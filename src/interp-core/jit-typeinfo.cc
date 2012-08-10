@@ -500,9 +500,9 @@ operator<< (std::ostream& os, const jit_matrix& mat)
 
 // -------------------- jit_type --------------------
 jit_type::jit_type (const std::string& aname, jit_type *aparent,
-                    llvm::Type *allvm_type, int aid) :
+                    llvm::Type *allvm_type, bool askip_paren, int aid) :
   mname (aname), mparent (aparent), llvm_type (allvm_type), mid (aid),
-  mdepth (aparent ? aparent->mdepth + 1 : 0)
+  mdepth (aparent ? aparent->mdepth + 1 : 0), mskip_paren (askip_paren)
 {
   std::memset (msret, 0, sizeof (msret));
   std::memset (mpointer_arg, 0, sizeof (mpointer_arg));
@@ -837,7 +837,7 @@ jit_operation::do_generate (const signature_vec& types) const
 }
 
 jit_function *
-jit_operation::generate (const signature_vec& types) const
+jit_operation::generate (const signature_vec&) const
 {
   return 0;
 }
@@ -1041,6 +1041,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   complex = new_type ("complex", any, complex_t);
   scalar = new_type ("scalar", complex, scalar_t);
   scalar_ptr = new_type ("scalar_ptr", 0, scalar_t->getPointerTo ());
+  any_ptr = new_type ("any_ptr", 0, any_t->getPointerTo ());
   range = new_type ("range", any, range_t);
   string = new_type ("string", any, string_t);
   boolean = new_type ("bool", any, bool_t);
@@ -1079,6 +1080,14 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
                                            0, "error_state");
   engine->addGlobalMapping (lerror_state,
                             reinterpret_cast<void *> (&error_state));
+
+  // generic call function
+  {
+    jit_type *int_t = intN (sizeof (octave_builtin::fcn) * 8);
+    any_call = create_function (jit_convention::external, "octave_jit_call",
+                                any, int_t, int_t, any_ptr, int_t);
+    any_call.add_mapping (engine, &octave_jit_call);
+  }
 
   // any with anything is an any op
   jit_function fn;
@@ -1800,9 +1809,9 @@ jit_typeinfo::do_end (jit_value *value, jit_value *idx, jit_value *count)
 
 jit_type*
 jit_typeinfo::new_type (const std::string& name, jit_type *parent,
-                        llvm::Type *llvm_type)
+                        llvm::Type *llvm_type, bool skip_paren)
 {
-  jit_type *ret = new jit_type (name, parent, llvm_type, next_id++);
+  jit_type *ret = new jit_type (name, parent, llvm_type, skip_paren, next_id++);
   id_to_type.push_back (ret);
   return ret;
 }
@@ -1918,7 +1927,7 @@ jit_typeinfo::do_insert_error_check (llvm::IRBuilderD& abuilder)
 void
 jit_typeinfo::add_builtin (const std::string& name)
 {
-  jit_type *btype = new_type (name, any, any->to_llvm ());
+  jit_type *btype = new_type (name, any, any->to_llvm (), true);
   builtins[name] = btype;
 
   octave_builtin *ov_builtin = find_builtin (name);
@@ -1974,10 +1983,49 @@ jit_typeinfo::find_builtin (const std::string& name)
 }
 
 void
-jit_typeinfo::register_generic (const std::string&, jit_type *,
-                                const std::vector<jit_type *>&)
+jit_typeinfo::register_generic (const std::string& name, jit_type *result,
+                                const std::vector<jit_type *>& args)
 {
-  // FIXME: Implement
+  octave_builtin *builtin = find_builtin (name);
+  if (! builtin)
+    return;
+
+  std::vector<jit_type *> fn_args (args.size () + 1);
+  fn_args[0] = builtins[name];
+  std::copy (args.begin (), args.end (), fn_args.begin () + 1);
+  jit_function fn = create_function (jit_convention::internal, name, result,
+                                     fn_args);
+  fn.mark_can_error ();
+  llvm::BasicBlock *block = fn.new_block ();
+  builder.SetInsertPoint (block);
+  llvm::Type *any_t = any->to_llvm ();
+  llvm::ArrayType *array_t = llvm::ArrayType::get (any_t, args.size ());
+  llvm::Value *array = llvm::UndefValue::get (array_t);
+  for (size_t i = 0; i < args.size (); ++i)
+    {
+      llvm::Value *arg = fn.argument (builder, i + 1);
+      jit_function agrab = get_grab (args[i]);
+      llvm::Value *garg = agrab.call (builder, arg);
+      jit_function acast = cast (any, args[i]);
+      array = builder.CreateInsertValue (array, acast.call (builder, garg), i);
+    }
+
+  llvm::Value *array_mem = builder.CreateAlloca (array_t);
+  builder.CreateStore (array, array_mem);
+  array = builder.CreateBitCast (array_mem, any_t->getPointerTo ());
+
+  jit_type *jintTy = intN (sizeof (octave_builtin::fcn) * 8);
+  llvm::Type *intTy = jintTy->to_llvm ();
+  size_t fcn_int = reinterpret_cast<size_t> (builtin->function ());
+  llvm::Value *fcn = llvm::ConstantInt::get (intTy, fcn_int);
+  llvm::Value *nargin = llvm::ConstantInt::get (intTy, args.size ());
+  size_t result_int = reinterpret_cast<size_t> (result);
+  llvm::Value *res_llvm = llvm::ConstantInt::get (intTy, result_int);
+  llvm::Value *ret = any_call.call (builder, fcn, nargin, array, res_llvm);
+
+  jit_function cast_result = cast (result, any);
+  fn.do_return (builder, cast_result.call (builder, ret));
+  paren_subsref_fn.add_overload (fn);
 }
 
 jit_function

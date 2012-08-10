@@ -132,7 +132,7 @@ public:
   typedef llvm::Value *(*convert_fn) (llvm::IRBuilderD&, llvm::Value *);
 
   jit_type (const std::string& aname, jit_type *aparent, llvm::Type *allvm_type,
-            int aid);
+            bool askip_paren, int aid);
 
   // a user readable type name
   const std::string& name (void) const { return mname; }
@@ -150,6 +150,8 @@ public:
   llvm::Type *to_llvm_arg (void) const;
 
   size_t depth (void) const { return mdepth; }
+
+  bool skip_paren (void) const { return mskip_paren; }
 
   // -------------------- Calling Convention information --------------------
 
@@ -195,6 +197,7 @@ private:
   llvm::Type *llvm_type;
   int mid;
   size_t mdepth;
+  bool mskip_paren;
 
   bool msret[jit_convention::length];
   bool mpointer_arg[jit_convention::length];
@@ -625,7 +628,7 @@ private:
                               jit_value *count);
 
   jit_type *new_type (const std::string& name, jit_type *parent,
-                      llvm::Type *llvm_type);
+                      llvm::Type *llvm_type, bool skip_paren = false);
 
 
   void add_print (jit_type *ty, void *fptr);
@@ -721,6 +724,7 @@ private:
   jit_type *matrix;
   jit_type *scalar;
   jit_type *scalar_ptr; // a fake type for interfacing with C++
+  jit_type *any_ptr; // a fake type for interfacing with C++
   jit_type *range;
   jit_type *string;
   jit_type *boolean;
@@ -745,6 +749,8 @@ private:
   jit_paren_subsasgn paren_subsasgn_fn;
   jit_operation end1_fn;
   jit_operation end_fn;
+
+  jit_function any_call;
 
   // type id -> cast function TO that type
   std::vector<jit_operation> casts;

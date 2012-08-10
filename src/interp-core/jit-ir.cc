@@ -619,9 +619,19 @@ jit_magic_end::jit_magic_end (const std::vector<context>& full_context)
 jit_magic_end::context
 jit_magic_end::resolve_context (void) const
 {
-  // FIXME: We need to have a way of marking functions so we can skip them here
-  context ret = contexts[0];
-  ret.value = argument (0);
+  size_t idx;
+  for (idx = 0; idx < contexts.size (); ++idx)
+    {
+      jit_type *ctx_type = contexts[idx].value->type ();
+      if (! ctx_type || ctx_type->skip_paren ())
+        break;
+    }
+
+  if (idx >= contexts.size ())
+    idx = 0;
+
+  context ret = contexts[idx];
+  ret.value = argument (idx);
   return ret;
 }
 

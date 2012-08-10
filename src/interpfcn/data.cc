@@ -7230,52 +7230,111 @@ endfor\n\
   return retval;
 }
 
+bool do_base64_encode (const char * inc, const size_t inlen, char *& out)
+{  
+  bool ret = false;
+  size_t outlen = base64_encode_alloc (inc, inlen, &out);
+  
+  if (! out && outlen == 0 && inlen != 0)
+    error ("base64_encode: input array too large");
+  else if (! out)
+    error ("base64_encode: memory allocation error");
+  else
+    ret = true;
+
+  return ret;
+}
+
 DEFUN (base64_encode, args, , "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{s} =} base64_encode (@var{x})\n\
 Encode a double matrix or array @var{x} into the base64 format string\n\
 @var{s}.\n\
 \n\
-@strong{Warning:} Encoding different numeric types, such as single or\n\
-integer, is not currently supported.  Any non-double input will be converted\n\
-to type double before encoding.\n\
 @seealso{base64_decode}\n\
 @end deftypefn")
 {
   octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();
   else 
     {
-      const Array<double> in = args(0).array_value ();
-      if (! error_state)
+      if (! args(0).is_numeric_type ()) 
+        error ("base64_encode: encoding is supported only for numeric arrays");
+      else if (args(0).is_complex_type () 
+          || args(0).is_sparse_type ())
+        error ("base64_encode: encoding complex or sparse data is not supported");
+      else if (args(0).is_integer_type ())
         {
-          const char* inc = reinterpret_cast<const char*> (in.data ());
-          size_t inlen = in.numel () * sizeof (double) / sizeof (char);
-          char* out;
-          size_t outlen = base64_encode_alloc (inc, inlen, &out);
+#define MAKE_INT_BRANCH(X)                                              \
+          if (args(0).is_ ## X ## _type ())                             \
+            {                                                           \
+              const X##NDArray in = args(0).  X## _array_value ();      \
+              size_t inlen =                                            \
+                in.numel () * sizeof (X## _t) / sizeof (char);          \
+              const char* inc =                                         \
+                reinterpret_cast<const char*> (in.data ());             \
+              char* out;                                                \
+              if (! error_state                                         \
+                  && do_base64_encode (inc, inlen, out))                \
+                retval(0) = octave_value (out);                         \
+            }
+                                          
+          MAKE_INT_BRANCH(int8)
+          else MAKE_INT_BRANCH(int16)
+          else MAKE_INT_BRANCH(int32)
+          else MAKE_INT_BRANCH(int64)
+          else MAKE_INT_BRANCH(uint8)
+          else MAKE_INT_BRANCH(uint16)
+          else MAKE_INT_BRANCH(uint32)
+          else MAKE_INT_BRANCH(uint64)
+#undef MAKE_INT_BRANCH
 
-          if (! out && outlen == 0 && inlen != 0)
-            error ("base64_encode: input array too large");
-          else if (! out)
-            error ("base64_encode: memory allocation error");
           else
+            panic_impossible ();
+        }
+      else if (args(0).is_single_type ())
+        {
+          const Array<float> in = args(0).float_array_value ();
+          size_t inlen;
+          inlen = in.numel () * sizeof (float) / sizeof (char); 
+          const char*  inc;
+          inc = reinterpret_cast<const char*> (in.data ());  
+          char* out;
+          if (! error_state 
+              && do_base64_encode (inc, inlen, out))
+            retval(0) = octave_value (out);
+        }                 
+      else
+        {
+          const Array<double> in = args(0).array_value ();
+          size_t inlen;
+          inlen = in.numel () * sizeof (double) / sizeof (char); 
+          const char*  inc;
+          inc = reinterpret_cast<const char*> (in.data ());   
+          char* out;
+          if (! error_state 
+              && do_base64_encode (inc, inlen, out))
             retval(0) = octave_value (out);
         }
-    }
-
+    }  
   return retval;
 }
 
 /*
-%!assert (base64_encode (single (pi)), "AAAAYPshCUA=")
-%!assert (base64_encode (uint8 (pi)), base64_encode (double (uint8 (pi))))
+%!assert (base64_encode (single (pi)), "2w9JQA==")
+%!assert (base64_encode (uint8 ([0 0 0])), "AAAA")
+%!assert (base64_encode (uint16 ([0 0 0])), "AAAAAAAA")
+%!assert (base64_encode (uint32 ([0 0 0])), "AAAAAAAAAAAAAAAA")
+%!assert (base64_encode (uint64 ([0 0 0])), "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+%!assert (base64_encode (uint8 ([255 255 255])), "////")
 
 %!error base64_encode ()
 %!error base64_encode (1,2)
 %!error base64_encode ("A string")
+%!error base64_encode ({"A cell array"})
+%!error base64_encode (struct ())
 */
 
 DEFUN (base64_decode, args, , "-*- texinfo -*-\n\
@@ -7301,7 +7360,7 @@ containing the dimensions of the decoded array.\n\
       if (nargin > 1)
         {
           const Array<octave_idx_type> new_size =
-                                       args(1).octave_idx_type_vector_value ();
+            args(1).octave_idx_type_vector_value ();
           if (! error_state)
             {
               new_dims = dim_vector::alloc (new_size.length ());

@@ -39,7 +39,6 @@ dnl ----------------------------------------------------------------------
 dnl
 dnl Figure out the hardware-vendor-os info.
 dnl
-dnl OCTAVE_HOST_TYPE
 AC_DEFUN([OCTAVE_HOST_TYPE],
 [AC_CANONICAL_HOST
 if test -z "$host"; then
@@ -54,7 +53,6 @@ AC_SUBST(canonical_host_type)])
 dnl
 dnl Set default value for a variable and substitute it.
 dnl
-dnl OCTAVE_SET_DEFAULT
 AC_DEFUN([OCTAVE_SET_DEFAULT],
 [ifelse($#, 2, [: ${$1=$2}
 ])dnl
@@ -75,7 +73,35 @@ fi
 AC_SUBST(ARFLAGS)
 ])
 dnl
-dnl See if the compiler supports placement delete
+dnl Check for unordered map headers and whether tr1 namespace is
+dnl required.
+dnl
+AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
+AC_CHECK_HEADERS([unordered_map], [], [
+  AC_CHECK_HEADERS([tr1/unordered_map])])
+AC_CACHE_CHECK([whether unordered_map requires tr1 namespace],
+  [octave_cv_header_require_tr1_namespace],
+  [AC_LANG_PUSH(C++)
+  octave_cv_header_require_tr1_namespace=no
+  if test "$ac_cv_header_unordered_map" = "yes"; then
+    ## Have <unordered_map>, but still have to check whether
+    ## tr1 namespace is required (like MSVC, for instance).
+    AC_COMPILE_IFELSE([
+      AC_LANG_PROGRAM([
+        #include <unordered_map>
+      ], [
+        std::unordered_map<int,int> m;
+      ])], octave_cv_header_require_tr1_namespace=no, octave_cv_header_require_tr1_namespace=yes)
+  elif test "$ac_cv_header_tr1_unordered_map" = "yes"; then
+    octave_cv_header_require_tr1_namespace=yes
+  fi
+  AC_LANG_POP(C++)])
+  if test "$octave_cv_header_require_tr1_namespace" = "yes"; then
+    AC_DEFINE(USE_UNORDERED_MAP_WITH_TR1, 1, [Define to 1 if unordered_map requires the use of tr1 namespace.])
+  fi
+])
+dnl
+dnl Check if the compiler supports placement delete.
 dnl
 AC_DEFUN([OCTAVE_PLACEMENT_DELETE],
 [AC_CACHE_CHECK([whether <new> defines placement delete operator],
@@ -90,7 +116,7 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
-dnl See if the compiler dynamic auto arrays
+dnl Check if the compiler dynamic auto arrays.
 dnl
 AC_DEFUN([OCTAVE_DYNAMIC_AUTO_ARRAYS],
 [AC_CACHE_CHECK([whether C++ supports dynamic auto arrays],
@@ -105,11 +131,11 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
-dnl See if the C++ library has the bit_and, bit_or and bit_xor
+dnl Check if the C++ library has the bit_and, bit_or, and bit_xor
 dnl templates defined.
 dnl
 AC_DEFUN([OCTAVE_CXX_BITWISE_OP_TEMPLATES],
-[AC_CACHE_CHECK([whether bit_and, bit_or and bit_xor are defined in the c++ library],
+[AC_CACHE_CHECK([whether bit_and, bit_or, bit_xor are defined in the C++ library],
 octave_cv_cxx_bitwise_op_templates,
 [AC_LANG_PUSH(C++)
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <functional>]],
@@ -124,9 +150,8 @@ AC_DEFINE(HAVE_CXX_BITWISE_OP_TEMPLATES,1,[Define to 1 if C++ library has templa
 fi
 AC_LANG_POP(C++)
 ])
-
 dnl
-dnl See if the C++ library has functions to set real and imaginary
+dnl Check if the C++ library has functions to set real and imaginary
 dnl parts of complex numbers independently.
 dnl
 AC_DEFUN([OCTAVE_CXX_COMPLEX_SETTERS],
@@ -142,7 +167,7 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
-dnl See if the C++ library has functions to access real and imaginary
+dnl Check if the C++ library has functions to access real and imaginary
 dnl parts of complex numbers independently via references.
 dnl
 AC_DEFUN([OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS],
@@ -158,7 +183,7 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
-dnl See if the Carbon Framework defines CGDisplayBitsPerPixel.
+dnl Check if the Carbon Framework defines CGDisplayBitsPerPixel.
 dnl
 AC_DEFUN([OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL],
 [AC_CACHE_CHECK([whether CGDisplayBitsPerPixel is defined in the Carbon Framework],
@@ -177,7 +202,7 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
-dnl The following test is from Karl Berry's Kpathseach library.  I'm
+dnl The following test is from Karl Berry's Kpathsearch library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.
 dnl
@@ -185,6 +210,7 @@ dnl Some BSD putenv's, e.g., FreeBSD, do malloc/free's on the environment.
 dnl This test program is due to Mike Hibler <mike@cs.utah.edu>.
 dnl We don't actually need to run this if we don't have putenv, but it
 dnl doesn't hurt.
+dnl 
 AC_DEFUN([OCTAVE_SMART_PUTENV],
 [AC_MSG_CHECKING([whether putenv uses malloc])
 AC_CACHE_VAL(octave_cv_func_putenv_malloc,
@@ -244,10 +270,9 @@ if test $octave_cv_func_putenv_malloc = yes; then
   AC_DEFINE(SMART_PUTENV,1,[To quiet autoheader.])
 fi])
 dnl
-dnl Check to see if C++ compiler needs the new friend template declaration 
+dnl Check if C++ compiler needs the new friend template declaration
 dnl syntax. 
 dnl
-dnl OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
 AC_DEFUN([OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL], [
   AC_REQUIRE([AC_PROG_CXX])
   AC_MSG_CHECKING([for C++ support for new friend template declaration])
@@ -279,12 +304,10 @@ EOB
   fi
 ])
 dnl
-dnl Check to see if C compiler handles FLAG command line option.  If
-dnl two arguments are specified, execute the second arg as shell
-dnl commands.  Otherwise, add FLAG to CFLAGS if the compiler accepts
-dnl the flag.
+dnl Check if C compiler handles FLAG command line option.  If two
+dnl arguments are specified, execute the second arg as shell commands.
+dnl Otherwise, add FLAG to CFLAGS if the compiler accepts the flag.
 dnl
-dnl OCTAVE_CC_FLAG
 AC_DEFUN([OCTAVE_CC_FLAG], [
   ac_safe=`echo "$1" | sed 'y% ./+-:=%___p___%'`
   AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
@@ -309,12 +332,10 @@ AC_DEFUN([OCTAVE_CC_FLAG], [
   fi
 ])
 dnl
-dnl Check to see if C++ compiler handles FLAG command line option.  If
-dnl two arguments are specified, execute the second arg as shell
-dnl commands.  Otherwise, add FLAG to CXXFLAGS if the compiler accepts
-dnl the flag.
+dnl Check if C++ compiler handles FLAG command line option.  If two
+dnl arguments are specified, execute the second arg as shell commands.
+dnl Otherwise, add FLAG to CXXFLAGS if the compiler accepts the flag.
 dnl
-dnl OCTAVE_CXX_FLAG
 AC_DEFUN([OCTAVE_CXX_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING([whether ${CXX-g++} accepts $1])
@@ -339,12 +360,11 @@ AC_DEFUN([OCTAVE_CXX_FLAG], [
   fi
 ])
 dnl
-dnl Check to see if Fortran compiler handles FLAG command line option.  If
+dnl Check if Fortran compiler handles FLAG command line option.  If
 dnl two arguments are specified, execute the second arg as shell
 dnl commands.  Otherwise, add FLAG to FFLAGS if the compiler accepts
 dnl the flag.
 dnl
-dnl OCTAVE_F77_FLAG
 AC_DEFUN([OCTAVE_F77_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING([whether ${F77-g77} accepts $1])
@@ -369,7 +389,7 @@ AC_DEFUN([OCTAVE_F77_FLAG], [
   fi
 ])
 dnl
-dnl Check to see whether Fortran compiler has the intrinsic function ISNAN.
+dnl Check if Fortran compiler has the intrinsic function ISNAN.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FORTRAN_HAVE_ISNAN], [
   AC_LANG_PUSH(Fortran 77)
@@ -391,7 +411,7 @@ AC_DEFUN([OCTAVE_CHECK_FORTRAN_HAVE_ISNAN], [
   AC_LANG_POP(Fortran 77)      
 ])
 dnl
-dnl Check to see whether the default Fortran INTEGER is 64 bits wide.
+dnl Check if the default Fortran INTEGER is 64 bits wide.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FORTRAN_INTEGER_SIZE], [
   octave_fintsize_save_FFLAGS="$FFLAGS"
@@ -445,16 +465,14 @@ rm -f conftest.$ac_objext fintsize.$ac_objext
   FFLAGS="$octave_fintsize_save_FFLAGS"
 ])
 dnl
-dnl
-dnl Adds warnings to final summary
+dnl Add warning to final summary.
 dnl
 AC_DEFUN([OCTAVE_CONFIGURE_WARNING], [
   AC_MSG_WARN([$][$1])
   m4_set_add([summary_warning_list], [$1])
 ])
 dnl
-dnl
-dnl Prints final summary
+dnl Print final summary.
 dnl
 AC_DEFUN([OCTAVE_CONFIGURE_WARNING_SUMMARY], [
   m4_set_foreach([summary_warning_list], [elt], [
@@ -464,10 +482,9 @@ AC_DEFUN([OCTAVE_CONFIGURE_WARNING_SUMMARY], [
     fi])
 ])
 dnl
-dnl
-dnl
 dnl OCTAVE_CHECK_LIBRARY(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
 dnl                      LANG, DOC-STRING, EXTRA-CHECK)
+dnl
 AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
   AC_ARG_WITH([$1-includedir],
     [AS_HELP_STRING([--with-$1-includedir=DIR],
@@ -545,7 +562,7 @@ AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
   fi
 ])
 dnl
-dnl Check for flex
+dnl Check for flex.
 dnl
 AC_DEFUN([OCTAVE_PROG_FLEX], [
 ### For now, don't define LEXLIB to be -lfl -- we don't use anything in
@@ -573,7 +590,7 @@ lex.cc, which is the case if you're building from VCS sources.
   AC_SUBST(LFLAGS)
 ])
 dnl
-dnl Check for bison
+dnl Check for bison.
 dnl
 AC_DEFUN([OCTAVE_PROG_BISON], [
   AC_PROG_YACC
@@ -617,7 +634,7 @@ else
 fi
 ])
 dnl
-dnl Does gnuplot exist?
+dnl Check for gnuplot.
 dnl
 AC_DEFUN([OCTAVE_PROG_GNUPLOT], [
 gp_names="gnuplot"
@@ -631,7 +648,7 @@ else
     GNUPLOT="$gp_default"
     warn_gnuplot="
 
-gnuplot not found. It isn't necessary to have gnuplot installed, but
+gnuplot not found.  It isn't necessary to have gnuplot installed, but
 without native graphics or gnuplot you won't be able to use any of
 Octave's plotting commands.
 "
@@ -641,9 +658,8 @@ fi
 AC_SUBST(GNUPLOT)
 ])
 dnl
-dnl Is gperf installed?
+dnl Check for gperf.
 dnl
-dnl OCTAVE_PROG_GPERF
 AC_DEFUN([OCTAVE_PROG_GPERF], [
   AC_CHECK_PROG(GPERF, gperf, gperf, [])
   if test -z "$GPERF"; then
@@ -658,9 +674,8 @@ reconstruct oct-gperf.h
   AC_SUBST(GPERF)
 ])
 dnl
-dnl Is ghostscript installed?
+dnl Check for ghostscript.
 dnl
-dnl OCTAVE_PROG_GHOSTSCRIPT
 AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   case "$canonical_host_type" in
     *-*-mingw* | *-*-msdosmsvc)
@@ -685,9 +700,20 @@ using Octave
   AC_SUBST(GHOSTSCRIPT)
 ])
 dnl
-dnl Is texi2dvi installed?
+dnl Check for makeinfo.
 dnl
-dnl OCTAVE_PROG_TEXI2DVI
+AC_DEFUN([OCTAVE_PROG_MAKEINFO],
+dnl use MKINFO, not MAKEINFO, for variable name because Automake automatically
+dnl defines a value for MAKEINFO even when it does not exist which will then
+dnl fool the 'test -z' line.
+  [AC_CHECK_PROG(MKINFO, makeinfo, makeinfo, [])
+   if test -z "$MKINFO"; then
+     AC_MSG_ERROR([makeinfo program required for reading documentation])
+   fi
+])
+dnl
+dnl Check for texi2dvi.
+dnl
 AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
   AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
   if test -z "$TEXI2DVI"; then
@@ -702,9 +728,8 @@ reconstruct the DVI version of the manual
   AC_SUBST(TEXI2DVI)
 ])
 dnl
-dnl Is texi2pdf installed?
+dnl Check for texi2pdf.
 dnl
-dnl OCTAVE_PROG_TEXI2PDF
 AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
   AC_REQUIRE([OCTAVE_PROG_TEXI2DVI])
   AC_CHECK_PROG(TEXI2PDF, texi2pdf, texi2pdf, [])
@@ -729,10 +754,9 @@ reconstruct the PDF version of the manual
   AC_SUBST(TEXI2PDF)
 ])
 dnl
-dnl See if the C++ library is ISO compliant.
+dnl Check if the C++ library is ISO compliant.
 dnl FIXME: This is obviously very simplistic, and trivially fooled.
 dnl
-dnl OCTAVE_CXX_ISO_COMPLIANT_LIBRARY
 AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
   AC_REQUIRE([AC_PROG_CXX])
   AC_MSG_CHECKING([if C++ library is ISO compliant])
@@ -793,9 +817,7 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   AC_SUBST(READLINE_LIBS)
 ])
 dnl
-dnl Check to see if C++ reintrepret cast works for function pointers.
-dnl
-dnl OCTAVE_CXX_BROKEN_REINTERPRET_CAST
+dnl Check if C++ reinterpret cast works for function pointers.
 dnl
 AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST], [
   AC_REQUIRE([AC_PROG_CXX])
@@ -814,7 +836,7 @@ AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST], [
 fi
   AC_LANG_POP(C++)])
 dnl
-dnl Find find.
+dnl Find find program.
 dnl
 # Prefer GNU find if found.
 AN_MAKEVAR([FIND],  [OCTAVE_PROG_FIND])
@@ -823,7 +845,7 @@ AN_PROGRAM([find],  [OCTAVE_PROG_FIND])
 AC_DEFUN([OCTAVE_PROG_FIND],
 [AC_CHECK_PROGS(FIND, gfind find, )])
 dnl
-dnl Find sed.
+dnl Find sed program.
 dnl
 # Check for a fully-functional sed program, that truncates
 # as few characters as possible and that supports "\(X\|Y\)"
@@ -889,25 +911,22 @@ AC_SUBST(SED)
 AC_MSG_RESULT([$SED])
 ])
 dnl
-dnl Find Perl.
+dnl Find Perl program.
 dnl
-dnl OCTAVE_PROG_PERL
 AC_DEFUN([OCTAVE_PROG_PERL],
 [AC_CHECK_PROG(PERL, perl, perl, [])
   AC_SUBST(PERL)
 ])
 dnl
-dnl Find Python.
+dnl Find Python program.
 dnl
-dnl OCTAVE_PROG_PYTHON
 AC_DEFUN([OCTAVE_PROG_PYTHON],
 [AC_CHECK_PROG(PYTHON, python, python, [])
   AC_SUBST(PYTHON)
 ])
 dnl
-dnl Find desktop-file-install.
+dnl Find desktop-file-install program.
 dnl
-dnl OCTAVE_PROG_DESKTOP_FILE_INSTALL
 AC_DEFUN([OCTAVE_PROG_DESKTOP_FILE_INSTALL],
 [AC_CHECK_PROG(DESKTOP_FILE_INSTALL, desktop-file-install, desktop-file-install, [])
   AC_SUBST(DESKTOP_FILE_INSTALL)
@@ -949,7 +968,7 @@ else
 fi
 ])
 dnl
-dnl Check for UMFPACK seperately split complex matrix and RHS. Note
+dnl Check for UMFPACK separately split complex matrix and RHS.  Note
 dnl that as umfpack.h can be in three different places, rather than
 dnl include it, just declare the functions needed.
 dnl
@@ -1005,9 +1024,9 @@ if test "$octave_cv_umfpack_seperate_split" = yes; then
 fi
 ])
 dnl
-dnl Check whether using HDF5 DLL under Windows. This is done by
+dnl Check whether using HDF5 DLL under Windows.  This is done by
 dnl testing for a data symbol in the HDF5 library, which would
-dnl requires the definition of _HDF5USEDL_ under MSVC compiler.
+dnl require the definition of _HDF5USEDL_ under MSVC compiler.
 dnl
 AC_DEFUN([OCTAVE_HDF5_DLL], [
   AC_CACHE_CHECK([if _HDF5USEDLL_ needs to be defined],octave_cv_hdf5_dll, [
@@ -1085,7 +1104,7 @@ const char *tmp = qh_version;
   fi
 ])
 dnl
-dnl Check whether Qhull works (does not crash)
+dnl Check whether Qhull works (does not crash).
 dnl
 AC_DEFUN([OCTAVE_CHECK_QHULL_OK],
   [AC_CACHE_CHECK([whether the qhull library works],
@@ -1139,11 +1158,11 @@ return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr);
   fi
 ])
 dnl
-dnl Check whether ARPACK works (does not crash)
+dnl Check whether ARPACK works (does not crash).
 dnl
 dnl Using a pure Fortran program doesn't seem to crash when linked
-dnl with the buggy ARPACK library but the C++ program does.  Maybe
-dnl it is the memory allocation that exposes the bug and using statically
+dnl with the buggy ARPACK library but the C++ program does.  Maybe it
+dnl is the memory allocation that exposes the bug and using statically
 dnl allocated arrays in Fortran does not?
 dnl
 AC_DEFUN([OCTAVE_CHECK_ARPACK_OK], [
@@ -1289,7 +1308,7 @@ doit (void)
   fi
 ])
 dnl
-dnl Check for OpenGL.  If found, define OPENGL_LIBS
+dnl Check for OpenGL.  If found, define OPENGL_LIBS.
 dnl
 dnl FIXME: The following tests should probably check for the
 dnl libraries separately.
@@ -1364,9 +1383,8 @@ fi
 AC_SUBST(OPENGL_LIBS)
 ])
 dnl
-dnl See if function gluTessCallback is called with "(...)"
+dnl Check if function gluTessCallback is called with "(...)".
 dnl
-dnl OCTAVE_GLUTESSCALLBACK_THREEDOTS
 AC_DEFUN([OCTAVE_GLUTESSCALLBACK_THREEDOTS],
 [AC_CACHE_CHECK([whether gluTessCallback is called with "(...)"],
 octave_cv_glutesscallback_threedots,
@@ -1386,9 +1404,9 @@ if test $octave_cv_glutesscallback_threedots = "yes"; then
 fi
 ])
 dnl
-dnl Check for support of OpenMP with a given compiler flag. If
-dnl found define HAVE_OPENMP and add the compile flag to CFLAGS
-dnl and CXXFLAGS.
+dnl Check for support of OpenMP with a given compiler flag.
+dnl If found define HAVE_OPENMP and add the compile flag
+dnl to CFLAGS and CXXFLAGS.
 dnl
 AC_DEFUN([OCTAVE_CHECK_OPENMP],
 [AC_MSG_CHECKING([for support of OpenMP])
@@ -1609,11 +1627,13 @@ appropiate for your system) is correctly set.
    AC_SUBST([FT2_LIBS])])
 dnl end of freetype2.m4
 
+dnl
 dnl Check whether a math mapper function is available in <cmath>.
 dnl Will define HAVE_CMATH_FUNC if there is a double variant and
 dnl HAVE_CMATH_FUNCF if there is a float variant.
 dnl Currently capable of checking for functions with single 
 dnl argument and returning bool/int/real.
+dnl
 AC_DEFUN([OCTAVE_CMATH_FUNC],[
 AC_MSG_CHECKING([for std::$1 in <cmath>])
 AC_LANG_PUSH(C++)
@@ -1645,6 +1665,7 @@ take_func(std::$1);
 AC_LANG_POP(C++)
 ])
 
+dnl
 dnl Check whether fast signed integer arithmetics using bit tricks
 dnl can be used in oct-inttypes.h.  Defines HAVE_FAST_INT_OPS if
 dnl the following conditions hold:
@@ -1656,7 +1677,7 @@ dnl 3. Signed addition and subtraction yield the same bit results as unsigned.
 dnl    (We use casts to prevent optimization interference, so there is no
 dnl     need for things like -ftrapv).
 dnl 4. Bit operations on signed integers work like on unsigned integers,
-dnl    except for the shifts. Shifts are arithmetic.
+dnl    except for the shifts.  Shifts are arithmetic.
 dnl
 AC_DEFUN([OCTAVE_FAST_INT_OPS],
 [AC_CACHE_CHECK([whether fast integer arithmetics is usable],
@@ -1722,7 +1743,6 @@ dnl Add options (lower case letters $1) "--with-framework-$1" and
 dnl "--without-framework-$1".  If this test is successful then perform
 dnl $4, otherwise do $5.
 dnl
-dnl OCTAVE_HAVE_FRAMEWORK
 AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
   AC_MSG_CHECKING([whether ${LD-ld} accepts -framework $1])
   AC_CACHE_VAL(octave_cv_framework_$1, [
@@ -1915,7 +1935,7 @@ fi[]dnl
 ])# PKG_CHECK_MODULES
 
 dnl
-dnl External macros.
+dnl Include external macros.
 dnl
 
 m4_include([m4/ax_pthread.m4])

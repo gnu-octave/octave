@@ -1995,7 +1995,9 @@ case "$canonical_host_type" in
 esac
 
 ## Check for CGDisplayBitsPerPixel function on Mac OSX systems with Carbon
-OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL
+if test $have_framework_carbon = "yes"; then
+  OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL
+fi
 
 OCTAVE_SMART_PUTENV
 

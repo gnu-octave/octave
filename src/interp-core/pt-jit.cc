@@ -581,15 +581,33 @@ jit_convert::visit_parameter_list (tree_parameter_list&)
 }
 
 void
-jit_convert::visit_postfix_expression (tree_postfix_expression&)
+jit_convert::visit_postfix_expression (tree_postfix_expression& tpe)
 {
-  throw jit_fail_exception ();
+  octave_value::unary_op etype = tpe.op_type ();
+  tree_expression *operand = tpe.operand ();
+  jit_value *operandv = visit (operand);
+
+  const jit_operation& fn = jit_typeinfo::unary_op (etype);
+  result = create_checked (fn, operandv);
+
+  if (etype == octave_value::op_incr || etype == octave_value::op_decr)
+    {
+      // FIXME: Somehow copy operandv
+      // do_assign (operand, operandv);
+      throw jit_fail_exception ("Postfix ++ and -- not yet supported");
+    }
 }
 
 void
-jit_convert::visit_prefix_expression (tree_prefix_expression&)
+jit_convert::visit_prefix_expression (tree_prefix_expression& tpe)
 {
-  throw jit_fail_exception ();
+  octave_value::unary_op etype = tpe.op_type ();
+  tree_expression *operand = tpe.operand ();
+  const jit_operation& fn = jit_typeinfo::unary_op (etype);
+  result = create_checked (fn, visit (operand));
+
+  if (etype == octave_value::op_incr || etype == octave_value::op_decr)
+    do_assign (operand, result);
 }
 
 void
@@ -905,12 +923,11 @@ jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
 jit_value *
 jit_convert::visit (tree& tee)
 {
-  result = 0;
-  tee.accept (*this);
+  unwind_protect prot;
+  prot.protect_var (result);
 
-  jit_value *ret = result;
-  result = 0;
-  return ret;
+  tee.accept (*this);
+  return result;
 }
 
 void
@@ -1962,5 +1979,13 @@ Test some simple cases that compile.
 %!   i += 1;
 %! endwhile
 %! assert (i == 10);
+
+%!test
+%! i = 0;
+%! while i < 10
+%!   a = ++i;
+%! endwhile
+%! assert (i == 10);
+%! assert (a == 10);
 
 */

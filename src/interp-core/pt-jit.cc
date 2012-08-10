@@ -592,9 +592,9 @@ jit_convert::visit_postfix_expression (tree_postfix_expression& tpe)
 
   if (etype == octave_value::op_incr || etype == octave_value::op_decr)
     {
-      // FIXME: Somehow copy operandv
-      // do_assign (operand, operandv);
-      throw jit_fail_exception ("Postfix ++ and -- not yet supported");
+      jit_value *ret = create_checked (&jit_typeinfo::copy, operandv);
+      do_assign (operand, result);
+      result = ret;
     }
 }
 
@@ -1991,5 +1991,12 @@ Test some simple cases that compile.
 %! endwhile
 %! assert (i == 10);
 %! assert (a == 10);
+%!test
+%! i = 0;
+%! while i < 10
+%!   a = i++;
+%! endwhile
+%! assert (i == 10);
+%! assert (a == 9);
 
 */

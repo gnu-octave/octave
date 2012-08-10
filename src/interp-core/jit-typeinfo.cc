@@ -1159,6 +1159,10 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn.add_mapping (engine, &octave_jit_release_matrix);
   release_fn.add_overload (fn);
 
+  // copy
+  copy_fn.stash_name ("copy");
+  copy_fn.add_overload (create_identity (scalar));
+
   // now for binary scalar operations
   add_binary_op (scalar, octave_value::op_add, llvm::Instruction::FAdd);
   add_binary_op (scalar, octave_value::op_sub, llvm::Instruction::FSub);

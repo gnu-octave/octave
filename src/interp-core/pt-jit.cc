@@ -607,12 +607,20 @@ jit_convert::visit_return_list (tree_return_list&)
 void
 jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
 {
-  if (tsa.op_type () != octave_value::op_asn_eq)
-    throw jit_fail_exception ("Unsupported assign");
-
-  // resolve rhs
   tree_expression *rhs = tsa.right_hand_side ();
   jit_value *rhsv = visit (rhs);
+  octave_value::assign_op op = tsa.op_type ();
+
+  if (op != octave_value::op_asn_eq)
+    {
+      // do the equivlent binary operation, then assign. This is always correct,
+      // but isn't always optimal.
+      tree_expression *lhs = tsa.left_hand_side ();
+      jit_value *lhsv = visit (lhs);
+      octave_value::binary_op bop = octave_value::assign_op_to_binary_op (op);
+      const jit_operation& fn = jit_typeinfo::binary_op (bop);
+      rhsv = create_checked (fn, lhsv, rhsv);
+    }
 
   result = do_assign (tsa.left_hand_side (), rhsv);
 }
@@ -1947,5 +1955,12 @@ Test some simple cases that compile.
 %!   break;
 %! endfor
 %! assert (m == sin ([1  2 3]));
+
+%!test
+%! i = 0;
+%! while i < 10
+%!   i += 1;
+%! endwhile
+%! assert (i == 10);
 
 */

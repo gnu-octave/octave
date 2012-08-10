@@ -1544,23 +1544,23 @@ AC_DEFUN([OCTAVE_SET_DEFAULT], [
   AC_SUBST($1)
 ])
 dnl
-dnl Check for UMFPACK separately split complex matrix and RHS.  Note
-dnl that as umfpack.h can be in three different places, rather than
-dnl include it, just declare the functions needed.
+dnl Check for UMFPACK separately split complex matrix and RHS.
 dnl
-dnl Assumes that the check for umfpack has already been performed.
+dnl Macro assumes that the check for umfpack has already been performed.
 dnl
 AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
   AC_MSG_CHECKING([for UMFPACK separate complex matrix and rhs split])
   AC_CACHE_VAL(octave_cv_umfpack_separate_split,
     [AC_RUN_IFELSE([AC_LANG_SOURCE([[
         #include <stdlib.h>
-        #if defined (HAVE_UFSPARSE_UMFPACK_H)
-        #include <ufsparse/umfpack.h>
+        #if defined (HAVE_SUITESPARSE_UMFPACK_H)
+        # include <suitesparse/umfpack.h>
+        #elif defined (HAVE_UFSPARSE_UMFPACK_H)
+        # include <ufsparse/umfpack.h>
         #elif defined (HAVE_UMFPACK_UMFPACK_H)
-        #include <umfpack/umfpack.h>
+        # include <umfpack/umfpack.h>
         #elif defined (HAVE_UMFPACK_H)
-        #include <umfpack.h>
+        # include <umfpack.h>
         #endif
         int n = 5;
         int Ap[] = {0, 2, 5, 9, 10, 12};

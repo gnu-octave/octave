@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-specfun.h"
 #include "lo-mappers.h"
 
+#include "mxarray.h"
 #include "oct-obj.h"
 #include "oct-stream.h"
 #include "ops.h"

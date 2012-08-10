@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "mxarray.h"
 #include "ov-cell.h"
 #include "oct-obj.h"
 #include "unwind-prot.h"

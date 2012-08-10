@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mach-info.h"
 #include "lo-ieee.h"
 
+#include "mxarray.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "pr-output.h"

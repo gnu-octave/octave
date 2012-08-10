@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Range.h"
 #include "data-conv.h"
-#include "mxarray.h"
 #include "mx-base.h"
 #include "str-vec.h"
 
@@ -40,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hdf5.h"
 
 class Cell;
+class mxArray;
 class octave_map;
 class octave_scalar_map;
 class octave_value;

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
+#include "mxarray.h"
 #include "oct-lvalue.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"

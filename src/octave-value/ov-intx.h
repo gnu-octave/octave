@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
+#include "mxarray.h"
 #include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-base-int.h"

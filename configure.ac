@@ -2003,15 +2003,24 @@ AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
 AC_FUNC_CLOSEDIR_VOID
 
-## Return type of matherr() 
-AC_MSG_CHECKING([for struct exception in math.h])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]],
-  [[struct exception *x; x->type; x->name;]])],
-  [AC_MSG_RESULT(yes)
-   AC_DEFINE(EXCEPTION_IN_MATH, 1,
-     [Define to 1 if your math.h declares struct exception for matherr().])],
-  [AC_MSG_RESULT(no)])
-
+## Check return type of matherr() 
+AC_CACHE_CHECK([for struct exception in math.h],
+  [octave_cv_func_matherr_type],
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <math.h>
+      ]], [[
+      struct exception *x;
+      x->type;
+      x->name;
+      ]])],
+    octave_cv_func_matherr_type=yes,
+    octave_cv_func_matherr_type=no)
+  ])
+if test $octave_cv_func_matherr_type = "yes"; then
+  AC_DEFINE(EXCEPTION_IN_MATH, 1,
+    [Define to 1 if math.h declares struct exception for matherr().])
+fi
+ 
 ## Signal stuff.
 
 AC_CHECK_DECLS([sys_siglist], [], [],

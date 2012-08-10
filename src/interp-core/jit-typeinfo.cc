@@ -1159,18 +1159,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn.add_mapping (engine, &octave_jit_release_matrix);
   release_fn.add_overload (fn);
 
-  // release scalar
-  fn = create_identity (scalar);
-  release_fn.add_overload (fn);
-
-  // release complex
-  fn = create_identity (complex);
-  release_fn.add_overload (fn);
-
-  // release index
-  fn = create_identity (index);
-  release_fn.add_overload (fn);
-
   // now for binary scalar operations
   add_binary_op (scalar, octave_value::op_add, llvm::Instruction::FAdd);
   add_binary_op (scalar, octave_value::op_sub, llvm::Instruction::FSub);

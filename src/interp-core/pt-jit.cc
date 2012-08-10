@@ -1145,7 +1145,7 @@ jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
       if (instr->needs_release ())
         {
           jit_block *fu_block = instr->first_use_block ();
-          if (fu_block && fu_block != &ablock)
+          if (fu_block && fu_block != &ablock && instr->needs_release ())
             temp.insert (instr);
         }
 
@@ -1155,15 +1155,15 @@ jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
           for (size_t i = 0; i < instr->argument_count (); ++i)
             {
               jit_value *arg = instr->argument (i);
-              if (arg->needs_release ())
-                {
-                  jit_call *release = create<jit_call> (&jit_typeinfo::release,
-                                                        arg);
-                  release->infer ();
-                  ablock.insert_after (iter, release);
-                  ++iter;
-                  temp.erase (arg);
-                }
+              if (! arg->needs_release ())
+                continue;
+
+              jit_call *release = create<jit_call> (&jit_typeinfo::release,
+                                                    arg);
+              release->infer ();
+              ablock.insert_after (iter, release);
+              ++iter;
+              temp.erase (arg);
             }
         }
     }
@@ -1202,6 +1202,9 @@ jit_convert::release_dead_phi (jit_block& ablock)
           for (size_t i = 0; i < phi->argument_count (); ++i)
             {
               jit_value *arg = phi->argument (i);
+              if (! arg->needs_release ())
+                continue;
+
               jit_block *inc = phi->incomming (i);
               jit_block *split = inc->maybe_split (*this, ablock);
               jit_terminator *term = split->terminator ();
@@ -1511,7 +1514,8 @@ jit_convert::convert_llvm::visit (jit_assign& assign)
   if (isa<jit_assign_base> (overwrite))
     {
       const jit_function& ol = jit_typeinfo::get_release (overwrite->type ());
-      ol.call (builder, overwrite);
+      if (ol.valid ())
+        ol.call (builder, overwrite);
     }
 }
 

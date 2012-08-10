@@ -66,8 +66,8 @@ if [ $# -gt 0 ]; then
   elif [ "x$1" = "x-strace" ]; then
     driver="strace -o octave.trace"
     shift
-  elif [ "x$1" = "x-gui" ]; then
-    octave_executable="$builddir/gui/src/octave-gui"
+  elif [ "x$1" = "x-cli" ]; then
+    octave_executable="$builddir/src/octave-cli"
     shift
   fi
 fi

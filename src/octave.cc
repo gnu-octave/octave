@@ -56,6 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lex.h"
 #include "load-path.h"
 #include "octave.h"
+#include "oct-conf.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-mutex.h"
@@ -119,14 +120,23 @@ static bool traditional = false;
 // (--verbose; -V)
 static bool verbose_flag = false;
 
+// If TRUE, force the GUI to start.
+// (--force-gui)
+static bool force_gui_option = false;
+
+// If TRUE don't start the GUI.
+// (--no-gui)
+static bool no_gui_option = false;
+
 // Usage message
 static const char *usage_string =
   "octave [-HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
-       [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
-       [--info-program prog] [--interactive] [--line-editing]\n\
-       [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
-       [--no-site-file] [--no-window-system] [-p path] [--path path]\n\
-       [--silent] [--traditional] [--verbose] [--version] [file]";
+       [--exec-path path] [--force-gui] [--help] [--image-path path]\n\
+       [--info-file file] [--info-program prog] [--interactive]\n\
+       [--line-editing] [--no-gui] [--no-history] [--no-init-file]\n\
+       [--no-init-path] [--no-line-editing] [--no-site-file]\n\
+       [--no-window-system] [-p path] [--path path] [--silent]\n\
+       [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
@@ -144,18 +154,20 @@ static bool persist = false;
 #define DOC_CACHE_FILE_OPTION 1
 #define EVAL_OPTION 2
 #define EXEC_PATH_OPTION 3
-#define IMAGE_PATH_OPTION 4
-#define INFO_FILE_OPTION 5
-#define INFO_PROG_OPTION 6
-#define LINE_EDITING_OPTION 7
-#define NO_INIT_FILE_OPTION 8
-#define NO_INIT_PATH_OPTION 9
-#define NO_LINE_EDITING_OPTION 10
-#define NO_SITE_FILE_OPTION 11
-#define NO_WINDOW_SYSTEM_OPTION 12
-#define PERSIST_OPTION 13
-#define TEXI_MACROS_FILE_OPTION 14
-#define TRADITIONAL_OPTION 15
+#define FORCE_GUI_OPTION 4
+#define IMAGE_PATH_OPTION 5
+#define INFO_FILE_OPTION 6
+#define INFO_PROG_OPTION 7
+#define LINE_EDITING_OPTION 8
+#define NO_GUI_OPTION 9
+#define NO_INIT_FILE_OPTION 10
+#define NO_INIT_PATH_OPTION 11
+#define NO_LINE_EDITING_OPTION 12
+#define NO_SITE_FILE_OPTION 13
+#define NO_WINDOW_SYSTEM_OPTION 14
+#define PERSIST_OPTION 15
+#define TEXI_MACROS_FILE_OPTION 16
+#define TRADITIONAL_OPTION 17
 struct option long_opts[] =
   {
     { "braindead",        no_argument,       0, TRADITIONAL_OPTION },
@@ -164,12 +176,14 @@ struct option long_opts[] =
     { "echo-commands",    no_argument,       0, 'x' },
     { "eval",             required_argument, 0, EVAL_OPTION },
     { "exec-path",        required_argument, 0, EXEC_PATH_OPTION },
+    { "force-gui",        no_argument,       0, FORCE_GUI_OPTION },
     { "help",             no_argument,       0, 'h' },
     { "image-path",       required_argument, 0, IMAGE_PATH_OPTION },
     { "info-file",        required_argument, 0, INFO_FILE_OPTION },
     { "info-program",     required_argument, 0, INFO_PROG_OPTION },
     { "interactive",      no_argument,       0, 'i' },
     { "line-editing",     no_argument,       0, LINE_EDITING_OPTION },
+    { "no-gui",           no_argument,       0, NO_GUI_OPTION },
     { "no-history",       no_argument,       0, 'H' },
     { "no-init-file",     no_argument,       0, NO_INIT_FILE_OPTION },
     { "no-init-path",     no_argument,       0, NO_INIT_PATH_OPTION },
@@ -632,7 +646,8 @@ maximum_braindamage (void)
   disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
-// You guessed it.
+// EMBEDDED is declared int instead of bool because this function is
+// declared extern "C".
 
 int
 octave_main (int argc, char **argv, int embedded)
@@ -641,6 +656,9 @@ octave_main (int argc, char **argv, int embedded)
 
   return octave_execute_interpreter ();
 }
+
+// EMBEDDED is declared int instead of bool because this function is
+// declared extern "C".
 
 void
 octave_initialize_interpreter (int argc, char **argv, int embedded)
@@ -787,6 +805,10 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
             set_exec_path (optarg);
           break;
 
+        case FORCE_GUI_OPTION:
+          force_gui_option = true;
+          break;
+
         case IMAGE_PATH_OPTION:
           if (optarg)
             set_image_path (optarg);
@@ -808,6 +830,10 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
         case NO_INIT_FILE_OPTION:
           read_init_files = false;
+          break;
+
+        case NO_GUI_OPTION:
+          no_gui_option = true;
           break;
 
         case NO_INIT_PATH_OPTION:
@@ -847,6 +873,12 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
           panic_impossible ();
           break;
         }
+    }
+
+  if (force_gui_option && no_gui_option)
+    {
+      error ("error: only one of --force-gui and --no-gui may be used");
+      usage ();
     }
 
   // Make sure we clean up when we exit.  Also allow users to register
@@ -980,6 +1012,36 @@ octave_execute_interpreter (void)
   clean_up_and_exit (retval);
 
   return 0;
+}
+
+// Return int instead of bool because this function is declared
+// extern "C".
+
+int
+octave_starting_gui (void)
+{
+  if (force_gui_option)
+    return true;
+
+  if (no_gui_option)
+    return false;
+
+  if (persist)
+    return true;
+
+  if (! (interactive || forced_interactive))
+    return false;
+
+  // If we have code to eval or execute from a file, and we are going to
+  // exit immediately after executing it, don't start the gui.
+
+  int last_arg_idx = optind;
+  int remaining_args = octave_cmdline_argc - last_arg_idx;
+
+  if (! code_to_eval.empty () || remaining_args > 0)
+    return false;
+
+  return true;
 }
 
 DEFUN (argv, args, ,

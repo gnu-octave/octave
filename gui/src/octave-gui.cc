@@ -21,6 +21,7 @@
 #include "welcome-wizard.h"
 #include "resource-manager.h"
 #include "main-window.h"
+#include "octave-gui.h"
 
 // Dissociate from the controlling terminal, if any.
 
@@ -28,6 +29,7 @@ static void
 dissociate_terminal (void)
 {
 #if ! defined (Q_OS_WIN32) || defined (Q_OS_CYGWIN)
+
   pid_t pid = fork ();
 
   if (pid < 0)
@@ -46,15 +48,22 @@ dissociate_terminal (void)
         }
     }
   else
-    exit (0);
+    {
+      // Parent
+
+      int status;
+
+      waitpid (pid, &status, 0);
+
+      exit (WIFEXITED (status) ? WEXITSTATUS (status) : 127);
+    }
+
 #endif
 }
 
 int
-main (int argc, char *argv[])
+octave_start_gui (int argc, char *argv[])
 {
-  octave_initialize_interpreter (argc, argv, 0);
-
   dissociate_terminal ();
 
   QApplication application (argc, argv);

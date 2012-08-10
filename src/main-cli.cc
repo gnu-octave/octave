@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2012 John W. Eaton
+Copyright (C) 2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,28 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_h)
-#define octave_octave_h 1
-
-#ifdef  __cplusplus
-extern "C" {
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
 
-extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
+#include <octave.h>
 
-extern OCTINTERP_API void
-octave_initialize_interpreter (int argc, char **argv, int embedded);
+int
+main (int argc, char **argv)
+{
+  octave_initialize_interpreter (argc, argv, 0);
 
-extern OCTINTERP_API int octave_execute_interpreter (void);
-
-extern OCTINTERP_API int octave_cmdline_argc;
-extern OCTINTERP_API char **octave_cmdline_argv;
-extern OCTINTERP_API int octave_embedded;
-
-extern OCTINTERP_API int octave_starting_gui (void);
-
-#ifdef  __cplusplus
+  return octave_execute_interpreter ();
 }
-#endif
-
-#endif

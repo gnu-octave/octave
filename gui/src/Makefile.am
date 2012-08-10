@@ -3,15 +3,13 @@ SRCDIRS = m-editor qtinfo octave-adapter \
 
 moc_%.cpp: %.h
 	test -d $(@D) || mkdir -p $(@D)
-	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(octave_gui_CPPFLAGS) $<
+	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
 
 ui_%.h: %.ui
 	@UIC@ -o $@ $<
 
 qrc_%.cpp: %.qrc
 	@RCC@ -o $@ $<
-
-bin_PROGRAMS = octave-gui
 
 octave_gui_MOC = \
 		 moc_documentation-dockwidget.cpp \
@@ -39,7 +37,9 @@ octave_gui_UI_H = $(patsubst %.ui,ui_%.h,$(octave_gui_UI))
 
 octave_gui_RC = qrc_resource.cpp
 
-octave_gui_SOURCES = \
+octlib_LTLIBRARIES = liboctgui.la
+
+liboctgui_la_SOURCES = \
 		     documentation-dockwidget.cc \
 		     files-dockwidget.cc \
 		     history-dockwidget.cc \
@@ -60,33 +60,37 @@ octave_gui_SOURCES = \
 		     octave-adapter/octave-main-thread.cc \
 		     qtinfo/parser.cc \
 		     qtinfo/webinfo.cc
-nodist_octave_gui_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
-octave_gui_CPPFLAGS = -I@QT_INCDIR@ \
-                      -I@QT_INCDIR@/QtCore \
-		      -I@QT_INCDIR@/QtGui \
-		      -I@QT_INCDIR@/QtNetwork \
-		      -I$(srcdir)/../qterminal/libqterminal \
-		      -I$(srcdir)/m-editor \
-		      -I$(srcdir)/octave-adapter \
-		      -I$(srcdir)/qtinfo \
-		      -I$(srcdir)/../../libcruft/misc \
-		      -I../../liboctave \
-		      -I$(srcdir)/../../liboctave \
-		      -I../../src/interp-core \
-		      -I$(srcdir)/../../src \
-		      -I$(srcdir)/../../src/interp-core \
-		      -I$(srcdir)/../../src/interpfcn \
-		      -I$(srcdir)/../../src/octave-value \
-		      -I$(srcdir)/../../src/operators \
-		      -I$(srcdir)/../../src/parse-tree
+liboctgui_la_LIBADD = \
+  libqterminal.la \
+  -lQtCore \
+  -lQtGui \
+  -lQtNetwork \
+  -lqscintilla2
 
-octave_gui_LDADD = libqterminal.la \
-		   ../../src/liboctinterp.la \
-                   ../../liboctave/liboctave.la \
-                   ../../libcruft/libcruft.la
+nodist_liboctgui_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
-octave_gui_LDFLAGS = -L@QT_LIBDIR@ -lQtCore -lQtGui -lQtNetwork -lqscintilla2
+liboctgui_la_CPPFLAGS = \
+  -I@QT_INCDIR@ \
+  -I@QT_INCDIR@/QtCore \
+  -I@QT_INCDIR@/QtGui \
+  -I@QT_INCDIR@/QtNetwork \
+  -I$(srcdir)/../qterminal/libqterminal \
+  -I$(srcdir)/m-editor \
+  -I$(srcdir)/octave-adapter \
+  -I$(srcdir)/qtinfo \
+  -I$(srcdir)/../../libcruft/misc \
+  -I../../liboctave \
+  -I$(srcdir)/../../liboctave \
+  -I../../src/interp-core \
+  -I$(srcdir)/../../src \
+  -I$(srcdir)/../../src/interp-core \
+  -I$(srcdir)/../../src/interpfcn \
+  -I$(srcdir)/../../src/octave-value \
+  -I$(srcdir)/../../src/operators \
+  -I$(srcdir)/../../src/parse-tree
+
+liboctgui_la_LDFLAGS = -L@QT_LIBDIR@
 
 noinst_HEADERS = \
 		 documentation-dockwidget.h \

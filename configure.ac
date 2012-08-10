@@ -266,10 +266,10 @@ case "$canonical_host_type" in
   ;;
 esac
 
-### gnulib initialization
+### gnulib initialization: part 1
+### Must take place immediately after a compiler is determined
 
 gl_EARLY
-gl_INIT
 
 ### Check version number when using gcc.
 
@@ -1864,6 +1864,12 @@ AC_FUNC_ALLOCA
 
 ## Does the C compiler support Automake subdir-objects option?
 AM_PROG_CC_C_O 
+
+### gnulib initialization: part 2
+### After all include and path modifications have taken place
+### and at the same priority level as function checks.
+
+gl_INIT
 
 ### Checks for functions and variables.
 

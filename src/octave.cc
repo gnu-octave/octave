@@ -1020,6 +1020,9 @@ octave_execute_interpreter (void)
 int
 octave_starting_gui (void)
 {
+  if (! display_info::display_available ())
+    return false;
+
   if (force_gui_option)
     return true;
 

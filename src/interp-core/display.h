@@ -30,7 +30,7 @@ class display_info
 protected:
 
   display_info (bool query = true)
-    : ht (1), wd (1), dp (0), rx (72), ry (72)
+    : ht (1), wd (1), dp (0), rx (72), ry (72), dpy_avail (false)
   {
     init (query);
   }
@@ -62,6 +62,11 @@ public:
     return instance_ok () ? instance->do_y_dpi () : 0;
   }
 
+  static bool display_available (void)
+  {
+    return instance_ok () ? instance->do_display_available () : false;
+  }
+
   // To disable querying the window system for defaults, this function
   // must be called before any other display_info function.
   static void no_window_system (void)
@@ -84,12 +89,16 @@ private:
   double rx;
   double ry;
 
+  bool dpy_avail;
+
   int do_height (void) const { return ht; }
   int do_width (void) const { return wd; }
   int do_depth (void) const { return dp; }
 
   double do_x_dpi (void) const { return rx; }
   double do_y_dpi (void) const { return ry; }
+
+  bool do_display_available (void) const { return dpy_avail; }
 
   void init (bool query = true);
 

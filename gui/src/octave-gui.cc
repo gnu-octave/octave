@@ -15,9 +15,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QtGui/QApplication>
 #include <QTranslator>
 #include <QSettings>
+
+#include <iostream>
+
+#include <syswait.h>
+
 #include "welcome-wizard.h"
 #include "resource-manager.h"
 #include "main-window.h"

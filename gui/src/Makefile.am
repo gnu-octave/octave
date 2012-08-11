@@ -48,6 +48,7 @@ liboctgui_la_SOURCES = \
 		     octave-qt-event-listener.cc \
 		     resource-manager.cc \
 		     settings-dialog.cc \
+		     symbol-information.cc \
 		     terminal-dockwidget.cc \
 		     welcome-wizard.cc \
 		     workspace-model.cc \
@@ -56,6 +57,7 @@ liboctgui_la_SOURCES = \
 		     m-editor/file-editor-tab.cc \
 		     m-editor/find-dialog.cc \
 		     m-editor/lexer-octave-gui.cc \
+		     octave-adapter/octave-event.cc \
 		     octave-adapter/octave-link.cc \
 		     octave-adapter/octave-main-thread.cc \
 		     qtinfo/parser.cc \

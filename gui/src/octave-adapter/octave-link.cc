@@ -15,8 +15,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "cmd-edit.h"
+#include "oct-env.h"
+#include "oct-mutex.h"
+#include "symtab.h"
+#include "toplev.h"
+
 #include "octave-link.h"
-#include "load-path.h"
 
 int octave_readline_hook ()
 {

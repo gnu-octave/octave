@@ -15,9 +15,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "workspace-model.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QTreeWidget>
 #include <QTime>
+
+#include <list>
+
+#include <symtab.h>
+
+#include "workspace-model.h"
 #include "octave-link.h"
 
 workspace_model::workspace_model(QObject *parent)

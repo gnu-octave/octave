@@ -15,8 +15,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "history-dockwidget.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QVBoxLayout>
+
+#include "cmd-hist.h"
+
+#include "history-dockwidget.h"
 
 history_dock_widget::history_dock_widget (QWidget * parent)
   : QDockWidget (parent), octave_event_observer ()

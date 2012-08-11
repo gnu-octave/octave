@@ -18,6 +18,7 @@
 #ifndef DOCUMENTATIONDOCKWIDGET_H
 #define DOCUMENTATIONDOCKWIDGET_H
 
+#include <QObject>
 #include <QDockWidget>
 #include "webinfo.h"
 

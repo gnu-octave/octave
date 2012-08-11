@@ -19,17 +19,10 @@
 #define OCTAVEEVENT_H
 
 #include <string>
-#include "octave-event-observer.h"
-#include "config.h"
-#include "symtab.h"
-#include "oct-env.h"
-#include "pt-eval.h"
-#include "toplev.h"
-#include "parse.h"
-#include "debug.h"
-#include "cmd-hist.h"
 
-#include <readline/readline.h>
+class octave_value_list;
+
+#include "octave-event-observer.h"
 
 /**
   * \class octave_event
@@ -74,23 +67,13 @@ class octave_event
     { _octave_event_observer.event_reject (this); }
 
   protected:
-    void call_octave_function (std::string name,
-                               const octave_value_list& args = octave_value_list (),
-                               int nargout = 0)
-    {
-      try
-      {
-        feval (name, args, nargout);
-      } catch (...) { } // Ignore exceptions. Crashes without that.
-    }
+    void call_octave_function (std::string name);
 
-    void finish_readline_event () const
-    {
-      rl_line_buffer[0] = '\0';
-      rl_point = rl_end = 0;
-      rl_done = 1;
-      //rl_forced_update_display ();
-    }
+    void call_octave_function (std::string name,
+                               const octave_value_list& args,
+                               int nargout = 0);
+
+    void finish_readline_event () const;
 
   private:
     octave_event_observer& _octave_event_observer;
@@ -129,8 +112,7 @@ class octave_exit_event : public octave_event
       : octave_event (o)
     { }
 
-    bool perform ()
-    { clean_up_and_exit (0); return true; }
+    bool perform ();
 };
 
 /** Implements an octave run file event. */
@@ -143,14 +125,7 @@ class octave_run_file_event : public octave_event
       : octave_event (o)
     { _file = file; }
 
-    bool perform ()
-    {
-      octave_value_list args;
-      args.append (octave_value (_file));
-      call_octave_function ("run", args);
-      finish_readline_event ();
-      return true;
-    }
+    bool perform ();
 
   private:
     std::string _file;
@@ -166,8 +141,7 @@ class octave_change_directory_event : public octave_event
       : octave_event (o)
     { _directory = directory; }
 
-    bool perform ()
-    { return octave_env::chdir (_directory); }
+    bool perform ();
 
   private:
     std::string _directory;
@@ -199,13 +173,7 @@ class octave_load_workspace_event : public octave_event
       : octave_event (o)
     { _file = file; }
 
-    bool perform ()
-    {
-      octave_value_list args;
-      args.append (octave_value (_file));
-      call_octave_function ("load", args);
-      return true;
-    }
+    bool perform ();
 
   private:
     std::string _file;
@@ -221,13 +189,7 @@ class octave_save_workspace_event : public octave_event
       : octave_event (o)
     { _file = file; }
 
-    bool perform ()
-    {
-      octave_value_list args;
-      args.append (octave_value (_file));
-      call_octave_function ("save", args);
-      return true;
-    }
+    bool perform ();
 
   private:
     std::string _file;
@@ -241,14 +203,7 @@ class octave_clear_history_event : public octave_event
       : octave_event (o)
     { }
 
-    bool perform ()
-    {
-      int i;
-      while ((i = command_history::length ()) > 0) {
-          command_history::remove (i - 1);
-        }
-      return true;
-    }
+  bool perform ();
 };
 
 class octave_add_breakpoint_event : public octave_event
@@ -265,17 +220,7 @@ class octave_add_breakpoint_event : public octave_event
       _line = line;
     }
 
-    bool perform ()
-    {
-      bp_table::intmap intmap;
-      intmap[0] = _line + 1;
-
-      std::string previous_directory = octave_env::get_current_directory ();
-      octave_env::chdir (_path);
-      intmap = bp_table::add_breakpoint (_function_name, intmap);
-      octave_env::chdir (previous_directory);
-      return intmap.size () > 0;
-    }
+    bool perform ();
 
     std::string get_path ()
     {
@@ -312,17 +257,7 @@ class octave_remove_breakpoint_event : public octave_event
       _line = line;
     }
 
-    bool perform ()
-    {
-      bp_table::intmap intmap;
-      intmap[0] = _line;
-
-      std::string previous_directory = octave_env::get_current_directory ();
-      octave_env::chdir (_path);
-      bp_table::remove_breakpoint (_function_name, intmap);
-      octave_env::chdir (previous_directory);
-      return true; // TODO: Check result.
-    }
+    bool perform ();
 
     std::string get_path ()
     {
@@ -357,15 +292,7 @@ class octave_remove_all_breakpoints_event : public octave_event
       _function_name = function_name;
     }
 
-    bool perform ()
-    {
-      bp_table::intmap intmap;
-      std::string previous_directory = octave_env::get_current_directory ();
-      octave_env::chdir (_path);
-      intmap = bp_table::remove_all_breakpoints_in_file (_function_name, true);
-      octave_env::chdir (previous_directory);
-      return intmap.size() > 0;
-    }
+    bool perform ();
 
     std::string get_path ()
     {
@@ -389,14 +316,7 @@ class octave_debug_step_into_event : public octave_event
     octave_debug_step_into_event (octave_event_observer& o)
       : octave_event (o) { }
 
-    bool perform ()
-    {
-      octave_value_list args;
-      args.append (octave_value ("in"));
-      call_octave_function ("dbstep", args);
-      finish_readline_event ();
-      return true;
-    }
+    bool perform ();
 };
 
 class octave_debug_step_over_event : public octave_event
@@ -421,14 +341,7 @@ class octave_debug_step_out_event : public octave_event
     octave_debug_step_out_event (octave_event_observer& o)
       : octave_event (o) { }
 
-    bool perform ()
-    {
-      octave_value_list args;
-      args.append (octave_value ("out"));
-      call_octave_function ("dbstep", args);
-      finish_readline_event ();
-      return true;
-    }
+    bool perform ();
 };
 
 class octave_debug_continue_event : public octave_event

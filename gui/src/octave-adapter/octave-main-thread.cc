@@ -15,9 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <string>
+
+#include "octave.h"
+
 #include "octave-main-thread.h"
 #include "octave-link.h"
-#include <string>
 
 octave_main_thread::octave_main_thread () : QThread ()
 {

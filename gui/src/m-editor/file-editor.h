@@ -18,16 +18,16 @@
 #ifndef FILEEDITORMDISUBWINDOW_H
 #define FILEEDITORMDISUBWINDOW_H
 
-#include "main-window.h"
-#include "file-editor-interface.h"
-#include "file-editor-tab.h"
-
 #include <QToolBar>
 #include <QAction>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QTabWidget>
+
+#include "main-window.h"
+#include "file-editor-interface.h"
+#include "file-editor-tab.h"
 
 const char UNNAMED_FILE[]     = "<unnamed>";
 const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";

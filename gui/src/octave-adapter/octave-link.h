@@ -18,51 +18,10 @@
 #ifndef OCTAVELINK_H
 #define OCTAVELINK_H
 
-// Octave includes
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef PACKAGE_URL
-#include "config.h"
-#include "cmd-edit.h"
-#include "error.h"
-#include "file-io.h"
-#include "input.h"
-#include "lex.h"
-#include "load-path.h"
-#include "octave.h"
-#include "oct-hist.h"
-#include "oct-map.h"
-#include "oct-obj.h"
-#include "ops.h"
-#include "ov.h"
-#include "ov-usr-fcn.h"
-#include "symtab.h"
-#include "pt.h"
-#include "pt-eval.h"
-#include "config.h"
-#include "Range.h"
-#include "toplev.h"
-#include "procstream.h"
-#include "sighandlers.h"
-#include "debug.h"
-#include "sysdep.h"
-#include "ov.h"
-#include "unwind-prot.h"
-#include "utils.h"
-#include "variables.h"
-#include "oct-mutex.h"
-#include "profiler.h"
-
-// Standard includes
-#include <iostream>
-#include <string>
-#include <vector>
-#include <readline/readline.h>
 #include <queue>
-#include <time.h>
+#include <string>
+
+class octave_mutex;
 
 #include "octave-main-thread.h"
 #include "octave-event.h"

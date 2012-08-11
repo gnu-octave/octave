@@ -39,8 +39,7 @@ octlib_LTLIBRARIES = liboctinterp.la
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 bin_PROGRAMS = \
   mkoctfile \
-  octave \
-  octave-cli \
+  $(OCTAVE_PROGRAMS) \
   octave-config
 
 mkoctfile_SOURCES =
@@ -235,16 +234,24 @@ octave_cli_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS)
 
-octave_SOURCES = main.cc
+if AMCOND_BUILD_GUI
+  octave_SOURCES = main.cc
+  OCTAVE_GUI_LIBS = ../gui/src/liboctgui.la
+  OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/gui/src
+else
+  octave_SOURCES = main-cli.cc
+  OCTAVE_GUI_LIBS =
+  OCTAVE_GUI_CPPFLAGS =
+endif
 
-octave_CPPFLAGS = -I$(top_srcdir)/gui/src
+octave_CPPFLAGS = $(OCTAVE_GUI_CPPFLAGS)
 
 octave_LDADD = \
   $(OCTAVE_CORE_LIBS) \
-  ../gui/src/liboctgui.la \
+  $(OCTAVE_GUI_LIBS) \
   $(OCTAVE_LINK_DEPS)
 
-octave_LDFLAGS = -DENABLE_GUI=1 $(octave_cli_LDFLAGS)
+octave_LDFLAGS = $(octave_cli_LDFLAGS)
 
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))

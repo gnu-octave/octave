@@ -17,7 +17,7 @@
 
 #include "resource-manager.h"
 #include "settings-dialog.h"
-#include "ui_settings-dialog.h"
+#include "ui-settings-dialog.h"
 #include <QSettings>
 
 settings_dialog::settings_dialog (QWidget * parent):

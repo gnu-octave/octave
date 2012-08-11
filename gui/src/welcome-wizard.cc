@@ -16,7 +16,7 @@
  */
 
 #include "welcome-wizard.h"
-#include "ui_welcome-wizard.h"
+#include "ui-welcome-wizard.h"
 
 welcome_wizard::welcome_wizard (QWidget *parent) :
   QDialog (parent),

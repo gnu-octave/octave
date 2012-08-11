@@ -67,8 +67,10 @@ EXTRA_DIST = \
 
 include m4/module.mk
 
-if OCTAVE_GUI
+if AMCOND_BUILD_GUI
 GUIDIR = gui
+else
+GUIDIR =
 endif
 
 # Subdirectories in which to run `make all'.

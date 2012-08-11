@@ -92,7 +92,10 @@ liboctgui_la_CPPFLAGS = \
   -I$(srcdir)/../../libcruft/misc \
   -I../../liboctave \
   -I$(srcdir)/../../liboctave \
+  -I../../src \
   -I../../src/interp-core \
+  -I../../src/interpfcn \
+  -I../../src/parse-tree \
   -I$(srcdir)/../../src \
   -I$(srcdir)/../../src/interp-core \
   -I$(srcdir)/../../src/interpfcn \

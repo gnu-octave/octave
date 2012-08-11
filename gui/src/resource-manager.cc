@@ -15,11 +15,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "resource-manager.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <string>
+
 #include <QFile>
 #include <QDir>
-
 #include <QNetworkProxy>
+
+#include "file-ops.h"
+#include "oct-env.h"
+
+#include "defaults.h"
+
+#include "resource-manager.h"
 
 resource_manager resource_manager::_singleton;
 
@@ -47,18 +58,30 @@ resource_manager::get_home_path ()
   return _home_path;
 }
 
+static std::string
+default_qt_settings_file (void)
+{
+  std::string dsf = octave_env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
+
+  if (dsf.empty ())
+    dsf = Voct_etc_dir + file_ops::dir_sep_str () + "default-qt-settings";
+
+  return dsf;
+}
+
 void
 resource_manager::reload_settings ()
 {
   QDesktopServices desktopServices;
   _home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  QString settings_path = _home_path + "/.config/octave-gui/";
-  QString settings_file = settings_path + "settings";
+  QString settings_path = _home_path + "/.config/octave/";
+  QString settings_file = settings_path + "qt-settings";
 
   if (!QFile::exists (settings_file))
    {
      QDir("/").mkpath (settings_path);
-     QFile::copy ("../default-settings", settings_file);
+     QFile::copy (QString::fromStdString (default_qt_settings_file ()),
+                  settings_file);
      _first_run = true;
    }
   else

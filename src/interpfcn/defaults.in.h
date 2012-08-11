@@ -194,6 +194,8 @@ extern std::string Vlocal_ver_fcn_file_dir;
 extern std::string Vlocal_api_fcn_file_dir;
 extern std::string Vlocal_fcn_file_dir;
 
+extern std::string Voct_etc_dir;
+
 extern std::string Voct_file_dir;
 extern std::string Vfcn_file_dir;
 

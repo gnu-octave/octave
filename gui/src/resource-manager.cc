@@ -25,14 +25,37 @@
 #include <QDir>
 #include <QNetworkProxy>
 
+#include "error.h"
 #include "file-ops.h"
 #include "oct-env.h"
+#include "singleton-cleanup.h"
 
 #include "defaults.h"
 
 #include "resource-manager.h"
 
-resource_manager resource_manager::_singleton;
+resource_manager *resource_manager::_instance = 0;
+
+bool
+resource_manager::instance_ok ()
+{
+  bool retval = true;
+
+  if (! _instance)
+    {
+      _instance = new resource_manager ();
+
+      if (_instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
+
+  if (! _instance)
+    {
+      ::error ("unable to create resource_manager object!");
+    }
+
+  return retval;
+}
 
 resource_manager::resource_manager ()
 {

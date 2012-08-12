@@ -32,7 +32,7 @@ public:
   static resource_manager *
   instance ()
   {
-    return &_singleton;
+    return (instance_ok ()) ? _instance : 0;
   }
 
   QSettings *get_settings ();
@@ -48,9 +48,13 @@ public:
 private:
   resource_manager ();
 
+  static bool instance_ok ();
+
+  static void cleanup_instance () { delete _instance; _instance = 0; }
+
   QSettings *_settings;
   QString _home_path;
-  static resource_manager _singleton;
+  static resource_manager *_instance;
   bool _first_run;
 };
 

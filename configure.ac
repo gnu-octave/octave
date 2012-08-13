@@ -284,7 +284,8 @@ gl_EARLY
 GCC_VERSION=
 if test "$GCC" = yes; then
   gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
-    sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
+    sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+
   case "$gcc_version" in
     [12].*)
       warn_gcc_version="gcc version $gcc_version is likely to cause problems"

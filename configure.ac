@@ -2020,8 +2020,6 @@ if test $have_framework_carbon = "yes"; then
   OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL
 fi
 
-OCTAVE_SMART_PUTENV
-
 AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
 AC_FUNC_CLOSEDIR_VOID

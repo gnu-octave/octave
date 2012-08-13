@@ -50,10 +50,15 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   widget ()->setLayout (layout);
 
   // Initialize collapse/expand state of the workspace subcategories.
-  _explicit_collapse.local      = resource_manager::instance ()->get_settings ()->value ("workspaceview/local_collapsed", false).toBool ();
-  _explicit_collapse.global     = resource_manager::instance ()->get_settings ()->value ("workspaceview/global_collapsed", false).toBool ();;
-  _explicit_collapse.persistent = resource_manager::instance ()->get_settings ()->value ("workspaceview/persistent_collapsed", false).toBool ();;
-  _explicit_collapse.hidden     = resource_manager::instance ()->get_settings ()->value ("workspaceview/hidden_collapsed", false).toBool ();;
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
+  _explicit_collapse.local      = settings->value ("workspaceview/local_collapsed", false).toBool ();
+  _explicit_collapse.global     = settings->value ("workspaceview/global_collapsed", false).toBool ();;
+  _explicit_collapse.persistent = settings->value ("workspaceview/persistent_collapsed", false).toBool ();;
+  _explicit_collapse.hidden     = settings->value ("workspaceview/hidden_collapsed", false).toBool ();;
 
   // Connect signals and slots.
   connect (this, SIGNAL (visibilityChanged (bool)),
@@ -74,10 +79,14 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
 
 workspace_view::~workspace_view ()
 {
-  resource_manager::instance ()->get_settings ()->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
-  resource_manager::instance ()->get_settings ()->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
-  resource_manager::instance ()->get_settings ()->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
-  resource_manager::instance ()->get_settings ()->setValue("workspaceview/hidden_collapsed", _explicit_collapse.hidden);
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
+  settings->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
+  settings->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
+  settings->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
+  settings->setValue("workspaceview/hidden_collapsed", _explicit_collapse.hidden);
 }
 
 void

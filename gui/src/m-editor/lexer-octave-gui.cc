@@ -134,7 +134,7 @@ const char *lexer_octave_gui::keywords(int set) const
 {
     if (set == 1)
       {
-        return resource_manager::instance ()->octave_keywords ();
+        return resource_manager::octave_keywords ();
       }
     return 0;
 }

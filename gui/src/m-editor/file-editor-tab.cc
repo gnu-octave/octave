@@ -37,7 +37,10 @@
 file_editor_tab::file_editor_tab(file_editor *fileEditor)
   : QWidget ((QWidget*)fileEditor), octave_event_observer ()
 {
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
   _file_editor = fileEditor;
   _file_name = "";
   _edit_area = new QsciScintilla (this);
@@ -284,7 +287,9 @@ file_editor_tab::update_lexer ()
       lexer = new QsciLexerBash ();
     }
 
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
 
   // Editor font (default or from settings)
   lexer->setDefaultFont (QFont (

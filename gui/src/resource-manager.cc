@@ -34,51 +34,59 @@
 
 #include "resource-manager.h"
 
-resource_manager *resource_manager::_instance = 0;
+resource_manager *resource_manager::instance = 0;
+
+resource_manager::resource_manager (void)
+  : settings (0), home_path (), first_run (false)
+{
+  do_reload_settings ();
+}
+
+resource_manager::~resource_manager (void)
+{
+  delete settings;
+}
+
+QString
+resource_manager::find_translator_file (QString language)
+{
+  // TODO: Quick hack to be able to test language files.
+  return QString ("../languages/%1.qm").arg (language);
+}
 
 bool
-resource_manager::instance_ok ()
+resource_manager::instance_ok (void)
 {
   bool retval = true;
 
-  if (! _instance)
+  if (! instance)
     {
-      _instance = new resource_manager ();
+      instance = new resource_manager ();
 
-      if (_instance)
+      if (instance)
         singleton_cleanup_list::add (cleanup_instance);
     }
 
-  if (! _instance)
+  if (! instance)
     {
       ::error ("unable to create resource_manager object!");
+
+      retval = false;
     }
 
   return retval;
 }
 
-resource_manager::resource_manager ()
-{
-  _settings = 0;
-  _first_run = false;
-  reload_settings ();
-}
-
-resource_manager::~resource_manager ()
-{
-  delete _settings;
-}
-
 QSettings *
-resource_manager::get_settings ()
+resource_manager::do_get_settings (void)
 {
-  return _settings;
+  return settings;
 }
 
 QString
-resource_manager::get_home_path ()
+resource_manager::do_get_home_path (void)
 {
-  return _home_path;
+  return home_path;
 }
 
 static std::string
@@ -93,11 +101,11 @@ default_qt_settings_file (void)
 }
 
 void
-resource_manager::reload_settings ()
+resource_manager::do_reload_settings (void)
 {
   QDesktopServices desktopServices;
-  _home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  QString settings_path = _home_path + "/.config/octave/";
+  home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
+  QString settings_path = home_path + "/.config/octave/";
   QString settings_file = settings_path + "qt-settings";
 
   if (!QFile::exists (settings_file))
@@ -105,63 +113,55 @@ resource_manager::reload_settings ()
      QDir("/").mkpath (settings_path);
      QFile::copy (QString::fromStdString (default_qt_settings_file ()),
                   settings_file);
-     _first_run = true;
+     first_run = true;
    }
   else
-     _first_run = false;
+     first_run = false;
 
-  set_settings (settings_file);
+  do_set_settings (settings_file);
 }
 
 void
-resource_manager::set_settings (QString file)
+resource_manager::do_set_settings (QString file)
 {
-  delete _settings;
-  _settings = new QSettings (file, QSettings::IniFormat);
+  delete settings;
+  settings = new QSettings (file, QSettings::IniFormat);
 }
-
-QString
-resource_manager::find_translator_file (QString language)
-{
-  // TODO: Quick hack to be able to test language files.
-  return QString("../languages/%1.qm").arg(language);
-}
-
 
 bool
-resource_manager::is_first_run ()
+resource_manager::do_is_first_run (void)
 {
-  return _first_run;
+  return first_run;
 }
 
 void
-resource_manager::update_network_settings ()
+resource_manager::do_update_network_settings (void)
 {
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-  if (_settings->value ("useProxyServer").toBool ())
+
+  if (settings->value ("useProxyServer").toBool ())
     {
-      QString proxyTypeString = _settings->value ("proxyType").toString ();
+      QString proxyTypeString = settings->value ("proxyType").toString ();
+
       if (proxyTypeString == "Socks5Proxy")
-        {
-          proxyType = QNetworkProxy::Socks5Proxy;
-        }
+        proxyType = QNetworkProxy::Socks5Proxy;
       else if (proxyTypeString == "HttpProxy")
-        {
-          proxyType = QNetworkProxy::HttpProxy;
-        }
+        proxyType = QNetworkProxy::HttpProxy;
     }
 
   QNetworkProxy proxy;
+
   proxy.setType (proxyType);
-  proxy.setHostName (_settings->value ("proxyHostName").toString ());
-  proxy.setPort (_settings->value ("proxyPort").toInt ());
-  proxy.setUser (_settings->value ("proxyUserName").toString ());
-  proxy.setPassword (_settings->value ("proxyPassword").toString ());
+  proxy.setHostName (settings->value ("proxyHostName").toString ());
+  proxy.setPort (settings->value ("proxyPort").toInt ());
+  proxy.setUser (settings->value ("proxyUserName").toString ());
+  proxy.setPassword (settings->value ("proxyPassword").toString ());
+
   QNetworkProxy::setApplicationProxy (proxy);
 }
 
 const char*
-resource_manager::octave_keywords ()
+resource_manager::octave_keywords (void)
 {
   return
       ".nargin. "

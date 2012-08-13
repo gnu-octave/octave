@@ -79,23 +79,26 @@ octave_start_gui (int argc, char *argv[])
 
   while (true)
     {
-      if (resource_manager::instance ()->is_first_run ())
+      if (resource_manager::is_first_run ())
         {
           welcome_wizard welcomeWizard;
           welcomeWizard.exec ();
-          resource_manager::instance ()->reload_settings ();
+          resource_manager::reload_settings ();
         }
       else
         {
-          QSettings *settings = resource_manager::instance ()->get_settings ();
+          QSettings *settings = resource_manager::get_settings ();
+
+          // FIXME -- what should happen if settings is 0?
+
           QString language = settings->value ("language").toString ();
 
-          QString translatorFile = resource_manager::instance ()->find_translator_file (language);
+          QString translatorFile = resource_manager::find_translator_file (language);
           QTranslator translator;
           translator.load (translatorFile);
           application.installTranslator (&translator);
 
-          resource_manager::instance ()->update_network_settings ();
+          resource_manager::update_network_settings ();
 
           main_window w;
           w.show ();

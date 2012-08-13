@@ -160,7 +160,10 @@ files_dock_widget::display_directory (QString directory)
 void
 files_dock_widget::notice_settings ()
 {
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
   _file_tree_view->setColumnHidden (0, !settings->value ("showFilenames").toBool ());
   _file_tree_view->setColumnHidden (1, !settings->value ("showFileSize").toBool ());
   _file_tree_view->setColumnHidden (2, !settings->value ("showFileType").toBool ());

@@ -18,44 +18,89 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
-#include <QSettings>
 #include <QDesktopServices>
-#include <QMap>
 #include <QIcon>
+#include <QMap>
+#include <QSettings>
 
 class resource_manager
 {
+protected:
+
+  resource_manager (void);
+
 public:
 
   ~resource_manager ();
 
-  static resource_manager *
-  instance ()
+  static QSettings *get_settings (void)
   {
-    return (instance_ok ()) ? _instance : 0;
+    return instance_ok () ? instance->do_get_settings () : 0;
   }
 
-  QSettings *get_settings ();
-  QString get_home_path ();
-  void reload_settings ();
-  void set_settings (QString file);
-  QString find_translator_file (QString language);
-  void update_network_settings ();
+  static QString get_home_path (void)
+  {
+    return instance_ok () ? instance->do_get_home_path () : QString ();
+  }
 
-  bool is_first_run ();
-  const char *octave_keywords ();
+  static void reload_settings (void)
+  {
+    if (instance_ok ())
+      instance->do_reload_settings ();
+  }
+
+  static void set_settings (QString file)
+  {
+    if (instance_ok ())
+      instance->do_set_settings (file);
+  }
+
+  static QString find_translator_file (QString language);
+
+  static void update_network_settings (void)
+  {
+    if (instance_ok ())
+      instance->do_update_network_settings ();
+  }
+
+  static bool is_first_run (void)
+  {
+    return instance_ok () ? instance->do_is_first_run () : true;
+  }
+
+  static const char *octave_keywords (void);
 
 private:
-  resource_manager ();
 
-  static bool instance_ok ();
+  static resource_manager *instance;
 
-  static void cleanup_instance () { delete _instance; _instance = 0; }
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  QSettings *_settings;
-  QString _home_path;
-  static resource_manager *_instance;
-  bool _first_run;
+  // No copying!
+
+  resource_manager (const resource_manager&);
+
+  resource_manager& operator = (const resource_manager&);
+
+  static bool instance_ok (void);
+
+  QSettings *settings;
+
+  QString home_path;
+
+  bool first_run;
+
+  QSettings *do_get_settings (void);
+
+  QString do_get_home_path (void);
+
+  void do_reload_settings (void);
+
+  void do_set_settings (QString file);
+
+  void do_update_network_settings (void);
+
+  bool do_is_first_run (void);
 };
 
 #endif // RESOURCEMANAGER_H

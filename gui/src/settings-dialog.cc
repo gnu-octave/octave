@@ -25,7 +25,10 @@ QDialog (parent), ui (new Ui::settings_dialog)
 {
   ui->setupUi (this);
 
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor").toBool ());
   ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
@@ -77,7 +80,10 @@ QDialog (parent), ui (new Ui::settings_dialog)
 
 settings_dialog::~settings_dialog ()
 {
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
   settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());

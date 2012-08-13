@@ -91,7 +91,7 @@ main_window::handle_save_workspace_request ()
 {
   QString selectedFile =
       QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
-                                    resource_manager::instance ()->get_home_path ());
+                                    resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
     {
       octave_link::instance ()
@@ -105,7 +105,7 @@ main_window::handle_load_workspace_request ()
 {
   QString selectedFile =
       QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
-                                    resource_manager::instance ()->get_home_path ());
+                                    resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
     {
       octave_link::instance ()
@@ -166,7 +166,9 @@ void
 main_window::notice_settings ()
 {
   // Set terminal font:
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
 
   QFont font = QFont();
   font.setFamily(settings->value("terminal/fontName").toString());
@@ -183,7 +185,7 @@ main_window::notice_settings ()
     _terminal->setCursorType(QTerminalInterface::UnderlineCursor,
                              cursorBlinking);
 
-  resource_manager::instance ()->update_network_settings ();
+  resource_manager::update_network_settings ();
 }
 
 void
@@ -414,7 +416,10 @@ main_window::closeEvent (QCloseEvent * closeEvent)
 void
 main_window::read_settings ()
 {
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   emit settings_changed ();
@@ -423,7 +428,10 @@ main_window::read_settings ()
 void
 main_window::write_settings ()
 {
-  QSettings *settings = resource_manager::instance ()->get_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+
+  // FIXME -- what should happen if settings is 0?
+
   settings->setValue ("MainWindow/geometry", saveGeometry ());
   settings->setValue ("MainWindow/windowState", saveState ());
   settings->sync ();

@@ -237,11 +237,9 @@ if test "$GXX" = yes; then
   gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
     sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
-  case "$gxx_version" in
-    1.* | 2.[[0123456789]].* | 3.[[01234]].*)
-      AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])
-    ;;
-  esac
+  AX_COMPARE_VERSION([$gxx_version], [lt], [3.5],
+    [AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])])
+
   GXX_VERSION="$gxx_version"
 fi
 AC_SUBST(GXX_VERSION)
@@ -286,12 +284,10 @@ if test "$GCC" = yes; then
   gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
     sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
-  case "$gcc_version" in
-    [12].*)
-      warn_gcc_version="gcc version $gcc_version is likely to cause problems"
-      OCTAVE_CONFIGURE_WARNING([warn_gcc_version])
-    ;;
-  esac
+  AX_COMPARE_VERSION([$gcc_version], [lt], [3],
+    [warn_gcc_version="gcc version $gcc_version is likely to cause problems"
+     OCTAVE_CONFIGURE_WARNING([warn_gcc_version])])
+
   GCC_VERSION="$gcc_version"
 fi
 AC_SUBST(CC_VERSION)

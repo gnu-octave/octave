@@ -121,9 +121,9 @@ void QUnixTerminalImpl::sendText(const QString& text)
 void QUnixTerminalImpl::setCursorType(CursorType type, bool blinking)
 {
     switch(type) {
-        case UnderlineCursor: m_terminalView->setKeyboardCursorShape(TerminalView::UnderlineCursor);
-        case BlockCursor: m_terminalView->setKeyboardCursorShape(TerminalView::BlockCursor);
-        case IBeamCursor: m_terminalView->setKeyboardCursorShape(TerminalView::IBeamCursor);
+        case UnderlineCursor: m_terminalView->setKeyboardCursorShape(TerminalView::UnderlineCursor); break;
+        case BlockCursor: m_terminalView->setKeyboardCursorShape(TerminalView::BlockCursor); break;
+        case IBeamCursor: m_terminalView->setKeyboardCursorShape(TerminalView::IBeamCursor); break;
     }
     m_terminalView->setBlinkingCursor(blinking);
 }

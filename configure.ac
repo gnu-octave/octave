@@ -232,7 +232,7 @@ AC_PROG_CXXCPP
 
 ### Check version number when using g++.
 
-CXX_VERSION=
+GXX_VERSION=
 if test "$GXX" = yes; then
   gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
     sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
@@ -242,8 +242,12 @@ if test "$GXX" = yes; then
       AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])
     ;;
   esac
-  CXX_VERSION="$gxx_version"
+  GXX_VERSION="$gxx_version"
 fi
+AC_SUBST(GXX_VERSION)
+
+## FIXME: CXX_VERSION is deprecated and should be removed in version 3.12
+CXX_VERSION="$gxx_version"
 AC_SUBST(CXX_VERSION)
 
 ### Determine which C compiler to use (we expect to find gcc).
@@ -277,7 +281,7 @@ gl_EARLY
 
 ### Check version number when using gcc.
 
-CC_VERSION=
+GCC_VERSION=
 if test "$GCC" = yes; then
   gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
     sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
@@ -287,9 +291,13 @@ if test "$GCC" = yes; then
       OCTAVE_CONFIGURE_WARNING([warn_gcc_version])
     ;;
   esac
-  CC_VERSION="$gcc_version"
+  GCC_VERSION="$gcc_version"
 fi
 AC_SUBST(CC_VERSION)
+
+## FIXME: CC_VERSION is deprecated and should be removed in version 3.12
+CC_VERSION="$gcc_version"
+AC_SUBST(GCC_VERSION)
 
 ### Determine the compiler flag necessary to create dependencies
 

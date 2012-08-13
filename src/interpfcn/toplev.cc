@@ -1254,6 +1254,7 @@ specified option.\n\
       { false, "CAMD_LDFLAGS", OCTAVE_CONF_CAMD_LDFLAGS },
       { false, "CAMD_LIBS", OCTAVE_CONF_CAMD_LIBS },
       { false, "CC", OCTAVE_CONF_CC },
+      // FIXME: CC_VERSION is deprecated.  Remove in version 3.12
       { false, "CC_VERSION", OCTAVE_CONF_CC_VERSION },
       { false, "CCOLAMD_CPPFLAGS", OCTAVE_CONF_CCOLAMD_CPPFLAGS },
       { false, "CCOLAMD_LDFLAGS", OCTAVE_CONF_CCOLAMD_LDFLAGS },
@@ -1277,12 +1278,15 @@ specified option.\n\
       { false, "CXXCPP", OCTAVE_CONF_CXXCPP },
       { false, "CXXFLAGS", OCTAVE_CONF_CXXFLAGS },
       { false, "CXXPICFLAG", OCTAVE_CONF_CXXPICFLAG },
+      // FIXME: CXX_VERSION is deprecated.  Remove in version 3.12
       { false, "CXX_VERSION", OCTAVE_CONF_CXX_VERSION },
       { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
       { false, "DEFS", OCTAVE_CONF_DEFS },
       { false, "DL_LD", OCTAVE_CONF_DL_LD },
       { false, "DL_LDFLAGS", OCTAVE_CONF_DL_LDFLAGS },
       { false, "DL_LIBS", OCTAVE_CONF_DL_LIBS },
+      { false, "GCC_VERSION", OCTAVE_CONF_GCC_VERSION },
+      { false, "GXX_VERSION", OCTAVE_CONF_GXX_VERSION },
       { false, "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING },
       { false, "EXEEXT", OCTAVE_CONF_EXEEXT },
       { false, "F77", OCTAVE_CONF_F77 },

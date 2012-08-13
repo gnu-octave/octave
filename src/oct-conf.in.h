@@ -96,6 +96,7 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_CC %OCTAVE_CONF_CC%
 #endif
 
+// FIXME: OCTAVE_CONF_CCC_VERSION is deprecated.  Remove in version 3.12
 #ifndef OCTAVE_CONF_CC_VERSION
 #define OCTAVE_CONF_CC_VERSION %OCTAVE_CONF_CC_VERSION%
 #endif
@@ -188,6 +189,7 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_CXX %OCTAVE_CONF_CXX%
 #endif
 
+// FIXME: OCTAVE_CONF_CXX_VERSION is deprecated.  Remove in version 3.12
 #ifndef OCTAVE_CONF_CXX_VERSION
 #define OCTAVE_CONF_CXX_VERSION %OCTAVE_CONF_CXX_VERSION%
 #endif
@@ -210,6 +212,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifndef OCTAVE_CONF_DL_LIBS
 #define OCTAVE_CONF_DL_LIBS %OCTAVE_CONF_DL_LIBS%
+#endif
+
+#ifndef OCTAVE_CONF_GCC_VERSION
+#define OCTAVE_CONF_GCC_VERSION %OCTAVE_CONF_GCC_VERSION%
+#endif
+
+#ifndef OCTAVE_CONF_GXX_VERSION
+#define OCTAVE_CONF_GXX_VERSION %OCTAVE_CONF_GXX_VERSION%
 #endif
 
 #ifndef OCTAVE_CONF_EXEEXT

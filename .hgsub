@@ -1,1 +1,2 @@
 gnulib = [git]git://git.sv.gnu.org/gnulib
+gui/qterminal = [git]https://code.google.com/p/qterminal/

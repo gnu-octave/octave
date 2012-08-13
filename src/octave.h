@@ -29,6 +29,17 @@ extern "C" {
 
 extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
 
+extern OCTINTERP_API void
+octave_initialize_interpreter (int argc, char **argv, int embedded);
+
+extern OCTINTERP_API int octave_execute_interpreter (void);
+
+extern OCTINTERP_API int octave_cmdline_argc;
+extern OCTINTERP_API char **octave_cmdline_argv;
+extern OCTINTERP_API int octave_embedded;
+
+extern OCTINTERP_API int octave_starting_gui (void);
+
 #ifdef  __cplusplus
 }
 #endif

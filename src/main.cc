@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2012 John W. Eaton
+Copyright (C) 2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,13 +24,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "f77-fcn.h"
-#include "lo-ieee.h"
-
-#include "octave.h"
+#include <octave.h>
+#include <octave-gui.h>
 
 int
 main (int argc, char **argv)
 {
-  return octave_main (argc, argv, 0);
+  octave_initialize_interpreter (argc, argv, 0);
+
+  if (octave_starting_gui ())
+    return octave_start_gui (argc, argv);
+
+  return octave_execute_interpreter ();
 }

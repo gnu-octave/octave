@@ -39,7 +39,7 @@ octlib_LTLIBRARIES = liboctinterp.la
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 bin_PROGRAMS = \
   mkoctfile \
-  octave \
+  $(OCTAVE_PROGRAMS) \
   octave-config
 
 mkoctfile_SOURCES =
@@ -58,7 +58,8 @@ BUILT_SOURCES_EXTRA = \
   octave-config.cc
 else
 bin_PROGRAMS = \
-  octave
+  octave \
+  octave-cli
 
 bin_SCRIPTS = \
   mkoctfile \
@@ -218,17 +219,39 @@ liboctinterp_la_LDFLAGS = \
 ## FIXME: Does this rule need to be uncommented?
 #fft.df fft.lo fft2.df fft2.lo fftn.df fftn.lo: CPPFLAGS += $(FFTW_XCPPFLAGS)
 
-octave_SOURCES = main.c
-
-octave_LDADD = \
+OCTAVE_CORE_LIBS = \
   liboctinterp.la \
   ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
+  ../libcruft/libcruft.la
+
+octave_cli_SOURCES = main-cli.cc
+
+octave_cli_LDADD = \
+  $(OCTAVE_CORE_LIBS)
   $(OCTAVE_LINK_DEPS)
 
-octave_LDFLAGS = \
+octave_cli_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS)
+
+if AMCOND_BUILD_GUI
+  octave_SOURCES = main.cc
+  OCTAVE_GUI_LIBS = ../gui/src/liboctgui.la
+  OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/gui/src
+else
+  octave_SOURCES = main-cli.cc
+  OCTAVE_GUI_LIBS =
+  OCTAVE_GUI_CPPFLAGS =
+endif
+
+octave_CPPFLAGS = $(OCTAVE_GUI_CPPFLAGS)
+
+octave_LDADD = \
+  $(OCTAVE_CORE_LIBS) \
+  $(OCTAVE_GUI_LIBS) \
+  $(OCTAVE_LINK_DEPS)
+
+octave_LDFLAGS = $(octave_cli_LDFLAGS)
 
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))

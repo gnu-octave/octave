@@ -79,6 +79,8 @@ display_info::init (bool query)
 
           rx = wd * 25.4 / wd_mm;
           ry = ht * 25.4 / ht_mm;
+
+          dpy_avail = true;
         }
       else
         warning ("no graphical display found");
@@ -109,6 +111,8 @@ display_info::init (bool query)
 
           rx = wd * 25.4 / wd_mm;
           ry = ht * 25.4 / ht_mm;
+
+          dpy_avail = true;
         }
       else
         warning ("no graphical display found");
@@ -144,6 +148,8 @@ display_info::init (bool query)
                 warning ("X11 display has no default screen");
 
               XCloseDisplay (display);
+
+              dpy_avail = true;
             }
           else
             warning ("unable to open X11 DISPLAY");

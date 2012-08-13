@@ -2146,6 +2146,44 @@ fi
 AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)
 
+### GUI/Qt related tests.
+
+HAVE_QT=false
+QT_INCDIR=
+QT_LIBDIR=
+build_gui=yes
+win32_terminal=no
+AC_ARG_ENABLE(gui,
+  [AS_HELP_STRING([--disable-gui], [build GUI (default is yes)])],
+  [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
+
+if test $build_gui = yes; then
+  AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
+  if test -n "$QMAKE"; then
+    QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p'`
+    QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p'`
+    AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
+    AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
+    AC_CHECK_PROGS(RCC, [rcc])
+    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC"; then
+      HAVE_QT=true
+      AC_DEFINE([HAVE_QT], 1, [Define to 1 if Qt is available (must have moc, uic, and rcc programs and developer header files and libraries installed)])
+    fi
+  fi
+
+  case "$canonical_host_type" in
+    *-*-mingw* | *-*-msdosmsvc*) win32_terminal=yes ;;
+    *)
+      AC_CHECK_HEADERS([pty.h libutil.h util.h])
+      AC_SEARCH_LIBS([openpty], [util], [AC_DEFINE([HAVE_OPENPTY], [], [Define whether openpty exists])])
+      ;;
+  esac
+fi
+AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
+AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
+AC_SUBST(QT_INCDIR)
+AC_SUBST(QT_LIBDIR)
+
 ### Run configure in subdirectories.
 
 export CC
@@ -2321,6 +2359,8 @@ AC_CONFIG_FILES([
   doc/liboctave/Makefile
   doc/refcard/Makefile
   examples/Makefile
+  gui/Makefile
+  gui/src/Makefile
   libcruft/Makefile
   libcruft/mkf77def
   libgnu/Makefile
@@ -2405,6 +2445,8 @@ Octave is now configured for $canonical_host_type
   QHULL LDFLAGS:               $QHULL_LDFLAGS
   QHULL libraries:             $QHULL_LIBS
   QRUPDATE libraries:          $QRUPDATE_LIBS
+  Qt headers:                  $QT_INCDIR
+  Qt libraries:                $QT_LIBDIR
   READLINE libraries:          $READLINE_LIBS
   REGEX libraries:             $REGEX_LIBS
   TERM libraries:              $TERM_LIBS

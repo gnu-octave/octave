@@ -1999,4 +1999,14 @@ Test some simple cases that compile.
 %! assert (i == 10);
 %! assert (a == 9);
 
+%!test
+%! num = 2;
+%! a = zeros (1, num);
+%! i = 1;
+%! while i <= num
+%!   a(i) = norm (eye (i));
+%!   ++i;
+%! endwhile
+%! assert (a, ones (1, num));
+
 */

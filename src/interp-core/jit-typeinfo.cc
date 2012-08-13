@@ -441,26 +441,16 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
 
   ovl = fn (ovl, 1);
 
-  // These type checks are not strictly required, but I'm guessing that
-  // incorrect types will be entered on occasion. This will be very difficult to
-  // debug unless we do the sanity check here.
+  // FIXME: Check result_type somehow
   if (result_type)
     {
-      if (ovl.length () != 1)
+      if (ovl.length () < 1)
         {
           gripe_bad_result ();
           return 0;
         }
 
-      octave_value& result = ovl.xelem (0);
-      jit_type *jtype = jit_typeinfo::join (jit_typeinfo::type_of (result),
-                                            result_type);
-      if (jtype != result_type)
-        {
-          gripe_bad_result ();
-          return 0;
-        }
-
+      octave_value result = ovl.xelem(0);
       octave_base_value *ret = result.internal_rep ();
       ret->grab ();
       return ret;
@@ -1817,6 +1807,33 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   register_intrinsic ("exp", llvm::Intrinsic::cos, scalar, scalar);
   register_generic ("exp", matrix, matrix);
 
+  add_builtin ("balance");
+  register_generic ("balance", matrix, matrix);
+
+  add_builtin ("cond");
+  register_generic ("cond", scalar, matrix);
+
+  add_builtin ("det");
+  register_generic ("det", scalar, matrix);
+
+  add_builtin ("norm");
+  register_generic ("norm", scalar, matrix);
+
+  add_builtin ("rand");
+  register_generic ("rand", matrix, scalar);
+  register_generic ("rand", matrix, std::vector<jit_type *> (2, scalar));
+
+  add_builtin ("magic");
+  register_generic ("magic", matrix, scalar);
+  register_generic ("magic", matrix, std::vector<jit_type *> (2, scalar));
+
+  add_builtin ("eye");
+  register_generic ("eye", matrix, scalar);
+  register_generic ("eye", matrix, std::vector<jit_type *> (2, scalar));
+
+  add_builtin ("mod");
+  register_generic ("mod", scalar, std::vector<jit_type *> (2, scalar));
+
   casts.resize (next_id + 1);
   jit_function any_id = create_identity (any);
   jit_function release_any = get_release (any);
@@ -2046,9 +2063,10 @@ jit_typeinfo::register_generic (const std::string& name, jit_type *result,
     {
       llvm::Value *arg = fn.argument (builder, i + 1);
       jit_function agrab = get_grab (args[i]);
-      llvm::Value *garg = agrab.call (builder, arg);
+      if (agrab.valid ())
+        arg = agrab.call (builder, arg);
       jit_function acast = cast (any, args[i]);
-      array = builder.CreateInsertValue (array, acast.call (builder, garg), i);
+      array = builder.CreateInsertValue (array, acast.call (builder, arg), i);
     }
 
   llvm::Value *array_mem = builder.CreateAlloca (array_t);

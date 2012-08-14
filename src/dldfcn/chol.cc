@@ -197,7 +197,7 @@ sparse matrices.\n\
 
               if (! error_state)
                 {
-                  octave_idx_type info;
+                  octave_idx_type info = nargout;
                   SparseCHOL fact (m, info, natural);
                   if (nargout == 3)
                     {
@@ -225,7 +225,7 @@ sparse matrices.\n\
 
               if (! error_state)
                 {
-                  octave_idx_type info;
+                  octave_idx_type info = nargout;
                   SparseComplexCHOL fact (m, info, natural);
 
                   if (nargout == 3)

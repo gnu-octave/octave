@@ -53,7 +53,7 @@ protected:
       : count (1), Lsparse (0), Common (), is_pd (false), minor_p (0),
         perms (), cond (0)
       {
-        info = init (a, natural);
+        info = init (a, natural, info);
       }
 
     ~sparse_base_chol_rep (void)
@@ -93,7 +93,8 @@ protected:
 
     double cond;
 
-    octave_idx_type init (const chol_type& a, bool natural = true);
+    octave_idx_type init (const chol_type& a, bool natural = true,
+                          octave_idx_type nargout = 1);
 
     void drop_zeros (const cholmod_sparse* S);
 
@@ -113,12 +114,16 @@ protected:
     sparse_base_chol_rep (const chol_type& a,
                           const bool natural)
       : count (1), is_pd (false), minor_p (0), perms (), cond (0)
-      { init (a, natural); }
+      {
+        init (a, natural);
+      }
 
     sparse_base_chol_rep (const chol_type& a, octave_idx_type& info,
                           const bool natural)
       : count (1), is_pd (false), minor_p (0), perms (), cond (0)
-      { info = init (a, natural); }
+      {
+        info = init (a, natural, info);
+      }
 
     ~sparse_base_chol_rep (void) { }
 
@@ -143,7 +148,8 @@ protected:
 
     double cond;
 
-    octave_idx_type init (const chol_type& a, bool natural = true);
+    octave_idx_type init (const chol_type& a, bool natural = true,
+                          octave_idx_type nargout = 0);
 
     // No copying!
 

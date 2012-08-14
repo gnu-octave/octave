@@ -1068,6 +1068,14 @@ f ()\n\
 error: nargin != 1\n\
 @end group\n\
 @end example\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, escape\n\
+sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
+regardless of whether @var{template} has been defined within single quotes\n\
+as long as there are two or more input arguments.\n\
+Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
+\"\\\\n\") or use the @code{regexptranslate} function.\n\
+@seealso{warning, lasterror}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1167,7 +1175,14 @@ following handles all warnings as errors:\n\
 warning (\"error\");\n\
 @end group\n\
 @end example\n\
-@seealso{warning_ids}\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, escape\n\
+sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
+regardless of whether @var{template} has been defined within single quotes\n\
+as long as there are two or more input arguments.\n\
+Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
+\"\\\\n\") or use the @code{regexptranslate} function.\n\
+@seealso{warning_ids, lastwarn, error}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1553,7 +1568,7 @@ unspecified fields are initialized with default values.\n\
 \n\
 If @code{lasterror} is called with the argument \"reset\", all fields are\n\
 set to their default values.\n\
-@seealso{lasterr}\n\
+@seealso{lasterr, error, lastwarn}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1678,7 +1693,7 @@ Query or set the last error message.  When called without input arguments,\n\
 return the last error message and message identifier.  With one\n\
 argument, set the last error message to @var{msg}.  With two arguments,\n\
 also set the last message identifier.\n\
-@seealso{lasterror}\n\
+@seealso{lasterror, error, lastwarn}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1722,10 +1737,14 @@ also set the last message identifier.\n\
 
 DEFUN (lastwarn, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn (@var{msg}, @var{msgid})\n\
-Without any arguments, return the last warning message.  With one\n\
+@deftypefn  {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn ()\n\
+@deftypefnx {Built-in Function} {} lastwarn (@var{msg})\n\
+@deftypefnx {Built-in Function} {} lastwarn (@var{msg}, @var{msgid})\n\
+Query or set the last warning message.  When called without input arguments,\n\
+return the last warning message and message identifier.  With one\n\
 argument, set the last warning message to @var{msg}.  With two arguments,\n\
 also set the last message identifier.\n\
+@seealso{warning, lasterror, lasterr}\n\
 @end deftypefn")
 {
   octave_value_list retval;

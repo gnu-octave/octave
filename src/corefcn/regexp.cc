@@ -596,10 +596,7 @@ Anchoring operators.  Requires pattern to occur at the start (@code{^}) or\n\
 end (@code{$}) of the string.\n\
 @end table\n\
 \n\
-In addition, the following escaped characters have special meaning.  Note,\n\
-it is recommended to quote @var{pat} in single quotes, rather than double\n\
-quotes, to avoid the escape sequences being interpreted by Octave before\n\
-being passed to @code{regexp}.\n\
+In addition, the following escaped characters have special meaning.\n\
 \n\
 @table @code\n\
 @item \\b\n\
@@ -632,6 +629,12 @@ Match any digit\n\
 @item \\D\n\
 Match any non-digit\n\
 @end table\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
+sequences (e.g., \"\\n\" => newline) are processed in @var{pat}\n\
+regardless of whether @var{pat} has been defined within single quotes.  Use\n\
+a second backslash to stop interpolation of the escape sequence (e.g.,\n\
+\"\\\\n\") or use the @code{regexptranslate} function.\n\
 \n\
 The outputs of @code{regexp} default to the order given below\n\
 \n\
@@ -1258,6 +1261,11 @@ Replace only the first occurrence of @var{pat} in the result.\n\
 This option is present for compatibility but is ignored.\n\
 \n\
 @end table\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
+sequences (e.g., \"\\n\" => newline) are processed in both @var{pat}\n\
+and @var{repstr} regardless of whether they were defined within single quotes.  Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
+\"\\\\n\") or use the @code{regexptranslate} function.\n\
 @seealso{regexp, regexpi, strrep}\n\
 @end deftypefn")
 {

@@ -26,9 +26,9 @@ AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS = \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
-  -Ioctave-value -I$(srcdir)/octave-value \
+  -I$(srcdir)/octave-value \
+  -I$(srcdir)/operators \
   -Iparse-tree -I$(srcdir)/parse-tree \
-  -Ioperators -I$(srcdir)/operators \
   -Iinterp-core -I$(srcdir)/interp-core \
   -Iinterpfcn -I$(srcdir)/interpfcn \
   -Icorefcn \

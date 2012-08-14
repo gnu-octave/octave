@@ -1818,13 +1818,17 @@ fi
 
 ### Determine types and size of types.
 
+AC_TYPE_INT64_T
 AC_TYPE_MODE_T
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
 AC_TYPE_UID_T
+AC_TYPE_UINT64_T
 AC_CHECK_TYPES([dev_t, ino_t])
 AC_CHECK_TYPES([long long int, unsigned long long int])
+AC_CHECK_TYPES([ptrdiff_t])
 
 ## How big are ints and how are they oriented?
 ## These could probably be eliminated in favor of run-time checks.

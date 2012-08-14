@@ -404,11 +404,8 @@ jit_block::maybe_split (jit_convert& convert, jit_block *asuccessor)
       size_t idx = term->successor_index (asuccessor);
       jit_block *split = convert.create<jit_block> ("phi_split", mvisit_count);
 
-      // try to place splits where they make sense
-      if (id () < asuccessor->id ())
-        convert.insert_before (asuccessor, split);
-      else
-        convert.insert_after (this, split);
+      // place after this to ensure define before use in the blocks list
+      convert.insert_after (this, split);
 
       term->stash_argument (idx, split);
       jit_branch *br = split->append (convert.create<jit_branch> (asuccessor));

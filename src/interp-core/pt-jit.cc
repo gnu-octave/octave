@@ -120,7 +120,6 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee,
     }
 
   remove_dead ();
-  merge_blocks ();
   final_block->label ();
   place_releases ();
   simplify_phi ();
@@ -950,35 +949,8 @@ jit_convert::append_users_term (jit_terminator *term)
 }
 
 void
-jit_convert::merge_blocks (void)
-{
-  std::vector<jit_block *> dead;
-  for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();
-       ++iter)
-    {
-      jit_block *b = *iter;
-      jit_block *merged = b->maybe_merge ();
-
-      if (merged)
-        {
-          if (merged == final_block)
-            final_block = b;
-
-          if (merged == entry_block)
-            entry_block = b;
-
-          dead.push_back (merged);
-        }
-    }
-
-  for (size_t i = 0; i < dead.size (); ++i)
-    blocks.erase (dead[i]->location ());
-}
-
-void
 jit_convert::construct_ssa (void)
 {
-  merge_blocks ();
   final_block->label ();
   final_block->compute_idom (entry_block);
   entry_block->compute_df ();
@@ -1608,6 +1580,7 @@ tree_jit::initialize (void)
 
   pass_manager = new llvm::FunctionPassManager (module);
   pass_manager->add (new llvm::TargetData(*engine->getTargetData ()));
+  pass_manager->add (llvm::createCFGSimplificationPass ());
   pass_manager->add (llvm::createBasicAliasAnalysisPass ());
   pass_manager->add (llvm::createPromoteMemoryToRegisterPass ());
   pass_manager->add (llvm::createInstructionCombiningPass ());
@@ -2008,5 +1981,19 @@ Test some simple cases that compile.
 %!   ++i;
 %! endwhile
 %! assert (a, ones (1, num));
+
+%!function test_compute_idom ()
+%! while (li <= length (l1) && si <= length (s1))
+%!   if (l1 (li) < s1 (si))
+%!     if (li == si)
+%!       break;
+%!     endif;
+%!     li++;
+%!   else
+%!     si++;
+%!   endif;
+%! endwhile
+
+%!error test_compute_idom ()
 
 */

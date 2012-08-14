@@ -334,8 +334,6 @@ private:
     all_values.push_back (value);
   }
 
-  void merge_blocks (void);
-
   void construct_ssa (void);
 
   void do_construct_ssa (jit_block& block, size_t avisit_count);

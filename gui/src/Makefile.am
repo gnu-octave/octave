@@ -1,3 +1,5 @@
+include $(top_srcdir)/build-aux/common.mk
+
 SRCDIRS = \
   m-editor \
   qtinfo \

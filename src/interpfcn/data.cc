@@ -4060,7 +4060,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{log, exp, pi, i, j}\n\
+@seealso{log, exp, pi, I}\n\
 @end deftypefn")
 {
 #if defined (M_E)
@@ -4217,7 +4217,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{e, i, j}\n\
+@seealso{e, I}\n\
 @end deftypefn")
 {
 #if defined (M_PI)
@@ -4326,7 +4326,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{e, pi, log, exp, i, j, J}\n\
+@seealso{e, pi, log, exp}\n\
 @end deftypefn")
 {
   return fill_matrix (args, Complex (0.0, 1.0), "I");

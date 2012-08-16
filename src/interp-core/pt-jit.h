@@ -348,8 +348,6 @@ public:
 
   size_t trip_count (const octave_value& bounds) const;
 
-  // FIXME: Temorary hack to test
-  typedef std::map<tree *, jit_info *> compiled_map;
   llvm::Module *module;
   llvm::PassManager *module_pass_manager;
   llvm::FunctionPassManager *pass_manager;

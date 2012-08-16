@@ -80,12 +80,43 @@ jit_block_list::insert_before (jit_block *loc, jit_block *ablock)
   insert_before (loc->location (), ablock);
 }
 
+std::ostream&
+jit_block_list::print (std::ostream& os, const std::string& header) const
+{
+  os << "-------------------- " << header << " --------------------\n";
+  return os << *this;
+}
+
+std::ostream&
+jit_block_list::print_dom (std::ostream& os) const
+{
+  os << "-------------------- dom info --------------------\n";
+  for (const_iterator iter = begin (); iter != end (); ++iter)
+    {
+      assert (*iter);
+      (*iter)->print_dom (os);
+    }
+  os << std::endl;
+}
+
 void
 jit_block_list::push_back (jit_block *b)
 {
   mlist.push_back (b);
   iterator iter = mlist.end ();
   b->stash_location (--iter);
+}
+
+std::ostream&
+operator<<(std::ostream& os, const jit_block_list& blocks)
+{
+  for (jit_block_list::const_iterator iter = blocks.begin ();
+       iter != blocks.end (); ++iter)
+    {
+      assert (*iter);
+      (*iter)->print (os, 0);
+    }
+  return os << std::endl;
 }
 
 // -------------------- jit_use --------------------

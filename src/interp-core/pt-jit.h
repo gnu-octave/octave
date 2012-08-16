@@ -36,15 +36,36 @@ jit_convert : public tree_walker
 public:
   typedef std::pair<jit_type *, std::string> type_bound;
   typedef std::vector<type_bound> type_bound_vector;
+  typedef std::map<std::string, jit_variable *> variable_map;
 
-  jit_convert (llvm::Module *module, tree &tee, jit_type *for_bounds = 0);
+  jit_convert (tree &tee, jit_type *for_bounds = 0);
+
+#define DECL_ARG(n) const ARG ## n& arg ## n
+#define JIT_CREATE_CHECKED(N)                                           \
+  template <OCT_MAKE_DECL_LIST (typename, ARG, N)>                      \
+  jit_call *create_checked (OCT_MAKE_LIST (DECL_ARG, N))                \
+  {                                                                     \
+    jit_call *ret = factory.create<jit_call> (OCT_MAKE_ARG_LIST (arg, N)); \
+    return create_checked_impl (ret);                                   \
+  }
+
+  JIT_CREATE_CHECKED (1)
+  JIT_CREATE_CHECKED (2)
+  JIT_CREATE_CHECKED (3)
+  JIT_CREATE_CHECKED (4)
+
+#undef JIT_CREATE_CHECKED
+#undef DECL_ARG
+
+  jit_block_list& get_blocks (void) { return blocks; }
+
+  const type_bound_vector& get_bounds (void) const { return bounds; }
+
+  jit_factory& get_factory (void) { return factory; }
 
   llvm::Function *get_function (void) const { return function; }
 
-  const std::vector<std::pair<std::string, bool> >& get_arguments(void) const
-  { return arguments; }
-
-  const type_bound_vector& get_bounds (void) const { return bounds; }
+  const variable_map &get_variable_map (void) const { return vmap; }
 
   void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
@@ -131,22 +152,6 @@ public:
   void visit_while_command (tree_while_command&);
 
   void visit_do_until_command (tree_do_until_command&);
-
-#define JIT_CREATE_CHECKED(N)                                           \
-  template <OCT_MAKE_DECL_LIST (typename, ARG, N)>                      \
-  jit_call *create_checked (OCT_MAKE_LIST (DECL_ARG, N))                \
-  {                                                                     \
-    jit_call *ret = factory.create<jit_call> (OCT_MAKE_ARG_LIST (arg, N)); \
-    return create_checked_impl (ret);                                   \
-  }
-
-  JIT_CREATE_CHECKED (1)
-  JIT_CREATE_CHECKED (2)
-  JIT_CREATE_CHECKED (3)
-  JIT_CREATE_CHECKED (4)
-
-#undef JIT_CREATE_CHECKED
-#undef DECL_ARG
 private:
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;
@@ -166,16 +171,13 @@ private:
 
   jit_block_list blocks;
 
-  std::list<jit_instruction *> worklist;
-
   std::vector<jit_magic_end::context> end_context;
 
   size_t iterator_count;
   size_t for_bounds_count;
   size_t short_count;
 
-  typedef std::map<std::string, jit_variable *> vmap_t;
-  vmap_t vmap;
+  variable_map vmap;
 
   jit_call *create_checked_impl (jit_call *ret);
 
@@ -218,63 +220,6 @@ private:
 
   jit_value *visit (tree& tee);
 
-  void push_worklist (jit_instruction *instr)
-  {
-    if (! instr->in_worklist ())
-      {
-        instr->stash_in_worklist (true);
-        worklist.push_back (instr);
-      }
-  }
-
-  void append_users (jit_value *v)
-  {
-    for (jit_use *use = v->first_use (); use; use = use->next ())
-      push_worklist (use->user ());
-  }
-
-  void append_users_term (jit_terminator *term);
-
-  void construct_ssa (void);
-
-  void do_construct_ssa (jit_block& block, size_t avisit_count);
-
-  void remove_dead ();
-
-  void place_releases (void);
-
-  void release_temp (jit_block& ablock, std::set<jit_value *>& temp);
-
-  void release_dead_phi (jit_block& ablock);
-
-  void simplify_phi (void);
-
-  void simplify_phi (jit_phi& phi);
-
-  void print_blocks (const std::string& header)
-  {
-    std::cout << "-------------------- " << header << " --------------------\n";
-    for (std::list<jit_block *>::iterator iter = blocks.begin ();
-         iter != blocks.end (); ++iter)
-      {
-        assert (*iter);
-        (*iter)->print (std::cout, 0);
-      }
-    std::cout << std::endl;
-  }
-
-  void print_dom (void)
-  {
-    std::cout << "-------------------- dom info --------------------\n";
-    for (std::list<jit_block *>::iterator iter = blocks.begin ();
-         iter != blocks.end (); ++iter)
-      {
-        assert (*iter);
-        (*iter)->print_dom (std::cout);
-      }
-    std::cout << std::endl;
-  }
-
   bool breaking; // true if we are breaking OR continuing
 
   typedef std::list<jit_block *> block_list;
@@ -289,13 +234,12 @@ class
 jit_convert_llvm : public jit_ir_walker
 {
 public:
-  jit_convert_llvm (jit_convert& jc) : jthis (jc) {}
-
   llvm::Function *convert (llvm::Module *module,
-                           const std::vector<std::pair<std::string, bool> >&
-                           args,
                            const jit_block_list& blocks,
                            const std::list<jit_value *>& constants);
+
+  const std::vector<std::pair<std::string, bool> >& get_arguments(void) const
+  { return argument_vec; }
 
 #define JIT_METH(clname)                        \
   virtual void visit (jit_ ## clname&);
@@ -304,8 +248,12 @@ public:
 
 #undef JIT_METH
 private:
+  std::vector<std::pair<std::string, bool> > argument_vec;
+
   // name -> llvm argument
   std::map<std::string, llvm::Value *> arguments;
+  llvm::Function *function;
+  llvm::BasicBlock *prelude;
 
   void finish_phi (jit_phi *phi);
 
@@ -318,13 +266,55 @@ private:
   {
     jvalue.accept (*this);
   }
-private:
-  jit_convert &jthis;
-  llvm::Function *function;
-  llvm::BasicBlock *prelude;
 };
 
-class jit_info;
+// type inference and SSA construction on the low level Octave IR
+class
+jit_infer
+{
+public:
+  typedef jit_convert::variable_map variable_map;
+
+  jit_infer (jit_factory& afactory, jit_block_list& ablocks,
+             const variable_map& avmap);
+
+  jit_block_list& get_blocks (void) const { return blocks; }
+
+  jit_factory& get_factory (void) const { return factory; }
+
+  void infer (void);
+private:
+  jit_block_list& blocks;
+  jit_factory& factory;
+  const variable_map& vmap;
+  std::list<jit_instruction *> worklist;
+
+  void append_users (jit_value *v);
+
+  void append_users_term (jit_terminator *term);
+
+  void construct_ssa (void);
+
+  void do_construct_ssa (jit_block& block, size_t avisit_count);
+
+  jit_block& entry_block (void) { return *blocks.front (); }
+
+  jit_block& final_block (void) { return *blocks.back (); }
+
+  void place_releases (void);
+
+  void push_worklist (jit_instruction *instr);
+
+  void remove_dead ();
+
+  void release_dead_phi (jit_block& ablock);
+
+  void release_temp (jit_block& ablock, std::set<jit_value *>& temp);
+
+  void simplify_phi (void);
+
+  void simplify_phi (jit_phi& phi);
+};
 
 class
 tree_jit
@@ -375,7 +365,7 @@ private:
   typedef jit_convert::type_bound_vector type_bound_vector;
   typedef void (*jited_function)(octave_base_value**);
 
-  void initialize (tree_jit& tjit, jit_convert& conv);
+  void compile (tree_jit& tjit, tree& tee, jit_type *for_bounds = 0);
 
   octave_value find (const vmap& extra_vars, const std::string& vname) const;
 

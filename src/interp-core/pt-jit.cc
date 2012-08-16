@@ -58,8 +58,7 @@ static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 static llvm::LLVMContext& context = llvm::getGlobalContext ();
 
 // -------------------- jit_convert --------------------
-jit_convert::jit_convert (llvm::Module *module, tree &tee,
-                          jit_type *for_bounds)
+jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
   : iterator_count (0), for_bounds_count (0), short_count (0), breaking (false)
 {
   jit_instruction::reset_ids ();
@@ -83,73 +82,13 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee,
   block->append (factory.create<jit_branch> (final_block));
   blocks.push_back (final_block);
 
-  for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
+  for (variable_map::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
     {
       jit_variable *var = iter->second;
       const std::string& name = var->name ();
       if (name.size () && name[0] != '#')
         final_block->append (factory.create<jit_store_argument> (var));
     }
-
-  construct_ssa ();
-
-  // initialize the worklist to instructions derived from constants
-  const std::list<jit_value *>& constants = factory.constants ();
-  for (std::list<jit_value *>::const_iterator iter = constants.begin ();
-       iter != constants.end (); ++iter)
-    append_users (*iter);
-
-  // the entry block terminator may be a regular branch statement
-  if (entry_block->terminator ())
-    push_worklist (entry_block->terminator ());
-
-  // FIXME: Describe algorithm here
-  while (worklist.size ())
-    {
-      jit_instruction *next = worklist.front ();
-      worklist.pop_front ();
-      next->stash_in_worklist (false);
-
-      if (next->infer ())
-        {
-          // terminators need to be handles specially
-          if (jit_terminator *term = dynamic_cast<jit_terminator *> (next))
-            append_users_term (term);
-          else
-            append_users (next);
-        }
-    }
-
-  remove_dead ();
-  final_block->label ();
-  place_releases ();
-  simplify_phi ();
-
-#ifdef OCTAVE_JIT_DEBUG
-  final_block->label ();
-  std::cout << "-------------------- Compiling tree --------------------\n";
-  std::cout << tee.str_print_code () << std::endl;
-  print_blocks ("octave jit ir");
-#endif
-
-  // for now just init arguments from entry, later we will have to do something
-  // more interesting
-  for (jit_block::iterator iter = entry_block->begin ();
-       iter != entry_block->end (); ++iter)
-    if (jit_extract_argument *extract
-        = dynamic_cast<jit_extract_argument *> (*iter))
-      arguments.push_back (std::make_pair (extract->name (), true));
-
-  jit_convert_llvm to_llvm (*this);
-  function = to_llvm.convert (module, arguments, blocks, constants);
-
-#ifdef OCTAVE_JIT_DEBUG
-  std::cout << "-------------------- llvm ir --------------------";
-  llvm::raw_os_ostream llvm_cout (std::cout);
-  function->print (llvm_cout);
-  std::cout << std::endl;
-  llvm::verifyFunction (*function);
-#endif
 }
 
 void
@@ -787,7 +726,7 @@ jit_convert::create_checked_impl (jit_call *ret)
 jit_variable *
 jit_convert::find_variable (const std::string& vname) const
 {
-  vmap_t::const_iterator iter;
+  variable_map::const_iterator iter;
   iter = vmap.find (vname);
   return iter != vmap.end () ? iter->second : 0;
 }
@@ -922,310 +861,6 @@ jit_convert::visit (tree& tee)
 }
 
 void
-jit_convert::append_users_term (jit_terminator *term)
-{
-  for (size_t i = 0; i < term->successor_count (); ++i)
-    {
-      if (term->alive (i))
-        {
-          jit_block *succ = term->successor (i);
-          for (jit_block::iterator iter = succ->begin (); iter != succ->end ()
-                 && isa<jit_phi> (*iter); ++iter)
-            push_worklist (*iter);
-
-          jit_terminator *sterm = succ->terminator ();
-          if (sterm)
-            push_worklist (sterm);
-        }
-    }
-}
-
-void
-jit_convert::construct_ssa (void)
-{
-  final_block->label ();
-  final_block->compute_idom (entry_block);
-  entry_block->compute_df ();
-  entry_block->create_dom_tree ();
-
-  // insert phi nodes where needed, this is done on a per variable basis
-  for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
-    {
-      jit_block::df_set visited, added_phi;
-      std::list<jit_block *> ssa_worklist;
-      iter->second->use_blocks (visited);
-      ssa_worklist.insert (ssa_worklist.begin (), visited.begin (),
-                           visited.end ());
-
-      while (ssa_worklist.size ())
-        {
-          jit_block *b = ssa_worklist.front ();
-          ssa_worklist.pop_front ();
-
-          for (jit_block::df_iterator diter = b->df_begin ();
-               diter != b->df_end (); ++diter)
-            {
-              jit_block *dblock = *diter;
-              if (! added_phi.count (dblock))
-                {
-                  jit_phi *phi = factory.create<jit_phi> (iter->second,
-                                                  dblock->use_count ());
-                  dblock->prepend (phi);
-                  added_phi.insert (dblock);
-                }
-
-              if (! visited.count (dblock))
-                {
-                  ssa_worklist.push_back (dblock);
-                  visited.insert (dblock);
-                }
-            }
-        }
-    }
-
-  do_construct_ssa (*entry_block, entry_block->visit_count ());
-}
-
-void
-jit_convert::do_construct_ssa (jit_block& ablock, size_t avisit_count)
-{
-  if (ablock.visited (avisit_count))
-    return;
-
-  // replace variables with their current SSA value
-  for (jit_block::iterator iter = ablock.begin (); iter != ablock.end (); ++iter)
-    {
-      jit_instruction *instr = *iter;
-      instr->construct_ssa ();
-      instr->push_variable ();
-    }
-
-  // finish phi nodes of successors
-  for (size_t i = 0; i < ablock.successor_count (); ++i)
-    {
-      jit_block *finish = ablock.successor (i);
-
-      for (jit_block::iterator iter = finish->begin (); iter != finish->end ()
-             && isa<jit_phi> (*iter);)
-        {
-          jit_phi *phi = static_cast<jit_phi *> (*iter);
-          jit_variable *var = phi->dest ();
-          if (var->has_top ())
-            {
-              phi->add_incomming (&ablock, var->top ());
-              ++iter;
-            }
-          else
-            {
-              // temporaries may have extranious phi nodes which can be removed
-              assert (! phi->use_count ());
-              assert (var->name ().size () && var->name ()[0] == '#');
-              iter = finish->remove (iter);
-            }
-        }
-    }
-
-  for (size_t i = 0; i < ablock.dom_successor_count (); ++i)
-    do_construct_ssa (*ablock.dom_successor (i), avisit_count);
-
-  ablock.pop_all ();
-}
-
-void
-jit_convert::remove_dead ()
-{
-  block_list::iterator biter;
-  for (biter = blocks.begin (); biter != blocks.end (); ++biter)
-    {
-      jit_block *b = *biter;
-      if (b->alive ())
-        {
-          for (jit_block::iterator iter = b->begin (); iter != b->end ()
-                 && isa<jit_phi> (*iter);)
-            {
-              jit_phi *phi = static_cast<jit_phi *> (*iter);
-              if (phi->prune ())
-                iter = b->remove (iter);
-              else
-                ++iter;
-            }
-        }
-    }
-
-  for (biter = blocks.begin (); biter != blocks.end ();)
-    {
-      jit_block *b = *biter;
-      if (b->alive ())
-        {
-          // FIXME: A special case for jit_error_check, if we generalize to
-          // we will need to change!
-          jit_terminator *term = b->terminator ();
-          if (term && term->successor_count () == 2 && ! term->alive (0))
-            {
-              jit_block *succ = term->successor (1);
-              term->remove ();
-              jit_branch *abreak = factory.create<jit_branch> (succ);
-              b->append (abreak);
-              abreak->infer ();
-            }
-
-          ++biter;
-        }
-      else
-        {
-          jit_terminator *term = b->terminator ();
-          if (term)
-            term->remove ();
-          biter = blocks.erase (biter);
-        }
-    }
-}
-
-void
-jit_convert::place_releases (void)
-{
-  std::set<jit_value *> temporaries;
-  for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();
-       ++iter)
-    {
-      jit_block& ablock = **iter;
-      if (ablock.id () != jit_block::NO_ID)
-        {
-          release_temp (ablock, temporaries);
-          release_dead_phi (ablock);
-        }
-    }
-}
-
-void
-jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
-{
-  for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ();
-       ++iter)
-    {
-      jit_instruction *instr = *iter;
-
-      // check for temporaries that require release and live across
-      // multiple blocks
-      if (instr->needs_release ())
-        {
-          jit_block *fu_block = instr->first_use_block ();
-          if (fu_block && fu_block != &ablock && instr->needs_release ())
-            temp.insert (instr);
-        }
-
-      if (isa<jit_call> (instr))
-        {
-          // place releases for temporary arguments
-          for (size_t i = 0; i < instr->argument_count (); ++i)
-            {
-              jit_value *arg = instr->argument (i);
-              if (! arg->needs_release ())
-                continue;
-
-              jit_call *release
-                = factory.create<jit_call> (&jit_typeinfo::release, arg);
-              release->infer ();
-              ablock.insert_after (iter, release);
-              ++iter;
-              temp.erase (arg);
-            }
-        }
-    }
-
-  if (! temp.size () || ! isa<jit_error_check> (ablock.terminator ()))
-    return;
-
-  // FIXME: If we support try/catch or unwind_protect final_block may not be the
-  // destination
-  jit_block *split = ablock.maybe_split (factory, blocks, final_block);
-  jit_terminator *term = split->terminator ();
-  for (std::set<jit_value *>::const_iterator iter = temp.begin ();
-       iter != temp.end (); ++iter)
-    {
-      jit_value *value = *iter;
-      jit_call *release
-        = factory.create<jit_call> (&jit_typeinfo::release, value);
-      split->insert_before (term, release);
-      release->infer ();
-    }
-}
-
-void
-jit_convert::release_dead_phi (jit_block& ablock)
-{
-  jit_block::iterator iter = ablock.begin ();
-  while (iter != ablock.end () && isa<jit_phi> (*iter))
-    {
-      jit_phi *phi = static_cast<jit_phi *> (*iter);
-      ++iter;
-
-      jit_use *use = phi->first_use ();
-      if (phi->use_count () == 1 && isa<jit_assign> (use->user ()))
-        {
-          // instead of releasing on assign, release on all incomming branches,
-          // this can get rid of casts inside loops
-          for (size_t i = 0; i < phi->argument_count (); ++i)
-            {
-              jit_value *arg = phi->argument (i);
-              if (! arg->needs_release ())
-                continue;
-
-              jit_block *inc = phi->incomming (i);
-              jit_block *split = inc->maybe_split (factory, blocks, ablock);
-              jit_terminator *term = split->terminator ();
-              jit_call *release
-                = factory.create<jit_call> (jit_typeinfo::release, arg);
-              release->infer ();
-              split->insert_before (term, release);
-            }
-
-          phi->replace_with (0);
-          phi->remove ();
-        }
-    }
-}
-
-void
-jit_convert::simplify_phi (void)
-{
-  for (block_list::iterator biter = blocks.begin (); biter != blocks.end ();
-       ++biter)
-    {
-      jit_block &ablock = **biter;
-      for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ()
-             && isa<jit_phi> (*iter); ++iter)
-        simplify_phi (*static_cast<jit_phi *> (*iter));
-    }
-}
-
-void
-jit_convert::simplify_phi (jit_phi& phi)
-{
-  jit_block& pblock = *phi.parent ();
-  const jit_operation& cast_fn = jit_typeinfo::cast (phi.type ());
-  jit_variable *dest = phi.dest ();
-  for (size_t i = 0; i < phi.argument_count (); ++i)
-    {
-      jit_value *arg = phi.argument (i);
-      if (arg->type () != phi.type ())
-        {
-          jit_block *pred = phi.incomming (i);
-          jit_block *split = pred->maybe_split (factory, blocks, pblock);
-          jit_terminator *term = split->terminator ();
-          jit_instruction *cast = factory.create<jit_call> (cast_fn, arg);
-          jit_assign *assign = factory.create<jit_assign> (dest, cast);
-
-          split->insert_before (term, cast);
-          split->insert_before (term, assign);
-          cast->infer ();
-          assign->infer ();
-          phi.stash_argument (i, assign);
-        }
-    }
-}
-
-void
 jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
 {
   for (block_list::const_iterator iter = lst.begin (); iter != lst.end ();
@@ -1236,14 +871,22 @@ jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
     }
 }
 
-// -------------------- jit_convert::convert_llvm --------------------
+// -------------------- jit_convert_llvm --------------------
 llvm::Function *
 jit_convert_llvm::convert (llvm::Module *module,
-                           const std::vector<std::pair<std::string, bool> >&
-                           args,
                            const jit_block_list& blocks,
                            const std::list<jit_value *>& constants)
 {
+  // for now just init arguments from entry, later we will have to do something
+  // more interesting
+  jit_block *entry_block = blocks.front ();
+  for (jit_block::iterator iter = entry_block->begin ();
+       iter != entry_block->end (); ++iter)
+    if (jit_extract_argument *extract
+        = dynamic_cast<jit_extract_argument *> (*iter))
+      argument_vec.push_back (std::make_pair (extract->name (), true));
+
+
   jit_type *any = jit_typeinfo::get_any ();
 
   // argument is an array of octave_base_value*, or octave_base_value**
@@ -1260,10 +903,10 @@ jit_convert_llvm::convert (llvm::Module *module,
       builder.SetInsertPoint (prelude);
 
       llvm::Value *arg = function->arg_begin ();
-      for (size_t i = 0; i < args.size (); ++i)
+      for (size_t i = 0; i < argument_vec.size (); ++i)
         {
           llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);
-          arguments[args[i].first] = loaded_arg;
+          arguments[argument_vec[i].first] = loaded_arg;
         }
 
       std::list<jit_block *>::const_iterator biter;
@@ -1501,6 +1144,372 @@ jit_convert_llvm::visit (jit_magic_end& me)
   me.stash_llvm (ret);
 }
 
+// -------------------- jit_infer --------------------
+jit_infer::jit_infer (jit_factory& afactory, jit_block_list& ablocks,
+                      const variable_map& avmap)
+  : blocks (ablocks), factory (afactory), vmap (avmap) {}
+
+void
+jit_infer::infer (void)
+{
+  construct_ssa ();
+
+  // initialize the worklist to instructions derived from constants
+  const std::list<jit_value *>& constants = factory.constants ();
+  for (std::list<jit_value *>::const_iterator iter = constants.begin ();
+       iter != constants.end (); ++iter)
+    append_users (*iter);
+
+  // the entry block terminator may be a regular branch statement
+  if (entry_block ().terminator ())
+    push_worklist (entry_block ().terminator ());
+
+  // FIXME: Describe algorithm here
+  while (worklist.size ())
+    {
+      jit_instruction *next = worklist.front ();
+      worklist.pop_front ();
+      next->stash_in_worklist (false);
+
+      if (next->infer ())
+        {
+          // terminators need to be handles specially
+          if (jit_terminator *term = dynamic_cast<jit_terminator *> (next))
+            append_users_term (term);
+          else
+            append_users (next);
+        }
+    }
+
+  remove_dead ();
+  final_block ().label ();
+  place_releases ();
+  simplify_phi ();
+}
+
+void
+jit_infer::append_users (jit_value *v)
+{
+  for (jit_use *use = v->first_use (); use; use = use->next ())
+    push_worklist (use->user ());
+}
+
+void
+jit_infer::append_users_term (jit_terminator *term)
+{
+  for (size_t i = 0; i < term->successor_count (); ++i)
+    {
+      if (term->alive (i))
+        {
+          jit_block *succ = term->successor (i);
+          for (jit_block::iterator iter = succ->begin (); iter != succ->end ()
+                 && isa<jit_phi> (*iter); ++iter)
+            push_worklist (*iter);
+
+          jit_terminator *sterm = succ->terminator ();
+          if (sterm)
+            push_worklist (sterm);
+        }
+    }
+}
+
+void
+jit_infer::construct_ssa (void)
+{
+  final_block ().label ();
+  final_block ().compute_idom (entry_block ());
+  entry_block ().compute_df ();
+  entry_block ().create_dom_tree ();
+
+  // insert phi nodes where needed, this is done on a per variable basis
+  for (variable_map::const_iterator iter = vmap.begin (); iter != vmap.end ();
+       ++iter)
+    {
+      jit_block::df_set visited, added_phi;
+      std::list<jit_block *> ssa_worklist;
+      iter->second->use_blocks (visited);
+      ssa_worklist.insert (ssa_worklist.begin (), visited.begin (),
+                           visited.end ());
+
+      while (ssa_worklist.size ())
+        {
+          jit_block *b = ssa_worklist.front ();
+          ssa_worklist.pop_front ();
+
+          for (jit_block::df_iterator diter = b->df_begin ();
+               diter != b->df_end (); ++diter)
+            {
+              jit_block *dblock = *diter;
+              if (! added_phi.count (dblock))
+                {
+                  jit_phi *phi = factory.create<jit_phi> (iter->second,
+                                                  dblock->use_count ());
+                  dblock->prepend (phi);
+                  added_phi.insert (dblock);
+                }
+
+              if (! visited.count (dblock))
+                {
+                  ssa_worklist.push_back (dblock);
+                  visited.insert (dblock);
+                }
+            }
+        }
+    }
+
+  do_construct_ssa (entry_block (), entry_block ().visit_count ());
+}
+
+void
+jit_infer::do_construct_ssa (jit_block& ablock, size_t avisit_count)
+{
+  if (ablock.visited (avisit_count))
+    return;
+
+  // replace variables with their current SSA value
+  for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ();
+       ++iter)
+    {
+      jit_instruction *instr = *iter;
+      instr->construct_ssa ();
+      instr->push_variable ();
+    }
+
+  // finish phi nodes of successors
+  for (size_t i = 0; i < ablock.successor_count (); ++i)
+    {
+      jit_block *finish = ablock.successor (i);
+
+      for (jit_block::iterator iter = finish->begin (); iter != finish->end ()
+             && isa<jit_phi> (*iter);)
+        {
+          jit_phi *phi = static_cast<jit_phi *> (*iter);
+          jit_variable *var = phi->dest ();
+          if (var->has_top ())
+            {
+              phi->add_incomming (&ablock, var->top ());
+              ++iter;
+            }
+          else
+            {
+              // temporaries may have extranious phi nodes which can be removed
+              assert (! phi->use_count ());
+              assert (var->name ().size () && var->name ()[0] == '#');
+              iter = finish->remove (iter);
+            }
+        }
+    }
+
+  for (size_t i = 0; i < ablock.dom_successor_count (); ++i)
+    do_construct_ssa (*ablock.dom_successor (i), avisit_count);
+
+  ablock.pop_all ();
+}
+
+void
+jit_infer::place_releases (void)
+{
+  std::set<jit_value *> temporaries;
+  for (jit_block_list::iterator iter = blocks.begin (); iter != blocks.end ();
+       ++iter)
+    {
+      jit_block& ablock = **iter;
+      if (ablock.id () != jit_block::NO_ID)
+        {
+          release_temp (ablock, temporaries);
+          release_dead_phi (ablock);
+        }
+    }
+}
+
+void
+jit_infer::push_worklist (jit_instruction *instr)
+{
+  if (! instr->in_worklist ())
+    {
+      instr->stash_in_worklist (true);
+      worklist.push_back (instr);
+    }
+}
+
+void
+jit_infer::remove_dead ()
+{
+  jit_block_list::iterator biter;
+  for (biter = blocks.begin (); biter != blocks.end (); ++biter)
+    {
+      jit_block *b = *biter;
+      if (b->alive ())
+        {
+          for (jit_block::iterator iter = b->begin (); iter != b->end ()
+                 && isa<jit_phi> (*iter);)
+            {
+              jit_phi *phi = static_cast<jit_phi *> (*iter);
+              if (phi->prune ())
+                iter = b->remove (iter);
+              else
+                ++iter;
+            }
+        }
+    }
+
+  for (biter = blocks.begin (); biter != blocks.end ();)
+    {
+      jit_block *b = *biter;
+      if (b->alive ())
+        {
+          // FIXME: A special case for jit_error_check, if we generalize to
+          // we will need to change!
+          jit_terminator *term = b->terminator ();
+          if (term && term->successor_count () == 2 && ! term->alive (0))
+            {
+              jit_block *succ = term->successor (1);
+              term->remove ();
+              jit_branch *abreak = factory.create<jit_branch> (succ);
+              b->append (abreak);
+              abreak->infer ();
+            }
+
+          ++biter;
+        }
+      else
+        {
+          jit_terminator *term = b->terminator ();
+          if (term)
+            term->remove ();
+          biter = blocks.erase (biter);
+        }
+    }
+}
+
+void
+jit_infer::release_dead_phi (jit_block& ablock)
+{
+  jit_block::iterator iter = ablock.begin ();
+  while (iter != ablock.end () && isa<jit_phi> (*iter))
+    {
+      jit_phi *phi = static_cast<jit_phi *> (*iter);
+      ++iter;
+
+      jit_use *use = phi->first_use ();
+      if (phi->use_count () == 1 && isa<jit_assign> (use->user ()))
+        {
+          // instead of releasing on assign, release on all incomming branches,
+          // this can get rid of casts inside loops
+          for (size_t i = 0; i < phi->argument_count (); ++i)
+            {
+              jit_value *arg = phi->argument (i);
+              if (! arg->needs_release ())
+                continue;
+
+              jit_block *inc = phi->incomming (i);
+              jit_block *split = inc->maybe_split (factory, blocks, ablock);
+              jit_terminator *term = split->terminator ();
+              jit_call *release
+                = factory.create<jit_call> (jit_typeinfo::release, arg);
+              release->infer ();
+              split->insert_before (term, release);
+            }
+
+          phi->replace_with (0);
+          phi->remove ();
+        }
+    }
+}
+
+void
+jit_infer::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
+{
+  for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ();
+       ++iter)
+    {
+      jit_instruction *instr = *iter;
+
+      // check for temporaries that require release and live across
+      // multiple blocks
+      if (instr->needs_release ())
+        {
+          jit_block *fu_block = instr->first_use_block ();
+          if (fu_block && fu_block != &ablock && instr->needs_release ())
+            temp.insert (instr);
+        }
+
+      if (isa<jit_call> (instr))
+        {
+          // place releases for temporary arguments
+          for (size_t i = 0; i < instr->argument_count (); ++i)
+            {
+              jit_value *arg = instr->argument (i);
+              if (! arg->needs_release ())
+                continue;
+
+              jit_call *release
+                = factory.create<jit_call> (&jit_typeinfo::release, arg);
+              release->infer ();
+              ablock.insert_after (iter, release);
+              ++iter;
+              temp.erase (arg);
+            }
+        }
+    }
+
+  if (! temp.size () || ! isa<jit_error_check> (ablock.terminator ()))
+    return;
+
+  // FIXME: If we support try/catch or unwind_protect final_block may not be the
+  // destination
+  jit_block *split = ablock.maybe_split (factory, blocks, final_block ());
+  jit_terminator *term = split->terminator ();
+  for (std::set<jit_value *>::const_iterator iter = temp.begin ();
+       iter != temp.end (); ++iter)
+    {
+      jit_value *value = *iter;
+      jit_call *release
+        = factory.create<jit_call> (&jit_typeinfo::release, value);
+      split->insert_before (term, release);
+      release->infer ();
+    }
+}
+
+void
+jit_infer::simplify_phi (void)
+{
+  for (jit_block_list::iterator biter = blocks.begin (); biter != blocks.end ();
+       ++biter)
+    {
+      jit_block &ablock = **biter;
+      for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ()
+             && isa<jit_phi> (*iter); ++iter)
+        simplify_phi (*static_cast<jit_phi *> (*iter));
+    }
+}
+
+void
+jit_infer::simplify_phi (jit_phi& phi)
+{
+  jit_block& pblock = *phi.parent ();
+  const jit_operation& cast_fn = jit_typeinfo::cast (phi.type ());
+  jit_variable *dest = phi.dest ();
+  for (size_t i = 0; i < phi.argument_count (); ++i)
+    {
+      jit_value *arg = phi.argument (i);
+      if (arg->type () != phi.type ())
+        {
+          jit_block *pred = phi.incomming (i);
+          jit_block *split = pred->maybe_split (factory, blocks, pblock);
+          jit_terminator *term = split->terminator ();
+          jit_instruction *cast = factory.create<jit_call> (cast_fn, arg);
+          jit_assign *assign = factory.create<jit_assign> (dest, cast);
+
+          split->insert_before (term, cast);
+          split->insert_before (term, assign);
+          cast->infer ();
+          assign->infer ();
+          phi.stash_argument (i, assign);
+        }
+    }
+}
+
 // -------------------- tree_jit --------------------
 
 tree_jit::tree_jit (void) : module (0), engine (0)
@@ -1622,36 +1631,13 @@ tree_jit::optimize (llvm::Function *fn)
 jit_info::jit_info (tree_jit& tjit, tree& tee)
   : engine (tjit.get_engine ()), function (0), llvm_function (0)
 {
-  try
-    {
-      jit_convert conv (tjit.get_module (), tee);
-      initialize (tjit, conv);
-    }
-  catch (const jit_fail_exception& e)
-    {
-#ifdef OCTAVE_JIT_DEBUG
-      if (e.known ())
-        std::cout << "jit fail: " << e.what () << std::endl;
-#endif
-    }
+  compile (tjit, tee);
 }
 
 jit_info::jit_info (tree_jit& tjit, tree& tee, const octave_value& for_bounds)
   : engine (tjit.get_engine ()), function (0), llvm_function (0)
 {
-  try
-    {
-      jit_convert conv (tjit.get_module (), tee,
-                        jit_typeinfo::type_of (for_bounds));
-      initialize (tjit, conv);
-    }
-  catch (const jit_fail_exception& e)
-    {
-#ifdef OCTAVE_JIT_DEBUG
-      if (e.known ())
-        std::cout << "jit fail: " << e.what () << std::endl;
-#endif
-    }
+  compile (tjit, tee, jit_typeinfo::type_of (for_bounds));
 }
 
 jit_info::~jit_info (void)
@@ -1713,14 +1699,48 @@ jit_info::match (const vmap& extra_vars) const
 }
 
 void
-jit_info::initialize (tree_jit& tjit, jit_convert& conv)
+jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 {
-  llvm_function = conv.get_function ();
-  arguments = conv.get_arguments ();
-  bounds = conv.get_bounds ();
+  try
+    {
+      jit_convert conv (tee, for_bounds);
+      jit_infer infer (conv.get_factory (), conv.get_blocks (),
+                       conv.get_variable_map ());
+
+      infer.infer ();
+#ifdef OCTAVE_JIT_DEBUG
+      jit_block *entry_block = infer.get_blocks ().front ();
+      entry_block->label ();
+      std::cout << "-------------------- Compiling tree --------------------\n";
+      std::cout << tee.str_print_code () << std::endl;
+      entry_block->print (std::cout, "octave jit ir");
+#endif
+
+      jit_factory& factory = conv.get_factory ();
+      jit_convert_llvm to_llvm;
+      llvm_function = to_llvm.convert (tjit.get_module (), infer.get_blocks (),
+                                       factory.constants ());
+      arguments = to_llvm.get_arguments ();
+      bounds = conv.get_bounds ();
+    }
+  catch (const jit_fail_exception& e)
+    {
+#ifdef OCTAVE_JIT_DEBUG
+      if (e.known ())
+        std::cout << "jit fail: " << e.what () << std::endl;
+#endif
+    }
 
   if (llvm_function)
     {
+#ifdef OCTAVE_JIT_DEBUG
+      std::cout << "-------------------- llvm ir --------------------";
+      llvm::raw_os_ostream llvm_cout (std::cout);
+      function->print (llvm_cout);
+      std::cout << std::endl;
+      llvm::verifyFunction (*function);
+#endif
+
       tjit.optimize (llvm_function);
 
 #ifdef OCTAVE_JIT_DEBUG

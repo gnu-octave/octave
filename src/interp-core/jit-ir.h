@@ -102,7 +102,6 @@ public:
 
   const value_list& constants (void) const { return mconstants; }
 
-  // this would be easier with variadic templates
   template <typename T>
   T *create (void)
   {
@@ -127,6 +126,7 @@ public:
   JIT_CREATE (4)
 
 #undef JIT_CREATE
+#undef DECL_ARG
 private:
   void track_value (jit_value *v);
 
@@ -168,10 +168,16 @@ public:
 
   void insert_before (jit_block *loc, jit_block *ablock);
 
+  std::ostream& print (std::ostream& os, const std::string& header) const;
+
+  std::ostream& print_dom (std::ostream& os) const;
+
   void push_back (jit_block *b);
 private:
   std::list<jit_block *> mlist;
 };
+
+std::ostream& operator<<(std::ostream& os, const jit_block_list& blocks);
 
 class
 jit_value : public jit_internal_list<jit_value, jit_use>
@@ -660,10 +666,10 @@ public:
   // See for idom computation algorithm
   // Cooper, Keith D.; Harvey, Timothy J; and Kennedy, Ken (2001).
   // "A Simple, Fast Dominance Algorithm"
-  void compute_idom (jit_block *entry_block)
+  void compute_idom (jit_block& entry_block)
   {
     bool changed;
-    entry_block->idom = entry_block;
+    entry_block.idom = &entry_block;
     do
       changed = update_idom (mvisit_count);
     while (changed);

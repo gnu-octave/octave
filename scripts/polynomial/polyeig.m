@@ -19,13 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{z} =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
 ## @deftypefnx {Function File} {[ @var{v}, @var{z} ] =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
+##
 ## Solve the polynomial eigenvalue problem of degree @var{l}.
 ##
-## Given a @var{n*n} matrix polynomial @var{C(s)} = @var{C0 + C1 s + @dots{} + Cl s^l} polyeig 
-## solves the eigenvalue problem (@var{C0} + @var{C1} + @dots{} + @var{Cl})v = 0.
-## Note that the eigenvalues @var{z} are the zeros of the matrix polynomial. @var{z} is a
-## @var{lxn} vector and @var{v} is a @var{(n x n)l} matrix with columns that correspond to
-## the eigenvectors.
+## Given a @var{n*n} matrix polynomial @var{C(s)} = @var{C0 + C1 s +
+## @dots{} + Cl s^l} polyeig solves the eigenvalue problem (@var{C0} +
+## @var{C1} + @dots{} + @var{Cl})v = 0. Note that the eigenvalues
+## @var{z} are the zeros of the matrix polynomial. @var{z} is a
+## @var{lxn} vector and @var{v} is a @var{(n x n)l} matrix with columns
+## that correspond to the eigenvectors.
+##
 ## @seealso{eig, eigs, compan}
 ## @end deftypefn
 
@@ -53,25 +56,28 @@ function [ z, varargout ] = polyeig (varargin)
   endif
   n = unique (n);
 
-  # matrix polynomial degree
+  ## matrix polynomial degree
   l = nin - 1;
 
-  # form needed matrices
-  C = [ zeros(n * (l - 1), n), eye(n * (l - 1)); -cell2mat(varargin(1 : end - 1)) ];
-  D = [ eye(n * (l - 1)), zeros(n * (l - 1), n); zeros(n, n * (l - 1)), varargin{end} ];
+  ## form needed matrices
+  C = [ zeros(n * (l - 1), n), eye(n * (l - 1));
+       -cell2mat(varargin(1 : end - 1)) ];
 
-  % solve generalized eigenvalue problem
+  D = [ eye(n * (l - 1)), zeros(n * (l - 1), n);
+       zeros(n, n * (l - 1)), varargin{end} ];
+
+  ## solve generalized eigenvalue problem
   if ( isequal (nargout, 1) )
     z = eig (C, D);
   else
     [ z, v ] = eig (C, D);
     varargout{1} = v;
-    % return n-element eigenvectors normalized so
-    % that the infinity-norm = 1
+    ## return n-element eigenvectors normalized so
+    ## that the infinity-norm = 1
     z = z(1:n,:);
-    % max() takes the abs if complex:
-    t = max(z);
-    z /= diag(t);
+    ## max() takes the abs if complex:
+    t = max (z);
+    z /= diag (t);
   endif
 
 endfunction

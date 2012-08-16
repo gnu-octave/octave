@@ -29,31 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "pt-walk.h"
 
-// -------------------- Current status --------------------
-// Simple binary operations (+-*/) on octave_scalar's (doubles) are optimized.
-// a = 5;
-// b = a * 5 + a;
-//
-// Indexing matrices with scalars works.
-//
-// if, elseif, else, break, continue, and for compile. Compilation is triggered
-// at the start of a simple for loop.
-//
-// The octave low level IR is a linear IR, it works by converting everything to
-// calls to jit_operations. This turns expressions like c = a + b into
-// c = call binary+ (a, b)
-// The jit_operations contain information about overloads for different types.
-// For, example, if we know a and b are scalars, then c must also be a scalar.
-//
-// Support for function calls is in progress. Currently, calls to sin with a
-// scalar argument will compile.
-//
-// TODO:
-// 1. Function calls (In progress)
-// 2. Cleanup/documentation
-// 3. ...
-// ---------------------------------------------------------
-
 // convert between IRs
 // FIXME: Class relationships are messy from here on down. They need to be
 // cleaned up.

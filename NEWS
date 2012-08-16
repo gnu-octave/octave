@@ -82,11 +82,10 @@ Summary of important user-visible changes for version 3.8:
       
  ** Other new functions added in 3.8.0:
 
-      betaincinv   erfcinv      splinefit
-      cmpermute    findfigs     tetramesh
-      cmunique     fminsearch   rgbplot     
-      colorcube    lines        shrinkfaces 
-
+      betaincinv   erfcinv      polyeig      shrinkfaces 
+      cmpermute    findfigs     splinefit
+      cmunique     fminsearch   tetramesh
+      colorcube    lines        rgbplot     
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.4 and have been

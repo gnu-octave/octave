@@ -520,9 +520,6 @@ public:
   bool is_real_matrix (void) const
     { return rep->is_real_matrix (); }
 
-  bool is_real_nd_array (void) const
-    { return rep->is_real_nd_array (); }
-
   bool is_complex_scalar (void) const
     { return rep->is_complex_scalar (); }
 

@@ -341,8 +341,6 @@ public:
 
   virtual bool is_real_matrix (void) const { return false; }
 
-  virtual bool is_real_nd_array (void) const { return false; }
-
   virtual bool is_complex_scalar (void) const { return false; }
 
   virtual bool is_complex_matrix (void) const { return false; }

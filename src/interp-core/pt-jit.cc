@@ -64,9 +64,9 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee,
 {
   jit_instruction::reset_ids ();
 
-  entry_block = create<jit_block> ("body");
-  final_block = create<jit_block> ("final");
-  append (entry_block);
+  entry_block = factory.create<jit_block> ("body");
+  final_block = factory.create<jit_block> ("final");
+  blocks.push_back (entry_block);
   entry_block->mark_alive ();
   block = entry_block;
 
@@ -80,21 +80,22 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee,
   assert (breaks.empty ());
   assert (continues.empty ());
 
-  block->append (create<jit_branch> (final_block));
-  append (final_block);
+  block->append (factory.create<jit_branch> (final_block));
+  blocks.push_back (final_block);
 
   for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
     {
       jit_variable *var = iter->second;
       const std::string& name = var->name ();
       if (name.size () && name[0] != '#')
-        final_block->append (create<jit_store_argument> (var));
+        final_block->append (factory.create<jit_store_argument> (var));
     }
 
   construct_ssa ();
 
   // initialize the worklist to instructions derived from constants
-  for (std::list<jit_value *>::iterator iter = constants.begin ();
+  const std::list<jit_value *>& constants = factory.constants ();
+  for (std::list<jit_value *>::const_iterator iter = constants.begin ();
        iter != constants.end (); ++iter)
     append_users (*iter);
 
@@ -151,13 +152,6 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee,
 #endif
 }
 
-jit_convert::~jit_convert (void)
-{
-  for (std::list<jit_value *>::iterator iter = all_values.begin ();
-       iter != all_values.end (); ++iter)
-    delete *iter;
-}
-
 void
 jit_convert::visit_anon_fcn_handle (tree_anon_fcn_handle&)
 {
@@ -181,40 +175,40 @@ jit_convert::visit_binary_expression (tree_binary_expression& be)
       bool is_and = boole->op_type () == tree_boolean_expression::bool_and;
 
       std::string short_name = next_shortcircut_result ();
-      jit_variable *short_result = create<jit_variable> (short_name);
+      jit_variable *short_result = factory.create<jit_variable> (short_name);
       vmap[short_name] = short_result;
 
-      jit_block *done = create<jit_block> (block->name ());
+      jit_block *done = factory.create<jit_block> (block->name ());
       tree_expression *lhs = be.lhs ();
       jit_value *lhsv = visit (lhs);
       lhsv = create_checked (&jit_typeinfo::logically_true, lhsv);
 
-      jit_block *short_early = create<jit_block> ("short_early");
-      append (short_early);
+      jit_block *short_early = factory.create<jit_block> ("short_early");
+      blocks.push_back (short_early);
 
-      jit_block *short_cont = create<jit_block> ("short_cont");
+      jit_block *short_cont = factory.create<jit_block> ("short_cont");
 
       if (is_and)
-        block->append (create<jit_cond_branch> (lhsv, short_cont, short_early));
+        block->append (factory.create<jit_cond_branch> (lhsv, short_cont, short_early));
       else
-        block->append (create<jit_cond_branch> (lhsv, short_early, short_cont));
+        block->append (factory.create<jit_cond_branch> (lhsv, short_early, short_cont));
 
       block = short_early;
 
-      jit_value *early_result = create<jit_const_bool> (! is_and);
-      block->append (create<jit_assign> (short_result, early_result));
-      block->append (create<jit_branch> (done));
+      jit_value *early_result = factory.create<jit_const_bool> (! is_and);
+      block->append (factory.create<jit_assign> (short_result, early_result));
+      block->append (factory.create<jit_branch> (done));
 
-      append (short_cont);
+      blocks.push_back (short_cont);
       block = short_cont;
 
       tree_expression *rhs = be.rhs ();
       jit_value *rhsv = visit (rhs);
       rhsv = create_checked (&jit_typeinfo::logically_true, rhsv);
-      block->append (create<jit_assign> (short_result, rhsv));
-      block->append (create<jit_branch> (done));
+      block->append (factory.create<jit_assign> (short_result, rhsv));
+      block->append (factory.create<jit_branch> (done));
 
-      append (done);
+      blocks.push_back (done);
       block = done;
       result = short_result;
     }
@@ -250,9 +244,9 @@ jit_convert::visit_colon_expression (tree_colon_expression& expr)
   if (tinc)
     increment = visit (tinc);
   else
-    increment = create<jit_const_scalar> (1);
+    increment = factory.create<jit_const_scalar> (1);
 
-  result = block->append (create<jit_call> (jit_typeinfo::make_range, base,
+  result = block->append (factory.create<jit_call> (jit_typeinfo::make_range, base,
                                             limit, increment));
 }
 
@@ -305,32 +299,34 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
 
   // we need a variable for our iterator, because it is used in multiple blocks
   std::string iter_name = next_iterator ();
-  jit_variable *iterator = create<jit_variable> (iter_name);
-  create<jit_variable> (iter_name);
+  jit_variable *iterator = factory.create<jit_variable> (iter_name);
+  factory.create<jit_variable> (iter_name);
   vmap[iter_name] = iterator;
 
-  jit_block *body = create<jit_block> ("for_body");
-  append (body);
+  jit_block *body = factory.create<jit_block> ("for_body");
+  blocks.push_back (body);
 
-  jit_block *tail = create<jit_block> ("for_tail");
+  jit_block *tail = factory.create<jit_block> ("for_tail");
 
   // do control expression, iter init, and condition check in prev_block (block)
   // if we are the top level for loop, the bounds is an input argument.
   jit_value *control = find_variable (next_for_bounds ());
   if (! control)
     control = visit (cmd.control_expr ());
-  jit_call *init_iter = create<jit_call> (jit_typeinfo::for_init, control);
+  jit_call *init_iter = factory.create<jit_call> (jit_typeinfo::for_init,
+                                                  control);
   block->append (init_iter);
-  block->append (create<jit_assign> (iterator, init_iter));
+  block->append (factory.create<jit_assign> (iterator, init_iter));
 
-  jit_value *check = block->append (create<jit_call> (jit_typeinfo::for_check,
-                                                      control, iterator));
-  block->append (create<jit_cond_branch> (check, body, tail));
+  jit_call *check = factory.create<jit_call> (jit_typeinfo::for_check, control,
+                                              iterator);
+  block->append (check);
+  block->append (factory.create<jit_cond_branch> (check, body, tail));
   block = body;
 
   // compute the syntactical iterator
-  jit_call *idx_rhs = create<jit_call> (jit_typeinfo::for_index, control,
-                                        iterator);
+  jit_call *idx_rhs = factory.create<jit_call> (jit_typeinfo::for_index,
+                                                control, iterator);
   block->append (idx_rhs);
   do_assign (cmd.left_hand_side (), idx_rhs);
 
@@ -343,31 +339,31 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
       // WTF are you doing user? Every branch was a continue, why did you have
       // a loop??? Users are silly people...
       finish_breaks (tail, breaks);
-      append (tail);
+      blocks.push_back (tail);
       block = tail;
       return;
     }
 
   // check our condition, continues jump to this block
-  jit_block *check_block = create<jit_block> ("for_check");
-  append (check_block);
+  jit_block *check_block = factory.create<jit_block> ("for_check");
+  blocks.push_back (check_block);
 
   if (! breaking)
-    block->append (create<jit_branch> (check_block));
+    block->append (factory.create<jit_branch> (check_block));
   finish_breaks (check_block, continues);
 
   block = check_block;
   const jit_operation& add_fn = jit_typeinfo::binary_op (octave_value::op_add);
-  jit_value *one = create<jit_const_index> (1);
-  jit_call *iter_inc = create<jit_call> (add_fn, iterator, one);
+  jit_value *one = factory.create<jit_const_index> (1);
+  jit_call *iter_inc = factory.create<jit_call> (add_fn, iterator, one);
   block->append (iter_inc);
-  block->append (create<jit_assign> (iterator, iter_inc));
-  check = block->append (create<jit_call> (jit_typeinfo::for_check, control,
+  block->append (factory.create<jit_assign> (iterator, iter_inc));
+  check = block->append (factory.create<jit_call> (jit_typeinfo::for_check, control,
                                            iterator));
-  block->append (create<jit_cond_branch> (check, body, tail));
+  block->append (factory.create<jit_cond_branch> (check, body, tail));
 
   // breaks will go to our tail
-  append (tail);
+  blocks.push_back (tail);
   finish_breaks (tail, breaks);
   block = tail;
 }
@@ -415,7 +411,7 @@ jit_convert::visit_identifier (tree_identifier& ti)
     {
       if (!end_context.size ())
         throw jit_fail_exception ("Illegal end");
-      result = block->append (create<jit_magic_end> (end_context));
+      result = block->append (factory.create<jit_magic_end> (end_context));
     }
   else
     result = get_variable (ti.name ());
@@ -455,12 +451,12 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
     {
       tree_if_clause *tic = *iter;
       if (tic->is_else_clause ())
-        entry_blocks[i] = create<jit_block> ("else");
+        entry_blocks[i] = factory.create<jit_block> ("else");
       else
-        entry_blocks[i] = create<jit_block> ("ifelse_cond");
+        entry_blocks[i] = factory.create<jit_block> ("ifelse_cond");
     }
 
-  jit_block *tail = create<jit_block> ("if_tail");
+  jit_block *tail = factory.create<jit_block> ("if_tail");
   if (! last_else)
     entry_blocks[entry_blocks.size () - 1] = tail;
 
@@ -473,7 +469,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
       assert (block);
 
       if (i) // the first block is prev_block, so it has already been added
-        append (entry_blocks[i]);
+        blocks.push_back (entry_blocks[i]);
 
       if (! tic->is_else_clause ())
         {
@@ -481,11 +477,11 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
           jit_value *cond = visit (expr);
           jit_call *check = create_checked (&jit_typeinfo::logically_true,
                                             cond);
-          jit_block *body = create<jit_block> (i == 0 ? "if_body"
-                                               : "ifelse_body");
-          append (body);
+          jit_block *body = factory.create<jit_block> (i == 0 ? "if_body"
+                                                       : "ifelse_body");
+          blocks.push_back (body);
 
-          jit_instruction *br = create<jit_cond_branch> (check, body,
+          jit_instruction *br = factory.create<jit_cond_branch> (check, body,
                                                         entry_blocks[i + 1]);
           block->append (br);
           block = body;
@@ -500,13 +496,13 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
       else
         {
           ++num_incomming;
-          block->append (create<jit_branch> (tail));
+          block->append (factory.create<jit_branch> (tail));
         }
     }
 
   if (num_incomming || ! last_else)
     {
-      append (tail);
+      blocks.push_back (tail);
       block = tail;
     }
   else
@@ -551,17 +547,17 @@ jit_convert::visit_constant (tree_constant& tc)
   if (v.is_real_scalar () && v.is_double_type ())
     {
       double dv = v.double_value ();
-      result = create<jit_const_scalar> (dv);
+      result = factory.create<jit_const_scalar> (dv);
     }
   else if (v.is_range ())
     {
       Range rv = v.range_value ();
-      result = create<jit_const_range> (rv);
+      result = factory.create<jit_const_range> (rv);
     }
   else if (v.is_complex_scalar ())
     {
       Complex cv = v.complex_value ();
-      result = create<jit_const_complex> (cv);
+      result = factory.create<jit_const_complex> (cv);
     }
   else
     throw jit_fail_exception ("Unknown constant");
@@ -673,8 +669,8 @@ jit_convert::visit_statement (tree_statement& stmt)
           // FIXME: ugly hack, we need to come up with a way to pass
           // nargout to visit_identifier
           const jit_operation& fn = jit_typeinfo::print_value ();
-          jit_const_string *name = create<jit_const_string> (expr->name ());
-          block->append (create<jit_call> (fn, name, expr_result));
+          jit_const_string *name = factory.create<jit_const_string> (expr->name ());
+          block->append (factory.create<jit_call> (fn, name, expr_result));
         }
     }
 }
@@ -736,9 +732,9 @@ jit_convert::visit_while_command (tree_while_command& wc)
   breaks.clear ();
   continues.clear ();
 
-  jit_block *cond_check = create<jit_block> ("while_cond_check");
-  block->append (create<jit_branch> (cond_check));
-  append (cond_check);
+  jit_block *cond_check = factory.create<jit_block> ("while_cond_check");
+  block->append (factory.create<jit_branch> (cond_check));
+  blocks.push_back (cond_check);
   block = cond_check;
 
   tree_expression *expr = wc.condition ();
@@ -746,11 +742,11 @@ jit_convert::visit_while_command (tree_while_command& wc)
   jit_value *check = visit (expr);
   check = create_checked (&jit_typeinfo::logically_true, check);
 
-  jit_block *body = create<jit_block> ("while_body");
-  append (body);
+  jit_block *body = factory.create<jit_block> ("while_body");
+  blocks.push_back (body);
 
-  jit_block *tail = create<jit_block> ("while_tail");
-  block->append (create<jit_cond_branch> (check, body, tail));
+  jit_block *tail = factory.create<jit_block> ("while_tail");
+  block->append (factory.create<jit_cond_branch> (check, body, tail));
   block = body;
 
   tree_statement_list *loop_body = wc.body ();
@@ -761,9 +757,9 @@ jit_convert::visit_while_command (tree_while_command& wc)
   finish_breaks (cond_check, continues);
 
   if (! breaking)
-    block->append (create<jit_branch> (cond_check));
+    block->append (factory.create<jit_branch> (cond_check));
 
-  append (tail);
+  blocks.push_back (tail);
   block = tail;
 }
 
@@ -773,25 +769,19 @@ jit_convert::visit_do_until_command (tree_do_until_command&)
   throw jit_fail_exception ();
 }
 
-void
-jit_convert::append (jit_block *ablock)
+jit_call *
+jit_convert::create_checked_impl (jit_call *ret)
 {
-  blocks.push_back (ablock);
-  ablock->stash_location (--blocks.end ());
-}
+  block->append (ret);
 
-void
-jit_convert::insert_before (block_iterator iter, jit_block *ablock)
-{
-  iter = blocks.insert (iter, ablock);
-  ablock->stash_location (iter);
-}
+  jit_block *normal = factory.create<jit_block> (block->name ());
+  jit_error_check *check = factory.create<jit_error_check> (ret, normal,
+                                                            final_block);
+  block->append (check);
+  blocks.push_back (normal);
+  block = normal;
 
-void
-jit_convert::insert_after (block_iterator iter, jit_block *ablock)
-{
-  ++iter;
-  insert_before (iter, ablock);
+  return ret;
 }
 
 jit_variable *
@@ -817,9 +807,9 @@ jit_convert::get_variable (const std::string& vname)
 jit_variable *
 jit_convert::create_variable (const std::string& vname, jit_type *type)
 {
-  jit_variable *var = create<jit_variable> (vname);
+  jit_variable *var = factory.create<jit_variable> (vname);
   jit_extract_argument *extract;
-  extract = create<jit_extract_argument> (type, var);
+  extract = factory.create<jit_extract_argument> (type, var);
   entry_block->prepend (extract);
   return vmap[vname] = var;
 }
@@ -867,7 +857,9 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
       unwind_protect prot;
       prot.add_method (&end_context,
                        &std::vector<jit_magic_end::context>::pop_back);
-      end_context.push_back (jit_magic_end::context (*this, object, idx, narg));
+
+      jit_magic_end::context ctx (factory, object, idx, narg);
+      end_context.push_back (ctx);
       call_args[idx + 1] = visit (*iter);
     }
 
@@ -904,7 +896,7 @@ jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
                         bool print, bool artificial)
 {
   jit_variable *var = get_variable (lhs);
-  jit_assign *assign = block->append (create<jit_assign> (var, rhs));
+  jit_assign *assign = block->append (factory.create<jit_assign> (var, rhs));
 
   if (artificial)
     assign->mark_artificial ();
@@ -912,8 +904,8 @@ jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
   if (print)
     {
       const jit_operation& print_fn = jit_typeinfo::print_value ();
-      jit_const_string *name = create<jit_const_string> (lhs);
-      block->append (create<jit_call> (print_fn, name, var));
+      jit_const_string *name = factory.create<jit_const_string> (lhs);
+      block->append (factory.create<jit_call> (print_fn, name, var));
     }
 
   return var;
@@ -976,7 +968,7 @@ jit_convert::construct_ssa (void)
               jit_block *dblock = *diter;
               if (! added_phi.count (dblock))
                 {
-                  jit_phi *phi = create<jit_phi> (iter->second,
+                  jit_phi *phi = factory.create<jit_phi> (iter->second,
                                                   dblock->use_count ());
                   dblock->prepend (phi);
                   added_phi.insert (dblock);
@@ -1072,7 +1064,8 @@ jit_convert::remove_dead ()
             {
               jit_block *succ = term->successor (1);
               term->remove ();
-              jit_branch *abreak = b->append (create<jit_branch> (succ));
+              jit_branch *abreak = factory.create<jit_branch> (succ);
+              b->append (abreak);
               abreak->infer ();
             }
 
@@ -1130,8 +1123,8 @@ jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
               if (! arg->needs_release ())
                 continue;
 
-              jit_call *release = create<jit_call> (&jit_typeinfo::release,
-                                                    arg);
+              jit_call *release
+                = factory.create<jit_call> (&jit_typeinfo::release, arg);
               release->infer ();
               ablock.insert_after (iter, release);
               ++iter;
@@ -1145,13 +1138,14 @@ jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
 
   // FIXME: If we support try/catch or unwind_protect final_block may not be the
   // destination
-  jit_block *split = ablock.maybe_split (*this, final_block);
+  jit_block *split = ablock.maybe_split (factory, blocks, final_block);
   jit_terminator *term = split->terminator ();
   for (std::set<jit_value *>::const_iterator iter = temp.begin ();
        iter != temp.end (); ++iter)
     {
       jit_value *value = *iter;
-      jit_call *release = create<jit_call> (&jit_typeinfo::release, value);
+      jit_call *release
+        = factory.create<jit_call> (&jit_typeinfo::release, value);
       split->insert_before (term, release);
       release->infer ();
     }
@@ -1178,9 +1172,10 @@ jit_convert::release_dead_phi (jit_block& ablock)
                 continue;
 
               jit_block *inc = phi->incomming (i);
-              jit_block *split = inc->maybe_split (*this, ablock);
+              jit_block *split = inc->maybe_split (factory, blocks, ablock);
               jit_terminator *term = split->terminator ();
-              jit_call *release = create<jit_call> (jit_typeinfo::release, arg);
+              jit_call *release
+                = factory.create<jit_call> (jit_typeinfo::release, arg);
               release->infer ();
               split->insert_before (term, release);
             }
@@ -1216,10 +1211,10 @@ jit_convert::simplify_phi (jit_phi& phi)
       if (arg->type () != phi.type ())
         {
           jit_block *pred = phi.incomming (i);
-          jit_block *split = pred->maybe_split (*this, pblock);
+          jit_block *split = pred->maybe_split (factory, blocks, pblock);
           jit_terminator *term = split->terminator ();
-          jit_instruction *cast = create<jit_call> (cast_fn, arg);
-          jit_assign *assign = create<jit_assign> (dest, cast);
+          jit_instruction *cast = factory.create<jit_call> (cast_fn, arg);
+          jit_assign *assign = factory.create<jit_assign> (dest, cast);
 
           split->insert_before (term, cast);
           split->insert_before (term, assign);
@@ -1237,7 +1232,7 @@ jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
        ++iter)
     {
       jit_block *b = *iter;
-      b->append (create<jit_branch> (dest));
+      b->append (factory.create<jit_branch> (dest));
     }
 }
 
@@ -1246,7 +1241,7 @@ llvm::Function *
 jit_convert_llvm::convert (llvm::Module *module,
                            const std::vector<std::pair<std::string, bool> >&
                            args,
-                           const std::list<jit_block *>& blocks,
+                           const jit_block_list& blocks,
                            const std::list<jit_value *>& constants)
 {
   jit_type *any = jit_typeinfo::get_any ();

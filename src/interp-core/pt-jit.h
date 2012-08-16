@@ -39,8 +39,6 @@ public:
 
   jit_convert (llvm::Module *module, tree &tee, jit_type *for_bounds = 0);
 
-  ~jit_convert (void);
-
   llvm::Function *get_function (void) const { return function; }
 
   const std::vector<std::pair<std::string, bool> >& get_arguments(void) const
@@ -134,37 +132,11 @@ public:
 
   void visit_do_until_command (tree_do_until_command&);
 
-  // this would be easier with variadic templates
-  template <typename T>
-  T *create (void)
-  {
-    T *ret = new T();
-    track_value (ret);
-    return ret;
-  }
-
-#define DECL_ARG(n) const ARG ## n& arg ## n
-#define JIT_CREATE(N)                                           \
-  template <typename T, OCT_MAKE_DECL_LIST (typename, ARG, N)>  \
-  T *create (OCT_MAKE_LIST (DECL_ARG, N))                       \
-  {                                                             \
-    T *ret = new T (OCT_MAKE_ARG_LIST (arg, N));                \
-    track_value (ret);                                          \
-    return ret;                                                 \
-  }
-
-  JIT_CREATE (1)
-  JIT_CREATE (2)
-  JIT_CREATE (3)
-  JIT_CREATE (4)
-
-#undef JIT_CREATE
-
 #define JIT_CREATE_CHECKED(N)                                           \
   template <OCT_MAKE_DECL_LIST (typename, ARG, N)>                      \
   jit_call *create_checked (OCT_MAKE_LIST (DECL_ARG, N))                \
   {                                                                     \
-    jit_call *ret = create<jit_call> (OCT_MAKE_ARG_LIST (arg, N));      \
+    jit_call *ret = factory.create<jit_call> (OCT_MAKE_ARG_LIST (arg, N)); \
     return create_checked_impl (ret);                                   \
   }
 
@@ -175,28 +147,11 @@ public:
 
 #undef JIT_CREATE_CHECKED
 #undef DECL_ARG
-
-  typedef std::list<jit_block *> block_list;
-  typedef block_list::iterator block_iterator;
-
-  void append (jit_block *ablock);
-
-  void insert_before (block_iterator iter, jit_block *ablock);
-
-  void insert_before (jit_block *loc, jit_block *ablock)
-  {
-    insert_before (loc->location (), ablock);
-  }
-
-  void insert_after (block_iterator iter, jit_block *ablock);
-
-  void insert_after (jit_block *loc, jit_block *ablock)
-  {
-    insert_after (loc->location (), ablock);
-  }
 private:
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;
+
+  jit_factory factory;
 
   // used instead of return values from visit_* functions
   jit_value *result;
@@ -209,13 +164,9 @@ private:
 
   llvm::Function *function;
 
-  std::list<jit_block *> blocks;
+  jit_block_list blocks;
 
   std::list<jit_instruction *> worklist;
-
-  std::list<jit_value *> constants;
-
-  std::list<jit_value *> all_values;
 
   std::vector<jit_magic_end::context> end_context;
 
@@ -226,23 +177,7 @@ private:
   typedef std::map<std::string, jit_variable *> vmap_t;
   vmap_t vmap;
 
-  jit_call *create_checked_impl (jit_call *ret)
-  {
-    block->append (ret);
-    create_check (ret);
-    return ret;
-  }
-
-  jit_error_check *create_check (jit_call *call)
-  {
-    jit_block *normal = create<jit_block> (block->name ());
-    jit_error_check *ret
-      = block->append (create<jit_error_check> (call, normal, final_block));
-    append (normal);
-    block = normal;
-
-    return ret;
-  }
+  jit_call *create_checked_impl (jit_call *ret);
 
   // get an existing vairable. If the variable does not exist, it will not be
   // created
@@ -300,13 +235,6 @@ private:
 
   void append_users_term (jit_terminator *term);
 
-  void track_value (jit_value *value)
-  {
-    if (value->type ())
-      constants.push_back (value);
-    all_values.push_back (value);
-  }
-
   void construct_ssa (void);
 
   void do_construct_ssa (jit_block& block, size_t avisit_count);
@@ -348,6 +276,8 @@ private:
   }
 
   bool breaking; // true if we are breaking OR continuing
+
+  typedef std::list<jit_block *> block_list;
   block_list breaks;
   block_list continues;
 
@@ -362,8 +292,9 @@ public:
   jit_convert_llvm (jit_convert& jc) : jthis (jc) {}
 
   llvm::Function *convert (llvm::Module *module,
-                           const std::vector<std::pair<std::string, bool> >& args,
-                           const std::list<jit_block *>& blocks,
+                           const std::vector<std::pair<std::string, bool> >&
+                           args,
+                           const jit_block_list& blocks,
                            const std::list<jit_value *>& constants);
 
 #define JIT_METH(clname)                        \

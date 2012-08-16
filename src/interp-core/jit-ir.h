@@ -69,8 +69,6 @@ JIT_VISIT_IR_NOTEMPLATE
 
 #undef JIT_METH
 
-class jit_convert;
-
 // ABCs which aren't included in  JIT_VISIT_IR_ALL
 class jit_instruction;
 class jit_terminator;
@@ -91,6 +89,89 @@ jit_const_range;
 
 class jit_ir_walker;
 class jit_use;
+
+// Creates and tracks memory for jit_value and subclasses.
+// Memory managment is simple, all values that are created live as long as the
+// factory.
+class
+jit_factory
+{
+  typedef std::list<jit_value *> value_list;
+public:
+  ~jit_factory (void);
+
+  const value_list& constants (void) const { return mconstants; }
+
+  // this would be easier with variadic templates
+  template <typename T>
+  T *create (void)
+  {
+    T *ret = new T ();
+    track_value (ret);
+    return ret;
+  }
+
+#define DECL_ARG(n) const ARG ## n& arg ## n
+#define JIT_CREATE(N)                                           \
+  template <typename T, OCT_MAKE_DECL_LIST (typename, ARG, N)>  \
+  T *create (OCT_MAKE_LIST (DECL_ARG, N))                       \
+  {                                                             \
+    T *ret = new T (OCT_MAKE_ARG_LIST (arg, N));                \
+    track_value (ret);                                          \
+    return ret;                                                 \
+  }
+
+  JIT_CREATE (1)
+  JIT_CREATE (2)
+  JIT_CREATE (3)
+  JIT_CREATE (4)
+
+#undef JIT_CREATE
+private:
+  void track_value (jit_value *v);
+
+  value_list all_values;
+
+  value_list mconstants;
+};
+
+// A list of basic blocks (jit_block) which form some body of code.
+//
+// We do not directly inherit from std::list because we need to update the
+// blocks stashed location in push_back and insert.
+class
+jit_block_list
+{
+public:
+  typedef std::list<jit_block *>::iterator iterator;
+  typedef std::list<jit_block *>::const_iterator const_iterator;
+
+  jit_block *back (void) const { return mlist.back (); }
+
+  iterator begin (void) { return mlist.begin (); }
+
+  const_iterator begin (void) const { return mlist.begin (); }
+
+  iterator end (void)  { return mlist.end (); }
+
+  const_iterator end (void) const  { return mlist.end (); }
+
+  iterator erase (iterator iter) { return mlist.erase (iter); }
+
+  jit_block *front (void) const { return mlist.front (); }
+
+  void insert_after (iterator iter, jit_block *ablock);
+
+  void insert_after (jit_block *loc, jit_block *ablock);
+
+  void insert_before (iterator iter, jit_block *ablock);
+
+  void insert_before (jit_block *loc, jit_block *ablock);
+
+  void push_back (jit_block *b);
+private:
+  std::list<jit_block *> mlist;
+};
 
 class
 jit_value : public jit_internal_list<jit_value, jit_use>
@@ -633,12 +714,13 @@ public:
     return os;
   }
 
-  // ...
-  jit_block *maybe_split (jit_convert& convert, jit_block *asuccessor);
+  jit_block *maybe_split (jit_factory& factory, jit_block_list& blocks,
+                          jit_block *asuccessor);
 
-  jit_block *maybe_split (jit_convert& convert, jit_block& asuccessor)
+  jit_block *maybe_split (jit_factory& factory, jit_block_list& blocks,
+                          jit_block& asuccessor)
   {
-    return maybe_split (convert, &asuccessor);
+    return maybe_split (factory, blocks, &asuccessor);
   }
 
   // print dominator infomration
@@ -1162,7 +1244,7 @@ public:
     context (void) : value (0), index (0), count (0)
     {}
 
-    context (jit_convert& convert, jit_value *avalue, size_t aindex,
+    context (jit_factory& factory, jit_value *avalue, size_t aindex,
              size_t acount);
 
     jit_value *value;

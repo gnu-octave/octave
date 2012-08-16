@@ -36,7 +36,57 @@ along with Octave; see the file COPYING.  If not, see
 #include <llvm/Instructions.h>
 
 #include "error.h"
-#include "pt-jit.h"
+
+// -------------------- jit_factory --------------------
+jit_factory::~jit_factory (void)
+{
+  for (value_list::iterator iter = all_values.begin ();
+       iter != all_values.end (); ++iter)
+    delete *iter;
+}
+
+void
+jit_factory::track_value (jit_value *value)
+{
+  if (value->type ())
+    mconstants.push_back (value);
+  all_values.push_back (value);
+}
+
+// -------------------- jit_block_list --------------------
+void
+jit_block_list::insert_after (iterator iter, jit_block *ablock)
+{
+  ++iter;
+  insert_before (iter, ablock);
+}
+
+void
+jit_block_list::insert_after (jit_block *loc, jit_block *ablock)
+{
+  insert_after (loc->location (), ablock);
+}
+
+void
+jit_block_list::insert_before (iterator iter, jit_block *ablock)
+{
+  iter = mlist.insert (iter, ablock);
+  ablock->stash_location (iter);
+}
+
+void
+jit_block_list::insert_before (jit_block *loc, jit_block *ablock)
+{
+  insert_before (loc->location (), ablock);
+}
+
+void
+jit_block_list::push_back (jit_block *b)
+{
+  mlist.push_back (b);
+  iterator iter = mlist.end ();
+  b->stash_location (--iter);
+}
 
 // -------------------- jit_use --------------------
 jit_block *
@@ -396,19 +446,20 @@ jit_block::pop_all (void)
 }
 
 jit_block *
-jit_block::maybe_split (jit_convert& convert, jit_block *asuccessor)
+jit_block::maybe_split (jit_factory& factory, jit_block_list& blocks,
+                        jit_block *asuccessor)
 {
   if (successor_count () > 1)
     {
       jit_terminator *term = terminator ();
       size_t idx = term->successor_index (asuccessor);
-      jit_block *split = convert.create<jit_block> ("phi_split", mvisit_count);
+      jit_block *split = factory.create<jit_block> ("phi_split", mvisit_count);
 
       // place after this to ensure define before use in the blocks list
-      convert.insert_after (this, split);
+      blocks.insert_after (this, split);
 
       term->stash_argument (idx, split);
-      jit_branch *br = split->append (convert.create<jit_branch> (asuccessor));
+      jit_branch *br = split->append (factory.create<jit_branch> (asuccessor));
       replace_in_phi (asuccessor, split);
 
       if (alive ())
@@ -596,10 +647,10 @@ jit_call::infer (void)
 }
 
 // -------------------- jit_magic_end --------------------
-jit_magic_end::context::context (jit_convert& convert, jit_value *avalue,
+jit_magic_end::context::context (jit_factory& factory, jit_value *avalue,
                                  size_t aindex, size_t acount)
-  : value (avalue), index (convert.create<jit_const_index> (aindex)),
-    count (convert.create<jit_const_index> (acount))
+  : value (avalue), index (factory.create<jit_const_index> (aindex)),
+    count (factory.create<jit_const_index> (acount))
 {}
 
 jit_magic_end::jit_magic_end (const std::vector<context>& full_context)

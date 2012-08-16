@@ -29,9 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "pt-walk.h"
 
-// convert between IRs
-// FIXME: Class relationships are messy from here on down. They need to be
-// cleaned up.
+// Convert from the parse tree (AST) to the low level Octave IR.
 class
 jit_convert : public tree_walker
 {
@@ -354,45 +352,45 @@ private:
   block_list continues;
 
   void finish_breaks (jit_block *dest, const block_list& lst);
+};
 
-  // this case is much simpler, just convert from the jit ir to llvm
-  class
-  convert_llvm : public jit_ir_walker
-  {
-  public:
-    convert_llvm (jit_convert& jc) : jthis (jc) {}
+// Convert from the low level Octave IR to LLVM
+class
+jit_convert_llvm : public jit_ir_walker
+{
+public:
+  jit_convert_llvm (jit_convert& jc) : jthis (jc) {}
 
-    llvm::Function *convert (llvm::Module *module,
-                             const std::vector<std::pair<std::string, bool> >& args,
-                             const std::list<jit_block *>& blocks,
-                             const std::list<jit_value *>& constants);
+  llvm::Function *convert (llvm::Module *module,
+                           const std::vector<std::pair<std::string, bool> >& args,
+                           const std::list<jit_block *>& blocks,
+                           const std::list<jit_value *>& constants);
 
 #define JIT_METH(clname)                        \
-    virtual void visit (jit_ ## clname&);
+  virtual void visit (jit_ ## clname&);
 
-    JIT_VISIT_IR_CLASSES;
+  JIT_VISIT_IR_CLASSES;
 
 #undef JIT_METH
-  private:
-    // name -> llvm argument
-    std::map<std::string, llvm::Value *> arguments;
+private:
+  // name -> llvm argument
+  std::map<std::string, llvm::Value *> arguments;
 
-    void finish_phi (jit_phi *phi);
+  void finish_phi (jit_phi *phi);
 
-    void visit (jit_value *jvalue)
-    {
-      return visit (*jvalue);
-    }
+  void visit (jit_value *jvalue)
+  {
+    return visit (*jvalue);
+  }
 
-    void visit (jit_value &jvalue)
-    {
-      jvalue.accept (*this);
-    }
-  private:
-    jit_convert &jthis;
-    llvm::Function *function;
-    llvm::BasicBlock *prelude;
-  };
+  void visit (jit_value &jvalue)
+  {
+    jvalue.accept (*this);
+  }
+private:
+  jit_convert &jthis;
+  llvm::Function *function;
+  llvm::BasicBlock *prelude;
 };
 
 class jit_info;

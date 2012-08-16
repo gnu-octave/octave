@@ -139,7 +139,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee,
         = dynamic_cast<jit_extract_argument *> (*iter))
       arguments.push_back (std::make_pair (extract->name (), true));
 
-  convert_llvm to_llvm (*this);
+  jit_convert_llvm to_llvm (*this);
   function = to_llvm.convert (module, arguments, blocks, constants);
 
 #ifdef OCTAVE_JIT_DEBUG
@@ -1243,10 +1243,11 @@ jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
 
 // -------------------- jit_convert::convert_llvm --------------------
 llvm::Function *
-jit_convert::convert_llvm::convert (llvm::Module *module,
-                                    const std::vector<std::pair< std::string, bool> >& args,
-                                    const std::list<jit_block *>& blocks,
-                                    const std::list<jit_value *>& constants)
+jit_convert_llvm::convert (llvm::Module *module,
+                           const std::vector<std::pair<std::string, bool> >&
+                           args,
+                           const std::list<jit_block *>& blocks,
+                           const std::list<jit_value *>& constants)
 {
   jit_type *any = jit_typeinfo::get_any ();
 
@@ -1318,7 +1319,7 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
 }
 
 void
-jit_convert::convert_llvm::finish_phi (jit_phi *phi)
+jit_convert_llvm::finish_phi (jit_phi *phi)
 {
   llvm::PHINode *llvm_phi = phi->to_llvm ();
   for (size_t i = 0; i < phi->argument_count (); ++i)
@@ -1329,25 +1330,25 @@ jit_convert::convert_llvm::finish_phi (jit_phi *phi)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_const_string& cs)
+jit_convert_llvm::visit (jit_const_string& cs)
 {
   cs.stash_llvm (builder.CreateGlobalStringPtr (cs.value ()));
 }
 
 void
-jit_convert::convert_llvm::visit (jit_const_bool& cb)
+jit_convert_llvm::visit (jit_const_bool& cb)
 {
   cb.stash_llvm (llvm::ConstantInt::get (cb.type_llvm (), cb.value ()));
 }
 
 void
-jit_convert::convert_llvm::visit (jit_const_scalar& cs)
+jit_convert_llvm::visit (jit_const_scalar& cs)
 {
   cs.stash_llvm (llvm::ConstantFP::get (cs.type_llvm (), cs.value ()));
 }
 
 void
-jit_convert::convert_llvm::visit (jit_const_complex& cc)
+jit_convert_llvm::visit (jit_const_complex& cc)
 {
   llvm::Type *scalar_t = jit_typeinfo::get_scalar_llvm ();
   llvm::Constant *values[2];
@@ -1357,13 +1358,13 @@ jit_convert::convert_llvm::visit (jit_const_complex& cc)
   cc.stash_llvm (llvm::ConstantVector::get (values));
 }
 
-void jit_convert::convert_llvm::visit (jit_const_index& ci)
+void jit_convert_llvm::visit (jit_const_index& ci)
 {
   ci.stash_llvm (llvm::ConstantInt::get (ci.type_llvm (), ci.value ()));
 }
 
 void
-jit_convert::convert_llvm::visit (jit_const_range& cr)
+jit_convert_llvm::visit (jit_const_range& cr)
 {
   llvm::StructType *stype = llvm::cast<llvm::StructType>(cr.type_llvm ());
   llvm::Type *scalar_t = jit_typeinfo::get_scalar_llvm ();
@@ -1383,7 +1384,7 @@ jit_convert::convert_llvm::visit (jit_const_range& cr)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_block& b)
+jit_convert_llvm::visit (jit_block& b)
 {
   llvm::BasicBlock *block = b.to_llvm ();
   builder.SetInsertPoint (block);
@@ -1392,13 +1393,13 @@ jit_convert::convert_llvm::visit (jit_block& b)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_branch& b)
+jit_convert_llvm::visit (jit_branch& b)
 {
   b.stash_llvm (builder.CreateBr (b.successor_llvm ()));
 }
 
 void
-jit_convert::convert_llvm::visit (jit_cond_branch& cb)
+jit_convert_llvm::visit (jit_cond_branch& cb)
 {
   llvm::Value *cond = cb.cond_llvm ();
   llvm::Value *br;
@@ -1408,7 +1409,7 @@ jit_convert::convert_llvm::visit (jit_cond_branch& cb)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_call& call)
+jit_convert_llvm::visit (jit_call& call)
 {
   const jit_function& ol = call.overload ();
 
@@ -1421,7 +1422,7 @@ jit_convert::convert_llvm::visit (jit_call& call)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_extract_argument& extract)
+jit_convert_llvm::visit (jit_extract_argument& extract)
 {
   llvm::Value *arg = arguments[extract.name ()];
   assert (arg);
@@ -1432,7 +1433,7 @@ jit_convert::convert_llvm::visit (jit_extract_argument& extract)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_store_argument& store)
+jit_convert_llvm::visit (jit_store_argument& store)
 {
   const jit_function& ol = store.overload ();
   llvm::Value *arg_value = ol.call (builder, store.result ());
@@ -1441,7 +1442,7 @@ jit_convert::convert_llvm::visit (jit_store_argument& store)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_phi& phi)
+jit_convert_llvm::visit (jit_phi& phi)
 {
   // we might not have converted all incoming branches, so we don't
   // set incomming branches now
@@ -1452,13 +1453,13 @@ jit_convert::convert_llvm::visit (jit_phi& phi)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_variable&)
+jit_convert_llvm::visit (jit_variable&)
 {
   throw jit_fail_exception ("ERROR: SSA construction should remove all variables");
 }
 
 void
-jit_convert::convert_llvm::visit (jit_error_check& check)
+jit_convert_llvm::visit (jit_error_check& check)
 {
   llvm::Value *cond = jit_typeinfo::insert_error_check (builder);
   llvm::Value *br = builder.CreateCondBr (cond, check.successor_llvm (0),
@@ -1467,7 +1468,7 @@ jit_convert::convert_llvm::visit (jit_error_check& check)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_assign& assign)
+jit_convert_llvm::visit (jit_assign& assign)
 {
   jit_value *new_value = assign.src ();
   assign.stash_llvm (new_value->to_llvm ());
@@ -1492,11 +1493,11 @@ jit_convert::convert_llvm::visit (jit_assign& assign)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_argument&)
+jit_convert_llvm::visit (jit_argument&)
 {}
 
 void
-jit_convert::convert_llvm::visit (jit_magic_end& me)
+jit_convert_llvm::visit (jit_magic_end& me)
 {
   const jit_function& ol = me.overload ();
 

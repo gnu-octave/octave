@@ -168,6 +168,11 @@ function yi = interp1 (x, y, varargin)
     y = y(p,:);
   endif
 
+ ## check whether sample point @var{x} are distinct; give error if not.
+  if (any (diff (x) == 0))
+    error ("interp1: X should have distinct values");
+  endif
+
   starmethod = method(1) == "*";
 
   if (starmethod)

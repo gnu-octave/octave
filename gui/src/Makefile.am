@@ -94,16 +94,16 @@ liboctgui_la_CPPFLAGS = \
   -I$(srcdir)/../../libcruft/misc \
   -I../../liboctave \
   -I$(srcdir)/../../liboctave \
-  -I../../src \
-  -I../../src/interp-core \
-  -I../../src/interpfcn \
-  -I../../src/parse-tree \
-  -I$(srcdir)/../../src \
-  -I$(srcdir)/../../src/interp-core \
-  -I$(srcdir)/../../src/interpfcn \
-  -I$(srcdir)/../../src/octave-value \
-  -I$(srcdir)/../../src/operators \
-  -I$(srcdir)/../../src/parse-tree
+  -I../../libinterp \
+  -I../../libinterp/interp-core \
+  -I../../libinterp/interpfcn \
+  -I../../libinterp/parse-tree \
+  -I$(srcdir)/../../libinterp \
+  -I$(srcdir)/../../libinterp/interp-core \
+  -I$(srcdir)/../../libinterp/interpfcn \
+  -I$(srcdir)/../../libinterp/octave-value \
+  -I$(srcdir)/../../libtinerp/operators \
+  -I$(srcdir)/../../libinterp/parse-tree
 
 liboctgui_la_LDFLAGS = -L@QT_LIBDIR@
 

@@ -32,7 +32,7 @@ builddir='%builddir%'
 
 d1="$top_srcdir/scripts"
 d2="$builddir/scripts"
-d3="$builddir/src"
+d3="$builddir/libinterp"
 
 d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`

@@ -43,7 +43,7 @@ AC_SUBST(OCTAVE_COPYRIGHT)
 dnl FIXME: We should auto-insert the Mercurial changeset ID into the
 dnl        AC_REVISION field whenever configure.ac is modified.
 dnl AC_REVISION($Revision: 1.603 $)
-AC_CONFIG_SRCDIR([src/octave.cc])
+AC_CONFIG_SRCDIR([libinterp/octave.cc])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -1383,7 +1383,7 @@ case "$canonical_host_type" in
     SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
   ;;
   *-*-darwin*)
-    DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/src/octave $(LDFLAGS)'
+    DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/libinterp/octave $(LDFLAGS)'
     MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $$BINDIR/octave-$$OCTAVE_VERSION$$EXEEXT'
     SH_LDFLAGS='-dynamiclib -single_module $(LDFLAGS)'
     case "$canonical_host_type" in
@@ -1710,7 +1710,7 @@ if $SHARED_LIBS; then
   LIBOCTAVE=-loctave$SHLLINKEXT
   LIBCRUFT=-lcruft$SHLLINKEXT
 else
-  LIBOCTINTERP='$(top_builddir)/src/liboctinterp.$(LIBEXT)'
+  LIBOCTINTERP='$(top_builddir)/libinterp/liboctinterp.$(LIBEXT)'
   LIBOCTAVE='$(top_builddir)/liboctave/liboctave.$(LIBEXT)'
   LIBCRUFT='$(top_builddir)/libcruft/libcruft.$(LIBEXT)'
 fi
@@ -2355,14 +2355,14 @@ typedef unsigned long ino_t;
 #define OCTAVE_API OCTAVE_IMPORT
 #endif
 
-/* API macro for src */
+/* API macro for libinterp */
 #ifdef OCTINTERP_DLL
 #define OCTINTERP_API OCTAVE_EXPORT
 #else
 #define OCTINTERP_API OCTAVE_IMPORT
 #endif
 
-/* API macro for src/graphics */
+/* API macro for libinterp/graphics */
 #ifdef OCTGRAPHICS_DLL
 #define OCTGRAPHICS_API OCTAVE_EXPORT
 #else
@@ -2401,6 +2401,7 @@ AC_CONFIG_FILES([
   libcruft/Makefile
   libcruft/mkf77def
   libgnu/Makefile
+  libinterp/Makefile
   liboctave/Makefile
   scripts/Makefile
   src/Makefile

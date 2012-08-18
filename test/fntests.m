@@ -41,7 +41,7 @@ else
   testdirs = {currdir, srcdir};
 endif
 
-src_tree = canonicalize_file_name (fullfile (topsrcdir, "src"));
+src_tree = canonicalize_file_name (fullfile (topsrcdir, "libinterp"));
 liboctave_tree = canonicalize_file_name (fullfile (topsrcdir, "liboctave"));
 script_tree = canonicalize_file_name (fullfile (topsrcdir, "scripts"));
 local_script_tree = canonicalize_file_name (fullfile (currdir, "../scripts"));

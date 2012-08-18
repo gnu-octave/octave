@@ -78,8 +78,8 @@ octave_cli_LDFLAGS = \
 
 if AMCOND_BUILD_GUI
   octave_SOURCES = main.cc
-  OCTAVE_GUI_LIBS = ../gui/src/liboctgui.la
-  OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/gui/src
+  OCTAVE_GUI_LIBS = ../libgui/src/liboctgui.la
+  OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
 else
   octave_SOURCES = main-cli.cc
   OCTAVE_GUI_LIBS =
@@ -144,4 +144,4 @@ endif
 .PHONY: make-version-links remove-version-links
 
 CLEANFILES = \
-  $(bin_SCRIPTS) \
+  $(bin_SCRIPTS)

@@ -68,7 +68,7 @@ EXTRA_DIST = \
 include m4/module.mk
 
 if AMCOND_BUILD_GUI
-GUIDIR = gui
+GUIDIR = libgui
 else
 GUIDIR =
 endif

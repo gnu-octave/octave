@@ -22,7 +22,7 @@ include $(top_srcdir)/build-aux/common.mk
 
 ## Automake generated rules for documentation are not parallel-safe.
 ## Restrict current directory to run serially
-.NOTPARALLEL:
+## .NOTPARALLEL:
 
 TEXINFO_TEX = ../texinfo.tex
 
@@ -159,15 +159,23 @@ octave_TEXINFOS = \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 
-octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES) $(srcdir)/images.mk
+octave.info octave.dvi octave.html/index.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES) $(srcdir)/images.mk
 
 octave.info: $(IMAGES_TXT)
 
 octave.dvi octave.ps: $(IMAGES_EPS) octave_logo.eps
 
-octave.html: $(IMAGES_PNG)
+octave.html/index.html: $(IMAGES_PNG)
+
+octave.html:
+	if [ -d octave.html ]; then true; else mkdir octave.html; fi
 
 octave.pdf: $(IMAGES_PDF) octave_logo.pdf
+
+## The texi2dvi script (used to create both PDF and DVI output formats)
+## uses some fixed temporary file names, so wait for DVI file to be
+## generated before creating PDF file to avoid conflicts.
+octave.pdf: octave.dvi
 
 all-local: dvi html pdf ps doc-cache $(HTMLDIR_IMAGES)
 

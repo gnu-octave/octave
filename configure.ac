@@ -2396,11 +2396,11 @@ AC_CONFIG_FILES([
   doc/liboctave/Makefile
   doc/refcard/Makefile
   examples/Makefile
-  gui/Makefile
-  gui/src/Makefile
   libcruft/Makefile
   libcruft/mkf77def
   libgnu/Makefile
+  libgui/Makefile
+  libgui/src/Makefile
   libinterp/Makefile
   liboctave/Makefile
   scripts/Makefile

@@ -48,7 +48,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         h = axis_obj.__plotyy_axes__;
         h = h(ishandle (h));
         h = h(isprop (h, "__ploty_axes__"));
-        rmappdata (h, "__plotyy_axes__")
+        rmappdata (h, "__plotyy_axes__");
       endif
     endif
 

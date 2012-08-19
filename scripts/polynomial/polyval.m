@@ -79,10 +79,10 @@ function [y, dy] = polyval (p, x, s = [], mu)
       dy = reshape (dy, size (x));
     catch
       if (isempty (s))
-        error ("polyval: third input is required.")
+        error ("polyval: third input is required.");
       elseif (isstruct (s)
               && all (ismember ({"R", "normr", "df"}, fieldnames (s))))
-        error (lasterr ())
+        error (lasterr ());
       elseif (isstruct (s))
         error ("polyval: third input is missing the required fields.");
       else

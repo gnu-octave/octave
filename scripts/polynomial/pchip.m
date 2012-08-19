@@ -80,12 +80,12 @@ function ret = pchip (x, y, xi)
     y = y(:).'; ##row vector
     szy = size (y);
     if (! size_equal (x, y))
-      error ("pchip: length of X and Y must match")
+      error ("pchip: length of X and Y must match");
     endif
   else
     szy = size (y);
     if (n != szy(end))
-      error ("pchip: length of X and last dimension of Y must match")
+      error ("pchip: length of X and last dimension of Y must match");
     endif
     y = reshape (y, [prod(szy(1:end-1)), szy(end)]);
   endif

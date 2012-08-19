@@ -42,7 +42,7 @@ function narginchk (minargs, maxargs)
   elseif (!isnumeric (maxargs) || !isscalar (maxargs))
     error ("maxargs must be a numeric scalar");
   elseif (minargs > maxargs)
-    error ("minargs cannot be larger than maxargs")
+    error ("minargs cannot be larger than maxargs");
   endif
 
   args = evalin ("caller", "nargin;");

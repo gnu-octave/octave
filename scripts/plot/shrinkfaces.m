@@ -101,17 +101,17 @@ function [nf, nv] = shrinkfaces (varargin)
   endif
   
   if (! isscalar (sf) || sf <= 0)
-    error ("shrinkfaces: scale factor must be a positive scalar")
+    error ("shrinkfaces: scale factor must be a positive scalar");
   endif
 
   n = columns (vertices);
   if (n < 2 || n > 3)
-    error ("shrinkfaces: only 2D and 3D patches are supported")
+    error ("shrinkfaces: only 2D and 3D patches are supported");
   endif
 
   m = columns (faces);
   if (m < 3)
-    error ("shrinkfaces: faces must consist of at least 3 vertices")
+    error ("shrinkfaces: faces must consist of at least 3 vertices");
   endif
 
   v = vertices(faces'(:), :);
@@ -134,8 +134,9 @@ function [nf, nv] = shrinkfaces (varargin)
   switch (nargout)
     case 0
       if (ishandle (p))
-        set (p, "FaceVertexCData", [], "CData", []) # avoid exceptions
-        set (p, "Vertices", v, "Faces", f, "FaceVertexCData", c)
+        ## avoid exceptions
+        set (p, "FaceVertexCData", [], "CData", []);
+        set (p, "Vertices", v, "Faces", f, "FaceVertxCData", c);
       else
         nf = struct ("faces", f, "vertices", v, "facevertexcdata", c);
       endif

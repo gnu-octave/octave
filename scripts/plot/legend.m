@@ -131,7 +131,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     elseif (all (ishandle (plty)))
       ca = [ca, plty(:).'];
     else
-      error ("legend.m: This should not happen. File a bug report.")
+      error ("legend.m: This should not happen. File a bug report.");
     endif
     ## Remove duplicates while preserving order
     [~, n] = unique (ca);

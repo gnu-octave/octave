@@ -150,7 +150,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
   else
     ndims = columns (subs);
     if (lenvals > 1 && lenvals != rows (subs))
-      error ("accumarray: dimension mismatch")
+      error ("accumarray: dimension mismatch");
     endif
   endif
 

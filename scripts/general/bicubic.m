@@ -94,7 +94,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     elseif (all (diff (x) > 0))
       flipx = false;
     else
-      error ("bicubic:nonmonotonic", "bicubic: X values must be monotonic")
+      error ("bicubic:nonmonotonic", "bicubic: X values must be monotonic");
     endif
     if (all (diff (y) < 0))
       flipy = true;
@@ -102,7 +102,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     elseif (all (diff (y) > 0))
       flipy = false;
     else
-      error ("bicubic:nonmonotonic", "bicubic: Y values must be monotonic")
+      error ("bicubic:nonmonotonic", "bicubic: Y values must be monotonic");
     endif
 
     ## Mark values outside the lookup table.

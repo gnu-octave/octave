@@ -197,13 +197,13 @@ endfunction
 
 function resetaxis (cax, d, ax, orig_props)
   if (ishandle (ax) && strcmp (get (ax, "type"), "axes"))
-    dellistener (ax, "position")
+    dellistener (ax, "position");
     units = get (ax, "units");
-    set (ax, "units", orig_props.units)
+    set (ax, "units", orig_props.units);
     set (ax, "position", orig_props.position, ...
              "outerposition", orig_props.outerposition, ...
              "activepositionproperty", orig_props.activepositionproperty);
-    set (ax, "units", units)
+    set (ax, "units", units);
   endif
 endfunction
 

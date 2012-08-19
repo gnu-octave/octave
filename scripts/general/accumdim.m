@@ -93,7 +93,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
   sz(dim) = n;
 
   if (length (subs) != size (vals, dim))
-    error ("accumdim: dimension mismatch")
+    error ("accumdim: dimension mismatch");
   endif
 
   if (isempty (func) || func == @sum)

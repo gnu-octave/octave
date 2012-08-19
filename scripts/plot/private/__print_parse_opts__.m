@@ -125,14 +125,14 @@ function arg_st = __print_parse_opts__ (varargin)
         if (! isempty (n) && n == numel (arg) - 1 && ismember (arg(end), "124"))
           arg_st.ghostscript.antialiasing_textalphabits = str2num (arg(end));
         else
-          error ("print: improper syntax, or value, for TextAlphaBits")
+          error ("print: improper syntax, or value, for TextAlphaBits");
         endif
       elseif (strncmpi (arg, "-graphicsalphabits=", 19))
         n = find (arg == "=");
         if (! isempty (n) && n == numel (arg) - 1 && ismember (arg(end), "124"))
           arg_st.ghostscript.antialiasing_graphicsalphabits = str2num (arg(end));
         else
-          error ("print: improper syntax, or value, for GraphicsAlphaBits")
+          error ("print: improper syntax, or value, for GraphicsAlphaBits");
         endif
       elseif ((length (arg) > 2) && arg(1:2) == "-G")
         arg_st.ghostscript.binary = file_in_path (getenv ("PATH"), arg(3:end));

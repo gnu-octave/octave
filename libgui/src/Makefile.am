@@ -122,6 +122,7 @@ noinst_HEADERS = \
   octave-adapter/octave-event.h \
   octave-adapter/octave-link.h \
   octave-adapter/octave-main-thread.h \
+  octave-gui.h \
   octave-qt-event-listener.h \
   qtinfo/parser.h \
   qtinfo/webinfo.h \
@@ -142,7 +143,49 @@ clean-local:
 
 BUILT_SOURCES = $(octave_gui_UI_H)
 
-EXTRA_DIST = $(octave_gui_UI) resource.qrc
+octave_gui_ICONS = \
+  icons/arrow_right.png \
+  icons/artsbuilderexecute.png \
+  icons/bookmark.png \
+  icons/bp_next.png \
+  icons/bp_prev.png \
+  icons/bp_rm_all.png \
+  icons/bp_toggle.png \
+  icons/chat.png \
+  icons/configure.png \
+  icons/db_cont.png \
+  icons/db_step_in.png \
+  icons/db_step_out.png \
+  icons/db_step.png \
+  icons/db_stop.png \
+  icons/editcopy.png \
+  icons/editcut.png \
+  icons/editpaste.png \
+  icons/filenew.png \
+  icons/fileopen.png \
+  icons/filesaveas.png \
+  icons/filesave.png \
+  icons/find.png \
+  icons/help_index.png \
+  icons/icons_license \
+  icons/jabber_protocol.png \
+  icons/logo.png \
+  icons/question.png \
+  icons/redled.png \
+  icons/redo.png \
+  icons/search.png \
+  icons/star.png \
+  icons/stop.png \
+  icons/terminal.png \
+  icons/undo.png \
+  icons/up.png \
+  icons/zoom-in.png \
+  icons/zoom-out.png
+
+EXTRA_DIST = \
+  $(octave_gui_UI) \
+  $(octave_gui_ICONS) \
+  resource.qrc
 
 noinst_LTLIBRARIES = libqterminal.la
 

@@ -13,6 +13,7 @@ polynomial_FCN_FILES = \
   polynomial/poly.m \
   polynomial/polyaffine.m \
   polynomial/polyder.m \
+  polynomial/polyeig.m \
   polynomial/polyfit.m \
   polynomial/polygcd.m \
   polynomial/polyint.m \

@@ -1,3 +1,21 @@
+# Copyright (C) 2012 John W. Eaton
+#
+# This file is part of Octave.
+#
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 3 of the License, or (at
+# your option) any later version.
+#
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, see
+# <http://www.gnu.org/licenses/>.
+
 include $(top_srcdir)/build-aux/common.mk
 
 SRCDIRS = \
@@ -8,16 +26,6 @@ SRCDIRS = \
   ../qterminal/libqterminal/win32 \
   ../qterminal/libqterminal \
   ../qterminal
-
-moc-%.cc: %.h
-	test -d $(@D) || mkdir -p $(@D)
-	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
-
-ui-%.h: %.ui
-	@UIC@ -o $@ $<
-
-qrc-%.cc: %.qrc
-	@RCC@ -o $@ $<
 
 octave_gui_MOC = \
   m-editor/moc-file-editor-interface.cc \
@@ -138,7 +146,7 @@ CLEANFILES = $(octave_gui_MOC) $(octave_gui_UI_H) $(octave_gui_RC)
 
 clean-local:
 	-if test "$(srcdir)" != "."; then \
-		for d in $(SRCDIRS); do test -d $$d && rmdir $$d; done \
+	   for d in $(SRCDIRS); do test -d $$d && rmdir $$d; done \
 	 fi
 
 BUILT_SOURCES = $(octave_gui_UI_H)
@@ -189,36 +197,38 @@ EXTRA_DIST = \
 
 noinst_LTLIBRARIES = libqterminal.la
 
-noinst_HEADERS += ../qterminal/libqterminal/QTerminal.h \
-		  ../qterminal/libqterminal/QTerminalInterface.h \
-		  ../qterminal/libqterminal/win32/QTerminalColors.h \
-		  ../qterminal/libqterminal/win32/QWinTerminalImpl.h \
-		  ../qterminal/libqterminal/unix/BlockArray.h \
-		  ../qterminal/libqterminal/unix/Character.h \
-		  ../qterminal/libqterminal/unix/CharacterColor.h \
-		  ../qterminal/libqterminal/unix/Emulation.h \
-		  ../qterminal/libqterminal/unix/ExtendedDefaultTranslator.h \
-		  ../qterminal/libqterminal/unix/Filter.h \
-		  ../qterminal/libqterminal/unix/History.h \
-		  ../qterminal/libqterminal/unix/KeyboardTranslator.h \
-		  ../qterminal/libqterminal/unix/konsole_wcwidth.h \
-		  ../qterminal/libqterminal/unix/kpty.h \
-		  ../qterminal/libqterminal/unix/kpty_p.h \
-		  ../qterminal/libqterminal/unix/LineFont.h \
-		  ../qterminal/libqterminal/unix/QUnixTerminalImpl.h \
-		  ../qterminal/libqterminal/unix/Screen.h \
-		  ../qterminal/libqterminal/unix/ScreenWindow.h \
-		  ../qterminal/libqterminal/unix/TerminalCharacterDecoder.h \
-		  ../qterminal/libqterminal/unix/Vt102Emulation.h \
-		  ../qterminal/libqterminal/unix/SelfListener.h \
-		  ../qterminal/libqterminal/unix/TerminalModel.h \
-		  ../qterminal/libqterminal/unix/TerminalView.h
+noinst_HEADERS += \
+  ../qterminal/libqterminal/QTerminal.h \
+  ../qterminal/libqterminal/QTerminalInterface.h \
+  ../qterminal/libqterminal/win32/QTerminalColors.h \
+  ../qterminal/libqterminal/win32/QWinTerminalImpl.h \
+  ../qterminal/libqterminal/unix/BlockArray.h \
+  ../qterminal/libqterminal/unix/Character.h \
+  ../qterminal/libqterminal/unix/CharacterColor.h \
+  ../qterminal/libqterminal/unix/Emulation.h \
+  ../qterminal/libqterminal/unix/ExtendedDefaultTranslator.h \
+  ../qterminal/libqterminal/unix/Filter.h \
+  ../qterminal/libqterminal/unix/History.h \
+  ../qterminal/libqterminal/unix/KeyboardTranslator.h \
+  ../qterminal/libqterminal/unix/konsole_wcwidth.h \
+  ../qterminal/libqterminal/unix/kpty.h \
+  ../qterminal/libqterminal/unix/kpty_p.h \
+  ../qterminal/libqterminal/unix/LineFont.h \
+  ../qterminal/libqterminal/unix/QUnixTerminalImpl.h \
+  ../qterminal/libqterminal/unix/Screen.h \
+  ../qterminal/libqterminal/unix/ScreenWindow.h \
+  ../qterminal/libqterminal/unix/TerminalCharacterDecoder.h \
+  ../qterminal/libqterminal/unix/Vt102Emulation.h \
+  ../qterminal/libqterminal/unix/SelfListener.h \
+  ../qterminal/libqterminal/unix/TerminalModel.h \
+  ../qterminal/libqterminal/unix/TerminalView.h
 
-libqterminal_la_CPPFLAGS = $(DEFS)  \
-			   -I@QT_INCDIR@ \
-			   -I@QT_INCDIR@/QtCore \
-			   -I@QT_INCDIR@/QtGui \
-			   -I$(srcdir)/../qterminal/libqterminal
+libqterminal_la_CPPFLAGS = \
+  $(DEFS) \
+  -I@QT_INCDIR@ \
+  -I@QT_INCDIR@/QtCore \
+  -I@QT_INCDIR@/QtGui \
+  -I$(srcdir)/../qterminal/libqterminal
 
 libqterminal_la_MOC = \
   ../qterminal/libqterminal/moc-QTerminal.cc \
@@ -264,5 +274,15 @@ libqterminal_la_MOC += \
   ../qterminal/libqterminal/unix/moc-Vt102Emulation.cc
 
 endif
+
+moc-%.cc: %.h
+	test -d $(@D) || mkdir -p $(@D)
+	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
+
+ui-%.h: %.ui
+	@UIC@ -o $@ $<
+
+qrc-%.cc: %.qrc
+	@RCC@ -o $@ $<
 
 CLEANFILES += $(libqterminal_la_MOC)

@@ -1,4 +1,4 @@
-include ../liboctave/link-deps.mk
+include $(top_srcdir)/liboctave/link-deps.mk
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   LIBOCTINTERP_LINK_DEPS =

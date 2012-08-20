@@ -18,6 +18,14 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
+QT_INCDIR = @QT_INCDIR@
+
+QT_LIBDIR = @QT_LIBDIR@
+
+QT_LIBS = -lQtCore -lQtGui -lQtNetwork -lqscintilla2
+
+QT_LDFLAGS = -L$(QT_LIBDIR)
+
 SRCDIRS = \
   m-editor \
   qtinfo \
@@ -81,20 +89,13 @@ liboctgui_la_SOURCES = \
   workspace-model.cc \
   workspace-view.cc
 
-liboctgui_la_LIBADD = \
-  libqterminal.la \
-  -lQtCore \
-  -lQtGui \
-  -lQtNetwork \
-  -lqscintilla2
-
 nodist_liboctgui_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
 liboctgui_la_CPPFLAGS = \
-  -I@QT_INCDIR@ \
-  -I@QT_INCDIR@/QtCore \
-  -I@QT_INCDIR@/QtGui \
-  -I@QT_INCDIR@/QtNetwork \
+  -I$(QT_INCDIR) \
+  -I$(QT_INCDIR)/QtCore \
+  -I$(QT_INCDIR)/QtGui \
+  -I$(QT_INCDIR)/QtNetwork \
   -I$(srcdir)/../qterminal/libqterminal \
   -I$(srcdir)/m-editor \
   -I$(srcdir)/octave-adapter \
@@ -113,7 +114,26 @@ liboctgui_la_CPPFLAGS = \
   -I$(srcdir)/../../libtinerp/operators \
   -I$(srcdir)/../../libinterp/parse-tree
 
-liboctgui_la_LDFLAGS = -L@QT_LIBDIR@
+include link-deps.mk
+
+liboctgui_la_LIBADD = \
+  libqterminal.la \
+  ../../liboctave/liboctave.la \
+  ../../libcruft/libcruft.la \
+  $(LIBOCTGUI_LINK_DEPS)
+
+# Increment these as needed and according to the rules in the libtool manual:
+liboctgui_current = 0
+liboctgui_revision = 0
+liboctgui_age = 0
+
+liboctgui_version_info = $(liboctgui_current):$(liboctgui_revision):$(liboctgui_age)
+
+liboctgui_la_LDFLAGS = \
+  -version-info $(liboctgui_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
+  -bindir $(bindir) \
+  $(LIBOCTGUI_LINK_OPTS)
 
 noinst_HEADERS = \
   documentation-dockwidget.h \
@@ -224,10 +244,9 @@ noinst_HEADERS += \
   ../qterminal/libqterminal/unix/TerminalView.h
 
 libqterminal_la_CPPFLAGS = \
-  $(DEFS) \
-  -I@QT_INCDIR@ \
-  -I@QT_INCDIR@/QtCore \
-  -I@QT_INCDIR@/QtGui \
+  -I$(QT_INCDIR) \
+  -I$(QT_INCDIR)/QtCore \
+  -I$(QT_INCDIR)/QtGui \
   -I$(srcdir)/../qterminal/libqterminal
 
 libqterminal_la_MOC = \

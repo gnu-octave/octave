@@ -66,6 +66,8 @@ OCTAVE_CORE_LIBS = \
   ../liboctave/liboctave.la \
   ../libcruft/libcruft.la
 
+include ../libgui/src/link-deps.mk
+
 octave_cli_SOURCES = main-cli.cc
 
 octave_cli_LDADD = \
@@ -91,11 +93,13 @@ octave_CPPFLAGS = \
   $(OCTAVE_GUI_CPPFLAGS)
 
 octave_LDADD = \
-  $(OCTAVE_CORE_LIBS) \
   $(OCTAVE_GUI_LIBS) \
-  $(OCTAVE_LINK_DEPS)
+  $(OCTAVE_CORE_LIBS) \
+  $(OCTAVE_GUI_LINK_DEPS)
 
-octave_LDFLAGS = $(octave_cli_LDFLAGS)
+octave_LDFLAGS = \
+  $(NO_UNDEFINED_LDFLAG) \
+  $(OCTAVE_GUI_LINK_OPTS)
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.in.cc Makefile

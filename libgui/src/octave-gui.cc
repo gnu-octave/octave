@@ -107,6 +107,8 @@ octave_start_gui (int argc, char *argv[])
 
           main_window w;
           w.show ();
+          w.focus_command_window ();
+
           return application.exec ();
         }
     }

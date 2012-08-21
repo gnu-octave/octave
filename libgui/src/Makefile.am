@@ -118,6 +118,7 @@ include link-deps.mk
 
 liboctgui_la_LIBADD = \
   libqterminal.la \
+  ../../libinterp/liboctinterp.la \
   ../../liboctave/liboctave.la \
   ../../libcruft/libcruft.la \
   $(LIBOCTGUI_LINK_DEPS)

@@ -16,6 +16,8 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+include $(top_srcdir)/build-aux/common.mk
+
 SUBDIRS = src
 
 octetc_DATA = default-qt-settings

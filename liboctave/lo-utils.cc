@@ -54,7 +54,10 @@ bool xis_zero (double x)
 { return x == 0; }
 
 bool xtoo_large_for_float (double x)
-{ return (! (xisnan (x) || xisinf (x)) && fabs (x) > FLT_MAX); }
+{
+  return (! (xisnan (x) || xisinf (x))
+          && fabs (x) > std::numeric_limits<float>::max ());
+}
 
 bool xtoo_large_for_float (const Complex& x)
 {

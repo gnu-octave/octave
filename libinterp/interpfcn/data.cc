@@ -4120,7 +4120,7 @@ either \"double\" or \"single\".\n\
                 retval = fill_matrix (octave_value ("single"),
                                       lo_ieee_nan_value (),
                                       lo_ieee_float_nan_value (), "eps");
-              else if (val < FLT_MIN)
+              else if (val < std::numeric_limits<float>::min ())
                 retval = fill_matrix (octave_value ("single"), 0e0,
                                       powf (2.0, -149e0), "eps");
               else
@@ -4129,7 +4129,8 @@ either \"double\" or \"single\".\n\
                   frexpf (val, &expon);
                   val = std::pow (static_cast <float> (2.0),
                                   static_cast <float> (expon - 24));
-                  retval = fill_matrix (octave_value ("single"), DBL_EPSILON,
+                  retval = fill_matrix (octave_value ("single"),
+                                        std::numeric_limits<double>::epsilon (),
                                         val, "eps");
                 }
             }
@@ -4145,7 +4146,7 @@ either \"double\" or \"single\".\n\
                 retval = fill_matrix (octave_value_list (),
                                       lo_ieee_nan_value (),
                                       lo_ieee_float_nan_value (), "eps");
-              else if (val < DBL_MIN)
+              else if (val < std::numeric_limits<double>::min ())
                 retval = fill_matrix (octave_value_list (),
                                       pow (2.0, -1074e0), 0e0, "eps");
               else
@@ -4155,13 +4156,15 @@ either \"double\" or \"single\".\n\
                   val = std::pow (static_cast <double> (2.0),
                                   static_cast <double> (expon - 53));
                   retval = fill_matrix (octave_value_list (), val,
-                                        FLT_EPSILON, "eps");
+                                        std::numeric_limits<float>::epsilon (),
+                                        "eps");
                 }
             }
         }
     }
   else
-    retval = fill_matrix (args, DBL_EPSILON, FLT_EPSILON, "eps");
+    retval = fill_matrix (args, std::numeric_limits<double>::epsilon (),
+                          std::numeric_limits<float>::epsilon (), "eps");
 
   return retval;
 }
@@ -4259,7 +4262,8 @@ either \"double\" or \"single\".\n\
 @seealso{realmin, intmax, bitmax, eps}\n\
 @end deftypefn")
 {
-  return fill_matrix (args, DBL_MAX, FLT_MAX, "realmax");
+  return fill_matrix (args, std::numeric_limits<double>::max (),
+                      std::numeric_limits<float>::max (), "realmax");
 }
 
 DEFUN (realmin, args, ,
@@ -4292,7 +4296,8 @@ either \"double\" or \"single\".\n\
 @seealso{realmax, intmin, eps}\n\
 @end deftypefn")
 {
-  return fill_matrix (args, DBL_MIN, FLT_MIN, "realmin");
+  return fill_matrix (args, std::numeric_limits<double>::min (),
+                      std::numeric_limits<float>::min (), "realmin");
 }
 
 DEFUN (I, args, ,

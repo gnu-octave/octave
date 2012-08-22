@@ -483,7 +483,7 @@ pr_max_internal (const Matrix& m)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  double result = -DBL_MAX;
+  double result = -std::numeric_limits<double>::max ();
 
   bool all_inf_or_nan = true;
 
@@ -512,7 +512,7 @@ pr_min_internal (const Matrix& m)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  double result = DBL_MAX;
+  double result = std::numeric_limits<double>::max ();
 
   bool all_inf_or_nan = true;
 

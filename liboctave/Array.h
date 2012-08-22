@@ -237,7 +237,7 @@ public:
 
 public:
 
-  ~Array (void)
+  virtual ~Array (void)
     {
       if (--rep->count == 0)
         delete rep;

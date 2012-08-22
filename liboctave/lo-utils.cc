@@ -56,6 +56,12 @@ bool xis_zero (double x)
 bool xtoo_large_for_float (double x)
 { return (! (xisnan (x) || xisinf (x)) && fabs (x) > FLT_MAX); }
 
+bool xtoo_large_for_float (const Complex& x)
+{
+  return (xtoo_large_for_float (x.real ())
+          || xtoo_large_for_float (x.imag ()));
+}
+
 bool xis_int_or_inf_or_nan (float x)
 { return xisnan (x) || D_NINT (x) == x; }
 

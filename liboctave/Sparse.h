@@ -584,6 +584,35 @@ public:
 
   Array<T> array_value (void) const;
 
+  // Generic any/all test functionality with arbitrary predicate.
+  template <class F, bool zero>
+  bool test (F fcn) const
+  {
+    return any_all_test<F, T, zero> (fcn, data (), nnz ());
+  }
+
+  // Simpler calls.
+  template <class F>
+  bool test_any (F fcn) const
+  { return test<F, false> (fcn); }
+
+  template <class F>
+  bool test_all (F fcn) const
+  { return test<F, true> (fcn); }
+
+  // Overloads for function references.
+  bool test_any (bool (&fcn) (T)) const
+  { return test<bool (&) (T), false> (fcn); }
+
+  bool test_any (bool (&fcn) (const T&)) const
+  { return test<bool (&) (const T&), false> (fcn); }
+
+  bool test_all (bool (&fcn) (T)) const
+  { return test<bool (&) (T), true> (fcn); }
+
+  bool test_all (bool (&fcn) (const T&)) const
+  { return test<bool (&) (const T&), true> (fcn); }
+
   template <class U, class F>
   Sparse<U>
   map (F fcn) const

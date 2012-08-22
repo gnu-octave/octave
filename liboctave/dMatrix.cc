@@ -2723,7 +2723,7 @@ Matrix::all_integers (double& max_val, double& min_val) const
 bool
 Matrix::too_large_for_float (void) const
 {
-  return test_all (xtoo_large_for_float);
+  return test_any (xtoo_large_for_float);
 }
 
 // FIXME Do these really belong here?  Maybe they should be

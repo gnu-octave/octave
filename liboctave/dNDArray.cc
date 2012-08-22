@@ -632,7 +632,7 @@ NDArray::all_integers (void) const
 bool
 NDArray::too_large_for_float (void) const
 {
-  return test_all (xtoo_large_for_float);
+  return test_any (xtoo_large_for_float);
 }
 
 // FIXME -- this is not quite the right thing.

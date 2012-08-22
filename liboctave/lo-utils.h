@@ -28,13 +28,45 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "quit.h"
+
 #include "lo-cutils.h"
 #include "oct-cmplx.h"
+
+// Generic any/all test functionality with arbitrary predicate.
+
+template <class F, class T, bool zero>
+bool
+any_all_test (F fcn, const T *m, octave_idx_type len)
+{
+  octave_idx_type i;
+
+  for (i = 0; i < len - 3; i += 4)
+    {
+      octave_quit ();
+
+      if (fcn (m[i]) != zero
+          || fcn (m[i+1]) != zero
+          || fcn (m[i+2]) != zero
+          || fcn (m[i+3]) != zero)
+        return ! zero;
+    }
+
+  octave_quit ();
+
+  for (; i < len; i++)
+    if (fcn (m[i]) != zero)
+      return ! zero;
+
+  return zero;
+}
 
 extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
 extern OCTAVE_API bool xis_one_or_zero (double x);
 extern OCTAVE_API bool xis_zero (double x);
 extern OCTAVE_API bool xtoo_large_for_float (double x);
+
+extern OCTAVE_API bool xtoo_large_for_float (const Complex&  x);
 
 extern OCTAVE_API bool xis_int_or_inf_or_nan (float x);
 extern OCTAVE_API bool xis_one_or_zero (float x);

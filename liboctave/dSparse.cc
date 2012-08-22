@@ -7418,17 +7418,7 @@ SparseMatrix::all_integers (double& max_val, double& min_val) const
 bool
 SparseMatrix::too_large_for_float (void) const
 {
-  octave_idx_type nel = nnz ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = data (i);
-
-      if (val > FLT_MAX || val < FLT_MIN)
-        return true;
-    }
-
-  return false;
+  return test_any (xtoo_large_for_float);
 }
 
 SparseBoolMatrix

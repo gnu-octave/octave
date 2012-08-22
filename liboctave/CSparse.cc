@@ -7299,23 +7299,7 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
 bool
 SparseComplexMatrix::too_large_for_float (void) const
 {
-  octave_idx_type nel = nnz ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-        Complex val = data (i);
-
-        double r_val = std::real (val);
-        double i_val = std::imag (val);
-
-        if (r_val > FLT_MAX
-            || i_val > FLT_MAX
-            || r_val < FLT_MIN
-            || i_val < FLT_MIN)
-          return true;
-    }
-
-  return false;
+  return test_any (xtoo_large_for_float);
 }
 
 // FIXME Do these really belong here?  Maybe they should be

@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_data_conv_h)
 #define octave_data_conv_h 1
 
-#include <climits>
+#include <limits>
 
 #include "mach-info.h"
 

@@ -24,9 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
-
 #include <iostream>
+#include <limits>
 
 #include "lo-ieee.h"
 #include "lo-utils.h"

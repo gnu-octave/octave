@@ -825,7 +825,8 @@ with line numbers.\n\
           dbg_fcn = get_user_code ();
 
           if (dbg_fcn)
-            do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
+            do_dbtype (octave_stdout, dbg_fcn->name (), 0,
+                       std::numeric_limits<int>::max ());
           else
             error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
           break;
@@ -848,7 +849,7 @@ with line numbers.\n\
                     int start, end;
                     start = atoi (start_str.c_str ());
                     if (end_str == "end")
-                      end = INT_MAX;
+                      end = std::numeric_limits<int>::max ();
                     else
                       end = atoi (end_str.c_str ());
 
@@ -866,7 +867,8 @@ with line numbers.\n\
                 dbg_fcn = get_user_code (arg);
 
                 if (dbg_fcn)
-                  do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
+                  do_dbtype (octave_stdout, dbg_fcn->name (), 0,
+                             std::numeric_limits<int>::max ());
                 else
                   error ("dbtype: function <%s> not found\n", arg.c_str ());
               }
@@ -889,7 +891,7 @@ with line numbers.\n\
 
                   start = atoi (start_str.c_str ());
                   if (end_str == "end")
-                    end = INT_MAX;
+                    end = std::numeric_limits<int>::max ();
                   else
                     end = atoi (end_str.c_str ());
                 }

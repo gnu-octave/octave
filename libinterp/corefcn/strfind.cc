@@ -25,10 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <string>
-#include <climits>
 #include <algorithm>
 #include <deque>
+#include <limits>
+#include <string>
 
 #include "Cell.h"
 #include "ov.h"
@@ -39,13 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 
 // This allows safe indexing with char. In C++, char may be (and often is) signed!
 #define ORD(ch) static_cast<unsigned char>(ch)
-#define TABSIZE (UCHAR_MAX + 1)
+#define TABSIZE (std::numeric_limits<unsigned char>::max () + 1)
 
 // This is the quick search algorithm, as described at
 // http://www-igm.univ-mlv.fr/~lecroq/string/node19.html
 static void
 qs_preprocess (const Array<char>& needle,
-               octave_idx_type table[TABSIZE])
+               octave_idx_type *table)
 {
   const char *x = needle.data ();
   octave_idx_type m = needle.numel ();
@@ -60,7 +60,7 @@ qs_preprocess (const Array<char>& needle,
 static Array<octave_idx_type>
 qs_search (const Array<char>& needle,
            const Array<char>& haystack,
-           const octave_idx_type table[TABSIZE],
+           const octave_idx_type *table,
            bool overlaps = true)
 {
   const char *x = needle.data ();
@@ -261,7 +261,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 static Array<char>
 qs_replace (const Array<char>& str, const Array<char>& pat,
             const Array<char>& rep,
-            const octave_idx_type table[TABSIZE],
+            const octave_idx_type *table,
             bool overlaps = true)
 {
   Array<char> ret = str;

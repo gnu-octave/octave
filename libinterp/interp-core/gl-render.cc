@@ -135,7 +135,7 @@ next_power_of_2 (int n)
 {
   int m = 1;
 
-  while (m < n && m < INT_MAX)
+  while (m < n && m < std::numeric_limits<int>::max ())
     m <<= 1;
 
   return m;
@@ -1425,7 +1425,7 @@ opengl_renderer::draw_line (const line::properties& props)
   Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
 
   bool has_z = (z.numel () > 0);
-  int n = static_cast<int> (::xmin (::xmin (x.numel (), y.numel ()), (has_z ? z.numel () : INT_MAX)));
+  int n = static_cast<int> (::xmin (::xmin (x.numel (), y.numel ()), (has_z ? z.numel () : std::numeric_limits<int>::max ())));
   octave_uint8 clip_mask = (props.is_clipping () ? 0x7F : 0x40), clip_ok (0x40);
 
   std::vector<octave_uint8> clip (n);

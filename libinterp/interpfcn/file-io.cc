@@ -39,10 +39,10 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cerrno>
-#include <climits>
 #include <cstdio>
 
 #include <iostream>
+#include <limits>
 #include <locale>
 #include <stack>
 #include <stdexcept>

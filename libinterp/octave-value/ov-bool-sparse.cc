@@ -25,9 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
-
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include "dim-vector.h"

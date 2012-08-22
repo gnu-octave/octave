@@ -698,7 +698,8 @@ but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
   int tmp = old_history_size;
 
   octave_value retval = set_internal_variable (tmp, args, nargout,
-                                               "history_size", -1, INT_MAX);
+                                               "history_size", -1,
+                                               std::numeric_limits<int>::max ());
 
   if (tmp != old_history_size)
     command_history::set_size (tmp);

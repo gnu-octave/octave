@@ -1445,7 +1445,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
   do \
     { \
       if (! width) \
-        width = INT_MAX; \
+        width = std::numeric_limits<int>::max (); \
  \
       std::ostringstream buf; \
  \
@@ -1468,7 +1468,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
             buf << static_cast<char> (c); \
         } \
  \
-      if (width == INT_MAX && c != EOF) \
+      if (width == std::numeric_limits<int>::max () && c != EOF) \
         is.putback (c); \
  \
       tmp = buf.str (); \

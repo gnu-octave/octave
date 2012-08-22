@@ -24,9 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
-
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include "lo-ieee.h"
@@ -65,7 +64,10 @@ template <class T, bool is_signed = true, bool can_be_too_big = true>
 struct octave_base_int_helper
 {
   static bool
-  char_value_out_of_range (T val) { return val < 0 || val > UCHAR_MAX; }
+  char_value_out_of_range (T val)
+  {
+    return val < 0 || val > std::numeric_limits<unsigned char>::max ();
+  }
 };
 
 template <class T>
@@ -77,7 +79,10 @@ struct octave_base_int_helper<T, false, false>
 template <class T>
 struct octave_base_int_helper<T, false, true>
 {
-  static bool char_value_out_of_range (T val) { return val > UCHAR_MAX; }
+  static bool char_value_out_of_range (T val)
+  {
+    return val > std::numeric_limits<unsigned char>::max ();
+  }
 };
 
 template <class T>

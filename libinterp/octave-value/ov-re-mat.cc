@@ -25,9 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
-
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include "data-conv.h"
@@ -68,10 +67,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-ascii.h"
 #include "ls-utils.h"
 #include "ls-hdf5.h"
-
-#if ! defined (UCHAR_MAX)
-#define UCHAR_MAX 255
-#endif
 
 template class octave_base_matrix<NDArray>;
 
@@ -410,7 +405,7 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
         {
           int ival = NINT (d);
 
-          if (ival < 0 || ival > UCHAR_MAX)
+          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
             {
               // FIXME -- is there something
               // better we could do?

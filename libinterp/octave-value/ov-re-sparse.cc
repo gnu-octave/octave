@@ -25,9 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
-
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include "lo-specfun.h"
@@ -233,7 +232,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
                 {
                   int ival = NINT (d);
 
-                  if (ival < 0 || ival > UCHAR_MAX)
+                  if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
                     {
                       // FIXME -- is there something
                       // better we could do?

@@ -381,8 +381,8 @@ static inline int
 xisint (double x)
 {
   return (D_NINT (x) == x
-          && ((x >= 0 && x < INT_MAX)
-              || (x <= 0 && x > INT_MIN)));
+          && ((x >= 0 && x < std::numeric_limits<int>::max ())
+              || (x <= 0 && x > std::numermic_limits<int>::min ())));
 }
 
 extern "C" Complex

@@ -26,11 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cerrno>
-#include <climits>
 #include <cstring>
 
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <string>
 
 #include <sys/types.h>
@@ -1266,7 +1266,9 @@ octave_sleep (double seconds)
         = static_cast<unsigned int> (modf (seconds, &t) * 1000000);
 
       unsigned int sec
-        = (t > UINT_MAX) ? UINT_MAX : static_cast<unsigned int> (t);
+        = ((t > std::numeric_limits<unsigned int>::max ())
+           ? std::numeric_limits<unsigned int>::max ()
+           : static_cast<unsigned int> (t));
 
       // Versions of these functions that accept unsigned int args are
       // defined in cutils.c.

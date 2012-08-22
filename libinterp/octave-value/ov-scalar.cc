@@ -130,7 +130,7 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
     {
       int ival = NINT (scalar);
 
-      if (ival < 0 || ival > UCHAR_MAX)
+      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         {
           // FIXME -- is there something better we could do?
 

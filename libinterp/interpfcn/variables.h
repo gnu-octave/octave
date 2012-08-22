@@ -32,10 +32,12 @@ class octave_value_list;
 class octave_builtin;
 class string_vector;
 
-#include <climits>
 #include <cfloat>
 
+#include <limits>
 #include <string>
+
+#include "lo-ieee.h"
 
 #include "ov.h"
 #include "ov-builtin.h"
@@ -97,7 +99,8 @@ set_internal_variable (char& var, const octave_value_list& args,
 extern OCTINTERP_API octave_value
 set_internal_variable (int& var, const octave_value_list& args,
                        int nargout, const char *nm,
-                       int minval = INT_MIN, int maxval = INT_MAX);
+                       int minval = std::numeric_limits<int>::min (),
+                       int maxval = std::numeric_limits<int>::max ());
 
 extern OCTINTERP_API octave_value
 set_internal_variable (double& var, const octave_value_list& args,

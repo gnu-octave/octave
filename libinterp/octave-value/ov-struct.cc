@@ -2212,8 +2212,8 @@ changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print,
-                                            -1, INT_MAX);
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print, -1,
+                                            std::numeric_limits<int>::max ());
 }
 
 DEFUN (print_struct_array_contents, args, nargout,

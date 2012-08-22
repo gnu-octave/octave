@@ -25,9 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
-
 #include <iostream>
+#include <limits>
 
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -450,7 +449,7 @@ octave_base_value::print_info (std::ostream& os,
   os << "no info for type: " << type_name () << "\n";
 }
 
-#define INT_CONV_METHOD(T, F, MIN_LIMIT, MAX_LIMIT) \
+#define INT_CONV_METHOD(T, F) \
   T \
   octave_base_value::F ## _value (bool require_int, bool frc_str_conv) const \
   { \
@@ -462,10 +461,10 @@ octave_base_value::print_info (std::ostream& os,
       { \
         if (require_int && D_NINT (d) != d) \
           error_with_cfn ("conversion of %g to " #T " value failed", d); \
-        else if (d < MIN_LIMIT) \
-          retval = MIN_LIMIT; \
-        else if (d > MAX_LIMIT) \
-          retval = MAX_LIMIT; \
+        else if (d < std::numeric_limits<T>::min ()) \
+          retval = std::numeric_limits<T>::min (); \
+        else if (d > std::numeric_limits<T>::max ()) \
+          retval = std::numeric_limits<T>::max (); \
         else \
           retval = static_cast<T> (::fix (d));  \
       } \
@@ -476,14 +475,14 @@ octave_base_value::print_info (std::ostream& os,
     return retval; \
   }
 
-INT_CONV_METHOD (short int, short, SHRT_MIN, SHRT_MAX)
-INT_CONV_METHOD (unsigned short int, ushort, 0, USHRT_MAX)
+INT_CONV_METHOD (short int, short)
+INT_CONV_METHOD (unsigned short int, ushort)
 
-INT_CONV_METHOD (int, int, INT_MIN, INT_MAX)
-INT_CONV_METHOD (unsigned int, uint, 0, UINT_MAX)
+INT_CONV_METHOD (int, int)
+INT_CONV_METHOD (unsigned int, uint)
 
-INT_CONV_METHOD (long int, long, LONG_MIN, LONG_MAX)
-INT_CONV_METHOD (unsigned long int, ulong, 0, ULONG_MAX)
+INT_CONV_METHOD (long int, long)
+INT_CONV_METHOD (unsigned long int, ulong)
 
 int
 octave_base_value::nint_value (bool frc_str_conv) const

@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_inttypes_h)
 #define octave_inttypes_h 1
 
-#include <climits>
 #include <cstdlib>
 
 #include <limits>

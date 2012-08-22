@@ -356,7 +356,9 @@ rational_approx (double val, int len)
     s = "1/0";
   else if (xisnan (val))
     s = "0/0";
-  else if (val < INT_MIN || val > INT_MAX || D_NINT (val) == val)
+  else if (val < std::numeric_limits<int>::min ()
+           || val > std::numeric_limits<int>::max ()
+           || D_NINT (val) == val)
     {
       std::ostringstream buf;
       buf.flags (std::ios::fixed);
@@ -385,7 +387,7 @@ rational_approx (double val, int len)
           double nextd = d;
 
           // Have we converged to 1/intmax ?
-          if (m > 100 || fabs (frac) < 1 / static_cast<double>(INT_MAX))
+          if (m > 100 || fabs (frac) < 1 / static_cast<double> (std::numeric_limits<int>::max ()))
             {
               lastn = n;
               lastd = d;
@@ -4068,7 +4070,8 @@ variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_precision}\n\
 @end deftypefn")
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_max_field_width, 0, INT_MAX);
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_max_field_width, 0,
+                                            std::numeric_limits<int>::max ());
 }
 
 DEFUN (output_precision, args, nargout,
@@ -4085,5 +4088,6 @@ variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_max_field_width}\n\
 @end deftypefn")
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1, INT_MAX);
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1,
+                                            std::numeric_limits<int>::max ());
 }

@@ -538,12 +538,14 @@ Options:\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
+  --force-gui             Force graphical user interface to start.\n\
   --help, -h,             Print short help message and exit.\n\
   --image-path PATH       Add PATH to head of image search path.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
   --line-editing          Force readline use for command-line editing.\n\
+  --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-init-path          Don't initialize function search path.\n\

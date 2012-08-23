@@ -230,12 +230,12 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
           if (++k > 100 || xisnan (z))
             return false;
 
-          if (std::abs (z) <= 100 * DBL_EPSILON)
+          if (std::abs (z) <= 100 * std::numeric_limits<double>::epsilon ())
             done = true;
         }
 
       root[i] = x;
-      x = x + sqrt (DBL_EPSILON);
+      x = x + sqrt (std::numeric_limits<double>::epsilon ());
     }
 
   // Add interpolation points at x = 0 and/or x = 1.

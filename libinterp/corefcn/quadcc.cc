@@ -1885,7 +1885,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       /* Should we drop this interval? */
       if ((m + h * xi[0]) >= (m + h * xi[1])
           || (m + h * xi[31]) >= (m + h * xi[32])
-          || iv->err < fabs (iv->igral) * DBL_EPSILON * 10)
+          || iv->err < fabs (iv->igral) * std::numeric_limits<double>::epsilon () * 10)
         {
 
 /*          printf

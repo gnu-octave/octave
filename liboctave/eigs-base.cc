@@ -3672,7 +3672,8 @@ EigsRealSymmetricMatrix (const Matrix& m, const std::string typ,
                          octave_idx_type &info, Matrix &eig_vec,
                          ColumnVector &eig_val, const Matrix& b,
                          ColumnVector &permB, ColumnVector &resid,
-                         std::ostream &os, double tol = DBL_EPSILON,
+                         std::ostream &os,
+                         double tol = std::numeric_limits<double>::epsilon (),
                          bool rvec = false, bool cholB = 0, int disp = 0,
                          int maxit = 300);
 
@@ -3682,7 +3683,8 @@ EigsRealSymmetricMatrix (const SparseMatrix& m, const std::string typ,
                          octave_idx_type &info, Matrix &eig_vec,
                          ColumnVector &eig_val, const SparseMatrix& b,
                          ColumnVector &permB, ColumnVector &resid,
-                         std::ostream& os, double tol = DBL_EPSILON,
+                         std::ostream& os,
+                         double tol = std::numeric_limits<double>::epsilon (),
                          bool rvec = false, bool cholB = 0, int disp = 0,
                          int maxit = 300);
 
@@ -3692,7 +3694,8 @@ EigsRealSymmetricMatrixShift (const Matrix& m, double sigma,
                               octave_idx_type &info, Matrix &eig_vec,
                               ColumnVector &eig_val, const Matrix& b,
                               ColumnVector &permB, ColumnVector &resid,
-                              std::ostream &os, double tol = DBL_EPSILON,
+                              std::ostream &os,
+                              double tol = std::numeric_limits<double>::epsilon (),
                               bool rvec = false, bool cholB = 0, int disp = 0,
                               int maxit = 300);
 
@@ -3702,7 +3705,8 @@ EigsRealSymmetricMatrixShift (const SparseMatrix& m, double sigma,
                               octave_idx_type &info, Matrix &eig_vec,
                               ColumnVector &eig_val, const SparseMatrix& b,
                               ColumnVector &permB, ColumnVector &resid,
-                              std::ostream &os, double tol = DBL_EPSILON,
+                              std::ostream &os,
+                              double tol = std::numeric_limits<double>::epsilon (),
                               bool rvec = false, bool cholB = 0, int disp = 0,
                               int maxit = 300);
 
@@ -3713,8 +3717,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
                        octave_idx_type &info,
                        Matrix &eig_vec, ColumnVector &eig_val,
                        ColumnVector &resid, std::ostream &os,
-                       double tol = DBL_EPSILON, bool rvec = false,
-                       bool cholB = 0, int disp = 0, int maxit = 300);
+                       double tol = std::numeric_limits<double>::epsilon (),
+                       bool rvec = false, bool cholB = 0, int disp = 0,
+                       int maxit = 300);
 
 extern octave_idx_type
 EigsRealNonSymmetricMatrix (const Matrix& m, const std::string typ,
@@ -3722,7 +3727,8 @@ EigsRealNonSymmetricMatrix (const Matrix& m, const std::string typ,
                             octave_idx_type &info, ComplexMatrix &eig_vec,
                             ComplexColumnVector &eig_val, const Matrix& b,
                             ColumnVector &permB, ColumnVector &resid,
-                            std::ostream &os, double tol = DBL_EPSILON,
+                            std::ostream &os,
+                            double tol = std::numeric_limits<double>::epsilon (),
                             bool rvec = false, bool cholB = 0, int disp = 0,
                             int maxit = 300);
 
@@ -3733,7 +3739,8 @@ EigsRealNonSymmetricMatrix (const SparseMatrix& m, const std::string typ,
                             ComplexColumnVector &eig_val,
                             const SparseMatrix& b,
                             ColumnVector &permB, ColumnVector &resid,
-                            std::ostream &os, double tol = DBL_EPSILON,
+                            std::ostream &os,
+                            double tol = std::numeric_limits<double>::epsilon (),
                             bool rvec = false, bool cholB = 0, int disp = 0,
                             int maxit = 300);
 
@@ -3744,7 +3751,8 @@ EigsRealNonSymmetricMatrixShift (const Matrix& m, double sigma,
                                  ComplexMatrix &eig_vec,
                                  ComplexColumnVector &eig_val, const Matrix& b,
                                  ColumnVector &permB, ColumnVector &resid,
-                                 std::ostream &os, double tol = DBL_EPSILON,
+                                 std::ostream &os,
+                                 double tol = std::numeric_limits<double>::epsilon (),
                                  bool rvec = false, bool cholB = 0,
                                  int disp = 0, int maxit = 300);
 
@@ -3756,7 +3764,8 @@ EigsRealNonSymmetricMatrixShift (const SparseMatrix& m, double sigma,
                                  ComplexColumnVector &eig_val,
                                  const SparseMatrix& b,
                                  ColumnVector &permB, ColumnVector &resid,
-                                 std::ostream &os, double tol = DBL_EPSILON,
+                                 std::ostream &os,
+                                 double tol = std::numeric_limits<double>::epsilon (),
                                  bool rvec = false, bool cholB = 0,
                                  int disp = 0, int maxit = 300);
 
@@ -3767,8 +3776,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                           octave_idx_type &info, ComplexMatrix &eig_vec,
                           ComplexColumnVector &eig_val,
                           ColumnVector &resid, std::ostream& os,
-                          double tol = DBL_EPSILON, bool rvec = false,
-                          bool cholB = 0, int disp = 0, int maxit = 300);
+                          double tol = std::numeric_limits<double>::epsilon (),
+                          bool rvec = false, bool cholB = 0, int disp = 0,
+                          int maxit = 300);
 
 extern octave_idx_type
 EigsComplexNonSymmetricMatrix (const ComplexMatrix& m, const std::string typ,
@@ -3777,7 +3787,8 @@ EigsComplexNonSymmetricMatrix (const ComplexMatrix& m, const std::string typ,
                                ComplexColumnVector &eig_val,
                                const ComplexMatrix& b, ColumnVector &permB,
                                ComplexColumnVector &resid,
-                               std::ostream &os, double tol = DBL_EPSILON,
+                               std::ostream &os,
+                               double tol = std::numeric_limits<double>::epsilon (),
                                bool rvec = false, bool cholB = 0, int disp = 0,
                                int maxit = 300);
 
@@ -3790,7 +3801,8 @@ EigsComplexNonSymmetricMatrix (const SparseComplexMatrix& m,
                                const SparseComplexMatrix& b,
                                ColumnVector &permB,
                                ComplexColumnVector &resid,
-                               std::ostream &os, double tol = DBL_EPSILON,
+                               std::ostream &os,
+                               double tol = std::numeric_limits<double>::epsilon (),
                                bool rvec = false, bool cholB = 0, int disp = 0,
                                int maxit = 300);
 
@@ -3803,7 +3815,8 @@ EigsComplexNonSymmetricMatrixShift (const ComplexMatrix& m, Complex sigma,
                                     const ComplexMatrix& b,
                                     ColumnVector &permB,
                                     ComplexColumnVector &resid,
-                                    std::ostream &os, double tol = DBL_EPSILON,
+                                    std::ostream &os,
+                                    double tol = std::numeric_limits<double>::epsilon (),
                                     bool rvec = false, bool cholB = 0,
                                     int disp = 0, int maxit = 300);
 
@@ -3817,7 +3830,8 @@ EigsComplexNonSymmetricMatrixShift (const SparseComplexMatrix& m,
                                     const SparseComplexMatrix& b,
                                     ColumnVector &permB,
                                     ComplexColumnVector &resid,
-                                    std::ostream &os, double tol = DBL_EPSILON,
+                                    std::ostream &os,
+                                    double tol = std::numeric_limits<double>::epsilon (),
                                     bool rvec = false, bool cholB = 0,
                                     int disp = 0, int maxit = 300);
 
@@ -3828,8 +3842,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              octave_idx_type &info, ComplexMatrix &eig_vec,
                              ComplexColumnVector &eig_val,
                              ComplexColumnVector &resid, std::ostream& os,
-                             double tol = DBL_EPSILON, bool rvec = false,
-                             bool cholB = 0, int disp = 0, int maxit = 300);
+                             double tol = std::numeric_limits<double>::epsilon (),
+                             bool rvec = false, bool cholB = 0,
+                             int disp = 0, int maxit = 300);
 #endif
 
 #ifndef _MSC_VER

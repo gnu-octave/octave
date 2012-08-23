@@ -329,7 +329,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
   bool a_is_sparse = false;
   ColumnVector permB;
   int arg_offset = 0;
-  double tol = DBL_EPSILON;
+  double tol = std::numeric_limits<double>::epsilon ();
   int maxit = 300;
   int disp = 0;
   octave_idx_type p = -1;

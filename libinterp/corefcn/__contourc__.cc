@@ -229,8 +229,8 @@ mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
         f[2] = Z(r+1, c+1) - lvl;
 
         for (unsigned int i = 0; i < 4; i++)
-          if (fabs(f[i]) < DBL_EPSILON)
-            f[i] = DBL_EPSILON;
+          if (fabs(f[i]) < std::numeric_limits<double>::epsilon ())
+            f[i] = std::numeric_limits<double>::epsilon ();
 
         if (f[1] * f[2] < 0)
           mark(r, c) += 2;
@@ -248,8 +248,8 @@ mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
         f[2] = Z(r+1, c+1) - lvl;
 
         for (unsigned int i = 0; i < 4; i++)
-          if (fabs(f[i]) < DBL_EPSILON)
-            f[i] = DBL_EPSILON;
+          if (fabs(f[i]) < std::numeric_limits<double>::epsilon ())
+            f[i] = std::numeric_limits<double>::epsilon ();
 
         if (f[0] * f[1] < 0)
           mark(r, c) += 1;

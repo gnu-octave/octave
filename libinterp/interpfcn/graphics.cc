@@ -5930,7 +5930,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               min_val = min_pos;
             }
           // FIXME -- maybe this test should also be relative?
-          if (std::abs (min_val - max_val) < sqrt (DBL_EPSILON))
+          if (std::abs (min_val - max_val) < sqrt (std::numeric_limits<double>::epsilon ()))
             {
               // Widen range when too small
               if (min_val >= 0)
@@ -5965,7 +5965,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               max_val = 1;
             }
           // FIXME -- maybe this test should also be relative?
-          else if (std::abs (min_val - max_val) < sqrt (DBL_EPSILON))
+          else if (std::abs (min_val - max_val) < sqrt (std::numeric_limits<double>::epsilon ()))
             {
               min_val -= 0.1 * std::abs (min_val);
               max_val += 0.1 * std::abs (max_val);

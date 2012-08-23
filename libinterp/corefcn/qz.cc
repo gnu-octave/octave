@@ -849,7 +849,7 @@ compatibility with @sc{matlab}.\n\
                      nn, nn, aa.data (), nn, work.fortran_vec (), inf_norm
                      F77_CHAR_ARG_LEN (1)));
 
-          double eps = DBL_EPSILON * inf_norm * nn;
+          double eps = std::numeric_limits<double>::epsilon () * inf_norm * nn;
 
 #ifdef DEBUG_SORT
           std::cout << "qz: calling dsubsp: aa=" << std::endl;

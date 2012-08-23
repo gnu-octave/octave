@@ -2513,7 +2513,7 @@ mxIsNaN (const double v)
 double
 mxGetEps (void)
 {
-  return DBL_EPSILON;
+  return std::numeric_limits<double>::epsilon ();
 }
 
 double

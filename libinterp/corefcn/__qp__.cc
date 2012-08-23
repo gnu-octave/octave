@@ -60,7 +60,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
       octave_idx_type tmp = A_nr > A_nc ? A_nr : A_nc;
 
-      double tol = tmp * s(0) * DBL_EPSILON;
+      double tol = tmp * s(0) * std::numeric_limits<double>::epsilon ();
 
       octave_idx_type n = s.length ();
 
@@ -76,7 +76,7 @@ null (const Matrix& A, octave_idx_type& rank)
         retval.resize (A_nc, 0);
 
       for (octave_idx_type i = 0; i < retval.numel (); i++)
-        if (std::abs (retval(i)) < DBL_EPSILON)
+        if (std::abs (retval(i)) < std::numeric_limits<double>::epsilon ())
           retval(i) = 0;
     }
 
@@ -94,7 +94,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
   iter = 0;
 
-  double rtol = sqrt (DBL_EPSILON);
+  double rtol = sqrt (std::numeric_limits<double>::epsilon ());
 
   // Problem dimension.
   octave_idx_type n = x.length ();
@@ -209,7 +209,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
               // Following the negative curvature of H.
 
-              if (p.transpose () * g > DBL_EPSILON)
+              if (p.transpose () * g > std::numeric_limits<double>::epsilon ())
                 p = -p;
 
               info = 1;
@@ -307,7 +307,7 @@ qp (const Matrix& H, const ColumnVector& q,
               // Computing the step pz.
               p = Z * eVrH;
 
-              if (p.transpose () * g > DBL_EPSILON)
+              if (p.transpose () * g > std::numeric_limits<double>::epsilon ())
                 p = -p;
             }
         }

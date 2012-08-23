@@ -865,9 +865,9 @@ FloatMatrix::pseudo_inverse (float tol) const
   if (tol <= 0.0)
     {
       if (nr > nc)
-        tol = nr * sigma.elem (0) * DBL_EPSILON;
+        tol = nr * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
       else
-        tol = nc * sigma.elem (0) * DBL_EPSILON;
+        tol = nc * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
     }
 
   while (r >= 0 && sigma.elem (r) < tol)

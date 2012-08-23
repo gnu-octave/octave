@@ -138,7 +138,7 @@ static bool read_history_file = true;
 
 // The value of "path" specified on the command line.
 // (--path; -p)
-static std::string command_line_path;
+static std::list<std::string> command_line_path;
 
 // Flags used to determine what commands should be echoed when they are
 // parsed and executed.
@@ -758,7 +758,7 @@ octave_process_command_line (int argc, char **argv)
 
         case 'p':
           if (optarg)
-            command_line_path = optarg;
+            command_line_path.push_back (optarg);
           break;
 
         case 'q':
@@ -931,8 +931,9 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   if (! read_history_file)
     bind_internal_variable ("saving_history", false);
 
-  if (! command_line_path.empty ())
-    load_path::set_command_line_path (command_line_path);
+  for (std::list<std::string>::const_iterator it = command_line_path.begin ();
+       it != command_line_path.end (); it++)
+    load_path::set_command_line_path (*it);
 
   if (echo_executing_commands)
     bind_internal_variable ("echo_executing_commands",

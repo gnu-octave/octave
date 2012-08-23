@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 int
 main (int argc, char **argv)
 {
+  octave_process_command_line (argc, argv);
+
   octave_initialize_interpreter (argc, argv, 0);
 
   return octave_execute_interpreter ();

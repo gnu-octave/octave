@@ -30,10 +30,18 @@ along with Octave; see the file COPYING.  If not, see
 int
 main (int argc, char **argv)
 {
-  octave_initialize_interpreter (argc, argv, 0);
+  int retval = 0;
+
+  octave_process_command_line (argc, argv);
 
   if (octave_starting_gui ())
-    return octave_start_gui (argc, argv);
+    retval = octave_start_gui (argc, argv);
+  else
+    {
+      octave_initialize_interpreter (argc, argv, 0);
 
-  return octave_execute_interpreter ();
+      retval = octave_execute_interpreter ();
+    }
+
+  return retval;
 }

@@ -39,6 +39,11 @@ void
 octave_main_thread::run ()
 {
   setlocale (LC_ALL, "en_US.UTF-8");
+
   emit ready ();
+
+  octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
+                                 octave_embedded);
+
   octave_execute_interpreter ();
 }

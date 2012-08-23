@@ -29,6 +29,8 @@ extern "C" {
 
 extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
 
+extern OCTINTERP_API void octave_process_command_line (int argc, char **argv);
+
 extern OCTINTERP_API void
 octave_initialize_interpreter (int argc, char **argv, int embedded);
 

@@ -128,6 +128,51 @@ static bool force_gui_option = false;
 // (--no-gui)
 static bool no_gui_option = false;
 
+// If TRUE, force readline command line editing.
+// (--line-editing)
+static bool forced_line_editing = false;
+
+// If TRUE, initialize history list from saved history file.
+// (--no-history; -H)
+static bool read_history_file = true;
+
+// The value of "path" specified on the command line.
+// (--path; -p)
+static std::string command_line_path;
+
+// Flags used to determine what commands should be echoed when they are
+// parsed and executed.
+// (--echo-commands; -x)
+static int echo_executing_commands = 0;
+
+// The file used for the doc string cache.
+// (--doc-cache-file)
+static std::string doc_cache_file;
+
+// The value for "EXEC_PATH" specified on the command line.
+// (--exec-path)
+static std::string exec_path;
+
+// The value for "IMAGE_PATH" specified on the command line.
+// (--image-path)
+static std::string image_path;
+
+// The value for "info_file" specified on the command line.
+// (--info-file)
+static std::string info_file;
+
+// The value for "info_program" specified on the command line.
+// (--info-program)
+static std::string info_program;
+
+// If TRUE, ignore the window system even if it is available.
+// (--no-window-system)
+static bool no_window_system = false;
+
+// The value for "texi_macros_file" specified on the command line.
+// (--texi-macros-file)
+static std::string texi_macros_file;
+
 // Usage message
 static const char *usage_string =
   "octave [-HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
@@ -654,9 +699,176 @@ maximum_braindamage (void)
 int
 octave_main (int argc, char **argv, int embedded)
 {
+  octave_process_command_line (argc, argv);
+
   octave_initialize_interpreter (argc, argv, embedded);
 
   return octave_execute_interpreter ();
+}
+
+void
+octave_process_command_line (int argc, char **argv)
+{
+  octave_cmdline_argc = argc;
+  octave_cmdline_argv = argv;
+
+  while (true)
+    {
+      int long_idx;
+
+      int optc = getopt_long (argc, argv, short_opts, long_opts, &long_idx);
+
+      if (optc < 0)
+        break;
+
+      switch (optc)
+        {
+        case '?':
+          // Unrecognized option.  getopt_long already printed a
+          // message about that, so we will just print the usage string
+          // and exit.
+          usage ();
+          break;
+
+        case 'H':
+          read_history_file = false;
+          break;
+
+        case 'V':
+          verbose_flag = true;
+          break;
+
+        case 'd':
+          // This is the same as yydebug in parse.y.
+          octave_debug++;
+          break;
+
+        case 'f':
+          read_init_files = false;
+          read_site_files = false;
+          break;
+
+        case 'h':
+          verbose_usage ();
+          break;
+
+        case 'i':
+          forced_interactive = true;
+          break;
+
+        case 'p':
+          if (optarg)
+            command_line_path = optarg;
+          break;
+
+        case 'q':
+          inhibit_startup_message = true;
+          break;
+
+        case 'x':
+          echo_executing_commands
+            = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
+          break;
+
+        case 'v':
+          print_version_and_exit ();
+          break;
+
+        case DOC_CACHE_FILE_OPTION:
+          if (optarg)
+            doc_cache_file = optarg;
+          break;
+
+        case EVAL_OPTION:
+          if (optarg)
+            {
+              if (code_to_eval.empty ())
+                code_to_eval = optarg;
+              else
+                code_to_eval += std::string (" ") + optarg;
+            }
+          break;
+
+        case EXEC_PATH_OPTION:
+          if (optarg)
+            exec_path = optarg;
+          break;
+
+        case FORCE_GUI_OPTION:
+          force_gui_option = true;
+          break;
+
+        case IMAGE_PATH_OPTION:
+          if (optarg)
+            image_path = optarg;
+          break;
+
+        case INFO_FILE_OPTION:
+          if (optarg)
+            info_file = optarg;
+          break;
+
+        case INFO_PROG_OPTION:
+          if (optarg)
+            info_program = optarg;
+          break;
+
+        case LINE_EDITING_OPTION:
+          forced_line_editing = true;
+          break;
+
+        case NO_INIT_FILE_OPTION:
+          read_init_files = false;
+          break;
+
+        case NO_GUI_OPTION:
+          no_gui_option = true;
+          break;
+
+        case NO_INIT_PATH_OPTION:
+          set_initial_path = false;
+          break;
+
+        case NO_LINE_EDITING_OPTION:
+          line_editing = false;
+          break;
+
+        case NO_SITE_FILE_OPTION:
+          read_site_files = 0;
+          break;
+
+        case NO_WINDOW_SYSTEM_OPTION:
+          no_window_system = true;
+          break;
+
+        case PERSIST_OPTION:
+          persist = true;
+          break;
+
+        case TEXI_MACROS_FILE_OPTION:
+          if (optarg)
+            texi_macros_file = optarg;
+          break;
+
+        case TRADITIONAL_OPTION:
+          traditional = true;
+          break;
+
+        default:
+          // getopt_long should print a message about unrecognized
+          // options and return '?', which is handled above.  So if we
+          // end up here, it is because there was an option but we
+          // forgot to handle it.  That should be fatal.
+          panic_impossible ();
+          break;
+        }
+    }
+
+  if (force_gui_option && no_gui_option)
+    {
+      error ("error: only one of --force-gui and --no-gui may be used");
+      usage ();
+    }
 }
 
 // EMBEDDED is declared int instead of bool because this function is
@@ -665,8 +877,6 @@ octave_main (int argc, char **argv, int embedded)
 void
 octave_initialize_interpreter (int argc, char **argv, int embedded)
 {
-  octave_cmdline_argc = argc;
-  octave_cmdline_argv = argv;
   octave_embedded = embedded;
 
   octave_env::set_program_name (argv[0]);
@@ -718,170 +928,36 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   install_builtins ();
 
-  bool forced_line_editing = false;
+  if (! read_history_file)
+    bind_internal_variable ("saving_history", false);
 
-  bool read_history_file = true;
+  if (! command_line_path.empty ())
+    load_path::set_command_line_path (command_line_path);
 
-  while (true)
-    {
-      int long_idx;
+  if (echo_executing_commands)
+    bind_internal_variable ("echo_executing_commands",
+                            echo_executing_commands);
 
-      int optc = getopt_long (argc, argv, short_opts, long_opts, &long_idx);
+  if (! doc_cache_file.empty ())
+    bind_internal_variable ("doc_cache_file", doc_cache_file);
 
-      if (optc < 0)
-        break;
+  if (! exec_path.empty ())
+    set_exec_path (exec_path);
 
-      switch (optc)
-        {
-        case '?':
-          // Unrecognized option.  getopt_long already printed a
-          // message about that, so we will just print the usage string
-          // and exit.
-          usage ();
-          break;
+  if (! image_path.empty ())
+    set_exec_path (image_path);
 
-        case 'H':
-          read_history_file = false;
-          bind_internal_variable ("saving_history", false);
-          break;
+  if (! info_file.empty ())
+    bind_internal_variable ("info_file", info_file);
 
-        case 'V':
-          verbose_flag = true;
-          break;
+  if (! info_program.empty ())
+    bind_internal_variable ("info_program", info_program);
 
-        case 'd':
-          // This is the same as yydebug in parse.y.
-          octave_debug++;
-          break;
+  if (no_window_system)
+    display_info::no_window_system ();
 
-        case 'f':
-          read_init_files = false;
-          read_site_files = false;
-          break;
-
-        case 'h':
-          verbose_usage ();
-          break;
-
-        case 'i':
-          forced_interactive = true;
-          break;
-
-        case 'p':
-          if (optarg)
-            load_path::set_command_line_path (optarg);
-          break;
-
-        case 'q':
-          inhibit_startup_message = true;
-          break;
-
-        case 'x':
-          {
-            double tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
-            bind_internal_variable ("echo_executing_commands", tmp);
-          }
-          break;
-
-        case 'v':
-          print_version_and_exit ();
-          break;
-
-        case DOC_CACHE_FILE_OPTION:
-          if (optarg)
-            bind_internal_variable ("doc_cache_file", optarg);
-          break;
-
-        case EVAL_OPTION:
-          if (optarg)
-            {
-              if (code_to_eval.empty ())
-                code_to_eval = optarg;
-              else
-                code_to_eval += std::string (" ") + optarg;
-            }
-          break;
-
-        case EXEC_PATH_OPTION:
-          if (optarg)
-            set_exec_path (optarg);
-          break;
-
-        case FORCE_GUI_OPTION:
-          force_gui_option = true;
-          break;
-
-        case IMAGE_PATH_OPTION:
-          if (optarg)
-            set_image_path (optarg);
-          break;
-
-        case INFO_FILE_OPTION:
-          if (optarg)
-            bind_internal_variable ("info_file", optarg);
-          break;
-
-        case INFO_PROG_OPTION:
-          if (optarg)
-            bind_internal_variable ("info_program", optarg);
-          break;
-
-        case LINE_EDITING_OPTION:
-          forced_line_editing = true;
-          break;
-
-        case NO_INIT_FILE_OPTION:
-          read_init_files = false;
-          break;
-
-        case NO_GUI_OPTION:
-          no_gui_option = true;
-          break;
-
-        case NO_INIT_PATH_OPTION:
-          set_initial_path = false;
-          break;
-
-        case NO_LINE_EDITING_OPTION:
-          line_editing = false;
-          break;
-
-        case NO_SITE_FILE_OPTION:
-          read_site_files = 0;
-          break;
-
-        case NO_WINDOW_SYSTEM_OPTION:
-          display_info::no_window_system ();
-          break;
-
-        case PERSIST_OPTION:
-          persist = true;
-          break;
-
-        case TEXI_MACROS_FILE_OPTION:
-          if (optarg)
-            bind_internal_variable ("texi_macros_file", optarg);
-          break;
-
-        case TRADITIONAL_OPTION:
-          traditional = true;
-          break;
-
-        default:
-          // getopt_long should print a message about unrecognized
-          // options and return '?', which is handled above.  So if we
-          // end up here, it is because there was an option but we
-          // forgot to handle it.  That should be fatal.
-          panic_impossible ();
-          break;
-        }
-    }
-
-  if (force_gui_option && no_gui_option)
-    {
-      error ("error: only one of --force-gui and --no-gui may be used");
-      usage ();
-    }
+  if (! texi_macros_file.empty ())
+    bind_internal_variable ("texi_macros_file", texi_macros_file);
 
   // Make sure we clean up when we exit.  Also allow users to register
   // functions.  If we don't have atexit or on_exit, we're going to
@@ -1034,7 +1110,13 @@ octave_starting_gui (void)
   if (persist)
     return true;
 
-  if (! (interactive || forced_interactive))
+  // If stdin is not a tty, then assume we are reading commands from a
+  // pipe or a redirected file and the GUI should not start.  If this is
+  // not the case (for example, starting from a desktop "launcher" with
+  // no terminal) and you want to start the GUI, you may use the
+  // --force-gui option to start the GUI.
+
+  if (! gnulib::isatty (fileno (stdin)))
     return false;
 
   // If we have code to eval or execute from a file, and we are going to

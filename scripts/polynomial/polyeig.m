@@ -18,16 +18,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{z} =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
-## @deftypefnx {Function File} {[ @var{v}, @var{z} ] =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
+## @deftypefnx {Function File} {[@var{v}, @var{z}] =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
 ##
 ## Solve the polynomial eigenvalue problem of degree @var{l}.
 ##
-## Given a @var{n*n} matrix polynomial @var{C(s)} = @var{C0 + C1 s +
-## @dots{} + Cl s^l} polyeig solves the eigenvalue problem (@var{C0} +
-## @var{C1} + @dots{} + @var{Cl})v = 0. Note that the eigenvalues
-## @var{z} are the zeros of the matrix polynomial. @var{z} is a
-## @var{lxn} vector and @var{v} is a @var{(n x n)l} matrix with columns
-## that correspond to the eigenvectors.
+## Given an @var{n*n} matrix polynomial
+## @code{@var{C}(s) = @var{C0} + @var{C1} s + @dots{} + @var{Cl} s^l}
+## polyeig solves the eigenvalue problem
+## @code{(@var{C0} + @var{C1} + @dots{} + @var{Cl})v = 0}.
+## Note that the eigenvalues @var{z} are the zeros of the matrix polynomial.
+## @var{z} is an @var{lxn} vector and @var{v} is an (@var{n} x @var{n})l matrix
+## with columns that correspond to the eigenvectors.
 ##
 ## @seealso{eig, eigs, compan}
 ## @end deftypefn

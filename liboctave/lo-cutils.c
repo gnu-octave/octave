@@ -76,3 +76,115 @@ octave_waitpid (pid_t pid, int *status, int options)
 {
   return WAITPID (pid, status, options);
 }
+
+OCTAVE_API int octave_wifexited (int status)
+{
+  int retval = 0;
+
+#if defined (WIFEXITED)
+  retval = WIFEXITED (status);
+#else
+  (*liboctave_warning_handler)
+    ("WIFEXITED always returns false in this version of Octave");
+#endif
+
+  return retval;
+}
+
+OCTAVE_API int octave_wexitstatus (int status)
+{
+  int retval = 0;
+
+#if defined (WEXITSTATUS)
+  retval = WEXITSTATUS (status);
+#else
+  (*liboctave_warning_handler)
+    ("WEXITSTATUS always returns 0 in this version of Octave");
+#endif
+
+  return retval;
+}
+
+OCTAVE_API int octave_wifsignaled (int status)
+{
+  int retval = 0;
+
+#if defined (WIFSIGNALED)
+  retval = WIFSIGNALED (status);
+#else
+  (*liboctave_warning_handler)
+    ("WIFSIGNALED always returns false in this version of Octave");
+#endif
+
+  return retval;
+}
+
+OCTAVE_API int octave_wtermsig (int status)
+{
+  int retval = 0;
+
+#if defined (WTERMSIG)
+  retval = WTERMSIG (status);
+#else
+  (*liboctave_warning_handler)
+    ("WTERMSIG always returns 0 in this version of Octave");
+#endif
+
+  return retval;
+}
+
+OCTAVE_API int octave_wcoredump (int status)
+{
+  int retval = 0;
+
+#if defined (WCOREDUMP)
+  retval = WCOREDUMP (status);
+#else
+  (*liboctave_warning_handler)
+    ("WCOREDUMP always returns false in this version of Octave");
+#endif
+
+  return retval;
+}
+
+OCTAVE_API int octave_wifstopped (int status)
+{
+  int retval = 0;
+
+#if defined (WIFSTOPPED)
+  retval = WIFSTOPPED (status);
+#else
+  (*liboctave_warning_handler)
+    ("WIFSTOPPED always returns false in this version of Octave");
+#endif
+
+  return retval;
+}
+
+OCTAVE_API int octave_wstopsig (int status)
+{
+  int retval = 0;
+
+#if defined (WSTOPSIG)
+  retval = WSTOPSIG (status);
+#else
+  (*liboctave_warning_handler)
+    ("WSTOPSIG always returns 0 in this version of Octave");
+#endif
+
+  return retval;
+}
+
+OCTAVE_API int octave_wifcontinued (int status)
+{
+  int retval = 0;
+
+#if defined (WIFCONTINUED)
+  retval = WIFCONTINUED (status);
+#else
+  (*liboctave_warning_handler)
+    ("WIFCONTINUED always returns false in this version of Octave");
+#endif
+
+  return retval;
+}

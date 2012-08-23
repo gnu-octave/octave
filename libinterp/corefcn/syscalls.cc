@@ -1376,21 +1376,17 @@ child terminated normally.\n\
 @seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = false;
 
-#if defined (WIFEXITED)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WIFEXITED (status);
+        retval = octave_wait::ifexited (status);
       else
         error ("WIFEXITED: STATUS must be an integer");
     }
-#else
-  warning ("WIFEXITED always returns false in this version of Octave");
-#endif
 
   return retval;
 }
@@ -1404,21 +1400,17 @@ status of the child.  This function should only be employed if\n\
 @seealso{waitpid, WIFEXITED, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = 0;
 
-#if defined (WEXITSTATUS)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WEXITSTATUS (status);
+        retval = octave_wait::exitstatus (status);
       else
         error ("WEXITSTATUS: STATUS must be an integer");
     }
-#else
-  warning ("WEXITSTATUS always returns false in this version of Octave");
-#endif
 
   return retval;
 }
@@ -1431,21 +1423,17 @@ child process was terminated by a signal.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = false;
 
-#if defined (WIFSIGNALED)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WIFSIGNALED (status);
+        retval = octave_wait::ifsignaled (status);
       else
         error ("WIFSIGNALED: STATUS must be an integer");
     }
-#else
-  warning ("WIFSIGNALED always returns false in this version of Octave");
-#endif
 
   return retval;
 }
@@ -1459,21 +1447,17 @@ should only be employed if @code{WIFSIGNALED} returned true.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = 0;
 
-#if defined (WTERMSIG)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WTERMSIG (status);
+        retval = octave_wait::termsig (status);
       else
         error ("WTERMSIG: STATUS must be an integer");
     }
-#else
-  warning ("WTERMSIG always returns false in this version of Octave");
-#endif
 
   return retval;
 }
@@ -1489,21 +1473,17 @@ Unix implementations (e.g., AIX, SunOS).\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = false;
 
-#if defined (WCOREDUMP)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WCOREDUMP (status);
+        retval = octave_wait::coredump (status);
       else
         error ("WCOREDUMP: STATUS must be an integer");
     }
-#else
-  warning ("WCOREDUMP always returns false in this version of Octave");
-#endif
 
   return retval;
 }
@@ -1518,21 +1498,17 @@ is being traced (see ptrace(2)).\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = false;
 
-#if defined (WIFSTOPPED)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WIFSTOPPED (status);
+        retval = octave_wait::ifstopped (status);
       else
         error ("WIFSTOPPED: STATUS must be an integer");
     }
-#else
-  warning ("WIFSTOPPED always returns false in this version of Octave");
-#endif
 
   return retval;
 }
@@ -1546,21 +1522,17 @@ be employed if @code{WIFSTOPPED} returned true.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WIFCONTINUED}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = 0;
 
-#if defined (WSTOPSIG)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WSTOPSIG (status);
+        retval = octave_wait::stopsig (status);
       else
         error ("WSTOPSIG: STATUS must be an integer");
     }
-#else
-  warning ("WSTOPSIG always returns false in this version of Octave");
-#endif
 
   return retval;
 }
@@ -1573,21 +1545,17 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG}\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = false;
 
-#if defined (WIFCONTINUED)
   if (args.length () == 1)
     {
       int status = args(0).int_value ();
 
       if (! error_state)
-        retval = WIFCONTINUED (status);
+        retval = octave_wait::ifcontinued (status);
       else
         error ("WIFCONTINUED: STATUS must be an integer");
     }
-#else
-  warning ("WIFCONTINUED always returns false in this version of Octave");
-#endif
 
   return retval;
 }

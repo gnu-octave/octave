@@ -108,7 +108,7 @@ pager_event_handler (pid_t pid, int status)
 
   if (pid > 0)
     {
-      if (WIFEXITED (status) || WIFSIGNALLED (status))
+      if (octave_wait::ifexited (status) || octave_wait::ifsignaled (status))
         {
           // Avoid warning() since that will put us back in the pager,
           // which would be bad news.

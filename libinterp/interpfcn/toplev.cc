@@ -808,8 +808,8 @@ run_command_and_return_output (const std::string& cmd_str)
 
       int cmd_status = cmd->close ();
 
-      if (WIFEXITED (cmd_status))
-        cmd_status = WEXITSTATUS (cmd_status);
+      if (octave_wait::ifexited (cmd_status))
+        cmd_status = octave_wait::exitstatus (cmd_status);
       else
         cmd_status = 127;
 
@@ -988,8 +988,8 @@ command shell that is started to run the command.\n\
               // status of the command.  Otherwise, return 127 as a
               // failure code.
 
-              if (WIFEXITED (status))
-                status = WEXITSTATUS (status);
+              if (octave_wait::ifexited (status))
+                status = octave_wait::exitstatus (status);
 
               retval(0) = status;
             }

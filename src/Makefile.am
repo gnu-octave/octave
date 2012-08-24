@@ -22,288 +22,84 @@ include $(top_srcdir)/build-aux/common.mk
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I$(top_srcdir)/libcruft/misc \
-  -I../liboctave -I$(top_srcdir)/liboctave \
-  -Ioctave-value -I$(srcdir)/octave-value \
-  -Iparse-tree -I$(srcdir)/parse-tree \
-  -Ioperators -I$(srcdir)/operators \
-  -Iinterp-core -I$(srcdir)/interp-core \
-  -Iinterpfcn -I$(srcdir)/interpfcn \
-  -Icorefcn \
-  -I. -I$(srcdir) \
-  -I../libgnu -I$(top_srcdir)/libgnu \
-  @CPPFLAGS@
-
-AUTOMAKE_OPTIONS = subdir-objects
-
-octlib_LTLIBRARIES = liboctinterp.la
+  -I$(srcdir)/../libinterp \
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 bin_PROGRAMS = \
   mkoctfile \
-  octave \
+  $(OCTAVE_PROGRAMS) \
   octave-config
 
 mkoctfile_SOURCES =
 nodist_mkoctfile_SOURCES = mkoctfile.cc
-mkoctfile_LDADD = ../libgnu/libgnu.la $(LIBS)
+mkoctfile_LDADD = $(top_builddir)/libgnu/libgnu.la $(LIBS)
 
 octave_config_SOURCES =
 nodist_octave_config_SOURCES = octave-config.cc
-octave_config_LDADD = corefcn/libcorefcn.la ../libgnu/libgnu.la $(LIBS)
+octave_config_LDADD = \
+  corefcn/libcorefcn.la \
+	$(top_builddir)/libgnu/libgnu.la \
+	$(LIBS)
 
 BUILT_SOURCES_EXTRA = \
   mkoctfile.cc \
   octave-config.cc
 else
 bin_PROGRAMS = \
-  octave
+  octave \
+  octave-cli
 
 bin_SCRIPTS = \
   mkoctfile \
   octave-config
 endif
 
-## Order matters here.  Leave builtins.cc last, because it depends on
-## $(DEF_FILES), and building those requires all the sources
-## (except builtins.cc) to be available.
-BUILT_SOURCES = \
-  interp-core/mxarray.h \
-  interp-core/oct-errno.cc \
-  interpfcn/defaults.h \
-  interpfcn/graphics-props.cc \
-  interpfcn/graphics.h \
-  operators/ops.cc \
-  parse-tree/lex.cc \
-  parse-tree/oct-gperf.h \
-  parse-tree/oct-parse.cc \
-  oct-conf.h \
-  version.h \
-  $(BUILT_SOURCES_EXTRA) \
-  builtins.cc
-
-BUILT_DISTFILES = \
-  parse-tree/oct-gperf.h \
-  parse-tree/oct-parse.h
-
-## Files that are created during build process and installed,
-## BUT not distributed in tarball.
-BUILT_NODISTFILES = \
-  interp-core/mxarray.h \
-  interp-core/oct-errno.cc \
-  interpfcn/defaults.h \
-  interpfcn/graphics.h \
-  operators/ops.cc \
-  oct-conf.h \
-  version.h \
-  $(OPT_HANDLERS) \
-  $(OPT_INC) \
-  $(ALL_DEF_FILES) \
-  builtins.cc
-
 EXTRA_DIST = \
-  Makefile.in \
-  DOCSTRINGS \
-  find-defun-files.sh \
-  gendoc.pl \
-  genprops.awk \
-  mk-errno-list \
-  mk-pkg-add \
-  mkbuiltins \
-  mkdefs \
   mkoctfile.in.cc \
   mkoctfile.in.sh \
-  mkops \
-  oct-conf.in.h \
   octave-config.in.cc \
-  octave-config.in.sh \
-  version.in.h \
-  $(BUILT_DISTFILES)
+  octave-config.in.sh
 
-octinclude_HEADERS = \
-  interpfcn/graphics-props.cc \
-  parse-tree/oct-gperf.h \
-  builtins.h \
-  octave.h \
-  $(OV_INCLUDES) \
-  $(OV_SPARSE_INCLUDES) \
-  $(PT_INCLUDES) \
-	$(OPERATOR_INCLUDES) \
-  $(INTERP_CORE_INCLUDES) \
-  $(INTERPFCN_INCLUDES)
-
-nodist_octinclude_HEADERS = \
-  interp-core/mxarray.h \
-  interpfcn/defaults.h \
-  interpfcn/graphics.h \
-  oct-conf.h \
-  version.h
-
-DIST_SRC = \
-  octave.cc \
-  $(OCTAVE_VALUE_SRC) \
-  $(PARSE_TREE_SRC) \
-  $(INTERP_CORE_SRC) \
-  $(INTERPFCN_SRC) \
-  $(COREFCN_SRC)
-
-noinst_LTLIBRARIES =
-
-include parse-tree/module.mk
-include octave-value/module.mk
-include operators/module.mk
-include template-inst/module.mk
-include interp-core/module.mk
-include interpfcn/module.mk
-include corefcn/module.mk
-include dldfcn/module.mk
-
-$(srcdir)/dldfcn/module.mk: $(srcdir)/dldfcn/config-module.sh $(srcdir)/dldfcn/config-module.awk $(srcdir)/dldfcn/module-files
-	$(srcdir)/dldfcn/config-module.sh $(top_srcdir)
-
-if AMCOND_ENABLE_DYNAMIC_LINKING
-  OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
-  OCT_STAMP_FILES = $(subst dldfcn/,dldfcn/$(am__leading_dot),$(DLDFCN_LIBS:.la=.oct-stamp))
-  DLD_LIBOCTINTERP_LIBADD = liboctinterp.la
-else
-  OCT_FILES =
-  OCT_STAMP_FILES =
-  DLD_LIBOCTINTERP_LIBADD =
-endif
-
-liboctinterp_la_SOURCES = \
-  octave.cc \
-  $(OPERATORS_SRC) \
-  $(TEMPLATE_INST_SRC)
-
-nodist_liboctinterp_la_SOURCES = \
-  interp-core/mxarray.h \
-  interp-core/oct-errno.cc \
-  interpfcn/defaults.h \
-  interpfcn/graphics.h \
-  operators/ops.cc \
-  builtins.cc \
-  oct-conf.h \
-  version.h \
-  $(OPT_INC)
-
-liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
-
-include link-deps.mk
-
-liboctinterp_la_LIBADD = \
-  octave-value/liboctave-value.la \
-  parse-tree/libparse-tree.la \
-  interp-core/libinterp-core.la \
-  interpfcn/libinterpfcn.la \
-  corefcn/libcorefcn.la \
+OCTAVE_CORE_LIBS = \
+  ../libinterp/liboctinterp.la \
   ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
-  $(LIBOCTINTERP_LINK_DEPS)
+  ../libcruft/libcruft.la
 
-# Increment these as needed and according to the rules in the libtool manual:
-liboctinterp_current = 1
-liboctinterp_revision = 1
-liboctinterp_age = 0
+include ../libgui/src/link-deps.mk
 
-liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
+octave_cli_SOURCES = main-cli.cc
 
-liboctinterp_la_LDFLAGS = \
-  -version-info $(liboctinterp_version_info) \
-  $(NO_UNDEFINED_LDFLAG) \
-  -bindir $(bindir) \
-  $(LIBOCTINTERP_LINK_OPTS)
-
-## FIXME: Does this rule need to be uncommented?
-#fft.df fft.lo fft2.df fft2.lo fftn.df fftn.lo: CPPFLAGS += $(FFTW_XCPPFLAGS)
-
-octave_SOURCES = main.c
-
-octave_LDADD = \
-  liboctinterp.la \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
+octave_cli_LDADD = \
+  $(OCTAVE_CORE_LIBS)
   $(OCTAVE_LINK_DEPS)
 
-octave_LDFLAGS = \
+octave_cli_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS)
 
-## Section for defining and creating DEF_FILES
-SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
-
-DLDFCN_DEF_FILES = $(DLDFCN_SRC:.cc=.df)
-
-## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
-## .df files that correspond to sources included in liboctave.
-if AMCOND_ENABLE_DYNAMIC_LINKING
-  DEF_FILES = $(SRC_DEF_FILES)
+if AMCOND_BUILD_GUI
+  octave_SOURCES = main.cc
+  OCTAVE_GUI_LIBS = ../libgui/src/liboctgui.la
+  OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
 else
-  DEF_FILES = $(SRC_DEF_FILES) $(DLDFCN_DEF_FILES)
+  octave_SOURCES = main-cli.cc
+  OCTAVE_GUI_LIBS =
+  OCTAVE_GUI_CPPFLAGS =
 endif
 
-ALL_DEF_FILES = $(SRC_DEF_FILES) $(DLDFCN_DEF_FILES)
+octave_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  $(OCTAVE_GUI_CPPFLAGS)
 
-$(SRC_DEF_FILES): mkdefs Makefile
+octave_LDADD = \
+  $(OCTAVE_GUI_LIBS) \
+  $(OCTAVE_CORE_LIBS) \
+  $(OCTAVE_GUI_LINK_DEPS)
 
-$(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
-
-DLL_CDEFS = @OCTINTERP_DLL_DEFS@
-DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
-
-## Rule to build a DEF file from a .cc file
-%.df: %.cc
-	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
-	mv $@-t $@
-
-## Special rules:
-## Mostly for sources which must be built before rest of compilation.
-
-## oct-conf.h must depend on Makefile.  Calling configure
-## may change default/config values.  However, calling configure will also
-## regenerate the Makefiles from Makefile.am and trigger the rules below.
-oct-conf.h: oct-conf.in.h Makefile
-	@$(do_subst_config_vals)
-
-version.h: version.in.h Makefile
-	$(SED) < $< \
-	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
-	  -e "s|%OCTAVE_API_VERSION_NUMBER%|${OCTAVE_API_VERSION_NUMBER}|" \
-	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
-	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \
-	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
-	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
-	mv $@-t $@
-
-builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
-	mv $@-t $@
-
-if AMCOND_ENABLE_DYNAMIC_LINKING
-DLDFCN_PKG_ADD_FILE = dldfcn/PKG_ADD
-
-dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t
-	mv $@-t $@
-endif
-
-if AMCOND_BUILD_DOCS
-.DOCSTRINGS: $(ALL_DEF_FILES) gendoc.pl
-	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
-		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
-		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
-	fi
-	@echo "creating .DOCSTRINGS from .cc source files"
-	@$(PERL) $(srcdir)/gendoc.pl $(ALL_DEF_FILES) > $@
-	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
-	touch $@
-
-all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE) .DOCSTRINGS
-else
-all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE)
-endif
+octave_LDFLAGS = \
+  $(NO_UNDEFINED_LDFLAG) \
+  $(OCTAVE_GUI_LINK_OPTS)
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.in.cc Makefile
@@ -323,9 +119,7 @@ endif
 
 install-exec-hook: make-version-links
 
-install-data-hook: install-oct
-
-uninstall-local: remove-version-links uninstall-oct
+uninstall-local: remove-version-links
 
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \
@@ -353,48 +147,5 @@ endif
 
 .PHONY: make-version-links remove-version-links
 
-if AMCOND_ENABLE_DYNAMIC_LINKING
-install-oct:
-	$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(octfiledir)
-	if [ -n "`cat $(DLDFCN_PKG_ADD_FILE)`" ]; then \
-	  $(INSTALL_DATA) $(DLDFCN_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
-	fi
-	cd $(DESTDIR)$(octlibdir) && \
-	for ltlib in $(DLDFCN_LIBS); do \
-	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
-	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
-	  if [ -n "$$dl" ]; then \
-	    $(INSTALL_PROGRAM) $$dl $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,^lib,,; s,\.la$$,.oct,'`; \
-	  else \
-	    echo "error: dlname is empty in $$ltlib!"; \
-	    exit 1; \
-	  fi; \
-	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
-	  if [ -n "$$lnames" ]; then \
-	    rm -f $$f $$lnames $$dl; \
-	  fi \
-	done
-
-uninstall-oct:
-	for f in $(notdir $(OCT_FILES)); do \
-	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
-	done
-	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
-endif
-.PHONY: install-oct uninstall-oct
-
 CLEANFILES = \
-  $(bin_SCRIPTS) \
-  $(DLDFCN_PKG_ADD_FILE) \
-  interpfcn/graphics-props.cc \
-  parse-tree/oct-parse.output
-
-DISTCLEANFILES = \
-  .DOCSTRINGS \
-  DOCSTRINGS \
-  $(BUILT_NODISTFILES) \
-  $(OCT_FILES) \
-  $(OCT_STAMP_FILES)
-
-MAINTAINERCLEANFILES = \
-  $(BUILT_DISTFILES)
+  $(bin_SCRIPTS)

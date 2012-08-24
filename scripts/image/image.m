@@ -127,7 +127,7 @@ function h = __img__ (x, y, img, varargin)
   dy = std (dy) / mean (abs (dy));
   tol = 100*eps;
   if (any (dx > tol) || any (dy > tol))
-    warning ("Image does not map to non-linearly spaced coordinates")
+    warning ("Image does not map to non-linearly spaced coordinates");
   endif
 
   ca = gca ();

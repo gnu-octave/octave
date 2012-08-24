@@ -20,12 +20,11 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I../libgnu -I$(top_srcdir)/libgnu \
-  @CPPFLAGS@
-
-AUTOMAKE_OPTIONS = subdir-objects
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
 octlib_LTLIBRARIES = libcruft.la
 
@@ -43,7 +42,7 @@ include link-deps.mk
 
 libcruft_la_LIBADD = \
   libranlib.la \
-  ../libgnu/libgnu.la \
+  $(top_builddir)/libgnu/libgnu.la \
   $(LIBCRUFT_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool

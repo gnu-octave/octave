@@ -25,7 +25,7 @@ Absolute tolerance; may be zero for pure relative error test.
 
   END_DOC_ITEM
   TYPE = "double"
-  INIT_VALUE = "::sqrt (DBL_EPSILON)"
+  INIT_VALUE = "::sqrt (std::numeric_limits<double>::epsilon ())"
   SET_EXPR = "val"
 END_OPTION
 
@@ -38,7 +38,7 @@ the relative tolerance must be greater than or equal to
 
   END_DOC_ITEM
   TYPE = "double"
-  INIT_VALUE = "::sqrt (DBL_EPSILON)"
+  INIT_VALUE = "::sqrt (std::numeric_limits<double>::epsilon ())"
   SET_EXPR = "val"
 END_OPTION
 
@@ -50,7 +50,7 @@ error test.
 
   END_DOC_ITEM
   TYPE = "float"
-  INIT_VALUE = "::sqrt (FLT_EPSILON)"
+  INIT_VALUE = "::sqrt (std::numeric_limits<float>::epsilon ())"
   SET_EXPR = "val"
 END_OPTION
 
@@ -62,6 +62,6 @@ tolerance is zero, the relative tolerance must be greater than or equal to
 @w{@code{max (50*eps, 0.5e-28)}}.
   END_DOC_ITEM
   TYPE = "float"
-  INIT_VALUE = "::sqrt (FLT_EPSILON)"
+  INIT_VALUE = "::sqrt (std::numeric_limits<float>::epsilon ())"
   SET_EXPR = "val"
 END_OPTION

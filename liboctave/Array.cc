@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cassert>
-#include <climits>
 
 #include <iostream>
 #include <sstream>

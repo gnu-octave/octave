@@ -84,6 +84,8 @@ for a definition), and then finding its eigenvalues.
 
 @DOCSTRING(roots)
 
+@DOCSTRING(polyeig)
+
 @DOCSTRING(compan)
 
 @DOCSTRING(mpoles)

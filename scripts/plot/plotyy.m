@@ -91,7 +91,7 @@ function [Ax, H1, H2] = plotyy (varargin)
       ax = ax(1:2);
     elseif (length (ax) == 1)
       ax(2) = axes ();
-      set (ax(2), "nextplot", get (ax(1), "nextplot"))
+      set (ax(2), "nextplot", get (ax(1), "nextplot"));
     elseif (isempty (ax))
       ax(1) = axes ();
       ax(2) = axes ();
@@ -157,7 +157,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
     axes (ax(2));
   else
     ax(2) = axes ();
-    set (ax(2), "nextplot", get (ax(1), "nextplot"))
+    set (ax(2), "nextplot", get (ax(1), "nextplot"));
   endif
   newplot ();
 
@@ -218,14 +218,14 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   elseif (ishandle (ax(1)))
     set (ax(1), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen. File a bug report.")
+    error ("plotyy.m: This shouldn't happen. File a bug report.");
   endif
   if (ishandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(2), "data", ax);
   elseif (ishandle (ax(2)))
     set (ax(2), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen. File a bug report.")
+    error ("plotyy.m: This shouldn't happen. File a bug report.");
   endif
 endfunction
 

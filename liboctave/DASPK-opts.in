@@ -32,13 +32,13 @@ tolerance must also be a vector of the same length.
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
     $OPTVAR.resize (dim_vector (1, 1));
-    $OPTVAR(0) = ::sqrt (DBL_EPSILON);
+    $OPTVAR(0) = ::sqrt (std::numeric_limits<double>::epsilon ());
   END_INIT_BODY
   SET_CODE
     void set_$OPT (double val)
       {
         $OPTVAR.resize (dim_vector (1, 1));
-        $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
+        $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (std::numeric_limits<double>::epsilon ());
         reset = true;
       }
 
@@ -68,13 +68,13 @@ The local error test applied at each integration step is
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
     $OPTVAR.resize (dim_vector (1, 1));
-    $OPTVAR(0) = ::sqrt (DBL_EPSILON);
+    $OPTVAR(0) = ::sqrt (std::numeric_limits<double>::epsilon ());
   END_INIT_BODY
   SET_CODE
     void set_$OPT (double val)
       {
         $OPTVAR.resize (dim_vector (1, 1));
-        $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
+        $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (std::numeric_limits<double>::epsilon ());
         reset = true;
       }
 
@@ -172,7 +172,7 @@ time steps.  The default is @code{EPINIT} = 0.01.
     $OPTVAR(1) = 6.0;
     $OPTVAR(2) = 5.0;
     $OPTVAR(3) = 0.0;
-    $OPTVAR(4) = ::pow (DBL_EPSILON, 2.0/3.0);
+    $OPTVAR(4) = ::pow (std::numeric_limits<double>::epsilon (), 2.0/3.0);
     $OPTVAR(5) = 0.01;
   END_INIT_BODY
   SET_EXPR = "val"

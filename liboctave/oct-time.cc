@@ -24,7 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
+#include <limits>
+
 #include <ctime>
 
 #include <sys/time.h>
@@ -121,7 +122,8 @@ DEFINE_SET_INT_FIELD_FCN (min, 0, 59)
 DEFINE_SET_INT_FIELD_FCN (hour, 0, 23)
 DEFINE_SET_INT_FIELD_FCN (mday, 1, 31)
 DEFINE_SET_INT_FIELD_FCN (mon, 0, 11)
-DEFINE_SET_INT_FIELD_FCN (year, INT_MIN, INT_MAX)
+DEFINE_SET_INT_FIELD_FCN (year, std::numeric_limits<int>::min (),
+                          std::numeric_limitd<int>::max ())
 DEFINE_SET_INT_FIELD_FCN (wday, 0, 6)
 DEFINE_SET_INT_FIELD_FCN (yday, 0, 365)
 DEFINE_SET_INT_FIELD_FCN (isdst, 0, 1)
@@ -256,7 +258,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   t.tm_hour = 0;
   t.tm_mday = 0;
   t.tm_mon = -1;
-  t.tm_year = INT_MIN;
+  t.tm_year = std::numeric_limits<int>::min ();
   t.tm_wday = 0;
   t.tm_yday = 0;
   t.tm_isdst = 0;
@@ -276,7 +278,8 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
 
   // Fill in wday and yday, but only if mday is valid and the mon and year
   // are filled in, avoiding issues with mktime and invalid dates.
-  if (t.tm_mday != 0 && t.tm_mon >= 0 && t.tm_year != INT_MIN)
+  if (t.tm_mday != 0 && t.tm_mon >= 0
+      && t.tm_year != std::numeric_limits<int>::min ())
     {
       t.tm_isdst = -1;
       gnulib::mktime (&t);
@@ -285,7 +288,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   if (t.tm_mon < 0)
     t.tm_mon = 0;
 
-  if (t.tm_year == INT_MIN)
+  if (t.tm_year == std::numeric_limits<int>::min ())
     t.tm_year = 0;
 
   if (q)

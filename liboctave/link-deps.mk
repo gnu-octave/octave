@@ -1,4 +1,4 @@
-include ../libcruft/link-deps.mk
+include $(top_srcdir)/libcruft/link-deps.mk
 
 LIBOCTAVE_LINK_DEPS = \
   $(SPARSE_XLIBS) \

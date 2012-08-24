@@ -632,7 +632,7 @@ NDArray::all_integers (void) const
 bool
 NDArray::too_large_for_float (void) const
 {
-  return test_all (xtoo_large_for_float);
+  return test_any (xtoo_large_for_float);
 }
 
 // FIXME -- this is not quite the right thing.
@@ -776,7 +776,7 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
         {
           octave_idx_type ival = NINTbig (d);
 
-          if (ival < 0 || ival > UCHAR_MAX)
+          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
             // FIXME -- is there something
             // better we could do? Should we warn the user?
             ival = 0;

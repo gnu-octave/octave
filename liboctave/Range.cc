@@ -456,7 +456,7 @@ tceil (double x, double ct)
 }
 
 static inline bool
-teq (double u, double v, double ct = 3.0 * DBL_EPSILON)
+teq (double u, double v, double ct = 3.0 * std::numeric_limits<double>::epsilon ())
 {
   double tu = fabs (u);
   double tv = fabs (v);
@@ -477,7 +477,7 @@ Range::nelem_internal (void) const
     }
   else
     {
-      double ct = 3.0 * DBL_EPSILON;
+      double ct = 3.0 * std::numeric_limits<double>::epsilon ();
 
       double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
 

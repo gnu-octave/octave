@@ -581,22 +581,6 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
 bool
 FloatComplexNDArray::too_large_for_float (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      FloatComplex val = elem (i);
-
-      float r_val = std::real (val);
-      float i_val = std::imag (val);
-
-      if ((! (xisnan (r_val) || xisinf (r_val))
-           && fabs (r_val) > FLT_MAX)
-          || (! (xisnan (i_val) || xisinf (i_val))
-              && fabs (i_val) > FLT_MAX))
-        return true;
-    }
-
   return false;
 }
 

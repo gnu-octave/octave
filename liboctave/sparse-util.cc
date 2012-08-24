@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stdio.h>
 #include <stdarg.h>
 #include "lo-error.h"
+#include "oct-sparse.h"
 #include "sparse-util.h"
 
 // FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
@@ -40,10 +41,15 @@ SparseCholError (int status, char *file, int line, char *message)
 void
 SparseCholError (int status, const char *file, int line, const char *message)
 {
-  (*current_liboctave_warning_handler)("warning %i, at line %i in file %s",
-                                     status, line, file);
+  // Ignore CHOLMOD_NOT_POSDEF, since we handle that in Fchol as an
+  // error or exit status.
+  if (status != CHOLMOD_NOT_POSDEF)
+    {
+      (*current_liboctave_warning_handler)("warning %i, at line %i in file %s",
+                                           status, line, file);
 
-  (*current_liboctave_warning_handler)(message);
+      (*current_liboctave_warning_handler)(message);
+    }
 }
 
 int

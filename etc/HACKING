@@ -105,88 +105,191 @@ An overview of the directory layout of Octave's source files:
 
   doc           -- Texinfo documentation for Octave
 
+
   examples      -- some example files
 
+
+  gnulib        -- gnulib subrepo.  This is the actual gnulib source
+                   tree, checked out with git.
+
+
+  libgnu        -- gnulib sources that we use.  The files here are
+                   copied here from the gnulib directory by the
+                   build-aux/bootstrap script that is run by the
+                   autogen.sh script.
+
+
   libcruft      -- various numerical libraries (mostly Fortran)
-    amos           * bessel functions
-    blas-xtra      * wrappers for blas functions used in Octave
-    daspk          * large scale differential algebraic equation solver
-    dasrt          * differential algebraic equation solver with root finding
-    dassl          * differential-algebraic system solver
-    fftpack        * subroutines for fast fourier transforms
-    lapack-xtra    * wrappers for lapack functions used in Octave
-    misc           * miscellaneous utilities
-    odepack        * ordinary differential equation solver
-    ordered-qz     * code for ordering eigenvalues for QZ factorization
-    quadpack       * subroutines for numerical integration
-    ranlib         * random number generators
-    slatec-err     * slatec error handling library
-    slatec-fn      * various special function subroutines
 
-  liboctave     -- the C++ interfaces to the numerical libraries and
-                   various OS facilities
+    amos             bessel functions
 
-  scripts       -- functions written in the Octave language
-    audio          * play and record sound files (system dependent)
-    deprecated     * older deprecated functions
-    elfun          * elementary mathematical functions
-    @ftp           * ftp object class
-    general        * utility functions
-    geometry       * geometry algorithms
-    help           * help subsystem functions
-    image          * image processing
-    io             * input/output functions
-    linear-algebra * linear algebra stuff
-    miscellaneous  * stuff that doesn't fit anywhere else
-    optimization   * zero finders and minimizers
-    path           * functions for path manipulation
-    pkg            * the package manager
-    plot           * plotting functions
-    polynomial     * polynomial manipulation
-    prefs          * user-defined preferences
-    set            * set manipulation
-    signal         * signal processing
-    sparse         * sparse matrix support
-    specfun        * special mathematical functions
-    special-matrix * functions for generating special types of matrices
-    startup        * initialization functions
-    statistics     * statistical functions, distributions, and tests
-    strings        * character string manipulation
-    testfun        * unit testing
-    time           * time and date functions
+    blas-xtra        wrappers for blas functions used in Octave
 
-  src           -- the interpreter itself plus lots of infrastructure
+    daspk            large scale differential algebraic equation solver
+
+    dasrt            differential algebraic equation solver with root finding
+
+    dassl            differential-algebraic system solver
+
+    fftpack          subroutines for fast fourier transforms
+
+    lapack-xtra      wrappers for lapack functions used in Octave
+
+    misc             miscellaneous utilities
+
+    odepack          ordinary differential equation solver
+
+    ordered-qz       code for ordering eigenvalues for QZ factorization
+
+    quadpack         subroutines for numerical integration
+
+    ranlib           random number generators
+
+    slatec-err       slatec error handling library
+
+    slatec-fn        various special function subroutines
+
+
+  liboctave     -- The C++ interfaces to the numerical libraries and
+                   various OS facilities.
+
+
+  libinterp     -- The interpreter itself plus lots of infrastructure
                    around it.  Octave's extensive octave_value class
                    hierarchy for polymorphically handling all Octave
                    types is defined here.  The built-in functions are
-                   also defined here, so if "help foo" tells you foo is
-                   built-in, its source will be somewhere in this
-                   directory.
-    DLD-FUNCTIONS  * Dynamically linked oct files.  If you see "help foo"
-                     telling you that foo is defined in foo.oct, then
-                     foo.cc will be found here and contain the source
-                     code.
-    OPERATORS      * Definitions and template instantiations for
+                   also defined here.
+
+    octave-value     the octave_value class hierarchy.  These are the
+                     container classes that hold various Octave data
+                     types like struct numerical arrays, structure
+                     arrays, and cell arrays.
+
+    parse-tree       Classes that define the parse tree for the
+                     interpreter.
+
+    interp-core      Core utilities for the interpreter.  There are no
+                     DEFUN functions (callable from the scripting
+                     language) defined here.
+
+    interpfcn        Functions closely related to the interpreter.
+                     Includes DEFUN functions (callable from the
+                     scripting language).  Also may export C++ functions
+                     that are used in other parts of the interpreter.
+
+    corefcn          Statically linked DEFUN functions (callable from
+                     the scripting langauge).  No C++ functions exported
+                     for use in other parts of the interpreter.
+
+    dldfcn           Dynamically linked DEFUN functions (callable
+                     from the scripting language).  If you see "help
+                     foo" telling you that foo is defined in foo.oct,
+                     then foo.cc will be found here and contain the
+                     source code.
+
+    operators        Definitions and template instantiations for
                      operators for all possible Octave type
                      combinations.
-    TEMPLATE-INST  * Some C++ template instantiations.
+
+    template-inst    Some C++ template instantiations.
+
+
+  libgui        -- the graphical user interface of GNU Octave
+
+    src              source files.
+
+      m-editor       source files for the m-file editor.
+
+      octave-adapter souce files for the octave layer for threadsafe
+                     communication with the octave interpreter.
+      qtinfo         source files for the Qt texinfo browser.
+
+      icons          icon files that will be compiled into the
+                     executable via a resource file.
+
+    qterminal        subrepository for the qterminal Qt terminal widget.
+
+    languages        translation files and list of translators.
+
+    kb-layouts       various files need by the qterminal widget that has
+                     been derived from Konsole.
+      
+
+  scripts       -- functions written in the Octave language
+
+    audio            play and record sound files (system dependent)
+
+    deprecated       older deprecated functions
+
+    elfun            elementary mathematical functions
+
+    @ftp             ftp object class
+
+    general          utility functions
+
+    geometry         geometry algorithms
+
+    help             help subsystem functions
+
+    image            image processing
+
+    io               input/output functions
+
+    linear-algebra   linear algebra stuff
+
+    miscellaneous    stuff that doesn't fit anywhere else
+
+    optimization     zero finders and minimizers
+
+    path             functions for path manipulation
+
+    pkg              the package manager
+
+    plot             plotting functions
+
+    polynomial       polynomial manipulation
+
+    prefs            user-defined preferences
+
+    set              set manipulation
+
+    signal           signal processing
+
+    sparse           sparse matrix support
+
+    specfun          special mathematical functions
+
+    special-matrix   functions for generating special types of matrices
+
+    startup          initialization functions
+
+    statistics       statistical functions, distributions, and tests
+
+    strings          character string manipulation
+
+    testfun          unit testing
+
+    time             time and date functions
+
 
   test          -- tests for the interpreter
-    test_*.m       * fixed tests for the interpreter
-    fntests.m      * script to run function tests embedded in C++ and .m files
 
+    test_ .m         fixed tests for the interpreter
+
+    fntests.m        script to run function tests embedded in C++ and .m
+                     files
 
 ----
 John W. Eaton
 jwe@octave.org
 
 
-Last updated: Tue Nov 22 20:51:34 PST 2011
+Last updated: Sat, 18 Aug 2012 18:51:25 EDT
 
 
 ################################################################################
 
-Copyright (C) 2009,2012 John W. Eaton
+Copyright (C) 2009-2012 John W. Eaton
 
 This file is part of Octave.
 

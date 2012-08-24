@@ -31,13 +31,13 @@ must match the dimension of the state vector.
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
     $OPTVAR.resize (dim_vector (1, 1));
-    $OPTVAR(0) = ::sqrt (DBL_EPSILON);
+    $OPTVAR(0) = ::sqrt (std::numeric_limits<double>::epsilon ());
   END_INIT_BODY
   SET_CODE
     void set_$OPT (double val)
       {
         $OPTVAR.resize (dim_vector (1, 1));
-        $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
+        $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (std::numeric_limits<double>::epsilon ());
         reset = true;
       }
 
@@ -63,8 +63,8 @@ The local error test applied at each integration step is
 
   END_DOC_ITEM
   TYPE = "double"
-  INIT_VALUE = "::sqrt (DBL_EPSILON)"
-  SET_EXPR = "(val > 0.0) ? val : ::sqrt (DBL_EPSILON)"
+  INIT_VALUE = "::sqrt (std::numeric_limits<double>::epsilon ())"
+  SET_EXPR = "(val > 0.0) ? val : ::sqrt (std::numeric_limits<double>::epsilon ())"
 END_OPTION
 
 OPTION

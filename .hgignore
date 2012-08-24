@@ -36,4 +36,4 @@ syntax: regexp
 # e.g. liboctave/smx-op-inc.mk
 ^liboctave/[\w-]*\.mk$
 
-^src/DLD-FUNCTIONS/module\.mk$
+^libinterp/dldfcn/module\.mk$

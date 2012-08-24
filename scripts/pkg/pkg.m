@@ -317,6 +317,9 @@ function [local_packages, global_packages] = pkg (varargin)
         ## Send verbose output to pager immediately.  Change setting locally.
         page_output_immediately (true, "local");
       case "-forge"
+        if (! octave_config_info ("CURL_LIBS"))
+          error ("pkg: can't download from forge without the cURL library");
+        endif
         octave_forge = true;
       case "-local"
         global_install = false;

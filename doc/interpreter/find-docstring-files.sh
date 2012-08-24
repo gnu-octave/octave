@@ -15,8 +15,8 @@ else
   echo "$1/scripts/DOCSTRINGS"
 fi
 
-if [ -f "../../src/DOCSTRINGS" ]; then
-  echo "../../src/DOCSTRINGS"
+if [ -f "../../libinterp/DOCSTRINGS" ]; then
+  echo "../../libinterp/DOCSTRINGS"
 else
-  echo "$1/src/DOCSTRINGS"
+  echo "$1/libinterp/DOCSTRINGS"
 fi

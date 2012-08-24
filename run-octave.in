@@ -32,7 +32,7 @@ builddir='%builddir%'
 
 d1="$top_srcdir/scripts"
 d2="$builddir/scripts"
-d3="$builddir/src"
+d3="$builddir/libinterp"
 
 d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
@@ -41,6 +41,8 @@ d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune
 d1_path=`echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
 d2_path=`echo "$d2_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
 d3_path=`echo "$d3_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
+
+octave_executable="$builddir/src/octave"
 
 LOADPATH="$d1_path:$d2_path:$d3_path"
 IMAGEPATH="$top_srcdir/scripts/image"
@@ -64,11 +66,15 @@ if [ $# -gt 0 ]; then
   elif [ "x$1" = "x-strace" ]; then
     driver="strace -o octave.trace"
     shift
+  elif [ "x$1" = "x-cli" ]; then
+    octave_executable="$builddir/src/octave-cli"
+    shift
   fi
 fi
 
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
+OCTAVE_DEFAULT_QT_SETTINGS="$top_srcdir/gui/default-qt-settings" \
   exec $builddir/libtool --mode=execute $driver \
-    "$builddir/src/octave" --no-init-path --path="$LOADPATH" \
+    "$octave_executable" --no-init-path --path="$LOADPATH" \
     --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
     --texi-macros-file="$TEXIMACROSFILE" --info-file="$INFOFILE" "$@"

@@ -50,6 +50,15 @@ octave_w32_library_search (HINSTANCE handle, const char *name);
 OCTAVE_API pid_t
 octave_waitpid (pid_t pid, int *status, int options);
 
+OCTAVE_API int octave_wifexited (int status);
+OCTAVE_API int octave_wexitstatus (int status);
+OCTAVE_API int octave_wifsignaled (int status);
+OCTAVE_API int octave_wtermsig (int status);
+OCTAVE_API int octave_wcoredump (int status);
+OCTAVE_API int octave_wifstopped (int status);
+OCTAVE_API int octave_wstopsig (int status);
+OCTAVE_API int octave_wifcontinued (int status);
+
 #ifdef __cplusplus
 }
 #endif

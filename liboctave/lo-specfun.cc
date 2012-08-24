@@ -3195,7 +3195,7 @@ betain (double x, double p, double q, double beta, bool& err)
   term = 1.0;
   ai = 1.0;
   value = 1.0;
-  ns = (int) (qq + cx * psq);
+  ns = static_cast<int> (qq + cx * psq);
 
   //  Use the Soper reduction formula.
 
@@ -3263,7 +3263,8 @@ betain (double x, double p, double q, double beta, bool& err)
 //    Volume 26, Number 1, 1977, pages 111-114.
 //
 double
-betaincinv (double y, double p, double q) {
+betaincinv (double y, double p, double q)
+{
   double a, acu, adj, fpu, g, h;
   int iex;
   bool indx;

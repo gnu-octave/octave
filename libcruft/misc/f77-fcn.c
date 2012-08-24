@@ -60,5 +60,5 @@ F77_FUNC (xstopx, XSTOPX) (const char *s, long slen)
 
   octave_jump_to_enclosing_context ();
 
-  F77_RETURN (0)
+  F77_NORETURN (0)
 }

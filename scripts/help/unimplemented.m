@@ -310,7 +310,6 @@ function list = missing_functions ()
   "plotbrowser",
   "plotedit",
   "plottools",
-  "polyeig",
   "prefdir",
   "preferences",
   "printdlg",

@@ -81,6 +81,57 @@ CRUFT_API extern int f77_exception_encountered;
 #define F77_FCN(f, F) F77_FUNC (f, F)
 #endif
 
+/*
+
+The following macros are used for handling Fortran <-> C calling
+conventions.  They are defined below for three different types of
+systems, Cray (possibly now obsolete), Visual Fortran, and any system
+that is compatible with the f2c calling conventions, including g77 and
+gfortran.  Note that gfortran is not completely compatible with the
+f2c calling conventions, but that we only use the parts that are
+compatible.  For example, f2c and gfortran differ in the way they
+handle Fortran functions that return complex values, but Octave does
+not call any Fortran functions like that directly from C or C++.
+
+Use these macros to pass character strings from C to Fortran:
+
+  F77_CHAR_ARG(x)
+  F77_CONST_CHAR_ARG(x)
+  F77_CXX_STRING_ARG(x)
+  F77_CHAR_ARG_LEN(l)
+  F77_CHAR_ARG_DECL
+  F77_CONST_CHAR_ARG_DECL
+  F77_CHAR_ARG_LEN_DECL
+
+Use these macros to write C-language functions that accept
+Fortran-style character strings:
+
+  F77_CHAR_ARG_DEF(s, len)
+  F77_CONST_CHAR_ARG_DEF(s, len)
+  F77_CHAR_ARG_LEN_DEF(len)
+  F77_CHAR_ARG_USE(s)
+  F77_CHAR_ARG_LEN_USE(s, len)
+
+Use this macro to declare the return type of a C-language function
+that is supposed to act like a Fortran subroutine:
+
+  F77_RET_T int
+
+Use these macros to return from C-language functions that are supposed
+to act like Fortran subroutines.  F77_NORETURN is intended to be used
+as the last statement of such a function that has been tagged with a
+"noreturn" attribute.  If the compiler supports the "noreturn"
+attribute or if F77_RET_T is void, then it should expand to nothing so
+that we avoid warnings about functions tagged as "noreturn"
+containing a return statement.  Otherwise, it should expand to a
+statement that returns the given value so that we avoid warnings about
+not returning a value from a function declared to return something.
+
+  F77_RETURN(retval)
+  F77_NORETURN(retval)
+
+*/
+
 #if defined (F77_USES_CRAY_CALLING_CONVENTION)
 
 #include <fortran.h>
@@ -106,8 +157,20 @@ CRUFT_API extern int f77_exception_encountered;
 #define F77_CHAR_ARG_USE(s) s.ptr
 #define F77_CHAR_ARG_LEN_USE(s, len) (s.mask.len>>3)
 
+/* Use this macro to declare the return type of a C-language function
+   that is supposed to act like a Fortran subroutine.  */
 #define F77_RET_T int
+
+/* Use these macros to return from C-language functions that are
+   supposed to act like Fortran subroutines.  F77_NORETURN is intended
+   to be used as the last statement of such a function that has been
+   tagged with a "noreturn" attribute.  */
 #define F77_RETURN(retval) return retval;
+#if defined (HAVE_ATTR_NORETURN)
+#define F77_NORETURN(retval)
+#else
+#define F77_NORETURN(retval) return retval;
+#endif
 
 /* FIXME -- these should work for SV1 or Y-MP systems but will
    need to be changed for others.  */
@@ -167,8 +230,6 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CONST_CHAR_ARG_DECL const char *, int
 #define F77_CHAR_ARG_LEN_DECL
 
-/* Use these macros to write C-language functions that accept
-   Fortran-style character strings.  */
 #define F77_CHAR_ARG_DEF(s, len) char *s, int len
 #define F77_CONST_CHAR_ARG_DEF(s, len) const char *s, int len
 #define F77_CHAR_ARG_LEN_DEF(len)
@@ -176,13 +237,14 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CHAR_ARG_LEN_USE(s, len) len
 
 #define F77_RET_T void
-#define F77_RETURN(retval)
+
+#define F77_RETURN(retval) return;
+#define F77_NORETURN(retval)
 
 #else
 
 /* Assume f2c-compatible calling convention.  */
 
-/* Use these macros to pass character strings from C to Fortran.  */
 #define F77_CHAR_ARG(x) x
 #define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
 #define F77_CHAR_ARG2(x, l) x
@@ -193,8 +255,6 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CONST_CHAR_ARG_DECL const char *
 #define F77_CHAR_ARG_LEN_DECL , long
 
-/* Use these macros to write C-language functions that accept
-   Fortran-style character strings.  */
 #define F77_CHAR_ARG_DEF(s, len) char *s
 #define F77_CONST_CHAR_ARG_DEF(s, len) const char *s
 #define F77_CHAR_ARG_LEN_DEF(len) , long len
@@ -202,7 +262,13 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CHAR_ARG_LEN_USE(s, len) len
 
 #define F77_RET_T int
+
 #define F77_RETURN(retval) return retval;
+#if defined (HAVE_ATTR_NORETURN)
+#define F77_NORETURN(retval)
+#else
+#define F77_NORETURN(retval) return retval;
+#endif
 
 #endif
 

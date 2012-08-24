@@ -31,32 +31,26 @@
 
 ## Author: jwe
 
-function [x, y, z] = sombrero (n)
+function [x, y, z] = sombrero (n = 41)
 
-  if (nargin == 0)
-    n = 41;
+  if (nargin > 2)
+    print_usage ();
+  elseif (n <= 1)
+    error ("sombrero: number of grid lines N must be greater than 1");
   endif
 
-  if (nargin < 2)
-    if (n > 1)
-      tx = linspace (-8, 8, n)';
-      ty = tx;
-      [xx, yy] = meshgrid (tx, ty);
-      r = sqrt (xx .^ 2 + yy .^ 2) + eps;
-      tz = sin (r) ./ r;
-      if (nargout == 0)
-        surf (tx, ty, tz);
-        box ("off");
-      else
-        x = tx;
-        y = ty;
-        z = tz;
-      endif
-    else
-      error ("sombrero: number of grid lines must be greater than 1");
-    endif
+  tx = linspace (-8, 8, n)';
+  ty = tx;
+  [xx, yy] = meshgrid (tx, ty);
+  r = sqrt (xx .^ 2 + yy .^ 2) + eps;
+  tz = sin (r) ./ r;
+  if (nargout == 0)
+    surf (tx, ty, tz);
+    box ("off");
   else
-    print_usage ();
+    x = tx;
+    y = ty;
+    z = tz;
   endif
 
 endfunction
@@ -66,4 +60,8 @@ endfunction
 %! clf;
 %! colormap ('default');
 %! sombrero ();
+
+## Test input validation
+%!error sombrero (1,2,3)
+%!error <N must be greater than 1> sombrero (1)
 

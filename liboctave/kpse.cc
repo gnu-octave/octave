@@ -129,7 +129,6 @@ extern "C" {
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
-#include <climits>
 #include <cerrno>
 #include <cassert>
 

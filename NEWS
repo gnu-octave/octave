@@ -1,3 +1,8 @@
+Summary of important user-visible changes for version 4.0:
+---------------------------------------------------------
+
+ ** A new GUI is now available with Octave.
+
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
@@ -72,16 +77,15 @@ Summary of important user-visible changes for version 3.8:
     January 1st of the current year.  The previous default was the current day,
     month, and year.  This may produce changes in existing scripts.
 
- ** Other new functions added in 3.8.0:
-
-      betaincinv   erfcinv      splinefit
-      cmpermute    findfigs     tetramesh
-      cmunique     fminsearch   rgbplot     
-      colorcube    lines        shrinkfaces 
-
  ** The default name of the Octave crash dump file is now called
     octave-workspace instead of octave-core.
       
+ ** Other new functions added in 3.8.0:
+
+      betaincinv   erfcinv      polyeig      shrinkfaces 
+      cmpermute    findfigs     splinefit
+      cmunique     fminsearch   tetramesh
+      colorcube    lines        rgbplot     
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.4 and have been
@@ -104,6 +108,14 @@ Summary of important user-visible changes for version 3.8:
     release after 3.8):
 
       static
+
+    The following configuration variables have been deprecated in Octave
+    3.8 and will be removed from Octave 3.12 (or whatever version is the
+    second major release after 3.8):
+
+      CC_VERSION  (now GCC_VERSION)
+      CXX_VERSION (now GXX_VERSION)
+
 
 Summary of important user-visible changes for version 3.6:
 ---------------------------------------------------------

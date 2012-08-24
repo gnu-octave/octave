@@ -584,23 +584,7 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
 bool
 ComplexNDArray::too_large_for_float (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      Complex val = elem (i);
-
-      double r_val = std::real (val);
-      double i_val = std::imag (val);
-
-      if ((! (xisnan (r_val) || xisinf (r_val))
-           && fabs (r_val) > FLT_MAX)
-          || (! (xisnan (i_val) || xisinf (i_val))
-              && fabs (i_val) > FLT_MAX))
-        return true;
-    }
-
-  return false;
+  return test_any (xtoo_large_for_float);
 }
 
 boolNDArray

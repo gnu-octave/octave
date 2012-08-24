@@ -91,7 +91,7 @@ function s = hdl2struct (h)
       ii++;
       s.children(ii) = hdl2struct (lg);
     elseif (nlg > 1)
-      error ("hdl2struct: more than one legend found")
+      error ("hdl2struct: more than one legend found");
     endif
 
     cb = findobj (par, "-depth", 1, "tag", "colorbar");
@@ -105,7 +105,7 @@ function s = hdl2struct (h)
       ii++;
       s.children(ii) = hdl2struct (cb);
     elseif (nlg > 1)
-      error ("hdl2struct: more than one colorbar found")
+      error ("hdl2struct: more than one colorbar found");
     endif
   endif
 
@@ -120,9 +120,9 @@ function hdlist = getspecial (h)
   hdlist = [];
 
   regkids = get ( h, "children");
-  set (0, "showhiddenhandles", "on")
+  set (0, "showhiddenhandles", "on");
   allkids = get ( h, "children");
-  set (0, "showhiddenhandles", "off")
+  set (0, "showhiddenhandles", "off");
   speckids = arrayfun (@(x) ! any (x == regkids), allkids);
   hdlist = allkids (find (speckids));
   hdlist = reshape (hdlist, 1, numel (hdlist));

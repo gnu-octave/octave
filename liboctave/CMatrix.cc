@@ -1192,9 +1192,9 @@ ComplexMatrix::pseudo_inverse (double tol) const
   if (tol <= 0.0)
     {
       if (nr > nc)
-        tol = nr * sigma.elem (0) * DBL_EPSILON;
+        tol = nr * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
       else
-        tol = nc * sigma.elem (0) * DBL_EPSILON;
+        tol = nc * sigma.elem (0) * std::numeric_limits<double>::epsilon ();
     }
 
   while (r >= 0 && sigma.elem (r) < tol)
@@ -3162,25 +3162,7 @@ ComplexMatrix::all_integers (double& max_val, double& min_val) const
 bool
 ComplexMatrix::too_large_for_float (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        Complex val = elem (i, j);
-
-        double r_val = std::real (val);
-        double i_val = std::imag (val);
-
-        if ((! (xisnan (r_val) || xisinf (r_val))
-             && fabs (r_val) > FLT_MAX)
-            || (! (xisnan (i_val) || xisinf (i_val))
-                && fabs (i_val) > FLT_MAX))
-          return true;
-      }
-
-  return false;
+  return test_any (xtoo_large_for_float);
 }
 
 // FIXME Do these really belong here?  Maybe they should be

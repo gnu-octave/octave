@@ -736,7 +736,7 @@ FloatNDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_id
         {
           octave_idx_type ival = NINTbig (d);
 
-          if (ival < 0 || ival > UCHAR_MAX)
+          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
             // FIXME -- is there something
             // better we could do? Should we warn the user?
             ival = 0;

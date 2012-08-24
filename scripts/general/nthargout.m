@@ -84,7 +84,7 @@ function out = nthargout (n, varargin)
   endif
 
   if (any (n != fix (n))  || ntot != fix (ntot) || any (n <= 0) || ntot <= 0)
-    error ("nthargout: N and NTOT must consist of positive integers")
+    error ("nthargout: N and NTOT must consist of positive integers");
   endif
 
   outargs = cell (1, ntot);

@@ -28,13 +28,45 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "quit.h"
+
 #include "lo-cutils.h"
 #include "oct-cmplx.h"
+
+// Generic any/all test functionality with arbitrary predicate.
+
+template <class F, class T, bool zero>
+bool
+any_all_test (F fcn, const T *m, octave_idx_type len)
+{
+  octave_idx_type i;
+
+  for (i = 0; i < len - 3; i += 4)
+    {
+      octave_quit ();
+
+      if (fcn (m[i]) != zero
+          || fcn (m[i+1]) != zero
+          || fcn (m[i+2]) != zero
+          || fcn (m[i+3]) != zero)
+        return ! zero;
+    }
+
+  octave_quit ();
+
+  for (; i < len; i++)
+    if (fcn (m[i]) != zero)
+      return ! zero;
+
+  return zero;
+}
 
 extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
 extern OCTAVE_API bool xis_one_or_zero (double x);
 extern OCTAVE_API bool xis_zero (double x);
 extern OCTAVE_API bool xtoo_large_for_float (double x);
+
+extern OCTAVE_API bool xtoo_large_for_float (const Complex&  x);
 
 extern OCTAVE_API bool xis_int_or_inf_or_nan (float x);
 extern OCTAVE_API bool xis_one_or_zero (float x);
@@ -102,5 +134,53 @@ octave_write_float (std::ostream& os, float dval);
 
 extern OCTAVE_API void
 octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
+
+// Maybe this is overkill, but it allos
+
+class
+octave_wait
+{
+public:
+
+  static bool ifexited (int status)
+  {
+    return octave_wifexited (status);
+  }
+
+  static int exitstatus (int status)
+  {
+    return octave_wexitstatus (status);
+  }
+
+  static bool ifsignaled (int status)
+  {
+    return octave_wifsignaled (status);
+  }
+
+  static int termsig (int status)
+  {
+    return octave_wtermsig (status);
+  }
+
+  static bool coredump (int status)
+  {
+    return octave_wcoredump (status);
+  }
+
+  static bool ifstopped (int status)
+  {
+    return octave_wifstopped (status);
+  }
+
+  static int stopsig (int status)
+  {
+    return octave_wstopsig (status);
+  }
+
+  static bool ifcontinued (int status)
+  {
+    return octave_wifcontinued (status);
+  }
+};
 
 #endif

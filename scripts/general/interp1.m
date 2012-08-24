@@ -24,10 +24,9 @@
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
 ## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, "pp")
 ##
-## One-dimensional interpolation.  Interpolate @var{y}, defined at the
-## points @var{x}, at the points @var{xi}.  The sample points @var{x}
-## must be monotonic.  If not specified, @var{x} is taken to be the
-## indices of @var{y}.  If @var{y} is an array, treat the columns
+## One-dimensional interpolation.  Interpolates to determine the value of
+## @var{yi} at the points, @var{xi}.  If not specified, @var{x} is taken
+## to be the indices of @var{y}.  If @var{y} is an array, treat the columns
 ## of @var{y} separately.
 ##
 ## Method is one of:
@@ -51,8 +50,8 @@
 ## @end table
 ##
 ## Appending '*' to the start of the above method forces @code{interp1}
-## to assume that @var{x} is uniformly spaced, and only @code{@var{x}
-## (1)} and @code{@var{x} (2)} are referenced.  This is usually faster,
+## to assume that @var{x} is uniformly spaced, and only @code{@var{x}(1)}
+## and @code{@var{x}(2)} are referenced.  This is usually faster,
 ## and is never slower.  The default method is "linear".
 ##
 ## If @var{extrap} is the string "extrap", then extrapolate values beyond
@@ -67,11 +66,15 @@
 ## @var{xi}, @var{method}, "extrap")}.
 ##
 ## Duplicate points in @var{x} specify a discontinuous interpolant.  There
-## should be at most 2 consecutive points with the same value.
-## The discontinuous interpolant is right-continuous if @var{x} is increasing,
-## left-continuous if it is decreasing.
-## Discontinuities are (currently) only allowed for "nearest" and "linear"
-## methods; in all other cases, @var{x} must be strictly monotonic.
+## may be at most 2 consecutive points with the same value.
+## If @var{x} is increasing, the default discontinuous interpolant is
+## right-continuous. If @var{x} is decreasing, the default discontinuous
+## interpolant is left-continuous.
+## The continuity condition of the interpolant may be specified by using
+## the options, "-left" or "-right", to select a left-continuous
+## or right-continuous interpolant, respectively.
+## Discontinuous interpolation is only allowed for "nearest" and "linear"
+## methods; in all other cases, the @var{x}-values must be unique.
 ##
 ## An example of the use of @code{interp1} is
 ##
@@ -114,6 +117,7 @@ function yi = interp1 (x, y, varargin)
   xi = [];
   ispp = false;
   firstnumeric = true;
+  rightcontinuous = [];
 
   if (nargin > 2)
     for i = 1:length (varargin)
@@ -124,6 +128,10 @@ function yi = interp1 (x, y, varargin)
           extrap = "extrap";
         elseif (strcmp ("pp", arg))
           ispp = true;
+        elseif (any (strcmp ({"right", "-right"}, arg)))
+          rightcontinuous = true;
+        elseif (any (strcmp ({"left", "-left"}, arg)))
+          rightcontinuous = false;
         else
           method = arg;
         endif
@@ -168,26 +176,41 @@ function yi = interp1 (x, y, varargin)
     y = y(p,:);
   endif
 
+  if (isempty (rightcontinuous))
+    ## If not specified, set the continuity condition
+    if (x(end) < x(1))
+      rightcontinuous = false;
+    else
+      rightcontinuous = true;
+    end
+  endif
+
+  if ((rightcontinuous && (x(end) < x(1)))
+      || (~ rightcontinuous && (x(end) > x(1))))
+    ## Switch between left-continuous and right-continuous
+    x = flipud (x);
+    y = flipud (y);
+  end
+
   starmethod = method(1) == "*";
 
   if (starmethod)
     dx = x(2) - x(1);
   else
-    jumps = x(1:nx-1) == x(2:nx);
+    jumps = x(1:end-1) == x(2:end);
     have_jumps = any (jumps);
     if (have_jumps)
       if (any (strcmp (method, {"nearest", "linear"})))
         if (any (jumps(1:nx-2) & jumps(2:nx-1)))
-          warning ("interp1: extra points in discontinuities");
+          error ("interp1: extra points in discontinuities");
         endif
       else
-        error ("interp1: discontinuities not supported for method %s", method);
+        error ("interp1: discontinuities not supported for method `%s'", method);
       endif
     endif
   endif
 
   ## Proceed with interpolating by all methods.
-
   switch (method)
   case "nearest"
     pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)], shiftdim (y, 1), szy(2:end));
@@ -348,6 +371,23 @@ endfunction
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
+%!demo
+%! clf;
+%! x = 0:0.5:3;
+%! x1 = [3 2 2 1];
+%! x2 = [1 2 2 3];
+%! y1 = [1 1 0 0];
+%! y2 = [0 0 1 1];
+%! h = plot (x, interp1 (x1, y1, x), 'b', x1, y1, 'sb');
+%! hold on
+%! g = plot (x, interp1 (x2, y2, x), 'r', x2, y2, '*r');
+%! xlim ([1 3])
+%! legend ([h(1), g(1)], {'left-continous', 'right-continuous'}, ...
+%!         'location', 'east')
+%! legend boxoff
+%! %--------------------------------------------------------
+%! % red curve is left-continuos and blue is right-continuous at x = 2
+
 ##FIXME: add test for n-d arguments here
 
 ## For each type of interpolated test, confirm that the interpolated
@@ -436,6 +476,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!assert (interp1 ([1 2 2 3], [1 2 3 4], 2), 3);
+%!assert (interp1 ([3 2 2 1], [4 3 2 1], 2), 2);
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 

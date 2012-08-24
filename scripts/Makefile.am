@@ -371,6 +371,12 @@ check-missing-semicolon:
 	  done ) | ../run-octave -qf
 .PHONY: check-missing-semicolon
 
+## Add rule to generate ctags.
+## Automake would normally generate such a rule, but only if there is a
+## xxx_SOURCES target
+ctags:
+	ctags $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES)
+
 install-data-local: install-startup-files install-pkg-add
 
 uninstall-local: uninstall-startup-files uninstall-pkg-add

@@ -44,7 +44,7 @@ function retval = help (name)
 
   if (nargin == 0)
 
-    puts ("\n\
+    text = "\n\
   For help with individual commands and functions type\n\
 \n\
     help NAME\n\
@@ -58,7 +58,13 @@ function retval = help (name)
     doc\n\
 \n\
   GNU Octave is supported and developed by its user community.\n\
-  For more information visit http://www.octave.org.\n\n");
+  For more information visit http://www.octave.org.\n\n";
+
+    if (nargout == 0)
+      puts (text);
+    else
+      retval = text;
+    endif
 
   elseif (nargin == 1 && ischar (name))
 

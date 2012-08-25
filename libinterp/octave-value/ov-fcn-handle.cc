@@ -375,7 +375,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
           for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
                p != vars.end (); p++)
             {
-              if (! save_ascii_data (os, p->varval (), p->name (), false, 0))
+              if (! save_ascii_data (os, p->varval (0), p->name (), false, 0))
                 return os;
             }
         }
@@ -550,7 +550,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
           for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
                p != vars.end (); p++)
             {
-              if (! save_binary_data (os, p->varval (), p->name (),
+              if (! save_binary_data (os, p->varval (0), p->name (),
                                       "", 0, save_as_floats))
                 return os;
             }
@@ -839,7 +839,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
           for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
                p != vars.end (); p++)
             {
-              if (! add_hdf5_data (data_hid, p->varval (), p->name (),
+              if (! add_hdf5_data (data_hid, p->varval (0), p->name (),
                                    "", false, save_as_floats))
                 break;
             }
@@ -1319,6 +1319,58 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 %!     assert (g (3), g2 (3));
 %!     unlink (nm);
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
+%!   unwind_protect_cleanup
+%!     unlink (nm);
+%!   end_unwind_protect
+%! endfor
+*/
+
+/*
+%!function fcn_handle_save_recurse (n, mode, nm, f2, g2, hm2, hdld2, hbi2)
+%!  if n == 0
+%!    save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
+%!  else
+%!    fcn_handle_save_recurse (n - 1, mode, nm, f2, g2, hm2, hdld2, hbi2);
+%!  endif
+%!endfunction
+%!function [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n, nm)
+%!  if n == 0
+%!    load (nm)
+%!  else
+%!    [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n - 1, nm);
+%!  endif
+%!endfunction
+
+Test for bug #35876
+%!test
+%! a = 2;
+%! f = @(x) a + x;
+%! g = @(x) 2 * x;
+%! hm = @version;
+%! hdld = @svd;
+%! hbi = @log2;
+%! f2 = f;
+%! g2 = g;
+%! hm2 = hm;
+%! hdld2 = hdld;
+%! hbi2 = hbi;
+%! modes = {"-text", "-binary"};
+%! if (!isempty (findstr (octave_config_info ("DEFS"), "HAVE_HDF5")))
+%!   modes(end+1) = "-hdf5";
+%! endif
+%! for i = 1:numel (modes)
+%!   mode = modes{i};
+%!   nm = tmpnam ();
+%!   unwind_protect
+%!     fcn_handle_save_recurse (2, mode, nm, f2, g2, hm2, hdld2, hbi2);
+%!     clear f2 g2 hm2 hdld2 hbi2
+%!     [f2, f2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (2, nm);
+%!     load (nm);
+%!     assert (f (2), f2 (2));
+%!     assert (g (2), g2 (2));
+%!     assert (g (3), g2 (3));
+%!     unlink (nm);
+%!     fcn_handle_save_recurse (2, mode, nm, f2, g2, hm2, hdld2, hbi2);
 %!   unwind_protect_cleanup
 %!     unlink (nm);
 %!   end_unwind_protect

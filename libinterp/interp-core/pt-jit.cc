@@ -1711,11 +1711,12 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
       infer.infer ();
 #ifdef OCTAVE_JIT_DEBUG
-      jit_block *entry_block = infer.get_blocks ().front ();
+      jit_block_list& blocks = infer.get_blocks ();
+      jit_block *entry_block = blocks.front ();
       entry_block->label ();
       std::cout << "-------------------- Compiling tree --------------------\n";
       std::cout << tee.str_print_code () << std::endl;
-      entry_block->print (std::cout, "octave jit ir");
+      blocks.print (std::cout, "octave jit ir");
 #endif
 
       jit_factory& factory = conv.get_factory ();
@@ -1738,9 +1739,9 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 #ifdef OCTAVE_JIT_DEBUG
       std::cout << "-------------------- llvm ir --------------------";
       llvm::raw_os_ostream llvm_cout (std::cout);
-      function->print (llvm_cout);
+      llvm_function->print (llvm_cout);
       std::cout << std::endl;
-      llvm::verifyFunction (*function);
+      llvm::verifyFunction (*llvm_function);
 #endif
 
       tjit.optimize (llvm_function);
@@ -1748,7 +1749,6 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 #ifdef OCTAVE_JIT_DEBUG
       std::cout << "-------------------- optimized llvm ir "
                 << "--------------------\n";
-      llvm::raw_os_ostream llvm_cout (std::cout);
       llvm_function->print (llvm_cout);
       llvm_cout.flush ();
       std::cout << std::endl;

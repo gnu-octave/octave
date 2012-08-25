@@ -800,7 +800,7 @@ public:
 
   jit_phi_incomming (jit_phi *auser) : muser (auser) {}
 
-  jit_phi_incomming (const jit_phi_incomming& use) : jit_internal_node ()
+  jit_phi_incomming (const jit_phi_incomming& use)
   {
     *this = use;
   }

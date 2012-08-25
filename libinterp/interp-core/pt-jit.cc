@@ -740,6 +740,8 @@ jit_convert::get_variable (const std::string& vname)
 
   octave_value val = symbol_table::find (vname);
   jit_type *type = jit_typeinfo::type_of (val);
+  bounds.push_back (type_bound (type, vname));
+
   return create_variable (vname, type);
 }
 
@@ -2011,5 +2013,15 @@ Test some simple cases that compile.
 %! endwhile
 
 %!error test_compute_idom ()
+
+%!function x = test_overload (a)
+%!  while 1
+%!    x = a;
+%!    break;
+%!  endwhile
+%!endfunction
+
+%!assert (test_overload (1), 1);
+%!assert (test_overload ([1 2]), [1 2]);
 
 */

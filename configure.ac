@@ -681,8 +681,6 @@ save_CXXFLAGS="$CXXFLAGS"
 save_LIBS="$LIBS"
 save_LDFLAGS="$LDFLAGS"
 
-warn_llvm="LLVM library fails tests.  JIT compilation will be disabled."
-
 AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
 
 AC_ARG_ENABLE([jit-debug],
@@ -698,6 +696,8 @@ LLVM_LDFLAGS=
 LLVM_LIBS=
 
 if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
+  warn_llvm="LLVM was not found or is to old. JIT is disabled."
+
   ## We use -isystem if available because we do not want to see warnings in LLVM
   LLVM_INCLUDE_FLAG=-I
   OCTAVE_CC_FLAG(-isystem ., [
@@ -721,7 +721,7 @@ if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
   LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
 
   AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([llvm/LLVMContext.h], [
+    AC_CHECK_HEADERS([llvm/LLVMContext.h, llvm/Support/TargetSelect.h], [
       AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
         AC_COMPILE_IFELSE(
           [AC_LANG_PROGRAM([[
@@ -738,7 +738,7 @@ if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
   AC_LANG_POP(C++)
   
 else
-  warn_llvm="LLVM_CONFIG not set.  JIT compilation will be disabled."
+  warn_llvm="LLVM_CONFIG not set. The experiential JIT feature is disabled."
 fi
 
 if test -z "$warn_llvm"; then

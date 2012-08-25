@@ -243,8 +243,6 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   vmap[iter_name] = iterator;
 
   jit_block *body = factory.create<jit_block> ("for_body");
-  blocks.push_back (body);
-
   jit_block *tail = factory.create<jit_block> ("for_tail");
 
   // do control expression, iter init, and condition check in prev_block (block)
@@ -261,6 +259,8 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
                                               iterator);
   block->append (check);
   block->append (factory.create<jit_cond_branch> (check, body, tail));
+
+  blocks.push_back (body);
   block = body;
 
   // compute the syntactical iterator
@@ -2023,5 +2023,23 @@ Test some simple cases that compile.
 
 %!assert (test_overload (1), 1);
 %!assert (test_overload ([1 2]), [1 2]);
+
+%!function a = bubble (a = [3 2 1])
+%!  swapped = 1;
+%!  n = length (a);
+%!  while (swapped)
+%!    swapped = 0;
+%!    for i = 1:n-1
+%!      if a(i) > a(i + 1)
+%!        swapped = 1;
+%!        temp = a(i);
+%!        a(i) = a(i + 1);
+%!        a(i + 1) = temp;
+%!      endif
+%!    endfor
+%!  endwhile
+%!endfunction
+
+%!assert (bubble (), [1 2 3]);
 
 */

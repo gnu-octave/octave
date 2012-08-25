@@ -280,6 +280,10 @@ class
 jit_use : public jit_internal_node<jit_value, jit_use>
 {
 public:
+  // some compilers don't allow us to use jit_internal_node without template
+  // paremeters
+  typedef jit_internal_node<jit_value, jit_use> PARENT_T;
+
   jit_use (void) : muser (0), mindex (0) {}
 
   // we should really have a move operator, but not until c++11 :(
@@ -305,7 +309,7 @@ public:
   void stash_value (jit_value *avalue, jit_instruction *auser = 0,
                     size_t aindex = -1)
   {
-    jit_internal_node::stash_value (avalue);
+    PARENT_T::stash_value (avalue);
     mindex = aindex;
     muser = auser;
   }

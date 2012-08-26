@@ -2184,7 +2184,7 @@ QT_LIBDIR=
 build_gui=yes
 win32_terminal=no
 AC_ARG_ENABLE(gui,
-  [AS_HELP_STRING([--disable-gui], [build GUI (default is yes)])],
+  [AS_HELP_STRING([--disable-gui], [avoid building the GUI (default no)])],
   [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
 
 if test $build_gui = yes; then

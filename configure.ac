@@ -132,7 +132,7 @@ AC_SUBST(config_opts)
 BOUNDS_CHECKING=false
 AC_ARG_ENABLE(bounds-check,
   [AS_HELP_STRING([--enable-bounds-check],
-    [bounds checking for indexing in internal array classes (default is no)])],
+    [enable bounds checking for indexing in internal array classes])],
   [if test "$enableval" = yes; then BOUNDS_CHECKING=true; fi], [])
 if $BOUNDS_CHECKING; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
@@ -144,7 +144,7 @@ fi
 USE_OCTAVE_ALLOCATOR=false
 AC_ARG_ENABLE(octave-allocator,
   [AS_HELP_STRING([--enable-octave-allocator],
-    [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.  (default is no)])],
+    [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.])],
   [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=true; fi], [])
 if $USE_OCTAVE_ALLOCATOR; then
   AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1,
@@ -158,7 +158,7 @@ fi
 USE_ATOMIC_REFCOUNT=false
 AC_ARG_ENABLE(atomic-refcount,
   [AS_HELP_STRING([--enable-atomic-refcount],
-    [use atomic operations for internal reference counting.  This is required for thread-safe behavior.  (default is no)])],
+    [use atomic operations for internal reference counting.  This is required for thread-safe behavior but does not by itself make Octave internals thread safe.])],
   [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=true; fi], [])
 if $USE_ATOMIC_REFCOUNT; then
   AC_DEFINE(USE_ATOMIC_REFCOUNT, 1,
@@ -170,7 +170,7 @@ fi
 
 DOCDIR=doc
 AC_ARG_ENABLE(docs,
-  [AS_HELP_STRING([--enable-docs], [build documentation (default is yes)])],
+  [AS_HELP_STRING([--disable-docs], [don't build documentation files])],
   [if test "$enableval" = no; then
      DOCDIR=
      warn_docs="building documentation disabled; make dist will fail"
@@ -1320,8 +1320,8 @@ OCTAVE_ENABLE_READLINE
 ### example, OS X and Windows).
 
 AC_ARG_ENABLE([dl],
-  [AS_HELP_STRING([--enable-dl],
-    [allow loading of dynamically linked modules (not all systems)])],
+  [AS_HELP_STRING([--disable-dl],
+    [disable loading of dynamically linked modules])],
   [case "${enableval}" in
      yes) ENABLE_DYNAMIC_LINKING=true ;;
      no) ENABLE_DYNAMIC_LINKING=false ;;
@@ -1622,8 +1622,8 @@ AC_SUBST(ldpreloadsep)
 ### More configure argument checking related to linking
 
 AC_ARG_ENABLE([no-undefined],
-  [AS_HELP_STRING([--enable-no-undefined],
-    [pass -no-undefined to libtool when linking Octave and its shared libraries (on by default)])],
+  [AS_HELP_STRING([--disable-no-undefined],
+    [don't pass -no-undefined to libtool when linking Octave and its shared libraries])],
   [case "${enableval}" in
      yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
      no)  NO_UNDEFINED_LDFLAG="" ;;
@@ -2126,8 +2126,8 @@ GXX_EXTRA_FLAGS="-Wall -W -Wshadow -Wold-style-cast -Wformat -Wpointer-arith -Ww
 try_extra_warning_flags=true
 
 AC_ARG_ENABLE(extra-warning-flags,
-  [AS_HELP_STRING([--enable-extra-warning-flags],
-    [add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS  (on by default, but only if the compiler appears to accept them)])],
+  [AS_HELP_STRING([--disable-extra-warning-flags],
+    [don't add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = no; then
      try_extra_warning_flags=false
    fi],
@@ -2154,7 +2154,7 @@ try_strict_warning_flags=false
 
 AC_ARG_ENABLE(strict-warning-flags,
   [AS_HELP_STRING([--enable-strict-warning-flags],
-    [add extra strict warning options to CFLAGS and CXXFLAGS (off by default)])],
+    [add extra strict warning options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = yes; then
      try_strict_warning_flags=true
    fi],
@@ -2184,7 +2184,7 @@ QT_LIBDIR=
 build_gui=yes
 win32_terminal=no
 AC_ARG_ENABLE(gui,
-  [AS_HELP_STRING([--disable-gui], [avoid building the GUI (default no)])],
+  [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
   [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
 
 if test $build_gui = yes; then

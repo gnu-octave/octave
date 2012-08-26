@@ -1018,8 +1018,8 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   USE_READLINE=true
   READLINE_LIBS=
   AC_ARG_ENABLE(readline,
-    [AS_HELP_STRING([--enable-readline],
-      [use readline library (default is yes)])],
+    [AS_HELP_STRING([--disable-readline],
+      [use readline library])],
     [if test "$enableval" = no; then
        USE_READLINE=false
        warn_readline="command editing and history features require GNU Readline"

@@ -215,7 +215,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                 {
                   // Non-optimized evaluation.
                   octave_value_list tmp;
-                  tmp(1) = args(2);
+                  tmp(1) = dim + 1;
                   tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
                   if (! error_state)
                     {
@@ -247,6 +247,19 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 %!test
 %! x = [1+i, 3-i; 1-i, 3-i];
 %! assert (dot (x, x), [4, 20]);
+
+%!test
+%! x = int8 ([1 2]);
+%! y = int8 ([2 3]);
+%! assert (dot (x, y), 8);
+
+%!test
+%! x = int8 ([1 2; 3 4]);
+%! y = int8 ([5 6; 7 8]);
+%! assert (dot (x, y), [26 44]);
+%! assert (dot (x, y, 2), [17; 53]);
+%! assert (dot (x, y, 3), [5 12; 21 32]);
+
 */
 
 DEFUN (blkmm, args, ,

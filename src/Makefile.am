@@ -38,9 +38,9 @@ mkoctfile_LDADD = $(top_builddir)/libgnu/libgnu.la $(LIBS)
 octave_config_SOURCES =
 nodist_octave_config_SOURCES = octave-config.cc
 octave_config_LDADD = \
-  corefcn/libcorefcn.la \
-	$(top_builddir)/libgnu/libgnu.la \
-	$(LIBS)
+  $(top_builddir)/libinterp/corefcn/libcorefcn.la \
+  $(top_builddir)/libgnu/libgnu.la \
+  $(LIBS)
 
 BUILT_SOURCES_EXTRA = \
   mkoctfile.cc \

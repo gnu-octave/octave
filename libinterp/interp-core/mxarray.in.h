@@ -88,6 +88,7 @@ typedef char mxChar;
  */
 typedef %OCTAVE_IDX_TYPE% mwSize;
 typedef %OCTAVE_IDX_TYPE% mwIndex;
+typedef %OCTAVE_IDX_TYPE% mwSignedIndex;
 
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 

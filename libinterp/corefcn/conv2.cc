@@ -88,6 +88,12 @@ When the third argument is a matrix, return the convolution of the matrix\n\
       shape = args(3).string_value ();
     }
 
+  if (args(0).ndims () > 2 || args(1).ndims () > 2)
+    {
+      error ("conv2: A and B must be 1-D vectors or 2-D matrices");
+      return retval;
+    }
+
   if (shape == "full")
     ct = convn_full;
   else if (shape == "same")
@@ -101,125 +107,125 @@ When the third argument is a matrix, return the convolution of the matrix\n\
       return retval;
     }
 
-   if (separable)
-     {
-      // If user requests separable, check first two params are vectors
+  if (separable)
+    {
+     // If user requests separable, check first two params are vectors
 
-       if (! (1 == args(0).rows () || 1 == args(0).columns ())
-           || ! (1 == args(1).rows () || 1 == args(1).columns ()))
-         {
-           print_usage ();
-           return retval;
-         }
+      if (! (1 == args(0).rows () || 1 == args(0).columns ())
+          || ! (1 == args(1).rows () || 1 == args(1).columns ()))
+        {
+          print_usage ();
+          return retval;
+        }
 
-       if (args(0).is_single_type () || args(1).is_single_type ()
-           || args(2).is_single_type ())
-         {
-           if (args(0).is_complex_type () || args(1).is_complex_type ()
-               || args(2).is_complex_type ())
-             {
-               FloatComplexMatrix a (args(2).float_complex_matrix_value ());
-               if (args(1).is_real_type () && args(2).is_real_type ())
-                 {
-                   FloatColumnVector v1 (args(0).float_vector_value ());
-                   FloatRowVector v2 (args(1).float_vector_value ());
-                   retval = convn (a, v1, v2, ct);
-                 }
-               else
-                 {
-                   FloatComplexColumnVector v1 (args(0).float_complex_vector_value ());
-                   FloatComplexRowVector v2 (args(1).float_complex_vector_value ());
-                   retval = convn (a, v1, v2, ct);
-                 }
-             }
-           else
-             {
-               FloatColumnVector v1 (args(0).float_vector_value ());
-               FloatRowVector v2 (args(1).float_vector_value ());
-               FloatMatrix a (args(2).float_matrix_value ());
-               retval = convn (a, v1, v2, ct);
-             }
-         }
-       else
-         {
-           if (args(0).is_complex_type () || args(1).is_complex_type ()
-               || args(2).is_complex_type ())
-             {
-               ComplexMatrix a (args(2).complex_matrix_value ());
-               if (args(1).is_real_type () && args(2).is_real_type ())
-                 {
-                   ColumnVector v1 (args(0).vector_value ());
-                   RowVector v2 (args(1).vector_value ());
-                   retval = convn (a, v1, v2, ct);
-                 }
-               else
-                 {
-                   ComplexColumnVector v1 (args(0).complex_vector_value ());
-                   ComplexRowVector v2 (args(1).complex_vector_value ());
-                   retval = convn (a, v1, v2, ct);
-                 }
-             }
-           else
-             {
-               ColumnVector v1 (args(0).vector_value ());
-               RowVector v2 (args(1).vector_value ());
-               Matrix a (args(2).matrix_value ());
-               retval = convn (a, v1, v2, ct);
-             }
-         }
-     } // if (separable)
-   else
-     {
-       if (args(0).is_single_type () || args(1).is_single_type ())
-         {
-           if (args(0).is_complex_type () || args(1).is_complex_type ())
-             {
-               FloatComplexMatrix a (args(0).float_complex_matrix_value ());
-               if (args(1).is_real_type ())
-                 {
-                   FloatMatrix b (args(1).float_matrix_value ());
-                   retval = convn (a, b, ct);
-                 }
-               else
-                 {
-                   FloatComplexMatrix b (args(1).float_complex_matrix_value ());
-                   retval = convn (a, b, ct);
-                 }
-             }
-           else
-             {
-               FloatMatrix a (args(0).float_matrix_value ());
-               FloatMatrix b (args(1).float_matrix_value ());
-               retval = convn (a, b, ct);
-             }
-         }
-       else
-         {
-           if (args(0).is_complex_type () || args(1).is_complex_type ())
-             {
-               ComplexMatrix a (args(0).complex_matrix_value ());
-               if (args(1).is_real_type ())
-                 {
-                   Matrix b (args(1).matrix_value ());
-                   retval = convn (a, b, ct);
-                 }
-               else
-                 {
-                   ComplexMatrix b (args(1).complex_matrix_value ());
-                   retval = convn (a, b, ct);
-                 }
-             }
-           else
-             {
-               Matrix a (args(0).matrix_value ());
-               Matrix b (args(1).matrix_value ());
-               retval = convn (a, b, ct);
-             }
-         }
+      if (args(0).is_single_type () || args(1).is_single_type ()
+          || args(2).is_single_type ())
+        {
+          if (args(0).is_complex_type () || args(1).is_complex_type ()
+              || args(2).is_complex_type ())
+            {
+              FloatComplexMatrix a (args(2).float_complex_matrix_value ());
+              if (args(1).is_real_type () && args(2).is_real_type ())
+                {
+                  FloatColumnVector v1 (args(0).float_vector_value ());
+                  FloatRowVector v2 (args(1).float_vector_value ());
+                  retval = convn (a, v1, v2, ct);
+                }
+              else
+                {
+                  FloatComplexColumnVector v1 (args(0).float_complex_vector_value ());
+                  FloatComplexRowVector v2 (args(1).float_complex_vector_value ());
+                  retval = convn (a, v1, v2, ct);
+                }
+            }
+          else
+            {
+              FloatColumnVector v1 (args(0).float_vector_value ());
+              FloatRowVector v2 (args(1).float_vector_value ());
+              FloatMatrix a (args(2).float_matrix_value ());
+              retval = convn (a, v1, v2, ct);
+            }
+        }
+      else
+        {
+          if (args(0).is_complex_type () || args(1).is_complex_type ()
+              || args(2).is_complex_type ())
+            {
+              ComplexMatrix a (args(2).complex_matrix_value ());
+              if (args(1).is_real_type () && args(2).is_real_type ())
+                {
+                  ColumnVector v1 (args(0).vector_value ());
+                  RowVector v2 (args(1).vector_value ());
+                  retval = convn (a, v1, v2, ct);
+                }
+              else
+                {
+                  ComplexColumnVector v1 (args(0).complex_vector_value ());
+                  ComplexRowVector v2 (args(1).complex_vector_value ());
+                  retval = convn (a, v1, v2, ct);
+                }
+            }
+          else
+            {
+              ColumnVector v1 (args(0).vector_value ());
+              RowVector v2 (args(1).vector_value ());
+              Matrix a (args(2).matrix_value ());
+              retval = convn (a, v1, v2, ct);
+            }
+        }
+    } // if (separable)
+  else
+    {
+      if (args(0).is_single_type () || args(1).is_single_type ())
+        {
+          if (args(0).is_complex_type () || args(1).is_complex_type ())
+            {
+              FloatComplexMatrix a (args(0).float_complex_matrix_value ());
+              if (args(1).is_real_type ())
+                {
+                  FloatMatrix b (args(1).float_matrix_value ());
+                  retval = convn (a, b, ct);
+                }
+              else
+                {
+                  FloatComplexMatrix b (args(1).float_complex_matrix_value ());
+                  retval = convn (a, b, ct);
+                }
+            }
+          else
+            {
+              FloatMatrix a (args(0).float_matrix_value ());
+              FloatMatrix b (args(1).float_matrix_value ());
+              retval = convn (a, b, ct);
+            }
+        }
+      else
+        {
+          if (args(0).is_complex_type () || args(1).is_complex_type ())
+            {
+              ComplexMatrix a (args(0).complex_matrix_value ());
+              if (args(1).is_real_type ())
+                {
+                  Matrix b (args(1).matrix_value ());
+                  retval = convn (a, b, ct);
+                }
+              else
+                {
+                  ComplexMatrix b (args(1).complex_matrix_value ());
+                  retval = convn (a, b, ct);
+                }
+            }
+          else
+            {
+              Matrix a (args(0).matrix_value ());
+              Matrix b (args(1).matrix_value ());
+              retval = convn (a, b, ct);
+            }
+        }
 
-     } // if (separable)
+    } // if (separable)
 
-   return retval;
+  return retval;
 }
 
 /*
@@ -277,6 +283,7 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 %% Test input validation
 %!error conv2 ()
 %!error conv2 (1)
+%!error <must be 1-D vectors or 2-D matrices> conv2 (ones (2), ones (2,2,2))
 %!error <SHAPE type not valid> conv2 (1,2, "NOT_A_SHAPE")
 %% Test alternate calling form which should be 2 vectors and a matrix
 %!error conv2 (ones (2), 1, 1)
@@ -385,7 +392,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
         }
     }
 
-   return retval;
+  return retval;
 }
 
 /*

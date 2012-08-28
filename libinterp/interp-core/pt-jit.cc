@@ -1287,17 +1287,16 @@ jit_infer::do_construct_ssa (jit_block& ablock, size_t avisit_count)
         {
           jit_phi *phi = static_cast<jit_phi *> (*iter);
           jit_variable *var = phi->dest ();
+          ++iter;
+
           if (var->has_top ())
-            {
-              phi->add_incomming (&ablock, var->top ());
-              ++iter;
-            }
+            phi->add_incomming (&ablock, var->top ());
           else
             {
               // temporaries may have extranious phi nodes which can be removed
               assert (! phi->use_count ());
               assert (var->name ().size () && var->name ()[0] == '#');
-              iter = finish->remove (iter);
+              phi->remove ();
             }
         }
     }
@@ -2041,5 +2040,16 @@ Test some simple cases that compile.
 %!endfunction
 
 %!assert (bubble (), [1 2 3]);
+
+%!test
+%! a = 0;
+%! b = 1;
+%! for i=1:1e3
+%!   for j=1:2
+%!     a = a + b;
+%!   endfor
+%! endfor
+%! assert (a, 2000);
+%! assert (b, 1);
 
 */

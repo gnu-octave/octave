@@ -40,6 +40,6 @@
 
 function h = gco ()
 
-  h = get (gcf (), "currentobject");
+  h = get (get (0, "currentfigure"), "currentobject");
 
 endfunction

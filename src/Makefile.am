@@ -25,10 +25,14 @@ AM_CPPFLAGS = \
   -I$(srcdir)/../libinterp \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
+OCTAVE_BINARIES = \
+  octave \
+  octave-cli
+
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 bin_PROGRAMS = \
   mkoctfile \
-  $(OCTAVE_PROGRAMS) \
+  $(OCTAVE_BINARIES) \
   octave-config
 
 mkoctfile_SOURCES =
@@ -47,8 +51,7 @@ BUILT_SOURCES_EXTRA = \
   octave-config.cc
 else
 bin_PROGRAMS = \
-  octave \
-  octave-cli
+  $(OCTAVE_BINARIES)
 
 bin_SCRIPTS = \
   mkoctfile \

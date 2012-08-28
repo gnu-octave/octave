@@ -653,7 +653,7 @@ main_loop (void)
         {
           recover_from_exception ();
           std::cerr
-            << "error: memory exhausted or requested size too large for range of Octave's index type -- trying to return to prompt"
+            << "error: out of memory -- trying to return to prompt"
             << std::endl;
         }
     }

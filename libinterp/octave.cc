@@ -379,14 +379,6 @@ safe_source_file (const std::string& file_name,
       recover_from_exception ();
       gripe_safe_source_exception (file_name, "unhandled execution exception");
     }
-  catch (std::bad_alloc)
-    {
-      recover_from_exception ();
-      error_state = -2;
-      gripe_safe_source_exception
-        (file_name,
-         "memory exhausted or requested size too large for range of Octave's index type");
-    }
 }
 
 // Initialize by reading startup files.
@@ -505,12 +497,6 @@ execute_eval_option_code (const std::string& code)
     {
       recover_from_exception ();
       std::cerr << "error: unhandled execution exception -- eval failed"
-                << std::endl;
-    }
-  catch (std::bad_alloc)
-    {
-      error_state = -2;
-      std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- eval failed"
                 << std::endl;
     }
 

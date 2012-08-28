@@ -757,6 +757,19 @@ tree_evaluator::visit_statement (tree_statement& stmt)
         {
           gripe_library_execution_error ();
         }
+      catch (std::bad_alloc)
+        {
+          // FIXME -- We want to use error_with_id here so that we set
+          // the error state, give users control over this error
+          // message, and so that we set the error_state appropriately
+          // so we'll get stack trace info when appropriate.  But
+          // error_with_id will require some memory allocations.  Is
+          // there anything we can do to make those more likely to
+          // succeed?
+
+          error_with_id ("Octave:bad-alloc",
+                         "out of memory or dimension too large for Octave's index type");
+        }
     }
 }
 
@@ -897,7 +910,6 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
   if (try_code)
     {
       try_code->accept (*this);
-      // FIXME: should std::bad_alloc be handled here?
     }
 
   if (error_state)

@@ -92,11 +92,6 @@ octave_oncleanup::~octave_oncleanup (void)
       // Swallow the interrupt.
       warning ("onCleanup: interrupt occured in cleanup action");
     }
-  catch (std::bad_alloc)
-    {
-      // Swallow the exception.
-      warning ("onCleanup: out of memory occured in cleanup action");
-    }
   catch (...) // Yes, the black hole. We're in a d-tor.
     {
       // This shouldn't happen, in theory.

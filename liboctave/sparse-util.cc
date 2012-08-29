@@ -32,6 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-util.h"
 
 // FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
+
+#ifdef HAVE_CHOLMOD
+
 void
 SparseCholError (int status, char *file, int line, char *message)
 {
@@ -41,6 +44,7 @@ SparseCholError (int status, char *file, int line, char *message)
 void
 SparseCholError (int status, const char *file, int line, const char *message)
 {
+
   // Ignore CHOLMOD_NOT_POSDEF, since we handle that in Fchol as an
   // error or exit status.
   if (status != CHOLMOD_NOT_POSDEF)
@@ -63,6 +67,7 @@ SparseCholPrint (const char *fmt, ...)
   return ret;
 }
 
+#endif //HAVE_CHOLMOD
 
 bool
 sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,

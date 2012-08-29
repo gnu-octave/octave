@@ -24,12 +24,16 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_sparse_util_h)
 #define octave_sparse_util_h 1
 
+#ifdef HAVE_CHOLMOD
+
 // FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
 extern OCTAVE_API void SparseCholError (int status, char *file,
                                         int line, char *message);
 extern OCTAVE_API void SparseCholError (int status, const char *file,
                                         int line, const char *message);
 extern OCTAVE_API int SparseCholPrint (const char *fmt, ...);
+
+#endif //HAVE_CHOLMOD
 
 extern OCTAVE_API bool
 sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,

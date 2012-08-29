@@ -79,7 +79,7 @@ octave_waitpid (pid_t pid, int *status, int options)
   return WAITPID (pid, status, options);
 }
 
-static void
+static inline void
 gripe_missing_wait_macro (const char *id, int status)
 {
   (*current_liboctave_warning_handler)

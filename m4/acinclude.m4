@@ -1506,6 +1506,7 @@ reconstruct the DVI version of the manual
 "
     OCTAVE_CONFIGURE_WARNING([warn_texi2dvi])
   fi
+  TEXI2DVI="$TEXI2DVI"' --build-dir=texi2dvi-build.$$$$'
   AC_SUBST(TEXI2DVI)
 ])
 dnl
@@ -1532,6 +1533,7 @@ reconstruct the PDF version of the manual
 "
     OCTAVE_CONFIGURE_WARNING([warn_texi2pdf])
   fi
+  TEXI2PDF="$TEXI2PDF"' --build-dir=texi2pdf-build.$$$$'
   AC_SUBST(TEXI2PDF)
 ])
 dnl

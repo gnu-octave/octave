@@ -20,10 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-## .NOTPARALLEL:
-
 TEXINFO_TEX = ../texinfo.tex
 
 ## Leading PATH_SEPARATOR required due to weak parsing by dvips (12/04/09)

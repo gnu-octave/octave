@@ -19,7 +19,6 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} scatter (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s})
-## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c})
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c}, @var{style})
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c}, @var{prop}, @var{val})

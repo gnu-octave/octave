@@ -73,7 +73,7 @@ if [ $# -gt 0 ]; then
 fi
 
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
-OCTAVE_DEFAULT_QT_SETTINGS="$top_srcdir/gui/default-qt-settings" \
+OCTAVE_DEFAULT_QT_SETTINGS="$top_srcdir/libgui/default-qt-settings" \
   exec $builddir/libtool --mode=execute $driver \
     "$octave_executable" --no-init-path --path="$LOADPATH" \
     --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \

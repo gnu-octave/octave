@@ -52,7 +52,5 @@ liboctave_TEXINFOS = \
 
 all-local: dvi html pdf ps
 
-liboctave.info liboctave.dvi liboctave.html liboctave.pdf: $(srcdir)/version.texi
-
 EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
 

@@ -147,26 +147,23 @@ MUNGED_TEXI_SRC = \
   var.texi \
   vectorize.texi
 
+BUILT_TEXINFOS = \
+  contributors.texi \
+  $(MUNGED_TEXI_SRC)
+
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
 info_TEXINFOS = octave.texi
 
 octave_TEXINFOS = \
-  contributors.texi \
-  $(MUNGED_TEXI_SRC)
-
-octave.info octave.dvi octave.html/index.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES) $(srcdir)/images.mk
-
-octave.info: $(IMAGES_TXT)
-
-octave.dvi octave.ps: $(IMAGES_EPS) octave_logo.eps
-
-octave.html/index.html: $(IMAGES_PNG)
+  $(BUILT_TEXINFOS) \
+  $(EXAMPLE_FILES) \
+  $(IMAGES) \
+  $(LOGOS) \
+  $(srcdir)/images.mk
 
 octave.html:
 	if [ -d octave.html ]; then true; else mkdir octave.html; fi
-
-octave.pdf: $(IMAGES_PDF) octave_logo.pdf
 
 ## The texi2dvi script (used to create both PDF and DVI output formats)
 ## uses some fixed temporary file names, so wait for DVI file to be
@@ -266,7 +263,7 @@ EXTRA_DIST = \
   $(LOGOS) \
   $(TXI_SRC)
 
-DISTCLEANFILES = $(octave_TEXINFOS) doc-cache
+DISTCLEANFILES = $(BUILT_TEXINFOS) doc-cache
 
 MAINTAINERCLEANFILES = $(IMAGES)
 

@@ -38,10 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 
 #include <string>
-#include <base64.h>
 
 #include "lo-ieee.h"
 #include "lo-math.h"
+#include "oct-base64.h"
 #include "oct-time.h"
 #include "str-vec.h"
 #include "quit.h"
@@ -7235,22 +7235,8 @@ endfor\n\
   return retval;
 }
 
-bool do_base64_encode (const char * inc, const size_t inlen, char *& out)
-{  
-  bool ret = false;
-  size_t outlen = base64_encode_alloc (inc, inlen, &out);
-  
-  if (! out && outlen == 0 && inlen != 0)
-    error ("base64_encode: input array too large");
-  else if (! out)
-    error ("base64_encode: memory allocation error");
-  else
-    ret = true;
-
-  return ret;
-}
-
-DEFUN (base64_encode, args, , "-*- texinfo -*-\n\
+DEFUN (base64_encode, args, ,
+  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{s} =} base64_encode (@var{x})\n\
 Encode a double matrix or array @var{x} into the base64 format string\n\
 @var{s}.\n\
@@ -7282,7 +7268,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
                 reinterpret_cast<const char*> (in.data ());             \
               char* out;                                                \
               if (! error_state                                         \
-                  && do_base64_encode (inc, inlen, out))                \
+                  && octave_base64_encode (inc, inlen, &out))          \
                 retval(0) = octave_value (out);                         \
             }
                                           
@@ -7308,7 +7294,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           inc = reinterpret_cast<const char*> (in.data ());  
           char* out;
           if (! error_state 
-              && do_base64_encode (inc, inlen, out))
+              && octave_base64_encode (inc, inlen, &out))
             retval(0) = octave_value (out);
         }                 
       else
@@ -7320,7 +7306,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           inc = reinterpret_cast<const char*> (in.data ());   
           char* out;
           if (! error_state 
-              && do_base64_encode (inc, inlen, out))
+              && octave_base64_encode (inc, inlen, &out))
             retval(0) = octave_value (out);
         }
     }  
@@ -7342,16 +7328,17 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 %!error base64_encode (struct ())
 */
 
-DEFUN (base64_decode, args, , "-*- texinfo -*-\n\
+DEFUN (base64_decode, args, ,
+  "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} base64_decode (@var{s})\n\
 @deftypefnx {Built-in Function} {@var{x} =} base64_decode (@var{s}, @var{dims})\n\
-Decode the double matrix or array @var{x} from the base64 format string\n\
+Decode the double matrix or array @var{x} from the base64 encoded string\n\
 @var{s}.  The optional input parameter @var{dims} should be a vector\n\
 containing the dimensions of the decoded array.\n\
 @seealso{base64_encode}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -7359,54 +7346,32 @@ containing the dimensions of the decoded array.\n\
     print_usage ();
   else
     {
-      dim_vector new_dims;
-      Array<double> res;
+      dim_vector dims;
 
       if (nargin > 1)
         {
-          const Array<octave_idx_type> new_size =
+          const Array<octave_idx_type> size =
             args(1).octave_idx_type_vector_value ();
+
           if (! error_state)
             {
-              new_dims = dim_vector::alloc (new_size.length ());
-              for (octave_idx_type i = 0; i < new_size.length (); i++)
-                new_dims(i) = new_size(i);
+              dims = dim_vector::alloc (size.length ());
+              for (octave_idx_type i = 0; i < size.length (); i++)
+                dims(i) = size(i);
             }
         }
 
-      const std::string in = args(0).string_value ();
+      const std::string str = args(0).string_value ();
 
       if (! error_state)
         {
-          const char *inc = &(in[0]);
-          char *out;
-          size_t inlen = in.length (), outlen;
+          Array<double> res = octave_base64_decode (str);
 
-          bool ok = base64_decode_alloc (inc, inlen, &out, &outlen);
+          if (nargin > 1)
+            res = res.reshape (dims);
 
-          if (! ok)
-            error ("base64_decode: input was not valid base64");
-          else if (! out)
-            error ("base64_decode: memory allocation error");
-          else
-            {
-              if ((outlen % (sizeof (double) / sizeof (char))) != 0)
-                error ("base64_decode: incorrect input size");
-              else
-                {
-                  octave_idx_type l;
-                  l = (outlen * sizeof (char)) / sizeof (double);
-                  res.resize1 (l);
-                  double *dout = reinterpret_cast<double*> (out);
-                  std::copy (dout, dout + l, res.fortran_vec ());
-
-                  if (nargin > 1)
-                    retval(0) = octave_value (res).reshape (new_dims);
-                  else
-                    retval(0) = octave_value (res);
-                }
-            }
-        }
+          retval = res;
+        }        
     }
 
   return retval; 

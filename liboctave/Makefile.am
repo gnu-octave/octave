@@ -214,6 +214,7 @@ INCS = \
   lo-utils.h \
   mach-info.h \
   oct-alloc.h \
+  oct-base64.h \
   oct-binmap.h \
   oct-cmplx.h \
   oct-convn.h \
@@ -437,6 +438,7 @@ LIBOCTAVE_CXX_SOURCES = \
   lo-utils.cc \
   mach-info.cc \
   oct-alloc.cc \
+  oct-base64.cc \
   oct-convn.cc \
   oct-env.cc \
   oct-fftw.cc \

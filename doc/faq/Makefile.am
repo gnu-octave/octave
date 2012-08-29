@@ -20,10 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-.NOTPARALLEL:
-
 TEXINFO_TEX = ../texinfo.tex
 
 info_TEXINFOS = OctaveFAQ.texi
@@ -31,4 +27,7 @@ info_TEXINFOS = OctaveFAQ.texi
 all-local: dvi html pdf ps
 
 EXTRA_DIST = OctaveFAQ.dvi OctaveFAQ.html OctaveFAQ.pdf OctaveFAQ.ps
+
+clean-local:
+	rm -rf t2d_cache
 

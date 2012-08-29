@@ -263,6 +263,9 @@ EXTRA_DIST = \
   $(LOGOS) \
   $(TXI_SRC)
 
+clean-local:
+	rm -rf t2d_cache
+
 DISTCLEANFILES = $(BUILT_TEXINFOS) doc-cache
 
 MAINTAINERCLEANFILES = $(IMAGES)

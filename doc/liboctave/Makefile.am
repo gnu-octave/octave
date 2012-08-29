@@ -21,10 +21,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-.NOTPARALLEL:
-
 TEXINFO_TEX = ../texinfo.tex
 
 info_TEXINFOS = liboctave.texi
@@ -53,4 +49,7 @@ liboctave_TEXINFOS = \
 all-local: dvi html pdf ps
 
 EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
+
+clean-local:
+	rm -rf t2d_cache
 

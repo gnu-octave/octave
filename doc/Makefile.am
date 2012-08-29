@@ -20,8 +20,8 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-## Avoid making multiple subdirs in parallel which can lead 
-## to a confusing error message stream
+## Avoid making multiple subdirs in parallel
+## which can lead to a confusing error message stream.
 .NOTPARALLEL:
 
 EXTRA_DIST = \

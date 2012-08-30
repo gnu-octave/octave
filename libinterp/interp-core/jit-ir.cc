@@ -97,6 +97,8 @@ jit_block_list::print_dom (std::ostream& os) const
       (*iter)->print_dom (os);
     }
   os << std::endl;
+
+  return os;
 }
 
 void

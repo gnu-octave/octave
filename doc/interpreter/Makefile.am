@@ -87,8 +87,9 @@ IMAGES = \
   $(IMAGES_EPS) \
   $(IMAGES_PDF) \
   $(IMAGES_PNG) \
-  $(IMAGES_TXT) \
-  $(HTMLDIR_IMAGES)
+  $(IMAGES_TXT)
+
+HTMLDIR_IMAGES = $(addprefix octave.html/, $(IMAGES_PNG))
 
 LOGOS = \
   octave_logo.eps \
@@ -147,11 +148,11 @@ MUNGED_TEXI_SRC = \
   var.texi \
   vectorize.texi
 
+TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
+
 BUILT_TEXINFOS = \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
-
-TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
 info_TEXINFOS = octave.texi
 
@@ -162,10 +163,12 @@ octave_TEXINFOS = \
   $(LOGOS) \
   $(srcdir)/images.mk
 
-octave.html:
-	if [ -d octave.html ]; then true; else mkdir octave.html; fi
+all-local: dvi html pdf ps doc-cache
 
-all-local: dvi html pdf ps doc-cache $(HTMLDIR_IMAGES)
+html: $(HTMLDIR_IMAGES)
+
+$(HTMLDIR_IMAGES): $(IMAGES_PNG) | octave.html
+	cp $(@F) octave.html
 
 # Prevent packaging of distribution unless all libraries 
 # necessary to create documentation are present
@@ -214,11 +217,11 @@ contributors.texi: contributors.in
 	  --no-validate --no-headers --no-split --output INSTALL $<
 	mv INSTALL ../../INSTALL.OCTAVE
 
+
 undocumented_list:
 	rm -f $@
 	-$(PERL) $(srcdir)/doccheck/mk_undocumented_list > $@
 .PHONY: undocumented_list
-
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 

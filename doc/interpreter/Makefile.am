@@ -165,11 +165,6 @@ octave_TEXINFOS = \
 octave.html:
 	if [ -d octave.html ]; then true; else mkdir octave.html; fi
 
-## The texi2dvi script (used to create both PDF and DVI output formats)
-## uses some fixed temporary file names, so wait for DVI file to be
-## generated before creating PDF file to avoid conflicts.
-octave.pdf: octave.dvi
-
 all-local: dvi html pdf ps doc-cache $(HTMLDIR_IMAGES)
 
 # Prevent packaging of distribution unless all libraries 

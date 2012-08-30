@@ -132,3 +132,4 @@ interp-core/mxarray.h: interp-core/mxarray.in.h Makefile
 noinst_LTLIBRARIES += interp-core/libinterp-core.la
 
 interp_core_libinterp_core_la_SOURCES = $(INTERP_CORE_SRC)
+interp_core_libinterp_core_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

@@ -91,3 +91,4 @@ parse-tree/oct-gperf.h: parse-tree/octave.gperf
 noinst_LTLIBRARIES += parse-tree/libparse-tree.la
 
 parse_tree_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)
+parse_tree_libparse_tree_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

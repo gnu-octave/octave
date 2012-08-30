@@ -75,3 +75,4 @@ __init_fltk__.lo __init_fltk__.o: \
 noinst_LTLIBRARIES += interpfcn/libinterpfcn.la
 
 interpfcn_libinterpfcn_la_SOURCES = $(INTERPFCN_SRC)
+interpfcn_libinterpfcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

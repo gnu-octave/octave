@@ -127,3 +127,4 @@ OCTAVE_VALUE_SRC = \
 noinst_LTLIBRARIES += octave-value/liboctave-value.la
 
 octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
+octave_value_liboctave_value_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

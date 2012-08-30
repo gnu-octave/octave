@@ -38,14 +38,13 @@ public:
   SparseComplexCHOL (void) :
     sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> () { }
 
-  SparseComplexCHOL (const SparseComplexMatrix& a, bool natural = true) :
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>
-  (a, natural) { }
+  SparseComplexCHOL (const SparseComplexMatrix& a, bool natural = true,
+                     bool force = false) :
+    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a, natural, force) { }
 
   SparseComplexCHOL (const SparseComplexMatrix& a, octave_idx_type& info,
-                     bool natural = true) :
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>
-  (a, info, natural) { }
+                     bool natural = true, bool force = false) :
+    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a, info, natural, force) { }
 
   SparseComplexCHOL (const SparseComplexCHOL& a) :
     sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a) { }

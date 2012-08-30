@@ -80,9 +80,10 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::drop_zeros
 template <class chol_type, class chol_elt, class p_type>
 octave_idx_type
 sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
-  (const chol_type& a, bool natural, octave_idx_type nargout)
+  (const chol_type& a, bool natural, bool force)
 {
   volatile octave_idx_type info = 0;
+
 #ifdef HAVE_CHOLMOD
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -170,7 +171,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   is_pd = cm->status == CHOLMOD_OK;
   info = (is_pd ? 0 : cm->status);
 
-  if (is_pd || nargout > 1)
+  if (is_pd || force)
     {
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       cond = CHOLMOD_NAME(rcond) (Lfactor, cm);

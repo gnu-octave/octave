@@ -35,12 +35,12 @@ public:
 
   SparseCHOL (void) : sparse_base_chol<SparseMatrix, double, SparseMatrix> () { }
 
-  SparseCHOL (const SparseMatrix& a, bool natural = true) :
-    sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, natural) { }
+  SparseCHOL (const SparseMatrix& a, bool natural = true, bool force = false) :
+    sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, natural, force) { }
 
   SparseCHOL (const SparseMatrix& a, octave_idx_type& info,
-              bool natural = true) :
-    sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, info, natural) { }
+              bool natural = false, bool force = false) :
+    sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, info, natural, force) { }
 
   SparseCHOL (const SparseCHOL& a) :
     sparse_base_chol<SparseMatrix, double, SparseMatrix> (a) { }

@@ -402,3 +402,9 @@ endfunction
 %! R = textscan (['Empty1' char(10)], 'Empty%d %f');
 %! assert (R{1}, int32 (1));
 %! assert (isempty (R{2}), true);
+
+%% bug #37023 (actually a strread test)
+%!test
+%! data = textscan("   1. 1 \n 2 3\n", '%f %f');
+%! assert (data{1}, [1; 2], 1e-15);
+%! assert (data{2}, [1; 3], 1e-15);

@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathsearch.h"
 #include "str-vec.h"
 
-#include <defaults.h>
+#include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
 #include "display.h"
@@ -687,6 +687,8 @@ octave_main (int argc, char **argv, int embedded)
 {
   octave_process_command_line (argc, argv);
 
+  install_defaults ();
+
   octave_initialize_interpreter (argc, argv, embedded);
 
   return octave_execute_interpreter ();
@@ -873,11 +875,9 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   octave_thread::init ();
 
   // The order of these calls is important.  The call to
-  // install_defaults must come before install_builtins because
-  // default variable values must be available for the variables to be
-  // installed, and the call to install_builtins must come before the
-  // options are processed because some command line options override
-  // defaults by calling bind_internal_variable.
+  // install_builtins must come before the option settings are processed
+  // because some command line options override defaults by calling
+  // bind_internal_variable.
 
   init_signals ();
 
@@ -896,8 +896,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   initialize_error_handlers ();
 
   initialize_default_warning_state ();
-
-  install_defaults ();
 
   initialize_pathsearch ();
 

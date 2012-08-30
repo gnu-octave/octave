@@ -24,12 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <octave.h>
+#include "defaults.h"
+#include "octave.h"
 
 int
 main (int argc, char **argv)
 {
   octave_process_command_line (argc, argv);
+
+  install_defaults ();
 
   octave_initialize_interpreter (argc, argv, 0);
 

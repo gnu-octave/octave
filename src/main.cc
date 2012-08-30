@@ -24,8 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <octave.h>
-#include <octave-gui.h>
+#include "defaults.h"
+#include "octave.h"
+#include "octave-gui.h"
 
 int
 main (int argc, char **argv)
@@ -33,6 +34,8 @@ main (int argc, char **argv)
   int retval = 0;
 
   octave_process_command_line (argc, argv);
+
+  install_defaults ();
 
   if (octave_starting_gui ())
     retval = octave_start_gui (argc, argv);

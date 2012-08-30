@@ -410,7 +410,7 @@ public:
         symbol_table::erase_persistent (name);
       }
 
-      context_id active_context (void) const;
+      OCTINTERP_API context_id active_context (void) const;
 
       scope_id scope (void) const { return decl_scope; }
 

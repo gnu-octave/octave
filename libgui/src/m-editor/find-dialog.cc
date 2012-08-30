@@ -145,8 +145,11 @@ find_dialog::search_next ()
                                       _wrap_check_box->isChecked (),
                                       !_backward_check_box->isChecked (),
                                       line,col,
-                                      true,
                                       true
+// FIXME: write a proper configure test (is it worth?)
+#if QSCINTILLA_VERSION >= 0x020600
+                                      , true
+#endif
                                       );
     }
 }

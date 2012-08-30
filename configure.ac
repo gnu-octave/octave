@@ -1361,6 +1361,7 @@ TEMPLATE_ARFLAGS="$ARFLAGS"
 CRUFT_DLL_DEFS=
 OCTAVE_DLL_DEFS=
 OCTINTERP_DLL_DEFS=
+OCTGUI_DLL_DEFS=
 OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 ldpreloadsep=" "
@@ -1442,6 +1443,7 @@ case "$canonical_host_type" in
       CRUFT_DLL_DEFS="-DCRUFT_DLL"
       OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
       OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+      OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
       OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
     else
       CPICFLAG=
@@ -1481,7 +1483,7 @@ case "$canonical_host_type" in
     ## Extra compilation flags.
     CRUFT_DLL_DEFS="-DCRUFT_DLL"
     OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
-    OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+    OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
     OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
   ;;
   *-*-linux* | *-*-gnu*)
@@ -1587,6 +1589,7 @@ AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
 AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
 AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
@@ -1615,6 +1618,7 @@ AC_SUBST(TEMPLATE_ARFLAGS)
 AC_SUBST(CRUFT_DLL_DEFS)
 AC_SUBST(OCTAVE_DLL_DEFS)
 AC_SUBST(OCTINTERP_DLL_DEFS)
+AC_SUBST(OCTGUI_DLL_DEFS)
 AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 AC_SUBST(library_path_var)
 AC_SUBST(ldpreloadsep)
@@ -2190,8 +2194,8 @@ AC_ARG_ENABLE(gui,
 if test $build_gui = yes; then
   AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
   if test -n "$QMAKE"; then
-    QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p'`
-    QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p'`
+    QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p' | sed -e 's,\\\\,/,g'`
+    QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p' | sed -e 's,\\\\,/,g'`
     AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
     AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
     AC_CHECK_PROGS(RCC, [rcc])
@@ -2367,6 +2371,13 @@ typedef unsigned long ino_t;
 #define OCTGRAPHICS_API OCTAVE_EXPORT
 #else
 #define OCTGRAPHICS_API OCTAVE_IMPORT
+#endif
+
+/* API macro for libgui */
+#ifdef OCTGUI_DLL
+#define OCTGUI_API OCTAVE_EXPORT
+#else
+#define OCTGUI_API OCTAVE_IMPORT
 #endif
 
 /* oct-types.h */

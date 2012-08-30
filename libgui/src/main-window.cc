@@ -20,6 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#include <QApplication>
+#include <QLabel>
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>

@@ -26,6 +26,8 @@ QT_LIBS = -lQtCore -lQtGui -lQtNetwork -lqscintilla2
 
 QT_LDFLAGS = -L$(QT_LIBDIR)
 
+MOC_CPPFLAGS =
+
 SRCDIRS = \
   m-editor \
   qtinfo \
@@ -92,6 +94,7 @@ liboctgui_la_SOURCES = \
 nodist_liboctgui_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
 liboctgui_la_CPPFLAGS = \
+  @OCTGUI_DLL_DEFS@ \
   -I$(QT_INCDIR) \
   -I$(QT_INCDIR)/QtCore \
   -I$(QT_INCDIR)/QtGui \
@@ -263,6 +266,10 @@ libqterminal_la_SOURCES = \
   ../qterminal/libqterminal/win32/QWinTerminalImpl.cpp
 
 libqterminal_la_MOC += ../qterminal/libqterminal/win32/moc-QWinTerminalImpl.cc
+libqterminal_la_CPPFLAGS += -DUNICODE
+
+# This flag is required to let MOC know about Q_OS_WIN32.
+MOC_CPPFLAGS += -DWIN32
 
 else
 
@@ -297,7 +304,7 @@ endif
 
 moc-%.cc: %.h
 	test -d $(@D) || mkdir -p $(@D)
-	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
+	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
 
 ui-%.h: %.ui
 	@UIC@ -o $@ $<

@@ -36,7 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexerdiff.h>
 #include "resource-manager.h"
+#include <QApplication>
+#include <QFileDialog>
 #include <QMessageBox>
+#include <QTextStream>
 #include <QVBoxLayout>
 
 file_editor_tab::file_editor_tab(file_editor *fileEditor)

@@ -17,9 +17,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "webinfo.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+
+#include "file-ops.h"
+#include "help.h"
+#include "defaults.h"
 
 
 webinfo::webinfo (QWidget *parent)
@@ -76,7 +84,7 @@ webinfo::webinfo (QWidget *parent)
 
   resize (500, 300);
 
-  set_info_path ("../../doc/interpreter/octave.info");
+  set_info_path (QString::fromStdString (Vinfo_file));
 }
 
 void

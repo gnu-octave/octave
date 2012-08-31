@@ -1,4 +1,4 @@
-# Makefile for octave's libcruft directory
+# Makefile for Octave's libcruft directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #

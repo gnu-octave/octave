@@ -1,4 +1,4 @@
-# Makefile for Octave's src directory
+# Makefile for Octave's libinterp directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #

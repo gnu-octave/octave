@@ -1,4 +1,4 @@
-# Makefile for octave's liboctave directory
+# Makefile for Octave's liboctave directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #

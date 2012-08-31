@@ -1,4 +1,4 @@
-# Makefile for octave's doc/interpreter directory
+# Makefile for Octave's doc directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #

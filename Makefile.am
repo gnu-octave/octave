@@ -1,4 +1,4 @@
-# Makefile for octave
+# Makefile for Octave
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #

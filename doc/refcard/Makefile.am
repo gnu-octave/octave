@@ -1,4 +1,4 @@
-# Makefile for octave's doc/refcard directory
+# Makefile for Octave's doc/refcard directory
 #
 # Copyright (C) 1996-2012 John W. Eaton
 #

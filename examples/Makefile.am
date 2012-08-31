@@ -1,4 +1,4 @@
-# Makefile for octave's examples directory
+# Makefile for Octave's examples directory
 #
 # Copyright (C) 1996-2012 John W. Eaton
 #

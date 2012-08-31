@@ -1,3 +1,5 @@
+# Makefile for Octave's libgui directory
+#
 # Copyright (C) 2012 John W. Eaton
 #
 # This file is part of Octave.

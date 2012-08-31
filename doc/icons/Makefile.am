@@ -1,4 +1,4 @@
-# Makefile for octave's doc/icons directory
+# Makefile for Octave's doc/icons directory
 #
 # Copyright (C) 2012 John W. Eaton
 #

@@ -1,4 +1,4 @@
-# Makefile for octave's test directory
+# Makefile for Octave's test directory
 #
 # Copyright (C) 1994-2012 John W. Eaton
 #

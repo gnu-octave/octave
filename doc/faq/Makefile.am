@@ -1,4 +1,4 @@
-# Makefile for octave's doc/faq directory
+# Makefile for Octave's doc/faq directory
 #
 # Copyright (C) 1996-2012 John W. Eaton
 #
@@ -25,6 +25,11 @@ TEXINFO_TEX = ../texinfo.tex
 info_TEXINFOS = OctaveFAQ.texi
 
 all-local: dvi html pdf ps
+
+## The texi2dvi script (used to create both PDF and DVI output formats)
+## uses some fixed temporary file names.  In order to avoid a race condition
+## the DVI and PDF builds are forced to run serially through a Makefile rule.
+OctaveFAQ.pdf: OctaveFAQ.dvi
 
 EXTRA_DIST = OctaveFAQ.dvi OctaveFAQ.html OctaveFAQ.pdf OctaveFAQ.ps
 

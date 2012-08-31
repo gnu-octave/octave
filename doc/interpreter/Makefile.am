@@ -1,4 +1,4 @@
-# Makefile for octave's doc/interpreter directory
+# Makefile for Octave's doc/interpreter directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -169,6 +169,11 @@ html: $(HTMLDIR_IMAGES)
 
 $(HTMLDIR_IMAGES): $(IMAGES_PNG) | octave.html
 	cp $(@F) octave.html
+
+## The texi2dvi script (used to create both PDF and DVI output formats)
+## uses some fixed temporary file names.  In order to avoid a race condition
+## the DVI and PDF builds are forced to run serially through a Makefile rule.
+octave.pdf: octave.dvi
 
 # Prevent packaging of distribution unless all libraries 
 # necessary to create documentation are present

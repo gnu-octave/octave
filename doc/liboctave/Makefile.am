@@ -1,4 +1,4 @@
-# Makefile for octave's doc/liboctave directory
+# Makefile for Octave's doc/liboctave directory
 #
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
 #               2005, 2006, 2007 John W. Eaton
@@ -47,6 +47,11 @@ liboctave_TEXINFOS = \
   range.texi
 
 all-local: dvi html pdf ps
+
+## The texi2dvi script (used to create both PDF and DVI output formats)
+## uses some fixed temporary file names.  In order to avoid a race condition
+## the DVI and PDF builds are forced to run serially through a Makefile rule.
+liboctave.pdf: liboctave.dvi
 
 EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
 

@@ -31,10 +31,10 @@ file="$2";
 echo "// DO NOT EDIT!  Generated automatically by mkdefs."
 case "$file" in
   $srcdir/*)
-    xsrcdir=`echo "$file" | sed "s,^$srcdir,src,"`
+    xsrcdir=`echo "$file" | sed "s,^$srcdir,libinterp,"`
   ;;
   *)
-    xsrcdir="src/$file"
+    xsrcdir="libinterp/$file"
   ;;
 esac
 echo " XDEFUN_FILE_NAME (\"$xsrcdir\")"

@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
-#include "config.h"
 #include "quit.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"

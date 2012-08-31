@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 // config.h needs to be first because it includes #defines that can */
 // affect other header files.
 
-#include "config.h"
+#include <config.h>
 
 #include "Matrix.h"
 

@@ -539,7 +539,7 @@ Octave is installed (for example, @samp{i586-unknown-gnu}).
 Octave and other binaries that people will want to run directly.
 
 @item @var{prefix}/lib/octave-@var{version}
-Libraries like libcruft.a and liboctave.a.
+Libraries like liboctave.a and liboctinterp.a.
 
 @item @var{prefix}/octave-@var{version}/include/octave
 Include files distributed with Octave.
@@ -796,12 +796,12 @@ Octave's 64-bit index support is activated with the configure option
 @end example
 
 You must ensure that all Fortran sources except those in the
-@file{libcruft/ranlib} directory are compiled such that INTEGERS are
+@file{liboctave/cruft/ranlib} directory are compiled such that INTEGERS are
 8-bytes wide.  If you are using gfortan, the configure script should
 automatically set the Makefile variable @w{@env{F77_INTEGER_8_FLAG}} to 
 @option{-fdefault-integer-8}.  If you are using another compiler, you
 must set this variable yourself.  You should NOT set this flag in
-@env{FFLAGS}, otherwise the files in @file{libcruft/ranlib} will be
+@env{FFLAGS}, otherwise the files in @file{liboctave/cruft/ranlib} will be
 miscompiled.
 
 @item Other dependencies
@@ -976,7 +976,7 @@ make[2]: *** [zgemm.o] Error 1
 @end example
 
 @noindent
-when compiling the Fortran subroutines in the @file{libcruft}
+when compiling the Fortran subroutines in the @file{liboctave/cruft}
 subdirectory, you should either upgrade your compiler or try compiling
 with optimization turned off.
 

@@ -1,4 +1,4 @@
-# Makefile for Octave's libcruft directory
+# Makefile for Octave's liboctave/cruft directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -45,8 +45,7 @@ libcruft_la_LIBADD = \
   $(top_builddir)/libgnu/libgnu.la \
   $(LIBCRUFT_LINK_DEPS)
 
-# Increment these as needed and according to the rules in the libtool
-# manual:
+# Increment these as needed and according to the rules in the libtool manual:
 libcruft_current = 1
 libcruft_revision = 0
 libcruft_age = 0

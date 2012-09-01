@@ -69,8 +69,7 @@ EXTRA_DIST = \
 
 OCTAVE_CORE_LIBS = \
   ../libinterp/liboctinterp.la \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la
+  ../liboctave/liboctave.la
 
 include ../libgui/src/link-deps.mk
 

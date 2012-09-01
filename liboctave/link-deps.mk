@@ -1,6 +1,7 @@
-include $(top_srcdir)/libcruft/link-deps.mk
+include $(top_srcdir)/liboctave/cruft/link-deps.mk
 
 LIBOCTAVE_LINK_DEPS = \
+	$(GNULIB_LINK_DEPS) \
   $(SPARSE_XLIBS) \
   $(ARPACK_LIBS) \
   $(QRUPDATE_LIBS) \

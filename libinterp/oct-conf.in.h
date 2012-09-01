@@ -350,10 +350,6 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_LFLAGS %OCTAVE_CONF_LFLAGS%
 #endif
 
-#ifndef OCTAVE_CONF_LIBCRUFT
-#define OCTAVE_CONF_LIBCRUFT %OCTAVE_CONF_LIBCRUFT%
-#endif
-
 #ifndef OCTAVE_CONF_LIBEXT
 #define OCTAVE_CONF_LIBEXT %OCTAVE_CONF_LIBEXT%
 #endif

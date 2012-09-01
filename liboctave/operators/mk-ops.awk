@@ -93,13 +93,13 @@ BEGIN {
 
           if (list_cc_files)
             {
-              printf (" %s", cc_file);
+              printf (" operators/%s", cc_file);
               next;
             }
 
           if (list_h_files)
             {
-              printf (" %s", h_file);
+              printf (" operators/%s", h_file);
               next;
             }
 

@@ -1318,7 +1318,6 @@ specified option.\n\
       { false, "LEX", OCTAVE_CONF_LEX },
       { false, "LEXLIB", OCTAVE_CONF_LEXLIB },
       { false, "LFLAGS", OCTAVE_CONF_LFLAGS },
-      { false, "LIBCRUFT", OCTAVE_CONF_LIBCRUFT },
       { false, "LIBEXT", OCTAVE_CONF_LIBEXT },
       { false, "LIBFLAGS", OCTAVE_CONF_LIBFLAGS },
       { false, "LIBOCTAVE", OCTAVE_CONF_LIBOCTAVE },

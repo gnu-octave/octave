@@ -22,9 +22,9 @@ for f in NEWS README COPYING; do
   fi
 done
 
-echo "generating source lists for liboctave/Makefile..."
+echo "generating source lists for liboctave/operators/module.mk..."
 
-(cd liboctave; ./config-ops.sh)
+(cd liboctave/operators; ./config-ops.sh)
 
 echo "generating doc/interpreter/images.mk..."
 

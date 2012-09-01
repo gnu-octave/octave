@@ -796,7 +796,7 @@ OCTAVE_CHECK_LIB(fftw3f, FFTW3F,
 AM_CONDITIONAL([AMCOND_HAVE_FFTW],
   [test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"])
 
-## Subdirectory of libcruft to build if FFTW is not found.
+## Subdirectory of liboctave/cruft to build if FFTW is not found.
 FFT_DIR="fftpack"
 AC_SUBST(FFT_DIR)
 
@@ -1134,7 +1134,7 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
       CFLAGS="$CFLAGS -DUSE_BLASWRAP"
       AC_LANG_PUSH(C)
       AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-          #include "libcruft/misc/blaswrap.c"
+          #include "liboctave/cruft/misc/blaswrap.c"
         ]])],
         [mv conftest.$ac_objext blaswrap.$ac_objext
          octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
@@ -1151,14 +1151,14 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
 
          ## remove temp file
          rm -f blaswrap.$ac_objext],
-        [AC_MSG_FAILURE([cannot compile libcruft/misc/blaswrap.c])])
+        [AC_MSG_FAILURE([cannot compile liboctave/cruft/misc/blaswrap.c])])
       AC_LANG_POP(C)
       CFLAGS="$octave_blaswrap_save_CFLAGS"
 
       if test "x$ax_blas_f77_func_ok" = "xno"; then
         BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
       else
-        ## wrapper in libcruft, remove from BLAS_LIBS
+        ## wrapper in cruft, remove from BLAS_LIBS
         BLAS_LIBS="`echo $BLAS_LIBS | sed -e 's/blaswrap.[[^ ]]* //g'`"
         AC_DEFINE(USE_BLASWRAP, 1,
           [Define to 1 if BLAS functions need to be wrapped (potentially needed for 64-bit OSX only).])
@@ -1712,11 +1712,9 @@ AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
 if $SHARED_LIBS; then
   LIBOCTINTERP=-loctinterp$SHLLINKEXT
   LIBOCTAVE=-loctave$SHLLINKEXT
-  LIBCRUFT=-lcruft$SHLLINKEXT
 else
   LIBOCTINTERP='$(top_builddir)/libinterp/liboctinterp.$(LIBEXT)'
   LIBOCTAVE='$(top_builddir)/liboctave/liboctave.$(LIBEXT)'
-  LIBCRUFT='$(top_builddir)/libcruft/libcruft.$(LIBEXT)'
 fi
 
 AC_SUBST(LD_CXX)
@@ -1724,7 +1722,6 @@ AC_SUBST(RDYNAMIC_FLAG)
 AC_SUBST(ENABLE_DYNAMIC_LINKING)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
-AC_SUBST(LIBCRUFT)
 
 ### Check for existence of various libraries
 
@@ -1938,7 +1935,7 @@ OCTAVE_CHECK_FUNC_CMATH(isnan)
 OCTAVE_CHECK_FUNC_CMATH(isinf)
 OCTAVE_CHECK_FUNC_CMATH(isfinite)
 
-dnl Would like to get rid of this cruft, and just have
+dnl Would like to get rid of this crap, and just have
 dnl
 dnl   AC_CHECK_FUNCS(finite isnan isinf)
 dnl
@@ -2407,13 +2404,13 @@ AC_CONFIG_FILES([
   doc/liboctave/Makefile
   doc/refcard/Makefile
   examples/Makefile
-  libcruft/Makefile
-  libcruft/mkf77def
   libgnu/Makefile
   libgui/Makefile
   libgui/src/Makefile
   libinterp/Makefile
   liboctave/Makefile
+  liboctave/cruft/Makefile
+  liboctave/cruft/mkf77def
   scripts/Makefile
   src/Makefile
   test/Makefile])

@@ -223,7 +223,6 @@ initialize (void)
   vars["LIBOCTAVE"] = "-loctave";
   vars["LIBOCTINTERP"] = "-loctinterp";
   vars["READLINE_LIBS"] = "-lreadline";
-  vars["LIBCRUFT"] = "-lcruft";
   vars["LAPACK_LIBS"] = get_variable ("LAPACK_LIBS", %OCTAVE_CONF_LAPACK_LIBS%);
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
   vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS", %OCTAVE_CONF_FFTW3_LDFLAGS%);
@@ -254,7 +253,7 @@ initialize (void)
     + " " + vars["LDFLAGS"];
 
   vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"]
-    + " " + vars["SPECIAL_MATH_LIB"] + " " + vars["LIBCRUFT"];
+    + " " + vars["SPECIAL_MATH_LIB"];
 
   vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"]
     + " " + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
@@ -307,20 +306,20 @@ static string help_msg =
 "                            CC                        LD_CXX\n"
 "                            CFLAGS                    LD_STATIC_FLAG\n"
 "                            CPICFLAG                  LFLAGS\n"
-"                            CPPFLAGS                  LIBCRUFT\n"
-"                            CXX                       LIBOCTAVE\n"
-"                            CXXFLAGS                  LIBOCTINTERP\n"
-"                            CXXPICFLAG                LIBS\n"
-"                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
-"                            DEPEND_FLAGS              OCTAVE_LINK_DEPS\n"
-"                            DL_LD                     OCTAVE_LINK_OPTS\n"
-"                            DL_LDFLAGS                OCT_LINK_DEPS\n"
-"                            EXEEXT                    OCT_LINK_OPTS\n"
-"                            F77                       RDYNAMIC_FLAG\n"
-"                            F77_INTEGER_8_FLAG        READLINE_LIBS\n"
-"                            FFLAGS                    SED\n"
-"                            FFTW3_LDFLAGS             XTRA_CFLAGS\n"
-"                            FFTW3_LIBS                XTRA_CXXFLAGS\n"
+"                            CPPFLAGS                  LIBOCTAVE\n"       
+"                            CXX                       LIBOCTINTERP\n"    
+"                            CXXFLAGS                  LIBS\n"            
+"                            CXXPICFLAG                OCTAVE_LIBS\n"     
+"                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LINK_DEPS\n"
+"                            DEPEND_FLAGS              OCTAVE_LINK_OPTS\n"
+"                            DL_LD                     OCT_LINK_DEPS\n"   
+"                            DL_LDFLAGS                OCT_LINK_OPTS\n"   
+"                            EXEEXT                    RDYNAMIC_FLAG\n"   
+"                            F77                       READLINE_LIBS\n"   
+"                            F77_INTEGER_8_FLAG        SED\n"             
+"                            FFLAGS                    XTRA_CFLAGS\n"     
+"                            FFTW3_LDFLAGS             XTRA_CXXFLAGS\n"   
+"                            FFTW3_LIBS                                   
 "                            FFTW3F_LDFLAGS\n"
 "                            FFTW3F_LIBS\n"
 "\n"
@@ -751,7 +750,7 @@ main (int argc, char **argv)
                 + " " + vars["ALL_LDFLAGS"] + " " +  pass_on_options
                 + " " + output_option + " " + objfiles + " " + libfiles
                 + " " + ldflags + " " + vars["LFLAGS"]
-                + " -loctinterp -loctave -lcruft "
+                + " -loctinterp -loctave "
                 + " " + vars["OCT_LINK_OPTS"]
                 + " " + vars["OCTAVE_LINK_DEPS"];
               result = run_command (cmd);
@@ -768,7 +767,7 @@ main (int argc, char **argv)
           string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
             + pass_on_options + " -o " + octfile + " " + objfiles + " "
             + libfiles + " " + ldflags + " " + vars["LFLAGS"]
-            + " -loctinterp -loctave -lcruft "
+            + " -loctinterp -loctave "
             + vars["OCT_LINK_OPTS"] + " " + vars["OCT_LINK_DEPS"];
           result = run_command (cmd);
         }

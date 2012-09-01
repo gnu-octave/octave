@@ -103,7 +103,7 @@ liboctgui_la_CPPFLAGS = \
   -I$(srcdir)/m-editor \
   -I$(srcdir)/octave-adapter \
   -I$(srcdir)/qtinfo \
-  -I$(srcdir)/../../libcruft/misc \
+  -I$(srcdir)/../../liboctave/cruft/misc \
   -I../../liboctave \
   -I$(srcdir)/../../liboctave \
   -I../../libinterp \
@@ -123,7 +123,6 @@ liboctgui_la_LIBADD = \
   libqterminal.la \
   ../../libinterp/liboctinterp.la \
   ../../liboctave/liboctave.la \
-  ../../libcruft/libcruft.la \
   $(LIBOCTGUI_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:

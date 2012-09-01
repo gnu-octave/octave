@@ -172,7 +172,6 @@ FLIBS = @FLIBS@
 
 LIBOCTINTERP = @LIBOCTINTERP@
 LIBOCTAVE = @LIBOCTAVE@
-LIBCRUFT = @LIBCRUFT@
 
 FT2_CFLAGS = @FT2_CFLAGS@
 FT2_LIBS = @FT2_LIBS@
@@ -329,7 +328,7 @@ libdir = @libdir@
 # Where to install and expect extra files like NEWS and doc-cache.
 octetcdir = @octetcdir@
 
-# Where to install and expect libraries like libcruft.a, liboctave.a,
+# Where to install and expect libraries like liboctave.a, liboctinterp.a,
 # and other architecture-dependent data.
 octlibdir = @octlibdir@
 
@@ -543,7 +542,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LEX%|\"${LEX}\"|" \
   -e "s|%OCTAVE_CONF_LEXLIB%|\"${LEXLIB}\"|" \
   -e "s|%OCTAVE_CONF_LFLAGS%|\"${LFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_LIBCRUFT%|\"${LIBCRUFT}\"|" \
   -e "s|%OCTAVE_CONF_LIBDIR%|\"${libdir}\"|" \
   -e "s|%OCTAVE_CONF_LIBEXT%|\"${LIBEXT}\"|" \
   -e "s|%OCTAVE_CONF_LIBFLAGS%|\"${LIBFLAGS}\"|" \
@@ -665,7 +663,6 @@ $(SED) < $< \
   -e "s|%library_path_var%|${library_path_var}|g" \
   -e "s|%liboctinterp%|${SHLPRE}octinterp.${SHLEXT}|g" \
   -e "s|%liboctave%|${SHLPRE}octave.${SHLEXT}|g" \
-  -e "s|%libcruft%|${SHLPRE}cruft.${SHLEXT}|g" \
   -e "s|%ldpreloadsep%|${ldpreloadsep}|g" \
   -e "s|%srcdir%|${srcdir}|" \
   -e "s|%top_srcdir%|${top_srcdir}|" \

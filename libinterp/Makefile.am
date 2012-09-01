@@ -24,7 +24,12 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I$(top_srcdir)/libcruft/misc \
+  -I$(top_srcdir)/liboctave/cruft/misc \
+  -I../liboctave/array -I$(top_srcdir)/liboctave/array \
+  -I../liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
+  -I../liboctave/operators -I$(top_srcdir)/liboctave/operators \
+  -I../liboctave/system -I$(top_srcdir)/liboctave/system \
+  -I../liboctave/util -I$(top_srcdir)/liboctave/util \
   -I../liboctave -I$(top_srcdir)/liboctave \
   -I$(srcdir)/octave-value \
   -I$(srcdir)/operators \
@@ -166,7 +171,6 @@ liboctinterp_la_LIBADD = \
   interpfcn/libinterpfcn.la \
   corefcn/libcorefcn.la \
   ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:

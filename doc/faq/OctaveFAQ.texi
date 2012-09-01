@@ -220,7 +220,7 @@ work; this is just one example.
 
 A program that embeds the Octave interpreter (e.g., by calling the
 "octave_main" function), or that calls functions from Octave's
-libraries (e.g., liboctinterp, liboctave, or libcruft) is
+libraries (e.g., liboctinterp or liboctave) is
 considered a derivative work of Octave and therefore must be
 released under terms that are compatible with the GPL.
 

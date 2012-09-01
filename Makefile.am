@@ -74,7 +74,7 @@ GUIDIR =
 endif
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = libgnu libcruft liboctave libinterp $(GUIDIR) src scripts @DOCDIR@ examples test
+SUBDIRS = libgnu liboctave libinterp $(GUIDIR) src scripts @DOCDIR@ examples test
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:

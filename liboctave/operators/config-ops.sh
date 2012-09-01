@@ -17,14 +17,14 @@ else
 fi
 
 if [ $# -lt 1 ]; then
-  top_srcdir=".."
+  top_srcdir="../.."
 else
   top_srcdir="$1"
 fi
 
 move_if_change="$top_srcdir/build-aux/move-if-change"
 
-liboctave_dir="$top_srcdir/liboctave"
+liboctave_dir="$top_srcdir/liboctave/operators"
 
 mk_ops="$liboctave_dir/mk-ops.awk"
 sparse_mk_ops="$liboctave_dir/sparse-mk-ops.awk"

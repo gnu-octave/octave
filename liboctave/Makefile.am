@@ -28,8 +28,8 @@ SUBDIRS = cruft
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I$(srcdir)/cruft/misc \
   -I$(srcdir)/array \
+  -I$(srcdir)/cruft/misc \
   -Inumeric -I$(srcdir)/numeric \
   -Ioperators -I$(srcdir)/operators \
   -I$(srcdir)/system \
@@ -94,11 +94,13 @@ include link-deps.mk
 
 liboctave_la_LIBADD = \
   array/libarray.la \
-	cruft/libcruft.la \
-	numeric/libnumeric.la \
-	operators/liboperators.la \
-	system/libsystem.la \
-	util/libutil.la \
+  cruft/libcruft.la \
+  cruft/ranlib/libranlib.la \
+  numeric/libnumeric.la \
+  operators/liboperators.la \
+  system/libsystem.la \
+  util/libutil.la \
+  ../libgnu/libgnu.la \
   $(LIBOCTAVE_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:

@@ -9,7 +9,7 @@ EXTRA_DIST += \
   ranlib/tstgmn.for \
   ranlib/tstmid.for
 
-libranlib_la_SOURCES += \
+ranlib_libranlib_la_SOURCES += \
   ranlib/advnst.f \
   ranlib/genbet.f \
   ranlib/genchi.f \

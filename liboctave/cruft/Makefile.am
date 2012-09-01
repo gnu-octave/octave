@@ -26,7 +26,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS = \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
-octlib_LTLIBRARIES = libcruft.la
+noinst_LTLIBRARIES = libcruft.la
 
 libcruft_la_SOURCES =
 
@@ -38,34 +38,13 @@ libcruft_la_CPPFLAGS = \
   @CRUFT_DLL_DEFS@ \
   $(AM_CPPFLAGS)
 
-include link-deps.mk
-
-libcruft_la_LIBADD = \
-  libranlib.la \
-  $(top_builddir)/libgnu/libgnu.la \
-  $(LIBCRUFT_LINK_DEPS)
-
-# Increment these as needed and according to the rules in the libtool manual:
-libcruft_current = 1
-libcruft_revision = 0
-libcruft_age = 0
-
-libcruft_version_info = $(libcruft_current):$(libcruft_revision):$(libcruft_age)
-
-libcruft_la_LDFLAGS = \
-  -version-info $(libcruft_version_info) \
-  $(NO_UNDEFINED_LDFLAG) \
-  @XTRA_CRUFT_SH_LDFLAGS@ \
-  -bindir $(bindir) \
-  $(LIBCRUFT_LINK_OPTS)
-
 libcruft_la_DEPENDENCIES = cruft.def
 
-noinst_LTLIBRARIES = libranlib.la
+noinst_LTLIBRARIES += ranlib/libranlib.la
 
-libranlib_la_SOURCES =
+ranlib_libranlib_la_SOURCES =
 
-libranlib_la_DEPENDENCIES = ranlib.def
+ranlib_libranlib_la_DEPENDENCIES = ranlib.def
 
 octinclude_HEADERS =
 

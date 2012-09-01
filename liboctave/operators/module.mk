@@ -46,13 +46,13 @@ OP_SRCDIR = $(srcdir)/operators
 
 ## Special rules for sources which must be built before rest of compilation.
 $(VX_OP_INC) $(VX_OP_SRC) : $(OP_SRCDIR)/mk-ops.awk operators/vx-ops
-	(cd operators; $(AWK) -f ../$(OP_SRCDIR)/mk-ops.awk prefix=vx ../$(OP_SRCDIR)/vx-ops)
+	(cd operators; $(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=vx $(OP_SRCDIR)/vx-ops)
 
 $(MX_OP_INC) $(MX_OP_SRC) : $(OP_SRCDIR)/mk-ops.awk operators/mx-ops
-	(cd operators; $(AWK) -f ../$(OP_SRCDIR)/mk-ops.awk prefix=mx ../$(OP_SRCDIR)/mx-ops)
+	(cd operators; $(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=mx $(OP_SRCDIR)/mx-ops)
 
 $(SMX_OP_INC) $(SMX_OP_SRC) : $(OP_SRCDIR)/sparse-mk-ops.awk operators/sparse-mx-ops
-	(cd operators; $(AWK) -f ../$(OP_SRCDIR)/sparse-mk-ops.awk prefix=smx ../$(OP_SRCDIR)/sparse-mx-ops)
+	(cd operators; $(AWK) -f $(OP_SRCDIR)/sparse-mk-ops.awk prefix=smx $(OP_SRCDIR)/sparse-mx-ops)
 
 operators/mx-ops.h : $(OP_SRCDIR)/mk-ops.awk operators/mx-ops
 	$(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(OP_SRCDIR)/mx-ops > $@-t

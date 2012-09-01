@@ -103,9 +103,16 @@ liboctgui_la_CPPFLAGS = \
   -I$(srcdir)/m-editor \
   -I$(srcdir)/octave-adapter \
   -I$(srcdir)/qtinfo \
-  -I$(srcdir)/../../liboctave/cruft/misc \
   -I../../liboctave \
+  -I../../liboctave/numeric \
+  -I../../liboctave/operators \
   -I$(srcdir)/../../liboctave \
+  -I$(srcdir)/../../liboctave/array \
+  -I$(srcdir)/../../liboctave/cruft/misc \
+  -I$(srcdir)/../../liboctave/numeric \
+  -I$(srcdir)/../../liboctave/operators \
+  -I$(srcdir)/../../liboctave/system \
+  -I$(srcdir)/../../liboctave/util \
   -I../../libinterp \
   -I../../libinterp/interp-core \
   -I../../libinterp/interpfcn \

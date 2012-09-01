@@ -22,8 +22,11 @@ include $(top_srcdir)/build-aux/common.mk
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I$(srcdir)/../libcruft/misc \
   -I$(srcdir)/../liboctave \
+  -I$(srcdir)/../liboctave/array \
+  -I$(srcdir)/../liboctave/cruft/misc \
+  -I$(srcdir)/../liboctave/numeric \
+  -I$(srcdir)/../liboctave/util \
   -I$(srcdir)/../libinterp \
   -I$(top_builddir)/libinterp/interpfcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu

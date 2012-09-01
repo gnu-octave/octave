@@ -7,7 +7,6 @@ else
 endif
 
 LIBOCTINTERP_LINK_DEPS += \
-	$(GNULIB_LINK_DEPS) \
   $(GRAPHICS_LIBS) \
   $(FT2_LIBS) \
   $(HDF5_LIBS) \

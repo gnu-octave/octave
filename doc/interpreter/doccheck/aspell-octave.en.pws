@@ -338,7 +338,6 @@ GEP
 geq
 gesdd
 gesvd
-gfortan
 Ghostscript
 Ghostscript's
 gif
@@ -493,7 +492,6 @@ Levinson
 LF
 lfloor
 li
-libcruft
 libcurl
 liblapack
 liboctave

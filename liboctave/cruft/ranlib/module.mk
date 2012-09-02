@@ -9,7 +9,7 @@ EXTRA_DIST += \
   ranlib/tstgmn.for \
   ranlib/tstmid.for
 
-ranlib_libranlib_la_SOURCES += \
+RANLIB_SRC = \
   ranlib/advnst.f \
   ranlib/genbet.f \
   ranlib/genchi.f \
@@ -45,3 +45,16 @@ ranlib_libranlib_la_SOURCES += \
   ranlib/sgamma.f \
   ranlib/snorm.f \
   ranlib/wrap.f
+
+noinst_LTLIBRARIES += ranlib/libranlib.la
+
+ranlib_libranlib_la_SOURCES = $(RANLIB_SRC)
+
+ranlib_libranlib_la_DEPENDENCIES = ranlib/ranlib.def
+
+## Special rules for files which must be built before compilation
+ranlib/ranlib.def: $(RANLIB_SRC) mkf77def
+	chmod a+rx mkf77def
+	./mkf77def $(srcdir) $(RANLIB_SRC) > $@-t
+	mv $@-t $@
+

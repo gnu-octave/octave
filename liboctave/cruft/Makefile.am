@@ -26,6 +26,8 @@ AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS = \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
+EXTRA_DIST = mkf77def.in
+
 noinst_LTLIBRARIES = libcruft.la
 
 libcruft_la_SOURCES =
@@ -40,15 +42,7 @@ libcruft_la_CPPFLAGS = \
 
 libcruft_la_DEPENDENCIES = cruft.def
 
-noinst_LTLIBRARIES += ranlib/libranlib.la
-
-ranlib_libranlib_la_SOURCES =
-
-ranlib_libranlib_la_DEPENDENCIES = ranlib.def
-
 octinclude_HEADERS =
-
-EXTRA_DIST =
 
 include amos/module.mk
 include blas-xtra/module.mk
@@ -65,17 +59,14 @@ include ranlib/module.mk
 include slatec-err/module.mk
 include slatec-fn/module.mk
 
+## Special rules for files which must be built before compilation
 cruft.def: $(libcruft_la_SOURCES) mkf77def
 	chmod a+rx mkf77def
 	./mkf77def $(srcdir) $(libcruft_la_SOURCES) > $@-t
 	mv $@-t $@
 
-ranlib.def: $(libranlib_la_SOURCES) mkf77def
-	chmod a+rx mkf77def
-	./mkf77def $(srcdir) $(libranlib_la_SOURCES) > $@-t
-	mv $@-t $@
-
-EXTRA_DIST += mkf77def.in
-
-DISTCLEANFILES = cruft.def ranlib.def $(nodist_libcruft_la_SOURCES)
+DISTCLEANFILES = \
+  cruft.def \
+	ranlib/ranlib.def
+	$(nodist_libcruft_la_SOURCES)
 

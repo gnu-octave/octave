@@ -164,9 +164,13 @@ void
 main_window::process_settings_dialog_request ()
 {
   settings_dialog *settingsDialog = new settings_dialog (this);
-  settingsDialog->exec ();
+  int change_settings = settingsDialog->exec ();
+  if (change_settings == QDialog::Accepted)
+    {
+      settingsDialog->write_changed_settings ();
+      emit settings_changed ();
+    }
   delete settingsDialog;
-  emit settings_changed ();
 }
 
 void

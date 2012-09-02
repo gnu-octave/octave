@@ -85,6 +85,12 @@ QDialog (parent), ui (new Ui::settings_dialog)
 
 settings_dialog::~settings_dialog ()
 {
+  delete ui;
+}
+
+void
+settings_dialog::write_changed_settings ()
+{
   QSettings *settings = resource_manager::get_settings ();
 
   // FIXME -- what should happen if settings is 0?
@@ -122,5 +128,4 @@ settings_dialog::~settings_dialog ()
     }
   settings->setValue ("terminal/cursorType", cursorType);
   settings->sync ();
-  delete ui;
 }

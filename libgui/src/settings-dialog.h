@@ -35,6 +35,7 @@ class settings_dialog:public QDialog
 Q_OBJECT public:
   explicit settings_dialog (QWidget * parent);
   ~settings_dialog ();
+  void write_changed_settings ();
 
 private:
   Ui::settings_dialog * ui;

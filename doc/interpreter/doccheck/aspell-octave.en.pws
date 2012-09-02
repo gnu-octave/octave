@@ -338,6 +338,7 @@ GEP
 geq
 gesdd
 gesvd
+gfortran
 Ghostscript
 Ghostscript's
 gif
@@ -455,6 +456,7 @@ iy
 Jacobian
 Jacobians
 ji
+JIT
 jpeg
 JPEG
 jpg
@@ -495,6 +497,7 @@ li
 libcurl
 liblapack
 liboctave
+liboctinterp
 Libtool
 licensors
 lineanchors
@@ -505,6 +508,7 @@ linespoints
 linkprop
 literalspacing
 Liu
+LLVM
 LM
 lm
 loadpath
@@ -698,6 +702,7 @@ poissinv
 poisspdf
 poissrnd
 polyderiv
+polyeig
 polyfit
 polyval
 POSIX
@@ -732,6 +737,7 @@ QP
 QQ
 qrupdate
 QRUPDATE
+QScintilla
 quadcc
 quadgk
 quadl
@@ -1027,6 +1033,7 @@ wblcdf
 wblinv
 wblpdf
 wblrnd
+WebKit
 Weibull
 Welch
 welch

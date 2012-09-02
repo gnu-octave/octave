@@ -284,7 +284,7 @@ GUI.
 @item Qt
 GUI and utility libraries (@url{}). Qt is required for building the GUI.
 It is a large framework, but the only components required are the GUI,
-core, Webkit, and network modules.
+core, WebKit, and network modules.
 
 @item SuiteSparse
 Sparse matrix factorization library

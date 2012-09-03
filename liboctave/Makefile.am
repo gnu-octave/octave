@@ -100,7 +100,7 @@ liboctave_la_LIBADD = \
   operators/liboperators.la \
   system/libsystem.la \
   util/libutil.la \
-  ../libgnu/libgnu.la \
+  $(top_builddir)/libgnu/libgnu.la \
   $(LIBOCTAVE_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:

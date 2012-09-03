@@ -67,6 +67,6 @@ cruft.def: $(libcruft_la_SOURCES) mkf77def
 
 DISTCLEANFILES = \
   cruft.def \
-	ranlib/ranlib.def
-	$(nodist_libcruft_la_SOURCES)
+  ranlib/ranlib.def \
+  $(nodist_libcruft_la_SOURCES)
 

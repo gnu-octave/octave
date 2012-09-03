@@ -25,12 +25,11 @@ AUTOMAKE_OPTIONS = subdir-objects
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
   -I$(top_srcdir)/liboctave/cruft/misc \
-  -I../liboctave/array -I$(top_srcdir)/liboctave/array \
-  -I../liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
-  -I../liboctave/operators -I$(top_srcdir)/liboctave/operators \
-  -I../liboctave/system -I$(top_srcdir)/liboctave/system \
-  -I../liboctave/util -I$(top_srcdir)/liboctave/util \
-  -I../liboctave -I$(top_srcdir)/liboctave \
+  -I$(top_srcdir)/liboctave/array \
+  -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
+  -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
+  -I$(top_srcdir)/liboctave/system \
+  -I$(top_srcdir)/liboctave/util \
   -I$(srcdir)/octave-value \
   -I$(srcdir)/operators \
   -Iparse-tree -I$(srcdir)/parse-tree \
@@ -170,7 +169,7 @@ liboctinterp_la_LIBADD = \
   interp-core/libinterp-core.la \
   interpfcn/libinterpfcn.la \
   corefcn/libcorefcn.la \
-  ../liboctave/liboctave.la \
+  $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
@@ -227,9 +226,10 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-## oct-conf.h must depend on Makefile.  Calling configure
-## may change default/config values.  However, calling configure will also
-## regenerate the Makefiles from Makefile.am and trigger the rules below.
+## oct-conf.h must depend on Makefile.
+## Calling configure may change default/config values.
+## However, calling configure will also regenerate the Makefiles from
+## Makefile.am and trigger the rules below.
 oct-conf.h: oct-conf.in.h Makefile
 	@$(do_subst_config_vals)
 

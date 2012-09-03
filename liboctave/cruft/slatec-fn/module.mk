@@ -78,3 +78,4 @@ slatec-fn/erfc.f: slatec-fn/erfc.in.f Makefile
 slatec-fn/derfc.f: slatec-fn/derfc.in.f Makefile
 	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t
 	mv $@-t $@
+

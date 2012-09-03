@@ -22,12 +22,11 @@ include $(top_srcdir)/build-aux/common.mk
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I$(srcdir)/../liboctave \
-  -I$(srcdir)/../liboctave/array \
-  -I$(srcdir)/../liboctave/cruft/misc \
-  -I$(srcdir)/../liboctave/numeric \
-  -I$(srcdir)/../liboctave/util \
-  -I$(srcdir)/../libinterp \
+  -I$(top_srcdir)/liboctave/array \
+  -I$(top_srcdir)/liboctave/cruft/misc \
+  -I$(top_srcdir)/liboctave/numeric \
+  -I$(top_srcdir)/liboctave/util \
+  -I$(top_srcdir)/libinterp \
   -I$(top_builddir)/libinterp/interpfcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
@@ -71,8 +70,8 @@ EXTRA_DIST = \
   octave-config.in.sh
 
 OCTAVE_CORE_LIBS = \
-  ../libinterp/liboctinterp.la \
-  ../liboctave/liboctave.la
+  $(top_builddir)/libinterp/liboctinterp.la \
+  $(top_builddir)/liboctave/liboctave.la
 
 include ../libgui/src/link-deps.mk
 
@@ -88,7 +87,7 @@ octave_cli_LDFLAGS = \
 
 if AMCOND_BUILD_GUI
   octave_SOURCES = main.cc
-  OCTAVE_GUI_LIBS = ../libgui/src/liboctgui.la
+  OCTAVE_GUI_LIBS = $(top_builddir)/libgui/src/liboctgui.la
   OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
 else
   octave_SOURCES = main-cli.cc

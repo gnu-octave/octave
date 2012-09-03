@@ -103,33 +103,24 @@ liboctgui_la_CPPFLAGS = \
   -I$(srcdir)/m-editor \
   -I$(srcdir)/octave-adapter \
   -I$(srcdir)/qtinfo \
-  -I../../liboctave \
-  -I../../liboctave/numeric \
-  -I../../liboctave/operators \
-  -I$(srcdir)/../../liboctave \
-  -I$(srcdir)/../../liboctave/array \
-  -I$(srcdir)/../../liboctave/cruft/misc \
-  -I$(srcdir)/../../liboctave/numeric \
-  -I$(srcdir)/../../liboctave/operators \
-  -I$(srcdir)/../../liboctave/system \
-  -I$(srcdir)/../../liboctave/util \
-  -I../../libinterp \
-  -I../../libinterp/interp-core \
-  -I../../libinterp/interpfcn \
-  -I../../libinterp/parse-tree \
-  -I$(srcdir)/../../libinterp \
-  -I$(srcdir)/../../libinterp/interp-core \
-  -I$(srcdir)/../../libinterp/interpfcn \
-  -I$(srcdir)/../../libinterp/octave-value \
-  -I$(srcdir)/../../libtinerp/operators \
-  -I$(srcdir)/../../libinterp/parse-tree
+  -I$(top_srcdir)/liboctave/cruft/misc \
+  -I$(top_srcdir)/liboctave/array \
+  -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
+  -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
+  -I$(top_srcdir)/liboctave/system \
+  -I$(top_srcdir)/liboctave/util \
+  -I$(top_srcdir)/libinterp \
+  -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
+  -I$(top_builddir)/libinterp/interp-core -I$(top_srcdir)/libinterp/interp-core \
+  -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \
+  -I$(top_srcdir)/libinterp/octave-value
 
 include link-deps.mk
 
 liboctgui_la_LIBADD = \
   libqterminal.la \
-  ../../libinterp/liboctinterp.la \
-  ../../liboctave/liboctave.la \
+  $(top_builddir)/libinterp/liboctinterp.la \
+  $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTGUI_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
@@ -172,7 +163,10 @@ noinst_HEADERS = \
   workspace-model.h \
   workspace-view.h
 
-CLEANFILES = $(octave_gui_MOC) $(octave_gui_UI_H) $(octave_gui_RC)
+CLEANFILES = \
+  $(octave_gui_MOC) \
+  $(octave_gui_UI_H) \
+  $(octave_gui_RC)
 
 clean-local:
 	-if test "$(srcdir)" != "."; then \
@@ -319,3 +313,4 @@ qrc-%.cc: %.qrc
 	@RCC@ -o $@ $<
 
 CLEANFILES += $(libqterminal_la_MOC)
+

@@ -229,6 +229,29 @@ xpow (const SparseComplexMatrix& a, double b)
 // small real part.  But perhaps that's really a problem with the math
 // library...
 
+// Handle special case of scalar-sparse-matrix .^ sparse-matrix.
+// Forwarding to the scalar elem_xpow function and then converting the
+// result back to a sparse matrix is a bit wasteful but it does not
+// seem worth the effort to optimize -- how often does this case come up
+// in practice?
+
+template <class S, class SM>
+inline octave_value
+scalar_xpow (const S& a, const SM& b)
+{
+  octave_value val = elem_xpow (a, b);
+
+  if (val.is_complex_type ())
+    return SparseComplexMatrix (val.complex_matrix_value ());
+  else
+    return SparseMatrix (val.matrix_value ());
+}
+
+/*
+%!assert (sparse (2) .^ [3, 4], sparse ([8, 16]));
+%!assert (sparse (2i) .^ [3, 4], sparse ([-0-8i, 16]));
+*/
+
 // -*- 1 -*-
 octave_value
 elem_xpow (double a, const SparseMatrix& b)
@@ -399,6 +422,9 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
+  if (a.numel () == 1 && b.numel () > 1)
+    return scalar_xpow (a(0), b);
+
   if (nr != b_nr || nc != b_nc)
     {
       gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
@@ -500,6 +526,9 @@ elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
 
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
+
+  if (a.numel () == 1 && b.numel () > 1)
+    return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
     {
@@ -641,6 +670,9 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
+  if (a.numel () == 1 && b.numel () > 1)
+    return scalar_xpow (a(0), b);
+
   if (nr != b_nr || nc != b_nc)
     {
       gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
@@ -708,6 +740,9 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
+
+  if (a.numel () == 1 && b.numel () > 1)
+    return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
     {

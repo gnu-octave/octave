@@ -130,7 +130,7 @@ OPERATORS_SRC = \
   operators/op-ui8-ui8.cc
 
 ## These look like included header files to Autotools build process
-OPERATOR_INCLUDES = \
+OPERATORS_INC = \
   operators/op-dm-template.cc \
   operators/op-dms-template.cc \
   operators/op-int.h \

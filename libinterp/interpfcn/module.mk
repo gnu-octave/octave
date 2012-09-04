@@ -3,7 +3,7 @@ EXTRA_DIST += \
   interpfcn/defaults.in.h \
   interpfcn/graphics.in.h
 
-INTERPFCN_INCLUDES = \
+INTERPFCN_INC = \
   interpfcn/data.h \
   interpfcn/debug.h \
   interpfcn/defun.h \

@@ -97,12 +97,11 @@ octinclude_HEADERS = \
   parse-tree/oct-gperf.h \
   builtins.h \
   octave.h \
-  $(OV_INCLUDES) \
-  $(OV_SPARSE_INCLUDES) \
-  $(PT_INCLUDES) \
-	$(OPERATOR_INCLUDES) \
-  $(INTERP_CORE_INCLUDES) \
-  $(INTERPFCN_INCLUDES)
+  $(OCTAVE_VALUE_INC) \
+  $(PARSE_TREE_INC) \
+  $(OPERATORS_INC) \
+  $(INTERP_CORE_INC) \
+  $(INTERPFCN_INC)
 
 nodist_octinclude_HEADERS = \
   interp-core/mxarray.h \

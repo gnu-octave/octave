@@ -2,7 +2,7 @@ EXTRA_DIST += \
   parse-tree/module.mk \
   parse-tree/octave.gperf
 
-PARSER_INCLUDES = \
+PARSER_INC = \
   parse-tree/lex.h \
   parse-tree/parse.h \
   parse-tree/parse-private.h
@@ -14,7 +14,7 @@ PARSER_SRC = \
 lex.lo lex.o oct-parse.lo oct-parse.o: \
   AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
 
-PT_INCLUDES = \
+PARSE_TREE_INC = \
   parse-tree/pt-all.h \
   parse-tree/pt-arg-list.h \
   parse-tree/pt-assign.h \
@@ -44,7 +44,7 @@ PT_INCLUDES = \
   parse-tree/pt-walk.h \
   parse-tree/pt.h \
   parse-tree/token.h \
-  $(PARSER_INCLUDES)
+  $(PARSER_INC)
 
 PARSE_TREE_SRC = \
   parse-tree/pt-arg-list.cc \

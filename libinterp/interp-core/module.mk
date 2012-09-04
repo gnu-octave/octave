@@ -4,13 +4,13 @@ EXTRA_DIST += \
   interp-core/mxarray.in.h \
   interp-core/oct-errno.in.cc
 
-JIT_INCLUDES = \
+JIT_INC = \
   interp-core/jit-util.h \
   interp-core/jit-typeinfo.h \
   interp-core/jit-ir.h \
   interp-core/pt-jit.h
 
-INTERP_CORE_INCLUDES = \
+INTERP_CORE_INC = \
   interp-core/Cell.h \
   interp-core/c-file-ptr-stream.h \
   interp-core/comment-list.h \
@@ -57,7 +57,7 @@ INTERP_CORE_INCLUDES = \
   interp-core/xnorm.h \
   interp-core/xpow.h \
   interp-core/zfstream.h \
-  $(JIT_INCLUDES)
+  $(JIT_INC)
 
 JIT_SRC = \
   interp-core/jit-util.cc \

@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <climits>
+
 #include "mx-base.h"
 
 #include "defun.h"

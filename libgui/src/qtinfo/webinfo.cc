@@ -70,8 +70,7 @@ webinfo::webinfo (QWidget *parent)
   layout->addLayout (hboxLayout);
 
   _search_line_edit = new QLineEdit(this);
-  // FIXME: maybe put in a better test in configure.ac
-#if QT_VERSION >= 0x040700
+#ifdef HAVE_SETPLACEHOLDERTEXT
   _search_line_edit->setPlaceholderText (tr ("Type here and press \'Return\' to search"));
 #endif
   hboxLayout->addWidget (_search_line_edit);

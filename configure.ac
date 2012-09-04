@@ -2203,6 +2203,10 @@ if test $build_gui = yes; then
     fi
   fi
 
+  ## Check for Qt functions which have changed their API over time
+  OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
+  OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+
   case "$canonical_host_type" in
     *-*-mingw* | *-*-msdosmsvc*) win32_terminal=yes ;;
     *)

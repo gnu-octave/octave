@@ -150,8 +150,7 @@ find_dialog::search_next ()
                                       !_backward_check_box->isChecked (),
                                       line,col,
                                       true
-// FIXME: write a proper configure test (is it worth?)
-#if QSCINTILLA_VERSION >= 0x020600
+#ifdef HAVE_FINDFIRST_MODERN
                                       , true
 #endif
                                       );

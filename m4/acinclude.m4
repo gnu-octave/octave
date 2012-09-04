@@ -143,6 +143,35 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
   fi
 ])
 dnl
+dnl Check whether Qscintilla FindFirst function is old (16 inputs) or
+dnl new (17 inputs).
+dnl FIXME: This test uses a version number.  It potentially could
+dnl        be re-written to actually call the function, but is it worth it?
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
+  AC_CACHE_CHECK([whether Qscintilla FindFirst uses 16 or 17 input arguments],
+    [octave_cv_func_findfirst_modern],
+    [AC_LANG_PUSH(C++)
+    save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="-I$QT_INCDIR -I$QT_INCDIR/Qt $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qsci/qsciglobal.h>
+        ]], [[
+        #if QSCINTILLA_VERSION < 0x020600
+          Old Form Found;
+        #endif
+        ]])],
+      octave_cv_func_findfirst_modern=yes,
+      octave_cv_func_findfirst_modern=no)
+    CPPFLAGS="$save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_findfirst_modern = "yes"; then
+    AC_DEFINE(HAVE_FINDFIRST_MODERN, 1, 
+      [Define to 1 if Qscintilla FindFirst uses modern form with 17 inputs.])
+  fi
+])
+dnl
 dnl Check if Fortran compiler has the intrinsic function ISNAN.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
@@ -190,6 +219,34 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
   if test $octave_cv_func_glutesscallback_threedots = "yes"; then
     AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1, 
       [Define to 1 if gluTessCallback is called with (...).])
+  fi
+])
+dnl
+dnl Check whether Qscintilla SetPlaceholderText function exists.
+dnl FIXME: This test uses a version number.  It potentially could
+dnl        be re-written to actually call the function, but is it worth it?
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
+  AC_CACHE_CHECK([whether Qt has SetPlaceholderText function],
+    [octave_cv_func_setplaceholdertext],
+    [AC_LANG_PUSH(C++)
+    save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="-I$QT_INCDIR $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qt/qglobal.h>
+        ]], [[
+        #if QT_VERSION < 0x040700
+          No SetPlacholderText function available;
+        #endif
+        ]])],
+      octave_cv_func_setplaceholdertext=yes,
+      octave_cv_func_setplaceholdertext=no)
+    CPPFLAGS="$save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_setplaceholdertext = "yes"; then
+    AC_DEFINE(HAVE_SETPLACEHOLDERTEXT, 1, 
+      [Define to 1 if you have the Qt SetPlaceholderText function.])
   fi
 ])
 dnl

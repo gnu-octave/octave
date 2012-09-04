@@ -98,11 +98,16 @@ file_editor::request_new_file ()
 void
 file_editor::request_open_file ()
 {
+  file_editor_tab *current_tab = active_editor_tab ();
   file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
       add_file_editor_tab (fileEditorTab);
-      if (!fileEditorTab->open_file ())
+      QString dir = QDir::currentPath ();
+      // get the filename of the last active tab to open a new file from there
+      if (current_tab)
+        dir = QDir::cleanPath (current_tab->get_file_name ());
+      if (!fileEditorTab->open_file (dir))
         {
           // If no file was loaded, remove the tab again.
           _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));

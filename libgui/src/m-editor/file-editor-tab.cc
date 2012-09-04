@@ -603,13 +603,14 @@ file_editor_tab::set_modified (bool modified)
 }
 
 bool
-file_editor_tab::open_file ()
+file_editor_tab::open_file (QString dir)
 {
   QString openFileName;
   QFileDialog fileDialog(this);
   fileDialog.setNameFilter(SAVE_FILE_FILTER);
   fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
   fileDialog.setViewMode(QFileDialog::Detail);
+  fileDialog.setDirectory(dir);
   if (fileDialog.exec () == QDialog::Accepted)
     {
       openFileName = fileDialog.selectedFiles().at(0);

@@ -64,7 +64,7 @@ public slots:
 
   void set_modified (bool modified = true);
 
-  bool open_file ();
+  bool open_file (QString dir = QString ());
   void load_file (QString fileName);
   void new_file ();
   bool save_file ();
@@ -73,6 +73,8 @@ public slots:
   void run_file ();
 
   void file_has_changed (QString fileName);
+  
+  QString get_file_name () const {return _file_name;} 
 
 signals:
   void file_name_changed (QString fileName);

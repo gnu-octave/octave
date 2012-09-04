@@ -20,6 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "terminal-dockwidget.h"
 
 terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *parent)

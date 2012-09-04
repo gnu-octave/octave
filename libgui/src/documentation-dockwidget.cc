@@ -20,6 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "documentation-dockwidget.h"
 
 documentation_dock_widget::documentation_dock_widget (QWidget *parent)

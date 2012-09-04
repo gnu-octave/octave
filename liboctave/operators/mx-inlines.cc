@@ -1086,7 +1086,7 @@ void mx_inline_diff (const T *v, T *r,
       for (octave_idx_type i = 0; i < n-2; i++)
         {
           for (octave_idx_type j = i*m; j < i*m+m; j++)
-            r[j] = (v[j+m+m] - v[j+m]) + (v[j+m] - v[j]);
+            r[j] = (v[j+m+m] - v[j+m]) - (v[j+m] - v[j]);
         }
       break;
     default:

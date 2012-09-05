@@ -2196,13 +2196,17 @@ if test $build_gui = yes; then
     [AC_MSG_ERROR([Qt libraries are required to build the GUI])])
 
   ## Check for Qt utility programs
-  AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
+  AC_CHECK_PROGS(QMAKE, [qmake-qt5 qmake-qt4 qmake])
   if test -z "$QMAKE"; then
     AC_MSG_ERROR([qmake is required to build the GUI])
   fi
 
-  QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p' | sed -e 's,\\\\,/,g'`
-  QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p' | sed -e 's,\\\\,/,g'`
+  QT_INCDIR=`$QMAKE -query QT_INSTALL_HEADERS | sed -e 's,\\\\,/,g'`
+  QT_LIBDIR=`$QMAKE -query QT_INSTALL_LIBS | sed -e 's,\\\\,/,g'`
+
+  if test "$QT_INCDIR" = "**Unknown**"; then
+    AC_MSG_ERROR([qmake >= Qt4 is required to build the GUI])
+  fi
 
   AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
   AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])

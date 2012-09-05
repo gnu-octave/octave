@@ -2186,13 +2186,13 @@ HAVE_QT=false
 QT_INCDIR=
 QT_LIBDIR=
 win32_terminal=no
-build_gui=yes
+build_gui=true
 GUIDIR=libgui
 AC_ARG_ENABLE(gui,
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
-  [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
+  [if test "$enableval" = no; then build_gui=false; fi], [build_gui=true])
 
-if test $build_gui = yes; then
+if test $build_gui = true; then
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],
@@ -2266,7 +2266,7 @@ else
   ## GUI disabled.  Eliminate building GUIDIR directory
   GUIDIR=
 fi
-AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
+AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = true])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_INCDIR)
 AC_SUBST(QT_LIBDIR)

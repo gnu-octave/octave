@@ -149,7 +149,7 @@ dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
-  AC_CACHE_CHECK([whether Qscintilla FindFirst uses 16 or 17 input arguments],
+  AC_CACHE_CHECK([whether Qscintilla FindFirst uses 17 input arguments],
     [octave_cv_func_findfirst_modern],
     [AC_LANG_PUSH(C++)
     save_CPPFLAGS="$CPPFLAGS"

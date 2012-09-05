@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <string>
+#include <cstring>
 #include <map>
 #include <list>
 #include <algorithm>
@@ -319,7 +320,7 @@ static string help_msg =
 "                            F77_INTEGER_8_FLAG        SED\n"             
 "                            FFLAGS                    XTRA_CFLAGS\n"     
 "                            FFTW3_LDFLAGS             XTRA_CXXFLAGS\n"   
-"                            FFTW3_LIBS                                   
+"                            FFTW3_LIBS\n"      
 "                            FFTW3F_LDFLAGS\n"
 "                            FFTW3F_LIBS\n"
 "\n"
@@ -352,21 +353,23 @@ static string help_msg =
 static string
 basename (const string& s, bool strip_path = false)
 {
-  size_t pos = s.rfind ('.');
   string retval;
+  size_t pos = s.rfind ('.');
 
   if (pos == string::npos)
     retval = s;
   else
     retval = s.substr (0, pos);
+
   if (strip_path)
     {
       size_t p1 = retval.rfind ('/'), p2 = retval.rfind ('\\');
       pos = (p1 != string::npos && p2 != string::npos
              ? max (p1, p2) : (p2 != string::npos ? p2 : p1));
       if (pos != string::npos)
-        retval = retval.substr (0, pos);
+        retval = retval.substr (++pos, string::npos);
     }
+
   return retval;
 }
 

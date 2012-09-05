@@ -357,10 +357,10 @@ dnl is the memory allocation that exposes the bug and using statically
 dnl allocated arrays in Fortran does not?
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK], [
-  AC_LANG_PUSH(C++)
   AC_CACHE_CHECK([whether the arpack library works],
     [octave_cv_lib_arpack_ok],
-    [AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 // External functions from ARPACK library
 extern "C" int
 F77_FUNC (dnaupd, DNAUPD) (int&, const char *, const int&, const char *,
@@ -493,8 +493,8 @@ doit (void)
     octave_cv_lib_arpack_ok=yes,
     octave_cv_lib_arpack_ok=no,
     octave_cv_lib_arpack_ok=yes)
+    AC_LANG_POP(C++)
   ])
-  AC_LANG_POP(C++)
   if test "$octave_cv_lib_arpack_ok" = "yes"; then
     $1
   else

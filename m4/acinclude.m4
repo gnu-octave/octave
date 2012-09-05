@@ -158,7 +158,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
         #include <Qsci/qsciglobal.h>
         ]], [[
         #if QSCINTILLA_VERSION < 0x020600
-          Old Form Found;
+        #error Old FindFirst function found.
         #endif
         ]])],
       octave_cv_func_findfirst_modern=yes,
@@ -236,7 +236,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
         #include <Qt/qglobal.h>
         ]], [[
         #if QT_VERSION < 0x040700
-          No SetPlacholderText function available;
+        #error No SetPlacholderText function available.
         #endif
         ]])],
       octave_cv_func_setplaceholdertext=yes,

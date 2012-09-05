@@ -2231,10 +2231,7 @@ if test $build_gui = yes; then
     LIBS="$save_LIBS"
     AC_LANG_POP([C++])
   ])
-  if test $octave_cv_lib_qscintilla = "yes"; then
-    AC_DEFINE(HAVE_QSCINTILLA, 1, 
-      [Define to 1 if you the Qscintilla library is available.])
-  else
+  if test $octave_cv_lib_qscintilla = "no"; then
     AC_MSG_ERROR([Qscintilla library is required to build the GUI])
   fi
 

@@ -2189,6 +2189,12 @@ AC_ARG_ENABLE(gui,
   [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
 
 if test $build_gui = yes; then
+  ## Check for Qt libraries
+  PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
+    [],
+    [AC_MSG_ERROR([Qt libraries are required to build the GUI])])
+
+  ## Check for Qt utility programs
   AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
   if test -z "$QMAKE"; then
     AC_MSG_ERROR([qmake is required to build the GUI])
@@ -2197,19 +2203,18 @@ if test $build_gui = yes; then
   QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p' | sed -e 's,\\\\,/,g'`
   QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p' | sed -e 's,\\\\,/,g'`
 
-  ## FIXME: Need an actual check for Qt libraries.
-  ##        The test below only checks for certain utilities also needed to build the GUI.
   AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
   AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
   AC_CHECK_PROGS(RCC, [rcc])
-  if test -n "$MOC" && test -n "$UIC" && test -n "$RCC"; then
-    HAVE_QT=true
-    AC_DEFINE(HAVE_QT, 1, 
-      [Define to 1 if Qt is available (must have moc, uic, and rcc programs and developer header files and libraries installed).])
-  fi
+  if test -z "$MOC" || test -z "$UIC" || test -z "$RCC"; then
+    AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required to build the GUI])
+  fi 
+
+  HAVE_QT=true
+  AC_DEFINE(HAVE_QT, 1, 
+    [Define to 1 if Qt is available (libraries, developer header files, utility programs (qmake, moc, uic, and rcc))])
 
   ## Check for Qscintilla library which is used in the GUI editor. 
-  ## This indirectly tests for Qt libraries
   AC_CACHE_CHECK([whether Qscintilla library is installed],
     [octave_cv_lib_qscintilla],
     [save_CPPFLAGS="$CPPFLAGS"

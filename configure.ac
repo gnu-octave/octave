@@ -2190,17 +2190,52 @@ AC_ARG_ENABLE(gui,
 
 if test $build_gui = yes; then
   AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
-  if test -n "$QMAKE"; then
-    QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p' | sed -e 's,\\\\,/,g'`
-    QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p' | sed -e 's,\\\\,/,g'`
-    AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
-    AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
-    AC_CHECK_PROGS(RCC, [rcc])
-    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC"; then
-      HAVE_QT=true
-      AC_DEFINE(HAVE_QT, 1, 
-        [Define to 1 if Qt is available (must have moc, uic, and rcc programs and developer header files and libraries installed).])
-    fi
+  if test -z "$QMAKE"; then
+    AC_MSG_ERROR([qmake is required to build the GUI])
+  fi
+
+  QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p' | sed -e 's,\\\\,/,g'`
+  QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p' | sed -e 's,\\\\,/,g'`
+
+  ## FIXME: Need an actual check for Qt libraries.
+  ##        The test below only checks for certain utilities also needed to build the GUI.
+  AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
+  AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
+  AC_CHECK_PROGS(RCC, [rcc])
+  if test -n "$MOC" && test -n "$UIC" && test -n "$RCC"; then
+    HAVE_QT=true
+    AC_DEFINE(HAVE_QT, 1, 
+      [Define to 1 if Qt is available (must have moc, uic, and rcc programs and developer header files and libraries installed).])
+  fi
+
+  ## Check for Qscintilla library which is used in the GUI editor. 
+  ## This indirectly tests for Qt libraries
+  AC_CACHE_CHECK([whether Qscintilla library is installed],
+    [octave_cv_lib_qscintilla],
+    [save_CPPFLAGS="$CPPFLAGS"
+    save_LDFLAGS="$LDFLAGS"
+    save_LIBS="$LIBS"
+    CPPFLAGS="-I$QT_INCDIR -I$QT_INCDIR/Qt $CPPFLAGS"
+    LDFLAGS="-L$QT_LIBDIR $LDFLAGS"
+    LIBS="-lqscintilla2"
+    AC_LANG_PUSH(C++)
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+      #include <Qsci/qscilexersql.h>
+      ]], [[
+      QsciLexerSQL sqlLexer(0);
+      ]])],
+      octave_cv_lib_qscintilla=yes,
+      octave_cv_lib_qscintilla=no)
+    CPPFLAGS="$save_CPPFLAGS"
+    LDFLAGS="$save_LDFLAGS"
+    LIBS="$save_LIBS"
+    AC_LANG_POP([C++])
+  ])
+  if test $octave_cv_lib_qscintilla = "yes"; then
+    AC_DEFINE(HAVE_QSCINTILLA, 1, 
+      [Define to 1 if you the Qscintilla library is available.])
+  else
+    AC_MSG_ERROR([Qscintilla library is required to build the GUI])
   fi
 
   ## Check for Qt functions which have changed their API over time

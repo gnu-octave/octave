@@ -2182,8 +2182,9 @@ AC_SUBST(WARN_CXXFLAGS)
 HAVE_QT=false
 QT_INCDIR=
 QT_LIBDIR=
-build_gui=yes
 win32_terminal=no
+build_gui=yes
+GUIDIR=libgui
 AC_ARG_ENABLE(gui,
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
   [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
@@ -2245,18 +2246,24 @@ if test $build_gui = yes; then
   OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
 
   case "$canonical_host_type" in
-    *-*-mingw* | *-*-msdosmsvc*) win32_terminal=yes ;;
+    *-*-mingw* | *-*-msdosmsvc*)
+      win32_terminal=yes
+      ;;
     *)
       AC_CHECK_HEADERS([pty.h libutil.h util.h])
       AC_SEARCH_LIBS([openpty], [util],
         [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
       ;;
   esac
+else
+  ## GUI disabled.  Eliminate building GUIDIR directory
+  GUIDIR=
 fi
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_INCDIR)
 AC_SUBST(QT_LIBDIR)
+AC_SUBST(GUIDIR)
 
 ### Run configure in subdirectories.
 

@@ -1743,20 +1743,7 @@ case "$canonical_host_type" in
 esac
 
 ## Find a termlib to use.
-octave_found_termlib=no
-for termlib in ncurses curses termcap terminfo termlib; do
-  AC_CHECK_LIB(${termlib}, tputs, [
-    TERM_LIBS="-l${termlib}"
-    octave_found_termlib=yes
-    break])
-done
-
-if test "$octave_found_termlib" = no; then
-  warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, o\
-r -ltermlib!"
-  AC_MSG_WARN([$warn_termlibs])
-fi
-AC_SUBST(TERM_LIBS)
+OCTAVE_CHECK_LIB_TERMLIB
 
 ### Checks for header files.
 

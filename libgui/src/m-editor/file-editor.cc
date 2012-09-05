@@ -111,7 +111,7 @@ file_editor::request_open_file ()
 }
 
 void
-file_editor::request_open_file (QString fileName)
+file_editor::request_open_file (const QString& fileName)
 {
   if (!isVisible ())
     {
@@ -279,7 +279,7 @@ file_editor::request_find ()
 }
 
 void
-file_editor::handle_file_name_changed (QString fileName)
+file_editor::handle_file_name_changed (const QString& fileName)
 {
   QObject *senderObject = sender ();
   file_editor_tab *fileEditorTab

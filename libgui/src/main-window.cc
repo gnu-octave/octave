@@ -85,14 +85,14 @@ main_window::open_file ()
 }
 
 void
-main_window::open_file (QString file_name)
+main_window::open_file (const QString& file_name)
 {
   _file_editor->request_open_file (file_name);
   focus_editor ();
 }
 
 void
-main_window::report_status_message (QString statusMessage)
+main_window::report_status_message (const QString& statusMessage)
 {
   _status_bar->showMessage (statusMessage, 1000);
 }
@@ -140,7 +140,7 @@ main_window::handle_clear_history_request()
 }
 
 void
-main_window::handle_command_double_clicked (QString command)
+main_window::handle_command_double_clicked (const QString& command)
 {
   _terminal->sendText (command);
   _terminal->setFocus ();
@@ -216,7 +216,7 @@ main_window::reset_windows ()
 }
 
 void
-main_window::current_working_directory_has_changed (QString directory)
+main_window::current_working_directory_has_changed (const QString& directory)
 {
   if (_current_directory_combo_box->count () > 31)
     {
@@ -244,7 +244,7 @@ main_window::change_current_working_directory ()
 }
 
 void
-main_window::set_current_working_directory (QString directory)
+main_window::set_current_working_directory (const QString& directory)
 {
   octave_link::instance ()
       ->post_event (new octave_change_directory_event (*this,

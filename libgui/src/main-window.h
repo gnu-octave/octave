@@ -83,15 +83,15 @@ signals:
   void settings_changed ();
 
 public slots:
-  void report_status_message (QString statusMessage);
+  void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request ();
   void handle_load_workspace_request ();
   void handle_clear_workspace_request ();
   void handle_clear_history_request ();
-  void handle_command_double_clicked (QString command);
+  void handle_command_double_clicked (const QString& command);
   void new_file ();
   void open_file ();
-  void open_file (QString file_name);
+  void open_file (const QString& file_name);
   void open_bug_tracker_page ();
   void open_agora_page ();
   void open_octave_forge_page ();
@@ -100,9 +100,9 @@ public slots:
   void notice_settings ();
   void prepare_for_quit ();
   void reset_windows ();
-  void current_working_directory_has_changed (QString directory);
+  void current_working_directory_has_changed (const QString& directory);
   void change_current_working_directory ();
-  void set_current_working_directory (QString directory);
+  void set_current_working_directory (const QString& directory);
   void current_working_directory_up ();
 
   void focus_command_window ();

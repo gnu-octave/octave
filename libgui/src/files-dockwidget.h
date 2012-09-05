@@ -57,12 +57,12 @@ public slots:
   void do_up_directory ();
 
   /** Sets the current directory being displayed. */
-  void set_current_directory (QString currentDirectory);
+  void set_current_directory (const QString& currentDirectory);
 
   /** Accepts user input a the line edit for the current directory. */
   void handle_directory_entered ();
 
-  void display_directory (QString directory);
+  void display_directory (const QString& directory);
 
   /** Tells the widget to react on changed settings. */
   void notice_settings ();
@@ -72,10 +72,10 @@ public slots:
 
 signals:
   /** Emitted, whenever the user requested to open a file. */
-  void open_file (QString fileName);
+  void open_file (const QString& fileName);
 
   /** Emitted, whenever the currently displayed directory changed. */
-  void displayed_directory_changed (QString directory);
+  void displayed_directory_changed (const QString& directory);
 
   /** Custom signal that tells if a user has clicke away that dock widget. */
   void active_changed (bool active);

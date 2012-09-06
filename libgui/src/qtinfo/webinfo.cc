@@ -31,7 +31,7 @@
 
 
 webinfo::webinfo (QWidget *parent)
-  :QWidget (parent)
+  : QWidget (parent)
 {
   _font_web = font ();
 
@@ -90,14 +90,14 @@ webinfo::webinfo (QWidget *parent)
 }
 
 void
-webinfo::set_info_path (QString info_path)
+webinfo::set_info_path (const QString& info_path)
 {
   _parser.set_info_path (info_path);
   load_node ("Top");
 }
 
 void
-webinfo::load_node (QString node_name)
+webinfo::load_node (const QString& node_name)
 {
   //Check if node has been already opened.
   for (int i = 0;i < _tab_bar->count (); i++)
@@ -142,7 +142,7 @@ webinfo::current_tab_changed (int index)
 }
 
 QTextBrowser *
-webinfo::addNewTab(QString name)
+webinfo::addNewTab (const QString& name)
 {
   _text_browser = new QTextBrowser (this);
   _text_browser->setOpenLinks (false);

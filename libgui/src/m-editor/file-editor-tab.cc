@@ -198,7 +198,7 @@ file_editor_tab::closeEvent (QCloseEvent *event)
 }
 
 void
-file_editor_tab::set_file_name (QString fileName)
+file_editor_tab::set_file_name (const QString& fileName)
 {
   _file_name = fileName;
   update_lexer ();
@@ -436,7 +436,7 @@ file_editor_tab::update_tracked_file ()
 }
 
 int
-file_editor_tab::check_file_modified (QString msg, int cancelButton)
+file_editor_tab::check_file_modified (const QString& msg, int cancelButton)
 {
   int decision = QMessageBox::Yes;
   if (_edit_area->isModified ())
@@ -627,7 +627,7 @@ file_editor_tab::open_file (QString dir)
 }
 
 void
-file_editor_tab::load_file (QString fileName)
+file_editor_tab::load_file (const QString& fileName)
 {
   if (!_file_editor->isVisible ())
     {
@@ -676,7 +676,7 @@ bool file_editor_tab::save_file()
 }
 
 bool
-file_editor_tab::save_file (QString saveFileName)
+file_editor_tab::save_file (const QString& saveFileName)
 {
   // it is a new file with the name "<unnamed>" -> call saveFielAs
   if (saveFileName == UNNAMED_FILE || saveFileName.isEmpty ())
@@ -778,7 +778,7 @@ file_editor_tab::run_file ()
 }
 
 void
-file_editor_tab::file_has_changed (QString fileName)
+file_editor_tab::file_has_changed (const QString& fileName)
 {
   Q_UNUSED (fileName);
   if (QFile::exists (_file_name))

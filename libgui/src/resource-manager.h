@@ -54,13 +54,13 @@ public:
       instance->do_reload_settings ();
   }
 
-  static void set_settings (QString file)
+  static void set_settings (const QString& file)
   {
     if (instance_ok ())
       instance->do_set_settings (file);
   }
 
-  static QString find_translator_file (QString language);
+  static QString find_translator_file (const QString& language);
 
   static void update_network_settings (void)
   {
@@ -101,7 +101,7 @@ private:
 
   void do_reload_settings (void);
 
-  void do_set_settings (QString file);
+  void do_set_settings (const QString& file);
 
   void do_update_network_settings (void);
 

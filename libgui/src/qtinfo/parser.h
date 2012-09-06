@@ -45,20 +45,21 @@ class parser
 
 public:
   parser (QObject *parent = 0);
-  void set_info_path (QString _info_path);
+  void set_info_path (const QString& _info_path);
   QString get_info_path ();
-  QString search_node (QString node);
-  QString global_search (QString text, int maxFounds);
+  QString search_node (const QString& node);
+  QString global_search (const QString& text, int maxFounds);
 
   /** Checks if this node is reference. If node is reference, it will be returned its position
     * in text, else  it will be returned -1.
     */
-  int is_ref (QString node);
+  int is_ref (const QString& node);
 
   /**Translates text of node to Html. If anchorPos is not -1, then anchor is inserted in that
     * position.
     */
-  QString node_text_to_html (QString text, int anchorPos=-1, QString anchor=QString());
+  QString node_text_to_html (const QString& text, int anchorPos = -1,
+                             const QString& anchor = QString ());
 
 private:
   struct node_position
@@ -78,12 +79,12 @@ private:
     int real_size;
   };
 
-  QString search_node (QString node, QIODevice * io);
+  QString search_node (const QString& node, QIODevice * io);
   QString get_next_node (QIODevice * io);
-  QString get_node_name (QString text);
-  QString get_node_up (QString text);
-  QString get_node_next (QString text);
-  QString get_node_prev (QString text);
+  QString get_node_name (const QString& text);
+  QString get_node_up (const QString& text);
+  QString get_node_next (const QString& text);
+  QString get_node_prev (const QString& text);
 
   /** Parses info files and gets map of node positions.*/
   void parse_info_map();

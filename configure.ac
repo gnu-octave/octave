@@ -672,56 +672,69 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [zlib.h], [gzclearerr])
 
 ### Check for the LLVM library
-dnl
-dnl LLVM is odd and has its own pkg-config like script.  We should probably
-dnl check for existence and ???.
-dnl
-save_CPPFLAGS="$CPPFLAGS"
-save_CXXFLAGS="$CXXFLAGS"
-save_LIBS="$LIBS"
-save_LDFLAGS="$LDFLAGS"
 
-AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
-
-AC_ARG_ENABLE([jit-debug],
-  AS_HELP_STRING([--enable-jit-debug], [enable debug printing of JIT IRs]))
-
-AS_IF([test "x$enable_jit_debug" = "xyes"], [
-  AC_DEFINE(OCTAVE_JIT_DEBUG, 1, [Define to 1 for JIT debug printing.])
-])
+build_jit=false
+AC_ARG_ENABLE([jit],
+  [AS_HELP_STRING([--enable-jit],
+    [(EXPERIMENTAL) enable JIT compiler])],
+  [if test "$enableval" = yes; then
+     build_jit=true
+   fi],
+  [])
 
 LLVM_CXXFLAGS=
 LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
 
-if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
-  warn_llvm="LLVM was not found or is to old. JIT is disabled."
+if test $build_jit = true; then
 
-  ## We use -isystem if available because we do not want to see warnings in LLVM
-  LLVM_INCLUDE_FLAG=-I
-  OCTAVE_CC_FLAG(-isystem ., [
-    LLVM_INCLUDE_FLAG=-isystem
-    AC_MSG_NOTICE([using -isystem for llvm headers])])
+  ## Find llvm-config program from environment variable or by searching
+  AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
+  AC_CHECK_PROG(LLVM_CONFIG, llvm-config, llvm-config, [])
+  
+  AC_ARG_ENABLE([jit-debug],
+    [AS_HELP_STRING([--enable-jit-debug], [enable debug printing of JIT IRs])])
 
-  LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-  LLVM_LIBS=`$LLVM_CONFIG --libs`
-  dnl Use -isystem so we don't get warnings from llvm headers
-  LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
-  LLVM_CXXFLAGS=
+  if test x$enable_jit_debug = "xyes"; then
+    AC_DEFINE(OCTAVE_JIT_DEBUG, 1, [Define to 1 for JIT debug printing.])
+  fi
 
-  dnl
-  dnl We define some extra flags that LLVM requires in order to include headers.
-  dnl Ideally we should get these from llvm-config, but llvm-config isn't very
-  dnl helpful.
-  dnl
-  CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
-  CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
-  LIBS="$LLVM_LIBS $LIBS"
-  LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+  if test -z "$LLVM_CONFIG"; then
+    warn_llvm="llvm-config utility not found.  JIT compiler is disabled."
+  else
+    ## Preset warning message in case compile fails
+    warn_llvm="LLVM was not found or is to old.  JIT compiler is disabled."
 
-  AC_LANG_PUSH(C++)
-    AC_CHECK_HEADERS([llvm/LLVMContext.h, llvm/Support/TargetSelect.h], [
+    save_CPPFLAGS="$CPPFLAGS"
+    save_CXXFLAGS="$CXXFLAGS"
+    save_LIBS="$LIBS"
+    save_LDFLAGS="$LDFLAGS"
+
+    ## Use -isystem if available because we don't want to see warnings in LLVM
+    LLVM_INCLUDE_FLAG=-I
+    OCTAVE_CC_FLAG(-isystem ., [
+      LLVM_INCLUDE_FLAG=-isystem
+      AC_MSG_NOTICE([using -isystem for LLVM headers])])
+
+    LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
+    LLVM_LIBS=`$LLVM_CONFIG --libs`
+    dnl Use -isystem so we don't get warnings from llvm headers
+    LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
+    LLVM_CXXFLAGS=
+
+    dnl
+    dnl Define some extra flags that LLVM requires in order to include headers.
+    dnl Ideally we should get these from llvm-config, but llvm-config isn't
+    dnl very helpful.
+    dnl
+    CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
+    CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
+    LIBS="$LLVM_LIBS $LIBS"
+    LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+
+    AC_LANG_PUSH(C++)
+    AC_CHECK_HEADERS([llvm/LLVMContext.h llvm/Support/TargetSelect.h], [
       AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
         AC_COMPILE_IFELSE(
           [AC_LANG_PROGRAM([[
@@ -735,31 +748,35 @@ if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
           [AC_MSG_RESULT([no])
       ])
     ])
-  AC_LANG_POP(C++)
-  
-else
-  warn_llvm="LLVM_CONFIG not set. The experiential JIT feature is disabled."
+    AC_LANG_POP(C++)
+    CPPFLAGS="$save_CPPFLAGS"
+    CXXFLAGS="$save_CXXFLAGS"
+    LIBS="$save_LIBS"
+    LDFLAGS="$save_LDFLAGS"
+  fi
+
+  if test -z "$warn_llvm"; then
+    AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
+  else
+    build_jit=false
+    LLVM_CPPFLAGS=
+    LLVM_CXXFLAGS=
+    LLVM_LDFLAGS=
+    LLVM_LIBS=
+    OCTAVE_CONFIGURE_WARNING([warn_llvm])
+  fi
+
+## FIXME: Re-instate when JIT is enabled by default
+#else
+#  ## JIT build disabled
+#  warn_llvm="JIT compiler disabled, some performance loss for loops"
+#  OCTAVE_CONFIGURE_WARNING([warn_llvm])
 fi
 
-if test -z "$warn_llvm"; then
-  AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
-else
-  LLVM_CXXFLAGS=
-  LLVM_CPPFLAGS=
-  LLVM_LDFLAGS=
-  LLVM_LIBS=
-  OCTAVE_CONFIGURE_WARNING([warn_llvm])
-fi
-
-AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_CPPFLAGS)
+AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_LDFLAGS)
 AC_SUBST(LLVM_LIBS)
-
-CPPFLAGS="$save_CPPFLAGS"
-CXXFLAGS="$save_CXXFLAGS"
-LIBS="$save_LIBS"
-LDFLAGS="$save_LDFLAGS"
 
 ### Check for HDF5 library.
 
@@ -1743,20 +1760,7 @@ case "$canonical_host_type" in
 esac
 
 ## Find a termlib to use.
-octave_found_termlib=no
-for termlib in ncurses curses termcap terminfo termlib; do
-  AC_CHECK_LIB(${termlib}, tputs, [
-    TERM_LIBS="-l${termlib}"
-    octave_found_termlib=yes
-    break])
-done
-
-if test "$octave_found_termlib" = no; then
-  warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, o\
-r -ltermlib!"
-  AC_MSG_WARN([$warn_termlibs])
-fi
-AC_SUBST(TERM_LIBS)
+OCTAVE_CHECK_LIB_TERMLIB
 
 ### Checks for header files.
 
@@ -2183,13 +2187,13 @@ HAVE_QT=false
 QT_INCDIR=
 QT_LIBDIR=
 win32_terminal=no
-build_gui=yes
+build_gui=true
 GUIDIR=libgui
 AC_ARG_ENABLE(gui,
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
-  [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
+  [if test "$enableval" = no; then build_gui=false; fi], [build_gui=true])
 
-if test $build_gui = yes; then
+if test $build_gui = true; then
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],
@@ -2263,7 +2267,7 @@ else
   ## GUI disabled.  Eliminate building GUIDIR directory
   GUIDIR=
 fi
-AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
+AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = true])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_INCDIR)
 AC_SUBST(QT_LIBDIR)
@@ -2558,6 +2562,8 @@ Octave is now configured for $canonical_host_type
   Default pager:               $DEFAULT_PAGER
   gnuplot:                     $GNUPLOT
 
+  Build Octave GUI:                   $build_gui
+  JIT compiler for loops:             $build_jit
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
   Build static libraries:             $STATIC_LIBS

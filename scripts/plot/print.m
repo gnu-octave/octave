@@ -21,19 +21,19 @@
 ## @deftypefnx {Function File} {} print (@var{options})
 ## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
-## Print a graph, or save it to a file.  Both output formatted for 
+## Print a plot, or save it to a file.  Both output formatted for 
 ## printing (PDF and PostScript), and many bitmapped and vector
 ## image formats are supported.
-##
-## @var{h} specifies the figure handle.  If no handle is specified
-## the handle for the current figure is used.
 ##
 ## @var{filename} defines the name of the output file.  If the
 ## file name has no suffix, one is inferred from the specified
 ## device and appended to the file name.  If no filename is
 ## specified, the output is sent to the printer.
 ##
-## For output to a printer, to a PostScript file, or a PDF file,
+## @var{h} specifies the figure handle.  If no handle is specified
+## the handle for the current figure is used.
+##
+## For output to a printer, PostScript file, or PDF file,
 ## the paper size is specified by the figure's @code{papersize}
 ## property.  The location and size of the image on the page are
 ## specified by the figure's @code{paperposition} property.  The
@@ -43,19 +43,19 @@
 ## The width and height of images are specified by the figure's
 ## @code{paperpositon(3:4)} property values.
 ##
-## The @code{print} command supports several @var{options}:
+## The @code{print} command supports many @var{options}:
 ##
 ## @table @code
 ## @item -f@var{h}
 ##   Specify the handle, @var{h}, of the figure to be printed.  The
-##   default is the current figure.
+## default is the current figure.
 ##
 ## @item -P@var{printer}
-##   Set the @var{printer} name to which the graph is sent if no
-##   @var{filename} is specified.
+##   Set the @var{printer} name to which the plot is sent if no
+## @var{filename} is specified.
 ##
 ## @item -G@var{ghostscript_command}
-##   Specify the command for calling Ghostscript.  For Unix and Windows,
+##   Specify the command for calling Ghostscript.  For Unix and Windows
 ## the defaults are 'gs' and 'gswin32c', respectively.
 ##
 ## @item -color
@@ -64,7 +64,7 @@
 ##
 ## @item -solid
 ## @itemx -dashed
-##   Forces all lines to be solid or dashed, respectively.
+##   Force all lines to be solid or dashed, respectively.
 ##
 ## @item -portrait
 ## @itemx -landscape
@@ -81,11 +81,11 @@
 ## For bitmap and printer output anti-aliasing is applied using
 ## Ghostscript's TextAlphaBits and GraphicsAlphaBits options.
 ## The default number of bits for each is 4.
-## Allowed values, for @var{N}, are 1, 2, or 4.
+## Allowed values for @var{N} are 1, 2, or 4.
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device},
-##   and is one of:
+## and is one of:
 ##
 ##   @table @code
 ##   @item ps
@@ -93,7 +93,7 @@
 ##   @itemx psc
 ##   @itemx psc2
 ##     Postscript (level 1 and 2, mono and color).  The FLTK graphics
-##     toolkit generates Postscript level 3.0.
+## toolkit generates Postscript level 3.0.
 ##
 ##   @item eps
 ##   @itemx eps2
@@ -108,7 +108,7 @@
 ##   @itemx pstex
 ##   @itemx pslatex
 ##   @itemx pdflatex
-##     Generate a @LaTeX{} (or @TeX{}) file for labels, and eps/ps/pdf
+##     Generate a @LaTeX{} (or @TeX{}) file for labels and eps/ps/pdf
 ## for graphics.  The file produced by @code{epslatexstandalone} can be
 ## processed directly by @LaTeX{}.  The other formats are intended to
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
@@ -116,8 +116,8 @@
 ## is only available for the FLTK graphics toolkit.
 ##
 ##   @item tikz
-##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK the result is
-##   PGF.
+##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
+## the result is PGF.
 ##
 ##   @item ill
 ##   @itemx aifm
@@ -136,9 +136,9 @@
 ##
 ##   @item fig
 ##     XFig.  For the Gnuplot graphics toolkit, the additional options
-##     @option{-textspecial} or @option{-textnormal} can be used to control
-##     whether the special flag should be set for the text in
-##     the figure (default is @option{-textnormal}).
+## @option{-textspecial} or @option{-textnormal} can be used to control
+## whether the special flag should be set for the text in
+## the figure.  (default is @option{-textnormal})
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -208,52 +208,52 @@
 ## the figure's "paperposition" property.
 ##
 ## @itemx -append
-##   Appends the PS, or PDF output to a pre-existing file of the
+##   Append Postscript or PDF output to a pre-existing file of the
 ## same type.
 ##
 ## @itemx -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and
-## SVG the default is the screen resolution, for other it is 150 dpi.
+## SVG the default is the screen resolution; for other formats it is 150 dpi.
 ## To specify screen resolution, use "-r0".
 ##
 ## @item -tight
-##   Forces a tight bounding box for eps-files.
+##   Force a tight bounding box for eps files.
 ##
 ## @item -@var{preview}
-##   Adds a preview to eps-files.  Supported formats are;
+##   Add a preview to eps files.  Supported formats are:
 ##
 ##   @table @code
 ##   @item -interchange
-##     Provides an interchange preview.
+##     Provide an interchange preview.
 ##
 ##   @item -metalfile
-##     Provides a metafile preview.
+##     Provide a metafile preview.
 ##
 ##   @item -pict
-##     Provides pict preview.
+##     Provide pict preview.
 ##
 ##   @item -tiff
-##     Provides a tiff preview.
+##     Provide a tiff preview.
 ##   @end table
 ##
 ## @item -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG@.  For
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.  For
 ## PS, EPS, PDF, and other vector formats the plot size is in points.
 ## This option is equivalent to changing the size of the plot box
-## associated with "paperposition" property.  Using the command form of
-## the print function, you must quote the @var{xsize},@var{ysize}
-## option.  For example, by writing @w{@code{"-S640,480"}}.
+## associated with the "paperposition" property.  When using the command form
+## of the print function you must quote the @var{xsize},@var{ysize}
+## option.  For example, by writing @w{"-S640,480"}.
 ##
 ## @item -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
-##   Associates all text with the @var{fontname} and/or @var{fontsize}.
-## @var{fontname} is ignored for some devices; dxf, fig, hpgl, etc.
+##   Use @var{fontname} and/or @var{fontsize} for all text.
+## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
 ## @end table
 ##
 ## The filename and options can be given in any order.
 ##
-## Example: Print to a file, using the svg device.
+## Example: Print to a file using the svg device.
 ##
 ## @example
 ## @group

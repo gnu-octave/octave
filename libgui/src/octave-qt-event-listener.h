@@ -41,7 +41,7 @@ class octave_qt_event_listener
     void quit_debug_mode ();
 
   signals:
-    void current_directory_has_changed_signal (QString directory);
+    void current_directory_has_changed_signal (const QString& directory);
     void entered_debug_mode_signal ();
     void quit_debug_mode_signal ();
 };

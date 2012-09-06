@@ -48,10 +48,10 @@ public slots:
   void reset_model ();
 
 signals:
-  void information (QString message);
+  void information (const QString& message);
 
   /** Emitted, whenever the user double-clicked a command in the history. */
-  void command_double_clicked (QString command);
+  void command_double_clicked (const QString& command);
 
   /** Custom signal that tells if a user has clicked away that dock widget. */
   void active_changed (bool active);

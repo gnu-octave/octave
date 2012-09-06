@@ -50,7 +50,7 @@ Q_OBJECT
 public:
   file_editor (QTerminal *terminal, main_window *m);
   ~file_editor ();
-  void loadFile (QString fileName);
+  void loadFile (const QString& fileName);
 
   QTerminal *       terminal ();
   main_window *     get_main_window ();
@@ -64,7 +64,7 @@ public:
 public slots:
   void request_new_file ();
   void request_open_file ();
-  void request_open_file (QString fileName);
+  void request_open_file (const QString& fileName);
 
   void request_undo ();
   void request_redo ();
@@ -88,7 +88,7 @@ public slots:
   void request_uncomment_selected_text ();
   void request_find ();
 
-  void handle_file_name_changed (QString fileName);
+  void handle_file_name_changed (const QString& fileName);
   void handle_tab_close_request (int index);
   void handle_tab_close_request ();
   void active_tab_changed (int index);

@@ -119,7 +119,7 @@ files_dock_widget::item_double_clicked (const QModelIndex & index)
 }
 
 void
-files_dock_widget::set_current_directory (QString currentDirectory)
+files_dock_widget::set_current_directory (const QString& currentDirectory)
 {
   display_directory (currentDirectory);
 }
@@ -139,7 +139,7 @@ files_dock_widget::do_up_directory ()
 }
 
 void
-files_dock_widget::display_directory (QString directory)
+files_dock_widget::display_directory (const QString& directory)
 {
   QFileInfo fileInfo (directory);
   if (fileInfo.exists ())

@@ -378,4 +378,11 @@ private:
 };
 
 #endif
+
+// If TRUE, enable JIT compiler debugging/tracing.
+extern bool Venable_jit_debug;
+
+// If TRUE, enable JIT compiler.
+extern bool Venable_jit_compiler;
+
 #endif

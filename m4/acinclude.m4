@@ -675,6 +675,25 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
   fi
 ])
 dnl
+dnl Find a suitable termlib to use.
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_TERMLIB], [
+  TERM_LIBS=
+  octave_found_termlib=no
+  for termlib in ncurses curses termcap terminfo termlib; do
+    AC_CHECK_LIB([${termlib}], [tputs], [
+      TERM_LIBS="-l${termlib}"
+      octave_found_termlib=yes
+      break])
+  done
+
+  if test "$octave_found_termlib" = no; then
+    warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!"
+    AC_MSG_WARN([$warn_termlibs])
+  fi
+  AC_SUBST(TERM_LIBS)
+])
+dnl
 dnl Check for support of OpenMP with a given compiler flag.
 dnl If found define HAVE_OPENMP and add the compile flag
 dnl to CFLAGS and CXXFLAGS.
@@ -1082,6 +1101,8 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
        warn_readline="command editing and history features require GNU Readline"
      fi])
   if $USE_READLINE; then
+    dnl RHEL 5 and older systems require termlib set before enabling readline
+    AC_REQUIRE([OCTAVE_CHECK_LIB_TERMLIB])
     save_LIBS="$LIBS"
     LIBS="$TERM_LIBS"
     AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout,

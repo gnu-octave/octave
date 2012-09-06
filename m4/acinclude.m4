@@ -83,12 +83,12 @@ AC_DEFUN([OCTAVE_CC_FLAG], [
     AC_LANG_POP(C)
   ])
   if eval "test \"`echo '$octave_cv_cc_flag_'$ac_safe`\" = yes"; then
-    AC_MSG_RESULT(yes)
+    AC_MSG_RESULT([yes])
     ifelse([$2], , 
       [CFLAGS="$CFLAGS $1"
       AC_MSG_RESULT([adding $1 to CFLAGS])], [$2])
   else
-    AC_MSG_RESULT(no)
+    AC_MSG_RESULT([no])
     ifelse([$3], , , [$3])
   fi
 ])
@@ -317,7 +317,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
     octave_$1_check_for_lib=false
     m4_ifblank([$4], [octave_$1_check_for_lib=true],
-               [AC_CHECK_HEADERS($4, [octave_$1_check_for_lib=true; break])])
+               [AC_CHECK_HEADERS([$4], [octave_$1_check_for_lib=true; break])])
     if $octave_$1_check_for_lib; then
       octave_check_lib_save_LDFLAGS="$LDFLAGS"
       LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
@@ -566,7 +566,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
   else
     case $canonical_host_type in
       *-*-mingw32* | *-*-msdosmsvc)
-        AC_CHECK_HEADERS(windows.h)
+        AC_CHECK_HEADERS([windows.h])
       ;;
     esac
     have_opengl_incs=no
@@ -605,14 +605,14 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
 
           LIBS="$save_LIBS"
           if test "x$OPENGL_LIBS" != "x"; then
-            AC_MSG_RESULT(yes)
+            AC_MSG_RESULT([yes])
           else
-            AC_MSG_RESULT(no)
+            AC_MSG_RESULT([no])
           fi
           ;;
         *)
           ## Non-Mac, Non-Windows systems use this check
-          AC_CHECK_LIB(GL, [glEnable], [OPENGL_LIBS="-lGL -lGLU"])
+          AC_CHECK_LIB([GL], [glEnable], [OPENGL_LIBS="-lGL -lGLU"])
           ;;
       esac
     fi
@@ -979,12 +979,12 @@ AC_DEFUN([OCTAVE_CXX_FLAG], [
     AC_LANG_POP(C++)
   ])
   if eval "test \"`echo '$octave_cv_cxx_flag_'$ac_safe`\" = yes"; then
-    AC_MSG_RESULT(yes)
+    AC_MSG_RESULT([yes])
     ifelse([$2], ,
       [CXXFLAGS="$CXXFLAGS $1"
       AC_MSG_RESULT([adding $1 to CXXFLAGS])], [$2])
   else
-    AC_MSG_RESULT(no)
+    AC_MSG_RESULT([no])
     ifelse([$3], , , [$3])
   fi
 ])
@@ -1093,7 +1093,7 @@ dnl
 AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   USE_READLINE=true
   READLINE_LIBS=
-  AC_ARG_ENABLE(readline,
+  AC_ARG_ENABLE([readline],
     [AS_HELP_STRING([--disable-readline],
       [use readline library])],
     [if test "$enableval" = no; then
@@ -1105,7 +1105,7 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
     AC_REQUIRE([OCTAVE_CHECK_LIB_TERMLIB])
     save_LIBS="$LIBS"
     LIBS="$TERM_LIBS"
-    AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout,
+    AC_CHECK_LIB([readline], [rl_set_keyboard_input_timeout],
       [READLINE_LIBS="-lreadline"
       AC_DEFINE(USE_READLINE, 1, [Define to 1 to use the readline library.])
       ],
@@ -1125,7 +1125,7 @@ dnl
 AC_DEFUN([OCTAVE_F77_FLAG], [
   ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING([whether ${F77-g77} accepts $1])
-  AC_CACHE_VAL(octave_cv_f77_flag_$ac_safe, [
+  AC_CACHE_VAL([octave_cv_f77_flag_$ac_safe], [
     AC_LANG_PUSH(Fortran 77)
     XFFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $1"
@@ -1136,12 +1136,12 @@ AC_DEFUN([OCTAVE_F77_FLAG], [
     AC_LANG_POP(Fortran 77)
   ])
   if eval "test \"`echo '$octave_cv_f77_flag_'$ac_safe`\" = yes"; then
-    AC_MSG_RESULT(yes)
+    AC_MSG_RESULT([yes])
     ifelse([$2], ,
       [FFLAGS="$FFLAGS $1"
       AC_MSG_RESULT([adding $1 to FFLAGS])], [$2])
   else
-    AC_MSG_RESULT(no)
+    AC_MSG_RESULT([no])
     ifelse([$3], , , [$3])
   fi
 ])
@@ -1239,7 +1239,7 @@ AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
     LDFLAGS="$XLDFLAGS"
   ])
   if test "$octave_cv_framework_$1" = "yes"; then
-    AC_MSG_RESULT(yes)
+    AC_MSG_RESULT([yes])
     AC_ARG_WITH(framework-m4_tolower($1),
       [AS_HELP_STRING([--without-framework-m4_tolower($1)], 
         [don't use framework $1])],
@@ -1251,7 +1251,7 @@ AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
       [$5]
     fi
   else
-    AC_MSG_RESULT(no)
+    AC_MSG_RESULT([no])
     [$5]
   fi
 ])
@@ -1483,7 +1483,7 @@ AC_DEFUN([OCTAVE_PROG_PAGER], [
       ;;
     esac
 
-    AC_CHECK_PROGS(DEFAULT_PAGER, $octave_possible_pagers, [])
+    AC_CHECK_PROGS(DEFAULT_PAGER, [$octave_possible_pagers], [])
     if test -z "$DEFAULT_PAGER"; then
       warn_less="I couldn't find \`less', \`more', \`page', or \`pg'"
       OCTAVE_CONFIGURE_WARNING([warn_less])
@@ -1630,7 +1630,7 @@ dnl Macro assumes that the check for umfpack has already been performed.
 dnl
 AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
   AC_MSG_CHECKING([for UMFPACK separate complex matrix and rhs split])
-  AC_CACHE_VAL(octave_cv_umfpack_separate_split,
+  AC_CACHE_VAL([octave_cv_umfpack_separate_split],
     [AC_RUN_IFELSE([AC_LANG_SOURCE([[
         #include <stdlib.h>
         #if defined (HAVE_SUITESPARSE_UMFPACK_H)

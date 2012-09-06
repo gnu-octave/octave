@@ -27,9 +27,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#ifdef HAVE_LLVM
-
+#include "defun.h"
+#include "ov.h"
+#include "pt-all.h"
 #include "pt-jit.h"
+#include "symtab.h"
+#include "variables.h"
+
+bool Venable_jit_debug = false;
+
+bool Venable_jit_compiler = true;
+
+#ifdef HAVE_LLVM
 
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
@@ -49,9 +58,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef OCTAVE_JIT_DEBUG
 #include <llvm/Bitcode/ReaderWriter.h>
 #endif
-
-#include "symtab.h"
-#include "pt-all.h"
 
 static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 
@@ -1710,12 +1716,15 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
       infer.infer ();
 #ifdef OCTAVE_JIT_DEBUG
-      jit_block_list& blocks = infer.get_blocks ();
-      jit_block *entry_block = blocks.front ();
-      entry_block->label ();
-      std::cout << "-------------------- Compiling tree --------------------\n";
-      std::cout << tee.str_print_code () << std::endl;
-      blocks.print (std::cout, "octave jit ir");
+      if (Venable_jit_debug)
+        {
+          jit_block_list& blocks = infer.get_blocks ();
+          jit_block *entry_block = blocks.front ();
+          entry_block->label ();
+          std::cout << "-------------------- Compiling tree --------------------\n";
+          std::cout << tee.str_print_code () << std::endl;
+          blocks.print (std::cout, "octave jit ir");
+        }
 #endif
 
       jit_factory& factory = conv.get_factory ();
@@ -1728,29 +1737,39 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
   catch (const jit_fail_exception& e)
     {
 #ifdef OCTAVE_JIT_DEBUG
-      if (e.known ())
-        std::cout << "jit fail: " << e.what () << std::endl;
+      if (Venable_jit_debug)
+        {
+          if (e.known ())
+            std::cout << "jit fail: " << e.what () << std::endl;
+        }
 #endif
     }
 
   if (llvm_function)
     {
 #ifdef OCTAVE_JIT_DEBUG
-      std::cout << "-------------------- llvm ir --------------------";
       llvm::raw_os_ostream llvm_cout (std::cout);
-      llvm_function->print (llvm_cout);
-      std::cout << std::endl;
-      llvm::verifyFunction (*llvm_function);
+
+      if (Venable_jit_debug)
+        {
+          std::cout << "-------------------- llvm ir --------------------";
+          llvm_function->print (llvm_cout);
+          std::cout << std::endl;
+          llvm::verifyFunction (*llvm_function);
+        }
 #endif
 
       tjit.optimize (llvm_function);
 
 #ifdef OCTAVE_JIT_DEBUG
-      std::cout << "-------------------- optimized llvm ir "
-                << "--------------------\n";
-      llvm_function->print (llvm_cout);
-      llvm_cout.flush ();
-      std::cout << std::endl;
+      if (Venable_jit_debug)
+        {
+          std::cout << "-------------------- optimized llvm ir "
+                    << "--------------------\n";
+          llvm_function->print (llvm_cout);
+          llvm_cout.flush ();
+          std::cout << std::endl;
+        }
 #endif
 
       void *void_fn = engine->getPointerToFunction (llvm_function);
@@ -1768,6 +1787,34 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
+DEFUN (enable_jit_debug, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} enable_jit_debug ()\n\
+Query or set the internal variable that determines whether\n\
+debugging/tracing is enabled for Octave's JIT compiler.\n\
+@end deftypefn")
+{
+#if defined (HAVE_LLVM) && defined (OCTAVE_JIT_DEBUG)
+  return SET_INTERNAL_VARIABLE (enable_jit_debug);
+#else
+  warning ("enable_jit_debug: JIT compiling not available in this version of Octave");
+  return octave_value ();
+#endif
+}
+
+DEFUN (enable_jit_compiler, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} enable_jit_compiler ()\n\
+Query or set the internal variable that enables Octave's JIT compiler.\n\
+@end deftypefn")
+{
+#if defined (HAVE_LLVM)
+  return SET_INTERNAL_VARIABLE (enable_jit_compiler);
+#else
+  warning ("enable_jit_compiler: JIT compiling not available in this version of Octave");
+  return octave_value ();
+#endif
+}
 
 /*
 Test some simple cases that compile.

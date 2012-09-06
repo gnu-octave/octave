@@ -1474,12 +1474,17 @@ specified option.\n\
 
       if (! error_state)
         {
-          Cell c = m.contents (arg.c_str ());
+          if (m.isfield (arg))
+            {
+              Cell c = m.contents (arg);
 
-          if (c.is_empty ())
-            error ("octave_config_info: no info for `%s'", arg.c_str ());
+              if (c.is_empty ())
+                error ("octave_config_info: no info for `%s'", arg.c_str ());
+              else
+                retval = c(0);
+            }
           else
-            retval = c(0);
+            error ("octave_config_info: invalid parameter `%s'", arg.c_str ());
         }
     }
   else if (nargin == 0)

@@ -673,12 +673,12 @@ OCTAVE_CHECK_LIB(z, ZLIB,
 
 ### Check for the LLVM library
 
-build_jit=true
+build_jit=false
 AC_ARG_ENABLE([jit],
-  [AS_HELP_STRING([--disable-jit],
-    [disable JIT compiler, some performance loss for code with loops])],
-  [if test "$enableval" = no; then
-     build_jit=false
+  [AS_HELP_STRING([--enable-jit],
+    [(EXPERIMENTAL) enable JIT compiler])],
+  [if test "$enableval" = yes; then
+     build_jit=true
    fi],
   [])
 
@@ -766,10 +766,11 @@ if test $build_jit = true; then
     OCTAVE_CONFIGURE_WARNING([warn_llvm])
   fi
 
-else
-  ## JIT build disabled
-  warn_llvm="JIT compiler disabled, some performance loss for code with loops"
-  OCTAVE_CONFIGURE_WARNING([warn_llvm])
+## FIXME: Re-instate when JIT is enabled by default
+#else
+#  ## JIT build disabled
+#  warn_llvm="JIT compiler disabled, some performance loss for loops"
+#  OCTAVE_CONFIGURE_WARNING([warn_llvm])
 fi
 
 AC_SUBST(LLVM_CPPFLAGS)

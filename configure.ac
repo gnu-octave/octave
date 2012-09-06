@@ -59,7 +59,7 @@ AC_USE_SYSTEM_EXTENSIONS
 ### Path separator.
 
 sepchar=:
-AC_ARG_WITH(sepchar,
+AC_ARG_WITH([sepchar],
   [AS_HELP_STRING([--with-sepchar=<char>],
     [use <char> as the path separation character])])
 case $with_sepchar in
@@ -85,36 +85,36 @@ AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"],
 
 ### Set default file locations
 
-OCTAVE_SET_DEFAULT(man1dir, '$(mandir)/man1')
-OCTAVE_SET_DEFAULT(man1ext, '.1')
-OCTAVE_SET_DEFAULT(doc_cache_file, '$(octetcdir)/doc-cache')
-OCTAVE_SET_DEFAULT(texi_macros_file, '$(octetcdir)/macros.texi')
-OCTAVE_SET_DEFAULT(infofile, '$(infodir)/octave.info')
-OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)/octave')
-OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')
-OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
-OCTAVE_SET_DEFAULT(localapifcnfiledir,
+OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
+OCTAVE_SET_DEFAULT([man1ext], '.1')
+OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
+OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
+OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
+OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
+OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
+OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
+OCTAVE_SET_DEFAULT([localapifcnfiledir],
   '$(datadir)/octave/site/$(api_version)/m')
-OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
-OCTAVE_SET_DEFAULT(octetcdir, '$(datadir)/octave/$(version)/etc')
-OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave/$(version)')
-OCTAVE_SET_DEFAULT(archlibdir,
+OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
+OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
+OCTAVE_SET_DEFAULT([octlibdir], '$(libdir)/octave/$(version)')
+OCTAVE_SET_DEFAULT([archlibdir],
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localarchlibdir,
+OCTAVE_SET_DEFAULT([localarchlibdir],
   '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localapiarchlibdir,
+OCTAVE_SET_DEFAULT([localapiarchlibdir],
   '$(libexecdir)/octave/$(api_version)/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localverarchlibdir,
+OCTAVE_SET_DEFAULT([localverarchlibdir],
   '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(octfiledir,
+OCTAVE_SET_DEFAULT([octfiledir],
   '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localoctfiledir,
+OCTAVE_SET_DEFAULT([localoctfiledir],
   '$(libdir)/octave/site/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localapioctfiledir,
+OCTAVE_SET_DEFAULT([localapioctfiledir],
   '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localveroctfiledir,
+OCTAVE_SET_DEFAULT([localveroctfiledir],
   '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
+OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')
 
 ### Find pkg-config executable (sets $PKG_CONFIG)
 
@@ -130,7 +130,7 @@ AC_SUBST(config_opts)
 ### by default.
 
 BOUNDS_CHECKING=false
-AC_ARG_ENABLE(bounds-check,
+AC_ARG_ENABLE([bounds-check],
   [AS_HELP_STRING([--enable-bounds-check],
     [enable bounds checking for indexing in internal array classes])],
   [if test "$enableval" = yes; then BOUNDS_CHECKING=true; fi], [])
@@ -142,7 +142,7 @@ fi
 ### Disabled by default.
 
 USE_OCTAVE_ALLOCATOR=false
-AC_ARG_ENABLE(octave-allocator,
+AC_ARG_ENABLE([octave-allocator],
   [AS_HELP_STRING([--enable-octave-allocator],
     [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.])],
   [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=true; fi], [])
@@ -156,7 +156,7 @@ fi
 ### disabled by default.
 
 USE_ATOMIC_REFCOUNT=false
-AC_ARG_ENABLE(atomic-refcount,
+AC_ARG_ENABLE([atomic-refcount],
   [AS_HELP_STRING([--enable-atomic-refcount],
     [use atomic operations for internal reference counting.  This is required for thread-safe behavior but does not by itself make Octave internals thread safe.])],
   [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=true; fi], [])
@@ -169,7 +169,7 @@ fi
 ### This is useful, for example, when building Octave on systems without TeX.
 
 DOCDIR=doc
-AC_ARG_ENABLE(docs,
+AC_ARG_ENABLE([docs],
   [AS_HELP_STRING([--disable-docs], [don't build documentation files])],
   [if test "$enableval" = no; then
      DOCDIR=
@@ -188,9 +188,9 @@ AC_ARG_ENABLE(64,
     [(EXPERIMENTAL) use 64-bit integers for array dimensions and indexing])],
   [if test "$enableval" = yes; then USE_64_BIT_IDX_T=true; fi], [])
 if $USE_64_BIT_IDX_T; then
-  AC_CHECK_SIZEOF(void *)
-  AC_CHECK_SIZEOF(int)
-  AC_CHECK_SIZEOF(long)
+  AC_CHECK_SIZEOF([void *])
+  AC_CHECK_SIZEOF([int])
+  AC_CHECK_SIZEOF([long])
   if test $ac_cv_sizeof_void_p -eq 8; then
     if test $ac_cv_sizeof_int -eq 8; then
       OCTAVE_IDX_TYPE=int
@@ -209,7 +209,7 @@ if $USE_64_BIT_IDX_T; then
   fi
 fi
 AC_SUBST(OCTAVE_IDX_TYPE)
-AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, $OCTAVE_IDX_TYPE,
+AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
 if $USE_64_BIT_IDX_T; then
   AC_DEFINE(USE_64_BIT_IDX_T, 1,
@@ -244,7 +244,7 @@ if test "$GXX" = yes; then
 fi
 AC_SUBST(GXX_VERSION)
 
-## FIXME: CXX_VERSION is deprecated and should be removed in version 3.12
+## FIXME: CXX_VERSION is deprecated and should be removed in Octave version 3.12
 CXX_VERSION="$gxx_version"
 AC_SUBST(CXX_VERSION)
 
@@ -292,7 +292,7 @@ if test "$GCC" = yes; then
 fi
 AC_SUBST(CC_VERSION)
 
-## FIXME: CC_VERSION is deprecated and should be removed in version 3.12
+## FIXME: CC_VERSION is deprecated and should be removed in Octave version 3.12
 CC_VERSION="$gcc_version"
 AC_SUBST(GCC_VERSION)
 
@@ -342,7 +342,7 @@ CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 ### Thus, we provide a FLOAT_TRUNCATE macro that may be defined to "volatile"
 ### when compiling for x87 target, or left empty for modern SSE math, that
 ### doesn't suffer from this problem at all.
-AC_ARG_ENABLE(float-truncate,
+AC_ARG_ENABLE([float-truncate],
   [AS_HELP_STRING([--enable-float-truncate],
     [enables truncating intermediate FP results.])],
   [if test "$enableval" = yes; then
@@ -352,7 +352,7 @@ AC_ARG_ENABLE(float-truncate,
    fi],
   [ac_float_truncate=])
 
-AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, $ac_float_truncate, 
+AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate], 
   [Define to volatile if you need to truncate intermediate FP results.])
 
 ### Determine extra CFLAGS that may be necessary for Octave.
@@ -366,13 +366,13 @@ ieee_fp_flag=
 case "$canonical_host_type" in
   i[[3456789]]86-*-*)
     if test "$GCC" = yes; then
-      OCTAVE_CC_FLAG(-mieee-fp, [
+      OCTAVE_CC_FLAG([-mieee-fp], [
         ieee_fp_flag=-mieee-fp
         XTRA_CFLAGS="$XTRA_CFLAGS -mieee-fp"
         AC_MSG_NOTICE([adding -mieee-fp to XTRA_CFLAGS])])
     fi
     if test "$GXX" = yes; then
-      OCTAVE_CXX_FLAG(-mieee-fp, [
+      OCTAVE_CXX_FLAG([-mieee-fp], [
         ieee_fp_flag=-mieee-fp
         XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-fp"
         AC_MSG_NOTICE([adding -mieee-fp to XTRA_CXXFLAGS])])
@@ -380,33 +380,33 @@ case "$canonical_host_type" in
   ;;
   alpha*-*-*)
     if test "$GCC" = yes; then
-      OCTAVE_CC_FLAG(-mieee, [
+      OCTAVE_CC_FLAG([-mieee], [
         ieee_fp_flag=-mieee
         XTRA_CFLAGS="$XTRA_CFLAGS -mieee"
         AC_MSG_NOTICE([adding -mieee to XTRA_CFLAGS])])
     else
-      OCTAVE_CC_FLAG(-ieee, [
+      OCTAVE_CC_FLAG([-ieee], [
         ieee_fp_flag=-ieee
         XTRA_CFLAGS="$XTRA_CFLAGS -ieee"
         AC_MSG_NOTICE([adding -ieee to XTRA_CFLAGS])])
     fi
     if test "$GXX" = yes; then
-      OCTAVE_CXX_FLAG(-mieee, [
+      OCTAVE_CXX_FLAG([-mieee], [
         ieee_fp_flag=-mieee
         XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee"
         AC_MSG_NOTICE([adding -mieee to XTRA_CXXFLAGS])])
     else
-      OCTAVE_CXX_FLAG(-ieee, [
+      OCTAVE_CXX_FLAG([-ieee], [
         ieee_fp_flag=-ieee
         XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ieee"
         AC_MSG_NOTICE([adding -ieee to XTRA_CXXFLAGS])])
     fi
   ;;
   *ibm-aix4*)
-    OCTAVE_CC_FLAG(-mminimal-toc, [
+    OCTAVE_CC_FLAG([-mminimal-toc], [
       XTRA_CFLAGS="$XTRA_CFLAGS -mminimal-toc"])
 
-    OCTAVE_CXX_FLAG(-mminimal-toc, [
+    OCTAVE_CXX_FLAG([-mminimal-toc], [
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mminimal-toc"])
   ;;
 esac
@@ -418,7 +418,7 @@ AC_SUBST(XTRA_CXXFLAGS)
 ### it by default.  Enable it with the flag --enable-openmp.
 
 USE_OPENMP=false
-AC_ARG_ENABLE(openmp,
+AC_ARG_ENABLE([openmp],
   [AS_HELP_STRING([--enable-openmp],
     [(EXPERIMENTAL) use OpenMP SMP multi-threading])],
   [if test "$enableval" = yes; then USE_OPENMP=true; fi], [])
@@ -468,17 +468,17 @@ else
   BUILD_EXEEXT='$(EXEEXT)'
 fi
 
-AC_ARG_VAR(BUILD_CC,
+AC_ARG_VAR([BUILD_CC],
   [build system C compiler (used if cross compiling)])
-AC_ARG_VAR(BUILD_CFLAGS,
+AC_ARG_VAR([BUILD_CFLAGS],
   [build system C compiler flags (used if cross compiling)])
-AC_ARG_VAR(BUILD_CXX,
+AC_ARG_VAR([BUILD_CXX],
   [build system C++ compiler (used if cross compiling)])
-AC_ARG_VAR(BUILD_CXXFLAGS,
+AC_ARG_VAR([BUILD_CXXFLAGS],
   [build system C++ compiler flags (used if cross compiling)])
-AC_ARG_VAR(BUILD_LDFLAGS,
+AC_ARG_VAR([BUILD_LDFLAGS],
   [build system C++ compiler link flags (used if cross compiling)])
-AC_ARG_VAR(BUILD_EXEEXT,
+AC_ARG_VAR([BUILD_EXEEXT],
   [build system executable extension (used if cross compiling)])
 
 dnl This is bogus.  We shouldn't have to explicitly add libc too!
@@ -600,6 +600,7 @@ if test "x$octave_cv_sizeof_fortran_integer" = xno; then
 fi
 AC_SUBST(F77_INTEGER_8_FLAG)
 
+## FIXME: Is this really used?  Makefile seems to use $F77 for compiler
 FC=$F77
 AC_SUBST(FC)
 
@@ -657,7 +658,7 @@ if test $ac_cv_pcre_h_macros_present = yes; then
   fi
   save_LIBS="$LIBS"
   LIBS="$REGEX_LIBS $LIBS"
-  AC_CHECK_FUNCS(pcre_compile,
+  AC_CHECK_FUNCS([pcre_compile],
     [AC_SUBST(REGEX_LIBS)],
     [AC_MSG_ERROR([$pcre_fail_msg])])
   LIBS="$save_LIBS"
@@ -690,8 +691,8 @@ LLVM_LIBS=
 if test $build_jit = true; then
 
   ## Find llvm-config program from environment variable or by searching
-  AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
-  AC_CHECK_PROG(LLVM_CONFIG, llvm-config, llvm-config, [])
+  AC_ARG_VAR([LLVM_CONFIG], [path to llvm-config utility])
+  AC_CHECK_PROG([LLVM_CONFIG], llvm-config, llvm-config, [])
   
   AC_ARG_ENABLE([jit-debug],
     [AS_HELP_STRING([--enable-jit-debug], [enable debug printing of JIT IRs])])
@@ -703,7 +704,7 @@ if test $build_jit = true; then
   if test -z "$LLVM_CONFIG"; then
     warn_llvm="llvm-config utility not found.  JIT compiler is disabled."
   else
-    ## Preset warning message in case compile fails
+    dnl Preset warning message in case compile fails
     warn_llvm="LLVM was not found or is to old.  JIT compiler is disabled."
 
     save_CPPFLAGS="$CPPFLAGS"
@@ -713,15 +714,15 @@ if test $build_jit = true; then
 
     ## Use -isystem if available because we don't want to see warnings in LLVM
     LLVM_INCLUDE_FLAG=-I
-    OCTAVE_CC_FLAG(-isystem ., [
+    OCTAVE_CC_FLAG([-isystem .], [
       LLVM_INCLUDE_FLAG=-isystem
       AC_MSG_NOTICE([using -isystem for LLVM headers])])
 
-    LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-    LLVM_LIBS=`$LLVM_CONFIG --libs`
     dnl Use -isystem so we don't get warnings from llvm headers
     LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
     LLVM_CXXFLAGS=
+    LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
+    LLVM_LIBS=`$LLVM_CONFIG --libs`
 
     dnl
     dnl Define some extra flags that LLVM requires in order to include headers.
@@ -781,8 +782,8 @@ AC_SUBST(LLVM_LIBS)
 ### Check for HDF5 library.
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(hdf5, HDF5,
   [HDF5 library not found.  Octave will not be able to save or load HDF5 data files.],
@@ -820,8 +821,8 @@ AC_SUBST(FFT_DIR)
 ### Check for GLPK library and header.
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
@@ -832,8 +833,8 @@ CPPFLAGS="$save_CPPFLAGS"
 ### Checks for cURL header and library.
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread and urlwrite functions will be disabled.],
@@ -879,9 +880,9 @@ PKG_CHECK_EXISTS([$magick++], [
           ]], [[
           Magick::ColorRGB c;
           ]])],
-        [AC_MSG_RESULT(yes)
+        [AC_MSG_RESULT([yes])
          warn_magick=],
-        [AC_MSG_RESULT(no)]
+        [AC_MSG_RESULT([no])]
       )
     ])
   AC_LANG_POP(C++)
@@ -913,16 +914,16 @@ if test "$have_x" = "yes"; then
   AC_SUBST(X11_INCFLAGS)
 
   if test -z $x_libraries; then
-    AC_CHECK_LIB(X11, XrmInitialize, [X11_LIBS=-lX11], [X11_LIBS=])
+    AC_CHECK_LIB([X11], XrmInitialize, [X11_LIBS=-lX11], [X11_LIBS=])
   elif test $x_libraries != "NONE"; then
-    AC_CHECK_LIB(X11, XrmInitialize, 
+    AC_CHECK_LIB([X11], XrmInitialize, 
       [X11_LIBS="-L$x_libraries -lX11"], [X11_LIBS=], "-L$x_libraries")
   fi
   AC_SUBST(X11_LIBS)
 fi
 
 ### Check for the Carbon framework on MacOSX systems
-OCTAVE_HAVE_FRAMEWORK(Carbon,
+OCTAVE_HAVE_FRAMEWORK([Carbon],
   [[#include <Carbon/Carbon.h>]], [[CGMainDisplayID ()]],
   [have_framework_carbon="yes"], [have_framework_carbon="no"])
 if test $have_framework_carbon = "yes"; then
@@ -1125,7 +1126,7 @@ AX_LAPACK([:], [:])
 ## Restore FFLAGS.
 FFLAGS="$save_FFLAGS"
 
-## Try again with -ff2c in FFLAGS
+## If necessary, try again with -ff2c in FFLAGS
 if test "x$ax_blas_f77_func_ok" = "xno"; then
   save_FFLAGS="$FFLAGS"
   FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
@@ -1281,7 +1282,7 @@ save_LIBS="$LIBS"
 save_CPPFLAGS="$CPPFLAGS"
 LIBS="$AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
 CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
-OCTAVE_CHECK_LIB(umfpack, UMFPACK,
+OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
   [umfpack_zi_get_determinant],
@@ -1294,7 +1295,7 @@ if test -z "$UMFPACK_LIBS"; then
   $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
   save_LIBS="$LIBS"
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
-  OCTAVE_CHECK_LIB(umfpack, UMFPACK,
+  OCTAVE_CHECK_LIB([umfpack], UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
     [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
     [umfpack_zi_get_determinant],
@@ -1316,7 +1317,7 @@ fi
 
 save_LIBS="$LIBS"
 LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
-OCTAVE_CHECK_LIB(arpack, ARPACK,
+OCTAVE_CHECK_LIB([arpack], ARPACK,
   [ARPACK not found.  The eigs function will be disabled.],
   [],
   [dseupd],
@@ -1648,7 +1649,7 @@ AC_ARG_ENABLE([no-undefined],
   [case "${enableval}" in
      yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
      no)  NO_UNDEFINED_LDFLAG="" ;;
-     *) AC_MSG_ERROR([bad value ${enableval} for --enable-link-all-depenencies]) ;;
+     *) AC_MSG_ERROR([bad value ${enableval} for --disable-no-undefined]) ;;
    esac],
   [NO_UNDEFINED_LDFLAG="-no-undefined"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
@@ -1686,7 +1687,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
       DL_API_MSG="(dlopen)"
       AC_DEFINE(HAVE_DLOPEN_API, 1,
         [Define to 1 if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
-      OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
+      OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
     ;;
     shl_load)
       shl_load_api=true
@@ -1746,7 +1747,7 @@ AC_SUBST(LIBOCTAVE)
 case "$canonical_host_type" in
   *-*-mingw*)
     if test "$have_msvc" = "yes"; then
-      AC_CHECK_LIB(dirent, opendir)
+      AC_CHECK_LIB([dirent], [opendir])
       LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
     else
       LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
@@ -1754,7 +1755,7 @@ case "$canonical_host_type" in
     LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
   *-*-msdosmsvc*)
-    AC_CHECK_LIB(dirent, opendir)
+    AC_CHECK_LIB([dirent], [opendir])
     LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
 esac
@@ -1785,16 +1786,18 @@ esac
 
 ## C headers
 
-AC_CHECK_HEADERS(curses.h direct.h dlfcn.h floatingpoint.h grp.h \
-  ieeefp.h inttypes.h locale.h memory.h ncurses.h poll.h pthread.h \
-  pwd.h sunmath.h sys/ioctl.h sys/param.h sys/poll.h sys/resource.h \
-  sys/select.h sys/utsname.h termcap.h)
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h grp.h])
+AC_CHECK_HEADERS([ieeefp.h inttypes.h locale.h memory.h ncurses.h])
+AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
+AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h ])
+AC_CHECK_HEADERS([sys/select.h sys/utsname.h termcap.h])
 
 ## C++ headers
 
 AC_LANG_PUSH(C++)
 
-AC_CHECK_HEADERS(sstream)
+AC_CHECK_HEADERS([sstream])
 OCTAVE_UNORDERED_MAP_HEADERS
 
 AC_LANG_POP(C++)
@@ -1802,11 +1805,11 @@ AC_LANG_POP(C++)
 ## Find a termio header to include.
 
 have_termios_h=no
-AC_CHECK_HEADERS(termios.h, have_termios_h=yes)
-AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
-AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
-AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
-AC_CHECK_HEADERS(conio.h, have_conio_h=yes, have_conio_h=no)
+AC_CHECK_HEADERS([termios.h], have_termios_h=yes)
+AC_CHECK_HEADERS([termio.h], have_termio_h=yes, have_termio_h=no)
+AC_CHECK_HEADERS([sgtty.h], have_sgtty_h=yes, have_sgtty_h=no)
+AC_CHECK_HEADERS([fnmatch.h], have_fnmatch_h=yes, have_fnmatch_h=no)
+AC_CHECK_HEADERS([conio.h], have_conio_h=yes, have_conio_h=no)
 
 if test "$have_termios_h" = yes \
     || test "$have_termio_h" = yes \
@@ -1838,16 +1841,17 @@ AC_CHECK_TYPES([ptrdiff_t])
 ## How big are ints and how are they oriented?
 ## These could probably be eliminated in favor of run-time checks.
 
-AC_CHECK_SIZEOF(short)
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(long)
-AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF([short])
+AC_CHECK_SIZEOF([int])
+AC_CHECK_SIZEOF([long])
+AC_CHECK_SIZEOF([long long])
 ## Check for long double type (for 64-bit integers)
-AC_CHECK_SIZEOF(long double)
+AC_CHECK_SIZEOF([long double])
 
 ### Check structures and existence of necessary members
 
-AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct stat.st_rdev])
+AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks,
+                  struct stat.st_rdev])
 AC_CHECK_MEMBERS([struct group.gr_passwd])
 
 AC_STRUCT_TIMEZONE
@@ -1898,17 +1902,18 @@ gl_INIT
 
 ### Checks for functions and variables.
 
-AC_CHECK_FUNCS(basename canonicalize_file_name \
-  chmod dup2 endgrent endpwent execvp expm1 expm1f fork \
-  getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
-  getppid getpwent getpwuid getuid getwd _kbhit kill \
-  lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
-  mkstemp pipe putenv \
-  realpath resolvepath rindex roundl select setgrent setlocale \
-  setpwent setvbuf siglongjmp \
-  strsignal tempnam tgammaf umask \
-  uname utime waitpid \
-  _chmod x_utime _utime32)
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_FUNCS([basename canonicalize_file_name chmod dup2])
+AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
+AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
+AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid getwd])
+AC_CHECK_FUNCS([kill lgamma lgammaf lgamma_r lgammaf_r])
+AC_CHECK_FUNCS([localtime_r log1p log1pf mkstemp pipe putenv])
+AC_CHECK_FUNCS([realpath resolvepath rindex roundl select setgrent])
+AC_CHECK_FUNCS([setlocale setpwent setvbuf siglongjmp])
+AC_CHECK_FUNCS([strsignal tempnam tgammaf umask])
+AC_CHECK_FUNCS([uname utime x_utime waitpid])
+AC_CHECK_FUNCS([_chmod _kbhit _utime32])
 
 ## exp2, round, tgamma function checks
 AC_LANG_PUSH(C++)
@@ -1941,7 +1946,7 @@ OCTAVE_CHECK_FUNC_CMATH(isfinite)
 
 dnl Would like to get rid of this crap, and just have
 dnl
-dnl   AC_CHECK_FUNCS(finite isnan isinf)
+dnl   AC_CHECK_FUNCS([finite isnan isinf])
 dnl
 dnl instead, but that used to fail on some systems...
 dnl
@@ -1956,16 +1961,17 @@ case "$canonical_host_type" in
   m68k-hp-hpux*)
   ;;
   *)
-    AC_CHECK_FUNCS(finite isnan isinf signbit)
-    AC_CHECK_FUNCS(_finite _isnan)
-    AC_CHECK_DECLS(signbit, , , [#include <math.h>])
+    AC_CHECK_FUNCS([finite isnan isinf signbit])
+    AC_CHECK_FUNCS([_finite _isnan])
+    AC_CHECK_DECLS([signbit], , , [#include <math.h>])
   ;;
 esac
 
 ## Check for nonstandard, but common math functions, that we need.
 
-AC_CHECK_FUNCS(acosh acoshf asinh asinhf atanh atanhf cbrt cbrtf erf erff \
-  erfc erfcf exp2f hypotf _hypotf log2 log2f)
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_FUNCS([acosh acoshf asinh asinhf atanh atanhf cbrt cbrtf])
+AC_CHECK_FUNCS([erf erff erfc erfcf exp2f hypotf _hypotf log2 log2f])
 
 ## MinGW exception for mkstemp
 case "$canonical_host_type" in
@@ -1982,12 +1988,12 @@ case "$canonical_host_type" in
         mkstemps ("XXXXXX", 0);
         ]]
       )],
-    [AC_MSG_RESULT(yes)
+    [AC_MSG_RESULT([yes])
      HAVE_MKSTEMPS=yes
      AC_DEFINE(HAVE_MKSTEMPS, 1,
        [Define to 1 if mkstemps is available in libiberty.])
     ],
-    [AC_MSG_RESULT(no)
+    [AC_MSG_RESULT([no])
      HAVE_MKSTEMPS=no
      LIBS="$save_LIBS"
     ])
@@ -2021,7 +2027,7 @@ case "$canonical_host_type" in
 esac
 
 ## Cygwin kluge for getrusage.
-AC_CHECK_FUNCS(getrusage)
+AC_CHECK_FUNCS([getrusage])
 case "$canonical_host_type" in
   *-*-cygwin*)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
@@ -2034,7 +2040,7 @@ if test $have_framework_carbon = "yes"; then
   OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL
 fi
 
-AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
+AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
 
 AC_FUNC_CLOSEDIR_VOID
 
@@ -2130,7 +2136,7 @@ GXX_EXTRA_FLAGS="-Wall -W -Wshadow -Wold-style-cast -Wformat -Wpointer-arith -Ww
 
 try_extra_warning_flags=true
 
-AC_ARG_ENABLE(extra-warning-flags,
+AC_ARG_ENABLE([extra-warning-flags],
   [AS_HELP_STRING([--disable-extra-warning-flags],
     [don't add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = no; then
@@ -2140,12 +2146,12 @@ AC_ARG_ENABLE(extra-warning-flags,
 
 if $try_extra_warning_flags; then
   for flag in $GCC_EXTRA_FLAGS; do
-    OCTAVE_CC_FLAG($flag, [
+    OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
   done
   for flag in $GXX_EXTRA_FLAGS; do
-    OCTAVE_CXX_FLAG($flag, [
+    OCTAVE_CXX_FLAG([$flag], [
       WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
   done
@@ -2157,7 +2163,7 @@ GXX_STRICT_FLAGS="-Wconversion -Weffc++"
 
 try_strict_warning_flags=false
 
-AC_ARG_ENABLE(strict-warning-flags,
+AC_ARG_ENABLE([strict-warning-flags],
   [AS_HELP_STRING([--enable-strict-warning-flags],
     [add extra strict warning options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = yes; then
@@ -2167,12 +2173,12 @@ AC_ARG_ENABLE(strict-warning-flags,
 
 if $try_strict_warning_flags; then
   for flag in $GCC_STRICT_FLAGS; do
-    OCTAVE_CC_FLAG($flag, [
+    OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
   done
   for flag in $GXX_STRICT_FLAGS; do
-    OCTAVE_CXX_FLAG($flag, [
+    OCTAVE_CXX_FLAG([$flag], [
       WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
   done
@@ -2189,11 +2195,11 @@ QT_LIBDIR=
 win32_terminal=no
 build_gui=true
 GUIDIR=libgui
-AC_ARG_ENABLE(gui,
+AC_ARG_ENABLE([gui],
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
-  [if test "$enableval" = no; then build_gui=false; fi], [build_gui=true])
+  [if test "$enableval" = no; then build_gui=false; fi], [])
 
-if test $build_gui = true; then
+if test $build_gui; then
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],
@@ -2212,8 +2218,8 @@ if test $build_gui = true; then
     AC_MSG_ERROR([qmake >= Qt4 is required to build the GUI])
   fi
 
-  AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
-  AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
+  AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
+  AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
   AC_CHECK_PROGS(RCC, [rcc])
   if test -z "$MOC" || test -z "$UIC" || test -z "$RCC"; then
     AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required to build the GUI])
@@ -2311,11 +2317,11 @@ AH_BOTTOM([
 #define FCN_PTR_CAST(T, E) reinterpret_cast<T> (E)
 #endif
 
-#if !defined(HAVE_DEV_T)
+#if ! defined (HAVE_DEV_T)
 typedef short dev_t;
 #endif
 
-#if !defined(HAVE_INO_T)
+#if ! defined (HAVE_INO_T)
 typedef unsigned long ino_t;
 #endif
 

@@ -99,6 +99,7 @@ void
 file_editor::request_open_file ()
 {
   file_editor_tab *current_tab = active_editor_tab ();
+  int curr_tab_index = _tab_widget->currentIndex ();
   file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
@@ -111,6 +112,9 @@ file_editor::request_open_file ()
         {
           // If no file was loaded, remove the tab again.
           _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));
+          // restore focus to previous tab
+          if (curr_tab_index>=0)
+            _tab_widget->setCurrentIndex (curr_tab_index);
         }
     }
 }

@@ -603,7 +603,7 @@ file_editor_tab::set_modified (bool modified)
 }
 
 bool
-file_editor_tab::open_file (QString dir)
+file_editor_tab::open_file (const QString& dir)
 {
   QString openFileName;
   QFileDialog fileDialog(this);

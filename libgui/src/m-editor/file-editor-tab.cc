@@ -121,6 +121,7 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
            this, SLOT (file_has_changed (QString)));
 
   _file_name = "";
+  _long_title = false;  
   update_window_title (false);
 }
 

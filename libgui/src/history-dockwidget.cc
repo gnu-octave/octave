@@ -63,7 +63,13 @@ history_dock_widget::event_accepted (octave_event *e)
             }
         }
 
-      _history_list_view->scrollToBottom ();
+      // FIXME -- how to make the widget scroll to the bottom when an
+      // item is added, but leave it alone if the user has moved it
+      // somewhere other than the bottom of the list?  The following
+      // doesn't seem to work.  It forces to the widget to always scroll
+      // to the bottom, even if no items are added.
+      //
+      // _history_list_view->scrollToBottom ();
     }
 
   // Post a new update event in a given time. This prevents flooding the

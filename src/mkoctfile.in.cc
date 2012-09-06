@@ -49,11 +49,11 @@ static map<string,string> vars;
 
 static string OCTAVE_VERSION = %OCTAVE_CONF_VERSION%;
 
-static std::string
-substitute_prefix (const std::string& s, const std::string& prefix,
-                   const std::string& new_prefix)
+static string
+substitute_prefix (const string& s, const string& prefix,
+                   const string& new_prefix)
 {
-  std::string retval = s;
+  string retval = s;
 
   if (!prefix.empty () && new_prefix != prefix)
     {
@@ -63,7 +63,7 @@ substitute_prefix (const std::string& s, const std::string& prefix,
     }
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  std::replace (retval.begin (), retval.end (), '/', '\\');
+  replace (retval.begin (), retval.end (), '/', '\\');
 #endif
 
   return retval;
@@ -124,7 +124,7 @@ initialize (void)
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
   int n = 1024;
 
-  std::string bin_dir (n, '\0');
+  string bin_dir (n, '\0');
 
   while (true)
     {
@@ -155,10 +155,10 @@ initialize (void)
 
   vars["OCTAVE_PREFIX"] = %OCTAVE_CONF_PREFIX%;
 
-  std::string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
-  std::string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
-  std::string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
-  std::string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
+  string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
+  string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
+  string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
+  string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
 
   if (! vars["OCTAVE_HOME"].empty ())
     {
@@ -185,18 +185,18 @@ initialize (void)
   vars["OCTLIBDIR"] = get_variable ("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  std::string DEFAULT_INCFLAGS
+  string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
-  std::string DEFAULT_INCFLAGS
+  string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #endif
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
 
-  std::string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
+  string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
   if (vars["LIBDIR"] != "/usr/lib")
     DEFAULT_LFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 

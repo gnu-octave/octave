@@ -50,13 +50,20 @@ history_dock_widget::event_accepted (octave_event *e)
       // them to our history.
       if (clientHistoryLength < serverHistoryLength)
         {
+          int elts_to_add = serverHistoryLength - clientHistoryLength;
+
+          _history_model->insertRows (clientHistoryLength, elts_to_add);
+
           for (int i = clientHistoryLength; i < serverHistoryLength; i++)
             {
-              _history_model->insertRow (0);
-              _history_model->setData (_history_model->index (0),
-                QString (command_history::get_entry (i).c_str ()));
+              std::string entry = command_history::get_entry (i);
+
+              _history_model->setData (_history_model->index (i),
+                                       QString::fromStdString (entry));
             }
         }
+
+      _history_list_view->scrollToBottom ();
     }
 
   // Post a new update event in a given time. This prevents flooding the

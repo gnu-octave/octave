@@ -489,7 +489,7 @@ void
 jit_convert::visit_constant (tree_constant& tc)
 {
   octave_value v = tc.rvalue1 ();
-  if (v.is_real_scalar () && v.is_double_type ())
+  if (v.is_real_scalar () && v.is_double_type () && ! v.is_complex_type ())
     {
       double dv = v.double_value ();
       result = factory.create<jit_const_scalar> (dv);
@@ -2098,5 +2098,14 @@ Test some simple cases that compile.
 %! endfor
 %! assert (a, 2000);
 %! assert (b, 1);
+
+%!test
+%! a = [1+1i 1+2i];
+%! b = 0;
+%! while 1
+%!   b = a(1);
+%!   break;
+%! endwhile
+%! assert (b, a(1));
 
 */

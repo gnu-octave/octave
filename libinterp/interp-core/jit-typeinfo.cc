@@ -2198,7 +2198,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
   if (ov.is_range ())
     return get_range ();
 
-  if (ov.is_double_type ())
+  if (ov.is_double_type () && ! ov.is_complex_type ())
     {
       if (ov.is_real_scalar ())
         return get_scalar ();

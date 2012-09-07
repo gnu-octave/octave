@@ -3,14 +3,18 @@ syntax: regexp
 # to mean "at any directory" while the ^ idiom means "from the
 # project's top-level directory".
 
+# gnulib makes these silly backup files
+^.*~
+
 # This one gets created by gnulib during the build, contains no Octave
 # files.
 ^gnulib/
 
 # These directories mostly contain cruft during build time, but they
-# do contain some Octave code.
-^libgnu/
-^m4/
+# do contain some Octave code, so we gotta be a bit more careful about
+# what we ignore here
+^libgnu/.*\.([hc]$|sin$|valgrind$|charset$)
+^m4/(?!ax_).+\.m4$
 
 # Emacs tools create these
 (^|/)TAGS$
@@ -34,6 +38,7 @@ syntax: regexp
 ^doc/interpreter/images\.mk$
 
 # e.g. liboctave/smx-op-inc.mk
-^liboctave/[\w-]*\.mk$
+^liboctave/operators/\w+-op-\w+\.mk$
+^liboctave/\w+-op-\w+\.mk$
 
 ^libinterp/dldfcn/module\.mk$

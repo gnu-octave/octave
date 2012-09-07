@@ -144,6 +144,8 @@ private:
 
     octave_refcount<size_t> count;
     std::string host;
+    std::string url;
+    std::string userpwd;
     bool valid;
     bool ascii;
     mutable CURLcode errnum;
@@ -182,8 +184,8 @@ public:
       rep->host = _host;
       init (user, passwd, std::cin, octave_stdout);
 
-      std::string url = "ftp://" + _host;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + _host;
+      setopt (CURLOPT_URL, rep->url.c_str ());
 
       // Setup the link, with no transfer
       if (!error_state)
@@ -358,8 +360,8 @@ public:
 
   void put (const std::string& file, std::istream& is) const
     {
-      std::string url = "ftp://" + rep->host + "/" + file;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host + "/" + file;
+      setopt (CURLOPT_URL, rep->url.c_str ());
       setopt (CURLOPT_UPLOAD, 1);
       setopt (CURLOPT_NOBODY, 0);
       set_istream (is);
@@ -368,51 +370,51 @@ public:
       set_istream (std::cin);
       setopt (CURLOPT_NOBODY, 1);
       setopt (CURLOPT_UPLOAD, 0);
-      url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host;
+      setopt (CURLOPT_URL, rep->url.c_str ());
     }
 
   void get (const std::string& file, std::ostream& os) const
     {
-      std::string url = "ftp://" + rep->host + "/" + file;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host + "/" + file;
+      setopt (CURLOPT_URL, rep->url.c_str ());
       setopt (CURLOPT_NOBODY, 0);
       set_ostream (os);
       if (! error_state)
         perform ();
       set_ostream (octave_stdout);
       setopt (CURLOPT_NOBODY, 1);
-      url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host;
+      setopt (CURLOPT_URL, rep->url.c_str ());
     }
 
   void dir (void) const
     {
-      std::string url = "ftp://" + rep->host + "/";
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host + "/";
+      setopt (CURLOPT_URL, rep->url.c_str ());
       setopt (CURLOPT_NOBODY, 0);
       if (! error_state)
         perform ();
       setopt (CURLOPT_NOBODY, 1);
-      url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host;
+      setopt (CURLOPT_URL, rep->url.c_str ());
     }
 
   string_vector list (void) const
     {
       std::ostringstream buf;
-      std::string url = "ftp://" + rep->host + "/";
+      rep->url = "ftp://" + rep->host + "/";
       setopt (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
-      setopt (CURLOPT_URL, url.c_str ());
+      setopt (CURLOPT_URL, rep->url.c_str ());
       setopt (CURLOPT_DIRLISTONLY, 1);
       setopt (CURLOPT_NOBODY, 0);
       if (! error_state)
         perform ();
       setopt (CURLOPT_NOBODY, 1);
-      url = "ftp://" + rep->host;
+      rep->url = "ftp://" + rep->host;
       setopt (CURLOPT_WRITEDATA, static_cast<void*> (&octave_stdout));
       setopt (CURLOPT_DIRLISTONLY, 0);
-      setopt (CURLOPT_URL, url.c_str ());
+      setopt (CURLOPT_URL, rep->url.c_str ());
 
       // Count number of directory entries
       std::string str = buf.str ();
@@ -445,8 +447,8 @@ public:
     {
       std::string path = pwd ();
 
-      std::string url = "ftp://" + rep->host + "/" + path + "/" + filename;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host + "/" + path + "/" + filename;
+      setopt (CURLOPT_URL, rep->url.c_str ());
       setopt (CURLOPT_FILETIME, 1);
       setopt (CURLOPT_HEADERFUNCTION, throw_away);
       setopt (CURLOPT_WRITEFUNCTION, throw_away);
@@ -479,8 +481,8 @@ public:
       setopt (CURLOPT_WRITEFUNCTION, write_data);
       setopt (CURLOPT_HEADERFUNCTION, 0);
       setopt (CURLOPT_FILETIME, 0);
-      url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str ());
+      rep->url = "ftp://" + rep->host;
+      setopt (CURLOPT_URL, rep->url.c_str ());
 
       // The MDTM command seems to reset the path to the root with the
       // servers I tested with, so cd again into the correct path. Make
@@ -562,11 +564,11 @@ private:
       setopt (CURLOPT_NOBODY, 1);
 
       // Set the username and password
-      std::string userpwd = user;
+      rep->userpwd = user;
       if (! passwd.empty ())
-        userpwd += ":" + passwd;
-      if (! userpwd.empty ())
-        setopt (CURLOPT_USERPWD, userpwd.c_str ());
+        rep->userpwd += ":" + passwd;
+      if (! rep->userpwd.empty ())
+        setopt (CURLOPT_USERPWD, rep->userpwd.c_str ());
 
       // Define our callback to get called when there's data to be written.
       setopt (CURLOPT_WRITEFUNCTION, write_data);

@@ -200,6 +200,11 @@ public:
 
       setopt (CURLOPT_NOBODY, 0);
 
+      // Restore the default HTTP request method to GET after setting
+      // NOBODY to true and back to false.  This is needed for backward
+      // compatibility with versions of libcurl < 7.18.2.
+      setopt (CURLOPT_HTTPGET, 1);
+
       // Don't need to store the parameters here as we can't change
       // the URL after the handle is created
       std::string query_string = form_query_string (param);

@@ -839,6 +839,20 @@ LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
+if test -z "$warn_curl"; then
+  AC_MSG_CHECKING([for CURLOPT_DIRLISTONLY in curl/curl.h])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM([[
+      #include <curl/curl.h>
+      ]], [[
+      curl_easy_setopt ((CURL*)NULL, CURLOPT_DIRLISTONLY, 0);
+      ]])],
+    [AC_MSG_RESULT(yes)],
+    [AC_MSG_RESULT(no)
+     AC_DEFINE(CURLOPT_DIRLISTONLY, CURLOPT_FTPLISTONLY,
+       [Define to the legacy option name if using an older version of cURL.])]
+  )
+fi
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 

@@ -953,7 +953,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
     set_exec_path (exec_path);
 
   if (! image_path.empty ())
-    set_exec_path (image_path);
+    set_image_path (image_path);
 
   if (! info_file.empty ())
     bind_internal_variable ("info_file", info_file);

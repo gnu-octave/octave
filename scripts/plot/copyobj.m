@@ -95,7 +95,7 @@ endfunction
 %!      'HorizontAlalignment', 'Center', 'Rotation', 30);
 %! hnew = copyobj (hdl);
 
-%!test
+%!testif HAVE_MAGICK
 %! h1 = figure ();
 %! set (h1, "visible", "off");
 %! x = 0:0.1:2*pi;

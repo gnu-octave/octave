@@ -55,11 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <curl/curlver.h>
 #include <curl/easy.h>
 
-// Backwards compatibility for curl < 7.17.0
-#if LIBCURL_VERSION_NUM < 0x071100
-#define CURLOPT_DIRLISTONLY CURLOPT_FTPLISTONLY
-#endif
-
 static int
 write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
 {

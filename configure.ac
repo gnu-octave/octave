@@ -1320,11 +1320,41 @@ if test -z "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
+## Test features of the installed UMFPACK library
+
 if test -n "$UMFPACK_LIBS"; then
+  ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time()
   save_LIBS="$LIBS";
-  LIBS="$UMFPACK_LIBS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
-  OCTAVE_UMFPACK_SEPARATE_SPLIT
+  LIBS="$UMFPACK_LIBS $FLIBS $LIBS"
+  xtra_libs=
+  OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
+  if test "$octave_cv_umfpack_need_suitesparse_time" = yes; then
+    AC_CHECK_LIB([rt], [clock_gettime], [xtra_libs="-lrt"], [xtra_libs=])
+    ## FIXME: This library list is only accurate for Linux, Mac OS X.
+    ##        Possibly need other library names for MinGW, Cygwin.
+    AC_SEARCH_LIBS([SuiteSparse_time],
+                   [suitesparseconfig SuiteSparse],
+                   [], [], [$xtra_libs])
+    case "$ac_cv_search_SuiteSparse_time" in
+      -l*)  
+        UMFPACK_LIBS="$UMFPACK_LIBS $ac_cv_search_SuiteSparse_time"
+      ;;
+      no)
+        UMFPACK_LIBS=
+        AC_MSG_WARN([UMFPACK library found but is missing SuiteSparse_time functionality.])
+        AC_MSG_WARN([UMFPACK library will be disabled.])
+      ;;
+    esac
+  fi
   LIBS="$save_LIBS"
+
+  ## Check for UMFPACK separately split complex matrix and RHS.
+  if test -n "$UMFPACK_LIBS"; then
+    save_LIBS="$LIBS";
+    LIBS="$UMFPACK_LIBS $CHOLMOD_LIBS $AMD_LIBS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
+    OCTAVE_UMFPACK_SEPARATE_SPLIT
+    LIBS="$save_LIBS"
+  fi
 fi
 
 ### Check for ARPACK library.

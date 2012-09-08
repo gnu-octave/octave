@@ -1624,6 +1624,35 @@ AC_DEFUN([OCTAVE_SET_DEFAULT], [
   AC_SUBST($1)
 ])
 dnl
+dnl Check whether SuiteSparse_time is required by UMFPACK.
+dnl UMFPACK >= 4 requires linking in another library for SuiteSparse_time.
+dnl
+dnl Macro assumes that the check for umfpack has already been performed.
+dnl
+AC_DEFUN([OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME], [
+  AC_CACHE_CHECK([whether UMFPACK needs SuiteSparse_time function], 
+    [octave_cv_umfpack_need_suitesparse_time],
+    [AC_LANG_PUSH(C)
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #if defined (HAVE_SUITESPARSE_UMFPACK_H)
+        # include <suitesparse/umfpack.h>
+        #elif defined (HAVE_UFSPARSE_UMFPACK_H)
+        # include <ufsparse/umfpack.h>
+        #elif defined (HAVE_UMFPACK_UMFPACK_H)
+        # include <umfpack/umfpack.h>
+        #elif defined (HAVE_UMFPACK_H)
+        # include <umfpack.h>
+        #endif
+        ]], [[
+        double stats [2];
+        umfpack_tic (stats);
+      ]])],
+      octave_cv_umfpack_need_suitesparse_time=no,
+      octave_cv_umfpack_need_suitesparse_time=yes)
+    AC_LANG_POP(C)
+  ])
+])
+dnl
 dnl Check for UMFPACK separately split complex matrix and RHS.
 dnl
 dnl Macro assumes that the check for umfpack has already been performed.

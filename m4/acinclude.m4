@@ -1662,6 +1662,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
   AC_CACHE_VAL([octave_cv_umfpack_separate_split],
     [AC_RUN_IFELSE([AC_LANG_SOURCE([[
         #include <stdlib.h>
+        #include <math.h>
         #if defined (HAVE_SUITESPARSE_UMFPACK_H)
         # include <suitesparse/umfpack.h>
         #elif defined (HAVE_UFSPARSE_UMFPACK_H)
@@ -1691,7 +1692,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
                                    Numeric, null, null) ;
           umfpack_zi_free_numeric (&Numeric) ;
           for (i = 0; i < n; i++, x+=2) 
-            if (fabs(*x - i - 1.) > 1.e-13)
+            if (fabs (*x - i - 1.) > 1.e-13)
               return (1);
           return (0) ;
         }

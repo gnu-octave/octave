@@ -359,7 +359,12 @@ jit_convert::visit_identifier (tree_identifier& ti)
       result = block->append (factory.create<jit_magic_end> (end_context));
     }
   else
-    result = get_variable (ti.name ());
+    {
+      jit_variable *var = get_variable (ti.name ());
+      jit_instruction *instr;
+      instr = factory.create<jit_call> (&jit_typeinfo::grab, var);
+      result = block->append (instr);
+    }
 }
 
 void
@@ -458,7 +463,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 void
 jit_convert::visit_index_expression (tree_index_expression& exp)
 {
-  result = resolve (jit_typeinfo::paren_subsref (), exp);
+  result = resolve (exp);
 }
 
 void
@@ -532,7 +537,7 @@ jit_convert::visit_postfix_expression (tree_postfix_expression& tpe)
 
   if (etype == octave_value::op_incr || etype == octave_value::op_decr)
     {
-      jit_value *ret = create_checked (&jit_typeinfo::copy, operandv);
+      jit_value *ret = create_checked (&jit_typeinfo::grab, operandv);
       do_assign (operand, result);
       result = ret;
     }
@@ -772,8 +777,8 @@ jit_convert::next_name (const char *prefix, size_t& count, bool inc)
 }
 
 jit_instruction *
-jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
-                      jit_value *extra_arg)
+jit_convert::resolve (tree_index_expression& exp, jit_value *extra_arg,
+                      bool lhs)
 {
   std::string type = exp.type_tags ();
   if (! (type.size () == 1 && type[0] == '('))
@@ -781,7 +786,8 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
 
   std::list<tree_argument_list *> args = exp.arg_lists ();
   if (args.size () != 1)
-    throw jit_fail_exception ("Bad number of arguments in tree_index_expression");
+    throw jit_fail_exception ("Bad number of arguments in "
+                              "tree_index_expression");
 
   tree_argument_list *arg_list = args.front ();
   if (! arg_list)
@@ -791,7 +797,16 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
     throw jit_fail_exception ("Empty arg_list");
 
   tree_expression *tree_object = exp.expression ();
-  jit_value *object = visit (tree_object);
+  jit_value *object;
+  if (lhs)
+    {
+      tree_identifier *id = dynamic_cast<tree_identifier *> (tree_object);
+      if (! id)
+        throw jit_fail_exception ("expected identifier");
+      object = get_variable (id->name ());
+    }
+  else
+    object = visit (tree_object);
 
   size_t narg = arg_list->size ();
   tree_argument_list::iterator iter = arg_list->begin ();
@@ -813,6 +828,9 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
   if (extra_arg)
     call_args[call_args.size () - 1] = extra_arg;
 
+  const jit_operation& fres = lhs ? jit_typeinfo::paren_subsasgn ()
+    : jit_typeinfo::paren_subsref ();
+
   return create_checked (fres, call_args);
 }
 
@@ -827,8 +845,7 @@ jit_convert::do_assign (tree_expression *exp, jit_value *rhs, bool artificial)
   else if (tree_index_expression *idx
            = dynamic_cast<tree_index_expression *> (exp))
     {
-      jit_value *new_object = resolve (jit_typeinfo::paren_subsasgn (), *idx,
-                                       rhs);
+      jit_value *new_object = resolve (*idx, rhs, true);
       do_assign (idx->expression (), new_object, true);
 
       // FIXME: Will not work for values that must be release/grabed
@@ -1121,13 +1138,6 @@ jit_convert_llvm::visit (jit_assign& assign)
 
   if (assign.artificial ())
     return;
-
-  if (isa<jit_assign_base> (new_value))
-    {
-      const jit_function& ol =  jit_typeinfo::get_grab (new_value->type ());
-      if (ol.valid ())
-        assign.stash_llvm (ol.call (builder, new_value));
-    }
 
   jit_value *overwrite = assign.overwrite ();
   if (isa<jit_assign_base> (overwrite))
@@ -2107,5 +2117,13 @@ Test some simple cases that compile.
 %!   break;
 %! endwhile
 %! assert (b, a(1));
+
+%!function test_undef ()
+%!  for i=1:1e7
+%!    XXX;
+%!  endfor
+%!endfunction
+
+%!error <undefined near> (test_undef);
 
 */

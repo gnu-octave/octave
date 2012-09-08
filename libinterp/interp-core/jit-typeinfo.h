@@ -498,11 +498,6 @@ public:
     return instance->release_fn.overload (type);
   }
 
-  static const jit_operation& copy (void)
-  {
-    return instance->copy_fn;
-  }
-
   static const jit_operation& print_value (void)
   {
     return instance->print_fn;
@@ -756,7 +751,6 @@ private:
   std::vector<jit_operation> unary_ops;
   jit_operation grab_fn;
   jit_operation release_fn;
-  jit_operation copy_fn;
   jit_operation print_fn;
   jit_operation for_init_fn;
   jit_operation for_check_fn;

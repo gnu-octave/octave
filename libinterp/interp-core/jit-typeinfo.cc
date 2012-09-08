@@ -1123,18 +1123,18 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
       binary_ops[op].add_overload (fn);
     }
 
-  // grab any
-  fn = create_function (jit_convention::external, "octave_jit_grab_any", any,
-                        any);
-  fn.add_mapping (engine, &octave_jit_grab_any);
-  grab_fn.add_overload (fn);
-  grab_fn.stash_name ("grab");
-
   // grab matrix
   fn = create_function (jit_convention::external, "octave_jit_grab_matrix",
                         matrix, matrix);
   fn.add_mapping (engine, &octave_jit_grab_matrix);
   grab_fn.add_overload (fn);
+
+  grab_fn.add_overload (create_identity (scalar));
+  grab_fn.add_overload (create_identity (scalar_ptr));
+  grab_fn.add_overload (create_identity (any_ptr));
+  grab_fn.add_overload (create_identity (boolean));
+  grab_fn.add_overload (create_identity (complex));
+  grab_fn.add_overload (create_identity (index));
 
   // release any
   fn = create_function (jit_convention::external, "octave_jit_release_any", 0,
@@ -1148,10 +1148,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
                         0, matrix);
   fn.add_mapping (engine, &octave_jit_release_matrix);
   release_fn.add_overload (fn);
-
-  // copy
-  copy_fn.stash_name ("copy");
-  copy_fn.add_overload (create_identity (scalar));
 
   // now for binary scalar operations
   add_binary_op (scalar, octave_value::op_add, llvm::Instruction::FAdd);
@@ -1836,6 +1832,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   casts.resize (next_id + 1);
   jit_function any_id = create_identity (any);
+  jit_function grab_any = create_function (jit_convention::external,
+                                           "octave_jit_grab_any", any, any);
+  grab_any.add_mapping (engine, &octave_jit_grab_any);
   jit_function release_any = get_release (any);
   std::vector<jit_type *> args;
   args.resize (1);
@@ -1846,6 +1845,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
       jit_type *btype = iter->second;
       args[0] = btype;
 
+      grab_fn.add_overload (jit_function (grab_any, btype, args));
       release_fn.add_overload (jit_function (release_any, 0, args));
       casts[any->type_id ()].add_overload (jit_function (any_id, any, args));
 

@@ -840,18 +840,21 @@ OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
 if test -z "$warn_curl"; then
-  AC_MSG_CHECKING([for CURLOPT_DIRLISTONLY in curl/curl.h])
-  AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[
+  ## Additional check on cURL library that was found
+  AC_CACHE_CHECK([for CURLOPT_DIRLISTONLY in curl/curl.h],
+    [octave_cv_header_define_curlopt_dirlistonly],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
       #include <curl/curl.h>
       ]], [[
       curl_easy_setopt ((CURL*)NULL, CURLOPT_DIRLISTONLY, 0);
       ]])],
-    [AC_MSG_RESULT(yes)],
-    [AC_MSG_RESULT(no)
-     AC_DEFINE(CURLOPT_DIRLISTONLY, CURLOPT_FTPLISTONLY,
-       [Define to the legacy option name if using an older version of cURL.])]
-  )
+      [octave_cv_header_define_curlopt_dirlistonly=no],
+      [octave_cv_header_define_curlopt_dirlistonly=yes])
+    ])
+  if test $octave_cv_header_define_curlopt_dirlistonly = "yes"; then
+    AC_DEFINE(CURLOPT_DIRLISTONLY, CURLOPT_FTPLISTONLY,
+      [Define to the legacy option name if using an older version of cURL.])]
+  fi
 fi
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
@@ -886,19 +889,21 @@ PKG_CHECK_EXISTS([$magick++], [
   CPPFLAGS="$MAGICK_CPPFLAGS $CPPFLAGS"
   LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
   AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([Magick++.h], [
-      AC_MSG_CHECKING([for Magick::ColorRGB in Magick++.h])
-      AC_PREPROC_IFELSE(
-        [AC_LANG_SOURCE([[
-          #include <Magick++.h>
-          ]], [[
-          Magick::ColorRGB c;
-          ]])],
-        [AC_MSG_RESULT([yes])
-         warn_magick=],
-        [AC_MSG_RESULT([no])]
-      )
-    ])
+  AC_CHECK_HEADER([Magick++.h], [
+    AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
+      [octave_cv_func_magick_colorrgb],
+      [AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
+        #include <Magick++.h>
+        ]], [[
+        Magick::ColorRGB c;
+        ]])],
+        octave_cv_func_magick_colorrgb=yes,
+        octave_cv_func_magick_colorrgb=no)
+      ])
+    if test $octave_cv_func_magick_colorrgb = yes; then
+      warn_magick=
+    fi
+  ])
   AC_LANG_POP(C++)
   CPPFLAGS="$save_CPPFLAGS"
   LIBS="$save_LIBS"
@@ -950,17 +955,17 @@ fi
 
 ### Check for list of libraries needed for native graphics renderer.
 
-warn_freetype=""
 native_graphics=true
+warn_freetype=""
 
 check_opengl=false
 AC_ARG_WITH([opengl],
   [AS_HELP_STRING([--without-opengl],
     [don't use OpenGL libraries, disable native graphics])],
   [if test "x$withval" = xno; then
+     native_graphics=false
      warn_opengl="--without-opengl specified.  Native graphics will be disabled."
      OCTAVE_CONFIGURE_WARNING([warn_opengl])
-     native_graphics=false
    else
      check_opengl=true
    fi],
@@ -976,9 +981,9 @@ GRAPHICS_CFLAGS=
 
 if test -z "$OPENGL_LIBS"; then
   if $check_opengl; then
+    native_graphics=false
     warn_fltk_opengl="OpenGL libs (GL and GLU) not found.  Native graphics will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
-    native_graphics=false
   fi
 fi
 
@@ -1011,8 +1016,8 @@ if test -n "$OPENGL_LIBS"; then
   fi
 
   if test -n "$warn_fontconfig"; then
-    OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
     native_graphics=false
+    OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
   fi
 
   ## Check for FLTK (www.fltk.org) library
@@ -1049,9 +1054,9 @@ if test -n "$OPENGL_LIBS"; then
   warn_fltk_opengl=""
 
   if test "$FLTK_CONFIG" = "no" ; then
+    native_graphics=false
     warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
-    native_graphics=false
   else
     FLTK_CFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`"
     FLTK_LDFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`"
@@ -1062,24 +1067,32 @@ if test -n "$OPENGL_LIBS"; then
       ;;
     esac
 
-    AC_MSG_CHECKING([for OpenGL support in FLTK])
-    save_CFLAGS="$CFLAGS"
-    CFLAGS="$CFLAGS $FLTK_CFLAGS"
-    AC_COMPILE_IFELSE(
-      [AC_LANG_PROGRAM([[#include <FL/gl.h>]], [[int nothing = 0;]])],
-      [AC_MSG_RESULT([no])
-       warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."],
-      [AC_MSG_RESULT([yes])
-       AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])])
-         
+    AC_CACHE_CHECK([for OpenGL support in FLTK],
+      [octave_cv_fltk_opengl_support],
+      [save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS $FLTK_CFLAGS"
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <FL/gl.h>
+        ]], [[
+        int nothing = 0;
+        ]])],
+        octave_cv_fltk_opengl_support=no,
+        octave_cv_fltk_opengl_support=yes)
+      CFLAGS="$save_CFLAGS"
+      ])
+    if test $octave_cv_fltk_opengl_support = no; then
+      warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
+    else
+      AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
+    fi 
+
     if test -z "$warn_fltk_opengl"; then
       GRAPHICS_CFLAGS="$FLTK_CFLAGS"
       GRAPHICS_LIBS="$FLTK_LDFLAGS"
     else
-      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
       native_graphics=false
+      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
     fi
-    CFLAGS="$save_CFLAGS"
   fi
 fi
 

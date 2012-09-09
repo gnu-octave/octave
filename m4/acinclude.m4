@@ -683,18 +683,30 @@ dnl Find a suitable termlib to use.
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_TERMLIB], [
   TERM_LIBS=
-  ac_octave_found_termlib=no
-  for termlib in ncurses curses termcap terminfo termlib; do
-    AC_CHECK_LIB([${termlib}], [tputs], [
-      TERM_LIBS="-l${termlib}"
-      ac_octave_found_termlib=yes
-      break])
-  done
+  ac_octave_save_LIBS="$LIBS"
+  AC_SEARCH_LIBS([tputs],
+                 [ncurses curses termcap terminfo termlib],
+                 [], [])
+  LIBS="$ac_octave_save_LIBS"
+  case "$ac_cv_search_tputs" in
+    -l*)  
+      TERM_LIBS="$ac_cv_search_tputs"
+    ;;
+    no)
+      warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!"
+      AC_MSG_WARN([$warn_termlibs])
+    ;;
+  esac
 
-  if test $ac_octave_found_termlib = no; then
-    warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!"
-    AC_MSG_WARN([$warn_termlibs])
-  fi
+dnl  Old code (9/9/2012).  Delete when new code is definitely proven.
+dnl
+dnl  for _termlib in ncurses curses termcap terminfo termlib; do
+dnl    AC_CHECK_LIB([${_termlib}], [tputs], [
+dnl      TERM_LIBS="-l${termlib}"
+dnl      octave_cv_lib_found_termlib=yes
+dnl      break])
+dnl  done
+
   AC_SUBST(TERM_LIBS)
 ])
 dnl

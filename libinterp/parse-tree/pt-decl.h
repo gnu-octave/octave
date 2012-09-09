@@ -84,6 +84,8 @@ public:
 
   tree_identifier *ident (void) { return id; }
 
+  std::string name (void) { return id ? id->name () : ""; }
+
   tree_expression *expression (void) { return expr; }
 
   tree_decl_elt *dup (symbol_table::scope_id scope,

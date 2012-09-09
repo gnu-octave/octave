@@ -452,6 +452,8 @@ public:
 
   static jit_type *get_scalar_ptr (void) { return instance->scalar_ptr; }
 
+  static jit_type *get_any_ptr (void) { return instance->any_ptr; }
+
   static jit_type *get_range (void) { return instance->range; }
 
   static jit_type *get_string (void) { return instance->string; }
@@ -496,6 +498,11 @@ public:
   static const jit_function& get_release (jit_type *type)
   {
     return instance->release_fn.overload (type);
+  }
+
+  static const jit_operation& destroy (void)
+  {
+    return instance->destroy_fn;
   }
 
   static const jit_operation& print_value (void)
@@ -562,6 +569,11 @@ public:
                                   jit_value *count)
   {
     return instance->do_end (value, index, count);
+  }
+
+  static const jit_operation& create_undef (void)
+  {
+    return instance->create_undef_fn;
   }
 private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
@@ -751,6 +763,7 @@ private:
   std::vector<jit_operation> unary_ops;
   jit_operation grab_fn;
   jit_operation release_fn;
+  jit_operation destroy_fn;
   jit_operation print_fn;
   jit_operation for_init_fn;
   jit_operation for_check_fn;
@@ -761,6 +774,7 @@ private:
   jit_paren_subsasgn paren_subsasgn_fn;
   jit_operation end1_fn;
   jit_operation end_fn;
+  jit_operation create_undef_fn;
 
   jit_function any_call;
 

@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "pager.h"
 #include "pt-eval.h"
+#include "pt-jit.h"
 #include "pt-jump.h"
 #include "pt-misc.h"
 #include "pt-pr-code.h"
@@ -192,6 +193,9 @@ octave_user_function::octave_user_function
     class_constructor (false), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
+#ifdef HAVE_LLVM
+    , jit_info (0)
+#endif
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
@@ -207,6 +211,10 @@ octave_user_function::~octave_user_function (void)
   delete cmd_list;
   delete lead_comm;
   delete trail_comm;
+
+#ifdef HAVE_LLVM
+  delete jit_info;
+#endif
 
   symbol_table::erase_scope (local_scope);
 }
@@ -372,6 +380,12 @@ octave_user_function::do_multi_index_op (int nargout,
   if (! cmd_list)
     return retval;
 
+#ifdef HAVE_LLVM
+  if (Venable_jit_compiler && is_special_expr ()
+      && tree_jit::execute (*this, args, retval))
+    return retval;
+#endif
+
   int nargin = args.length ();
 
   unwind_protect frame;
@@ -457,23 +471,14 @@ octave_user_function::do_multi_index_op (int nargout,
   frame.protect_var (tree_evaluator::statement_context);
   tree_evaluator::statement_context = tree_evaluator::function;
 
-  bool special_expr = (is_inline_function () || is_anonymous_function ());
-
   BEGIN_PROFILER_BLOCK (profiler_name ())
 
-  if (special_expr)
+  if (is_special_expr ())
     {
-      assert (cmd_list->length () == 1);
+      tree_expression *expr = special_expr ();
 
-      tree_statement *stmt = 0;
-
-      if ((stmt = cmd_list->front ())
-          && stmt->is_expression ())
-        {
-          tree_expression *expr = stmt->expression ();
-
-          retval = expr->rvalue (nargout);
-        }
+      if (expr)
+        retval = expr->rvalue (nargout);
     }
   else
     cmd_list->accept (*current_evaluator);
@@ -497,7 +502,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
   // Copy return values out.
 
-  if (ret_list && ! special_expr)
+  if (ret_list && ! is_special_expr ())
     {
       ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
 
@@ -527,6 +532,16 @@ void
 octave_user_function::accept (tree_walker& tw)
 {
   tw.visit_octave_user_function (*this);
+}
+
+tree_expression *
+octave_user_function::special_expr (void)
+{
+  assert (is_special_expr ());
+  assert (cmd_list->length () == 1);
+
+  tree_statement *stmt = cmd_list->front ();
+  return stmt->expression ();
 }
 
 bool

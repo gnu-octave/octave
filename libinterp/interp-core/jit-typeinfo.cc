@@ -366,6 +366,16 @@ octave_jit_end_matrix (jit_matrix *mat, octave_idx_type idx,
     return idx < ndim ? mat->dimensions[idx] : 1;
 }
 
+extern "C" octave_base_value *
+octave_jit_create_undef (void)
+{
+  octave_value undef;
+  octave_base_value *ret = undef.internal_rep ();
+  ret->grab ();
+
+  return ret;
+}
+
 extern "C" Complex
 octave_jit_complex_div (Complex lhs, Complex rhs)
 {
@@ -791,14 +801,15 @@ Array<octave_idx_type>
 jit_operation::to_idx (const std::vector<jit_type*>& types) const
 {
   octave_idx_type numel = types.size ();
-  if (numel == 1)
-    numel = 2;
+  numel = std::max (2, numel);
 
   Array<octave_idx_type> idx (dim_vector (1, numel));
   for (octave_idx_type i = 0; i < static_cast<octave_idx_type> (types.size ());
        ++i)
     idx(i) = types[i]->type_id ();
 
+  if (types.size () == 0)
+    idx(0) = idx(1) = 0;
   if (types.size () == 1)
     {
       idx(1) = idx(0);
@@ -1148,6 +1159,14 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
                         0, matrix);
   fn.add_mapping (engine, &octave_jit_release_matrix);
   release_fn.add_overload (fn);
+
+  // destroy
+  destroy_fn = release_fn;
+  destroy_fn.stash_name ("destroy");
+  destroy_fn.add_overload (create_identity(scalar));
+  destroy_fn.add_overload (create_identity(boolean));
+  destroy_fn.add_overload (create_identity(index));
+  destroy_fn.add_overload (create_identity(complex));
 
   // now for binary scalar operations
   add_binary_op (scalar, octave_value::op_add, llvm::Instruction::FAdd);
@@ -1701,6 +1720,12 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn = create_function (jit_convention::external, "octave_jit_end_matrix",
                         scalar, matrix, index, index);
   end_fn.add_overload (fn);
+
+  // -------------------- create_undef --------------------
+  create_undef_fn.stash_name ("create_undef");
+  fn = create_function (jit_convention::external, "octave_jit_create_undef",
+                        any);
+  create_undef_fn.add_overload (fn);
 
   casts[any->type_id ()].stash_name ("(any)");
   casts[scalar->type_id ()].stash_name ("(scalar)");

@@ -47,10 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 //FIXME: This should be part of tree_evaluator
 #include "pt-jit.h"
 
-#if HAVE_LLVM
-static tree_jit jiter;
-#endif
-
 static tree_evaluator std_evaluator;
 
 tree_evaluator *current_evaluator = &std_evaluator;
@@ -311,7 +307,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   octave_value rhs = expr->rvalue1 ();
 
 #if HAVE_LLVM
-  if (Venable_jit_compiler && jiter.execute (cmd, rhs))
+  if (Venable_jit_compiler && tree_jit::execute (cmd, rhs))
     return;
 #endif
 
@@ -1048,7 +1044,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
     return;
 
 #if HAVE_LLVM
-  if (Venable_jit_compiler && jiter.execute (cmd))
+  if (Venable_jit_compiler && tree_jit::execute (cmd))
     return;
 #endif
 

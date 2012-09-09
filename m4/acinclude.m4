@@ -74,12 +74,12 @@ AC_DEFUN([OCTAVE_CC_FLAG], [
   AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
   AC_CACHE_VAL([octave_cv_cc_flag_$ac_safe],
     [AC_LANG_PUSH(C)
-    XCFLAGS="$CFLAGS"
+    ac_octave_save_CFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS $1"
     AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
       [eval "octave_cv_cc_flag_$ac_safe=yes"],
       [eval "octave_cv_cc_flag_$ac_safe=no"])
-    CFLAGS="$XCFLAGS"
+    CFLAGS="$ac_octave_save_CFLAGS"
     AC_LANG_POP(C)
   ])
   if eval "test \"`echo '$octave_cv_cc_flag_'$ac_safe`\" = yes"; then
@@ -152,7 +152,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
   AC_CACHE_CHECK([whether Qscintilla FindFirst uses 17 input arguments],
     [octave_cv_func_findfirst_modern],
     [AC_LANG_PUSH(C++)
-    save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="-I$QT_INCDIR -I$QT_INCDIR/Qt $CPPFLAGS"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <Qsci/qsciglobal.h>
@@ -163,10 +163,10 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
         ]])],
       octave_cv_func_findfirst_modern=yes,
       octave_cv_func_findfirst_modern=no)
-    CPPFLAGS="$save_CPPFLAGS"
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_findfirst_modern = "yes"; then
+  if test $octave_cv_func_findfirst_modern = yes; then
     AC_DEFINE(HAVE_FINDFIRST_MODERN, 1, 
       [Define to 1 if Qscintilla FindFirst uses modern form with 17 inputs.])
   fi
@@ -216,7 +216,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
       octave_cv_func_glutesscallback_threedots=no)
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_glutesscallback_threedots = "yes"; then
+  if test $octave_cv_func_glutesscallback_threedots = yes; then
     AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1, 
       [Define to 1 if gluTessCallback is called with (...).])
   fi
@@ -230,7 +230,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
   AC_CACHE_CHECK([whether Qt has SetPlaceholderText function],
     [octave_cv_func_setplaceholdertext],
     [AC_LANG_PUSH(C++)
-    save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="-I$QT_INCDIR $CPPFLAGS"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <Qt/qglobal.h>
@@ -241,10 +241,10 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
         ]])],
       octave_cv_func_setplaceholdertext=yes,
       octave_cv_func_setplaceholdertext=no)
-    CPPFLAGS="$save_CPPFLAGS"
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_setplaceholdertext = "yes"; then
+  if test $octave_cv_func_setplaceholdertext = yes; then
     AC_DEFINE(HAVE_SETPLACEHOLDERTEXT, 1, 
       [Define to 1 if you have the Qt SetPlaceholderText function.])
   fi
@@ -263,7 +263,7 @@ AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
       octave_cv_hdf5_has_ver_16_api=yes,
       octave_cv_hdf5_has_ver_16_api=no)
   ])
-  if test "$octave_cv_hdf5_has_ver_16_api" != "yes"; then
+  if test $octave_cv_hdf5_has_ver_16_api != yes; then
     AC_DEFINE(HAVE_HDF5_18, 1, [Define to 1 if >=HDF5-1.8 is available.])
   fi
 ])
@@ -312,16 +312,16 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   m4_set_add([summary_warning_list], [warn_$1])
 
   if test -n "$m4_toupper([$1])_LIBS"; then
-    octave_check_lib_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
     octave_$1_check_for_lib=false
     m4_ifblank([$4], [octave_$1_check_for_lib=true],
                [AC_CHECK_HEADERS([$4], [octave_$1_check_for_lib=true; break])])
     if $octave_$1_check_for_lib; then
-      octave_check_lib_save_LDFLAGS="$LDFLAGS"
+      ac_octave_save_LDFLAGS="$LDFLAGS"
       LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
-      octave_check_lib_save_LIBS="$LIBS"
+      ac_octave_save_LIBS="$LIBS"
       LIBS="$m4_toupper([$1])_LIBS $LIBS"
       octave_$1_ok=no
       AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
@@ -335,11 +335,11 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
             [Define to 1 if $2 is available.])
           [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
       fi
-      LIBS="$octave_check_lib_save_LIBS"
-      LDFLAGS="$octave_check_lib_save_LDFLAGS"
+      LIBS="$ac_octave_save_LIBS"
+      LDFLAGS="$ac_octave_save_LDFLAGS"
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
-    CPPFLAGS="$octave_check_lib_save_CPPFLAGS"
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
   fi
   AC_SUBST(m4_toupper([$1])_LIBS)
   AC_SUBST([TEXINFO_]m4_toupper([$1]))
@@ -495,10 +495,12 @@ doit (void)
     octave_cv_lib_arpack_ok=yes)
     AC_LANG_POP(C++)
   ])
-  if test "$octave_cv_lib_arpack_ok" = "yes"; then
+  if test $octave_cv_lib_arpack_ok = yes; then
     $1
+    :
   else
     $2
+    :
   fi
 ])
 dnl
@@ -532,7 +534,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
       LIBS="$save_LIBS"
     ])
   ])
-  if test "$octave_cv_lib_hdf5_dll" = yes; then
+  if test $octave_cv_lib_hdf5_dll = yes; then
     AC_DEFINE(_HDF5USEDLL_, 1, [Define to 1 if using HDF5 dll (Win32).])
   fi
 ])
@@ -557,7 +559,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
     ]],
     have_framework_opengl=yes, have_framework_opengl=no)
 
-  if test $have_framework_opengl = "yes"; then
+  if test $have_framework_opengl = yes; then
     AC_DEFINE(HAVE_FRAMEWORK_OPENGL, 1,
       [Define to 1 if framework OPENGL is available.])
     OPENGL_LIBS="-Wl,-framework -Wl,OpenGL"
@@ -584,7 +586,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
 #endif
     ])
 
-    if test "$have_opengl_incs" = "yes"; then
+    if test "$have_opengl_incs" = yes; then
       case $canonical_host_type in
         *-*-mingw32* | *-*-msdosmsvc)
           save_LIBS="$LIBS"
@@ -668,10 +670,12 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
       octave_cv_lib_qhull_ok=no,
       octave_cv_lib_qhull_ok=yes)
   ])
-  if test "$octave_cv_lib_qhull_ok" = "yes"; then
+  if test $octave_cv_lib_qhull_ok = yes; then
     $1
+    :
   else
     $2
+    :
   fi
 ])
 dnl
@@ -679,15 +683,15 @@ dnl Find a suitable termlib to use.
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_TERMLIB], [
   TERM_LIBS=
-  octave_found_termlib=no
+  ac_octave_found_termlib=no
   for termlib in ncurses curses termcap terminfo termlib; do
     AC_CHECK_LIB([${termlib}], [tputs], [
       TERM_LIBS="-l${termlib}"
-      octave_found_termlib=yes
+      ac_octave_found_termlib=yes
       break])
   done
 
-  if test "$octave_found_termlib" = no; then
+  if test $ac_octave_found_termlib = no; then
     warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!"
     AC_MSG_WARN([$warn_termlibs])
   fi
@@ -700,7 +704,7 @@ dnl to CFLAGS and CXXFLAGS.
 dnl
 AC_DEFUN([OCTAVE_CHECK_OPENMP], [
   AC_MSG_CHECKING([for support of OpenMP])
-  XCFLAGS="$CFLAGS"
+  ac_octave_save_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS $1"
   AC_CACHE_VAL([octave_cv_check_openmp],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -717,11 +721,11 @@ AC_DEFUN([OCTAVE_CHECK_OPENMP], [
       octave_cv_openmp=yes, octave_cv_openmmp=no, octave_cv_openmp=no)
   ])
   AC_MSG_RESULT([$octave_cv_openmp])
-  if test "$octave_cv_openmp" = yes; then
+  if test $octave_cv_openmp = yes; then
     AC_DEFINE(HAVE_OPENMP, 1, [Define to 1 if compiler supports OpenMP.])
     CXXFLAGS="$CXXFLAGS $1"
   else
-    CFLAGS="$XCFLAGS"
+    CFLAGS="$ac_octave_save_CFLAGS"
   fi
 ])
 dnl
@@ -764,7 +768,7 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
       ]])], 
       octave_cv_lib_qhull_version=yes, octave_cv_lib_qhull_version=no)
   ])
-  if test "$octave_cv_lib_qhull_version" = no; then
+  if test $octave_cv_lib_qhull_version = no; then
     AC_DEFINE(NEED_QHULL_VERSION, 1,
       [Define to 1 if the Qhull library needs a qh_version variable defined.])
   fi
@@ -775,7 +779,7 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
   AC_CACHE_CHECK([whether $F77 generates correct size integers],
     [octave_cv_sizeof_fortran_integer],
-    [octave_fintsize_save_FFLAGS="$FFLAGS"
+    [ac_octave_save_FFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
     AC_LANG_PUSH(Fortran 77)
     AC_COMPILE_IFELSE(
@@ -789,7 +793,7 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
       end
 ]],
       [mv conftest.$ac_objext fintsize.$ac_objext
-      octave_fintsize_save_LIBS="$LIBS"
+      ac_octave_save_LIBS="$LIBS"
       LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
       AC_LANG_PUSH(C)
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
@@ -815,13 +819,13 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
         octave_cv_sizeof_fortran_integer=no,
         octave_cv_sizeof_fortran_integer=yes)
       AC_LANG_POP(C)
-      LIBS="$octave_fintsize_save_LIBS"
+      LIBS="$ac_octave_save_LIBS"
       rm -f conftest.$ac_objext fintsize.$ac_objext],
       [rm -f conftest.$ac_objext
       AC_MSG_FAILURE([cannot compile a simple Fortran program])
       octave_cv_sizeof_fortran_integer=no])
     AC_LANG_POP(Fortran 77)
-    FFLAGS="$octave_fintsize_save_FFLAGS"
+    FFLAGS="$ac_octave_save_FFLAGS"
   ])
 ])
 dnl
@@ -886,7 +890,7 @@ AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST],
       octave_cv_cxx_broken_reinterpret_cast=yes)
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_cxx_broken_reinterpret_cast = yes ; then
+  if test $octave_cv_cxx_broken_reinterpret_cast = yes; then
     AC_DEFINE(CXX_BROKEN_REINTERPRET_CAST, 1,
       [Define to 1 if C++ reinterpret_cast fails for function pointers.])
   fi
@@ -970,12 +974,12 @@ AC_DEFUN([OCTAVE_CXX_FLAG], [
   AC_MSG_CHECKING([whether ${CXX-g++} accepts $1])
   AC_CACHE_VAL([octave_cv_cxx_flag_$ac_safe],
     [AC_LANG_PUSH(C++)
-    XCXXFLAGS="$CXXFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
     CXXFLAGS="$CXXFLAGS $1"
     AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
       eval "octave_cv_cxx_flag_$ac_safe=yes",
       eval "octave_cv_cxx_flag_$ac_safe=no")
-    CXXFLAGS="$XCXXFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
     AC_LANG_POP(C++)
   ])
   if eval "test \"`echo '$octave_cv_cxx_flag_'$ac_safe`\" = yes"; then
@@ -1103,7 +1107,7 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   if $USE_READLINE; then
     dnl RHEL 5 and older systems require termlib set before enabling readline
     AC_REQUIRE([OCTAVE_CHECK_LIB_TERMLIB])
-    save_LIBS="$LIBS"
+    ac_octave_save_LIBS="$LIBS"
     LIBS="$TERM_LIBS"
     AC_CHECK_LIB([readline], [rl_set_keyboard_input_timeout],
       [READLINE_LIBS="-lreadline"
@@ -1112,7 +1116,7 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
       [AC_MSG_WARN([I need GNU Readline 4.2 or later])
       AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
     ])
-    LIBS="$save_LIBS"
+    LIBS="$ac_octave_save_LIBS"
   fi
   AC_SUBST(READLINE_LIBS)
 ])
@@ -1127,12 +1131,12 @@ AC_DEFUN([OCTAVE_F77_FLAG], [
   AC_MSG_CHECKING([whether ${F77-g77} accepts $1])
   AC_CACHE_VAL([octave_cv_f77_flag_$ac_safe], [
     AC_LANG_PUSH(Fortran 77)
-    XFFLAGS="$FFLAGS"
+    ac_octave_save_FFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $1"
     AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
       eval "octave_cv_f77_flag_$ac_safe=yes",
       eval "octave_cv_f77_flag_$ac_safe=no")
-    FFLAGS="$XFFLAGS"
+    FFLAGS="$ac_octave_save_FFLAGS"
     AC_LANG_POP(Fortran 77)
   ])
   if eval "test \"`echo '$octave_cv_f77_flag_'$ac_safe`\" = yes"; then
@@ -1229,23 +1233,24 @@ dnl
 AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
   AC_MSG_CHECKING([whether ${LD-ld} accepts -framework $1])
   AC_CACHE_VAL([octave_cv_framework_$1],
-    [XLDFLAGS="$LDFLAGS"
+    [ac_octave_save_LDFLAGS="$LDFLAGS"
     LDFLAGS="$LDFLAGS -framework $1"
     AC_LANG_PUSH(C++)
     AC_LINK_IFELSE([AC_LANG_PROGRAM([$2], [$3])],
       eval "octave_cv_framework_$1=yes",
       eval "octave_cv_framework_$1=no")
     AC_LANG_POP(C++)
-    LDFLAGS="$XLDFLAGS"
+    LDFLAGS="$ac_octave_save_LDFLAGS"
   ])
-  if test "$octave_cv_framework_$1" = "yes"; then
+  if test "$octave_cv_framework_$1" = yes; then
     AC_MSG_RESULT([yes])
     AC_ARG_WITH(framework-m4_tolower($1),
       [AS_HELP_STRING([--without-framework-m4_tolower($1)], 
         [don't use framework $1])],
          with_have_framework=$withval, with_have_framework=yes)
-    if test "$with_have_framework" = "yes"; then
+    if test "$with_have_framework" = yes; then
       [$4]
+      :
     else
       AC_MSG_NOTICE([framework rejected by --without-framework-m4_tolower($1)])
       [$5]
@@ -1299,7 +1304,7 @@ AC_DEFUN([OCTAVE_IEEE754_DATA_FORMAT], [
   else
     AC_MSG_RESULT([$octave_cv_ieee754_data_format])
   fi
-  if test "$octave_cv_ieee754_data_format" = yes; then
+  if test $octave_cv_ieee754_data_format = yes; then
     AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1,
       [Define to 1 if your system uses IEEE 754 data format.])
   else
@@ -1355,7 +1360,7 @@ AC_DEFUN([OCTAVE_PROG_DESKTOP_FILE_INSTALL], [
 dnl
 dnl Find find program.
 dnl
-# Prefer GNU find if found.
+## Prefer GNU find if found.
 AN_MAKEVAR([FIND],  [OCTAVE_PROG_FIND])
 AN_PROGRAM([gfind], [OCTAVE_PROG_FIND])
 AN_PROGRAM([find],  [OCTAVE_PROG_FIND])
@@ -1396,13 +1401,13 @@ dnl
 AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   case "$canonical_host_type" in
     *-*-mingw* | *-*-msdosmsvc)
-      gs_names="gswin32c gs mgs"
+      ac_octave_gs_names="gswin32c gs mgs"
     ;;
     *)
-      gs_names="gs"
+      ac_octave_gs_names="gs"
     ;;
   esac
-  AC_CHECK_PROGS(GHOSTSCRIPT, [$gs_names])
+  AC_CHECK_PROGS(GHOSTSCRIPT, [$ac_octave_gs_names])
   if test -z "$GHOSTSCRIPT"; then
     GHOSTSCRIPT='$(top_srcdir)/build-aux/missing gs'
     warn_ghostscript="
@@ -1419,13 +1424,13 @@ dnl
 dnl Check for gnuplot.
 dnl
 AC_DEFUN([OCTAVE_PROG_GNUPLOT], [
-  gp_names="gnuplot"
-  gp_default="gnuplot"
+  ac_octave_gp_names="gnuplot"
+  ac_octave_gp_default="gnuplot"
   if test "$cross_compiling" = yes; then
-    GNUPLOT="$gp_default"
+    GNUPLOT="$ac_octave_gp_default"
     AC_MSG_RESULT([assuming $GNUPLOT exists on $canonical_host_type host])
   else
-    AC_CHECK_PROGS(GNUPLOT, [$gp_names])
+    AC_CHECK_PROGS(GNUPLOT, [$ac_octave_gp_names])
     if test -z "$GNUPLOT"; then
       GNUPLOT="$gp_default"
       warn_gnuplot="
@@ -1476,14 +1481,14 @@ AC_DEFUN([OCTAVE_PROG_PAGER], [
     AC_MSG_RESULT([assuming $DEFAULT_PAGER exists on $canonical_host_type host])
     AC_SUBST(DEFAULT_PAGER)
   else
-    octave_possible_pagers="less more page pg"
+    ac_octave_possible_pagers="less more page pg"
     case "$canonical_host_type" in
       *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
-        octave_possible_pagers="$octave_possible_pagers more.com"
+        ac_octave_possible_pagers="$ac_octave_possible_pagers more.com"
       ;;
     esac
 
-    AC_CHECK_PROGS(DEFAULT_PAGER, [$octave_possible_pagers], [])
+    AC_CHECK_PROGS(DEFAULT_PAGER, [$ac_octave_possible_pagers], [])
     if test -z "$DEFAULT_PAGER"; then
       warn_less="I couldn't find \`less', \`more', \`page', or \`pg'"
       OCTAVE_CONFIGURE_WARNING([warn_less])
@@ -1594,15 +1599,15 @@ AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
   AC_REQUIRE([OCTAVE_PROG_TEXI2DVI])
   AC_CHECK_PROG(TEXI2PDF, texi2pdf, texi2pdf, [])
   if test -z "$TEXI2PDF"; then
-    missing=true;
+    ac_octave_missing=true;
     if test -n "$TEXI2DVI"; then
       TEXI2PDF="$TEXI2DVI --pdf"
-      missing=false;
+      ac_octave_missing=false;
     fi
   else
-    missing=false;
+    ac_octave_missing=false;
   fi
-  if $missing; then
+  if $ac_octave_missing; then
     TEXI2PDF='$(top_srcdir)/build-aux/missing texi2pdf'
     warn_texi2pdf="
 
@@ -1706,7 +1711,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
   else
     AC_MSG_RESULT([$octave_cv_umfpack_separate_split])
   fi
-  if test "$octave_cv_umfpack_separate_split" = yes; then
+  if test $octave_cv_umfpack_separate_split = yes; then
     AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, 
       [Define to 1 if the UMFPACK Complex solver allows matrix and RHS to be split independently.])
   fi
@@ -1722,7 +1727,7 @@ AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
     [octave_cv_header_require_tr1_namespace],
     [AC_LANG_PUSH(C++)
     octave_cv_header_require_tr1_namespace=no
-    if test "$ac_cv_header_unordered_map" = "yes"; then
+    if test $ac_cv_header_unordered_map = yes; then
       ## Have <unordered_map>, but still have to check whether
       ## tr1 namespace is required (like MSVC, for instance).
       AC_COMPILE_IFELSE(
@@ -1733,12 +1738,12 @@ AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
         ]])],
         octave_cv_header_require_tr1_namespace=no, 
         octave_cv_header_require_tr1_namespace=yes)
-    elif test "$ac_cv_header_tr1_unordered_map" = "yes"; then
+    elif test $ac_cv_header_tr1_unordered_map = yes; then
       octave_cv_header_require_tr1_namespace=yes
     fi
     AC_LANG_POP(C++)
   ])
-  if test "$octave_cv_header_require_tr1_namespace" = "yes"; then
+  if test $octave_cv_header_require_tr1_namespace = yes; then
     AC_DEFINE(USE_UNORDERED_MAP_WITH_TR1, 1, 
       [Define to 1 if unordered_map requires the use of tr1 namespace.])
   fi

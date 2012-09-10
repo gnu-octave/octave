@@ -1921,6 +1921,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           std::cout << "-------------------- raw function ";
           std::cout << "--------------------\n";
           std::cout << *raw_fn.to_llvm () << std::endl;
+          llvm::verifyFunction (*raw_fn.to_llvm ());
         }
 #endif
 
@@ -1969,6 +1970,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           std::cout << "-------------------- optimized and wrapped ";
           std::cout << "--------------------\n";
           std::cout << *llvm_function << std::endl;
+          llvm::verifyFunction (*llvm_function);
         }
 #endif
 

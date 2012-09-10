@@ -693,13 +693,6 @@ if test $build_jit = true; then
   ## Find llvm-config program from environment variable or by searching
   AC_ARG_VAR([LLVM_CONFIG], [path to llvm-config utility])
   AC_CHECK_PROG([LLVM_CONFIG], llvm-config, llvm-config, [])
-  
-  AC_ARG_ENABLE([jit-debug],
-    [AS_HELP_STRING([--enable-jit-debug], [enable debug printing of JIT IRs])])
-
-  if test x$enable_jit_debug = "xyes"; then
-    AC_DEFINE(OCTAVE_JIT_DEBUG, 1, [Define to 1 for JIT debug printing.])
-  fi
 
   if test -z "$LLVM_CONFIG"; then
     warn_llvm="llvm-config utility not found.  JIT compiler is disabled."

@@ -43,6 +43,7 @@ bool Venable_jit_compiler = true;
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
 #include <llvm/Analysis/Verifier.h>
+#include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/LLVMContext.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
@@ -54,10 +55,6 @@ bool Venable_jit_compiler = true;
 #include <llvm/Target/TargetData.h>
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Transforms/Scalar.h>
-
-#ifdef OCTAVE_JIT_DEBUG
-#include <llvm/Bitcode/ReaderWriter.h>
-#endif
 
 static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 
@@ -1865,12 +1862,13 @@ tree_jit::optimize (llvm::Function *fn)
   module_pass_manager->run (*module);
   pass_manager->run (*fn);
 
-#ifdef OCTAVE_JIT_DEBUG
-  std::string error;
-  llvm::raw_fd_ostream fout ("test.bc", error,
-                             llvm::raw_fd_ostream::F_Binary);
-  llvm::WriteBitcodeToFile (module, fout);
-#endif
+  if (Venable_jit_debug)
+    {
+      std::string error;
+      llvm::raw_fd_ostream fout ("test.bc", error,
+                                 llvm::raw_fd_ostream::F_Binary);
+      llvm::WriteBitcodeToFile (module, fout);
+    }
 }
 
 // -------------------- jit_function_info --------------------
@@ -1890,7 +1888,6 @@ jit_function_info::jit_function_info (tree_jit& tjit,
                        conv.get_variable_map ());
       infer.infer ();
 
-#if OCTAVE_JIT_DEBUG
       if (Venable_jit_debug)
         {
           jit_block_list& blocks = infer.get_blocks ();
@@ -1905,7 +1902,6 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           tpc.visit_octave_user_function_trailer (fcn);
           blocks.print (std::cout, "octave jit ir");
         }
-#endif
 
       jit_factory& factory = conv.get_factory ();
       llvm::Module *module = tjit.get_module ();
@@ -1915,7 +1911,6 @@ jit_function_info::jit_function_info (tree_jit& tjit,
                                                       factory.constants (),
                                                       fcn, argument_types);
 
-#ifdef OCTAVE_JIT_DEBUG
       if (Venable_jit_debug)
         {
           std::cout << "-------------------- raw function ";
@@ -1923,7 +1918,6 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           std::cout << *raw_fn.to_llvm () << std::endl;
           llvm::verifyFunction (*raw_fn.to_llvm ());
         }
-#endif
 
       std::string wrapper_name = fcn.name () + "_wrapper";
       jit_type *any_t = jit_typeinfo::get_any ();
@@ -1964,7 +1958,6 @@ jit_function_info::jit_function_info (tree_jit& tjit,
       llvm::Function *llvm_function = wrapper.to_llvm ();
       tjit.optimize (llvm_function);
 
-#ifdef OCTAVE_JIT_DEBUG
       if (Venable_jit_debug)
         {
           std::cout << "-------------------- optimized and wrapped ";
@@ -1972,7 +1965,6 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           std::cout << *llvm_function << std::endl;
           llvm::verifyFunction (*llvm_function);
         }
-#endif
 
       llvm::ExecutionEngine* engine = tjit.get_engine ();
       void *void_fn = engine->getPointerToFunction (llvm_function);
@@ -1981,13 +1973,12 @@ jit_function_info::jit_function_info (tree_jit& tjit,
   catch (const jit_fail_exception& e)
     {
       argument_types.clear ();
-#ifdef OCTAVE_JIT_DEBUG
+
       if (Venable_jit_debug)
         {
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
         }
-#endif
     }
 }
 
@@ -2113,7 +2104,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
                        conv.get_variable_map ());
 
       infer.infer ();
-#ifdef OCTAVE_JIT_DEBUG
+
       if (Venable_jit_debug)
         {
           jit_block_list& blocks = infer.get_blocks ();
@@ -2123,7 +2114,6 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
           std::cout << tee.str_print_code () << std::endl;
           blocks.print (std::cout, "octave jit ir");
         }
-#endif
 
       jit_factory& factory = conv.get_factory ();
       jit_convert_llvm to_llvm;
@@ -2135,41 +2125,30 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
     }
   catch (const jit_fail_exception& e)
     {
-#ifdef OCTAVE_JIT_DEBUG
       if (Venable_jit_debug)
         {
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
         }
-#endif
     }
 
   if (llvm_function)
     {
-#ifdef OCTAVE_JIT_DEBUG
-      llvm::raw_os_ostream llvm_cout (std::cout);
-
       if (Venable_jit_debug)
         {
           std::cout << "-------------------- llvm ir --------------------";
-          llvm_function->print (llvm_cout);
-          std::cout << std::endl;
+          std::cout << *llvm_function << std::endl;
           llvm::verifyFunction (*llvm_function);
         }
-#endif
 
       tjit.optimize (llvm_function);
 
-#ifdef OCTAVE_JIT_DEBUG
       if (Venable_jit_debug)
         {
           std::cout << "-------------------- optimized llvm ir "
                     << "--------------------\n";
-          llvm_function->print (llvm_cout);
-          llvm_cout.flush ();
-          std::cout << std::endl;
+          std::cout << *llvm_function << std::endl;
         }
-#endif
 
       void *void_fn = engine->getPointerToFunction (llvm_function);
       function = reinterpret_cast<jited_function> (void_fn);
@@ -2193,7 +2172,7 @@ Query or set the internal variable that determines whether\n\
 debugging/tracing is enabled for Octave's JIT compiler.\n\
 @end deftypefn")
 {
-#if defined (HAVE_LLVM) && defined (OCTAVE_JIT_DEBUG)
+#if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (enable_jit_debug);
 #else
   warning ("enable_jit_debug: JIT compiling not available in this version of Octave");

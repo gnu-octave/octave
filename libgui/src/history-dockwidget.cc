@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-hist.h"
 
+#include "error.h"
+
 #include "history-dockwidget.h"
 
 history_dock_widget::history_dock_widget (QWidget * parent)
@@ -40,6 +42,8 @@ history_dock_widget::history_dock_widget (QWidget * parent)
 void
 history_dock_widget::event_accepted (octave_event *e)
 {
+  static bool scroll_window = false;
+
   if (dynamic_cast <octave_update_history_event*> (e))
     {
       // Determine the client's (our) history length and the one of the server.
@@ -61,15 +65,21 @@ history_dock_widget::event_accepted (octave_event *e)
               _history_model->setData (_history_model->index (i),
                                        QString::fromStdString (entry));
             }
-        }
 
-      // FIXME -- how to make the widget scroll to the bottom when an
-      // item is added, but leave it alone if the user has moved it
-      // somewhere other than the bottom of the list?  The following
-      // doesn't seem to work.  It forces to the widget to always scroll
-      // to the bottom, even if no items are added.
-      //
-      // _history_list_view->scrollToBottom ();
+          // FIXME -- does this behavior make sense?  Calling
+          // _history_list_view->scrollToBottom () here doesn't seem to
+          // have any effect.  Instead, we need to request that action
+          // and wait until the next event occurs in which no items
+          // are added to the history list.
+
+          scroll_window = true;
+        }
+      else if (scroll_window)
+        {
+          scroll_window = false;
+
+          _history_list_view->scrollToBottom ();
+        }
     }
 
   // Post a new update event in a given time. This prevents flooding the

@@ -144,12 +144,18 @@ workspace_model::parent(const QModelIndex &index) const
     return QModelIndex();
 
   tree_item *childItem = static_cast<tree_item*>(index.internalPointer());
-  tree_item *parentItem = childItem->parent();
 
-  if (parentItem == _rootItem)
-    return QModelIndex();
+  if (childItem)
+    {
+      tree_item *parentItem = childItem->parent();
 
-  return createIndex(parentItem->row(), 0, parentItem);
+      if (! parentItem || parentItem == _rootItem)
+        return QModelIndex();
+
+      return createIndex(parentItem->row(), 0, parentItem);
+    }
+  else
+    return QModelIndex ();
 }
 
 int

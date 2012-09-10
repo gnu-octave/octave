@@ -44,7 +44,6 @@ workspace_model::workspace_model(QObject *parent)
   insert_top_level_item(0, new tree_item ("Local"));
   insert_top_level_item(1, new tree_item ("Global"));
   insert_top_level_item(2, new tree_item ("Persistent"));
-  insert_top_level_item(3, new tree_item ("Hidden"));
 
   connect(&_update_workspace_model_timer,
           SIGNAL (timeout ()),
@@ -88,7 +87,6 @@ workspace_model::event_accepted (octave_event *e)
       top_level_item (0)->delete_child_items ();
       top_level_item (1)->delete_child_items ();
       top_level_item (2)->delete_child_items ();
-      top_level_item (3)->delete_child_items ();
 
       foreach (const symbol_information& s, _symbol_information)
         {
@@ -104,7 +102,6 @@ workspace_model::event_accepted (octave_event *e)
               case symbol_information::local:       top_level_item (0)->add_child (child); break;
               case symbol_information::global:      top_level_item (1)->add_child (child); break;
               case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
-              case symbol_information::hidden:      top_level_item (3)->add_child (child); break;
             }
         }
 

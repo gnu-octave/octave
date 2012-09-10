@@ -67,7 +67,6 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   _explicit_collapse.local      = settings->value ("workspaceview/local_collapsed", false).toBool ();
   _explicit_collapse.global     = settings->value ("workspaceview/global_collapsed", false).toBool ();;
   _explicit_collapse.persistent = settings->value ("workspaceview/persistent_collapsed", false).toBool ();;
-  _explicit_collapse.hidden     = settings->value ("workspaceview/hidden_collapsed", false).toBool ();;
 
   // Connect signals and slots.
   connect (this, SIGNAL (visibilityChanged (bool)),
@@ -95,7 +94,6 @@ workspace_view::~workspace_view ()
   settings->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
   settings->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
   settings->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
-  settings->setValue("workspaceview/hidden_collapsed", _explicit_collapse.hidden);
 }
 
 void
@@ -125,7 +123,6 @@ workspace_view::model_changed ()
   QModelIndex local_model_index = _workspace_model->index (0, 0);
   QModelIndex global_model_index = _workspace_model->index (1, 0);
   QModelIndex persistent_model_index = _workspace_model->index (2, 0);
-  QModelIndex hidden_model_index = _workspace_model->index (3, 0);
 
   if (_explicit_collapse.local) {
     _workspace_tree_view->collapse (local_model_index);
@@ -143,12 +140,6 @@ workspace_view::model_changed ()
     _workspace_tree_view->collapse (persistent_model_index);
   } else {
     _workspace_tree_view->expand (persistent_model_index);
-  }
-
-  if (_explicit_collapse.hidden) {
-    _workspace_tree_view->collapse (hidden_model_index);
-  } else {
-    _workspace_tree_view->expand (hidden_model_index);
   }
 }
 
@@ -177,8 +168,6 @@ workspace_view::collapse_requested (QModelIndex index)
     _explicit_collapse.global = true;
   if (item_data[0] == "Persistent")
     _explicit_collapse.persistent = true;
-  if (item_data[0] == "Hidden")
-    _explicit_collapse.hidden = true;
 }
 
 void
@@ -206,8 +195,6 @@ workspace_view::expand_requested (QModelIndex index)
     _explicit_collapse.global = false;
   if (item_data[0] == "Persistent")
     _explicit_collapse.persistent = false;
-  if (item_data[0] == "Hidden")
-    _explicit_collapse.hidden = false;
 }
 
 void

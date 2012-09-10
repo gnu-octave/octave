@@ -49,10 +49,10 @@ struct symbol_information
 {
   enum Scope
   {
-    local       = 0,
-    global      = 1,
-    persistent  = 2,
-    hidden      = 3
+    unknown     = 0,
+    local       = 1,
+    global      = 2,
+    persistent  = 3
   };
 
   QString _symbol;

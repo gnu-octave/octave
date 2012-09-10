@@ -41,8 +41,8 @@ symbol_information::from_symbol_record
     _scope = global;
   else if (symbol_record.is_persistent ())
     _scope = persistent;
-  else if (symbol_record.is_hidden ())
-    _scope = hidden;
+  else
+    _scope = unknown;
 
   _symbol = QString (symbol_record.name ().c_str ());
   _class  = QString (symbol_record.varval ().class_name ().c_str ());

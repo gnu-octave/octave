@@ -63,7 +63,6 @@ private:
     bool local;
     bool global;
     bool persistent;
-    bool hidden;
   } _explicit_collapse;
 };
 

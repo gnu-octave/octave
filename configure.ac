@@ -2256,7 +2256,7 @@ AC_ARG_ENABLE([gui],
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
   [if test "$enableval" = no; then build_gui=false; fi], [])
 
-if test $build_gui; then
+if test $build_gui = true; then
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],

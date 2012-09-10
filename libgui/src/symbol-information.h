@@ -56,7 +56,7 @@ struct symbol_information
   };
 
   QString _symbol;
-  QString _type;
+  QString _class;
   QString _value;
   QString _dimension;
   Scope   _scope;
@@ -65,7 +65,7 @@ struct symbol_information
   int
   hash () const
   {
-    return qHash (_symbol) + qHash (_type) + qHash (_value)
+    return qHash (_symbol) + qHash (_class) + qHash (_value)
       + qHash (_dimension) + (int)_scope;
   }
 
@@ -76,7 +76,7 @@ struct symbol_information
     if (hash () == other.hash ())
       {
         return _symbol == other._symbol
-            && _type   == other._type
+            && _class  == other._class
             && _value  == other._value
             && _scope  == other._scope
             && _dimension == other._dimension;

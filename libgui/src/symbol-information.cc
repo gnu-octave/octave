@@ -45,7 +45,7 @@ symbol_information::from_symbol_record
     _scope = hidden;
 
   _symbol = QString (symbol_record.name ().c_str ());
-  _type   = QString (symbol_record.varval ().type_name ().c_str ());
+  _class  = QString (symbol_record.varval ().class_name ().c_str ());
   octave_value ov = symbol_record.varval ();
 
   // In case we have really large matrices or strings, cut them down

@@ -76,12 +76,8 @@ workspace_model::event_accepted (octave_event *e)
 
       _symbol_information.clear ();
       for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
-         iterator != symbolTable.end (); iterator++)
-      {
-        symbol_information symbolInformation;
-        symbolInformation.from_symbol_record (*iterator);
-        _symbol_information.push_back (symbolInformation);
-      }
+           iterator != symbolTable.end (); iterator++)
+        _symbol_information.push_back (symbol_information (*iterator));
 
       beginResetModel();
       top_level_item (0)->delete_child_items ();
@@ -92,12 +88,12 @@ workspace_model::event_accepted (octave_event *e)
         {
           tree_item *child = new tree_item ();
 
-          child->set_data (0, s._symbol);
-          child->set_data (1, s._class);
-          child->set_data (2, s._dimension);
-          child->set_data (3, s._value);
+          child->set_data (0, s.symbol ());
+          child->set_data (1, s.class_name ());
+          child->set_data (2, s.dimension ());
+          child->set_data (3, s.value ());
 
-          switch (s._scope)
+          switch (s.scope ())
             {
               case symbol_information::local:       top_level_item (0)->add_child (child); break;
               case symbol_information::global:      top_level_item (1)->add_child (child); break;

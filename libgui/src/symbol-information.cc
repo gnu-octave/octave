@@ -31,35 +31,49 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "symbol-information.h"
 
-bool
-symbol_information::from_symbol_record
-  (const symbol_table::symbol_record& symbol_record)
+symbol_information::symbol_information (const symbol_table::symbol_record& sr)
 {
-  if (symbol_record.is_local () && !symbol_record.is_global () && !symbol_record.is_hidden ())
+  if (sr.is_local () && !sr.is_global () && !sr.is_hidden ())
     _scope = local;
-  else if (symbol_record.is_global ())
+  else if (sr.is_global ())
     _scope = global;
-  else if (symbol_record.is_persistent ())
+  else if (sr.is_persistent ())
     _scope = persistent;
   else
     _scope = unknown;
 
-  _symbol = QString (symbol_record.name ().c_str ());
-  _class  = QString (symbol_record.varval ().class_name ().c_str ());
-  octave_value ov = symbol_record.varval ();
+  _symbol = QString (sr.name ().c_str ());
+  _class_name = QString (sr.varval ().class_name ().c_str ());
+  octave_value ov = sr.varval ();
+  dim_vector dv = ov.dims ();
 
   // In case we have really large matrices or strings, cut them down
   // for performance reasons.
   QString short_value_string;
   bool use_short_value_string = false;
-  if (ov.is_matrix_type () || ov.is_cell ())
+  if (ov.is_range ())
     {
-      if (ov.rows () * ov.columns () > 10)
-        {
-          use_short_value_string = true;
-          short_value_string
-            = QString ("%1x%2 items").arg (ov.rows ()).arg (ov.columns ());
-        }
+      use_short_value_string = true;
+
+      Range r = ov.range_value ();
+
+      double base = r.base ();
+      double increment = r.base ();
+      double limit = r.base ();
+
+      std::stringstream buffer;
+
+      buffer << base << ":";
+      if (increment != 1 )
+        buffer << increment << ":";
+      buffer << limit;
+      
+      short_value_string = QString::fromStdString (buffer.str ());
+    }
+  else if (ov.is_matrix_type () || ov.is_cell ())
+    {
+      if (ov.numel () > 10)
+        use_short_value_string = true;
     }
   else if (ov.is_string ())
     {
@@ -83,23 +97,8 @@ symbol_information::from_symbol_record
     }
   _value.replace("\n", " ");
 
-  if (ov.is_string ())
-    _dimension = QString ("%1").arg (ov.string_value ().length ());
-  else if (ov.is_range ())
-    _dimension =  QString ("%1 : %2 : %3").arg (ov.range_value ().base ())
-      .arg (ov.range_value ().inc ())
-      .arg (ov.range_value ().limit ());
-  else if (ov.is_matrix_type () || ov.is_cell ())
-    _dimension = QString ("%1x%2").arg (ov.rows ())
-      .arg (ov.columns ());
-  else if (ov.is_function_handle ())
-    // See code for func2str for a possible solution
-    _dimension = QString ("func handle");
-  else if (ov.is_inline_function ())
-    // See code for formula for a possible solution
-    _dimension = QString ("inline func");
-  else
-    _dimension = "1";
+  _dimension = QString::fromStdString (dv.str ());
 
-  return true;
+  _hash = _scope + qHash (_symbol) + qHash (_class_name) + qHash (_value)
+    + qHash (_dimension);
 }

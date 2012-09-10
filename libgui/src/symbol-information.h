@@ -32,8 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QHash>
 
-#include <sstream>
-
 #include "symtab.h"
 
 /**
@@ -45,8 +43,10 @@ along with Octave; see the file COPYING.  If not, see
   * about a symbol-table entry that will be used in the model for the
   * graphical user interface.
   */
-struct symbol_information
+class symbol_information
 {
+public:
+
   enum Scope
   {
     unknown     = 0,
@@ -55,37 +55,60 @@ struct symbol_information
     persistent  = 3
   };
 
+  symbol_information (const symbol_table::symbol_record& symbol_record);
+
+  symbol_information (const symbol_information& x)
+    : _scope (x._scope), _symbol (x._symbol), _class_name (x._class_name),
+      _value (x._value), _dimension (x._dimension), _hash (x._hash)
+  { }
+
+  symbol_information operator = (const symbol_information& x)
+  {
+    if (this != &x)
+      {
+        _scope = x._scope;
+        _symbol = x._symbol;
+        _class_name = x._class_name;
+        _value = x._value;
+        _dimension = x._dimension;
+        _hash = x._hash;
+      }
+
+    return *this;
+  }
+
+  ~symbol_information (void) { }
+
+  QString symbol (void) const { return _symbol; }
+  QString class_name (void) const { return _class_name; }
+  QString value (void) const { return _value; }
+  QString dimension (void) const { return _dimension; }
+  Scope scope (void) const { return _scope; }
+
+  friend bool
+  operator == (const symbol_information& a, const symbol_information& b)
+  {
+    return (a.hash () == b.hash ()
+            && a.scope () == b.scope ()
+            && a.symbol () == b.symbol ()
+            && a.class_name () == b.class_name ()
+            && a.value () == b.value ()
+            && a.dimension () == b.dimension ());
+  }
+
+private:
+
+  // FIXME -- this is not really the scope of the symbol.
+  Scope _scope;
+
   QString _symbol;
-  QString _class;
+  QString _class_name;
   QString _value;
   QString _dimension;
-  Scope   _scope;
 
-  /** Hashes the symbol information for quickly comparing it. */
-  int
-  hash () const
-  {
-    return qHash (_symbol) + qHash (_class) + qHash (_value)
-      + qHash (_dimension) + (int)_scope;
-  }
+  int _hash;
 
-  /** Compares two symbol information objects. */
-  bool
-  equals (const symbol_information& other) const
-  {
-    if (hash () == other.hash ())
-      {
-        return _symbol == other._symbol
-            && _class  == other._class
-            && _value  == other._value
-            && _scope  == other._scope
-            && _dimension == other._dimension;
-      }
-  }
-
-  /** Extracts meta information from a given symbol record. */
-  bool
-  from_symbol_record (const symbol_table::symbol_record& symbol_record);
+  int hash (void) const { return _hash; }
 };
 
 #endif // SYMBOLINFORMATION_H

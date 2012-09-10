@@ -435,8 +435,21 @@ main_window::read_settings ()
 
   // FIXME -- what should happen if settings is 0?
 
-  restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
+  settings->beginGroup ("DockWidgets");
+  // restoring the geometry of all widgets
+  foreach (QObject *obj, children ())
+    {
+      QString name = obj->objectName ();
+      if (obj->isWidgetType () && ! name.isEmpty ())
+        {
+          QWidget *widget = qobject_cast<QWidget *> (obj);
+          QVariant val = settings->value (name);
+          widget->restoreGeometry (val.toByteArray ());
+        }
+      }
+  settings->endGroup();
+  restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
   emit settings_changed ();
 }
 
@@ -449,6 +462,19 @@ main_window::write_settings ()
 
   settings->setValue ("MainWindow/geometry", saveGeometry ());
   settings->setValue ("MainWindow/windowState", saveState ());
+  settings->beginGroup ("DockWidgets");
+  // saving the geometry of all widgets
+  foreach (QObject *obj, children())
+    {
+      QString name = obj->objectName ();
+      if (obj->isWidgetType () && ! name.isEmpty ())
+        {
+          QWidget *widget = qobject_cast<QWidget *>(obj);
+          settings->setValue (name, widget->saveGeometry ());
+        }
+    }
+
+  settings->endGroup();
   settings->sync ();
 }
 

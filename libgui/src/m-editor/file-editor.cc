@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "file-editor.h"
+#include "resource-manager.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
@@ -46,6 +47,20 @@ file_editor::file_editor (QTerminal *terminal, main_window *m)
 
 file_editor::~file_editor ()
 {
+  QSettings *settings = resource_manager::get_settings ();
+  QStringList sessionFileNames;
+  if (settings->value ("editor/restoreSession",true).toBool ())
+  {
+    for (int n=0;n<_tab_widget->count();++n)
+      {
+        file_editor_tab* tab = dynamic_cast<file_editor_tab*> (_tab_widget->widget (n));
+        if (!tab)
+          continue;
+        sessionFileNames.append (tab->get_file_name ());
+      }
+  }
+  settings->setValue ("editor/savedSessionTabs", sessionFileNames);
+  settings->sync ();
 }
 
 QTerminal *
@@ -120,7 +135,7 @@ file_editor::request_open_file ()
 }
 
 void
-file_editor::request_open_file (const QString& fileName)
+file_editor::request_open_file (const QString& fileName, bool silent)
 {
   if (!isVisible ())
     {
@@ -128,10 +143,17 @@ file_editor::request_open_file (const QString& fileName)
     }
 
   file_editor_tab *fileEditorTab = new file_editor_tab (this);
+  int curr_tab_index = _tab_widget->currentIndex ();
   if (fileEditorTab)
     {
       add_file_editor_tab (fileEditorTab);
-      fileEditorTab->load_file (fileName);
+      if (!fileEditorTab->load_file (fileName, silent))
+        {
+          // If no file was loaded, remove the tab again.
+          _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));
+          // restore focus to previous tab
+          _tab_widget->setCurrentIndex (curr_tab_index);
+        }
     }
 }
 
@@ -554,6 +576,16 @@ file_editor::construct ()
   setWindowIcon (QIcon::fromTheme ("accessories-text-editor",
                                    style->standardIcon (QStyle::SP_FileIcon)));
   setWindowTitle ("Octave Editor");
+
+  //restore previous session
+  QSettings *settings = resource_manager::get_settings ();
+  if (settings->value ("editor/restoreSession",true).toBool ())
+  {
+    QStringList sessionFileNames = settings->value("editor/savedSessionTabs", QStringList()).toStringList ();
+
+    for (int n=0;n<sessionFileNames.count();++n)
+      request_open_file(sessionFileNames.at(n), true);
+  }
 }
 
 void

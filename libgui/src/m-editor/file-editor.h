@@ -64,7 +64,7 @@ public:
 public slots:
   void request_new_file ();
   void request_open_file ();
-  void request_open_file (const QString& fileName);
+  void request_open_file (const QString& fileName, bool silent = false);
 
   void request_undo ();
   void request_redo ();

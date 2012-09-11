@@ -627,8 +627,8 @@ file_editor_tab::open_file (const QString& dir)
     }
 }
 
-void
-file_editor_tab::load_file (const QString& fileName)
+bool
+file_editor_tab::load_file(const QString& fileName, bool silent)
 {
   if (!_file_editor->isVisible ())
     {
@@ -638,10 +638,11 @@ file_editor_tab::load_file (const QString& fileName)
   QFile file (fileName);
   if (!file.open (QFile::ReadOnly))
     {
-      QMessageBox::warning (this, tr ("Octave Editor"),
-                            tr ("Could not open file %1 for read:\n%2.").arg (fileName).
-                            arg (file.errorString ()));
-      return;
+      if (silent==false)
+        QMessageBox::warning (this, tr ("Octave Editor"),
+                              tr ("Could not open file %1 for read:\n%2.").arg (fileName).
+                              arg (file.errorString ()));
+      return false;
     }
 
   QTextStream in (&file);
@@ -655,6 +656,8 @@ file_editor_tab::load_file (const QString& fileName)
 
   update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet
+
+  return true;
 }
 
 void

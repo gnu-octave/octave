@@ -141,6 +141,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QCheckBox" name="editor_restoreSession">
+           <property name="text">
+            <string>Restore tabs from previous session on startup</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>

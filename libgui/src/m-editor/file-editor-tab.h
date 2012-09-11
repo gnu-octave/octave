@@ -65,7 +65,7 @@ public slots:
   void set_modified (bool modified = true);
 
   bool open_file (const QString& dir = QString ());
-  void load_file (const QString& fileName);
+  bool load_file (const QString& fileName, bool silent = false);
   void new_file ();
   bool save_file ();
   bool save_file (const QString& saveFileName);

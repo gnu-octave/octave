@@ -46,6 +46,7 @@ QDialog (parent), ui (new Ui::settings_dialog)
   ui->editor_fontName->setCurrentFont (QFont (settings->value ("editor/fontName","Courier").toString()) );
   ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
+  ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier").toString()) );
   ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());
   ui->showFilenames->setChecked (settings->value ("showFilenames").toBool());
@@ -107,6 +108,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/fontName", ui->editor_fontName->currentFont().family());
   settings->setValue ("editor/fontSize", ui->editor_fontSize->value());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
+  settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
   settings->setValue ("terminal/fontName", ui->terminal_fontName->currentFont().family());
   settings->setValue ("showFilenames", ui->showFilenames->isChecked ());

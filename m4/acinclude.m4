@@ -313,34 +313,35 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
 
   if test -n "$m4_toupper([$1])_LIBS"; then
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_LDFLAGS="$LDFLAGS"
+    ac_octave_save_LIBS="$LIBS"
     CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
+    LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
+    LIBS="$m4_toupper([$1])_LIBS $LIBS"
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
-    octave_$1_check_for_lib=false
-    m4_ifblank([$4], [octave_$1_check_for_lib=true],
-               [AC_CHECK_HEADERS([$4], [octave_$1_check_for_lib=true; break])])
-    if $octave_$1_check_for_lib; then
-      ac_octave_save_LDFLAGS="$LDFLAGS"
-      LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
-      ac_octave_save_LIBS="$LIBS"
-      LIBS="$m4_toupper([$1])_LIBS $LIBS"
-      octave_$1_ok=no
-      AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
-      AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
-        [octave_$1_ok=yes])
-      AC_MSG_RESULT([$octave_$1_ok])
-      if test $octave_$1_ok = yes; then
+    ac_octave_$1_check_for_lib=false
+    m4_ifblank([$4], [ac_octave_$1_check_for_lib=true],
+               [AC_CHECK_HEADERS([$4], [ac_octave_$1_check_for_lib=true; break])])
+    if $ac_octave_$1_check_for_lib; then
+      AC_CACHE_CHECK([for $5 in $m4_toupper([$1])_LIBS],
+        [octave_cv_lib_$1],
+        [AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
+          [octave_cv_lib_$1=yes], [octave_cv_lib_$1=no])
+      ])
+      if test "$octave_cv_lib_$1" = yes; then
         m4_ifblank([$8], [
           warn_$1=
           AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
             [Define to 1 if $2 is available.])
           [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
       fi
-      LIBS="$ac_octave_save_LIBS"
-      LDFLAGS="$ac_octave_save_LDFLAGS"
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    LDFLAGS="$ac_octave_save_LDFLAGS"
+    LIBS="$ac_octave_save_LIBS"
   fi
+
   AC_SUBST(m4_toupper([$1])_LIBS)
   AC_SUBST([TEXINFO_]m4_toupper([$1]))
   if test -n "$warn_$1"; then

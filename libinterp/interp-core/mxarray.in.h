@@ -116,13 +116,174 @@ class octave_value;
       rep->METHOD_CALL; \
     }
 
-// This just provides a way to avoid infinite recursion when building
-// mxArray objects.
+// A class to provide the default implemenation of some of the virtual
+// functions declared in the mxArray class.
 
-struct
-xmxArray
+class mxArray;
+
+class mxArray_base
 {
-  xmxArray (void) { }
+protected:
+
+  mxArray_base (void) { }
+
+public:
+
+  virtual mxArray_base *dup (void) const = 0;
+
+  virtual mxArray *as_mxArray (void) const { return 0; }
+
+  virtual ~mxArray_base (void) { }
+
+  virtual bool is_octave_value (void) const { return false; }
+
+  virtual int is_cell (void) const = 0;
+
+  virtual int is_char (void) const = 0;
+
+  virtual int is_class (const char *name_arg) const
+  {
+    int retval = 0;
+
+    const char *cname = get_class_name ();
+
+    if (cname && name_arg)
+      retval = ! strcmp (cname, name_arg);
+
+    return retval;
+  }
+
+  virtual int is_complex (void) const = 0;
+
+  virtual int is_double (void) const = 0;
+
+  virtual int is_function_handle (void) const = 0;
+
+  virtual int is_int16 (void) const = 0;
+
+  virtual int is_int32 (void) const = 0;
+
+  virtual int is_int64 (void) const = 0;
+
+  virtual int is_int8 (void) const = 0;
+
+  virtual int is_logical (void) const = 0;
+
+  virtual int is_numeric (void) const = 0;
+
+  virtual int is_single (void) const = 0;
+
+  virtual int is_sparse (void) const = 0;
+
+  virtual int is_struct (void) const = 0;
+
+  virtual int is_uint16 (void) const = 0;
+
+  virtual int is_uint32 (void) const = 0;
+
+  virtual int is_uint64 (void) const = 0;
+
+  virtual int is_uint8 (void) const = 0;
+
+  virtual int is_logical_scalar (void) const
+  {
+    return is_logical () && get_number_of_elements () == 1;
+  }
+
+  virtual int is_logical_scalar_true (void) const = 0;
+
+  virtual mwSize get_m (void) const = 0;
+
+  virtual mwSize get_n (void) const = 0;
+
+  virtual mwSize *get_dimensions (void) const = 0;
+
+  virtual mwSize get_number_of_dimensions (void) const = 0;
+
+  virtual void set_m (mwSize m) = 0;
+
+  virtual void set_n (mwSize n) = 0;
+
+  virtual void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) = 0;
+
+  virtual mwSize get_number_of_elements (void) const = 0;
+
+  virtual int is_empty (void) const = 0;
+
+  virtual mxClassID get_class_id (void) const = 0;
+
+  virtual const char *get_class_name (void) const = 0;
+
+  virtual void set_class_name (const char *name_arg) = 0;
+
+  virtual mxArray *get_cell (mwIndex /*idx*/) const
+  {
+    invalid_type_error ();
+    return 0;
+  }
+
+  virtual void set_cell (mwIndex idx, mxArray *val) = 0;
+
+  virtual double get_scalar (void) const = 0;
+
+  virtual void *get_data (void) const = 0;
+
+  virtual void *get_imag_data (void) const = 0;
+
+  virtual void set_data (void *pr) = 0;
+
+  virtual void set_imag_data (void *pi) = 0;
+
+  virtual mwIndex *get_ir (void) const = 0;
+
+  virtual mwIndex *get_jc (void) const = 0;
+
+  virtual mwSize get_nzmax (void) const = 0;
+
+  virtual void set_ir (mwIndex *ir) = 0;
+
+  virtual void set_jc (mwIndex *jc) = 0;
+
+  virtual void set_nzmax (mwSize nzmax) = 0;
+
+  virtual int add_field (const char *key) = 0;
+
+  virtual void remove_field (int key_num) = 0;
+
+  virtual mxArray *get_field_by_number (mwIndex index, int key_num) const = 0;
+
+  virtual void set_field_by_number (mwIndex index, int key_num, mxArray *val) = 0;
+
+  virtual int get_number_of_fields (void) const = 0;
+
+  virtual const char *get_field_name_by_number (int key_num) const = 0;
+
+  virtual int get_field_number (const char *key) const = 0;
+
+  virtual int get_string (char *buf, mwSize buflen) const = 0;
+
+  virtual char *array_to_string (void) const = 0;
+
+  virtual mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const = 0;
+
+  virtual size_t get_element_size (void) const = 0;
+
+  virtual bool mutation_needed (void) const { return false; }
+
+  virtual mxArray *mutate (void) const { return 0; }
+
+  virtual octave_value as_octave_value (void) const = 0;
+
+protected:
+
+  mxArray_base (const mxArray_base&) { }
+
+  void invalid_type_error (void) const
+  {
+    error ("invalid type for operation");
+  }
+
+  void error (const char *msg) const;
 };
 
 // The main interface class.  The representation can be based on an
@@ -165,138 +326,147 @@ public:
 
   mxArray (mwSize m, mwSize n);
 
-  virtual mxArray *dup (void) const
+  mxArray *dup (void) const
   {
-    mxArray *new_rep = rep->dup ();
+    mxArray *retval = rep->as_mxArray ();
 
-    return new mxArray (new_rep, name);
+    if (retval)
+      retval->set_name (name);
+    else
+      {
+        mxArray_base *new_rep = rep->dup ();
+
+        retval = new mxArray (new_rep, name);
+      }
+
+    return retval;
   }
 
-  virtual ~mxArray (void);
+  ~mxArray (void);
 
-  virtual bool is_octave_value (void) const { return rep->is_octave_value (); }
+  bool is_octave_value (void) const { return rep->is_octave_value (); }
 
-  virtual int is_cell (void) const { return rep->is_cell (); }
+  int is_cell (void) const { return rep->is_cell (); }
 
-  virtual int is_char (void) const { return rep->is_char (); }
+  int is_char (void) const { return rep->is_char (); }
 
-  virtual int is_class (const char *name_arg) const { return rep->is_class (name_arg); }
+  int is_class (const char *name_arg) const { return rep->is_class (name_arg); }
 
-  virtual int is_complex (void) const { return rep->is_complex (); }
+  int is_complex (void) const { return rep->is_complex (); }
 
-  virtual int is_double (void) const { return rep->is_double (); }
+  int is_double (void) const { return rep->is_double (); }
 
-  virtual int is_function_handle (void) const { return rep->is_function_handle (); }
+  int is_function_handle (void) const { return rep->is_function_handle (); }
 
-  virtual int is_int16 (void) const { return rep->is_int16 (); }
+  int is_int16 (void) const { return rep->is_int16 (); }
 
-  virtual int is_int32 (void) const { return rep->is_int32 (); }
+  int is_int32 (void) const { return rep->is_int32 (); }
 
-  virtual int is_int64 (void) const { return rep->is_int64 (); }
+  int is_int64 (void) const { return rep->is_int64 (); }
 
-  virtual int is_int8 (void) const { return rep->is_int8 (); }
+  int is_int8 (void) const { return rep->is_int8 (); }
 
-  virtual int is_logical (void) const { return rep->is_logical (); }
+  int is_logical (void) const { return rep->is_logical (); }
 
-  virtual int is_numeric (void) const { return rep->is_numeric (); }
+  int is_numeric (void) const { return rep->is_numeric (); }
 
-  virtual int is_single (void) const { return rep->is_single (); }
+  int is_single (void) const { return rep->is_single (); }
 
-  virtual int is_sparse (void) const { return rep->is_sparse (); }
+  int is_sparse (void) const { return rep->is_sparse (); }
 
-  virtual int is_struct (void) const { return rep->is_struct (); }
+  int is_struct (void) const { return rep->is_struct (); }
 
-  virtual int is_uint16 (void) const { return rep->is_uint16 (); }
+  int is_uint16 (void) const { return rep->is_uint16 (); }
 
-  virtual int is_uint32 (void) const { return rep->is_uint32 (); }
+  int is_uint32 (void) const { return rep->is_uint32 (); }
 
-  virtual int is_uint64 (void) const { return rep->is_uint64 (); }
+  int is_uint64 (void) const { return rep->is_uint64 (); }
 
-  virtual int is_uint8 (void) const { return rep->is_uint8 (); }
+  int is_uint8 (void) const { return rep->is_uint8 (); }
 
-  virtual int is_logical_scalar (void) const { return rep->is_logical_scalar (); }
+  int is_logical_scalar (void) const { return rep->is_logical_scalar (); }
 
-  virtual int is_logical_scalar_true (void) const { return rep->is_logical_scalar_true (); }
+  int is_logical_scalar_true (void) const { return rep->is_logical_scalar_true (); }
 
-  virtual mwSize get_m (void) const { return rep->get_m (); }
+  mwSize get_m (void) const { return rep->get_m (); }
 
-  virtual mwSize get_n (void) const { return rep->get_n (); }
+  mwSize get_n (void) const { return rep->get_n (); }
 
-  virtual mwSize *get_dimensions (void) const { return rep->get_dimensions (); }
+  mwSize *get_dimensions (void) const { return rep->get_dimensions (); }
 
-  virtual mwSize get_number_of_dimensions (void) const { return rep->get_number_of_dimensions (); }
+  mwSize get_number_of_dimensions (void) const { return rep->get_number_of_dimensions (); }
 
-  virtual void set_m (mwSize m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
+  void set_m (mwSize m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
 
-  virtual void set_n (mwSize n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
+  void set_n (mwSize n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
 
-  virtual void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
+  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
 
-  virtual mwSize get_number_of_elements (void) const { return rep->get_number_of_elements (); }
+  mwSize get_number_of_elements (void) const { return rep->get_number_of_elements (); }
 
-  virtual int is_empty (void) const { return get_number_of_elements () == 0; }
+  int is_empty (void) const { return get_number_of_elements () == 0; }
 
   const char *get_name (void) const { return name; }
 
   void set_name (const char *name_arg);
 
-  virtual mxClassID get_class_id (void) const { return rep->get_class_id (); }
+  mxClassID get_class_id (void) const { return rep->get_class_id (); }
 
-  virtual const char *get_class_name (void) const { return rep->get_class_name (); }
+  const char *get_class_name (void) const { return rep->get_class_name (); }
 
-  virtual void set_class_name (const char *name_arg) { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
+  void set_class_name (const char *name_arg) { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
 
-  virtual mxArray *get_cell (mwIndex idx) const { DO_MUTABLE_METHOD (mxArray *, get_cell (idx)); }
+  mxArray *get_cell (mwIndex idx) const { DO_MUTABLE_METHOD (mxArray *, get_cell (idx)); }
 
-  virtual void set_cell (mwIndex idx, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
+  void set_cell (mwIndex idx, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
 
-  virtual double get_scalar (void) const { return rep->get_scalar (); }
+  double get_scalar (void) const { return rep->get_scalar (); }
 
-  virtual void *get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
+  void *get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
 
-  virtual void *get_imag_data (void) const { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
+  void *get_imag_data (void) const { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
 
-  virtual void set_data (void *pr) { DO_VOID_MUTABLE_METHOD (set_data (pr)); }
+  void set_data (void *pr) { DO_VOID_MUTABLE_METHOD (set_data (pr)); }
 
-  virtual void set_imag_data (void *pi) { DO_VOID_MUTABLE_METHOD (set_imag_data (pi)); }
+  void set_imag_data (void *pi) { DO_VOID_MUTABLE_METHOD (set_imag_data (pi)); }
 
-  virtual mwIndex *get_ir (void) const { DO_MUTABLE_METHOD (mwIndex *, get_ir ()); }
+  mwIndex *get_ir (void) const { DO_MUTABLE_METHOD (mwIndex *, get_ir ()); }
 
-  virtual mwIndex *get_jc (void) const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
+  mwIndex *get_jc (void) const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
 
-  virtual mwSize get_nzmax (void) const { return rep->get_nzmax (); }
+  mwSize get_nzmax (void) const { return rep->get_nzmax (); }
 
-  virtual void set_ir (mwIndex *ir) { DO_VOID_MUTABLE_METHOD (set_ir (ir)); }
+  void set_ir (mwIndex *ir) { DO_VOID_MUTABLE_METHOD (set_ir (ir)); }
 
-  virtual void set_jc (mwIndex *jc) { DO_VOID_MUTABLE_METHOD (set_jc (jc)); }
+  void set_jc (mwIndex *jc) { DO_VOID_MUTABLE_METHOD (set_jc (jc)); }
 
-  virtual void set_nzmax (mwSize nzmax) { DO_VOID_MUTABLE_METHOD (set_nzmax (nzmax)); }
+  void set_nzmax (mwSize nzmax) { DO_VOID_MUTABLE_METHOD (set_nzmax (nzmax)); }
 
-  virtual int add_field (const char *key) { DO_MUTABLE_METHOD (int, add_field (key)); }
+  int add_field (const char *key) { DO_MUTABLE_METHOD (int, add_field (key)); }
 
-  virtual void remove_field (int key_num) { DO_VOID_MUTABLE_METHOD (remove_field (key_num)); }
+  void remove_field (int key_num) { DO_VOID_MUTABLE_METHOD (remove_field (key_num)); }
 
-  virtual mxArray *get_field_by_number (mwIndex index, int key_num) const { DO_MUTABLE_METHOD (mxArray *, get_field_by_number (index, key_num)); }
+  mxArray *get_field_by_number (mwIndex index, int key_num) const { DO_MUTABLE_METHOD (mxArray *, get_field_by_number (index, key_num)); }
 
-  virtual void set_field_by_number (mwIndex index, int key_num, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
+  void set_field_by_number (mwIndex index, int key_num, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
 
-  virtual int get_number_of_fields (void) const { return rep->get_number_of_fields (); }
+  int get_number_of_fields (void) const { return rep->get_number_of_fields (); }
 
-  virtual const char *get_field_name_by_number (int key_num) const { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
+  const char *get_field_name_by_number (int key_num) const { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
 
-  virtual int get_field_number (const char *key) const { DO_MUTABLE_METHOD (int, get_field_number (key)); }
+  int get_field_number (const char *key) const { DO_MUTABLE_METHOD (int, get_field_number (key)); }
 
-  virtual int get_string (char *buf, mwSize buflen) const { return rep->get_string (buf, buflen); }
+  int get_string (char *buf, mwSize buflen) const { return rep->get_string (buf, buflen); }
 
-  virtual char *array_to_string (void) const { return rep->array_to_string (); }
+  char *array_to_string (void) const { return rep->array_to_string (); }
 
-  virtual mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const { return rep->calc_single_subscript (nsubs, subs); }
+  mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const { return rep->calc_single_subscript (nsubs, subs); }
 
-  virtual size_t get_element_size (void) const { return rep->get_element_size (); }
+  size_t get_element_size (void) const { return rep->get_element_size (); }
 
-  virtual bool mutation_needed (void) const { return rep->mutation_needed (); }
+  bool mutation_needed (void) const { return rep->mutation_needed (); }
 
-  virtual mxArray *mutate (void) const { return rep->mutate (); }
+  mxArray *mutate (void) const { return rep->mutate (); }
 
   static void *malloc (size_t n);
 
@@ -316,22 +486,20 @@ public:
     return retval;
   }
 
-  static octave_value as_octave_value (mxArray *ptr);
+  static octave_value as_octave_value (const mxArray *ptr);
 
 protected:
 
-  virtual octave_value as_octave_value (void) const;
-
-  mxArray (const xmxArray&) : rep (0), name (0) { }
+  octave_value as_octave_value (void) const;
 
 private:
 
-  mutable mxArray *rep;
+  mutable mxArray_base *rep;
 
   char *name;
 
-  mxArray (mxArray *r, const char *n)
-    : rep (r), name (strsave (n)) { }
+  mxArray (mxArray_base *r, const char *n)
+    : rep (r), name (mxArray::strsave (n)) { }
 
   void maybe_mutate (void) const;
 

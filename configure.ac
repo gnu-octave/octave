@@ -1230,7 +1230,7 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [sqr1up],
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
-if test "$octave_qrupdate_ok" = yes; then
+if test "$octave_cv_lib_qrupdate" = yes; then
   LIBS="$LIBS $QRUPDATE_LIBS"
   AC_LANG_PUSH([Fortran 77])
   AC_MSG_CHECKING([for slup1up in $QRUPDATE_LIBS])
@@ -1313,6 +1313,7 @@ LIBS="$save_LIBS"
 if test -z "$UMFPACK_LIBS"; then
   ## Invalidate the cache and try again with -lcblas.
   $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+  $as_unset octave_cv_lib_umfpack
   save_LIBS="$LIBS"
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   OCTAVE_CHECK_LIB([umfpack], UMFPACK,
@@ -1331,7 +1332,7 @@ fi
 if test -n "$UMFPACK_LIBS"; then
   ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time()
   save_LIBS="$LIBS";
-  LIBS="$UMFPACK_LIBS $FLIBS $LIBS"
+  LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   xtra_libs=
   OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
   if test "$octave_cv_umfpack_need_suitesparse_time" = yes; then
@@ -1357,7 +1358,7 @@ if test -n "$UMFPACK_LIBS"; then
   ## Check for UMFPACK separately split complex matrix and RHS.
   if test -n "$UMFPACK_LIBS"; then
     save_LIBS="$LIBS";
-    LIBS="$UMFPACK_LIBS $CHOLMOD_LIBS $AMD_LIBS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
+    LIBS="$UMFPACK_LIBS $CHOLMOD_LDFLAGS $CHOLMOD_LIBS $AMD_LDFLAGS $AMD_LIBS $COLAMD_LDFLAGS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
     OCTAVE_UMFPACK_SEPARATE_SPLIT
     LIBS="$save_LIBS"
   fi

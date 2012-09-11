@@ -2429,6 +2429,10 @@ save_mat5_binary_element (std::ostream& os,
     }
 
   os.write (reinterpret_cast<char *> (&flags), 4);
+  // Matlab seems to have trouble reading files that have nzmax == 0 at
+  // this point in the file.
+  if (nnz_32 == 0)
+    nnz_32 = 1;
   os.write (reinterpret_cast<char *> (&nnz_32), 4);
 
   write_mat5_tag (os, miINT32, dim_len);

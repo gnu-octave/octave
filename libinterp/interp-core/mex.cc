@@ -104,175 +104,12 @@ valid_key (const char *key)
 
 // ------------------------------------------------------------------
 
-// A class to provide the default implemenation of some of the virtual
-// functions declared in the mxArray class.
-
-class mxArray_base : public mxArray
+void
+mxArray_base::error (const char *msg) const
 {
-protected:
-
-  mxArray_base (void) : mxArray (xmxArray ()) { }
-
-public:
-
-  mxArray *dup (void) const = 0;
-
-  ~mxArray_base (void) { }
-
-  bool is_octave_value (void) const { return false; }
-
-  int is_cell (void) const = 0;
-
-  int is_char (void) const = 0;
-
-  int is_class (const char *name_arg) const
-  {
-    int retval = 0;
-
-    const char *cname = get_class_name ();
-
-    if (cname && name_arg)
-      retval = ! strcmp (cname, name_arg);
-
-    return retval;
-  }
-
-  int is_complex (void) const = 0;
-
-  int is_double (void) const = 0;
-
-  int is_function_handle (void) const = 0;
-
-  int is_int16 (void) const = 0;
-
-  int is_int32 (void) const = 0;
-
-  int is_int64 (void) const = 0;
-
-  int is_int8 (void) const = 0;
-
-  int is_logical (void) const = 0;
-
-  int is_numeric (void) const = 0;
-
-  int is_single (void) const = 0;
-
-  int is_sparse (void) const = 0;
-
-  int is_struct (void) const = 0;
-
-  int is_uint16 (void) const = 0;
-
-  int is_uint32 (void) const = 0;
-
-  int is_uint64 (void) const = 0;
-
-  int is_uint8 (void) const = 0;
-
-  int is_logical_scalar (void) const
-  {
-    return is_logical () && get_number_of_elements () == 1;
-  }
-
-  int is_logical_scalar_true (void) const = 0;
-
-  mwSize get_m (void) const = 0;
-
-  mwSize get_n (void) const = 0;
-
-  mwSize *get_dimensions (void) const = 0;
-
-  mwSize get_number_of_dimensions (void) const = 0;
-
-  void set_m (mwSize m) = 0;
-
-  void set_n (mwSize n) = 0;
-
-  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) = 0;
-
-  mwSize get_number_of_elements (void) const = 0;
-
-  int is_empty (void) const = 0;
-
-  mxClassID get_class_id (void) const = 0;
-
-  const char *get_class_name (void) const = 0;
-
-  void set_class_name (const char *name_arg) = 0;
-
-  mxArray *get_cell (mwIndex /*idx*/) const
-  {
-    invalid_type_error ();
-    return 0;
-  }
-
-  void set_cell (mwIndex idx, mxArray *val) = 0;
-
-  double get_scalar (void) const = 0;
-
-  void *get_data (void) const = 0;
-
-  void *get_imag_data (void) const = 0;
-
-  void set_data (void *pr) = 0;
-
-  void set_imag_data (void *pi) = 0;
-
-  mwIndex *get_ir (void) const = 0;
-
-  mwIndex *get_jc (void) const = 0;
-
-  mwSize get_nzmax (void) const = 0;
-
-  void set_ir (mwIndex *ir) = 0;
-
-  void set_jc (mwIndex *jc) = 0;
-
-  void set_nzmax (mwSize nzmax) = 0;
-
-  int add_field (const char *key) = 0;
-
-  void remove_field (int key_num) = 0;
-
-  mxArray *get_field_by_number (mwIndex index, int key_num) const = 0;
-
-  void set_field_by_number (mwIndex index, int key_num, mxArray *val) = 0;
-
-  int get_number_of_fields (void) const = 0;
-
-  const char *get_field_name_by_number (int key_num) const = 0;
-
-  int get_field_number (const char *key) const = 0;
-
-  int get_string (char *buf, mwSize buflen) const = 0;
-
-  char *array_to_string (void) const = 0;
-
-  mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const = 0;
-
-  size_t get_element_size (void) const = 0;
-
-  bool mutation_needed (void) const { return false; }
-
-  mxArray *mutate (void) const { return 0; }
-
-protected:
-
-  octave_value as_octave_value (void) const = 0;
-
-  mxArray_base (const mxArray_base&) : mxArray (xmxArray ()) { }
-
-  void invalid_type_error (void) const
-  {
-    error ("invalid type for operation");
-  }
-
-  void error (const char *msg) const
-  {
-    // FIXME
-    ::error ("%s", msg);
-  }
-};
+  // FIXME
+  ::error ("%s", msg);
+}
 
 static mwIndex
 calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
@@ -327,14 +164,11 @@ public:
     : mxArray_base (), val (ov), mutate_flag (false),
       id (mxUNKNOWN_CLASS), class_name (0), ndims (-1), dims (0) { }
 
-  mxArray *dup (void) const
+  mxArray_base *dup (void) const { return new mxArray_octave_value (*this); }
+
+  mxArray *as_mxArray (void) const
   {
-    mxArray *retval = val.as_mxArray ();
-
-    if (! retval)
-      retval = new mxArray_octave_value (*this);
-
-    return retval;
+    return val.as_mxArray ();
   }
 
   ~mxArray_octave_value (void)
@@ -693,9 +527,9 @@ public:
 
   mxArray *mutate (void) const { return val.as_mxArray (); }
 
-protected:
-
   octave_value as_octave_value (void) const { return val; }
+
+protected:
 
   mxArray_octave_value (const mxArray_octave_value& arg)
     : mxArray_base (arg), val (arg.val), mutate_flag (arg.mutate_flag),
@@ -1193,7 +1027,7 @@ public:
       }
   }
 
-  mxArray_number *dup (void) const { return new mxArray_number (*this); }
+  mxArray_base *dup (void) const { return new mxArray_number (*this); }
 
   ~mxArray_number (void)
   {
@@ -1318,35 +1152,6 @@ public:
       }
 
     return buf;
-  }
-
-protected:
-
-  template <typename ELT_T, typename ARRAY_T, typename ARRAY_ELT_T>
-  octave_value
-  int_to_ov (const dim_vector& dv) const
-  {
-    octave_value retval;
-
-    mwSize nel = get_number_of_elements ();
-
-    ELT_T *ppr = static_cast<ELT_T *> (pr);
-
-    if (pi)
-      error ("complex integer types are not supported");
-    else
-      {
-        ARRAY_T val (dv);
-
-        ARRAY_ELT_T *ptr = val.fortran_vec ();
-
-        for (mwIndex i = 0; i < nel; i++)
-          ptr[i] = ppr[i];
-
-        retval = val;
-      }
-
-    return retval;
   }
 
   octave_value as_octave_value (void) const
@@ -1483,6 +1288,35 @@ protected:
     return retval;
   }
 
+protected:
+
+  template <typename ELT_T, typename ARRAY_T, typename ARRAY_ELT_T>
+  octave_value
+  int_to_ov (const dim_vector& dv) const
+  {
+    octave_value retval;
+
+    mwSize nel = get_number_of_elements ();
+
+    ELT_T *ppr = static_cast<ELT_T *> (pr);
+
+    if (pi)
+      error ("complex integer types are not supported");
+    else
+      {
+        ARRAY_T val (dv);
+
+        ARRAY_ELT_T *ptr = val.fortran_vec ();
+
+        for (mwIndex i = 0; i < nel; i++)
+          ptr[i] = ppr[i];
+
+        retval = val;
+      }
+
+    return retval;
+  }
+
   mxArray_number (const mxArray_number& val)
     : mxArray_matlab (val),
       pr (malloc (get_number_of_elements () * get_element_size ())),
@@ -1523,7 +1357,7 @@ public:
       jc (static_cast<mwIndex *> (calloc (n + 1, sizeof (mwIndex))))
     { }
 
-  mxArray_sparse *dup (void) const { return new mxArray_sparse (*this); }
+  mxArray_base *dup (void) const { return new mxArray_sparse (*this); }
 
   ~mxArray_sparse (void)
   {
@@ -1556,8 +1390,6 @@ public:
   void set_jc (mwIndex *jc_arg) { jc = jc_arg; }
 
   void set_nzmax (mwSize nzmax_arg) { nzmax = nzmax_arg; }
-
-protected:
 
   octave_value as_octave_value (void) const
   {
@@ -1714,7 +1546,7 @@ public:
       fields[i] = strsave (keys[i]);
   }
 
-  mxArray_struct *dup (void) const { return new mxArray_struct (*this); }
+  mxArray_base *dup (void) const { return new mxArray_struct (*this); }
 
   ~mxArray_struct (void)
   {
@@ -1863,8 +1695,6 @@ public:
 
   void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
 
-protected:
-
   octave_value as_octave_value (void) const
   {
     dim_vector dv = dims_to_dim_vector ();
@@ -1940,7 +1770,7 @@ public:
     : mxArray_matlab (mxCELL_CLASS, m, n),
       data (static_cast<mxArray **> (calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
 
-  mxArray_cell *dup (void) const { return new mxArray_cell (*this); }
+  mxArray_base *dup (void) const { return new mxArray_cell (*this); }
 
   ~mxArray_cell (void)
   {
@@ -1962,8 +1792,6 @@ public:
   void *get_data (void) const { return data; }
 
   void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
-
-protected:
 
   octave_value as_octave_value (void) const
   {

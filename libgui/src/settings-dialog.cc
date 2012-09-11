@@ -45,7 +45,7 @@ QDialog (parent), ui (new Ui::settings_dialog)
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
   ui->editor_fontName->setCurrentFont (QFont (settings->value ("editor/fontName","Courier").toString()) );
   ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());
-  ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",true).toBool ());
+  ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier").toString()) );
   ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());
   ui->showFilenames->setChecked (settings->value ("showFilenames").toBool());

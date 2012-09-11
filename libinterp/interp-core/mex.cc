@@ -245,7 +245,7 @@ public:
       {
         ndims = val.ndims ();
 
-        dims = static_cast<mwSize *> (malloc (ndims * sizeof (mwSize)));
+        dims = static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize)));
 
         dim_vector dv = val.dims ();
 
@@ -322,7 +322,7 @@ public:
     if (! class_name)
       {
         std::string s = val.class_name ();
-        class_name = strsave (s.c_str ());
+        class_name = mxArray::strsave (s.c_str ());
       }
 
     return class_name;
@@ -463,7 +463,7 @@ public:
       {
         mwSize nel = get_number_of_elements ();
 
-        buf = static_cast<char *> (malloc (nel + 1));
+        buf = static_cast<char *> (mxArray::malloc (nel + 1));
 
         if (buf)
           {
@@ -533,8 +533,9 @@ protected:
 
   mxArray_octave_value (const mxArray_octave_value& arg)
     : mxArray_base (arg), val (arg.val), mutate_flag (arg.mutate_flag),
-      id (arg.id), class_name (strsave (arg.class_name)), ndims (arg.ndims),
-      dims (ndims > 0 ? static_cast<mwSize *> (malloc (ndims * sizeof (mwSize))) : 0)
+      id (arg.id), class_name (mxArray::strsave (arg.class_name)),
+      ndims (arg.ndims),
+      dims (ndims > 0 ? static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))) : 0)
   {
     if (dims)
       {
@@ -577,7 +578,7 @@ protected:
   mxArray_matlab (mxClassID id_arg, mwSize ndims_arg, const mwSize *dims_arg)
     : mxArray_base (), class_name (0), id (id_arg),
       ndims (ndims_arg < 2 ? 2 : ndims_arg),
-      dims (static_cast<mwSize *> (malloc (ndims * sizeof (mwSize))))
+      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
     if (ndims_arg < 2)
       {
@@ -600,7 +601,7 @@ protected:
   mxArray_matlab (mxClassID id_arg, const dim_vector& dv)
     : mxArray_base (), class_name (0), id (id_arg),
       ndims (dv.length ()),
-      dims (static_cast<mwSize *> (malloc (ndims * sizeof (mwSize))))
+      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
     for (mwIndex i = 0; i < ndims; i++)
       dims[i] = dv(i);
@@ -616,7 +617,7 @@ protected:
 
   mxArray_matlab (mxClassID id_arg, mwSize m, mwSize n)
     : mxArray_base (), class_name (0), id (id_arg), ndims (2),
-      dims (static_cast<mwSize *> (malloc (ndims * sizeof (mwSize))))
+      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
     dims[0] = m;
     dims[1] = n;
@@ -745,7 +746,7 @@ public:
   void set_class_name (const char *name_arg)
   {
     mxFree (class_name);
-    class_name = static_cast<char *> (malloc (strlen (name_arg) + 1));
+    class_name = static_cast<char *> (mxArray::malloc (strlen (name_arg) + 1));
     strcpy (class_name, name_arg);
   }
 
@@ -903,9 +904,9 @@ public:
 protected:
 
   mxArray_matlab (const mxArray_matlab& val)
-    : mxArray_base (val), class_name (strsave (val.class_name)),
+    : mxArray_base (val), class_name (mxArray::strsave (val.class_name)),
       id (val.id), ndims (val.ndims),
-      dims (static_cast<mwSize *> (malloc (ndims * sizeof (mwSize))))
+      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
     for (mwIndex i = 0; i < ndims; i++)
       dims[i] = val.dims[i];
@@ -956,23 +957,23 @@ public:
   mxArray_number (mxClassID id_arg, mwSize ndims_arg, const mwSize *dims_arg,
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, ndims_arg, dims_arg),
-      pr (calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? calloc (get_number_of_elements (), get_element_size ()) : 0) { }
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
+      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (), get_element_size ()) : 0) { }
 
   mxArray_number (mxClassID id_arg, const dim_vector& dv,
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, dv),
-      pr (calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? calloc (get_number_of_elements (), get_element_size ()) : 0) { }
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
+      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (), get_element_size ()) : 0) { }
 
   mxArray_number (mxClassID id_arg, mwSize m, mwSize n, mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, m, n),
-      pr (calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? calloc (get_number_of_elements (), get_element_size ()) : 0) { }
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
+      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (), get_element_size ()) : 0) { }
 
   mxArray_number (mxClassID id_arg, double val)
     : mxArray_matlab (id_arg, 1, 1),
-      pr (calloc (get_number_of_elements (), get_element_size ())),
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (0)
   {
     double *dpr = static_cast<double *> (pr);
@@ -981,7 +982,7 @@ public:
 
   mxArray_number (mxClassID id_arg, mxLogical val)
     : mxArray_matlab (id_arg, 1, 1),
-      pr (calloc (get_number_of_elements (), get_element_size ())),
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (0)
   {
     mxLogical *lpr = static_cast<mxLogical *> (pr);
@@ -992,7 +993,7 @@ public:
     : mxArray_matlab (mxCHAR_CLASS,
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
-      pr (calloc (get_number_of_elements (), get_element_size ())),
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (0)
   {
     mxChar *cpr = static_cast<mxChar *> (pr);
@@ -1004,7 +1005,7 @@ public:
   // FIXME??
   mxArray_number (mwSize m, const char **str)
     : mxArray_matlab (mxCHAR_CLASS, m, max_str_len (m, str)),
-      pr (calloc (get_number_of_elements (), get_element_size ())),
+      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (0)
   {
     mxChar *cpr = static_cast<mxChar *> (pr);
@@ -1139,7 +1140,7 @@ public:
 
     mwSize nel = get_number_of_elements ();
 
-    char *buf = static_cast<char *> (malloc (nel + 1));
+    char *buf = static_cast<char *> (mxArray::malloc (nel + 1));
 
     if (buf)
       {
@@ -1319,8 +1320,8 @@ protected:
 
   mxArray_number (const mxArray_number& val)
     : mxArray_matlab (val),
-      pr (malloc (get_number_of_elements () * get_element_size ())),
-      pi (val.pi ? malloc (get_number_of_elements () * get_element_size ()) : 0)
+      pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
+      pi (val.pi ? mxArray::malloc (get_number_of_elements () * get_element_size ()) : 0)
   {
     size_t nbytes = get_number_of_elements () * get_element_size ();
 
@@ -1351,10 +1352,10 @@ public:
   mxArray_sparse (mxClassID id_arg, mwSize m, mwSize n, mwSize nzmax_arg,
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg),
-      pr (calloc (nzmax, get_element_size ())),
-      pi (flag == mxCOMPLEX ? calloc (nzmax, get_element_size ()) : 0),
-      ir (static_cast<mwIndex *> (calloc (nzmax, sizeof (mwIndex)))),
-      jc (static_cast<mwIndex *> (calloc (n + 1, sizeof (mwIndex))))
+      pr (mxArray::calloc (nzmax, get_element_size ())),
+      pi (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ()) : 0),
+      ir (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex)))),
+      jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
     { }
 
   mxArray_base *dup (void) const { return new mxArray_sparse (*this); }
@@ -1483,10 +1484,10 @@ private:
 
   mxArray_sparse (const mxArray_sparse& val)
     : mxArray_matlab (val), nzmax (val.nzmax),
-      pr (malloc (nzmax * get_element_size ())),
-      pi (val.pi ? malloc (nzmax * get_element_size ()) : 0),
-      ir (static_cast<mwIndex *> (malloc (nzmax * sizeof (mwIndex)))),
-      jc (static_cast<mwIndex *> (malloc (nzmax * sizeof (mwIndex))))
+      pr (mxArray::malloc (nzmax * get_element_size ())),
+      pi (val.pi ? mxArray::malloc (nzmax * get_element_size ()) : 0),
+      ir (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex)))),
+      jc (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex))))
   {
     size_t nbytes = nzmax * get_element_size ();
 
@@ -1518,24 +1519,24 @@ public:
   mxArray_struct (mwSize ndims_arg, const mwSize *dims_arg, int num_keys_arg,
                   const char **keys)
     : mxArray_matlab (mxSTRUCT_CLASS, ndims_arg, dims_arg), nfields (num_keys_arg),
-      fields (static_cast<char **> (calloc (nfields, sizeof (char *)))),
-      data (static_cast<mxArray **> (calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
+      fields (static_cast<char **> (mxArray::calloc (nfields, sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
   {
     init (keys);
   }
 
   mxArray_struct (const dim_vector& dv, int num_keys_arg, const char **keys)
     : mxArray_matlab (mxSTRUCT_CLASS, dv), nfields (num_keys_arg),
-      fields (static_cast<char **> (calloc (nfields, sizeof (char *)))),
-      data (static_cast<mxArray **> (calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
+      fields (static_cast<char **> (mxArray::calloc (nfields, sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
   {
     init (keys);
   }
 
   mxArray_struct (mwSize m, mwSize n, int num_keys_arg, const char **keys)
     : mxArray_matlab (mxSTRUCT_CLASS, m, n), nfields (num_keys_arg),
-      fields (static_cast<char **> (calloc (nfields, sizeof (char *)))),
-      data (static_cast<mxArray **> (calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
+      fields (static_cast<char **> (mxArray::calloc (nfields, sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
   {
     init (keys);
   }
@@ -1543,7 +1544,7 @@ public:
   void init (const char **keys)
   {
     for (int i = 0; i < nfields; i++)
-      fields[i] = strsave (keys[i]);
+      fields[i] = mxArray::strsave (keys[i]);
   }
 
   mxArray_base *dup (void) const { return new mxArray_struct (*this); }
@@ -1575,13 +1576,13 @@ public:
 
         if (fields)
           {
-            fields[nfields-1] = strsave (key);
+            fields[nfields-1] = mxArray::strsave (key);
 
             mwSize nel = get_number_of_elements ();
 
             mwSize ntot = nfields * nel;
 
-            mxArray **new_data = static_cast<mxArray **> (malloc (ntot * sizeof (mxArray *)));
+            mxArray **new_data = static_cast<mxArray **> (mxArray::malloc (ntot * sizeof (mxArray *)));
 
             if (new_data)
               {
@@ -1622,9 +1623,9 @@ public:
 
         int new_nfields = nfields - 1;
 
-        char **new_fields = static_cast<char **> (malloc (new_nfields * sizeof (char *)));
+        char **new_fields = static_cast<char **> (mxArray::malloc (new_nfields * sizeof (char *)));
 
-        mxArray **new_data = static_cast<mxArray **> (malloc (new_nfields * nel * sizeof (mxArray *)));
+        mxArray **new_data = static_cast<mxArray **> (mxArray::malloc (new_nfields * nel * sizeof (mxArray *)));
 
         for (int i = 0; i < key_num; i++)
           new_fields[i] = fields[i];
@@ -1731,11 +1732,11 @@ private:
 
   mxArray_struct (const mxArray_struct& val)
     : mxArray_matlab (val), nfields (val.nfields),
-      fields (static_cast<char **> (malloc (nfields * sizeof (char *)))),
-      data (static_cast<mxArray **> (malloc (nfields * get_number_of_elements () * sizeof (mxArray *))))
+      fields (static_cast<char **> (mxArray::malloc (nfields * sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::malloc (nfields * get_number_of_elements () * sizeof (mxArray *))))
   {
     for (int i = 0; i < nfields; i++)
-      fields[i] = strsave (val.fields[i]);
+      fields[i] = mxArray::strsave (val.fields[i]);
 
     mwSize nel = get_number_of_elements ();
 
@@ -1760,15 +1761,15 @@ public:
 
   mxArray_cell (mwSize ndims_arg, const mwSize *dims_arg)
     : mxArray_matlab (mxCELL_CLASS, ndims_arg, dims_arg),
-      data (static_cast<mxArray **> (calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
+      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
 
   mxArray_cell (const dim_vector& dv)
     : mxArray_matlab (mxCELL_CLASS, dv),
-      data (static_cast<mxArray **> (calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
+      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
 
   mxArray_cell (mwSize m, mwSize n)
     : mxArray_matlab (mxCELL_CLASS, m, n),
-      data (static_cast<mxArray **> (calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
+      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
 
   mxArray_base *dup (void) const { return new mxArray_cell (*this); }
 
@@ -1815,7 +1816,7 @@ private:
 
   mxArray_cell (const mxArray_cell& val)
     : mxArray_matlab (val),
-      data (static_cast<mxArray **> (malloc (get_number_of_elements () * sizeof (mxArray *))))
+      data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements () * sizeof (mxArray *))))
   {
     mwSize nel = get_number_of_elements ();
 
@@ -1890,7 +1891,7 @@ void
 mxArray::set_name (const char *name_arg)
 {
   mxFree (name);
-  name = strsave (name_arg);
+  name = mxArray::strsave (name_arg);
 }
 
 octave_value
@@ -2360,7 +2361,7 @@ mxGetNaN (void)
 void *
 mxCalloc (size_t n, size_t size)
 {
-  return mex_context ? mex_context->calloc (n, size) : calloc (n, size);
+  return mex_context ? mex_context->calloc (n, size) : ::calloc (n, size);
 }
 
 void *
@@ -3008,8 +3009,8 @@ mexFunctionName (void)
 }
 
 int
-mexCallMATLAB (int nargout, mxArray *argout[], int nargin, mxArray *argin[],
-               const char *fname)
+mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
+               const mxArray *argin[], const char *fname)
 {
   octave_value_list args;
 

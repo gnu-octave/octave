@@ -499,7 +499,7 @@ private:
   char *name;
 
   mxArray (mxArray_base *r, const char *n)
-    : rep (r), name (strsave (n)) { }
+    : rep (r), name (mxArray::strsave (n)) { }
 
   void maybe_mutate (void) const;
 

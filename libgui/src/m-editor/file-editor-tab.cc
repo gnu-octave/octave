@@ -49,10 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 file_editor_tab::file_editor_tab(file_editor *fileEditor)
   : QWidget ((QWidget*)fileEditor), octave_event_observer ()
 {
-  QSettings *settings = resource_manager::get_settings ();
-
-  // FIXME -- what should happen if settings is 0?
-
   _file_editor = fileEditor;
   _file_name = "";
   _edit_area = new QsciScintilla (this);
@@ -74,39 +70,27 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   // line numbers
   _edit_area->setMarginsForegroundColor(QColor(96,96,96));
   _edit_area->setMarginsBackgroundColor(QColor(232,232,220));
-  if (settings->value ("editor/showLineNumbers",true).toBool ())
-    {
-      QFont marginFont( settings->value ("editor/fontName","Courier").toString () ,
-                        settings->value ("editor/fontSize",10).toInt () );
-      _edit_area->setMarginsFont( marginFont );
-      QFontMetrics metrics(marginFont);
-      _edit_area->setMarginType (2, QsciScintilla::TextMargin);
-      _edit_area->setMarginWidth(2, metrics.width("9999"));
-      _edit_area->setMarginLineNumbers (2, true);
-    }
-
+  _edit_area->setMarginType (2, QsciScintilla::TextMargin);
+  
   // code folding
   _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
   _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
 
+  //highlight current line color
+  _edit_area->setCaretLineBackgroundColor(QColor(245,245,245));
+
   // other features
-  if (settings->value ("editor/highlightCurrentLine",true).toBool ())
-    {
-      _edit_area->setCaretLineVisible(true);
-      _edit_area->setCaretLineBackgroundColor(QColor(245,245,245));
-    }
   _edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
   _edit_area->setAutoIndent (true);
   _edit_area->setIndentationWidth (2);
   _edit_area->setIndentationsUseTabs (false);
-  if (settings->value ("editor/codeCompletion",true).toBool ())
-    {
-      _edit_area->autoCompleteFromAll ();
-      _edit_area->setAutoCompletionSource(QsciScintilla::AcsAll);
-      _edit_area->setAutoCompletionThreshold (1);
-    }
+
   _edit_area->setUtf8 (true);
 
+  // auto completion
+  _edit_area->autoCompleteFromAll ();
+  _edit_area->setAutoCompletionSource(QsciScintilla::AcsAll);
+  
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (_edit_area);
   layout->setMargin (0);
@@ -121,8 +105,8 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
            this, SLOT (file_has_changed (QString)));
 
   _file_name = "";
-  _long_title = settings->value ("editor/longWindowTitle",false).toBool ();
-  update_window_title (false);
+ 
+  notice_settings ();
 }
 
 bool
@@ -299,18 +283,17 @@ file_editor_tab::update_lexer ()
     {
       lexer = new QsciLexerBash ();
     }
-
+  
   QSettings *settings = resource_manager::get_settings ();
-
-  // FIXME -- what should happen if settings is 0?
-
+  
   // Editor font (default or from settings)
-  lexer->setDefaultFont (QFont (
-                                settings->value ("editor/fontName",
-                                                 "Courier").toString (),
-                                settings->value ("editor/fontSize",
-                                                 10).toInt ()));
-
+  if (settings)
+    lexer->setDefaultFont (QFont (
+                             settings->value ("editor/fontName",
+                                              "Courier").toString (),
+                             settings->value ("editor/fontSize",
+                                              10).toInt ()));
+  
   // TODO: Autoindent not working as it should
   lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
                              QsciScintilla::AiOpening  ||
@@ -830,4 +813,41 @@ file_editor_tab::file_has_changed (const QString& fileName)
           emit close_request ();
         }
     }
+}
+
+void
+file_editor_tab::notice_settings ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  
+  if (settings==NULL)
+    return; // this shouldn't happen!
+  
+  _edit_area->setCaretLineVisible(settings->value ("editor/highlightCurrentLine",true).toBool ());
+  
+  if (settings->value ("editor/codeCompletion",true).toBool ())
+    _edit_area->setAutoCompletionThreshold (1);
+  else
+    _edit_area->setAutoCompletionThreshold (-1);
+  
+  QFont font( settings->value ("editor/fontName","Courier").toString () ,
+              settings->value ("editor/fontSize",10).toInt () );
+  if (settings->value ("editor/showLineNumbers",true).toBool ())
+    {
+      _edit_area->setMarginLineNumbers (2, true);
+      _edit_area->setMarginsFont( font );
+      QFontMetrics metrics( font );      
+      _edit_area->setMarginWidth(2, metrics.width("9999"));
+    }      
+  else
+    {
+      _edit_area->setMarginLineNumbers (2, false);
+      _edit_area->setMarginWidth(2, 0);
+    }      
+  
+  update_lexer ();
+  
+  _long_title = settings->value ("editor/longWindowTitle",false).toBool ();
+
+  update_window_title (false);  
 }

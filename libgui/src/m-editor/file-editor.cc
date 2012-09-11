@@ -373,6 +373,18 @@ file_editor::handle_editor_state_changed ()
 }
 
 void
+file_editor::notice_settings ()
+{
+  for(int i = 0; i < _tab_widget->count (); i++)
+    {
+      file_editor_tab *fileEditorTab
+          = dynamic_cast <file_editor_tab*> (_tab_widget->widget (i));
+      if (fileEditorTab)
+        fileEditorTab->notice_settings ();
+    } 
+}
+
+void
 file_editor::construct ()
 {
   QWidget *widget = new QWidget (this);

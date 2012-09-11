@@ -833,6 +833,8 @@ main_window::construct ()
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));
   connect (this,                        SIGNAL (settings_changed ()),
+           _file_editor,                SLOT   (notice_settings ()));
+  connect (this,                        SIGNAL (settings_changed ()),
            _files_dock_widget,          SLOT   (notice_settings ()));
   connect (this,                        SIGNAL (settings_changed ()),
            this,                        SLOT   (notice_settings ()));

@@ -74,6 +74,9 @@ public slots:
 
   void file_has_changed (const QString& fileName);
   QString get_file_name () const {return _file_name;} 
+  
+  /** Tells the editor tab to react on changed settings. */
+  void notice_settings ();
 
 signals:
   void file_name_changed (const QString& fileName);

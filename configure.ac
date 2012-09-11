@@ -1331,7 +1331,7 @@ fi
 if test -n "$UMFPACK_LIBS"; then
   ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time()
   save_LIBS="$LIBS";
-  LIBS="$UMFPACK_LIBS $FLIBS $LIBS"
+  LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   xtra_libs=
   OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
   if test "$octave_cv_umfpack_need_suitesparse_time" = yes; then
@@ -1357,7 +1357,7 @@ if test -n "$UMFPACK_LIBS"; then
   ## Check for UMFPACK separately split complex matrix and RHS.
   if test -n "$UMFPACK_LIBS"; then
     save_LIBS="$LIBS";
-    LIBS="$UMFPACK_LIBS $CHOLMOD_LIBS $AMD_LIBS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
+    LIBS="$UMFPACK_LIBS $CHOLMOD_LDFLAGS $CHOLMOD_LIBS $AMD_LDFLAGS $AMD_LIBS $COLAMD_LDFLAGS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
     OCTAVE_UMFPACK_SEPARATE_SPLIT
     LIBS="$save_LIBS"
   fi

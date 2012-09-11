@@ -103,9 +103,6 @@
            <property name="text">
             <string>Show line numbers</string>
            </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
           </widget>
          </item>
          <item>
@@ -115,9 +112,6 @@
            </property>
            <property name="text">
             <string>Highlight current line</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -634,38 +628,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>editor_showLineNumbers</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_showLineNumbers</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>87</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>249</x>
-     <y>87</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_highlightCurrentLine</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_highlightCurrentLine</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>112</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>249</x>
-     <y>112</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>useProxyServer</sender>
    <signal>toggled(bool)</signal>
    <receiver>proxyUserName</receiver>
@@ -710,22 +672,6 @@
     <hint type="destinationlabel">
      <x>68</x>
      <y>182</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_codeCompletion</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_codeCompletion</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>137</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>249</x>
-     <y>137</y>
     </hint>
    </hints>
   </connection>

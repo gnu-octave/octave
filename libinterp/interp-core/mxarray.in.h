@@ -486,7 +486,7 @@ public:
     return retval;
   }
 
-  static octave_value as_octave_value (mxArray *ptr);
+  static octave_value as_octave_value (const mxArray *ptr);
 
 protected:
 

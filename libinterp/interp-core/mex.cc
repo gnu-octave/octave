@@ -1894,7 +1894,7 @@ mxArray::set_name (const char *name_arg)
 }
 
 octave_value
-mxArray::as_octave_value (mxArray *ptr)
+mxArray::as_octave_value (const mxArray *ptr)
 {
   return ptr ? ptr->as_octave_value () : octave_value (Matrix ());
 }
@@ -3214,7 +3214,7 @@ mexGetVariablePtr (const char *space, const char *name)
 }
 
 int
-mexPutVariable (const char *space, const char *name, mxArray *ptr)
+mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 {
   if (! ptr)
     return 1;

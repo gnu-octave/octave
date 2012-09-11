@@ -56,7 +56,7 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs,
     }
   else if (mxIsLogical (prhs[0]))
     {
-      bool *pbr, *pbr2;
+      mxLogical *pbr, *pbr2;
       mexPrintf ("Matrix is %d-by-%d logical",
                  " sparse matrix", m, n);
       mexPrintf (" with %d elements\n", nz);

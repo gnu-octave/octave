@@ -1230,7 +1230,7 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [sqr1up],
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
-if test "$octave_qrupdate_ok" = yes; then
+if test "$octave_cv_lib_qrupdate" = yes; then
   LIBS="$LIBS $QRUPDATE_LIBS"
   AC_LANG_PUSH([Fortran 77])
   AC_MSG_CHECKING([for slup1up in $QRUPDATE_LIBS])
@@ -1313,6 +1313,7 @@ LIBS="$save_LIBS"
 if test -z "$UMFPACK_LIBS"; then
   ## Invalidate the cache and try again with -lcblas.
   $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+  $as_unset octave_cv_lib_umfpack
   save_LIBS="$LIBS"
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   OCTAVE_CHECK_LIB([umfpack], UMFPACK,

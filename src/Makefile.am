@@ -73,7 +73,7 @@ OCTAVE_CORE_LIBS = \
   $(top_builddir)/libinterp/liboctinterp.la \
   $(top_builddir)/liboctave/liboctave.la
 
-include ../libgui/src/link-deps.mk
+include ../libgui/link-deps.mk
 
 octave_cli_SOURCES = main-cli.cc
 
@@ -87,7 +87,7 @@ octave_cli_LDFLAGS = \
 
 if AMCOND_BUILD_GUI
   octave_SOURCES = main.cc
-  OCTAVE_GUI_LIBS = $(top_builddir)/libgui/src/liboctgui.la
+  OCTAVE_GUI_LIBS = $(top_builddir)/libgui/liboctgui.la
   OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
 else
   octave_SOURCES = main-cli.cc

@@ -2520,7 +2520,6 @@ AC_CONFIG_FILES([
   examples/Makefile
   libgnu/Makefile
   libgui/Makefile
-  libgui/src/Makefile
   libinterp/Makefile
   liboctave/Makefile
   liboctave/cruft/Makefile

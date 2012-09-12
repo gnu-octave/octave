@@ -30,6 +30,10 @@ AM_CPPFLAGS = \
   -I$(top_builddir)/libinterp/interpfcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
+AM_CFLAGS += $(WARN_CFLAGS)
+
+AM_CXXFLAGS += $(WARN_CXXFLAGS)
+
 OCTAVE_BINARIES = \
   octave \
   octave-cli

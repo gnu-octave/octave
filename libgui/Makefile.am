@@ -34,29 +34,6 @@ MOC_CPPFLAGS =
 
 octlib_LTLIBRARIES = liboctgui.la
 
-liboctgui_la_CPPFLAGS = \
-  @OCTGUI_DLL_DEFS@ \
-  -I$(QT_INCDIR) \
-  -I$(QT_INCDIR)/QtCore \
-  -I$(QT_INCDIR)/QtGui \
-  -I$(QT_INCDIR)/QtNetwork \
-  -I$(srcdir)/qterminal/libqterminal \
-  -Isrc -I$(srcdir)/src \
-  -I$(srcdir)/src/m-editor \
-  -I$(srcdir)/src/octave-adapter \
-  -I$(srcdir)/src/qtinfo \
-  -I$(top_srcdir)/liboctave/cruft/misc \
-  -I$(top_srcdir)/liboctave/array \
-  -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
-  -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
-  -I$(top_srcdir)/liboctave/system \
-  -I$(top_srcdir)/liboctave/util \
-  -I$(top_srcdir)/libinterp \
-  -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
-  -I$(top_builddir)/libinterp/interp-core -I$(top_srcdir)/libinterp/interp-core \
-  -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \
-  -I$(top_srcdir)/libinterp/octave-value
-
 EXTRA_DIST = default-qt-settings
 
 BUILT_SOURCES =

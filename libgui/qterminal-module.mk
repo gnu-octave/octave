@@ -34,10 +34,15 @@ qterminal_libqterminal_la_MOC = \
 nodist_qterminal_libqterminal_la_SOURCES = $(qterminal_libqterminal_la_MOC)
 
 qterminal_libqterminal_la_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
   -I$(QT_INCDIR) \
   -I$(QT_INCDIR)/QtCore \
   -I$(QT_INCDIR)/QtGui \
   -I$(srcdir)/qterminal/libqterminal
+
+qterminal_libqterminal_la_CFLAGS = $(AM_CFLAGS)
+
+qterminal_libqterminal_la_CXXFLAGS = $(AM_CXXFLAGS)
 
 if WIN32_TERMINAL
 

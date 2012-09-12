@@ -33,7 +33,7 @@ octave_qt_event_listener::octave_qt_event_listener (QObject *parent)
 }
 
 void
-octave_qt_event_listener::current_directory_has_changed (std::string directory)
+octave_qt_event_listener::current_directory_has_changed (const std::string& directory)
 {
   emit current_directory_has_changed_signal
       (QString::fromStdString (directory));

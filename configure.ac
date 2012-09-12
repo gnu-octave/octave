@@ -1231,16 +1231,17 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
 if test "$octave_cv_lib_qrupdate" = yes; then
-  LIBS="$LIBS $QRUPDATE_LIBS"
-  AC_LANG_PUSH([Fortran 77])
-  AC_MSG_CHECKING([for slup1up in $QRUPDATE_LIBS])
-  octave_qrupdate_luu=no
-  AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])], [octave_qrupdate_luu=yes])
-  AC_MSG_RESULT([$octave_qrupdate_luu])
-  if test "$octave_qrupdate_luu" = yes; then
+  AC_CACHE_CHECK([for slup1up in $QRUPDATE_LIBS],
+    [octave_cv_func_slup1up],
+    [LIBS="$LIBS $QRUPDATE_LIBS"
+    AC_LANG_PUSH([Fortran 77])
+    AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])],
+      octave_cv_func_slup1up=yes, octave_cv_func_slup1up=no)
+    AC_LANG_POP([Fortran 77])
+  ])
+  if test $octave_cv_func_slup1up = yes; then
     AC_DEFINE(HAVE_QRUPDATE_LUU, 1, [Define to 1 if qrupdate supports LU updates.])
   fi
-  AC_LANG_POP([Fortran 77])
 fi
 LIBS="$save_LIBS"
 
@@ -2519,7 +2520,6 @@ AC_CONFIG_FILES([
   examples/Makefile
   libgnu/Makefile
   libgui/Makefile
-  libgui/src/Makefile
   libinterp/Makefile
   liboctave/Makefile
   liboctave/cruft/Makefile

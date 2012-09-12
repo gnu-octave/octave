@@ -73,9 +73,9 @@ class octave_event
     { _octave_event_observer.event_reject (this); }
 
   protected:
-    void call_octave_function (std::string name);
+    void call_octave_function (const std::string& name);
 
-    void call_octave_function (std::string name,
+    void call_octave_function (const std::string& name,
                                const octave_value_list& args,
                                int nargout = 0);
 
@@ -127,7 +127,7 @@ class octave_run_file_event : public octave_event
   public:
     /** Creates a new octave_run_file_event. */
     octave_run_file_event (octave_event_observer& o,
-                           std::string file)
+                           const std::string& file)
       : octave_event (o)
     { _file = file; }
 
@@ -143,7 +143,7 @@ class octave_change_directory_event : public octave_event
   public:
     /** Creates a new octave_change_directory_event. */
     octave_change_directory_event (octave_event_observer& o,
-                                   std::string directory)
+                                   const std::string& directory)
       : octave_event (o)
     { _directory = directory; }
 
@@ -175,7 +175,7 @@ class octave_load_workspace_event : public octave_event
   public:
     /** Creates a new octave_change_directory_event. */
     octave_load_workspace_event (octave_event_observer& o,
-                                 std::string file)
+                                 const std::string& file)
       : octave_event (o)
     { _file = file; }
 
@@ -191,7 +191,7 @@ class octave_save_workspace_event : public octave_event
   public:
     /** Creates a new octave_change_directory_event. */
     octave_save_workspace_event (octave_event_observer& o,
-                                 std::string file)
+                                 const std::string& file)
       : octave_event (o)
     { _file = file; }
 
@@ -216,8 +216,8 @@ class octave_add_breakpoint_event : public octave_event
 {
   public:
     octave_add_breakpoint_event (octave_event_observer& o,
-                                 std::string path,
-                                 std::string function_name,
+                                 const std::string& path,
+                                 const std::string& function_name,
                                  int line)
       : octave_event (o)
     {
@@ -253,8 +253,8 @@ class octave_remove_breakpoint_event : public octave_event
 {
   public:
     octave_remove_breakpoint_event (octave_event_observer& o,
-                                    std::string path,
-                                    std::string function_name,
+                                    const std::string& path,
+                                    const std::string& function_name,
                                     int line)
       : octave_event (o)
     {
@@ -290,8 +290,8 @@ class octave_remove_all_breakpoints_event : public octave_event
 {
   public:
     octave_remove_all_breakpoints_event (octave_event_observer& o,
-                                         std::string path,
-                                         std::string function_name)
+                                         const std::string& path,
+                                         const std::string& function_name)
       : octave_event (o)
     {
       _path = path;

@@ -101,13 +101,13 @@ void
 main_window::handle_save_workspace_request ()
 {
   QString selectedFile =
-      QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
-                                    resource_manager::get_home_path ());
+    QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
+                                  resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
     {
       octave_link::instance ()
-          ->post_event (new octave_save_workspace_event (*this,
-          selectedFile.toStdString()));
+        ->post_event (new octave_save_workspace_event (*this,
+                                                       selectedFile.toStdString()));
     }
 }
 
@@ -115,13 +115,13 @@ void
 main_window::handle_load_workspace_request ()
 {
   QString selectedFile =
-      QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
-                                    resource_manager::get_home_path ());
+    QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
+                                  resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
     {
       octave_link::instance ()
-          ->post_event (new octave_load_workspace_event (*this,
-            selectedFile.toStdString()));
+        ->post_event (new octave_load_workspace_event (*this,
+                                                       selectedFile.toStdString()));
     }
 }
 
@@ -129,14 +129,14 @@ void
 main_window::handle_clear_workspace_request ()
 {
   octave_link::instance ()
-      ->post_event (new octave_clear_workspace_event (*this));
+    ->post_event (new octave_clear_workspace_event (*this));
 }
 
 void
 main_window::handle_clear_history_request()
 {
   octave_link::instance ()
-      ->post_event (new octave_clear_history_event (*this));
+    ->post_event (new octave_clear_history_event (*this));
 }
 
 void
@@ -233,13 +233,13 @@ void
 main_window::change_current_working_directory ()
 {
   QString selectedDirectory =
-      QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
+    QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
 
   if (!selectedDirectory.isEmpty ())
     {
       octave_link::instance ()
-          ->post_event (new octave_change_directory_event (*this,
-                        selectedDirectory.toStdString ()));
+        ->post_event (new octave_change_directory_event (*this,
+                                                         selectedDirectory.toStdString ()));
     }
 }
 
@@ -247,8 +247,8 @@ void
 main_window::set_current_working_directory (const QString& directory)
 {
   octave_link::instance ()
-      ->post_event (new octave_change_directory_event (*this,
-                    directory.toStdString ()));
+    ->post_event (new octave_change_directory_event (*this,
+                                                     directory.toStdString ()));
 }
 
 void
@@ -367,56 +367,56 @@ void
 main_window::debug_continue ()
 {
   octave_link::instance ()
-      ->post_event (new octave_debug_continue_event (*this));
+    ->post_event (new octave_debug_continue_event (*this));
 }
 
 void
 main_window::debug_step_into ()
 {
   octave_link::instance ()
-      ->post_event (new octave_debug_step_into_event (*this));
+    ->post_event (new octave_debug_step_into_event (*this));
 }
 
 void
 main_window::debug_step_over ()
 {
   octave_link::instance ()
-      ->post_event (new octave_debug_step_over_event (*this));
+    ->post_event (new octave_debug_step_over_event (*this));
 }
 
 void
 main_window::debug_step_out ()
 {
   octave_link::instance ()
-      ->post_event (new octave_debug_step_out_event (*this));
+    ->post_event (new octave_debug_step_out_event (*this));
 }
 
 void
 main_window::debug_quit ()
 {
   octave_link::instance ()
-      ->post_event (new octave_debug_quit_event (*this));
+    ->post_event (new octave_debug_quit_event (*this));
 }
 
 void
 main_window::show_about_octave ()
 {
   QString message =
-      "GNU Octave\n"
-      "Copyright (C) 2009 John W. Eaton and others.\n"
-      "This is free software; see the source code for copying conditions."
-      "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or"
-      "FITNESS FOR A PARTICULAR PURPOSE.  For details, type `warranty'.\n"
-      "\n"
-      "Additional information about Octave is available at http://www.octave.org.\n"
-      "\n"
-      "Please contribute if you find this software useful."
-      "For more information, visit http://www.octave.org/help-wanted.html\n"
-      "\n"
-      "Report bugs to <bug@octave.org> (but first, please read"
-      "http://www.octave.org/bugs.html to learn how to write a helpful report).\n"
-      "\n"
-      "For information about changes from previous versions, type `news'.\n";
+    "GNU Octave\n"
+    "Copyright (C) 2009 John W. Eaton and others.\n"
+    "This is free software; see the source code for copying conditions."
+    "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or"
+    "FITNESS FOR A PARTICULAR PURPOSE.  For details, type `warranty'.\n"
+    "\n"
+    "Additional information about Octave is available at http://www.octave.org.\n"
+    "\n"
+    "Please contribute if you find this software useful."
+    "For more information, visit http://www.octave.org/help-wanted.html\n"
+    "\n"
+    "Report bugs to <bug@octave.org> (but first, please read"
+    "http://www.octave.org/bugs.html to learn how to write a helpful report).\n"
+    "\n"
+    "For information about changes from previous versions, type `news'.\n";
 
   QMessageBox::about (this, tr ("About Octave"), message);
 }
@@ -426,7 +426,7 @@ main_window::closeEvent (QCloseEvent * closeEvent)
 {
   closeEvent->ignore ();
   octave_link::instance ()->post_event (new octave_exit_event (*this));
- }
+}
 
 void
 main_window::read_settings ()
@@ -447,7 +447,7 @@ main_window::read_settings ()
           QVariant val = settings->value (name);
           widget->restoreGeometry (val.toByteArray ());
         }
-      }
+    }
   settings->endGroup();
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
   emit settings_changed ();
@@ -528,7 +528,7 @@ main_window::construct ()
   QMenu *new_menu = file_menu->addMenu(tr ("New"));
 
   QAction *new_script_action
-      = new_menu->addAction (QIcon(":/actions/icons/filenew.png"), tr ("Script"));
+    = new_menu->addAction (QIcon(":/actions/icons/filenew.png"), tr ("Script"));
   new_script_action->setShortcut (Qt::ControlModifier + Qt::Key_N);
 
   QAction *new_function_action = new_menu->addAction (tr ("Function"));
@@ -547,37 +547,37 @@ main_window::construct ()
   new_gui_action->setEnabled (false); // TODO: Make this work.
 
   QAction *open_action
-      = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open..."));
+    = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open..."));
   open_action->setShortcut (Qt::ControlModifier + Qt::Key_O);
 
   QAction *close_command_window_action
-      = file_menu->addAction (tr ("Close Command Window"));
+    = file_menu->addAction (tr ("Close Command Window"));
   close_command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_W);
   close_command_window_action->setEnabled (false); // TODO: Make this work.
 
   file_menu->addSeparator ();
   QAction *import_data_action
-      = file_menu->addAction (tr ("Import Data..."));
+    = file_menu->addAction (tr ("Import Data..."));
   import_data_action->setEnabled (false); // TODO: Make this work.
 
   QAction *save_workspace_action
-      = file_menu->addAction (tr ("Save Workspace..."));
+    = file_menu->addAction (tr ("Save Workspace..."));
   save_workspace_action->setShortcut (Qt::ControlModifier + Qt::Key_S);
   file_menu->addSeparator ();
 
   QAction *preferences_action
-      = file_menu->addAction (QIcon(":/actions/icons/configure.png"),
-                              tr ("Preferences..."));
+    = file_menu->addAction (QIcon(":/actions/icons/configure.png"),
+                            tr ("Preferences..."));
   file_menu->addSeparator ();
   QAction *page_setup_action
-      = file_menu->addAction (tr ("Page Setup..."));
+    = file_menu->addAction (tr ("Page Setup..."));
   page_setup_action->setEnabled (false); // TODO: Make this work.
   QAction *print_action
-      = file_menu->addAction (tr ("Print"));
+    = file_menu->addAction (tr ("Print"));
   print_action->setShortcut (Qt::ControlModifier + Qt::Key_P);
   print_action->setEnabled (false); // TODO: Make this work.
   QAction *print_selection_action
-      = file_menu->addAction (tr ("Print Selection..."));
+    = file_menu->addAction (tr ("Print Selection..."));
   print_selection_action->setEnabled (false); // TODO: Make this work.
 
   file_menu->addSeparator ();
@@ -587,57 +587,57 @@ main_window::construct ()
 
   QMenu *edit_menu = menuBar ()->addMenu (tr ("&Edit"));
   QAction *undo_action
-      = edit_menu->addAction (QIcon(":/actions/icons/undo.png"), tr ("Undo"));
+    = edit_menu->addAction (QIcon(":/actions/icons/undo.png"), tr ("Undo"));
   undo_action->setShortcut (QKeySequence::Undo);
 
   QAction *redo_action
-      = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
+    = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
   redo_action->setShortcut (QKeySequence::Redo);
   edit_menu->addSeparator ();
 
   QAction *cut_action
-      = edit_menu->addAction (QIcon(":/actions/icons/editcut.png"), tr ("Cut"));
+    = edit_menu->addAction (QIcon(":/actions/icons/editcut.png"), tr ("Cut"));
   cut_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_X);
 
   QAction *copy_action
-      = edit_menu->addAction (QIcon(":/actions/icons/editcopy.png"), tr ("Copy"));
+    = edit_menu->addAction (QIcon(":/actions/icons/editcopy.png"), tr ("Copy"));
   copy_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_C);
 
   QAction *paste_action
-      = edit_menu->addAction (QIcon(":/actions/icons/editpaste.png"), tr ("Paste"));
+    = edit_menu->addAction (QIcon(":/actions/icons/editpaste.png"), tr ("Paste"));
   paste_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_V);
 
   QAction *paste_to_workspace_action
-      = edit_menu->addAction (tr ("Paste To Workspace..."));
+    = edit_menu->addAction (tr ("Paste To Workspace..."));
   paste_to_workspace_action->setEnabled (false); // TODO: Make this work.
   edit_menu->addSeparator ();
 
   QAction *select_all_action
-      = edit_menu->addAction (tr ("Select All"));
+    = edit_menu->addAction (tr ("Select All"));
   select_all_action->setEnabled (false); // TODO: Make this work.
   QAction *delete_action
-      = edit_menu->addAction (tr ("Delete"));
+    = edit_menu->addAction (tr ("Delete"));
   delete_action->setShortcut (Qt::Key_Delete);
   delete_action->setEnabled (false); // TODO: Make this work.
   edit_menu->addSeparator ();
 
   QAction *find_action
-      = edit_menu->addAction (tr ("Find..."));
+    = edit_menu->addAction (tr ("Find..."));
   find_action->setEnabled (false); // TODO: Make this work.
   QAction *find_files_action
-      = edit_menu->addAction (tr ("Find Files..."));
+    = edit_menu->addAction (tr ("Find Files..."));
   find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
                                   + Qt::Key_F);
   find_files_action->setEnabled (false); // TODO: Make this work.
   edit_menu->addSeparator ();
 
   QAction *clear_command_window_action
-      = edit_menu->addAction (tr ("Clear Command Window"));
+    = edit_menu->addAction (tr ("Clear Command Window"));
   clear_command_window_action->setEnabled (false); // TODO: Make this work.
   QAction *clear_command_history
-      = edit_menu->addAction(tr ("Clear Command History"));
+    = edit_menu->addAction(tr ("Clear Command History"));
   QAction * clear_workspace_action
-      = edit_menu->addAction (tr ("Clear Workspace"));
+    = edit_menu->addAction (tr ("Clear Workspace"));
 
   _debug_menu = menuBar ()->addMenu (tr ("De&bug"));
 
@@ -713,7 +713,7 @@ main_window::construct ()
   QAction * show_documentation_action = window_menu->addAction (tr ("Show Documentation"));
   show_documentation_action->setCheckable (true);
   show_documentation_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
-                                   + Qt::Key_5);
+                                          + Qt::Key_5);
   window_menu->addSeparator ();
 
   QAction * command_window_action
@@ -760,19 +760,19 @@ main_window::construct ()
 
   // Toolbars
   QToolBar *main_tool_bar = addToolBar ("Main");
-            main_tool_bar->addAction (new_script_action);
-            main_tool_bar->addAction (open_action);
-            main_tool_bar->addSeparator ();
-            main_tool_bar->addAction (cut_action);
-            main_tool_bar->addAction (copy_action);
-            main_tool_bar->addAction (paste_action);
-            main_tool_bar->addAction (undo_action);
-            main_tool_bar->addAction (redo_action);
-            main_tool_bar->addSeparator ();
-            main_tool_bar->addWidget (new QLabel (tr ("Current Directory:")));
-            main_tool_bar->addWidget (_current_directory_combo_box);
-            main_tool_bar->addWidget (_current_directory_tool_button);
-            main_tool_bar->addWidget (_current_directory_up_tool_button);
+  main_tool_bar->addAction (new_script_action);
+  main_tool_bar->addAction (open_action);
+  main_tool_bar->addSeparator ();
+  main_tool_bar->addAction (cut_action);
+  main_tool_bar->addAction (copy_action);
+  main_tool_bar->addAction (paste_action);
+  main_tool_bar->addAction (undo_action);
+  main_tool_bar->addAction (redo_action);
+  main_tool_bar->addSeparator ();
+  main_tool_bar->addWidget (new QLabel (tr ("Current Directory:")));
+  main_tool_bar->addWidget (_current_directory_combo_box);
+  main_tool_bar->addWidget (_current_directory_tool_button);
+  main_tool_bar->addWidget (_current_directory_up_tool_button);
 
   connect (qApp,                        SIGNAL (aboutToQuit ()),
            this,                        SLOT   (prepare_for_quit ()));

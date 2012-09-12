@@ -82,7 +82,7 @@ files_dock_widget::files_dock_widget (QWidget *parent)
   _file_tree_view->setStatusTip (tr ("Doubleclick a file to open it."));
 
   _current_directory->setText(_file_system_model->fileInfo (rootPathIndex).
-                       absoluteFilePath ());
+                              absoluteFilePath ());
 
   connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)), this,
            SLOT (item_double_clicked (const QModelIndex &)));
@@ -147,7 +147,7 @@ files_dock_widget::display_directory (const QString& directory)
       if (fileInfo.isDir ())
         {
           _file_tree_view->setRootIndex (_file_system_model->
-                                        index (fileInfo.absoluteFilePath ()));
+                                         index (fileInfo.absoluteFilePath ()));
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
           _current_directory->setText (fileInfo.absoluteFilePath ());
 

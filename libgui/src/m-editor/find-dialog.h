@@ -55,7 +55,7 @@ class QPushButton;
 class find_dialog : public QDialog
 {
   Q_OBJECT
-public:
+  public:
   find_dialog (QsciScintilla* edit_area, QWidget *parent = 0);
 
 private slots:

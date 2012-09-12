@@ -31,35 +31,35 @@ along with Octave; see the file COPYING.  If not, see
 
 class lexer_octave_gui : public QsciLexer
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    // the used styles
-    enum
-      {
-        Default = 0,
-        Comment = 1,
-        Command = 2,
-        Number = 3,
-        Keyword = 4,
-        SingleQuotedString = 5,
-        Operator = 6,
-        Identifier = 7,
-        DoubleQuotedString = 8
-      };
+  public:
+  // the used styles
+  enum
+    {
+      Default = 0,
+      Comment = 1,
+      Command = 2,
+      Number = 3,
+      Keyword = 4,
+      SingleQuotedString = 5,
+      Operator = 6,
+      Identifier = 7,
+      DoubleQuotedString = 8
+    };
 
-    lexer_octave_gui (QObject *parent = 0);
-    virtual ~lexer_octave_gui ();
-    const char *language () const;
-    const char *lexer () const;
-    QColor defaultColor (int style) const;
-    QFont defaultFont (int style) const;
-    const char *keywords (int set) const;
-    QString description (int style) const;
+  lexer_octave_gui (QObject *parent = 0);
+  virtual ~lexer_octave_gui ();
+  const char *language () const;
+  const char *lexer () const;
+  QColor defaultColor (int style) const;
+  QFont defaultFont (int style) const;
+  const char *keywords (int set) const;
+  QString description (int style) const;
 
 private:
-    lexer_octave_gui (const lexer_octave_gui &);
-    lexer_octave_gui &operator= (const lexer_octave_gui &);
+  lexer_octave_gui (const lexer_octave_gui &);
+  lexer_octave_gui &operator= (const lexer_octave_gui &);
 };
 
 #endif

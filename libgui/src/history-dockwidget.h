@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 class history_dock_widget : public QDockWidget, public octave_event_observer
 {
-Q_OBJECT
-public:
+  Q_OBJECT
+  public:
   history_dock_widget (QWidget *parent = 0);
 
   void event_accepted (octave_event *e);

@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPushButton>
 
 workspace_view::workspace_view (QWidget * parent) : QDockWidget
-  (parent)
+                                                    (parent)
 {
   setObjectName ("WorkspaceView");
   setWindowTitle (tr ("Workspace"));
@@ -160,7 +160,7 @@ workspace_view::collapse_requested (QModelIndex index)
   // In order to make collapsing/expanding work again, we need to set
   // flags ourselves here.
   QMap<int, QVariant> item_data
-      = _workspace_model->itemData (index);
+    = _workspace_model->itemData (index);
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = true;
@@ -187,7 +187,7 @@ workspace_view::expand_requested (QModelIndex index)
   // In order to make collapsing/expanding work again, we need to do set
   // flags ourselves here.
   QMap<int, QVariant> item_data
-      = _workspace_model->itemData (index);
+    = _workspace_model->itemData (index);
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = false;

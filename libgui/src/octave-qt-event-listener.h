@@ -28,22 +28,22 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-event-listener.h"
 
 class octave_qt_event_listener
-    : public QObject, public octave_event_listener
+  : public QObject, public octave_event_listener
 {
-    Q_OBJECT
+  Q_OBJECT
   public:
-    octave_qt_event_listener (QObject *parent = 0);
+  octave_qt_event_listener (QObject *parent = 0);
 
-    void current_directory_has_changed (const std::string& directory);
-    void about_to_exit ();
+  void current_directory_has_changed (const std::string& directory);
+  void about_to_exit ();
 
-    void entered_debug_mode ();
-    void quit_debug_mode ();
+  void entered_debug_mode ();
+  void quit_debug_mode ();
 
-  signals:
-    void current_directory_has_changed_signal (const QString& directory);
-    void entered_debug_mode_signal ();
-    void quit_debug_mode_signal ();
+signals:
+  void current_directory_has_changed_signal (const QString& directory);
+  void entered_debug_mode_signal ();
+  void quit_debug_mode_signal ();
 };
 
 #endif // OCTAVEQTEVENTLISTENER_H

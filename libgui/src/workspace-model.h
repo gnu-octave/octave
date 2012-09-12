@@ -48,7 +48,7 @@ public:
   }
 
   ~tree_item () {
-     qDeleteAll (_child_items);
+    qDeleteAll (_child_items);
   }
 
   void insert_child_item (int at, tree_item *item) {
@@ -62,8 +62,8 @@ public:
   }
 
   void delete_child_items () {
-      qDeleteAll (_child_items);
-      _child_items.clear ();
+    qDeleteAll (_child_items);
+    _child_items.clear ();
   }
 
   void remove_child (tree_item *item) {
@@ -112,11 +112,11 @@ private:
 };
 
 class workspace_model
-    : public QAbstractItemModel, public octave_event_observer
+  : public QAbstractItemModel, public octave_event_observer
 {
   Q_OBJECT
 
-public:
+  public:
   workspace_model (QObject *parent = 0);
   ~workspace_model ();
 
@@ -128,7 +128,7 @@ public:
   QVariant headerData (int section, Qt::Orientation orientation,
                        int role = Qt::DisplayRole) const;
   QModelIndex index (int row, int column,
-                    const QModelIndex &parent = QModelIndex ()) const;
+                     const QModelIndex &parent = QModelIndex ()) const;
   QModelIndex parent (const QModelIndex &index) const;
   int rowCount (const QModelIndex &parent = QModelIndex ()) const;
   int columnCount (const QModelIndex &parent = QModelIndex ()) const;
@@ -144,7 +144,7 @@ signals:
 
 private:
   /** Timer for periodically updating the workspace model from the current
-    * symbol information. */
+   * symbol information. */
   QTimer _update_workspace_model_timer;
 
   /** Stores the current symbol information. */

@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 
 settings_dialog::settings_dialog (QWidget * parent):
-QDialog (parent), ui (new Ui::settings_dialog)
+  QDialog (parent), ui (new Ui::settings_dialog)
 {
   ui->setupUi (this);
 

@@ -35,25 +35,25 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 
 /**
-  * \struct symbol_information
-  * \brief Meta-information over a symbol-table entry.
-  * \author Jacob Dawid
-  * This struct is used to store meta information over a symbol entry.
-  * It reduces memory consumption, since it only stores relevant data
-  * about a symbol-table entry that will be used in the model for the
-  * graphical user interface.
-  */
+ * \struct symbol_information
+ * \brief Meta-information over a symbol-table entry.
+ * \author Jacob Dawid
+ * This struct is used to store meta information over a symbol entry.
+ * It reduces memory consumption, since it only stores relevant data
+ * about a symbol-table entry that will be used in the model for the
+ * graphical user interface.
+ */
 class symbol_information
 {
 public:
 
   enum Scope
-  {
-    unknown     = 0,
-    local       = 1,
-    global      = 2,
-    persistent  = 3
-  };
+    {
+      unknown     = 0,
+      local       = 1,
+      global      = 2,
+      persistent  = 3
+    };
 
   symbol_information (const symbol_table::symbol_record& symbol_record);
 

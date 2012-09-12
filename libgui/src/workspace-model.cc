@@ -64,7 +64,7 @@ void
 workspace_model::request_update_workspace ()
 {
   octave_link::instance ()
-      ->post_event (new octave_update_workspace_event (*this));
+    ->post_event (new octave_update_workspace_event (*this));
 }
 
 void
@@ -95,9 +95,9 @@ workspace_model::event_accepted (octave_event *e)
 
           switch (s.scope ())
             {
-              case symbol_information::local:       top_level_item (0)->add_child (child); break;
-              case symbol_information::global:      top_level_item (1)->add_child (child); break;
-              case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
+            case symbol_information::local:       top_level_item (0)->add_child (child); break;
+            case symbol_information::global:      top_level_item (1)->add_child (child); break;
+            case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
             }
         }
 

@@ -41,13 +41,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <readline/readline.h>
 
 void
-octave_event::call_octave_function (std::string name)
+octave_event::call_octave_function (const std::string& name)
 {
   call_octave_function (name, octave_value_list ());
 }
 
 void
-octave_event::call_octave_function (std::string name,
+octave_event::call_octave_function (const std::string& name,
                                     const octave_value_list& args,
                                     int nargout)
 {

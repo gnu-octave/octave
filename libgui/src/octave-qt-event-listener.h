@@ -34,7 +34,7 @@ class octave_qt_event_listener
   public:
     octave_qt_event_listener (QObject *parent = 0);
 
-    void current_directory_has_changed (std::string directory);
+    void current_directory_has_changed (const std::string& directory);
     void about_to_exit ();
 
     void entered_debug_mode ();

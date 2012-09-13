@@ -1454,13 +1454,15 @@ Matrix::rcond (MatrixType &mattype) const
       else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
         {
           double anorm = -1.0;
-          Matrix atmp = *this;
-          double *tmp_data = atmp.fortran_vec ();
 
           if (typ == MatrixType::Hermitian)
             {
               octave_idx_type info = 0;
               char job = 'L';
+
+              Matrix atmp = *this;
+              double *tmp_data = atmp.fortran_vec ();
+
               anorm = atmp.abs().sum().
                 row(static_cast<octave_idx_type>(0)).max();
 
@@ -1494,6 +1496,9 @@ Matrix::rcond (MatrixType &mattype) const
           if (typ == MatrixType::Full)
             {
               octave_idx_type info = 0;
+
+              Matrix atmp = *this;
+              double *tmp_data = atmp.fortran_vec ();
 
               Array<octave_idx_type> ipvt (dim_vector (nr, 1));
               octave_idx_type *pipvt = ipvt.fortran_vec ();
@@ -1760,8 +1765,10 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
         {
           info = 0;
           char job = 'L';
+
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
+
           anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
           F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
@@ -1838,6 +1845,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
+
           if(anorm < 0.)
             anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 

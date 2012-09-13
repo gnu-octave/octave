@@ -65,7 +65,6 @@ UTIL_SRC = \
   util/oct-md5.cc \
   util/oct-mutex.cc \
   util/oct-shlib.cc \
-  util/oct-sort.cc \
   util/pathsearch.cc \
   util/regexp.cc \
   util/singleton-cleanup.cc \

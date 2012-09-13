@@ -113,13 +113,11 @@ ARRAY_SRC = \
   array/MArray-i.cc \
   array/MArray-s.cc \
   array/MatrixType.cc \
-  array/MSparse.cc \
   array/MSparse-C.cc \
   array/MSparse-d.cc \
   array/PermMatrix.cc \
   array/Range.cc \
   array/Sparse-b.cc \
-  array/Sparse.cc \
   array/Sparse-C.cc \
   array/Sparse-d.cc \
   array/uint16NDArray.cc \
@@ -132,7 +130,9 @@ TEMPLATE_SRC += \
   array/DiagArray2.cc \
   array/intNDArray.cc \
   array/MArray.cc \
-  array/MDiagArray2.cc
+  array/MDiagArray2.cc \
+  array/MSparse.cc \
+  array/Sparse.cc
 
 noinst_LTLIBRARIES += array/libarray.la
 

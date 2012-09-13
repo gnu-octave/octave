@@ -91,4 +91,13 @@ instead.\n\
 %!assert (rcond (ones (2)), 0)
 %!assert (rcond ([1 1; 2 1]), 1/9)
 %!assert (rcond (magic (4)), 0, eps)
+
+%!shared x, sx
+%! x = [-5.25, -2.25; -2.25, 1] * eps () + ones (2) / 2;
+%! sx = [-5.25, -2.25; -2.25, 1] * eps ("single") + ones (2) / 2;
+%!assert (rcond (x) < eps ());
+%!assert (rcond (sx) < eps ('single'));
+%!assert (rcond (x*i) < eps ());
+%!assert (rcond (sx*i) < eps ('single'));
+
 */

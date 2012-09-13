@@ -74,7 +74,7 @@ function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
     else
       new_stream = false;
     endif
-    term = gnuplot_default_term ();
+    term = gnuplot_default_term (plot_stream);
     if (strcmp (term, "dumb"))
       ## popen2 eats stdout of gnuplot, use temporary file instead
       dumb_tmp_file = tmpnam ();
@@ -114,7 +114,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
   ## When "term" originates from print.m, it may include other options.
   if (nargin < 4)
     ## This supports the gnuplot graphics toolkit.
-    term = gnuplot_default_term ();
+    term = gnuplot_default_term (plot_stream);
     opts_str = "";
   else
     ## Get the one word terminal id and save the remaining as options to
@@ -132,7 +132,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
   if (strfind (opts_str, "noenhanced"))
     enhanced = false;
   else
-    enhanced = gnuplot_is_enhanced_term (term);
+    enhanced = gnuplot_is_enhanced_term (plot_stream, term);
   endif
 
   ## Set the terminal.
@@ -329,10 +329,10 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
 
 endfunction
 
-function term = gnuplot_default_term ()
+function term = gnuplot_default_term (plot_stream)
   term = getenv ("GNUTERM");
   ## If not specified, guess the terminal type.
-  if (isempty (term))
+  if (isempty (term) || ! __gnuplot_has_terminal__ (term, plot_stream))
     if (ismac ())
       term = "aqua";
     elseif (! isunix ())
@@ -358,24 +358,24 @@ function [term, opts] = gnuplot_trim_term (string)
   endif
 endfunction
 
-function have_enhanced = gnuplot_is_enhanced_term (term)
+function have_enhanced = gnuplot_is_enhanced_term (plot_stream, term)
   persistent enhanced_terminals;
   if (isempty (enhanced_terminals))
     ## Don't include pstex, pslatex or epslatex here as the TeX commands
     ## should not be interpreted in that case.
     enhanced_terminals = {"aqua", "canvas", "dumb", "emf", "gif", "jpeg", ...
                           "pdf", "pdfcairo", "pm", "png", "pngcairo", ...
-                          "postscript", "svg", "windows", "wxt", "x11"};
+                          "postscript", "qt", "svg", "windows", "wxt", "x11"};
   endif
-  if (nargin < 1)
+  if (nargin < 2)
     ## Determine the default gnuplot terminal.
-    term = gnuplot_default_term ();
+    term = gnuplot_default_term (plot_stream);
   endif
   have_enhanced = any (strncmp (enhanced_terminals, term, min (numel (term), 3)));
 endfunction
 
 function ret = output_to_screen (term)
-  ret = any (strcmpi ({"aqua", "dumb", "wxt", "x11", "windows", "pm"}, term));
+  ret = any (strcmpi ({"aqua", "dumb", "pm", "qt", "windows", "wxt", "x11"}, term));
 endfunction
 
 function retval = have_non_legend_axes (h)

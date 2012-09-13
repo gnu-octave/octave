@@ -82,6 +82,8 @@ octave_start_gui (int argc, char *argv[])
 {
   dissociate_terminal ();
 
+  setenv ("GNUTERM", "qt", 1);
+
   QApplication application (argc, argv);
 
   while (true)

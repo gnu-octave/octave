@@ -596,8 +596,7 @@ file_editor_tab::open_file (const QString& dir)
       if (openFileName.isEmpty ())
         return false;
 
-      load_file(openFileName);
-      return true;
+      return load_file(openFileName);
     }
   else
     {

@@ -312,11 +312,9 @@ file_editor_tab::request_add_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::instance ()->post_event
-    (new octave_add_breakpoint_event (*this,
-                                      path.toStdString (),
-                                      function_name.toStdString (),
-                                      line));
+  octave_link::post_event (new octave_add_breakpoint_event
+                           (*this, path.toStdString (),
+                            function_name.toStdString (), line));
 }
 
 void
@@ -329,11 +327,9 @@ file_editor_tab::request_remove_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::instance ()->post_event
-    (new octave_remove_breakpoint_event (*this,
-                                         path.toStdString (),
-                                         function_name.toStdString (),
-                                         line));
+  octave_link::post_event (new octave_remove_breakpoint_event
+                           (*this, path.toStdString (),
+                            function_name.toStdString (), line));
 }
 
 void
@@ -501,10 +497,9 @@ file_editor_tab::remove_all_breakpoints ()
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::instance ()->post_event
-    (new octave_remove_all_breakpoints_event (*this,
-                                              path.toStdString (),
-                                              function_name.toStdString ()));
+  octave_link::post_event (new octave_remove_all_breakpoints_event
+                           (*this, path.toStdString (),
+                            function_name.toStdString ()));
 }
 
 void
@@ -713,7 +708,7 @@ file_editor_tab::save_file_as ()
   if (saveFileName == UNNAMED_FILE || saveFileName.isEmpty ())
     {
       QString directory = QString::fromStdString
-        (octave_link::instance ()->get_last_working_directory ());
+        (octave_link::last_working_directory ());
 
       if (directory.isEmpty ())
         {
@@ -751,8 +746,8 @@ file_editor_tab::run_file ()
 
   QFileInfo file_info (_file_name);
   QString path = file_info.absolutePath ();
-  //QString current_path = QString::fromStdString
-  (octave_link::instance ()->get_last_working_directory ());
+  QString current_path
+    = QString::fromStdString (octave_link::last_working_directory ());
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.
@@ -760,8 +755,8 @@ file_editor_tab::run_file ()
   _file_editor->terminal ()->sendText (QString ("cd \'%1\'\n%2\n")
                                        .arg(path).arg (function_name));
   // TODO: Sending a run event crashes for long scripts. Find out why.
-  //  octave_link::instance ()
-  //      ->post_event (new octave_run_file_event (*this, _file_name.toStdString ()));
+  //  octave_link::post_event (new octave_run_file_event
+  //                           (*this, _file_name.toStdString ()));
 }
 
 void

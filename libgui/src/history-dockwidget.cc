@@ -161,8 +161,7 @@ history_dock_widget::handle_visibility_changed (bool visible)
 void
 history_dock_widget::request_history_model_update ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_update_history_event (*this));
+  octave_link::post_event (new octave_update_history_event (*this));
 }
 
 void

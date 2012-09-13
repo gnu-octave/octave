@@ -46,7 +46,7 @@ main_window::main_window (QWidget *p)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
-  octave_link::instance ()->launch_octave();
+  octave_link::launch_octave ();
 }
 
 main_window::~main_window ()
@@ -105,9 +105,8 @@ main_window::handle_save_workspace_request ()
                                   resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
     {
-      octave_link::instance ()
-        ->post_event (new octave_save_workspace_event (*this,
-                                                       selectedFile.toStdString()));
+      octave_link::post_event (new octave_save_workspace_event
+                               (*this, selectedFile.toStdString ()));
     }
 }
 
@@ -119,24 +118,21 @@ main_window::handle_load_workspace_request ()
                                   resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
     {
-      octave_link::instance ()
-        ->post_event (new octave_load_workspace_event (*this,
-                                                       selectedFile.toStdString()));
+      octave_link::post_event (new octave_load_workspace_event
+                               (*this, selectedFile.toStdString ()));
     }
 }
 
 void
 main_window::handle_clear_workspace_request ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_clear_workspace_event (*this));
+  octave_link::post_event (new octave_clear_workspace_event (*this));
 }
 
 void
 main_window::handle_clear_history_request()
 {
-  octave_link::instance ()
-    ->post_event (new octave_clear_history_event (*this));
+  octave_link::post_event (new octave_clear_history_event (*this));
 }
 
 void
@@ -237,18 +233,16 @@ main_window::change_current_working_directory ()
 
   if (!selectedDirectory.isEmpty ())
     {
-      octave_link::instance ()
-        ->post_event (new octave_change_directory_event (*this,
-                                                         selectedDirectory.toStdString ()));
+      octave_link::post_event (new octave_change_directory_event
+                               (*this, selectedDirectory.toStdString ()));
     }
 }
 
 void
 main_window::set_current_working_directory (const QString& directory)
 {
-  octave_link::instance ()
-    ->post_event (new octave_change_directory_event (*this,
-                                                     directory.toStdString ()));
+  octave_link::post_event (new octave_change_directory_event
+                           (*this, directory.toStdString ()));
 }
 
 void
@@ -366,36 +360,31 @@ main_window::handle_quit_debug_mode ()
 void
 main_window::debug_continue ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_debug_continue_event (*this));
+  octave_link::post_event (new octave_debug_continue_event (*this));
 }
 
 void
 main_window::debug_step_into ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_debug_step_into_event (*this));
+  octave_link::post_event (new octave_debug_step_into_event (*this));
 }
 
 void
 main_window::debug_step_over ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_debug_step_over_event (*this));
+  octave_link::post_event (new octave_debug_step_over_event (*this));
 }
 
 void
 main_window::debug_step_out ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_debug_step_out_event (*this));
+  octave_link::post_event (new octave_debug_step_out_event (*this));
 }
 
 void
 main_window::debug_quit ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_debug_quit_event (*this));
+  octave_link::post_event (new octave_debug_quit_event (*this));
 }
 
 void
@@ -425,7 +414,7 @@ void
 main_window::closeEvent (QCloseEvent *e)
 {
   e->ignore ();
-  octave_link::instance ()->post_event (new octave_exit_event (*this));
+  octave_link::post_event (new octave_exit_event (*this));
 }
 
 void
@@ -888,7 +877,7 @@ main_window::construct ()
   read_settings ();
 
   _octave_qt_event_listener = new octave_qt_event_listener ();
-  octave_link::instance ()->register_event_listener (_octave_qt_event_listener);
+  octave_link::register_event_listener (_octave_qt_event_listener);
 
   connect (_octave_qt_event_listener,
            SIGNAL (current_directory_has_changed_signal (QString)),

@@ -63,8 +63,7 @@ workspace_model::~workspace_model()
 void
 workspace_model::request_update_workspace ()
 {
-  octave_link::instance ()
-    ->post_event (new octave_update_workspace_event (*this));
+  octave_link::post_event (new octave_update_workspace_event (*this));
 }
 
 void

@@ -28,140 +28,165 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
+#include "singleton-cleanup.h"
 #include "symtab.h"
 #include "toplev.h"
 
 #include "octave-link.h"
 
-int octave_readline_hook ()
+static int
+octave_readline_hook (void)
 {
-  octave_link::instance ()->entered_readline_hook ();
-  octave_link::instance ()->generate_events ();
-  octave_link::instance ()->process_events ();
-  octave_link::instance ()->finished_readline_hook ();
+  octave_link::entered_readline_hook ();
+  octave_link::generate_events ();
+  octave_link::process_events ();
+  octave_link::finished_readline_hook ();
+
   return 0;
 }
 
-void octave_exit_hook (int status)
+static void
+octave_exit_hook (int)
 {
-  (void) status;
-  octave_link::instance ()->about_to_exit ();
+  octave_link::about_to_exit ();
 }
 
-octave_link octave_link::_singleton;
+octave_link *octave_link::instance = 0;
 
-octave_link::octave_link ()
-{
-  _event_queue_mutex = new octave_mutex ();
-  _last_working_directory = "";
-  _debugging_mode_active = false;
-}
-
-octave_link::~octave_link ()
-{
-}
+octave_link::octave_link (void)
+  : event_listener (0), event_queue_mutex (new octave_mutex ()),
+    event_queue (), last_cwd (), debugging (false)
+{ }
 
 void
-octave_link::launch_octave ()
+octave_link::do_launch_octave (void)
 {
   // Create both threads.
-  _octave_main_thread = new octave_main_thread ();
+  main_thread = new octave_main_thread ();
+
   command_editor::add_event_hook (octave_readline_hook);
+
   octave_exit = octave_exit_hook;
 
   // Start the first one.
-  _octave_main_thread->start ();
+  main_thread->start ();
 }
 
 void
-octave_link::register_event_listener (octave_event_listener *oel)
-{ _octave_event_listener = oel; }
+octave_link::do_register_event_listener (octave_event_listener *el)
+{
+  event_listener = el;
+}
 
 void
-octave_link::generate_events ()
+octave_link::do_generate_events (void)
 {
   std::string current_working_directory = octave_env::get_current_directory ();
-  if (current_working_directory != _last_working_directory)
+
+  if (current_working_directory != last_cwd)
     {
-      _last_working_directory = current_working_directory;
-      if (_octave_event_listener)
-        _octave_event_listener
-            ->current_directory_has_changed (_last_working_directory);
+      last_cwd = current_working_directory;
+
+      if (event_listener)
+        event_listener->current_directory_has_changed (last_cwd);
     }
 
-  if (_debugging_mode_active != Vdebugging)
+  if (debugging != Vdebugging)
     {
-      _debugging_mode_active = Vdebugging;
-      if (_octave_event_listener)
+      debugging = Vdebugging;
+
+      if (event_listener)
         {
-          if (_debugging_mode_active)
-            _octave_event_listener->entered_debug_mode ();
+          if (debugging)
+            event_listener->entered_debug_mode ();
           else
-            _octave_event_listener->quit_debug_mode ();
+            event_listener->quit_debug_mode ();
         }
     }
 }
 
 void
-octave_link::process_events ()
+octave_link::do_process_events (void)
 {
-  _event_queue_mutex->lock ();
+  event_queue_mutex->lock ();
 
-  while (_event_queue.size () > 0)
+  while (event_queue.size () > 0)
     {
-      octave_event * e = _event_queue.front ();
-      _event_queue.pop ();
+      octave_event *e = event_queue.front ();
+
+      event_queue.pop ();
+
       if (e->perform ())
         e->accept ();
       else
         e->reject ();
     }
-  _event_queue_mutex->unlock ();
+
+  event_queue_mutex->unlock ();
 }
 
 void
-octave_link::post_event (octave_event *e)
+octave_link::do_post_event (octave_event *e)
 {
   if (e)
     {
-      _event_queue_mutex->lock ();
-      _event_queue.push (e);
-      _event_queue_mutex->unlock ();
+      event_queue_mutex->lock ();
+      event_queue.push (e);
+      event_queue_mutex->unlock ();
     }
 }
 
 void
-octave_link::event_accepted (octave_event *e)
-{ delete e; }
-
-void
-octave_link::event_reject (octave_event *e)
-{ delete e; }
-
-void
-octave_link::about_to_exit ()
+octave_link::do_about_to_exit (void)
 {
-  _event_queue_mutex->lock ();
-  while (!_event_queue.empty ())
-    _event_queue.pop ();
+  event_queue_mutex->lock ();
 
-  _event_queue_mutex->unlock ();
+  while (! event_queue.empty ())
+    event_queue.pop ();
 
-  if (_octave_event_listener)
-    _octave_event_listener->about_to_exit ();
-}
+  event_queue_mutex->unlock ();
 
-void
-octave_link::entered_readline_hook ()
-{ }
-
-void
-octave_link::finished_readline_hook ()
-{
+  if (event_listener)
+    event_listener->about_to_exit ();
 }
 
 std::string
-octave_link::get_last_working_directory ()
+octave_link::do_last_working_directory (void)
 {
-  return _last_working_directory;
+  return last_cwd;
+}
+
+void
+octave_link::event_accepted (octave_event *e)
+{
+  delete e;
+}
+
+void
+octave_link::event_reject (octave_event *e)
+{
+  delete e;
+}
+
+bool
+octave_link::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    {
+      instance = new octave_link ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
+
+  if (! instance)
+    {
+      ::error ("unable to create octave_link object!");
+
+      retval = false;
+    }
+
+  return retval;
 }

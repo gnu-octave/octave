@@ -30,53 +30,53 @@
 #include "defaults.h"
 
 
-webinfo::webinfo (QWidget *parent)
-  : QWidget (parent)
+webinfo::webinfo (QWidget *p)
+  : QWidget (p)
 {
   _font_web = font ();
 
-  QVBoxLayout *layout = new QVBoxLayout ();
-  layout->setMargin (0);
-  setLayout (layout);
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  vbox_layout->setMargin (0);
+  setLayout (vbox_layout);
 
-  QHBoxLayout *hboxLayout = new QHBoxLayout ();
-  hboxLayout->setMargin (2);
-  layout->addLayout (hboxLayout);
+  QHBoxLayout *hbox_layout = new QHBoxLayout ();
+  hbox_layout->setMargin (2);
+  vbox_layout->addLayout (hbox_layout);
 
   _close_tab_button = new QPushButton (this);
   _close_tab_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
   _close_tab_button->setIcon (QIcon (":/actions/icons/stop.png"));
-  hboxLayout->addWidget (_close_tab_button);
+  hbox_layout->addWidget (_close_tab_button);
 
   _tab_bar = new QTabBar (this);
   _tab_bar->setSizePolicy (QSizePolicy::Preferred,QSizePolicy::Preferred);
   _tab_bar->setExpanding (false);
-  hboxLayout->addWidget (_tab_bar);
+  hbox_layout->addWidget (_tab_bar);
 
   _zoom_in_button = new QToolButton (this);
   _zoom_in_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
   _zoom_in_button->setIcon (QIcon (":/actions/icons/zoom-in.png"));
-  hboxLayout->addWidget (_zoom_in_button);
+  hbox_layout->addWidget (_zoom_in_button);
 
   _zoom_out_button = new QToolButton (this);
   _zoom_out_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
   _zoom_out_button->setIcon (QIcon (":/actions/icons/zoom-out.png"));
-  hboxLayout->addWidget (_zoom_out_button);
+  hbox_layout->addWidget (_zoom_out_button);
 
   _stacked_widget = new QStackedWidget (this);
-  layout->addWidget (_stacked_widget);
+  vbox_layout->addWidget (_stacked_widget);
 
-  hboxLayout = new QHBoxLayout ();
-  layout->addLayout (hboxLayout);
+  hbox_layout = new QHBoxLayout ();
+  vbox_layout->addLayout (hbox_layout);
 
   _search_line_edit = new QLineEdit(this);
 #ifdef HAVE_SETPLACEHOLDERTEXT
   _search_line_edit->setPlaceholderText (tr ("Type here and press \'Return\' to search"));
 #endif
-  hboxLayout->addWidget (_search_line_edit);
+  hbox_layout->addWidget (_search_line_edit);
 
   _search_check_box = new QCheckBox (tr ("Global search"));
-  hboxLayout->addWidget (_search_check_box);
+  hbox_layout->addWidget (_search_check_box);
 
   connect (_close_tab_button, SIGNAL (clicked ()), this, SLOT (close_tab ()));
   connect (_tab_bar, SIGNAL (currentChanged (int)), this, SLOT (current_tab_changed (int)));
@@ -130,8 +130,8 @@ webinfo::link_clicked (const QUrl & link)
 void
 webinfo::current_tab_changed (int index)
 {
-  QVariant data = _tab_bar->tabData (index);
-  _text_browser = (QTextBrowser*) (data.value<void*> ());
+  QVariant tab_data = _tab_bar->tabData (index);
+  _text_browser = (QTextBrowser*) (tab_data.value<void*> ());
 
   _stacked_widget->setCurrentIndex (_stacked_widget->indexOf (_text_browser));
 
@@ -156,9 +156,9 @@ webinfo::addNewTab (const QString& name)
 
   int nt = _tab_bar->addTab (name);
   _tab_bar->setCurrentIndex (nt);
-  QVariant data;
-  data.setValue ( (void*)_text_browser);
-  _tab_bar->setTabData (nt, data);
+  QVariant tab_data;
+  tab_data.setValue ( (void*)_text_browser);
+  _tab_bar->setTabData (nt, tab_data);
 
   connect (_tab_bar, SIGNAL (currentChanged (int)), this, SLOT (current_tab_changed (int)));
 
@@ -180,8 +180,8 @@ webinfo::close_tab ()
 void
 webinfo::closeTab (int index)
 {
-  QVariant data = _tab_bar->tabData (index);
-  QWidget *w = (QWidget*) (data.value<void*> ());
+  QVariant tab_data = _tab_bar->tabData (index);
+  QWidget *w = (QWidget*) (tab_data.value<void*> ());
   _stacked_widget->removeWidget (w);
   delete w;
 

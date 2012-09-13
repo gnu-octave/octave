@@ -35,12 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStyle>
 #include <QTextStream>
 
-file_editor::file_editor (QTerminal *terminal, main_window *m)
-  : file_editor_interface(terminal, m)
+file_editor::file_editor (QTerminal *t, main_window *m)
+  : file_editor_interface (t, m)
 {
   construct ();
 
-  _terminal = terminal;
+  _terminal = t;
   _main_window = m;
   setVisible (false);
 }
@@ -387,12 +387,12 @@ file_editor::notice_settings ()
 void
 file_editor::construct ()
 {
-  QWidget *widget = new QWidget (this);
-  QStyle *style = QApplication::style ();
+  QWidget *editor_widget = new QWidget (this);
+  QStyle *editor_style = QApplication::style ();
 
-  _menu_bar = new QMenuBar (widget);
-  _tool_bar = new QToolBar (widget);
-  _tab_widget = new QTabWidget (widget);
+  _menu_bar = new QMenuBar (editor_widget);
+  _tool_bar = new QToolBar (editor_widget);
+  _tab_widget = new QTabWidget (editor_widget);
   _tab_widget->setTabsClosable (true);
 
   QAction *new_action = new QAction (QIcon(":/actions/icons/filenew.png"),
@@ -529,13 +529,13 @@ file_editor::construct ()
   _run_menu->addAction (_run_action);
   _menu_bar->addMenu (_run_menu);
 
-  QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (_menu_bar);
-  layout->addWidget (_tool_bar);
-  layout->addWidget (_tab_widget);
-  layout->setMargin (0);
-  widget->setLayout (layout);
-  setWidget (widget);
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  vbox_layout->addWidget (_menu_bar);
+  vbox_layout->addWidget (_tool_bar);
+  vbox_layout->addWidget (_tab_widget);
+  vbox_layout->setMargin (0);
+  editor_widget->setLayout (vbox_layout);
+  setWidget (editor_widget);
 
   connect (new_action,
            SIGNAL (triggered ()), this, SLOT (request_new_file ()));
@@ -586,7 +586,7 @@ file_editor::construct ()
 
   resize (500, 400);
   setWindowIcon (QIcon::fromTheme ("accessories-text-editor",
-                                   style->standardIcon (QStyle::SP_FileIcon)));
+                                   editor_style->standardIcon (QStyle::SP_FileIcon)));
   setWindowTitle ("Octave Editor");
 
   //restore previous session

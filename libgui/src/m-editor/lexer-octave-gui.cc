@@ -31,8 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 // -----------------------------------------------------
 // Some basic functions
 // -----------------------------------------------------
-lexer_octave_gui::lexer_octave_gui(QObject *parent)
-  : QsciLexer(parent)  // inherit from base lexer
+lexer_octave_gui::lexer_octave_gui (QObject *p)
+  : QsciLexer (p)
 {
 }
 

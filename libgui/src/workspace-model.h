@@ -35,15 +35,15 @@ along with Octave; see the file COPYING.  If not, see
 class tree_item
 {
 public:
-  tree_item (const QList<QVariant> &data, tree_item *parent = 0) {
-    _parent_item = parent;
-    _item_data = data;
+  tree_item (const QList<QVariant> &d, tree_item *p = 0) {
+    _parent_item = p;
+    _item_data = d;
   }
 
-  tree_item (QVariant data = QVariant(), tree_item *parent = 0) {
+  tree_item (QVariant d = QVariant(), tree_item *p = 0) {
     QList<QVariant> variantList;
-    variantList << data << QVariant () << QVariant () << QVariant ();
-    _parent_item = parent;
+    variantList << d << QVariant () << QVariant () << QVariant ();
+    _parent_item = p;
     _item_data = variantList;
   }
 
@@ -75,13 +75,13 @@ public:
     return _item_data[column];
   }
 
-  void set_data (int column, QVariant data)
+  void set_data (int column, QVariant d)
   {
-    _item_data[column] = data;
+    _item_data[column] = d;
   }
 
-  tree_item *child (int row) {
-    return _child_items[row];
+  tree_item *child (int r) {
+    return _child_items[r];
   }
 
   int child_count () const {

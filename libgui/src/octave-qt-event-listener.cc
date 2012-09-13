@@ -27,8 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-event-listener.h"
 #include <QApplication>
 
-octave_qt_event_listener::octave_qt_event_listener (QObject *parent)
-  : QObject (parent), octave_event_listener ()
+octave_qt_event_listener::octave_qt_event_listener (QObject *p)
+  : QObject (p), octave_event_listener ()
 {
 }
 

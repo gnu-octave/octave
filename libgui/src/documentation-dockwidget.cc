@@ -26,8 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "documentation-dockwidget.h"
 
-documentation_dock_widget::documentation_dock_widget (QWidget *parent)
-  : QDockWidget (parent)
+documentation_dock_widget::documentation_dock_widget (QWidget *p)
+  : QDockWidget (p)
 {
   setObjectName ("DocumentationDockWidget");
   setWindowTitle (tr ("Documentation"));
@@ -47,8 +47,8 @@ documentation_dock_widget::handle_visibility_changed (bool visible)
 }
 
 void
-documentation_dock_widget::closeEvent (QCloseEvent *event)
+documentation_dock_widget::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
-  QDockWidget::closeEvent (event);
+  QDockWidget::closeEvent (e);
 }

@@ -26,8 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "terminal-dockwidget.h"
 
-terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *parent)
-  : QDockWidget (parent)
+terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *p)
+  : QDockWidget (p)
 {
   setObjectName ("TerminalDockWidget");
   setWindowTitle (tr ("Command Window"));

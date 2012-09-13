@@ -41,8 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor.h"
 #include "settings-dialog.h"
 
-main_window::main_window (QWidget * parent)
-  : QMainWindow (parent), octave_event_observer ()
+main_window::main_window (QWidget *p)
+  : QMainWindow (p), octave_event_observer ()
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -185,10 +185,10 @@ main_window::notice_settings ()
 
   // FIXME -- what should happen if settings is 0?
 
-  QFont font = QFont();
-  font.setFamily(settings->value("terminal/fontName").toString());
-  font.setPointSize(settings->value("terminal/fontSize").toInt ());
-  _terminal->setTerminalFont(font);
+  QFont term_font = QFont();
+  term_font.setFamily(settings->value("terminal/fontName").toString());
+  term_font.setPointSize(settings->value("terminal/fontSize").toInt ());
+  _terminal->setTerminalFont (term_font);
 
   QString cursorType = settings->value ("terminal/cursorType").toString ();
   bool cursorBlinking = settings->value ("terminal/cursorBlinking").toBool ();
@@ -422,9 +422,9 @@ main_window::show_about_octave ()
 }
 
 void
-main_window::closeEvent (QCloseEvent * closeEvent)
+main_window::closeEvent (QCloseEvent *e)
 {
-  closeEvent->ignore ();
+  e->ignore ();
   octave_link::instance ()->post_event (new octave_exit_event (*this));
 }
 

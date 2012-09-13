@@ -66,10 +66,10 @@ protected:
   QTerminal* _terminal;
   main_window* _main_window;
 
-  void closeEvent (QCloseEvent *event)
+  void closeEvent (QCloseEvent *e)
   {
     emit active_changed (false);
-    QDockWidget::closeEvent (event);
+    QDockWidget::closeEvent (e);
   }
 
 protected slots:

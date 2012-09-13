@@ -47,8 +47,8 @@
 #include <QIcon>
 #include "find-dialog.h"
 
-find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *parent)
-  : QDialog (parent)
+find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
+  : QDialog (p)
 {
   setWindowTitle ("Find and Replace");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));

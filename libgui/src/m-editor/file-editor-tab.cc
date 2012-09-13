@@ -91,10 +91,10 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   _edit_area->autoCompleteFromAll ();
   _edit_area->setAutoCompletionSource(QsciScintilla::AcsAll);
 
-  QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (_edit_area);
-  layout->setMargin (0);
-  setLayout (layout);
+  QVBoxLayout *edit_area_layout = new QVBoxLayout ();
+  edit_area_layout->addWidget (_edit_area);
+  edit_area_layout->setMargin (0);
+  setLayout (edit_area_layout);
 
   // connect modified signal
   connect (_edit_area, SIGNAL (modificationChanged (bool)),
@@ -158,13 +158,13 @@ file_editor_tab::event_reject (octave_event *e)
 }
 
 void
-file_editor_tab::closeEvent (QCloseEvent *event)
+file_editor_tab::closeEvent (QCloseEvent *e)
 {
   if (_file_editor->get_main_window ()->is_closing ())
     {
       // close whole application: save file or not if modified
       check_file_modified ("Closing Octave", 0); // no cancel possible
-      event->accept ();
+      e->accept ();
     }
   else
     {
@@ -173,11 +173,11 @@ file_editor_tab::closeEvent (QCloseEvent *event)
       if (check_file_modified ("Close File",
                                QMessageBox::Cancel) == QMessageBox::Cancel)
         {
-          event->ignore ();
+          e->ignore ();
         }
       else
         {
-          event->accept();
+          e->accept();
         }
     }
 }
@@ -197,18 +197,18 @@ file_editor_tab::handle_margin_clicked(int margin, int line,
   Q_UNUSED (state);
   if (margin == 1)
     {
-      unsigned int mask = _edit_area->markersAtLine (line);
+      unsigned int markers_mask = _edit_area->markersAtLine (line);
 
       if (state & Qt::ControlModifier)
         {
-          if (mask && (1 << bookmark))
+          if (markers_mask && (1 << bookmark))
             _edit_area->markerDelete(line,bookmark);
           else
             _edit_area->markerAdd(line,bookmark);
         }
       else
         {
-          if (mask && (1 << breakpoint))
+          if (markers_mask && (1 << breakpoint))
             {
               request_remove_breakpoint (line);
             }

@@ -32,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "history-dockwidget.h"
 
-history_dock_widget::history_dock_widget (QWidget * parent)
-  : QDockWidget (parent), octave_event_observer ()
+history_dock_widget::history_dock_widget (QWidget * p)
+  : QDockWidget (p), octave_event_observer ()
 {
   setObjectName ("HistoryDockWidget");
   construct ();
@@ -106,16 +106,16 @@ history_dock_widget::construct ()
   _history_list_view->setStatusTip (tr ("Doubleclick a command to transfer it to the terminal."));
   _filter_line_edit = new QLineEdit (this);
   _filter_line_edit->setStatusTip (tr ("Enter text to filter the command history."));
-  QVBoxLayout *layout = new QVBoxLayout ();
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
 
   setWindowTitle (tr ("Command History"));
   setWidget (new QWidget ());
 
-  layout->addWidget (_history_list_view);
-  layout->addWidget (_filter_line_edit);
-  layout->setMargin (2);
+  vbox_layout->addWidget (_history_list_view);
+  vbox_layout->addWidget (_filter_line_edit);
+  vbox_layout->setMargin (2);
 
-  widget ()->setLayout (layout);
+  widget ()->setLayout (vbox_layout);
 
   connect (_filter_line_edit,
            SIGNAL (textEdited (QString)),
@@ -172,8 +172,8 @@ history_dock_widget::reset_model ()
 }
 
 void
-history_dock_widget::closeEvent (QCloseEvent *event)
+history_dock_widget::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
-  QDockWidget::closeEvent (event);
+  QDockWidget::closeEvent (e);
 }

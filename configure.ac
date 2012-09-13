@@ -702,8 +702,6 @@ if test $build_jit = true; then
 
     save_CPPFLAGS="$CPPFLAGS"
     save_CXXFLAGS="$CXXFLAGS"
-    save_LIBS="$LIBS"
-    save_LDFLAGS="$LDFLAGS"
 
     ## Use -isystem if available because we don't want to see warnings in LLVM
     LLVM_INCLUDE_FLAG=-I
@@ -724,29 +722,13 @@ if test $build_jit = true; then
     dnl
     CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
     CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
-    LIBS="$LLVM_LIBS $LIBS"
-    LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
-
     AC_LANG_PUSH(C++)
-    AC_CHECK_HEADERS([llvm/LLVMContext.h llvm/Support/TargetSelect.h], [
-      AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-            #include <llvm/LLVMContext.h>
-            ]], [[
-            llvm::LLVMContext& ctx = llvm::getGlobalContext ();
-            ]])],
-          [AC_MSG_RESULT([yes])
-           warn_llvm=
-           XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"],
-          [AC_MSG_RESULT([no])
-      ])
-    ])
+    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
+      warn_llvm=
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
     CXXFLAGS="$save_CXXFLAGS"
-    LIBS="$save_LIBS"
-    LDFLAGS="$save_LDFLAGS"
   fi
 
   if test -z "$warn_llvm"; then

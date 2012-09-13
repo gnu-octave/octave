@@ -54,7 +54,6 @@ UTIL_SRC = \
   util/cmd-hist.cc \
   util/data-conv.cc \
   util/glob-match.cc \
-  util/kpse.cc \
   util/lo-array-gripes.cc \
   util/lo-ieee.cc \
   util/lo-utils.cc \
@@ -73,7 +72,7 @@ UTIL_SRC = \
   util/sparse-sort.cc \
   util/sparse-util.cc \
   util/str-vec.cc \
-	$(UTIL_C_SRC)
+  $(UTIL_C_SRC)
 
 TEMPLATE_SRC += \
   util/oct-sort.cc

@@ -66,6 +66,8 @@ template <typename T, typename U>
 struct
 jit_array
 {
+  jit_array () : array (0) {}
+
   jit_array (T& from) : array (new T (from))
   {
     update ();
@@ -161,7 +163,7 @@ public:
   // retval. (on the stack)
   bool sret (jit_convention::type cc) const { return msret[cc]; }
 
-  void mark_sret (jit_convention::type cc = jit_convention::external)
+  void mark_sret (jit_convention::type cc)
   { msret[cc] = true; }
 
   // A function like: void foo (mytype arg0)
@@ -169,7 +171,7 @@ public:
   // Basically just pass by reference.
   bool pointer_arg (jit_convention::type cc) const { return mpointer_arg[cc]; }
 
-  void mark_pointer_arg (jit_convention::type cc = jit_convention::external)
+  void mark_pointer_arg (jit_convention::type cc)
   { mpointer_arg[cc] = true; }
 
   // Convert into an equivalent form before calling. For example, complex is
@@ -278,7 +280,8 @@ public:
 
   llvm::Value *argument (llvm::IRBuilderD& builder, size_t idx) const;
 
-  void do_return (llvm::IRBuilderD& builder, llvm::Value *rval = 0);
+  void do_return (llvm::IRBuilderD& builder, llvm::Value *rval = 0,
+                  bool verify = true);
 
   llvm::Function *to_llvm (void) const { return llvm_function; }
 

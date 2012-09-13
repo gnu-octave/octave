@@ -113,10 +113,10 @@ octave_jit_grab_any (octave_base_value *obv)
   return obv;
 }
 
-extern "C" void
-octave_jit_grab_matrix (jit_matrix *result, jit_matrix *m)
+extern "C" jit_matrix
+octave_jit_grab_matrix (jit_matrix *m)
 {
-  *result = *m->array;
+  return *m->array;
 }
 
 extern "C" octave_base_value *
@@ -130,12 +130,12 @@ octave_jit_cast_any_matrix (jit_matrix *m)
   return rep;
 }
 
-extern "C" void
-octave_jit_cast_matrix_any (jit_matrix *ret, octave_base_value *obv)
+extern "C" jit_matrix
+octave_jit_cast_matrix_any (octave_base_value *obv)
 {
   NDArray m = obv->array_value ();
-  *ret = m;
   obv->release ();
+  return m;
 }
 
 extern "C" octave_base_value *
@@ -148,13 +148,13 @@ octave_jit_cast_any_range (jit_range *rng)
 
   return rep;
 }
-extern "C" void
-octave_jit_cast_range_any (jit_range *ret, octave_base_value *obv)
+extern "C" jit_range
+octave_jit_cast_range_any (octave_base_value *obv)
 {
 
   jit_range r (obv->range_value ());
-  *ret = r;
   obv->release ();
+  return r;
 }
 
 extern "C" double
@@ -228,9 +228,9 @@ octave_jit_gindex_range (int nd, int dim, octave_idx_type iext,
     }
 }
 
-extern "C" void
-octave_jit_paren_subsasgn_impl (jit_matrix *ret, jit_matrix *mat,
-                                octave_idx_type index, double value)
+extern "C" jit_matrix
+octave_jit_paren_subsasgn_impl (jit_matrix *mat, octave_idx_type index,
+                                double value)
 {
   NDArray *array = mat->array;
   if (array->nelem () < index)
@@ -240,7 +240,7 @@ octave_jit_paren_subsasgn_impl (jit_matrix *ret, jit_matrix *mat,
   data[index - 1] = value;
 
   mat->update ();
-  *ret = *mat;
+  return *mat;
 }
 
 static void
@@ -272,12 +272,12 @@ octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
     }
 }
 
-extern "C" void
-octave_jit_paren_scalar_subsasgn (jit_matrix *ret, jit_matrix *mat,
-                                  double *indices, octave_idx_type idx_count,
-                                  double value)
+extern "C" jit_matrix
+octave_jit_paren_scalar_subsasgn (jit_matrix *mat, double *indices,
+                                  octave_idx_type idx_count, double value)
 {
   // FIXME: Replace this with a more optimal version
+  jit_matrix ret;
   try
     {
       Array<idx_vector> idx;
@@ -286,17 +286,19 @@ octave_jit_paren_scalar_subsasgn (jit_matrix *ret, jit_matrix *mat,
       Matrix temp (1, 1);
       temp.xelem(0) = value;
       mat->array->assign (idx, temp);
-      ret->update (mat->array);
+      ret.update (mat->array);
     }
   catch (const octave_execution_exception&)
     {
       gripe_library_execution_error ();
     }
+
+  return ret;
 }
 
-extern "C" void
-octave_jit_paren_subsasgn_matrix_range (jit_matrix *result, jit_matrix *mat,
-                                        jit_range *index, double value)
+extern "C" jit_matrix
+octave_jit_paren_subsasgn_matrix_range (jit_matrix *mat, jit_range *index,
+                                        double value)
 {
   NDArray *array = mat->array;
   bool done = false;
@@ -340,7 +342,9 @@ octave_jit_paren_subsasgn_matrix_range (jit_matrix *result, jit_matrix *mat,
       array->assign (idx, avalue);
     }
 
-  result->update (array);
+  jit_matrix ret;
+  ret.update (array);
+  return ret;
 }
 
 extern "C" double
@@ -562,6 +566,10 @@ jit_function::jit_function (llvm::Module *amodule,
   llvm::FunctionType *ft = llvm::FunctionType::get (rtype, llvm_args, false);
   llvm_function = llvm::Function::Create (ft, llvm::Function::ExternalLinkage,
                                           aname, module);
+
+  if (sret ())
+    llvm_function->addAttribute (1, llvm::Attribute::StructRet);
+
   if (call_conv == jit_convention::internal)
     llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
 }
@@ -620,12 +628,18 @@ jit_function::call (llvm::IRBuilderD& builder,
   llvm::SmallVector<llvm::Value *, 10> llvm_args;
   llvm_args.reserve (in_args.size () + sret ());
 
-  llvm::Value *sret_mem = 0;
-  llvm::Value *saved_stack = 0;
+  llvm::BasicBlock *insert_block = builder.GetInsertBlock ();
+  llvm::Function *parent = insert_block->getParent ();
+  assert (parent);
+
+  // we insert allocas inside the prelude block to prevent stack overflows
+  llvm::BasicBlock& prelude = parent->getEntryBlock ();
+  llvm::IRBuilder<> pre_builder (&prelude, prelude.begin ());
+
+  llvm::AllocaInst *sret_mem = 0;
   if (sret ())
     {
-      saved_stack = builder.CreateCall (stacksave);
-      sret_mem = builder.CreateAlloca (mresult->packed_type (call_conv));
+      sret_mem = pre_builder.CreateAlloca (mresult->packed_type (call_conv));
       llvm_args.push_back (sret_mem);
     }
 
@@ -638,33 +652,29 @@ jit_function::call (llvm::IRBuilderD& builder,
 
       if (args[i]->pointer_arg (call_conv))
         {
-          if (! saved_stack)
-            saved_stack = builder.CreateCall (stacksave);
-
-          arg = builder.CreateAlloca (args[i]->to_llvm ());
-          builder.CreateStore (in_args[i], arg);
+          llvm::Type *ty = args[i]->packed_type (call_conv);
+          llvm::Value *alloca = pre_builder.CreateAlloca (ty);
+          builder.CreateStore (arg, alloca);
+          arg = alloca;
         }
 
       llvm_args.push_back (arg);
     }
 
-  llvm::Value *ret = builder.CreateCall (llvm_function, llvm_args);
-  if (sret_mem)
-    ret = builder.CreateLoad (sret_mem);
+  llvm::CallInst *callinst = builder.CreateCall (llvm_function, llvm_args);
+  llvm::Value *ret = callinst;
+
+  if (sret ())
+    {
+      callinst->addAttribute (1, llvm::Attribute::StructRet);
+      ret = builder.CreateLoad (sret_mem);
+    }
 
   if (mresult)
     {
       jit_type::convert_fn unpack = mresult->unpack (call_conv);
       if (unpack)
         ret = unpack (builder, ret);
-    }
-
-  if (saved_stack)
-    {
-      llvm::Function *stackrestore
-        = llvm::Intrinsic::getDeclaration (module,
-                                           llvm::Intrinsic::stackrestore);
-      builder.CreateCall (stackrestore, saved_stack);
     }
 
   return ret;
@@ -691,7 +701,8 @@ jit_function::argument (llvm::IRBuilderD& builder, size_t idx) const
 }
 
 void
-jit_function::do_return (llvm::IRBuilderD& builder, llvm::Value *rval)
+jit_function::do_return (llvm::IRBuilderD& builder, llvm::Value *rval,
+                         bool verify)
 {
   assert (! rval == ! mresult);
 
@@ -702,14 +713,18 @@ jit_function::do_return (llvm::IRBuilderD& builder, llvm::Value *rval)
         rval = convert (builder, rval);
 
       if (sret ())
-        builder.CreateStore (rval, llvm_function->arg_begin ());
+        {
+          builder.CreateStore (rval, llvm_function->arg_begin ());
+          builder.CreateRetVoid ();
+        }
       else
         builder.CreateRet (rval);
     }
   else
     builder.CreateRetVoid ();
 
-  llvm::verifyFunction (*llvm_function);
+  if (verify)
+    llvm::verifyFunction (*llvm_function);
 }
 
 void
@@ -1032,9 +1047,14 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   // complex_ret is what is passed to C functions in order to get calling
   // convention right
+  llvm::Type *cmplx_inner_cont[] = {scalar_t, scalar_t};
+  llvm::StructType *cmplx_inner = llvm::StructType::create (cmplx_inner_cont);
+
   complex_ret = llvm::StructType::create (context, "complex_ret");
-  llvm::Type *complex_ret_contents[] = {scalar_t, scalar_t};
-  complex_ret->setBody (complex_ret_contents);
+  {
+    llvm::Type *contents[] = {cmplx_inner};
+    complex_ret->setBody (contents);
+  }
 
   // create types
   any = new_type ("any", 0, any_t);
@@ -1059,18 +1079,18 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // specify calling conventions
   // FIXME: We should detect architecture and do something sane based on that
   // here we assume x86 or x86_64
-  matrix->mark_sret ();
-  matrix->mark_pointer_arg ();
+  matrix->mark_sret (jit_convention::external);
+  matrix->mark_pointer_arg (jit_convention::external);
 
-  range->mark_sret ();
-  range->mark_pointer_arg ();
+  range->mark_sret (jit_convention::external);
+  range->mark_pointer_arg (jit_convention::external);
 
   complex->set_pack (jit_convention::external, &jit_typeinfo::pack_complex);
   complex->set_unpack (jit_convention::external, &jit_typeinfo::unpack_complex);
   complex->set_packed_type (jit_convention::external, complex_ret);
 
   if (sizeof (void *) == 4)
-    complex->mark_sret ();
+    complex->mark_sret (jit_convention::external);
 
   paren_subsref_fn.initialize (module, engine);
   paren_subsasgn_fn.initialize (module, engine);
@@ -1333,9 +1353,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   binary_ops[octave_value::op_div].add_overload (fn);
   binary_ops[octave_value::op_ldiv].add_overload (fn);
 
-  fn = mirror_binary (complex_div);
-  binary_ops[octave_value::op_ldiv].add_overload (fn);
-  binary_ops[octave_value::op_el_ldiv].add_overload (fn);
+  // fn = mirror_binary (complex_div);
+  // binary_ops[octave_value::op_ldiv].add_overload (fn);
+  // binary_ops[octave_value::op_el_ldiv].add_overload (fn);
 
   fn = create_function (jit_convention::external,
                         "octave_jit_pow_complex_complex", complex, complex,
@@ -1990,8 +2010,11 @@ jit_typeinfo::create_identity (jit_type *type)
 
   if (! identities[id].valid ())
     {
-      jit_function fn = create_function (jit_convention::internal, "id", type,
-                                         type);
+      std::stringstream name;
+      name << "id_" << type->name ();
+      jit_function fn = create_function (jit_convention::internal, name.str (),
+                                         type, type);
+
       llvm::BasicBlock *body = fn.new_block ();
       builder.SetInsertPoint (body);
       fn.do_return (builder, fn.argument (builder, 0));
@@ -2141,17 +2164,24 @@ jit_typeinfo::pack_complex (llvm::IRBuilderD& bld, llvm::Value *cplx)
   llvm::Value *real = bld.CreateExtractElement (cplx, bld.getInt32 (0));
   llvm::Value *imag = bld.CreateExtractElement (cplx, bld.getInt32 (1));
   llvm::Value *ret = llvm::UndefValue::get (complex_ret);
-  ret = bld.CreateInsertValue (ret, real, 0);
-  return bld.CreateInsertValue (ret, imag, 1);
+
+  unsigned int re_idx[] = {0, 0};
+  unsigned int im_idx[] = {0, 1};
+  ret = bld.CreateInsertValue (ret, real, re_idx);
+  return bld.CreateInsertValue (ret, imag, im_idx);
 }
 
 llvm::Value *
 jit_typeinfo::unpack_complex (llvm::IRBuilderD& bld, llvm::Value *result)
 {
+  unsigned int re_idx[] = {0, 0};
+  unsigned int im_idx[] = {0, 1};
+
   llvm::Type *complex_t = get_complex ()->to_llvm ();
-  llvm::Value *real = bld.CreateExtractValue (result, 0);
-  llvm::Value *imag = bld.CreateExtractValue (result, 1);
+  llvm::Value *real = bld.CreateExtractValue (result, re_idx);
+  llvm::Value *imag = bld.CreateExtractValue (result, im_idx);
   llvm::Value *ret = llvm::UndefValue::get (complex_t);
+
   ret = bld.CreateInsertElement (ret, real, bld.getInt32 (0));
   return bld.CreateInsertElement (ret, imag, bld.getInt32 (1));
 }

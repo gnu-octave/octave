@@ -276,6 +276,9 @@ private:
 
   bool converting_function;
 
+  // only used if we are converting a function
+  jit_function creating;
+
   llvm::Function *function;
   llvm::BasicBlock *prelude;
 

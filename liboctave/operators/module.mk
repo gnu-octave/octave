@@ -39,7 +39,7 @@ OPERATORS_INC = \
 ## There are no distributed source files in this directory
 OPERATORS_SRC =
 
-OTHER_INC += \
+TEMPLATE_SRC += \
   operators/mx-inlines.cc
 
 OP_SRCDIR = $(abs_top_srcdir)/liboctave/operators

@@ -130,11 +130,9 @@ ARRAY_SRC = \
 TEMPLATE_SRC += \
   array/Array.cc \
   array/DiagArray2.cc \
+  array/intNDArray.cc \
   array/MArray.cc \
   array/MDiagArray2.cc
-
-OTHER_INC += \
-  array/intNDArray.cc
 
 noinst_LTLIBRARIES += array/libarray.la
 

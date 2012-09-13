@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ui-settings-dialog.h"
 #include <QSettings>
 
-settings_dialog::settings_dialog (QWidget * parent):
-QDialog (parent), ui (new Ui::settings_dialog)
+settings_dialog::settings_dialog (QWidget *p):
+  QDialog (p), ui (new Ui::settings_dialog)
 {
   ui->setupUi (this);
 

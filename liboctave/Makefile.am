@@ -36,6 +36,10 @@ AM_CPPFLAGS = \
   -I$(srcdir)/util \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
+AM_CFLAGS += $(WARN_CFLAGS)
+
+AM_CXXFLAGS += $(WARN_CXXFLAGS)
+
 octlib_LTLIBRARIES = liboctave.la
 
 EXTRA_DIST =

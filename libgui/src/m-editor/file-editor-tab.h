@@ -33,7 +33,7 @@ class file_editor;
 class file_editor_tab : public QWidget, public octave_event_observer
 {
   Q_OBJECT
-public:
+  public:
   file_editor_tab (file_editor *fileEditor);
   bool copy_available ();
 
@@ -73,7 +73,10 @@ public slots:
   void run_file ();
 
   void file_has_changed (const QString& fileName);
-  QString get_file_name () const {return _file_name;} 
+  QString get_file_name () const {return _file_name;}
+
+  /** Tells the editor tab to react on changed settings. */
+  void notice_settings ();
 
 signals:
   void file_name_changed (const QString& fileName);

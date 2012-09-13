@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate the base LU class for the types we need.
 
-#include <base-lu.h>
-#include <base-lu.cc>
+#include "base-lu.h"
+#include "base-lu.cc"
 
 template class base_lu <FloatComplexMatrix>;
 

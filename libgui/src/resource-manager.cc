@@ -114,14 +114,14 @@ resource_manager::do_reload_settings (void)
   QString settings_file = settings_path + "qt-settings";
 
   if (!QFile::exists (settings_file))
-   {
-     QDir("/").mkpath (settings_path);
-     QFile::copy (QString::fromStdString (default_qt_settings_file ()),
-                  settings_file);
-     first_run = true;
-   }
+    {
+      QDir("/").mkpath (settings_path);
+      QFile::copy (QString::fromStdString (default_qt_settings_file ()),
+                   settings_file);
+      first_run = true;
+    }
   else
-     first_run = false;
+    first_run = false;
 
   do_set_settings (settings_file);
 }

@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-model.h"
 #include "octave-link.h"
 
-workspace_model::workspace_model(QObject *parent)
-  : QAbstractItemModel(parent), octave_event_observer ()
+workspace_model::workspace_model(QObject *p)
+  : QAbstractItemModel (p), octave_event_observer ()
 {
   QList<QVariant> rootData;
   rootData << tr ("Name") << tr ("Class") << tr("Dimension") << tr ("Value");
@@ -63,8 +63,7 @@ workspace_model::~workspace_model()
 void
 workspace_model::request_update_workspace ()
 {
-  octave_link::instance ()
-      ->post_event (new octave_update_workspace_event (*this));
+  octave_link::post_event (new octave_update_workspace_event (*this));
 }
 
 void
@@ -95,9 +94,20 @@ workspace_model::event_accepted (octave_event *e)
 
           switch (s.scope ())
             {
-              case symbol_information::local:       top_level_item (0)->add_child (child); break;
-              case symbol_information::global:      top_level_item (1)->add_child (child); break;
-              case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
+            case symbol_information::local:
+              top_level_item (0)->add_child (child);
+              break;
+
+            case symbol_information::global:
+              top_level_item (1)->add_child (child);
+              break;
+
+            case symbol_information::persistent:
+              top_level_item (2)->add_child (child);
+              break;
+
+            default:
+              break;
             }
         }
 
@@ -118,17 +128,17 @@ workspace_model::event_reject (octave_event *e)
 }
 
 QModelIndex
-workspace_model::index(int row, int column, const QModelIndex &parent) const
+workspace_model::index(int row, int column, const QModelIndex &p) const
 {
-  if (!hasIndex(row, column, parent))
+  if (!hasIndex(row, column, p))
     return QModelIndex();
 
   tree_item *parentItem;
 
-  if (!parent.isValid())
+  if (!p.isValid())
     parentItem = _rootItem;
   else
-    parentItem = static_cast<tree_item*>(parent.internalPointer());
+    parentItem = static_cast<tree_item*>(p.internalPointer());
 
   tree_item *childItem = parentItem->child(row);
   if (childItem)
@@ -138,12 +148,12 @@ workspace_model::index(int row, int column, const QModelIndex &parent) const
 }
 
 QModelIndex
-workspace_model::parent(const QModelIndex &index) const
+workspace_model::parent(const QModelIndex &idx) const
 {
-  if (!index.isValid())
+  if (!idx.isValid())
     return QModelIndex();
 
-  tree_item *childItem = static_cast<tree_item*>(index.internalPointer());
+  tree_item *childItem = static_cast<tree_item*>(idx.internalPointer());
 
   if (childItem)
     {
@@ -159,25 +169,25 @@ workspace_model::parent(const QModelIndex &index) const
 }
 
 int
-workspace_model::rowCount(const QModelIndex &parent) const
+workspace_model::rowCount(const QModelIndex &p) const
 {
   tree_item *parentItem;
-  if (parent.column() > 0)
+  if (p.column() > 0)
     return 0;
 
-  if (!parent.isValid())
+  if (!p.isValid())
     parentItem = _rootItem;
   else
-    parentItem = static_cast<tree_item*>(parent.internalPointer());
+    parentItem = static_cast<tree_item*>(p.internalPointer());
 
   return parentItem->child_count();
 }
 
 int
-workspace_model::columnCount(const QModelIndex &parent) const
+workspace_model::columnCount(const QModelIndex &p) const
 {
-  if (parent.isValid())
-    return static_cast<tree_item*>(parent.internalPointer())->column_count();
+  if (p.isValid())
+    return static_cast<tree_item*>(p.internalPointer())->column_count();
   else
     return _rootItem->column_count();
 }
@@ -195,9 +205,9 @@ workspace_model::top_level_item (int at)
 }
 
 Qt::ItemFlags
-workspace_model::flags(const QModelIndex &index) const
+workspace_model::flags(const QModelIndex &idx) const
 {
-  if (!index.isValid())
+  if (!idx.isValid())
     return 0;
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -213,16 +223,16 @@ workspace_model::headerData(int section, Qt::Orientation orientation, int role) 
 }
 
 QVariant
-workspace_model::data(const QModelIndex &index, int role) const
+workspace_model::data(const QModelIndex &idx, int role) const
 {
-  if (!index.isValid())
+  if (!idx.isValid())
     return QVariant();
 
   if (role != Qt::DisplayRole)
     return QVariant();
 
-  tree_item *item = static_cast<tree_item*>(index.internalPointer());
+  tree_item *item = static_cast<tree_item*>(idx.internalPointer());
 
-  return item->data(index.column());
+  return item->data(idx.column());
 }
 

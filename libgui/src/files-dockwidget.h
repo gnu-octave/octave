@@ -39,13 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLineEdit>
 
 /**
-  \class files_dock_widget
-  \brief Dock widget to display files in the current directory.
-  */
+   \class files_dock_widget
+   \brief Dock widget to display files in the current directory.
+*/
 class files_dock_widget : public QDockWidget
 {
   Q_OBJECT
-public:
+  public:
   /** Constructs a new files_dock_widget. */
   files_dock_widget (QWidget *parent = 0);
 

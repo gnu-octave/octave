@@ -30,7 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <syswait.h>
+#include "lo-utils.h"
+#include "syswait.h"
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
@@ -69,7 +70,8 @@ dissociate_terminal (void)
 
       waitpid (pid, &status, 0);
 
-      exit (WIFEXITED (status) ? WEXITSTATUS (status) : 127);
+      exit (octave_wait::ifexited (status)
+            ? octave_wait::exitstatus (status) : 127);
     }
 
 #endif

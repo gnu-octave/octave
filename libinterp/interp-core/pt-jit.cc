@@ -1075,8 +1075,8 @@ jit_convert_llvm::convert_function (llvm::Module *module,
   jit_return *ret = dynamic_cast<jit_return *> (final_block->back ());
   assert (ret);
 
-  jit_function creating = jit_function (module, jit_convention::internal,
-                                        "foobar", ret->result_type (), args);
+  creating = jit_function (module, jit_convention::internal,
+                           "foobar", ret->result_type (), args);
   function = creating.to_llvm ();
 
   try
@@ -1280,10 +1280,16 @@ void
 jit_convert_llvm::visit (jit_return& ret)
 {
   jit_value *res = ret.result ();
-  if (res)
-    builder.CreateRet (res->to_llvm ());
+
+  if (converting_function)
+    creating.do_return (builder, res->to_llvm (), false);
   else
-    builder.CreateRetVoid ();
+    {
+      if (res)
+        builder.CreateRet (res->to_llvm ());
+      else
+        builder.CreateRetVoid ();
+    }
 }
 
 void

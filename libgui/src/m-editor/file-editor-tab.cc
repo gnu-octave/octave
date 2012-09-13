@@ -49,10 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 file_editor_tab::file_editor_tab(file_editor *fileEditor)
   : QWidget ((QWidget*)fileEditor), octave_event_observer ()
 {
-  QSettings *settings = resource_manager::get_settings ();
-
-  // FIXME -- what should happen if settings is 0?
-
   _file_editor = fileEditor;
   _file_name = "";
   _edit_area = new QsciScintilla (this);
@@ -74,43 +70,31 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   // line numbers
   _edit_area->setMarginsForegroundColor(QColor(96,96,96));
   _edit_area->setMarginsBackgroundColor(QColor(232,232,220));
-  if (settings->value ("editor/showLineNumbers",true).toBool ())
-    {
-      QFont marginFont( settings->value ("editor/fontName","Courier").toString () ,
-                        settings->value ("editor/fontSize",10).toInt () );
-      _edit_area->setMarginsFont( marginFont );
-      QFontMetrics metrics(marginFont);
-      _edit_area->setMarginType (2, QsciScintilla::TextMargin);
-      _edit_area->setMarginWidth(2, metrics.width("9999"));
-      _edit_area->setMarginLineNumbers (2, true);
-    }
+  _edit_area->setMarginType (2, QsciScintilla::TextMargin);
 
   // code folding
   _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
   _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
 
+  //highlight current line color
+  _edit_area->setCaretLineBackgroundColor(QColor(245,245,245));
+
   // other features
-  if (settings->value ("editor/highlightCurrentLine",true).toBool ())
-    {
-      _edit_area->setCaretLineVisible(true);
-      _edit_area->setCaretLineBackgroundColor(QColor(245,245,245));
-    }
   _edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
   _edit_area->setAutoIndent (true);
   _edit_area->setIndentationWidth (2);
   _edit_area->setIndentationsUseTabs (false);
-  if (settings->value ("editor/codeCompletion",true).toBool ())
-    {
-      _edit_area->autoCompleteFromAll ();
-      _edit_area->setAutoCompletionSource(QsciScintilla::AcsAll);
-      _edit_area->setAutoCompletionThreshold (1);
-    }
+
   _edit_area->setUtf8 (true);
 
-  QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (_edit_area);
-  layout->setMargin (0);
-  setLayout (layout);
+  // auto completion
+  _edit_area->autoCompleteFromAll ();
+  _edit_area->setAutoCompletionSource(QsciScintilla::AcsAll);
+
+  QVBoxLayout *edit_area_layout = new QVBoxLayout ();
+  edit_area_layout->addWidget (_edit_area);
+  edit_area_layout->setMargin (0);
+  setLayout (edit_area_layout);
 
   // connect modified signal
   connect (_edit_area, SIGNAL (modificationChanged (bool)),
@@ -121,8 +105,8 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
            this, SLOT (file_has_changed (QString)));
 
   _file_name = "";
-  _long_title = settings->value ("editor/longWindowTitle",false).toBool ();
-  update_window_title (false);
+
+  notice_settings ();
 }
 
 bool
@@ -174,13 +158,13 @@ file_editor_tab::event_reject (octave_event *e)
 }
 
 void
-file_editor_tab::closeEvent (QCloseEvent *event)
+file_editor_tab::closeEvent (QCloseEvent *e)
 {
   if (_file_editor->get_main_window ()->is_closing ())
     {
       // close whole application: save file or not if modified
       check_file_modified ("Closing Octave", 0); // no cancel possible
-      event->accept ();
+      e->accept ();
     }
   else
     {
@@ -189,11 +173,11 @@ file_editor_tab::closeEvent (QCloseEvent *event)
       if (check_file_modified ("Close File",
                                QMessageBox::Cancel) == QMessageBox::Cancel)
         {
-          event->ignore ();
+          e->ignore ();
         }
       else
         {
-          event->accept();
+          e->accept();
         }
     }
 }
@@ -213,18 +197,18 @@ file_editor_tab::handle_margin_clicked(int margin, int line,
   Q_UNUSED (state);
   if (margin == 1)
     {
-      unsigned int mask = _edit_area->markersAtLine (line);
+      unsigned int markers_mask = _edit_area->markersAtLine (line);
 
       if (state & Qt::ControlModifier)
         {
-          if (mask && (1 << bookmark))
+          if (markers_mask && (1 << bookmark))
             _edit_area->markerDelete(line,bookmark);
           else
             _edit_area->markerAdd(line,bookmark);
         }
       else
         {
-          if (mask && (1 << breakpoint))
+          if (markers_mask && (1 << breakpoint))
             {
               request_remove_breakpoint (line);
             }
@@ -257,7 +241,7 @@ file_editor_tab::update_lexer ()
       QString keyword;
       QStringList keywordList;
 
-       // get whole string with all keywords
+      // get whole string with all keywords
       keyword = lexer->keywords (1);
       // split into single strings
       keywordList = keyword.split (QRegExp ("\\s+"));
@@ -265,21 +249,21 @@ file_editor_tab::update_lexer ()
       int i;
       for (i = 0; i < keywordList.size (); i++)
         {
-           // add single strings to the API
+          // add single strings to the API
           lexer_api->add (keywordList.at (i));
         }
       // prepare API info ... this make take some time
       lexer_api->prepare ();
     }
   else if (_file_name.endsWith (".c")
-        || _file_name.endsWith (".cc")
-        || _file_name.endsWith (".cpp")
-        || _file_name.endsWith (".cxx")
-        || _file_name.endsWith (".c++")
-        || _file_name.endsWith (".h")
-        || _file_name.endsWith (".hh")
-        || _file_name.endsWith (".hpp")
-        || _file_name.endsWith (".h++"))
+           || _file_name.endsWith (".cc")
+           || _file_name.endsWith (".cpp")
+           || _file_name.endsWith (".cxx")
+           || _file_name.endsWith (".c++")
+           || _file_name.endsWith (".h")
+           || _file_name.endsWith (".hh")
+           || _file_name.endsWith (".hpp")
+           || _file_name.endsWith (".h++"))
     {
       lexer = new QsciLexerCPP ();
     }
@@ -302,14 +286,13 @@ file_editor_tab::update_lexer ()
 
   QSettings *settings = resource_manager::get_settings ();
 
-  // FIXME -- what should happen if settings is 0?
-
   // Editor font (default or from settings)
-  lexer->setDefaultFont (QFont (
-                                settings->value ("editor/fontName",
-                                                 "Courier").toString (),
-                                settings->value ("editor/fontSize",
-                                                 10).toInt ()));
+  if (settings)
+    lexer->setDefaultFont (QFont (
+                                  settings->value ("editor/fontName",
+                                                   "Courier").toString (),
+                                  settings->value ("editor/fontSize",
+                                                   10).toInt ()));
 
   // TODO: Autoindent not working as it should
   lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
@@ -329,11 +312,9 @@ file_editor_tab::request_add_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::instance ()->post_event
-      (new octave_add_breakpoint_event (*this,
-                                        path.toStdString (),
-                                        function_name.toStdString (),
-                                        line));
+  octave_link::post_event (new octave_add_breakpoint_event
+                           (*this, path.toStdString (),
+                            function_name.toStdString (), line));
 }
 
 void
@@ -346,11 +327,9 @@ file_editor_tab::request_remove_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::instance ()->post_event
-      (new octave_remove_breakpoint_event (*this,
-                                           path.toStdString (),
-                                           function_name.toStdString (),
-                                           line));
+  octave_link::post_event (new octave_remove_breakpoint_event
+                           (*this, path.toStdString (),
+                            function_name.toStdString (), line));
 }
 
 void
@@ -518,10 +497,9 @@ file_editor_tab::remove_all_breakpoints ()
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::instance ()->post_event
-      (new octave_remove_all_breakpoints_event (*this,
-                                                path.toStdString (),
-                                                function_name.toStdString ()));
+  octave_link::post_event (new octave_remove_all_breakpoints_event
+                           (*this, path.toStdString (),
+                            function_name.toStdString ()));
 }
 
 void
@@ -712,7 +690,7 @@ file_editor_tab::save_file (const QString& saveFileName)
   _file_name = saveFileName;
   // set the window title to actual file name (not modified)
   update_window_title (false);
-   // files is save -> not modified
+  // files is save -> not modified
   _edit_area->setModified (false);
   file.close();
 
@@ -729,7 +707,7 @@ file_editor_tab::save_file_as ()
   if (saveFileName == UNNAMED_FILE || saveFileName.isEmpty ())
     {
       QString directory = QString::fromStdString
-          (octave_link::instance ()->get_last_working_directory ());
+        (octave_link::last_working_directory ());
 
       if (directory.isEmpty ())
         {
@@ -767,17 +745,17 @@ file_editor_tab::run_file ()
 
   QFileInfo file_info (_file_name);
   QString path = file_info.absolutePath ();
-  //QString current_path = QString::fromStdString
-      (octave_link::instance ()->get_last_working_directory ());
+  QString current_path
+    = QString::fromStdString (octave_link::last_working_directory ());
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
   _file_editor->terminal ()->sendText (QString ("cd \'%1\'\n%2\n")
-    .arg(path).arg (function_name));
+                                       .arg(path).arg (function_name));
   // TODO: Sending a run event crashes for long scripts. Find out why.
-  //  octave_link::instance ()
-  //      ->post_event (new octave_run_file_event (*this, _file_name.toStdString ()));
+  //  octave_link::post_event (new octave_run_file_event
+  //                           (*this, _file_name.toStdString ()));
 }
 
 void
@@ -794,10 +772,10 @@ file_editor_tab::file_has_changed (const QString& fileName)
           alreadyAsking = true;
 
           int decision =
-          QMessageBox::warning (this, tr ("Octave Editor"),
-                                tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
-                                arg (_file_name), QMessageBox::Yes,
-                                QMessageBox::No);
+            QMessageBox::warning (this, tr ("Octave Editor"),
+                                  tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
+                                  arg (_file_name), QMessageBox::Yes,
+                                  QMessageBox::No);
 
           if (decision == QMessageBox::Yes)
             {
@@ -810,10 +788,10 @@ file_editor_tab::file_has_changed (const QString& fileName)
   else
     {
       int decision =
-      QMessageBox::warning (this, tr ("Octave Editor"),
-                            tr ("It seems that \'%1\' has been deleted or renamed. Do you want to save it now?").
-                            arg (_file_name), QMessageBox::Save,
-                            QMessageBox::Close);
+        QMessageBox::warning (this, tr ("Octave Editor"),
+                              tr ("It seems that \'%1\' has been deleted or renamed. Do you want to save it now?").
+                              arg (_file_name), QMessageBox::Save,
+                              QMessageBox::Close);
       if (decision == QMessageBox::Save)
         {
           if (!save_file_as ())
@@ -829,4 +807,41 @@ file_editor_tab::file_has_changed (const QString& fileName)
           emit close_request ();
         }
     }
+}
+
+void
+file_editor_tab::notice_settings ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings==NULL)
+    return; // this shouldn't happen!
+
+  _edit_area->setCaretLineVisible(settings->value ("editor/highlightCurrentLine",true).toBool ());
+
+  if (settings->value ("editor/codeCompletion",true).toBool ())
+    _edit_area->setAutoCompletionThreshold (1);
+  else
+    _edit_area->setAutoCompletionThreshold (-1);
+
+  QFont font( settings->value ("editor/fontName","Courier").toString () ,
+              settings->value ("editor/fontSize",10).toInt () );
+  if (settings->value ("editor/showLineNumbers",true).toBool ())
+    {
+      _edit_area->setMarginLineNumbers (2, true);
+      _edit_area->setMarginsFont( font );
+      QFontMetrics metrics( font );
+      _edit_area->setMarginWidth(2, metrics.width("9999"));
+    }
+  else
+    {
+      _edit_area->setMarginLineNumbers (2, false);
+      _edit_area->setMarginWidth(2, 0);
+    }
+
+  update_lexer ();
+
+  _long_title = settings->value ("editor/longWindowTitle",false).toBool ();
+
+  update_window_title (false);
 }

@@ -35,12 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStyle>
 #include <QTextStream>
 
-file_editor::file_editor (QTerminal *terminal, main_window *m)
-  : file_editor_interface(terminal, m)
+file_editor::file_editor (QTerminal *t, main_window *m)
+  : file_editor_interface (t, m)
 {
   construct ();
 
-  _terminal = terminal;
+  _terminal = t;
   _main_window = m;
   setVisible (false);
 }
@@ -50,15 +50,15 @@ file_editor::~file_editor ()
   QSettings *settings = resource_manager::get_settings ();
   QStringList sessionFileNames;
   if (settings->value ("editor/restoreSession",true).toBool ())
-  {
-    for (int n=0;n<_tab_widget->count();++n)
-      {
-        file_editor_tab* tab = dynamic_cast<file_editor_tab*> (_tab_widget->widget (n));
-        if (!tab)
-          continue;
-        sessionFileNames.append (tab->get_file_name ());
-      }
-  }
+    {
+      for (int n=0;n<_tab_widget->count();++n)
+        {
+          file_editor_tab* tab = dynamic_cast<file_editor_tab*> (_tab_widget->widget (n));
+          if (!tab)
+            continue;
+          sessionFileNames.append (tab->get_file_name ());
+        }
+    }
   settings->setValue ("editor/savedSessionTabs", sessionFileNames);
   settings->sync ();
 }
@@ -373,34 +373,46 @@ file_editor::handle_editor_state_changed ()
 }
 
 void
+file_editor::notice_settings ()
+{
+  for(int i = 0; i < _tab_widget->count (); i++)
+    {
+      file_editor_tab *fileEditorTab
+        = dynamic_cast <file_editor_tab*> (_tab_widget->widget (i));
+      if (fileEditorTab)
+        fileEditorTab->notice_settings ();
+    }
+}
+
+void
 file_editor::construct ()
 {
-  QWidget *widget = new QWidget (this);
-  QStyle *style = QApplication::style ();
+  QWidget *editor_widget = new QWidget (this);
+  QStyle *editor_style = QApplication::style ();
 
-  _menu_bar = new QMenuBar (widget);
-  _tool_bar = new QToolBar (widget);
-  _tab_widget = new QTabWidget (widget);
+  _menu_bar = new QMenuBar (editor_widget);
+  _tool_bar = new QToolBar (editor_widget);
+  _tab_widget = new QTabWidget (editor_widget);
   _tab_widget->setTabsClosable (true);
 
   QAction *new_action = new QAction (QIcon(":/actions/icons/filenew.png"),
-        tr("&New File"), _tool_bar);
+                                     tr("&New File"), _tool_bar);
 
   QAction *open_action = new QAction (QIcon(":/actions/icons/fileopen.png"),
-        tr("&Open File"), _tool_bar);
+                                      tr("&Open File"), _tool_bar);
 
   QAction *save_action = new QAction (QIcon(":/actions/icons/filesave.png"),
-        tr("&Save File"), _tool_bar);
+                                      tr("&Save File"), _tool_bar);
 
   QAction *save_as_action
     = new QAction (QIcon(":/actions/icons/filesaveas.png"),
                    tr("Save File &As"), _tool_bar);
 
   QAction *undo_action = new QAction (QIcon(":/actions/icons/undo.png"),
-        tr("&Undo"), _tool_bar);
+                                      tr("&Undo"), _tool_bar);
 
   QAction *redo_action = new QAction (QIcon(":/actions/icons/redo.png"),
-        tr("&Redo"), _tool_bar);
+                                      tr("&Redo"), _tool_bar);
 
   _copy_action = new QAction (QIcon(":/actions/icons/editcopy.png"),
                               tr ("&Copy"), _tool_bar);
@@ -409,25 +421,25 @@ file_editor::construct ()
                               tr ("Cu&t"), _tool_bar);
 
   QAction *paste_action
-      = new QAction (QIcon (":/actions/icons/editpaste.png"),
-                     tr("Paste"), _tool_bar);
+    = new QAction (QIcon (":/actions/icons/editpaste.png"),
+                   tr("Paste"), _tool_bar);
   QAction *next_bookmark_action       = new QAction (tr ("&Next Bookmark"),_tool_bar);
   QAction *previous_bookmark_action   = new QAction (tr ("Pre&vious Bookmark"),_tool_bar);
   QAction *toggle_bookmark_action     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
   QAction *remove_bookmark_action     = new QAction (tr ("&Remove All Bookmarks"),_tool_bar);
 
   QAction *next_breakpoint_action
-      = new QAction (QIcon (":/actions/icons/bp_next.png"),
-                     tr ("&Next breakpoint"), _tool_bar);
+    = new QAction (QIcon (":/actions/icons/bp_next.png"),
+                   tr ("&Next breakpoint"), _tool_bar);
   QAction *previous_breakpoint_action
-      = new QAction (QIcon (":/actions/icons/bp_prev.png"),
-                     tr ("Pre&vious breakpoint"), _tool_bar);
+    = new QAction (QIcon (":/actions/icons/bp_prev.png"),
+                   tr ("Pre&vious breakpoint"), _tool_bar);
   QAction *toggle_breakpoint_action
-      = new QAction (QIcon (":/actions/icons/bp_toggle.png"),
-                     tr ("Toggle &breakpoint"), _tool_bar);
+    = new QAction (QIcon (":/actions/icons/bp_toggle.png"),
+                   tr ("Toggle &breakpoint"), _tool_bar);
   QAction *remove_all_breakpoints_action
-      = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
-                     tr ("&Remove All breakpoints"), _tool_bar);
+    = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
+                   tr ("&Remove All breakpoints"), _tool_bar);
 
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
@@ -436,7 +448,7 @@ file_editor::construct ()
                                       tr ("&Find and Replace"), _tool_bar);
 
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
-        tr("Save File And Run"), _tool_bar);
+                             tr("Save File And Run"), _tool_bar);
 
   // some actions are disabled from the beginning
   _copy_action->setEnabled(false);
@@ -517,17 +529,17 @@ file_editor::construct ()
   _run_menu->addAction (_run_action);
   _menu_bar->addMenu (_run_menu);
 
-  QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (_menu_bar);
-  layout->addWidget (_tool_bar);
-  layout->addWidget (_tab_widget);
-  layout->setMargin (0);
-  widget->setLayout (layout);
-  setWidget (widget);
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  vbox_layout->addWidget (_menu_bar);
+  vbox_layout->addWidget (_tool_bar);
+  vbox_layout->addWidget (_tab_widget);
+  vbox_layout->setMargin (0);
+  editor_widget->setLayout (vbox_layout);
+  setWidget (editor_widget);
 
   connect (new_action,
            SIGNAL (triggered ()), this, SLOT (request_new_file ()));
-  connect (open_action,              
+  connect (open_action,
            SIGNAL (triggered ()), this, SLOT (request_open_file ()));
   connect (undo_action,
            SIGNAL (triggered ()), this, SLOT (request_undo ()));
@@ -574,18 +586,18 @@ file_editor::construct ()
 
   resize (500, 400);
   setWindowIcon (QIcon::fromTheme ("accessories-text-editor",
-                                   style->standardIcon (QStyle::SP_FileIcon)));
+                                   editor_style->standardIcon (QStyle::SP_FileIcon)));
   setWindowTitle ("Octave Editor");
 
   //restore previous session
   QSettings *settings = resource_manager::get_settings ();
   if (settings->value ("editor/restoreSession",true).toBool ())
-  {
-    QStringList sessionFileNames = settings->value("editor/savedSessionTabs", QStringList()).toStringList ();
+    {
+      QStringList sessionFileNames = settings->value("editor/savedSessionTabs", QStringList()).toStringList ();
 
-    for (int n=0;n<sessionFileNames.count();++n)
-      request_open_file(sessionFileNames.at(n), true);
-  }
+      for (int n=0;n<sessionFileNames.count();++n)
+        request_open_file(sessionFileNames.at(n), true);
+    }
 }
 
 void

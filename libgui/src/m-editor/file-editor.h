@@ -45,9 +45,9 @@ enum editor_markers
 
 class file_editor : public file_editor_interface
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
+  public:
   file_editor (QTerminal *terminal, main_window *m);
   ~file_editor ();
   void loadFile (const QString& fileName);
@@ -93,6 +93,9 @@ public slots:
   void handle_tab_close_request ();
   void active_tab_changed (int index);
   void handle_editor_state_changed ();
+
+  /** Tells the editor to react on changed settings. */
+  void notice_settings ();
 
 private:
   void construct ();

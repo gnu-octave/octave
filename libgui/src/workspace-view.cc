@@ -30,8 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QPushButton>
 
-workspace_view::workspace_view (QWidget * parent) : QDockWidget
-  (parent)
+workspace_view::workspace_view (QWidget *p)
+  : QDockWidget (p)
 {
   setObjectName ("WorkspaceView");
   setWindowTitle (tr ("Workspace"));
@@ -51,12 +51,12 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   setWidget (new QWidget (this));
 
   // Create a new layout and add widgets to it.
-  QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (_workspace_tree_view);
-  layout->setMargin (2);
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  vbox_layout->addWidget (_workspace_tree_view);
+  vbox_layout->setMargin (2);
 
   // Set the empty widget to have our layout.
-  widget ()->setLayout (layout);
+  widget ()->setLayout (vbox_layout);
 
   // Initialize collapse/expand state of the workspace subcategories.
 
@@ -160,7 +160,7 @@ workspace_view::collapse_requested (QModelIndex index)
   // In order to make collapsing/expanding work again, we need to set
   // flags ourselves here.
   QMap<int, QVariant> item_data
-      = _workspace_model->itemData (index);
+    = _workspace_model->itemData (index);
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = true;
@@ -187,7 +187,7 @@ workspace_view::expand_requested (QModelIndex index)
   // In order to make collapsing/expanding work again, we need to do set
   // flags ourselves here.
   QMap<int, QVariant> item_data
-      = _workspace_model->itemData (index);
+    = _workspace_model->itemData (index);
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = false;
@@ -205,8 +205,8 @@ workspace_view::item_double_clicked (QModelIndex index)
 }
 
 void
-workspace_view::closeEvent (QCloseEvent *event)
+workspace_view::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
-  QDockWidget::closeEvent (event);
+  QDockWidget::closeEvent (e);
 }

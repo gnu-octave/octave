@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 class workspace_view : public QDockWidget
 {
   Q_OBJECT
-public:
+  public:
   workspace_view (QWidget * parent = 0);
   ~workspace_view ();
 

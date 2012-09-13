@@ -35,49 +35,49 @@ class file_editor_interface : public QDockWidget
   Q_OBJECT
 
   public:
-    file_editor_interface (QTerminal *terminal, main_window *mainWindow)
-      : QDockWidget ((QWidget*)mainWindow) // QDockWidget constructor is explicit, hence the cast.
-    {
-      setObjectName ("FileEditor");
-      _terminal = terminal;
-      _main_window = mainWindow;
+  file_editor_interface (QTerminal *terminal, main_window *mainWindow)
+    : QDockWidget ((QWidget*)mainWindow) // QDockWidget constructor is explicit, hence the cast.
+  {
+    setObjectName ("FileEditor");
+    _terminal = terminal;
+    _main_window = mainWindow;
 
-      connect (this, SIGNAL (visibilityChanged (bool)), this,
-               SLOT (handle_visibility_changed (bool)));
-    }
+    connect (this, SIGNAL (visibilityChanged (bool)), this,
+             SLOT (handle_visibility_changed (bool)));
+  }
 
-    virtual ~file_editor_interface () { }
+  virtual ~file_editor_interface () { }
 
-    virtual QMenu *debug_menu () = 0;
-    virtual QToolBar *toolbar () = 0;
+  virtual QMenu *debug_menu () = 0;
+  virtual QToolBar *toolbar () = 0;
 
-    virtual void handle_entered_debug_mode () = 0;
-    virtual void handle_quit_debug_mode () = 0;
+  virtual void handle_entered_debug_mode () = 0;
+  virtual void handle_quit_debug_mode () = 0;
 
-  public slots:
-    virtual void request_new_file () = 0;
-    virtual void request_open_file () = 0;
-    virtual void request_open_file (const QString& fileName, bool silent = false) = 0;
+public slots:
+  virtual void request_new_file () = 0;
+  virtual void request_open_file () = 0;
+  virtual void request_open_file (const QString& fileName, bool silent = false) = 0;
 
-  signals:
-      void active_changed (bool active);
+signals:
+  void active_changed (bool active);
 
-  protected:
-    QTerminal* _terminal;
-    main_window* _main_window;
+protected:
+  QTerminal* _terminal;
+  main_window* _main_window;
 
-    void closeEvent (QCloseEvent *event)
-    {
-      emit active_changed (false);
-      QDockWidget::closeEvent (event);
-    }
+  void closeEvent (QCloseEvent *e)
+  {
+    emit active_changed (false);
+    QDockWidget::closeEvent (e);
+  }
 
-  protected slots:
-    void handle_visibility_changed (bool visible)
-    {
-      if (visible)
-        emit active_changed (true);
-    }
+protected slots:
+  void handle_visibility_changed (bool visible)
+  {
+    if (visible)
+      emit active_changed (true);
+  }
 };
 
 #endif // FILEEDITORINTERFACE_H

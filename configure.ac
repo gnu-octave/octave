@@ -702,8 +702,6 @@ if test $build_jit = true; then
 
     save_CPPFLAGS="$CPPFLAGS"
     save_CXXFLAGS="$CXXFLAGS"
-    save_LIBS="$LIBS"
-    save_LDFLAGS="$LDFLAGS"
 
     ## Use -isystem if available because we don't want to see warnings in LLVM
     LLVM_INCLUDE_FLAG=-I
@@ -724,29 +722,13 @@ if test $build_jit = true; then
     dnl
     CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
     CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
-    LIBS="$LLVM_LIBS $LIBS"
-    LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
-
     AC_LANG_PUSH(C++)
-    AC_CHECK_HEADERS([llvm/LLVMContext.h llvm/Support/TargetSelect.h], [
-      AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-            #include <llvm/LLVMContext.h>
-            ]], [[
-            llvm::LLVMContext& ctx = llvm::getGlobalContext ();
-            ]])],
-          [AC_MSG_RESULT([yes])
-           warn_llvm=
-           XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"],
-          [AC_MSG_RESULT([no])
-      ])
-    ])
+    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
+      warn_llvm=
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
     CXXFLAGS="$save_CXXFLAGS"
-    LIBS="$save_LIBS"
-    LDFLAGS="$save_LDFLAGS"
   fi
 
   if test -z "$warn_llvm"; then
@@ -1231,16 +1213,17 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
 if test "$octave_cv_lib_qrupdate" = yes; then
-  LIBS="$LIBS $QRUPDATE_LIBS"
-  AC_LANG_PUSH([Fortran 77])
-  AC_MSG_CHECKING([for slup1up in $QRUPDATE_LIBS])
-  octave_qrupdate_luu=no
-  AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])], [octave_qrupdate_luu=yes])
-  AC_MSG_RESULT([$octave_qrupdate_luu])
-  if test "$octave_qrupdate_luu" = yes; then
+  AC_CACHE_CHECK([for slup1up in $QRUPDATE_LIBS],
+    [octave_cv_func_slup1up],
+    [LIBS="$LIBS $QRUPDATE_LIBS"
+    AC_LANG_PUSH([Fortran 77])
+    AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])],
+      octave_cv_func_slup1up=yes, octave_cv_func_slup1up=no)
+    AC_LANG_POP([Fortran 77])
+  ])
+  if test $octave_cv_func_slup1up = yes; then
     AC_DEFINE(HAVE_QRUPDATE_LUU, 1, [Define to 1 if qrupdate supports LU updates.])
   fi
-  AC_LANG_POP([Fortran 77])
 fi
 LIBS="$save_LIBS"
 
@@ -2519,7 +2502,6 @@ AC_CONFIG_FILES([
   examples/Makefile
   libgnu/Makefile
   libgui/Makefile
-  libgui/src/Makefile
   libinterp/Makefile
   liboctave/Makefile
   liboctave/cruft/Makefile

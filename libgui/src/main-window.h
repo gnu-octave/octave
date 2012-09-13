@@ -54,14 +54,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-event-observer.h"
 
 /**
-  * \class MainWindow
-  *
-  * Represents the main window.
-  */
+ * \class MainWindow
+ *
+ * Represents the main window.
+ */
 class main_window
-    : public QMainWindow, public octave_event_observer
+  : public QMainWindow, public octave_event_observer
 {
-Q_OBJECT public:
+  Q_OBJECT public:
   main_window (QWidget * parent = 0);
   ~main_window ();
 

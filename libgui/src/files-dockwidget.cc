@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QProcess>
 #include <QDebug>
 
-files_dock_widget::files_dock_widget (QWidget *parent)
-  : QDockWidget (parent)
+files_dock_widget::files_dock_widget (QWidget *p)
+  : QDockWidget (p)
 {
   setObjectName ("FilesDockWidget");
   setWindowTitle (tr ("Current Directory"));
@@ -82,19 +82,18 @@ files_dock_widget::files_dock_widget (QWidget *parent)
   _file_tree_view->setStatusTip (tr ("Doubleclick a file to open it."));
 
   _current_directory->setText(_file_system_model->fileInfo (rootPathIndex).
-                       absoluteFilePath ());
+                              absoluteFilePath ());
 
   connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)), this,
            SLOT (item_double_clicked (const QModelIndex &)));
 
   // Layout the widgets vertically with the toolbar on top
-  QVBoxLayout *
-    layout = new QVBoxLayout ();
-  layout->setSpacing (0);
-  layout->addWidget (_navigation_tool_bar);
-  layout->addWidget (_file_tree_view);
-  layout->setMargin (1);
-  widget ()->setLayout (layout);
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  vbox_layout->setSpacing (0);
+  vbox_layout->addWidget (_navigation_tool_bar);
+  vbox_layout->addWidget (_file_tree_view);
+  vbox_layout->setMargin (1);
+  widget ()->setLayout (vbox_layout);
   // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 
   connect (_current_directory, SIGNAL (returnPressed ()),
@@ -147,7 +146,7 @@ files_dock_widget::display_directory (const QString& directory)
       if (fileInfo.isDir ())
         {
           _file_tree_view->setRootIndex (_file_system_model->
-                                        index (fileInfo.absoluteFilePath ()));
+                                         index (fileInfo.absoluteFilePath ()));
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
           _current_directory->setText (fileInfo.absoluteFilePath ());
 
@@ -190,8 +189,8 @@ files_dock_widget::handle_visibility_changed (bool visible)
 }
 
 void
-files_dock_widget::closeEvent (QCloseEvent *event)
+files_dock_widget::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
-  QDockWidget::closeEvent (event);
+  QDockWidget::closeEvent (e);
 }

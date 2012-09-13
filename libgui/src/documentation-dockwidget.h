@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 class documentation_dock_widget : public QDockWidget
 {
   Q_OBJECT
-public:
+  public:
   documentation_dock_widget (QWidget *parent = 0);
 
 public slots:

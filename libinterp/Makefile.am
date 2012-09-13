@@ -38,6 +38,10 @@ AM_CPPFLAGS = \
   -Icorefcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
+AM_CFLAGS += $(WARN_CFLAGS)
+
+AM_CXXFLAGS += $(WARN_CXXFLAGS)
+
 octlib_LTLIBRARIES = liboctinterp.la
 
 ## Order matters here.  Leave builtins.cc last, because it depends on

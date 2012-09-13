@@ -67,7 +67,7 @@ symbol_information::symbol_information (const symbol_table::symbol_record& sr)
       if (increment != 1 )
         buffer << increment << ":";
       buffer << limit;
-      
+
       short_value_string = QString::fromStdString (buffer.str ());
     }
   else if (ov.is_matrix_type () || ov.is_cell ())

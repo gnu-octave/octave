@@ -30,8 +30,8 @@
 #include <QProcess>
 #include <QBuffer>
 
-parser::parser(QObject *parent)
-  : QObject(parent)
+parser::parser(QObject *p)
+  : QObject(p)
 {
   _compressors_map.insert ("bz2",  "bzip2 -dc \"%1\"");
   _compressors_map.insert ("gz",   "gzip -dc \"%1\"");

@@ -27,9 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "welcome-wizard.h"
 #include "ui-welcome-wizard.h"
 
-welcome_wizard::welcome_wizard (QWidget *parent) :
-  QDialog (parent),
-  _ui (new Ui::welcome_wizard)
+welcome_wizard::welcome_wizard (QWidget *p)
+  : QDialog (p), _ui (new Ui::welcome_wizard)
 {
   _ui->setupUi (this);
   connect (_ui->nextButton1, SIGNAL (clicked ()), this, SLOT (next ()));

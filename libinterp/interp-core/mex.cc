@@ -3010,7 +3010,7 @@ mexFunctionName (void)
 
 int
 mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
-               const mxArray *argin[], const char *fname)
+               mxArray *argin[], const char *fname)
 {
   octave_value_list args;
 

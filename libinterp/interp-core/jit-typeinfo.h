@@ -236,6 +236,9 @@ public:
 
   jit_function (const jit_function& fn);
 
+  // erase the interal LLVM function (if it exists). Will become invalid.
+  void erase (void);
+
   template <typename T>
   void add_mapping (llvm::ExecutionEngine *engine, T fn)
   {

@@ -586,6 +586,16 @@ jit_function::jit_function (const jit_function& fn)
     args (fn.args), call_conv (fn.call_conv), mcan_error (fn.mcan_error)
 {}
 
+void
+jit_function::erase (void)
+{
+  if (! llvm_function)
+    return;
+
+  llvm_function->eraseFromParent ();
+  llvm_function = 0;
+}
+
 std::string
 jit_function::name (void) const
 {

@@ -1865,6 +1865,9 @@ tree_jit::trip_count (const octave_value& bounds) const
 void
 tree_jit::optimize (llvm::Function *fn)
 {
+  if (Venable_jit_debug)
+    llvm::verifyModule (*module);
+
   module_pass_manager->run (*module);
   pass_manager->run (*fn);
 
@@ -1886,6 +1889,9 @@ jit_function_info::jit_function_info (tree_jit& tjit,
   size_t nargs = ov_args.length ();
   for (size_t i = 0; i < nargs; ++i)
     argument_types[i] = jit_typeinfo::type_of (ov_args(i));
+
+  jit_function raw_fn;
+  jit_function wrapper;
 
   try
     {
@@ -1912,10 +1918,9 @@ jit_function_info::jit_function_info (tree_jit& tjit,
       jit_factory& factory = conv.get_factory ();
       llvm::Module *module = tjit.get_module ();
       jit_convert_llvm to_llvm;
-      jit_function raw_fn = to_llvm.convert_function (module,
-                                                      infer.get_blocks (),
-                                                      factory.constants (),
-                                                      fcn, argument_types);
+      raw_fn = to_llvm.convert_function (module, infer.get_blocks (),
+                                         factory.constants (), fcn,
+                                         argument_types);
 
       if (Venable_jit_debug)
         {
@@ -1928,8 +1933,9 @@ jit_function_info::jit_function_info (tree_jit& tjit,
       std::string wrapper_name = fcn.name () + "_wrapper";
       jit_type *any_t = jit_typeinfo::get_any ();
       std::vector<jit_type *> wrapper_args (1, jit_typeinfo::get_any_ptr ());
-      jit_function wrapper (module, jit_convention::internal, wrapper_name,
-                            any_t, wrapper_args);
+      wrapper = jit_function (module, jit_convention::internal, wrapper_name,
+                              any_t, wrapper_args);
+
       llvm::BasicBlock *wrapper_body = wrapper.new_block ();
       builder.SetInsertPoint (wrapper_body);
 
@@ -1985,6 +1991,9 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
         }
+
+      wrapper.erase ();
+      raw_fn.erase ();
     }
 }
 

@@ -49,6 +49,9 @@ include qterminal-module.mk
 
 include link-deps.mk
 
+# Dummy C++ source to cause C++ linking.
+nodist_EXTRA_liboctgui_la_SOURCES = dummy.cc
+
 liboctgui_la_LIBADD = \
   qterminal/libqterminal.la \
   src/libgui-src.la \

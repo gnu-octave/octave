@@ -96,6 +96,9 @@ liboctave_la_CPPFLAGS = \
 
 include link-deps.mk
 
+# Dummy C++ source to cause C++ linking.
+nodist_EXTRA_liboctave_la_SOURCES = dummy.cc
+
 liboctave_la_LIBADD = \
   array/libarray.la \
   cruft/libcruft.la \

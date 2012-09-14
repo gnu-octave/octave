@@ -65,8 +65,7 @@ class main_window
   main_window (QWidget * parent = 0);
   ~main_window ();
 
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
+  void handle_event (octave_event *e, bool accept);
 
   QTerminal *get_terminal_view () { return _terminal; }
   history_dock_widget *get_history_dock_widget ()

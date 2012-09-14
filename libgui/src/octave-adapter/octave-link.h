@@ -150,8 +150,7 @@ private:
 
   std::string do_last_working_directory (void);
 
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
+  void handle_event (octave_event *e, bool accept);
 };
 
 #endif // OCTAVELINK_H

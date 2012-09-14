@@ -54,18 +54,20 @@ main_window::~main_window ()
 }
 
 void
-main_window::event_accepted (octave_event *e)
+main_window::handle_event (octave_event *e, bool accept)
 {
-  if (dynamic_cast<octave_clear_history_event*> (e))
+  if (accept)
     {
-      // After clearing the history, we need to reset the model.
-      _history_dock_widget->reset_model ();
+      if (dynamic_cast<octave_clear_history_event*> (e))
+        {
+          // After clearing the history, we need to reset the model.
+          _history_dock_widget->reset_model ();
+        }
     }
-}
-
-void
-main_window::event_reject (octave_event *e)
-{
+  else
+    {
+      // octave_event::perform failed to process event.
+    }
 }
 
 void

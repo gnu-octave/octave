@@ -120,8 +120,7 @@ class workspace_model
   workspace_model (QObject *parent = 0);
   ~workspace_model ();
 
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
+  void handle_event (octave_event *e, bool accept);
 
   QVariant data (const QModelIndex &index, int role) const;
   Qt::ItemFlags flags (const QModelIndex &index) const;

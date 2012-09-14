@@ -40,56 +40,58 @@ history_dock_widget::history_dock_widget (QWidget * p)
 }
 
 void
-history_dock_widget::event_accepted (octave_event *e)
+history_dock_widget::handle_event (octave_event *e, bool accept)
 {
   static bool scroll_window = false;
 
-  if (dynamic_cast <octave_update_history_event*> (e))
+  if (accept)
     {
-      // Determine the client's (our) history length and the one of the server.
-      int clientHistoryLength = _history_model->rowCount ();
-      int serverHistoryLength = command_history::length ();
-
-      // If were behind the server, iterate through all new entries and add
-      // them to our history.
-      if (clientHistoryLength < serverHistoryLength)
+      if (dynamic_cast <octave_update_history_event*> (e))
         {
-          int elts_to_add = serverHistoryLength - clientHistoryLength;
+          // Determine the client's (our) history length and the one of the server.
+          int clientHistoryLength = _history_model->rowCount ();
+          int serverHistoryLength = command_history::length ();
 
-          _history_model->insertRows (clientHistoryLength, elts_to_add);
-
-          for (int i = clientHistoryLength; i < serverHistoryLength; i++)
+          // If were behind the server, iterate through all new entries and add
+          // them to our history.
+          if (clientHistoryLength < serverHistoryLength)
             {
-              std::string entry = command_history::get_entry (i);
+              int elts_to_add = serverHistoryLength - clientHistoryLength;
 
-              _history_model->setData (_history_model->index (i),
-                                       QString::fromStdString (entry));
+              _history_model->insertRows (clientHistoryLength, elts_to_add);
+
+              for (int i = clientHistoryLength; i < serverHistoryLength; i++)
+                {
+                  std::string entry = command_history::get_entry (i);
+
+                  _history_model->setData (_history_model->index (i),
+                                           QString::fromStdString (entry));
+                }
+
+              // FIXME -- does this behavior make sense?  Calling
+              // _history_list_view->scrollToBottom () here doesn't seem to
+              // have any effect.  Instead, we need to request that action
+              // and wait until the next event occurs in which no items
+              // are added to the history list.
+
+              scroll_window = true;
             }
+          else if (scroll_window)
+            {
+              scroll_window = false;
 
-          // FIXME -- does this behavior make sense?  Calling
-          // _history_list_view->scrollToBottom () here doesn't seem to
-          // have any effect.  Instead, we need to request that action
-          // and wait until the next event occurs in which no items
-          // are added to the history list.
-
-          scroll_window = true;
+              _history_list_view->scrollToBottom ();
+            }
         }
-      else if (scroll_window)
-        {
-          scroll_window = false;
 
-          _history_list_view->scrollToBottom ();
-        }
+      // Post a new update event in a given time. This prevents flooding the
+      // event queue.
+      _update_history_model_timer.start ();
     }
-
-  // Post a new update event in a given time. This prevents flooding the
-  // event queue.
-  _update_history_model_timer.start ();
-}
-
-void
-history_dock_widget::event_reject (octave_event *e)
-{
+  else
+    {
+      // octave_event::perform failed to handle event.
+    }
 }
 
 void

@@ -39,8 +39,7 @@ class history_dock_widget : public QDockWidget, public octave_event_observer
   public:
   history_dock_widget (QWidget *parent = 0);
 
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
+  void handle_event (octave_event *e, bool accept);
 
 public slots:
   void handle_visibility_changed (bool visible);

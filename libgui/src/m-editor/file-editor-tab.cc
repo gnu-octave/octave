@@ -116,41 +116,42 @@ file_editor_tab::copy_available ()
 }
 
 void
-file_editor_tab::event_accepted (octave_event *e)
+file_editor_tab::handle_event (octave_event *e, bool accept)
 {
-  if (dynamic_cast<octave_run_file_event*> (e))
+  if (accept)
     {
-      // File was run successfully.
-    }
+      if (dynamic_cast<octave_run_file_event*> (e))
+        {
+          // File was run successfully.
+        }
 
-  if (octave_add_breakpoint_event *abe
-      = dynamic_cast<octave_add_breakpoint_event*> (e))
-    {
-      // TODO: Check file.
-      _edit_area->markerAdd (abe->get_line (), breakpoint);
-    }
+      if (octave_add_breakpoint_event *abe
+          = dynamic_cast<octave_add_breakpoint_event*> (e))
+        {
+          // TODO: Check file.
+          _edit_area->markerAdd (abe->get_line (), breakpoint);
+        }
 
-  if (octave_remove_breakpoint_event *rbe
-      = dynamic_cast<octave_remove_breakpoint_event*> (e))
-    {
-      // TODO: Check file.
-      _edit_area->markerDelete (rbe->get_line (), breakpoint);
-    }
+      if (octave_remove_breakpoint_event *rbe
+          = dynamic_cast<octave_remove_breakpoint_event*> (e))
+        {
+          // TODO: Check file.
+          _edit_area->markerDelete (rbe->get_line (), breakpoint);
+        }
 
-  if (octave_remove_all_breakpoints_event *rabe
-      = dynamic_cast<octave_remove_all_breakpoints_event*> (e))
-    {
-      Q_UNUSED (rabe);
-      _edit_area->markerDeleteAll (breakpoint);
+      if (octave_remove_all_breakpoints_event *rabe
+          = dynamic_cast<octave_remove_all_breakpoints_event*> (e))
+        {
+          Q_UNUSED (rabe);
+          _edit_area->markerDeleteAll (breakpoint);
+        }
     }
-}
-
-void
-file_editor_tab::event_reject (octave_event *e)
-{
-  if (dynamic_cast<octave_run_file_event*> (e))
+  else
     {
-      // Running file failed.
+      if (dynamic_cast<octave_run_file_event*> (e))
+        {
+          // Running file failed.
+        }
     }
 }
 

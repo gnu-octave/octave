@@ -67,62 +67,64 @@ workspace_model::request_update_workspace ()
 }
 
 void
-workspace_model::event_accepted (octave_event *e)
+workspace_model::handle_event (octave_event *e, bool accept)
 {
-  if (dynamic_cast <octave_update_workspace_event*> (e))
+  if (accept)
     {
-      std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
-
-      _symbol_information.clear ();
-      for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
-           iterator != symbolTable.end (); iterator++)
-        _symbol_information.push_back (symbol_information (*iterator));
-
-      beginResetModel();
-      top_level_item (0)->delete_child_items ();
-      top_level_item (1)->delete_child_items ();
-      top_level_item (2)->delete_child_items ();
-
-      foreach (const symbol_information& s, _symbol_information)
+      if (dynamic_cast <octave_update_workspace_event*> (e))
         {
-          tree_item *child = new tree_item ();
+          std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
 
-          child->set_data (0, s.symbol ());
-          child->set_data (1, s.class_name ());
-          child->set_data (2, s.dimension ());
-          child->set_data (3, s.value ());
+          _symbol_information.clear ();
+          for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
+               iterator != symbolTable.end (); iterator++)
+            _symbol_information.push_back (symbol_information (*iterator));
 
-          switch (s.scope ())
+          beginResetModel();
+          top_level_item (0)->delete_child_items ();
+          top_level_item (1)->delete_child_items ();
+          top_level_item (2)->delete_child_items ();
+
+          foreach (const symbol_information& s, _symbol_information)
             {
-            case symbol_information::local:
-              top_level_item (0)->add_child (child);
-              break;
+              tree_item *child = new tree_item ();
 
-            case symbol_information::global:
-              top_level_item (1)->add_child (child);
-              break;
+              child->set_data (0, s.symbol ());
+              child->set_data (1, s.class_name ());
+              child->set_data (2, s.dimension ());
+              child->set_data (3, s.value ());
 
-            case symbol_information::persistent:
-              top_level_item (2)->add_child (child);
-              break;
+              switch (s.scope ())
+                {
+                case symbol_information::local:
+                  top_level_item (0)->add_child (child);
+                  break;
 
-            default:
-              break;
+                case symbol_information::global:
+                  top_level_item (1)->add_child (child);
+                  break;
+
+                case symbol_information::persistent:
+                  top_level_item (2)->add_child (child);
+                  break;
+
+                default:
+                  break;
+                }
             }
+
+          endResetModel();
+          emit model_changed();
         }
 
-      endResetModel();
-      emit model_changed();
+      // Post a new event in a given time.
+      // This prevents flooding the event queue when no events are being processed.
+      _update_workspace_model_timer.start ();
     }
-
-  // Post a new event in a given time.
-  // This prevents flooding the event queue when no events are being processed.
-  _update_workspace_model_timer.start ();
-}
-
-void
-workspace_model::event_reject (octave_event *e)
-{
+  else
+    {
+      // octave_event::perform failed to process event.
+    }
 }
 
 QModelIndex

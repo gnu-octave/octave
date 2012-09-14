@@ -59,18 +59,14 @@ class octave_event
     virtual bool perform () = 0;
 
     /**
-      * Accepts this event. This allows the event observer to react properly
-      * onto the event.
+      * Pass the event on to the class that posted the event.  ACCEPT
+      * will be true if the perform function was successful, and false
+      * otherwise.
       */
-    void accept ()
-    { _octave_event_observer.event_accepted (this); }
-
-    /**
-      * Rejects this event. This allows the event observer to react properly
-      * onto the event.
-      */
-    void reject ()
-    { _octave_event_observer.event_reject (this); }
+    void handle_event (bool accept)
+    {
+      _octave_event_observer.handle_event (this, accept);
+    }
 
   protected:
     void call_octave_function (const std::string& name);

@@ -37,8 +37,7 @@ class file_editor_tab : public QWidget, public octave_event_observer
   file_editor_tab (file_editor *fileEditor);
   bool copy_available ();
 
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
+  void handle_event (octave_event *e, bool accept);
 
 public slots:
   void update_window_title(bool modified);

@@ -116,10 +116,9 @@ octave_link::do_process_events (void)
 
       event_queue.pop ();
 
-      if (e->perform ())
-        e->accept ();
-      else
-        e->reject ();
+      bool status = e->perform ();
+
+      e->handle_event (status);
 
       delete e;
     }
@@ -159,12 +158,7 @@ octave_link::do_last_working_directory (void)
 }
 
 void
-octave_link::event_accepted (octave_event *e)
-{
-}
-
-void
-octave_link::event_reject (octave_event *e)
+octave_link::handle_event (octave_event *, bool)
 {
 }
 

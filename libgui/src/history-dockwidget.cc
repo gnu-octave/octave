@@ -85,13 +85,11 @@ history_dock_widget::event_accepted (octave_event *e)
   // Post a new update event in a given time. This prevents flooding the
   // event queue.
   _update_history_model_timer.start ();
-  delete e;
 }
 
 void
 history_dock_widget::event_reject (octave_event *e)
 {
-  delete e;
 }
 
 void

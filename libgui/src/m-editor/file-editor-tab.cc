@@ -143,8 +143,6 @@ file_editor_tab::event_accepted (octave_event *e)
       Q_UNUSED (rabe);
       _edit_area->markerDeleteAll (breakpoint);
     }
-
-  delete e;
 }
 
 void
@@ -154,7 +152,6 @@ file_editor_tab::event_reject (octave_event *e)
     {
       // Running file failed.
     }
-  delete e;
 }
 
 void

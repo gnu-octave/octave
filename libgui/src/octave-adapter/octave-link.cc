@@ -120,6 +120,8 @@ octave_link::do_process_events (void)
         e->accept ();
       else
         e->reject ();
+
+      delete e;
     }
 
   event_queue_mutex->unlock ();
@@ -159,13 +161,11 @@ octave_link::do_last_working_directory (void)
 void
 octave_link::event_accepted (octave_event *e)
 {
-  delete e;
 }
 
 void
 octave_link::event_reject (octave_event *e)
 {
-  delete e;
 }
 
 bool

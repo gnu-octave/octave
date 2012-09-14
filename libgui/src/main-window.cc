@@ -61,13 +61,11 @@ main_window::event_accepted (octave_event *e)
       // After clearing the history, we need to reset the model.
       _history_dock_widget->reset_model ();
     }
-  delete e;
 }
 
 void
 main_window::event_reject (octave_event *e)
 {
-  delete e;
 }
 
 void

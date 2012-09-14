@@ -118,13 +118,11 @@ workspace_model::event_accepted (octave_event *e)
   // Post a new event in a given time.
   // This prevents flooding the event queue when no events are being processed.
   _update_workspace_model_timer.start ();
-  delete e;
 }
 
 void
 workspace_model::event_reject (octave_event *e)
 {
-  delete e;
 }
 
 QModelIndex

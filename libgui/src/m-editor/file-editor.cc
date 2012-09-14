@@ -353,9 +353,8 @@ file_editor::handle_tab_close_request ()
 }
 
 void
-file_editor::active_tab_changed (int index)
+file_editor::active_tab_changed (int)
 {
-  Q_UNUSED (index);
   handle_editor_state_changed ();
 }
 

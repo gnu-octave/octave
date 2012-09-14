@@ -139,10 +139,8 @@ file_editor_tab::handle_event (octave_event *e, bool accept)
           _edit_area->markerDelete (rbe->get_line (), breakpoint);
         }
 
-      if (octave_remove_all_breakpoints_event *rabe
-          = dynamic_cast<octave_remove_all_breakpoints_event*> (e))
+      if (dynamic_cast<octave_remove_all_breakpoints_event*> (e))
         {
-          Q_UNUSED (rabe);
           _edit_area->markerDeleteAll (breakpoint);
         }
     }
@@ -192,7 +190,6 @@ void
 file_editor_tab::handle_margin_clicked(int margin, int line,
                                        Qt::KeyboardModifiers state)
 {
-  Q_UNUSED (state);
   if (margin == 1)
     {
       unsigned int markers_mask = _edit_area->markersAtLine (line);
@@ -757,9 +754,8 @@ file_editor_tab::run_file ()
 }
 
 void
-file_editor_tab::file_has_changed (const QString& fileName)
+file_editor_tab::file_has_changed (const QString&)
 {
-  Q_UNUSED (fileName);
   if (QFile::exists (_file_name))
     {
       // Prevent popping up multiple message boxes when the file has

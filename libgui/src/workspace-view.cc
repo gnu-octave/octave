@@ -198,9 +198,8 @@ workspace_view::expand_requested (QModelIndex index)
 }
 
 void
-workspace_view::item_double_clicked (QModelIndex index)
+workspace_view::item_double_clicked (QModelIndex)
 {
-  Q_UNUSED (index);
   // TODO: Implement opening a dialog that allows the user to change a variable in the workspace.
 }
 

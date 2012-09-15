@@ -32,7 +32,7 @@ octave_gui_UI_H = $(patsubst src/%.ui, src/ui-%.h, $(octave_gui_UI))
 
 octave_gui_RC = src/qrc-resource.cc
 
-liboctgui_la_SOURCES = \
+src_libgui_src_la_SOURCES = \
   src/documentation-dockwidget.cc \
   src/files-dockwidget.cc \
   src/history-dockwidget.cc \
@@ -56,7 +56,7 @@ liboctgui_la_SOURCES = \
   src/workspace-model.cc \
   src/workspace-view.cc
 
-nodist_liboctgui_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
+nodist_src_libgui_src_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
 noinst_HEADERS += \
   src/documentation-dockwidget.h \
@@ -131,7 +131,7 @@ octave_gui_ICONS = \
   src/icons/zoom-in.png \
   src/icons/zoom-out.png
 
-liboctgui_la_CPPFLAGS = \
+src_libgui_src_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
   -I$(QT_INCDIR) \
@@ -155,11 +155,8 @@ liboctgui_la_CPPFLAGS = \
   -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \
   -I$(top_srcdir)/libinterp/octave-value
 
-liboctgui_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-liboctgui_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+src_libgui_src_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 noinst_LTLIBRARIES += src/libgui-src.la
-
-src_libgui_src_la_SOURCES = $(GUI_SRC_SRC)
-src_libgui_src_la_CPPFLAGS = $(liboctgui_la_CPPFLAGS)

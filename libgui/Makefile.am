@@ -47,6 +47,10 @@ noinst_LTLIBRARIES =
 include src/module.mk
 include qterminal-module.mk
 
+## libocgui merely collects of compiled convenience libraries.
+## It has no source code itself.
+liboctgui_la_SOURCES = 
+
 include link-deps.mk
 
 # Dummy C++ source to cause C++ linking.

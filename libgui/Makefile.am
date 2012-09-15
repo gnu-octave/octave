@@ -36,9 +36,9 @@ octlib_LTLIBRARIES = liboctgui.la
 
 EXTRA_DIST = default-qt-settings
 
-BUILT_SOURCES =
-
 CLEANFILES =
+
+BUILT_SOURCES =
 
 noinst_HEADERS =
 
@@ -47,13 +47,13 @@ noinst_LTLIBRARIES =
 include src/module.mk
 include qterminal-module.mk
 
-## libocgui merely collects of compiled convenience libraries.
+## liboctgui merely collects a bunch of compiled convenience libraries.
 ## It has no source code itself.
 liboctgui_la_SOURCES = 
 
 include link-deps.mk
 
-# Dummy C++ source to cause C++ linking.
+# Dummy C++ source to force C++ linking.
 nodist_EXTRA_liboctgui_la_SOURCES = dummy.cc
 
 liboctgui_la_LIBADD = \

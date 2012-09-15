@@ -50,7 +50,9 @@ qterminal_libqterminal_la_SOURCES = \
   qterminal/libqterminal/win32/QTerminalColors.cpp \
   qterminal/libqterminal/win32/QWinTerminalImpl.cpp
 
-qterminal_libqterminal_la_MOC += qterminal/libqterminal/win32/moc-QWinTerminalImpl.cc
+qterminal_libqterminal_la_MOC += \
+  qterminal/libqterminal/win32/moc-QWinTerminalImpl.cc
+
 qterminal_libqterminal_la_CPPFLAGS += -DUNICODE
 
 # This flag is required to let MOC know about Q_OS_WIN32.

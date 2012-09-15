@@ -105,10 +105,7 @@ function [vx, vy] = voronoi (varargin)
     linespec = varargin(narg);
   endif
 
-  lx = length (x);
-  ly = length (y);
-
-  if (lx != ly)
+  if (length (x) != length (y))
     error ("voronoi: X and Y must be vectors of the same length");
   endif
 
@@ -133,35 +130,33 @@ function [vx, vy] = voronoi (varargin)
                               [[x(:) ; xbox(:)], [y(:); ybox(:)]],
                               opts{:});
 
-  idx = find (! infi);
-  ll = length (idx);
-  c = c(idx).';
-  k = sum (cellfun ("length", c));
+  c = c(! infi).';
+  ## Delete null entries which cause problems in next cellfun function
+  c(cellfun ("isempty", c)) = [];
   edges = cell2mat (cellfun (@(x) [x ; [x(end), x(1:end-1)]], c,
                              "uniformoutput", false));
 
   ## Identify the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';
-  edges = edges (:, [(edges(1, 1: end - 1) != edges(1, 2 : end) | ...
-                      edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
+  edges = edges(:, [(edges(1, 1 :end - 1) != edges(1, 2 : end) | ...
+                     edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
 
   ## Eliminate the edges of the diagram representing the box
-  poutside = (1 : rows (p)) ...
-      (p (:, 1) < xmin - xdelta | p (:, 1) > xmax + xdelta | ...
-       p (:, 2) < ymin - ydelta | p (:, 2) > ymax + ydelta);
-  edgeoutside = ismember (edges (1, :), poutside) & ...
-      ismember (edges (2, :), poutside);
-  edges (:, edgeoutside) = [];
+  poutside = (1:rows (p)) ...
+      (p(:, 1) < xmin - xdelta | p(:, 1) > xmax + xdelta | ...
+       p(:, 2) < ymin - ydelta | p(:, 2) > ymax + ydelta);
+  edgeoutside = ismember (edges(1, :), poutside) & ...
+                ismember (edges(2, :), poutside);
+  edges(:, edgeoutside) = [];
 
   ## Get points of the diagram
   Vvx = reshape (p(edges, 1), size (edges));
   Vvy = reshape (p(edges, 2), size (edges));
 
   if (nargout < 2)
-    lim = [xmin, xmax, ymin, ymax];
     h = plot (handl, Vvx, Vvy, linespec{:}, x, y, '+');
-    axis (lim + 0.1 * [[-1, 1] * (lim (2) - lim (1)), ...
-                       [-1, 1] * (lim (4) - lim (3))]);
+    lim = [xmin, xmax, ymin, ymax];
+    axis (lim + 0.1 * [[-1, 1] * xdelta, [-1, 1] * ydelta]);
     if (nargout == 1)
       vx = h;
     endif

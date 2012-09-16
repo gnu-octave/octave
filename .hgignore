@@ -6,8 +6,8 @@ syntax: regexp
 # gnulib makes these silly backup files
 ^.*~
 
-# This one gets created by gnulib during the build, contains no Octave
-# files.
+# This directory gets created by gnulib during the build. 
+# It contains no Octave files.
 ^gnulib/
 
 # These directories mostly contain cruft during build time, but they
@@ -23,7 +23,7 @@ syntax: regexp
 (/|^)Makefile\.in$
 ^INSTALL$
 
-^aclocal\.m4
+^aclocal\.m4$
 ^build-.*($|/)
 ^configure$
 ^autom4te\.cache($|/)
@@ -37,8 +37,7 @@ syntax: regexp
 ^doc/\w*/version\.texi$
 ^doc/interpreter/images\.mk$
 
-# e.g. liboctave/smx-op-inc.mk
+# e.g. liboctave/operators/smx-op-inc.mk
 ^liboctave/operators/\w+-op-\w+\.mk$
-^liboctave/\w+-op-\w+\.mk$
 
 ^libinterp/dldfcn/module\.mk$

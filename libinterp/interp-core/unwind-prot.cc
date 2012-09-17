@@ -25,12 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <cstddef>
-#include <cstring>
-
 #include "error.h"
 #include "unwind-prot.h"
-#include "utils.h"
 
 void unwind_protect_safe::gripe_exception (void)
 {

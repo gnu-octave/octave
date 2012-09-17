@@ -2049,8 +2049,7 @@ will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
 in binary mode and with the @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true,\n\
-the file will be deleted automatically when Octave exits, or when\n\
-the function @code{purge_tmp_files} is called.\n\
+the file will be deleted automatically when Octave exits.\n\
 \n\
 If successful, @var{fid} is a valid file ID, @var{name} is the name of\n\
 the file, and @var{msg} is an empty string.  Otherwise, @var{fid}\n\

@@ -210,6 +210,12 @@ octave_remove_history (int n)
     }
 }
 
+void
+octave_clear_history (void)
+{
+  clear_history ();
+}
+
 char *
 octave_history_goto_mark (int n)
 {

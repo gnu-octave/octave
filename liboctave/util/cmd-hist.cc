@@ -69,6 +69,8 @@ public:
 
   void do_remove (int);
 
+  void do_clear (void);
+
   int do_where (void) const;
 
   int do_length (void) const;
@@ -199,6 +201,12 @@ void
 gnu_history::do_remove (int n)
 {
   ::octave_remove_history (n);
+}
+
+void
+gnu_history::do_clear (void)
+{
+  ::octave_clear_history ();
 }
 
 int
@@ -587,6 +595,13 @@ command_history::remove (int n)
     instance->do_remove (n);
 }
 
+void
+command_history::clear (void)
+{
+  if (instance_ok ())
+    instance->do_clear ();
+}
+
 int
 command_history::where (void)
 {
@@ -804,6 +819,11 @@ command_history::do_add (const std::string&)
 
 void
 command_history::do_remove (int)
+{
+}
+
+void
+command_history::do_clear (void)
 {
 }
 

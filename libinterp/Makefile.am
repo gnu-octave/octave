@@ -210,6 +210,8 @@ $(SRC_DEF_FILES): mkdefs Makefile
 
 $(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
 
+## FIXME: The following two variables are deprecated and should be removed
+##        in Octave version 3.12.
 DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 

@@ -52,8 +52,8 @@ DEFUN (mgorth, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
 Orthogonalize a given column vector @var{x} with respect to a set of\n\
-orthonormal vectors comprising the columns of @var{v}
-using the modified Gram-Schmidt method.  \n\
+orthonormal vectors comprising the columns of @var{v}\n\
+using the modified Gram-Schmidt method.\n\
 On exit, @var{y} is a unit vector such that:\n\
 \n\
 @example\n\

@@ -43,9 +43,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "settings-dialog.h"
 
 #include "debug.h"
+#include "defaults.h"
 #include "load-save.h"
 #include "toplev.h"
 #include "variables.h"
+#include "version.h"
 
 #include "cmd-hist.h"
 #include "oct-env.h"
@@ -376,22 +378,7 @@ main_window::debug_quit ()
 void
 main_window::show_about_octave ()
 {
-  QString message =
-    "GNU Octave\n"
-    "Copyright (C) 2009 John W. Eaton and others.\n"
-    "This is free software; see the source code for copying conditions."
-    "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or"
-    "FITNESS FOR A PARTICULAR PURPOSE.  For details, type `warranty'.\n"
-    "\n"
-    "Additional information about Octave is available at http://www.octave.org.\n"
-    "\n"
-    "Please contribute if you find this software useful."
-    "For more information, visit http://www.octave.org/help-wanted.html\n"
-    "\n"
-    "Report bugs to <bug@octave.org> (but first, please read"
-    "http://www.octave.org/bugs.html to learn how to write a helpful report).\n"
-    "\n"
-    "For information about changes from previous versions, type `news'.\n";
+  QString message = OCTAVE_STARTUP_MESSAGE;
 
   QMessageBox::about (this, tr ("About Octave"), message);
 }

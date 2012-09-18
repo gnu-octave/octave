@@ -1,5 +1,5 @@
 #! /bin/sh
-# autogen.sh
+# bootstrap
 # Run this to generate all the initial makefiles, etc.
 
 set -e
@@ -36,7 +36,7 @@ echo "generating libinterp/dldfcn/module.mk..."
 
 echo "bootstrapping..."
 
-build-aux/bootstrap "$@"
+build-aux/bootstrap_gnulib "$@"
 
 ## G77 is obsolete, but it is still the first option in the autoconf Fortran
 ## macros.  We should avoid it, because mixing old versions of g77 with modern

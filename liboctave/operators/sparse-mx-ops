@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-# NOTE: if this file changes, you must run autogen.sh and configure to
+# NOTE: if this file changes, you must run bootstrap and configure to
 # rebuild the source file lists for Make.
 
 # types

@@ -43,9 +43,9 @@ relevant information on downloading sources at:
 
   http://www.gnu.org/software/octave/download.html
 
-After cloning Octave, you will need to run the autogen.sh script:
+After cloning Octave, you will need to run the bootstrap script:
 
-  $ ./autogen.sh
+  $ ./bootstrap
 
 This script will examine the source tree and generate some Makefile
 fragments and then runs the bootstrap script.  The bootstrap script comes
@@ -70,10 +70,10 @@ subrepository, so they will be automatically updated to the
 corresponding Mercurial revision if you update the working directory to
 a past revision not too far in the past.
 
-Additional options besides --gnulib-srcdir can be passed to autogen.sh and
-they will be forwarded without modification to the bootstrap script.
+Additional options besides --gnulib-srcdir can be passed to bootstrap and
+they will be forwarded without modification to the gnulib bootstrap script.
 
-Once the autogen.sh and bootstrap scripts complete successfully, you may
+Once the bootstrap and bootstrap_gnulib scripts complete successfully, you may
 run
 
   $ ./configure
@@ -115,8 +115,8 @@ An overview of the directory layout of Octave's source files:
 
   libgnu        -- gnulib sources that we use.  The files here are
                    copied here from the gnulib directory by the
-                   build-aux/bootstrap script that is run by the
-                   autogen.sh script.
+                   build-aux/bootstrap_gnulib script that is run by the
+                   bootstrap script.
 
 
   liboctave     -- C++ interfaces to the numerical libraries, Fortran

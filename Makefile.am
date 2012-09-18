@@ -37,8 +37,8 @@ EXTRA_DIST = \
   INSTALL.OCTAVE \
   NEWS \
   README \
-  autogen.sh \
-  build-aux/bootstrap \
+  bootstrap \
+  build-aux/bootstrap_gnulib \
   build-aux/bootstrap.conf \
   build-aux/mk-opts.pl \
   build-aux/mkinstalldirs \

@@ -129,6 +129,12 @@ private:
   bool do_have_breakpoints (void) { return (! bp_set.empty ()); }
 };
 
-std::string get_file_line (const std::string& fname, size_t line);
+extern std::string get_file_line (const std::string& fname, size_t line);
+
+extern void OCTINTERP_API debug_continue (void);
+
+extern void OCTINTERP_API debug_step (const std::string& what = std::string ());
+
+extern void OCTINTERP_API debug_quit (void);
 
 #endif

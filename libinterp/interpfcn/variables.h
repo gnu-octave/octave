@@ -148,4 +148,7 @@ extern OCTINTERP_API void clear_symbol (const std::string& nm);
 
 extern OCTINTERP_API void maybe_missing_function_hook (const std::string& name);
 
+// Equivalent to Fclear without any arguments.
+extern OCTINTERP_API void clear_current_scope (void);
+
 #endif

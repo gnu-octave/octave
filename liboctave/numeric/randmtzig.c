@@ -260,7 +260,7 @@ oct_init_by_entropy (void)
     int n = 0;
 
     /* Look for entropy in /dev/urandom */
-    FILE* urandom =fopen ("/dev/urandom", "rb");
+    FILE* urandom = fopen ("/dev/urandom", "rb");
     if (urandom)
       {
         while (n < MT_N)
@@ -400,8 +400,8 @@ randu32 (void)
 static double
 randu53 (void)
 {
-  const uint32_t a=randi32 ()>>5;
-  const uint32_t b=randi32 ()>>6;
+  const uint32_t a = randi32 ()>>5;
+  const uint32_t b = randi32 ()>>6;
   return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
 }
 
@@ -593,7 +593,7 @@ oct_randn (void)
 # else /* !HAVE_X86_32 */
       /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
       const uint64_t r = NRANDI;
-      const int64_t rabs=r>>1;
+      const int64_t rabs = r>>1;
       const int idx = (int)(rabs&0xFF);
       const double x = ( r&1 ? -rabs : rabs) * wi[idx];
 # endif /* !HAVE_X86_32 */

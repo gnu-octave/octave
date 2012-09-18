@@ -87,4 +87,7 @@ do_save (std::ostream& os, const symbol_table::symbol_record& sr,
 extern void
 write_header (std::ostream& os, load_save_format format);
 
+extern OCTINTERP_API void load_workspace (const std::string& file);
+extern OCTINTERP_API void save_workspace (const std::string& file);
+
 #endif

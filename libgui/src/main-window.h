@@ -44,28 +44,23 @@ along with Octave; see the file COPYING.  If not, see
 
 // Own includes
 #include "resource-manager.h"
-#include "octave-link.h"
 #include "workspace-view.h"
 #include "history-dockwidget.h"
 #include "files-dockwidget.h"
 #include "terminal-dockwidget.h"
 #include "documentation-dockwidget.h"
 #include "octave-qt-event-listener.h"
-#include "octave-event-observer.h"
 
 /**
  * \class MainWindow
  *
  * Represents the main window.
  */
-class main_window
-  : public QMainWindow, public octave_event_observer
+class main_window : public QMainWindow
 {
   Q_OBJECT public:
   main_window (QWidget * parent = 0);
   ~main_window ();
-
-  void handle_event (octave_event *e, bool accept);
 
   QTerminal *get_terminal_view () { return _terminal; }
   history_dock_widget *get_history_dock_widget ()
@@ -127,6 +122,28 @@ protected:
 private:
   void construct ();
   void establish_octave_link ();
+
+  void save_workspace_callback (const std::string& file);
+
+  void load_workspace_callback (const std::string& file);
+
+  void clear_workspace_callback (void);
+
+  void clear_history_callback (void);
+
+  void change_directory_callback (const std::string& directory);
+
+  void debug_continue_callback (void);
+
+  void debug_step_into_callback (void);
+
+  void debug_step_over_callback (void);
+
+  void debug_step_out_callback (void);
+
+  void debug_quit_callback (void);
+
+  void exit_callback (void);
 
   QTerminal *               _terminal;
   file_editor_interface *   _file_editor;

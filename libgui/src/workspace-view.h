@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDockWidget>
 #include <QTreeView>
 #include <QSemaphore>
-#include "octave-link.h"
+
 #include "workspace-model.h"
 
 class workspace_view : public QDockWidget

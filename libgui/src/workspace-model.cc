@@ -29,13 +29,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <list>
 
-#include <symtab.h>
+#include "symtab.h"
+#include "variables.h"
 
 #include "workspace-model.h"
 #include "octave-link.h"
 
 workspace_model::workspace_model(QObject *p)
-  : QAbstractItemModel (p), octave_event_observer ()
+  : QAbstractItemModel (p)
 {
   QList<QVariant> rootData;
   rootData << tr ("Name") << tr ("Class") << tr("Dimension") << tr ("Value");
@@ -63,68 +64,7 @@ workspace_model::~workspace_model()
 void
 workspace_model::request_update_workspace ()
 {
-  octave_link::post_event (new octave_update_workspace_event (*this));
-}
-
-void
-workspace_model::handle_event (octave_event *e, bool accept)
-{
-  if (accept)
-    {
-      if (dynamic_cast <octave_update_workspace_event*> (e))
-        {
-          std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
-
-          _symbol_information.clear ();
-          for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
-               iterator != symbolTable.end (); iterator++)
-            _symbol_information.push_back (symbol_information (*iterator));
-
-          beginResetModel();
-          top_level_item (0)->delete_child_items ();
-          top_level_item (1)->delete_child_items ();
-          top_level_item (2)->delete_child_items ();
-
-          foreach (const symbol_information& s, _symbol_information)
-            {
-              tree_item *child = new tree_item ();
-
-              child->set_data (0, s.symbol ());
-              child->set_data (1, s.class_name ());
-              child->set_data (2, s.dimension ());
-              child->set_data (3, s.value ());
-
-              switch (s.scope ())
-                {
-                case symbol_information::local:
-                  top_level_item (0)->add_child (child);
-                  break;
-
-                case symbol_information::global:
-                  top_level_item (1)->add_child (child);
-                  break;
-
-                case symbol_information::persistent:
-                  top_level_item (2)->add_child (child);
-                  break;
-
-                default:
-                  break;
-                }
-            }
-
-          endResetModel();
-          emit model_changed();
-        }
-
-      // Post a new event in a given time.
-      // This prevents flooding the event queue when no events are being processed.
-      _update_workspace_model_timer.start ();
-    }
-  else
-    {
-      // octave_event::perform failed to process event.
-    }
+  octave_link::post_event (this, &workspace_model::update_workspace_callback);
 }
 
 QModelIndex
@@ -234,5 +174,56 @@ workspace_model::data(const QModelIndex &idx, int role) const
   tree_item *item = static_cast<tree_item*>(idx.internalPointer());
 
   return item->data(idx.column());
+}
+
+void
+workspace_model::update_workspace_callback (void)
+{
+  std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
+
+  _symbol_information.clear ();
+  for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
+       iterator != symbolTable.end (); iterator++)
+    _symbol_information.push_back (symbol_information (*iterator));
+
+  beginResetModel();
+  top_level_item (0)->delete_child_items ();
+  top_level_item (1)->delete_child_items ();
+  top_level_item (2)->delete_child_items ();
+
+  foreach (const symbol_information& s, _symbol_information)
+    {
+      tree_item *child = new tree_item ();
+
+      child->set_data (0, s.symbol ());
+      child->set_data (1, s.class_name ());
+      child->set_data (2, s.dimension ());
+      child->set_data (3, s.value ());
+
+      switch (s.scope ())
+        {
+        case symbol_information::local:
+          top_level_item (0)->add_child (child);
+          break;
+
+        case symbol_information::global:
+          top_level_item (1)->add_child (child);
+          break;
+
+        case symbol_information::persistent:
+          top_level_item (2)->add_child (child);
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  endResetModel();
+  emit model_changed();
+
+  // Post a new event in a given time.
+  // This prevents flooding the event queue when no events are being processed.
+  _update_workspace_model_timer.start ();
 }
 

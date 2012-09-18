@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTimer>
 
 #include "symbol-information.h"
-#include "octave-event-observer.h"
 
 class tree_item
 {
@@ -112,15 +111,13 @@ private:
 };
 
 class workspace_model
-  : public QAbstractItemModel, public octave_event_observer
+  : public QAbstractItemModel
 {
   Q_OBJECT
 
   public:
   workspace_model (QObject *parent = 0);
   ~workspace_model ();
-
-  void handle_event (octave_event *e, bool accept);
 
   QVariant data (const QModelIndex &index, int role) const;
   Qt::ItemFlags flags (const QModelIndex &index) const;
@@ -142,6 +139,9 @@ signals:
   void model_changed ();
 
 private:
+
+  void update_workspace_callback (void);
+
   /** Timer for periodically updating the workspace model from the current
    * symbol information. */
   QTimer _update_workspace_model_timer;

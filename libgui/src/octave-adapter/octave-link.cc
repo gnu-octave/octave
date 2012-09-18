@@ -55,7 +55,7 @@ octave_link *octave_link::instance = 0;
 
 octave_link::octave_link (void)
   : event_listener (0), event_queue_mutex (new octave_mutex ()),
-    event_queue (), last_cwd (), debugging (false)
+    gui_event_queue (), last_cwd (), debugging (false)
 { }
 
 void
@@ -110,31 +110,9 @@ octave_link::do_process_events (void)
 {
   event_queue_mutex->lock ();
 
-  while (event_queue.size () > 0)
-    {
-      octave_event *e = event_queue.front ();
-
-      event_queue.pop ();
-
-      bool status = e->perform ();
-
-      e->handle_event (status);
-
-      delete e;
-    }
+  gui_event_queue.run ();
 
   event_queue_mutex->unlock ();
-}
-
-void
-octave_link::do_post_event (octave_event *e)
-{
-  if (e)
-    {
-      event_queue_mutex->lock ();
-      event_queue.push (e);
-      event_queue_mutex->unlock ();
-    }
 }
 
 void
@@ -142,8 +120,7 @@ octave_link::do_about_to_exit (void)
 {
   event_queue_mutex->lock ();
 
-  while (! event_queue.empty ())
-    event_queue.pop ();
+  gui_event_queue.discard ();
 
   event_queue_mutex->unlock ();
 
@@ -155,11 +132,6 @@ std::string
 octave_link::do_last_working_directory (void)
 {
   return last_cwd;
-}
-
-void
-octave_link::handle_event (octave_event *, bool)
-{
 }
 
 bool

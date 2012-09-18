@@ -24,12 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "file-editor-tab.h"
-#include "file-editor.h"
-#include "find-dialog.h"
-#include "octave-link.h"
-
-
 #include <Qsci/qsciapis.h>
 // Not available in the Debian repos yet!
 // #include <Qsci/qscilexeroctave.h>
@@ -46,8 +40,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTextStream>
 #include <QVBoxLayout>
 
+#include "file-editor-tab.h"
+#include "file-editor.h"
+#include "find-dialog.h"
+#include "octave-link.h"
+
+#include "debug.h"
+#include "oct-env.h"
+
 file_editor_tab::file_editor_tab(file_editor *fileEditor)
-  : QWidget ((QWidget*)fileEditor), octave_event_observer ()
+  : QWidget ((QWidget*)fileEditor)
 {
   _file_editor = fileEditor;
   _file_name = "";
@@ -113,44 +115,6 @@ bool
 file_editor_tab::copy_available ()
 {
   return _copy_available;
-}
-
-void
-file_editor_tab::handle_event (octave_event *e, bool accept)
-{
-  if (accept)
-    {
-      if (dynamic_cast<octave_run_file_event*> (e))
-        {
-          // File was run successfully.
-        }
-
-      if (octave_add_breakpoint_event *abe
-          = dynamic_cast<octave_add_breakpoint_event*> (e))
-        {
-          // TODO: Check file.
-          _edit_area->markerAdd (abe->get_line (), breakpoint);
-        }
-
-      if (octave_remove_breakpoint_event *rbe
-          = dynamic_cast<octave_remove_breakpoint_event*> (e))
-        {
-          // TODO: Check file.
-          _edit_area->markerDelete (rbe->get_line (), breakpoint);
-        }
-
-      if (dynamic_cast<octave_remove_all_breakpoints_event*> (e))
-        {
-          _edit_area->markerDeleteAll (breakpoint);
-        }
-    }
-  else
-    {
-      if (dynamic_cast<octave_run_file_event*> (e))
-        {
-          // Running file failed.
-        }
-    }
 }
 
 void
@@ -307,9 +271,10 @@ file_editor_tab::request_add_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::post_event (new octave_add_breakpoint_event
-                           (*this, path.toStdString (),
-                            function_name.toStdString (), line));
+  bp_info info (path, function_name, line);
+
+  octave_link::post_event
+    (this, &file_editor_tab::add_breakpoint_callback, info);
 }
 
 void
@@ -322,9 +287,10 @@ file_editor_tab::request_remove_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::post_event (new octave_remove_breakpoint_event
-                           (*this, path.toStdString (),
-                            function_name.toStdString (), line));
+  bp_info info (path, function_name, line);
+
+  octave_link::post_event
+    (this, &file_editor_tab::remove_breakpoint_callback, info);
 }
 
 void
@@ -492,9 +458,10 @@ file_editor_tab::remove_all_breakpoints ()
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  octave_link::post_event (new octave_remove_all_breakpoints_event
-                           (*this, path.toStdString (),
-                            function_name.toStdString ()));
+  bp_info info (path, function_name, 0);
+
+  octave_link::post_event
+    (this, &file_editor_tab::remove_all_breakpoints_callback, info);
 }
 
 void
@@ -749,8 +716,8 @@ file_editor_tab::run_file ()
   _file_editor->terminal ()->sendText (QString ("cd \'%1\'\n%2\n")
                                        .arg(path).arg (function_name));
   // TODO: Sending a run event crashes for long scripts. Find out why.
-  //  octave_link::post_event (new octave_run_file_event
-  //                           (*this, _file_name.toStdString ()));
+  // octave_link::post_event
+  //   (this, &file_editor_tab::run_file_callback, _file_name.toStdString ()));
 }
 
 void
@@ -838,4 +805,62 @@ file_editor_tab::notice_settings ()
   _long_title = settings->value ("editor/longWindowTitle",false).toBool ();
 
   update_window_title (false);
+}
+
+void
+file_editor_tab::run_file_callback (void)
+{
+  // Maybe someday we will do something here?
+}
+
+void
+file_editor_tab::add_breakpoint_callback (const bp_info& info)
+{
+  bp_table::intmap intmap;
+  intmap[0] = info.line + 1;
+
+  std::string previous_directory = octave_env::get_current_directory ();
+  octave_env::chdir (info.path);
+  intmap = bp_table::add_breakpoint (info.function_name, intmap);
+  octave_env::chdir (previous_directory);
+
+  if (intmap.size () > 0)
+    {
+    // FIXME -- Check file.
+      _edit_area->markerAdd (info.line, breakpoint);
+    }
+}
+
+void
+file_editor_tab::remove_breakpoint_callback (const bp_info& info)
+{
+  bp_table::intmap intmap;
+  intmap[0] = info.line;
+
+  std::string previous_directory = octave_env::get_current_directory ();
+  octave_env::chdir (info.path);
+  bp_table::remove_breakpoint (info.function_name, intmap);
+  octave_env::chdir (previous_directory);
+
+  // FIXME -- check result
+  bool success = true;
+
+  if (success)
+    {
+      // FIXME -- check file.
+      _edit_area->markerDelete (info.line, breakpoint);
+    }
+}
+
+void
+file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
+{
+  bp_table::intmap intmap;
+  std::string previous_directory = octave_env::get_current_directory ();
+  octave_env::chdir (info.path);
+  intmap = bp_table::remove_all_breakpoints_in_file (info.function_name, true);
+  octave_env::chdir (previous_directory);
+
+  if (intmap.size() > 0)
+    _edit_area->markerDeleteAll (breakpoint);
 }

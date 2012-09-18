@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <unistd.h>
 
 #include "pathmax.h"
+#include "canonicalize.h"
 
 #include "dir-ops.h"
 #include "file-ops.h"

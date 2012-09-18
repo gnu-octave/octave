@@ -279,10 +279,15 @@ xcopysign (float x, float y)
   return gnulib::copysignf (x, y);
 }
 
+float xfloor (float x)
+{
+  return gnulib::floorf (x);
+}
+
 float
 xround (float x)
 {
-  return gnulib::round (x);
+  return gnulib::roundf (x);
 }
 
 float

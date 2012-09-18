@@ -24,14 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef OCTAVELINK_H
 #define OCTAVELINK_H
 
-#include <queue>
 #include <string>
 
 class octave_mutex;
 
+#include "event-queue.h"
+
 #include "octave-main-thread.h"
-#include "octave-event.h"
-#include "octave-event-observer.h"
 #include "octave-event-listener.h"
 
 // \class OctaveLink
@@ -42,7 +41,7 @@ class octave_mutex;
 // buffering access operations to octave and executing them in the
 // readline event hook, which lives in the octave thread.
 
-class octave_link : public octave_event_observer
+class octave_link
 {
 protected:
 
@@ -76,10 +75,25 @@ public:
       instance->do_process_events ();
   }
 
-  static void post_event (octave_event *e)
+  template <class T>
+  static void post_event (T *obj, void (T::*method) (void))
   {
     if (instance_ok ())
-      instance->do_post_event (e);
+      instance->do_post_event (obj, method);
+  }
+
+  template <class T, class A>
+  static void post_event (T *obj, void (T::*method) (A), A arg)
+  {
+    if (instance_ok ())
+      instance->do_post_event (obj, method, arg);
+  }
+
+  template <class T, class A>
+  static void post_event (T *obj, void (T::*method) (const A&), const A& arg)
+  {
+    if (instance_ok ())
+      instance->do_post_event (obj, method, arg);
   }
 
   static void about_to_exit (void)
@@ -128,8 +142,8 @@ private:
   // Semaphore to lock access to the event queue.
   octave_mutex *event_queue_mutex;
 
-  // Buffer for queueing events until they will be processed.
-  std::queue <octave_event *> event_queue;
+  // Event Queue.
+  event_queue gui_event_queue;
 
   // Stores the last known current working directory of octave.
   std::string last_cwd;
@@ -141,7 +155,24 @@ private:
 
   void do_generate_events (void);
   void do_process_events (void);
-  void do_post_event (octave_event *e);
+
+  template <class T>
+  void do_post_event (T *obj, void (T::*method) (void))
+  {
+    gui_event_queue.add_method (obj, method);
+  }
+
+  template <class T, class A>
+  void do_post_event (T *obj, void (T::*method) (A), A arg)
+  {
+    gui_event_queue.add_method (obj, method, arg);
+  }
+
+  template <class T, class A>
+  void do_post_event (T *obj, void (T::*method) (const A&), const A& arg)
+  {
+    gui_event_queue.add_method (obj, method, arg);
+  }
 
   void do_about_to_exit (void);
 
@@ -149,8 +180,6 @@ private:
   void do_finished_readline_hook (void) { }
 
   std::string do_last_working_directory (void);
-
-  void handle_event (octave_event *e, bool accept);
 };
 
 #endif // OCTAVELINK_H

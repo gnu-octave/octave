@@ -66,6 +66,8 @@ extern int octave_history_truncate_file (const char *, int);
 
 extern void octave_remove_history (int);
 
+extern void octave_clear_history (void);
+
 extern char *octave_history_goto_mark (int n);
 
 extern char *octave_history_get (int n);

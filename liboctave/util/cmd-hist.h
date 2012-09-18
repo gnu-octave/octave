@@ -65,6 +65,8 @@ public:
 
   static void remove (int);
 
+  static void clear (void);
+
   static int where (void);
 
   static int length (void);
@@ -157,6 +159,8 @@ protected:
   virtual void do_add (const std::string&);
 
   virtual void do_remove (int);
+
+  virtual void do_clear (void);
 
   virtual int do_where (void) const;
 

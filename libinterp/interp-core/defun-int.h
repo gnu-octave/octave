@@ -77,12 +77,22 @@ defun_isargout (int, int);
 extern OCTINTERP_API void
 defun_isargout (int, int, bool *);
 
+#define DECLARE_FUNXX(name, args_decl, nargout_decl) \
+  OCTAVE_EXPORT octave_value_list name (args_decl, nargout_decl)
+
 #define DECLARE_FUNX(name, args_name, nargout_name) \
-  OCTAVE_EXPORT octave_value_list \
-  name (const octave_value_list& args_name, int nargout_name)
+  DECLARE_FUNXX (name, \
+                 const octave_value_list& args_name = octave_value_list (), \
+                 int nargout_name = 0)
+
+#define DECLARE_FUNX_NO_DEFAULTS(name, args_name, nargout_name) \
+  DECLARE_FUNXX (name, const octave_value_list& args_name, int nargout_name)
 
 #define DECLARE_FUN(name, args_name, nargout_name) \
   DECLARE_FUNX (F ## name, args_name, nargout_name)
+
+#define DECLARE_FUN_NO_DEFAULTS(name, args_name, nargout_name) \
+  DECLARE_FUNX_NO_DEFAULTS (F ## name, args_name, nargout_name)
 
 // Define the code that will be used to insert the new function into
 // the symbol table.  We look for this name instead of the actual

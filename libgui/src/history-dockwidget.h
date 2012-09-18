@@ -30,16 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringListModel>
 #include <QTimer>
 
-#include "octave-link.h"
-#include "octave-event-observer.h"
-
-class history_dock_widget : public QDockWidget, public octave_event_observer
+class history_dock_widget : public QDockWidget
 {
   Q_OBJECT
   public:
   history_dock_widget (QWidget *parent = 0);
-
-  void handle_event (octave_event *e, bool accept);
 
 public slots:
   void handle_visibility_changed (bool visible);
@@ -69,6 +64,8 @@ private:
   QStringListModel *_history_model;
 
   QTimer _update_history_model_timer;
+
+  void update_history_callback (void);
 };
 
 #endif // HISTORYDOCKWIDGET_H

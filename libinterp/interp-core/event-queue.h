@@ -1,7 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
+Copyright (C) 2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,92 +20,76 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_unwind_prot_h)
-#define octave_unwind_prot_h 1
+#if !defined (octave_event_queue_h)
+#define octave_event_queue_h 1
 
-#include <stack>
+#include <queue>
 #include <memory>
 
 #include "action-container.h"
 
 class
 OCTINTERP_API
-unwind_protect : public action_container
+event_queue : public action_container
 {
 public:
 
-  unwind_protect (void) : lifo () { }
+  event_queue (void) : fifo () { }
 
   // Destructor should not raise an exception, so all actions
   // registered should be exception-safe (but setting error_state is
-  // allowed). If you're not sure, see unwind_protect_safe.
+  // allowed). If you're not sure, see event_queue_safe.
 
-  ~unwind_protect (void) { run (); }
+  ~event_queue (void) { run (); }
 
-  virtual void add (elem *new_elem)
+  void add (elem *new_elem)
   {
-    lifo.push (new_elem);
+    fifo.push (new_elem);
   }
-
-  void add (void (*fcn) (void *), void *ptr = 0) GCC_ATTR_DEPRECATED
-  {
-    add (new fcn_arg_elem<void *> (fcn, ptr));
-  }
-
-  operator bool (void) const { return ! empty (); }
-
-  void run_top (void) GCC_ATTR_DEPRECATED { run_first (); }
 
   void run_first (void)
   {
     if (! empty ())
       {
         // No leak on exception!
-        std::auto_ptr<elem> ptr (lifo.top ());
-        lifo.pop ();
+        std::auto_ptr<elem> ptr (fifo.front ());
+        fifo.pop ();
         ptr->run ();
       }
   }
-
-  void run_top (int num) GCC_ATTR_DEPRECATED { run (num); }
-
-  void discard_top (void) GCC_ATTR_DEPRECATED { discard_first (); }
 
   void discard_first (void)
   {
     if (! empty ())
       {
-        elem *ptr = lifo.top ();
-        lifo.pop ();
+        elem *ptr = fifo.front ();
+        fifo.pop ();
         delete ptr;
       }
   }
 
-  void discard_top (int num) GCC_ATTR_DEPRECATED { discard (num); }
-
-  size_t size (void) const { return lifo.size (); }
+  size_t size (void) const { return fifo.size (); }
 
 protected:
 
-  std::stack<elem *> lifo;
+  std::queue<elem *> fifo;
 
 private:
 
   // No copying!
 
-  unwind_protect (const unwind_protect&);
+  event_queue (const event_queue&);
 
-  unwind_protect& operator = (const unwind_protect&);
+  event_queue& operator = (const event_queue&);
 };
 
-// Like unwind_protect, but this one will guard against the
+// Like event_queue, but this one will guard against the
 // possibility of seeing an exception (or interrupt) in the cleanup
 // actions. Not that we can do much about it, but at least we won't
 // crash.
 
 class
-OCTINTERP_API
-unwind_protect_safe : public unwind_protect
+event_queue_safe : public event_queue
 {
 private:
 
@@ -114,9 +97,9 @@ private:
 
 public:
 
-  unwind_protect_safe (void) : unwind_protect () { }
+  event_queue_safe (void) : event_queue () { }
 
-  ~unwind_protect_safe (void)
+  ~event_queue_safe (void)
     {
       while (! empty ())
         {
@@ -135,9 +118,9 @@ private:
 
   // No copying!
 
-  unwind_protect_safe (const unwind_protect_safe&);
+  event_queue_safe (const event_queue_safe&);
 
-  unwind_protect_safe& operator = (const unwind_protect_safe&);
+  event_queue_safe& operator = (const event_queue_safe&);
 };
 
 #endif

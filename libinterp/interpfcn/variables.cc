@@ -2340,8 +2340,8 @@ without the dash as well.\n\
     {
       if (argc == 1)
         {
-          do_clear_globals (argv, argc, 1);
-          do_clear_variables (argv, argc, 1);
+          do_clear_globals (argv, argc, true);
+          do_clear_variables (argv, argc, true);
         }
       else
         {
@@ -2458,6 +2458,12 @@ without the dash as well.\n\
     }
 
   return retval;
+}
+
+void
+clear_current_scope (void)
+{
+  Fclear ();
 }
 
 DEFUN (whos_line_format, args, nargout,

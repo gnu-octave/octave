@@ -57,14 +57,14 @@ along with Octave; see the file COPYING.  If not, see
 #else
 
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name); \
+  DECLARE_FUN_NO_DEFAULTS (name, args_name, nargout_name); \
   DEFINE_FUN_INSTALLER_FUN (name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name)
+  DECLARE_FUN_NO_DEFAULTS (name, args_name, nargout_name)
 
 #define DEFUNX_DLD(name, fname, gname, args_name, nargout_name, doc) \
-  DECLARE_FUNX (fname, args_name, nargout_name); \
+  DECLARE_FUNX_NO_DEFAULTS (fname, args_name, nargout_name); \
   DEFINE_FUNX_INSTALLER_FUN (name, fname, gname, doc) \
-  DECLARE_FUNX (fname, args_name, nargout_name)
+  DECLARE_FUNX_NO_DEFAULTS (fname, args_name, nargout_name)
 
 #endif
 

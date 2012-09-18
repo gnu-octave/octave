@@ -12,6 +12,7 @@ JIT_INC = \
 
 INTERP_CORE_INC = \
   interp-core/Cell.h \
+  interp-core/action-container.h \
   interp-core/c-file-ptr-stream.h \
   interp-core/comment-list.h \
   interp-core/cutils.h \
@@ -19,6 +20,7 @@ INTERP_CORE_INC = \
   interp-core/defun-int.h \
   interp-core/display.h \
   interp-core/dynamic-ld.h \
+  interp-core/event-queue.h \
   interp-core/gl-render.h \
   interp-core/gl2ps-renderer.h \
   interp-core/gl2ps.h \

@@ -37,12 +37,23 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QIcon>
 
-#include "main-window.h"
 #include "file-editor.h"
+#include "main-window.h"
+#include "octave-link.h"
 #include "settings-dialog.h"
 
+#include "debug.h"
+#include "defaults.h"
+#include "load-save.h"
+#include "toplev.h"
+#include "variables.h"
+#include "version.h"
+
+#include "cmd-hist.h"
+#include "oct-env.h"
+
 main_window::main_window (QWidget *p)
-  : QMainWindow (p), octave_event_observer ()
+  : QMainWindow (p)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -51,23 +62,6 @@ main_window::main_window (QWidget *p)
 
 main_window::~main_window ()
 {
-}
-
-void
-main_window::handle_event (octave_event *e, bool accept)
-{
-  if (accept)
-    {
-      if (dynamic_cast<octave_clear_history_event*> (e))
-        {
-          // After clearing the history, we need to reset the model.
-          _history_dock_widget->reset_model ();
-        }
-    }
-  else
-    {
-      // octave_event::perform failed to process event.
-    }
 }
 
 void
@@ -104,10 +98,8 @@ main_window::handle_save_workspace_request ()
     QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
                                   resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
-    {
-      octave_link::post_event (new octave_save_workspace_event
-                               (*this, selectedFile.toStdString ()));
-    }
+    octave_link::post_event (this, &main_window::save_workspace_callback,
+                             selectedFile.toStdString ());
 }
 
 void
@@ -117,22 +109,20 @@ main_window::handle_load_workspace_request ()
     QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
                                   resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
-    {
-      octave_link::post_event (new octave_load_workspace_event
-                               (*this, selectedFile.toStdString ()));
-    }
+    octave_link::post_event (this, &main_window::load_workspace_callback,
+                             selectedFile.toStdString ());
 }
 
 void
 main_window::handle_clear_workspace_request ()
 {
-  octave_link::post_event (new octave_clear_workspace_event (*this));
+  octave_link::post_event (this, &main_window::clear_workspace_callback);
 }
 
 void
 main_window::handle_clear_history_request()
 {
-  octave_link::post_event (new octave_clear_history_event (*this));
+  octave_link::post_event (this, &main_window::clear_history_callback);
 }
 
 void
@@ -232,17 +222,15 @@ main_window::change_current_working_directory ()
     QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
 
   if (!selectedDirectory.isEmpty ())
-    {
-      octave_link::post_event (new octave_change_directory_event
-                               (*this, selectedDirectory.toStdString ()));
-    }
+    octave_link::post_event (this, &main_window::change_directory_callback,
+                             selectedDirectory.toStdString ());
 }
 
 void
 main_window::set_current_working_directory (const QString& directory)
 {
-  octave_link::post_event (new octave_change_directory_event
-                           (*this, directory.toStdString ()));
+  octave_link::post_event (this, &main_window::change_directory_callback,
+                           directory.toStdString ());
 }
 
 void
@@ -360,52 +348,37 @@ main_window::handle_quit_debug_mode ()
 void
 main_window::debug_continue ()
 {
-  octave_link::post_event (new octave_debug_continue_event (*this));
+  octave_link::post_event (this, &main_window::debug_continue_callback);
 }
 
 void
 main_window::debug_step_into ()
 {
-  octave_link::post_event (new octave_debug_step_into_event (*this));
+  octave_link::post_event (this, &main_window::debug_step_into_callback);
 }
 
 void
 main_window::debug_step_over ()
 {
-  octave_link::post_event (new octave_debug_step_over_event (*this));
+  octave_link::post_event (this, &main_window::debug_step_over_callback);
 }
 
 void
 main_window::debug_step_out ()
 {
-  octave_link::post_event (new octave_debug_step_out_event (*this));
+  octave_link::post_event (this, &main_window::debug_step_out_callback);
 }
 
 void
 main_window::debug_quit ()
 {
-  octave_link::post_event (new octave_debug_quit_event (*this));
+  octave_link::post_event (this, &main_window::debug_quit_callback);
 }
 
 void
 main_window::show_about_octave ()
 {
-  QString message =
-    "GNU Octave\n"
-    "Copyright (C) 2009 John W. Eaton and others.\n"
-    "This is free software; see the source code for copying conditions."
-    "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or"
-    "FITNESS FOR A PARTICULAR PURPOSE.  For details, type `warranty'.\n"
-    "\n"
-    "Additional information about Octave is available at http://www.octave.org.\n"
-    "\n"
-    "Please contribute if you find this software useful."
-    "For more information, visit http://www.octave.org/help-wanted.html\n"
-    "\n"
-    "Report bugs to <bug@octave.org> (but first, please read"
-    "http://www.octave.org/bugs.html to learn how to write a helpful report).\n"
-    "\n"
-    "For information about changes from previous versions, type `news'.\n";
+  QString message = OCTAVE_STARTUP_MESSAGE;
 
   QMessageBox::about (this, tr ("About Octave"), message);
 }
@@ -414,7 +387,7 @@ void
 main_window::closeEvent (QCloseEvent *e)
 {
   e->ignore ();
-  octave_link::post_event (new octave_exit_event (*this));
+  octave_link::post_event (this, &main_window::exit_callback);
 }
 
 void
@@ -895,3 +868,70 @@ main_window::construct ()
            SLOT (handle_quit_debug_mode ()));
 }
 
+void
+main_window::save_workspace_callback (const std::string& file)
+{
+  save_workspace (file);
+}
+
+void
+main_window::load_workspace_callback (const std::string& file)
+{
+  load_workspace (file);
+}
+
+void
+main_window::clear_workspace_callback (void)
+{
+  clear_current_scope ();
+}
+
+void
+main_window::clear_history_callback (void)
+{
+  command_history::clear ();
+
+  _history_dock_widget->reset_model ();
+}
+
+void
+main_window::change_directory_callback (const std::string& directory)
+{
+  octave_env::chdir (directory); 
+}
+
+void
+main_window::debug_continue_callback (void)
+{
+  debug_continue ();
+}
+
+void
+main_window::debug_step_into_callback (void)
+{
+  debug_step ("in");
+}
+
+void
+main_window::debug_step_over_callback (void)
+{
+  debug_step ();
+}
+
+void
+main_window::debug_step_out_callback (void)
+{
+  debug_step ("out");
+}
+
+void
+main_window::debug_quit_callback (void)
+{
+  debug_quit ();
+}
+
+void
+main_window::exit_callback (void)
+{
+  clean_up_and_exit (0);
+}

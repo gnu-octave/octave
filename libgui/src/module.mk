@@ -84,8 +84,6 @@ noinst_HEADERS += \
   src/m-editor/lexer-octave-gui.h \
   src/main-window.h \
   src/octave-adapter/octave-event-listener.h \
-  src/octave-adapter/octave-event-observer.h \
-  src/octave-adapter/octave-event.h \
   src/octave-adapter/octave-link.h \
   src/octave-adapter/octave-main-thread.h \
   src/octave-gui.h \
@@ -109,7 +107,6 @@ src_libgui_src_la_SOURCES = \
   src/m-editor/find-dialog.cc \
   src/m-editor/lexer-octave-gui.cc \
   src/main-window.cc \
-  src/octave-adapter/octave-event.cc \
   src/octave-adapter/octave-link.cc \
   src/octave-adapter/octave-main-thread.cc \
   src/octave-gui.cc \
@@ -144,7 +141,7 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
   -I$(top_srcdir)/liboctave/system \
   -I$(top_srcdir)/liboctave/util \
-  -I$(top_srcdir)/libinterp \
+  -I$(top_builddir)/libinterp -I$(top_srcdir)/libinterp \
   -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
   -I$(top_builddir)/libinterp/interp-core -I$(top_srcdir)/libinterp/interp-core \
   -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \

@@ -188,9 +188,6 @@ liboctinterp_la_LDFLAGS = \
   -bindir $(bindir) \
   $(LIBOCTINTERP_LINK_OPTS)
 
-## FIXME: Does this rule need to be uncommented?
-#fft.df fft.lo fft2.df fft2.lo fftn.df fftn.lo: CPPFLAGS += $(FFTW_XCPPFLAGS)
-
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 

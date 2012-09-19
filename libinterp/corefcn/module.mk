@@ -95,5 +95,5 @@ COREFCN_SRC = \
 noinst_LTLIBRARIES += corefcn/libcorefcn.la
 
 corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
-corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)
+corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
 

@@ -36,9 +36,7 @@ nodist_libcruft_la_SOURCES =
 
 libcruft_la_FFLAGS = $(F77_INTEGER_8_FLAG)
 
-libcruft_la_CPPFLAGS = \
-  @CRUFT_DLL_DEFS@ \
-  $(AM_CPPFLAGS)
+libcruft_la_CPPFLAGS = @CRUFT_DLL_DEFS@ $(AM_CPPFLAGS)
 
 libcruft_la_DEPENDENCIES = cruft.def
 

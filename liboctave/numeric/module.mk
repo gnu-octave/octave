@@ -1,5 +1,5 @@
 EXTRA_DIST += \
-	numeric/module.mk \
+  numeric/module.mk \
   $(OPT_IN)
 
 OPT_INC = \
@@ -156,7 +156,7 @@ NUMERIC_SRC = \
   numeric/SparsedbleCHOL.cc \
   numeric/SparsedbleLU.cc \
   numeric/SparseQR.cc \
-	$(NUMERIC_C_SRC)
+  $(NUMERIC_C_SRC)
 
 TEMPLATE_SRC += \
   numeric/base-lu.cc \
@@ -176,5 +176,9 @@ $(OPT_INC) : %.h : %.in $(top_srcdir)/build-aux/mk-opts.pl
 noinst_LTLIBRARIES += numeric/libnumeric.la
 
 numeric_libnumeric_la_SOURCES = $(NUMERIC_SRC)
-numeric_libnumeric_la_CPPFLAGS = $(liboctave_la_CPPFLAGS)
+numeric_libnumeric_la_CPPFLAGS = \
+  $(liboctave_la_CPPFLAGS) \
+  $(ARPACK_CPPFLAGS) \
+  $(FFTW_XCPPFLAGS) \
+  $(SPARSE_XCPPFLAGS)
 

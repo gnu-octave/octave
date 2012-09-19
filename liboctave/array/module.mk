@@ -137,5 +137,7 @@ TEMPLATE_SRC += \
 noinst_LTLIBRARIES += array/libarray.la
 
 array_libarray_la_SOURCES = $(ARRAY_SRC)
-array_libarray_la_CPPFLAGS = $(liboctave_la_CPPFLAGS)
+array_libarray_la_CPPFLAGS = \
+  $(liboctave_la_CPPFLAGS) \
+  $(SPARSE_XCPPFLAGS)
 

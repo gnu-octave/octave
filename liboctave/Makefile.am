@@ -85,18 +85,11 @@ include util/module.mk
 ## It has no source code itself.
 liboctave_la_SOURCES = 
 
-## FIXME: SPARSE, FFTW, and ARPACK flags should probably only be in the
-##        particular convenience library that needs them.  
-liboctave_la_CPPFLAGS = \
-  @OCTAVE_DLL_DEFS@ \
-  $(SPARSE_XCPPFLAGS) \
-  $(FFTW_XCPPFLAGS) \
-  $(ARPACK_CPPFLAGS) \
-  $(AM_CPPFLAGS)
+liboctave_la_CPPFLAGS = @OCTAVE_DLL_DEFS@ $(AM_CPPFLAGS)
 
 include link-deps.mk
 
-# Dummy C++ source to cause C++ linking.
+# Dummy C++ source to force C++ linking.
 nodist_EXTRA_liboctave_la_SOURCES = dummy.cc
 
 liboctave_la_LIBADD = \

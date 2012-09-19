@@ -2460,12 +2460,6 @@ without the dash as well.\n\
   return retval;
 }
 
-void
-clear_current_scope (void)
-{
-  Fclear ();
-}
-
 DEFUN (whos_line_format, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\

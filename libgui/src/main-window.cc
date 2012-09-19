@@ -42,11 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 #include "settings-dialog.h"
 
-#include "debug.h"
+#include "builtins.h"
 #include "defaults.h"
 #include "load-save.h"
 #include "toplev.h"
-#include "variables.h"
 #include "version.h"
 
 #include "cmd-hist.h"
@@ -871,19 +870,19 @@ main_window::construct ()
 void
 main_window::save_workspace_callback (const std::string& file)
 {
-  save_workspace (file);
+  Fsave (ovl (file));
 }
 
 void
 main_window::load_workspace_callback (const std::string& file)
 {
-  load_workspace (file);
+  Fload (ovl (file));
 }
 
 void
 main_window::clear_workspace_callback (void)
 {
-  clear_current_scope ();
+  Fclear ();
 }
 
 void
@@ -897,41 +896,41 @@ main_window::clear_history_callback (void)
 void
 main_window::change_directory_callback (const std::string& directory)
 {
-  octave_env::chdir (directory); 
+  Fcd (ovl (directory));
 }
 
 void
 main_window::debug_continue_callback (void)
 {
-  debug_continue ();
+  Fdbcont ();
 }
 
 void
 main_window::debug_step_into_callback (void)
 {
-  debug_step ("in");
+  Fdbstep (ovl ("in"));
 }
 
 void
 main_window::debug_step_over_callback (void)
 {
-  debug_step ();
+  Fdbstep ();
 }
 
 void
 main_window::debug_step_out_callback (void)
 {
-  debug_step ("out");
+  Fdbstep (ovl ("out"));
 }
 
 void
 main_window::debug_quit_callback (void)
 {
-  debug_quit ();
+  Fdbquit ();
 }
 
 void
 main_window::exit_callback (void)
 {
-  clean_up_and_exit (0);
+  Fquit ();
 }

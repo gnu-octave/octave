@@ -53,6 +53,7 @@ BUILT_SOURCES = \
   interpfcn/defaults.h \
   interpfcn/graphics-props.cc \
   interpfcn/graphics.h \
+  builtin-defun-decls.h \
   operators/ops.cc \
   parse-tree/lex.cc \
   parse-tree/oct-gperf.h \
@@ -73,6 +74,7 @@ BUILT_NODISTFILES = \
   interp-core/oct-errno.cc \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
+  builtin-defun-decls.h \
   operators/ops.cc \
   oct-conf.h \
   version.h \
@@ -100,6 +102,7 @@ octinclude_HEADERS = \
   interpfcn/graphics-props.cc \
   parse-tree/oct-gperf.h \
   builtins.h \
+  builtin-defun-decls.h \
   octave.h \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
@@ -157,6 +160,7 @@ nodist_liboctinterp_la_SOURCES = \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
   operators/ops.cc \
+  builtin-defun-decls.h \
   builtins.cc \
   oct-conf.h \
   version.h \
@@ -246,7 +250,11 @@ version.h: version.in.h Makefile
 	mv $@-t $@
 
 builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
+	$(srcdir)/mkbuiltins --source $(DEF_FILES) > $@-t
+	mv $@-t $@
+
+builtin-defun-decls.h: $(SRC_DEF_FILES) mkbuiltins
+	$(srcdir)/mkbuiltins --header $(SRC_DEF_FILES) > $@-t
 	mv $@-t $@
 
 if AMCOND_ENABLE_DYNAMIC_LINKING

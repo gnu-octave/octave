@@ -111,8 +111,11 @@ INTERP_CORE_SRC = \
   $(JIT_SRC) \
   $(C_INTERP_CORE_SRC)
 
-## FIXME: I don't believe this rule actually fires
-display.df display.lo: CPPFLAGS += $(X11_FLAGS)
+## FIXME: Automake does not support per-object rules.
+##        These rules could be emulated by creating a new convenience
+##        library and using per-library rules.  Or we can just live
+##        without the rule since there haven't been any problems. (09/18/2012)
+#display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
 ## Special rules for sources which must be built before rest of compilation.
 interp-core/oct-errno.cc: interp-core/oct-errno.in.cc Makefile

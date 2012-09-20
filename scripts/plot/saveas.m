@@ -102,6 +102,6 @@ function  saveas (h, filename, fmt = "pdf")
 
   prt_opt = strcat ("-d", tolower (fmt));
 
-  print (filename, prt_opt);
+  print (fig, filename, prt_opt);
 
 endfunction

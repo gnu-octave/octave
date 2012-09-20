@@ -18,14 +18,59 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-if test $# -eq 0; then
-  echo "usage: mkbuiltins f1 f2 ..." 1>&2
+if test $# -lt 2; then
+  echo "usage: mkbuiltins --header|--source f1 f2 ..." 1>&2
   exit 1
 fi
 
 SED=${SED:-'sed'}
 
-cat << \EOF
+make_header=false
+make_source=false
+case "$1" in
+  --header)
+    make_header=true
+    shift
+  ;;
+  --source)
+    make_source=true
+    shift
+  ;;
+  *)
+    echo "mkbuiltins: unrecognized option: $1" 1>&2
+    exit 1
+  ;;
+esac
+
+if $make_header; then
+
+  cat << \EOF
+// DO NOT EDIT!  Generated automatically by mkbuiltins.
+
+#if !defined (octave_builtin_defun_decls_h)
+#define octave_builtin_defun_decls_h 1
+
+#include "oct-obj.h"
+
+#define DEFUN_DECL(name) \
+  extern OCTINTERP_API octave_value_list \
+  name (const octave_value_list& = octave_value_list (), int = 0);
+
+EOF
+
+ $SED -n -e 's/ *\(XDEFUN\|XDEFCONSTFUN\)_INTERNAL *( *\([_A-Za-z][_A-Za-z0-9]*\) *,.*$/DEFUN_DECL (F\2);/p; s/^ *XDEFUNX_INTERNAL *( *"\([_A-Za-z][_A-Za-z0-9]*\)" *,.*$/DEFUN_DECL (F\1);/p' "$@"
+
+  cat << \EOF
+
+#undef DEFUN_DECL
+
+#endif
+
+EOF
+
+else
+
+  cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
 
 #ifdef HAVE_CONFIG_H
@@ -79,33 +124,35 @@ cat << \EOF
 
 EOF
 
-for arg
-do
-  fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
-  echo "static void"
-  echo "install_${fcn}_fcns (void)"
-  echo "{"
-  cat "$arg"
-  echo "}"
-  echo ""
-done
+  for arg
+  do
+    fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
+    echo "static void"
+    echo "install_${fcn}_fcns (void)"
+    echo "{"
+    cat "$arg"
+    echo "}"
+    echo ""
+  done
 
-cat << \EOF
+  cat << \EOF
 
 void
 install_builtins (void)
 {
 EOF
 
-for arg
-do
-  fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
-  echo "  install_${fcn}_fcns ();"
-done
+  for arg
+  do
+    fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
+    echo "  install_${fcn}_fcns ();"
+  done
 
-cat << \EOF
+  cat << \EOF
 }
 
 EOF
+
+fi
 
 exit 0

@@ -82,7 +82,7 @@ cd octave
 Generate the necessary configuration files:
 
 @example
-./autogen.sh
+./bootstrap
 @end example
 
 @item

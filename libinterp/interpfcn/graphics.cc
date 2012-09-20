@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "singleton-cleanup.h"
 
+#include "builtins.h"
 #include "cutils.h"
 #include "defun.h"
 #include "display.h"
@@ -8202,7 +8203,7 @@ gh_manager::do_process_events (bool force)
 
   if (Vdrawnow_requested && ! old_Vdrawnow_requested)
     {
-      feval ("drawnow");
+      Fdrawnow ();
 
       Vdrawnow_requested = false;
     }

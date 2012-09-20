@@ -1443,17 +1443,6 @@ dump_octave_core (void)
     }
 }
 
-void
-load_workspace (const std::string& file)
-{
-  octave_value_list args;
-
-  if (! file.empty ())
-    args(0) = file;
-
-  Fload (args);
-}
-
 DEFUN (save, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} save file\n\
@@ -1753,17 +1742,6 @@ the file @file{data} in Octave's binary format.\n\
     }
 
   return retval;
-}
-
-void
-save_workspace (const std::string& file)
-{
-  octave_value_list args;
-
-  if (! file.empty ())
-    args(0) = file;
-
-  Fsave (args);
 }
 
 DEFUN (crash_dumps_octave_core, args, nargout,

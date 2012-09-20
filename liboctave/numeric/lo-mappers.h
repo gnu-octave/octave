@@ -119,7 +119,7 @@ extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
 extern OCTAVE_API float xtrunc (float x);
 extern OCTAVE_API float xcopysign (float x, float y);
 inline float xceil (float x) { return ceilf (x); }
-inline float xfloor (float x) { return floorf (x); }
+extern OCTAVE_API float xfloor (float x);
 inline float arg (float x) { return atan2f (0.0f, x); }
 inline float conj (float x) { return x; }
 inline float fix (float x) { return xtrunc (x); }

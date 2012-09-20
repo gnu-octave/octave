@@ -141,7 +141,7 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
   -I$(top_srcdir)/liboctave/system \
   -I$(top_srcdir)/liboctave/util \
-  -I$(top_srcdir)/libinterp \
+  -I$(top_builddir)/libinterp -I$(top_srcdir)/libinterp \
   -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
   -I$(top_builddir)/libinterp/interp-core -I$(top_srcdir)/libinterp/interp-core \
   -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \

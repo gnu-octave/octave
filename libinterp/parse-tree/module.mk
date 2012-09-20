@@ -11,8 +11,12 @@ PARSER_SRC = \
   parse-tree/lex.ll \
   parse-tree/oct-parse.yy
 
-lex.lo lex.o oct-parse.lo oct-parse.o: \
-  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+## FIXME: Automake does not support per-object rules.
+##        These rules could be emulated by creating a new convenience
+##        library and using per-library rules.  Or we can just live
+##        with the extra warnings about old-sytle-casts. (09/18/2012)
+#lex.lo lex.o oct-parse.lo oct-parse.o: \
+#  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
 
 PARSE_TREE_INC = \
   parse-tree/pt-all.h \

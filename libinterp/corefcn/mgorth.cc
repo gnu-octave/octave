@@ -51,15 +51,16 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 DEFUN (mgorth, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
-Orthogonalize a given column vector @var{x} with respect to a given\n\
-orthonormal basis @var{v} using a modified Gram-Schmidt orthogonalization.  \n\
+Orthogonalize a given column vector @var{x} with respect to a set of\n\
+orthonormal vectors comprising the columns of @var{v}\n\
+using the modified Gram-Schmidt method.\n\
 On exit, @var{y} is a unit vector such that:\n\
 \n\
 @example\n\
 @group\n\
   norm (@var{y}) = 1\n\
   @var{v}' * @var{y} = 0\n\
-  @var{x} = @var{h}*[@var{v}, @var{y}]\n\
+  @var{x} = [@var{v}, @var{y}]*@var{h}'\n\
 @end group\n\
 @end example\n\
 \n\
@@ -81,7 +82,7 @@ On exit, @var{y} is a unit vector such that:\n\
   if (arg_v.ndims () != 2 || arg_x.ndims () != 2 || arg_x.columns () != 1
       || arg_v.rows () != arg_x.rows ())
     {
-      error ("mgorth: V should me a matrix, and X a column vector with"
+      error ("mgorth: V should be a matrix, and X a column vector with"
              " the same number of rows as V.");
       return retval;
     }

@@ -270,8 +270,8 @@ be installed.
 After installing each of the dependencies, the sources are compiled by
 setting the proper environment variables and then following the standard build
 sequence.  The following is an example set of variables for a 32-bit build
-using gcc-4.2.  When building from the sources obtained from the mercurial
-archive, ./autogen.sh must be run prior to ./configure.
+using gcc-4.2.  When building from the sources obtained from the Mercurial
+archive, ./bootstrap must be run prior to ./configure.
 
   export FINK_PREFIX="/sw"
   export PREFIX="/usr/local/bin"
@@ -385,7 +385,7 @@ dependencies may be needed.
 Octave may now be built from a local mercurial archive by typing the commands
 below (these assume gcc-4.4 is installed by macports).
 
-  ./autogen.sh
+  ./bootstrap
   export PREFIX=/opt/local
   export CC=/opt/local/bin/gcc-mp-4.4
   export CXX=/opt/local/bin/g++-mp-4.4

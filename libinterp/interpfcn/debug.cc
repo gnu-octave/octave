@@ -1201,17 +1201,6 @@ execution to continue until the current function returns.\n\
 
 DEFALIAS (dbnext, dbstep);
 
-void
-debug_step (const std::string& what)
-{
-  octave_value_list args;
-
-  if (! what.empty ())
-    args(0) = what;
-
-  Fdbstep (args);
-}
-
 DEFUN (dbcont, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbcont\n\
@@ -1234,12 +1223,6 @@ Leave command-line debugging mode and continue code execution normally.\n\
     error ("dbcont: can only be called in debug mode");
 
   return octave_value_list ();
-}
-
-void
-debug_continue (void)
-{
-  Fdbcont ();
 }
 
 DEFUN (dbquit, args, ,
@@ -1267,12 +1250,6 @@ return to the Octave prompt.\n\
     error ("dbquit: can only be called in debug mode");
 
   return octave_value_list ();
-}
-
-void
-debug_quit (void)
-{
-  Fdbquit ();
 }
 
 DEFUN (isdebugmode, args, ,

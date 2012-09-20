@@ -53,6 +53,7 @@ BUILT_SOURCES = \
   interpfcn/defaults.h \
   interpfcn/graphics-props.cc \
   interpfcn/graphics.h \
+  builtin-defun-decls.h \
   operators/ops.cc \
   parse-tree/lex.cc \
   parse-tree/oct-gperf.h \
@@ -73,6 +74,7 @@ BUILT_NODISTFILES = \
   interp-core/oct-errno.cc \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
+  builtin-defun-decls.h \
   operators/ops.cc \
   oct-conf.h \
   version.h \
@@ -100,6 +102,7 @@ octinclude_HEADERS = \
   interpfcn/graphics-props.cc \
   parse-tree/oct-gperf.h \
   builtins.h \
+  builtin-defun-decls.h \
   octave.h \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
@@ -157,6 +160,7 @@ nodist_liboctinterp_la_SOURCES = \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
   operators/ops.cc \
+  builtin-defun-decls.h \
   builtins.cc \
   oct-conf.h \
   version.h \
@@ -188,9 +192,6 @@ liboctinterp_la_LDFLAGS = \
   -bindir $(bindir) \
   $(LIBOCTINTERP_LINK_OPTS)
 
-## FIXME: Does this rule need to be uncommented?
-#fft.df fft.lo fft2.df fft2.lo fftn.df fftn.lo: CPPFLAGS += $(FFTW_XCPPFLAGS)
-
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 
@@ -210,6 +211,8 @@ $(SRC_DEF_FILES): mkdefs Makefile
 
 $(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
 
+## FIXME: The following two variables are deprecated and should be removed
+##        in Octave version 3.12.
 DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
@@ -247,7 +250,11 @@ version.h: version.in.h Makefile
 	mv $@-t $@
 
 builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
+	$(srcdir)/mkbuiltins --source $(DEF_FILES) > $@-t
+	mv $@-t $@
+
+builtin-defun-decls.h: $(SRC_DEF_FILES) mkbuiltins
+	$(srcdir)/mkbuiltins --header $(SRC_DEF_FILES) > $@-t
 	mv $@-t $@
 
 if AMCOND_ENABLE_DYNAMIC_LINKING

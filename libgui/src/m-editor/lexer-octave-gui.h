@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QObject>
 #include <Qsci/qsciglobal.h>
 #include <Qsci/qscilexer.h>
-
+#include <Qsci/qsciapis.h>
 
 class lexer_octave_gui : public QsciLexer
 {
@@ -49,7 +49,7 @@ class lexer_octave_gui : public QsciLexer
     };
 
   lexer_octave_gui (QObject *parent = 0);
-  virtual ~lexer_octave_gui ();
+  ~lexer_octave_gui ();
   const char *language () const;
   const char *lexer () const;
   QColor defaultColor (int style) const;
@@ -60,6 +60,7 @@ class lexer_octave_gui : public QsciLexer
 private:
   lexer_octave_gui (const lexer_octave_gui &);
   lexer_octave_gui &operator= (const lexer_octave_gui &);
+  QsciAPIs *lexer_api;
 };
 
 #endif

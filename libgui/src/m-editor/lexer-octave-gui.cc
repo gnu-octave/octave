@@ -34,10 +34,37 @@ along with Octave; see the file COPYING.  If not, see
 lexer_octave_gui::lexer_octave_gui (QObject *p)
   : QsciLexer (p)
 {
+  // The API info that is used for auto completion
+  // TODO: Where to store a file with API info (raw or prepared?)?
+  // TODO: Also provide infos on octave-forge functions?
+  // TODO: Also provide infos on function parameters?
+  // By now, use the keywords-list from syntax highlighting
+
+  QString keyword;
+  QStringList keywordList;
+
+  // get whole string with all keywords
+  keyword = this->keywords (1);
+  // split into single strings
+  keywordList = keyword.split (QRegExp ("\\s+"));
+
+  lexer_api = new QsciAPIs (this);
+  if (lexer_api)
+    {
+      for (int i = 0; i < keywordList.size (); i++)
+        {
+          // add single strings to the API
+          lexer_api->add (keywordList.at (i));
+        }
+      // prepare API info ... this may take some time
+      lexer_api->prepare ();
+    }
 }
 
 lexer_octave_gui::~lexer_octave_gui()
 {
+  if (lexer_api)
+    delete lexer_api;
 }
 
 const char *lexer_octave_gui::language() const

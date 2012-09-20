@@ -114,10 +114,11 @@ public slots:
   void debug_step_out ();
   void debug_quit ();
 
-protected:
-  void closeEvent (QCloseEvent * closeEvent);
   void read_settings ();
   void write_settings ();
+
+protected:
+  void closeEvent (QCloseEvent * closeEvent);
 
 private:
   void construct ();

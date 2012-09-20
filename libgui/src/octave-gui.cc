@@ -110,6 +110,7 @@ octave_start_gui (int argc, char *argv[])
           resource_manager::update_network_settings ();
 
           main_window w;
+          w.read_settings ();  // Get the widget settings after construction and before showing
           w.show ();
           w.focus_command_window ();
 

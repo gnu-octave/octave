@@ -860,7 +860,6 @@ main_window::construct ()
   addDockWidget (Qt::BottomDockWidgetArea, _terminal_dock_widget);
   addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
   setStatusBar (_status_bar);
-  read_settings ();
 
   _octave_qt_event_listener = new octave_qt_event_listener ();
   octave_link::register_event_listener (_octave_qt_event_listener);

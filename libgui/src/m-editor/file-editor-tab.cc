@@ -145,9 +145,15 @@ file_editor_tab::closeEvent (QCloseEvent *e)
 void
 file_editor_tab::set_file_name (const QString& fileName)
 {
+  // update tracked file
+  QStringList trackedFiles = _file_system_watcher.files ();
+  if (!trackedFiles.isEmpty ())
+    _file_system_watcher.removePath (_file_name);
+  _file_system_watcher.addPath (fileName);
   _file_name = fileName;
+
+  // update lexer after _file_name change
   update_lexer ();
-  update_tracked_file ();
 }
 
 void
@@ -188,31 +194,6 @@ file_editor_tab::update_lexer ()
   if (_file_name.endsWith (".m") || _file_name.endsWith (".M"))
     {
       lexer = new lexer_octave_gui ();
-
-      // The API info that is used for auto completion
-      // TODO: Where to store a file with API info (raw or prepared?)?
-      // TODO: Also provide infos on octave-forge functions?
-      // TODO: Also provide infos on function parameters?
-      // By now, use the keywords-list from syntax highlighting
-
-      QsciAPIs *lexer_api = new QsciAPIs (lexer);
-
-      QString keyword;
-      QStringList keywordList;
-
-      // get whole string with all keywords
-      keyword = lexer->keywords (1);
-      // split into single strings
-      keywordList = keyword.split (QRegExp ("\\s+"));
-
-      int i;
-      for (i = 0; i < keywordList.size (); i++)
-        {
-          // add single strings to the API
-          lexer_api->add (keywordList.at (i));
-        }
-      // prepare API info ... this make take some time
-      lexer_api->prepare ();
     }
   else if (_file_name.endsWith (".c")
            || _file_name.endsWith (".cc")
@@ -365,24 +346,13 @@ file_editor_tab::handle_copy_available(bool enableCopy)
   emit editor_state_changed ();
 }
 
-void
-file_editor_tab::update_tracked_file ()
-{
-  QStringList trackedFiles = _file_system_watcher.files ();
-  if (!trackedFiles.isEmpty ())
-    _file_system_watcher.removePaths (trackedFiles);
-
-  if (_file_name != UNNAMED_FILE)
-    _file_system_watcher.addPath (_file_name);
-}
-
 int
 file_editor_tab::check_file_modified (const QString& msg, int cancelButton)
 {
   int decision = QMessageBox::Yes;
   if (_edit_area->isModified ())
     {
-      // file is modified but not saved, aks user what to do
+      // file is modified but not saved, ask user what to do
       decision = QMessageBox::warning (this,
                                        msg,
                                        tr ("The file %1\n"
@@ -590,9 +560,6 @@ file_editor_tab::load_file(const QString& fileName, bool silent)
   QApplication::restoreOverrideCursor ();
 
   set_file_name (fileName);
-  update_tracked_file ();
-
-
   update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet
 
@@ -627,10 +594,6 @@ file_editor_tab::save_file (const QString& saveFileName)
       return save_file_as();
     }
 
-  QStringList watched_files = _file_system_watcher.files();
-  if (!watched_files.isEmpty ())
-    _file_system_watcher.removePaths(watched_files);
-
   // open the file for writing
   QFile file (saveFileName);
   if (!file.open (QFile::WriteOnly))
@@ -638,7 +601,6 @@ file_editor_tab::save_file (const QString& saveFileName)
       QMessageBox::warning (this, tr ("Octave Editor"),
                             tr ("Could not open file %1 for write:\n%2.").
                             arg (saveFileName).arg (file.errorString ()));
-      _file_system_watcher.addPaths (watched_files);
       return false;
     }
 
@@ -647,17 +609,15 @@ file_editor_tab::save_file (const QString& saveFileName)
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << _edit_area->text ();
   QApplication::restoreOverrideCursor ();
+  file.close();
 
-  // save file name for later use
-  _file_name = saveFileName;
+  // save file name after closing file otherwise tracker will notice file change
+  set_file_name (saveFileName);
   // set the window title to actual file name (not modified)
   update_window_title (false);
   // files is save -> not modified
   _edit_area->setModified (false);
-  file.close();
 
-  if (!watched_files.isEmpty ())
-    _file_system_watcher.addPaths (watched_files);
   return true;
 }
 
@@ -760,7 +720,6 @@ file_editor_tab::file_has_changed (const QString&)
               set_file_name (UNNAMED_FILE);
               update_window_title (true); // window title (no modification)
               set_modified (true);
-              update_tracked_file ();
             }
         }
       else

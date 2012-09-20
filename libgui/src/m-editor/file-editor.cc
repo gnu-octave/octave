@@ -594,8 +594,8 @@ file_editor::construct ()
     {
       QStringList sessionFileNames = settings->value("editor/savedSessionTabs", QStringList()).toStringList ();
 
-      for (int n=0;n<sessionFileNames.count();++n)
-        request_open_file(sessionFileNames.at(n), true);
+      for (int n=0; n < sessionFileNames.count (); ++n)
+        request_open_file (sessionFileNames.at (n), true);
     }
 }
 

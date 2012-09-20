@@ -2562,12 +2562,16 @@ Octave is now configured for $canonical_host_type
   QHULL CPPFLAGS:              $QHULL_CPPFLAGS
   QHULL LDFLAGS:               $QHULL_LDFLAGS
   QHULL libraries:             $QHULL_LIBS
+  QRUPDATE CPPFLAGS:           $QRUPDATE_CPPFLAGS
+  QRUPDATE LDFLAGS:            $QRUPDATE_LDFLAGS
   QRUPDATE libraries:          $QRUPDATE_LIBS
   Qt headers:                  $QT_INCDIR
   Qt libraries:                $QT_LIBDIR
   READLINE libraries:          $READLINE_LIBS
   REGEX libraries:             $REGEX_LIBS
   TERM libraries:              $TERM_LIBS
+  UMFPACK CPPFLAGS:            $UMFPACK_CPPFLAGS
+  UMFPACK LDFLAGS:             $UMFPACK_LDFLAGS
   UMFPACK libraries:           $UMFPACK_LIBS
   X11 include flags:           $X11_INCFLAGS
   X11 libraries:               $X11_LIBS

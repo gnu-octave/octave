@@ -476,6 +476,8 @@ private:
                             int nargout, const octave_value_list& va_args,
                             const std::list<octave_lvalue> *lvalue_list);
 
+  void restore_warning_states (void);
+
   // No copying!
 
   octave_user_function (const octave_user_function& fn);

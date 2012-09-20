@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <defaults.h>
 #include "Cell.h"
+#include "builtins.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -455,6 +456,8 @@ octave_user_function::do_multi_index_op (int nargout,
   bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args),
                        lvalue_list);
 
+  frame.add_method (this, &octave_user_function::restore_warning_states);
+
   bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
   if (echo_commands)
@@ -614,6 +617,11 @@ octave_user_function::bind_automatic_vars
   symbol_table::mark_automatic (".nargin.");
   symbol_table::mark_automatic (".nargout.");
 
+  symbol_table::varref (".saved_warning_states.") = octave_value ();
+
+  symbol_table::mark_automatic (".saved_warning_states.");
+  symbol_table::mark_automatic (".saved_warning_states.");
+
   if (takes_varargs ())
     symbol_table::varref ("varargin") = va_args.cell_value ();
 
@@ -646,6 +654,26 @@ octave_user_function::bind_automatic_vars
 
   symbol_table::mark_hidden (".ignored.");
   symbol_table::mark_automatic (".ignored.");
+}
+
+void
+octave_user_function::restore_warning_states (void)
+{
+  octave_value val = symbol_table::varval (".saved_warning_states.");
+
+  if (val.is_defined ())
+    {
+      octave_map m = val.map_value ();
+
+      if (error_state)
+        panic_impossible ();
+
+      Cell ids = m.contents ("identifier");
+      Cell states = m.contents ("state");
+
+      for (octave_idx_type i = 0; i < m.numel (); i++)
+        Fwarning (ovl (states(i), ids(i)));
+    }
 }
 
 DEFUN (nargin, args, ,

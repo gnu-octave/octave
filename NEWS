@@ -3,6 +3,17 @@ Summary of important user-visible changes for version 4.0:
 
  ** A new GUI is now available with Octave.
 
+ ** Warning states may now be set temporarily, until the end of the
+    current function, using the syntax
+
+      warning STATE ID "local"
+
+    in which STATE may be "on", "off", or "error".  Changes to warning
+    states that are set locally affect the current function and all
+    functions called from the current scope.  The previous warning state
+    is restored on return from the current function.  The "local"
+    option is ignored if used in the top-level workspace.
+
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 

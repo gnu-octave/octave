@@ -1141,6 +1141,59 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
   return retval;
 }
 
+static octave_scalar_map
+warning_query (const std::string& id_arg)
+{
+  octave_scalar_map retval;
+
+  std::string id = id_arg;
+
+  if (id == "last")
+    id = Vlast_warning_id;
+
+  Cell ident = warning_options.contents ("identifier");
+  Cell state = warning_options.contents ("state");
+
+  octave_idx_type nel = ident.numel ();
+
+  bool found = false;
+
+  std::string val;
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      if (ident(i).string_value () == id)
+        {
+          val = state(i).string_value ();
+          found = true;
+          break;
+        }
+    }
+
+  if (! found)
+    {
+      for (octave_idx_type i = 0; i < nel; i++)
+        {
+          if (ident(i).string_value () == "all")
+            {
+              val = state(i).string_value ();
+              found = true;
+              break;
+            }
+        }
+    }
+
+  if (found)
+    {
+      retval.assign ("identifier", id);
+      retval.assign ("state", val);
+    }
+  else
+    error ("warning: unable to find default warning state!");
+
+  return retval;
+}
+
 DEFUN (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
@@ -1149,6 +1202,7 @@ DEFUN (warning, args, nargout,
 @deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (@var{state}, @var{id}, \"local\")\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
 functions (@pxref{Formatted Output}) and print the resulting message\n\
@@ -1176,6 +1230,15 @@ warning (\"error\");\n\
 @end group\n\
 @end example\n\
 \n\
+If the state is @samp{\"on\"}, @samp{\"off\"}, or @samp{\"error\"}\n\
+and the third argument is @samp{\"local\"}, then the warning state\n\
+will be set temporarily, until the end of the current function.\n\
+Changes to warning states that are set locally affect the current\n\
+function and all functions called from the current scope.  The\n\
+previous warning state is restored on return from the current\n\
+function.  The \"local\" option is ignored if used in the top-level\n\
+workspace.\n\
+\n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
 sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
 regardless of whether @var{template} has been defined within single quotes\n\
@@ -1201,13 +1264,93 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
           std::string arg1 = argv(1);
           std::string arg2 = "all";
 
-          if (argc == 3)
+          if (argc >= 3)
             arg2 = argv(2);
 
           if (arg1 == "on" || arg1 == "off" || arg1 == "error")
             {
               octave_map old_warning_options = warning_options;
 
+              if (argc == 4 && argv(3) == "local"
+                  && ! symbol_table::at_top_level ())
+                {
+                  symbol_table::scope_id scope
+                    = octave_call_stack::current_scope ();
+
+                  symbol_table::context_id context
+                    = octave_call_stack::current_context ();
+
+                  octave_scalar_map val = warning_query (arg2);
+
+                  octave_value curr_state = val.contents ("state");
+
+                  // FIXME -- this might be better with a dictionary
+                  // object.
+
+                  octave_value curr_warning_states
+                    = symbol_table::varval (".saved_warning_states.",
+                                            scope, context);
+
+                  octave_map m;
+
+                  if (curr_warning_states.is_defined ())
+                    m = curr_warning_states.map_value ();
+                  else
+                    {
+                      string_vector fields (2);
+
+                      fields(0) = "identifier";
+                      fields(1) = "state";
+
+                      m = octave_map (dim_vector (0, 1), fields);
+                    }
+
+                  if (error_state)
+                    panic_impossible ();
+
+                  Cell ids = m.contents ("identifier");
+                  Cell states = m.contents ("state");
+
+                  octave_idx_type nel = states.numel ();
+                  bool found = false;
+                  octave_idx_type i;
+                  for (i = 0; i < nel; i++)
+                    {
+                      std::string id = ids(i).string_value ();
+
+                      if (error_state)
+                        panic_impossible ();
+
+                      if (id == arg2)
+                        {
+                          states(i) = curr_state;
+                          found = true;
+                          break;
+                        }
+                    }
+
+                  if (! found)
+                    {
+                      m.resize (dim_vector (nel+1, 1));
+
+                      ids.resize (dim_vector (nel+1, 1));
+                      states.resize (dim_vector (nel+1, 1));
+
+                      ids(nel) = arg2;
+                      states(nel) = curr_state;
+                    }
+
+                  m.contents ("identifier") = ids;
+                  m.contents ("state") = states;
+
+                  symbol_table::varref
+                    (".saved_warning_states.", scope, context) = m;
+
+                  // Now ignore the "local" argument and continue to
+                  // handle the current setting.
+                  argc--;
+                }
+                  
               if (arg2 == "all")
                 {
                   octave_map tmp;
@@ -1369,54 +1512,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                   retval = tmp;
                 }
               else
-                {
-                  if (arg2 == "last")
-                    arg2 = Vlast_warning_id;
-
-                  Cell ident = warning_options.contents ("identifier");
-                  Cell state = warning_options.contents ("state");
-
-                  octave_idx_type nel = ident.numel ();
-
-                  bool found = false;
-
-                  std::string val;
-
-                  for (octave_idx_type i = 0; i < nel; i++)
-                    {
-                      if (ident(i).string_value () == arg2)
-                        {
-                          val = state(i).string_value ();
-                          found = true;
-                          break;
-                        }
-                    }
-
-                  if (! found)
-                    {
-                      for (octave_idx_type i = 0; i < nel; i++)
-                        {
-                          if (ident(i).string_value () == "all")
-                            {
-                              val = state(i).string_value ();
-                              found = true;
-                              break;
-                            }
-                        }
-                    }
-
-                  if (found)
-                    {
-                      octave_scalar_map tmp;
-
-                      tmp.assign ("identifier", arg2);
-                      tmp.assign ("state", val);
-
-                      retval = tmp;
-                    }
-                  else
-                    error ("warning: unable to find default warning state!");
-                }
+                retval = warning_query (arg2);
 
               done = true;
             }

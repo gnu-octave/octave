@@ -630,6 +630,30 @@ octave_value::octave_value (const Array<float>& a)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const DiagArray2<double>& d)
+  : rep (new octave_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const DiagArray2<float>& d)
+  : rep (new octave_float_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const DiagArray2<Complex>& d)
+  : rep (new octave_complex_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const DiagArray2<FloatComplex>& d)
+  : rep (new octave_float_complex_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const DiagMatrix& d)
   : rep (new octave_diag_matrix (d))
 {

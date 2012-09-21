@@ -597,6 +597,11 @@ file_editor_tab::save_file (const QString& saveFileName)
       return save_file_as();
     }
 
+  // remove the file to save from the tracker since we will change it on disk now
+  QStringList watched_files = _file_system_watcher.files();
+  if (!watched_files.isEmpty ())
+    _file_system_watcher.removePath(saveFileName);  
+    
   // open the file for writing
   QFile file (saveFileName);
   if (!file.open (QFile::WriteOnly))

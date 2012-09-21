@@ -97,7 +97,7 @@ public:
 
   dim_vector dims (void) const { return dim_vector (d1, d2); }
 
-  Array<T> diag (octave_idx_type k = 0) const;
+  Array<T> diag (octave_idx_type k = 0) GCC_ATTR_DEPRECATED const;
   Array<T> extract_diag (octave_idx_type k = 0) const;
   DiagArray2<T> build_diag_matrix () const
   {

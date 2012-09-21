@@ -97,8 +97,7 @@ public:
   MatrixType matrix_type (const MatrixType&) const
     { return matrix_type (); }
 
-  octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (matrix.diag (k)); }
+  octave_value diag (octave_idx_type k = 0) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     { return to_dense ().sort (dim, mode); }

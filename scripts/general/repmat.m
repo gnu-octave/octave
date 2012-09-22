@@ -40,11 +40,20 @@ function x = repmat (A, m, n)
   endif
 
   if (nargin == 3)
-    if (! (isscalar (m) && isscalar (n)))
+    if (! (numel (m) < 2 && numel (n) < 2))
       error ("repmat: with 3 arguments M and N must be scalar");
+    endif
+    if (isempty (m))
+      m = 1;
+    endif
+    if (isempty (n))
+      n = 1;
     endif
     idx = [m, n];
   else
+    if (isempty (m))
+      m = 1;
+    endif
     if (isscalar (m))
       idx = [m, m];
       n = m;
@@ -101,10 +110,11 @@ function x = repmat (A, m, n)
 
 endfunction
 
-
 # Test various methods of providing size parameters
 %!shared x
 %! x = [1 2;3 4];
+%!assert (repmat (x, 1, []), repmat (x, 1))
+%!assert (repmat (x, [], 3), repmat (x, [1, 3]))
 %!assert (repmat (x, [1 1]), repmat (x, 1))
 %!assert (repmat (x, [3 3]), repmat (x, 3))
 %!assert (repmat (x, [1 1]), repmat (x, 1, 1))

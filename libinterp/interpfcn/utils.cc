@@ -99,19 +99,17 @@ Return true if @var{name} is a valid variable name.\n\
 @seealso{iskeyword, exist, who}\n\
 @end deftypefn")
 {
-  octave_value retval;
+  octave_value retval = false;
 
-  int argc = args.length () + 1;
+  int nargin = args.length ();
 
-  string_vector argv = args.make_argv ("isvarname");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 2)
-    retval = valid_identifier (argv[1]) && ! is_keyword (argv[1]);
-  else
+  if (nargin != 1)
     print_usage ();
+  else if (args(0).is_string ())
+    {
+      std::string varname = args(0).string_value ();
+      retval = valid_identifier (varname) && ! is_keyword (varname);
+    }
 
   return retval;
 }
@@ -122,6 +120,7 @@ Return true if @var{name} is a valid variable name.\n\
 %!assert (isvarname ("_1"), true)
 %!assert (isvarname ("1foo"), false)
 %!assert (isvarname (""), false)
+%!assert (isvarname (12), false)
 
 %!error isvarname ()
 %!error isvarname ("foo", "bar");

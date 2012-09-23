@@ -145,11 +145,14 @@ file_editor_tab::closeEvent (QCloseEvent *e)
 void
 file_editor_tab::set_file_name (const QString& fileName)
 {
-  // update tracked file
-  QStringList trackedFiles = _file_system_watcher.files ();
-  if (!trackedFiles.isEmpty ())
-    _file_system_watcher.removePath (_file_name);
-  _file_system_watcher.addPath (fileName);
+  if (fileName != UNNAMED_FILE)
+    {
+      // update tracked file if wie really hae a file on disk
+      QStringList trackedFiles = _file_system_watcher.files ();
+      if (!trackedFiles.isEmpty ())
+        _file_system_watcher.removePath (_file_name);
+        _file_system_watcher.addPath (fileName);
+    }
   _file_name = fileName;
 
   // update lexer after _file_name change

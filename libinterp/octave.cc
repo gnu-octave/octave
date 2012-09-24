@@ -675,6 +675,7 @@ maximum_braindamage (void)
 
   bind_internal_variable ("PS1", ">> ");
   bind_internal_variable ("PS2", "");
+  bind_internal_variable ("PS4", "");
   bind_internal_variable ("allow_noninteger_range_as_index", true);
   bind_internal_variable ("beep_on_error", true);
   bind_internal_variable ("confirm_recursive_rmdir", false);

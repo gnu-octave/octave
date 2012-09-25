@@ -357,7 +357,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     endif
 
     if (strcmp (textpos, "default"))
-      warned = false;
       k = nkids;
       for i = 1 : nargs
         arg = varargin{i};
@@ -389,14 +388,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             if (--k == 0)
               break;
             endif
-          elseif (! warned)
-            break;
+          else
+            break;  # k = 0, no further handles to process
           endif
         else
           error ("legend: expecting argument to be a character string");
         endif
       endfor
-      if (i < nargs && ! warned)
+      if (i < nargs)
         warning ("legend: ignoring extra labels");
       endif
     else
@@ -440,7 +439,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (isempty (hplots))
       if (! isempty (hlegend))
         fkids = get (fig, "children");
-        delete (fkids (fkids == hlegend));
+        delete (fkids(fkids == hlegend));
         hlegend = [];
         hobjects = [];
         hplots  = [];
@@ -760,10 +759,10 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                    "xliminclude", "off", "yliminclude", "off");
         set (t1, "deletefcn", {@deletelegend1, hlegend});
 
-        ## Resize the axis the legend is attached to if the
-        ## legend is "outside" the plot and create listener to
+        ## Resize the axis that the legend is attached to if the
+        ## legend is "outside" the plot and create a listener to
         ## resize axis to original size if the legend is deleted,
-        ## hidden or shown
+        ## hidden, or shown.
         if (outside)
           for i = 1 : numel (ca)
             units = get (ca(i), "units");

@@ -442,6 +442,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
       obj = get (kids(end));
 
+      if (isfield (obj, "xdata"))
+        obj.xdata = double (obj.xdata);
+      end
+      if (isfield (obj, "ydata"))
+        obj.ydata = double (obj.ydata);
+      end
+      if (isfield (obj, "zdata"))
+        obj.zdata = double (obj.zdata);
+      end
+
       if (isfield (obj, "units"))
         units = obj.units;
         unwind_protect

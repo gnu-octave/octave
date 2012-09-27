@@ -68,6 +68,32 @@ octave_base_diag<DMT, MT>::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
+
+template <class DMT, class MT>
+octave_value
+octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
+{
+  octave_value retval;
+  if (matrix.rows () == 1 || matrix.cols () == 1)
+    {
+      // Rather odd special case. This is a row or column vector
+      // represented as a diagonal matrix with a single nonzero entry, but
+      // Fdiag semantics are to product a diagonal matrix for vector
+      // inputs.
+      if (k == 0)
+        // Returns Diag2Array<T> with nnz <= 1.
+        retval = matrix.build_diag_matrix ();
+      else
+        // Returns Array<T> matrix
+        retval = matrix.array_value ().diag (k);
+    }
+  else
+    // Returns Array<T> vector
+    retval = matrix.extract_diag (k);
+  return retval;
+}
+
+
 template <class DMT, class MT>
 octave_value
 octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,

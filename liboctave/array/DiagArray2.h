@@ -64,7 +64,7 @@ public:
 
   template <class U>
   DiagArray2 (const DiagArray2<U>& a)
-    : Array<T> (a.diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
+    : Array<T> (a.extract_diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 
   ~DiagArray2 (void) { }
 
@@ -97,7 +97,12 @@ public:
 
   dim_vector dims (void) const { return dim_vector (d1, d2); }
 
-  Array<T> diag (octave_idx_type k = 0) const;
+  Array<T> diag (octave_idx_type k = 0) const GCC_ATTR_DEPRECATED;
+  Array<T> extract_diag (octave_idx_type k = 0) const;
+  DiagArray2<T> build_diag_matrix () const
+  {
+    return DiagArray2<T> (array_value ());
+  }
 
   // Warning: the non-const two-index versions will silently ignore assignments
   // to off-diagonal elements.

@@ -50,6 +50,13 @@ template <class T>
 Array<T>
 DiagArray2<T>::diag (octave_idx_type k) const
 {
+  return extract_diag (k);
+}
+
+template <class T>
+Array<T>
+DiagArray2<T>::extract_diag (octave_idx_type k) const
+{
   Array<T> d;
 
   if (k == 0)

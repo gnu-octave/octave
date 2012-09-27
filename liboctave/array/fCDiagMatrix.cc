@@ -236,13 +236,13 @@ FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a, octave_idx_type be
 FloatDiagMatrix
 FloatComplexDiagMatrix::abs (void) const
 {
-  return FloatDiagMatrix (diag ().abs (), rows (), columns ());
+  return FloatDiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
 
 FloatComplexDiagMatrix
 conj (const FloatComplexDiagMatrix& a)
 {
-  return FloatComplexDiagMatrix (conj (a.diag ()), a.rows (), a.columns ());
+  return FloatComplexDiagMatrix (conj (a.extract_diag ()), a.rows (), a.columns ());
 }
 
 // resize is the destructive analog for this one
@@ -546,7 +546,7 @@ FloatComplexDiagMatrix::determinant (void) const
 float
 FloatComplexDiagMatrix::rcond (void) const
 {
-  FloatColumnVector av = diag (0).map<float> (std::abs);
+  FloatColumnVector av = extract_diag (0).map<float> (std::abs);
   float amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0f : amn / amx;
 }

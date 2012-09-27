@@ -856,7 +856,7 @@ FloatMatrix::pseudo_inverse (float tol) const
   FloatMatrix U = result.left_singular_matrix ();
   FloatMatrix V = result.right_singular_matrix ();
 
-  FloatColumnVector sigma = S.diag ();
+  FloatColumnVector sigma = S.extract_diag ();
 
   octave_idx_type r = sigma.length () - 1;
   octave_idx_type nr = rows ();

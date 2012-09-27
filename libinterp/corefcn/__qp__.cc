@@ -51,7 +51,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
       DiagMatrix S = A_svd.singular_values ();
 
-      ColumnVector s = S.diag ();
+      ColumnVector s = S.extract_diag ();
 
       Matrix V = A_svd.right_singular_matrix ();
 

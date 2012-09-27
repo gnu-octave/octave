@@ -141,19 +141,19 @@ FloatDiagMatrix::fill (const FloatRowVector& a, octave_idx_type beg)
 FloatDiagMatrix
 FloatDiagMatrix::abs (void) const
 {
-  return FloatDiagMatrix (diag ().abs (), rows (), columns ());
+  return FloatDiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
 
 FloatDiagMatrix
 real (const FloatComplexDiagMatrix& a)
 {
-  return FloatDiagMatrix (real (a.diag ()), a.rows (), a.columns ());
+  return FloatDiagMatrix (real (a.extract_diag ()), a.rows (), a.columns ());
 }
 
 FloatDiagMatrix
 imag (const FloatComplexDiagMatrix& a)
 {
-  return FloatDiagMatrix (imag (a.diag ()), a.rows (), a.columns ());
+  return FloatDiagMatrix (imag (a.extract_diag ()), a.rows (), a.columns ());
 }
 
 FloatMatrix
@@ -362,7 +362,7 @@ FloatDiagMatrix::determinant (void) const
 float
 FloatDiagMatrix::rcond (void) const
 {
-  FloatColumnVector av = diag (0).map<float> (fabsf);
+  FloatColumnVector av = extract_diag (0).map<float> (fabsf);
   float amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0f : amn / amx;
 }

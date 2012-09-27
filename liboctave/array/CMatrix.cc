@@ -1183,7 +1183,7 @@ ComplexMatrix::pseudo_inverse (double tol) const
   ComplexMatrix U = result.left_singular_matrix ();
   ComplexMatrix V = result.right_singular_matrix ();
 
-  ColumnVector sigma = S.diag ();
+  ColumnVector sigma = S.extract_diag ();
 
   octave_idx_type r = sigma.length () - 1;
   octave_idx_type nr = rows ();

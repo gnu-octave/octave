@@ -141,19 +141,19 @@ DiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 DiagMatrix
 DiagMatrix::abs (void) const
 {
-  return DiagMatrix (diag ().abs (), rows (), columns ());
+  return DiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
 
 DiagMatrix
 real (const ComplexDiagMatrix& a)
 {
-  return DiagMatrix (real (a.diag ()), a.rows (), a.cols ());
+  return DiagMatrix (real (a.extract_diag ()), a.rows (), a.cols ());
 }
 
 DiagMatrix
 imag (const ComplexDiagMatrix& a)
 {
-  return DiagMatrix (imag (a.diag ()), a.rows (), a.cols ());
+  return DiagMatrix (imag (a.extract_diag ()), a.rows (), a.cols ());
 }
 
 Matrix
@@ -362,7 +362,7 @@ DiagMatrix::determinant (void) const
 double
 DiagMatrix::rcond (void) const
 {
-  ColumnVector av = diag (0).map<double> (fabs);
+  ColumnVector av = extract_diag (0).map<double> (fabs);
   double amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }

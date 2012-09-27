@@ -426,7 +426,7 @@ octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
   os << "# rows: " << matrix.rows () << "\n"
     << "# columns: " << matrix.columns () << "\n";
 
-  os << matrix.diag ();
+  os << matrix.extract_diag ();
 
   return true;
 }

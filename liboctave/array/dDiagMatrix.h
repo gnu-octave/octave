@@ -98,8 +98,8 @@ public:
 
   // other operations
 
-  ColumnVector diag (octave_idx_type k = 0) const
-    { return MDiagArray2<double>::diag (k); }
+  ColumnVector extract_diag (octave_idx_type k = 0) const
+    { return MDiagArray2<double>::extract_diag (k); }
 
   DET determinant (void) const;
   double rcond (void) const;

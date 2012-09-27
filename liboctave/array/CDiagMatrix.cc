@@ -236,13 +236,13 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a, octave_idx_type beg)
 DiagMatrix
 ComplexDiagMatrix::abs (void) const
 {
-  return DiagMatrix (diag ().abs (), rows (), columns ());
+  return DiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
 
 ComplexDiagMatrix
 conj (const ComplexDiagMatrix& a)
 {
-  return ComplexDiagMatrix (conj (a.diag ()), a.rows (), a.columns ());
+  return ComplexDiagMatrix (conj (a.extract_diag ()), a.rows (), a.columns ());
 }
 
 // resize is the destructive analog for this one
@@ -546,7 +546,7 @@ ComplexDiagMatrix::determinant (void) const
 double
 ComplexDiagMatrix::rcond (void) const
 {
-  ColumnVector av = diag (0).map<double> (std::abs);
+  ColumnVector av = extract_diag (0).map<double> (std::abs);
   double amx = av.max (), amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }

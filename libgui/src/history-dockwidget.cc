@@ -24,7 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <QApplication>
+#include <QClipboard>
 #include <QVBoxLayout>
+#include <QMenu>
 
 #include "error.h"
 
@@ -50,6 +53,10 @@ history_dock_widget::construct ()
   _history_list_view->setAlternatingRowColors (true);
   _history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
   _history_list_view->setStatusTip (tr ("Doubleclick a command to transfer it to the terminal."));
+  _history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
+  _history_list_view->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(_history_list_view, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(ctxMenu(const QPoint &)));
+
   _filter_line_edit = new QLineEdit (this);
   _filter_line_edit->setStatusTip (tr ("Enter text to filter the command history."));
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
@@ -91,10 +98,43 @@ history_dock_widget::construct ()
   setFocusProxy (_filter_line_edit);
 }
 
+void history_dock_widget::ctxMenu(const QPoint &pos) {
+    QMenu *menu = new QMenu;
+    menu->addAction(tr("Copy"), this, SLOT(handle_contextmenu_copy(bool)));
+    menu->addAction(tr("Evaluate"), this, SLOT(handle_contextmenu_evaluate(bool)));
+    menu->exec(_history_list_view->mapToGlobal(pos));
+}
+
+void history_dock_widget::handle_contextmenu_copy(bool flag)
+{
+  QString text;
+  QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
+  QModelIndexList rows = selectionModel->selectedRows();
+  QModelIndexList::iterator it;
+  for (it=rows.begin() ; it != rows.end(); it++) {
+    if ((*it).isValid()) {
+      text += (*it).data().toString()+"\n";
+    }
+  }
+  QApplication::clipboard()->setText(text);
+}
+
+void history_dock_widget::handle_contextmenu_evaluate(bool flag)
+{
+  QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
+  QModelIndexList rows = selectionModel->selectedRows();
+  QModelIndexList::iterator it;
+  for (it=rows.begin() ; it != rows.end(); it++) {
+    if ((*it).isValid()) {
+      emit command_double_clicked ((*it).data().toString()+"\n");
+    }
+  }
+}
+
 void
 history_dock_widget::handle_double_click (QModelIndex modelIndex)
 {
-  emit command_double_clicked (modelIndex.data().toString());
+  emit command_double_clicked (modelIndex.data().toString()+"\n");
 }
 
 void

@@ -53,6 +53,9 @@ protected:
   void closeEvent (QCloseEvent *event);
 private slots:
   void handle_double_click (QModelIndex modelIndex);
+  void handle_contextmenu_copy(bool flag);
+  void handle_contextmenu_evaluate(bool flag);
+  void ctxMenu(const QPoint &pos);
 
 private:
   void construct ();

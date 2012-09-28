@@ -241,6 +241,8 @@ function add_patch_children (hg)
     ## Decode contourc output format.
     i1 = 1;
     ncont = 0;
+    cont_lev = [];
+    cont_area = [];
     while (i1 < columns (c))
       ncont++;
       cont_lev(ncont) = c(1, i1);

@@ -272,7 +272,7 @@ octave_shl_load_shlib::octave_shl_load_shlib (const std::string& f)
   if (! library)
     {
       using namespace std;
-      (*current_liboctave_error_handler) ("%s", strerror (errno));
+      (*current_liboctave_error_handler) ("%s", gnulib::strerror (errno));
     }
 }
 

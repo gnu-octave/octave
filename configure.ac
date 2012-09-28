@@ -1918,11 +1918,11 @@ AC_CHECK_FUNCS([basename canonicalize_file_name chmod dup2])
 AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
 AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
 AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid getwd])
-AC_CHECK_FUNCS([kill lgamma lgammaf lgamma_r lgammaf_r])
-AC_CHECK_FUNCS([localtime_r log1p log1pf mkstemp pipe putenv])
+AC_CHECK_FUNCS([isascii kill lgamma lgammaf lgamma_r lgammaf_r])
+AC_CHECK_FUNCS([localtime_r log1p log1pf mkstemp modf pipe pow putenv])
 AC_CHECK_FUNCS([realpath resolvepath rindex roundl select setgrent])
 AC_CHECK_FUNCS([setlocale setpwent setvbuf siglongjmp])
-AC_CHECK_FUNCS([strsignal tempnam tgammaf umask])
+AC_CHECK_FUNCS([sqrt strsignal tempnam tgammaf umask])
 AC_CHECK_FUNCS([uname utime x_utime waitpid])
 AC_CHECK_FUNCS([_chmod _kbhit _utime32])
 
@@ -2278,6 +2278,8 @@ if test $build_gui = true; then
       AC_CHECK_HEADERS([pty.h libutil.h util.h])
       AC_SEARCH_LIBS([openpty], [util],
         [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
+      AC_CHECK_FUNCS([chown ftruncate mmap munmap], [],
+                     [AC_MSG_ERROR([Missing function required by GUI])])
       ;;
   esac
 else

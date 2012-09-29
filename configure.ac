@@ -878,6 +878,9 @@ PKG_CHECK_EXISTS([$magick++], [
   AC_LANG_POP(C++)
   CPPFLAGS="$save_CPPFLAGS"
   LIBS="$save_LIBS"
+
+  AC_CHECK_FUNCS([setlocale], [],
+                 [warn_magick="$magick++ requires setlocale function.  The imread function for reading image files will not be fully functional."])
 ])
 
 if test -z "$warn_magick"; then
@@ -1913,18 +1916,24 @@ gl_INIT
 
 ### Checks for functions and variables.
 
+dnl These checks define/undefine HAVE_FUNCNAME in config.h.
+dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_FUNCS([basename canonicalize_file_name chmod dup2])
+AC_CHECK_FUNCS([canonicalize_file_name dup2])
 AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
 AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
-AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid getwd])
-AC_CHECK_FUNCS([isascii kill lgamma lgammaf lgamma_r lgammaf_r])
-AC_CHECK_FUNCS([localtime_r log1p log1pf mkstemp modf pipe pow putenv])
-AC_CHECK_FUNCS([realpath resolvepath rindex roundl select setgrent])
-AC_CHECK_FUNCS([setlocale setpwent setvbuf siglongjmp])
-AC_CHECK_FUNCS([sqrt strsignal tempnam tgammaf umask])
-AC_CHECK_FUNCS([uname utime x_utime waitpid])
-AC_CHECK_FUNCS([_chmod _kbhit _utime32])
+AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
+AC_CHECK_FUNCS([kill lgamma lgammaf lgamma_r lgammaf_r])
+AC_CHECK_FUNCS([log1p log1pf pipe])
+AC_CHECK_FUNCS([realpath resolvepath roundl])
+AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
+AC_CHECK_FUNCS([tempnam tgammaf toascii])
+AC_CHECK_FUNCS([umask uname waitpid])
+AC_CHECK_FUNCS([_kbhit])
+
+dnl There are no workarounds in the code for missing these functions.
+AC_CHECK_FUNCS([modf pow putenv sqrt sqrtf], [],
+               [AC_MSG_ERROR([Missing function required to build Octave])])
 
 ## exp2, round, tgamma function checks
 AC_LANG_PUSH(C++)
@@ -2035,6 +2044,14 @@ case $canonical_host_type in
         [Define to 1 if your system needs to define math constants like M_LN2.])
         AC_MSG_RESULT([yes])])
   ;;
+esac
+
+## Windows-specific use of functions
+case $canonical_host_type in
+  *-*-mingw* | *-*-msdosmsvc*)
+    AC_CHECK_FUNCS([setvbuf], [],
+                   [AC_MSG_ERROR([Missing function required to build Octave])])
+    ;;
 esac
 
 ## Cygwin kluge for getrusage.
@@ -2270,16 +2287,21 @@ if test $build_gui = true; then
   OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
   OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
 
+  AC_CHECK_FUNCS([setlocale], [],
+                 [AC_MSG_ERROR([Missing function required to build GUI])])
+
   case $canonical_host_type in
     *-*-mingw* | *-*-msdosmsvc*)
       win32_terminal=yes
+      AC_CHECK_FUNCS([setvbuf], [],
+                     [AC_MSG_ERROR([Missing function required to build GUI])])
       ;;
     *)
       AC_CHECK_HEADERS([pty.h libutil.h util.h])
       AC_SEARCH_LIBS([openpty], [util],
         [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
-      AC_CHECK_FUNCS([chown ftruncate mmap munmap], [],
-                     [AC_MSG_ERROR([Missing function required by GUI])])
+      AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
+                     [AC_MSG_ERROR([Missing function required to build GUI])])
       ;;
   esac
 else

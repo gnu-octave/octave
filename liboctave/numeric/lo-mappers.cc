@@ -317,7 +317,9 @@ signum (float x)
 float
 xlog2 (float x)
 {
-#if defined (HAVE_LOG2)
+#if defined (HAVE_LOG2F)
+  return log2f (x);
+#elif defined (HAVE_LOG2)
   return log2 (x);
 #else
 #if defined (M_LN2)
@@ -345,7 +347,9 @@ xlog2 (const FloatComplex& x)
 float
 xexp2 (float x)
 {
-#if defined (HAVE_EXP2)
+#if defined (HAVE_EXP2F)
+  return exp2f (x);
+#elif defined (HAVE_EXP2)
   return exp2 (x);
 #else
 #if defined (M_LN2)

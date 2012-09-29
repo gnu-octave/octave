@@ -381,7 +381,7 @@ maybe_initialize_magick (void)
 
   if (! initialized)
     {
-      // Save the locale as GraphicsMagick might change this (depending on version)
+      // Save locale as GraphicsMagick might change this (depending on version)
       const char *static_locale = setlocale (LC_ALL, NULL);
       const std::string locale (static_locale);
 

@@ -106,7 +106,7 @@ octave_putenv (const std::string& name, const std::string& value)
   // As far as I can see there's no way to distinguish between the
   // various errors; putenv doesn't have errno values.
 
-  if (putenv (new_item) < 0)
+  if (gnulib::putenv (new_item) < 0)
     (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 }
 

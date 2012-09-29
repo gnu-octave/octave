@@ -450,18 +450,6 @@ else
   BUILD_CXX='$(CXX)'
   BUILD_CXXFLAGS='$(CXXFLAGS)'
   BUILD_LDFLAGS='$(LDFLAGS)'
-  dnl ## 2012/07/31: Commented out special build requirements
-  dnl ## for Sun compiler now that gendoc.cc is no longer part of build.
-  dnl ##################################################################
-  dnl #case $canonical_host_type in
-  dnl #  sparc-sun-solaris2*)
-  dnl #    if test "$GCC" != yes; then
-  dnl #      ## The Sun C++ compiler never seems to complete compiling
-  dnl #      ## gendoc.cc unless we reduce the optimization level...
-  dnl #      ## BUILD_CXXFLAGS="-g -O1"
-  dnl #    fi
-  dnl #  ;;
-  dnl #esac
   BUILD_EXEEXT='$(EXEEXT)'
 fi
 

@@ -1981,33 +1981,6 @@ dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
 AC_CHECK_FUNCS([acosh acoshf asinh asinhf atanh atanhf cbrt cbrtf])
 AC_CHECK_FUNCS([erf erff erfc erfcf exp2f hypotf _hypotf log2 log2f])
 
-## MinGW exception for mkstemp
-case $canonical_host_type in
-  *-*-mingw*)
-    ## MinGW does not provide a mkstemp function.  However, it provides
-    ## the mkstemps function in libiberty.
-    AC_MSG_CHECKING([for mkstemps in libiberty])
-    save_LIBS="$LIBS"
-    LIBS="-liberty $LIBS"
-    AC_LINK_IFELSE([
-      AC_LANG_PROGRAM([[
-        int mkstemps (char *pattern, int suffix_len);
-        ]], [[
-        mkstemps ("XXXXXX", 0);
-        ]]
-      )],
-    [AC_MSG_RESULT([yes])
-     HAVE_MKSTEMPS=yes
-     AC_DEFINE(HAVE_MKSTEMPS, 1,
-       [Define to 1 if mkstemps is available in libiberty.])
-    ],
-    [AC_MSG_RESULT([no])
-     HAVE_MKSTEMPS=no
-     LIBS="$save_LIBS"
-    ])
-   ;;
-esac
-
 ## Windows-specific tests for extra #defines
 case $canonical_host_type in
   *-*-msdosmsvc | *-*-mingw*)

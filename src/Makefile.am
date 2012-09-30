@@ -55,9 +55,6 @@ octave_config_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \
   $(LIBS)
 
-BUILT_SOURCES_EXTRA = \
-  mkoctfile.cc \
-  octave-config.cc
 else
 bin_PROGRAMS = \
   $(OCTAVE_BINARIES)

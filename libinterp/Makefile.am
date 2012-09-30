@@ -60,7 +60,6 @@ BUILT_SOURCES = \
   parse-tree/oct-parse.cc \
   oct-conf.h \
   version.h \
-  $(BUILT_SOURCES_EXTRA) \
   builtins.cc
 
 BUILT_DISTFILES = \

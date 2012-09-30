@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QProcess>
 #include <QDebug>
+#include <QHeaderView>
 
 files_dock_widget::files_dock_widget (QWidget *p)
   : QDockWidget (p)
@@ -81,6 +82,15 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _file_tree_view->setColumnHidden (3, true);
   _file_tree_view->setStatusTip (tr ("Doubleclick a file to open it."));
 
+  // get sort column and order as well as cloumn state (order and width)
+  QSettings *settings = resource_manager::get_settings ();
+  // FIXME -- what should happen if settings is 0?
+  _file_tree_view->sortByColumn (
+              settings->value ("filesdockwidget/sort_files_by_column",0).toInt (),
+              static_cast<Qt::SortOrder>(settings->value ("filesdockwidget/sort_files_by_order",Qt::AscendingOrder).toUInt ())
+  );
+  _file_tree_view->header ()->restoreState (settings->value ("filesdockwidget/column_state").toByteArray ());
+  
   _current_directory->setText(_file_system_model->fileInfo (rootPathIndex).
                               absoluteFilePath ());
 
@@ -107,6 +117,16 @@ files_dock_widget::files_dock_widget (QWidget *p)
            this, SLOT (handle_visibility_changed (bool)));
 
   setFocusProxy (_current_directory);
+}
+
+files_dock_widget::~files_dock_widget ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  int sort_column = _file_tree_view->header ()->sortIndicatorSection ();
+  Qt::SortOrder sort_order = _file_tree_view->header ()->sortIndicatorOrder ();
+  settings->setValue ("filesdockwidget/sort_files_by_column", sort_column);
+  settings->setValue ("filesdockwidget/sort_files_by_order", sort_order);
+  settings->setValue ("filesdockwidget/column_state", _file_tree_view->header ()->saveState ()); 
 }
 
 void

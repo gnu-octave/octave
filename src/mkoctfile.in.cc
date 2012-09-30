@@ -73,7 +73,7 @@ static string
 get_line (FILE *fp)
 {
   static vector<char> buf (100);
-  int idx = 0;
+  unsigned int idx = 0;
   char c;
 
   while (true)
@@ -436,7 +436,6 @@ main (int argc, char **argv)
   for (int i = 1; i < argc; i++)
     {
       string arg = argv[i];
-      size_t len = arg.length ();
 
       if (ends_with (arg, ".c"))
         {
@@ -608,13 +607,13 @@ main (int argc, char **argv)
 
           FILE *fd = popen (cmd.c_str (), "r");
           ofstream fo (dfile.c_str ());
-          int pos;
+          size_t pos;
           while (!feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != string::npos)
                 {
-                  int spos = line.rfind ('/', pos);
+                  size_t spos = line.rfind ('/', pos);
                   string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos) << endl;
                 }
@@ -636,13 +635,13 @@ main (int argc, char **argv)
 
           FILE *fd = popen (cmd.c_str (), "r");
           ofstream fo (dfile.c_str ());
-          int pos;
+          size_t pos;
           while (!feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != string::npos)
                 {
-                  int spos = line.rfind ('/', pos);
+                  size_t spos = line.rfind ('/', pos);
                   string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos+2) << endl;
                 }

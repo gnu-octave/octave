@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "workspace-view.h"
 #include "resource-manager.h"
+#include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -68,6 +69,10 @@ workspace_view::workspace_view (QWidget *p)
   _explicit_collapse.global     = settings->value ("workspaceview/global_collapsed", false).toBool ();;
   _explicit_collapse.persistent = settings->value ("workspaceview/persistent_collapsed", false).toBool ();;
 
+  // Initialize column order and width of the workspace
+  
+  _workspace_tree_view->header ()->restoreState (settings->value("workspaceview/column_state").toByteArray ());
+
   // Connect signals and slots.
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT(handle_visibility_changed (bool)));
@@ -94,6 +99,7 @@ workspace_view::~workspace_view ()
   settings->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
   settings->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
   settings->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
+  settings->setValue("workspaceview/column_state", _workspace_tree_view->header ()->saveState ());
 }
 
 void

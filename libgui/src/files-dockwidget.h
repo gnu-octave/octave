@@ -48,6 +48,7 @@ class files_dock_widget : public QDockWidget
   public:
   /** Constructs a new files_dock_widget. */
   files_dock_widget (QWidget *parent = 0);
+  ~files_dock_widget ();
 
 public slots:
   /** Slot for handling a change in directory via double click. */

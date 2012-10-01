@@ -3250,7 +3250,7 @@ public:
         retval = factory_properties.lookup (name);
 
         if (retval.is_undefined ())
-          error ("get: invalid default property `%s'", name.c_str ());
+          error ("get: invalid default property '%s'", name.c_str ());
       }
 
     return retval;
@@ -3261,7 +3261,7 @@ public:
     octave_value retval = factory_properties.lookup (name);
 
     if (retval.is_undefined ())
-      error ("get: invalid factory default property `%s'", name.c_str ());
+      error ("get: invalid factory default property '%s'", name.c_str ());
 
     return retval;
   }

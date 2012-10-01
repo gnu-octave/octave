@@ -41,7 +41,7 @@ function deps_cell = fix_depends (depends)
       sub = dep(lpar(1)+1:rpar(1)-1);
       parts = strsplit (sub, " ", true);
       if (length (parts) != 2)
-        error ("incorrect syntax for dependency `%s' in the DESCRIPTION file\n",
+        error ("incorrect syntax for dependency '%s' in the DESCRIPTION file\n",
                dep);
       endif
       operator = parts{1};

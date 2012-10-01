@@ -1164,7 +1164,7 @@ complete description of the syntax of the template string.\n\
               catch (std::runtime_error)
                 {
                   // Display a warning if the specified locale is unknown
-                  warning ("fscanf: invalid locale. Try `locale -a' for a list of supported values.");
+                  warning ("fscanf: invalid locale. Try 'locale -a' for a list of supported values.");
                   oldloc = std::locale::classic ();
                 }
               retval = os.oscanf (args(1), who);
@@ -1274,7 +1274,7 @@ is returned in @var{pos}.\n\
                   catch (std::runtime_error)
                     {
                       // Display a warning if the specified locale is unknown
-                      warning ("sscanf: invalid locale. Try `locale -a' for a list of supported values.");
+                      warning ("sscanf: invalid locale. Try 'locale -a' for a list of supported values.");
                     }
                   retval = os.oscanf (args(1), who);
                 }              

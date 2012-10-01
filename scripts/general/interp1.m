@@ -205,7 +205,7 @@ function yi = interp1 (x, y, varargin)
           error ("interp1: extra points in discontinuities");
         endif
       else
-        error ("interp1: discontinuities not supported for method `%s'", method);
+        error ("interp1: discontinuities not supported for method '%s'", method);
       endif
     endif
   endif

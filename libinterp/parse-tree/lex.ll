@@ -1506,12 +1506,12 @@ is_keyword_token (const std::string& s)
                || reading_classdef_file)
               && ! curr_fcn_file_full_name.empty ())
             warning_with_id ("Octave:deprecated-keyword",
-                             "the `static' keyword is obsolete and will be removed from a future version of Octave; please use `persistent' instead; near line %d of file `%s'",
+                             "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d of file '%s'",
                              input_line_number,
                              curr_fcn_file_full_name.c_str ());
           else
             warning_with_id ("Octave:deprecated-keyword",
-                             "the `static' keyword is obsolete and will be removed from a future version of Octave; please use `persistent' instead; near line %d",
+                             "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d",
                              input_line_number);
           // fall through ...
 

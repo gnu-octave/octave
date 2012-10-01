@@ -24,7 +24,7 @@
 
 /**
  * \class parser
- * This class gets nodes and searchs inside of `info files'.
+ * This class gets nodes and searchs inside of 'info files'.
  * <p>Each info file has nodes. Every node has the documentation.
  * Info files contains a map with position of each node.</p>
  * <p>What is position?

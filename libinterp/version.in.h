@@ -87,6 +87,6 @@ For more information, visit http://www.octave.org/help-wanted.html"
 
 #define OCTAVE_STARTUP_MESSAGE \
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-    ("  For details, type `warranty'.") "\n\n" \
-  "For information about changes from previous versions, type `news'."
+    ("  For details, type 'warranty'.") "\n\n" \
+  "For information about changes from previous versions, type 'news'."
 #endif

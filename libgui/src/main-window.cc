@@ -203,14 +203,13 @@ main_window::reset_windows ()
 void
 main_window::current_working_directory_has_changed (const QString& directory)
 {
-  if (_current_directory_combo_box->count () > 31)
-    {
-      _current_directory_combo_box->removeItem (0);
-    }
-  _current_directory_combo_box->addItem (directory);
   int index = _current_directory_combo_box->findText (directory);
-  _current_directory_combo_box->setCurrentIndex (index);
-
+  if ( index >= 0 )  // directory already in list -> remove it
+    { 
+      _current_directory_combo_box->removeItem (index);
+    }
+  _current_directory_combo_box->insertItem (0,directory);  // add (on top)
+  _current_directory_combo_box->setCurrentIndex (0);  // top is actual
   _files_dock_widget->set_current_directory (directory);
 }
 
@@ -411,6 +410,12 @@ main_window::read_settings ()
     }
   settings->endGroup();
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+  // restore the list of the last directories
+  QStringList curr_dirs = settings->value ("MainWindow/current_directory_list").toStringList ();
+  for (int i=0; i < curr_dirs.size (); i++)
+    {
+      _current_directory_combo_box->addItem (curr_dirs.at (i));
+    }
   emit settings_changed ();
 }
 
@@ -436,6 +441,13 @@ main_window::write_settings ()
     }
 
   settings->endGroup();
+  // write the list of recent used directories
+  QStringList curr_dirs;
+  for (int i=0; i<_current_directory_combo_box->count (); i++)
+    {
+      curr_dirs.append (_current_directory_combo_box->itemText (i));
+    }
+  settings->setValue ("MainWindow/current_directory_list",curr_dirs);
   settings->sync ();
 }
 
@@ -460,7 +472,8 @@ main_window::construct ()
   _current_directory_combo_box->setFixedWidth (300);
   _current_directory_combo_box->setEditable (true);
   _current_directory_combo_box->setInsertPolicy (QComboBox::InsertAtTop);
-  _current_directory_combo_box->setMaxVisibleItems (14);
+  _current_directory_combo_box->setMaxVisibleItems (16);
+  _current_directory_combo_box->setMaxCount (16);
 
   _current_directory_tool_button = new QToolButton (this);
   _current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));

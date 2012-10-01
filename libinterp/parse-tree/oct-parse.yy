@@ -4373,7 +4373,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
       // Unmark forced variables.
       // Restore previous value of global_command.
-      frame.run_top (2);
+      frame.run (2);
 
       if (parse_status == 0)
         {

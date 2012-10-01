@@ -603,7 +603,7 @@ load_path::do_set (const std::string& p, bool warn, bool is_init)
     do_append (*i, warn);
 
   // Restore add hook and execute for all newly added directories.
-  frame.run_top ();
+  frame.run_first ();
 
   for (dir_info_list_iterator i = dir_info_list.begin ();
        i != dir_info_list.end ();

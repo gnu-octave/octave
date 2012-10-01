@@ -103,7 +103,7 @@ octave_oncleanup::~octave_oncleanup (void)
   // Otherwise, set it back to what it was before.
   if (error_state)
     {
-      frame.discard_top ();
+      frame.discard_first ();
       octave_call_stack::backtrace_error_message ();
     }
 }

@@ -765,7 +765,7 @@ get_debug_input (const std::string& prompt)
 
       // Unmark forced variables.
       // Restore previous value of global_command.
-      frame.run_top (2);
+      frame.run (2);
 
       octave_quit ();
     }

@@ -990,11 +990,11 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
 
   if (tree_break_command::breaking || tree_return_command::returning)
     {
-      frame.discard_top (2);
+      frame.discard (2);
     }
   else
     {
-      frame.run_top (2);
+      frame.run (2);
     }
 
   // We don't want to ignore errors that occur in the cleanup code, so
@@ -1002,9 +1002,9 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   // Otherwise, set it back to what it was before.
 
   if (error_state)
-    frame.discard_top (2);
+    frame.discard (2);
   else
-    frame.run_top (2);
+    frame.run (2);
 
   frame.run ();
 }

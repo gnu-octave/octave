@@ -53,13 +53,13 @@ BUILT_SOURCES = \
   interpfcn/defaults.h \
   interpfcn/graphics-props.cc \
   interpfcn/graphics.h \
-  builtin-defun-decls.h \
   operators/ops.cc \
   parse-tree/lex.cc \
   parse-tree/oct-gperf.h \
   parse-tree/oct-parse.cc \
   oct-conf.h \
   version.h \
+  builtin-defun-decls.h \
   builtins.cc
 
 BUILT_DISTFILES = \

@@ -1080,7 +1080,7 @@ not be using this function.  Instead use @code{imfinfo}.\n\
         {
           std::string msg = fs.error ();
 
-          error ("imfinfo: error reading `%s': %s",
+          error ("imfinfo: error reading '%s': %s",
                  filename.c_str (), msg.c_str ());
 
           return retval;

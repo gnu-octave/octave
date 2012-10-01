@@ -85,7 +85,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   else if (auto_add)
     retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
-    error ("structure has no member `%s'", nm.c_str ());
+    error ("structure has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -1100,7 +1100,7 @@ octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
   octave_value retval = map.getfield (nm);
 
   if (! auto_add && retval.is_undefined ())
-    error ("structure has no member `%s'", nm.c_str ());
+    error ("structure has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -1807,7 +1807,7 @@ If the argument is an object, return the underlying struct.\n\
 
       if (! valid_identifier (key))
         {
-          error ("struct: invalid structure field name `%s'", key.c_str ());
+          error ("struct: invalid structure field name '%s'", key.c_str ());
           return retval;
         }
 

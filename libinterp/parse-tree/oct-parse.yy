@@ -904,7 +904,7 @@ simple_expr     : colon_expr
                   { $$ = make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
                 ;
 
-// Arrange for the lexer to return CLOSE_BRACE for `]' by looking ahead
+// Arrange for the lexer to return CLOSE_BRACE for ']' by looking ahead
 // one token for an assignment op.
 
 assign_lhs      : simple_expr
@@ -1218,7 +1218,7 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                 ;
 
 // ===========================================
-// Some `subroutines' for function definitions
+// Some 'subroutines' for function definitions
 // ===========================================
 
 push_fcn_symtab : // empty
@@ -1741,7 +1741,7 @@ static void
 end_error (const char *type, token::end_tok_type ettype, int l, int c)
 {
   static const char *fmt
-    = "`%s' command matched by `%s' near line %d column %d";
+    = "'%s' command matched by '%s' near line %d column %d";
 
   switch (ettype)
     {
@@ -1872,7 +1872,7 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
       else
         warning_with_id
           ("Octave:assign-as-truth-value",
-           "suggest parenthesis around assignment used as truth value near line %d, column %d in file `%s'",
+           "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
            expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
     }
 }
@@ -1890,7 +1890,7 @@ maybe_warn_variable_switch_label (tree_expression *expr)
       else
         warning_with_id
           ("Octave:variable-switch-label",
-           "variable switch label near line %d, column %d in file `%s'",
+           "variable switch label near line %d, column %d in file '%s'",
            expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
     }
 }
@@ -2854,7 +2854,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       {
         warning_with_id
           ("Octave:function-name-clash",
-           "function name `%s' does not agree with function file name `%s'",
+           "function name '%s' does not agree with function file name '%s'",
            id_name.c_str (), curr_fcn_file_full_name.c_str ());
 
         id_name = nm;
@@ -2898,13 +2898,13 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
       if (fs && fs.is_newer (now))
         warning_with_id ("Octave:future-time-stamp",
-                         "time stamp for `%s' is in the future", nm.c_str ());
+                         "time stamp for '%s' is in the future", nm.c_str ());
     }
   else if (! (input_from_tmp_history_file || input_from_startup_file)
            && reading_script_file
            && curr_fcn_file_name == id_name)
     {
-      warning ("function `%s' defined within script file `%s'",
+      warning ("function '%s' defined within script file '%s'",
                id_name.c_str (), curr_fcn_file_full_name.c_str ());
     }
 
@@ -3124,7 +3124,7 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
       else
         {
           if (reading_script_file)
-            warning ("ignoring persistent declaration near line %d of file `%s'",
+            warning ("ignoring persistent declaration near line %d of file '%s'",
                      l, curr_fcn_file_full_name.c_str ());
           else
             warning ("ignoring persistent declaration near line %d", l);
@@ -3209,7 +3209,7 @@ maybe_warn_missing_semi (tree_statement_list *t)
       if (tmp->is_expression ())
         warning_with_id
           ("Octave:missing-semicolon",
-           "missing semicolon near line %d, column %d in file `%s'",
+           "missing semicolon near line %d, column %d in file '%s'",
             tmp->line (), tmp->column (), curr_fcn_file_full_name.c_str ());
     }
 }
@@ -3621,9 +3621,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
         }
     }
   else if (require_file)
-    error ("no such file, `%s'", ff.c_str ());
+    error ("no such file, '%s'", ff.c_str ());
   else if (! warn_for.empty ())
-    error ("%s: unable to open file `%s'", warn_for.c_str (), ff.c_str ());
+    error ("%s: unable to open file '%s'", warn_for.c_str (), ff.c_str ());
 
   return fcn_ptr;
 }
@@ -3909,7 +3909,7 @@ With no arguments, return a structure containing the current autoload map.\n\
                 }
               if (! found)
                 warning_with_id ("Octave:autoload-relative-file-name",
-                                 "autoload: `%s' is not an absolute file name",
+                                 "autoload: '%s' is not an absolute file name",
                                  nm.c_str ());
             }
           autoload_map[argv[1]] = nm;
@@ -4025,7 +4025,7 @@ source_file (const std::string& file_name, const std::string& context,
             }
         }
       else
-        error ("source: error sourcing file `%s'",
+        error ("source: error sourcing file '%s'",
                file_full_name.c_str ());
     }
 }
@@ -4154,7 +4154,7 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
     {
       maybe_missing_function_hook (name);
       if (! error_state)
-        error ("feval: function `%s' not found", name.c_str ());
+        error ("feval: function '%s' not found", name.c_str ());
     }
 
   return retval;
@@ -4294,7 +4294,7 @@ another function for the given type signature.\n\
             retval = feval (fcn.function_value (), args.splice (0, 1),
                             nargout);
           else
-            error ("builtin: lookup for symbol `%s' failed", name.c_str ());
+            error ("builtin: lookup for symbol '%s' failed", name.c_str ());
         }
       else
         error ("builtin: function name (F) must be a string");

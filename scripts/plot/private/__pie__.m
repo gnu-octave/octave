@@ -139,7 +139,7 @@ function hlist = __pie__ (caller, varargin)
                text(xt, yt, labels{i}, "horizontalalignment", align)];
 
     else
-      error ("__pie__: unknown caller `%s'", caller);
+      error ("__pie__: unknown caller '%s'", caller);
     endif
   endfor
 

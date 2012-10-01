@@ -291,7 +291,7 @@ oct_data_conv::string_to_data_type
           else
             {
               (*current_liboctave_error_handler)
-                ("invalid repeat count in `%s'", str.c_str ());
+                ("invalid repeat count in '%s'", str.c_str ());
 
               return;
             }
@@ -364,7 +364,7 @@ oct_data_conv::string_to_data_type
       else
         {
           (*current_liboctave_error_handler)
-            ("invalid repeat count in `%s'", str.c_str ());
+            ("invalid repeat count in '%s'", str.c_str ());
 
           return;
         }
@@ -852,7 +852,7 @@ do_double_format_conversion (void *data, octave_idx_type len,
 
     default:
       (*current_liboctave_error_handler)
-        ("impossible state reached in file `%s' at line %d",
+        ("impossible state reached in file '%s' at line %d",
          __FILE__, __LINE__);
       break;
     }
@@ -979,7 +979,7 @@ do_float_format_conversion (void *data, octave_idx_type len,
 
     default:
       (*current_liboctave_error_handler)
-        ("impossible state reached in file `%s' at line %d",
+        ("impossible state reached in file '%s' at line %d",
          __FILE__, __LINE__);
       break;
     }
@@ -1002,7 +1002,7 @@ do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
 
     default:
       (*current_liboctave_error_handler)
-        ("impossible state reached in file `%s' at line %d",
+        ("impossible state reached in file '%s' at line %d",
          __FILE__, __LINE__);
       break;
     }

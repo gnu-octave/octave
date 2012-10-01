@@ -33,7 +33,7 @@ function dirname = tempdir ()
   endif
 
   if (! isdir (dirname))
-    warning ("tempdir: `%s' does not exist or is not a directory", dirname);
+    warning ("tempdir: '%s' does not exist or is not a directory", dirname);
   endif
 
 endfunction

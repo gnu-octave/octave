@@ -508,8 +508,8 @@ scanf_format_list::printme (void) const
 
       std::cerr
         << "modifier:   " << elt->modifier << "\n"
-        << "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
-        << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
+        << "char_class: '" << undo_string_escapes (elt->char_class) << "'\n"
+        << "text:       '" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
 
@@ -867,12 +867,12 @@ printf_format_list::printme (void) const
 
       std::cerr
         << "args:     " << elt->args << "\n"
-        << "flags:    `" << elt->flags << "'\n"
+        << "flags:    '" << elt->flags << "'\n"
         << "width:    " << elt->fw << "\n"
         << "prec:     " << elt->prec << "\n"
-        << "type:     `" << elt->type << "'\n"
-        << "modifier: `" << elt->modifier << "'\n"
-        << "text:     `" << undo_string_escapes (elt->text) << "'\n\n";
+        << "type:     '" << elt->type << "'\n"
+        << "modifier: '" << elt->modifier << "'\n"
+        << "text:     '" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
 
@@ -1387,7 +1387,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
   tmp.resize (n)
 
-// For a `%s' format, skip initial whitespace and then read until the
+// For a '%s' format, skip initial whitespace and then read until the
 // next whitespace character or until WIDTH characters have been read.
 #define BEGIN_S_CONVERSION() \
   int width = elt->width; \
@@ -2476,7 +2476,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
           if (elt)
             {
-              // NSA is the number of `star' args to convert.
+              // NSA is the number of 'star' args to convert.
 
               int nsa = (elt->fw < 0) + (elt->prec < 0);
 

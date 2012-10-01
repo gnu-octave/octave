@@ -174,7 +174,7 @@ public:
 #define OCTAVE_LOCAL_BUFFER_MAX_STACK_SIZE 8192
 
 // If we have automatic arrays, we use an automatic array if the size
-// is small enough.  To avoid possibly evaluating `size' multiple
+// is small enough.  To avoid possibly evaluating 'size' multiple
 // times, we first cache it.  Note that we always construct both the
 // stack array and the octave_local_buffer object, but only one of
 // them will be nonempty.

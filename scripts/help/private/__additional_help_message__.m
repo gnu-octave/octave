@@ -29,7 +29,7 @@ function msg = __additional_help_message__ ()
     msg = "\
 Additional help for built-in functions and operators is\n\
 available in the on-line version of the manual.  Use the command\n\
-`doc <topic>' to search the manual index.\n\
+'doc <topic>' to search the manual index.\n\
 \n\
 Help and information about Octave is also available on the WWW\n\
 at http://www.octave.org and via the help@octave.org\n\

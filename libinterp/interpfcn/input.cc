@@ -422,7 +422,7 @@ octave_read (char *buf, unsigned max_size)
   return status;
 }
 
-// Fix things up so that input can come from file `name', printing a
+// Fix things up so that input can come from file 'name', printing a
 // warning if the file doesn't exist.
 
 FILE *

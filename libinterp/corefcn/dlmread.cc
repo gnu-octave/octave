@@ -221,7 +221,7 @@ fields.  The default is zero.\n\
 
       if (! input_file)
         {
-          error ("dlmread: unable to open file `%s'", fname.c_str ());
+          error ("dlmread: unable to open file '%s'", fname.c_str ());
           return retval;
         }
       else

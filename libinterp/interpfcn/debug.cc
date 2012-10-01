@@ -784,7 +784,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
             }
         }
       else
-        os << "dbtype: unable to open `" << ff << "' for reading!\n";
+        os << "dbtype: unable to open '" << ff << "' for reading!\n";
     }
   else
     os << "dbtype: unknown function " << name << "\n";

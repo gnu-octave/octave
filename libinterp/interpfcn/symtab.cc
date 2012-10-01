@@ -1704,7 +1704,7 @@ DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
           retval = symbol_table::varval (name);
 
           if (retval.is_undefined ())
-            error ("variable_value: `%s' is not a variable in the current scope",
+            error ("variable_value: '%s' is not a variable in the current scope",
                    name.c_str ());
         }
       else

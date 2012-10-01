@@ -81,7 +81,7 @@ endfunction
 
 %!test
 %! [l, c, m, msg] = colstyle ("~");
-%! assert (msg, "colstyle: unrecognized format character: `~'");
+%! assert (msg, "colstyle: unrecognized format character: '~'");
 
 %% Test input validation
 %!error colstyle ()

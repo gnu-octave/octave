@@ -110,7 +110,7 @@ int warning_state = 0;
 
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
-// the `unwind_protect' statement.
+// the 'unwind_protect' statement.
 int buffer_error_messages = 0;
 
 // TRUE means error messages are turned off.
@@ -921,10 +921,10 @@ location of the error.  Typically @var{err} is returned from\n\
                           if (l > 0)
                             {
                               if (c > 0)
-                                pr_where_1 ("error: called from `%s' near line %d, column %d",
+                                pr_where_1 ("error: called from '%s' near line %d, column %d",
                                             nm.c_str (), l, c);
                               else
-                                pr_where_1 ("error: called from `%d' near line %d", nm.c_str (), l);
+                                pr_where_1 ("error: called from '%d' near line %d", nm.c_str (), l);
                             }
                         }
                     }
@@ -946,10 +946,10 @@ location of the error.  Typically @var{err} is returned from\n\
                           if (l > 0)
                             {
                               if (c > 0)
-                                pr_where_1 ("error: called from `%s' in file %s near line %d, column %d",
+                                pr_where_1 ("error: called from '%s' in file %s near line %d, column %d",
                                             nm.c_str (), file.c_str (), l, c);
                               else
-                                pr_where_1 ("error: called from `%d' in file %s near line %d", nm.c_str (), file.c_str (), l);
+                                pr_where_1 ("error: called from '%d' in file %s near line %d", nm.c_str (), file.c_str (), l);
                             }
                         }
                     }
@@ -1537,7 +1537,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
           if (m.contains ("identifier") && m.contains ("state"))
             warning_options = m;
           else
-            error ("warning: expecting structure with fields `identifier' and `state'");
+            error ("warning: expecting structure with fields 'identifier' and 'state'");
 
           done = true;
 

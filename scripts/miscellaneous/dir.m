@@ -82,7 +82,7 @@ function retval = dir (directory)
       fn = flst{1};
       [st, err, msg] = stat (fn);
       if (err < 0)
-        warning ("dir: `stat (%s)' failed: %s", fn, msg);
+        warning ("dir: 'stat (%s)' failed: %s", fn, msg);
         nf = 0;
       elseif (S_ISDIR (st.mode))
         flst = readdir (flst{1});
@@ -99,7 +99,7 @@ function retval = dir (directory)
         fn = flst{i};
         [st, err, msg] = lstat (fn);
         if (err < 0)
-          warning ("dir: `lstat (%s)' failed: %s", fn, msg);
+          warning ("dir: 'lstat (%s)' failed: %s", fn, msg);
         else
           ## If we are looking at a link that points to something,
           ## return info about the target of the link, otherwise, return
@@ -136,7 +136,7 @@ function retval = dir (directory)
     ## Print the structure to the screen.
     printf ("%s", list_in_columns ({info.name}));
   else
-    warning ("dir: nonexistent directory `%s'", directory);
+    warning ("dir: nonexistent directory '%s'", directory);
   endif
 
 endfunction

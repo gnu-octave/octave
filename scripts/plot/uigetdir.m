@@ -38,7 +38,7 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
     if (! __is_function__ (funcname))
       error ("uigetdir: fltk graphics toolkit required");
     elseif (! strcmp (defaulttoolkit, "gnuplot"))
-      warning ("uigetdir: no implementation for toolkit `%s', using `fltk' instead",
+      warning ("uigetdir: no implementation for toolkit '%s', using 'fltk' instead",
                defaulttoolkit);
     endif
   endif

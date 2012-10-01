@@ -46,7 +46,7 @@ tree_binary_expression::rvalue (int nargout)
   octave_value_list retval;
 
   if (nargout > 1)
-    error ("binary operator `%s': invalid number of output arguments",
+    error ("binary operator '%s': invalid number of output arguments",
            oper () . c_str ());
   else
     retval = rvalue1 (nargout);
@@ -176,7 +176,7 @@ tree_boolean_expression::rvalue (int nargout)
   octave_value_list retval;
 
   if (nargout > 1)
-    error ("binary operator `%s': invalid number of output arguments",
+    error ("binary operator '%s': invalid number of output arguments",
            oper () . c_str ());
   else
     retval = rvalue1 (nargout);

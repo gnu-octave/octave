@@ -109,7 +109,7 @@ is_valid_function (const std::string& fcn_name,
     }
 
   if (! ans && warn)
-    error ("%s: the symbol `%s' is not valid as a function",
+    error ("%s: the symbol '%s' is not valid as a function",
            warn_for.c_str (), fcn_name.c_str ());
 
   return ans;
@@ -167,7 +167,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
               if (! retval)
                 {
-                  error ("%s: `%s' is not valid as a function",
+                  error ("%s: '%s' is not valid as a function",
                          warn_for.c_str (), fname.c_str ());
                   return retval;
                 }
@@ -176,7 +176,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
                        warn_for.c_str ());
             }
           else
-            error ("%s: `%s' is not valid as a function",
+            error ("%s: '%s' is not valid as a function",
                    warn_for.c_str (), fname.c_str ());
         }
       else
@@ -608,7 +608,7 @@ get_global_value (const std::string& nm, bool silent)
   octave_value val = symbol_table::global_varval (nm);
 
   if (val.is_undefined () && ! silent)
-    error ("get_global_value: undefined symbol `%s'", nm.c_str ());
+    error ("get_global_value: undefined symbol '%s'", nm.c_str ());
 
   return val;
 }
@@ -625,7 +625,7 @@ get_top_level_value (const std::string& nm, bool silent)
   octave_value val = symbol_table::top_level_varval (nm);
 
   if (val.is_undefined () && ! silent)
-    error ("get_top_level_value: undefined symbol `%s'", nm.c_str ());
+    error ("get_top_level_value: undefined symbol '%s'", nm.c_str ());
 
   return val;
 }
@@ -1110,7 +1110,7 @@ private:
                   break;
 
                 default:
-                  error ("whos_line_format: modifier `%c' unknown",
+                  error ("whos_line_format: modifier '%c' unknown",
                          param.modifier);
 
                   os << std::setiosflags (std::ios::right)
@@ -1160,7 +1160,7 @@ private:
                   break;
 
                 default:
-                  error ("whos_line_format: command `%c' unknown",
+                  error ("whos_line_format: command '%c' unknown",
                          param.command);
                 }
 
@@ -1593,7 +1593,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
       else if (argv[i] == "global")
         global_only = true;
       else if (argv[i][0] == '-')
-        warning ("%s: unrecognized option `%s'", my_name.c_str (),
+        warning ("%s: unrecognized option '%s'", my_name.c_str (),
                  argv[i].c_str ());
       else
         break;

@@ -160,7 +160,7 @@ function [output, status] = mkoctfile (varargin)
   endif
 
   if (sys == 127)
-    warning ("unable to find mkoctfile in expected location: `%s'",
+    warning ("unable to find mkoctfile in expected location: '%s'",
              shell_script);
 
     warning ("mkoctfile exited with failure status");

@@ -118,13 +118,13 @@ file_ops::tilde_expansion_hook file_ops::tilde_expansion_preexpansion_hook = 0;
 file_ops::tilde_expansion_hook file_ops::tilde_expansion_failure_hook = 0;
 
 // When non-null, this is a NULL terminated array of strings which are
-// duplicates for a tilde prefix.  Bash uses this to expand `=~' and
-// `:~'.
+// duplicates for a tilde prefix.  Bash uses this to expand '=~' and
+// ':~'.
 string_vector file_ops::tilde_additional_prefixes = default_prefixes;
 
 // When non-null, this is a NULL terminated array of strings which
 // match the end of a username, instead of just "/".  Bash sets this
-// to `:' and `=~'.
+// to ':' and '=~'.
 string_vector file_ops::tilde_additional_suffixes = default_suffixes;
 
 // Find the start of a tilde expansion in S, and return the index
@@ -222,7 +222,7 @@ tilde_expand_word (const std::string& filename)
   if (f_len == 0 || filename[0] != '~')
     return filename;
 
-  // A leading `~/' or a bare `~' is *always* translated to the value
+  // A leading '~/' or a bare '~' is *always* translated to the value
   // of $HOME or the home directory of the current user, regardless of
   // any preexpansion hook.
 

@@ -36,9 +36,9 @@ public:
 
   enum opts
   {
-    pathname = 1,  // No wildcard can ever match `/'.
+    pathname = 1,  // No wildcard can ever match '/'.
     noescape = 2,  // Backslashes don't quote special chars.
-    period = 4     // Leading `.' is matched only explicitly.
+    period = 4     // Leading '.' is matched only explicitly.
   };
 
   glob_match (const std::string& p,

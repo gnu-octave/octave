@@ -45,7 +45,7 @@ static void
 gripe_missing_glyph (char c)
 {
   warning_with_id ("Octave:missing-glyph",
-                   "ft_render: skipping missing glyph for character `%c'",
+                   "ft_render: skipping missing glyph for character '%c'",
                    c);
 }
 
@@ -53,7 +53,7 @@ static void
 gripe_glyph_render (char c)
 {
   warning_with_id ("Octave:glyph-render",
-                   "ft_render: unable to render glyph for character `%c'",
+                   "ft_render: unable to render glyph for character '%c'",
                    c);
 }
 
@@ -136,7 +136,7 @@ private:
       // FIXME -- Skip the call to FcFini because it can trigger the
       // assertion
       //
-      //   octave: fccache.c:507: FcCacheFini: Assertion `fcCacheChains[i] == ((void *)0)' failed.
+      //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
       //
       // if (fontconfig_initialized)
       //   FcFini ();
@@ -298,7 +298,7 @@ ft_render::set_mode (int m)
         }
       break;
     default:
-      ::error ("ft_render: invalid mode `%d'", mode);
+      ::error ("ft_render: invalid mode '%d'", mode);
       break;
     }
 }

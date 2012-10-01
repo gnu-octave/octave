@@ -509,7 +509,7 @@ open_diary_file (void)
   external_diary_file.open (diary_file.c_str (), std::ios::app);
 
   if (! external_diary_file)
-    error ("diary: can't open diary file `%s'", diary_file.c_str ());
+    error ("diary: can't open diary file '%s'", diary_file.c_str ());
 }
 
 DEFUN (diary, args, ,
@@ -612,7 +612,7 @@ The current state can be determined via @code{page_screen_output}.\n\
       else if (arg == "off")
         Vpage_screen_output = false;
       else
-        error ("more: unrecognized argument `%s'", arg.c_str ());
+        error ("more: unrecognized argument '%s'", arg.c_str ());
     }
   else if (argc == 1)
     Vpage_screen_output = ! Vpage_screen_output;

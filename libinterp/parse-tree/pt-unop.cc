@@ -49,7 +49,7 @@ tree_prefix_expression::rvalue (int nargout)
   octave_value_list retval;
 
   if (nargout > 1)
-    error ("prefix operator `%s': invalid number of output arguments",
+    error ("prefix operator '%s': invalid number of output arguments",
            oper () . c_str ());
   else
     retval = rvalue1 (nargout);
@@ -136,7 +136,7 @@ tree_postfix_expression::rvalue (int nargout)
   octave_value_list retval;
 
   if (nargout > 1)
-    error ("postfix operator `%s': invalid number of output arguments",
+    error ("postfix operator '%s': invalid number of output arguments",
            oper () . c_str ());
   else
     retval = rvalue1 (nargout);

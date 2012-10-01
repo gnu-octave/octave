@@ -100,7 +100,7 @@ function retval = help (name)
       case "html"
         [text, status] = strip_html_tags (text);
       case "not documented"
-        error ("help: `%s' is not documented\n", name);
+        error ("help: '%s' is not documented\n", name);
       case "not found"
         do_contents (name);
         return;
@@ -197,7 +197,7 @@ function do_contents (name)
     msg = feval (missing_function_hook, name);
 
     if (isempty (msg))
-      msg = sprintf ("`%s' not found", name);
+      msg = sprintf ("'%s' not found", name);
     endif
 
     error ("help: %s\n", msg);

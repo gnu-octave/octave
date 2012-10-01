@@ -148,7 +148,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
           {
             octave_value_list jdx = idx.front ();
             // Check for a simple element assignment. That means, if D is a diagonal matrix,
-            // `D(i,i) = x' will not destroy its diagonality (provided i is a valid index).
+            // 'D(i,i) = x' will not destroy its diagonality (provided i is a valid index).
             if (jdx.length () == 2 && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
               {
                 typename DMT::element_type val;

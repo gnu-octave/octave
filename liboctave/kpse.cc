@@ -57,8 +57,8 @@ extern "C" {
 
 #ifdef __DJGPP__
 #include <fcntl.h>      /* for long filenames' stuff */
-#include <dir.h>        /* for `getdisk' */
-#include <io.h>         /* for `setmode' */
+#include <dir.h>        /* for 'getdisk' */
+#include <io.h>         /* for 'setmode' */
 #endif
 }
 
@@ -67,7 +67,7 @@ extern "C" {
 #define KPATHSEA 32
 #endif
 
-/* System dependencies that are figured out by `configure'.  If we are
+/* System dependencies that are figured out by 'configure'.  If we are
    compiling standalone, we get our c-auto.h.  Otherwise, the package
    containing us must provide this (unless it can somehow generate ours
    from c-auto.in).  We use <...> instead of "..." so that the current
@@ -111,7 +111,7 @@ extern "C" {
 #ifndef IS_DIR_SEP
 #define IS_DIR_SEP(ch) ((ch) == DIR_SEP)
 #endif
-#ifndef IS_DEVICE_SEP /* No `devices' on, e.g., Unix.  */
+#ifndef IS_DEVICE_SEP /* No 'devices' on, e.g., Unix.  */
 #define IS_DEVICE_SEP(ch) 0
 #endif
 #ifndef NAME_BEGINS_WITH_DEVICE
@@ -277,7 +277,7 @@ static unsigned int kpathsea_debug = 0;
 /* Define common sorts of messages.  */
 
 /* This should be called only after a system call fails.  Don't exit
-   with status `errno', because that might be 256, which would mean
+   with status 'errno', because that might be 256, which would mean
    success (exit statuses are truncated to eight bits).  */
 #define FATAL_PERROR(str) \
   do \
@@ -340,7 +340,7 @@ static std::string kpse_expand_default (const std::string& path,
 static string_vector kpse_db_search (const std::string& name,
                                      const std::string& path_elt, bool all);
 
-#include <ctime> /* for `time' */
+#include <ctime> /* for 'time' */
 
 static bool
 kpse_is_env_sep (char c)
@@ -712,7 +712,7 @@ log_search (const string_vector& filenames)
                      filename.c_str ());
 
           /* And show them online, if debugging.  We've already started
-             the debugging line in `search', where this is called, so
+             the debugging line in 'search', where this is called, so
              just print the filename here, don't use DEBUGF.  */
           if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
             gnulib::fputs (filename.c_str (), stderr);
@@ -769,7 +769,7 @@ absolute_search (const std::string& name)
   string_vector ret_list;
   std::string found = kpse_readable_file (name);
 
-  /* Add `found' to the return list even if it's null; that tells
+  /* Add 'found' to the return list even if it's null; that tells
      the caller we didn't find anything.  */
   ret_list.append (found);
 
@@ -831,8 +831,8 @@ path_search (const std::string& path, const std::string& name,
          (2b) no db exists; or
          (2c) no db's are relevant to this elt; or
          (3) MUST_EXIST && NAME was not in the db.
-         In (2*), `found' will be NULL.
-         In (3),  `found' will be an empty list. */
+         In (2*), 'found' will be NULL.
+         In (3),  'found' will be an empty list. */
 
       if (allow_disk_search && found.empty ())
         {
@@ -913,7 +913,7 @@ search (const std::string& path, const std::string& original_name,
 
 /* Search PATH for the first NAME.  */
 
-/* Call `kpse_expand' on NAME.  If the result is an absolute or
+/* Call 'kpse_expand' on NAME.  If the result is an absolute or
    explicitly relative filename, check whether it is a readable
    (regular) file.
 
@@ -941,9 +941,9 @@ kpse_path_search (const std::string& path, const std::string& name,
 }
 
 /* Search all elements of PATH for files named NAME.  Not sure if it's
-   right to assert `must_exist' here, but it suffices now.  */
+   right to assert 'must_exist' here, but it suffices now.  */
 
-/* Like `kpse_path_search' with MUST_EXIST true, but return a list of
+/* Like 'kpse_path_search' with MUST_EXIST true, but return a list of
    all the filenames (or NULL if none), instead of taking the first.  */
 
 static string_vector
@@ -1027,8 +1027,8 @@ path_find_first_of (const std::string& path, const string_vector& names,
                    (2c) no db's are relevant to this elt; or
                    (3) MUST_EXIST && NAME was not in the db.
 
-                 In (2*), `found' will be NULL.
-                 In (3),  `found' will be an empty list. */
+                 In (2*), 'found' will be NULL.
+                 In (3),  'found' will be an empty list. */
 
               if (allow_disk_search && found.empty ())
                 {
@@ -1163,7 +1163,7 @@ kpse_path_find_first_of (const std::string& path, const string_vector& names,
 /* Search each element of PATH for each element of NAMES and return a
    list containing everything found, in the order found.  */
 
-/* Like `kpse_path_find_first_of' with MUST_EXIST true, but return a
+/* Like 'kpse_path_find_first_of' with MUST_EXIST true, but return a
    list of all the filenames (or NULL if none), instead of taking the
    first.  */
 
@@ -1193,7 +1193,7 @@ kpse_tilde_expand (const std::string& name)
     {
       expansion = name;
 
-      /* If a bare tilde, return the home directory or `.'.  (Very
+      /* If a bare tilde, return the home directory or '.'.  (Very
          unlikely that the directory name will do anyone any good, but
          ...  */
     }
@@ -1204,7 +1204,7 @@ kpse_tilde_expand (const std::string& name)
       if (expansion.empty ())
         expansion = ".";
 
-      /* If `~/', remove any trailing / or replace leading // in $HOME.
+      /* If '~/', remove any trailing / or replace leading // in $HOME.
          Should really check for doubled intermediate slashes, too.  */
     }
   else if (IS_DIR_SEP (name[1]))
@@ -1227,7 +1227,7 @@ kpse_tilde_expand (const std::string& name)
 
       expansion = home + name.substr (c);
 
-      /* If `~user' or `~user/', look up user in the passwd database (but
+      /* If '~user' or '~user/', look up user in the passwd database (but
          OS/2 doesn't have this concept.  */
     }
   else
@@ -1242,10 +1242,10 @@ kpse_tilde_expand (const std::string& name)
       std::string user = name.substr (1, c-1);
 
       /* We only need the cast here for (deficient) systems
-         which do not declare `getpwnam' in <pwd.h>.  */
+         which do not declare 'getpwnam' in <pwd.h>.  */
       octave_passwd p = octave_passwd::getpwnam (user);
 
-      /* If no such user, just use `.'.  */
+      /* If no such user, just use '.'.  */
       std::string home = p ? p.dir () : std::string (".");
 
       if (home.empty ())
@@ -1357,11 +1357,11 @@ kpse_brace_expand_element (const std::string& elt)
   return ret;
 }
 
-/* Do brace expansion and call `kpse_expand' on each element of the
+/* Do brace expansion and call 'kpse_expand' on each element of the
    result; return the final expansion (always in fresh memory, even if
-   no expansions were done).  We don't call `kpse_expand_default'
+   no expansions were done).  We don't call 'kpse_expand_default'
    because there is a whole sequence of defaults to run through; see
-   `kpse_init_format'.  */
+   'kpse_init_format'.  */
 
 static std::string
 kpse_brace_expand (const std::string& path)
@@ -1395,8 +1395,8 @@ kpse_brace_expand (const std::string& path)
 /* Expand all special constructs in a path, and include only the actually
    existing directories in the result. */
 
-/* Do brace expansion and call `kpse_expand' on each argument of the
-   result, then expand any `//' constructs.  The final expansion (always
+/* Do brace expansion and call 'kpse_expand' on each argument of the
+   result, then expand any '//' constructs.  The final expansion (always
    in fresh memory) is a path of all the existing directories that match
    the pattern. */
 
@@ -1672,8 +1672,8 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
                (i+1 < text_len &&
                 (brace_whitespace (text[i+1]) || text[i+1] == '}'))))
             continue;
-          /* If this is being compiled as part of bash, ignore the `{'
-             in a `${}' construct */
+          /* If this is being compiled as part of bash, ignore the '{'
+             in a '${}' construct */
           if ((c != '{') || i == 0 || (text[i-1] != '$'))
             break;
         }
@@ -1715,8 +1715,8 @@ struct kpse_format_info_type
   string_vector suffix;      /* For kpse_find_file to check for/append.  */
 };
 
-/* The sole variable of that type, indexed by `kpse_file_format_type'.
-   Initialized by calls to `kpse_find_file' for `kpse_init_format'.  */
+/* The sole variable of that type, indexed by 'kpse_file_format_type'.
+   Initialized by calls to 'kpse_find_file' for 'kpse_init_format'.  */
 static kpse_format_info_type kpse_format_info;
 
 /* And EXPAND_DEFAULT calls kpse_expand_default on try_path and the
@@ -1794,11 +1794,11 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
      component of FILENAME, we've matched.  */
   if (! matched && *path_elt == 0)
     {
-      /* Probably PATH_ELT ended with `vf' or some such, and FILENAME
-         ends with `vf/ptmr.vf'.  In that case, we'll be at a
+      /* Probably PATH_ELT ended with 'vf' or some such, and FILENAME
+         ends with 'vf/ptmr.vf'.  In that case, we'll be at a
          directory separator.  On the other hand, if PATH_ELT ended
-         with a / (as in `vf/'), FILENAME being the same `vf/ptmr.vf',
-         we'll be at the `p'.  Upshot: if we're at a dir separator in
+         with a / (as in 'vf/'), FILENAME being the same 'vf/ptmr.vf',
+         we'll be at the 'p'.  Upshot: if we're at a dir separator in
          FILENAME, skip it.  But if not, that's ok, as long as there
          are no more dir separators.  */
 
@@ -1875,8 +1875,8 @@ kpse_db_search (const std::string& name_arg,
     return ret;
 
   /* When tex-glyph.c calls us looking for, e.g., dpi600/cmr10.pk, we
-     won't find it unless we change NAME to just `cmr10.pk' and append
-     `/dpi600' to PATH_ELT.  We are justified in using a literal `/'
+     won't find it unless we change NAME to just 'cmr10.pk' and append
+     '/dpi600' to PATH_ELT.  We are justified in using a literal '/'
      here, since that's what tex-glyph.c unconditionally uses in
      DPI_BITMAP_SPEC.  But don't do anything if the / begins NAME; that
      should never happen.  */
@@ -1890,7 +1890,7 @@ kpse_db_search (const std::string& name_arg,
   else
     path_elt = orig_path_elt;
 
-  /* Don't bother doing any lookups if this `path_elt' isn't covered by
+  /* Don't bother doing any lookups if this 'path_elt' isn't covered by
      any of database directories.  We do this not so much because the
      extra couple of hash lookups matter -- they don't -- but rather
      because we want to return NULL in this case, so path_search can
@@ -1918,7 +1918,7 @@ kpse_db_search (const std::string& name_arg,
     {
       std::string atry = aliases[i];
 
-      /* We have an ls-R db.  Look up `atry'.  */
+      /* We have an ls-R db.  Look up 'atry'.  */
       string_vector db_dirs = hash_lookup (db, atry);
 
       /* For each filename found, see if it matches the path element.  For
@@ -1948,8 +1948,8 @@ kpse_db_search (const std::string& name_arg,
                 {
                   /* The hit in the DB doesn't exist in disk.  Now try
                      all its aliases.  For example, suppose we have a
-                     hierarchy on CD, thus `mf.bas', but ls-R contains
-                     `mf.base'.  Find it anyway.  Could probably work
+                     hierarchy on CD, thus 'mf.bas', but ls-R contains
+                     'mf.base'.  Find it anyway.  Could probably work
                      around this with aliases, but this is pretty easy
                      and shouldn't hurt.  The upshot is that if one of
                      the aliases actually exists, we use that.  */
@@ -2229,8 +2229,8 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
   else
     {
       /* If we do have something to match, see if it exists.  For
-         example, POST might be `pk/ljfour', and they might have a
-         directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
+         example, POST might be 'pk/ljfour', and they might have a
+         directory '$TEXMF/fonts/pk/ljfour' that we should find.  */
       name += post;
       expand_elt (str_list_ptr, name, elt_length);
       name.resize (elt_length);
@@ -2275,8 +2275,8 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
   else
     {
       /* If we do have something to match, see if it exists.  For
-         example, POST might be `pk/ljfour', and they might have a
-         directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
+         example, POST might be 'pk/ljfour', and they might have a
+         directory '$TEXMF/fonts/pk/ljfour' that we should find.  */
       name += post;
       expand_elt (str_list_ptr, name, elt_length);
       name.resize (elt_length);
@@ -2284,7 +2284,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
 
   while ((e = gnulib::readdir (dir)))
     {
-      /* If it begins with a `.', never mind.  (This allows ``hidden''
+      /* If it begins with a '.', never mind.  (This allows "hidden"
          directories that the algorithm won't find.)  */
 
       if (e->d_name[0] != '.')
@@ -2327,7 +2327,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
 #endif
             }
 
-          /* Remove the directory entry we just checked from `name'.  */
+          /* Remove the directory entry we just checked from 'name'.  */
           name.resize (elt_length);
         }
     }
@@ -2389,7 +2389,7 @@ expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
    current working directory.
 
    It's up to the caller to expand ELT.  This is because this routine is
-   most likely only useful to be called from `kpse_path_search', which
+   most likely only useful to be called from 'kpse_path_search', which
    has already assumed expansion has been done.  */
 
 static str_llist_type *
@@ -2494,20 +2494,20 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
 
   /* If we are the first unmoved element, nothing to relink.  */
   if (unmoved != mover)
-    { /* Remember `mover's current successor, so we can relink `mover's
+    { /* Remember 'mover's current successor, so we can relink 'mover's
          predecessor to it.  */
       str_llist_elt_type *before_mover;
       str_llist_elt_type *after_mover = STR_LLIST_NEXT (*mover);
 
-      /* Find `mover's predecessor.  */
+      /* Find 'mover's predecessor.  */
       for (before_mover = unmoved; STR_LLIST_NEXT (*before_mover) != mover;
            before_mover = STR_LLIST_NEXT (*before_mover))
         ;
 
-      /* `before_mover' now links to `after_mover'.  */
+      /* 'before_mover' now links to 'after_mover'.  */
       STR_LLIST_NEXT (*before_mover) = after_mover;
 
-      /* Insert `mover' before `unmoved' and after `last_moved' (or at
+      /* Insert 'mover' before 'unmoved' and after 'last_moved' (or at
          the head of the list).  */
       STR_LLIST_NEXT (*mover) = unmoved;
       if (! last_moved)
@@ -2545,8 +2545,8 @@ expanding_p (const std::string& var)
     ? expansions[var] : false;
 }
 
-/* Append the result of value of `var' to EXPANSION, where `var' begins
-   at START and ends at END.  If `var' is not set, do not complain.
+/* Append the result of value of 'var' to EXPANSION, where 'var' begins
+   at START and ends at END.  If 'var' is not set, do not complain.
    This is a subroutine for the more complicated expansion function.  */
 
 static void
@@ -2555,7 +2555,7 @@ expand (std::string &expansion, const std::string& var)
   if (expanding_p (var))
     {
       (*current_liboctave_warning_handler)
-        ("kpathsea: variable `%s' references itself (eventually)",
+        ("kpathsea: variable '%s' references itself (eventually)",
          var.c_str ());
     }
   else
@@ -2605,7 +2605,7 @@ kpse_var_expand (const std::string& src)
         {
           i++;
 
-          /* Three cases: `$VAR', `${VAR}', `$<anything-else>'.  */
+          /* Three cases: '$VAR', '${VAR}', '$<anything-else>'.  */
           if (IS_VAR_CHAR (src[i]))
             {
               /* $V: collect name constituents, then expand.  */
@@ -2646,7 +2646,7 @@ kpse_var_expand (const std::string& src)
             {
               /* $<something-else>: error.  */
               (*current_liboctave_warning_handler)
-                ("%s: Unrecognized variable construct `$%c'",
+                ("%s: Unrecognized variable construct '$%c'",
                  src.c_str (), src[i]);
 
               /* Just ignore those chars and keep going.  */

@@ -121,7 +121,7 @@ default_save_header_format (void)
 }
 
 // The format string for the comment line at the top of text-format
-// save files.  Passed to strftime.  Should begin with `#' and contain
+// save files.  Passed to strftime.  Should begin with '#' and contain
 // no newline characters.
 static std::string Vsave_header_format_string = default_save_header_format ();
 
@@ -129,11 +129,11 @@ static void
 gripe_file_open (const std::string& fcn, const std::string& file)
 {
   if (fcn == "load")
-    error ("%s: unable to open input file `%s'", fcn.c_str (), file.c_str ());
+    error ("%s: unable to open input file '%s'", fcn.c_str (), file.c_str ());
   else if (fcn == "save")
-    error ("%s: unable to open output file `%s'", fcn.c_str (), file.c_str ());
+    error ("%s: unable to open output file '%s'", fcn.c_str (), file.c_str ());
   else
-    error ("%s: unable to open file `%s'", fcn.c_str (), file.c_str ());
+    error ("%s: unable to open file '%s'", fcn.c_str (), file.c_str ());
 }
 
 // Install a variable with name NAME and the value VAL in the
@@ -394,7 +394,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
           if (tc.is_defined ())
             {
               if (format == LS_MAT_ASCII && argv_idx < argc)
-                warning ("load: loaded ASCII file `%s' -- ignoring extra args",
+                warning ("load: loaded ASCII file '%s' -- ignoring extra args",
                          orig_fname.c_str ());
 
               if (format == LS_MAT_ASCII
@@ -442,12 +442,12 @@ do_load (std::istream& stream, const std::string& orig_fname,
                 break;
             }
           else
-            error ("load: unable to load variable `%s'", name.c_str ());
+            error ("load: unable to load variable '%s'", name.c_str ());
         }
       else
         {
           if (count == 0)
-            error ("load: are you sure `%s' is an Octave data file?",
+            error ("load: are you sure '%s' is an Octave data file?",
                    orig_fname.c_str ());
 
           break;
@@ -873,7 +873,7 @@ Force Octave to assume the file is in Octave's text format.\n\
                   file.close ();
                 }
               else
-                error ("load: unable to open input file `%s'",
+                error ("load: unable to open input file '%s'",
                        orig_fname.c_str ());
             }
         }
@@ -1269,7 +1269,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       if (! symbol_table::is_variable (struct_name))
         {
-          error ("save: no such variable: `%s'", struct_name.c_str ());
+          error ("save: no such variable: '%s'", struct_name.c_str ());
           return;
         }
 
@@ -1277,7 +1277,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       if (! struct_var.is_map () || struct_var.numel () != 1)
         {
-          error ("save: `%s' is not a scalar structure",
+          error ("save: '%s' is not a scalar structure",
                  struct_name.c_str ());
           return;
         }
@@ -1292,7 +1292,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
               if (! save_fields (os, struct_var_map, argv[i], fmt,
                                  save_as_floats))
                 {
-                  warning ("save: no such field `%s.%s'",
+                  warning ("save: no such field '%s.%s'",
                            struct_name.c_str (), argv[i].c_str ());
                 }
             }
@@ -1305,7 +1305,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
       for (int i = argv_idx; i < argc; i++)
         {
           if (! save_vars (os, argv[i], fmt, save_as_floats))
-            warning ("save: no such variable `%s'", argv[i].c_str ());
+            warning ("save: no such variable '%s'", argv[i].c_str ());
         }
     }
 }
@@ -1350,7 +1350,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
         }
     }
 
-  message (0, "save to `%s' complete", fname);
+  message (0, "save to '%s' complete", fname);
 }
 
 void
@@ -1362,7 +1362,7 @@ dump_octave_core (void)
 
       const char *fname = Voctave_core_file_name.c_str ();
 
-      message (0, "attempting to save variables to `%s'...", fname);
+      message (0, "attempting to save variables to '%s'...", fname);
 
       load_save_format format = LS_BINARY;
 
@@ -1404,7 +1404,7 @@ dump_octave_core (void)
               file.close ();
             }
           else
-            warning ("unable to open `%s' for writing...", fname);
+            warning ("unable to open '%s' for writing...", fname);
         }
       else
 #endif /* HAVE_HDF5 */
@@ -1423,7 +1423,7 @@ dump_octave_core (void)
                   file.close ();
                 }
               else
-                warning ("unable to open `%s' for writing...", fname);
+                warning ("unable to open '%s' for writing...", fname);
             }
           else
 #endif
@@ -1437,7 +1437,7 @@ dump_octave_core (void)
                   file.close ();
                 }
               else
-                warning ("unable to open `%s' for writing...", fname);
+                warning ("unable to open '%s' for writing...", fname);
             }
         }
     }
@@ -1636,7 +1636,7 @@ the file @file{data} in Octave's binary format.\n\
         }
     }
 
-  // Guard against things like `save a*', which are probably mistakes...
+  // Guard against things like 'save a*', which are probably mistakes...
 
   else if (i == argc - 1 && glob_pattern_p (argv[i]))
     {

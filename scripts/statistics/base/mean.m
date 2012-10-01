@@ -117,7 +117,7 @@ function y = mean (x, opt1, opt2)
   elseif (strcmp (opt, "h"))
     y = n ./ sum (1 ./ x, dim);
   else
-    error ("mean: option `%s' not recognized", opt);
+    error ("mean: option '%s' not recognized", opt);
   endif
 
 endfunction

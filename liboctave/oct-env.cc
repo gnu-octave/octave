@@ -234,7 +234,7 @@ octave_env::do_set_program_name (const std::string& s) const
 }
 
 // Return a pretty pathname.  If the first part of the pathname is the
-// same as $HOME, then replace that with `~'.
+// same as $HOME, then replace that with '~'.
 
 std::string
 octave_env::do_polite_directory_format (const std::string& name) const
@@ -301,7 +301,7 @@ octave_env::do_rooted_relative_pathname (const std::string& s) const
   return false;
 }
 
-// Return the `basename' of the pathname in STRING (the stuff after
+// Return the 'basename' of the pathname in STRING (the stuff after
 // the last directory separator).  If STRING is not a full pathname,
 // simply return it.
 

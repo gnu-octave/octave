@@ -68,7 +68,7 @@ check_version (const std::string& version, const std::string& fcn)
 {
   if (version != OCTAVE_API_VERSION)
     {
-      error ("API version %s found in .oct file function `%s'\n"
+      error ("API version %s found in .oct file function '%s'\n"
              "       does not match the running Octave (API version %s)\n"
              "       this can lead to incorrect results or other failures\n"
              "       you can fix this problem by recompiling this .oct file",

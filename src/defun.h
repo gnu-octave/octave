@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFUN(name, args_name, nargout_name, doc) \
   DEFUN_INTERNAL (name, args_name, nargout_name, doc)
 
-// This one can be used when `name' cannot be used directly (if it is
+// This one can be used when 'name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the internal name of the function must be passed
 // too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").

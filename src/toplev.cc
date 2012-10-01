@@ -817,7 +817,7 @@ run_command_and_return_output (const std::string& cmd_str)
       retval(0) = cmd_status;
     }
   else
-    error ("unable to start subprocess for `%s'", cmd_str.c_str ());
+    error ("unable to start subprocess for '%s'", cmd_str.c_str ());
 
   return retval;
 }
@@ -1470,7 +1470,7 @@ specified option.\n\
           Cell c = m.contents (arg.c_str ());
 
           if (c.is_empty ())
-            error ("octave_config_info: no info for `%s'", arg.c_str ());
+            error ("octave_config_info: no info for '%s'", arg.c_str ());
           else
             retval = c(0);
         }

@@ -265,7 +265,7 @@ quit_loop_now (void)
 {
   octave_quit ();
 
-  // Maybe handle `continue N' someday...
+  // Maybe handle 'continue N' someday...
 
   if (tree_continue_command::continuing)
     tree_continue_command::continuing--;
@@ -480,7 +480,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
         }
     }
   else
-    error ("in statement `for [X, Y] = VAL', VAL must be a structure");
+    error ("in statement 'for [X, Y] = VAL', VAL must be a structure");
 }
 
 void

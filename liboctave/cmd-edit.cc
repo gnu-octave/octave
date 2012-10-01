@@ -1276,7 +1276,7 @@ command_editor::filename_quoting_desired (bool arg)
 //      \a      bell (ascii 07)
 //      \d      the date
 //      \e      escape (ascii 033)
-//      \h      the hostname up to the first `.'
+//      \h      the hostname up to the first '.'
 //      \H      the hostname
 //      \n      CRLF
 //      \r      CR

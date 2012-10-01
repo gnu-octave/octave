@@ -559,7 +559,7 @@ octave_rand::get_dist_id (const std::string& d)
     retval = gamma_dist;
   else
     (*current_liboctave_error_handler)
-      ("rand: invalid distribution `%s'", d.c_str ());
+      ("rand: invalid distribution '%s'", d.c_str ());
 
   return retval;
 }

@@ -125,7 +125,7 @@ static const char *usage_string =
        [--silent] [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
-// the real set of options will agree.  Note: the `+' must come first
+// the real set of options will agree.  Note: the '+' must come first
 // to prevent getopt from permuting arguments!
 static const char *short_opts = "+HVdfhip:qvx";
 

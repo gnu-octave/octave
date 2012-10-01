@@ -78,7 +78,7 @@ function [y, c] = stft(x, win_size, inc, num_coef, win_type)
       elseif (strcmp (win_type, "rectangle"))
         win_type = 3;
       else
-        error ("stft: unknown window type `%s'", win_type);
+        error ("stft: unknown window type '%s'", win_type);
       endif
     endif
   else

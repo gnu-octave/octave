@@ -317,7 +317,7 @@ process_texi_input_file (std::istream& is, std::ostream& os)
                               while (isspace (doc_string[j]))
                                 j++;
 
-                              // Make `see also' references in functions
+                              // Make 'see also' references in functions
                               // possible using @anchor{TAG} (new with
                               // Texinfo 4.0).
 

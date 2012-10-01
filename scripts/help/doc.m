@@ -92,7 +92,7 @@ function retval = doc (fname)
     if (! (have_fname && status == 0))
       status = system (cmd);
       if (status == 127)
-        warning ("unable to find info program `%s'", info_program ());
+        warning ("unable to find info program '%s'", info_program ());
       endif
     endif
 

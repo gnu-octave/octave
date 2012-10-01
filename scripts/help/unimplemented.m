@@ -54,7 +54,7 @@ function txt = unimplemented (fcn)
 
   otherwise
     if (ismember (fcn, missing_functions ()))
-      txt = sprintf ("the `%s' function is not yet implemented in Octave", fcn);
+      txt = sprintf ("the '%s' function is not yet implemented in Octave", fcn);
     else
       is_matlab_function = false;
       txt = "";
@@ -430,6 +430,6 @@ endfunction
 %! str = unimplemented ("quad2d");
 %! assert (str(1:51), "quad2d is not implemented.  Consider using dblquad.");
 %! str = unimplemented ("MException");
-%! assert (str(1:58), "the `MException' function is not yet implemented in Octave");
+%! assert (str(1:58), "the 'MException' function is not yet implemented in Octave");
 
 

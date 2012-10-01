@@ -1439,7 +1439,7 @@ public:
       }
     // FIXME -- is this necessary, or even useful?
     // else
-    //   error ("clear: no such function `%s'", name.c_str ());
+    //   error ("clear: no such function '%s'", name.c_str ());
   }
 
   // This clears oct and mex files, incl. autoloads.
@@ -1485,7 +1485,7 @@ public:
         fcn_table[alias] = finfo;
       }
     else
-      panic ("alias: `%s' is undefined", name.c_str ());
+      panic ("alias: '%s' is undefined", name.c_str ());
   }
 
   static void add_dispatch (const std::string& name, const std::string& type,

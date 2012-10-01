@@ -780,7 +780,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
             }
         }
       else
-        os << "dbtype: unable to open `" << ff << "' for reading!\n";
+        os << "dbtype: unable to open '" << ff << "' for reading!\n";
     }
   else
     os << "dbtype: unknown function " << name << "\n";
@@ -854,7 +854,7 @@ with line numbers.\n\
                         error ("dbtype: start line must be less than end line\n");
                     }
                   else
-                    error ("dbtype: line specification must be `start:end'");
+                    error ("dbtype: line specification must be 'start:end'");
                 }
             }
           break;

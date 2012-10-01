@@ -149,7 +149,7 @@ do_history (int argc, const string_vector& argv)
             command_history::set_file (argv[i+1]);
 
           if (option == "-a")
-            // Append `new' lines to file.
+            // Append 'new' lines to file.
             command_history::append ();
 
           else if (option == "-w")
@@ -161,7 +161,7 @@ do_history (int argc, const string_vector& argv)
             command_history::read ();
 
           else if (option == "-n")
-            // Read `new' history from file.
+            // Read 'new' history from file.
             command_history::read_range ();
 
           else
@@ -187,9 +187,9 @@ do_history (int argc, const string_vector& argv)
       if (sscanf (argv[i].c_str (), "%d", &limit) != 1)
         {
           if (argv[i][0] == '-')
-            error ("history: unrecognized option `%s'", argv[i].c_str ());
+            error ("history: unrecognized option '%s'", argv[i].c_str ());
           else
-            error ("history: bad non-numeric arg `%s'", argv[i].c_str ());
+            error ("history: bad non-numeric arg '%s'", argv[i].c_str ());
 
           return;
         }
@@ -260,10 +260,10 @@ edit_history_readline (std::fstream& stream)
   return line;
 }
 
-// Use `command' to replace the last entry in the history list, which,
-// by this time, is `run_history blah...'.  The intent is that the
-// new command becomes the history entry, and that `fc' should never
-// appear in the history list.  This way you can do `run_history' to
+// Use 'command' to replace the last entry in the history list, which,
+// by this time, is 'run_history blah...'.  The intent is that the
+// new command becomes the history entry, and that 'fc' should never
+// appear in the history list.  This way you can do 'run_history' to
 // your heart's content.
 
 static void
@@ -393,7 +393,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
 
   if (! file)
     {
-      error ("%s: couldn't open temporary file `%s'", warn_for,
+      error ("%s: couldn't open temporary file '%s'", warn_for,
              name.c_str ());
       return retval;
     }

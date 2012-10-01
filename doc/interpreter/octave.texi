@@ -20,7 +20,7 @@
 @setfilename octave.info
 
 @c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c want lots of 'See also: foo, bar, and baz' strings cluttering the
 @c printed manual (that information should be in the supporting text for
 @c each group of functions and variables).
 
@@ -47,7 +47,7 @@
 @end macro
 
 @c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c expansion of the @code{XXX} macro is 'XXX'.  The use of the apostrophe
 @c can be confusing if the code segment itself ends with a transpose operator.
 @ifinfo
 @macro xcode{arg}

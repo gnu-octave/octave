@@ -140,7 +140,7 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2num (arg(3:end));
       elseif (length (arg) >= 1 && arg(1) == "-")
-        error ("print: unknown option `%s'", arg);
+        error ("print: unknown option '%s'", arg);
       elseif (length (arg) > 0)
         arg_st.name = arg;
       endif
@@ -470,7 +470,7 @@ function bin = __find_binary__ (binary)
   persistent data = struct ()
 
   if (! isfield (data, binary))
-    ## Reinitialize when `user_binaries' is present.
+    ## Reinitialize when 'user_binaries' is present.
     data.(binary).bin = "";
     data.(binary).warn_on_absence = false;
   endif

@@ -637,7 +637,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 
   if (len > 1 && dir_arg.substr (len-2) == "//")
     warning_with_id ("Octave:recursive-path-search",
-                     "trailing `//' is no longer special in search path elements");
+                     "trailing '//' is no longer special in search path elements");
 
   std::string dir = file_ops::tilde_expand (dir_arg);
 

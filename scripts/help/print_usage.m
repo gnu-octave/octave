@@ -59,9 +59,9 @@ function print_usage (name)
     case "html"
       [usage_string, status] = get_usage_html (text, max_len);
     case "not documented"
-      error ("print_usage: `%s' is not documented\n", name);
+      error ("print_usage: '%s' is not documented\n", name);
     case "not found"
-      error ("print_usage: `%s' not found\n", name);
+      error ("print_usage: '%s' not found\n", name);
     otherwise
       error ("print_usage: internal error: unsupported help text format: '%s'\n", format);
   endswitch

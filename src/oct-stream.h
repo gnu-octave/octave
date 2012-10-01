@@ -87,14 +87,14 @@ public:
   // TRUE if we are not storing the result of this conversion.
   bool discard;
 
-  // Type of conversion -- `d', `i', `o', `u', `x', `e', `f', `g',
-  // `c', `s', `p', `%', or `['.
+  // Type of conversion -- 'd', 'i', 'o', 'u', 'x', 'e', 'f', 'g',
+  // 'c', 's', 'p', '%', or '['.
   char type;
 
-  // A length modifier -- `h', `l', or `L'.
+  // A length modifier -- 'h', 'l', or 'L'.
   char modifier;
 
-  // The class of characters in a `[' format.
+  // The class of characters in a '[' format.
   std::string char_class;
 };
 
@@ -229,14 +229,14 @@ public:
   // Precision.
   int prec;
 
-  // Flags -- `-', `+', ` ', `0', or `#'.
+  // Flags -- '-', '+', ' ', '0', or '#'.
   std::string flags;
 
-  // Type of conversion -- `d', `i', `o', `x', `X', `u', `c', `s',
-  // `f', `e', `E', `g', `G', `p', or `%'
+  // Type of conversion -- 'd', 'i', 'o', 'x', 'X', 'u', 'c', 's',
+  // 'f', 'e', 'E', 'g', 'G', 'p', or '%'
   char type;
 
-  // A length modifier -- `h', `l', or `L'.
+  // A length modifier -- 'h', 'l', or 'L'.
   char modifier;
 };
 

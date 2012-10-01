@@ -6205,7 +6205,7 @@ ordered lists.\n\
 */
 
 // Sort the rows of the matrix @var{a} according to the order
-// specified by @var{mode}, which can either be `ascend' or `descend'
+// specified by @var{mode}, which can either be 'ascend' or 'descend'
 // and return the index vector corresponding to the sort order.
 //
 // This function does not yet support sparse matrices.

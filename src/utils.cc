@@ -630,8 +630,8 @@ do_string_escapes (const std::string& s)
               break;
 
             default:
-              warning ("unrecognized escape sequence `\\%c' --\
- converting to `%c'", s[j], s[j]);
+              warning ("unrecognized escape sequence '\\%c' --\
+ converting to '%c'", s[j], s[j]);
               retval[i] = s[j];
               break;
             }

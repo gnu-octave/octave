@@ -49,9 +49,9 @@ tree_identifier::eval_undefined_error (void)
     return;
 
   if (l == -1 && c == -1)
-    ::error ("`%s' undefined", name ().c_str ());
+    ::error ("'%s' undefined", name ().c_str ());
   else
-    ::error ("`%s' undefined near line %d column %d",
+    ::error ("'%s' undefined near line %d column %d",
              name ().c_str (), l, c);
 }
 
@@ -72,7 +72,7 @@ tree_identifier::rvalue (int nargout)
       //
       // If this identifier refers to a function, we need to know
       // whether it is indexed so that we can do the same thing
-      // for `f' and `f()'.  If the index is present, return the
+      // for 'f' and 'f()'.  If the index is present, return the
       // function object and let tree_index_expression::rvalue
       // handle indexing.  Otherwise, arrange to call the function
       // here, so that we don't return the function definition as

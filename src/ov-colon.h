@@ -39,7 +39,7 @@ class octave_value_list;
 
 class tree_walker;
 
-// A type to represent `:' as used for indexing.
+// A type to represent ':' as used for indexing.
 
 class
 octave_magic_colon : public octave_base_value

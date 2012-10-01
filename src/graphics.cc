@@ -1798,7 +1798,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
                 pval_map[pname] = val;
             }
           else
-            error ("invalid %s property `%s'", pfx.c_str (), pname.c_str ());
+            error ("invalid %s property '%s'", pfx.c_str (), pname.c_str ());
         }
     }
 
@@ -7475,7 +7475,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
         obj.initialize ();
     }
   else
-    error ("gh_manager::do_make_graphics_handle: invalid object type `%s'",
+    error ("gh_manager::do_make_graphics_handle: invalid object type '%s'",
            go_name.c_str ());
 
   return h;
@@ -9045,7 +9045,7 @@ gtk_manager::do_get_toolkit (void) const
             retval = pl->second;
         }
       else
-        error ("default graphics toolkit `%s' is not available!",
+        error ("default graphics toolkit '%s' is not available!",
                dtk.c_str ());
     }
   else
@@ -9169,7 +9169,7 @@ undocumented.\n\
                 do_events = false;
               else
                 {
-                  error ("drawnow: invalid argument, expected `expose' as argument");
+                  error ("drawnow: invalid argument, expected 'expose' as argument");
                   return retval;
                 }
             }
@@ -9211,7 +9211,7 @@ undocumented.\n\
 
                           if (! (fs && fs.is_dir ()))
                             {
-                              error ("drawnow: nonexistent directory `%s'",
+                              error ("drawnow: nonexistent directory '%s'",
                                      dirname.c_str ());
 
                               return retval;
@@ -9523,7 +9523,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
                             go.get_properties ().insert_property (name, p);
                         }
                       else
-                        error ("addproperty: a `%s' property already exists in the graphics object",
+                        error ("addproperty: a '%s' property already exists in the graphics object",
                                name.c_str ());
                     }
                   else
@@ -9885,10 +9885,10 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                   if (s.compare ("timeout"))
                     timeout_index = max_arg_index + 1;
                   else
-                    error ("waitfor: invalid parameter `%s'", s.c_str ());
+                    error ("waitfor: invalid parameter '%s'", s.c_str ());
                 }
               else
-                error ("waitfor: invalid parameter, expected `timeout'");
+                error ("waitfor: invalid parameter, expected 'timeout'");
             }
 
           if (! error_state && timeout_index >= 0)

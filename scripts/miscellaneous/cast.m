@@ -33,7 +33,7 @@ function retval = cast (val, typ)
                              "double"; "single"; "logical"; "char"})))
         retval = feval (typ, val);
       else
-        error ("cast: type name `%s' is not a built-in type", typ);
+        error ("cast: type name '%s' is not a built-in type", typ);
       endif
     else
       error ("cast: expecting TYPE name as second argument");

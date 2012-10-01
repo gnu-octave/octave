@@ -72,7 +72,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     if (! __is_function__ (funcname))
       error ("uigetfile: fltk graphics toolkit required");
     elseif (! strcmp (defaulttoolkit, "gnuplot"))
-      warning ("uigetfile: no implementation for toolkit `%s', using `fltk' instead",
+      warning ("uigetfile: no implementation for toolkit '%s', using 'fltk' instead",
                defaulttoolkit);
     endif
   endif

@@ -579,7 +579,7 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
     }
   else
     {
-      warning ("opengl_renderer: cannot render object of type `%s'",
+      warning ("opengl_renderer: cannot render object of type '%s'",
                props.graphics_object_name ().c_str ());
     }
 }
@@ -2979,7 +2979,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       }
       break;
     default:
-      warning ("opengl_renderer: unsupported marker `%s'",
+      warning ("opengl_renderer: unsupported marker '%s'",
                marker.c_str ());
       break;
     }

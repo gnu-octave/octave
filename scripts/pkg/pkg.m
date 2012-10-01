@@ -1751,7 +1751,7 @@ function desc = get_description (filename)
         value = strip (line (colon+1:end));
         if (length (value) == 0)
             fclose (fid);
-            error ("The keyword `%s' of the package `%s' has an empty value",
+            error ("The keyword '%s' of the package '%s' has an empty value",
                     keyword, desc.name);
         endif
         desc.(keyword) = value;
@@ -1820,7 +1820,7 @@ function deps_cell = fix_depends (depends)
       sub = dep(lpar(1)+1:rpar(1)-1);
       parts = strsplit (sub, " ", true);
       if (length (parts) != 2)
-        error ("incorrect syntax for dependency `%s' in the DESCRIPTION file\n",
+        error ("incorrect syntax for dependency '%s' in the DESCRIPTION file\n",
                dep);
       endif
       operator = parts{1};

@@ -58,8 +58,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// TRUE means use a scaled fixed point format for `format long' and
-// `format short'.
+// TRUE means use a scaled fixed point format for 'format long' and
+// 'format short'.
 static bool Vfixed_point_format = false;
 
 // The maximum field width for a number printed by the default output
@@ -3631,7 +3631,7 @@ set_format_style (int argc, const string_vector& argv)
                 }
               else
                 {
-                  error ("format: unrecognized option `short %s'",
+                  error ("format: unrecognized option 'short %s'",
                          arg.c_str ());
                   return;
                 }
@@ -3676,7 +3676,7 @@ set_format_style (int argc, const string_vector& argv)
                 }
               else
                 {
-                  error ("format: unrecognized option `long %s'",
+                  error ("format: unrecognized option 'long %s'",
                          arg.c_str ());
                   return;
                 }
@@ -3755,7 +3755,7 @@ set_format_style (int argc, const string_vector& argv)
           Vcompact_format = false;
         }
       else
-        error ("format: unrecognized format state `%s'", arg.c_str ());
+        error ("format: unrecognized format state '%s'", arg.c_str ());
     }
   else
     {

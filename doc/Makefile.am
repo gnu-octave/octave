@@ -29,5 +29,5 @@ EXTRA_DIST = \
   texinfo.tex \
   texmf.cnf
 
-SUBDIRS = faq icons interpreter liboctave refcard
+SUBDIRS = icons interpreter liboctave refcard
 

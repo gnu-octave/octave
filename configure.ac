@@ -2456,7 +2456,6 @@ AC_SUBST(ac_config_headers)
 AC_CONFIG_FILES([
   Makefile 
   doc/Makefile
-  doc/faq/Makefile
   doc/icons/Makefile
   doc/interpreter/Makefile
   doc/liboctave/Makefile

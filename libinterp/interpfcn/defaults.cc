@@ -93,6 +93,8 @@ static std::string VIMAGE_PATH;
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
 
+std::string Vbuilt_in_docstrings_file;
+
 std::string
 subst_octave_home (const std::string& s)
 {
@@ -371,6 +373,21 @@ set_site_defaults_file (void)
     Vsite_defaults_file = sf;
 }
 
+static void
+set_built_in_docstrings_file (void)
+{
+  if (Vbuilt_in_docstrings_file.empty ())
+    {
+      std::string df = octave_env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
+
+      if (df.empty ())
+        Vbuilt_in_docstrings_file
+          = Voct_etc_dir + file_ops::dir_sep_str () + "built-in-docstrings";
+      else
+        Vbuilt_in_docstrings_file = df;
+    }
+}
+
 void
 install_defaults (void)
 {
@@ -424,6 +441,8 @@ install_defaults (void)
   set_local_site_defaults_file ();
 
   set_site_defaults_file ();
+
+  set_built_in_docstrings_file ();
 }
 
 DEFUN (EDITOR, args, nargout,

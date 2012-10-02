@@ -207,6 +207,8 @@ extern OCTINTERP_API std::string VEDITOR;
 extern OCTINTERP_API std::string Vlocal_site_defaults_file;
 extern OCTINTERP_API std::string Vsite_defaults_file;
 
+extern OCTINTERP_API std::string Vbuilt_in_docstrings_file;
+
 // Name of the FFTW wisdom program.
 extern OCTINTERP_API std::string Vfftw_wisdom_program;
 

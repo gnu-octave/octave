@@ -78,6 +78,7 @@ else
 #endif
 
 #include "defun.h"
+#include "help.h"
 #include "oct-obj.h"
 #include "variables.h"
 #include "builtins.h"
@@ -149,6 +150,8 @@ EOF
   done
 
   cat << \EOF
+
+  install_built_in_docstrings ();
 }
 
 EOF

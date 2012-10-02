@@ -47,6 +47,7 @@ octave_executable="$builddir/src/octave"
 LOADPATH="$d1_path:$d2_path:$d3_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
+BUILT_IN_DOCSTRINGS_FILE="$builddir/libinterp/DOCSTRINGS"
 TEXIMACROSFILE="$top_srcdir/doc/interpreter/macros.texi"
 INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 
@@ -82,4 +83,5 @@ OCTAVE_DEFAULT_QT_SETTINGS="$top_srcdir/libgui/default-qt-settings" \
   exec $builddir/libtool --mode=execute $driver \
     "$octave_executable" --no-init-path --path="$LOADPATH" \
     --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
+    --built-in-docstrings-file="$BUILT_IN_DOCSTRINGS_FILE" \
     --texi-macros-file="$TEXIMACROSFILE" --info-file="$INFOFILE" "$@"

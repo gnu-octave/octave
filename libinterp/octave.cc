@@ -205,60 +205,61 @@ static bool persist = false;
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
-#define DOC_CACHE_FILE_OPTION 1
-#define EVAL_OPTION 2
-#define EXEC_PATH_OPTION 3
-#define FORCE_GUI_OPTION 4
-#define IMAGE_PATH_OPTION 5
-#define INFO_FILE_OPTION 6
-#define INFO_PROG_OPTION 7
-#define JIT_DEBUG_OPTION 8
-#define LINE_EDITING_OPTION 9
-#define NO_GUI_OPTION 10
-#define NO_INIT_FILE_OPTION 11
-#define NO_INIT_PATH_OPTION 12
-#define NO_JIT_COMPILER_OPTION 13
-#define NO_LINE_EDITING_OPTION 14
-#define NO_SITE_FILE_OPTION 15
-#define NO_WINDOW_SYSTEM_OPTION 16
-#define PERSIST_OPTION 17
-#define TEXI_MACROS_FILE_OPTION 18
-#define TRADITIONAL_OPTION 19
-struct option long_opts[] =
-  {
-    { "braindead",        no_argument,       0, TRADITIONAL_OPTION },
-    { "debug",            no_argument,       0, 'd' },
-    { "doc-cache-file",   required_argument, 0, DOC_CACHE_FILE_OPTION },
-    { "echo-commands",    no_argument,       0, 'x' },
-    { "eval",             required_argument, 0, EVAL_OPTION },
-    { "exec-path",        required_argument, 0, EXEC_PATH_OPTION },
-    { "force-gui",        no_argument,       0, FORCE_GUI_OPTION },
-    { "help",             no_argument,       0, 'h' },
-    { "image-path",       required_argument, 0, IMAGE_PATH_OPTION },
-    { "info-file",        required_argument, 0, INFO_FILE_OPTION },
-    { "info-program",     required_argument, 0, INFO_PROG_OPTION },
-    { "interactive",      no_argument,       0, 'i' },
-    { "jit-debug",        no_argument,       0, JIT_DEBUG_OPTION },
-    { "line-editing",     no_argument,       0, LINE_EDITING_OPTION },
-    { "no-gui",           no_argument,       0, NO_GUI_OPTION },
-    { "no-history",       no_argument,       0, 'H' },
-    { "no-init-file",     no_argument,       0, NO_INIT_FILE_OPTION },
-    { "no-init-path",     no_argument,       0, NO_INIT_PATH_OPTION },
-    { "no-jit",           no_argument,       0, NO_JIT_COMPILER_OPTION },
-    { "no-line-editing",  no_argument,       0, NO_LINE_EDITING_OPTION },
-    { "no-site-file",     no_argument,       0, NO_SITE_FILE_OPTION },
-    { "no-window-system", no_argument,       0, NO_WINDOW_SYSTEM_OPTION },
-    { "norc",             no_argument,       0, 'f' },
-    { "path",             required_argument, 0, 'p' },
-    { "persist",          no_argument,       0, PERSIST_OPTION },
-    { "quiet",            no_argument,       0, 'q' },
-    { "silent",           no_argument,       0, 'q' },
-    { "texi-macros-file", required_argument, 0, TEXI_MACROS_FILE_OPTION },
-    { "traditional",      no_argument,       0, TRADITIONAL_OPTION },
-    { "verbose",          no_argument,       0, 'V' },
-    { "version",          no_argument,       0, 'v' },
-    { 0,                  0,                 0, 0 }
-  };
+#define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
+#define DOC_CACHE_FILE_OPTION 2
+#define EVAL_OPTION 3
+#define EXEC_PATH_OPTION 4
+#define FORCE_GUI_OPTION 5
+#define IMAGE_PATH_OPTION 6
+#define INFO_FILE_OPTION 7
+#define INFO_PROG_OPTION 8
+#define JIT_DEBUG_OPTION 9
+#define LINE_EDITING_OPTION 10
+#define NO_GUI_OPTION 11
+#define NO_INIT_FILE_OPTION 12
+#define NO_INIT_PATH_OPTION 13
+#define NO_JIT_COMPILER_OPTION 14
+#define NO_LINE_EDITING_OPTION 15
+#define NO_SITE_FILE_OPTION 16
+#define NO_WINDOW_SYSTEM_OPTION 17
+#define PERSIST_OPTION 18
+#define TEXI_MACROS_FILE_OPTION 19
+#define TRADITIONAL_OPTION 20
+struct option long_opts[] = {
+  { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
+  { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
+  { "debug",                    no_argument,       0, 'd' },
+  { "doc-cache-file",           required_argument, 0, DOC_CACHE_FILE_OPTION },
+  { "echo-commands",            no_argument,       0, 'x' },
+  { "eval",                     required_argument, 0, EVAL_OPTION },
+  { "exec-path",                required_argument, 0, EXEC_PATH_OPTION },
+  { "force-gui",                no_argument,       0, FORCE_GUI_OPTION },
+  { "help",                     no_argument,       0, 'h' },
+  { "image-path",               required_argument, 0, IMAGE_PATH_OPTION },
+  { "info-file",                required_argument, 0, INFO_FILE_OPTION },
+  { "info-program",             required_argument, 0, INFO_PROG_OPTION },
+  { "interactive",              no_argument,       0, 'i' },
+  { "jit-debug",                no_argument,       0, JIT_DEBUG_OPTION },
+  { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
+  { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
+  { "no-history",               no_argument,       0, 'H' },
+  { "no-init-file",             no_argument,       0, NO_INIT_FILE_OPTION },
+  { "no-init-path",             no_argument,       0, NO_INIT_PATH_OPTION },
+  { "no-jit",                   no_argument,       0, NO_JIT_COMPILER_OPTION },
+  { "no-line-editing",          no_argument,       0, NO_LINE_EDITING_OPTION },
+  { "no-site-file",             no_argument,       0, NO_SITE_FILE_OPTION },
+  { "no-window-system",         no_argument,       0, NO_WINDOW_SYSTEM_OPTION },
+  { "norc",                     no_argument,       0, 'f' },
+  { "path",                     required_argument, 0, 'p' },
+  { "persist",                  no_argument,       0, PERSIST_OPTION },
+  { "quiet",                    no_argument,       0, 'q' },
+  { "silent",                   no_argument,       0, 'q' },
+  { "texi-macros-file",         required_argument, 0, TEXI_MACROS_FILE_OPTION },
+  { "traditional",              no_argument,       0, TRADITIONAL_OPTION },
+  { "verbose",                  no_argument,       0, 'V' },
+  { "version",                  no_argument,       0, 'v' },
+  { 0,                          0,                 0, 0 }
+};
 
 // Store the command-line options for later use.
 
@@ -776,6 +777,11 @@ octave_process_command_line (int argc, char **argv)
 
         case 'v':
           print_version_and_exit ();
+          break;
+
+        case BUILT_IN_DOCSTRINGS_FILE_OPTION:
+          if (optarg)
+            Vbuilt_in_docstrings_file = optarg;
           break;
 
         case DOC_CACHE_FILE_OPTION:

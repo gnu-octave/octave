@@ -280,7 +280,7 @@ else
 all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE)
 endif
 
-install-data-hook: install-oct
+install-data-hook: install-oct install-built-in-docstrings
 
 uninstall-local: uninstall-oct
 
@@ -313,6 +313,10 @@ uninstall-oct:
 	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
 endif
 .PHONY: install-oct uninstall-oct
+
+install-built-in-docstrings:
+	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+.PHONY: install-built-in-docstrings
 
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \

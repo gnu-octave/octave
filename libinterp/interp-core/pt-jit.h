@@ -441,7 +441,7 @@ private:
 #endif
 
 // If TRUE, enable JIT compiler debugging/tracing.
-extern bool Venable_jit_debug;
+extern bool Venable_jit_debugging;
 
 // If TRUE, enable JIT compiler.
 extern bool Venable_jit_compiler;

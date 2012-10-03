@@ -126,14 +126,6 @@ static bool force_gui_option = false;
 // (--no-gui)
 static bool no_gui_option = false;
 
-// If TRUE, disable the JIT compiler.
-// (--no-jit-compiler)
-static bool no_jit_compiler_option = false;
-
-// If TRUE, enable JIT compiler debugging/tracing.
-// (--jit-debug)
-static bool jit_debug_option = false;
-
 // If TRUE, force readline command line editing.
 // (--line-editing)
 static bool forced_line_editing = false;
@@ -163,7 +155,7 @@ static const char *usage_string =
   "octave [-HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--jit-debug] [--line-editing] [--no-gui] [--no-history]\n\
+       [--jit-debugging] [--line-editing] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-jit-compiler]\n\
        [--no-line-editing] [--no-site-file] [--no-window-system]\n\
        [-p path] [--path path] [--silent] [--traditional]\n\
@@ -190,7 +182,7 @@ static bool persist = false;
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7
 #define INFO_PROG_OPTION 8
-#define JIT_DEBUG_OPTION 9
+#define JIT_DEBUGGING_OPTION 9
 #define LINE_EDITING_OPTION 10
 #define NO_GUI_OPTION 11
 #define NO_INIT_FILE_OPTION 12
@@ -216,7 +208,7 @@ struct option long_opts[] = {
   { "info-file",                required_argument, 0, INFO_FILE_OPTION },
   { "info-program",             required_argument, 0, INFO_PROG_OPTION },
   { "interactive",              no_argument,       0, 'i' },
-  { "jit-debug",                no_argument,       0, JIT_DEBUG_OPTION },
+  { "jit-debugging",            no_argument,       0, JIT_DEBUGGING_OPTION },
   { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
   { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
   { "no-history",               no_argument,       0, 'H' },
@@ -802,8 +794,8 @@ octave_process_command_line (int argc, char **argv)
             Vinfo_program = optarg;
           break;
 
-        case JIT_DEBUG_OPTION:
-          jit_debug_option = true;
+        case JIT_DEBUGGING_OPTION:
+          Fenable_jit_debugging (octave_value (true));
           break;
 
         case LINE_EDITING_OPTION:
@@ -823,7 +815,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case NO_JIT_COMPILER_OPTION:
-          no_jit_compiler_option = true;
+          Fenable_jit_compiler (octave_value (false));
           break;
 
         case NO_LINE_EDITING_OPTION:
@@ -883,11 +875,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   octave_thread::init ();
 
-  // The order of these calls is important.  The call to
-  // install_builtins must come before the option settings are processed
-  // because some command line options override defaults by calling
-  // bind_internal_variable.
-
   init_signals ();
 
   sysdep_init ();
@@ -933,12 +920,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (no_window_system)
     display_info::no_window_system ();
-
-  if (jit_debug_option)
-    bind_internal_variable ("enable_jit_debugging", true);
-
-  if (no_jit_compiler_option)
-    bind_internal_variable ("enable_jit_compiler", false);
 
   // Make sure we clean up when we exit.  Also allow users to register
   // functions.  If we don't have atexit or on_exit, we're going to

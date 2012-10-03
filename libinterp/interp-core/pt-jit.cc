@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "variables.h"
 
-bool Venable_jit_debug = false;
+bool Venable_jit_debugging = false;
 
 bool Venable_jit_compiler = true;
 
@@ -1865,13 +1865,13 @@ tree_jit::trip_count (const octave_value& bounds) const
 void
 tree_jit::optimize (llvm::Function *fn)
 {
-  if (Venable_jit_debug)
+  if (Venable_jit_debugging)
     llvm::verifyModule (*module);
 
   module_pass_manager->run (*module);
   pass_manager->run (*fn);
 
-  if (Venable_jit_debug)
+  if (Venable_jit_debugging)
     {
       std::string error;
       llvm::raw_fd_ostream fout ("test.bc", error,
@@ -1900,7 +1900,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
                        conv.get_variable_map ());
       infer.infer ();
 
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           jit_block_list& blocks = infer.get_blocks ();
           jit_block *entry_block = blocks.front ();
@@ -1922,7 +1922,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
                                          factory.constants (), fcn,
                                          argument_types);
 
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           std::cout << "-------------------- raw function ";
           std::cout << "--------------------\n";
@@ -1970,7 +1970,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
       llvm::Function *llvm_function = wrapper.to_llvm ();
       tjit.optimize (llvm_function);
 
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           std::cout << "-------------------- optimized and wrapped ";
           std::cout << "--------------------\n";
@@ -1986,7 +1986,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
     {
       argument_types.clear ();
 
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
@@ -2120,7 +2120,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
       infer.infer ();
 
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           jit_block_list& blocks = infer.get_blocks ();
           jit_block *entry_block = blocks.front ();
@@ -2140,7 +2140,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
     }
   catch (const jit_fail_exception& e)
     {
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
@@ -2149,7 +2149,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
   if (llvm_function)
     {
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           std::cout << "-------------------- llvm ir --------------------";
           std::cout << *llvm_function << std::endl;
@@ -2158,7 +2158,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
       tjit.optimize (llvm_function);
 
-      if (Venable_jit_debug)
+      if (Venable_jit_debugging)
         {
           std::cout << "-------------------- optimized llvm ir "
                     << "--------------------\n";
@@ -2180,17 +2180,17 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
-DEFUN (enable_jit_debug, args, nargout,
+DEFUN (enable_jit_debugging, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} enable_jit_debug ()\n\
+@deftypefn {Built-in Function} {} enable_jit_debugging ()\n\
 Query or set the internal variable that determines whether\n\
 debugging/tracing is enabled for Octave's JIT compiler.\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)
-  return SET_INTERNAL_VARIABLE (enable_jit_debug);
+  return SET_INTERNAL_VARIABLE (enable_jit_debugging);
 #else
-  warning ("enable_jit_debug: JIT compiling not available in this version of Octave");
+  warning ("enable_jit_debugging: JIT compiling not available in this version of Octave");
   return octave_value ();
 #endif
 }

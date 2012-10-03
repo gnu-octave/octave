@@ -315,6 +315,7 @@ endif
 .PHONY: install-oct uninstall-oct
 
 install-built-in-docstrings:
+	$(MKDIR_P) $(DESTDIR)$(octetcdir)
 	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: install-built-in-docstrings
 

@@ -725,6 +725,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case 'H':
+          Fsaving_history (octave_value (false));
           read_history_file = false;
           break;
 
@@ -930,9 +931,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   install_ops ();
 
   install_builtins ();
-
-  if (! read_history_file)
-    bind_internal_variable ("saving_history", false);
 
   for (std::list<std::string>::const_iterator it = command_line_path.begin ();
        it != command_line_path.end (); it++)

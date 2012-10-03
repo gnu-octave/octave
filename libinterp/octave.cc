@@ -166,14 +166,6 @@ static std::string exec_path;
 // (--image-path)
 static std::string image_path;
 
-// The value for "info_file" specified on the command line.
-// (--info-file)
-static std::string info_file;
-
-// The value for "info_program" specified on the command line.
-// (--info-program)
-static std::string info_program;
-
 // If TRUE, ignore the window system even if it is available.
 // (--no-window-system)
 static bool no_window_system = false;

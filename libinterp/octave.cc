@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "display.h"
 #include "error.h"
 #include "file-io.h"
+#include "help.h"
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
@@ -815,12 +816,12 @@ octave_process_command_line (int argc, char **argv)
 
         case INFO_FILE_OPTION:
           if (optarg)
-            info_file = optarg;
+            Vinfo_file = optarg;
           break;
 
         case INFO_PROG_OPTION:
           if (optarg)
-            info_program = optarg;
+            Vinfo_program = optarg;
           break;
 
         case JIT_DEBUG_OPTION:
@@ -961,12 +962,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (! image_path.empty ())
     set_image_path (image_path);
-
-  if (! info_file.empty ())
-    bind_internal_variable ("info_file", info_file);
-
-  if (! info_program.empty ())
-    bind_internal_variable ("info_program", info_program);
 
   if (no_window_system)
     display_info::no_window_system ();

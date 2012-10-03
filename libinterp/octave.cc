@@ -245,7 +245,7 @@ struct option long_opts[] = {
   { "no-history",               no_argument,       0, 'H' },
   { "no-init-file",             no_argument,       0, NO_INIT_FILE_OPTION },
   { "no-init-path",             no_argument,       0, NO_INIT_PATH_OPTION },
-  { "no-jit",                   no_argument,       0, NO_JIT_COMPILER_OPTION },
+  { "no-jit-compiler",          no_argument,       0, NO_JIT_COMPILER_OPTION },
   { "no-line-editing",          no_argument,       0, NO_LINE_EDITING_OPTION },
   { "no-site-file",             no_argument,       0, NO_SITE_FILE_OPTION },
   { "no-window-system",         no_argument,       0, NO_WINDOW_SYSTEM_OPTION },

@@ -217,7 +217,8 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
 
     if (i == 1)
       x_axis_range = get (ax, "xlim");
-      h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
+      h_baseline = line (x_axis_range, [base_value, base_value],
+                         "color", [0, 0, 0]);
       set (h_baseline, "handlevisibility", "off");
       set (h_baseline, "xliminclude", "off");
       addlistener (ax, "xlim", @update_xlim);

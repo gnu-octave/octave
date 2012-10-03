@@ -146,11 +146,6 @@ static bool read_history_file = true;
 // (--path; -p)
 static std::list<std::string> command_line_path;
 
-// Flags used to determine what commands should be echoed when they are
-// parsed and executed.
-// (--echo-commands; -x)
-static int echo_executing_commands = 0;
-
 // The file used for the doc string cache.
 // (--doc-cache-file)
 static std::string doc_cache_file;
@@ -761,8 +756,10 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case 'x':
-          echo_executing_commands
-            = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
+          {
+            int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
+            Fecho_executing_commands (octave_value (val));
+          }
           break;
 
         case 'v':
@@ -936,10 +933,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
        it != command_line_path.end (); it++)
     load_path::set_command_line_path (*it);
 
-  if (echo_executing_commands)
-    bind_internal_variable ("echo_executing_commands",
-                            echo_executing_commands);
-
   if (! doc_cache_file.empty ())
     bind_internal_variable ("doc_cache_file", doc_cache_file);
 
@@ -1067,7 +1060,7 @@ octave_execute_interpreter (void)
 
       // FIXME -- is this the right thing to do?
 
-      bind_internal_variable ("echo_executing_commands", ECHO_CMD_LINE);
+      Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
     }
 
   if (octave_embedded)

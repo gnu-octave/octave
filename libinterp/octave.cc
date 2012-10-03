@@ -752,12 +752,12 @@ octave_process_command_line (int argc, char **argv)
 
         case BUILT_IN_DOCSTRINGS_FILE_OPTION:
           if (optarg)
-            Vbuilt_in_docstrings_file = optarg;
+            Fbuilt_in_docstrings_file (octave_value (optarg));
           break;
 
         case DOC_CACHE_FILE_OPTION:
           if (optarg)
-            Vdoc_cache_file = optarg;
+            Fdoc_cache_file (octave_value (optarg));
           break;
 
         case EVAL_OPTION:
@@ -786,12 +786,12 @@ octave_process_command_line (int argc, char **argv)
 
         case INFO_FILE_OPTION:
           if (optarg)
-            Vinfo_file = optarg;
+            Finfo_file (octave_value (optarg));
           break;
 
         case INFO_PROG_OPTION:
           if (optarg)
-            Vinfo_program = optarg;
+            Finfo_program (octave_value (optarg));
           break;
 
         case JIT_DEBUGGING_OPTION:
@@ -836,7 +836,7 @@ octave_process_command_line (int argc, char **argv)
 
         case TEXI_MACROS_FILE_OPTION:
           if (optarg)
-            Vtexi_macros_file = optarg;
+            Ftexi_macros_file (octave_value (optarg));
           break;
 
         case TRADITIONAL_OPTION:

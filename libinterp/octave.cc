@@ -146,10 +146,6 @@ static bool read_history_file = true;
 // (--path; -p)
 static std::list<std::string> command_line_path;
 
-// The file used for the doc string cache.
-// (--doc-cache-file)
-static std::string doc_cache_file;
-
 // The value for "EXEC_PATH" specified on the command line.
 // (--exec-path)
 static std::string exec_path;
@@ -161,10 +157,6 @@ static std::string image_path;
 // If TRUE, ignore the window system even if it is available.
 // (--no-window-system)
 static bool no_window_system = false;
-
-// The value for "texi_macros_file" specified on the command line.
-// (--texi-macros-file)
-static std::string texi_macros_file;
 
 // Usage message
 static const char *usage_string =
@@ -773,7 +765,7 @@ octave_process_command_line (int argc, char **argv)
 
         case DOC_CACHE_FILE_OPTION:
           if (optarg)
-            doc_cache_file = optarg;
+            Vdoc_cache_file = optarg;
           break;
 
         case EVAL_OPTION:
@@ -852,7 +844,7 @@ octave_process_command_line (int argc, char **argv)
 
         case TEXI_MACROS_FILE_OPTION:
           if (optarg)
-            texi_macros_file = optarg;
+            Vtexi_macros_file = optarg;
           break;
 
         case TRADITIONAL_OPTION:
@@ -933,9 +925,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
        it != command_line_path.end (); it++)
     load_path::set_command_line_path (*it);
 
-  if (! doc_cache_file.empty ())
-    bind_internal_variable ("doc_cache_file", doc_cache_file);
-
   if (! exec_path.empty ())
     set_exec_path (exec_path);
 
@@ -944,9 +933,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (no_window_system)
     display_info::no_window_system ();
-
-  if (! texi_macros_file.empty ())
-    bind_internal_variable ("texi_macros_file", texi_macros_file);
 
   if (jit_debug_option)
     bind_internal_variable ("enable_jit_debugging", true);

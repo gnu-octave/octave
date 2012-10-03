@@ -296,21 +296,27 @@ set_image_path (const std::string& path)
 static void
 set_default_doc_cache_file (void)
 {
-  std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
+  if (Vdoc_cache_file.empty ())
+    {
+      std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
 
-  std::string env_file = octave_env::getenv ("OCTAVE_DOC_CACHE_FILE");
+      std::string env_file = octave_env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
-  Vdoc_cache_file = env_file.empty () ? def_file : env_file;
+      Vdoc_cache_file = env_file.empty () ? def_file : env_file;
+    }
 }
 
 static void
 set_default_texi_macros_file (void)
 {
-  std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
+  if (Vtexi_macros_file.empty ())
+    {
+      std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
 
-  std::string env_file = octave_env::getenv ("OCTAVE_TEXI_MACROS_FILE");
+      std::string env_file = octave_env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 
-  Vtexi_macros_file = env_file.empty () ? def_file : env_file;
+      Vtexi_macros_file = env_file.empty () ? def_file : env_file;
+    }
 }
 
 static void

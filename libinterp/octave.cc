@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathsearch.h"
 #include "str-vec.h"
 
+#include "builtins.h"
 #include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
@@ -112,10 +113,6 @@ static bool set_initial_path = true;
 // TRUE means we don't print the usual startup message.
 // (--quiet; --silent; -q)
 static bool inhibit_startup_message = false;
-
-// TRUE means we turn on compatibility options.
-// (--traditional)
-static bool traditional = false;
 
 // If TRUE, print verbose info in some cases.
 // (--verbose; -V)
@@ -667,20 +664,19 @@ maximum_braindamage (void)
 {
   persist = true;
 
-  bind_internal_variable ("PS1", ">> ");
-  bind_internal_variable ("PS2", "");
-  bind_internal_variable ("PS4", "");
-  bind_internal_variable ("allow_noninteger_range_as_index", true);
-  bind_internal_variable ("beep_on_error", true);
-  bind_internal_variable ("confirm_recursive_rmdir", false);
-  bind_internal_variable ("crash_dumps_octave_core", false);
-  bind_internal_variable ("default_save_options", "-mat-binary");
-  bind_internal_variable ("do_braindead_shortcircuit_evaluation", true);
-  bind_internal_variable ("fixed_point_format", true);
-  bind_internal_variable ("history_timestamp_format_string",
-                         "%%-- %D %I:%M %p --%%");
-  bind_internal_variable ("page_screen_output", false);
-  bind_internal_variable ("print_empty_dimensions", false);
+  FPS1 (octave_value (">> "));
+  FPS2 (octave_value (""));
+  FPS4 (octave_value (""));
+  Fallow_noninteger_range_as_index (octave_value (true));
+  Fbeep_on_error (octave_value (true));
+  Fconfirm_recursive_rmdir (octave_value (false));
+  Fcrash_dumps_octave_core (octave_value (false));
+  Fdefault_save_options (octave_value ("-mat-binary"));
+  Fdo_braindead_shortcircuit_evaluation (octave_value (true));
+  Ffixed_point_format (octave_value (true));
+  Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
+  Fpage_screen_output (octave_value (false));
+  Fprint_empty_dimensions (octave_value (false));
 
   disable_warning ("Octave:abbreviated-property-match");
   disable_warning ("Octave:fopen-file-in-path");
@@ -862,7 +858,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case TRADITIONAL_OPTION:
-          traditional = true;
+          maximum_braindamage ();
           break;
 
         default:
@@ -995,9 +991,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (line_editing)
     initialize_command_input ();
-
-  if (traditional)
-    maximum_braindamage ();
 
   octave_interpreter_ready = true;
 

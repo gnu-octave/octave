@@ -986,13 +986,6 @@ install_built_in_docstrings (void)
               if (fp)
                 {
                   tmp = tmp.substr (pos+1);
-
-                  while (tmp.length () > 2 && tmp[0] == '@' && tmp[1] == 'c')
-                    {
-                      pos = tmp.find ('\n');
-                      tmp = tmp.substr (pos+1);
-                    }
-
                   fp->document (tmp);
                 }
             }
@@ -1006,7 +999,6 @@ install_built_in_docstrings (void)
                 << std::endl;
     }
 
-  octave_time t2;
 }
 
 static void

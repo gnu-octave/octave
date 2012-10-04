@@ -401,4 +401,11 @@ xrem (T x, T y)
   return retval;
 }
 
+template <typename T>
+T
+xsignbit (T x)
+{
+  return signbit (x);
+}
+
 #endif

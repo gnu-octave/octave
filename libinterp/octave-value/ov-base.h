@@ -725,6 +725,7 @@ public:
       umap_xisspace,
       umap_xisupper,
       umap_xisxdigit,
+      umap_xsignbit,
       umap_xtoascii,
       umap_xtolower,
       umap_xtoupper,

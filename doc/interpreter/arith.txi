@@ -262,6 +262,8 @@ cos (pi/2)
 
 @DOCSTRING(sign)
 
+@DOCSTRING(signbit)
+
 @node Special Functions
 @section Special Functions
 

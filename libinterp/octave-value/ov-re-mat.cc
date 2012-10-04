@@ -929,6 +929,7 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (tan, double, ::tan);
       ARRAY_MAPPER (tanh, double, ::tanh);
       ARRAY_MAPPER (isna, bool, octave_is_NA);
+      ARRAY_MAPPER (xsignbit, double, xsignbit);
 
     default:
       if (umap >= umap_xisalnum && umap <= umap_xtoupper)

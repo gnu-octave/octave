@@ -1229,6 +1229,7 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
       "isspace",
       "isupper",
       "isxdigit",
+      "signbit",
       "toascii",
       "tolower",
       "toupper"

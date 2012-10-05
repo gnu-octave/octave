@@ -322,8 +322,8 @@ if AMCOND_BUILD_DOCS
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
 	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
-.PHONY: install-built-in-docstrings
 endif
+.PHONY: install-built-in-docstrings
 
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \

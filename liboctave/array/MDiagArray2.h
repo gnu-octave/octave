@@ -91,7 +91,7 @@ public:
     }
 
   MArray<T> diag (octave_idx_type k = 0) const
-    { return DiagArray2<T>::diag (k); }
+    { return DiagArray2<T>::extract_diag (k); }
 
   MDiagArray2<T> transpose (void) const { return DiagArray2<T>::transpose (); }
   MDiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const { return DiagArray2<T>::hermitian (fcn); }

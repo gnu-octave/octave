@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "lo-error.h"
 #include "oct-env.h"
-#include "pathsearch.h"
 #include "str-vec.h"
 
 #include "builtins.h"
@@ -250,24 +249,6 @@ intern_argv (int argc, char **argv)
       while (--i > 0)
         octave_argv[i-1] = *(argv+i);
     }
-}
-
-static void
-initialize_pathsearch (void)
-{
-  // This may seem odd, but doing it this way means that we don't have
-  // to modify the kpathsea library...
-
-  std::string odb = octave_env::getenv ("OCTAVE_DB_PATH");
-
-  // For backward compatibility.
-
-  if (odb.empty ())
-    odb = octave_env::getenv ("OCTAVE_DB_DIR");
-
-  if (odb.empty ())
-    odb = Vdata_dir + file_ops::dir_sep_str () + "octave:"
-      + Vlibexec_dir + file_ops::dir_sep_str () + "octave";
 }
 
 DEFUN (__version_info__, args, ,
@@ -892,8 +873,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   initialize_error_handlers ();
 
   initialize_default_warning_state ();
-
-  initialize_pathsearch ();
 
   if (! embedded)
     install_signal_handlers ();

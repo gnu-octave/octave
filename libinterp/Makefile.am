@@ -280,7 +280,11 @@ else
 all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE)
 endif
 
+if AMCOND_BUILD_DOCS
 install-data-hook: install-oct install-built-in-docstrings
+else
+install-data-hook: install-oct
+endif
 
 uninstall-local: uninstall-oct
 
@@ -314,10 +318,12 @@ uninstall-oct:
 endif
 .PHONY: install-oct uninstall-oct
 
+if AMCOND_BUILD_DOCS
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
 	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: install-built-in-docstrings
+endif
 
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \

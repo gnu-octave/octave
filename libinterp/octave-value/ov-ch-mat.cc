@@ -152,12 +152,11 @@ octave_char_matrix::as_mxArray (void) const
   return retval;
 }
 
-// The C++ standard guarantees cctype defines functions, not macros
-// (and hence macros *CAN'T* be defined if only cctype is included)
-// so there's no need to f*ck around.
-// The exceptions are isascii and toascii, which are not C++.
-// Oddly enough, all those character functions are int (*) (int), even
-// in C++.  Wicked!
+// The C++ standard guarantees cctype defines functions, not macros (and
+// hence macros *CAN'T* be defined if only cctype is included) so
+// there's no need to fuck around. The exceptions are isascii and
+// toascii, which are not C++. Oddly enough, all those character
+// functions are int (*) (int), even in C++. Wicked!
 static inline int xisascii (int c)
 { return isascii (c); }
 

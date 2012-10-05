@@ -482,6 +482,8 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
     }
   return retval;
 #else
+  (*current_liboctave_error_handler)
+    ("CXSPARSE unavailable; cannot solve minimum norm problem");
   return RT ();
 #endif
 }

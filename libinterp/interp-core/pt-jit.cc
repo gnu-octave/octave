@@ -2180,7 +2180,7 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
-DEFUN (enable_jit_debugging, , ,
+DEFUN (enable_jit_debugging, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} enable_jit_debugging ()\n\
 Query or set the internal variable that determines whether\n\
@@ -2195,7 +2195,7 @@ debugging/tracing is enabled for Octave's JIT compiler.\n\
 #endif
 }
 
-DEFUN (enable_jit_compiler, , ,
+DEFUN (enable_jit_compiler, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} enable_jit_compiler ()\n\
 Query or set the internal variable that enables Octave's JIT compiler.\n\

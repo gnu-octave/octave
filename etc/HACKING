@@ -41,7 +41,7 @@ Obviously, if you are reading these notes, you did manage to check out
 this package from the repository.  For the record, you will find all the
 relevant information on downloading sources at:
 
-  http://www.gnu.org/software/octave/download.html
+  http://www.octave.org/download.html
 
 After checking out Octave, you will need to run the autogen.sh script:
 

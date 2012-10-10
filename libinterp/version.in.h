@@ -58,7 +58,7 @@ FITNESS FOR A PARTICULAR PURPOSE." ARG
 
 #define OCTAVE_CONTRIB_STATEMENT \
   "Please contribute if you find this software useful.\n\
-For more information, visit http://www.octave.org/help-wanted.html"
+For more information, visit http://www.octave.org/get-involved.html"
 
 #define OCTAVE_BUGS_STATEMENT \
   "Read http://www.octave.org/bugs.html to learn how to submit bug reports."

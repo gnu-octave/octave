@@ -29,7 +29,7 @@ To initialize:
 
 */
 
-// PKG_ADD: register_graphics_toolkit ("fltk");
+// PKG_ADD: if (__have_fltk__ ()) register_graphics_toolkit ("fltk"); endif
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2029,6 +2029,19 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
 
 #endif
 
+DEFUN_DLD (__have_fltk__, , , "")
+{
+  octave_value retval;
+
+#if defined (HAVE_FLTK)
+  retval = true;
+#else
+  retval = false;
+#endif
+
+  return retval;
+}
+
 // FIXME -- This function should be abstracted and made potentially
 // available to all graphics toolkits.  This suggests putting it in
 // graphics.cc as is done for drawnow() and having the master
@@ -2126,4 +2139,3 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
   return octave_value ();
 #endif
 }
-

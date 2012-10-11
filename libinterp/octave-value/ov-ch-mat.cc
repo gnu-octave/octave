@@ -172,6 +172,8 @@ static inline int xtoascii (int c)
 octave_value
 octave_char_matrix::map (unary_mapper_t umap) const
 {
+  octave_value retval;
+
   switch (umap)
     {
 #define STRING_MAPPER(UMAP,FCN,TYPE) \
@@ -194,10 +196,26 @@ octave_char_matrix::map (unary_mapper_t umap) const
     STRING_MAPPER (xtolower, std::tolower, char);
     STRING_MAPPER (xtoupper, std::toupper, char);
 
-    default:
+    // For Matlab compatibility, these should work on ASCII values
+    // without error or warning.
+    case umap_abs:
+    case umap_ceil:
+    case umap_fix:
+    case umap_floor:
+    case umap_imag:
+    case umap_isinf:
+    case umap_isnan:
+    case umap_real:
+    case umap_round:
       {
         octave_matrix m (array_value (true));
         return m.map (umap);
       }
+
+    default:
+      error ("%s: expecting numeric argument", get_umap_name (umap));
+      break;
     }
+
+  return retval;
 }

@@ -4116,53 +4116,53 @@ either \"double\" or \"single\".\n\
     {
       if (args(0).is_single_type ())
         {
-          float val = args(0).float_value ();
+          Array<float> x = args(0).float_array_value ();
 
           if (! error_state)
-            {
-              val = ::fabsf (val);
-              if (xisnan (val) || xisinf (val))
-                retval = fill_matrix (octave_value ("single"),
-                                      lo_ieee_nan_value (),
-                                      lo_ieee_float_nan_value (), "eps");
-              else if (val < std::numeric_limits<float>::min ())
-                retval = fill_matrix (octave_value ("single"), 0e0,
-                                      powf (2.0, -149e0), "eps");
-              else
+            {              
+              Array<float> epsval (x.dims ());
+              
+              for (octave_idx_type i = 0; i < x.numel (); i++)
                 {
-                  int expon;
-                  frexpf (val, &expon);
-                  val = std::pow (static_cast <float> (2.0),
-                                  static_cast <float> (expon - 24));
-                  retval = fill_matrix (octave_value ("single"),
-                                        std::numeric_limits<double>::epsilon (),
-                                        val, "eps");
+                  float val = ::fabsf (x(i));
+                  if (xisnan (val) || xisinf (val))
+                    epsval(i) = lo_ieee_nan_value ();
+                  else if (val < std::numeric_limits<float>::min ())
+                    epsval(i) = powf (2.0, -149e0);                  
+                  else
+                    {
+                      int expon;
+                      frexpf (val, &expon);
+                      epsval(i) = std::pow (static_cast <float> (2.0),
+                                            static_cast <float> (expon - 24));
+                    }
                 }
+              retval = epsval;
             }
         }
       else
         {
-          double val = args(0).double_value ();
+          Array<double> x = args(0).array_value ();
 
           if (! error_state)
             {
-              val = ::fabs (val);
-              if (xisnan (val) || xisinf (val))
-                retval = fill_matrix (octave_value_list (),
-                                      lo_ieee_nan_value (),
-                                      lo_ieee_float_nan_value (), "eps");
-              else if (val < std::numeric_limits<double>::min ())
-                retval = fill_matrix (octave_value_list (),
-                                      pow (2.0, -1074e0), 0e0, "eps");
-              else
+              Array<double> epsval (x.dims ());
+
+              for (octave_idx_type i = 0; i < x.numel (); i++)
                 {
-                  int expon;
-                  frexp (val, &expon);
-                  val = std::pow (static_cast <double> (2.0),
-                                  static_cast <double> (expon - 53));
-                  retval = fill_matrix (octave_value_list (), val,
-                                        std::numeric_limits<float>::epsilon (),
-                                        "eps");
+                  double val = ::fabs (x(i));
+                  if (xisnan (val) || xisinf (val))
+                    epsval(i) = lo_ieee_nan_value ();
+                  else if (val < std::numeric_limits<double>::min ())
+                    epsval(i) = pow (2.0, -1074e0);
+                  else
+                    {
+                      int expon;
+                      frexp (val, &expon);
+                      epsval(i) = std::pow (static_cast <double> (2.0),
+                                            static_cast <double> (expon - 53));
+                    }
+                  retval = epsval;
                 }
             }
         }
@@ -4184,6 +4184,8 @@ either \"double\" or \"single\".\n\
 %!assert (eps (realmin/16), 2^(-1074))
 %!assert (eps (Inf), NaN)
 %!assert (eps (NaN), NaN)
+%!assert (eps ([1/2 1 2 realmax 0 realmin/2 realmin/16 Inf NaN]), 
+%!             [2^(-53) 2^(-52) 2^(-51) 2^971 2^(-1074) 2^(-1074) 2^(-1074) NaN NaN])
 %!assert (eps (single (1/2)), single (2^(-24)))
 %!assert (eps (single (1)), single (2^(-23)))
 %!assert (eps (single (2)), single (2^(-22)))
@@ -4193,6 +4195,9 @@ either \"double\" or \"single\".\n\
 %!assert (eps (realmin ("single")/16), single (2^(-149)))
 %!assert (eps (single (Inf)), single (NaN))
 %!assert (eps (single (NaN)), single (NaN))
+%!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])), 
+%!             single ([2^(-24) 2^(-23) 2^(-22) 2^104 2^(-149) 2^(-149) 2^(-149) NaN NaN]))
+
 */
 
 DEFUN (pi, args, ,

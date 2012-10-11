@@ -2135,7 +2135,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 
   return octave_value (mode_str);
 #else
-  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  error ("gui_mode: not available without OpenGL and FLTK libraries");
   return octave_value ();
 #endif
 }

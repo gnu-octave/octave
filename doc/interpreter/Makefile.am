@@ -249,7 +249,7 @@ spellcheck: $(SPELLCHECK_FILES)
 EXTRA_DIST = \
   config-images.sh \
   contributors.in \
-	doc-cache \
+  doc-cache \
   find-docstring-files.sh \
   images \
   images.awk \

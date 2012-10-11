@@ -1755,7 +1755,8 @@ sign (x) =  0, x = 0;\n\
 \n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 \n\
-Note that @code{sign (-0.0)} is 0.\n\  Although IEEE 754 floating point\n\
+Note that @code{sign (-0.0)} is 0.\n\
+Although IEEE 754 floating point\n\
 allows zero to be signed, 0.0 and -0.0 compare equal.  If you must test\n\
 whether zero is signed, use the @code{signbit} function.\n\
 @seealso{signbit}\n\

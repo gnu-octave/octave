@@ -32,10 +32,8 @@ function rgbplot (cmap)
     print_usage ();
   endif
 
-  if (! ismatrix (cmap) || ndims (cmap) != 2 || columns (cmap) != 3)
-    error ("rgbplot: CMAP must be a matrix of size Nx3");
-  elseif (any (cmap(:) < 0) || any (cmap(:) > 1))
-    error ("rgbplot: CMAP intensities must be in the range [0, 1]");
+  if (! iscolormap (cmap))
+    error ("rgbplot: CMAP must be a colormap");
   endif
 
   plot (cmap(:,1),"r", cmap(:,2),"g", cmap(:,3),"b");
@@ -52,9 +50,4 @@ endfunction
 %%test input validation
 %!error rgbplot ()
 %!error rgbplot (1,2)
-%!error <CMAP must be a matrix of size Nx3> rgbplot ({0 1 0})
-%!error <CMAP must be a matrix of size Nx3> rgbplot (ones (3,3,3))
-%!error <CMAP must be a matrix of size Nx3> rgbplot (ones (3,4))
-%!error <CMAP intensities must be in the range> rgbplot ([0 0 -2])
-%!error <CMAP intensities must be in the range> rgbplot ([0 0 2])
-
+%!error <CMAP must be a colormap> rgbplot ({0 1 0})

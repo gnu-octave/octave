@@ -68,9 +68,7 @@ function [Y, newmap] = cmunique (X, map)
 
   if (nargin == 2)
     ## (X, map) case
-    if (! isnumeric (map) || iscomplex (map)
-        || ndims (map) != 2 || columns (map) != 3
-        || any (map(:) < 0) || any (map(:) > 1))
+    if (! iscolormap (map))
       error ("cmunique: MAP must be a valid colormap");
     endif
     [newmap,i,j] = unique (map, "rows");  # calculate unique colormap

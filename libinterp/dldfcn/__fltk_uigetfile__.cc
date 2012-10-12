@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if defined (HAVE_FLTK)
+#ifdef HAVE_FLTK
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -39,6 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 // headers which may require Octave's Complex typedef.
 #undef Complex
 
+#endif
+
 #include "defun-dld.h"
 #include "file-ops.h"
 
@@ -48,6 +50,7 @@ DEFUN_DLD (__fltk_uigetfile__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+#ifdef HAVE_FLTK
   // Expected argument list:
   //
   //   args(0) ... FileFilter in fltk format
@@ -132,6 +135,10 @@ Undocumented internal function.\n\
   Fl::flush ();
 
   return retval;
+#else
+  error ("__fltk_uigetfile__: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
 /*
@@ -139,4 +146,3 @@ Undocumented internal function.\n\
 %!assert (1)
 */
 
-#endif

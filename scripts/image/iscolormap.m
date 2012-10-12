@@ -43,3 +43,8 @@ endfunction
 
 %!assert (iscolormap (jet (64)))
 %!assert (iscolormap (magic (4)), false)
+%!assert (iscolormap ({0 1 0}), false)
+%!assert (iscolormap (ones (3,3,3)), false)
+%!assert (iscolormap (ones (3,4)), false)
+%!assert (iscolormap ([0 0 -2]), false)
+%!assert (iscolormap ([0 0 2]), false)

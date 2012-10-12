@@ -473,6 +473,11 @@ gzfilebuf::seekoff (off_type off, std::ios_base::seekdir way,
       if ((io_mode & std::ios_base::in) && way == std::ios_base::cur)
         computed_off += this->gptr () - this->egptr ();
 
+      // Handle tellg/tellp as a special case up front, no need to seek
+      // or invalidate get/put buffers
+      if (off == 0 && way == std::ios_base::cur)
+        return pos_type (gztell (file) + computed_off);
+
       if (way == std::ios_base::beg)
         ret = pos_type (gzseek (file, computed_off, SEEK_SET));
       else if (way == std::ios_base::cur)

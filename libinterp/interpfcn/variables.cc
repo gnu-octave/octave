@@ -543,13 +543,13 @@ Check only for variables.\n\
 Check only for built-in functions.\n\
 \n\
 @item \"file\"\n\
-Check only for files.\n\
+Check only for files and directories.\n\
 \n\
 @item \"dir\"\n\
 Check only for directories.\n\
 @end table\n\
 \n\
-@seealso{file_in_loadpath}\n\
+@seealso{file_in_loadpath, file_in_path, stat}\n\
 @end deftypefn")
 {
   octave_value retval = false;

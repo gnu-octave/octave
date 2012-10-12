@@ -567,7 +567,7 @@ built in to the interpreter.
 The Octave distribution includes a 650+ page manual that is also
 distributed under the terms of the GNU GPL.
 It is available on the web at
-@url{http://www.octave.org/docs.html} and you will also
+@url{http://www.octave.org/support.html} and you will also
 find there instructions on how to order a paper version.
 
 The complete text of the Octave manual is also available using the GNU
@@ -593,14 +593,14 @@ answered by the Octave manual or by this document.
 @node User community
 @section User community
 
-To subscribe to the list, go to @url{http://www.octave.org/archive.html}
+To subscribe to the list, go to @url{http://www.octave.org/support.html}
 and follow the link to the subscription page for the list.
 
 @strong{Please do not} send requests to be added or removed from the
 mailing list, or other administrative trivia to the list itself.
 
 An archive of old postings to the help-octave mailing list is maintained
-on @url{http://www.octave.org/archive.html}.
+on @url{http://www.octave.org/support.html}.
 
 You will also find some user advice and code spread over the web.  Good
 starting points are the Octave Wiki @url{http://wiki.octave.org} and
@@ -657,7 +657,7 @@ projects do.  For an up-to-date listing of packagers, see:
 
 @itemize @bullet
 @item @url{http://www.octave.org/download.html}
-@item @url{http://wiki.octave.org/wiki.pl?CategoryInstall}
+@item @url{http://wiki.octave.org/Installation}
 @end itemize
 
 As of today, Octave binaries are available at least on Debian, Ubuntu,

@@ -15,8 +15,7 @@ more than one release.
 Please DO report other bugs in the development releases as soon as you
 find them.  Bugs should be reported to the bug tracker at
 'http://bugs.octave.org'.  Please read read the bug reporting
-guidelines (http://www.gnu.org/software/octave/bugs.html) before
-submitting an item.
+guidelines (http://www.octave.org/bugs.html) before submitting an item.
 
 If you have a fix for a bug, or an enhancement to submit, send your
 patch to maintainers@octave.org or submit it to the patch
@@ -77,6 +76,6 @@ unless you do your best to help.
 If you would like to be on the very sharpest part of the bleeding
 edge, you can now use Mercurial to access Octave's current development
 sources.  Instructions for checking out a copy are available on the
-web at http://www.gnu.org/software/octave/download.html.
+web at http://www.octave.org/download.html.
 
 Last updated: Sat Jan 22 21:26:18 PST 2011

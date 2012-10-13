@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} iscolormap (@var{cm})
-## Return true if @var{cm} is a colormap.
+## @deftypefn {Function File} {} iscolormap (@var{cmap})
+## Return true if @var{cmap} is a colormap.
 ##
 ## A colormap is an @var{n} row by 3 column matrix.  The columns contain red,
-## green, and blue intensities respectively.  All entries should be between 0
+## green, and blue intensities respectively.  All entries must be between 0
 ## and 1 inclusive.
 ##
 ## @seealso{colormap, rgbplot}
@@ -29,22 +29,24 @@
 
 ## Author: Carnë Draug <carandraug+dev@gmail.com>
 
-function retval = iscolormap (cm)
+function retval = iscolormap (cmap)
 
   if (nargin != 1)
     print_usage;
   endif
 
-  retval = (ismatrix (cm) && isreal (cm) && isnumeric (cm) &&
-            columns(cm) == 3 && ndims (cm) == 2 && isa (cm, "double") &&
-            min (cm(:)) >= 0 && max (cm(:)) <= 1);
+  retval = (isnumeric (cmap) && isreal (cmap) &&
+            columns (cmap) == 3 && ndims (cmap) == 2 && isa (cmap, "double") &&
+            min (cmap(:)) >= 0 && max (cmap(:)) <= 1);
 
 endfunction
 
+
 %!assert (iscolormap (jet (64)))
-%!assert (iscolormap (magic (4)), false)
 %!assert (iscolormap ({0 1 0}), false)
-%!assert (iscolormap (ones (3,3,3)), false)
+%!assert (iscolormap ([0 1i 0]), false)
 %!assert (iscolormap (ones (3,4)), false)
+%!assert (iscolormap (ones (3,3,3)), false)
+%!assert (iscolormap (single (jet (64))), false)
 %!assert (iscolormap ([0 0 -2]), false)
 %!assert (iscolormap ([0 0 2]), false)

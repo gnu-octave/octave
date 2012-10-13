@@ -17,16 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rgbplot (@var{cmap})
+## @deftypefn  {Function File} {} rgbplot (@var{cmap})
+## @deftypefnx {Function File} {@var{h} =} rgbplot (@dots{})
 ## Plot the components of a colormap.
 ##
 ## The first column is plotted in red, the second column in green, and
 ## the third column in blue.  The values are between 0 and 1 and represent
 ## the intensity of the RGB components in the given indexed color.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
+##
 ## @seealso{colormap}
 ## @end deftypefn
 
-function rgbplot (cmap)
+function retval = rgbplot (cmap)
 
   if (nargin != 1)
     print_usage ();
@@ -36,9 +40,13 @@ function rgbplot (cmap)
     error ("rgbplot: CMAP must be a colormap");
   endif
 
-  plot (cmap(:,1),"r", cmap(:,2),"g", cmap(:,3),"b");
+  h = plot (cmap(:,1),"r", cmap(:,2),"g", cmap(:,3),"b");
   set (gca, 'ytick', 0:0.1:1);
   xlabel ("color index");
+
+  if (nargout > 0)
+    retval = h;
+  endif
 
 endfunction
 

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} rgbplot (@var{cmap})
-## @deftypefnx {Function File} {@var{h} =} rgbplot (@dots{})
+## @deftypefnx {Function File} {@var{h} =} rgbplot (@var{cmap})
 ## Plot the components of a colormap.
 ##
 ## The first column is plotted in red, the second column in green, and

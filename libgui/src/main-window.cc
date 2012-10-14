@@ -61,6 +61,36 @@ main_window::main_window (QWidget *p)
 
 main_window::~main_window ()
 {
+  // Clean up all dynamically created objects to ensure they are
+  // deleted before this main_window is.  Otherwise, some will be
+  // attached to a non-existent parent.
+
+  if (_octave_qt_event_listener)
+    delete _octave_qt_event_listener;
+
+  if (_file_editor)
+    delete _file_editor;
+
+  if (_terminal_dock_widget)
+    delete _terminal_dock_widget;
+
+  if (_terminal)
+    delete _terminal;
+
+  if (_status_bar)
+    delete _status_bar;
+
+  if (_documentation_dock_widget)
+    delete _documentation_dock_widget;
+
+  if (_files_dock_widget)
+    delete _files_dock_widget;
+
+  if (_history_dock_widget)
+    delete _history_dock_widget;
+
+  if (_workspace_view)
+    delete _workspace_view;
 }
 
 void
@@ -485,11 +515,11 @@ main_window::construct ()
   _current_directory_combo_box->setMaxVisibleItems (16);
   _current_directory_combo_box->setMaxCount (16);
 
-  _current_directory_tool_button = new QToolButton (this);
-  _current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));
+  QToolButton *current_directory_tool_button = new QToolButton (this);
+  current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));
 
-  _current_directory_up_tool_button = new QToolButton (this);
-  _current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
+  QToolButton *current_directory_up_tool_button = new QToolButton (this);
+  current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
 
   // Octave Terminal subwindow.
   _terminal = new QTerminal (this);
@@ -497,6 +527,9 @@ main_window::construct ()
   _terminal->setFocusPolicy (Qt::StrongFocus);
   _terminal_dock_widget = new terminal_dock_widget (_terminal, this);
 
+  // Create and set the central widget.  QMainWindow takes ownership of
+  // the widget (pointer) so there is no need to delete the object upon
+  // destroying this main_window.
   QWidget *dummyWidget = new QWidget ();
   dummyWidget->setObjectName ("CentralDummyWidget");
   dummyWidget->resize (10, 10);
@@ -753,10 +786,12 @@ main_window::construct ()
   main_tool_bar->addAction (undo_action);
   main_tool_bar->addAction (redo_action);
   main_tool_bar->addSeparator ();
+  // addWidget takes ownership of the objects so there is no
+  // need to delete these upon destroying this main_window.
   main_tool_bar->addWidget (new QLabel (tr ("Current Directory:")));
   main_tool_bar->addWidget (_current_directory_combo_box);
-  main_tool_bar->addWidget (_current_directory_tool_button);
-  main_tool_bar->addWidget (_current_directory_up_tool_button);
+  main_tool_bar->addWidget (current_directory_tool_button);
+  main_tool_bar->addWidget (current_directory_up_tool_button);
 
   connect (qApp,                        SIGNAL (aboutToQuit ()),
            this,                        SLOT   (prepare_for_quit ()));
@@ -836,9 +871,9 @@ main_window::construct ()
            this,                        SLOT   (handle_load_workspace_request ()));
   connect (clear_workspace_action,      SIGNAL (triggered ()),
            this,                        SLOT   (handle_clear_workspace_request ()));
-  connect (_current_directory_tool_button, SIGNAL (clicked ()),
+  connect (current_directory_tool_button, SIGNAL (clicked ()),
            this,                        SLOT   (change_current_working_directory ()));
-  connect (_current_directory_up_tool_button, SIGNAL (clicked ()),
+  connect (current_directory_up_tool_button, SIGNAL (clicked ()),
            this,                        SLOT   (current_working_directory_up()));
   connect (copy_action,                 SIGNAL (triggered()),
            _terminal,                   SLOT   (copyClipboard ()));

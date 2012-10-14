@@ -166,8 +166,6 @@ private:
   // Toolbars.
   QStatusBar *              _status_bar;
   QComboBox *               _current_directory_combo_box;
-  QToolButton *             _current_directory_tool_button;
-  QToolButton *             _current_directory_up_tool_button;
 
   octave_qt_event_listener *_octave_qt_event_listener;
 

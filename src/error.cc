@@ -1109,8 +1109,10 @@ of an unusual condition, but only when it makes sense for your program\n\
 to go on.\n\
 \n\
 The optional message identifier allows users to enable or disable\n\
-warnings tagged by @var{id}.  The special identifier @samp{\"all\"} may\n\
-be used to set the state of all warnings.\n\
+warnings tagged by @var{id}.  A message identifier is of the form\n\
+\"NAMESPACE:WARNING-NAME\".  Octave's own warnings use the \"Octave\"\n\
+namespace (@pxref{doc-warning_ids}).  The special identifier @samp{\"all\"}\n\
+may be used to set the state of all warnings.\n\
 \n\
 If the first argument is @samp{\"on\"} or @samp{\"off\"}, set the state\n\
 of a particular warning using the identifier @var{id}.  If the first\n\

@@ -4810,6 +4810,8 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES (hggroup)
+      string_property displayname , ""
+      radio_property erasemode , "{normal}|none|xor|background"
       // hidden properties for limit computation
       row_vector_property xlim hr , Matrix ()
       row_vector_property ylim hr , Matrix ()

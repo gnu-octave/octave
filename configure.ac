@@ -670,7 +670,7 @@ AC_CACHE_CHECK([whether pcre.h defines the macros we need],
 #if defined (HAVE_PCRE_H)
 #include <pcre.h>
 #elif defined (HAVE_PCRE_PCRE_H)
-#include <pcre.h>
+#include <pcre/pcre.h>
 #error "NO PCRE HEADER"
 #endif
 #if defined (PCRE_INFO_NAMECOUNT) \

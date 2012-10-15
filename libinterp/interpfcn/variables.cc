@@ -2559,16 +2559,21 @@ void maybe_missing_function_hook (const std::string& name)
   // Don't do this if we're handling errors.
   if (buffer_error_messages == 0 && ! Vmissing_function_hook.empty ())
     {
-      // Ensure auto-restoration.
-      unwind_protect frame;
-      frame.protect_var (Vmissing_function_hook);
+      octave_value val = symbol_table::find_function (Vmissing_function_hook);
 
-      // Clear the variable prior to calling the function.
-      const std::string func_name = Vmissing_function_hook;
-      Vmissing_function_hook.clear ();
+      if (val.is_defined ())
+        {
+          // Ensure auto-restoration.
+          unwind_protect frame;
+          frame.protect_var (Vmissing_function_hook);
 
-      // Call.
-      feval (func_name, octave_value (name));
+          // Clear the variable prior to calling the function.
+          const std::string func_name = Vmissing_function_hook;
+          Vmissing_function_hook.clear ();
+
+          // Call.
+          feval (func_name, octave_value (name));
+        }
     }
 }
 

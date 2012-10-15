@@ -146,7 +146,7 @@
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
 
-function ret = edit (file, state)
+function ret = edit (varargin)
 
   ## Pick up globals or default them.
 
@@ -157,51 +157,86 @@ function ret = edit (file, state)
                                 "LICENSE",  "GPL",
                                 "MODE", "async",
                                 "EDITINPLACE", false);
-  ## Make sure the state variables survive "clear functions".
+  ## Make sure the stateval variables survive "clear functions".
   mlock;
 
-  if (nargin == 2)
-    switch (toupper (file))
+  if (nargin == 1)
+    ## User has supplied one arg, this can be a single file name
+    ## or a cell array of strings containing multiple files to be
+    ## opened
+    if (iscellstr(varargin{1}))
+      ## If first arg is a cell array of strings, it becomes the
+      ## list of files to be edited
+      editfilelist = varargin{1};
+    elseif (ischar(varargin{1}))
+      ## If first arg is a string, create a cell array of strings
+      ## of length one (by copying the input cell array)
+      editfilelist = varargin(1);
+    else
+      error('edit: expected file to be a string or cell array of strings');
+    endif
+  elseif (nargin == 2)
+    ## User has supplied two arguments, these could be two file
+    ## names, or a combination of editor state name and new value
+    ## for that state, so first check for the various states
+    statevar = varargin{1};
+    stateval = varargin{2};
+    switch (toupper (statevar))
     case "EDITOR"
-      FUNCTION.EDITOR = state;
+      FUNCTION.EDITOR = stateval;
+      return
     case "HOME"
-      if (! isempty (state) && state(1) == "~")
-        state = [ default_home, state(2:end) ];
+      if (! isempty (stateval) && stateval(1) == "~")
+        stateval = [ default_home, stateval(2:end) ];
       endif
-      FUNCTION.HOME = state;
+      FUNCTION.HOME = stateval;
+      return
     case "AUTHOR"
-      FUNCTION.AUTHOR = state;
+      FUNCTION.AUTHOR = stateval;
+      return
     case "EMAIL"
-      FUNCTION.EMAIL = state;
+      FUNCTION.EMAIL = stateval;
+      return
     case "LICENSE"
-      FUNCTION.LICENSE = state;
+      FUNCTION.LICENSE = stateval;
+      return
     case "MODE"
-      if (strcmp (state, "sync") || strcmp (state, "async"))
-        FUNCTION.MODE = state;
+      if (strcmp (stateval, "sync") || strcmp (stateval, "async"))
+        FUNCTION.MODE = stateval;
       else
         error ('edit: expected "edit MODE sync|async"');
       endif
+      return
     case "EDITINPLACE"
-      if (ischar (state))
-        if (strcmpi (state, "true"))
-          state = true;
-        elseif (strcmpi (state, "false"))
-          state = false;
+      if (ischar (stateval))
+        if (strcmpi (stateval, "true"))
+          stateval = true;
+        elseif (strcmpi (stateval, "false"))
+          stateval = false;
         else
-          state = eval (state);
+          stateval = eval (stateval);
         endif
       endif
-      FUNCTION.EDITINPLACE = state;
+      FUNCTION.EDITINPLACE = stateval;
+      return
     case "GET"
-      if (isfield (FUNCTION, toupper (state)))
-        ret = FUNCTION.(toupper (state));
+      if (isfield (FUNCTION, toupper (stateval)))
+        ret = FUNCTION.(toupper (stateval));
       else
         ret = FUNCTION;
       endif
+      return
     otherwise
-      error ('edit: expected "edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE|MODE val"');
+      ## If none of the states match, assume both inputs are
+      ## actually both file names to be opened
+      editfilelist = varargin;
     endswitch
-    return
+  elseif (nargin > 2)
+    if (iscellstr(varargin))
+      editfilelist = varargin;
+    else
+      error('edit: if supplying more than one input all inputs must be strings containing fiel names to open.');
+    endif
   endif
 
   ## Start the editor without a file if no file is given.
@@ -216,253 +251,267 @@ function ret = edit (file, state)
     return;
   endif
 
-  ## Check whether the user is trying to edit a builtin of compiled function.
-  switch (exist (file))
-    case {3, 5}
-      error ("edit: unable to edit a built-in or compiled function");
-  endswitch
+  if (numel(editfilelist) > 1)
 
-  ## Checks for whether the file is
-  ## absolute or relative should be handled inside file_in_loadpath.
-  ## That way, it will be possible to look up files correctly given
-  ## partial path information.  For example, you should be able to
-  ## edit a particular overloaded function by doing any one of
-  ##
-  ##   edit classname/foo
-  ##   edit classname/foo.m
-  ##   edit @classname/foo
-  ##   edit @classname/foo.m
-  ##
-  ## This functionality is needed for other functions as well (at least
-  ## help and type; there may be more).  So the place to fix that is in
-  ## file_in_loadpath, possibly with some help from the load_path class.
-
-  ## The code below includes a portion that serves as a place-holder for
-  ## the changes suggested above.
-
-  ## Create list of explicit and implicit file names.
-  filelist = {file};
-  ## If file has no extension, add file.m and file.cc to the list.
-  idx = rindex (file, ".");
-  if (idx == 0)
-    ## Create the list of files to look for
-    filelist = {file};
-    if (isempty (regexp (file, '\.m$')))
-      ## No ".m" at the end of the file, add to the list.
-      filelist{end+1} = cat (2, file, ".m");
-    endif
-    if (isempty (regexp (file, '\.cc$')))
-      ## No ".cc" at the end of the file, add to the list.
-      filelist{end+1} = cat (2, file, ".cc");
-    endif
-  endif
-
-  ## If the file includes a path, it may be an overloaded function.
-  if (! strcmp (file, "@") && index (file, filesep))
-    ## No "@" at the beginning of the file, add to the list.
-    numfiles = numel (filelist);
-    for n = 1:numfiles
-      filelist{n+numfiles} = cat (2, "@", filelist{n});
+    ## Call edit on each of the files in the list if there are more than 1
+    for i = 1:numel(editfilelist)
+      edit(editfilelist{i});
     endfor
-  endif
 
-  ## Search the entire path for the 1st instance of a file in the list.
-  fileandpath = "";
-  for n = 1:numel (filelist)
-    filetoedit = file_in_path (path, filelist{n});
-    if (! isempty (filetoedit))
-      ## The path is explicitly included.
-      fileandpath = filetoedit;
-      break;
+  else
+  
+    ## Only one file name was supplied, get it from the cell array
+    file = editfilelist{1};
+
+    ## Check whether the user is trying to edit a builtin or compiled function.
+    switch (exist (file))
+      case {3, 5}
+        error ("edit: unable to edit a built-in or compiled function");
+    endswitch
+
+    ## Checks for whether the file is
+    ## absolute or relative should be handled inside file_in_loadpath.
+    ## That way, it will be possible to look up files correctly given
+    ## partial path information.  For example, you should be able to
+    ## edit a particular overloaded function by doing any one of
+    ##
+    ##   edit classname/foo
+    ##   edit classname/foo.m
+    ##   edit @classname/foo
+    ##   edit @classname/foo.m
+    ##
+    ## This functionality is needed for other functions as well (at least
+    ## help and type; there may be more).  So the place to fix that is in
+    ## file_in_loadpath, possibly with some help from the load_path class.
+
+    ## The code below includes a portion that serves as a place-holder for
+    ## the changes suggested above.
+
+    ## Create list of explicit and implicit file names.
+    filelist = {file};
+    ## If file has no extension, add file.m and file.cc to the list.
+    idx = rindex (file, ".");
+    if (idx == 0)
+      ## Create the list of files to look for
+      filelist = {file};
+      if (isempty (regexp (file, '\.m$')))
+        ## No ".m" at the end of the file, add to the list.
+        filelist{end+1} = cat (2, file, ".m");
+      endif
+      if (isempty (regexp (file, '\.cc$')))
+        ## No ".cc" at the end of the file, add to the list.
+        filelist{end+1} = cat (2, file, ".cc");
+      endif
     endif
-  endfor
 
-  if (! isempty (fileandpath))
-    ## If the file exists, then edit it.
-    if (FUNCTION.EDITINPLACE)
-      ## Edit in place even if it is protected.
-      system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
-              [], FUNCTION.MODE);
-      return;
-    else
-      ## If the file is modifiable in place then edit it, otherwise make
-      ## a copy in HOME and then edit it.
-      fid = fopen (fileandpath, "r+t");
-      if (fid < 0)
-        from = fileandpath;
-        fileandpath = cstrcat (FUNCTION.HOME, from (rindex (from, filesep):end));
-        [status, msg] = copyfile (from, fileandpath, 1);
-        if (status == 0)
-          error (msg);
+    ## If the file includes a path, it may be an overloaded function.
+    if (! strcmp (file, "@") && index (file, filesep))
+      ## No "@" at the beginning of the file, add to the list.
+      numfiles = numel (filelist);
+      for n = 1:numfiles
+        filelist{n+numfiles} = cat (2, "@", filelist{n});
+      endfor
+    endif
+
+    ## Search the entire path for the 1st instance of a file in the list.
+    fileandpath = "";
+    for n = 1:numel (filelist)
+      filetoedit = file_in_path (path, filelist{n});
+      if (! isempty (filetoedit))
+        ## The path is explicitly included.
+        fileandpath = filetoedit;
+        break;
+      endif
+    endfor
+
+    if (! isempty (fileandpath))
+      ## If the file exists, then edit it.
+      if (FUNCTION.EDITINPLACE)
+        ## Edit in place even if it is protected.
+        system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
+                [], FUNCTION.MODE);
+        return;
+      else
+        ## If the file is modifiable in place then edit it, otherwise make
+        ## a copy in HOME and then edit it.
+        fid = fopen (fileandpath, "r+t");
+        if (fid < 0)
+          from = fileandpath;
+          fileandpath = cstrcat (FUNCTION.HOME, from (rindex (from, filesep):end));
+          [status, msg] = copyfile (from, fileandpath, 1);
+          if (status == 0)
+            error (msg);
+          endif
+        else
+          fclose (fid);
         endif
-      else
-        fclose (fid);
+        system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
+                [], FUNCTION.MODE);
+        return;
       endif
-      system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
-              [], FUNCTION.MODE);
-      return;
     endif
+
+    ## If editing a new file that is neither a m-file or an oct-file,
+    ## just edit it.
+    fileandpath = file;
+    idx = rindex (file, ".");
+    name = file(1:idx-1);
+    ext = file(idx+1:end);
+    switch (ext)
+      case {"cc", "m"}
+        0;
+      otherwise
+        system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
+                [], FUNCTION.MODE);
+        return;
+    endswitch
+
+    ## The file doesn't exist in path so create it, put in the function
+    ## template and edit it.
+
+    ## Guess the email name if it was not given.
+    if (isempty (FUNCTION.EMAIL))
+      host = getenv ("HOSTNAME");
+      if (isempty (host) && ispc ())
+        host = getenv ("COMPUTERNAME");
+      endif
+      if (isempty (host))
+        [status, host] = system ("uname -n");
+        ## trim newline from end of hostname
+        if (! isempty (host))
+          host = host(1:end-1);
+        endif
+      endif
+      if (isempty (host))
+        FUNCTION.EMAIL = " ";
+      else
+        FUNCTION.EMAIL = cstrcat ("<", default_user(0), "@", host, ">");
+      endif
+    endif
+
+    ## Fill in the revision string.
+    now = localtime (time);
+    revs = cstrcat ("Created: ", strftime ("%Y-%m-%d", now));
+
+    ## Fill in the copyright string.
+    copyright = cstrcat (strftime ("Copyright (C) %Y ", now), FUNCTION.AUTHOR);
+
+    ## Fill in the author tag field.
+    author = cstrcat ("Author: ", FUNCTION.AUTHOR, " ", FUNCTION.EMAIL);
+
+    ## Fill in the header.
+    uclicense = toupper (FUNCTION.LICENSE);
+    switch (uclicense)
+      case "GPL"
+        head = cstrcat (copyright, "\n\n", "\
+  This program is free software; you can redistribute it and/or modify\n\
+  it under the terms of the GNU General Public License as published by\n\
+  the Free Software Foundation; either version 3 of the License, or\n\
+  (at your option) any later version.\n\
+  \n\
+  This program is distributed in the hope that it will be useful,\n\
+  but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+  GNU General Public License for more details.\n\
+  \n\
+  You should have received a copy of the GNU General Public License\n\
+  along with Octave; see the file COPYING.  If not, see\n\
+  <http://www.gnu.org/licenses/>.\
+  ");
+        tail = cstrcat (author, "\n", revs);
+
+      case "BSD"
+        head = cstrcat (copyright, "\n\n", "\
+  This program is free software; redistribution and use in source and\n\
+  binary forms, with or without modification, are permitted provided that\n\
+  the following conditions are met:\n\
+  \n\
+     1.Redistributions of source code must retain the above copyright\n\
+       notice, this list of conditions and the following disclaimer.\n\
+     2.Redistributions in binary form must reproduce the above copyright\n\
+       notice, this list of conditions and the following disclaimer in the\n\
+       documentation and/or other materials provided with the distribution.\n\
+  \n\
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND\n\
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n\
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n\
+  ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE\n\
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\n\
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS\n\
+  OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)\n\
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT\n\
+  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY\n\
+  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF\n\
+  SUCH DAMAGE.\
+  ");
+        tail = cstrcat (author, "\n", revs);
+
+      case "PD"
+        head = "";
+        tail = cstrcat (author, "\n", revs, "\n\n",
+                       "This program is granted to the public domain.");
+
+      otherwise
+        head = "";
+        tail = cstrcat (copyright, "\n\n", FUNCTION.LICENSE, "\n",
+                       author, "\n", revs);
+    endswitch
+
+    ## Generate the function template.
+    exists = exist (name);
+    switch (ext)
+      case {"cc", "C", "cpp"}
+        if (isempty (head))
+          comment = cstrcat ("/*\n", tail, "\n\n*/\n\n");
+        else
+          comment = cstrcat ("/*\n", head, "\n\n", tail, "\n\n*/\n\n");
+        endif
+        ## If we are shadowing an m-file, paste the code for the m-file.
+        if (any (exists == [2, 103]))
+          code = cstrcat ("\\ ", strrep (type (name){1}, "\n", "\n// "));
+        else
+          code = " ";
+        endif
+        body = cstrcat ("#include <octave/oct.h>\n\n",
+                       "DEFUN_DLD(", name, ",args,nargout,\"\\\n",
+                       name, "\\n\\\n\")\n{\n",
+                       "  octave_value_list retval;\n",
+                       "  int nargin = args.length ();\n\n",
+                       code, "\n  return retval;\n}\n");
+
+        text = cstrcat (comment, body);
+      case "m"
+        ## If we are editing a function defined on the fly, paste the
+        ## code.
+        if (any (exists == [2, 103]))
+          body = type (name){1};
+        else
+          body = cstrcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
+        endif
+        if (isempty (head))
+          comment = cstrcat ("## ", name, "\n\n",
+                             "## ", strrep (tail, "\n", "\n## "), "\n\n");
+        else
+          comment = cstrcat ("## ", strrep (head,"\n","\n## "), "\n\n", ...
+                             "## ", name, "\n\n", ...
+                             "## ", strrep (tail, "\n", "\n## "), "\n\n");
+        endif
+        text = cstrcat (comment, body);
+    endswitch
+
+    ## Write the initial file (if there is anything to write)
+    fid = fopen (fileandpath, "wt");
+    if (fid < 0)
+      error ("edit: could not create %s", fileandpath);
+    endif
+    fputs (fid, text);
+    fclose (fid);
+
+    ## Finally we are ready to edit it!
+    system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
+            [], FUNCTION.MODE);
+            
   endif
-
-  ## If editing a new file that is neither a m-file or an oct-file,
-  ## just edit it.
-  fileandpath = file;
-  idx = rindex (file, ".");
-  name = file(1:idx-1);
-  ext = file(idx+1:end);
-  switch (ext)
-    case {"cc", "m"}
-      0;
-    otherwise
-      system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
-              [], FUNCTION.MODE);
-      return;
-  endswitch
-
-  ## The file doesn't exist in path so create it, put in the function
-  ## template and edit it.
-
-  ## Guess the email name if it was not given.
-  if (isempty (FUNCTION.EMAIL))
-    host = getenv ("HOSTNAME");
-    if (isempty (host) && ispc ())
-      host = getenv ("COMPUTERNAME");
-    endif
-    if (isempty (host))
-      [status, host] = system ("uname -n");
-      ## trim newline from end of hostname
-      if (! isempty (host))
-        host = host(1:end-1);
-      endif
-    endif
-    if (isempty (host))
-      FUNCTION.EMAIL = " ";
-    else
-      FUNCTION.EMAIL = cstrcat ("<", default_user(0), "@", host, ">");
-    endif
-  endif
-
-  ## Fill in the revision string.
-  now = localtime (time);
-  revs = cstrcat ("Created: ", strftime ("%Y-%m-%d", now));
-
-  ## Fill in the copyright string.
-  copyright = cstrcat (strftime ("Copyright (C) %Y ", now), FUNCTION.AUTHOR);
-
-  ## Fill in the author tag field.
-  author = cstrcat ("Author: ", FUNCTION.AUTHOR, " ", FUNCTION.EMAIL);
-
-  ## Fill in the header.
-  uclicense = toupper (FUNCTION.LICENSE);
-  switch (uclicense)
-    case "GPL"
-      head = cstrcat (copyright, "\n\n", "\
-This program is free software; you can redistribute it and/or modify\n\
-it under the terms of the GNU General Public License as published by\n\
-the Free Software Foundation; either version 3 of the License, or\n\
-(at your option) any later version.\n\
-\n\
-This program is distributed in the hope that it will be useful,\n\
-but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
-GNU General Public License for more details.\n\
-\n\
-You should have received a copy of the GNU General Public License\n\
-along with Octave; see the file COPYING.  If not, see\n\
-<http://www.gnu.org/licenses/>.\
-");
-      tail = cstrcat (author, "\n", revs);
-
-    case "BSD"
-      head = cstrcat (copyright, "\n\n", "\
-This program is free software; redistribution and use in source and\n\
-binary forms, with or without modification, are permitted provided that\n\
-the following conditions are met:\n\
-\n\
-   1.Redistributions of source code must retain the above copyright\n\
-     notice, this list of conditions and the following disclaimer.\n\
-   2.Redistributions in binary form must reproduce the above copyright\n\
-     notice, this list of conditions and the following disclaimer in the\n\
-     documentation and/or other materials provided with the distribution.\n\
-\n\
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND\n\
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n\
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n\
-ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE\n\
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\n\
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS\n\
-OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)\n\
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT\n\
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY\n\
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF\n\
-SUCH DAMAGE.\
-");
-      tail = cstrcat (author, "\n", revs);
-
-    case "PD"
-      head = "";
-      tail = cstrcat (author, "\n", revs, "\n\n",
-                     "This program is granted to the public domain.");
-
-    otherwise
-      head = "";
-      tail = cstrcat (copyright, "\n\n", FUNCTION.LICENSE, "\n",
-                     author, "\n", revs);
-  endswitch
-
-  ## Generate the function template.
-  exists = exist (name);
-  switch (ext)
-    case {"cc", "C", "cpp"}
-      if (isempty (head))
-        comment = cstrcat ("/*\n", tail, "\n\n*/\n\n");
-      else
-        comment = cstrcat ("/*\n", head, "\n\n", tail, "\n\n*/\n\n");
-      endif
-      ## If we are shadowing an m-file, paste the code for the m-file.
-      if (any (exists == [2, 103]))
-        code = cstrcat ("\\ ", strrep (type (name){1}, "\n", "\n// "));
-      else
-        code = " ";
-      endif
-      body = cstrcat ("#include <octave/oct.h>\n\n",
-                     "DEFUN_DLD(", name, ",args,nargout,\"\\\n",
-                     name, "\\n\\\n\")\n{\n",
-                     "  octave_value_list retval;\n",
-                     "  int nargin = args.length ();\n\n",
-                     code, "\n  return retval;\n}\n");
-
-      text = cstrcat (comment, body);
-    case "m"
-      ## If we are editing a function defined on the fly, paste the
-      ## code.
-      if (any (exists == [2, 103]))
-        body = type (name){1};
-      else
-        body = cstrcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
-      endif
-      if (isempty (head))
-        comment = cstrcat ("## ", name, "\n\n",
-                           "## ", strrep (tail, "\n", "\n## "), "\n\n");
-      else
-        comment = cstrcat ("## ", strrep (head,"\n","\n## "), "\n\n", ...
-                           "## ", name, "\n\n", ...
-                           "## ", strrep (tail, "\n", "\n## "), "\n\n");
-      endif
-      text = cstrcat (comment, body);
-  endswitch
-
-  ## Write the initial file (if there is anything to write)
-  fid = fopen (fileandpath, "wt");
-  if (fid < 0)
-    error ("edit: could not create %s", fileandpath);
-  endif
-  fputs (fid, text);
-  fclose (fid);
-
-  ## Finally we are ready to edit it!
-  system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
-          [], FUNCTION.MODE);
 
 endfunction
 

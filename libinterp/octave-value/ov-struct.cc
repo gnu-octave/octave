@@ -2144,10 +2144,11 @@ extern octave_value_list Fcellstr (const octave_value_list& args, int);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rmfield (@var{s}, @var{f})\n\
+@deftypefn  {Built-in Function} {@var{s} =} rmfield (@var{s}, \"@var{f}\")\n\
+@deftypefnx {Built-in Function} {@var{s} =} rmfield (@var{s}, @var{f})\n\
 Return a copy of the structure (array) @var{s} with the field @var{f}\n\
 removed.  If @var{f} is a cell array of strings or a character array, remove\n\
-the named fields.\n\
+each of the named fields.\n\
 @seealso{cellstr, iscellstr, setfield}\n\
 @end deftypefn")
 {
@@ -2192,8 +2193,14 @@ the named fields.\n\
 
 /*
 ## test rmfield
-%!test
+%!shared x
 %! x(3).d=1;  x(2).a=2;  x(1).b=3;  x(2).c=3;  x(6).f="abc123";
+%!
+%!test
+%! y = rmfield (x, "c");
+%! assert (fieldnames (y), {"d"; "a"; "b"; "f"});
+%! assert (size (y), [1, 6]);
+%!test
 %! y = rmfield (x, {"a", "f"});
 %! assert (fieldnames (y), {"d"; "b"; "c"});
 %! assert (size (y), [1, 6]);

@@ -1144,7 +1144,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       // Fall-through
     case MAT_FILE_STRUCT_CLASS:
       {
-        Octave_map m (dim_vector (1, 1));
+        Octave_map m (dims);
         int32_t fn_type;
         int32_t fn_len;
         int32_t field_name_length;

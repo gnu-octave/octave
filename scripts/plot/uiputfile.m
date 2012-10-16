@@ -49,6 +49,7 @@
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.
 ## If, in addition, a path is given it is also used as current path.
+## @seealso{uigetfile, uigetdir}
 ## @end deftypefn
 
 ## Author: Kai Habel

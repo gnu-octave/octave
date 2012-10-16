@@ -58,6 +58,7 @@
 ## and a 2-element vector containing the pixel coordinates.
 ## Two or more files can be selected when setting the "MultiSelect" key to "on".
 ## In that case @var{fname} is a cell array containing the files.
+## @seealso{uiputfile, uigetdir}
 ## @end deftypefn
 
 ## Author: Kai Habel

@@ -23,7 +23,8 @@
 ## Write @var{y} to the canonical RIFF/WAVE sound file @var{filename}
 ## with sample rate @var{Fs} and bits per sample @var{bps}.  The
 ## default sample rate is 8000 Hz with 16-bits per sample.  Each column
-## of the data represents a separate channel.
+## of the data represents a separate channel.  If @var{y} is either a
+## row vector or a column vector, it is written as a single channel.
 ## @seealso{wavread}
 ## @end deftypefn
 
@@ -50,11 +51,20 @@ function wavwrite (y, varargin)
     endif
   endif
 
+  ## calculate filesize
+  [n, channels] = size (y);
+
+  ## allow y to be a row vector
+  if (n == 1)
+    n = channels;
+    channels = 1;
+  endif
+
   ## test arguments
-  if (columns (y) < 1)
+  if (channels < 1)
     error ("wavwrite: Y must have at least one column");
   endif
-  if (columns (y) > 0x7FFF)
+  if (channels > 0x7FFF)
     error ("wavwrite: Y has more than 32767 columns (too many for a WAV-file)");
   endif
 
@@ -69,9 +79,6 @@ function wavwrite (y, varargin)
     otherwise
       error ("wavwrite: sample resolution not supported");
   endswitch
-
-  ## calculate filesize
-  [n, channels] = size (y);
 
   ## size of data chunk
   ck_size = n*channels*(bits_per_sample/8);
@@ -174,10 +181,19 @@ endfunction
 %! unlink (fname);
 %
 %!test
-%! A = [-2:2];
+%! A = [-2:2]';
 %! wavwrite (A, fname);
 %! B = wavread (fname);
 %! B *= 32768;
-%! assert (B, [-32768 -32768 0 32767 32767]);
+%! assert (B, [-32768 -32768 0 32767 32767]');
+%! unlink (fname);
+%
+%!test
+%! A = [-1:0.1:1];
+%! wavwrite (A, fname);
+%! [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%! assert (A', B, 1/2^15);
+%! assert (samples_per_sec, 8000);
+%! assert (bits_per_sample, 16);
 %! unlink (fname);
 

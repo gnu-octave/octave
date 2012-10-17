@@ -2182,9 +2182,16 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 DEFUN (enable_jit_debugging, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} enable_jit_debugging ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} enable_jit_debugging ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} enable_jit_debugging (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} enable_jit_debugging (@var{new_val}, \"local\")\n\
 Query or set the internal variable that determines whether\n\
 debugging/tracing is enabled for Octave's JIT compiler.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{enable_jit_compiler}\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)
@@ -2197,8 +2204,15 @@ debugging/tracing is enabled for Octave's JIT compiler.\n\
 
 DEFUN (enable_jit_compiler, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} enable_jit_compiler ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} enable_jit_compiler ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} enable_jit_compiler (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} enable_jit_compiler (@var{new_val}, \"local\")\n\
 Query or set the internal variable that enables Octave's JIT compiler.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{enable_jit_debugging}\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)

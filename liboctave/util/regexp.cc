@@ -446,55 +446,80 @@ regexp::is_match (const string_vector& buffer)
   return retval;
 }
 
+// Declare rep_token_t used in processing replacement string
+typedef struct
+  {
+    size_t pos;
+    int num;
+  } rep_token_t;
+
+
 std::string
 regexp::replace (const std::string& buffer, const std::string& replacement)
 {
   std::string retval;
 
-  // Identify replacement tokens; build a vector of group numbers in
-  // the replacement string so that we can quickly calculate the size
-  // of the replacement.
-
-  int tokens = 0;
-  for (size_t i=1; i < replacement.size (); i++)
-    {
-      if (replacement[i-1]=='$' && isdigit (replacement[i]))
-        {
-          tokens++;
-          i++;
-        }
-    }
-  std::vector<int> token (tokens);
-
-  int kk = 0;
-  for (size_t i = 1; i < replacement.size (); i++)
-    {
-      if (replacement[i-1]=='$' && isdigit (replacement[i]))
-        {
-          token[kk++] = replacement[i]-'0';
-          i++;
-        }
-    }
-
   regexp::match_data rx_lst = match (buffer);
 
-  size_t sz = rx_lst.size ();
+  size_t num_matches = rx_lst.size ();
 
-  if (sz == 0)
+  if (num_matches == 0)
     {
       retval = buffer;
       return retval;
     }
 
-  std::string rep;
+  // Identify replacement tokens; build a vector of group numbers in
+  // the replacement string so that we can quickly calculate the size
+  // of the replacement.
 
-  if (tokens > 0)
+  // FIXME: All code assumes that only 10 tokens ($0-$9) exist.
+  //        $11 represents $1 followed by the character '1' rather than
+  //        the eleventh capture buffer.
+
+  std::string repstr = replacement;
+  std::vector<rep_token_t> tokens;
+  tokens.reserve (5);  // Reserve memory for 5 pattern replacements
+
+  for (size_t i=0; i < repstr.size (); i++)
+    {
+      if (repstr[i] == '\\')
+        {
+          if (i < repstr.size () - 1 && repstr[i+1] == '$')
+            {
+              repstr.erase (i,1);  // erase backslash
+              i++;                 // skip over '$'
+              continue;
+            }
+          if (i < repstr.size () - 1 && repstr[i+1] == '\\')
+            {
+              repstr.erase (i,1);  // erase 1st backslash
+              continue;
+            }
+        }
+      else if (repstr[i] == '$')
+        {
+          if (i < repstr.size () - 1 && isdigit (repstr[i+1]))
+            {
+              rep_token_t tmp_token;
+
+              tmp_token.pos = i;
+              tmp_token.num = repstr[i+1]-'0';
+              tokens.push_back (tmp_token);
+            }
+        }
+    }
+
+  std::string rep;
+  int num_tokens = tokens.size ();
+
+  if (num_tokens > 0)
     {
       // Determine replacement length
-      const size_t replen = replacement.size () - 2*tokens;
+      const size_t replen = repstr.size () - 2*num_tokens;
       int delta = 0;
       regexp::match_data::const_iterator p = rx_lst.begin ();
-      for (size_t i = 0; i < sz; i++)
+      for (size_t i = 0; i < num_matches; i++)
         {
           OCTAVE_QUIT;
 
@@ -503,13 +528,13 @@ regexp::replace (const std::string& buffer, const std::string& replacement)
 
           const Matrix pairs (p->token_extents ());
           size_t pairlen = 0;
-          for (int j = 0; j < tokens; j++)
+          for (int j = 0; j < num_tokens; j++)
             {
-              if (token[j] == 0)
+              if (tokens[j].num == 0)
                 pairlen += static_cast<size_t> (end - start) + 1;
-              else if (token[j] <= pairs.rows ())
-                pairlen += static_cast<size_t> (pairs(token[j]-1,1)
-                                                - pairs(token[j]-1,0)) + 1;
+              else if (tokens[j].num <= pairs.rows ())
+                pairlen += static_cast<size_t> (pairs(tokens[j].num-1,1)
+                                                - pairs(tokens[j].num-1,0)) + 1;
             }
           delta += (static_cast<int> (replen + pairlen)
                     - static_cast<int> (end - start + 1));
@@ -520,7 +545,7 @@ regexp::replace (const std::string& buffer, const std::string& replacement)
       rep.reserve (buffer.size () + delta);
       size_t from = 0;
       p = rx_lst.begin ();
-      for (size_t i = 0; i < sz; i++)
+      for (size_t i = 0; i < num_matches; i++)
         {
           OCTAVE_QUIT;
 
@@ -531,51 +556,50 @@ regexp::replace (const std::string& buffer, const std::string& replacement)
           rep.append (&buffer[from], static_cast<size_t> (start - 1) - from);
           from = static_cast<size_t> (end - 1) + 1;
 
-          for (size_t j = 1; j < replacement.size (); j++)
+          size_t cur_pos = 0;
+
+          for (int j = 0; j < num_tokens; j++)
             {
-              if (replacement[j-1]=='$' && isdigit (replacement[j]))
+              rep.append (&repstr[cur_pos], (tokens[j].pos) - cur_pos);
+              cur_pos = tokens[j].pos+2;
+
+              int k = tokens[j].num;
+              if (k == 0)
                 {
-                  int k = replacement[j]-'0';
-                  if (k == 0)
-                    {
-                      // replace with entire match
-                      rep.append (&buffer[static_cast<size_t> (end - 1)],
-                                  static_cast<size_t> (end - start) + 1);
-                    }
-                  else if (k <= pairs.rows ())
-                    {
-                      // replace with group capture
-                      rep.append (&buffer[static_cast<size_t> (pairs(k-1,0)-1)],
-                                  static_cast<size_t> (pairs(k-1,1)
-                                                       - pairs(k-1,0)) + 1);
-                    }
-                  else
-                    {
-                      // replace with nothing
-                    }
-                  j++;
+                  // replace with entire match
+                  rep.append (&buffer[static_cast<size_t> (end - 1)],
+                              static_cast<size_t> (end - start) + 1);
+                }
+              else if (k <= pairs.rows ())
+                {
+                  // replace with group capture
+                  rep.append (&buffer[static_cast<size_t> (pairs(k-1,0)-1)],
+                              static_cast<size_t> (pairs(k-1,1)
+                                                   - pairs(k-1,0)) + 1);
                 }
               else
-                rep.append (1, replacement[j-1]);
-
-              if (j+1 == replacement.size ())
-                rep.append (1, replacement[j]);
+                {
+                  // replace with nothing
+                }
             }
+          if (cur_pos < repstr.size ())
+            rep.append (&repstr[cur_pos], repstr.size () - cur_pos);
+
           p++;
         }
       rep.append (&buffer[from], buffer.size () - from);
     }
   else
     {
-      // Determine replacement length
-      const size_t replen = replacement.size ();
+      // Determine repstr length
+      const size_t replen = repstr.size ();
       int delta = 0;
       regexp::match_data::const_iterator p = rx_lst.begin ();
-      for (size_t i = 0; i < sz; i++)
+      for (size_t i = 0; i < num_matches; i++)
         {
           OCTAVE_QUIT;
           delta += static_cast<int> (replen)
-            - static_cast<int> (p->end () - p->start () + 1);
+                   - static_cast<int> (p->end () - p->start () + 1);
           p++;
         }
 
@@ -583,13 +607,13 @@ regexp::replace (const std::string& buffer, const std::string& replacement)
       rep.reserve (buffer.size () + delta);
       size_t from = 0;
       p = rx_lst.begin ();
-      for (size_t i = 0; i < sz; i++)
+      for (size_t i = 0; i < num_matches; i++)
         {
           OCTAVE_QUIT;
           rep.append (&buffer[from],
                       static_cast<size_t> (p->start () - 1) - from);
           from = static_cast<size_t> (p->end () - 1) + 1;
-          rep.append (replacement);
+          rep.append (repstr);
           p++;
         }
       rep.append (&buffer[from], buffer.size () - from);

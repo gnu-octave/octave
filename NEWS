@@ -56,9 +56,16 @@ Summary of important user-visible changes for version 3.8:
     where the pattern is actually the assertion '^' or start-of-line.
 
  ** For compatibility with Matlab, the regexp, regexpi, and regexprep
-    functions now process backslash escapes in single-quoted pattern
+    functions now process backslash escape sequences in single-quoted pattern
     strings.  In addition, the regexprep function now processes backslash
-    escapes in single-quoted replacement strings.
+    escapes in single-quoted replacement strings.  For example,
+    
+    regexprep (str, '\t', '\n')
+
+    would search the variable str for a TAB character (escape sequence \t)
+    and replace it with a NEWLINE (escape sequence \n).  Previously the
+    expression would have searched for a literal '\' followed by 't' and
+    replaced the two characters with the sequence '\', 'n'.
 
  ** Redundant terminal comma accepted by parser
 

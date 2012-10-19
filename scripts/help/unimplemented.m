@@ -29,11 +29,6 @@ function txt = unimplemented (fcn)
   ## Some smarter cases, add more as needed.
   switch (fcn)
 
-  case "importdata"
-    txt = ["importdata is not implemented.  Similar functionality is ",...
-    "available through @code{load}, @code{dlmread}, @code{csvread}, ",...
-    "or @code{textscan}."];  
-
   case "quad2d"
     txt = ["quad2d is not implemented.  Consider using dblquad."];
 
@@ -217,7 +212,6 @@ function list = missing_functions ()
   "imapprox",
   "imformats",
   "import",
-  "importdata",
   "inmem",
   "inputParser",
   "inputdlg",

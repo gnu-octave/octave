@@ -230,6 +230,11 @@ Formatted data from can be read from, or written to, text files as well.
 
 @DOCSTRING(textscan)
 
+The @code{importdata} function has the ability to work with a wide
+variety of data.
+
+@DOCSTRING(importdata)
+
 @menu
 * Saving Data on Unexpected Exits::
 @end menu

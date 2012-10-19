@@ -353,8 +353,8 @@ to Octave are possible and which are in effect.
 
 @node Getting Help
 @section Commands for Getting Help
-@cindex on-line help
-@cindex help, on-line
+@cindex online help
+@cindex help, online
 
 The entire text of this manual is available from the Octave prompt
 via the command @kbd{doc}.  In addition, the documentation for

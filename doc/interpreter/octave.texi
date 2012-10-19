@@ -19,7 +19,7 @@
 \input texinfo
 @setfilename octave.info
 
-@c The following macro is used for the on-line help system, but we don't
+@c The following macro is used for the online help system, but we don't
 @c want lots of 'See also: foo, bar, and baz' strings cluttering the
 @c printed manual (that information should be in the supporting text for
 @c each group of functions and variables).

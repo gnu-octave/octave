@@ -24,7 +24,7 @@ programs amongst each other.  To aid this sharing Octave supports the
 installation of extra packages.  The `Octave-Forge' project is a
 community-maintained set of packages that can be downloaded and
 installed in Octave.  At the time of writing the `Octave-Forge' project
-can be found on-line at @uref{http://octave.sourceforge.net}, but
+can be found online at @uref{http://octave.sourceforge.net}, but
 since the Internet is an ever-changing place this may not be true at
 the time of reading.  Therefore it is recommended to see the Octave
 website for an updated reference.

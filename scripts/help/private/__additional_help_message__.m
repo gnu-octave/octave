@@ -28,7 +28,7 @@ function msg = __additional_help_message__ ()
   else
     msg = "\
 Additional help for built-in functions and operators is\n\
-available in the on-line version of the manual.  Use the command\n\
+available in the online version of the manual.  Use the command\n\
 'doc <topic>' to search the manual index.\n\
 \n\
 Help and information about Octave is also available on the WWW\n\

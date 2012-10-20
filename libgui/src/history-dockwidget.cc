@@ -61,6 +61,7 @@ history_dock_widget::construct ()
   _filter_line_edit->setStatusTip (tr ("Enter text to filter the command history."));
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
 
+  setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Command History"));
   setWidget (new QWidget ());
 
@@ -84,6 +85,9 @@ history_dock_widget::construct ()
            SIGNAL (visibilityChanged (bool)),
            this,
            SLOT (handle_visibility_changed (bool)));
+
+  // topLevelChanged is emitted when floating property changes (floating = true)
+  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
 
   _update_history_model_timer.setInterval (200);
   _update_history_model_timer.setSingleShot (true);
@@ -161,6 +165,17 @@ history_dock_widget::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
   QDockWidget::closeEvent (e);
+}
+
+// slot for signal that is emitted when floating property changes
+void
+history_dock_widget::top_level_changed (bool floating)
+{
+  if(floating)
+    {
+      setWindowFlags(Qt::Window);  // make a window from the widget when floating
+      show();                      // make it visible again since setWindowFlags hides it
+    }
 }
 
 void

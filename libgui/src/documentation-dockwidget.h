@@ -36,6 +36,8 @@ class documentation_dock_widget : public QDockWidget
 public slots:
   /** Slot to steer changing visibility from outside. */
   void handle_visibility_changed (bool visible);
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 
 signals:
   /** Custom signal that tells if a user has clicked away that dock widget. */

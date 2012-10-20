@@ -397,15 +397,20 @@ main_window::read_settings ()
 
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   settings->beginGroup ("DockWidgets");
-  // restoring the geometry of all widgets
+  // restoring the geometry of all dock-widgets
   foreach (QObject *obj, children ())
     {
       QString name = obj->objectName ();
-      if (obj->isWidgetType () && ! name.isEmpty ())
+      if (obj->inherits("QDockWidget") && ! name.isEmpty ())
         {
-          QWidget *widget = qobject_cast<QWidget *> (obj);
+          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
           QVariant val = settings->value (name);
           widget->restoreGeometry (val.toByteArray ());
+          bool floating = settings->value (name+"Floating",false).toBool ();
+          bool visible = settings->value (name+"Visible",true).toBool ();
+          if (floating)
+            widget->setWindowFlags (Qt::Window); // if floating, make window from widget
+          widget->setVisible (visible);          // make widget visible if desired (setWindowFlags hides widget)
         }
     }
   settings->endGroup();
@@ -427,20 +432,25 @@ main_window::write_settings ()
   // FIXME -- what should happen if settings is 0?
 
   settings->setValue ("MainWindow/geometry", saveGeometry ());
-  settings->setValue ("MainWindow/windowState", saveState ());
   settings->beginGroup ("DockWidgets");
   // saving the geometry of all widgets
   foreach (QObject *obj, children())
     {
       QString name = obj->objectName ();
-      if (obj->isWidgetType () && ! name.isEmpty ())
+      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
         {
-          QWidget *widget = qobject_cast<QWidget *>(obj);
+          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
           settings->setValue (name, widget->saveGeometry ());
-        }
+          bool floating = widget->isFloating ();
+          bool visible = widget->isVisible ();
+          settings->setValue (name+"Floating",floating);  // store floating state
+          settings->setValue (name+"Visible",visible);    // store visibility
+          if (floating)
+            widget->setWindowFlags(Qt::Widget); // if floating, recover the widget state such that the widget's
+        }                                       // state is correctly saved by the saveSate () below
     }
-
   settings->endGroup();
+  settings->setValue ("MainWindow/windowState", saveState ());
   // write the list of recent used directories
   QStringList curr_dirs;
   for (int i=0; i<_current_directory_combo_box->count (); i++)

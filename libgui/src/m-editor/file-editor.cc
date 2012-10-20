@@ -352,6 +352,17 @@ file_editor::handle_tab_close_request ()
       }
 }
 
+// slot for signal that is emitted when floating property changes
+void
+file_editor::top_level_changed (bool floating)
+{
+  if(floating)
+    {
+      setWindowFlags(Qt::Window);  // make a window from the widget when floating
+      show();                      // make it visible again since setWindowFlag hides it
+    }
+}
+
 void
 file_editor::active_tab_changed (int)
 {
@@ -582,11 +593,12 @@ file_editor::construct ()
            SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
   connect (_tab_widget,
            SIGNAL (currentChanged(int)), this, SLOT (active_tab_changed (int)));
+  // topLevelChanged is emitted when floating property changes (floating = true)
+  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
 
   resize (500, 400);
-  setWindowIcon (QIcon::fromTheme ("accessories-text-editor",
-                                   editor_style->standardIcon (QStyle::SP_FileIcon)));
-  setWindowTitle ("Octave Editor");
+  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowTitle ("Editor");
 
   //restore previous session
   QSettings *settings = resource_manager::get_settings ();

@@ -40,6 +40,8 @@ public slots:
   void handle_visibility_changed (bool visible);
   void request_history_model_update ();
   void reset_model ();
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 
 signals:
   void information (const QString& message);

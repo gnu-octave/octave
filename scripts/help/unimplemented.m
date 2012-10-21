@@ -37,6 +37,10 @@ function txt = unimplemented (fcn)
     "linear-algebra package at ",...
     "@url{http://octave.sourceforge.net/linear-algebra/}."];
 
+  case "funm"
+    txt = ["funm is not currently part of core Octave.  See the ",...
+    "linear-algebra package at @url{http://octave.sf.net/linear-algebra/}."];
+
   case "linprog"
     txt = ["Octave does not currently provide linprog.  ",...
     "Linear programming problems may be solved using @code{glpk}.  ",...
@@ -47,6 +51,23 @@ function txt = unimplemented (fcn)
     "For more information try @code{help lsode}.  ",...
     "Matlab-compatible ODE functions are provided by the odepkg package.  ",...
     "See @url{http://octave.sourceforge.net/odepkg/}."];
+
+  case {"javaArray", "javaMethod", "javaMethodEDT", "javaObject", "javaObjectEDT", "javaaddpath", "javaclasspath", "javarmpath"}
+    txt = ["Java objects and methods can be used with the java package. ",...
+    "See @url{http://octave.sf.net/java/}."];
+
+  case {"errordlg", "helpdlg", "inputdlg", "listdlg", "questdlg", "warndlg"}
+    txt = ["Several dialog functions are provided in the java package. ",...
+    "See @url{http://octave.sf.net/java/}."];
+
+  case {"xlsread", "xlsfinfo", "xlswrite", "wk1read", "wk1finfo", "wk1write"}
+    txt = ["Functions for spreadsheet style I/O (.xls .xlsx .sxc .ods .dbf .wk1 etc.) " , ...
+    "are provided in the io package. ",...
+    "See @url{http://octave.sf.net/io/}."];
+
+  case {"avifile", "aviinfo", "aviread"}
+    txt = ["Basic video file support is provided in the video package. ",...
+    "See @url{http://octave.sf.net/video/}."];
 
   otherwise
     if (ismember (fcn, missing_functions ()))
@@ -88,9 +109,6 @@ function list = missing_functions ()
   "aufinfo",
   "auread",
   "auwrite",
-  "avifile",
-  "aviinfo",
-  "aviread",
   "bar3",
   "bar3h",
   "bench",
@@ -163,7 +181,6 @@ function list = missing_functions ()
   "echodemo",
   "ellipj",
   "ellipke",
-  "errordlg",
   "evalc",
   "exifread",
   "expint",
@@ -198,7 +215,6 @@ function list = missing_functions ()
   "hdftool",
   "helpbrowser",
   "helpdesk",
-  "helpdlg",
   "helpwin",
   "hgexport",
   "hgload",
@@ -214,7 +230,6 @@ function list = missing_functions ()
   "import",
   "inmem",
   "inputParser",
-  "inputdlg",
   "inspect",
   "instrfind",
   "instrfindall",
@@ -224,15 +239,7 @@ function list = missing_functions ()
   "isjava",
   "isocaps",
   "isstudent",
-  "javaArray",
-  "javaMethod",
-  "javaMethodEDT",
-  "javaObject",
-  "javaObjectEDT",
-  "javaaddpath",
   "javachk",
-  "javaclasspath",
-  "javarmpath",
   "ldl",
   "libfunctions",
   "libfunctionsview",
@@ -245,7 +252,6 @@ function list = missing_functions ()
   "linkaxes",
   "linkdata",
   "linsolve",
-  "listdlg",
   "listfonts",
   "loadlibrary",
   "lscov",
@@ -314,7 +320,6 @@ function list = missing_functions ()
   "publish",
   "qmr",
   "quad2d",
-  "questdlg",
   "rbbox",
   "reducepatch",
   "reducevolume",
@@ -385,7 +390,6 @@ function list = missing_functions ()
   "visdiff",
   "volumebounds",
   "waitfor",
-  "warndlg",
   "waterfall",
   "wavfinfo",
   "wavplay",
@@ -396,9 +400,6 @@ function list = missing_functions ()
   "wk1read",
   "wk1write",
   "workspace",
-  "xlsfinfo",
-  "xlsread",
-  "xlswrite",
   "xmlread",
   "xmlwrite",
   "xslt",

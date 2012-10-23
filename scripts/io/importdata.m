@@ -60,9 +60,6 @@
 ## @end deftypefn
 
 ## Author: Erik Kjellson <erikiiofph7@users.sourceforge.net>
-## 2012-10-16 First version
-## 2012-10-23 Speeded up the import by a factor 2.
-
 
 function [output, delimiter, header_rows] = importdata (varargin)
 
@@ -261,9 +258,9 @@ function [output, delimiter, header_rows] = \
     delimiter_pattern = ' +';
   endif
   for i=(header_rows+1):length(file_content_rows)
-    data_columns = max(data_columns, 
-                       length (regexp (file_content_rows{i},
-                                       delimiter_pattern, "split")));
+    data_columns = max (data_columns,
+                        length (regexp (file_content_rows{i},
+                                        delimiter_pattern, "split")));
   endfor
 
   ## Go through the data and put it in either output.data or
@@ -278,9 +275,9 @@ function [output, delimiter, header_rows] = \
       for j=1:length(row_data)
         ## Try to convert the column to a number, if it works put it in
         ## output.data, otherwise in output.textdata
-        data_numeric = str2num(row_data{j});
+        data_numeric = str2num (row_data{j});
         if (!isempty (data_numeric))
-          output.data ((i-header_rows), j) = data_numeric;
+          output.data(i-header_rows, j) = data_numeric;
         else
           output.textdata{i,j} = row_data{j};
         endif

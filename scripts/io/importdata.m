@@ -193,10 +193,6 @@ function [output, delimiter, header_rows] = \
   ## Read file into string and count the number of header rows
   file_content = fileread (fname);
 
-  ## The characters need to be in a row vector instead of a column
-  ## vector to be recognized as a proper string.
-  file_content = file_content(:)';
-
   ## Split the file into rows (using \r\n or \n as delimiters between rows).
   file_content_rows = regexp (file_content, "\r?\n", "split");
 
@@ -275,7 +271,7 @@ function [output, delimiter, header_rows] = \
       for j=1:length(row_data)
         ## Try to convert the column to a number, if it works put it in
         ## output.data, otherwise in output.textdata
-        data_numeric = str2num (row_data{j});
+        data_numeric = str2double (row_data{j});
         if (!isempty (data_numeric))
           output.data(i-header_rows, j) = data_numeric;
         else
@@ -293,9 +289,9 @@ function [output, delimiter, header_rows] = \
     output.colheaders = output.textdata(end,:);
   endif
 
-  ## When delimiter = "\\t" convert it to a tab, as is done in the Matlab
-  ## version
-  if (strcmpi (delimiter, "\\t"))
+  ## When delimiter = "\\t" convert it to a tab, done for Matlab compatibility.
+  if (strcmp (delimiter, '\t'))
     delimiter = "\t";
   endif
+
 endfunction

@@ -71,6 +71,9 @@ public slots:
   /** Slot to steer changing visibility from outside. */
   void handle_visibility_changed (bool visible);
 
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
+
 signals:
   /** Emitted, whenever the user requested to open a file. */
   void open_file (const QString& fileName);

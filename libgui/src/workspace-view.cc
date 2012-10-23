@@ -35,6 +35,7 @@ workspace_view::workspace_view (QWidget *p)
   : QDockWidget (p)
 {
   setObjectName ("WorkspaceView");
+  setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Workspace"));
 
   // Create a new workspace model.
@@ -87,6 +88,9 @@ workspace_view::workspace_view (QWidget *p)
 
   connect (_workspace_tree_view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (item_double_clicked (QModelIndex)));
+
+  // topLevelChanged is emitted when floating property changes (floating = true)
+  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
 
 }
 
@@ -214,4 +218,15 @@ workspace_view::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
   QDockWidget::closeEvent (e);
+}
+
+// slot for signal that is emitted when floating property changes
+void
+workspace_view::top_level_changed (bool floating)
+{
+  if(floating)
+    {
+      setWindowFlags(Qt::Window);  // make a window from the widget when floating
+      show();                      // make it visible again since setWindowFlags hides it
+    }
 }

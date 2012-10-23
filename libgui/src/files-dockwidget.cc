@@ -39,6 +39,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   : QDockWidget (p)
 {
   setObjectName ("FilesDockWidget");
+  setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Current Directory"));
   setWidget (new QWidget (this));
 
@@ -115,6 +116,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility_changed (bool)));
+  // topLevelChanged is emitted when floating property changes (floating = true)
+  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
 
   setFocusProxy (_current_directory);
 }
@@ -213,4 +216,15 @@ files_dock_widget::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
   QDockWidget::closeEvent (e);
+}
+
+// slot for signal that is emitted when floating property changes
+void
+files_dock_widget::top_level_changed (bool floating)
+{
+  if(floating)
+    {
+      setWindowFlags(Qt::Window);  // make a window from the widget when floating
+      show();                      // make it visible again since setWindowFlags hides it
+    }
 }

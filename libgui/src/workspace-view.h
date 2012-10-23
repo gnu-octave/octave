@@ -39,6 +39,8 @@ class workspace_view : public QDockWidget
 public slots:
   void handle_visibility_changed (bool visible);
   void model_changed ();
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 
 signals:
   /** Custom signal that tells if a user has clicke away that dock widget. */

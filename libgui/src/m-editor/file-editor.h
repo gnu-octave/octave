@@ -93,6 +93,8 @@ public slots:
   void handle_tab_close_request ();
   void active_tab_changed (int index);
   void handle_editor_state_changed ();
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 
   /** Tells the editor to react on changed settings. */
   void notice_settings ();

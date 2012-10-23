@@ -41,6 +41,8 @@ public slots:
     if (visible)
       emit active_changed (true);
   }
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 };
 
 #endif // TERMINALDOCKWIDGET_H

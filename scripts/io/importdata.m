@@ -61,6 +61,7 @@
 
 ## Author: Erik Kjellson <erikiiofph7@users.sourceforge.net>
 ## 2012-10-16 First version
+## 2012-10-23 Speeded up the import by a factor 2.
 
 
 function [output, delimiter, header_rows] = importdata (varargin)
@@ -265,21 +266,21 @@ function [output, delimiter, header_rows] = \
                                        delimiter_pattern, "split")));
   endfor
 
-
   ## Go through the data and put it in either output.data or
   ## output.textdata depending on if it is numeric or not.
   output.data = NaN (length (file_content_rows) - header_rows, data_columns);
   for i=(header_rows+1):length(file_content_rows)
     ## Only use the row if it contains anything other than white-space
     ## characters.
-    if (length (regexp (file_content_rows{i}, "\\S","match")) > 0)
+    if (any (file_content_rows{i} != " "))
       row_data = regexp (file_content_rows{i}, delimiter_pattern, "split");
 
       for j=1:length(row_data)
         ## Try to convert the column to a number, if it works put it in
         ## output.data, otherwise in output.textdata
-        if (length(str2num(row_data{j})) > 0)
-          output.data ((i-header_rows), j) = str2num (row_data{j});
+        data_numeric = str2num(row_data{j});
+        if (!isempty (data_numeric))
+          output.data ((i-header_rows), j) = data_numeric;
         else
           output.textdata{i,j} = row_data{j};
         endif

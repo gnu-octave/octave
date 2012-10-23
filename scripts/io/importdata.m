@@ -50,6 +50,8 @@
 ##
 ## @item @sc{Matlab} file
 ##
+## @item Spreadsheet files (depending on external software)
+##
 ## @item Wav file
 ##
 ## @end itemize
@@ -135,13 +137,17 @@ function [output, delimiter, header_rows] = importdata (varargin)
       delimiter  = NaN;
       header_rows = 0;
       output = load (fname);
-    case ".wk1"
-      error (sprintf ("importdata: not implemented for file format %s", 
-                      fileExt));
-    case {".xls", ".xlsx"}
-      ## FIXME: implement Excel import.
-      error (sprintf ("importdata: not implemented for file format %s", 
-                      fileExt));
+    case {".wk1", ".xls", ".xlsx", ".dbf", ".pxl"}
+      ## If there's no Excel file support simply fall back to unimplemented.m
+      output = xlsread (fname);
+    case {".ods", ".sxc", ".fods", ".uos", ".xml"}
+      ## unimplemented.m only knows ML functions; odsread isn't one but is in OF
+      try
+        output = odsread (fname);
+      catch
+        ## Fall back to unimplemented.m.
+        output = xlsread (fname);
+      end_try_catch
     case {".wav", ".wave"}
       delimiter  = NaN;
       header_rows = 0;
@@ -266,7 +272,7 @@ function [output, delimiter, header_rows] = \
   for i=(header_rows+1):length(file_content_rows)
     ## Only use the row if it contains anything other than white-space
     ## characters.
-    if (length (regexp (file_content_rows{i}, "\S","match")) > 0)
+    if (length (regexp (file_content_rows{i}, "\\S","match")) > 0)
       row_data = regexp (file_content_rows{i}, delimiter_pattern, "split");
 
       for j=1:length(row_data)

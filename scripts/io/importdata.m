@@ -91,7 +91,7 @@ function [output, delimiter, header_rows] = importdata (varargin)
     if (!ischar (delimiter))
       error("importdata: delimiter needs to be a character");
     endif
-    if (length (delimiter) > 1 && !strcmpi (delimiter, "\t"))
+    if (length (delimiter) > 1 && !strcmpi (delimiter, "\\t"))
       error("importdata: delimiter cannot be longer than 1 character");
     endif
     if (strcmpi (delimiter, "\\"))
@@ -271,11 +271,13 @@ function [output, delimiter, header_rows] = \
       for j=1:length(row_data)
         ## Try to convert the column to a number, if it works put it in
         ## output.data, otherwise in output.textdata
-        data_numeric = str2double (row_data{j});
-        if (!isempty (data_numeric))
-          output.data(i-header_rows, j) = data_numeric;
-        else
-          output.textdata{i,j} = row_data{j};
+        if (!isempty (row_data{j}))
+          data_numeric = str2double (row_data{j});
+          if (!isempty (data_numeric))
+            output.data(i-header_rows, j) = data_numeric;
+          else
+            output.textdata{i,j} = row_data{j};
+          endif
         endif
       endfor
 
@@ -295,3 +297,118 @@ function [output, delimiter, header_rows] = \
   endif
 
 endfunction
+
+
+########################################
+
+%!test
+%! # Comma separated values
+%! A = [3.1 -7.2 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1,-7.2,0\n0.012,6.5,128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, ",");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, ",");
+%! assert (h, 0);
+
+%!test
+%! # Tab separated values
+%! A = [3.1 -7.2 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, "\\t");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+%!test
+%! # Space separated values, using multiple spaces to align in columns.
+%! A = [3.1 -7.2 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(1,:));
+%! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(2,:));
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, " ");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, " ");
+%! assert (h, 0);
+
+%!test
+%! # Header
+%! A.data = [3.1 -7.2 0; 0.012 6.5 128];
+%! A.textdata = {"This is a header row."; \
+%!               "this row does not contain any data, but the next one does."};
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, [A.textdata{1} "\n"]);
+%! fputs (fid, [A.textdata{2} "\n"]);
+%! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, "\\t");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 2);
+
+%!test
+%! # Ignore empty rows containing only spaces
+%! A = [3.1 -7.2 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(1,:));
+%! fputs (fid, "      ");
+%! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(2,:));
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, " ");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, " ");
+%! assert (h, 0);
+
+%!test
+%! # Exponentials
+%! A = [3.1 -7.2 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "+3.1e0\t-72E-1\t0\n12e-3\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, "\\t");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+%!test
+%! # Missing values
+%! A = [3.1 NaN 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\t\t0\n0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, "\\t");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+%!test
+%! # CRLF for line breaks
+%! A = [3.1 -7.2 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\t-7.2\t0\r\n0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, "\\t");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+

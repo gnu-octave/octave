@@ -2536,7 +2536,7 @@ variable value is restored when exiting the function.\n\
   return SET_INTERNAL_VARIABLE (whos_line_format);
 }
 
-static std::string Vmissing_function_hook = "unimplemented";
+static std::string Vmissing_function_hook = "__unimplemented__";
 
 DEFUN (missing_function_hook, args, nargout,
     "-*- texinfo -*-\n\

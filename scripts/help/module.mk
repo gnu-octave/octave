@@ -6,6 +6,7 @@ help_PRIVATE_FCN_FILES = \
 
 help_FCN_FILES = \
   help/__makeinfo__.m \
+  help/__unimplemented__.m \
   help/doc.m \
   help/gen_doc_cache.m \
   help/get_first_help_sentence.m \
@@ -13,7 +14,6 @@ help_FCN_FILES = \
   help/lookfor.m \
   help/print_usage.m \
   help/type.m \
-  help/unimplemented.m \
   help/which.m \
   $(help_PRIVATE_FCN_FILES)
 

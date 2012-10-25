@@ -30,7 +30,7 @@
 ## @end deftypefn
 
 
-function txt = unimplemented (fcn)
+function txt = __unimplemented__ (fcn)
 
   if (nargin != 1)
     print_usage ();
@@ -421,9 +421,9 @@ endfunction
 
 
 %!test
-%! str = unimplemented ("no_name_function");
+%! str = __unimplemented__ ("no_name_function");
 %! assert (isempty (str));
-%! str = unimplemented ("quad2d");
+%! str = __unimplemented__ ("quad2d");
 %! assert (str(1:51), "quad2d is not implemented.  Consider using dblquad.");
-%! str = unimplemented ("MException");
+%! str = __unimplemented__ ("MException");
 %! assert (str(1:58), "the 'MException' function is not yet implemented in Octave");

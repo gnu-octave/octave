@@ -25,7 +25,6 @@ highlightCurrentLine=true
 codeCompletion=true
 fontName=Ubuntu Mono
 fontSize=12
-shortWindowTitle=true
 longWindowTitle=true
 
 [terminal]

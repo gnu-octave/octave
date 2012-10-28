@@ -149,7 +149,8 @@ function [q, err] = quadgk (f, a, b, varargin)
           trace = varargin{2};
         endif
         if (nargin > 5)
-          error ("quadgk: can not pass additional arguments to user function");
+          error ("Octave:Invalid-fun-call",
+                  "quadgk: can not pass additional arguments to user function");
         endif
       else
         idx = 1;
@@ -170,14 +171,17 @@ function [q, err] = quadgk (f, a, b, varargin)
             elseif (strcmpi (str, "trace"))
               trace = varargin{idx++};
             else
-              error ("quadgk: unknown property %s", str);
+              error ("Octave:invalid-input-arg",
+                                            "quadgk: unknown property %s", str);
             endif
           else
-            error ("quadgk: expecting property to be a string");
+            error ("Octave:invalid-input-arg",
+                                   "quadgk: expecting property to be a string");
           endif
         endwhile
         if (idx != nargin - 2)
-          error ("quadgk: expecting properties in pairs");
+          error ("Octave:Invalid-fun-call",
+                                       "quadgk: expecting properties in pairs");
         endif
       endif
     endif
@@ -297,8 +301,12 @@ function [q, err] = quadgk (f, a, b, varargin)
     endwhile
     subs = [subs(1:end-1), subs(2:end)];
 
-    warn_state = warning ("query", "Octave:divide-by-zero");
+    # Not needed anmoyre
+    #warn_state = warning ("query", "Octave:divide-by-zero");
+    # Set divide-by-zero warning off locally
+    warning ("off", "Octave:divide-by-zero", "local");
 
+    warn_msg   = "Octave:quadgk:warning-termination";
     unwind_protect
       ## Singularity will cause divide by zero warnings
       warning ("off", "Octave:divide-by-zero");
@@ -327,7 +335,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 
         ## Quit if any evaluations are not finite (Inf or NaN)
         if (any (! isfinite (q_subs)))
-          warning ("quadgk: non finite integrand encountered");
+          warning (warn_msg, "quadgk: non finite integrand encountered");
           q = q0;
           err = err0;
           break;
@@ -372,7 +380,8 @@ function [q, err] = quadgk (f, a, b, varargin)
         ## If the maximum subinterval count is met accept remaining
         ## subinterval and exit
         if (rows (subs) > maxint)
-          warning ("quadgk: maximum interval count (%d) met", maxint);
+          warning (warn_msg,
+                             "quadgk: maximum interval count (%d) met", maxint);
           q += sum (q_subs);
           err += sum (q_errs);
           break;
@@ -383,12 +392,18 @@ function [q, err] = quadgk (f, a, b, varargin)
       endwhile
 
       if (err > max (abstol, reltol * abs (q)))
-        warning ("quadgk: Error tolerance not met. Estimated error %g", err);
+        warning (warn_msg,
+                    "quadgk: Error tolerance not met. Estimated error %g", err);
       endif
     unwind_protect_cleanup
+
+      # not needed aynomre, used local off of warnings
+      %{
       if (strcmp (warn_state.state, "on"))
         warning ("on", "Octave:divide-by-zero");
       endif
+      %}
+
     end_unwind_protect
   endif
 endfunction
@@ -460,4 +475,3 @@ endfunction
 %error (quadgk (@sin))
 %error (quadgk (@sin, -pi))
 %error (quadgk (@sin, -pi, pi, "DummyArg"))
-

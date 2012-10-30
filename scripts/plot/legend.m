@@ -886,7 +886,7 @@ function deletelegend2 (h, d, ca, pos, outpos, t1, hplots)
   set (t1, "deletefcn", "");
   delete (t1);
   for i = 1 : numel (hplots)
-    if (strcmp (get (hplots (i), "type"), "line"))
+    if (ishandle (hplots(i)) && strcmp (get (hplots (i), "type"), "line"))
       dellistener (hplots (i), "color");
       dellistener (hplots (i), "linestyle");
       dellistener (hplots (i), "marker");

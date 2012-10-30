@@ -1121,6 +1121,10 @@ parse_save_options (const string_vector &argv,
           use_zlib  = true;
         }
 #endif
+      else if (argv[i][0] == '-')
+        {
+          error ("save: Unrecognized option '%s'", argv[i].c_str ());
+        }
       else
         retval.append (argv[i]);
     }

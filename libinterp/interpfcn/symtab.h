@@ -1772,15 +1772,18 @@ public:
       inst->do_mark_global (name);
   }
 
+  // exclude: Storage classes to exclude, you can OR them together
   static std::list<symbol_record>
   all_variables (scope_id scope = xcurrent_scope,
                  context_id context = xdefault_context,
-                 bool defined_only = true)
+                 bool defined_only = true,
+                 unsigned int exclude = symbol_record::hidden)
   {
     symbol_table *inst = get_instance (scope);
 
     return inst
-      ? inst->do_all_variables (context, defined_only) : std::list<symbol_record> ();
+      ? inst->do_all_variables (context, defined_only, exclude)
+      : std::list<symbol_record> ();
   }
 
   static std::list<symbol_record> glob (const std::string& pattern)
@@ -2538,7 +2541,8 @@ private:
   }
 
   std::list<symbol_record>
-  do_all_variables (context_id context, bool defined_only) const
+  do_all_variables (context_id context, bool defined_only,
+                    unsigned int exclude) const
   {
     std::list<symbol_record> retval;
 
@@ -2546,7 +2550,8 @@ private:
       {
         const symbol_record& sr = p->second;
 
-        if (defined_only && ! sr.is_defined (context))
+        if ((defined_only && ! sr.is_defined (context))
+            || (sr.xstorage_class () & exclude))
           continue;
 
         retval.push_back (sr);

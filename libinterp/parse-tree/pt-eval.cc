@@ -1170,7 +1170,7 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
             }
           else
             {
-              // Executing "dbstep N".  Decrease N by one and continue executing.
+              // Executing "dbstep N".  Decrease N by one and continue.
 
               dbstep_flag--;
             }

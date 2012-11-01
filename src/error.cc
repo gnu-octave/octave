@@ -1800,6 +1800,7 @@ the top-level error message).\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+@seealso{debug_on_warning, debug_on_interrupt}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_error);
@@ -1816,6 +1817,7 @@ to enter the debugger when a warning is encountered.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+@seealso{debug_on_error, debug_on_interrupt}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_warning);

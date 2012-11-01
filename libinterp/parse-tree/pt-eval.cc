@@ -1136,22 +1136,6 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
 {
   bool break_on_this_statement = false;
 
-  // Don't decrement break flag unless we are in the same frame as we
-  // were when we saw the "dbstep N" command.
-
-  if (dbstep_flag > 1)
-    {
-      if (octave_call_stack::current_frame () == current_frame)
-        {
-          // Don't allow dbstep N to step past end of current frame.
-
-          if (is_end_of_fcn_or_script)
-            dbstep_flag = 1;
-          else
-            dbstep_flag--;
-        }
-    }
-
   if (octave_debug_on_interrupt_state)
     {
       break_on_this_statement = true;
@@ -1168,17 +1152,29 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
 
       current_frame = octave_call_stack::current_frame ();
     }
-  else if (dbstep_flag == 1)
+  else if (dbstep_flag > 0)
     {
       if (octave_call_stack::current_frame () == current_frame)
         {
-          // We get here if we are doing a "dbstep" or a "dbstep N"
-          // and the count has reached 1 and we are in the current
-          // debugging frame.
+          if (dbstep_flag == 1 || is_end_of_fcn_or_script)
+            {
+              // We get here if we are doing a "dbstep" or a "dbstep N" and the
+              // count has reached 1 so that we must stop and return to debug
+              // prompt.  Alternatively, "dbstep N" has been used but the end
+              // of the frame has been reached so we stop at the last line and
+              // return to prompt.
 
-          break_on_this_statement = true;
+              break_on_this_statement = true;
 
-          dbstep_flag = 0;
+              dbstep_flag = 0;
+            }
+          else
+            {
+              // Executing "dbstep N".  Decrease N by one and continue executing.
+
+              dbstep_flag--;
+            }
+
         }
     }
   else if (dbstep_flag == -1)

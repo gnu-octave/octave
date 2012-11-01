@@ -47,7 +47,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       else
         h = axis_obj.__plotyy_axes__;
         h = h(ishandle (h));
-        h = h(isprop (h, "__ploty_axes__"));
+        h = h(isprop (h, "__plotyy_axes__"));
         rmappdata (h, "__plotyy_axes__");
       endif
     endif
@@ -441,6 +441,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     while (! isempty (kids))
 
       obj = get (kids(end));
+
+      if (isfield (obj, "xdata"))
+        obj.xdata = double (obj.xdata);
+      end
+      if (isfield (obj, "ydata"))
+        obj.ydata = double (obj.ydata);
+      end
+      if (isfield (obj, "zdata"))
+        obj.zdata = double (obj.zdata);
+      end
 
       if (isfield (obj, "units"))
         units = obj.units;

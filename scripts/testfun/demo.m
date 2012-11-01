@@ -101,7 +101,11 @@ function demo (name, n)
   endif
 
   [code, idx] = test (name, "grabdemo");
-  if (isempty (idx))
+
+  if (idx == -1)
+    warning ("no function %s found", name);
+    return;
+  elseif (isempty (idx))
     warning ("no demo available for %s", name);
     return;
   elseif (n >= length (idx))

@@ -46,7 +46,7 @@ function [R, G, B] = ind2rgb (x, map)
   endif
 
   ## Check the color map.
-  if (ndims (map) != 2 || columns (map) != 3)
+  if (! iscolormap (map))
     error ("ind2rgb: MAP must be a valid colormap");
   endif
 

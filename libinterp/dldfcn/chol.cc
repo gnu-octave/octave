@@ -180,7 +180,6 @@ sparse matrices.\n\
 
       octave_idx_type nr = arg.rows ();
       octave_idx_type nc = arg.columns ();
-      bool natural = (nargout != 3);
 
       int arg_is_empty = empty_arg ("chol", nr, nc);
 
@@ -191,14 +190,18 @@ sparse matrices.\n\
 
       if (arg.is_sparse_type ())
         {
+          octave_idx_type info;
+          bool natural = (nargout != 3);
+          bool force = nargout > 1;
+
           if (arg.is_real_type ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
               if (! error_state)
                 {
-                  octave_idx_type info = nargout;
-                  SparseCHOL fact (m, info, natural);
+                  SparseCHOL fact (m, info, natural, force);
+
                   if (nargout == 3)
                     {
                       if (vecout)
@@ -225,8 +228,7 @@ sparse matrices.\n\
 
               if (! error_state)
                 {
-                  octave_idx_type info = nargout;
-                  SparseComplexCHOL fact (m, info, natural);
+                  SparseComplexCHOL fact (m, info, natural, force);
 
                   if (nargout == 3)
                     {
@@ -405,14 +407,16 @@ symmetric positive definite matrix @var{A}.\n\
         {
           if (arg.is_sparse_type ())
             {
+              octave_idx_type info;
+
               if (arg.is_real_type ())
                 {
                   SparseMatrix m = arg.sparse_matrix_value ();
 
                   if (! error_state)
                     {
-                      octave_idx_type info;
                       SparseCHOL chol (m, info);
+
                       if (info == 0)
                         retval = chol.inverse ();
                       else
@@ -425,8 +429,8 @@ symmetric positive definite matrix @var{A}.\n\
 
                   if (! error_state)
                     {
-                      octave_idx_type info;
                       SparseComplexCHOL chol (m, info);
+
                       if (info == 0)
                         retval = chol.inverse ();
                       else

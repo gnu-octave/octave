@@ -670,6 +670,30 @@ octave_value::octave_value (const Array<float>& a)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const DiagArray2<double>& d)
+  : rep (new octave_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const DiagArray2<float>& d)
+  : rep (new octave_float_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const DiagArray2<Complex>& d)
+  : rep (new octave_complex_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const DiagArray2<FloatComplex>& d)
+  : rep (new octave_float_complex_diag_matrix (d))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const DiagMatrix& d)
   : rep (new octave_diag_matrix (d))
 {
@@ -1320,7 +1344,7 @@ static void
 gripe_assign_failed (const std::string& on, const std::string& tn1,
                      const std::string& tn2)
 {
-  error ("assignment failed for `%s %s %s'",
+  error ("assignment failed for '%s %s %s'",
          tn1.c_str (), on.c_str (), tn2.c_str ());
 }
 #endif
@@ -1330,7 +1354,7 @@ gripe_assign_failed_or_no_method (const std::string& on,
                                   const std::string& tn1,
                                   const std::string& tn2)
 {
-  error ("assignment failed, or no method for `%s %s %s'",
+  error ("assignment failed, or no method for '%s %s %s'",
          tn1.c_str (), on.c_str (), tn2.c_str ());
 }
 
@@ -1888,14 +1912,14 @@ static void
 gripe_binary_op (const std::string& on, const std::string& tn1,
                  const std::string& tn2)
 {
-  error ("binary operator `%s' not implemented for `%s' by `%s' operations",
+  error ("binary operator '%s' not implemented for '%s' by '%s' operations",
          on.c_str (), tn1.c_str (), tn2.c_str ());
 }
 
 static void
 gripe_binary_op_conv (const std::string& on)
 {
-  error ("type conversion failed for binary operator `%s'", on.c_str ());
+  error ("type conversion failed for binary operator '%s'", on.c_str ());
 }
 
 octave_value
@@ -2200,7 +2224,7 @@ do_binary_op (octave_value::compound_binary_op op,
 static void
 gripe_cat_op (const std::string& tn1, const std::string& tn2)
 {
-  error ("concatenation operator not implemented for `%s' by `%s' operations",
+  error ("concatenation operator not implemented for '%s' by '%s' operations",
          tn1.c_str (), tn2.c_str ());
 }
 
@@ -2312,14 +2336,14 @@ octave_value::print_info (std::ostream& os, const std::string& prefix) const
 static void
 gripe_unary_op (const std::string& on, const std::string& tn)
 {
-  error ("unary operator `%s' not implemented for `%s' operands",
+  error ("unary operator '%s' not implemented for '%s' operands",
          on.c_str (), tn.c_str ());
 }
 
 static void
 gripe_unary_op_conv (const std::string& on)
 {
-  error ("type conversion failed for unary operator `%s'", on.c_str ());
+  error ("type conversion failed for unary operator '%s'", on.c_str ());
 }
 
 octave_value
@@ -2399,7 +2423,7 @@ static void
 gripe_unary_op_conversion_failed (const std::string& op,
                                   const std::string& tn)
 {
-  error ("operator %s: type conversion for `%s' failed",
+  error ("operator %s: type conversion for '%s' failed",
          op.c_str (), tn.c_str ());
 }
 
@@ -2791,7 +2815,7 @@ decode_subscripts (const char* name, const octave_value& arg,
                 type_string[k] = '.';
               else
                 {
-                  error ("%s: invalid indexing type `%s'", name, item.c_str ());
+                  error ("%s: invalid indexing type '%s'", name, item.c_str ());
                   return;
                 }
             }
@@ -2830,7 +2854,7 @@ decode_subscripts (const char* name, const octave_value& arg,
         }
     }
   else
-    error ("%s: second argument must be a structure with fields `type' and `subs'", name);
+    error ("%s: second argument must be a structure with fields 'type' and 'subs'", name);
 }
 
 DEFUN (subsref, args, nargout,

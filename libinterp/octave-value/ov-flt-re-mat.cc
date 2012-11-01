@@ -806,6 +806,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (tan, float, ::tanf);
       ARRAY_MAPPER (tanh, float, ::tanhf);
       ARRAY_MAPPER (isna, bool, octave_is_NA);
+      ARRAY_MAPPER (xsignbit, float, xsignbit);
 
     default:
       return octave_base_value::map (umap);

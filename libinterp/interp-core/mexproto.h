@@ -87,7 +87,8 @@ extern OCTINTERP_API int mexPrintf (const char *fmt, ...);
 extern OCTINTERP_API mxArray *mexGetVariable (const char *space, const char *name);
 extern OCTINTERP_API const mxArray *mexGetVariablePtr (const char *space, const char *name);
 
-extern OCTINTERP_API int mexPutVariable (const char *space, const char *name, mxArray *ptr);
+extern OCTINTERP_API int mexPutVariable (const char *space, const char *name,
+                                         const mxArray *ptr);
 
 extern OCTINTERP_API void mexMakeArrayPersistent (mxArray *ptr);
 extern OCTINTERP_API void mexMakeMemoryPersistent (void *ptr);

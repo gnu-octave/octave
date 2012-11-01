@@ -199,7 +199,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
         fflush (plot_stream);
       endif
     else
-      error ("__go_draw_figure__: expecting figure object, found `%s'",
+      error ("__go_draw_figure__: expecting figure object, found '%s'",
              htype);
     endif
   else

@@ -41,7 +41,7 @@ contributions is @email{maintainers@@octave.org}.  This concerns the
 development of Octave core, i.e., code that goes to Octave directly.
 You may consider developing and publishing a package instead; a great
 place for this is the allied Octave-Forge project
-(@url{http://octave.sf.net}).  Note that the Octave project is
+(@url{http://octave.sourceforge.net}).  Note that the Octave project is
 inherently more conservative and follows narrower rules.
 
 @node Building the Development Sources
@@ -68,7 +68,7 @@ doing
 Check out a copy of the Octave sources:
 
 @example
-hg clone http://hg.savannah.gnu.org/hgweb/octave
+hg clone http://www.octave.org/hg/octave
 @end example
 
 @item
@@ -82,7 +82,7 @@ cd octave
 Generate the necessary configuration files:
 
 @example
-./autogen.sh
+./bootstrap
 @end example
 
 @item

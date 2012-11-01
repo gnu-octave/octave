@@ -216,7 +216,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
                   if (nargout == 0 || nargout == 1)
                     {
-                      retval(0) = sigma.diag ();
+                      retval(0) = sigma.extract_diag ();
                     }
                   else
                     {
@@ -244,7 +244,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
                   if (nargout == 0 || nargout == 1)
                     {
-                      retval(0) = sigma.diag ();
+                      retval(0) = sigma.extract_diag ();
                     }
                   else
                     {
@@ -275,7 +275,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
                   if (nargout == 0 || nargout == 1)
                     {
-                      retval(0) = sigma.diag ();
+                      retval(0) = sigma.extract_diag ();
                     }
                   else
                     {
@@ -303,7 +303,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
                   if (nargout == 0 || nargout == 1)
                     {
-                      retval(0) = sigma.diag ();
+                      retval(0) = sigma.extract_diag ();
                     }
                   else
                     {

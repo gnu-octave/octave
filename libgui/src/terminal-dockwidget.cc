@@ -20,14 +20,32 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "terminal-dockwidget.h"
 
-terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *parent)
-  : QDockWidget (parent)
+terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *p)
+  : QDockWidget (p)
 {
   setObjectName ("TerminalDockWidget");
+  setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Command Window"));
   setWidget (terminal);
 
   connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handle_visibility_changed (bool)));
+  // topLevelChanged is emitted when floating property changes (floating = true)
+  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
+}
+
+// slot for signal that is emitted when floating property changes
+void
+terminal_dock_widget::top_level_changed (bool floating)
+{
+  if(floating)
+    {
+      setWindowFlags(Qt::Window);  // make a window from the widget when floating
+      show();                      // make it visible again since setWindowFlags hides it
+    }
 }

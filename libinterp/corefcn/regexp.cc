@@ -45,12 +45,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 // Replace backslash escapes in a string with the real values.  We need
-// this special function instead of the one in utils.cc because the set
-// of escape sequences used in regexps is different from those used in
-// the *printf functions.
+// two special functions instead of the one in utils.cc because the set
+// of escape sequences used for regexp patterns and replacement strings
+// is different from those used in the *printf functions.
 
 static std::string
-do_regexp_string_escapes (const std::string& s)
+do_regexp_ptn_string_escapes (const std::string& s)
 {
   std::string retval;
 
@@ -66,11 +66,56 @@ do_regexp_string_escapes (const std::string& s)
         {
           switch (s[++j])
             {
-            case '$':
-              retval[i] = '$';
+            case 'b': // backspace
+              retval[i] = '\b';
               break;
 
-            case 'a':
+#if 0
+// FIXME : To be complete, we need to handle \oN, \o{N}.
+//         The PCRE library already handles \N where N
+//         is an octal number.  New code needs to merely
+//         replace \oN or \o{N} with \N.
+            case 'o': // octal number
+#endif
+
+            default:  // pass escape sequence through
+              retval[i] = '\\';
+              retval[++i] = s[j];
+              break;
+            }
+        }
+      else
+        {
+          retval[i] = s[j];
+        }
+
+      i++;
+      j++;
+    }
+
+  retval.resize (i);
+
+  return retval;
+}
+
+static std::string
+do_regexp_rep_string_escapes (const std::string& s)
+{
+  std::string retval;
+
+  size_t i = 0;
+  size_t j = 0;
+  size_t len = s.length ();
+
+  retval.resize (len);
+
+  while (j < len)
+    {
+      if (s[j] == '\\' && j+1 < len)
+        {
+          switch (s[++j])
+            {
+            case 'a': // alarm
               retval[i] = '\a';
               break;
 
@@ -98,10 +143,6 @@ do_regexp_string_escapes (const std::string& s)
               retval[i] = '\v';
               break;
 
-            case '\\': // backslash
-              retval[i] = '\\';
-              break;
-
 #if 0
 // FIXME -- to be complete, we need to handle \oN, \o{N}, \xN, and
 // \x{N}.  Hex digits may be upper or lower case.  Brackets are
@@ -110,8 +151,8 @@ do_regexp_string_escapes (const std::string& s)
             case 'o': // octal number
             case 'x': // hex number
 #endif
-
-            default:
+ 
+            default:  // pass escape sequence through
               retval[i] = '\\';
               retval[++i] = s[j];
               break;
@@ -205,7 +246,7 @@ octregexp (const octave_value_list &args, int nargout,
     return retval;
   // Matlab compatibility.
   if (args(1).is_sq_string ())
-    pattern = do_regexp_string_escapes (pattern);
+    pattern = do_regexp_ptn_string_escapes (pattern);
 
   regexp::opts options;
   options.case_insensitive (case_insensitive);
@@ -1196,14 +1237,14 @@ octregexprep (const octave_value_list &args, const std::string &who)
     return retval;
   // Matlab compatibility.
   if (args(1).is_sq_string ())
-    pattern = do_regexp_string_escapes (pattern);
+    pattern = do_regexp_ptn_string_escapes (pattern);
 
   std::string replacement = args(2).string_value ();
   if (error_state)
     return retval;
   // Matlab compatibility.
   if (args(2).is_sq_string ())
-    replacement = do_regexp_string_escapes (replacement);
+    replacement = do_regexp_rep_string_escapes (replacement);
 
   // Pack options excluding 'tokenize' and various output
   // reordering strings into regexp arg list

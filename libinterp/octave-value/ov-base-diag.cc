@@ -68,6 +68,32 @@ octave_base_diag<DMT, MT>::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
+
+template <class DMT, class MT>
+octave_value
+octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
+{
+  octave_value retval;
+  if (matrix.rows () == 1 || matrix.cols () == 1)
+    {
+      // Rather odd special case. This is a row or column vector
+      // represented as a diagonal matrix with a single nonzero entry, but
+      // Fdiag semantics are to product a diagonal matrix for vector
+      // inputs.
+      if (k == 0)
+        // Returns Diag2Array<T> with nnz <= 1.
+        retval = matrix.build_diag_matrix ();
+      else
+        // Returns Array<T> matrix
+        retval = matrix.array_value ().diag (k);
+    }
+  else
+    // Returns Array<T> vector
+    retval = matrix.extract_diag (k);
+  return retval;
+}
+
+
 template <class DMT, class MT>
 octave_value
 octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
@@ -122,7 +148,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
           {
             octave_value_list jdx = idx.front ();
             // Check for a simple element assignment. That means, if D is a diagonal matrix,
-            // `D(i,i) = x' will not destroy its diagonality (provided i is a valid index).
+            // 'D(i,i) = x' will not destroy its diagonality (provided i is a valid index).
             if (jdx.length () == 2 && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
               {
                 typename DMT::element_type val;
@@ -400,7 +426,7 @@ octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
   os << "# rows: " << matrix.rows () << "\n"
     << "# columns: " << matrix.columns () << "\n";
 
-  os << matrix.diag ();
+  os << matrix.extract_diag ();
 
   return true;
 }

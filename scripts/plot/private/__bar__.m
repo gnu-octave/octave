@@ -217,7 +217,8 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
 
     if (i == 1)
       x_axis_range = get (ax, "xlim");
-      h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
+      h_baseline = line (x_axis_range, [base_value, base_value],
+                         "color", [0, 0, 0]);
       set (h_baseline, "handlevisibility", "off");
       set (h_baseline, "xliminclude", "off");
       addlistener (ax, "xlim", @update_xlim);
@@ -230,7 +231,8 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
     addproperty ("basevalue", hg, "data", base_value);
     addproperty ("baseline", hg, "data", h_baseline);
 
-    addlistener (hg, "showbaseline", @show_baseline);
+    addlistener (hg, "showbaseline", {@show_baseline, "showbl"});
+    addlistener (hg, "visible", {@show_baseline, "visib"});
     addlistener (hg, "basevalue", @move_baseline);
 
     addproperty ("barwidth", hg, "data", width);
@@ -316,20 +318,27 @@ function update_baseline (h, d)
   endfor
 endfunction
 
-function show_baseline (h, d)
+function show_baseline (h, d, prop = "")
   persistent recursion = false;
-
+  
   ## Don't allow recursion
   if (! recursion)
     unwind_protect
       recursion = true;
       hlist = get (h, "bargroup");
-      showbaseline = get (h, "showbaseline");
-      for hh = hlist(:)'
-        if (hh != h)
-          set (hh, "showbaseline", showbaseline);
+      if (strcmp (prop, "showbl"))
+        showbaseline = get (h, "showbaseline");
+        for hh = hlist(:)'
+          if (hh != h)
+            set (hh, "showbaseline", showbaseline);
+          endif
+        endfor
+      elseif (strcmp (prop, "visib"))
+        showbaseline = "on";
+        if (all (strcmp (get (hlist, "visible"), "off")))
+          showbaseline = "off";
         endif
-      endfor
+      endif
       set (get (h, "baseline"), "visible", showbaseline);
     unwind_protect_cleanup
       recursion = false;

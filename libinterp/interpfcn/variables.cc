@@ -109,7 +109,7 @@ is_valid_function (const std::string& fcn_name,
     }
 
   if (! ans && warn)
-    error ("%s: the symbol `%s' is not valid as a function",
+    error ("%s: the symbol '%s' is not valid as a function",
            warn_for.c_str (), fcn_name.c_str ());
 
   return ans;
@@ -167,7 +167,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
               if (! retval)
                 {
-                  error ("%s: `%s' is not valid as a function",
+                  error ("%s: '%s' is not valid as a function",
                          warn_for.c_str (), fname.c_str ());
                   return retval;
                 }
@@ -176,7 +176,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
                        warn_for.c_str ());
             }
           else
-            error ("%s: `%s' is not valid as a function",
+            error ("%s: '%s' is not valid as a function",
                    warn_for.c_str (), fname.c_str ());
         }
       else
@@ -543,13 +543,13 @@ Check only for variables.\n\
 Check only for built-in functions.\n\
 \n\
 @item \"file\"\n\
-Check only for files.\n\
+Check only for files and directories.\n\
 \n\
 @item \"dir\"\n\
 Check only for directories.\n\
 @end table\n\
 \n\
-@seealso{file_in_loadpath}\n\
+@seealso{file_in_loadpath, file_in_path, stat}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -608,7 +608,7 @@ get_global_value (const std::string& nm, bool silent)
   octave_value val = symbol_table::global_varval (nm);
 
   if (val.is_undefined () && ! silent)
-    error ("get_global_value: undefined symbol `%s'", nm.c_str ());
+    error ("get_global_value: undefined symbol '%s'", nm.c_str ());
 
   return val;
 }
@@ -625,7 +625,7 @@ get_top_level_value (const std::string& nm, bool silent)
   octave_value val = symbol_table::top_level_varval (nm);
 
   if (val.is_undefined () && ! silent)
-    error ("get_top_level_value: undefined symbol `%s'", nm.c_str ());
+    error ("get_top_level_value: undefined symbol '%s'", nm.c_str ());
 
   return val;
 }
@@ -1110,7 +1110,7 @@ private:
                   break;
 
                 default:
-                  error ("whos_line_format: modifier `%c' unknown",
+                  error ("whos_line_format: modifier '%c' unknown",
                          param.modifier);
 
                   os << std::setiosflags (std::ios::right)
@@ -1160,7 +1160,7 @@ private:
                   break;
 
                 default:
-                  error ("whos_line_format: command `%c' unknown",
+                  error ("whos_line_format: command '%c' unknown",
                          param.command);
                 }
 
@@ -1593,7 +1593,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
       else if (argv[i] == "global")
         global_only = true;
       else if (argv[i][0] == '-')
-        warning ("%s: unrecognized option `%s'", my_name.c_str (),
+        warning ("%s: unrecognized option '%s'", my_name.c_str (),
                  argv[i].c_str ());
       else
         break;
@@ -1881,7 +1881,7 @@ bind_ans (const octave_value& val, bool print)
         }
       else
         {
-          symbol_table::varref (ans) = val;
+          symbol_table::force_varref (ans) = val;
 
           if (print)
             val.print_with_name (octave_stdout, ans);
@@ -2340,8 +2340,8 @@ without the dash as well.\n\
     {
       if (argc == 1)
         {
-          do_clear_globals (argv, argc, 1);
-          do_clear_variables (argv, argc, 1);
+          do_clear_globals (argv, argc, true);
+          do_clear_variables (argv, argc, true);
         }
       else
         {
@@ -2536,7 +2536,7 @@ variable value is restored when exiting the function.\n\
   return SET_INTERNAL_VARIABLE (whos_line_format);
 }
 
-static std::string Vmissing_function_hook = "unimplemented";
+static std::string Vmissing_function_hook = "__unimplemented__";
 
 DEFUN (missing_function_hook, args, nargout,
     "-*- texinfo -*-\n\
@@ -2559,16 +2559,21 @@ void maybe_missing_function_hook (const std::string& name)
   // Don't do this if we're handling errors.
   if (buffer_error_messages == 0 && ! Vmissing_function_hook.empty ())
     {
-      // Ensure auto-restoration.
-      unwind_protect frame;
-      frame.protect_var (Vmissing_function_hook);
+      octave_value val = symbol_table::find_function (Vmissing_function_hook);
 
-      // Clear the variable prior to calling the function.
-      const std::string func_name = Vmissing_function_hook;
-      Vmissing_function_hook.clear ();
+      if (val.is_defined ())
+        {
+          // Ensure auto-restoration.
+          unwind_protect frame;
+          frame.protect_var (Vmissing_function_hook);
 
-      // Call.
-      feval (func_name, octave_value (name));
+          // Clear the variable prior to calling the function.
+          const std::string func_name = Vmissing_function_hook;
+          Vmissing_function_hook.clear ();
+
+          // Call.
+          feval (func_name, octave_value (name));
+        }
     }
 }
 

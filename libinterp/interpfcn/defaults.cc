@@ -93,6 +93,8 @@ static std::string VIMAGE_PATH;
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
 
+std::string Vbuilt_in_docstrings_file;
+
 std::string
 subst_octave_home (const std::string& s)
 {
@@ -294,42 +296,54 @@ set_image_path (const std::string& path)
 static void
 set_default_doc_cache_file (void)
 {
-  std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
+  if (Vdoc_cache_file.empty ())
+    {
+      std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
 
-  std::string env_file = octave_env::getenv ("OCTAVE_DOC_CACHE_FILE");
+      std::string env_file = octave_env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
-  Vdoc_cache_file = env_file.empty () ? def_file : env_file;
+      Vdoc_cache_file = env_file.empty () ? def_file : env_file;
+    }
 }
 
 static void
 set_default_texi_macros_file (void)
 {
-  std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
+  if (Vtexi_macros_file.empty ())
+    {
+      std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
 
-  std::string env_file = octave_env::getenv ("OCTAVE_TEXI_MACROS_FILE");
+      std::string env_file = octave_env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 
-  Vtexi_macros_file = env_file.empty () ? def_file : env_file;
+      Vtexi_macros_file = env_file.empty () ? def_file : env_file;
+    }
 }
 
 static void
 set_default_info_file (void)
 {
-  std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
+  if (Vinfo_file.empty ())
+    {
+      std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
 
-  std::string oct_info_file = octave_env::getenv ("OCTAVE_INFO_FILE");
+      std::string oct_info_file = octave_env::getenv ("OCTAVE_INFO_FILE");
 
-  Vinfo_file = oct_info_file.empty () ? std_info_file : oct_info_file;
+      Vinfo_file = oct_info_file.empty () ? std_info_file : oct_info_file;
+    }
 }
 
 static void
 set_default_info_prog (void)
 {
-  std::string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
+  if (Vinfo_program.empty ())
+    {
+      std::string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
 
-  if (oct_info_prog.empty ())
-    Vinfo_program = "info";
-  else
-    Vinfo_program = std::string (oct_info_prog);
+      if (oct_info_prog.empty ())
+        Vinfo_program = "info";
+      else
+        Vinfo_program = std::string (oct_info_prog);
+    }
 }
 
 static void
@@ -369,6 +383,21 @@ set_site_defaults_file (void)
     }
   else
     Vsite_defaults_file = sf;
+}
+
+static void
+set_built_in_docstrings_file (void)
+{
+  if (Vbuilt_in_docstrings_file.empty ())
+    {
+      std::string df = octave_env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
+
+      if (df.empty ())
+        Vbuilt_in_docstrings_file
+          = Voct_etc_dir + file_ops::dir_sep_str () + "built-in-docstrings";
+      else
+        Vbuilt_in_docstrings_file = df;
+    }
 }
 
 void
@@ -424,6 +453,8 @@ install_defaults (void)
   set_local_site_defaults_file ();
 
   set_site_defaults_file ();
+
+  set_built_in_docstrings_file ();
 }
 
 DEFUN (EDITOR, args, nargout,

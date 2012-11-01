@@ -26,8 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_LLVM
 
 #include "jit-ir.h"
-
 #include "pt-walk.h"
+#include "symtab.h"
+
+class octave_value_list;
 
 // Convert from the parse tree (AST) to the low level Octave IR.
 class
@@ -39,6 +41,8 @@ public:
   typedef std::map<std::string, jit_variable *> variable_map;
 
   jit_convert (tree &tee, jit_type *for_bounds = 0);
+
+  jit_convert (octave_user_function& fcn, const std::vector<jit_type *>& args);
 
 #define DECL_ARG(n) const ARG ## n& arg ## n
 #define JIT_CREATE_CHECKED(N)                                           \
@@ -156,6 +160,11 @@ private:
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;
 
+  bool converting_function;
+
+  // the scope of the function we are converting, or the current scope
+  symbol_table::scope_id scope;
+
   jit_factory factory;
 
   // used instead of return values from visit_* functions
@@ -179,6 +188,8 @@ private:
 
   variable_map vmap;
 
+  void initialize (symbol_table::scope_id s);
+
   jit_call *create_checked_impl (jit_call *ret);
 
   // get an existing vairable. If the variable does not exist, it will not be
@@ -191,7 +202,8 @@ private:
 
   // create a variable of the given name and given type. Will also insert an
   // extract statement
-  jit_variable *create_variable (const std::string& vname, jit_type *type);
+  jit_variable *create_variable (const std::string& vname, jit_type *type,
+                                 bool isarg = true);
 
   // The name of the next for loop iterator. If inc is false, then the iterator
   // counter will not be incremented.
@@ -206,9 +218,8 @@ private:
 
   std::string next_name (const char *prefix, size_t& count, bool inc);
 
-  jit_instruction *resolve (const jit_operation& fres,
-                            tree_index_expression& exp,
-                            jit_value *extra_arg = 0);
+  jit_instruction *resolve (tree_index_expression& exp,
+                            jit_value *extra_arg = 0, bool lhs = false);
 
   jit_value *do_assign (tree_expression *exp, jit_value *rhs,
                         bool artificial = false);
@@ -234,10 +245,17 @@ class
 jit_convert_llvm : public jit_ir_walker
 {
 public:
-  llvm::Function *convert (llvm::Module *module,
-                           const jit_block_list& blocks,
-                           const std::list<jit_value *>& constants);
+  llvm::Function *convert_loop (llvm::Module *module,
+                                const jit_block_list& blocks,
+                                const std::list<jit_value *>& constants);
 
+  jit_function convert_function (llvm::Module *module,
+                                 const jit_block_list& blocks,
+                                 const std::list<jit_value *>& constants,
+                                 octave_user_function& fcn,
+                                 const std::vector<jit_type *>& args);
+
+  // arguments to the llvm::Function for loops
   const std::vector<std::pair<std::string, bool> >& get_arguments(void) const
   { return argument_vec; }
 
@@ -248,12 +266,24 @@ public:
 
 #undef JIT_METH
 private:
+  // name -> argument index (used for compiling functions)
+  std::map<std::string, int> argument_index;
+
   std::vector<std::pair<std::string, bool> > argument_vec;
 
-  // name -> llvm argument
+  // name -> llvm argument (used for compiling loops)
   std::map<std::string, llvm::Value *> arguments;
+
+  bool converting_function;
+
+  // only used if we are converting a function
+  jit_function creating;
+
   llvm::Function *function;
   llvm::BasicBlock *prelude;
+
+  void convert (const jit_block_list& blocks,
+                const std::list<jit_value *>& constants);
 
   void finish_phi (jit_phi *phi);
 
@@ -320,13 +350,15 @@ class
 tree_jit
 {
 public:
-  tree_jit (void);
-
   ~tree_jit (void);
 
-  bool execute (tree_simple_for_command& cmd, const octave_value& bounds);
+  static bool execute (tree_simple_for_command& cmd,
+                       const octave_value& bounds);
 
-  bool execute (tree_while_command& cmd);
+  static bool execute (tree_while_command& cmd);
+
+  static bool execute (octave_user_function& fcn, const octave_value_list& args,
+                       octave_value_list& retval);
 
   llvm::ExecutionEngine *get_engine (void) const { return engine; }
 
@@ -334,7 +366,18 @@ public:
 
   void optimize (llvm::Function *fn);
  private:
+  tree_jit (void);
+
+  static tree_jit& instance (void);
+
   bool initialize (void);
+
+  bool do_execute (tree_simple_for_command& cmd, const octave_value& bounds);
+
+  bool do_execute (tree_while_command& cmd);
+
+  bool do_execute (octave_user_function& fcn, const octave_value_list& args,
+                   octave_value_list& retval);
 
   size_t trip_count (const octave_value& bounds) const;
 
@@ -342,6 +385,24 @@ public:
   llvm::PassManager *module_pass_manager;
   llvm::FunctionPassManager *pass_manager;
   llvm::ExecutionEngine *engine;
+};
+
+class
+jit_function_info
+{
+public:
+  jit_function_info (tree_jit& tjit, octave_user_function& fcn,
+                     const octave_value_list& ov_args);
+
+  bool execute (const octave_value_list& ov_args,
+                octave_value_list& retval) const;
+
+  bool match (const octave_value_list& ov_args) const;
+private:
+  typedef octave_base_value *(*jited_function)(octave_base_value**);
+
+  std::vector<jit_type *> argument_types;
+  jited_function function;
 };
 
 class
@@ -378,4 +439,11 @@ private:
 };
 
 #endif
+
+// If TRUE, enable JIT compiler debugging/tracing.
+extern bool Venable_jit_debugging;
+
+// If TRUE, enable JIT compiler.
+extern bool Venable_jit_compiler;
+
 #endif

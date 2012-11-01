@@ -381,7 +381,7 @@ maybe_initialize_magick (void)
 
   if (! initialized)
     {
-      // Save the locale as GraphicsMagick might change this (depending on version)
+      // Save locale as GraphicsMagick might change this (depending on version)
       const char *static_locale = setlocale (LC_ALL, NULL);
       const std::string locale (static_locale);
 
@@ -1080,7 +1080,7 @@ not be using this function.  Instead use @code{imfinfo}.\n\
         {
           std::string msg = fs.error ();
 
-          error ("imfinfo: error reading `%s': %s",
+          error ("imfinfo: error reading '%s': %s",
                  filename.c_str (), msg.c_str ());
 
           return retval;

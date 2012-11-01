@@ -29,7 +29,7 @@ To initialize:
 
 */
 
-// PKG_ADD: register_graphics_toolkit ("fltk");
+// PKG_ADD: if (__have_fltk__ ()) register_graphics_toolkit ("fltk"); endif
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -38,7 +38,7 @@ To initialize:
 #include "defun-dld.h"
 #include "error.h"
 
-#if defined (HAVE_FLTK)
+#ifdef HAVE_FLTK
 
 #include <map>
 #include <set>
@@ -1984,10 +1984,17 @@ public:
   }
 };
 
+#endif
+
 // Initialize the fltk graphics toolkit.
 
-DEFUN_DLD (__init_fltk__, , , "")
+DEFUN_DLD (__init_fltk__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __init_fltk__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
+#ifdef HAVE_FLTK
   if (! toolkit_loaded)
     {
       mlock ();
@@ -2000,20 +2007,36 @@ DEFUN_DLD (__init_fltk__, , , "")
       args(0) = "__fltk_redraw__";
       feval ("add_input_event_hook", args, 0);
     }
-
-  octave_value retval;
-  return retval;
-}
-
-DEFUN_DLD (__fltk_redraw__, , , "")
-{
-  __fltk_redraw__ ();
+#else
+  error ("__init_fltk__: not available without OpenGL and FLTK libraries");
+#endif
 
   return octave_value ();
 }
 
-DEFUN_DLD (__fltk_maxtime__, args, ,"")
+DEFUN_DLD (__fltk_redraw__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __fltk_redraw__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
+#ifdef HAVE_FLTK
+  __fltk_redraw__ ();
+#else
+  error ("__fltk_redraw__: not available without OpenGL and FLTK libraries");
+#endif
+
+  return octave_value ();
+}
+
+DEFUN_DLD (__fltk_maxtime__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {@var{maxtime} =} __fltk_maxtime__ ()\n\
+@deftypefnx {Loadable Function} {} __fltk_maxtime__ (@var{maxtime})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+#ifdef HAVE_FLTK
   octave_value retval = fltk_maxtime;
 
   if (args.length () == 1)
@@ -2025,9 +2048,28 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
     }
 
   return retval;
+#else
+  error ("__fltk_maxtime__: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
+DEFUN_DLD (__have_fltk__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {@var{FLTK_available} =} __have_fltk__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+#ifdef HAVE_FLTK
+  retval = true;
+#else
+  retval = false;
 #endif
+
+  return retval;
+}
 
 // FIXME -- This function should be abstracted and made potentially
 // available to all graphics toolkits.  This suggests putting it in
@@ -2046,7 +2088,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{gui_mode}\n\
 @end deftypefn")
 {
-#if defined (HAVE_FLTK)
+#ifdef HAVE_FLTK
   octave_value retval = wheel_zoom_speed;
 
   if (args.length () == 1)
@@ -2086,7 +2128,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{mouse_wheel_zoom}\n\
 @end deftypefn")
 {
-#if defined (HAVE_FLTK)
+#ifdef HAVE_FLTK
   caseless_str mode_str;
 
   if (gui_mode == pan_zoom)
@@ -2122,8 +2164,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 
   return octave_value (mode_str);
 #else
-  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  error ("gui_mode: not available without OpenGL and FLTK libraries");
   return octave_value ();
 #endif
 }
-

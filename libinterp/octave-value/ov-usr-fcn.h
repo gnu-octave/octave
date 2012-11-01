@@ -41,7 +41,12 @@ class octave_value;
 class tree_parameter_list;
 class tree_statement_list;
 class tree_va_return_list;
+class tree_expression;
 class tree_walker;
+
+#ifdef HAVE_LLVM
+class jit_function_info;
+#endif
 
 class
 octave_user_code : public octave_function
@@ -283,6 +288,14 @@ public:
       : false;
   }
 
+  // If we are a special expression, then the function body consists of exactly
+  // one expression. The expression's result is the return value of the
+  // function.
+  bool is_special_expr (void) const
+  {
+    return is_inline_function () || is_anonymous_function ();
+  }
+
   bool is_nested_function (void) const { return nested_function; }
 
   void mark_as_nested_function (void) { nested_function = true; }
@@ -335,6 +348,10 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
+  // If is_special_expr is true, retrieve the sigular expression that forms the
+  // body. May be null (even if is_special_expr is true).
+  tree_expression *special_expr (void);
+
   bool subsasgn_optimization_ok (void);
 
   void accept (tree_walker& tw);
@@ -350,6 +367,12 @@ public:
       else
         return false;
     }
+
+#ifdef HAVE_LLVM
+  jit_function_info *get_info (void) { return jit_info; }
+
+  void stash_info (jit_function_info *info) { jit_info = info; }
+#endif
 
 #if 0
   void print_symtab_info (std::ostream& os) const;
@@ -427,6 +450,10 @@ private:
   // pointer to the current unwind_protect frame of this function.
   unwind_protect *curr_unwind_protect_frame;
 
+#ifdef HAVE_LLVM
+  jit_function_info *jit_info;
+#endif
+
 #if 0
   // The symbol record for argn in the local symbol table.
   octave_value& argn_varref;
@@ -448,6 +475,8 @@ private:
   void bind_automatic_vars (const string_vector& arg_names, int nargin,
                             int nargout, const octave_value_list& va_args,
                             const std::list<octave_lvalue> *lvalue_list);
+
+  void restore_warning_states (void);
 
   // No copying!
 

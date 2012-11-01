@@ -89,7 +89,6 @@ fi
 : ${LIBOCTAVE=-loctave}
 : ${LIBOCTINTERP=-loctinterp}
 : ${READLINE_LIBS=-lreadline}
-: ${LIBCRUFT=-lcruft}
 : ${LAPACK_LIBS=%OCTAVE_CONF_LAPACK_LIBS%}
 : ${BLAS_LIBS=%OCTAVE_CONF_BLAS_LIBS%}
 : ${FFTW3_LDFLAGS=%OCTAVE_CONF_FFTW3_LDFLAGS%}
@@ -116,7 +115,7 @@ fi
 
 : ${ALL_LDFLAGS="$LD_STATIC_FLAG $CPICFLAG $LDFLAGS"}
 
-: ${OCTAVE_LIBS="$LIBOCTINTERP $LIBOCTAVE $SPECIAL_MATH_LIB $LIBCRUFT"}
+: ${OCTAVE_LIBS="$LIBOCTINTERP $LIBOCTAVE $SPECIAL_MATH_LIB"}
 
 # Local variables.
 
@@ -243,18 +242,18 @@ Options:
                             CFLAGS                    LD_CXX
                             CPICFLAG                  LD_STATIC_FLAG
                             CPPFLAGS                  LFLAGS
-                            CXX                       LIBCRUFT
-                            CXXFLAGS                  LIBOCTAVE
-                            CXXPICFLAG                LIBOCTINTERP
-                            DEPEND_EXTRA_SED_PATTERN  LIBS
-                            DEPEND_FLAGS              OCTAVE_LIBS
-                            DL_LD                     OCTAVE_LINK_DEPS
-                            DL_LDFLAGS                OCT_LINK_DEPS
-                            EXEEXT                    RDYNAMIC_FLAG
-                            F77                       READLINE_LIBS
-                            F77_INTEGER_8_FLAG        SED
-                            FFLAGS                    XTRA_CFLAGS
-                            FFTW3_LDFLAGS             XTRA_CXXFLAGS
+                            CXX                       LIBOCTAVE       
+                            CXXFLAGS                  LIBOCTINTERP    
+                            CXXPICFLAG                LIBS            
+                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS     
+                            DEPEND_FLAGS              OCTAVE_LINK_DEPS
+                            DL_LD                     OCT_LINK_DEPS   
+                            DL_LDFLAGS                RDYNAMIC_FLAG   
+                            EXEEXT                    READLINE_LIBS   
+                            F77                       SED             
+                            F77_INTEGER_8_FLAG        XTRA_CFLAGS     
+                            FFLAGS                    XTRA_CXXFLAGS   
+                            FFTW3_LDFLAGS             
                             FFTW3_LIBS
                             FFTW3F_LDFLAGS
 
@@ -533,7 +532,7 @@ fi
 if $link && [ -n "$objfiles" ]; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $OCTAVE_LINK_OPTS $OCTAVE_LINK_DEPS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave $OCTAVE_LINK_OPTS $OCTAVE_LINK_DEPS"
       $dbg $cmd
       eval $cmd
     else
@@ -541,7 +540,7 @@ if $link && [ -n "$objfiles" ]; then
       exit 1
     fi
   else
-    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $OCT_LINK_OPTS $OCT_LINK_DEPS"
+    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave $OCT_LINK_OPTS $OCT_LINK_DEPS"
     $dbg $cmd
     eval $cmd
   fi

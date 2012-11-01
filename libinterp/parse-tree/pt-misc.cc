@@ -83,7 +83,7 @@ tree_parameter_list::validate (in_or_out type)
           else if (dict.find (name) != dict.end ())
             {
               retval = false;
-              error ("`%s' appears more than once in parameter list",
+              error ("'%s' appears more than once in parameter list",
                      name.c_str ());
               break;
             }

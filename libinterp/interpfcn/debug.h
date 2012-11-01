@@ -129,6 +129,6 @@ private:
   bool do_have_breakpoints (void) { return (! bp_set.empty ()); }
 };
 
-std::string get_file_line (const std::string& fname, size_t line);
+extern std::string get_file_line (const std::string& fname, size_t line);
 
 #endif

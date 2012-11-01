@@ -49,6 +49,7 @@
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.
 ## If, in addition, a path is given it is also used as current path.
+## @seealso{uigetfile, uigetdir}
 ## @end deftypefn
 
 ## Author: Kai Habel
@@ -63,7 +64,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     if (! __is_function__ (funcname))
       error ("uiputfile: fltk graphics toolkit required");
     elseif (! strcmp (defaulttoolkit, "gnuplot"))
-      warning ("uiputfile: no implementation for toolkit `%s', using `fltk' instead",
+      warning ("uiputfile: no implementation for toolkit '%s', using 'fltk' instead",
                defaulttoolkit);
     endif
   endif

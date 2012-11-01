@@ -33,14 +33,15 @@ function print_usage (name)
     if (numel (x) > 1)
       name = x (2).name;
     else
-      error ("print_usage: invalid function\n");
+      error ("Octave:invalid-context", "print_usage: invalid function\n");
     endif
     fullpath = evalin ("caller", "mfilename (""fullpath"")");
     if (strcmp (fullpath(end-length(name)+1:end), name))
       fullname = [fullpath, ".m"];
     endif
   elseif (!ischar (name))
-    error ("print_usage: input argument must be a string");
+    error ("Octave:invalid-input-arg",
+                                "print_usage: input argument must be a string");
   else
     fullname = name;
   endif
@@ -59,9 +60,9 @@ function print_usage (name)
     case "html"
       [usage_string, status] = get_usage_html (text, max_len);
     case "not documented"
-      error ("print_usage: `%s' is not documented\n", name);
+      error ("print_usage: '%s' is not documented\n", name);
     case "not found"
-      error ("print_usage: `%s' not found\n", name);
+      error ("print_usage: '%s' not found\n", name);
     otherwise
       error ("print_usage: internal error: unsupported help text format: '%s'\n", format);
   endswitch
@@ -73,7 +74,7 @@ function print_usage (name)
   endif
 
   if (at_toplev)
-    error ("Invalid call to %s.  Correct usage is:\n\n%s\n%s",
+    error ("Octave:invalid-fun-call", "Invalid call to %s.  Correct usage is:\n\n%s\n%s",
            name, usage_string, __additional_help_message__ ());
   else
     msg = sprintf ("Invalid call to %s.  Correct usage is:\n\n%s",
@@ -84,7 +85,7 @@ function print_usage (name)
       msg(end) = " ";
     endif
 
-    error (msg);
+    error ("Octave:invalid-fun-call", msg);
   endif
 
 endfunction
@@ -139,4 +140,3 @@ endfunction
 
 ## Stop reporting function as missing tests.  No good tests possible.
 %!assert (1)
-

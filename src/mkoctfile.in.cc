@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <string>
+#include <cstring>
 #include <map>
 #include <list>
 #include <algorithm>
@@ -48,11 +49,11 @@ static map<string,string> vars;
 
 static string OCTAVE_VERSION = %OCTAVE_CONF_VERSION%;
 
-static std::string
-substitute_prefix (const std::string& s, const std::string& prefix,
-                   const std::string& new_prefix)
+static string
+substitute_prefix (const string& s, const string& prefix,
+                   const string& new_prefix)
 {
-  std::string retval = s;
+  string retval = s;
 
   if (!prefix.empty () && new_prefix != prefix)
     {
@@ -62,7 +63,7 @@ substitute_prefix (const std::string& s, const std::string& prefix,
     }
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  std::replace (retval.begin (), retval.end (), '/', '\\');
+  replace (retval.begin (), retval.end (), '/', '\\');
 #endif
 
   return retval;
@@ -72,7 +73,7 @@ static string
 get_line (FILE *fp)
 {
   static vector<char> buf (100);
-  int idx = 0;
+  unsigned int idx = 0;
   char c;
 
   while (true)
@@ -123,7 +124,7 @@ initialize (void)
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
   int n = 1024;
 
-  std::string bin_dir (n, '\0');
+  string bin_dir (n, '\0');
 
   while (true)
     {
@@ -154,10 +155,10 @@ initialize (void)
 
   vars["OCTAVE_PREFIX"] = %OCTAVE_CONF_PREFIX%;
 
-  std::string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
-  std::string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
-  std::string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
-  std::string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
+  string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
+  string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
+  string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
+  string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
 
   if (! vars["OCTAVE_HOME"].empty ())
     {
@@ -184,18 +185,18 @@ initialize (void)
   vars["OCTLIBDIR"] = get_variable ("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  std::string DEFAULT_INCFLAGS
+  string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
-  std::string DEFAULT_INCFLAGS
+  string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #endif
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
 
-  std::string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
+  string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
   if (vars["LIBDIR"] != "/usr/lib")
     DEFAULT_LFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 
@@ -223,7 +224,6 @@ initialize (void)
   vars["LIBOCTAVE"] = "-loctave";
   vars["LIBOCTINTERP"] = "-loctinterp";
   vars["READLINE_LIBS"] = "-lreadline";
-  vars["LIBCRUFT"] = "-lcruft";
   vars["LAPACK_LIBS"] = get_variable ("LAPACK_LIBS", %OCTAVE_CONF_LAPACK_LIBS%);
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
   vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS", %OCTAVE_CONF_FFTW3_LDFLAGS%);
@@ -254,7 +254,7 @@ initialize (void)
     + " " + vars["LDFLAGS"];
 
   vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"]
-    + " " + vars["SPECIAL_MATH_LIB"] + " " + vars["LIBCRUFT"];
+    + " " + vars["SPECIAL_MATH_LIB"];
 
   vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"]
     + " " + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
@@ -307,20 +307,20 @@ static string help_msg =
 "                            CC                        LD_CXX\n"
 "                            CFLAGS                    LD_STATIC_FLAG\n"
 "                            CPICFLAG                  LFLAGS\n"
-"                            CPPFLAGS                  LIBCRUFT\n"
-"                            CXX                       LIBOCTAVE\n"
-"                            CXXFLAGS                  LIBOCTINTERP\n"
-"                            CXXPICFLAG                LIBS\n"
-"                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
-"                            DEPEND_FLAGS              OCTAVE_LINK_DEPS\n"
-"                            DL_LD                     OCTAVE_LINK_OPTS\n"
-"                            DL_LDFLAGS                OCT_LINK_DEPS\n"
-"                            EXEEXT                    OCT_LINK_OPTS\n"
-"                            F77                       RDYNAMIC_FLAG\n"
-"                            F77_INTEGER_8_FLAG        READLINE_LIBS\n"
-"                            FFLAGS                    SED\n"
-"                            FFTW3_LDFLAGS             XTRA_CFLAGS\n"
-"                            FFTW3_LIBS                XTRA_CXXFLAGS\n"
+"                            CPPFLAGS                  LIBOCTAVE\n"       
+"                            CXX                       LIBOCTINTERP\n"    
+"                            CXXFLAGS                  LIBS\n"            
+"                            CXXPICFLAG                OCTAVE_LIBS\n"     
+"                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LINK_DEPS\n"
+"                            DEPEND_FLAGS              OCTAVE_LINK_OPTS\n"
+"                            DL_LD                     OCT_LINK_DEPS\n"   
+"                            DL_LDFLAGS                OCT_LINK_OPTS\n"   
+"                            EXEEXT                    RDYNAMIC_FLAG\n"   
+"                            F77                       READLINE_LIBS\n"   
+"                            F77_INTEGER_8_FLAG        SED\n"             
+"                            FFLAGS                    XTRA_CFLAGS\n"     
+"                            FFTW3_LDFLAGS             XTRA_CXXFLAGS\n"   
+"                            FFTW3_LIBS\n"      
 "                            FFTW3F_LDFLAGS\n"
 "                            FFTW3F_LIBS\n"
 "\n"
@@ -353,21 +353,23 @@ static string help_msg =
 static string
 basename (const string& s, bool strip_path = false)
 {
-  size_t pos = s.rfind ('.');
   string retval;
+  size_t pos = s.rfind ('.');
 
   if (pos == string::npos)
     retval = s;
   else
     retval = s.substr (0, pos);
+
   if (strip_path)
     {
       size_t p1 = retval.rfind ('/'), p2 = retval.rfind ('\\');
       pos = (p1 != string::npos && p2 != string::npos
              ? max (p1, p2) : (p2 != string::npos ? p2 : p1));
       if (pos != string::npos)
-        retval = retval.substr (0, pos);
+        retval = retval.substr (++pos, string::npos);
     }
+
   return retval;
 }
 
@@ -434,7 +436,6 @@ main (int argc, char **argv)
   for (int i = 1; i < argc; i++)
     {
       string arg = argv[i];
-      size_t len = arg.length ();
 
       if (ends_with (arg, ".c"))
         {
@@ -606,13 +607,13 @@ main (int argc, char **argv)
 
           FILE *fd = popen (cmd.c_str (), "r");
           ofstream fo (dfile.c_str ());
-          int pos;
+          size_t pos;
           while (!feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != string::npos)
                 {
-                  int spos = line.rfind ('/', pos);
+                  size_t spos = line.rfind ('/', pos);
                   string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos) << endl;
                 }
@@ -634,13 +635,13 @@ main (int argc, char **argv)
 
           FILE *fd = popen (cmd.c_str (), "r");
           ofstream fo (dfile.c_str ());
-          int pos;
+          size_t pos;
           while (!feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != string::npos)
                 {
-                  int spos = line.rfind ('/', pos);
+                  size_t spos = line.rfind ('/', pos);
                   string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos+2) << endl;
                 }
@@ -751,7 +752,7 @@ main (int argc, char **argv)
                 + " " + vars["ALL_LDFLAGS"] + " " +  pass_on_options
                 + " " + output_option + " " + objfiles + " " + libfiles
                 + " " + ldflags + " " + vars["LFLAGS"]
-                + " -loctinterp -loctave -lcruft "
+                + " -loctinterp -loctave "
                 + " " + vars["OCT_LINK_OPTS"]
                 + " " + vars["OCTAVE_LINK_DEPS"];
               result = run_command (cmd);
@@ -768,7 +769,7 @@ main (int argc, char **argv)
           string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
             + pass_on_options + " -o " + octfile + " " + objfiles + " "
             + libfiles + " " + ldflags + " " + vars["LFLAGS"]
-            + " -loctinterp -loctave -lcruft "
+            + " -loctinterp -loctave "
             + vars["OCT_LINK_OPTS"] + " " + vars["OCT_LINK_DEPS"];
           result = run_command (cmd);
         }

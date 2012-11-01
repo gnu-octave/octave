@@ -397,7 +397,7 @@ function ZI = interp2 (varargin)
         ZI (!inside) = extrapval;
 
       else
-        error ("interp2: input data must have `meshgrid' format");
+        error ("interp2: input data must have 'meshgrid' format");
       endif
 
     elseif (strcmp (method, "spline"))
@@ -405,7 +405,7 @@ function ZI = interp2 (varargin)
         ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrapval,
                         "spline");
       else
-        error ("interp2: input data must have `meshgrid' format");
+        error ("interp2: input data must have 'meshgrid' format");
       endif
     else
       error ("interp2: interpolation METHOD not recognized");

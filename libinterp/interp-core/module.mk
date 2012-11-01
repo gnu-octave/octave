@@ -4,14 +4,15 @@ EXTRA_DIST += \
   interp-core/mxarray.in.h \
   interp-core/oct-errno.in.cc
 
-JIT_INCLUDES = \
+JIT_INC = \
   interp-core/jit-util.h \
   interp-core/jit-typeinfo.h \
   interp-core/jit-ir.h \
   interp-core/pt-jit.h
 
-INTERP_CORE_INCLUDES = \
+INTERP_CORE_INC = \
   interp-core/Cell.h \
+  interp-core/action-container.h \
   interp-core/c-file-ptr-stream.h \
   interp-core/comment-list.h \
   interp-core/cutils.h \
@@ -19,6 +20,7 @@ INTERP_CORE_INCLUDES = \
   interp-core/defun-int.h \
   interp-core/display.h \
   interp-core/dynamic-ld.h \
+  interp-core/event-queue.h \
   interp-core/gl-render.h \
   interp-core/gl2ps-renderer.h \
   interp-core/gl2ps.h \
@@ -57,7 +59,7 @@ INTERP_CORE_INCLUDES = \
   interp-core/xnorm.h \
   interp-core/xpow.h \
   interp-core/zfstream.h \
-  $(JIT_INCLUDES)
+  $(JIT_INC)
 
 JIT_SRC = \
   interp-core/jit-util.cc \
@@ -109,8 +111,11 @@ INTERP_CORE_SRC = \
   $(JIT_SRC) \
   $(C_INTERP_CORE_SRC)
 
-## FIXME: I don't believe this rule actually fires
-display.df display.lo: CPPFLAGS += $(X11_FLAGS)
+## FIXME: Automake does not support per-object rules.
+##        These rules could be emulated by creating a new convenience
+##        library and using per-library rules.  Or we can just live
+##        without the rule since there haven't been any problems. (09/18/2012)
+#display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
 ## Special rules for sources which must be built before rest of compilation.
 interp-core/oct-errno.cc: interp-core/oct-errno.in.cc Makefile
@@ -132,3 +137,4 @@ interp-core/mxarray.h: interp-core/mxarray.in.h Makefile
 noinst_LTLIBRARIES += interp-core/libinterp-core.la
 
 interp_core_libinterp_core_la_SOURCES = $(INTERP_CORE_SRC)
+interp_core_libinterp_core_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

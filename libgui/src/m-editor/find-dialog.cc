@@ -39,12 +39,16 @@
 **
 ****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QtGui>
 #include <QIcon>
 #include "find-dialog.h"
 
-find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *parent)
-  : QDialog (parent)
+find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
+  : QDialog (p)
 {
   setWindowTitle ("Find and Replace");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
@@ -139,15 +143,17 @@ find_dialog::search_next ()
   if (_edit_area)
     {
       _find_result_available = _edit_area->findFirst (_search_line_edit->text (),
-                                      _regex_check_box->isChecked (),
-                                      _case_check_box->isChecked (),
-                                      _whole_words_check_box->isChecked (),
-                                      _wrap_check_box->isChecked (),
-                                      !_backward_check_box->isChecked (),
-                                      line,col,
-                                      true,
-                                      true
-                                      );
+                                                      _regex_check_box->isChecked (),
+                                                      _case_check_box->isChecked (),
+                                                      _whole_words_check_box->isChecked (),
+                                                      _wrap_check_box->isChecked (),
+                                                      !_backward_check_box->isChecked (),
+                                                      line,col,
+                                                      true
+#ifdef HAVE_FINDFIRST_MODERN
+                                                      , true
+#endif
+                                                      );
     }
 }
 

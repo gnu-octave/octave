@@ -44,11 +44,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "unwind-prot.h"
 
-#if HAVE_LLVM
 //FIXME: This should be part of tree_evaluator
 #include "pt-jit.h"
-static tree_jit jiter;
-#endif
 
 static tree_evaluator std_evaluator;
 
@@ -271,7 +268,7 @@ quit_loop_now (void)
 {
   octave_quit ();
 
-  // Maybe handle `continue N' someday...
+  // Maybe handle 'continue N' someday...
 
   if (tree_continue_command::continuing)
     tree_continue_command::continuing--;
@@ -310,7 +307,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   octave_value rhs = expr->rvalue1 ();
 
 #if HAVE_LLVM
-  if (jiter.execute (cmd, rhs))
+  if (Venable_jit_compiler && tree_jit::execute (cmd, rhs))
     return;
 #endif
 
@@ -491,7 +488,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
         }
     }
   else
-    error ("in statement `for [X, Y] = VAL', VAL must be a structure");
+    error ("in statement 'for [X, Y] = VAL', VAL must be a structure");
 }
 
 void
@@ -763,6 +760,19 @@ tree_evaluator::visit_statement (tree_statement& stmt)
         {
           gripe_library_execution_error ();
         }
+      catch (std::bad_alloc)
+        {
+          // FIXME -- We want to use error_with_id here so that we set
+          // the error state, give users control over this error
+          // message, and so that we set the error_state appropriately
+          // so we'll get stack trace info when appropriate.  But
+          // error_with_id will require some memory allocations.  Is
+          // there anything we can do to make those more likely to
+          // succeed?
+
+          error_with_id ("Octave:bad-alloc",
+                         "out of memory or dimension too large for Octave's index type");
+        }
     }
 }
 
@@ -903,7 +913,6 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
   if (try_code)
     {
       try_code->accept (*this);
-      // FIXME: should std::bad_alloc be handled here?
     }
 
   if (error_state)
@@ -987,11 +996,11 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
 
   if (tree_break_command::breaking || tree_return_command::returning)
     {
-      frame.discard_top (2);
+      frame.discard (2);
     }
   else
     {
-      frame.run_top (2);
+      frame.run (2);
     }
 
   // We don't want to ignore errors that occur in the cleanup code, so
@@ -999,9 +1008,9 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   // Otherwise, set it back to what it was before.
 
   if (error_state)
-    frame.discard_top (2);
+    frame.discard (2);
   else
-    frame.run_top (2);
+    frame.run (2);
 
   frame.run ();
 }
@@ -1041,7 +1050,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
     return;
 
 #if HAVE_LLVM
-  if (jiter.execute (cmd))
+  if (Venable_jit_compiler && tree_jit::execute (cmd))
     return;
 #endif
 

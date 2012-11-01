@@ -155,7 +155,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 //
 // The input file must have a header followed by some data.
 //
-// All lines in the header must begin with a `#' character.
+// All lines in the header must begin with a '#' character.
 //
 // The header must contain a list of keyword and value pairs with the
 // keyword and value separated by a colon.
@@ -244,7 +244,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
   if (name.empty ())
     {
       if (count == 0)
-        error ("load: empty name keyword or no data found in file `%s'",
+        error ("load: empty name keyword or no data found in file '%s'",
                filename.c_str ());
 
       return std::string ();
@@ -253,7 +253,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
   if (! (name == ".nargin." || name == ".nargout."
          || name == CELL_ELT_TAG || valid_identifier (name)))
     {
-      error ("load: bogus identifier `%s' found in file `%s'",
+      error ("load: bogus identifier '%s' found in file '%s'",
              name.c_str (), filename.c_str ());
       return std::string ();
     }
@@ -283,7 +283,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
         tc = octave_value_typeinfo::lookup_type (typ);
 
       if (! tc.load_ascii (is))
-        error ("load: trouble reading ascii file `%s'", filename.c_str ());
+        error ("load: trouble reading ascii file '%s'", filename.c_str ());
     }
   else
     error ("load: failed to extract keyword specifying value type");

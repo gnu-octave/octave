@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <defaults.h>
 #include "Cell.h"
+#include "builtins.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -39,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "pager.h"
 #include "pt-eval.h"
+#include "pt-jit.h"
 #include "pt-jump.h"
 #include "pt-misc.h"
 #include "pt-pr-code.h"
@@ -192,6 +194,9 @@ octave_user_function::octave_user_function
     class_constructor (false), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
+#ifdef HAVE_LLVM
+    , jit_info (0)
+#endif
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
@@ -207,6 +212,10 @@ octave_user_function::~octave_user_function (void)
   delete cmd_list;
   delete lead_comm;
   delete trail_comm;
+
+#ifdef HAVE_LLVM
+  delete jit_info;
+#endif
 
   symbol_table::erase_scope (local_scope);
 }
@@ -372,6 +381,12 @@ octave_user_function::do_multi_index_op (int nargout,
   if (! cmd_list)
     return retval;
 
+#ifdef HAVE_LLVM
+  if (Venable_jit_compiler && is_special_expr ()
+      && tree_jit::execute (*this, args, retval))
+    return retval;
+#endif
+
   int nargin = args.length ();
 
   unwind_protect frame;
@@ -441,6 +456,8 @@ octave_user_function::do_multi_index_op (int nargout,
   bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args),
                        lvalue_list);
 
+  frame.add_method (this, &octave_user_function::restore_warning_states);
+
   bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
   if (echo_commands)
@@ -457,23 +474,14 @@ octave_user_function::do_multi_index_op (int nargout,
   frame.protect_var (tree_evaluator::statement_context);
   tree_evaluator::statement_context = tree_evaluator::function;
 
-  bool special_expr = (is_inline_function () || is_anonymous_function ());
-
   BEGIN_PROFILER_BLOCK (profiler_name ())
 
-  if (special_expr)
+  if (is_special_expr ())
     {
-      assert (cmd_list->length () == 1);
+      tree_expression *expr = special_expr ();
 
-      tree_statement *stmt = 0;
-
-      if ((stmt = cmd_list->front ())
-          && stmt->is_expression ())
-        {
-          tree_expression *expr = stmt->expression ();
-
-          retval = expr->rvalue (nargout);
-        }
+      if (expr)
+        retval = expr->rvalue (nargout);
     }
   else
     cmd_list->accept (*current_evaluator);
@@ -497,7 +505,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
   // Copy return values out.
 
-  if (ret_list && ! special_expr)
+  if (ret_list && ! is_special_expr ())
     {
       ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
 
@@ -527,6 +535,16 @@ void
 octave_user_function::accept (tree_walker& tw)
 {
   tw.visit_octave_user_function (*this);
+}
+
+tree_expression *
+octave_user_function::special_expr (void)
+{
+  assert (is_special_expr ());
+  assert (cmd_list->length () == 1);
+
+  tree_statement *stmt = cmd_list->front ();
+  return stmt->expression ();
 }
 
 bool
@@ -581,8 +599,8 @@ octave_user_function::bind_automatic_vars
       // which might be redefined in a function.  Keep the old argn name
       // for backward compatibility of functions that use it directly.
 
-      symbol_table::varref ("argn") = arg_names;
-      symbol_table::varref (".argn.") = Cell (arg_names);
+      symbol_table::force_varref ("argn") = arg_names;
+      symbol_table::force_varref (".argn.") = Cell (arg_names);
 
       symbol_table::mark_hidden (".argn.");
 
@@ -590,14 +608,19 @@ octave_user_function::bind_automatic_vars
       symbol_table::mark_automatic (".argn.");
     }
 
-  symbol_table::varref (".nargin.") = nargin;
-  symbol_table::varref (".nargout.") = nargout;
+  symbol_table::force_varref (".nargin.") = nargin;
+  symbol_table::force_varref (".nargout.") = nargout;
 
   symbol_table::mark_hidden (".nargin.");
   symbol_table::mark_hidden (".nargout.");
 
   symbol_table::mark_automatic (".nargin.");
   symbol_table::mark_automatic (".nargout.");
+
+  symbol_table::varref (".saved_warning_states.") = octave_value ();
+
+  symbol_table::mark_automatic (".saved_warning_states.");
+  symbol_table::mark_automatic (".saved_warning_states.");
 
   if (takes_varargs ())
     symbol_table::varref ("varargin") = va_args.cell_value ();
@@ -631,6 +654,26 @@ octave_user_function::bind_automatic_vars
 
   symbol_table::mark_hidden (".ignored.");
   symbol_table::mark_automatic (".ignored.");
+}
+
+void
+octave_user_function::restore_warning_states (void)
+{
+  octave_value val = symbol_table::varval (".saved_warning_states.");
+
+  if (val.is_defined ())
+    {
+      octave_map m = val.map_value ();
+
+      if (error_state)
+        panic_impossible ();
+
+      Cell ids = m.contents ("identifier");
+      Cell states = m.contents ("state");
+
+      for (octave_idx_type i = 0; i < m.numel (); i++)
+        Fwarning (ovl (states(i), ids(i)));
+    }
 }
 
 DEFUN (nargin, args, ,

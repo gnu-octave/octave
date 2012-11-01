@@ -324,13 +324,13 @@ make_idx_args (const std::string& type,
                       subs_field(i) = val;
                     else
                       {
-                        error ("expecting character string argument for `.' index");
+                        error ("expecting character string argument for '.' index");
                         return retval;
                       }
                   }
                 else
                   {
-                    error ("expecting single argument for `.' index");
+                    error ("expecting single argument for '.' index");
                     return retval;
                   }
               }
@@ -386,7 +386,7 @@ octave_class::dotref (const octave_value_list& idx)
       if (p != my_map.end ())
         retval = my_map.contents (p);
       else
-        error ("class has no member `%s'", nm.c_str ());
+        error ("class has no member '%s'", nm.c_str ());
     }
   else
     gripe_invalid_index1 ();
@@ -1975,7 +1975,7 @@ derived.\n\
                             octave_class::exemplar_map[id]
                               = octave_class::exemplar_info (retval);
                           else if (! it->second.compare (retval))
-                            error ("class: object of class `%s' does not match previously constructed objects",
+                            error ("class: object of class '%s' does not match previously constructed objects",
                                    id.c_str ());
                         }
                     }
@@ -1983,7 +1983,7 @@ derived.\n\
                     error ("class: expecting structure S as first argument");
                 }
               else
-                error ("class: `%s' is invalid as a class name in this context",
+                error ("class: '%s' is invalid as a class name in this context",
                        id.c_str ());
             }
           else

@@ -29,18 +29,20 @@ along with Octave; see the file COPYING.  If not, see
 class terminal_dock_widget : public QDockWidget
 {
   Q_OBJECT
-public:
+  public:
   terminal_dock_widget (QTerminal *terminal, QWidget *parent = 0);
 
 signals:
-    void active_changed (bool active);
+  void active_changed (bool active);
 
 public slots:
-    void handle_visibility_changed (bool visible)
-    {
-      if (visible)
-        emit active_changed (true);
-    }
+  void handle_visibility_changed (bool visible)
+  {
+    if (visible)
+      emit active_changed (true);
+  }
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 };
 
 #endif // TERMINALDOCKWIDGET_H

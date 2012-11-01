@@ -69,6 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "Cell.h"
+#include "builtins.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -645,7 +646,7 @@ returning the empty string if no key is available.\n\
 
   if (interactive || forced_interactive)
     {
-      feval ("drawnow");
+      Fdrawnow ();
 
       int c = octave_kbhit (args.length () == 0);
 
@@ -697,7 +698,7 @@ clc;\n\
         {
           if (! xisnan (dval))
             {
-              feval ("drawnow");
+              Fdrawnow ();
 
               if (xisinf (dval))
                 {
@@ -713,7 +714,7 @@ clc;\n\
     }
   else
     {
-      feval ("drawnow");
+      Fdrawnow ();
       flush_octave_stdout ();
       octave_kbhit ();
     }
@@ -746,7 +747,7 @@ Suspend the execution of the program for the given number of seconds.\n\
             warning ("sleep: NaN is an invalid delay");
           else
             {
-              feval ("drawnow");
+              Fdrawnow ();
               octave_sleep (dval);
             }
         }
@@ -786,7 +787,7 @@ of time less than one second, @code{usleep} will pause the execution for\n\
             warning ("usleep: NaN is an invalid delay");
           else
             {
-              feval ("drawnow");
+              Fdrawnow ();
 
               int delay = NINT (dval);
 

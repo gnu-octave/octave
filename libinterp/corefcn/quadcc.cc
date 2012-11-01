@@ -1720,7 +1720,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       Vinvfx (iv->fx, &(iv->c[idx[2]]), 2);
       Vinvfx (iv->fx, &(iv->c[0]), 0);
       for (i = 0; i < nnans; i++)
-        iv->fx[i] = octave_NaN;
+        iv->fx[nans[i]] = octave_NaN;
       iv->a = iivals[j];
       iv->b = iivals[j + 1];
       iv->depth = 3;
@@ -1849,7 +1849,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (&(iv->c[idx[d]]), n[d], d, nans, nnans);
               for (i = 0; i < nnans; i++)
-                iv->fx[i] = octave_NaN;
+                iv->fx[nans[i]] = octave_NaN;
             }
 
           /* Compute the error estimate. */
@@ -1994,7 +1994,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (ivl->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivl->fx[i] = octave_NaN;
+                ivl->fx[nans[i]] = octave_NaN;
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -2090,7 +2090,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (ivr->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivr->fx[i] = octave_NaN;
+                ivr->fx[nans[i]] = octave_NaN;
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -2254,6 +2254,19 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
 %!assert (quadcc (@(x) exp (-x .^ 2), -Inf, Inf), sqrt (pi), 1e-6)
 %!assert (quadcc (@(x) exp (-x .^ 2), -Inf, 0), sqrt (pi)/2, 1e-6)
+
+## Test function with NaNs in interval 
+%!function y = __nansin (x)
+%!  nan_locs = [-3*pi/4, -pi/4, 0, pi/3, pi/2, pi];
+%!  y = sin (x);
+%!  idx = min (abs (bsxfun (@minus, x(:), nan_locs)), [], 2); 
+%!  y(idx < 1e-10) = NaN;
+%!endfunction 
+
+%!test
+%! [q, err, npoints] = quadcc ("__nansin", -pi, pi); 
+%! assert (q, 0, eps);
+%! assert (err, 0, 15*eps);
 
 %% Test input validation
 %!error (quadcc ())

@@ -27,13 +27,23 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#ifdef HAVE_LLVM
-
+#include "defun.h"
+#include "ov.h"
+#include "pt-all.h"
 #include "pt-jit.h"
+#include "symtab.h"
+#include "variables.h"
+
+bool Venable_jit_debugging = false;
+
+bool Venable_jit_compiler = true;
+
+#ifdef HAVE_LLVM
 
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
 #include <llvm/Analysis/Verifier.h>
+#include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/LLVMContext.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
@@ -46,35 +56,22 @@ along with Octave; see the file COPYING.  If not, see
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Transforms/Scalar.h>
 
-#ifdef OCTAVE_JIT_DEBUG
-#include <llvm/Bitcode/ReaderWriter.h>
-#endif
-
-#include "symtab.h"
-#include "pt-all.h"
-
 static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 
 static llvm::LLVMContext& context = llvm::getGlobalContext ();
 
 // -------------------- jit_convert --------------------
 jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
-  : iterator_count (0), for_bounds_count (0), short_count (0), breaking (false)
+  : converting_function (false)
 {
-  jit_instruction::reset_ids ();
-
-  entry_block = factory.create<jit_block> ("body");
-  final_block = factory.create<jit_block> ("final");
-  blocks.push_back (entry_block);
-  entry_block->mark_alive ();
-  block = entry_block;
+  initialize (symbol_table::current_scope ());
 
   if (for_bounds)
     create_variable (next_for_bounds (false), for_bounds);
 
   visit (tee);
 
-  // FIXME: Remove if we no longer only compile loops
+  // breaks must have been handled by the top level loop
   assert (! breaking);
   assert (breaks.empty ());
   assert (continues.empty ());
@@ -89,6 +86,91 @@ jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
       if (name.size () && name[0] != '#')
         final_block->append (factory.create<jit_store_argument> (var));
     }
+
+  final_block->append (factory.create<jit_return> ());
+}
+
+jit_convert::jit_convert (octave_user_function& fcn,
+                          const std::vector<jit_type *>& args)
+  : converting_function (true)
+{
+  initialize (fcn.scope ());
+
+  tree_parameter_list *plist = fcn.parameter_list ();
+  tree_parameter_list *rlist = fcn.return_list ();
+  if (plist && plist->takes_varargs ())
+    throw jit_fail_exception ("varags not supported");
+
+  if (rlist && (rlist->size () > 1 || rlist->takes_varargs ()))
+    throw jit_fail_exception ("multiple returns not supported");
+
+  if (plist)
+    {
+      tree_parameter_list::iterator piter = plist->begin ();
+      for (size_t i = 0; i < args.size (); ++i, ++piter)
+        {
+          if (piter == plist->end ())
+            throw jit_fail_exception ("Too many parameter to function");
+
+          tree_decl_elt *elt = *piter;
+          std::string name = elt->name ();
+          create_variable (name, args[i]);
+        }
+    }
+
+  jit_value *return_value = 0;
+  if (fcn.is_special_expr ())
+    {
+      tree_expression *expr = fcn.special_expr ();
+      if (expr)
+        {
+          jit_variable *retvar = get_variable ("#return");
+          jit_value *retval = visit (expr);
+          block->append (factory.create<jit_assign> (retvar, retval));
+          return_value = retvar;
+        }
+    }
+  else
+    visit_statement_list (*fcn.body ());
+
+  // the user may use break or continue to exit the function. Because the
+  // function does not start as a loop, we can have one continue, one break, or
+  // a regular fallthrough to exit the function
+  if (continues.size ())
+    {
+      assert (! continues.size ());
+      finish_breaks (final_block, continues);
+    }
+  else if (breaks.size ())
+    finish_breaks (final_block, breaks);
+  else
+    block->append (factory.create<jit_branch> (final_block));
+  blocks.push_back (final_block);
+  block = final_block;
+
+  if (! return_value && rlist && rlist->size () == 1)
+    {
+      tree_decl_elt *elt = rlist->front ();
+      return_value = get_variable (elt->name ());
+    }
+
+  // FIXME: We should use live range analysis to delete variables where needed.
+  // For now we just delete everything at the end of the function.
+  for (variable_map::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
+    {
+      if (iter->second != return_value)
+        {
+          jit_call *call;
+          call = factory.create<jit_call> (&jit_typeinfo::destroy,
+                                           iter->second);
+          final_block->append (call);
+        }
+    }
+
+  if (return_value)
+    final_block->append (factory.create<jit_return> (return_value));
+  else
+    final_block->append (factory.create<jit_return> ());
 }
 
 void
@@ -243,8 +325,6 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   vmap[iter_name] = iterator;
 
   jit_block *body = factory.create<jit_block> ("for_body");
-  blocks.push_back (body);
-
   jit_block *tail = factory.create<jit_block> ("for_tail");
 
   // do control expression, iter init, and condition check in prev_block (block)
@@ -261,6 +341,8 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
                                               iterator);
   block->append (check);
   block->append (factory.create<jit_cond_branch> (check, body, tail));
+
+  blocks.push_back (body);
   block = body;
 
   // compute the syntactical iterator
@@ -353,7 +435,12 @@ jit_convert::visit_identifier (tree_identifier& ti)
       result = block->append (factory.create<jit_magic_end> (end_context));
     }
   else
-    result = get_variable (ti.name ());
+    {
+      jit_variable *var = get_variable (ti.name ());
+      jit_instruction *instr;
+      instr = factory.create<jit_call> (&jit_typeinfo::grab, var);
+      result = block->append (instr);
+    }
 }
 
 void
@@ -452,7 +539,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 void
 jit_convert::visit_index_expression (tree_index_expression& exp)
 {
-  result = resolve (jit_typeinfo::paren_subsref (), exp);
+  result = resolve (exp);
 }
 
 void
@@ -483,7 +570,7 @@ void
 jit_convert::visit_constant (tree_constant& tc)
 {
   octave_value v = tc.rvalue1 ();
-  if (v.is_real_scalar () && v.is_double_type ())
+  if (v.is_real_scalar () && v.is_double_type () && ! v.is_complex_type ())
     {
       double dv = v.double_value ();
       result = factory.create<jit_const_scalar> (dv);
@@ -526,7 +613,7 @@ jit_convert::visit_postfix_expression (tree_postfix_expression& tpe)
 
   if (etype == octave_value::op_incr || etype == octave_value::op_decr)
     {
-      jit_value *ret = create_checked (&jit_typeinfo::copy, operandv);
+      jit_value *ret = create_checked (&jit_typeinfo::grab, operandv);
       do_assign (operand, result);
       result = ret;
     }
@@ -708,6 +795,23 @@ jit_convert::visit_do_until_command (tree_do_until_command&)
   throw jit_fail_exception ();
 }
 
+void
+jit_convert::initialize (symbol_table::scope_id s)
+{
+  scope = s;
+  iterator_count = 0;
+  for_bounds_count = 0;
+  short_count = 0;
+  breaking = false;
+  jit_instruction::reset_ids ();
+
+  entry_block = factory.create<jit_block> ("body");
+  final_block = factory.create<jit_block> ("final");
+  blocks.push_back (entry_block);
+  entry_block->mark_alive ();
+  block = entry_block;
+}
+
 jit_call *
 jit_convert::create_checked_impl (jit_call *ret)
 {
@@ -738,18 +842,42 @@ jit_convert::get_variable (const std::string& vname)
   if (ret)
     return ret;
 
-  octave_value val = symbol_table::find (vname);
-  jit_type *type = jit_typeinfo::type_of (val);
-  return create_variable (vname, type);
+  symbol_table::symbol_record record = symbol_table::find_symbol (vname, scope);
+  if (record.is_persistent () || record.is_global ())
+    throw jit_fail_exception ("Persistent and global not yet supported");
+
+  if (converting_function)
+    return create_variable (vname, jit_typeinfo::get_any (), false);
+  else
+    {
+      octave_value val = record.varval ();
+      jit_type *type = jit_typeinfo::type_of (val);
+      bounds.push_back (type_bound (type, vname));
+
+      return create_variable (vname, type);
+    }
 }
 
 jit_variable *
-jit_convert::create_variable (const std::string& vname, jit_type *type)
+jit_convert::create_variable (const std::string& vname, jit_type *type,
+                              bool isarg)
 {
   jit_variable *var = factory.create<jit_variable> (vname);
-  jit_extract_argument *extract;
-  extract = factory.create<jit_extract_argument> (type, var);
-  entry_block->prepend (extract);
+
+  if (isarg)
+    {
+      jit_extract_argument *extract;
+      extract = factory.create<jit_extract_argument> (type, var);
+      entry_block->prepend (extract);
+    }
+  else
+    {
+      jit_call *init = factory.create<jit_call> (&jit_typeinfo::create_undef);
+      jit_assign *assign = factory.create<jit_assign> (var, init);
+      entry_block->prepend (assign);
+      entry_block->prepend (init);
+    }
+
   return vmap[vname] = var;
 }
 
@@ -764,8 +892,8 @@ jit_convert::next_name (const char *prefix, size_t& count, bool inc)
 }
 
 jit_instruction *
-jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
-                      jit_value *extra_arg)
+jit_convert::resolve (tree_index_expression& exp, jit_value *extra_arg,
+                      bool lhs)
 {
   std::string type = exp.type_tags ();
   if (! (type.size () == 1 && type[0] == '('))
@@ -773,7 +901,8 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
 
   std::list<tree_argument_list *> args = exp.arg_lists ();
   if (args.size () != 1)
-    throw jit_fail_exception ("Bad number of arguments in tree_index_expression");
+    throw jit_fail_exception ("Bad number of arguments in "
+                              "tree_index_expression");
 
   tree_argument_list *arg_list = args.front ();
   if (! arg_list)
@@ -783,7 +912,16 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
     throw jit_fail_exception ("Empty arg_list");
 
   tree_expression *tree_object = exp.expression ();
-  jit_value *object = visit (tree_object);
+  jit_value *object;
+  if (lhs)
+    {
+      tree_identifier *id = dynamic_cast<tree_identifier *> (tree_object);
+      if (! id)
+        throw jit_fail_exception ("expected identifier");
+      object = get_variable (id->name ());
+    }
+  else
+    object = visit (tree_object);
 
   size_t narg = arg_list->size ();
   tree_argument_list::iterator iter = arg_list->begin ();
@@ -805,6 +943,9 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
   if (extra_arg)
     call_args[call_args.size () - 1] = extra_arg;
 
+  const jit_operation& fres = lhs ? jit_typeinfo::paren_subsasgn ()
+    : jit_typeinfo::paren_subsref ();
+
   return create_checked (fres, call_args);
 }
 
@@ -819,8 +960,7 @@ jit_convert::do_assign (tree_expression *exp, jit_value *rhs, bool artificial)
   else if (tree_index_expression *idx
            = dynamic_cast<tree_index_expression *> (exp))
     {
-      jit_value *new_object = resolve (jit_typeinfo::paren_subsasgn (), *idx,
-                                       rhs);
+      jit_value *new_object = resolve (*idx, rhs, true);
       do_assign (idx->expression (), new_object, true);
 
       // FIXME: Will not work for values that must be release/grabed
@@ -873,10 +1013,12 @@ jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
 
 // -------------------- jit_convert_llvm --------------------
 llvm::Function *
-jit_convert_llvm::convert (llvm::Module *module,
-                           const jit_block_list& blocks,
-                           const std::list<jit_value *>& constants)
+jit_convert_llvm::convert_loop (llvm::Module *module,
+                                const jit_block_list& blocks,
+                                const std::list<jit_value *>& constants)
 {
+  converting_function = false;
+
   // for now just init arguments from entry, later we will have to do something
   // more interesting
   jit_block *entry_block = blocks.front ();
@@ -909,44 +1051,7 @@ jit_convert_llvm::convert (llvm::Module *module,
           arguments[argument_vec[i].first] = loaded_arg;
         }
 
-      std::list<jit_block *>::const_iterator biter;
-      for (biter = blocks.begin (); biter != blocks.end (); ++biter)
-        {
-          jit_block *jblock = *biter;
-          llvm::BasicBlock *block = llvm::BasicBlock::Create (context,
-                                                              jblock->name (),
-                                                              function);
-          jblock->stash_llvm (block);
-        }
-
-      jit_block *first = *blocks.begin ();
-      builder.CreateBr (first->to_llvm ());
-
-      // constants aren't in the IR, we visit those first
-      for (std::list<jit_value *>::const_iterator iter = constants.begin ();
-           iter != constants.end (); ++iter)
-        if (! isa<jit_instruction> (*iter))
-          visit (*iter);
-
-      // convert all instructions
-      for (biter = blocks.begin (); biter != blocks.end (); ++biter)
-        visit (*biter);
-
-      // now finish phi nodes
-      for (biter = blocks.begin (); biter != blocks.end (); ++biter)
-        {
-          jit_block& block = **biter;
-          for (jit_block::iterator piter = block.begin ();
-               piter != block.end () && isa<jit_phi> (*piter); ++piter)
-            {
-              jit_instruction *phi = *piter;
-              finish_phi (static_cast<jit_phi *> (phi));
-            }
-        }
-
-      jit_block *last = blocks.back ();
-      builder.SetInsertPoint (last->to_llvm ());
-      builder.CreateRetVoid ();
+      convert (blocks, constants);
     } catch (const jit_fail_exception& e)
     {
       function->eraseFromParent ();
@@ -954,6 +1059,92 @@ jit_convert_llvm::convert (llvm::Module *module,
     }
 
   return function;
+}
+
+
+jit_function
+jit_convert_llvm::convert_function (llvm::Module *module,
+                                    const jit_block_list& blocks,
+                                    const std::list<jit_value *>& constants,
+                                    octave_user_function& fcn,
+                                    const std::vector<jit_type *>& args)
+{
+  converting_function = true;
+
+  jit_block *final_block = blocks.back ();
+  jit_return *ret = dynamic_cast<jit_return *> (final_block->back ());
+  assert (ret);
+
+  creating = jit_function (module, jit_convention::internal,
+                           "foobar", ret->result_type (), args);
+  function = creating.to_llvm ();
+
+  try
+    {
+      prelude = creating.new_block ("prelude");
+      builder.SetInsertPoint (prelude);
+
+      tree_parameter_list *plist = fcn.parameter_list ();
+      if (plist)
+        {
+          tree_parameter_list::iterator piter = plist->begin ();
+          tree_parameter_list::iterator pend = plist->end ();
+          for (size_t i = 0; i < args.size () && piter != pend; ++i, ++piter)
+            {
+              tree_decl_elt *elt = *piter;
+              std::string arg_name = elt->name ();
+              arguments[arg_name] = creating.argument (builder, i);
+            }
+        }
+
+      convert (blocks, constants);
+    } catch (const jit_fail_exception& e)
+    {
+      function->eraseFromParent ();
+      throw;
+    }
+
+  return creating;
+}
+
+void
+jit_convert_llvm::convert (const jit_block_list& blocks,
+                           const std::list<jit_value *>& constants)
+{
+  std::list<jit_block *>::const_iterator biter;
+  for (biter = blocks.begin (); biter != blocks.end (); ++biter)
+    {
+      jit_block *jblock = *biter;
+      llvm::BasicBlock *block = llvm::BasicBlock::Create (context,
+                                                          jblock->name (),
+                                                          function);
+      jblock->stash_llvm (block);
+    }
+
+  jit_block *first = *blocks.begin ();
+  builder.CreateBr (first->to_llvm ());
+
+  // constants aren't in the IR, we visit those first
+  for (std::list<jit_value *>::const_iterator iter = constants.begin ();
+       iter != constants.end (); ++iter)
+    if (! isa<jit_instruction> (*iter))
+      visit (*iter);
+
+  // convert all instructions
+  for (biter = blocks.begin (); biter != blocks.end (); ++biter)
+    visit (*biter);
+
+  // now finish phi nodes
+  for (biter = blocks.begin (); biter != blocks.end (); ++biter)
+    {
+      jit_block& block = **biter;
+      for (jit_block::iterator piter = block.begin ();
+           piter != block.end () && isa<jit_phi> (*piter); ++piter)
+        {
+          jit_instruction *phi = *piter;
+          finish_phi (static_cast<jit_phi *> (phi));
+        }
+    }
 }
 
 void
@@ -1064,10 +1255,16 @@ jit_convert_llvm::visit (jit_extract_argument& extract)
 {
   llvm::Value *arg = arguments[extract.name ()];
   assert (arg);
-  arg = builder.CreateLoad (arg);
 
-  const jit_function& ol = extract.overload ();
-  extract.stash_llvm (ol.call (builder, arg));
+  if (converting_function)
+    extract.stash_llvm (arg);
+  else
+    {
+      arg = builder.CreateLoad (arg);
+
+      const jit_function& ol = extract.overload ();
+      extract.stash_llvm (ol.call (builder, arg));
+    }
 }
 
 void
@@ -1077,6 +1274,22 @@ jit_convert_llvm::visit (jit_store_argument& store)
   llvm::Value *arg_value = ol.call (builder, store.result ());
   llvm::Value *arg = arguments[store.name ()];
   store.stash_llvm (builder.CreateStore (arg_value, arg));
+}
+
+void
+jit_convert_llvm::visit (jit_return& ret)
+{
+  jit_value *res = ret.result ();
+
+  if (converting_function)
+    creating.do_return (builder, res->to_llvm (), false);
+  else
+    {
+      if (res)
+        builder.CreateRet (res->to_llvm ());
+      else
+        builder.CreateRetVoid ();
+    }
 }
 
 void
@@ -1113,13 +1326,6 @@ jit_convert_llvm::visit (jit_assign& assign)
 
   if (assign.artificial ())
     return;
-
-  if (isa<jit_assign_base> (new_value))
-    {
-      const jit_function& ol =  jit_typeinfo::get_grab (new_value->type ());
-      if (ol.valid ())
-        assign.stash_llvm (ol.call (builder, new_value));
-    }
 
   jit_value *overwrite = assign.overwrite ();
   if (isa<jit_assign_base> (overwrite))
@@ -1285,17 +1491,16 @@ jit_infer::do_construct_ssa (jit_block& ablock, size_t avisit_count)
         {
           jit_phi *phi = static_cast<jit_phi *> (*iter);
           jit_variable *var = phi->dest ();
+          ++iter;
+
           if (var->has_top ())
-            {
-              phi->add_incomming (&ablock, var->top ());
-              ++iter;
-            }
+            phi->add_incomming (&ablock, var->top ());
           else
             {
               // temporaries may have extranious phi nodes which can be removed
               assert (! phi->use_count ());
               assert (var->name ().size () && var->name ()[0] == '#');
-              iter = finish->remove (iter);
+              phi->remove ();
             }
         }
     }
@@ -1522,44 +1727,27 @@ tree_jit::~tree_jit (void)
 bool
 tree_jit::execute (tree_simple_for_command& cmd, const octave_value& bounds)
 {
-  const size_t MIN_TRIP_COUNT = 1000;
-
-  size_t tc = trip_count (bounds);
-  if (! tc || ! initialize ())
-    return false;
-
-  jit_info::vmap extra_vars;
-  extra_vars["#for_bounds0"] = &bounds;
-
-  jit_info *info = cmd.get_info ();
-  if (! info || ! info->match (extra_vars))
-    {
-      if (tc < MIN_TRIP_COUNT)
-        return false;
-
-      delete info;
-      info = new jit_info (*this, cmd, bounds);
-      cmd.stash_info (info);
-    }
-
-  return info->execute (extra_vars);
+  return instance ().do_execute (cmd, bounds);
 }
 
 bool
 tree_jit::execute (tree_while_command& cmd)
 {
-  if (! initialize ())
-    return false;
+  return instance ().do_execute (cmd);
+}
 
-  jit_info *info = cmd.get_info ();
-  if (! info || ! info->match ())
-    {
-      delete info;
-      info = new jit_info (*this, cmd);
-      cmd.stash_info (info);
-    }
+bool
+tree_jit::execute (octave_user_function& fcn, const octave_value_list& args,
+                   octave_value_list& retval)
+{
+  return instance ().do_execute (fcn, args, retval);
+}
 
-  return info->execute ();
+tree_jit&
+tree_jit::instance (void)
+{
+  static tree_jit ret;
+  return ret;
 }
 
 bool
@@ -1599,6 +1787,67 @@ tree_jit::initialize (void)
   return true;
 }
 
+bool
+tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
+{
+  const size_t MIN_TRIP_COUNT = 1000;
+
+  size_t tc = trip_count (bounds);
+  if (! tc || ! initialize ())
+    return false;
+
+  jit_info::vmap extra_vars;
+  extra_vars["#for_bounds0"] = &bounds;
+
+  jit_info *info = cmd.get_info ();
+  if (! info || ! info->match (extra_vars))
+    {
+      if (tc < MIN_TRIP_COUNT)
+        return false;
+
+      delete info;
+      info = new jit_info (*this, cmd, bounds);
+      cmd.stash_info (info);
+    }
+
+  return info->execute (extra_vars);
+}
+
+bool
+tree_jit::do_execute (tree_while_command& cmd)
+{
+  if (! initialize ())
+    return false;
+
+  jit_info *info = cmd.get_info ();
+  if (! info || ! info->match ())
+    {
+      delete info;
+      info = new jit_info (*this, cmd);
+      cmd.stash_info (info);
+    }
+
+  return info->execute ();
+}
+
+bool
+tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
+                      octave_value_list& retval)
+{
+  if (! initialize ())
+    return false;
+
+  jit_function_info *info = fcn.get_info ();
+    if (! info || ! info->match (args))
+      {
+        delete info;
+        info = new jit_function_info (*this, fcn, args);
+        fcn.stash_info (info);
+      }
+
+    return info->execute (args, retval);
+}
+
 size_t
 tree_jit::trip_count (const octave_value& bounds) const
 {
@@ -1616,15 +1865,177 @@ tree_jit::trip_count (const octave_value& bounds) const
 void
 tree_jit::optimize (llvm::Function *fn)
 {
+  if (Venable_jit_debugging)
+    llvm::verifyModule (*module);
+
   module_pass_manager->run (*module);
   pass_manager->run (*fn);
 
-#ifdef OCTAVE_JIT_DEBUG
-  std::string error;
-  llvm::raw_fd_ostream fout ("test.bc", error,
-                             llvm::raw_fd_ostream::F_Binary);
-  llvm::WriteBitcodeToFile (module, fout);
-#endif
+  if (Venable_jit_debugging)
+    {
+      std::string error;
+      llvm::raw_fd_ostream fout ("test.bc", error,
+                                 llvm::raw_fd_ostream::F_Binary);
+      llvm::WriteBitcodeToFile (module, fout);
+    }
+}
+
+// -------------------- jit_function_info --------------------
+jit_function_info::jit_function_info (tree_jit& tjit,
+                                      octave_user_function& fcn,
+                                      const octave_value_list& ov_args)
+  : argument_types (ov_args.length ()), function (0)
+{
+  size_t nargs = ov_args.length ();
+  for (size_t i = 0; i < nargs; ++i)
+    argument_types[i] = jit_typeinfo::type_of (ov_args(i));
+
+  jit_function raw_fn;
+  jit_function wrapper;
+
+  try
+    {
+      jit_convert conv (fcn, argument_types);
+      jit_infer infer (conv.get_factory (), conv.get_blocks (),
+                       conv.get_variable_map ());
+      infer.infer ();
+
+      if (Venable_jit_debugging)
+        {
+          jit_block_list& blocks = infer.get_blocks ();
+          jit_block *entry_block = blocks.front ();
+          entry_block->label ();
+          std::cout << "-------------------- Compiling function ";
+          std::cout << "--------------------\n";
+
+          tree_print_code tpc (std::cout);
+          tpc.visit_octave_user_function_header (fcn);
+          tpc.visit_statement_list (*fcn.body ());
+          tpc.visit_octave_user_function_trailer (fcn);
+          blocks.print (std::cout, "octave jit ir");
+        }
+
+      jit_factory& factory = conv.get_factory ();
+      llvm::Module *module = tjit.get_module ();
+      jit_convert_llvm to_llvm;
+      raw_fn = to_llvm.convert_function (module, infer.get_blocks (),
+                                         factory.constants (), fcn,
+                                         argument_types);
+
+      if (Venable_jit_debugging)
+        {
+          std::cout << "-------------------- raw function ";
+          std::cout << "--------------------\n";
+          std::cout << *raw_fn.to_llvm () << std::endl;
+          llvm::verifyFunction (*raw_fn.to_llvm ());
+        }
+
+      std::string wrapper_name = fcn.name () + "_wrapper";
+      jit_type *any_t = jit_typeinfo::get_any ();
+      std::vector<jit_type *> wrapper_args (1, jit_typeinfo::get_any_ptr ());
+      wrapper = jit_function (module, jit_convention::internal, wrapper_name,
+                              any_t, wrapper_args);
+
+      llvm::BasicBlock *wrapper_body = wrapper.new_block ();
+      builder.SetInsertPoint (wrapper_body);
+
+      llvm::Value *wrapper_arg = wrapper.argument (builder, 0);
+      std::vector<llvm::Value *> raw_args (nargs);
+      for (size_t i = 0; i < nargs; ++i)
+        {
+          llvm::Value *arg;
+          arg = builder.CreateConstInBoundsGEP1_32 (wrapper_arg, i);
+          arg = builder.CreateLoad (arg);
+
+          jit_type *arg_type = argument_types[i];
+          const jit_function& cast = jit_typeinfo::cast (arg_type, any_t);
+          raw_args[i] = cast.call (builder, arg);
+        }
+
+      llvm::Value *result = raw_fn.call (builder, raw_args);
+      if (raw_fn.result ())
+        {
+          jit_type *raw_result_t = raw_fn.result ();
+          const jit_function& cast = jit_typeinfo::cast (any_t, raw_result_t);
+          result = cast.call (builder, result);
+        }
+      else
+        {
+          llvm::Value *zero = builder.getInt32 (0);
+          result = builder.CreateBitCast (zero, any_t->to_llvm ());
+        }
+
+      wrapper.do_return (builder, result);
+
+      llvm::Function *llvm_function = wrapper.to_llvm ();
+      tjit.optimize (llvm_function);
+
+      if (Venable_jit_debugging)
+        {
+          std::cout << "-------------------- optimized and wrapped ";
+          std::cout << "--------------------\n";
+          std::cout << *llvm_function << std::endl;
+          llvm::verifyFunction (*llvm_function);
+        }
+
+      llvm::ExecutionEngine* engine = tjit.get_engine ();
+      void *void_fn = engine->getPointerToFunction (llvm_function);
+      function = reinterpret_cast<jited_function> (void_fn);
+    }
+  catch (const jit_fail_exception& e)
+    {
+      argument_types.clear ();
+
+      if (Venable_jit_debugging)
+        {
+          if (e.known ())
+            std::cout << "jit fail: " << e.what () << std::endl;
+        }
+
+      wrapper.erase ();
+      raw_fn.erase ();
+    }
+}
+
+bool
+jit_function_info::execute (const octave_value_list& ov_args,
+                            octave_value_list& retval) const
+{
+  if (! function)
+    return false;
+
+  // TODO figure out a way to delete ov_args so we avoid duplicating refcount
+  size_t nargs = ov_args.length ();
+  std::vector<octave_base_value *> args (nargs);
+  for (size_t i = 0; i < nargs; ++i)
+    {
+      octave_base_value *obv = ov_args(i).internal_rep ();
+      obv->grab ();
+      args[i] = obv;
+    }
+
+  octave_base_value *ret = function (&args[0]);
+  if (ret)
+    retval(0) = octave_value (ret);
+
+  return true;
+}
+
+bool
+jit_function_info::match (const octave_value_list& ov_args) const
+{
+  if (! function)
+    return true;
+
+  size_t nargs = ov_args.length ();
+  if (nargs != argument_types.size ())
+    return false;
+
+  for (size_t i = 0; i < nargs; ++i)
+    if (jit_typeinfo::type_of (ov_args(i)) != argument_types[i])
+      return false;
+
+  return true;
 }
 
 // -------------------- jit_info --------------------
@@ -1708,49 +2119,51 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
                        conv.get_variable_map ());
 
       infer.infer ();
-#ifdef OCTAVE_JIT_DEBUG
-      jit_block *entry_block = infer.get_blocks ().front ();
-      entry_block->label ();
-      std::cout << "-------------------- Compiling tree --------------------\n";
-      std::cout << tee.str_print_code () << std::endl;
-      entry_block->print (std::cout, "octave jit ir");
-#endif
+
+      if (Venable_jit_debugging)
+        {
+          jit_block_list& blocks = infer.get_blocks ();
+          jit_block *entry_block = blocks.front ();
+          entry_block->label ();
+          std::cout << "-------------------- Compiling tree --------------------\n";
+          std::cout << tee.str_print_code () << std::endl;
+          blocks.print (std::cout, "octave jit ir");
+        }
 
       jit_factory& factory = conv.get_factory ();
       jit_convert_llvm to_llvm;
-      llvm_function = to_llvm.convert (tjit.get_module (), infer.get_blocks (),
-                                       factory.constants ());
+      llvm_function = to_llvm.convert_loop (tjit.get_module (),
+                                            infer.get_blocks (),
+                                            factory.constants ());
       arguments = to_llvm.get_arguments ();
       bounds = conv.get_bounds ();
     }
   catch (const jit_fail_exception& e)
     {
-#ifdef OCTAVE_JIT_DEBUG
-      if (e.known ())
-        std::cout << "jit fail: " << e.what () << std::endl;
-#endif
+      if (Venable_jit_debugging)
+        {
+          if (e.known ())
+            std::cout << "jit fail: " << e.what () << std::endl;
+        }
     }
 
   if (llvm_function)
     {
-#ifdef OCTAVE_JIT_DEBUG
-      std::cout << "-------------------- llvm ir --------------------";
-      llvm::raw_os_ostream llvm_cout (std::cout);
-      function->print (llvm_cout);
-      std::cout << std::endl;
-      llvm::verifyFunction (*function);
-#endif
+      if (Venable_jit_debugging)
+        {
+          std::cout << "-------------------- llvm ir --------------------";
+          std::cout << *llvm_function << std::endl;
+          llvm::verifyFunction (*llvm_function);
+        }
 
       tjit.optimize (llvm_function);
 
-#ifdef OCTAVE_JIT_DEBUG
-      std::cout << "-------------------- optimized llvm ir "
-                << "--------------------\n";
-      llvm::raw_os_ostream llvm_cout (std::cout);
-      llvm_function->print (llvm_cout);
-      llvm_cout.flush ();
-      std::cout << std::endl;
-#endif
+      if (Venable_jit_debugging)
+        {
+          std::cout << "-------------------- optimized llvm ir "
+                    << "--------------------\n";
+          std::cout << *llvm_function << std::endl;
+        }
 
       void *void_fn = engine->getPointerToFunction (llvm_function);
       function = reinterpret_cast<jited_function> (void_fn);
@@ -1767,6 +2180,48 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
+DEFUN (enable_jit_debugging, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} enable_jit_debugging ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} enable_jit_debugging (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} enable_jit_debugging (@var{new_val}, \"local\")\n\
+Query or set the internal variable that determines whether\n\
+debugging/tracing is enabled for Octave's JIT compiler.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{enable_jit_compiler}\n\
+@end deftypefn")
+{
+#if defined (HAVE_LLVM)
+  return SET_INTERNAL_VARIABLE (enable_jit_debugging);
+#else
+  warning ("enable_jit_debugging: JIT compiling not available in this version of Octave");
+  return octave_value ();
+#endif
+}
+
+DEFUN (enable_jit_compiler, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} enable_jit_compiler ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} enable_jit_compiler (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} enable_jit_compiler (@var{new_val}, \"local\")\n\
+Query or set the internal variable that enables Octave's JIT compiler.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{enable_jit_debugging}\n\
+@end deftypefn")
+{
+#if defined (HAVE_LLVM)
+  return SET_INTERNAL_VARIABLE (enable_jit_compiler);
+#else
+  warning ("enable_jit_compiler: JIT compiling not available in this version of Octave");
+  return octave_value ();
+#endif
+}
 
 /*
 Test some simple cases that compile.
@@ -2011,5 +2466,70 @@ Test some simple cases that compile.
 %! endwhile
 
 %!error test_compute_idom ()
+
+%!function x = test_overload (a)
+%!  while 1
+%!    x = a;
+%!    break;
+%!  endwhile
+%!endfunction
+
+%!assert (test_overload (1), 1);
+%!assert (test_overload ([1 2]), [1 2]);
+
+%!function a = bubble (a = [3 2 1])
+%!  swapped = 1;
+%!  n = length (a);
+%!  while (swapped)
+%!    swapped = 0;
+%!    for i = 1:n-1
+%!      if a(i) > a(i + 1)
+%!        swapped = 1;
+%!        temp = a(i);
+%!        a(i) = a(i + 1);
+%!        a(i + 1) = temp;
+%!      endif
+%!    endfor
+%!  endwhile
+%!endfunction
+
+%!assert (bubble (), [1 2 3]);
+
+%!test
+%! a = 0;
+%! b = 1;
+%! for i=1:1e3
+%!   for j=1:2
+%!     a = a + b;
+%!   endfor
+%! endfor
+%! assert (a, 2000);
+%! assert (b, 1);
+
+%!test
+%! a = [1+1i 1+2i];
+%! b = 0;
+%! while 1
+%!   b = a(1);
+%!   break;
+%! endwhile
+%! assert (b, a(1));
+
+%!function test_undef ()
+%!  for i=1:1e7
+%!    XXX;
+%!  endfor
+%!endfunction
+
+%!error <undefined near> (test_undef);
+
+%!shared id
+%! id = @(x) x;
+
+%!assert (id (1), 1);
+%!assert (id (1+1i), 1+1i)
+%!assert (id (1, 2), 1)
+%!error <undefined> (id ())
+
 
 */

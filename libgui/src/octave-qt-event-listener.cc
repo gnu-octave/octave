@@ -20,19 +20,23 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "octave-qt-event-listener.h"
 #include <QApplication>
 
-octave_qt_event_listener::octave_qt_event_listener (QObject *parent)
-  : QObject (parent), octave_event_listener ()
+octave_qt_event_listener::octave_qt_event_listener (QObject *p)
+  : QObject (p), octave_event_listener ()
 {
 }
 
 void
-octave_qt_event_listener::current_directory_has_changed (std::string directory)
+octave_qt_event_listener::current_directory_has_changed (const std::string& directory)
 {
   emit current_directory_has_changed_signal
-      (QString::fromStdString (directory));
+    (QString::fromStdString (directory));
 }
 
 void

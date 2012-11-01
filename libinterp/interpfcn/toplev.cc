@@ -653,7 +653,7 @@ main_loop (void)
         {
           recover_from_exception ();
           std::cerr
-            << "error: memory exhausted or requested size too large for range of Octave's index type -- trying to return to prompt"
+            << "error: out of memory -- trying to return to prompt"
             << std::endl;
         }
     }
@@ -817,7 +817,7 @@ run_command_and_return_output (const std::string& cmd_str)
       retval(0) = cmd_status;
     }
   else
-    error ("unable to start subprocess for `%s'", cmd_str.c_str ());
+    error ("unable to start subprocess for '%s'", cmd_str.c_str ());
 
   return retval;
 }
@@ -1249,10 +1249,10 @@ specified option.\n\
       { false, "ARPACK_LDFLAGS", OCTAVE_CONF_ARPACK_LDFLAGS },
       { false, "ARPACK_LIBS", OCTAVE_CONF_ARPACK_LIBS },
       { false, "BLAS_LIBS", OCTAVE_CONF_BLAS_LIBS },
-      { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
       { false, "CAMD_CPPFLAGS", OCTAVE_CONF_CAMD_CPPFLAGS },
       { false, "CAMD_LDFLAGS", OCTAVE_CONF_CAMD_LDFLAGS },
       { false, "CAMD_LIBS", OCTAVE_CONF_CAMD_LIBS },
+      { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
       { false, "CC", OCTAVE_CONF_CC },
       // FIXME: CC_VERSION is deprecated.  Remove in version 3.12
       { false, "CC_VERSION", OCTAVE_CONF_CC_VERSION },
@@ -1302,11 +1302,13 @@ specified option.\n\
       { false, "FFTW3F_LIBS", OCTAVE_CONF_FFTW3F_LIBS },
       { false, "FLIBS", OCTAVE_CONF_FLIBS },
       { false, "FPICFLAG", OCTAVE_CONF_FPICFLAG },
+      { false, "FT2_CFLAGS", OCTAVE_CONF_FT2_CFLAGS },
       { false, "FT2_LIBS", OCTAVE_CONF_FT2_LIBS },
       { false, "GLPK_CPPFLAGS", OCTAVE_CONF_GLPK_CPPFLAGS },
       { false, "GLPK_LDFLAGS", OCTAVE_CONF_GLPK_LDFLAGS },
       { false, "GLPK_LIBS", OCTAVE_CONF_GLPK_LIBS },
       { false, "GNUPLOT", OCTAVE_CONF_GNUPLOT },
+      { false, "GRAPHICS_CFLAGS", OCTAVE_CONF_GRAPHICS_CFLAGS },
       { false, "GRAPHICS_LIBS", OCTAVE_CONF_GRAPHICS_LIBS },
       { false, "HDF5_CPPFLAGS", OCTAVE_CONF_HDF5_CPPFLAGS },
       { false, "HDF5_LDFLAGS", OCTAVE_CONF_HDF5_LDFLAGS },
@@ -1318,19 +1320,18 @@ specified option.\n\
       { false, "LEX", OCTAVE_CONF_LEX },
       { false, "LEXLIB", OCTAVE_CONF_LEXLIB },
       { false, "LFLAGS", OCTAVE_CONF_LFLAGS },
-      { false, "LIBCRUFT", OCTAVE_CONF_LIBCRUFT },
       { false, "LIBEXT", OCTAVE_CONF_LIBEXT },
       { false, "LIBFLAGS", OCTAVE_CONF_LIBFLAGS },
       { false, "LIBOCTAVE", OCTAVE_CONF_LIBOCTAVE },
       { false, "LIBOCTINTERP", OCTAVE_CONF_LIBOCTINTERP },
       { false, "LIBS", OCTAVE_CONF_LIBS },
+      { false, "LLVM_CPPFLAGS", OCTAVE_CONF_LLVM_CPPFLAGS },
+      { false, "LLVM_LDFLAGS", OCTAVE_CONF_LLVM_LDFLAGS },
+      { false, "LLVM_LIBS", OCTAVE_CONF_LLVM_LIBS },
       { false, "LN_S", OCTAVE_CONF_LN_S },
       { false, "MAGICK_CPPFLAGS", OCTAVE_CONF_MAGICK_CPPFLAGS },
       { false, "MAGICK_LDFLAGS", OCTAVE_CONF_MAGICK_LDFLAGS },
       { false, "MAGICK_LIBS", OCTAVE_CONF_MAGICK_LIBS },
-      { false, "LLVM_CPPFLAGS", OCTAVE_CONF_LLVM_CPPFLAGS },
-      { false, "LLVM_LDFLAGS", OCTAVE_CONF_LLVM_LDFLAGS },
-      { false, "LLVM_LIBS", OCTAVE_CONF_LLVM_LIBS },
       { false, "MKOCTFILE_DL_LDFLAGS", OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS },
       { false, "OCTAVE_LINK_DEPS", OCTAVE_CONF_OCTAVE_LINK_DEPS },
       { false, "OCTAVE_LINK_OPTS", OCTAVE_CONF_OCTAVE_LINK_OPTS },
@@ -1365,6 +1366,8 @@ specified option.\n\
       { false, "UMFPACK_LDFLAGS", OCTAVE_CONF_UMFPACK_LDFLAGS },
       { false, "UMFPACK_LIBS", OCTAVE_CONF_UMFPACK_LIBS },
       { false, "USE_64_BIT_IDX_T", OCTAVE_CONF_USE_64_BIT_IDX_T },
+      { false, "WARN_CFLAGS", OCTAVE_CONF_WARN_CFLAGS },
+      { false, "WARN_CXXFLAGS", OCTAVE_CONF_WARN_CXXFLAGS },
       { false, "X11_INCFLAGS", OCTAVE_CONF_X11_INCFLAGS },
       { false, "X11_LIBS", OCTAVE_CONF_X11_LIBS },
       { false, "XTRA_CFLAGS", OCTAVE_CONF_XTRA_CFLAGS },
@@ -1475,12 +1478,17 @@ specified option.\n\
 
       if (! error_state)
         {
-          Cell c = m.contents (arg.c_str ());
+          if (m.isfield (arg))
+            {
+              Cell c = m.contents (arg);
 
-          if (c.is_empty ())
-            error ("octave_config_info: no info for `%s'", arg.c_str ());
+              if (c.is_empty ())
+                error ("octave_config_info: no info for '%s'", arg.c_str ());
+              else
+                retval = c(0);
+            }
           else
-            retval = c(0);
+            error ("octave_config_info: invalid parameter '%s'", arg.c_str ());
         }
     }
   else if (nargin == 0)
@@ -1516,11 +1524,11 @@ __builtin_new (size_t sz)
   /* malloc (0) is unpredictable; avoid it.  */
   if (sz == 0)
     sz = 1;
-  p = malloc (sz);
+  p = gnulib::malloc (sz);
   while (p == 0)
     {
       (*__new_handler) ();
-      p = malloc (sz);
+      p = gnulib::malloc (sz);
     }
 
   if (debug_new_delete)

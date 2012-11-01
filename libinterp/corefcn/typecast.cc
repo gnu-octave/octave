@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <climits>
+
 #include "mx-base.h"
 
 #include "defun.h"
@@ -130,7 +132,7 @@ An example of the use of typecast on a little-endian machine is\n\
 @group\n\
 @var{x} = uint16 ([1, 65535]);\n\
 typecast (@var{x}, \"uint8\")\n\
-  @result{} [   0,   1, 255, 255]\n\
+@result{} [   1,   0, 255, 255]\n\
 @end group\n\
 @end example\n\
 @seealso{cast, bitunpack, bitpack, swapbytes}\n\

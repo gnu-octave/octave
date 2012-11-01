@@ -1193,6 +1193,7 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
       "erfinv",
       "erfcinv",
       "erfc",
+      "erfcx",
       "exp",
       "expm1",
       "finite",
@@ -1229,6 +1230,7 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
       "isspace",
       "isupper",
       "isxdigit",
+      "signbit",
       "toascii",
       "tolower",
       "toupper"
@@ -1272,7 +1274,7 @@ octave_base_value::dump (std::ostream& os) const
 static void
 gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 {
-  error ("assignment of `%s' to indexed `%s' not implemented",
+  error ("assignment of '%s' to indexed '%s' not implemented",
          tn2.c_str (), tn1.c_str ());
 }
 
@@ -1280,7 +1282,7 @@ static void
 gripe_assign_conversion_failed (const std::string& tn1,
                                 const std::string& tn2)
 {
-  error ("type conversion for assignment of `%s' to indexed `%s' failed",
+  error ("type conversion for assignment of '%s' to indexed '%s' failed",
          tn2.c_str (), tn1.c_str ());
 }
 
@@ -1288,7 +1290,7 @@ static void
 gripe_no_conversion (const std::string& on, const std::string& tn1,
                      const std::string& tn2)
 {
-  error ("operator %s: no conversion for assignment of `%s' to indexed `%s'",
+  error ("operator %s: no conversion for assignment of '%s' to indexed '%s'",
          on.c_str (), tn2.c_str (), tn1.c_str ());
 }
 

@@ -495,6 +495,13 @@ in the use of methods of other classes with the user class.  An example
 @cindex transpose, complex-conjugate
 @cindex unary minus
 
+@c Need at least one plaintext sentence here between the @node and @float
+@c table below or the two will overlap due to a bug in Texinfo. 
+@c This is not our fault; this *is* a ridiculous kluge.
+The following table shows, for each built-in numerical operation, the
+corresponding function name to use when providing an overloaded method for a
+user class.
+
 @float Table,tab:overload_ops
 @opindex +
 @opindex -

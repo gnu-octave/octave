@@ -41,11 +41,11 @@ If you are reading these notes, you may have already managed to clone
 this package from the repository.  For the record, you will find all the
 relevant information on downloading sources at:
 
-  http://www.gnu.org/software/octave/download.html
+  http://www.octave.org/download.html
 
-After cloning Octave, you will need to run the autogen.sh script:
+After cloning Octave, you will need to run the bootstrap script:
 
-  $ ./autogen.sh
+  $ ./bootstrap
 
 This script will examine the source tree and generate some Makefile
 fragments and then runs the bootstrap script.  The bootstrap script comes
@@ -70,10 +70,10 @@ subrepository, so they will be automatically updated to the
 corresponding Mercurial revision if you update the working directory to
 a past revision not too far in the past.
 
-Additional options besides --gnulib-srcdir can be passed to autogen.sh and
-they will be forwarded without modification to the bootstrap script.
+Additional options besides --gnulib-srcdir can be passed to bootstrap and
+they will be forwarded without modification to the gnulib bootstrap script.
 
-Once the autogen.sh and bootstrap scripts complete successfully, you may
+Once the bootstrap and bootstrap_gnulib scripts complete successfully, you may
 run
 
   $ ./configure
@@ -115,44 +115,54 @@ An overview of the directory layout of Octave's source files:
 
   libgnu        -- gnulib sources that we use.  The files here are
                    copied here from the gnulib directory by the
-                   build-aux/bootstrap script that is run by the
-                   autogen.sh script.
+                   build-aux/bootstrap_gnulib script that is run by the
+                   bootstrap script.
 
 
-  libcruft      -- various numerical libraries (mostly Fortran)
+  liboctave     -- C++ interfaces to the numerical libraries, Fortran
+                   numerical libraries, various OS facilities, and utility
+                   functions
 
-    amos             bessel functions
+    array       the base Array, NDArray, Matrix, and Sparse classes
 
-    blas-xtra        wrappers for blas functions used in Octave
+    cruft       various numerical libraries (mostly Fortran)
 
-    daspk            large scale differential algebraic equation solver
+      amos             bessel functions
 
-    dasrt            differential algebraic equation solver with root finding
+      blas-xtra        wrappers for blas functions used in Octave
 
-    dassl            differential-algebraic system solver
+      daspk            large scale differential algebraic equation solver
 
-    fftpack          subroutines for fast fourier transforms
+      dasrt            differential algebraic equation solver with root finding
 
-    lapack-xtra      wrappers for lapack functions used in Octave
+      dassl            differential-algebraic system solver
 
-    misc             miscellaneous utilities
+      fftpack          subroutines for fast fourier transforms
 
-    odepack          ordinary differential equation solver
+      lapack-xtra      wrappers for lapack functions used in Octave
 
-    ordered-qz       code for ordering eigenvalues for QZ factorization
+      misc             miscellaneous utilities
 
-    quadpack         subroutines for numerical integration
+      odepack          ordinary differential equation solver
 
-    ranlib           random number generators
+      ordered-qz       code for ordering eigenvalues for QZ factorization
 
-    slatec-err       slatec error handling library
+      quadpack         subroutines for numerical integration
 
-    slatec-fn        various special function subroutines
+      ranlib           random number generators
 
+      slatec-err       slatec error handling library
 
-  liboctave     -- The C++ interfaces to the numerical libraries and
-                   various OS facilities.
+      slatec-fn        various special function subroutines
 
+    numeric     C++ numerical algorithms and interfaces to the Fortran
+                algorithms
+
+    operators   code for operators that act on base classes such as Array
+
+    system      OS-related functions
+ 
+    util        utility and miscellaneous functions
 
   libinterp     -- The interpreter itself plus lots of infrastructure
                    around it.  Octave's extensive octave_value class
@@ -160,7 +170,7 @@ An overview of the directory layout of Octave's source files:
                    types is defined here.  The built-in functions are
                    also defined here.
 
-    octave-value     the octave_value class hierarchy.  These are the
+    octave-value     The octave_value class hierarchy.  These are the
                      container classes that hold various Octave data
                      types like struct numerical arrays, structure
                      arrays, and cell arrays.

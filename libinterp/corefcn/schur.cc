@@ -169,7 +169,7 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
       if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
           && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
         {
-          warning ("schur: incorrect ordered schur argument `%c'",
+          warning ("schur: incorrect ordered schur argument '%c'",
                    ord.c_str ());
           return retval;
         }

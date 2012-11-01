@@ -115,7 +115,7 @@ f ()
 @print{}  
 @print{}  
 @print{}  Additional help for built-in functions and operators is
-@print{}  available in the on-line version of the manual.  Use the command
+@print{}  available in the online version of the manual.  Use the command
 @print{}  `doc <topic>' to search the manual index.
 @print{}  
 @print{}  Help and information about Octave is also available on the WWW
@@ -296,7 +296,10 @@ It is also possible to assign an identification string to a warning.
 If a warning has such an ID the user can enable and disable this warning
 as will be described in the next section.  To assign an ID to a warning,
 simply call @code{warning} with two string arguments, where the first
-is the identification string, and the second is the actual warning.
+is the identification string, and the second is the actual warning.  Note
+that warning IDs are in the format "NAMESPACE:WARNING-NAME".  The namespace
+"Octave" is used for Octave's own warnings.  Any other string is available
+as a namespace for user's own warnings.
 
 @DOCSTRING(warning)
 
@@ -315,7 +318,7 @@ their string identifications.  The following code will issue a warning
 
 @example
 @group
-warning ("non-negative-variable", 
+warning ("example:non-negative-variable", 
          "'a' must be non-negative.  Setting 'a' to zero.");
 @end group
 @end example
@@ -325,8 +328,8 @@ while the following won't issue a warning
 
 @example
 @group
-warning ("off", "non-negative-variable");
-warning ("non-negative-variable", 
+warning ("off", "example:non-negative-variable");
+warning ("example:non-negative-variable", 
          "'a' must be non-negative.  Setting 'a' to zero.");
 @end group
 @end example

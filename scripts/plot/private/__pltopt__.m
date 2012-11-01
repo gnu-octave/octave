@@ -219,7 +219,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
         endif
       else
         if (err_on_invalid)
-          error ("%s: unrecognized format character: `%s'", caller, topt);
+          error ("%s: unrecognized format character: '%s'", caller, topt);
         else
           valid = false;
           options = __default_plot_options__ ();

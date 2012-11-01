@@ -73,7 +73,7 @@ Additional information beyond the tutorial is summarized below.
  ----------------------
 
   The source for testing snapshots can be downloaded from the official Octave
-  web site.  http://www.gnu.org/software/octave/download.html 
+  web site.  http://www.octave.org/download.html 
 
   The very latest development code is also available via anonymous access to a
   read-only Mercurial archive.  The method of download is described on the web
@@ -94,7 +94,7 @@ Additional information beyond the tutorial is summarized below.
   http://thread.gmane.org/gmane.comp.gnu.octave.bugs/12361/focus=12404
 
   To build development sources from the Mercurial repository you must run
-  'autogen.sh' (bootstrap) before running configure and make.  This requires
+  bootstrap before running configure and make.  This requires
   that automake and autoconf tools be installed.
 
 

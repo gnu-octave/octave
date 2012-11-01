@@ -422,7 +422,7 @@ octave_read (char *buf, unsigned max_size)
   return status;
 }
 
-// Fix things up so that input can come from file `name', printing a
+// Fix things up so that input can come from file 'name', printing a
 // warning if the file doesn't exist.
 
 FILE *
@@ -765,7 +765,7 @@ get_debug_input (const std::string& prompt)
 
       // Unmark forced variables.
       // Restore previous value of global_command.
-      frame.run_top (2);
+      frame.run (2);
 
       octave_quit ();
     }

@@ -1492,8 +1492,11 @@ symbol_table::do_update_nest (void)
         }
     }
   else if (nest_children.size ())
-    for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
-      ti->second.set_curr_fcn (curr_fcn);
+    {
+      static_workspace = true;
+      for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
+        ti->second.set_curr_fcn (curr_fcn);
+    }
 
   for (std::vector<symbol_table*>::iterator iter = nest_children.begin ();
        iter != nest_children.end (); ++iter)
@@ -1701,7 +1704,7 @@ DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
           retval = symbol_table::varval (name);
 
           if (retval.is_undefined ())
-            error ("variable_value: `%s' is not a variable in the current scope",
+            error ("variable_value: '%s' is not a variable in the current scope",
                    name.c_str ());
         }
       else

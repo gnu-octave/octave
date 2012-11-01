@@ -1754,6 +1754,12 @@ sign (x) =  0, x = 0;\n\
 @end ifnottex\n\
 \n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
+\n\
+Note that @code{sign (-0.0)} is 0.\n\
+Although IEEE 754 floating point\n\
+allows zero to be signed, 0.0 and -0.0 compare equal.  If you must test\n\
+whether zero is signed, use the @code{signbit} function.\n\
+@seealso{signbit}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1775,6 +1781,41 @@ For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 %!assert (sign (single (0)), single (0))
 %!assert (sign (single (3)), single (1))
 %!assert (sign (single ([1, -pi; e, 0])), single ([1, -1; 1, 0]))
+
+%!error sign ()
+%!error sign (1, 2)
+*/
+
+DEFUNX ("signbit", Fsignbit, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} signbit (@var{x})\n\
+Return a nonzero value if the value of @var{x} has its sign bit set.\n\
+\n\
+This is not the same as @code{x < 0.0}, because IEEE 754 floating point\n\
+allows zero to be signed.  The comparison @code{-0.0 < 0.0} is false,\n\
+but @code{signbit (-0.0)} will return a nonzero value.\n\
+@seealso{sign}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).xsignbit ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (signbit (1) == 0)
+%!assert (signbit (-2) != 0)
+%!assert (signbit (0) == 0)
+%!assert (signbit (-0) != 0)
+
+%!assert (signbit (single (1)) == 0)
+%!assert (signbit (single (-2)) != 0)
+%!assert (signbit (single (0)) == 0)
+%!assert (signbit (single (-0)) != 0)
 
 %!error sign ()
 %!error sign (1, 2)

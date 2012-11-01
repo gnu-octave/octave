@@ -2,7 +2,7 @@ EXTRA_DIST += \
   parse-tree/module.mk \
   parse-tree/octave.gperf
 
-PARSER_INCLUDES = \
+PARSER_INC = \
   parse-tree/lex.h \
   parse-tree/parse.h \
   parse-tree/parse-private.h
@@ -11,10 +11,14 @@ PARSER_SRC = \
   parse-tree/lex.ll \
   parse-tree/oct-parse.yy
 
-lex.lo lex.o oct-parse.lo oct-parse.o: \
-  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+## FIXME: Automake does not support per-object rules.
+##        These rules could be emulated by creating a new convenience
+##        library and using per-library rules.  Or we can just live
+##        with the extra warnings about old-sytle-casts. (09/18/2012)
+#lex.lo lex.o oct-parse.lo oct-parse.o: \
+#  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
 
-PT_INCLUDES = \
+PARSE_TREE_INC = \
   parse-tree/pt-all.h \
   parse-tree/pt-arg-list.h \
   parse-tree/pt-assign.h \
@@ -46,7 +50,7 @@ PT_INCLUDES = \
   parse-tree/pt-walk.h \
   parse-tree/pt.h \
   parse-tree/token.h \
-  $(PARSER_INCLUDES)
+  $(PARSER_INC)
 
 PARSE_TREE_SRC = \
   parse-tree/pt-arg-list.cc \
@@ -95,3 +99,4 @@ parse-tree/oct-gperf.h: parse-tree/octave.gperf
 noinst_LTLIBRARIES += parse-tree/libparse-tree.la
 
 parse_tree_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)
+parse_tree_libparse_tree_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

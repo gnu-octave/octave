@@ -27,18 +27,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWidget>
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
-#include "octave-event-observer.h"
 
 class file_editor;
-class file_editor_tab : public QWidget, public octave_event_observer
+class file_editor_tab : public QWidget
 {
   Q_OBJECT
-public:
+  public:
   file_editor_tab (file_editor *fileEditor);
   bool copy_available ();
-
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
 
 public slots:
   void update_window_title(bool modified);
@@ -64,33 +60,53 @@ public slots:
 
   void set_modified (bool modified = true);
 
-  bool open_file ();
-  void load_file (QString fileName);
+  bool open_file (const QString& dir = QString ());
+  bool load_file (const QString& fileName, bool silent = false);
   void new_file ();
   bool save_file ();
-  bool save_file(QString saveFileName);
+  bool save_file (const QString& saveFileName);
   bool save_file_as();
   void run_file ();
 
-  void file_has_changed (QString fileName);
+  void file_has_changed (const QString& fileName);
+  QString get_file_name () const {return _file_name;}
+
+  /** Tells the editor tab to react on changed settings. */
+  void notice_settings ();
 
 signals:
-  void file_name_changed (QString fileName);
+  void file_name_changed (const QString& fileName);
   void editor_state_changed ();
   void close_request ();
 
 protected:
   void closeEvent (QCloseEvent *event);
-  void set_file_name (QString fileName);
+  void set_file_name (const QString& fileName);
 
 private:
+
+  struct bp_info
+  {
+    bp_info (const QString& p, const QString& fn, int l)
+      : path (p.toStdString ()), function_name (fn.toStdString ()), line (l)
+    { }
+
+    std::string path;
+    std::string function_name;
+    int line;
+  };
+
   void update_lexer ();
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 
-  void update_tracked_file ();
-  int check_file_modified (QString msg, int cancelButton);
+  int check_file_modified (const QString& msg, int cancelButton);
   void do_comment_selected_text (bool comment);
+
+  void run_file_callback (void);
+  void add_breakpoint_callback (const bp_info& info);
+  void remove_breakpoint_callback (const bp_info& info);
+  void remove_all_breakpoints_callback (const bp_info& info);
 
   file_editor *         _file_editor;
   QsciScintilla *       _edit_area;

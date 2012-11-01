@@ -20,6 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "resource-manager.h"
 #include "files-dockwidget.h"
 
@@ -29,11 +33,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QProcess>
 #include <QDebug>
+#include <QHeaderView>
 
-files_dock_widget::files_dock_widget (QWidget *parent)
-  : QDockWidget (parent)
+files_dock_widget::files_dock_widget (QWidget *p)
+  : QDockWidget (p)
 {
   setObjectName ("FilesDockWidget");
+  setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Current Directory"));
   setWidget (new QWidget (this));
 
@@ -77,20 +83,28 @@ files_dock_widget::files_dock_widget (QWidget *parent)
   _file_tree_view->setColumnHidden (3, true);
   _file_tree_view->setStatusTip (tr ("Doubleclick a file to open it."));
 
+  // get sort column and order as well as cloumn state (order and width)
+  QSettings *settings = resource_manager::get_settings ();
+  // FIXME -- what should happen if settings is 0?
+  _file_tree_view->sortByColumn (
+              settings->value ("filesdockwidget/sort_files_by_column",0).toInt (),
+              static_cast<Qt::SortOrder>(settings->value ("filesdockwidget/sort_files_by_order",Qt::AscendingOrder).toUInt ())
+  );
+  _file_tree_view->header ()->restoreState (settings->value ("filesdockwidget/column_state").toByteArray ());
+  
   _current_directory->setText(_file_system_model->fileInfo (rootPathIndex).
-                       absoluteFilePath ());
+                              absoluteFilePath ());
 
   connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)), this,
            SLOT (item_double_clicked (const QModelIndex &)));
 
   // Layout the widgets vertically with the toolbar on top
-  QVBoxLayout *
-    layout = new QVBoxLayout ();
-  layout->setSpacing (0);
-  layout->addWidget (_navigation_tool_bar);
-  layout->addWidget (_file_tree_view);
-  layout->setMargin (1);
-  widget ()->setLayout (layout);
+  QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  vbox_layout->setSpacing (0);
+  vbox_layout->addWidget (_navigation_tool_bar);
+  vbox_layout->addWidget (_file_tree_view);
+  vbox_layout->setMargin (1);
+  widget ()->setLayout (vbox_layout);
   // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 
   connect (_current_directory, SIGNAL (returnPressed ()),
@@ -102,8 +116,20 @@ files_dock_widget::files_dock_widget (QWidget *parent)
 
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility_changed (bool)));
+  // topLevelChanged is emitted when floating property changes (floating = true)
+  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
 
   setFocusProxy (_current_directory);
+}
+
+files_dock_widget::~files_dock_widget ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  int sort_column = _file_tree_view->header ()->sortIndicatorSection ();
+  Qt::SortOrder sort_order = _file_tree_view->header ()->sortIndicatorOrder ();
+  settings->setValue ("filesdockwidget/sort_files_by_column", sort_column);
+  settings->setValue ("filesdockwidget/sort_files_by_order", sort_order);
+  settings->setValue ("filesdockwidget/column_state", _file_tree_view->header ()->saveState ()); 
 }
 
 void
@@ -115,7 +141,7 @@ files_dock_widget::item_double_clicked (const QModelIndex & index)
 }
 
 void
-files_dock_widget::set_current_directory (QString currentDirectory)
+files_dock_widget::set_current_directory (const QString& currentDirectory)
 {
   display_directory (currentDirectory);
 }
@@ -135,7 +161,7 @@ files_dock_widget::do_up_directory ()
 }
 
 void
-files_dock_widget::display_directory (QString directory)
+files_dock_widget::display_directory (const QString& directory)
 {
   QFileInfo fileInfo (directory);
   if (fileInfo.exists ())
@@ -143,7 +169,7 @@ files_dock_widget::display_directory (QString directory)
       if (fileInfo.isDir ())
         {
           _file_tree_view->setRootIndex (_file_system_model->
-                                        index (fileInfo.absoluteFilePath ()));
+                                         index (fileInfo.absoluteFilePath ()));
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
           _current_directory->setText (fileInfo.absoluteFilePath ());
 
@@ -186,8 +212,19 @@ files_dock_widget::handle_visibility_changed (bool visible)
 }
 
 void
-files_dock_widget::closeEvent (QCloseEvent *event)
+files_dock_widget::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
-  QDockWidget::closeEvent (event);
+  QDockWidget::closeEvent (e);
+}
+
+// slot for signal that is emitted when floating property changes
+void
+files_dock_widget::top_level_changed (bool floating)
+{
+  if(floating)
+    {
+      setWindowFlags(Qt::Window);  // make a window from the widget when floating
+      show();                      // make it visible again since setWindowFlags hides it
+    }
 }

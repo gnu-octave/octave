@@ -30,7 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <syswait.h>
+#include "lo-utils.h"
+#include "syswait.h"
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
@@ -69,7 +70,8 @@ dissociate_terminal (void)
 
       waitpid (pid, &status, 0);
 
-      exit (WIFEXITED (status) ? WEXITSTATUS (status) : 127);
+      exit (octave_wait::ifexited (status)
+            ? octave_wait::exitstatus (status) : 127);
     }
 
 #endif
@@ -79,6 +81,8 @@ int
 octave_start_gui (int argc, char *argv[])
 {
   dissociate_terminal ();
+
+  setenv ("GNUTERM", "qt", 1);
 
   QApplication application (argc, argv);
 
@@ -106,6 +110,7 @@ octave_start_gui (int argc, char *argv[])
           resource_manager::update_network_settings ();
 
           main_window w;
+          w.read_settings ();  // Get the widget settings after construction and before showing
           w.show ();
           w.focus_command_window ();
 

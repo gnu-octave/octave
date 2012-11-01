@@ -103,9 +103,6 @@
            <property name="text">
             <string>Show line numbers</string>
            </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
           </widget>
          </item>
          <item>
@@ -115,9 +112,6 @@
            </property>
            <property name="text">
             <string>Highlight current line</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -138,6 +132,13 @@
           <widget class="QCheckBox" name="editor_longWindowTitle">
            <property name="text">
             <string>Show complete path in window title</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="editor_restoreSession">
+           <property name="text">
+            <string>Restore tabs from previous session on startup</string>
            </property>
           </widget>
          </item>
@@ -487,6 +488,13 @@
      </widget>
     </widget>
    </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
@@ -620,38 +628,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>editor_showLineNumbers</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_showLineNumbers</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>87</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>249</x>
-     <y>87</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_highlightCurrentLine</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_highlightCurrentLine</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>112</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>249</x>
-     <y>112</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>useProxyServer</sender>
    <signal>toggled(bool)</signal>
    <receiver>proxyUserName</receiver>
@@ -700,18 +676,34 @@
    </hints>
   </connection>
   <connection>
-   <sender>editor_codeCompletion</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_codeCompletion</receiver>
-   <slot>setEnabled(bool)</slot>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>settings_dialog</receiver>
+   <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>249</x>
-     <y>137</y>
+     <x>299</x>
+     <y>366</y>
     </hint>
     <hint type="destinationlabel">
-     <x>249</x>
-     <y>137</y>
+     <x>299</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>settings_dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>299</x>
+     <y>366</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>199</y>
     </hint>
    </hints>
   </connection>

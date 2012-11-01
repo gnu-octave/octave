@@ -53,7 +53,7 @@ resource_manager::~resource_manager (void)
 }
 
 QString
-resource_manager::find_translator_file (QString language)
+resource_manager::find_translator_file (const QString& language)
 {
   // TODO: Quick hack to be able to test language files.
   return QString ("../languages/%1.qm").arg (language);
@@ -114,20 +114,20 @@ resource_manager::do_reload_settings (void)
   QString settings_file = settings_path + "qt-settings";
 
   if (!QFile::exists (settings_file))
-   {
-     QDir("/").mkpath (settings_path);
-     QFile::copy (QString::fromStdString (default_qt_settings_file ()),
-                  settings_file);
-     first_run = true;
-   }
+    {
+      QDir("/").mkpath (settings_path);
+      QFile::copy (QString::fromStdString (default_qt_settings_file ()),
+                   settings_file);
+      first_run = true;
+    }
   else
-     first_run = false;
+    first_run = false;
 
   do_set_settings (settings_file);
 }
 
 void
-resource_manager::do_set_settings (QString file)
+resource_manager::do_set_settings (const QString& file)
 {
   delete settings;
   settings = new QSettings (file, QSettings::IniFormat);
@@ -311,6 +311,7 @@ resource_manager::octave_keywords (void)
       "__sort_rows_idx__ "
       "__strip_html_tags__ "
       "__token_count__ "
+      "__unimplemented__ "
       "__varval__ "
       "__version_info__ "
       "__voronoi__ "
@@ -1638,7 +1639,6 @@ resource_manager::octave_keywords (void)
       "unifinv "
       "unifpdf "
       "unifrnd "
-      "unimplemented "
       "union "
       "unique "
       "unix "

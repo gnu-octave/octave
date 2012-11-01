@@ -48,7 +48,7 @@ function retval = recycle (state)
       elseif (strcmpi (state, "off"))
         current_state = "off";
       else
-        error ("recycle: invalid value of STATE = `%s'", state);
+        error ("recycle: invalid value of STATE = '%s'", state);
       endif
     else
       error ("recycle: STATE must be a character string");

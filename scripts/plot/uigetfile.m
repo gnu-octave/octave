@@ -58,6 +58,7 @@
 ## and a 2-element vector containing the pixel coordinates.
 ## Two or more files can be selected when setting the "MultiSelect" key to "on".
 ## In that case @var{fname} is a cell array containing the files.
+## @seealso{uiputfile, uigetdir}
 ## @end deftypefn
 
 ## Author: Kai Habel
@@ -72,7 +73,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     if (! __is_function__ (funcname))
       error ("uigetfile: fltk graphics toolkit required");
     elseif (! strcmp (defaulttoolkit, "gnuplot"))
-      warning ("uigetfile: no implementation for toolkit `%s', using `fltk' instead",
+      warning ("uigetfile: no implementation for toolkit '%s', using 'fltk' instead",
                defaulttoolkit);
     endif
   endif

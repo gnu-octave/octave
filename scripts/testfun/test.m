@@ -171,7 +171,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   if (isempty (__file))
     if (__grabdemo)
       __ret1 = "";
-      __ret2 = [];
+      __ret2 = -1;
     else
       if (exist (__name) == 3)
         fprintf (__fid, "%s%s source code with tests for dynamically linked function not found\n", __signal_empty, __name);

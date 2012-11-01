@@ -103,7 +103,7 @@ gripe_invalid_conversion (const std::string& from, const std::string& to)
 void
 gripe_invalid_value_specified (const char *name)
 {
-  warning ("invalid value specified for `%s'", name);
+  warning ("invalid value specified for '%s'", name);
 }
 
 void
@@ -134,9 +134,9 @@ void
 gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 {
   if (is_error)
-    error ("%s: wrong type argument `%s'", name, s);
+    error ("%s: wrong type argument '%s'", name, s);
   else
-    warning ("%s: wrong type argument `%s'", name, s);
+    warning ("%s: wrong type argument '%s'", name, s);
 }
 
 void
@@ -165,14 +165,14 @@ void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op)
 {
   std::string type = op.type_name ();
-  error ("invalid operand `%s' for unary operator", type.c_str ());
+  error ("invalid operand '%s' for unary operator", type.c_str ());
 }
 
 void
 gripe_wrong_type_arg_for_binary_op (const octave_value& op)
 {
   std::string type = op.type_name ();
-  error ("invalid operand `%s' for binary operator", type.c_str ());
+  error ("invalid operand '%s' for binary operator", type.c_str ());
 }
 
 void

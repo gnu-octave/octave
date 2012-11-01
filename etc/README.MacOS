@@ -31,7 +31,7 @@ Links to the stable releases, snap shots, and instructions for obtaining
 the current development sources using mercurial can be found on Octave's 
 web-site below.
 
-  http://www.gnu.org/software/octave/download.html
+  http://www.octave.org/download.html
 
 Building on MacOS can vary significantly between versions.  These
 instructions document the procedure for MacOS 10.6.X.
@@ -77,7 +77,7 @@ as well.  However, care must be taken.
 
 Instructions for building Octave are available on the web at the link below.
 
-    http://wiki.octave.org/wiki.pl?BuildFromSource
+    http://wiki.octave.org/Build_from_source
 
 In addition, those wishing to build on MacOS X (10.6.x) should read section
 2.1 above.
@@ -143,7 +143,7 @@ A fully functional Octave requires additional dependencies.  Here is an example
 
 See the link below for additional details about optional dependencies.
 
-    http://wiki.octave.org/wiki.pl?BuildFromSource
+    http://wiki.octave.org/Build_from_source
 
 TODO - Modify the configure script to test for 64 bit vecLib bug.  When the bug
        is present, apply the wrapper solution.
@@ -270,8 +270,8 @@ be installed.
 After installing each of the dependencies, the sources are compiled by
 setting the proper environment variables and then following the standard build
 sequence.  The following is an example set of variables for a 32-bit build
-using gcc-4.2.  When building from the sources obtained from the mercurial
-archive, ./autogen.sh must be run prior to ./configure.
+using gcc-4.2.  When building from the sources obtained from the Mercurial
+archive, ./bootstrap must be run prior to ./configure.
 
   export FINK_PREFIX="/sw"
   export PREFIX="/usr/local/bin"
@@ -385,7 +385,7 @@ dependencies may be needed.
 Octave may now be built from a local mercurial archive by typing the commands
 below (these assume gcc-4.4 is installed by macports).
 
-  ./autogen.sh
+  ./bootstrap
   export PREFIX=/opt/local
   export CC=/opt/local/bin/gcc-mp-4.4
   export CXX=/opt/local/bin/g++-mp-4.4

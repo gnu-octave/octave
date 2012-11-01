@@ -40,24 +40,48 @@ function x = repmat (A, m, n)
   endif
 
   if (nargin == 3)
-    if (! (isscalar (m) && isscalar (n)))
-      error ("repmat: with 3 arguments M and N must be scalar");
-    endif
-    idx = [m, n];
-  else
-    if (isscalar (m))
-      idx = [m, m];
-      n = m;
-    elseif (isvector (m) && length (m) > 1)
-      ## Ensure that we have a row vector
-      idx = m(:).';
+    if (! isempty (m) && isempty (n))
+      m = m(:).';
+      n = 1;
+    elseif (isempty (m) && ! isempty (n))
+      m = n(:).';
+      n = 1;
+    elseif (isempty (m) && isempty (n))
+      m = n = 1;
     else
-      error ("repmat: invalid dimensional argument");
+      if (all (size (m) > 1))
+        m = m(:,1);
+        if (numel (m) < 3)
+          n = n(end);
+        else
+          n = [];
+        endif
+      endif
+      if (all (size (n) > 1))
+        n = n(:,1);
+      endif
+      m = m(:).';
+      n = n(:).';
+    endif
+  else
+    if (isempty (m))
+      m = n = 1;
+    elseif (isscalar (m))
+      n = m;
+    elseif (ndims (m) > 2)
+      error ("repmat: M has more than 2 dimensions")
+    elseif (all (size (m) > 1))
+      m = m(:,1).';
+      n = [];
+    else
+      m = m(:).';
+      n = [];
     endif
   endif
+  idx = [m, n];
 
   if (all (idx < 0))
-    error ("repmat: invalid dimensions");
+    error ("repmat: invalid dimensions")
   else
     idx = max (idx, 0);
   endif
@@ -101,6 +125,20 @@ function x = repmat (A, m, n)
 
 endfunction
 
+# Tests for ML compatibility
+%!shared x
+%! x = [1 2 3];
+%!assert (repmat (x, [3, 1]), repmat (x, 3, []))
+%!assert (repmat (x, [3, 1]), repmat (x, [], 3))
+%!assert (repmat (x, [1, 3]), repmat (x, [], [1, 3]))
+%!assert (repmat (x, [1, 3]), repmat (x, [1, 3], []))
+%!assert (repmat (x, [1 3]), repmat (x, [1 3; 3 3]))
+%!assert (repmat (x, [1 1 2]), repmat (x, [1 1; 1 3; 2 1]))
+%!assert (repmat (x, [1 3; 1 3], [1; 3]), repmat (x, [1 1 3]))
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1; 4]))
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1 2; 3 4]))
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 1 4]));
+%!assert (repmat (x, [1 1], 4), repmat (x, 1, [1 4]));
 
 # Test various methods of providing size parameters
 %!shared x

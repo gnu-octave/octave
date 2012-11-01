@@ -103,7 +103,7 @@ endfunction
 ##                   maximization.) Default is 1, maximization.
 ##                   set STOPIT(6)=-1 for minimization
 ##        If a non-empty fourth parameter string SAVIT is present, then
-##        `SAVE SAVIT x fmax nf' is executed after each inner iteration.
+##        'SAVE SAVIT x fmax nf' is executed after each inner iteration.
 ##        NB: x0 can be a matrix.  In the output argument, in SAVIT saves,
 ##            and in function calls, x has the same shape as x0.
 ##        NMSMAX(fun, x0, STOPIT, SAVIT, P1, P2,...) allows additional
@@ -257,7 +257,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
 
     ##  One step of the Nelder-Mead simplex algorithm
     ##  NJH: Altered function calls and changed CNT to NF.
-    ##       Changed each `fr < f(1)' type test to `>' for maximization
+    ##       Changed each 'fr < f(1)' type test to '>' for maximization
     ##       and re-ordered function values after sort.
 
     vbar = (sum (V(:,1:n)')/n)';  # Mean value

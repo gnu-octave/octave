@@ -152,21 +152,28 @@ octave_char_matrix::as_mxArray (void) const
   return retval;
 }
 
-// The C++ standard guarantees cctype defines functions, not macros (and hence macros *CAN'T*
-// be defined if only cctype is included)
-// so there's no need to f*ck around. The exceptions are isascii and toascii,
-// which are not C++.
-// Oddly enough, all those character functions are int (*) (int), even
-// in C++. Wicked!
+// The C++ standard guarantees cctype defines functions, not macros (and
+// hence macros *CAN'T* be defined if only cctype is included) so
+// there's no need to fuck around. The exceptions are isascii and
+// toascii, which are not C++. Oddly enough, all those character
+// functions are int (*) (int), even in C++. Wicked!
 static inline int xisascii (int c)
 { return isascii (c); }
 
 static inline int xtoascii (int c)
-{ return toascii (c); }
+{
+#ifdef HAVE_TOASCII
+  return toascii (c);
+#else
+  return (c & 0x7F);
+#endif
+}
 
 octave_value
 octave_char_matrix::map (unary_mapper_t umap) const
 {
+  octave_value retval;
+
   switch (umap)
     {
 #define STRING_MAPPER(UMAP,FCN,TYPE) \
@@ -189,10 +196,26 @@ octave_char_matrix::map (unary_mapper_t umap) const
     STRING_MAPPER (xtolower, std::tolower, char);
     STRING_MAPPER (xtoupper, std::toupper, char);
 
-    default:
+    // For Matlab compatibility, these should work on ASCII values
+    // without error or warning.
+    case umap_abs:
+    case umap_ceil:
+    case umap_fix:
+    case umap_floor:
+    case umap_imag:
+    case umap_isinf:
+    case umap_isnan:
+    case umap_real:
+    case umap_round:
       {
         octave_matrix m (array_value (true));
         return m.map (umap);
       }
+
+    default:
+      error ("%s: expecting numeric argument", get_umap_name (umap));
+      break;
     }
+
+  return retval;
 }

@@ -230,6 +230,11 @@ Formatted data from can be read from, or written to, text files as well.
 
 @DOCSTRING(textscan)
 
+The @code{importdata} function has the ability to work with a wide
+variety of data.
+
+@DOCSTRING(importdata)
+
 @menu
 * Saving Data on Unexpected Exits::
 @end menu
@@ -408,7 +413,7 @@ formatted and written to the output stream.  For example,
 @group
 pct = 37;
 filename = "foo.txt";
-printf ("Processed %d%% of `%s'.\nPlease be patient.\n",
+printf ("Processed %d%% of '%s'.\nPlease be patient.\n",
         pct, filename);
 @end group
 @end example
@@ -418,7 +423,7 @@ produces output like
 
 @example
 @group
-Processed 37% of `foo.txt'.
+Processed 37% of 'foo.txt'.
 Please be patient.
 @end group
 @end example
@@ -698,7 +703,7 @@ followed by a digit.
 
 The following flags can be used to modify the behavior:
 
-@c Not @samp so we can have ` ' as an item.
+@c Not @samp so we can have ' ' as an item.
 @table @asis
 @item @samp{-}
 Left-justify the result in the field.  Normally the result is

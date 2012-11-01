@@ -26,66 +26,89 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME -- we should not be including config.h in header files.
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <QString>
 #include <QHash>
 
-#include <sstream>
-
 #include "symtab.h"
 
 /**
-  * \struct symbol_information
-  * \brief Meta-information over a symbol-table entry.
-  * \author Jacob Dawid
-  * This struct is used to store meta information over a symbol entry.
-  * It reduces memory consumption, since it only stores relevant data
-  * about a symbol-table entry that will be used in the model for the
-  * graphical user interface.
-  */
-struct symbol_information
+ * \struct symbol_information
+ * \brief Meta-information over a symbol-table entry.
+ * \author Jacob Dawid
+ * This struct is used to store meta information over a symbol entry.
+ * It reduces memory consumption, since it only stores relevant data
+ * about a symbol-table entry that will be used in the model for the
+ * graphical user interface.
+ */
+class symbol_information
 {
+public:
+
   enum Scope
+    {
+      unknown     = 0,
+      local       = 1,
+      global      = 2,
+      persistent  = 3
+    };
+
+  symbol_information (const symbol_table::symbol_record& symbol_record);
+
+  symbol_information (const symbol_information& x)
+    : _scope (x._scope), _symbol (x._symbol), _class_name (x._class_name),
+      _value (x._value), _dimension (x._dimension), _hash (x._hash)
+  { }
+
+  symbol_information operator = (const symbol_information& x)
   {
-    local       = 0,
-    global      = 1,
-    persistent  = 2,
-    hidden      = 3
-  };
+    if (this != &x)
+      {
+        _scope = x._scope;
+        _symbol = x._symbol;
+        _class_name = x._class_name;
+        _value = x._value;
+        _dimension = x._dimension;
+        _hash = x._hash;
+      }
+
+    return *this;
+  }
+
+  ~symbol_information (void) { }
+
+  QString symbol (void) const { return _symbol; }
+  QString class_name (void) const { return _class_name; }
+  QString value (void) const { return _value; }
+  QString dimension (void) const { return _dimension; }
+  Scope scope (void) const { return _scope; }
+
+  friend bool
+  operator == (const symbol_information& a, const symbol_information& b)
+  {
+    return (a.hash () == b.hash ()
+            && a.scope () == b.scope ()
+            && a.symbol () == b.symbol ()
+            && a.class_name () == b.class_name ()
+            && a.value () == b.value ()
+            && a.dimension () == b.dimension ());
+  }
+
+private:
+
+  // FIXME -- this is not really the scope of the symbol.
+  Scope _scope;
 
   QString _symbol;
-  QString _type;
+  QString _class_name;
   QString _value;
   QString _dimension;
-  Scope   _scope;
 
-  /** Hashes the symbol information for quickly comparing it. */
-  int
-  hash () const
-  {
-    return qHash (_symbol) + qHash (_type) + qHash (_value)
-      + qHash (_dimension) + (int)_scope;
-  }
+  int _hash;
 
-  /** Compares two symbol information objects. */
-  bool
-  equals (const symbol_information& other) const
-  {
-    if (hash () == other.hash ())
-      {
-        return _symbol == other._symbol
-            && _type   == other._type
-            && _value  == other._value
-            && _scope  == other._scope
-            && _dimension == other._dimension;
-      }
-  }
-
-  /** Extracts meta information from a given symbol record. */
-  bool
-  from_symbol_record (const symbol_table::symbol_record& symbol_record);
+  int hash (void) const { return _hash; }
 };
 
 #endif // SYMBOLINFORMATION_H

@@ -438,7 +438,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
           hid_t int_sign = H5Tget_sign (type_id);
 
           if (int_sign == H5T_SGN_ERROR)
-            warning ("load: can't read `%s' (unknown datatype)", name);
+            warning ("load: can't read '%s' (unknown datatype)", name);
           else
             {
               if (int_sign == H5T_SGN_NONE)
@@ -447,7 +447,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
               int slen = H5Tget_size (type_id);
               if (slen < 0)
-                warning ("load: can't read `%s' (unknown datatype)", name);
+                warning ("load: can't read '%s' (unknown datatype)", name);
               else
                 {
                   switch (slen)
@@ -469,7 +469,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
                       break;
 
                     default:
-                      warning ("load: can't read `%s' (unknown datatype)",
+                      warning ("load: can't read '%s' (unknown datatype)",
                                name);
                       int_typ = "";
                       break;
@@ -478,7 +478,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
             }
 #endif
           if (int_typ == "")
-            warning ("load: can't read `%s' (unknown datatype)", name);
+            warning ("load: can't read '%s' (unknown datatype)", name);
           else
             {
               // Matrix or scalar?
@@ -523,7 +523,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
         }
       else
         {
-          warning ("load: can't read `%s' (unknown datatype)", name);
+          warning ("load: can't read '%s' (unknown datatype)", name);
           retval = 0; // unknown datatype; skip
         }
 
@@ -540,7 +540,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
     {
       // should we attempt to handle invalid identifiers by converting
       // bad characters to '_', say?
-      warning ("load: skipping invalid identifier `%s' in hdf5 file",
+      warning ("load: skipping invalid identifier '%s' in hdf5 file",
                name);
     }
 
@@ -899,7 +899,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
     H5Gclose (data_id);
 
   if (! retval)
-    error ("save: error while writing `%s' to hdf5 file", name.c_str ());
+    error ("save: error while writing '%s' to hdf5 file", name.c_str ());
 
   return retval;
 }

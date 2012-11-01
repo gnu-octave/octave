@@ -203,6 +203,10 @@ public:
   octave_value (const Array<double>& m);
   octave_value (const Array<float>& m);
   octave_value (const DiagMatrix& d);
+  octave_value (const DiagArray2<double>& d);
+  octave_value (const DiagArray2<float>& d);
+  octave_value (const DiagArray2<Complex>& d);
+  octave_value (const DiagArray2<FloatComplex>& d);
   octave_value (const FloatDiagMatrix& d);
   octave_value (const RowVector& v);
   octave_value (const FloatRowVector& v);
@@ -1162,6 +1166,7 @@ public:
   MAPPER_FORWARD (xisspace)
   MAPPER_FORWARD (xisupper)
   MAPPER_FORWARD (xisxdigit)
+  MAPPER_FORWARD (xsignbit)
   MAPPER_FORWARD (xtoascii)
   MAPPER_FORWARD (xtolower)
   MAPPER_FORWARD (xtoupper)

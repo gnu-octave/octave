@@ -66,9 +66,9 @@ function [text, status] = get_first_help_sentence (name, max_len = 80)
     case "html"
       [text, status] = first_sentence_html (help_text, max_len);
     case "not documented"
-      error ("get_first_help_sentence: `%s' is not documented\n", name);
+      error ("get_first_help_sentence: '%s' is not documented\n", name);
     case "not found"
-      error ("get_first_help_sentence: `%s' not found\n", name);
+      error ("get_first_help_sentence: '%s' not found\n", name);
     otherwise
       error ("get_first_help_sentence: internal error: unsupported help text format: '%s'\n", format);
   endswitch

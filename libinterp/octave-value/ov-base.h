@@ -725,6 +725,7 @@ public:
       umap_xisspace,
       umap_xisupper,
       umap_xisxdigit,
+      umap_xsignbit,
       umap_xtoascii,
       umap_xtolower,
       umap_xtoupper,
@@ -801,9 +802,9 @@ protected:
   // (think of an empty cell array with >2G elements).
   octave_refcount<octave_idx_type> count;
 
-private:
-
   static const char *get_umap_name (unary_mapper_t);
+
+private:
 
   static int curr_print_indent_level;
   static bool beginning_of_line;

@@ -20,13 +20,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "resource-manager.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
 #include <QSettings>
 
-settings_dialog::settings_dialog (QWidget * parent):
-QDialog (parent), ui (new Ui::settings_dialog)
+settings_dialog::settings_dialog (QWidget *p):
+  QDialog (p), ui (new Ui::settings_dialog)
 {
   ui->setupUi (this);
 
@@ -41,7 +45,8 @@ QDialog (parent), ui (new Ui::settings_dialog)
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
   ui->editor_fontName->setCurrentFont (QFont (settings->value ("editor/fontName","Courier").toString()) );
   ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());
-  ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",true).toBool ());
+  ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
+  ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier").toString()) );
   ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());
   ui->showFilenames->setChecked (settings->value ("showFilenames").toBool());
@@ -85,6 +90,12 @@ QDialog (parent), ui (new Ui::settings_dialog)
 
 settings_dialog::~settings_dialog ()
 {
+  delete ui;
+}
+
+void
+settings_dialog::write_changed_settings ()
+{
   QSettings *settings = resource_manager::get_settings ();
 
   // FIXME -- what should happen if settings is 0?
@@ -97,6 +108,7 @@ settings_dialog::~settings_dialog ()
   settings->setValue ("editor/fontName", ui->editor_fontName->currentFont().family());
   settings->setValue ("editor/fontSize", ui->editor_fontSize->value());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
+  settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
   settings->setValue ("terminal/fontName", ui->terminal_fontName->currentFont().family());
   settings->setValue ("showFilenames", ui->showFilenames->isChecked ());
@@ -122,5 +134,4 @@ settings_dialog::~settings_dialog ()
     }
   settings->setValue ("terminal/cursorType", cursorType);
   settings->sync ();
-  delete ui;
 }

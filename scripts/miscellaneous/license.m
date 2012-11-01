@@ -138,10 +138,10 @@ function retval = license (varargin)
           elseif (strcmp (varargin{3}, "disable"))
             __octave_licenses__{found,3} = false;
           else
-            error ("license: TOGGLE must be either `enable' or `disable'");
+            error ("license: TOGGLE must be either 'enable' or 'disable'");
           endif
         else
-          error ("license: FEATURE `%s' not found", feature);
+          error ("license: FEATURE '%s' not found", feature);
         endif
       endif
 
@@ -182,6 +182,6 @@ endfunction
 %% Test input validation
 %!error license ("not_inuse")
 %!error <TOGGLE must be either> license ("test", "Octave", "not_enable")
-%!error <FEATURE `INVALID' not found> license ("test", "INVALID", "enable")
+%!error <FEATURE 'INVALID' not found> license ("test", "INVALID", "enable")
 %!error license ("not_test", "Octave", "enable")
 

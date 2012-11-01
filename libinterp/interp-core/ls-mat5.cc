@@ -374,7 +374,7 @@ read_mat5_integer_data (std::istream& is, int *m,
   \
         if (read_mat5_tag (is, swap, type, len)) \
           { \
-            error ("load: reading matrix data for `%s'", retval.c_str ()); \
+            error ("load: reading matrix data for '%s'", retval.c_str ()); \
             goto data_read_error; \
           } \
   \
@@ -385,7 +385,7 @@ read_mat5_integer_data (std::istream& is, int *m,
   \
         if (! is || error_state) \
           { \
-            error ("load: reading matrix data for `%s'", retval.c_str ()); \
+            error ("load: reading matrix data for '%s'", retval.c_str ()); \
             goto data_read_error; \
           } \
   \
@@ -398,7 +398,7 @@ read_mat5_integer_data (std::istream& is, int *m,
   \
             if (read_mat5_tag (is, swap, type, len)) \
               { \
-                error ("load: reading matrix data for `%s'", \
+                error ("load: reading matrix data for '%s'", \
                        retval.c_str ()); \
                 goto data_read_error; \
               } \
@@ -409,7 +409,7 @@ read_mat5_integer_data (std::istream& is, int *m,
   \
             if (! is || error_state) \
               { \
-                error ("load: reading imaginary matrix data for `%s'", \
+                error ("load: reading imaginary matrix data for '%s'", \
                        retval.c_str ()); \
                 goto data_read_error; \
               } \
@@ -714,7 +714,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             if (! is || error_state)
               {
-                error ("load: reading cell data for `%s'", nm.c_str ());
+                error ("load: reading cell data for '%s'", nm.c_str ());
                 goto data_read_error;
               }
 
@@ -756,7 +756,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (read_mat5_tag (is, swap, type, len))
           {
-            error ("load: reading sparse row data for `%s'", retval.c_str ());
+            error ("load: reading sparse row data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -767,7 +767,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (! is || error_state)
           {
-            error ("load: reading sparse row data for `%s'", retval.c_str ());
+            error ("load: reading sparse row data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -776,7 +776,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // col indices
         if (read_mat5_tag (is, swap, type, len))
           {
-            error ("load: reading sparse column data for `%s'", retval.c_str ());
+            error ("load: reading sparse column data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -787,7 +787,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (! is || error_state)
           {
-            error ("load: reading sparse column data for `%s'", retval.c_str ());
+            error ("load: reading sparse column data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -796,7 +796,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // real data subelement
         if (read_mat5_tag (is, swap, type, len))
           {
-            error ("load: reading sparse matrix data for `%s'", retval.c_str ());
+            error ("load: reading sparse matrix data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -814,7 +814,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (! is || error_state)
           {
-            error ("load: reading sparse matrix data for `%s'", retval.c_str ());
+            error ("load: reading sparse matrix data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -827,7 +827,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             if (read_mat5_tag (is, swap, type, len))
               {
-                error ("load: reading sparse matrix data for `%s'", retval.c_str ());
+                error ("load: reading sparse matrix data for '%s'", retval.c_str ());
                 goto data_read_error;
               }
 
@@ -836,7 +836,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             if (! is || error_state)
               {
-                error ("load: reading imaginary sparse matrix data for `%s'",
+                error ("load: reading imaginary sparse matrix data for '%s'",
                        retval.c_str ());
                 goto data_read_error;
               }
@@ -1144,7 +1144,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       // Fall-through
     case MAT_FILE_STRUCT_CLASS:
       {
-        Octave_map m (dim_vector (1, 1));
+        Octave_map m (dims);
         int32_t fn_type;
         int32_t fn_len;
         int32_t field_name_length;
@@ -1319,7 +1319,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (read_mat5_tag (is, swap, type, len))
           {
-            error ("load: reading matrix data for `%s'", retval.c_str ());
+            error ("load: reading matrix data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -1330,7 +1330,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (! is || error_state)
           {
-            error ("load: reading matrix data for `%s'", retval.c_str ());
+            error ("load: reading matrix data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -1344,7 +1344,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             if (read_mat5_tag (is, swap, type, len))
               {
-                error ("load: reading matrix data for `%s'", retval.c_str ());
+                error ("load: reading matrix data for '%s'", retval.c_str ());
                 goto data_read_error;
               }
 
@@ -1354,7 +1354,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             if (! is || error_state)
               {
-                error ("load: reading imaginary matrix data for `%s'",
+                error ("load: reading imaginary matrix data for '%s'",
                        retval.c_str ());
                 goto data_read_error;
               }
@@ -1385,7 +1385,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (read_mat5_tag (is, swap, type, len))
           {
-            error ("load: reading matrix data for `%s'", retval.c_str ());
+            error ("load: reading matrix data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -1396,7 +1396,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (! is || error_state)
           {
-            error ("load: reading matrix data for `%s'", retval.c_str ());
+            error ("load: reading matrix data for '%s'", retval.c_str ());
             goto data_read_error;
           }
 
@@ -1423,7 +1423,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             if (read_mat5_tag (is, swap, type, len))
               {
-                error ("load: reading matrix data for `%s'", retval.c_str ());
+                error ("load: reading matrix data for '%s'", retval.c_str ());
                 goto data_read_error;
               }
 
@@ -1433,7 +1433,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             if (! is || error_state)
               {
-                error ("load: reading imaginary matrix data for `%s'",
+                error ("load: reading imaginary matrix data for '%s'",
                        retval.c_str ());
                 goto data_read_error;
               }
@@ -1505,11 +1505,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
  data_read_error:
  early_read_error:
-  error ("load: trouble reading binary file `%s'", filename.c_str ());
+  error ("load: trouble reading binary file '%s'", filename.c_str ());
   return std::string ();
 
  skip_ahead:
-  warning ("skipping over `%s'", retval.c_str ());
+  warning ("skipping over '%s'", retval.c_str ());
   is.seekg (pos + static_cast<std::streamoff> (element_length));
   return read_mat5_binary_element (is, filename, swap, global, tc);
 }
@@ -2429,6 +2429,10 @@ save_mat5_binary_element (std::ostream& os,
     }
 
   os.write (reinterpret_cast<char *> (&flags), 4);
+  // Matlab seems to have trouble reading files that have nzmax == 0 at
+  // this point in the file.
+  if (nnz_32 == 0)
+    nnz_32 = 1;
   os.write (reinterpret_cast<char *> (&nnz_32), 4);
 
   write_mat5_tag (os, miINT32, dim_len);
@@ -2713,7 +2717,7 @@ save_mat5_binary_element (std::ostream& os,
   return true;
 
  error_cleanup:
-  error ("save: error while writing `%s' to MAT file", name.c_str ());
+  error ("save: error while writing '%s' to MAT file", name.c_str ());
 
   return false;
 }

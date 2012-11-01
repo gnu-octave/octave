@@ -29,22 +29,22 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <list>
 
-#include <symtab.h>
+#include "symtab.h"
+#include "variables.h"
 
 #include "workspace-model.h"
 #include "octave-link.h"
 
-workspace_model::workspace_model(QObject *parent)
-  : QAbstractItemModel(parent), octave_event_observer ()
+workspace_model::workspace_model(QObject *p)
+  : QAbstractItemModel (p)
 {
   QList<QVariant> rootData;
-  rootData << tr ("Name") << tr ("Type") << tr("Dimension") << tr ("Value");
+  rootData << tr ("Name") << tr ("Class") << tr("Dimension") << tr ("Value");
   _rootItem = new tree_item(rootData);
 
   insert_top_level_item(0, new tree_item ("Local"));
   insert_top_level_item(1, new tree_item ("Global"));
   insert_top_level_item(2, new tree_item ("Persistent"));
-  insert_top_level_item(3, new tree_item ("Hidden"));
 
   connect(&_update_workspace_model_timer,
           SIGNAL (timeout ()),
@@ -64,78 +64,21 @@ workspace_model::~workspace_model()
 void
 workspace_model::request_update_workspace ()
 {
-  octave_link::instance ()
-      ->post_event (new octave_update_workspace_event (*this));
-}
-
-void
-workspace_model::event_accepted (octave_event *e)
-{
-  if (dynamic_cast <octave_update_workspace_event*> (e))
-    {
-      std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
-
-      _symbol_information.clear ();
-      for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
-         iterator != symbolTable.end (); iterator++)
-      {
-        symbol_information symbolInformation;
-        symbolInformation.from_symbol_record (*iterator);
-        _symbol_information.push_back (symbolInformation);
-      }
-
-      beginResetModel();
-      top_level_item (0)->delete_child_items ();
-      top_level_item (1)->delete_child_items ();
-      top_level_item (2)->delete_child_items ();
-      top_level_item (3)->delete_child_items ();
-
-      foreach (const symbol_information& s, _symbol_information)
-        {
-          tree_item *child = new tree_item ();
-
-          child->set_data (0, s._symbol);
-          child->set_data (1, s._type);
-          child->set_data (2, s._dimension);
-          child->set_data (3, s._value);
-
-          switch (s._scope)
-            {
-              case symbol_information::local:       top_level_item (0)->add_child (child); break;
-              case symbol_information::global:      top_level_item (1)->add_child (child); break;
-              case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
-              case symbol_information::hidden:      top_level_item (3)->add_child (child); break;
-            }
-        }
-
-      endResetModel();
-      emit model_changed();
-    }
-
-  // Post a new event in a given time.
-  // This prevents flooding the event queue when no events are being processed.
-  _update_workspace_model_timer.start ();
-  delete e;
-}
-
-void
-workspace_model::event_reject (octave_event *e)
-{
-  delete e;
+  octave_link::post_event (this, &workspace_model::update_workspace_callback);
 }
 
 QModelIndex
-workspace_model::index(int row, int column, const QModelIndex &parent) const
+workspace_model::index(int row, int column, const QModelIndex &p) const
 {
-  if (!hasIndex(row, column, parent))
+  if (!hasIndex(row, column, p))
     return QModelIndex();
 
   tree_item *parentItem;
 
-  if (!parent.isValid())
+  if (!p.isValid())
     parentItem = _rootItem;
   else
-    parentItem = static_cast<tree_item*>(parent.internalPointer());
+    parentItem = static_cast<tree_item*>(p.internalPointer());
 
   tree_item *childItem = parentItem->child(row);
   if (childItem)
@@ -145,40 +88,46 @@ workspace_model::index(int row, int column, const QModelIndex &parent) const
 }
 
 QModelIndex
-workspace_model::parent(const QModelIndex &index) const
+workspace_model::parent(const QModelIndex &idx) const
 {
-  if (!index.isValid())
+  if (!idx.isValid())
     return QModelIndex();
 
-  tree_item *childItem = static_cast<tree_item*>(index.internalPointer());
-  tree_item *parentItem = childItem->parent();
+  tree_item *childItem = static_cast<tree_item*>(idx.internalPointer());
 
-  if (parentItem == _rootItem)
-    return QModelIndex();
+  if (childItem)
+    {
+      tree_item *parentItem = childItem->parent();
 
-  return createIndex(parentItem->row(), 0, parentItem);
+      if (! parentItem || parentItem == _rootItem)
+        return QModelIndex();
+
+      return createIndex(parentItem->row(), 0, parentItem);
+    }
+  else
+    return QModelIndex ();
 }
 
 int
-workspace_model::rowCount(const QModelIndex &parent) const
+workspace_model::rowCount(const QModelIndex &p) const
 {
   tree_item *parentItem;
-  if (parent.column() > 0)
+  if (p.column() > 0)
     return 0;
 
-  if (!parent.isValid())
+  if (!p.isValid())
     parentItem = _rootItem;
   else
-    parentItem = static_cast<tree_item*>(parent.internalPointer());
+    parentItem = static_cast<tree_item*>(p.internalPointer());
 
   return parentItem->child_count();
 }
 
 int
-workspace_model::columnCount(const QModelIndex &parent) const
+workspace_model::columnCount(const QModelIndex &p) const
 {
-  if (parent.isValid())
-    return static_cast<tree_item*>(parent.internalPointer())->column_count();
+  if (p.isValid())
+    return static_cast<tree_item*>(p.internalPointer())->column_count();
   else
     return _rootItem->column_count();
 }
@@ -196,9 +145,9 @@ workspace_model::top_level_item (int at)
 }
 
 Qt::ItemFlags
-workspace_model::flags(const QModelIndex &index) const
+workspace_model::flags(const QModelIndex &idx) const
 {
-  if (!index.isValid())
+  if (!idx.isValid())
     return 0;
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -214,16 +163,67 @@ workspace_model::headerData(int section, Qt::Orientation orientation, int role) 
 }
 
 QVariant
-workspace_model::data(const QModelIndex &index, int role) const
+workspace_model::data(const QModelIndex &idx, int role) const
 {
-  if (!index.isValid())
+  if (!idx.isValid())
     return QVariant();
 
   if (role != Qt::DisplayRole)
     return QVariant();
 
-  tree_item *item = static_cast<tree_item*>(index.internalPointer());
+  tree_item *item = static_cast<tree_item*>(idx.internalPointer());
 
-  return item->data(index.column());
+  return item->data(idx.column());
+}
+
+void
+workspace_model::update_workspace_callback (void)
+{
+  std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
+
+  _symbol_information.clear ();
+  for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
+       iterator != symbolTable.end (); iterator++)
+    _symbol_information.push_back (symbol_information (*iterator));
+
+  beginResetModel();
+  top_level_item (0)->delete_child_items ();
+  top_level_item (1)->delete_child_items ();
+  top_level_item (2)->delete_child_items ();
+
+  foreach (const symbol_information& s, _symbol_information)
+    {
+      tree_item *child = new tree_item ();
+
+      child->set_data (0, s.symbol ());
+      child->set_data (1, s.class_name ());
+      child->set_data (2, s.dimension ());
+      child->set_data (3, s.value ());
+
+      switch (s.scope ())
+        {
+        case symbol_information::local:
+          top_level_item (0)->add_child (child);
+          break;
+
+        case symbol_information::global:
+          top_level_item (1)->add_child (child);
+          break;
+
+        case symbol_information::persistent:
+          top_level_item (2)->add_child (child);
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  endResetModel();
+  emit model_changed();
+
+  // Post a new event in a given time.
+  // This prevents flooding the event queue when no events are being processed.
+  _update_workspace_model_timer.start ();
 }
 

@@ -30,16 +30,30 @@ function rmappdata (h, varargin)
   endif
 
   for nh = 1:numel (h)
-    appdata = get (h(nh), "__appdata__");
-    appdata = rmfield (appdata, varargin);
-    set (h(nh), "__appdata__", appdata);
+    if (isprop (h(nh), "__appdata__"))
+      appdata = get (h(nh), "__appdata__");
+      for v = 1:numel(varargin)
+        if (isfield (appdata, varargin{v}))
+          appdata = rmfield (appdata, varargin{v});
+        else
+          error ("rmappdata: appdata '%s' is not present")
+        endif
+      endfor
+      set (h(nh), "__appdata__", appdata);
+    endif
   endfor
 
 endfunction
-
 
 %!test
 %! setappdata (0, "hello", "world");
 %! rmappdata (0, "hello");
 %! assert (isappdata (0, "hello"), false);
+
+%!test
+%! setappdata (0, "data1", rand (3));
+%! setappdata (0, "data2", {"hello", "world"});
+%! rmappdata (0, "data1", "data2");
+%! assert (isappdata (0, "data1"), false);
+%! assert (isappdata (0, "data2"), false);
 

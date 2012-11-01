@@ -161,13 +161,8 @@ function imwrite (img, varargin)
     else
       error ("imwrite: %s: invalid class for indexed image data", img_class);
     endif
-    if (isa (map, "double"))
-      if (ndims (map) != 2 || columns (map) != 3)
-        error ("imwrite: invalid size for colormap");
-      endif
-    else
-      error ("imwrite: %s invalid class for indexed image colormap",
-             class (map));
+    if (! iscolormap (map))
+      error ("imwrite: invalid indexed image colormap");
     endif
 
     ## FIXME -- we should really be writing indexed images here but

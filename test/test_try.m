@@ -63,9 +63,9 @@
 %!   a;
 %!   error ("Shoudn't get here");
 %! catch
-%!   assert (lasterr()(1:13), "`a' undefined");
+%!   assert (lasterr()(1:13), "'a' undefined");
 %! end_try_catch
-%! assert (lasterr()(1:13), "`a' undefined");
+%! assert (lasterr()(1:13), "'a' undefined");
 
 %% test/octave.test/try/try-6.m
 %!test 
@@ -86,7 +86,7 @@
 %!   a;
 %!   error ("Shoudn't get here");
 %! catch
-%!   assert (mangle (lasterr)(1:14), "<`a' undefined");
+%!   assert (mangle (lasterr)(1:14), "<'a' undefined");
 %! end_try_catch
 
 %% test/octave.test/try/try-8.m
@@ -97,13 +97,13 @@
 %!     a;
 %!     error ("Shoudn't get here");
 %!   catch
-%!     assert (lasterr()(1:13), "`a' undefined");
+%!     assert (lasterr()(1:13), "'a' undefined");
 %!   end_try_catch
 %!   clear b;
 %!   b;
 %!   error ("Shoudn't get here");
 %! catch
-%!   assert (lasterr()(1:13), "`b' undefined");
+%!   assert (lasterr()(1:13), "'b' undefined");
 %! end_try_catch
 
 %% test/octave.test/try/try-9.m
@@ -114,12 +114,12 @@
 %!   error ("Shoudn't get here");
 %! catch
 %!   try
-%!     assert (lasterr()(1:13), "`a' undefined");
+%!     assert (lasterr()(1:13), "'a' undefined");
 %!     clear b;
 %!     b;
 %!     error ("Shoudn't get here");
 %!   catch
-%!     assert (lasterr()(1:13), "`b' undefined");
+%!     assert (lasterr()(1:13), "'b' undefined");
 %!   end_try_catch
 %! end_try_catch
 
@@ -134,6 +134,6 @@
 %!     error (cstrcat ("rethrow: ", lasterr));
 %!   end_try_catch
 %! catch
-%!   assert (lasterr()(1:22), "rethrow: `a' undefined");
+%!   assert (lasterr()(1:22), "rethrow: 'a' undefined");
 %! end_try_catch
 

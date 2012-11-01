@@ -31,11 +31,11 @@ class webinfo : public QWidget
   Q_OBJECT
 public:
   webinfo (QWidget *parent = 0);
-  void set_info_path (QString info_path);
-  void load_node (QString node_name);
+  void set_info_path (const QString& info_path);
+  void load_node (const QString& node_name);
 
 public slots:
-  void link_clicked (const QUrl &link);
+  void link_clicked (const QUrl& link);
   void current_tab_changed (int index);
   void close_tab ();
   void search ();
@@ -55,6 +55,6 @@ private:
   parser              _parser;
   QFont               _font_web;
 
-  QTextBrowser *addNewTab (QString name);
+  QTextBrowser *addNewTab (const QString& name);
   void closeTab(int index);
 };

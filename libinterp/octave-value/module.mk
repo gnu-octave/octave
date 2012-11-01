@@ -1,7 +1,7 @@
 EXTRA_DIST += \
   octave-value/module.mk
 
-OV_INTTYPE_INCLUDES = \
+OV_INTTYPE_INC = \
   octave-value/ov-base-int.h \
   octave-value/ov-base-int.cc \
   octave-value/ov-int-traits.h \
@@ -15,13 +15,13 @@ OV_INTTYPE_INCLUDES = \
   octave-value/ov-uint64.h \
   octave-value/ov-uint8.h
 
-OV_SPARSE_INCLUDES = \
+OV_SPARSE_INC = \
   octave-value/ov-base-sparse.h \
   octave-value/ov-bool-sparse.h \
   octave-value/ov-cx-sparse.h \
   octave-value/ov-re-sparse.h
 
-OV_INCLUDES = \
+OCTAVE_VALUE_INC = \
   octave-value/ov-base-diag.h \
   octave-value/ov-base-diag.cc \
   octave-value/ov-base-mat.h \
@@ -67,7 +67,8 @@ OV_INCLUDES = \
   octave-value/ov-typeinfo.h \
   octave-value/ov-usr-fcn.h \
   octave-value/ov.h \
-  $(OV_INTTYPE_INCLUDES)
+  $(OV_INTTYPE_INC) \
+  $(OV_SPARSE_INC)
 
 OV_INTTYPE_SRC = \
   octave-value/ov-int16.cc \
@@ -129,3 +130,4 @@ OCTAVE_VALUE_SRC = \
 noinst_LTLIBRARIES += octave-value/liboctave-value.la
 
 octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
+octave_value_liboctave_value_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

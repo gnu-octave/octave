@@ -26,19 +26,21 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDockWidget>
 #include <QTreeView>
 #include <QSemaphore>
-#include "octave-link.h"
+
 #include "workspace-model.h"
 
 class workspace_view : public QDockWidget
 {
   Q_OBJECT
-public:
+  public:
   workspace_view (QWidget * parent = 0);
   ~workspace_view ();
 
 public slots:
   void handle_visibility_changed (bool visible);
   void model_changed ();
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 
 signals:
   /** Custom signal that tells if a user has clicke away that dock widget. */
@@ -63,7 +65,6 @@ private:
     bool local;
     bool global;
     bool persistent;
-    bool hidden;
   } _explicit_collapse;
 };
 

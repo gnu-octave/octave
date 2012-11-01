@@ -61,7 +61,7 @@ function opts = __fltk_print__ (opts)
       endif
     else
       error ("print:invalid-suffix", 
-             "invalid suffix `%s' for device `%s'.",
+             "invalid suffix '%s' for device '%s'.",
              opts.name(dot:end), lower (opts.devopt));
     endif
     gl2ps_device = {sprintf("%snotxt", lower (suffix))};

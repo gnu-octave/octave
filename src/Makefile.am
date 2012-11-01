@@ -22,38 +22,17 @@ include $(top_srcdir)/build-aux/common.mk
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I$(srcdir)/../libinterp \
+  -I$(top_srcdir)/liboctave/array \
+  -I$(top_srcdir)/liboctave/cruft/misc \
+  -I$(top_srcdir)/liboctave/numeric \
+  -I$(top_srcdir)/liboctave/util \
+  -I$(top_srcdir)/libinterp \
+  -I$(top_builddir)/libinterp/interpfcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
-if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-bin_PROGRAMS = \
-  mkoctfile \
-  $(OCTAVE_PROGRAMS) \
-  octave-config
+AM_CFLAGS += $(WARN_CFLAGS)
 
-mkoctfile_SOURCES =
-nodist_mkoctfile_SOURCES = mkoctfile.cc
-mkoctfile_LDADD = $(top_builddir)/libgnu/libgnu.la $(LIBS)
-
-octave_config_SOURCES =
-nodist_octave_config_SOURCES = octave-config.cc
-octave_config_LDADD = \
-  corefcn/libcorefcn.la \
-	$(top_builddir)/libgnu/libgnu.la \
-	$(LIBS)
-
-BUILT_SOURCES_EXTRA = \
-  mkoctfile.cc \
-  octave-config.cc
-else
-bin_PROGRAMS = \
-  octave \
-  octave-cli
-
-bin_SCRIPTS = \
-  mkoctfile \
-  octave-config
-endif
+AM_CXXFLAGS += $(WARN_CXXFLAGS)
 
 EXTRA_DIST = \
   mkoctfile.in.cc \
@@ -61,12 +40,17 @@ EXTRA_DIST = \
   octave-config.in.cc \
   octave-config.in.sh
 
-OCTAVE_CORE_LIBS = \
-  ../libinterp/liboctinterp.la \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la
+DISTCLEANFILES =
 
-include ../libgui/src/link-deps.mk
+OCTAVE_BINARIES = \
+  octave \
+  octave-cli
+
+OCTAVE_CORE_LIBS = \
+  $(top_builddir)/libinterp/liboctinterp.la \
+  $(top_builddir)/liboctave/liboctave.la
+
+include ../libgui/link-deps.mk
 
 octave_cli_SOURCES = main-cli.cc
 
@@ -80,7 +64,7 @@ octave_cli_LDFLAGS = \
 
 if AMCOND_BUILD_GUI
   octave_SOURCES = main.cc
-  OCTAVE_GUI_LIBS = ../libgui/src/liboctgui.la
+  OCTAVE_GUI_LIBS = $(top_builddir)/libgui/liboctgui.la
   OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
 else
   octave_SOURCES = main-cli.cc
@@ -102,11 +86,40 @@ octave_LDFLAGS = \
   $(OCTAVE_GUI_LINK_OPTS)
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+bin_PROGRAMS = \
+  $(OCTAVE_BINARIES) \
+  mkoctfile \
+  octave-config
+
+mkoctfile_SOURCES =
+nodist_mkoctfile_SOURCES = mkoctfile.cc
+mkoctfile_LDADD = $(top_builddir)/libgnu/libgnu.la $(LIBS)
+
+octave_config_SOURCES =
+nodist_octave_config_SOURCES = octave-config.cc
+octave_config_LDADD = \
+  $(top_builddir)/libinterp/corefcn/libcorefcn.la \
+  $(top_builddir)/libgnu/libgnu.la \
+  $(LIBS)
+
+DISTCLEANFILES += mkoctfile.cc octave-config.cc
+
+else
+bin_PROGRAMS = \
+  $(OCTAVE_BINARIES)
+
+bin_SCRIPTS = \
+  mkoctfile \
+  octave-config
+endif
+
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.in.cc Makefile
 	@$(do_subst_default_vals)
 
 mkoctfile.cc: mkoctfile.in.cc Makefile
 	@$(do_subst_config_vals)
+
 else
 octave-config: octave-config.in.sh Makefile
 	@$(do_subst_default_vals)

@@ -30,7 +30,7 @@ class octave_value_list;
 class unwind_protect;
 
 #define panic_impossible() \
-  panic ("impossible state reached in file `%s' at line %d", \
+  panic ("impossible state reached in file '%s' at line %d", \
          __FILE__, __LINE__)
 
 extern OCTINTERP_API void reset_error_handler (void);
@@ -122,7 +122,7 @@ extern OCTINTERP_API int warning_state;
 
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
-// the `unwind_protect' statement.
+// the 'unwind_protect' statement.
 extern OCTINTERP_API int buffer_error_messages;
 
 // TRUE means error messages are turned off.

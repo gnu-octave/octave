@@ -54,9 +54,7 @@ function [Y, newmap] = cmpermute (X, map, index)
     error ("cmpermute: X must be an indexed image");
   endif
 
-  if (! isnumeric (map) || iscomplex (map)
-      || ndims (map) != 2 || columns (map) != 3
-      || any (map(:) < 0) || any (map(:) > 1))
+  if (! iscolormap (map))
     error ("cmpermute: MAP must be a valid colormap");
   endif
 

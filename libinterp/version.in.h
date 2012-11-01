@@ -58,7 +58,7 @@ FITNESS FOR A PARTICULAR PURPOSE." ARG
 
 #define OCTAVE_CONTRIB_STATEMENT \
   "Please contribute if you find this software useful.\n\
-For more information, visit http://www.octave.org/help-wanted.html"
+For more information, visit http://www.octave.org/get-involved.html"
 
 #define OCTAVE_BUGS_STATEMENT \
   "Read http://www.octave.org/bugs.html to learn how to submit bug reports."
@@ -87,6 +87,6 @@ For more information, visit http://www.octave.org/help-wanted.html"
 
 #define OCTAVE_STARTUP_MESSAGE \
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-    ("  For details, type `warranty'.") "\n\n" \
-  "For information about changes from previous versions, type `news'."
+    ("  For details, type 'warranty'.") "\n\n" \
+  "For information about changes from previous versions, type 'news'."
 #endif

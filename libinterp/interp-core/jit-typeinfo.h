@@ -66,6 +66,8 @@ template <typename T, typename U>
 struct
 jit_array
 {
+  jit_array () : array (0) {}
+
   jit_array (T& from) : array (new T (from))
   {
     update ();
@@ -161,7 +163,7 @@ public:
   // retval. (on the stack)
   bool sret (jit_convention::type cc) const { return msret[cc]; }
 
-  void mark_sret (jit_convention::type cc = jit_convention::external)
+  void mark_sret (jit_convention::type cc)
   { msret[cc] = true; }
 
   // A function like: void foo (mytype arg0)
@@ -169,7 +171,7 @@ public:
   // Basically just pass by reference.
   bool pointer_arg (jit_convention::type cc) const { return mpointer_arg[cc]; }
 
-  void mark_pointer_arg (jit_convention::type cc = jit_convention::external)
+  void mark_pointer_arg (jit_convention::type cc)
   { mpointer_arg[cc] = true; }
 
   // Convert into an equivalent form before calling. For example, complex is
@@ -234,6 +236,9 @@ public:
 
   jit_function (const jit_function& fn);
 
+  // erase the interal LLVM function (if it exists). Will become invalid.
+  void erase (void);
+
   template <typename T>
   void add_mapping (llvm::ExecutionEngine *engine, T fn)
   {
@@ -278,7 +283,8 @@ public:
 
   llvm::Value *argument (llvm::IRBuilderD& builder, size_t idx) const;
 
-  void do_return (llvm::IRBuilderD& builder, llvm::Value *rval = 0);
+  void do_return (llvm::IRBuilderD& builder, llvm::Value *rval = 0,
+                  bool verify = true);
 
   llvm::Function *to_llvm (void) const { return llvm_function; }
 
@@ -452,6 +458,8 @@ public:
 
   static jit_type *get_scalar_ptr (void) { return instance->scalar_ptr; }
 
+  static jit_type *get_any_ptr (void) { return instance->any_ptr; }
+
   static jit_type *get_range (void) { return instance->range; }
 
   static jit_type *get_string (void) { return instance->string; }
@@ -498,9 +506,9 @@ public:
     return instance->release_fn.overload (type);
   }
 
-  static const jit_operation& copy (void)
+  static const jit_operation& destroy (void)
   {
-    return instance->copy_fn;
+    return instance->destroy_fn;
   }
 
   static const jit_operation& print_value (void)
@@ -567,6 +575,11 @@ public:
                                   jit_value *count)
   {
     return instance->do_end (value, index, count);
+  }
+
+  static const jit_operation& create_undef (void)
+  {
+    return instance->create_undef_fn;
   }
 private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
@@ -756,7 +769,7 @@ private:
   std::vector<jit_operation> unary_ops;
   jit_operation grab_fn;
   jit_operation release_fn;
-  jit_operation copy_fn;
+  jit_operation destroy_fn;
   jit_operation print_fn;
   jit_operation for_init_fn;
   jit_operation for_check_fn;
@@ -767,6 +780,7 @@ private:
   jit_paren_subsasgn paren_subsasgn_fn;
   jit_operation end1_fn;
   jit_operation end_fn;
+  jit_operation create_undef_fn;
 
   jit_function any_call;
 

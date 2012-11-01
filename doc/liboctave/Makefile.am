@@ -1,4 +1,4 @@
-# Makefile for octave's doc/liboctave directory
+# Makefile for Octave's doc/liboctave directory
 #
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
 #               2005, 2006, 2007 John W. Eaton
@@ -20,10 +20,6 @@
 # <http://www.gnu.org/licenses/>.
 
 include $(top_srcdir)/build-aux/common.mk
-
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-.NOTPARALLEL:
 
 TEXINFO_TEX = ../texinfo.tex
 
@@ -52,7 +48,13 @@ liboctave_TEXINFOS = \
 
 all-local: dvi html pdf ps
 
-liboctave.info liboctave.dvi liboctave.html liboctave.pdf: $(srcdir)/version.texi
+## The texi2dvi script (used to create both PDF and DVI output formats)
+## uses some fixed temporary file names.  In order to avoid a race condition
+## the DVI and PDF builds are forced to run serially through a Makefile rule.
+liboctave.pdf: liboctave.dvi
 
 EXTRA_DIST = liboctave.dvi liboctave.html liboctave.pdf liboctave.ps
+
+clean-local:
+	rm -rf t2d_cache
 

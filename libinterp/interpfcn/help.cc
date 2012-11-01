@@ -922,6 +922,95 @@ raw_help (const std::string& nm, bool& symbol_found)
   return h;
 }
 
+
+DEFUN (built_in_docstrings_file, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} built_in_docstrings_file ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} built_in_docstrings_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} built_in_docstrings_file (@var{new_val}, \"local\")\n\
+Query or set the internal variable that specifies the name of the\n\
+file containing docstrings for built-in Octave functions.\n\
+\n\
+Note that this variable is only used when Octave is initializing itself,\n\
+so setting it will have no effect.\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (built_in_docstrings_file);
+}
+
+void
+install_built_in_docstrings (void)
+{
+  std::string fname = Vbuilt_in_docstrings_file;
+
+  std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+
+  if (file)
+    {
+      // Ignore header;
+      file.ignore (1000, 0x1f);
+
+      if (file.gcount () == 1000)
+        {
+          // We use std::cerr here instead of calling Octave's warning
+          // function because install_built_in_docstrings is called
+          // before the interpreter is initialized, so warning messages
+          // won't work properly.
+
+          std::cerr << "warning: is builtin-docstrings file corrupted?"
+                    << std::endl;
+          return;
+        }
+
+      // FIXME -- eliminate fixed buffer size.
+      size_t bufsize = 100000;
+
+      OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
+
+      while (! file.eof ())
+        {
+          file.getline (buf, bufsize, 0x1f);
+
+          std::string tmp (buf);
+
+          size_t pos = tmp.find ('\n');
+
+          std::string fcn = tmp.substr (0, pos);
+
+          octave_value ov = symbol_table::find_built_in_function (fcn);
+
+          if (ov.is_defined ())
+            {
+              octave_function *fp = ov.function_value ();
+
+              if (fp)
+                {
+                  tmp = tmp.substr (pos+1);
+
+                  // Strip @c FILENAME which is part of current DOCSTRINGS
+                  // syntax.  This may disappear if a specific format for
+                  // docstring files is developed.
+                  while (tmp.length () > 2 && tmp[0] == '@' && tmp[1] == 'c')
+                    {
+                      pos = tmp.find ('\n');
+                      tmp = tmp.substr (pos+1);
+                    }
+
+                  fp->document (tmp);
+                }
+            }
+        }
+    }
+  else
+    {
+      // See note above about using std::cerr instead of warning.
+
+      std::cerr << "warning: docstring file '" << fname << "' not found"
+                << std::endl;
+    }
+
+}
+
 static void
 do_get_help_text (const std::string& name, std::string& text,
                   std::string& format)

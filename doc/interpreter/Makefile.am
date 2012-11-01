@@ -1,4 +1,4 @@
-# Makefile for octave's doc/interpreter directory
+# Makefile for Octave's doc/interpreter directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -19,10 +19,6 @@
 # <http://www.gnu.org/licenses/>.
 
 include $(top_srcdir)/build-aux/common.mk
-
-## Automake generated rules for documentation are not parallel-safe.
-## Restrict current directory to run serially
-## .NOTPARALLEL:
 
 TEXINFO_TEX = ../texinfo.tex
 
@@ -91,8 +87,9 @@ IMAGES = \
   $(IMAGES_EPS) \
   $(IMAGES_PDF) \
   $(IMAGES_PNG) \
-  $(IMAGES_TXT) \
-  $(HTMLDIR_IMAGES)
+  $(IMAGES_TXT)
+
+HTMLDIR_IMAGES = $(addprefix octave.html/, $(IMAGES_PNG))
 
 LOGOS = \
   octave_logo.eps \
@@ -153,31 +150,30 @@ MUNGED_TEXI_SRC = \
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
-info_TEXINFOS = octave.texi
-
-octave_TEXINFOS = \
+BUILT_TEXINFOS = \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 
-octave.info octave.dvi octave.html/index.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES) $(srcdir)/images.mk
+info_TEXINFOS = octave.texi
 
-octave.info: $(IMAGES_TXT)
+octave_TEXINFOS = \
+  $(BUILT_TEXINFOS) \
+  $(EXAMPLE_FILES) \
+  $(IMAGES) \
+  $(LOGOS) \
+  $(srcdir)/images.mk
 
-octave.dvi octave.ps: $(IMAGES_EPS) octave_logo.eps
+all-local: dvi html pdf ps doc-cache
 
-octave.html/index.html: $(IMAGES_PNG)
+html: $(HTMLDIR_IMAGES)
 
-octave.html:
-	if [ -d octave.html ]; then true; else mkdir octave.html; fi
-
-octave.pdf: $(IMAGES_PDF) octave_logo.pdf
+$(HTMLDIR_IMAGES): $(IMAGES_PNG) | octave.html
+	cp $(@F) octave.html
 
 ## The texi2dvi script (used to create both PDF and DVI output formats)
-## uses some fixed temporary file names, so wait for DVI file to be
-## generated before creating PDF file to avoid conflicts.
+## uses some fixed temporary file names.  In order to avoid a race condition
+## the DVI and PDF builds are forced to run serially through a Makefile rule.
 octave.pdf: octave.dvi
-
-all-local: dvi html pdf ps doc-cache $(HTMLDIR_IMAGES)
 
 # Prevent packaging of distribution unless all libraries 
 # necessary to create documentation are present
@@ -226,11 +222,11 @@ contributors.texi: contributors.in
 	  --no-validate --no-headers --no-split --output INSTALL $<
 	mv INSTALL ../../INSTALL.OCTAVE
 
+
 undocumented_list:
 	rm -f $@
 	-$(PERL) $(srcdir)/doccheck/mk_undocumented_list > $@
 .PHONY: undocumented_list
-
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 
@@ -253,6 +249,7 @@ spellcheck: $(SPELLCHECK_FILES)
 EXTRA_DIST = \
   config-images.sh \
   contributors.in \
+  doc-cache \
   find-docstring-files.sh \
   images \
   images.awk \
@@ -270,7 +267,10 @@ EXTRA_DIST = \
   $(LOGOS) \
   $(TXI_SRC)
 
-DISTCLEANFILES = $(octave_TEXINFOS) doc-cache
+clean-local:
+	rm -rf t2d_cache
+
+DISTCLEANFILES = $(BUILT_TEXINFOS) doc-cache
 
 MAINTAINERCLEANFILES = $(IMAGES)
 

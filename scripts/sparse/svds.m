@@ -288,7 +288,7 @@ endfunction
 %!
 %!testif HAVE_ARPACK
 %! s = svds (speye (10));
-%! assert (s, ones (6, 1), 2*eps);
+%! assert (s, ones (6, 1), 4*eps);
 
 %!test
 %! ## Restore random number generator seeds at end of tests

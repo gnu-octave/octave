@@ -405,8 +405,10 @@ function varargout = strread (str, format = "%f", varargin)
     ## Check for single delimiter followed/preceded by whitespace
     if (! isempty (delimiter_str))
       dlmstr = setdiff (delimiter_str, " ");
-      rxp_dlmwsp = sprintf ("( [%s]|[%s] )", dlmstr, dlmstr);
-      str = regexprep (str, rxp_dlmwsp, delimiter_str(1));
+      if (! isempty (dlmstr))
+        rxp_dlmwsp = sprintf ('( [%s] | [%s]|[%s] )', dlmstr, dlmstr, dlmstr);
+        str = regexprep (str, rxp_dlmwsp, delimiter_str(1));
+      endif
     endif
     ## Wipe leading and trailing whitespace on each line (it may be
     ## delimiter too)
@@ -528,7 +530,7 @@ function varargout = strread (str, format = "%f", varargin)
               ## ..or it IS found.  Add inferred width of current conversion field
               iwrdp += index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}) - 1;
             endif
-          elseif (iwrdp < iwrdl)
+          elseif (iwrdp <= iwrdl)
             ## No bordering literal to the right => field occupies (rest of) word
             nxt_wrd = 1;
           endif
@@ -955,6 +957,12 @@ endfunction
 %! assert (isempty (a));
 %! assert (isempty (b));
 %! assert (isempty (c));
+
+%% bug #37023
+%!test
+%! [a, b] = strread (" 1. 1 \n  2 3 \n", "%f %f", "endofline", "\n");
+%! assert (a, [1; 2], 1e-15);
+%! assert (b, [1; 3], 1e-15);
 
 %% Unsupported format specifiers
 %!test

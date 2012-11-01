@@ -18,6 +18,7 @@ image_FCN_FILES = \
   image/hot.m \
   image/hsv.m \
   image/hsv2rgb.m \
+  image/iscolormap.m \
   image/image.m \
   image/imagesc.m \
   image/imfinfo.m \

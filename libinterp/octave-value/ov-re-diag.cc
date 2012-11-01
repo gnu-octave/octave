@@ -163,7 +163,7 @@ octave_diag_matrix::map (unary_mapper_t umap) const
       return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
     case umap_sqrt:
       {
-        ComplexColumnVector tmp = matrix.diag ().map<Complex> (rc_sqrt);
+        ComplexColumnVector tmp = matrix.extract_diag ().map<Complex> (rc_sqrt);
         ComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;
@@ -181,7 +181,7 @@ octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 
-  Matrix m = Matrix (matrix.diag ());
+  Matrix m = Matrix (matrix.extract_diag ());
   save_type st = LS_DOUBLE;
   if (save_as_floats)
     {

@@ -44,29 +44,23 @@ along with Octave; see the file COPYING.  If not, see
 
 // Own includes
 #include "resource-manager.h"
-#include "octave-link.h"
 #include "workspace-view.h"
 #include "history-dockwidget.h"
 #include "files-dockwidget.h"
 #include "terminal-dockwidget.h"
 #include "documentation-dockwidget.h"
 #include "octave-qt-event-listener.h"
-#include "octave-event-observer.h"
 
 /**
-  * \class MainWindow
-  *
-  * Represents the main window.
-  */
-class main_window
-    : public QMainWindow, public octave_event_observer
+ * \class MainWindow
+ *
+ * Represents the main window.
+ */
+class main_window : public QMainWindow
 {
-Q_OBJECT public:
+  Q_OBJECT public:
   main_window (QWidget * parent = 0);
   ~main_window ();
-
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
 
   QTerminal *get_terminal_view () { return _terminal; }
   history_dock_widget *get_history_dock_widget ()
@@ -83,15 +77,15 @@ signals:
   void settings_changed ();
 
 public slots:
-  void report_status_message (QString statusMessage);
+  void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request ();
   void handle_load_workspace_request ();
   void handle_clear_workspace_request ();
   void handle_clear_history_request ();
-  void handle_command_double_clicked (QString command);
+  void handle_command_double_clicked (const QString& command);
   void new_file ();
   void open_file ();
-  void open_file (QString file_name);
+  void open_file (const QString& file_name);
   void open_bug_tracker_page ();
   void open_agora_page ();
   void open_octave_forge_page ();
@@ -100,9 +94,9 @@ public slots:
   void notice_settings ();
   void prepare_for_quit ();
   void reset_windows ();
-  void current_working_directory_has_changed (QString directory);
+  void current_working_directory_has_changed (const QString& directory);
   void change_current_working_directory ();
-  void set_current_working_directory (QString directory);
+  void set_current_working_directory (const QString& directory);
   void current_working_directory_up ();
 
   void focus_command_window ();
@@ -120,14 +114,37 @@ public slots:
   void debug_step_out ();
   void debug_quit ();
 
-protected:
-  void closeEvent (QCloseEvent * closeEvent);
   void read_settings ();
   void write_settings ();
+
+protected:
+  void closeEvent (QCloseEvent * closeEvent);
 
 private:
   void construct ();
   void establish_octave_link ();
+
+  void save_workspace_callback (const std::string& file);
+
+  void load_workspace_callback (const std::string& file);
+
+  void clear_workspace_callback (void);
+
+  void clear_history_callback (void);
+
+  void change_directory_callback (const std::string& directory);
+
+  void debug_continue_callback (void);
+
+  void debug_step_into_callback (void);
+
+  void debug_step_over_callback (void);
+
+  void debug_step_out_callback (void);
+
+  void debug_quit_callback (void);
+
+  void exit_callback (void);
 
   QTerminal *               _terminal;
   file_editor_interface *   _file_editor;

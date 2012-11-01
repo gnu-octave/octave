@@ -50,10 +50,10 @@ tree_identifier::eval_undefined_error (void)
 
   if (l == -1 && c == -1)
     ::error_with_id ("Octave:undefined-function",
-                     "`%s' undefined", name ().c_str ());
+                     "'%s' undefined", name ().c_str ());
   else
     ::error_with_id ("Octave:undefined-function",
-                     "`%s' undefined near line %d column %d",
+                     "'%s' undefined near line %d column %d",
                      name ().c_str (), l, c);
 }
 
@@ -74,7 +74,7 @@ tree_identifier::rvalue (int nargout)
       //
       // If this identifier refers to a function, we need to know
       // whether it is indexed so that we can do the same thing
-      // for `f' and `f()'.  If the index is present, return the
+      // for 'f' and 'f()'.  If the index is present, return the
       // function object and let tree_index_expression::rvalue
       // handle indexing.  Otherwise, arrange to call the function
       // here, so that we don't return the function definition as
@@ -94,6 +94,8 @@ tree_identifier::rvalue (int nargout)
           retval = val;
         }
     }
+  else if (sym->is_added_static ())
+    static_workspace_error ();
   else
     eval_undefined_error ();
 
@@ -116,6 +118,9 @@ tree_identifier::rvalue1 (int nargout)
 octave_lvalue
 tree_identifier::lvalue (void)
 {
+  if (sym->is_added_static ())
+    static_workspace_error ();
+
   return octave_lvalue (&(sym->varref ()));
 }
 

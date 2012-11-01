@@ -26,14 +26,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialog>
 
 namespace Ui {
-    class welcome_wizard;
+  class welcome_wizard;
 }
 
 class welcome_wizard : public QDialog
 {
   Q_OBJECT
 
-public:
+  public:
   explicit welcome_wizard (QWidget *parent = 0);
   ~welcome_wizard ();
 

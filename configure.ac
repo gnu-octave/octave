@@ -58,17 +58,16 @@ AC_USE_SYSTEM_EXTENSIONS
 
 ### Path separator.
 
-sepchar=:
-AC_ARG_WITH(sepchar,
+sepchar=':'
+AC_ARG_WITH([sepchar],
   [AS_HELP_STRING([--with-sepchar=<char>],
     [use <char> as the path separation character])])
 case $with_sepchar in
   yes | "")
-    case "$canonical_host_type" in
+    case $canonical_host_type in
       *-*-mingw* | *-*-msdosmsvc)
-        sepchar=';'
-        ;;
-      esac
+        sepchar=';' ;;
+    esac
     ;;
   no)
     AC_MSG_ERROR([You are required to define a path separation character])
@@ -85,36 +84,36 @@ AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"],
 
 ### Set default file locations
 
-OCTAVE_SET_DEFAULT(man1dir, '$(mandir)/man1')
-OCTAVE_SET_DEFAULT(man1ext, '.1')
-OCTAVE_SET_DEFAULT(doc_cache_file, '$(octetcdir)/doc-cache')
-OCTAVE_SET_DEFAULT(texi_macros_file, '$(octetcdir)/macros.texi')
-OCTAVE_SET_DEFAULT(infofile, '$(infodir)/octave.info')
-OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)/octave')
-OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')
-OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
-OCTAVE_SET_DEFAULT(localapifcnfiledir,
+OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
+OCTAVE_SET_DEFAULT([man1ext], '.1')
+OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
+OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
+OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
+OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
+OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
+OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
+OCTAVE_SET_DEFAULT([localapifcnfiledir],
   '$(datadir)/octave/site/$(api_version)/m')
-OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
-OCTAVE_SET_DEFAULT(octetcdir, '$(datadir)/octave/$(version)/etc')
-OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave/$(version)')
-OCTAVE_SET_DEFAULT(archlibdir,
+OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
+OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
+OCTAVE_SET_DEFAULT([octlibdir], '$(libdir)/octave/$(version)')
+OCTAVE_SET_DEFAULT([archlibdir],
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localarchlibdir,
+OCTAVE_SET_DEFAULT([localarchlibdir],
   '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localapiarchlibdir,
+OCTAVE_SET_DEFAULT([localapiarchlibdir],
   '$(libexecdir)/octave/$(api_version)/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localverarchlibdir,
+OCTAVE_SET_DEFAULT([localverarchlibdir],
   '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(octfiledir,
+OCTAVE_SET_DEFAULT([octfiledir],
   '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localoctfiledir,
+OCTAVE_SET_DEFAULT([localoctfiledir],
   '$(libdir)/octave/site/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localapioctfiledir,
+OCTAVE_SET_DEFAULT([localapioctfiledir],
   '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(localveroctfiledir,
+OCTAVE_SET_DEFAULT([localveroctfiledir],
   '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
+OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')
 
 ### Find pkg-config executable (sets $PKG_CONFIG)
 
@@ -130,9 +129,9 @@ AC_SUBST(config_opts)
 ### by default.
 
 BOUNDS_CHECKING=false
-AC_ARG_ENABLE(bounds-check,
+AC_ARG_ENABLE([bounds-check],
   [AS_HELP_STRING([--enable-bounds-check],
-    [bounds checking for indexing in internal array classes (default is no)])],
+    [enable bounds checking for indexing in internal array classes])],
   [if test "$enableval" = yes; then BOUNDS_CHECKING=true; fi], [])
 if $BOUNDS_CHECKING; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
@@ -142,9 +141,9 @@ fi
 ### Disabled by default.
 
 USE_OCTAVE_ALLOCATOR=false
-AC_ARG_ENABLE(octave-allocator,
+AC_ARG_ENABLE([octave-allocator],
   [AS_HELP_STRING([--enable-octave-allocator],
-    [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.  (default is no)])],
+    [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.])],
   [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=true; fi], [])
 if $USE_OCTAVE_ALLOCATOR; then
   AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1,
@@ -156,9 +155,9 @@ fi
 ### disabled by default.
 
 USE_ATOMIC_REFCOUNT=false
-AC_ARG_ENABLE(atomic-refcount,
+AC_ARG_ENABLE([atomic-refcount],
   [AS_HELP_STRING([--enable-atomic-refcount],
-    [use atomic operations for internal reference counting.  This is required for thread-safe behavior.  (default is no)])],
+    [use atomic operations for internal reference counting.  This is required for thread-safe behavior but does not by itself make Octave internals thread safe.])],
   [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=true; fi], [])
 if $USE_ATOMIC_REFCOUNT; then
   AC_DEFINE(USE_ATOMIC_REFCOUNT, 1,
@@ -169,8 +168,8 @@ fi
 ### This is useful, for example, when building Octave on systems without TeX.
 
 DOCDIR=doc
-AC_ARG_ENABLE(docs,
-  [AS_HELP_STRING([--enable-docs], [build documentation (default is yes)])],
+AC_ARG_ENABLE([docs],
+  [AS_HELP_STRING([--disable-docs], [don't build documentation files])],
   [if test "$enableval" = no; then
      DOCDIR=
      warn_docs="building documentation disabled; make dist will fail"
@@ -188,9 +187,9 @@ AC_ARG_ENABLE(64,
     [(EXPERIMENTAL) use 64-bit integers for array dimensions and indexing])],
   [if test "$enableval" = yes; then USE_64_BIT_IDX_T=true; fi], [])
 if $USE_64_BIT_IDX_T; then
-  AC_CHECK_SIZEOF(void *)
-  AC_CHECK_SIZEOF(int)
-  AC_CHECK_SIZEOF(long)
+  AC_CHECK_SIZEOF([void *])
+  AC_CHECK_SIZEOF([int])
+  AC_CHECK_SIZEOF([long])
   if test $ac_cv_sizeof_void_p -eq 8; then
     if test $ac_cv_sizeof_int -eq 8; then
       OCTAVE_IDX_TYPE=int
@@ -209,7 +208,7 @@ if $USE_64_BIT_IDX_T; then
   fi
 fi
 AC_SUBST(OCTAVE_IDX_TYPE)
-AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, $OCTAVE_IDX_TYPE,
+AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
 if $USE_64_BIT_IDX_T; then
   AC_DEFINE(USE_64_BIT_IDX_T, 1,
@@ -240,12 +239,12 @@ if test "$GXX" = yes; then
   AX_COMPARE_VERSION([$gxx_version], [lt], [3.5],
     [AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])])
 
-  GXX_VERSION="$gxx_version"
+  GXX_VERSION=$gxx_version
 fi
 AC_SUBST(GXX_VERSION)
 
-## FIXME: CXX_VERSION is deprecated and should be removed in version 3.12
-CXX_VERSION="$gxx_version"
+## FIXME: CXX_VERSION is deprecated and should be removed in Octave version 3.12
+CXX_VERSION=$gxx_version
 AC_SUBST(CXX_VERSION)
 
 ### Determine which C compiler to use (we expect to find gcc).
@@ -256,7 +255,7 @@ AC_PROG_GCC_TRADITIONAL
 
 ## Check for MSVC
 have_msvc=no
-case "$canonical_host_type" in
+case $canonical_host_type in
   *-*-msdosmsvc)
     have_msvc=yes
   ;;
@@ -288,12 +287,12 @@ if test "$GCC" = yes; then
     [warn_gcc_version="gcc version $gcc_version is likely to cause problems"
      OCTAVE_CONFIGURE_WARNING([warn_gcc_version])])
 
-  GCC_VERSION="$gcc_version"
+  GCC_VERSION=$gcc_version
 fi
 AC_SUBST(CC_VERSION)
 
-## FIXME: CC_VERSION is deprecated and should be removed in version 3.12
-CC_VERSION="$gcc_version"
+## FIXME: CC_VERSION is deprecated and should be removed in Octave version 3.12
+CC_VERSION=$gcc_version
 AC_SUBST(GCC_VERSION)
 
 ### Determine the compiler flag necessary to create dependencies
@@ -302,10 +301,8 @@ AC_SUBST(GCC_VERSION)
 INCLUDE_DEPS=true
 DEPEND_FLAGS="-M"
 DEPEND_EXTRA_SED_PATTERN=""
-if test "$GCC" = yes; then
-  true
-else
-  case "$canonical_host_type" in
+if test "$GCC" != yes; then
+  case $canonical_host_type in
     sparc-sun-solaris2* | i386-pc-solaris2*)
       DEPEND_FLAGS="-xM1"
       DEPEND_EXTRA_SED_PATTERN="-e '/\/opt\/SUNWspro/d'"
@@ -313,7 +310,7 @@ else
     *-*-msdosmsvc)
     ;;
     *-*-mingw*)
-      if test "$have_msvc" = "no"; then
+      if test $have_msvc = no; then
         INCLUDE_DEPS=false
       fi
     ;;
@@ -342,17 +339,17 @@ CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 ### Thus, we provide a FLOAT_TRUNCATE macro that may be defined to "volatile"
 ### when compiling for x87 target, or left empty for modern SSE math, that
 ### doesn't suffer from this problem at all.
-AC_ARG_ENABLE(float-truncate,
+AC_ARG_ENABLE([float-truncate],
   [AS_HELP_STRING([--enable-float-truncate],
     [enables truncating intermediate FP results.])],
   [if test "$enableval" = yes; then
-     ac_float_truncate=volatile;
+     ac_float_truncate=volatile
    else
-     ac_float_truncate=;
+     ac_float_truncate=
    fi],
   [ac_float_truncate=])
 
-AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, $ac_float_truncate, 
+AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate], 
   [Define to volatile if you need to truncate intermediate FP results.])
 
 ### Determine extra CFLAGS that may be necessary for Octave.
@@ -363,16 +360,16 @@ AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, $ac_float_truncate,
 ## On Alpha/OSF systems, we need -mieee.
 
 ieee_fp_flag=
-case "$canonical_host_type" in
+case $canonical_host_type in
   i[[3456789]]86-*-*)
     if test "$GCC" = yes; then
-      OCTAVE_CC_FLAG(-mieee-fp, [
+      OCTAVE_CC_FLAG([-mieee-fp], [
         ieee_fp_flag=-mieee-fp
         XTRA_CFLAGS="$XTRA_CFLAGS -mieee-fp"
         AC_MSG_NOTICE([adding -mieee-fp to XTRA_CFLAGS])])
     fi
     if test "$GXX" = yes; then
-      OCTAVE_CXX_FLAG(-mieee-fp, [
+      OCTAVE_CXX_FLAG([-mieee-fp], [
         ieee_fp_flag=-mieee-fp
         XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-fp"
         AC_MSG_NOTICE([adding -mieee-fp to XTRA_CXXFLAGS])])
@@ -380,33 +377,33 @@ case "$canonical_host_type" in
   ;;
   alpha*-*-*)
     if test "$GCC" = yes; then
-      OCTAVE_CC_FLAG(-mieee, [
+      OCTAVE_CC_FLAG([-mieee], [
         ieee_fp_flag=-mieee
         XTRA_CFLAGS="$XTRA_CFLAGS -mieee"
         AC_MSG_NOTICE([adding -mieee to XTRA_CFLAGS])])
     else
-      OCTAVE_CC_FLAG(-ieee, [
+      OCTAVE_CC_FLAG([-ieee], [
         ieee_fp_flag=-ieee
         XTRA_CFLAGS="$XTRA_CFLAGS -ieee"
         AC_MSG_NOTICE([adding -ieee to XTRA_CFLAGS])])
     fi
     if test "$GXX" = yes; then
-      OCTAVE_CXX_FLAG(-mieee, [
+      OCTAVE_CXX_FLAG([-mieee], [
         ieee_fp_flag=-mieee
         XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee"
         AC_MSG_NOTICE([adding -mieee to XTRA_CXXFLAGS])])
     else
-      OCTAVE_CXX_FLAG(-ieee, [
+      OCTAVE_CXX_FLAG([-ieee], [
         ieee_fp_flag=-ieee
         XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ieee"
         AC_MSG_NOTICE([adding -ieee to XTRA_CXXFLAGS])])
     fi
   ;;
   *ibm-aix4*)
-    OCTAVE_CC_FLAG(-mminimal-toc, [
+    OCTAVE_CC_FLAG([-mminimal-toc], [
       XTRA_CFLAGS="$XTRA_CFLAGS -mminimal-toc"])
 
-    OCTAVE_CXX_FLAG(-mminimal-toc, [
+    OCTAVE_CXX_FLAG([-mminimal-toc], [
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mminimal-toc"])
   ;;
 esac
@@ -418,12 +415,12 @@ AC_SUBST(XTRA_CXXFLAGS)
 ### it by default.  Enable it with the flag --enable-openmp.
 
 USE_OPENMP=false
-AC_ARG_ENABLE(openmp,
+AC_ARG_ENABLE([openmp],
   [AS_HELP_STRING([--enable-openmp],
     [(EXPERIMENTAL) use OpenMP SMP multi-threading])],
   [if test "$enableval" = yes; then USE_OPENMP=true; fi], [])
 if $USE_OPENMP; then
-  case "$canonical_host_type" in
+  case $canonical_host_type in
     *-*-mingw* | *-*-cygwin* | *-*-gnu*)
       OCTAVE_CHECK_OPENMP(-fopenmp)
     ;;
@@ -453,32 +450,20 @@ else
   BUILD_CXX='$(CXX)'
   BUILD_CXXFLAGS='$(CXXFLAGS)'
   BUILD_LDFLAGS='$(LDFLAGS)'
-  ## 2012/07/31: Commented out special build requirements
-  ## for Sun compiler now that gendoc.cc is no longer part of build.
-  ##################################################################
-  #case "$canonical_host_type" in
-  #  sparc-sun-solaris2*)
-  #    if test "$GCC" != yes; then
-  #      ## The Sun C++ compiler never seems to complete compiling
-  #      ## gendoc.cc unless we reduce the optimization level...
-  #      ## BUILD_CXXFLAGS="-g -O1"
-  #    fi
-  #  ;;
-  #esac
   BUILD_EXEEXT='$(EXEEXT)'
 fi
 
-AC_ARG_VAR(BUILD_CC,
+AC_ARG_VAR([BUILD_CC],
   [build system C compiler (used if cross compiling)])
-AC_ARG_VAR(BUILD_CFLAGS,
+AC_ARG_VAR([BUILD_CFLAGS],
   [build system C compiler flags (used if cross compiling)])
-AC_ARG_VAR(BUILD_CXX,
+AC_ARG_VAR([BUILD_CXX],
   [build system C++ compiler (used if cross compiling)])
-AC_ARG_VAR(BUILD_CXXFLAGS,
+AC_ARG_VAR([BUILD_CXXFLAGS],
   [build system C++ compiler flags (used if cross compiling)])
-AC_ARG_VAR(BUILD_LDFLAGS,
+AC_ARG_VAR([BUILD_LDFLAGS],
   [build system C++ compiler link flags (used if cross compiling)])
-AC_ARG_VAR(BUILD_EXEEXT,
+AC_ARG_VAR([BUILD_EXEEXT],
   [build system executable extension (used if cross compiling)])
 
 dnl This is bogus.  We shouldn't have to explicitly add libc too!
@@ -487,7 +472,7 @@ dnl in case -lm is needed to compile Fortran programs.
 
 ### Look for math library.  If found, this will add -lm to LIBS.
 
-case "$canonical_host_type" in
+case $canonical_host_type in
   *-*-linux*)
     AC_CHECK_LIB(m, sin, , , -lc)
   ;;
@@ -499,7 +484,7 @@ esac
 ### Determine the Fortran compiler and how to invoke it
 
 ## Default FFLAGS is -O.
-if test "x$FFLAGS" = x; then
+if test x"$FFLAGS" = x""; then
   FFLAGS="-O"
 fi
 
@@ -513,28 +498,28 @@ F77_TOLOWER=true
 F77_APPEND_UNDERSCORE=true
 F77_APPEND_EXTRA_UNDERSCORE=true
 
-case "$ac_cv_f77_mangling" in
+case $ac_cv_f77_mangling in
   "upper case") F77_TOLOWER=false ;;
 esac
-case "$ac_cv_f77_mangling" in
+case $ac_cv_f77_mangling in
   "no underscore") F77_APPEND_UNDERSCORE=false ;;
 esac
-case "$ac_cv_f77_mangling" in
+case $ac_cv_f77_mangling in
   "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=false ;;
 esac
 
-case "$canonical_host_type" in
+case $canonical_host_type in
   i[[3456789]]86-*-*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
-      OCTAVE_F77_FLAG(-mieee-fp)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      OCTAVE_F77_FLAG([-mieee-fp])
     fi
   ;;
   alpha*-*-*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
-      OCTAVE_F77_FLAG(-mieee)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      OCTAVE_F77_FLAG([-mieee])
     else
-      OCTAVE_F77_FLAG(-ieee)
-      OCTAVE_F77_FLAG(-fpe1)
+      OCTAVE_F77_FLAG([-ieee])
+      OCTAVE_F77_FLAG([-fpe1])
     fi
   ;;
   powerpc-apple-machten*)
@@ -556,22 +541,22 @@ fi
 
 OCTAVE_CHECK_FUNC_FORTRAN_ISNAN
 F77_ISNAN_MACRO=
-if test "x$octave_cv_func_fortran_isnan" = xno; then
+if test $octave_cv_func_fortran_isnan = no; then
   AC_MSG_NOTICE([substituting ISNAN(X) with X.NE.X in Fortran sources])
   F77_ISNAN_MACRO="s|ISNAN(\(@<:@^)@:>@*\))|(\1.NE.\1)|"
 fi
 AC_SUBST(F77_ISNAN_MACRO)
 
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
-if test "x$octave_cv_sizeof_fortran_integer" = xno; then
+if test $octave_cv_sizeof_fortran_integer = no; then
   if $USE_64_BIT_IDX_T; then
-    case "$F77" in
+    case $F77 in
       *gfortran*)
-        case "$F77_INTEGER_8_FLAG" in
+        case $F77_INTEGER_8_FLAG in
           *-fdefault-integer-8*)
           ;;
           *)
-            case "$FFLAGS" in
+            case $FFLAGS in
               *-fdefault-integer-8*)
                 AC_MSG_NOTICE([setting -fdefault-integer-8 in F77_INTEGER_8_FLAG instead of FFLAGS])
                 FFLAGS=`echo $FFLAGS | sed 's/-fdefault-integer-8//g'`
@@ -591,7 +576,7 @@ if test "x$octave_cv_sizeof_fortran_integer" = xno; then
     if test -z "$octave_cv_sizeof_fortran_integer"; then
       OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
     fi
-    if test "x$octave_cv_sizeof_fortran_integer" = xno; then
+    if test $octave_cv_sizeof_fortran_integer = no; then
       AC_MSG_ERROR([in order to build Octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
     fi
   else
@@ -600,10 +585,11 @@ if test "x$octave_cv_sizeof_fortran_integer" = xno; then
 fi
 AC_SUBST(F77_INTEGER_8_FLAG)
 
+## FIXME: Is this really used?  Makefile seems to use $F77 for compiler
 FC=$F77
 AC_SUBST(FC)
 
-OCTAVE_F77_FLAG(-ffloat-store, [
+OCTAVE_F77_FLAG([-ffloat-store], [
   AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
   F77_FLOAT_STORE_FLAG=-ffloat-store
   AC_SUBST(F77_FLOAT_STORE_FLAG)
@@ -636,7 +622,7 @@ AC_CACHE_CHECK([whether pcre.h defines the macros we need],
     #if defined (HAVE_PCRE_H)
     # include <pcre.h>
     #elif defined (HAVE_PCRE_PCRE_H)
-    # include <pcre.h>
+    # include <pcre/pcre.h>
     #error "NO PCRE HEADER"
     #endif
     #if defined (PCRE_INFO_NAMECOUNT) \
@@ -651,13 +637,13 @@ if test $ac_cv_pcre_h_macros_present = yes; then
   AC_CHECK_PROG(HAVE_PCRE_CONFIG, pcre-config, [yes], [no])
   if test $HAVE_PCRE_CONFIG = yes; then
     XTRA_CXXFLAGS="$XTRA_CXXFLAGS `pcre-config --cflags`"
-    REGEX_LIBS="`pcre-config --libs`"
+    REGEX_LIBS=`pcre-config --libs`
   else
     REGEX_LIBS="-lpcre"
   fi
   save_LIBS="$LIBS"
   LIBS="$REGEX_LIBS $LIBS"
-  AC_CHECK_FUNCS(pcre_compile,
+  AC_CHECK_FUNCS([pcre_compile],
     [AC_SUBST(REGEX_LIBS)],
     [AC_MSG_ERROR([$pcre_fail_msg])])
   LIBS="$save_LIBS"
@@ -672,100 +658,91 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [zlib.h], [gzclearerr])
 
 ### Check for the LLVM library
-dnl
-dnl LLVM is odd and has its own pkg-config like script.  We should probably
-dnl check for existence and ???.
-dnl
-save_CPPFLAGS="$CPPFLAGS"
-save_CXXFLAGS="$CXXFLAGS"
-save_LIBS="$LIBS"
-save_LDFLAGS="$LDFLAGS"
 
-warn_llvm="LLVM library fails tests.  JIT compilation will be disabled."
-
-AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
-
-AC_ARG_ENABLE([jit-debug],
-  AS_HELP_STRING([--enable-jit-debug], [enable debug printing of JIT IRs]))
-
-AS_IF([test "x$enable_jit_debug" = "xyes"], [
-  AC_DEFINE(OCTAVE_JIT_DEBUG, 1, [Define to 1 for JIT debug printing.])
-])
+build_jit=false
+AC_ARG_ENABLE([jit],
+  [AS_HELP_STRING([--enable-jit],
+    [(EXPERIMENTAL) enable JIT compiler])],
+  [if test "$enableval" = yes; then
+     build_jit=true
+   fi],
+  [])
 
 LLVM_CXXFLAGS=
 LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
 
-if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
-  ## We use -isystem if available because we do not want to see warnings in LLVM
-  LLVM_INCLUDE_FLAG=-I
-  OCTAVE_CC_FLAG(-isystem ., [
-    LLVM_INCLUDE_FLAG=-isystem
-    AC_MSG_NOTICE([using -isystem for llvm headers])])
+if test $build_jit = true; then
 
-  LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-  LLVM_LIBS=`$LLVM_CONFIG --libs`
-  dnl Use -isystem so we don't get warnings from llvm headers
-  LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
-  LLVM_CXXFLAGS=
+  ## Find llvm-config program from environment variable or by searching
+  AC_ARG_VAR([LLVM_CONFIG], [path to llvm-config utility])
+  AC_CHECK_PROG([LLVM_CONFIG], llvm-config, llvm-config, [])
 
-  dnl
-  dnl We define some extra flags that LLVM requires in order to include headers.
-  dnl Ideally we should get these from llvm-config, but llvm-config isn't very
-  dnl helpful.
-  dnl
-  CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
-  CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
-  LIBS="$LLVM_LIBS $LIBS"
-  LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+  if test -z "$LLVM_CONFIG"; then
+    warn_llvm="llvm-config utility not found.  JIT compiler is disabled."
+  else
+    dnl Preset warning message in case compile fails
+    warn_llvm="LLVM was not found or is to old.  JIT compiler is disabled."
 
-  AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([llvm/LLVMContext.h], [
-      AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-            #include <llvm/LLVMContext.h>
-            ]], [[
-            llvm::LLVMContext& ctx = llvm::getGlobalContext ();
-            ]])],
-          [AC_MSG_RESULT([yes])
-           warn_llvm=
-           XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"],
-          [AC_MSG_RESULT([no])
-      ])
-    ])
-  AC_LANG_POP(C++)
-  
-else
-  warn_llvm="LLVM_CONFIG not set.  JIT compilation will be disabled."
+    save_CPPFLAGS="$CPPFLAGS"
+    save_CXXFLAGS="$CXXFLAGS"
+
+    ## Use -isystem if available because we don't want to see warnings in LLVM
+    LLVM_INCLUDE_FLAG=-I
+    OCTAVE_CC_FLAG([-isystem .], [
+      LLVM_INCLUDE_FLAG=-isystem
+      AC_MSG_NOTICE([using -isystem for LLVM headers])])
+
+    dnl Use -isystem so we don't get warnings from llvm headers
+    LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
+    LLVM_CXXFLAGS=
+    LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
+    LLVM_LIBS=`$LLVM_CONFIG --libs`
+
+    dnl
+    dnl Define some extra flags that LLVM requires in order to include headers.
+    dnl Ideally we should get these from llvm-config, but llvm-config isn't
+    dnl very helpful.
+    dnl
+    CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
+    CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
+    AC_LANG_PUSH(C++)
+    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
+      warn_llvm=
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
+    AC_LANG_POP(C++)
+    CPPFLAGS="$save_CPPFLAGS"
+    CXXFLAGS="$save_CXXFLAGS"
+  fi
+
+  if test -z "$warn_llvm"; then
+    AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
+  else
+    build_jit=false
+    LLVM_CPPFLAGS=
+    LLVM_CXXFLAGS=
+    LLVM_LDFLAGS=
+    LLVM_LIBS=
+    OCTAVE_CONFIGURE_WARNING([warn_llvm])
+  fi
+dnl FIXME: Re-instate when JIT is enabled by default
+dnl else
+dnl   ## JIT build disabled
+dnl   warn_llvm="JIT compiler disabled, some performance loss for loops"
+dnl   OCTAVE_CONFIGURE_WARNING([warn_llvm])
 fi
 
-if test -z "$warn_llvm"; then
-  AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
-else
-  LLVM_CXXFLAGS=
-  LLVM_CPPFLAGS=
-  LLVM_LDFLAGS=
-  LLVM_LIBS=
-  OCTAVE_CONFIGURE_WARNING([warn_llvm])
-fi
-
-AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_CPPFLAGS)
+AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_LDFLAGS)
 AC_SUBST(LLVM_LIBS)
-
-CPPFLAGS="$save_CPPFLAGS"
-CXXFLAGS="$save_CXXFLAGS"
-LIBS="$save_LIBS"
-LDFLAGS="$save_LDFLAGS"
 
 ### Check for HDF5 library.
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(hdf5, HDF5,
   [HDF5 library not found.  Octave will not be able to save or load HDF5 data files.],
@@ -775,7 +752,7 @@ OCTAVE_CHECK_LIB(hdf5, HDF5,
    TEXINFO_HDF5="@set HAVE_HDF5"
    AC_DEFINE(HAVE_HDF5, 1,
      [Define to 1 if HDF5 is available and newer than version 1.6.])
-   if test "$have_msvc" = "yes"; then
+   if test $have_msvc = yes; then
      OCTAVE_CHECK_LIB_HDF5_DLL
    fi
   ])
@@ -796,15 +773,15 @@ OCTAVE_CHECK_LIB(fftw3f, FFTW3F,
 AM_CONDITIONAL([AMCOND_HAVE_FFTW],
   [test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"])
 
-## Subdirectory of libcruft to build if FFTW is not found.
+## Subdirectory of liboctave/cruft to build if FFTW is not found.
 FFT_DIR="fftpack"
 AC_SUBST(FFT_DIR)
 
 ### Check for GLPK library and header.
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
@@ -815,12 +792,29 @@ CPPFLAGS="$save_CPPFLAGS"
 ### Checks for cURL header and library.
 
 save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
+CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
+if test -z "$warn_curl"; then
+  ## Additional check on cURL library that was found
+  AC_CACHE_CHECK([for CURLOPT_DIRLISTONLY in curl/curl.h],
+    [octave_cv_header_define_curlopt_dirlistonly],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <curl/curl.h>
+      ]], [[
+      curl_easy_setopt ((CURL*)NULL, CURLOPT_DIRLISTONLY, 0);
+      ]])],
+      [octave_cv_header_define_curlopt_dirlistonly=no],
+      [octave_cv_header_define_curlopt_dirlistonly=yes])
+    ])
+  if test $octave_cv_header_define_curlopt_dirlistonly = yes; then
+    AC_DEFINE(CURLOPT_DIRLISTONLY, CURLOPT_FTPLISTONLY,
+      [Define to the legacy option name if using an older version of cURL.])]
+  fi
+fi
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 
@@ -854,22 +848,27 @@ PKG_CHECK_EXISTS([$magick++], [
   CPPFLAGS="$MAGICK_CPPFLAGS $CPPFLAGS"
   LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
   AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([Magick++.h], [
-      AC_MSG_CHECKING([for Magick::ColorRGB in Magick++.h])
-      AC_PREPROC_IFELSE(
-        [AC_LANG_SOURCE([[
-          #include <Magick++.h>
-          ]], [[
-          Magick::ColorRGB c;
-          ]])],
-        [AC_MSG_RESULT(yes)
-         warn_magick=],
-        [AC_MSG_RESULT(no)]
-      )
-    ])
+  AC_CHECK_HEADER([Magick++.h], [
+    AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
+      [octave_cv_func_magick_colorrgb],
+      [AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
+        #include <Magick++.h>
+        ]], [[
+        Magick::ColorRGB c;
+        ]])],
+        octave_cv_func_magick_colorrgb=yes,
+        octave_cv_func_magick_colorrgb=no)
+      ])
+    if test $octave_cv_func_magick_colorrgb = yes; then
+      warn_magick=
+    fi
+  ])
   AC_LANG_POP(C++)
   CPPFLAGS="$save_CPPFLAGS"
   LIBS="$save_LIBS"
+
+  AC_CHECK_FUNCS([setlocale], [],
+                 [warn_magick="$magick++ requires setlocale function.  The imread function for reading image files will not be fully functional."])
 ])
 
 if test -z "$warn_magick"; then
@@ -887,7 +886,7 @@ AC_SUBST(MAGICK_LIBS)
 ### Check for X11 libraries
 
 AC_PATH_X
-if test "$have_x" = "yes"; then
+if test "$have_x" = yes; then
   AC_DEFINE(HAVE_X_WINDOWS, 1, [Define to 1 if you have X11.])
 
   if test "$x_includes" != "NONE"; then
@@ -895,20 +894,20 @@ if test "$have_x" = "yes"; then
   fi
   AC_SUBST(X11_INCFLAGS)
 
-  if test -z $x_libraries; then
-    AC_CHECK_LIB(X11, XrmInitialize, [X11_LIBS=-lX11], [X11_LIBS=])
+  if test -z "$x_libraries"; then
+    AC_CHECK_LIB([X11], XrmInitialize, [X11_LIBS="-lX11"], [X11_LIBS=])
   elif test $x_libraries != "NONE"; then
-    AC_CHECK_LIB(X11, XrmInitialize, 
+    AC_CHECK_LIB([X11], XrmInitialize, 
       [X11_LIBS="-L$x_libraries -lX11"], [X11_LIBS=], "-L$x_libraries")
   fi
   AC_SUBST(X11_LIBS)
 fi
 
 ### Check for the Carbon framework on MacOSX systems
-OCTAVE_HAVE_FRAMEWORK(Carbon,
+OCTAVE_HAVE_FRAMEWORK([Carbon],
   [[#include <Carbon/Carbon.h>]], [[CGMainDisplayID ()]],
-  [have_framework_carbon="yes"], [have_framework_carbon="no"])
-if test $have_framework_carbon = "yes"; then
+  [have_framework_carbon=yes], [have_framework_carbon=no])
+if test $have_framework_carbon = yes; then
   AC_DEFINE(HAVE_FRAMEWORK_CARBON, 1,
     [Define to 1 if framework CARBON is available.])
   CARBON_LIBS="-Wl,-framework -Wl,Carbon"
@@ -918,17 +917,17 @@ fi
 
 ### Check for list of libraries needed for native graphics renderer.
 
-warn_freetype=""
 native_graphics=true
+warn_freetype=""
 
 check_opengl=false
 AC_ARG_WITH([opengl],
   [AS_HELP_STRING([--without-opengl],
     [don't use OpenGL libraries, disable native graphics])],
-  [if test "x$withval" = xno; then
+  [if test x"$withval" = x"no"; then
+     native_graphics=false
      warn_opengl="--without-opengl specified.  Native graphics will be disabled."
      OCTAVE_CONFIGURE_WARNING([warn_opengl])
-     native_graphics=false
    else
      check_opengl=true
    fi],
@@ -944,9 +943,9 @@ GRAPHICS_CFLAGS=
 
 if test -z "$OPENGL_LIBS"; then
   if $check_opengl; then
+    native_graphics=false
     warn_fltk_opengl="OpenGL libs (GL and GLU) not found.  Native graphics will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
-    native_graphics=false
   fi
 fi
 
@@ -979,8 +978,8 @@ if test -n "$OPENGL_LIBS"; then
   fi
 
   if test -n "$warn_fontconfig"; then
-    OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
     native_graphics=false
+    OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
   fi
 
   ## Check for FLTK (www.fltk.org) library
@@ -997,14 +996,14 @@ if test -n "$OPENGL_LIBS"; then
     [fltk_exec_prefix="$withval"],
     [fltk_exec_prefix=""])
 
-  if test -n "$fltk_exec_prefix"; then
+  if test x"$fltk_exec_prefix" != x""; then
     fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
     if test "x${FLTK_CONFIG+set}" != xset ; then
       FLTK_CONFIG="$fltk_exec_prefix/bin/fltk-config"
     fi
   fi
 
-  if test -n "$fltk_prefix"; then
+  if test x"$fltk_prefix" != x""; then
     fltk_args="$fltk_args --prefix=$fltk_prefix"
     if test x${FLTK_CONFIG+set} != xset ; then
       FLTK_CONFIG="$fltk_prefix/bin/fltk-config"
@@ -1016,38 +1015,46 @@ if test -n "$OPENGL_LIBS"; then
   warn_fltk_config=""
   warn_fltk_opengl=""
 
-  if test "$FLTK_CONFIG" = "no" ; then
+  if test "$FLTK_CONFIG" = no; then
+    native_graphics=false
     warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
-    native_graphics=false
   else
-    FLTK_CFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`"
-    FLTK_LDFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`"
+    FLTK_CFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
+    FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
 
-    case "$canonical_host_type" in
+    case $canonical_host_type in
       *-*-mingw*)
-        FLTK_LDFLAGS="`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`"
+        FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`
       ;;
     esac
 
-    AC_MSG_CHECKING([for OpenGL support in FLTK])
-    save_CFLAGS="$CFLAGS"
-    CFLAGS="$CFLAGS $FLTK_CFLAGS"
-    AC_COMPILE_IFELSE(
-      [AC_LANG_PROGRAM([[#include <FL/gl.h>]], [[int nothing = 0;]])],
-      [AC_MSG_RESULT([no])
-       warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."],
-      [AC_MSG_RESULT([yes])
-       AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])])
-         
+    AC_CACHE_CHECK([for OpenGL support in FLTK],
+      [octave_cv_fltk_opengl_support],
+      [save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS $FLTK_CFLAGS"
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <FL/gl.h>
+        ]], [[
+        int nothing = 0;
+        ]])],
+        octave_cv_fltk_opengl_support=no,
+        octave_cv_fltk_opengl_support=yes)
+      CFLAGS="$save_CFLAGS"
+      ])
+    if test $octave_cv_fltk_opengl_support = no; then
+      warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
+    else
+      AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
+    fi 
+
     if test -z "$warn_fltk_opengl"; then
       GRAPHICS_CFLAGS="$FLTK_CFLAGS"
       GRAPHICS_LIBS="$FLTK_LDFLAGS"
     else
-      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
       native_graphics=false
+      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
     fi
-    CFLAGS="$save_CFLAGS"
   fi
 fi
 
@@ -1057,7 +1064,7 @@ AC_SUBST(GRAPHICS_LIBS)
 ### Start determination of shared vs. static libraries
 
 ## Use -static if compiling on Alpha OSF/1 1.3 systems.
-case "$canonical_host_type" in
+case $canonical_host_type in
   alpha*-dec-osf1.3)
     LD_STATIC_FLAG=-static
   ;;
@@ -1077,20 +1084,20 @@ ifdef([LT_INIT], [], [
 LT_PREREQ([2.2.2])
 LT_INIT([disable-static dlopen win32-dll])
 
-if test x$enable_shared = xyes; then
+if test x"$enable_shared" = x"yes"; then
   SHARED_LIBS=true
 else
   SHARED_LIBS=false
 fi
 
-if test x$enable_static = xyes; then
+if test x"$enable_static" = x"yes"; then
   STATIC_LIBS=true
 else
   STATIC_LIBS=false
 fi
 
 XTRA_CRUFT_SH_LDFLAGS=
-if test "$have_msvc" = "yes"; then
+if test $have_msvc = yes; then
   FLIBS="$FLIBS -lkernel32"
   XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
 fi
@@ -1108,8 +1115,8 @@ AX_LAPACK([:], [:])
 ## Restore FFLAGS.
 FFLAGS="$save_FFLAGS"
 
-## Try again with -ff2c in FFLAGS
-if test "x$ax_blas_f77_func_ok" = "xno"; then
+## If necessary, try again with -ff2c in FFLAGS
+if test $ax_blas_f77_func_ok = no; then
   save_FFLAGS="$FFLAGS"
   FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
 
@@ -1118,7 +1125,7 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
 
   ## Restore FFLAGS, with -ff2c if that was helpful
 
-  if test "x$ax_blas_f77_func_ok" = "xno"; then
+  if test $ax_blas_f77_func_ok = no; then
     FFLAGS="$save_FFLAGS"
   else
     FFLAGS="-ff2c $save_FFLAGS"
@@ -1126,15 +1133,15 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
 fi
 
 ## On OSX, try again with a wrapper library (without -ff2c!)
-if test "x$ax_blas_f77_func_ok" = "xno"; then
-  case "$canonical_host_type" in
+if test $ax_blas_f77_func_ok = no; then
+  case $canonical_host_type in
     *-*-darwin*)
       ## test if wrapper functions help
       octave_blaswrap_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DUSE_BLASWRAP"
       AC_LANG_PUSH(C)
       AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-          #include "libcruft/misc/blaswrap.c"
+          #include "liboctave/cruft/misc/blaswrap.c"
         ]])],
         [mv conftest.$ac_objext blaswrap.$ac_objext
          octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
@@ -1151,15 +1158,15 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
 
          ## remove temp file
          rm -f blaswrap.$ac_objext],
-        [AC_MSG_FAILURE([cannot compile libcruft/misc/blaswrap.c])])
+        [AC_MSG_FAILURE([cannot compile liboctave/cruft/misc/blaswrap.c])])
       AC_LANG_POP(C)
       CFLAGS="$octave_blaswrap_save_CFLAGS"
 
-      if test "x$ax_blas_f77_func_ok" = "xno"; then
+      if test $ax_blas_f77_func_ok = no; then
         BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
       else
-        ## wrapper in libcruft, remove from BLAS_LIBS
-        BLAS_LIBS="`echo $BLAS_LIBS | sed -e 's/blaswrap.[[^ ]]* //g'`"
+        ## wrapper in cruft, remove from BLAS_LIBS
+        BLAS_LIBS=`echo $BLAS_LIBS | sed -e 's/blaswrap.[[^ ]]* //g'`
         AC_DEFINE(USE_BLASWRAP, 1,
           [Define to 1 if BLAS functions need to be wrapped (potentially needed for 64-bit OSX only).])
       fi
@@ -1167,8 +1174,8 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
   esac
 fi
 
-if test "x$ax_blas_f77_func_ok" = "xno"; then
-  if $USE_64_BIT_IDX_T && test "$ax_blas_integer_size_ok" = "no" ; then
+if test $ax_blas_f77_func_ok = no; then
+  if $USE_64_BIT_IDX_T && test $ax_blas_integer_size_ok = no; then
     ## Attempt to be more informative.
     AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers.  This is incompatible with --enable-64.])
   else
@@ -1176,7 +1183,7 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
   fi
 fi
 
-if test x$ax_blas_ok = xno || test x$ax_lapack_ok = xno; then
+if test $ax_blas_ok = no || test $ax_lapack_ok = no; then
   AC_MSG_ERROR([BLAS and LAPACK libraries are required])
 fi
 
@@ -1192,17 +1199,18 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [sqr1up],
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
-if test "$octave_qrupdate_ok" = yes; then
-  LIBS="$LIBS $QRUPDATE_LIBS"
-  AC_LANG_PUSH([Fortran 77])
-  AC_MSG_CHECKING([for slup1up in $QRUPDATE_LIBS])
-  octave_qrupdate_luu=no
-  AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])], [octave_qrupdate_luu=yes])
-  AC_MSG_RESULT([$octave_qrupdate_luu])
-  if test "$octave_qrupdate_luu" = yes; then
+if test $octave_cv_lib_qrupdate = yes; then
+  AC_CACHE_CHECK([for slup1up in $QRUPDATE_LIBS],
+    [octave_cv_func_slup1up],
+    [LIBS="$LIBS $QRUPDATE_LIBS"
+    AC_LANG_PUSH([Fortran 77])
+    AC_LINK_IFELSE([AC_LANG_CALL([], [slup1up])],
+      octave_cv_func_slup1up=yes, octave_cv_func_slup1up=no)
+    AC_LANG_POP([Fortran 77])
+  ])
+  if test $octave_cv_func_slup1up = yes; then
     AC_DEFINE(HAVE_QRUPDATE_LUU, 1, [Define to 1 if qrupdate supports LU updates.])
   fi
-  AC_LANG_POP([Fortran 77])
 fi
 LIBS="$save_LIBS"
 
@@ -1238,8 +1246,9 @@ OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [ccolamd],
   [], [don't use CCOLAMD library, disable some sparse matrix functionality])
 
-### Check for CHOLMOD library.  If your cholmod library requires cblas,
-### then you will need to configure with --with-cholmod="-lcholmod -lcblas".
+### Check for CHOLMOD library.
+### If your cholmod library requires cblas, then you will need to
+### configure with --with-cholmod="-lcholmod -lcblas".
 
 save_LIBS="$LIBS"
 LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
@@ -1264,7 +1273,7 @@ save_LIBS="$LIBS"
 save_CPPFLAGS="$CPPFLAGS"
 LIBS="$AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
 CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
-OCTAVE_CHECK_LIB(umfpack, UMFPACK,
+OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
   [umfpack_zi_get_determinant],
@@ -1275,9 +1284,10 @@ LIBS="$save_LIBS"
 if test -z "$UMFPACK_LIBS"; then
   ## Invalidate the cache and try again with -lcblas.
   $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+  $as_unset octave_cv_lib_umfpack
   save_LIBS="$LIBS"
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
-  OCTAVE_CHECK_LIB(umfpack, UMFPACK,
+  OCTAVE_CHECK_LIB([umfpack], UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
     [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
     [umfpack_zi_get_determinant],
@@ -1288,18 +1298,48 @@ if test -z "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
+## Test features of the installed UMFPACK library
+
 if test -n "$UMFPACK_LIBS"; then
+  ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time()
   save_LIBS="$LIBS";
-  LIBS="$UMFPACK_LIBS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
-  OCTAVE_UMFPACK_SEPARATE_SPLIT
+  LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  xtra_libs=
+  OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
+  if test $octave_cv_umfpack_need_suitesparse_time = yes; then
+    AC_CHECK_LIB([rt], [clock_gettime], [xtra_libs="-lrt"], [xtra_libs=])
+    ## FIXME: This library list is only accurate for Linux, Mac OS X.
+    ##        Possibly need other library names for MinGW, Cygwin.
+    AC_SEARCH_LIBS([SuiteSparse_time],
+                   [suitesparseconfig SuiteSparse],
+                   [], [], [$xtra_libs])
+    case $ac_cv_search_SuiteSparse_time in
+      -l*)  
+        UMFPACK_LIBS="$UMFPACK_LIBS $ac_cv_search_SuiteSparse_time"
+      ;;
+      no)
+        UMFPACK_LIBS=
+        AC_MSG_WARN([UMFPACK library found but is missing SuiteSparse_time functionality.])
+        AC_MSG_WARN([UMFPACK library will be disabled.])
+      ;;
+    esac
+  fi
   LIBS="$save_LIBS"
+
+  ## Check for UMFPACK separately split complex matrix and RHS.
+  if test -n "$UMFPACK_LIBS"; then
+    save_LIBS="$LIBS";
+    LIBS="$UMFPACK_LIBS $CHOLMOD_LDFLAGS $CHOLMOD_LIBS $AMD_LDFLAGS $AMD_LIBS $COLAMD_LDFLAGS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
+    OCTAVE_UMFPACK_SEPARATE_SPLIT
+    LIBS="$save_LIBS"
+  fi
 fi
 
 ### Check for ARPACK library.
 
 save_LIBS="$LIBS"
 LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
-OCTAVE_CHECK_LIB(arpack, ARPACK,
+OCTAVE_CHECK_LIB([arpack], ARPACK,
   [ARPACK not found.  The eigs function will be disabled.],
   [],
   [dseupd],
@@ -1320,12 +1360,12 @@ OCTAVE_ENABLE_READLINE
 ### example, OS X and Windows).
 
 AC_ARG_ENABLE([dl],
-  [AS_HELP_STRING([--enable-dl],
-    [allow loading of dynamically linked modules (not all systems)])],
-  [case "${enableval}" in
+  [AS_HELP_STRING([--disable-dl],
+    [disable loading of dynamically linked modules])],
+  [case $enableval in
      yes) ENABLE_DYNAMIC_LINKING=true ;;
      no) ENABLE_DYNAMIC_LINKING=false ;;
-     *) AC_MSG_ERROR([bad value ${enableval} for --enable-dl]) ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-dl]) ;;
    esac],
   [ENABLE_DYNAMIC_LINKING=true])
 
@@ -1361,11 +1401,12 @@ TEMPLATE_ARFLAGS="$ARFLAGS"
 CRUFT_DLL_DEFS=
 OCTAVE_DLL_DEFS=
 OCTINTERP_DLL_DEFS=
+OCTGUI_DLL_DEFS=
 OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 ldpreloadsep=" "
 BUILD_COMPILED_AUX_PROGRAMS=false
-case "$canonical_host_type" in
+case $canonical_host_type in
   *-*-386bsd* | *-*-netbsd*)
     SH_LD=ld
     SH_LDFLAGS=-Bshareable
@@ -1386,7 +1427,7 @@ case "$canonical_host_type" in
     DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/libinterp/octave $(LDFLAGS)'
     MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $$BINDIR/octave-$$OCTAVE_VERSION$$EXEEXT'
     SH_LDFLAGS='-dynamiclib -single_module $(LDFLAGS)'
-    case "$canonical_host_type" in
+    case $canonical_host_type in
       powerpc-*)
         CXXPICFLAG=
         CPICFLAG=
@@ -1418,7 +1459,7 @@ case "$canonical_host_type" in
   ;;
   *-*-mingw*)
     BUILD_COMPILED_AUX_PROGRAMS=true
-    if test "$have_msvc" = "yes"; then
+    if test $have_msvc = yes; then
       DL_LDFLAGS="-shared"
       CPICFLAG=
       CXXPICFLAG=
@@ -1431,7 +1472,7 @@ case "$canonical_host_type" in
       SHLLIBPRE=
       SHLBINPRE=
       SH_LDFLAGS="-shared"
-      if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
+      if test -n "`echo $CFLAGS | grep -e '-g'`" || test -n "`echo $CXXFLAGS | grep -e '-g'`"; then
         DL_LDFLAGS="$DL_LDFLAGS -g"
         SH_LDFLAGS="$SH_LDFLAGS -g"
       fi
@@ -1442,6 +1483,7 @@ case "$canonical_host_type" in
       CRUFT_DLL_DEFS="-DCRUFT_DLL"
       OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
       OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+      OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
       OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
     else
       CPICFLAG=
@@ -1471,7 +1513,7 @@ case "$canonical_host_type" in
     SHLLIBPRE=
     SHLBINPRE=
     SH_LDFLAGS="-shared"
-    if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
+    if test -n "`echo $CFLAGS | grep -e '-g'`" || test -n "`echo $CXXFLAGS | grep -e '-g'`"; then
       DL_LDFLAGS="$DL_LDFLAGS -g"
       SH_LDFLAGS="$SH_LDFLAGS -g"
     fi
@@ -1481,7 +1523,7 @@ case "$canonical_host_type" in
     ## Extra compilation flags.
     CRUFT_DLL_DEFS="-DCRUFT_DLL"
     OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
-    OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+    OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
     OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
   ;;
   *-*-linux* | *-*-gnu*)
@@ -1499,7 +1541,7 @@ case "$canonical_host_type" in
     library_path_var=LIBPATH
   ;;
   hppa*-hp-hpux*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
+    if test $ac_cv_f77_compiler_gnu = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=+Z
@@ -1509,7 +1551,7 @@ case "$canonical_host_type" in
     library_path_var=SHLIB_PATH
   ;;
   ia64*-hp-hpux*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
+    if test $ac_cv_f77_compiler_gnu = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=+Z
@@ -1522,7 +1564,7 @@ case "$canonical_host_type" in
     FPICFLAG=
   ;;
   sparc-sun-sunos4*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
+    if test $ac_cv_f77_compiler_gnu = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=-PIC
@@ -1531,7 +1573,7 @@ case "$canonical_host_type" in
     SH_LDFLAGS="-assert nodefinitions"
   ;;
   sparc-sun-solaris2* | i386-pc-solaris2*)
-    if test "$ac_cv_f77_compiler_gnu" = yes; then
+    if test $ac_cv_f77_compiler_gnu = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=-KPIC
@@ -1549,9 +1591,7 @@ case "$canonical_host_type" in
       SH_LDFLAGS=-G
     fi
     ## Template closures in archive libraries need a different mechanism.
-    if test "$GXX" = yes; then
-      true
-    else
+    if test "$GXX" != yes; then
       TEMPLATE_AR='$(CXX)'
       TEMPLATE_ARFLAGS="-xar -o"
     fi
@@ -1587,6 +1627,7 @@ AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
 AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
 AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
@@ -1615,6 +1656,7 @@ AC_SUBST(TEMPLATE_ARFLAGS)
 AC_SUBST(CRUFT_DLL_DEFS)
 AC_SUBST(OCTAVE_DLL_DEFS)
 AC_SUBST(OCTINTERP_DLL_DEFS)
+AC_SUBST(OCTGUI_DLL_DEFS)
 AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 AC_SUBST(library_path_var)
 AC_SUBST(ldpreloadsep)
@@ -1622,12 +1664,12 @@ AC_SUBST(ldpreloadsep)
 ### More configure argument checking related to linking
 
 AC_ARG_ENABLE([no-undefined],
-  [AS_HELP_STRING([--enable-no-undefined],
-    [pass -no-undefined to libtool when linking Octave and its shared libraries (on by default)])],
-  [case "${enableval}" in
+  [AS_HELP_STRING([--disable-no-undefined],
+    [don't pass -no-undefined to libtool when linking Octave and its shared libraries])],
+  [case $enableval in
      yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
      no)  NO_UNDEFINED_LDFLAG="" ;;
-     *) AC_MSG_ERROR([bad value ${enableval} for --enable-link-all-depenencies]) ;;
+     *) AC_MSG_ERROR([bad value $enableval for --disable-no-undefined]) ;;
    esac],
   [NO_UNDEFINED_LDFLAG="-no-undefined"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
@@ -1635,13 +1677,14 @@ AC_SUBST(NO_UNDEFINED_LDFLAG)
 AC_ARG_ENABLE([link-all-dependencies],
   [AS_HELP_STRING([--enable-link-all-dependencies],
     [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
-  [case "${enableval}" in
+  [case $enableval in
      yes) link_all_deps=true ;;
      no)  link_all_deps=false ;;
-     *) AC_MSG_ERROR([bad value ${enableval} for --enable-link-all-depenencies]) ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-depenencies])
+     ;;
    esac],
   [link_all_deps=false])
-AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test x$link_all_deps = xtrue])
+AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = true])
 
 ## Dynamic linking is now enabled only if we are building shared
 ## libs and some API for dynamic linking has been detected.
@@ -1659,13 +1702,13 @@ dyld_api=false
 
 if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
-  case "$lt_cv_dlopen" in
+  case $lt_cv_dlopen in
     dlopen)
       dlopen_api=true
       DL_API_MSG="(dlopen)"
       AC_DEFINE(HAVE_DLOPEN_API, 1,
         [Define to 1 if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
-      OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
+      OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
     ;;
     shl_load)
       shl_load_api=true
@@ -1703,16 +1746,14 @@ if $ENABLE_DYNAMIC_LINKING; then
 fi
 
 AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
-  [test x$ENABLE_DYNAMIC_LINKING = xtrue])
+  [test x"$ENABLE_DYNAMIC_LINKING" = x"true"])
 
 if $SHARED_LIBS; then
-  LIBOCTINTERP=-loctinterp$SHLLINKEXT
-  LIBOCTAVE=-loctave$SHLLINKEXT
-  LIBCRUFT=-lcruft$SHLLINKEXT
+  LIBOCTINTERP="-loctinterp$SHLLINKEXT"
+  LIBOCTAVE="-loctave$SHLLINKEXT"
 else
   LIBOCTINTERP='$(top_builddir)/libinterp/liboctinterp.$(LIBEXT)'
   LIBOCTAVE='$(top_builddir)/liboctave/liboctave.$(LIBEXT)'
-  LIBCRUFT='$(top_builddir)/libcruft/libcruft.$(LIBEXT)'
 fi
 
 AC_SUBST(LD_CXX)
@@ -1720,15 +1761,14 @@ AC_SUBST(RDYNAMIC_FLAG)
 AC_SUBST(ENABLE_DYNAMIC_LINKING)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
-AC_SUBST(LIBCRUFT)
 
 ### Check for existence of various libraries
 
 ## OS-specific test for dirent, opendir.
-case "$canonical_host_type" in
+case $canonical_host_type in
   *-*-mingw*)
-    if test "$have_msvc" = "yes"; then
-      AC_CHECK_LIB(dirent, opendir)
+    if test $have_msvc = yes; then
+      AC_CHECK_LIB([dirent], [opendir])
       LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
     else
       LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
@@ -1736,83 +1776,53 @@ case "$canonical_host_type" in
     LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
   *-*-msdosmsvc*)
-    AC_CHECK_LIB(dirent, opendir)
+    AC_CHECK_LIB([dirent], [opendir])
     LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
 esac
 
 ## Find a termlib to use.
-octave_found_termlib=no
-for termlib in ncurses curses termcap terminfo termlib; do
-  AC_CHECK_LIB(${termlib}, tputs, [
-    TERM_LIBS="-l${termlib}"
-    octave_found_termlib=yes
-    break])
-done
-
-if test "$octave_found_termlib" = no; then
-  warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, o\
-r -ltermlib!"
-  AC_MSG_WARN([$warn_termlibs])
-fi
-AC_SUBST(TERM_LIBS)
+OCTAVE_CHECK_LIB_TERMLIB
 
 ### Checks for header files.
 
 AC_HEADER_DIRENT
 AC_HEADER_SYS_WAIT
 
-dnl FIXME: We should probably only generate this file if it is missing.
-### Produce unistd.h for MSVC target, this simplifies changes in
-### Octave source tree and avoid problems with lex-generated code.
-case "$canonical_host_type" in
-  *-*-msdosmsvc)
-    AC_MSG_NOTICE([Generating replacement for <unistd.h> for MSVC])
-    cat << \EOF > unistd.h
-/* File generated by configure script. */
-#include <direct.h>
-#include <io.h>
-#include <process.h>
-EOF
-    CPPFLAGS="-I. $CPPFLAGS"
-    ;;
-esac
-
 ## C headers
 
-AC_CHECK_HEADERS(curses.h direct.h dlfcn.h floatingpoint.h grp.h \
-  ieeefp.h inttypes.h locale.h memory.h ncurses.h poll.h pthread.h \
-  pwd.h sunmath.h sys/ioctl.h sys/param.h sys/poll.h sys/resource.h \
-  sys/select.h sys/utsname.h termcap.h)
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h grp.h])
+AC_CHECK_HEADERS([ieeefp.h inttypes.h locale.h memory.h ncurses.h])
+AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
+AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h ])
+AC_CHECK_HEADERS([sys/select.h sys/utsname.h termcap.h])
 
 ## C++ headers
 
 AC_LANG_PUSH(C++)
 
-AC_CHECK_HEADERS(sstream)
+AC_CHECK_HEADERS([sstream])
 OCTAVE_UNORDERED_MAP_HEADERS
 
 AC_LANG_POP(C++)
 
 ## Find a termio header to include.
 
-have_termios_h=no
-AC_CHECK_HEADERS(termios.h, have_termios_h=yes)
-AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
-AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
-AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
-AC_CHECK_HEADERS(conio.h, have_conio_h=yes, have_conio_h=no)
+AC_CHECK_HEADERS([termios.h], have_termios_h=yes, have_termios_h=no)
+AC_CHECK_HEADERS([termio.h], have_termio_h=yes, have_termio_h=no)
+AC_CHECK_HEADERS([sgtty.h], have_sgtty_h=yes, have_sgtty_h=no)
+AC_CHECK_HEADERS([fnmatch.h], have_fnmatch_h=yes, have_fnmatch_h=no)
+AC_CHECK_HEADERS([conio.h], have_conio_h=yes, have_conio_h=no)
 
-if test "$have_termios_h" = yes \
-    || test "$have_termio_h" = yes \
-    || test "$have_sgtty_h" = yes; then
-  true
-else
+if test $have_termios_h != yes \
+    && test $have_termio_h != yes \
+    && test $have_sgtty_h != yes; then
   AC_MSG_WARN([I couldn't find termios.h, termio.h, or sgtty.h!])
 fi
 
 ## For MSVC compilers, avoid #define of min/max from windows.h header
-if test "$have_msvc" = "yes"; then
+if test $have_msvc = yes; then
   AC_DEFINE(NOMINMAX, 1, [Define to 1 if you want to avoid min/max macro definition in Windows headers.])
 fi
 
@@ -1833,16 +1843,17 @@ AC_CHECK_TYPES([ptrdiff_t])
 ## How big are ints and how are they oriented?
 ## These could probably be eliminated in favor of run-time checks.
 
-AC_CHECK_SIZEOF(short)
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(long)
-AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF([short])
+AC_CHECK_SIZEOF([int])
+AC_CHECK_SIZEOF([long])
+AC_CHECK_SIZEOF([long long])
 ## Check for long double type (for 64-bit integers)
-AC_CHECK_SIZEOF(long double)
+AC_CHECK_SIZEOF([long double])
 
 ### Check structures and existence of necessary members
 
-AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct stat.st_rdev])
+AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks,
+                  struct stat.st_rdev])
 AC_CHECK_MEMBERS([struct group.gr_passwd])
 
 AC_STRUCT_TIMEZONE
@@ -1893,17 +1904,24 @@ gl_INIT
 
 ### Checks for functions and variables.
 
-AC_CHECK_FUNCS(basename canonicalize_file_name \
-  chmod dup2 endgrent endpwent execvp expm1 expm1f fork \
-  getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
-  getppid getpwent getpwuid getuid getwd _kbhit kill \
-  lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
-  mkstemp pipe putenv \
-  realpath resolvepath rindex roundl select setgrent setlocale \
-  setpwent setvbuf siglongjmp \
-  strsignal tempnam tgammaf umask \
-  uname utime waitpid \
-  _chmod x_utime _utime32)
+dnl These checks define/undefine HAVE_FUNCNAME in config.h.
+dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_FUNCS([canonicalize_file_name dup2])
+AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
+AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
+AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
+AC_CHECK_FUNCS([kill lgamma lgammaf lgamma_r lgammaf_r])
+AC_CHECK_FUNCS([log1p log1pf pipe])
+AC_CHECK_FUNCS([realpath resolvepath roundl])
+AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
+AC_CHECK_FUNCS([tempnam tgammaf toascii])
+AC_CHECK_FUNCS([umask uname waitpid])
+AC_CHECK_FUNCS([_kbhit])
+
+dnl There are no workarounds in the code for missing these functions.
+AC_CHECK_FUNCS([modf pow sqrt sqrtf], [],
+               [AC_MSG_ERROR([Missing function required to build Octave])])
 
 ## exp2, round, tgamma function checks
 AC_LANG_PUSH(C++)
@@ -1934,9 +1952,9 @@ OCTAVE_CHECK_FUNC_CMATH(isnan)
 OCTAVE_CHECK_FUNC_CMATH(isinf)
 OCTAVE_CHECK_FUNC_CMATH(isfinite)
 
-dnl Would like to get rid of this cruft, and just have
+dnl Would like to get rid of this crap, and just have
 dnl
-dnl   AC_CHECK_FUNCS(finite isnan isinf)
+dnl   AC_CHECK_FUNCS([finite isnan isinf])
 dnl
 dnl instead, but that used to fail on some systems...
 dnl
@@ -1947,50 +1965,24 @@ dnl with an argument.
 
 ### I am told that Inf and NaN don't work on m68k HP sytems.
 
-case "$canonical_host_type" in
+case $canonical_host_type in
   m68k-hp-hpux*)
   ;;
   *)
-    AC_CHECK_FUNCS(finite isnan isinf signbit)
-    AC_CHECK_FUNCS(_finite _isnan)
-    AC_CHECK_DECLS(signbit, , , [#include <math.h>])
+    AC_CHECK_FUNCS([finite isnan isinf signbit])
+    AC_CHECK_FUNCS([_finite _isnan])
+    AC_CHECK_DECLS([signbit], , , [#include <math.h>])
   ;;
 esac
 
 ## Check for nonstandard, but common math functions, that we need.
 
-AC_CHECK_FUNCS(acosh acoshf asinh asinhf atanh atanhf cbrt cbrtf erf erff \
-  erfc erfcf exp2f hypotf _hypotf log2 log2f)
-
-## MinGW exception for mkstemp
-case "$canonical_host_type" in
-  *-*-mingw*)
-    ## MinGW does not provide a mkstemp function.  However, it provides
-    ## the mkstemps function in libiberty.
-    AC_MSG_CHECKING([for mkstemps in libiberty])
-    save_LIBS="$LIBS"
-    LIBS="-liberty $LIBS"
-    AC_LINK_IFELSE([
-      AC_LANG_PROGRAM([[
-        int mkstemps (char *pattern, int suffix_len);
-        ]], [[
-        mkstemps ("XXXXXX", 0);
-        ]]
-      )],
-    [AC_MSG_RESULT(yes)
-     HAVE_MKSTEMPS=yes
-     AC_DEFINE(HAVE_MKSTEMPS, 1,
-       [Define to 1 if mkstemps is available in libiberty.])
-    ],
-    [AC_MSG_RESULT(no)
-     HAVE_MKSTEMPS=no
-     LIBS="$save_LIBS"
-    ])
-   ;;
-esac
+dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
+AC_CHECK_FUNCS([acosh acoshf asinh asinhf atanh atanhf cbrt cbrtf])
+AC_CHECK_FUNCS([erf erff erfc erfcf exp2f hypotf _hypotf log2 log2f])
 
 ## Windows-specific tests for extra #defines
-case "$canonical_host_type" in
+case $canonical_host_type in
   *-*-msdosmsvc | *-*-mingw*)
     AC_MSG_CHECKING([for required _WIN32_WINNT])
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -2015,9 +2007,17 @@ case "$canonical_host_type" in
   ;;
 esac
 
+## Windows-specific use of functions
+case $canonical_host_type in
+  *-*-mingw* | *-*-msdosmsvc*)
+    AC_CHECK_FUNCS([setvbuf], [],
+                   [AC_MSG_ERROR([Missing function required to build Octave])])
+    ;;
+esac
+
 ## Cygwin kluge for getrusage.
-AC_CHECK_FUNCS(getrusage)
-case "$canonical_host_type" in
+AC_CHECK_FUNCS([getrusage])
+case $canonical_host_type in
   *-*-cygwin*)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
       [Define to 1 if your struct rusage only has time information.])
@@ -2025,11 +2025,11 @@ case "$canonical_host_type" in
 esac
 
 ## Check for CGDisplayBitsPerPixel function on Mac OSX systems with Carbon
-if test $have_framework_carbon = "yes"; then
+if test $have_framework_carbon = yes; then
   OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL
 fi
 
-AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
+AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
 
 AC_FUNC_CLOSEDIR_VOID
 
@@ -2046,7 +2046,7 @@ AC_CACHE_CHECK([for struct exception in math.h],
     octave_cv_func_matherr_type=yes,
     octave_cv_func_matherr_type=no)
   ])
-if test $octave_cv_func_matherr_type = "yes"; then
+if test $octave_cv_func_matherr_type = yes; then
   AC_DEFINE(EXCEPTION_IN_MATH, 1,
     [Define to 1 if math.h declares struct exception for matherr().])
 fi
@@ -2125,9 +2125,9 @@ GXX_EXTRA_FLAGS="-Wall -W -Wshadow -Wold-style-cast -Wformat -Wpointer-arith -Ww
 
 try_extra_warning_flags=true
 
-AC_ARG_ENABLE(extra-warning-flags,
-  [AS_HELP_STRING([--enable-extra-warning-flags],
-    [add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS  (on by default, but only if the compiler appears to accept them)])],
+AC_ARG_ENABLE([extra-warning-flags],
+  [AS_HELP_STRING([--disable-extra-warning-flags],
+    [don't add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = no; then
      try_extra_warning_flags=false
    fi],
@@ -2135,12 +2135,12 @@ AC_ARG_ENABLE(extra-warning-flags,
 
 if $try_extra_warning_flags; then
   for flag in $GCC_EXTRA_FLAGS; do
-    OCTAVE_CC_FLAG($flag, [
+    OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
   done
   for flag in $GXX_EXTRA_FLAGS; do
-    OCTAVE_CXX_FLAG($flag, [
+    OCTAVE_CXX_FLAG([$flag], [
       WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
   done
@@ -2152,9 +2152,9 @@ GXX_STRICT_FLAGS="-Wconversion -Weffc++"
 
 try_strict_warning_flags=false
 
-AC_ARG_ENABLE(strict-warning-flags,
+AC_ARG_ENABLE([strict-warning-flags],
   [AS_HELP_STRING([--enable-strict-warning-flags],
-    [add extra strict warning options to CFLAGS and CXXFLAGS (off by default)])],
+    [add extra strict warning options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = yes; then
      try_strict_warning_flags=true
    fi],
@@ -2162,12 +2162,12 @@ AC_ARG_ENABLE(strict-warning-flags,
 
 if $try_strict_warning_flags; then
   for flag in $GCC_STRICT_FLAGS; do
-    OCTAVE_CC_FLAG($flag, [
+    OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
   done
   for flag in $GXX_STRICT_FLAGS; do
-    OCTAVE_CXX_FLAG($flag, [
+    OCTAVE_CXX_FLAG([$flag], [
       WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
       AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
   done
@@ -2181,40 +2181,99 @@ AC_SUBST(WARN_CXXFLAGS)
 HAVE_QT=false
 QT_INCDIR=
 QT_LIBDIR=
-build_gui=yes
 win32_terminal=no
-AC_ARG_ENABLE(gui,
-  [AS_HELP_STRING([--disable-gui], [build GUI (default is yes)])],
-  [if test "$enableval" = no; then build_gui=no; fi], [build_gui=yes])
+build_gui=true
+GUIDIR=libgui
+AC_ARG_ENABLE([gui],
+  [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
+  [if test "$enableval" = no; then build_gui=false; fi], [])
 
-if test $build_gui = yes; then
-  AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
-  if test -n "$QMAKE"; then
-    QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p'`
-    QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p'`
-    AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
-    AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
-    AC_CHECK_PROGS(RCC, [rcc])
-    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC"; then
-      HAVE_QT=true
-      AC_DEFINE(HAVE_QT, 1, 
-        [Define to 1 if Qt is available (must have moc, uic, and rcc programs and developer header files and libraries installed).])
-    fi
+if test $build_gui = true; then
+  ## Check for Qt libraries
+  PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
+    [],
+    [AC_MSG_ERROR([Qt libraries are required to build the GUI])])
+
+  ## Check for Qt utility programs
+  AC_CHECK_PROGS(QMAKE, [qmake-qt5 qmake-qt4 qmake])
+  if test -z "$QMAKE"; then
+    AC_MSG_ERROR([qmake is required to build the GUI])
   fi
 
-  case "$canonical_host_type" in
-    *-*-mingw* | *-*-msdosmsvc*) win32_terminal=yes ;;
+  QT_INCDIR=`$QMAKE -query QT_INSTALL_HEADERS | sed -e 's,\\\\,/,g'`
+  QT_LIBDIR=`$QMAKE -query QT_INSTALL_LIBS | sed -e 's,\\\\,/,g'`
+
+  if test "$QT_INCDIR" = "**Unknown**"; then
+    AC_MSG_ERROR([qmake >= Qt4 is required to build the GUI])
+  fi
+
+  AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
+  AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
+  AC_CHECK_PROGS(RCC, [rcc])
+  if test -z "$MOC" || test -z "$UIC" || test -z "$RCC"; then
+    AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required to build the GUI])
+  fi 
+
+  HAVE_QT=true
+  AC_DEFINE(HAVE_QT, 1, 
+    [Define to 1 if Qt is available (libraries, developer header files, utility programs (qmake, moc, uic, and rcc))])
+
+  ## Check for Qscintilla library which is used in the GUI editor. 
+  AC_CACHE_CHECK([whether Qscintilla library is installed],
+    [octave_cv_lib_qscintilla],
+    [save_CPPFLAGS="$CPPFLAGS"
+    save_LDFLAGS="$LDFLAGS"
+    save_LIBS="$LIBS"
+    CPPFLAGS="-I$QT_INCDIR -I$QT_INCDIR/Qt $CPPFLAGS"
+    LDFLAGS="-L$QT_LIBDIR $LDFLAGS"
+    LIBS="-lqscintilla2"
+    AC_LANG_PUSH(C++)
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+      #include <Qsci/qscilexersql.h>
+      ]], [[
+      QsciLexerSQL sqlLexer(0);
+      ]])],
+      octave_cv_lib_qscintilla=yes,
+      octave_cv_lib_qscintilla=no)
+    CPPFLAGS="$save_CPPFLAGS"
+    LDFLAGS="$save_LDFLAGS"
+    LIBS="$save_LIBS"
+    AC_LANG_POP([C++])
+  ])
+  if test $octave_cv_lib_qscintilla = no; then
+    AC_MSG_ERROR([Qscintilla library is required to build the GUI])
+  fi
+
+  ## Check for Qt functions which have changed their API over time
+  OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
+  OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+
+  AC_CHECK_FUNCS([setlocale], [],
+                 [AC_MSG_ERROR([Missing function required to build GUI])])
+
+  case $canonical_host_type in
+    *-*-mingw* | *-*-msdosmsvc*)
+      win32_terminal=yes
+      AC_CHECK_FUNCS([setvbuf], [],
+                     [AC_MSG_ERROR([Missing function required to build GUI])])
+      ;;
     *)
       AC_CHECK_HEADERS([pty.h libutil.h util.h])
       AC_SEARCH_LIBS([openpty], [util],
         [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
+      AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
+                     [AC_MSG_ERROR([Missing function required to build GUI])])
       ;;
   esac
+else
+  ## GUI disabled.  Eliminate building GUIDIR directory
+  GUIDIR=
 fi
-AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
+AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = true])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_INCDIR)
 AC_SUBST(QT_LIBDIR)
+AC_SUBST(GUIDIR)
 
 ### Run configure in subdirectories.
 
@@ -2254,11 +2313,11 @@ AH_BOTTOM([
 #define FCN_PTR_CAST(T, E) reinterpret_cast<T> (E)
 #endif
 
-#if !defined(HAVE_DEV_T)
+#if ! defined (HAVE_DEV_T)
 typedef short dev_t;
 #endif
 
-#if !defined(HAVE_INO_T)
+#if ! defined (HAVE_INO_T)
 typedef unsigned long ino_t;
 #endif
 
@@ -2369,6 +2428,13 @@ typedef unsigned long ino_t;
 #define OCTGRAPHICS_API OCTAVE_IMPORT
 #endif
 
+/* API macro for libgui */
+#ifdef OCTGUI_DLL
+#define OCTGUI_API OCTAVE_EXPORT
+#else
+#define OCTGUI_API OCTAVE_IMPORT
+#endif
+
 /* oct-types.h */
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;
@@ -2390,19 +2456,17 @@ AC_SUBST(ac_config_headers)
 AC_CONFIG_FILES([
   Makefile 
   doc/Makefile
-  doc/faq/Makefile
   doc/icons/Makefile
   doc/interpreter/Makefile
   doc/liboctave/Makefile
   doc/refcard/Makefile
   examples/Makefile
-  libcruft/Makefile
-  libcruft/mkf77def
   libgnu/Makefile
   libgui/Makefile
-  libgui/src/Makefile
   libinterp/Makefile
   liboctave/Makefile
+  liboctave/cruft/Makefile
+  liboctave/cruft/mkf77def
   scripts/Makefile
   src/Makefile
   test/Makefile])
@@ -2482,12 +2546,16 @@ Octave is now configured for $canonical_host_type
   QHULL CPPFLAGS:              $QHULL_CPPFLAGS
   QHULL LDFLAGS:               $QHULL_LDFLAGS
   QHULL libraries:             $QHULL_LIBS
+  QRUPDATE CPPFLAGS:           $QRUPDATE_CPPFLAGS
+  QRUPDATE LDFLAGS:            $QRUPDATE_LDFLAGS
   QRUPDATE libraries:          $QRUPDATE_LIBS
   Qt headers:                  $QT_INCDIR
   Qt libraries:                $QT_LIBDIR
   READLINE libraries:          $READLINE_LIBS
   REGEX libraries:             $REGEX_LIBS
   TERM libraries:              $TERM_LIBS
+  UMFPACK CPPFLAGS:            $UMFPACK_CPPFLAGS
+  UMFPACK LDFLAGS:             $UMFPACK_LDFLAGS
   UMFPACK libraries:           $UMFPACK_LIBS
   X11 include flags:           $X11_INCFLAGS
   X11 libraries:               $X11_LIBS
@@ -2498,6 +2566,8 @@ Octave is now configured for $canonical_host_type
   Default pager:               $DEFAULT_PAGER
   gnuplot:                     $GNUPLOT
 
+  Build Octave GUI:                   $build_gui
+  JIT compiler for loops:             $build_jit
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
   Build static libraries:             $STATIC_LIBS
@@ -2512,9 +2582,7 @@ warn_msg_printed=false
 OCTAVE_CONFIGURE_WARNING_SUMMARY
 
 if $ENABLE_DYNAMIC_LINKING; then
-  if $SHARED_LIBS; then
-    true
-  else
+  if test $SHARED_LIBS = false; then
     AC_MSG_WARN([You used --enable-dl but not --enable-shared.])
     AC_MSG_WARN([Are you sure that is what you want to do?])
     warn_msg_printed=true
@@ -2551,9 +2619,7 @@ if $USE_OPENMP; then
   warn_msg_printed=true
 fi
 
-if $native_graphics; then
-  true;
-else
+if test $native_graphics = false; then
   AC_MSG_WARN([])
   AC_MSG_WARN([I didn't find the necessary libraries to compile native])
   AC_MSG_WARN([graphics.  It isn't necessary to have native graphics,])

@@ -50,14 +50,14 @@ function [pval, f, df_b, df_w] = anova (y, g)
     print_usage ();
   elseif (nargin == 1)
     if (isvector (y))
-      error ("anova: for `anova (Y)', Y must not be a vector");
+      error ("anova: for 'anova (Y)', Y must not be a vector");
     endif
     [group_count, k] = size (y);
     n = group_count * k;
     group_mean = mean (y);
   else
     if (! isvector (y))
-      error ("anova: for `anova (Y, G)', Y must be a vector");
+      error ("anova: for 'anova (Y, G)', Y must be a vector");
     endif
     n = length (y);
     if (! isvector (g) || (length (g) != n))

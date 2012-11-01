@@ -30,28 +30,24 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringListModel>
 #include <QTimer>
 
-#include "octave-link.h"
-#include "octave-event-observer.h"
-
-class history_dock_widget : public QDockWidget, public octave_event_observer
+class history_dock_widget : public QDockWidget
 {
-Q_OBJECT
-public:
+  Q_OBJECT
+  public:
   history_dock_widget (QWidget *parent = 0);
-
-  void event_accepted (octave_event *e);
-  void event_reject (octave_event *e);
 
 public slots:
   void handle_visibility_changed (bool visible);
   void request_history_model_update ();
   void reset_model ();
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
 
 signals:
-  void information (QString message);
+  void information (const QString& message);
 
   /** Emitted, whenever the user double-clicked a command in the history. */
-  void command_double_clicked (QString command);
+  void command_double_clicked (const QString& command);
 
   /** Custom signal that tells if a user has clicked away that dock widget. */
   void active_changed (bool active);
@@ -59,6 +55,9 @@ protected:
   void closeEvent (QCloseEvent *event);
 private slots:
   void handle_double_click (QModelIndex modelIndex);
+  void handle_contextmenu_copy(bool flag);
+  void handle_contextmenu_evaluate(bool flag);
+  void ctxMenu(const QPoint &pos);
 
 private:
   void construct ();
@@ -70,6 +69,8 @@ private:
   QStringListModel *_history_model;
 
   QTimer _update_history_model_timer;
+
+  void update_history_callback (void);
 };
 
 #endif // HISTORYDOCKWIDGET_H

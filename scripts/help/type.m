@@ -73,13 +73,13 @@ function retval = type (varargin)
       if (isempty (file))
         ## 'name' is an ordinary file, and not a function name.
         ## FIXME: Should we just print it anyway?
-        error ("type: `%s' undefined\n", name);
+        error ("type: '%s' undefined\n", name);
       endif
 
       ## Read the file
       fid = fopen (file, "r");
       if (fid < 0)
-        error ("type: couldn't open `%s' for reading", file);
+        error ("type: couldn't open '%s' for reading", file);
       endif
       contents = char (fread (fid).');
       fclose (fid);
@@ -99,7 +99,7 @@ function retval = type (varargin)
     elseif (any (strcmp (__keywords__ (), name)))
       text = sprintf ("%s is a keyword", name);
     else
-      error ("type: `%s' undefined\n", name);
+      error ("type: '%s' undefined\n", name);
     endif
 
     ## Should we return the text or print if

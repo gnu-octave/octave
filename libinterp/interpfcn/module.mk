@@ -3,7 +3,7 @@ EXTRA_DIST += \
   interpfcn/defaults.in.h \
   interpfcn/graphics.in.h
 
-INTERPFCN_INCLUDES = \
+INTERPFCN_INC = \
   interpfcn/data.h \
   interpfcn/debug.h \
   interpfcn/defun.h \
@@ -65,13 +65,7 @@ interpfcn/graphics-props.cc: interpfcn/graphics.in.h genprops.awk Makefile
 	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
 	mv $@-t $@
 
-## FIXME: Do these rules work correctly after transplant to interpfcn/ dir?
-__fltk_uigetfile__.lo __fltk_uigetfile__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
-
-__init_fltk__.lo __init_fltk__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
-
 noinst_LTLIBRARIES += interpfcn/libinterpfcn.la
 
 interpfcn_libinterpfcn_la_SOURCES = $(INTERPFCN_SRC)
+interpfcn_libinterpfcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

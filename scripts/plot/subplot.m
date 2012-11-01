@@ -206,7 +206,7 @@ function h = subplot (varargin)
         else
           objpos = get (child, "outerposition");
         endif
-        if (all (objpos == pos) && ! replace_axes)
+        if (all (abs (objpos - pos) < eps) && ! replace_axes)
           ## If the new axes are in exactly the same position as an
           ## existing axes object, use the existing axes.
           found = true;

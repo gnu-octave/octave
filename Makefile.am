@@ -1,4 +1,4 @@
-# Makefile for octave
+# Makefile for Octave
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -37,9 +37,9 @@ EXTRA_DIST = \
   INSTALL.OCTAVE \
   NEWS \
   README \
-  autogen.sh \
-  build-aux/bootstrap \
-  build-aux/bootstrap.conf \
+  bootstrap \
+  build-aux/bootstrap_gnulib \
+  build-aux/bootstrap_gnulib.conf \
   build-aux/mk-opts.pl \
   build-aux/mkinstalldirs \
   build-aux/move-if-change \
@@ -67,14 +67,8 @@ EXTRA_DIST = \
 
 include m4/module.mk
 
-if AMCOND_BUILD_GUI
-GUIDIR = libgui
-else
-GUIDIR =
-endif
-
 # Subdirectories in which to run `make all'.
-SUBDIRS = libgnu libcruft liboctave libinterp $(GUIDIR) src scripts @DOCDIR@ examples test
+SUBDIRS = libgnu liboctave libinterp @GUIDIR@ src scripts @DOCDIR@ examples test
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:

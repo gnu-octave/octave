@@ -1,4 +1,4 @@
-# Makefile for Octave's src directory
+# Makefile for Octave's libinterp directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -24,8 +24,12 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I$(top_srcdir)/libcruft/misc \
-  -I../liboctave -I$(top_srcdir)/liboctave \
+  -I$(top_srcdir)/liboctave/cruft/misc \
+  -I$(top_srcdir)/liboctave/array \
+  -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
+  -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
+  -I$(top_srcdir)/liboctave/system \
+  -I$(top_srcdir)/liboctave/util \
   -I$(srcdir)/octave-value \
   -I$(srcdir)/operators \
   -Iparse-tree -I$(srcdir)/parse-tree \
@@ -33,6 +37,10 @@ AM_CPPFLAGS = \
   -Iinterpfcn -I$(srcdir)/interpfcn \
   -Icorefcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+
+AM_CFLAGS += $(WARN_CFLAGS)
+
+AM_CXXFLAGS += $(WARN_CXXFLAGS)
 
 octlib_LTLIBRARIES = liboctinterp.la
 
@@ -51,7 +59,7 @@ BUILT_SOURCES = \
   parse-tree/oct-parse.cc \
   oct-conf.h \
   version.h \
-  $(BUILT_SOURCES_EXTRA) \
+  builtin-defun-decls.h \
   builtins.cc
 
 BUILT_DISTFILES = \
@@ -65,6 +73,7 @@ BUILT_NODISTFILES = \
   interp-core/oct-errno.cc \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
+  builtin-defun-decls.h \
   operators/ops.cc \
   oct-conf.h \
   version.h \
@@ -92,13 +101,13 @@ octinclude_HEADERS = \
   interpfcn/graphics-props.cc \
   parse-tree/oct-gperf.h \
   builtins.h \
+  builtin-defun-decls.h \
   octave.h \
-  $(OV_INCLUDES) \
-  $(OV_SPARSE_INCLUDES) \
-  $(PT_INCLUDES) \
-	$(OPERATOR_INCLUDES) \
-  $(INTERP_CORE_INCLUDES) \
-  $(INTERPFCN_INCLUDES)
+  $(OCTAVE_VALUE_INC) \
+  $(PARSE_TREE_INC) \
+  $(OPERATORS_INC) \
+  $(INTERP_CORE_INC) \
+  $(INTERPFCN_INC)
 
 nodist_octinclude_HEADERS = \
   interp-core/mxarray.h \
@@ -150,6 +159,7 @@ nodist_liboctinterp_la_SOURCES = \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
   operators/ops.cc \
+  builtin-defun-decls.h \
   builtins.cc \
   oct-conf.h \
   version.h \
@@ -165,8 +175,7 @@ liboctinterp_la_LIBADD = \
   interp-core/libinterp-core.la \
   interpfcn/libinterpfcn.la \
   corefcn/libcorefcn.la \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
+  $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
@@ -181,9 +190,6 @@ liboctinterp_la_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
   $(LIBOCTINTERP_LINK_OPTS)
-
-## FIXME: Does this rule need to be uncommented?
-#fft.df fft.lo fft2.df fft2.lo fftn.df fftn.lo: CPPFLAGS += $(FFTW_XCPPFLAGS)
 
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
@@ -204,6 +210,8 @@ $(SRC_DEF_FILES): mkdefs Makefile
 
 $(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
 
+## FIXME: The following two variables are deprecated and should be removed
+##        in Octave version 3.12.
 DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
@@ -223,9 +231,10 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-## oct-conf.h must depend on Makefile.  Calling configure
-## may change default/config values.  However, calling configure will also
-## regenerate the Makefiles from Makefile.am and trigger the rules below.
+## oct-conf.h must depend on Makefile.
+## Calling configure may change default/config values.
+## However, calling configure will also regenerate the Makefiles from
+## Makefile.am and trigger the rules below.
 oct-conf.h: oct-conf.in.h Makefile
 	@$(do_subst_config_vals)
 
@@ -240,7 +249,11 @@ version.h: version.in.h Makefile
 	mv $@-t $@
 
 builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
+	$(srcdir)/mkbuiltins --source $(DEF_FILES) > $@-t
+	mv $@-t $@
+
+builtin-defun-decls.h: $(SRC_DEF_FILES) mkbuiltins
+	$(srcdir)/mkbuiltins --header $(SRC_DEF_FILES) > $@-t
 	mv $@-t $@
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
@@ -267,7 +280,11 @@ else
 all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE)
 endif
 
+if AMCOND_BUILD_DOCS
+install-data-hook: install-oct install-built-in-docstrings
+else
 install-data-hook: install-oct
+endif
 
 uninstall-local: uninstall-oct
 
@@ -300,6 +317,13 @@ uninstall-oct:
 	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
 endif
 .PHONY: install-oct uninstall-oct
+
+if AMCOND_BUILD_DOCS
+install-built-in-docstrings:
+	$(MKDIR_P) $(DESTDIR)$(octetcdir)
+	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+endif
+.PHONY: install-built-in-docstrings
 
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \

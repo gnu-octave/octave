@@ -76,7 +76,7 @@ function opts = __gnuplot_print__ (opts)
         name = opts.name(1:dot-1);
       else
         error ("print:invalid-suffix", 
-               "invalid suffix `%s' for device `%s'.",
+               "invalid suffix '%s' for device '%s'.",
                opts.name(dot:end), lower (opts.devopt));
       endif
     endif

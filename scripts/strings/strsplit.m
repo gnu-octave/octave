@@ -104,7 +104,7 @@ endfunction
 %!assert (strsplit ("road to hell", " "), {"road", "to", "hell"})
 %!assert (strsplit ("road to^hell", " ^"), {"road", "to", "hell"})
 %!assert (strsplit ("road   to--hell", " -", true), {"road", "to", "hell"})
-%!assert (strsplit (["a,bc";",de"], ","), {"a", "bc", ones(1,0), "de "})
+%!assert (strsplit (["a,bc";",de"], ","), {"a", "bc", char(ones(1,0)), "de "})
 %!assert (strsplit (["a,bc";",de"], ",", true), {"a", "bc", "de "})
 %!assert (strsplit (["a,bc";",de"], ", ", true), {"a", "bc", "de"})
 

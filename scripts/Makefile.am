@@ -1,4 +1,4 @@
-# Makefile for octave's scripts directory
+# Makefile for Octave's scripts directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #

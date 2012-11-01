@@ -11,18 +11,18 @@ OPT_HANDLERS = \
   corefcn/Quad-opts.cc
 
 OPT_INC = \
-  $(top_builddir)/liboctave/DASPK-opts.h \
-  $(top_builddir)/liboctave/DASRT-opts.h \
-  $(top_builddir)/liboctave/DASSL-opts.h \
-  $(top_builddir)/liboctave/LSODE-opts.h \
-  $(top_builddir)/liboctave/Quad-opts.h
+  $(top_builddir)/liboctave/numeric/DASPK-opts.h \
+  $(top_builddir)/liboctave/numeric/DASRT-opts.h \
+  $(top_builddir)/liboctave/numeric/DASSL-opts.h \
+  $(top_builddir)/liboctave/numeric/LSODE-opts.h \
+  $(top_builddir)/liboctave/numeric/Quad-opts.h
 
-$(OPT_HANDLERS): corefcn/%.cc : $(top_builddir)/liboctave/%.in
+$(OPT_HANDLERS): corefcn/%.cc : $(top_builddir)/liboctave/numeric/%.in
 	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
 	mv $@-t $@
 
 $(OPT_INC) : %.h : %.in
-	$(MAKE) -C $(top_builddir)/liboctave $(@F)
+	$(MAKE) -C $(top_builddir)/liboctave/numeric $(@F)
 
 COREFCN_SRC = \
   corefcn/__contourc__.cc \
@@ -95,4 +95,5 @@ COREFCN_SRC = \
 noinst_LTLIBRARIES += corefcn/libcorefcn.la
 
 corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
+corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
 

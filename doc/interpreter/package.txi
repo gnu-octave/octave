@@ -24,7 +24,7 @@ programs amongst each other.  To aid this sharing Octave supports the
 installation of extra packages.  The `Octave-Forge' project is a
 community-maintained set of packages that can be downloaded and
 installed in Octave.  At the time of writing the `Octave-Forge' project
-can be found on-line at @uref{http://octave.sourceforge.net}, but
+can be found online at @uref{http://octave.sourceforge.net}, but
 since the Internet is an ever-changing place this may not be true at
 the time of reading.  Therefore it is recommended to see the Octave
 website for an updated reference.
@@ -211,6 +211,7 @@ into @file{package/ONEWS}.
 @item package/ONEWS
 This is an optional file describing old entries from the @file{NEWS} file.
 
+@cindex PKG_ADD
 @anchor{doc-PKG_ADD}
 @item package/PKG_ADD
 An optional file that includes commands that are run when the package
@@ -235,6 +236,8 @@ autoload ('bar', which ('foo'));
 @xref{PKG_ADD and PKG_DEL Directives}, for details on @w{@code{PKG_ADD}}
 directives.
 
+@cindex PKG_DEL
+@anchor{doc-PKG_DEL}
 @item package/PKG_DEL
 An optional file that includes commands that are run when the package
 is removed from the users path.  Note that @w{@code{PKG_DEL}} directives in

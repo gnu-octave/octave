@@ -136,7 +136,8 @@ extern OCTINTERP_API octave_value builtin_any_variable (const std::string&);
 extern OCTINTERP_API void bind_ans (const octave_value& val, bool print);
 
 extern OCTINTERP_API void
-bind_internal_variable (const std::string& fname, const octave_value& val);
+bind_internal_variable (const std::string& fname,
+                        const octave_value& val) GCC_ATTR_DEPRECATED;
 
 extern OCTINTERP_API void mlock (void);
 extern OCTINTERP_API void munlock (const std::string&);

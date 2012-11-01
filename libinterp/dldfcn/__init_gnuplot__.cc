@@ -33,6 +33,7 @@ To initialize:
 #include <config.h>
 #endif
 
+#include "builtins.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "graphics.h"
@@ -148,24 +149,17 @@ private:
 
           if (! error_state)
             {
-              args(1) = "\nquit;\n";
-              args(0) = fids(0);
-              feval ("fputs", args);
+              Ffputs (ovl (fids(0), "\nquit;\n"));
 
-              args.resize (1);
-              feval ("fflush", args);
-              feval ("pclose", args);
+              Ffflush (ovl (fids(0)));
+              Fpclose (ovl (fids(0)));
 
               if (fids.numel () > 1)
                 {
-                  args(0) = fids(1);
-                  feval ("pclose", args);
+                  Fpclose (ovl (fids(1)));
 
                   if (fids.numel () > 2)
-                    {
-                      args(0) = fids(2);
-                      feval ("waitpid", args);
-                    }
+                    Fwaitpid (ovl (fids(2)));
                 }
             }
         }

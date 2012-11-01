@@ -395,7 +395,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
         if (! is || error_state)
           {
-            error ("load: reading matrix data for `%s'", name);
+            error ("load: reading matrix data for '%s'", name);
             goto data_read_error;
           }
 
@@ -408,7 +408,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
             if (! is || error_state)
               {
-                error ("load: reading imaginary matrix data for `%s'", name);
+                error ("load: reading imaginary matrix data for '%s'", name);
                 goto data_read_error;
               }
 
@@ -431,7 +431,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
     }
 
  data_read_error:
-  error ("load: trouble reading binary file `%s'", filename.c_str ());
+  error ("load: trouble reading binary file '%s'", filename.c_str ());
   return retval;
 }
 

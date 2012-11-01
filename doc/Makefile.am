@@ -1,4 +1,4 @@
-# Makefile for octave's doc/interpreter directory
+# Makefile for Octave's doc directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -20,8 +20,8 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-## Avoid making multiple subdirs in parallel which can lead 
-## to a confusing error message stream
+## Avoid making multiple subdirs in parallel
+## which can lead to a confusing error message stream.
 .NOTPARALLEL:
 
 EXTRA_DIST = \
@@ -29,5 +29,5 @@ EXTRA_DIST = \
   texinfo.tex \
   texmf.cnf
 
-SUBDIRS = faq icons interpreter liboctave refcard
+SUBDIRS = icons interpreter liboctave refcard
 

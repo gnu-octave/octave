@@ -76,6 +76,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     if (riff_size == -1)
       error ("wavread: file contains no RIFF chunk");
     endif
+    riff_size = min (riff_size, file_size - riff_pos);
 
     riff_type = char (fread (fid, 4))';
     if (! strcmp (riff_type, "WAVE"))
@@ -100,6 +101,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     if (data_size == -1)
       error ("wavread: file contains no data chunk");
     endif
+    data_size = min (data_size, file_size - data_pos);
 
     ### Read format chunk.
     fseek (fid, fmt_pos, "bof");

@@ -23,7 +23,7 @@
 ## Open a GUI dialog for selecting a directory.  If @var{init_path} is not
 ## given the current working directory is used.  @var{dialog_name} may be
 ## used to customize the dialog title.
-## @seealso{uigetfile}
+## @seealso{uigetfile, uiputfile}
 ## @end deftypefn
 
 ## Author: Kai Habel
@@ -38,7 +38,7 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
     if (! __is_function__ (funcname))
       error ("uigetdir: fltk graphics toolkit required");
     elseif (! strcmp (defaulttoolkit, "gnuplot"))
-      warning ("uigetdir: no implementation for toolkit `%s', using `fltk' instead",
+      warning ("uigetdir: no implementation for toolkit '%s', using 'fltk' instead",
                defaulttoolkit);
     endif
   endif

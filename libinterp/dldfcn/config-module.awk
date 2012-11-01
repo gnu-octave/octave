@@ -71,7 +71,7 @@ BEGIN {
       }
     printf ("dldfcn_%s_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED_LDFLAG) %s $(OCT_LINK_OPTS)\n",
             basename, ldflags[i]);
-    printf ("dldfcn_%s_la_LIBADD = $(DLD_LIBOCTINTERP_LIBADD) ../liboctave/liboctave.la ../libcruft/libcruft.la %s $(OCT_LINK_DEPS)\n",
+    printf ("dldfcn_%s_la_LIBADD = $(DLD_LIBOCTINTERP_LIBADD) ../liboctave/liboctave.la %s $(OCT_LINK_DEPS)\n",
             basename, libraries[i]);
   }
 }

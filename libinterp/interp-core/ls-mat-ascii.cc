@@ -178,7 +178,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
     }
 
   if (nr == 0 || nc == 0)
-    error ("load: file `%s' seems to be empty!", filename.c_str ());
+    error ("load: file '%s' seems to be empty!", filename.c_str ());
 
   is.clear ();
   is.seekg (pos);
@@ -284,7 +284,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
                         }
                       else
                         {
-                          error ("load: failed to read matrix from file `%s'",
+                          error ("load: failed to read matrix from file '%s'",
                                  filename.c_str ());
 
                           return retval;
@@ -313,15 +313,15 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
                        expected, total_count);
             }
           else
-            error ("load: failed to read matrix from file `%s'",
+            error ("load: failed to read matrix from file '%s'",
                    filename.c_str ());
         }
       else
-        error ("load: unable to extract matrix size from file `%s'",
+        error ("load: unable to extract matrix size from file '%s'",
                filename.c_str ());
     }
   else
-    error ("load: unable to convert filename `%s' to valid identifier",
+    error ("load: unable to convert filename '%s' to valid identifier",
            filename.c_str ());
 
   return retval;

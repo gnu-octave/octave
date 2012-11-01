@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
   JIT_METH(call);                               \
   JIT_METH(extract_argument);                   \
   JIT_METH(store_argument);                     \
+  JIT_METH(return);                             \
   JIT_METH(phi);                                \
   JIT_METH(variable);                           \
   JIT_METH(error_check);                        \
@@ -280,6 +281,10 @@ class
 jit_use : public jit_internal_node<jit_value, jit_use>
 {
 public:
+  // some compilers don't allow us to use jit_internal_node without template
+  // paremeters
+  typedef jit_internal_node<jit_value, jit_use> PARENT_T;
+
   jit_use (void) : muser (0), mindex (0) {}
 
   // we should really have a move operator, but not until c++11 :(
@@ -305,7 +310,7 @@ public:
   void stash_value (jit_value *avalue, jit_instruction *auser = 0,
                     size_t aindex = -1)
   {
-    jit_internal_node::stash_value (avalue);
+    PARENT_T::stash_value (avalue);
     mindex = aindex;
     muser = auser;
   }
@@ -764,6 +769,10 @@ public:
     return true;
   }
 
+  jit_instruction *front (void) { return instructions.front (); }
+
+  jit_instruction *back (void) { return instructions.back (); }
+
   JIT_VALUE_ACCEPT;
 private:
   void internal_append (jit_instruction *instr);
@@ -796,7 +805,7 @@ public:
 
   jit_phi_incomming (jit_phi *auser) : muser (auser) {}
 
-  jit_phi_incomming (const jit_phi_incomming& use) : jit_internal_node ()
+  jit_phi_incomming (const jit_phi_incomming& use)
   {
     *this = use;
   }
@@ -1145,6 +1154,21 @@ class
 jit_call : public jit_instruction
 {
 public:
+  jit_call (const jit_operation& (*aoperation) (void))
+    : moperation (aoperation ())
+  {
+    const jit_function& ol = overload ();
+    if (ol.valid ())
+      stash_type (ol.result ());
+  }
+
+  jit_call (const jit_operation& aoperation) : moperation (aoperation)
+  {
+    const jit_function& ol = overload ();
+    if (ol.valid ())
+      stash_type (ol.result ());
+  }
+
 #define JIT_CALL_CONST(N)                                               \
   jit_call (const jit_operation& aoperation,                            \
             OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
@@ -1359,6 +1383,38 @@ public:
   JIT_VALUE_ACCEPT;
 private:
   jit_variable *dest;
+};
+
+class
+jit_return : public jit_instruction
+{
+public:
+  jit_return (void) {}
+
+  jit_return (jit_value *retval) : jit_instruction (retval) {}
+
+  jit_value *result (void) const
+  {
+    return argument_count () ? argument (0) : 0;
+  }
+
+  jit_type *result_type (void) const
+  {
+    jit_value *res = result ();
+    return res ? res->type () : 0;
+  }
+
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
+  {
+    print_indent (os, indent) << "return";
+
+    if (result ())
+      os << " " << *result ();
+
+    return os;
+  }
+
+  JIT_VALUE_ACCEPT;
 };
 
 class

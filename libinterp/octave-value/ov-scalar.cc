@@ -337,6 +337,7 @@ octave_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (isinf, xisinf);
       SCALAR_MAPPER (isna, octave_is_NA);
       SCALAR_MAPPER (isnan, xisnan);
+      SCALAR_MAPPER (xsignbit, xsignbit);
 
     default:
       if (umap >= umap_xisalnum && umap <= umap_xtoupper)

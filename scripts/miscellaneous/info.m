@@ -27,8 +27,9 @@ function info ()
   Additional information about GNU Octave is available at\n\
   http://www.octave.org\n\
 \n\
-  Descriptions of mailing lists devoted to Octave are available at\n\
-  http://www.octave.org/archive.html\n\
+  Links to the mailing list and other resources for getting help with\n\
+  Octave are available at\n\
+  http://www.octave.org/support.html\n\
 \n\
   You may also find some information in the Octave Wiki at\n\
   http://wiki.octave.org\n\

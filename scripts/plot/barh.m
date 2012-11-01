@@ -54,5 +54,15 @@ function varargout = barh (varargin)
 endfunction
 
 
-%% FIXME: Need demo or test for function
+%!demo
+%! clf;
+%! x = rand (10, 1);
+%! barh (x);
+
+%!demo
+%! clf;
+%! h = barh (rand (5, 3));
+%! set (h(1), 'facecolor', 'r')
+%! set (h(2), 'facecolor', 'g')
+%! set (h(3), 'facecolor', 'b')
 

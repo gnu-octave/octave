@@ -43,15 +43,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "lo-error.h"
 #include "oct-env.h"
-#include "pathsearch.h"
 #include "str-vec.h"
 
-#include <defaults.h>
+#include "builtins.h"
+#include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
 #include "file-io.h"
+#include "help.h"
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
@@ -113,10 +114,6 @@ static bool set_initial_path = true;
 // (--quiet; --silent; -q)
 static bool inhibit_startup_message = false;
 
-// TRUE means we turn on compatibility options.
-// (--traditional)
-static bool traditional = false;
-
 // If TRUE, print verbose info in some cases.
 // (--verbose; -V)
 static bool verbose_flag = false;
@@ -141,15 +138,6 @@ static bool read_history_file = true;
 // (--path; -p)
 static std::list<std::string> command_line_path;
 
-// Flags used to determine what commands should be echoed when they are
-// parsed and executed.
-// (--echo-commands; -x)
-static int echo_executing_commands = 0;
-
-// The file used for the doc string cache.
-// (--doc-cache-file)
-static std::string doc_cache_file;
-
 // The value for "EXEC_PATH" specified on the command line.
 // (--exec-path)
 static std::string exec_path;
@@ -158,34 +146,23 @@ static std::string exec_path;
 // (--image-path)
 static std::string image_path;
 
-// The value for "info_file" specified on the command line.
-// (--info-file)
-static std::string info_file;
-
-// The value for "info_program" specified on the command line.
-// (--info-program)
-static std::string info_program;
-
 // If TRUE, ignore the window system even if it is available.
 // (--no-window-system)
 static bool no_window_system = false;
-
-// The value for "texi_macros_file" specified on the command line.
-// (--texi-macros-file)
-static std::string texi_macros_file;
 
 // Usage message
 static const char *usage_string =
   "octave [-HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--line-editing] [--no-gui] [--no-history] [--no-init-file]\n\
-       [--no-init-path] [--no-line-editing] [--no-site-file]\n\
-       [--no-window-system] [-p path] [--path path] [--silent]\n\
-       [--traditional] [--verbose] [--version] [file]";
+       [--jit-debugging] [--line-editing] [--no-gui] [--no-history]\n\
+       [--no-init-file] [--no-init-path] [--no-jit-compiler]\n\
+       [--no-line-editing] [--no-site-file] [--no-window-system]\n\
+       [-p path] [--path path] [--silent] [--traditional]\n\
+       [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
-// the real set of options will agree.  Note: the `+' must come first
+// the real set of options will agree.  Note: the '+' must come first
 // to prevent getopt from permuting arguments!
 static const char *short_opts = "+HVdfhip:qvx";
 
@@ -197,56 +174,61 @@ static bool persist = false;
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
-#define DOC_CACHE_FILE_OPTION 1
-#define EVAL_OPTION 2
-#define EXEC_PATH_OPTION 3
-#define FORCE_GUI_OPTION 4
-#define IMAGE_PATH_OPTION 5
-#define INFO_FILE_OPTION 6
-#define INFO_PROG_OPTION 7
-#define LINE_EDITING_OPTION 8
-#define NO_GUI_OPTION 9
-#define NO_INIT_FILE_OPTION 10
-#define NO_INIT_PATH_OPTION 11
-#define NO_LINE_EDITING_OPTION 12
-#define NO_SITE_FILE_OPTION 13
-#define NO_WINDOW_SYSTEM_OPTION 14
-#define PERSIST_OPTION 15
-#define TEXI_MACROS_FILE_OPTION 16
-#define TRADITIONAL_OPTION 17
-struct option long_opts[] =
-  {
-    { "braindead",        no_argument,       0, TRADITIONAL_OPTION },
-    { "debug",            no_argument,       0, 'd' },
-    { "doc-cache-file",   required_argument, 0, DOC_CACHE_FILE_OPTION },
-    { "echo-commands",    no_argument,       0, 'x' },
-    { "eval",             required_argument, 0, EVAL_OPTION },
-    { "exec-path",        required_argument, 0, EXEC_PATH_OPTION },
-    { "force-gui",        no_argument,       0, FORCE_GUI_OPTION },
-    { "help",             no_argument,       0, 'h' },
-    { "image-path",       required_argument, 0, IMAGE_PATH_OPTION },
-    { "info-file",        required_argument, 0, INFO_FILE_OPTION },
-    { "info-program",     required_argument, 0, INFO_PROG_OPTION },
-    { "interactive",      no_argument,       0, 'i' },
-    { "line-editing",     no_argument,       0, LINE_EDITING_OPTION },
-    { "no-gui",           no_argument,       0, NO_GUI_OPTION },
-    { "no-history",       no_argument,       0, 'H' },
-    { "no-init-file",     no_argument,       0, NO_INIT_FILE_OPTION },
-    { "no-init-path",     no_argument,       0, NO_INIT_PATH_OPTION },
-    { "no-line-editing",  no_argument,       0, NO_LINE_EDITING_OPTION },
-    { "no-site-file",     no_argument,       0, NO_SITE_FILE_OPTION },
-    { "no-window-system", no_argument,       0, NO_WINDOW_SYSTEM_OPTION },
-    { "norc",             no_argument,       0, 'f' },
-    { "path",             required_argument, 0, 'p' },
-    { "persist",          no_argument,       0, PERSIST_OPTION },
-    { "quiet",            no_argument,       0, 'q' },
-    { "silent",           no_argument,       0, 'q' },
-    { "texi-macros-file", required_argument, 0, TEXI_MACROS_FILE_OPTION },
-    { "traditional",      no_argument,       0, TRADITIONAL_OPTION },
-    { "verbose",          no_argument,       0, 'V' },
-    { "version",          no_argument,       0, 'v' },
-    { 0,                  0,                 0, 0 }
-  };
+#define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
+#define DOC_CACHE_FILE_OPTION 2
+#define EVAL_OPTION 3
+#define EXEC_PATH_OPTION 4
+#define FORCE_GUI_OPTION 5
+#define IMAGE_PATH_OPTION 6
+#define INFO_FILE_OPTION 7
+#define INFO_PROG_OPTION 8
+#define JIT_DEBUGGING_OPTION 9
+#define LINE_EDITING_OPTION 10
+#define NO_GUI_OPTION 11
+#define NO_INIT_FILE_OPTION 12
+#define NO_INIT_PATH_OPTION 13
+#define NO_JIT_COMPILER_OPTION 14
+#define NO_LINE_EDITING_OPTION 15
+#define NO_SITE_FILE_OPTION 16
+#define NO_WINDOW_SYSTEM_OPTION 17
+#define PERSIST_OPTION 18
+#define TEXI_MACROS_FILE_OPTION 19
+#define TRADITIONAL_OPTION 20
+struct option long_opts[] = {
+  { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
+  { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
+  { "debug",                    no_argument,       0, 'd' },
+  { "doc-cache-file",           required_argument, 0, DOC_CACHE_FILE_OPTION },
+  { "echo-commands",            no_argument,       0, 'x' },
+  { "eval",                     required_argument, 0, EVAL_OPTION },
+  { "exec-path",                required_argument, 0, EXEC_PATH_OPTION },
+  { "force-gui",                no_argument,       0, FORCE_GUI_OPTION },
+  { "help",                     no_argument,       0, 'h' },
+  { "image-path",               required_argument, 0, IMAGE_PATH_OPTION },
+  { "info-file",                required_argument, 0, INFO_FILE_OPTION },
+  { "info-program",             required_argument, 0, INFO_PROG_OPTION },
+  { "interactive",              no_argument,       0, 'i' },
+  { "jit-debugging",            no_argument,       0, JIT_DEBUGGING_OPTION },
+  { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
+  { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
+  { "no-history",               no_argument,       0, 'H' },
+  { "no-init-file",             no_argument,       0, NO_INIT_FILE_OPTION },
+  { "no-init-path",             no_argument,       0, NO_INIT_PATH_OPTION },
+  { "no-jit-compiler",          no_argument,       0, NO_JIT_COMPILER_OPTION },
+  { "no-line-editing",          no_argument,       0, NO_LINE_EDITING_OPTION },
+  { "no-site-file",             no_argument,       0, NO_SITE_FILE_OPTION },
+  { "no-window-system",         no_argument,       0, NO_WINDOW_SYSTEM_OPTION },
+  { "norc",                     no_argument,       0, 'f' },
+  { "path",                     required_argument, 0, 'p' },
+  { "persist",                  no_argument,       0, PERSIST_OPTION },
+  { "quiet",                    no_argument,       0, 'q' },
+  { "silent",                   no_argument,       0, 'q' },
+  { "texi-macros-file",         required_argument, 0, TEXI_MACROS_FILE_OPTION },
+  { "traditional",              no_argument,       0, TRADITIONAL_OPTION },
+  { "verbose",                  no_argument,       0, 'V' },
+  { "version",                  no_argument,       0, 'v' },
+  { 0,                          0,                 0, 0 }
+};
 
 // Store the command-line options for later use.
 
@@ -268,24 +250,6 @@ intern_argv (int argc, char **argv)
       while (--i > 0)
         octave_argv[i-1] = *(argv+i);
     }
-}
-
-static void
-initialize_pathsearch (void)
-{
-  // This may seem odd, but doing it this way means that we don't have
-  // to modify the kpathsea library...
-
-  std::string odb = octave_env::getenv ("OCTAVE_DB_PATH");
-
-  // For backward compatibility.
-
-  if (odb.empty ())
-    odb = octave_env::getenv ("OCTAVE_DB_DIR");
-
-  if (odb.empty ())
-    odb = Vdata_dir + file_ops::dir_sep_str () + "octave:"
-      + Vlibexec_dir + file_ops::dir_sep_str () + "octave";
 }
 
 DEFUN (__version_info__, args, ,
@@ -379,14 +343,6 @@ safe_source_file (const std::string& file_name,
     {
       recover_from_exception ();
       gripe_safe_source_exception (file_name, "unhandled execution exception");
-    }
-  catch (std::bad_alloc)
-    {
-      recover_from_exception ();
-      error_state = -2;
-      gripe_safe_source_exception
-        (file_name,
-         "memory exhausted or requested size too large for range of Octave's index type");
     }
 }
 
@@ -508,12 +464,6 @@ execute_eval_option_code (const std::string& code)
       std::cerr << "error: unhandled execution exception -- eval failed"
                 << std::endl;
     }
-  catch (std::bad_alloc)
-    {
-      error_state = -2;
-      std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- eval failed"
-                << std::endl;
-    }
 
   return parse_status;
 }
@@ -590,11 +540,13 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
+  --jit-debug             Enable JIT compiler debugging/tracing.\n\
   --line-editing          Force readline use for command-line editing.\n\
   --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-init-path          Don't initialize function search path.\n\
+  --no-jit-compiler       Disable the JIT compiler.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
   --no-window-system      Disable window system, including graphics.\n\
@@ -673,19 +625,19 @@ maximum_braindamage (void)
 {
   persist = true;
 
-  bind_internal_variable ("PS1", ">> ");
-  bind_internal_variable ("PS2", "");
-  bind_internal_variable ("allow_noninteger_range_as_index", true);
-  bind_internal_variable ("beep_on_error", true);
-  bind_internal_variable ("confirm_recursive_rmdir", false);
-  bind_internal_variable ("crash_dumps_octave_core", false);
-  bind_internal_variable ("default_save_options", "-mat-binary");
-  bind_internal_variable ("do_braindead_shortcircuit_evaluation", true);
-  bind_internal_variable ("fixed_point_format", true);
-  bind_internal_variable ("history_timestamp_format_string",
-                         "%%-- %D %I:%M %p --%%");
-  bind_internal_variable ("page_screen_output", false);
-  bind_internal_variable ("print_empty_dimensions", false);
+  FPS1 (octave_value (">> "));
+  FPS2 (octave_value (""));
+  FPS4 (octave_value (""));
+  Fallow_noninteger_range_as_index (octave_value (true));
+  Fbeep_on_error (octave_value (true));
+  Fconfirm_recursive_rmdir (octave_value (false));
+  Fcrash_dumps_octave_core (octave_value (false));
+  Fdefault_save_options (octave_value ("-mat-binary"));
+  Fdo_braindead_shortcircuit_evaluation (octave_value (true));
+  Ffixed_point_format (octave_value (true));
+  Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
+  Fpage_screen_output (octave_value (false));
+  Fprint_empty_dimensions (octave_value (false));
 
   disable_warning ("Octave:abbreviated-property-match");
   disable_warning ("Octave:fopen-file-in-path");
@@ -701,6 +653,8 @@ int
 octave_main (int argc, char **argv, int embedded)
 {
   octave_process_command_line (argc, argv);
+
+  install_defaults ();
 
   octave_initialize_interpreter (argc, argv, embedded);
 
@@ -732,6 +686,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case 'H':
+          Fsaving_history (octave_value (false));
           read_history_file = false;
           break;
 
@@ -767,17 +722,24 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case 'x':
-          echo_executing_commands
-            = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
+          {
+            int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
+            Fecho_executing_commands (octave_value (val));
+          }
           break;
 
         case 'v':
           print_version_and_exit ();
           break;
 
+        case BUILT_IN_DOCSTRINGS_FILE_OPTION:
+          if (optarg)
+            Fbuilt_in_docstrings_file (octave_value (optarg));
+          break;
+
         case DOC_CACHE_FILE_OPTION:
           if (optarg)
-            doc_cache_file = optarg;
+            Fdoc_cache_file (octave_value (optarg));
           break;
 
         case EVAL_OPTION:
@@ -806,28 +768,36 @@ octave_process_command_line (int argc, char **argv)
 
         case INFO_FILE_OPTION:
           if (optarg)
-            info_file = optarg;
+            Finfo_file (octave_value (optarg));
           break;
 
         case INFO_PROG_OPTION:
           if (optarg)
-            info_program = optarg;
+            Finfo_program (octave_value (optarg));
+          break;
+
+        case JIT_DEBUGGING_OPTION:
+          Fenable_jit_debugging (octave_value (true));
           break;
 
         case LINE_EDITING_OPTION:
           forced_line_editing = true;
           break;
 
-        case NO_INIT_FILE_OPTION:
-          read_init_files = false;
-          break;
-
         case NO_GUI_OPTION:
           no_gui_option = true;
           break;
 
+        case NO_INIT_FILE_OPTION:
+          read_init_files = false;
+          break;
+
         case NO_INIT_PATH_OPTION:
           set_initial_path = false;
+          break;
+
+        case NO_JIT_COMPILER_OPTION:
+          Fenable_jit_compiler (octave_value (false));
           break;
 
         case NO_LINE_EDITING_OPTION:
@@ -848,11 +818,11 @@ octave_process_command_line (int argc, char **argv)
 
         case TEXI_MACROS_FILE_OPTION:
           if (optarg)
-            texi_macros_file = optarg;
+            Ftexi_macros_file (octave_value (optarg));
           break;
 
         case TRADITIONAL_OPTION:
-          traditional = true;
+          maximum_braindamage ();
           break;
 
         default:
@@ -887,13 +857,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   octave_thread::init ();
 
-  // The order of these calls is important.  The call to
-  // install_defaults must come before install_builtins because
-  // default variable values must be available for the variables to be
-  // installed, and the call to install_builtins must come before the
-  // options are processed because some command line options override
-  // defaults by calling bind_internal_variable.
-
   init_signals ();
 
   sysdep_init ();
@@ -912,10 +875,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   initialize_default_warning_state ();
 
-  install_defaults ();
-
-  initialize_pathsearch ();
-
   if (! embedded)
     install_signal_handlers ();
   else
@@ -929,37 +888,18 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   install_builtins ();
 
-  if (! read_history_file)
-    bind_internal_variable ("saving_history", false);
-
   for (std::list<std::string>::const_iterator it = command_line_path.begin ();
        it != command_line_path.end (); it++)
     load_path::set_command_line_path (*it);
-
-  if (echo_executing_commands)
-    bind_internal_variable ("echo_executing_commands",
-                            echo_executing_commands);
-
-  if (! doc_cache_file.empty ())
-    bind_internal_variable ("doc_cache_file", doc_cache_file);
 
   if (! exec_path.empty ())
     set_exec_path (exec_path);
 
   if (! image_path.empty ())
-    set_exec_path (image_path);
-
-  if (! info_file.empty ())
-    bind_internal_variable ("info_file", info_file);
-
-  if (! info_program.empty ())
-    bind_internal_variable ("info_program", info_program);
+    set_image_path (image_path);
 
   if (no_window_system)
     display_info::no_window_system ();
-
-  if (! texi_macros_file.empty ())
-    bind_internal_variable ("texi_macros_file", texi_macros_file);
 
   // Make sure we clean up when we exit.  Also allow users to register
   // functions.  If we don't have atexit or on_exit, we're going to
@@ -989,9 +929,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (line_editing)
     initialize_command_input ();
-
-  if (traditional)
-    maximum_braindamage ();
 
   octave_interpreter_ready = true;
 
@@ -1070,7 +1007,7 @@ octave_execute_interpreter (void)
 
       // FIXME -- is this the right thing to do?
 
-      bind_internal_variable ("echo_executing_commands", ECHO_CMD_LINE);
+      Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
     }
 
   if (octave_embedded)
@@ -1100,7 +1037,7 @@ octave_execute_interpreter (void)
 int
 octave_starting_gui (void)
 {
-  if (! display_info::display_available ())
+  if (no_window_system || ! display_info::display_available ())
     return false;
 
   if (force_gui_option)

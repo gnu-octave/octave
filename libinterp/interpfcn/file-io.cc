@@ -1164,7 +1164,7 @@ complete description of the syntax of the template string.\n\
               catch (std::runtime_error)
                 {
                   // Display a warning if the specified locale is unknown
-                  warning ("fscanf: invalid locale. Try `locale -a' for a list of supported values.");
+                  warning ("fscanf: invalid locale. Try 'locale -a' for a list of supported values.");
                   oldloc = std::locale::classic ();
                 }
               retval = os.oscanf (args(1), who);
@@ -1274,7 +1274,7 @@ is returned in @var{pos}.\n\
                   catch (std::runtime_error)
                     {
                       // Display a warning if the specified locale is unknown
-                      warning ("sscanf: invalid locale. Try `locale -a' for a list of supported values.");
+                      warning ("sscanf: invalid locale. Try 'locale -a' for a list of supported values.");
                     }
                   retval = os.oscanf (args(1), who);
                 }              
@@ -2049,8 +2049,7 @@ will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
 in binary mode and with the @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true,\n\
-the file will be deleted automatically when Octave exits, or when\n\
-the function @code{purge_tmp_files} is called.\n\
+the file will be deleted automatically when Octave exits.\n\
 \n\
 If successful, @var{fid} is a valid file ID, @var{name} is the name of\n\
 the file, and @var{msg} is an empty string.  Otherwise, @var{fid}\n\

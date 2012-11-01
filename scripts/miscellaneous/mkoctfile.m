@@ -87,18 +87,18 @@
 ##    CFLAGS                    LD_CXX
 ##    CPICFLAG                  LD_STATIC_FLAG
 ##    CPPFLAGS                  LFLAGS
-##    CXX                       LIBCRUFT
-##    CXXFLAGS                  LIBOCTAVE
-##    CXXPICFLAG                LIBOCTINTERP
-##    DEPEND_EXTRA_SED_PATTERN  LIBS
-##    DEPEND_FLAGS              OCTAVE_LIBS
-##    DL_LD                     OCTAVE_LINK_DEPS
-##    DL_LDFLAGS                OCT_LINK_DEPS
-##    EXEEXT                    RDYNAMIC_FLAG
-##    F77                       READLINE_LIBS
-##    F77_INTEGER_8_FLAG        SED
-##    FFLAGS                    XTRA_CFLAGS
-##    FFTW3_LDFLAGS             XTRA_CXXFLAGS
+##    CXX                       LIBOCTAVE       
+##    CXXFLAGS                  LIBOCTINTERP    
+##    CXXPICFLAG                LIBS            
+##    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS     
+##    DEPEND_FLAGS              OCTAVE_LINK_DEPS
+##    DL_LD                     OCT_LINK_DEPS   
+##    DL_LDFLAGS                RDYNAMIC_FLAG   
+##    EXEEXT                    READLINE_LIBS   
+##    F77                       SED             
+##    F77_INTEGER_8_FLAG        XTRA_CFLAGS     
+##    FFLAGS                    XTRA_CXXFLAGS   
+##    FFTW3_LDFLAGS             
 ##    FFTW3_LIBS
 ##    FFTW3F_LDFLAGS
 ##
@@ -160,7 +160,7 @@ function [output, status] = mkoctfile (varargin)
   endif
 
   if (sys == 127)
-    warning ("unable to find mkoctfile in expected location: `%s'",
+    warning ("unable to find mkoctfile in expected location: '%s'",
              shell_script);
 
     warning ("mkoctfile exited with failure status");

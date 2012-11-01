@@ -85,7 +85,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   else if (auto_add)
     retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
-    error ("structure has no member `%s'", nm.c_str ());
+    error ("structure has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -1100,7 +1100,7 @@ octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
   octave_value retval = map.getfield (nm);
 
   if (! auto_add && retval.is_undefined ())
-    error ("structure has no member `%s'", nm.c_str ());
+    error ("structure has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -1807,7 +1807,7 @@ If the argument is an object, return the underlying struct.\n\
 
       if (! valid_identifier (key))
         {
-          error ("struct: invalid structure field name `%s'", key.c_str ());
+          error ("struct: invalid structure field name '%s'", key.c_str ());
           return retval;
         }
 
@@ -2144,10 +2144,11 @@ extern octave_value_list Fcellstr (const octave_value_list& args, int);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rmfield (@var{s}, @var{f})\n\
+@deftypefn  {Built-in Function} {@var{s} =} rmfield (@var{s}, \"@var{f}\")\n\
+@deftypefnx {Built-in Function} {@var{s} =} rmfield (@var{s}, @var{f})\n\
 Return a copy of the structure (array) @var{s} with the field @var{f}\n\
 removed.  If @var{f} is a cell array of strings or a character array, remove\n\
-the named fields.\n\
+each of the named fields.\n\
 @seealso{cellstr, iscellstr, setfield}\n\
 @end deftypefn")
 {
@@ -2192,8 +2193,14 @@ the named fields.\n\
 
 /*
 ## test rmfield
-%!test
+%!shared x
 %! x(3).d=1;  x(2).a=2;  x(1).b=3;  x(2).c=3;  x(6).f="abc123";
+%!
+%!test
+%! y = rmfield (x, "c");
+%! assert (fieldnames (y), {"d"; "a"; "b"; "f"});
+%! assert (size (y), [1, 6]);
+%!test
 %! y = rmfield (x, {"a", "f"});
 %! assert (fieldnames (y), {"d"; "b"; "c"});
 %! assert (size (y), [1, 6]);

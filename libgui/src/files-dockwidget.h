@@ -39,15 +39,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLineEdit>
 
 /**
-  \class files_dock_widget
-  \brief Dock widget to display files in the current directory.
-  */
+   \class files_dock_widget
+   \brief Dock widget to display files in the current directory.
+*/
 class files_dock_widget : public QDockWidget
 {
   Q_OBJECT
-public:
+  public:
   /** Constructs a new files_dock_widget. */
   files_dock_widget (QWidget *parent = 0);
+  ~files_dock_widget ();
 
 public slots:
   /** Slot for handling a change in directory via double click. */
@@ -57,12 +58,12 @@ public slots:
   void do_up_directory ();
 
   /** Sets the current directory being displayed. */
-  void set_current_directory (QString currentDirectory);
+  void set_current_directory (const QString& currentDirectory);
 
   /** Accepts user input a the line edit for the current directory. */
   void handle_directory_entered ();
 
-  void display_directory (QString directory);
+  void display_directory (const QString& directory);
 
   /** Tells the widget to react on changed settings. */
   void notice_settings ();
@@ -70,12 +71,15 @@ public slots:
   /** Slot to steer changing visibility from outside. */
   void handle_visibility_changed (bool visible);
 
+  /** Slot when floating property changes */
+  void top_level_changed (bool floating);
+
 signals:
   /** Emitted, whenever the user requested to open a file. */
-  void open_file (QString fileName);
+  void open_file (const QString& fileName);
 
   /** Emitted, whenever the currently displayed directory changed. */
-  void displayed_directory_changed (QString directory);
+  void displayed_directory_changed (const QString& directory);
 
   /** Custom signal that tells if a user has clicke away that dock widget. */
   void active_changed (bool active);

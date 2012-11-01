@@ -38,10 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 
 #include <string>
-#include <base64.h>
 
 #include "lo-ieee.h"
 #include "lo-math.h"
+#include "oct-base64.h"
 #include "oct-time.h"
 #include "str-vec.h"
 #include "quit.h"
@@ -1337,6 +1337,11 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert (diag (int8 ([1, 0, 0; 0, 2, 0; 0, 0, 3])), int8 ([1; 2; 3]))
 %!assert (diag (int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8 ([1; 2; 3]))
 %!assert (diag (int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8 ([1; 2; 3]))
+
+## bug #37411
+%!assert (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
+%!assert (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
+%!assert (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
 
 ## Test non-square size
 %!assert (diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
@@ -4111,53 +4116,53 @@ either \"double\" or \"single\".\n\
     {
       if (args(0).is_single_type ())
         {
-          float val = args(0).float_value ();
+          Array<float> x = args(0).float_array_value ();
 
           if (! error_state)
-            {
-              val = ::fabsf (val);
-              if (xisnan (val) || xisinf (val))
-                retval = fill_matrix (octave_value ("single"),
-                                      lo_ieee_nan_value (),
-                                      lo_ieee_float_nan_value (), "eps");
-              else if (val < std::numeric_limits<float>::min ())
-                retval = fill_matrix (octave_value ("single"), 0e0,
-                                      powf (2.0, -149e0), "eps");
-              else
+            {              
+              Array<float> epsval (x.dims ());
+              
+              for (octave_idx_type i = 0; i < x.numel (); i++)
                 {
-                  int expon;
-                  frexpf (val, &expon);
-                  val = std::pow (static_cast <float> (2.0),
-                                  static_cast <float> (expon - 24));
-                  retval = fill_matrix (octave_value ("single"),
-                                        std::numeric_limits<double>::epsilon (),
-                                        val, "eps");
+                  float val = ::fabsf (x(i));
+                  if (xisnan (val) || xisinf (val))
+                    epsval(i) = lo_ieee_nan_value ();
+                  else if (val < std::numeric_limits<float>::min ())
+                    epsval(i) = powf (2.0, -149e0);                  
+                  else
+                    {
+                      int expon;
+                      frexpf (val, &expon);
+                      epsval(i) = std::pow (static_cast <float> (2.0),
+                                            static_cast <float> (expon - 24));
+                    }
                 }
+              retval = epsval;
             }
         }
       else
         {
-          double val = args(0).double_value ();
+          Array<double> x = args(0).array_value ();
 
           if (! error_state)
             {
-              val = ::fabs (val);
-              if (xisnan (val) || xisinf (val))
-                retval = fill_matrix (octave_value_list (),
-                                      lo_ieee_nan_value (),
-                                      lo_ieee_float_nan_value (), "eps");
-              else if (val < std::numeric_limits<double>::min ())
-                retval = fill_matrix (octave_value_list (),
-                                      pow (2.0, -1074e0), 0e0, "eps");
-              else
+              Array<double> epsval (x.dims ());
+
+              for (octave_idx_type i = 0; i < x.numel (); i++)
                 {
-                  int expon;
-                  frexp (val, &expon);
-                  val = std::pow (static_cast <double> (2.0),
-                                  static_cast <double> (expon - 53));
-                  retval = fill_matrix (octave_value_list (), val,
-                                        std::numeric_limits<float>::epsilon (),
-                                        "eps");
+                  double val = ::fabs (x(i));
+                  if (xisnan (val) || xisinf (val))
+                    epsval(i) = lo_ieee_nan_value ();
+                  else if (val < std::numeric_limits<double>::min ())
+                    epsval(i) = pow (2.0, -1074e0);
+                  else
+                    {
+                      int expon;
+                      frexp (val, &expon);
+                      epsval(i) = std::pow (static_cast <double> (2.0),
+                                            static_cast <double> (expon - 53));
+                    }
+                  retval = epsval;
                 }
             }
         }
@@ -4179,6 +4184,8 @@ either \"double\" or \"single\".\n\
 %!assert (eps (realmin/16), 2^(-1074))
 %!assert (eps (Inf), NaN)
 %!assert (eps (NaN), NaN)
+%!assert (eps ([1/2 1 2 realmax 0 realmin/2 realmin/16 Inf NaN]), 
+%!             [2^(-53) 2^(-52) 2^(-51) 2^971 2^(-1074) 2^(-1074) 2^(-1074) NaN NaN])
 %!assert (eps (single (1/2)), single (2^(-24)))
 %!assert (eps (single (1)), single (2^(-23)))
 %!assert (eps (single (2)), single (2^(-22)))
@@ -4188,6 +4195,9 @@ either \"double\" or \"single\".\n\
 %!assert (eps (realmin ("single")/16), single (2^(-149)))
 %!assert (eps (single (Inf)), single (NaN))
 %!assert (eps (single (NaN)), single (NaN))
+%!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])), 
+%!             single ([2^(-24) 2^(-23) 2^(-22) 2^104 2^(-149) 2^(-149) 2^(-149) NaN NaN]))
+
 */
 
 DEFUN (pi, args, ,
@@ -6204,7 +6214,7 @@ ordered lists.\n\
 */
 
 // Sort the rows of the matrix @var{a} according to the order
-// specified by @var{mode}, which can either be `ascend' or `descend'
+// specified by @var{mode}, which can either be 'ascend' or 'descend'
 // and return the index vector corresponding to the sort order.
 //
 // This function does not yet support sparse matrices.
@@ -7235,22 +7245,8 @@ endfor\n\
   return retval;
 }
 
-bool do_base64_encode (const char * inc, const size_t inlen, char *& out)
-{  
-  bool ret = false;
-  size_t outlen = base64_encode_alloc (inc, inlen, &out);
-  
-  if (! out && outlen == 0 && inlen != 0)
-    error ("base64_encode: input array too large");
-  else if (! out)
-    error ("base64_encode: memory allocation error");
-  else
-    ret = true;
-
-  return ret;
-}
-
-DEFUN (base64_encode, args, , "-*- texinfo -*-\n\
+DEFUN (base64_encode, args, ,
+  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{s} =} base64_encode (@var{x})\n\
 Encode a double matrix or array @var{x} into the base64 format string\n\
 @var{s}.\n\
@@ -7282,7 +7278,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
                 reinterpret_cast<const char*> (in.data ());             \
               char* out;                                                \
               if (! error_state                                         \
-                  && do_base64_encode (inc, inlen, out))                \
+                  && octave_base64_encode (inc, inlen, &out))          \
                 retval(0) = octave_value (out);                         \
             }
                                           
@@ -7308,7 +7304,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           inc = reinterpret_cast<const char*> (in.data ());  
           char* out;
           if (! error_state 
-              && do_base64_encode (inc, inlen, out))
+              && octave_base64_encode (inc, inlen, &out))
             retval(0) = octave_value (out);
         }                 
       else
@@ -7320,7 +7316,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           inc = reinterpret_cast<const char*> (in.data ());   
           char* out;
           if (! error_state 
-              && do_base64_encode (inc, inlen, out))
+              && octave_base64_encode (inc, inlen, &out))
             retval(0) = octave_value (out);
         }
     }  
@@ -7342,16 +7338,17 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 %!error base64_encode (struct ())
 */
 
-DEFUN (base64_decode, args, , "-*- texinfo -*-\n\
+DEFUN (base64_decode, args, ,
+  "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} base64_decode (@var{s})\n\
 @deftypefnx {Built-in Function} {@var{x} =} base64_decode (@var{s}, @var{dims})\n\
-Decode the double matrix or array @var{x} from the base64 format string\n\
+Decode the double matrix or array @var{x} from the base64 encoded string\n\
 @var{s}.  The optional input parameter @var{dims} should be a vector\n\
 containing the dimensions of the decoded array.\n\
 @seealso{base64_encode}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -7359,54 +7356,32 @@ containing the dimensions of the decoded array.\n\
     print_usage ();
   else
     {
-      dim_vector new_dims;
-      Array<double> res;
+      dim_vector dims;
 
       if (nargin > 1)
         {
-          const Array<octave_idx_type> new_size =
+          const Array<octave_idx_type> size =
             args(1).octave_idx_type_vector_value ();
+
           if (! error_state)
             {
-              new_dims = dim_vector::alloc (new_size.length ());
-              for (octave_idx_type i = 0; i < new_size.length (); i++)
-                new_dims(i) = new_size(i);
+              dims = dim_vector::alloc (size.length ());
+              for (octave_idx_type i = 0; i < size.length (); i++)
+                dims(i) = size(i);
             }
         }
 
-      const std::string in = args(0).string_value ();
+      const std::string str = args(0).string_value ();
 
       if (! error_state)
         {
-          const char *inc = &(in[0]);
-          char *out;
-          size_t inlen = in.length (), outlen;
+          Array<double> res = octave_base64_decode (str);
 
-          bool ok = base64_decode_alloc (inc, inlen, &out, &outlen);
+          if (nargin > 1)
+            res = res.reshape (dims);
 
-          if (! ok)
-            error ("base64_decode: input was not valid base64");
-          else if (! out)
-            error ("base64_decode: memory allocation error");
-          else
-            {
-              if ((outlen % (sizeof (double) / sizeof (char))) != 0)
-                error ("base64_decode: incorrect input size");
-              else
-                {
-                  octave_idx_type l;
-                  l = (outlen * sizeof (char)) / sizeof (double);
-                  res.resize1 (l);
-                  double *dout = reinterpret_cast<double*> (out);
-                  std::copy (dout, dout + l, res.fortran_vec ());
-
-                  if (nargin > 1)
-                    retval(0) = octave_value (res).reshape (new_dims);
-                  else
-                    retval(0) = octave_value (res);
-                }
-            }
-        }
+          retval = res;
+        }        
     }
 
   return retval; 

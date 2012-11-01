@@ -243,7 +243,7 @@ octave_value_typeinfo::do_register_unary_class_op (octave_value::unary_op op,
     {
       std::string op_name = octave_value::unary_op_as_string (op);
 
-      warning ("duplicate unary operator `%s' for class dispatch",
+      warning ("duplicate unary operator '%s' for class dispatch",
                op_name.c_str ());
     }
 
@@ -261,7 +261,7 @@ octave_value_typeinfo::do_register_unary_op (octave_value::unary_op op,
       std::string op_name = octave_value::unary_op_as_string (op);
       std::string type_name = types(t);
 
-      warning ("duplicate unary operator `%s' for type `%s'",
+      warning ("duplicate unary operator '%s' for type '%s'",
                op_name.c_str (), type_name.c_str ());
     }
 
@@ -279,7 +279,7 @@ octave_value_typeinfo::do_register_non_const_unary_op
       std::string op_name = octave_value::unary_op_as_string (op);
       std::string type_name = types(t);
 
-      warning ("duplicate unary operator `%s' for type `%s'",
+      warning ("duplicate unary operator '%s' for type '%s'",
                op_name.c_str (), type_name.c_str ());
     }
 
@@ -296,7 +296,7 @@ octave_value_typeinfo::do_register_binary_class_op (octave_value::binary_op op,
     {
       std::string op_name = octave_value::binary_op_as_string (op);
 
-      warning ("duplicate binary operator `%s' for class dispatch",
+      warning ("duplicate binary operator '%s' for class dispatch",
                op_name.c_str ());
     }
 
@@ -316,7 +316,7 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
       std::string t1_name = types(t1);
       std::string t2_name = types(t2);
 
-      warning ("duplicate binary operator `%s' for types `%s' and `%s'",
+      warning ("duplicate binary operator '%s' for types '%s' and '%s'",
                op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
     }
 
@@ -333,7 +333,7 @@ octave_value_typeinfo::do_register_binary_class_op (octave_value::compound_binar
     {
       std::string op_name = octave_value::binary_op_fcn_name (op);
 
-      warning ("duplicate compound binary operator `%s' for class dispatch",
+      warning ("duplicate compound binary operator '%s' for class dispatch",
                op_name.c_str ());
     }
 
@@ -353,7 +353,7 @@ octave_value_typeinfo::do_register_binary_op (octave_value::compound_binary_op o
       std::string t1_name = types(t1);
       std::string t2_name = types(t2);
 
-      warning ("duplicate compound binary operator `%s' for types `%s' and `%s'",
+      warning ("duplicate compound binary operator '%s' for types '%s' and '%s'",
                op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
     }
 
@@ -370,7 +370,7 @@ octave_value_typeinfo::do_register_cat_op (int t1, int t2, octave_value_typeinfo
       std::string t1_name = types(t1);
       std::string t2_name = types(t2);
 
-      warning ("duplicate concatenation operator for types `%s' and `%s'",
+      warning ("duplicate concatenation operator for types '%s' and '%s'",
                t1_name.c_str (), t1_name.c_str ());
     }
 
@@ -390,7 +390,7 @@ octave_value_typeinfo::do_register_assign_op (octave_value::assign_op op,
       std::string t_lhs_name = types(t_lhs);
       std::string t_rhs_name = types(t_rhs);
 
-      warning ("duplicate assignment operator `%s' for types `%s' and `%s'",
+      warning ("duplicate assignment operator '%s' for types '%s' and '%s'",
                op_name.c_str (), t_lhs_name.c_str (), t_rhs_name.c_str ());
     }
 
@@ -408,7 +408,7 @@ octave_value_typeinfo::do_register_assignany_op (octave_value::assign_op op,
       std::string op_name = octave_value::assign_op_as_string (op);
       std::string t_lhs_name = types(t_lhs);
 
-      warning ("duplicate assignment operator `%s' for types `%s'",
+      warning ("duplicate assignment operator '%s' for types '%s'",
                op_name.c_str (), t_lhs_name.c_str ());
     }
 
@@ -426,7 +426,7 @@ octave_value_typeinfo::do_register_pref_assign_conv (int t_lhs, int t_rhs,
       std::string t_lhs_name = types(t_lhs);
       std::string t_rhs_name = types(t_rhs);
 
-      warning ("overriding assignment conversion for types `%s' and `%s'",
+      warning ("overriding assignment conversion for types '%s' and '%s'",
                t_lhs_name.c_str (), t_rhs_name.c_str ());
     }
 
@@ -444,7 +444,7 @@ octave_value_typeinfo::do_register_type_conv_op
       std::string t_name = types(t);
       std::string t_result_name = types(t_result);
 
-      warning ("overriding type conversion op for `%s' to `%s'",
+      warning ("overriding type conversion op for '%s' to '%s'",
                t_name.c_str (), t_result_name.c_str ());
     }
 
@@ -462,7 +462,7 @@ octave_value_typeinfo::do_register_widening_op
       std::string t_name = types(t);
       std::string t_result_name = types(t_result);
 
-      warning ("overriding widening op for `%s' to `%s'",
+      warning ("overriding widening op for '%s' to '%s'",
                t_name.c_str (), t_result_name.c_str ());
     }
 

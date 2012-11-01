@@ -136,7 +136,7 @@ function [nf, nv] = shrinkfaces (varargin)
       if (ishandle (p))
         ## avoid exceptions
         set (p, "FaceVertexCData", [], "CData", []);
-        set (p, "Vertices", v, "Faces", f, "FaceVertxCData", c);
+        set (p, "Vertices", v, "Faces", f, "FaceVertexCData", c);
       else
         nf = struct ("faces", f, "vertices", v, "facevertexcdata", c);
       endif

@@ -17,6 +17,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "parser.h"
 #include <QFileInfo>
 #include <QDir>
@@ -26,8 +30,8 @@
 #include <QProcess>
 #include <QBuffer>
 
-parser::parser(QObject *parent)
-  : QObject(parent)
+parser::parser(QObject *p)
+  : QObject(p)
 {
   _compressors_map.insert ("bz2",  "bzip2 -dc \"%1\"");
   _compressors_map.insert ("gz",   "gzip -dc \"%1\"");
@@ -37,7 +41,7 @@ parser::parser(QObject *parent)
 }
 
 void
-parser::set_info_path (QString infoPath)
+parser::set_info_path (const QString& infoPath)
 {
   this->_info_path = infoPath;
 
@@ -96,7 +100,7 @@ parser::open_file (QFileInfo & file_info)
 }
 
 int
-parser::is_ref (QString node)
+parser::is_ref (const QString& node)
 {
   if (_ref_map.contains (node))
     {
@@ -108,8 +112,10 @@ parser::is_ref (QString node)
 }
 
 QString
-parser::search_node (QString node)
+parser::search_node (const QString& node_arg)
 {
+  QString node = node_arg;
+
   QFileInfo file_info;
   QString ref;
 
@@ -148,7 +154,7 @@ parser::search_node (QString node)
 }
 
 QString
-parser::search_node (QString node, QIODevice *io)
+parser::search_node (const QString& node, QIODevice *io)
 {
   while (!io->atEnd ())
     {
@@ -182,7 +188,7 @@ parser::get_next_node (QIODevice *io)
 }
 
 static QString
-get_first_line (QString text)
+get_first_line (const QString& text)
 {
   int n = text.indexOf ("\n");
 
@@ -196,7 +202,7 @@ get_first_line (QString text)
 }
 
 static QString
-parser_node (QString text, QString node_name)
+parser_node (const QString& text, const QString& node_name)
 {
   QString firstLine = get_first_line (text);
   QStringList nodes = firstLine.split (",");
@@ -213,31 +219,31 @@ parser_node (QString text, QString node_name)
 }
 
 QString
-parser::get_node_name (QString text)
+parser::get_node_name (const QString& text)
 {
   return parser_node (text, "Node:");
 }
 
 QString
-parser::get_node_up (QString text)
+parser::get_node_up (const QString& text)
 {
   return parser_node (text, "Up:");
 }
 
 QString
-parser::get_node_next (QString text)
+parser::get_node_next (const QString& text)
 {
   return parser_node (text, "Next:");
 }
 
 QString
-parser::get_node_prev (QString text)
+parser::get_node_prev (const QString& text)
 {
   return parser_node (text, "Prev:");
 }
 
 static void
-replace_links (QString &text)
+replace_links (QString& text)
 {
   QRegExp re ("(\\*[N|n]ote|\n\\*)([ |\n]+)([^:]+):([^:\\.,]*)([:,\\.])");
   int i = 0, f;
@@ -278,7 +284,7 @@ replace_links (QString &text)
 }
 
 static void
-replace_colons (QString &text)
+replace_colons (QString& text)
 {
   QRegExp re ("`([^']+)'");
   int i = 0, f;
@@ -294,7 +300,7 @@ replace_colons (QString &text)
 }
 
 static void
-info_to_html (QString &text)
+info_to_html (QString& text)
 {
   text.replace ("&", "&amp;");
   text.replace ("<", "&lt;");
@@ -307,8 +313,11 @@ info_to_html (QString &text)
 }
 
 QString
-parser::node_text_to_html (QString text, int anchorPos, QString anchor)
+parser::node_text_to_html (const QString& text_arg, int anchorPos,
+                           const QString& anchor)
 {
+  QString text = text_arg;
+
   QString nodeName = get_node_name (text);
   QString nodeUp   = get_node_up (text);
   QString nodeNext = get_node_next (text);
@@ -475,7 +484,7 @@ parser::seek (QIODevice *io, int pos)
 }
 
 static void
-replace (QString &text, QRegExp re, QString after)
+replace (QString& text, const QRegExp& re, const QString& after)
 {
   int pos = 0;
 
@@ -491,7 +500,7 @@ replace (QString &text, QRegExp re, QString after)
 }
 
 QString
-parser::global_search (QString text, int max_founds)
+parser::global_search (const QString& text, int max_founds)
 {
   QString results;
   QStringList words = text.split (" ",QString::SkipEmptyParts);

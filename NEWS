@@ -3,6 +3,17 @@ Summary of important user-visible changes for version 4.0:
 
  ** A new GUI is now available with Octave.
 
+ ** Warning states may now be set temporarily, until the end of the
+    current function, using the syntax
+
+      warning STATE ID "local"
+
+    in which STATE may be "on", "off", or "error".  Changes to warning
+    states that are set locally affect the current function and all
+    functions called from the current scope.  The previous warning state
+    is restored on return from the current function.  The "local"
+    option is ignored if used in the top-level workspace.
+
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
@@ -45,9 +56,16 @@ Summary of important user-visible changes for version 3.8:
     where the pattern is actually the assertion '^' or start-of-line.
 
  ** For compatibility with Matlab, the regexp, regexpi, and regexprep
-    functions now process backslash escapes in single-quoted pattern
+    functions now process backslash escape sequences in single-quoted pattern
     strings.  In addition, the regexprep function now processes backslash
-    escapes in single-quoted replacement strings.
+    escapes in single-quoted replacement strings.  For example,
+    
+    regexprep (str, '\t', '\n')
+
+    would search the variable str for a TAB character (escape sequence \t)
+    and replace it with a NEWLINE (escape sequence \n).  Previously the
+    expression would have searched for a literal '\' followed by 't' and
+    replaced the two characters with the sequence '\', 'n'.
 
  ** Redundant terminal comma accepted by parser
 
@@ -82,10 +100,11 @@ Summary of important user-visible changes for version 3.8:
       
  ** Other new functions added in 3.8.0:
 
-      betaincinv   erfcinv      polyeig      shrinkfaces 
-      cmpermute    findfigs     splinefit
-      cmunique     fminsearch   tetramesh
-      colorcube    lines        rgbplot     
+      betaincinv   erfcinv      lines      rgbplot
+      cmpermute    findfigs     polyeig    shrinkfaces
+      cmunique     fminsearch   splinefit
+      colorcube    iscolormap   tetramesh
+
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.4 and have been

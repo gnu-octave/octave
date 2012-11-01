@@ -113,11 +113,15 @@ function y = mean (x, opt1, opt2)
   if (strcmp (opt, "a"))
     y = sum (x, dim) / n;
   elseif (strcmp (opt, "g"))
-    y = prod (x, dim) .^ (1/n);
+    if (all (x(:) >= 0))
+      y = exp (sum (log (x), dim) ./ n);
+    else
+      error ("mean: X must not contain any negative values");
+    endif
   elseif (strcmp (opt, "h"))
     y = n ./ sum (1 ./ x, dim);
   else
-    error ("mean: option `%s' not recognized", opt);
+    error ("mean: option '%s' not recognized", opt);
   endif
 
 endfunction
@@ -130,6 +134,9 @@ endfunction
 %! assert (mean (x), 0);
 %! assert (mean (y), 0);
 %! assert (mean (z), [0, 10]);
+
+## Test small numbers
+%!assert (mean (repmat (0.1,1,1000), "g"), 0.1, 20*eps)
 
 %!assert (mean (magic (3), 1), [5, 5, 5])
 %!assert (mean (magic (3), 2), [5; 5; 5])

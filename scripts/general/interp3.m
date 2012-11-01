@@ -91,7 +91,7 @@ function vi = interp3 (varargin)
     if (ndims (v) != 3)
       error ("interp3: expect 3-dimensional array of values");
     endif
-    x = varargin (2:end);
+    x = varargin (2:nargs);
     if (any (! cellfun (@isvector, x)))
       for i = 2 : 3
         if (! size_equal (x{1}, x{i}))
@@ -137,15 +137,48 @@ endfunction
 
 
 %!test
-%! x = y = z = -1:1;
+%! x = y = z = -1:1; y = y + 2;
 %! f = @(x,y,z) x.^2 - y - z.^2;
 %! [xx, yy, zz] = meshgrid (x, y, z);
 %! v = f (xx,yy,zz);
-%! xi = yi = zi = -1:0.5:1;
+%! xi = yi = zi = -1:0.5:1; yi = yi + 2.1;
 %! [xxi, yyi, zzi] = meshgrid (xi, yi, zi);
 %! vi = interp3 (x, y, z, v, xxi, yyi, zzi);
-%! [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
-%! vi2 = interpn (x, y, z, v, xxi, yyi, zzi);
+%! [xxi, yyi, zzi] = ndgrid (yi, xi, zi);
+%! vi2 = interpn (y, x, z, v, xxi, yyi, zzi);
+%! tol = 10 * eps;
+%! assert (vi, vi2, tol);
+
+%!test
+%! x=z=1:2; y=1:3;xi=zi=.6:1.6; yi=1; v=ones([3,2,2]);  v(:,2,1)=[7 ;5;4];  v(:,1,2)=[2 ;3;5];
+%! [xxi3, yyi3, zzi3] = meshgrid (xi, yi, zi);
+%! [xxi, yyi, zzi] = ndgrid (yi, xi, zi);
+%! vi = interp3 (x, y, z, v, xxi3, yyi3, zzi3, "nearest");
+%! vi2 = interpn (y, x, z, v, xxi, yyi, zzi,"nearest");
+%! assert (vi, vi2);
+
+%!test
+%! x=z=1:2; y=1:3;xi=zi=.6:1.6; yi=1; v=ones([3,2,2]);  v(:,2,1)=[7 ;5;4];  v(:,1,2)=[2 ;3;5];
+%! vi = interp3 (x, y, z, v, xi+1, yi, zi, "nearest",3);
+%! vi2 = interpn (y, x, z, v, yi, xi+1, zi,"nearest", 3);
+%! assert (vi, vi2);
+
+%!test
+%! x=z=1:2; y=1:3;xi=zi=.6:1.6; yi=1; v=ones([3,2,2]);  v(:,2,1)=[7 ;5;4];  v(:,1,2)=[2 ;3;5];
+%! vi = interp3 (x, y, z, v, xi, yi, zi, "nearest");
+%! vi2 = interpn (y, x, z, v, yi, xi, zi,"nearest");
+%! assert (vi, vi2);
+
+%!test
+%! x=z=1:2; y=1:3;xi=zi=.6:1.6; yi=1; v=ones([3,2,2]);  v(:,2,1)=[7 ;5;4];  v(:,1,2)=[2 ;3;5];
+%! vi = interp3 (v, xi, yi, zi, "nearest",3);
+%! vi2 = interpn (v, yi, xi, zi,"nearest", 3);
+%! assert (vi, vi2);
+
+%!test
+%! xi=zi=.6:1.6; yi=1; v=ones([3,2,2]);  v(:,2,1)=[7 ;5;4];  v(:,1,2)=[2 ;3;5];
+%! vi = interp3 (v, xi, yi, zi, "nearest");
+%! vi2 = interpn (v, yi, xi, zi,"nearest");
 %! assert (vi, vi2);
 
 %!shared z, zout, tol

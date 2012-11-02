@@ -571,17 +571,19 @@ void
 jit_convert::visit_constant (tree_constant& tc)
 {
   octave_value v = tc.rvalue1 ();
-  if (v.is_real_scalar () && v.is_double_type () && ! v.is_complex_type ())
+  jit_type *ty = jit_typeinfo::type_of (v);
+
+  if (ty == jit_typeinfo::get_scalar ())
     {
       double dv = v.double_value ();
       result = factory.create<jit_const_scalar> (dv);
     }
-  else if (v.is_range ())
+  else if (ty == jit_typeinfo::get_range ())
     {
       Range rv = v.range_value ();
       result = factory.create<jit_const_range> (rv);
     }
-  else if (v.is_complex_scalar ())
+  else if (ty == jit_typeinfo::get_complex ())
     {
       Complex cv = v.complex_value ();
       result = factory.create<jit_const_complex> (cv);
@@ -2252,6 +2254,35 @@ Test some simple cases that compile.
 %!   result = result + inc * (1/3 * ii ^ 2);
 %! endfor
 %! assert (abs (result - 1/9) < 1e-5);
+
+%!test
+%! temp = 1+1i;
+%! nan = NaN;
+%! while 1
+%!   temp = temp - 1i;
+%!   temp = temp * nan;
+%!   break;
+%! endwhile
+%! assert (imag (temp), 0);
+
+%!test
+%! temp = 1+1i;
+%! nan = NaN+1i;
+%! while 1
+%!   nan = nan - 1i;
+%!   temp = temp - 1i;
+%!   temp = temp * nan;
+%!   break;
+%! endwhile
+%! assert (imag (temp), 0);
+
+%!test
+%! temp = 1+1i;
+%! while 1
+%!   temp = temp * 5;
+%!   break;
+%! endwhile
+%! assert (temp, 5+5i);
 
 %!test
 %! nr = 1001;

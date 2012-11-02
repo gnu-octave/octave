@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "debug.h"
 #include "defun.h"
 #include "ov.h"
 #include "pt-all.h"
@@ -34,9 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "variables.h"
 
-bool Venable_jit_debugging = false;
+static bool Venable_jit_debugging = false;
 
-bool Venable_jit_compiler = true;
+static bool Venable_jit_compiler = true;
 
 #ifdef HAVE_LLVM
 
@@ -1793,7 +1794,7 @@ tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
   const size_t MIN_TRIP_COUNT = 1000;
 
   size_t tc = trip_count (bounds);
-  if (! tc || ! initialize ())
+  if (! tc || ! initialize () || ! enabled ())
     return false;
 
   jit_info::vmap extra_vars;
@@ -1816,7 +1817,7 @@ tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
 bool
 tree_jit::do_execute (tree_while_command& cmd)
 {
-  if (! initialize ())
+  if (! initialize () || ! enabled ())
     return false;
 
   jit_info *info = cmd.get_info ();
@@ -1834,7 +1835,7 @@ bool
 tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
                       octave_value_list& retval)
 {
-  if (! initialize ())
+  if (! initialize () || ! enabled ())
     return false;
 
   jit_function_info *info = fcn.get_info ();
@@ -1846,6 +1847,15 @@ tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
       }
 
     return info->execute (args, retval);
+}
+
+bool
+tree_jit::enabled (void)
+{
+  // Ideally, we should only disable JIT if there is a breakpoint in the code we
+  // are about to run. However, we can't figure this out in O(1) time, so we
+  // conservatively check for the existence of any breakpoints.
+  return Venable_jit_compiler && ! bp_table::have_breakpoints ();
 }
 
 size_t

@@ -307,7 +307,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   octave_value rhs = expr->rvalue1 ();
 
 #if HAVE_LLVM
-  if (Venable_jit_compiler && tree_jit::execute (cmd, rhs))
+  if (tree_jit::execute (cmd, rhs))
     return;
 #endif
 
@@ -1044,7 +1044,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
     return;
 
 #if HAVE_LLVM
-  if (Venable_jit_compiler && tree_jit::execute (cmd))
+  if (tree_jit::execute (cmd))
     return;
 #endif
 

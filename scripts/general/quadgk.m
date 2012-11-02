@@ -301,110 +301,99 @@ function [q, err] = quadgk (f, a, b, varargin)
     endwhile
     subs = [subs(1:end-1), subs(2:end)];
 
-    # Not needed anmoyre
-    #warn_state = warning ("query", "Octave:divide-by-zero");
     # Set divide-by-zero warning off locally
     warning ("off", "Octave:divide-by-zero", "local");
 
     warn_msg   = "Octave:quadgk:warning-termination";
-    unwind_protect
-      ## Singularity will cause divide by zero warnings
-      warning ("off", "Octave:divide-by-zero");
 
-      ## Initial evaluation of the integrand on the subintervals
-      [q_subs, q_errs] = __quadgk_eval__ (f, subs);
-      q0 = sum (q_subs);
-      err0 = sum (q_errs);
+    ## Singularity will cause divide by zero warnings
+    warning ("off", "Octave:divide-by-zero");
 
-      if (isa (a, "single") || isa (b, "single") || isa (waypoints, "single"))
-        myeps = eps ("single");
+    ## Initial evaluation of the integrand on the subintervals
+    [q_subs, q_errs] = __quadgk_eval__ (f, subs);
+    q0 = sum (q_subs);
+    err0 = sum (q_errs);
+
+    if (isa (a, "single") || isa (b, "single") || isa (waypoints, "single"))
+      myeps = eps ("single");
+    else
+      myeps = eps;
+    endif
+
+    first = true;
+    while (true)
+      ## Check for subintervals that are too small. Test must be
+      ## performed in untransformed subintervals. What is a good
+      ## value for this test. Shampine suggests 100*eps
+      if (any (abs (diff (trans (subs), [], 2) / h0) < 100 * myeps))
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      ## Quit if any evaluations are not finite (Inf or NaN)
+      if (any (! isfinite (q_subs)))
+        warning (warn_msg, "quadgk: non finite integrand encountered");
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      tol = max (abstol, reltol .* abs (q0));
+
+      ## If the global error estimate is meet exit
+      if (err0 < tol)
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      ## Accept the subintervals that meet the convergence criteria
+      idx = find (abs (q_errs) < tol .* abs (diff (subs, [], 2)) ./ h);
+      if (first)
+        q = sum (q_subs (idx));
+        err = sum (q_errs(idx));
+        first = false;
       else
-        myeps = eps;
+        q0 = q + sum (q_subs);
+        err0 = err + sum (q_errs);
+        q += sum (q_subs (idx));
+        err += sum (q_errs(idx));
+      endif
+      subs(idx,:) = [];
+
+      ## If no remaining subintervals exit
+      if (rows (subs) == 0)
+        break;
       endif
 
-      first = true;
-      while (true)
-        ## Check for subintervals that are too small. Test must be
-        ## performed in untransformed subintervals. What is a good
-        ## value for this test. Shampine suggests 100*eps
-        if (any (abs (diff (trans (subs), [], 2) / h0) < 100 * myeps))
-          q = q0;
-          err = err0;
-          break;
-        endif
+      if (trace)
+        disp ([rows(subs), err, q0]);
+      endif
 
-        ## Quit if any evaluations are not finite (Inf or NaN)
-        if (any (! isfinite (q_subs)))
-          warning (warn_msg, "quadgk: non finite integrand encountered");
-          q = q0;
-          err = err0;
-          break;
-        endif
+      ## Split remaining subintervals in two
+      mid = (subs(:,2) + subs(:,1)) ./ 2;
+      subs = [subs(:,1), mid; mid, subs(:,2)];
 
-        tol = max (abstol, reltol .* abs (q0));
-
-        ## If the global error estimate is meet exit
-        if (err0 < tol)
-          q = q0;
-          err = err0;
-          break;
-        endif
-
-        ## Accept the subintervals that meet the convergence criteria
-        idx = find (abs (q_errs) < tol .* abs (diff (subs, [], 2)) ./ h);
-        if (first)
-          q = sum (q_subs (idx));
-          err = sum (q_errs(idx));
-          first = false;
-        else
-          q0 = q + sum (q_subs);
-          err0 = err + sum (q_errs);
-          q += sum (q_subs (idx));
-          err += sum (q_errs(idx));
-        endif
-        subs(idx,:) = [];
-
-        ## If no remaining subintervals exit
-        if (rows (subs) == 0)
-          break;
-        endif
-
-        if (trace)
-          disp ([rows(subs), err, q0]);
-        endif
-
-        ## Split remaining subintervals in two
-        mid = (subs(:,2) + subs(:,1)) ./ 2;
-        subs = [subs(:,1), mid; mid, subs(:,2)];
-
-        ## If the maximum subinterval count is met accept remaining
-        ## subinterval and exit
-        if (rows (subs) > maxint)
-          warning (warn_msg,
-                             "quadgk: maximum interval count (%d) met", maxint);
-          q += sum (q_subs);
-          err += sum (q_errs);
-          break;
-        endif
-
-        ## Evaluation of the integrand on the remaining subintervals
-        [q_subs, q_errs] = __quadgk_eval__ (f, subs);
-      endwhile
-
-      if (err > max (abstol, reltol * abs (q)))
+      ## If the maximum subinterval count is met accept remaining
+      ## subinterval and exit
+      if (rows (subs) > maxint)
         warning (warn_msg,
-                    "quadgk: Error tolerance not met. Estimated error %g", err);
+                 "quadgk: maximum interval count (%d) met", maxint);
+        q += sum (q_subs);
+        err += sum (q_errs);
+        break;
       endif
-    unwind_protect_cleanup
 
-      # not needed aynomre, used local off of warnings
-      %{
-      if (strcmp (warn_state.state, "on"))
-        warning ("on", "Octave:divide-by-zero");
-      endif
-      %}
+      ## Evaluation of the integrand on the remaining subintervals
+      [q_subs, q_errs] = __quadgk_eval__ (f, subs);
+    endwhile
 
-    end_unwind_protect
+    if (err > max (abstol, reltol * abs (q)))
+      warning (warn_msg,
+               "quadgk: Error tolerance not met. Estimated error %g", err);
+    endif
+
   endif
 endfunction
 

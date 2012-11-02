@@ -18,26 +18,37 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} area (@var{x}, @var{y})
-## @deftypefnx {Function File} {} area (@var{x}, @var{y}, @var{lvl})
+## @deftypefn  {Function File} {} area (@var{y})
+## @deftypefnx {Function File} {} area (@var{x}, @var{y})
+## @deftypefnx {Function File} {} area (@dots{}, @var{lvl})
 ## @deftypefnx {Function File} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} area (@var{y}, @dots{})
 ## @deftypefnx {Function File} {} area (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} area (@dots{})
-## Area plot of cumulative sum of the columns of @var{y}.  This shows the
-## contributions of a value to a sum, and is functionally similar to
+## Area plot of the columns of @var{y}.  This shows the
+## contributions of each column value to the row sum.  It is functionally similar to
 ## @code{plot (@var{x}, cumsum (@var{y}, 2))}, except that the area under
 ## the curve is shaded.
 ##
-## If the @var{x} argument is omitted it is assumed to be given by
+## If the @var{x} argument is omitted it defaults to 
 ## @code{1 : rows (@var{y})}.  A value @var{lvl} can be defined that determines
-## where the base level of the shading under the curve should be defined.
+## where the base level of the shading under the curve should be defined.  The
+## default level is 0.
 ##
-## Additional arguments to the @code{area} function are passed to
-## @code{patch}.
+## Additional arguments to the @code{area} function are passed directly to
+## @code{patch}.  
 ##
 ## The optional return value @var{h} is a graphics handle to the hggroup
-## object representing the area patch objects.
+## object representing the area patch objects.  The "BaseValue" property
+## of the hggroup can be used to adjust the level where shading begins.
+##
+## Example: Verify identity sin^2 + cos^2 = 1
+##
+## @example
+## t = linspace (0, 2*pi, 100)';
+## y = [sin(t).^2, cos(t).^2)];
+## area (t, y);
+## legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');  
+## @end example
 ## @seealso{plot, patch}
 ## @end deftypefn
 
@@ -45,59 +56,59 @@ function h = area (varargin)
 
   [ax, varargin, nargin] = __plt_get_axis_arg__ ("area", varargin{:});
 
-  if (nargin > 0)
-    idx = 1;
-    x = y = [];
-    bv = 0;
-    args = {};
-    ## Check for (X) or (X,Y) arguments and possible base value.
-    if (nargin >= idx && ismatrix (varargin{idx}))
-      y = varargin{idx};
-      idx++;
-      if (nargin >= idx)
-        if (isscalar (varargin{idx}))
+  if (nargin == 0)
+    print_usage ();
+  endif
+
+  idx = 1;
+  x = y = [];
+  bv = 0;
+  args = {};
+  ## Check for (X) or (X,Y) arguments and possible base value.
+  if (nargin >= idx && ismatrix (varargin{idx}))
+    y = varargin{idx};
+    idx++;
+    if (nargin >= idx)
+      if (isscalar (varargin{idx}))
+        bv = varargin{idx};
+        idx++;
+      elseif (ismatrix (varargin{idx}))
+        x = y;
+        y = varargin{idx};
+        idx++;
+        if (nargin >= idx && isscalar (varargin{idx}))
           bv = varargin{idx};
           idx++;
-        elseif (ismatrix (varargin{idx}))
-          x = y;
-          y = varargin{idx};
-          idx++;
-          if (nargin >= idx && isscalar (varargin{idx}))
-            bv = varargin{idx};
-            idx++;
-          endif
         endif
       endif
-    else
-      print_usage ();
-    endif
-    ## Check for additional args.
-    if (nargin >= idx)
-      args = {varargin{idx:end}};
-    endif
-    newplot ();
-    if (isvector (y))
-      y = y(:);
-    endif
-    if (isempty (x))
-      x = repmat ([1:rows(y)]', 1, columns (y));
-    elseif (isvector (x))
-      x = repmat (x(:),  1, columns (y));
-    endif
-
-    oldax = gca ();
-    unwind_protect
-      axes (ax);
-      tmp = __area__ (ax, x, y, bv, args{:});
-    unwind_protect_cleanup
-      axes (oldax);
-    end_unwind_protect
-
-    if (nargout > 0)
-      h = tmp;
     endif
   else
     print_usage ();
+  endif
+  ## Check for additional args.
+  if (nargin >= idx)
+    args = {varargin{idx:end}};
+  endif
+  newplot ();
+  if (isvector (y))
+    y = y(:);
+  endif
+  if (isempty (x))
+    x = repmat ([1:rows(y)]', 1, columns (y));
+  elseif (isvector (x))
+    x = repmat (x(:),  1, columns (y));
+  endif
+
+  oldax = gca ();
+  unwind_protect
+    axes (ax);
+    tmp = __area__ (ax, x, y, bv, args{:});
+  unwind_protect_cleanup
+    axes (oldax);
+  end_unwind_protect
+
+  if (nargout > 0)
+    h = tmp;
   endif
 
 endfunction
@@ -157,9 +168,9 @@ endfunction
 function update_props (h, d)
   kids = get (h, "children");
   set (kids, "edgecolor", get (h, "edgecolor"),
-       "linewidth", get (h, "linewidth"),
-       "linestyle", get (h, "linestyle"),
-       "facecolor", get (h, "facecolor"));
+             "linewidth", get (h, "linewidth"),
+             "linestyle", get (h, "linestyle"),
+             "facecolor", get (h, "facecolor"));
 endfunction
 
 function move_baseline (h, d)
@@ -206,3 +217,26 @@ function update_data (h, d)
     y0 = y1;
   endfor
 endfunction
+
+
+%!demo
+%! # Verify identity sin^2 + cos^2 = 1
+%! clf;
+%! t = linspace (0, 2*pi, 100)';
+%! y = [sin(t).^2, cos(t).^2];
+%! area (t, y);
+%! legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');  
+
+%!demo
+%! # Show effects of setting BaseValue
+%! clf;
+%! x = [-2:0.1:2]';
+%! y = x.^2 - 1;
+%! subplot (1, 2, 1)
+%! area (x, y);
+%! title ({'Parabola y = x^2 -1';'BaseValue = 0'});
+%! subplot (1, 2, 2)
+%! h = area (x, y);
+%! set (h, 'basevalue', -1);
+%! title ({'Parabola y = x^2 -1';'BaseValue = -1'});
+

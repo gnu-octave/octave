@@ -1311,6 +1311,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 %!   mode = modes{i};
 %!   nm = tmpnam ();
 %!   unwind_protect
+%!     f2 (1); # bug #33857
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!     clear f2 g2 hm2 hdld2 hbi2
 %!     load (nm);

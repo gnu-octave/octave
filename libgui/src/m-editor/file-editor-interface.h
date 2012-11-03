@@ -44,16 +44,6 @@ class file_editor_interface : public QDockWidget
 
     connect (this, SIGNAL (visibilityChanged (bool)), this,
              SLOT (handle_visibility_changed (bool)));
-
-    // connect the editor dockWidget's topLevelChanged signal, which
-    // is emitted when its floating property changes, to a
-    // user-defined slot. We do this so than when the editor is popped
-    // out we can turn it into a proper window with all the normal
-    // toolbar buttons for a window, i.e. minimise, maximise, close
-    connect (this,
-             SIGNAL(topLevelChanged(bool)), this,
-             SLOT(dockWidget_topLevelChanged(bool)));
-
   }
 
   virtual ~file_editor_interface () { }
@@ -87,27 +77,6 @@ protected slots:
   {
     if (visible)
       emit active_changed (true);
-  }
-
-  // when the floating property of a dockWidget is changed from docked
-  // to floating we make it a top level window (with minmize,
-  // maximize, and close button in the title bar) by calling
-  // setWindowFlags(Qt::Window)
-  //
-  // The dockWidget will automatically regain it's Qt::widget flag
-  // when it becomes docked again (by dragging it to the right place
-  // or double clicking the title bar)
-  void dockWidget_topLevelChanged (bool isFloating)
-  {
-      if (isFloating)
-        {
-          //file_editor.setWindowFlags(Qt::Window);
-          this->setWindowFlags(Qt::Window);
-          // setWindowFlags calls setParent() when changing the flags
-          // for a window, causing the widget to be hidden. We must
-          // call show() to make the widget visible again
-          this->show();
-        }
   }
 };
 

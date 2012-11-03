@@ -496,7 +496,6 @@ main_window::construct ()
   _terminal->setObjectName ("OctaveTerminal");
   _terminal->setFocusPolicy (Qt::StrongFocus);
   _terminal_dock_widget = new terminal_dock_widget (_terminal, this);
-  _terminal_dock_widget->setWindowIcon (QIcon(":/actions/icons/terminal.png"));
 
   QWidget *dummyWidget = new QWidget ();
   dummyWidget->setObjectName ("CentralDummyWidget");

@@ -1233,7 +1233,7 @@ private:
 };
 
 // FIXME: This is just ugly...
-// checks error_state, if error_state is false then goto the normal branche,
+// checks error_state, if error_state is false then goto the normal branch,
 // otherwise goto the error branch
 class
 jit_error_check : public jit_terminator

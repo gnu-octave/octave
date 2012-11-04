@@ -231,8 +231,6 @@ private:
 
   jit_value *visit (tree& tee);
 
-  bool breaking; // true if we are breaking OR continuing
-
   typedef std::list<jit_block *> block_list;
   block_list breaks;
   block_list continues;

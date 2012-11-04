@@ -174,4 +174,7 @@ private:
   static void cleanup_instance (void) { delete instance; instance = 0; }
 };
 
+// TRUE means we should try to enter the debugger on SIGINT.
+extern OCTINTERP_API bool Vdebug_on_interrupt;
+
 #endif

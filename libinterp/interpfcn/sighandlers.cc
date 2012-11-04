@@ -61,7 +61,7 @@ int pipe_handler_error_count = 0;
 bool can_interrupt = false;
 
 // TRUE means we should try to enter the debugger on SIGINT.
-static bool Vdebug_on_interrupt = false;
+bool Vdebug_on_interrupt = false;
 
 // Allow users to avoid writing octave-workspace for SIGHUP (sent by
 // closing gnome-terminal, for example).  Note that this variable has

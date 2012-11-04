@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "pt-all.h"
 #include "pt-jit.h"
+#include "sighandlers.h"
 #include "symtab.h"
 #include "variables.h"
 

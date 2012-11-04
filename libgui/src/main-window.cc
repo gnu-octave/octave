@@ -743,6 +743,7 @@ main_window::construct ()
 
   // Toolbars
   QToolBar *main_tool_bar = addToolBar ("Main");
+  main_tool_bar->setObjectName ("MainToolBar");
   main_tool_bar->addAction (new_script_action);
   main_tool_bar->addAction (open_action);
   main_tool_bar->addSeparator ();

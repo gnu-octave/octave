@@ -153,7 +153,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
     [octave_cv_func_findfirst_modern],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="-I$QT_INCDIR -I$QT_INCDIR/Qt $CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <Qsci/qsciglobal.h>
         ]], [[
@@ -231,7 +231,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
     [octave_cv_func_setplaceholdertext],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="-I$QT_INCDIR $CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <Qt/qglobal.h>
         ]], [[

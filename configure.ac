@@ -2179,8 +2179,9 @@ AC_SUBST(WARN_CXXFLAGS)
 ### GUI/Qt related tests.
 
 HAVE_QT=false
-QT_INCDIR=
-QT_LIBDIR=
+QT_CPPFLAGS=
+QT_LDFLAGS=
+QT_LIBS=
 win32_terminal=no
 build_gui=true
 GUIDIR=libgui
@@ -2194,17 +2195,14 @@ if test $build_gui = true; then
     [],
     [AC_MSG_ERROR([Qt libraries are required to build the GUI])])
 
-  ## Check for Qt utility programs
-  AC_CHECK_PROGS(QMAKE, [qmake-qt5 qmake-qt4 qmake])
-  if test -z "$QMAKE"; then
-    AC_MSG_ERROR([qmake is required to build the GUI])
-  fi
+  ## Retrieve Qt compilation and linker flags
+  QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
+  QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
+  QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
 
-  QT_INCDIR=`$QMAKE -query QT_INSTALL_HEADERS | sed -e 's,\\\\,/,g'`
-  QT_LIBDIR=`$QMAKE -query QT_INSTALL_LIBS | sed -e 's,\\\\,/,g'`
-
-  if test "$QT_INCDIR" = "**Unknown**"; then
-    AC_MSG_ERROR([qmake >= Qt4 is required to build the GUI])
+  ## Check for Qt4
+  if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
+    AC_MSG_ERROR([Qt >= 4.0.0 is required to build the GUI])
   fi
 
   AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
@@ -2216,7 +2214,7 @@ if test $build_gui = true; then
 
   HAVE_QT=true
   AC_DEFINE(HAVE_QT, 1, 
-    [Define to 1 if Qt is available (libraries, developer header files, utility programs (qmake, moc, uic, and rcc))])
+    [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, and rcc))])
 
   ## Check for Qscintilla library which is used in the GUI editor. 
   AC_CACHE_CHECK([whether Qscintilla library is installed],
@@ -2224,9 +2222,9 @@ if test $build_gui = true; then
     [save_CPPFLAGS="$CPPFLAGS"
     save_LDFLAGS="$LDFLAGS"
     save_LIBS="$LIBS"
-    CPPFLAGS="-I$QT_INCDIR -I$QT_INCDIR/Qt $CPPFLAGS"
-    LDFLAGS="-L$QT_LIBDIR $LDFLAGS"
-    LIBS="-lqscintilla2"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    LDFLAGS="$QT_LDFLAGS $LDFLAGS"
+    LIBS="$QT_LIBS -lqscintilla2"
     AC_LANG_PUSH(C++)
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[
       #include <Qsci/qscilexersql.h>
@@ -2243,6 +2241,9 @@ if test $build_gui = true; then
   if test $octave_cv_lib_qscintilla = no; then
     AC_MSG_ERROR([Qscintilla library is required to build the GUI])
   fi
+  ## Let's assume Qscintilla library is at the same location as
+  ## other regular Qt libraries.
+  QT_LIBS="$QT_LIBS -lqscintilla2"
 
   ## Check for Qt functions which have changed their API over time
   OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
@@ -2271,8 +2272,9 @@ else
 fi
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = true])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
-AC_SUBST(QT_INCDIR)
-AC_SUBST(QT_LIBDIR)
+AC_SUBST(QT_CPPFLAGS)
+AC_SUBST(QT_LDFLAGS)
+AC_SUBST(QT_LIBS)
 AC_SUBST(GUIDIR)
 
 ### Run configure in subdirectories.
@@ -2549,8 +2551,9 @@ Octave is now configured for $canonical_host_type
   QRUPDATE CPPFLAGS:           $QRUPDATE_CPPFLAGS
   QRUPDATE LDFLAGS:            $QRUPDATE_LDFLAGS
   QRUPDATE libraries:          $QRUPDATE_LIBS
-  Qt headers:                  $QT_INCDIR
-  Qt libraries:                $QT_LIBDIR
+  Qt CPPFLAGS:                 $QT_CPPFLAGS
+  Qt LDFLAGS:                  $QT_LDFLAGS
+  Qt libraries:                $QT_LIBS
   READLINE libraries:          $READLINE_LIBS
   REGEX libraries:             $REGEX_LIBS
   TERM libraries:              $TERM_LIBS

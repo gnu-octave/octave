@@ -126,10 +126,7 @@ nodist_src_libgui_src_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 src_libgui_src_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
-  -I$(QT_INCDIR) \
-  -I$(QT_INCDIR)/QtCore \
-  -I$(QT_INCDIR)/QtGui \
-  -I$(QT_INCDIR)/QtNetwork \
+  @QT_CPPFLAGS@ \
   -I$(srcdir)/qterminal/libqterminal \
   -Isrc -I$(srcdir)/src \
   -I$(srcdir)/src/m-editor \

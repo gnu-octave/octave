@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME -- is there a better name for this class?
 
 class
-OCTINTERP_API
 action_container
 {
 public:

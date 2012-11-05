@@ -1110,6 +1110,15 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   engine->addGlobalMapping (lerror_state,
                             reinterpret_cast<void *> (&error_state));
 
+  // sig_atomic_type is going to be some sort of integer
+  sig_atomic_type = llvm::Type::getIntNTy (context, sizeof(sig_atomic_t) * 8);
+  loctave_interrupt_state
+    = new llvm::GlobalVariable (*module, sig_atomic_type, false,
+                                llvm::GlobalValue::ExternalLinkage, 0,
+                                "octave_interrupt_state");
+  engine->addGlobalMapping (loctave_interrupt_state,
+                            reinterpret_cast<void *> (&octave_interrupt_state));
+
   // generic call function
   {
     jit_type *int_t = intN (sizeof (octave_builtin::fcn) * 8);
@@ -1799,7 +1808,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   casts[scalar->type_id ()].stash_name ("(scalar)");
   casts[complex->type_id ()].stash_name ("(complex)");
   casts[matrix->type_id ()].stash_name ("(matrix)");
-  casts[any->type_id ()].stash_name ("(range)");
+  casts[range->type_id ()].stash_name ("(range)");
 
   // cast any <- matrix
   fn = create_function (jit_convention::external, "octave_jit_cast_any_matrix",
@@ -2076,6 +2085,14 @@ llvm::Value *
 jit_typeinfo::do_insert_error_check (llvm::IRBuilderD& abuilder)
 {
   return abuilder.CreateLoad (lerror_state);
+}
+
+llvm::Value *
+jit_typeinfo::do_insert_interrupt_check (llvm::IRBuilderD& abuilder)
+{
+  llvm::LoadInst *val = abuilder.CreateLoad (loctave_interrupt_state);
+  val->setVolatile (true);
+  return abuilder.CreateICmpSGT (val, abuilder.getInt32 (0));
 }
 
 void

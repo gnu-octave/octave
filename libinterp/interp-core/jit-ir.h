@@ -1176,10 +1176,7 @@ public:
     return moperation.overload (argument_types ());
   }
 
-  virtual bool needs_release (void) const
-  {
-    return type () && jit_typeinfo::get_release (type ()).valid ();
-  }
+  virtual bool needs_release (void) const;
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
@@ -1212,27 +1209,47 @@ class
 jit_error_check : public jit_terminator
 {
 public:
-  jit_error_check (jit_call *acheck_for, jit_block *normal, jit_block *error)
-    : jit_terminator (2, error, normal, acheck_for) {}
+  // Which variable is the error check for?
+  enum variable
+    {
+      var_error_state,
+      var_interrupt
+    };
+
+  static std::string variable_to_string (variable v);
+
+  jit_error_check (variable var, jit_call *acheck_for, jit_block *normal,
+                   jit_block *error)
+    : jit_terminator (2, error, normal, acheck_for), mvariable (var) {}
+
+  jit_error_check (variable var, jit_block *normal, jit_block *error)
+    : jit_terminator (2, error, normal), mvariable (var) {}
+
+  variable check_variable (void) const { return mvariable; }
+
+  bool has_check_for (void) const
+  {
+    return argument_count () == 3;
+  }
 
   jit_call *check_for (void) const
   {
+    assert (has_check_for ());
     return static_cast<jit_call *> (argument (2));
   }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
-  {
-    print_indent (os, indent) << "error_check " << *check_for () << ", ";
-    print_successor (os, 1) << ", ";
-    return print_successor (os, 0);
-  }
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const;
 
   JIT_VALUE_ACCEPT;
 protected:
   virtual bool check_alive (size_t idx) const
   {
+    if (! has_check_for ())
+      return true;
     return idx == 1 ? true : check_for ()->can_error ();
   }
+private:
+  variable mvariable;
 };
 
 // for now only handles the 1D case

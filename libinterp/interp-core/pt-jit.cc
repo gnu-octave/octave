@@ -403,6 +403,9 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   jit_block *check_block = factory.create<jit_block> ("for_check");
   blocks.push_back (check_block);
 
+  jit_block *interrupt_check = factory.create<jit_block> ("for_interrupt");
+  blocks.push_back (interrupt_check);
+
   if (! all_breaking)
     block->append (factory.create<jit_branch> (check_block));
   finish_breaks (check_block, continues);
@@ -415,7 +418,14 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   block->append (factory.create<jit_assign> (iterator, iter_inc));
   check = block->append (factory.create<jit_call> (jit_typeinfo::for_check,
                                                    control, iterator));
-  block->append (factory.create<jit_cond_branch> (check, body, tail));
+  block->append (factory.create<jit_cond_branch> (check, interrupt_check,
+                                                  tail));
+
+  block = interrupt_check;
+  jit_error_check *ec
+    = factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                       body, final_block);
+  block->append (ec);
 
   // breaks will go to our tail
   blocks.push_back (tail);
@@ -834,10 +844,22 @@ jit_convert::visit_while_command (tree_while_command& wc)
     }
 
   finish_breaks (tail, breaks);
-  finish_breaks (cond_check, continues);
 
-  if (! all_breaking)
-    block->append (factory.create<jit_branch> (cond_check));
+  if (! all_breaking || continues.size ())
+    {
+      jit_block *interrupt_check
+        = factory.create<jit_block> ("interrupt_check");
+      blocks.push_back (interrupt_check);
+      finish_breaks (interrupt_check, continues);
+      if (! all_breaking)
+        block->append (factory.create<jit_branch> (interrupt_check));
+
+      block = interrupt_check;
+      jit_error_check *ec
+        = factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                           cond_check, final_block);
+      block->append (ec);
+    }
 
   blocks.push_back (tail);
   block = tail;
@@ -871,8 +893,9 @@ jit_convert::create_checked_impl (jit_call *ret)
   block->append (ret);
 
   jit_block *normal = factory.create<jit_block> (block->name ());
-  jit_error_check *check = factory.create<jit_error_check> (ret, normal,
-                                                            final_block);
+  jit_error_check *check
+    = factory.create<jit_error_check> (jit_error_check::var_error_state, ret,
+                                       normal, final_block);
   block->append (check);
   blocks.push_back (normal);
   block = normal;
@@ -1365,7 +1388,20 @@ jit_convert_llvm::visit (jit_variable&)
 void
 jit_convert_llvm::visit (jit_error_check& check)
 {
-  llvm::Value *cond = jit_typeinfo::insert_error_check (builder);
+  llvm::Value *cond;
+
+  switch (check.check_variable ())
+    {
+    case jit_error_check::var_error_state:
+      cond = jit_typeinfo::insert_error_check (builder);
+      break;
+    case jit_error_check::var_interrupt:
+      cond = jit_typeinfo::insert_interrupt_check (builder);
+      break;
+    default:
+      panic_impossible ();
+    }
+
   llvm::Value *br = builder.CreateCondBr (cond, check.successor_llvm (0),
                                           check.successor_llvm (1));
   check.stash_llvm (br);
@@ -2080,6 +2116,8 @@ jit_function_info::execute (const octave_value_list& ov_args,
   if (ret)
     retval(0) = octave_value (ret);
 
+  octave_quit ();
+
   return true;
 }
 
@@ -2147,6 +2185,8 @@ jit_info::execute (const vmap& extra_vars) const
       if (name.size () && name[0] != '#')
         symbol_table::varref (arguments[i].first) = real_arguments[i];
     }
+
+  octave_quit ();
 
   return true;
 }

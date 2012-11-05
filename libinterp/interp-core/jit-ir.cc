@@ -698,6 +698,23 @@ jit_terminator::to_llvm (void) const
 
 // -------------------- jit_call --------------------
 bool
+jit_call::needs_release (void) const
+{
+  if (type () && jit_typeinfo::get_release (type ()).valid ())
+    {
+      for (jit_use *use = first_use (); use; use = use->next ())
+        {
+          jit_assign *assign = dynamic_cast<jit_assign *> (use->user ());
+          if (assign && assign->artificial ())
+            return false;
+        }
+
+      return true;
+    }
+  return false;
+}
+
+bool
 jit_call::infer (void)
 {
   // FIXME: explain algorithm
@@ -724,6 +741,33 @@ jit_call::infer (void)
     }
 
   return false;
+}
+
+// -------------------- jit_error_check --------------------
+std::string
+jit_error_check::variable_to_string (variable v)
+{
+  switch (v)
+    {
+    case var_error_state:
+      return "error_state";
+    case var_interrupt:
+      return "interrupt";
+    default:
+      panic_impossible ();
+    }
+}
+
+std::ostream&
+jit_error_check::print (std::ostream& os, size_t indent) const
+{
+  print_indent (os, indent) << "error_check " << variable_to_string (mvariable)
+                            << ", ";
+
+  if (has_check_for ())
+    os << "<for> " << *check_for () << ", ";
+  print_successor (os << "<normal> ", 1) << ", ";
+  return print_successor (os << "<error> ", 0);
 }
 
 // -------------------- jit_magic_end --------------------

@@ -141,7 +141,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 
     if (nargin > 3)
       if (! ischar (varargin{1}))
-        if (!isempty (varargin{1}))
+        if (! isempty (varargin{1}))
           abstol = varargin{1};
           reltol = 0;
         endif
@@ -149,8 +149,7 @@ function [q, err] = quadgk (f, a, b, varargin)
           trace = varargin{2};
         endif
         if (nargin > 5)
-          error ("Octave:Invalid-fun-call",
-                  "quadgk: can not pass additional arguments to user function");
+          error ("quadgk: can not pass additional arguments to user function");
         endif
       else
         idx = 1;
@@ -171,17 +170,14 @@ function [q, err] = quadgk (f, a, b, varargin)
             elseif (strcmpi (str, "trace"))
               trace = varargin{idx++};
             else
-              error ("Octave:invalid-input-arg",
-                                            "quadgk: unknown property %s", str);
+              error ("quadgk: unknown property '%s'", str);
             endif
           else
-            error ("Octave:invalid-input-arg",
-                                   "quadgk: expecting property to be a string");
+            error ("quadgk: property PROP must be a string");
           endif
         endwhile
         if (idx != nargin - 2)
-          error ("Octave:Invalid-fun-call",
-                                       "quadgk: expecting properties in pairs");
+          error ("quadgk: property/value must occur in pairs");
         endif
       endif
     endif
@@ -192,8 +188,8 @@ function [q, err] = quadgk (f, a, b, varargin)
     endif
 
     ## Use variable subsitution to weaken endpoint singularities and to
-    ## perform integration with endpoints at infinity. No transform for
-    ## contour integrals
+    ## perform integration with endpoints at infinity.  No transform for
+    ## contour integrals.
     if (iscomplex (a) || iscomplex (b) || iscomplex (waypoints))
       ## contour integral, no transform
       subs = [a; waypoints; b];
@@ -201,14 +197,14 @@ function [q, err] = quadgk (f, a, b, varargin)
       h0 = h;
       trans = @(t) t;
     elseif (isinf (a) && isinf (b))
-      ## Standard Infinite to finite integral transformation.
+      ## Standard infinite to finite integral transformation.
       ##   \int_{-\infinity_^\infinity f(x) dx = \int_-1^1 f (g(t)) g'(t) dt
       ## where
       ##   g(t)  = t / (1 - t^2)
       ##   g'(t) =  (1 + t^2) / (1 - t^2) ^ 2
       ## waypoint transform is then
       ##   t =  (2 * g(t)) ./ (1 + sqrt(1 + 4 * g(t) .^ 2))
-      if (!isempty (waypoints))
+      if (! isempty (waypoints))
         trans = @(x) (2 * x) ./ (1 + sqrt (1 + 4 * x .^ 2));
         subs = [-1; trans(waypoints); 1];
       else
@@ -218,7 +214,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       h0 = b - a;
       trans = @(t) t ./ (1 - t.^2);
       f = @(t) f (t ./ (1 - t .^ 2)) .* (1 + t .^ 2) ./ ((1 - t .^ 2) .^ 2);
-    elseif (isinf(a))
+    elseif (isinf (a))
       ## Formula defined in Shampine paper as two separate steps. One to
       ## weaken singularity at finite end, then a second to transform to
       ## a finite interval. The singularity weakening transform is
@@ -233,7 +229,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## waypoint transform is then
       ##   t = sqrt (b - x)
       ##   s =  - t / (t + 1)
-      if (!isempty (waypoints))
+      if (! isempty (waypoints))
         tmp = sqrt (b - waypoints);
         trans = @(x)  - x ./ (x + 1);
         subs = [-1; trans(tmp); 0];
@@ -258,7 +254,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## waypoint transform is then
       ##   t = sqrt (x - a)
       ##   s = t / (t + 1)
-      if (!isempty (waypoints))
+      if (! isempty (waypoints))
         tmp = sqrt (waypoints - a);
         trans = @(x) x ./ (x + 1);
         subs = [0; trans(tmp); 1];
@@ -301,13 +297,11 @@ function [q, err] = quadgk (f, a, b, varargin)
     endwhile
     subs = [subs(1:end-1), subs(2:end)];
 
-    # Set divide-by-zero warning off locally
+    ## Singularity will cause divide by zero warnings.
+    ## Turn off warning locally for quadgk function only.
     warning ("off", "Octave:divide-by-zero", "local");
 
-    warn_msg   = "Octave:quadgk:warning-termination";
-
-    ## Singularity will cause divide by zero warnings
-    warning ("off", "Octave:divide-by-zero");
+    warn_id = "Octave:quadgk:warning-termination";
 
     ## Initial evaluation of the integrand on the subintervals
     [q_subs, q_errs] = __quadgk_eval__ (f, subs);
@@ -333,7 +327,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 
       ## Quit if any evaluations are not finite (Inf or NaN)
       if (any (! isfinite (q_subs)))
-        warning (warn_msg, "quadgk: non finite integrand encountered");
+        warning (warn_id, "quadgk: non finite integrand encountered");
         q = q0;
         err = err0;
         break;
@@ -378,8 +372,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## If the maximum subinterval count is met accept remaining
       ## subinterval and exit
       if (rows (subs) > maxint)
-        warning (warn_msg,
-                 "quadgk: maximum interval count (%d) met", maxint);
+        warning (warn_id, "quadgk: maximum interval count (%d) met", maxint);
         q += sum (q_subs);
         err += sum (q_errs);
         break;
@@ -390,8 +383,8 @@ function [q, err] = quadgk (f, a, b, varargin)
     endwhile
 
     if (err > max (abstol, reltol * abs (q)))
-      warning (warn_msg,
-               "quadgk: Error tolerance not met. Estimated error %g", err);
+      warning (warn_id,
+               "quadgk: Error tolerance not met.  Estimated error %g", err);
     endif
 
   endif

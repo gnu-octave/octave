@@ -85,7 +85,7 @@ include util/module.mk
 ## It has no source code itself.
 liboctave_la_SOURCES = 
 
-liboctave_la_CPPFLAGS = @OCTAVE_DLL_DEFS@ $(AM_CPPFLAGS)
+liboctave_la_CPPFLAGS = @OCTAVE_DLL_DEFS@ @CRUFT_DLL_DEFS@ $(AM_CPPFLAGS)
 
 include link-deps.mk
 

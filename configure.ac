@@ -1099,7 +1099,7 @@ fi
 XTRA_CRUFT_SH_LDFLAGS=
 if test $have_msvc = yes; then
   FLIBS="$FLIBS -lkernel32"
-  XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
+  XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft/cruft.def"
 fi
 AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 

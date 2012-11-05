@@ -36,21 +36,21 @@ extern OCTINTERP_API void install_built_in_docstrings (void);
 
 // Name of the doc cache file specified on the command line.
 // (--doc-cache-file file)
-extern std::string Vdoc_cache_file;
+extern OCTINTERP_API std::string Vdoc_cache_file;
 
 // Name of the file containing local Texinfo macros that are prepended
 // to doc strings before processing.
 // (--texi-macros-file)
-extern std::string Vtexi_macros_file;
+extern OCTINTERP_API std::string Vtexi_macros_file;
 
 // Name of the info file specified on command line.
 // (--info-file file)
-extern std::string Vinfo_file;
+extern OCTINTERP_API std::string Vinfo_file;
 
 // Name of the info reader we'd like to use.
 // (--info-program program)
-extern std::string Vinfo_program;
+extern OCTINTERP_API std::string Vinfo_program;
 
-extern std::string do_which (const std::string& name);
+extern OCTINTERP_API std::string do_which (const std::string& name);
 
 #endif

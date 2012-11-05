@@ -1441,7 +1441,7 @@ jit_infer::infer (void)
     }
 
   remove_dead ();
-  final_block ().label ();
+  blocks.label ();
   place_releases ();
   simplify_phi ();
 }
@@ -1475,7 +1475,7 @@ jit_infer::append_users_term (jit_terminator *term)
 void
 jit_infer::construct_ssa (void)
 {
-  final_block ().label ();
+  blocks.label ();
   final_block ().compute_idom (entry_block ());
   entry_block ().compute_df ();
   entry_block ().create_dom_tree ();
@@ -1966,8 +1966,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
       if (Venable_jit_debugging)
         {
           jit_block_list& blocks = infer.get_blocks ();
-          jit_block *entry_block = blocks.front ();
-          entry_block->label ();
+          blocks.label ();
           std::cout << "-------------------- Compiling function ";
           std::cout << "--------------------\n";
 
@@ -2186,8 +2185,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
       if (Venable_jit_debugging)
         {
           jit_block_list& blocks = infer.get_blocks ();
-          jit_block *entry_block = blocks.front ();
-          entry_block->label ();
+          blocks.label ();
           std::cout << "-------------------- Compiling tree --------------------\n";
           std::cout << tee.str_print_code () << std::endl;
           blocks.print (std::cout, "octave jit ir");

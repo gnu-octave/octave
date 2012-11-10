@@ -136,6 +136,8 @@ public:
 
   static void reset_debug_state (void);
 
+  static bool statement_printing_enabled (void);
+
   // If > 0, stop executing at the (N-1)th stopping point, counting
   //         from the the current execution point in the current frame.
   //

@@ -132,6 +132,13 @@ tree_evaluator::reset_debug_state (void)
   dbstep_flag = 0;
 }
 
+bool
+tree_evaluator::statement_printing_enabled (void)
+{
+  return ! (Vsilent_functions && (statement_context == function
+                                  || statement_context == script));
+}
+
 static inline void
 do_global_init (tree_decl_elt& elt)
 {
@@ -717,10 +724,6 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               if (debug_mode)
                 do_breakpoint (expr->is_breakpoint ());
 
-              if ((statement_context == function || statement_context == script)
-                  && Vsilent_functions)
-                expr->set_print_flag (false);
-
               // FIXME -- maybe all of this should be packaged in
               // one virtual function that returns a flag saying whether
               // or not the expression will take care of binding ans and
@@ -744,7 +747,8 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               octave_value tmp_result = expr->rvalue1 (0);
 
               if (do_bind_ans && ! (error_state || tmp_result.is_undefined ()))
-                bind_ans (tmp_result, expr->print_result ());
+                bind_ans (tmp_result, expr->print_result ()
+                          && statement_printing_enabled ());
 
               //              if (tmp_result.is_defined ())
               //                result_values(0) = tmp_result;

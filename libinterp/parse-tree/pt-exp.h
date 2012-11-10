@@ -87,6 +87,9 @@ public:
 
   bool is_postfix_indexed (void) const { return postfix_indexed; }
 
+  // Check if the result of the expression should be printed.
+  // Should normally be used in conjunction with
+  // tree_evaluator::statement_printing_enabled.
   bool print_result (void) const { return print_flag; }
 
   virtual std::string oper (void) const { return "<unknown>"; }

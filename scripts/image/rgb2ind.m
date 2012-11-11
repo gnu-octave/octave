@@ -1,4 +1,5 @@
 ## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -50,16 +51,34 @@ function [x, map] = rgb2ind (R, G, B)
     error ("rgb2ind: arguments must all have the same size");
   endif
 
-  [hi, wi] = size (R);
+  map = unique([R(:) G(:) B(:)], "rows");
+  ## RGB values for each point of the image are listed and expanded to compare
+  ## with the colormap values. We then find the indexes when all 3 match and
+  ## rebuild the image to its original size
+  [x, ~] = find (squeeze (all (bsxfun (@eq, reshape(map', [1 3 rows(map)]), [R(:) G(:) B(:)]), 2))');
+  x = reshape (x, size (R));
 
-  x = zeros (hi, wi);
+  ## a colormap is of class double and values between 0 and 1
+  switch class (R)
+    case {"single", "double", "logical"}
+      ## do nothing, return the same
+    case {"uint8", "uint16"}
+      map = double (map) / double (intmax (class (R)));
+    case "int16"
+      map = (double (im) + 32768) / 65535;
+    otherwise
+      error ("unsupported image class %s", im_class);
+  endswitch
 
-  map = zeros (hi*wi, 3);
-
-  map(:,1) = R(:);
-  map(:,2) = G(:);
-  map(:,3) = B(:);
-
-  x(:) = 1:(hi*wi);
-
+  ## we convert to the smallest class necessary to encode the image. Matlab
+  ## documentation does not mention what it does when uint16 is not enough...
+  ## When an indexed image is of integer class, there's a -1 offset to the
+  ## colormap, hence the adjustment
+  if (rows (map) < 256)
+    x = uint8 (x - 1);
+  elseif (rows (map) < 65536)
+    x = uint16 (x - 1);
+  else
+    ## leave it as double
+  endif
 endfunction

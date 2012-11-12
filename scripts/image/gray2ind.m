@@ -20,9 +20,11 @@
 ## @deftypefn  {Function File} {[@var{img} =} gray2ind (@var{I})
 ## @deftypefnx {Function File} {[@var{img} =} gray2ind (@var{I}, @var{n})
 ## @deftypefnx {Function File} {[@var{img}, @var{map} =} gray2ind (@dots{})
-## Convert a gray scale intensity image to an Octave indexed image.
+## Convert a gray scale or binary image to an indexed image.
+##
 ## The indexed image will consist of @var{n} different intensity values.
-## If not given @var{n} defaults to 64.
+## If not given @var{n} defaults to 64 and 2 for gray scale and binary images
+## respectively.
 ## @seealso{ind2gray, rgb2ind} 
 ## @end deftypefn
 
@@ -35,6 +37,12 @@ function [X, map] = gray2ind (I, n = 64)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
+  ## default n is different if image is logical
+  if (nargin < 2 && isa (I, "logical"))
+    n = 2;
+  endif
+
   C = class (I);
   if (! ismatrix (I) || ndims (I) != 2)
     error ("gray2ind: first input argument must be a gray scale image");
@@ -44,7 +52,7 @@ function [X, map] = gray2ind (I, n = 64)
   endif
   ints = {"uint8", "uint16", "int8", "int16"};
   floats = {"double", "single"};
-  if (! ismember (C, {ints{:}, floats{:}}))
+  if (! ismember (C, {ints{:}, floats{:}, "logical"}))
     error ("gray2ind: invalid data type '%s'", C);
   endif
   if (ismember (C, floats) && (min (I(:)) < 0 || max (I(:)) > 1))

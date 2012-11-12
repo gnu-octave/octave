@@ -486,14 +486,18 @@ function ret = edit (varargin)
         if (any (exists == [2, 103]))
           body = type (name){1};
         else
-          body = cstrcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
+          body = cstrcat ("function [ret] = ", name, " ()\n\nendfunction\n");
         endif
         if (isempty (head))
-          comment = cstrcat ("## ", name, "\n\n",
+          comment = cstrcat ("## -*- texinfo -*- \n## @deftypefn {Function File}", 
+                             "{@var{ret} =}", name, "(@var{x}, @var{y})\n##\n",
+                             "## @seealso{}\n## @end deftypefn\n\n",
                              "## ", strrep (tail, "\n", "\n## "), "\n\n");
         else
           comment = cstrcat ("## ", strrep (head,"\n","\n## "), "\n\n", ...
-                             "## ", name, "\n\n", ...
+                             "## -*- texinfo -*- \n## @deftypefn {Function File}", 
+                             "{@var{ret} =}", name, "(@var{x}, @var{y})\n##\n",
+                             "## @seealso{}\n## @end deftypefn\n\n",
                              "## ", strrep (tail, "\n", "\n## "), "\n\n");
         endif
         text = cstrcat (comment, body);

@@ -24,7 +24,9 @@
 ##
 ## The indexed image will consist of @var{n} different intensity values.
 ## If not given @var{n} defaults to 64 and 2 for gray scale and binary images
-## respectively.
+## respectively.  Its class will be uint8, uint16 or double in order of which
+## one is necessary to fit @var{n} different intensities.
+##
 ## @seealso{ind2gray, rgb2ind} 
 ## @end deftypefn
 
@@ -67,6 +69,13 @@ function [X, map] = gray2ind (I, n = 64)
     high = double (intmax (C));
     I = (double (I) - low) / (high - low);
   endif
-  X = round (I*(n-1)) + 1;
-
+  X = round (I*(n-1));
+  if (n < 256)
+    X = uint8 (X);
+  elseif (n < 65536)
+    X = uint16 (X);
+  else
+    ## if uint16 is not enough, we return double in which case there's no 0
+    X += 1;
+  endif
 endfunction

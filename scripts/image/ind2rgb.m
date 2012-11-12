@@ -41,7 +41,8 @@ function [R, G, B] = ind2rgb (x, map)
   endif
 
   ## Check if X is an indexed image.
-  if (ndims (x) != 2 || any (x(:) != fix (x(:))) || min (x(:)) < 1)
+  if (ndims (x) != 2 || (isfloat (x) && ! isindex (x)) ||
+      ! ismember (class (x), {"double", "single", "uint8", "uint16"}))
     error ("ind2rgb: X must be an indexed image");
   endif
 
@@ -51,7 +52,18 @@ function [R, G, B] = ind2rgb (x, map)
   endif
 
   ## Do we have enough colors in the color map?
+  ## there's an offset of 1 when the indexed image is an integer class so we fix
+  ## it now and convert it to float only if really necessary and even then only
+  ## to single precision since its enough for both uint8 and uint16
   maxidx = max (x(:));
+  if (isinteger (x))
+    if (maxidx == intmax (class (x)))
+      x = single (x);
+    endif
+    x      += 1;
+    maxidx += 1;
+  endif
+
   rm = rows (map);
   if (rm < maxidx)
     ## Pad with the last color in the map.
@@ -71,3 +83,25 @@ function [R, G, B] = ind2rgb (x, map)
     R(:,:,2) = G;
   endif
 endfunction
+
+%!shared img, map, ergb, rgb, r, g, b
+%! img = [2 4 5; 3 2 5; 1 2 4];
+%! map = [0.0  0.0  0.0
+%!        0.2  0.4  0.6
+%!        0.4  0.4  0.5
+%!        0.3  0.7  1.0
+%!        0.1  0.5  0.8];
+%! ergb(:,:,1) = [0.2 0.3 0.1; 0.4 0.2 0.1; 0.0 0.2 0.3];
+%! ergb(:,:,2) = [0.4 0.7 0.5; 0.4 0.4 0.5; 0.0 0.4 0.7];
+%! ergb(:,:,3) = [0.6 1.0 0.8; 0.5 0.6 0.8; 0.0 0.6 1.0];
+%! ## test basic usage with 1 and 3 outputs
+%! [rgb] = ind2rgb (img, map);
+%! [r, g, b] = ind2rgb (img, map);
+%!assert (ergb, rgb);
+%!assert (ergb, reshape ([r(:) g(:) b(:)], [size(img) 3]));
+%! ## test correction for integers
+%! img = uint8 (img -1);
+%! [rgb] = ind2rgb (img, map);
+%!assert (ergb, rgb);
+%! ## check it fails when image is a float with an index value of 0
+%!fail("[rgb] = ind2rgb (double(img), map)")

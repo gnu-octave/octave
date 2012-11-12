@@ -40,36 +40,7 @@ function [R, G, B] = ind2rgb (x, map)
     map = colormap ();
   endif
 
-  ## Check if X is an indexed image.
-  if (ndims (x) != 2 || (isfloat (x) && ! isindex (x)) ||
-      ! ismember (class (x), {"double", "single", "uint8", "uint16"}))
-    error ("ind2rgb: X must be an indexed image");
-  endif
-
-  ## Check the color map.
-  if (! iscolormap (map))
-    error ("ind2rgb: MAP must be a valid colormap");
-  endif
-
-  ## Do we have enough colors in the color map?
-  ## there's an offset of 1 when the indexed image is an integer class so we fix
-  ## it now and convert it to float only if really necessary and even then only
-  ## to single precision since its enough for both uint8 and uint16
-  maxidx = max (x(:));
-  if (isinteger (x))
-    if (maxidx == intmax (class (x)))
-      x = single (x);
-    endif
-    x      += 1;
-    maxidx += 1;
-  endif
-
-  rm = rows (map);
-  if (rm < maxidx)
-    ## Pad with the last color in the map.
-    pad = repmat (map(end,:), maxidx-rm, 1);
-    map(end+1:maxidx, :) = pad;
-  endif
+  [x, map] = ind2x ("ind2rgb", x, map);
 
   ## Compute result
   [hi, wi] = size (x);

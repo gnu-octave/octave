@@ -20,6 +20,8 @@
 ## @deftypefn  {Function File} {} ind2gray (@var{x})
 ## @deftypefnx {Function File} {} ind2gray (@var{x}, @var{map})
 ## Convert a color indexed image to a gray scale intensity image.
+## If the colormap doesn't contain enough colors, pad it with the
+## last color in the map.
 ## If @var{map} is omitted, the current colormap is used to determine the
 ## intensities.
 ## @seealso{gray2ind, ind2rgb}
@@ -31,20 +33,20 @@
 
 function y = ind2gray (x, map)
 
+  ## Do we have the right number of inputs?
   if (nargin < 1 || nargin > 2)
     print_usage ();
   elseif (nargin == 1)
     map = colormap ();
   endif
 
-  [rows, cols] = size (x);
+  [x, map] = ind2x ("ind2gray", x, map);
 
   ## Convert colormap to intensity values (the first column of the
   ## result of the call to rgb2ntsc) and then replace indices in
   ## the input matrix with indexed values in the output matrix (indexed
   ## values are the result of indexing the intensity values by the
   ## elements of x(:)).
-
-  y = reshape (((rgb2ntsc (map))(:,1))(x(:)), rows, cols);
+  y = reshape (((rgb2ntsc (map))(:,1))(x(:)), rows (x), columns (x));
 
 endfunction

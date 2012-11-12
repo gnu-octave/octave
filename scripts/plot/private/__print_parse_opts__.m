@@ -140,7 +140,7 @@ function arg_st = __print_parse_opts__ (varargin)
           error ("print: Ghostscript binary ""%s"" could not be located",
                  arg(3:end));
         else
-          arg_st.ghostscript_binary = __quote_path__ (arg_st.ghostscript_binary);
+          arg_st.ghostscript.binary = __quote_path__ (arg_st.ghostscript.binary);
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-F")
         idx = rindex (arg, ":");

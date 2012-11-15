@@ -51,12 +51,9 @@ function [x, map] = rgb2ind (R, G, B)
     error ("rgb2ind: arguments must all have the same size");
   endif
 
-  map = unique([R(:) G(:) B(:)], "rows");
-  ## RGB values for each point of the image are listed and expanded to compare
-  ## with the colormap values. We then find the indexes when all 3 match and
-  ## rebuild the image to its original size
-  [x, ~] = find (squeeze (all (bsxfun (@eq, reshape(map', [1 3 rows(map)]), [R(:) G(:) B(:)]), 2))');
-  x = reshape (x, size (R));
+  map    = unique([R(:) G(:) B(:)], "rows");
+  [~, x] = ismember ([R(:) G(:) B(:)], map, "rows");
+  x      = reshape (x, size (R));
 
   ## a colormap is of class double and values between 0 and 1
   switch class (R)

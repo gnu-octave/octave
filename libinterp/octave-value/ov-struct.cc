@@ -1093,11 +1093,19 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct", "stru
 octave_value
 octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
+  octave_value retval;
+
   assert (idx.length () == 1);
 
   std::string nm = idx(0).string_value ();
 
-  octave_value retval = map.getfield (nm);
+  if (! valid_identifier (nm))
+    {
+      error ("subsref: invalid structure field name '%s'", nm.c_str ());
+      return retval;
+    }
+
+  retval = map.getfield (nm);
 
   if (! auto_add && retval.is_undefined ())
     error ("structure has no member '%s'", nm.c_str ());
@@ -1217,6 +1225,12 @@ octave_scalar_struct::subsasgn (const std::string& type,
       assert (key_idx.length () == 1);
 
       std::string key = key_idx(0).string_value ();
+
+      if (! valid_identifier (key))
+        {
+          error ("subsasgn: invalid structure field name '%s'", key.c_str ());
+          return retval;
+        }
 
       if (n > 1)
         {

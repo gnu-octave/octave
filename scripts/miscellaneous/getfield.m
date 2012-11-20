@@ -18,28 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{v1}, @dots{}] =} getfield (@var{s}, @var{key}, @dots{})
-## Extract a field from a structure (or a nested structure).  For example:
+## @deftypefn {Function File} {[@var{val}] =} getfield (@var{s}, @var{field})
+## @deftypefnx {Function File} {[@var{val}] =} getfield (@var{s}, @var{idx1}, @var{field1}, @var{idx2}, @var{field2}, @dots{})
+## Extract a field from a structure (or a nested structure). The syntax
+## is the same as @code{setfield}, except it omits the final @var{val}
+## argument, returning this value instead of setting it.
 ##
-## @example
-## @group
-## ss(1,2).fd(3).b = 5;
-## getfield (ss, @{1,2@}, "fd", @{3@}, "b")
-##    @result{} 5
-## @end group
-## @end example
-##
-## Note that the function call in the previous example is equivalent to
-## the expression
-##
-## @example
-## @group
-## i1 = @{1,2@}; i2 = "fd"; i3 = @{3@}; i4= "b";
-## ss(i1@{:@}).(i2)(i3@{:@}).(i4)
-##    @result{} 5
-##
-## @end group
-## @end example
 ## @seealso{setfield, rmfield, isfield, isstruct, fieldnames, struct}
 ## @end deftypefn
 

@@ -176,7 +176,8 @@
 ## Print warnings for Octave language features that may cause
 ## compatibility problems with @sc{matlab}.
 ## By default, the @code{Octave:matlab-incompatible} warning is disabled.
-## @seealso{traditional, braindead}
+## The --traditional or --braindead startup options for Octave may also
+## be of use, @xref{Command Line Options}.
 ##
 ## @item Octave:md5sum-file-in-path
 ## By default, the @code{Octave:md5sum-file-in-path} warning is enabled.

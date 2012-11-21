@@ -261,6 +261,12 @@ Octave:load-file-in-path
 @end group
 @end example
 
+@noindent
+Note that this does not enable the @code{Octave:matlab-incompatible}
+warning, which you might want if you want to be told about writing code
+that works in Octave but not Matlab; @xref{doc-warning} and
+@xref{doc-warning_ids}.
+
 @item  --verbose
 @itemx -V
 @cindex @code{--verbose}

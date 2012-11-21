@@ -2148,7 +2148,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
         k = 1;
         ntics = numel (tics);
         nlabels = numel (labels);
-        fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
+        fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
         if (mirror)
           fprintf (plot_stream, "set %stics add %s %s %s mirror (", ax,
                    tickdir, ticklength, axispos);
@@ -2173,7 +2173,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
         else
           fprintf (plot_stream, "unset m%stics;\n", ax);
         endif
-     else
+      else
         error ("__go_draw_axes__: unsupported type of ticklabel");
       endif
     else

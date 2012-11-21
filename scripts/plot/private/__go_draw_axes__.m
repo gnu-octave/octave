@@ -2150,10 +2150,10 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
         nlabels = numel (labels);
         fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
         if (mirror)
-          fprintf (plot_stream, "set %stics %s %s %s mirror (", ax,
+          fprintf (plot_stream, "set %stics add %s %s %s mirror (", ax,
                    tickdir, ticklength, axispos);
         else
-          fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax,
+          fprintf (plot_stream, "set %stics add %s %s %s nomirror (", ax,
                    tickdir, ticklength, axispos);
         endif
 

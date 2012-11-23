@@ -177,6 +177,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Object Oriented Programming::            
 * GUI Development::            
 * System Utilities::            
+* Java Interface:: 
 * Packages:: 
 * Dynamically Linked Functions::
 * Test and Demo Functions::
@@ -909,6 +910,7 @@ Grammar and Parser
 @include oop.texi
 @include gui.texi
 @include system.texi
+@include java.texi
 @include package.texi
 
 @c maybe add again later, if anyone every writes any really interesting

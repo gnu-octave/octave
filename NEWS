@@ -97,7 +97,29 @@ Summary of important user-visible changes for version 3.8:
 
  ** The default name of the Octave crash dump file is now called
     octave-workspace instead of octave-core.
-      
+
+ ** The java package from Octave Forge is now part of Octave.  The
+    following new functions are available for interacting with Java
+    directly from Octave:
+
+      java                  java_invoke
+      java2mat              java_new
+      javaArray             java_set
+      javaMethod            java_unsigned_conversion
+      javaObject            javaaddpath
+      java_convert_matrix   javaclasspath
+      java_debug            javafields
+      java_exit             javamem
+      java_get              javamethods
+      java_init             javarmpath
+
+    In addition, the following functions that use the Java interface
+    are now available (provided that Octave is compiled with support for
+    Java enabled):
+
+      helpdlg    listdlg   questdlg
+      inputdlg   msgbox    warndlg
+
  ** Other new functions added in 3.8.0:
 
       betaincinv   erfcinv      lines      rgbplot

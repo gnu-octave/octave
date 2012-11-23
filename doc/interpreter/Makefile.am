@@ -83,11 +83,23 @@ include images.mk
 $(srcdir)/images.mk: $(srcdir)/config-images.sh $(srcdir)/images.awk $(srcdir)/images
 	$(srcdir)/config-images.sh $(top_srcdir)
 
+JAVA_IMAGES = \
+  java-images/image001.png \
+  java-images/image002.png \
+  java-images/image003.png \
+  java-images/image004.png \
+  java-images/image005.png \
+  java-images/image006.png \
+  java-images/image007.png \
+  java-images/image008.png \
+  java-images/image009.png
+
 IMAGES = \
   $(IMAGES_EPS) \
   $(IMAGES_PDF) \
   $(IMAGES_PNG) \
-  $(IMAGES_TXT)
+  $(IMAGES_TXT) \
+  $(JAVA_IMAGES)
 
 HTMLDIR_IMAGES = $(addprefix octave.html/, $(IMAGES_PNG))
 
@@ -123,6 +135,7 @@ MUNGED_TEXI_SRC = \
   interp.texi \
   intro.texi \
   io.texi \
+  java.texi \
   linalg.texi \
   matrix.texi \
   nonlin.texi \

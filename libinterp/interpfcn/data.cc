@@ -2880,6 +2880,9 @@ effect.\n\
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 4), zeros (2, 2, 0, "single"))
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 7), zeros (2, 2, 0, 3, "single"))
 
+;-)
+%!assert (sum ("Octave") + "8", sumsq (primes (17)))
+
 %!error sum ()
 */
 

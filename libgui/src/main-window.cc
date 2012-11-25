@@ -257,14 +257,29 @@ main_window::change_current_working_directory ()
 void
 main_window::set_current_working_directory (const QString& directory)
 {
-  octave_link::post_event (this, &main_window::change_directory_callback,
-                           directory.toStdString ());
+  QFileInfo fileInfo (directory);  // check whether this is an existing dir
+  if (fileInfo.exists () && fileInfo.isDir ())   // is dir and exists
+    octave_link::post_event (this, &main_window::change_directory_callback,
+                             directory.toStdString ());
 }
 
 void
 main_window::current_working_directory_up ()
 {
   set_current_working_directory ("..");
+}
+
+// Slot that is called if return is pressed in the line edit of the combobox
+// -> a new or a directory that is already in the drop down list was entered
+void
+main_window::current_working_directory_entered ()
+{
+  QString dir = _current_directory_line_edit->text ();  // get new directory
+  int index = _current_directory_combo_box->findText (dir);  // already in list?
+  if ( index < 0 )  // directory not yet in list -> set directory
+    set_current_working_directory (dir);
+  // if directory already in list, combobox triggers signal activated ()
+  // to change directory
 }
 
 void
@@ -508,12 +523,15 @@ main_window::construct ()
   _documentation_dock_widget->setStatusTip (tr ("See the documentation for help."));
   _status_bar               = new QStatusBar (this);
 
+  _current_directory_line_edit = new QLineEdit (this);
   _current_directory_combo_box = new QComboBox (this);
-  _current_directory_combo_box->setFixedWidth (300);
+  _current_directory_combo_box->setFixedWidth (current_directory_width);
   _current_directory_combo_box->setEditable (true);
+  // setLineEdit takes ownership -> no need to delete line_edit in ~main_window
+  _current_directory_combo_box->setLineEdit (_current_directory_line_edit);
   _current_directory_combo_box->setInsertPolicy (QComboBox::InsertAtTop);
-  _current_directory_combo_box->setMaxVisibleItems (16);
-  _current_directory_combo_box->setMaxCount (16);
+  _current_directory_combo_box->setMaxVisibleItems (current_directory_max_visible);
+  _current_directory_combo_box->setMaxCount (current_directory_max_count);
 
   QToolButton *current_directory_tool_button = new QToolButton (this);
   current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));
@@ -881,6 +899,8 @@ main_window::construct ()
            _terminal,                   SLOT   (pasteClipboard ()));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (set_current_working_directory (QString)));
+  connect (_current_directory_line_edit, SIGNAL (returnPressed ()),
+           this,                        SLOT (current_working_directory_entered ()));
   connect (_debug_continue,             SIGNAL (triggered ()),
            this,                        SLOT (debug_continue ()));
   connect (_debug_step_into,            SIGNAL (triggered ()),

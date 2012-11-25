@@ -98,6 +98,7 @@ public slots:
   void change_current_working_directory ();
   void set_current_working_directory (const QString& directory);
   void current_working_directory_up ();
+  void current_working_directory_entered ();
 
   void focus_command_window ();
   void focus_command_history ();
@@ -166,6 +167,10 @@ private:
   // Toolbars.
   QStatusBar *              _status_bar;
   QComboBox *               _current_directory_combo_box;
+  static const int        current_directory_width       = 300;
+  static const int        current_directory_max_visible = 16;
+  static const int        current_directory_max_count   = 16;
+  QLineEdit *               _current_directory_line_edit;
 
   octave_qt_event_listener *_octave_qt_event_listener;
 

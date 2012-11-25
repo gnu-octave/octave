@@ -246,12 +246,14 @@ main_window::current_working_directory_has_changed (const QString& directory)
 void
 main_window::change_current_working_directory ()
 {
-  QString selectedDirectory =
+  QString directory =
     QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
 
-  if (!selectedDirectory.isEmpty ())
-    octave_link::post_event (this, &main_window::change_directory_callback,
-                             selectedDirectory.toStdString ());
+  if (!directory.isEmpty ())
+    {
+      std::string dir = directory.toLocal8Bit ().data ();
+      octave_link::post_event (this, &main_window::change_directory_callback,dir);
+    }
 }
 
 void
@@ -259,8 +261,10 @@ main_window::set_current_working_directory (const QString& directory)
 {
   QFileInfo fileInfo (directory);  // check whether this is an existing dir
   if (fileInfo.exists () && fileInfo.isDir ())   // is dir and exists
-    octave_link::post_event (this, &main_window::change_directory_callback,
-                             directory.toStdString ());
+    {
+      std::string dir = directory.toLocal8Bit ().data ();
+      octave_link::post_event (this, &main_window::change_directory_callback,dir);
+    }
 }
 
 void

@@ -36,7 +36,7 @@ void
 octave_qt_event_listener::current_directory_has_changed (const std::string& directory)
 {
   emit current_directory_has_changed_signal
-    (QString::fromStdString (directory));
+    (QString::fromLocal8Bit (directory.data (), directory.size ()));
 }
 
 void

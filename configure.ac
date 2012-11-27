@@ -756,8 +756,8 @@ if test -n "$JAVAC" -a -n "$JAR"; then
   AC_MSG_CHECKING([for Java version])
   java_version=[`$JAVA -version 2>&1 | sed -n -e 's/^java version[^0-9"]*"\([^"]*\)"/\1/p'`]
   AC_MSG_RESULT($java_version)
-  java_major=[`echo -n $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
-  java_minor=[`echo -n $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+  java_major=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
+  java_minor=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
   if test $java_major -ge 1 -a $java_minor -ge 5; then
     case "$canonical_host_type" in
       *-msdosmsvc*)
@@ -776,6 +776,7 @@ if test -n "$JAVAC" -a -n "$JAR"; then
             JAVA_TEMP="/System/Library/Frameworks/JavaVM.framework"
             JAVA_HOME="${JAVA_TEMP}/Home"
             JAVA_ARCH="${JAVA_TEMP}/Libraries/libjvm_compat.dylib"
+            JAVA_LIBS="-framework JavaVM"
             # According to:
             #   http://developer.apple.com/unix/crossplatform.html
             # you need to explicitely set the include path
@@ -791,7 +792,7 @@ if test -n "$JAVAC" -a -n "$JAR"; then
             JAVA_HOME=/usr/lib/jvm
           fi
         fi
-        JAVA_HOME=[`echo -n $JAVA_HOME | sed -e 's|/$||'`]
+        JAVA_HOME=[`echo $JAVA_HOME | sed -e 's|/$||'`]
         if test -z "$JAVA_ARCH"; then
           if test -d "${JAVA_HOME}/jre/lib/i386"; then
             JAVA_ARCH="i386";

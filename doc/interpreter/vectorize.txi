@@ -632,7 +632,7 @@ relatively expensive operations.
 
 If you are using @code{eval} merely as an exception handling mechanism, and not
 because you need to execute some arbitrary text, use the @code{try}
-statement instead.  @xref{The @code{try} Statement}.
+statement instead.  @xref{The try Statement}.
 
 @item Use @code{ignore_function_time_stamp} when appropriate.
 If you are calling lots of functions, and none of them will need to change

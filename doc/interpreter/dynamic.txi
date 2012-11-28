@@ -1119,7 +1119,7 @@ without being deallocated.  Therefore, ideally Octave itself should
 allocate any memory that is needed by the foreign code, with either the
 @nospell{fortran_vec} method or the @w{@code{OCTAVE_LOCAL_BUFFER}} macro.
 
-The Octave unwind_protect mechanism (@ref{The @code{unwind_protect} Statement})
+The Octave unwind_protect mechanism (@ref{The unwind_protect Statement})
 can also be used in oct-files.  In conjunction with the exception
 handling of Octave, it is important to enforce that certain code is run
 to allow variables, etc. to be restored even if an exception occurs.  An

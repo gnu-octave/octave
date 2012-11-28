@@ -192,7 +192,7 @@ If the object is copied to multiple variables (or cell or struct array\n\
 elements) or returned from a function, @var{action} will be executed after\n\
 clearing the last copy of the object.  Note that if multiple local onCleanup\n\
 variables are created, the order in which they are called is unspecified.\n\
-For similar functionality @xref{The @code{unwind_protect} Statement}.\n\
+For similar functionality @xref{The unwind_protect Statement}.\n\
 @end deftypefn")
 {
   octave_value retval;

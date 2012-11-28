@@ -44,7 +44,7 @@ input arguments.
 Since an error can occur during the evaluation of a program, it is
 very convenient to be able to detect that an error occurred, so that
 the error can be fixed.  This is possible with the @code{try} statement
-described in @ref{The @code{try} Statement}.
+described in @ref{The try Statement}.
 
 @menu
 * Raising Errors::
@@ -136,7 +136,7 @@ f ()
 @subsection Catching Errors
 
 When an error occurs, it can be detected and handled using the
-@code{try} statement as described in @ref{The @code{try} Statement}.
+@code{try} statement as described in @ref{The try Statement}.
 As an example, the following piece of code counts the number of errors
 that occurs during a @code{for} loop.
 

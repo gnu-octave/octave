@@ -48,13 +48,13 @@ endfunction
 
 
 %!demo
-%! clf;
+%! figure;
 %! img = reshape (1:100, 10, 10);
 %! imagesc (img);
 %! colormap (gray (64));
 %! title ("Image with default 64 gray levels");
 %! pos = get (gcf, "position");
-%! pos(1) += pos(3) + 15;
+%! pos(1) += pos(3) + 25;
 %! figure ("position", pos); 
 %! colormap (contrast (img, 10));
 %! imagesc (img);

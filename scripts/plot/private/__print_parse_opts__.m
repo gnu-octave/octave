@@ -140,7 +140,7 @@ function arg_st = __print_parse_opts__ (varargin)
           error ("print: Ghostscript binary ""%s"" could not be located",
                  arg(3:end));
         else
-          arg_st.ghostscript_binary = __quote_path__ (arg_st.ghostscript_binary);
+          arg_st.ghostscript.binary = __quote_path__ (arg_st.ghostscript.binary);
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-F")
         idx = rindex (arg, ":");
@@ -477,7 +477,7 @@ function gs = __ghostscript_binary__ ()
       gs_binaries = horzcat (gs_binaries, {"gs", "gs.exe"});
     else
       ## pc - Includes Win32 and mingw.
-      gs_binaries = horzcat (gs_binaries, {"gs.exe", "gswin32c.exe", "mgs.exe"});
+      gs_binaries = horzcat (gs_binaries, {"gs.exe", "gswin32c.exe", "gswin64c.exe", "mgs.exe"});
     endif
     n = 0;
     while (n < numel (gs_binaries) && isempty (ghostscript_binary))

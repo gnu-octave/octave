@@ -1,0 +1,78 @@
+FCN_FILE_DIRS += java
+
+EXTRA_DIST += java/octave.jar
+
+java_FCN_FILES = \
+  java/dlgtest.m \
+  java/errordlg.m \
+  java/helpdlg.m \
+  java/inputdlg.m \
+  java/java.m \
+  java/javaArray.m \
+  java/javaaddpath.m \
+  java/javaclasspath.m \
+  java/javafields.m \
+  java/javamem.m \
+  java/javamethods.m \
+  java/javarmpath.m \
+  java/listdlg.m \
+  java/msgbox.m \
+  java/questdlg.m \
+  java/warndlg.m
+
+FCN_FILES += $(java_FCN_FILES)
+
+PKG_ADD_FILES += java/PKG_ADD
+
+DIRSTAMP_FILES += java/$(octave_dirstamp)
+
+JAR_FILES += java/octave.jar
+
+org_octave_dir = org/octave
+
+JAVA_SRC = \
+  $(org_octave_dir)/ClassHelper.java \
+  $(org_octave_dir)/OctClassLoader.java \
+  $(org_octave_dir)/Octave.java \
+  $(org_octave_dir)/OctaveReference.java \
+  $(org_octave_dir)/Matrix.java \
+  $(org_octave_dir)/JDialogBox.java \
+  $(org_octave_dir)/DlgListener.java \
+  $(org_octave_dir)/TeXtranslator.java \
+  $(org_octave_dir)/TeXcode.java
+
+JAVA_CLASSES = $(JAVA_SRC:.java=.class)
+
+JAVA_IMAGES = \
+  $(org_octave_dir)/images/question.png \
+  $(org_octave_dir)/images/error.png \
+  $(org_octave_dir)/images/warning.png \
+  $(org_octave_dir)/images/information.png \
+  $(org_octave_dir)/images/octave.png
+
+java_JAVA_SRC = $(addprefix java/, $(JAVA_SRC))
+
+java_JAVA_CLASSES = $(addprefix java/, $(JAVA_CLASSES))
+
+java_JAVA_IMAGES = $(addprefix java/, $(JAVA_IMAGES))
+
+java_JAVA_IMAGES_src = $(addprefix $(srcdir)/java/, $(JAVA_IMAGES))
+
+java_JAVA_CLASSES_src = $(addprefix $(srcdir)/java/, $(java_JAVA_CLASSES))
+
+%.class : %.java
+	$(MKDIR_P) java/$(org_octave_dir)
+	( cd $(srcdir)/java; $(JAVAC) -source 1.3 -target 1.3 -d $(abs_builddir)/java $(org_octave_dir)/$(<F) )
+
+java/images.stamp: $(java_JAVA_IMAGES_src)
+	if [ "x$(srcdir)" != "x." ]; then \
+	  $(MKDIR_P) java/$(org_octave_dir)/images; \
+	  cp $(java_JAVA_IMAGES_src) java/$(org_octave_dir)/images; \
+	fi
+	touch $@
+
+java/octave.jar: java/images.stamp $(java_JAVA_CLASSES)
+	( cd java; $(JAR) cf octave.jar.t $(JAVA_CLASSES) $(JAVA_IMAGES) )
+	mv $@.t $@
+
+EXTRA_DIST += $(java_JAVA_SRC) $(java_JAVA_IMAGES)

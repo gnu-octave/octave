@@ -68,11 +68,11 @@ function cmap = colormap (map, name)
     endif
 
     if (! isempty (map))
-      if (columns (map) != 3)
-        error ("colormap: MAP must have 3 columns: [R,G,B]");
+      if (! ismatrix (map) || ndims (map) != 2 || columns (map) != 3)
+        error ("colormap: MAP must be an N x 3 ([R,G,B]) matrix");
       endif
-      if (min (min (map)) < 0 || max (max (map)) > 1)
-        error ("colormap: MAP must have values in [0,1]");
+      if (any (map(:) < 0) || any (map(:) > 1))
+        error ("colormap: all MAP values must be in the range [0,1]");
       endif
       ## Set the new color map
       set (gcf (), "colormap", map);
@@ -96,3 +96,6 @@ function cmap = colormap (map, name)
   endif
 
 endfunction
+
+
+%% 

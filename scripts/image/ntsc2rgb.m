@@ -20,7 +20,18 @@
 ## @deftypefn  {Function File} {@var{rgb_map} =} ntsc2rgb (@var{yiq_map})
 ## @deftypefnx {Function File} {@var{rgb_img} =} ntsc2rgb (@var{yiq_img})
 ## Transform a colormap or image from luminance-chrominance (NTSC) space to
-## red-green-blue (RGB) space.
+## red-green-blue (RGB) color space.
+##
+## Implementation Note:
+## The conversion matrix is chosen to be the inverse of the
+## matrix used for rgb2ntsc such that
+##
+## @example
+## x == ntsc2rgb (rgb2ntsc (x))
+## @end example
+##
+## @sc{matlab} uses a slightly different matrix where rounding
+## means the equality above does not hold.
 ## @seealso{rgb2ntsc, hsv2rgb, ind2rgb}
 ## @end deftypefn
 
@@ -34,16 +45,21 @@ function rgb = ntsc2rgb (yiq)
     print_usage ();
   endif
 
+  cls = class (yiq);
+  if (! any (isa (yiq, {"uint8", "uint16", "single", "double"})))
+    error ("ntsc2rgb: invalid data type '%s'", cls);
+  endif
+
   ## If we have an image convert it into a color map.
   if (ismatrix (yiq) && ndims (yiq) == 3)
     is_image = true;
-    Sz = size (yiq);
+    sz = size (yiq);
     yiq = [yiq(:,:,1)(:), yiq(:,:,2)(:), yiq(:,:,3)(:)];
     ## Convert to a double image.
     if (isinteger (yiq))
-      C = class (yiq);
-      low = double (intmin (C));
-      high = double (intmax (C));
+      cls = class (yiq);
+      low = double (intmin (cls));
+      high = double (intmax (cls));
       yiq = (double (yiq) - low) / (high - low);
     endif
   else
@@ -54,16 +70,44 @@ function rgb = ntsc2rgb (yiq)
     error ("ntsc2rgb: argument must be a matrix of size Nx3 or NxMx3");
   endif
 
-  ## Convert data
+  ## Conversion matrix constructed from 'inv (rgb2ntsc matrix)'.  See
+  ## programming notes in rgb2ntsc.m.  Note: Matlab matrix for inverse
+  ## is slightly different.  We prefer this matrix so that
+  ## x == ntsc2rgb (rgb2ntsc (x)) rather than maintaining strict compatibility
+  ## with Matlab.
   trans = [ 1.0,      1.0,      1.0;
             0.95617, -0.27269, -1.10374;
-            0.62143, -0.64681, 1.70062 ];
+            0.62143, -0.64681,  1.70062 ];
 
   rgb = yiq * trans;
 
   ## If input was an image, convert it back into one.
   if (is_image)
-    rgb = reshape (rgb, Sz);
+    rgb = reshape (rgb, sz);
   endif
 
 endfunction
+
+
+%!test
+%! rgb_map = rand (64, 3);
+%! assert (ntsc2rgb (rgb2ntsc (rgb_map)), rgb_map, 1e-3);
+
+%!test
+%! rgb_img = rand (64, 64, 3);
+%! assert (ntsc2rgb (rgb2ntsc (rgb_img)), rgb_img, 1e-3);
+
+%%!test
+%%! ntsc_map = rand (64, 3);
+%%! assert (rgb2ntsc (ntsc2rgb (ntsc_map)), ntsc_map, 1e-3);
+%
+%%!test
+%%! ntsc_img = rand (64, 64, 3);
+%%! assert (rgb2ntsc (ntsc2rgb (ntsc_img)), ntsc_img, 1e-3);
+
+%% Test input validation
+%!error ntsc2rgb ()
+%!error ntsc2rgb (1,2)
+%!error <invalid data type 'cell'> ntsc2rgb ({1})
+%!error <must be a matrix of size Nx3 or NxMx3> ntsc2rgb (ones (2,2))
+

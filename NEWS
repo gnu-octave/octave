@@ -88,6 +88,13 @@ Summary of important user-visible changes for version 3.8:
     functions.  Packages that implement extra colormaps should use these
     commands with PKG_ADD and PKG_DEL statements.
 
+ ** The m-files in the image directory have been overhauled.
+    The principal benefit is that Octave will now no longer automatically
+    convert images stored with integers to doubles.  Storing images as uint8
+    or uint16 requires only 1/8 or 1/4 the memory of an image stored using
+    doubles.  For certain operations, such as fft2, the image must still be
+    converted to double in order to work.
+
  ** The datevec function has been extended for better Matlab compatibility.
     It now accepts string inputs in the following numerical formats: 12, 21,
     22, 26, 29, 31.  This is undocumented, but verifiable, Matlab behavior.
@@ -97,7 +104,29 @@ Summary of important user-visible changes for version 3.8:
 
  ** The default name of the Octave crash dump file is now called
     octave-workspace instead of octave-core.
-      
+
+ ** The java package from Octave Forge is now part of Octave.  The
+    following new functions are available for interacting with Java
+    directly from Octave:
+
+      java                  java_invoke
+      java2mat              java_new
+      javaArray             java_set
+      javaMethod            java_unsigned_conversion
+      javaObject            javaaddpath
+      java_convert_matrix   javaclasspath
+      java_debug            javafields
+      java_exit             javamem
+      java_get              javamethods
+      java_init             javarmpath
+
+    In addition, the following functions that use the Java interface
+    are now available (provided that Octave is compiled with support for
+    Java enabled):
+
+      helpdlg    listdlg   questdlg
+      inputdlg   msgbox    warndlg
+
  ** Other new functions added in 3.8.0:
 
       betaincinv   erfcinv      lines      rgbplot

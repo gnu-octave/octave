@@ -38,9 +38,9 @@ another data container, the comma separated list.
 @cindex structures
 @cindex data structures
 
-Octave includes support for organizing data in structures.  The current
+Octave includes support for organizing data in structures. The current
 implementation uses an associative array with indices limited to
-strings, but the syntax is more like C-style structures.  
+strings, but the syntax is more like C-style structures.
 
 @menu
 * Basic Usage and Examples::
@@ -390,6 +390,28 @@ x
 @end group
 @end example
 
+@noindent
+Dynamic indexing also allows you to use arbitrary strings, not merely
+valid Octave identifiers (note that this does not work on @sc{Matlab}):
+
+@example
+@group
+a = "long field with spaces (and funny char$)";
+x.a = 1;
+x.(a) = 2;
+x
+     @result{} x =
+        @{
+          a =  1
+          long field with spaces (and funny char$) =  2
+        @}
+@end group
+@end example
+
+@noindent
+The warning id @code{Octave:matlab-incompatible} can be enabled to warn
+about this usage. @xref{doc-warning_ids}.
+
 More realistically, all of the functions that operate on strings can be used
 to build the correct field name before it is entered into the data structure.
 
@@ -471,7 +493,7 @@ struct ("field1", @{@{1, "one"@}@}, "field2", 2)
           field2 =  2
         @}
 @end group
- @end example       
+@end example
 
 @DOCSTRING(struct)
 
@@ -491,9 +513,9 @@ Other functions that can manipulate the fields of a structure are given below.
 
 @DOCSTRING(isfield)
 
-@DOCSTRING(getfield)
-
 @DOCSTRING(setfield)
+
+@DOCSTRING(getfield)
 
 @DOCSTRING(rmfield)
 

@@ -17,65 +17,98 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{img} =} gray2ind (@var{I})
-## @deftypefnx {Function File} {[@var{img} =} gray2ind (@var{I}, @var{n})
-## @deftypefnx {Function File} {[@var{img}, @var{map} =} gray2ind (@dots{})
-## Convert a gray scale or binary image to an indexed image.
-##
+## @deftypefn  {Function File} {@var{img} =} gray2ind (@var{I})
+## @deftypefnx {Function File} {@var{img} =} gray2ind (@var{I}, @var{n})
+## @deftypefnx {Function File} {@var{img} =} gray2ind (@var{BW})
+## @deftypefnx {Function File} {@var{img} =} gray2ind (@var{BW}, @var{n})
+## @deftypefnx {Function File} {[@var{img}, @var{map}] =} gray2ind (@dots{})
+## Convert a grayscale or binary intensity image to an indexed image.
+## 
 ## The indexed image will consist of @var{n} different intensity values.
-## If not given @var{n} defaults to 64 and 2 for gray scale and binary images
-## respectively.  Its class will be uint8, uint16 or double in order of which
-## one is necessary to fit @var{n} different intensities.
+## If not given @var{n} defaults to 64 for grayscale images or 2 for
+## binary black and white images.
 ##
-## @seealso{ind2gray, rgb2ind} 
+## The output @var{img} is of class uint8 or uint 16 if @var{n} is less than or
+## equal to 256 or 65536 respectively.  Otherwise, the output is of class double.
+## @seealso{ind2gray, rgb2ind}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function [X, map] = gray2ind (I, n = 64)
-  ## Check input
+function [I, map] = gray2ind (I, n = 64)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
+  elseif (! isreal (I) || issparse (I))
+    error ("gray2ind: I must be a grayscale or binary image");
+  elseif (! isscalar (n) || n < 1 || n > 65536)
+    error ("gray2ind: N must be a positive integer in the range [1, 65536]");
+  elseif (! ismatrix (I) || ndims (I) != 2)
+    error ("gray2ind: first input argument must be a gray scale image");
   endif
 
   ## default n is different if image is logical
-  if (nargin < 2 && isa (I, "logical"))
+  if (nargin == 1 && islogical (I))
     n = 2;
   endif
 
-  C = class (I);
-  if (! ismatrix (I) || ndims (I) != 2)
-    error ("gray2ind: first input argument must be a gray scale image");
-  endif
   if (! isscalar (n) || n < 0)
     error ("gray2ind: second input argument must be a positive integer");
   endif
-  ints = {"uint8", "uint16", "int8", "int16"};
-  floats = {"double", "single"};
-  if (! ismember (C, {ints{:}, floats{:}, "logical"}))
-    error ("gray2ind: invalid data type '%s'", C);
-  endif
-  if (ismember (C, floats) && (min (I(:)) < 0 || max (I(:)) > 1))
+
+  cls = class (I);
+  if (! any (isa (I, {"logical", "uint8", "uint16", "int16", "single", "double"})))
+    error ("gray2ind: invalid data type '%s'", cls);
+  elseif (isfloat (I) && (min (I(:) < 0) || max (I(:) > 1)))
     error ("gray2ind: floating point images may only contain values between 0 and 1");
   endif
 
-  ## Convert data
   map = gray (n);
-  ## If @var{I} is an integer matrix convert it to a double matrix with values in [0, 1]
-  if (ismember (C, ints))
-    low = double (intmin (C));
-    high = double (intmax (C));
-    I = (double (I) - low) / (high - low);
-  endif
-  X = round (I*(n-1));
-  if (n < 256)
-    X = uint8 (X);
-  elseif (n < 65536)
-    X = uint16 (X);
+
+  ## Set up scale factor
+  if (isinteger (I))
+    low   = double (intmin (cls));
+    scale = double (intmax (cls)) - low;
+    I = double (I) - low;
   else
-    ## if uint16 is not enough, we return double in which case there's no 0
-    X += 1;
+    scale = 1;
+  endif
+  ## Note: no separate call to round () necessary because
+  ##       type conversion does that automatically.
+  I = I * ((n-1)/scale);
+  if (n < 256)
+    I = uint8 (I);
+  elseif (n < 65536)
+    I = uint16 (I);
+  else
+    ## if uint16 is not enough, we return double in which case index
+    ## values should start at 1.
+    I = round (I) + 1;
   endif
 endfunction
+
+%!assert (gray2ind ([0 0.25 0.5 1]), uint8 ([0 16 32 63]))
+%!assert (gray2ind ([0 0.25 0.5 1], 400), uint16 ([0 100 200 399]))
+%!assert (gray2ind (logical ([1 0 0 1])), uint8 ([1 0 0 1]))
+%!assert (gray2ind (uint8 ([0 64 128 192 255])), uint8 ([0 16 32 47 63]))
+
+%!test
+%! i2g = ind2gray (1:100, gray (100));
+%! g2i = gray2ind (i2g, 100);
+%! assert (g2i, uint8 (0:99));
+
+%% Test input validation
+%!error gray2ind ()
+%!error gray2ind (1,2,3)
+%!error <I must be a grayscale or binary image> gray2ind ({1})
+%!error <I must be a grayscale or binary image> gray2ind ([1+i])
+%!error <I must be a grayscale or binary image> gray2ind (sparse ([1]))
+%!error <N must be a positive integer> gray2ind (1, ones (2,2))
+%!error <N must be a positive integer> gray2ind (1, 0)
+%!error <N must be a positive integer> gray2ind (1, 65537)
+%!error <invalid data type> gray2ind (uint32 (1))
+%!error <values between 0 and 1> gray2ind (-1)
+%!error <values between 0 and 1> gray2ind (2)
+

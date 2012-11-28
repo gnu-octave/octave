@@ -1,0 +1,1705 @@
+@c Copyright (C) 2010-2012 Martin Hepperle
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c 
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c 
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@node Java Interface
+@chapter Java Interface
+
+@cindex using Octave with Java
+@cindex Java, using with Octave
+@cindex calling Java from Octave
+@cindex Java, calling from Octave
+@cindex calling Octave from Java
+@cindex  Octave, calling from Java
+
+The @code{java} package is designed for calling Java from Octave.
+If you want to call Octave from Java, you might want to use a library like 
+@code{javaOctave} (@url{http://kenai.com/projects/javaOctave}) or
+@code{joPas} (@url{http://jopas.sourceforge.net}). 
+
+@menu
+* Available Functions::         
+* FAQ - Frequently asked Questions::  
+@end menu
+
+@node Available Functions
+@section Available Functions
+
+@menu
+* javaclasspath::               
+* javaaddpath::                 
+* javarmpath::                  
+* javamem::                     
+* javaArray::                   
+* javaObject::                  
+* java_new::                    
+* javaMethod::                  
+* java_invoke::                 
+* java_get::                    
+* java_set::                    
+* javamethods::                 
+* javafields::                  
+* msgbox::                      
+* errordlg::                    
+* helpdlg::                     
+* inputdlg::                    
+* listdlg::                     
+* questdlg::                    
+* warndlg::                     
+@end menu
+
+@node javaclasspath
+@subsection javaclasspath
+@findex javaclasspath
+@anchor{doc-javaclasspath}
+@c - index -
+@cindex classpath, displaying
+@cindex classpath, dynamic
+@cindex dynamic classpath
+@cindex classpath, static
+@cindex static classpath
+@c - index -
+
+@deftypefn {Function file}  {} javaclasspath
+@deftypefnx {Function file} {@var{STATIC} =} javaclasspath
+@deftypefnx {Function file} {[@var{STATIC}, @var{DYNAMIC}] =} javaclasspath
+@deftypefnx {Function file} {@var{PATH} =} javaclasspath (@var{WHAT})
+
+Return the class path of the Java virtual machine as a cell array of strings. 
+
+If called without an input parameter:
+@itemize
+@item If no output variable is given, the result is simply printed 
+to the standard output.
+@item If one output variable @var{STATIC} is given, the result is
+the static classpath.
+@item If two output variables @var{STATIC} and @var{DYNAMIC} are 
+given, the first variable will contain the static classpath,
+the second will be filled with the dynamic claspath.
+@end itemize
+
+If called with a single input parameter @var{WHAT}:
+@itemize
+If no output parameter is given:
+@item The result is printed to the standard output similar to the call without input parameter.@*
+If the output parameter @var{PATH} is used:
+@item If @var{WHAT} is '-static' the static classpath is returned.
+@item If @var{WHAT} is '-dynamic' the dynamic  classpath is returned.
+@item If @var{WHAT} is '-all' the static and the dynamic classpath 
+are returned in a single cell array.
+@end itemize
+
+For the example two entries have been added to the static classpath using the file @code{classpath.txt}.
+
+Example: 
+@example
+Octave > javaclasspath('-all')
+   STATIC JAVA PATH
+
+      z:/someclasses.jar
+      z:/classdir/classfiles
+      
+   DYNAMIC JAVA PATH
+      - empty -
+
+Octave > javaaddpath('z:/dynamic');
+Octave > ps = javaclasspath('-all')
+ps =
+@{
+  [1,1] = z:/someclasses.jar
+  [1,2] = z:/classdir/classfiles
+  [1,3] = z:/dynamic
+@}
+@end example
+
+@seealso{@ref{doc-javaaddpath,,javaaddpath},
+         @ref{doc-javarmpath,,javarmpath},
+         @ref{doc-FAQ,,How to make Java classes available to Octave?}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javaaddpath
+@subsection javaaddpath
+@anchor{doc-javaaddpath}
+@c - index -
+@findex javaaddpath
+@cindex classpath, adding new path
+@cindex path, adding to classpath
+@cindex classpath, dynamic
+@cindex dynamic classpath, adding new path
+@c - index -
+
+@deftypefn {Function File} {} javaaddpath (@var{PATH})
+
+Add @var{PATH} to the dynamic class path of the Java virtual machine. @var{PATH} can be either a directory where .class files can be found, or a .jar file containing Java classes. In both cases the directory or file must exist. 
+
+Example: 
+
+This example adds a Java archive and a directory containing @var{.class} files to the @var{classpath} and displays the current @var{classpath} list. 
+
+@example
+Octave > javaaddpath('C:/java/myclasses.jar'); 
+Octave > javaaddpath('C:/java/classes'); 
+Octave > javaclasspath; 
+ans = 
+@{ 
+  [1,1] = C:\java\myclasses.jar 
+  [1,2] = C:\java\classes 
+@} 
+@end example
+@seealso{@ref{doc-javaclasspath,,javaclasspath}, @ref{doc-javarmpath,,javarmpath},
+         @ref{doc-FAQ,,How to make Java classes available to Octave?}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javarmpath
+@subsection javarmpath
+@anchor{doc-javarmpath}
+@c - index -
+@cindex classpath, removing path
+@cindex path, removing from classpath
+@c - index -
+
+@deftypefn {Function File} {} javarmpath (@var{PATH})
+Remove @var{PATH} from the dynamic class path of the Java virtual machine. @var{PATH} can be either a directory where .class files can be found, or a .jar file containing Java classes. 
+
+Example: This example removes one of the directories added in the example for the @code{javaaddpath} function. 
+
+@example
+Octave > javarmpath('C:/java/classes'); 
+Octave > javaclasspath 
+@{ 
+  [1,1] = C:\java\myclasses.jar 
+@} 
+@end example
+
+@seealso{@ref{doc-javaaddpath,,javaaddpath}, @ref{doc-javaclasspath,,javaclasspath},
+         @ref{doc-FAQ,,How to make Java classes available to Octave?}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javamem
+@subsection javamem
+@anchor{doc-javamem}
+@c - index -
+@cindex memory, displaying Java memory status
+@c - index -
+
+@deftypefn  {Function File} {} javamem
+@deftypefnx {Function File} {[@var{JMEM}] =} javamem
+
+Show current memory status of the java virtual machine (JVM)
+& run garbage collector.
+
+When no return argument is given the info is echoed to the screen.
+Otherwise, cell array @var{JMEM} contains @var{Maximum}, @var{Total}, and
+@var{Free} memory (in bytes).
+
+All java-based routines are run in the JVM's shared memory pool,
+a dedicated and separate part of memory claimed by the JVM from
+your computer's total memory (which comprises physical RAM and
+virtual memory / swap space on hard disk).
+
+The maximum available memory can be set using the file @code{java.opts}
+(in the same subdirectory where @code{javaaddpath.m} lives, see 
+@samp{which javaaddpath}. Usually that is: @*
+[/usr]/share/Octave/packages/java-1.2.8.
+
+@code{java.opts} is a plain text file. It can contain memory related 
+options, starting with @code{-X}.
+In the following exmaple, the first line specifies the initial 
+memory size in megabytes, the second line specifies the requested 
+maximum size:
+@example
+-Xms64m
+-Xmx512m
+@end example
+You can adapt these values if your system has limited available
+physical memory. When no @code{java.opts} file is present, the default
+assignments are depending on system hardware and Java version. 
+Typically these are an initial memory size of @math{RAM/64} and 
+a maximum memory size of @math{min(RAM/4, 1GB)}, where @var{RAM}
+is the amount of installed memory.
+
+In the output of javamem @var{Total memory} is what the operating
+system has currently assigned to the JVM and depends on actual 
+and active memory usage.
+@var{Free memory} is self-explanatory. During operation of java-based
+Octave functions the amounts of Total and Free memory will vary,
+due to java's own cleaning up and your operating system's memory
+management.
+
+Example:
+@example
+Octave > javamem
+Java virtual machine (JVM) memory info:
+Maximum available memory:          247 MB;
+   (...running garbage collector...)
+OK, current status:
+Total memory in virtual machine:    15 MB;
+Free memory in virtual machine:     15 MB;
+2 CPUs available.
+
+Octave > [MEM] = javamem()
+MEM =
+@{
+  [1,1] =  259522560
+  [2,1] =  16318464
+  [3,1] =  16085576
+@}
+@end example
+
+@seealso{@ref{doc-FAQ,,How can I handle memory limitations?}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javaArray
+@subsection javaArray
+@anchor{doc-javaArray}
+@c - index -
+@cindex array, creating a Java array
+@c - index -
+
+@deftypefn  {Function File} {ARRAY =} javaArray (@var{CLASS}, [@var{M}, @var{N}, ...])
+@deftypefnx {Function File} {ARRAY =} javaArray (@var{CLASS}, @var{M}, @var{N}, ...)
+
+Create a Java array of size @code{[M, N, ...]} with elements of class @var{CLASS}. @var{CLASS} can be a Java object representing a class or a string containing the fully qualified class name. 
+The generated array is uninitialized, all elements are set to null if @var{CLASS} is a reference type, or to a default value (usually 0) if @var{CLASS} is a primitive type. 
+
+Example: This example creates a (2 x 2) array of Java @var{String} objects and assigns a value to one of the elements. Finally it displays the type of @var{a}.
+@example
+Octave > a = javaArray('java.lang.String', 2, 2); 
+Octave > a(1,1) = 'Hello'; 
+Octave > a
+a =
+<Java object: java.lang.String[][]>
+@end example
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javaObject
+@subsection javaObject
+@anchor{doc-javaObject}
+@c - index -
+@cindex object, creating a Java object
+@c - index -
+
+@deftypefn  {Function File} {OBJECT =} javaObject (@var{CLASS}, [@var{ARG1}, ...,  @var{ARGN}])
+
+Create a Java object of class @var{CLASS}, by calling the class constructor with the given arguments @var{ARG1}, ..., @var{ARGN}. The @var{CLASS} name should be given in fully qualified string form (including any package prefix). In Matlab you should avoid to use the import statement and the short form of object creation. 
+
+Example: This example demonstrates two ways to create a Java @code{StringBuffer} object. The first variant creates an uninitialized @var{StringBuffer} object, while the second variant calls a constructor with the given initial @code{String}. Then it displays the type of @code{o}, and finally the content of the @code{StringBuffer} object is displayed by using its @code{toString} method.
+
+@example
+Octave > o = javaObject('java.lang.StringBuffer'); 
+Octave > o = javaObject('java.lang.StringBuffer', 'Initial'); 
+Octave > o 
+o =
+<Java object: java.lang.StringBuffer>
+Octave > o.toString 
+ans = Initial
+@end example
+
+Equivalent to the @code{java_new} function.
+For compatibility with Matlab it is recommended to use the @code{javaObject} function. 
+
+@seealso{@ref{doc-java_new,,java_new}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node java_new
+@subsection java_new
+@anchor{doc-java_new}
+@c - index -
+@cindex object, creating a Java object
+@c - index -
+
+@deftypefn  {Function File} {OBJECT =} java_new (@var{CLASS}, [@var{ARG1}, ...,  @var{ARGN}])
+
+Create a Java object of class @var{CLASS}, by calling the class constructor with the given arguments @var{ARG1}, ..., @var{ARGN}. 
+Equivalent to the @code{javaObject} function. 
+For compatibility with Matlab it is recommended to use the @code{javaObject} function. 
+
+Example: 
+@example
+Octave > o = java_new('java.lang.StringBuffer', 'Initial'); 
+Octave > o 
+o =
+<Java object: java.lang.StringBuffer>
+Octave > o.toString 
+ans = Initial
+@end example
+
+@seealso{@ref{doc-javaObject,,javaObject}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javaMethod
+@subsection javaMethod
+@anchor{doc-javaMethod}
+@c - index -
+@cindex method, invoking a method of a Java object
+@c - index -
+
+@deftypefn  {Function File} {RET =} javaMethod (@var{NAME}, @var{OBJECT}[, @var{ARG1}, ...,  @var{ARGN}])
+
+Invoke the method @var{NAME} on the Java object @var{OBJECT} with the arguments @var{ARG1}, ... For static methods, @var{OBJECT} can be a string representing the fully qualified name of the corresponding class. The function returns the result of the method invocation. 
+When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent. 
+
+Example: 
+@example
+Octave > ret = javaMethod("method1", x, 1.0, "a string")
+Octave > ret = x.method1(1.0, "a string") 
+@end example
+
+@seealso{@ref{doc-javamethods,,javamethods}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node java_invoke
+@subsection java_invoke
+@anchor{doc-java_invoke}
+@c - index -
+@cindex method, invoking a method of a Java object
+@c - index -
+
+@deftypefn  {Function File} {RET =} java_invoke (@var{OBJECT}, @var{NAME}[, @var{ARG1}, ...,  @var{ARGN}])
+
+Invoke the method @var{NAME} on the Java object @var{OBJECT} with the arguments @var{ARG1}, ... For static methods, @var{OBJECT} can be a string representing the fully qualified name of the corresponding class. The function returns the result of the method invocation. Equivalent to the @code{javaMethod} function. When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent. 
+
+Example: 
+@example
+Octave > ret = java_invoke(x, "method1", 1.0, "a string") 
+Octave > ret = x.method1(1.0, "a string") 
+@end example
+
+@seealso{@ref{doc-javamethods,,javamethods}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node java_get
+@subsection java_get
+@anchor{doc-java_get}
+@c - index -
+@cindex field, returning value of Java object field
+@c - index -
+
+@deftypefn  {Function File} {VAL =} java_get (@var{OBJECT}, @var{NAME})
+
+Get the value of the field @var{NAME} of the Java object @var{OBJECT}. For static fields, @var{OBJECT} can be a string representing the fully qualified name of the corresponding class. 
+
+When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent 
+
+Example: 
+@example
+Octave > java_get(x, "field1") 
+Octave > x.field1 
+@end example
+
+@seealso{@ref{doc-javafields,,javafields},
+         @ref{doc-java_set,,java_set}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node java_set
+@subsection java_set
+@anchor{doc-java_set}
+@c - index -
+@cindex field, setting value of Java object field
+@c - index -
+
+@deftypefn  {Function File} {OBJECT =} java_set (@var{OBJECT}, @var{NAME}, @var{VALUE})
+
+Set the value of the field @var{NAME} of the Java object @var{OBJECT} to @var{VALUE}. For static fields, @var{OBJECT} can be a string representing the fully qualified named of the corresponding Java class. 
+When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent 
+
+Example: 
+@example
+Octave > java_set(x, "field1", val) 
+Octave > x.field1 = val 
+@end example
+
+@seealso{@ref{doc-javafields,,javafields},
+         @ref{doc-java_get,,java_get}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javamethods
+@subsection javamethods
+@anchor{doc-javamethods}
+@c - index -
+@cindex methods, displaying available methods of a Java object
+@c - index -
+
+@deftypefn   {Function File} {M =} javamethods (@var{CLASSNAME})
+@deftypefnx  {Function File} {M =} javamethods (@var{OBJECT})
+
+Given a string with a Java class name @var{CLASSNAME} or a regular Java object @var{OBJECT}, this function returns a cell array containing descriptions of all methods of the Java class @var{CLASSNAME} respectively the class of @var{OBJECT}. 
+
+Examples: The first example shows how the methods of a class can be queried, while the second example works with the methods of a concrete instance of a class. Note that creation of a @code{java.lang.Double} object requires an initializer (in the example the value 1.2). 
+@example
+Octave > m = javamethods('java.lang.Double'); 
+Octave > size(m) 
+ans = 
+  1 30 
+
+Octave > m@{7@} 
+ans = double longBitsToDouble(long) 
+
+Octave > o = javaObject('java.lang.Double', 1.2); 
+Octave > m = javamethods(o); 
+Octave > size(m) 
+ans = 
+  1 30 
+
+Octave > m@{7@} 
+ans = double longBitsToDouble(long) 
+@end example
+
+@seealso{@ref{doc-javafields,,javafields},
+         @ref{doc-java_invoke,,java_invoke}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node javafields
+@subsection javafields
+@anchor{doc-javafields}
+@c - index -
+@cindex fields, displaying available fields of a Java object
+@c - index -
+
+@deftypefn   {Function File} {F =} javafields (@var{CLASSNAME})
+@deftypefnx  {Function File} {F =} javafields (@var{OBJECT})
+
+Given a string with a Java class name @var{CLASSNAME} or a regular Java object @var{OBJECT}, this function returns a cell array containing the descriptions for all fields of the Java class @var{CLASSNAME} respectively the class of @var{OBJECT}. 
+
+Examples: 
+
+The first example shows how the fields of a class can be queried without creating an instance of the class. 
+@example
+Octave > f = javafields('java.lang.Double'); 
+Octave > size(f)
+ans =
+  1 10
+
+Octave > f@{7@}
+ans = public static final int java.lang.Double.MAX_EXPONENT 
+@end example
+
+The second example works with the fields of an instance of a class. Note that creation of a @code{java.lang.Double} object requires an initializer (in the example a value of 1.2 is specified). 
+@example
+Octave > o = javaObject('java.lang.Double', 1.2); 
+Octave > f = javafields(o); 
+Octave > size(f) 
+ans = 
+  1 10 
+
+Octave > f@{7@} 
+ans = public static final int java.lang.Double.MAX_EXPONENT 
+@end example
+
+@seealso{@ref{doc-java_set,,java_set},
+         @ref{doc-java_get,,java_get}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node msgbox
+@subsection msgbox
+@anchor{doc-msgbox}
+@c - index -
+@cindex dialog, displaying a warning dialog
+@c - index -
+
+@deftypefn   {Function File} {F =} msgbox (@var{MESSAGE})
+@deftypefnx  {Function File} {F =} msgbox (@var{MESSAGE}, @var{TITLE})
+@deftypefnx  {Function File} {F =} msgbox (@var{MESSAGE}, @var{TITLE}, @var{ICON})
+
+Displays a @var{MESSAGE} using a dialog box. The parameter @var{TITLE} can be used to optionally decorate the dialog caption. 
+The third optional parameter @var{ICON} can be either @code{'error'}, @code{'help'} or @code{'warn'}
+and selectes the corresponding icon.
+If it is omitted, no icon is shown.
+
+Examples: The first example shows a dialog box without a caption text, whereas the second example specifies a caption text of its own. 
+The third example also demonstrates how a character 
+according to the @TeX{} symbol set can be specified. It is important to include a space character
+after the symbol code and how to embed a newline character (ASCII code 10) into the string.
+
+@example
+Octave > msgbox('This is an important message'); 
+Octave > msgbox('Do not forget to feed the cat.', 'Remember');
+Octave > msgbox(['I \heartsuit Octave!',10, ...
+                  ' Even if I hate it sometimes.'], ...
+                 'I Confess','warn');
+@end example
+
+@c @image{java-images/image003}
+
+@seealso{@ref{doc-errordlg,,errordlg},
+         @ref{doc-helpdlg,,helpdlg},
+         @ref{doc-warndlg,,warndlg}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node errordlg
+@subsection errordlg
+@anchor{doc-errordlg}
+@c - index -
+@cindex dialog, displaying an error dialog
+@c - index -
+
+@deftypefn   {Function File} {F =} errordlg (@var{MESSAGE})
+@deftypefnx  {Function File} {F =} errordlg (@var{MESSAGE}, @var{TITLE})
+
+Displays the @var{MESSAGE} using an error dialog box. The @var{TITLE} can be used optionally to decorate the dialog caption instead of the default title "Error Dialog". 
+
+Examples: The first example shows a dialog box with default caption, whereas the second example specifies a its own caption 
+@example
+Octave > errordlg('Oops, an expected error occured'); 
+@end example
+@c @image{java-images/image001
+@example
+Octave > errordlg('Another error occured', 'Oops'); 
+@end example
+
+@seealso{@ref{doc-helpdlg,,helpdlg},
+         @ref{doc-inputdlg,,inputdlg},
+         @ref{doc-listdlg,,listdlg},
+         @ref{doc-questdlg,,questdlg},
+         @ref{doc-warndlg,,warndlg}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node helpdlg
+@subsection helpdlg
+@anchor{doc-helpdlg}
+@c - index -
+@cindex dialog, displaying a help dialog
+@c - index -
+
+@deftypefn   {Function File} {F =} helpdlg (@var{MESSAGE})
+@deftypefnx  {Function File} {F =} helpdlg (@var{MESSAGE}, @var{TITLE})
+
+Displays the @var{MESSAGE} using a help dialog box. The help message can consist of multiple lines, separated by a newline character. The @var{TITLE} can be used optionally to decorate the dialog caption bar instead of the default title "Help Dialog". 
+
+Examples: The first example shows a dialog box with default caption, whereas the next two examples specify their own caption. Note that if the backslash escape notation is used in a double quoted string, it is immediately replaced by Octave with a newline.
+If it is contained in a single quoted string, it is not replaced by Octave, 
+but later by the dialog function.
+
+@example
+Octave > helpdlg('This is a short notice'); 
+Octave > helpdlg(['line #1',10,'line #2'], 'Inventory'); 
+Octave > helpdlg("1 eel\n9 buckazoids\n2 peas", 'Inventory'); 
+@end example
+
+@c @image{java-images/image004}
+
+@seealso{@ref{doc-errordlg,,errordlg},
+         @ref{doc-inputdlg,,inputdlg},
+         @ref{doc-listdlg,,listdlg},
+         @ref{doc-questdlg,,questdlg},
+         @ref{doc-warndlg,,warndlg}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node inputdlg
+@subsection inputdlg
+@anchor{doc-inputdlg}
+@c - index -
+@cindex dialog, displaying an input dialog
+@c - index -
+
+@deftypefn   {Function File} {C =} inputdlg (@var{PROMPT})
+@deftypefnx  {Function File} {C =} inputdlg (@var{PROMPT}, @var{TITLE})
+@deftypefnx  {Function File} {C =} inputdlg (@var{PROMPT}, @var{TITLE}, @var{ROWSCOLS})
+@deftypefnx  {Function File} {C =} inputdlg (@var{PROMPT}, @var{TITLE}, @var{ROWSCOLS}, @var{DEFAULTS})
+
+Returns the user's inputs from a multi-textfield dialog box in form of a cell array of strings. If the user closed the dialog with the Cancel button, en empty cell array is returned. This can be checked with the @var{isempty} function. The first argument @var{PROMPT} is mandatory. It is a cell array with strings labeling each text field. The optional string @var{TITLE} can be used as the caption of the dialog. The size of the text fields can be defined by the argument @var{ROWSCOLS}, which can be either a scalar to define the number of columns used for each text field, a vector to define the number of rows for each text field individually, or a matrix to define the number of rows and columns for each text field individually. It is possible to place default values into the text fields by supplying a cell array of strings for the argument @var{DEFAULTS}. 
+
+Examples: The first example shows a simple usage of the input dialog box without defaults. 
+@example
+Octave > prompt = @{'Width','Height','Depth'@}; 
+Octave > dims = inputdlg(prompt, 'Enter Box Dimensions'); 
+Octave > volume = str2num(dims@{1@}) * ... 
+                  str2num(dims@{2@}) * str2num(dims@{3@}); 
+@end example
+
+@c @image{java-images/image005}
+
+The second example shows the application of a scalar for the number of rows and a cell array with default values. 
+@example
+Octave > prompt = @{'Width', 'Height', 'Depth'@}; 
+Octave > defaults = @{'1.1', '2.2', '3.3'@}; 
+Octave > title = 'Enter Box Dimensions'; 
+Octave > dims = inputdlg(prompt, title, 1, defaults); 
+Octave > dims 
+dims = 
+@{
+  [1,1] = 1.1 
+  [2,1] = 2.2 
+  [3,1] = 3.3 
+@}
+@end example
+
+@c @image{java-images/image006}
+
+The third example shows the application of row height and column width specification.. 
+@example
+Octave > prompt = @{'Width', 'Height', 'Depth'@}; 
+Octave > defaults = @{'1.1', '2.2', '3.3'@}; 
+Octave > rc = [1,10; 2,20; 3,30]; 
+Octave > title = 'Enter Box Dimensions'; 
+Octave > dims = inputdlg(prompt, title, rc, defaults); 
+@end example
+
+@c @image{java-images/image007}
+
+@seealso{@ref{doc-errordlg,,errordlg},
+         @ref{doc-helpdlg,,helpdlg},
+         @ref{doc-listdlg,,listdlg},
+         @ref{doc-questdlg,,questdlg},
+         @ref{doc-warndlg,,warndlg}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node listdlg
+@subsection listdlg
+@anchor{doc-listdlg}
+@c - index -
+@cindex dialog, displaying a list dialog
+@c - index -
+
+@deftypefn   {Function File} {[SEL, OK] =} listdlg (@var{KEY}, @var{VALUE}[, @var{KEY}, @var{VALUE}, ...])
+
+This function returns the inputs from a list dialog box. The result is returned as a vector of indices and a flag. The vector @var{SEL} contains the 1-based indices of all list items selected by the user. The flag @var{OK} is 1 if the user closed the dialog with the OK Button, otherwise it is 0 and @var{SEL} is empty.. The arguments of this function are specified in the form of @var{KEY}, @var{VALUE} pairs. At least the @code{'ListString'} argument pair must be specified. It is also possible to preselect items in the list in order to provide a default selection. 
+
+The @var{KEY} and @var{VALUE} pairs can be selected from the following list: 
+
+@table @code
+@item ListString
+a cell array of strings comprising the content of the list.
+@item SelectionMode
+can be either @code{'single'} or @code{'multiple'}. 
+@item ListSize
+a vector with two elements @code{[width, height]} defining the size of the list field in pixels. 
+@item InitialValue
+a vector containing 1-based indices of preselected elements.
+@item Name
+a string to be used as the dialog caption.
+@item PromptString
+a cell array of strings to be displayed above the list field.
+@item OKString
+a string used to label the OK button.
+@item CancelString
+a string used to label the Cancel button.
+@end table
+
+Example:
+@example
+Octave > [s,ok] = listdlg('ListString', ... 
+                  @{'An item', 'another', 'yet another'@}, ...
+                  'Name', 'Selection Dialog', ...
+                  'SelectionMode', 'Multiple', ...
+                  'PromptString',['Select an item...',10,'...or multiple items']);
+
+Octave > imax = length(s); 
+Octave > for i=1:1:imax 
+Octave >   disp(s(i)); 
+Octave > end 
+@end example
+
+@c @image{java-images/image002}
+
+@seealso{@ref{doc-errordlg,,errordlg},
+         @ref{doc-helpdlg,,helpdlg},
+         @ref{doc-inputdlg,,inputdlg},
+         @ref{doc-questdlg,,questdlg},
+         @ref{doc-warndlg,,warndlg}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node questdlg
+@subsection questdlg
+@anchor{doc-questdlg}
+@c - index -
+@cindex dialog, displaying a question dialog
+@c - index -
+
+@deftypefn   {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE})
+@deftypefnx  {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE}, @var{DEFAULT})
+@deftypefnx  {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE}, @var{BTN1}, @var{BTN2}, @var{DEFAULT})
+@deftypefnx  {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE}, @var{BTN1}, @var{BTN2}, @var{BTN3}, @var{DEFAULT})
+
+Displays the @var{MESSAGE} using a question dialog box with a caption @var{TITLE}. The dialog contains two or three buttons which all close the dialog. It returns the caption of the activated button.
+
+If only @var{MESSAGE} and @var{TITLE} are specified, three buttons with the default captions "Yes",
+"No", "Cancel" are used.
+The string @var{DEFAULT} identifies the default button, which is activated by pressing the ENTER key. It must match one of the strings given in @var{BTN1}, @var{BTN2} or @var{BTN3}. If only two button captions @var{BTN1} and @var{BTN2} are specified, the dialog will have only these two buttons. 
+
+
+Examples: The first example shows a dialog box with two buttons, whereas the next example demonstrates the use of three buttons. 
+@example
+Octave > questdlg('Select your gender', 'Sex', ... 
+                  'Male', 'Female', 'Female'); 
+@end example
+
+@c @image{java-images/image008}
+
+@example
+Octave > questdlg('Select your gender', 'Sex', ... 
+                  'Male', 'dont know', 'Female', 'Female'); 
+@end example
+
+@c @image{java-images/image009}
+
+@seealso{@ref{doc-errordlg,,errordlg},
+         @ref{doc-helpdlg,,helpdlg},
+         @ref{doc-inputdlg,,inputdlg},
+         @ref{doc-listdlg,,listdlg},
+         @ref{doc-warndlg,,warndlg}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node warndlg
+@subsection warndlg
+@anchor{doc-warndlg}
+@c - index -
+@cindex dialog, displaying a warning dialog
+@c - index -
+
+@deftypefn   {Function File} {F =} warndlg (@var{MESSAGE})
+@deftypefnx  {Function File} {F =} warndlg (@var{MESSAGE}, @var{TITLE})
+
+Displays a @var{MESSAGE} using a warning dialog box. The @var{TITLE} can be used optionally to decorate the dialog caption instead of the default title "Warning Dialog". 
+
+Examples: The first example shows a dialog box with default caption, whereas the second example specifies a caption text of its own. The second example also demonstrates how a character 
+according to the @TeX{} symbol set can be specified. It is important to include a space character
+after the symbol code. The \n character can be used to start a new line. 
+The third example shows an alternate way to embed the newline character (the newline character has the ASCII code 10) into the string.
+Please refer to the Octave manual for the difference between single and double quoted
+strings.
+
+@example
+Octave > warndlg('An expected warning occured'); 
+Octave > warndlg('I \heartsuit Octave!\nEven if I hate her sometimes.', ...
+                 'Confession');
+Octave > warndlg(['I \heartsuit Octave!',10, ...
+                  ' Even if I hate her sometimes.'], ...
+                 'I Confess');
+@end example
+
+@c @image{java-images/image003}
+
+@seealso{@ref{doc-errordlg,,errordlg},
+         @ref{doc-helpdlg,,helpdlg},
+         @ref{doc-inputdlg,,inputdlg},
+         @ref{doc-listdlg,,listdlg},
+         @ref{doc-questdlg,,questdlg}}
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+@node FAQ - Frequently asked Questions
+@section FAQ - Frequently asked Questions
+
+@menu
+* How to distinguish between Octave and Matlab?::  
+* How to make Java classes available?::  
+* How to create an instance of a Java class?::  
+* How can I handle memory limitations?::  
+* How to compile the java package in Octave?::  
+* Which @TeX{} symbols are implemented in the dialog functions?::  
+@end menu
+
+@c ------------------------------------------------------------------------
+@node How to distinguish between Octave and Matlab?
+@subsection How to distinguish between Octave and Matlab? 
+@anchor{doc-FAQ}
+@c - index -
+@cindex Octave and Matlab, how to distinguish between
+@c - index -
+
+Octave and Matlab are very similar, but handle Java slightly different. Therefore it may be necessary to detect the environment and use the appropriate functions. The following function can be used to detect the environment. Due to the persistent variable it can be called repeatedly without a heavy performance hit. 
+
+Example: 
+@example
+%% 
+%% Return: true if the environment is Octave. 
+%% 
+function ret = isOctave 
+  persistent retval; % speeds up repeated calls 
+
+  if isempty(retval)
+    retval = (exist('Octave_VERSION','builtin') > 0); 
+  end 
+
+  ret = retval; 
+end 
+@end example
+
+@c ------------------------------------------------------------------------
+@node How to make Java classes available?
+@subsection How to make Java classes available to Octave?
+@c - index -
+@cindex classpath, setting
+@cindex classpath, difference between static and dynamic
+@cindex static classpath
+@cindex dynamic classpath
+@cindex @code{classpath.txt}
+@cindex classes, making available to Octave
+@c - index -
+
+Java finds classes by searching a @var{classpath}. This is a list of Java archive files and/or directories containing class files.
+In Octave and Matlab the @var{classpath} is composed of two parts:
+@itemize
+@item the @var{static classpath} is initialized once at startup of the JVM, and
+@item the @var{dynamic classpath} which can be modified at runtime.
+@end itemize
+Octave searches the @var{static classpath} first, then the @var{dynamic classpath}.
+Classes appearing in the @var{static} as well as in the @var{dynamic classpath} will therefore be found in the @var{static classpath} and loaded from this location.
+@*
+Classes which shall be used regularly or must be available to all users should be 
+added to the @var{static classpath}. 
+The @var{static classpath} is populated once from the contents of a plain text file named @code{classpath.txt} when the Java Virtual Machine starts. This file contains one line for each individual classpath to be added to the @var{static classpath}.
+These lines can identify single class files, directories containing class files or Java archives with complete class file hierarchies.
+Comment lines starting with a @code{#} or a  @code{%} character are ignored.
+
+The search rules for the file @code{classpath.txt} are:
+@itemize
+@item First, Octave searches for the file @code{classpath.txt} in your home directory,
+If such a file is found, it is read and defines the initial @var{static classpath}.
+Thus it is possible to build an initial static classpath on a 'per user' basis.
+
+@item Next, Octave looks for another file @code{classpath.txt} in the package installation directory.
+This is where @code{javaclasspath.m} resides, usually something like @code{...\share\Octave\packages\java-1.2.8}. 
+You can find this directory by executing the command
+@example
+pkg list
+@end example
+If this file exists, its contents is also appended to the static classpath.
+Note that the archives and class directories defined in this file will affect all users.
+@end itemize
+
+Classes which are used only by a specific script should be placed in the @var{dynamic classpath}. This portion of the classpath can be modified at runtime using the @code{javaaddpath} and @code{javarmpath} functions. 
+
+Example: 
+@example
+Octave > base_path = 'C:/Octave/java_files'; 
+
+Octave > % add two JARchives to the dynamic classpath 
+Octave > javaaddpath([base_path, '/someclasses.jar']); 
+Octave > javaaddpath([base_path, '/moreclasses.jar']); 
+
+Octave > % check the dynamic classpath 
+Octave > p = javaclasspath; 
+Octave > disp(p@{1@}); 
+C:/Octave/java_files/someclasses.jar
+Octave > disp(p@{2@}); 
+C:/Octave/java_files/moreclasses.jar
+
+Octave > % remove the first element from the classpath 
+Octave > javarmpath([base_path, '/someclasses.jar']); 
+Octave > p = javaclasspath; 
+Octave > disp(p@{1@}); 
+C:/Octave/java_files/moreclasses.jar
+
+Octave > % provoke an error
+Octave > disp(p@{2@}); 
+error: A(I): Index exceeds matrix dimension. 
+@end example
+
+Another way to add files to the @var{dynamic classpath} exclusively for your user account is to use the file @code{.octaverc} which is stored in your home directory.
+All Octave commands in this file are executed each time you start a new instance of Octave. 
+The following example adds the directory @code{octave} to Octave's search path and 
+the archive @code{myclasses.jar} in this directory to the Java search path.
+@example
+% content of .octaverc:
+addpath('~/octave');
+javaaddpath('~/octave/myclasses.jar');
+@end example
+
+@c ------------------------------------------------------------------------
+@node How to create an instance of a Java class?
+@subsection How to create an instance of a Java class?
+@c - index -
+@cindex object, how to create
+@cindex instance, how to create
+@c - index -
+
+If your code shall work under Octave as well as Matlab you should use the function @code{javaObject} to create Java objects. The function @code{java_new} is Octave specific and does not exist in the Matlab environment.
+
+Example 1, suitable for Octave but not for Matlab: 
+@example
+   Passenger = java_new('package.FirstClass', row, seat);
+@end example
+
+Example 2, which works in Octave as well as in Matlab: 
+@example
+   Passenger = javaObject('package.FirstClass', row, seat);
+@end example
+
+@c ------------------------------------------------------------------------
+@node How can I handle memory limitations?
+@subsection How can I handle memory limitations?
+@cindex memory, limitations
+
+In order to execute Java code Octave creates a Java Virtual Machine (JVM). Such a JVM allocates a fixed amount of initial memory and may expand this pool up to a fixed maximum memory limit. The default values depend on the Java version (see @ref{doc-javamem,,javamem}).
+The memory pool is shared by all Java objects running in the JVM.
+This strict memory limit is intended mainly to avoid that runaway applications inside web browsers or in enterprise servers can consume all memory and crash the system. 
+When the maximum memory limit is hit, Java code will throw exceptions so that applications will fail or behave unexpectedly.
+
+In Octave as well as in Matlab, you can specify options for the creation of the JVM inside a file named @code{java.opts}. 
+This is a text file where you can enter lines containing @code{-X} and @code{-D} options handed to the JVM during initialization. 
+
+In Octave, the Java options file must be located in the directory where @code{javaclasspath.m} resides, i.e. the package installation directory, usually something like @var{...\share\Octave\packages\java-1.2.8}. You can find this directory by executing 
+@example
+pkg list
+@end example
+
+In Matlab, the options file goes into the @var{MATLABROOT/bin/ARCH} directory or in your personal Matlab startup directory (can be determined by a @samp{pwd} command). @var{MATLABROOT} is the Matlab root directory and @var{ARCH} is your system architecture, which you find by issuing the commands @samp{matlabroot} respectively @samp{computer('arch')}.
+
+The @code{-X} options allow you to increase the maximum amount of memory available to the JVM to 256 Megabytes by adding the following line to the @code{java.opts} file: 
+@example
+-Xmx256m 
+@end example
+
+The maximum possible amount of memory depends on your system. On a Windows system with 2 Gigabytes main memory you should be able to set this maximum to about 1 Gigabyte.
+
+If your application requires a large amount of memory from the beginning, you can also specify the initial amount of memory allocated to the JVM. Adding the following line to the @code{java.opts} file starts the JVM with 64 Megabytes of initial memory:
+@example
+-Xms64m 
+@end example
+
+For more details on the available @code{-X} options of your Java Virtual Machine issue the command @samp{java -X} at the operating system command prompt and consult the Java documentation.
+
+
+The @code{-D} options can be used to define system properties which can then be used by Java classes inside Octave. System properties can be retrieved by using the @code{getProperty()} methods of the @code{java.lang.System} class. The following example line defines the property @var{MyProperty} and assigns it the string @code{12.34}. 
+@example
+-DMyProperty=12.34
+@end example
+The value of this property can then be retrieved as a string by a Java object or in Octave:
+@example
+Octave > javaMethod('java.lang.System', 'getProperty', 'MyProperty');
+ans = 12.34
+@end example
+
+@seealso{@ref{doc-javamem,,javamem}}
+
+@c ------------------------------------------------------------------------
+@node How to compile the java package in Octave?
+@subsection How to compile the java package in Octave?
+@c - index -
+@cindex package, how to compile?
+@cindex compiling the java package, how? 
+@cindex java package, how to compile?
+@cindex java package, how to install?
+@cindex java package, how to uninstall?
+@c - index -
+
+Most Octave installations come with the @var{java} package pre-installed. In case you want to replace this package with a more recent version, you must perform the following steps: 
+
+@c ---------
+@menu
+* Uninstall the currently installed package @var{java}::  
+* Make sure that the build environment is configured properly::  
+* Compile and install the package in Octave::  
+* Test the java package installation::  
+@end menu
+
+@node Uninstall the currently installed package @var{java}
+@subsubsection Uninstall the currently installed package @var{java}
+Check whether the @var{java} package is already installed by issuing
+the @code{pkg list} command:
+@example
+Octave > pkg list
+Package Name  | Version | Installation directory
+--------------+---------+-----------------------
+        java *|   1.2.8 | /home/octavio/octave/java-1.2.8
+Octave > 
+@end example
+
+@noindent
+If the @var{java} package appears in the list you must uninstall it first by issuing the command 
+@example
+Octave > pkg uninstall java
+Octave > pkg list
+@end example
+
+Now the java package should not be listed anymore. If you have used the @var{java} package during the current session of Octave, you have to exit and restart Octave before you can uninstall the package. This is because the system keeps certain libraries in memory after they have been loaded once.
+
+@c ---------
+@node Make sure that the build environment is configured properly
+@subsubsection Make sure that the build environment is configured properly
+The installation process requires that the environment variable @code{JAVA_HOME} points to the Java Development Kit (JDK) on your computer. 
+
+@itemize @bullet
+@item
+Note that JDK is not equal to JRE (Java Runtime Environment). The JDK home directory contains subdirectories with include, library and executable files which are required to compile the @var{java} package. These files are not part of the JRE, so you definitely need the JDK. 
+@item
+Do not use backslashes but ordinary slashes in the path. 
+@end itemize
+
+Set the environment variable @code{JAVA_HOME} according to your local JDK installation. Please adapt the path in the following examples according to the JDK installation on your system.@*
+If you are using a Windows system that might be: 
+@example
+Octave > setenv("JAVA_HOME","C:/Java/jdk1.6.0_21");
+@end example
+Note, that on both system types, Windows as well as Linux, you must use the forward slash '/' as the separator, not the backslash '\'.
+
+If you are using a Linux system this would look probably more like: 
+@example
+Octave > setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
+@end example
+
+@c ---------
+@node Compile and install the package in Octave
+@subsubsection Compile and install the package in Octave
+If you have for example saved the package archive on your @var{z:} drive the command would be: 
+@example
+Octave> pkg install -verbose z:/java-1.2.8.tar.gz
+@end example
+or if you have Linux and the package file is stored in your home directory: 
+@example
+Octave > pkg install -verbose ~/java-1.2.8.tar.gz
+@end example
+The option @code{-verbose} will produce some lengthy output, which should not show any errors 
+(maybe a few warnings at best). 
+
+You can then produce a list of all installed packages: 
+@example
+Octave > pkg list
+@end example
+
+This list of packages should now include the package @var{java}:
+@example
+Octave > pkg list
+Package Name  | Version | Installation directory
+--------------+---------+-----------------------
+        java *|   1.2.8 | /home/octavio/octave/java-1.2.8
+Octave > 
+@end example
+
+@c ---------
+@node Test the java package installation
+@subsubsection Test the java package installation
+
+The following code creates a Java string object, which however is automatically converted to an Octave string:
+@example
+Octave > s = javaObject('java.lang.String', 'Hello OctaveString') 
+s = Hello OctaveString 
+@end example
+
+Note that the java package automatically transforms the Java String object to an Octave string. This means that you cannot apply Java String methods to the result. 
+
+This "auto boxing" scheme seems to be implemented for the following Java classes: 
+@itemize @bullet
+@item
+java.lang.Integer
+@item
+java.lang.Double 
+@item
+java.lang.Boolean 
+@item
+java.lang.String 
+@end itemize
+
+If you instead create an object for which no "auto-boxing" is implemented, @code{javaObject} returns the genuine Java object: 
+@example
+Octave > v = javaObject('java.util.Vector') 
+v = 
+<Java object: java.util.Vector> 
+Octave > v.add(12); 
+Octave > v.get(0) 
+ans = 12 
+@end example
+
+If you have created such a Java object, you can apply all methods of the Java class to the returned object. Note also that for some objects you must specify an initializer: 
+@example
+% not: 
+Octave > d = javaObject('java.lang.Double') 
+error: [java] java.lang.NoSuchMethodException: java.lang.Double 
+% but: 
+Octave > d = javaObject('java.lang.Double',12.34) 
+d = 12.340 
+@end example
+
+@c ------------------------------------------------------------------------
+@node Which @TeX{} symbols are implemented in the dialog functions?
+@subsection Which @TeX{} symbols are implemented in the dialog functions?
+@c - index -
+@cindex symbols, translation table
+@cindex @TeX{} symbols, translation table
+@cindex translation table for @TeX{} symbols
+@c - index -
+
+The dialog functions contain a translation table for @TeX{} like symbol codes. Thus messages and labels can be tailored to show some common mathematical symbols or Greek characters. No further @TeX{} formatting codes are supported. The characters are translated to their Unicode equivalent. However, not all characters may be displayable on your system. This depends on the font used by the Java system on your computer.
+
+Each @TeX{} symbol code must be terminated by a space character to make it distinguishable from the surrounding text. Therefore the string @samp{\alpha =12.0} will produce the desired result, whereas @samp{\alpha=12.0} would produce the literal text @var{'\alpha=12.0'}.
+
+@seealso{@ref{doc-errordlg,,errordlg},
+         @ref{doc-helpdlg,,helpdlg},
+         @ref{doc-inputdlg,,inputdlg},
+         @ref{doc-listdlg,,listdlg},
+         @ref{doc-msgbox,,msgbox},
+         @ref{doc-questdlg,,questdlg},
+         @ref{doc-warndlg,,warndlg}}
+
+@need 5000
+@c ---------------------------------
+@ifhtml
+@float Table
+The table below shows each @TeX{} character code and the corresponding Unicode character: 
+@multitable @columnfractions 0.18 0.1 0.05 0.18 0.1 0.05 0.18 0.1
+@item \alpha
+@tab 'α'
+@tab
+@tab \beta
+@tab 'β'
+@tab
+@tab \gamma
+@tab 'γ'
+@c ----------
+@item \delta
+@tab 'δ'
+@tab
+@tab \epsilon
+@tab 'ε'
+@tab
+@tab \zeta
+@tab 'ζ'
+@c ----------
+@item \eta
+@tab 'η'
+@tab
+@tab \theta
+@tab 'θ'
+@tab
+@tab \vartheta
+@tab 'ϑ'
+@c ----------
+@item \iota
+@tab 'ι'
+@tab
+@tab \kappa
+@tab 'κ'
+@tab
+@tab \lambda
+@tab 'λ'
+@c ----------
+@item \mu
+@tab 'μ'
+@tab
+@tab \nu
+@tab 'ν'
+@tab
+@tab \xi
+@tab 'ξ'
+@c ----------
+@item \pi
+@tab 'π'
+@tab
+@tab \rho
+@tab 'ρ'
+@tab
+@tab \sigma
+@tab 'σ'
+@c ----------
+@item \varsigma
+@tab 'ς'
+@tab
+@tab \tau
+@tab 'τ'
+@tab
+@tab \phi
+@tab 'φ'
+@c ----------
+@item \chi
+@tab 'χ'
+@tab
+@tab \psi
+@tab 'ψ'
+@tab
+@tab \omega
+@tab 'ω'
+@c ----------
+@item \upsilon
+@tab 'υ'
+@tab
+@tab \Gamma
+@tab 'Γ'
+@tab
+@tab \Delta
+@tab 'Δ'
+@c ----------
+@item \Theta
+@tab 'Θ'
+@tab
+@tab \Lambda
+@tab 'Λ'
+@tab
+@tab \Pi
+@tab 'Π'
+@c ----------
+@item \Xi
+@tab 'Ξ'
+@tab
+@tab \Sigma
+@tab 'Σ'
+@tab
+@tab \Upsilon
+@tab 'Υ'
+@c ----------
+@item \Phi
+@tab 'Φ'
+@tab
+@tab \Psi
+@tab 'Ψ'
+@tab
+@tab \Omega
+@tab 'Ω'
+@c ----------
+@item \Im
+@tab 'ℑ'
+@tab
+@tab \Re
+@tab 'ℜ'
+@tab
+@tab \leq
+@tab '≤'
+@c ----------
+@item \geq
+@tab '≥'
+@tab
+@tab \neq
+@tab '≠'
+@tab
+@tab \pm
+@tab '±'
+@c ----------
+@item \infty
+@tab '∞'
+@tab
+@tab \partial
+@tab '∂'
+@tab
+@tab \approx
+@tab '≈'
+@c ----------
+@item \circ
+@tab '∘'
+@tab
+@tab \bullet
+@tab '•'
+@tab
+@tab \times
+@tab '×'
+@c ----------
+@item \sim
+@tab '~'
+@tab
+@tab \nabla
+@tab '∇'
+@tab
+@tab \ldots
+@tab '…'
+@c ----------
+@item \exists
+@tab '∃'
+@tab
+@tab \neg
+@tab '¬'
+@tab
+@tab \aleph
+@tab 'ℵ'
+@c ----------
+@item \forall
+@tab '∀'
+@tab
+@tab \cong
+@tab '≅'
+@tab
+@tab \wp
+@tab '℘'
+@c ----------
+@item \propto
+@tab '∝'
+@tab
+@tab \otimes
+@tab '⊗'
+@tab
+@tab \oplus
+@tab '⊕'
+@c ----------
+@item \oslash
+@tab '⊘'
+@tab
+@tab \cap
+@tab '∩'
+@tab
+@tab \cup
+@tab '∪'
+@c ----------
+@item \ni
+@tab '∋'
+@tab
+@tab \in
+@tab '∈'
+@tab
+@tab \div
+@tab '÷'
+@c ----------
+@item \equiv
+@tab '≡'
+@tab
+@tab \int
+@tab '∫'
+@tab
+@tab \perp
+@tab '⊥'
+@c ----------
+@item \wedge
+@tab '∧'
+@tab
+@tab \vee
+@tab '∨'
+@tab
+@tab \supseteq
+@tab '⊇'
+@c ----------
+@item \supset
+@tab '⊃'
+@tab
+@tab \subseteq
+@tab '⊆'
+@tab
+@tab \subset
+@tab '⊂'
+@c ----------
+@item \clubsuit
+@tab '♣'
+@tab
+@tab \spadesuit
+@tab '♠'
+@tab
+@tab \heartsuit
+@tab '♥'
+@c ----------
+@item \diamondsuit
+@tab '♦'
+@tab
+@tab \copyright
+@tab '©'
+@tab
+@tab \leftarrow
+@tab '←'
+@c ----------
+@item \uparrow
+@tab '↑'
+@tab
+@tab \rightarrow
+@tab '→'
+@tab
+@tab \downarrow
+@tab '↓'
+@c ----------
+@item \leftrightarrow
+@tab '↔'
+@tab
+@tab \updownarrow
+@tab '↕'
+@tab
+@c ----------
+@end multitable
+@caption{@TeX{} character codes and the resulting symbols.}
+@end float
+@end ifhtml
+@c ---------------------------------
+@iftex
+@float Table
+The table below shows each @TeX{} character code and the corresponding Unicode character: 
+@multitable @columnfractions 0.18 0.1 0.05 0.18 0.1 0.05 0.18 0.1
+@headitem @TeX{} code
+@tab Symbol
+@tab
+@tab @TeX{} code
+@tab Symbol
+@tab
+@tab @TeX{} code
+@tab Symbol
+@c ----------
+@item \alpha
+@tab '@math{\alpha}'
+@tab
+@tab \beta
+@tab '@math{\beta}'
+@tab
+@tab \gamma
+@tab '@math{\gamma}'
+@c ----------
+@item \delta
+@tab '@math{\delta}'
+@tab
+@tab \epsilon
+@tab '@math{\epsilon}'
+@tab
+@tab \zeta
+@tab '@math{\zeta}'
+@c ----------
+@item \eta
+@tab '@math{\eta}'
+@tab
+@tab \theta
+@tab '@math{\theta}'
+@tab
+@tab \vartheta
+@tab '@math{\vartheta}'
+@c ----------
+@item \iota
+@tab '@math{\iota}'
+@tab
+@tab \kappa
+@tab '@math{\kappa}'
+@tab
+@tab \lambda
+@tab '@math{\lambda}'
+@c ----------
+@item \mu
+@tab '@math{\mu}'
+@tab
+@tab \nu
+@tab '@math{\nu}'
+@tab
+@tab \xi
+@tab '@math{\xi}'
+@c ----------
+@item \pi
+@tab '@math{\pi}'
+@tab
+@tab \rho
+@tab '@math{\rho}'
+@tab
+@tab \sigma
+@tab '@math{\sigma}'
+@c ----------
+@item \varsigma
+@tab '@math{\varsigma}'
+@tab
+@tab \tau
+@tab '@math{\tau}'
+@tab
+@tab \phi
+@tab '@math{\phi}'
+@c ----------
+@item \chi
+@tab '@math{\chi}'
+@tab
+@tab \psi
+@tab '@math{\psi}'
+@tab
+@tab \omega
+@tab '@math{\omega}'
+@c ----------
+@item \upsilon
+@tab '@math{\upsilon}'
+@tab
+@tab \Gamma
+@tab '@math{\Gamma}'
+@tab
+@tab \Delta
+@tab '@math{\Delta}'
+@c ----------
+@item \Theta
+@tab '@math{\Theta}'
+@tab
+@tab \Lambda
+@tab '@math{\Lambda}'
+@tab
+@tab \Pi
+@tab '@math{\Pi}'
+@c ----------
+@item \Xi
+@tab '@math{\Xi}'
+@tab
+@tab \Sigma
+@tab '@math{\Sigma}'
+@tab
+@tab \Upsilon
+@tab '@math{\Upsilon}'
+@c ----------
+@item \Phi
+@tab '@math{\Phi}'
+@tab
+@tab \Psi
+@tab '@math{\Psi}'
+@tab
+@tab \Omega
+@tab '@math{\Omega}'
+@c ----------
+@item \Im
+@tab '@math{\Im}'
+@tab
+@tab \Re
+@tab '@math{\Re}'
+@tab
+@tab \leq
+@tab '@math{\leq}'
+@c ----------
+@item \geq
+@tab '@math{\geq}'
+@tab
+@tab \neq
+@tab '@math{\neq}'
+@tab
+@tab \pm
+@tab '@math{\pm}'
+@c ----------
+@item \infty
+@tab '@math{\infty}'
+@tab
+@tab \partial
+@tab '@math{\partial}'
+@tab
+@tab \approx
+@tab '@math{\approx}'
+@c ----------
+@item \circ
+@tab '@math{\circ}'
+@tab
+@tab \bullet
+@tab '@math{\bullet}'
+@tab
+@tab \times
+@tab '@math{\times}'
+@c ----------
+@item \sim
+@tab '@math{\sim}'
+@tab
+@tab \nabla
+@tab '@math{\nabla}'
+@tab
+@tab \ldots
+@tab '@math{\ldots}'
+@c ----------
+@item \exists
+@tab '@math{\exists}'
+@tab
+@tab \neg
+@tab '@math{\neg}'
+@tab
+@tab \aleph
+@tab '@math{\aleph}'
+@c ----------
+@item \forall
+@tab '@math{\forall}'
+@tab
+@tab \cong
+@tab '@math{\cong}'
+@tab
+@tab \wp
+@tab '@math{\wp}'
+@c ----------
+@item \propto
+@tab '@math{\propto}'
+@tab
+@tab \otimes
+@tab '@math{\otimes}'
+@tab
+@tab \oplus
+@tab '@math{\oplus}'
+@c ----------
+@item \oslash
+@tab '@math{\oslash}'
+@tab
+@tab \cap
+@tab '@math{\cap}'
+@tab
+@tab \cup
+@tab '@math{\cup}'
+@c ----------
+@item \ni
+@tab '@math{\ni}'
+@tab
+@tab \in
+@tab '@math{\in}'
+@tab
+@tab \div
+@tab '@math{\div}'
+@c ----------
+@item \equiv
+@tab '@math{\equiv}'
+@tab
+@tab \int
+@tab '@math{\int}'
+@tab
+@tab \perp
+@tab '@math{\perp}'
+@c ----------
+@item \wedge
+@tab '@math{\wedge}'
+@tab
+@tab \vee
+@tab '@math{\vee}'
+@tab
+@tab \supseteq
+@tab '@math{\supseteq}'
+@c ----------
+@item \supset
+@tab '@math{\supset}'
+@tab
+@tab \subseteq
+@tab '@math{\subseteq}'
+@tab
+@tab \subset
+@tab '@math{\subset}'
+@c ----------
+@item \clubsuit
+@tab '@math{\clubsuit}'
+@tab
+@tab \spadesuit
+@tab '@math{\spadesuit}'
+@tab
+@tab \heartsuit
+@tab '@math{\heartsuit}'
+@c ----------
+@item \diamondsuit
+@tab '@math{\diamondsuit}'
+@tab
+@tab \copyright
+@tab '@math{\copyright}'
+@tab
+@tab \leftarrow
+@tab '@math{\leftarrow}'
+@c ----------
+@item \uparrow
+@tab '@math{\uparrow}'
+@tab
+@tab \rightarrow
+@tab '@math{\rightarrow}'
+@tab
+@tab \downarrow
+@tab '@math{\downarrow}'
+@c ----------
+@item \leftrightarrow
+@tab '@math{\leftrightarrow}'
+@tab
+@tab \updownarrow
+@tab '@math{\updownarrow}'
+@tab
+@c ----------
+@end multitable
+@caption{@TeX{} character codes and the resulting symbols.}
+@end float
+@end iftex
+@c ---------------------------------

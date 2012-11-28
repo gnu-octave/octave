@@ -978,6 +978,7 @@ before reaching the debugging mode, a normal interrupt will occur.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+@seealso{debug_on_error, debug_on_warning}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_interrupt);

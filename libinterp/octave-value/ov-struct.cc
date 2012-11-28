@@ -116,6 +116,22 @@ gripe_failed_assignment (void)
   error ("assignment to structure element failed");
 }
 
+static void
+maybe_warn_invalid_field_name (const std::string& key, const char *who)
+{
+  if (! valid_identifier (key))
+    {
+      if (who)
+        warning_with_id ("Octave:matlab-incompatible",
+                         "%s: invalid structure field name '%s'",
+                         who, key.c_str ());
+      else
+        warning_with_id ("Octave:matlab-incompatible",
+                         "invalid structure field name '%s'",
+                         key.c_str ());
+    }
+}
+
 octave_value_list
 octave_struct::subsref (const std::string& type,
                         const std::list<octave_value_list>& idx,
@@ -305,6 +321,11 @@ octave_struct::subsasgn (const std::string& type,
 
                 std::string key = key_idx(0).string_value ();
 
+                maybe_warn_invalid_field_name (key, "subsasgn");
+
+                if (error_state)
+                  return retval;
+
                 std::list<octave_value_list> next_idx (idx);
 
                 // We handled two index elements, so subsasgn to
@@ -362,6 +383,11 @@ octave_struct::subsasgn (const std::string& type,
             assert (key_idx.length () == 1);
 
             std::string key = key_idx(0).string_value ();
+
+            maybe_warn_invalid_field_name (key, "subsasgn");
+
+            if (error_state)
+              return retval;
 
             std::list<octave_value_list> next_idx (idx);
 
@@ -430,6 +456,11 @@ octave_struct::subsasgn (const std::string& type,
                 assert (key_idx.length () == 1);
 
                 std::string key = key_idx(0).string_value ();
+
+                maybe_warn_invalid_field_name (key, "subsasgn");
+
+                if (error_state)
+                  return retval;
 
                 if (! error_state)
                   {
@@ -529,6 +560,11 @@ octave_struct::subsasgn (const std::string& type,
             assert (key_idx.length () == 1);
 
             std::string key = key_idx(0).string_value ();
+
+            maybe_warn_invalid_field_name (key, "subsasgn");
+
+            if (error_state)
+              return retval;
 
             if (t_rhs.is_cs_list ())
               {
@@ -1093,11 +1129,18 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct", "stru
 octave_value
 octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
+  octave_value retval;
+
   assert (idx.length () == 1);
 
   std::string nm = idx(0).string_value ();
 
-  octave_value retval = map.getfield (nm);
+  maybe_warn_invalid_field_name (nm, "subsref");
+
+  if (error_state)
+    return retval;
+
+  retval = map.getfield (nm);
 
   if (! auto_add && retval.is_undefined ())
     error ("structure has no member '%s'", nm.c_str ());
@@ -1217,6 +1260,11 @@ octave_scalar_struct::subsasgn (const std::string& type,
       assert (key_idx.length () == 1);
 
       std::string key = key_idx(0).string_value ();
+
+      maybe_warn_invalid_field_name (key, "subsasgn");
+
+      if (error_state)
+        return retval;
 
       if (n > 1)
         {
@@ -1805,11 +1853,10 @@ If the argument is an object, return the underlying struct.\n\
       if (error_state)
         return retval;
 
-      if (! valid_identifier (key))
-        {
-          error ("struct: invalid structure field name '%s'", key.c_str ());
-          return retval;
-        }
+      maybe_warn_invalid_field_name (key, "struct");
+
+      if (error_state)
+        return retval;
 
       // Value may be v, { v }, or { v1, v2, ... }
       // In the first two cases, we need to create a cell array of

@@ -179,6 +179,7 @@ numeric_libnumeric_la_SOURCES = $(NUMERIC_SRC)
 numeric_libnumeric_la_CPPFLAGS = \
   $(liboctave_la_CPPFLAGS) \
   $(ARPACK_CPPFLAGS) \
+  -I$(srcdir)/cruft/Faddeeva \
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 

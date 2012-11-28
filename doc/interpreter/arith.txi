@@ -291,6 +291,10 @@ cos (pi/2)
 
 @DOCSTRING(erfcx)
 
+@DOCSTRING(erfi)
+
+@DOCSTRING(dawson)
+
 @DOCSTRING(erfinv)
 
 @DOCSTRING(erfcinv)

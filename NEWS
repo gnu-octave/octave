@@ -89,6 +89,7 @@ Summary of important user-visible changes for version 3.8:
     commands with PKG_ADD and PKG_DEL statements.
 
  ** The m-files in the image directory have been overhauled.
+
     The principal benefit is that Octave will now no longer automatically
     convert images stored with integers to doubles.  Storing images as uint8
     or uint16 requires only 1/8 or 1/4 the memory of an image stored using
@@ -102,10 +103,18 @@ Summary of important user-visible changes for version 3.8:
     January 1st of the current year.  The previous default was the current day,
     month, and year.  This may produce changes in existing scripts.
 
+ ** The error function and its derivatives has been extended to accept complex
+    arguments.  The following functions now accept complex inputs:
+
+    erf   erfc   erfcx   erfinv   erfcinv
+
+    In addition two new error functions erfi (imaginary error function) and
+    and dawson (scaled imaginary error function) have been added.
+
  ** The default name of the Octave crash dump file is now called
     octave-workspace instead of octave-core.
 
- ** The java package from Octave Forge is now part of Octave.  The
+ ** The java package from Octave Forge is now part of core Octave.  The
     following new functions are available for interacting with Java
     directly from Octave:
 
@@ -129,10 +138,10 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      betaincinv   erfcinv      lines      rgbplot
-      cmpermute    findfigs     polyeig    shrinkfaces
-      cmunique     fminsearch   splinefit
-      colorcube    iscolormap   tetramesh
+      betaincinv   dawson     fminsearch   rgbplot    
+      cmpermute    erfcinv    iscolormap   shrinkfaces
+      cmunique     erfi       lines        splinefit             
+      colorcube    findfigs   polyeig      tetramesh             
 
  ** Deprecated functions.
 

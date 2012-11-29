@@ -56,10 +56,14 @@ extern OCTAVE_API double atanh (double);
 #if !defined (HAVE_ERF)
 extern OCTAVE_API double erf (double);
 #endif
+extern OCTAVE_API Complex erf (const Complex& x);
+extern OCTAVE_API FloatComplex erf (const FloatComplex& x);
 
 #if !defined (HAVE_ERFC)
 extern OCTAVE_API double erfc (double);
 #endif
+extern OCTAVE_API Complex erfc (const Complex& x);
+extern OCTAVE_API FloatComplex erfc (const FloatComplex& x);
 
 #if !defined (HAVE_ACOSHF)
 extern OCTAVE_API float acoshf (float);
@@ -578,8 +582,20 @@ extern OCTAVE_API float erfinv (float x);
 extern OCTAVE_API double erfcinv (double x);
 extern OCTAVE_API float erfcinv (float x);
 
-extern OCTAVE_API double erfcx (double x);
 extern OCTAVE_API float erfcx (float x);
+extern OCTAVE_API double erfcx (double x);
+extern OCTAVE_API Complex erfcx (const Complex& x);
+extern OCTAVE_API FloatComplex erfcx (const FloatComplex& x);
+
+extern OCTAVE_API float erfi (float x);
+extern OCTAVE_API double erfi (double x);
+extern OCTAVE_API Complex erfi (const Complex& x);
+extern OCTAVE_API FloatComplex erfi (const FloatComplex& x);
+
+extern OCTAVE_API float dawson (float x);
+extern OCTAVE_API double dawson (double x);
+extern OCTAVE_API Complex dawson (const Complex& x);
+extern OCTAVE_API FloatComplex dawson (const FloatComplex& x);
 
 extern OCTAVE_API double betaincinv (double x, double a, double b);
 extern OCTAVE_API Array<double> betaincinv (double x, double a, const Array<double>& b);

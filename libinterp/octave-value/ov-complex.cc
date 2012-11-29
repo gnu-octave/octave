@@ -431,6 +431,11 @@ octave_complex::map (unary_mapper_t umap) const
       SCALAR_MAPPER (asinh, ::asinh);
       SCALAR_MAPPER (atan, ::atan);
       SCALAR_MAPPER (atanh, ::atanh);
+      SCALAR_MAPPER (erf, ::erf);
+      SCALAR_MAPPER (erfc, ::erfc);
+      SCALAR_MAPPER (erfcx, ::erfcx);
+      SCALAR_MAPPER (erfi, ::erfi);
+      SCALAR_MAPPER (dawson, ::dawson);
       SCALAR_MAPPER (ceil, ::ceil);
       SCALAR_MAPPER (conj, std::conj);
       SCALAR_MAPPER (cos, std::cos);

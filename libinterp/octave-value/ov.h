@@ -1126,6 +1126,8 @@ public:
   MAPPER_FORWARD (erfcinv)
   MAPPER_FORWARD (erfc)
   MAPPER_FORWARD (erfcx)
+  MAPPER_FORWARD (erfi)
+  MAPPER_FORWARD (dawson)
   MAPPER_FORWARD (exp)
   MAPPER_FORWARD (expm1)
   MAPPER_FORWARD (finite)

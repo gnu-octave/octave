@@ -689,6 +689,8 @@ public:
       umap_erfcinv,
       umap_erfc,
       umap_erfcx,
+      umap_erfi,
+      umap_dawson,
       umap_exp,
       umap_expm1,
       umap_finite,

@@ -744,6 +744,11 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (asinh, FloatComplex, ::asinh);
       ARRAY_MAPPER (atan, FloatComplex, ::atan);
       ARRAY_MAPPER (atanh, FloatComplex, ::atanh);
+      ARRAY_MAPPER (erf, FloatComplex, ::erf);
+      ARRAY_MAPPER (erfc, FloatComplex, ::erfc);
+      ARRAY_MAPPER (erfcx, FloatComplex, ::erfcx);
+      ARRAY_MAPPER (erfi, FloatComplex, ::erfi);
+      ARRAY_MAPPER (dawson, FloatComplex, ::dawson);
       ARRAY_MAPPER (ceil, FloatComplex, ::ceil);
       ARRAY_MAPPER (cos, FloatComplex, std::cos);
       ARRAY_MAPPER (cosh, FloatComplex, std::cosh);

@@ -547,7 +547,7 @@ erf (z) = --------- *  | e^(-t^2) dt\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{erfc, erfcx, erfinv, erfcinv}\n\
+@seealso{erfc, erfcx, erfi, dawson, erfinv, erfcinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -584,6 +584,13 @@ erf (z) = --------- *  | e^(-t^2) dt\n\
 %! assert (erfc (x), 1-v, 1.e-6);
 %! assert (erfinv (v), x, 1.e-6);
 
+%!test
+%! x = [1+2i,-1+2i,1e-6+2e-6i,0+2i];
+%! v = [-0.53664356577857-5.04914370344703i, 0.536643565778565-5.04914370344703i, 0.112837916709965e-5+0.225675833419178e-5i, 18.5648024145755526i];
+%! assert (erf (x), v, -1.e-10);
+%! assert (erf (-x), -v, -1.e-10);
+%! assert (erfc (x), 1-v, -1.e-10);
+
 %!error erf ()
 %!error erf (1, 2)
 */
@@ -596,7 +603,7 @@ Compute the inverse error function, i.e., @var{y} such that\n\
 @example\n\
 erf (@var{y}) == @var{x}\n\
 @end example\n\
-@seealso{erf, erfc, erfcx, erfcinv}\n\
+@seealso{erf, erfc, erfcx, erfi, dawson, erfcinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -634,7 +641,7 @@ Compute the inverse complementary error function, i.e., @var{y} such that\n\
 @example\n\
 erfc (@var{y}) == @var{x}\n\
 @end example\n\
-@seealso{erfc, erf, erfcx, erfinv}\n\
+@seealso{erfc, erf, erfcx, erfi, dawson, erfinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -674,7 +681,7 @@ $1 - {\\rm erf} (z)$.\n\
 @ifnottex\n\
 @w{@code{1 - erf (@var{z})}}.\n\
 @end ifnottex\n\
-@seealso{erfcinv, erfcx, erf, erfinv}\n\
+@seealso{erfcinv, erfcx, erfi, dawson, erf, erfinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -707,11 +714,11 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
-exp (z^2) * erfc (x)\n\
+exp (z^2) * erfc (z)\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{erfc, erf, erfinv, erfcinv}\n\
+@seealso{erfc, erf, erfi, dawson, erfinv, erfcinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -724,10 +731,96 @@ exp (z^2) * erfc (x)\n\
 }
 
 /*
-## FIXME: Need a test for erfcx
+
+%!test
+%! x = [1+2i,-1+2i,1e-6+2e-6i,0+2i];
+%! assert (erfcx (x), exp (x.^2) .* erfc(x), -1.e-10);
+
+%!test
+%! x = [100, 100+20i];
+%! v = [0.0056416137829894329, 0.0054246791754558-0.00108483153786434i];
+%! assert (erfcx (x), v, -1.e-10);
 
 %!error erfcx ()
 %!error erfcx (1, 2)
+*/
+
+DEFUN (erfi, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} erfi (@var{z})\n\
+Compute the imaginary error function,\n\
+@tex\n\
+$$\n\
+ -i {\\rm erf} (iz) \n\
+$$\n\
+@end tex\n\
+@ifnottex\n\
+\n\
+@example\n\
+-i * erf (i*z)\n\
+@end example\n\
+\n\
+@end ifnottex\n\
+@seealso{erfc, erf, erfcx, dawson, erfinv, erfcinv}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).erfi ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+%!test
+%! x = [-0.1, 0.1, 1, 1+2i,-1+2i,1e-6+2e-6i,0+2i];
+%! assert (erfi (x), -i * erf(i*x), -1.e-10);
+
+%!error erfi ()
+%!error erfi (1, 2)
+*/
+
+DEFUN (dawson, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} dawson (@var{z})\n\
+Compute the Dawson (scaled imaginary error) function,\n\
+@tex\n\
+$$\n\
+ {\\sqrt{\\pi} \\over 2} e^{-z^2} {\\rm erfi} (z) \\equiv -i {\\sqrt{\\pi} \\over 2} e^{-z^2} {\\rm erf} (iz)\n\
+$$\n\
+@end tex\n\
+@ifnottex\n\
+\n\
+@example\n\
+(sqrt (pi) / 2) * exp (-z^2) * erfi (z)\n\
+@end example\n\
+\n\
+@end ifnottex\n\
+@seealso{erfc, erf, erfcx, erfi, erfinv, erfcinv}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).dawson ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+%!test
+%! x = [0.1, 1, 1+2i,-1+2i,1e-4+2e-4i,0+2i];
+%! v = [0.099335992397852861, 0.53807950691, -13.38892731648-11.828715104i, 13.38892731648-11.828715104i, 0.0001000000073333+0.000200000001333i, 48.160012114291i];
+%! assert (dawson (x), v, -1.e-10);
+%! assert (dawson (-x), -v, -1.e-10);
+
+%!error dawson ()
+%!error dawson (1, 2)
 */
 
 DEFUN (exp, args, ,

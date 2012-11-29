@@ -109,7 +109,7 @@ Summary of important user-visible changes for version 3.8:
     erf   erfc   erfcx   erfinv   erfcinv
 
     In addition two new error functions erfi (imaginary error function) and
-    and dawson (scaled imaginary error function) have been added.
+    dawson (scaled imaginary error function) have been added.
 
  ** The default name of the Octave crash dump file is now called
     octave-workspace instead of octave-core.

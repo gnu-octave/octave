@@ -137,6 +137,10 @@ jet_colormap (void)
 {
   Matrix cmap (64, 3, 0.0);
 
+  // Produce X in the same manner as linspace so that 
+  // jet_colormap and jet.m produce *exactly* the same result.
+  double delta = 1.0 / 63.0;
+
   for (octave_idx_type i = 0; i < 64; i++)
     {
       // This is the jet colormap.  It would be nice to be able
@@ -146,7 +150,7 @@ jet_colormap (void)
       // called, so calling an interpreted function is not
       // possible.
 
-      double x = i / 63.0;
+      double x = i*delta;
 
       if (x >= 3.0/8.0 && x < 5.0/8.0)
         cmap(i,0) = 4.0 * x - 3.0/2.0;

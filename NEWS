@@ -106,7 +106,7 @@ Summary of important user-visible changes for version 3.8:
  ** The error function and its derivatives has been extended to accept complex
     arguments.  The following functions now accept complex inputs:
 
-    erf   erfc   erfcx   erfinv   erfcinv
+    erf  erfc  erfcx   
 
     In addition two new error functions erfi (imaginary error function) and
     dawson (scaled imaginary error function) have been added.

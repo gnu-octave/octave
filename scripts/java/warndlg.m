@@ -15,20 +15,35 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {@var{P} =} warndlg (@var{MESSAGE} [,@var{TITLE}])
-##
 ## Displays the @var{MESSAGE} using a warning dialog box. 
-## The @var{TITLE} can be used optionally to decorate the dialog caption.
+##
+## @var{message} can have multiple lines separated by newline characters
+## ("\n"), or it can be a cellstr array (one element for each line).
+## The optional @var{TITLE} (character string) can be used to decorate the
+## dialog caption.
 ##
 ## @end deftypefn
 ## @seealso{helpdlg, inputdlg, listdlg, questiondlg}
 
-function ret = warndlg(message,varargin)
+function ret = warndlg (message, varargin)
+
+  if (! ischar (message))
+    if (iscell (message))
+      message = cell2mlstr (message);
+    else
+      error ("warndlg: character string or cellstr array expected for message");
+    endif
+  endif
   
   switch length (varargin)
   case 0
      title = 'Warning Dialog';
   otherwise
-     title = varargin{1};
+    if (ischar (varargin{1}))
+      title = varargin{1};
+    else
+      error ("warndlg: character string expected for title");
+    endif
   endswitch
 
   ret = java_invoke ('org.octave.JDialogBox', 'warndlg', message, title);

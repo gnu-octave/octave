@@ -23,7 +23,10 @@
 ## The dialog contains two or three buttons which all close the dialog. 
 ## It returns the caption of the activated button.
 ##
-## The @var{TITLE} can be used optionally to decorate the dialog caption.
+## @var{message} can have multiple lines separated by newline characters
+## ("\n"), or it can be a cellstr array (one element for each line).
+## The optional @var{TITLE} (character string) can be used to decorate the
+## dialog caption.
 ## The string @var{DEFAULT} identifies the default button, 
 ## which is activated by pressing the ENTER key.
 ## It must match one of the strings given in @var{BTN1}, @var{BTN2} or @var{BTN3}.
@@ -37,9 +40,9 @@
 ## @end deftypefn
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, warndlg}
 
-function ret = questdlg(question,varargin)
+function ret = questdlg (question, varargin)
 
-  if length(varargin) < 1
+  if length (varargin) < 1
     print_usage();
   end
   
@@ -48,8 +51,15 @@ function ret = questdlg(question,varargin)
   options{3} = 'Cancel';   % button3
   options{4} = 'Yes';      % default
 
+  if (! ischar (question))
+    if (iscell (question))
+      question = cell2mlstr (question);
+    else
+      error ("questdlg: character string or cellstr array expected for message");
+    endif
+  endif
 
-  switch length(varargin)
+  switch length (varargin)
   case 1
      % title was given
      title = varargin{1};
@@ -75,6 +85,9 @@ function ret = questdlg(question,varargin)
      print_usage();
   end
 
+  if (! ischar (title))
+    error ("questdlg: character string expected for title");
+  endif
 
   ret = java_invoke ('org.octave.JDialogBox', 'questdlg', question, title, options);
 

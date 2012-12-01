@@ -16,21 +16,34 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {@var{P} =} errordlg (@var{MESSAGE} [,@var{TITLE}])
 ##
-## Displays the @var{MESSAGE} using an error dialog box. 
-## The @var{TITLE} can be used optionally to decorate the dialog caption.
+## Displays the @var{MESSAGE} (character string or cell string array for
+## multi-line text) using an error dialog box. 
+## @var{TITLE} can be used optionally to decorate the dialog caption.
 ## The return value is always 1.
 ##
 ## @end deftypefn
 ## @seealso{helpdlg, inputdlg, listdlg, questdlg, warndlg}
 
-function ret = errordlg(message,varargin)
-  
+function ret = errordlg (message, varargin)
+
+  if (! ischar (message))
+    if (iscell (message))
+      message = cell2mlstr (message);
+    else
+      error ("errordlg: character string or cellstr array expected for message");
+    endif
+  endif
+
   switch length (varargin)
   case 0
-     title = "Error Dialog";
+    title = "Error Dialog";
   otherwise
-     title = varargin{1};
+      title = varargin{1};
   endswitch
+
+  if (! ischar (title))
+    error ("errordlg: character string expected for title");
+  endif
 
   ret = java_invoke ("org.octave.JDialogBox", "errordlg", message, title);
 

@@ -61,7 +61,7 @@
 ## @end deftypefn
 ## @seealso{errordlg, helpdlg, inputdlg, questdlg, warndlg}
 
-function varargout = listdlg(varargin)
+function varargout = listdlg (varargin)
 
    if nargin < 2
      print_usage ();

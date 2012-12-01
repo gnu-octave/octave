@@ -39,27 +39,39 @@
 ## @end deftypefn
 ## @seealso{errordlg, helpdlg, listdlg, questdlg, warndlg}
 
-function varargout = inputdlg(prompt,varargin)
-  
+function varargout = inputdlg (prompt, varargin)
+
+  if (iscell (prompt))
+    % Silently extract only char elements
+    prompt = prompt (find (cellfun ("ischar", prompt)));
+  elseif (ischar (prompt))
+    prompt = {prompt};
+  else
+    error ("inputdlg: character string or cellstr array expected for prompt");
+  endif
+
   switch length (varargin)
   case 0
      title = "Input Dialog";
      lineNo = 1;
-     defaults = cellstr(cell(size(prompt)));
+     defaults = cellstr (cell( size (prompt)));
   case 1
      title = varargin{1};
      lineNo = 1;
-     defaults = cellstr(cell(size(prompt)));
+     defaults = cellstr (cell (size (prompt)));
   case 2
      title = varargin{1};
      lineNo = varargin{2};
-     defaults = cellstr(cell(size(prompt)));
+     defaults = cellstr (cell (size (prompt)));
   otherwise
      title = varargin{1};
      lineNo = varargin{2};
      defaults = varargin{3};
   end
 
+  if (! ischar (title))
+    error ("inputdlg: character string expected for title");
+  endif
 
   % specification of text field sizes as in Matlab 
   % Matlab requires a matrix for lineNo, not a cell array...

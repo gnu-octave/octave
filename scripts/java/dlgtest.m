@@ -1,63 +1,13 @@
 %
-% Install the java package.
-% Test the dlg... functions of the java package.
+% Test the dlg... functions of the Octave-Java bridge
+%
+% Once the Java bridge works OK this function should be dropped from core octave
 %
 % Author: Martin Hepperle
 % Version August 2010
+% Adapted for core Octave Philip Nienhuis 2012
 %
-function dlgtest ( reinstall )
-
-   % Windows example paths
-   if ispc()
-      % NOTE: do NOT use backslashes as separator, only forward slashes!
-      pkgpath = 'z:/java-1.2.8.tar.gz';
-      java_home = getenv ("JAVA_HOME");
-   elseif isunix()
-      % Linux example paths
-      pkgpath = '~/java-1.2.8.tar.gz';
-      java_home = getenv ("JAVA_HOME");
-   else
-      pkgpath = 'unknown';
-      java_home = 'unknown';   
-   end
-
-   if nargin<1
-      disp('usage: dlgtest ( reinstall )');
-      disp( 'where: reinstall = 0 : do not reinstall java package');
-      disp(['       reinstall = 1 : reinstall java package from ', pkgpath, ...
-            ', using Java JDK from ', java_home]);
-      return
-   end
-
-  if ! exist (java_home, "dir")
-    disp(['Java JDK home directory ', java_home,' does not exist.']);
-    disp('Please adapt java_home in dlgtest.m.');
-    return;
-  end
-
-  if reinstall == 1
-    if ! exist (pkgpath, "file")
-      disp(['Package file ', pkgpath, ' does not exist.']);
-      disp('Please adapt pkgpath in dlgtest.m.');
-      return;
-    end
-  end
-
-  page_screen_output(0);
-
-  if reinstall == 1
-    disp('- uninstalling package java');
-    pkg uninstall java
-
-    disp(['- installing package java from ',pkgpath]);
-    disp(['  using JDK from ',java_home]);
-    setenv('JAVA_HOME',java_home)
-    %% pkg does not understand variables as arguments?
-    eval(['pkg install ', pkgpath])
-    disp('Done.');
-  end
-
-  page_screen_output(1);
+function dlgtest
 
   answer = 1;
   while (answer > 0 )

@@ -17,7 +17,11 @@
 ## @deftypefn {Function file} {@var{P} =} msgbox (@var{MESSAGE} [,@var{TITLE} [,@var{ICON}]])
 ##
 ## Displays the @var{MESSAGE} using a message dialog. 
-## The @var{TITLE} is an optional string, which can be used to decorate the dialog caption.
+##
+## @var{message} can have multiple lines separated by newline characters
+## ("\n"), or it can be a cellstr array (one element for each line).
+## The optional @var{TITLE} (character string) can be used to decorate the
+## dialog caption.
 ## The @var{ICON} can be used optionally to select a dialog icon. 
 ## It can be one of @code{'error'}, @code{'help'} or @code{'warn'}.
 ## The return value is always 1.
@@ -25,29 +29,41 @@
 ## @end deftypefn
 ## @seealso{helpdlg, questdlg, warndlg}
 
-function ret = msgbox(message,varargin)
+function ret = msgbox (message, varargin)
+
+  if (! ischar (message))
+    if (iscell (message))
+      message = cell2mlstr (message);
+    else
+      error ("msgbox: character string or cellstr array expected for message");
+    endif
+  endif
   
   switch length (varargin)
-  case 0
-     title = "";
-     dlg = 'emptydlg';
-  case 1
-     title = varargin{1};
-     dlg = 'emptydlg';
-  otherwise
-   % two or more arguments
-    title = varargin{1};
-    icon =  varargin{2};
-    if strcmp(icon,'error') == 1
-      dlg = 'errordlg';
-    elseif strcmp(icon,'help') == 1
-      dlg = 'helpdlg';
-    elseif strcmp(icon,'warn') == 1
-      dlg = 'warndlg';
-    else
+    case 0
+      title = "";
       dlg = 'emptydlg';
-    end
+    case 1
+      title = varargin{1};
+      dlg = 'emptydlg';
+    otherwise
+      % two or more arguments
+      title = varargin{1};
+      icon =  varargin{2};
+      if strcmp (icon,'error') == 1
+        dlg = 'errordlg';
+      elseif strcmp (icon,'help') == 1
+        dlg = 'helpdlg';
+      elseif strcmp (icon,'warn') == 1
+        dlg = 'warndlg';
+      else
+        dlg = 'emptydlg';
+      end
   endswitch
+
+  if (! ischar (title))
+    error ("msgbox: character string expected for title");
+  endif
 
   ret = java_invoke ('org.octave.JDialogBox', dlg, message, title );
 

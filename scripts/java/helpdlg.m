@@ -16,22 +16,41 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {@var{P} =} helpdlg (@var{MESSAGE} [,@var{TITLE}])
 ##
-## Displays a @var{MESSAGE} in a help dialog box. 
-## The help message can have multiple lines, separated by a newline character '\n'.
-## The @var{TITLE} can be used optionally to decorate the dialog caption.
+## Displays a @var{MESSAGE} in a help dialog box.
+##
+## @var{message} can have multiple lines separated by newline characters
+## ("\n"), or it can be a cellstr array (one element for each line).
+## The optional @var{TITLE} (character string) can be used to decorate the
+## dialog caption.
 ## The return value is always 1.
 ##
 ## @end deftypefn
 ## @seealso{errordlg, inputdlg, listdlg, questdlg, warndlg}
 
-function ret = helpdlg(message,varargin)
+function ret = helpdlg (message, varargin)
+
+  if (! ischar (message))
+    if (iscell (message))
+      message = cell2mlstr (message);
+    else
+      error ("helpdlg: character string or cellstr array expected for message");
+    endif
+  endif
   
   switch length (varargin)
   case 0
      title = "Help Dialog";
   otherwise
-     title = varargin{1};
+    if (ischar (varargin {1}))
+      title = varargin{1};
+    else
+      error ("helpdlg: character string expected for title");
+    endif
   endswitch
+
+  if (! ischar (title))
+    error ("helpdlg: character string expected for title");
+  endif
 
   ret = java_invoke ("org.octave.JDialogBox", "helpdlg", message, title);
 

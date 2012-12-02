@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{I} =} ind2gray (@var{x})
-## @deftypefnx {Function File} {@var{I} =} ind2gray (@var{x}, @var{map})
+## @deftypefn {Function File} {@var{I} =} ind2gray (@var{x}, @var{map})
 ## Convert a color indexed image to a grayscale intensity image.
 ##
-## If @var{map} is omitted, the current colormap is used to determine the
-## intensities.  If it doesn't contain enough colors, it is padded it with the
-## last color in the map.
+## The image @var{x} must be an indexed image which will be converted using the
+## colormap @var{cmap}.  If @var{cmap} does not contain enough colors for the
+## image, pixels in @var{x} outside the range are mapped to the last color in
+## the map before conversion to grayscale.
 ##
 ## The output @var{I} is of the same class as the input @var{x} and may be
 ## one of @code{uint8}, @code{uint16}, @code{single}, or @code{double}.
@@ -40,9 +40,9 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function I = ind2gray (x, map = colormap ())
+function I = ind2gray (x, map)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin != 2)
     print_usage ();
   endif
   [x, map] = ind2x ("ind2rgb", x, map);
@@ -53,7 +53,9 @@ function I = ind2gray (x, map = colormap ())
   ## Convert colormap to same class as that of input so that when reshape
   ## later, produces output of the same type as the input
   cls = class (x);
-  if (isinteger (x)) 
+  if (isinteger (x))
+    ## if we later add support for int16 images, this will not work. Look into
+    ## im2int16 from image package for such case
     map *= intmax (cls);
   elseif (strcmp (cls, "single"))
     map = single (map);

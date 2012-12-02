@@ -17,18 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x})
-## @deftypefnx {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
+## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
 ## @deftypefnx {Function File} {[@var{R}, @var{G}, @var{B}] =} ind2rgb (@dots{})
 ## Convert an indexed image to red, green, and blue color components.
-## If @var{map} is omitted, the current colormap is used for the conversion.
-## When the colormap does not contain enough colors it is padded to the
-## required length using the last color in the map.
 ##
-## The output may be a single MxNx3 matrix where M is the number of rows in
-## @var{x} and N is the number of columns in @var{x}.  Alternatively,
-## individual red, green, and blue color matrices of size MxN may be
-## returned.
+## The image @var{x} must be an indexed image which will be converted using the
+## colormap @var{cmap}.  If @var{cmap} does not contain enough colors for the
+## image, pixels in @var{x} outside the range are mapped to the last color in
+## the map.
+##
+## The output may be a single RGB image (MxNx3 matrix where M and N are the
+## original image @var{x} dimensions, one for each of the red, green and blue
+## channels).  Alternatively, the individual red, green, and blue color matrices
+## of size MxN may be returned.
+##
 ## @seealso{rgb2ind, ind2gray, hsv2rgb, ntsc2rgb}
 ## @end deftypefn
 
@@ -36,9 +38,9 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function [R, G, B] = ind2rgb (x, map = colormap ())
+function [R, G, B] = ind2rgb (x, map)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin != 2)
     print_usage ();
   endif
   [x, map] = ind2x ("ind2rgb", x, map);

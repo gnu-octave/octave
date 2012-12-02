@@ -48,7 +48,7 @@ function [x, map] = ind2x (name, x, map)
 
   rm = rows (map);
   if (rm < maxidx)
-    ## Pad with the last color in the map.
+    ## Pad with the last color in the map for matlab compatibility
     pad = repmat (map(end,:), maxidx-rm, 1);
     map(end+1:maxidx, :) = pad;
   endif

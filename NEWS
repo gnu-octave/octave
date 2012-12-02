@@ -96,6 +96,10 @@ Summary of important user-visible changes for version 3.8:
     doubles.  For certain operations, such as fft2, the image must still be
     converted to double in order to work.
 
+    Other changes include fixes to the way indexed images are read from a
+    colormap depending on the image class (integer images have a -1 offset to
+    the colormap row number).
+
  ** The datevec function has been extended for better Matlab compatibility.
     It now accepts string inputs in the following numerical formats: 12, 21,
     22, 26, 29, 31.  This is undocumented, but verifiable, Matlab behavior.

@@ -20,12 +20,14 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
 ## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
-## Convert an image in red-green-blue (RGB) space to an indexed image.
+## Convert an image in red-green-blue (RGB) color space to an indexed image.
 ## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
 ## @end deftypefn
 
-## FIXME: This function has a very different syntax than the Matlab one of the same name.
-##        Octave function does no support N, MAP, DITHER, or TOL arguments
+## FIXME: This function has a very different syntax than the Matlab
+##        one of the same name.
+##        Octave function does not support N, MAP, DITHER, or TOL arguments.
+
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
 ## Adapted-By: jwe
@@ -51,7 +53,7 @@ function [x, map] = rgb2ind (R, G, B)
 
   x = reshape (1:numel (R), size (R));
 
-  map    = unique([R(:) G(:) B(:)], "rows");
+  map    = unique ([R(:) G(:) B(:)], "rows");
   [~, x] = ismember ([R(:) G(:) B(:)], map, "rows");
   x      = reshape (x, size (R));
 
@@ -78,7 +80,9 @@ function [x, map] = rgb2ind (R, G, B)
   else
     ## leave it as double
   endif
+
 endfunction
+
 
 %% FIXME: Need some functional tests or %!demo blocks
 
@@ -86,3 +90,4 @@ endfunction
 %!error rgb2ind ()
 %!error rgb2ind (1,2)
 %!error rgb2ind (1,2,3,4)
+

@@ -20,10 +20,10 @@
 ## @deftypefn {Function File} {} iscolormap (@var{cmap})
 ## Return true if @var{cmap} is a colormap.
 ##
-## A colormap is an @var{n} row by 3 column matrix.  The columns contain red,
-## green, and blue intensities respectively.  All entries must be between 0
-## and 1 inclusive.
-##
+## A colormap is a real matrix with @var{n} rows and 3 columns.
+## Each row represents a single color.  The columns contain red, green,
+## and blue intensities respectively.  All entries must be between 0 and 1
+## inclusive.
 ## @seealso{colormap, rgbplot}
 ## @end deftypefn
 
@@ -36,7 +36,7 @@ function retval = iscolormap (cmap)
   endif
 
   retval = (isnumeric (cmap) && isreal (cmap) &&
-            columns (cmap) == 3 && ndims (cmap) == 2 && isa (cmap, "double") &&
+            ndims (cmap) == 2 && columns (cmap) == 3 && isa (cmap, "double") &&
             min (cmap(:)) >= 0 && max (cmap(:)) <= 1);
 
 endfunction
@@ -45,8 +45,9 @@ endfunction
 %!assert (iscolormap (jet (64)))
 %!assert (iscolormap ({0 1 0}), false)
 %!assert (iscolormap ([0 1i 0]), false)
-%!assert (iscolormap (ones (3,4)), false)
 %!assert (iscolormap (ones (3,3,3)), false)
+%!assert (iscolormap (ones (3,4)), false)
 %!assert (iscolormap (single (jet (64))), false)
 %!assert (iscolormap ([0 0 -2]), false)
 %!assert (iscolormap ([0 0 2]), false)
+

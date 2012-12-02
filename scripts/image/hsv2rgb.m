@@ -46,7 +46,7 @@ function rgb_map = hsv2rgb (hsv_map)
   endif
 
   cls = class (hsv_map);
-  if (! any (isa (hsv_map, {"uint8", "uint16", "single", "double"})))
+  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
     error ("hsv2rgb: invalid data type '%s'", cls);
   elseif (isfloat (hsv_map) && (any (hsv_map(:) < 0) || any (hsv_map(:) > 1)))
     error ("hsv2rgb: floating point images may only contain values between 0 and 1");
@@ -96,6 +96,8 @@ function rgb_map = hsv2rgb (hsv_map)
              + (hue >= 1/6 & hue < 1/2)
              + (hue >= 1/2 & hue < 2/3) .* (4 - 6 * hue));
 
+  ## FIXME: hsv2rgb does not preserve class of image.
+  ##        Should it also convert back to uint8, uint16 for integer images?
   ## If input was an image, convert it back into one.
   if (is_image)
     rgb_map = reshape (rgb_map, sz);

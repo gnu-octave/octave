@@ -34,22 +34,24 @@
 
 function rmap = brighten (arg1, beta)
 
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
   h = -1;
   if (nargin == 1)
     beta = arg1;
-    m = colormap;
+    m = colormap ();
     h = gcf ();
-  elseif (nargin == 2)
+  else
     if (ishandle (arg1))
       h = arg1;
       m = get (h, "colormap");
-    elseif (ismatrix (arg1) && columns (arg1) == 3)
+    elseif (iscolormap (arg1))
       m = arg1;
     else
-      error ("brighten: first argument must be an Nx3 matrix or a handle");
+      error ("brighten: first argument must be a colormap or a graphics handle");
     endif
-  else
-    print_usage ();
   endif
 
   if (! isscalar (beta) || beta <= -1 || beta >= 1)

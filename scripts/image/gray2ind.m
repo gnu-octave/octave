@@ -28,8 +28,8 @@
 ## If not given @var{n} defaults to 64 for grayscale images or 2 for
 ## binary black and white images.
 ##
-## The output @var{img} is of class uint8 or uint 16 if @var{n} is less than or
-## equal to 256 or 65536 respectively.  Otherwise, the output is of class double.
+## The output @var{img} is of class uint8 if @var{n} is less than or
+## equal to 256; Otherwise the return class is uint16.
 ## @seealso{ind2gray, rgb2ind}
 ## @end deftypefn
 
@@ -46,7 +46,7 @@ function [I, map] = gray2ind (I, n = 64)
   elseif (! isscalar (n) || n < 1 || n > 65536)
     error ("gray2ind: N must be a positive integer in the range [1, 65536]");
   elseif (! ismatrix (I) || ndims (I) != 2)
-    error ("gray2ind: first input argument must be a gray scale image");
+    error ("gray2ind: I must be a grayscale or binary image");
   endif
 
   ## default n is different if image is logical
@@ -54,12 +54,8 @@ function [I, map] = gray2ind (I, n = 64)
     n = 2;
   endif
 
-  if (! isscalar (n) || n < 0)
-    error ("gray2ind: second input argument must be a positive integer");
-  endif
-
   cls = class (I);
-  if (! any (isa (I, {"logical", "uint8", "uint16", "int16", "single", "double"})))
+  if (! any (strcmp (cls, {"logical", "uint8", "uint16", "int16", "single", "double"})))
     error ("gray2ind: invalid data type '%s'", cls);
   elseif (isfloat (I) && (min (I(:) < 0) || max (I(:) > 1)))
     error ("gray2ind: floating point images may only contain values between 0 and 1");
@@ -75,19 +71,18 @@ function [I, map] = gray2ind (I, n = 64)
   else
     scale = 1;
   endif
+  I *= (n-1)/scale;
+
   ## Note: no separate call to round () necessary because
   ##       type conversion does that automatically.
-  I = I * ((n-1)/scale);
   if (n < 256)
     I = uint8 (I);
-  elseif (n < 65536)
-    I = uint16 (I);
   else
-    ## if uint16 is not enough, we return double in which case index
-    ## values should start at 1.
-    I = round (I) + 1;
+    I = uint16 (I);
   endif
+
 endfunction
+
 
 %!assert (gray2ind ([0 0.25 0.5 1]), uint8 ([0 16 32 63]))
 %!assert (gray2ind ([0 0.25 0.5 1], 400), uint16 ([0 100 200 399]))

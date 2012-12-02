@@ -135,7 +135,7 @@ function imwrite (img, varargin)
       if ((nd == 2 || nd == 3) && strcmp (img_class, "double"))
         img = uint8 (img * 255);
       endif
-      ## FIXME -- should we handle color images w/ alpha channel here?
+      ## FIXME: should we handle color images with alpha channel here?
       if (nd == 3 && size (img, 3) < 3)
         error ("imwrite: invalid dimensions for truecolor image");
       endif
@@ -165,8 +165,8 @@ function imwrite (img, varargin)
       error ("imwrite: invalid indexed image colormap");
     endif
 
-    ## FIXME -- we should really be writing indexed images here but
-    ## __magick_write__ needs to be fixed to handle them.
+    ## FIXME: we should really be writing indexed images here but
+    ##        __magick_write__ needs to be fixed to handle them.
 
     [r, g, b] = ind2rgb (img, map);
     tmp = uint8 (cat (3, r, g, b) * 255);

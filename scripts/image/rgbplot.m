@@ -50,7 +50,7 @@ function retval = rgbplot (cmap, style)
   endif
 
   if (! iscolormap (cmap))
-    error ("rgbplot: CMAP must be a colormap");
+    error ("rgbplot: CMAP must be a valid colormap");
   elseif (! ischar (style))
     error ("rgbplot: STYLE must be a string");
   endif
@@ -69,7 +69,7 @@ function retval = rgbplot (cmap, style)
   xlabel ("color index");
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction
@@ -81,7 +81,8 @@ endfunction
 %! subplot (1, 2, 2)
 %! rgbplot (ocean, "composite");
 
-%%test input validation
+%% Test input validation
 %!error rgbplot ()
 %!error rgbplot (1,2)
-%!error <CMAP must be a colormap> rgbplot ({0 1 0})
+%!error <CMAP must be a valid colormap> rgbplot ({0 1 0})
+

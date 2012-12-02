@@ -22,8 +22,8 @@
 ## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{map})
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("default")
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("list")
-## @deftypefnx {Function File} {@var{cmap} =} colormap ("register", "name")
-## @deftypefnx {Function File} {@var{cmap} =} colormap ("unregister", "name")
+## @deftypefnx {Function File} {@var{cmap} =} colormap ("register", "@var{name}")
+## @deftypefnx {Function File} {@var{cmap} =} colormap ("unregister", "@var{name}")
 ## Query or set the current colormap.
 ##
 ## @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
@@ -68,8 +68,9 @@ function cmap = colormap (map, name)
     endif
 
     if (! isempty (map))
-      if (! ismatrix (map) || ndims (map) != 2 || columns (map) != 3)
-        error ("colormap: MAP must be an N x 3 ([R,G,B]) matrix");
+      if (! (isnumeric (map) && isreal (map)
+             && ndims (map) == 2 && columns (map) == 3))
+        error ("colormap: MAP must be a real-valued N x 3 ([R,G,B]) matrix");
       endif
       if (any (map(:) < 0) || any (map(:) > 1))
         error ("colormap: all MAP values must be in the range [0,1]");
@@ -98,4 +99,4 @@ function cmap = colormap (map, name)
 endfunction
 
 
-%% 
+%% FIXME: Need some demos/tests

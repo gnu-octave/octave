@@ -62,7 +62,7 @@ function [Y, newmap] = cmunique (X, map)
 
   cls = class (X);
   ## FIXME: Documentation accepts only 3 classes.  Could easily add 'single'.
-  if (! any (isa (X, {"uint8", "uint16", "double"})))
+  if (! any (strcmp (cls, {"uint8", "uint16", "double"})))
     error ("cmunique: X is of invalid data type '%s'", cls);
   endif
 

@@ -24,7 +24,7 @@
 ##
 ## A color in the RGB space consists of red, green, and blue intensities.
 ##
-## A color in HSV space is represented by hue, saturation and value
+## A color in HSV space is represented by hue, saturation, and value
 ## (brightness) levels.  Value gives the amount of light in the color.  Hue
 ## describes the dominant wavelength.  Saturation is the amount of hue mixed
 ## into the color.
@@ -41,7 +41,7 @@ function hsv_map = rgb2hsv (rgb)
   endif
 
   cls = class (rgb);
-  if (! any (isa (rgb, {"uint8", "uint16", "single", "double"})))
+  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
     error ("rgb2hsv: invalid data type '%s'", cls);
   elseif (isfloat (rgb) && (any (rgb(:) < 0) || any (rgb(:) > 1)))
     error ("rgb2hsv: floating point images may only contain values between 0 and 1");
@@ -54,7 +54,6 @@ function hsv_map = rgb2hsv (rgb)
     rgb = [rgb(:,:,1)(:), rgb(:,:,2)(:), rgb(:,:,3)(:)];
     ## Convert to a double image.
     if (isinteger (rgb))
-      cls = class (rgb);
       low = double (intmin (cls));
       high = double (intmax (cls));
       rgb = (double (rgb) - low) / (high - low);
@@ -64,7 +63,7 @@ function hsv_map = rgb2hsv (rgb)
   endif
 
   if (! ismatrix (rgb) || columns (rgb) != 3 || issparse (rgb))
-    error ("rgb2hsv: input must be a matrix of size Nx3");
+    error ("rgb2hsv: input must be a matrix of size Nx3 or MxNx3");
   endif
 
   ## get the max and min for each row
@@ -100,6 +99,8 @@ function hsv_map = rgb2hsv (rgb)
 
   hsv_map = [h, s, v];
 
+  ## FIXME: rgb2hsv does not preserve class of image.
+  ##        Should it also convert back to uint8, uint16 for integer images?
   ## If input was an image, convert it back into one.
   if (is_image)
     hsv_map = reshape (hsv_map, sz);

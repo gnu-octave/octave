@@ -46,7 +46,7 @@ function rgb = ntsc2rgb (yiq)
   endif
 
   cls = class (yiq);
-  if (! any (isa (yiq, {"uint8", "uint16", "single", "double"})))
+  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
     error ("ntsc2rgb: invalid data type '%s'", cls);
   endif
 
@@ -57,7 +57,6 @@ function rgb = ntsc2rgb (yiq)
     yiq = [yiq(:,:,1)(:), yiq(:,:,2)(:), yiq(:,:,3)(:)];
     ## Convert to a double image.
     if (isinteger (yiq))
-      cls = class (yiq);
       low = double (intmin (cls));
       high = double (intmax (cls));
       yiq = (double (yiq) - low) / (high - low);
@@ -66,12 +65,12 @@ function rgb = ntsc2rgb (yiq)
     is_image = false;
   endif
 
-  if (! ismatrix (yiq) || columns (yiq) != 3)
-    error ("ntsc2rgb: argument must be a matrix of size Nx3 or NxMx3");
+  if (! isreal (yiq) || columns (yiq) != 3 || issparse (yiq))
+    error ("ntsc2rgb: input must be a matrix of size Nx3 or NxMx3");
   endif
 
-  ## Conversion matrix constructed from 'inv (rgb2ntsc matrix)'.  See
-  ## programming notes in rgb2ntsc.m.  Note: Matlab matrix for inverse
+  ## Conversion matrix constructed from 'inv (rgb2ntsc matrix)'.
+  ## See programming notes in rgb2ntsc.m.  Note: Matlab matrix for inverse
   ## is slightly different.  We prefer this matrix so that
   ## x == ntsc2rgb (rgb2ntsc (x)) rather than maintaining strict compatibility
   ## with Matlab.
@@ -81,6 +80,8 @@ function rgb = ntsc2rgb (yiq)
 
   rgb = yiq * trans;
 
+  ## FIXME: ntsc2rgb does not preserve class of image.
+  ##        Should it also convert back to uint8, uint16 for integer images?
   ## If input was an image, convert it back into one.
   if (is_image)
     rgb = reshape (rgb, sz);
@@ -89,6 +90,11 @@ function rgb = ntsc2rgb (yiq)
 endfunction
 
 
+%% Test pure R, G, B colors
+%!assert (ntsc2rgb ([.299  .596  .211]), [1 0 0], 1e-5)
+%!assert (ntsc2rgb ([.587 -.274 -.523]), [0 1 0], 1e-5)
+%!assert (ntsc2rgb ([.114 -.322  .312]), [0 0 1], 1e-5)
+
 %!test
 %! rgb_map = rand (64, 3);
 %! assert (ntsc2rgb (rgb2ntsc (rgb_map)), rgb_map, 1e-3);
@@ -96,14 +102,6 @@ endfunction
 %!test
 %! rgb_img = rand (64, 64, 3);
 %! assert (ntsc2rgb (rgb2ntsc (rgb_img)), rgb_img, 1e-3);
-
-%%!test
-%%! ntsc_map = rand (64, 3);
-%%! assert (rgb2ntsc (ntsc2rgb (ntsc_map)), ntsc_map, 1e-3);
-%
-%%!test
-%%! ntsc_img = rand (64, 64, 3);
-%%! assert (rgb2ntsc (ntsc2rgb (ntsc_img)), ntsc_img, 1e-3);
 
 %% Test input validation
 %!error ntsc2rgb ()

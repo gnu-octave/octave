@@ -17,26 +17,25 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## private function for the ind2something functions which have a lot of code
-## in common
+## private function for the ind2XXX functions which have a lot of code in common
 
-function [x, map] = ind2x (name, x, map)
+function [x, map] = ind2x (caller, x, map)
 
   ## Check if X is an indexed image.
   if (ndims (x) != 2 || issparse (x) || (isfloat (x) && ! isindex (x)) ||
-      ! ismember (class (x), {"double", "single", "uint8", "uint16"}))
-    error ("%s: X must be an indexed image", name);
+      ! any (strcmp (class (x), {"uint8", "uint16", "single", "double"})))
+    error ("%s: X must be an indexed image", caller);
   endif
 
-  ## Check the color map.
+  ## Check if map is a valid colormap.
   if (! iscolormap (map))
-    error ("%s: MAP must be a valid colormap", name);
+    error ("%s: MAP must be a valid colormap", caller);
   endif
 
   ## Do we have enough colors in the color map?
   ## there's an offset of 1 when the indexed image is an integer class so we fix
   ## it now and convert it to float only if really necessary and even then only
-  ## to single precision since its enough for both uint8 and uint16
+  ## to single precision since that is enough for both uint8 and uint16.
   maxidx = max (x(:));
   if (isinteger (x))
     if (maxidx == intmax (class (x)))
@@ -46,10 +45,10 @@ function [x, map] = ind2x (name, x, map)
     maxidx += 1;
   endif
 
-  rm = rows (map);
-  if (rm < maxidx)
+  num_colors = rows (map);
+  if (num_colors < maxidx)
     ## Pad with the last color in the map for matlab compatibility
-    pad = repmat (map(end,:), maxidx-rm, 1);
+    pad = repmat (map(end,:), maxidx - num_colors, 1);
     map(end+1:maxidx, :) = pad;
   endif
 

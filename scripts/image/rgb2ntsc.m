@@ -51,7 +51,7 @@ function yiq = rgb2ntsc (rgb)
   endif
 
   cls = class (rgb);
-  if (! any (isa (rgb, {"uint8", "uint16", "single", "double"})))
+  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
     error ("rgb2ntsc: invalid data type '%s'", cls);
   elseif (isfloat (rgb) && (any (rgb(:) < 0) || any (rgb(:) > 1)))
     error ("rgb2ntsc: floating point images may only contain values between 0 and 1");
@@ -72,8 +72,8 @@ function yiq = rgb2ntsc (rgb)
     is_image = false;
   endif
 
-  if (! ismatrix (rgb) || columns (rgb) != 3 || issparse (rgb))
-    error ("rgb2ntsc: argument must be a matrix of size Nx3 or NxMx3");
+  if (! isreal (rgb) || columns (rgb) != 3 || issparse (rgb))
+    error ("rgb2ntsc: input must be a matrix of size Nx3 or NxMx3");
   endif
 
   ## Reference matrix for transformation from http://en.wikipedia.org/wiki/YIQ
@@ -86,6 +86,8 @@ function yiq = rgb2ntsc (rgb)
   ## Convert data. 
   yiq = rgb * trans;
 
+  ## FIXME: rgb2ntsc does not preserve class of image.
+  ##        Should it also convert back to uint8, uint16 for integer images?
   ## If input was an image, convert it back into one.
   if (is_image)
     yiq = reshape (yiq, sz);
@@ -94,8 +96,10 @@ function yiq = rgb2ntsc (rgb)
 endfunction
 
 
-%% Test RED conversion
-%assert (rgb2ntsc ([1 0 0]), [0.299 0.587 0.114])
+%% Test pure RED, GREEN, BLUE colors
+%assert (rgb2ntsc ([1 0 0]), [.299  .587  .114])
+%assert (rgb2ntsc ([0 1 0]), [.596 -.274 -.322])
+%assert (rgb2ntsc ([1 0 1]), [.211 -.523  .312])
 
 %!test
 %! rgb_map = rand (64, 3);

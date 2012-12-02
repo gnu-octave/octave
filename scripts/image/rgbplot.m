@@ -39,7 +39,7 @@
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##
-## Run @code{demo rgbplot} to see an example of @cdoe{rgpblot} and each style
+## Run @code{demo rgbplot} to see an example of @code{rgbplot} and each style
 ## option.
 ## @seealso{colormap}
 ## @end deftypefn

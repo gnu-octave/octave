@@ -24,26 +24,27 @@
 ## Plot the components of a colormap.
 ##
 ## Two different @var{style}s are available for displaying the @var{cmap}:
+##
 ## @table @asis
 ## @item profile (default)
-## Plots the RGB line profile of the colormap for each of the channels (red,
+## Plot the RGB line profile of the colormap for each of the channels (red,
 ## green and blue) with the plot lines colored appropriately.  Each line
 ## represents the intensity of each RGB components across the colormap.
 ##
 ## @item composite
-## Draws the colormap across the X axis so that the actual colors are visible
-## rather than the individual color components.
+## Draw the colormap across the X-axis so that the actual index colors are
+## visible rather than the individual color components.
 ##
 ## @end table
 ##
-## Run @code{demo rgbplot} for a comparison display.
-##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##
+## Run @code{demo rgbplot} to see an example of @cdoe{rgpblot} and each style
+## option.
 ## @seealso{colormap}
 ## @end deftypefn
 
-function retval = rgbplot (cmap, style)
+function h = rgbplot (cmap, style)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -55,12 +56,12 @@ function retval = rgbplot (cmap, style)
     error ("rgbplot: STYLE must be a string");
   endif
 
-  switch tolower (style)
+  switch (tolower (style))
     case "profile"
-      h = plot (cmap(:,1),"r", cmap(:,2),"g", cmap(:,3),"b");
+      htmp = plot (cmap(:,1),"r", cmap(:,2),"g", cmap(:,3),"b");
       set (gca, 'ytick', 0:0.1:1);
     case "composite"
-      h = image (1:rows(cmap));
+      htmp = image (1:rows(cmap));
       set (gca, 'ytick', []);
       colormap (cmap);
     otherwise
@@ -74,11 +75,12 @@ function retval = rgbplot (cmap, style)
 
 endfunction
 
+
 %!demo
 %! clf;
 %! subplot (1, 2, 1);
 %! rgbplot (ocean, "profile");
-%! subplot (1, 2, 2)
+%! subplot (1, 2, 2);
 %! rgbplot (ocean, "composite");
 
 %% Test input validation

@@ -58,7 +58,7 @@ function [x, map] = rgb2ind (R, G, B)
   x      = reshape (x, size (R));
 
   ## a colormap is of class double and values between 0 and 1
-  switch class (R)
+  switch (class (R))
     case {"single", "double", "logical"}
       ## do nothing, return the same
     case {"uint8", "uint16"}

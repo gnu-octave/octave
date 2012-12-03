@@ -20,7 +20,8 @@
 ## @deftypefn  {Function File} {@var{yiq_map} =} rgb2ntsc (@var{rgb_map})
 ## @deftypefnx {Function File} {@var{yiq_img} =} rgb2ntsc (@var{rgb_img})
 ## Transform a colormap or image from red-green-blue (RGB) color space to
-## luminance-chrominance (NTSC) space.
+## luminance-chrominance (NTSC) space.  The input may be of class uint8,
+## uint16, single, or double.  The output is of class double.
 ##
 ## Implementation Note:
 ## The reference matrix for the transformation is
@@ -67,6 +68,8 @@ function yiq = rgb2ntsc (rgb)
       low = double (intmin (cls));
       high = double (intmax (cls));
       rgb = (double (rgb) - low) / (high - low);
+    elseif (isa (rgb, "single"))
+      rgb = double (rgb);
     endif
   else
     is_image = false;
@@ -86,8 +89,6 @@ function yiq = rgb2ntsc (rgb)
   ## Convert data. 
   yiq = rgb * trans;
 
-  ## FIXME: rgb2ntsc does not preserve class of image.
-  ##        Should it also convert back to uint8, uint16 for integer images?
   ## If input was an image, convert it back into one.
   if (is_image)
     yiq = reshape (yiq, sz);

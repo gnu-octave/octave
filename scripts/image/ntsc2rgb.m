@@ -45,9 +45,8 @@ function rgb = ntsc2rgb (yiq)
     print_usage ();
   endif
 
-  cls = class (yiq);
-  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
-    error ("ntsc2rgb: invalid data type '%s'", cls);
+  if (! isa (yiq, "double"))
+    error ("ntsc2rgb: YIQ must be of type double");
   endif
 
   ## If we have an image convert it into a color map.
@@ -55,12 +54,6 @@ function rgb = ntsc2rgb (yiq)
     is_image = true;
     sz = size (yiq);
     yiq = [yiq(:,:,1)(:), yiq(:,:,2)(:), yiq(:,:,3)(:)];
-    ## Convert to a double image.
-    if (isinteger (yiq))
-      low = double (intmin (cls));
-      high = double (intmax (cls));
-      yiq = (double (yiq) - low) / (high - low);
-    endif
   else
     is_image = false;
   endif
@@ -80,8 +73,6 @@ function rgb = ntsc2rgb (yiq)
 
   rgb = yiq * trans;
 
-  ## FIXME: ntsc2rgb does not preserve class of image.
-  ##        Should it also convert back to uint8, uint16 for integer images?
   ## If input was an image, convert it back into one.
   if (is_image)
     rgb = reshape (rgb, sz);
@@ -106,6 +97,6 @@ endfunction
 %% Test input validation
 %!error ntsc2rgb ()
 %!error ntsc2rgb (1,2)
-%!error <invalid data type 'cell'> ntsc2rgb ({1})
+%!error <YIQ must be of type double> ntsc2rgb (uint8 (1))
 %!error <must be a matrix of size Nx3 or NxMx3> ntsc2rgb (ones (2,2))
 

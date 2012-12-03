@@ -39,7 +39,7 @@ function map = gray (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("gray: argument must be a scalar");
+      error ("gray: N must be a scalar");
     endif
   else
     print_usage ();

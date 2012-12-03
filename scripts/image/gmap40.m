@@ -37,7 +37,7 @@ function map = gmap40 (n)
     n = 6;
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("gmap40: argument must be a scalar");
+      error ("gmap40: N must be a scalar");
     endif
   else
     print_usage ();

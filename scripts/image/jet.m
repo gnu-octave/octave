@@ -37,7 +37,7 @@ function map = jet (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("jet: argument must be a scalar");
+      error ("jet: N must be a scalar");
     endif
   else
     print_usage ();

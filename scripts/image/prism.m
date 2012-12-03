@@ -37,7 +37,7 @@ function map = prism (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("prism: argument must be a scalar");
+      error ("prism: N must be a scalar");
     endif
   else
     print_usage ();

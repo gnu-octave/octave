@@ -25,8 +25,7 @@
 ## When called with only two arguments, @code{cmpermute} randomly rearranges
 ## the colormap @var{map} and returns a new colormap @var{newmap}.  It also
 ## returns the indexed image @var{Y} which is the equivalent of the original
-## input image @var{X} when displayed using @var{newmap}.  The input image
-## @var{X} must be an indexed image of class uint8 or double.
+## input image @var{X} when displayed using @var{newmap}.  
 ##
 ## When called with an optional third argument the order of colors in the
 ## new colormap is defined by @var{index}.
@@ -44,9 +43,9 @@ function [Y, newmap] = cmpermute (X, map, index)
     print_usage ();
   endif
 
-  ## FIXME: Matlab only accepts 2 types.  Expand to uint16 & single??
-  if (! (isa (X, "uint8") || isa (X, "double")))
-    error ("cmpermute: X must be of class uint8 or double");
+  cls = class (X);
+  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
+    error ("cmpermute: invalid data type '%s'", cls);
   endif
 
   if (! isreal (X) || issparse (X)
@@ -71,13 +70,17 @@ function [Y, newmap] = cmpermute (X, map, index)
   rindex = zeros (size (index));
   rindex(index) = 1:length (index);
  
-  ## adapt indices
-  if (isa (X, "uint8"))
-    rindex = uint8 (rindex-1);
-    ## 0-based indices
-    Y = rindex(double (X) + 1);
-  else
+  ## preserve class of input image in output
+  if (strcmp (cls, "double")) 
     Y = rindex(X);
+  elseif (strcmp (cls, "single")) 
+    rindex = single (rindex);
+    Y = rindex(X);
+  else
+    ## adapt indices
+    rindex = feval (cls, rindex - 1);
+    ## 0-based indices
+    Y = rindex(single (X) + 1);
   endif
 
 endfunction
@@ -126,7 +129,7 @@ endfunction
 ## Test input validation
 %!error cmpermute ()
 %!error cmpermute (1,2,3,4)
-%!error <X must be of class uint8> cmpermute (uint16 (magic (16)), jet (256))
+%!error <invalid data type 'uint32'> cmpermute (uint32 (magic (16)), jet (256))
 %!error <X must be an indexed image> cmpermute (1+i, jet (256))
 %!error <X must be an indexed image> cmpermute (sparse (1), jet (256))
 %!error <X must be an indexed image> cmpermute (0, jet (256))

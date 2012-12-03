@@ -61,8 +61,7 @@ function [Y, newmap] = cmunique (X, map)
   endif
 
   cls = class (X);
-  ## FIXME: Documentation accepts only 3 classes.  Could easily add 'single'.
-  if (! any (strcmp (cls, {"uint8", "uint16", "double"})))
+  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
     error ("cmunique: X is of invalid data type '%s'", cls);
   endif
 
@@ -72,10 +71,10 @@ function [Y, newmap] = cmunique (X, map)
       error ("cmunique: MAP must be a valid colormap");
     endif
     [newmap,i,j] = unique (map, "rows");  # calculate unique colormap
-    if (isa (X, "double"))
+    if (isfloat (X))
       Y = j(X);               # find new indices
     else
-      Y = j(double (X) + 1);  # find new indices
+      Y = j(double (X) + 1);  # find new indices, switch to 1-based index
     endif
   else
     switch (size (X,3))
@@ -95,13 +94,13 @@ function [Y, newmap] = cmunique (X, map)
     endswitch
     
     ## if image was uint8 or uint16 we have to convert newmap to [0,1] range
-    if (! isa (X, "double"))
-      newmap = double (newmap) / double (intmax (class (X)));
+    if (isinteger (X))
+      newmap = double (newmap) / double (intmax (cls));
     endif
   endif
 
   if (rows (newmap) <= 256)
-    ## convert Y to uint8 (0-based indices then)
+    ## convert Y to uint8 and 0-based indexing
     Y = uint8 (Y-1);
   endif
 
@@ -184,15 +183,15 @@ endfunction
 %!test
 %! I = uint16 (rand (10,10)*65535);
 %! Id = double (I) / 65535;
-%! [Y,newmap] = cmunique (I);
-%! assert (Id,newmap (:,1)(Y+1));
-%! assert (Id,newmap (:,2)(Y+1));
-%! assert (Id,newmap (:,3)(Y+1));
+%! [Y, newmap] = cmunique (I);
+%! assert (Id, newmap(:,1)(Y+1));
+%! assert (Id, newmap(:,2)(Y+1));
+%! assert (Id, newmap(:,3)(Y+1));
 
 ## Test input validation
 %!error cmpermute ()
 %!error cmpermute (1,2,3)
-%!error <X is of invalid data type> cmunique (single (magic (16)))
+%!error <X is of invalid data type> cmunique (uint32 (magic (16)))
 %!error <MAP must be a valid colormap> cmunique (1, "a")
 %!error <MAP must be a valid colormap> cmunique (1, i)
 %!error <MAP must be a valid colormap> cmunique (1, ones (3,3,3))

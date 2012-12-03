@@ -122,7 +122,7 @@ libgnu_la_SOURCES += base64.h base64.c
 
 ## begin gnulib module bitrotate
 
-libgnu_la_SOURCES += bitrotate.h
+libgnu_la_SOURCES += bitrotate.h bitrotate.c
 
 ## end   gnulib module bitrotate
 
@@ -654,8 +654,9 @@ EXTRA_libgnu_la_SOURCES += fstat.c
 
 ## begin gnulib module fstatat
 
+libgnu_la_SOURCES += statat.c
 
-EXTRA_DIST += at-func.c fstatat.c openat-priv.h
+EXTRA_DIST += at-func.c fstatat.c
 
 EXTRA_libgnu_la_SOURCES += at-func.c fstatat.c
 
@@ -990,6 +991,7 @@ EXTRA_DIST += malloca.h malloca.valgrind
 ## begin gnulib module math
 
 BUILT_SOURCES += math.h
+libgnu_la_SOURCES += math.c
 
 # We need the following in order to create <math.h> when the system
 # doesn't have one that works with the given compiler.
@@ -1407,7 +1409,7 @@ EXTRA_libgnu_la_SOURCES += open.c
 ## begin gnulib module openat
 
 
-EXTRA_DIST += openat-priv.h openat.c
+EXTRA_DIST += openat.c
 
 EXTRA_libgnu_la_SOURCES += openat.c
 
@@ -1581,6 +1583,7 @@ EXTRA_libgnu_la_SOURCES += select.c
 
 ## begin gnulib module sigaction
 
+libgnu_la_SOURCES += sig-handler.c
 
 EXTRA_DIST += sig-handler.h sigaction.c
 
@@ -1915,6 +1918,7 @@ EXTRA_DIST += stdint.in.h
 ## begin gnulib module stdio
 
 BUILT_SOURCES += stdio.h
+libgnu_la_SOURCES += stdio.c
 
 # We need the following in order to create <stdio.h> when the system
 # doesn't have one that works with the given compiler.
@@ -2119,6 +2123,7 @@ stdlib.h: stdlib.in.h $(top_builddir)/config.status $(CXXDEFS_H) \
 	      -e 's|@''REPLACE_MALLOC''@|$(REPLACE_MALLOC)|g' \
 	      -e 's|@''REPLACE_MBTOWC''@|$(REPLACE_MBTOWC)|g' \
 	      -e 's|@''REPLACE_MKSTEMP''@|$(REPLACE_MKSTEMP)|g' \
+	      -e 's|@''REPLACE_PTSNAME''@|$(REPLACE_PTSNAME)|g' \
 	      -e 's|@''REPLACE_PTSNAME_R''@|$(REPLACE_PTSNAME_R)|g' \
 	      -e 's|@''REPLACE_PUTENV''@|$(REPLACE_PUTENV)|g' \
 	      -e 's|@''REPLACE_RANDOM_R''@|$(REPLACE_RANDOM_R)|g' \
@@ -2401,6 +2406,7 @@ EXTRA_DIST += sys_select.in.h
 ## begin gnulib module sys_socket
 
 BUILT_SOURCES += sys/socket.h
+libgnu_la_SOURCES += sys_socket.c
 
 # We need the following in order to create <sys/socket.h> when the system
 # doesn't have one that works with the given compiler.
@@ -2731,6 +2737,7 @@ EXTRA_libgnu_la_SOURCES += trunc.c truncf.c
 ## begin gnulib module unistd
 
 BUILT_SOURCES += unistd.h
+libgnu_la_SOURCES += unistd.c
 
 # We need the following in order to create an empty placeholder for
 # <unistd.h> when the system doesn't have one.
@@ -3044,6 +3051,7 @@ EXTRA_DIST += wchar.in.h
 ## begin gnulib module wctype-h
 
 BUILT_SOURCES += wctype.h
+libgnu_la_SOURCES += wctype-h.c
 
 # We need the following in order to create <wctype.h> when the system
 # doesn't have one that works with the given compiler.
@@ -3111,7 +3119,7 @@ EXTRA_DIST += xgetcwd.h
 
 ## begin gnulib module xsize
 
-libgnu_la_SOURCES += xsize.h
+libgnu_la_SOURCES += xsize.h xsize.c
 
 ## end   gnulib module xsize
 

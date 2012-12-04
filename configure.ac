@@ -1054,10 +1054,19 @@ if test -n "$OPENGL_LIBS"; then
 
   ## Check for FreeType 2 library
 
-  AC_CHECK_FT2([9.0.3],
-    [AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have FreeType library.])
-     XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],
-    [warn_freetype="FreeType library not found.  Native graphics will be disabled."])
+  PKG_CHECK_MODULES([FT2], [freetype2], [
+    min_ft2_version=9.03
+    AC_MSG_CHECKING([for FreeType -- version >= $min_ft2_version])
+    $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
+    ac_status=$?
+    if test $ac_status = 0; then
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"
+    else
+      AC_MSG_RESULT(no)
+      warn_freetype="FreeType library not found.  Native graphics will be disabled."
+    fi])
 
   if test -n "$warn_freetype"; then
     OCTAVE_CONFIGURE_WARNING([warn_freetype])

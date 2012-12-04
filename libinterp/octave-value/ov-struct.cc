@@ -85,7 +85,8 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   else if (auto_add)
     retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
-    error ("structure has no member '%s'", nm.c_str ());
+    error_with_id ("Octave:invalid-indexing", 
+                   "structure has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -1143,7 +1144,8 @@ octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
   retval = map.getfield (nm);
 
   if (! auto_add && retval.is_undefined ())
-    error ("structure has no member '%s'", nm.c_str ());
+    error_with_id ("Octave:invalid-indexing",
+                   "structure has no member '%s'", nm.c_str ());
 
   return retval;
 }

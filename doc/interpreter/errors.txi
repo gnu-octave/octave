@@ -180,6 +180,39 @@ endfor
 
 @DOCSTRING(lasterr)
 
+It is also possible to assign an identification string to an error.
+If an error has such an ID the user can catch this error
+as will be shown in the next example.  To assign an ID to an error,
+simply call @code{error} with two string arguments, where the first
+is the identification string, and the second is the actual error.  Note
+that error IDs are in the format "NAMESPACE:ERROR-NAME".  The namespace
+"Octave" is used for Octave's own errors.  Any other string is available
+as a namespace for user's own errors.
+
+The next example counts indexing errors. The errors are catched using the
+field identifier of the structure returned by the function @code{lasterror}.
+
+@example
+@group
+number_of_errors = 0;
+for n = 1:100
+  try
+    @dots{}
+  catch
+    id = lasterror.identifier;
+    if (strcmp (id, "Octave:invalid-indexing"))
+      number_of_errors++;
+    endif
+  end_try_catch
+endfor
+@end group
+@end example
+
+The functions distributed with Octave can issue one of the following
+errors.
+
+@DOCSTRING(error_ids)
+
 When an error has been handled it is possible to raise it again.  This
 can be useful when an error needs to be detected, but the program should
 still abort.  This is possible using the @code{rethrow} function.  The
@@ -305,6 +338,11 @@ as a namespace for user's own warnings.
 
 @DOCSTRING(lastwarn)
 
+The functions distributed with Octave can issue one of the following
+warnings.
+
+@DOCSTRING(warning_ids)
+
 @node Enabling and Disabling Warnings
 @subsection Enabling and Disabling Warnings
 
@@ -333,10 +371,5 @@ warning ("example:non-negative-variable",
          "'a' must be non-negative.  Setting 'a' to zero.");
 @end group
 @end example
-
-The functions distributed with Octave can issue one of the following
-warnings.
-
-@DOCSTRING(warning_ids)
 
 

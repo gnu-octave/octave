@@ -36,6 +36,13 @@
 ## Indicates that a data-type was indexed incorrectly, e.g., real-value index
 ## for arrays, non-existent field of a structure.
 ##
+## @item Octave:bad-alloc
+## Indicates that memory couldn't be allocated.
+##
+## @item Octave:undefined-function
+## Indicates a call to a function that is not defined. The function may
+## exist but Octave is unable to find it in the search path.
+##
 ## @end table
 
 

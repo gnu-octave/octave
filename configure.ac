@@ -2219,40 +2219,53 @@ if test $build_java = true; then
     AC_PATH_PROG(JAVAC, javac, [], [$JAVA_HOME/bin$PATH_SEPARATOR$PATH])
     AC_PATH_PROG(JAR, jar, [], [$JAVA_HOME/bin$PATH_SEPARATOR$PATH])
   fi
-  if test -n "$JAVAC" -a -n "$JAR"; then
+  if test -n "$JAVAC" && test -n "$JAR"; then
     AC_MSG_CHECKING([for Java version])
     java_version=[`$JAVA -version 2>&1 | sed -n -e 's/^java version[^0-9"]*"\([^"]*\)"/\1/p'`]
     AC_MSG_RESULT($java_version)
     java_major=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
     java_minor=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
-    if test $java_major -ge 1 -a $java_minor -ge 5; then
-      case "$canonical_host_type" in
+    if test $java_major -ge 1 && test $java_minor -ge 5; then
+      case $canonical_host_type in
         *-msdosmsvc*)
           HAVE_JAVA=yes
           JAVA_LIBS=-ladvapi32
         ;;
-        *)
+        *-*-darwin*)
           if test -z "$JAVA_HOME"; then
-            # This is the location of Java on an OS X box. In this
-            # directory we can find the various versions of a
-            # JavaVMs. Check for the newest version set the JAVA_HOME
-            # variable.
+            ## This is the location of Java on an OS X box. In this
+            ## directory we can find the various versions of a JavaVMs.
+            ## Check for the newest version set the JAVA_HOME variable.
             if test -d "/System/Library/Frameworks/JavaVM.framework"; then
-              # Sneak the -framework flag into mkoctfile via LFLAGS
-              LFLAGS="$LFLAGS -framework JavaVM"
               JAVA_TEMP="/System/Library/Frameworks/JavaVM.framework"
               JAVA_HOME="${JAVA_TEMP}/Home"
               JAVA_ARCH="${JAVA_TEMP}/Libraries/libjvm_compat.dylib"
-              JAVA_LIBS="-framework JavaVM"
-              # According to:
-              #   http://developer.apple.com/unix/crossplatform.html
-              # you need to explicitly set the include path
-              JAVA_CPPFLAGS="-I${JAVA_HOME}/include"
-              HAVE_JAVA=yes
-            # This is the Debian default path
-            elif test -d "/usr/lib/jvm/default-java"; then
+            fi
+          fi
+          JAVA_HOME=[`echo $JAVA_HOME | sed -e 's|/$||'`]
+          if test -z "$JAVA_ARCH"; then
+            if test -d "${JAVA_HOME}/jre/lib/mac"; then
+              JAVA_ARCH="mac"
+            elif test -d "${JAVA_HOME}/jre/lib/maci"; then
+              JAVA_ARCH="maci"
+            fi
+          fi
+          if test -n "$JAVA_ARCH"; then
+            HAVE_JAVA=yes
+            ## Sneak the -framework flag into mkoctfile via LFLAGS
+            LFLAGS="$LFLAGS -framework JavaVM"
+            ## According to: http://developer.apple.com/unix/crossplatform.html
+            ## one must explicitly set the include path
+            JAVA_CPPFLAGS="-I${JAVA_HOME}/include"
+            JAVA_LIBS="-framework JavaVM"
+          fi
+        ;;
+        *)
+          if test -z "$JAVA_HOME"; then
+            ## This is the Debian default path
+            if test -d "/usr/lib/jvm/default-java"; then
               JAVA_HOME=/usr/lib/jvm/default-java
-            # This is the path of java 6 on debian
+            ## This is the path of java 6 on debian
             elif test -d "/usr/lib/jvm/java-6-sun"; then
               JAVA_HOME=//usr/lib/jvm/java-6-sun
             else
@@ -2265,10 +2278,6 @@ if test $build_java = true; then
               JAVA_ARCH="i386";
             elif test -d "${JAVA_HOME}/jre/lib/amd64"; then
               JAVA_ARCH="amd64"
-            elif test -d "${JAVA_HOME}/jre/lib/mac"; then
-              JAVA_ARCH="mac"
-            elif test -d "${JAVA_HOME}/jre/lib/maci"; then
-              JAVA_ARCH="maci"
             elif test -d "${JAVA_HOME}/jre/lib/solaris"; then
               JAVA_ARCH="solaris"
             elif test -d "${JAVA_HOME}/jre/lib/solarisv9"; then
@@ -2277,10 +2286,10 @@ if test $build_java = true; then
           fi
           if test -n "$JAVA_ARCH"; then
             HAVE_JAVA=yes
-            case "$canonical_host_type" in
+            case $canonical_host_type in
               *-mingw* | *-cygwin*)
-                JAVA_LIBS=-ladvapi32
                 JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
+                JAVA_LIBS=-ladvapi32
               ;;
               *)
                 JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
@@ -2289,7 +2298,7 @@ if test $build_java = true; then
           fi
         ;;
       esac
-      if test "$HAVE_JAVA" = "yes"; then
+      if test $HAVE_JAVA = yes; then
         AC_DEFINE(HAVE_JAVA, 1,
           [Define to 1 if Java is available and is at least version 1.5])
       fi

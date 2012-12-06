@@ -24,6 +24,10 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 EXTRA_DIST =
 
+CLEANFILES =
+
+DISTCLEANFILES =
+
 FCN_FILE_DIRS =
 
 FCN_FILES =
@@ -451,10 +455,15 @@ EXTRA_DIST += \
   mkdoc.pl \
   mk-pkg-add
 
-DISTCLEANFILES = \
+DISTCLEANFILES += \
   .DOCSTRINGS \
   DOCSTRINGS \
   $(PKG_ADD_FILES) \
   $(DIRSTAMP_FILES) \
   $(GEN_FCN_FILES)
 
+distclean-local:
+	if [ "x$(srcdir)" != "x." ]; then \
+	  rm $(java_JAVA_IMAGES); \
+	fi
+	

@@ -1,7 +1,5 @@
 FCN_FILE_DIRS += java
 
-EXTRA_DIST += java/octave.jar
-
 java_FCN_FILES = \
   java/dlgtest.m \
   java/errordlg.m \
@@ -56,18 +54,16 @@ java_JAVA_CLASSES = $(addprefix java/, $(JAVA_CLASSES))
 
 java_JAVA_IMAGES = $(addprefix java/, $(JAVA_IMAGES))
 
-java_JAVA_IMAGES_src = $(addprefix $(srcdir)/java/, $(JAVA_IMAGES))
-
-java_JAVA_CLASSES_src = $(addprefix $(srcdir)/java/, $(java_JAVA_CLASSES))
+srcdir_java_JAVA_IMAGES = $(addprefix $(srcdir)/java/, $(JAVA_IMAGES))
 
 %.class : %.java
 	$(MKDIR_P) java/$(org_octave_dir)
 	( cd $(srcdir)/java; $(JAVAC) -source 1.3 -target 1.3 -d $(abs_builddir)/java $(org_octave_dir)/$(<F) )
 
-java/images.stamp: $(java_JAVA_IMAGES_src)
+java/images.stamp: $(srcdir_java_JAVA_IMAGES)
 	if [ "x$(srcdir)" != "x." ]; then \
 	  $(MKDIR_P) java/$(org_octave_dir)/images; \
-	  cp $(java_JAVA_IMAGES_src) java/$(org_octave_dir)/images; \
+	  cp $(srcdir_java_JAVA_IMAGES) java/$(org_octave_dir)/images; \
 	fi
 	touch $@
 
@@ -75,4 +71,9 @@ java/octave.jar: java/images.stamp $(java_JAVA_CLASSES)
 	( cd java; $(JAR) cf octave.jar.t $(JAVA_CLASSES) $(JAVA_IMAGES) )
 	mv $@.t $@
 
-EXTRA_DIST += $(java_JAVA_SRC) $(java_JAVA_IMAGES)
+EXTRA_DIST += $(JAR_FILES) $(java_JAVA_SRC) $(java_JAVA_IMAGES)
+
+CLEANFILES += $(JAR_FILES) $(java_JAVA_CLASSES)
+
+DISTCLEANFILES += java/images.stamp
+

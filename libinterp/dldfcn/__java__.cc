@@ -14,6 +14,11 @@
 ** along with this program; If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_JAVA
 #include "__java__.h"
 
 #include "parse.h"
@@ -2037,3 +2042,6 @@ octave_value octave_java::do_java_set (JNIEnv* jni_env, const std::string& class
     }
   return retval;
 }
+
+#endif
+

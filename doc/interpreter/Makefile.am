@@ -94,13 +94,19 @@ JAVA_IMAGES = \
   java-images/image008.png \
   java-images/image009.png
 
-IMAGES = \
+BUILT_IMAGES = \
   $(IMAGES_EPS) \
   $(IMAGES_PDF) \
   $(IMAGES_PNG) \
-  $(IMAGES_TXT) \
+  $(IMAGES_TXT)
+
+IMAGES = \
+  $(BUILT_IMAGES) \
   $(JAVA_IMAGES)
 
+## FIXME: JAVA_IMAGES will eventually need to be added to the HTML build.
+##        It will require a different Makefile rule later because 
+##        JAVA_IMAGES live in a subdir rather than in the current directory.
 HTMLDIR_IMAGES = $(addprefix octave.html/, $(IMAGES_PNG))
 
 LOGOS = \
@@ -285,5 +291,5 @@ clean-local:
 
 DISTCLEANFILES = $(BUILT_TEXINFOS) doc-cache
 
-MAINTAINERCLEANFILES = $(IMAGES)
+MAINTAINERCLEANFILES = $(BUILT_IMAGES)
 

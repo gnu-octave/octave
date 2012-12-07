@@ -19,6 +19,19 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isa (@var{obj}, @var{class})
 ## Return true if @var{obj} is an object from the class @var{class}.
+##
+## @var{class} may also be one of the following class categories: 
+##
+## @table @asis
+## @item "float"
+## Floating point value comprising classes "double" and "single".
+##
+## @item "integer"
+## Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.
+##
+## @item "numeric"
+## Numeric value comprising either a floating point or integer value.
+## @end table
 ## @seealso{class, typeinfo}
 ## @end deftypefn
 
@@ -31,16 +44,12 @@ function retval = isa (obj, cname)
     print_usage ();
   endif
 
-  persistent float_classes = {"double", "single"};
-
-  persistent fnum_classes = {"double", "single", ...
-                             "uint8", "uint16", "uint32", "uint64", ...
-                             "int8", "int16", "int32", "int64"};
-
   if (strcmp (cname, "float"))
-    retval = any (strcmp (class (obj), float_classes));
+    retval = isfloat (obj);
+  elseif (strcmp (cname, "integer"))
+    retval = isinteger (obj);
   elseif (strcmp (cname, "numeric"))
-    retval = any (strcmp (class (obj), fnum_classes));
+    retval = isnumeric (obj);
   else
     class_of_x = class (obj);
     retval = strcmp (class_of_x, cname);
@@ -76,6 +85,9 @@ endfunction
 %!assert (isa (uint16 (13), "numeric"), true)
 %!assert (isa (uint32 (13), "numeric"), true)
 %!assert (isa (uint64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "integer"), true)
+%!assert (isa (double (13), "integer"), false)
+%!assert (isa (single (13), "integer"), false)
 
 %!assert (isa (double (13), "double"))
 %!assert (isa (single (13), "single"))

@@ -104,7 +104,7 @@ endfunction
 
 function disp_path_list ( which, path_list )
   printf ("   %s JAVA PATH\n\n", which);
-  if (length (path_list) > 0)
+  if (numel (path_list) > 0)
     printf ("      %s\n", path_list{:});
   else
     printf ("      - empty -\n");

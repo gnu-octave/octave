@@ -38,7 +38,7 @@
 
 function retval = javaArray (class_name, varargin)
 
-  switch length (varargin)
+  switch (numel (varargin))
     case 0
       error ("missing array size");
 

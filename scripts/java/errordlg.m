@@ -39,7 +39,7 @@ function retval = errordlg (message, varargin)
     endif
   endif
 
-  switch length (varargin)
+  switch (numel (varargin))
     case 0
       title = "Error Dialog";
 

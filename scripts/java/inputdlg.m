@@ -57,7 +57,7 @@ function retval = inputdlg (prompt, varargin)
     error ("inputdlg: character string or cellstr array expected for prompt");
   endif
 
-  switch length (varargin)
+  switch (numel (varargin))
     case 0
       title = "Input Dialog";
       lineNo = 1;

@@ -56,9 +56,9 @@
 ## @example
 ## [sel, ok] = listdlg ("ListString", @{"An item", "another", "yet another"@}, "SelectionMode", "Multiple" );
 ## if (ok == 1)
-##    imax = length(sel);
-##    for i=1:1:imax
-##     disp(sel(i));
+##    imax = numel (sel);
+##    for i = 1:1:imax
+##     disp (sel(i));
 ##    end
 ## end
 ## @end example
@@ -121,7 +121,7 @@ function varargout = listdlg (varargin)
                       selmode, listsize, initialvalue, name, prompt,
                       okstring, cancelstring);
 
-   if (length(ret) > 0)
+   if (numel (ret) > 0)
      varargout = {ret, 1};
    else
      varargout = {{}, 0};

@@ -59,7 +59,7 @@ function test_listdlg
    disp('- test listdlg with selectionmode single. No caption, no prompt.');
    itemlist = {'An item \\alpha', 'another', 'yet another'};
    s = listdlg ( 'ListString',itemlist, 'SelectionMode','Single' );
-   imax = length(s);
+   imax = numel (s);
    for i=1:1:imax
       disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
    end
@@ -71,7 +71,7 @@ function test_listdlg
                  'Name','Selection Dialog', ...
                  'InitialValue',[1,2,3,4],
                  'PromptString',{'Select an item...', '...or multiple items'} );
-   imax = length(s);
+   imax = numel (s);
    for i=1:1:imax
       disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
    end

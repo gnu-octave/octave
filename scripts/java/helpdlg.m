@@ -39,7 +39,7 @@ function retval = helpdlg (message, varargin)
     endif
   endif
   
-  switch length (varargin)
+  switch (numel (varargin))
     case 0
       title = "Help Dialog";
 

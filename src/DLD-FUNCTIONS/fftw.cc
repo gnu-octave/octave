@@ -267,3 +267,32 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
 
   return retval;
 }
+
+/*
+
+%!testif HAVE_FFTW
+%! def_method = fftw ("planner");
+%! unwind_protect
+%!   method = "estimate";
+%!   fftw ("planner", method);
+%!   assert (fftw ("planner"), method);
+%!   method = "measure";
+%!   fftw ("planner", method);
+%!   assert (fftw ("planner"), method);
+%!   method = "patient";
+%!   fftw ("planner", method);
+%!   assert (fftw ("planner"), method);
+%!   method = "exhaustive";
+%!   fftw ("planner", method);
+%!   assert (fftw ("planner"), method);
+%!   method = "hybrid";
+%!   fftw ("planner", method);
+%!   assert (fftw ("planner"), method);
+%! unwind_protect_cleanup
+%!   fftw ("planner", def_method);
+%! end_unwind_protect
+
+%!error <Invalid call to fftw> fftw ();
+%!error <Invalid call to fftw> fftw ("planner", "estimate", "measure");
+
+ */

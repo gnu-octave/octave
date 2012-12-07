@@ -225,14 +225,14 @@ public:
   {
     static FftwMethod dummy;
 
-    return instance_ok () ? instance->method () : dummy;
+    return instance_ok () ? instance->do_method () : dummy;
   }
 
   static FftwMethod method (FftwMethod _meth)
   {
     static FftwMethod dummy;
 
-    return instance_ok () ? instance->method (_meth) : dummy;
+    return instance_ok () ? instance->do_method (_meth) : dummy;
   }
 
 private:

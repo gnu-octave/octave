@@ -226,28 +226,31 @@ static void set_dll_directory (const std::string& dir = "")
 }
 #endif
 
-static std::string get_module_path(const std::string& name, bool strip_name = true) 
+static std::string get_module_path (const std::string& name, bool strip_name = true) 
 {
   std::string retval;
 
   retval = octave_env::make_absolute (load_path::find_file (name), 
 #ifdef HAVE_OCTAVE_32
-				      octave_env::getcwd ());
+                                      octave_env::getcwd ());
 #else
-                      octave_env::get_current_directory ());
+                                      octave_env::get_current_directory ());
 #endif
 
-  if (! retval.empty () && strip_name)
+  if (! retval.empty ())
     {
-      size_t pos = retval.rfind (file_ops::dir_sep_str () + name);
+      if (strip_name)
+      {
+        size_t pos = retval.rfind (file_ops::dir_sep_str () + name);
 
-      if (pos != std::string::npos)
-        retval.resize (pos);
-      else
-        throw std::string("No module path in ")+retval;
+        if (pos != std::string::npos)
+          retval.resize (pos);
+        else
+          throw std::string ("No module path in ") + retval;
+      }
     }
   else
-    throw std::string("Could not find file ")+name;
+    throw std::string ("Could not find file ") + name;
 
   return retval;
 }
@@ -329,7 +332,7 @@ static std::string initial_class_path ()
    // find octave.jar file
    if (! retval.empty ())
     {
-      std::string jar_file = retval + file_ops::dir_sep_str () + "octave.jar";
+      std::string jar_file = get_module_path ("octave.jar", false);
       file_stat jar_exists (jar_file);
 
       if (jar_exists)

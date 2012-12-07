@@ -17,20 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{P} =} helpdlg (@var{MESSAGE} [,@var{TITLE}])
+## @deftypefn {Function file} {@var{p} =} helpdlg (@var{msg} ,@var{title}])
+## Display @var{msg} in a help dialog box.
 ##
-## Displays a @var{MESSAGE} in a help dialog box.
+## The message may have multiple lines separated by newline characters
+## (@code{"\n"}), or it may be a cellstr array with one element for each
+## line.  The optional @var{title} (character string) can be used to
+## decorate the dialog caption.
 ##
-## @var{message} can have multiple lines separated by newline characters
-## ("\n"), or it can be a cellstr array (one element for each line).
-## The optional @var{TITLE} (character string) can be used to decorate the
-## dialog caption.
 ## The return value is always 1.
-##
-## @end deftypefn
 ## @seealso{errordlg, inputdlg, listdlg, questdlg, warndlg}
+## @end deftypefn
 
-function ret = helpdlg (message, varargin)
+function retval = helpdlg (message, varargin)
 
   if (! ischar (message))
     if (iscell (message))
@@ -41,20 +40,21 @@ function ret = helpdlg (message, varargin)
   endif
   
   switch length (varargin)
-  case 0
-     title = "Help Dialog";
-  otherwise
-    if (ischar (varargin {1}))
-      title = varargin{1};
-    else
-      error ("helpdlg: character string expected for title");
-    endif
+    case 0
+      title = "Help Dialog";
+
+    otherwise
+      if (ischar (varargin {1}))
+        title = varargin{1};
+      else
+        error ("helpdlg: character string expected for title");
+      endif
   endswitch
 
   if (! ischar (title))
     error ("helpdlg: character string expected for title");
   endif
 
-  ret = java_invoke ("org.octave.JDialogBox", "helpdlg", message, title);
+  retval = java_invoke ("org.octave.JDialogBox", "helpdlg", message, title);
 
 endfunction

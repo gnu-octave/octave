@@ -24,15 +24,17 @@
 ## https://savannah.gnu.org/bugs/?func=detailitem&item_id=31468#comment4
 ## Created: 2012-06-29
 
-function [ ret ] = cell2mlstr (cstr)
+function retval = cell2mlstr (cstr)
 
   if (! iscellstr (cstr))
     ## Only use char elements
     cstr = cstr (find (cellfun ("ischar", cstr)));
   endif
+
   ## Treat cell string array as multi-line text
   cstr(1:2:2*numel (cstr)) = cstr;
   cstr(2:2:numel (cstr)) = "\n";
-  ret = [cstr{:}];
+
+  retval = [cstr{:}];
 
 endfunction

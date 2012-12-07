@@ -17,17 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{P} =} errordlg (@var{MESSAGE} [,@var{TITLE}])
+## @deftypefn {Function file} {@var{p} =} errordlg (@var{msg}, @var{title})
+## Display @var{msg} using an error dialog box.
 ##
-## Displays the @var{MESSAGE} (character string or cell string array for
-## multi-line text) using an error dialog box. 
-## @var{TITLE} can be used optionally to decorate the dialog caption.
+## The message may have multiple lines separated by newline characters
+## (@code{"\n"}), or it may be a cellstr array with one element for each
+## line.  The optional @var{title} (character string) can be used to
+## decorate the dialog caption.
+##
 ## The return value is always 1.
-##
-## @end deftypefn
 ## @seealso{helpdlg, inputdlg, listdlg, questdlg, warndlg}
+## @end deftypefn
 
-function ret = errordlg (message, varargin)
+function retval = errordlg (message, varargin)
 
   if (! ischar (message))
     if (iscell (message))
@@ -38,9 +40,10 @@ function ret = errordlg (message, varargin)
   endif
 
   switch length (varargin)
-  case 0
-    title = "Error Dialog";
-  otherwise
+    case 0
+      title = "Error Dialog";
+
+    otherwise
       title = varargin{1};
   endswitch
 
@@ -48,6 +51,6 @@ function ret = errordlg (message, varargin)
     error ("errordlg: character string expected for title");
   endif
 
-  ret = java_invoke ("org.octave.JDialogBox", "errordlg", message, title);
+  retval = java_invoke ("org.octave.JDialogBox", "errordlg", message, title);
 
 endfunction

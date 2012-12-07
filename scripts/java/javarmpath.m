@@ -19,30 +19,30 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {} javarmpath (@var{path})
-##
-## Removes @var{path} from the dynamic class path of the Java virtual
-## machine. @var{path} can be either a directory where .class files
-## can be found, or a .jar file containing Java classes.
-##
+## Remove @var{path} from the dynamic class path of the Java virtual
+## machine.  @var{path} may be either a directory where @file{.class}
+## files are found, or a @file{.jar} file containing Java classes.
+## @seealso{javaaddpath, javaclasspath}
 ## @end deftypefn
-## @seealso{javaaddpath,javaclasspath}
 
 function javarmpath (class_path)
 
   if (nargin != 1)
     print_usage ();
   else
-    % MH 30-08-2010: added tilde_expand to allow for specification of user's home
-    old_path = canonicalize_file_name (tilde_expand(class_path));
+    old_path = canonicalize_file_name (tilde_expand (class_path));
     if (exist (old_path, "dir"))
       if (! strcmp (old_path (end), filesep))
         old_path = [old_path, filesep];
-      end
-    end
-    success = java_invoke ('org.octave.ClassHelper', 'removeClassPath', old_path);
-    if (! success)
-      disp (['Warning: ', old_path, ' not found in Java classpath.', 10]);
-    end
-  end
+      endif
+    endif
 
-end
+    success = java_invoke ("org.octave.ClassHelper", "removeClassPath",
+                           old_path);
+
+    if (! success)
+      warning ("javarmpath: %s: not found in Java classpath", old_path);
+    endif
+  endif
+
+endfunction

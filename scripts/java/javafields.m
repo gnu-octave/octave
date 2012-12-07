@@ -17,31 +17,30 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{P} =} javafields (@var{class})
-##
-## Returns the fields of a Java object in the form of a cell 
-## array of strings. If no output variable is
-## given, the result is simply printed on the standard output.
-##
-## @end deftypefn
+## @deftypefn {Function file} {@var{p} =} javafields (@var{class})
+## Return the fields of a Java object in the form of a cell 
+## array of strings.  If no output is requested, print the result
+## printed on the standard output.
 ## @seealso{javamethods}
+## @end deftypefn
 
-function varargout = javafields(classname)
+function retval = javafields (classname)
   
   if (nargin != 1)
-     print_usage ();
+    print_usage ();
   else
-     c_methods = java_invoke ("org.octave.ClassHelper", "getFields",classname);
-     method_list = strsplit (c_methods, ';');
+    c_methods = java_invoke ("org.octave.ClassHelper", "getFields", classname);
+    method_list = strsplit (c_methods, ';');
 
-     switch nargout
-     case 0
-       if (! isempty (method_list))
-         disp(method_list);
-       endif
-     case 1
-       varargout{1} = cellstr (method_list);
-     endswitch
-  endif
+    switch (nargout)
+      case 0
+        if (! isempty (method_list))
+          disp (method_list);
+        endif
+
+      case 1
+        retval = cellstr (method_list);
+   endswitch
+ endif
 
 endfunction

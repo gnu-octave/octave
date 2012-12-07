@@ -17,22 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{P} =} msgbox (@var{MESSAGE} [,@var{TITLE} [,@var{ICON}]])
+## @deftypefn {Function file} {@var{p} =} msgbox (@var{msg}, @var{title}, @var{ICON})
+## Display @var{msg} using a message dialog. 
 ##
-## Displays the @var{MESSAGE} using a message dialog. 
+## The message may have multiple lines separated by newline characters
+## (@code{"\n"}), or it may be a cellstr array with one element for each
+## line.  The optional @var{title} (character string) can be used to
+## decorate the dialog caption.
 ##
-## @var{message} can have multiple lines separated by newline characters
-## ("\n"), or it can be a cellstr array (one element for each line).
-## The optional @var{TITLE} (character string) can be used to decorate the
-## dialog caption.
-## The @var{ICON} can be used optionally to select a dialog icon. 
-## It can be one of @code{'error'}, @code{'help'} or @code{'warn'}.
+## The optional argument @var{icon} selects a dialog icon. 
+## It can be one of @code{"error"}, @code{"help"} or @code{"warn"}.
+##
 ## The return value is always 1.
-##
-## @end deftypefn
 ## @seealso{helpdlg, questdlg, warndlg}
+## @end deftypefn
 
-function ret = msgbox (message, varargin)
+function retval = msgbox (message, varargin)
 
   if (! ischar (message))
     if (iscell (message))
@@ -45,22 +45,24 @@ function ret = msgbox (message, varargin)
   switch length (varargin)
     case 0
       title = "";
-      dlg = 'emptydlg';
+      dlg = "emptydlg";
+
     case 1
       title = varargin{1};
-      dlg = 'emptydlg';
+      dlg = "emptydlg";
+
     otherwise
-      % two or more arguments
+      ## two or more arguments
       title = varargin{1};
       icon =  varargin{2};
-      if strcmp (icon,'error') == 1
-        dlg = 'errordlg';
-      elseif strcmp (icon,'help') == 1
-        dlg = 'helpdlg';
-      elseif strcmp (icon,'warn') == 1
-        dlg = 'warndlg';
+      if (strcmp (icon, "error"))
+        dlg = "errordlg";
+      elseif (strcmp (icon, "help"))
+        dlg = "helpdlg";
+      elseif (strcmp (icon, "warn"))
+        dlg = "warndlg";
       else
-        dlg = 'emptydlg';
+        dlg = "emptydlg";
       end
   endswitch
 
@@ -68,6 +70,6 @@ function ret = msgbox (message, varargin)
     error ("msgbox: character string expected for title");
   endif
 
-  ret = java_invoke ('org.octave.JDialogBox', dlg, message, title );
+  retval = java_invoke ("org.octave.JDialogBox", dlg, message, title );
 
 endfunction

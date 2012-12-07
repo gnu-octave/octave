@@ -18,60 +18,61 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file}  {}          javaclasspath
-## @deftypefnx {Function file} {@var{STATIC} =} javaclasspath
-## @deftypefnx {Function file} {[@var{STATIC}, @var{DYNAMIC}] =} javaclasspath
-## @deftypefnx {Function file} {@var{PATH} =} javaclasspath (@var{WHAT})
-##
-## Returns the class path of the Java virtual machine in
+## @deftypefn {Function file}  {} javaclasspath ()
+## @deftypefnx {Function file} {@var{static} =} javaclasspath ()
+## @deftypefnx {Function file} {[@var{static}, @var{dynamic}] =} javaclasspath ()
+## @deftypefnx {Function file} {@var{path} =} javaclasspath (@var{what})
+## Return the class path of the Java virtual machine in
 ## the form of a cell array of strings. 
 ##
 ## If called without input parameter:@*
 ## @itemize
-## @item If no output variable is given, the result is simply printed 
+## @item If no output is requested, the result is simply printed 
 ## on the standard output.
-## @item If one output variable @var{STATIC} is given, the result is
+## @item If one output value @var{STATIC} is requested, the result is
 ## the static classpath.
-## @item If two output variables @var{STATIC} and @var{DYNAMIC} are 
-## given, the first variable will contain the static classpath,
-## the second will be filled with the dynamic claspath.
+## @item If two output values@var{STATIC} and @var{DYNAMIC} are 
+## requested, the first variable will contain the static classpath,
+## the second will be filled with the dynamic classpath.
 ## @end itemize
 ## 
-## If called with a single input parameter @var{WHAT}:@*
+## If called with a single input parameter @var{what}:@*
 ## @itemize
-## @item If @var{WHAT} is '-static' the static classpath is returned.
-## @item If @var{WHAT} is '-dynamic' the dynamic  classpath is returned.
-## @item If @var{WHAT} is '-all' the static and the dynamic classpath 
-## are returned in a single cell array
+## @item If @var{what} is @code{"-static"} return the static classpath
+## @item If @var{what} is @code{"-dynamic"} return the dynamic classpath
+## @item If @var{what} is @code{"-all"} return both the static and
+## dynamic classpath
 ## @end itemize
+## @seealso{javaaddpath, javarmpath}
 ## @end deftypefn
-## @seealso{javaaddpath,javarmpath}
 
 function varargout = javaclasspath (which)
 
-  % dynamic classpath
+  ## dynamic classpath
   dynamic_path = java_invoke ("org.octave.ClassHelper", "getClassPath");
   dynamic_path_list = strsplit (dynamic_path, pathsep ());
 
-  % static classpath
-  static_path = java_invoke ('java.lang.System', 'getProperty', 'java.class.path');
+  ## static classpath
+  static_path = java_invoke ("java.lang.System", "getProperty", "java.class.path");
   static_path_list = strsplit (static_path, pathsep ());
-  if (length (static_path_list) > 1)
-    % remove first element (which is .../octave.jar)
-    static_path_list = static_path_list(2:length (static_path_list));
+  if (numel (static_path_list) > 1)
+    ## remove first element (which is .../octave.jar)
+    static_path_list = static_path_list(2:numel (static_path_list));
   else
     static_path_list = {};
-  end
+  endif
 
   switch nargin
     case 0
       switch nargout
         case 0
-          disp_path_list ( 'STATIC', static_path_list )
-          disp('');
-          disp_path_list ( 'DYNAMIC', dynamic_path_list )
+          disp_path_list ( "STATIC", static_path_list )
+          disp ("");
+          disp_path_list ( "DYNAMIC", dynamic_path_list )
+
         case 1
           varargout{1} = cellstr (dynamic_path_list);
+
         case 2
           varargout{1} = cellstr (dynamic_path_list);
           varargout{2} = cellstr (static_path_list);
@@ -80,31 +81,32 @@ function varargout = javaclasspath (which)
     case 1
       switch nargout
         case 0
-          if (strcmp (which, '-static') == 1)
-            disp_path_list ( 'STATIC', static_path_list )
-          elseif (strcmp (which, '-dynamic') == 1)
-            disp_path_list ( 'DYNAMIC', dynamic_path_list )
-          end
+          if (strcmp (which, "-static") == 1)
+            disp_path_list ( "STATIC", static_path_list )
+          elseif (strcmp (which, "-dynamic") == 1)
+            disp_path_list ( "DYNAMIC", dynamic_path_list )
+          endif
+
         case 1
-          if (strcmp (which, '-static') == 1)
+          if (strcmp (which, "-static") == 1)
             varargout{1} = cellstr (static_path_list);
-          elseif (strcmp (which, '-dynamic') == 1)
+          elseif (strcmp (which, "-dynamic") == 1)
             varargout{1} = cellstr (dynamic_path_list);
-          elseif (strcmp (which, '-all') == 1)
+          elseif (strcmp (which, "-all") == 1)
             varargout{1} = cellstr ([static_path_list, dynamic_path_list]);
-          end
+          endif
       endswitch
   endswitch
   
-end
-#
-# Display cell array of paths
-#
+endfunction
+
+## Display cell array of paths
+
 function disp_path_list ( which, path_list )
-  printf ('   %s JAVA PATH\n\n', which);
+  printf ("   %s JAVA PATH\n\n", which);
   if (length (path_list) > 0)
-    printf ('      %s\n', path_list{:});
+    printf ("      %s\n", path_list{:});
   else
-    printf ('      - empty -\n');
+    printf ("      - empty -\n");
   endif
-end
+endfunction

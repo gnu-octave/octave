@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} javamem
-## @deftypefnx {Function File} [@var{jmem}] = javamem
+## @deftypefn {Function File} javamem ()
+## @deftypefnx {Function File} [@var{jmem}] = javamem ()
 ## Show current memory status of the Java virtual machine (JVM)
-## & run garbage collector.
+## and run garbage collector.
 ##
 ## When no return argument is given the info is echoed to the screen.
 ## Otherwise, output cell array @var{jmem} contains Maximum, Total,
@@ -52,7 +52,6 @@
 ## octave functions the amounts of Total and Free memory will vary,
 ## due to Java's own cleaning up and your operating system's memory
 ## management.
-##
 ## @end deftypefn
 
 ## Author: Philip Nienhuis
@@ -62,22 +61,25 @@
 ## 2010-08-25 Corrected text on java memory assignments
 ## 2010-09-05 Further overhauled help text
 
-function [ j_mem ] = javamem ()
+function j_mem = javamem ()
 
-  rt = java_invoke ('java.lang.Runtime', 'getRuntime');
+  rt = java_invoke ("java.lang.Runtime", "getRuntime");
   rt.gc;
   jmem = cell (3, 1);
   jmem{1} = rt.maxMemory ().doubleValue ();
   jmem{2} = rt.totalMemory ().doubleValue ();
   jmem{3} = rt.freeMemory ().doubleValue ();
 
-  if (nargout < 1)
+  if (nargout == 0)
     printf ("\nJava virtual machine (JVM) memory info:\n");
-    printf ("Maximum available memory:        %5d MiB;\n", jmem{1} / 1024 / 1024);
+    printf ("Maximum available memory:        %5d MiB;\n",
+            jmem{1} / 1024 / 1024);
     printf ("   (...running garbage collector...)\n");
     printf ("OK, current status:\n");
-    printf ("Total memory in virtual machine: %5d MiB;\n", jmem{2} / 1024 / 1024);
-    printf ("Free memory in virtual machine:  %5d MiB;\n", jmem{3} / 1024 / 1024);
+    printf ("Total memory in virtual machine: %5d MiB;\n",
+            jmem{2} / 1024 / 1024);
+    printf ("Free memory in virtual machine:  %5d MiB;\n",
+            jmem{3} / 1024 / 1024);
     printf ("%d CPUs available.\n", rt.availableProcessors ());
   else
     j_mem = jmem;

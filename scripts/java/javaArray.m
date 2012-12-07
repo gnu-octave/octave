@@ -17,12 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{a} =} javaArray (@var{class}, @var{[M,N,...]})
-## @deftypefnx {Function file} {@var{a} =} javaArray (@var{class}, @var{M}, @var{N}, @dots{})
+## @deftypefn {Function file} {@var{a} =} javaArray (@var{class}, @var{sz})
+## @deftypefnx {Function file} {@var{a} =} javaArray (@var{class}, @var{m}, @var{n}, @dots{})
 ##
-## Creates a Java array of size @code{[@var{M}, @var{N}, @dots{}]} with
-## elements of class @var{class}.  @var{class} may be a Java object
-## representing a class or a string containing the fully qualified class name.
+## Creates a Java array of size @var{sz} with elements of class
+## @var{class}.  @var{class} may be a Java object representing a class
+## or a string containing the fully qualified class name.  The size of
+## the object may also be specified with individual integer arguments
+## @var{m}, @var{n}, etc.
 ##
 ## The generated array is uninitialized, all elements are set to null
 ## if @var{class} is a reference type, or to a default value (usually 0)

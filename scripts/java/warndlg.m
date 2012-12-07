@@ -25,7 +25,7 @@
 ## line.  The optional @var{title} (character string) can be used to
 ## decorate the dialog caption.
 ##
-## @seealso{helpdlg, inputdlg, listdlg, questiondlg}
+## @seealso{helpdlg, inputdlg, listdlg, questdlg}
 ## @end deftypefn
 
 function retval = warndlg (message, varargin)

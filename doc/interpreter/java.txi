@@ -39,776 +39,74 @@ If you want to call Octave from Java, you might want to use a library like
 @node Available Functions
 @section Available Functions
 
-@menu
-* javaclasspath::               
-* javaaddpath::                 
-* javarmpath::                  
-* javamem::                     
-* javaArray::                   
-* javaObject::                  
-* java_new::                    
-* javaMethod::                  
-* java_invoke::                 
-* java_get::                    
-* java_set::                    
-* javamethods::                 
-* javafields::                  
-* msgbox::                      
-* errordlg::                    
-* helpdlg::                     
-* inputdlg::                    
-* listdlg::                     
-* questdlg::                    
-* warndlg::                     
-@end menu
-
-@node javaclasspath
-@subsection javaclasspath
-@findex javaclasspath
-@anchor{doc-javaclasspath}
-@c - index -
 @cindex classpath, displaying
 @cindex classpath, dynamic
 @cindex dynamic classpath
 @cindex classpath, static
 @cindex static classpath
-@c - index -
+@DOCSTRING(javaclasspath)
 
-@deftypefn {Function file}  {} javaclasspath
-@deftypefnx {Function file} {@var{STATIC} =} javaclasspath
-@deftypefnx {Function file} {[@var{STATIC}, @var{DYNAMIC}] =} javaclasspath
-@deftypefnx {Function file} {@var{PATH} =} javaclasspath (@var{WHAT})
-
-Return the class path of the Java virtual machine as a cell array of strings. 
-
-If called without an input parameter:
-@itemize
-@item If no output variable is given, the result is simply printed 
-to the standard output.
-@item If one output variable @var{STATIC} is given, the result is
-the static classpath.
-@item If two output variables @var{STATIC} and @var{DYNAMIC} are 
-given, the first variable will contain the static classpath,
-the second will be filled with the dynamic claspath.
-@end itemize
-
-If called with a single input parameter @var{WHAT}:
-@itemize
-If no output parameter is given:
-@item The result is printed to the standard output similar to the call without input parameter.@*
-If the output parameter @var{PATH} is used:
-@item If @var{WHAT} is '-static' the static classpath is returned.
-@item If @var{WHAT} is '-dynamic' the dynamic  classpath is returned.
-@item If @var{WHAT} is '-all' the static and the dynamic classpath 
-are returned in a single cell array.
-@end itemize
-
-For the example two entries have been added to the static classpath using the file @code{classpath.txt}.
-
-Example: 
-@example
-Octave > javaclasspath('-all')
-   STATIC JAVA PATH
-
-      z:/someclasses.jar
-      z:/classdir/classfiles
-      
-   DYNAMIC JAVA PATH
-      - empty -
-
-Octave > javaaddpath('z:/dynamic');
-Octave > ps = javaclasspath('-all')
-ps =
-@{
-  [1,1] = z:/someclasses.jar
-  [1,2] = z:/classdir/classfiles
-  [1,3] = z:/dynamic
-@}
-@end example
-
-@seealso{@ref{doc-javaaddpath,,javaaddpath},
-         @ref{doc-javarmpath,,javarmpath},
-         @ref{doc-FAQ,,How to make Java classes available to Octave?}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javaaddpath
-@subsection javaaddpath
-@anchor{doc-javaaddpath}
-@c - index -
 @findex javaaddpath
 @cindex classpath, adding new path
 @cindex path, adding to classpath
 @cindex classpath, dynamic
 @cindex dynamic classpath, adding new path
-@c - index -
+@DOCSTRING(javaaddpath)
 
-@deftypefn {Function File} {} javaaddpath (@var{PATH})
-
-Add @var{PATH} to the dynamic class path of the Java virtual machine. @var{PATH} can be either a directory where .class files can be found, or a .jar file containing Java classes. In both cases the directory or file must exist. 
-
-Example: 
-
-This example adds a Java archive and a directory containing @var{.class} files to the @var{classpath} and displays the current @var{classpath} list. 
-
-@example
-Octave > javaaddpath('C:/java/myclasses.jar'); 
-Octave > javaaddpath('C:/java/classes'); 
-Octave > javaclasspath; 
-ans = 
-@{ 
-  [1,1] = C:\java\myclasses.jar 
-  [1,2] = C:\java\classes 
-@} 
-@end example
-@seealso{@ref{doc-javaclasspath,,javaclasspath}, @ref{doc-javarmpath,,javarmpath},
-         @ref{doc-FAQ,,How to make Java classes available to Octave?}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javarmpath
-@subsection javarmpath
-@anchor{doc-javarmpath}
-@c - index -
 @cindex classpath, removing path
 @cindex path, removing from classpath
-@c - index -
+@DOCSTRING(javarmpath)
 
-@deftypefn {Function File} {} javarmpath (@var{PATH})
-Remove @var{PATH} from the dynamic class path of the Java virtual machine. @var{PATH} can be either a directory where .class files can be found, or a .jar file containing Java classes. 
-
-Example: This example removes one of the directories added in the example for the @code{javaaddpath} function. 
-
-@example
-Octave > javarmpath('C:/java/classes'); 
-Octave > javaclasspath 
-@{ 
-  [1,1] = C:\java\myclasses.jar 
-@} 
-@end example
-
-@seealso{@ref{doc-javaaddpath,,javaaddpath}, @ref{doc-javaclasspath,,javaclasspath},
-         @ref{doc-FAQ,,How to make Java classes available to Octave?}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javamem
-@subsection javamem
-@anchor{doc-javamem}
-@c - index -
 @cindex memory, displaying Java memory status
-@c - index -
+@DOCSTRING(javamem)
 
-@deftypefn  {Function File} {} javamem
-@deftypefnx {Function File} {[@var{JMEM}] =} javamem
-
-Show current memory status of the java virtual machine (JVM)
-& run garbage collector.
-
-When no return argument is given the info is echoed to the screen.
-Otherwise, cell array @var{JMEM} contains @var{Maximum}, @var{Total}, and
-@var{Free} memory (in bytes).
-
-All java-based routines are run in the JVM's shared memory pool,
-a dedicated and separate part of memory claimed by the JVM from
-your computer's total memory (which comprises physical RAM and
-virtual memory / swap space on hard disk).
-
-The maximum available memory can be set using the file @code{java.opts}
-(in the same subdirectory where @code{javaaddpath.m} lives, see 
-@samp{which javaaddpath}. Usually that is: @*
-[/usr]/share/Octave/packages/java-1.2.8.
-
-@code{java.opts} is a plain text file. It can contain memory related 
-options, starting with @code{-X}.
-In the following exmaple, the first line specifies the initial 
-memory size in megabytes, the second line specifies the requested 
-maximum size:
-@example
--Xms64m
--Xmx512m
-@end example
-You can adapt these values if your system has limited available
-physical memory. When no @code{java.opts} file is present, the default
-assignments are depending on system hardware and Java version. 
-Typically these are an initial memory size of @math{RAM/64} and 
-a maximum memory size of @math{min(RAM/4, 1GB)}, where @var{RAM}
-is the amount of installed memory.
-
-In the output of javamem @var{Total memory} is what the operating
-system has currently assigned to the JVM and depends on actual 
-and active memory usage.
-@var{Free memory} is self-explanatory. During operation of java-based
-Octave functions the amounts of Total and Free memory will vary,
-due to java's own cleaning up and your operating system's memory
-management.
-
-Example:
-@example
-Octave > javamem
-Java virtual machine (JVM) memory info:
-Maximum available memory:          247 MB;
-   (...running garbage collector...)
-OK, current status:
-Total memory in virtual machine:    15 MB;
-Free memory in virtual machine:     15 MB;
-2 CPUs available.
-
-Octave > [MEM] = javamem()
-MEM =
-@{
-  [1,1] =  259522560
-  [2,1] =  16318464
-  [3,1] =  16085576
-@}
-@end example
-
-@seealso{@ref{doc-FAQ,,How can I handle memory limitations?}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javaArray
-@subsection javaArray
-@anchor{doc-javaArray}
-@c - index -
 @cindex array, creating a Java array
-@c - index -
+@DOCSTRING(javaArray)
 
-@deftypefn  {Function File} {ARRAY =} javaArray (@var{CLASS}, [@var{M}, @var{N}, ...])
-@deftypefnx {Function File} {ARRAY =} javaArray (@var{CLASS}, @var{M}, @var{N}, ...)
-
-Create a Java array of size @code{[M, N, ...]} with elements of class @var{CLASS}. @var{CLASS} can be a Java object representing a class or a string containing the fully qualified class name. 
-The generated array is uninitialized, all elements are set to null if @var{CLASS} is a reference type, or to a default value (usually 0) if @var{CLASS} is a primitive type. 
-
-Example: This example creates a (2 x 2) array of Java @var{String} objects and assigns a value to one of the elements. Finally it displays the type of @var{a}.
-@example
-Octave > a = javaArray('java.lang.String', 2, 2); 
-Octave > a(1,1) = 'Hello'; 
-Octave > a
-a =
-<Java object: java.lang.String[][]>
-@end example
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javaObject
-@subsection javaObject
-@anchor{doc-javaObject}
-@c - index -
 @cindex object, creating a Java object
-@c - index -
+@DOCSTRING(javaObject)
 
-@deftypefn  {Function File} {OBJECT =} javaObject (@var{CLASS}, [@var{ARG1}, ...,  @var{ARGN}])
-
-Create a Java object of class @var{CLASS}, by calling the class constructor with the given arguments @var{ARG1}, ..., @var{ARGN}. The @var{CLASS} name should be given in fully qualified string form (including any package prefix). In Matlab you should avoid to use the import statement and the short form of object creation. 
-
-Example: This example demonstrates two ways to create a Java @code{StringBuffer} object. The first variant creates an uninitialized @var{StringBuffer} object, while the second variant calls a constructor with the given initial @code{String}. Then it displays the type of @code{o}, and finally the content of the @code{StringBuffer} object is displayed by using its @code{toString} method.
-
-@example
-Octave > o = javaObject('java.lang.StringBuffer'); 
-Octave > o = javaObject('java.lang.StringBuffer', 'Initial'); 
-Octave > o 
-o =
-<Java object: java.lang.StringBuffer>
-Octave > o.toString 
-ans = Initial
-@end example
-
-Equivalent to the @code{java_new} function.
-For compatibility with Matlab it is recommended to use the @code{javaObject} function. 
-
-@seealso{@ref{doc-java_new,,java_new}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node java_new
-@subsection java_new
-@anchor{doc-java_new}
-@c - index -
 @cindex object, creating a Java object
-@c - index -
+@DOCSTRING(java_new)
 
-@deftypefn  {Function File} {OBJECT =} java_new (@var{CLASS}, [@var{ARG1}, ...,  @var{ARGN}])
-
-Create a Java object of class @var{CLASS}, by calling the class constructor with the given arguments @var{ARG1}, ..., @var{ARGN}. 
-Equivalent to the @code{javaObject} function. 
-For compatibility with Matlab it is recommended to use the @code{javaObject} function. 
-
-Example: 
-@example
-Octave > o = java_new('java.lang.StringBuffer', 'Initial'); 
-Octave > o 
-o =
-<Java object: java.lang.StringBuffer>
-Octave > o.toString 
-ans = Initial
-@end example
-
-@seealso{@ref{doc-javaObject,,javaObject}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javaMethod
-@subsection javaMethod
-@anchor{doc-javaMethod}
-@c - index -
 @cindex method, invoking a method of a Java object
-@c - index -
+@DOCSTRING(javaMethod)
 
-@deftypefn  {Function File} {RET =} javaMethod (@var{NAME}, @var{OBJECT}[, @var{ARG1}, ...,  @var{ARGN}])
-
-Invoke the method @var{NAME} on the Java object @var{OBJECT} with the arguments @var{ARG1}, ... For static methods, @var{OBJECT} can be a string representing the fully qualified name of the corresponding class. The function returns the result of the method invocation. 
-When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent. 
-
-Example: 
-@example
-Octave > ret = javaMethod("method1", x, 1.0, "a string")
-Octave > ret = x.method1(1.0, "a string") 
-@end example
-
-@seealso{@ref{doc-javamethods,,javamethods}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node java_invoke
-@subsection java_invoke
-@anchor{doc-java_invoke}
-@c - index -
 @cindex method, invoking a method of a Java object
-@c - index -
+@DOCSTRING(java_invoke)
 
-@deftypefn  {Function File} {RET =} java_invoke (@var{OBJECT}, @var{NAME}[, @var{ARG1}, ...,  @var{ARGN}])
-
-Invoke the method @var{NAME} on the Java object @var{OBJECT} with the arguments @var{ARG1}, ... For static methods, @var{OBJECT} can be a string representing the fully qualified name of the corresponding class. The function returns the result of the method invocation. Equivalent to the @code{javaMethod} function. When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent. 
-
-Example: 
-@example
-Octave > ret = java_invoke(x, "method1", 1.0, "a string") 
-Octave > ret = x.method1(1.0, "a string") 
-@end example
-
-@seealso{@ref{doc-javamethods,,javamethods}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node java_get
-@subsection java_get
-@anchor{doc-java_get}
-@c - index -
 @cindex field, returning value of Java object field
-@c - index -
+@DOCSTRING(java_get)
 
-@deftypefn  {Function File} {VAL =} java_get (@var{OBJECT}, @var{NAME})
-
-Get the value of the field @var{NAME} of the Java object @var{OBJECT}. For static fields, @var{OBJECT} can be a string representing the fully qualified name of the corresponding class. 
-
-When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent 
-
-Example: 
-@example
-Octave > java_get(x, "field1") 
-Octave > x.field1 
-@end example
-
-@seealso{@ref{doc-javafields,,javafields},
-         @ref{doc-java_set,,java_set}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node java_set
-@subsection java_set
-@anchor{doc-java_set}
-@c - index -
 @cindex field, setting value of Java object field
-@c - index -
+@DOCSTRING(java_set)
 
-@deftypefn  {Function File} {OBJECT =} java_set (@var{OBJECT}, @var{NAME}, @var{VALUE})
-
-Set the value of the field @var{NAME} of the Java object @var{OBJECT} to @var{VALUE}. For static fields, @var{OBJECT} can be a string representing the fully qualified named of the corresponding Java class. 
-When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent 
-
-Example: 
-@example
-Octave > java_set(x, "field1", val) 
-Octave > x.field1 = val 
-@end example
-
-@seealso{@ref{doc-javafields,,javafields},
-         @ref{doc-java_get,,java_get}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javamethods
-@subsection javamethods
-@anchor{doc-javamethods}
-@c - index -
 @cindex methods, displaying available methods of a Java object
-@c - index -
+@DOCSTRING(javamethods)
 
-@deftypefn   {Function File} {M =} javamethods (@var{CLASSNAME})
-@deftypefnx  {Function File} {M =} javamethods (@var{OBJECT})
-
-Given a string with a Java class name @var{CLASSNAME} or a regular Java object @var{OBJECT}, this function returns a cell array containing descriptions of all methods of the Java class @var{CLASSNAME} respectively the class of @var{OBJECT}. 
-
-Examples: The first example shows how the methods of a class can be queried, while the second example works with the methods of a concrete instance of a class. Note that creation of a @code{java.lang.Double} object requires an initializer (in the example the value 1.2). 
-@example
-Octave > m = javamethods('java.lang.Double'); 
-Octave > size(m) 
-ans = 
-  1 30 
-
-Octave > m@{7@} 
-ans = double longBitsToDouble(long) 
-
-Octave > o = javaObject('java.lang.Double', 1.2); 
-Octave > m = javamethods(o); 
-Octave > size(m) 
-ans = 
-  1 30 
-
-Octave > m@{7@} 
-ans = double longBitsToDouble(long) 
-@end example
-
-@seealso{@ref{doc-javafields,,javafields},
-         @ref{doc-java_invoke,,java_invoke}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node javafields
-@subsection javafields
-@anchor{doc-javafields}
-@c - index -
 @cindex fields, displaying available fields of a Java object
-@c - index -
+@DOCSTRING(javafields)
 
-@deftypefn   {Function File} {F =} javafields (@var{CLASSNAME})
-@deftypefnx  {Function File} {F =} javafields (@var{OBJECT})
-
-Given a string with a Java class name @var{CLASSNAME} or a regular Java object @var{OBJECT}, this function returns a cell array containing the descriptions for all fields of the Java class @var{CLASSNAME} respectively the class of @var{OBJECT}. 
-
-Examples: 
-
-The first example shows how the fields of a class can be queried without creating an instance of the class. 
-@example
-Octave > f = javafields('java.lang.Double'); 
-Octave > size(f)
-ans =
-  1 10
-
-Octave > f@{7@}
-ans = public static final int java.lang.Double.MAX_EXPONENT 
-@end example
-
-The second example works with the fields of an instance of a class. Note that creation of a @code{java.lang.Double} object requires an initializer (in the example a value of 1.2 is specified). 
-@example
-Octave > o = javaObject('java.lang.Double', 1.2); 
-Octave > f = javafields(o); 
-Octave > size(f) 
-ans = 
-  1 10 
-
-Octave > f@{7@} 
-ans = public static final int java.lang.Double.MAX_EXPONENT 
-@end example
-
-@seealso{@ref{doc-java_set,,java_set},
-         @ref{doc-java_get,,java_get}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node msgbox
-@subsection msgbox
-@anchor{doc-msgbox}
-@c - index -
 @cindex dialog, displaying a warning dialog
-@c - index -
+@DOCSTRING(msgbox)
 
-@deftypefn   {Function File} {F =} msgbox (@var{MESSAGE})
-@deftypefnx  {Function File} {F =} msgbox (@var{MESSAGE}, @var{TITLE})
-@deftypefnx  {Function File} {F =} msgbox (@var{MESSAGE}, @var{TITLE}, @var{ICON})
-
-Displays a @var{MESSAGE} using a dialog box. The parameter @var{TITLE} can be used to optionally decorate the dialog caption. 
-The third optional parameter @var{ICON} can be either @code{'error'}, @code{'help'} or @code{'warn'}
-and selectes the corresponding icon.
-If it is omitted, no icon is shown.
-
-Examples: The first example shows a dialog box without a caption text, whereas the second example specifies a caption text of its own. 
-The third example also demonstrates how a character 
-according to the @TeX{} symbol set can be specified. It is important to include a space character
-after the symbol code and how to embed a newline character (ASCII code 10) into the string.
-
-@example
-Octave > msgbox('This is an important message'); 
-Octave > msgbox('Do not forget to feed the cat.', 'Remember');
-Octave > msgbox(['I \heartsuit Octave!',10, ...
-                  ' Even if I hate it sometimes.'], ...
-                 'I Confess','warn');
-@end example
-
-@c @image{java-images/image003}
-
-@seealso{@ref{doc-errordlg,,errordlg},
-         @ref{doc-helpdlg,,helpdlg},
-         @ref{doc-warndlg,,warndlg}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node errordlg
-@subsection errordlg
-@anchor{doc-errordlg}
-@c - index -
 @cindex dialog, displaying an error dialog
-@c - index -
+@DOCSTRING(errordlg)
 
-@deftypefn   {Function File} {F =} errordlg (@var{MESSAGE})
-@deftypefnx  {Function File} {F =} errordlg (@var{MESSAGE}, @var{TITLE})
-
-Displays the @var{MESSAGE} using an error dialog box. The @var{TITLE} can be used optionally to decorate the dialog caption instead of the default title "Error Dialog". 
-
-Examples: The first example shows a dialog box with default caption, whereas the second example specifies a its own caption 
-@example
-Octave > errordlg('Oops, an expected error occured'); 
-@end example
-@c @image{java-images/image001
-@example
-Octave > errordlg('Another error occured', 'Oops'); 
-@end example
-
-@seealso{@ref{doc-helpdlg,,helpdlg},
-         @ref{doc-inputdlg,,inputdlg},
-         @ref{doc-listdlg,,listdlg},
-         @ref{doc-questdlg,,questdlg},
-         @ref{doc-warndlg,,warndlg}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node helpdlg
-@subsection helpdlg
-@anchor{doc-helpdlg}
-@c - index -
 @cindex dialog, displaying a help dialog
-@c - index -
+@DOCSTRING(helpdlg)
 
-@deftypefn   {Function File} {F =} helpdlg (@var{MESSAGE})
-@deftypefnx  {Function File} {F =} helpdlg (@var{MESSAGE}, @var{TITLE})
-
-Displays the @var{MESSAGE} using a help dialog box. The help message can consist of multiple lines, separated by a newline character. The @var{TITLE} can be used optionally to decorate the dialog caption bar instead of the default title "Help Dialog". 
-
-Examples: The first example shows a dialog box with default caption, whereas the next two examples specify their own caption. Note that if the backslash escape notation is used in a double quoted string, it is immediately replaced by Octave with a newline.
-If it is contained in a single quoted string, it is not replaced by Octave, 
-but later by the dialog function.
-
-@example
-Octave > helpdlg('This is a short notice'); 
-Octave > helpdlg(['line #1',10,'line #2'], 'Inventory'); 
-Octave > helpdlg("1 eel\n9 buckazoids\n2 peas", 'Inventory'); 
-@end example
-
-@c @image{java-images/image004}
-
-@seealso{@ref{doc-errordlg,,errordlg},
-         @ref{doc-inputdlg,,inputdlg},
-         @ref{doc-listdlg,,listdlg},
-         @ref{doc-questdlg,,questdlg},
-         @ref{doc-warndlg,,warndlg}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node inputdlg
-@subsection inputdlg
-@anchor{doc-inputdlg}
-@c - index -
 @cindex dialog, displaying an input dialog
-@c - index -
+@DOCSTRING(inputdlg)
 
-@deftypefn   {Function File} {C =} inputdlg (@var{PROMPT})
-@deftypefnx  {Function File} {C =} inputdlg (@var{PROMPT}, @var{TITLE})
-@deftypefnx  {Function File} {C =} inputdlg (@var{PROMPT}, @var{TITLE}, @var{ROWSCOLS})
-@deftypefnx  {Function File} {C =} inputdlg (@var{PROMPT}, @var{TITLE}, @var{ROWSCOLS}, @var{DEFAULTS})
-
-Returns the user's inputs from a multi-textfield dialog box in form of a cell array of strings. If the user closed the dialog with the Cancel button, en empty cell array is returned. This can be checked with the @var{isempty} function. The first argument @var{PROMPT} is mandatory. It is a cell array with strings labeling each text field. The optional string @var{TITLE} can be used as the caption of the dialog. The size of the text fields can be defined by the argument @var{ROWSCOLS}, which can be either a scalar to define the number of columns used for each text field, a vector to define the number of rows for each text field individually, or a matrix to define the number of rows and columns for each text field individually. It is possible to place default values into the text fields by supplying a cell array of strings for the argument @var{DEFAULTS}. 
-
-Examples: The first example shows a simple usage of the input dialog box without defaults. 
-@example
-Octave > prompt = @{'Width','Height','Depth'@}; 
-Octave > dims = inputdlg(prompt, 'Enter Box Dimensions'); 
-Octave > volume = str2num(dims@{1@}) * ... 
-                  str2num(dims@{2@}) * str2num(dims@{3@}); 
-@end example
-
-@c @image{java-images/image005}
-
-The second example shows the application of a scalar for the number of rows and a cell array with default values. 
-@example
-Octave > prompt = @{'Width', 'Height', 'Depth'@}; 
-Octave > defaults = @{'1.1', '2.2', '3.3'@}; 
-Octave > title = 'Enter Box Dimensions'; 
-Octave > dims = inputdlg(prompt, title, 1, defaults); 
-Octave > dims 
-dims = 
-@{
-  [1,1] = 1.1 
-  [2,1] = 2.2 
-  [3,1] = 3.3 
-@}
-@end example
-
-@c @image{java-images/image006}
-
-The third example shows the application of row height and column width specification.. 
-@example
-Octave > prompt = @{'Width', 'Height', 'Depth'@}; 
-Octave > defaults = @{'1.1', '2.2', '3.3'@}; 
-Octave > rc = [1,10; 2,20; 3,30]; 
-Octave > title = 'Enter Box Dimensions'; 
-Octave > dims = inputdlg(prompt, title, rc, defaults); 
-@end example
-
-@c @image{java-images/image007}
-
-@seealso{@ref{doc-errordlg,,errordlg},
-         @ref{doc-helpdlg,,helpdlg},
-         @ref{doc-listdlg,,listdlg},
-         @ref{doc-questdlg,,questdlg},
-         @ref{doc-warndlg,,warndlg}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node listdlg
-@subsection listdlg
-@anchor{doc-listdlg}
-@c - index -
 @cindex dialog, displaying a list dialog
-@c - index -
+@DOCSTRING(listdlg)
 
-@deftypefn   {Function File} {[SEL, OK] =} listdlg (@var{KEY}, @var{VALUE}[, @var{KEY}, @var{VALUE}, ...])
-
-This function returns the inputs from a list dialog box. The result is returned as a vector of indices and a flag. The vector @var{SEL} contains the 1-based indices of all list items selected by the user. The flag @var{OK} is 1 if the user closed the dialog with the OK Button, otherwise it is 0 and @var{SEL} is empty.. The arguments of this function are specified in the form of @var{KEY}, @var{VALUE} pairs. At least the @code{'ListString'} argument pair must be specified. It is also possible to preselect items in the list in order to provide a default selection. 
-
-The @var{KEY} and @var{VALUE} pairs can be selected from the following list: 
-
-@table @code
-@item ListString
-a cell array of strings comprising the content of the list.
-@item SelectionMode
-can be either @code{'single'} or @code{'multiple'}. 
-@item ListSize
-a vector with two elements @code{[width, height]} defining the size of the list field in pixels. 
-@item InitialValue
-a vector containing 1-based indices of preselected elements.
-@item Name
-a string to be used as the dialog caption.
-@item PromptString
-a cell array of strings to be displayed above the list field.
-@item OKString
-a string used to label the OK button.
-@item CancelString
-a string used to label the Cancel button.
-@end table
-
-Example:
-@example
-Octave > [s,ok] = listdlg('ListString', ... 
-                  @{'An item', 'another', 'yet another'@}, ...
-                  'Name', 'Selection Dialog', ...
-                  'SelectionMode', 'Multiple', ...
-                  'PromptString',['Select an item...',10,'...or multiple items']);
-
-Octave > imax = length(s); 
-Octave > for i=1:1:imax 
-Octave >   disp(s(i)); 
-Octave > end 
-@end example
-
-@c @image{java-images/image002}
-
-@seealso{@ref{doc-errordlg,,errordlg},
-         @ref{doc-helpdlg,,helpdlg},
-         @ref{doc-inputdlg,,inputdlg},
-         @ref{doc-questdlg,,questdlg},
-         @ref{doc-warndlg,,warndlg}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node questdlg
-@subsection questdlg
-@anchor{doc-questdlg}
-@c - index -
 @cindex dialog, displaying a question dialog
-@c - index -
+@DOCSTRING(questdlg)
 
-@deftypefn   {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE})
-@deftypefnx  {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE}, @var{DEFAULT})
-@deftypefnx  {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE}, @var{BTN1}, @var{BTN2}, @var{DEFAULT})
-@deftypefnx  {Function File} {C =} questdlg (@var{MESSAGE}, @var{TITLE}, @var{BTN1}, @var{BTN2}, @var{BTN3}, @var{DEFAULT})
-
-Displays the @var{MESSAGE} using a question dialog box with a caption @var{TITLE}. The dialog contains two or three buttons which all close the dialog. It returns the caption of the activated button.
-
-If only @var{MESSAGE} and @var{TITLE} are specified, three buttons with the default captions "Yes",
-"No", "Cancel" are used.
-The string @var{DEFAULT} identifies the default button, which is activated by pressing the ENTER key. It must match one of the strings given in @var{BTN1}, @var{BTN2} or @var{BTN3}. If only two button captions @var{BTN1} and @var{BTN2} are specified, the dialog will have only these two buttons. 
-
-
-Examples: The first example shows a dialog box with two buttons, whereas the next example demonstrates the use of three buttons. 
-@example
-Octave > questdlg('Select your gender', 'Sex', ... 
-                  'Male', 'Female', 'Female'); 
-@end example
-
-@c @image{java-images/image008}
-
-@example
-Octave > questdlg('Select your gender', 'Sex', ... 
-                  'Male', 'dont know', 'Female', 'Female'); 
-@end example
-
-@c @image{java-images/image009}
-
-@seealso{@ref{doc-errordlg,,errordlg},
-         @ref{doc-helpdlg,,helpdlg},
-         @ref{doc-inputdlg,,inputdlg},
-         @ref{doc-listdlg,,listdlg},
-         @ref{doc-warndlg,,warndlg}}
-@end deftypefn
-
-@c ------------------------------------------------------------------------
-@node warndlg
-@subsection warndlg
-@anchor{doc-warndlg}
-@c - index -
 @cindex dialog, displaying a warning dialog
-@c - index -
-
-@deftypefn   {Function File} {F =} warndlg (@var{MESSAGE})
-@deftypefnx  {Function File} {F =} warndlg (@var{MESSAGE}, @var{TITLE})
-
-Displays a @var{MESSAGE} using a warning dialog box. The @var{TITLE} can be used optionally to decorate the dialog caption instead of the default title "Warning Dialog". 
-
-Examples: The first example shows a dialog box with default caption, whereas the second example specifies a caption text of its own. The second example also demonstrates how a character 
-according to the @TeX{} symbol set can be specified. It is important to include a space character
-after the symbol code. The \n character can be used to start a new line. 
-The third example shows an alternate way to embed the newline character (the newline character has the ASCII code 10) into the string.
-Please refer to the Octave manual for the difference between single and double quoted
-strings.
-
-@example
-Octave > warndlg('An expected warning occured'); 
-Octave > warndlg('I \heartsuit Octave!\nEven if I hate her sometimes.', ...
-                 'Confession');
-Octave > warndlg(['I \heartsuit Octave!',10, ...
-                  ' Even if I hate her sometimes.'], ...
-                 'I Confess');
-@end example
-
-@c @image{java-images/image003}
-
-@seealso{@ref{doc-errordlg,,errordlg},
-         @ref{doc-helpdlg,,helpdlg},
-         @ref{doc-inputdlg,,inputdlg},
-         @ref{doc-listdlg,,listdlg},
-         @ref{doc-questdlg,,questdlg}}
-@end deftypefn
+@DOCSTRING(warndlg)
 
 @c ------------------------------------------------------------------------
 @node FAQ - Frequently asked Questions
@@ -896,27 +194,27 @@ Classes which are used only by a specific script should be placed in the @var{dy
 
 Example: 
 @example
-Octave > base_path = 'C:/Octave/java_files'; 
+octave> base_path = 'C:/Octave/java_files'; 
 
-Octave > % add two JARchives to the dynamic classpath 
-Octave > javaaddpath([base_path, '/someclasses.jar']); 
-Octave > javaaddpath([base_path, '/moreclasses.jar']); 
+octave> % add two JARchives to the dynamic classpath 
+octave> javaaddpath([base_path, '/someclasses.jar']); 
+octave> javaaddpath([base_path, '/moreclasses.jar']); 
 
-Octave > % check the dynamic classpath 
-Octave > p = javaclasspath; 
-Octave > disp(p@{1@}); 
+octave> % check the dynamic classpath 
+octave> p = javaclasspath; 
+octave> disp(p@{1@}); 
 C:/Octave/java_files/someclasses.jar
-Octave > disp(p@{2@}); 
+octave> disp(p@{2@}); 
 C:/Octave/java_files/moreclasses.jar
 
-Octave > % remove the first element from the classpath 
-Octave > javarmpath([base_path, '/someclasses.jar']); 
-Octave > p = javaclasspath; 
-Octave > disp(p@{1@}); 
+octave> % remove the first element from the classpath 
+octave> javarmpath([base_path, '/someclasses.jar']); 
+octave> p = javaclasspath; 
+octave> disp(p@{1@}); 
 C:/Octave/java_files/moreclasses.jar
 
-Octave > % provoke an error
-Octave > disp(p@{2@}); 
+octave> % provoke an error
+octave> disp(p@{2@}); 
 error: A(I): Index exceeds matrix dimension. 
 @end example
 
@@ -991,11 +289,11 @@ The @code{-D} options can be used to define system properties which can then be 
 @end example
 The value of this property can then be retrieved as a string by a Java object or in Octave:
 @example
-Octave > javaMethod('java.lang.System', 'getProperty', 'MyProperty');
+octave> javaMethod('java.lang.System', 'getProperty', 'MyProperty');
 ans = 12.34
 @end example
 
-@seealso{@ref{doc-javamem,,javamem}}
+@seealso{javamem}
 
 @c ------------------------------------------------------------------------
 @node How to compile the java package in Octave?
@@ -1023,18 +321,18 @@ Most Octave installations come with the @var{java} package pre-installed. In cas
 Check whether the @var{java} package is already installed by issuing
 the @code{pkg list} command:
 @example
-Octave > pkg list
+octave> pkg list
 Package Name  | Version | Installation directory
 --------------+---------+-----------------------
         java *|   1.2.8 | /home/octavio/octave/java-1.2.8
-Octave > 
+octave> 
 @end example
 
 @noindent
 If the @var{java} package appears in the list you must uninstall it first by issuing the command 
 @example
-Octave > pkg uninstall java
-Octave > pkg list
+octave> pkg uninstall java
+octave> pkg list
 @end example
 
 Now the java package should not be listed anymore. If you have used the @var{java} package during the current session of Octave, you have to exit and restart Octave before you can uninstall the package. This is because the system keeps certain libraries in memory after they have been loaded once.
@@ -1054,13 +352,13 @@ Do not use backslashes but ordinary slashes in the path.
 Set the environment variable @code{JAVA_HOME} according to your local JDK installation. Please adapt the path in the following examples according to the JDK installation on your system.@*
 If you are using a Windows system that might be: 
 @example
-Octave > setenv("JAVA_HOME","C:/Java/jdk1.6.0_21");
+octave> setenv("JAVA_HOME","C:/Java/jdk1.6.0_21");
 @end example
 Note, that on both system types, Windows as well as Linux, you must use the forward slash '/' as the separator, not the backslash '\'.
 
 If you are using a Linux system this would look probably more like: 
 @example
-Octave > setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
+octave> setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
 @end example
 
 @c ---------
@@ -1072,23 +370,23 @@ Octave> pkg install -verbose z:/java-1.2.8.tar.gz
 @end example
 or if you have Linux and the package file is stored in your home directory: 
 @example
-Octave > pkg install -verbose ~/java-1.2.8.tar.gz
+octave> pkg install -verbose ~/java-1.2.8.tar.gz
 @end example
 The option @code{-verbose} will produce some lengthy output, which should not show any errors 
 (maybe a few warnings at best). 
 
 You can then produce a list of all installed packages: 
 @example
-Octave > pkg list
+octave> pkg list
 @end example
 
 This list of packages should now include the package @var{java}:
 @example
-Octave > pkg list
+octave> pkg list
 Package Name  | Version | Installation directory
 --------------+---------+-----------------------
         java *|   1.2.8 | /home/octavio/octave/java-1.2.8
-Octave > 
+octave> 
 @end example
 
 @c ---------
@@ -1097,7 +395,7 @@ Octave >
 
 The following code creates a Java string object, which however is automatically converted to an Octave string:
 @example
-Octave > s = javaObject('java.lang.String', 'Hello OctaveString') 
+octave> s = javaObject('java.lang.String', 'Hello OctaveString') 
 s = Hello OctaveString 
 @end example
 
@@ -1117,21 +415,21 @@ java.lang.String
 
 If you instead create an object for which no "auto-boxing" is implemented, @code{javaObject} returns the genuine Java object: 
 @example
-Octave > v = javaObject('java.util.Vector') 
+octave> v = javaObject('java.util.Vector') 
 v = 
 <Java object: java.util.Vector> 
-Octave > v.add(12); 
-Octave > v.get(0) 
+octave> v.add(12); 
+octave> v.get(0) 
 ans = 12 
 @end example
 
 If you have created such a Java object, you can apply all methods of the Java class to the returned object. Note also that for some objects you must specify an initializer: 
 @example
 % not: 
-Octave > d = javaObject('java.lang.Double') 
+octave> d = javaObject('java.lang.Double') 
 error: [java] java.lang.NoSuchMethodException: java.lang.Double 
 % but: 
-Octave > d = javaObject('java.lang.Double',12.34) 
+octave> d = javaObject('java.lang.Double',12.34) 
 d = 12.340 
 @end example
 
@@ -1148,13 +446,7 @@ The dialog functions contain a translation table for @TeX{} like symbol codes. T
 
 Each @TeX{} symbol code must be terminated by a space character to make it distinguishable from the surrounding text. Therefore the string @samp{\alpha =12.0} will produce the desired result, whereas @samp{\alpha=12.0} would produce the literal text @var{'\alpha=12.0'}.
 
-@seealso{@ref{doc-errordlg,,errordlg},
-         @ref{doc-helpdlg,,helpdlg},
-         @ref{doc-inputdlg,,inputdlg},
-         @ref{doc-listdlg,,listdlg},
-         @ref{doc-msgbox,,msgbox},
-         @ref{doc-questdlg,,questdlg},
-         @ref{doc-warndlg,,warndlg}}
+@seealso{errordlg, helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
 
 @need 5000
 @c ---------------------------------

@@ -20,15 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __JAVA__H__
-#define __JAVA__H__
+#if !defined (octave___java__h)
+#define octave___java__h 1
 
-#include "oct.h"
-#include "config.h"
-#ifndef OCTAVE_EXPORT
-#include "oct-dlldefs.h"
-#endif // OCTAVE_EXPORT
 #include <jni.h>
+
+#include <oct-obj.h>
+#include <ov.h>
 
 #ifdef JAVAPKG_BUILD
 # define JAVAPKG_API OCTAVE_EXPORT

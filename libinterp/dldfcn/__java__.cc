@@ -40,13 +40,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "__java__.h"
 #include "cmd-edit.h"
+#include "defun-dld.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "load-path.h"
 #include "oct-env.h"
-#include "oct-env.h"
 #include "oct-shlib.h"
 #include "parse.h"
+#include "variables.h"
 
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *args);
 typedef jint (JNICALL *JNI_GetCreatedJavaVMs_t) (JavaVM **pvm, jsize bufLen, jsize *nVMs);

@@ -102,17 +102,17 @@ class JAVAPKG_API octave_java : public octave_base_value
 {
 public:
   octave_java (void)
-    : java_object (0), java_class (0)
+    : octave_base_value (), java_object (0), java_class (0)
     { }
 
   octave_java (const octave_java& jobj)
-    : java_object (0), java_class (0)
+    : octave_base_value (jobj), java_object (0), java_class (0)
     {
       init (jobj.java_object, jobj.java_class);
     }
 
-  octave_java (jobject obj, jclass cls = 0)
-    : java_object (0)
+  octave_java (const jobject& obj, jclass cls = 0)
+    : octave_base_value (), java_object (0)
     {
       init (obj, cls);
     }

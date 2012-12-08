@@ -18,11 +18,6 @@ package org.octave;
 
 public class OctaveReference
 {
-	static
-	{
-		System.load (System.getProperty ("octave.java.path") + java.io.File.separator + "__java__.oct");
-	}
-  
 	private int ID;
 
 	public OctaveReference(int ID)

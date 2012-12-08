@@ -38,14 +38,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <clocale>
 
 #include "Cell.h"
-#include "__java__.h"
 #include "cmd-edit.h"
-#include "defun-dld.h"
+#include "defaults.h"
+#include "defun.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "load-path.h"
 #include "oct-env.h"
 #include "oct-shlib.h"
+#include "ov-java.h"
 #include "parse.h"
 #include "variables.h"
 
@@ -252,51 +253,19 @@ set_dll_directory (const std::string& dir = "")
 #endif
 
 static std::string
-get_module_path (const std::string& name, bool strip_name = true)
+initial_java_dir (void)
 {
-  std::string retval;
+  static std::string java_dir;
 
-  retval = octave_env::make_absolute (load_path::find_file (name),
-                                      octave_env::get_current_directory ());
-
-  if (! retval.empty ())
+  if (java_dir.empty ())
     {
-      if (strip_name)
-      {
-        size_t pos = retval.rfind (file_ops::dir_sep_str () + name);
+      java_dir = octave_env::getenv ("OCTAVE_JAVA_DIR");
 
-        if (pos != std::string::npos)
-          retval.resize (pos);
-        else
-          throw std::string ("No module path in ") + retval;
-      }
+      if (java_dir.empty ())
+        java_dir = Vfcn_file_dir + file_ops::dir_sep_str () + "java";
     }
-  else
-    throw std::string ("Could not find file ") + name;
 
-  return retval;
-}
-
-static std::string
-initial_java_dir (bool arch_dependent = false)
-{
-  static std::string path1;
-  static std::string path2;
-
-  if (arch_dependent)
-    {
-      if (path1.empty ())
-        path1 = get_module_path ("__java__.oct", true);
-
-      return path1;
-    }
-  else
-    {
-      if (path2.empty ())
-        path2 = get_module_path ("javaclasspath.m", true);
-
-      return path2;
-    }
+  return java_dir;
 }
 
 // Read the content of a file filename (usually "classpath.txt")
@@ -350,19 +319,23 @@ read_classpath_txt (const std::string& filepath)
 static std::string
 initial_class_path (void)
 {
-  std::string retval = initial_java_dir ();
+  std::string java_dir = initial_java_dir ();
+
+  std::string retval = java_dir;
 
   // find octave.jar file
   if (! retval.empty ())
     {
-      std::string jar_file = get_module_path ("octave.jar", false);
+      std::string sep = file_ops::dir_sep_str ();
+
+      std::string jar_file = java_dir + sep + "octave.jar";
+
       file_stat jar_exists (jar_file);
 
       if (jar_exists)
         {
           // initialize static classpath to octave.jar
           retval = jar_file;
-
 
           // The base classpath has been set.  Try to find the optional
           // file "classpath.txt" in two places.  The users classes will
@@ -376,7 +349,8 @@ initial_class_path (void)
           // Try to read the file "classpath.txt" in the user's home
           // directory.
 
-          cp_file = file_ops::tilde_expand ("~" + file_ops::dir_sep_str () + str_filename);
+          std::string home_dir = "~" + sep + str_filename;
+          cp_file = file_ops::tilde_expand (home_dir);
           cp_exists = file_stat (cp_file);
           if (cp_exists)
             {
@@ -389,7 +363,7 @@ initial_class_path (void)
 
           // Try to read a file "classpath.txt" in the package directory.
 
-          cp_file = initial_java_dir () + file_ops::dir_sep_str () + str_filename;
+          cp_file = java_dir + sep + str_filename;
           cp_exists = file_stat (cp_file);
           if (cp_exists)
             {
@@ -554,10 +528,9 @@ initialize_jvm (void)
       JVMArgs vm_args;
 
       vm_args.add ("-Djava.class.path=" + initial_class_path ());
-      vm_args.add ("-Doctave.java.path=" + initial_java_dir (true));
       vm_args.add ("-Xrs");
       vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
-      vm_args.read_java_opts (initial_java_dir (false) + file_ops::dir_sep_str () + "java.opts");
+      vm_args.read_java_opts (initial_java_dir () + file_ops::dir_sep_str () + "java.opts");
 
 # if !defined (__APPLE__) && !defined (__MACH__)
 
@@ -571,7 +544,7 @@ initialize_jvm (void)
 #else
 
       if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **> (&current_env),
-                        vm_args.to_args ()) != JNI_OK)
+                            vm_args.to_args ()) != JNI_OK)
         throw std::string ("unable to start Java VM in ")+jvm_lib_path;
 
     }
@@ -1390,7 +1363,7 @@ initialize_java (void)
     }
 }
 
-DEFUN_DLD (java_init, , ,
+DEFUN (java_init, , ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} java_init ()\n\
 Undocumented internal function.\n\
@@ -1406,7 +1379,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN_DLD (java_exit, , ,
+DEFUN (java_exit, , ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} java_exit ()\n\
 Undocumented internal function.\n\
@@ -1419,7 +1392,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN_DLD (java_new, args, ,
+DEFUN (java_new, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{obj} =} java_new (@var{name}, @var{arg1}, ...)\n\
 Create a Java object of class @var{name}, by calling the class constructor with the\n\
@@ -1435,7 +1408,7 @@ arguments @var{arg1}, ...\n\
   return _java_new (args);
 }
 
-DEFUN_DLD (javaObject, args, ,
+DEFUN (javaObject, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{obj} =} javaObject (@var{name}, @var{arg1}, ...)\n\
 Create a Java object of class @var{name}, by calling the class constructor with the\n\
@@ -1484,7 +1457,7 @@ static octave_value _java_new (const octave_value_list& args)
   return retval;
 }
 
-DEFUN_DLD (java_invoke, args, ,
+DEFUN (java_invoke, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{ret} =} java_invoke (@var{obj}, @var{name}, @var{arg1}, ...)\n\
 Invoke the method @var{name} on the Java object @var{obj} with the arguments\n\
@@ -1506,7 +1479,7 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
   return _java_invoke (args);
 }
 
-DEFUN_DLD (javaMethod, args, ,
+DEFUN (javaMethod, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{ret} =} javaMethod (@var{name}, @var{obj}, @var{arg1}, ...)\n\
 Invoke the method @var{name} on the Java object @var{obj} with the arguments\n\
@@ -1594,7 +1567,7 @@ _java_invoke (const octave_value_list& args)
   return retval;
 }
 
-DEFUN_DLD (java_get, args, ,
+DEFUN (java_get, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} java_get (@var{obj}, @var{name})\n\
 Get the value of the field @var{name} of the Java object @var{obj}. For\n\
@@ -1648,7 +1621,7 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
   return retval;
 }
 
-DEFUN_DLD (java_set, args, ,
+DEFUN (java_set, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{obj} =} java_set (@var{obj}, @var{name}, @var{val})\n\
 Set the value of the field @var{name} of the Java object @var{obj} to @var{val}.\n\
@@ -1702,7 +1675,7 @@ a shortcut syntax. For instance, the two following statements are equivalent\n\
   return retval;
 }
 
-DEFUN_DLD (java2mat, args, ,
+DEFUN (java2mat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} java2mat (@var{obj})\n\
 Undocumented internal function.\n\
@@ -1733,16 +1706,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN_DLD (__java__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __java__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  return octave_value ();
-}
-
-DEFUN_DLD (java_convert_matrix, args, nargout,
+DEFUN (java_convert_matrix, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} java_convert_matrix ()\n\
 Query or set the internal variable that determines FIXME.\n\
@@ -1751,7 +1715,7 @@ Query or set the internal variable that determines FIXME.\n\
   return SET_INTERNAL_VARIABLE (java_convert_matrix);
 }
 
-DEFUN_DLD (java_unsigned_conversion, args, nargout,
+DEFUN (java_unsigned_conversion, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} java_unsigned_conversion ()\n\
 Query or set the internal variable that determines FIXME.\n\
@@ -1760,7 +1724,7 @@ Query or set the internal variable that determines FIXME.\n\
   return SET_INTERNAL_VARIABLE (java_unsigned_conversion);
 }
 
-DEFUN_DLD (java_debug, args, nargout,
+DEFUN (java_debug, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} java_debug ()\n\
 Query or set the internal variable that determines FIXME.\n\

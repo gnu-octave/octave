@@ -10,10 +10,6 @@ BEGIN {
   print "  dldfcn/module-files \\"
   print "  dldfcn/oct-qhull.h"
   print ""
-## Kluge...
-  print "DLDFCN_INC = \\"
-  print "  dldfcn/__java__.h"
-  print ""
 }
 /^#.*/ { next; }
 {

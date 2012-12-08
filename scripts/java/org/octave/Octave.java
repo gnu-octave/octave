@@ -20,11 +20,6 @@ import java.util.*;
 
 public class Octave
 {
-  static
-  {
-    System.load (System.getProperty ("octave.java.path") + java.io.File.separator + "__java__.oct");
-  }
-
   private static Object notifyObject = null;
   private static Object[] args = null;
   private static LinkedList invokeList = new LinkedList();

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave___java__h)
-#define octave___java__h 1
+#if !defined (octave_java_h)
+#define octave_java_h 1
 
 #include <jni.h>
 
@@ -321,4 +321,4 @@ private:
   std::string java_type;
 };
 
-#endif /* __JAVA__H__ */
+#endif

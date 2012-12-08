@@ -107,8 +107,7 @@ octinclude_HEADERS = \
   $(PARSE_TREE_INC) \
   $(OPERATORS_INC) \
   $(INTERP_CORE_INC) \
-  $(INTERPFCN_INC) \
-  $(DLDFCN_INC)
+  $(INTERPFCN_INC)
 
 nodist_octinclude_HEADERS = \
   interp-core/mxarray.h \

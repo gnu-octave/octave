@@ -76,6 +76,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "ov-null-mat.h"
 #include "ov-lazy-idx.h"
+#include "ov-java.h"
 
 #include "defun.h"
 #include "error.h"
@@ -2754,6 +2755,7 @@ install_types (void)
   octave_null_sq_str::register_type ();
   octave_lazy_index::register_type ();
   octave_oncleanup::register_type ();
+  octave_java::register_type ();
 }
 
 DEFUN (sizeof, args, ,

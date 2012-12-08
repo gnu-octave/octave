@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined HAVE_JAVA
 
-#if defined (HAVE_WINDWOS_H)
+#if defined (HAVE_WINDOWS_H)
 #include <windows.h>
 #endif
 

@@ -124,6 +124,27 @@ PKG_PROG_PKG_CONFIG
 config_opts=$ac_configure_args
 AC_SUBST(config_opts)
 
+### Define the path to the shell on the host system.  Most systems will
+### ensure /bin/sh is the default shell so this can be safely ignored by
+### almost everyone.  However, when building for Android, for example,
+### this will need to be set.
+SHELL_PATH=/bin/sh
+AC_ARG_WITH([shell],
+  [AS_HELP_STRING([--with-shell=SHELL],
+    [use SHELL as the shell interpreter (default: /bin/sh)])])
+case $with_shell in
+  no)
+    AC_MSG_ERROR([A shell interpreter is required])
+  ;;
+  yes | "")
+  ;;
+  *)
+    SHELL_PATH=$with_shell
+  ;;
+esac
+AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
+  [Define this to be the path to the shell command interpreter.])
+
 ### Enable bounds checking on element references within Octave's array and
 ### matrix classes.  This slows down some operations a bit, so it is turned off
 ### by default.

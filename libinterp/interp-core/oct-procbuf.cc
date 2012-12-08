@@ -42,6 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "utils.h"
 
+#ifndef SHELL_PATH
+#define SHELL_PATH "/bin/sh"
+#endif
+
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
 
@@ -125,7 +129,7 @@ octave_procbuf::open (const char *command, int mode)
           octave_procbuf_list = octave_procbuf_list->next;
         }
 
-      execl ("/bin/sh", "sh", "-c", command, static_cast<void *> (0));
+      execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (0));
 
       exit (127);
     }

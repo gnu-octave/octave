@@ -75,7 +75,7 @@ bool
 octave_shlib::shlib_rep::is_out_of_date (void) const
 {
   file_stat fs (file);
-  return fs.is_newer (tm_loaded);
+  return (fs && fs.is_newer (tm_loaded));
 }
 
 void
@@ -83,7 +83,7 @@ octave_shlib::shlib_rep::fake_reload (void)
 {
   // We can't actually reload the library, but we'll pretend we did.
   file_stat fs (file);
-  if (fs.is_newer (tm_loaded))
+  if (fs && fs.is_newer (tm_loaded))
     {
       tm_loaded = fs.mtime ();
 

@@ -2220,7 +2220,7 @@ AC_ARG_ENABLE([java],
 
 HAVE_JAVA=no
 ## Grab JAVA_HOME from environment variable if it exists
-AC_ARG_VAR([JAVA_HOME], [path to Java installation])
+AC_ARG_VAR([JAVA_HOME], [path to Java JDK installation])
 JAVA_ARCH=
 JAVAC=
 JAR=
@@ -2230,6 +2230,11 @@ JAVA_LIBS=
 if test $build_java = true; then
 
   warn_java=
+
+  if test -z "$JAVA_HOME"; then
+    AC_MSG_WARN([JAVA_HOME environment variable not initialized.])
+    AC_MSG_WARN([Auto-detection will proceed but is unreliable.])
+  fi
 
   if test -z "$JAVA_HOME"; then
     AC_CHECK_PROG(JAVA, java, java)

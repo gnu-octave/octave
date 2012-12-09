@@ -2045,13 +2045,12 @@ graphics_object::set (const Array<std::string>& names,
 void
 graphics_object::set (const octave_map& m)
 {
-  for (octave_map::const_iterator p = m.begin ();
-       p != m.end (); p++)
+  for (octave_idx_type p = 0; p < m.nfields (); p++)
     {
-      caseless_str name  = m.key (p);
+      caseless_str name  = m.keys ()[p];
 
-      octave_value val = octave_value (m.contents (p).elem (m.numel () - 1));
-
+      octave_value val = octave_value (m.contents (name).elem (m.numel () - 1));
+      
       set_value_or_default (name, val);
 
       if (error_state)
@@ -2070,6 +2069,32 @@ graphics_object::set (const octave_map& m)
 %! h = plot (1:10, 10:-1:1, 1:10, 1:10);
 %! set (h, struct ("linewidth", {5, 10}));
 %! assert (get (h, "linewidth"), {10; 10});
+## test ordering
+%!test
+%! markchanged = @(h, foobar, name) set (h, "userdata", [get(h,"userdata"); {name}]);
+%! figure (1, "visible", "off")
+%! clf ()
+%! h = line ();
+%! set (h, "userdata", {})
+%! addlistener (h, "color", {markchanged, "color"})
+%! addlistener (h, "linewidth", {markchanged, "linewidth"})
+%! # "linewidth" first
+%! props.linewidth = 2;
+%! props.color = "r";
+%! set (h, props);
+%! assert (get (h, "userdata"), fieldnames (props))
+%! clear props
+%! clf ()
+%! h = line ();
+%! set (h, "userdata", {})
+%! addlistener (h, "color", {markchanged, "color"})
+%! addlistener (h, "linewidth", {markchanged, "linewidth"})
+%! # "color" first
+%! props.color = "r";
+%! props.linewidth = 2;
+%! set (h, props);
+%! assert (get (h, "userdata"), fieldnames (props))
+%! close (1)
 */
 
 // Set a property to a value or to its (factory) default value.

@@ -200,7 +200,7 @@ history_dock_widget::update_history_callback (void)
           std::string entry = command_history::get_entry (i);
 
           _history_model->setData (_history_model->index (i),
-                                   QString::fromStdString (entry));
+                      QString::fromLocal8Bit (entry.data (), entry.size ()));
         }
 
       // FIXME -- does this behavior make sense?  Calling

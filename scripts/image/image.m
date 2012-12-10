@@ -105,6 +105,13 @@ function h = __img__ (x, y, img, varargin)
     error ("__img__: matrix is empty");
   endif
 
+  ## FIXME: Hack for integer formats which use zero-based indexing
+  ##        Hack favors correctness of display over size of image in memory.
+  ##        True fix will be done in C++ code. 
+  if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
+    img = single (img) + 1;
+  endif
+
   if (isempty (x))
     x = [1, columns(img)];
   endif

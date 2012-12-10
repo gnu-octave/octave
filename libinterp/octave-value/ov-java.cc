@@ -449,9 +449,14 @@ initialize_jvm (void)
         throw std::string ("unable to find Java Runtime Environment");
     }
 
+#else  // Not Win32 system
+  
+  // JAVA_LDPATH determined by configure and set in config.h
+#if defined (__APPLE__)
+  std::string jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.dylib");
 #else
-
-  std::string jvm_lib_path = JAVA_HOME + std::string ("/jre/lib/") + JAVA_ARCH + "/server/libjvm.so";
+  std::string jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.so");
+#endif
 
 #endif
 

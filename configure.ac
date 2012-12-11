@@ -2254,7 +2254,7 @@ do
     ## Find JAVA_HOME for JRE by running java and querying properties
     JAVA_TMP_HOME=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`  
     ## Strip directory back to top-level installation dir (JAVA_HOME for JDK) 
-    JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e "s|/bin/\?$||" -e "s|/jre/\?$||"`
+    JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e 's|/bin/\?$||' | sed -e 's|/jre/\?$||'`
   fi
 
   ## Amend search path for JAVAC and JAR.
@@ -2296,28 +2296,60 @@ do
     ;;
   esac
 
+  ## Determine Shared Library Extension
+  ## FIXME: May need dll extension for cygwin, mingw.
+  case $canonical_host_type in
+    *-*-darwin*)
+      shlext=dylib
+    ;;
+    *)
+      shlext=so
+    ;;
+  esac
+
+  AC_MSG_CHECKING([for libjvm.${shlext}])
+
   ## Run Java to try and determine library path to libjvm.so.
   JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
-  JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e 's/^://' -e 's/:$//' -e 's/:/ /g'`
+  JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e 's/:/ /g'`
 	for dir in $JAVA_TMP_LDPATH; do
-    case $canonical_host_type in
-      *-*-darwin*)
-        if test -f "$dir/libjvm.dylib"; then
-          JAVA_LDPATH=$dir
-          break
-        fi
-      ;;
-      *)
-        if test -f "$dir/libjvm.so"; then
-          JAVA_LDPATH=$dir
-          break
-        fi
-      ;;
-    esac
+    if test -f "$dir/libjvm.${shlext}"; then
+      JAVA_LDPATH=$dir
+      break
+    fi
   done
+
   if test -z "$JAVA_LDPATH"; then
+    ## Nothing found.  Try Java again using bootpath argument. 
+    JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_BOOTPATH`
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/server"
+    for dir in $JAVA_TMP_LDPATH; do
+      if test -f "$dir/libjvm.${shlext}"; then
+        JAVA_LDPATH=$dir
+        break
+      fi
+    done
+  fi
+
+  if test -z "$JAVA_LDPATH"; then
+    ## Java failed to find it's own library path.  Guess wildly.
+    JAVA_TMP_LDPATH=`ls -d $JAVA_HOME/jre/lib/*/server`
+    ## Add some paths that might work on Macs.
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/../Libraries ${JAVA_HOME}/Libraries"
+    for dir in $JAVA_TMP_LDPATH; do
+      if test -f "$dir/libjvm.${shlext}"; then
+        JAVA_LDPATH=$dir
+        break
+      fi
+    done
+  fi
+
+  if test -z "$JAVA_LDPATH"; then
+    AC_MSG_RESULT([not found])
     AC_MSG_WARN([Library libjvm not found.  Octave will not be able to call Java methods.])
     break
+  else
+    AC_MSG_RESULT([$JAVA_LDPATH])
   fi
 
   ## Java and JVM found.  Set up flags.
@@ -2326,8 +2358,9 @@ do
       ## Sneak the -framework flag into mkoctfile via LFLAGS
       LFLAGS="$LFLAGS -framework JavaVM"
       ## According to: http://developer.apple.com/unix/crossplatform.html
-      ## one must explicitly set the include path
-      JAVA_CPPFLAGS="-I${JAVA_HOME}/include"
+      ## one must explicitly set the include path.
+      ## Unfortunately, the include path keeps moving around.
+      JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I/System/Library/Frameworks/JavaVM.framework/Home/include -I/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Headers -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
       JAVA_LIBS="-framework JavaVM"
     ;;
     *-mingw* | *-cygwin*)
@@ -2339,8 +2372,8 @@ do
     ;;
   esac
 
-  ## Search for jni.h include file.
-	JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e "s/-I//g"`
+  ## Verify jni.h include file exists.
+	JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
   have_jni=false
 	for dir in $JNI_PATH; do 
 	  if test -f "${dir}/jni.h"; then have_jni=true; break; fi

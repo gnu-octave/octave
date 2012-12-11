@@ -14,6 +14,10 @@ public class OctJavaQry
       {
         System.out.println (System.getProperty ("java.library.path"));
       }
+      else if (args[0].equals ("JAVA_BOOTPATH"))
+      {
+        System.out.println (System.getProperty ("sun.boot.library.path"));
+      }
     }
   }
 }

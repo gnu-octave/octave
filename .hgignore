@@ -8,12 +8,11 @@ syntax: regexp
 
 # This directory gets created by gnulib during the build. 
 # It contains no Octave files.
-^gnulib/
+^libgnu/*
 
-# These directories mostly contain cruft during build time, but they
-# do contain some Octave code, so we gotta be a bit more careful about
+# This directory mostly contains cruft during build time, but it does
+# contain some Octave code, so we gotta be a bit more careful about
 # what we ignore here
-^libgnu/.*\.([hc]$|sin$|valgrind$|charset$|mk$)
 ^m4/(?!ax_).+\.m4$
 
 # Emacs tools create these

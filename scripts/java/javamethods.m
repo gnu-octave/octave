@@ -17,29 +17,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{P} =} javamethods (@var{class})
-## Return the methods of a Java object in the form of a cell 
+## @deftypefn  {Function File} {} javamethods (@var{javaobj})
+## @deftypefnx {Function File} {} javamethods ("@var{classname}")
+## @deftypefnx {Function File} {@var{mtd_names} =} javamethods (@dots{})
+## Return the methods of a Java object or Java class in the form of a cell 
 ## array of strings.  If no output is requested, print the result to the
 ## standard output.
-## @seealso{methods}
+## @seealso{javafields, java_invoke, javaMethod, javaObject}
 ## @end deftypefn
 
-function retval = javamethods (classname)
+function mtd_names = javamethods (classname)
   
   if (nargin != 1)
     print_usage ();
-  else
-    c_methods = java_invoke ("org.octave.ClassHelper", "getMethods", classname);
-    method_list = strsplit (c_methods, ";");
+  endif
 
-    switch nargout
-      case 0
-        if (! isempty (method_list))
-          disp(method_list);
-        endif
-      case 1
-        retval = cellstr (method_list);
-    endswitch
+  cls_methods = java_invoke ("org.octave.ClassHelper", "getMethods", classname);
+  method_list = strsplit (cls_methods, ';');
+
+  if (nargout == 0)
+    if (! isempty (method_list))
+      disp (method_list);
+    endif
+  else
+    mtd_names = cellstr (method_list);
   endif
 
 endfunction
+

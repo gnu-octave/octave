@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function file} {@var{p} =} questdlg (@var{msg}, @var{title})
-## @deftypefnx {Function file} @var{p} = questdlg (@var{msg}, @var{title}, @var{default})
-## @deftypefnx {Function file} @var{p} = questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{default})
-## @deftypefnx {Function file} @var{p} = questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
+## @deftypefn  {Function File} {@var{btn} =} questdlg (@var{msg})
+## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title})
+## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{default})
+## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{default})
+## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
 ## Display @var{msg} using a question dialog box and return the caption
 ## of the activated button.
 ##
-## The dialog may contain two or three buttons which all close the dialog. 
+## The dialog may contain two or three buttons which will all close the dialog.
 ##
 ## The message may have multiple lines separated by newline characters
 ## (@code{"\n"}), or it may be a cellstr array with one element for each
@@ -32,74 +33,67 @@
 ## decorate the dialog caption.
 ##
 ## The string @var{default} identifies the default button, 
-## which is activated by pressing the ENTER key.
+## which is activated by pressing the @kbd{ENTER} key.
 ## It must match one of the strings given in @var{btn1}, @var{btn2} or
 ## @var{btn3}.
 ##
 ## If only @var{msg} and @var{title} are specified, three buttons with
-## the default captions @code{"Yes"}, @code{"No"}, and @code{"Cancel"}
-## are used.
+## the default captions "Yes", "No", and "Cancel" are used.
 ##
-## If only two button captions @var{btn1} and @var{btn2} are specified, 
+## If only two button captions, @var{btn1} and @var{btn2}, are specified 
 ## the dialog will have only these two buttons.
 ##
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, warndlg}
 ## @end deftypefn
 
-function ret = questdlg (question, varargin)
+function btn = questdlg (msg, title = "Question Dialog", varargin)
 
-  if (numel (varargin) < 1)
+  if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
   
-  options{1} = "Yes";      ## button1
-  options{2} = "No";       ## button2
-  options{3} = "Cancel";   ## button3
-  options{4} = "Yes";      ## default
-
-  if (! ischar (question))
-    if (iscell (question))
-      question = cell2mlstr (question);
+  if (! ischar (msg))
+    if (iscell (msg))
+      msg = cell2mlstr (msg);
     else
-      error ("questdlg: character string or cellstr array expected for message");
+      error ("questdlg: MSG must be a character string or cellstr array");
     endif
   endif
 
+  if (! ischar (title))
+    error ("questdlg: TITLES must be a character string");
+  endif
+
+  options{1} = "Yes";      # button1
+  options{2} = "No";       # button2
+  options{3} = "Cancel";   # button3
+  options{4} = "Yes";      # default
+
   switch (numel (varargin))
     case 1
-      ## title was given
-      title = varargin{1};
+      ## default button string
+      options{4} = varargin{1};  # default
 
-    case 2
-      ## title and default button string
-      title = varargin{1};
-      options{4} = varargin{2}; ## default
+    case 3
+      ## two buttons and default button string
+      options{1} = varargin{1};  # button1
+      options{2} = "";           # not used, no middle button
+      options{3} = varargin{2};  # button3
+      options{4} = varargin{3};  # default
 
     case 4
-      ## title, two buttons and default button string
-      title = varargin{1};
-      options{1} = varargin{2}; ## button1
-      options{2} = "";          ## not used, no middle button
-      options{3} = varargin{3}; ## button3
-      options{4} = varargin{4}; ## default
-
-    case 5
-      ## title, three buttons and default button string
-      title      = varargin{1};
-      options{1} = varargin{2}; ## button1
-      options{2} = varargin{3}; ## button2
-      options{3} = varargin{4}; ## button3
-      options{4} = varargin{5}; ## default
+      ## three buttons and default button string
+      options{1} = varargin{1};  # button1
+      options{2} = varargin{2};  # button2
+      options{3} = varargin{3};  # button3
+      options{4} = varargin{4};  # default
 
     otherwise
       print_usage ();
+
   endswitch
 
-  if (! ischar (title))
-    error ("questdlg: character string expected for title");
-  endif
-
-  ret = java_invoke ("org.octave.JDialogBox", "questdlg", question,
+  btn = java_invoke ("org.octave.JDialogBox", "questdlg", msg,
                      title, options);
 
 endfunction

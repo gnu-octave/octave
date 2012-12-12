@@ -18,31 +18,42 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {} javaaddpath (@var{path})
-## Add @var{path} to the dynamic class path of the Java virtual
-## machine.  @var{path} may be either a directory where @file{.class}
+## @deftypefn  {Function File} {} javaaddpath (@var{clspath})
+## @deftypefnx {Function File} {} javaaddpath (@var{clspath1}, @dots{})
+## Add @var{clspath} to the dynamic class path of the Java virtual
+## machine.  @var{clspath} may either be a directory where @file{.class}
 ## files are found, or a @file{.jar} file containing Java classes.
-## @seealso{javaclasspath}
+## Multiple paths may be added at once by specifying additional arguments.
+## @seealso{javarmpath, javaclasspath}
 ## @end deftypefn
 
-function javaaddpath (class_path)
+function javaaddpath (varargin)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
-  else
-    new_path = canonicalize_file_name (tilde_expand (class_path));
+  endif
+
+  for i = 1:numel (varargin)
+    clspath = varargin{i};
+    if (! ischar (clspath))
+      error ("javaaddpath: CLSPATH must be a string");
+    endif
+
+    new_path = canonicalize_file_name (tilde_expand (clspath));
     if (exist (new_path, "dir"))
-      if (! strcmp (new_path (end), filesep))
-        new_path = [new_path, filesep];
+      if (new_path(end) != filesep ())
+        new_path = [new_path, filesep()];
       endif
     elseif (! exist (new_path, "file"))
-      error ("invalid Java classpath: %s", class_path);
+      error ("javaaddpath: CLSPATH does not exist: %s", clspath);
     endif
+
     success = java_invoke ("org.octave.ClassHelper", "addClassPath", new_path);
 
     if (! success)
       warning ("javaaddpath: failed to add '%s' to Java classpath", new_path);
     endif
-  endif 
+  endfor 
    
 endfunction
+

@@ -17,39 +17,37 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{p} =} warndlg (@var{msg}, @var{title})
+## @deftypefn  {Function File} {@var{h} =} warndlg (@var{msg})
+## @deftypefnx {Function File} {@var{h} =} warndlg (@var{msg}, @var{title})
 ## Display @var{msg} using a warning dialog box. 
 ##
 ## The message may have multiple lines separated by newline characters
-## (@code{"\n"}), or it may be a cellstr array with one element for each
-## line.  The optional @var{title} (character string) can be used to
-## decorate the dialog caption.
+## ("\n"), or it may be a cellstr array with one element for each
+## line.  The optional input @var{title} (character string) can be used to
+## set the dialog caption.  The default title is "Warning Dialog".
 ##
 ## @seealso{helpdlg, inputdlg, listdlg, questdlg}
 ## @end deftypefn
 
-function retval = warndlg (message, varargin)
+function retval = warndlg (msg, title = "Warning Dialog")
 
-  if (! ischar (message))
-    if (iscell (message))
-      message = cell2mlstr (message);
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
+  if (! ischar (msg))
+    if (iscell (msg))
+      msg = cell2mlstr (msg);
     else
-      error ("warndlg: character string or cellstr array expected for message");
+      error ("warndlg: MSG must be a string or cellstr array");
     endif
   endif
-  
-  switch (numel (varargin))
-    case 0
-      title = "Warning Dialog";
 
-    otherwise
-      if (ischar (varargin{1}))
-        title = varargin{1};
-      else
-        error ("warndlg: character string expected for title");
-      endif
-  endswitch
+  if (! ischar (title))
+    error ("warndlg: TITLE must be a character string");
+  endif
 
-  retval = java_invoke ("org.octave.JDialogBox", "warndlg", message, title);
+  retval = java_invoke ("org.octave.JDialogBox", "warndlg", msg, title);
 
 endfunction
+

@@ -18,22 +18,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {} javarmpath (@var{path})
-## Remove @var{path} from the dynamic class path of the Java virtual
-## machine.  @var{path} may be either a directory where @file{.class}
+## @deftypefn  {Function File} {} javarmpath (@var{clspath})
+## @deftypefnx {Function File} {} javarmpath (@var{clspath1}, @dots{})
+## Remove @var{clspath} from the dynamic class path of the Java virtual
+## machine.  @var{clspath} may either be a directory where @file{.class}
 ## files are found, or a @file{.jar} file containing Java classes.
+## Multiple paths may be removed at once by specifying additional arguments.
 ## @seealso{javaaddpath, javaclasspath}
 ## @end deftypefn
 
-function javarmpath (class_path)
+function javarmpath (varargin)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
-  else
-    old_path = canonicalize_file_name (tilde_expand (class_path));
+  endif
+
+  for i = 1:numel (varargin)
+    clspath = varargin{i};
+    if (! ischar (clspath))
+      error ("javarmpath: CLSPATH must be a string");
+    endif
+
+    old_path = canonicalize_file_name (tilde_expand (clspath));
     if (exist (old_path, "dir"))
-      if (! strcmp (old_path (end), filesep))
-        old_path = [old_path, filesep];
+      if (old_path(end) != filesep ())
+        old_path = [old_path, filesep()];
       endif
     endif
 
@@ -43,6 +52,7 @@ function javarmpath (class_path)
     if (! success)
       warning ("javarmpath: %s: not found in Java classpath", old_path);
     endif
-  endif
+  endfor
 
 endfunction
+

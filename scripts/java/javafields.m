@@ -17,30 +17,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{p} =} javafields (@var{class})
-## Return the fields of a Java object in the form of a cell 
+## @deftypefn  {Function File} {} javafields (@var{javaobj})
+## @deftypefnx {Function File} {} javafields ("@var{classname}")
+## @deftypefnx {Function File} {@var{fld_names} =} javafields (@dots{})
+## Return the fields of a Java object or Java class in the form of a cell 
 ## array of strings.  If no output is requested, print the result
-## printed on the standard output.
-## @seealso{javamethods}
+## to the standard output.
+## @seealso{javamethods, javaObject}
 ## @end deftypefn
 
-function retval = javafields (classname)
+function fld_names = javafields (javaobj)
   
   if (nargin != 1)
     print_usage ();
+  endif
+  
+  c_methods = java_invoke ("org.octave.ClassHelper", "getFields", javaobj);
+  method_list = strsplit (c_methods, ';');
+
+  if (nargout == 0)
+    if (! isempty (method_list))
+      disp (method_list);
+    endif
   else
-    c_methods = java_invoke ("org.octave.ClassHelper", "getFields", classname);
-    method_list = strsplit (c_methods, ';');
-
-    switch (nargout)
-      case 0
-        if (! isempty (method_list))
-          disp (method_list);
-        endif
-
-      case 1
-        retval = cellstr (method_list);
-   endswitch
- endif
+    fld_names = cellstr (method_list);
+  endif
 
 endfunction
+

@@ -17,99 +17,109 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{p} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
+## @deftypefn  {Function File} {@var{cstr} =} inputdlg (@var{prompt})
+## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title})
+## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols})
+## @deftypefnx {Function File} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
 ## Return user input from a multi-textfield dialog box in a cell array
 ## of strings, or an empty cell array if the dialog is closed by the
 ## Cancel button.
 ##
+## Inputs:
+##
 ## @table @var
 ## @item prompt
-## The first argument @var{prompt} is mandatory.
-## It is a cell array with strings labeling each textfield. 
+## A cell array with strings labeling each text field.  This input is required. 
+##
 ## @item title
-## The optional string @var{title} can be used as the caption of the dialog. 
+## String to use for the caption of the dialog.  The default is "Input Dialog".
+##
 ## @item rowscols
-## The size of the text fields can be defined by the argument @var{rowscols}, 
-## which can have three forms:
+## Specifies the size of the text fields and can take three forms:
+##
 ## @enumerate
 ## @item a scalar value which defines the number of rows used for each
 ## text field.
+##
 ## @item a vector which defines the individual number of rows
 ## used for each text field. 
+##
 ## @item a matrix which defines the individual number of rows and
-## columns used for each text field.
+## columns used for each text field.  In the matrix each row describes
+## a single text field.  The first column specifies the number of input
+## rows to use and the second column specifies the text field width.
 ## @end enumerate
+##
 ## @item defaults
-## It is possible to place default values into the text fields by supplying
-## the a cell array of strings or number for the argument @var{defaults}.
+## A list of default values to place in each text fields.  It must be
+## a cell array of strings with the same size as @var{prompt}.
 ## @end table
-## @seealso{errordlg, helpdlg, listdlg, questdlg, warndlg}
+## @seealso{errordlg, helpdlg, listdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = inputdlg (prompt, varargin)
+function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
+
+  if (nargin < 1 || nargin > 4)
+    print_usage ();
+  endif
 
   if (iscell (prompt))
     ## Silently extract only char elements
-    prompt = prompt (find (cellfun ("ischar", prompt)));
+    prompt = prompt(cellfun ("ischar", prompt));
   elseif (ischar (prompt))
     prompt = {prompt};
   else
-    error ("inputdlg: character string or cellstr array expected for prompt");
+    error ("inputdlg: PROMPT must be a character string or cellstr array");
+  endif
+
+  if (! ischar (title))
+    error ("inputdlg: TITLE must be a character string");
   endif
 
   switch (numel (varargin))
     case 0
-      title = "Input Dialog";
-      lineNo = 1;
-      defaults = cellstr (cell( size (prompt)));
+      linespec = 1;
+      defaults = cellstr (cell (size (prompt)));
 
     case 1
-      title = varargin{1};
-      lineNo = 1;
+      linespec = varargin{1};
       defaults = cellstr (cell (size (prompt)));
 
     case 2
-      title = varargin{1};
-      lineNo = varargin{2};
-      defaults = cellstr (cell (size (prompt)));
-
-    otherwise
-      title = varargin{1};
-      lineNo = varargin{2};
-      defaults = varargin{3};
+      linespec = varargin{1};
+      defaults = varargin{2};
   endswitch
 
-  if (! ischar (title))
-    error ("inputdlg: character string expected for title");
-  endif
-
   ## specification of text field sizes as in Matlab 
-  ## Matlab requires a matrix for lineNo, not a cell array...
+  ## Matlab requires a matrix for linespec, not a cell array...
   ## rc = [1,10; 2,20; 3,30];
   ##     c1  c2
   ## r1  1   10   first  text field is 1x10
   ## r2  2   20   second text field is 2x20
   ## r3  3   30   third  text field is 3x30
-  if (isscalar (lineNo))
-    ## only scalar value in lineTo, copy from lineNo and add defaults
-    rowscols = zeros(size(prompt)(2),2);
+  if (isscalar (linespec))
+    ## only scalar value in lineTo, copy from linespec and add defaults
+    rowscols = zeros (columns (prompt), 2);
     ## cols
     rowscols(:,2) = 25;
-    rowscols(:,1) = lineNo;
-  elseif (isvector (lineNo))
-      ## only one column in lineTo, copy from vector lineNo and add defaults
+    rowscols(:,1) = linespec;
+  elseif (isvector (linespec))
+      ## only one column in lineTo, copy from vector linespec and add defaults
       rowscols = zeros (columns (prompt), 2);
-      ## rows from colum vector lineNo, columns are set to default
+      ## rows from colum vector linespec, columns are set to default
       rowscols(:,2) = 25;
-      rowscols(:,1) = lineNo(:);         
-  elseif (ismatrix (lineNo))
-    if (rows (lineNo) == columns (prompt) && columns (lineNo) == 2)
-      ## (rows x columns) match, copy array lineNo
-      rowscols = lineNo;
+      rowscols(:,1) = linespec(:);
+  elseif (ismatrix (linespec))
+    if (rows (linespec) == columns (prompt) && columns (linespec) == 2)
+      ## (rows x columns) match, copy array linespec
+      rowscols = linespec;
+    else
+      error ("inputdlg: ROWSCOLS matrix does not match size of PROMPT");
     endif
+
   else
     ## dunno
-    error ("inputdlg: unknown form of lineNo argument");
+    error ("inputdlg: unknown form of ROWSCOLS argument");
   endif
   
   ## convert numeric values in defaults cell array to strings
@@ -120,9 +130,9 @@ function retval = inputdlg (prompt, varargin)
                              prompt, title, rc, defs);
   
    if (isempty (user_inputs))
-     retval = {};
+     cstr = {};
    else
-     retval = cellstr (user_inputs);
+     cstr = cellstr (user_inputs);
    endif
 
 endfunction

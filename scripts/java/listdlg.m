@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
+## @deftypefn {Function File} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
 ## Return user inputs from a list dialog box in a vector of 
 ## selection indices @var{sel} and a flag @var{ok} indicating how the
 ## user closed the dialog box.  The value of @var{ok} is 1 if the user
@@ -34,48 +34,58 @@
 ## @table @code
 ## @item "ListString"
 ##    a cell array of strings comprising the content of the list.
+##
 ## @item "SelectionMode"
-##    can be either @code{"Single"} or @code{"Multiple"}.
+##    can be either @code{"Single"} or @code{"Multiple"} (default).
+##
 ## @item "ListSize"
 ##    a vector with two elements @var{width} and @var{height} defining
-##    the size of the list field in pixels.
+##    the size of the list field in pixels.  Default is [160 300].
+##
 ## @item "InitialValue"
-##    a vector containing 1-based indices of preselected elements.
+##    a vector containing 1-based indices of preselected elements.  Default
+##    is 1 (first item).
+##
 ## @item "Name"
-##    a string to be used as the dialog caption.
+##    a string to be used as the dialog caption.  Default is "".
+##
 ## @item "PromptString"
-##    a cell array of strings to be displayed above the list field.
+##    a cell array of strings to be displayed above the list field.  Default
+##    is @{@}.
+##
 ## @item "OKString"
-##    a string used to label the OK button.
+##    a string used to label the OK button.  Default is "OK".
+##
 ## @item "CancelString"
-##    a string used to label the Cancel button.
+##    a string used to label the Cancel button.  Default is "Cancel".
 ## @end table
 ##
 ## Example:
 ##
 ## @example
+## @group
 ## [sel, ok] = listdlg ("ListString", @{"An item", "another", "yet another"@}, "SelectionMode", "Multiple" );
 ## if (ok == 1)
-##    imax = numel (sel);
-##    for i = 1:1:imax
+##   imax = numel (sel);
+##   for i = 1:1:imax
 ##     disp (sel(i));
-##    end
-## end
+##   endfor
+## endif
+## @end group
 ## @end example
 ##
-## @seealso{errordlg, helpdlg, inputdlg, questdlg, warndlg}
+## @seealso{errordlg, helpdlg, inputdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
 function varargout = listdlg (varargin)
 
-   if nargin < 2
+   if (nargin < 2)
      print_usage ();
-     return;
-   end
+   endif
    
    listcell = {""};
-   selmode = "single";
-   listsize = [300, 160];
+   selmode = "multiple";
+   listsize = [160, 300];
    initialvalue = 1;
    name = "";
    prompt = {""};
@@ -106,7 +116,7 @@ function varargout = listdlg (varargin)
    ## make sure prompt strings are a cell array
    if (! iscell (prompt))
      prompt = {prompt};
-   end
+   endif
 
    ## make sure listcell strings are a cell array
    if (! iscell (listcell))
@@ -128,3 +138,4 @@ function varargout = listdlg (varargin)
    endif
 
 endfunction
+

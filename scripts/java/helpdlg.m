@@ -17,44 +17,38 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{p} =} helpdlg (@var{msg} ,@var{title}])
+## @deftypefn  {Function File} {@var{h} =} helpdlg (@var{msg})
+## @deftypefnx {Function File} {@var{h} =} helpdlg (@var{msg}, @var{title})
 ## Display @var{msg} in a help dialog box.
 ##
 ## The message may have multiple lines separated by newline characters
-## (@code{"\n"}), or it may be a cellstr array with one element for each
-## line.  The optional @var{title} (character string) can be used to
-## decorate the dialog caption.
+## ("\n"), or it may be a cellstr array with one element for each
+## line.  The optional input @var{title} (character string) can be used to
+## set the dialog caption.  The default title is "Help Dialog".
 ##
 ## The return value is always 1.
-## @seealso{errordlg, inputdlg, listdlg, questdlg, warndlg}
+## @seealso{errordlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = helpdlg (message, varargin)
+function h = helpdlg (msg, title = "Help Dialog")
 
-  if (! ischar (message))
-    if (iscell (message))
-      message = cell2mlstr (message);
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
+  if (! ischar (msg))
+    if (iscell (msg))
+      msg = cell2mlstr (msg);
     else
-      error ("helpdlg: character string or cellstr array expected for message");
+      error ("helpdlg: MSG must be a string or cellstr array");
     endif
   endif
-  
-  switch (numel (varargin))
-    case 0
-      title = "Help Dialog";
-
-    otherwise
-      if (ischar (varargin {1}))
-        title = varargin{1};
-      else
-        error ("helpdlg: character string expected for title");
-      endif
-  endswitch
 
   if (! ischar (title))
-    error ("helpdlg: character string expected for title");
+    error ("helpdlg: TITLE must be a character string");
   endif
 
-  retval = java_invoke ("org.octave.JDialogBox", "helpdlg", message, title);
+  h = java_invoke ("org.octave.JDialogBox", "helpdlg", msg, title);
 
 endfunction
+

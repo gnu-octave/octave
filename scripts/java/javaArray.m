@@ -17,39 +17,35 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{a} =} javaArray (@var{class}, @var{sz})
-## @deftypefnx {Function file} {@var{a} =} javaArray (@var{class}, @var{m}, @var{n}, @dots{})
+## @deftypefn  {Function File} {@var{a} =} javaArray (@var{classname}, @var{sz})
+## @deftypefnx {Function File} {@var{a} =} javaArray (@var{classname}, @var{m}, @var{n}, @dots{})
 ##
-## Creates a Java array of size @var{sz} with elements of class
-## @var{class}.  @var{class} may be a Java object representing a class
+## Create a Java array of size @var{sz} with elements of class
+## @var{classname}.  @var{classname} may be a Java object representing a class
 ## or a string containing the fully qualified class name.  The size of
 ## the object may also be specified with individual integer arguments
 ## @var{m}, @var{n}, etc.
 ##
-## The generated array is uninitialized, all elements are set to null
-## if @var{class} is a reference type, or to a default value (usually 0)
-## if @var{class} is a primitive type.
+## The generated array is uninitialized.  All elements are set to null
+## if @var{classname} is a reference type, or to a default value (usually 0)
+## if @var{classname} is a primitive type.
 ##
 ## @example
+## @group
 ## a = javaArray ("java.lang.String", 2, 2);
 ## a(1,1) = "Hello";
+## @end group
 ## @end example
 ## @end deftypefn
 
-function retval = javaArray (class_name, varargin)
+function retval = javaArray (classname, varargin)
 
-  switch (numel (varargin))
-    case 0
-      error ("missing array size");
-
-    case 1
-      dims = varargin{1};
-
-    otherwise
-      dims = [varargin{:}];
-  endswitch
+  if (nargin < 2)
+    print_usage ();
+  endif
 
   retval = java_invoke ("org.octave.ClassHelper", "createArray",
-                        class_name, dims);
+                        classname, [varargin{:}]);
 
 endfunction
+

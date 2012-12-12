@@ -17,59 +17,59 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {@var{p} =} msgbox (@var{msg}, @var{title}, @var{ICON})
-## Display @var{msg} using a message dialog. 
+## @deftypefn  {Function File} {@var{h} =} msgbox (@var{msg})
+## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title})
+## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title}, @var{icon})
+## Display @var{msg} using a message dialog box. 
 ##
 ## The message may have multiple lines separated by newline characters
 ## (@code{"\n"}), or it may be a cellstr array with one element for each
-## line.  The optional @var{title} (character string) can be used to
+## line.  The optional input @var{title} (character string) can be used to
 ## decorate the dialog caption.
 ##
 ## The optional argument @var{icon} selects a dialog icon. 
-## It can be one of @code{"error"}, @code{"help"} or @code{"warn"}.
+## It can be one of @code{"none"} (default), @code{"error"}, @code{"help"} or
+## @code{"warn"}.
 ##
 ## The return value is always 1.
-## @seealso{helpdlg, questdlg, warndlg}
+## @seealso{errordlg, helpdlg, inputdlg, listdlg, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = msgbox (message, varargin)
+function h = msgbox (msg, title = "", icon)
 
-  if (! ischar (message))
-    if (iscell (message))
-      message = cell2mlstr (message);
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  endif
+
+  if (! ischar (msg))
+    if (iscell (msg))
+      msg = cell2mlstr (msg);
     else
-      error ("msgbox: character string or cellstr array expected for message");
+      error ("msgbox: MSG must be a character string or cellstr array");
     endif
   endif
-  
-  switch (numel (varargin))
-    case 0
-      title = "";
-      dlg = "emptydlg";
-
-    case 1
-      title = varargin{1};
-      dlg = "emptydlg";
-
-    otherwise
-      ## two or more arguments
-      title = varargin{1};
-      icon =  varargin{2};
-      if (strcmp (icon, "error"))
-        dlg = "errordlg";
-      elseif (strcmp (icon, "help"))
-        dlg = "helpdlg";
-      elseif (strcmp (icon, "warn"))
-        dlg = "warndlg";
-      else
-        dlg = "emptydlg";
-      end
-  endswitch
 
   if (! ischar (title))
-    error ("msgbox: character string expected for title");
+    error ("msgbox: TITLE must be a character string");
+  endif
+  
+  dlg = "emptydlg";
+  if (nargin == 3)
+    switch (icon)
+      case "error"
+        dlg = "errordlg";
+      case "help"
+        dlg = "helpdlg";
+      case "warn"
+        dlg = "warndlg";
+      case "none"
+        dlg = "emptydlg";
+      otherwise
+        error ("msgbox: ICON is not a valid type");
+    endswitch
   endif
 
-  retval = java_invoke ("org.octave.JDialogBox", dlg, message, title );
+  h = java_invoke ("org.octave.JDialogBox", dlg, msg, title);
 
 endfunction
+

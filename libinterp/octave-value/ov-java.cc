@@ -2209,3 +2209,22 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 
 #endif
 
+// Outside of #ifdef HAVE_JAVA because it is desirable to be able to
+// merely test for the presence of a Java object without having Java installed. 
+DEFUN (isjava, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isjava (@var{x})\n\
+Return true if @var{x} is a Java object.\n\
+@seealso{class, typeinfo, isa}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () != 1)
+    print_usage ();
+  else
+    retval = args(0).is_java ();
+
+  return retval;
+}
+

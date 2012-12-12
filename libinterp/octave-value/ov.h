@@ -563,6 +563,9 @@ public:
   bool is_object (void) const
     { return rep->is_object (); }
 
+  bool is_java (void) const
+    { return rep->is_java (); }
+
   bool is_cs_list (void) const
     { return rep->is_cs_list (); }
 

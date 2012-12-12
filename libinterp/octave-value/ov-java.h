@@ -149,6 +149,8 @@ public:
 
   bool is_map (void) const { return true; }
 
+  bool is_java (void) const { return true; }
+
   string_vector map_keys (void) const;
 
   dim_vector dims (void) const;

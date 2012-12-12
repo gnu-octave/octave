@@ -365,6 +365,8 @@ public:
 
   virtual bool is_object (void) const { return false; }
 
+  virtual bool is_java (void) const { return false; }
+
   virtual bool is_cs_list (void) const { return false; }
 
   virtual bool is_magic_colon (void) const { return false; }

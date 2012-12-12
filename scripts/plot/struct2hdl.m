@@ -92,6 +92,14 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     p = p(1:2, 1:(tst(end)-1));
   endif
 
+  ## Place the "*mode" properties as the end to avoid have the updaters
+  ## change the mode to "manual" when the value is "auto"
+  names = fieldnames (s.properties);
+  n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
+  n = (n | strcmp (names, "activepositionproperty"));
+  names = [names(!n); names(n)];
+  s.properties = orderfields (s.properties, names);
+
   ## create object
   if (strcmp (s.type, "root"))
     h = 0;

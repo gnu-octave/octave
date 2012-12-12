@@ -38,7 +38,8 @@ function h = helpdlg (msg, title = "Help Dialog")
 
   if (! ischar (msg))
     if (iscell (msg))
-      msg = cell2mlstr (msg);
+      msg = sprintf ("%s\n", msg{:});
+      msg(end) = "";
     else
       error ("helpdlg: MSG must be a string or cellstr array");
     endif

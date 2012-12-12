@@ -54,7 +54,8 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
   
   if (! ischar (msg))
     if (iscell (msg))
-      msg = cell2mlstr (msg);
+      msg = sprintf ("%s\n", msg{:});
+      msg(end) = "";
     else
       error ("questdlg: MSG must be a character string or cellstr array");
     endif

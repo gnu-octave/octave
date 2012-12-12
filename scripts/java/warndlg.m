@@ -37,7 +37,8 @@ function retval = warndlg (msg, title = "Warning Dialog")
 
   if (! ischar (msg))
     if (iscell (msg))
-      msg = cell2mlstr (msg);
+      msg = sprintf ("%s\n", msg{:});
+      msg(end) = "";
     else
       error ("warndlg: MSG must be a string or cellstr array");
     endif

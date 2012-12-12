@@ -38,7 +38,8 @@ function h = errordlg (msg, title = "Error Dialog")
 
   if (! ischar (msg))
     if (iscell (msg))
-      msg = cell2mlstr (msg);
+      msg = sprintf ("%s\n", msg{:});
+      msg(end) = "";
     else
       error ("errordlg: MSG must be a string or cellstr array");
     endif

@@ -43,7 +43,8 @@ function h = msgbox (msg, title = "", icon)
 
   if (! ischar (msg))
     if (iscell (msg))
-      msg = cell2mlstr (msg);
+      msg = sprintf ("%s\n", msg{:});
+      msg(end) = "";
     else
       error ("msgbox: MSG must be a character string or cellstr array");
     endif

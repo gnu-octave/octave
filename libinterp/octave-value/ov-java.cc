@@ -24,6 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "defun.h"
+#include "error.h"
+
 #if defined HAVE_JAVA
 
 #if defined (HAVE_WINDOWS_H)
@@ -40,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "cmd-edit.h"
 #include "defaults.h"
-#include "defun.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "load-path.h"
@@ -71,7 +73,6 @@ extern "C"
   Java_org_octave_Octave_needThreadedInvokation (JNIEnv *, jclass);
 }
 
-static octave_value _java_new (const octave_value_list& args);
 static octave_value _java_invoke (const octave_value_list& args);
 
 static JavaVM *jvm = 0;
@@ -219,14 +220,14 @@ get_module_filename (HMODULE hMod)
 
       if (status < n)
         {
-          retval.resize(n);
+          retval.resize (n);
           found = true;
           break;
         }
       else
         {
           n *= 2;
-          retval.resize(n);
+          retval.resize (n);
         }
     }
   return (found ? retval : "");
@@ -340,7 +341,7 @@ initial_class_path (void)
           // The base classpath has been set.  Try to find the optional
           // file "classpath.txt" in two places.  The users classes will
           // take precedence over the settings defined in the package
-          // directory
+          // directory.
 
           std::string str_filename = "classpath.txt";
           std::string cp_file;
@@ -375,7 +376,7 @@ initial_class_path (void)
             }
         }
       else
-        throw std::string ("octave jar does not exist: ") + jar_file;
+        throw std::string ("octave.jar does not exist: ") + jar_file;
     }
   else
     throw std::string ("initial java dir is empty");
@@ -386,11 +387,11 @@ initial_class_path (void)
 static void
 initialize_jvm (void)
 {
-  JNIEnv *current_env;
-
+  // Most of the time JVM already exists and has been initialized.
   if (jvm)
     return;
 
+  JNIEnv *current_env;
   const char *static_locale = setlocale (LC_ALL, NULL);
   const std::string locale (static_locale);
 
@@ -450,7 +451,7 @@ initialize_jvm (void)
     }
 
 #else  // Not Win32 system
-  
+
   // JAVA_LDPATH determined by configure and set in config.h
 #if defined (__APPLE__)
   std::string jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.dylib");
@@ -1307,7 +1308,6 @@ unbox (JNIEnv* jni_env, const octave_value_list& args,
   return found;
 }
 
-
 static long
 get_current_thread_ID (JNIEnv *jni_env)
 {
@@ -1368,10 +1368,11 @@ initialize_java (void)
     }
 }
 
-DEFUN (java_init, , ,
+DEFUN (__java_init__, , ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} java_init ()\n\
-Undocumented internal function.\n\
+@deftypefn {Built-in Function} {} java_init ()\n\
+Internal function used @strong{only} when debugging Java interface.\n\
+Function will directly call initialize_java() to create an instance of a JVM.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1384,10 +1385,12 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN (java_exit, , ,
+DEFUN (__java_exit__, , ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} java_exit ()\n\
-Undocumented internal function.\n\
+@deftypefn {Built-in Function} {} java_exit ()\n\
+Internal function used @strong{only} when debugging Java interface.\n\
+Function will directly call terminate_jvm() to destroy the current JVM\n\
+instance.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1397,137 +1400,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN (java_new, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{obj} =} java_new (@var{name}, @var{arg1}, ...)\n\
-Create a Java object of class @var{name}, by calling the class constructor with the\n\
-arguments @var{arg1}, ...\n\
-\n\
-@example\n\
-  x = java_new (\"java.lang.StringBuffer\", \"Initial string\")\n\
-@end example\n\
-\n\
-@seealso{java_invoke, java_get, java_set}\n\
-@end deftypefn")
-{
-  return _java_new (args);
-}
-
-DEFUN (javaObject, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{obj} =} javaObject (@var{name}, @var{arg1}, ...)\n\
-Create a Java object of class @var{name}, by calling the class constructor with the\n\
-arguments @var{arg1}, ...\n\
-The first example creates an unitialized object, \
-while the second example supplies an initializer argument.\n\
-\n\
-@example\n\
-  x = javaObject (\"java.lang.StringBuffer\")\n\
-  x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
-@end example\n\
-\n\
-@seealso{java_invoke, java_new, java_get, java_set}\n\
-@end deftypefn")
-{
-  return _java_new (args);
-}
-
-// internally called from java_new and javaObject for backward compatibility
-static octave_value _java_new (const octave_value_list& args)
-{
-  octave_value retval;
-
-  initialize_java ();
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () > 0)
-        {
-          std::string name = args(0).string_value ();
-          if (! error_state)
-            {
-              octave_value_list tmp;
-              for (int i=1; i<args.length (); i++)
-                tmp(i-1) = args(i);
-              retval = octave_java::do_java_create (current_env, name, tmp);
-            }
-          else
-            error ("java_new: first argument must be a string");
-        }
-      else
-        print_usage ();
-    }
-
-  return retval;
-}
-
-DEFUN (java_invoke, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{ret} =} java_invoke (@var{obj}, @var{name}, @var{arg1}, ...)\n\
-Invoke the method @var{name} on the Java object @var{obj} with the arguments\n\
-@var{arg1}, ... For static methods, @var{obj} can be a string representing the\n\
-fully qualified name of the corresponding class. The function returns the result\n\
-of the method invocation.\n\
-\n\
-When @var{obj} is a regular Java object, the structure-like indexing can be used\n\
-as a shortcut syntax. For instance, the two following statements are equivalent\n\
-\n\
-@example\n\
-  ret = java_invoke (x, \"method1\", 1.0, \"a string\")\n\
-  ret = x.method1 (1.0, \"a string\")\n\
-@end example\n\
-\n\
-@seealso{java_get, java_set, java_new}\n\
-@end deftypefn")
-{
-  return _java_invoke (args);
-}
-
-DEFUN (javaMethod, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{ret} =} javaMethod (@var{name}, @var{obj}, @var{arg1}, ...)\n\
-Invoke the method @var{name} on the Java object @var{obj} with the arguments\n\
-@var{arg1}, ... For static methods, @var{obj} can be a string representing the\n\
-fully qualified name of the corresponding class. The function returns the result\n\
-of the method invocation.\n\
-\n\
-When @var{obj} is a regular Java object, the structure-like indexing can be used\n\
-as a shortcut syntax. For instance, the two following statements are equivalent\n\
-\n\
-@example\n\
-  ret = javaMethod (\"method1\", x, 1.0, \"a string\")\n\
-  ret = x.method1 (1.0, \"a string\")\n\
-@end example\n\
-\n\
-@seealso{java_get, java_set, java_new}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () > 1)
-    {
-      // swap first two arguments
-      octave_value_list tmp;
-      tmp(0) = args(1);
-      tmp(1) = args(0);
-
-      // copy remaining arguments
-      for (int i=2; i<args.length (); i++)
-        tmp(i) = args(i);
-
-      retval = _java_invoke (tmp);
-    }
-  else
-    {
-      print_usage ();
-    }
-
-  return retval;
-}
-
-// internally called from java_invoke and javaMethod for backward
-// compatibility.
+// internally called from java_invoke and javaMethod.
 
 static octave_value
 _java_invoke (const octave_value_list& args)
@@ -1542,7 +1415,7 @@ _java_invoke (const octave_value_list& args)
 
       if (args.length () > 1)
         {
-          std::string name = args(1).string_value ();
+          std::string methodname = args(1).string_value ();
           if (! error_state)
             {
               octave_value_list tmp;
@@ -1552,190 +1425,24 @@ _java_invoke (const octave_value_list& args)
               if (args(0).class_name () == "octave_java")
                 {
                   octave_java *jobj = TO_JAVA (args(0));
-                  retval = jobj->do_java_invoke (current_env, name, tmp);
+                  retval = jobj->do_java_invoke (current_env, methodname, tmp);
                 }
               else if (args(0).is_string ())
                 {
                   std::string cls = args(0).string_value ();
-                  retval = octave_java::do_java_invoke (current_env, cls, name, tmp);
+                  retval = octave_java::do_java_invoke (current_env, cls, methodname, tmp);
                 }
               else
-                error ("java_invoke: first argument must be a Java object or a string");
+                error ("java_invoke: OBJ must be a Java object or a string");
             }
           else
-            error ("java_invoke: second argument must be a string");
+            error ("java_invoke: METHODNAME must be a string");
         }
       else
         print_usage ();
     }
 
   return retval;
-}
-
-DEFUN (java_get, args, ,
-    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{val} =} java_get (@var{obj}, @var{name})\n\
-Get the value of the field @var{name} of the Java object @var{obj}. For\n\
-static fields, @var{obj} can be a string representing the fully qualified\n\
-name of the corresponding class.\n\
-\n\
-When @var{obj} is a regular Java object, the structure-like indexing can be used\n\
-as a shortcut syntax. For instance, the two following statements are equivalent\n\
-\n\
-@example\n\
-  java_get (x, \"field1\")\n\
-  x.field1\n\
-@end example\n\
-\n\
-@seealso{java_set, java_invoke, java_new}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  initialize_java ();
-
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () == 2)
-        {
-          std::string name = args(1).string_value ();
-          if (! error_state)
-            {
-              if (args(0).class_name () == "octave_java")
-                {
-                  octave_java *jobj = TO_JAVA (args(0));
-                  retval = jobj->do_java_get (current_env, name);
-                }
-              else if (args(0).is_string ())
-                {
-                  std::string cls = args(0).string_value ();
-                  retval = octave_java::do_java_get (current_env, cls, name);
-                }
-              else
-                error ("java_get: first argument must be a Java object or a string");
-            }
-          else
-            error ("java_get: second argument must be a string");
-        }
-      else
-        print_usage ();
-    }
-
-  return retval;
-}
-
-DEFUN (java_set, args, ,
-    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{obj} =} java_set (@var{obj}, @var{name}, @var{val})\n\
-Set the value of the field @var{name} of the Java object @var{obj} to @var{val}.\n\
-For static fields, @var{obj} can be a string representing the fully qualified named\n\
-of the corresponding Java class.\n\
-\n\
-When @var{obj} is a regular Java object, the structure-like indexing can be used as\n\
-a shortcut syntax. For instance, the two following statements are equivalent\n\
-\n\
-@example\n\
-  java_set (x, \"field1\", val)\n\
-  x.field1 = val\n\
-@end example\n\
-\n\
-@seealso{java_get, java_invoke, java_new}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  initialize_java ();
-
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () == 3)
-        {
-          std::string name = args(1).string_value ();
-          if (! error_state)
-            {
-              if (args(0).class_name () == "octave_java")
-                {
-                  octave_java *jobj = TO_JAVA (args(0));
-                  retval = jobj->do_java_set (current_env, name, args(2));
-                }
-              else if (args(0).is_string ())
-                {
-                  std::string cls = args(0).string_value ();
-                  retval = octave_java::do_java_set (current_env, cls, name, args(2));
-                }
-              else
-                error ("java_set: first argument must be a Java object or a string");
-            }
-          else
-            error ("java_set: second argument must be a string");
-        }
-      else
-        print_usage ();
-    }
-
-  return retval;
-}
-
-DEFUN (java2mat, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} java2mat (@var{obj})\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  initialize_java ();
-
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () == 1)
-        {
-          if (args(0).class_name () == "octave_java")
-            {
-              octave_java *jobj = TO_JAVA (args(0));
-              retval(0) = box_more (current_env, jobj->to_java (), 0);
-            }
-          else
-            retval(0) = args(0);
-        }
-      else
-        print_usage ();
-    }
-
-  return retval;
-}
-
-DEFUN (java_convert_matrix, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_convert_matrix ()\n\
-Query or set the internal variable that determines FIXME.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (java_convert_matrix);
-}
-
-DEFUN (java_unsigned_conversion, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_unsigned_conversion ()\n\
-Query or set the internal variable that determines FIXME.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (java_unsigned_conversion);
-}
-
-DEFUN (java_debug, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_debug ()\n\
-Query or set the internal variable that determines FIXME.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (java_debug);
 }
 
 JNIEXPORT jboolean JNICALL
@@ -1895,7 +1602,7 @@ octave_java::subsref (const std::string& type,
           count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
-          retval = feval (std::string ("java_get"), ovl, 1);
+          retval = feval (std::string ("__java_get__"), ovl, 1);
         }
       break;
 
@@ -1935,7 +1642,7 @@ octave_java::subsasgn (const std::string& type,
             ovl(0) = octave_value (this);
             ovl(1) = (idx.front ())(0);
             ovl(2) = rhs;
-            feval ("java_set", ovl, 0);
+            feval ("__java_set__", ovl, 0);
             if (! error_state)
               {
                 count++;
@@ -2208,6 +1915,350 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 }
 
 #endif
+// endif on HAVE_JAVA
+//
+// DEFUN blocks below must be outside of HAVE_JAVA block so that
+// documentation strings are always available, even when functions are not.
+
+DEFUN (javaObject, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{obj} =} javaObject (@var{classname})\n\
+@deftypefnx {Built-in Function} {@var{obj} =} javaObject (@var{classname}, @var{arg1}, @dots{})\n\
+Create a Java object of class @var{classsname}, by calling the class\n\
+constructor with the arguments @var{arg1}, @dots{}\n\
+\n\
+The first example creates an uninitialized object, \\n\
+while the second example supplies an initializer argument.\n\
+\n\
+@example\n\
+@group\n\
+  x = javaObject (\"java.lang.StringBuffer\")\n\
+  x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{java_invoke}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  octave_value retval;
+
+  initialize_java ();
+  if (! error_state)
+    {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
+      if (args.length () > 0)
+        {
+          std::string classname = args(0).string_value ();
+          if (! error_state)
+            {
+              octave_value_list tmp;
+              for (int i=1; i<args.length (); i++)
+                tmp(i-1) = args(i);
+              retval = octave_java::do_java_create (current_env, classname, tmp);
+            }
+          else
+            error ("javaObject: CLASSNAME argument must be a string");
+        }
+      else
+        print_usage ();
+    }
+
+  return retval;
+#else
+  error ("javaObject: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (java_invoke, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{ret} =} java_invoke (@var{obj}, @var{methodname}, @var{arg1}, @dots{})\n\
+Invoke the method @var{methodname} on the Java object @var{obj} with the arguments\n\
+@var{arg1}, @dots{}  For static methods, @var{obj} can be a string\n\
+representing the fully qualified name of the corresponding class.  The\n\
+function returns the result of the method invocation.\n\
+\n\
+When @var{obj} is a regular Java object, structure-like indexing can be\n\
+used as a shortcut syntax.  For instance, the two following statements are\n\
+equivalent\n\
+\n\
+@example\n\
+@group\n\
+  ret = java_invoke (x, \"method1\", 1.0, \"a string\")\n\
+  ret = x.method1 (1.0, \"a string\")\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{javaMethod, javaObject}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  return _java_invoke (args);
+#else
+  error ("java_invoke: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (javaMethod, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
+Invoke the method @var{methodname} on the Java object @var{obj} with the arguments\n\
+@var{arg1}, @dots{}  For static methods, @var{obj} can be a string\n\
+representing the fully qualified name of the corresponding class.  The\n\
+function returns the result of the method invocation.\n\
+\n\
+When @var{obj} is a regular Java object, structure-like indexing can be\n\
+used as a shortcut syntax.  For instance, the two following statements are\n\
+equivalent\n\
+\n\
+@example\n\
+@group\n\
+  ret = javaMethod (\"method1\", x, 1.0, \"a string\")\n\
+  ret = x.method1 (1.0, \"a string\")\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{java_invoke, javaObject}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  octave_value retval;
+
+  if (args.length () > 1)
+    {
+      // swap first two arguments
+      octave_value_list tmp;
+      tmp(0) = args(1);
+      tmp(1) = args(0);
+
+      // copy remaining arguments
+      for (int i=2; i<args.length (); i++)
+        tmp(i) = args(i);
+
+      retval = _java_invoke (tmp);
+    }
+  else
+    {
+      print_usage ();
+    }
+
+  return retval;
+#else
+  error ("javaMethod: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (__java_get__, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} __java_get__ (@var{obj}, @var{name})\n\
+Get the value of the field @var{name} of the Java object @var{obj}.  For\n\
+static fields, @var{obj} can be a string representing the fully qualified\n\
+name of the corresponding class.\n\
+\n\
+When @var{obj} is a regular Java object, structure-like indexing can be\n\
+used as a shortcut syntax.  For instance, the two following statements are\n\
+equivalent\n\
+\n\
+@example\n\
+@group\n\
+  __java_get__ (x, \"field1\")\n\
+  x.field1\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{java_set, java_invoke, javaObject}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  octave_value retval;
+
+  initialize_java ();
+
+  if (! error_state)
+    {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
+      if (args.length () == 2)
+        {
+          std::string name = args(1).string_value ();
+          if (! error_state)
+            {
+              if (args(0).class_name () == "octave_java")
+                {
+                  octave_java *jobj = TO_JAVA (args(0));
+                  retval = jobj->do_java_get (current_env, name);
+                }
+              else if (args(0).is_string ())
+                {
+                  std::string cls = args(0).string_value ();
+                  retval = octave_java::do_java_get (current_env, cls, name);
+                }
+              else
+                error ("__java_get__: OBJ must be a Java object or a string");
+            }
+          else
+            error ("__java_get__: NAME must be a string");
+        }
+      else
+        print_usage ();
+    }
+
+  return retval;
+#else
+  error ("__java_get__: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (__java_set__, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{obj} =} __java_set__ (@var{obj}, @var{name}, @var{val})\n\
+Set the value of the field @var{name} of the Java object @var{obj} to\n\
+@var{val}.  For static fields, @var{obj} can be a string representing the\n\
+fully qualified named of the corresponding Java class.\n\
+\n\
+When @var{obj} is a regular Java object, structure-like indexing can be\n\
+used as a shortcut syntax.  For instance, the two following statements are\n\
+equivalent\n\
+\n\
+@example\n\
+@group\n\
+  __java_set__ (x, \"field1\", val)\n\
+  x.field1 = val\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{__java_get__, java_invoke, javaObject}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  octave_value retval;
+
+  initialize_java ();
+
+  if (! error_state)
+    {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
+      if (args.length () == 3)
+        {
+          std::string name = args(1).string_value ();
+          if (! error_state)
+            {
+              if (args(0).class_name () == "octave_java")
+                {
+                  octave_java *jobj = TO_JAVA (args(0));
+                  retval = jobj->do_java_set (current_env, name, args(2));
+                }
+              else if (args(0).is_string ())
+                {
+                  std::string cls = args(0).string_value ();
+                  retval = octave_java::do_java_set (current_env, cls, name, args(2));
+                }
+              else
+                error ("__java_set__: OBJ must be a Java object or a string");
+            }
+          else
+            error ("__java_set__: NAME must be a string");
+        }
+      else
+        print_usage ();
+    }
+
+  return retval;
+#else
+  error ("__java_set__: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (java2mat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java2mat (@var{obj})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  octave_value_list retval;
+
+  initialize_java ();
+
+  if (! error_state)
+    {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
+      if (args.length () == 1)
+        {
+          if (args(0).class_name () == "octave_java")
+            {
+              octave_java *jobj = TO_JAVA (args(0));
+              retval(0) = box_more (current_env, jobj->to_java (), 0);
+            }
+          else
+            retval(0) = args(0);
+        }
+      else
+        print_usage ();
+    }
+
+  return retval;
+#else
+  error ("java2mat: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (java_convert_matrix, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java_convert_matrix ()\n\
+FIXME: Determine what this variable controls and rename function\n\
+Query or set the internal variable that determines FIXME.\n\
+@seealso{java_unsigned_conversion, java_debug}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  return SET_INTERNAL_VARIABLE (java_convert_matrix);
+#else
+  error ("java_convert_matrix: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (java_unsigned_conversion, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java_unsigned_conversion ()\n\
+FIXME: Determine what this variable controls and rename function\n\
+Query or set the internal variable that determines FIXME.\n\
+@seealso{java_convert_matrix, java_debug}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  return SET_INTERNAL_VARIABLE (java_unsigned_conversion);
+#else
+  error ("java_unsigned_conversion: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (java_debug, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java_debug ()\n\
+FIXME: Determine what this variable controls and rename function\n\
+Query or set the internal variable that determines FIXME.\n\
+@seealso{java_convert_matrix, java_unsigned_conversion}\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  return SET_INTERNAL_VARIABLE (java_debug);
+#else
+  error ("java_debug: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
 
 // Outside of #ifdef HAVE_JAVA because it is desirable to be able to
 // merely test for the presence of a Java object without having Java installed. 

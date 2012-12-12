@@ -124,7 +124,8 @@ function varargout = listdlg (varargin)
    endif
    
    ## transform matrices to cell arrays of strings
-   listsize = arrayfun (@num2str, listsize, "UniformOutput", false);
+   ## swap width and height to correct calling format for JDialogBox
+   listsize = {num2str(listsize(2)), num2str(listsize(1))};
    initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
    
    ret = java_invoke ("org.octave.JDialogBox", "listdlg", listcell,

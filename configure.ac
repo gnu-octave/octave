@@ -2218,14 +2218,31 @@ AC_ARG_ENABLE([java],
    fi],
   [])
 
+AC_ARG_WITH([java-homedir],
+  [AS_HELP_STRING([--with-java-homedir=DIR],
+    [Java JDK directory in DIR])],
+  [JAVA_HOMEDIR="$withval"])
+
+AC_ARG_WITH([java-includedir],
+  [AS_HELP_STRING([--with-java-includedir=DIR],
+    [look for java include file <jni.h> in DIR])],
+  [JAVA_CPPFLAGS="$withval"], [JAVA_CPPFLAGS=""])
+
+AC_ARG_WITH([java-libdir],
+  [AS_HELP_STRING([--with-java-libdir=DIR],
+    [look for java library libjvm in DIR])],
+  [JAVA_LDPATH="$withval"], [JAVA_LDPATH=""])
+
 HAVE_JAVA=no
 ## Grab JAVA_HOME from environment variable if it exists
 AC_ARG_VAR([JAVA_HOME], [path to Java JDK installation])
-JAVA_LDPATH=
+## But --with-java-homedir option overrides environment variable
+if test -n "$JAVA_HOMEDIR"; then
+  JAVA_HOME=$JAVA_HOMEDIR
+fi
 JAVA=
 JAVAC=
 JAR=
-JAVA_CPPFLAGS=
 JAVA_LIBS=
 
 ## Fake loop so that "break" can be used to skip code blocks
@@ -2275,7 +2292,7 @@ do
   ## Check Java version is recent enough.
   AC_MSG_CHECKING([for Java version])
   java_version=[`$JAVA -version 2>&1 | sed -n -e 's/^java version[^0-9"]*"\([^"]*\)"/\1/p'`]
-  AC_MSG_RESULT($java_version)
+  AC_MSG_RESULT([$java_version])
   java_major=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
   java_minor=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
   if test $java_major -ge 1 && test $java_minor -ge 5; then
@@ -2297,10 +2314,12 @@ do
   esac
 
   ## Determine Shared Library Extension
-  ## FIXME: May need dll extension for cygwin, mingw.
   case $canonical_host_type in
-    *-*-darwin*)
+    *-darwin*)
       shlext=dylib
+    ;;
+    *-mingw* | *-cygwin*)
+      shlext=dll
     ;;
     *)
       shlext=so
@@ -2309,20 +2328,22 @@ do
 
   AC_MSG_CHECKING([for libjvm.${shlext}])
 
-  ## Run Java to try and determine library path to libjvm.so.
-  JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
-  JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e 's/:/ /g'`
-	for dir in $JAVA_TMP_LDPATH; do
-    if test -f "$dir/libjvm.${shlext}"; then
-      JAVA_LDPATH=$dir
-      break
-    fi
-  done
+  if test -z "$JAVA_LDPATH"; then
+    ## Run Java to try and determine library path to libjvm.so.
+    JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
+    JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e 's/:/ /g'`
+    for dir in $JAVA_TMP_LDPATH; do
+      if test -f "$dir/libjvm.${shlext}"; then
+        JAVA_LDPATH=$dir
+        break
+      fi
+    done
+  fi
 
   if test -z "$JAVA_LDPATH"; then
     ## Nothing found.  Try Java again using bootpath argument. 
     JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_BOOTPATH`
-    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/server"
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/client ${JAVA_TMP_LDPATH}/server"
     for dir in $JAVA_TMP_LDPATH; do
       if test -f "$dir/libjvm.${shlext}"; then
         JAVA_LDPATH=$dir
@@ -2333,7 +2354,8 @@ do
 
   if test -z "$JAVA_LDPATH"; then
     ## Java failed to find it's own library path.  Guess wildly.
-    JAVA_TMP_LDPATH=`ls -d $JAVA_HOME/jre/lib/*/server`
+    JAVA_TMP_LDPATH=`ls -d $JAVA_HOME/jre/lib/*/client`
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} `ls -d $JAVA_HOME/jre/lib/*/server`"
     ## Add some paths that might work on Macs.
     JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/../Libraries ${JAVA_HOME}/Libraries"
     for dir in $JAVA_TMP_LDPATH; do
@@ -2344,6 +2366,15 @@ do
     done
   fi
 
+  ## Verify value passed in option --with-java-libdir
+  if test -n "$JAVA_LDPATH"; then
+    if test -f "${JAVA_LDPATH}/libjvm.${shlext}"; then
+      :  # libjvm found
+    else
+      JAVA_LDPATH=""
+    fi 
+  fi
+
   if test -z "$JAVA_LDPATH"; then
     AC_MSG_RESULT([not found])
     AC_MSG_WARN([Library libjvm not found.  Octave will not be able to call Java methods.])
@@ -2352,23 +2383,37 @@ do
     AC_MSG_RESULT([$JAVA_LDPATH])
   fi
 
+  AC_MSG_CHECKING([for include file <jni.h>])
+
   ## Java and JVM found.  Set up flags.
   case $canonical_host_type in
-    *-*-darwin*)
+    *-darwin*)
       ## Sneak the -framework flag into mkoctfile via LFLAGS
       LFLAGS="$LFLAGS -framework JavaVM"
       ## According to: http://developer.apple.com/unix/crossplatform.html
       ## one must explicitly set the include path.
       ## Unfortunately, the include path keeps moving around.
-      JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I/System/Library/Frameworks/JavaVM.framework/Home/include -I/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Headers -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I/System/Library/Frameworks/JavaVM.framework/Home/include -I/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Headers -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
+      fi
       JAVA_LIBS="-framework JavaVM"
     ;;
     *-mingw* | *-cygwin*)
-      JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
+      fi
       JAVA_LIBS=-ladvapi32
     ;;
     *)
-      JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/linux"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
+      fi
     ;;
   esac
 
@@ -2378,7 +2423,10 @@ do
 	for dir in $JNI_PATH; do 
 	  if test -f "${dir}/jni.h"; then have_jni=true; break; fi
 	done
-  if test $have_jni = false; then
+  if test $have_jni = true; then
+    AC_MSG_RESULT([$dir])
+  else
+    AC_MSG_RESULT([not found])
     AC_MSG_WARN([Include file <jni.h> not found.  Octave will not be able to call Java methods.])
     break
   fi

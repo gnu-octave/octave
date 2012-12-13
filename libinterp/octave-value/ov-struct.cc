@@ -1749,9 +1749,12 @@ octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) c
 
 DEFUN (struct, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} struct (\"field\", @var{value}, \"field\", @var{value}, @dots{})\n\
+@deftypefn {Built-in Function} {} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
 \n\
-Create a structure and initialize its value.\n\
+Create a scalar or array structure and initialize its values. The\n\
+@var{field1}, @var{field2}, @dots{} variables are strings giving the\n\
+names of the fields and the @var{value1}, @var{value2}, @dots{}\n\
+variables can be any type.\n\
 \n\
 If the values are cell arrays, create a structure array and initialize\n\
 its values.  The dimensions of each cell array of values must match.\n\
@@ -1760,6 +1763,41 @@ the entire array.  If the cells are empty, create an empty structure\n\
 array with the specified field names.\n\
 \n\
 If the argument is an object, return the underlying struct.\n\
+\n\
+Observe that the syntax is optimized for struct @strong{arrays}. Consider the\n\
+following examples:\n\
+\n\
+@example\n\
+@group\n\
+struct (\"foo\", 1)\n\
+  @result{} scalar structure containing the fields:\n\
+    foo =  1\n\
+\n\
+struct (\"foo\", @{@})\n\
+  @result{} 0x0 struct array containing the fields:\n\
+    foo\n\
+\n\
+struct (\"foo\", @{ @{@} @})\n\
+  @result{} scalar structure containing the fields:\n\
+    foo = @{@}(0x0)\n\
+\n\
+struct (\"foo\", @{1, 2, 3@})\n\
+  @result{} 1x3 struct array containing the fields:\n\
+    foo\n\
+\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+The first case is an ordinary scalar struct, one field, one value. The\n\
+second produces an empty struct array with one field and no values, since\n\
+s being passed an empty cell array of struct array values. When the value is\n\
+a cell array containing a single entry, this becomes a scalar struct with\n\
+that single entry as the value of the field. That single entry happens\n\
+to be an empty cell array.\n\
+\n\
+Finally, if the value is a non-scalar cell array, then @code{struct}\n\
+produces a struct @strong{array}.\n\
 @end deftypefn")
 {
   octave_value retval;

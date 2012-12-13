@@ -2219,7 +2219,6 @@ AC_ARG_WITH([java-libdir],
     [look for java library libjvm in DIR])],
   [JAVA_LDPATH="$withval"], [JAVA_LDPATH=""])
 
-HAVE_JAVA=no
 ## Grab JAVA_HOME from environment variable if it exists
 AC_ARG_VAR([JAVA_HOME], [path to Java JDK installation])
 ## But --with-java-homedir option overrides environment variable
@@ -2231,16 +2230,19 @@ JAVAC=
 JAR=
 JAVA_LIBS=
 
-## Fake loop so that "break" can be used to skip code blocks
+## Fake loop so that "break" can be used to skip code blocks.
 while test $build_java = true
 do
+  ## Unset build_java.  Variable is set only if all configuration tests pass.
+  build_java=false
+
   ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
   if test -z "$JAVA_HOME"; then
     AC_MSG_WARN([JAVA_HOME environment variable not initialized.])
     AC_MSG_WARN([Auto-detection will proceed but is unreliable.])
   fi
 
-  ## Search for a viable Java executable
+  ## Search for a viable Java executable.
   if test -z "$JAVA_HOME"; then
     JAVA_PATH=$PATH
   else
@@ -2254,9 +2256,9 @@ do
   fi
 
   if test -z "$JAVA_HOME"; then
-    ## Find JAVA_HOME for JRE by running java and querying properties
+    ## Find JAVA_HOME for JRE by running java and querying properties.
     JAVA_TMP_HOME=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`  
-    ## Strip directory back to top-level installation dir (JAVA_HOME for JDK) 
+    ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
     JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e 's|/bin/\?$||' | sed -e 's|/jre/\?$||'`
   fi
 
@@ -2291,7 +2293,7 @@ do
   ## At this point Win32 systems have enough configuration data.
   case $canonical_host_type in
     *-msdosmsvc*)
-      HAVE_JAVA=yes
+      build_java=true
       JAVA_LIBS=-ladvapi32
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
@@ -2420,17 +2422,13 @@ do
   fi
 
   ## Passed all configuration tests.  A workable Java installation was found.
-  HAVE_JAVA=yes    
+  build_java=true
   AC_DEFINE(HAVE_JAVA, 1,
     [Define to 1 if Java is available and is at least version 1.5])
   break
 done
 
-## For later reporting in configure summary
-if test $HAVE_JAVA = no; then
-  build_java=false
-fi
-AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $HAVE_JAVA = yes])
+AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = true])
 AC_SUBST(JAVA)
 AC_SUBST(JAVAC)
 AC_SUBST(JAR)

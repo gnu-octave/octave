@@ -2313,27 +2313,27 @@ do
     ;;
   esac
 
-  ## Determine Shared Library Extension
+  ## Determine which library file name to search for.
   case $canonical_host_type in
     *-darwin*)
-      shlext=dylib
+      jvmlib=libjvm.dylib
     ;;
     *-mingw* | *-cygwin*)
-      shlext=dll
+      jvmlib=jvm.dll
     ;;
     *)
-      shlext=so
+      jvmlib=libjvm.so
     ;;
   esac
 
-  AC_MSG_CHECKING([for libjvm.${shlext}])
+  AC_MSG_CHECKING([for $jvmlib])
 
   if test -z "$JAVA_LDPATH"; then
     ## Run Java to try and determine library path to libjvm.so.
     JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
-    JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e 's/:/ /g'`
+    JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e "s/${PATH_SEPARATOR}/ /g"`
     for dir in $JAVA_TMP_LDPATH; do
-      if test -f "$dir/libjvm.${shlext}"; then
+      if test -f "$dir/$jvmlib"; then
         JAVA_LDPATH=$dir
         break
       fi
@@ -2345,7 +2345,7 @@ do
     JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_BOOTPATH`
     JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/client ${JAVA_TMP_LDPATH}/server"
     for dir in $JAVA_TMP_LDPATH; do
-      if test -f "$dir/libjvm.${shlext}"; then
+      if test -f "$dir/$jvmlib"; then
         JAVA_LDPATH=$dir
         break
       fi
@@ -2358,8 +2358,10 @@ do
     JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} `ls -d $JAVA_HOME/jre/lib/*/server`"
     ## Add some paths that might work on Macs.
     JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/../Libraries ${JAVA_HOME}/Libraries"
+    ## Add some paths that might work on MinGW
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/bin/client ${JAVA_HOME}/bin/server"
     for dir in $JAVA_TMP_LDPATH; do
-      if test -f "$dir/libjvm.${shlext}"; then
+      if test -f "$dir/$jvmlib"; then
         JAVA_LDPATH=$dir
         break
       fi
@@ -2368,7 +2370,7 @@ do
 
   ## Verify value passed in option --with-java-libdir
   if test -n "$JAVA_LDPATH"; then
-    if test -f "${JAVA_LDPATH}/libjvm.${shlext}"; then
+    if test -f "${JAVA_LDPATH}/$jvmlib"; then
       :  # libjvm found
     else
       JAVA_LDPATH=""
@@ -2377,7 +2379,7 @@ do
 
   if test -z "$JAVA_LDPATH"; then
     AC_MSG_RESULT([not found])
-    AC_MSG_WARN([Library libjvm not found.  Octave will not be able to call Java methods.])
+    AC_MSG_WARN([Library $jvmlib not found.  Octave will not be able to call Java methods.])
     break
   else
     AC_MSG_RESULT([$JAVA_LDPATH])

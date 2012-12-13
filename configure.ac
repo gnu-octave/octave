@@ -2133,20 +2133,6 @@ if test -n "$DOCDIR" && test -n "$warn_gnuplot"; then
 fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 
-### Even though we include config.h, we need to have the preprocessor
-### defines available in a variable for the testif feature of the
-### scripts/testfun/test.m function.  Use UGLY_DEFS to hold all the -D
-### options.  These are ultimately placed in the DEFS field of the
-### struct returned by octave_config_info, which is used by test.m.
-
-AC_OUTPUT_MAKE_DEFS
-
-### We have to insert extra levels of backslash quoting here so that
-### the right thing ends up in oct-conf.h.
-UGLY_DEFS=`echo $DEFS | $SED 's,\\",\\\\\\\\\\\\\\\\\\",g'`
-AC_MSG_NOTICE([defining UGLY_DEFS to be $UGLY_DEFS])
-AC_SUBST(UGLY_DEFS)
-
 ### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
 ### done feature testing. 
 
@@ -2455,7 +2441,6 @@ AC_DEFINE_UNQUOTED([JAVA_LDPATH], ["$JAVA_LDPATH"], [Java library path (libjvm)]
 
 ### GUI/Qt related tests.
 
-HAVE_QT=false
 QT_CPPFLAGS=
 QT_LDFLAGS=
 QT_LIBS=
@@ -2489,7 +2474,6 @@ if test $build_gui = true; then
     AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required to build the GUI])
   fi 
 
-  HAVE_QT=true
   AC_DEFINE(HAVE_QT, 1, 
     [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, and rcc))])
 
@@ -2726,6 +2710,21 @@ typedef OCTAVE_IDX_TYPE octave_idx_type;
 
 dnl end of AH_BOTTOM
 dnl ------------------------------------------------------------
+
+### Make all AC_DEFINES available to testif feature of test.m function.
+### This must reside at the bottom of configure.ac after all AC_DEFINES
+### have been made.
+### Use UGLY_DEFS to hold all the -D options.  These are ultimately placed
+### in the DEFS field of the struct returned by octave_config_info, which
+### is used by test.m.
+
+AC_OUTPUT_MAKE_DEFS
+
+## We have to insert extra levels of backslash quoting here so that
+## the right thing ends up in oct-conf.h.
+UGLY_DEFS=`echo $DEFS | $SED 's,\\",\\\\\\\\\\\\\\\\\\",g'`
+AC_MSG_NOTICE([defining UGLY_DEFS to be $UGLY_DEFS])
+AC_SUBST(UGLY_DEFS)
 
 ### Do the substitutions in all the Makefiles.
 

@@ -28,6 +28,7 @@ general_FCN_FILES = \
   general/del2.m \
   general/display.m \
   general/divergence.m \
+  general/fieldnames.m \
   general/flipdim.m \
   general/fliplr.m \
   general/flipud.m \

@@ -23,10 +23,17 @@
 ## Return the fields of a Java object or Java class in the form of a cell 
 ## array of strings.  If no output is requested, print the result
 ## to the standard output.
-## @seealso{javamethods, javaObject}
+## @seealso{fieldnames, methods, javamethods, javaObject}
 ## @end deftypefn
 
 function fld_names = javafields (javaobj)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "javafields is obsolete and will be removed from a future version of Octave, please use fieldnames instead");
+  endif
   
   if (nargin != 1)
     print_usage ();

@@ -1925,48 +1925,32 @@ Return true if @var{x} is a structure or a structure array.\n\
   return retval;
 }
 
-DEFUN (fieldnames, args, ,
+DEFUN (__fieldnames__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fieldnames (@var{struct})\n\
-Return a cell array of strings naming the elements of the structure\n\
-@var{struct}.  It is an error to call @code{fieldnames} with an\n\
-argument that is not a structure.\n\
+@deftypefn  {Built-in Function} {} __fieldnames__ (@var{struct})\n\
+@deftypefnx {Built-in Function} {} __fieldnames__ (@var{obj})\n\
+Internal function.\n\
+\n\
+Implements @code{fieldnames()} for structures and Octave objects.\n\
+@seealso{fieldnames}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  int nargin = args.length ();
+  // Input validation has already been done in fieldnames.m.
+  octave_value arg = args(0);
 
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
+  octave_map m = arg.map_value ();
 
-      if (arg.is_map () || arg.is_object ())
-        {
-          octave_map m = arg.map_value ();
+  string_vector keys = m.fieldnames ();
 
-          string_vector keys = m.fieldnames ();
-
-          if (keys.length () == 0)
-            retval = Cell (0, 1);
-          else
-            retval = Cell (keys);
-        }
-      else
-        gripe_wrong_type_arg ("fieldnames", args(0));
-    }
+  if (keys.length () == 0)
+    retval = Cell (0, 1);
   else
-    print_usage ();
+    retval = Cell (keys);
 
   return retval;
 }
-
-/*
-## test preservation of fieldname order
-%!test
-%! x(3).d=1;  x(2).a=2; x(1).b=3;  x(2).c=3;
-%! assert (fieldnames (x), {"d"; "a"; "b"; "c"});
-*/
 
 DEFUN (isfield, args, ,
   "-*- texinfo -*-\n\

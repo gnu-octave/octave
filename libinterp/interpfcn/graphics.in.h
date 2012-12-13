@@ -1394,7 +1394,7 @@ public:
 
   array_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m)
-    : base_property (nm, h), data (m),
+    : base_property (nm, h), data (m.is_sparse_type () ? m.full_value () : m),
       xmin (), xmax (), xminp (), xmaxp (),
       type_constraints (), size_constraints ()
     {
@@ -1454,12 +1454,14 @@ public:
 protected:
   bool do_set (const octave_value& v)
     {
-      if (validate (v))
+      octave_value tmp = v.is_sparse_type () ? v.full_value () : v;
+
+      if (validate (tmp))
         {
           // FIXME -- should we check for actual data change?
-          if (! is_equal (v))
+          if (! is_equal (tmp))
             {
-              data = v;
+              data = tmp;
 
               get_data_limits ();
 

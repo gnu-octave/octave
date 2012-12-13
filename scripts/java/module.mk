@@ -24,10 +24,13 @@ PKG_ADD_FILES += java/PKG_ADD
 
 DIRSTAMP_FILES += java/$(octave_dirstamp)
 
+if AMCOND_HAVE_JAVA
 JAR_FILES += java/octave.jar
+endif
 
 org_octave_dir = org/octave
 
+if AMCOND_HAVE_JAVA
 JAVA_SRC = \
   $(org_octave_dir)/ClassHelper.java \
   $(org_octave_dir)/OctClassLoader.java \
@@ -38,6 +41,7 @@ JAVA_SRC = \
   $(org_octave_dir)/DlgListener.java \
   $(org_octave_dir)/TeXtranslator.java \
   $(org_octave_dir)/TeXcode.java
+endif
 
 JAVA_CLASSES = $(JAVA_SRC:.java=.class)
 
@@ -67,9 +71,11 @@ java/images.stamp: $(srcdir_java_JAVA_IMAGES)
 	fi
 	touch $@
 
+if AMCOND_HAVE_JAVA
 java/octave.jar: java/images.stamp $(java_JAVA_CLASSES)
 	( cd java; $(JAR) cf octave.jar.t $(JAVA_CLASSES) $(JAVA_IMAGES) )
 	mv $@.t $@
+endif
 
 EXTRA_DIST += $(JAR_FILES) $(java_JAVA_SRC) $(java_JAVA_IMAGES)
 

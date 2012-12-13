@@ -52,9 +52,7 @@ include geometry/module.mk
 include help/module.mk
 include image/module.mk
 include io/module.mk
-if AMCOND_HAVE_JAVA
 include java/module.mk
-endif
 include linear-algebra/module.mk
 include miscellaneous/module.mk
 include optimization/module.mk
@@ -127,11 +125,9 @@ io/PKG_ADD: $(io_FCN_FILES) $(io_GEN_FCN_FILES) io/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(io_FCN_FILES) -- $(io_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
-if AMCOND_HAVE_JAVA
 java/PKG_ADD: $(java_FCN_FILES) $(java_GEN_FCN_FILES) java/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(java_FCN_FILES) -- $(java_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
-endif
 
 linear-algebra/PKG_ADD: $(linear_algebra_FCN_FILES) $(linear_algebra_GEN_FCN_FILES) linear-algebra/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(linear_algebra_FCN_FILES) -- $(linear_algebra_GEN_FCN_FILES) > $@-t
@@ -226,9 +222,7 @@ $(geometry_GEN_FCN_FILES): geometry/$(octave_dirstamp)
 $(help_GEN_FCN_FILES): help/$(octave_dirstamp)
 $(image_GEN_FCN_FILES): image/$(octave_dirstamp)
 $(io_GEN_FCN_FILES): io/$(octave_dirstamp)
-if AMCOND_HAVE_JAVA
 $(java_GEN_FCN_FILES): java/$(octave_dirstamp)
-endif
 $(linear_algebra_GEN_FCN_FILES): linear-algebra/$(octave_dirstamp)
 $(miscellaneous_GEN_FCN_FILES): miscellaneous/$(octave_dirstamp)
 $(optimization_GEN_FCN_FILES): optimization/$(octave_dirstamp)
@@ -278,11 +272,9 @@ image/$(octave_dirstamp):
 io/$(octave_dirstamp):
 	$(MKDIR_P) io
 	: > io/$(octave_dirstamp)
-if AMCOND_HAVE_JAVA
 java/$(octave_dirstamp):
 	$(MKDIR_P) java
 	: > java/$(octave_dirstamp)
-endif
 linear-algebra/$(octave_dirstamp):
 	$(MKDIR_P) linear-algebra
 	: > linear-algebra/$(octave_dirstamp)

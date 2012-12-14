@@ -10,7 +10,6 @@ java_FCN_FILES = \
   java/javaaddpath.m \
   java/javaclasspath.m \
   java/javamem.m \
-  java/javamethods.m \
   java/javarmpath.m \
   java/listdlg.m \
   java/msgbox.m \

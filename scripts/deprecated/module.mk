@@ -7,10 +7,11 @@ deprecated_FCN_FILES = \
   deprecated/cut.m \
   deprecated/error_text.m \
   deprecated/isstr.m \
-  deprecated/javafields.m \
   deprecated/java_get.m \
   deprecated/java_new.m \
   deprecated/java_set.m \
+  deprecated/javafields.m \
+  deprecated/javamethods.m \
   deprecated/polyderiv.m \
   deprecated/setstr.m \
   deprecated/shell_cmd.m \

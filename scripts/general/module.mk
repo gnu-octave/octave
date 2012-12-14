@@ -53,6 +53,7 @@ general_FCN_FILES = \
   general/isvector.m \
   general/loadobj.m \
   general/logspace.m \
+  general/methods.m \
   general/nargchk.m \
   general/narginchk.m \
   general/nargoutchk.m \

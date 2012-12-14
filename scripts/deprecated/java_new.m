@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 2012 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##

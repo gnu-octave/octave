@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 2012 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -41,7 +41,7 @@ function retval = java_new (varargin)
              "java_new is obsolete and will be removed from a future version of Octave; please use javaObject instead");
   endif
 
-  if (nargin < 2)
+  if (nargin < 1)
     print_usage ();
   endif
 

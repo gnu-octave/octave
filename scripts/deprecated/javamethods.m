@@ -23,10 +23,17 @@
 ## Return the methods of a Java object or Java class in the form of a cell 
 ## array of strings.  If no output is requested, print the result to the
 ## standard output.
-## @seealso{javafields, java_invoke, javaMethod, javaObject}
+## @seealso{methods, javafields, java_invoke, javaMethod, javaObject}
 ## @end deftypefn
 
 function mtd_names = javamethods (classname)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "javamethods is obsolete and will be removed from a future version of Octave, please use methods instead");
+  endif
   
   if (nargin != 1)
     print_usage ();

@@ -2103,47 +2103,33 @@ is a method of this class.\n\
   return retval;
 }
 
-DEFUN (methods, args, nargout,
+DEFUN (__methods__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} methods (@var{x})\n\
-@deftypefnx {Built-in Function} {} methods (\"classname\")\n\
-Return a cell array containing the names of the methods for the\n\
-object @var{x} or the named class.\n\
+@deftypefn  {Built-in Function} {} __methods__ (@var{x})\n\
+@deftypefnx {Built-in Function} {} __methods__ (\"classname\")\n\
+Internal function.\n\
+\n\
+Implements @code{methods} for Octave class objects and classnames.\n\
+@seealso{methods}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  // Input validation has already been done in methods.m.
+  octave_value arg = args(0);
+
+  std::string class_name;
+
+  if (arg.is_object ())
+    class_name = arg.class_name ();
+  else if (arg.is_string ())
+    class_name = arg.string_value ();
+
+  if (! error_state)
     {
-      octave_value arg = args(0);
-
-      std::string class_name;
-
-      if (arg.is_object ())
-        class_name = arg.class_name ();
-      else if (arg.is_string ())
-        class_name = arg.string_value ();
-      else
-        error ("methods: expecting object or class name as argument");
-
-      if (! error_state)
-        {
-          string_vector sv = load_path::methods (class_name);
-
-          if (nargout == 0)
-            {
-              octave_stdout << "Methods for class " << class_name << ":\n\n";
-
-              sv.list_in_columns (octave_stdout);
-
-              octave_stdout << std::endl;
-            }
-          else
-            retval = Cell (sv);
-        }
+      string_vector sv = load_path::methods (class_name);
+      retval = Cell (sv);
     }
-  else
-    print_usage ();
 
   return retval;
 }

@@ -1875,22 +1875,22 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 
 DEFUN (javaObject, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{obj} =} javaObject (@var{classname})\n\
-@deftypefnx {Built-in Function} {@var{obj} =} javaObject (@var{classname}, @var{arg1}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{jobj} =} javaObject (@var{classname})\n\
+@deftypefnx {Built-in Function} {@var{jobj} =} javaObject (@var{classname}, @var{arg1}, @dots{})\n\
 Create a Java object of class @var{classsname}, by calling the class\n\
 constructor with the arguments @var{arg1}, @dots{}\n\
 \n\
-The first example creates an uninitialized object, \\n\
-while the second example supplies an initializer argument.\n\
+The first example creates an uninitialized object,\n\
+while the second example supplies an initial argument to the constructor.\n\
 \n\
 @example\n\
 @group\n\
-  x = javaObject (\"java.lang.StringBuffer\")\n\
-  x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
+x = javaObject (\"java.lang.StringBuffer\")\n\
+x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{javaMethod}\n\
+@seealso{javaMethod, javaArray}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
@@ -1913,7 +1913,7 @@ while the second example supplies an initializer argument.\n\
               retval = octave_java::do_javaObject (current_env, classname, tmp);
             }
           else
-            error ("javaObject: CLASSNAME argument must be a string");
+            error ("javaObject: CLASSNAME must be a string");
         }
       else
         print_usage ();

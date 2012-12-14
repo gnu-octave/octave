@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{a} =} javaArray (@var{classname}, @var{sz})
-## @deftypefnx {Function File} {@var{a} =} javaArray (@var{classname}, @var{m}, @var{n}, @dots{})
+## @deftypefn  {Function File} {@var{jary} =} javaArray (@var{classname}, @var{sz})
+## @deftypefnx {Function File} {@var{jary} =} javaArray (@var{classname}, @var{m}, @var{n}, @dots{})
 ##
 ## Create a Java array of size @var{sz} with elements of class
 ## @var{classname}.  @var{classname} may be a Java object representing a class
@@ -32,10 +32,11 @@
 ##
 ## @example
 ## @group
-## a = javaArray ("java.lang.String", 2, 2);
-## a(1,1) = "Hello";
+## jary = javaArray ("java.lang.String", 2, 2);
+## jary(1,1) = "Hello";
 ## @end group
 ## @end example
+## @seealso{javaObject}
 ## @end deftypefn
 
 function retval = javaArray (classname, varargin)

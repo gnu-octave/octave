@@ -215,6 +215,23 @@ main_window::notice_settings ()
     _terminal->setCursorType(QTerminalInterface::UnderlineCursor,
                              cursorBlinking);
 
+  // the widget's icons (when floating)
+  int icon_set = settings->value ("DockWidgets/widget_icon_set",0).toInt ();
+  QString icon_prefix = QString (WIDGET_ICON_SET_PREFIX[icon_set]);
+  QString icon;
+  foreach (QObject *obj, children ())
+    {
+      QString name = obj->objectName ();
+      if (obj->inherits("QDockWidget") && ! name.isEmpty ())
+        { // if children is a dockwidget with a name
+          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
+          icon = icon_prefix;  // prefix or octave-logo
+          if (icon_set)        // > 0 : each widget has individual icon
+            icon = icon + name + QString(".png");
+          widget->setWindowIcon (QIcon (icon));
+        }
+    }
+
   resource_manager::update_network_settings ();
 }
 

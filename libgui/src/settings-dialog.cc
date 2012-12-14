@@ -38,6 +38,11 @@ settings_dialog::settings_dialog (QWidget *p):
 
   // FIXME -- what should happen if settings is 0?
 
+  int widget_icon_set = settings->value ("DockWidgets/widget_icon_set",0).toInt ();
+  ui->general_icon_octave-> setChecked (NO_ICON_SET == widget_icon_set);
+  ui->general_icon_graphic-> setChecked (GRAPHIC_ICON_SET == widget_icon_set);
+  ui->general_icon_letter-> setChecked (LETTER_ICON_SET == widget_icon_set);
+
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor").toBool ());
   ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
@@ -100,6 +105,12 @@ settings_dialog::write_changed_settings ()
 
   // FIXME -- what should happen if settings is 0?
 
+  int widget_icon_set = NO_ICON_SET;
+  if (ui->general_icon_letter->isChecked ())
+    widget_icon_set = LETTER_ICON_SET;
+  else if (ui->general_icon_graphic->isChecked ())
+    widget_icon_set = GRAPHIC_ICON_SET;
+  settings->setValue ("DockWidgets/widget_icon_set",widget_icon_set);
   settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());

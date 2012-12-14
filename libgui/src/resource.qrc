@@ -36,5 +36,17 @@
         <file>icons/db_step_in.png</file>
         <file>icons/db_step_out.png</file>
         <file>icons/db_stop.png</file>
+        <file>icons/letter_logo_FilesDockWidget.png</file>
+        <file>icons/letter_logo_FileEditor.png</file>
+        <file>icons/letter_logo_TerminalDockWidget.png</file>
+        <file>icons/letter_logo_HistoryDockWidget.png</file>
+        <file>icons/letter_logo_WorkspaceView.png</file>
+        <file>icons/letter_logo_DocumentationDockWidget.png</file>
+        <file>icons/graphic_logo_FilesDockWidget.png</file>
+        <file>icons/graphic_logo_FileEditor.png</file>
+        <file>icons/graphic_logo_TerminalDockWidget.png</file>
+        <file>icons/graphic_logo_HistoryDockWidget.png</file>
+        <file>icons/graphic_logo_WorkspaceView.png</file>
+        <file>icons/graphic_logo_DocumentationDockWidget.png</file>
     </qresource>
 </RCC>

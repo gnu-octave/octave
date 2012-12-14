@@ -33,7 +33,7 @@
 ## @end group
 ## @end example
 ## 
-## @seealso{java_set, java_invoke, javaObject}
+## @seealso{java_set, javaMethod, javaObject}
 ## @end deftypefn
 
 function retval = java_get (obj, name)

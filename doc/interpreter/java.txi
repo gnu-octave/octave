@@ -26,8 +26,9 @@
 @cindex calling Octave from Java
 @cindex  Octave, calling from Java
 
-The @code{java} package is designed for calling Java from Octave.
-If you want to call Octave from Java, you might want to use a library like 
+The Java Interface is designed for calling Java functions from Octave.
+If you want to do the reverse and call Octave from Java, you might try
+a library like 
 @code{javaOctave} (@url{http://kenai.com/projects/javaOctave}) or
 @code{joPas} (@url{http://jopas.sourceforge.net}). 
 
@@ -66,26 +67,27 @@ If you want to call Octave from Java, you might want to use a library like
 @cindex object, creating a Java object
 @DOCSTRING(javaObject)
 
-@cindex object, creating a Java object
-@DOCSTRING(java_new)
-
 @cindex method, invoking a method of a Java object
 @DOCSTRING(javaMethod)
 
-@cindex method, invoking a method of a Java object
-@DOCSTRING(java_invoke)
-
 @cindex field, returning value of Java object field
-@DOCSTRING(java_get)
+FIXME: Need documentation on how to use structure-like indexing
+to get fields from Java object.
 
 @cindex field, setting value of Java object field
-@DOCSTRING(java_set)
+FIXME: Need documentation on how to use structure-like indexing
+to set fields from Java object.
 
 @cindex methods, displaying available methods of a Java object
-@DOCSTRING(javamethods)
+FIXME: Need documentation on how methods() is overloaded to return
+the methods of a Java object.
 
 @cindex fields, displaying available fields of a Java object
-@DOCSTRING(javafields)
+FIXME: Need documentation on how fieldnames() is overloaded to return
+the methods of a Java object.
+
+The following functions all use the Java Interface to provide some form
+of dialog box.
 
 @cindex dialog, displaying a warning dialog
 @DOCSTRING(msgbox)
@@ -129,15 +131,21 @@ If you want to call Octave from Java, you might want to use a library like
 @cindex Octave and Matlab, how to distinguish between
 @c - index -
 
-Octave and Matlab are very similar, but handle Java slightly different. Therefore it may be necessary to detect the environment and use the appropriate functions. The following function can be used to detect the environment. Due to the persistent variable it can be called repeatedly without a heavy performance hit. 
+Octave and @sc{matlab} are very similar, but handle Java slightly different. 
+Therefore it may be necessary to detect the environment and use the appropriate
+functions.  The following function can be used to detect the environment.  Due
+to the persistent variable it can be called repeatedly without a heavy
+performance hit. 
 
 Example: 
+
 @example
+@group
 %% 
 %% Return: true if the environment is Octave. 
 %% 
 function ret = isOctave 
-  persistent retval; % speeds up repeated calls 
+  persistent retval;  % speeds up repeated calls 
 
   if isempty(retval)
     retval = (exist('Octave_VERSION','builtin') > 0); 
@@ -145,6 +153,7 @@ function ret = isOctave
 
   ret = retval; 
 end 
+@end group
 @end example
 
 @c ------------------------------------------------------------------------
@@ -155,44 +164,60 @@ end
 @cindex classpath, difference between static and dynamic
 @cindex static classpath
 @cindex dynamic classpath
-@cindex @code{classpath.txt}
+@cindex @file{classpath.txt}
 @cindex classes, making available to Octave
 @c - index -
 
-Java finds classes by searching a @var{classpath}. This is a list of Java archive files and/or directories containing class files.
-In Octave and Matlab the @var{classpath} is composed of two parts:
+Java finds classes by searching a @var{classpath}.  This is a list of Java
+archive files and/or directories containing class files.  In Octave and
+@sc{matlab} the @var{classpath} is composed of two parts:
+
 @itemize
 @item the @var{static classpath} is initialized once at startup of the JVM, and
+
 @item the @var{dynamic classpath} which can be modified at runtime.
 @end itemize
-Octave searches the @var{static classpath} first, then the @var{dynamic classpath}.
-Classes appearing in the @var{static} as well as in the @var{dynamic classpath} will therefore be found in the @var{static classpath} and loaded from this location.
-@*
-Classes which shall be used regularly or must be available to all users should be 
-added to the @var{static classpath}. 
-The @var{static classpath} is populated once from the contents of a plain text file named @code{classpath.txt} when the Java Virtual Machine starts. This file contains one line for each individual classpath to be added to the @var{static classpath}.
-These lines can identify single class files, directories containing class files or Java archives with complete class file hierarchies.
-Comment lines starting with a @code{#} or a  @code{%} character are ignored.
 
-The search rules for the file @code{classpath.txt} are:
+Octave searches the @var{static classpath} first, then the @var{dynamic
+classpath}.  Classes appearing in the @var{static} as well as in the
+@var{dynamic classpath} will therefore be found in the @var{static classpath}
+and loaded from this location.  Classes which shall be used regularly or must
+be available to all users should be added to the @var{static classpath}.  The
+@var{static classpath} is populated once from the contents of a plain text file
+named @file{classpath.txt} when the Java Virtual Machine starts.  This file
+contains one line for each individual classpath to be added to the @var{static
+classpath}.  These lines can identify single class files, directories containing
+class files or Java archives with complete class file hierarchies.  Comment
+lines starting with a @code{#} or a @code{%} character are ignored.
+
+The search rules for the file @file{classpath.txt} are:
+
 @itemize
-@item First, Octave searches for the file @code{classpath.txt} in your home directory,
-If such a file is found, it is read and defines the initial @var{static classpath}.
-Thus it is possible to build an initial static classpath on a 'per user' basis.
+@item First, Octave searches for the file @file{classpath.txt} in your home directory,
+If such a file is found, it is read and defines the initial @var{static
+classpath}.  Thus it is possible to build an initial static classpath on a 'per
+user' basis.
 
-@item Next, Octave looks for another file @code{classpath.txt} in the package installation directory.
-This is where @code{javaclasspath.m} resides, usually something like @code{...\share\Octave\packages\java-1.2.8}. 
-You can find this directory by executing the command
+@item Next, Octave looks for another file @file{classpath.txt} in the package
+installation directory.  This is where @file{javaclasspath.m} resides, usually
+something like @file{@dots{}\share\Octave\packages\java-1.2.8}.  You can find
+this directory by executing the command 
+
 @example
 pkg list
 @end example
+
 If this file exists, its contents is also appended to the static classpath.
-Note that the archives and class directories defined in this file will affect all users.
+Note that the archives and class directories defined in this file will affect
+all users.
 @end itemize
 
-Classes which are used only by a specific script should be placed in the @var{dynamic classpath}. This portion of the classpath can be modified at runtime using the @code{javaaddpath} and @code{javarmpath} functions. 
+Classes which are used only by a specific script should be placed in the
+@var{dynamic classpath}.  This portion of the classpath can be modified at
+runtime using the @code{javaaddpath} and @code{javarmpath} functions. 
 
 Example: 
+
 @example
 octave> base_path = 'C:/Octave/java_files'; 
 
@@ -218,14 +243,19 @@ octave> disp(p@{2@});
 error: A(I): Index exceeds matrix dimension. 
 @end example
 
-Another way to add files to the @var{dynamic classpath} exclusively for your user account is to use the file @code{.octaverc} which is stored in your home directory.
-All Octave commands in this file are executed each time you start a new instance of Octave. 
-The following example adds the directory @code{octave} to Octave's search path and 
-the archive @code{myclasses.jar} in this directory to the Java search path.
+Another way to add files to the @var{dynamic classpath} exclusively for your
+user account is to use the file @file{.octaverc} which is stored in your home
+directory.  All Octave commands in this file are executed each time you start a
+new instance of Octave.  The following example adds the directory @file{octave}
+to Octave's search path and the archive @file{myclasses.jar} in this directory
+to the Java search path. 
+
 @example
+@group
 % content of .octaverc:
 addpath('~/octave');
 javaaddpath('~/octave/myclasses.jar');
+@end group
 @end example
 
 @c ------------------------------------------------------------------------
@@ -236,14 +266,19 @@ javaaddpath('~/octave/myclasses.jar');
 @cindex instance, how to create
 @c - index -
 
-If your code shall work under Octave as well as Matlab you should use the function @code{javaObject} to create Java objects. The function @code{java_new} is Octave specific and does not exist in the Matlab environment.
+If your code shall work under Octave as well as @sc{matlab} you should use the
+function @code{javaObject} to create Java objects.  The function
+@code{java_new} is Octave specific and does not exist in the @sc{matlab}
+environment.
 
-Example 1, suitable for Octave but not for Matlab: 
+Example 1, suitable for Octave but not for @sc{matlab}: 
+
 @example
    Passenger = java_new('package.FirstClass', row, seat);
 @end example
 
-Example 2, which works in Octave as well as in Matlab: 
+Example 2, which works in Octave as well as in @sc{matlab}: 
+
 @example
    Passenger = javaObject('package.FirstClass', row, seat);
 @end example
@@ -253,44 +288,80 @@ Example 2, which works in Octave as well as in Matlab:
 @subsection How can I handle memory limitations?
 @cindex memory, limitations
 
-In order to execute Java code Octave creates a Java Virtual Machine (JVM). Such a JVM allocates a fixed amount of initial memory and may expand this pool up to a fixed maximum memory limit. The default values depend on the Java version (see @ref{doc-javamem,,javamem}).
-The memory pool is shared by all Java objects running in the JVM.
-This strict memory limit is intended mainly to avoid that runaway applications inside web browsers or in enterprise servers can consume all memory and crash the system. 
-When the maximum memory limit is hit, Java code will throw exceptions so that applications will fail or behave unexpectedly.
+In order to execute Java code Octave creates a Java Virtual Machine (JVM). 
+Such a JVM allocates a fixed amount of initial memory and may expand this pool
+up to a fixed maximum memory limit.  The default values depend on the Java
+version (see @ref{doc-javamem,,javamem}).  The memory pool is shared by all Java
+objects running in the JVM@.  This strict memory limit is intended mainly to
+avoid that runaway applications inside web browsers or in enterprise servers
+can consume all memory and crash the system.  When the maximum memory limit is
+hit, Java code will throw exceptions so that applications will fail or behave
+unexpectedly.
 
-In Octave as well as in Matlab, you can specify options for the creation of the JVM inside a file named @code{java.opts}. 
-This is a text file where you can enter lines containing @code{-X} and @code{-D} options handed to the JVM during initialization. 
+In Octave as well as in @sc{matlab}, you can specify options for the creation
+of the JVM inside a file named @file{java.opts}.  This is a text file where you
+can enter lines containing @option{-X} and @option{-D} options handed to the
+JVM during initialization. 
 
-In Octave, the Java options file must be located in the directory where @code{javaclasspath.m} resides, i.e. the package installation directory, usually something like @var{...\share\Octave\packages\java-1.2.8}. You can find this directory by executing 
+In Octave, the Java options file must be located in the directory where
+@file{javaclasspath.m} resides, i.e., the package installation directory,
+usually something like @file{@dots{}\share\Octave\packages\java-1.2.8}.  You can
+find this directory by executing 
+
 @example
 pkg list
 @end example
 
-In Matlab, the options file goes into the @var{MATLABROOT/bin/ARCH} directory or in your personal Matlab startup directory (can be determined by a @samp{pwd} command). @var{MATLABROOT} is the Matlab root directory and @var{ARCH} is your system architecture, which you find by issuing the commands @samp{matlabroot} respectively @samp{computer('arch')}.
+In @sc{matlab}, the options file goes into the @file{MATLABROOT/bin/ARCH}
+directory or in your personal @sc{matlab} startup directory (can be determined
+by a @samp{pwd} command).  @var{MATLABROOT} is the @sc{matlab} root directory
+and @var{ARCH} is your system architecture, which you find by issuing the
+commands @samp{matlabroot} respectively @samp{computer('arch')}.
 
-The @code{-X} options allow you to increase the maximum amount of memory available to the JVM to 256 Megabytes by adding the following line to the @code{java.opts} file: 
+The @option{-X} options allow you to increase the maximum amount of memory
+available to the JVM to 256 Megabytes by adding the following line to the
+@file{java.opts} file: 
+
 @example
 -Xmx256m 
 @end example
 
-The maximum possible amount of memory depends on your system. On a Windows system with 2 Gigabytes main memory you should be able to set this maximum to about 1 Gigabyte.
+The maximum possible amount of memory depends on your system.  On a Windows
+system with 2 Gigabytes main memory you should be able to set this maximum to
+about 1 Gigabyte.
 
-If your application requires a large amount of memory from the beginning, you can also specify the initial amount of memory allocated to the JVM. Adding the following line to the @code{java.opts} file starts the JVM with 64 Megabytes of initial memory:
+If your application requires a large amount of memory from the beginning, you
+can also specify the initial amount of memory allocated to the JVM@.  Adding
+the following line to the @file{java.opts} file starts the JVM with 64
+Megabytes of initial memory: 
+
 @example
 -Xms64m 
 @end example
 
-For more details on the available @code{-X} options of your Java Virtual Machine issue the command @samp{java -X} at the operating system command prompt and consult the Java documentation.
+For more details on the available @option{-X} options of your Java Virtual
+Machine issue the command @samp{java -X} at the operating system command prompt
+and consult the Java documentation.
 
 
-The @code{-D} options can be used to define system properties which can then be used by Java classes inside Octave. System properties can be retrieved by using the @code{getProperty()} methods of the @code{java.lang.System} class. The following example line defines the property @var{MyProperty} and assigns it the string @code{12.34}. 
+The @option{-D} options can be used to define system properties which can then
+be used by Java classes inside Octave.  System properties can be retrieved by
+using the @code{getProperty()} methods of the @code{java.lang.System} class. 
+The following example line defines the property @var{MyProperty} and assigns it
+the string @code{12.34}. 
+
 @example
 -DMyProperty=12.34
 @end example
-The value of this property can then be retrieved as a string by a Java object or in Octave:
+
+The value of this property can then be retrieved as a string by a Java object
+or in Octave: 
+
 @example
+@group
 octave> javaMethod('java.lang.System', 'getProperty', 'MyProperty');
 ans = 12.34
+@end group
 @end example
 
 @seealso{javamem}
@@ -306,7 +377,9 @@ ans = 12.34
 @cindex java package, how to uninstall?
 @c - index -
 
-Most Octave installations come with the @var{java} package pre-installed. In case you want to replace this package with a more recent version, you must perform the following steps: 
+Most Octave installations come with the @var{java} package pre-installed.  In
+case you want to replace this package with a more recent version, you must
+perform the following steps: 
 
 @c ---------
 @menu
@@ -320,43 +393,64 @@ Most Octave installations come with the @var{java} package pre-installed. In cas
 @subsubsection Uninstall the currently installed package @var{java}
 Check whether the @var{java} package is already installed by issuing
 the @code{pkg list} command:
+
 @example
+@group
 octave> pkg list
 Package Name  | Version | Installation directory
 --------------+---------+-----------------------
         java *|   1.2.8 | /home/octavio/octave/java-1.2.8
 octave> 
+@end group
 @end example
 
 @noindent
-If the @var{java} package appears in the list you must uninstall it first by issuing the command 
+If the @var{java} package appears in the list you must uninstall it first by
+issuing the command 
+
 @example
+@group
 octave> pkg uninstall java
 octave> pkg list
+@end group
 @end example
 
-Now the java package should not be listed anymore. If you have used the @var{java} package during the current session of Octave, you have to exit and restart Octave before you can uninstall the package. This is because the system keeps certain libraries in memory after they have been loaded once.
+Now the java package should not be listed anymore.  If you have used the
+@var{java} package during the current session of Octave, you have to exit and
+restart Octave before you can uninstall the package.  This is because the
+system keeps certain libraries in memory after they have been loaded once.
 
 @c ---------
 @node Make sure that the build environment is configured properly
 @subsubsection Make sure that the build environment is configured properly
-The installation process requires that the environment variable @code{JAVA_HOME} points to the Java Development Kit (JDK) on your computer. 
+The installation process requires that the environment variable
+@w{@env{JAVA_HOME}} points to the Java Development Kit (JDK) on your computer. 
 
 @itemize @bullet
 @item
-Note that JDK is not equal to JRE (Java Runtime Environment). The JDK home directory contains subdirectories with include, library and executable files which are required to compile the @var{java} package. These files are not part of the JRE, so you definitely need the JDK. 
+Note that JDK is not equal to JRE (Java Runtime Environment).  The JDK home
+directory contains subdirectories with include, library and executable files
+which are required to compile the @var{java} package.  These files are not part
+of the JRE, so you definitely need the JDK. 
+
 @item
 Do not use backslashes but ordinary slashes in the path. 
 @end itemize
 
-Set the environment variable @code{JAVA_HOME} according to your local JDK installation. Please adapt the path in the following examples according to the JDK installation on your system.@*
-If you are using a Windows system that might be: 
+Set the environment variable @w{@env{JAVA_HOME}} according to your local JDK
+installation.  Please adapt the path in the following examples according to the
+JDK installation on your system.  If you are using a Windows system that might
+be: 
+
 @example
 octave> setenv("JAVA_HOME","C:/Java/jdk1.6.0_21");
 @end example
-Note, that on both system types, Windows as well as Linux, you must use the forward slash '/' as the separator, not the backslash '\'.
+
+Note, that on both system types, Windows as well as Linux, you must use the
+forward slash '/' as the separator, not the backslash '\'.
 
 If you are using a Linux system this would look probably more like: 
+
 @example
 octave> setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
 @end example
@@ -364,73 +458,103 @@ octave> setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
 @c ---------
 @node Compile and install the package in Octave
 @subsubsection Compile and install the package in Octave
-If you have for example saved the package archive on your @var{z:} drive the command would be: 
+If you have for example saved the package archive on your @file{z:} drive the
+command would be: 
+
 @example
 Octave> pkg install -verbose z:/java-1.2.8.tar.gz
 @end example
+
+@noindent
 or if you have Linux and the package file is stored in your home directory: 
+
 @example
 octave> pkg install -verbose ~/java-1.2.8.tar.gz
 @end example
-The option @code{-verbose} will produce some lengthy output, which should not show any errors 
-(maybe a few warnings at best). 
+
+The option @option{-verbose} will produce some lengthy output, which should not
+show any errors (maybe a few warnings at best). 
 
 You can then produce a list of all installed packages: 
+
 @example
 octave> pkg list
 @end example
 
 This list of packages should now include the package @var{java}:
+
 @example
+@group
 octave> pkg list
 Package Name  | Version | Installation directory
 --------------+---------+-----------------------
         java *|   1.2.8 | /home/octavio/octave/java-1.2.8
 octave> 
+@end group
 @end example
 
 @c ---------
 @node Test the java package installation
 @subsubsection Test the java package installation
 
-The following code creates a Java string object, which however is automatically converted to an Octave string:
+The following code creates a Java string object, which however is automatically
+converted to an Octave string: 
+
 @example
+@group
 octave> s = javaObject('java.lang.String', 'Hello OctaveString') 
 s = Hello OctaveString 
+@end group
 @end example
 
-Note that the java package automatically transforms the Java String object to an Octave string. This means that you cannot apply Java String methods to the result. 
+Note that the java package automatically transforms the Java String object to
+an Octave string.  This means that you cannot apply Java String methods to the
+result. 
 
-This "auto boxing" scheme seems to be implemented for the following Java classes: 
+This "auto boxing" scheme seems to be implemented for the following Java
+classes: 
+
 @itemize @bullet
 @item
 java.lang.Integer
+
 @item
 java.lang.Double 
+
 @item
 java.lang.Boolean 
+
 @item
 java.lang.String 
 @end itemize
 
-If you instead create an object for which no "auto-boxing" is implemented, @code{javaObject} returns the genuine Java object: 
+If you instead create an object for which no "auto-boxing" is implemented,
+@code{javaObject} returns the genuine Java object: 
+
 @example
+@group
 octave> v = javaObject('java.util.Vector') 
 v = 
 <Java object: java.util.Vector> 
 octave> v.add(12); 
 octave> v.get(0) 
 ans = 12 
+@end group
 @end example
 
-If you have created such a Java object, you can apply all methods of the Java class to the returned object. Note also that for some objects you must specify an initializer: 
+If you have created such a Java object, you can apply all methods of the Java
+class to the returned object.  Note also that for some objects you must specify
+an initializer: 
+
 @example
+@group
 % not: 
 octave> d = javaObject('java.lang.Double') 
 error: [java] java.lang.NoSuchMethodException: java.lang.Double 
 % but: 
 octave> d = javaObject('java.lang.Double',12.34) 
 d = 12.340 
+@end group
 @end example
 
 @c ------------------------------------------------------------------------
@@ -442,9 +566,17 @@ d = 12.340
 @cindex translation table for @TeX{} symbols
 @c - index -
 
-The dialog functions contain a translation table for @TeX{} like symbol codes. Thus messages and labels can be tailored to show some common mathematical symbols or Greek characters. No further @TeX{} formatting codes are supported. The characters are translated to their Unicode equivalent. However, not all characters may be displayable on your system. This depends on the font used by the Java system on your computer.
+The dialog functions contain a translation table for @TeX{} like symbol codes. 
+Thus messages and labels can be tailored to show some common mathematical
+symbols or Greek characters.  No further @TeX{} formatting codes are supported.
+ The characters are translated to their Unicode equivalent.  However, not all
+characters may be displayable on your system.  This depends on the font used by
+the Java system on your computer.
 
-Each @TeX{} symbol code must be terminated by a space character to make it distinguishable from the surrounding text. Therefore the string @samp{\alpha =12.0} will produce the desired result, whereas @samp{\alpha=12.0} would produce the literal text @var{'\alpha=12.0'}.
+Each @TeX{} symbol code must be terminated by a space character to make it
+distinguishable from the surrounding text.  Therefore the string @samp{\alpha
+=12.0} will produce the desired result, whereas @samp{\alpha=12.0} would
+produce the literal text @var{'\alpha=12.0'}.
 
 @seealso{errordlg, helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
 
@@ -452,7 +584,8 @@ Each @TeX{} symbol code must be terminated by a space character to make it disti
 @c ---------------------------------
 @ifhtml
 @float Table
-The table below shows each @TeX{} character code and the corresponding Unicode character: 
+The table below shows each @TeX{} character code and the corresponding Unicode
+character: 
 @multitable @columnfractions 0.18 0.1 0.05 0.18 0.1 0.05 0.18 0.1
 @item \alpha
 @tab 'α'

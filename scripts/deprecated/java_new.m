@@ -29,7 +29,7 @@
 ## @end group
 ## @end example
 ## 
-## @seealso{javaObject, java_invoke}
+## @seealso{javaObject, javaMethod}
 ## @end deftypefn
 
 function retval = java_new (varargin)

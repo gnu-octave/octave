@@ -46,7 +46,7 @@ function javarmpath (varargin)
       endif
     endif
 
-    success = java_invoke ("org.octave.ClassHelper", "removeClassPath",
+    success = javaMethod ("removeClassPath", "org.octave.ClassHelper",
                            old_path);
 
     if (! success)

@@ -94,7 +94,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
 
   endswitch
 
-  btn = java_invoke ("org.octave.JDialogBox", "questdlg", msg,
+  btn = javaMethod ("questdlg", "org.octave.JDialogBox", msg,
                      title, options);
 
 endfunction

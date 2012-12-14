@@ -8,6 +8,7 @@ deprecated_FCN_FILES = \
   deprecated/error_text.m \
   deprecated/isstr.m \
   deprecated/java_get.m \
+  deprecated/java_invoke.m \
   deprecated/java_new.m \
   deprecated/java_set.m \
   deprecated/javafields.m \

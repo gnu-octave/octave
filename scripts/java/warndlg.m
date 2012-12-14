@@ -48,7 +48,7 @@ function retval = warndlg (msg, title = "Warning Dialog")
     error ("warndlg: TITLE must be a character string");
   endif
 
-  retval = java_invoke ("org.octave.JDialogBox", "warndlg", msg, title);
+  retval = javaMethod ("warndlg", "org.octave.JDialogBox", msg, title);
 
 endfunction
 

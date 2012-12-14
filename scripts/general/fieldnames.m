@@ -46,7 +46,7 @@ function names = fieldnames (obj)
     ## Call internal C++ function for structs or Octave objects
     names = __fieldnames__ (obj);
   elseif (isjava (obj) || ischar (obj))
-    names_str = java_invoke ("org.octave.ClassHelper", "getFields", obj);
+    names_str = javaMethod ("getFields", "org.octave.ClassHelper", obj);
     names = strsplit (names_str, ';');
   else
     error ("fieldnames: Invalid input argument"); 

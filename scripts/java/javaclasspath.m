@@ -57,11 +57,11 @@
 function varargout = javaclasspath (which)
 
   ## dynamic classpath
-  dynamic_path = java_invoke ("org.octave.ClassHelper", "getClassPath");
+  dynamic_path = javaMethod ("getClassPath", "org.octave.ClassHelper");
   dynamic_path_list = strsplit (dynamic_path, pathsep ());
 
   ## static classpath
-  static_path = java_invoke ("java.lang.System", "getProperty", "java.class.path");
+  static_path = javaMethod ("getProperty", "java.lang.System", "java.class.path");
   static_path_list = strsplit (static_path, pathsep ());
   if (numel (static_path_list) > 1)
     ## remove first element (which is .../octave.jar)

@@ -48,7 +48,7 @@ function javaaddpath (varargin)
       error ("javaaddpath: CLSPATH does not exist: %s", clspath);
     endif
 
-    success = java_invoke ("org.octave.ClassHelper", "addClassPath", new_path);
+    success = javaMethod ("addClassPath", "org.octave.ClassHelper", new_path);
 
     if (! success)
       warning ("javaaddpath: failed to add '%s' to Java classpath", new_path);

@@ -70,7 +70,7 @@ function h = msgbox (msg, title = "", icon)
     endswitch
   endif
 
-  h = java_invoke ("org.octave.JDialogBox", dlg, msg, title);
+  h = javaMethod (dlg, "org.octave.JDialogBox", msg, title);
 
 endfunction
 

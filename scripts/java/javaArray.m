@@ -44,7 +44,7 @@ function retval = javaArray (classname, varargin)
     print_usage ();
   endif
 
-  retval = java_invoke ("org.octave.ClassHelper", "createArray",
+  retval = javaMethod ("createArray", "org.octave.ClassHelper",
                         classname, [varargin{:}]);
 
 endfunction

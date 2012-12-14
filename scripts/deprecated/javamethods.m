@@ -23,7 +23,7 @@
 ## Return the methods of a Java object or Java class in the form of a cell 
 ## array of strings.  If no output is requested, print the result to the
 ## standard output.
-## @seealso{methods, javafields, java_invoke, javaMethod, javaObject}
+## @seealso{methods, fieldnames, javaMethod, javaObject}
 ## @end deftypefn
 
 function mtd_names = javamethods (classname)
@@ -39,7 +39,7 @@ function mtd_names = javamethods (classname)
     print_usage ();
   endif
 
-  cls_methods = java_invoke ("org.octave.ClassHelper", "getMethods", classname);
+  cls_methods = javaMethod ("getMethods", "org.octave.ClassHelper", classname);
   method_list = strsplit (cls_methods, ';');
 
   if (nargout == 0)

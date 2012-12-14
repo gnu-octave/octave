@@ -73,8 +73,6 @@ extern "C"
   Java_org_octave_Octave_needThreadedInvokation (JNIEnv *, jclass);
 }
 
-static octave_value _java_invoke (const octave_value_list& args);
-
 static JavaVM *jvm = 0;
 static bool jvm_attached = false;
 
@@ -1400,51 +1398,6 @@ instance.\n\
   return retval;
 }
 
-// internally called from java_invoke and javaMethod.
-
-static octave_value
-_java_invoke (const octave_value_list& args)
-{
-  octave_value retval;
-
-  initialize_java ();
-
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () > 1)
-        {
-          std::string methodname = args(1).string_value ();
-          if (! error_state)
-            {
-              octave_value_list tmp;
-              for (int i=2; i<args.length (); i++)
-                tmp(i-2) = args(i);
-
-              if (args(0).class_name () == "octave_java")
-                {
-                  octave_java *jobj = TO_JAVA (args(0));
-                  retval = jobj->do_java_invoke (current_env, methodname, tmp);
-                }
-              else if (args(0).is_string ())
-                {
-                  std::string cls = args(0).string_value ();
-                  retval = octave_java::do_java_invoke (current_env, cls, methodname, tmp);
-                }
-              else
-                error ("java_invoke: OBJ must be a Java object or a string");
-            }
-          else
-            error ("java_invoke: METHODNAME must be a string");
-        }
-      else
-        print_usage ();
-    }
-
-  return retval;
-}
-
 JNIEXPORT jboolean JNICALL
 Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
                              jobjectArray argin, jobjectArray argout)
@@ -1589,11 +1542,11 @@ octave_java::subsref (const std::string& type,
         {
           octave_value_list ovl;
           count++;
-          ovl(0) = octave_value (this);
-          ovl(1) = (idx.front ())(0);
+          ovl(1) = octave_value (this);
+          ovl(0) = (idx.front ())(0);
           std::list<octave_value_list>::const_iterator it = idx.begin ();
           ovl.append (*++it);
-          retval = feval (std::string ("java_invoke"), ovl, 1);
+          retval = feval (std::string ("javaMethod"), ovl, 1);
           skip++;
         }
       else
@@ -1731,7 +1684,7 @@ octave_java::convert_to_str_internal (bool, bool force, char type) const
 }
 
 octave_value
-octave_java::do_java_invoke (JNIEnv* jni_env, const std::string& name,
+octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
                              const octave_value_list& args)
 {
   octave_value retval;
@@ -1758,7 +1711,7 @@ octave_java::do_java_invoke (JNIEnv* jni_env, const std::string& name,
 }
 
 octave_value
-octave_java:: do_java_invoke (JNIEnv* jni_env,
+octave_java:: do_javaMethod (JNIEnv* jni_env,
                               const std::string& class_name,
                               const std::string& name,
                               const octave_value_list& args)
@@ -1788,7 +1741,7 @@ octave_java:: do_java_invoke (JNIEnv* jni_env,
 }
 
 octave_value
-octave_java::do_java_create (JNIEnv* jni_env, const std::string& name,
+octave_java::do_javaObject (JNIEnv* jni_env, const std::string& name,
                              const octave_value_list& args)
 {
   octave_value retval;
@@ -1937,13 +1890,14 @@ while the second example supplies an initializer argument.\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{java_invoke}\n\
+@seealso{javaMethod}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
   octave_value retval;
 
   initialize_java ();
+
   if (! error_state)
     {
       JNIEnv *current_env = octave_java::thread_jni_env ();
@@ -1956,7 +1910,7 @@ while the second example supplies an initializer argument.\n\
               octave_value_list tmp;
               for (int i=1; i<args.length (); i++)
                 tmp(i-1) = args(i);
-              retval = octave_java::do_java_create (current_env, classname, tmp);
+              retval = octave_java::do_javaObject (current_env, classname, tmp);
             }
           else
             error ("javaObject: CLASSNAME argument must be a string");
@@ -1972,39 +1926,10 @@ while the second example supplies an initializer argument.\n\
 #endif
 }
 
-DEFUN (java_invoke, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{ret} =} java_invoke (@var{obj}, @var{methodname}, @var{arg1}, @dots{})\n\
-Invoke the method @var{methodname} on the Java object @var{obj} with the arguments\n\
-@var{arg1}, @dots{}  For static methods, @var{obj} can be a string\n\
-representing the fully qualified name of the corresponding class.  The\n\
-function returns the result of the method invocation.\n\
-\n\
-When @var{obj} is a regular Java object, structure-like indexing can be\n\
-used as a shortcut syntax.  For instance, the two following statements are\n\
-equivalent\n\
-\n\
-@example\n\
-@group\n\
-  ret = java_invoke (x, \"method1\", 1.0, \"a string\")\n\
-  ret = x.method1 (1.0, \"a string\")\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{javaMethod, javaObject}\n\
-@end deftypefn")
-{
-#ifdef HAVE_JAVA
-  return _java_invoke (args);
-#else
-  error ("java_invoke: Octave was not compiled with Java interface");
-  return octave_value ();
-#endif
-}
-
 DEFUN (javaMethod, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
+@deftypefnx {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
 Invoke the method @var{methodname} on the Java object @var{obj} with the arguments\n\
 @var{arg1}, @dots{}  For static methods, @var{obj} can be a string\n\
 representing the fully qualified name of the corresponding class.  The\n\
@@ -2021,28 +1946,45 @@ equivalent\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{java_invoke, javaObject}\n\
+@seealso{methods, javaObject}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
   octave_value retval;
 
-  if (args.length () > 1)
-    {
-      // swap first two arguments
-      octave_value_list tmp;
-      tmp(0) = args(1);
-      tmp(1) = args(0);
+  initialize_java ();
 
-      // copy remaining arguments
-      for (int i=2; i<args.length (); i++)
-        tmp(i) = args(i);
-
-      retval = _java_invoke (tmp);
-    }
-  else
+  if (! error_state)
     {
-      print_usage ();
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
+      if (args.length () > 1)
+        {
+          std::string methodname = args(0).string_value ();
+          if (! error_state)
+            {
+              octave_value_list tmp;
+              for (int i=2; i<args.length (); i++)
+                tmp(i-2) = args(i);
+
+              if (args(1).class_name () == "octave_java")
+                {
+                  octave_java *jobj = TO_JAVA (args(1));
+                  retval = jobj->do_javaMethod (current_env, methodname, tmp);
+                }
+              else if (args(1).is_string ())
+                {
+                  std::string cls = args(1).string_value ();
+                  retval = octave_java::do_javaMethod (current_env, cls, methodname, tmp);
+                }
+              else
+                error ("javaMethod: OBJ must be a Java object or a string");
+            }
+          else
+            error ("javaMethod: METHODNAME must be a string");
+        }
+      else
+        print_usage ();
     }
 
   return retval;
@@ -2070,7 +2012,7 @@ equivalent\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{java_set, java_invoke, javaObject}\n\
+@seealso{__java_set__, javaMethod, javaObject}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
@@ -2132,7 +2074,7 @@ equivalent\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{__java_get__, java_invoke, javaObject}\n\
+@seealso{__java_get__, javaMethod, javaObject}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
@@ -2178,7 +2120,7 @@ equivalent\n\
 
 DEFUN (java2mat, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java2mat (@var{obj})\n\
+@deftypefn {Built-in Function} {} java2mat (@var{javaobj})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -2266,7 +2208,7 @@ DEFUN (isjava, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isjava (@var{x})\n\
 Return true if @var{x} is a Java object.\n\
-@seealso{class, typeinfo, isa}\n\
+@seealso{class, typeinfo, isa, javaObject}\n\
 @end deftypefn")
 {
   octave_value retval;

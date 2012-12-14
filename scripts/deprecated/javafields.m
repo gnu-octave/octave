@@ -23,7 +23,7 @@
 ## Return the fields of a Java object or Java class in the form of a cell 
 ## array of strings.  If no output is requested, print the result
 ## to the standard output.
-## @seealso{fieldnames, methods, javamethods, javaObject}
+## @seealso{fieldnames, methods, javaObject}
 ## @end deftypefn
 
 function fld_names = javafields (javaobj)
@@ -39,7 +39,7 @@ function fld_names = javafields (javaobj)
     print_usage ();
   endif
   
-  c_methods = java_invoke ("org.octave.ClassHelper", "getFields", javaobj);
+  c_methods = javaMethod ("getFields", "org.octave.ClassHelper", javaobj);
   method_list = strsplit (c_methods, ';');
 
   if (nargout == 0)

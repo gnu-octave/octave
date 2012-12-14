@@ -128,7 +128,7 @@ function varargout = listdlg (varargin)
    listsize = {num2str(listsize(2)), num2str(listsize(1))};
    initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
    
-   ret = java_invoke ("org.octave.JDialogBox", "listdlg", listcell,
+   ret = javaMethod ("listdlg", "org.octave.JDialogBox", listcell,
                       selmode, listsize, initialvalue, name, prompt,
                       okstring, cancelstring);
 

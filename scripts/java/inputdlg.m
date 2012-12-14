@@ -126,7 +126,7 @@ function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
   defs = cellfun (@num2str, defaults, "UniformOutput", false);
   rc = arrayfun (@num2str, rowscols, "UniformOutput", false);
 
-  user_inputs = java_invoke ("org.octave.JDialogBox", "inputdlg",
+  user_inputs = javaMethod ("inputdlg", "org.octave.JDialogBox",
                              prompt, title, rc, defs);
   
    if (isempty (user_inputs))

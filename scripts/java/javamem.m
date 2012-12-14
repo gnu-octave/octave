@@ -67,7 +67,7 @@
 
 function jmem = javamem ()
 
-  rt = java_invoke ("java.lang.Runtime", "getRuntime");
+  rt = javaMethod ("getRuntime", "java.lang.Runtime");
   rt.gc;
   jvmem = cell (3, 1);
   jvmem{1} = rt.maxMemory ().doubleValue ();

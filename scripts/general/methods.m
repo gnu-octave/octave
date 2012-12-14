@@ -42,11 +42,11 @@ function mtds = methods (obj)
     ## Try Octave class first.
     mtds_list = __methods__ (obj);
     if (isempty (mtds_list))
-      mtds_str = java_invoke ("org.octave.ClassHelper", "getMethods", obj);
+      mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
       mtds_list = strsplit (mtds_str, ';');
     endif
   elseif (isjava (obj))
-    mtds_str = java_invoke ("org.octave.ClassHelper", "getMethods", obj);
+    mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
     mtds_list = strsplit (mtds_str, ';');
   else
     error ("methods: Invalid input argument");

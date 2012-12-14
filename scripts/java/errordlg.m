@@ -49,7 +49,7 @@ function h = errordlg (msg, title = "Error Dialog")
     error ("errordlg: TITLE must be a character string");
   endif
 
-  h = java_invoke ("org.octave.JDialogBox", "errordlg", msg, title);
+  h = javaMethod ("errordlg", "org.octave.JDialogBox", msg, title);
 
 endfunction
 

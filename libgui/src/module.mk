@@ -27,9 +27,21 @@ octave_gui_ICONS = \
   src/icons/filesaveas.png \
   src/icons/filesave.png \
   src/icons/find.png \
+  src/icons/graphic_logo_DocumentationDockWidget.png \
+  src/icons/graphic_logo_FileEditor.png \
+  src/icons/graphic_logo_FilesDockWidget.png \
+  src/icons/graphic_logo_HistoryDockWidget.png \
+  src/icons/graphic_logo_TerminalDockWidget.png \
+  src/icons/graphic_logo_WorkspaceView.png \
   src/icons/help_index.png \
   src/icons/icons_license \
   src/icons/jabber_protocol.png \
+  src/icons/letter_logo_DocumentationDockWidget.png \
+  src/icons/letter_logo_FileEditor.png \
+  src/icons/letter_logo_FilesDockWidget.png \
+  src/icons/letter_logo_HistoryDockWidget.png \
+  src/icons/letter_logo_TerminalDockWidget.png \
+  src/icons/letter_logo_WorkspaceView.png \
   src/icons/logo.png \
   src/icons/question.png \
   src/icons/redled.png \

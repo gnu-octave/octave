@@ -51,7 +51,7 @@ function retval = java_invoke (obj, methodname, varargin)
     print_usage ();
   endif
 
-  retval = javaMethod (methodname, obj, varargin);
+  retval = javaMethod (methodname, obj, varargin{:});
 
 endfunction
 

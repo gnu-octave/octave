@@ -45,7 +45,7 @@ function retval = java_new (varargin)
     print_usage ();
   endif
 
-  retval = javaObject (varargin);
+  retval = javaObject (varargin{:});
 
 endfunction
 

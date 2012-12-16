@@ -293,19 +293,19 @@ read_classpath_txt (const std::string& filepath)
         {
           std::getline (fs, line);
 
-          if (line.length () > 1)
+          if (line.length () > 0)
             {
-              if (line.at(0) == '#' || line.at(0) == '%')
+              if (line[0] == '#' || line[0] == '%')
                 ; // skip comments
               else
                 {
                   // prepend separator character
                   classpath.append (dir_path::path_sep_str ());
 
-                  // append content of line without trailing blanks
-                  int iLast = line.find_last_not_of (' ');
+                  // append content of line without whitespace
+                  int last = line.find_last_not_of (" \t\f\v\r\n");
 
-                  classpath.append (file_ops::tilde_expand (line.substr (0, iLast+1)));
+                  classpath.append (file_ops::tilde_expand (line.substr (0, last+1)));
                 }
             }
         }
@@ -313,7 +313,6 @@ read_classpath_txt (const std::string& filepath)
 
   return (classpath);
 }
-
 
 static std::string
 initial_class_path (void)

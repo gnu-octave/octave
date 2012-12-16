@@ -336,41 +336,54 @@ initial_class_path (void)
           // initialize static classpath to octave.jar
           retval = jar_file;
 
-          // The base classpath has been set.  Try to find the optional
-          // file "classpath.txt" in two places.  The users classes will
-          // take precedence over the settings defined in the package
-          // directory.
+          // The base classpath has been set.
+          // Try to find an optional file specifying classpaths in 3 places.
+          // 1) Current directory
+          // 2) User's home directory
+          // 3) Octave installation directory where octave.jar resides
 
-          std::string str_filename = "classpath.txt";
-          std::string cp_file;
-          file_stat   cp_exists;
+          // The filename is "javaclasspath.txt", but historically
+          // has been "classpath.txt" so both are supported.
+          std::string cp_list[] = {"javaclasspath.txt", "classpath.txt"};
 
-          // Try to read the file "classpath.txt" in the user's home
-          // directory.
-
-          std::string home_dir = "~" + sep + str_filename;
-          cp_file = file_ops::tilde_expand (home_dir);
-          cp_exists = file_stat (cp_file);
-          if (cp_exists)
+          for (int i=0; i<2; i++)
             {
-              // The file "classpath.txt" has been found: add its
-              // contents to the static classpath.
+              std::string filename = cp_list[i];
+              std::string cp_file = filename;
+              file_stat   cp_exists;
 
-              std::string theClassPath = read_classpath_txt (cp_file);
-              retval.append (theClassPath);
-            }
+              // Try to find classpath file in the current directory.
 
-          // Try to read a file "classpath.txt" in the package directory.
+              cp_exists = file_stat (cp_file);
+              if (cp_exists)
+                {
+                  // File found.  Add its contents to the static classpath.
+                  std::string classpath = read_classpath_txt (cp_file);
+                  retval.append (classpath);
+                }
 
-          cp_file = java_dir + sep + str_filename;
-          cp_exists = file_stat (cp_file);
-          if (cp_exists)
-            {
-              // The file "classpath.txt" has been found: add its
-              // contents to the static classpath.
+              // Try to find classpath file in the user's home directory.
 
-              std::string theClassPath = read_classpath_txt (cp_file);
-              retval.append (theClassPath);
+              cp_file = "~" + sep + filename;
+              cp_file = file_ops::tilde_expand (cp_file);
+              cp_exists = file_stat (cp_file);
+              if (cp_exists)
+                {
+                  // File found.  Add its contents to the static classpath.
+                  std::string classpath = read_classpath_txt (cp_file);
+                  retval.append (classpath);
+                }
+
+              // Try to find classpath file in the Octave install directory.
+
+              cp_file = java_dir + sep + filename;
+              cp_exists = file_stat (cp_file);
+              if (cp_exists)
+                {
+                  // File found.  Add its contents to the static classpath.
+                  std::string classpath = read_classpath_txt (cp_file);
+                  retval.append (classpath);
+                }
             }
         }
       else

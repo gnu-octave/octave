@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isa (@var{obj}, @var{class})
-## Return true if @var{obj} is an object from the class @var{class}.
+## @deftypefn {Function File} {} isa (@var{obj}, @var{classname})
+## Return true if @var{obj} is an object from the class @var{classname}.
 ##
-## @var{class} may also be one of the following class categories: 
+## @var{classname} may also be one of the following class categories: 
 ##
 ## @table @asis
 ## @item "float"
@@ -38,23 +38,23 @@
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## Adapted-by: jwe
 
-function retval = isa (obj, cname)
+function retval = isa (obj, classname)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (strcmp (cname, "float"))
+  if (strcmp (classname, "float"))
     retval = isfloat (obj);
-  elseif (strcmp (cname, "integer"))
+  elseif (strcmp (classname, "integer"))
     retval = isinteger (obj);
-  elseif (strcmp (cname, "numeric"))
+  elseif (strcmp (classname, "numeric"))
     retval = isnumeric (obj);
   else
-    class_of_x = class (obj);
-    retval = strcmp (class_of_x, cname);
+    class_of_obj = class (obj);
+    retval = strcmp (class_of_obj, classname);
     if (! retval && isobject (obj))
-      retval = __isa_parent__ (obj, cname);
+      retval = __isa_parent__ (obj, classname);
     endif
   endif
 

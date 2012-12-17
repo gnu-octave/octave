@@ -5,7 +5,6 @@ java_FCN_FILES = \
   java/errordlg.m \
   java/helpdlg.m \
   java/inputdlg.m \
-  java/java.m \
   java/javaArray.m \
   java/javaaddpath.m \
   java/javaclasspath.m \

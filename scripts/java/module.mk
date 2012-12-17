@@ -13,6 +13,7 @@ java_FCN_FILES = \
   java/listdlg.m \
   java/msgbox.m \
   java/questdlg.m \
+  java/usejava.m \
   java/warndlg.m
 
 FCN_FILES += $(java_FCN_FILES)

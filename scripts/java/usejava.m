@@ -38,11 +38,11 @@
 ## @end table
 ##
 ## @code{usejava} determines if specific Java features are available in an
-## Octave session.  This function is provided for compatibility with scripts
-## which may alter their behavior based on the availability of Java.  The
-## feature "desktop" always returns @code{false} as Octave has no Java-based
-## desktop.  Other features may be available if the Octave-Forge Java package
-## has been installed.
+## Octave session.  This function is provided for scripts which may alter
+## their behavior based on the availability of Java.  The feature "desktop"
+## always returns @code{false} as Octave has no Java-based desktop.  Other
+## features may be available if Octave was compiled with the Java Interface
+## and Java is installed.
 ## @end deftypefn
 
 function retval = usejava (feature)
@@ -54,22 +54,22 @@ function retval = usejava (feature)
   retval = false;
 
   switch feature
-    ## For each feature, try javamethods() on a Java class of a feature
+    ## For each feature, try methods() on a Java class of a feature
     case "awt"
       try
-        dum = javamethods ("java.awt.Frame");
+        dum = methods ("java.awt.Frame");
         retval = true;
       end_try_catch
     case "desktop"
       ## Octave has no Java based GUI/desktop, leave retval = false
     case "jvm"
       try
-        dum = javamethods ("java.lang.Runtime");
+        dum = methods ("java.lang.Runtime");
         retval = true;
       end_try_catch
     case "swing"
       try
-        dum = javamethods ("javax.swing.Popup");
+        dum = methods ("javax.swing.Popup");
         retval = true;
       end_try_catch
     otherwise
@@ -80,6 +80,9 @@ endfunction
 
 
 %!assert (usejava ("desktop"), false)
+
+%!testif HAVE_JAVA
+%! assert (usejava ("jvm"), true);
 
 %% Test input validation
 %!error usejava ()

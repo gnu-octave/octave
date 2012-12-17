@@ -17,35 +17,33 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Loadable Function} {@var{obj} =} java_new (@var{name})
-## @deftypefnx {Loadable Function} {@var{obj} =} java_new (@var{name}, @var{arg1}, @dots{})
-## Create a Java object of class @var{name}, by calling the class constructor
-## with the arguments @var{arg1}, @dots{}
+## @deftypefn  {Built-in Function} {@var{val} =} java_debug ()
+## @deftypefnx {Built-in Function} {@var{old_val} =} java_debug (@var{new_val})
+## @deftypefnx {Built-in Function} {} java_debug (@var{new_val}, \"local\")
+## Query or set the internal variable that determines whether extra debugging
+## information regarding the initialization of the JVM and any Java exceptions
+## is printed.
 ## 
-## @example
-## @group
-##   x = java_new ("java.lang.StringBuffer")
-##   x = java_new ("java.lang.StringBuffer", "Initial string")
-## @end group
-## @end example
-## 
-## @seealso{javaObject, javaMethod}
+## When called from inside a function with the \"local\" option, the variable is
+## changed locally for the function and any subroutines it calls.  The original
+## variable value is restored when exiting the function.
+## @seealso{debug_java, java_convert_matrix, java_unsigned_conversion}
 ## @end deftypefn
 
-function retval = java_new (varargin)
+function old_val = java_debug (varargin)
 
   persistent warned = false;
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "java_new is obsolete and will be removed from a future version of Octave; please use javaObject instead");
+             "java_debug is obsolete and will be removed from a future version of Octave; use debug_java instead");
   endif
 
-  if (nargin < 1)
+  if (nargin > 2)
     print_usage ();
   endif
 
-  retval = javaObject (varargin{:});
+  old_val = debug_java (varargin{:});
 
 endfunction
 

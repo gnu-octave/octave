@@ -5,11 +5,14 @@ deprecated_FCN_FILES = \
   deprecated/cor.m \
   deprecated/corrcoef.m \
   deprecated/cut.m \
+  deprecated/java_debug.m \
   deprecated/error_text.m \
   deprecated/isstr.m \
+  deprecated/java_convert_matrix.m \
   deprecated/java_get.m \
   deprecated/java_invoke.m \
   deprecated/java_new.m \
+  deprecated/java_unsigned_conversion.m \
   deprecated/java_set.m \
   deprecated/javafields.m \
   deprecated/javamethods.m \

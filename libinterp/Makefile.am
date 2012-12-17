@@ -291,10 +291,10 @@ endif
 if AMCOND_BUILD_DOCS
 install-data-hook: install-oct install-built-in-docstrings
 else
-install-data-hook: install-oct
+install-data-hook: install-oct uninstall-built-in-docstrings
 endif
 
-uninstall-local: uninstall-oct
+uninstall-local: uninstall-oct uninstall-built-in-docstrings
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
@@ -330,8 +330,11 @@ if AMCOND_BUILD_DOCS
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
 	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+
+uninstall-built-in-docstrings:
+	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
 endif
-.PHONY: install-built-in-docstrings
+.PHONY: install-built-in-docstrings uninstall-built-in-docstrings
 
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \

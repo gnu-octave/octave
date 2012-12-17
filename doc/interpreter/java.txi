@@ -26,19 +26,56 @@
 @cindex calling Octave from Java
 @cindex  Octave, calling from Java
 
-The Java Interface is designed for calling Java functions from Octave.
-If you want to do the reverse and call Octave from Java, you might try
+The Java Interface is designed for calling Java functions from within Octave.
+If you want to do the reverse, and call Octave from within Java, try
 a library like 
 @code{javaOctave} (@url{http://kenai.com/projects/javaOctave}) or
 @code{joPas} (@url{http://jopas.sourceforge.net}). 
 
 @menu
-* Available Functions::         
+* Java Interface Functions::         
+* Dialog Box Functions::         
 * FAQ - Frequently asked Questions::  
 @end menu
 
-@node Available Functions
-@section Available Functions
+@node Java Interface Functions
+@section Java Interface Functions
+
+The following functions are the core of the Java Interface.  They provide
+a way to create a Java object, get and set its data fields, and call Java
+methods which return results to Octave. 
+
+@cindex object, creating a Java object
+@DOCSTRING(javaObject)
+
+@cindex fields, displaying available fields of a Java object
+FIXME: Need documentation on how fieldnames() is overloaded to return
+the methods of a Java object.
+
+@cindex field, returning value of Java object field
+FIXME: Need documentation on how to use structure-like indexing
+to get fields from Java object.
+
+@cindex field, setting value of Java object field
+FIXME: Need documentation on how to use structure-like indexing
+to set fields from Java object.
+
+@DOCSTRING(isjava)
+
+@cindex array, creating a Java array
+@DOCSTRING(javaArray)
+
+@cindex method, invoking a method of a Java object
+@DOCSTRING(javaMethod)
+
+@cindex methods, displaying available methods of a Java object
+FIXME: Need documentation on how methods() is overloaded to return
+the methods of a Java object.
+
+The following three functions are used to display and modify the
+class path used by the Java Virtual Machine.  This is entirely separate
+from Octave's PATH variable and is used by the JVM to find the correct
+code to execute.
 
 @cindex classpath, displaying
 @cindex classpath, dynamic
@@ -58,33 +95,22 @@ a library like
 @cindex path, removing from classpath
 @DOCSTRING(javarmpath)
 
+The following four functions provide information and control over the interface
+between Octave and the Java Virtual Machine.
+
+@DOCSTRING(usejava)
+
 @cindex memory, displaying Java memory status
 @DOCSTRING(javamem)
 
-@cindex array, creating a Java array
-@DOCSTRING(javaArray)
+@DOCSTRING(java_matrix_autoconversion)
 
-@cindex object, creating a Java object
-@DOCSTRING(javaObject)
+@DOCSTRING(java_unsigned_autoconversion)
 
-@cindex method, invoking a method of a Java object
-@DOCSTRING(javaMethod)
+@DOCSTRING(debug_java)
 
-@cindex field, returning value of Java object field
-FIXME: Need documentation on how to use structure-like indexing
-to get fields from Java object.
-
-@cindex field, setting value of Java object field
-FIXME: Need documentation on how to use structure-like indexing
-to set fields from Java object.
-
-@cindex methods, displaying available methods of a Java object
-FIXME: Need documentation on how methods() is overloaded to return
-the methods of a Java object.
-
-@cindex fields, displaying available fields of a Java object
-FIXME: Need documentation on how fieldnames() is overloaded to return
-the methods of a Java object.
+@node Dialog Box Functions
+@section Dialog Box Functions
 
 The following functions all use the Java Interface to provide some form
 of dialog box.

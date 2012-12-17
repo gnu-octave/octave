@@ -521,8 +521,6 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(octave_config_info)
 
-@DOCSTRING(usejava)
-
 @DOCSTRING(getrusage)
 
 @node Hashing Functions

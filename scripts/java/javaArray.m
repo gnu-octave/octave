@@ -30,6 +30,8 @@
 ## if @var{classname} is a reference type, or to a default value (usually 0)
 ## if @var{classname} is a primitive type.
 ##
+## Sample code:
+##
 ## @example
 ## @group
 ## jary = javaArray ("java.lang.String", 2, 2);

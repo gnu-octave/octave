@@ -64,10 +64,10 @@
 ##
 ## @example
 ## @group
-## [sel, ok] = listdlg ("ListString", @{"An item", "another", "yet another"@}, "SelectionMode", "Multiple" );
+## [sel, ok] = listdlg ("ListString", @{"An item", "another", "yet another"@},
+##                      "SelectionMode", "Multiple");
 ## if (ok == 1)
-##   imax = numel (sel);
-##   for i = 1:1:imax
+##   for i = 1:numel (sel)
 ##     disp (sel(i));
 ##   endfor
 ## endif

@@ -1879,9 +1879,8 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
   return retval;
 }
 
-#endif
-// endif on HAVE_JAVA
-//
+#endif  // endif on HAVE_JAVA
+
 // DEFUN blocks below must be outside of HAVE_JAVA block so that
 // documentation strings are always available, even when functions are not.
 
@@ -1892,7 +1891,7 @@ DEFUN (javaObject, args, ,
 Create a Java object of class @var{classsname}, by calling the class\n\
 constructor with the arguments @var{arg1}, @dots{}\n\
 \n\
-The first example creates an uninitialized object,\n\
+The first example below creates an uninitialized object,\n\
 while the second example supplies an initial argument to the constructor.\n\
 \n\
 @example\n\
@@ -1942,8 +1941,8 @@ DEFUN (javaMethod, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
 @deftypefnx {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
-Invoke the method @var{methodname} on the Java object @var{obj} with the arguments\n\
-@var{arg1}, @dots{}  For static methods, @var{obj} can be a string\n\
+Invoke the method @var{methodname} on the Java object @var{obj} with the\n\
+arguments @var{arg1}, @dots{}  For static methods, @var{obj} can be a string\n\
 representing the fully qualified name of the corresponding class.  The\n\
 function returns the result of the method invocation.\n\
 \n\
@@ -2194,9 +2193,9 @@ DEFUN (java_unsigned_autoconversion, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} java_unsigned_autoconversion (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls how integer classes are\n\
-converted when Java matrix autoconversion is enabled.  When enabled, Java\n\
-arrays of class Byte or Integer are converted to matrices of class uint8 or\n\
-uint32 respectively.\n\
+converted when @code{java_matrix_autoconversion} is enabled.  When enabled,\n\
+Java arrays of class Byte or Integer are converted to matrices of class\n\
+uint8 or uint32 respectively.  The default value is true.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
@@ -2236,7 +2235,7 @@ variable value is restored when exiting the function.\n\
 }
 
 // Outside of #ifdef HAVE_JAVA because it is desirable to be able to
-// merely test for the presence of a Java object without having Java installed. 
+// test for the presence of a Java object without having Java installed. 
 DEFUN (isjava, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isjava (@var{x})\n\

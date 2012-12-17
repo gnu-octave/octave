@@ -84,9 +84,9 @@ static std::map<int,octave_value> octave_ref_map;
 static int octave_java_refcount = 0;
 static long octave_thread_ID = -1;
 
-bool Vjava_convert_matrix = false;
-bool Vjava_unsigned_conversion = true;
-bool Vjava_debug = false;
+bool Vjava_matrix_autoconversion = false;
+bool Vjava_unsigned_autoconversion = true;
+bool Vdebug_java = false;
 
 class JVMArgs
 {
@@ -130,7 +130,7 @@ public:
             if (line.length () > 2
                 && (line.find ("-D") == 0 || line.find ("-X") == 0))
               java_opts.push_back (line);
-            else if (line.length () > 0 && Vjava_debug)
+            else if (line.length () > 0 && Vdebug_java)
               std::cerr << "invalid JVM option, skipping: " << line << std::endl;
           }
       }
@@ -163,7 +163,7 @@ private:
         vm_args.options = new JavaVMOption [vm_args.nOptions];
         for (std::list<std::string>::const_iterator it = java_opts.begin (); it != java_opts.end (); ++it)
           {
-            if (Vjava_debug)
+            if (Vdebug_java)
               std::cout << *it << std::endl;
             vm_args.options[index++].optionString = strsave ((*it).c_str ());
           }
@@ -630,7 +630,7 @@ check_exception (JNIEnv* jni_env)
 
   if (ex)
     {
-      if (Vjava_debug)
+      if (Vdebug_java)
         jni_env->ExceptionDescribe ();
 
       jni_env->ExceptionClear ();
@@ -967,7 +967,7 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
         }
     }
 
-  if (retval.is_undefined () && Vjava_convert_matrix)
+  if (retval.is_undefined () && Vjava_matrix_autoconversion)
     {
       cls = find_octave_class (jni_env, "org/octave/Matrix");
 
@@ -998,7 +998,7 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
             }
           else if (s == "byte")
             {
-              if (Vjava_unsigned_conversion)
+              if (Vjava_unsigned_autoconversion)
                 {
                   uint8NDArray m (dims);
                   mID = jni_env->GetMethodID (cls, "toByte", "()[B");
@@ -1017,7 +1017,7 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
             }
           else if (s == "integer")
             {
-              if (Vjava_unsigned_conversion)
+              if (Vjava_unsigned_autoconversion)
                 {
                   uint32NDArray m (dims);
                   mID = jni_env->GetMethodID (cls, "toInt", "()[I");
@@ -1191,7 +1191,7 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       //jcls = jni_env->FindClass ("java/lang/Object");
       jcls = 0;
     }
-  else if (!Vjava_convert_matrix
+  else if (!Vjava_matrix_autoconversion
            && ((val.is_real_matrix ()
                 && (val.rows () == 1 || val.columns () == 1))
                || val.is_range ()))
@@ -1203,7 +1203,7 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jobj = dv;
       jcls = jni_env->GetObjectClass (jobj);
     }
-  else if (Vjava_convert_matrix
+  else if (Vjava_matrix_autoconversion
            && (val.is_matrix_type () || val.is_range ()) && val.is_real_type ())
     {
       jclass_ref mcls (jni_env, find_octave_class (jni_env, "org/octave/Matrix"));
@@ -2166,50 +2166,71 @@ Undocumented internal function.\n\
 #endif
 }
 
-DEFUN (java_convert_matrix, args, nargout,
+DEFUN (java_matrix_autoconversion, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_convert_matrix ()\n\
-FIXME: Determine what this variable controls and rename function\n\
-Query or set the internal variable that determines FIXME.\n\
-@seealso{java_unsigned_conversion, java_debug}\n\
+@deftypefn  {Built-in Function} {@var{val} =} java_matrix_autoconversion ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} java_matrix_autoconversion (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether Java arrays are\n\
+automatically converted to Octave matrices.  The default value is false.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{java_unsigned_autoconversion, debug_java}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
-  return SET_INTERNAL_VARIABLE (java_convert_matrix);
+  return SET_INTERNAL_VARIABLE (java_matrix_autoconversion);
 #else
-  error ("java_convert_matrix: Octave was not compiled with Java interface");
+  error ("java_matrix_autoconversion: Octave was not compiled with Java interface");
   return octave_value ();
 #endif
 }
 
-DEFUN (java_unsigned_conversion, args, nargout,
+DEFUN (java_unsigned_autoconversion, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_unsigned_conversion ()\n\
-FIXME: Determine what this variable controls and rename function\n\
-Query or set the internal variable that determines FIXME.\n\
-@seealso{java_convert_matrix, java_debug}\n\
+@deftypefn  {Built-in Function} {@var{val} =} java_unsigned_autoconversion ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} java_unsigned_autoconversion (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls how integer classes are\n\
+converted when Java matrix autoconversion is enabled.  When enabled, Java\n\
+arrays of class Byte or Integer are converted to matrices of class uint8 or\n\
+uint32 respectively.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{java_matrix_autoconversion, debug_java}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
-  return SET_INTERNAL_VARIABLE (java_unsigned_conversion);
+  return SET_INTERNAL_VARIABLE (java_unsigned_autoconversion);
 #else
-  error ("java_unsigned_conversion: Octave was not compiled with Java interface");
+  error ("java_unsigned_autoconversion: Octave was not compiled with Java interface");
   return octave_value ();
 #endif
 }
 
-DEFUN (java_debug, args, nargout,
+DEFUN (debug_java, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_debug ()\n\
-FIXME: Determine what this variable controls and rename function\n\
-Query or set the internal variable that determines FIXME.\n\
-@seealso{java_convert_matrix, java_unsigned_conversion}\n\
+@deftypefn  {Built-in Function} {@var{val} =} debug_java ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} debug_java (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_java (@var{new_val}, \"local\")\n\
+Query or set the internal variable that determines whether extra debugging\n\
+information regarding the initialization of the JVM and any Java exceptions\n\
+is printed.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{java_matrix_autoconversion, java_unsigned_autoconversion}\n\
 @end deftypefn")
 {
 #ifdef HAVE_JAVA
-  return SET_INTERNAL_VARIABLE (java_debug);
+  return SET_INTERNAL_VARIABLE (debug_java);
 #else
-  error ("java_debug: Octave was not compiled with Java interface");
+  error ("debug_java: Octave was not compiled with Java interface");
   return octave_value ();
 #endif
 }

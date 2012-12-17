@@ -109,11 +109,11 @@ extern JAVAPKG_API int
 unbox (JNIEnv* jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss);
 
-extern JAVAPKG_API bool Vjava_convert_matrix;
+extern JAVAPKG_API bool Vjava_matrix_autoconversion;
 
-extern JAVAPKG_API bool Vjava_unsigned_conversion;
+extern JAVAPKG_API bool Vjava_unsigned_autoconversion;
 
-extern JAVAPKG_API bool Vjava_debug;
+extern JAVAPKG_API bool Vdebug_java;
 
 class JAVAPKG_API octave_java : public octave_base_value
 {

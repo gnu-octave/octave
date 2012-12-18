@@ -46,6 +46,9 @@ function mtds = methods (obj)
       mtds_list = strsplit (mtds_str, ';');
     endif
   elseif (isjava (obj))
+    ## FIXME: Function prototype that excepts java obj exists, but doesn't
+    ##        work if obj is java.lang.String.  Convert obj to classname.
+    obj = class (obj);
     mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
     mtds_list = strsplit (mtds_str, ';');
   else

@@ -46,6 +46,11 @@ function names = fieldnames (obj)
     ## Call internal C++ function for structs or Octave objects
     names = __fieldnames__ (obj);
   elseif (isjava (obj) || ischar (obj))
+    ## FIXME: Function prototype that excepts java obj exists, but doesn't
+    ##        work if obj is java.lang.String.  Convert obj to classname.
+    if (! ischar (obj))
+      obj = class (obj);
+    endif
     names_str = javaMethod ("getFields", "org.octave.ClassHelper", obj);
     names = strsplit (names_str, ';');
   else

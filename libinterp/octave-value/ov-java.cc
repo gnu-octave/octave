@@ -1793,7 +1793,7 @@ octave_java::do_javaObject (JNIEnv* jni_env, const std::string& name,
                                                                         jstring (clsName), jobjectArray (arg_objs), jobjectArray (arg_types)));
 
           if (resObj)
-            retval = box (jni_env, resObj);
+            retval = octave_value (new octave_java (resObj, 0));
           else
             check_exception (jni_env);
         }

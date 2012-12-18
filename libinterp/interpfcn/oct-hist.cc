@@ -128,12 +128,13 @@ static std::string Vhistory_timestamp_format_string
 // means read file, arg of -q means don't number lines.  Arg of N
 // means only display that many items.
 
-static void
-do_history (int argc, const string_vector& argv)
+static string_vector
+do_history (int argc, const string_vector& argv, bool output = true)
 {
   int numbered_output = 1;
 
   unwind_protect frame;
+  string_vector hlist;
 
   frame.add_fcn (command_history::set_file, command_history::file ());
 
@@ -167,7 +168,7 @@ do_history (int argc, const string_vector& argv)
           else
             panic_impossible ();
 
-          return;
+          return hlist;
         }
       else if (argv[i] == "-q")
         numbered_output = 0;
@@ -191,19 +192,22 @@ do_history (int argc, const string_vector& argv)
           else
             error ("history: bad non-numeric arg '%s'", argv[i].c_str ());
 
-          return;
+          return hlist;
         }
 
       if (limit < 0)
         limit = -limit;
     }
 
-  string_vector hlist = command_history::list (limit, numbered_output);
+  hlist = command_history::list (limit, numbered_output);
 
   int len = hlist.length ();
 
-  for (i = 0; i < len; i++)
-    octave_stdout << hlist[i] << "\n";
+  if (output)
+    for (i = 0; i < len; i++)
+      octave_stdout << hlist[i] << "\n";
+
+  return hlist;
 }
 
 // Read the edited history lines from STREAM and return them
@@ -582,9 +586,10 @@ omitted, the previous command in the history list is used.\n\
   return retval;
 }
 
-DEFUN (history, args, ,
+DEFUN (history, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} history options\n\
+@deftypefn {Command} history options\n\
+@deftypefnx {Built-in Function} {@var{h} = } history (@var{opt1}, @var{opt2}, @dots{})\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
 that you have executed.  Valid options are:\n\
 \n\
@@ -609,6 +614,9 @@ and pasting commands using the X Window System.\n\
 For example, to display the five most recent commands that you have\n\
 typed without displaying line numbers, use the command\n\
 @kbd{history -q 5}.\n\
+\n\
+If invoked with a single output argument, the history will be saved to that\n\
+argument as a cell string and will not be output to screen.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -620,7 +628,16 @@ typed without displaying line numbers, use the command\n\
   if (error_state)
     return retval;
 
-  do_history (argc, argv);
+  string_vector hlist;
+  if (nargout > 0)
+    {
+      argv.append (std::string ("-q"));
+      argc++;
+      hlist = do_history (argc, argv, false);
+      retval(0) = Cell (hlist);
+    }
+  else
+    do_history (argc, argv, true);
 
   return retval;
 }

@@ -45,7 +45,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-lvalue.h"
 #include "ov-class.h"
+#ifdef HAVE_JAVA
 #include "ov-java.h"
+#endif
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
@@ -1944,8 +1946,10 @@ derived.\n\
       retval = args(0).class_name ();
     else
       {
+#ifdef HAVE_JAVA
         octave_java *jobj = dynamic_cast<octave_java*>(args(0).internal_rep ());
         retval = jobj->java_class_name ();
+#endif
       }
   else
     {

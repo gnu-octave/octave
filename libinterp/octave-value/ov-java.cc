@@ -967,6 +967,18 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
         }
     }
 
+  if (retval.is_undefined ())
+    {
+      cls = jni_env->FindClass ("java/lang/Character");
+
+      if (jni_env->IsInstanceOf (jobj, cls))
+        {
+          jmethodID m = jni_env->GetMethodID (cls, "charValue", "()C");
+          retval = jni_env->CallCharMethod (jobj, m);
+          retval = retval.convert_to_str (false, true); 
+        }
+    }
+
   if (retval.is_undefined () && Vjava_matrix_autoconversion)
     {
       cls = find_octave_class (jni_env, "org/octave/Matrix");

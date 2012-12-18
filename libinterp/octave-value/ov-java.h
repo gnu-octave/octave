@@ -140,7 +140,7 @@ public:
   jobject to_java (void) const { return java_object; }
   jclass to_class (void) const { return java_class; }
 
-  std::string java_class_name (void) const { return java_type; }
+  std::string java_class_name (void) const { return java_classname; }
 
   octave_base_value* clone (void) const { return new octave_java (*this); }
   octave_base_value* empty_clone (void) const { return new octave_java (); }
@@ -157,7 +157,7 @@ public:
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const
   {
-    os << "<Java object: " << java_type << ">";
+    os << "<Java object: " << java_classname << ">";
     newline(os);
   }
 
@@ -288,7 +288,7 @@ private:
             jclass_ref clsCls (current_env, current_env->GetObjectClass (java_class));
             jmethodID mID = current_env->GetMethodID (clsCls, "getCanonicalName", "()Ljava/lang/String;");
             jobject_ref resObj (current_env, current_env->CallObjectMethod (java_class, mID));
-            java_type = jstring_to_string (current_env, resObj);
+            java_classname = jstring_to_string (current_env, resObj);
           }
       }
   }
@@ -312,15 +312,27 @@ private:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
-
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
   jobject java_object;
 
   jclass java_class;
 
-  std::string java_type;
+  std::string java_classname;
+
+  DECLARE_OCTAVE_ALLOCATOR
+
+public:
+  int type_id (void) const { return t_id; }
+  std::string type_name (void) const { return t_name; }
+  std::string class_name (void) const { return java_classname; }
+
+  static int static_type_id (void) { return t_id; }
+  static std::string static_type_name (void) { return t_name; }
+  static std::string static_class_name (void) { return "<unknown>"; }
+  static void register_type (void);
+
+private:
+  static int t_id;
+  static const std::string t_name;
 };
 
 #endif

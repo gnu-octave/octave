@@ -1942,15 +1942,7 @@ derived.\n\
     print_usage ();
   else if (nargin == 1)
     // Called for class of object
-    if (! args(0).is_java ())
-      retval = args(0).class_name ();
-    else
-      {
-#ifdef HAVE_JAVA
-        octave_java *jobj = dynamic_cast<octave_java*>(args(0).internal_rep ());
-        retval = jobj->java_class_name ();
-#endif
-      }
+    retval = args(0).class_name ();
   else
     {
       // Called as class constructor

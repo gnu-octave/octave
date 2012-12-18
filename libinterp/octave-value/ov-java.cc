@@ -1063,7 +1063,7 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
 {
   octave_value retval = box (jni_env, jobj, jcls);
 
-  if (retval.class_name () == "octave_java")
+  if (retval.is_java ())
     {
       retval = octave_value ();
 
@@ -1153,7 +1153,7 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
 {
   int found = 1;
 
-  if (val.class_name () == "octave_java")
+  if (val.is_java ())
     {
       octave_java *ovj = TO_JAVA (val);
       jobj = ovj->to_java ();
@@ -1514,7 +1514,16 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
 
 DEFINE_OCTAVE_ALLOCATOR (octave_java);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_java, "octave_java", "octave_java");
+int octave_java::t_id (-1);
+
+const std::string octave_java::t_name ("octave_java");
+
+void
+octave_java::register_type (void)
+{
+  t_id = octave_value_typeinfo::register_type
+    (octave_java::t_name, "<unknown>", octave_value (new octave_java ()));
+}
 
 dim_vector
 octave_java::dims (void) const
@@ -1978,7 +1987,7 @@ equivalent\n\
               for (int i=2; i<args.length (); i++)
                 tmp(i-2) = args(i);
 
-              if (args(1).class_name () == "octave_java")
+              if (args(1).is_java ())
                 {
                   octave_java *jobj = TO_JAVA (args(1));
                   retval = jobj->do_javaMethod (current_env, methodname, tmp);
@@ -2040,7 +2049,7 @@ equivalent\n\
           std::string name = args(1).string_value ();
           if (! error_state)
             {
-              if (args(0).class_name () == "octave_java")
+              if (args(0).is_java ())
                 {
                   octave_java *jobj = TO_JAVA (args(0));
                   retval = jobj->do_java_get (current_env, name);
@@ -2102,7 +2111,7 @@ equivalent\n\
           std::string name = args(1).string_value ();
           if (! error_state)
             {
-              if (args(0).class_name () == "octave_java")
+              if (args(0).is_java ())
                 {
                   octave_java *jobj = TO_JAVA (args(0));
                   retval = jobj->do_java_set (current_env, name, args(2));
@@ -2146,7 +2155,7 @@ Undocumented internal function.\n\
 
       if (args.length () == 1)
         {
-          if (args(0).class_name () == "octave_java")
+          if (args(0).is_java ())
             {
               octave_java *jobj = TO_JAVA (args(0));
               retval(0) = box_more (current_env, jobj->to_java (), 0);

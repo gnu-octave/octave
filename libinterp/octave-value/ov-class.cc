@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-lvalue.h"
 #include "ov-class.h"
+#include "ov-java.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
@@ -1921,13 +1922,14 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
 
 DEFUN (class, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} class (@var{expr})\n\
-@deftypefnx {Built-in Function} {} class (@var{s}, @var{id})\n\
-@deftypefnx {Built-in Function} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
-Return the class of the expression @var{expr} or create a class with\n\
+@deftypefn  {Function File} {@var{classname} =} class (@var{obj})\n\
+@deftypefnx {Function File} {} class (@var{s}, @var{id})\n\
+@deftypefnx {Function File} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
+Return the class of the object @var{obj} or create a class with\n\
 fields from structure @var{s} and name (string) @var{id}.  Additional\n\
 arguments name a list of parent classes from which the new class is\n\
 derived.\n\
+@seealso{typeinfo, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1937,9 +1939,17 @@ derived.\n\
   if (nargin == 0)
     print_usage ();
   else if (nargin == 1)
-    retval = args(0).class_name ();
+    // Called for class of object
+    if (! args(0).is_java ())
+      retval = args(0).class_name ();
+    else
+      {
+        octave_java *jobj = dynamic_cast<octave_java*>(args(0).internal_rep ());
+        retval = jobj->java_class_name ();
+      }
   else
     {
+      // Called as class constructor
       octave_function *fcn = octave_call_stack::caller ();
 
       std::string id = args(1).string_value ();
@@ -1995,6 +2005,18 @@ derived.\n\
 
   return retval;
 }
+
+/*
+%!assert (class (1.1), "double");
+%!assert (class (single (1.1)), "single");
+%!assert (class (uint8 (1)), "uint8");
+%!testif HAVE_JAVA
+%! jobj = javaObject ("java.lang.StringBuffer");
+%! assert (class (jobj), "java.lang.StringBuffer");
+
+%% Test Input Validation
+%!error class ()
+*/
 
 DEFUN (__isa_parent__, args, ,
   "-*- texinfo -*-\n\

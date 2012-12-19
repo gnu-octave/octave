@@ -138,8 +138,9 @@ do_history (int argc, const string_vector& argv, bool output = true)
 
   frame.add_fcn (command_history::set_file, command_history::file ());
 
-  int i;
-  for (i = 1; i < argc; i++)
+  // Number of history lines to show
+  std::string N;
+  for (int i = 1; i < argc; i++)
     {
       std::string option = argv[i];
 
@@ -178,33 +179,33 @@ do_history (int argc, const string_vector& argv, bool output = true)
           break;
         }
       else
-        break;
+        // The last argument found in the command list that looks like
+        // an integer will be used
+        N = argv[i];
     }
 
   int limit = -1;
 
-  if (i < argc)
+  if (N != "" && sscanf (N.c_str (), "%d", &limit) != 1)
     {
-      if (sscanf (argv[i].c_str (), "%d", &limit) != 1)
-        {
-          if (argv[i][0] == '-')
-            error ("history: unrecognized option '%s'", argv[i].c_str ());
-          else
-            error ("history: bad non-numeric arg '%s'", argv[i].c_str ());
+      if (N[0] == '-')
+        error ("history: unrecognized option '%s'", N.c_str ());
+      else
+        error ("history: bad non-numeric arg '%s'", N.c_str ());
 
-          return hlist;
-        }
-
-      if (limit < 0)
-        limit = -limit;
+      return hlist;
     }
+
+  if (limit < 0)
+    limit = -limit;
+
 
   hlist = command_history::list (limit, numbered_output);
 
   int len = hlist.length ();
 
   if (output)
-    for (i = 0; i < len; i++)
+    for (int i = 0; i < len; i++)
       octave_stdout << hlist[i] << "\n";
 
   return hlist;

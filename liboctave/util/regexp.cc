@@ -426,11 +426,7 @@ regexp::is_match (const std::string& buffer)
 {
   regexp::match_data rx_lst = match (buffer);
 
-  regexp::match_data::const_iterator p = rx_lst.begin ();
-
-  std::string match_string = p->match_string ();
-
-  return ! match_string.empty ();
+  return rx_lst.size () > 0;
 }
 
 Array<bool>

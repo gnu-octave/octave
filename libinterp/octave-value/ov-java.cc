@@ -923,20 +923,11 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
   if (! jobj)
     retval = Matrix ();
 
+  // Convert a scalar of any numeric class (byte, short, integer, long, float,
+  // double) to a double value.  Matlab does the same thing.
   if (retval.is_undefined ())
     {
-      cls = jni_env->FindClass ("java/lang/Integer");
-
-      if (jni_env->IsInstanceOf (jobj, cls))
-        {
-          jmethodID m = jni_env->GetMethodID (cls, "intValue", "()I");
-          retval = jni_env->CallIntMethod (jobj, m);
-        }
-    }
-
-  if (retval.is_undefined ())
-    {
-      cls = jni_env->FindClass ("java/lang/Double");
+      cls = jni_env->FindClass ("java/lang/Number");
 
       if (jni_env->IsInstanceOf (jobj, cls))
         {
@@ -952,7 +943,6 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
       if (jni_env->IsInstanceOf (jobj, cls))
         {
           jmethodID m = jni_env->GetMethodID (cls, "booleanValue", "()Z");
-          // MH retval = jni_env->CallBooleanMethod (jobj, m);
           retval = (jni_env->CallBooleanMethod (jobj, m) ? true : false);
         }
     }

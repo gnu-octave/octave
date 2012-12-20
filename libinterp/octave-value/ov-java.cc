@@ -1164,6 +1164,36 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jobj = jni_env->NewStringUTF (s.c_str ());
       jcls = jni_env->GetObjectClass (jobj);
     }
+  else if (val.is_real_scalar ())
+    {
+      if (val.is_double_type ())
+        {
+          double dval = val.double_value ();
+          jclass_ref dcls (jni_env, jni_env->FindClass ("java/lang/Double"));
+          jfieldID fid = jni_env->GetStaticFieldID (dcls, "TYPE", "Ljava/lang/Class;");
+          jmethodID mid = jni_env->GetMethodID (dcls, "<init>", "(D)V");
+          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid));
+          jobj = jni_env->NewObject (dcls, mid, dval);
+        }
+      else
+        {
+          float fval = val.float_scalar_value ();
+          jclass_ref fcls (jni_env, jni_env->FindClass ("java/lang/Float"));
+          jfieldID fid = jni_env->GetStaticFieldID (fcls, "TYPE", "Ljava/lang/Class;");
+          jmethodID mid = jni_env->GetMethodID (fcls, "<init>", "(F)V");
+          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (fcls, fid));
+          jobj = jni_env->NewObject (fcls, mid, fval);
+        }
+    }
+  else if (val.is_integer_type () && val.is_scalar_type ())
+    {
+      int32_t ival = val.int32_scalar_value ();
+      jclass_ref icls (jni_env, jni_env->FindClass ("java/lang/Integer"));
+      jfieldID fid = jni_env->GetStaticFieldID (icls, "TYPE", "Ljava/lang/Class;");
+      jmethodID mid = jni_env->GetMethodID (icls, "<init>", "(I)V");
+      jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (icls, fid));
+      jobj = jni_env->NewObject (icls, mid, ival);
+    }
   else if (val.is_bool_scalar ())
    {
       bool bval = val.bool_value ();
@@ -1173,20 +1203,11 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (bcls, fid));
       jobj = jni_env->NewObject (bcls, mid, bval);
    }
-  else if (val.is_real_scalar ())
-    {
-      double dval = val.double_value ();
-      jclass_ref dcls (jni_env, jni_env->FindClass ("java/lang/Double"));
-      jfieldID fid = jni_env->GetStaticFieldID (dcls, "TYPE", "Ljava/lang/Class;");
-      jmethodID mid = jni_env->GetMethodID (dcls, "<init>", "(D)V");
-      jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid));
-      jobj = jni_env->NewObject (dcls, mid, dval);
-    }
   else if (val.is_empty ())
     {
       jobj = 0;
-      //jcls = jni_env->FindClass ("java/lang/Object");
       jcls = 0;
+      //jcls = jni_env->FindClass ("java/lang/Object");
     }
   else if (!Vjava_matrix_autoconversion
            && ((val.is_real_matrix ()

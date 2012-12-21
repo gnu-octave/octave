@@ -241,7 +241,7 @@ spellcheck: $(SPELLCHECK_FILES)
 EXTRA_DIST = \
   config-images.sh \
   contributors.in \
-	doc-cache \
+  doc-cache \
   find-docstring-files.sh \
   images \
   images.awk \
@@ -258,7 +258,7 @@ EXTRA_DIST = \
   $(LOGOS) \
   $(TXI_SRC)
 
-DISTCLEANFILES = $(octave_TEXINFOS) doc-cache
+DISTCLEANFILES = $(octave_TEXINFOS)
 
-MAINTAINERCLEANFILES = $(IMAGES)
+MAINTAINERCLEANFILES = $(IMAGES) doc-cache
 

@@ -183,18 +183,7 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  bool is_string (void) const
-  {
-    JNIEnv *current_env = thread_jni_env ();
-
-    if (current_env && java_object)
-      {
-        jclass_ref cls (current_env, current_env->FindClass ("java/lang/String"));
-        return current_env->IsInstanceOf (java_object, cls);
-      }
-
-    return false;
-  }
+  bool is_java_string (void) const;
 
   static JNIEnv* thread_jni_env (void);
 

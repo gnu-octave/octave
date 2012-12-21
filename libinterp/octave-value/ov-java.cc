@@ -621,6 +621,20 @@ jstring_to_string (JNIEnv* jni_env, jobject obj)
   return retval;
 }
 
+bool
+octave_java::is_java_string (void) const
+{
+  JNIEnv *current_env = thread_jni_env ();
+
+  if (current_env && java_object)
+    {
+      jclass_ref cls (current_env, current_env->FindClass ("java/lang/String"));
+      return current_env->IsInstanceOf (java_object, cls);
+    }
+
+  return false;
+}
+
 static octave_value
 check_exception (JNIEnv* jni_env)
 {

@@ -1978,6 +1978,14 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 #endif
 }
 
+/*
+%!testif HAVE_JAVA
+%% The tests below merely check if javaObject works at all. Whether it works
+%% properly, i.e. creates the right values, is a matter of Java itself
+%% Create a Short and check if it really is a short, i.e. whether it overflows
+%! assert (javaObject ("java.lang.Short", 40000).doubleValue < 0);
+*/
+
 DEFUN (javaMethod, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
@@ -2045,6 +2053,13 @@ equivalent\n\
   return octave_value ();
 #endif
 }
+
+/*
+%!testif HAVE_JAVA
+%% Check for valid first two Java version numbers
+%! jver = strsplit (javaMethod ('getProperty', 'java.lang.System', 'java.version'), '.');
+%! assert (isfinite (str2double (jver{1})) && isfinite (str2double (jver{2})));
+*/
 
 DEFUN (__java_get__, args, ,
     "-*- texinfo -*-\n\

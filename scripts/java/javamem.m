@@ -70,9 +70,9 @@ function jmem = javamem ()
   rt = javaMethod ("getRuntime", "java.lang.Runtime");
   rt.gc;
   jvmem = cell (3, 1);
-  jvmem{1} = rt.maxMemory ().doubleValue ();
-  jvmem{2} = rt.totalMemory ().doubleValue ();
-  jvmem{3} = rt.freeMemory ().doubleValue ();
+  jvmem{1} = rt.maxMemory ();
+  jvmem{2} = rt.totalMemory ();
+  jvmem{3} = rt.freeMemory ();
 
   if (nargout == 0)
     printf ("\nJava virtual machine (JVM) memory info:\n");

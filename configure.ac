@@ -2244,9 +2244,9 @@ do
 
   ## Search for a viable Java executable.
   if test -z "$JAVA_HOME"; then
-    JAVA_PATH=$PATH
+    JAVA_PATH="$PATH"
   else
-    JAVA_PATH=${JAVA_HOME}$PATH_SEPARATOR${JAVA_HOME}/jre/bin$PATH_SEPARATOR${JAVA_HOME}/bin$PATH_SEPARATOR${JAVA_HOME}/../bin$PATH_SEPARATOR${PATH}
+    JAVA_PATH="${JAVA_HOME}$PATH_SEPARATOR${JAVA_HOME}/jre/bin$PATH_SEPARATOR${JAVA_HOME}/bin$PATH_SEPARATOR${JAVA_HOME}/../bin$PATH_SEPARATOR${PATH}"
   fi
   AC_PATH_PROG(JAVA, java, [], [$JAVA_PATH])
 
@@ -2257,16 +2257,33 @@ do
 
   if test -z "$JAVA_HOME"; then
     ## Find JAVA_HOME for JRE by running java and querying properties.
-    JAVA_TMP_HOME=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`  
+    JAVA_TMP_HOME="`\"$JAVA\" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`"
     ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
-    JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e 's|/bin/\?$||' | sed -e 's|/jre/\?$||'`
+    JAVA_HOME="`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`"
   fi
 
+  case $canonical_host_type in
+    *-mingw* | *-msdosmsvc*)
+      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is without
+      ## colon and backslashes, as it is also used as path separator. Use quoted paths
+      ## as Java may be installed in a path with whitespaces (e.g. C:\Program Files\Java\...).
+      if test -n "$JAVA_HOME"; then
+        JAVA_HOME="`cd \"$JAVA_HOME\" && pwd`"
+	## Maybe this will be useful in the future, as native Java won't probably
+	## understand MSYS paths.
+	JAVA_HOME_NATIVE="`cd \"$JAVA_HOME\" && pwd -W`"
+      fi
+    ;;
+    *)
+      JAVA_HOME_NATIVE="$JAVA_HOME"
+    ;;
+  esac
+
   ## Amend search path for JAVAC and JAR.
-  if test -z JAVA_HOME; then
-    JAVA_PATH=$PATH
+  if test -z "$JAVA_HOME"; then
+    JAVA_PATH="$PATH"
   else
-    JAVA_PATH=${JAVA_HOME}$PATH_SEPARATOR${JAVA_HOME}/bin$PATH_SEPARATOR${JAVA_HOME}/../bin$PATH_SEPARATOR${PATH}
+    JAVA_PATH="${JAVA_HOME}$PATH_SEPARATOR${JAVA_HOME}/bin$PATH_SEPARATOR${JAVA_HOME}/../bin$PATH_SEPARATOR${PATH}"
   fi
 
   AC_PATH_PROG(JAVAC, javac, [], [$JAVA_PATH])
@@ -2279,7 +2296,7 @@ do
 
   ## Check Java version is recent enough.
   AC_MSG_CHECKING([for Java version])
-  java_version=[`$JAVA -version 2>&1 | sed -n -e 's/^java version[^0-9"]*"\([^"]*\)"/\1/p'`]
+  java_version=[`$"JAVA" -version 2>&1 | sed -n -e 's/^java version[^0-9"]*"\([^"]*\)"/\1/p'`]
   AC_MSG_RESULT([$java_version])
   java_major=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
   java_minor=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
@@ -2290,7 +2307,9 @@ do
     break
   fi
 
-  ## At this point Win32 systems have enough configuration data.
+  ## At this point Win32/MSVC systems have enough configuration data. We assume
+  ## that all appropriate variables (e.g. INCLUDE and LIB) have already the required
+  ## paths to compile and link against JDK.
   case $canonical_host_type in
     *-msdosmsvc*)
       build_java=true
@@ -2298,6 +2317,15 @@ do
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
       break
+    ;;
+    *-mingw*)
+      if test "$have_msvc" = "yes"; then
+        build_java=true
+        JAVA_LIBS=-ladvapi32
+        AC_DEFINE(HAVE_JAVA, 1,
+          [Define to 1 if Java is available and is at least version 1.5])
+        break
+      fi
     ;;
   esac
 

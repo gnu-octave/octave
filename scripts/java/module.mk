@@ -60,7 +60,7 @@ srcdir_java_JAVA_IMAGES = $(addprefix $(srcdir)/java/, $(JAVA_IMAGES))
 
 %.class : %.java
 	$(MKDIR_P) java/$(org_octave_dir)
-	( cd $(srcdir)/java; $(JAVAC) -source 1.3 -target 1.3 -d $(abs_builddir)/java $(org_octave_dir)/$(<F) )
+	( cd $(srcdir)/java; "$(JAVAC)" -source 1.3 -target 1.3 -d $(abs_builddir)/java $(org_octave_dir)/$(<F) )
 
 java/images.stamp: $(srcdir_java_JAVA_IMAGES)
 	if [ "x$(srcdir)" != "x." ]; then \
@@ -71,7 +71,7 @@ java/images.stamp: $(srcdir_java_JAVA_IMAGES)
 
 if AMCOND_HAVE_JAVA
 java/octave.jar: java/images.stamp $(java_JAVA_CLASSES)
-	( cd java; $(JAR) cf octave.jar.t $(JAVA_CLASSES) $(JAVA_IMAGES) )
+	( cd java; "$(JAR)" cf octave.jar.t $(JAVA_CLASSES) $(JAVA_IMAGES) )
 	mv $@.t $@
 endif
 

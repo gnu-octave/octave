@@ -333,7 +333,9 @@ function term = gnuplot_default_term (plot_stream)
   term = getenv ("GNUTERM");
   ## If not specified, guess the terminal type.
   if (isempty (term) || ! __gnuplot_has_terminal__ (term, plot_stream))
-    if (ismac ())
+    if (isguirunning () && __gnuplot_has_terminal__ ("qt", plot_stream))
+      term = "qt";
+    elseif (ismac ())
       term = "aqua";
     elseif (! isunix ())
       term = "windows";

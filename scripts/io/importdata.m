@@ -259,6 +259,15 @@ function [output, delimiter, header_rows] = \
                                         delimiter_pattern, "split")));
   endfor
 
+  ## FIXME: Make it behave like Matlab when importing a table where a whole
+  ## column is text only. E.g.
+  ##    abc  12  34
+  ##    def  56  78
+  ## This would give a 3x2 data matrix with the left column = nan(2,1), and 
+  ## the text would end up in textdata.
+  ## In Matlab the data matrix would only be a 2x2 matrix, see example at:
+  ## http://www.mathworks.se/help/matlab/import_export/import-numeric-data-and-header-text-from-a-text-file.html
+
   ## Go through the data and put it in either output.data or
   ## output.textdata depending on if it is numeric or not.
   output.data = NaN (length (file_content_rows) - header_rows, data_columns);
@@ -273,7 +282,7 @@ function [output, delimiter, header_rows] = \
         ## output.data, otherwise in output.textdata
         if (!isempty (row_data{j}))
           data_numeric = str2double (row_data{j});
-          if (!isempty (data_numeric))
+          if (!isnan (data_numeric))
             output.data(i-header_rows, j) = data_numeric;
           else
             output.textdata{i,j} = row_data{j};
@@ -379,6 +388,19 @@ endfunction
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "+3.1e0\t-72E-1\t0\n12e-3\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, "\\t");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+%!test
+%! # Complex numbers
+%! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\t-7.2\t0-3.4i\n0.012\t-6.5+7.2i\t128");
 %! fclose (fid);
 %! [a,d,h] = importdata (fn, "\\t");
 %! unlink (fn);

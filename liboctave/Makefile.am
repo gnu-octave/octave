@@ -85,7 +85,7 @@ include util/module.mk
 ## It has no source code itself.
 liboctave_la_SOURCES = 
 
-liboctave_la_CPPFLAGS = @OCTAVE_DLL_DEFS@ $(AM_CPPFLAGS)
+liboctave_la_CPPFLAGS = @OCTAVE_DLL_DEFS@ @CRUFT_DLL_DEFS@ $(AM_CPPFLAGS)
 
 include link-deps.mk
 
@@ -113,6 +113,7 @@ liboctave_version_info = $(liboctave_current):$(liboctave_revision):$(liboctave_
 liboctave_la_LDFLAGS = \
   -version-info $(liboctave_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
+  @XTRA_CRUFT_SH_LDFLAGS@ \
   -bindir $(bindir) \
   $(LIBOCTAVE_LINK_OPTS)
 

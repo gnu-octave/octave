@@ -24,6 +24,10 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 EXTRA_DIST =
 
+CLEANFILES =
+
+DISTCLEANFILES =
+
 FCN_FILE_DIRS =
 
 FCN_FILES =
@@ -36,6 +40,8 @@ DIRSTAMP_FILES =
 
 IMAGES =
 
+JAR_FILES =
+
 ## Read subdirs to set all variables above
 include @ftp/module.mk
 include audio/module.mk
@@ -46,6 +52,7 @@ include geometry/module.mk
 include help/module.mk
 include image/module.mk
 include io/module.mk
+include java/module.mk
 include linear-algebra/module.mk
 include miscellaneous/module.mk
 include optimization/module.mk
@@ -68,16 +75,16 @@ include strings/module.mk
 include testfun/module.mk
 include time/module.mk
 
-nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES)
+nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES) $(JAR_FILES)
 
 image_DATA = $(IMAGES)
 
 FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
 
 if AMCOND_BUILD_DOCS
-all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) .DOCSTRINGS
+all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) $(JAR_FILES) .DOCSTRINGS
 else
-all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES)
+all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) $(JAR_FILES)
 endif
 
 octave_dirstamp = $(am__leading_dot)dirstamp
@@ -116,6 +123,10 @@ image/PKG_ADD: $(image_FCN_FILES) $(image_GEN_FCN_FILES) image/$(octave_dirstamp
 
 io/PKG_ADD: $(io_FCN_FILES) $(io_GEN_FCN_FILES) io/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(io_FCN_FILES) -- $(io_GEN_FCN_FILES) > $@-t
+	mv $@-t $@
+
+java/PKG_ADD: $(java_FCN_FILES) $(java_GEN_FCN_FILES) java/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(java_FCN_FILES) -- $(java_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
 linear-algebra/PKG_ADD: $(linear_algebra_FCN_FILES) $(linear_algebra_GEN_FCN_FILES) linear-algebra/$(octave_dirstamp) mk-pkg-add
@@ -211,6 +222,7 @@ $(geometry_GEN_FCN_FILES): geometry/$(octave_dirstamp)
 $(help_GEN_FCN_FILES): help/$(octave_dirstamp)
 $(image_GEN_FCN_FILES): image/$(octave_dirstamp)
 $(io_GEN_FCN_FILES): io/$(octave_dirstamp)
+$(java_GEN_FCN_FILES): java/$(octave_dirstamp)
 $(linear_algebra_GEN_FCN_FILES): linear-algebra/$(octave_dirstamp)
 $(miscellaneous_GEN_FCN_FILES): miscellaneous/$(octave_dirstamp)
 $(optimization_GEN_FCN_FILES): optimization/$(octave_dirstamp)
@@ -260,6 +272,9 @@ image/$(octave_dirstamp):
 io/$(octave_dirstamp):
 	$(MKDIR_P) io
 	: > io/$(octave_dirstamp)
+java/$(octave_dirstamp):
+	$(MKDIR_P) java
+	: > java/$(octave_dirstamp)
 linear-algebra/$(octave_dirstamp):
 	$(MKDIR_P) linear-algebra
 	: > linear-algebra/$(octave_dirstamp)
@@ -432,10 +447,15 @@ EXTRA_DIST += \
   mkdoc.pl \
   mk-pkg-add
 
-DISTCLEANFILES = \
+DISTCLEANFILES += \
   .DOCSTRINGS \
   DOCSTRINGS \
   $(PKG_ADD_FILES) \
   $(DIRSTAMP_FILES) \
   $(GEN_FCN_FILES)
 
+distclean-local:
+	if [ "x$(srcdir)" != "x." ]; then \
+	  rm $(java_JAVA_IMAGES); \
+	fi
+	

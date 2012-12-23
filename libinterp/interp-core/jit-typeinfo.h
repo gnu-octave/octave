@@ -566,6 +566,11 @@ public:
     return instance->do_insert_error_check (bld);
   }
 
+  static llvm::Value *insert_interrupt_check (llvm::IRBuilderD& bld)
+  {
+    return instance->do_insert_interrupt_check (bld);
+  }
+
   static const jit_operation& end (void)
   {
     return instance->end_fn;
@@ -692,6 +697,8 @@ private:
 
   llvm::Value *do_insert_error_check (llvm::IRBuilderD& bld);
 
+  llvm::Value *do_insert_interrupt_check (llvm::IRBuilderD& bld);
+
   void add_builtin (const std::string& name);
 
   void register_intrinsic (const std::string& name, size_t id,
@@ -747,6 +754,9 @@ private:
   int next_id;
 
   llvm::GlobalVariable *lerror_state;
+  llvm::GlobalVariable *loctave_interrupt_state;
+
+  llvm::Type *sig_atomic_type;
 
   std::vector<jit_type*> id_to_type;
   jit_type *any;

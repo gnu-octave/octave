@@ -1,4 +1,5 @@
 ## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -19,11 +20,13 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
 ## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
-## Convert an image in red-green-blue (RGB) space to an indexed image.
+## Convert an image in red-green-blue (RGB) color space to an indexed image.
 ## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
 ## @end deftypefn
 
-## Bugs: The color map may have duplicate entries.
+## FIXME: This function has a very different syntax than the Matlab
+##        one of the same name.
+##        Octave function does not support N, MAP, DITHER, or TOL arguments.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
@@ -37,29 +40,54 @@ function [x, map] = rgb2ind (R, G, B)
 
   if (nargin == 1)
     rgb = R;
-    if (length (size (rgb)) == 3 && size (rgb, 3) == 3)
+    if (ndims (rgb) != 3 || size (rgb, 3) != 3)
+      error ("rgb2ind: argument is not an RGB image");
+    else
       R = rgb(:,:,1);
       G = rgb(:,:,2);
       B = rgb(:,:,3);
-    else
-      error ("rgb2ind: argument is not an RGB image");
     endif
+  elseif (! size_equal (R, G, B))
+    error ("rgb2ind: R, G, and B must have the same size");
   endif
 
-  if (! size_equal (R, G) || ! size_equal (R, B))
-    error ("rgb2ind: arguments must all have the same size");
+  x = reshape (1:numel (R), size (R));
+
+  map    = unique ([R(:) G(:) B(:)], "rows");
+  [~, x] = ismember ([R(:) G(:) B(:)], map, "rows");
+  x      = reshape (x, size (R));
+
+  ## a colormap is of class double and values between 0 and 1
+  switch (class (R))
+    case {"single", "double", "logical"}
+      ## do nothing, return the same
+    case {"uint8", "uint16"}
+      map = double (map) / double (intmax (class (R)));
+    case "int16"
+      map = (double (im) + 32768) / 65535;
+    otherwise
+      error ("unsupported image class %s", im_class);
+  endswitch
+
+  ## we convert to the smallest class necessary to encode the image. Matlab
+  ## documentation does not mention what it does when uint16 is not enough...
+  ## When an indexed image is of integer class, there's a -1 offset to the
+  ## colormap, hence the adjustment
+  if (rows (map) < 256)
+    x = uint8 (x - 1);
+  elseif (rows (map) < 65536)
+    x = uint16 (x - 1);
+  else
+    ## leave it as double
   endif
-
-  [hi, wi] = size (R);
-
-  x = zeros (hi, wi);
-
-  map = zeros (hi*wi, 3);
-
-  map(:,1) = R(:);
-  map(:,2) = G(:);
-  map(:,3) = B(:);
-
-  x(:) = 1:(hi*wi);
 
 endfunction
+
+
+%% FIXME: Need some functional tests or %!demo blocks
+
+%% Test input validation
+%!error rgb2ind ()
+%!error rgb2ind (1,2)
+%!error rgb2ind (1,2,3,4)
+

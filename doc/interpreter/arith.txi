@@ -285,11 +285,15 @@ cos (pi/2)
 
 @DOCSTRING(duplication_matrix)
 
+@DOCSTRING(dawson)
+
 @DOCSTRING(erf)
 
 @DOCSTRING(erfc)
 
 @DOCSTRING(erfcx)
+
+@DOCSTRING(erfi)
 
 @DOCSTRING(erfinv)
 

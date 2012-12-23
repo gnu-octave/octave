@@ -17,35 +17,44 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isa (@var{obj}, @var{class})
-## Return true if @var{obj} is an object from the class @var{class}.
+## @deftypefn {Function File} {} isa (@var{obj}, @var{classname})
+## Return true if @var{obj} is an object from the class @var{classname}.
+##
+## @var{classname} may also be one of the following class categories: 
+##
+## @table @asis
+## @item "float"
+## Floating point value comprising classes "double" and "single".
+##
+## @item "integer"
+## Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.
+##
+## @item "numeric"
+## Numeric value comprising either a floating point or integer value.
+## @end table
 ## @seealso{class, typeinfo}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## Adapted-by: jwe
 
-function retval = isa (obj, cname)
+function retval = isa (obj, classname)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  persistent float_classes = {"double", "single"};
-
-  persistent fnum_classes = {"double", "single", ...
-                             "uint8", "uint16", "uint32", "uint64", ...
-                             "int8", "int16", "int32", "int64"};
-
-  if (strcmp (cname, "float"))
-    retval = any (strcmp (class (obj), float_classes));
-  elseif (strcmp (cname, "numeric"))
-    retval = any (strcmp (class (obj), fnum_classes));
+  if (strcmp (classname, "float"))
+    retval = isfloat (obj);
+  elseif (strcmp (classname, "integer"))
+    retval = isinteger (obj);
+  elseif (strcmp (classname, "numeric"))
+    retval = isnumeric (obj);
   else
-    class_of_x = class (obj);
-    retval = strcmp (class_of_x, cname);
+    class_of_obj = class (obj);
+    retval = strcmp (class_of_obj, classname);
     if (! retval && isobject (obj))
-      retval = __isa_parent__ (obj, cname);
+      retval = __isa_parent__ (obj, classname);
     endif
   endif
 
@@ -76,6 +85,9 @@ endfunction
 %!assert (isa (uint16 (13), "numeric"), true)
 %!assert (isa (uint32 (13), "numeric"), true)
 %!assert (isa (uint64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "integer"), true)
+%!assert (isa (double (13), "integer"), false)
+%!assert (isa (single (13), "integer"), false)
 
 %!assert (isa (double (13), "double"))
 %!assert (isa (single (13), "single"))

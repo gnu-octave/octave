@@ -17,13 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x})
-## @deftypefnx {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
-## @deftypefnx {Function File} {[@var{R}, @var{G}, @var{B}] =} ind2rgb (@dots{})
+## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
+## @deftypefnx {Function File} {[@var{R}, @var{G}, @var{B}] =} ind2rgb (@var{x}, @var{map})
 ## Convert an indexed image to red, green, and blue color components.
-## If the colormap doesn't contain enough colors, pad it with the
-## last color in the map.
-## If @var{map} is omitted, the current colormap is used for the conversion.
+##
+## The image @var{x} must be an indexed image which will be converted using the
+## colormap @var{map}.  If @var{map} does not contain enough colors for the
+## image, pixels in @var{x} outside the range are mapped to the last color in
+## the map.
+##
+## The output may be a single RGB image (MxNx3 matrix where M and N are the
+## original image @var{x} dimensions, one for each of the red, green and blue
+## channels).  Alternatively, the individual red, green, and blue color matrices
+## of size MxN may be returned.
+##
 ## @seealso{rgb2ind, ind2gray, hsv2rgb, ntsc2rgb}
 ## @end deftypefn
 
@@ -33,41 +40,60 @@
 
 function [R, G, B] = ind2rgb (x, map)
 
-  ## Do we have the right number of inputs?
-  if (nargin < 1 || nargin > 2)
+  if (nargin != 2)
     print_usage ();
-  elseif (nargin == 1)
-    map = colormap ();
   endif
-
-  ## Check if X is an indexed image.
-  if (ndims (x) != 2 || any (x(:) != fix (x(:))) || min (x(:)) < 1)
-    error ("ind2rgb: X must be an indexed image");
-  endif
-
-  ## Check the color map.
-  if (! iscolormap (map))
-    error ("ind2rgb: MAP must be a valid colormap");
-  endif
-
-  ## Do we have enough colors in the color map?
-  maxidx = max (x(:));
-  rm = rows (map);
-  if (rm < maxidx)
-    ## Pad with the last color in the map.
-    pad = repmat (map(end,:), maxidx-rm, 1);
-    map(end+1:maxidx, :) = pad;
-  endif
+  [x, map] = ind2x ("ind2rgb", x, map);
 
   ## Compute result
-  [hi, wi] = size (x);
-  R = reshape (map (x(:), 1), hi, wi);
-  G = reshape (map (x(:), 2), hi, wi);
-  B = reshape (map (x(:), 3), hi, wi);
+  [row, col] = size (x);
+  R = reshape (map(x(:), 1), row, col);
+  G = reshape (map(x(:), 2), row, col);
+  B = reshape (map(x(:), 3), row, col);
 
   ## Use 3D array if only one output is requested.
   if (nargout <= 1)
-    R(:,:,3) = B;
     R(:,:,2) = G;
+    R(:,:,3) = B;
   endif
+
 endfunction
+
+
+%!shared img, map, ergb, rgb, r, g, b
+%! img = [2 4 5; 3 2 5; 1 2 4];
+%! map = [0.0  0.0  0.0
+%!        0.2  0.4  0.6
+%!        0.4  0.4  0.5
+%!        0.3  0.7  1.0
+%!        0.1  0.5  0.8];
+%! ergb(:,:,1) = [0.2 0.3 0.1; 0.4 0.2 0.1; 0.0 0.2 0.3];
+%! ergb(:,:,2) = [0.4 0.7 0.5; 0.4 0.4 0.5; 0.0 0.4 0.7];
+%! ergb(:,:,3) = [0.6 1.0 0.8; 0.5 0.6 0.8; 0.0 0.6 1.0];
+%! ## test basic usage with 1 and 3 outputs
+%! [rgb] = ind2rgb (img, map);
+%! [r, g, b] = ind2rgb (img, map);
+%!assert (ergb, rgb);
+%!assert (ergb, reshape ([r(:) g(:) b(:)], [size(img) 3]));
+%! ## test correction for integers
+%! img = uint8 (img -1);
+%! [rgb] = ind2rgb (img, map);
+%!assert (ergb, rgb);
+%! ## check it fails when image is a float with an index value of 0
+%!fail ("[rgb] = ind2rgb (double(img), map)")
+
+%% Test input validation
+%!error ind2rgb ()
+%!error ind2rgb (1,2,3)
+%!error <X must be an indexed image> ind2rgb ({1}, jet (64))
+%!error <X must be an indexed image> ind2rgb (1+i, jet (64))
+%!error <X must be an indexed image> ind2rgb (sparse (1), jet (64))
+%!error <X must be an indexed image> ind2rgb (0, jet (64))
+%!error <X must be an indexed image> ind2rgb (1.1, jet (64))
+%!error <MAP must be a valid colormap> ind2rgb (1, {1})
+%!error <MAP must be a valid colormap> ind2rgb (1, 1+i)
+%!error <MAP must be a valid colormap> ind2rgb (1, ones (2,2,2))
+%!error <MAP must be a valid colormap> ind2rgb (1, ones (2,4))
+%!error <MAP must be a valid colormap> ind2rgb (1, [-1])
+%!error <MAP must be a valid colormap> ind2rgb (1, [2])
+

@@ -1,0 +1,1156 @@
+@c Copyright (C) 2010-2012 Martin Hepperle
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c 
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c 
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@node Java Interface
+@chapter Java Interface
+
+@cindex using Octave with Java
+@cindex Java, using with Octave
+@cindex calling Java from Octave
+@cindex Java, calling from Octave
+@cindex calling Octave from Java
+@cindex  Octave, calling from Java
+
+The Java Interface is designed for calling Java functions from within Octave.
+If you want to do the reverse, and call Octave from within Java, try
+a library like 
+@code{javaOctave} (@url{http://kenai.com/projects/javaOctave}) or
+@code{joPas} (@url{http://jopas.sourceforge.net}). 
+
+@menu
+* Java Interface Functions::         
+* Dialog Box Functions::         
+* FAQ - Frequently asked Questions::  
+@end menu
+
+@node Java Interface Functions
+@section Java Interface Functions
+
+The following functions are the core of the Java Interface.  They provide
+a way to create a Java object, get and set its data fields, and call Java
+methods which return results to Octave. 
+
+@cindex object, creating a Java object
+@DOCSTRING(javaObject)
+
+@cindex fields, displaying available fields of a Java object
+FIXME: Need documentation on how fieldnames() is overloaded to return
+the methods of a Java object.
+
+@cindex field, returning value of Java object field
+FIXME: Need documentation on how to use structure-like indexing
+to get fields from Java object.
+
+@cindex field, setting value of Java object field
+FIXME: Need documentation on how to use structure-like indexing
+to set fields from Java object.
+
+@DOCSTRING(isjava)
+
+@cindex array, creating a Java array
+@DOCSTRING(javaArray)
+
+@cindex method, invoking a method of a Java object
+@DOCSTRING(javaMethod)
+
+@cindex methods, displaying available methods of a Java object
+FIXME: Need documentation on how methods() is overloaded to return
+the methods of a Java object.
+
+The following three functions are used to display and modify the
+class path used by the Java Virtual Machine.  This is entirely separate
+from Octave's PATH variable and is used by the JVM to find the correct
+code to execute.
+
+@cindex classpath, displaying
+@cindex classpath, dynamic
+@cindex dynamic classpath
+@cindex classpath, static
+@cindex static classpath
+@DOCSTRING(javaclasspath)
+
+@findex javaaddpath
+@cindex classpath, adding new path
+@cindex path, adding to classpath
+@cindex classpath, dynamic
+@cindex dynamic classpath, adding new path
+@DOCSTRING(javaaddpath)
+
+@cindex classpath, removing path
+@cindex path, removing from classpath
+@DOCSTRING(javarmpath)
+
+The following four functions provide information and control over the interface
+between Octave and the Java Virtual Machine.
+
+@DOCSTRING(usejava)
+
+@cindex memory, displaying Java memory status
+@DOCSTRING(javamem)
+
+@DOCSTRING(java_matrix_autoconversion)
+
+@DOCSTRING(java_unsigned_autoconversion)
+
+@DOCSTRING(debug_java)
+
+@node Dialog Box Functions
+@section Dialog Box Functions
+
+The following functions all use the Java Interface to provide some form
+of dialog box.
+
+@cindex dialog, displaying a warning dialog
+@DOCSTRING(msgbox)
+
+@cindex dialog, displaying an error dialog
+@DOCSTRING(errordlg)
+
+@cindex dialog, displaying a help dialog
+@DOCSTRING(helpdlg)
+
+@cindex dialog, displaying an input dialog
+@DOCSTRING(inputdlg)
+
+@cindex dialog, displaying a list dialog
+@DOCSTRING(listdlg)
+
+@cindex dialog, displaying a question dialog
+@DOCSTRING(questdlg)
+
+@cindex dialog, displaying a warning dialog
+@DOCSTRING(warndlg)
+
+@c ------------------------------------------------------------------------
+@node FAQ - Frequently asked Questions
+@section FAQ - Frequently asked Questions
+
+@menu
+* How to distinguish between Octave and Matlab?::  
+* How to make Java classes available?::  
+* How to create an instance of a Java class?::  
+* How can I handle memory limitations?::  
+* How to compile the java package in Octave?::  
+* Which @TeX{} symbols are implemented in the dialog functions?::  
+@end menu
+
+@c ------------------------------------------------------------------------
+@node How to distinguish between Octave and Matlab?
+@subsection How to distinguish between Octave and Matlab? 
+@anchor{doc-FAQ}
+@c - index -
+@cindex Octave and Matlab, how to distinguish between
+@c - index -
+
+Octave and @sc{matlab} are very similar, but handle Java slightly different. 
+Therefore it may be necessary to detect the environment and use the appropriate
+functions.  The following function can be used to detect the environment.  Due
+to the persistent variable it can be called repeatedly without a heavy
+performance hit. 
+
+Example: 
+
+@example
+@group
+%% 
+%% Return: true if the environment is Octave. 
+%% 
+function ret = isOctave 
+  persistent retval;  % speeds up repeated calls 
+
+  if isempty(retval)
+    retval = (exist('Octave_VERSION','builtin') > 0); 
+  end 
+
+  ret = retval; 
+end 
+@end group
+@end example
+
+@c ------------------------------------------------------------------------
+@node How to make Java classes available?
+@subsection How to make Java classes available to Octave?
+@c - index -
+@cindex classpath, setting
+@cindex classpath, difference between static and dynamic
+@cindex static classpath
+@cindex dynamic classpath
+@cindex @file{classpath.txt}
+@cindex classes, making available to Octave
+@c - index -
+
+Java finds classes by searching a @var{classpath}.  This is a list of Java
+archive files and/or directories containing class files.  In Octave and
+@sc{matlab} the @var{classpath} is composed of two parts:
+
+@itemize
+@item the @var{static classpath} is initialized once at startup of the JVM, and
+
+@item the @var{dynamic classpath} which can be modified at runtime.
+@end itemize
+
+Octave searches the @var{static classpath} first, then the @var{dynamic
+classpath}.  Classes appearing in the @var{static} as well as in the
+@var{dynamic classpath} will therefore be found in the @var{static classpath}
+and loaded from this location.  Classes which shall be used regularly or must
+be available to all users should be added to the @var{static classpath}.  The
+@var{static classpath} is populated once from the contents of a plain text file
+named @file{classpath.txt} when the Java Virtual Machine starts.  This file
+contains one line for each individual classpath to be added to the @var{static
+classpath}.  These lines can identify single class files, directories containing
+class files or Java archives with complete class file hierarchies.  Comment
+lines starting with a @code{#} or a @code{%} character are ignored.
+
+The search rules for the file @file{classpath.txt} are:
+
+@itemize
+@item First, Octave searches for the file @file{classpath.txt} in your home directory,
+If such a file is found, it is read and defines the initial @var{static
+classpath}.  Thus it is possible to build an initial static classpath on a 'per
+user' basis.
+
+@item Next, Octave looks for another file @file{classpath.txt} in the package
+installation directory.  This is where @file{javaclasspath.m} resides, usually
+something like @file{@dots{}\share\Octave\packages\java-1.2.8}.  You can find
+this directory by executing the command 
+
+@example
+pkg list
+@end example
+
+If this file exists, its contents is also appended to the static classpath.
+Note that the archives and class directories defined in this file will affect
+all users.
+@end itemize
+
+Classes which are used only by a specific script should be placed in the
+@var{dynamic classpath}.  This portion of the classpath can be modified at
+runtime using the @code{javaaddpath} and @code{javarmpath} functions. 
+
+Example: 
+
+@example
+octave> base_path = 'C:/Octave/java_files'; 
+
+octave> % add two JARchives to the dynamic classpath 
+octave> javaaddpath([base_path, '/someclasses.jar']); 
+octave> javaaddpath([base_path, '/moreclasses.jar']); 
+
+octave> % check the dynamic classpath 
+octave> p = javaclasspath; 
+octave> disp(p@{1@}); 
+C:/Octave/java_files/someclasses.jar
+octave> disp(p@{2@}); 
+C:/Octave/java_files/moreclasses.jar
+
+octave> % remove the first element from the classpath 
+octave> javarmpath([base_path, '/someclasses.jar']); 
+octave> p = javaclasspath; 
+octave> disp(p@{1@}); 
+C:/Octave/java_files/moreclasses.jar
+
+octave> % provoke an error
+octave> disp(p@{2@}); 
+error: A(I): Index exceeds matrix dimension. 
+@end example
+
+Another way to add files to the @var{dynamic classpath} exclusively for your
+user account is to use the file @file{.octaverc} which is stored in your home
+directory.  All Octave commands in this file are executed each time you start a
+new instance of Octave.  The following example adds the directory @file{octave}
+to Octave's search path and the archive @file{myclasses.jar} in this directory
+to the Java search path. 
+
+@example
+@group
+% content of .octaverc:
+addpath('~/octave');
+javaaddpath('~/octave/myclasses.jar');
+@end group
+@end example
+
+@c ------------------------------------------------------------------------
+@node How to create an instance of a Java class?
+@subsection How to create an instance of a Java class?
+@c - index -
+@cindex object, how to create
+@cindex instance, how to create
+@c - index -
+
+If your code shall work under Octave as well as @sc{matlab} you should use the
+function @code{javaObject} to create Java objects.  The function
+@code{java_new} is Octave specific and does not exist in the @sc{matlab}
+environment.
+
+Example 1, suitable for Octave but not for @sc{matlab}: 
+
+@example
+   Passenger = java_new('package.FirstClass', row, seat);
+@end example
+
+Example 2, which works in Octave as well as in @sc{matlab}: 
+
+@example
+   Passenger = javaObject('package.FirstClass', row, seat);
+@end example
+
+@c ------------------------------------------------------------------------
+@node How can I handle memory limitations?
+@subsection How can I handle memory limitations?
+@cindex memory, limitations
+
+In order to execute Java code Octave creates a Java Virtual Machine (JVM). 
+Such a JVM allocates a fixed amount of initial memory and may expand this pool
+up to a fixed maximum memory limit.  The default values depend on the Java
+version (see @ref{doc-javamem,,javamem}).  The memory pool is shared by all Java
+objects running in the JVM@.  This strict memory limit is intended mainly to
+avoid that runaway applications inside web browsers or in enterprise servers
+can consume all memory and crash the system.  When the maximum memory limit is
+hit, Java code will throw exceptions so that applications will fail or behave
+unexpectedly.
+
+In Octave as well as in @sc{matlab}, you can specify options for the creation
+of the JVM inside a file named @file{java.opts}.  This is a text file where you
+can enter lines containing @option{-X} and @option{-D} options handed to the
+JVM during initialization. 
+
+In Octave, the Java options file must be located in the directory where
+@file{javaclasspath.m} resides, i.e., the package installation directory,
+usually something like @file{@dots{}\share\Octave\packages\java-1.2.8}.  You can
+find this directory by executing 
+
+@example
+pkg list
+@end example
+
+In @sc{matlab}, the options file goes into the @file{MATLABROOT/bin/ARCH}
+directory or in your personal @sc{matlab} startup directory (can be determined
+by a @samp{pwd} command).  @var{MATLABROOT} is the @sc{matlab} root directory
+and @var{ARCH} is your system architecture, which you find by issuing the
+commands @samp{matlabroot} respectively @samp{computer('arch')}.
+
+The @option{-X} options allow you to increase the maximum amount of memory
+available to the JVM to 256 Megabytes by adding the following line to the
+@file{java.opts} file: 
+
+@example
+-Xmx256m 
+@end example
+
+The maximum possible amount of memory depends on your system.  On a Windows
+system with 2 Gigabytes main memory you should be able to set this maximum to
+about 1 Gigabyte.
+
+If your application requires a large amount of memory from the beginning, you
+can also specify the initial amount of memory allocated to the JVM@.  Adding
+the following line to the @file{java.opts} file starts the JVM with 64
+Megabytes of initial memory: 
+
+@example
+-Xms64m 
+@end example
+
+For more details on the available @option{-X} options of your Java Virtual
+Machine issue the command @samp{java -X} at the operating system command prompt
+and consult the Java documentation.
+
+
+The @option{-D} options can be used to define system properties which can then
+be used by Java classes inside Octave.  System properties can be retrieved by
+using the @code{getProperty()} methods of the @code{java.lang.System} class. 
+The following example line defines the property @var{MyProperty} and assigns it
+the string @code{12.34}. 
+
+@example
+-DMyProperty=12.34
+@end example
+
+The value of this property can then be retrieved as a string by a Java object
+or in Octave: 
+
+@example
+@group
+octave> javaMethod('java.lang.System', 'getProperty', 'MyProperty');
+ans = 12.34
+@end group
+@end example
+
+@seealso{javamem}
+
+@c ------------------------------------------------------------------------
+@node How to compile the java package in Octave?
+@subsection How to compile the java package in Octave?
+@c - index -
+@cindex package, how to compile?
+@cindex compiling the java package, how? 
+@cindex java package, how to compile?
+@cindex java package, how to install?
+@cindex java package, how to uninstall?
+@c - index -
+
+Most Octave installations come with the @var{java} package pre-installed.  In
+case you want to replace this package with a more recent version, you must
+perform the following steps: 
+
+@c ---------
+@menu
+* Uninstall the currently installed package @var{java}::  
+* Make sure that the build environment is configured properly::  
+* Compile and install the package in Octave::  
+* Test the java package installation::  
+@end menu
+
+@node Uninstall the currently installed package @var{java}
+@subsubsection Uninstall the currently installed package @var{java}
+Check whether the @var{java} package is already installed by issuing
+the @code{pkg list} command:
+
+@example
+@group
+octave> pkg list
+Package Name  | Version | Installation directory
+--------------+---------+-----------------------
+        java *|   1.2.8 | /home/octavio/octave/java-1.2.8
+octave> 
+@end group
+@end example
+
+@noindent
+If the @var{java} package appears in the list you must uninstall it first by
+issuing the command 
+
+@example
+@group
+octave> pkg uninstall java
+octave> pkg list
+@end group
+@end example
+
+Now the java package should not be listed anymore.  If you have used the
+@var{java} package during the current session of Octave, you have to exit and
+restart Octave before you can uninstall the package.  This is because the
+system keeps certain libraries in memory after they have been loaded once.
+
+@c ---------
+@node Make sure that the build environment is configured properly
+@subsubsection Make sure that the build environment is configured properly
+The installation process requires that the environment variable
+@w{@env{JAVA_HOME}} points to the Java Development Kit (JDK) on your computer. 
+
+@itemize @bullet
+@item
+Note that JDK is not equal to JRE (Java Runtime Environment).  The JDK home
+directory contains subdirectories with include, library and executable files
+which are required to compile the @var{java} package.  These files are not part
+of the JRE, so you definitely need the JDK. 
+
+@item
+Do not use backslashes but ordinary slashes in the path. 
+@end itemize
+
+Set the environment variable @w{@env{JAVA_HOME}} according to your local JDK
+installation.  Please adapt the path in the following examples according to the
+JDK installation on your system.  If you are using a Windows system that might
+be: 
+
+@example
+octave> setenv("JAVA_HOME","C:/Java/jdk1.6.0_21");
+@end example
+
+Note, that on both system types, Windows as well as Linux, you must use the
+forward slash '/' as the separator, not the backslash '\'.
+
+If you are using a Linux system this would look probably more like: 
+
+@example
+octave> setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
+@end example
+
+@c ---------
+@node Compile and install the package in Octave
+@subsubsection Compile and install the package in Octave
+If you have for example saved the package archive on your @file{z:} drive the
+command would be: 
+
+@example
+Octave> pkg install -verbose z:/java-1.2.8.tar.gz
+@end example
+
+@noindent
+or if you have Linux and the package file is stored in your home directory: 
+
+@example
+octave> pkg install -verbose ~/java-1.2.8.tar.gz
+@end example
+
+The option @option{-verbose} will produce some lengthy output, which should not
+show any errors (maybe a few warnings at best). 
+
+You can then produce a list of all installed packages: 
+
+@example
+octave> pkg list
+@end example
+
+This list of packages should now include the package @var{java}:
+
+@example
+@group
+octave> pkg list
+Package Name  | Version | Installation directory
+--------------+---------+-----------------------
+        java *|   1.2.8 | /home/octavio/octave/java-1.2.8
+octave> 
+@end group
+@end example
+
+@c ---------
+@node Test the java package installation
+@subsubsection Test the java package installation
+
+The following code creates a Java string object, which however is automatically
+converted to an Octave string: 
+
+@example
+@group
+octave> s = javaObject('java.lang.String', 'Hello OctaveString') 
+s = Hello OctaveString 
+@end group
+@end example
+
+Note that the java package automatically transforms the Java String object to
+an Octave string.  This means that you cannot apply Java String methods to the
+result. 
+
+This "auto boxing" scheme seems to be implemented for the following Java
+classes: 
+
+@itemize @bullet
+@item
+java.lang.Integer
+
+@item
+java.lang.Double 
+
+@item
+java.lang.Boolean 
+
+@item
+java.lang.String 
+@end itemize
+
+If you instead create an object for which no "auto-boxing" is implemented,
+@code{javaObject} returns the genuine Java object: 
+
+@example
+@group
+octave> v = javaObject('java.util.Vector') 
+v = 
+<Java object: java.util.Vector> 
+octave> v.add(12); 
+octave> v.get(0) 
+ans = 12 
+@end group
+@end example
+
+If you have created such a Java object, you can apply all methods of the Java
+class to the returned object.  Note also that for some objects you must specify
+an initializer: 
+
+@example
+@group
+% not: 
+octave> d = javaObject('java.lang.Double') 
+error: [java] java.lang.NoSuchMethodException: java.lang.Double 
+% but: 
+octave> d = javaObject('java.lang.Double',12.34) 
+d = 12.340 
+@end group
+@end example
+
+@c ------------------------------------------------------------------------
+@node Which @TeX{} symbols are implemented in the dialog functions?
+@subsection Which @TeX{} symbols are implemented in the dialog functions?
+@c - index -
+@cindex symbols, translation table
+@cindex @TeX{} symbols, translation table
+@cindex translation table for @TeX{} symbols
+@c - index -
+
+The dialog functions contain a translation table for @TeX{} like symbol codes. 
+Thus messages and labels can be tailored to show some common mathematical
+symbols or Greek characters.  No further @TeX{} formatting codes are supported.
+ The characters are translated to their Unicode equivalent.  However, not all
+characters may be displayable on your system.  This depends on the font used by
+the Java system on your computer.
+
+Each @TeX{} symbol code must be terminated by a space character to make it
+distinguishable from the surrounding text.  Therefore the string @samp{\alpha
+=12.0} will produce the desired result, whereas @samp{\alpha=12.0} would
+produce the literal text @var{'\alpha=12.0'}.
+
+@seealso{errordlg, helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
+
+@need 5000
+@c ---------------------------------
+@ifhtml
+@float Table
+The table below shows each @TeX{} character code and the corresponding Unicode
+character: 
+@multitable @columnfractions 0.18 0.1 0.05 0.18 0.1 0.05 0.18 0.1
+@item \alpha
+@tab 'α'
+@tab
+@tab \beta
+@tab 'β'
+@tab
+@tab \gamma
+@tab 'γ'
+@c ----------
+@item \delta
+@tab 'δ'
+@tab
+@tab \epsilon
+@tab 'ε'
+@tab
+@tab \zeta
+@tab 'ζ'
+@c ----------
+@item \eta
+@tab 'η'
+@tab
+@tab \theta
+@tab 'θ'
+@tab
+@tab \vartheta
+@tab 'ϑ'
+@c ----------
+@item \iota
+@tab 'ι'
+@tab
+@tab \kappa
+@tab 'κ'
+@tab
+@tab \lambda
+@tab 'λ'
+@c ----------
+@item \mu
+@tab 'μ'
+@tab
+@tab \nu
+@tab 'ν'
+@tab
+@tab \xi
+@tab 'ξ'
+@c ----------
+@item \pi
+@tab 'π'
+@tab
+@tab \rho
+@tab 'ρ'
+@tab
+@tab \sigma
+@tab 'σ'
+@c ----------
+@item \varsigma
+@tab 'ς'
+@tab
+@tab \tau
+@tab 'τ'
+@tab
+@tab \phi
+@tab 'φ'
+@c ----------
+@item \chi
+@tab 'χ'
+@tab
+@tab \psi
+@tab 'ψ'
+@tab
+@tab \omega
+@tab 'ω'
+@c ----------
+@item \upsilon
+@tab 'υ'
+@tab
+@tab \Gamma
+@tab 'Γ'
+@tab
+@tab \Delta
+@tab 'Δ'
+@c ----------
+@item \Theta
+@tab 'Θ'
+@tab
+@tab \Lambda
+@tab 'Λ'
+@tab
+@tab \Pi
+@tab 'Π'
+@c ----------
+@item \Xi
+@tab 'Ξ'
+@tab
+@tab \Sigma
+@tab 'Σ'
+@tab
+@tab \Upsilon
+@tab 'Υ'
+@c ----------
+@item \Phi
+@tab 'Φ'
+@tab
+@tab \Psi
+@tab 'Ψ'
+@tab
+@tab \Omega
+@tab 'Ω'
+@c ----------
+@item \Im
+@tab 'ℑ'
+@tab
+@tab \Re
+@tab 'ℜ'
+@tab
+@tab \leq
+@tab '≤'
+@c ----------
+@item \geq
+@tab '≥'
+@tab
+@tab \neq
+@tab '≠'
+@tab
+@tab \pm
+@tab '±'
+@c ----------
+@item \infty
+@tab '∞'
+@tab
+@tab \partial
+@tab '∂'
+@tab
+@tab \approx
+@tab '≈'
+@c ----------
+@item \circ
+@tab '∘'
+@tab
+@tab \bullet
+@tab '•'
+@tab
+@tab \times
+@tab '×'
+@c ----------
+@item \sim
+@tab '~'
+@tab
+@tab \nabla
+@tab '∇'
+@tab
+@tab \ldots
+@tab '…'
+@c ----------
+@item \exists
+@tab '∃'
+@tab
+@tab \neg
+@tab '¬'
+@tab
+@tab \aleph
+@tab 'ℵ'
+@c ----------
+@item \forall
+@tab '∀'
+@tab
+@tab \cong
+@tab '≅'
+@tab
+@tab \wp
+@tab '℘'
+@c ----------
+@item \propto
+@tab '∝'
+@tab
+@tab \otimes
+@tab '⊗'
+@tab
+@tab \oplus
+@tab '⊕'
+@c ----------
+@item \oslash
+@tab '⊘'
+@tab
+@tab \cap
+@tab '∩'
+@tab
+@tab \cup
+@tab '∪'
+@c ----------
+@item \ni
+@tab '∋'
+@tab
+@tab \in
+@tab '∈'
+@tab
+@tab \div
+@tab '÷'
+@c ----------
+@item \equiv
+@tab '≡'
+@tab
+@tab \int
+@tab '∫'
+@tab
+@tab \perp
+@tab '⊥'
+@c ----------
+@item \wedge
+@tab '∧'
+@tab
+@tab \vee
+@tab '∨'
+@tab
+@tab \supseteq
+@tab '⊇'
+@c ----------
+@item \supset
+@tab '⊃'
+@tab
+@tab \subseteq
+@tab '⊆'
+@tab
+@tab \subset
+@tab '⊂'
+@c ----------
+@item \clubsuit
+@tab '♣'
+@tab
+@tab \spadesuit
+@tab '♠'
+@tab
+@tab \heartsuit
+@tab '♥'
+@c ----------
+@item \diamondsuit
+@tab '♦'
+@tab
+@tab \copyright
+@tab '©'
+@tab
+@tab \leftarrow
+@tab '←'
+@c ----------
+@item \uparrow
+@tab '↑'
+@tab
+@tab \rightarrow
+@tab '→'
+@tab
+@tab \downarrow
+@tab '↓'
+@c ----------
+@item \leftrightarrow
+@tab '↔'
+@tab
+@tab \updownarrow
+@tab '↕'
+@tab
+@c ----------
+@end multitable
+@caption{@TeX{} character codes and the resulting symbols.}
+@end float
+@end ifhtml
+@c ---------------------------------
+@iftex
+@float Table
+The table below shows each @TeX{} character code and the corresponding Unicode character: 
+@multitable @columnfractions 0.18 0.1 0.05 0.18 0.1 0.05 0.18 0.1
+@headitem @TeX{} code
+@tab Symbol
+@tab
+@tab @TeX{} code
+@tab Symbol
+@tab
+@tab @TeX{} code
+@tab Symbol
+@c ----------
+@item \alpha
+@tab '@math{\alpha}'
+@tab
+@tab \beta
+@tab '@math{\beta}'
+@tab
+@tab \gamma
+@tab '@math{\gamma}'
+@c ----------
+@item \delta
+@tab '@math{\delta}'
+@tab
+@tab \epsilon
+@tab '@math{\epsilon}'
+@tab
+@tab \zeta
+@tab '@math{\zeta}'
+@c ----------
+@item \eta
+@tab '@math{\eta}'
+@tab
+@tab \theta
+@tab '@math{\theta}'
+@tab
+@tab \vartheta
+@tab '@math{\vartheta}'
+@c ----------
+@item \iota
+@tab '@math{\iota}'
+@tab
+@tab \kappa
+@tab '@math{\kappa}'
+@tab
+@tab \lambda
+@tab '@math{\lambda}'
+@c ----------
+@item \mu
+@tab '@math{\mu}'
+@tab
+@tab \nu
+@tab '@math{\nu}'
+@tab
+@tab \xi
+@tab '@math{\xi}'
+@c ----------
+@item \pi
+@tab '@math{\pi}'
+@tab
+@tab \rho
+@tab '@math{\rho}'
+@tab
+@tab \sigma
+@tab '@math{\sigma}'
+@c ----------
+@item \varsigma
+@tab '@math{\varsigma}'
+@tab
+@tab \tau
+@tab '@math{\tau}'
+@tab
+@tab \phi
+@tab '@math{\phi}'
+@c ----------
+@item \chi
+@tab '@math{\chi}'
+@tab
+@tab \psi
+@tab '@math{\psi}'
+@tab
+@tab \omega
+@tab '@math{\omega}'
+@c ----------
+@item \upsilon
+@tab '@math{\upsilon}'
+@tab
+@tab \Gamma
+@tab '@math{\Gamma}'
+@tab
+@tab \Delta
+@tab '@math{\Delta}'
+@c ----------
+@item \Theta
+@tab '@math{\Theta}'
+@tab
+@tab \Lambda
+@tab '@math{\Lambda}'
+@tab
+@tab \Pi
+@tab '@math{\Pi}'
+@c ----------
+@item \Xi
+@tab '@math{\Xi}'
+@tab
+@tab \Sigma
+@tab '@math{\Sigma}'
+@tab
+@tab \Upsilon
+@tab '@math{\Upsilon}'
+@c ----------
+@item \Phi
+@tab '@math{\Phi}'
+@tab
+@tab \Psi
+@tab '@math{\Psi}'
+@tab
+@tab \Omega
+@tab '@math{\Omega}'
+@c ----------
+@item \Im
+@tab '@math{\Im}'
+@tab
+@tab \Re
+@tab '@math{\Re}'
+@tab
+@tab \leq
+@tab '@math{\leq}'
+@c ----------
+@item \geq
+@tab '@math{\geq}'
+@tab
+@tab \neq
+@tab '@math{\neq}'
+@tab
+@tab \pm
+@tab '@math{\pm}'
+@c ----------
+@item \infty
+@tab '@math{\infty}'
+@tab
+@tab \partial
+@tab '@math{\partial}'
+@tab
+@tab \approx
+@tab '@math{\approx}'
+@c ----------
+@item \circ
+@tab '@math{\circ}'
+@tab
+@tab \bullet
+@tab '@math{\bullet}'
+@tab
+@tab \times
+@tab '@math{\times}'
+@c ----------
+@item \sim
+@tab '@math{\sim}'
+@tab
+@tab \nabla
+@tab '@math{\nabla}'
+@tab
+@tab \ldots
+@tab '@math{\ldots}'
+@c ----------
+@item \exists
+@tab '@math{\exists}'
+@tab
+@tab \neg
+@tab '@math{\neg}'
+@tab
+@tab \aleph
+@tab '@math{\aleph}'
+@c ----------
+@item \forall
+@tab '@math{\forall}'
+@tab
+@tab \cong
+@tab '@math{\cong}'
+@tab
+@tab \wp
+@tab '@math{\wp}'
+@c ----------
+@item \propto
+@tab '@math{\propto}'
+@tab
+@tab \otimes
+@tab '@math{\otimes}'
+@tab
+@tab \oplus
+@tab '@math{\oplus}'
+@c ----------
+@item \oslash
+@tab '@math{\oslash}'
+@tab
+@tab \cap
+@tab '@math{\cap}'
+@tab
+@tab \cup
+@tab '@math{\cup}'
+@c ----------
+@item \ni
+@tab '@math{\ni}'
+@tab
+@tab \in
+@tab '@math{\in}'
+@tab
+@tab \div
+@tab '@math{\div}'
+@c ----------
+@item \equiv
+@tab '@math{\equiv}'
+@tab
+@tab \int
+@tab '@math{\int}'
+@tab
+@tab \perp
+@tab '@math{\perp}'
+@c ----------
+@item \wedge
+@tab '@math{\wedge}'
+@tab
+@tab \vee
+@tab '@math{\vee}'
+@tab
+@tab \supseteq
+@tab '@math{\supseteq}'
+@c ----------
+@item \supset
+@tab '@math{\supset}'
+@tab
+@tab \subseteq
+@tab '@math{\subseteq}'
+@tab
+@tab \subset
+@tab '@math{\subset}'
+@c ----------
+@item \clubsuit
+@tab '@math{\clubsuit}'
+@tab
+@tab \spadesuit
+@tab '@math{\spadesuit}'
+@tab
+@tab \heartsuit
+@tab '@math{\heartsuit}'
+@c ----------
+@item \diamondsuit
+@tab '@math{\diamondsuit}'
+@tab
+@tab \copyright
+@tab '@math{\copyright}'
+@tab
+@tab \leftarrow
+@tab '@math{\leftarrow}'
+@c ----------
+@item \uparrow
+@tab '@math{\uparrow}'
+@tab
+@tab \rightarrow
+@tab '@math{\rightarrow}'
+@tab
+@tab \downarrow
+@tab '@math{\downarrow}'
+@c ----------
+@item \leftrightarrow
+@tab '@math{\leftrightarrow}'
+@tab
+@tab \updownarrow
+@tab '@math{\updownarrow}'
+@tab
+@c ----------
+@end multitable
+@caption{@TeX{} character codes and the resulting symbols.}
+@end float
+@end iftex
+@c ---------------------------------

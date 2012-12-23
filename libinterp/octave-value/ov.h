@@ -563,6 +563,9 @@ public:
   bool is_object (void) const
     { return rep->is_object (); }
 
+  bool is_java (void) const
+    { return rep->is_java (); }
+
   bool is_cs_list (void) const
     { return rep->is_cs_list (); }
 
@@ -1126,6 +1129,8 @@ public:
   MAPPER_FORWARD (erfcinv)
   MAPPER_FORWARD (erfc)
   MAPPER_FORWARD (erfcx)
+  MAPPER_FORWARD (erfi)
+  MAPPER_FORWARD (dawson)
   MAPPER_FORWARD (exp)
   MAPPER_FORWARD (expm1)
   MAPPER_FORWARD (finite)

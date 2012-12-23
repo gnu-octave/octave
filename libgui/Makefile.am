@@ -22,14 +22,6 @@ include $(top_srcdir)/build-aux/common.mk
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-QT_INCDIR = @QT_INCDIR@
-
-QT_LIBDIR = @QT_LIBDIR@
-
-QT_LIBS = -lQtCore -lQtGui -lQtNetwork -lqscintilla2
-
-QT_LDFLAGS = -L$(QT_LIBDIR)
-
 MOC_CPPFLAGS =
 
 octlib_LTLIBRARIES = liboctgui.la

@@ -216,9 +216,17 @@ DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 ## Rule to build a DEF file from a .cc file
+##
+## FIXME -- This rule should be fixed to avoid using special
+## flags like JAVA_CPPFLAGS for every file.  How could it be written
+## so that it uses octave_value_liboctave_value_la_CPPFLAGS when
+## generating the octave-value/*.df files?
+## 
+## FIXME -- Shouldn't the build stop if CPP fails here?
 %.df: %.cc
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
 	mv $@-t $@
 
@@ -283,10 +291,10 @@ endif
 if AMCOND_BUILD_DOCS
 install-data-hook: install-oct install-built-in-docstrings
 else
-install-data-hook: install-oct
+install-data-hook: install-oct uninstall-built-in-docstrings
 endif
 
-uninstall-local: uninstall-oct
+uninstall-local: uninstall-oct uninstall-built-in-docstrings
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
@@ -322,8 +330,11 @@ if AMCOND_BUILD_DOCS
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
 	$(INSTALL_DATA) DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+
+uninstall-built-in-docstrings:
+	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
 endif
-.PHONY: install-built-in-docstrings
+.PHONY: install-built-in-docstrings uninstall-built-in-docstrings
 
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \

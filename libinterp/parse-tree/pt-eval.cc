@@ -132,6 +132,13 @@ tree_evaluator::reset_debug_state (void)
   dbstep_flag = 0;
 }
 
+bool
+tree_evaluator::statement_printing_enabled (void)
+{
+  return ! (Vsilent_functions && (statement_context == function
+                                  || statement_context == script));
+}
+
 static inline void
 do_global_init (tree_decl_elt& elt)
 {
@@ -307,7 +314,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   octave_value rhs = expr->rvalue1 ();
 
 #if HAVE_LLVM
-  if (Venable_jit_compiler && tree_jit::execute (cmd, rhs))
+  if (tree_jit::execute (cmd, rhs))
     return;
 #endif
 
@@ -723,10 +730,6 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               if (debug_mode)
                 do_breakpoint (expr->is_breakpoint ());
 
-              if ((statement_context == function || statement_context == script)
-                  && Vsilent_functions)
-                expr->set_print_flag (false);
-
               // FIXME -- maybe all of this should be packaged in
               // one virtual function that returns a flag saying whether
               // or not the expression will take care of binding ans and
@@ -750,7 +753,8 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               octave_value tmp_result = expr->rvalue1 (0);
 
               if (do_bind_ans && ! (error_state || tmp_result.is_undefined ()))
-                bind_ans (tmp_result, expr->print_result ());
+                bind_ans (tmp_result, expr->print_result ()
+                          && statement_printing_enabled ());
 
               //              if (tmp_result.is_defined ())
               //                result_values(0) = tmp_result;
@@ -1050,7 +1054,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
     return;
 
 #if HAVE_LLVM
-  if (Venable_jit_compiler && tree_jit::execute (cmd))
+  if (tree_jit::execute (cmd))
     return;
 #endif
 
@@ -1142,22 +1146,6 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
 {
   bool break_on_this_statement = false;
 
-  // Don't decrement break flag unless we are in the same frame as we
-  // were when we saw the "dbstep N" command.
-
-  if (dbstep_flag > 1)
-    {
-      if (octave_call_stack::current_frame () == current_frame)
-        {
-          // Don't allow dbstep N to step past end of current frame.
-
-          if (is_end_of_fcn_or_script)
-            dbstep_flag = 1;
-          else
-            dbstep_flag--;
-        }
-    }
-
   if (octave_debug_on_interrupt_state)
     {
       break_on_this_statement = true;
@@ -1174,17 +1162,29 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
 
       current_frame = octave_call_stack::current_frame ();
     }
-  else if (dbstep_flag == 1)
+  else if (dbstep_flag > 0)
     {
       if (octave_call_stack::current_frame () == current_frame)
         {
-          // We get here if we are doing a "dbstep" or a "dbstep N"
-          // and the count has reached 1 and we are in the current
-          // debugging frame.
+          if (dbstep_flag == 1 || is_end_of_fcn_or_script)
+            {
+              // We get here if we are doing a "dbstep" or a "dbstep N" and the
+              // count has reached 1 so that we must stop and return to debug
+              // prompt.  Alternatively, "dbstep N" has been used but the end
+              // of the frame has been reached so we stop at the last line and
+              // return to prompt.
 
-          break_on_this_statement = true;
+              break_on_this_statement = true;
 
-          dbstep_flag = 0;
+              dbstep_flag = 0;
+            }
+          else
+            {
+              // Executing "dbstep N".  Decrease N by one and continue.
+
+              dbstep_flag--;
+            }
+
         }
     }
   else if (dbstep_flag == -1)

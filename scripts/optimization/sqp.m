@@ -748,7 +748,7 @@ endfunction
 %!
 %! obj_opt = 0.0539498477702739;
 %!
-%! assert (x, x_opt, 5*sqrt (eps));
+%! assert (x, x_opt, 8*sqrt (eps));
 %! assert (obj, obj_opt, sqrt (eps));
 
 %% Test input validation

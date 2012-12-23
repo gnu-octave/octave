@@ -77,6 +77,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "version.h"
 
+#ifndef SHELL_PATH
+#define SHELL_PATH "/bin/sh"
+#endif
+
 void (*octave_exit) (int) = ::exit;
 
 // TRUE means the quit() call is allowed.
@@ -950,7 +954,7 @@ command shell that is started to run the command.\n\
                   // FIXME -- should probably replace this
                   // call with something portable.
 
-                  execl ("/bin/sh", "sh", "-c", cmd_str.c_str (),
+                  execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
                          static_cast<void *> (0));
 
                   panic_impossible ();
@@ -1346,8 +1350,9 @@ specified option.\n\
       { false, "QRUPDATE_CPPFLAGS", OCTAVE_CONF_QRUPDATE_CPPFLAGS },
       { false, "QRUPDATE_LDFLAGS", OCTAVE_CONF_QRUPDATE_LDFLAGS },
       { false, "QRUPDATE_LIBS", OCTAVE_CONF_QRUPDATE_LIBS },
-      { false, "QT_INCDIR", OCTAVE_CONF_QT_INCDIR },
-      { false, "QT_LIBDIR", OCTAVE_CONF_QT_LIBDIR },
+      { false, "QT_CPPFLAGS", OCTAVE_CONF_QT_CPPFLAGS },
+      { false, "QT_LDFLAGS", OCTAVE_CONF_QT_LDFLAGS },
+      { false, "QT_LIBS", OCTAVE_CONF_QT_LIBS },
       { false, "RANLIB", OCTAVE_CONF_RANLIB },
       { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
       { false, "READLINE_LIBS", OCTAVE_CONF_READLINE_LIBS },

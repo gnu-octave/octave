@@ -173,8 +173,15 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       __ret1 = "";
       __ret2 = -1;
     else
-      if (exist (__name) == 3)
+      ftype = exist (__name);
+      if (ftype == 3)
         fprintf (__fid, "%s%s source code with tests for dynamically linked function not found\n", __signal_empty, __name);
+      elseif (ftype == 5)
+        fprintf (__fid, "%s%s is a built-in function\n", __signal_empty, __name);
+      elseif (any (strcmp (__operators__ (), __name)))
+        fprintf (__fid, "%s%s is an operator\n", __signal_empty, __name);
+      elseif (any (strcmp (__keywords__ (), __name)))
+        fprintf (__fid, "%s%s is a keyword\n", __signal_empty, __name);
       else
         fprintf (__fid, "%s%s does not exist in path\n", __signal_empty, __name);
       endif

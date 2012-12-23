@@ -19,13 +19,19 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
+## @deftypefnx {Function File} {} image (@dots{}, "@var{property}", @var{value}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} image (@dots{})
-## Display a matrix as a color image.
+## Display a matrix as an indexed color image.
 ##
 ## The elements of @var{img} are indices into the current colormap.
-## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}.  If you are using gnuplot 4.1 or earlier, these
-## variables are ignored.
+## @var{x} and @var{y} are optional 2-element vectors, @w{@code{[min, max]}},
+## which specify the range for the axis labels.  If a range is specified as
+## @w{@code{[max, min]}} then the image will be reversed along that axis.  For
+## convenience, @var{x} and @var{y} may be specified as N-element vectors
+## matching the length of the data in @var{img}.  However, only the first and
+## last elements will be used to determine the axis limits.
+## @strong{Warning:} @var{x} and @var{y} are ignored when using gnuplot 4.0
+## or earlier.
 ##
 ## The optional return value @var{h} is a graphics handle to the image.
 ##
@@ -36,7 +42,7 @@
 ## @code{ydir} property to "reverse".  This has implications whenever
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
-## using, for example, @code{flipud (ydata,1)}.
+## using, for example, @code{flipud (ydata)}.
 ##
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
@@ -45,49 +51,38 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function retval = image (varargin)
+function h = image (varargin)
 
   [ax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
 
-  firstnonnumeric = Inf;
-  for i = 1 : nargin
-    if (! isnumeric (varargin{i}))
-      firstnonnumeric = i;
-      break;
-    endif
-  endfor
-
-  if (nargin == 0 || firstnonnumeric == 1)
+  chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
+  
+  if (nargin == 0 || chararg == 1)
     img = imread ("default.img");
     x = y = [];
-  elseif (nargin == 1 || firstnonnumeric == 2)
+  elseif (nargin == 1 || chararg == 2)
     img = varargin{1};
     x = y = [];
-  elseif (nargin == 2 || firstnonnumeric == 3)
+  elseif (nargin == 2 || chararg == 3)
     print_usage ();
   else
     x = varargin{1};
     y = varargin{2};
     img = varargin{3};
-    firstnonnumeric = 4;
-  endif
-
-  if (iscomplex (img))
-    warning ("image: only showing real part of complex image");
-    img = real (img);
+    chararg = 4;
   endif
 
   oldax = gca ();
   unwind_protect
     axes (ax);
-    h = __img__ (x, y, img, varargin {firstnonnumeric:end});
+    htmp = __img__ (x, y, img, varargin{chararg:end});
     set (ax, "layer", "top");
   unwind_protect_cleanup
     axes (oldax);
   end_unwind_protect
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction
@@ -110,6 +105,13 @@ function h = __img__ (x, y, img, varargin)
     error ("__img__: matrix is empty");
   endif
 
+  ## FIXME: Hack for integer formats which use zero-based indexing
+  ##        Hack favors correctness of display over size of image in memory.
+  ##        True fix will be done in C++ code. 
+  if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
+    img = single (img) + 1;
+  endif
+
   if (isempty (x))
     x = [1, columns(img)];
   endif
@@ -118,32 +120,36 @@ function h = __img__ (x, y, img, varargin)
     y = [1, rows(img)];
   endif
 
-  xdata = [x(1), x(end)];
-  ydata = [y(1), y(end)];
+  xdata = x([1, end]);
+  ydata = y([1, end]);
 
-  dx = diff (x);
-  dy = diff (y);
-  dx = std (dx) / mean (abs (dx));
-  dy = std (dy) / mean (abs (dy));
-  tol = 100*eps;
-  if (any (dx > tol) || any (dy > tol))
-    warning ("Image does not map to non-linearly spaced coordinates");
+  if (numel (x) > 2 && numel (y) > 2)
+    ## Test data for non-linear spacing which is unsupported
+    ## FIXME: Need a better check on linearity
+    tol = 100*eps;
+    dx = diff (x);
+    dy = diff (y);
+    dx = std (dx) / mean (abs (dx));
+    dy = std (dy) / mean (abs (dy));
+    if (any (dx > tol) || any (dy > tol))
+      warning ("image: non-linear X, Y data is ignored.  IMG will be shown with linear mapping");
+    endif
   endif
 
   ca = gca ();
 
-  tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
-                    "cdatamapping", "direct", varargin {:});
+  htmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
+                       "cdatamapping", "direct", varargin {:});
 
-  px = __image_pixel_size__ (tmp);
+  px = __image_pixel_size__ (htmp);
 
   if (xdata(2) < xdata(1))
-    xdata = xdata(2:-1:1);
+    xdata = fliplr (xdata);
   elseif (xdata(2) == xdata(1))
     xdata = xdata(1) + [0, columns(img)-1];
   endif
   if (ydata(2) < ydata(1))
-    ydata = ydata(2:-1:1);
+    ydata = fliplr (ydata);
   elseif (ydata(2) == ydata(1))
     ydata = ydata(1) + [0, rows(img)-1];
   endif
@@ -160,9 +166,9 @@ function h = __img__ (x, y, img, varargin)
 
   if (ndims (img) == 3)
     if (isinteger (img))
-      c = class (img);
-      mn = intmin (c);
-      mx = intmax (c);
+      cls = class (img);
+      mn = intmin (cls);
+      mx = intmax (cls);
       set (ca, "clim", double ([mn, mx]));
     endif
   endif
@@ -175,7 +181,7 @@ function h = __img__ (x, y, img, varargin)
   endif
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction
@@ -183,66 +189,21 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ("default");
+%! colormap (jet (21));
 %! img = 1 ./ hilb (11);
-%! x = -5:5;
-%! y = x;
+%! x = y = -5:5;
 %! subplot (2,2,1);
-%!  h = image (abs(x), abs(y), img);
-%!  set (h, "cdatamapping", "scaled");
-%!  ylabel ("limits = [4.5, 15.5]");
-%!  title ("image (abs(x), abs(y), img)");
+%!  h = image (x, y, img);
+%!  ylabel ("limits = [-5.5, 5.5]");
+%!  title ("image (x, y, img)");
 %! subplot (2,2,2);
 %!  h = image (-x, y, img);
-%!  set (h, "cdatamapping", "scaled");
 %!  title ("image (-x, y, img)");
 %! subplot (2,2,3);
 %!  h = image (x, -y, img);
-%!  set (h, "cdatamapping", "scaled");
 %!  title ("image (x, -y, img)");
 %!  ylabel ("limits = [-5.5, 5.5]");
 %! subplot (2,2,4);
 %!  h = image (-x, -y, img);
-%!  set (h, "cdatamapping", "scaled");
 %!  title ("image (-x, -y, img)");
-
-%!demo
-%! clf;
-%! colormap ("default");
-%! g = 0.1:0.1:10;
-%! h = g'*g;
-%! imagesc (g, g, sin (h));
-%! hold on;
-%! imagesc (g, g+12, cos (h/2));
-%! axis ([0 10 0 22]);
-%! hold off;
-%! title ("two consecutive images");
-
-%!demo
-%! clf;
-%! colormap ("default");
-%! g = 0.1:0.1:10;
-%! h = g'*g;
-%! imagesc (g, g, sin (h));
-%! hold all;
-%! plot (g, 11.0 * ones (size (g)));
-%! imagesc (g, g+12, cos (h/2));
-%! axis ([0 10 0 22]);
-%! hold off;
-%! title ("image, line, image");
-
-%!demo
-%! clf;
-%! colormap ("default");
-%! g = 0.1:0.1:10;
-%! h = g'*g;
-%! plot (g, 10.5 * ones (size (g)));
-%! hold all;
-%! imagesc (g, g, sin (h));
-%! plot (g, 11.0 * ones (size (g)));
-%! imagesc (g, g+12, cos (h/2));
-%! plot (g, 11.5 * ones (size (g)));
-%! axis ([0 10 0 22]);
-%! hold off;
-%! title ("line, image, line, image, line");
 

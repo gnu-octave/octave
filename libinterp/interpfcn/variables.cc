@@ -282,7 +282,7 @@ generate_struct_completions (const std::string& text,
 
           frame.run ();
 
-          if (tmp.is_defined () && tmp.is_map ())
+          if (tmp.is_defined () && (tmp.is_map () || tmp.is_java ()))
             names = tmp.map_keys ();
         }
     }

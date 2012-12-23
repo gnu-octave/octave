@@ -41,7 +41,7 @@ function map = hsv (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("hsv: argument must be a scalar");
+      error ("hsv: N must be a scalar");
     endif
   else
     print_usage ();

@@ -177,6 +177,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Object Oriented Programming::            
 * GUI Development::            
 * System Utilities::            
+* Java Interface:: 
 * Packages:: 
 * Dynamically Linked Functions::
 * Test and Demo Functions::
@@ -366,15 +367,15 @@ Evaluation
 
 Statements
 
-* The @code{if} Statement::            
-* The @code{switch} Statement::        
-* The @code{while} Statement::         
-* The @code{do-until} Statement::      
-* The @code{for} Statement::           
-* The @code{break} Statement::         
-* The @code{continue} Statement::      
-* The @code{unwind_protect} Statement::  
-* The @code{try} Statement::           
+* The if Statement::            
+* The switch Statement::        
+* The while Statement::         
+* The do-until Statement::      
+* The for Statement::           
+* The break Statement::         
+* The continue Statement::      
+* The unwind_protect Statement::  
+* The try Statement::           
 * Continuation Lines::          
 
 The @code{switch} Statement
@@ -909,6 +910,7 @@ Grammar and Parser
 @include oop.texi
 @include gui.texi
 @include system.texi
+@include java.texi
 @include package.texi
 
 @c maybe add again later, if anyone every writes any really interesting

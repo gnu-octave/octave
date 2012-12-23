@@ -85,7 +85,8 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   else if (auto_add)
     retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
-    error ("structure has no member '%s'", nm.c_str ());
+    error_with_id ("Octave:invalid-indexing", 
+                   "structure has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -114,6 +115,22 @@ static void
 gripe_failed_assignment (void)
 {
   error ("assignment to structure element failed");
+}
+
+static void
+maybe_warn_invalid_field_name (const std::string& key, const char *who)
+{
+  if (! valid_identifier (key))
+    {
+      if (who)
+        warning_with_id ("Octave:matlab-incompatible",
+                         "%s: invalid structure field name '%s'",
+                         who, key.c_str ());
+      else
+        warning_with_id ("Octave:matlab-incompatible",
+                         "invalid structure field name '%s'",
+                         key.c_str ());
+    }
 }
 
 octave_value_list
@@ -305,6 +322,11 @@ octave_struct::subsasgn (const std::string& type,
 
                 std::string key = key_idx(0).string_value ();
 
+                maybe_warn_invalid_field_name (key, "subsasgn");
+
+                if (error_state)
+                  return retval;
+
                 std::list<octave_value_list> next_idx (idx);
 
                 // We handled two index elements, so subsasgn to
@@ -362,6 +384,11 @@ octave_struct::subsasgn (const std::string& type,
             assert (key_idx.length () == 1);
 
             std::string key = key_idx(0).string_value ();
+
+            maybe_warn_invalid_field_name (key, "subsasgn");
+
+            if (error_state)
+              return retval;
 
             std::list<octave_value_list> next_idx (idx);
 
@@ -430,6 +457,11 @@ octave_struct::subsasgn (const std::string& type,
                 assert (key_idx.length () == 1);
 
                 std::string key = key_idx(0).string_value ();
+
+                maybe_warn_invalid_field_name (key, "subsasgn");
+
+                if (error_state)
+                  return retval;
 
                 if (! error_state)
                   {
@@ -529,6 +561,11 @@ octave_struct::subsasgn (const std::string& type,
             assert (key_idx.length () == 1);
 
             std::string key = key_idx(0).string_value ();
+
+            maybe_warn_invalid_field_name (key, "subsasgn");
+
+            if (error_state)
+              return retval;
 
             if (t_rhs.is_cs_list ())
               {
@@ -1093,14 +1130,22 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct", "stru
 octave_value
 octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
+  octave_value retval;
+
   assert (idx.length () == 1);
 
   std::string nm = idx(0).string_value ();
 
-  octave_value retval = map.getfield (nm);
+  maybe_warn_invalid_field_name (nm, "subsref");
+
+  if (error_state)
+    return retval;
+
+  retval = map.getfield (nm);
 
   if (! auto_add && retval.is_undefined ())
-    error ("structure has no member '%s'", nm.c_str ());
+    error_with_id ("Octave:invalid-indexing",
+                   "structure has no member '%s'", nm.c_str ());
 
   return retval;
 }
@@ -1217,6 +1262,11 @@ octave_scalar_struct::subsasgn (const std::string& type,
       assert (key_idx.length () == 1);
 
       std::string key = key_idx(0).string_value ();
+
+      maybe_warn_invalid_field_name (key, "subsasgn");
+
+      if (error_state)
+        return retval;
 
       if (n > 1)
         {
@@ -1699,9 +1749,12 @@ octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) c
 
 DEFUN (struct, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} struct (\"field\", @var{value}, \"field\", @var{value}, @dots{})\n\
+@deftypefn {Built-in Function} {} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
 \n\
-Create a structure and initialize its value.\n\
+Create a scalar or array structure and initialize its values. The\n\
+@var{field1}, @var{field2}, @dots{} variables are strings giving the\n\
+names of the fields and the @var{value1}, @var{value2}, @dots{}\n\
+variables can be any type.\n\
 \n\
 If the values are cell arrays, create a structure array and initialize\n\
 its values.  The dimensions of each cell array of values must match.\n\
@@ -1710,6 +1763,41 @@ the entire array.  If the cells are empty, create an empty structure\n\
 array with the specified field names.\n\
 \n\
 If the argument is an object, return the underlying struct.\n\
+\n\
+Observe that the syntax is optimized for struct @strong{arrays}. Consider the\n\
+following examples:\n\
+\n\
+@example\n\
+@group\n\
+struct (\"foo\", 1)\n\
+  @result{} scalar structure containing the fields:\n\
+    foo =  1\n\
+\n\
+struct (\"foo\", @{@})\n\
+  @result{} 0x0 struct array containing the fields:\n\
+    foo\n\
+\n\
+struct (\"foo\", @{ @{@} @})\n\
+  @result{} scalar structure containing the fields:\n\
+    foo = @{@}(0x0)\n\
+\n\
+struct (\"foo\", @{1, 2, 3@})\n\
+  @result{} 1x3 struct array containing the fields:\n\
+    foo\n\
+\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+The first case is an ordinary scalar struct, one field, one value. The\n\
+second produces an empty struct array with one field and no values, since\n\
+s being passed an empty cell array of struct array values. When the value is\n\
+a cell array containing a single entry, this becomes a scalar struct with\n\
+that single entry as the value of the field. That single entry happens\n\
+to be an empty cell array.\n\
+\n\
+Finally, if the value is a non-scalar cell array, then @code{struct}\n\
+produces a struct @strong{array}.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1805,11 +1893,10 @@ If the argument is an object, return the underlying struct.\n\
       if (error_state)
         return retval;
 
-      if (! valid_identifier (key))
-        {
-          error ("struct: invalid structure field name '%s'", key.c_str ());
-          return retval;
-        }
+      maybe_warn_invalid_field_name (key, "struct");
+
+      if (error_state)
+        return retval;
 
       // Value may be v, { v }, or { v1, v2, ... }
       // In the first two cases, we need to create a cell array of
@@ -1876,48 +1963,32 @@ Return true if @var{x} is a structure or a structure array.\n\
   return retval;
 }
 
-DEFUN (fieldnames, args, ,
+DEFUN (__fieldnames__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fieldnames (@var{struct})\n\
-Return a cell array of strings naming the elements of the structure\n\
-@var{struct}.  It is an error to call @code{fieldnames} with an\n\
-argument that is not a structure.\n\
+@deftypefn  {Built-in Function} {} __fieldnames__ (@var{struct})\n\
+@deftypefnx {Built-in Function} {} __fieldnames__ (@var{obj})\n\
+Internal function.\n\
+\n\
+Implements @code{fieldnames()} for structures and Octave objects.\n\
+@seealso{fieldnames}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  int nargin = args.length ();
+  // Input validation has already been done in fieldnames.m.
+  octave_value arg = args(0);
 
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
+  octave_map m = arg.map_value ();
 
-      if (arg.is_map () || arg.is_object ())
-        {
-          octave_map m = arg.map_value ();
+  string_vector keys = m.fieldnames ();
 
-          string_vector keys = m.fieldnames ();
-
-          if (keys.length () == 0)
-            retval = Cell (0, 1);
-          else
-            retval = Cell (keys);
-        }
-      else
-        gripe_wrong_type_arg ("fieldnames", args(0));
-    }
+  if (keys.length () == 0)
+    retval = Cell (0, 1);
   else
-    print_usage ();
+    retval = Cell (keys);
 
   return retval;
 }
-
-/*
-## test preservation of fieldname order
-%!test
-%! x(3).d=1;  x(2).a=2; x(1).b=3;  x(2).c=3;
-%! assert (fieldnames (x), {"d"; "a"; "b"; "c"});
-*/
 
 DEFUN (isfield, args, ,
   "-*- texinfo -*-\n\

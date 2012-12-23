@@ -703,5 +703,14 @@ currently installed data types.\n\
 %!assert (typeinfo (""), "null_string")
 %!assert (typeinfo (''), "null_sq_string")
 
+%!test
+%! cvar = onCleanup (@() "");
+%! assert (typeinfo (cvar), "onCleanup");
+
+%!testif HAVE_JAVA
+%! x = javaObject ("java.lang.StringBuffer");
+%! assert (typeinfo (x), "octave_java");
+
+## Test input validation
 %!error typeinfo ("foo", 1)
 */

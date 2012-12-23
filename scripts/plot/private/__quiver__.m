@@ -211,12 +211,19 @@ function hg = __quiver__ (varargin)
 
     xtmp = x + uu(:) .* (1 - arrowsize);
     ytmp = y + vv(:) .* (1 - arrowsize);
-    xarrw1 = xtmp + (y - yend) * arrowsize / 3;
-    xarrw2 = xtmp - (y - yend) * arrowsize / 3;
-    yarrw1 = ytmp - (x - xend) * arrowsize / 3;
-    yarrw2 = ytmp + (x - xend) * arrowsize / 3;
+
     if (is3d)
+      xarrw1 = xtmp + sqrt((y - yend).^2 + (z - zend).^2) * arrowsize / 3;
+      xarrw2 = xtmp - sqrt((y - yend).^2 + (z - zend).^2) * arrowsize / 3;
+      yarrw1 = ytmp - sqrt((x - xend).^2 + (z - zend).^2) * arrowsize / 3;
+      yarrw2 = ytmp + sqrt((x - xend).^2 + (z - zend).^2) * arrowsize / 3;
+
       zarrw1 = zarrw2 = zend - ww(:) * arrowsize;
+    else
+      xarrw1 = xtmp + (y - yend) * arrowsize / 3;
+      xarrw2 = xtmp - (y - yend) * arrowsize / 3;
+      yarrw1 = ytmp - (x - xend) * arrowsize / 3;
+      yarrw2 = ytmp + (x - xend) * arrowsize / 3;
     endif
 
     if (have_line_spec)

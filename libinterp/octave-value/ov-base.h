@@ -365,6 +365,8 @@ public:
 
   virtual bool is_object (void) const { return false; }
 
+  virtual bool is_java (void) const { return false; }
+
   virtual bool is_cs_list (void) const { return false; }
 
   virtual bool is_magic_colon (void) const { return false; }
@@ -689,6 +691,8 @@ public:
       umap_erfcinv,
       umap_erfc,
       umap_erfcx,
+      umap_erfi,
+      umap_dawson,
       umap_exp,
       umap_expm1,
       umap_finite,

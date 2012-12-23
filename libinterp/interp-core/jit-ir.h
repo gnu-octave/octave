@@ -169,6 +169,8 @@ public:
 
   void insert_before (jit_block *loc, jit_block *ablock);
 
+  void label (void);
+
   std::ostream& print (std::ostream& os, const std::string& header) const;
 
   std::ostream& print_dom (std::ostream& os) const;
@@ -654,19 +656,7 @@ public:
     label (mvisit_count, number);
   }
 
-  void label (size_t avisit_count, size_t& number)
-  {
-    if (visited (avisit_count))
-      return;
-
-    for (jit_use *use = first_use (); use; use = use->next ())
-      {
-        jit_block *pred = use->user_parent ();
-        pred->label (avisit_count, number);
-      }
-
-    mid = number++;
-  }
+  void label (size_t avisit_count, size_t& number);
 
   // See for idom computation algorithm
   // Cooper, Keith D.; Harvey, Timothy J; and Kennedy, Ken (2001).
@@ -704,26 +694,7 @@ public:
   // call pop_varaible on all instructions
   void pop_all (void);
 
-  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
-  {
-    print_indent (os, indent);
-    short_print (os) << ":        %pred = ";
-    for (jit_use *use = first_use (); use; use = use->next ())
-      {
-        jit_block *pred = use->user_parent ();
-        os << *pred;
-        if (use->next ())
-          os << ", ";
-      }
-    os << std::endl;
-
-    for (const_iterator iter = begin (); iter != end (); ++iter)
-      {
-        jit_instruction *instr = *iter;
-        instr->print (os, indent + 1) << std::endl;
-      }
-    return os;
-  }
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const;
 
   jit_block *maybe_split (jit_factory& factory, jit_block_list& blocks,
                           jit_block *asuccessor);
@@ -742,6 +713,8 @@ public:
     os << mname;
     if (mid != NO_ID)
       os << mid;
+    else
+      os << "!";
     return os;
   }
 
@@ -1203,10 +1176,7 @@ public:
     return moperation.overload (argument_types ());
   }
 
-  virtual bool needs_release (void) const
-  {
-    return type () && jit_typeinfo::get_release (type ()).valid ();
-  }
+  virtual bool needs_release (void) const;
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
@@ -1233,33 +1203,53 @@ private:
 };
 
 // FIXME: This is just ugly...
-// checks error_state, if error_state is false then goto the normal branche,
+// checks error_state, if error_state is false then goto the normal branch,
 // otherwise goto the error branch
 class
 jit_error_check : public jit_terminator
 {
 public:
-  jit_error_check (jit_call *acheck_for, jit_block *normal, jit_block *error)
-    : jit_terminator (2, error, normal, acheck_for) {}
+  // Which variable is the error check for?
+  enum variable
+    {
+      var_error_state,
+      var_interrupt
+    };
+
+  static std::string variable_to_string (variable v);
+
+  jit_error_check (variable var, jit_call *acheck_for, jit_block *normal,
+                   jit_block *error)
+    : jit_terminator (2, error, normal, acheck_for), mvariable (var) {}
+
+  jit_error_check (variable var, jit_block *normal, jit_block *error)
+    : jit_terminator (2, error, normal), mvariable (var) {}
+
+  variable check_variable (void) const { return mvariable; }
+
+  bool has_check_for (void) const
+  {
+    return argument_count () == 3;
+  }
 
   jit_call *check_for (void) const
   {
+    assert (has_check_for ());
     return static_cast<jit_call *> (argument (2));
   }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
-  {
-    print_indent (os, indent) << "error_check " << *check_for () << ", ";
-    print_successor (os, 1) << ", ";
-    return print_successor (os, 0);
-  }
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const;
 
   JIT_VALUE_ACCEPT;
 protected:
   virtual bool check_alive (size_t idx) const
   {
+    if (! has_check_for ())
+      return true;
     return idx == 1 ? true : check_for ()->can_error ();
   }
+private:
+  variable mvariable;
 };
 
 // for now only handles the 1D case

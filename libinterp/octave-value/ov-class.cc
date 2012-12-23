@@ -45,6 +45,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "oct-lvalue.h"
 #include "ov-class.h"
+#ifdef HAVE_JAVA
+#include "ov-java.h"
+#endif
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
@@ -1921,13 +1924,14 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
 
 DEFUN (class, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} class (@var{expr})\n\
-@deftypefnx {Built-in Function} {} class (@var{s}, @var{id})\n\
-@deftypefnx {Built-in Function} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
-Return the class of the expression @var{expr} or create a class with\n\
+@deftypefn  {Function File} {@var{classname} =} class (@var{obj})\n\
+@deftypefnx {Function File} {} class (@var{s}, @var{id})\n\
+@deftypefnx {Function File} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
+Return the class of the object @var{obj} or create a class with\n\
 fields from structure @var{s} and name (string) @var{id}.  Additional\n\
 arguments name a list of parent classes from which the new class is\n\
 derived.\n\
+@seealso{typeinfo, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1937,9 +1941,11 @@ derived.\n\
   if (nargin == 0)
     print_usage ();
   else if (nargin == 1)
+    // Called for class of object
     retval = args(0).class_name ();
   else
     {
+      // Called as class constructor
       octave_function *fcn = octave_call_stack::caller ();
 
       std::string id = args(1).string_value ();
@@ -1995,6 +2001,18 @@ derived.\n\
 
   return retval;
 }
+
+/*
+%!assert (class (1.1), "double");
+%!assert (class (single (1.1)), "single");
+%!assert (class (uint8 (1)), "uint8");
+%!testif HAVE_JAVA
+%! jobj = javaObject ("java.lang.StringBuffer");
+%! assert (class (jobj), "java.lang.StringBuffer");
+
+%% Test Input Validation
+%!error class ()
+*/
 
 DEFUN (__isa_parent__, args, ,
   "-*- texinfo -*-\n\
@@ -2103,47 +2121,33 @@ is a method of this class.\n\
   return retval;
 }
 
-DEFUN (methods, args, nargout,
+DEFUN (__methods__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} methods (@var{x})\n\
-@deftypefnx {Built-in Function} {} methods (\"classname\")\n\
-Return a cell array containing the names of the methods for the\n\
-object @var{x} or the named class.\n\
+@deftypefn  {Built-in Function} {} __methods__ (@var{x})\n\
+@deftypefnx {Built-in Function} {} __methods__ (\"classname\")\n\
+Internal function.\n\
+\n\
+Implements @code{methods} for Octave class objects and classnames.\n\
+@seealso{methods}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  // Input validation has already been done in methods.m.
+  octave_value arg = args(0);
+
+  std::string class_name;
+
+  if (arg.is_object ())
+    class_name = arg.class_name ();
+  else if (arg.is_string ())
+    class_name = arg.string_value ();
+
+  if (! error_state)
     {
-      octave_value arg = args(0);
-
-      std::string class_name;
-
-      if (arg.is_object ())
-        class_name = arg.class_name ();
-      else if (arg.is_string ())
-        class_name = arg.string_value ();
-      else
-        error ("methods: expecting object or class name as argument");
-
-      if (! error_state)
-        {
-          string_vector sv = load_path::methods (class_name);
-
-          if (nargout == 0)
-            {
-              octave_stdout << "Methods for class " << class_name << ":\n\n";
-
-              sv.list_in_columns (octave_stdout);
-
-              octave_stdout << std::endl;
-            }
-          else
-            retval = Cell (sv);
-        }
+      string_vector sv = load_path::methods (class_name);
+      retval = Cell (sv);
     }
-  else
-    print_usage ();
 
   return retval;
 }

@@ -633,8 +633,6 @@ jit_function::call (llvm::IRBuilderD& builder,
     throw jit_fail_exception ("Call not implemented");
 
   assert (in_args.size () == args.size ());
-  llvm::Function *stacksave
-    = llvm::Intrinsic::getDeclaration (module, llvm::Intrinsic::stacksave);
   llvm::SmallVector<llvm::Value *, 10> llvm_args;
   llvm_args.reserve (in_args.size () + sret ());
 
@@ -1112,6 +1110,15 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   engine->addGlobalMapping (lerror_state,
                             reinterpret_cast<void *> (&error_state));
 
+  // sig_atomic_type is going to be some sort of integer
+  sig_atomic_type = llvm::Type::getIntNTy (context, sizeof(sig_atomic_t) * 8);
+  loctave_interrupt_state
+    = new llvm::GlobalVariable (*module, sig_atomic_type, false,
+                                llvm::GlobalValue::ExternalLinkage, 0,
+                                "octave_interrupt_state");
+  engine->addGlobalMapping (loctave_interrupt_state,
+                            reinterpret_cast<void *> (&octave_interrupt_state));
+
   // generic call function
   {
     jit_type *int_t = intN (sizeof (octave_builtin::fcn) * 8);
@@ -1322,12 +1329,29 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *one = builder.getInt32 (1);
     llvm::Value *two = builder.getInt32 (2);
     llvm::Value *three = builder.getInt32 (3);
+    llvm::Value *fzero = llvm::ConstantFP::get (scalar_t, 0);
+
+    // we are really dealing with a complex number OR a scalar. That is, if the
+    // complex component is 0, we really have a scalar. This matters in
+    // 0+0i * NaN
+    llvm::BasicBlock *complex_mul = fn.new_block ("complex_mul");
+    llvm::BasicBlock *real_mul = fn.new_block ("real_mul");
+    llvm::BasicBlock *ret_block = fn.new_block ("ret");
+    llvm::Value *temp = builder.CreateFCmpUEQ (complex_imag (lhs), fzero);
+    llvm::Value *temp2 = builder.CreateFCmpUEQ (complex_imag (rhs), fzero);
+    temp = builder.CreateAnd (temp, temp2);
+    builder.CreateCondBr (temp, real_mul, complex_mul);
+
+    builder.SetInsertPoint(real_mul);
+    temp = builder.CreateFMul (complex_real (lhs), complex_real (rhs));
+    llvm::Value *real_branch_ret = complex_new (temp, fzero);
+    builder.CreateBr (ret_block);
 
     llvm::Type *vec4 = llvm::VectorType::get (scalar_t, 4);
     llvm::Value *mlhs = llvm::UndefValue::get (vec4);
     llvm::Value *mrhs = mlhs;
-
-    llvm::Value *temp = complex_real (lhs);
+    builder.SetInsertPoint (complex_mul);
+    temp = complex_real (lhs);
     mlhs = builder.CreateInsertElement (mlhs, temp, zero);
     mlhs = builder.CreateInsertElement (mlhs, temp, two);
     temp = complex_imag (lhs);
@@ -1349,7 +1373,15 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     tlhs = builder.CreateExtractElement (mres, two);
     trhs = builder.CreateExtractElement (mres, three);
     llvm::Value *ret_imag = builder.CreateFAdd (tlhs, trhs);
-    fn.do_return (builder, complex_new (ret_real, ret_imag));
+    llvm::Value *complex_branch_ret = complex_new (ret_real, ret_imag);
+    builder.CreateBr (ret_block);
+
+    builder.SetInsertPoint (ret_block);
+    llvm::PHINode *merge = llvm::PHINode::Create(complex_t, 2);
+    builder.Insert (merge);
+    merge->addIncoming (real_branch_ret, real_mul);
+    merge->addIncoming (complex_branch_ret, complex_mul);
+    fn.do_return (builder, merge);
   }
 
   binary_ops[octave_value::op_mul].add_overload (fn);
@@ -1381,10 +1413,25 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
+    llvm::BasicBlock *complex_mul = fn.new_block ("complex_mul");
+    llvm::BasicBlock *scalar_mul = fn.new_block ("scalar_mul");
+
+    llvm::Value *fzero = llvm::ConstantFP::get (scalar_t, 0);
     llvm::Value *lhs = fn.argument (builder, 0);
-    llvm::Value *tlhs = complex_new (lhs, lhs);
     llvm::Value *rhs = fn.argument (builder, 1);
-    fn.do_return (builder, builder.CreateFMul (tlhs, rhs));
+
+    llvm::Value *cmp = builder.CreateFCmpUEQ (complex_imag (rhs), fzero);
+    builder.CreateCondBr (cmp, scalar_mul, complex_mul);
+
+    builder.SetInsertPoint (scalar_mul);
+    llvm::Value *temp = complex_real (rhs);
+    temp = builder.CreateFMul (lhs, temp);
+    fn.do_return (builder, complex_new (temp, fzero), false);
+
+
+    builder.SetInsertPoint (complex_mul);
+    temp = complex_new (lhs, lhs);
+    fn.do_return (builder, builder.CreateFMul (temp, rhs));
   }
   binary_ops[octave_value::op_mul].add_overload (fn);
   binary_ops[octave_value::op_el_mul].add_overload (fn);
@@ -1761,7 +1808,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   casts[scalar->type_id ()].stash_name ("(scalar)");
   casts[complex->type_id ()].stash_name ("(complex)");
   casts[matrix->type_id ()].stash_name ("(matrix)");
-  casts[any->type_id ()].stash_name ("(range)");
+  casts[range->type_id ()].stash_name ("(range)");
 
   // cast any <- matrix
   fn = create_function (jit_convention::external, "octave_jit_cast_any_matrix",
@@ -2040,6 +2087,14 @@ jit_typeinfo::do_insert_error_check (llvm::IRBuilderD& abuilder)
   return abuilder.CreateLoad (lerror_state);
 }
 
+llvm::Value *
+jit_typeinfo::do_insert_interrupt_check (llvm::IRBuilderD& abuilder)
+{
+  llvm::LoadInst *val = abuilder.CreateLoad (loctave_interrupt_state);
+  val->setVolatile (true);
+  return abuilder.CreateICmpSGT (val, abuilder.getInt32 (0));
+}
+
 void
 jit_typeinfo::add_builtin (const std::string& name)
 {
@@ -2273,7 +2328,14 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
     }
 
   if (ov.is_complex_scalar ())
-    return get_complex ();
+    {
+      Complex cv = ov.complex_value ();
+
+      // We don't really represent complex values, instead we represent
+      // complex_or_scalar. If the imag value is zero, we assume a scalar.
+      if (cv.imag () == 0)
+        return get_complex ();
+    }
 
   return get_any ();
 }

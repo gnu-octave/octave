@@ -71,7 +71,7 @@
 ## for.
 ##
 ## @item ByteOrder
-## Endian option for formats that support it.  Is either @code{"little-endian"},
+## Endian option for formats that support it.  Value is @code{"little-endian"},
 ## @code{"big-endian"}, or @code{"undefined"}.
 ##
 ## @item Gamma
@@ -83,8 +83,7 @@
 ##
 ## @item ModulusDepth
 ## Image modulus depth (minimum number of bits required to support
-## red/green/blue
-## components without loss of accuracy).
+## red/green/blue components without loss of accuracy).
 ##
 ## @item Quality
 ## JPEG/MIFF/PNG compression level.
@@ -93,19 +92,18 @@
 ## Preferred number of colors in the image.
 ##
 ## @item ResolutionUnits
-## Units of image resolution.  Is either @code{"pixels per inch"},
+## Units of image resolution.  Value is @code{"pixels per inch"},
 ## @code{"pixels per centimeter"}, or @code{"undefined"}.
 ##
 ## @item ColorType
-## Image type.  Is either @code{"grayscale"}, @code{"indexed"},
-## @code{"truecolor"},
-## or @code{"undefined"}.
+## Image type.  Value is @code{"grayscale"}, @code{"indexed"},
+## @code{"truecolor"}, or @code{"undefined"}.
 ##
 ## @item View
 ## FlashPix viewing parameters.
 ## @end table
 ##
-## @seealso{imread, imwrite}
+## @seealso{imread, imwrite, imshow}
 ## @end deftypefn
 
 function info = imfinfo (filename)
@@ -114,7 +112,7 @@ function info = imfinfo (filename)
     print_usage ();
   endif
 
-  if (!ischar (filename))
+  if (! ischar (filename))
     error ("imfinfo: FILENAME must be a string");
   endif
 

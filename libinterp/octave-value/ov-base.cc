@@ -1194,6 +1194,8 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
       "erfcinv",
       "erfc",
       "erfcx",
+      "erfi",
+      "dawson",
       "exp",
       "expm1",
       "finite",

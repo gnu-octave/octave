@@ -131,6 +131,12 @@
 ## By default, the @code{Octave:built-in-variable-assignment} warning is
 ## enabled.
 ##
+## @item Octave:deprecated-keyword
+## If the @code{Octave:deprecated-keyword} warning is enabled, a
+## warning is issued when Octave encounters a keyword that is obsolete and
+## scheduled for removal from Octave.
+## By default, the @code{Octave:deprecated-keyword} warning is enabled.
+##
 ## @item Octave:divide-by-zero
 ## If the @code{Octave:divide-by-zero} warning is enabled, a
 ## warning is issued when Octave encounters a division by zero.
@@ -170,6 +176,8 @@
 ## Print warnings for Octave language features that may cause
 ## compatibility problems with @sc{matlab}.
 ## By default, the @code{Octave:matlab-incompatible} warning is disabled.
+## The --traditional or --braindead startup options for Octave may also
+## be of use, @xref{Command Line Options}.
 ##
 ## @item Octave:md5sum-file-in-path
 ## By default, the @code{Octave:md5sum-file-in-path} warning is enabled.
@@ -240,7 +248,7 @@
 ## if you would like to enable this short-circuit evaluation in
 ## Octave.  Note that the @code{&&} and @code{||} operators always short
 ## circuit in both Octave and @sc{matlab}, so it's only necessary to
-## enable @sc{matlab}-style short-circuiting it's too arduous to modify
+## enable @sc{matlab}-style short-circuiting if it's too arduous to modify
 ## existing code that relies on this behavior.
 ## By default, the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled.
@@ -254,6 +262,15 @@
 ##
 ## @item Octave:recursive-path-search
 ## By default, the @code{Octave:recursive-path-search} warning is enabled.
+##
+## @item Octave:remove-init-dir
+## The @code{path} function changes the search path that Octave uses
+## to find functions.  It is possible to set the path to a value which
+## excludes Octave's own built-in functions.  If the
+## @code{Octave:remove-init-dir} warning is enabled then Octave will warn
+## when the @code{path} function has been used in a way that may render
+## Octave unworkable.
+## By default, the @code{Octave:remove-init-dir} warning is enabled.
 ##
 ## @item Octave:reload-forces-clear
 ## If several functions have been loaded from the same file, Octave must

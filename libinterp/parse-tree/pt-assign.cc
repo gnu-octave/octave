@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-arg-list.h"
 #include "pt-bp.h"
 #include "pt-assign.h"
+#include "pt-eval.h"
 #include "pt-walk.h"
 #include "utils.h"
 #include "variables.h"
@@ -247,7 +248,8 @@ tree_simple_assignment::rvalue1 (int)
                       else
                         retval = ult.value ();
 
-                      if (print_result ())
+                      if (print_result ()
+                          && tree_evaluator::statement_printing_enabled ())
                         {
                           // We clear any index here so that we can
                           // get the new value of the referenced
@@ -459,7 +461,8 @@ tree_multi_assignment::rvalue (int)
 
           if (error_state)
             break;
-          else if (print_result ())
+          else if (print_result ()
+                   && tree_evaluator::statement_printing_enabled ())
             {
               // We clear any index here so that we can get
               // the new value of the referenced object below,

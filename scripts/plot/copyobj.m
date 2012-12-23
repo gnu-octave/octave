@@ -41,6 +41,10 @@ function hnew = copyobj (horig, hparent = 0)
     print_usage ();
   endif
 
+  ## current figure and axes
+  cf = gcf ();
+  ca = gca ();
+  
   ## compatibility of input handles
   kididx = find (strcmp (alltypes, get (horig).type));
   paridx = find (strcmp (alltypes, get (hparent).type));
@@ -56,6 +60,12 @@ function hnew = copyobj (horig, hparent = 0)
     hnew = struct2hdl (str, hparent);
   endif
 
+  ## reset current figure (and eventually axes) to original
+  set (0, "currentfigure", cf);
+  if (get (hnew, "parent") == cf)
+    set (cf, "currentaxes", ca)
+  endif
+  
 endfunction
 
 

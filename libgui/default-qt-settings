@@ -3,7 +3,6 @@ connectOnStartup=true
 showMessageOfTheDay=true
 showTopic=true
 autoIdentification=false
-nickServPassword=
 useCustomFileEditor=false
 customFileEditor=emacs
 showFilenames=true
@@ -23,15 +22,50 @@ proxyPassword=
 showLineNumbers=true
 highlightCurrentLine=true
 codeCompletion=true
-fontName=Ubuntu Mono
-fontSize=12
-shortWindowTitle=true
-longWindowTitle=true
+fontName=Courier
+fontSize=10
+longWindowTitle=false
+restoreSession=false
+savedSessionTabs=@Invalid()
 
 [terminal]
 fontSize=10
-fontName=Andale Mono
+fontName=Courier
+cursorBlinking=true
+cursorType=ibeam
 
 [MainWindow]
-geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\x31\0\0\0\x18\0\0\x4\xff\0\0\x3\xff\0\0\0\0\0\0\0\0\xff\xff\xff\xfe\xff\xff\xff\xfe\0\0\0\0\x2\0)
-windowState=@ByteArray(\0\0\0\xff\0\0\0\0\xfd\0\0\0\x1\0\0\0\x1\0\0\x4\xcf\0\0\x3\x91\xfc\x2\0\0\0\x1\xfc\0\0\0\x41\0\0\x3\x91\0\0\x1\xc7\0\xff\xff\xff\xfc\x1\0\0\0\x3\xfc\0\0\0\0\0\0\x1.\0\0\0R\0\xff\xff\xff\xfc\x2\0\0\0\x2\xfb\0\0\0\x1a\0W\0o\0r\0k\0s\0p\0\x61\0\x63\0\x65\0V\0i\0\x65\0w\x1\0\0\0\x41\0\0\x1\xe8\0\0\0k\0\xff\xff\xff\xfb\0\0\0\"\0H\0i\0s\0t\0o\0r\0y\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\x2/\0\0\x1\xa3\0\0\0\x8c\0\xff\xff\xff\xfc\0\0\x1\x34\0\0\x2\x81\0\0\x2\x81\0\0\x2\x81\xfa\0\0\0\0\x2\0\0\0\x2\xfb\0\0\0$\0T\0\x65\0r\0m\0i\0n\0\x61\0l\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\0\0\xff\xff\xff\xff\0\0\x1\xa9\0\xff\xff\xff\xfb\0\0\0\x14\0\x46\0i\0l\0\x65\0\x45\0\x64\0i\0t\0o\0r\x1\0\0\x1\xf0\0\0\x1\xe2\0\0\0j\0\xff\xff\xff\xfb\0\0\0\x1e\0\x46\0i\0l\0\x65\0s\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\x3\xbb\0\0\x1\x14\0\0\0P\0\xff\xff\xff\0\0\0\0\0\0\x3\x91\0\0\0\x4\0\0\0\x4\0\0\0\b\0\0\0\b\xfc\0\0\0\x1\0\0\0\x2\0\0\0\x1\xff\xff\xff\xff\x1\0\0\0\0\xff\xff\xff\xff\0\0\0\0\0\0\0\0)
+geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\0\x18\0\0\x3G\0\0\x2\xe9\0\0\0\x1\0\0\0\x33\0\0\x3\x46\0\0\x2\xe8\0\0\0\0\0\0)
+windowState=@ByteArray(\0\0\0\xff\0\0\0\0\xfd\0\0\0\x1\0\0\0\x1\0\0\x3\x46\0\0\x2x\xfc\x2\0\0\0\x1\xfc\0\0\0(\0\0\x2x\0\0\x1\xc5\0\xff\xff\xff\xfc\x1\0\0\0\x2\xfc\0\0\0\0\0\0\0\xe8\0\0\0R\0\xff\xff\xff\xfc\x2\0\0\0\x3\xfb\0\0\0\x1e\0\x46\0i\0l\0\x65\0s\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\0(\0\0\0\xc9\0\0\0\x8d\0\xff\xff\xff\xfb\0\0\0\x1a\0W\0o\0r\0k\0s\0p\0\x61\0\x63\0\x65\0V\0i\0\x65\0w\x1\0\0\0\xf7\0\0\0\xd7\0\0\0k\0\xff\xff\xff\xfb\0\0\0\"\0H\0i\0s\0t\0o\0r\0y\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\x1\xd4\0\0\0\xcc\0\0\0\x8a\0\xff\xff\xff\xfc\0\0\0\xee\0\0\x2X\0\0\x2X\0\xff\xff\xff\xfa\0\0\0\0\x2\0\0\0\x3\xfb\0\0\0$\0T\0\x65\0r\0m\0i\0n\0\x61\0l\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\0\0\xff\xff\xff\xff\0\0\x1\xa9\0\xff\xff\xff\xfb\0\0\0\x14\0\x46\0i\0l\0\x65\0\x45\0\x64\0i\0t\0o\0r\x1\0\0\0\0\xff\xff\xff\xff\0\0\0h\0\xff\xff\xff\xfb\0\0\0.\0\x44\0o\0\x63\0u\0m\0\x65\0n\0t\0\x61\0t\0i\0o\0n\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\0\0\xff\xff\xff\xff\0\0\0\xac\0\xff\xff\xff\0\0\0\0\0\0\x2x\0\0\0\x4\0\0\0\x4\0\0\0\b\0\0\0\b\xfc\0\0\0\x1\0\0\0\x2\0\0\0\x1\xff\xff\xff\xff\x1\0\0\0\0\xff\xff\xff\xff\0\0\0\0\0\0\0\0)
+current_directory_list=@Invalid()
+
+[DockWidgets]
+TerminalDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\xee\0\0\0(\0\0\x3\x45\0\0\x2\x83\0\0\0\xee\0\0\0(\0\0\x3\x45\0\0\x2\x83\0\0\0\0\0\0)
+TerminalDockWidgetFloating=false
+TerminalDockWidgetVisible=true
+WorkspaceView=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\0\xf7\0\0\0\xe7\0\0\x1\xcd\0\0\0\0\0\0\0\xf7\0\0\0\xe7\0\0\x1\xcd\0\0\0\0\0\0)
+WorkspaceViewFloating=false
+WorkspaceViewVisible=true
+HistoryDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\x1\xd4\0\0\0\xe7\0\0\x2\x9f\0\0\0\0\0\0\x1\xd4\0\0\0\xe7\0\0\x2\x9f\0\0\0\0\0\0)
+HistoryDockWidgetFloating=false
+HistoryDockWidgetVisible=true
+FilesDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\0(\0\0\0\xe7\0\0\0\xf0\0\0\0\0\0\0\0(\0\0\0\xe7\0\0\0\xf0\0\0\0\0\0\0)
+FilesDockWidgetFloating=false
+FilesDockWidgetVisible=true
+DocumentationDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\xff\xff\xfb\xb3\xff\xff\xfb\xb1\xff\xff\xfe\v\xff\xff\xfe\v\xff\xff\xfb\xb3\xff\xff\xfb\xb1\xff\xff\xfe\v\xff\xff\xfe\v\0\0\0\0\0\0)
+DocumentationDockWidgetFloating=false
+DocumentationDockWidgetVisible=true
+FileEditor=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\xff\xff\xfb\xb3\xff\xff\xfb\xb1\xff\xff\xfe\v\xff\xff\xfe\v\xff\xff\xfb\xb3\xff\xff\xfb\xb1\xff\xff\xfe\v\xff\xff\xfe\v\0\0\0\0\0\0)
+FileEditorFloating=false
+FileEditorVisible=true
+
+[workspaceview]
+local_collapsed=false
+global_collapsed=false
+persistent_collapsed=false
+column_state=@ByteArray(\0\0\0\xff\0\0\0\0\0\0\0\x1\0\0\0\x1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x1\x90\0\0\0\x4\x1\0\0\x1\0\0\0\0\0\0\0\0\0\0\0\0\x64\xff\xff\xff\xff\0\0\0\x81\0\0\0\0\0\0\0\x1\0\0\x1\x90\0\0\0\x4\0\0\0\0)
+
+[filesdockwidget]
+sort_files_by_column=0
+sort_files_by_order=0
+column_state=@ByteArray(\0\0\0\xff\0\0\0\0\0\0\0\x1\0\0\0\0\0\0\0\0\x1\0\0\0\0\0\0\0\0\0\0\0\x4\xe\0\0\0\x3\0\0\0\x3\0\0\0\x64\0\0\0\x2\0\0\0\x64\0\0\0\x1\0\0\0\x64\0\0\0\xd4\0\0\0\x4\x1\x1\0\x1\0\0\0\0\0\0\0\0\0\0\0\0\x64\xff\xff\xff\xff\0\0\0\x81\0\0\0\0\0\0\0\x2\0\0\0\xd4\0\0\0\x1\0\0\0\0\0\0\0\0\0\0\0\x3\0\0\0\0)

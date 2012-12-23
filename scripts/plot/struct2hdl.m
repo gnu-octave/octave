@@ -92,6 +92,25 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     p = p(1:2, 1:(tst(end)-1));
   endif
 
+  ## Place the "*mode" properties as the end to avoid having the updaters
+  ## change the mode to "manual" when the value is "auto".
+  names = fieldnames (s.properties);
+  n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
+  n = (n | strcmp (names, "activepositionproperty"));
+  names = [names(!n); names(n)];
+  if (strcmp (s.type, "axes"))
+    n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));
+    if (strcmp (s.properties.activepositionproperty, "position"))
+      names{n_pos(1)} = "outerposition";
+      names{n_pos(2)} = "position";
+    else
+      names{n_pos(1)} = "position";
+      names{n_pos(2)} = "outerposition";
+    endif
+  endif
+  ## Reorder the properties with the mode properties coming last
+  s.properties = orderfields (s.properties, names);
+
   ## create object
   if (strcmp (s.type, "root"))
     h = 0;

@@ -27,16 +27,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "debug.h"
 #include "defun.h"
 #include "ov.h"
 #include "pt-all.h"
 #include "pt-jit.h"
+#include "sighandlers.h"
 #include "symtab.h"
 #include "variables.h"
 
-bool Venable_jit_debugging = false;
+static bool Venable_jit_debugging = false;
 
-bool Venable_jit_compiler = true;
+static bool Venable_jit_compiler = true;
 
 #ifdef HAVE_LLVM
 
@@ -60,6 +62,12 @@ static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 
 static llvm::LLVMContext& context = llvm::getGlobalContext ();
 
+// -------------------- jit_break_exception --------------------
+
+// jit_break is thrown whenever a branch we are converting has only breaks or
+// continues. This is because all code that follows a break or continue is dead.
+class jit_break_exception : public std::exception {};
+
 // -------------------- jit_convert --------------------
 jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
   : converting_function (false)
@@ -69,10 +77,14 @@ jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
   if (for_bounds)
     create_variable (next_for_bounds (false), for_bounds);
 
-  visit (tee);
+  try
+    {
+      visit (tee);
+    }
+  catch (const jit_break_exception&)
+    {}
 
   // breaks must have been handled by the top level loop
-  assert (! breaking);
   assert (breaks.empty ());
   assert (continues.empty ());
 
@@ -119,32 +131,48 @@ jit_convert::jit_convert (octave_user_function& fcn,
     }
 
   jit_value *return_value = 0;
+  bool all_breaking = false;
   if (fcn.is_special_expr ())
     {
       tree_expression *expr = fcn.special_expr ();
       if (expr)
         {
           jit_variable *retvar = get_variable ("#return");
-          jit_value *retval = visit (expr);
+          jit_value *retval;
+          try
+            {
+              retval = visit (expr);
+            }
+          catch (const jit_break_exception&)
+            {}
+
+          if (breaks.size () || continues.size ())
+            throw jit_fail_exception ("break/continue not supported in "
+                                      "anonymous functions");
+
           block->append (factory.create<jit_assign> (retvar, retval));
           return_value = retvar;
         }
     }
   else
-    visit_statement_list (*fcn.body ());
-
-  // the user may use break or continue to exit the function. Because the
-  // function does not start as a loop, we can have one continue, one break, or
-  // a regular fallthrough to exit the function
-  if (continues.size ())
     {
-      assert (! continues.size ());
+      try
+        {
+          visit_statement_list (*fcn.body ());
+        }
+      catch (const jit_break_exception&)
+        {
+          all_breaking = true;
+        }
+
+      // the user may use break or continue to exit the function
       finish_breaks (final_block, continues);
+      finish_breaks (final_block, breaks);
     }
-  else if (breaks.size ())
-    finish_breaks (final_block, breaks);
-  else
+
+  if (! all_breaking)
     block->append (factory.create<jit_branch> (final_block));
+
   blocks.push_back (final_block);
   block = final_block;
 
@@ -250,7 +278,7 @@ void
 jit_convert::visit_break_command (tree_break_command&)
 {
   breaks.push_back (block);
-  breaking = true;
+  throw jit_break_exception ();
 }
 
 void
@@ -275,7 +303,7 @@ void
 jit_convert::visit_continue_command (tree_continue_command&)
 {
   continues.push_back (block);
-  breaking = true;
+  throw jit_break_exception ();
 }
 
 void
@@ -310,11 +338,9 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   // and used only inside the for loop (e.g. the index variable)
 
   // If we are a nested for loop we need to store the previous breaks
-  assert (! breaking);
   unwind_protect prot;
   prot.protect_var (breaks);
   prot.protect_var (continues);
-  prot.protect_var (breaking);
   breaks.clear ();
   continues.clear ();
 
@@ -353,23 +379,34 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
 
   // do loop
   tree_statement_list *pt_body = cmd.body ();
-  pt_body->accept (*this);
-
-  if (breaking && continues.empty ())
+  bool all_breaking = false;
+  try
     {
-      // WTF are you doing user? Every branch was a continue, why did you have
-      // a loop??? Users are silly people...
-      finish_breaks (tail, breaks);
-      blocks.push_back (tail);
-      block = tail;
-      return;
+      pt_body->accept (*this);
+    }
+  catch (const jit_break_exception&)
+    {
+      if (continues.empty ())
+        {
+          // WTF are you doing user? Every branch was a break, why did you have
+          // a loop??? Users are silly people...
+          finish_breaks (tail, breaks);
+          blocks.push_back (tail);
+          block = tail;
+          return;
+        }
+
+      all_breaking = true;
     }
 
   // check our condition, continues jump to this block
   jit_block *check_block = factory.create<jit_block> ("for_check");
   blocks.push_back (check_block);
 
-  if (! breaking)
+  jit_block *interrupt_check = factory.create<jit_block> ("for_interrupt");
+  blocks.push_back (interrupt_check);
+
+  if (! all_breaking)
     block->append (factory.create<jit_branch> (check_block));
   finish_breaks (check_block, continues);
 
@@ -379,9 +416,16 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   jit_call *iter_inc = factory.create<jit_call> (add_fn, iterator, one);
   block->append (iter_inc);
   block->append (factory.create<jit_assign> (iterator, iter_inc));
-  check = block->append (factory.create<jit_call> (jit_typeinfo::for_check, control,
-                                           iterator));
-  block->append (factory.create<jit_cond_branch> (check, body, tail));
+  check = block->append (factory.create<jit_call> (jit_typeinfo::for_check,
+                                                   control, iterator));
+  block->append (factory.create<jit_cond_branch> (check, interrupt_check,
+                                                  tail));
+
+  block = interrupt_check;
+  jit_error_check *ec
+    = factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                       body, final_block);
+  block->append (ec);
 
   // breaks will go to our tail
   blocks.push_back (tail);
@@ -486,6 +530,13 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   if (! last_else)
     entry_blocks[entry_blocks.size () - 1] = tail;
 
+
+  // each branch in the if statement will have different breaks/continues
+  block_list current_breaks = breaks;
+  block_list current_continues = continues;
+  breaks.clear ();
+  continues.clear ();
+
   size_t num_incomming = 0; // number of incomming blocks to our tail
   iter = lst.begin ();
   for (size_t i = 0; iter != lst.end (); ++iter, ++i)
@@ -515,16 +566,22 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 
       tree_statement_list *stmt_lst = tic->commands ();
       assert (stmt_lst); // jwe: Can this be null?
-      stmt_lst->accept (*this);
 
-      if (breaking)
-        breaking = false;
-      else
+      try
         {
+          stmt_lst->accept (*this);
           ++num_incomming;
           block->append (factory.create<jit_branch> (tail));
         }
+      catch(const jit_break_exception&)
+        {}
+
+      current_breaks.splice (current_breaks.end (), breaks);
+      current_continues.splice (current_continues.end (), continues);
     }
+
+  breaks.splice (breaks.end (), current_breaks);
+  continues.splice (continues.end (), current_continues);
 
   if (num_incomming || ! last_else)
     {
@@ -533,7 +590,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
     }
   else
     // every branch broke, so we don't have a tail
-    breaking = true;
+    throw jit_break_exception ();
 }
 
 void
@@ -570,17 +627,19 @@ void
 jit_convert::visit_constant (tree_constant& tc)
 {
   octave_value v = tc.rvalue1 ();
-  if (v.is_real_scalar () && v.is_double_type () && ! v.is_complex_type ())
+  jit_type *ty = jit_typeinfo::type_of (v);
+
+  if (ty == jit_typeinfo::get_scalar ())
     {
       double dv = v.double_value ();
       result = factory.create<jit_const_scalar> (dv);
     }
-  else if (v.is_range ())
+  else if (ty == jit_typeinfo::get_range ())
     {
       Range rv = v.range_value ();
       result = factory.create<jit_const_range> (rv);
     }
-  else if (v.is_complex_scalar ())
+  else if (ty == jit_typeinfo::get_complex ())
     {
       Complex cv = v.complex_value ();
       result = factory.create<jit_const_complex> (cv);
@@ -711,9 +770,6 @@ jit_convert::visit_statement_list (tree_statement_list& lst)
       // jwe: Can this ever be null?
       assert (elt);
       elt->accept (*this);
-
-      if (breaking)
-        break;
     }
 }
 
@@ -750,11 +806,9 @@ jit_convert::visit_unwind_protect_command (tree_unwind_protect_command&)
 void
 jit_convert::visit_while_command (tree_while_command& wc)
 {
-  assert (! breaking);
   unwind_protect prot;
   prot.protect_var (breaks);
   prot.protect_var (continues);
-  prot.protect_var (breaking);
   breaks.clear ();
   continues.clear ();
 
@@ -776,14 +830,36 @@ jit_convert::visit_while_command (tree_while_command& wc)
   block = body;
 
   tree_statement_list *loop_body = wc.body ();
+  bool all_breaking = false;
   if (loop_body)
-    loop_body->accept (*this);
+    {
+      try
+        {
+          loop_body->accept (*this);
+        }
+      catch (const jit_break_exception&)
+        {
+          all_breaking = true;
+        }
+    }
 
   finish_breaks (tail, breaks);
-  finish_breaks (cond_check, continues);
 
-  if (! breaking)
-    block->append (factory.create<jit_branch> (cond_check));
+  if (! all_breaking || continues.size ())
+    {
+      jit_block *interrupt_check
+        = factory.create<jit_block> ("interrupt_check");
+      blocks.push_back (interrupt_check);
+      finish_breaks (interrupt_check, continues);
+      if (! all_breaking)
+        block->append (factory.create<jit_branch> (interrupt_check));
+
+      block = interrupt_check;
+      jit_error_check *ec
+        = factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                           cond_check, final_block);
+      block->append (ec);
+    }
 
   blocks.push_back (tail);
   block = tail;
@@ -802,7 +878,6 @@ jit_convert::initialize (symbol_table::scope_id s)
   iterator_count = 0;
   for_bounds_count = 0;
   short_count = 0;
-  breaking = false;
   jit_instruction::reset_ids ();
 
   entry_block = factory.create<jit_block> ("body");
@@ -818,8 +893,9 @@ jit_convert::create_checked_impl (jit_call *ret)
   block->append (ret);
 
   jit_block *normal = factory.create<jit_block> (block->name ());
-  jit_error_check *check = factory.create<jit_error_check> (ret, normal,
-                                                            final_block);
+  jit_error_check *check
+    = factory.create<jit_error_check> (jit_error_check::var_error_state, ret,
+                                       normal, final_block);
   block->append (check);
   blocks.push_back (normal);
   block = normal;
@@ -1312,7 +1388,20 @@ jit_convert_llvm::visit (jit_variable&)
 void
 jit_convert_llvm::visit (jit_error_check& check)
 {
-  llvm::Value *cond = jit_typeinfo::insert_error_check (builder);
+  llvm::Value *cond;
+
+  switch (check.check_variable ())
+    {
+    case jit_error_check::var_error_state:
+      cond = jit_typeinfo::insert_error_check (builder);
+      break;
+    case jit_error_check::var_interrupt:
+      cond = jit_typeinfo::insert_interrupt_check (builder);
+      break;
+    default:
+      panic_impossible ();
+    }
+
   llvm::Value *br = builder.CreateCondBr (cond, check.successor_llvm (0),
                                           check.successor_llvm (1));
   check.stash_llvm (br);
@@ -1388,7 +1477,7 @@ jit_infer::infer (void)
     }
 
   remove_dead ();
-  final_block ().label ();
+  blocks.label ();
   place_releases ();
   simplify_phi ();
 }
@@ -1422,7 +1511,7 @@ jit_infer::append_users_term (jit_terminator *term)
 void
 jit_infer::construct_ssa (void)
 {
-  final_block ().label ();
+  blocks.label ();
   final_block ().compute_idom (entry_block ());
   entry_block ().compute_df ();
   entry_block ().create_dom_tree ();
@@ -1793,7 +1882,7 @@ tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
   const size_t MIN_TRIP_COUNT = 1000;
 
   size_t tc = trip_count (bounds);
-  if (! tc || ! initialize ())
+  if (! tc || ! initialize () || ! enabled ())
     return false;
 
   jit_info::vmap extra_vars;
@@ -1816,7 +1905,7 @@ tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
 bool
 tree_jit::do_execute (tree_while_command& cmd)
 {
-  if (! initialize ())
+  if (! initialize () || ! enabled ())
     return false;
 
   jit_info *info = cmd.get_info ();
@@ -1834,7 +1923,7 @@ bool
 tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
                       octave_value_list& retval)
 {
-  if (! initialize ())
+  if (! initialize () || ! enabled ())
     return false;
 
   jit_function_info *info = fcn.get_info ();
@@ -1846,6 +1935,16 @@ tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
       }
 
     return info->execute (args, retval);
+}
+
+bool
+tree_jit::enabled (void)
+{
+  // Ideally, we should only disable JIT if there is a breakpoint in the code we
+  // are about to run. However, we can't figure this out in O(1) time, so we
+  // conservatively check for the existence of any breakpoints.
+  return Venable_jit_compiler && ! bp_table::have_breakpoints ()
+    && ! Vdebug_on_interrupt && ! Vdebug_on_error;
 }
 
 size_t
@@ -1903,8 +2002,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
       if (Venable_jit_debugging)
         {
           jit_block_list& blocks = infer.get_blocks ();
-          jit_block *entry_block = blocks.front ();
-          entry_block->label ();
+          blocks.label ();
           std::cout << "-------------------- Compiling function ";
           std::cout << "--------------------\n";
 
@@ -2018,6 +2116,8 @@ jit_function_info::execute (const octave_value_list& ov_args,
   if (ret)
     retval(0) = octave_value (ret);
 
+  octave_quit ();
+
   return true;
 }
 
@@ -2086,6 +2186,8 @@ jit_info::execute (const vmap& extra_vars) const
         symbol_table::varref (arguments[i].first) = real_arguments[i];
     }
 
+  octave_quit ();
+
   return true;
 }
 
@@ -2123,8 +2225,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
       if (Venable_jit_debugging)
         {
           jit_block_list& blocks = infer.get_blocks ();
-          jit_block *entry_block = blocks.front ();
-          entry_block->label ();
+          blocks.label ();
           std::cout << "-------------------- Compiling tree --------------------\n";
           std::cout << tee.str_print_code () << std::endl;
           blocks.print (std::cout, "octave jit ir");
@@ -2227,6 +2328,33 @@ variable value is restored when exiting the function.\n\
 Test some simple cases that compile.
 
 %!test
+%! for i=1:1e6
+%!   if i < 5
+%!     break
+%!   else
+%!     break
+%!   endif
+%! endfor
+%! assert (i, 1);
+
+%!test
+%! while 1
+%!   if 1
+%!     break
+%!  else
+%!    break
+%!  endif
+%! endwhile
+
+%!test
+%! for i=1:1e6
+%!   if i == 100
+%!     break
+%!   endif
+%! endfor
+%! assert (i, 100);
+
+%!test
 %! inc = 1e-5;
 %! result = 0;
 %! for ii = 0:inc:1
@@ -2242,6 +2370,35 @@ Test some simple cases that compile.
 %!   result = result + inc * (1/3 * ii ^ 2);
 %! endfor
 %! assert (abs (result - 1/9) < 1e-5);
+
+%!test
+%! temp = 1+1i;
+%! nan = NaN;
+%! while 1
+%!   temp = temp - 1i;
+%!   temp = temp * nan;
+%!   break;
+%! endwhile
+%! assert (imag (temp), 0);
+
+%!test
+%! temp = 1+1i;
+%! nan = NaN+1i;
+%! while 1
+%!   nan = nan - 1i;
+%!   temp = temp - 1i;
+%!   temp = temp * nan;
+%!   break;
+%! endwhile
+%! assert (imag (temp), 0);
+
+%!test
+%! temp = 1+1i;
+%! while 1
+%!   temp = temp * 5;
+%!   break;
+%! endwhile
+%! assert (temp, 5+5i);
 
 %!test
 %! nr = 1001;

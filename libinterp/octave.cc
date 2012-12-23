@@ -172,6 +172,9 @@ static std::string code_to_eval;
 // If TRUE, don't exit after evaluating code given by --eval option.
 static bool persist = false;
 
+// If TRUE, the GUI should be started.
+static bool start_gui = false;
+
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
 #define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
@@ -1031,11 +1034,8 @@ octave_execute_interpreter (void)
   return 0;
 }
 
-// Return int instead of bool because this function is declared
-// extern "C".
-
-int
-octave_starting_gui (void)
+static bool
+check_starting_gui (void)
 {
   if (no_window_system || ! display_info::display_available ())
     return false;
@@ -1069,6 +1069,37 @@ octave_starting_gui (void)
 
   return true;
 }
+
+// Return int instead of bool because this function is declared
+// extern "C".
+
+int
+octave_starting_gui (void)
+{
+  start_gui = check_starting_gui ();
+  return start_gui;
+}
+
+DEFUN (isguirunning, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isguirunning ()\n\
+Return true if Octave is running in GUI mode and false otherwise.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = start_gui;
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (islogical (isguirunning ()))
+%!error isguirunning (1)
+*/
 
 DEFUN (argv, args, ,
   "-*- texinfo -*-\n\

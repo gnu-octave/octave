@@ -36,7 +36,7 @@ function map = winter (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("winter: argument must be a scalar");
+      error ("winter: N must be a scalar");
     endif
   else
     print_usage ();

@@ -80,6 +80,16 @@ jit_block_list::insert_before (jit_block *loc, jit_block *ablock)
   insert_before (loc->location (), ablock);
 }
 
+void
+jit_block_list::label (void)
+{
+  if (mlist.size ())
+    {
+      jit_block *block = mlist.back ();
+      block->label ();
+    }
+}
+
 std::ostream&
 jit_block_list::print (std::ostream& os, const std::string& header) const
 {
@@ -469,6 +479,21 @@ jit_block::update_idom (size_t avisit_count)
 }
 
 void
+jit_block::label (size_t avisit_count, size_t& number)
+{
+  if (visited (avisit_count))
+    return;
+
+  for (jit_use *use = first_use (); use; use = use->next ())
+    {
+      jit_block *pred = use->user_parent ();
+      pred->label (avisit_count, number);
+    }
+
+  mid = number++;
+}
+
+void
 jit_block::pop_all (void)
 {
   for (iterator iter = begin (); iter != end (); ++iter)
@@ -476,6 +501,28 @@ jit_block::pop_all (void)
       jit_instruction *instr = *iter;
       instr->pop_variable ();
     }
+}
+
+std::ostream&
+jit_block::print (std::ostream& os, size_t indent) const
+{
+  print_indent (os, indent);
+  short_print (os) << ":        %pred = ";
+  for (jit_use *use = first_use (); use; use = use->next ())
+    {
+      jit_block *pred = use->user_parent ();
+      os << *pred;
+      if (use->next ())
+        os << ", ";
+    }
+  os << std::endl;
+
+  for (const_iterator iter = begin (); iter != end (); ++iter)
+    {
+      jit_instruction *instr = *iter;
+      instr->print (os, indent + 1) << std::endl;
+    }
+  return os;
 }
 
 jit_block *
@@ -651,6 +698,23 @@ jit_terminator::to_llvm (void) const
 
 // -------------------- jit_call --------------------
 bool
+jit_call::needs_release (void) const
+{
+  if (type () && jit_typeinfo::get_release (type ()).valid ())
+    {
+      for (jit_use *use = first_use (); use; use = use->next ())
+        {
+          jit_assign *assign = dynamic_cast<jit_assign *> (use->user ());
+          if (assign && assign->artificial ())
+            return false;
+        }
+
+      return true;
+    }
+  return false;
+}
+
+bool
 jit_call::infer (void)
 {
   // FIXME: explain algorithm
@@ -677,6 +741,33 @@ jit_call::infer (void)
     }
 
   return false;
+}
+
+// -------------------- jit_error_check --------------------
+std::string
+jit_error_check::variable_to_string (variable v)
+{
+  switch (v)
+    {
+    case var_error_state:
+      return "error_state";
+    case var_interrupt:
+      return "interrupt";
+    default:
+      panic_impossible ();
+    }
+}
+
+std::ostream&
+jit_error_check::print (std::ostream& os, size_t indent) const
+{
+  print_indent (os, indent) << "error_check " << variable_to_string (mvariable)
+                            << ", ";
+
+  if (has_check_for ())
+    os << "<for> " << *check_for () << ", ";
+  print_successor (os << "<normal> ", 1) << ", ";
+  return print_successor (os << "<error> ", 0);
 }
 
 // -------------------- jit_magic_end --------------------

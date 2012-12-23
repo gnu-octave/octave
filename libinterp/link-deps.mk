@@ -7,7 +7,6 @@ else
 endif
 
 LIBOCTINTERP_LINK_DEPS += \
-  $(GRAPHICS_LIBS) \
   $(FT2_LIBS) \
   $(HDF5_LIBS) \
   $(Z_LIBS) \
@@ -17,10 +16,10 @@ LIBOCTINTERP_LINK_DEPS += \
   $(X11_LIBS) \
   $(CARBON_LIBS) \
   $(LLVM_LIBS) \
+  $(JAVA_LIBS) \
   $(LAPACK_LIBS)
 
 LIBOCTINTERP_LINK_OPTS = \
-  $(GRAPHICS_LDFLAGS) \
   $(FT2_LDFLAGS) \
   $(HDF5_LDFLAGS) \
   $(Z_LDFLAGS) \

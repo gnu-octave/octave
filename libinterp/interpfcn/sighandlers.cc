@@ -61,7 +61,7 @@ int pipe_handler_error_count = 0;
 bool can_interrupt = false;
 
 // TRUE means we should try to enter the debugger on SIGINT.
-static bool Vdebug_on_interrupt = false;
+bool Vdebug_on_interrupt = false;
 
 // Allow users to avoid writing octave-workspace for SIGHUP (sent by
 // closing gnome-terminal, for example).  Note that this variable has
@@ -978,6 +978,7 @@ before reaching the debugging mode, a normal interrupt will occur.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+@seealso{debug_on_error, debug_on_warning}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_interrupt);

@@ -124,6 +124,27 @@ PKG_PROG_PKG_CONFIG
 config_opts=$ac_configure_args
 AC_SUBST(config_opts)
 
+### Define the path to the shell on the host system.  Most systems will
+### ensure /bin/sh is the default shell so this can be safely ignored by
+### almost everyone.  However, when building for Android, for example,
+### this will need to be set.
+SHELL_PATH=/bin/sh
+AC_ARG_WITH([shell],
+  [AS_HELP_STRING([--with-shell=SHELL],
+    [use SHELL as the shell interpreter (default: /bin/sh)])])
+case $with_shell in
+  no)
+    AC_MSG_ERROR([A shell interpreter is required])
+  ;;
+  yes | "")
+  ;;
+  *)
+    SHELL_PATH=$with_shell
+  ;;
+esac
+AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
+  [Define this to be the path to the shell command interpreter.])
+
 ### Enable bounds checking on element references within Octave's array and
 ### matrix classes.  This slows down some operations a bit, so it is turned off
 ### by default.
@@ -954,10 +975,19 @@ if test -n "$OPENGL_LIBS"; then
 
   ## Check for FreeType 2 library
 
-  AC_CHECK_FT2([9.0.3],
-    [AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have FreeType library.])
-     XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],
-    [warn_freetype="FreeType library not found.  Native graphics will be disabled."])
+  PKG_CHECK_MODULES([FT2], [freetype2], [
+    min_ft2_version=9.03
+    AC_MSG_CHECKING([for FreeType -- version >= $min_ft2_version])
+    $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
+    ac_status=$?
+    if test $ac_status = 0; then
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"
+    else
+      AC_MSG_RESULT(no)
+      warn_freetype="FreeType library not found.  Native graphics will be disabled."
+    fi])
 
   if test -n "$warn_freetype"; then
     OCTAVE_CONFIGURE_WARNING([warn_freetype])
@@ -1099,7 +1129,7 @@ fi
 XTRA_CRUFT_SH_LDFLAGS=
 if test $have_msvc = yes; then
   FLIBS="$FLIBS -lkernel32"
-  XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
+  XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft/cruft.def"
 fi
 AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
@@ -2076,6 +2106,7 @@ AC_SUBST([LEX_OUTPUT_ROOT], [lex.octave_])
 OCTAVE_PROG_BISON
 
 AC_PROG_LN_S
+AC_PROG_MKDIR_P
 
 AC_PROG_INSTALL
 INSTALL_SCRIPT='${INSTALL}'
@@ -2101,20 +2132,6 @@ if test -n "$DOCDIR" && test -n "$warn_gnuplot"; then
   OCTAVE_CONFIGURE_WARNING([warn_docs])
 fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
-
-### Even though we include config.h, we need to have the preprocessor
-### defines available in a variable for the testif feature of the
-### scripts/testfun/test.m function.  Use UGLY_DEFS to hold all the -D
-### options.  These are ultimately placed in the DEFS field of the
-### struct returned by octave_config_info, which is used by test.m.
-
-AC_OUTPUT_MAKE_DEFS
-
-### We have to insert extra levels of backslash quoting here so that
-### the right thing ends up in oct-conf.h.
-UGLY_DEFS=`echo $DEFS | $SED 's,\\",\\\\\\\\\\\\\\\\\\",g'`
-AC_MSG_NOTICE([defining UGLY_DEFS to be $UGLY_DEFS])
-AC_SUBST(UGLY_DEFS)
 
 ### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
 ### done feature testing. 
@@ -2176,11 +2193,283 @@ fi
 AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)
 
+### Check for Java.
+
+build_java=true
+AC_ARG_ENABLE([java],
+  [AS_HELP_STRING([--disable-java],
+    [disable Java interface])],
+  [if test "$enableval" = no; then
+     build_java=false
+   fi],
+  [])
+
+AC_ARG_WITH([java-homedir],
+  [AS_HELP_STRING([--with-java-homedir=DIR],
+    [Java JDK directory in DIR])],
+  [JAVA_HOMEDIR="$withval"])
+
+AC_ARG_WITH([java-includedir],
+  [AS_HELP_STRING([--with-java-includedir=DIR],
+    [look for java include file <jni.h> in DIR])],
+  [JAVA_CPPFLAGS="$withval"], [JAVA_CPPFLAGS=""])
+
+AC_ARG_WITH([java-libdir],
+  [AS_HELP_STRING([--with-java-libdir=DIR],
+    [look for java library libjvm in DIR])],
+  [JAVA_LDPATH="$withval"], [JAVA_LDPATH=""])
+
+## Grab JAVA_HOME from environment variable if it exists
+AC_ARG_VAR([JAVA_HOME], [path to Java JDK installation])
+## But --with-java-homedir option overrides environment variable
+if test -n "$JAVA_HOMEDIR"; then
+  JAVA_HOME=$JAVA_HOMEDIR
+fi
+JAVA=
+JAVAC=
+JAR=
+JAVA_LIBS=
+
+## Fake loop so that "break" can be used to skip code blocks.
+while test $build_java = true
+do
+  ## Unset build_java.  Variable is set only if all configuration tests pass.
+  build_java=false
+
+  ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
+  if test -z "$JAVA_HOME"; then
+    AC_MSG_WARN([JAVA_HOME environment variable not initialized.])
+    AC_MSG_WARN([Auto-detection will proceed but is unreliable.])
+  fi
+
+  ## Search for a viable Java executable.
+  if test -z "$JAVA_HOME"; then
+    JAVA_PATH="$PATH"
+  else
+    JAVA_PATH="${JAVA_HOME}$PATH_SEPARATOR${JAVA_HOME}/jre/bin$PATH_SEPARATOR${JAVA_HOME}/bin$PATH_SEPARATOR${JAVA_HOME}/../bin$PATH_SEPARATOR${PATH}"
+  fi
+  AC_PATH_PROG(JAVA, java, [], [$JAVA_PATH])
+
+  if test -z "$JAVA"; then
+    AC_MSG_WARN([No Java executable found.  Octave will not be able to call Java methods.])   
+    break
+  fi
+
+  if test -z "$JAVA_HOME"; then
+    ## Find JAVA_HOME for JRE by running java and querying properties.
+    JAVA_TMP_HOME="`\"$JAVA\" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`"
+    ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
+    JAVA_HOME="`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`"
+  fi
+
+  case $canonical_host_type in
+    *-mingw* | *-msdosmsvc*)
+      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is without
+      ## colon and backslashes, as it is also used as path separator. Use quoted paths
+      ## as Java may be installed in a path with whitespaces (e.g. C:\Program Files\Java\...).
+      if test -n "$JAVA_HOME"; then
+        JAVA_HOME="`cd \"$JAVA_HOME\" && pwd`"
+	## Maybe this will be useful in the future, as native Java won't probably
+	## understand MSYS paths.
+	JAVA_HOME_NATIVE="`cd \"$JAVA_HOME\" && pwd -W`"
+      fi
+    ;;
+    *)
+      JAVA_HOME_NATIVE="$JAVA_HOME"
+    ;;
+  esac
+
+  ## Amend search path for JAVAC and JAR.
+  if test -z "$JAVA_HOME"; then
+    JAVA_PATH="$PATH"
+  else
+    JAVA_PATH="${JAVA_HOME}$PATH_SEPARATOR${JAVA_HOME}/bin$PATH_SEPARATOR${JAVA_HOME}/../bin$PATH_SEPARATOR${PATH}"
+  fi
+
+  AC_PATH_PROG(JAVAC, javac, [], [$JAVA_PATH])
+  AC_PATH_PROG(JAR, jar, [], [$JAVA_PATH])
+
+  if test -z "$JAVAC" || test -z "$JAR"; then
+    AC_MSG_WARN([No javac compiler or jar executable found.  Octave will not be able to call Java methods.])
+    break
+  fi
+
+  ## Check Java version is recent enough.
+  AC_MSG_CHECKING([for Java version])
+  java_version=[`$"JAVA" -version 2>&1 | sed -n -e 's/^java version[^0-9"]*"\([^"]*\)"/\1/p'`]
+  AC_MSG_RESULT([$java_version])
+  java_major=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
+  java_minor=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+  if test $java_major -ge 1 && test $java_minor -ge 5; then
+    :  # Version is ok.  Do nothing.
+  else
+    AC_MSG_WARN([Java version is too old (< 1.5).  Octave will not be able to call Java methods.])
+    break
+  fi
+
+  ## At this point Win32/MSVC systems have enough configuration data. We assume
+  ## that all appropriate variables (e.g. INCLUDE and LIB) have already the required
+  ## paths to compile and link against JDK.
+  case $canonical_host_type in
+    *-msdosmsvc*)
+      build_java=true
+      JAVA_LIBS=-ladvapi32
+      AC_DEFINE(HAVE_JAVA, 1,
+        [Define to 1 if Java is available and is at least version 1.5])
+      break
+    ;;
+    *-mingw*)
+      if test "$have_msvc" = "yes"; then
+        build_java=true
+        JAVA_LIBS=-ladvapi32
+        AC_DEFINE(HAVE_JAVA, 1,
+          [Define to 1 if Java is available and is at least version 1.5])
+        break
+      fi
+    ;;
+  esac
+
+  ## Determine which library file name to search for.
+  case $canonical_host_type in
+    *-darwin*)
+      jvmlib=libjvm.dylib
+    ;;
+    *-mingw* | *-cygwin*)
+      jvmlib=jvm.dll
+    ;;
+    *)
+      jvmlib=libjvm.so
+    ;;
+  esac
+
+  AC_MSG_CHECKING([for $jvmlib])
+
+  if test -z "$JAVA_LDPATH"; then
+    ## Run Java to try and determine library path to libjvm.so.
+    JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
+    JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e "s/${PATH_SEPARATOR}/ /g"`
+    for dir in $JAVA_TMP_LDPATH; do
+      if test -f "$dir/$jvmlib"; then
+        JAVA_LDPATH=$dir
+        break
+      fi
+    done
+  fi
+
+  if test -z "$JAVA_LDPATH"; then
+    ## Nothing found.  Try Java again using bootpath argument. 
+    JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_BOOTPATH`
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/client ${JAVA_TMP_LDPATH}/server"
+    for dir in $JAVA_TMP_LDPATH; do
+      if test -f "$dir/$jvmlib"; then
+        JAVA_LDPATH=$dir
+        break
+      fi
+    done
+  fi
+
+  if test -z "$JAVA_LDPATH"; then
+    ## Java failed to find it's own library path.  Guess wildly.
+    JAVA_TMP_LDPATH=`ls -d $JAVA_HOME/jre/lib/*/client`
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} `ls -d $JAVA_HOME/jre/lib/*/server`"
+    ## Add some paths that might work on Macs.
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/../Libraries ${JAVA_HOME}/Libraries"
+    ## Add some paths that might work on MinGW
+    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/bin/client ${JAVA_HOME}/bin/server"
+    for dir in $JAVA_TMP_LDPATH; do
+      if test -f "$dir/$jvmlib"; then
+        JAVA_LDPATH=$dir
+        break
+      fi
+    done
+  fi
+
+  ## Verify value passed in option --with-java-libdir
+  if test -n "$JAVA_LDPATH"; then
+    if test -f "${JAVA_LDPATH}/$jvmlib"; then
+      :  # libjvm found
+    else
+      JAVA_LDPATH=""
+    fi 
+  fi
+
+  if test -z "$JAVA_LDPATH"; then
+    AC_MSG_RESULT([not found])
+    AC_MSG_WARN([Library $jvmlib not found.  Octave will not be able to call Java methods.])
+    break
+  else
+    AC_MSG_RESULT([$JAVA_LDPATH])
+  fi
+
+  AC_MSG_CHECKING([for include file <jni.h>])
+
+  ## Java and JVM found.  Set up flags.
+  case $canonical_host_type in
+    *-darwin*)
+      ## Sneak the -framework flag into mkoctfile via LFLAGS
+      LFLAGS="$LFLAGS -framework JavaVM"
+      ## According to: http://developer.apple.com/unix/crossplatform.html
+      ## one must explicitly set the include path.
+      ## Unfortunately, the include path keeps moving around.
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I/System/Library/Frameworks/JavaVM.framework/Home/include -I/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Headers -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
+      fi
+      JAVA_LIBS="-framework JavaVM"
+    ;;
+    *-mingw* | *-cygwin*)
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
+      fi
+      JAVA_LIBS=-ladvapi32
+    ;;
+    *)
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/linux"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
+      fi
+    ;;
+  esac
+
+  ## Verify jni.h include file exists.
+	JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
+  have_jni=false
+	for dir in $JNI_PATH; do 
+	  if test -f "${dir}/jni.h"; then have_jni=true; break; fi
+	done
+  if test $have_jni = true; then
+    AC_MSG_RESULT([$dir])
+  else
+    AC_MSG_RESULT([not found])
+    AC_MSG_WARN([Include file <jni.h> not found.  Octave will not be able to call Java methods.])
+    break
+  fi
+
+  ## Passed all configuration tests.  A workable Java installation was found.
+  build_java=true
+  AC_DEFINE(HAVE_JAVA, 1,
+    [Define to 1 if Java is available and is at least version 1.5])
+  break
+done
+
+AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = true])
+AC_SUBST(JAVA)
+AC_SUBST(JAVAC)
+AC_SUBST(JAR)
+AC_SUBST(JAVA_CPPFLAGS)
+AC_SUBST(JAVA_LIBS)
+AC_DEFINE_UNQUOTED([JAVA_HOME], ["$JAVA_HOME"], [Java home (top-level installation dir)])
+AC_DEFINE_UNQUOTED([JAVA_LDPATH], ["$JAVA_LDPATH"], [Java library path (libjvm)])
+
 ### GUI/Qt related tests.
 
-HAVE_QT=false
-QT_INCDIR=
-QT_LIBDIR=
+QT_CPPFLAGS=
+QT_LDFLAGS=
+QT_LIBS=
 win32_terminal=no
 build_gui=true
 GUIDIR=libgui
@@ -2194,17 +2483,14 @@ if test $build_gui = true; then
     [],
     [AC_MSG_ERROR([Qt libraries are required to build the GUI])])
 
-  ## Check for Qt utility programs
-  AC_CHECK_PROGS(QMAKE, [qmake-qt5 qmake-qt4 qmake])
-  if test -z "$QMAKE"; then
-    AC_MSG_ERROR([qmake is required to build the GUI])
-  fi
+  ## Retrieve Qt compilation and linker flags
+  QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
+  QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
+  QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
 
-  QT_INCDIR=`$QMAKE -query QT_INSTALL_HEADERS | sed -e 's,\\\\,/,g'`
-  QT_LIBDIR=`$QMAKE -query QT_INSTALL_LIBS | sed -e 's,\\\\,/,g'`
-
-  if test "$QT_INCDIR" = "**Unknown**"; then
-    AC_MSG_ERROR([qmake >= Qt4 is required to build the GUI])
+  ## Check for Qt4
+  if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
+    AC_MSG_ERROR([Qt >= 4.0.0 is required to build the GUI])
   fi
 
   AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
@@ -2214,9 +2500,8 @@ if test $build_gui = true; then
     AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required to build the GUI])
   fi 
 
-  HAVE_QT=true
   AC_DEFINE(HAVE_QT, 1, 
-    [Define to 1 if Qt is available (libraries, developer header files, utility programs (qmake, moc, uic, and rcc))])
+    [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, and rcc))])
 
   ## Check for Qscintilla library which is used in the GUI editor. 
   AC_CACHE_CHECK([whether Qscintilla library is installed],
@@ -2224,9 +2509,9 @@ if test $build_gui = true; then
     [save_CPPFLAGS="$CPPFLAGS"
     save_LDFLAGS="$LDFLAGS"
     save_LIBS="$LIBS"
-    CPPFLAGS="-I$QT_INCDIR -I$QT_INCDIR/Qt $CPPFLAGS"
-    LDFLAGS="-L$QT_LIBDIR $LDFLAGS"
-    LIBS="-lqscintilla2"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    LDFLAGS="$QT_LDFLAGS $LDFLAGS"
+    LIBS="$QT_LIBS -lqscintilla2"
     AC_LANG_PUSH(C++)
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[
       #include <Qsci/qscilexersql.h>
@@ -2243,6 +2528,9 @@ if test $build_gui = true; then
   if test $octave_cv_lib_qscintilla = no; then
     AC_MSG_ERROR([Qscintilla library is required to build the GUI])
   fi
+  ## Let's assume Qscintilla library is at the same location as
+  ## other regular Qt libraries.
+  QT_LIBS="$QT_LIBS -lqscintilla2"
 
   ## Check for Qt functions which have changed their API over time
   OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
@@ -2271,8 +2559,9 @@ else
 fi
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = true])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
-AC_SUBST(QT_INCDIR)
-AC_SUBST(QT_LIBDIR)
+AC_SUBST(QT_CPPFLAGS)
+AC_SUBST(QT_LDFLAGS)
+AC_SUBST(QT_LIBS)
 AC_SUBST(GUIDIR)
 
 ### Run configure in subdirectories.
@@ -2448,6 +2737,21 @@ typedef OCTAVE_IDX_TYPE octave_idx_type;
 dnl end of AH_BOTTOM
 dnl ------------------------------------------------------------
 
+### Make all AC_DEFINES available to testif feature of test.m function.
+### This must reside at the bottom of configure.ac after all AC_DEFINES
+### have been made.
+### Use UGLY_DEFS to hold all the -D options.  These are ultimately placed
+### in the DEFS field of the struct returned by octave_config_info, which
+### is used by test.m.
+
+AC_OUTPUT_MAKE_DEFS
+
+## We have to insert extra levels of backslash quoting here so that
+## the right thing ends up in oct-conf.h.
+UGLY_DEFS=`echo $DEFS | $SED 's,\\",\\\\\\\\\\\\\\\\\\",g'`
+AC_MSG_NOTICE([defining UGLY_DEFS to be $UGLY_DEFS])
+AC_SUBST(UGLY_DEFS)
+
 ### Do the substitutions in all the Makefiles.
 
 AC_SUBST(ac_config_files)
@@ -2533,6 +2837,10 @@ Octave is now configured for $canonical_host_type
   HDF5 CPPFLAGS:               $HDF5_CPPFLAGS
   HDF5 LDFLAGS:                $HDF5_LDFLAGS
   HDF5 libraries:              $HDF5_LIBS
+  Java home:                   $JAVA_HOME
+  Java JVM path:               $JAVA_LDPATH
+  Java CPPFLAGS:               $JAVA_CPPFLAGS
+  Java libraries:              $JAVA_LIBS
   LAPACK libraries:            $LAPACK_LIBS
   LLVM CPPFLAGS:               $LLVM_CPPFLAGS
   LLVM LDFLAGS:                $LLVM_LDFLAGS
@@ -2549,8 +2857,9 @@ Octave is now configured for $canonical_host_type
   QRUPDATE CPPFLAGS:           $QRUPDATE_CPPFLAGS
   QRUPDATE LDFLAGS:            $QRUPDATE_LDFLAGS
   QRUPDATE libraries:          $QRUPDATE_LIBS
-  Qt headers:                  $QT_INCDIR
-  Qt libraries:                $QT_LIBDIR
+  Qt CPPFLAGS:                 $QT_CPPFLAGS
+  Qt LDFLAGS:                  $QT_LDFLAGS
+  Qt libraries:                $QT_LIBS
   READLINE libraries:          $READLINE_LIBS
   REGEX libraries:             $REGEX_LIBS
   TERM libraries:              $TERM_LIBS
@@ -2568,6 +2877,7 @@ Octave is now configured for $canonical_host_type
 
   Build Octave GUI:                   $build_gui
   JIT compiler for loops:             $build_jit
+  Build Java interface:               $build_java
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
   Build static libraries:             $STATIC_LIBS

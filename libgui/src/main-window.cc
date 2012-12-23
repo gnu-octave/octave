@@ -61,6 +61,36 @@ main_window::main_window (QWidget *p)
 
 main_window::~main_window ()
 {
+  // Clean up all dynamically created objects to ensure they are
+  // deleted before this main_window is.  Otherwise, some will be
+  // attached to a non-existent parent.
+
+  if (_octave_qt_event_listener)
+    delete _octave_qt_event_listener;
+
+  if (_file_editor)
+    delete _file_editor;
+
+  if (_terminal_dock_widget)
+    delete _terminal_dock_widget;
+
+  if (_terminal)
+    delete _terminal;
+
+  if (_status_bar)
+    delete _status_bar;
+
+  if (_documentation_dock_widget)
+    delete _documentation_dock_widget;
+
+  if (_files_dock_widget)
+    delete _files_dock_widget;
+
+  if (_history_dock_widget)
+    delete _history_dock_widget;
+
+  if (_workspace_view)
+    delete _workspace_view;
 }
 
 void
@@ -185,6 +215,23 @@ main_window::notice_settings ()
     _terminal->setCursorType(QTerminalInterface::UnderlineCursor,
                              cursorBlinking);
 
+  // the widget's icons (when floating)
+  int icon_set = settings->value ("DockWidgets/widget_icon_set",0).toInt ();
+  QString icon_prefix = QString (WIDGET_ICON_SET_PREFIX[icon_set]);
+  QString icon;
+  foreach (QObject *obj, children ())
+    {
+      QString name = obj->objectName ();
+      if (obj->inherits("QDockWidget") && ! name.isEmpty ())
+        { // if children is a dockwidget with a name
+          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
+          icon = icon_prefix;  // prefix or octave-logo
+          if (icon_set)        // > 0 : each widget has individual icon
+            icon = icon + name + QString(".png");
+          widget->setWindowIcon (QIcon (icon));
+        }
+    }
+
   resource_manager::update_network_settings ();
 }
 
@@ -216,25 +263,44 @@ main_window::current_working_directory_has_changed (const QString& directory)
 void
 main_window::change_current_working_directory ()
 {
-  QString selectedDirectory =
+  QString directory =
     QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
 
-  if (!selectedDirectory.isEmpty ())
-    octave_link::post_event (this, &main_window::change_directory_callback,
-                             selectedDirectory.toStdString ());
+  if (!directory.isEmpty ())
+    {
+      std::string dir = directory.toLocal8Bit ().data ();
+      octave_link::post_event (this, &main_window::change_directory_callback,dir);
+    }
 }
 
 void
 main_window::set_current_working_directory (const QString& directory)
 {
-  octave_link::post_event (this, &main_window::change_directory_callback,
-                           directory.toStdString ());
+  QFileInfo fileInfo (directory);  // check whether this is an existing dir
+  if (fileInfo.exists () && fileInfo.isDir ())   // is dir and exists
+    {
+      std::string dir = directory.toLocal8Bit ().data ();
+      octave_link::post_event (this, &main_window::change_directory_callback,dir);
+    }
 }
 
 void
 main_window::current_working_directory_up ()
 {
   set_current_working_directory ("..");
+}
+
+// Slot that is called if return is pressed in the line edit of the combobox
+// -> a new or a directory that is already in the drop down list was entered
+void
+main_window::current_working_directory_entered ()
+{
+  QString dir = _current_directory_line_edit->text ();  // get new directory
+  int index = _current_directory_combo_box->findText (dir);  // already in list?
+  if ( index < 0 )  // directory not yet in list -> set directory
+    set_current_working_directory (dir);
+  // if directory already in list, combobox triggers signal activated ()
+  // to change directory
 }
 
 void
@@ -478,26 +544,31 @@ main_window::construct ()
   _documentation_dock_widget->setStatusTip (tr ("See the documentation for help."));
   _status_bar               = new QStatusBar (this);
 
+  _current_directory_line_edit = new QLineEdit (this);
   _current_directory_combo_box = new QComboBox (this);
-  _current_directory_combo_box->setFixedWidth (300);
+  _current_directory_combo_box->setFixedWidth (current_directory_width);
   _current_directory_combo_box->setEditable (true);
+  // setLineEdit takes ownership -> no need to delete line_edit in ~main_window
+  _current_directory_combo_box->setLineEdit (_current_directory_line_edit);
   _current_directory_combo_box->setInsertPolicy (QComboBox::InsertAtTop);
-  _current_directory_combo_box->setMaxVisibleItems (16);
-  _current_directory_combo_box->setMaxCount (16);
+  _current_directory_combo_box->setMaxVisibleItems (current_directory_max_visible);
+  _current_directory_combo_box->setMaxCount (current_directory_max_count);
 
-  _current_directory_tool_button = new QToolButton (this);
-  _current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));
+  QToolButton *current_directory_tool_button = new QToolButton (this);
+  current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));
 
-  _current_directory_up_tool_button = new QToolButton (this);
-  _current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
+  QToolButton *current_directory_up_tool_button = new QToolButton (this);
+  current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
 
   // Octave Terminal subwindow.
   _terminal = new QTerminal (this);
   _terminal->setObjectName ("OctaveTerminal");
   _terminal->setFocusPolicy (Qt::StrongFocus);
   _terminal_dock_widget = new terminal_dock_widget (_terminal, this);
-  _terminal_dock_widget->setWindowIcon (QIcon(":/actions/icons/terminal.png"));
 
+  // Create and set the central widget.  QMainWindow takes ownership of
+  // the widget (pointer) so there is no need to delete the object upon
+  // destroying this main_window.
   QWidget *dummyWidget = new QWidget ();
   dummyWidget->setObjectName ("CentralDummyWidget");
   dummyWidget->resize (10, 10);
@@ -744,6 +815,7 @@ main_window::construct ()
 
   // Toolbars
   QToolBar *main_tool_bar = addToolBar ("Main");
+  main_tool_bar->setObjectName ("MainToolBar");
   main_tool_bar->addAction (new_script_action);
   main_tool_bar->addAction (open_action);
   main_tool_bar->addSeparator ();
@@ -753,10 +825,12 @@ main_window::construct ()
   main_tool_bar->addAction (undo_action);
   main_tool_bar->addAction (redo_action);
   main_tool_bar->addSeparator ();
+  // addWidget takes ownership of the objects so there is no
+  // need to delete these upon destroying this main_window.
   main_tool_bar->addWidget (new QLabel (tr ("Current Directory:")));
   main_tool_bar->addWidget (_current_directory_combo_box);
-  main_tool_bar->addWidget (_current_directory_tool_button);
-  main_tool_bar->addWidget (_current_directory_up_tool_button);
+  main_tool_bar->addWidget (current_directory_tool_button);
+  main_tool_bar->addWidget (current_directory_up_tool_button);
 
   connect (qApp,                        SIGNAL (aboutToQuit ()),
            this,                        SLOT   (prepare_for_quit ()));
@@ -836,9 +910,9 @@ main_window::construct ()
            this,                        SLOT   (handle_load_workspace_request ()));
   connect (clear_workspace_action,      SIGNAL (triggered ()),
            this,                        SLOT   (handle_clear_workspace_request ()));
-  connect (_current_directory_tool_button, SIGNAL (clicked ()),
+  connect (current_directory_tool_button, SIGNAL (clicked ()),
            this,                        SLOT   (change_current_working_directory ()));
-  connect (_current_directory_up_tool_button, SIGNAL (clicked ()),
+  connect (current_directory_up_tool_button, SIGNAL (clicked ()),
            this,                        SLOT   (current_working_directory_up()));
   connect (copy_action,                 SIGNAL (triggered()),
            _terminal,                   SLOT   (copyClipboard ()));
@@ -846,6 +920,8 @@ main_window::construct ()
            _terminal,                   SLOT   (pasteClipboard ()));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (set_current_working_directory (QString)));
+  connect (_current_directory_line_edit, SIGNAL (returnPressed ()),
+           this,                        SLOT (current_working_directory_entered ()));
   connect (_debug_continue,             SIGNAL (triggered ()),
            this,                        SLOT (debug_continue ()));
   connect (_debug_step_into,            SIGNAL (triggered ()),

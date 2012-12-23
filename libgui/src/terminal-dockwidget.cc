@@ -39,6 +39,20 @@ terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *p)
   connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
 }
 
+void
+terminal_dock_widget::closeEvent (QCloseEvent *e)
+{
+  emit active_changed (false);
+  QDockWidget::closeEvent (e);
+}
+
+void
+terminal_dock_widget::handle_visibility_changed (bool visible)
+{
+  if (visible)
+    emit active_changed (true);
+}
+
 // slot for signal that is emitted when floating property changes
 void
 terminal_dock_widget::top_level_changed (bool floating)

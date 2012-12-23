@@ -52,6 +52,7 @@ OCTAVE_VALUE_INC = \
   octave-value/ov-flt-cx-mat.h \
   octave-value/ov-flt-re-diag.h \
   octave-value/ov-flt-re-mat.h \
+  octave-value/ov-java.h \
   octave-value/ov-lazy-idx.h \
   octave-value/ov-mex-fcn.h \
   octave-value/ov-null-mat.h \
@@ -110,6 +111,7 @@ OCTAVE_VALUE_SRC = \
   octave-value/ov-flt-cx-mat.cc \
   octave-value/ov-flt-re-diag.cc \
   octave-value/ov-flt-re-mat.cc \
+  octave-value/ov-java.cc \
   octave-value/ov-lazy-idx.cc \
   octave-value/ov-mex-fcn.cc \
   octave-value/ov-null-mat.cc \
@@ -130,4 +132,14 @@ OCTAVE_VALUE_SRC = \
 noinst_LTLIBRARIES += octave-value/liboctave-value.la
 
 octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
-octave_value_liboctave_value_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)
+
+## FIXME -- maybe it would be better to limit the JAVA flags to
+## the compile commands for ov-java.cc?  Does JAVA_LIBS need to be
+## added to LIBOCTINTERP_LINK_DEPS (see libinterp/link-deps.mk)?
+## Should we have a separate set of JAVA_LDFLAGS?
+
+octave_value_liboctave_value_la_CPPFLAGS = \
+  $(liboctinterp_la_CPPFLAGS) \
+  $(JAVA_CPPFLAGS)
+
+octave_value_liboctave_value_la_LIBADD = $(JAVA_LIBS)

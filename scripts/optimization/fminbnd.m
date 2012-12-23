@@ -21,7 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
 ## Find a minimum point of a univariate function.
-## 
+##
 ## @var{fun} should be a function handle or name.  @var{a}, @var{b} specify a
 ## starting interval.  @var{options} is a structure specifying additional
 ## options.  Currently, @code{fminbnd} recognizes these options:
@@ -74,8 +74,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     fun = str2func (fun, "global");
   endif
 
-  ## TODO
-  ## displev = optimget (options, "Display", "notify");
+  displ = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");
   tolx = optimget (options, "TolX", 1e-8);
@@ -101,6 +100,11 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   fv = fw = fval = fun (x);
   nfev++;
 
+  ## Only for display purposes.
+  iter(1).funccount = nfev;
+  iter(1).x = x;
+  iter(1).fx = fval;
+
   while (niter < maxiter && nfev < maxfev)
     xm = 0.5*(a+b);
     ## FIXME: the golden section search can actually get closer than sqrt(eps)
@@ -115,6 +119,8 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     if (abs (e) > tol)
       dogs = false;
       ## Try inverse parabolic step.
+      iter(niter+1).procedure = "parabolic";
+
       r = (x - w)*(fval - fv);
       q = (x - v)*(fval - fw);
       p = (x - v)*q - (x - w)*r;
@@ -141,43 +147,52 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     endif
     if (dogs)
       ## Default to golden section step.
+
+      ## WARNING: This is also the "initial" procedure following
+      ## MATLAB nomenclature. After the loop we'll fix the string
+      ## for the first step.
+      iter(niter+1).procedure = "golden";
+
       e = ifelse (x >= xm, a - x, b - x);
       d = c * e;
     endif
 
-     ## f must not be evaluated too close to x.
-     u = x + max (abs (d), tol) * (sign (d) + (d == 0));
+    ## f must not be evaluated too close to x.
+    u = x + max (abs (d), tol) * (sign (d) + (d == 0));
+    fu = fun (u);
 
-     fu = fun (u);
-     nfev++;
-     niter++;
+    niter++;
 
-     ## update  a, b, v, w, and x
+    iter(niter).funccount = nfev++;
+    iter(niter).x = u;
+    iter(niter).fx = fu;
 
-     if (fu <= fval)
-       if (u < x)
-         b = x;
-       else
-         a = x;
-       endif
-       v = w; fv = fw;
-       w = x; fw = fval;
-       x = u; fval = fu;
-     else
-       ## The following if-statement was originally executed even if fu == fval.
-       if (u < x)
-         a = u;
-       else
-         b = u;
-       endif
-       if (fu <= fw || w == x)
-         v = w; fv = fw;
-         w = u; fw = fu;
-       elseif (fu <= fv || v == x || v == w)
-         v = u;
-         fv = fu;
-       endif
-     endif
+    ## update  a, b, v, w, and x
+
+    if (fu <= fval)
+      if (u < x)
+        b = x;
+      else
+        a = x;
+      endif
+      v = w; fv = fw;
+      w = x; fw = fval;
+      x = u; fval = fu;
+    else
+      ## The following if-statement was originally executed even if fu == fval.
+      if (u < x)
+        a = u;
+      else
+        b = u;
+      endif
+      if (fu <= fw || w == x)
+        v = w; fv = fw;
+        w = u; fw = fu;
+      elseif (fu <= fv || v == x || v == w)
+        v = u;
+        fv = fu;
+      endif
+    endif
 
     ## If there's an output function, use it now.
     if (outfcn)
@@ -190,6 +205,26 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
       endif
     endif
   endwhile
+
+  ## Fix the first step procedure.
+  iter(1).procedure = "initial";
+
+  ## Handle the "Display" option
+  switch displ
+    case "iter"
+      print_formatted_table (iter);
+      print_exit_msg (info, struct("TolX", tolx, "fx", fval));
+    case "notify"
+      if (info == 0)
+        print_exit_msg (info, struct("fx",fval));
+      endif
+    case "final"
+      print_exit_msg (info, struct("TolX", tolx, "fx", fval));
+    case "off"
+      "skip";
+    otherwise
+      warning ("unknown option for Display: '%s'", displ);
+  endswitch
 
   output.iterations = niter;
   output.funcCount = nfev;
@@ -208,6 +243,36 @@ function fx = guarded_eval (fun, x)
   elseif (isnan (fx))
     error ("fminbnd:isnan", "fminbnd: NaN value encountered");
   endif
+endfunction
+
+## A hack for printing a formatted table
+function print_formatted_table (table)
+  printf ("\n Func-count     x          f(x)         Procedure\n");
+  for row=table
+    printf("%5.5s        %7.7s    %8.8s\t%s\n",
+           int2str (row.funccount), num2str (row.x,"%.5f"),
+           num2str (row.fx,"%.6f"), row.procedure);
+  endfor
+  printf ("\n");
+endfunction
+
+## Print either a success termination message or bad news
+function print_exit_msg (info, opt=struct())
+  printf ("");
+  switch info
+    case 1
+      printf ("Optimization terminated:\n");
+      printf (" the current x satisfies the termination criteria using OPTIONS.TolX of %e\n", opt.TolX);
+    case 0
+      printf ("Exiting: Maximum number of iterations has been exceeded\n");
+      printf ("         - increase MaxIter option.\n");
+      printf ("         Current function value: %.6f\n", opt.fx);
+    case -1
+      "FIXME"; ## FIXME: what's the message MATLAB prints for this case?
+    otherwise
+      error ("internal error - fminbnd() is bug, sorry!");
+  endswitch
+  printf ("\n");
 endfunction
 
 

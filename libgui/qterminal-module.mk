@@ -35,9 +35,7 @@ nodist_qterminal_libqterminal_la_SOURCES = $(qterminal_libqterminal_la_MOC)
 
 qterminal_libqterminal_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  -I$(QT_INCDIR) \
-  -I$(QT_INCDIR)/QtCore \
-  -I$(QT_INCDIR)/QtGui \
+  @QT_CPPFLAGS@ \
   -I$(srcdir)/qterminal/libqterminal
 
 qterminal_libqterminal_la_CFLAGS = $(AM_CFLAGS)
@@ -56,7 +54,7 @@ qterminal_libqterminal_la_MOC += \
 qterminal_libqterminal_la_CPPFLAGS += -DUNICODE
 
 # This flag is required to let MOC know about Q_OS_WIN32.
-MOC_CPPFLAGS += -DWIN32
+MOC_CPPFLAGS += -DQ_OS_WIN32
 
 else
 

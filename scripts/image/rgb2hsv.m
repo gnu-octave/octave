@@ -24,7 +24,7 @@
 ##
 ## A color in the RGB space consists of red, green, and blue intensities.
 ##
-## A color in HSV space is represented by hue, saturation and value
+## A color in HSV space is represented by hue, saturation, and value
 ## (brightness) levels.  Value gives the amount of light in the color.  Hue
 ## describes the dominant wavelength.  Saturation is the amount of hue mixed
 ## into the color.
@@ -40,32 +40,38 @@ function hsv_map = rgb2hsv (rgb)
     print_usage ();
   endif
 
+  cls = class (rgb);
+  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
+    error ("rgb2hsv: invalid data type '%s'", cls);
+  elseif (isfloat (rgb) && (any (rgb(:) < 0) || any (rgb(:) > 1)))
+    error ("rgb2hsv: floating point images may only contain values between 0 and 1");
+  endif
+
   ## If we have an image convert it into a color map.
-  if (ismatrix (rgb) && ndims (rgb) == 3)
+  if (isreal (rgb) && ndims (rgb) == 3)
     is_image = true;
-    Sz = size (rgb);
+    sz = size (rgb);
     rgb = [rgb(:,:,1)(:), rgb(:,:,2)(:), rgb(:,:,3)(:)];
     ## Convert to a double image.
     if (isinteger (rgb))
-      C = class (rgb);
-      low = double (intmin (C));
-      high = double (intmax (C));
+      low = double (intmin (cls));
+      high = double (intmax (cls));
       rgb = (double (rgb) - low) / (high - low);
     endif
   else
     is_image = false;
   endif
 
-  if (! ismatrix (rgb) || columns (rgb) != 3)
-    error ("rgb2hsv: RGB_MAP must be a matrix of size n x 3");
+  if (! ismatrix (rgb) || columns (rgb) != 3 || issparse (rgb))
+    error ("rgb2hsv: input must be a matrix of size Nx3 or MxNx3");
   endif
 
-  ## get the max and min
-  s = min (rgb')';
-  v = max (rgb')';
+  ## get the max and min for each row
+  s = min (rgb, [], 2);
+  v = max (rgb, [], 2);
 
   ## set hue to zero for undefined values (gray has no hue)
-  h = zeros (size (v));
+  h = zeros (rows (rgb), 1);
   notgray = (s != v);
 
   ## blue hue
@@ -85,10 +91,7 @@ function hsv_map = rgb2hsv (rgb)
   if (any (idx))
     h(idx) =       1/6 * (rgb(idx,2) - rgb(idx,3)) ./ (v(idx) - s(idx));
   endif
-
-  ## correct for negative red
-  idx = (h < 0);
-  h(idx) = 1+h(idx);
+  h(h < 0) += 1;   # correct for negative red
 
   ## set the saturation
   s(! notgray) = 0;
@@ -96,9 +99,33 @@ function hsv_map = rgb2hsv (rgb)
 
   hsv_map = [h, s, v];
 
+  ## FIXME: rgb2hsv does not preserve class of image.
+  ##        Should it also convert back to uint8, uint16 for integer images?
   ## If input was an image, convert it back into one.
   if (is_image)
-    hsv_map = reshape (hsv_map, Sz);
+    hsv_map = reshape (hsv_map, sz);
   endif
 
 endfunction
+
+
+%% Test pure colors and gray
+%!assert (rgb2hsv ([1 0 0]), [0 1 1])
+%!assert (rgb2hsv ([0 1 0]), [1/3 1 1])
+%!assert (rgb2hsv ([0 0 1]), [2/3 1 1])
+%!assert (rgb2hsv ([0.5 0.5 0.5]), [0 0 0.5])
+
+%!test
+%! rgb_map = rand (64, 3);
+%! assert (hsv2rgb (rgb2hsv (rgb_map)), rgb_map, 1e-6);
+
+%!test
+%! rgb_img = rand (64, 64, 3);
+%! assert (hsv2rgb (rgb2hsv (rgb_img)), rgb_img, 1e-6);
+
+%% Test input validation
+%!error rgb2hsv ()
+%!error rgb2hsv (1,2)
+%!error <invalid data type 'cell'> rgb2hsv ({1})
+%!error <must be a matrix of size Nx3> rgb2hsv (ones (2,2))
+

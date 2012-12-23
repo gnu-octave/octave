@@ -1,5 +1,8 @@
 FCN_FILE_DIRS += image
 
+image_PRIVATE_FCN_FILES = \
+  image/private/ind2x.m
+
 image_FCN_FILES = \
   image/autumn.m \
   image/bone.m \
@@ -42,7 +45,8 @@ image_FCN_FILES = \
   image/spring.m \
   image/summer.m \
   image/white.m \
-  image/winter.m
+  image/winter.m \
+  $(image_PRIVATE_FCN_FILES)
 
 IMAGES += \
   image/default.img

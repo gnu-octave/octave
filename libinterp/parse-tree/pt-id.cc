@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-bp.h"
 #include "pt-const.h"
+#include "pt-eval.h"
 #include "pt-id.h"
 #include "pt-walk.h"
 #include "symtab.h"
@@ -88,7 +89,8 @@ tree_identifier::rvalue (int nargout)
         }
       else
         {
-          if (print_result () && nargout == 0)
+          if (print_result () && nargout == 0
+              && tree_evaluator::statement_printing_enabled ())
             val.print_with_name (octave_stdout, name ());
 
           retval = val;

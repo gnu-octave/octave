@@ -903,6 +903,11 @@ octave_sparse_complex_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (asinh, Complex, ::asinh);
       ARRAY_MAPPER (atan, Complex, ::atan);
       ARRAY_MAPPER (atanh, Complex, ::atanh);
+      ARRAY_MAPPER (erf, Complex, ::erf);
+      ARRAY_MAPPER (erfc, Complex, ::erfc);
+      ARRAY_MAPPER (erfcx, Complex, ::erfcx);
+      ARRAY_MAPPER (erfi, Complex, ::erfi);
+      ARRAY_MAPPER (dawson, Complex, ::dawson);
       ARRAY_MAPPER (ceil, Complex, ::ceil);
       ARRAY_MAPPER (conj, Complex, std::conj<double>);
       ARRAY_MAPPER (cos, Complex, std::cos);

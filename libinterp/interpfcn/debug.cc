@@ -794,21 +794,24 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 
 DEFUN (dbtype, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbtype ()\n\
-@deftypefnx {Built-in Function} {} dbtype (\"startl:endl\")\n\
-@deftypefnx {Built-in Function} {} dbtype (\"startl:end\")\n\
-@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\")\n\
-@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\", \"startl\")\n\
-@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\", \"startl:endl\")\n\
-@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\", \"startl:end\")\n\
-When in debugging mode and called with no arguments, list the script file\n\
-being debugged with line numbers.  An optional range specification,\n\
-specified as a string, can be used to list only a portion of the file.\n\
-The special keyword \"end\" is a valid line number specification.\n\
+@deftypefn  {Command} {} dbtype\n\
+@deftypefnx {Command} {} dbtype @var{lineno}\n\
+@deftypefnx {Command} {} dbtype @var{startl:endl}\n\
+@deftypefnx {Command} {} dbtype @var{startl:end}\n\
+@deftypefnx {Command} {} dbtype @var{func}\n\
+@deftypefnx {Command} {} dbtype @var{func} @var{lineno}\n\
+@deftypefnx {Command} {} dbtype @var{func} @var{startl:endl}\n\
+@deftypefnx {Command} {} dbtype @var{func} @var{startl:end}\n\
+Display a script file with line numbers.\n\
 \n\
-When called with the name of a function, list that script file\n\
-with line numbers.\n\
-@seealso{dbstatus, dbstop}\n\
+When called with no arguments in debugging mode, display the script file\n\
+currently being debugged.  An optional range specification can be used to\n\
+list only a portion of the file.  The special keyword \"end\" is a valid\n\
+line number specification for the last line of the file.\n\
+\n\
+When called with the name of a function, list that script file with line\n\
+numbers.\n\
+@seealso{dbwhere, dbstatus, dbstop}\n\
 @end deftypefn")
 {
   octave_value retval;

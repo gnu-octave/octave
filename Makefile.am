@@ -43,6 +43,7 @@ EXTRA_DIST = \
   build-aux/mk-opts.pl \
   build-aux/mkinstalldirs \
   build-aux/move-if-change \
+  build-aux/OctJavaQry.class \
   etc/NEWS.1 \
   etc/NEWS.2 \
   etc/NEWS.3 \

@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "action-container.h"
 
 class
-OCTINTERP_API
 event_queue : public action_container
 {
 public:

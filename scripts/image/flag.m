@@ -37,7 +37,7 @@ function map = flag (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("flag: argument must be a scalar");
+      error ("flag: N must be a scalar");
     endif
   else
     print_usage ();

@@ -231,8 +231,6 @@ private:
 
   jit_value *visit (tree& tee);
 
-  bool breaking; // true if we are breaking OR continuing
-
   typedef std::list<jit_block *> block_list;
   block_list breaks;
   block_list continues;
@@ -379,6 +377,8 @@ public:
   bool do_execute (octave_user_function& fcn, const octave_value_list& args,
                    octave_value_list& retval);
 
+  bool enabled (void);
+
   size_t trip_count (const octave_value& bounds) const;
 
   llvm::Module *module;
@@ -439,11 +439,4 @@ private:
 };
 
 #endif
-
-// If TRUE, enable JIT compiler debugging/tracing.
-extern bool Venable_jit_debugging;
-
-// If TRUE, enable JIT compiler.
-extern bool Venable_jit_compiler;
-
 #endif

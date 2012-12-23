@@ -137,6 +137,10 @@ jet_colormap (void)
 {
   Matrix cmap (64, 3, 0.0);
 
+  // Produce X in the same manner as linspace so that 
+  // jet_colormap and jet.m produce *exactly* the same result.
+  double delta = 1.0 / 63.0;
+
   for (octave_idx_type i = 0; i < 64; i++)
     {
       // This is the jet colormap.  It would be nice to be able
@@ -146,7 +150,7 @@ jet_colormap (void)
       // called, so calling an interpreted function is not
       // possible.
 
-      double x = i / 63.0;
+      double x = i*delta;
 
       if (x >= 3.0/8.0 && x < 5.0/8.0)
         cmap(i,0) = 4.0 * x - 3.0/2.0;
@@ -2041,13 +2045,12 @@ graphics_object::set (const Array<std::string>& names,
 void
 graphics_object::set (const octave_map& m)
 {
-  for (octave_map::const_iterator p = m.begin ();
-       p != m.end (); p++)
+  for (octave_idx_type p = 0; p < m.nfields (); p++)
     {
-      caseless_str name  = m.key (p);
+      caseless_str name  = m.keys ()[p];
 
-      octave_value val = octave_value (m.contents (p).elem (m.numel () - 1));
-
+      octave_value val = octave_value (m.contents (name).elem (m.numel () - 1));
+      
       set_value_or_default (name, val);
 
       if (error_state)
@@ -2066,6 +2069,32 @@ graphics_object::set (const octave_map& m)
 %! h = plot (1:10, 10:-1:1, 1:10, 1:10);
 %! set (h, struct ("linewidth", {5, 10}));
 %! assert (get (h, "linewidth"), {10; 10});
+## test ordering
+%!test
+%! markchanged = @(h, foobar, name) set (h, "userdata", [get(h,"userdata"); {name}]);
+%! figure (1, "visible", "off")
+%! clf ()
+%! h = line ();
+%! set (h, "userdata", {})
+%! addlistener (h, "color", {markchanged, "color"})
+%! addlistener (h, "linewidth", {markchanged, "linewidth"})
+%! # "linewidth" first
+%! props.linewidth = 2;
+%! props.color = "r";
+%! set (h, props);
+%! assert (get (h, "userdata"), fieldnames (props))
+%! clear props
+%! clf ()
+%! h = line ();
+%! set (h, "userdata", {})
+%! addlistener (h, "color", {markchanged, "color"})
+%! addlistener (h, "linewidth", {markchanged, "linewidth"})
+%! # "color" first
+%! props.color = "r";
+%! props.linewidth = 2;
+%! set (h, props);
+%! assert (get (h, "userdata"), fieldnames (props))
+%! close (1)
 */
 
 // Set a property to a value or to its (factory) default value.

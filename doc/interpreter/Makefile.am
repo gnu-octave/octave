@@ -83,12 +83,30 @@ include images.mk
 $(srcdir)/images.mk: $(srcdir)/config-images.sh $(srcdir)/images.awk $(srcdir)/images
 	$(srcdir)/config-images.sh $(top_srcdir)
 
-IMAGES = \
+JAVA_IMAGES = \
+  java-images/image001.png \
+  java-images/image002.png \
+  java-images/image003.png \
+  java-images/image004.png \
+  java-images/image005.png \
+  java-images/image006.png \
+  java-images/image007.png \
+  java-images/image008.png \
+  java-images/image009.png
+
+BUILT_IMAGES = \
   $(IMAGES_EPS) \
   $(IMAGES_PDF) \
   $(IMAGES_PNG) \
   $(IMAGES_TXT)
 
+IMAGES = \
+  $(BUILT_IMAGES) \
+  $(JAVA_IMAGES)
+
+## FIXME: JAVA_IMAGES will eventually need to be added to the HTML build.
+##        It will require a different Makefile rule later because 
+##        JAVA_IMAGES live in a subdir rather than in the current directory.
 HTMLDIR_IMAGES = $(addprefix octave.html/, $(IMAGES_PNG))
 
 LOGOS = \
@@ -123,6 +141,7 @@ MUNGED_TEXI_SRC = \
   interp.texi \
   intro.texi \
   io.texi \
+  java.texi \
   linalg.texi \
   matrix.texi \
   nonlin.texi \
@@ -270,7 +289,7 @@ EXTRA_DIST = \
 clean-local:
 	rm -rf t2d_cache
 
-DISTCLEANFILES = $(BUILT_TEXINFOS) doc-cache
+DISTCLEANFILES = $(BUILT_TEXINFOS)
 
-MAINTAINERCLEANFILES = $(IMAGES)
+MAINTAINERCLEANFILES = $(BUILT_IMAGES) doc-cache
 

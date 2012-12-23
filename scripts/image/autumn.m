@@ -37,7 +37,7 @@ function map = autumn (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("autumn: argument must be a scalar");
+      error ("autumn: N must be a scalar");
     endif
   else
     print_usage ();

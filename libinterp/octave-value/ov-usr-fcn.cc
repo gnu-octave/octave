@@ -382,7 +382,7 @@ octave_user_function::do_multi_index_op (int nargout,
     return retval;
 
 #ifdef HAVE_LLVM
-  if (Venable_jit_compiler && is_special_expr ()
+  if (is_special_expr ()
       && tree_jit::execute (*this, args, retval))
     return retval;
 #endif

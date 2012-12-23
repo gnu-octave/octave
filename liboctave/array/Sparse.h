@@ -87,12 +87,12 @@ protected:
       }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz = 0)
-      : d (new T [nz]), r (new octave_idx_type [nz]),
+      : d (nz > 0 ? new T [nz] : 0),
+      r (nz > 0 ? new octave_idx_type [nz] : 0),
       c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
       ncols (nc), count (1)
       {
-        c[nc] = nz;
-        for (octave_idx_type i = 0; i < nc; i++)
+        for (octave_idx_type i = 0; i < nc + 1; i++)
           c[i] = 0;
       }
 

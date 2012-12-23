@@ -128,25 +128,52 @@ static std::string Vhistory_timestamp_format_string
 // means read file, arg of -q means don't number lines.  Arg of N
 // means only display that many items.
 
-static void
-do_history (int argc, const string_vector& argv)
+static string_vector
+do_history (const octave_value_list& args, int nargout)
 {
-  int numbered_output = 1;
+  bool numbered_output = nargout == 0;
 
   unwind_protect frame;
 
+  string_vector hlist;
+
   frame.add_fcn (command_history::set_file, command_history::file ());
 
-  int i;
-  for (i = 1; i < argc; i++)
+  int nargin = args.length ();
+
+  // Number of history lines to show
+  int limit = -1;
+
+  for (octave_idx_type i = 0; i < nargin; i++)
     {
-      std::string option = argv[i];
+      octave_value arg = args(i);
+
+      std::string option;
+
+      if (arg.is_string ())
+        option = arg.string_value ();
+      else if (arg.is_numeric_type ())
+        {
+          limit = arg.int_value ();
+          continue;
+        }
+      else
+        {
+          gripe_wrong_type_arg ("history", arg);
+          return hlist;
+        }
 
       if (option == "-r" || option == "-w" || option == "-a"
           || option == "-n")
         {
-          if (i < argc - 1)
-            command_history::set_file (argv[i+1]);
+          if (i < nargin - 1 && args(i+1).is_string ())
+            command_history::set_file (args(++i).string_value ());
+          else
+            {
+              error ("history: expecting file name for %s option",
+                     option.c_str ());
+              return hlist;
+            }
 
           if (option == "-a")
             // Append 'new' lines to file.
@@ -167,43 +194,49 @@ do_history (int argc, const string_vector& argv)
           else
             panic_impossible ();
 
-          return;
+          return hlist;
         }
-      else if (argv[i] == "-q")
-        numbered_output = 0;
-      else if (argv[i] == "--")
+      else if (option == "-q")
+        numbered_output = false;
+      else if (option == "--")
         {
           i++;
           break;
         }
       else
-        break;
-    }
-
-  int limit = -1;
-
-  if (i < argc)
-    {
-      if (sscanf (argv[i].c_str (), "%d", &limit) != 1)
         {
-          if (argv[i][0] == '-')
-            error ("history: unrecognized option '%s'", argv[i].c_str ());
+          // The last argument found in the command list that looks like
+          // an integer will be used
+          int tmp;
+
+          if (sscanf (option.c_str (), "%d", &tmp) == 1)
+            limit = tmp;
           else
-            error ("history: bad non-numeric arg '%s'", argv[i].c_str ());
+            {
+              if (option.length () > 0 && option[0] == '-')
+                error ("history: unrecognized option '%s'", option.c_str ());
+              else
+                error ("history: bad non-numeric arg '%s'", option.c_str ());
 
-          return;
+              return  hlist;
+            }
         }
-
-      if (limit < 0)
-        limit = -limit;
     }
 
-  string_vector hlist = command_history::list (limit, numbered_output);
+  if (limit < 0)
+    limit = -limit;
+
+  hlist = command_history::list (limit, numbered_output);
 
   int len = hlist.length ();
 
-  for (i = 0; i < len; i++)
-    octave_stdout << hlist[i] << "\n";
+  if (nargout == 0)
+    {
+      for (octave_idx_type i = 0; i < len; i++)
+        octave_stdout << hlist[i] << "\n";
+    }
+
+  return hlist;
 }
 
 // Read the edited history lines from STREAM and return them
@@ -314,9 +347,28 @@ edit_history_add_hist (const std::string& line)
     }
 }
 
+static bool
+get_int_arg (const octave_value& arg, int& val)
+{
+  bool ok = true;
+
+  if (arg.is_string ())
+    {
+      std::string tmp = arg.string_value ();
+
+      ok = sscanf (tmp.c_str (), "%d", &val) == 1;
+    }
+  else if (arg.is_numeric_type ())
+    val = arg.int_value ();
+  else
+    ok = false;
+
+  return ok;
+}
+
 static std::string
-mk_tmp_hist_file (int argc, const string_vector& argv,
-                  int insert_curr, const char *warn_for)
+mk_tmp_hist_file (const octave_value_list& args,
+                  bool insert_curr, const char *warn_for)
 {
   std::string retval;
 
@@ -339,31 +391,34 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
 
   int hist_end = hist_count;
   int hist_beg = hist_count;
-  int reverse = 0;
+
+  bool reverse = false;
 
   // Process options.
 
-  int usage_error = 0;
-  if (argc == 3)
+  int nargin = args.length ();
+
+  bool usage_error = false;
+  if (nargin == 2)
     {
-      if (sscanf (argv[1].c_str (), "%d", &hist_beg) != 1
-          || sscanf (argv[2].c_str (), "%d", &hist_end) != 1)
-        usage_error = 1;
-      else
+      if (get_int_arg (args(0), hist_beg)
+          && get_int_arg (args(1), hist_end))
         {
           hist_beg--;
           hist_end--;
         }
-    }
-  else if (argc == 2)
-    {
-      if (sscanf (argv[1].c_str (), "%d", &hist_beg) != 1)
-        usage_error = 1;
       else
+        usage_error = true;
+    }
+  else if (nargin == 1)
+    {
+      if (get_int_arg (args(0), hist_beg))
         {
           hist_beg--;
           hist_end = hist_beg;
         }
+      else
+        usage_error = true;
     }
 
   if (hist_beg < 0 || hist_end < 0 || hist_beg > hist_count
@@ -384,7 +439,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
       int t = hist_end;
       hist_end = hist_beg;
       hist_beg = t;
-      reverse = 1;
+      reverse = true;
     }
 
   std::string name = octave_tempnam ("", "oct-");
@@ -421,9 +476,9 @@ unlink_cleanup (const char *file)
 }
 
 static void
-do_edit_history (int argc, const string_vector& argv)
+do_edit_history (const octave_value_list& args)
 {
-  std::string name = mk_tmp_hist_file (argc, argv, 0, "edit_history");
+  std::string name = mk_tmp_hist_file (args, false, "edit_history");
 
   if (name.empty ())
     return;
@@ -489,9 +544,9 @@ do_edit_history (int argc, const string_vector& argv)
 }
 
 static void
-do_run_history (int argc, const string_vector& argv)
+do_run_history (const octave_value_list& args)
 {
-  std::string name = mk_tmp_hist_file (argc, argv, 1, "run_history");
+  std::string name = mk_tmp_hist_file (args, true, "run_history");
 
   if (name.empty ())
     return;
@@ -570,21 +625,15 @@ omitted, the previous command in the history list is used.\n\
 {
   octave_value_list retval;
 
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("edit_history");
-
-  if (error_state)
-    return retval;
-
-  do_edit_history (argc, argv);
+  do_edit_history (args);
 
   return retval;
 }
 
-DEFUN (history, args, ,
+DEFUN (history, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} history options\n\
+@deftypefn {Command} history options\n\
+@deftypefnx {Built-in Function} {@var{h} = } history (@var{opt1}, @var{opt2}, @dots{})\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
 that you have executed.  Valid options are:\n\
 \n\
@@ -609,18 +658,17 @@ and pasting commands using the X Window System.\n\
 For example, to display the five most recent commands that you have\n\
 typed without displaying line numbers, use the command\n\
 @kbd{history -q 5}.\n\
+\n\
+If invoked with a single output argument, the history will be saved to that\n\
+argument as a cell string and will not be output to screen.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
-  int argc = args.length () + 1;
+  string_vector hlist = do_history (args, nargout);
 
-  string_vector argv = args.make_argv ("history");
-
-  if (error_state)
-    return retval;
-
-  do_history (argc, argv);
+  if (nargout > 0)
+    retval = Cell (hlist);
 
   return retval;
 }
@@ -635,14 +683,7 @@ and the commands are simply executed as they appear in the history list.\n\
 {
   octave_value_list retval;
 
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("run_history");
-
-  if (error_state)
-    return retval;
-
-  do_run_history (argc, argv);
+  do_run_history (args);
 
   return retval;
 }

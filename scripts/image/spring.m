@@ -36,7 +36,7 @@ function map = spring (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("spring: argument must be a scalar");
+      error ("spring: N must be a scalar");
     endif
   else
     print_usage ();

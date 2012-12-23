@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "lo-utils.h"
+#include "oct-env.h"
 #include "syswait.h"
 
 #include "welcome-wizard.h"
@@ -81,8 +82,6 @@ int
 octave_start_gui (int argc, char *argv[])
 {
   dissociate_terminal ();
-
-  setenv ("GNUTERM", "qt", 1);
 
   QApplication application (argc, argv);
 

@@ -46,20 +46,20 @@ The list of statements contained between keywords like @code{if} or
 @dfn{body} of a control statement.
 
 @menu
-* The @code{if} Statement::            
-* The @code{switch} Statement::        
-* The @code{while} Statement::         
-* The @code{do-until} Statement::      
-* The @code{for} Statement::           
-* The @code{break} Statement::         
-* The @code{continue} Statement::      
-* The @code{unwind_protect} Statement::  
-* The @code{try} Statement::           
+* The if Statement::            
+* The switch Statement::        
+* The while Statement::         
+* The do-until Statement::      
+* The for Statement::           
+* The break Statement::         
+* The continue Statement::      
+* The unwind_protect Statement::  
+* The try Statement::           
 * Continuation Lines::          
 @end menu
 
-@node The @code{if} Statement
-@section The @code{if} Statement
+@node The if Statement
+@section The if Statement
 @cindex @code{if} statement
 @cindex @code{else} statement
 @cindex @code{elseif} statement
@@ -207,8 +207,8 @@ else
 using the indentation to show how Octave groups the statements.
 @xref{Functions and Scripts}.
 
-@node The @code{switch} Statement
-@section The @code{switch} Statement
+@node The switch Statement
+@section The switch Statement
 @cindex @code{switch} statement
 @cindex @code{case} statement
 @cindex @code{otherwise} statement
@@ -385,8 +385,8 @@ switch (foo)
 
 @end itemize
 
-@node The @code{while} Statement
-@section The @code{while} Statement
+@node The while Statement
+@section The while Statement
 @cindex @code{while} statement
 @cindex @code{endwhile} statement
 @cindex loop
@@ -454,8 +454,8 @@ A newline is not required between the condition and the
 body; but using one makes the program clearer unless the body is very
 simple.
 
-@node The @code{do-until} Statement
-@section The @code{do-until} Statement
+@node The do-until Statement
+@section The do-until Statement
 @cindex @code{do-until} statement
 
 The @code{do-until} statement is similar to the @code{while} statement,
@@ -501,8 +501,8 @@ A newline is not required between the @code{do} keyword and the
 body; but using one makes the program clearer unless the body is very
 simple.
 
-@node The @code{for} Statement
-@section The @code{for} Statement
+@node The for Statement
+@section The for Statement
 @cindex @code{for} statement
 @cindex @code{endfor} statement
 
@@ -658,8 +658,8 @@ also optional.  This is useful for cycling through the values of all the
 structure elements when the names of the elements do not need to be
 known.
 
-@node The @code{break} Statement
-@section The @code{break} Statement
+@node The break Statement
+@section The break Statement
 @cindex @code{break} statement
 
 The @code{break} statement jumps out of the innermost @code{for} or
@@ -713,8 +713,8 @@ endwhile
 @end group
 @end example
 
-@node The @code{continue} Statement
-@section The @code{continue} Statement
+@node The continue Statement
+@section The continue Statement
 @cindex @code{continue} statement
 
 The @code{continue} statement, like @code{break}, is used only inside
@@ -762,8 +762,8 @@ endfor
 @end group
 @end example
 
-@node The @code{unwind_protect} Statement
-@section The @code{unwind_protect} Statement
+@node The unwind_protect Statement
+@section The unwind_protect Statement
 @cindex @code{unwind_protect} statement
 @cindex @code{unwind_protect_cleanup}
 @cindex @code{end_unwind_protect}
@@ -813,8 +813,8 @@ of the @code{unwind_protect} block because evaluation would stop at the
 point of the error and the statement to restore the value would not be
 executed.
 
-@node The @code{try} Statement
-@section The @code{try} Statement
+@node The try Statement
+@section The try Statement
 @cindex @code{try} statement
 @cindex @code{catch}
 @cindex @code{end_try_catch}

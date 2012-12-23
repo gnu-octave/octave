@@ -36,13 +36,13 @@ signals:
   void active_changed (bool active);
 
 public slots:
-  void handle_visibility_changed (bool visible)
-  {
-    if (visible)
-      emit active_changed (true);
-  }
+  void handle_visibility_changed (bool visible);
   /** Slot when floating property changes */
   void top_level_changed (bool floating);
+
+protected:
+  void closeEvent (QCloseEvent *event);
 };
+
 
 #endif // TERMINALDOCKWIDGET_H

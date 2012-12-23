@@ -40,7 +40,7 @@ function map = rainbow (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("rainbow: argument must be a scalar");
+      error ("rainbow: N must be a scalar");
     endif
   else
     print_usage ();

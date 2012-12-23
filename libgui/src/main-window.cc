@@ -576,7 +576,7 @@ main_window::construct ()
   dummyWidget->hide ();
   setCentralWidget (dummyWidget);
 
-  _file_editor = new file_editor (_terminal, this);
+  _file_editor = new file_editor (this);
 
   QMenu *file_menu = menuBar ()->addMenu (tr ("&File"));
 

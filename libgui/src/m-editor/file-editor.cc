@@ -35,44 +35,31 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStyle>
 #include <QTextStream>
 
-file_editor::file_editor (QTerminal *t, main_window *m)
-  : file_editor_interface (t, m)
+#include "octave-link.h"
+
+file_editor::file_editor (QWidget *p)
+  : file_editor_interface (p)
 {
+  // Set current editing directory before construct because loaded
+  // files will change ced accordingly.
+  ced = QDir::currentPath ();
+
   construct ();
 
-  _terminal = t;
-  _main_window = m;
   setVisible (false);
 }
 
 file_editor::~file_editor ()
 {
   QSettings *settings = resource_manager::get_settings ();
-  QStringList sessionFileNames;
+  fetFileNames.clear ();
   if (settings->value ("editor/restoreSession",true).toBool ())
     {
-      for (int n=0;n<_tab_widget->count();++n)
-        {
-          file_editor_tab* tab = dynamic_cast<file_editor_tab*> (_tab_widget->widget (n));
-          if (!tab)
-            continue;
-          sessionFileNames.append (tab->get_file_name ());
-        }
+      // Have all file editor tabs signal what their file names are.
+      emit fetab_file_name_query (0);
     }
-  settings->setValue ("editor/savedSessionTabs", sessionFileNames);
+  settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();
-}
-
-QTerminal *
-file_editor::terminal ()
-{
-  return _terminal;
-}
-
-main_window *
-file_editor::get_main_window ()
-{
-  return _main_window;
 }
 
 QMenu *
@@ -102,10 +89,14 @@ file_editor::handle_quit_debug_mode ()
 void
 file_editor::request_new_file ()
 {
-  file_editor_tab *fileEditorTab = new file_editor_tab (this);
+  // New file isn't a file_editor_tab function since the file
+  // editor tab has yet to be created and there is no object to
+  // pass a signal to.  Hence, functionality is here.
+
+  file_editor_tab *fileEditorTab = new file_editor_tab (ced);
   if (fileEditorTab)
     {
-      add_file_editor_tab (fileEditorTab);
+      add_file_editor_tab (fileEditorTab, UNNAMED_FILE);
       fileEditorTab->new_file ();
     }
 }
@@ -113,208 +104,263 @@ file_editor::request_new_file ()
 void
 file_editor::request_open_file ()
 {
-  file_editor_tab *current_tab = active_editor_tab ();
-  int curr_tab_index = _tab_widget->currentIndex ();
-  file_editor_tab *fileEditorTab = new file_editor_tab (this);
-  if (fileEditorTab)
+  // Open file isn't a file_editor_tab function since the file
+  // editor tab has yet to be created and there is no object to
+  // pass a signal to.  Hence, functionality is here.
+
+  // Create a NonModal message.
+  QFileDialog* fileDialog = new QFileDialog (this);
+  fileDialog->setNameFilter (SAVE_FILE_FILTER);
+  fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
+  fileDialog->setViewMode (QFileDialog::Detail);
+  fileDialog->setDirectory (ced);
+  connect (fileDialog, SIGNAL (fileSelected (const QString&)),
+           this, SLOT (request_open_file (const QString&)));
+  fileDialog->setWindowModality (Qt::NonModal);
+  fileDialog->setAttribute (Qt::WA_DeleteOnClose);
+  fileDialog->show ();
+}
+
+void
+file_editor::request_open_file (const QString& openFileName)
+{
+  if (openFileName.isEmpty ())
     {
-      add_file_editor_tab (fileEditorTab);
-      QString dir = QDir::currentPath ();
-      // get the filename of the last active tab to open a new file from there
-      if (current_tab)
-        dir = QDir::cleanPath (current_tab->get_file_name ());
-      if (!fileEditorTab->open_file (dir))
+      // ??  Not sure this will happen.  This routine isn't even called
+      // if the user hasn't selected a file.
+    }
+  else
+    {
+      // Have all file editor tabs signal what their file names are.
+      fetFileNames.clear ();
+      emit fetab_file_name_query (0);
+
+      // Check whether this file is already open in the editor.
+      if (fetFileNames.contains (openFileName, Qt::CaseSensitive))
         {
-          // If no file was loaded, remove the tab again.
-          _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));
-          // restore focus to previous tab
-          if (curr_tab_index>=0)
-            _tab_widget->setCurrentIndex (curr_tab_index);
+          // Create a NonModal message so nothing is blocked and
+          // bring the existing file forward.
+          QMessageBox* msgBox = new QMessageBox (
+                  QMessageBox::Critical, tr ("Octave Editor"),
+                  tr ("File %1 is already open in the editor.").
+                  arg (openFileName), QMessageBox::Ok, 0);
+          msgBox->setWindowModality (Qt::NonModal);
+          msgBox->setAttribute (Qt::WA_DeleteOnClose);
+          msgBox->show ();
+          for(int i = 0; i < _tab_widget->count (); i++)
+            {
+              if (_tab_widget->tabText (i) == openFileName)
+                {
+                  _tab_widget->setCurrentIndex (i);
+                  break;
+                }
+            }
+          return;
+        }
+
+      file_editor_tab *fileEditorTab = new file_editor_tab ();
+      if (fileEditorTab)
+        {
+          QString result = fileEditorTab->load_file(openFileName);
+          if (result == "")
+            {
+              // Supply empty title then have the file_editor_tab update
+              // with full or short name.
+              add_file_editor_tab (fileEditorTab, "");
+              fileEditorTab->update_window_title (false);
+            }
+          else
+            {
+              delete fileEditorTab;
+              // Create a NonModal message about error.
+              QMessageBox* msgBox = new QMessageBox (
+                      QMessageBox::Critical, tr ("Octave Editor"),
+                      tr ("Could not open file %1 for read:\n%2.").
+                      arg (openFileName).arg (result),
+                      QMessageBox::Ok, 0);
+              msgBox->setWindowModality (Qt::NonModal);
+              msgBox->setAttribute (Qt::WA_DeleteOnClose);
+              msgBox->show ();
+            }
         }
     }
 }
 
 void
-file_editor::request_open_file (const QString& fileName, bool silent)
+file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_success)
 {
-  if (!isVisible ())
+  // Have all file editor tabs signal what their file names are.
+  fetFileNames.clear ();
+  emit fetab_file_name_query (0);
+
+  // If one of those names matches the desired name, that's a conflict.
+  if (fetFileNames.contains (saveFileName, Qt::CaseSensitive))
     {
-      show ();
+      // Note: to overwrite the contents of some other file editor tab
+      // with the same name requires identifying which file editor tab
+      // that is (not too difficult) then close that tab.  Of course,
+      // that could trigger another dialog box if the file editor tab
+      // with the same name has modifications in it.  This could become
+      // somewhat confusing to the user.  For now, opt to do nothing.
+
+      // Create a NonModal message about error.
+      QMessageBox* msgBox = new QMessageBox (
+              QMessageBox::Critical, tr ("Octave Editor"),
+              tr ("File not saved!  You've selected a file name\n\n     %1\n\nwhich is the same as an already open file in the editor.  (Could allow overwriting, with message, if that is what folks want.)").
+              arg (saveFileName),
+              QMessageBox::Ok, 0);
+      msgBox->setWindowModality (Qt::NonModal);
+      msgBox->setAttribute (Qt::WA_DeleteOnClose);
+      msgBox->show ();
+
+      return;
     }
 
-  file_editor_tab *fileEditorTab = new file_editor_tab (this);
-  int curr_tab_index = _tab_widget->currentIndex ();
-  if (fileEditorTab)
+  QObject* saveFileObject = sender ();
+  QWidget* saveFileWidget = 0;
+  for(int i = 0; i < _tab_widget->count (); i++)
     {
-      add_file_editor_tab (fileEditorTab);
-      if (!fileEditorTab->load_file (fileName, silent))
+      if (_tab_widget->widget (i) == saveFileObject)
         {
-          // If no file was loaded, remove the tab again.
-          _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));
-          // restore focus to previous tab
-          _tab_widget->setCurrentIndex (curr_tab_index);
+          saveFileWidget = _tab_widget->widget (i);
+          break;
         }
     }
+  if (!saveFileWidget)
+    {
+      // Create a NonModal message about error.
+      QMessageBox* msgBox = new QMessageBox (
+              QMessageBox::Critical, tr ("Octave Editor"),
+              tr ("The associated file editor tab has disappeared.  It was likely closed by some means."),
+              QMessageBox::Ok, 0);
+      msgBox->setWindowModality (Qt::NonModal);
+      msgBox->setAttribute (Qt::WA_DeleteOnClose);
+      msgBox->show ();
+      return;
+    }
+
+  // Can save without conflict, have the file editor tab do so.
+  emit fetab_save_file (saveFileWidget, saveFileName, remove_on_success);
 }
 
 void
 file_editor::request_undo ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->undo ();
+  emit fetab_undo (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_redo ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->redo ();
+  emit fetab_redo (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_copy ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->copy ();
+  emit fetab_copy (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_cut ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->cut ();
+  emit fetab_cut (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_paste ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->paste ();
+  emit fetab_paste (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_save_file ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->save_file ();
+  emit fetab_save_file (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_save_file_as ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->save_file_as ();
+   emit fetab_save_file_as (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_run_file ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->run_file ();
+  emit fetab_run_file (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_toggle_bookmark ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->toggle_bookmark ();
+  emit fetab_toggle_bookmark (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_next_bookmark ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->next_bookmark ();
+  emit fetab_next_bookmark (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_previous_bookmark ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->previous_bookmark ();
+  emit fetab_previous_bookmark (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_remove_bookmark ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->remove_bookmark ();
+  emit fetab_remove_bookmark (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_toggle_breakpoint ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->toggle_breakpoint ();
+  emit fetab_toggle_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_next_breakpoint ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->next_breakpoint ();
+  emit fetab_next_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_previous_breakpoint ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->previous_breakpoint ();
+  emit fetab_previous_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_remove_breakpoint ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->remove_all_breakpoints ();
+  emit fetab_remove_all_breakpoints (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_comment_selected_text ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->comment_selected_text ();
+  emit fetab_comment_selected_text (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_uncomment_selected_text ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->uncomment_selected_text ();
+  emit fetab_uncomment_selected_text (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_find ()
 {
-  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
-  if (_active_file_editor_tab)
-    _active_file_editor_tab->find ();
+  emit fetab_find (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::handle_file_name_changed (const QString& fileName)
 {
-  QObject *senderObject = sender ();
-  file_editor_tab *fileEditorTab
-    = dynamic_cast<file_editor_tab*> (senderObject);
+  QObject *fileEditorTab = sender();
   if (fileEditorTab)
     {
       for(int i = 0; i < _tab_widget->count (); i++)
@@ -330,26 +376,72 @@ file_editor::handle_file_name_changed (const QString& fileName)
 void
 file_editor::handle_tab_close_request (int index)
 {
-  file_editor_tab *fileEditorTab
-    = dynamic_cast <file_editor_tab*> (_tab_widget->widget (index));
-  if (fileEditorTab)
-    if (fileEditorTab->close ())
-      {
-        _tab_widget->removeTab (index);
-        delete fileEditorTab;
-      }
+  // Signal to the tabs a request to close whomever matches the identifying
+  // tag (i.e., unique widget pointer).  The reason for this indirection is
+  // that it will enable a file editor widget to toss up a non-static
+  // dialog box and later signal that it wants to be removed.
+  QWidget *tabID = _tab_widget->widget (index);
+  emit fetab_close_request (tabID);
 }
 
 void
-file_editor::handle_tab_close_request ()
+file_editor::handle_tab_remove_request ()
 {
-  file_editor_tab *fileEditorTab = dynamic_cast <file_editor_tab*> (sender ());
+  QObject *fileEditorTab = sender();
   if (fileEditorTab)
-    if (fileEditorTab->close ())
-      {
-        _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));
-        delete fileEditorTab;
-      }
+    {
+      for(int i = 0; i < _tab_widget->count (); i++)
+        {
+          if (_tab_widget->widget (i) == fileEditorTab)
+            {
+              _tab_widget->removeTab (i);
+              delete fileEditorTab;
+            }
+        }
+    }
+}
+
+void
+file_editor::handle_add_filename_to_list (const QString& fileName)
+{
+  fetFileNames.append (fileName);
+}
+
+void
+file_editor::active_tab_changed (int index)
+{
+  emit fetab_change_request (_tab_widget->widget (index));
+}
+
+void
+file_editor::handle_editor_state_changed (bool copy_available, const QString& file_name)
+{
+  // In case there is some scenario where traffic could be coming from
+  // all the file editor tabs, just process info from the current active tab.
+  if (sender() == _tab_widget->currentWidget ())
+    {
+      _copy_action->setEnabled (copy_available);
+      _cut_action->setEnabled (copy_available);
+      if (!file_name.isEmpty ())
+        {
+          ced = QDir::cleanPath (file_name);
+          int lastslash = ced.lastIndexOf ('/');
+          // Test against > 0 because if somehow the directory is "/" the
+          // slash should be retained.  Otherwise, last slash is removed.
+          if (lastslash > 0 && lastslash != ced.count ())
+            {
+              ced = ced.left (lastslash);
+            }
+        }
+      setFocusProxy (_tab_widget->currentWidget ());
+    }
+}
+
+void
+file_editor::notice_settings ()
+{
+  // Relay signal to file editor tabs.
+  emit fetab_settings_changed ();
 }
 
 // slot for signal that is emitted when floating property changes
@@ -360,37 +452,6 @@ file_editor::top_level_changed (bool floating)
     {
       setWindowFlags(Qt::Window);  // make a window from the widget when floating
       show();                      // make it visible again since setWindowFlag hides it
-    }
-}
-
-void
-file_editor::active_tab_changed (int)
-{
-  handle_editor_state_changed ();
-}
-
-void
-file_editor::handle_editor_state_changed ()
-{
-  file_editor_tab *f = active_editor_tab ();
-  if (f)
-    {
-      bool copy_available = f->copy_available ();
-      _copy_action->setEnabled (copy_available);
-      _cut_action->setEnabled (copy_available);
-      setFocusProxy (f);
-    }
-}
-
-void
-file_editor::notice_settings ()
-{
-  for(int i = 0; i < _tab_widget->count (); i++)
-    {
-      file_editor_tab *fileEditorTab
-        = dynamic_cast <file_editor_tab*> (_tab_widget->widget (i));
-      if (fileEditorTab)
-        fileEditorTab->notice_settings ();
     }
 }
 
@@ -607,25 +668,79 @@ file_editor::construct ()
       QStringList sessionFileNames = settings->value("editor/savedSessionTabs", QStringList()).toStringList ();
 
       for (int n=0; n < sessionFileNames.count (); ++n)
-        request_open_file (sessionFileNames.at (n), true);
+        request_open_file (sessionFileNames.at (n));
     }
 }
 
 void
-file_editor::add_file_editor_tab (file_editor_tab *f)
+file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
 {
-  _tab_widget->addTab (f, "");
-  connect (f, SIGNAL (file_name_changed(QString)),
-           this, SLOT(handle_file_name_changed(QString)));
-  connect (f, SIGNAL (editor_state_changed ()),
-           this, SLOT (handle_editor_state_changed ()));
-  connect (f, SIGNAL (close_request ()),
-           this, SLOT (handle_tab_close_request ()));
-  _tab_widget->setCurrentWidget (f);
-}
+  _tab_widget->addTab (f, fn);
 
-file_editor_tab *
-file_editor::active_editor_tab ()
-{
-  return dynamic_cast<file_editor_tab*> (_tab_widget->currentWidget ());
+  // Signals from the file editor_tab
+  connect (f, SIGNAL (file_name_changed (const QString&)),
+           this, SLOT (handle_file_name_changed (const QString&)));
+  connect (f, SIGNAL (editor_state_changed (bool, const QString&)),
+           this, SLOT (handle_editor_state_changed (bool, const QString&)));
+  connect (f, SIGNAL (tab_remove_request ()),
+           this, SLOT (handle_tab_remove_request ()));
+  connect (f, SIGNAL (add_filename_to_list (const QString&)),
+           this, SLOT (handle_add_filename_to_list (const QString&)));
+  connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
+           this, SLOT (check_conflict_save (const QString&, bool)));
+  connect (f, SIGNAL (process_octave_code (const QString&)),
+           parent (), SLOT (handle_command_double_clicked (const QString&)));
+  
+  // Signals from the file_editor non-trivial operations
+  connect (this, SIGNAL (fetab_settings_changed ()),
+           f, SLOT (notice_settings ()));
+  connect (this, SIGNAL (fetab_close_request (const QWidget*)),
+           f, SLOT (conditional_close (const QWidget*)));
+  connect (this, SIGNAL (fetab_change_request (const QWidget*)),
+           f, SLOT (change_editor_state (const QWidget*)));
+  connect (this, SIGNAL (fetab_file_name_query (const QWidget*)),
+           f, SLOT (file_name_query (const QWidget*)));
+  connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&, bool)),
+           f, SLOT (save_file (const QWidget*, const QString&, bool)));
+  // Signals from the file_editor trivial operations
+  connect (this, SIGNAL (fetab_undo (const QWidget*)),
+           f, SLOT (undo (const QWidget*)));
+  connect (this, SIGNAL (fetab_redo (const QWidget*)),
+           f, SLOT (redo (const QWidget*)));
+  connect (this, SIGNAL (fetab_copy (const QWidget*)),
+           f, SLOT (copy (const QWidget*)));
+  connect (this, SIGNAL (fetab_cut (const QWidget*)),
+           f, SLOT (cut (const QWidget*)));
+  connect (this, SIGNAL (fetab_paste (const QWidget*)),
+           f, SLOT (paste (const QWidget*)));
+  connect (this, SIGNAL (fetab_save_file (const QWidget*)),
+           f, SLOT (save_file (const QWidget*)));
+  connect (this, SIGNAL (fetab_save_file_as (const QWidget*)),
+           f, SLOT (save_file_as (const QWidget*)));
+  connect (this, SIGNAL (fetab_run_file (const QWidget*)),
+           f, SLOT (run_file (const QWidget*)));
+  connect (this, SIGNAL (fetab_toggle_bookmark (const QWidget*)),
+           f, SLOT (toggle_bookmark (const QWidget*)));
+  connect (this, SIGNAL (fetab_next_bookmark (const QWidget*)),
+           f, SLOT (next_bookmark (const QWidget*)));
+  connect (this, SIGNAL (fetab_previous_bookmark (const QWidget*)),
+           f, SLOT (previous_bookmark (const QWidget*)));
+  connect (this, SIGNAL (fetab_remove_bookmark (const QWidget*)),
+           f, SLOT (remove_bookmark (const QWidget*)));
+  connect (this, SIGNAL (fetab_toggle_breakpoint (const QWidget*)),
+           f, SLOT (toggle_breakpoint (const QWidget*)));
+  connect (this, SIGNAL (fetab_next_breakpoint (const QWidget*)),
+           f, SLOT (next_breakpoint (const QWidget*)));
+  connect (this, SIGNAL (fetab_previous_breakpoint (const QWidget*)),
+           f, SLOT (previous_breakpoint (const QWidget*)));
+  connect (this, SIGNAL (fetab_remove_all_breakpoints (const QWidget*)),
+           f, SLOT (remove_all_breakpoints (const QWidget*)));
+  connect (this, SIGNAL (fetab_comment_selected_text (const QWidget*)),
+           f, SLOT (comment_selected_text (const QWidget*)));
+  connect (this, SIGNAL (fetab_uncomment_selected_text (const QWidget*)),
+           f, SLOT (uncomment_selected_text (const QWidget*)));
+  connect (this, SIGNAL (fetab_find (const QWidget*)),
+           f, SLOT (find (const QWidget*)));
+
+  _tab_widget->setCurrentWidget (f);
 }

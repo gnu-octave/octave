@@ -27,20 +27,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 #include <QToolBar>
 
-class QTerminal;
-class main_window;
-
 class file_editor_interface : public QDockWidget
 {
   Q_OBJECT
 
   public:
-  file_editor_interface (QTerminal *terminal, main_window *mainWindow)
-    : QDockWidget ((QWidget*)mainWindow) // QDockWidget constructor is explicit, hence the cast.
+  file_editor_interface (QWidget *p)
+    : QDockWidget (p)
   {
     setObjectName ("FileEditor");
-    _terminal = terminal;
-    _main_window = mainWindow;
 
     connect (this, SIGNAL (visibilityChanged (bool)), this,
              SLOT (handle_visibility_changed (bool)));
@@ -57,15 +52,12 @@ class file_editor_interface : public QDockWidget
 public slots:
   virtual void request_new_file () = 0;
   virtual void request_open_file () = 0;
-  virtual void request_open_file (const QString& fileName, bool silent = false) = 0;
+  virtual void request_open_file (const QString& fileName) = 0;
 
 signals:
   void active_changed (bool active);
 
 protected:
-  QTerminal* _terminal;
-  main_window* _main_window;
-
   void closeEvent (QCloseEvent *e)
   {
     emit active_changed (false);

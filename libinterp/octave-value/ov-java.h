@@ -28,12 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <oct-obj.h>
 #include <ov.h>
 
-#ifdef JAVAPKG_BUILD
-# define JAVAPKG_API OCTAVE_EXPORT
-#else
-# define JAVAPKG_API OCTAVE_IMPORT
-#endif
-
 template <class T>
 class java_local_ref
 {
@@ -89,33 +83,33 @@ typedef java_local_ref<jbyteArray> jbyteArray_ref;
 typedef java_local_ref<jdoubleArray> jdoubleArray_ref;
 typedef java_local_ref<jthrowable> jthrowable_ref;
 
-extern JAVAPKG_API std::string
+extern OCTINTERP_API std::string
 jstring_to_string (JNIEnv* jni_env, jstring s);
 
-extern JAVAPKG_API std::string
+extern OCTINTERP_API std::string
 jstring_to_string (JNIEnv* jni_env, jobject obj);
 
-extern JAVAPKG_API octave_value
+extern OCTINTERP_API octave_value
 box (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 
-extern JAVAPKG_API octave_value
+extern OCTINTERP_API octave_value
 box_more (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 
-extern JAVAPKG_API int
+extern OCTINTERP_API int
 unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
        jclass_ref& jcls);
 
-extern JAVAPKG_API int
+extern OCTINTERP_API int
 unbox (JNIEnv* jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss);
 
-extern JAVAPKG_API bool Vjava_matrix_autoconversion;
+extern OCTINTERP_API bool Vjava_matrix_autoconversion;
 
-extern JAVAPKG_API bool Vjava_unsigned_autoconversion;
+extern OCTINTERP_API bool Vjava_unsigned_autoconversion;
 
-extern JAVAPKG_API bool Vdebug_java;
+extern OCTINTERP_API bool Vdebug_java;
 
-class JAVAPKG_API octave_java : public octave_base_value
+class OCTINTERP_API octave_java : public octave_base_value
 {
 public:
 

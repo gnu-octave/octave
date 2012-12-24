@@ -797,8 +797,8 @@ endfunction
 %!   str = sprintf ("%s %.6f %s\n", str, a(k), b(k));
 %! endfor
 %! [aa, bb] = strread (str, "%f %s");
-%! assert (a, aa, 1e-6);
-%! assert (cellstr (b), bb);
+%! assert (aa, a, 1e-6);
+%! assert (bb, cellstr (b));
 
 %!test
 %! str = "";
@@ -808,7 +808,7 @@ endfunction
 %!   str = sprintf ("%s %.6f %s\n", str, a(k), b(k));
 %! endfor
 %! aa = strread (str, "%f %*s");
-%! assert (a, aa, 1e-6);
+%! assert (aa, a, 1e-6);
 
 %!test
 %! str = sprintf ("/* this is\nacomment*/ 1 2 3");

@@ -891,6 +891,8 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   install_builtins ();
 
+  install_classdef ();
+
   for (std::list<std::string>::const_iterator it = command_line_path.begin ();
        it != command_line_path.end (); it++)
     load_path::set_command_line_path (*it);

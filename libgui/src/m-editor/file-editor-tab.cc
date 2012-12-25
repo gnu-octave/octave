@@ -1056,12 +1056,13 @@ void
 file_editor_tab::handle_file_reload_answer (int decision)
 {
   if (decision == QMessageBox::Yes)
-    {
+    { // reload: file is readded to the file watcher in set_file_name ()
       load_file (_file_name);
     }
-
-  // Start watching file once again.
-  _file_system_watcher.addPath (_file_name);
+  else
+    { // do not reload: readd to the file watche
+      _file_system_watcher.addPath (_file_name);
+    }
 }
 
 void

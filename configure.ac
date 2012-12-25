@@ -2257,21 +2257,22 @@ do
 
   if test -z "$JAVA_HOME"; then
     ## Find JAVA_HOME for JRE by running java and querying properties.
-    JAVA_TMP_HOME="`\"$JAVA\" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`"
+    JAVA_TMP_HOME=`"$JAVA" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`
     ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
-    JAVA_HOME="`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`"
+    JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`
   fi
 
   case $canonical_host_type in
     *-mingw* | *-msdosmsvc*)
-      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is without
-      ## colon and backslashes, as it is also used as path separator. Use quoted paths
-      ## as Java may be installed in a path with whitespaces (e.g. C:\Program Files\Java\...).
+      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is
+      ## without colon and backslashes, as it is also used as path separator.
+      ## Use quoted paths as Java may be installed in a path with whitespaces
+      ## (e.g. C:\Program Files\Java\...).
       if test -n "$JAVA_HOME"; then
-        JAVA_HOME="`cd \"$JAVA_HOME\" && pwd`"
-	## Maybe this will be useful in the future, as native Java won't probably
-	## understand MSYS paths.
-	JAVA_HOME_NATIVE="`cd \"$JAVA_HOME\" && pwd -W`"
+        JAVA_HOME=`cd "$JAVA_HOME" && pwd`
+        ## Maybe this will be useful in the future, as native Java won't
+        ## understand MSYS paths.
+        JAVA_HOME_NATIVE=`cd "$JAVA_HOME" && pwd -W`
       fi
     ;;
     *)
@@ -2307,9 +2308,9 @@ do
     break
   fi
 
-  ## At this point Win32/MSVC systems have enough configuration data. We assume
-  ## that all appropriate variables (e.g. INCLUDE and LIB) have already the required
-  ## paths to compile and link against JDK.
+  ## At this point Win32/MSVC systems have enough configuration data.  We
+  ## assume that all appropriate variables (e.g. INCLUDE and LIB) already have
+  ## the required paths to compile and link against JDK.
   case $canonical_host_type in
     *-msdosmsvc*)
       build_java=true
@@ -2436,11 +2437,11 @@ do
   esac
 
   ## Verify jni.h include file exists.
-	JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
+  JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
   have_jni=false
-	for dir in $JNI_PATH; do 
-	  if test -f "${dir}/jni.h"; then have_jni=true; break; fi
-	done
+  for dir in $JNI_PATH; do 
+    if test -f "${dir}/jni.h"; then have_jni=true; break; fi
+  done
   if test $have_jni = true; then
     AC_MSG_RESULT([$dir])
   else

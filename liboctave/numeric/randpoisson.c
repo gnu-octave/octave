@@ -422,7 +422,7 @@ poisson_rejection (double lambda, double *p, size_t n)
       double y, em, t;
       do {
         do {
-          y = tan(M_PI*RUNI);
+          y = tan (M_PI*RUNI);
           em = sq * y + lambda;
         } while (em < 0.0);
         em = floor (em);

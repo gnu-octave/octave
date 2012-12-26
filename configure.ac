@@ -2012,6 +2012,46 @@ dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
 AC_CHECK_FUNCS([acosh acoshf asinh asinhf atanh atanhf cbrt cbrtf])
 AC_CHECK_FUNCS([erf erff erfc erfcf exp2f hypotf _hypotf log2 log2f])
 
+## Check for math defines such as M_LN2 in math.h
+AC_CACHE_CHECK([for MATH DEFINES in math.h],
+  [octave_cv_header_math_defines],
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+    #include <math.h>
+    ]], [[
+    double x = M_LN2;]])],
+    octave_cv_header_math_defines=yes,
+    octave_cv_header_math_defines=no)
+  ])
+
+if test $octave_cv_header_math_defines = no; then
+  ## Check again and try defining _USE_MATH_DEFINES
+  AC_CACHE_CHECK([whether _USE_MATH_DEFINES needs to be defined],
+    [octave_cv_header__use_math_defines],
+    [save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <math.h>
+      ]], [[
+      double x = M_LN2;]])],
+      octave_cv_header__use_math_defines=yes,
+      octave_cv_header__use_math_defines=no)
+    CPPFLAGS="$save_CPPFLAGS"
+    ])
+  if test $octave_cv_header__use_math_defines = yes; then
+    octave_cv_header_math_defines=yes
+    AC_DEFINE(_USE_MATH_DEFINES, 1,
+      [Define to 1 if _USE_MATH_DEFINES is required to get math constants like M_LN2.])
+    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
+  fi
+fi 
+
+if test $octave_cv_header_math_defines = yes; then
+  AC_DEFINE(HAVE_MATH_DEFINES, 1,
+    [Define to 1 if defines such as M_PI are available in math.h])
+else
+  AC_MSG_ERROR([MATH DEFINES in math.h such as M_PI are required to build Octave])
+fi
+
 ## Windows-specific tests for extra #defines
 case $canonical_host_type in
   *-*-msdosmsvc | *-*-mingw*)
@@ -2026,15 +2066,6 @@ case $canonical_host_type in
       [AC_DEFINE(_WIN32_WINNT, 0x0403,
         [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
        AC_MSG_RESULT([0x0403])])
-    AC_MSG_CHECKING([whether _USE_MATH_DEFINES needs to be defined])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <math.h>
-        ]], [[
-        int x = M_LN2;]])],
-      [AC_MSG_RESULT([no])],
-      [AC_DEFINE(_USE_MATH_DEFINES, 1,
-        [Define to 1 if your system needs to define math constants like M_LN2.])
-        AC_MSG_RESULT([yes])])
   ;;
 esac
 

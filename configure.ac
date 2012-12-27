@@ -2352,7 +2352,7 @@ do
       break
     ;;
     *-mingw*)
-      if test "$have_msvc" = "yes"; then
+      if test $have_msvc = yes; then
         build_java=true
         JAVA_LIBS=-ladvapi32
         AC_DEFINE(HAVE_JAVA, 1,

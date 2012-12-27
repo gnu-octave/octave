@@ -597,7 +597,8 @@ function varargout = strread (str, format = "%f", varargin)
             else
               if (! idg(ii) && ! isempty (strfind (fmt_words{ii-1}, "%s")))
                 ## Trailing literal.  If preceding format == '%s' this is an error
-                warning ("Ambiguous '%s' specifier next to literal in column %d", icol);
+                warning ...
+                 ("strread: ambiguous '%s' specifier next to literal in column %d", icol);
               elseif (idg(ii))
                 ## Current field = fixed width. Strip into icol, rest in icol+1
                 sw = regexp (fmt_words{ii}, '\d', "once");

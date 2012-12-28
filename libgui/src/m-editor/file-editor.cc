@@ -147,9 +147,12 @@ file_editor::request_open_file (const QString& openFileName)
           msgBox->setWindowModality (Qt::NonModal);
           msgBox->setAttribute (Qt::WA_DeleteOnClose);
           msgBox->show ();
+          QFileInfo file(openFileName);
+          QString short_openFileName = file.fileName();  // get file name only
           for(int i = 0; i < _tab_widget->count (); i++)
-            {
-              if (_tab_widget->tabText (i) == openFileName)
+            { // check whether tab title is file name (long or short)
+              if (_tab_widget->tabText (i) == openFileName ||
+                  _tab_widget->tabText (i) == short_openFileName)
                 {
                   _tab_widget->setCurrentIndex (i);
                   break;

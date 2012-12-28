@@ -43,7 +43,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.11 tar-ustar])
 
-OCTAVE_HOST_TYPE
+OCTAVE_CANONICAL_HOST
 
 AC_DEFINE(OCTAVE_SOURCE, 1, [Define to 1 if this is Octave.])
   
@@ -135,8 +135,8 @@ AC_ARG_WITH([sepchar],
     [use <char> as the path separation character])])
 case $with_sepchar in
   yes | "")
-    case $canonical_host_type in
-      *-*-mingw* | *-*-msdosmsvc)
+    case $host_os in
+      mingw* | msdosmsvc)
         sepchar=';' ;;
     esac
     ;;
@@ -305,11 +305,11 @@ AC_PROG_GCC_TRADITIONAL
 
 ## Check for MSVC
 have_msvc=no
-case $canonical_host_type in
-  *-*-msdosmsvc)
+case $host_os in
+  msdosmsvc)
     have_msvc=yes
   ;;
-  *-*-mingw*)
+  mingw*)
     AC_MSG_CHECKING([for MSVC compiler])
     AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
         #ifndef _MSC_VER
@@ -470,11 +470,11 @@ AC_ARG_ENABLE([openmp],
     [(EXPERIMENTAL) use OpenMP SMP multi-threading])],
   [if test "$enableval" = yes; then USE_OPENMP=true; fi], [])
 if $USE_OPENMP; then
-  case $canonical_host_type in
-    *-*-mingw* | *-*-cygwin* | *-*-gnu*)
+  case $host_os in
+    mingw* | cygwin* | *-gnu*)
       OCTAVE_CHECK_OPENMP(-fopenmp)
     ;;
-    *-*-msdosmsvc)
+    msdosmsvc)
       ## FIXME: is this the right flag for MSVC?
       OCTAVE_CHECK_OPENMP(-openmp)
     ;;
@@ -522,8 +522,8 @@ dnl in case -lm is needed to compile Fortran programs.
 
 ### Look for math library.  If found, this will add -lm to LIBS.
 
-case $canonical_host_type in
-  *-*-linux*)
+case $host_os in
+  linux*)
     AC_CHECK_LIB(m, sin, , , -lc)
   ;;
   *)
@@ -1082,8 +1082,8 @@ if test -n "$OPENGL_LIBS"; then
     FLTK_CFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
     FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
 
-    case $canonical_host_type in
-      *-*-mingw*)
+    case $host_os in
+      mingw*)
         FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`
       ;;
     esac
@@ -1193,8 +1193,8 @@ fi
 
 ## On OSX, try again with a wrapper library (without -ff2c!)
 if test $ax_blas_f77_func_ok = no; then
-  case $canonical_host_type in
-    *-*-darwin*)
+  case $host_os in
+    darwin*)
       ## test if wrapper functions help
       octave_blaswrap_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DUSE_BLASWRAP"
@@ -1824,8 +1824,8 @@ AC_SUBST(LIBOCTAVE)
 ### Check for existence of various libraries
 
 ## OS-specific test for dirent, opendir.
-case $canonical_host_type in
-  *-*-mingw*)
+case $host_os in
+  mingw*)
     if test $have_msvc = yes; then
       AC_CHECK_LIB([dirent], [opendir])
       LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
@@ -1834,7 +1834,7 @@ case $canonical_host_type in
     fi
     LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
-  *-*-msdosmsvc*)
+  msdosmsvc)
     AC_CHECK_LIB([dirent], [opendir])
     LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
@@ -2082,8 +2082,8 @@ else
 fi
 
 ## Windows-specific tests for extra #defines
-case $canonical_host_type in
-  *-*-msdosmsvc | *-*-mingw*)
+case $host_os in
+  msdosmsvc | mingw*)
     AC_MSG_CHECKING([for required _WIN32_WINNT])
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <windows.h>
@@ -2099,8 +2099,8 @@ case $canonical_host_type in
 esac
 
 ## Windows-specific use of functions
-case $canonical_host_type in
-  *-*-mingw* | *-*-msdosmsvc*)
+case $host_os in
+  msdosmsvc | mingw*)
     AC_CHECK_FUNCS([setvbuf], [],
                    [AC_MSG_ERROR([Missing function required to build Octave])])
     ;;
@@ -2108,8 +2108,8 @@ esac
 
 ## Cygwin kluge for getrusage.
 AC_CHECK_FUNCS([getrusage])
-case $canonical_host_type in
-  *-*-cygwin*)
+case $host_os in
+  cygwin*)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
       [Define to 1 if your struct rusage only has time information.])
   ;;
@@ -2291,8 +2291,8 @@ do
     JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`
   fi
 
-  case $canonical_host_type in
-    *-mingw* | *-msdosmsvc*)
+  case $host_os in
+    mingw* | msdosmsvc)
       ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is
       ## without colon and backslashes, as it is also used as path separator.
       ## Use quoted paths as Java may be installed in a path with whitespaces
@@ -2340,15 +2340,15 @@ do
   ## At this point Win32/MSVC systems have enough configuration data.  We
   ## assume that all appropriate variables (e.g. INCLUDE and LIB) already have
   ## the required paths to compile and link against JDK.
-  case $canonical_host_type in
-    *-msdosmsvc*)
+  case $host_os in
+    msdosmsvc)
       build_java=true
       JAVA_LIBS=-ladvapi32
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
       break
     ;;
-    *-mingw*)
+    mingw*)
       if test $have_msvc = yes; then
         build_java=true
         JAVA_LIBS=-ladvapi32
@@ -2360,11 +2360,11 @@ do
   esac
 
   ## Determine which library file name to search for.
-  case $canonical_host_type in
-    *-darwin*)
+  case $host_os in
+    darwin*)
       jvmlib=libjvm.dylib
     ;;
-    *-mingw* | *-cygwin*)
+    mingw* | cygwin*)
       jvmlib=jvm.dll
     ;;
     *)
@@ -2434,8 +2434,8 @@ do
   AC_MSG_CHECKING([for include file <jni.h>])
 
   ## Java and JVM found.  Set up flags.
-  case $canonical_host_type in
-    *-darwin*)
+  case $host_os in
+    darwin*)
       ## Sneak the -framework flag into mkoctfile via LFLAGS
       LFLAGS="$LFLAGS -framework JavaVM"
       ## According to: http://developer.apple.com/unix/crossplatform.html
@@ -2448,7 +2448,7 @@ do
       fi
       JAVA_LIBS="-framework JavaVM"
     ;;
-    *-mingw* | *-cygwin*)
+    mingw* | cygwin*)
       if test -n "$JAVA_CPPFLAGS"; then
         JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
       else
@@ -2569,8 +2569,8 @@ if test $build_gui = true; then
   AC_CHECK_FUNCS([setlocale], [],
                  [AC_MSG_ERROR([Missing function required to build GUI])])
 
-  case $canonical_host_type in
-    *-*-mingw* | *-*-msdosmsvc*)
+  case $host_os in
+    mingw* | msdosmsvc)
       win32_terminal=yes
       AC_CHECK_FUNCS([setvbuf], [],
                      [AC_MSG_ERROR([Missing function required to build GUI])])

@@ -89,6 +89,7 @@ signals:
   void editor_state_changed (bool copy_available, const QString& fileName);
   void tab_remove_request ();
   void add_filename_to_list (const QString& fileName);
+  void mru_add_file (const QString& file_name);
   void editor_check_conflict_save (const QString& saveFileName, bool remove_on_success);
   void process_octave_code (const QString& command);
 

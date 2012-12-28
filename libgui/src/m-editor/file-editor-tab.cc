@@ -167,6 +167,8 @@ file_editor_tab::set_file_name (const QString& fileName)
 
   // update the file editor with current editing directory
   emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name));
+  // add the new file to the mru list
+  emit mru_add_file (QDir::cleanPath (_file_name));
 }
 
 void

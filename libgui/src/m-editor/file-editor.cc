@@ -168,6 +168,8 @@ file_editor::request_open_file (const QString& openFileName)
               // with full or short name.
               add_file_editor_tab (fileEditorTab, "");
               fileEditorTab->update_window_title (false);
+              // file already loaded, add file to mru list here
+              handle_mru_add_file(QDir::cleanPath (openFileName));
             }
           else
             {
@@ -185,6 +187,18 @@ file_editor::request_open_file (const QString& openFileName)
         }
     }
 }
+
+// open a file from the mru list
+void
+file_editor::request_mru_open_file ()
+{
+  QAction *action = qobject_cast<QAction *>(sender ());
+  if (action)
+    {
+      request_open_file (action->data ().toString ());
+    }
+}
+
 
 void
 file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_success)
@@ -358,6 +372,39 @@ file_editor::request_find ()
 }
 
 void
+file_editor::handle_mru_add_file (const QString& file_name)
+{
+  _mru_files.removeAll (file_name);
+  _mru_files.prepend (file_name);
+  mru_menu_update ();
+}
+
+void
+file_editor::mru_menu_update ()
+{
+  int num_files = qMin (_mru_files.size(), int (MaxMRUFiles));
+  // configure and show active actions of mru-menu
+  for (int i = 0; i < num_files; ++i)
+    {
+      QString text = tr("&%1 %2").
+          arg ((i+1) % int (MaxMRUFiles)).arg (_mru_files.at (i));
+      _mru_file_actions[i]->setText (text);
+      _mru_file_actions[i]->setData (_mru_files.at (i));
+      _mru_file_actions[i]->setVisible (true);
+    }
+    // hide unused mru-menu entries
+    for (int j = num_files; j < MaxMRUFiles; ++j)
+      _mru_file_actions[j]->setVisible (false);
+    // delete entries in string-list beyond MaxMRUFiles
+    while (_mru_files.size () > MaxMRUFiles)
+      _mru_files.removeLast ();
+    // save actual mru-list in settings
+    QSettings *settings = resource_manager::get_settings ();
+    // FIXME -- what should happen if settings is 0?
+    settings->setValue ("editor/mru_file_list",_mru_files);
+}
+
+void
 file_editor::handle_file_name_changed (const QString& fileName)
 {
   QObject *fileEditorTab = sender();
@@ -521,6 +568,16 @@ file_editor::construct ()
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
                              tr("Save File And Run"), _tool_bar);
 
+  // the mru-list and an empty array of actions
+  QSettings *settings = resource_manager::get_settings ();
+  // FIXME -- what should happen if settings is 0?
+  _mru_files = settings->value ("editor/mru_file_list").toStringList ();
+  for (int i = 0; i < MaxMRUFiles; ++i)
+    {
+       _mru_file_actions[i] = new QAction (this);
+       _mru_file_actions[i]->setVisible (false);
+    }
+
   // some actions are disabled from the beginning
   _copy_action->setEnabled(false);
   _cut_action->setEnabled(false);
@@ -566,6 +623,12 @@ file_editor::construct ()
   fileMenu->addAction (save_action);
   fileMenu->addAction (save_as_action);
   fileMenu->addSeparator ();
+  QMenu *mru_file_menu = new QMenu (tr ("Open &Recent"), fileMenu);
+  for (int i = 0; i < MaxMRUFiles; ++i)
+    {
+      mru_file_menu->addAction (_mru_file_actions[i]);
+    }
+  fileMenu->addMenu (mru_file_menu);
   _menu_bar->addMenu (fileMenu);
 
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
@@ -650,6 +713,12 @@ file_editor::construct ()
            SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
   connect (find_action,
            SIGNAL (triggered ()), this, SLOT (request_find ()));
+  // The actions of the mru file menu
+  for (int i = 0; i < MaxMRUFiles; ++i)
+    {
+      connect(_mru_file_actions[i], SIGNAL (triggered ()), this, SLOT (request_mru_open_file ()));
+    }
+  mru_menu_update ();
   connect (_tab_widget,
            SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
   connect (_tab_widget,
@@ -662,7 +731,6 @@ file_editor::construct ()
   setWindowTitle ("Editor");
 
   //restore previous session
-  QSettings *settings = resource_manager::get_settings ();
   if (settings->value ("editor/restoreSession",true).toBool ())
     {
       QStringList sessionFileNames = settings->value("editor/savedSessionTabs", QStringList()).toStringList ();
@@ -688,6 +756,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            this, SLOT (handle_add_filename_to_list (const QString&)));
   connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
            this, SLOT (check_conflict_save (const QString&, bool)));
+  connect (f, SIGNAL (mru_add_file (const QString&)),
+           this, SLOT (handle_mru_add_file (const QString&)));
   connect (f, SIGNAL (process_octave_code (const QString&)),
            parent (), SLOT (handle_command_double_clicked (const QString&)));
   

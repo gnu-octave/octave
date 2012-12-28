@@ -89,6 +89,7 @@ signals:
 public slots:
   void request_new_file ();
   void request_open_file ();
+  void request_mru_open_file ();
 
   void request_undo ();
   void request_redo ();
@@ -118,6 +119,7 @@ public slots:
   void handle_add_filename_to_list (const QString& fileName);
   void active_tab_changed (int index);
   void handle_editor_state_changed (bool enableCopy, const QString& fileName);
+  void handle_mru_add_file (const QString& file_name);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
   /** Slot when floating property changes */
@@ -133,6 +135,7 @@ private:
   void construct ();
   void add_file_editor_tab(file_editor_tab *f, const QString &fn);
   void save_file_as (QWidget *fetabID = 0);
+  void mru_menu_update ();
 
   QStringList fetFileNames;
   QString ced;
@@ -145,6 +148,11 @@ private:
   QAction *         _run_action;
   QTabWidget *      _tab_widget;
   int               _marker_breakpoint;
+
+  enum { MaxMRUFiles = 10 };
+  QAction *_mru_file_actions[MaxMRUFiles];
+  QStringList _mru_files;
+
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

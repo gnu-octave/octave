@@ -18,13 +18,6 @@ dnl Copyright (C) 1993-2012 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, see
 ### <http://www.gnu.org/licenses/>.
 
-### Preserve CFLAGS and CXXFLAGS from the environment before doing
-### anything else because we don't know which macros might call
-### AC_PROG_CC or AC_PROG_CXX.
-
-EXTERN_CFLAGS="$CFLAGS"
-EXTERN_CXXFLAGS="$CXXFLAGS"
-
 AC_PREREQ([2.62])
 AC_INIT([GNU Octave], [3.7.0+], [http://octave.org/bugs.html], [octave])
 

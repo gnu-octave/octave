@@ -178,6 +178,19 @@ private:
   std::list<std::string> java_opts;
 };
 
+void
+octave_java::print (std::ostream& os, bool) const
+{
+  print_raw (os);
+  newline (os);
+}
+
+void
+octave_java::print_raw (std::ostream& os, bool) const
+{
+  os << "<Java object: " << java_classname << ">";
+}
+
 static dim_vector compute_array_dimensions (JNIEnv* jni_env, jobject obj);
 
 #ifdef __WIN32__

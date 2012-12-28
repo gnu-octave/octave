@@ -49,6 +49,84 @@ AC_DEFINE(OCTAVE_SOURCE, 1, [Define to 1 if this is Octave.])
   
 AC_USE_SYSTEM_EXTENSIONS
 
+### Make configure args available for other uses.
+
+config_opts=$ac_configure_args
+AC_SUBST(config_opts)
+
+### Set default file locations
+
+OCTAVE_SET_DEFAULT([octlibdir], '$(libdir)/octave/$(version)')
+OCTAVE_SET_DEFAULT([archlibdir],
+  '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([localarchlibdir],
+  '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([localapiarchlibdir],
+  '$(libexecdir)/octave/$(api_version)/site/exec/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([localverarchlibdir],
+  '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([octfiledir],
+  '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([localoctfiledir],
+  '$(libdir)/octave/site/oct/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([localapioctfiledir],
+  '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([localveroctfiledir],
+  '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
+OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
+OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
+OCTAVE_SET_DEFAULT([localapifcnfiledir],
+  '$(datadir)/octave/site/$(api_version)/m')
+OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
+OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
+OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
+OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
+OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')
+OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
+OCTAVE_SET_DEFAULT([man1ext], '.1')
+OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
+
+### Check for programs used in building, installing, and running Octave.
+
+## Programs used in configuring Octave.
+## Find pkg-config executable (sets $PKG_CONFIG)
+PKG_PROG_PKG_CONFIG
+
+## Programs used in Makefiles.
+AC_PROG_AWK
+OCTAVE_PROG_FIND
+OCTAVE_PROG_SED
+OCTAVE_PROG_PERL
+
+## Programs used to build parts of Octave.
+OCTAVE_PROG_GPERF
+
+OCTAVE_PROG_FLEX
+AC_SUBST([LEX_OUTPUT_ROOT], [lex.octave_])
+
+OCTAVE_PROG_BISON
+
+OCTAVE_PROG_MAKEINFO
+OCTAVE_PROG_TEXI2DVI
+OCTAVE_PROG_TEXI2PDF
+
+## Programs used when installing Octave.
+AC_PROG_LN_S
+AC_PROG_MKDIR_P
+
+AC_PROG_INSTALL
+INSTALL_SCRIPT='${INSTALL}'
+AC_SUBST(INSTALL_SCRIPT)
+
+OCTAVE_PROG_DESKTOP_FILE_INSTALL
+
+## Programs used when running Octave
+OCTAVE_PROG_GHOSTSCRIPT
+OCTAVE_PROG_GNUPLOT
+OCTAVE_PROG_PAGER
+OCTAVE_PROG_PYTHON
+
 ### Path separator.
 
 sepchar=':'
@@ -74,48 +152,6 @@ AC_DEFINE_UNQUOTED(SEPCHAR, ['$sepchar'],
   [Define this to be the path separator for your system, as a character constant.])
 AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"],
   [Define this to be the path separator for your system, as a string.])
-
-### Set default file locations
-
-OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
-OCTAVE_SET_DEFAULT([man1ext], '.1')
-OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
-OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
-OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
-OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
-OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
-OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
-OCTAVE_SET_DEFAULT([localapifcnfiledir],
-  '$(datadir)/octave/site/$(api_version)/m')
-OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
-OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
-OCTAVE_SET_DEFAULT([octlibdir], '$(libdir)/octave/$(version)')
-OCTAVE_SET_DEFAULT([archlibdir],
-  '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([localarchlibdir],
-  '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([localapiarchlibdir],
-  '$(libexecdir)/octave/$(api_version)/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([localverarchlibdir],
-  '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([octfiledir],
-  '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([localoctfiledir],
-  '$(libdir)/octave/site/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([localapioctfiledir],
-  '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([localveroctfiledir],
-  '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
-OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')
-
-### Find pkg-config executable (sets $PKG_CONFIG)
-
-PKG_PROG_PKG_CONFIG
-
-### Make configure args available for other uses.
-
-config_opts=$ac_configure_args
-AC_SUBST(config_opts)
 
 ### Define the path to the shell on the host system.  Most systems will
 ### ensure /bin/sh is the default shell so this can be safely ignored by
@@ -2115,38 +2151,6 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 # include <unistd.h>
 #endif
 ]])
-
-### Checks for other programs used in building, testing, installing, and
-### running Octave.
-
-AC_PROG_AWK
-OCTAVE_PROG_FIND
-OCTAVE_PROG_SED
-OCTAVE_PROG_PERL
-OCTAVE_PROG_PYTHON
-
-OCTAVE_PROG_FLEX
-AC_SUBST([LEX_OUTPUT_ROOT], [lex.octave_])
-
-OCTAVE_PROG_BISON
-
-AC_PROG_LN_S
-AC_PROG_MKDIR_P
-
-AC_PROG_INSTALL
-INSTALL_SCRIPT='${INSTALL}'
-AC_SUBST(INSTALL_SCRIPT)
-
-OCTAVE_PROG_DESKTOP_FILE_INSTALL
-
-OCTAVE_PROG_GNUPLOT
-OCTAVE_PROG_PAGER
-OCTAVE_PROG_GPERF
-
-OCTAVE_PROG_GHOSTSCRIPT
-OCTAVE_PROG_MAKEINFO
-OCTAVE_PROG_TEXI2DVI
-OCTAVE_PROG_TEXI2PDF
 
 ### Need to disable building documentation if gnuplot was not found,
 ### unless it was already disabled previously.

@@ -37,4 +37,9 @@ NO_INSTANTIATE_ARRAY_SORT (jit_function);
 
 INSTANTIATE_ARRAY (jit_function, OCTINTERP_API);
 
+#ifdef Cell_h
+#error Must not include Cell.h in Array-jit.h
+#error This causes problems on MSVC
+#endif
+
 #endif

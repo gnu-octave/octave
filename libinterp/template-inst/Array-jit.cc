@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 extern template class OCTAVE_API Array<octave_idx_type>;
 
-#include "pt-jit.h"
+#include "jit-ir.h"
 
 NO_INSTANTIATE_ARRAY_SORT (jit_function);
 

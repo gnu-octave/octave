@@ -811,15 +811,10 @@ cdef_object_rep::map_keys (void) const
   return string_vector ();
 }
 
-handle_cdef_object::~handle_cdef_object (void)
-{
-  printf ("deleting %s object (handle)\n", cname.c_str ());
-}
-
 octave_value_list
-handle_cdef_object::subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout, int& skip)
+cdef_object_rep::subsref (const std::string& type,
+                          const std::list<octave_value_list>& idx,
+                          int nargout, int& skip)
 {
   skip = 0;
 
@@ -899,9 +894,9 @@ handle_cdef_object::subsref (const std::string& type,
 }
 
 octave_value
-handle_cdef_object::subsasgn (const std::string& type,
-                              const std::list<octave_value_list>& idx,
-                              const octave_value& rhs)
+cdef_object_rep::subsasgn (const std::string& type,
+                           const std::list<octave_value_list>& idx,
+                           const octave_value& rhs)
 {
   octave_value retval;
 
@@ -955,6 +950,16 @@ handle_cdef_object::subsasgn (const std::string& type,
     }
 
   return retval;
+}
+
+handle_cdef_object::~handle_cdef_object (void)
+{
+  printf ("deleting %s object (handle)\n", cname.c_str ());
+}
+
+value_cdef_object::~value_cdef_object (void)
+{
+  printf ("deleting %s object (value)\n", cname.c_str ());
 }
 
 cdef_method
@@ -1377,19 +1382,28 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
       ctor_args.prepend (to_ov (obj));
       ctor_retval = ctor.execute (ctor_args, 1);
 
-      if (ctor_retval.length () == 1)
-        obj = to_cdef (ctor_retval(0));
-      else
-        ::error ("%s: invalid number of output arguments for classdef constructor",
-                 ctor_name.c_str ());
+      if (! error_state)
+        {
+          if (ctor_retval.length () == 1)
+            obj = to_cdef (ctor_retval(0));
+          else
+            ::error ("%s: invalid number of output arguments for classdef constructor",
+                     ctor_name.c_str ());
+        }
     }
 }
 
 octave_value
 cdef_class::cdef_class_rep::construct (const octave_value_list& args)
 {
-  // FIXME: determine whether to use value or handle rep object
-  cdef_object obj (new handle_cdef_object (get ("Name").string_value ()));
+  cdef_object_rep *r;
+
+  if (is_handle_class ())
+    r = new handle_cdef_object (get_name ());
+  else
+    r = new value_cdef_object (get_name ());
+
+  cdef_object obj (r);
 
   initialize_object (obj);
 
@@ -1490,14 +1504,6 @@ cdef_class::make_meta_class (tree_classdef* t)
 
   if (error_state)
     return cdef_class ();
-
-  // FIXME: remove this...
-  if (! retval.is_handle_class ())
-    {
-      ::error ("%s: value classes not supported yet",
-               class_name.c_str ());
-      return cdef_class ();
-    }
 
   // Class attributes
 

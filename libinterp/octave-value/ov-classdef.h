@@ -55,39 +55,35 @@ public:
 
   virtual cdef_class get_class (void) const;
 
-  virtual void set_class (const cdef_object&)
-    { error ("set_class: invalid object"); }
-
   virtual cdef_object_rep* clone (void) const
     {
       error ("clone: invalid object");
       return new cdef_object_rep ();
     }
 
-  virtual void put (const std::string&, const octave_value&)
-    { error ("put: invalid object"); }
+  virtual void put (const std::string& pname, const octave_value& val)
+    { map.assign (pname, val); }
 
-  virtual octave_value get (const std::string&) const
+  virtual octave_value get (const std::string& pname) const
     {
-      error ("get: invalid object");
-      return octave_value ();
+      Cell val = map.contents (pname);
+
+      if (val.numel () > 0)
+	return val(0, 0);
+      else
+	{
+	  error ("get: unknown slot: %s", pname.c_str ());
+	  return octave_value ();
+	}
     }
 
-  virtual octave_value_list subsref (const std::string&,
-				     const std::list<octave_value_list>&,
-				     int, int&)
-    {
-      error ("subsref: invalid object");
-      return octave_value_list ();
-    }
+  virtual octave_value_list subsref (const std::string& type,
+                                     const std::list<octave_value_list>& idx,
+                                     int nargout, int& skip);
 
-  virtual octave_value subsasgn (const std::string&,
-                                 const std::list<octave_value_list>&,
-                                 const octave_value&)
-    {
-      error ("subsasgn: invalid object");
-      return octave_value ();
-    }
+  virtual octave_value subsasgn (const std::string& type,
+                                 const std::list<octave_value_list>& idx,
+                                 const octave_value& rhs);
 
   virtual string_vector map_keys(void) const;
 
@@ -104,6 +100,14 @@ protected:
 
   /* class name */
   std::string cname;
+
+  /* object property values */
+  Octave_map map;
+
+private:
+  // No copying
+  cdef_object_rep (const cdef_object_rep&);
+  cdef_object_rep& operator = (const cdef_object_rep& );
 };
 
 class
@@ -202,34 +206,39 @@ public:
       return obj;
     }
 
-  void put (const std::string& pname, const octave_value& val)
-    { map.assign (pname, val); }
+  bool is_valid (void) const { return true; }
 
-  octave_value get (const std::string& pname) const
+private:
+  // No copying
+  handle_cdef_object (const handle_cdef_object&);
+  handle_cdef_object& operator = (const handle_cdef_object&);
+};
+
+class
+value_cdef_object : public cdef_object_rep
+{
+public:
+  value_cdef_object (void)
+      : cdef_object_rep () { }
+
+  value_cdef_object (const std::string& nm)
+      : cdef_object_rep (nm) { }
+
+  ~value_cdef_object (void);
+
+  cdef_object_rep* clone (void) const
     {
-      Cell val = map.contents (pname);
-
-      if (val.numel () > 0)
-	return val(0, 0);
-      else
-	{
-	  error ("get: unknown slot: %s", pname.c_str ());
-	  return octave_value ();
-	}
+      value_cdef_object* obj = new value_cdef_object (cname);
+      obj->map = map;
+      return obj;
     }
-
-  octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout, int& skip);
-
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
 
   bool is_valid (void) const { return true; }
 
-protected:
-  Octave_map map;
+private:
+  // No copying
+  value_cdef_object (const value_cdef_object&);
+  value_cdef_object& operator = (const value_cdef_object&);
 };
 
 class

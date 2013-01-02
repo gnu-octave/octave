@@ -106,12 +106,12 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Check if there's at least one string format specifier
     fmt = strrep (format, "%", " %");
     fmt = regexp (fmt, '[^ ]+', 'match');
-    fmt = strtrim (fmt(strmatch ("%", fmt)))
+    fmt = strtrim (fmt(strmatch ("%", fmt)));
     has_str_fmt = all (cellfun ("isempty", strfind (strtrim (fmt(strmatch ("%", fmt))), 's')));
     ## If there is a format, AND whitespace value = empty,
     ## don't add a space (char(32)) to whitespace
     if (! (isempty (args{ipos+1}) &&  has_str_fmt))
-      args{ipos+1} = unique ([" ", whitespace]);
+      args{ipos+1} = unique ([" ", args{ipos+1}]);
     endif
   endif
 

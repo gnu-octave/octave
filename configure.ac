@@ -2501,93 +2501,112 @@ QT_CPPFLAGS=
 QT_LDFLAGS=
 QT_LIBS=
 win32_terminal=no
-build_gui=true
+build_gui=yes
 GUIDIR=libgui
 AC_ARG_ENABLE([gui],
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
-  [if test "$enableval" = no; then build_gui=false; fi], [])
+  [if test "$enableval" = no; then build_gui=no; fi], [])
 
-if test $build_gui = true; then
+if test $build_gui = yes; then
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],
-    [AC_MSG_ERROR([Qt libraries are required to build the GUI])])
+    [AC_MSG_WARN([Qt libraries not found -- disabling GUI])
+     build_gui=no])
 
-  ## Retrieve Qt compilation and linker flags
-  QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
-  QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
-  QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
+  if test $build_gui = yes; then
+    ## Retrieve Qt compilation and linker flags
+    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
+    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
+    QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
 
-  ## Check for Qt4
-  if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-    AC_MSG_ERROR([Qt >= 4.0.0 is required to build the GUI])
+    ## Check for Qt4
+    if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
+      AC_MSG_WARN([Qt >= 4.0.0 not found -- disabling GUI])
+      build_gui=no
+    fi
   fi
 
-  AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
-  AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
-  AC_CHECK_PROGS(RCC, [rcc])
-  if test -z "$MOC" || test -z "$UIC" || test -z "$RCC"; then
-    AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required to build the GUI])
-  fi 
-
-  AC_DEFINE(HAVE_QT, 1, 
-    [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, and rcc))])
-
-  ## Check for Qscintilla library which is used in the GUI editor. 
-  AC_CACHE_CHECK([whether Qscintilla library is installed],
-    [octave_cv_lib_qscintilla],
-    [save_CPPFLAGS="$CPPFLAGS"
-    save_LDFLAGS="$LDFLAGS"
-    save_LIBS="$LIBS"
-    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
-    LDFLAGS="$QT_LDFLAGS $LDFLAGS"
-    LIBS="$QT_LIBS -lqscintilla2"
-    AC_LANG_PUSH(C++)
-    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-      #include <Qsci/qscilexersql.h>
-      ]], [[
-      QsciLexerSQL sqlLexer(0);
-      ]])],
-      octave_cv_lib_qscintilla=yes,
-      octave_cv_lib_qscintilla=no)
-    CPPFLAGS="$save_CPPFLAGS"
-    LDFLAGS="$save_LDFLAGS"
-    LIBS="$save_LIBS"
-    AC_LANG_POP([C++])
-  ])
-  if test $octave_cv_lib_qscintilla = no; then
-    AC_MSG_ERROR([Qscintilla library is required to build the GUI])
+  if test $build_gui = yes; then
+    AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
+    AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
+    AC_CHECK_PROGS(RCC, [rcc])
+    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC"; then
+      AC_DEFINE(HAVE_QT, 1, 
+        [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, and rcc))])
+    else
+      AC_MSG_WARN([Qt utility programs moc, uic, and rcc not found -- disabling GUI])
+      build_gui=no
+    fi
   fi
-  ## Let's assume Qscintilla library is at the same location as
-  ## other regular Qt libraries.
-  QT_LIBS="$QT_LIBS -lqscintilla2"
 
-  ## Check for Qt functions which have changed their API over time
-  OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
-  OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+  if test $build_gui = yes; then
+    OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+  fi
 
-  AC_CHECK_FUNCS([setlocale], [],
-                 [AC_MSG_ERROR([Missing function required to build GUI])])
+  if test $build_gui = yes; then
+    ## Check for Qscintilla library which is used in the GUI editor. 
+    AC_CACHE_CHECK([whether Qscintilla library is installed],
+      [octave_cv_lib_qscintilla],
+      [save_CPPFLAGS="$CPPFLAGS"
+      save_LDFLAGS="$LDFLAGS"
+      save_LIBS="$LIBS"
+      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+      LDFLAGS="$QT_LDFLAGS $LDFLAGS"
+      LIBS="$QT_LIBS -lqscintilla2"
+      AC_LANG_PUSH(C++)
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qsci/qscilexersql.h>
+        ]], [[
+        QsciLexerSQL sqlLexer(0);
+        ]])],
+        octave_cv_lib_qscintilla=yes,
+        octave_cv_lib_qscintilla=no)
+      CPPFLAGS="$save_CPPFLAGS"
+      LDFLAGS="$save_LDFLAGS"
+      LIBS="$save_LIBS"
+      AC_LANG_POP([C++])
+    ])
+    if test $octave_cv_lib_qscintilla = no; then
+      AC_MSG_WARN([Qscintilla library not found -- disabling built-in GUI editor])
+    else
+      ## Let's assume Qscintilla library is at the same location as
+      ## other regular Qt libraries.
+      QT_LIBS="$QT_LIBS -lqscintilla2"
+      OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
+      AC_DEFINE(HAVE_QSCINTILLA, 1, 
+        [Define to 1 if the QScintilla library and header files are available])
+    fi
 
-  case $host_os in
-    mingw* | msdosmsvc)
-      win32_terminal=yes
-      AC_CHECK_FUNCS([setvbuf], [],
-                     [AC_MSG_ERROR([Missing function required to build GUI])])
-      ;;
-    *)
-      AC_CHECK_HEADERS([pty.h libutil.h util.h])
-      AC_SEARCH_LIBS([openpty], [util],
-        [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
-      AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
-                     [AC_MSG_ERROR([Missing function required to build GUI])])
-      ;;
-  esac
-else
+    AC_CHECK_FUNCS([setlocale], [],
+      [AC_MSG_WARN([setlocale not found -- disabling GUI])
+       build_gui=no])
+
+    if test $build_gui = yes; then
+      case $host_os in
+        mingw* | msdosmsvc*)
+          AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
+            [AC_MSG_WARN([setvbuf not found -- disabling GUI])
+             build_gui=no])
+          ;;
+        *)
+          AC_CHECK_HEADERS([pty.h libutil.h util.h])
+          AC_SEARCH_LIBS([openpty], [util],
+            [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
+          AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
+            [AC_MSG_ERROR([At least one of chmod, chown, ftruncate, mmap, and munmap not found -- disabling GUI])
+             build_gui=no])
+          ;;
+      esac
+    fi
+  fi
+fi
+
+if test $build_gui = no; then
   ## GUI disabled.  Eliminate building GUIDIR directory
   GUIDIR=
 fi
-AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = true])
+AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)

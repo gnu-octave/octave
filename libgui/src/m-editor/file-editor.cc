@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#ifdef HAVE_QSCINTILLA
+
 #include "file-editor.h"
 #include "resource-manager.h"
 #include <QVBoxLayout>
@@ -817,3 +819,5 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
 
   _tab_widget->setCurrentWidget (f);
 }
+
+#endif

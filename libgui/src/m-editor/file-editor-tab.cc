@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#ifdef HAVE_QSCINTILLA
+
 #include <Qsci/qsciapis.h>
 // Not available in the Debian repos yet!
 // #include <Qsci/qscilexeroctave.h>
@@ -1096,3 +1098,5 @@ file_editor_tab::set_debugger_position (int line)
       _edit_area->markerAdd (line, debugger_position);
     }
 }
+
+#endif

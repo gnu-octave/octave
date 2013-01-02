@@ -3893,8 +3893,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
                   // Convert parse tree for classdef object to
                   // meta.class info (and stash it in the symbol
                   // table?).  Return pointer to constructor?
-                  
-                  octave_value meta_class = classdef_object->make_meta_class ();
+
+                  if (fcn_ptr)
+                    panic_impossible ();
+
+                  fcn_ptr = classdef_object->make_meta_class ();
                 }
             }
           else

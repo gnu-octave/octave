@@ -85,6 +85,10 @@ public:
   virtual bool is_class_constructor (const std::string& = std::string ()) const
     { return false; }
 
+  virtual bool
+  is_classdef_constructor (const std::string& = std::string ()) const
+    { return false; }
+
   virtual bool is_class_method (const std::string& = std::string ()) const
     { return false; }
 

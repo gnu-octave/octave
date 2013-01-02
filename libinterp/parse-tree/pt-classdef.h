@@ -623,7 +623,7 @@ public:
   octave_comment_list *leading_comment (void) { return lead_comm; }
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  octave_value make_meta_class (void) const;
+  octave_function* make_meta_class (void);
 
   tree_classdef *dup (symbol_table::scope_id scope,
                       symbol_table::context_id context) const;

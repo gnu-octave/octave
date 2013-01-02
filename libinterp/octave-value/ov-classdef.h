@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_classdef_h)
 #define octave_classdef_h 1
 
+#include <set>
 #include <string>
 
 #include "oct-map.h"
@@ -78,6 +79,14 @@ public:
     {
       error ("subsref: invalid object");
       return octave_value_list ();
+    }
+
+  virtual octave_value subsasgn (const std::string&,
+                                 const std::list<octave_value_list>&,
+                                 const octave_value&)
+    {
+      error ("subsasgn: invalid object");
+      return octave_value ();
     }
 
   virtual string_vector map_keys(void) const;
@@ -156,6 +165,11 @@ public:
 			     int nargout, int& skip)
     { return rep->subsref (type, idx, nargout, skip); }
 
+  octave_value subsasgn (const std::string& type,
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs)
+    { return rep->subsasgn (type, idx, rhs); }
+
   string_vector map_keys (void) const { return rep->map_keys (); }
 
   const cdef_object_rep* get_rep (void) const { return rep; }
@@ -178,6 +192,8 @@ public:
 
   handle_cdef_object (const std::string& nm)
       : cdef_object_rep (nm) { }
+
+  ~handle_cdef_object (void);
 
   cdef_object_rep* clone (void) const
     {
@@ -206,6 +222,10 @@ public:
 			     const std::list<octave_value_list>& idx,
 			     int nargout, int& skip);
 
+  octave_value subsasgn (const std::string& type,
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
+
   bool is_valid (void) const { return true; }
 
 protected:
@@ -222,9 +242,12 @@ private:
   {
   public:
     cdef_class_rep (const std::string& nm)
-	: handle_cdef_object (nm) { }
+	: handle_cdef_object (nm), handle_class (false) { }
 
-    cdef_method find_method (const std::string& nm);
+    std::string get_name (void) const
+      { return get ("Name").string_value (); }
+
+    cdef_method find_method (const std::string& nm, bool local = false);
 
     void install_method (const cdef_method& meth);
 
@@ -244,25 +267,47 @@ private:
 
     void delete_object (cdef_object obj);
 
+    octave_value_list subsref_meta (const std::string& type,
+                                    const std::list<octave_value_list>& idx,
+                                    int nargout);
+
+    octave_value construct (const octave_value_list& args);
+
+    void initialize_object (cdef_object& obj);
+
+    void run_constructor (cdef_object& obj, const octave_value_list& args);
+
+    void mark_as_handle_class (void) { handle_class = true; }
+
+    bool is_handle_class (void) const { return handle_class; }
+
   private:
     void load_all_methods (void);
 
-    void find_names (std::map<std::string,std::string>& names,
-		     std::map<std::string,int>& count);
+    void find_names (std::set<std::string>& names, bool all);
     
     void find_properties (std::map<std::string,cdef_property>& props,
-			  std::map<std::string,int>& count);
-    
-    void find_methods (std::map<std::string,cdef_method>& meths,
-		       std::map<std::string,int>& count);
+                          bool only_inherited);
+
+    void find_methods (std::map<std::string, cdef_method>& meths,
+                       bool only_inherited);
 
   private:
+    // The @-directory were this class is loaded from.
+    // (not used yet)
     std::string directory;
 
+    // The methods defined by this class.
     std::map<std::string,cdef_method> method_map;
 
+    // The properties defined by this class.
     std::map<std::string,cdef_property> property_map;
 
+    // TRUE if this class is a handle class. A class is a handle
+    // class when the abstract "handle" class is one of its superclasses.
+    bool handle_class;
+
+    // Utility iterator typedef's.
     typedef std::map<std::string,cdef_method>::iterator method_iterator;
     typedef std::map<std::string,cdef_method>::const_iterator method_const_iterator;
     typedef std::map<std::string,cdef_property>::iterator property_iterator;
@@ -307,7 +352,7 @@ public:
       return *this;
     }
 
-  cdef_method find_method (const std::string& nm);
+  cdef_method find_method (const std::string& nm, bool local = false);
 
   void install_method (const cdef_method& meth)
     { get_rep ()->install_method (meth); }
@@ -330,7 +375,7 @@ public:
     { return get_rep ()->get_directory (); }
 
   std::string get_name (void) const
-    { return get ("Name").string_value (); }
+    { return get_rep ()->get_name (); }
 
   bool is_builtin (void) const
     { return get_directory ().empty (); }
@@ -338,7 +383,32 @@ public:
   void delete_object (cdef_object obj)
     { get_rep ()->delete_object (obj); }
 
-  static cdef_class make_meta_class (const tree_classdef* t);
+  octave_value_list subsref_meta (const std::string& type,
+                                  const std::list<octave_value_list>& idx,
+                                  int nargout)
+    { return get_rep ()->subsref_meta (type, idx, nargout); }
+
+  static cdef_class make_meta_class (tree_classdef* t);
+
+  octave_function* get_method_function (const std::string& nm);
+
+  octave_function* get_constructor_function (void)
+    { return get_method_function (get_name ()); }
+
+  octave_value construct (const octave_value_list& args)
+    { return get_rep ()->construct (args); }
+
+  void initialize_object (cdef_object& obj)
+    { get_rep ()->initialize_object (obj); }
+
+  void run_constructor (cdef_object& obj, const octave_value_list& args)
+    { get_rep ()->run_constructor (obj, args); }
+
+  void mark_as_handle_class (void)
+    { get_rep ()->mark_as_handle_class (); }
+
+  bool is_handle_class (void) const
+    { return get_rep ()->is_handle_class (); }
 
 private:
   cdef_class_rep* get_rep (void)
@@ -378,7 +448,10 @@ private:
 
     void set_value (const octave_value& val) { default_value = val; }
 
-    void set_value (const cdef_object& obj, const octave_value& val);
+    void set_value (cdef_object& obj, const octave_value& val);
+
+  private:
+    bool is_recursive_set (const cdef_object& obj) const;
 
   private:
     octave_value default_value;
@@ -414,20 +487,14 @@ public:
 
   octave_value get_value (void) { return get_rep ()->get_value (); }
 
-  void set_value (const cdef_object& obj, const octave_value& val)
+  void set_value (cdef_object& obj, const octave_value& val)
     { get_rep ()->set_value (obj, val); }
 
   void set_value (const octave_value& val) { get_rep ()->set_value (val); }
  
-  std::string get_get_access (void) const
-    { return get ("GetAccess").string_value (); }
+  bool check_get_access (void) const;
   
-  std::string get_set_access (void) const
-    { return get ("SetAccess").string_value (); }
-
-  bool check_get_access (const std::string& acc) const;
-  
-  bool check_set_access (const std::string& acc) const;
+  bool check_set_access (void) const;
 
   std::string get_name (void) const
     { return get ("Name").string_value (); }
@@ -506,10 +573,7 @@ public:
 			     const octave_value_list& args, int nargout)
     { return get_rep ()->execute (obj, args, nargout); }
 
-  std::string get_access (void) const
-    { return get ("Access").string_value (); }
-
-  bool check_access (const std::string& req) const;
+  bool check_access (void) const;
   
   std::string get_name (void) const
     { return get ("Name").string_value (); }
@@ -533,8 +597,8 @@ cdef_object::get_class (void) const
 { return rep->get_class (); }
 
 inline cdef_method
-cdef_class::find_method (const std::string& nm)
-{ return get_rep ()->find_method (nm); }
+cdef_class::find_method (const std::string& nm, bool local)
+{ return get_rep ()->find_method (nm, local); }
 
 inline cdef_property
 cdef_class::find_property (const std::string& nm)
@@ -678,6 +742,10 @@ public:
       octave_value_list retval = subsref (type, idx, 1);
       return (retval.length () > 0 ? retval(0) : octave_value ());
     }
+
+  octave_value subsasgn (const std::string& type,
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
 
   string_vector map_keys (void) const { return object.map_keys (); }
 

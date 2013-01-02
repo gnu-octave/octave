@@ -232,16 +232,16 @@ tree_classdef_body::~tree_classdef_body (void)
 
 // Classdef
 
-octave_value
-tree_classdef::make_meta_class (void) const
+octave_function*
+tree_classdef::make_meta_class (void)
 {
   octave_value retval;
   cdef_class cls = cdef_class::make_meta_class (this);
 
   if (cls.ok ())
-    retval = to_ov (cls);
+    return cls.get_constructor_function ();
 
-  return retval;
+  return 0;
 }
 
 tree_classdef *
@@ -255,6 +255,5 @@ tree_classdef::dup (symbol_table::scope_id,
 void
 tree_classdef::accept (tree_walker& tw)
 {
-  std::cerr << "I am super accepting" << std::endl;
-  // tw.visit_classdef (*this);
+  tw.visit_classdef (*this);
 }

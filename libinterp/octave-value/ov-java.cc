@@ -1409,38 +1409,6 @@ initialize_java (void)
     }
 }
 
-DEFUN (__java_init__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_init ()\n\
-Internal function used @strong{only} when debugging Java interface.\n\
-Function will directly call initialize_java() to create an instance of a JVM.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  retval = 0;
-  initialize_java ();
-  if (! error_state)
-    retval = 1;
-
-  return retval;
-}
-
-DEFUN (__java_exit__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_exit ()\n\
-Internal function used @strong{only} when debugging Java interface.\n\
-Function will directly call terminate_jvm() to destroy the current JVM\n\
-instance.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  terminate_jvm ();
-
-  return retval;
-}
-
 JNIEXPORT jboolean JNICALL
 Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
                              jobjectArray argin, jobjectArray argout)
@@ -1936,6 +1904,48 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 
 // DEFUN blocks below must be outside of HAVE_JAVA block so that
 // documentation strings are always available, even when functions are not.
+
+DEFUN (__java_init__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java_init ()\n\
+Internal function used @strong{only} when debugging Java interface.\n\
+Function will directly call initialize_java() to create an instance of a JVM.\n\
+@end deftypefn")
+{
+
+#ifdef HAVE_JAVA
+  octave_value retval;
+
+  retval = 0;
+
+  initialize_java ();
+
+  if (! error_state)
+    retval = 1;
+
+  return retval;
+#else
+  error ("__java_init__: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (__java_exit__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java_exit ()\n\
+Internal function used @strong{only} when debugging Java interface.\n\
+Function will directly call terminate_jvm() to destroy the current JVM\n\
+instance.\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  terminate_jvm ();
+#else
+  error ("__java_init__: Octave was not compiled with Java interface");
+#endif
+
+  return octave_value ();
+}
 
 DEFUN (javaObject, args, ,
   "-*- texinfo -*-\n\

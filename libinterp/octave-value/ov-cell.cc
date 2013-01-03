@@ -1399,7 +1399,7 @@ cell array will have a dimension vector corresponding to\n\
 s = struct (\"name\", @{\"Peter\", \"Hannah\", \"Robert\"@},\n\
            \"age\", @{23, 16, 3@});\n\
 c = struct2cell (s)\n\
-   @result{} c = @{1x1x3 Cell Array@}\n\
+   @result{} c = @{2x1x3 Cell Array@}\n\
 c(1,1,:)(:)\n\
    @result{}\n\
       @{\n\

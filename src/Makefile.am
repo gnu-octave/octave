@@ -25,9 +25,10 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/liboctave/array \
   -I$(top_srcdir)/liboctave/cruft/misc \
   -I$(top_srcdir)/liboctave/numeric \
+  -I$(top_srcdir)/liboctave/system \
   -I$(top_srcdir)/liboctave/util \
   -I$(top_srcdir)/libinterp \
-  -I$(top_builddir)/libinterp/interpfcn \
+  -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
 AM_CFLAGS += $(WARN_CFLAGS)

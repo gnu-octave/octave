@@ -178,8 +178,6 @@ private:
   std::list<std::string> java_opts;
 };
 
-static dim_vector compute_array_dimensions (JNIEnv* jni_env, jobject obj);
-
 #ifdef __WIN32__
 static std::string
 read_registry_string (const std::string& key, const std::string& value)
@@ -726,8 +724,8 @@ compute_array_dimensions (JNIEnv* jni_env, jobject obj)
   jobjectArray_ref jobj (jni_env, reinterpret_cast<jobjectArray> (obj));
   jclass_ref jcls (jni_env, jni_env->GetObjectClass (obj));
   jclass_ref ccls (jni_env, jni_env->GetObjectClass (jcls));
-  jmethodID isArray_ID = jni_env->GetMethodID (ccls, "isArray", "()Z"),
-            getComponentType_ID = jni_env->GetMethodID (ccls, "getComponentType", "()Ljava/lang/Class;");
+  jmethodID isArray_ID = jni_env->GetMethodID (ccls, "isArray", "()Z");
+  jmethodID getComponentType_ID = jni_env->GetMethodID (ccls, "getComponentType", "()Ljava/lang/Class;");
 
   dim_vector dv (1, 1);
   int idx = 0;
@@ -810,7 +808,8 @@ set_array_elements (JNIEnv* jni_env, jobject jobj,
   octave_value retval;
 
   jclass_ref rhsCls (jni_env);
-  jobject_ref resObj (jni_env), rhsObj (jni_env);
+  jobject_ref resObj (jni_env);
+  jobject_ref rhsObj (jni_env);
   jobject_ref java_idx (jni_env, make_java_index (jni_env, idx));
 
   if (! error_state && unbox (jni_env, rhs, rhsObj, rhsCls))
@@ -839,15 +838,16 @@ get_invoke_list (JNIEnv* jni_env, jobject jobj)
     {
       jclass_ref cls (jni_env, jni_env->GetObjectClass (jobj));
       jclass_ref ccls (jni_env, jni_env->GetObjectClass (cls));
-      jmethodID getMethods_ID = jni_env->GetMethodID (ccls, "getMethods", "()[Ljava/lang/reflect/Method;"),
-        getFields_ID = jni_env->GetMethodID (ccls, "getFields", "()[Ljava/lang/reflect/Field;");
-      jobjectArray_ref mList (jni_env, reinterpret_cast<jobjectArray> (jni_env->CallObjectMethod (cls, getMethods_ID))),
-        fList (jni_env, reinterpret_cast<jobjectArray> (jni_env->CallObjectMethod (cls, getFields_ID)));
-      int mLen = jni_env->GetArrayLength (mList), fLen = jni_env->GetArrayLength (fList);
-      jclass_ref mCls (jni_env, jni_env->FindClass ("java/lang/reflect/Method")),
-        fCls (jni_env, jni_env->FindClass ("java/lang/reflect/Field"));
-      jmethodID m_getName_ID = jni_env->GetMethodID (mCls, "getName", "()Ljava/lang/String;"),
-        f_getName_ID = jni_env->GetMethodID (fCls, "getName", "()Ljava/lang/String;");
+      jmethodID getMethods_ID = jni_env->GetMethodID (ccls, "getMethods", "()[Ljava/lang/reflect/Method;");
+      jmethodID getFields_ID = jni_env->GetMethodID (ccls, "getFields", "()[Ljava/lang/reflect/Field;");
+      jobjectArray_ref mList (jni_env, reinterpret_cast<jobjectArray> (jni_env->CallObjectMethod (cls, getMethods_ID)));
+      jobjectArray_ref fList (jni_env, reinterpret_cast<jobjectArray> (jni_env->CallObjectMethod (cls, getFields_ID)));
+      int mLen = jni_env->GetArrayLength (mList);
+      int fLen = jni_env->GetArrayLength (fList);
+      jclass_ref mCls (jni_env, jni_env->FindClass ("java/lang/reflect/Method"));
+      jclass_ref fCls (jni_env, jni_env->FindClass ("java/lang/reflect/Field"));
+      jmethodID m_getName_ID = jni_env->GetMethodID (mCls, "getName", "()Ljava/lang/String;");
+      jmethodID f_getName_ID = jni_env->GetMethodID (fCls, "getName", "()Ljava/lang/String;");
 
       for (int i = 0; i < mLen; i++)
         {
@@ -1230,8 +1230,7 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
     {
       Matrix m = val.matrix_value ();
       jdoubleArray dv = jni_env->NewDoubleArray (m.length ());
-      //for (int i = 0; i < m.length (); i++)
-        jni_env->SetDoubleArrayRegion (dv, 0, m.length (), m.fortran_vec ());
+      jni_env->SetDoubleArrayRegion (dv, 0, m.length (), m.fortran_vec ());
       jobj = dv;
       jcls = jni_env->GetObjectClass (jobj);
     }
@@ -1408,38 +1407,6 @@ initialize_java (void)
           error (msg.c_str ());
         }
     }
-}
-
-DEFUN (__java_init__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_init ()\n\
-Internal function used @strong{only} when debugging Java interface.\n\
-Function will directly call initialize_java() to create an instance of a JVM.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  retval = 0;
-  initialize_java ();
-  if (! error_state)
-    retval = 1;
-
-  return retval;
-}
-
-DEFUN (__java_exit__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} java_exit ()\n\
-Internal function used @strong{only} when debugging Java interface.\n\
-Function will directly call terminate_jvm() to destroy the current JVM\n\
-instance.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  terminate_jvm ();
-
-  return retval;
 }
 
 JNIEXPORT jboolean JNICALL
@@ -1736,6 +1703,19 @@ octave_java::convert_to_str_internal (bool, bool force, char type) const
     return octave_value ("");
 }
 
+void
+octave_java::print (std::ostream& os, bool) const
+{
+  print_raw (os);
+  newline (os);
+}
+
+void
+octave_java::print_raw (std::ostream& os, bool) const
+{
+  os << "<Java object: " << java_classname << ">";
+}
+
 octave_value
 octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
                              const octave_value_list& args)
@@ -1924,6 +1904,48 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 
 // DEFUN blocks below must be outside of HAVE_JAVA block so that
 // documentation strings are always available, even when functions are not.
+
+DEFUN (__java_init__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java_init ()\n\
+Internal function used @strong{only} when debugging Java interface.\n\
+Function will directly call initialize_java() to create an instance of a JVM.\n\
+@end deftypefn")
+{
+
+#ifdef HAVE_JAVA
+  octave_value retval;
+
+  retval = 0;
+
+  initialize_java ();
+
+  if (! error_state)
+    retval = 1;
+
+  return retval;
+#else
+  error ("__java_init__: Octave was not compiled with Java interface");
+  return octave_value ();
+#endif
+}
+
+DEFUN (__java_exit__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} java_exit ()\n\
+Internal function used @strong{only} when debugging Java interface.\n\
+Function will directly call terminate_jvm() to destroy the current JVM\n\
+instance.\n\
+@end deftypefn")
+{
+#ifdef HAVE_JAVA
+  terminate_jvm ();
+#else
+  error ("__java_init__: Octave was not compiled with Java interface");
+#endif
+
+  return octave_value ();
+}
 
 DEFUN (javaObject, args, ,
   "-*- texinfo -*-\n\

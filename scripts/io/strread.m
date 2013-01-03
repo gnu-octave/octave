@@ -597,7 +597,8 @@ function varargout = strread (str, format = "%f", varargin)
             else
               if (! idg(ii) && ! isempty (strfind (fmt_words{ii-1}, "%s")))
                 ## Trailing literal.  If preceding format == '%s' this is an error
-                warning ("Ambiguous '%s' specifier next to literal in column %d", icol);
+                warning ...
+                 ("strread: ambiguous '%s' specifier next to literal in column %d", icol);
               elseif (idg(ii))
                 ## Current field = fixed width. Strip into icol, rest in icol+1
                 sw = regexp (fmt_words{ii}, '\d', "once");
@@ -797,8 +798,8 @@ endfunction
 %!   str = sprintf ("%s %.6f %s\n", str, a(k), b(k));
 %! endfor
 %! [aa, bb] = strread (str, "%f %s");
-%! assert (a, aa, 1e-6);
-%! assert (cellstr (b), bb);
+%! assert (aa, a, 1e-6);
+%! assert (bb, cellstr (b));
 
 %!test
 %! str = "";
@@ -808,7 +809,7 @@ endfunction
 %!   str = sprintf ("%s %.6f %s\n", str, a(k), b(k));
 %! endfor
 %! aa = strread (str, "%f %*s");
-%! assert (a, aa, 1e-6);
+%! assert (aa, a, 1e-6);
 
 %!test
 %! str = sprintf ("/* this is\nacomment*/ 1 2 3");

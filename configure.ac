@@ -18,21 +18,14 @@ dnl Copyright (C) 1993-2012 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, see
 ### <http://www.gnu.org/licenses/>.
 
-### Preserve CFLAGS and CXXFLAGS from the environment before doing
-### anything else because we don't know which macros might call
-### AC_PROG_CC or AC_PROG_CXX.
-
-EXTERN_CFLAGS="$CFLAGS"
-EXTERN_CXXFLAGS="$CXXFLAGS"
-
 AC_PREREQ([2.62])
-AC_INIT([GNU Octave], [3.7.0+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.7.1+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 OCTAVE_API_VERSION_NUMBER="48"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2012-02-22"
+OCTAVE_RELEASE_DATE="2013-01-02"
 OCTAVE_COPYRIGHT="Copyright (C) 2012 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
@@ -50,52 +43,19 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.11 tar-ustar])
 
-OCTAVE_HOST_TYPE
+OCTAVE_CANONICAL_HOST
 
 AC_DEFINE(OCTAVE_SOURCE, 1, [Define to 1 if this is Octave.])
   
 AC_USE_SYSTEM_EXTENSIONS
 
-### Path separator.
+### Make configure args available for other uses.
 
-sepchar=':'
-AC_ARG_WITH([sepchar],
-  [AS_HELP_STRING([--with-sepchar=<char>],
-    [use <char> as the path separation character])])
-case $with_sepchar in
-  yes | "")
-    case $canonical_host_type in
-      *-*-mingw* | *-*-msdosmsvc)
-        sepchar=';' ;;
-    esac
-    ;;
-  no)
-    AC_MSG_ERROR([You are required to define a path separation character])
-    ;;
-  *)
-    sepchar=$with_sepchar
-    ;;
-esac
-AC_SUBST(sepchar)
-AC_DEFINE_UNQUOTED(SEPCHAR, ['$sepchar'],
-  [Define this to be the path separator for your system, as a character constant.])
-AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"],
-  [Define this to be the path separator for your system, as a string.])
+config_opts=$ac_configure_args
+AC_SUBST(config_opts)
 
 ### Set default file locations
 
-OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
-OCTAVE_SET_DEFAULT([man1ext], '.1')
-OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
-OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
-OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
-OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
-OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
-OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
-OCTAVE_SET_DEFAULT([localapifcnfiledir],
-  '$(datadir)/octave/site/$(api_version)/m')
-OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
-OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
 OCTAVE_SET_DEFAULT([octlibdir], '$(libdir)/octave/$(version)')
 OCTAVE_SET_DEFAULT([archlibdir],
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
@@ -113,16 +73,85 @@ OCTAVE_SET_DEFAULT([localapioctfiledir],
   '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT([localveroctfiledir],
   '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
+OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
+OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
+OCTAVE_SET_DEFAULT([localapifcnfiledir],
+  '$(datadir)/octave/site/$(api_version)/m')
+OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
+OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
+OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
+OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
 OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')
+OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
+OCTAVE_SET_DEFAULT([man1ext], '.1')
+OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
 
-### Find pkg-config executable (sets $PKG_CONFIG)
+### Check for programs used in building, installing, and running Octave.
 
+## Programs used in configuring Octave.
+## Find pkg-config executable (sets $PKG_CONFIG)
 PKG_PROG_PKG_CONFIG
 
-### Make configure args available for other uses.
+## Programs used in Makefiles.
+AC_PROG_AWK
+OCTAVE_PROG_FIND
+OCTAVE_PROG_SED
+OCTAVE_PROG_PERL
 
-config_opts=$ac_configure_args
-AC_SUBST(config_opts)
+## Programs used to build parts of Octave.
+OCTAVE_PROG_GPERF
+
+OCTAVE_PROG_FLEX
+AC_SUBST([LEX_OUTPUT_ROOT], [lex.octave_])
+
+OCTAVE_PROG_BISON
+
+OCTAVE_PROG_MAKEINFO
+OCTAVE_PROG_TEXI2DVI
+OCTAVE_PROG_TEXI2PDF
+
+## Programs used when installing Octave.
+AC_PROG_LN_S
+AC_PROG_MKDIR_P
+
+AC_PROG_INSTALL
+INSTALL_SCRIPT='${INSTALL}'
+AC_SUBST(INSTALL_SCRIPT)
+
+OCTAVE_PROG_DESKTOP_FILE_INSTALL
+
+## Programs used when running Octave
+OCTAVE_PROG_GHOSTSCRIPT
+OCTAVE_PROG_GNUPLOT
+OCTAVE_PROG_PAGER
+OCTAVE_PROG_PYTHON
+
+### Path separator.
+
+sepchar=':'
+AC_ARG_WITH([sepchar],
+  [AS_HELP_STRING([--with-sepchar=<char>],
+    [use <char> as the path separation character])])
+case $with_sepchar in
+  yes | "")
+    case $host_os in
+      mingw* | msdosmsvc)
+        sepchar=';' ;;
+    esac
+    ;;
+  no)
+    AC_MSG_ERROR([You are required to define a path separation character])
+    ;;
+  *)
+    sepchar=$with_sepchar
+    ;;
+esac
+AC_SUBST(sepchar)
+AC_DEFINE_UNQUOTED(SEPCHAR, ['$sepchar'],
+  [Define this to be the path separator for your system, as a character constant.])
+AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"],
+  [Define this to be the path separator for your system, as a string.])
 
 ### Define the path to the shell on the host system.  Most systems will
 ### ensure /bin/sh is the default shell so this can be safely ignored by
@@ -276,11 +305,11 @@ AC_PROG_GCC_TRADITIONAL
 
 ## Check for MSVC
 have_msvc=no
-case $canonical_host_type in
-  *-*-msdosmsvc)
+case $host_os in
+  msdosmsvc)
     have_msvc=yes
   ;;
-  *-*-mingw*)
+  mingw*)
     AC_MSG_CHECKING([for MSVC compiler])
     AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
         #ifndef _MSC_VER
@@ -441,11 +470,11 @@ AC_ARG_ENABLE([openmp],
     [(EXPERIMENTAL) use OpenMP SMP multi-threading])],
   [if test "$enableval" = yes; then USE_OPENMP=true; fi], [])
 if $USE_OPENMP; then
-  case $canonical_host_type in
-    *-*-mingw* | *-*-cygwin* | *-*-gnu*)
+  case $host_os in
+    mingw* | cygwin* | *-gnu*)
       OCTAVE_CHECK_OPENMP(-fopenmp)
     ;;
-    *-*-msdosmsvc)
+    msdosmsvc)
       ## FIXME: is this the right flag for MSVC?
       OCTAVE_CHECK_OPENMP(-openmp)
     ;;
@@ -487,20 +516,12 @@ AC_ARG_VAR([BUILD_LDFLAGS],
 AC_ARG_VAR([BUILD_EXEEXT],
   [build system executable extension (used if cross compiling)])
 
-dnl This is bogus.  We shouldn't have to explicitly add libc too!
-dnl Keep this check before the check for the Fortran compiler,
-dnl in case -lm is needed to compile Fortran programs.
 
 ### Look for math library.  If found, this will add -lm to LIBS.
 
-case $canonical_host_type in
-  *-*-linux*)
-    AC_CHECK_LIB(m, sin, , , -lc)
-  ;;
-  *)
-    AC_CHECK_LIB(m, sin)
-  ;;
-esac
+dnl Keep this check before the check for the Fortran compiler,
+dnl in case -lm is needed to compile Fortran programs.
+AC_CHECK_LIB(m, sin)
 
 ### Determine the Fortran compiler and how to invoke it
 
@@ -1053,8 +1074,8 @@ if test -n "$OPENGL_LIBS"; then
     FLTK_CFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
     FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
 
-    case $canonical_host_type in
-      *-*-mingw*)
+    case $host_os in
+      mingw*)
         FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`
       ;;
     esac
@@ -1164,8 +1185,8 @@ fi
 
 ## On OSX, try again with a wrapper library (without -ff2c!)
 if test $ax_blas_f77_func_ok = no; then
-  case $canonical_host_type in
-    *-*-darwin*)
+  case $host_os in
+    darwin*)
       ## test if wrapper functions help
       octave_blaswrap_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DUSE_BLASWRAP"
@@ -1399,9 +1420,7 @@ AC_ARG_ENABLE([dl],
    esac],
   [ENABLE_DYNAMIC_LINKING=true])
 
-if $STATIC_LIBS || $SHARED_LIBS; then
-  true
-else
+if ! $STATIC_LIBS && ! $SHARED_LIBS; then
   AC_MSG_ERROR([You can't disable building static AND shared libraries!])
 fi
 
@@ -1765,7 +1784,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
   ## Disable dynamic linking if capability is not present.
   if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
-    true
+    :  # some form of dynamic linking present
   else
     ENABLE_DYNAMIC_LINKING=false
   fi
@@ -1795,8 +1814,8 @@ AC_SUBST(LIBOCTAVE)
 ### Check for existence of various libraries
 
 ## OS-specific test for dirent, opendir.
-case $canonical_host_type in
-  *-*-mingw*)
+case $host_os in
+  mingw*)
     if test $have_msvc = yes; then
       AC_CHECK_LIB([dirent], [opendir])
       LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
@@ -1805,7 +1824,7 @@ case $canonical_host_type in
     fi
     LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
-  *-*-msdosmsvc*)
+  msdosmsvc)
     AC_CHECK_LIB([dirent], [opendir])
     LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
   ;;
@@ -1941,7 +1960,8 @@ AC_CHECK_FUNCS([canonicalize_file_name dup2])
 AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
 AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
 AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
-AC_CHECK_FUNCS([kill lgamma lgammaf lgamma_r lgammaf_r])
+AC_CHECK_FUNCS([isascii kill])
+AC_CHECK_FUNCS([lgamma lgammaf lgamma_r lgammaf_r])
 AC_CHECK_FUNCS([log1p log1pf pipe])
 AC_CHECK_FUNCS([realpath resolvepath roundl])
 AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
@@ -1982,21 +2002,11 @@ OCTAVE_CHECK_FUNC_CMATH(isnan)
 OCTAVE_CHECK_FUNC_CMATH(isinf)
 OCTAVE_CHECK_FUNC_CMATH(isfinite)
 
-dnl Would like to get rid of this crap, and just have
-dnl
-dnl   AC_CHECK_FUNCS([finite isnan isinf])
-dnl
-dnl instead, but that used to fail on some systems...
-dnl
-dnl Also just using AC_CHECK_FUNCS doesn't seem to work to find isinf
-dnl and isnan on Linux systems, so we use AC_CHECK_FUNC, and if that
-dnl fails, we try again by including math.h and invoking the function
-dnl with an argument. 
-
-### I am told that Inf and NaN don't work on m68k HP sytems.
+## Check for Inf and NaN functions
 
 case $canonical_host_type in
   m68k-hp-hpux*)
+    ## I am told that Inf and NaN don't work on m68k HP sytems.
   ;;
   *)
     AC_CHECK_FUNCS([finite isnan isinf signbit])
@@ -2011,9 +2021,49 @@ dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
 AC_CHECK_FUNCS([acosh acoshf asinh asinhf atanh atanhf cbrt cbrtf])
 AC_CHECK_FUNCS([erf erff erfc erfcf exp2f hypotf _hypotf log2 log2f])
 
+## Check for math defines such as M_LN2 in math.h
+AC_CACHE_CHECK([for MATH DEFINES in math.h],
+  [octave_cv_header_math_defines],
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+    #include <math.h>
+    ]], [[
+    double x = M_LN2;]])],
+    octave_cv_header_math_defines=yes,
+    octave_cv_header_math_defines=no)
+  ])
+
+if test $octave_cv_header_math_defines = no; then
+  ## Check again and try defining _USE_MATH_DEFINES
+  AC_CACHE_CHECK([whether _USE_MATH_DEFINES needs to be defined],
+    [octave_cv_header__use_math_defines],
+    [save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <math.h>
+      ]], [[
+      double x = M_LN2;]])],
+      octave_cv_header__use_math_defines=yes,
+      octave_cv_header__use_math_defines=no)
+    CPPFLAGS="$save_CPPFLAGS"
+    ])
+  if test $octave_cv_header__use_math_defines = yes; then
+    octave_cv_header_math_defines=yes
+    AC_DEFINE(_USE_MATH_DEFINES, 1,
+      [Define to 1 if _USE_MATH_DEFINES is required to get math constants like M_LN2.])
+    CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
+  fi
+fi 
+
+if test $octave_cv_header_math_defines = yes; then
+  AC_DEFINE(HAVE_MATH_DEFINES, 1,
+    [Define to 1 if defines such as M_PI are available in math.h])
+else
+  AC_MSG_ERROR([MATH DEFINES in math.h such as M_PI are required to build Octave])
+fi
+
 ## Windows-specific tests for extra #defines
-case $canonical_host_type in
-  *-*-msdosmsvc | *-*-mingw*)
+case $host_os in
+  msdosmsvc | mingw*)
     AC_MSG_CHECKING([for required _WIN32_WINNT])
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <windows.h>
@@ -2025,21 +2075,12 @@ case $canonical_host_type in
       [AC_DEFINE(_WIN32_WINNT, 0x0403,
         [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
        AC_MSG_RESULT([0x0403])])
-    AC_MSG_CHECKING([whether _USE_MATH_DEFINES needs to be defined])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <math.h>
-        ]], [[
-        int x = M_LN2;]])],
-      [AC_MSG_RESULT([no])],
-      [AC_DEFINE(_USE_MATH_DEFINES, 1,
-        [Define to 1 if your system needs to define math constants like M_LN2.])
-        AC_MSG_RESULT([yes])])
   ;;
 esac
 
 ## Windows-specific use of functions
-case $canonical_host_type in
-  *-*-mingw* | *-*-msdosmsvc*)
+case $host_os in
+  msdosmsvc | mingw*)
     AC_CHECK_FUNCS([setvbuf], [],
                    [AC_MSG_ERROR([Missing function required to build Octave])])
     ;;
@@ -2047,8 +2088,8 @@ esac
 
 ## Cygwin kluge for getrusage.
 AC_CHECK_FUNCS([getrusage])
-case $canonical_host_type in
-  *-*-cygwin*)
+case $host_os in
+  cygwin*)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
       [Define to 1 if your struct rusage only has time information.])
   ;;
@@ -2090,38 +2131,6 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 # include <unistd.h>
 #endif
 ]])
-
-### Checks for other programs used in building, testing, installing, and
-### running Octave.
-
-AC_PROG_AWK
-OCTAVE_PROG_FIND
-OCTAVE_PROG_SED
-OCTAVE_PROG_PERL
-OCTAVE_PROG_PYTHON
-
-OCTAVE_PROG_FLEX
-AC_SUBST([LEX_OUTPUT_ROOT], [lex.octave_])
-
-OCTAVE_PROG_BISON
-
-AC_PROG_LN_S
-AC_PROG_MKDIR_P
-
-AC_PROG_INSTALL
-INSTALL_SCRIPT='${INSTALL}'
-AC_SUBST(INSTALL_SCRIPT)
-
-OCTAVE_PROG_DESKTOP_FILE_INSTALL
-
-OCTAVE_PROG_GNUPLOT
-OCTAVE_PROG_PAGER
-OCTAVE_PROG_GPERF
-
-OCTAVE_PROG_GHOSTSCRIPT
-OCTAVE_PROG_MAKEINFO
-OCTAVE_PROG_TEXI2DVI
-OCTAVE_PROG_TEXI2PDF
 
 ### Need to disable building documentation if gnuplot was not found,
 ### unless it was already disabled previously.
@@ -2257,21 +2266,22 @@ do
 
   if test -z "$JAVA_HOME"; then
     ## Find JAVA_HOME for JRE by running java and querying properties.
-    JAVA_TMP_HOME="`\"$JAVA\" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`"
+    JAVA_TMP_HOME=`"$JAVA" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`
     ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
-    JAVA_HOME="`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`"
+    JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`
   fi
 
-  case $canonical_host_type in
-    *-mingw* | *-msdosmsvc*)
-      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is without
-      ## colon and backslashes, as it is also used as path separator. Use quoted paths
-      ## as Java may be installed in a path with whitespaces (e.g. C:\Program Files\Java\...).
+  case $host_os in
+    mingw* | msdosmsvc)
+      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is
+      ## without colon and backslashes, as it is also used as path separator.
+      ## Use quoted paths as Java may be installed in a path with whitespaces
+      ## (e.g. C:\Program Files\Java\...).
       if test -n "$JAVA_HOME"; then
-        JAVA_HOME="`cd \"$JAVA_HOME\" && pwd`"
-	## Maybe this will be useful in the future, as native Java won't probably
-	## understand MSYS paths.
-	JAVA_HOME_NATIVE="`cd \"$JAVA_HOME\" && pwd -W`"
+        JAVA_HOME=`cd "$JAVA_HOME" && pwd`
+        ## Maybe this will be useful in the future, as native Java won't
+        ## understand MSYS paths.
+        JAVA_HOME_NATIVE=`cd "$JAVA_HOME" && pwd -W`
       fi
     ;;
     *)
@@ -2307,19 +2317,19 @@ do
     break
   fi
 
-  ## At this point Win32/MSVC systems have enough configuration data. We assume
-  ## that all appropriate variables (e.g. INCLUDE and LIB) have already the required
-  ## paths to compile and link against JDK.
-  case $canonical_host_type in
-    *-msdosmsvc*)
+  ## At this point Win32/MSVC systems have enough configuration data.  We
+  ## assume that all appropriate variables (e.g. INCLUDE and LIB) already have
+  ## the required paths to compile and link against JDK.
+  case $host_os in
+    msdosmsvc)
       build_java=true
       JAVA_LIBS=-ladvapi32
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
       break
     ;;
-    *-mingw*)
-      if test "$have_msvc" = "yes"; then
+    mingw*)
+      if test $have_msvc = yes; then
         build_java=true
         JAVA_LIBS=-ladvapi32
         AC_DEFINE(HAVE_JAVA, 1,
@@ -2330,11 +2340,11 @@ do
   esac
 
   ## Determine which library file name to search for.
-  case $canonical_host_type in
-    *-darwin*)
+  case $host_os in
+    darwin*)
       jvmlib=libjvm.dylib
     ;;
-    *-mingw* | *-cygwin*)
+    mingw* | cygwin*)
       jvmlib=jvm.dll
     ;;
     *)
@@ -2404,8 +2414,8 @@ do
   AC_MSG_CHECKING([for include file <jni.h>])
 
   ## Java and JVM found.  Set up flags.
-  case $canonical_host_type in
-    *-darwin*)
+  case $host_os in
+    darwin*)
       ## Sneak the -framework flag into mkoctfile via LFLAGS
       LFLAGS="$LFLAGS -framework JavaVM"
       ## According to: http://developer.apple.com/unix/crossplatform.html
@@ -2418,7 +2428,7 @@ do
       fi
       JAVA_LIBS="-framework JavaVM"
     ;;
-    *-mingw* | *-cygwin*)
+    mingw* | cygwin*)
       if test -n "$JAVA_CPPFLAGS"; then
         JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
       else
@@ -2436,11 +2446,11 @@ do
   esac
 
   ## Verify jni.h include file exists.
-	JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
+  JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
   have_jni=false
-	for dir in $JNI_PATH; do 
-	  if test -f "${dir}/jni.h"; then have_jni=true; break; fi
-	done
+  for dir in $JNI_PATH; do 
+    if test -f "${dir}/jni.h"; then have_jni=true; break; fi
+  done
   if test $have_jni = true; then
     AC_MSG_RESULT([$dir])
   else
@@ -2471,93 +2481,112 @@ QT_CPPFLAGS=
 QT_LDFLAGS=
 QT_LIBS=
 win32_terminal=no
-build_gui=true
+build_gui=yes
 GUIDIR=libgui
 AC_ARG_ENABLE([gui],
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
-  [if test "$enableval" = no; then build_gui=false; fi], [])
+  [if test "$enableval" = no; then build_gui=no; fi], [])
 
-if test $build_gui = true; then
+if test $build_gui = yes; then
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],
-    [AC_MSG_ERROR([Qt libraries are required to build the GUI])])
+    [AC_MSG_WARN([Qt libraries not found -- disabling GUI])
+     build_gui=no])
 
-  ## Retrieve Qt compilation and linker flags
-  QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
-  QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
-  QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
+  if test $build_gui = yes; then
+    ## Retrieve Qt compilation and linker flags
+    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
+    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
+    QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
 
-  ## Check for Qt4
-  if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-    AC_MSG_ERROR([Qt >= 4.0.0 is required to build the GUI])
+    ## Check for Qt4
+    if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
+      AC_MSG_WARN([Qt >= 4.0.0 not found -- disabling GUI])
+      build_gui=no
+    fi
   fi
 
-  AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
-  AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
-  AC_CHECK_PROGS(RCC, [rcc])
-  if test -z "$MOC" || test -z "$UIC" || test -z "$RCC"; then
-    AC_MSG_ERROR([Qt utility programs moc, uic, and rcc are required to build the GUI])
-  fi 
-
-  AC_DEFINE(HAVE_QT, 1, 
-    [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, and rcc))])
-
-  ## Check for Qscintilla library which is used in the GUI editor. 
-  AC_CACHE_CHECK([whether Qscintilla library is installed],
-    [octave_cv_lib_qscintilla],
-    [save_CPPFLAGS="$CPPFLAGS"
-    save_LDFLAGS="$LDFLAGS"
-    save_LIBS="$LIBS"
-    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
-    LDFLAGS="$QT_LDFLAGS $LDFLAGS"
-    LIBS="$QT_LIBS -lqscintilla2"
-    AC_LANG_PUSH(C++)
-    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-      #include <Qsci/qscilexersql.h>
-      ]], [[
-      QsciLexerSQL sqlLexer(0);
-      ]])],
-      octave_cv_lib_qscintilla=yes,
-      octave_cv_lib_qscintilla=no)
-    CPPFLAGS="$save_CPPFLAGS"
-    LDFLAGS="$save_LDFLAGS"
-    LIBS="$save_LIBS"
-    AC_LANG_POP([C++])
-  ])
-  if test $octave_cv_lib_qscintilla = no; then
-    AC_MSG_ERROR([Qscintilla library is required to build the GUI])
+  if test $build_gui = yes; then
+    AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
+    AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
+    AC_CHECK_PROGS(RCC, [rcc])
+    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC"; then
+      AC_DEFINE(HAVE_QT, 1, 
+        [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, and rcc))])
+    else
+      AC_MSG_WARN([Qt utility programs moc, uic, and rcc not found -- disabling GUI])
+      build_gui=no
+    fi
   fi
-  ## Let's assume Qscintilla library is at the same location as
-  ## other regular Qt libraries.
-  QT_LIBS="$QT_LIBS -lqscintilla2"
 
-  ## Check for Qt functions which have changed their API over time
-  OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
-  OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+  if test $build_gui = yes; then
+    OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+  fi
 
-  AC_CHECK_FUNCS([setlocale], [],
-                 [AC_MSG_ERROR([Missing function required to build GUI])])
+  if test $build_gui = yes; then
+    ## Check for Qscintilla library which is used in the GUI editor. 
+    AC_CACHE_CHECK([whether Qscintilla library is installed],
+      [octave_cv_lib_qscintilla],
+      [save_CPPFLAGS="$CPPFLAGS"
+      save_LDFLAGS="$LDFLAGS"
+      save_LIBS="$LIBS"
+      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+      LDFLAGS="$QT_LDFLAGS $LDFLAGS"
+      LIBS="$QT_LIBS -lqscintilla2"
+      AC_LANG_PUSH(C++)
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qsci/qscilexersql.h>
+        ]], [[
+        QsciLexerSQL sqlLexer(0);
+        ]])],
+        octave_cv_lib_qscintilla=yes,
+        octave_cv_lib_qscintilla=no)
+      CPPFLAGS="$save_CPPFLAGS"
+      LDFLAGS="$save_LDFLAGS"
+      LIBS="$save_LIBS"
+      AC_LANG_POP([C++])
+    ])
+    if test $octave_cv_lib_qscintilla = no; then
+      AC_MSG_WARN([Qscintilla library not found -- disabling built-in GUI editor])
+    else
+      ## Let's assume Qscintilla library is at the same location as
+      ## other regular Qt libraries.
+      QT_LIBS="$QT_LIBS -lqscintilla2"
+      OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
+      AC_DEFINE(HAVE_QSCINTILLA, 1, 
+        [Define to 1 if the QScintilla library and header files are available])
+    fi
 
-  case $canonical_host_type in
-    *-*-mingw* | *-*-msdosmsvc*)
-      win32_terminal=yes
-      AC_CHECK_FUNCS([setvbuf], [],
-                     [AC_MSG_ERROR([Missing function required to build GUI])])
-      ;;
-    *)
-      AC_CHECK_HEADERS([pty.h libutil.h util.h])
-      AC_SEARCH_LIBS([openpty], [util],
-        [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
-      AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
-                     [AC_MSG_ERROR([Missing function required to build GUI])])
-      ;;
-  esac
-else
+    AC_CHECK_FUNCS([setlocale], [],
+      [AC_MSG_WARN([setlocale not found -- disabling GUI])
+       build_gui=no])
+
+    if test $build_gui = yes; then
+      case $host_os in
+        mingw* | msdosmsvc*)
+          AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
+            [AC_MSG_WARN([setvbuf not found -- disabling GUI])
+             build_gui=no])
+          ;;
+        *)
+          AC_CHECK_HEADERS([pty.h libutil.h util.h])
+          AC_SEARCH_LIBS([openpty], [util],
+            [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
+          AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
+            [AC_MSG_ERROR([At least one of chmod, chown, ftruncate, mmap, and munmap not found -- disabling GUI])
+             build_gui=no])
+          ;;
+      esac
+    fi
+  fi
+fi
+
+if test $build_gui = no; then
   ## GUI disabled.  Eliminate building GUIDIR directory
   GUIDIR=
 fi
-AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = true])
+AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)

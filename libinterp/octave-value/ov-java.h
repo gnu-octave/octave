@@ -149,16 +149,9 @@ public:
 
   dim_vector dims (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const
-  {
-    os << "<Java object: " << java_classname << ">";
-    newline(os);
-  }
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
-  {
-    print(os, pr_as_read_syntax);
-  }
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   octave_value_list
   subsref (const std::string& type,

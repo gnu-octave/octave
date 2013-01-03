@@ -148,7 +148,9 @@ private:
   void exit_callback (void);
 
   QTerminal *               _terminal;
+#ifdef HAVE_QSCINTILLA
   file_editor_interface *   _file_editor;
+#endif
   QMenu *                   _debug_menu;
 
   QAction *                 _debug_continue;

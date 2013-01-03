@@ -97,54 +97,87 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
         unsigned int start_edge, bool first, charMatrix& mark)
 {
   double px[4], py[4], pz[4], tmp;
-  unsigned int stop_edge, next_edge, pt[2];
-  int next_r, next_c;
+  unsigned int stop_edge, pt[2];
 
-  //get x, y, and z - lvl for current facet
-  px[0] = px[3] = X(c);
-  px[1] = px[2] = X(c+1);
-
-  py[0] = py[1] = Y(r);
-  py[2] = py[3] = Y(r+1);
-
-  pz[3] = Z(r+1, c) - lvl;
-  pz[2] = Z(r+1, c + 1) - lvl;
-  pz[1] = Z(r, c+1) - lvl;
-  pz[0] = Z(r, c) - lvl;
-
-  // Facet edge and point naming assignment.
-  //
-  //  0-----1   .-0-.
-  //  |     |   |   |
-  //  |     |   3   1
-  //  |     |   |   |
-  //  3-----2   .-2-.
-
-  // Get mark value of current facet.
-  char id = static_cast<char> (mark(r, c));
-
-  // Check startedge s.
-  if (start_edge == 255)
+  // Continue while next facet is not done yet.
+  while (r >= 0 && c >= 0 && r < mark.rows () && c < mark.cols ()
+         && mark(r, c) > 0)
     {
-      // Find start edge.
-      for (unsigned int k = 0; k < 4; k++)
-        if (static_cast<char> (1 << k) & id)
-          start_edge = k;
-    }
 
-  if (start_edge == 255)
-    return;
+      //get x, y, and z - lvl for current facet
+      px[0] = px[3] = X(c);
+      px[1] = px[2] = X(c+1);
 
-  // Decrease mark value of current facet for start edge.
-  mark(r, c) -= static_cast<char> (1 << start_edge);
+      py[0] = py[1] = Y(r);
+      py[2] = py[3] = Y(r+1);
 
-  // Next point (clockwise).
-  pt[0] = start_edge;
-  pt[1] = (pt[0] + 1) % 4;
+      pz[3] = Z(r+1, c) - lvl;
+      pz[2] = Z(r+1, c + 1) - lvl;
+      pz[1] = Z(r, c+1) - lvl;
+      pz[0] = Z(r, c) - lvl;
 
-  // Calculate contour segment start if first of contour.
-  if (first)
-    {
+      // Facet edge and point naming assignment.
+      //
+      //  0-----1   .-0-.
+      //  |     |   |   |
+      //  |     |   3   1
+      //  |     |   |   |
+      //  3-----2   .-2-.
+
+      // Get mark value of current facet.
+      char id = static_cast<char> (mark(r, c));
+
+      // Check startedge s.
+      if (start_edge == 255)
+        {
+          // Find start edge.
+          for (unsigned int k = 0; k < 4; k++)
+            if (static_cast<char> (1 << k) & id)
+              start_edge = k;
+        }
+
+      if (start_edge == 255)
+        break;
+
+      // Decrease mark value of current facet for start edge.
+      mark(r, c) -= static_cast<char> (1 << start_edge);
+
+      // Next point (clockwise).
+      pt[0] = start_edge;
+      pt[1] = (pt[0] + 1) % 4;
+
+      // Calculate contour segment start if first of contour.
+      if (first)
+        {
+          tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
+
+          if (xisnan (tmp))
+            ct_x = ct_y = 0.5;
+          else
+            {
+              ct_x = px[pt[0]] + (px[pt[1]] - px[pt[0]])/(1 + tmp);
+              ct_y = py[pt[0]] + (py[pt[1]] - py[pt[0]])/(1 + tmp);
+            }
+
+          start_contour (lvl, ct_x, ct_y);
+          first = false;
+        }
+
+      // Find stop edge.
+      // FIXME -- perhaps this should use a while loop?
+      for (unsigned int k = 1; k <= 4; k++)
+        {
+          if (start_edge == 0 || start_edge == 2)
+            stop_edge = (start_edge + k) % 4;
+          else
+            stop_edge = (start_edge - k) % 4;
+
+          if (static_cast<char> (1 << stop_edge) & id)
+            break;
+        }
+
+      pt[0] = stop_edge;
+      pt[1] = (pt[0] + 1) % 4;
       tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
 
       if (xisnan (tmp))
@@ -155,60 +188,25 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
           ct_y = py[pt[0]] + (py[pt[1]] - py[pt[0]])/(1 + tmp);
         }
 
-      start_contour (lvl, ct_x, ct_y);
-    }
+      // Add point to contour.
+      add_point (ct_x, ct_y);
 
-  // Find stop edge.
-  // FIXME -- perhaps this should use a while loop?
-  for (unsigned int k = 1; k <= 4; k++)
-    {
-      if (start_edge == 0 || start_edge == 2)
-        stop_edge = (start_edge + k) % 4;
-      else
-        stop_edge = (start_edge - k) % 4;
+      // Decrease id value of current facet for start edge.
+      mark(r, c) -= static_cast<char> (1 << stop_edge);
 
-      if (static_cast<char> (1 << stop_edge) & id)
-        break;
-    }
+      // Find next facet.
+      if (stop_edge == 0)
+        r--;
+      else if (stop_edge == 1)
+        c++;
+      else if (stop_edge == 2)
+        r++;
+      else if (stop_edge == 3)
+        c--;
 
-  pt[0] = stop_edge;
-  pt[1] = (pt[0] + 1) % 4;
-  tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
+      // Go to next facet.
+      start_edge = (stop_edge + 2) % 4;
 
-  if (xisnan (tmp))
-    ct_x = ct_y = 0.5;
-  else
-    {
-      ct_x = px[pt[0]] + (px[pt[1]] - px[pt[0]])/(1 + tmp);
-      ct_y = py[pt[0]] + (py[pt[1]] - py[pt[0]])/(1 + tmp);
-    }
-
-  // Add point to contour.
-  add_point (ct_x, ct_y);
-
-  // Decrease id value of current facet for start edge.
-  mark(r, c) -= static_cast<char> (1 << stop_edge);
-
-  // Find next facet.
-  next_c = c;
-  next_r = r;
-
-  if (stop_edge == 0)
-    next_r--;
-  else if (stop_edge == 1)
-    next_c++;
-  else if (stop_edge == 2)
-    next_r++;
-  else if (stop_edge == 3)
-    next_c--;
-
-  // Check if next facet is not done yet.
-  // Go to next facet.
-  if (next_r >= 0 && next_c >= 0 && next_r < mark.rows ()
-      && next_c < mark.cols () && mark(next_r, next_c) > 0)
-    {
-      next_edge = (stop_edge + 2) % 4;
-      drawcn (X, Y, Z, lvl, next_r, next_c, ct_x, ct_y, next_edge, false, mark);
     }
 }
 

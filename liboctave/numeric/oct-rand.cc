@@ -427,7 +427,7 @@ octave_rand::do_float_scalar (float a)
   if (use_old_generators)
     {
       double da = a;
-      double dretval;
+      double dretval = 0.0;
       switch (current_distribution)
         {
         case uniform_dist:

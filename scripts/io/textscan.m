@@ -195,6 +195,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       error ("textscan: character value required for EndOfLine");
     endif
   else
+    if (! ischar (fid))
     ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
@@ -204,6 +205,9 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     elseif (! isempty (strfind ("\r", str(1 : eol_srch_len))))
       eol_char = "\r";
     ## Otherwise, use plain UNIX (LF)
+    else
+      eol_char = "\n";
+    endif
     else
       eol_char = "\n";
     endif
@@ -408,3 +412,88 @@ endfunction
 %! data = textscan("   1. 1 \n 2 3\n", '%f %f');
 %! assert (data{1}, [1; 2], 1e-15);
 %! assert (data{2}, [1; 3], 1e-15);
+
+%%  Whitespace test (bug #37333) using delimiter ";"
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = "C:/code/meas;";
+%! tc{1, end+1} = " C:/code/sim;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";");
+%! for k = 1:numel (c{1})
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end
+
+%%  Whitespace test (bug #37333), adding multipleDelimsAsOne true arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "multipleDelimsAsOne", 1);
+%! for k = 1:numel (c{1})
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end
+
+%%  Whitespace test (bug #37333), adding multipleDelimsAsOne false arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;;";
+%! tc{1, end+1} = "";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "multipleDelimsAsOne", 0);
+%! for k = 1:numel (c{1})
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end
+
+%%  Whitespace test (bug #37333) whitespace "" arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "whitespace", "");
+%! for k = 1:numel (c{1})
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   assert (strcmp (lh, rh));
+%! end
+
+%%  Whitespace test (bug #37333), whitespace " " arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "whitespace", " ");
+%! for k = 1:numel (c{1})
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end

@@ -120,8 +120,7 @@ FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type,
       //
       // For Lapack 3.0, this problem seems to be fixed.
 
-      jobu = 'N';
-      jobv = 'N';
+      jobu = jobv = 'N';
       ncol_u = nrow_vt = 1;
       break;
 
@@ -144,21 +143,21 @@ FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type,
 
   FloatComplex *vt = right_sm.fortran_vec ();
 
-  octave_idx_type lrwork = 5*max_mn;
-
-  Array<float> rwork (dim_vector (lrwork, 1));
-
-  // Ask ZGESVD what the dimension of WORK should be.
+  // Query CGESVD for the correct dimension of WORK.
 
   octave_idx_type lwork = -1;
 
   Array<FloatComplex> work (dim_vector (1, 1));
 
   octave_idx_type one = 1;
-  octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
+  octave_idx_type m1 = std::max (m, one);
+  octave_idx_type nrow_vt1 = std::max (nrow_vt, one);
 
   if (svd_driver == SVD::GESVD)
     {
+      octave_idx_type lrwork = 5*max_mn;
+      Array<float> rwork (dim_vector (lrwork, 1));
+
       F77_XFCN (cgesvd, CGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                                  m, n, tmp_data, m1, s_vec, u, m1, vt,
@@ -182,6 +181,14 @@ FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type,
     {
       assert (jobu == jobv);
       char jobz = jobu;
+
+      octave_idx_type lrwork;
+      if (jobz == 'N')
+        lrwork = 5*min_mn;
+      else
+        lrwork = min_mn * std::max (5*min_mn+7, 2*max_mn+2*min_mn+1);
+      Array<float> rwork (dim_vector (lrwork, 1));
+
       OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
 
       F77_XFCN (cgesdd, CGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),

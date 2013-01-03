@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#ifdef HAVE_QSCINTILLA
+
 #include "lexer-octave-gui.h"
 #include <qcolor.h>
 #include <qfont.h>
@@ -175,3 +177,4 @@ const char *lexer_octave_gui::keywords(int set) const
   return 0;
 }
 
+#endif

@@ -48,7 +48,7 @@
 ##         @}
 ## @end group
 ## @group
-## t = struct ("d", @{@}, "c", @{@}, "b", "a", @{@});
+## t = struct ("d", @{@}, "c", @{@}, "b", @{@}, "a", @{@});
 ## t2 = orderfields (s, t)
 ##      @result{} t2 =
 ##         @{
@@ -59,7 +59,7 @@
 ##         @}
 ## @end group
 ## @group
-## t3 = orderfields (s, [3, 2, 4, 1]);
+## t3 = orderfields (s, [3, 2, 4, 1])
 ##      @result{} t3 =
 ##         @{
 ##           a =  1

@@ -51,6 +51,7 @@ symbol_information::symbol_information (const symbol_table::symbol_record& sr)
   // for performance reasons.
   QString short_value_string;
   bool use_short_value_string = false;
+
   if (ov.is_range ())
     {
       use_short_value_string = true;
@@ -58,8 +59,8 @@ symbol_information::symbol_information (const symbol_table::symbol_record& sr)
       Range r = ov.range_value ();
 
       double base = r.base ();
-      double increment = r.base ();
-      double limit = r.base ();
+      double increment = r.inc ();
+      double limit = r.limit ();
 
       std::stringstream buffer;
 
@@ -72,16 +73,24 @@ symbol_information::symbol_information (const symbol_table::symbol_record& sr)
     }
   else if (ov.is_matrix_type () || ov.is_cell ())
     {
-      if (ov.numel () > 10)
-        use_short_value_string = true;
-    }
-  else if (ov.is_string ())
-    {
-      if (ov.string_value ().length () > 40)
+      if (ov.is_string ())  // a string?
         {
-          use_short_value_string = true;
-          short_value_string
-            = QString::fromStdString (ov.string_value ().substr (0, 40));
+          if (ov.string_value ().length () > 30)
+            {
+              use_short_value_string = true;
+              short_value_string = QString ("\"")
+                  + QString::fromStdString (ov.string_value ().substr (0, 30))
+                  + QString (" ... \"");
+            }
+        }
+      else  // arrays and cell arrays
+        {
+          if (ov.numel () > 10)
+            {
+              use_short_value_string = true;
+              short_value_string = QString("...");
+              // TODO: what kind of short version can be printed for arrays?
+            }
         }
     }
 

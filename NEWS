@@ -142,10 +142,10 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      betaincinv   dawson     fminsearch   rgbplot    
-      cmpermute    erfcinv    iscolormap   shrinkfaces
-      cmunique     erfi       lines        splinefit             
-      colorcube    findfigs   polyeig      tetramesh             
+      betaincinv   dawson     fminsearch  polyeig     tetramesh
+      cmpermute    erfcinv    importdata  rgbplot
+      cmunique     erfi       iscolormap  shrinkfaces
+      colorcube    findfigs   lines       splinefit
 
  ** Deprecated functions.
 

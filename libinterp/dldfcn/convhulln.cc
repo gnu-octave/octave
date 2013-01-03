@@ -179,7 +179,7 @@ convex hull is calculated.\n\n\
         {
           octave_idx_type j = 0;
 
-          if (! nonsimp_seen && ! facet->simplicial)
+          if (! (nonsimp_seen || facet->simplicial || qh hull_dim == 2))
             {
               nonsimp_seen = true;
 
@@ -313,4 +313,9 @@ convex hull is calculated.\n\n\
 %! h = sortrows (sort (h, 2), [1 2 3]);
 %! assert (h, [1 2 3;1 2 4; 1 3 4; 2 3 4]);
 %! assert (v, 8/3, 10*eps);
+
+%!testif HAVE_QHULL
+%! triangle=[0 0; 1 1; 1 0; 1 2];
+%! h = convhulln (triangle);
+%! assert (size (h), [3 2]);
 */

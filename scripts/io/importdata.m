@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{A} =} importdata (@var{fname})
 ## @deftypefnx {Function File} {@var{A} =} importdata (@var{fname}, @var{delimiter})
-## @deftypefnx {Function File} {@var{A} =} importdata (@var{fname}, @var{delimiter},  @var{header_rows})
-## @deftypefnx {Function File} {[@var{A}, @var{delimiter}] =} importdata (...)
-## @deftypefnx {Function File} {[@var{A}, @var{delimiter}, @var{header_rows}] =} importdata (...)
+## @deftypefnx {Function File} {@var{A} =} importdata (@var{fname}, @var{delimiter}, @var{header_rows})
+## @deftypefnx {Function File} {[@var{A}, @var{delimiter}] =} importdata (@dots{})
+## @deftypefnx {Function File} {[@var{A}, @var{delimiter}, @var{header_rows}] =} importdata (@dots{})
 ## Importing data from file.
 ##
 ## Importing the contents of file @var{fname} into workspace.

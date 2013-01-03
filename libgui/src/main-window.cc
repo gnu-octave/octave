@@ -68,8 +68,10 @@ main_window::~main_window ()
   if (_octave_qt_event_listener)
     delete _octave_qt_event_listener;
 
+#ifdef HAVE_QSCINTILLA
   if (_file_editor)
     delete _file_editor;
+#endif
 
   if (_terminal_dock_widget)
     delete _terminal_dock_widget;
@@ -96,22 +98,28 @@ main_window::~main_window ()
 void
 main_window::new_file ()
 {
+#ifdef HAVE_QSCINTILLA
   _file_editor->request_new_file ();
   focus_editor ();
+#endif
 }
 
 void
 main_window::open_file ()
 {
+#ifdef HAVE_QSCINTILLA
   _file_editor->request_open_file ();
   focus_editor ();
+#endif
 }
 
 void
 main_window::open_file (const QString& file_name)
 {
+#ifdef HAVE_QSCINTILLA
   _file_editor->request_open_file (file_name);
   focus_editor ();
+#endif
 }
 
 void
@@ -362,6 +370,7 @@ main_window::focus_workspace ()
 void
 main_window::focus_editor ()
 {
+#ifdef HAVE_QSCINTILLA
   if (!_file_editor->isVisible ())
     {
       _file_editor->setVisible (true);
@@ -370,6 +379,7 @@ main_window::focus_editor ()
   _file_editor->setFocus ();
   _file_editor->activateWindow ();
   _file_editor->raise ();
+#endif
 }
 
 void
@@ -394,7 +404,9 @@ main_window::handle_entered_debug_mode ()
   _debug_step_over->setEnabled (true);
   _debug_step_out->setEnabled (true);
   _debug_quit->setEnabled (true);
+#ifdef HAVE_QSCINTILLA
   _file_editor->handle_entered_debug_mode ();
+#endif
 }
 
 void
@@ -406,7 +418,9 @@ main_window::handle_quit_debug_mode ()
   _debug_step_over->setEnabled (false);
   _debug_step_out->setEnabled (false);
   _debug_quit->setEnabled (false);
+#ifdef HAVE_QSCINTILLA
   _file_editor->handle_quit_debug_mode ();
+#endif
 }
 
 void
@@ -576,7 +590,9 @@ main_window::construct ()
   dummyWidget->hide ();
   setCentralWidget (dummyWidget);
 
-  _file_editor = new file_editor (_terminal, this);
+#ifdef HAVE_QSCINTILLA
+  _file_editor = new file_editor (this);
+#endif
 
   QMenu *file_menu = menuBar ()->addMenu (tr ("&File"));
 
@@ -698,35 +714,47 @@ main_window::construct ()
 
   _debug_step_over = _debug_menu->addAction (QIcon (":/actions/icons/db_step.png"), tr ("Step"));
   _debug_step_over->setEnabled (false);
+#ifdef HAVE_QSCINTILLA
   _file_editor->debug_menu ()->addAction (_debug_step_over);
   _file_editor->toolbar ()->addAction (_debug_step_over);
+#endif
   _debug_step_over->setShortcut (Qt::Key_F10);
 
   _debug_step_into = _debug_menu->addAction (QIcon (":/actions/icons/db_step_in.png"), tr ("Step in"));
   _debug_step_into->setEnabled (false);
+#ifdef HAVE_QSCINTILLA
   _file_editor->debug_menu ()->addAction (_debug_step_into);
   _file_editor->toolbar ()->addAction (_debug_step_into);
+#endif
   _debug_step_into->setShortcut (Qt::Key_F11);
 
   _debug_step_out = _debug_menu->addAction (QIcon (":/actions/icons/db_step_out.png"), tr ("Step out"));
   _debug_step_out->setEnabled (false);
+#ifdef HAVE_QSCINTILLA
   _file_editor->debug_menu ()->addAction (_debug_step_out);
   _file_editor->toolbar ()->addAction (_debug_step_out);
+#endif
   _debug_step_out->setShortcut (Qt::ShiftModifier + Qt::Key_F11);
 
   _debug_continue = _debug_menu->addAction (QIcon (":/actions/icons/db_cont.png"), tr ("Continue"));
   _debug_continue->setEnabled (false);
+#ifdef HAVE_QSCINTILLA
   _file_editor->debug_menu ()->addAction (_debug_continue);
   _file_editor->toolbar ()->addAction (_debug_continue);
+#endif
   _debug_continue->setShortcut (Qt::Key_F5);
 
   _debug_menu->addSeparator ();
+#ifdef HAVE_QSCINTILLA
   _file_editor->debug_menu ()->addSeparator ();
+#endif
 
   _debug_quit = _debug_menu->addAction (QIcon (":/actions/icons/db_stop.png"), tr ("Exit Debug Mode"));
   _debug_quit->setEnabled (false);
+#ifdef HAVE_QSCINTILLA
   _file_editor->debug_menu ()->addAction (_debug_quit);
   _file_editor->toolbar ()->addAction (_debug_quit);
+#endif
   _debug_quit->setShortcut (Qt::ShiftModifier + Qt::Key_F5);
 
   //QMenu *parallelMenu = menuBar ()->addMenu (tr ("&Parallel"));
@@ -866,10 +894,12 @@ main_window::construct ()
            _files_dock_widget,          SLOT   (setVisible (bool)));
   connect (_files_dock_widget,          SIGNAL (active_changed (bool)),
            show_file_browser_action,    SLOT   (setChecked (bool)));
+#ifdef HAVE_QSCINTILLA
   connect (show_editor_action,          SIGNAL (toggled (bool)),
            _file_editor,                SLOT   (setVisible (bool)));
   connect (_file_editor,                SIGNAL (active_changed (bool)),
            show_editor_action,          SLOT   (setChecked (bool)));
+#endif
   connect (show_documentation_action,   SIGNAL (toggled (bool)),
            _documentation_dock_widget,  SLOT   (setVisible (bool)));
   connect (_documentation_dock_widget,  SIGNAL (active_changed (bool)),
@@ -890,8 +920,10 @@ main_window::construct ()
 
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));
+#ifdef HAVE_QSCINTILLA
   connect (this,                        SIGNAL (settings_changed ()),
            _file_editor,                SLOT   (notice_settings ()));
+#endif
   connect (this,                        SIGNAL (settings_changed ()),
            _files_dock_widget,          SLOT   (notice_settings ()));
   connect (this,                        SIGNAL (settings_changed ()),
@@ -941,7 +973,9 @@ main_window::construct ()
   addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
   addDockWidget (Qt::LeftDockWidgetArea, _history_dock_widget);
   addDockWidget (Qt::RightDockWidgetArea, _files_dock_widget);
+#ifdef HAVE_QSCINTILLA
   addDockWidget (Qt::RightDockWidgetArea, _file_editor);
+#endif
   addDockWidget (Qt::BottomDockWidgetArea, _terminal_dock_widget);
   addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
   setStatusBar (_status_bar);

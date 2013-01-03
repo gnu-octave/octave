@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "octave.h"
 #include "octave-gui.h"
+#include "sysdep.h"
 
 int
 main (int argc, char **argv)
@@ -34,6 +35,8 @@ main (int argc, char **argv)
   int retval = 0;
 
   octave_process_command_line (argc, argv);
+
+  sysdep_init ();
 
   install_defaults ();
 

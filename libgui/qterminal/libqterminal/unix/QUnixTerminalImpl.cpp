@@ -26,7 +26,7 @@
 
 QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
     : QTerminalInterface(parent) {
-    setMinimumSize(600, 400);
+    setMinimumSize(300, 200);
     initialize();
 }
 

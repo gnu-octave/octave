@@ -1276,19 +1276,23 @@ AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
 dnl
 dnl Figure out the hardware-vendor-os info.
 dnl
-dnl Hanging '])' in AC_MSG_WARN is for adding newline to output
-dnl
-AC_DEFUN([OCTAVE_HOST_TYPE], [
+AC_DEFUN([OCTAVE_CANONICAL_HOST], [
   AC_CANONICAL_HOST
   if test -z "$host"; then
-    host=unknown
+    host=unknown-unknown-unknown
+    AC_MSG_WARN([configuring Octave for unknown system type])
   fi
   canonical_host_type=$host
-  if test "$host" = unknown; then
-    AC_MSG_WARN([configuring Octave for unknown system type
-])
-  fi
   AC_SUBST(canonical_host_type)
+  if test -z "$host_cpu"; then
+    host_cpu=unknown
+  fi
+  if test -z "$host_vendor"; then
+    host_vendor=unknown
+  fi
+  if test -z "$host_os"; then
+    host_os=unknown
+  fi
 ])
 dnl
 dnl Check for IEEE 754 data format.

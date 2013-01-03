@@ -118,8 +118,7 @@ SVD::init (const Matrix& a, SVD::type svd_type, SVD::driver svd_driver)
       //
       // For Lapack 3.0, this problem seems to be fixed.
 
-      jobu = 'N';
-      jobv = 'N';
+      jobu = jobv = 'N';
       ncol_u = nrow_vt = 1;
       break;
 
@@ -142,14 +141,15 @@ SVD::init (const Matrix& a, SVD::type svd_type, SVD::driver svd_driver)
 
   double *vt = right_sm.fortran_vec ();
 
-  // Ask DGESVD what the dimension of WORK should be.
+  // Query DGESVD for the correct dimension of WORK.
 
   octave_idx_type lwork = -1;
 
   Array<double> work (dim_vector (1, 1));
 
   octave_idx_type one = 1;
-  octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
+  octave_idx_type m1 = std::max (m, one);
+  octave_idx_type nrow_vt1 = std::max (nrow_vt, one);
 
   if (svd_driver == SVD::GESVD)
     {

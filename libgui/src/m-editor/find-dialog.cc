@@ -43,6 +43,8 @@
 #include <config.h>
 #endif
 
+#ifdef HAVE_QSCINTILLA
+
 #include <QtGui>
 #include <QIcon>
 #include "find-dialog.h"
@@ -199,3 +201,5 @@ find_dialog::replace_all ()
     }
   // TODO: Show number of replaced strings
 }
+
+#endif

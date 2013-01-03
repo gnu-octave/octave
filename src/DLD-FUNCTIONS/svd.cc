@@ -423,3 +423,16 @@ variable value is restored when exiting the function.\n\
 
   return SET_INTERNAL_VARIABLE_CHOICES (svd_driver, driver_names);
 }
+
+/*
+%!test
+%! A = [1+1i, 1-1i, 0; 0, 2, 0; 1i, 1i, 1+2i];
+%! old_driver = svd_driver ("gesvd");
+%! [U1, S1, V1] = svd (A);
+%! svd_driver ("gesdd");
+%! [U2, S2, V2] = svd (A);
+%! assert (U1, U2, 5*eps);
+%! assert (S1, S2, 5*eps);
+%! assert (V1, V2, 5*eps);
+%! svd_driver (old_driver);
+*/

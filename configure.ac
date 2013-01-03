@@ -516,20 +516,12 @@ AC_ARG_VAR([BUILD_LDFLAGS],
 AC_ARG_VAR([BUILD_EXEEXT],
   [build system executable extension (used if cross compiling)])
 
-dnl This is bogus.  We shouldn't have to explicitly add libc too!
-dnl Keep this check before the check for the Fortran compiler,
-dnl in case -lm is needed to compile Fortran programs.
 
 ### Look for math library.  If found, this will add -lm to LIBS.
 
-case $host_os in
-  linux*)
-    AC_CHECK_LIB(m, sin, , , -lc)
-  ;;
-  *)
-    AC_CHECK_LIB(m, sin)
-  ;;
-esac
+dnl Keep this check before the check for the Fortran compiler,
+dnl in case -lm is needed to compile Fortran programs.
+AC_CHECK_LIB(m, sin)
 
 ### Determine the Fortran compiler and how to invoke it
 
@@ -1428,9 +1420,7 @@ AC_ARG_ENABLE([dl],
    esac],
   [ENABLE_DYNAMIC_LINKING=true])
 
-if $STATIC_LIBS || $SHARED_LIBS; then
-  true
-else
+if ! $STATIC_LIBS && ! $SHARED_LIBS; then
   AC_MSG_ERROR([You can't disable building static AND shared libraries!])
 fi
 
@@ -1794,7 +1784,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
   ## Disable dynamic linking if capability is not present.
   if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
-    true
+    :  # some form of dynamic linking present
   else
     ENABLE_DYNAMIC_LINKING=false
   fi
@@ -2012,21 +2002,11 @@ OCTAVE_CHECK_FUNC_CMATH(isnan)
 OCTAVE_CHECK_FUNC_CMATH(isinf)
 OCTAVE_CHECK_FUNC_CMATH(isfinite)
 
-dnl Would like to get rid of this crap, and just have
-dnl
-dnl   AC_CHECK_FUNCS([finite isnan isinf])
-dnl
-dnl instead, but that used to fail on some systems...
-dnl
-dnl Also just using AC_CHECK_FUNCS doesn't seem to work to find isinf
-dnl and isnan on Linux systems, so we use AC_CHECK_FUNC, and if that
-dnl fails, we try again by including math.h and invoking the function
-dnl with an argument. 
-
-### I am told that Inf and NaN don't work on m68k HP sytems.
+## Check for Inf and NaN functions
 
 case $canonical_host_type in
   m68k-hp-hpux*)
+    ## I am told that Inf and NaN don't work on m68k HP sytems.
   ;;
   *)
     AC_CHECK_FUNCS([finite isnan isinf signbit])

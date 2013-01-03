@@ -2012,21 +2012,11 @@ OCTAVE_CHECK_FUNC_CMATH(isnan)
 OCTAVE_CHECK_FUNC_CMATH(isinf)
 OCTAVE_CHECK_FUNC_CMATH(isfinite)
 
-dnl Would like to get rid of this crap, and just have
-dnl
-dnl   AC_CHECK_FUNCS([finite isnan isinf])
-dnl
-dnl instead, but that used to fail on some systems...
-dnl
-dnl Also just using AC_CHECK_FUNCS doesn't seem to work to find isinf
-dnl and isnan on Linux systems, so we use AC_CHECK_FUNC, and if that
-dnl fails, we try again by including math.h and invoking the function
-dnl with an argument. 
-
-### I am told that Inf and NaN don't work on m68k HP sytems.
+## Check for Inf and NaN functions
 
 case $canonical_host_type in
   m68k-hp-hpux*)
+    ## I am told that Inf and NaN don't work on m68k HP sytems.
   ;;
   *)
     AC_CHECK_FUNCS([finite isnan isinf signbit])

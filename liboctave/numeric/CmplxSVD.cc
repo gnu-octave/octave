@@ -118,8 +118,7 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type, SVD::driver svd_dr
       //
       // For Lapack 3.0, this problem seems to be fixed.
 
-      jobu = 'N';
-      jobv = 'N';
+      jobu = jobv = 'N';
       ncol_u = nrow_vt = 1;
       break;
 
@@ -142,21 +141,21 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type, SVD::driver svd_dr
 
   Complex *vt = right_sm.fortran_vec ();
 
-  octave_idx_type lrwork = 5*max_mn;
-
-  Array<double> rwork (dim_vector (lrwork, 1));
-
-  // Ask ZGESVD what the dimension of WORK should be.
+  // Query ZGESVD for the correct dimension of WORK.
 
   octave_idx_type lwork = -1;
 
   Array<Complex> work (dim_vector (1, 1));
 
   octave_idx_type one = 1;
-  octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
+  octave_idx_type m1 = std::max (m, one);
+  octave_idx_type nrow_vt1 = std::max (nrow_vt, one);
 
   if (svd_driver == SVD::GESVD)
     {
+      octave_idx_type lrwork = 5*max_mn;
+      Array<double> rwork (dim_vector (lrwork, 1));
+
       F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
                                  m, n, tmp_data, m1, s_vec, u, m1, vt,
@@ -180,6 +179,14 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type, SVD::driver svd_dr
     {
       assert (jobu == jobv);
       char jobz = jobu;
+
+      octave_idx_type lrwork;
+      if (jobz == 'N')
+        lrwork = 7*min_mn;
+      else
+        lrwork = 5*min_mn*min_mn + 5*min_mn;
+      Array<double> rwork (dim_vector (lrwork, 1));
+
       OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
 
       F77_XFCN (zgesdd, ZGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),

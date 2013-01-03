@@ -516,20 +516,12 @@ AC_ARG_VAR([BUILD_LDFLAGS],
 AC_ARG_VAR([BUILD_EXEEXT],
   [build system executable extension (used if cross compiling)])
 
-dnl This is bogus.  We shouldn't have to explicitly add libc too!
-dnl Keep this check before the check for the Fortran compiler,
-dnl in case -lm is needed to compile Fortran programs.
 
 ### Look for math library.  If found, this will add -lm to LIBS.
 
-case $host_os in
-  linux*)
-    AC_CHECK_LIB(m, sin, , , -lc)
-  ;;
-  *)
-    AC_CHECK_LIB(m, sin)
-  ;;
-esac
+dnl Keep this check before the check for the Fortran compiler,
+dnl in case -lm is needed to compile Fortran programs.
+AC_CHECK_LIB(m, sin)
 
 ### Determine the Fortran compiler and how to invoke it
 

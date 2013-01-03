@@ -1256,11 +1256,10 @@ void
 jit_convert_llvm::visit (jit_const_complex& cc)
 {
   llvm::Type *scalar_t = jit_typeinfo::get_scalar_llvm ();
-  llvm::Constant *values[2];
   Complex value = cc.value ();
-  values[0] = llvm::ConstantFP::get (scalar_t, value.real ());
-  values[1] = llvm::ConstantFP::get (scalar_t, value.imag ());
-  cc.stash_llvm (llvm::ConstantVector::get (values));
+  llvm::Value *real = llvm::ConstantFP::get (scalar_t, value.real ());
+  llvm::Value *imag = llvm::ConstantFP::get (scalar_t, value.imag ());
+  cc.stash_llvm (jit_typeinfo::create_complex (real, imag));
 }
 
 void jit_convert_llvm::visit (jit_const_index& ci)

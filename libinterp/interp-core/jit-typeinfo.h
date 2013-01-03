@@ -586,6 +586,11 @@ public:
   {
     return instance->create_undef_fn;
   }
+
+  static llvm::Value *create_complex (llvm::Value *real, llvm::Value *imag)
+  {
+    return instance->complex_new (real, imag);
+  }
 private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
 
@@ -673,15 +678,53 @@ private:
 
   void add_binary_fcmp (jit_type *ty, int op, int llvm_op);
 
+  // create a function with an external calling convention
+  // forces the function pointer to be specified
+  template <typename T>
+  jit_function create_external (llvm::ExecutionEngine *ee, T fn,
+                                const llvm::Twine& name, jit_type *ret,
+                                const std::vector<jit_type *>& args
+                                = std::vector<jit_type *> ())
+  {
+    jit_function retval = create_function (jit_convention::external, name, ret,
+                                           args);
+    retval.add_mapping (ee, fn);
+    return retval;
+  }
+
+#define JIT_PARAM_ARGS llvm::ExecutionEngine *ee, T fn,     \
+    const llvm::Twine& name, jit_type *ret,
+#define JIT_PARAMS ee, fn, name, ret,
+#define CREATE_FUNCTION(N) JIT_EXPAND(template <typename T> jit_function, \
+                                      create_external,                  \
+                                      jit_type *, /* empty */, N)
+
+  CREATE_FUNCTION(1);
+  CREATE_FUNCTION(2);
+  CREATE_FUNCTION(3);
+  CREATE_FUNCTION(4);
+
+#undef JIT_PARAM_ARGS
+#undef JIT_PARAMS
+#undef CREATE_FUNCTION
+
+  // use create_external or create_internal directly
   jit_function create_function (jit_convention::type cc,
                                 const llvm::Twine& name, jit_type *ret,
                                 const std::vector<jit_type *>& args
                                 = std::vector<jit_type *> ());
 
-#define JIT_PARAM_ARGS jit_convention::type cc, const llvm::Twine& name, \
-    jit_type *ret,
-#define JIT_PARAMS cc, name, ret,
-#define CREATE_FUNCTION(N) JIT_EXPAND(jit_function, create_function,    \
+  // create an internal calling convention (a function defined in llvm)
+  jit_function create_internal (const llvm::Twine& name, jit_type *ret,
+                                const std::vector<jit_type *>& args
+                                = std::vector<jit_type *> ())
+  {
+    return create_function (jit_convention::internal, name, ret, args);
+  }
+
+#define JIT_PARAM_ARGS const llvm::Twine& name, jit_type *ret,
+#define JIT_PARAMS name, ret,
+#define CREATE_FUNCTION(N) JIT_EXPAND(jit_function, create_internal,    \
                                       jit_type *, /* empty */, N)
 
   CREATE_FUNCTION(1);

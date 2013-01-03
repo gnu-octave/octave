@@ -656,6 +656,8 @@ octave_main (int argc, char **argv, int embedded)
 {
   octave_process_command_line (argc, argv);
 
+  sysdep_init ();
+
   install_defaults ();
 
   octave_initialize_interpreter (argc, argv, embedded);
@@ -860,8 +862,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   octave_thread::init ();
 
   init_signals ();
-
-  sysdep_init ();
 
   octave_ieee_init ();
 

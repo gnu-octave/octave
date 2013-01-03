@@ -1420,9 +1420,7 @@ AC_ARG_ENABLE([dl],
    esac],
   [ENABLE_DYNAMIC_LINKING=true])
 
-if $STATIC_LIBS || $SHARED_LIBS; then
-  true
-else
+if ! $STATIC_LIBS && ! $SHARED_LIBS; then
   AC_MSG_ERROR([You can't disable building static AND shared libraries!])
 fi
 
@@ -1786,7 +1784,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
   ## Disable dynamic linking if capability is not present.
   if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
-    true
+    :  # some form of dynamic linking present
   else
     ENABLE_DYNAMIC_LINKING=false
   fi

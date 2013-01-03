@@ -35,11 +35,6 @@ enum widget_icon_set
     GRAPHIC_ICON_SET,
     LETTER_ICON_SET
   };
-static const char* WIDGET_ICON_SET_PREFIX[] =
-    {":/actions/icons/logo.png",
-     ":/actions/icons/graphic_logo_",
-     ":/actions/icons/letter_logo_"};
-
 
 class resource_manager
 {

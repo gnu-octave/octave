@@ -203,6 +203,16 @@ main_window::process_settings_dialog_request ()
 void
 main_window::notice_settings ()
 {
+  // FIXME -- was this supposed to be configurable in some way?  If so,
+  // maybe it should be moved back to resource-manager.{h,cc}, but not
+  // as a static variable.
+  static const char *WIDGET_ICON_SET_PREFIX[] =
+    {
+      ":/actions/icons/logo.png",
+      ":/actions/icons/graphic_logo_",
+      ":/actions/icons/letter_logo_"
+    };
+
   // Set terminal font:
   QSettings *settings = resource_manager::get_settings ();
 

@@ -511,7 +511,9 @@ void
 file_editor::construct ()
 {
   QWidget *editor_widget = new QWidget (this);
-  QStyle *editor_style = QApplication::style ();
+
+  // FIXME -- what was the intended purpose of this unused variable?
+  // QStyle *editor_style = QApplication::style ();
 
   _menu_bar = new QMenuBar (editor_widget);
   _tool_bar = new QToolBar (editor_widget);

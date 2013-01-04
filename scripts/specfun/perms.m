@@ -38,17 +38,17 @@
 ## @end example
 ## @end deftypefn
 
-function A = perms (w)
+function A = perms (v)
   if (nargin != 1)
     print_usage ();
   endif
-  v = [1:length(w)]';
-  n = length (v);
+  vidx = [1:length(v)]';
+  n = length (vidx);
 
   if (n == 0)
     p = [];
   else
-    p = v(1);
+    p = vidx(1);
     for j = 2:n
       B = p;
       p = zeros (prod (2:j), n);
@@ -56,13 +56,13 @@ function A = perms (w)
       idx = 1:k;
       for i = j:-1:1
         p(idx,1:i-1) = B(:,1:i-1);
-        p(idx,i) = v(j);
+        p(idx,i) = vidx(j);
         p(idx,i+1:j) = B(:,i:j-1);
         idx += k;
       endfor
     endfor
   endif
-  A = w(p);
+  A = v(p);
 endfunction
 
 

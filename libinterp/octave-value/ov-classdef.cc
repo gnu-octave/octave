@@ -2601,6 +2601,29 @@ Undocumented internal function.\n\
   return retval;
 }
 
+DEFUN (metaclass, args, /* nargout */,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} metaclass (obj)\n\
+Returns the meta.class object corresponding to the class of @var{obj}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      cdef_object obj = to_cdef (args(0));
+
+      if (! error_state)
+        retval = to_ov (obj.get_class ());
+      else
+        print_usage ();
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

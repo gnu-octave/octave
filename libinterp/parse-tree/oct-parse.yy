@@ -1589,7 +1589,8 @@ classdef_beg    : CLASSDEF
 classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep class_body opt_sep END
                   {
                     lexer_flags.parsing_classdef = false;
-                    $$ = make_classdef ($1, $3, $4, $5, $7, $9, $2);
+                    if (! ($$ = make_classdef ($1, $3, $4, $5, $7, $9, $2)))
+                      ABORT_PARSE;
                   }
                 ;
 
@@ -3449,6 +3450,21 @@ make_classdef (token *tok_val, tree_classdef_attribute_list *a,
                octave_comment_list *lc)
 {
   tree_classdef *retval = 0;
+
+  std::string cls_name = id->name ();
+
+  std::string nm = curr_fcn_file_name;
+
+  size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
+
+  if (pos != std::string::npos)
+    nm = curr_fcn_file_name.substr (pos+1);
+
+  if (nm != cls_name)
+    {
+      yyerror ("invalid classdef definition, the class name must match the file name");
+      return retval;
+    }
 
   if (end_token_ok (end_tok, token::classdef_end))
     {

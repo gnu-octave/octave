@@ -77,13 +77,13 @@ public:
 	}
     }
 
-  virtual octave_value_list subsref (const std::string& type,
-                                     const std::list<octave_value_list>& idx,
-                                     int nargout, int& skip);
+  virtual octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int nargout, size_t& skip, const cdef_class& context);
 
-  virtual octave_value subsasgn (const std::string& type,
-                                 const std::list<octave_value_list>& idx,
-                                 const octave_value& rhs);
+  virtual octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
   virtual string_vector map_keys(void) const;
 
@@ -91,8 +91,41 @@ public:
 
   std::string class_name (void) const { return cname; }
 
-  void set_class_name (const std::string& nm)
-    { cname = nm; }
+  void set_class_name (const std::string& nm) { cname = nm; }
+
+  void mark_for_construction (const cdef_class&);
+
+  //bool is_constructed_for (const cdef_class&) const;
+
+  bool is_constructed_for (const std::string& nm) const
+    {
+      return (is_constructed ()
+              || ctor_list.find (nm) == ctor_list.end ());
+    }
+
+  bool is_partially_constructed_for (const std::string& nm) const
+    {
+      std::map< std::string, std::list<std::string> >::const_iterator it;
+
+      if (is_constructed ())
+        return true;
+      else if ((it = ctor_list.find (nm)) == ctor_list.end ()
+               || it->second.empty ())
+        return true;
+
+      for (std::list<std::string>::const_iterator lit = it->second.begin ();
+           lit != it->second.end (); ++lit)
+        if (! is_constructed_for (*lit))
+          return false;
+
+      return true;
+    }
+
+  void mark_as_constructed (void) { ctor_list.clear (); }
+
+  void mark_as_constructed (const std::string& nm) { ctor_list.erase (nm); }
+
+  bool is_constructed (void) const { return ctor_list.empty (); }
 
 protected:
   /* reference count */
@@ -104,9 +137,17 @@ protected:
   /* object property values */
   Octave_map map;
 
+  /* Internal/temporary structure used during object construction */
+  std::map< std::string, std::list<std::string> > ctor_list;
+
+protected:
+  /* Restricted copying */
+  cdef_object_rep (const cdef_object_rep& r)
+    : refcount (1), cname (r.cname), map (r.map),
+      ctor_list (r.ctor_list) { }
+
 private:
-  // No copying
-  cdef_object_rep (const cdef_object_rep&);
+  /* No assignment */
   cdef_object_rep& operator = (const cdef_object_rep& );
 };
 
@@ -164,14 +205,14 @@ public:
   octave_value get (const std::string& pname) const
     { return rep->get (pname); }
 
-  octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout, int& skip)
-    { return rep->subsref (type, idx, nargout, skip); }
+  octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int nargout, size_t& skip, const cdef_class& context)
+    { return rep->subsref (type, idx, nargout, skip, context); }
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs)
+  octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs)
     { return rep->subsasgn (type, idx, rhs); }
 
   string_vector map_keys (void) const { return rep->map_keys (); }
@@ -179,6 +220,22 @@ public:
   const cdef_object_rep* get_rep (void) const { return rep; }
 
   bool ok (void) const { return rep->is_valid (); }
+
+  void mark_for_construction (const cdef_class& cls)
+    { rep->mark_for_construction (cls); }
+
+  bool is_constructed (void) const { return rep->is_constructed (); }
+
+  bool is_constructed_for (const std::string& nm) const
+    { return rep->is_constructed_for (nm); }
+
+  bool is_partially_constructed_for (const std::string& nm) const
+    { return rep->is_partially_constructed_for (nm); }
+
+  void mark_as_constructed (void) { rep->mark_as_constructed (); }
+
+  void mark_as_constructed (const std::string& nm)
+    { rep->mark_as_constructed (nm); }
 
 protected:
   cdef_object_rep* get_rep (void) { return rep; }
@@ -253,6 +310,9 @@ private:
     cdef_class_rep (const std::string& nm)
 	: handle_cdef_object (nm), handle_class (false) { }
 
+    cdef_class_rep (const std::string& nm,
+                    const std::list<cdef_class>& superclasses);
+
     std::string get_name (void) const
       { return get ("Name").string_value (); }
 
@@ -276,9 +336,9 @@ private:
 
     void delete_object (cdef_object obj);
 
-    octave_value_list subsref_meta (const std::string& type,
-                                    const std::list<octave_value_list>& idx,
-                                    int nargout);
+    octave_value_list
+    subsref_meta (const std::string& type,
+                  const std::list<octave_value_list>& idx, int nargout);
 
     octave_value construct (const octave_value_list& args);
 
@@ -316,6 +376,11 @@ private:
     // class when the abstract "handle" class is one of its superclasses.
     bool handle_class;
 
+    // The list of super-class constructors that are called implicitly by the
+    // the classdef engine when creating an object. These constructors are not
+    // called explicitly by the class constructor.
+    std::list<std::string> implicit_ctor_list;
+
     // Utility iterator typedef's.
     typedef std::map<std::string,cdef_method>::iterator method_iterator;
     typedef std::map<std::string,cdef_method>::const_iterator method_const_iterator;
@@ -330,6 +395,10 @@ public:
 
   cdef_class (const std::string& nm)
       : cdef_object (new cdef_class_rep (nm)) { }
+
+  cdef_class (const std::string& nm,
+              const std::list<cdef_class>& superclasses)
+      : cdef_object (new cdef_class_rep (nm, superclasses)) { }
 
   cdef_class (const cdef_class& cls)
       : cdef_object (cls) { }
@@ -533,13 +602,14 @@ private:
 
     octave_value get_function (void) const { return function; }
 
-    void set_function (const octave_value& fcn)
-      { function = fcn; }
+    void set_function (const octave_value& fcn) { function = fcn; }
 
     octave_value_list execute (const octave_value_list& args, int nargout);
 
     octave_value_list execute (const cdef_object& obj,
 			       const octave_value_list& args, int nargout);
+
+    bool is_constructor (void) const;
 
   private:
     void check_method (void);
@@ -593,6 +663,12 @@ public:
   void set_function (const octave_value& fcn)
     { get_rep ()->set_function (fcn); }
 
+  octave_value get_function (void) const
+    { return get_rep ()->get_function (); }
+
+  bool is_constructor (void) const
+    { return get_rep ()->is_constructor (); }
+
 private:
   cdef_method_rep* get_rep (void)
     { return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ()); }
@@ -630,10 +706,6 @@ private:
     void install_function (const octave_value& fcn, const std::string& nm);
 
     void install_package (const cdef_package& pack, const std::string& nm);
-
-    octave_value_list subsref (const std::string& type,
-                               const std::list<octave_value_list>& idx,
-                               int nargout, int& skip);
 
     Cell get_classes (void) const;
 
@@ -721,8 +793,9 @@ public:
   octave_base_value* empty_clone (void) const
     { return new octave_classdef (); }
 
-  cdef_object get_object (void) const
-    { return object; }
+  cdef_object get_object (void) const { return object; }
+
+  cdef_object& get_object_ref (void) { return object; }
 
   bool is_defined (void) const { return true; }
 
@@ -804,6 +877,20 @@ to_cdef (const octave_value& val)
     {
       warning ("trying to cast non-object into object");
       return cdef_object ();
+    }
+}
+
+inline cdef_object&
+to_cdef_ref (octave_value& val)
+{
+  static cdef_object empty;
+
+  if (val.type_name () == "object")
+    return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
+  else
+    {
+      warning ("trying to cast non-object into object");
+      return empty;
     }
 }
 

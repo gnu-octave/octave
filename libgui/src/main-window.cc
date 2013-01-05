@@ -286,7 +286,7 @@ main_window::change_current_working_directory ()
 
   if (!directory.isEmpty ())
     {
-      std::string dir = directory.toLocal8Bit ().data ();
+      std::string dir = directory.toUtf8 ().data ();
       octave_link::post_event (this, &main_window::change_directory_callback,dir);
     }
 }
@@ -297,7 +297,7 @@ main_window::set_current_working_directory (const QString& directory)
   QFileInfo fileInfo (directory);  // check whether this is an existing dir
   if (fileInfo.exists () && fileInfo.isDir ())   // is dir and exists
     {
-      std::string dir = directory.toLocal8Bit ().data ();
+      std::string dir = directory.toUtf8 ().data ();
       octave_link::post_event (this, &main_window::change_directory_callback,dir);
     }
 }

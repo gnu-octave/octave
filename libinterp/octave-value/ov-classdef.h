@@ -405,7 +405,7 @@ private:
   {
   public:
     cdef_class_rep (void)
-	: handle_cdef_object (), handle_class (false) { }
+	: handle_cdef_object (), handle_class (false), object_count (0) { }
 
     cdef_class_rep (const std::list<cdef_class>& superclasses);
 
@@ -450,6 +450,10 @@ private:
 
     bool is_handle_class (void) const { return handle_class; }
 
+    void register_object (void) { object_count++; }
+
+    void unregister_object (void) { object_count--; }
+
   private:
     void load_all_methods (void);
 
@@ -486,6 +490,9 @@ private:
     // the classdef engine when creating an object. These constructors are not
     // called explicitly by the class constructor.
     std::list<cdef_class> implicit_ctor_list;
+
+    // The number of objects of this class.
+    octave_refcount<octave_idx_type> object_count;
 
     // Utility iterator typedef's.
     typedef std::map<std::string,cdef_method>::iterator method_iterator;
@@ -596,6 +603,10 @@ public:
   static const cdef_class& meta_property (void) { return _meta_property; }
   static const cdef_class& meta_method (void) { return _meta_method; }
   static const cdef_class& meta_package (void) { return _meta_package; }
+
+  void register_object (void) { get_rep ()->register_object (); }
+
+  void unregister_object (void) { get_rep ()->unregister_object (); }
 
 private:
   cdef_class_rep* get_rep (void)
@@ -835,19 +846,38 @@ cdef_object_base::get_class (void) const
 inline void
 cdef_object_base::set_class (const cdef_class& cls)
 {
-  klass = cls;
+  if ((klass.ok () && cls.ok () && cls != get_class ())
+      || (klass.ok () && ! cls.ok ())
+      || (! klass.ok () && cls.ok ()))
+    {
+      unregister_object ();
+      klass = cls;
+      register_object ();
+    }
 }
 
 inline void
 cdef_object_base::register_object (void)
 {
-  // FIXME: implement this
+  if (klass.ok ())
+    {
+      cdef_class cls (get_class ());
+
+      if (! error_state && cls.ok ())
+        cls.register_object ();
+    }
 }
 
 inline void
 cdef_object_base::unregister_object (void)
 {
-  // FIXME: implement this
+  if (klass.ok ())
+    {
+      cdef_class cls (get_class ());
+
+      if (! error_state && cls.ok ())
+        cls.unregister_object ();
+    }
 }
 
 inline cdef_method

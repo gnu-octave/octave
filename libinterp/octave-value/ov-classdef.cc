@@ -1214,7 +1214,7 @@ value_cdef_object::~value_cdef_object (void)
 }
 
 cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
-     : handle_cdef_object (), handle_class (false)
+     : handle_cdef_object (), handle_class (false), object_count (0)
 {
   put ("SuperClasses", to_ov (superclasses));
   implicit_ctor_list = superclasses;

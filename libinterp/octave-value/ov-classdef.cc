@@ -179,14 +179,39 @@ lookup_class (const std::string& name, bool error_if_not_found = true)
   return cdef_class ();
 }
 
+static cdef_class
+lookup_class (const cdef_class& cls)
+{
+  // FIXME: placeholder for the time being, the purpose
+  //        is to centralized any class update activity here.
+
+  return cls;
+}
+
+static cdef_class
+lookup_class (const octave_value& ov)
+{
+  if (ov.is_string())
+    return lookup_class (ov.string_value ());
+  else
+    {
+      cdef_class cls (to_cdef (ov));
+
+      if (! error_state)
+        return lookup_class (cls);
+    }
+
+  return cdef_class ();
+}
+
 static std::list<cdef_class>
-lookup_classes (const Cell& cls_names)
+lookup_classes (const Cell& cls_list)
 {
   std::list<cdef_class> retval;
 
-  for (int i = 0; i < cls_names.numel (); i++)
+  for (int i = 0; i < cls_list.numel (); i++)
     {
-      cdef_class c = lookup_class (cls_names(i).string_value ());
+      cdef_class c = lookup_class (cls_list(i));
 
       if (! error_state)
         retval.push_back (c);
@@ -227,7 +252,7 @@ is_superclass (const cdef_class& clsa, const cdef_class& clsb,
 
       for (int i = 0; ! error_state && ! retval && i < c.numel (); i++)
 	{
-	  cdef_class cls = lookup_class (c(i).string_value ());
+	  cdef_class cls = lookup_class (c(i));
 
 	  if (! error_state)
 	    retval = is_superclass (clsa, cls, true,
@@ -583,8 +608,9 @@ static cdef_class
 make_class (const std::string& name,
             const std::list<cdef_class>& super_list = std::list<cdef_class> ())
 {
-  cdef_class cls ("meta.class", super_list);
+  cdef_class cls (name, super_list);
 
+  cls.set_class (cdef_class::meta_class ());
   cls.put ("ConstructOnLoad", false);
   cls.put ("ContainingPackage", Matrix ());
   cls.put ("Description", std::string ());
@@ -593,7 +619,6 @@ make_class (const std::string& name,
   cls.put ("Hidden", false);
   cls.put ("InferiorClasses", Cell ());
   cls.put ("Methods", Cell ());
-  cls.put ("Name", name);
   cls.put ("Properties", Cell ());
   cls.put ("Sealed", false);
 
@@ -652,9 +677,9 @@ make_property (const cdef_class& cls, const std::string& name,
 {
   // FIXME: what about default value?
 
-  cdef_property prop ("meta.property");
+  cdef_property prop (name);
 
-  prop.put ("Name", name);
+  prop.set_class (cdef_class::meta_property ());
   prop.put ("Description", std::string ());
   prop.put ("DetailedDescription", std::string ());
   prop.put ("Abstract", false);
@@ -693,15 +718,15 @@ make_method (const cdef_class& cls, const std::string& name,
              const octave_value& fcn,const std::string& m_access = "public",
              bool is_static = false)
 {
-  cdef_method meth ("meta.method");
+  cdef_method meth (name);
 
+  meth.set_class (cdef_class::meta_method ());
   meth.put ("Abstract", false);
   meth.put ("Access", m_access);
   meth.put ("DefiningClass", to_ov (cls));
   meth.put ("Description", std::string ());
   meth.put ("DetailedDescription", std::string ());
   meth.put ("Hidden", false);
-  meth.put ("Name", name);
   meth.put ("Sealed", true);
   meth.put ("Static", is_static);
 
@@ -728,9 +753,11 @@ make_package (const std::string& nm,
 {
   cdef_package pack ("meta.package");
 
-  all_packages[nm] = pack;
+  pack.set_class (cdef_class::meta_package ());
   pack.put ("Name", nm);
   pack.put ("ContainingPackage", to_ov (all_packages[parent]));
+
+  all_packages[nm] = pack;
 
   return pack;
 }
@@ -981,14 +1008,6 @@ private:
 
 //----------------------------------------------------------------------------
 
-cdef_class
-cdef_object_rep::get_class (void) const
-{
-  cdef_class cls = lookup_class (class_name ());
-
-  return cls;
-}
-
 string_vector
 cdef_object_rep::map_keys (void) const
 {
@@ -1001,10 +1020,10 @@ cdef_object_rep::map_keys (void) const
 }
 
 octave_value_list
-cdef_object_rep::subsref (const std::string& type,
-                          const std::list<octave_value_list>& idx,
-                          int nargout, size_t& skip,
-                          const cdef_class& context)
+cdef_object_scalar::subsref (const std::string& type,
+                             const std::list<octave_value_list>& idx,
+                             int nargout, size_t& skip,
+                             const cdef_class& context)
 {
   skip = 0;
 
@@ -1084,9 +1103,9 @@ cdef_object_rep::subsref (const std::string& type,
 }
 
 octave_value
-cdef_object_rep::subsasgn (const std::string& type,
-                           const std::list<octave_value_list>& idx,
-                           const octave_value& rhs)
+cdef_object_scalar::subsasgn (const std::string& type,
+                              const std::list<octave_value_list>& idx,
+                              const octave_value& rhs)
 {
   octave_value retval;
 
@@ -1143,7 +1162,7 @@ cdef_object_rep::subsasgn (const std::string& type,
 }
 
 void
-cdef_object_rep::mark_for_construction (const cdef_class& cls)
+cdef_object_scalar::mark_for_construction (const cdef_class& cls)
 {
   std::string cls_name = cls.get_name ();
 
@@ -1151,35 +1170,54 @@ cdef_object_rep::mark_for_construction (const cdef_class& cls)
 
   if (! error_state)
     {
-      std::list<std::string> supcls_names;
-
-      for (int i = 0; ! error_state && i < supcls.numel (); i++)
-        supcls_names.push_back (supcls(i).string_value ());
+      std::list<cdef_class> supcls_list = lookup_classes (supcls);
 
       if (! error_state)
-        ctor_list[cls_name] = supcls_names;
+        ctor_list[cls] = supcls_list;
     }
+}
+  
+bool cdef_object_scalar::is_constructed_for (const cdef_class& cls) const
+{
+  return (is_constructed ()
+          || ctor_list.find (cls) == ctor_list.end ());
+}
+
+bool cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
+{
+  std::map< cdef_class, std::list<cdef_class> >::const_iterator it;
+
+  if (is_constructed ())
+    return true;
+  else if ((it = ctor_list.find (cls)) == ctor_list.end ()
+           || it->second.empty ())
+    return true;
+
+  for (std::list<cdef_class>::const_iterator lit = it->second.begin ();
+       lit != it->second.end (); ++lit)
+    if (! is_constructed_for (*lit))
+      return false;
+
+  return true;
 }
 
 handle_cdef_object::~handle_cdef_object (void)
 {
-  gnulib::printf ("deleting %s object (handle)\n", cname.c_str ());
+  gnulib::printf ("deleting %s object (handle)\n",
+                  get_class ().get_name ().c_str ());
 }
 
 value_cdef_object::~value_cdef_object (void)
 {
-  gnulib::printf ("deleting %s object (value)\n", cname.c_str ());
+  gnulib::printf ("deleting %s object (value)\n",
+                  get_class ().get_name ().c_str ());
 }
 
-cdef_class::cdef_class_rep::cdef_class_rep (const std::string& nm,
-                                            const std::list<cdef_class>& superclasses)
-     : handle_cdef_object (nm), handle_class (false)
+cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
+     : handle_cdef_object (), handle_class (false)
 {
-  for (std::list<cdef_class>::const_iterator it = superclasses.begin ();
-       it != superclasses.end (); ++it)
-    implicit_ctor_list.push_back (it->get_name ());
-
-  put ("SuperClasses", Cell (implicit_ctor_list));
+  put ("SuperClasses", to_ov (superclasses));
+  implicit_ctor_list = superclasses;
 }
 
 cdef_method
@@ -1209,7 +1247,7 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
 
       for (int i = 0; i < super_classes.numel (); i++)
         {
-          cdef_class cls = lookup_class (super_classes(i).string_value ());
+          cdef_class cls = lookup_class (super_classes(i));
 
           if (! error_state)
             {
@@ -1227,9 +1265,8 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
 class ctor_analyzer : public tree_walker
 {
 public:
-  ctor_analyzer (const std::string& ctor, const std::string& obj,
-                 const std::list<std::string>& l)
-    : tree_walker (), who (ctor), obj_name (obj), available_ctor_list (l) { }
+  ctor_analyzer (const std::string& ctor, const std::string& obj)
+    : tree_walker (), who (ctor), obj_name (obj) { }
 
   void visit_statement_list (tree_statement_list& t)
     {
@@ -1282,24 +1319,17 @@ public:
                                                ? class_name
                                                : package_name + "." + class_name);
 
-                      if (std::find (available_ctor_list.begin (),
-                                     available_ctor_list.end (), ctor_name)
-                          == available_ctor_list.end ())
-                        ::error ("`%s' is not a direct superclass of `%s'",
-                                 ctor_name.c_str (), who.c_str ());
-                      else if (std::find (ctor_list.begin (), ctor_list.end (),
-                                          ctor_name) != ctor_list.end ())
-                        ::error ("calling constructor `%s' more than once",
-                                 ctor_name.c_str ());
+                      cdef_class cls = lookup_class (ctor_name, false);
 
-                      ctor_list.push_back (ctor_name);
+                      if (cls.ok ())
+                        ctor_list.push_back (cls);
                     }
                 }
             }
         }
     }
 
-  std::list<std::string> get_constructor_list (void) const
+  std::list<cdef_class> get_constructor_list (void) const
     { return ctor_list; }
 
   // NO-OP
@@ -1348,10 +1378,7 @@ private:
   std::string obj_name;
 
   /* The list of superclass constructors that are explicitly called */
-  std::list<std::string> ctor_list;
-
-  /* The list of possible superclass constructors */
-  std::list<std::string> available_ctor_list;
+  std::list<cdef_class> ctor_list;
 };
 
 void
@@ -1378,20 +1405,19 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
               if (ret_list && ret_list->size () == 1)
                 {
                   std::string obj_name = ret_list->front ()->name ();
-                  ctor_analyzer a (meth.get_name (), obj_name,
-                                   implicit_ctor_list);
+                  ctor_analyzer a (meth.get_name (), obj_name);
 
                   body->accept (a);
                   if (! error_state)
                     {
-                      std::list<std::string> explicit_ctor_list
+                      std::list<cdef_class> explicit_ctor_list
                         = a.get_constructor_list ();
 
-                      for (std::list<std::string>::const_iterator it = explicit_ctor_list.begin ();
+                      for (std::list<cdef_class>::const_iterator it = explicit_ctor_list.begin ();
                            ! error_state && it != explicit_ctor_list.end (); ++it)
                         {
                           gnulib::printf ("explicit superclass constructor: %s\n",
-                                  it->c_str ());
+                                          it->get_name ().c_str ());
                           implicit_ctor_list.remove (*it);
                         }
                     }
@@ -1471,7 +1497,7 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string, cdef_method>& me
 
   for (int i = 0; i < super_classes.numel (); i++)
     {
-      cdef_class cls = lookup_class (super_classes(i).string_value ());
+      cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
 	cls.get_rep ()->find_methods (meths, true);
@@ -1499,7 +1525,7 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
 
   for (int i = 0; i < super_classes.numel (); i++)
     {
-      cdef_class cls = lookup_class (super_classes(i).string_value ());
+      cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
 	{
@@ -1574,7 +1600,7 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,cdef_property>
 
   for (int i = 0; ! error_state && i < super_classes.numel (); i++)
     {
-      cdef_class cls = lookup_class (super_classes(i).string_value ());
+      cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
 	cls.get_rep ()->find_properties (props, true);
@@ -1634,7 +1660,7 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 
   for (int i = 0; ! error_state && i < super_classes.numel (); i++)
     {
-      cdef_class cls = lookup_class (super_classes(i).string_value ());
+      cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
 	cls.get_rep ()->find_names (names, all);
@@ -1672,13 +1698,13 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
 
   if (it != method_map.end ())
     {
-      std::string cls_name = obj.class_name ();
+      cdef_class cls = obj.get_class ();
 
-      obj.set_class_name (get ("Name").string_value ());
+      obj.set_class (wrap ());
 
       it->second.execute (obj, octave_value_list (), 0);
 
-      obj.set_class_name (cls_name);
+      obj.set_class (cls);
     }
 
   // FIXME: should we destroy corresponding properties here?
@@ -1689,7 +1715,7 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
 
   for (int i = 0; i < super_classes.numel (); i++)
     {
-      cdef_class cls = lookup_class (super_classes(i).string_value ());
+      cdef_class cls = lookup_class (super_classes(i));
 
       if (!error_state)
 	cls.delete_object (obj);
@@ -1769,7 +1795,7 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
 {
   octave_value_list empty_args;
 
-  for (std::list<std::string>::const_iterator it = implicit_ctor_list.begin ();
+  for (std::list<cdef_class>::const_iterator it = implicit_ctor_list.begin ();
        ! error_state && it != implicit_ctor_list.end (); ++it)
     {
       cdef_class supcls = lookup_class (*it);
@@ -1807,7 +1833,7 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
         }
     }
 
-  obj.mark_as_constructed (cls_name);
+  obj.mark_as_constructed (wrap ());
 }
 
 octave_value
@@ -1816,9 +1842,10 @@ cdef_class::cdef_class_rep::construct (const octave_value_list& args)
   cdef_object_rep *r;
 
   if (is_handle_class ())
-    r = new handle_cdef_object (get_name ());
+    r = new handle_cdef_object ();
   else
-    r = new value_cdef_object (get_name ());
+    r = new value_cdef_object ();
+  r->set_class (wrap ());
 
   cdef_object obj (r);
 
@@ -2071,7 +2098,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj)
     {
       cdef_class cls (to_cdef (get ("DefiningClass")));
 
-      if (! obj.is_partially_constructed_for (cls.get_name ()))
+      if (! obj.is_partially_constructed_for (cls))
         {
           ::error ("cannot reference properties of class `%s' for non-constructed object",
                    cls.get_name ().c_str ());
@@ -2115,7 +2142,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
     {
       cdef_class cls (to_cdef (get ("DefiningClass")));
 
-      if (! obj.is_partially_constructed_for (cls.get_name ()))
+      if (! obj.is_partially_constructed_for (cls))
         {
           ::error ("cannot reference properties of class `%s' for non-constructed object",
                    cls.get_name ().c_str ());
@@ -2389,26 +2416,38 @@ Cell
 cdef_package::cdef_package_rep::get_packages (void) const
 { return map2Cell (package_map); }
 
+cdef_class cdef_class::_meta_class = cdef_class ();
+cdef_class cdef_class::_meta_property = cdef_class ();
+cdef_class cdef_class::_meta_method = cdef_class ();
+cdef_class cdef_class::_meta_package = cdef_class ();
+
+cdef_package cdef_package::_meta = cdef_package ();
+
 void
 install_classdef (void)
 {
   octave_classdef::register_type ();
 
-  /* meta classes */
+  /* bootstrap */
   cdef_class handle = make_class ("handle");
-  cdef_class meta_class = make_class ("meta.class", handle);
-  cdef_class meta_property = make_class ("meta.property", handle);
-  cdef_class meta_method = make_class ("meta.method", handle);
+  cdef_class meta_class = cdef_class::_meta_class = make_class ("meta.class", handle);
+  handle.set_class (meta_class);
+  meta_class.set_class (meta_class);
+
+  /* meta classes */
+  cdef_class meta_property = cdef_class::_meta_property = make_class ("meta.property", handle);
+  cdef_class meta_method = cdef_class::_meta_method = make_class ("meta.method", handle);
+  cdef_class meta_package = cdef_class::_meta_package = make_class ("meta.package", handle);
+
   cdef_class meta_event = make_class ("meta.event", handle);
-  cdef_class meta_package = make_class ("meta.package", handle);
   cdef_class meta_dynproperty = make_class ("meta.dynamicproperty", handle);
 
   /* meta classes are all sealed */
   meta_class.put ("Sealed", true);
   meta_property.put ("Sealed", true);
   meta_method.put ("Sealed", true);
-  meta_event.put ("Sealed", true);
   meta_package.put ("Sealed", true);
+  meta_event.put ("Sealed", true);
   meta_dynproperty.put ("Sealed", true);
 
   /* meta.class properties */
@@ -2532,7 +2571,7 @@ install_classdef (void)
                                             "public", true));
 
   /* create "meta" package */
-  cdef_package package_meta = make_package ("meta");
+  cdef_package package_meta = cdef_package::_meta = make_package ("meta");
   package_meta.install_class (meta_class,       "class");
   package_meta.install_class (meta_property,    "property");
   package_meta.install_class (meta_method,      "method");

@@ -38,6 +38,9 @@ class cdef_package;
 
 class tree_classdef;
 
+// This is mainly a boostrap class to declare the expected interface.
+// The actual base class is cdef_class_base, which is declared after
+// cdef_object, such that it can contain cdef_object objects.
 class
 cdef_object_rep
 {
@@ -45,110 +48,102 @@ public:
   friend class cdef_object;
 
 public:
-  cdef_object_rep (void)
-      : refcount (1), cname () { }
-
-  cdef_object_rep (const std::string& nm)
-      : refcount (1), cname (nm) { }
+  cdef_object_rep (void) : refcount (1) { }
 
   virtual ~cdef_object_rep (void) { }
 
   virtual cdef_class get_class (void) const;
 
+  virtual void set_class (const cdef_class&)
+    { gripe_invalid_object ("set_class"); }
+
   virtual cdef_object_rep* clone (void) const
     {
-      error ("clone: invalid object");
+      gripe_invalid_object ("clone");
       return new cdef_object_rep ();
     }
 
-  virtual void put (const std::string& pname, const octave_value& val)
-    { map.assign (pname, val); }
+  virtual bool is_class (void) const { return false; }
 
-  virtual octave_value get (const std::string& pname) const
+  virtual bool is_property (void) const { return false; }
+
+  virtual bool is_method (void) const { return false; }
+
+  virtual bool is_package (void) const { return false; }
+
+  virtual void put (const std::string&, const octave_value&)
+    { gripe_invalid_object ("put"); }
+
+  virtual octave_value get (const std::string&) const
     {
-      Cell val = map.contents (pname);
-
-      if (val.numel () > 0)
-	return val(0, 0);
-      else
-	{
-	  error ("get: unknown slot: %s", pname.c_str ());
-	  return octave_value ();
-	}
+      gripe_invalid_object ("get");
+      return octave_value ();
     }
 
   virtual octave_value_list
-  subsref (const std::string& type, const std::list<octave_value_list>& idx,
-           int nargout, size_t& skip, const cdef_class& context);
+  subsref (const std::string&, const std::list<octave_value_list>&,
+           int, size_t&, const cdef_class&)
+    {
+      gripe_invalid_object ("subsref");
+      return octave_value_list ();
+    }
 
   virtual octave_value
-  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
-            const octave_value& rhs);
+  subsasgn (const std::string&, const std::list<octave_value_list>&,
+            const octave_value&)
+    {
+      gripe_invalid_object ("subsasgn");
+      return octave_value ();
+    }
 
   virtual string_vector map_keys(void) const;
 
   virtual bool is_valid (void) const { return false; }
 
-  std::string class_name (void) const { return cname; }
+  std::string class_name (void) const;
 
-  void set_class_name (const std::string& nm) { cname = nm; }
+  virtual void mark_for_construction (const cdef_class&)
+    { gripe_invalid_object ("mark_for_construction"); }
 
-  void mark_for_construction (const cdef_class&);
-
-  //bool is_constructed_for (const cdef_class&) const;
-
-  bool is_constructed_for (const std::string& nm) const
+  virtual bool is_constructed_for (const cdef_class&) const
     {
-      return (is_constructed ()
-              || ctor_list.find (nm) == ctor_list.end ());
+      gripe_invalid_object ("is_constructed_for");
+      return false;
     }
 
-  bool is_partially_constructed_for (const std::string& nm) const
+  virtual bool is_partially_constructed_for (const cdef_class&) const
     {
-      std::map< std::string, std::list<std::string> >::const_iterator it;
-
-      if (is_constructed ())
-        return true;
-      else if ((it = ctor_list.find (nm)) == ctor_list.end ()
-               || it->second.empty ())
-        return true;
-
-      for (std::list<std::string>::const_iterator lit = it->second.begin ();
-           lit != it->second.end (); ++lit)
-        if (! is_constructed_for (*lit))
-          return false;
-
-      return true;
+      gripe_invalid_object ("is_partially_constructed_for");
+      return false;
     }
 
-  void mark_as_constructed (void) { ctor_list.clear (); }
+  virtual void mark_as_constructed (void)
+    { gripe_invalid_object ("mark_as_constructed"); }
 
-  void mark_as_constructed (const std::string& nm) { ctor_list.erase (nm); }
+  virtual void mark_as_constructed (const cdef_class&)
+    { gripe_invalid_object ("mark_as_constructed"); }
 
-  bool is_constructed (void) const { return ctor_list.empty (); }
+  virtual bool is_constructed (void) const
+    {
+      gripe_invalid_object ("is_constructed");
+      return false;
+    }
 
 protected:
   /* reference count */
   octave_refcount<int> refcount;
 
-  /* class name */
-  std::string cname;
-
-  /* object property values */
-  Octave_map map;
-
-  /* Internal/temporary structure used during object construction */
-  std::map< std::string, std::list<std::string> > ctor_list;
-
 protected:
   /* Restricted copying */
-  cdef_object_rep (const cdef_object_rep& r)
-    : refcount (1), cname (r.cname), map (r.map),
-      ctor_list (r.ctor_list) { }
+  cdef_object_rep (const cdef_object_rep&)
+    : refcount (1) { }
 
 private:
   /* No assignment */
   cdef_object_rep& operator = (const cdef_object_rep& );
+
+  void gripe_invalid_object (const char *who) const
+    { error ("%s: invalid object", who); }
 };
 
 class
@@ -190,14 +185,21 @@ public:
 
   cdef_class get_class (void) const;
 
-  void set_class_name (const std::string& nm)
-    { rep->set_class_name (nm); }
+  void set_class (const cdef_class& cls) { rep->set_class (cls); }
 
   std::string class_name (void) const
     { return rep->class_name (); }
 
   cdef_object clone (void) const
     { return cdef_object (rep->clone ()); }
+
+  bool is_class (void) const { return rep->is_class (); }
+
+  bool is_property (void) const { return rep->is_property (); }
+
+  bool is_method (void) const { return rep->is_method (); }
+
+  bool is_package (void) const { return rep->is_package (); }
 
   void put (const std::string& pname, const octave_value& val)
     { rep->put (pname, val); }
@@ -226,16 +228,16 @@ public:
 
   bool is_constructed (void) const { return rep->is_constructed (); }
 
-  bool is_constructed_for (const std::string& nm) const
-    { return rep->is_constructed_for (nm); }
+  bool is_constructed_for (const cdef_class& cls) const
+    { return rep->is_constructed_for (cls); }
 
-  bool is_partially_constructed_for (const std::string& nm) const
-    { return rep->is_partially_constructed_for (nm); }
+  bool is_partially_constructed_for (const cdef_class& cls) const
+    { return rep->is_partially_constructed_for (cls); }
 
   void mark_as_constructed (void) { rep->mark_as_constructed (); }
 
-  void mark_as_constructed (const std::string& nm)
-    { rep->mark_as_constructed (nm); }
+  void mark_as_constructed (const cdef_class& cls)
+    { rep->mark_as_constructed (cls); }
 
 protected:
   cdef_object_rep* get_rep (void) { return rep; }
@@ -245,14 +247,110 @@ private:
 };
 
 class
-handle_cdef_object : public cdef_object_rep
+cdef_object_base : public cdef_object_rep
+{
+public:
+  cdef_object_base (void)
+    : cdef_object_rep (), klass ()
+    {
+      register_object ();
+    }
+
+  ~cdef_object_base (void) { unregister_object (); }
+
+  cdef_class get_class (void) const;
+
+  void set_class (const cdef_class& cls);
+
+protected:
+  // Restricted copying!
+  cdef_object_base (const cdef_object_base& obj)
+    : cdef_object_rep (obj), klass (obj.klass)
+    {
+      register_object ();
+    }
+
+private:
+  void register_object (void);
+
+  void unregister_object (void);
+
+private:
+  // The class of the object
+  cdef_object klass;
+
+private:
+  // No assignment!
+  cdef_object_base& operator = (const cdef_object_base&);
+};
+
+class
+cdef_object_scalar : public cdef_object_base
+{
+public:
+  cdef_object_scalar (void) : cdef_object_base () { }
+
+  ~cdef_object_scalar (void) { }
+
+  void put (const std::string& pname, const octave_value& val)
+    { map.assign (pname, val); }
+
+  octave_value get (const std::string& pname) const
+    {
+      Cell val = map.contents (pname);
+
+      if (val.numel () > 0)
+	return val(0, 0);
+      else
+	{
+	  error ("get: unknown slot: %s", pname.c_str ());
+	  return octave_value ();
+	}
+    }
+
+  octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int nargout, size_t& skip, const cdef_class& context);
+
+  octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
+
+  void mark_for_construction (const cdef_class&);
+
+  bool is_constructed_for (const cdef_class& cls) const;
+
+  bool is_partially_constructed_for (const cdef_class& cls) const;
+
+  void mark_as_constructed (void) { ctor_list.clear (); }
+
+  void mark_as_constructed (const cdef_class& cls) { ctor_list.erase (cls); }
+
+  bool is_constructed (void) const { return ctor_list.empty (); }
+
+protected:
+  // Object property values
+  Octave_map map;
+
+  // Internal/temporary structure used during object construction
+  std::map< cdef_class, std::list<cdef_class> > ctor_list;
+
+protected:
+  // Restricted object copying!
+  cdef_object_scalar (const cdef_object_scalar& obj)
+    : cdef_object_base (obj), map (obj.map), ctor_list (obj.ctor_list) { }
+
+private:
+  // No assignment!
+  cdef_object_scalar& operator = (const cdef_object_scalar&);
+};
+
+class
+handle_cdef_object : public cdef_object_scalar
 {
 public:
   handle_cdef_object (void)
-      : cdef_object_rep () { }
-
-  handle_cdef_object (const std::string& nm)
-      : cdef_object_rep (nm) { }
+      : cdef_object_scalar () { }
 
   ~handle_cdef_object (void);
 
@@ -272,29 +370,28 @@ private:
 };
 
 class
-value_cdef_object : public cdef_object_rep
+value_cdef_object : public cdef_object_scalar
 {
 public:
   value_cdef_object (void)
-      : cdef_object_rep () { }
-
-  value_cdef_object (const std::string& nm)
-      : cdef_object_rep (nm) { }
+      : cdef_object_scalar () { }
 
   ~value_cdef_object (void);
 
   cdef_object_rep* clone (void) const
     {
-      value_cdef_object* obj = new value_cdef_object (cname);
-      obj->map = map;
+      value_cdef_object* obj = new value_cdef_object (*this);
       return obj;
     }
 
   bool is_valid (void) const { return true; }
 
 private:
-  // No copying
-  value_cdef_object (const value_cdef_object&);
+  // Private copying!
+  value_cdef_object (const value_cdef_object& obj)
+    : cdef_object_scalar (obj) { }
+
+  // No assignment!
   value_cdef_object& operator = (const value_cdef_object&);
 };
 
@@ -307,14 +404,17 @@ private:
   cdef_class_rep : public handle_cdef_object
   {
   public:
-    cdef_class_rep (const std::string& nm)
-	: handle_cdef_object (nm), handle_class (false) { }
+    cdef_class_rep (void)
+	: handle_cdef_object (), handle_class (false) { }
 
-    cdef_class_rep (const std::string& nm,
-                    const std::list<cdef_class>& superclasses);
+    cdef_class_rep (const std::list<cdef_class>& superclasses);
+
+    bool is_class (void) const { return true; }
 
     std::string get_name (void) const
       { return get ("Name").string_value (); }
+
+    void set_name (const std::string& nm) { put ("Name", nm); }
 
     cdef_method find_method (const std::string& nm, bool local = false);
 
@@ -361,6 +461,12 @@ private:
     void find_methods (std::map<std::string, cdef_method>& meths,
                        bool only_inherited);
 
+    cdef_class wrap (void)
+      {
+        refcount++;
+        return cdef_class (this);
+      }
+
   private:
     // The @-directory were this class is loaded from.
     // (not used yet)
@@ -379,7 +485,7 @@ private:
     // The list of super-class constructors that are called implicitly by the
     // the classdef engine when creating an object. These constructors are not
     // called explicitly by the class constructor.
-    std::list<std::string> implicit_ctor_list;
+    std::list<cdef_class> implicit_ctor_list;
 
     // Utility iterator typedef's.
     typedef std::map<std::string,cdef_method>::iterator method_iterator;
@@ -393,12 +499,10 @@ public:
   cdef_class (void)
       : cdef_object () { }
 
-  cdef_class (const std::string& nm)
-      : cdef_object (new cdef_class_rep (nm)) { }
-
   cdef_class (const std::string& nm,
               const std::list<cdef_class>& superclasses)
-      : cdef_object (new cdef_class_rep (nm, superclasses)) { }
+      : cdef_object (new cdef_class_rep (superclasses))
+    { get_rep ()->set_name (nm); }
 
   cdef_class (const cdef_class& cls)
       : cdef_object (cls) { }
@@ -407,7 +511,7 @@ public:
       : cdef_object (obj)
     {
       // This should never happen...
-      if (class_name () != "meta.class")
+      if (! is_class ())
 	error ("internal error: invalid assignment from %s to meta.class object",
 	       class_name ().c_str ());
     }
@@ -421,7 +525,7 @@ public:
 
   cdef_class& operator = (const cdef_object& obj)
     {
-      if (obj.class_name () == "meta.class")
+      if (obj.is_class ())
 	cdef_object::operator= (obj);
       else
 	error ("internal error: invalid assignment from %s to meta.class object",
@@ -488,6 +592,11 @@ public:
   bool is_handle_class (void) const
     { return get_rep ()->is_handle_class (); }
 
+  static const cdef_class& meta_class (void) { return _meta_class; }
+  static const cdef_class& meta_property (void) { return _meta_property; }
+  static const cdef_class& meta_method (void) { return _meta_method; }
+  static const cdef_class& meta_package (void) { return _meta_package; }
+
 private:
   cdef_class_rep* get_rep (void)
     { return dynamic_cast<cdef_class_rep *> (cdef_object::get_rep ()); }
@@ -497,6 +606,15 @@ private:
 
   friend bool operator == (const cdef_class&, const cdef_class&);
   friend bool operator != (const cdef_class&, const cdef_class&);
+  friend bool operator < (const cdef_class&, const cdef_class&);
+
+private:
+  static cdef_class _meta_class;
+  static cdef_class _meta_property;
+  static cdef_class _meta_method;
+  static cdef_class _meta_package;
+
+  friend void install_classdef (void);
 };
 
 inline bool
@@ -508,6 +626,11 @@ inline bool
 operator != (const cdef_class& clsa, const cdef_class& clsb)
 { return ! (clsa == clsb); }
 
+// This is only to be able to use cdef_class as map keys.
+inline bool
+operator < (const cdef_class& clsa, const cdef_class& clsb)
+{ return clsa.get_rep () < clsb.get_rep (); }
+
 class
 cdef_property : public cdef_object
 {
@@ -517,8 +640,16 @@ private:
   cdef_property_rep : public handle_cdef_object
   {
   public:
-    cdef_property_rep (const std::string& nm)
-	: handle_cdef_object (nm) { }
+    cdef_property_rep (void)
+	: handle_cdef_object () { }
+
+    bool is_property (void) const { return true; }
+
+    std::string get_name (void) const { return get("Name").string_value (); }
+
+    void set_name (const std::string& nm) { put ("Name", nm); }
+
+    bool is_constant (void) const { return get("Constant").bool_value (); }
 
     octave_value get_value (void) const { return default_value; }
 
@@ -539,7 +670,8 @@ public:
   cdef_property (void) : cdef_object () { }
 
   cdef_property (const std::string& nm)
-      : cdef_object (new cdef_property_rep (nm)) { }
+      : cdef_object (new cdef_property_rep ())
+    { get_rep ()->set_name (nm); }
 
   cdef_property (const cdef_property& prop)
       : cdef_object (prop) { }
@@ -548,7 +680,7 @@ public:
       : cdef_object (obj)
     {
       // This should never happen...
-      if (class_name () != "meta.property")
+      if (! is_property ())
 	error ("internal error: invalid assignment from %s to meta.property object",
 	       class_name ().c_str ());
     }
@@ -574,11 +706,9 @@ public:
   
   bool check_set_access (void) const;
 
-  std::string get_name (void) const
-    { return get ("Name").string_value (); }
+  std::string get_name (void) const { return get_rep ()->get_name (); }
 
-  bool is_constant (void) const
-    { return get ("Constant").bool_value (); }
+  bool is_constant (void) const { return get_rep ()->is_constant (); }
 
 private:
   cdef_property_rep* get_rep (void)
@@ -597,8 +727,15 @@ private:
   cdef_method_rep : public handle_cdef_object
   {
   public:
-    cdef_method_rep (const std::string& nm)
-	: handle_cdef_object (nm) { }
+    cdef_method_rep (void) : handle_cdef_object () { }
+
+    bool is_method (void) const { return true; }
+
+    std::string get_name (void) const { return get("Name").string_value (); }
+
+    void set_name (const std::string& nm) { put ("Name", nm); }
+
+    bool is_static (void) const { return get("Static").bool_value (); }
 
     octave_value get_function (void) const { return function; }
 
@@ -622,7 +759,8 @@ public:
   cdef_method (void) : cdef_object () { }
 
   cdef_method (const std::string& nm)
-      : cdef_object (new cdef_method_rep (nm)) { }
+      : cdef_object (new cdef_method_rep ())
+    { get_rep ()->set_name (nm); }
 
   cdef_method (const cdef_property& prop)
       : cdef_object (prop) { }
@@ -631,7 +769,7 @@ public:
       : cdef_object (obj)
     {
       // This should never happen...
-      if (class_name () != "meta.method")
+      if (! is_method ())
 	error ("internal error: invalid assignment from %s to meta.method object",
 	       class_name ().c_str ());
     }
@@ -654,11 +792,9 @@ public:
 
   bool check_access (void) const;
   
-  std::string get_name (void) const
-    { return get ("Name").string_value (); }
+  std::string get_name (void) const { return get_rep ()->get_name (); }
 
-  bool is_static (void) const
-    { return get ("Static").bool_value (); }
+  bool is_static (void) const { return get_rep ()->is_static (); }
 
   void set_function (const octave_value& fcn)
     { get_rep ()->set_function (fcn); }
@@ -678,8 +814,41 @@ private:
 };
 
 inline cdef_class
+cdef_object_rep::get_class (void) const
+{
+  gripe_invalid_object ("get_class");
+  return cdef_class ();
+}
+
+inline std::string
+cdef_object_rep::class_name (void) const
+{ return get_class ().get_name (); }
+
+inline cdef_class
 cdef_object::get_class (void) const
 { return rep->get_class (); }
+
+inline cdef_class
+cdef_object_base::get_class (void) const
+{ return cdef_class (klass); }
+
+inline void
+cdef_object_base::set_class (const cdef_class& cls)
+{
+  klass = cls;
+}
+
+inline void
+cdef_object_base::register_object (void)
+{
+  // FIXME: implement this
+}
+
+inline void
+cdef_object_base::unregister_object (void)
+{
+  // FIXME: implement this
+}
 
 inline cdef_method
 cdef_class::find_method (const std::string& nm, bool local)
@@ -698,8 +867,13 @@ private:
   cdef_package_rep : public handle_cdef_object
   {
   public:
-    cdef_package_rep (const std::string& nm)
-      : handle_cdef_object (nm) { }
+    cdef_package_rep (void) : handle_cdef_object () { }
+
+    bool is_package (void) const { return true; }
+
+    std::string get_name (void) const { return get("Name").string_value (); }
+
+    void set_name (const std::string& nm) { put ("Name", nm); }
 
     void install_class (const cdef_class& cls, const std::string& nm);
 
@@ -730,13 +904,14 @@ public:
   cdef_package (void) : cdef_object () { }
 
   cdef_package (const std::string& nm)
-      : cdef_object (new cdef_package_rep (nm)) { }
+      : cdef_object (new cdef_package_rep ())
+    { get_rep ()->set_name (nm); }
 
   cdef_package (const cdef_object& obj)
       : cdef_object (obj)
     {
       // This should never happen...
-      if (class_name () != "meta.package")
+      if (! is_package ())
 	error ("internal error: invalid assignment from %s to meta.package object",
 	       class_name ().c_str ());
     }
@@ -766,12 +941,21 @@ public:
   Cell get_packages (void) const
     { return get_rep ()->get_packages (); }
 
+  std::string get_name (void) const { return get_rep ()->get_name (); }
+
+  static const cdef_package& meta (void) { return _meta; }
+
 private:
   cdef_package_rep* get_rep (void)
     { return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ()); }
   
   const cdef_package_rep* get_rep (void) const
     { return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ()); }
+
+private:
+  static cdef_package _meta;
+
+  friend void install_classdef (void);
 };
 
 class

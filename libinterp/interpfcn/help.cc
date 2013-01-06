@@ -478,7 +478,16 @@ Jump to the end of the innermost enclosing do, while or for loop.\n\
 @deftypefn {Keyword} {} do\n\
 Begin a do-until loop.  This differs from a do-while loop in that the\n\
 body of the loop is executed at least once.\n\
-@seealso{while}\n\
+\n\
+@example\n\
+@group\n\
+i = 0;\n\
+do\n\
+  i++\n\
+until (i == 10)\n\
+@end group\n\
+@end example\n\
+@seealso{for, until, while}\n\
 @end deftypefn"),
 
   pair_type ("else",
@@ -708,7 +717,7 @@ is completed).\n\
   pair_type ("until",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} until\n\
-End a do-until loop.\n\
+End a do-until loop.  See @code{do} for an example.\n\
 @seealso{do}\n\
 @end deftypefn"),
 
@@ -751,7 +760,16 @@ Pass an arbitrary number of arguments out of a function.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} while\n\
 Begin a while loop.\n\
-@seealso{do}\n\
+\n\
+@example\n\
+@group\n\
+i = 0;\n\
+while (i < 10)\n\
+  i++\n\
+endwhile\n\
+@end group\n\
+@end example\n\
+@seealso{do, endwhile, for, until}\n\
 @end deftypefn"),
 };
 

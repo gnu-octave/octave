@@ -701,7 +701,7 @@ A line number, or vector of line numbers, with a breakpoint.\n\
 
 DEFUN (dbwhere, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} dbwhere ()\n\
+@deftypefn {Command} {} dbwhere\n\
 In debugging mode, report the current file and line number where\n\
 execution is stopped.\n\
 @seealso{dbstatus, dbcont, dbstep, dbup}\n\
@@ -1027,8 +1027,8 @@ show_octave_dbstack (void)
 
 DEFUN (dbstack, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbstack ()\n\
-@deftypefnx {Built-in Function} {} dbstack (@var{n})\n\
+@deftypefn  {Command} {} dbstack\n\
+@deftypefnx {Command} {} dbstack @var{n}\n\
 @deftypefnx {Built-in Function} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
 Display or return current debugging function stack information.\n\
 With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\

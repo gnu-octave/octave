@@ -129,9 +129,19 @@ public:
       return false;
     }
 
+  virtual octave_idx_type static_count (void) const { return 0; }
+
+  virtual void destroy (void) { delete this; }
+
+  void release (void)
+    {
+      if (--refcount == static_count ())
+        destroy ();
+    }
+
 protected:
   /* reference count */
-  octave_refcount<int> refcount;
+  octave_refcount<octave_idx_type> refcount;
 
 protected:
   /* Restricted copying */
@@ -164,17 +174,13 @@ public:
       : rep (r) { }
 
   virtual ~cdef_object (void)
-    {
-      if (--rep->refcount == 0)
-	delete rep;
-    }
+    { rep->release (); }
 
   cdef_object& operator = (const cdef_object& obj)
     {
       if (rep != obj.rep)
 	{
-	  if (--rep->refcount == 0)
-	    delete rep;
+          rep->release ();
 
 	  rep = obj.rep;
 	  rep->refcount++;
@@ -405,7 +411,8 @@ private:
   {
   public:
     cdef_class_rep (void)
-	: handle_cdef_object (), handle_class (false), object_count (0) { }
+	: handle_cdef_object (), member_count (0), handle_class (false),
+          object_count (0) { }
 
     cdef_class_rep (const std::list<cdef_class>& superclasses);
 
@@ -454,6 +461,23 @@ private:
 
     void unregister_object (void) { object_count--; }
 
+    octave_idx_type static_count (void) const { return member_count; }
+
+    void destroy (void)
+      {
+        if (member_count)
+          {
+            refcount++;
+            cdef_class lock (this);
+
+            member_count = 0;
+            method_map.clear ();
+            property_map.clear ();
+          }
+        else
+          delete this;
+      }
+
   private:
     void load_all_methods (void);
 
@@ -481,6 +505,9 @@ private:
 
     // The properties defined by this class.
     std::map<std::string,cdef_property> property_map;
+
+    // The number of members in this class (methods, properties...)
+    octave_idx_type member_count;
 
     // TRUE if this class is a handle class. A class is a handle
     // class when the abstract "handle" class is one of its superclasses.
@@ -897,7 +924,7 @@ private:
   cdef_package_rep : public handle_cdef_object
   {
   public:
-    cdef_package_rep (void) : handle_cdef_object () { }
+    cdef_package_rep (void) : handle_cdef_object (), member_count (0) { }
 
     bool is_package (void) const { return true; }
 
@@ -917,10 +944,31 @@ private:
 
     Cell get_packages (void) const;
 
+    octave_idx_type static_count (void) const { return member_count; }
+
+    void destroy (void)
+      {
+        if (member_count)
+          {
+            refcount++;
+            cdef_package lock (this);
+
+            member_count = 0;
+            class_map.clear ();
+            package_map.clear ();
+          }
+        else
+          delete this;
+      }
+
   private:
     std::map<std::string, cdef_class> class_map;
     std::map<std::string, octave_value> function_map;
     std::map<std::string, cdef_package> package_map;
+
+    // The number of registered members in this package (classes, packages).
+    // This only accounts for the members that back-reference to this package.
+    octave_idx_type member_count;
 
     typedef std::map<std::string, cdef_class>::iterator class_iterator;
     typedef std::map<std::string, cdef_class>::const_iterator class_const_iterator;

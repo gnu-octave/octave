@@ -814,7 +814,11 @@ public:
   octave_classdef_proxy (const cdef_class& _klass)
     : klass (_klass) { }
 
-  ~octave_classdef_proxy (void) { }
+  ~octave_classdef_proxy (void)
+    {
+      // This means the class has been cleared from the symbol table.
+      all_classes.erase (klass.get_name ());
+    }
 
   octave_value_list
   subsref (const std::string& type,
@@ -1214,7 +1218,8 @@ value_cdef_object::~value_cdef_object (void)
 }
 
 cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
-     : handle_cdef_object (), handle_class (false), object_count (0)
+     : handle_cdef_object (), member_count (0), handle_class (false),
+       object_count (0)
 {
   put ("SuperClasses", to_ov (superclasses));
   implicit_ctor_list = superclasses;
@@ -1386,6 +1391,8 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 {
   method_map[meth.get_name ()] = meth;
 
+  member_count++;
+
   if (meth.is_constructor ())
     {
       // Analyze the constructor code to determine what superclass
@@ -1543,6 +1550,8 @@ void
 cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
 {
   property_map[prop.get_name ()] = prop;
+
+  member_count++;
 }
 
 Cell
@@ -2372,6 +2381,8 @@ cdef_package::cdef_package_rep::install_class (const cdef_class& cls,
                                                const std::string& nm)
 {
   class_map[nm] = cls;
+
+  member_count++;
 }
 
 void
@@ -2386,6 +2397,8 @@ cdef_package::cdef_package_rep::install_package (const cdef_package& pack,
                                                  const std::string& nm)
 {
   package_map[nm] = pack;
+
+  member_count++;
 }
 
 template<class T1, class T2>

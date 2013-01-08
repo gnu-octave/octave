@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "toplev.h"
 
+#include "Array.cc"
+
 static std::map<std::string, cdef_class> all_classes;
 static std::map<std::string, cdef_package> all_packages;
 
@@ -611,6 +613,7 @@ make_class (const std::string& name,
   cdef_class cls (name, super_list);
 
   cls.set_class (cdef_class::meta_class ());
+  cls.put ("Abstract", false);
   cls.put ("ConstructOnLoad", false);
   cls.put ("ContainingPackage", Matrix ());
   cls.put ("Description", std::string ());
@@ -657,7 +660,8 @@ make_class (const std::string& name,
   if (error_state)
     return cdef_class ();
 
-  all_classes[name] = cls;
+  if (! name.empty ())
+    all_classes[name] = cls;
 
   return cls;
 }
@@ -668,6 +672,17 @@ make_class (const std::string& name, const cdef_class& super)
   return make_class (name, std::list<cdef_class> (1, super));
 }
 
+static cdef_class
+make_meta_class (const std::string& name, const cdef_class& super)
+{
+  cdef_class cls = make_class (name, super);
+
+  cls.put ("Sealed", true);
+  cls.mark_as_meta_class ();
+
+  return cls;
+}
+
 static cdef_property
 make_property (const cdef_class& cls, const std::string& name,
 	       const octave_value& get_method = Matrix (),
@@ -675,8 +690,6 @@ make_property (const cdef_class& cls, const std::string& name,
 	       const octave_value& set_method = Matrix (),
 	       const std::string& set_access = "public")
 {
-  // FIXME: what about default value?
-
   cdef_property prop (name);
 
   prop.set_class (cdef_class::meta_property ());
@@ -730,7 +743,8 @@ make_method (const cdef_class& cls, const std::string& name,
   meth.put ("Sealed", true);
   meth.put ("Static", is_static);
 
-  make_function_of_class (cls, fcn);
+  if (fcn.is_defined ())
+    make_function_of_class (cls, fcn);
 
   meth.set_function (fcn);
 
@@ -757,7 +771,8 @@ make_package (const std::string& nm,
   pack.put ("Name", nm);
   pack.put ("ContainingPackage", to_ov (all_packages[parent]));
 
-  all_packages[nm] = pack;
+  if (! nm.empty ())
+    all_packages[nm] = pack;
 
   return pack;
 }
@@ -804,6 +819,24 @@ octave_classdef::subsasgn (const std::string& type,
                            const octave_value& rhs)
 {
   return object.subsasgn (type, idx, rhs);
+}
+
+octave_value
+octave_classdef::undef_subsasgn (const std::string& type,
+                                 const std::list<octave_value_list>& idx,
+                                 const octave_value& rhs)
+{
+  if (type.length () == 1 && type[0] == '(')
+    {
+      object = object.make_array ();
+
+      if (! error_state)
+        return subsasgn (type, idx, rhs);
+    }
+  else
+    return octave_base_value::undef_subsasgn (type, idx, rhs);
+
+  return octave_value ();
 }
 
 //----------------------------------------------------------------------------
@@ -1180,6 +1213,171 @@ cdef_object_scalar::mark_for_construction (const cdef_class& cls)
         ctor_list[cls] = supcls_list;
     }
 }
+
+octave_value_list
+cdef_object_array::subsref (const std::string& type,
+                            const std::list<octave_value_list>& idx,
+                            int /* nargout */, size_t& skip,
+                            const cdef_class& /* context */)
+{
+  octave_value_list retval;
+
+  skip = 1;
+
+  switch (type[0])
+    {
+    case '(':
+        {
+          const octave_value_list& ival = idx.front ();
+          bool is_scalar = true;
+          Array<idx_vector> iv (dim_vector (1, ival.length ()));
+
+          for (int i = 0; ! error_state && i < ival.length (); i++)
+            {
+              iv(i) = ival(i).index_vector ();
+              if (! error_state)
+                is_scalar = is_scalar && iv(i).is_scalar ();
+            }
+
+          if (! error_state)
+            {
+              Array<cdef_object> ires = array.index (iv);
+
+              if (! error_state)
+                {
+                  if (is_scalar)
+                    retval(0) = to_ov (ires(0));
+                  else
+                    {
+                      cdef_object array_obj (new cdef_object_array (ires));
+
+                      array_obj.set_class (get_class ());
+
+                      retval(0) = to_ov (array_obj);
+                    }
+                }
+            }
+        }
+      break;
+
+    default:
+      ::error ("can't perform indexing operation on array of %s objects",
+               class_name ().c_str ());
+      break;
+    }
+
+  return retval;
+}
+
+octave_value
+cdef_object_array::subsasgn (const std::string& type,
+                             const std::list<octave_value_list>& idx,
+                             const octave_value& rhs)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      if (type.length () == 1)
+        {
+          cdef_object rhs_obj = to_cdef (rhs);
+
+          if (! error_state)
+            {
+              if (rhs_obj.get_class () == get_class ())
+                {
+                  const octave_value_list& ival = idx.front ();
+                  bool is_scalar = true;
+                  Array<idx_vector> iv (dim_vector (1, ival.length ()));
+
+                  for (int i = 0; ! error_state && i < ival.length (); i++)
+                    {
+                      iv(i) = ival(i).index_vector ();
+                      if (! error_state)
+                        is_scalar = is_scalar && iv(i).is_scalar ();
+                    }
+
+                  if (! error_state)
+                    {
+                      Array<cdef_object> rhs_mat;
+
+                      if (! rhs_obj.is_array ())
+                        {
+                          rhs_mat = Array<cdef_object> (dim_vector (1, 1));
+                          rhs_mat(0) = rhs_obj;
+                        }
+                      else
+                        rhs_mat = rhs_obj.array_value ();
+
+                      if (! error_state)
+                        {
+                          octave_idx_type n = array.numel ();
+
+                          array.assign (iv, rhs_mat, cdef_object ());
+
+                          if (! error_state)
+                            {
+                              if (array.numel () > n)
+                                fill_empty_values ();
+
+                              if (! error_state)
+                                {
+                                  refcount++;
+                                  retval = to_ov (cdef_object (this));
+                                }
+                            }
+                        }
+                    }
+                }
+              else
+                ::error ("can't assign %s object into array of %s objects.",
+                         rhs_obj.class_name ().c_str (),
+                         class_name ().c_str ());
+            }
+        }
+      else
+        ::error ("can't perform indexing operation on array of %s objects",
+                 class_name ().c_str ());
+      break;
+
+    default:
+      ::error ("can't perform indexing operation on array of %s objects",
+               class_name ().c_str ());
+      break;
+    }
+
+  return retval;
+}
+
+void
+cdef_object_array::fill_empty_values (void)
+{
+  cdef_class cls = get_class ();
+
+  if (! error_state)
+    {
+      cdef_object obj;
+
+      int n = array.numel ();
+
+      for (int i = 0; ! error_state && i < n; i++)
+        {
+          if (! array.xelem (i).ok ())
+            {
+              if (! obj.ok ())
+                {
+                  obj = cls.construct_object (octave_value_list ());
+
+                  if (! error_state)
+                    array.xelem (i) = obj;
+                }
+              else
+                array.xelem (i) = obj.copy ();
+            }
+        }
+    }
+}
   
 bool cdef_object_scalar::is_constructed_for (const cdef_class& cls) const
 {
@@ -1219,7 +1417,7 @@ value_cdef_object::~value_cdef_object (void)
 
 cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
      : handle_cdef_object (), member_count (0), handle_class (false),
-       object_count (0)
+       object_count (0), meta (false)
 {
   put ("SuperClasses", to_ov (superclasses));
   implicit_ctor_list = superclasses;
@@ -1474,14 +1672,12 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string, cdef_method>& me
 
   method_const_iterator it;
 
-  std::string cls_name = get_base_name (get_name ());
-
   for (it = method_map.begin (); it != method_map.end (); ++it)
     {
-      std::string nm = it->second.get_name ();
-
-      if (nm != cls_name)
+      if (! it->second.is_constructor ())
         {
+          std::string nm = it->second.get_name ();
+
           if (meths.find (nm) == meths.end ())
             {
               if (only_inherited)
@@ -1624,15 +1820,13 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 {
   load_all_methods ();
 
-  std::string cls_name = get_base_name (get_name ());
-
   for (method_const_iterator it = method_map.begin ();
        ! error_state && it != method_map.end(); ++it)
     {
-      std::string nm = it->second.get_name ();
-
-      if (nm != cls_name)
+      if (! it->second.is_constructor ())
         {
+          std::string nm = it->second.get_name ();
+
           if (! all)
             {
               octave_value acc = it->second.get ("Access");
@@ -1848,27 +2042,93 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
 octave_value
 cdef_class::cdef_class_rep::construct (const octave_value_list& args)
 {
-  cdef_object_rep *r;
+  cdef_object obj = construct_object (args);
 
-  if (is_handle_class ())
-    r = new handle_cdef_object ();
-  else
-    r = new value_cdef_object ();
-  r->set_class (wrap ());
+  if (! error_state && obj.ok ())
+    return to_ov (obj);
 
-  cdef_object obj (r);
+  return octave_value ();
+}
 
-  initialize_object (obj);
-
-  if (! error_state)
+cdef_object
+cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
+{
+  if (! is_abstract ())
     {
-      run_constructor (obj, args);
+      cdef_object obj;
 
-      if (! error_state)
-        return to_ov (obj);
+      if (is_meta_class ())
+        {
+          // This code path is only used to create empty meta objects
+          // as filler for the empty values within a meta object array.
+
+          cdef_class this_cls = wrap ();
+
+          static cdef_object empty_class;
+
+          if (this_cls == cdef_class::meta_class ())
+            {
+              if (! empty_class.ok ())
+                empty_class = make_class ("", std::list<cdef_class> ());
+              obj = empty_class;
+            }
+          else if (this_cls == cdef_class::meta_property ())
+            {
+              static cdef_property empty_property;
+
+              if (! empty_class.ok ())
+                empty_class = make_class ("", std::list<cdef_class> ());
+              if (! empty_property.ok ())
+                empty_property = make_property (empty_class, "");
+              obj = empty_property;
+            }
+          else if (this_cls == cdef_class::meta_method ())
+            {
+              static cdef_method empty_method;
+
+              if (! empty_class.ok ())
+                empty_class = make_class ("", std::list<cdef_class> ());
+              if (! empty_method.ok ())
+                empty_method = make_method (empty_class, "", octave_value ());
+              obj = empty_method;
+            }
+          else if (this_cls == cdef_class::meta_package ())
+            {
+              static cdef_package empty_package;
+
+              if (! empty_package.ok ())
+                empty_package = make_package ("");
+              obj = empty_package;
+            }
+          else
+            panic_impossible ();
+
+          return obj;
+        }
+      else
+        {
+          if (is_handle_class ())
+            obj = cdef_object (new handle_cdef_object ());
+          else
+            obj = cdef_object (new value_cdef_object ());
+          obj.set_class (wrap ());
+
+          initialize_object (obj);
+
+          if (! error_state)
+            {
+              run_constructor (obj, args);
+
+              if (! error_state)
+                return obj;
+            }
+        }
     }
+  else
+    error ("cannot instantiate object for abstract class `%s'",
+           get_name ().c_str ());
 
-  return octave_value();
+  return cdef_object ();
 }
 
 static octave_value
@@ -2443,27 +2703,20 @@ install_classdef (void)
 
   /* bootstrap */
   cdef_class handle = make_class ("handle");
-  cdef_class meta_class = cdef_class::_meta_class = make_class ("meta.class", handle);
+  cdef_class meta_class = cdef_class::_meta_class = make_meta_class ("meta.class", handle);
   handle.set_class (meta_class);
   meta_class.set_class (meta_class);
 
   /* meta classes */
-  cdef_class meta_property = cdef_class::_meta_property = make_class ("meta.property", handle);
-  cdef_class meta_method = cdef_class::_meta_method = make_class ("meta.method", handle);
-  cdef_class meta_package = cdef_class::_meta_package = make_class ("meta.package", handle);
+  cdef_class meta_property = cdef_class::_meta_property = make_meta_class ("meta.property", handle);
+  cdef_class meta_method = cdef_class::_meta_method = make_meta_class ("meta.method", handle);
+  cdef_class meta_package = cdef_class::_meta_package = make_meta_class ("meta.package", handle);
 
-  cdef_class meta_event = make_class ("meta.event", handle);
-  cdef_class meta_dynproperty = make_class ("meta.dynamicproperty", handle);
-
-  /* meta classes are all sealed */
-  meta_class.put ("Sealed", true);
-  meta_property.put ("Sealed", true);
-  meta_method.put ("Sealed", true);
-  meta_package.put ("Sealed", true);
-  meta_event.put ("Sealed", true);
-  meta_dynproperty.put ("Sealed", true);
+  cdef_class meta_event = make_meta_class ("meta.event", handle);
+  cdef_class meta_dynproperty = make_meta_class ("meta.dynamicproperty", handle);
 
   /* meta.class properties */
+  meta_class.install_property (make_attribute (meta_class, "Abstract"));
   meta_class.install_property (make_attribute (meta_class, "ConstructOnLoad"));
   meta_class.install_property (make_property  (meta_class, "ContainingPackage"));
   meta_class.install_property (make_property  (meta_class, "Description"));

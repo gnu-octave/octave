@@ -668,9 +668,11 @@ if AMCOND_BUILD_DOCS
 	@$(PERL) $(srcdir)/gendoc.pl $(ALL_DEF_FILES) > $@
 	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
-endif
 
 all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE) .DOCSTRINGS
+else
+all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE)
+endif
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.cc.in Makefile

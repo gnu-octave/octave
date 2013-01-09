@@ -2417,7 +2417,7 @@ do
   case $host_os in
     darwin*)
       ## Sneak the -framework flag into mkoctfile via LDFLAGS
-      LFLAGS="$LDFLAGS -framework JavaVM"
+      LDFLAGS="$LDFLAGS -framework JavaVM"
       ## According to: http://developer.apple.com/unix/crossplatform.html
       ## one must explicitly set the include path.
       ## Unfortunately, the include path keeps moving around.

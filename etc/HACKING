@@ -48,10 +48,10 @@ After cloning Octave, you will need to run the bootstrap script:
   $ ./bootstrap
 
 This script will examine the source tree and generate some Makefile
-fragments and then runs the bootstrap script.  The bootstrap script comes
-from gnulib, but is kept in the Octave source archive.  It should be
-updated from the gnulib sources as necssary.  The bootstrap script takes
-care of running the autotools and generating the configure script.
+fragments, then run autotools scripts to generate Makefile.in files from
+Makefile.am files and create the configure script.  The bootstrap script
+comes from gnulib, but is kept in the Octave source archive.  It should
+be updated from the gnulib sources as necessary.
 
 If you have a copy of gnulib in some directory apart from the Octave
 source tree, then pass the name of the directory containing gnulib-tool
@@ -73,10 +73,15 @@ a past revision not too far in the past.
 Additional options besides --gnulib-srcdir can be passed to bootstrap and
 they will be forwarded without modification to the gnulib bootstrap script.
 
-Once the bootstrap and bootstrap_gnulib scripts complete successfully, you may
-run
+Once the bootstrap script completes successfully, you may configure and
+build Octave.  We recommend that you build Octave in a separate
+directory tree from the sources.  For example, if you have just finished
+running the bootstrap script in the top-level source directory, run the
+following commands to create a build tree, configure, and build Octave:
 
-  $ ./configure
+  $ mkdir .build
+  $ cd .build
+  $ ../configure
   $ make
   $ make check
 
@@ -109,13 +114,19 @@ An overview of the directory layout of Octave's source files:
   examples      -- some example files
 
 
-  gnulib        -- gnulib subrepo.  This is the actual gnulib source
-                   tree, checked out with git.
+  gnulib-hg     -- gnulib subrepo.  This is a clone of the gnulib source
+                   tree maintained by the Octave project.  The default
+                   branch is identical to the upstream gnulib sources.
+                   There is also an "octave-stable" branch that may
+                   contain changes as needed for the "stable" branch in
+                   the Octave archive.  We usually don't want to update
+                   gnulib sources when going from one stable point
+                   release to the next, but we occasionally need to
+                   include small updates.
 
 
   libgnu        -- gnulib sources that we use.  The files here are
                    copied here from the gnulib directory by the
-                   build-aux/bootstrap_gnulib script that is run by the
                    bootstrap script.
 
 
@@ -294,7 +305,7 @@ John W. Eaton
 jwe@octave.org
 
 
-Last updated: Sat, 18 Aug 2012 18:51:25 EDT
+Last updated: Thu, 10 Jan 2013 10:46:41 EST
 
 
 ################################################################################

@@ -108,8 +108,8 @@ EXTRA_DIST = \
   mk-pkg-add \
   mkbuiltins \
   mkdefs \
-  mkoctfile.in.cc \
-  mkoctfile.in.sh \
+  mkoctfile.cc.in \
+  mkoctfile.in \
   mkops \
   mxarray.h.in \
   oct-conf.h.in \

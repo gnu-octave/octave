@@ -805,7 +805,7 @@ operator < (const cdef_class& clsa, const cdef_class& clsb)
 class
 cdef_property : public cdef_object
 {
-  friend cdef_class;
+  friend class cdef_class;
 
 private:
 
@@ -892,7 +892,7 @@ private:
 class
 cdef_method : public cdef_object
 {
-  friend cdef_class;
+  friend class cdef_class;
 
 private:
 
@@ -1068,7 +1068,7 @@ cdef_class::find_property (const std::string& nm)
 class
 cdef_package : public cdef_object
 {
-  friend cdef_class;
+  friend class cdef_class;
 
 private:
 

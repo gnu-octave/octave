@@ -1421,7 +1421,7 @@ AC_ARG_ENABLE([dl],
   [ENABLE_DYNAMIC_LINKING=true])
 
 if ! $STATIC_LIBS && ! $SHARED_LIBS; then
-  AC_MSG_ERROR([You can't disable building static AND shared libraries!])
+  AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
 fi
 
 CPICFLAG=-fPIC

@@ -201,13 +201,13 @@ initialize (void)
 
   vars["CPPFLAGS"] = get_variable ("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
   vars["INCFLAGS"] = get_variable ("INCFLAGS", DEFAULT_INCFLAGS);
-  vars["F77"] = get_variable ("F77", %OCTAVE_CONF_F77%);
+  vars["F77"] = get_variable ("F77", %OCTAVE_CONF_MKOCTFILE_F77%);
   vars["FFLAGS"] = get_variable ("FFLAGS", %OCTAVE_CONF_FFLAGS%);
   vars["FPICFLAG"] = get_variable ("FPICFLAG", %OCTAVE_CONF_FPICFLAG%);
-  vars["CC"] = get_variable ("CC", %OCTAVE_CONF_CC%);
+  vars["CC"] = get_variable ("CC", %OCTAVE_CONF_MKOCTFILE_CC%);
   vars["CFLAGS"] = get_variable ("CFLAGS", %OCTAVE_CONF_CFLAGS%);
   vars["CPICFLAG"] = get_variable ("CPICFLAG", %OCTAVE_CONF_CPICFLAG%);
-  vars["CXX"] = get_variable ("CXX", %OCTAVE_CONF_CXX%);
+  vars["CXX"] = get_variable ("CXX", %OCTAVE_CONF_MKOCTFILE_CXX%);
   vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
   vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
   vars["XTRA_CFLAGS"] = get_variable ("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
@@ -216,7 +216,7 @@ initialize (void)
   vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS", %OCTAVE_CONF_DEPEND_FLAGS%);
   vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable ("DEPEND_EXTRA_SED_PATTERN", %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
 
-  vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_DL_LD%);
+  vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_MKOCTFILE_DL_LD%);
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS", %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
 
   vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG", %OCTAVE_CONF_RDYNAMIC_FLAG%);
@@ -236,7 +236,7 @@ initialize (void)
   vars["OCT_LINK_DEPS"] = get_variable ("FLIBS", %OCTAVE_CONF_OCT_LINK_DEPS%);
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
 
-  vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_LD_CXX%);
+  vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LFLAGS);

@@ -381,6 +381,15 @@ octave_jit_create_undef (void)
 }
 
 extern "C" Complex
+octave_jit_complex_mul (Complex lhs, Complex rhs)
+{
+  if (lhs.imag () == 0 && rhs.imag() == 0)
+    return Complex (lhs.real () * rhs.real (), 0);
+
+  return lhs * rhs;
+}
+
+extern "C" Complex
 octave_jit_complex_div (Complex lhs, Complex rhs)
 {
   // see src/OPERATORS/op-cs-cs.cc
@@ -1018,6 +1027,9 @@ jit_typeinfo::initialize (llvm::Module *m, llvm::ExecutionEngine *e)
   new jit_typeinfo (m, e);
 }
 
+// wrap function names to simplify jit_typeinfo::create_external
+#define JIT_FN(fn) engine, &fn, #fn
+
 jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   : module (m), engine (e), next_id (0),
     builder (*new llvm::IRBuilderD (context))
@@ -1051,7 +1063,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   matrix_contents[4] = string_t;
   matrix_t->setBody (llvm::makeArrayRef (matrix_contents, 5));
 
-  llvm::Type *complex_t = llvm::VectorType::get (scalar_t, 2);
+  llvm::Type *complex_t = llvm::ArrayType::get (scalar_t, 2);
 
   // complex_ret is what is passed to C functions in order to get calling
   // convention right
@@ -1122,19 +1134,16 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // generic call function
   {
     jit_type *int_t = intN (sizeof (octave_builtin::fcn) * 8);
-    any_call = create_function (jit_convention::external, "octave_jit_call",
-                                any, int_t, int_t, any_ptr, int_t);
-    any_call.add_mapping (engine, &octave_jit_call);
+    any_call = create_external (JIT_FN (octave_jit_call), any, int_t, int_t,
+                                any_ptr, int_t);
   }
 
   // any with anything is an any op
   jit_function fn;
   jit_type *binary_op_type = intN (sizeof (octave_value::binary_op) * 8);
   llvm::Type *llvm_bo_type = binary_op_type->to_llvm ();
-  jit_function any_binary = create_function (jit_convention::external,
-                                             "octave_jit_binary_any_any",
+  jit_function any_binary = create_external (JIT_FN (octave_jit_binary_any_any),
                                              any, binary_op_type, any, any);
-  any_binary.add_mapping (engine, &octave_jit_binary_any_any);
   any_binary.mark_can_error ();
   binary_ops.resize (octave_value::num_binary_ops);
   for (size_t i = 0; i < octave_value::num_binary_ops; ++i)
@@ -1157,7 +1166,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
       llvm::Twine fn_name ("octave_jit_binary_any_any_");
       fn_name = fn_name + llvm::Twine (op);
 
-      fn = create_function (jit_convention::internal, fn_name, any, any, any);
+      fn = create_internal (fn_name, any, any, any);
       fn.mark_can_error ();
       llvm::BasicBlock *block = fn.new_block ();
       builder.SetInsertPoint (block);
@@ -1172,9 +1181,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     }
 
   // grab matrix
-  fn = create_function (jit_convention::external, "octave_jit_grab_matrix",
-                        matrix, matrix);
-  fn.add_mapping (engine, &octave_jit_grab_matrix);
+  fn = create_external (JIT_FN (octave_jit_grab_matrix), matrix, matrix);
   grab_fn.add_overload (fn);
 
   grab_fn.add_overload (create_identity (scalar));
@@ -1185,16 +1192,12 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   grab_fn.add_overload (create_identity (index));
 
   // release any
-  fn = create_function (jit_convention::external, "octave_jit_release_any", 0,
-                        any);
-  fn.add_mapping (engine, &octave_jit_release_any);
+  fn = create_external (JIT_FN (octave_jit_release_any), 0, any);
   release_fn.add_overload (fn);
   release_fn.stash_name ("release");
 
   // release matrix
-  fn = create_function (jit_convention::external, "octave_jit_release_matrix",
-                        0, matrix);
-  fn.add_mapping (engine, &octave_jit_release_matrix);
+  fn = create_external (JIT_FN (octave_jit_release_matrix), 0, matrix);
   release_fn.add_overload (fn);
 
   // destroy
@@ -1218,14 +1221,11 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   add_binary_fcmp (scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
   add_binary_fcmp (scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
 
-  jit_function gripe_div0 = create_function (jit_convention::external,
-                                             "gripe_divide_by_zero", 0);
-  gripe_div0.add_mapping (engine, &gripe_divide_by_zero);
+  jit_function gripe_div0 = create_external (JIT_FN (gripe_divide_by_zero), 0);
   gripe_div0.mark_can_error ();
 
   // divide is annoying because it might error
-  fn = create_function (jit_convention::internal,
-                        "octave_jit_div_scalar_scalar", scalar, scalar, scalar);
+  fn = create_internal ("octave_jit_div_scalar_scalar", scalar, scalar, scalar);
   fn.mark_can_error ();
 
   llvm::BasicBlock *body = fn.new_block ();
@@ -1258,17 +1258,14 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // In general, the result of scalar ^ scalar is a complex number. We might be
   // able to improve on this if we keep track of the range of values varaibles
   // can take on.
-  fn = create_function (jit_convention::external,
-                        "octave_jit_pow_scalar_scalar", complex, scalar,
+  fn = create_external (JIT_FN (octave_jit_pow_scalar_scalar), complex, scalar,
                         scalar);
-  fn.add_mapping (engine, &octave_jit_pow_scalar_scalar);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
   // now for unary scalar operations
   // FIXME: Impelment not
-  fn = create_function (jit_convention::internal, "octave_jit_++", scalar,
-                        scalar);
+  fn = create_internal ("octave_jit_++", scalar, scalar);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1279,8 +1276,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   unary_ops[octave_value::op_incr].add_overload (fn);
 
-  fn = create_function (jit_convention::internal, "octave_jit_--", scalar,
-                        scalar);
+  fn = create_internal ("octave_jit_--", scalar, scalar);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1291,8 +1287,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   unary_ops[octave_value::op_decr].add_overload (fn);
 
-  fn = create_function (jit_convention::internal, "octave_jit_uminus", scalar,
-                        scalar);
+  fn = create_internal ("octave_jit_uminus", scalar, scalar);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1308,106 +1303,53 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   unary_ops[octave_value::op_hermitian].add_overload (fn);
 
   // now for binary complex operations
-  add_binary_op (complex, octave_value::op_add, llvm::Instruction::FAdd);
-  add_binary_op (complex, octave_value::op_sub, llvm::Instruction::FSub);
-
-  fn = create_function (jit_convention::internal,
-                        "octave_jit_*_complex_complex", complex, complex,
+  fn = create_internal ("octave_jit_+_complex_complex", complex, complex,
                         complex);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
-    // (x0*x1 - y0*y1, x0*y1 + y0*x1) = (x0,y0) * (x1,y1)
-    // We compute this in one vectorized multiplication, a subtraction, and an
-    // addition.
     llvm::Value *lhs = fn.argument (builder, 0);
     llvm::Value *rhs = fn.argument (builder, 1);
-
-    // FIXME: We need a better way of doing this, working with llvm's IR
-    // directly is sort of a pain.
-    llvm::Value *zero = builder.getInt32 (0);
-    llvm::Value *one = builder.getInt32 (1);
-    llvm::Value *two = builder.getInt32 (2);
-    llvm::Value *three = builder.getInt32 (3);
-    llvm::Value *fzero = llvm::ConstantFP::get (scalar_t, 0);
-
-    // we are really dealing with a complex number OR a scalar. That is, if the
-    // complex component is 0, we really have a scalar. This matters in
-    // 0+0i * NaN
-    llvm::BasicBlock *complex_mul = fn.new_block ("complex_mul");
-    llvm::BasicBlock *real_mul = fn.new_block ("real_mul");
-    llvm::BasicBlock *ret_block = fn.new_block ("ret");
-    llvm::Value *temp = builder.CreateFCmpUEQ (complex_imag (lhs), fzero);
-    llvm::Value *temp2 = builder.CreateFCmpUEQ (complex_imag (rhs), fzero);
-    temp = builder.CreateAnd (temp, temp2);
-    builder.CreateCondBr (temp, real_mul, complex_mul);
-
-    builder.SetInsertPoint(real_mul);
-    temp = builder.CreateFMul (complex_real (lhs), complex_real (rhs));
-    llvm::Value *real_branch_ret = complex_new (temp, fzero);
-    builder.CreateBr (ret_block);
-
-    llvm::Type *vec4 = llvm::VectorType::get (scalar_t, 4);
-    llvm::Value *mlhs = llvm::UndefValue::get (vec4);
-    llvm::Value *mrhs = mlhs;
-    builder.SetInsertPoint (complex_mul);
-    temp = complex_real (lhs);
-    mlhs = builder.CreateInsertElement (mlhs, temp, zero);
-    mlhs = builder.CreateInsertElement (mlhs, temp, two);
-    temp = complex_imag (lhs);
-    mlhs = builder.CreateInsertElement (mlhs, temp, one);
-    mlhs = builder.CreateInsertElement (mlhs, temp, three);
-
-    temp = complex_real (rhs);
-    mrhs = builder.CreateInsertElement (mrhs, temp, zero);
-    mrhs = builder.CreateInsertElement (mrhs, temp, three);
-    temp = complex_imag (rhs);
-    mrhs = builder.CreateInsertElement (mrhs, temp, one);
-    mrhs = builder.CreateInsertElement (mrhs, temp, two);
-
-    llvm::Value *mres = builder.CreateFMul (mlhs, mrhs);
-    llvm::Value *tlhs = builder.CreateExtractElement (mres, zero);
-    llvm::Value *trhs = builder.CreateExtractElement (mres, one);
-    llvm::Value *ret_real = builder.CreateFSub (tlhs, trhs);
-
-    tlhs = builder.CreateExtractElement (mres, two);
-    trhs = builder.CreateExtractElement (mres, three);
-    llvm::Value *ret_imag = builder.CreateFAdd (tlhs, trhs);
-    llvm::Value *complex_branch_ret = complex_new (ret_real, ret_imag);
-    builder.CreateBr (ret_block);
-
-    builder.SetInsertPoint (ret_block);
-    llvm::PHINode *merge = llvm::PHINode::Create(complex_t, 2);
-    builder.Insert (merge);
-    merge->addIncoming (real_branch_ret, real_mul);
-    merge->addIncoming (complex_branch_ret, complex_mul);
-    fn.do_return (builder, merge);
+    llvm::Value *real = builder.CreateFAdd (complex_real (lhs),
+                                            complex_real (rhs));
+    llvm::Value *imag = builder.CreateFAdd (complex_imag (lhs),
+                                            complex_imag (rhs));
+    fn.do_return (builder, complex_new (real, imag));
   }
+  binary_ops[octave_value::op_add].add_overload (fn);
 
+  fn = create_internal ("octave_jit_-_complex_complex", complex, complex,
+                        complex);
+  body = fn.new_block ();
+  builder.SetInsertPoint (body);
+  {
+    llvm::Value *lhs = fn.argument (builder, 0);
+    llvm::Value *rhs = fn.argument (builder, 1);
+    llvm::Value *real = builder.CreateFSub (complex_real (lhs),
+                                            complex_real (rhs));
+    llvm::Value *imag = builder.CreateFSub (complex_imag (lhs),
+                                            complex_imag (rhs));
+    fn.do_return (builder, complex_new (real, imag));
+  }
+  binary_ops[octave_value::op_sub].add_overload (fn);
+
+  fn = create_external (JIT_FN (octave_jit_complex_mul),
+                        complex, complex, complex);
   binary_ops[octave_value::op_mul].add_overload (fn);
   binary_ops[octave_value::op_el_mul].add_overload (fn);
 
-  jit_function complex_div = create_function (jit_convention::external,
-                                              "octave_jit_complex_div",
+  jit_function complex_div = create_external (JIT_FN (octave_jit_complex_div),
                                               complex, complex, complex);
-  complex_div.add_mapping (engine, &octave_jit_complex_div);
   complex_div.mark_can_error ();
   binary_ops[octave_value::op_div].add_overload (fn);
   binary_ops[octave_value::op_ldiv].add_overload (fn);
 
-  // fn = mirror_binary (complex_div);
-  // binary_ops[octave_value::op_ldiv].add_overload (fn);
-  // binary_ops[octave_value::op_el_ldiv].add_overload (fn);
-
-  fn = create_function (jit_convention::external,
-                        "octave_jit_pow_complex_complex", complex, complex,
-                        complex);
-  fn.add_mapping (engine, &octave_jit_pow_complex_complex);
+  fn = create_external (JIT_FN (octave_jit_pow_complex_complex), complex,
+                        complex, complex);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
-  fn = create_function (jit_convention::internal,
-                        "octave_jit_*_scalar_complex", complex, scalar,
+  fn = create_internal ("octave_jit_*_scalar_complex", complex, scalar,
                         complex);
   jit_function mul_scalar_complex = fn;
   body = fn.new_block ();
@@ -1430,8 +1372,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
 
     builder.SetInsertPoint (complex_mul);
-    temp = complex_new (lhs, lhs);
-    fn.do_return (builder, builder.CreateFMul (temp, rhs));
+    temp = complex_new (builder.CreateFMul (lhs, complex_real (rhs)),
+                        builder.CreateFMul (lhs, complex_imag (rhs)));
+    fn.do_return (builder, temp);
   }
   binary_ops[octave_value::op_mul].add_overload (fn);
   binary_ops[octave_value::op_el_mul].add_overload (fn);
@@ -1441,8 +1384,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   binary_ops[octave_value::op_mul].add_overload (fn);
   binary_ops[octave_value::op_el_mul].add_overload (fn);
 
-  fn = create_function (jit_convention::internal, "octave_jit_+_scalar_complex",
-                        complex, scalar, complex);
+  fn = create_internal ("octave_jit_+_scalar_complex", complex, scalar,
+                        complex);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1456,8 +1399,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn = mirror_binary (fn);
   binary_ops[octave_value::op_add].add_overload (fn);
 
-  fn = create_function (jit_convention::internal, "octave_jit_-_complex_scalar",
-                        complex, complex, scalar);
+  fn = create_internal ("octave_jit_-_complex_scalar", complex, complex,
+                        scalar);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1468,8 +1411,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   binary_ops[octave_value::op_sub].add_overload (fn);
 
-  fn = create_function (jit_convention::internal, "octave_jit_-_scalar_complex",
-                        complex, scalar, complex);
+  fn = create_internal ("octave_jit_-_scalar_complex", complex, scalar,
+                        complex);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1480,17 +1423,13 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   binary_ops[octave_value::op_sub].add_overload (fn);
 
-  fn = create_function (jit_convention::external,
-                        "octave_jit_pow_scalar_complex", complex, scalar,
+  fn = create_external (JIT_FN (octave_jit_pow_scalar_complex), complex, scalar,
                         complex);
-  fn.add_mapping (engine, &octave_jit_pow_scalar_complex);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
-  fn = create_function (jit_convention::external,
-                        "octave_jit_pow_complex_scalar", complex, complex,
-                        scalar);
-  fn.add_mapping (engine, &octave_jit_pow_complex_scalar);
+  fn = create_external (JIT_FN (octave_jit_pow_complex_scalar), complex,
+                        complex, scalar);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
@@ -1509,8 +1448,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // initialize for loop
   for_init_fn.stash_name ("for_init");
 
-  fn = create_function (jit_convention::internal, "octave_jit_for_range_init",
-                        index, range);
+  fn = create_internal ("octave_jit_for_range_init", index, range);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1522,8 +1460,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // bounds check for for loop
   for_check_fn.stash_name ("for_check");
 
-  fn = create_function (jit_convention::internal, "octave_jit_for_range_check",
-                        boolean, range, index);
+  fn = create_internal ("octave_jit_for_range_check", boolean, range, index);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1538,8 +1475,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // index variabe for for loop
   for_index_fn.stash_name ("for_index");
 
-  fn = create_function (jit_convention::internal, "octave_jit_for_range_idx",
-                        scalar, range, index);
+  fn = create_internal ("octave_jit_for_range_idx", scalar, range, index);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1559,13 +1495,10 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   logically_true_fn.stash_name ("logically_true");
 
   jit_function gripe_nantl
-    = create_function (jit_convention::external,
-                       "octave_jit_gripe_nan_to_logical_conversion", 0);
-  gripe_nantl.add_mapping (engine, &octave_jit_gripe_nan_to_logical_conversion);
+    = create_external (JIT_FN (octave_jit_gripe_nan_to_logical_conversion), 0);
   gripe_nantl.mark_can_error ();
 
-  fn = create_function (jit_convention::internal,
-                        "octave_jit_logically_true_scalar", boolean, scalar);
+  fn = create_internal ("octave_jit_logically_true_scalar", boolean, scalar);
   fn.mark_can_error ();
 
   body = fn.new_block ();
@@ -1597,12 +1530,11 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // FIXME: May be benificial to implement all in LLVM
   make_range_fn.stash_name ("make_range");
   jit_function compute_nelem
-    = create_function (jit_convention::external, "octave_jit_compute_nelem",
+    = create_external (JIT_FN (octave_jit_compute_nelem),
                        index, scalar, scalar, scalar);
-  compute_nelem.add_mapping (engine, &octave_jit_compute_nelem);
 
-  fn = create_function (jit_convention::internal, "octave_jit_make_range",
-                        range, scalar, scalar, scalar);
+
+  fn = create_internal ("octave_jit_make_range", range, scalar, scalar, scalar);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1627,17 +1559,12 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_type *jit_int = intN (sizeof (int) * 8);
   llvm::Type *int_t = jit_int->to_llvm ();
   jit_function ginvalid_index
-    = create_function (jit_convention::external, "octave_jit_ginvalid_index",
-                       0);
-  ginvalid_index.add_mapping (engine, &octave_jit_ginvalid_index);
-  jit_function gindex_range = create_function (jit_convention::external,
-                                               "octave_jit_gindex_range",
+    = create_external (JIT_FN (octave_jit_ginvalid_index), 0);
+  jit_function gindex_range = create_external (JIT_FN (octave_jit_gindex_range),
                                                0, jit_int, jit_int, index,
                                                index);
-  gindex_range.add_mapping (engine, &octave_jit_gindex_range);
 
-  fn = create_function (jit_convention::internal, "()subsref", scalar, matrix,
-                        scalar);
+  fn = create_internal ("()subsref", scalar, matrix, scalar);
   fn.mark_can_error ();
 
   body = fn.new_block ();
@@ -1706,12 +1633,11 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   paren_subsasgn_fn.stash_name ("()subsasgn");
 
   jit_function resize_paren_subsasgn
-    = create_function (jit_convention::external,
-                       "octave_jit_paren_subsasgn_impl", matrix, matrix, index,
-                       scalar);
-  resize_paren_subsasgn.add_mapping (engine, &octave_jit_paren_subsasgn_impl);
-  fn = create_function (jit_convention::internal, "octave_jit_paren_subsasgn",
-                        matrix, matrix, scalar, scalar);
+    = create_external (JIT_FN (octave_jit_paren_subsasgn_impl), matrix, matrix,
+                       index, scalar);
+
+  fn = create_internal ("octave_jit_paren_subsasgn", matrix, matrix, scalar,
+                        scalar);
   fn.mark_can_error ();
   body = fn.new_block ();
   builder.SetInsertPoint (body);
@@ -1774,16 +1700,13 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   paren_subsasgn_fn.add_overload (fn);
 
-  fn = create_function (jit_convention::external,
-                        "octave_jit_paren_subsasgn_matrix_range", matrix,
+  fn = create_external (JIT_FN (octave_jit_paren_subsasgn_matrix_range), matrix,
                         matrix, range, scalar);
-  fn.add_mapping (engine, &octave_jit_paren_subsasgn_matrix_range);
   fn.mark_can_error ();
   paren_subsasgn_fn.add_overload (fn);
 
   end1_fn.stash_name ("end1");
-  fn = create_function (jit_convention::internal, "octave_jit_end1_matrix",
-                        scalar, matrix, index, index);
+  fn = create_internal ("octave_jit_end1_matrix", scalar, matrix, index, index);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1794,14 +1717,13 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   end1_fn.add_overload (fn);
 
   end_fn.stash_name ("end");
-  fn = create_function (jit_convention::external, "octave_jit_end_matrix",
-                        scalar, matrix, index, index);
+  fn = create_external (JIT_FN (octave_jit_end_matrix),scalar, matrix, index,
+                        index);
   end_fn.add_overload (fn);
 
   // -------------------- create_undef --------------------
   create_undef_fn.stash_name ("create_undef");
-  fn = create_function (jit_convention::external, "octave_jit_create_undef",
-                        any);
+  fn = create_external (JIT_FN (octave_jit_create_undef), any);
   create_undef_fn.add_overload (fn);
 
   casts[any->type_id ()].stash_name ("(any)");
@@ -1811,56 +1733,39 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   casts[range->type_id ()].stash_name ("(range)");
 
   // cast any <- matrix
-  fn = create_function (jit_convention::external, "octave_jit_cast_any_matrix",
-                        any, matrix);
-  fn.add_mapping (engine, &octave_jit_cast_any_matrix);
+  fn = create_external (JIT_FN (octave_jit_cast_any_matrix), any, matrix);
   casts[any->type_id ()].add_overload (fn);
 
   // cast matrix <- any
-  fn = create_function (jit_convention::external, "octave_jit_cast_matrix_any",
-                        matrix, any);
-  fn.add_mapping (engine, &octave_jit_cast_matrix_any);
+  fn = create_external (JIT_FN (octave_jit_cast_matrix_any), matrix, any);
   casts[matrix->type_id ()].add_overload (fn);
 
   // cast any <- range
-  fn = create_function (jit_convention::external, "octave_jit_cast_any_range",
-                        any, range);
-  fn.add_mapping (engine, &octave_jit_cast_any_range);
+  fn = create_external (JIT_FN (octave_jit_cast_any_range), any, range);
   casts[any->type_id ()].add_overload (fn);
 
   // cast range <- any
-  fn = create_function (jit_convention::external, "octave_jit_cast_range_any",
-                        range, any);
-  fn.add_mapping (engine, &octave_jit_cast_range_any);
+  fn = create_external (JIT_FN (octave_jit_cast_range_any), range, any);
   casts[range->type_id ()].add_overload (fn);
 
   // cast any <- scalar
-  fn = create_function (jit_convention::external, "octave_jit_cast_any_scalar",
-                        any, scalar);
-  fn.add_mapping (engine, &octave_jit_cast_any_scalar);
+  fn = create_external (JIT_FN (octave_jit_cast_any_scalar), any, scalar);
   casts[any->type_id ()].add_overload (fn);
 
   // cast scalar <- any
-  fn = create_function (jit_convention::external, "octave_jit_cast_scalar_any",
-                        scalar, any);
-  fn.add_mapping (engine, &octave_jit_cast_scalar_any);
+  fn = create_external (JIT_FN (octave_jit_cast_scalar_any), scalar, any);
   casts[scalar->type_id ()].add_overload (fn);
 
   // cast any <- complex
-  fn = create_function (jit_convention::external, "octave_jit_cast_any_complex",
-                        any, complex);
-  fn.add_mapping (engine, &octave_jit_cast_any_complex);
+  fn = create_external (JIT_FN (octave_jit_cast_any_complex), any, complex);
   casts[any->type_id ()].add_overload (fn);
 
   // cast complex <- any
-  fn = create_function (jit_convention::external, "octave_jit_cast_complex_any",
-                        complex, any);
-  fn.add_mapping (engine, &octave_jit_cast_complex_any);
+  fn = create_external (JIT_FN (octave_jit_cast_complex_any), complex, any);
   casts[complex->type_id ()].add_overload (fn);
 
   // cast complex <- scalar
-  fn = create_function (jit_convention::internal,
-                        "octave_jit_cast_complex_scalar", complex, scalar);
+  fn = create_internal ("octave_jit_cast_complex_scalar", complex, scalar);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1870,8 +1775,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   casts[complex->type_id ()].add_overload (fn);
 
   // cast scalar <- complex
-  fn = create_function (jit_convention::internal,
-                        "octave_jit_cast_scalar_complex", scalar, complex);
+  fn = create_internal ("octave_jit_cast_scalar_complex", scalar, complex);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   fn.do_return (builder, complex_real (fn.argument (builder, 0)));
@@ -1934,9 +1838,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   casts.resize (next_id + 1);
   jit_function any_id = create_identity (any);
-  jit_function grab_any = create_function (jit_convention::external,
-                                           "octave_jit_grab_any", any, any);
-  grab_any.add_mapping (engine, &octave_jit_grab_any);
+  jit_function grab_any = create_external (JIT_FN (octave_jit_grab_any),
+                                           any, any);
   jit_function release_any = get_release (any);
   std::vector<jit_type *> args;
   args.resize (1);
@@ -1981,9 +1884,7 @@ jit_typeinfo::add_print (jit_type *ty, void *fptr)
 {
   std::stringstream name;
   name << "octave_jit_print_" << ty->name ();
-  jit_function fn = create_function (jit_convention::external, name.str (), 0,
-                                     intN (8), ty);
-  fn.add_mapping (engine, fptr);
+  jit_function fn = create_external (engine, fptr, name.str (), 0, intN (8), ty);
   print_fn.add_overload (fn);
 }
 
@@ -1996,8 +1897,7 @@ jit_typeinfo::add_binary_op (jit_type *ty, int op, int llvm_op)
   fname << "octave_jit_" << octave_value::binary_op_as_string (ov_op)
         << "_" << ty->name ();
 
-  jit_function fn = create_function (jit_convention::internal, fname.str (),
-                                        ty, ty, ty);
+  jit_function fn = create_internal (fname.str (), ty, ty, ty);
   llvm::BasicBlock *block = fn.new_block ();
   builder.SetInsertPoint (block);
   llvm::Instruction::BinaryOps temp
@@ -2017,8 +1917,7 @@ jit_typeinfo::add_binary_icmp (jit_type *ty, int op, int llvm_op)
   fname << "octave_jit" << octave_value::binary_op_as_string (ov_op)
         << "_" << ty->name ();
 
-  jit_function fn = create_function (jit_convention::internal, fname.str (),
-                                     boolean, ty, ty);
+  jit_function fn = create_internal (fname.str (), boolean, ty, ty);
   llvm::BasicBlock *block = fn.new_block ();
   builder.SetInsertPoint (block);
   llvm::CmpInst::Predicate temp
@@ -2037,8 +1936,7 @@ jit_typeinfo::add_binary_fcmp (jit_type *ty, int op, int llvm_op)
   fname << "octave_jit" << octave_value::binary_op_as_string (ov_op)
         << "_" << ty->name ();
 
-  jit_function fn = create_function (jit_convention::internal, fname.str (),
-                                     boolean, ty, ty);
+  jit_function fn = create_internal (fname.str (), boolean, ty, ty);
   llvm::BasicBlock *block = fn.new_block ();
   builder.SetInsertPoint (block);
   llvm::CmpInst::Predicate temp
@@ -2069,9 +1967,8 @@ jit_typeinfo::create_identity (jit_type *type)
     {
       std::stringstream name;
       name << "id_" << type->name ();
-      jit_function fn = create_function (jit_convention::internal, name.str (),
-                                         type, type);
 
+      jit_function fn = create_internal (name.str (), type, type);
       llvm::BasicBlock *body = fn.new_block ();
       builder.SetInsertPoint (body);
       fn.do_return (builder, fn.argument (builder, 0));
@@ -2130,8 +2027,7 @@ jit_typeinfo::register_intrinsic (const std::string& name, size_t iid,
   // The first argument will be the Octave function, but we already know that
   // the function call is the equivalent of the intrinsic, so we ignore it and
   // call the intrinsic with the remaining arguments.
-  jit_function fn = create_function (jit_convention::internal, fn_name.str (),
-                                     result, args1);
+  jit_function fn = create_internal (fn_name.str (), result, args1);
   llvm::BasicBlock *body = fn.new_block ();
   builder.SetInsertPoint (body);
 
@@ -2164,8 +2060,7 @@ jit_typeinfo::register_generic (const std::string& name, jit_type *result,
   std::vector<jit_type *> fn_args (args.size () + 1);
   fn_args[0] = builtins[name];
   std::copy (args.begin (), args.end (), fn_args.begin () + 1);
-  jit_function fn = create_function (jit_convention::internal, name, result,
-                                     fn_args);
+  jit_function fn = create_internal (name, result, fn_args);
   fn.mark_can_error ();
   llvm::BasicBlock *block = fn.new_block ();
   builder.SetInsertPoint (block);
@@ -2203,8 +2098,7 @@ jit_typeinfo::register_generic (const std::string& name, jit_type *result,
 jit_function
 jit_typeinfo::mirror_binary (const jit_function& fn)
 {
-  jit_function ret = create_function (jit_convention::internal,
-                                      fn.name () + "_reverse",
+  jit_function ret = create_internal (fn.name () + "_reverse",
                                       fn.result (), fn.argument_type (1),
                                       fn.argument_type (0));
   if (fn.can_error ())
@@ -2226,8 +2120,8 @@ llvm::Value *
 jit_typeinfo::pack_complex (llvm::IRBuilderD& bld, llvm::Value *cplx)
 {
   llvm::Type *complex_ret = instance->complex_ret;
-  llvm::Value *real = bld.CreateExtractElement (cplx, bld.getInt32 (0));
-  llvm::Value *imag = bld.CreateExtractElement (cplx, bld.getInt32 (1));
+  llvm::Value *real = bld.CreateExtractValue (cplx, 0);
+  llvm::Value *imag = bld.CreateExtractValue (cplx, 1);
   llvm::Value *ret = llvm::UndefValue::get (complex_ret);
 
   unsigned int re_idx[] = {0, 0};
@@ -2247,32 +2141,32 @@ jit_typeinfo::unpack_complex (llvm::IRBuilderD& bld, llvm::Value *result)
   llvm::Value *imag = bld.CreateExtractValue (result, im_idx);
   llvm::Value *ret = llvm::UndefValue::get (complex_t);
 
-  ret = bld.CreateInsertElement (ret, real, bld.getInt32 (0));
-  return bld.CreateInsertElement (ret, imag, bld.getInt32 (1));
+  ret = bld.CreateInsertValue (ret, real, 0);
+  return bld.CreateInsertValue (ret, imag, 1);
 }
 
 llvm::Value *
 jit_typeinfo::complex_real (llvm::Value *cx)
 {
-  return builder.CreateExtractElement (cx, builder.getInt32 (0));
+  return builder.CreateExtractValue (cx, 0);
 }
 
 llvm::Value *
 jit_typeinfo::complex_real (llvm::Value *cx, llvm::Value *real)
 {
-  return builder.CreateInsertElement (cx, real, builder.getInt32 (0));
+  return builder.CreateInsertValue (cx, real, 0);
 }
 
 llvm::Value *
 jit_typeinfo::complex_imag (llvm::Value *cx)
 {
-  return builder.CreateExtractElement (cx, builder.getInt32 (1));
+  return builder.CreateExtractValue (cx, 1);
 }
 
 llvm::Value *
 jit_typeinfo::complex_imag (llvm::Value *cx, llvm::Value *imag)
 {
-  return builder.CreateInsertElement (cx, imag, builder.getInt32 (1));
+  return builder.CreateInsertValue (cx, imag, 1);
 }
 
 llvm::Value *
@@ -2333,7 +2227,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
 
       // We don't really represent complex values, instead we represent
       // complex_or_scalar. If the imag value is zero, we assume a scalar.
-      if (cv.imag () == 0)
+      if (cv.imag () != 0)
         return get_complex ();
     }
 

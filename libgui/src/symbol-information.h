@@ -81,7 +81,11 @@ public:
 
   QString symbol (void) const { return _symbol; }
   QString class_name (void) const { return _class_name; }
-  QString value (void) const { return _value; }
+  QString value (void) const
+    {
+      return QString::fromUtf8 (_value.toStdString ().data (),
+                                _value.toStdString ().size ());
+    }
   QString dimension (void) const { return _dimension; }
   Scope scope (void) const { return _scope; }
 

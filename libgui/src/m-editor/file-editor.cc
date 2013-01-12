@@ -225,7 +225,8 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
       // Create a NonModal message about error.
       QMessageBox* msgBox = new QMessageBox (
               QMessageBox::Critical, tr ("Octave Editor"),
-              tr ("File not saved!  You've selected a file name\n\n     %1\n\nwhich is the same as an already open file in the editor.  (Could allow overwriting, with message, if that is what folks want.)").
+              tr ("File not saved! A file with the selected name\n%1\n"
+                   "is already open in the editor").
               arg (saveFileName),
               QMessageBox::Ok, 0);
       msgBox->setWindowModality (Qt::NonModal);
@@ -511,7 +512,9 @@ void
 file_editor::construct ()
 {
   QWidget *editor_widget = new QWidget (this);
-  QStyle *editor_style = QApplication::style ();
+
+  // FIXME -- what was the intended purpose of this unused variable?
+  // QStyle *editor_style = QApplication::style ();
 
   _menu_bar = new QMenuBar (editor_widget);
   _tool_bar = new QToolBar (editor_widget);

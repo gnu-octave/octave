@@ -56,7 +56,7 @@ QString
 resource_manager::find_translator_file (const QString& language)
 {
   // TODO: Quick hack to be able to test language files.
-  return QString ("../languages/%1.qm").arg (language);
+  return QString ("libgui/languages/%1.qm").arg (language);
 }
 
 bool

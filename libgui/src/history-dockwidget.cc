@@ -102,14 +102,14 @@ history_dock_widget::construct ()
   setFocusProxy (_filter_line_edit);
 }
 
-void history_dock_widget::ctxMenu(const QPoint &pos) {
+void history_dock_widget::ctxMenu(const QPoint &xpos) {
     QMenu *menu = new QMenu;
     menu->addAction(tr("Copy"), this, SLOT(handle_contextmenu_copy(bool)));
     menu->addAction(tr("Evaluate"), this, SLOT(handle_contextmenu_evaluate(bool)));
-    menu->exec(_history_list_view->mapToGlobal(pos));
+    menu->exec(_history_list_view->mapToGlobal(xpos));
 }
 
-void history_dock_widget::handle_contextmenu_copy(bool flag)
+void history_dock_widget::handle_contextmenu_copy(bool)
 {
   QString text;
   QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
@@ -123,7 +123,7 @@ void history_dock_widget::handle_contextmenu_copy(bool flag)
   QApplication::clipboard()->setText(text);
 }
 
-void history_dock_widget::handle_contextmenu_evaluate(bool flag)
+void history_dock_widget::handle_contextmenu_evaluate(bool)
 {
   QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
   QModelIndexList rows = selectionModel->selectedRows();
@@ -200,7 +200,7 @@ history_dock_widget::update_history_callback (void)
           std::string entry = command_history::get_entry (i);
 
           _history_model->setData (_history_model->index (i),
-                      QString::fromLocal8Bit (entry.data (), entry.size ()));
+                      QString::fromUtf8 (entry.data (), entry.size ()));
         }
 
       // FIXME -- does this behavior make sense?  Calling

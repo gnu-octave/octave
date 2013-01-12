@@ -30,7 +30,7 @@ class QTerminalInterface : public QWidget
 {
     Q_OBJECT
 public:
-    QTerminalInterface(QWidget *parent = 0) : QWidget(parent) {
+    QTerminalInterface(QWidget *xparent = 0) : QWidget(xparent) {
       connect (this, SIGNAL(customContextMenuRequested(QPoint)),
                this, SLOT(handleCustomContextMenuRequested(QPoint)));
 

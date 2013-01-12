@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="pt_BR" sourcelanguage="en">
 <context>
     <name>documentation_dock_widget</name>
     <message>
         <location filename="../src/documentation-dockwidget.cc" line="+34"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Documentação</translation>
     </message>
 </context>
 <context>
@@ -50,32 +50,32 @@ is already open in the editor</source>
     <message>
         <location line="+130"/>
         <source>&amp;New File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Novo Arquivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Open File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Abrir Arquivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Save File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Salvar Arquivo</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save File &amp;As</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Salvar Arquivo &amp;Como</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Desfazer</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Refazer</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -230,17 +230,17 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+11"/>
         <source>Move up one directory.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Subir um diretório.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Enter the path or filename.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Digite o caminho ou o nome do arquivo.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Doubleclick a file to open it.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Clique duas vezes num arquivo para abrí-lo.</translation>
     </message>
 </context>
 <context>
@@ -316,17 +316,17 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/history-dockwidget.cc" line="+55"/>
         <source>Doubleclick a command to transfer it to the terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Clique duas vezes num comando para transferí-lo ao terminal.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enter text to filter the command history.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Digite um texto para filtrar o hitórico de comandos.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Histórico de Comandos</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -344,47 +344,47 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/m-editor/lexer-octave-gui.cc" line="+145"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Padrão</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Comentário</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Comando</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Número</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Palavra-Chave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">String com aspas simples</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Operador</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Identificador</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">String com aspas duplas</translation>
     </message>
 </context>
 <context>
@@ -392,12 +392,12 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/main-window.cc" line="+135"/>
         <source>Save Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Salvar ambiente de trabalho</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Load Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carregar ambiente de trabalho</translation>
     </message>
     <message>
         <location line="+155"/>
@@ -408,22 +408,22 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+186"/>
         <location line="+381"/>
         <source>About Octave</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sobre o Octave</translation>
     </message>
     <message>
         <location line="-290"/>
         <source>View the variables in the active workspace.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Visualizar variáveis no ambiente de trabalho.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Browse and search the command history.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pesquise no histórico de comandos.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Browse your files.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Procure seus arquivos.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -523,7 +523,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+4"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sair</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -678,7 +678,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+4"/>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Histórico de Comandos</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -688,17 +688,17 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+4"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ambiente de trabalho</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Editor</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Documentação</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -713,7 +713,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+2"/>
         <source>Report Bug</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Reportar Bug</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -737,7 +737,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location filename="../src/settings-dialog.ui" line="+29"/>
         <location filename="../src/ui-settings-dialog.h" line="+461"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Configurações</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -773,7 +773,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+11"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Editor</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -825,19 +825,19 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+27"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Use custom file editor:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Usar editor de arquivos personalizado:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>emacs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">emacs</translation>
     </message>
     <message>
         <location line="+10"/>
         <location filename="../src/ui-settings-dialog.h" line="+6"/>
         <source>Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Terminal</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -855,43 +855,43 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+36"/>
         <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>File Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Navegador de Arquivos</translation>
     </message>
     <message>
         <location line="+6"/>
         <location filename="../src/ui-settings-dialog.h" line="-6"/>
         <source>Show filenames</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostrar nomes de arquivo</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show file size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostrar tamanho do arquivo</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show file type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostrar tipo do arquivo</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show date of last modification</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostrar data de última modificação</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show hidden files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostrar arquivos ocultos</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alternar cores das linhas</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -945,7 +945,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+17"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Senha:</translation>
     </message>
 </context>
 <context>
@@ -1037,7 +1037,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/workspace-model.cc" line="+42"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nome</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1052,7 +1052,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+0"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valor</translation>
     </message>
 </context>
 <context>
@@ -1060,7 +1060,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/workspace-view.cc" line="+39"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ambiente de trabalho</translation>
     </message>
 </context>
 </TS>

@@ -675,7 +675,7 @@ file_editor_tab::handle_copy_available(bool enableCopy)
 }
 
 int
-file_editor_tab::check_file_modified (const QString& msg, int cancelButton)
+file_editor_tab::check_file_modified (const QString&, int)
 {
   int decision = QMessageBox::Yes;
   if (_edit_area->isModified ())
@@ -987,13 +987,14 @@ file_editor_tab::notice_settings ()
   else
     _edit_area->setAutoCompletionThreshold (-1);
 
-  QFont font( settings->value ("editor/fontName","Courier").toString () ,
-              settings->value ("editor/fontSize",10).toInt () );
+  QFont xfont (settings->value ("editor/fontName","Courier").toString (),
+               settings->value ("editor/fontSize",10).toInt ());
+
   if (settings->value ("editor/showLineNumbers",true).toBool ())
     {
       _edit_area->setMarginLineNumbers (2, true);
-      _edit_area->setMarginsFont( font );
-      QFontMetrics metrics( font );
+      _edit_area->setMarginsFont (xfont);
+      QFontMetrics metrics (xfont);
       _edit_area->setMarginWidth(2, metrics.width("9999"));
     }
   else

@@ -200,14 +200,15 @@ main_window::process_settings_dialog_request ()
   delete settingsDialog;
 }
 
+
 void
 main_window::notice_settings ()
 {
-  // Set terminal font:
   QSettings *settings = resource_manager::get_settings ();
 
   // FIXME -- what should happen if settings is 0?
 
+  // Set terminal font:
   QFont term_font = QFont();
   term_font.setFamily(settings->value("terminal/fontName").toString());
   term_font.setPointSize(settings->value("terminal/fontSize").toInt ());
@@ -224,8 +225,32 @@ main_window::notice_settings ()
                              cursorBlinking);
 
   // the widget's icons (when floating)
-  int icon_set = settings->value ("DockWidgets/widget_icon_set",0).toInt ();
-  QString icon_prefix = QString (WIDGET_ICON_SET_PREFIX[icon_set]);
+  QString icon_set = settings->value ("DockWidgets/widget_icon_set","NONE").
+                                      toString ();
+  static struct
+    {
+      QString name;
+      QString path;
+    }
+  widget_icon_data[] =
+    { // array of possible icon sets (name, path (complete for NONE))
+      // the first entry here is the default!
+      {"NONE",    ":/actions/icons/logo.png"},
+      {"GRAPHIC", ":/actions/icons/graphic_logo_"},
+      {"LETTER",  ":/actions/icons/letter_logo_"},
+      {"", ""} // end marker has empty name
+    };
+  int count = 0;
+  int icon_set_found = 0; // default
+  while (!widget_icon_data[count].name.isEmpty ())
+    { // while not end of data
+      if (widget_icon_data[count].name == icon_set)
+        { // data of desired icon set found
+          icon_set_found = count;
+          break;
+        }
+      count++;
+    }
   QString icon;
   foreach (QObject *obj, children ())
     {
@@ -233,15 +258,16 @@ main_window::notice_settings ()
       if (obj->inherits("QDockWidget") && ! name.isEmpty ())
         { // if children is a dockwidget with a name
           QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
-          icon = icon_prefix;  // prefix or octave-logo
-          if (icon_set)        // > 0 : each widget has individual icon
-            icon = icon + name + QString(".png");
+          icon = widget_icon_data[icon_set_found].path; // prefix or octave-logo
+          if (widget_icon_data[icon_set_found].name != "NONE")
+            icon = icon + name + ".png"; // add widget name and ext.
           widget->setWindowIcon (QIcon (icon));
         }
     }
 
   resource_manager::update_network_settings ();
 }
+
 
 void
 main_window::prepare_for_quit ()
@@ -276,7 +302,7 @@ main_window::change_current_working_directory ()
 
   if (!directory.isEmpty ())
     {
-      std::string dir = directory.toLocal8Bit ().data ();
+      std::string dir = directory.toUtf8 ().data ();
       octave_link::post_event (this, &main_window::change_directory_callback,dir);
     }
 }
@@ -287,7 +313,7 @@ main_window::set_current_working_directory (const QString& directory)
   QFileInfo fileInfo (directory);  // check whether this is an existing dir
   if (fileInfo.exists () && fileInfo.isDir ())   // is dir and exists
     {
-      std::string dir = directory.toLocal8Bit ().data ();
+      std::string dir = directory.toUtf8 ().data ();
       octave_link::post_event (this, &main_window::change_directory_callback,dir);
     }
 }

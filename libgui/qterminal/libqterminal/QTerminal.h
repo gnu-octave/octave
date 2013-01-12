@@ -31,8 +31,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
     {
         Q_OBJECT
     public:
-        QTerminal(QWidget *parent = 0)
-            : QWinTerminalImpl(parent) { }
+        QTerminal(QWidget *xparent = 0)
+            : QWinTerminalImpl(xparent) { }
         ~QTerminal() { }
     };
 #else
@@ -41,8 +41,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
     {
         Q_OBJECT
     public:
-        QTerminal(QWidget *parent = 0)
-            : QUnixTerminalImpl(parent) { }
+        QTerminal(QWidget *xparent = 0)
+            : QUnixTerminalImpl(xparent) { }
         ~QTerminal() { }
     };
 #endif

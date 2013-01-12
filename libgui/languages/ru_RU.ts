@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>documentation_dock_widget</name>
     <message>
         <location filename="../src/documentation-dockwidget.cc" line="+34"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Документация</translation>
     </message>
 </context>
 <context>
@@ -50,42 +50,42 @@ is already open in the editor</source>
     <message>
         <location line="+130"/>
         <source>&amp;New File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Созд&amp;ать</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Open File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Открыть</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Save File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Сохранить</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save File &amp;As</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сохранить &amp;как</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">О&amp;тменить</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Повторить</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Копировать</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вы&amp;резать</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -95,17 +95,17 @@ is already open in the editor</source>
     <message>
         <location line="+1"/>
         <source>&amp;Next Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">С&amp;ледующая закладка</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Pre&amp;vious Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пр&amp;едыдущая закладка</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Установить/снять закладку</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -155,7 +155,7 @@ is already open in the editor</source>
     <message>
         <location line="+51"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Файл</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -165,7 +165,7 @@ is already open in the editor</source>
     <message>
         <location line="+8"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Правка</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -175,7 +175,7 @@ is already open in the editor</source>
     <message>
         <location line="+9"/>
         <source>&amp;Run</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Запуск</translation>
     </message>
 </context>
 <context>
@@ -225,22 +225,22 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/files-dockwidget.cc" line="+43"/>
         <source>Current Directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Текущий каталог</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Move up one directory.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Перейти на уровень выше.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Enter the path or filename.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Введите путь или имя файла.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Doubleclick a file to open it.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Двойной щелчок по файлу откроет его.</translation>
     </message>
 </context>
 <context>
@@ -316,17 +316,17 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/history-dockwidget.cc" line="+55"/>
         <source>Doubleclick a command to transfer it to the terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Двойной щелчок по команде перенесёт её в командную строку.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enter text to filter the command history.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Введите текст для фильтрации выполненных команд.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -344,47 +344,47 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/m-editor/lexer-octave-gui.cc" line="+145"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">По умолчанию</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Комментарий</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Команда</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Число</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Зарезервированное слово</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Строка в одинарных кавычках</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Оператор</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Идентификатор</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Строка в двойных кавычках</translation>
     </message>
 </context>
 <context>
@@ -392,12 +392,12 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/main-window.cc" line="+135"/>
         <source>Save Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сохранить область переменных</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Load Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Загрузить область переменных</translation>
     </message>
     <message>
         <location line="+155"/>
@@ -408,22 +408,22 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+186"/>
         <location line="+381"/>
         <source>About Octave</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Об Octave</translation>
     </message>
     <message>
         <location line="-290"/>
         <source>View the variables in the active workspace.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Просмотр содержимого текущей области переменных.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Browse and search the command history.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Просмотр и поиск в журнале выполненных команд.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Browse your files.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Просмотр файлов.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -433,7 +433,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+39"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Файл</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -523,12 +523,12 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+4"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выход</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Правка</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -678,27 +678,27 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+4"/>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Current Directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Текущий каталог</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Область переменных</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редактор</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Документация</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -713,7 +713,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+2"/>
         <source>Report Bug</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сообщить об ошибке</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -737,7 +737,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location filename="../src/settings-dialog.ui" line="+29"/>
         <location filename="../src/ui-settings-dialog.h" line="+461"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Параметры</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -773,7 +773,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+11"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редактор</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -825,19 +825,19 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+27"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Use custom file editor:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбрать редактор:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>emacs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">emacs</translation>
     </message>
     <message>
         <location line="+10"/>
         <location filename="../src/ui-settings-dialog.h" line="+6"/>
         <source>Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Командная строка</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -855,43 +855,43 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+36"/>
         <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>File Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файловый менеджер</translation>
     </message>
     <message>
         <location line="+6"/>
         <location filename="../src/ui-settings-dialog.h" line="-6"/>
         <source>Show filenames</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показывать имена файлов</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show file size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показывать размер файлов</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show file type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показывать типы файлов</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show date of last modification</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показывать дату последнего изменения</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show hidden files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показывать скрытые файлы</translation>
     </message>
     <message>
         <location line="+7"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Чередующиеся цвета строк</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -945,7 +945,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
         <location line="+17"/>
         <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пароль:</translation>
     </message>
 </context>
 <context>
@@ -1037,7 +1037,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/workspace-model.cc" line="+42"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Идентификатор</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1052,7 +1052,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location line="+0"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Значение</translation>
     </message>
 </context>
 <context>
@@ -1060,7 +1060,7 @@ which is the same as the current file name.  Use Save to overwrite.  (Could allo
     <message>
         <location filename="../src/workspace-view.cc" line="+39"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Область переменных</translation>
     </message>
 </context>
 </TS>

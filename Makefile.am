@@ -38,8 +38,7 @@ EXTRA_DIST = \
   NEWS \
   README \
   bootstrap \
-  build-aux/bootstrap_gnulib \
-  build-aux/bootstrap_gnulib.conf \
+  bootstrap.conf \
   build-aux/mk-opts.pl \
   build-aux/mkinstalldirs \
   build-aux/move-if-change \

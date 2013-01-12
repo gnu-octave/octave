@@ -26,7 +26,7 @@ foreach $DOCSTRING_file (@ARGV)
   
   do 
   {
-    chomp;
+    s/\s*$//;   # strip EOL character(s)
     $symbol = substr ($_,1);
     $docstring = extract_docstring ();
     if ($help_text{$symbol})
@@ -46,7 +46,7 @@ foreach $DOCSTRING_file (@ARGV)
 # Process .txi to .texi by expanding @DOCSTRING, @EXAMPLEFILE macros
 
 # Add warning header
-print '@c DO NOT EDIT!  Generated automatically by munge-texi.',"\n\n";
+print '@c DO NOT EDIT!  Generated automatically by munge-texi.pl.',"\n\n";
 
 TXI_LINE: while (<STDIN>)
 {

@@ -28,18 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMap>
 #include <QSettings>
 
-// constants for the widget's icons
-enum widget_icon_set
-  {
-    NO_ICON_SET = 0,
-    GRAPHIC_ICON_SET,
-    LETTER_ICON_SET
-  };
-static const char* WIDGET_ICON_SET_PREFIX[] =
-    {":/actions/icons/logo.png",
-     ":/actions/icons/graphic_logo_",
-     ":/actions/icons/letter_logo_"};
-
 
 class resource_manager
 {
@@ -119,6 +107,7 @@ private:
   void do_update_network_settings (void);
 
   bool do_is_first_run (void);
+
 };
 
 #endif // RESOURCEMANAGER_H

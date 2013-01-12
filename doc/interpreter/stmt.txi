@@ -662,10 +662,11 @@ known.
 @section The break Statement
 @cindex @code{break} statement
 
-The @code{break} statement jumps out of the innermost @code{for} or
-@code{while} loop that encloses it.  The @code{break} statement may only
-be used within the body of a loop.  The following example finds the
-smallest divisor of a given integer, and also identifies prime numbers:
+The @code{break} statement jumps out of the innermost @code{while},
+@code{do-until}, or @code{for} loop that encloses it.  The @code{break}
+statement may only be used within the body of a loop.  The following
+example finds the smallest divisor of a given integer, and also
+identifies prime numbers:
 
 @example
 @group
@@ -718,9 +719,10 @@ endwhile
 @cindex @code{continue} statement
 
 The @code{continue} statement, like @code{break}, is used only inside
-@code{for} or @code{while} loops.  It skips over the rest of the loop
-body, causing the next cycle around the loop to begin immediately.
-Contrast this with @code{break}, which jumps out of the loop altogether.
+@code{while}, @code{do-until}, or @code{for} loops.  It skips over the
+rest of the loop body, causing the next cycle around the loop to begin
+immediately.  Contrast this with @code{break}, which jumps out of the
+loop altogether.
 Here is an example:
 
 @example

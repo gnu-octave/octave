@@ -1811,6 +1811,34 @@ AC_SUBST(ENABLE_DYNAMIC_LINKING)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
 
+
+if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
+  CROSS_TOOL_PREFIX="$ac_tool_prefix"
+  MKOCTFILE_CC='$(shell echo $(CC) | sed "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_CXX='$(shell echo $(CXX) | sed "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_DL_LD='$(shell echo $(DL_LD) | sed "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_F77='$(shell echo $(F77) | sed "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_LD_CXX='$(shell echo $(LD_CXX) | sed "s,$(CROSS_TOOL_PREFIX),,")'
+else
+  MKOCTFILE_CC="$CC"
+  MKOCTFILE_CXX="$CXX"
+  MKOCTFILE_DL_LD="$DL_LD"
+  MKOCTFILE_F77="$F77"
+  MKOCTFILE_LD_CXX="$LD_CXX"
+fi
+AC_MSG_NOTICE([defining CROSS_TOOL_PREFIX to be $CROSS_TOOL_PREFIX])
+AC_MSG_NOTICE([defining MKOCTFILE_CC to be $MKOCTFILE_CC])
+AC_MSG_NOTICE([defining MKOCTFILE_CXX to be $MKOCTFILE_CXX])
+AC_MSG_NOTICE([defining MKOCTFILE_DL_LD to be $MKOCTFILE_DL_LD])
+AC_MSG_NOTICE([defining MKOCTFILE_F77 to be $MKOCTFILE_F77])
+AC_MSG_NOTICE([defining MKOCTFILE_LD_CXX to be $MKOCTFILE_LD_CXX])
+AC_SUBST(CROSS_TOOL_PREFIX)
+AC_SUBST(MKOCTFILE_CC)
+AC_SUBST(MKOCTFILE_CXX)
+AC_SUBST(MKOCTFILE_DL_LD)
+AC_SUBST(MKOCTFILE_F77)
+AC_SUBST(MKOCTFILE_LD_CXX)
+
 ### Check for existence of various libraries
 
 ## OS-specific test for dirent, opendir.

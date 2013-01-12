@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_liboctave_cutils_h)
 #define octave_liboctave_cutils_h 1
 
+#include <sys/types.h>
+
 #ifdef HAVE_LOADLIBRARY_API
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -31,8 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <sys/types.h>
 
 OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,

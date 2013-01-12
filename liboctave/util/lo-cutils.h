@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
+#include <sys/types.h>
+
 OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,
               int (*cmp) (const void *, const void *));

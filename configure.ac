@@ -1106,7 +1106,7 @@ OCTAVE_CHECK_LIBRARY(amd, AMD,
 
 OCTAVE_CHECK_LIBRARY(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/camd.h ufsparse/camd.h amd/camd.h camd.h],
+  [suitesparse/camd.h ufsparse/camd.h camd/camd.h camd.h],
   [camd_postorder],
   [], [don't use CAMD library, disable some sparse matrix functionality])
 
@@ -1114,7 +1114,7 @@ OCTAVE_CHECK_LIBRARY(camd, CAMD,
 
 OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/colamd.h ufsparse/colamd.h amd/colamd.h colamd.h],
+  [suitesparse/colamd.h ufsparse/colamd.h colamd/colamd.h colamd.h],
   [colamd],
   [], [don't use COLAMD library, disable some sparse matrix functionality])
 
@@ -1122,7 +1122,7 @@ OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
 
 OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/ccolamd.h ufsparse/ccolamd.h amd/ccolamd.h ccolamd.h],
+  [suitesparse/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h ccolamd.h],
   [ccolamd],
   [], [don't use CCOLAMD library, disable some sparse matrix functionality])
 
@@ -1142,7 +1142,7 @@ LIBS="$save_LIBS"
 
 OCTAVE_CHECK_LIBRARY(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/cs.h ufsparse/cs.h amd/cs.h cs.h],
+  [suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h],
   [cs_di_sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 

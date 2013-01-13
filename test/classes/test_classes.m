@@ -199,3 +199,20 @@
 %!  assert(isa(grk,'Blork'))
 %!  assert(isa(grk,'Snork'))
 %!  assert(isa(grk,'Spork'))
+
+%%  Basic classdef tests
+%!shared p, i, amt
+%! p = foo_payment (4, 4*12, 50e3);
+%! i = p.rate / (12 * 100);
+%! amt = (p.principle * i) / (1 - (1 + i)^(-p.term));
+%!assert (class (p), "foo_payment");
+%!assert (p.term, 48);
+%!assert (p.rate, 4.0);
+%!assert (p.principle, 50e3);
+%!assert (p.amount, amt, eps ())
+%!xtest
+%! assert (amount (p), amt, eps ())
+%!xtest
+%! xassert (properties (p), {'rate'; 'term'; 'principle'})
+%!xtest
+%! xassert (methods (p), {'amount'; 'foo_payment'})

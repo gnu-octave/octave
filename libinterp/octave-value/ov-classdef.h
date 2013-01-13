@@ -165,6 +165,8 @@ public:
         destroy ();
     }
 
+  virtual dim_vector dims (void) const { return dim_vector (); }
+
 protected:
   /* reference count */
   octave_refcount<octave_idx_type> refcount;
@@ -227,6 +229,8 @@ public:
 
   cdef_object empty_clone (void) const
     { return cdef_object (rep->empty_clone ()); }
+
+  dim_vector dims (void) const { return rep->dims (); }
 
   cdef_object make_array (void) const
     { return cdef_object (rep->make_array ()); }
@@ -355,6 +359,8 @@ public:
   cdef_object_rep* clone (void) const
     { return new cdef_object_array (*this); }
 
+  dim_vector dims (void) const { return array.dims (); }
+
   bool is_valid (void) const { return true; }
 
   bool is_array (void) const { return true; }
@@ -390,6 +396,8 @@ public:
   cdef_object_scalar (void) : cdef_object_base () { }
 
   ~cdef_object_scalar (void) { }
+
+  dim_vector dims (void) const { return dim_vector (1, 1); }
 
   void put (const std::string& pname, const octave_value& val)
     { map.assign (pname, val); }
@@ -1234,7 +1242,11 @@ public:
 
   void print_raw(std::ostream& os, bool /* pr_as_read_syntax */ = false) const
     {
-      os << object.class_name () << " object";
+      if (object.is_array ())
+        os << "array (" << object.dims ().str () << ") of "
+          << object.class_name () << " objects";
+      else
+        os << object.class_name () << " object";
     }
 
   octave_value_list subsref (const std::string& type,
@@ -1258,7 +1270,7 @@ public:
 
   string_vector map_keys (void) const { return object.map_keys (); }
 
-  dim_vector dims (void) const { return dim_vector (1, 1); }
+  dim_vector dims (void) const { return object.dims (); }
 
 private:
   cdef_object object;

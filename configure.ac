@@ -812,6 +812,26 @@ OCTAVE_CHECK_LIB(fftw3f, FFTW3F,
   [FFTW3F library not found.  The slower FFTPACK library will be used instead.],
   [fftw3.h], [fftwf_plan_dft_1d])
 
+## Check for the multithreaded FFTW library.
+## Fallback to singlethreaded if not found or disabled
+build_fftw_threads=true
+AC_ARG_ENABLE([fftw-threads],
+  [AS_HELP_STRING([--disable-fftw-threads],
+    [disable Multi-threaded FFTW])],
+  [if test "$enableval" = no; then
+     build_fftw_threads=false
+   fi],
+  [])
+
+if test $build_fftw_threads = true; then
+  OCTAVE_CHECK_LIB(fftw3_threads, FFTW3_THREADS,
+    [FFTW3_THREADS library not found.  The single-threaded library is used instead.],
+    [fftw3.h], [fftw_plan_with_nthreads])
+  OCTAVE_CHECK_LIB(fftw3f_threads, FFTW3F_THREADS,
+    [FFTW3F_THREADS library not found.  The single-threaded library is used instead.],
+    [fftw3.h], [fftwf_plan_with_nthreads])
+fi
+
 AM_CONDITIONAL([AMCOND_HAVE_FFTW],
   [test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"])
 
@@ -2887,9 +2907,11 @@ Octave is now configured for $canonical_host_type
   FFTW3 CPPFLAGS:              $FFTW3_CPPFLAGS
   FFTW3 LDFLAGS:               $FFTW3_LDFLAGS
   FFTW3 libraries:             $FFTW3_LIBS
+  FFTW3_THREADS libraries:     $FFTW3_THREADS_LIBS
   FFTW3F CPPFLAGS:             $FFTW3F_CPPFLAGS
   FFTW3F LDFLAGS:              $FFTW3F_LDFLAGS
   FFTW3F libraries:            $FFTW3F_LIBS
+  FFTW3F_THREADS libraries:    $FFTW3F_THREADS_LIBS
   fontconfig CFLAGS:           $FONTCONFIG_CFLAGS
   fontconfig libraries:        $FONTCONFIG_LIBS
   FreeType2 CFLAGS:            $FT2_CFLAGS

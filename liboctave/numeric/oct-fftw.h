@@ -98,6 +98,24 @@ public:
     return instance_ok () ? instance->do_method (_meth) : dummy;
   }
 
+#if defined (HAVE_FFTW3F_THREADS)
+  static void threads (int _nthreads)
+  {
+    if (instance_ok () && _nthreads != threads ())
+      {
+        instance->nthreads = _nthreads;
+        fftw_plan_with_nthreads (_nthreads);
+        //Clear the current plans
+        instance->rplan = instance->plan[0] = instance->plan[1] = 0;
+      }
+  }
+
+  static int threads ()
+  {
+    return instance_ok () ? instance->nthreads : 0;
+  }
+#endif
+
 private:
 
   // No copying!
@@ -169,6 +187,11 @@ private:
   dim_vector rn;
 
   bool rsimd_align;
+
+#if defined (HAVE_FFTW3_THREADS)
+  //number of threads when compiled with Multi-threading support
+  int nthreads;
+#endif
 };
 
 class
@@ -234,6 +257,24 @@ public:
 
     return instance_ok () ? instance->do_method (_meth) : dummy;
   }
+
+#if defined (HAVE_FFTW3F_THREADS)
+  static void threads (int _nthreads)
+  {
+    if (instance_ok () && _nthreads != threads ())
+      {
+        instance->nthreads = _nthreads;
+        fftwf_plan_with_nthreads (_nthreads);
+        //Clear the current plans
+        instance->rplan = instance->plan[0] = instance->plan[1] = 0;
+      }
+  }
+
+  static int threads ()
+  {
+    return instance_ok () ? instance->nthreads : 0;
+  }
+#endif
 
 private:
 
@@ -306,6 +347,11 @@ private:
   dim_vector rn;
 
   bool rsimd_align;
+
+#if defined (HAVE_FFTW3F_THREADS)
+  //number of threads when compiled with Multi-threading support
+  int nthreads;
+#endif
 };
 
 class

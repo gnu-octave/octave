@@ -35,6 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "singleton-cleanup.h"
 
+#if defined (HAVE_FFTW3_THREADS)
+#include "nproc.h"
+#endif
+
 octave_fftw_planner *octave_fftw_planner::instance = 0;
 
 // Helper class to create and cache FFTW plans for both 1D and
@@ -64,6 +68,16 @@ octave_fftw_planner::octave_fftw_planner (void)
   simd_align[0] = simd_align[1] = false;
   inplace[0] = inplace[1] = false;
   n[0] = n[1] = dim_vector ();
+
+#if defined (HAVE_FFTW3_THREADS)
+  int init_ret = fftw_init_threads ();
+  if (!init_ret)
+    (*current_liboctave_error_handler) ("Error initializing FFTW threads");
+  //Use number of processors available to the current process
+  //This can be later changed with fftw ("threads", nthreads)
+  nthreads = num_processors (NPROC_CURRENT);
+  fftw_plan_with_nthreads (nthreads);
+#endif
 
   // If we have a system wide wisdom file, import it.
   fftw_import_system_wisdom ();
@@ -394,6 +408,16 @@ octave_float_fftw_planner::octave_float_fftw_planner (void)
   simd_align[0] = simd_align[1] = false;
   inplace[0] = inplace[1] = false;
   n[0] = n[1] = dim_vector ();
+
+#if defined (HAVE_FFTW3F_THREADS)
+  int init_ret = fftwf_init_threads ();
+  if (!init_ret)
+    (*current_liboctave_error_handler) ("Error initializing FFTW3F threads");
+  //Use number of processors available to the current process
+  //This can be later changed with fftw ("threads", nthreads)
+  nthreads = num_processors (NPROC_CURRENT);
+  fftwf_plan_with_nthreads (nthreads);
+#endif
 
   // If we have a system wide wisdom file, import it.
   fftwf_import_system_wisdom ();

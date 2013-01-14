@@ -79,6 +79,9 @@ fi
 : ${XTRA_CFLAGS=%OCTAVE_CONF_XTRA_CFLAGS%}
 : ${XTRA_CXXFLAGS=%OCTAVE_CONF_XTRA_CXXFLAGS%}
 
+: ${AR=%OCTAVE_CONF_MKOCTFILE_AR%}
+: ${RANLIB=%OCTAVE_CONF_MKOCTFILE_RANLIB%}
+
 : ${DEPEND_FLAGS=%OCTAVE_CONF_DEPEND_FLAGS%}
 : ${DEPEND_EXTRA_SED_PATTERN=%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%}
 
@@ -233,29 +236,30 @@ Options:
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
 
-                            ALL_CFLAGS                FFTW3F_LIBS
-                            ALL_CXXFLAGS              FLIBS
-                            ALL_FFLAGS                FPICFLAG
-                            ALL_LDFLAGS               INCFLAGS
+                            ALL_CFLAGS                FFTW3F_LDFLAGS
+                            ALL_CXXFLAGS              FFTW3F_LIBS
+                            ALL_FFLAGS                FLIBS
+                            ALL_LDFLAGS               FPICFLAG
+                            AR                        INCFLAGS
                             BLAS_LIBS                 LAPACK_LIBS
                             CC                        LDFLAGS
                             CFLAGS                    LD_CXX
                             CPICFLAG                  LD_STATIC_FLAG
                             CPPFLAGS                  LFLAGS
-                            CXX                       LIBOCTAVE       
-                            CXXFLAGS                  LIBOCTINTERP    
-                            CXXPICFLAG                LIBS            
-                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS     
+                            CXX                       LIBOCTAVE
+                            CXXFLAGS                  LIBOCTINTERP
+                            CXXPICFLAG                LIBS
+                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
                             DEPEND_FLAGS              OCTAVE_LINK_DEPS
-                            DL_LD                     OCT_LINK_DEPS   
-                            DL_LDFLAGS                RDYNAMIC_FLAG   
-                            EXEEXT                    READLINE_LIBS   
-                            F77                       SED             
-                            F77_INTEGER_8_FLAG        XTRA_CFLAGS     
-                            FFLAGS                    XTRA_CXXFLAGS   
-                            FFTW3_LDFLAGS             
+                            DL_LD                     OCT_LINK_DEPS
+                            DL_LDFLAGS                RANLIB
+                            EXEEXT                    RDYNAMIC_FLAG
+                            F77                       READLINE_LIBS
+                            F77_INTEGER_8_FLAG        SED
+                            FFLAGS                    XTRA_CFLAGS
+                            FFTW3_LDFLAGS             XTRA_CXXFLAGS
                             FFTW3_LIBS
-                            FFTW3F_LDFLAGS
+                          
 
   -v, --verbose           Echo commands as they are executed.
 

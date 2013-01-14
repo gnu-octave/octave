@@ -177,6 +177,13 @@ dispatch_kron (const octave_value& a, const octave_value& b)
   octave_value retval;
   if (a.is_perm_matrix () && b.is_perm_matrix ())
     retval = do_kron<PermMatrix, PermMatrix> (a, b);
+  else if (a.is_sparse_type () || b.is_sparse_type ())
+    {
+      if (a.is_complex_type () || b.is_complex_type ())
+        retval = do_kron<SparseComplexMatrix, SparseComplexMatrix> (a, b);
+      else
+        retval = do_kron<SparseMatrix, SparseMatrix> (a, b);
+    }
   else if (a.is_diag_matrix ())
     {
       if (b.is_diag_matrix () && a.rows () == a.columns ()
@@ -213,13 +220,6 @@ dispatch_kron (const octave_value& a, const octave_value& b)
           else
             retval = do_kron<DiagMatrix, Matrix> (a, b);
         }
-    }
-  else if (a.is_sparse_type () || b.is_sparse_type ())
-    {
-      if (a.is_complex_type () || b.is_complex_type ())
-        retval = do_kron<SparseComplexMatrix, SparseComplexMatrix> (a, b);
-      else
-        retval = do_kron<SparseMatrix, SparseMatrix> (a, b);
     }
   else if (a.is_single_type () || b.is_single_type ())
     {

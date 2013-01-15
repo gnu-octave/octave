@@ -4,7 +4,6 @@ classes_FCN_FILES = \
   classes/@Blork/display.m \
   classes/@Blork/get.m \
   classes/@Blork/set.m \
-  classes/foo_payment.m \
   classes/@Cork/Cork.m \
   classes/@Cork/click.m \
   classes/@Cork/display.m \

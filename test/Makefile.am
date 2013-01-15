@@ -52,6 +52,7 @@ FCN_FILES = \
 
 include bug-35448/module.mk
 include bug-36025/module.mk
+include classdef/module.mk
 include classes/module.mk
 include class-concat/module.mk
 include ctor-vs-method/module.mk

@@ -853,6 +853,8 @@ public:
       all_classes.erase (klass.get_name ());
     }
 
+  octave_function* function_value (bool = false) { return this; }
+
   octave_value_list
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,
@@ -871,8 +873,18 @@ public:
     }
 
   octave_value_list
-  do_multi_index_op (int /* nargout */, const octave_value_list& /* idx */)
-    { return to_ov (klass); }
+  do_multi_index_op (int nargout, const octave_value_list& idx)
+    {
+      // Emulate constructor
+
+      std::list<octave_value_list> l (1, idx);
+      std::string type ("(");
+
+      return subsref (type, l, nargout);
+    }
+
+  bool is_postfix_index_handled (char type) const
+    { return (type == '(' || type == '.'); }
 
 private:
   cdef_class klass;

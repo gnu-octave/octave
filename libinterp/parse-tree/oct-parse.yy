@@ -3169,7 +3169,8 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
   int l = expr->line ();
   int c = expr->column ();
 
-  expr->mark_postfix_indexed ();
+  if (! expr->is_postfix_indexed ()) 
+    expr->set_postfix_index (type);
 
   if (expr->is_index_expression ())
     {
@@ -3194,6 +3195,9 @@ make_indirect_ref (tree_expression *expr, const std::string& elt)
 
   int l = expr->line ();
   int c = expr->column ();
+
+  if (! expr->is_postfix_indexed ()) 
+    expr->set_postfix_index ('.');
 
   if (expr->is_index_expression ())
     {
@@ -3220,6 +3224,9 @@ make_indirect_ref (tree_expression *expr, tree_expression *elt)
 
   int l = expr->line ();
   int c = expr->column ();
+
+  if (! expr->is_postfix_indexed ()) 
+    expr->set_postfix_index ('.');
 
   if (expr->is_index_expression ())
     {

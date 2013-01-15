@@ -152,6 +152,9 @@ public:
 
   virtual void accept (tree_walker&) { }
 
+  virtual bool is_postfix_index_handled (char type) const
+    { return (type == '(' || type == '{'); }
+
 protected:
 
   octave_function (const std::string& nm,

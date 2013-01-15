@@ -75,13 +75,19 @@ tree_identifier::rvalue (int nargout)
       //
       // If this identifier refers to a function, we need to know
       // whether it is indexed so that we can do the same thing
-      // for 'f' and 'f()'.  If the index is present, return the
-      // function object and let tree_index_expression::rvalue
-      // handle indexing.  Otherwise, arrange to call the function
-      // here, so that we don't return the function definition as
-      // a value.
+      // for 'f' and 'f()'.  If the index is present and the function
+      // object declares it can handle it, return the function object
+      // and let tree_index_expression::rvalue handle indexing.
+      // Otherwise, arrange to call the function here, so that we don't
+      // return the function definition as a value.
 
-      if (val.is_function () && ! is_postfix_indexed ())
+      octave_function *fcn = 0;
+
+      if (val.is_function ())
+        fcn = val.function_value (true);
+
+      if (fcn && ! (is_postfix_indexed ()
+                    && fcn->is_postfix_index_handled (postfix_index ())))
         {
           octave_value_list tmp_args;
 

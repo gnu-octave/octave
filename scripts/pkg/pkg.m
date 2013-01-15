@@ -1354,16 +1354,16 @@ function configure_make (desc, packdir, verbose)
     if (exist (fullfile (src, "configure"), "file"))
       flags = "";
       if (isempty (getenv ("CC")))
-        flags = cstrcat (flags, " CC=\"", octave_config_info ("-p", "CC"), "\"");
+        flags = cstrcat (flags, " CC=\"", makeinfo ("-p", "CC"), "\"");
       endif
       if (isempty (getenv ("CXX")))
-        flags = cstrcat (flags, " CXX=\"", octave_config_info ("-p", "CXX"), "\"");
+        flags = cstrcat (flags, " CXX=\"", makeinfo ("-p", "CXX"), "\"");
       endif
       if (isempty (getenv ("AR")))
-        flags = cstrcat (flags, " AR=\"", octave_config_info ("-p", "AR"), "\"");
+        flags = cstrcat (flags, " AR=\"", makeinfo ("-p", "AR"), "\"");
       endif
       if (isempty (getenv ("RANLIB")))
-        flags = cstrcat (flags, " RANLIB=\"", octave_config_info ("-p", "RANLIB"), "\"");
+        flags = cstrcat (flags, " RANLIB=\"", makeinfo ("-p", "RANLIB"), "\"");
       endif
       [status, output] = shell (cstrcat ("cd '", src, "'; ", scenv,
                                          "./configure --prefix=\"",

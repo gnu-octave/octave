@@ -1130,8 +1130,13 @@ cdef_object_scalar::subsref (const std::string& type,
 		{
 		  if (prop.check_get_access ())
 		    {
-		      refcount++;
-		      retval(0) = prop.get_value (cdef_object (this));
+                      if (prop.is_constant ())
+                        retval(0) = prop.get_value ();
+                      else
+                        {
+                          refcount++;
+                          retval(0) = prop.get_value (cdef_object (this));
+                        }
 
 		      skip = 1;
 		    }
@@ -1942,6 +1947,8 @@ cdef_class::cdef_class_rep::subsref_meta (const std::string& type,
                                           const std::list<octave_value_list>& idx,
                                           int nargout)
 {
+  size_t skip = 1;
+
   octave_value_list retval;
 
   switch (type[0])
@@ -1951,16 +1958,79 @@ cdef_class::cdef_class_rep::subsref_meta (const std::string& type,
       gnulib::printf ("constructor\n");
       retval(0) = construct (idx.front ());
       break;
+
     case '.':
       // Static method, constant (or property?)
-      gnulib::printf ("static method\n");
+      gnulib::printf ("static method/property\n");
+      if (idx.front ().length () == 1)
+        {
+          std::string nm = idx.front ()(0).string_value ();
+
+          if (! error_state)
+            {
+              cdef_method meth = find_method (nm);
+
+              if (meth.ok ())
+                {
+                  if (meth.is_static ())
+                    {
+                      if (meth.check_access ())
+                        {
+                          octave_value_list args;
+
+                          if (type.length () > 1 && idx.size () > 1
+                              && type[1] == '(')
+                            {
+                              args = *(++(idx.begin ()));
+                              skip++;
+                            }
+
+                          retval = meth.execute (args, (type.length () > skip
+                                                        ? 1 : nargout));
+                        }
+                      else
+                        gripe_method_access ("meta.class", meth);
+                    }
+                  else
+                    ::error ("method `%s' is not static", nm.c_str ());
+                }
+              else
+                {
+                  cdef_property prop = find_property (nm);
+
+                  if (prop.ok ())
+                    {
+                      if (prop.is_constant ())
+                        {
+                          if (prop.check_get_access ())
+                            retval(0) = prop.get_value ();
+                          else
+                            gripe_property_access ("meta.class", prop, false);
+                        }
+                      else
+                        ::error ("property `%s' is not constant",
+                                 nm.c_str ());
+                    }
+                  else
+                    ::error ("no such method or property `%s'", nm.c_str ());
+                }
+            }
+          else
+            ::error ("invalid meta.class indexing, expected a method or property name");
+        }
+      else
+        ::error ("invalid meta.class indexing");
+      break;
+
+    default:
+      ::error ("invalid meta.class indexing");
       break;
     }
 
   if (! error_state)
     {
-      if (type.length () > 1 && idx.size () > 1 && ! retval.empty ())
-	retval = retval(0).next_subsref (nargout, type, idx);
+      if (type.length () > skip && idx.size () > skip && ! retval.empty ())
+	retval = retval(0).next_subsref (nargout, type, idx, skip);
     }
 
   return retval;

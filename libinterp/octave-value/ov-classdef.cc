@@ -2099,23 +2099,28 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
 
   if (ctor.ok ())
     {
-      octave_value_list ctor_args (args);
-      octave_value_list ctor_retval;
-
-      ctor_args.prepend (to_ov (obj));
-      ctor_retval = ctor.execute (ctor_args, 1);
-
-      if (! error_state)
+      if (ctor.check_access ())
         {
-          if (ctor_retval.length () == 1)
-            obj = to_cdef (ctor_retval(0));
-          else
+          octave_value_list ctor_args (args);
+          octave_value_list ctor_retval;
+
+          ctor_args.prepend (to_ov (obj));
+          ctor_retval = ctor.execute (ctor_args, 1);
+
+          if (! error_state)
             {
-              ::error ("%s: invalid number of output arguments for classdef constructor",
-                       ctor_name.c_str ());
-              return;
+              if (ctor_retval.length () == 1)
+                obj = to_cdef (ctor_retval(0));
+              else
+                {
+                  ::error ("%s: invalid number of output arguments for classdef constructor",
+                           ctor_name.c_str ());
+                  return;
+                }
             }
         }
+      else
+        gripe_method_access ("constructor", ctor);
     }
 
   obj.mark_as_constructed (wrap ());

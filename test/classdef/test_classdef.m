@@ -33,11 +33,15 @@
 %%  of the classdef OOP facilities.  There are a number of classes, mostly
 %%  kind of the same, that create a hierarchy.
 
-%%  Basic classdef tests
-%!shared p, i, amt
+%%  Basic classdef tests for value class
+%!shared p, q, i, amt
+%! q = foo_payment ();
 %! p = foo_payment (4, 4*12, 50e3);
 %! i = p.rate / (12 * 100);
 %! amt = (p.principle * i) / (1 - (1 + i)^(-p.term));
+%!assert (isempty (q.rate));
+%!assert (isempty (q.principle));
+%!assert (isempty (q.term));
 %!assert (class (p), "foo_payment");
 %!assert (p.term, 48);
 %!assert (p.rate, 4.0);
@@ -46,6 +50,8 @@
 %!xtest
 %! assert (amount (p), amt, eps ())
 %!xtest
-%! xassert (properties (p), {'rate'; 'term'; 'principle'})
+%! assert (properties (p), {'rate'; 'term'; 'principle'})
 %!xtest
-%! xassert (methods (p), {'amount'; 'foo_payment'})
+%! assert (methods (p), {'amount'; 'foo_payment'})
+%!assert (isempty (foo_payment().rate))
+%!error <property `rate' is not constant> foo_payment.rate

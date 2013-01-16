@@ -6,13 +6,11 @@ classdef foo_payment
   end
   methods
     function obj = foo_payment (r, t, p)
-      if (nargin == 0)
-        obj = struct ('rate', 0, 'term', 0, 'principle', 0);
-      elseif (nargin == 3)
+      if (nargin == 3)
         obj.rate = r;
         obj.term = t;
         obj.principle = p;
-      else
+      elseif (nargin ~= 0)
         error ('foo_payment:SyntaxError', ...
                'foo_payment: Invalid syntax')
       end

@@ -35,14 +35,14 @@
 
 %%  Basic classdef tests for value class
 %!shared p, q, i, amt
-%! q = foo_payment ();
-%! p = foo_payment (4, 4*12, 50e3);
+%! q = foo_value_class ();
+%! p = foo_value_class (4, 4*12, 50e3);
 %! i = p.rate / (12 * 100);
 %! amt = (p.principle * i) / (1 - (1 + i)^(-p.term));
 %!assert (isempty (q.rate));
 %!assert (isempty (q.principle));
 %!assert (isempty (q.term));
-%!assert (class (p), "foo_payment");
+%!assert (class (p), "foo_value_class");
 %!assert (p.term, 48);
 %!assert (p.rate, 4.0);
 %!assert (p.principle, 50e3);
@@ -52,6 +52,6 @@
 %!xtest
 %! assert (properties (p), {'rate'; 'term'; 'principle'})
 %!xtest
-%! assert (methods (p), {'amount'; 'foo_payment'})
-%!assert (isempty (foo_payment().rate))
-%!error <property `rate' is not constant> foo_payment.rate
+%! assert (methods (p), {'amount'; 'foo_value_class'})
+%!assert (isempty (foo_value_class().rate))
+%!error <property `rate' is not constant> foo_value_class.rate

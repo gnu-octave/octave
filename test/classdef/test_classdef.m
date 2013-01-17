@@ -55,3 +55,15 @@
 %! assert (methods (p), {'amount'; 'foo_value_class'})
 %!assert (isempty (foo_value_class().rate))
 %!error <property `rate' is not constant> foo_value_class.rate
+
+%%  Static method and Constant Property
+%!assert (foo_static_method_constant_property.radians_per_cycle, 2*pi);
+%!assert (foo_static_method_constant_property().radians_per_cycle, 2*pi);
+%!assert (foo_static_method_constant_property().pie, pi);
+%!error <property `frequency' is not constant> foo_static_method_constant_property.frequency
+%!error <method `cosine' is not static> foo_static_method_constant_property.cosine
+%!test
+%! obj = foo_static_method_constant_property;
+%! obj.frequency = 10;
+%! assert (obj.cosine (0.1), cos (2 * pi * 10 * 0.1), eps ())
+%! assert (obj.sine (0.1), sin (2 * pi * 10 * 0.1), eps ())

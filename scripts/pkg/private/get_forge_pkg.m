@@ -39,7 +39,7 @@ function [ver, url] = get_forge_pkg (name)
   name = tolower (name);
 
   ## Try to download package's index page.
-  [html, succ] = urlread (sprintf ("http://octave.sourceforge.net/%s/index.html", name));
+  [html, succ] = urlread (sprintf ("http://packages.octave.org/%s/index.html", name));
   if (succ)
     ## Remove blanks for simpler matching.
     html(isspace(html)) = [];
@@ -52,17 +52,17 @@ function [ver, url] = get_forge_pkg (name)
       ver = t{1}{1};
       if (nargout > 1)
         # Build download string.
-        urlbase = "http://downloads.sourceforge.net/octave/%s-%s.tar.gz?download";
-        url = sprintf (urlbase, name, ver);
-        ## Verify that the string exists on the page.
-        if (isempty (strfind (html, url)))
+        pkg_file = sprintf ("%s-%s.tar.gz", name, ver);
+        url = cstrcat ("http://packages.octave.org/download/", pkg_file);
+        ## Verify that the package string exists on the page.
+        if (isempty (strfind (html, pkg_file)))
           warning ("get_forge_pkg: download URL not verified");
         endif
       endif
     endif
   else
     ## Try get the list of all packages.
-    [html, succ] = urlread ("http://octave.sourceforge.net/packages.php");
+    [html, succ] = urlread ("http://packages.octave.org/packages.php");
     if (succ)
       t = regexp (html, "<div class=""package"" id=""(\\w+)"">", "tokens");
       t = horzcat (t{:});

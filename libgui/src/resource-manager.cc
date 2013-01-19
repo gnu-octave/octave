@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFile>
 #include <QDir>
 #include <QNetworkProxy>
+ #include <QLibraryInfo>
 
 #include "error.h"
 #include "file-ops.h"
@@ -52,11 +53,31 @@ resource_manager::~resource_manager (void)
   delete settings;
 }
 
+
 QString
-resource_manager::find_translator_file (const QString& language)
+resource_manager::get_gui_translation_dir (void)
 {
-  // TODO: Quick hack to be able to test language files.
-  return QString ("libgui/languages/%1.qm").arg (language);
+  // get environment variable for the locale dir (e.g. from run-octave)
+  std::string dldir = octave_env::getenv ("OCTAVE_LOCALE_DIR");
+  if (dldir.empty ())
+    dldir = Voct_locale_dir; // env-var empty, load the default location
+  return QString::fromStdString (dldir);
+}
+
+void
+resource_manager::config_translators (QTranslator *qt_tr,QTranslator *gui_tr)
+{
+  QSettings *settings = resource_manager::get_settings ();
+  // FIXME -- what should happen if settings is 0?
+  // get the locale from the settings
+  QString language = settings->value ("language","SYSTEM").toString ();
+  if (language == "SYSTEM")
+      language = QLocale::system().name();    // get system wide locale
+  // load the translator file for qt strings
+  qt_tr->load("qt_" + language,
+              QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  // load the translator file for gui strings
+  gui_tr->load (language, get_gui_translation_dir ());
 }
 
 bool

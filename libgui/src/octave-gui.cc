@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QtGui/QApplication>
 #include <QTranslator>
-#include <QSettings>
 
 #include <iostream>
 
@@ -95,21 +94,19 @@ octave_start_gui (int argc, char *argv[])
         }
       else
         {
-          QSettings *settings = resource_manager::get_settings ();
+          // install translators for the gui and qt text
+          QTranslator gui_translator, qt_translator;
+          resource_manager::config_translators (&gui_translator,&qt_translator);
+          application.installTranslator (&qt_translator);
+          application.installTranslator (&gui_translator);
 
-          // FIXME -- what should happen if settings is 0?
-
-          QString language = settings->value ("language").toString ();
-
-          QString translatorFile = resource_manager::find_translator_file (language);
-          QTranslator translator;
-          translator.load (translatorFile);
-          application.installTranslator (&translator);
-
+          // update network-settings
           resource_manager::update_network_settings ();
 
+          // create main window, read settings, and show window
           main_window w;
-          w.read_settings ();  // Get the widget settings after construction and before showing
+          w.read_settings ();  // get widget settings after construction
+                               // but before showing
           w.show ();
           w.focus_command_window ();
 

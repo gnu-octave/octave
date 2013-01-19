@@ -80,6 +80,7 @@ OCTAVE_SET_DEFAULT([localapifcnfiledir],
   '$(datadir)/octave/site/$(api_version)/m')
 OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
 OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
+OCTAVE_SET_DEFAULT([octlocaledir], '$(datadir)/octave/$(version)/locale')
 OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
 OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
 OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')

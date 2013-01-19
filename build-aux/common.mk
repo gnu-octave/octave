@@ -342,6 +342,9 @@ libdir = @libdir@
 # Where to install and expect extra files like NEWS and doc-cache.
 octetcdir = @octetcdir@
 
+# Where to install and expect the language files for the gui.
+octlocaledir = @octlocaledir@
+
 # Where to install and expect libraries like liboctave.a, liboctinterp.a,
 # and other architecture-dependent data.
 octlibdir = @octlibdir@
@@ -673,6 +676,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_OCTLIBDIR%|\"${octlibdir}\"|" \
+  -e "s|%OCTAVE_OCTLOCALEDIR%|\"${octlocaledir}\"|" \
   -e "s|%OCTAVE_STARTUPFILEDIR%|\"${startupfiledir}\"|" \
   -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \

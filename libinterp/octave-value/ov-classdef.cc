@@ -471,16 +471,12 @@ class_fevalStatic (const octave_value_list& args, int nargout)
 
 	      if (meth.ok ())
 		{
-		  if (meth.check_access ())
-		    {
-		      if (meth.is_static ())
-			retval = meth.execute (args.splice (0, 2), nargout);
-		      else
-			error ("fevalStatic: method `%s' is not static",
-			       meth_name.c_str ());
-		    }
-		  else
-		    gripe_method_access ("fevalStatic", meth);
+                    if (meth.is_static ())
+                      retval = meth.execute (args.splice (0, 2), nargout,
+                                             true, "fevalStatic");
+                    else
+                      error ("fevalStatic: method `%s' is not static",
+                             meth_name.c_str ());
 		}
 	      else
 		error ("fevalStatic: method not found: %s",
@@ -517,16 +513,11 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
 
 	      if (prop.ok ())
 		{
-		  if (prop.check_get_access ())
-		    {
-		      if (prop.is_constant ())
-			retval(0) = prop.get_value ();
-		      else
-			error ("getConstant: property `%s' is not constant",
-			       prop_name.c_str ());
-		    }
-		  else
-		    gripe_property_access ("getConstant", prop);
+                  if (prop.is_constant ())
+                    retval(0) = prop.get_value (true, "getConstant");
+                  else
+                    error ("getConstant: property `%s' is not constant",
+                           prop_name.c_str ());
 		}
 	      else
 		error ("getConstant: property not found: %s",
@@ -1004,12 +995,8 @@ public:
                           cdef_method meth = cls.find_method (meth_name, false);
 
                           if (meth.ok ())
-                            {
-                              if (meth.check_access ())
-                                retval = meth.execute (idx, nargout);
-                              else
-                                gripe_method_access (meth_name, meth);
-                            }
+                            retval = meth.execute (idx, nargout, true,
+                                                   meth_name);
                           else
                             ::error ("no method `%s' found in superclass `%s'",
                                      meth_name.c_str (), cls_name.c_str ());
@@ -1093,33 +1080,29 @@ cdef_object_scalar::subsref (const std::string& type,
 
 	  if (meth.ok ())
 	    {
-	      if (meth.check_access ())
-		{
-		  int _nargout = (type.length () > 2 ? 1 : nargout);
+              int _nargout = (type.length () > 2 ? 1 : nargout);
 
-		  octave_value_list args;
+              octave_value_list args;
 
-		  skip = 1;
+              skip = 1;
 
-		  if (type.length () > 1 && type[1] == '(')
-		    {
-		      std::list<octave_value_list>::const_iterator it = idx.begin ();
+              if (type.length () > 1 && type[1] == '(')
+                {
+                  std::list<octave_value_list>::const_iterator it = idx.begin ();
 
-		      args = *++it;
+                  args = *++it;
 
-		      skip++;
-		    }
+                  skip++;
+                }
 
-		  if (meth.is_static ())
-		    retval = meth.execute (args, _nargout);
-		  else
-		    {
-		      refcount++;
-		      retval = meth.execute (cdef_object (this), args, _nargout);
-		    }
-		}
-	      else
-		gripe_method_access ("subsref", meth);
+              if (meth.is_static ())
+                retval = meth.execute (args, _nargout, true, "subsref");
+              else
+                {
+                  refcount++;
+                  retval = meth.execute (cdef_object (this), args, _nargout,
+                                         true, "subsref");
+                }
 	    }
 
 	  if (skip == 0 && ! error_state)
@@ -1128,20 +1111,16 @@ cdef_object_scalar::subsref (const std::string& type,
 
 	      if (prop.ok ())
 		{
-		  if (prop.check_get_access ())
-		    {
-                      if (prop.is_constant ())
-                        retval(0) = prop.get_value ();
-                      else
-                        {
-                          refcount++;
-                          retval(0) = prop.get_value (cdef_object (this));
-                        }
+                  if (prop.is_constant ())
+                    retval(0) = prop.get_value (true, "subsref");
+                  else
+                    {
+                      refcount++;
+                      retval(0) = prop.get_value (cdef_object (this),
+                                                  true, "subsref");
+                    }
 
-		      skip = 1;
-		    }
-		  else
-		    gripe_property_access ("subsref", prop);
+                  skip = 1;
 		}
 	      else
 		error ("subsref: unknown method or property: %s", name.c_str ());
@@ -1179,19 +1158,14 @@ cdef_object_scalar::subsasgn (const std::string& type,
                 {
                   if (type.length () == 1)
                     {
-                      if (prop.check_set_access ())
-                        {
-                          refcount++;
+                      refcount++;
 
-                          cdef_object obj (this);
+                      cdef_object obj (this);
 
-                          prop.set_value (obj, rhs);
+                      prop.set_value (obj, rhs, true, "subsasgn");
 
-                          if (! error_state)
-                            retval = to_ov (obj);
-                        }
-                      else
-                        gripe_property_access ("subsasgn", prop, true);
+                      if (! error_state)
+                        retval = to_ov (obj);
                     }
                   else
                     {
@@ -1922,7 +1896,7 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
 
       obj.set_class (wrap ());
 
-      it->second.execute (obj, octave_value_list (), 0);
+      it->second.execute (obj, octave_value_list (), 0, false);
 
       obj.set_class (cls);
     }
@@ -1974,22 +1948,18 @@ cdef_class::cdef_class_rep::subsref_meta (const std::string& type,
                 {
                   if (meth.is_static ())
                     {
-                      if (meth.check_access ())
+                      octave_value_list args;
+
+                      if (type.length () > 1 && idx.size () > 1
+                          && type[1] == '(')
                         {
-                          octave_value_list args;
-
-                          if (type.length () > 1 && idx.size () > 1
-                              && type[1] == '(')
-                            {
-                              args = *(++(idx.begin ()));
-                              skip++;
-                            }
-
-                          retval = meth.execute (args, (type.length () > skip
-                                                        ? 1 : nargout));
+                          args = *(++(idx.begin ()));
+                          skip++;
                         }
-                      else
-                        gripe_method_access ("meta.class", meth);
+
+                      retval = meth.execute (args, (type.length () > skip
+                                                    ? 1 : nargout), true,
+                                             "meta.class");
                     }
                   else
                     ::error ("method `%s' is not static", nm.c_str ());
@@ -2001,12 +1971,7 @@ cdef_class::cdef_class_rep::subsref_meta (const std::string& type,
                   if (prop.ok ())
                     {
                       if (prop.is_constant ())
-                        {
-                          if (prop.check_get_access ())
-                            retval(0) = prop.get_value ();
-                          else
-                            gripe_property_access ("meta.class", prop, false);
-                        }
+                        retval(0) = prop.get_value (true, "meta.class");
                       else
                         ::error ("property `%s' is not constant",
                                  nm.c_str ());
@@ -2099,28 +2064,23 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
 
   if (ctor.ok ())
     {
-      if (ctor.check_access ())
+      octave_value_list ctor_args (args);
+      octave_value_list ctor_retval;
+
+      ctor_args.prepend (to_ov (obj));
+      ctor_retval = ctor.execute (ctor_args, 1, true, "constructor");
+
+      if (! error_state)
         {
-          octave_value_list ctor_args (args);
-          octave_value_list ctor_retval;
-
-          ctor_args.prepend (to_ov (obj));
-          ctor_retval = ctor.execute (ctor_args, 1);
-
-          if (! error_state)
+          if (ctor_retval.length () == 1)
+            obj = to_cdef (ctor_retval(0));
+          else
             {
-              if (ctor_retval.length () == 1)
-                obj = to_cdef (ctor_retval(0));
-              else
-                {
-                  ::error ("%s: invalid number of output arguments for classdef constructor",
-                           ctor_name.c_str ());
-                  return;
-                }
+              ::error ("%s: invalid number of output arguments for classdef constructor",
+                       ctor_name.c_str ());
+              return;
             }
         }
-      else
-        gripe_method_access ("constructor", ctor);
     }
 
   obj.mark_as_constructed (wrap ());
@@ -2446,9 +2406,18 @@ cdef_class::get_method_function (const std::string& /* nm */)
 }
 
 octave_value
-cdef_property::cdef_property_rep::get_value (const cdef_object& obj)
+cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
+                                             bool do_check_access,
+                                             const std::string& who)
 {
   octave_value retval;
+
+  if (do_check_access && ! check_get_access ())
+    {
+      gripe_property_access (who, wrap (), false);
+
+      return retval;
+    }
 
   if (! obj.is_constructed ())
     {
@@ -2483,6 +2452,20 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj)
   return retval;
 }
 
+octave_value
+cdef_property::cdef_property_rep::get_value (bool do_check_access,
+                                             const std::string& who)
+{
+  if (do_check_access && ! check_get_access ())
+    {
+      gripe_property_access (who, wrap (), false);
+
+      return octave_value ();
+    }
+
+  return get ("DefaultValue");
+}
+
 bool
 cdef_property::cdef_property_rep::is_recursive_set (const cdef_object& /* obj */) const
 {
@@ -2492,8 +2475,17 @@ cdef_property::cdef_property_rep::is_recursive_set (const cdef_object& /* obj */
 
 void
 cdef_property::cdef_property_rep::set_value (cdef_object& obj,
-                                             const octave_value& val)
+                                             const octave_value& val,
+                                             bool do_check_access,
+                                             const std::string& who)
 {
+  if (do_check_access && ! check_set_access ())
+    {
+      gripe_property_access (who, wrap (), true);
+
+      return;
+    }
+
   if (! obj.is_constructed ())
     {
       cdef_class cls (to_cdef (get ("DefiningClass")));
@@ -2535,7 +2527,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 }
 
 bool
-cdef_property::check_get_access (void) const
+cdef_property::cdef_property_rep::check_get_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
@@ -2546,7 +2538,7 @@ cdef_property::check_get_access (void) const
 }
 
 bool
-cdef_property::check_set_access (void) const
+cdef_property::cdef_property_rep::check_set_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
@@ -2564,9 +2556,17 @@ cdef_method::cdef_method_rep::check_method (void)
 
 octave_value_list
 cdef_method::cdef_method_rep::execute (const octave_value_list& args,
-				       int nargout)
+				       int nargout, bool do_check_access,
+                                       const std::string& who)
 {
   octave_value_list retval;
+
+  if (do_check_access && ! check_access ())
+    {
+      gripe_method_access (who, wrap ());
+
+      return retval;
+    }
 
   if (! get ("Abstract").bool_value ())
     {
@@ -2587,9 +2587,17 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
 octave_value_list
 cdef_method::cdef_method_rep::execute (const cdef_object& obj,
 				       const octave_value_list& args,
-				       int nargout)
+				       int nargout, bool do_check_access,
+                                       const std::string& who)
 {
   octave_value_list retval;
+
+  if (do_check_access && ! check_access ())
+    {
+      gripe_method_access (who, wrap ());
+
+      return retval;
+    }
 
   if (! get ("Abstract").bool_value ())
     {
@@ -2625,7 +2633,7 @@ cdef_method::cdef_method_rep::is_constructor (void) const
 }
 
 bool
-cdef_method::check_access (void) const
+cdef_method::cdef_method_rep::check_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 

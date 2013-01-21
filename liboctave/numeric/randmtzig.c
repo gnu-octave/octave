@@ -637,7 +637,7 @@ oct_rande (void)
       const int idx = (int)(ri & 0xFF);
       const double x = ri * we[idx];
       if (ri < ke[idx])
-        return x;               // 98.9% of the time we return here 1st try
+        return x;               /* 98.9% of the time we return here 1st try */
       else if (idx == 0)
         {
           /* As stated in Marsaglia and Tsang
@@ -804,7 +804,7 @@ oct_float_rande (void)
       const int idx = (int)(ri & 0xFF);
       const float x = ri * fwe[idx];
       if (ri < fke[idx])
-        return x;               // 98.9% of the time we return here 1st try
+        return x;               /* 98.9% of the time we return here 1st try */
       else if (idx == 0)
         {
           /* As stated in Marsaglia and Tsang

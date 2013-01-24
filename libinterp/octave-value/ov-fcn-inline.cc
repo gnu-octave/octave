@@ -760,12 +760,12 @@ If the second argument is an integer @var{n}, the arguments are\n\
             }
           else if (nargin == 2 && args(1).is_numeric_type ())
             {
-              if (! args(1).is_scalar_type ()) 
+              if (! args(1).is_scalar_type ())
                 {
                   error ("inline: N must be an integer");
                   return retval;
                 }
-              
+
               int n = args(1).int_value ();
 
               if (! error_state)
@@ -834,7 +834,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
 %!assert (feval (inline ("sqrt (x^2 + y^2)", "x", "y"), 3, 4), 5)
 %!assert (feval (inline ("exp (P1*x) + P2", 3), 3, 4, 5), exp(3*4) + 5)
 
-## Test input validation 
+## Test input validation
 %!error inline ()
 %!error <STR argument must be a string> inline (1)
 %!error <N must be an integer> inline ("2", ones (2,2))

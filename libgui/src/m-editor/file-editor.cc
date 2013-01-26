@@ -64,6 +64,18 @@ file_editor::~file_editor ()
   settings->sync ();
 }
 
+// set focus to editor and its current tab
+void
+file_editor::set_focus ()
+{
+  setFocus ();
+  activateWindow ();
+  raise ();
+  QWidget *fileEditorTab = _tab_widget->currentWidget ();
+  if (fileEditorTab)
+    emit fetab_set_focus (fileEditorTab);
+}
+
 QMenu *
 file_editor::debug_menu ()
 {
@@ -819,6 +831,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (uncomment_selected_text (const QWidget*)));
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
+  connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
+           f, SLOT (set_focus (const QWidget*)));
 
   _tab_widget->setCurrentWidget (f);
 }

@@ -259,6 +259,15 @@ file_editor_tab::update_lexer ()
   _edit_area->setLexer (lexer);
 }
 
+// slot for fetab_set_focus: sets the focus to the current edit area
+void
+file_editor_tab::set_focus (const QWidget* ID)
+{
+  if (ID != this)
+    return;
+  _edit_area->setFocus ();
+}
+
 void
 file_editor_tab::undo (const QWidget* ID)
 {

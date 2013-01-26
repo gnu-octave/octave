@@ -52,6 +52,7 @@ public slots:
   /** Simply transmit file name. */
   void file_name_query (const QWidget* ID);
 
+  void set_focus (const QWidget* ID);
   void undo (const QWidget* ID);
   void redo (const QWidget* ID);
   void copy (const QWidget* ID);

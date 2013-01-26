@@ -393,6 +393,7 @@ main_window::focus_workspace ()
   _workspace_view->raise ();
 }
 
+
 void
 main_window::focus_editor ()
 {
@@ -401,10 +402,8 @@ main_window::focus_editor ()
     {
       _file_editor->setVisible (true);
     }
-
-  _file_editor->setFocus ();
-  _file_editor->activateWindow ();
-  _file_editor->raise ();
+  // call own function of editor in order to set focus to the current editor tab
+  _file_editor->set_focus ();
 #endif
 }
 
@@ -419,6 +418,54 @@ main_window::focus_documentation ()
   _documentation_dock_widget->setFocus ();
   _documentation_dock_widget->activateWindow ();
   _documentation_dock_widget->raise ();
+}
+
+void
+main_window::handle_command_window_visible (bool visible)
+{
+  // if widget is changed to visible and is not floating
+  if (visible && !_terminal_dock_widget->isFloating ())
+    focus_command_window ();
+}
+
+void
+main_window::handle_command_history_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_history_dock_widget->isFloating ())
+    focus_command_history ();
+}
+
+void
+main_window::handle_current_directory_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_files_dock_widget->isFloating ())
+    focus_current_directory ();
+}
+
+void
+main_window::handle_workspace_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_workspace_view->isFloating ())
+    focus_workspace ();
+}
+
+void
+main_window::handle_editor_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_file_editor->isFloating ())
+    focus_editor ();
+}
+
+void
+main_window::handle_documentation_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_documentation_dock_widget->isFloating ())
+    focus_documentation ();
 }
 
 void
@@ -943,6 +990,18 @@ main_window::construct ()
            this,                        SLOT (focus_editor ()));
   connect (documentation_action,        SIGNAL (triggered ()),
            this,                        SLOT (focus_documentation ()));
+  connect (_terminal_dock_widget,       SIGNAL (visibilityChanged (bool)),
+           this,                        SLOT (handle_command_window_visible (bool)));
+  connect (_workspace_view,             SIGNAL (visibilityChanged (bool)),
+           this,                        SLOT (handle_workspace_visible (bool)));
+  connect (_history_dock_widget,        SIGNAL (visibilityChanged (bool)),
+           this,                        SLOT (handle_command_history_visible (bool)));
+  connect (_files_dock_widget,          SIGNAL (visibilityChanged (bool)),
+           this,                        SLOT (handle_current_directory_visible (bool)));
+  connect (_file_editor,                SIGNAL (visibilityChanged (bool)),
+           this,                        SLOT (handle_editor_visible (bool)));
+  connect (_documentation_dock_widget,  SIGNAL (visibilityChanged (bool)),
+           this,                        SLOT (handle_documentation_visible (bool)));
 
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));

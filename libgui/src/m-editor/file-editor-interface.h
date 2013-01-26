@@ -48,6 +48,7 @@ class file_editor_interface : public QDockWidget
 
   virtual void handle_entered_debug_mode () = 0;
   virtual void handle_quit_debug_mode () = 0;
+  virtual void set_focus () = 0;
 
 public slots:
   virtual void request_new_file () = 0;

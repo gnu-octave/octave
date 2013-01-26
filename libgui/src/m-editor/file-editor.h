@@ -54,6 +54,7 @@ class file_editor : public file_editor_interface
   QMenu *           debug_menu ();
   QToolBar *        toolbar ();
 
+  void set_focus ();
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
 
@@ -85,6 +86,7 @@ signals:
   void fetab_comment_selected_text (const QWidget* ID);
   void fetab_uncomment_selected_text (const QWidget* ID);
   void fetab_find (const QWidget* ID);
+  void fetab_set_focus (const QWidget* ID);
 
 public slots:
   void request_new_file ();

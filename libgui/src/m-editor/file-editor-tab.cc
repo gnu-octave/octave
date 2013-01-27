@@ -659,7 +659,7 @@ file_editor_tab::update_window_title (bool modified)
 {
   QString title ("");
   if (_file_name.isEmpty () || _file_name.at (_file_name.count () - 1) == '/')
-    title = UNNAMED_FILE;
+    title = tr("<unnamed>");
   else
     {
       if ( _long_title )
@@ -866,7 +866,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
           fileDialog->setDirectory (_file_name);
         }
     }
-  fileDialog->setNameFilter (SAVE_FILE_FILTER);
+  fileDialog->setNameFilter (tr("Octave Files (*.m);;All Files (*.*)"));
   fileDialog->setDefaultSuffix ("m");
   fileDialog->setAcceptMode (QFileDialog::AcceptSave);
   fileDialog->setViewMode (QFileDialog::Detail);
@@ -897,7 +897,8 @@ file_editor_tab::message_duplicate_file_name (const QString& saveFileName)
   // Create a NonModal message about error.
   QMessageBox* msgBox = new QMessageBox (
           QMessageBox::Critical, tr ("Octave Editor"),
-          tr ("File not saved!  You've selected a file name\n\n     %1\n\nwhich is the same as the current file name.  Use ""Save"" to overwrite.  (Could allow overwriting, with message, if that is what folks want.)").
+          tr ("File not saved! The selected file name\n%1\n"
+              "is the same as the current file name").
           arg (saveFileName),
           QMessageBox::Ok, 0);
   msgBox->setWindowModality (Qt::NonModal);

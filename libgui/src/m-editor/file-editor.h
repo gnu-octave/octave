@@ -33,8 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
 
-const char UNNAMED_FILE[]     = "<unnamed>";
-const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";
 enum editor_markers
   {
     bookmark,

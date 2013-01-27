@@ -110,8 +110,8 @@ file_editor::request_new_file ()
   file_editor_tab *fileEditorTab = new file_editor_tab (ced);
   if (fileEditorTab)
     {
-      add_file_editor_tab (fileEditorTab, UNNAMED_FILE);
-      fileEditorTab->new_file ();
+      add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
+      fileEditorTab->new_file ();               // title is updated here
     }
 }
 
@@ -124,7 +124,7 @@ file_editor::request_open_file ()
 
   // Create a NonModal message.
   QFileDialog* fileDialog = new QFileDialog (this);
-  fileDialog->setNameFilter (SAVE_FILE_FILTER);
+  fileDialog->setNameFilter (tr("Octave Files (*.m);;All Files (*.*)"));
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
   fileDialog->setDirectory (ced);

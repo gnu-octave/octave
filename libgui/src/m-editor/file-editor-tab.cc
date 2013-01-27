@@ -661,11 +661,14 @@ file_editor_tab::update_window_title (bool modified)
   if (_file_name.isEmpty () || _file_name.at (_file_name.count () - 1) == '/')
     title = UNNAMED_FILE;
   else
-    title = _file_name;
-  if ( !_long_title )
     {
-      QFileInfo file(_file_name);
-      title = file.fileName();
+      if ( _long_title )
+        title = _file_name;
+      else
+        {
+          QFileInfo file(_file_name);
+          title = file.fileName();
+        }
     }
 
   if ( modified )

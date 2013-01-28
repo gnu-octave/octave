@@ -456,8 +456,10 @@ void
 main_window::handle_editor_visible (bool visible)
 {
   // if changed to visible and widget is not floating
+#ifdef HAVE_QSCINTILLA
   if (visible && !_file_editor->isFloating ())
     focus_editor ();
+#endif
 }
 
 void
@@ -998,8 +1000,10 @@ main_window::construct ()
            this,                        SLOT (handle_command_history_visible (bool)));
   connect (_files_dock_widget,          SIGNAL (visibilityChanged (bool)),
            this,                        SLOT (handle_current_directory_visible (bool)));
+#ifdef HAVE_QSCINTILLA
   connect (_file_editor,                SIGNAL (visibilityChanged (bool)),
            this,                        SLOT (handle_editor_visible (bool)));
+#endif
   connect (_documentation_dock_widget,  SIGNAL (visibilityChanged (bool)),
            this,                        SLOT (handle_documentation_visible (bool)));
 

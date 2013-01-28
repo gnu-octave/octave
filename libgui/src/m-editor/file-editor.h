@@ -113,7 +113,7 @@ public slots:
   void request_uncomment_selected_text ();
   void request_find ();
 
-  void handle_file_name_changed (const QString& fileName);
+  void handle_file_name_changed (const QString& fileName, const QString& toolTip);
   void handle_tab_close_request (int index);
   void handle_tab_remove_request ();
   void handle_add_filename_to_list (const QString& fileName);

@@ -423,7 +423,7 @@ file_editor::mru_menu_update ()
 }
 
 void
-file_editor::handle_file_name_changed (const QString& fileName)
+file_editor::handle_file_name_changed (const QString& fileName, const QString& toolTip)
 {
   QObject *fileEditorTab = sender();
   if (fileEditorTab)
@@ -433,6 +433,7 @@ file_editor::handle_file_name_changed (const QString& fileName)
           if (_tab_widget->widget (i) == fileEditorTab)
             {
               _tab_widget->setTabText (i, fileName);
+              _tab_widget->setTabToolTip (i, toolTip);
             }
         }
     }
@@ -766,8 +767,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
   _tab_widget->addTab (f, fn);
 
   // Signals from the file editor_tab
-  connect (f, SIGNAL (file_name_changed (const QString&)),
-           this, SLOT (handle_file_name_changed (const QString&)));
+  connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
+           this, SLOT (handle_file_name_changed (const QString&, const QString&)));
   connect (f, SIGNAL (editor_state_changed (bool, const QString&)),
            this, SLOT (handle_editor_state_changed (bool, const QString&)));
   connect (f, SIGNAL (tab_remove_request ()),

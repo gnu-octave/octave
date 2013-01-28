@@ -658,6 +658,7 @@ void
 file_editor_tab::update_window_title (bool modified)
 {
   QString title ("");
+  QString tooltip ("");
   if (_file_name.isEmpty () || _file_name.at (_file_name.count () - 1) == '/')
     title = tr("<unnamed>");
   else
@@ -668,15 +669,16 @@ file_editor_tab::update_window_title (bool modified)
         {
           QFileInfo file(_file_name);
           title = file.fileName();
+          tooltip = _file_name;
         }
     }
 
   if ( modified )
     {
-      emit file_name_changed (title.prepend("* "));
+      emit file_name_changed (title.prepend("* "), tooltip);
     }
   else
-    emit file_name_changed (title);
+    emit file_name_changed (title, tooltip);
 }
 
 void

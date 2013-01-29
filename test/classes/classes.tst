@@ -316,3 +316,29 @@
 %!xtest  s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 %!xtest  s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 
+%%%%%%%%%%%%%%%%%%%%%%%%
+%% Testing precedence %%
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% default: leftmost object wins
+%!shared A, B
+%!test A = Snork(rand(2));
+%!test B = CPrecedenceTester1();  % no call to inferiorto/superiorto
+%!assert (isequal (tattack (A, B), 'Snork'))
+%!assert (isequal (tattack (B, A), 'CPrecedenceTester1'))  % idem
+
+%!shared A, B
+%!test A = Snork(rand(2));
+%!test B = CPrecedenceTester2(1);  % CPrecedenceTester2 > Snork
+%!assert (isequal (tattack (A, B), 'CPrecedenceTester2'))
+%!assert (isequal (tattack (B, A), 'CPrecedenceTester2'))
+%% Trying to change to CPrecendenceTester < Snork
+%!error D = CPrecedenceTester2(2);
+
+%!shared A, B
+%!test A = Snork(rand(2));
+%!test B = CPrecedenceTester3(2);  % CPrecedenceTester3 < Snork
+%!assert (isequal (tattack (A, B), 'Snork'))
+%!assert (isequal (tattack (B, A), 'Snork'))
+%% Trying to change to CPrecendenceTester3 > Snork
+%!error D = CPrecedenceTester3(1);

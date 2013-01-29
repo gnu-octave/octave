@@ -1013,20 +1013,12 @@ bool
 symbol_table::set_class_relationship (const std::string& sup_class,
                                       const std::string& inf_class)
 {
-  class_precedence_table_const_iterator p
-    = class_precedence_table.find (inf_class);
+  if (is_superiorto (inf_class, sup_class))
+    return false;
 
-  if (p != class_precedence_table.end ())
-    {
-      const std::set<std::string>& inferior_classes = p->second;
-
-      std::set<std::string>::const_iterator q
-        = inferior_classes.find (sup_class);
-
-      if (q != inferior_classes.end ())
-        return false;
-    }
-
+  // If sup_class doesn't have an entry in the precedence table, 
+  // this will automatically create it, and associate to it a 
+  // singleton set {inf_class} of inferior classes.
   class_precedence_table[sup_class].insert (inf_class);
 
   return true;
@@ -1034,7 +1026,7 @@ symbol_table::set_class_relationship (const std::string& sup_class,
 
 // Has class A been marked as superior to class B?  Also returns
 // TRUE if B has been marked as inferior to A, since we only keep
-// one table, and convert inferiort information to a superiorto
+// one table, and convert inferiorto information to a superiorto
 // relationship.  Two calls are required to determine whether there
 // is no relationship between two classes:
 //
@@ -1048,20 +1040,14 @@ symbol_table::set_class_relationship (const std::string& sup_class,
 bool
 symbol_table::is_superiorto (const std::string& a, const std::string& b)
 {
-  bool retval = false;
+  class_precedence_table_const_iterator p = class_precedence_table.find (a);  
+  // If a has no entry in the precedence table, return false
+  if (p == class_precedence_table.end ())
+    return false;
 
-  class_precedence_table_const_iterator p = class_precedence_table.find (a);
-
-  if (p != class_precedence_table.end ())
-    {
-      const std::set<std::string>& inferior_classes = p->second;
-      std::set<std::string>::const_iterator q = inferior_classes.find (b);
-
-      if (q != inferior_classes.end ())
-        retval = true;
-    }
-
-  return retval;
+  const std::set<std::string>& inferior_classes = p->second;
+  std::set<std::string>::const_iterator q = inferior_classes.find (b);
+  return (q != inferior_classes.end ());
 }
 
 static std::string

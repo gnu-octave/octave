@@ -83,13 +83,11 @@ public:
 
   virtual bool is_array (void) const { return false; }
 
-  virtual bool is_class (void) const { return false; }
+  virtual bool is_value_object (void) const { return false; }
 
-  virtual bool is_property (void) const { return false; }
+  virtual bool is_handle_object (void) const { return false; }
 
-  virtual bool is_method (void) const { return false; }
-
-  virtual bool is_package (void) const { return false; }
+  virtual bool is_meta_object (void) const { return false; }
 
   virtual Array<cdef_object> array_value (void) const
     {
@@ -240,13 +238,11 @@ public:
 
   bool is_array (void) const { return rep->is_array (); }
 
-  bool is_class (void) const { return rep->is_class (); }
+  bool is_value_object (void) const { return rep->is_value_object (); }
 
-  bool is_property (void) const { return rep->is_property (); }
+  bool is_handle_object (void) const { return rep->is_handle_object (); }
 
-  bool is_method (void) const { return rep->is_method (); }
-
-  bool is_package (void) const { return rep->is_package (); }
+  bool is_meta_object (void) const { return rep->is_meta_object (); }
 
   Array<cdef_object> array_value (void) const { return rep->array_value (); }
 
@@ -473,6 +469,8 @@ public:
 
   bool is_valid (void) const { return true; }
 
+  bool is_handle_object (void) const { return true; }
+
 protected:
   // Restricted copying!
   handle_cdef_object (const handle_cdef_object& obj)
@@ -499,6 +497,8 @@ public:
 
   bool is_valid (void) const { return true; }
 
+  bool is_value_object (void) const { return true; }
+
 private:
   // Private copying!
   value_cdef_object (const value_cdef_object& obj)
@@ -509,16 +509,107 @@ private:
 };
 
 class
-cdef_class : public cdef_object
+cdef_meta_object_rep : public handle_cdef_object
+{
+public:
+  cdef_meta_object_rep (void)
+    : handle_cdef_object () { }
+
+  ~cdef_meta_object_rep (void) { }
+
+  cdef_object_rep* copy (void) const
+    { return new cdef_meta_object_rep (*this); }
+
+  bool is_meta_object (void) const { return true; }
+
+  virtual bool is_class (void) const { return false; }
+
+  virtual bool is_property (void) const { return false; }
+
+  virtual bool is_method (void) const { return false; }
+
+  virtual bool is_package (void) const { return false; }
+  
+  virtual octave_value_list
+  meta_subsref (const std::string& /* type */,
+                const std::list<octave_value_list>& /* idx */,
+                int /* nargout */)
+    {
+      ::error ("subsref: invalid meta object");
+      return octave_value_list ();
+    }
+
+  virtual void meta_release (void) { }
+
+  virtual bool meta_is_postfix_index_handled (char /* type */) const
+    { return false; }
+
+protected:
+  // Restricted copying!
+  cdef_meta_object_rep (const cdef_meta_object_rep& obj)
+    : handle_cdef_object (obj) { }
+
+private:
+  // No assignment!
+  cdef_meta_object_rep& operator = (const cdef_meta_object_rep&);
+};
+
+class
+cdef_meta_object : public cdef_object
+{
+public:
+  cdef_meta_object (void)
+    : cdef_object () { }
+
+  cdef_meta_object (const cdef_meta_object& obj)
+    : cdef_object (obj) { }
+
+  cdef_meta_object (cdef_meta_object_rep *r)
+    : cdef_object (r) { }
+
+  // Object consistency is checked in sub-classes.
+  cdef_meta_object (const cdef_object& obj)
+    : cdef_object (obj) { }
+
+  ~cdef_meta_object (void) { }
+
+  bool is_class (void) const { return get_rep ()->is_class (); }
+
+  bool is_property (void) const { return get_rep ()->is_property (); }
+
+  bool is_method (void) const { return get_rep ()->is_method (); }
+
+  bool is_package (void) const { return get_rep ()->is_package (); }
+
+  octave_value_list
+  meta_subsref (const std::string& type,
+                const std::list<octave_value_list>& idx, int nargout)
+    { return get_rep ()->meta_subsref (type, idx, nargout); }
+
+  void meta_release (void) { get_rep ()->meta_release (); }
+
+  bool meta_is_postfix_index_handled (char type) const
+    { return get_rep ()->meta_is_postfix_index_handled (type); }
+
+private:
+  cdef_meta_object_rep* get_rep (void)
+    { return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ()); }
+  
+  const cdef_meta_object_rep* get_rep (void) const
+    { return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ()); }
+};
+
+class
+cdef_class : public cdef_meta_object
 {
 private:
 
   class
-  cdef_class_rep : public handle_cdef_object
+  cdef_class_rep : public cdef_meta_object_rep
   {
   public:
     cdef_class_rep (void)
-	: handle_cdef_object (), member_count (0), handle_class (false),
+	: cdef_meta_object_rep (), member_count (0), handle_class (false),
           object_count (0), meta (false) { }
 
     cdef_class_rep (const std::list<cdef_class>& superclasses);
@@ -557,8 +648,13 @@ private:
     void delete_object (cdef_object obj);
 
     octave_value_list
-    subsref_meta (const std::string& type,
+    meta_subsref (const std::string& type,
                   const std::list<octave_value_list>& idx, int nargout);
+
+    void meta_release (void);
+
+    bool meta_is_postfix_index_handled (char type) const
+      { return (type == '(' || type == '.'); }
 
     octave_value construct (const octave_value_list& args);
 
@@ -651,7 +747,7 @@ private:
 
   private:
     cdef_class_rep (const cdef_class_rep& c)
-      : handle_cdef_object (c), directory (c.directory),
+      : cdef_meta_object_rep (c), directory (c.directory),
         method_map (c.method_map), property_map (c.property_map),
         member_count (c.member_count), handle_class (c.handle_class),
         implicit_ctor_list (c.implicit_ctor_list),
@@ -661,18 +757,18 @@ private:
 public:
   // Create and invalid class object
   cdef_class (void)
-      : cdef_object () { }
+      : cdef_meta_object () { }
 
   cdef_class (const std::string& nm,
               const std::list<cdef_class>& superclasses)
-      : cdef_object (new cdef_class_rep (superclasses))
+      : cdef_meta_object (new cdef_class_rep (superclasses))
     { get_rep ()->set_name (nm); }
 
   cdef_class (const cdef_class& cls)
-      : cdef_object (cls) { }
+      : cdef_meta_object (cls) { }
 
   cdef_class (const cdef_object& obj)
-      : cdef_object (obj)
+      : cdef_meta_object (obj)
     {
       // This should never happen...
       if (! is_class ())
@@ -683,17 +779,6 @@ public:
   cdef_class& operator = (const cdef_class& cls)
     {
       cdef_object::operator= (cls);
-
-      return *this;
-    }
-
-  cdef_class& operator = (const cdef_object& obj)
-    {
-      if (obj.is_class ())
-	cdef_object::operator= (obj);
-      else
-	error ("internal error: invalid assignment from %s to meta.class object",
-	       class_name ().c_str ());
 
       return *this;
     }
@@ -732,11 +817,6 @@ public:
 
   void delete_object (cdef_object obj)
     { get_rep ()->delete_object (obj); }
-
-  octave_value_list subsref_meta (const std::string& type,
-                                  const std::list<octave_value_list>& idx,
-                                  int nargout)
-    { return get_rep ()->subsref_meta (type, idx, nargout); }
 
   static cdef_class make_meta_class (tree_classdef* t);
 
@@ -811,18 +891,18 @@ operator < (const cdef_class& clsa, const cdef_class& clsb)
 { return clsa.get_rep () < clsb.get_rep (); }
 
 class
-cdef_property : public cdef_object
+cdef_property : public cdef_meta_object
 {
   friend class cdef_class;
 
 private:
 
   class
-  cdef_property_rep : public handle_cdef_object
+  cdef_property_rep : public cdef_meta_object_rep
   {
   public:
     cdef_property_rep (void)
-	: handle_cdef_object () { }
+	: cdef_meta_object_rep () { }
 
     cdef_object_rep* copy (void) const { return new cdef_property_rep (*this); }
 
@@ -851,7 +931,7 @@ private:
 
   private:
     cdef_property_rep (const cdef_property_rep& p)
-      : handle_cdef_object (p) { }
+      : cdef_meta_object_rep (p) { }
 
     bool is_recursive_set (const cdef_object& obj) const;
 
@@ -863,17 +943,17 @@ private:
   };
 
 public:
-  cdef_property (void) : cdef_object () { }
+  cdef_property (void) : cdef_meta_object () { }
 
   cdef_property (const std::string& nm)
-      : cdef_object (new cdef_property_rep ())
+      : cdef_meta_object (new cdef_property_rep ())
     { get_rep ()->set_name (nm); }
 
   cdef_property (const cdef_property& prop)
-      : cdef_object (prop) { }
+      : cdef_meta_object (prop) { }
 
   cdef_property (const cdef_object& obj)
-      : cdef_object (obj)
+      : cdef_meta_object (obj)
     {
       // This should never happen...
       if (! is_property ())
@@ -920,17 +1000,17 @@ private:
 };
 
 class
-cdef_method : public cdef_object
+cdef_method : public cdef_meta_object
 {
   friend class cdef_class;
 
 private:
 
   class
-  cdef_method_rep : public handle_cdef_object
+  cdef_method_rep : public cdef_meta_object_rep
   {
   public:
-    cdef_method_rep (void) : handle_cdef_object () { }
+    cdef_method_rep (void) : cdef_meta_object_rep () { }
 
     cdef_object_rep* copy (void) const { return new cdef_method_rep(*this); }
 
@@ -961,7 +1041,7 @@ private:
 
   private:
     cdef_method_rep (const cdef_method_rep& m)
-      : handle_cdef_object (m), function (m.function) { }
+      : cdef_meta_object_rep (m), function (m.function) { }
 
     void check_method (void);
 
@@ -976,17 +1056,17 @@ private:
   };
 
 public:
-  cdef_method (void) : cdef_object () { }
+  cdef_method (void) : cdef_meta_object () { }
 
   cdef_method (const std::string& nm)
-      : cdef_object (new cdef_method_rep ())
+      : cdef_meta_object (new cdef_method_rep ())
     { get_rep ()->set_name (nm); }
 
-  cdef_method (const cdef_property& prop)
-      : cdef_object (prop) { }
+  cdef_method (const cdef_method& meth)
+      : cdef_meta_object (meth) { }
 
   cdef_method (const cdef_object& obj)
-      : cdef_object (obj)
+      : cdef_meta_object (obj)
     {
       // This should never happen...
       if (! is_method ())
@@ -1112,17 +1192,17 @@ cdef_class::find_property (const std::string& nm)
 { return get_rep ()->find_property (nm); }
 
 class
-cdef_package : public cdef_object
+cdef_package : public cdef_meta_object
 {
   friend class cdef_class;
 
 private:
 
   class
-  cdef_package_rep : public handle_cdef_object
+  cdef_package_rep : public cdef_meta_object_rep
   {
   public:
-    cdef_package_rep (void) : handle_cdef_object (), member_count (0) { }
+    cdef_package_rep (void) : cdef_meta_object_rep (), member_count (0) { }
 
     cdef_object_rep* copy (void) const { return new cdef_package_rep (*this); }
 
@@ -1179,20 +1259,23 @@ private:
 
   private:
     cdef_package_rep (const cdef_package_rep& p)
-      : handle_cdef_object (p), class_map (p.class_map),
+      : cdef_meta_object_rep (p), class_map (p.class_map),
         function_map (p.function_map), package_map (p.package_map),
         member_count (p.member_count) { }
   };
 
 public:
-  cdef_package (void) : cdef_object () { }
+  cdef_package (void) : cdef_meta_object () { }
 
   cdef_package (const std::string& nm)
-      : cdef_object (new cdef_package_rep ())
+      : cdef_meta_object (new cdef_package_rep ())
     { get_rep ()->set_name (nm); }
 
+  cdef_package (const cdef_package& pack)
+    : cdef_meta_object (pack) { }
+
   cdef_package (const cdef_object& obj)
-      : cdef_object (obj)
+      : cdef_meta_object (obj)
     {
       // This should never happen...
       if (! is_package ())

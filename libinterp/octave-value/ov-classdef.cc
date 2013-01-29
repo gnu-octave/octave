@@ -832,17 +832,14 @@ octave_classdef::undef_subsasgn (const std::string& type,
 
 //----------------------------------------------------------------------------
 
-class octave_classdef_proxy : public octave_function
+class octave_classdef_meta : public octave_function
 {
 public:
-  octave_classdef_proxy (const cdef_class& _klass)
-    : klass (_klass) { }
+  octave_classdef_meta (const cdef_meta_object& obj)
+    : object (obj) { }
 
-  ~octave_classdef_proxy (void)
-    {
-      // This means the class has been cleared from the symbol table.
-      all_classes.erase (klass.get_name ());
-    }
+  ~octave_classdef_meta (void)
+    { object.meta_release (); }
 
   octave_function* function_value (bool = false) { return this; }
 
@@ -850,7 +847,7 @@ public:
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,
            int nargout)
-    { return klass.subsref_meta (type, idx, nargout); }
+    { return object.meta_subsref (type, idx, nargout); }
 
   octave_value
   subsref (const std::string& type,
@@ -866,7 +863,7 @@ public:
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx)
     {
-      // Emulate constructor
+      // Emulate ()-type meta subsref
 
       std::list<octave_value_list> l (1, idx);
       std::string type ("(");
@@ -875,10 +872,10 @@ public:
     }
 
   bool is_postfix_index_handled (char type) const
-    { return (type == '(' || type == '.'); }
+    { return object.meta_is_postfix_index_handled (type); }
 
 private:
-  cdef_class klass;
+  cdef_meta_object object;
 };
 
 //----------------------------------------------------------------------------
@@ -1407,7 +1404,7 @@ value_cdef_object::~value_cdef_object (void)
 }
 
 cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
-     : handle_cdef_object (), member_count (0), handle_class (false),
+     : cdef_meta_object_rep (), member_count (0), handle_class (false),
        object_count (0), meta (false)
 {
   put ("SuperClasses", to_ov (superclasses));
@@ -1917,7 +1914,7 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
 }
 
 octave_value_list
-cdef_class::cdef_class_rep::subsref_meta (const std::string& type,
+cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
                                           const std::list<octave_value_list>& idx,
                                           int nargout)
 {
@@ -1999,6 +1996,12 @@ cdef_class::cdef_class_rep::subsref_meta (const std::string& type,
     }
 
   return retval;
+}
+
+void
+cdef_class::cdef_class_rep::meta_release (void)
+{
+  all_classes.erase (get_name ());
 }
 
 void
@@ -2400,7 +2403,7 @@ cdef_class::make_meta_class (tree_classdef* t)
 octave_function*
 cdef_class::get_method_function (const std::string& /* nm */)
 {
-  octave_classdef_proxy* p = new octave_classdef_proxy (*this);
+  octave_classdef_meta* p = new octave_classdef_meta (*this);
 
   return p;
 }

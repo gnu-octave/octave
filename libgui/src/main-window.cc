@@ -616,6 +616,30 @@ main_window::write_settings ()
   settings->sync ();
 }
 
+
+// Connecting the signals emitted when the visibility of a widget changes.
+// This has to be done after the window is shown (see octave-gui.cc)
+void
+main_window::connect_visibility_changed ()
+{
+  connect (_terminal_dock_widget, SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_command_window_visible (bool)));
+  connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_workspace_visible (bool)));
+  connect (_history_dock_widget,  SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_command_history_visible (bool)));
+  connect (_files_dock_widget,    SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_current_directory_visible (bool)));
+#ifdef HAVE_QSCINTILLA
+  connect (_file_editor,          SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_editor_visible (bool)));
+#endif
+  connect (_documentation_dock_widget,  SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_documentation_visible (bool)));
+}
+
+
+// Main subroutine of the constructor
 void
 main_window::construct ()
 {
@@ -992,20 +1016,6 @@ main_window::construct ()
            this,                        SLOT (focus_editor ()));
   connect (documentation_action,        SIGNAL (triggered ()),
            this,                        SLOT (focus_documentation ()));
-  connect (_terminal_dock_widget,       SIGNAL (visibilityChanged (bool)),
-           this,                        SLOT (handle_command_window_visible (bool)));
-  connect (_workspace_view,             SIGNAL (visibilityChanged (bool)),
-           this,                        SLOT (handle_workspace_visible (bool)));
-  connect (_history_dock_widget,        SIGNAL (visibilityChanged (bool)),
-           this,                        SLOT (handle_command_history_visible (bool)));
-  connect (_files_dock_widget,          SIGNAL (visibilityChanged (bool)),
-           this,                        SLOT (handle_current_directory_visible (bool)));
-#ifdef HAVE_QSCINTILLA
-  connect (_file_editor,                SIGNAL (visibilityChanged (bool)),
-           this,                        SLOT (handle_editor_visible (bool)));
-#endif
-  connect (_documentation_dock_widget,  SIGNAL (visibilityChanged (bool)),
-           this,                        SLOT (handle_documentation_visible (bool)));
 
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));

@@ -123,6 +123,7 @@ public slots:
 
   void read_settings ();
   void write_settings ();
+  void connect_visibility_changed ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);

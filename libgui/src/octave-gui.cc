@@ -109,7 +109,8 @@ octave_start_gui (int argc, char *argv[])
                                // but before showing
           w.show ();
           w.focus_command_window ();
-
+          w.connect_visibility_changed (); // connect signals for changes in
+                                           // visibility not before w is shown
           return application.exec ();
         }
     }

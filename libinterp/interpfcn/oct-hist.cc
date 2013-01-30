@@ -496,9 +496,17 @@ do_edit_history (const octave_value_list& args)
   volatile octave_interrupt_handler old_interrupt_handler
     = octave_ignore_interrupts ();
 
-  system (cmd.c_str ());
+  int status = system (cmd.c_str ());
 
   octave_set_interrupt_handler (old_interrupt_handler);
+
+  // Check if text edition was successfull.  Abort the operation
+  // in case of failure.
+  if (status != EXIT_SUCCESS)
+    {
+      error ("edit_history: text editor command failed");
+      return;
+    }
 
   // Write the commands to the history file since source_file
   // disables command line history while it executes.

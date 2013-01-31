@@ -86,9 +86,10 @@ public slots:
   void new_file ();
   void open_file ();
   void open_file (const QString& file_name);
+  void open_online_documentation_page ();
   void open_bug_tracker_page ();
-  void open_agora_page ();
   void open_octave_forge_page ();
+  void open_agora_page ();
   void process_settings_dialog_request ();
   void show_about_octave ();
   void notice_settings ();

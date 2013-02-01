@@ -624,6 +624,8 @@ file_editor_tab::find (const QWidget* ID)
     }
 
   _find_dialog->activateWindow ();
+  _find_dialog->init_search_text ();
+
 }
 
 void

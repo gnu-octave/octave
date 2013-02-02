@@ -166,7 +166,7 @@ void
 main_window::handle_command_double_clicked (const QString& command)
 {
   _terminal->sendText (command);
-  _terminal->setFocus ();
+  focus_command_window ();
 }
 
 void

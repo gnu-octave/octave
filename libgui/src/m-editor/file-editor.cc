@@ -62,12 +62,17 @@ file_editor::~file_editor ()
     }
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();
+
+  if (_mru_file_menu)
+    delete _mru_file_menu;
 }
 
 // set focus to editor and its current tab
 void
 file_editor::set_focus ()
 {
+  if (!isVisible ())
+    setVisible (true);
   setFocus ();
   activateWindow ();
   raise ();
@@ -112,6 +117,7 @@ file_editor::request_new_file ()
     {
       add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
       fileEditorTab->new_file ();               // title is updated here
+      set_focus ();                             // focus editor and new tab
     }
 }
 
@@ -202,6 +208,7 @@ file_editor::request_open_file (const QString& openFileName)
               msgBox->show ();
             }
         }
+      set_focus ();  // really show editor and the current editor tab
     }
 }
 
@@ -644,12 +651,12 @@ file_editor::construct ()
   fileMenu->addAction (save_action);
   fileMenu->addAction (save_as_action);
   fileMenu->addSeparator ();
-  QMenu *mru_file_menu = new QMenu (tr ("Open &Recent"), fileMenu);
+  _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), fileMenu);
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
-      mru_file_menu->addAction (_mru_file_actions[i]);
+      _mru_file_menu->addAction (_mru_file_actions[i]);
     }
-  fileMenu->addMenu (mru_file_menu);
+  fileMenu->addMenu (_mru_file_menu);
   _menu_bar->addMenu (fileMenu);
 
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);

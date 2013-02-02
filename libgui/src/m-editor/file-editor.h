@@ -49,6 +49,7 @@ class file_editor : public file_editor_interface
   ~file_editor ();
   void loadFile (const QString& fileName);
 
+  QMenu *           get_mru_menu ( ) { return _mru_file_menu; }
   QMenu *           debug_menu ();
   QToolBar *        toolbar ();
 
@@ -150,6 +151,7 @@ private:
   int               _marker_breakpoint;
 
   enum { MaxMRUFiles = 10 };
+  QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
 

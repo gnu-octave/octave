@@ -100,7 +100,6 @@ main_window::new_file ()
 {
 #ifdef HAVE_QSCINTILLA
   _file_editor->request_new_file ();
-  focus_editor ();
 #endif
 }
 
@@ -109,7 +108,6 @@ main_window::open_file ()
 {
 #ifdef HAVE_QSCINTILLA
   _file_editor->request_open_file ();
-  focus_editor ();
 #endif
 }
 
@@ -118,7 +116,6 @@ main_window::open_file (const QString& file_name)
 {
 #ifdef HAVE_QSCINTILLA
   _file_editor->request_open_file (file_name);
-  focus_editor ();
 #endif
 }
 
@@ -404,10 +401,6 @@ void
 main_window::focus_editor ()
 {
 #ifdef HAVE_QSCINTILLA
-  if (!_file_editor->isVisible ())
-    {
-      _file_editor->setVisible (true);
-    }
   // call own function of editor in order to set focus to the current editor tab
   _file_editor->set_focus ();
 #endif
@@ -725,6 +718,9 @@ main_window::construct ()
   QAction *open_action
     = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open..."));
   open_action->setShortcut (Qt::ControlModifier + Qt::Key_O);
+
+  file_menu->addMenu(_file_editor->get_mru_menu ());
+
   QAction *close_command_window_action
     = file_menu->addAction (tr ("Close Command Window"));
   close_command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_W);

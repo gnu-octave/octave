@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 //#include "defun.h"
 
 /* Define the size of the interval heap. */
-#define cquad_heapsize                  200
+#define cquad_heapsize                  50
 
 
 /* Data of a single interval */

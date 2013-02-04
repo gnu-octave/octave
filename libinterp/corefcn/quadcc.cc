@@ -1552,14 +1552,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   static const double w = M_SQRT2 / 2;
   static const int ndiv_max = 20;
 
-  /* The interval heap. */
-  cquad_ival *ivals;
-  int *heap;
-
   /* Arguments left and right */
   int nargin = args.length ();
   octave_function *fcn;
-  double a, b, tol, *iivals, *sing;
+  double a, b, tol, *sing;
 
   /* Variables needed for transforming the integrand. */
   bool wrap = false;
@@ -1639,9 +1635,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
   int cquad_heapsize = (nivals >= min_cquad_heapsize ? nivals + 1 
                                                      : min_cquad_heapsize);
-  heap = new int [cquad_heapsize];
-  ivals = new cquad_ival [cquad_heapsize];
-  iivals = new double [cquad_heapsize];
+  /* The interval heap. */
+  OCTAVE_LOCAL_BUFFER (cquad_ival, ivals, cquad_heapsize);
+  OCTAVE_LOCAL_BUFFER (double, iivals, cquad_heapsize);
+  OCTAVE_LOCAL_BUFFER (int, heap, cquad_heapsize);
 
   if (nivals == 1)
     {
@@ -2242,11 +2239,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
          iv->rdepth, iv->ndiv);
     }
 #endif
-
-  /* Clean up heap memory */
-  delete [] heap;
-  delete [] ivals;
-  delete [] iivals;
 
   /* Clean up and present the results. */
   if (nargout > 2)

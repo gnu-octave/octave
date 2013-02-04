@@ -656,6 +656,8 @@ Note that user classes always have higher precedence than built-in
 Octave types.  So in fact marking our polynomial class higher than the 
 "double" class is in fact not necessary.
 
+When faced with two objects that have the same precedence, Octave will use the
+method of the object that appears first on the list of arguments.
 
 @node Inheritance and Aggregation
 @section Inheritance and Aggregation

@@ -69,7 +69,14 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
                  octave_value& func,
                  octave_value& error_handler)
 {
-  octave_value_list tmp = func.do_multi_index_op (nargout, inputlist);
+  octave_value_list tmp;
+  try {
+    tmp = func.do_multi_index_op (nargout, inputlist);
+  }
+  catch (octave_execution_exception) {
+    if (error_handler.is_defined ())
+      error_state = 1;
+  }
 
   if (error_state)
     {
@@ -996,6 +1003,7 @@ v = cellfun (@@det, a); # faster\n\
 %!assert (cellfun (@atan2, {1,1;1,1}, {1,2;1,2}), atan2 ([1,1;1,1],[1,2;1,2]))
 %!error cellfun (@factorial, {-1,3})
 %!assert (cellfun (@factorial,{-1,3},"ErrorHandler",@(x,y) NaN), [NaN,6])
+%!assert (cellfun (@(x) x(2),{[1],[1,2]},"ErrorHandler",@(x,y) NaN), [NaN,2])
 %!test
 %! [a,b,c] = cellfun (@fileparts, {fullfile("a","b","c.d"), fullfile("e","f","g.h")}, "UniformOutput", false);
 %! assert (a, {fullfile("a","b"), fullfile("e","f")});

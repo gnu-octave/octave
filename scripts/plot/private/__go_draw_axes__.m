@@ -1591,7 +1591,19 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       else
         fontspec = "";
       endif
-      colorspec = get_text_colorspec (hlgnd.textcolor, mono);
+      textcolors = get (findobj (hlgnd.children, "type", "text"), "color");
+      if (iscell (textcolors))
+        textcolors = cell2mat (textcolors);
+        textcolors = unique (textcolors, "rows");
+      endif
+      if (rows (textcolors) > 1)
+        ## Gnuplot is unable to assign arbitrary colors to each text entry
+        ## for the key/legend.  But, the text color can be set to match the
+        ## color of the plot object.
+        colorspec = "textcolor variable";
+      else
+        colorspec = get_text_colorspec (textcolors, mono);
+      endif
       fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s %s;\n",
                inout, pos, box, reverse, horzvert, fontspec, colorspec);
     else

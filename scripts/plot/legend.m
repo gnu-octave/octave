@@ -874,6 +874,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (addprops)
           addlistener (hlegend, "edgecolor", @updatelegendtext);
           addlistener (hlegend, "textcolor", @updatelegendtext);
+          addlistener (hlegend, "fontsize", @updatelegendtext);
           addlistener (hlegend, "interpreter", @updatelegendtext);
           addlistener (hlegend, "location", @updatelegend);
           addlistener (hlegend, "orientation", @updatelegend);
@@ -915,7 +916,10 @@ function updatelegendtext (h, d)
   text_kids = findobj (kids, "-property", "interpreter", "type", "text");
   interpreter = get (h, "interpreter");
   textcolor = get (h, "textcolor");
-  set (text_kids, "interpreter", interpreter, "color", textcolor);
+  fontsize = get (h, "fontsize");
+  set (text_kids, "interpreter", interpreter,
+                  "fontsize", fontsize,
+                  "color", textcolor);
 endfunction
 
 function hideshowlegend (h, d, ca, pos1, pos2)

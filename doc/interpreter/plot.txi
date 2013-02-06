@@ -136,6 +136,10 @@ shown in @ref{fig:hist}.
 
 @DOCSTRING(hist)
 
+@DOCSTRING(stemleaf)
+
+@DOCSTRING(printd)
+
 @DOCSTRING(stairs)
 
 @DOCSTRING(stem)

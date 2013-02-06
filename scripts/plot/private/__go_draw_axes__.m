@@ -2350,7 +2350,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   persistent sym = __setup_sym_table__ ();
   persistent flds = fieldnames (sym);
 
-  [s, e, m] = regexp (str,'\\\\([a-zA-Z]+|0)','start','end','matches');
+  [s, e, m] = regexp (str, "\\\\([a-zA-Z]+|0)", "start", "end", "matches");
 
   for i = length (s) : -1 : 1
     ## special case for "\0"  and replace with "{/Symbol \306}'

@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 
 history_dock_widget::history_dock_widget (QWidget * p)
-  : QDockWidget (p)
+  : octave_dock_widget (p)
 {
   setObjectName ("HistoryDockWidget");
   construct ();
@@ -71,23 +71,11 @@ history_dock_widget::construct ()
 
   widget ()->setLayout (vbox_layout);
 
-  connect (_filter_line_edit,
-           SIGNAL (textEdited (QString)),
-           &_sort_filter_proxy_model,
-           SLOT (setFilterWildcard (QString)));
+  connect (_filter_line_edit, SIGNAL (textEdited (QString)),
+           &_sort_filter_proxy_model, SLOT (setFilterWildcard (QString)));
 
-  connect (_history_list_view,
-           SIGNAL (doubleClicked (QModelIndex)),
-           this,
-           SLOT (handle_double_click (QModelIndex)));
-
-  connect (this,
-           SIGNAL (visibilityChanged (bool)),
-           this,
-           SLOT (handle_visibility_changed (bool)));
-
-  // topLevelChanged is emitted when floating property changes (floating = true)
-  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
+  connect (_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
+           this, SLOT (handle_double_click (QModelIndex)));
 
   _update_history_model_timer.setInterval (200);
   _update_history_model_timer.setSingleShot (true);
@@ -142,13 +130,6 @@ history_dock_widget::handle_double_click (QModelIndex modelIndex)
 }
 
 void
-history_dock_widget::handle_visibility_changed (bool visible)
-{
-  if (visible)
-    emit active_changed (true);
-}
-
-void
 history_dock_widget::request_history_model_update ()
 {
   octave_link::post_event (this, &history_dock_widget::update_history_callback);
@@ -158,24 +139,6 @@ void
 history_dock_widget::reset_model ()
 {
   _history_model->setStringList (QStringList ());
-}
-
-void
-history_dock_widget::closeEvent (QCloseEvent *e)
-{
-  emit active_changed (false);
-  QDockWidget::closeEvent (e);
-}
-
-// slot for signal that is emitted when floating property changes
-void
-history_dock_widget::top_level_changed (bool floating)
-{
-  if(floating)
-    {
-      setWindowFlags(Qt::Window);  // make a window from the widget when floating
-      show();                      // make it visible again since setWindowFlags hides it
-    }
 }
 
 void

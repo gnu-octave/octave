@@ -73,7 +73,8 @@ octave_gui_MOC = \
   src/moc-workspace-view.cc \
   src/octave-adapter/moc-octave-main-thread.cc \
   src/qtinfo/moc-parser.cc \
-  src/qtinfo/moc-webinfo.cc
+  src/qtinfo/moc-webinfo.cc \
+  src/moc-octave-dock-widget.cc
 
 octave_gui_RC = src/qrc-resource.cc
 
@@ -86,6 +87,7 @@ octave_gui_UI_H = $(patsubst src/%.ui, src/ui-%.h, $(octave_gui_UI))
 BUILT_SOURCES += $(octave_gui_UI_H)
 
 noinst_HEADERS += \
+  src/octave-dock-widget.h \
   src/documentation-dockwidget.h \
   src/files-dockwidget.h \
   src/history-dockwidget.h \

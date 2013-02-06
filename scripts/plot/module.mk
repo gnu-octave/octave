@@ -150,6 +150,7 @@ plot_FCN_FILES = \
   plot/plotyy.m \
   plot/polar.m \
   plot/print.m \
+  plot/printd.m \
   plot/quiver.m \
   plot/quiver3.m \
   plot/rectangle.m \
@@ -174,6 +175,7 @@ plot_FCN_FILES = \
   plot/stairs.m \
   plot/stem.m \
   plot/stem3.m \
+  plot/stemleaf.m \
   plot/struct2hdl.m \
   plot/subplot.m \
   plot/surf.m \

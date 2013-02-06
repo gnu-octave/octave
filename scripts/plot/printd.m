@@ -18,7 +18,6 @@
 ## License along with Octave; see the file COPYING. If not,
 ## see <http://www.gnu.org/licenses/>.
 
-
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} printd (@var{obj}, @var{filename})
 ##
@@ -34,64 +33,67 @@
 ## Description: Convert objects into other file formats.
 
 function printd (obj, filename)
-% Convert any object acceptable to disp() into various display formats.
-% obj is the input object.
-% filename is the output file (with required suffix).
+  ## Convert any object acceptable to disp() into various display formats.
+  ## obj is the input object.
+  ## filename is the output file (with required suffix).
 
-% Extract .suffix from filename
-  if ((sufix = rindex (filename, '.')) <= 0)
-    error ('The output filename: %s requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg', filename);
+  ## Extract .suffix from filename
+  if ((sufix = rindex (filename, ".")) <= 0)
+    error ("The output filename: %s requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
   endif
   opt = substr (filename, sufix+1);
-  [pf, tempf, mag] = mkstemp ('oct-XXXXXX', 1);  % Safe version of tmpnam()
-  fprintf (pf, '%s', disp (obj));
+  [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);  # Safe version of tmpnam()
+  fprintf (pf, "%s", disp (obj));
   frewind (pf);
-% It seems best to only use convert for image output.  Its ps and pdf are badly rendered.
+
+  ## It seems best to only use convert for image output.  Its ps and pdf
+  ## are badly rendered.
   opt = lower (opt);
   switch opt
     case {"pdf"}
       enscr = sprintf (
-         'enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit',...
-         tempf, tempf, tempf, tempf, tempf, filename);
+                       "enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit",...
+                       tempf, tempf, tempf, tempf, tempf, filename);
       system (enscr);
-      delete ([tempf '.ps']);
+      delete ([tempf ".ps"]);
     case {"ps"}
-      enscr = sprintf ('enscript --no-header -o %s %s ; exit', filename, tempf);
+      enscr = sprintf ("enscript --no-header -o %s %s ; exit", filename, tempf);
       system (enscr);
     case {"eps"}
       enscr = sprintf (
-         'enscript --no-header -o %s.ps %s ; ps2eps --ignoreBB %s.ps; mv %s.eps %s; exit',...
-         tempf, tempf, tempf, tempf, filename);
+                       "enscript --no-header -o %s.ps %s ; ps2eps --ignoreBB %s.ps; mv %s.eps %s; exit",...
+                       tempf, tempf, tempf, tempf, filename);
       system (enscr);
-      delete ([tempf '.ps']);
+      delete ([tempf ".ps"]);
     case {"txt"}
-      enscr = sprintf ('cp %s %s', tempf, filename);
+      enscr = sprintf ("cp %s %s", tempf, filename);
       system (enscr);
     case {"jpg" "jpeg"}
-      enscr = sprintf ('convert -trim txt:%s  jpg:%s', tempf, filename);
+      enscr = sprintf ("convert -trim txt:%s  jpg:%s", tempf, filename);
       system (enscr);
     otherwise
       fclose (pf);
       delete (tempf);
-      error ('Unknown conversion type: %s.\nOptions are: pdf ps eps txt jpg jpeg', opt);
-    endswitch
-    fclose (pf);
-    delete (tempf);
-    printf ('%s file %s written\n', opt, filename);
+      error ("Unknown conversion type: %s.\nOptions are: pdf ps eps txt jpg jpeg", opt);
+
+  endswitch
+  fclose (pf);
+  delete (tempf);
+  printf ("%s file %s written\n", opt, filename);
 endfunction
 
 %!demo
 %!  r2 = ["stem step: 10, data: unsorted.\nHinges:    lo: 12, hi: 42\n";...
 %! "   1 | 22118";"   2 | 28";"   3 | 98";"   4 | 244";"   5 | 2"];
-%! printd (r2, 'test_p.txt');
+%! printd (r2, "test_p.txt");
 %! system ("cat test_p.txt");
 %! delete ("test_p.txt");
 
 %!test
 %! r2 = ["stem step: 10, data: unsorted.\nHinges:    lo: 12, hi: 42\n";...
 %! "   1 | 22118";"   2 | 28";"   3 | 98";"   4 | 244";"   5 | 2"];
-%! printd (r2, 'test_p.txt');
-%! r4 = fileread ('test_p.txt');
+%! printd (r2, "test_p.txt");
+%! r4 = fileread ("test_p.txt");
 %! delete ("test_p.txt");
 %! r2 = disp (r2);
 %! assert (r4, r2)

@@ -44,54 +44,55 @@
 ## Description: Compute stem and leaf plot
 
 function varargout = stemleaf (x, stem_unit)
-% Compute and display a stem and leaf plot of the vector x.
-% The x vector is converted to integer by x = fix(x). 
-% If an output argument is provided, the plot is returned as
-% an array of strings.  The first element is the heading
-% followed by an element for each stem.
-% The default stem step is 10.  If stem_unit is provided
-% the stem step is set to: 10^(stem_unit+1)
-% The x vector should be integers.  It will be treated so that
-% the last digit is the leaf value and the other digits are
-% the stems.
+  ## Compute and display a stem and leaf plot of the vector x. The x
+  ## vector is converted to integer by x = fix(x). If an output argument
+  ## is provided, the plot is returned as an array of strings.  The
+  ## first element is the heading followed by an element for each stem.
+  ##
+  ## The default stem step is 10.  If stem_unit is provided the stem
+  ## step is set to: 10^(stem_unit+1) The x vector should be integers.
+  ## It will be treated so that the last digit is the leaf value and the
+  ## other digits are the stems.
+  ##
+  ## When we first implemented stem and leaf plots in the early 1960's
+  ## there was some discussion about sorting vs. leaving the leaf
+  ## entries in the original order in the data. We decided in favor or
+  ## sorting the leaves for most purposes. This is the choice
+  ## implemented in the SNAP/IEDA system that was written at that time.
+  ##
+  ## SNAP/IEDA and particularly its stem and leaf plotting were further
+  ## developed by Hale Trotter, David Hoagland (at Princeton and MIT)
+  ## and others.
+  ##
+  ## Tukey, in EDA, generally uses unsorted leaves.  In addition, he
+  ## described a wide range of additional display formats.  This
+  ## implementation does not sort the leaves, but if the x vector is
+  ## sorted then the leaves come out sorted.  A simple display format is
+  ## used.
+  ##
+  ## I doubt if providing other options is worthwhile.  The code can
+  ## quite easily be modified to provide specific display results.  Or,
+  ## the returned output string can be edited. The returned output is an
+  ## array of strings with each row containing a line of the plot
+  ## preceded by the lines of header text as the first row.  This
+  ## facilitates annotation.
+  ##
+  ## Note that the code has some added complexity due to the need to
+  ## distinguish both + and - 0 stems. The +- stem values are essential
+  ## for all plots which span 0. After dealing with +-0 stems, the added
+  ## complexity of putting +- data values in the correct stem is minor,
+  ## but the sign of 0 leaves must be checked.  And, the cases where the
+  ## stems start or end at +- 0 must also be considered.
+  ##
+  ## The fact that IEEE floating point defines +- 0 helps make this
+  ## easier.
+  ##
+  ##
+  ## Michael D. Godfrey   January 2013
 
-% When we first implemented stem and leaf plots in the early
-% 1960's there was some discussion about sorting vs. leaving
-% the leaf entries in the original order in the data. We
-% decided in favor or sorting the leaves for most purposes.
-% This is the choice implemented in the SNAP/IEDA system that
-% was written at that time.
-% SNAP/IEDA and particularly its stem and leaf plotting were further
-% developed by Hale Trotter, David Hoagland (at Princeton and MIT)
-% and others.
-% Tukey, in EDA, generally uses unsorted leaves.  In addition,
-% he described a wide range of additional display formats.  This 
-% implementation does not sort the leaves, but if the x vector is
-% sorted then the leaves come out sorted.  A simple display
-% format is used.
-% I doubt if providing other options is worthwhile.  The
-% code can quite easily be modified to provide specific
-% display results.  Or, the returned output string can be edited.
-% The returned output is an array of strings with each row
-% containing a line of the plot preceded by the lines of header
-% text as the first row.  This facilitates annotation.
-%
-% Note that the code has some added complexity due to the need
-% to distinguish both + and - 0 stems.
-% The +- stem values are essential for all plots which span 0.
-% After dealing with +-0 stems, the added complexity of putting
-% +- data values in the correct stem is minor, but the sign of
-% 0 leaves must be checked.  And, the cases where the stems start 
-% or end at +- 0 must also be considered.
-% 
-% The fact that IEEE floating point defines +- 0 helps make this
-% easier.
-%
-% Michael D. Godfrey   January 2013
-
-% More could be implemented for better data scaling. And, of course,
-% other options for the kinds of plots described by Tukey could be
-% provided.  This may best be left to users.
+  ## More could be implemented for better data scaling. And, of course,
+  ## other options for the kinds of plots described by Tukey could be
+  ## provided. This may best be left to users.
 
   if (nargin >= 2)
     stem_step = 10^(stem_unit+1);
@@ -102,31 +103,32 @@ function varargout = stemleaf (x, stem_unit)
     printf ('Input vector truncated to integer values.\n')
     x = fix (x);
   endif
-% Avoid use of int32 due to:
-% floor (int32 (-44)/10) == -4 and floor (int32 (-46)/10) = -5 !!!
-% x  = sort (fix (x));  % User can decide about sorting x.
-% x  = fix (x);
-%  Adjust scale if too small.
-%  while any(abs((fix(x) - x)) >= abs(x/100))
-%    x =10*x;
-%  endwhile
-% Note that IEEE 754 states that -+ 0 should compare equal.
-% This has led to C sort (and therefore Octave) treating them
-% as equal.  Thus, sort([ -1 0 -0 1]) yields: -1 0 -0 1.
-% and, sort([-1 -0 0 1]) yields: -1 -0 0 1.
-% This means that stem-and-leaf plotting cannot rely on sort
-% to order the data as needed for display.
 
-% 
+  ## Avoid use of int32 due to:
+
+  ##  floor (int32 (-44)/10) == -4 and floor (int32 (-46)/10) = -5 !!!
+  ##  x  = sort (fix (x));  % User can decide about sorting x.
+  ##  x  = fix (x);
+  ##  %Adjust scale if too small.
+  ##  while any(abs((fix(x) - x)) >= abs(x/100))
+  ##    x =10*x;
+  ##  endwhile
+
+  ## Note that IEEE 754 states that -+ 0 should compare equal. This has
+  ## led to C sort (and therefore Octave) treating them as equal.  Thus,
+  ## sort([ -1 0 -0 1]) yields: -1 0 -0 1. and, sort([-1 -0 0 1])
+  ## yields: -1 -0 0 1. This means that stem-and-leaf plotting cannot
+  ## rely on sort to order the data as needed for display.
+
   if (all((sort(x) == x)) == 1)
     hsort = 'sorted.';
   else
     hsort = 'unsorted.';
   endif
   nx = max (size (x));
-% Determine stem values
+  ## Determine stem values
   if (min(x) < 0)
-    if (signbit(max(x)) == 0)     % max is positive
+    if (signbit(max(x)) == 0)     # max is positive
       stems = [fix(min(x)/stem_step)-1 : -1 -0];
       stems = [stems 0 : fix(max(x)/stem_step)+1 ];
     else
@@ -137,18 +139,18 @@ function varargout = stemleaf (x, stem_unit)
         stems = [stems 0 : fix(max(x)/stem_step)];
       endif
     endif
-  else                            % All stems are > 0
+  else                            # All stems are > 0
     stems = [fix(min(x)/stem_step) : fix(max(x)/stem_step) + 1];
   endif
-%stems
-%x
+  ##stems
+  ##x
   nstems = max(size(stems));
-% compute hinges at +- 1.5 * quartiles
-% this requires sorted data!
-  xs = sort (x);                   % Note that sort preserves -0
+  ## compute hinges at +- 1.5 * quartiles
+  ## this requires sorted data!
+  xs = sort (x);                   # Note that sort preserves -0
   threeh = 1.5;
   two    = 2.0;
-  j  = idivide(nx, 4, "fix") + 1;  % Use F95 truncation.
+  j  = idivide(nx, 4, "fix") + 1;  # Use F95 truncation.
   k  = nx - j + 1;
   hl = xs (j);
   hu = xs (k);
@@ -156,88 +158,97 @@ function varargout = stemleaf (x, stem_unit)
     hl = (xs (j + 1) + hl) / two;
     hu = (xs (k - 1) + hu) / two;
   endif
-%
-%     ::::::::  determine h-spread (dh) and fences  ::::::::
+
+  ##     ::::::::  determine h-spread (dh) and fences  ::::::::
   dh = hu - hl;
   fu = hu + threeh * dh;
   fl = hl - threeh * dh;
 
-%     ::::::::  find value adjacent to lower fence  ::::::::
+  ##     ::::::::  find value adjacent to lower fence  ::::::::
   for i = 1:j
-    if ( xs (i) >= fl ) continue; endif
+    if ( xs (i) >= fl ) 
+      continue; 
+    endif
   endfor
   ilow = i;
   xlo = xs (ilow);
-%
-%     :::::::: find value adjacent to upper fence  ::::::::
+
+  ##     :::::::: find value adjacent to upper fence  ::::::::
   for  i = 1:j
-    if ( xs (nx -i + 1) <= fu )continue; endif
+    if ( xs (nx -i + 1) <= fu )
+      continue;
+    endif
   endfor
-%
+
   ihi = nx - i + 1;
   xhi = xs (ihi);
-%
-% Heading for output:
-  plot_out = [''];
-  plot_out = [plot_out sprintf('stem step: %i, data: %s\nHinges:    lo: %g, hi: %g\n',
-             stem_step, hsort, xlo, xhi)];
-% This may appear to be a good place to use vectorization using the stem and data arrays
-% but the necessary special case treatment of 0 and -0 seems to result in little reduction
-% of complexity, and since this algorithm is for small data vectors only there would be
-% practically no performance improvement.
 
-% Determine leaves for each stem:
-    for kx = 2:nstems
-      line_out = [''];
-      steml    = [''];
-% Build a string of leaf digits for stem(kx) if stem(kx) <= 0, or stem(kx-1) if stem(kx) > 0
-% stems -+ 0 have to be handled as special cases.
-      for xi = 1:nx
-        if(signbit(stems(kx)) == 1)
-          t1 = ((x(xi) <= stems(kx)*10) && (x(xi) > (stems(kx-1)*10)));
-        else
-          t1 = ((x(xi) < stems(kx)*10) && (x(xi) >= (stems(kx-1)*10)));
-        endif
-% Special tests for stem -+ 0
-        if ((stems(kx) == 0) && signbit(stems(kx)) && (x(xi) == 0)) && !signbit(x(xi))
-           t1 = 0;
-        endif
-        if ((stems(kx-1) == 0) && !signbit(stems(kx-1)) && (x(xi) == 0)) && signbit(x(xi))
-           t1 = 0;
-        endif
-% Create line as a string
-        if t1
-          if (stems(kx) <= 0)
-            xz =  abs (x(xi) - stems(kx)*10);
-          else
-            xz =  abs (x(xi) - stems(kx-1)*10);
-          endif
-          if ((stems(kx) == 0) && signbit(stems(kx)))
-            steml = [steml sprintf('%d', abs(x(xi) - stems(kx)*10))];
-          else
-            steml = [steml sprintf('%d', xz)];
-          endif
-        endif    %  t1
-      endfor    % xi = 1:nx
-% Set correct -0
-      if ((stems(kx) == 0) && signbit(stems(kx)))
-        line_out = [line_out sprintf('  -0 | %s',  steml)];  % -0 stem.
+  ## Heading for output:
+  plot_out = "";
+  plot_out = [plot_out sprintf("stem step: %i, data: %s\nHinges:    lo: %g, hi: %g\n",
+                               stem_step, hsort, xlo, xhi)];
+
+  ## This may appear to be a good place to use vectorization using the
+  ## stem and data arrays but the necessary special case treatment of 0
+  ## and -0 seems to result in little reduction of complexity, and since
+  ## this algorithm is for small data vectors only there would be
+  ## practically no performance improvement.
+
+  ## Determine leaves for each stem:
+  for kx = 2:nstems
+    line_out = "";
+    steml    = "";
+    ## Build a string of leaf digits for stem(kx) if stem(kx) <= 0, or
+    ## stem(kx-1) if stem(kx) > 0
+
+    ## stems -+ 0 have to be handled as special cases.
+    for xi = 1:nx
+      if(signbit(stems(kx)) == 1)
+        t1 = ((x(xi) <= stems(kx)*10) && (x(xi) > (stems(kx-1)*10)));
       else
-        if( stems(kx) < 0)
-          line_out = [line_out sprintf('%4d | %s', stems(kx), steml)];
+        t1 = ((x(xi) < stems(kx)*10) && (x(xi) >= (stems(kx-1)*10)));
+      endif
+      ## Special tests for stem -+ 0
+      if ((stems(kx) == 0) && signbit(stems(kx)) && (x(xi) == 0)) && !signbit(x(xi))
+        t1 = 0;
+      endif
+      if ((stems(kx-1) == 0) && !signbit(stems(kx-1)) && (x(xi) == 0)) && signbit(x(xi))
+        t1 = 0;
+      endif
+      ## Create line as a string
+      if t1
+        if (stems(kx) <= 0)
+          xz =  abs (x(xi) - stems(kx)*10);
         else
-          if stems(kx) > 0
-          line_out = [line_out sprintf('%4d | %s', stems(kx-1), steml)];
-          endif
+          xz =  abs (x(xi) - stems(kx-1)*10);
+        endif
+        if ((stems(kx) == 0) && signbit(stems(kx)))
+          steml = [steml sprintf("%d", abs(x(xi) - stems(kx)*10))];
+        else
+          steml = [steml sprintf("%d", xz)];
+        endif
+      endif    %  t1
+    endfor    % xi = 1:nx
+
+    ## Set correct -0
+    if ((stems(kx) == 0) && signbit(stems(kx)))
+      line_out = [line_out sprintf("  -0 | %s",  steml)];  % -0 stem.
+    else
+      if( stems(kx) < 0)
+        line_out = [line_out sprintf("%4d | %s", stems(kx), steml)];
+      else
+        if stems(kx) > 0
+          line_out = [line_out sprintf("%4d | %s", stems(kx-1), steml)];
         endif
       endif
-      plot_out = [plot_out; line_out];
-    endfor    % kx = 2:nstems
+    endif
+    plot_out = [plot_out; line_out];
+  endfor    % kx = 2:nstems
   if (nargout == 0)
     rows = size (plot_out)(1);
     cols = size (plot_out)(2);
     for k = 1:rows
-      printf('%s\n', plot_out(k,1:cols));
+      printf("%s\n", plot_out(k,1:cols));
     endfor
   else
     varargout{1} = plot_out;

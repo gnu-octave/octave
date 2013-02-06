@@ -1591,7 +1591,19 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       else
         fontspec = "";
       endif
-      colorspec = get_text_colorspec (hlgnd.textcolor, mono);
+      textcolors = get (findobj (hlgnd.children, "type", "text"), "color");
+      if (iscell (textcolors))
+        textcolors = cell2mat (textcolors);
+        textcolors = unique (textcolors, "rows");
+      endif
+      if (rows (textcolors) > 1)
+        ## Gnuplot is unable to assign arbitrary colors to each text entry
+        ## for the key/legend.  But, the text color can be set to match the
+        ## color of the plot object.
+        colorspec = "textcolor variable";
+      else
+        colorspec = get_text_colorspec (textcolors, mono);
+      endif
       fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s %s;\n",
                inout, pos, box, reverse, horzvert, fontspec, colorspec);
     else
@@ -2350,7 +2362,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   persistent sym = __setup_sym_table__ ();
   persistent flds = fieldnames (sym);
 
-  [s, e, m] = regexp (str,'\\\\([a-zA-Z]+|0)','start','end','matches');
+  [s, e, m] = regexp (str, "\\\\([a-zA-Z]+|0)", "start", "end", "matches");
 
   for i = length (s) : -1 : 1
     ## special case for "\0"  and replace with "{/Symbol \306}'

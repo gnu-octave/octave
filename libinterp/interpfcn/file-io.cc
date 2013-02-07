@@ -436,7 +436,7 @@ Returns the number of lines skipped (end-of-line sequences encountered).\n\
 
           bool err = false;
 
-          long tmp = os.skipl (count_arg, err, who);
+          off_t tmp = os.skipl (count_arg, err, who);
 
           if (! (error_state || err))
             retval = tmp;

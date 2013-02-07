@@ -1028,10 +1028,10 @@ octave_base_stream::gets (octave_idx_type max_len, bool& err, const std::string&
   return do_gets (max_len, err, false, who);
 }
 
-long
-octave_base_stream::skipl (long num, bool& err, const std::string& who)
+off_t
+octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
 {
-  long cnt = -1;
+  off_t cnt = -1;
 
   if ((interactive || forced_interactive) && file_number () == 0)
     {
@@ -2816,10 +2816,10 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err,
   return retval;
 }
 
-long
-octave_stream::skipl (long count, bool& err, const std::string& who)
+off_t
+octave_stream::skipl (off_t count, bool& err, const std::string& who)
 {
-  long retval = -1;
+  off_t retval = -1;
 
   if (stream_ok ())
     retval = rep->skipl (count, err, who);
@@ -2827,10 +2827,10 @@ octave_stream::skipl (long count, bool& err, const std::string& who)
   return retval;
 }
 
-long
+off_t
 octave_stream::skipl (const octave_value& tc_count, bool& err, const std::string& who)
 {
-  long retval = -1;
+  off_t retval = -1;
 
   err = false;
 
@@ -2861,7 +2861,7 @@ octave_stream::skipl (const octave_value& tc_count, bool& err, const std::string
 }
 
 int
-octave_stream::seek (long offset, int origin)
+octave_stream::seek (off_t offset, int origin)
 {
   int status = -1;
 
@@ -2871,7 +2871,7 @@ octave_stream::seek (long offset, int origin)
 
       // Find current position so we can return to it if needed.
 
-      long orig_pos = rep->tell ();
+      off_t orig_pos = rep->tell ();
 
       // Move to end of file.  If successful, find the offset of the end.
 
@@ -2879,7 +2879,7 @@ octave_stream::seek (long offset, int origin)
 
       if (status == 0)
         {
-          long eof_pos = rep->tell ();
+          off_t eof_pos = rep->tell ();
 
           if (origin == SEEK_CUR)
             {
@@ -2899,7 +2899,7 @@ octave_stream::seek (long offset, int origin)
             {
               // Where are we after moving to desired position?
 
-              long desired_pos = rep->tell ();
+              off_t desired_pos = rep->tell ();
 
               // I don't think save_pos can be less than zero, but we'll
               // check anyway...
@@ -2935,7 +2935,10 @@ octave_stream::seek (const octave_value& tc_offset,
 {
   int retval = -1;
 
-  long xoffset = tc_offset.long_value (true);
+  // FIXME -- should we have octave_value methods that handle off_t
+  // explicitly?
+  octave_int64 val = tc_offset.int64_scalar_value ();
+  off_t xoffset = val.value ();
 
   if (! error_state)
     {
@@ -2989,10 +2992,10 @@ octave_stream::seek (const octave_value& tc_offset,
   return retval;
 }
 
-long
+off_t
 octave_stream::tell (void)
 {
-  long retval = -1;
+  off_t retval = -1;
 
   if (stream_ok ())
     retval = rep->tell ();
@@ -3561,17 +3564,17 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
               // Seek to skip when inside bounds of existing file.
               // Otherwise, write NUL to skip.
 
-              long orig_pos = tell ();
+              off_t orig_pos = tell ();
 
               seek (0, SEEK_END);
 
-              long eof_pos = tell ();
+              off_t eof_pos = tell ();
 
               // Is it possible for this to fail to return us to the
               // original position?
               seek (orig_pos, SEEK_SET);
 
-              long remaining = eof_pos - orig_pos;
+              off_t remaining = eof_pos - orig_pos;
 
               if (remaining < skip)
                 {

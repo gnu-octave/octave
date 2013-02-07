@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_strstream::seek (long, int)
+octave_base_strstream::seek (off_t, int)
 {
   error ("fseek: invalid operation");
   return -1;
@@ -37,7 +37,7 @@ octave_base_strstream::seek (long, int)
 
 // Return current stream position.
 
-long
+off_t
 octave_base_strstream::tell (void)
 {
   error ("ftell: invalid operation");

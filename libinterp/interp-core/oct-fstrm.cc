@@ -62,7 +62,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_fstream::seek (long, int)
+octave_fstream::seek (off_t, int)
 {
   error ("fseek: invalid_operation");
   return -1;
@@ -70,7 +70,7 @@ octave_fstream::seek (long, int)
 
 // Return current stream position.
 
-long
+off_t
 octave_fstream::tell (void)
 {
   error ("ftell: invalid_operation");

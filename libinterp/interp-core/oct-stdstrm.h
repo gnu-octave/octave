@@ -43,12 +43,12 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (long offset, int origin)
+  int seek (off_t offset, int origin)
     { return s ? s->seek (offset, origin) : -1; }
 
   // Return current stream position.
 
-  long tell (void) { return s ? s->tell () : -1; }
+  off_t tell (void) { return s ? s->tell () : -1; }
 
   // Return non-zero if EOF has been reached on this stream.
 

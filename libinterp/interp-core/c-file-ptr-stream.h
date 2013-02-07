@@ -74,9 +74,9 @@ public:
 
   int file_number () const { return f ? fileno (f) : -1; }
 
-  int seek (long offset, int origin);
+  int seek (off_t offset, int origin);
 
-  long tell (void);
+  off_t tell (void);
 
   void clear (void) { if (f) clearerr (f); }
 
@@ -117,10 +117,10 @@ public:
 
   void stream_close (void) { if (buf) buf->buf_close (); }
 
-  int seek (long offset, int origin)
+  int seek (off_t offset, int origin)
     { return buf ? buf->seek (offset, origin) : -1; }
 
-  long tell (void) { return buf ? buf->tell () : -1; }
+  off_t tell (void) { return buf ? buf->tell () : -1; }
 
   void clear (void) { if (buf) buf->clear (); STREAM_T::clear (); }
 
@@ -192,10 +192,10 @@ public:
 
   int file_number () const { return -1; }
 
-  int seek (long offset, int origin)
-    { return f ? gzseek (f, offset, origin) : -1; }
+  int seek (off_t offset, int origin)
+    { return f ? gzseek (f, offset, origin) >= 0 : -1; }
 
-  long tell (void) { return f ? gztell (f) : -1; }
+  off_t tell (void) { return f ? gztell (f) : -1; }
 
   void clear (void) { if (f) gzclearerr (f); }
 

@@ -1537,7 +1537,12 @@ AC_DEFUN([OCTAVE_PROG_MAKEINFO], [
   dnl exist which will then fool the 'test -z' line.
   AC_CHECK_PROG(MKINFO, makeinfo, makeinfo, [])
   if test -z "$MKINFO"; then
-    AC_MSG_ERROR([makeinfo program required for reading documentation])
+    warn_makeinfo="
+
+I didn't find makeinfo, which is required for reading documentation.
+You may install a copy later for Octave to use.
+"
+    OCTAVE_CONFIGURE_WARNING([warn_makeinfo])
   fi
 ])
 dnl

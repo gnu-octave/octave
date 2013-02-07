@@ -2185,13 +2185,21 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 #endif
 ]])
 
-### Need to disable building documentation if gnuplot was not found,
-### unless it was already disabled previously.
+### Need to disable building documentation if either gnuplot or
+### makeinfo are missing.  Skip this warning if building docs was
+### disabled with a configure option.
 
-if test -n "$DOCDIR" && test -n "$warn_gnuplot"; then
-  DOCDIR=
-  warn_docs="building documentation disabled because gnuplot was not found; make dist will fail"
-  OCTAVE_CONFIGURE_WARNING([warn_docs])
+if test -n "$DOCDIR"; then
+  if test -n "$warn_gnuplot"; then
+    DOCDIR=
+    warn_docs_gnuplot="building documentation disabled because gnuplot was not found; make dist will fail"
+    OCTAVE_CONFIGURE_WARNING([warn_docs_gnuplot])
+  fi
+  if test -n "$warn_makeinfo"; then
+    DOCDIR=
+    warn_docs_makeinfo="building documentation disabled because makeinfo was not found; make dist will fail"
+    OCTAVE_CONFIGURE_WARNING([warn_docs_makeinfo])
+  fi
 fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 

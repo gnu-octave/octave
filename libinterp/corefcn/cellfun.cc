@@ -1142,7 +1142,7 @@ arrayfun (@@str2num, [1234],\n\
   if (nargin < 2)
     {
       error_with_id ("Octave:invalid-fun-call", 
-                           "arrayfun: function requires at least 2 arguments");
+                     "arrayfun: function requires at least 2 arguments");
       print_usage ();
       return retval;
     }
@@ -1174,7 +1174,8 @@ arrayfun (@@str2num, [1234],\n\
 
           if (func.is_undefined ())
             error_with_id ("Octave:invalid-input-arg",
-                         "arrayfun: invalid function NAME: %s", name.c_str ());
+                           "arrayfun: invalid function NAME: %s",
+                           name.c_str ());
 
           symbol_table_lookup = true;
         }
@@ -1253,7 +1254,7 @@ arrayfun (@@str2num, [1234],\n\
                   if (mask[i] && inputs[i].dims () != fdims)
                     {
                       error_with_id ("Octave:invalid-input-arg", 
-                                              "arrayfun: dimensions mismatch");
+                                     "arrayfun: dimensions mismatch");
                       return retval;
                     }
                 }
@@ -1301,7 +1302,7 @@ arrayfun (@@str2num, [1234],\n\
               if (nargout > 0 && tmp.length () < nargout)
                 {
                   error_with_id ("Octave:invalid-fun-call", 
-                      "arrayfun: function returned fewer than nargout values");
+                                 "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
 
@@ -1327,7 +1328,7 @@ arrayfun (@@str2num, [1234],\n\
                               else
                                 {
                                   error_with_id ("Octave:invalid-fun-call",
-             "arrayfun: all values must be scalars when UniformOutput = true");
+                                                 "arrayfun: all values must be scalars when UniformOutput = true");
                                   break;
                                 }
                             }
@@ -1355,7 +1356,7 @@ arrayfun (@@str2num, [1234],\n\
                                   else
                                     {
                                       error_with_id ("Octave:invalid-fun-call",
-              "arrayfun: all values must be scalars when UniformOutput = true");
+                                                     "arrayfun: all values must be scalars when UniformOutput = true");
                                       break;
                                     }
                                 }
@@ -1414,7 +1415,7 @@ arrayfun (@@str2num, [1234],\n\
               if (nargout > 0 && tmp.length () < nargout)
                 {
                   error_with_id ("Octave:invalid-fun-call", 
-                      "arrayfun: function returned fewer than nargout values");
+                                 "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
 
@@ -1446,7 +1447,7 @@ arrayfun (@@str2num, [1234],\n\
     }
   else
     error_with_id ("Octave:invalid-fun-call", 
-                "arrayfun: argument NAME must be a string or function handle");
+                   "arrayfun: argument NAME must be a string or function handle");
 
   return retval;
 }

@@ -653,9 +653,8 @@ returning the empty string if no key is available.\n\
       if (c == -1)
         c = 0;
 
-      char *s = new char [2];
-      s[0] = c;
-      s[1] = '\0';
+      char s[2] = {c, '\0'};
+
       retval = s;
     }
 

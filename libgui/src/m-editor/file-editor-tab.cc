@@ -975,12 +975,20 @@ file_editor_tab::file_has_changed (const QString&)
     }
   else
     {
-      // Create a WindowModal message that blocks the edit area
-      // by making _edit_area parent.
+      QString modified = "";
+      if (_edit_area->isModified ())
+        modified = tr ("\n\nWarning: The contents in the editor is modified!");
+      // Create a WindowModal message. The file editor tab can't be made
+      // parent because it may be deleted depending upon the response.
+      // Instead, change the _edit_area to read only.
       QMessageBox* msgBox = new QMessageBox (
               QMessageBox::Warning, tr ("Octave Editor"),
-              tr ("It seems that \'%1\' has been deleted or renamed. Do you want to save it now?").
-              arg (_file_name), QMessageBox::Save | QMessageBox::Close, this);
+              tr ("It seems that the file\n"
+                  "%1\n"
+                  "has been deleted or renamed. Do you want to save it now?%2").
+              arg (_file_name).arg (modified),
+              QMessageBox::Save | QMessageBox::Close, 0);
+      _edit_area->setReadOnly (true);
       connect (msgBox, SIGNAL (finished (int)),
                this, SLOT (handle_file_resave_answer (int)));
       msgBox->setWindowModality (Qt::WindowModal);
@@ -1090,21 +1098,21 @@ file_editor_tab::handle_file_reload_answer (int decision)
 void
 file_editor_tab::handle_file_resave_answer (int decision)
 {
+  // check decision of user in dialog
   if (decision == QMessageBox::Save)
     {
-      save_file (_file_name);
+      save_file (_file_name);  // readds file to watcher in set_file_name ()
+      _edit_area->setReadOnly (false);  // delete read only flag
     }
   else
     {
-      if (close ())
-        {
-          emit tab_remove_request ();
-          return;  // Don't touch member variables after removal
-        }
+      // Definitely close the file.
+      // Set modified to false to prevent the dialog box when the close event
+      // is posted. If the user cancels the close in this dialog the tab is
+      // left open with a non-existing file.
+      _edit_area->setModified (false);
+      close ();
     }
-
-  // Start watching file once again.
-  _file_system_watcher.addPath (_file_name);
 }
 
 void

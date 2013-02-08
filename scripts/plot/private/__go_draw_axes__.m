@@ -2027,6 +2027,7 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
       endif
     endif
   endif
+  fprintf (plot_stream, "\n # pad binary data with a space\n")
 
 endfunction
 

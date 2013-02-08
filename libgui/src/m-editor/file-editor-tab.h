@@ -133,7 +133,7 @@ private:
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 
-  int check_file_modified (const QString& msg, int cancelButton);
+  int check_file_modified ();
   void do_comment_selected_text (bool comment);
 
   void run_file_callback (void);

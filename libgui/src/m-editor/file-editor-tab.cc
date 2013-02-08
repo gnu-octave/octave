@@ -142,8 +142,7 @@ file_editor_tab::closeEvent (QCloseEvent *e)
 {
   // ignore close event if file is not saved and user cancels
   // closing this window
-  if (check_file_modified ("Close File",
-                           QMessageBox::Cancel) == QMessageBox::Cancel)
+  if (check_file_modified () == QMessageBox::Cancel)
     {
       e->ignore ();
     }
@@ -691,7 +690,7 @@ file_editor_tab::handle_copy_available(bool enableCopy)
 }
 
 int
-file_editor_tab::check_file_modified (const QString&, int)
+file_editor_tab::check_file_modified ()
 {
   int decision = QMessageBox::Yes;
   if (_edit_area->isModified ())
@@ -700,9 +699,14 @@ file_editor_tab::check_file_modified (const QString&, int)
       // editor tab can't be made parent because it may be deleted depending
       // upon the response.  Instead, change the _edit_area to read only.
       QMessageBox* msgBox = new QMessageBox (
-              QMessageBox::Warning, tr ("Octave Editor"),
-              tr ("The file \'%1\' has been modified. Do you want to save the changes?").
-              arg (_file_name), QMessageBox::Yes | QMessageBox::No, 0);
+          QMessageBox::Warning, tr ("Octave Editor"),
+          tr ("The file\n"
+              "%1\n"
+              "is about to be closed but has been modified.\n"
+              "Do you want to cancel closing, save or discard the changes?").
+          arg (_file_name),
+          QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard, 0);
+      msgBox->setDefaultButton (QMessageBox::Save);
       _edit_area->setReadOnly (true);
       connect (msgBox, SIGNAL (finished (int)),
                this, SLOT (handle_file_modified_answer (int)));
@@ -723,12 +727,12 @@ file_editor_tab::check_file_modified (const QString&, int)
 void
 file_editor_tab::handle_file_modified_answer (int decision)
 {
-  if (decision == QMessageBox::Yes)
+  if (decision == QMessageBox::Save)
     {
       // Save file, then remove from editor.
       save_file (_file_name, true);
     }
-  else if (decision == QMessageBox::No)
+  else if (decision == QMessageBox::Discard)
     {
       // User doesn't want to save, just remove from editor.
       emit tab_remove_request ();

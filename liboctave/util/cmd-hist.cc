@@ -192,8 +192,14 @@ gnu_history::do_add (const std::string& s)
       if (s.empty ()
           || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
         return;
+     
+      // Strip newline before adding to list
+      std::string stmp = s;
+      int stmp_len = stmp.length ();
+      if (stmp[stmp_len - 1] == '\n')
+        stmp.resize (stmp_len - 1);
 
-      lines_this_session += ::octave_add_history (s.c_str (), history_control);
+      lines_this_session += ::octave_add_history (stmp.c_str (), history_control);
     }
 }
 

@@ -532,6 +532,8 @@ do_edit_history (const octave_value_list& args)
         }
       else
         edit_history_add_hist (line);
+
+      delete [] line;
     }
 
   file.close ();

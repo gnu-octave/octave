@@ -168,6 +168,10 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_OCTLIBDIR %OCTAVE_OCTLIBDIR%
 #endif
 
+#ifndef OCTAVE_OCTTESTSDIR
+#define OCTAVE_OCTTESTSDIR %OCTAVE_OCTTESTSDIR%
+#endif
+
 #ifndef OCTAVE_PREFIX
 #define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif

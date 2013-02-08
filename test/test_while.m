@@ -21,28 +21,28 @@
 %! i = 0;
 %! while (eye (2))
 %!   i++;
-%!   printf_assert ("%d\n", i);
+%!   __printf_assert__ ("%d\n", i);
 %! endwhile
-%! assert (prog_output_assert (""));
+%! assert (__prog_output_assert__ (""));
 
 %% test/octave.test/while/while-2.m
 %!test
 %! i = 5;
 %! while (--i)
-%!   printf_assert ("%d", i);
+%!   __printf_assert__ ("%d", i);
 %! endwhile
-%! printf_assert ("\n");
-%! assert (prog_output_assert ("4321"));
+%! __printf_assert__ ("\n");
+%! assert (__prog_output_assert__ ("4321"));
 
 %% test/octave.test/while/while-3.m
 %!test
 %! i = 5;
 %! while (i)
 %!   i--;
-%!   printf_assert ("%d", i);
+%!   __printf_assert__ ("%d", i);
 %! endwhile
-%! printf_assert ("\n");
-%! assert (prog_output_assert ("43210"));
+%! __printf_assert__ ("\n");
+%! assert (__prog_output_assert__ ("43210"));
 
 %% test/octave.test/while/while-4.m
 %!test
@@ -51,10 +51,10 @@
 %!   if (i > 2)
 %!     break;
 %!   endif
-%!   printf_assert ("%d", i);
+%!   __printf_assert__ ("%d", i);
 %! endwhile
-%! printf_assert ("\n");
-%! assert (prog_output_assert ("12"));
+%! __printf_assert__ ("\n");
+%! assert (__prog_output_assert__ ("12"));
 
 %% test/octave.test/while/while-5.m
 %!test
@@ -63,8 +63,8 @@
 %!   if (i < 3)
 %!     continue;
 %!   endif
-%!   printf_assert ("%d", i);
+%!   __printf_assert__ ("%d", i);
 %! endwhile
-%! printf_assert ("\n");
-%! assert (prog_output_assert ("34"));
+%! __printf_assert__ ("\n");
+%! assert (__prog_output_assert__ ("34"));
 

@@ -68,6 +68,12 @@ test_sparse.m: build_sparse_tests.sh
 test_bc_overloads.m: build_bc_overload_tests.sh bc_overloads_expected
 	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
 
+GENERATED_BC_OVERLOADS_DIRS := \
+  $(shell $(srcdir)/build_bc_overload_tests.sh --list-dirs)
+
+GENERATED_BC_OVERLOADS_FILES := \
+  $(shell $(srcdir)/build_bc_overload_tests.sh --list-files)
+
 EXTRA_DIST = \
   build_sparse_tests.sh \
   build_bc_overload_tests.sh \
@@ -77,12 +83,17 @@ EXTRA_DIST = \
 
 CLEANFILES = \
   test_sparse.m \
-  test_bc_overloads.m \
-  tbcover.m
+  $(GENERATED_BC_OVERRLOADS_FILES)
 
 DISTCLEANFILES = \
   fntests.log
-        
+
+fixedtestsdir := $(octtestsdir)/fixed
+
+nobase_fixedtests_DATA = \
+  test_sparse.m \
+  $(GENERATED_BC_OVERLOADS_FILES) \
+  $(filter-out fntests.m, $(FCN_FILES))
+
 clean-local:
-	-rm -rf @double @logical @int8 @uint64 @int64 @cell @single @int32 \
-	@uint8 @uint16 @uint32 @struct @int16 @function_handle @char
+	-rm -rf $(GENERATED_BC_OVERLOADS_DIRS)

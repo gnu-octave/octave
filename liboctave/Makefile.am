@@ -75,6 +75,8 @@ OTHER_INC =
 ## C++ files with templates that are #included, not compiled
 TEMPLATE_SRC =
 
+## A list of all files that could include tests
+
 include array/module.mk
 include numeric/module.mk
 include operators/module.mk
@@ -116,6 +118,22 @@ liboctave_la_LDFLAGS = \
   @XTRA_CRUFT_SH_LDFLAGS@ \
   -bindir $(bindir) \
   $(LIBOCTAVE_LINK_OPTS)
+
+## Rules to build test files
+
+LIBOCTAVE_TST_SRC = \
+  $(array_libarray_la_SOURCES) \
+  $(numeric_libnumeric_la_SOURCES) \
+  $(system_libsystem_la_SOURCES) \
+  $(util_libutil_la_SOURCES)
+
+TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
+
+TST_FILES := $(addsuffix -tst,$(TST_FILES_SRC))
+
+liboctavetestsdir := $(octtestsdir)/liboctave
+
+nobase_liboctavetests_DATA = $(TST_FILES)
 
 DISTCLEANFILES += $(BUILT_INCS)
 

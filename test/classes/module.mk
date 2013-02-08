@@ -37,17 +37,39 @@ classes_FCN_FILES = \
   classes/@Snork/Snork.m \
   classes/@Snork/cack.m \
   classes/@Snork/display.m \
+  classes/@Snork/double.m \
   classes/@Snork/end.m \
+  classes/@Snork/eq.m \
+  classes/@Snork/fdisp.m \
+  classes/@Snork/ge.m \
   classes/@Snork/get.m \
   classes/@Snork/getStash.m \
   classes/@Snork/gick.m \
+  classes/@Snork/gt.m \
+  classes/@Snork/horzcat.m \
+  classes/@Snork/ldivide.m \
+  classes/@Snork/le.m \
   classes/@Snork/loadobj.m \
+  classes/@Snork/lt.m \
+  classes/@Snork/minus.m \
+  classes/@Snork/mldivide.m \
+  classes/@Snork/mpower.m \
+  classes/@Snork/mrdivide.m \
+  classes/@Snork/mtimes.m \
+  classes/@Snork/ne.m \
+  classes/@Snork/plus.m \
+  classes/@Snork/power.m \
   classes/@Snork/private/myStash.m \
+  classes/@Snork/rdivide.m \
   classes/@Snork/saveobj.m \
   classes/@Snork/set.m \
   classes/@Snork/subsasgn.m \
   classes/@Snork/subsindex.m \
   classes/@Snork/subsref.m \
+  classes/@Snork/times.m \
+  classes/@Snork/uminus.m \
+  classes/@Snork/uplus.m \
+  classes/@Snork/vertcat.m \
   classes/@Spork/Spork.m \
   classes/@Spork/cack.m \
   classes/@Spork/display.m \

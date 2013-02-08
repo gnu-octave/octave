@@ -771,7 +771,7 @@ endfunction
 %!test   a=3;             # assign to a shared variable
 %!test   assert (a,3)     # variable should equal 3
 %!shared b,c              # replace shared variables
-%!test assert (!exist ("a"));  # a no longer exists
+%!test assert (!exist ("a", "var"));  # a no longer exists
 %!test assert (isempty (b));   # variables start off empty
 %!shared a,b,c            # recreate a shared variable
 %!test assert (isempty (a));   # value is empty even if it had a previous value
@@ -780,7 +780,7 @@ endfunction
 %!test c=6;             # update a value
 %!test assert ([a, b, c],[1, 2, 6]); # show that the update sticks
 %!shared                     # clear all shared variables
-%!test assert (!exist ("a")) # show that they are cleared
+%!test assert (!exist ("a", "var")) # show that they are cleared
 %!shared a,b,c               # support for initializer shorthand
 %! a=1; b=2; c=4;
 
@@ -835,7 +835,7 @@ endfunction
 % !demo   with syntax error  # syntax errors in demo fail properly
 % !shared a,b,c
 % !demo                      # shared variables not available in demo
-% ! assert(exist("a"))
+% ! assert(exist("a", "var"))
 % !error
 % ! test('/etc/passwd');
 % ! test("nonexistent file");

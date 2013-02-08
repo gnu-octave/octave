@@ -37,7 +37,28 @@ CLASSES="
 "
 
 if [ $# -eq 1 ]; then
-  expected_results_file="$1"
+  case "$1" in
+    --list-files)
+      echo tbcover.m test_bc_overloads.m
+      for class in $CLASSES; do
+        echo @$class/tbcover.m
+      done
+      exit
+    ;;
+    --list-dirs)
+      for class in $CLASSES; do
+        echo @$class
+      done
+      exit
+    ;;
+    --list-classes)
+      echo $CLASSES
+      exit
+    ;;
+    *)
+      expected_results_file="$1"
+    ;;
+  esac
 else
   echo "usage: build_bc_overload_tests.sh expected-results-file" 1>&2
   exit 1

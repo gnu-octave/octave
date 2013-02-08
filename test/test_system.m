@@ -39,8 +39,8 @@
 %% test/octave.test/system/pause-1.m
 %!test
 %! pause (0);
-%! printf_assert ("ok\n");
-%! assert (prog_output_assert ("ok"));
+%! __printf_assert__ ("ok\n");
+%! assert (__prog_output_assert__ ("ok"));
 
 %% test/octave.test/system/pause-2.m
 %!error <Invalid call to pause> pause (1, 2)
@@ -48,8 +48,8 @@
 %% test/octave.test/system/sleep-1.m
 %!test
 %! sleep (0);
-%! printf_assert ("ok\n");
-%! assert (prog_output_assert ("ok"));
+%! __printf_assert__ ("ok\n");
+%! assert (__prog_output_assert__ ("ok"));
 
 %% test/octave.test/system/sleep-2.m
 %!error <Invalid call to sleep> sleep ()
@@ -60,8 +60,8 @@
 %% test/octave.test/system/usleep-1.m
 %!test
 %! usleep (0);
-%! printf_assert ("ok\n");
-%! assert (prog_output_assert ("ok"));
+%! __printf_assert__ ("ok\n");
+%! assert (__prog_output_assert__ ("ok"));
 
 %% test/octave.test/system/usleep-2.m
 %!error <Invalid call to usleep> usleep ()

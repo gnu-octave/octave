@@ -230,6 +230,16 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
 	mv $@-t $@
 
+## Rules to build test files
+
+TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(DIST_SRC) $(DLDFCN_SRC))
+
+TST_FILES := $(addsuffix -tst,$(TST_FILES_SRC))
+
+libinterptestsdir := $(octtestsdir)/libinterp
+
+nobase_libinterptests_DATA = $(TST_FILES)
+
 ## Override Automake's rule that forces a .hh extension on us even
 ## though we don't want it.  It would be super awesome if automake
 ## would allow users to choose the header file extension.

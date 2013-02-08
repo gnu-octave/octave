@@ -363,6 +363,9 @@ mandir = @mandir@
 man1dir = @man1dir@
 man1ext = @man1ext@
 
+# Where to install test files.
+octtestsdir = @octtestsdir@
+
 # The full path to the default doc cache file.
 doc_cache_file = @doc_cache_file@
 
@@ -677,6 +680,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_OCTLIBDIR%|\"${octlibdir}\"|" \
   -e "s|%OCTAVE_OCTLOCALEDIR%|\"${octlocaledir}\"|" \
+  -e "s|%OCTAVE_OCTTESTSDIR%|\"${octtestsdir}\"|" \
   -e "s|%OCTAVE_STARTUPFILEDIR%|\"${startupfiledir}\"|" \
   -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
@@ -725,3 +729,17 @@ done
 rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD
 -rmdir $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
 endef
+
+define test-file-commands
+( echo "## DO NOT EDIT!  Generated automatically from $(<F) by Make."; grep '^%!' $< ) > $@-t
+mv $@-t $@
+endef
+
+%.cc-tst : %.cc
+	$(test-file-commands)
+
+%.yy-tst : %.yy
+	$(test-file-commands)
+
+%.ll-tst : %.ll
+	$(test-file-commands)

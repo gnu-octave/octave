@@ -40,7 +40,6 @@ classes_FCN_FILES = \
   classes/@Snork/double.m \
   classes/@Snork/end.m \
   classes/@Snork/eq.m \
-  classes/@Snork/fdisp.m \
   classes/@Snork/ge.m \
   classes/@Snork/get.m \
   classes/@Snork/getStash.m \

@@ -374,23 +374,21 @@ mk_tmp_hist_file (const octave_value_list& args,
 
   string_vector hlist = command_history::list ();
 
-  int hist_count = hlist.length ();
+  int hist_count = hlist.length () - 1;  // switch to zero-based indexing
 
   // The current command line is already part of the history list by
   // the time we get to this point.  Delete it from the list.
 
-  hist_count -= 2;
-
   if (! insert_curr)
     command_history::remove (hist_count);
 
-  hist_count--;
+  hist_count--;  // skip last entry in history list
 
   // If no numbers have been specified, the default is to edit the
   // last command in the history list.
 
-  int hist_end = hist_count;
   int hist_beg = hist_count;
+  int hist_end = hist_count;
 
   bool reverse = false;
 
@@ -436,9 +434,7 @@ mk_tmp_hist_file (const octave_value_list& args,
 
   if (hist_end < hist_beg)
     {
-      int t = hist_end;
-      hist_end = hist_beg;
-      hist_beg = t;
+      std::swap (hist_end, hist_beg);
       reverse = true;
     }
 

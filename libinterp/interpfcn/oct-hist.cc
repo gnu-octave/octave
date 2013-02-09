@@ -91,7 +91,7 @@ default_history_file (void)
 static int
 default_history_size (void)
 {
-  int size = 1024;
+  int size = 1000;
 
   std::string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
 
@@ -735,7 +735,7 @@ DEFUN (history_size, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} history_size ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_size (@var{new_val})\n\
 Query or set the internal variable that specifies how many entries\n\
-to store in the history file.  The default value is @code{1024},\n\
+to store in the history file.  The default value is @code{1000},\n\
 but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 @seealso{history_file, history_timestamp_format_string, saving_history}\n\
 @end deftypefn")

@@ -65,14 +65,14 @@ check: test_sparse.m test_bc_overloads.m
 test_sparse.m: build_sparse_tests.sh
 	$(srcdir)/build_sparse_tests.sh
 
-test_bc_overloads.m: build_bc_overload_tests.sh bc_overloads_expected
-	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
-
 GENERATED_BC_OVERLOADS_DIRS := \
   $(shell $(srcdir)/build_bc_overload_tests.sh --list-dirs)
 
 GENERATED_BC_OVERLOADS_FILES := \
   $(shell $(srcdir)/build_bc_overload_tests.sh --list-files)
+
+$(GENERATED_BC_OVERLOADS_FILES): build_bc_overload_tests.sh bc_overloads_expected
+	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
 
 EXTRA_DIST = \
   build_sparse_tests.sh \
@@ -83,7 +83,7 @@ EXTRA_DIST = \
 
 CLEANFILES = \
   test_sparse.m \
-  $(GENERATED_BC_OVERRLOADS_FILES)
+  $(GENERATED_BC_OVERLOADS_FILES)
 
 DISTCLEANFILES = \
   fntests.log

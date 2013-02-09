@@ -39,7 +39,8 @@ CLASSES="
 if [ $# -eq 1 ]; then
   case "$1" in
     --list-files)
-      echo tbcover.m test_bc_overloads.m
+      echo tbcover.m
+      echo test_bc_overloads.m
       for class in $CLASSES; do
         echo @$class/tbcover.m
       done

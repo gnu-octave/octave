@@ -203,7 +203,7 @@ function varargout = stemleaf (x, stem_unit)
 
     ## stems -+ 0 have to be handled as special cases.
     for xi = 1:nx
-      if(signbit(stems(kx)) == 1)
+      if(signbit(stems(kx)) != 0)
         t1 = ((x(xi) <= stems(kx)*10) && (x(xi) > (stems(kx-1)*10)));
       else
         t1 = ((x(xi) < stems(kx)*10) && (x(xi) >= (stems(kx-1)*10)));

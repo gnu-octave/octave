@@ -71,8 +71,9 @@ GENERATED_BC_OVERLOADS_DIRS := \
 GENERATED_BC_OVERLOADS_FILES := \
   $(shell $(srcdir)/build_bc_overload_tests.sh --list-files)
 
-$(GENERATED_BC_OVERLOADS_FILES): build_bc_overload_tests.sh bc_overloads_expected
+bc-overload-tests.stamp: build_bc_overload_tests.sh bc_overloads_expected
 	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
+	touch $@
 
 EXTRA_DIST = \
   build_sparse_tests.sh \

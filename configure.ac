@@ -19,14 +19,14 @@ dnl Copyright (C) 1993-2012 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.62])
-AC_INIT([GNU Octave], [3.7.1+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.7.2], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 OCTAVE_API_VERSION_NUMBER="48"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2013-01-02"
-OCTAVE_COPYRIGHT="Copyright (C) 2012 John W. Eaton and others."
+OCTAVE_RELEASE_DATE="2013-02-09"
+OCTAVE_COPYRIGHT="Copyright (C) 2013 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
 AC_SUBST(OCTAVE_API_VERSION)

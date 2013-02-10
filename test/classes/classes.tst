@@ -162,7 +162,7 @@
 %!test drk = Dork();                   % Precedence.
 %! assert (isequal (bling (drk, prk), 2));
 %! assert (isequal (bling (prk, drk), 2));
-  
+
 %%  The Gork class tests aggregation and multiple inheritance.
 %!shared grk
 %!test grk = Gork();

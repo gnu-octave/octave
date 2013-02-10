@@ -79,6 +79,6 @@ classes_FCN_FILES = \
   classes/@Spork/private/myStash.m \
   classes/@Spork/saveobj.m \
   classes/@Spork/set.m \
-  classes/test_classes.m
+  classes/classes.tst
 
 FCN_FILES += $(classes_FCN_FILES)

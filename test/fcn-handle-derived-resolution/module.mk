@@ -6,6 +6,6 @@ fcn_handle_derived_resolution_FCN_FILES = \
   fcn-handle-derived-resolution/@other/other.m \
   fcn-handle-derived-resolution/@parent/numel.m \
   fcn-handle-derived-resolution/@parent/parent.m \
-  fcn-handle-derived-resolution/test_fcn_handle_derived_resolution.m
+  fcn-handle-derived-resolution/fcn-handle-derived-resolution.tst
 
 FCN_FILES += $(fcn_handle_derived_resolution_FCN_FILES)

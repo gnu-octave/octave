@@ -22,12 +22,12 @@
 # Search for "# fails"   
 
 # ./build_sparse_tests.sh preset
-#    creates test_sparse.m with preset tests.
-#    Use "test test_sparse" from octave to run the tests.
+#    creates sparse.tst with preset tests.
+#    Use "test sparse.tst" from octave to run the tests.
 #
 # ./build_sparse_tests.sh random
-#    Creates test_sprandom.m with randomly generated matrices.
-#    Use "test test_sprandom" from octave to run the tests.
+#    Creates sprandom.tst with randomly generated matrices.
+#    Use "test sprandom.tst" from octave to run the tests.
 
 # build_sparse_tests.sh generates tests for real and complex sparse matrices.
 # Also, we want to run both fixed tests with known outputs (quick tests)
@@ -114,9 +114,9 @@ case $1 in
 esac
 
 if $preset; then
-    TESTS=test_sparse.m
+    TESTS=sparse.tst
 else
-    TESTS=test_sprandom.m
+    TESTS=sprandom.tst
 fi
 
 # create initial file
@@ -238,7 +238,7 @@ gen_function() {
 ##    run preset sparse tests.  All should pass.
 function [passes, tests] = test_sparse
   disp ("writing test output to sptest.log");
-  test ("test_sparse", "normal", "sptest.log");
+  test ("sparse.tst", "normal", "sptest.log");
 endfunction
 
 EOF
@@ -258,7 +258,7 @@ function [passes,total] = test_sprandom
   warning ("untested --- fix the source in build_sparse_tests.sh");
   disp ("appending test output to sprandomtest.log");
   fid = fopen ("sprandomtest.log", "at");
-  test ("test_sprandom", "normal", fid);
+  test ("sprandom.tst", "normal", fid);
   ##[passes, total] = test("sprandomtest","normal",fid);
   fclose (fid);
 endfunction

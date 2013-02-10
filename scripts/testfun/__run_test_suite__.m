@@ -23,8 +23,8 @@
 
 function __run_test_suite__ (fcndirs, fixedtestdirs)
   testsdir = octave_config_info ("octtestsdir");
-  libinterptestdir = fullfile (testsdir, "libinterp")
-  liboctavetestdir = fullfile (testsdir, "liboctave")
+  libinterptestdir = fullfile (testsdir, "libinterp");
+  liboctavetestdir = fullfile (testsdir, "liboctave");
   fixedtestdir = fullfile (testsdir, "fixed");
   fcnfiledir = octave_config_info ("fcnfiledir");
   if (nargin == 0)
@@ -194,13 +194,12 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
     chdir (d);
     for i = 1:length (lst)
       nm = lst(i).name;
-      if (length (nm) > 5 && strcmp (nm(1:5), "test_")
-          && strcmp (nm((end-1):end), ".m"))
+      if (length (nm) > 4 && strcmp (nm((end-3):end), ".tst"))
         p = n = xf = sk = 0;
         ffnm = fullfile (d, nm);
         if (has_tests (ffnm))
           print_test_file_name (nm);
-          [p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
+          [p, n, xf, sk] = test (nm, "quiet", fid);
           print_pass_fail (n, p);
           files_with_tests(end+1) = ffnm;
         ##elseif (has_demos (ffnm))
@@ -244,8 +243,10 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
       continue
     endif
     f = fullfile (d, nm);
-    if ((length (nm) > 2 && strcmp (nm((end-1):end), ".m")) || 
-        (length (nm) > 4 && strcmp (nm((end-3):end), "-tst")))
+    if ((length (nm) > 2 && strcmp (nm((end-1):end), ".m"))
+        || (length (nm) > 4
+            && (strcmp (nm((end-3):end), "-tst")
+                || strcmp (nm((end-3):end), ".tst"))))
       p = n = xf = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
       if (has_tests (f))

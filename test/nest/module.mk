@@ -1,4 +1,4 @@
-nest_FCN_FILES = \
+nest_fcn_files = \
   nest/arg_nest.m \
   nest/arg_ret.m \
   nest/nest_eval.m \
@@ -13,7 +13,7 @@ nest_FCN_FILES = \
   nest/scope3.m \
   nest/script_nest.m \
   nest/script_nest_script.m \
-  nest/test_nest.m \
+  nest/nest.tst \
   nest/varg_nest.m \
   nest/varg_nest2.m
 

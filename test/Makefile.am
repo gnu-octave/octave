@@ -22,33 +22,33 @@ include $(top_srcdir)/build-aux/common.mk
 
 FCN_FILES = \
   fntests.m \
-  test_args.m \
-  test_bug_31371.m \
-  test_diag_perm.m \
-  test_error.m \
-  test_eval-catch.m \
-  test_for.m \
-  test_func.m \
-  test_global.m \
-  test_if.m \
-  test_index.m \
-  test_io.m \
-  test_line_continue.m \
-  test_logical_index.m \
-  test_null_assign.m \
-  test_parser.m \
-  test_prefer.m \
-  test_range.m \
-  test_recursion.m \
-  test_return.m \
-  test_slice.m \
-  test_struct.m \
-  test_switch.m \
-  test_system.m \
-  test_transpose.m \
-  test_try.m \
-  test_unwind.m \
-  test_while.m
+  args.tst \
+  bug-31371.tst \
+  diag-perm.tst \
+  error.tst \
+  eval-catch.tst \
+  for.tst \
+  func.tst \
+  global.tst \
+  if.tst \
+  index.tst \
+  io.tst \
+  line-continue.tst \
+  logical-index.tst \
+  null-assign.tst \
+  parser.tst \
+  prefer.tst \
+  range.tst \
+  recursion.tst \
+  return.tst \
+  slice.tst \
+  struct.tst \
+  switch.tst \
+  system.tst \
+  transpose.tst \
+  try.tst \
+  unwind.tst \
+  while.tst
 
 include bug-35448/module.mk
 include bug-36025/module.mk
@@ -59,31 +59,34 @@ include ctor-vs-method/module.mk
 include fcn-handle-derived-resolution/module.mk
 include nest/module.mk
 
-check: test_sparse.m test_bc_overloads.m
+check: sparse.tst bc-overload-tests.stamp
 	$(top_builddir)/run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
 
-test_sparse.m: build_sparse_tests.sh
-	$(srcdir)/build_sparse_tests.sh
+sparse.tst: build-sparse-tests.sh
+	$(srcdir)/build-sparse-tests.sh
 
 GENERATED_BC_OVERLOADS_DIRS := \
-  $(shell $(srcdir)/build_bc_overload_tests.sh --list-dirs)
+  $(shell $(srcdir)/build-bc-overload-tests.sh --list-dirs)
 
 GENERATED_BC_OVERLOADS_FILES := \
-  $(shell $(srcdir)/build_bc_overload_tests.sh --list-files)
+  $(shell $(srcdir)/build-bc-overload-tests.sh --list-files)
 
-bc-overload-tests.stamp: build_bc_overload_tests.sh bc_overloads_expected
-	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
+bc-overload-tests.stamp: build-bc-overload-tests.sh bc-overloads-expected
+	$(srcdir)/build-bc-overload-tests.sh $(srcdir)/bc-overloads-expected
 	touch $@
 
+BUILT_SOURCES = bc-overload-tests.stamp
+
 EXTRA_DIST = \
-  build_sparse_tests.sh \
-  build_bc_overload_tests.sh \
-  bc_overloads_expected \
+  build-sparse-tests.sh \
+  build-bc-overload-tests.sh \
+  bc-overloads-expected \
   build_bc_overloads_expected.m \
   $(FCN_FILES)
 
 CLEANFILES = \
-  test_sparse.m \
+  sparse.tst \
+  bc-overload-tests.stamp \
   $(GENERATED_BC_OVERLOADS_FILES)
 
 DISTCLEANFILES = \
@@ -92,7 +95,7 @@ DISTCLEANFILES = \
 fixedtestsdir := $(octtestsdir)/fixed
 
 nobase_fixedtests_DATA = \
-  test_sparse.m \
+  sparse.tst \
   $(GENERATED_BC_OVERLOADS_FILES) \
   $(filter-out fntests.m, $(FCN_FILES))
 

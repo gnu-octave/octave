@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_classdef_h)
 #define octave_classdef_h 1
 
+#include <map>
 #include <set>
 #include <string>
 
@@ -1039,6 +1040,13 @@ private:
 
     bool is_constructor (void) const;
 
+    octave_value_list
+    meta_subsref (const std::string& type,
+                  const std::list<octave_value_list>& idx, int nargout);
+
+    bool meta_is_postfix_index_handled (char type) const
+      { return (type == '(' || type == '.'); }
+
   private:
     cdef_method_rep (const cdef_method_rep& m)
       : cdef_meta_object_rep (m), function (m.function) { }
@@ -1459,6 +1467,133 @@ to_cdef (const cdef_object& obj)
 { return obj; }
 
 OCTINTERP_API void install_classdef (void);
+
+class
+cdef_manager
+{
+public:
+
+  static cdef_class find_class (const std::string& name,
+                                bool error_if_not_found = true,
+                                bool load_if_not_found = true)
+    {
+      if (instance_ok ())
+        return instance->do_find_class (name, error_if_not_found,
+                                        load_if_not_found);
+
+      return cdef_class ();
+    }
+
+  static octave_function* find_method_symbol (const std::string& method_name,
+                                              const std::string& class_name)
+    {
+      if (instance_ok ())
+        return instance->do_find_method_symbol (method_name, class_name);
+
+      return 0;
+    }
+
+  static cdef_package find_package (const std::string& name,
+                                    bool error_if_not_found = true)
+    {
+      if (instance_ok ())
+        return instance->do_find_package (name, error_if_not_found);
+
+      return cdef_package ();
+    }
+
+  static void register_class (const cdef_class& cls)
+    {
+      if (instance_ok ())
+        instance->do_register_class (cls);
+    }
+
+  static void unregister_class (const cdef_class& cls)
+    {
+      if (instance_ok ())
+        instance->do_unregister_class (cls);
+    }
+
+  static void register_package (const cdef_package& pkg)
+    {
+      if (instance_ok ())
+        instance->do_register_package (pkg);
+    }
+
+  static void unregister_package (const cdef_package& pkg)
+    {
+      if (instance_ok ())
+        instance->do_unregister_package (pkg);
+    }
+
+private:
+
+  cdef_manager (void) { }
+
+  cdef_manager (const cdef_manager&);
+
+  cdef_manager& operator = (const cdef_manager&);
+
+  ~cdef_manager (void) { }
+
+  static void create_instance (void);
+
+  static bool instance_ok (void)
+    {
+      bool retval = true;
+
+      if (! instance)
+        create_instance ();
+
+      if (! instance)
+        {
+          ::error ("unable to create cdef_manager!");
+
+          retval = false;
+        }
+
+      return retval;
+    }
+
+  static void cleanup_instance (void)
+    {
+      delete instance;
+
+      instance = 0;
+    }
+
+  cdef_class do_find_class (const std::string& name, bool error_if_not_found,
+                            bool load_if_not_found);
+
+  octave_function* do_find_method_symbol (const std::string& method_name,
+                                          const std::string& class_name);
+
+  cdef_package do_find_package (const std::string& name,
+                                bool error_if_not_found);
+
+  void do_register_class (const cdef_class& cls)
+    { all_classes[cls.get_name ()] = cls; }
+
+  void do_unregister_class (const cdef_class& cls)
+    { all_classes.erase(cls.get_name ()); }
+
+  void do_register_package (const cdef_package& pkg)
+    { all_packages[pkg.get_name ()] = pkg; }
+
+  void do_unregister_package (const cdef_package& pkg)
+    { all_packages.erase(pkg.get_name ()); }
+
+private:
+
+  // The single cdef_manager instance
+  static cdef_manager *instance;
+
+  // All registered/loaded classes
+  std::map<std::string, cdef_class> all_classes;
+
+  // All registered/loaded packages
+  std::map<std::string, cdef_package> all_packages;
+};
 
 #endif
 

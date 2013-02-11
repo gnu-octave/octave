@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dirfns.h"
 #include "input.h"
 #include "load-path.h"
+#include "ov-classdef.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
@@ -392,6 +393,31 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
           class_constructors[name] = retval;
         }
     }
+  else
+    {
+      // Classdef constructors can be defined anywhere in the path, not
+      // necessarily in @-folders. Look for a normal function and load it.
+      // If the loaded function is a classdef constructor, store it as such
+      // and restore function_on_path to its previous value.
+
+      octave_value old_function_on_path = function_on_path;
+
+      octave_value maybe_cdef_ctor = find_user_function ();
+
+      if (maybe_cdef_ctor.is_defined ())
+        {
+          octave_function *fcn = maybe_cdef_ctor.function_value (true);
+
+          if (fcn && fcn->is_classdef_constructor ())
+            {
+              retval = maybe_cdef_ctor;
+
+              class_constructors[name] = retval;
+
+              function_on_path = old_function_on_path;
+            }
+        }
+    }
 
   return retval;
 }
@@ -406,43 +432,53 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
     retval = load_class_constructor ();
   else
     {
-      std::string dir_name;
+      octave_function *cm = cdef_manager::find_method_symbol (name,
+                                                              dispatch_type);
 
-      std::string file_name = load_path::find_method (dispatch_type, name,
-                                                      dir_name);
+      if (cm)
+        retval = octave_value (cm);
 
-      if (! file_name.empty ())
+      if (! retval.is_defined ())
         {
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name,
-                                                     dispatch_type);
+          std::string dir_name;
 
-          if (fcn)
+          std::string file_name = load_path::find_method (dispatch_type, name,
+                                                          dir_name);
+
+          if (! file_name.empty ())
             {
-              retval = octave_value (fcn);
+              octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+                                                         dispatch_type);
 
-              class_methods[dispatch_type] = retval;
-            }
-        }
-
-      if (retval.is_undefined ())
-        {
-          // Search parent classes
-
-          const std::list<std::string>& plist = parent_classes (dispatch_type);
-
-          std::list<std::string>::const_iterator it = plist.begin ();
-
-          while (it != plist.end ())
-            {
-              retval = find_method (*it);
-
-              if (retval.is_defined ())
+              if (fcn)
                 {
-                  class_methods[dispatch_type] = retval;
-                  break;
-                }
+                  retval = octave_value (fcn);
 
-              it++;
+                  class_methods[dispatch_type] = retval;
+                }
+            }
+
+          if (retval.is_undefined ())
+            {
+              // Search parent classes
+
+              const std::list<std::string>& plist =
+                parent_classes (dispatch_type);
+
+              std::list<std::string>::const_iterator it = plist.begin ();
+
+              while (it != plist.end ())
+                {
+                  retval = find_method (*it);
+
+                  if (retval.is_defined ())
+                    {
+                      class_methods[dispatch_type] = retval;
+                      break;
+                    }
+
+                  it++;
+                }
             }
         }
     }

@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
-#include <map>
 
 #include "defun.h"
 #include "ov-builtin.h"
@@ -38,13 +37,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-misc.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
+#include "singleton-cleanup.h"
 #include "symtab.h"
 #include "toplev.h"
 
 #include "Array.cc"
-
-static std::map<std::string, cdef_class> all_classes;
-static std::map<std::string, cdef_package> all_packages;
 
 static void
 gripe_method_access (const std::string& from, const cdef_method& meth)
@@ -144,41 +141,11 @@ execute_ov (octave_value val, const octave_value_list& args, int nargout)
 }
 
 static cdef_class
-lookup_class (const std::string& name, bool error_if_not_found = true)
+lookup_class (const std::string& name, bool error_if_not_found = true,
+              bool load_if_not_found = true)
 {
-  std::map<std::string, cdef_class>::iterator it = all_classes.find (name);
-
-  if (it == all_classes.end ())
-    {
-      // FIXME: implement this properly
-
-      octave_value ov_cls = symbol_table::find (name);
-
-      if (ov_cls.is_defined ())
-        it = all_classes.find (name);
-    }
-
-  if (it == all_classes.end ())
-    {
-      if (error_if_not_found)
-	error ("class not found: %s", name.c_str ());
-    }
-  else
-    {
-      cdef_class& cls = it->second;
-
-      if (! cls.is_builtin ())
-	{
-	  // FIXME: check whether a class reload is needed
-	}
-
-      if (cls.ok ())
-	return cls;
-      else
-	all_classes.erase (it);
-    }
-
-  return cdef_class ();
+  return cdef_manager::find_class (name, error_if_not_found,
+                                   load_if_not_found);
 }
 
 static cdef_class
@@ -652,7 +619,7 @@ make_class (const std::string& name,
     return cdef_class ();
 
   if (! name.empty ())
-    all_classes[name] = cls;
+    cdef_manager::register_class (cls);
 
   return cls;
 }
@@ -760,10 +727,13 @@ make_package (const std::string& nm,
 
   pack.set_class (cdef_class::meta_package ());
   pack.put ("Name", nm);
-  pack.put ("ContainingPackage", to_ov (all_packages[parent]));
+  if (parent.empty ())
+    pack.put ("ContainingPackage", Matrix ());
+  else
+    pack.put ("ContainingPackage", to_ov (cdef_manager::find_package (parent)));
 
   if (! nm.empty ())
-    all_packages[nm] = pack;
+    cdef_manager::register_package (pack);
 
   return pack;
 }
@@ -2001,7 +1971,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 void
 cdef_class::cdef_class_rep::meta_release (void)
 {
-  all_classes.erase (get_name ());
+  cdef_manager::unregister_class (wrap ());
 }
 
 void
@@ -2646,24 +2616,37 @@ cdef_method::cdef_method_rep::check_access (void) const
   return false;
 }
 
+octave_value_list
+cdef_method::cdef_method_rep::meta_subsref
+  (const std::string& type, const std::list<octave_value_list>& idx,
+   int nargout)
+{
+  octave_value_list retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = execute (idx.front (), type.length () > 1 ? 1 : nargout, true);
+      break;
+
+    default:
+      error ("invalid meta.method indexing");
+      break;
+    }
+
+  if (! error_state)
+    {
+      if (type.length () > 1 && idx.size () > 1 && ! retval.empty ())
+	retval = retval(0).next_subsref (nargout, type, idx, 1);
+    }
+
+  return retval;
+}
+
 static cdef_package
 lookup_package (const std::string& name)
 {
-  std::map<std::string, cdef_package>::const_iterator it = all_packages.find (name);
-
-  if (it != all_packages.end ())
-    {
-      cdef_package pack = it->second;
-
-      if (pack.ok ())
-        return pack;
-      else
-        error ("invalid package: %s", name.c_str ());
-    }
-  else
-    error ("package not found: %s", name.c_str ());
-
-  return cdef_package ();
+  return cdef_manager::find_package (name);
 }
 
 static octave_value_list
@@ -2943,6 +2926,102 @@ install_classdef (void)
   package_meta.install_class (meta_event,       "event");
   package_meta.install_class (meta_dynproperty, "dynproperty");
 }
+
+//----------------------------------------------------------------------------
+
+cdef_manager* cdef_manager::instance = 0;
+
+void
+cdef_manager::create_instance (void)
+{
+  instance = new cdef_manager ();
+
+  if (instance)
+    singleton_cleanup_list::add (cleanup_instance);
+}
+
+cdef_class
+cdef_manager::do_find_class (const std::string& name,
+                             bool error_if_not_found, bool load_if_not_found)
+{
+  std::map<std::string, cdef_class>::iterator it = all_classes.find (name);
+
+  if (it == all_classes.end ())
+    {
+      // FIXME: implement this properly, take package prefix into account
+
+      if (load_if_not_found)
+        {
+          octave_value ov_cls = symbol_table::find (name);
+
+          if (ov_cls.is_defined ())
+            it = all_classes.find (name);
+        }
+    }
+
+  if (it == all_classes.end ())
+    {
+      if (error_if_not_found)
+	error ("class not found: %s", name.c_str ());
+    }
+  else
+    {
+      cdef_class cls = it->second;
+
+      if (! cls.is_builtin ())
+        cls = lookup_class (cls);
+
+      if (cls.ok ())
+	return cls;
+      else
+	all_classes.erase (it);
+    }
+
+  return cdef_class ();
+}
+
+octave_function*
+cdef_manager::do_find_method_symbol (const std::string& method_name,
+                                     const std::string& class_name)
+{
+  octave_function *retval = 0;
+
+  cdef_class cls = find_class (class_name, false, false);
+
+  if (cls.ok ())
+    {
+      cdef_method meth = cls.find_method (method_name);
+
+      if (meth.ok ())
+        retval = new octave_classdef_meta (meth);
+    }
+
+  return retval;
+}
+
+cdef_package
+cdef_manager::do_find_package (const std::string& name,
+                               bool error_if_not_found)
+{
+  cdef_package retval;
+
+  std::map<std::string, cdef_package>::const_iterator it
+    = all_packages.find (name);
+
+  if (it != all_packages.end ())
+    {
+      retval = it->second;
+
+      if (! retval.ok ())
+        error ("invalid package `%s'", name.c_str ());
+    }
+  else if (error_if_not_found)
+    error ("unknown package `%s'", name.c_str ());
+
+  return retval;
+}
+
+//----------------------------------------------------------------------------
 
 DEFUN (__meta_get_package__, args, , "")
 {

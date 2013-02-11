@@ -63,7 +63,7 @@ if [ $# -gt 0 ]; then
     shift
   elif [ "x$1" = "x-gud2" ]; then
     ## The latest version of gud needs -i=mi. There isn't a good way to check
-    ## this at configure time, so we just add a gdb2 flag
+    ## this at configure time, so we just add a gud2 flag
     driver="gdb -i=mi --args"
     shift
   elif [ "x$1" = "x-valgrind" ]; then

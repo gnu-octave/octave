@@ -127,12 +127,6 @@ function r = pick_rand_diag (n, k)
   ## Compute the stuff described above
   a = n*(n - 1)/2;
   d = [mod(k,2):2:min(n,k)-2];
-
-  ## Since we 
-  if (isempty (d))
-    keyboard
-  endif
-
   m = (k - d)/2;
   q = (n - d).*(n - d - 1).*m ./ (d + 2)./(d + 1)./(a - m + 1);
 

@@ -93,6 +93,57 @@ AC_DEFUN([OCTAVE_CC_FLAG], [
   fi
 ])
 dnl
+dnl Check whether the FFTW library supports multi-threading. This macro
+dnl should be called once per FFTW precision passing in the library
+dnl variant (e.g. "fftw3") and a function in the thread support API
+dnl (e.g. "fftw_plan_with_nthreads"). Depending on how FFTW was built,
+dnl the thread functions could be compiled into the main FFTW library or
+dnl could be a separate add-on library that is passed to the linker
+dnl ahead of the main FFTW library.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FFTW_THREADS], [
+  ac_octave_save_CPPFLAGS="$CPPFLAGS"
+  ac_octave_save_LDFLAGS="$LDFLAGS"
+  ac_octave_save_LIBS="$LIBS"
+  CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
+  LIBS="$m4_toupper([$1])_LIBS $LIBS"
+  AC_CACHE_CHECK([for $1 multi-threading support],
+    [octave_cv_[$1]_threads_lib],
+    [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+      #include <fftw3.h>
+      ]], [[
+      $2 (2);
+      ]])],
+      [octave_cv_[$1]_threads_lib=yes],
+      [LIBS="-l[$1]_threads $LIBS"
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #include <fftw3.h>
+        ]], [[
+        $2 (2);
+        ]])],
+        [octave_cv_[$1]_threads_lib="-l[$1]_threads"],
+        [octave_cv_[$1]_threads_lib=no])
+    ])
+  ])
+  case $octave_cv_[$1]_threads_lib in
+    -l*)
+      m4_toupper([$1])_LIBS="$octave_cv_[$1]_threads_lib $m4_toupper([$1])_LIBS"
+      ;;
+    no)
+      AC_MSG_WARN([No $1 multi-threading support found.])
+      AC_MSG_WARN([The single-threaded library will be used instead.])
+      ;;
+  esac
+  if test $octave_cv_[$1]_threads_lib != no; then
+    AC_DEFINE([HAVE_]m4_toupper([$1])[_THREADS], 1,
+      [Define to 1 if ]m4_toupper([$1])[ has multi-threading support.])
+  fi
+  CPPFLAGS="$ac_octave_save_CPPFLAGS"
+  LDFLAGS="$ac_octave_save_LDFLAGS"
+  LIBS="$ac_octave_save_LIBS"
+])
+dnl
 dnl Check whether a math mapper function is available in <cmath>.
 dnl Will define HAVE_CMATH_FUNC if there is a double variant and
 dnl HAVE_CMATH_FUNCF if there is a float variant.
@@ -1486,7 +1537,12 @@ AC_DEFUN([OCTAVE_PROG_MAKEINFO], [
   dnl exist which will then fool the 'test -z' line.
   AC_CHECK_PROG(MKINFO, makeinfo, makeinfo, [])
   if test -z "$MKINFO"; then
-    AC_MSG_ERROR([makeinfo program required for reading documentation])
+    warn_makeinfo="
+
+I didn't find makeinfo, which is required for reading documentation.
+You may install a copy later for Octave to use.
+"
+    OCTAVE_CONFIGURE_WARNING([warn_makeinfo])
   fi
 ])
 dnl

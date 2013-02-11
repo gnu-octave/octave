@@ -148,6 +148,8 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     h = createsurface (s, par);
   elseif (strcmp (s.type, "hggroup"))
     [h, s, p] = createhg (s, p, par, hilev);
+  else
+    error ("struct2hdl: %s objects are not implemented yet", s.type)
   endif
 
   ## children

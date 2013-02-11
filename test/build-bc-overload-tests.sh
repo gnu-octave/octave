@@ -37,7 +37,29 @@ CLASSES="
 "
 
 if [ $# -eq 1 ]; then
-  expected_results_file="$1"
+  case "$1" in
+    --list-files)
+      echo tbcover.m
+      echo bc-overloads.tst
+      for class in $CLASSES; do
+        echo @$class/tbcover.m
+      done
+      exit
+    ;;
+    --list-dirs)
+      for class in $CLASSES; do
+        echo @$class
+      done
+      exit
+    ;;
+    --list-classes)
+      echo $CLASSES
+      exit
+    ;;
+    *)
+      expected_results_file="$1"
+    ;;
+  esac
 else
   echo "usage: build_bc_overload_tests.sh expected-results-file" 1>&2
   exit 1
@@ -65,7 +87,7 @@ if test "$1" = "overloads_only" ; then
   exit
 fi
 
-cat > test_bc_overloads.m << EOF
+cat > bc-overloads.tst << EOF
 ## !!! DO NOT EDIT !!!
 ## THIS IS AN AUTOMATICALLY GENERATED FILE
 ## modify build_bc_overload_tests.sh to generate the tests you need.
@@ -91,7 +113,7 @@ EOF
 
 cat $expected_results_file | \
 while read cl1 cl2 clr ; do
-  cat >> test_bc_overloads.m << EOF
+  cat >> bc-overloads.tst << EOF
 %% Name call
 %!assert (tbcover (ex.$cl1, ex.$cl2), "$clr")
 %% Handle call
@@ -100,7 +122,7 @@ while read cl1 cl2 clr ; do
 EOF
 done
 
-cat >> test_bc_overloads.m << EOF
+cat >> bc-overloads.tst << EOF
 %%test handles through cellfun
 %!test
 %! f = fieldnames (ex);

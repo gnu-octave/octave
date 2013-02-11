@@ -228,7 +228,7 @@ An overview of the directory layout of Octave's source files:
       icons          icon files that will be compiled into the
                      executable via a resource file.
 
-    qterminal        subrepository for the qterminal Qt terminal widget.
+    qterminal        Qt terminal widget
 
     languages        translation files and list of translators.
 

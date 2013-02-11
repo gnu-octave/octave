@@ -86,9 +86,10 @@ public slots:
   void new_file ();
   void open_file ();
   void open_file (const QString& file_name);
+  void open_online_documentation_page ();
   void open_bug_tracker_page ();
-  void open_agora_page ();
   void open_octave_forge_page ();
+  void open_agora_page ();
   void process_settings_dialog_request ();
   void show_about_octave ();
   void notice_settings ();
@@ -106,6 +107,12 @@ public slots:
   void focus_workspace ();
   void focus_editor ();
   void focus_documentation ();
+  void handle_command_window_visible (bool);
+  void handle_command_history_visible (bool);
+  void handle_current_directory_visible (bool);
+  void handle_workspace_visible (bool);
+  void handle_editor_visible (bool);
+  void handle_documentation_visible (bool);
 
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
@@ -117,6 +124,7 @@ public slots:
 
   void read_settings ();
   void write_settings ();
+  void connect_visibility_changed ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);

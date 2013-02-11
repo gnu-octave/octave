@@ -193,15 +193,15 @@ c_file_ptr_buf::buf_close (void)
 }
 
 int
-c_file_ptr_buf::seek (long offset, int origin)
+c_file_ptr_buf::seek (off_t offset, int origin)
 {
-  return f ? gnulib::fseek (f, offset, origin) : -1;
+  return f ? gnulib::fseeko (f, offset, origin) : -1;
 }
 
-long
+off_t
 c_file_ptr_buf::tell (void)
 {
-  return f ? gnulib::ftell (f) : -1;
+  return f ? gnulib::ftello (f) : -1;
 }
 
 int

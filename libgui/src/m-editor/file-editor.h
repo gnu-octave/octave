@@ -33,8 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
 
-const char UNNAMED_FILE[]     = "<unnamed>";
-const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";
 enum editor_markers
   {
     bookmark,
@@ -51,9 +49,11 @@ class file_editor : public file_editor_interface
   ~file_editor ();
   void loadFile (const QString& fileName);
 
+  QMenu *           get_mru_menu ( ) { return _mru_file_menu; }
   QMenu *           debug_menu ();
   QToolBar *        toolbar ();
 
+  void set_focus ();
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
 
@@ -85,6 +85,7 @@ signals:
   void fetab_comment_selected_text (const QWidget* ID);
   void fetab_uncomment_selected_text (const QWidget* ID);
   void fetab_find (const QWidget* ID);
+  void fetab_set_focus (const QWidget* ID);
 
 public slots:
   void request_new_file ();
@@ -113,7 +114,7 @@ public slots:
   void request_uncomment_selected_text ();
   void request_find ();
 
-  void handle_file_name_changed (const QString& fileName);
+  void handle_file_name_changed (const QString& fileName, const QString& toolTip);
   void handle_tab_close_request (int index);
   void handle_tab_remove_request ();
   void handle_add_filename_to_list (const QString& fileName);
@@ -150,6 +151,7 @@ private:
   int               _marker_breakpoint;
 
   enum { MaxMRUFiles = 10 };
+  QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
 

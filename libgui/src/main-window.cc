@@ -100,7 +100,6 @@ main_window::new_file ()
 {
 #ifdef HAVE_QSCINTILLA
   _file_editor->request_new_file ();
-  focus_editor ();
 #endif
 }
 
@@ -109,7 +108,6 @@ main_window::open_file ()
 {
 #ifdef HAVE_QSCINTILLA
   _file_editor->request_open_file ();
-  focus_editor ();
 #endif
 }
 
@@ -118,7 +116,6 @@ main_window::open_file (const QString& file_name)
 {
 #ifdef HAVE_QSCINTILLA
   _file_editor->request_open_file (file_name);
-  focus_editor ();
 #endif
 }
 
@@ -166,7 +163,13 @@ void
 main_window::handle_command_double_clicked (const QString& command)
 {
   _terminal->sendText (command);
-  _terminal->setFocus ();
+  focus_command_window ();
+}
+
+void
+main_window::open_online_documentation_page ()
+{
+  QDesktopServices::openUrl (QUrl ("http://gnu.org/software/octave/doc/interpreter"));
 }
 
 void
@@ -176,15 +179,15 @@ main_window::open_bug_tracker_page ()
 }
 
 void
-main_window::open_agora_page ()
-{
-  QDesktopServices::openUrl (QUrl ("http://agora.octave.org/"));
-}
-
-void
 main_window::open_octave_forge_page ()
 {
   QDesktopServices::openUrl (QUrl ("http://octave.sourceforge.net/"));
+}
+
+void
+main_window::open_agora_page ()
+{
+  QDesktopServices::openUrl (QUrl ("http://agora.octave.org/"));
 }
 
 void
@@ -393,18 +396,13 @@ main_window::focus_workspace ()
   _workspace_view->raise ();
 }
 
+
 void
 main_window::focus_editor ()
 {
 #ifdef HAVE_QSCINTILLA
-  if (!_file_editor->isVisible ())
-    {
-      _file_editor->setVisible (true);
-    }
-
-  _file_editor->setFocus ();
-  _file_editor->activateWindow ();
-  _file_editor->raise ();
+  // call own function of editor in order to set focus to the current editor tab
+  _file_editor->set_focus ();
 #endif
 }
 
@@ -419,6 +417,56 @@ main_window::focus_documentation ()
   _documentation_dock_widget->setFocus ();
   _documentation_dock_widget->activateWindow ();
   _documentation_dock_widget->raise ();
+}
+
+void
+main_window::handle_command_window_visible (bool visible)
+{
+  // if widget is changed to visible and is not floating
+  if (visible && !_terminal_dock_widget->isFloating ())
+    focus_command_window ();
+}
+
+void
+main_window::handle_command_history_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_history_dock_widget->isFloating ())
+    focus_command_history ();
+}
+
+void
+main_window::handle_current_directory_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_files_dock_widget->isFloating ())
+    focus_current_directory ();
+}
+
+void
+main_window::handle_workspace_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_workspace_view->isFloating ())
+    focus_workspace ();
+}
+
+void
+main_window::handle_editor_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+#ifdef HAVE_QSCINTILLA
+  if (visible && !_file_editor->isFloating ())
+    focus_editor ();
+#endif
+}
+
+void
+main_window::handle_documentation_visible (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && !_documentation_dock_widget->isFloating ())
+    focus_documentation ();
 }
 
 void
@@ -567,6 +615,30 @@ main_window::write_settings ()
   settings->sync ();
 }
 
+
+// Connecting the signals emitted when the visibility of a widget changes.
+// This has to be done after the window is shown (see octave-gui.cc)
+void
+main_window::connect_visibility_changed ()
+{
+  connect (_terminal_dock_widget, SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_command_window_visible (bool)));
+  connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_workspace_visible (bool)));
+  connect (_history_dock_widget,  SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_command_history_visible (bool)));
+  connect (_files_dock_widget,    SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_current_directory_visible (bool)));
+#ifdef HAVE_QSCINTILLA
+  connect (_file_editor,          SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_editor_visible (bool)));
+#endif
+  connect (_documentation_dock_widget,  SIGNAL (visibilityChanged (bool)),
+           this,                  SLOT (handle_documentation_visible (bool)));
+}
+
+
+// Main subroutine of the constructor
 void
 main_window::construct ()
 {
@@ -647,12 +719,15 @@ main_window::construct ()
     = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open..."));
   open_action->setShortcut (Qt::ControlModifier + Qt::Key_O);
 
+  file_menu->addMenu(_file_editor->get_mru_menu ());
+
   QAction *close_command_window_action
     = file_menu->addAction (tr ("Close Command Window"));
   close_command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_W);
   close_command_window_action->setEnabled (false); // TODO: Make this work.
 
-  file_menu->addSeparator ();
+  file_menu->addSeparator (); /////
+
   QAction *import_data_action
     = file_menu->addAction (tr ("Import Data..."));
   import_data_action->setEnabled (false); // TODO: Make this work.
@@ -660,12 +735,15 @@ main_window::construct ()
   QAction *save_workspace_action
     = file_menu->addAction (tr ("Save Workspace..."));
   save_workspace_action->setShortcut (Qt::ControlModifier + Qt::Key_S);
-  file_menu->addSeparator ();
+
+  file_menu->addSeparator (); /////
 
   QAction *preferences_action
     = file_menu->addAction (QIcon(":/actions/icons/configure.png"),
                             tr ("Preferences..."));
-  file_menu->addSeparator ();
+
+  file_menu->addSeparator (); /////
+
   QAction *page_setup_action
     = file_menu->addAction (tr ("Page Setup..."));
   page_setup_action->setEnabled (false); // TODO: Make this work.
@@ -677,7 +755,8 @@ main_window::construct ()
     = file_menu->addAction (tr ("Print Selection..."));
   print_selection_action->setEnabled (false); // TODO: Make this work.
 
-  file_menu->addSeparator ();
+  file_menu->addSeparator (); /////
+
   QAction *exit_action = file_menu->addAction (tr ("Exit"));
   exit_action->setShortcut (Qt::ControlModifier + Qt::Key_Q);
 
@@ -690,7 +769,8 @@ main_window::construct ()
   QAction *redo_action
     = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
   redo_action->setShortcut (QKeySequence::Redo);
-  edit_menu->addSeparator ();
+
+  edit_menu->addSeparator (); /////
 
   QAction *cut_action
     = edit_menu->addAction (QIcon(":/actions/icons/editcut.png"), tr ("Cut"));
@@ -707,7 +787,8 @@ main_window::construct ()
   QAction *paste_to_workspace_action
     = edit_menu->addAction (tr ("Paste To Workspace..."));
   paste_to_workspace_action->setEnabled (false); // TODO: Make this work.
-  edit_menu->addSeparator ();
+
+  edit_menu->addSeparator (); /////
 
   QAction *select_all_action
     = edit_menu->addAction (tr ("Select All"));
@@ -716,7 +797,8 @@ main_window::construct ()
     = edit_menu->addAction (tr ("Delete"));
   delete_action->setShortcut (Qt::Key_Delete);
   delete_action->setEnabled (false); // TODO: Make this work.
-  edit_menu->addSeparator ();
+
+  edit_menu->addSeparator (); /////
 
   QAction *find_action
     = edit_menu->addAction (tr ("Find..."));
@@ -726,7 +808,8 @@ main_window::construct ()
   find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
                                   + Qt::Key_F);
   find_files_action->setEnabled (false); // TODO: Make this work.
-  edit_menu->addSeparator ();
+
+  edit_menu->addSeparator (); /////
 
   QAction *clear_command_window_action
     = edit_menu->addAction (tr ("Clear Command Window"));
@@ -770,9 +853,9 @@ main_window::construct ()
 #endif
   _debug_continue->setShortcut (Qt::Key_F5);
 
-  _debug_menu->addSeparator ();
+  _debug_menu->addSeparator (); /////
 #ifdef HAVE_QSCINTILLA
-  _file_editor->debug_menu ()->addSeparator ();
+  _file_editor->debug_menu ()->addSeparator (); /////
 #endif
 
   _debug_quit = _debug_menu->addAction (QIcon (":/actions/icons/db_stop.png"), tr ("Exit Debug Mode"));
@@ -823,7 +906,7 @@ main_window::construct ()
   show_documentation_action->setCheckable (true);
   show_documentation_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
                                           + Qt::Key_5);
-  window_menu->addSeparator ();
+  window_menu->addSeparator (); /////
 
   QAction * command_window_action
     = window_menu->addAction (tr ("Command Window"));
@@ -849,20 +932,31 @@ main_window::construct ()
     = window_menu->addAction (tr ("Documentation"));
   documentation_action->setShortcut (Qt::ControlModifier + Qt::Key_5);
 
-  window_menu->addSeparator ();
+  window_menu->addSeparator (); /////
+
   QAction * reset_windows_action
     = window_menu->addAction (tr ("Reset Windows"));
   reset_windows_action->setEnabled (false); // TODO: Make this work.
 
   // Help menu
   QMenu *   help_menu = menuBar ()->addMenu (tr ("&Help"));
+  QMenu * documentation_menu
+    = help_menu->addMenu (tr ("Documentation"));
+  QAction * ondisk_documentation_action
+    = documentation_menu->addAction (tr ("On Disk"));
+  QAction * online_documentation_action
+    = documentation_menu->addAction (tr ("Online"));
+
+  help_menu->addSeparator (); /////
+
   QAction * report_bug_action
     = help_menu->addAction (tr ("Report Bug"));
-  QAction * agora_action
-    = help_menu->addAction (tr ("Visit Agora"));
   QAction * octave_forge_action
     = help_menu->addAction (tr ("Visit Octave Forge"));
-  help_menu->addSeparator ();
+  QAction * agora_action
+    = help_menu->addAction (tr ("Visit Agora"));
+
+  help_menu->addSeparator (); /////
 
   QAction * about_octave_action
     = help_menu->addAction (tr ("About Octave"));
@@ -872,13 +966,17 @@ main_window::construct ()
   main_tool_bar->setObjectName ("MainToolBar");
   main_tool_bar->addAction (new_script_action);
   main_tool_bar->addAction (open_action);
-  main_tool_bar->addSeparator ();
+
+  main_tool_bar->addSeparator (); /////
+
   main_tool_bar->addAction (cut_action);
   main_tool_bar->addAction (copy_action);
   main_tool_bar->addAction (paste_action);
   main_tool_bar->addAction (undo_action);
   main_tool_bar->addAction (redo_action);
-  main_tool_bar->addSeparator ();
+
+  main_tool_bar->addSeparator (); /////
+
   // addWidget takes ownership of the objects so there is no
   // need to delete these upon destroying this main_window.
   main_tool_bar->addWidget (new QLabel (tr ("Current Directory:")));
@@ -896,12 +994,14 @@ main_window::construct ()
            this,                        SLOT   (new_file ()));
   connect (open_action,                 SIGNAL (triggered ()),
            this,                        SLOT   (open_file ()));
+  connect (online_documentation_action, SIGNAL (triggered ()),
+           this,                        SLOT   (open_online_documentation_page ()));
   connect (report_bug_action,           SIGNAL (triggered ()),
            this,                        SLOT   (open_bug_tracker_page ()));
-  connect (agora_action,                SIGNAL (triggered ()),
-           this,                        SLOT   (open_agora_page ()));
   connect (octave_forge_action,         SIGNAL (triggered ()),
            this,                        SLOT   (open_octave_forge_page ()));
+  connect (agora_action,                SIGNAL (triggered ()),
+           this,                        SLOT   (open_agora_page ()));
   connect (about_octave_action,         SIGNAL (triggered ()),
            this,                        SLOT   (show_about_octave ()));
   connect (show_command_window_action,  SIGNAL (toggled (bool)),
@@ -942,6 +1042,8 @@ main_window::construct ()
   connect (editor_action,               SIGNAL (triggered ()),
            this,                        SLOT (focus_editor ()));
   connect (documentation_action,        SIGNAL (triggered ()),
+           this,                        SLOT (focus_documentation ()));
+  connect (ondisk_documentation_action, SIGNAL (triggered ()),
            this,                        SLOT (focus_documentation ()));
 
   connect (reset_windows_action,        SIGNAL (triggered ()),

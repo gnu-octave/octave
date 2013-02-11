@@ -62,6 +62,23 @@ file_editor::~file_editor ()
     }
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();
+
+  if (_mru_file_menu)
+    delete _mru_file_menu;
+}
+
+// set focus to editor and its current tab
+void
+file_editor::set_focus ()
+{
+  if (!isVisible ())
+    setVisible (true);
+  setFocus ();
+  activateWindow ();
+  raise ();
+  QWidget *fileEditorTab = _tab_widget->currentWidget ();
+  if (fileEditorTab)
+    emit fetab_set_focus (fileEditorTab);
 }
 
 QMenu *
@@ -98,8 +115,9 @@ file_editor::request_new_file ()
   file_editor_tab *fileEditorTab = new file_editor_tab (ced);
   if (fileEditorTab)
     {
-      add_file_editor_tab (fileEditorTab, UNNAMED_FILE);
-      fileEditorTab->new_file ();
+      add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
+      fileEditorTab->new_file ();               // title is updated here
+      set_focus ();                             // focus editor and new tab
     }
 }
 
@@ -112,7 +130,7 @@ file_editor::request_open_file ()
 
   // Create a NonModal message.
   QFileDialog* fileDialog = new QFileDialog (this);
-  fileDialog->setNameFilter (SAVE_FILE_FILTER);
+  fileDialog->setNameFilter (tr("Octave Files (*.m);;All Files (*.*)"));
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
   fileDialog->setDirectory (ced);
@@ -190,6 +208,7 @@ file_editor::request_open_file (const QString& openFileName)
               msgBox->show ();
             }
         }
+      set_focus ();  // really show editor and the current editor tab
     }
 }
 
@@ -411,7 +430,7 @@ file_editor::mru_menu_update ()
 }
 
 void
-file_editor::handle_file_name_changed (const QString& fileName)
+file_editor::handle_file_name_changed (const QString& fileName, const QString& toolTip)
 {
   QObject *fileEditorTab = sender();
   if (fileEditorTab)
@@ -421,6 +440,7 @@ file_editor::handle_file_name_changed (const QString& fileName)
           if (_tab_widget->widget (i) == fileEditorTab)
             {
               _tab_widget->setTabText (i, fileName);
+              _tab_widget->setTabToolTip (i, toolTip);
             }
         }
     }
@@ -631,12 +651,12 @@ file_editor::construct ()
   fileMenu->addAction (save_action);
   fileMenu->addAction (save_as_action);
   fileMenu->addSeparator ();
-  QMenu *mru_file_menu = new QMenu (tr ("Open &Recent"), fileMenu);
+  _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), fileMenu);
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
-      mru_file_menu->addAction (_mru_file_actions[i]);
+      _mru_file_menu->addAction (_mru_file_actions[i]);
     }
-  fileMenu->addMenu (mru_file_menu);
+  fileMenu->addMenu (_mru_file_menu);
   _menu_bar->addMenu (fileMenu);
 
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
@@ -754,8 +774,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
   _tab_widget->addTab (f, fn);
 
   // Signals from the file editor_tab
-  connect (f, SIGNAL (file_name_changed (const QString&)),
-           this, SLOT (handle_file_name_changed (const QString&)));
+  connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
+           this, SLOT (handle_file_name_changed (const QString&, const QString&)));
   connect (f, SIGNAL (editor_state_changed (bool, const QString&)),
            this, SLOT (handle_editor_state_changed (bool, const QString&)));
   connect (f, SIGNAL (tab_remove_request ()),
@@ -819,6 +839,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (uncomment_selected_text (const QWidget*)));
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
+  connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
+           f, SLOT (set_focus (const QWidget*)));
 
   _tab_widget->setCurrentWidget (f);
 }

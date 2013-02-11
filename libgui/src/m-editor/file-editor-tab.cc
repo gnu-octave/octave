@@ -142,8 +142,7 @@ file_editor_tab::closeEvent (QCloseEvent *e)
 {
   // ignore close event if file is not saved and user cancels
   // closing this window
-  if (check_file_modified ("Close File",
-                           QMessageBox::Cancel) == QMessageBox::Cancel)
+  if (check_file_modified () == QMessageBox::Cancel)
     {
       e->ignore ();
     }
@@ -257,6 +256,15 @@ file_editor_tab::update_lexer ()
                              QsciScintilla::AiClosing);
 
   _edit_area->setLexer (lexer);
+}
+
+// slot for fetab_set_focus: sets the focus to the current edit area
+void
+file_editor_tab::set_focus (const QWidget* ID)
+{
+  if (ID != this)
+    return;
+  _edit_area->setFocus ();
 }
 
 void
@@ -615,6 +623,8 @@ file_editor_tab::find (const QWidget* ID)
     }
 
   _find_dialog->activateWindow ();
+  _find_dialog->init_search_text ();
+
 }
 
 void
@@ -649,22 +659,27 @@ void
 file_editor_tab::update_window_title (bool modified)
 {
   QString title ("");
+  QString tooltip ("");
   if (_file_name.isEmpty () || _file_name.at (_file_name.count () - 1) == '/')
-    title = UNNAMED_FILE;
+    title = tr("<unnamed>");
   else
-    title = _file_name;
-  if ( !_long_title )
     {
-      QFileInfo file(_file_name);
-      title = file.fileName();
+      if ( _long_title )
+        title = _file_name;
+      else
+        {
+          QFileInfo file(_file_name);
+          title = file.fileName();
+          tooltip = _file_name;
+        }
     }
 
   if ( modified )
     {
-      emit file_name_changed (title.prepend("* "));
+      emit file_name_changed (title.prepend("* "), tooltip);
     }
   else
-    emit file_name_changed (title);
+    emit file_name_changed (title, tooltip);
 }
 
 void
@@ -675,7 +690,7 @@ file_editor_tab::handle_copy_available(bool enableCopy)
 }
 
 int
-file_editor_tab::check_file_modified (const QString&, int)
+file_editor_tab::check_file_modified ()
 {
   int decision = QMessageBox::Yes;
   if (_edit_area->isModified ())
@@ -684,9 +699,14 @@ file_editor_tab::check_file_modified (const QString&, int)
       // editor tab can't be made parent because it may be deleted depending
       // upon the response.  Instead, change the _edit_area to read only.
       QMessageBox* msgBox = new QMessageBox (
-              QMessageBox::Warning, tr ("Octave Editor"),
-              tr ("The file \'%1\' has been modified. Do you want to save the changes?").
-              arg (_file_name), QMessageBox::Yes | QMessageBox::No, 0);
+          QMessageBox::Warning, tr ("Octave Editor"),
+          tr ("The file\n"
+              "%1\n"
+              "is about to be closed but has been modified.\n"
+              "Do you want to cancel closing, save or discard the changes?").
+          arg (_file_name),
+          QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard, 0);
+      msgBox->setDefaultButton (QMessageBox::Save);
       _edit_area->setReadOnly (true);
       connect (msgBox, SIGNAL (finished (int)),
                this, SLOT (handle_file_modified_answer (int)));
@@ -707,12 +727,12 @@ file_editor_tab::check_file_modified (const QString&, int)
 void
 file_editor_tab::handle_file_modified_answer (int decision)
 {
-  if (decision == QMessageBox::Yes)
+  if (decision == QMessageBox::Save)
     {
       // Save file, then remove from editor.
       save_file (_file_name, true);
     }
-  else if (decision == QMessageBox::No)
+  else if (decision == QMessageBox::Discard)
     {
       // User doesn't want to save, just remove from editor.
       emit tab_remove_request ();
@@ -854,7 +874,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
           fileDialog->setDirectory (_file_name);
         }
     }
-  fileDialog->setNameFilter (SAVE_FILE_FILTER);
+  fileDialog->setNameFilter (tr("Octave Files (*.m);;All Files (*.*)"));
   fileDialog->setDefaultSuffix ("m");
   fileDialog->setAcceptMode (QFileDialog::AcceptSave);
   fileDialog->setViewMode (QFileDialog::Detail);
@@ -885,7 +905,8 @@ file_editor_tab::message_duplicate_file_name (const QString& saveFileName)
   // Create a NonModal message about error.
   QMessageBox* msgBox = new QMessageBox (
           QMessageBox::Critical, tr ("Octave Editor"),
-          tr ("File not saved!  You've selected a file name\n\n     %1\n\nwhich is the same as the current file name.  Use ""Save"" to overwrite.  (Could allow overwriting, with message, if that is what folks want.)").
+          tr ("File not saved! The selected file name\n%1\n"
+              "is the same as the current file name").
           arg (saveFileName),
           QMessageBox::Ok, 0);
   msgBox->setWindowModality (Qt::NonModal);
@@ -958,12 +979,20 @@ file_editor_tab::file_has_changed (const QString&)
     }
   else
     {
-      // Create a WindowModal message that blocks the edit area
-      // by making _edit_area parent.
+      QString modified = "";
+      if (_edit_area->isModified ())
+        modified = tr ("\n\nWarning: The contents in the editor is modified!");
+      // Create a WindowModal message. The file editor tab can't be made
+      // parent because it may be deleted depending upon the response.
+      // Instead, change the _edit_area to read only.
       QMessageBox* msgBox = new QMessageBox (
               QMessageBox::Warning, tr ("Octave Editor"),
-              tr ("It seems that \'%1\' has been deleted or renamed. Do you want to save it now?").
-              arg (_file_name), QMessageBox::Save | QMessageBox::Close, this);
+              tr ("It seems that the file\n"
+                  "%1\n"
+                  "has been deleted or renamed. Do you want to save it now?%2").
+              arg (_file_name).arg (modified),
+              QMessageBox::Save | QMessageBox::Close, 0);
+      _edit_area->setReadOnly (true);
       connect (msgBox, SIGNAL (finished (int)),
                this, SLOT (handle_file_resave_answer (int)));
       msgBox->setWindowModality (Qt::WindowModal);
@@ -1073,21 +1102,21 @@ file_editor_tab::handle_file_reload_answer (int decision)
 void
 file_editor_tab::handle_file_resave_answer (int decision)
 {
+  // check decision of user in dialog
   if (decision == QMessageBox::Save)
     {
-      save_file (_file_name);
+      save_file (_file_name);  // readds file to watcher in set_file_name ()
+      _edit_area->setReadOnly (false);  // delete read only flag
     }
   else
     {
-      if (close ())
-        {
-          emit tab_remove_request ();
-          return;  // Don't touch member variables after removal
-        }
+      // Definitely close the file.
+      // Set modified to false to prevent the dialog box when the close event
+      // is posted. If the user cancels the close in this dialog the tab is
+      // left open with a non-existing file.
+      _edit_area->setModified (false);
+      close ();
     }
-
-  // Start watching file once again.
-  _file_system_watcher.addPath (_file_name);
 }
 
 void

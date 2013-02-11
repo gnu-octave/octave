@@ -40,11 +40,11 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (long, int);
+  int seek (off_t, int);
 
   // Return current stream position.
 
-  virtual long tell (void);
+  virtual off_t tell (void);
 
   // The name of the file.
 
@@ -104,7 +104,7 @@ public:
 
   std::ostream *output_stream (void) { return 0; }
 
-  long tell (void) { return is.tellg (); }
+  off_t tell (void) { return is.tellg (); }
 
   std::streambuf *rdbuf (void) { return is ? is.rdbuf () : 0; }
 

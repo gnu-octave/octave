@@ -96,7 +96,7 @@
 ## employ OutputFcn: After a vector is evaluated for residuals, if OutputFcn is
 ## called with that vector, then the intermediate results should be saved for
 ## future Jacobian evaluation, and should be kept until a Jacobian evaluation
-## is requested or until outputfcn is called with a different vector, in which
+## is requested or until OutputFcn is called with a different vector, in which
 ## case they should be dropped in favor of this most recent vector.  A short
 ## example how this can be achieved follows:
 ##

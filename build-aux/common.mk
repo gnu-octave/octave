@@ -156,21 +156,14 @@ RDYNAMIC_FLAG = @RDYNAMIC_FLAG@
 
 NO_UNDEFINED_LDFLAG = @NO_UNDEFINED_LDFLAG@
 
+MKOCTFILE_AR = @MKOCTFILE_AR@
 MKOCTFILE_CC = @MKOCTFILE_CC@
 MKOCTFILE_CXX = @MKOCTFILE_CXX@
 MKOCTFILE_DL_LD = @MKOCTFILE_DL_LD@
 MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_LDFLAGS@
 MKOCTFILE_F77 = @MKOCTFILE_F77@
 MKOCTFILE_LD_CXX = @MKOCTFILE_LD_CXX@
-
-# List of libraries and their special compilation flags
-
-MKOCTFILE_CC = @MKOCTFILE_CC@
-MKOCTFILE_CXX = @MKOCTFILE_CXX@
-MKOCTFILE_DL_LD = @MKOCTFILE_DL_LD@
-MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_LDFLAGS@
-MKOCTFILE_F77 = @MKOCTFILE_F77@
-MKOCTFILE_LD_CXX = @MKOCTFILE_LD_CXX@
+MKOCTFILE_RANLIB = @MKOCTFILE_RANLIB@
 
 # List of libraries and their special compilation flags
 
@@ -349,6 +342,9 @@ libdir = @libdir@
 # Where to install and expect extra files like NEWS and doc-cache.
 octetcdir = @octetcdir@
 
+# Where to install and expect the language files for the gui.
+octlocaledir = @octlocaledir@
+
 # Where to install and expect libraries like liboctave.a, liboctinterp.a,
 # and other architecture-dependent data.
 octlibdir = @octlibdir@
@@ -366,6 +362,9 @@ includedir = @includedir@
 mandir = @mandir@
 man1dir = @man1dir@
 man1ext = @man1ext@
+
+# Where to install test files.
+octtestsdir = @octtestsdir@
 
 # The full path to the default doc cache file.
 doc_cache_file = @doc_cache_file@
@@ -581,12 +580,14 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_MAGICK_CPPFLAGS%|\"${MAGICK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MAGICK_LDFLAGS%|\"${MAGICK_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MAGICK_LIBS%|\"${MAGICK_LIBS}\"|" \
+  -e 's|%OCTAVE_CONF_MKOCTFILE_AR%|\"${MKOCTFILE_AR}\"|' \
   -e 's|%OCTAVE_CONF_MKOCTFILE_CC%|\"${MKOCTFILE_CC}\"|' \
   -e 's|%OCTAVE_CONF_MKOCTFILE_CXX%|\"${MKOCTFILE_CXX}\"|' \
   -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LD%|\"${MKOCTFILE_DL_LD}\"|' \
   -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|' \
   -e 's|%OCTAVE_CONF_MKOCTFILE_F77%|\"${MKOCTFILE_F77}\"|' \
   -e 's|%OCTAVE_CONF_MKOCTFILE_LD_CXX%|\"${MKOCTFILE_LD_CXX}\"|' \
+  -e 's|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${MKOCTFILE_RANLIB}\"|' \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_DEPS%|\"${OCTAVE_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_OPTS%|\"${OCTAVE_LINK_OPTS}\"|" \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
@@ -678,6 +679,8 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_OCTLIBDIR%|\"${octlibdir}\"|" \
+  -e "s|%OCTAVE_OCTLOCALEDIR%|\"${octlocaledir}\"|" \
+  -e "s|%OCTAVE_OCTTESTSDIR%|\"${octtestsdir}\"|" \
   -e "s|%OCTAVE_STARTUPFILEDIR%|\"${startupfiledir}\"|" \
   -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
@@ -726,3 +729,17 @@ done
 rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD
 -rmdir $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
 endef
+
+define test-file-commands
+( echo "## DO NOT EDIT!  Generated automatically from $(<F) by Make."; grep '^%!' $< ) > $@-t
+mv $@-t $@
+endef
+
+%.cc-tst : %.cc
+	$(test-file-commands)
+
+%.yy-tst : %.yy
+	$(test-file-commands)
+
+%.ll-tst : %.ll
+	$(test-file-commands)

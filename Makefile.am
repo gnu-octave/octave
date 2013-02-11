@@ -39,6 +39,7 @@ EXTRA_DIST = \
   README \
   bootstrap \
   bootstrap.conf \
+  build-aux/find-files-with-tests.sh \
   build-aux/mk-opts.pl \
   build-aux/mkinstalldirs \
   build-aux/move-if-change \

@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <clocale>
 #include <string>
 
 #include "octave.h"

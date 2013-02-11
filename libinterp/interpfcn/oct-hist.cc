@@ -91,7 +91,7 @@ default_history_file (void)
 static int
 default_history_size (void)
 {
-  int size = 1024;
+  int size = 1000;
 
   std::string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
 
@@ -374,23 +374,21 @@ mk_tmp_hist_file (const octave_value_list& args,
 
   string_vector hlist = command_history::list ();
 
-  int hist_count = hlist.length ();
+  int hist_count = hlist.length () - 1;  // switch to zero-based indexing
 
   // The current command line is already part of the history list by
   // the time we get to this point.  Delete it from the list.
 
-  hist_count -= 2;
-
   if (! insert_curr)
     command_history::remove (hist_count);
 
-  hist_count--;
+  hist_count--;  // skip last entry in history list
 
   // If no numbers have been specified, the default is to edit the
   // last command in the history list.
 
-  int hist_end = hist_count;
   int hist_beg = hist_count;
+  int hist_end = hist_count;
 
   bool reverse = false;
 
@@ -436,9 +434,7 @@ mk_tmp_hist_file (const octave_value_list& args,
 
   if (hist_end < hist_beg)
     {
-      int t = hist_end;
-      hist_end = hist_beg;
-      hist_beg = t;
+      std::swap (hist_end, hist_beg);
       reverse = true;
     }
 
@@ -496,9 +492,17 @@ do_edit_history (const octave_value_list& args)
   volatile octave_interrupt_handler old_interrupt_handler
     = octave_ignore_interrupts ();
 
-  system (cmd.c_str ());
+  int status = system (cmd.c_str ());
 
   octave_set_interrupt_handler (old_interrupt_handler);
+
+  // Check if text edition was successfull.  Abort the operation
+  // in case of failure.
+  if (status != EXIT_SUCCESS)
+    {
+      error ("edit_history: text editor command failed");
+      return;
+    }
 
   // Write the commands to the history file since source_file
   // disables command line history while it executes.
@@ -524,6 +528,8 @@ do_edit_history (const octave_value_list& args)
         }
       else
         edit_history_add_hist (line);
+
+      delete [] line;
     }
 
   file.close ();
@@ -729,7 +735,7 @@ DEFUN (history_size, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} history_size ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_size (@var{new_val})\n\
 Query or set the internal variable that specifies how many entries\n\
-to store in the history file.  The default value is @code{1024},\n\
+to store in the history file.  The default value is @code{1000},\n\
 but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 @seealso{history_file, history_timestamp_format_string, saving_history}\n\
 @end deftypefn")

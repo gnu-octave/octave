@@ -156,12 +156,20 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_OCTETCDIR %OCTAVE_OCTETCDIR%
 #endif
 
+#ifndef OCTAVE_OCTLOCALEDIR
+#define OCTAVE_OCTLOCALEDIR %OCTAVE_OCTLOCALEDIR%
+#endif
+
 #ifndef OCTAVE_OCTINCLUDEDIR
 #define OCTAVE_OCTINCLUDEDIR %OCTAVE_OCTINCLUDEDIR%
 #endif
 
 #ifndef OCTAVE_OCTLIBDIR
 #define OCTAVE_OCTLIBDIR %OCTAVE_OCTLIBDIR%
+#endif
+
+#ifndef OCTAVE_OCTTESTSDIR
+#define OCTAVE_OCTTESTSDIR %OCTAVE_OCTTESTSDIR%
 #endif
 
 #ifndef OCTAVE_PREFIX
@@ -195,6 +203,7 @@ extern OCTINTERP_API std::string Vlocal_api_fcn_file_dir;
 extern OCTINTERP_API std::string Vlocal_fcn_file_dir;
 
 extern OCTINTERP_API std::string Voct_etc_dir;
+extern OCTINTERP_API std::string Voct_locale_dir;
 
 extern OCTINTERP_API std::string Voct_file_dir;
 extern OCTINTERP_API std::string Vfcn_file_dir;

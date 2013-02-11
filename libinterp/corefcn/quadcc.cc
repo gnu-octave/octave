@@ -33,11 +33,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-//#include "oct.h"
-//#include "defun.h"
 
-/* Define the size of the interval heap. */
-#define cquad_heapsize                  200
+/* Extended debugging */
+#define DEBUG_QUADCC 0
+
+/* Define the minimum size of the interval heap. */
+#define min_cquad_heapsize  200 
 
 
 /* Data of a single interval */
@@ -1551,14 +1552,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   static const double w = M_SQRT2 / 2;
   static const int ndiv_max = 20;
 
-  /* The interval heap. */
-  cquad_ival ivals[cquad_heapsize];
-  int heap[cquad_heapsize];
-
   /* Arguments left and right */
   int nargin = args.length ();
   octave_function *fcn;
-  double a, b, tol, iivals[cquad_heapsize], *sing;
+  double a, b, tol, *sing;
 
   /* Variables needed for transforming the integrand. */
   bool wrap = false;
@@ -1588,7 +1585,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     fcn = args(0).function_value ();
   else
     {
-       std::string fcn_name = unique_symbol_name ("__quadcc_fcn_");
+       std::string fcn_name = unique_symbol_name ("__quadcc_fcn__");
        std::string fname = "function y = ";
        fname.append (fcn_name);
        fname.append ("(x) y = ");
@@ -1596,7 +1593,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                                "; endfunction");
     }
 
-  if (!args(1).is_real_scalar ())
+  if (! args(1).is_real_scalar ())
     {
       error ("quadcc: lower limit of integration (A) must be a single real scalar");
       return retval;
@@ -1604,7 +1601,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   else
     a = args(1).double_value ();
 
-  if (!args(2).is_real_scalar ())
+  if (! args(2).is_real_scalar ())
     {
       error ("quadcc: upper limit of integration (B) must be a single real scalar");
       return retval;
@@ -1614,7 +1611,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
   if (nargin < 4 || args(3).is_empty ())
     tol = 1.0e-6;
-  else if (!args(3).is_real_scalar () || args(3).double_value () <= 0)
+  else if (! args(3).is_real_scalar () || args(3).double_value () <= 0)
     {
       error ("quadcc: tolerance (TOL) must be a single real scalar > 0");
       return retval;
@@ -1625,8 +1622,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   if (nargin < 5)
     {
       nivals = 1;
-      iivals[0] = a;
-      iivals[1] = b;
     }
   else if (!(args(4).is_real_scalar () || args(4).is_real_matrix ()))
     {
@@ -1635,16 +1630,27 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
   else
     {
-      nivals = 1 + args(4).length ();
-      if (nivals > cquad_heapsize)
-        {
-          error ("quadcc: maximum number of singular points is limited to %i",
-                 cquad_heapsize-1);
-          return retval;
-        }
+      nivals = 1 + args(4).numel ();
+    }
+
+  int cquad_heapsize = (nivals >= min_cquad_heapsize ? nivals + 1 
+                                                     : min_cquad_heapsize);
+  /* The interval heap. */
+  OCTAVE_LOCAL_BUFFER (cquad_ival, ivals, cquad_heapsize);
+  OCTAVE_LOCAL_BUFFER (double, iivals, cquad_heapsize);
+  OCTAVE_LOCAL_BUFFER (int, heap, cquad_heapsize);
+
+  if (nivals == 1)
+    {
+      iivals[0] = a;
+      iivals[1] = b;
+    }
+  else
+    {
+      // Intervals around singularities
       sing = args(4).array_value ().fortran_vec ();
       iivals[0] = a;
-      for (i = 0; i < nivals - 2; i++)
+      for (i = 0; i < nivals - 1; i++)
         iivals[i + 1] = sing[i];
       iivals[nivals] = b;
     }
@@ -1653,7 +1659,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   if (xisinf (a) || xisinf (b))
     {
       wrap = true;
-      for (i = 0; i <= nivals; i++)
+      for (i = 0; i < nivals + 1; i++)
         if (xisinf (iivals[i]))
           iivals[i] = gnulib::copysign (1.0, iivals[i]);
         else
@@ -1664,7 +1670,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   /* Initialize the heaps. */
   for (i = 0; i < cquad_heapsize; i++)
     heap[i] = i;
-
 
   /* Create the first interval(s). */
   igral = 0.0;
@@ -1681,16 +1686,16 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       if (wrap)
         {
           for (i = 0; i <= n[3]; i++)
-            ex (i) = tan (M_PI / 2 * (m + xi[i] * h));
+            ex(i) = tan (M_PI / 2 * (m + xi[i] * h));
         }
       else
         {
           for (i = 0; i <= n[3]; i++)
-            ex (i) = m + xi[i] * h;
+            ex(i) = m + xi[i] * h;
         }
       fargs(0) = ex;
       fvals = feval (fcn, fargs, 1);
-      if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
+      if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
         {
           error ("quadcc: integrand F must return a single, real-valued vector");
           return retval;
@@ -1703,14 +1708,14 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
         }
       for (i = 0; i <= n[3]; i++)
         {
-          iv->fx[i] = effex (i);
+          iv->fx[i] = effex(i);
           if (wrap)
             {
               xw = ex(i);
               iv->fx[i] *= (1.0 + xw * xw) * M_PI / 2;
             }
           neval++;
-          if (!xfinite (iv->fx[i]))
+          if (! xfinite (iv->fx[i]))
             {
               nans[nnans++] = i;
               iv->fx[i] = 0.0;
@@ -1782,10 +1787,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       m = (iv->a + iv->b) / 2;
       h = (iv->b - iv->a) / 2;
 
-/*      printf
+#if (DEBUG_QUADCC)
+      printf
         ("quadcc: processing ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
          heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
-*/
+#endif
+
       /* Should we try to increase the degree? */
       if (iv->depth < 3)
         {
@@ -1799,17 +1806,16 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             if (wrap)
               {
                 for (i = 0; i < n[d] / 2; i++)
-                  ex (i) =
-                    tan (M_PI / 2 * (m + xi[(2 * i + 1) * skip[d]] * h));
+                  ex(i) = tan (M_PI / 2 * (m + xi[(2 * i + 1) * skip[d]] * h));
               }
             else
               {
                 for (i = 0; i < n[d] / 2; i++)
-                  ex (i) = m + xi[(2 * i + 1) * skip[d]] * h;
+                  ex(i) = m + xi[(2 * i + 1) * skip[d]] * h;
               }
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
-            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
+            if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               {
                 error ("quadcc: integrand F must return a single, real-valued vector");
                 return retval;
@@ -1824,7 +1830,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             for (i = 0; i < n[d] / 2; i++)
               {
                 j = (2 * i + 1) * skip[d];
-                iv->fx[j] = effex (i);
+                iv->fx[j] = effex(i);
                 if (wrap)
                   {
                     xw = ex(i);
@@ -1835,7 +1841,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[d])
             {
-              if (!xfinite (iv->fx[i]))
+              if (! xfinite (iv->fx[i]))
                 {
                   nans[nnans++] = i;
                   iv->fx[i] = 0.0;
@@ -1888,11 +1894,13 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           || iv->err < fabs (iv->igral) * std::numeric_limits<double>::epsilon () * 10)
         {
 
-/*          printf
+#if (DEBUG_QUADCC)
+          printf
             ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
              heap[0], nivals, iv->a, iv->b, iv->igral, iv->err,
              iv->depth);
-*/
+#endif
+
           /* Keep this interval's contribution */
           err_final += iv->err;
           igral_final += iv->igral;
@@ -1905,7 +1913,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           i = 0;
           while (2 * i + 1 < nivals)
             {
-
               /* Get the kids */
               j = 2 * i + 1;
               /* If the j+1st entry exists and is larger than the jth,
@@ -1948,16 +1955,16 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             if (wrap)
               {
                 for (i = 0; i < n[0] - 1; i++)
-                  ex (i) = tan (M_PI / 2 * (ml + xi[(i + 1) * skip[0]] * hl));
+                  ex(i) = tan (M_PI / 2 * (ml + xi[(i + 1) * skip[0]] * hl));
               }
             else
               {
                 for (i = 0; i < n[0] - 1; i++)
-                  ex (i) = ml + xi[(i + 1) * skip[0]] * hl;
+                  ex(i) = ml + xi[(i + 1) * skip[0]] * hl;
               }
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
-            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
+            if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               {
                 error ("quadcc: integrand F must return a single, real-valued vector");
                 return retval;
@@ -1972,7 +1979,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             for (i = 0; i < n[0] - 1; i++)
               {
                 j = (i + 1) * skip[0];
-                ivl->fx[j] = effex (i);
+                ivl->fx[j] = effex(i);
                 if (wrap)
                   {
                     xw = ex(i);
@@ -1983,7 +1990,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (!xfinite (ivl->fx[i]))
+              if (! xfinite (ivl->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivl->fx[i] = 0.0;
@@ -2044,16 +2051,16 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             if (wrap)
               {
                 for (i = 0; i < n[0] - 1; i++)
-                  ex (i) = tan (M_PI / 2 * (mr + xi[(i + 1) * skip[0]] * hr));
+                  ex(i) = tan (M_PI / 2 * (mr + xi[(i + 1) * skip[0]] * hr));
               }
             else
               {
                 for (i = 0; i < n[0] - 1; i++)
-                  ex (i) = mr + xi[(i + 1) * skip[0]] * hr;
+                  ex(i) = mr + xi[(i + 1) * skip[0]] * hr;
               }
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
-            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
+            if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               {
                 error ("quadcc: integrand F must return a single, real-valued vector");
                 return retval;
@@ -2068,7 +2075,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             for (i = 0; i < n[0] - 1; i++)
               {
                 j = (i + 1) * skip[0];
-                ivr->fx[j] = effex (i);
+                ivr->fx[j] = effex(i);
                 if (wrap)
                   {
                     xw = ex(i);
@@ -2079,7 +2086,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (!xfinite (ivr->fx[i]))
+              if (! xfinite (ivr->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivr->fx[i] = 0.0;
@@ -2195,16 +2202,16 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
         }
 
-      /* If the heap is about to overflow, remove the last two
-         intervals. */
+      /* If the heap is about to overflow, remove the last two intervals. */
       while (nivals > cquad_heapsize - 2)
         {
           iv = &(ivals[heap[nivals - 1]]);
-/*          printf
+#if (DEBUG_QUADCC)
+          printf
             ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
              heap[0], nivals, iv->a, iv->b, iv->igral, iv->err,
              iv->depth);
-*/
+#endif
           err_final += iv->err;
           igral_final += iv->igral;
           nivals--;
@@ -2222,7 +2229,8 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
 
   /* Dump the contents of the heap. */
-/*  for (i = 0; i < nivals; i++)
+#if (DEBUG_QUADCC)
+  for (i = 0; i < nivals; i++)
     {
       iv = &(ivals[heap[i]]);
       printf
@@ -2230,7 +2238,8 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
          i, heap[i], iv->a, iv->b, iv->igral, iv->err, iv->depth,
          iv->rdepth, iv->ndiv);
     }
-*/
+#endif
+
   /* Clean up and present the results. */
   if (nargout > 2)
     retval(2) = neval;
@@ -2265,7 +2274,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
 %!test
 %! [q, err, npoints] = quadcc ("__nansin", -pi, pi); 
-%! assert (q, 0, eps);
+%! assert (q, 0, 1e-6);
 %! assert (err, 0, 15*eps);
 
 %% Test input validation

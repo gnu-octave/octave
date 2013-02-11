@@ -345,11 +345,11 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  virtual int seek (long offset, int origin) = 0;
+  virtual int seek (off_t offset, int origin) = 0;
 
   // Return current stream position.
 
-  virtual long tell (void) = 0;
+  virtual off_t tell (void) = 0;
 
   // Return TRUE if EOF has been reached on this stream.
 
@@ -460,7 +460,7 @@ private:
 
   std::string getl (octave_idx_type max_len, bool& err, const std::string& who /* = "getl" */);
   std::string gets (octave_idx_type max_len, bool& err, const std::string& who /* = "gets" */);
-  long skipl (long count, bool& err, const std::string& who /* = "skipl" */);
+  off_t skipl (off_t count, bool& err, const std::string& who /* = "skipl" */);
 
   octave_value do_scanf (scanf_format_list& fmt_list, octave_idx_type nr, octave_idx_type nc,
                          bool one_elt_size_spec, octave_idx_type& count,
@@ -524,13 +524,13 @@ public:
   std::string gets (const octave_value& max_len, bool& err,
                     const std::string& who /* = "gets" */);
 
-  long skipl (long count, bool& err, const std::string& who /* = "skipl" */);
-  long skipl (const octave_value& count, bool& err, const std::string& who /* = "skipl" */);
+  off_t skipl (off_t count, bool& err, const std::string& who /* = "skipl" */);
+  off_t skipl (const octave_value& count, bool& err, const std::string& who /* = "skipl" */);
 
-  int seek (long offset, int origin);
+  int seek (off_t offset, int origin);
   int seek (const octave_value& offset, const octave_value& origin);
 
-  long tell (void);
+  off_t tell (void);
 
   int rewind (void);
 

@@ -352,7 +352,7 @@
 %!       mode = deblank (mode_list (k,:));
 %!       [id, err] = fopen (nm, mode, arch);
 %!       if (id < 0)
-%!         printf_assert ("open failed: %s (%s, %s): %s\n", nm, mode, arch, err);
+%!         __printf_assert__ ("open failed: %s (%s, %s): %s\n", nm, mode, arch, err);
 %!         status = 0;
 %!         break;
 %!       else
@@ -361,7 +361,7 @@
 %!       tmp_mode = cstrcat (mode, "b");
 %!       [id, err] = fopen (nm, tmp_mode, arch);
 %!       if (id < 0)
-%!         printf_assert ("open failed: %s (%s, %s): %s\n", nm, tmp_mode, arch, err);
+%!         __printf_assert__ ("open failed: %s (%s, %s): %s\n", nm, tmp_mode, arch, err);
 %!         status = 0;
 %!         break;
 %!       else
@@ -370,7 +370,7 @@
 %!       tmp_mode = cstrcat (mode, "t");
 %!       [id, err] = fopen (nm, tmp_mode, arch);
 %!       if (id < 0)
-%!         printf_assert ("open failed: %s (%s, %s): %s\n", nm, tmp_mode, arch, err);
+%!         __printf_assert__ ("open failed: %s (%s, %s): %s\n", nm, tmp_mode, arch, err);
 %!         status = 0;
 %!         break;
 %!       else
@@ -399,7 +399,7 @@
 
 %% test/octave.test/io/fopen-4.m
 %! fopen ("foo", "wb", "noodle");
-%! assert (prog_output_assert ("error:"));
+%! assert (__prog_output_assert__ ("error:"));
 
 %% test/octave.test/io/fopen-5.m
 %!error <Invalid call to fopen> fopen ()
@@ -452,13 +452,13 @@
 %!     endfor
 %!     
 %!     if (x == 1:n)
-%!       printf_assert ("ok\n");
+%!       __printf_assert__ ("ok\n");
 %!     endif
 %!   endif
 %! endif
 %! 
 %! unlink (nm);
-%! assert (prog_output_assert ("ok"));
+%! assert (__prog_output_assert__ ("ok"));
 
 %% test/octave.test/io/file-pos-1.m
 %!test

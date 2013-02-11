@@ -130,6 +130,21 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _extension->hide ();
 }
 
+
+// initialize search text with selected text if this is in one single line
+void
+find_dialog::init_search_text ()
+{
+  if (_edit_area->hasSelectedText ())
+    {
+      int lbeg, lend, cbeg, cend;
+      _edit_area->getSelection(&lbeg,&cbeg,&lend,&cend);
+      if (lbeg == lend)
+        _search_line_edit->setText (_edit_area->selectedText ());
+    }
+}
+
+
 void
 find_dialog::search_next ()
 {

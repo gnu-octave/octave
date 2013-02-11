@@ -69,7 +69,14 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
                  octave_value& func,
                  octave_value& error_handler)
 {
-  octave_value_list tmp = func.do_multi_index_op (nargout, inputlist);
+  octave_value_list tmp;
+  try {
+    tmp = func.do_multi_index_op (nargout, inputlist);
+  }
+  catch (octave_execution_exception) {
+    if (error_handler.is_defined ())
+      error_state = 1;
+  }
 
   if (error_state)
     {
@@ -996,6 +1003,7 @@ v = cellfun (@@det, a); # faster\n\
 %!assert (cellfun (@atan2, {1,1;1,1}, {1,2;1,2}), atan2 ([1,1;1,1],[1,2;1,2]))
 %!error cellfun (@factorial, {-1,3})
 %!assert (cellfun (@factorial,{-1,3},"ErrorHandler",@(x,y) NaN), [NaN,6])
+%!assert (cellfun (@(x) x(2),{[1],[1,2]},"ErrorHandler",@(x,y) NaN), [NaN,2])
 %!test
 %! [a,b,c] = cellfun (@fileparts, {fullfile("a","b","c.d"), fullfile("e","f","g.h")}, "UniformOutput", false);
 %! assert (a, {fullfile("a","b"), fullfile("e","f")});
@@ -1133,7 +1141,8 @@ arrayfun (@@str2num, [1234],\n\
 
   if (nargin < 2)
     {
-      error ("arrayfun: function requires at least 2 arguments");
+      error_with_id ("Octave:invalid-fun-call", 
+                     "arrayfun: function requires at least 2 arguments");
       print_usage ();
       return retval;
     }
@@ -1164,7 +1173,9 @@ arrayfun (@@str2num, [1234],\n\
           func = symbol_table::find_function (name);
 
           if (func.is_undefined ())
-            error ("arrayfun: invalid function NAME: %s", name.c_str ());
+            error_with_id ("Octave:invalid-input-arg",
+                           "arrayfun: invalid function NAME: %s",
+                           name.c_str ());
 
           symbol_table_lookup = true;
         }
@@ -1242,7 +1253,8 @@ arrayfun (@@str2num, [1234],\n\
                 {
                   if (mask[i] && inputs[i].dims () != fdims)
                     {
-                      error ("arrayfun: dimensions mismatch");
+                      error_with_id ("Octave:invalid-input-arg", 
+                                     "arrayfun: dimensions mismatch");
                       return retval;
                     }
                 }
@@ -1289,7 +1301,8 @@ arrayfun (@@str2num, [1234],\n\
 
               if (nargout > 0 && tmp.length () < nargout)
                 {
-                  error ("arrayfun: function returned fewer than nargout values");
+                  error_with_id ("Octave:invalid-fun-call", 
+                                 "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
 
@@ -1314,7 +1327,8 @@ arrayfun (@@str2num, [1234],\n\
                                 retv[j] = val.resize (fdims);
                               else
                                 {
-                                  error ("arrayfun: all values must be scalars when UniformOutput = true");
+                                  error_with_id ("Octave:invalid-fun-call",
+                                                 "arrayfun: all values must be scalars when UniformOutput = true");
                                   break;
                                 }
                             }
@@ -1341,7 +1355,8 @@ arrayfun (@@str2num, [1234],\n\
                                     }
                                   else
                                     {
-                                      error ("arrayfun: all values must be scalars when UniformOutput = true");
+                                      error_with_id ("Octave:invalid-fun-call",
+                                                     "arrayfun: all values must be scalars when UniformOutput = true");
                                       break;
                                     }
                                 }
@@ -1399,7 +1414,8 @@ arrayfun (@@str2num, [1234],\n\
 
               if (nargout > 0 && tmp.length () < nargout)
                 {
-                  error ("arrayfun: function returned fewer than nargout values");
+                  error_with_id ("Octave:invalid-fun-call", 
+                                 "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
 
@@ -1430,7 +1446,8 @@ arrayfun (@@str2num, [1234],\n\
         }
     }
   else
-    error ("arrayfun: argument NAME must be a string or function handle");
+    error_with_id ("Octave:invalid-fun-call", 
+                   "arrayfun: argument NAME must be a string or function handle");
 
   return retval;
 }

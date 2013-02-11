@@ -75,6 +75,7 @@ std::string Vlocal_api_fcn_file_dir;
 std::string Vlocal_fcn_file_dir;
 
 std::string Voct_etc_dir;
+std::string Voct_locale_dir;
 
 std::string Voct_file_dir;
 std::string Vfcn_file_dir;
@@ -221,6 +222,12 @@ static void
 set_default_oct_etc_dir (void)
 {
   Voct_etc_dir = subst_octave_home (OCTAVE_OCTETCDIR);
+}
+
+static void
+set_default_oct_locale_dir (void)
+{
+  Voct_locale_dir = subst_octave_home (OCTAVE_OCTLOCALEDIR);
 }
 
 static void
@@ -428,6 +435,7 @@ install_defaults (void)
   set_default_local_fcn_file_dir ();
 
   set_default_oct_etc_dir ();
+  set_default_oct_locale_dir ();
 
   set_default_fcn_file_dir ();
   set_default_oct_file_dir ();

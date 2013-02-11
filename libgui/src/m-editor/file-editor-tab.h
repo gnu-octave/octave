@@ -52,6 +52,7 @@ public slots:
   /** Simply transmit file name. */
   void file_name_query (const QWidget* ID);
 
+  void set_focus (const QWidget* ID);
   void undo (const QWidget* ID);
   void redo (const QWidget* ID);
   void copy (const QWidget* ID);
@@ -85,7 +86,7 @@ public slots:
   void file_has_changed (const QString& fileName);
 
 signals:
-  void file_name_changed (const QString& fileName);
+  void file_name_changed (const QString& fileName, const QString& toolTip);
   void editor_state_changed (bool copy_available, const QString& fileName);
   void tab_remove_request ();
   void add_filename_to_list (const QString& fileName);
@@ -132,7 +133,7 @@ private:
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 
-  int check_file_modified (const QString& msg, int cancelButton);
+  int check_file_modified ();
   void do_comment_selected_text (bool comment);
 
   void run_file_callback (void);

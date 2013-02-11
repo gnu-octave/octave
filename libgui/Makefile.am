@@ -26,8 +26,16 @@ MOC_CPPFLAGS =
 
 octlib_LTLIBRARIES = liboctgui.la
 
-EXTRA_DIST = default-qt-settings
+locales = \
+  languages/be_BY.qm \
+  languages/de_DE.qm \
+  languages/en_US.qm \
+  languages/es_ES.qm \
+  languages/pt_BR.qm \
+  languages/ru_RU.qm \
+  languages/uk_UA.qm
 
+EXTRA_DIST = default-qt-settings $(locales)
 CLEANFILES =
 
 BUILT_SOURCES =
@@ -69,6 +77,8 @@ liboctgui_la_LDFLAGS = \
   $(LIBOCTGUI_LINK_OPTS)
 
 octetc_DATA = default-qt-settings
+
+octlocale_DATA = $(locales)
 
 moc-%.cc: %.h
 	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<

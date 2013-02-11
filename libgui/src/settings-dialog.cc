@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
 #include <QSettings>
+#include <QDir>
+#include <QFileInfo>
 
 settings_dialog::settings_dialog (QWidget *p):
   QDialog (p), ui (new Ui::settings_dialog)
@@ -35,9 +37,28 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->setupUi (this);
 
   QSettings *settings = resource_manager::get_settings ();
-
   // FIXME -- what should happen if settings is 0?
 
+  // look for available language files and the actual settings
+  QString qm_dir_name = resource_manager::get_gui_translation_dir ();
+  QDir qm_dir (qm_dir_name);
+  QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"),
+                                                 QDir::Files | QDir::Readable,
+                                                 QDir::Name);
+  for (int i = 0; i < qm_files.length (); i++)    // insert available languages
+    ui->comboBox_language->addItem (qm_files.at (i).baseName ());
+  ui->comboBox_language->insertItem (0,tr("System setting")); // System at beginning
+  ui->comboBox_language->insertSeparator (1);         // separator after System
+  QString language = settings->value ("language","SYSTEM").toString ();
+  if (language == "SYSTEM")
+    language = tr("System setting");
+  int selected = ui->comboBox_language->findText (language);
+  if (selected >= 0)
+    ui->comboBox_language->setCurrentIndex (selected);
+  else
+    ui->comboBox_language->setCurrentIndex (0);  // System is default
+
+  // which icon has to be selected
   QString widget_icon_set =
       settings->value ("DockWidgets/widget_icon_set","NONE").toString ();
   ui->general_icon_octave-> setChecked (true);  // the default (if invalid set)
@@ -104,15 +125,23 @@ void
 settings_dialog::write_changed_settings ()
 {
   QSettings *settings = resource_manager::get_settings ();
-
   // FIXME -- what should happen if settings is 0?
 
+  // the icon set
   QString widget_icon_set = "NONE";
   if (ui->general_icon_letter->isChecked ())
     widget_icon_set = "LETTER";
   else if (ui->general_icon_graphic->isChecked ())
     widget_icon_set = "GRAPHIC";
   settings->setValue ("DockWidgets/widget_icon_set",widget_icon_set);
+
+  // language
+  QString language = ui->comboBox_language->currentText ();
+  if (language == tr("System setting"))
+    language = "SYSTEM";
+  settings->setValue ("language", language);
+
+  // other settings
   settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());
@@ -138,6 +167,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("proxyPassword", ui->proxyPassword->text ());
   settings->setValue ("terminal/cursorBlinking", ui->terminal_cursorBlinking->isChecked ());
 
+  // the cursor
   QString cursorType;
   switch (ui->terminal_cursorType->currentIndex ())
     {

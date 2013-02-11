@@ -1414,6 +1414,7 @@ specified option.\n\
       { true, "octetcdir", OCTAVE_OCTETCDIR },
       { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },
       { true, "octlibdir", OCTAVE_OCTLIBDIR },
+      { true, "octtestsdir", OCTAVE_OCTTESTSDIR },
       { true, "prefix", OCTAVE_PREFIX },
       { true, "startupfiledir", OCTAVE_STARTUPFILEDIR },
       { false, "version", OCTAVE_VERSION },

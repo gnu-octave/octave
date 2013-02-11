@@ -21,67 +21,67 @@
 %! i = 0;
 %! if (i == 0)
 %!   i++;
-%!   printf_assert ("%d\n", i);
+%!   __printf_assert__ ("%d\n", i);
 %! endif
-%! assert (prog_output_assert ("1"));
+%! assert (__prog_output_assert__ ("1"));
 
 %% test/octave.test/if/if-2.m
 %!test
 %! if (eye (2))
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! else
-%!   printf_assert ("pass\n");
+%!   __printf_assert__ ("pass\n");
 %! end
-%! assert (prog_output_assert ("pass"));
+%! assert (__prog_output_assert__ ("pass"));
 
 %% test/octave.test/if/if-3.m
 %!test
 %! x = 2;
 %! if (eye (2))
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! elseif (x)
-%!   printf_assert ("pass\n");
+%!   __printf_assert__ ("pass\n");
 %! endif
-%! assert (prog_output_assert ("pass"));
+%! assert (__prog_output_assert__ ("pass"));
 
 %% test/octave.test/if/if-4.m
 %!test
 %! x = 0;
 %! y = -2;
 %! if (eye (2))
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! elseif (x)
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! elseif (y)
-%!   printf_assert ("pass\n");
+%!   __printf_assert__ ("pass\n");
 %! end
-%! assert (prog_output_assert ("pass"));
+%! assert (__prog_output_assert__ ("pass"));
 
 %% test/octave.test/if/if-5.m
 %!test
 %! x = 0;
 %! y = -2;
 %! if (eye (2))
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! elseif (x)
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! elseif (x)
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! else
-%!   printf_assert ("pass\n");
+%!   __printf_assert__ ("pass\n");
 %! endif
-%! assert (prog_output_assert ("pass"));
+%! assert (__prog_output_assert__ ("pass"));
 
 %% test/octave.test/if/if-6.m
 %!test
 %! x = 0;
 %! y = -2;
 %! if (y)
-%!   printf_assert ("pass\n");
+%!   __printf_assert__ ("pass\n");
 %! elseif (x)
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! elseif (x)
-%!   printf_assert ("fail\n");
+%!   __printf_assert__ ("fail\n");
 %! end
-%! assert (prog_output_assert ("pass"));
+%! assert (__prog_output_assert__ ("pass"));
 

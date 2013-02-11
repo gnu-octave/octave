@@ -645,7 +645,8 @@ function arguments will then be in alphabetical order.  It should\n\
 be noted that i, and j are ignored as arguments due to the\n\
 ambiguity between their use as a variable or their use as an inbuilt\n\
 constant.  All arguments followed by a parenthesis are considered\n\
-to be functions.\n\
+to be functions. If no arguments are found, a function taking a single\n\
+argument named @code{x} will be created.\n\
 \n\
 If the second and subsequent arguments are character strings,\n\
 they are the names of the arguments of the function.\n\
@@ -752,15 +753,19 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
               // Sort the arguments into ascii order.
               fargs.sort ();
+
+              if (fargs.length () == 0)
+                fargs.append (std::string ("x"));
+
             }
           else if (nargin == 2 && args(1).is_numeric_type ())
             {
-              if (! args(1).is_scalar_type ()) 
+              if (! args(1).is_scalar_type ())
                 {
                   error ("inline: N must be an integer");
                   return retval;
                 }
-              
+
               int n = args(1).int_value ();
 
               if (! error_state)
@@ -825,9 +830,11 @@ If the second argument is an integer @var{n}, the arguments are\n\
 %! fn = inline ("x.^2 + 1");
 %!assert (feval (fn, 6), 37)
 %!assert (fn (6), 37)
-## FIXME: Need tests for other 2 calling forms of inline()
+%!assert (feval (inline ("sum (x(:))"), [1 2; 3 4]), 10)
+%!assert (feval (inline ("sqrt (x^2 + y^2)", "x", "y"), 3, 4), 5)
+%!assert (feval (inline ("exp (P1*x) + P2", 3), 3, 4, 5), exp(3*4) + 5)
 
-## Test input validation 
+## Test input validation
 %!error inline ()
 %!error <STR argument must be a string> inline (1)
 %!error <N must be an integer> inline ("2", ones (2,2))

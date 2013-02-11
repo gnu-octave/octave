@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QIcon>
 #include <QMap>
 #include <QSettings>
-
+#include <QTranslator>
 
 class resource_manager
 {
@@ -61,7 +61,9 @@ public:
       instance->do_set_settings (file);
   }
 
-  static QString find_translator_file (const QString& language);
+  static QString get_gui_translation_dir (void);
+
+  static void config_translators (QTranslator*, QTranslator*);
 
   static void update_network_settings (void)
   {

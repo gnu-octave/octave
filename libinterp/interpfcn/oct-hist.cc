@@ -377,7 +377,9 @@ mk_tmp_hist_file (const octave_value_list& args,
   int hist_count = hlist.length () - 1;  // switch to zero-based indexing
 
   // The current command line is already part of the history list by
-  // the time we get to this point.  Delete it from the list.
+  // the time we get to this point.  Delete the cmd from the list when
+  // executing 'edit_history' so that it doesn't show up in the history
+  // but the actual commands performed will.
 
   if (! insert_curr)
     command_history::remove (hist_count);
@@ -521,13 +523,15 @@ do_edit_history (const octave_value_list& args)
           continue;
         }
 
-      if (first)
-        {
-          first = 0;
-          edit_history_repl_hist (line);
-        }
-      else
-        edit_history_add_hist (line);
+      // Command 'edit history' has already been removed in
+      // mk_tmp_hist_file ()
+      //if (first)
+      //  {
+      //    first = 0;
+      //    edit_history_repl_hist (line);
+      //  }
+      //else
+      edit_history_add_hist (line);
 
       delete [] line;
     }

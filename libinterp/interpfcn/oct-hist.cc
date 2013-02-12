@@ -642,27 +642,30 @@ omitted, the previous command in the history list is used.\n\
 
 DEFUN (history, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Command} history options\n\
-@deftypefnx {Built-in Function} {@var{h} = } history (@var{opt1}, @var{opt2}, @dots{})\n\
+@deftypefn  {Command} {} history\n\
+@deftypefnx {Command} {} history @var{opt1} @dots{}\n\
+@deftypefnx {Built-in Function} {@var{h} =} history ()\n\
+@deftypefnx {Built-in Function} {@var{h} =} history (@var{opt1}, @dots{})\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
 that you have executed.  Valid options are:\n\
 \n\
 @table @code\n\
-@item -w @var{file}\n\
-Write the current history to the file @var{file}.  If the name is\n\
-omitted, use the default history file (normally @file{~/.octave_hist}).\n\
+@item   @var{n}\n\
+@itemx -@var{n}\n\
+Display only the most recent @var{n} lines of history.\n\
+\n\
+@item -q\n\
+Don't number the displayed lines of history.  This is useful for cutting\n\
+and pasting commands using the X Window System.\n\
 \n\
 @item -r @var{file}\n\
 Read the file @var{file}, appending its contents to the current\n\
 history list.  If the name is omitted, use the default history file\n\
 (normally @file{~/.octave_hist}).\n\
 \n\
-@item @var{n}\n\
-Display only the most recent @var{n} lines of history.\n\
-\n\
-@item -q\n\
-Don't number the displayed lines of history.  This is useful for cutting\n\
-and pasting commands using the X Window System.\n\
+@item -w @var{file}\n\
+Write the current history to the file @var{file}.  If the name is\n\
+omitted, use the default history file (normally @file{~/.octave_hist}).\n\
 @end table\n\
 \n\
 For example, to display the five most recent commands that you have\n\

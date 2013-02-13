@@ -74,7 +74,11 @@ image_DATA = $(IMAGES)
 
 FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
 
+if AMCOND_BUILD_DOCS
 all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) .DOCSTRINGS
+else
+all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES)
+endif
 
 octave_dirstamp = $(am__leading_dot)dirstamp
 

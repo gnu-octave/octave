@@ -140,6 +140,8 @@ signals:
 
 private:
 
+  bool _update_event_enabled;
+
   void update_workspace_callback (void);
 
   /** Timer for periodically updating the workspace model from the current

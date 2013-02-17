@@ -77,8 +77,9 @@ history_dock_widget::construct ()
   connect (_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (handle_double_click (QModelIndex)));
 
-  _update_history_model_timer.setInterval (200);
-  _update_history_model_timer.setSingleShot (true);
+  _update_event_enabled = true;
+  _update_history_model_timer.setInterval (500);
+  _update_history_model_timer.setSingleShot (false);
 
   connect (&_update_history_model_timer,
            SIGNAL (timeout ()),
@@ -132,7 +133,11 @@ history_dock_widget::handle_double_click (QModelIndex modelIndex)
 void
 history_dock_widget::request_history_model_update ()
 {
-  octave_link::post_event (this, &history_dock_widget::update_history_callback);
+  if (_update_event_enabled)
+    {
+      _update_event_enabled = false;  // no more update until this one is processed
+      octave_link::post_event (this, &history_dock_widget::update_history_callback);
+    }
 }
 
 void
@@ -181,7 +186,7 @@ history_dock_widget::update_history_callback (void)
       _history_list_view->scrollToBottom ();
     }
 
-  // Post a new update event in a given time. This prevents flooding the
-  // event queue.
-  _update_history_model_timer.start ();
+  // update is processed, re-enable further updates events triggered by timer
+    _update_event_enabled = true;
+
 }

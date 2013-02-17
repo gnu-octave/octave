@@ -66,6 +66,7 @@ private:
   QTimer _update_history_model_timer;
 
   void update_history_callback (void);
+  bool _update_event_enabled;
 };
 
 #endif // HISTORYDOCKWIDGET_H

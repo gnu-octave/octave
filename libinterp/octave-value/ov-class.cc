@@ -2196,7 +2196,7 @@ This function may only be called from a class constructor.\n\
       error ("superiorto: invalid call from outside class constructor");
       return retval;
     }
-  
+
   for (int i = 0; i < args.length (); i++)
     {
       std::string inf_class = args(i).string_value ();
@@ -2206,7 +2206,7 @@ This function may only be called from a class constructor.\n\
               break;
         }
 
-      // User defined classes always have higher precedence 
+      // User defined classes always have higher precedence
       // than built-in classes
       if (is_built_in_class (inf_class))
         break;
@@ -2218,8 +2218,8 @@ This function may only be called from a class constructor.\n\
                  sup_class.c_str (), inf_class.c_str ());
           break;
         }
-    }   
-  
+    }
+
   return retval;
 }
 
@@ -2233,30 +2233,30 @@ This function may only be called from a class constructor.\n\
 @end deftypefn")
 {
   octave_value retval;
-  
+
   octave_function *fcn = octave_call_stack::caller ();
   if ((! fcn) || (! fcn->is_class_constructor ()))
     {
       error ("inferiorto: invalid call from outside class constructor");
       return retval;
     }
-  
+
   for (int i = 0; i < args.length (); i++)
     {
-      std::string sup_class = args(i).string_value ();      
+      std::string sup_class = args(i).string_value ();
       if (error_state)
         {
           error ("inferiorto: expecting argument to be class name");
           break;
         }
-      
+
       if (is_built_in_class (sup_class))
         {
           error ("inferiorto: cannot give user-defined class lower "
                  "precedence than built-in class");
           break;
         }
-      
+
       std::string inf_class = fcn->name ();
       if (! symbol_table::set_class_relationship (sup_class, inf_class))
         {

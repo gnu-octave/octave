@@ -1016,8 +1016,8 @@ symbol_table::set_class_relationship (const std::string& sup_class,
   if (is_superiorto (inf_class, sup_class))
     return false;
 
-  // If sup_class doesn't have an entry in the precedence table, 
-  // this will automatically create it, and associate to it a 
+  // If sup_class doesn't have an entry in the precedence table,
+  // this will automatically create it, and associate to it a
   // singleton set {inf_class} of inferior classes.
   class_precedence_table[sup_class].insert (inf_class);
 
@@ -1040,7 +1040,7 @@ symbol_table::set_class_relationship (const std::string& sup_class,
 bool
 symbol_table::is_superiorto (const std::string& a, const std::string& b)
 {
-  class_precedence_table_const_iterator p = class_precedence_table.find (a);  
+  class_precedence_table_const_iterator p = class_precedence_table.find (a);
   // If a has no entry in the precedence table, return false
   if (p == class_precedence_table.end ())
     return false;
@@ -1466,7 +1466,7 @@ symbol_table::do_update_nest (void)
             {
               if (ours.is_global () || ours.is_persistent ())
                 ::error ("global and persistent may only be used in the topmost level in which a nested variable is used");
-                
+
               if (! ours.is_formal ())
                 {
                   ours.invalidate ();

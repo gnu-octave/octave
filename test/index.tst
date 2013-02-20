@@ -210,3 +210,20 @@
 %!error <attempted to use a complex scalar as an index> x(i)
 %!error <attempted to use a complex scalar as an index> x(j)
 %!error <attempted to use a complex scalar as an index> x(1+i)
+
+## bug #38357
+%!shared d, dd
+%! d = diag ([1, 2, 3]);
+%! dd = diag ([1, 2, 3], 6, 3);
+%!assert (d(1), 1);
+%!assert (dd(1), 1);
+%!assert (d(3, 3), 3);
+%!assert (dd(3, 3), 3);
+%!assert (d(2), 0);
+%!assert (dd(2), 0);
+%!assert (dd(6,1), 0);
+%!error d(6,6);
+%!error dd(6,6);
+%!error d(3,6);
+%!error dd(3,6);
+

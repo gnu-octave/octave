@@ -843,8 +843,8 @@ get_user_input (const octave_value_list& args, int nargout)
 
 DEFUN (input, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} input (@var{prompt})\n\
-@deftypefnx {Built-in Function} {} input (@var{prompt}, \"s\")\n\
+@deftypefn  {Built-in Function} {@var{ans} =} input (@var{prompt})\n\
+@deftypefnx {Built-in Function} {@var{ans} =} input (@var{prompt}, \"s\")\n\
 Print a prompt and wait for user input.  For example,\n\
 \n\
 @example\n\
@@ -874,7 +874,8 @@ directly, without evaluating it first.\n\
 Because there may be output waiting to be displayed by the pager, it is\n\
 a good idea to always call @code{fflush (stdout)} before calling\n\
 @code{input}.  This will ensure that all pending output is written to\n\
-the screen before your prompt.  @xref{Input and Output}.\n\
+the screen before your prompt.\n\
+@seealso{yes_or_no, kbhit}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -909,12 +910,14 @@ octave_yes_or_no (const std::string& prompt)
 
 DEFUN (yes_or_no, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} yes_or_no (@var{prompt})\n\
-Ask the user a yes-or-no question.  Return 1 if the answer is yes.\n\
-Takes one argument, which is the string to display to ask the\n\
-question.  It should end in a space; @samp{yes-or-no-p} adds\n\
-@samp{(yes or no) } to it.  The user must confirm the answer with\n\
-RET and can edit it until it has been confirmed.\n\
+@deftypefn {Built-in Function} {@var{ans} =} yes_or_no (\"@var{prompt}\")\n\
+Ask the user a yes-or-no question.  Return logical true if the answer is yes\n\
+or false if the answer is no.  Takes one argument, @var{prompt}, which is\n\
+the string to display when asking the question.  @var{prompt} should end in\n\
+a space; @code{yes-or-no} adds the string @samp{(yes or no) } to it.  The\n\
+user must confirm the answer with @key{RET} and can edit it until it has\n\
+been confirmed.\n\
+@seealso{input}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -986,7 +989,7 @@ do_keyboard (const octave_value_list& args)
 DEFUN (keyboard, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} keyboard ()\n\
-@deftypefnx {Built-in Function} {} keyboard (@var{prompt})\n\
+@deftypefnx {Built-in Function} {} keyboard (\"@var{prompt}\")\n\
 This function is normally used for simple debugging.  When the\n\
 @code{keyboard} function is executed, Octave prints a prompt and waits\n\
 for user input.  The input strings are then evaluated and the results\n\

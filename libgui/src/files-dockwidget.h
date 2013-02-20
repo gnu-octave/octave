@@ -35,14 +35,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <QAction>
 #include <QTreeView>
 
-#include <QDockWidget>
 #include <QLineEdit>
+#include "octave-dock-widget.h"
 
 /**
    \class files_dock_widget
    \brief Dock widget to display files in the current directory.
 */
-class files_dock_widget : public QDockWidget
+class files_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
   public:
@@ -51,6 +51,7 @@ class files_dock_widget : public QDockWidget
   ~files_dock_widget ();
 
 public slots:
+
   /** Slot for handling a change in directory via double click. */
   void item_double_clicked (const QModelIndex & index);
 
@@ -68,12 +69,6 @@ public slots:
   /** Tells the widget to react on changed settings. */
   void notice_settings ();
 
-  /** Slot to steer changing visibility from outside. */
-  void handle_visibility_changed (bool visible);
-
-  /** Slot when floating property changes */
-  void top_level_changed (bool floating);
-
 signals:
   /** Emitted, whenever the user requested to open a file. */
   void open_file (const QString& fileName);
@@ -81,11 +76,7 @@ signals:
   /** Emitted, whenever the currently displayed directory changed. */
   void displayed_directory_changed (const QString& directory);
 
-  /** Custom signal that tells if a user has clicke away that dock widget. */
-  void active_changed (bool active);
-
 protected:
-  void closeEvent (QCloseEvent *event);
 
 private:
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc

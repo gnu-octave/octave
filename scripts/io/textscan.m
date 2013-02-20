@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 Ben Abbott <bpabbott@mac.com>
+## Copyright (C) 2010-2013 Ben Abbott <bpabbott@mac.com>
 ##
 ## This file is part of Octave.
 ##
@@ -167,14 +167,23 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     st_pos = ftell (fid);
     ## Skip header lines if requested
     headerlines = find (strcmpi (args, "headerlines"), 1);
-    ## Beware of zero valued headerline, fskipl would skip to EOF
-    if (! isempty (headerlines) && (args{headerlines + 1} > 0))
-      fskipl (fid, args{headerlines + 1});
-      args(headerlines:headerlines+1) = [];
-      st_pos = ftell (fid);
+    if (! isempty (headerlines))
+      ## Beware of missing or wrong headerline value
+      if (headerlines  == numel (args)
+         || ! isnumeric (args{headerlines + 1}))
+        error ("Missing or illegal value for 'headerlines'" );
+      endif
+      ## Avoid conveying floats to fskipl
+      args{headerlines + 1} = round (args{headerlines + 1});
+      if (args{headerlines + 1} > 0)
+        ## Beware of zero valued headerline, fskipl would skip to EOF
+        fskipl (fid, args{headerlines + 1});
+        args(headerlines:headerlines+1) = [];
+        st_pos = ftell (fid);
+      elseif (args{headerlines + 1} < 0)
+        warning ("textscan.m: negative headerline value ignored");
+      endif
     endif
-    ## Read a first file chunk. Rest follows after endofline processing
-    [str, count] = fscanf (fid, "%c", BUFLENGTH);
   endif
 
   ## Check for empty result
@@ -497,3 +506,7 @@ endfunction
 %!   rh = strtrim (rh);
 %!   assert (strcmp (lh, rh));
 %! end
+
+%!error <missing or illegal value for> textread (file_in_loadpath ("textscan.m"), "", "headerlines")
+%!error <missing or illegal value for> textread (file_in_loadpath ("textscan.m"), "", "headerlines", 'hh')
+%!error <character value required for> textread (file_in_loadpath ("textscan.m"), "", "endofline", true)

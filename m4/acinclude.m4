@@ -370,10 +370,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
     LIBS="$m4_toupper([$1])_LIBS $LIBS"
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
-    ac_octave_$1_check_for_lib=false
-    m4_ifblank([$4], [ac_octave_$1_check_for_lib=true],
-               [AC_CHECK_HEADERS([$4], [ac_octave_$1_check_for_lib=true; break])])
-    if $ac_octave_$1_check_for_lib; then
+    ac_octave_$1_check_for_lib=no
+    m4_ifblank([$4], [ac_octave_$1_check_for_lib=yes],
+               [AC_CHECK_HEADERS([$4], [ac_octave_$1_check_for_lib=yes; break])])
+    if test $ac_octave_$1_check_for_lib = yes; then
       AC_CACHE_CHECK([for $5 in $m4_toupper([$1])_LIBS],
         [octave_cv_lib_$1],
         [AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
@@ -1159,16 +1159,16 @@ dnl Allow the user disable support for command line editing using GNU
 dnl readline.
 dnl
 AC_DEFUN([OCTAVE_ENABLE_READLINE], [
-  USE_READLINE=true
+  USE_READLINE=yes
   READLINE_LIBS=
   AC_ARG_ENABLE([readline],
     [AS_HELP_STRING([--disable-readline],
       [use readline library])],
     [if test "$enableval" = no; then
-       USE_READLINE=false
+       USE_READLINE=no
        warn_readline="command editing and history features require GNU Readline"
      fi])
-  if $USE_READLINE; then
+  if test $USE_READLINE = yes; then
     dnl RHEL 5 and older systems require termlib set before enabling readline
     AC_REQUIRE([OCTAVE_CHECK_LIB_TERMLIB])
     ac_octave_save_LIBS="$LIBS"
@@ -1672,15 +1672,15 @@ AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
   AC_REQUIRE([OCTAVE_PROG_TEXI2DVI])
   AC_CHECK_PROG(TEXI2PDF, texi2pdf, texi2pdf, [])
   if test -z "$TEXI2PDF"; then
-    ac_octave_missing=true;
+    ac_octave_texi2pdf_missing=yes;
     if test -n "$TEXI2DVI"; then
       TEXI2PDF="$TEXI2DVI --pdf"
-      ac_octave_missing=false;
+      ac_octave_texi2pdf_missing=no;
     fi
   else
-    ac_octave_missing=false;
+    ac_octave_texi2pdf_missing=no;
   fi
-  if $ac_octave_missing; then
+  if test $ac_octave_texi2pdf_missing = yes; then
     TEXI2PDF='$(top_srcdir)/build-aux/missing texi2pdf'
     warn_texi2pdf="
 

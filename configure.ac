@@ -872,7 +872,7 @@ if test -z "$warn_curl"; then
     ])
   if test $octave_cv_header_define_curlopt_dirlistonly = yes; then
     AC_DEFINE(CURLOPT_DIRLISTONLY, CURLOPT_FTPLISTONLY,
-      [Define to the legacy option name if using an older version of cURL.])]
+      [Define to the legacy option name if using an older version of cURL.])
   fi
 fi
 LIBS="$save_LIBS"

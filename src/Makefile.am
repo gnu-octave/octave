@@ -572,6 +572,12 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
 	mv $@-t $@
 
+## Override Automake's rule that forces a .hh extension on us even
+## though we don't want it.  It would be super awesome if automake
+## would allow users to choose the header file extension.
+.yy.cc:
+	$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE)
+
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 

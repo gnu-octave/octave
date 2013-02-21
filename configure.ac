@@ -861,16 +861,16 @@ OCTAVE_CHECK_LIB(curl, cURL,
 if test -z "$warn_curl"; then
   ## Additional check on cURL library that was found
   AC_CACHE_CHECK([for CURLOPT_DIRLISTONLY in curl/curl.h],
-    [octave_cv_header_define_curlopt_dirlistonly],
+    [octave_cv_curl_has_curlopt_dirlistonly],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
       #include <curl/curl.h>
       ]], [[
       curl_easy_setopt ((CURL*)NULL, CURLOPT_DIRLISTONLY, 0);
       ]])],
-      [octave_cv_header_define_curlopt_dirlistonly=no],
-      [octave_cv_header_define_curlopt_dirlistonly=yes])
+      [octave_cv_curl_has_curlopt_dirlistonly=yes],
+      [octave_cv_curl_has_curlopt_dirlistonly=no])
     ])
-  if test $octave_cv_header_define_curlopt_dirlistonly = yes; then
+  if test $octave_cv_curl_has_curlopt_dirlistonly = no; then
     AC_DEFINE(CURLOPT_DIRLISTONLY, CURLOPT_FTPLISTONLY,
       [Define to the legacy option name if using an older version of cURL.])
   fi

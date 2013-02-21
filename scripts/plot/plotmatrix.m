@@ -164,9 +164,9 @@ function [h, ax, p, pax, need_usage] = __plotmatrix__ (bigax, varargin)
   border = [0.130, 0.110, 0.225, 0.185] .* [xsize, ysize, xsize, ysize];
   border(3:4) = - border(3:4) - border(1:2);
 
-  for i = 1 : n
-    for j = 1 : m
-      pos = [xsize * (j - 1) + xoff, ysize * (n - i) + yoff, xsize, ysize];
+  for i = 1 : m
+    for j = 1 : n
+      pos = [xsize * (i - 1) + xoff, ysize * (n - j) + yoff, xsize, ysize];
       tmp = axes ("outerposition", pos, "position", pos + border,
                   "parent", parent);
       if (i == j && have_hist)

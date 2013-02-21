@@ -26,6 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "fpucw.h"
+
+#if HAVE_FPU_CONTROL_H
+#include <fpu_control.h>
+#endif
 
 #if defined HAVE_JAVA
 
@@ -392,6 +397,22 @@ initial_class_path (void)
   return retval;
 }
 
+#ifndef _FPU_DEFAULT
+#if defined __i386__ || defined __x86_64__
+#define _FPU_DEFAULT 0x037f
+#else
+#define _FPU_DEFAULT 0
+#endif
+#endif
+
+static void
+restore_fpu_state (void)
+{
+  fpucw_t cw = GET_FPUCW ();
+  if (cw != _FPU_DEFAULT)
+    SET_FPUCW (_FPU_DEFAULT);
+}
+
 static void
 initialize_jvm (void)
 {
@@ -583,6 +604,8 @@ terminate_jvm (void)
 
       if (jvm_lib)
         jvm_lib.close ();
+
+      restore_fpu_state ();
     }
 }
 
@@ -742,6 +765,8 @@ compute_array_dimensions (JNIEnv* jni_env, jobject obj)
       idx++;
     }
 
+  restore_fpu_state ();
+
   return dv;
 }
 
@@ -798,6 +823,8 @@ get_array_elements (JNIEnv* jni_env, jobject jobj,
   else
     retval = check_exception (jni_env);
 
+  restore_fpu_state ();
+
   return retval;
 }
 
@@ -825,6 +852,8 @@ set_array_elements (JNIEnv* jni_env, jobject jobj,
     retval = box (jni_env, resObj);
   else
     retval = check_exception (jni_env);
+
+  restore_fpu_state ();
 
   return retval;
 }
@@ -862,6 +891,8 @@ get_invoke_list (JNIEnv* jni_env, jobject jobj)
           jstring_ref fieldName (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (field, f_getName_ID)));
           name_list.push_back (jstring_to_string (jni_env, fieldName));
         }
+
+      restore_fpu_state ();
     }
 
   string_vector v (name_list);
@@ -921,6 +952,8 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
         }
       else
         error ("unable to convert Java object to string");
+
+      restore_fpu_state ();
     }
 
   return retval;
@@ -1155,6 +1188,8 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
   if (retval.is_undefined ())
     retval = octave_value (new octave_java (jobj, jcls));
 
+  restore_fpu_state ();
+
   return retval;
 }
 
@@ -1381,6 +1416,8 @@ java_event_hook (void)
       jclass_ref cls (current_env, find_octave_class (current_env, "org/octave/Octave"));
       jmethodID mID = current_env->GetStaticMethodID (cls, "checkPendingAction", "()V");
       current_env->CallStaticVoidMethod (cls, mID);
+
+      restore_fpu_state ();
     }
 
   return 0;
@@ -1406,6 +1443,8 @@ initialize_java (void)
         {
           error (msg.c_str ());
         }
+
+      restore_fpu_state ();
     }
 }
 
@@ -1738,6 +1777,8 @@ octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
           else
             retval = check_exception (jni_env);
         }
+
+      restore_fpu_state ();
     }
 
   return retval;
@@ -1768,6 +1809,8 @@ octave_java:: do_javaMethod (JNIEnv* jni_env,
           else
             retval = check_exception (jni_env);
         }
+
+      restore_fpu_state ();
     }
 
   return retval;
@@ -1797,6 +1840,8 @@ octave_java::do_javaObject (JNIEnv* jni_env, const std::string& name,
           else
             check_exception (jni_env);
         }
+
+      restore_fpu_state ();
     }
 
   return retval;
@@ -1820,6 +1865,8 @@ octave_java::do_java_get (JNIEnv* jni_env, const std::string& name)
         retval = box (jni_env, resObj);
       else
         retval = check_exception (jni_env);
+
+      restore_fpu_state ();
     }
 
   return retval;
@@ -1844,6 +1891,8 @@ octave_java::do_java_get (JNIEnv* jni_env, const std::string& class_name,
         retval = box (jni_env, resObj);
       else
         retval = check_exception (jni_env);
+
+      restore_fpu_state ();
     }
 
   return retval;
@@ -1869,6 +1918,8 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& name,
           jni_env->CallStaticObjectMethod (helperClass, mID, to_java (), jstring (fName), jobject (jobj));
           check_exception (jni_env);
         }
+
+      restore_fpu_state ();
     }
 
   return retval;
@@ -1895,6 +1946,8 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
           jni_env->CallStaticObjectMethod (helperClass, mID, jstring (cName), jstring (fName), jobject (jobj));
           check_exception (jni_env);
         }
+
+      restore_fpu_state ();
     }
 
   return retval;

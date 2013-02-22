@@ -1462,7 +1462,7 @@ DL_LD='$(SH_LD)'
 DL_LDFLAGS='$(SH_LDFLAGS)'
 MKOCTFILE_DL_LDFLAGS='$(DL_LDFLAGS)'
 SONAME_FLAGS=
-NO_OCT_FILE_STRIP=no
+NO_OCT_FILE_STRIP=false
 TEMPLATE_AR='$(AR)'
 TEMPLATE_ARFLAGS="$ARFLAGS"
 CRUFT_DLL_DEFS=
@@ -1505,7 +1505,7 @@ case $canonical_host_type in
     SHLLIB='$(SHLEXT)'
     SHLEXT_VER='$(version).$(SHLEXT)'
     SHLLIB_VER='$(version).$(SHLLIB)'
-    NO_OCT_FILE_STRIP=yes
+    NO_OCT_FILE_STRIP=true
     SONAME_FLAGS='-install_name $(octlibdir)/$@'
     library_path_var=DYLD_LIBRARY_PATH  
   ;;
@@ -1543,7 +1543,7 @@ case $canonical_host_type in
         DL_LDFLAGS="$DL_LDFLAGS -g"
         SH_LDFLAGS="$SH_LDFLAGS -g"
       fi
-      NO_OCT_FILE_STRIP=yes
+      NO_OCT_FILE_STRIP=true
       library_path_var=PATH
       ## Extra compilation flags.
       CRUFT_DLL_DEFS="-DCRUFT_DLL"
@@ -1583,7 +1583,7 @@ case $canonical_host_type in
       DL_LDFLAGS="$DL_LDFLAGS -g"
       SH_LDFLAGS="$SH_LDFLAGS -g"
     fi
-    NO_OCT_FILE_STRIP=yes
+    NO_OCT_FILE_STRIP=true
     library_path_var=PATH
     ## Extra compilation flags.
     CRUFT_DLL_DEFS="-DCRUFT_DLL"

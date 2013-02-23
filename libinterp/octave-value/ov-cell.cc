@@ -136,7 +136,8 @@ gripe_failed_assignment (void)
 octave_value_list
 octave_cell::subsref (const std::string& type,
                       const std::list<octave_value_list>& idx,
-                      int nargout)
+                      int nargout,
+                      const std::list<octave_lvalue> *lvalue_list)
 {
   octave_value_list retval;
 
@@ -178,7 +179,9 @@ octave_cell::subsref (const std::string& type,
   // octave_user_function::subsref.
 
   if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx);
+    retval = (lvalue_list
+              ? retval(0).next_subsref (nargout, type, idx, lvalue_list)
+              : retval(0).next_subsref (nargout, type, idx));
 
   return retval;
 }

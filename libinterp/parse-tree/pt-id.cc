@@ -59,7 +59,8 @@ tree_identifier::eval_undefined_error (void)
 }
 
 octave_value_list
-tree_identifier::rvalue (int nargout)
+tree_identifier::rvalue (int nargout,
+                         const std::list<octave_lvalue> *lvalue_list)
 {
   octave_value_list retval;
 
@@ -85,7 +86,9 @@ tree_identifier::rvalue (int nargout)
         {
           octave_value_list tmp_args;
 
-          retval = val.do_multi_index_op (nargout, tmp_args);
+          retval = (lvalue_list
+                    ? val.do_multi_index_op (nargout, tmp_args, lvalue_list)
+                    : val.do_multi_index_op (nargout, tmp_args));
         }
       else
         {

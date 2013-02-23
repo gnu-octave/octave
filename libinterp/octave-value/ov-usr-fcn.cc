@@ -481,7 +481,9 @@ octave_user_function::do_multi_index_op (int nargout,
       tree_expression *expr = special_expr ();
 
       if (expr)
-        retval = expr->rvalue (nargout);
+        retval = (lvalue_list
+                  ? expr->rvalue (nargout, lvalue_list)
+                  : expr->rvalue (nargout));
     }
   else
     cmd_list->accept (*current_evaluator);
@@ -1006,4 +1008,24 @@ element-by-element and a logical array is returned.  At the top level,\n\
 %!test
 %! [x, y] = try_isargout ();
 %! assert ([x, y], [1, 2]);
+%!
+%% It should work without ():
+%!test
+%! [~, y] = try_isargout;
+%! assert (y, -2);
+%!
+%% It should work in function handles, anonymous functions, and cell
+%% arrays of handles or anonymous functions.
+%!test
+%! fh = @try_isargout;
+%! af = @() try_isargout;
+%! c = {fh, af};
+%! [~, y] = fh ();
+%! assert (y, -2);
+%! [~, y] = af ();
+%! assert (y, -2);
+%! [~, y] = c{1}();
+%! assert (y, -2);
+%! [~, y] = c{2}();
+%! assert (y, -2);
 */

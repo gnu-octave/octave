@@ -1312,6 +1312,23 @@ octave_value::next_subsref (int nargout, const std::string& type,
     return *this;
 }
 
+octave_value_list
+octave_value::next_subsref (int nargout, const std::string& type,
+                            const std::list<octave_value_list>& idx,
+                            const std::list<octave_lvalue> *lvalue_list,
+                            size_t skip)
+{
+  if (! error_state && idx.size () > skip)
+    {
+      std::list<octave_value_list> new_idx (idx);
+      for (size_t i = 0; i < skip; i++)
+        new_idx.erase (new_idx.begin ());
+      return subsref (type.substr (skip), new_idx, nargout, lvalue_list);
+    }
+  else
+    return *this;
+}
+
 octave_value
 octave_value::next_subsref (bool auto_add, const std::string& type,
                             const std::list<octave_value_list>& idx,

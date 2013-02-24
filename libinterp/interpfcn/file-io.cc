@@ -646,23 +646,23 @@ must also open the file in binary mode.\n\
 The parameter @var{arch} is a string specifying the default data format\n\
 for the file.  Valid values for @var{arch} are:\n\
 \n\
-@table @asis\n\
-@samp{native}\n\
+@table @samp\n\
+@item native\n\
 The format of the current machine (this is the default).\n\
 \n\
-@samp{ieee-be}\n\
+@item ieee-be\n\
 IEEE big endian format.\n\
 \n\
-@samp{ieee-le}\n\
+@item ieee-le\n\
 IEEE little endian format.\n\
 \n\
-@samp{vaxd}\n\
+@item vaxd\n\
 VAX D floating format.\n\
 \n\
-@samp{vaxg}\n\
+@item vaxg\n\
 VAX G floating format.\n\
 \n\
-@samp{cray}\n\
+@item cray\n\
 Cray floating format.\n\
 @end table\n\
 \n\

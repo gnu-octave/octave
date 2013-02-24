@@ -296,20 +296,20 @@ starting double-quote is not part of the string!
 When choosing variable names try to adhere to the following guidelines.
 
 @table @asis
-@item 
-vectors : x,y,z,t,w
+@item vectors :
+x,y,z,t,w
 
-@item
-matrices : A,B,M
+@item matrices :
+A,B,M
 
-@item
-strings : @nospell{str},s
+@item strings :
+@nospell{str},s
 
-@item
-filenames : @nospell{fname}
+@item filenames :
+@nospell{fname}
 
-@item
-cells,@nospell{cellstrs} : c,@nospell{cstr}
+@item cells,@nospell{cellstrs} :
+c,@nospell{cstr}
 @end table
 
 @item

@@ -90,7 +90,8 @@ modified versions.
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
-@flushright @image{octave_logo,2.1in} @end flushright
+@flushright @image{octave_logo,2.1in}
+@end flushright
 @tab
 @c this is a spacer column
 @tab

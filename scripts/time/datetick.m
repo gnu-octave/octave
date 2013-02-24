@@ -22,13 +22,12 @@
 ## @deftypefnx {Function File} {} datetick (@var{axis}, @var{form})
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keeplimits")
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keepticks")
-## @deftypefnx {Function File} {} datetick (@dots{ax}, @dots{})
-## Add date formatted tick labels to an axis.  The axis the apply the
-## ticks to is determined by @var{axis} that can take the values "x",
-## "y" or "z".  The default value is "x".  The formatting of the labels is
-## determined by the variable @var{form}, that can either be a string in
-## the format needed by @code{dateform}, or a positive integer that can
-## be accepted by @code{datestr}.
+## @deftypefnx {Function File} {} datetick (@var{hax}, @dots{})
+## Add date formatted tick labels to an axis.  The axis to apply the
+## ticks to is determined by @var{axis} which can take the values "x",
+## "y", or "z".  The default value is "x".  The formatting of the labels is
+## determined by the variable @var{form}, which can either be a string or
+## positive integer that @code{datestr} accepts.
 ## @seealso{datenum, datestr}
 ## @end deftypefn
 

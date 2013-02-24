@@ -556,9 +556,9 @@ interpreted as filename globbing patterns (as they are used by Unix shells).\n\
 Within a pattern\n\
 \n\
 @table @code\n\
-@itemx *\n\
+@item *\n\
 matches any string, including the null string,\n\
-@itemx ?\n\
+@item ?\n\
 matches any single character, and\n\
 \n\
 @item [@dots{}]\n\

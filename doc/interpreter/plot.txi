@@ -2573,15 +2573,15 @@ Marker styles are specified by the following properties:
 A character indicating a plot marker to be place at each data point, or
 @code{"none"}, meaning no markers should be displayed.
 
-@itemx markeredgecolor
+@item markeredgecolor
 The color of the edge around the marker, or @code{"auto"}, meaning that
 the edge color is the same as the face color.  @xref{Colors}.
 
-@itemx markerfacecolor
+@item markerfacecolor
 The color of the marker, or @code{"none"} to indicate that the marker
 should not be filled.  @xref{Colors}.
 
-@itemx markersize
+@item markersize
 A number specifying the size of the marker.  The default is 1.  A value
 of 2 is twice as large as the default, etc.
 @end table

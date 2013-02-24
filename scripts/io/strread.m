@@ -39,7 +39,7 @@
 ## @item %s
 ## The word is parsed as a string.
 ##
-## @itemx %f
+## @item  %f
 ## @itemx %n
 ## The word is parsed as a number and converted to double.
 ##

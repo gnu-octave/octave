@@ -87,7 +87,7 @@
 ## @item "hide"
 ##   Hide legend on the plot
 ##
-## @itemx "toggle"
+## @item "toggle"
 ##   Toggles between "hide" and "show"
 ##
 ## @item "boxon"
@@ -102,7 +102,7 @@
 ## @item "right"
 ##   Place label text to the right of the keys
 ##
-## @itemx "off"
+## @item  "off"
 ##   Delete the legend object
 ## @end table
 ##

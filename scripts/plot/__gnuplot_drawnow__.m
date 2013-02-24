@@ -297,6 +297,16 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         term_str = sprintf ("%s %s", term_str, size_str);
       endif
     endif
+    if (! __gnuplot_has_feature__ ("has_termoption_dashed"))
+      ## If "set termoption dashed" isn't available add "dashed" option
+      ## to the "set terminal ..." command, if it is supported.
+      if (any (strcmpi (term, {"aqua", "cgm", "eepic", "emf", "epslatex", \
+                               "fig", "pcl5", "mp", "next", "openstep", "pdf", \
+                               "pdfcairo", "pngcairo", "postscript", \
+                               "pslatex", "pstext", "svg", "tgif", "x11"})))
+        term_str = sprintf ("%s dashed", term_str);
+      endif
+    end
 
     ## Work around the gnuplot feature of growing the x11 window and
     ## flickering window (x11, windows, & wxt) when the mouse and
@@ -321,7 +331,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         endif
       endif
     endif
-    fprintf (plot_stream, "set termoption dashed\n")
+    if (__gnuplot_has_feature__ ("has_termoption_dashed"))
+      fprintf (plot_stream, "set termoption dashed\n")
+    endif
   else
     ## gnuplot will pick up the GNUTERM environment variable itself
     ## so no need to set the terminal type if not also setting the

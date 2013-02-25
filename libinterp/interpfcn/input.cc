@@ -100,10 +100,6 @@ std::string current_eval_string;
 // TRUE means get input from current_eval_string.
 bool get_input_from_eval_string = false;
 
-// TRUE means we haven't been asked for the input from
-// current_eval_string yet.
-bool input_from_eval_string_pending = false;
-
 // TRUE means that input is coming from a file that was named on
 // the command line.
 bool input_from_command_line_file = false;
@@ -191,16 +187,16 @@ do_input_echo (const std::string& input_string)
 }
 
 std::string
-gnu_readline (const std::string& s, bool force_readline)
+gnu_readline (const std::string& s, bool& eof, bool force_readline)
 {
   octave_quit ();
+
+  eof = false;
 
   std::string retval;
 
   if (line_editing || force_readline)
     {
-      bool eof;
-
       retval = command_editor::readline (s, eof);
 
       if (! eof && retval.empty ())
@@ -221,14 +217,22 @@ gnu_readline (const std::string& s, bool force_readline)
       if (reading_fcn_file || reading_script_file || reading_classdef_file)
         curr_stream = ff_instream;
 
-      retval = octave_fgets (curr_stream);
+      retval = octave_fgets (curr_stream, eof);
     }
 
   return retval;
 }
 
+extern std::string
+gnu_readline (const std::string& s, bool force_readline)
+{
+  bool eof = false;
+
+  return gnu_readline (s, eof, force_readline);
+}
+
 static inline std::string
-interactive_input (const std::string& s, bool force_readline = false)
+interactive_input (const std::string& s, bool& eof, bool force_readline)
 {
   Vlast_prompt_time.stamp ();
 
@@ -247,13 +251,23 @@ interactive_input (const std::string& s, bool force_readline = false)
         return "\n";
     }
 
-  return gnu_readline (s, force_readline);
+  return gnu_readline (s, eof, force_readline);
+}
+
+static inline std::string
+interactive_input (const std::string& s, bool force_readline = false)
+{
+  bool eof = false;
+
+  return interactive_input (s, eof, force_readline);
 }
 
 static std::string
-octave_gets (void)
+octave_gets (bool& eof)
 {
   octave_quit ();
+
+  eof = false;
 
   std::string retval;
 
@@ -280,7 +294,7 @@ octave_gets (void)
 
       octave_diary << prompt;
 
-      retval = interactive_input (prompt);
+      retval = interactive_input (prompt, eof, false);
 
       // There is no need to update the load_path cache if there is no
       // user input.
@@ -301,7 +315,7 @@ octave_gets (void)
         }
     }
   else
-    retval = gnu_readline ("");
+    retval = gnu_readline ("", eof, false);
 
   current_input_line = retval;
 
@@ -330,28 +344,28 @@ octave_gets (void)
 // Read a line from the input stream.
 
 static std::string
-get_user_input (void)
+get_user_input (bool& eof)
 {
   octave_quit ();
+
+  eof = false;
 
   std::string retval;
 
   if (get_input_from_eval_string)
     {
-      if (input_from_eval_string_pending)
-        {
-          input_from_eval_string_pending = false;
+      retval = current_eval_string;
 
-          retval = current_eval_string;
+      size_t len = retval.length ();
 
-          size_t len = retval.length ();
+      // Clear the global eval string so that the next call will return
+      // an empty character string with EOF = true.
+      current_eval_string = "";
 
-          if (len > 0 && retval[len-1] != '\n')
-            retval.append ("\n");
-        }
+      eof = true;
     }
   else
-    retval = octave_gets ();
+    retval = octave_gets (eof);
 
   current_input_line = retval;
 
@@ -367,13 +381,15 @@ octave_read (char *buf, unsigned max_size)
   static std::string input_buf;
   static const char *pos = 0;
   static size_t chars_left = 0;
+  static bool eof = false;
 
   int status = 0;
+
   if (chars_left == 0)
     {
       pos = 0;
 
-      input_buf = get_user_input ();
+      input_buf = get_user_input (eof);
 
       chars_left = input_buf.length ();
 
@@ -410,14 +426,9 @@ octave_read (char *buf, unsigned max_size)
         }
 
       status = len;
-
-    }
-  else if (chars_left == 0)
-    {
-      status = 0;
     }
   else
-    status = -1;
+    status = eof ? 0 : -1;
 
   return status;
 }

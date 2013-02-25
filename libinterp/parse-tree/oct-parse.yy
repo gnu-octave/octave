@@ -4315,7 +4315,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (input_line_number);
   frame.protect_var (current_input_column);
   frame.protect_var (get_input_from_eval_string);
-  frame.protect_var (input_from_eval_string_pending);
   frame.protect_var (parser_end_of_input);
   frame.protect_var (line_editing);
   frame.protect_var (current_eval_string);
@@ -4331,7 +4330,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   input_line_number = 1;
   current_input_column = 1;
   get_input_from_eval_string = true;
-  input_from_eval_string_pending = true;
   parser_end_of_input = false;
   line_editing = false;
   current_function_depth = 0;

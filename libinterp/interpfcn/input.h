@@ -45,10 +45,6 @@ extern std::string current_eval_string;
 // TRUE means get input from current_eval_string.
 extern bool get_input_from_eval_string;
 
-// TRUE means we haven't been asked for the input from
-// current_eval_string yet.
-extern bool input_from_eval_string_pending;
-
 // TRUE means that input is coming from a file that was named on
 // the command line.
 extern bool input_from_command_line_file;

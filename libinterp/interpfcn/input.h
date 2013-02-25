@@ -35,8 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
-extern OCTINTERP_API int octave_read (char *buf, unsigned max_size);
-extern OCTINTERP_API FILE *get_input_from_file (const std::string& name, int warn = 1);
+extern OCTINTERP_API std::string get_user_input (bool& eof);
+
+extern OCTINTERP_API FILE *get_input_from_file (const std::string& name,
+                                                int warn = 1);
+
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
 // Global pointer for eval().

@@ -62,6 +62,9 @@ and @ref{Advanced Plotting}.
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
+* Use of @code{axis}@comma{} @code{line}@comma{} and @code{patch} Functions::
+* Manipulation of Plot Windows::
+* Use of the @code{interpreter} Property::
 * Printing and Saving Plots::              
 * Interacting with Plots::      
 * Test Plotting Functions::     
@@ -517,8 +520,9 @@ creates two figures, with the first displaying a sine wave and
 the second a cosine wave.  Figure numbers must be positive integers.
 
 @DOCSTRING(figure)
-@subsection Use of @code{axis},  @code{line}, and @code{patch} functions
-@cindex use of @code{axis},  @code{line}, and @code{patch} functions
+
+@node Use of @code{axis}@comma{} @code{line}@comma{} and @code{patch} Functions
+@subsection Use of @code{axis}@comma{} @code{line}@comma{} and @code{patch} Functions
 
 You can create axes, line, and patch objects directly using the
 @code{axes}, @code{line}, and @code{patch} functions.  These objects
@@ -532,8 +536,8 @@ become children of the current axes object.
 
 @DOCSTRING(surface)
 
-@subsection Manipulation of plot windows
-@cindex manipulation of plot windows
+@node Manipulation of Plot Windows
+@subsection Manipulation of Plot Windows
 
 By default, Octave refreshes the plot window when a prompt is printed,
 or when waiting for input.  The
@@ -591,8 +595,8 @@ figure window, call the @code{close} function.
 
 @DOCSTRING(closereq)
 
+@node Use of the @code{interpreter} Property
 @subsection Use of the @code{interpreter} Property
-@cindex use of the @code{interpreter} property
 
 All text objects, including titles, labels, legends, and text, include
 the property 'interpreter', this property determines the manner in which

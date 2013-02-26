@@ -216,6 +216,8 @@ public:
 
   void xunput (char c, char *buf);
 
+  void xunput (char c);
+
   void fixup_column_count (char *s);
 
   bool inside_any_object_index (void);

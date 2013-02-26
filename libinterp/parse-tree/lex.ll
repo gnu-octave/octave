@@ -256,7 +256,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<SCRIPT_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
-    curr_lexer->xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
     COUNT_TOK_AND_RETURN (SCRIPT_FILE);
   }
 
@@ -264,7 +264,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<FUNCTION_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
-    curr_lexer->xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
     COUNT_TOK_AND_RETURN (FUNCTION_FILE);
   }
 
@@ -354,7 +354,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int tok_to_return = curr_lexer->handle_close_bracket (spc_gobbled, ']');
 
     if (spc_gobbled)
-      curr_lexer->xunput (' ', yytext);
+      curr_lexer->xunput (' ');
 
     COUNT_TOK_AND_RETURN (tok_to_return);
   }
@@ -380,7 +380,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int tok_to_return = curr_lexer->handle_close_bracket (spc_gobbled, '}');
 
     if (spc_gobbled)
-      curr_lexer->xunput (' ', yytext);
+      curr_lexer->xunput (' ');
 
     COUNT_TOK_AND_RETURN (tok_to_return);
   }
@@ -409,7 +409,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
           {
             curr_lexer->maybe_warn_separator_insert (';');
 
-            curr_lexer->xunput (';', yytext);
+            curr_lexer->xunput (';');
           }
       }
 
@@ -446,7 +446,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
               {
                 curr_lexer->maybe_warn_separator_insert (';');
 
-                curr_lexer->xunput (';', yytext);
+                curr_lexer->xunput (';');
               }
 
             curr_lexer->quote_is_transpose = false;
@@ -766,7 +766,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     curr_lexer->looking_for_object_index = false;
 
-    curr_lexer->xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
 
     bool eof = false;
     int tok = curr_lexer->process_comment (false, eof);
@@ -956,7 +956,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     LEXER_DEBUG (".");
 
-    curr_lexer->xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
 
     int c = curr_lexer->text_yyinput ();
 
@@ -1497,10 +1497,10 @@ lexical_feedback::do_comma_insert_check (void)
 
   int c = text_yyinput ();
 
-  xunput (c, yytext);
+  xunput (c);
 
   if (spc_gobbled)
-    xunput (' ', yytext);
+    xunput (' ');
 
   do_comma_insert = (! looking_at_object_index.front ()
                      && bracketflag && c == '[');
@@ -1533,7 +1533,7 @@ lexical_feedback::text_yyinput (void)
 
       if (c != '\n')
         {
-          xunput (c, yytext);
+          xunput (c);
           c = '\n';
         }
     }
@@ -1558,6 +1558,12 @@ lexical_feedback::xunput (char c, char *buf)
     input_line_number--;
 
   yyunput (c, buf);
+}
+
+void
+lexical_feedback::xunput (char c)
+{
+  xunput (c, yytext);
 }
 
 // If we read some newlines, we need figure out what column we're
@@ -2128,7 +2134,7 @@ lexical_feedback::next_token_is_sep_op (void)
 
   retval = match_any (c, ",;\n]");
 
-  xunput (c, yytext);
+  xunput (c);
 
   return retval;
 }
@@ -2151,22 +2157,22 @@ lexical_feedback::next_token_is_postfix_unary_op (bool spc_prev)
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '\'');
-      xunput (c1, yytext);
+      xunput (c1);
     }
   else if (c0 == '+')
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '+');
-      xunput (c1, yytext);
+      xunput (c1);
     }
   else if (c0 == '-')
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '-');
-      xunput (c1, yytext);
+      xunput (c1);
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return un_op;
 }
@@ -2215,7 +2221,7 @@ lexical_feedback::next_token_is_bin_op (bool spc_prev)
             break;
           }
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2239,7 +2245,7 @@ lexical_feedback::next_token_is_bin_op (bool spc_prev)
           // A structure element reference is a binary op.
           bin_op = true;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2269,7 +2275,7 @@ lexical_feedback::next_token_is_bin_op (bool spc_prev)
         if (c1 == '=')
           bin_op = true;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2277,7 +2283,7 @@ lexical_feedback::next_token_is_bin_op (bool spc_prev)
       break;
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return bin_op;
 }
@@ -2447,7 +2453,7 @@ lexical_feedback::eat_whitespace (void)
     octave_comment_buffer::append (comment_buf);
 
  done:
-  xunput (c, yytext);
+  xunput (c);
   current_input_column--;
   return retval;
 }
@@ -2586,7 +2592,7 @@ lexical_feedback::have_continuation (bool trailing_comments_ok)
         }
     }
 
-  xunput (c, yytext);
+  xunput (c);
   return false;
 
 cleanup:
@@ -2595,7 +2601,7 @@ cleanup:
 
   int len = s.length ();
   while (len--)
-    xunput (s[len], yytext);
+    xunput (s[len]);
 
   return false;
 }
@@ -2615,12 +2621,12 @@ lexical_feedback::have_ellipsis_continuation (bool trailing_comments_ok)
         return true;
       else
         {
-          xunput (c2, yytext);
-          xunput (c1, yytext);
+          xunput (c2);
+          xunput (c1);
         }
     }
   else
-    xunput (c1, yytext);
+    xunput (c1);
 
   return false;
 }
@@ -2639,7 +2645,7 @@ lexical_feedback::eat_continuation (void)
       || (c == '\\' && have_continuation ()))
     retval = eat_whitespace ();
   else
-    xunput (c, yytext);
+    xunput (c);
 
   return retval;
 }
@@ -2702,7 +2708,7 @@ lexical_feedback::handle_string (char delim)
               else
                 {
                   std::string s;
-                  xunput (c, yytext);
+                  xunput (c);
 
                   if (delim == '\'')
                     s = buf.str ();
@@ -2750,7 +2756,7 @@ lexical_feedback::next_token_is_assign_op (void)
     case '=':
       {
         int c1 = text_yyinput ();
-        xunput (c1, yytext);
+        xunput (c1);
         if (c1 != '=')
           retval = true;
       }
@@ -2765,7 +2771,7 @@ lexical_feedback::next_token_is_assign_op (void)
     case '|':
       {
         int c1 = text_yyinput ();
-        xunput (c1, yytext);
+        xunput (c1);
         if (c1 == '=')
           retval = true;
       }
@@ -2777,11 +2783,11 @@ lexical_feedback::next_token_is_assign_op (void)
         if (match_any (c1, "+-*/\\"))
           {
             int c2 = text_yyinput ();
-            xunput (c2, yytext);
+            xunput (c2);
             if (c2 == '=')
               retval = true;
           }
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2791,11 +2797,11 @@ lexical_feedback::next_token_is_assign_op (void)
         if (c1 == '>')
           {
             int c2 = text_yyinput ();
-            xunput (c2, yytext);
+            xunput (c2);
             if (c2 == '=')
               retval = true;
           }
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2805,11 +2811,11 @@ lexical_feedback::next_token_is_assign_op (void)
         if (c1 == '<')
           {
             int c2 = text_yyinput ();
-            xunput (c2, yytext);
+            xunput (c2);
             if (c2 == '=')
               retval = true;
           }
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2817,7 +2823,7 @@ lexical_feedback::next_token_is_assign_op (void)
       break;
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return retval;
 }
@@ -2826,7 +2832,7 @@ bool
 lexical_feedback::next_token_is_index_op (void)
 {
   int c = text_yyinput ();
-  xunput (c, yytext);
+  xunput (c);
   return c == '(' || c == '{';
 }
 
@@ -2884,7 +2890,7 @@ lexical_feedback::handle_close_bracket (bool spc_gobbled, int bracket_type)
             {
               maybe_warn_separator_insert (',');
 
-              xunput (',', yytext);
+              xunput (',');
               return retval;
             }
         }
@@ -2910,8 +2916,8 @@ lexical_feedback::maybe_unput_comma (int spc_gobbled)
       int c1 = text_yyinput ();
       int c2 = text_yyinput ();
 
-      xunput (c2, yytext);
-      xunput (c1, yytext);
+      xunput (c2);
+      xunput (c1);
 
       int sep_op = next_token_is_sep_op ();
 
@@ -2931,7 +2937,7 @@ lexical_feedback::maybe_unput_comma (int spc_gobbled)
 
       maybe_warn_separator_insert (',');
 
-      xunput (',', yytext);
+      xunput (',');
     }
 }
 
@@ -2956,7 +2962,7 @@ lexical_feedback::next_token_can_follow_bin_op (void)
   // Restore input.
   while (! buf.empty ())
     {
-      xunput (buf.top (), yytext);
+      xunput (buf.top ());
 
       buf.pop ();
     }
@@ -2999,12 +3005,12 @@ lexical_feedback::looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3054,12 +3060,12 @@ lexical_feedback::looks_like_command_arg (void)
                   && next_token_can_follow_bin_op ())
                 retval = false;
 
-              xunput (c2, yytext);
+              xunput (c2);
             }
             break;
           }
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3074,7 +3080,7 @@ lexical_feedback::looks_like_command_arg (void)
             && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3095,13 +3101,13 @@ lexical_feedback::looks_like_command_arg (void)
                     && next_token_can_follow_bin_op ())
                   retval = false;
 
-                xunput (c3, yytext);
+                xunput (c3);
               }
             else if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
                      && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n")
                  && (! isdigit (c1) && c1 != ' ' && c1 != '\t'
@@ -3112,7 +3118,7 @@ lexical_feedback::looks_like_command_arg (void)
             retval = false;
           }
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3131,13 +3137,13 @@ lexical_feedback::looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
                  && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3155,13 +3161,13 @@ lexical_feedback::looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
                  && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3180,13 +3186,13 @@ lexical_feedback::looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
                  && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3194,7 +3200,7 @@ lexical_feedback::looks_like_command_arg (void)
       break;
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return retval;
 }
@@ -3378,13 +3384,13 @@ lexical_feedback::handle_identifier (void)
   if (c1 == '=')
     {
       int c2 = text_yyinput ();
-      xunput (c2, yytext);
+      xunput (c2);
 
       if (c2 != '=')
         next_tok_is_eq = true;
     }
 
-  xunput (c1, yytext);
+  xunput (c1);
 
   // Kluge alert.
   //

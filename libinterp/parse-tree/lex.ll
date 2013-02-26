@@ -1237,10 +1237,12 @@ class
 flex_stream_reader : public stream_reader
 {
 public:
-  flex_stream_reader (char *buf_arg) : stream_reader (), buf (buf_arg) { }
+  flex_stream_reader (lexical_feedback *l, char *buf_arg)
+    : lexer (l), stream_reader (), buf (buf_arg)
+  { }
 
-  int getc (void) { return curr_lexer->text_yyinput (); }
-  int ungetc (int c) { curr_lexer->xunput (c, buf); return 0; }
+  int getc (void) { return lexer->text_yyinput (); }
+  int ungetc (int c) { lexer->xunput (c, buf); return 0; }
 
 private:
 
@@ -1249,6 +1251,8 @@ private:
   flex_stream_reader (const flex_stream_reader&);
 
   flex_stream_reader& operator = (const flex_stream_reader&);
+
+  lexical_feedback *lexer;
 
   char *buf;
 };
@@ -2253,7 +2257,7 @@ lexical_feedback::process_comment (bool start_in_block, bool& eof)
   if (! help_buf.empty ())
     help_txt = help_buf.top ();
 
-  flex_stream_reader flex_reader (yytext);
+  flex_stream_reader flex_reader (this, yytext);
 
   // process_comment is only supposed to be called when we are not
   // initially looking at a block comment.

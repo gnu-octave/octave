@@ -51,9 +51,6 @@ extern OCTINTERP_API void cleanup_parser (void);
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
 
-extern void prep_lexer_for_script_file (void);
-extern void prep_lexer_for_function_file (void);
-
 class
 stream_reader
 {
@@ -206,6 +203,10 @@ public:
   }
 
   void reset_parser (void);
+
+  void prep_for_script_file (void);
+
+  void prep_for_function_file (void);
 
   int octave_read (char *buf, unsigned int max_size);
 

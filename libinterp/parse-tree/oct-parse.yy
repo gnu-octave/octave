@@ -3578,9 +3578,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
             help_buf.push (help_txt);
 
           if (reading_script_file)
-            prep_lexer_for_script_file ();
+            curr_lexer->prep_for_script_file ();
           else
-            prep_lexer_for_function_file ();
+            curr_lexer->prep_for_function_file ();
 
           curr_lexer->parsing_class_method = ! dispatch_type.empty ();
 

@@ -1297,18 +1297,6 @@ is omitted, return a list of keywords.\n\
 
 */
 
-void
-prep_lexer_for_script_file (void)
-{
-  BEGIN (SCRIPT_FILE_BEGIN);
-}
-
-void
-prep_lexer_for_function_file (void)
-{
-  BEGIN (FUNCTION_FILE_BEGIN);
-}
-
 // Used to delete trailing white space from tokens.
 
 static std::string
@@ -1419,6 +1407,18 @@ lexical_feedback::reset_parser (void)
   // Clear the buffer for help text.
   while (! help_buf.empty ())
     help_buf.pop ();
+}
+
+void
+lexical_feedback::prep_for_script_file (void)
+{
+  BEGIN (SCRIPT_FILE_BEGIN);
+}
+
+void
+lexical_feedback::prep_for_function_file (void)
+{
+  BEGIN (FUNCTION_FILE_BEGIN);
 }
 
 int

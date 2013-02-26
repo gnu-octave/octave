@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <stack>
 
-extern void reset_parser (void);
 extern int octave_lex (void);
 
 class tree;

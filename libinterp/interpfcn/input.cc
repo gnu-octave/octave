@@ -686,7 +686,7 @@ get_debug_input (const std::string& prompt)
     {
       reset_error_handler ();
 
-      reset_parser ();
+      curr_lexer->reset_parser ();
 
       // Save current value of global_command.
       frame.protect_var (global_command);

@@ -976,12 +976,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 %%
 
-// Fix things up for errors or interrupts.  The parser is never called
-// recursively, so it is always safe to reinitialize its state before
-// doing any parsing.
-
 void
-reset_parser (void)
+lexical_feedback::reset_parser (void)
 {
   // Start off on the right foot.
   BEGIN (INITIAL);
@@ -1209,8 +1205,6 @@ clear_all_buffers (void)
 void
 cleanup_parser (void)
 {
-  reset_parser ();
-
   clear_all_buffers ();
 }
 

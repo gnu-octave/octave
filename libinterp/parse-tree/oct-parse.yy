@@ -3503,7 +3503,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       curr_lexer = new lexical_feedback ();
       frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
-      reset_parser ();
+      curr_lexer->reset_parser ();
 
       std::string help_txt = gobble_leading_white_space (ffile, eof);
 
@@ -4344,7 +4344,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   do
     {
-      reset_parser ();
+      curr_lexer->reset_parser ();
 
       frame.protect_var (global_command);
 

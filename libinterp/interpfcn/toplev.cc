@@ -574,7 +574,7 @@ main_loop (void)
 
           reset_error_handler ();
 
-          reset_parser ();
+          curr_lexer->reset_parser ();
 
           if (symbol_table::at_top_level ())
             tree_evaluator::reset_debug_state ();

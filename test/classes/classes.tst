@@ -304,6 +304,10 @@
 %!assert (s1 >= (x1 - 1))
 %!assert (x1 >= (s1 - 1))
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Testing horizontal & vertical concatenation %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Test overloaded vertcat() for the Snork class
 %% See bug #38170 (http://savannah.gnu.org/bugs/?38170)
 %!test   s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
@@ -315,6 +319,20 @@
 %!test   s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 %!xtest  s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 %!xtest  s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
+
+%% Test with the Blork class, where neither vertcat() nor horzcat() is overloaded
+%!shared x1, x2, x3
+%!test x1 = Blork();
+%!test x2 = [x1 x1];
+%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]));
+%!test x2 = [x1 51];
+%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]));
+%!test x3 = [x2; x2];
+%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]));
+%!test x3 = [x2; [51 x1]];
+%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]));
+%!error <dimension mismatch> x4 = [x1  x3];
+%!error <dimension mismatch> x4 = [x1; x3];
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %% Testing precedence %%

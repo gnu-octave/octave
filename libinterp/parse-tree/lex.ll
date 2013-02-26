@@ -1157,7 +1157,7 @@ reset_parser (void)
     help_buf.pop ();
 
   // Reset other flags.
-  lexer_flags.init ();
+  lexer_flags = lexical_feedback ();
 }
 
 static void
@@ -3396,79 +3396,6 @@ handle_identifier (void)
     lexer_flags.looking_for_object_index = true;
 
   return NAME;
-}
-
-void
-lexical_feedback::init (void)
-{
-  // No need to do comma insert or convert spaces to comma at
-  // beginning of input.
-  convert_spaces_to_comma = true;
-  do_comma_insert = false;
-
-  // Yes, we are at the beginning of a statement.
-  at_beginning_of_statement = true;
-
-  // Not initiallly looking at an anonymous function argument list.
-  looking_at_anon_fcn_args = false;
-
-  // Not parsing a function return, parameter, or declaration list.
-  looking_at_return_list = false;
-  looking_at_parameter_list = false;
-  looking_at_decl_list = false;
-
-  // Not looking at an argument list initializer expression.
-  looking_at_initializer_expression = false;
-
-  // Not parsing a matrix or the left hand side of multi-value
-  // assignment statement.
-  looking_at_matrix_or_assign_lhs = false;
-
-  // Object index not possible until we've seen something.
-  looking_for_object_index = false;
-
-  // Not initially looking at indirect references.
-  looking_at_indirect_ref = false;
-
-  // Not initially parsing a class method.
-  parsing_class_method = false;
-
-  // Not initially defining a class with classdef.
-  maybe_classdef_get_set_method = false;
-  parsing_classdef = false;
-
-  // Quote marks strings intially.
-  quote_is_transpose = false;
-
-  // Not initially defining a matrix list.
-  bracketflag = 0;
-
-  // Not initially defining a cell array list.
-  braceflag = 0;
-
-  // Not initially inside a loop or if statement.
-  looping = 0;
-
-  // Not initially defining a function.
-  defining_func = 0;
-
-  // Not initiallly looking at a function handle.
-  looking_at_function_handle = 0;
-
-  // Not parsing an object index.
-  while (! looking_at_object_index.empty ())
-    looking_at_object_index.pop_front ();
-
-  // Not parsing an object index.
-  while (! parsed_function_name.empty ())
-    parsed_function_name.pop ();
-
-  // The closest paren, brace, or bracket nesting is not an object
-  // index.
-  looking_at_object_index.push_front (false);
-
-  // Set of identifiers that might be local variable names is empty.
-  pending_local_variables.clear ();
 }
 
 bool

@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_lex_h 1
 
 #include <list>
+#include <set>
 #include <stack>
 
 // FIXME -- these input buffer things should be members of a
@@ -63,7 +64,7 @@ public:
   lexical_feedback (void)
     : convert_spaces_to_comma (true), do_comma_insert (false),
       at_beginning_of_statement (true),
-      looking_at_anon_fcn_args (true), looking_at_return_list (false),
+      looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
       looking_at_initializer_expression (false),
       looking_at_matrix_or_assign_lhs (false),
@@ -74,13 +75,76 @@ public:
       looping (0), defining_func (0), looking_at_function_handle (0),
       looking_at_object_index (), parsed_function_name (),
       pending_local_variables ()
-    {
-      init ();
-    }
+  {
+    init ();
+  }
+
+  lexical_feedback (const lexical_feedback& lf)
+    : convert_spaces_to_comma (lf.convert_spaces_to_comma),
+      do_comma_insert (lf.do_comma_insert),
+      at_beginning_of_statement (lf.at_beginning_of_statement),
+      looking_at_anon_fcn_args (lf.looking_at_anon_fcn_args),
+      looking_at_return_list (lf.looking_at_return_list),
+      looking_at_parameter_list (lf.looking_at_parameter_list),
+      looking_at_decl_list (lf.looking_at_decl_list),
+      looking_at_initializer_expression (lf.looking_at_initializer_expression),
+      looking_at_matrix_or_assign_lhs (lf.looking_at_matrix_or_assign_lhs),
+      looking_for_object_index (lf.looking_for_object_index),
+      looking_at_indirect_ref (lf.looking_at_indirect_ref),
+      parsing_class_method (lf.parsing_class_method),
+      maybe_classdef_get_set_method (lf.maybe_classdef_get_set_method),
+      parsing_classdef (lf.parsing_classdef),
+      quote_is_transpose (lf.quote_is_transpose),
+      bracketflag (lf.bracketflag),
+      braceflag (lf.braceflag),
+      looping (lf.looping),
+      defining_func (lf.defining_func),
+      looking_at_function_handle (lf.looking_at_function_handle),
+      looking_at_object_index (lf.looking_at_object_index),
+      parsed_function_name (lf.parsed_function_name),
+      pending_local_variables (lf.pending_local_variables)
+  { }
+
+  lexical_feedback& operator = (const lexical_feedback& lf)
+  {
+    if (&lf != this)
+      {
+        convert_spaces_to_comma = lf.convert_spaces_to_comma;
+        do_comma_insert = lf.do_comma_insert;
+        at_beginning_of_statement = lf.at_beginning_of_statement;
+        looking_at_anon_fcn_args = lf.looking_at_anon_fcn_args;
+        looking_at_return_list = lf.looking_at_return_list;
+        looking_at_parameter_list = lf.looking_at_parameter_list;
+        looking_at_decl_list = lf.looking_at_decl_list;
+        looking_at_initializer_expression = lf.looking_at_initializer_expression;
+        looking_at_matrix_or_assign_lhs = lf.looking_at_matrix_or_assign_lhs;
+        looking_for_object_index = lf.looking_for_object_index;
+        looking_at_indirect_ref = lf.looking_at_indirect_ref;
+        parsing_class_method = lf.parsing_class_method;
+        maybe_classdef_get_set_method = lf.maybe_classdef_get_set_method;
+        parsing_classdef = lf.parsing_classdef;
+        quote_is_transpose = lf.quote_is_transpose;
+        bracketflag = lf.bracketflag;
+        braceflag = lf.braceflag;
+        looping = lf.looping;
+        defining_func = lf.defining_func;
+        looking_at_function_handle = lf.looking_at_function_handle;
+        looking_at_object_index = lf.looking_at_object_index;
+        parsed_function_name = lf.parsed_function_name;
+        pending_local_variables = lf.pending_local_variables;
+      }
+
+    return *this;
+  }
 
   ~lexical_feedback (void) { }
 
-  void init (void);
+  void init (void)
+  {
+    // The closest paren, brace, or bracket nesting is not an object
+    // index.
+    looking_at_object_index.push_front (false);
+  }
 
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
@@ -161,12 +225,6 @@ public:
 
   // Set of identifiers that might be local variable names.
   std::set<std::string> pending_local_variables;
-
-private:
-
-  lexical_feedback (const lexical_feedback&);
-
-  lexical_feedback& operator = (const lexical_feedback&);
 };
 
 class

@@ -557,6 +557,11 @@ main_loop (void)
 
   octave_initialized = true;
 
+  unwind_protect frame;
+
+  frame.protect_var (curr_lexer);
+  curr_lexer = new lexical_feedback ();
+
   // The big loop.
 
   int retval = 0;
@@ -564,7 +569,7 @@ main_loop (void)
     {
       try
         {
-          unwind_protect frame;
+          unwind_protect inner_frame;
 
           reset_error_handler ();
 
@@ -631,7 +636,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (lexer_flags.parser_end_of_input)
+              else if (curr_lexer->parser_end_of_input)
                 break;
             }
         }

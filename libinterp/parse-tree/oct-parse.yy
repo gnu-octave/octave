@@ -556,7 +556,7 @@ input1          : '\n'
                   { $$ = 0; }
                 | END_OF_INPUT
                   {
-                    lexer_flags.parser_end_of_input = 1;
+                    curr_lexer->parser_end_of_input = 1;
                     $$ = 0;
                   }
                 | simple_list
@@ -659,26 +659,26 @@ constant        : NUM
 matrix          : '[' ']'
                   {
                     $$ = new tree_constant (octave_null_matrix::instance);
-                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-                    lexer_flags.pending_local_variables.clear ();
+                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
+                    curr_lexer->pending_local_variables.clear ();
                   }
                 | '[' ';' ']'
                   {
                     $$ = new tree_constant (octave_null_matrix::instance);
-                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-                    lexer_flags.pending_local_variables.clear ();
+                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
+                    curr_lexer->pending_local_variables.clear ();
                   }
                 | '[' ',' ']'
                   {
                     $$ = new tree_constant (octave_null_matrix::instance);
-                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-                    lexer_flags.pending_local_variables.clear ();
+                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
+                    curr_lexer->pending_local_variables.clear ();
                   }
                 | '[' matrix_rows ']'
                   {
                     $$ = finish_matrix ($2);
-                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-                    lexer_flags.pending_local_variables.clear ();
+                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
+                    curr_lexer->pending_local_variables.clear ();
                   }
                 ;
 
@@ -730,13 +730,13 @@ cell_or_matrix_row
 fcn_handle      : '@' FCN_HANDLE
                   {
                     $$ = make_fcn_handle ($2);
-                    lexer_flags.looking_at_function_handle--;
+                    curr_lexer->looking_at_function_handle--;
                   }
                 ;
 
 anon_fcn_handle : '@' param_list statement
                   {
-                    lexer_flags.quote_is_transpose = false;
+                    curr_lexer->quote_is_transpose = false;
                     $$ = make_anon_fcn_handle ($2, $3);
                   }
                 ;
@@ -796,7 +796,7 @@ arg_list        : expression
                 ;
 
 indirect_ref_op : '.'
-                  { lexer_flags.looking_at_indirect_ref = true; }
+                  { curr_lexer->looking_at_indirect_ref = true; }
                 ;
 
 oper_expr       : primary_expr
@@ -909,14 +909,14 @@ assign_lhs      : simple_expr
                 | '[' arg_list opt_comma CLOSE_BRACE
                   {
                     $$ = $2;
-                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-                    for (std::set<std::string>::const_iterator p = lexer_flags.pending_local_variables.begin ();
-                         p != lexer_flags.pending_local_variables.end ();
+                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
+                    for (std::set<std::string>::const_iterator p = curr_lexer->pending_local_variables.begin ();
+                         p != curr_lexer->pending_local_variables.end ();
                          p++)
                       {
                         symbol_table::force_variable (*p);
                       }
-                    lexer_flags.pending_local_variables.clear ();
+                    curr_lexer->pending_local_variables.clear ();
                   }
                 ;
 
@@ -988,17 +988,17 @@ command         : declaration
 
 parsing_decl_list
                 : // empty
-                  { lexer_flags.looking_at_decl_list = true; }
+                  { curr_lexer->looking_at_decl_list = true; }
 
 declaration     : GLOBAL parsing_decl_list decl1
                   {
                     $$ = make_decl_command (GLOBAL, $1, $3);
-                    lexer_flags.looking_at_decl_list = false;
+                    curr_lexer->looking_at_decl_list = false;
                   }
                 | PERSISTENT parsing_decl_list decl1
                   {
                     $$ = make_decl_command (PERSISTENT, $1, $3);
-                    lexer_flags.looking_at_decl_list = false;
+                    curr_lexer->looking_at_decl_list = false;
                   }
                 ;
 
@@ -1012,13 +1012,13 @@ decl1           : decl2
                 ;
 
 decl_param_init : // empty
-                { lexer_flags.looking_at_initializer_expression = true; }
+                { curr_lexer->looking_at_initializer_expression = true; }
 
 decl2           : identifier
                   { $$ = new tree_decl_elt ($1); }
                 | identifier '=' decl_param_init expression
                   {
-                    lexer_flags.looking_at_initializer_expression = false;
+                    curr_lexer->looking_at_initializer_expression = false;
                     $$ = new tree_decl_elt ($1, $4);
                   }
                 | magic_tilde
@@ -1243,28 +1243,28 @@ push_fcn_symtab : // empty
 
 param_list_beg  : '('
                   {
-                    lexer_flags.looking_at_parameter_list = true;
+                    curr_lexer->looking_at_parameter_list = true;
 
-                    if (lexer_flags.looking_at_function_handle)
+                    if (curr_lexer->looking_at_function_handle)
                       {
                         parser_symtab_context.push ();
                         symbol_table::set_scope (symbol_table::alloc_scope ());
-                        lexer_flags.looking_at_function_handle--;
-                        lexer_flags.looking_at_anon_fcn_args = true;
+                        curr_lexer->looking_at_function_handle--;
+                        curr_lexer->looking_at_anon_fcn_args = true;
                       }
                   }
                 ;
 
 param_list_end  : ')'
                   {
-                    lexer_flags.looking_at_parameter_list = false;
-                    lexer_flags.looking_for_object_index = false;
+                    curr_lexer->looking_at_parameter_list = false;
+                    curr_lexer->looking_for_object_index = false;
                   }
                 ;
 
 param_list      : param_list_beg param_list1 param_list_end
                   {
-                    lexer_flags.quote_is_transpose = false;
+                    curr_lexer->quote_is_transpose = false;
                     $$ = $2;
                   }
                 | param_list_beg error
@@ -1302,12 +1302,12 @@ param_list2     : decl2
 
 return_list     : '[' ']'
                   {
-                    lexer_flags.looking_at_return_list = false;
+                    curr_lexer->looking_at_return_list = false;
                     $$ = new tree_parameter_list ();
                   }
                 | return_list1
                   {
-                    lexer_flags.looking_at_return_list = false;
+                    curr_lexer->looking_at_return_list = false;
                     if ($1->validate (tree_parameter_list::out))
                       $$ = $1;
                     else
@@ -1315,7 +1315,7 @@ return_list     : '[' ']'
                   }
                 | '[' return_list1 ']'
                   {
-                    lexer_flags.looking_at_return_list = false;
+                    curr_lexer->looking_at_return_list = false;
                     if ($2->validate (tree_parameter_list::out))
                       $$ = $2;
                     else
@@ -1339,8 +1339,8 @@ return_list1    : identifier
 script_file     : SCRIPT_FILE opt_list END_OF_INPUT
                   {
                     tree_statement *end_of_script
-                      = make_end ("endscript", lexer_flags.input_line_number,
-                                  lexer_flags.current_input_column);
+                      = make_end ("endscript", curr_lexer->input_line_number,
+                                  curr_lexer->current_input_column);
 
                     make_script ($2, end_of_script);
 
@@ -1368,8 +1368,8 @@ function_beg    : push_fcn_symtab FCN stash_comment
                   {
                     $$ = $3;
 
-                    if (reading_classdef_file || lexer_flags.parsing_classdef)
-                      lexer_flags.maybe_classdef_get_set_method = true;
+                    if (reading_classdef_file || curr_lexer->parsing_classdef)
+                      curr_lexer->maybe_classdef_get_set_method = true;
                   }
                 ;
 
@@ -1389,21 +1389,21 @@ fcn_name        : identifier
                   {
                     std::string id_name = $1->name ();
 
-                    lexer_flags.parsed_function_name.top () = true;
-                    lexer_flags.maybe_classdef_get_set_method = false;
+                    curr_lexer->parsed_function_name.top () = true;
+                    curr_lexer->maybe_classdef_get_set_method = false;
 
                     $$ = $1;
                   }
                 | GET '.' identifier
                   {
-                    lexer_flags.parsed_function_name.top () = true;
-                    lexer_flags.maybe_classdef_get_set_method = false;
+                    curr_lexer->parsed_function_name.top () = true;
+                    curr_lexer->maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
                 | SET '.' identifier
                   {
-                    lexer_flags.parsed_function_name.top () = true;
-                    lexer_flags.maybe_classdef_get_set_method = false;
+                    curr_lexer->parsed_function_name.top () = true;
+                    curr_lexer->maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
                 ;
@@ -1463,8 +1463,8 @@ function_end    : END
                         YYABORT;
                       }
 
-                    $$ = make_end ("endfunction", lexer_flags.input_line_number,
-                                   lexer_flags.current_input_column);
+                    $$ = make_end ("endfunction", curr_lexer->input_line_number,
+                                   curr_lexer->current_input_column);
                   }
                 ;
 
@@ -1475,13 +1475,13 @@ function_end    : END
 classdef_beg    : CLASSDEF stash_comment
                   {
                     $$ = 0;
-                    lexer_flags.parsing_classdef = true;
+                    curr_lexer->parsing_classdef = true;
                   }
                 ;
 
 classdef_end    : END
                   {
-                    lexer_flags.parsing_classdef = false;
+                    curr_lexer->parsing_classdef = false;
 
                     if (end_token_ok ($1, token::classdef_end))
                       $$ = make_end ("endclassdef", $1->line (), $1->column ());
@@ -1687,12 +1687,12 @@ opt_comma       : // empty
 static void
 yyerror (const char *s)
 {
-  int err_col = lexer_flags.current_input_column - 1;
+  int err_col = curr_lexer->current_input_column - 1;
 
   std::ostringstream output_buf;
 
   if (reading_fcn_file || reading_script_file || reading_classdef_file)
-    output_buf << "parse error near line " << lexer_flags.input_line_number
+    output_buf << "parse error near line " << curr_lexer->input_line_number
                << " of file " << curr_fcn_file_full_name;
   else
     output_buf << "parse error:";
@@ -2124,8 +2124,8 @@ static tree_anon_fcn_handle *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
-  int l = lexer_flags.input_line_number;
-  int c = lexer_flags.current_input_column;
+  int l = curr_lexer->input_line_number;
+  int c = curr_lexer->current_input_column;
 
   tree_parameter_list *ret_list = 0;
 
@@ -2430,7 +2430,7 @@ make_while_command (token *while_tok, tree_expression *expr,
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
-      lexer_flags.looping--;
+      curr_lexer->looping--;
 
       int l = while_tok->line ();
       int c = while_tok->column ();
@@ -2453,7 +2453,7 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 
   octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
-  lexer_flags.looping--;
+  curr_lexer->looping--;
 
   int l = until_tok->line ();
   int c = until_tok->column ();
@@ -2479,7 +2479,7 @@ make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
-      lexer_flags.looping--;
+      curr_lexer->looping--;
 
       int l = for_tok->line ();
       int c = for_tok->column ();
@@ -2876,7 +2876,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
             fcn->stash_parent_fcn_scope (primary_fcn_scope);
         }
 
-      if (lexer_flags.parsing_class_method)
+      if (curr_lexer->parsing_class_method)
         {
           if (current_class_name == id_name)
             fcn->mark_as_class_constructor ();
@@ -2903,8 +2903,8 @@ frob_function (const std::string& fname, octave_user_function *fcn)
     }
 
   fcn->stash_function_name (id_name);
-  fcn->stash_fcn_location (lexer_flags.input_line_number,
-                           lexer_flags.current_input_column);
+  fcn->stash_fcn_location (curr_lexer->input_line_number,
+                           curr_lexer->current_input_column);
 
   if (! help_buf.empty () && current_function_depth == 1
       && ! parsing_subfunctions)
@@ -3006,10 +3006,10 @@ recover_from_parsing_function (void)
   current_function_depth--;
   function_scopes.pop_back ();
 
-  lexer_flags.defining_func--;
-  lexer_flags.parsed_function_name.pop ();
-  lexer_flags.looking_at_return_list = false;
-  lexer_flags.looking_at_parameter_list = false;
+  curr_lexer->defining_func--;
+  curr_lexer->parsed_function_name.pop ();
+  curr_lexer->looking_at_return_list = false;
+  curr_lexer->looking_at_parameter_list = false;
 }
 
 // Make an index expression.
@@ -3066,7 +3066,7 @@ make_indirect_ref (tree_expression *expr, const std::string& elt)
   else
     retval = new tree_index_expression (expr, elt, l, c);
 
-  lexer_flags.looking_at_indirect_ref = false;
+  curr_lexer->looking_at_indirect_ref = false;
 
   return retval;
 }
@@ -3092,7 +3092,7 @@ make_indirect_ref (tree_expression *expr, tree_expression *elt)
   else
     retval = new tree_index_expression (expr, elt, l, c);
 
-  lexer_flags.looking_at_indirect_ref = false;
+  curr_lexer->looking_at_indirect_ref = false;
 
   return retval;
 }
@@ -3313,7 +3313,7 @@ text_getc (FILE *f)
     }
 
   if (c == '\n')
-    lexer_flags.input_line_number++;
+    curr_lexer->input_line_number++;
 
   return c;
 }
@@ -3328,7 +3328,7 @@ public:
   int ungetc (int c)
   {
     if (c == '\n')
-      lexer_flags.input_line_number--;
+      curr_lexer->input_line_number--;
 
     return ::ungetc (c, f);
   }
@@ -3354,11 +3354,11 @@ skip_white_space (stream_reader& reader)
         {
         case ' ':
         case '\t':
-          lexer_flags.current_input_column++;
+          curr_lexer->current_input_column++;
           break;
 
         case '\n':
-          lexer_flags.current_input_column = 1;
+          curr_lexer->current_input_column = 1;
           break;
 
         default:
@@ -3499,9 +3499,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
     {
       bool eof;
 
-      frame.protect_var (lexer_flags);
+      frame.protect_var (curr_lexer);
 
-      // Also resets lexer_flags.
+      curr_lexer = new lexical_feedback ();
+
       reset_parser ();
 
       std::string help_txt = gobble_leading_white_space (ffile, eof);
@@ -3581,7 +3582,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
           else
             prep_lexer_for_function_file ();
 
-          lexer_flags.parsing_class_method = ! dispatch_type.empty ();
+          curr_lexer->parsing_class_method = ! dispatch_type.empty ();
 
           frame.protect_var (global_command);
 
@@ -3604,8 +3605,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       else
         {
           tree_statement *end_of_script
-            = make_end ("endscript", lexer_flags.input_line_number,
-                        lexer_flags.current_input_column);
+            = make_end ("endscript", curr_lexer->input_line_number,
+                        curr_lexer->current_input_column);
 
           make_script (0, end_of_script);
 
@@ -4304,7 +4305,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   unwind_protect frame;
 
-  frame.protect_var (lexer_flags);
+  frame.protect_var (curr_lexer);
 
   frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);
@@ -4318,7 +4319,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (reading_script_file);
   frame.protect_var (reading_classdef_file);
 
-  lexer_flags = lexical_feedback ();
+  curr_lexer = new lexical_feedback ();
 
   get_input_from_eval_string = true;
   line_editing = false;
@@ -4417,7 +4418,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                   || tree_continue_command::continuing)
                 break;
             }
-          else if (lexer_flags.parser_end_of_input)
+          else if (curr_lexer->parser_end_of_input)
             break;
         }
     }

@@ -678,6 +678,9 @@ get_debug_input (const std::string& prompt)
       switch_to_buffer (new_buf);
     }
 
+  frame.protect_var (curr_lexer);
+  curr_lexer = new lexical_feedback ();
+
   while (Vdebugging)
     {
       reset_error_handler ();
@@ -1193,7 +1196,7 @@ static hook_fcn_map_type hook_fcn_map;
 static int
 input_event_hook (void)
 {
-  if (! lexer_flags.defining_func)
+  if (! curr_lexer->defining_func)
     {
       hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
 

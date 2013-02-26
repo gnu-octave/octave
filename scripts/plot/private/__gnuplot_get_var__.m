@@ -24,16 +24,10 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2009-02-07
 
-function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
+function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
 
-  if (nargin == 0)
-    h = gcf ();
-  endif
   if (nargin < 2)
     print_usage ();
-  endif
-  if (nargin < 3)
-    fmt = '';
   endif
 
   if (numel (h) == 1 && isfigure (h))
@@ -65,8 +59,8 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
     ## Mode: 6*8*8 ==  0600
     [err, msg] = mkfifo (gpin_name, 6*8*8);
 
-    if (err != 0)
-      error ("__gnuplot_get_var__: Can not make fifo (%s)", msg);
+    if (err)
+      error ("__gnuplot_get_var__: Can not make FIFO (%s)", msg);
     endif
   endif
 
@@ -79,18 +73,18 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
   unwind_protect
 
     ## Notes: Variables may be undefined if user closes gnuplot by "q"
-    ## or Alt-F4. Further, this abrupt close also requires the leading
+    ## or Alt-F4.  Further, this abrupt close also requires the leading
     ## "\n" on the next line.
     if (use_mkfifo)
       fprintf (ostream, "\nset print \"%s\";\n", gpin_name);
       fflush (ostream);
       [gpin, err] = fopen (gpin_name, "r");
-      if (err != 0)
+      if (err)
         ## Try a second time, and then give an error.
         [gpin, err] = fopen (gpin_name, "r");
       endif
-      if (err != 0)
-        error ("__gnuplot_get_var__: can not open fifo");
+      if (err)
+        error ("__gnuplot_get_var__: can not open FIFO");
       endif
       gp_cmd = sprintf ("\nif (exists(\"%s\")) print %s; else print NaN\n",
                         gp_var_name(1:n), gp_var_name);
@@ -126,7 +120,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
 
       str = {};
       while (isempty (str))
-        str = char (fread (istream)');
+        str = fread (istream, "*char")';
         if (isempty (str))
           sleep (0.05);
         else
@@ -138,8 +132,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
     endif
 
     ## Strip out EOLs and the continuation character "|"
-    str(str=="\n") = "";
-    str(str=="\r") = "";
+    str(str=="\n" | str=="\r") = "";
     n_continue = strfind (str, " \\ ");
     if (! isempty (n_continue))
       str(n_continue+1) = "";

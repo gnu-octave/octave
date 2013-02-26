@@ -31,6 +31,10 @@
 
 function [x, y, button] = __gnuplot_ginput__ (f, n)
 
+  if (compare_versions (__gnuplot_version__ (), "4.0", "<="))
+    error ("ginput: version %s of gnuplot not supported", gnuplot_version ());
+  endif
+
   ostream = get (f, "__plot_stream__");
   if (numel (ostream) < 1)
     error ("ginput: stream to gnuplot not open");
@@ -44,10 +48,6 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
   else
     use_mkfifo = true;
     ostream = ostream(1);
-  endif
-
-  if (compare_versions (__gnuplot_version__ (), "4.0", "<="))
-    error ("ginput: version %s of gnuplot not supported", gnuplot_version ());
   endif
 
   if (nargin == 1)
@@ -66,7 +66,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
     ##Mode: 6*8*8 ==  0600
     [err, msg] = mkfifo (gpin_name, 6*8*8);
 
-    if (err != 0)
+    if (err)
       error ("ginput: Can not open fifo (%s)", msg);
     endif
   endif
@@ -84,8 +84,8 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         fprintf (ostream, "set print \"%s\";\n", gpin_name);
         fflush (ostream);
         [gpin, err] = fopen (gpin_name, "r");
-        if (err != 0)
-          error ("ginput: Can not open fifo (%s)", msg);
+        if (err)
+          error ("ginput: Can not open FIFO (%s)", msg);
         endif
         fputs (ostream, "pause mouse any;\n\n");
         fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
@@ -98,7 +98,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         [x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
         fclose (gpin);
       else
-        fprintf (ostream, "set print \"-\";\n");
+        fputs (ostream, "set print \"-\";\n");
         fflush (ostream);
         fputs (ostream, "pause mouse any;\n\n");
         fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print \"OCTAVE: \", MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
@@ -109,7 +109,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
 
         str = {};
         while (isempty (str))
-          str = char (fread (istream)');
+          str = fread (istream, "*char")';
           if (isempty (str))
             sleep (0.05);
           else

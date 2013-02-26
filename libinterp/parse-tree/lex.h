@@ -212,6 +212,8 @@ public:
 
   char *flex_yytext (void);
 
+  int flex_yyleng (void);
+
   void do_comma_insert_check (void);
 
   int text_yyinput (void);

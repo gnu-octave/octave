@@ -1485,6 +1485,12 @@ lexical_feedback::flex_yytext (void)
   return yytext;
 }
 
+int
+lexical_feedback::flex_yyleng (void)
+{
+  return yyleng;
+}
+
 // GAG.
 //
 // If we're reading a matrix and the next character is '[', make sure
@@ -2508,7 +2514,7 @@ lexical_feedback::handle_number (void)
   curr_lexer->push_token (new token (value, yytxt, input_line_number,
                                      current_input_column));
 
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   do_comma_insert_check ();
 }
@@ -3240,7 +3246,7 @@ lexical_feedback::handle_superclass_identifier (void)
                 input_line_number, current_input_column));
 
   convert_spaces_to_comma = true;
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   return SUPERCLASSREF;
 }
@@ -3274,7 +3280,7 @@ lexical_feedback::handle_meta_identifier (void)
                 input_line_number, current_input_column));
 
   convert_spaces_to_comma = true;
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   return METAQUERY;
 }
@@ -3292,7 +3298,7 @@ lexical_feedback::handle_identifier (void)
 
   std::string tok = strip_trailing_whitespace (yytxt);
 
-  int c = yytxt[yyleng-1];
+  int c = yytxt[flex_yyleng()-1];
 
   bool cont_is_spc = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
 
@@ -3316,7 +3322,7 @@ lexical_feedback::handle_identifier (void)
       convert_spaces_to_comma = true;
       looking_for_object_index = true;
 
-      current_input_column += yyleng;
+      current_input_column += flex_yyleng ();
 
       return STRUCT_ELT;
     }
@@ -3347,7 +3353,7 @@ lexical_feedback::handle_identifier (void)
           curr_lexer->push_token (new token (tok, input_line_number,
                                              current_input_column));
 
-          current_input_column += yyleng;
+          current_input_column += flex_yyleng ();
           quote_is_transpose = false;
           convert_spaces_to_comma = true;
           looking_for_object_index = true;
@@ -3363,7 +3369,7 @@ lexical_feedback::handle_identifier (void)
     {
       if (kw_token >= 0)
         {
-          current_input_column += yyleng;
+          current_input_column += flex_yyleng ();
           quote_is_transpose = false;
           convert_spaces_to_comma = true;
           looking_for_object_index = false;
@@ -3442,7 +3448,7 @@ lexical_feedback::handle_identifier (void)
       maybe_unput_comma (spc_gobbled);
     }
 
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   if (tok != "__end__")
     looking_for_object_index = true;

@@ -222,9 +222,8 @@ static unsigned int Vtoken_count = 0;
 static bool lexer_debug_flag = false;
 
 // Forward declarations for functions defined at the bottom of this
-// file.
+// file that are needed inside the lexer actions.
 
-static bool match_any (char c, const char *s);
 static std::string strip_trailing_whitespace (char *s);
 static int octave_read (char *buf, unsigned int max_size);
 static void display_token (int tok);
@@ -980,27 +979,6 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 %%
 
-// GAG.
-//
-// If we're reading a matrix and the next character is '[', make sure
-// that we insert a comma ahead of it.
-
-void
-lexical_feedback::do_comma_insert_check (void)
-{
-  bool spc_gobbled = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
-
-  int c = text_yyinput ();
-
-  xunput (c, yytext);
-
-  if (spc_gobbled)
-    xunput (' ', yytext);
-
-  do_comma_insert = (! looking_at_object_index.front ()
-                     && bracketflag && c == '[');
-}
-
 // Fix things up for errors or interrupts.  The parser is never called
 // recursively, so it is always safe to reinitialize its state before
 // doing any parsing.
@@ -1179,91 +1157,6 @@ display_character (char c)
       }
 }
 
-lexical_feedback::~lexical_feedback (void)
-{
-  // Clear out the stack of token info used to track line and
-  // column numbers.
-
-  while (! token_stack.empty ())
-    {
-      delete token_stack.top ();
-      token_stack.pop ();
-    }
-}
-
-int
-lexical_feedback::text_yyinput (void)
-{
-  int c = yyinput ();
-
-  if (lexer_debug_flag)
-    {
-      std::cerr << "I: ";
-      display_character (c);
-      std::cerr << std::endl;
-    }
-
-  // Convert CRLF into just LF and single CR into LF.
-
-  if (c == '\r')
-    {
-      c = yyinput ();
-
-      if (lexer_debug_flag)
-        {
-          std::cerr << "I: ";
-          display_character (c);
-          std::cerr << std::endl;
-        }
-
-      if (c != '\n')
-        {
-          xunput (c, yytext);
-          c = '\n';
-        }
-    }
-
-  if (c == '\n')
-    input_line_number++;
-
-  return c;
-}
-
-void
-lexical_feedback::xunput (char c, char *buf)
-{
-  if (lexer_debug_flag)
-    {
-      std::cerr << "U: ";
-      display_character (c);
-      std::cerr << std::endl;
-    }
-
-  if (c == '\n')
-    input_line_number--;
-
-  yyunput (c, buf);
-}
-
-// If we read some newlines, we need figure out what column we're
-// really looking at.
-
-void
-lexical_feedback::fixup_column_count (char *s)
-{
-  char c;
-  while ((c = *s++) != '\0')
-    {
-      if (c == '\n')
-        {
-          input_line_number++;
-          current_input_column = 1;
-        }
-      else
-        current_input_column++;
-    }
-}
-
 // Include these so that we don't have to link to libfl.a.
 
 int
@@ -1338,6 +1231,527 @@ void
 delete_input_buffer (void *buf)
 {
   delete_buffer (static_cast<YY_BUFFER_STATE> (buf));
+}
+
+class
+flex_stream_reader : public stream_reader
+{
+public:
+  flex_stream_reader (char *buf_arg) : stream_reader (), buf (buf_arg) { }
+
+  int getc (void) { return curr_lexer->text_yyinput (); }
+  int ungetc (int c) { curr_lexer->xunput (c, buf); return 0; }
+
+private:
+
+  // No copying!
+
+  flex_stream_reader (const flex_stream_reader&);
+
+  flex_stream_reader& operator = (const flex_stream_reader&);
+
+  char *buf;
+};
+
+// Return 1 if the given character matches any character in the given
+// string.
+
+static bool
+match_any (char c, const char *s)
+{
+  char tmp;
+  while ((tmp = *s++) != '\0')
+    {
+      if (c == tmp)
+        return true;
+    }
+  return false;
+}
+
+// Given information about the spacing surrounding an operator,
+// return 1 if it looks like it should be treated as a binary
+// operator.  For example,
+//
+//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==>  binary
+//
+//   [ 1 +2 ]  ==>  unary
+
+static bool
+looks_like_bin_op (bool spc_prev, int next_char)
+{
+  bool spc_next = (next_char == ' ' || next_char == '\t');
+
+  return ((spc_prev && spc_next) || ! spc_prev);
+}
+
+bool
+is_keyword (const std::string& s)
+{
+  // Parsing function names like "set.property_name" inside
+  // classdef-style class definitions is simplified by handling the
+  // "set" and "get" portions of the names using the same mechanism as
+  // is used for keywords.  However, they are not really keywords in
+  // the language, so omit them from the list of possible keywords.
+
+  return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
+          && ! (s == "set" || s == "get"));
+}
+
+DEFUN (iskeyword, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} iskeyword ()\n\
+@deftypefnx {Built-in Function} {} iskeyword (@var{name})\n\
+Return true if @var{name} is an Octave keyword.  If @var{name}\n\
+is omitted, return a list of keywords.\n\
+@seealso{isvarname, exist}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("iskeyword");
+
+  if (error_state)
+    return retval;
+
+  if (argc == 1)
+    {
+      // Neither set and get are keywords.  See the note in the
+      // is_keyword function for additional details.
+
+      string_vector lst (TOTAL_KEYWORDS);
+
+      int j = 0;
+
+      for (int i = 0; i < TOTAL_KEYWORDS; i++)
+        {
+          std::string tmp = wordlist[i].name;
+
+          if (! (tmp == "set" || tmp == "get"))
+            lst[j++] = tmp;
+        }
+
+      lst.resize (j);
+
+      retval = Cell (lst.sort ());
+    }
+  else if (argc == 2)
+    {
+      retval = is_keyword (argv[1]);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+%!assert (iskeyword ("for"))
+%!assert (iskeyword ("fort"), false)
+%!assert (iskeyword ("fft"), false)
+
+*/
+
+void
+prep_lexer_for_script_file (void)
+{
+  BEGIN (SCRIPT_FILE_BEGIN);
+}
+
+void
+prep_lexer_for_function_file (void)
+{
+  BEGIN (FUNCTION_FILE_BEGIN);
+}
+
+// Used to delete trailing white space from tokens.
+
+static std::string
+strip_trailing_whitespace (char *s)
+{
+  std::string retval = s;
+
+  size_t pos = retval.find_first_of (" \t");
+
+  if (pos != std::string::npos)
+    retval.resize (pos);
+
+  return retval;
+}
+
+static int
+octave_read (char *buf, unsigned max_size)
+{
+  static const char * const eol = "\n";
+  static std::string input_buf;
+  static const char *pos = 0;
+  static size_t chars_left = 0;
+  static bool eof = false;
+
+  int status = 0;
+
+  if (chars_left == 0)
+    {
+      pos = 0;
+
+      input_buf = get_user_input (eof);
+
+      chars_left = input_buf.length ();
+
+      pos = input_buf.c_str ();
+    }
+
+  if (chars_left > 0)
+    {
+      size_t len = max_size > chars_left ? chars_left : max_size;
+      assert (len > 0);
+
+      memcpy (buf, pos, len);
+
+      chars_left -= len;
+      pos += len;
+
+      // Make sure input ends with a new line character.
+      if (chars_left == 0 && buf[len-1] != '\n')
+        {
+          if (len < max_size)
+            {
+              // There is enough room to plug the newline character in
+              // the buffer.
+              buf[len++] = '\n';
+            }
+          else
+            {
+              // There isn't enough room to plug the newline character
+              // in the buffer so make sure it is returned on the next
+              // octave_read call.
+              pos = eol;
+              chars_left = 1;
+            }
+        }
+
+      status = len;
+    }
+  else
+    {
+      status = YY_NULL;
+
+      if (! eof)
+        YY_FATAL_ERROR ("octave_read () in flex scanner failed");
+    }
+
+  return status;
+}
+
+static void
+display_token (int tok)
+{
+  switch (tok)
+    {
+    case '=': std::cerr << "'='\n"; break;
+    case ':': std::cerr << "':'\n"; break;
+    case '-': std::cerr << "'-'\n"; break;
+    case '+': std::cerr << "'+'\n"; break;
+    case '*': std::cerr << "'*'\n"; break;
+    case '/': std::cerr << "'/'\n"; break;
+    case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
+    case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
+    case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
+    case DIV_EQ: std::cerr << "DIV_EQ\n"; break;
+    case LEFTDIV_EQ: std::cerr << "LEFTDIV_EQ\n"; break;
+    case POW_EQ: std::cerr << "POW_EQ\n"; break;
+    case EMUL_EQ: std::cerr << "EMUL_EQ\n"; break;
+    case EDIV_EQ: std::cerr << "EDIV_EQ\n"; break;
+    case ELEFTDIV_EQ: std::cerr << "ELEFTDIV_EQ\n"; break;
+    case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
+    case AND_EQ: std::cerr << "AND_EQ\n"; break;
+    case OR_EQ: std::cerr << "OR_EQ\n"; break;
+    case LSHIFT_EQ: std::cerr << "LSHIFT_EQ\n"; break;
+    case RSHIFT_EQ: std::cerr << "RSHIFT_EQ\n"; break;
+    case LSHIFT: std::cerr << "LSHIFT\n"; break;
+    case RSHIFT: std::cerr << "RSHIFT\n"; break;
+    case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
+    case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
+    case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
+    case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
+    case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
+    case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
+    case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
+    case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;
+    case EXPR_NE: std::cerr << "EXPR_NE\n"; break;
+    case EXPR_GE: std::cerr << "EXPR_GE\n"; break;
+    case EXPR_GT: std::cerr << "EXPR_GT\n"; break;
+    case LEFTDIV: std::cerr << "LEFTDIV\n"; break;
+    case EMUL: std::cerr << "EMUL\n"; break;
+    case EDIV: std::cerr << "EDIV\n"; break;
+    case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
+    case EPLUS: std::cerr << "EPLUS\n"; break;
+    case EMINUS: std::cerr << "EMINUS\n"; break;
+    case QUOTE: std::cerr << "QUOTE\n"; break;
+    case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
+    case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
+    case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
+    case POW: std::cerr << "POW\n"; break;
+    case EPOW: std::cerr << "EPOW\n"; break;
+
+    case NUM:
+    case IMAG_NUM:
+      std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
+                << " [" << yylval.tok_val->number () << "]\n";
+      break;
+
+    case STRUCT_ELT:
+      std::cerr << "STRUCT_ELT [" << yylval.tok_val->text () << "]\n"; break;
+
+    case NAME:
+      {
+        symbol_table::symbol_record *sr = yylval.tok_val->sym_rec ();
+        std::cerr << "NAME";
+        if (sr)
+          std::cerr << " [" << sr->name () << "]";
+        std::cerr << "\n";
+      }
+      break;
+
+    case END: std::cerr << "END\n"; break;
+
+    case DQ_STRING:
+    case SQ_STRING:
+      std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
+                << " [" << yylval.tok_val->text () << "]\n";
+      break;
+
+    case FOR: std::cerr << "FOR\n"; break;
+    case WHILE: std::cerr << "WHILE\n"; break;
+    case DO: std::cerr << "DO\n"; break;
+    case UNTIL: std::cerr << "UNTIL\n"; break;
+    case IF: std::cerr << "IF\n"; break;
+    case ELSEIF: std::cerr << "ELSEIF\n"; break;
+    case ELSE: std::cerr << "ELSE\n"; break;
+    case SWITCH: std::cerr << "SWITCH\n"; break;
+    case CASE: std::cerr << "CASE\n"; break;
+    case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
+    case BREAK: std::cerr << "BREAK\n"; break;
+    case CONTINUE: std::cerr << "CONTINUE\n"; break;
+    case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
+    case UNWIND: std::cerr << "UNWIND\n"; break;
+    case CLEANUP: std::cerr << "CLEANUP\n"; break;
+    case TRY: std::cerr << "TRY\n"; break;
+    case CATCH: std::cerr << "CATCH\n"; break;
+    case GLOBAL: std::cerr << "GLOBAL\n"; break;
+    case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
+    case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
+    case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
+    case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
+    case FCN: std::cerr << "FCN\n"; break;
+    case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
+    case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
+    case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
+    case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
+    case METAQUERY: std::cerr << "METAQUERY\n"; break;
+    case GET: std::cerr << "GET\n"; break;
+    case SET: std::cerr << "SET\n"; break;
+    case PROPERTIES: std::cerr << "PROPERTIES\n"; break;
+    case METHODS: std::cerr << "METHODS\n"; break;
+    case EVENTS: std::cerr << "EVENTS\n"; break;
+    case CLASSDEF: std::cerr << "CLASSDEF\n"; break;
+    case '\n': std::cerr << "\\n\n"; break;
+    case '\r': std::cerr << "\\r\n"; break;
+    case '\t': std::cerr << "TAB\n"; break;
+    default:
+      {
+        if (tok < 256)
+          std::cerr << static_cast<char> (tok) << "\n";
+        else
+          std::cerr << "UNKNOWN(" << tok << ")\n";
+      }
+      break;
+    }
+}
+
+static void
+display_state (void)
+{
+  std::cerr << "S: ";
+
+  switch (YY_START)
+    {
+    case INITIAL:
+      std::cerr << "INITIAL" << std::endl;
+      break;
+
+    case COMMAND_START:
+      std::cerr << "COMMAND_START" << std::endl;
+      break;
+
+    case MATRIX_START:
+      std::cerr << "MATRIX_START" << std::endl;
+      break;
+
+    case SCRIPT_FILE_BEGIN:
+      std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
+      break;
+
+    case FUNCTION_FILE_BEGIN:
+      std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
+      break;
+
+    default:
+      std::cerr << "UNKNOWN START STATE!" << std::endl;
+      break;
+    }
+}
+
+static void
+lexer_debug (const char *pattern, const char *text)
+{
+  std::cerr << std::endl;
+
+  display_state ();
+
+  std::cerr << "P: " << pattern << std::endl;
+  std::cerr << "T: " << text << std::endl;
+}
+
+DEFUN (__display_tokens__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __display_tokens__ ()\n\
+Query or set the internal variable that determines whether Octave's\n\
+lexer displays tokens as they are read.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (display_tokens);
+}
+
+DEFUN (__token_count__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __token_count__ ()\n\
+Number of language tokens processed since Octave startup.\n\
+@end deftypefn")
+{
+  return octave_value (Vtoken_count);
+}
+
+DEFUN (__lexer_debug_flag__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val}))\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  retval = set_internal_variable (lexer_debug_flag, args, nargout,
+                                  "__lexer_debug_flag__");
+
+  return retval;
+}
+
+lexical_feedback::~lexical_feedback (void)
+{
+  // Clear out the stack of token info used to track line and
+  // column numbers.
+
+  while (! token_stack.empty ())
+    {
+      delete token_stack.top ();
+      token_stack.pop ();
+    }
+}
+
+// GAG.
+//
+// If we're reading a matrix and the next character is '[', make sure
+// that we insert a comma ahead of it.
+
+void
+lexical_feedback::do_comma_insert_check (void)
+{
+  bool spc_gobbled = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
+
+  int c = text_yyinput ();
+
+  xunput (c, yytext);
+
+  if (spc_gobbled)
+    xunput (' ', yytext);
+
+  do_comma_insert = (! looking_at_object_index.front ()
+                     && bracketflag && c == '[');
+}
+
+int
+lexical_feedback::text_yyinput (void)
+{
+  int c = yyinput ();
+
+  if (lexer_debug_flag)
+    {
+      std::cerr << "I: ";
+      display_character (c);
+      std::cerr << std::endl;
+    }
+
+  // Convert CRLF into just LF and single CR into LF.
+
+  if (c == '\r')
+    {
+      c = yyinput ();
+
+      if (lexer_debug_flag)
+        {
+          std::cerr << "I: ";
+          display_character (c);
+          std::cerr << std::endl;
+        }
+
+      if (c != '\n')
+        {
+          xunput (c, yytext);
+          c = '\n';
+        }
+    }
+
+  if (c == '\n')
+    input_line_number++;
+
+  return c;
+}
+
+void
+lexical_feedback::xunput (char c, char *buf)
+{
+  if (lexer_debug_flag)
+    {
+      std::cerr << "U: ";
+      display_character (c);
+      std::cerr << std::endl;
+    }
+
+  if (c == '\n')
+    input_line_number--;
+
+  yyunput (c, buf);
+}
+
+// If we read some newlines, we need figure out what column we're
+// really looking at.
+
+void
+lexical_feedback::fixup_column_count (char *s)
+{
+  char c;
+  while ((c = *s++) != '\0')
+    {
+      if (c == '\n')
+        {
+          input_line_number++;
+          current_input_column = 1;
+        }
+      else
+        current_input_column++;
+    }
 }
 
 bool
@@ -1829,26 +2243,6 @@ lexical_feedback::grab_comment_block (stream_reader& reader, bool at_bol,
   return buf;
 }
 
-class
-flex_stream_reader : public stream_reader
-{
-public:
-  flex_stream_reader (char *buf_arg) : stream_reader (), buf (buf_arg) { }
-
-  int getc (void) { return curr_lexer->text_yyinput (); }
-  int ungetc (int c) { curr_lexer->xunput (c, buf); return 0; }
-
-private:
-
-  // No copying!
-
-  flex_stream_reader (const flex_stream_reader&);
-
-  flex_stream_reader& operator = (const flex_stream_reader&);
-
-  char *buf;
-};
-
 int
 lexical_feedback::process_comment (bool start_in_block, bool& eof)
 {
@@ -1895,37 +2289,6 @@ lexical_feedback::process_comment (bool start_in_block, bool& eof)
     return ';';
   else
     return 0;
-}
-
-// Return 1 if the given character matches any character in the given
-// string.
-
-static bool
-match_any (char c, const char *s)
-{
-  char tmp;
-  while ((tmp = *s++) != '\0')
-    {
-      if (c == tmp)
-        return true;
-    }
-  return false;
-}
-
-// Given information about the spacing surrounding an operator,
-// return 1 if it looks like it should be treated as a binary
-// operator.  For example,
-//
-//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==>  binary
-//
-//   [ 1 +2 ]  ==>  unary
-
-static bool
-looks_like_bin_op (bool spc_prev, int next_char)
-{
-  bool spc_next = (next_char == ' ' || next_char == '\t');
-
-  return ((spc_prev && spc_next) || ! spc_prev);
 }
 
 // Recognize separators.  If the separator is a CRLF pair, it is
@@ -2092,21 +2455,6 @@ lexical_feedback::next_token_is_bin_op (bool spc_prev)
   xunput (c0, yytext);
 
   return bin_op;
-}
-
-// Used to delete trailing white space from tokens.
-
-static std::string
-strip_trailing_whitespace (char *s)
-{
-  std::string retval = s;
-
-  size_t pos = retval.find_first_of (" \t");
-
-  if (pos != std::string::npos)
-    retval.resize (pos);
-
-  return retval;
 }
 
 // FIXME -- we need to handle block comments here.
@@ -3278,152 +3626,6 @@ lexical_feedback::handle_identifier (void)
   return NAME;
 }
 
-bool
-is_keyword (const std::string& s)
-{
-  // Parsing function names like "set.property_name" inside
-  // classdef-style class definitions is simplified by handling the
-  // "set" and "get" portions of the names using the same mechanism as
-  // is used for keywords.  However, they are not really keywords in
-  // the language, so omit them from the list of possible keywords.
-
-  return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
-          && ! (s == "set" || s == "get"));
-}
-
-DEFUN (iskeyword, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} iskeyword ()\n\
-@deftypefnx {Built-in Function} {} iskeyword (@var{name})\n\
-Return true if @var{name} is an Octave keyword.  If @var{name}\n\
-is omitted, return a list of keywords.\n\
-@seealso{isvarname, exist}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("iskeyword");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 1)
-    {
-      // Neither set and get are keywords.  See the note in the
-      // is_keyword function for additional details.
-
-      string_vector lst (TOTAL_KEYWORDS);
-
-      int j = 0;
-
-      for (int i = 0; i < TOTAL_KEYWORDS; i++)
-        {
-          std::string tmp = wordlist[i].name;
-
-          if (! (tmp == "set" || tmp == "get"))
-            lst[j++] = tmp;
-        }
-
-      lst.resize (j);
-
-      retval = Cell (lst.sort ());
-    }
-  else if (argc == 2)
-    {
-      retval = is_keyword (argv[1]);
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-/*
-
-%!assert (iskeyword ("for"))
-%!assert (iskeyword ("fort"), false)
-%!assert (iskeyword ("fft"), false)
-
-*/
-
-void
-prep_lexer_for_script_file (void)
-{
-  BEGIN (SCRIPT_FILE_BEGIN);
-}
-
-void
-prep_lexer_for_function_file (void)
-{
-  BEGIN (FUNCTION_FILE_BEGIN);
-}
-
-static int
-octave_read (char *buf, unsigned max_size)
-{
-  static const char * const eol = "\n";
-  static std::string input_buf;
-  static const char *pos = 0;
-  static size_t chars_left = 0;
-  static bool eof = false;
-
-  int status = 0;
-
-  if (chars_left == 0)
-    {
-      pos = 0;
-
-      input_buf = get_user_input (eof);
-
-      chars_left = input_buf.length ();
-
-      pos = input_buf.c_str ();
-    }
-
-  if (chars_left > 0)
-    {
-      size_t len = max_size > chars_left ? chars_left : max_size;
-      assert (len > 0);
-
-      memcpy (buf, pos, len);
-
-      chars_left -= len;
-      pos += len;
-
-      // Make sure input ends with a new line character.
-      if (chars_left == 0 && buf[len-1] != '\n')
-        {
-          if (len < max_size)
-            {
-              // There is enough room to plug the newline character in
-              // the buffer.
-              buf[len++] = '\n';
-            }
-          else
-            {
-              // There isn't enough room to plug the newline character
-              // in the buffer so make sure it is returned on the next
-              // octave_read call.
-              pos = eol;
-              chars_left = 1;
-            }
-        }
-
-      status = len;
-    }
-  else
-    {
-      status = YY_NULL;
-
-      if (! eof)
-        YY_FATAL_ERROR ("octave_read () in flex scanner failed");
-    }
-
-  return status;
-}
-
 void
 lexical_feedback::maybe_warn_separator_insert (char sep)
 {
@@ -3490,207 +3692,4 @@ lexical_feedback::gripe_matlab_incompatible_operator (const std::string& op)
   if (t[n-1] == '\n')
     t.resize (n-1);
   gripe_matlab_incompatible (t + " used as operator");
-}
-
-static void
-display_token (int tok)
-{
-  switch (tok)
-    {
-    case '=': std::cerr << "'='\n"; break;
-    case ':': std::cerr << "':'\n"; break;
-    case '-': std::cerr << "'-'\n"; break;
-    case '+': std::cerr << "'+'\n"; break;
-    case '*': std::cerr << "'*'\n"; break;
-    case '/': std::cerr << "'/'\n"; break;
-    case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
-    case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
-    case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
-    case DIV_EQ: std::cerr << "DIV_EQ\n"; break;
-    case LEFTDIV_EQ: std::cerr << "LEFTDIV_EQ\n"; break;
-    case POW_EQ: std::cerr << "POW_EQ\n"; break;
-    case EMUL_EQ: std::cerr << "EMUL_EQ\n"; break;
-    case EDIV_EQ: std::cerr << "EDIV_EQ\n"; break;
-    case ELEFTDIV_EQ: std::cerr << "ELEFTDIV_EQ\n"; break;
-    case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
-    case AND_EQ: std::cerr << "AND_EQ\n"; break;
-    case OR_EQ: std::cerr << "OR_EQ\n"; break;
-    case LSHIFT_EQ: std::cerr << "LSHIFT_EQ\n"; break;
-    case RSHIFT_EQ: std::cerr << "RSHIFT_EQ\n"; break;
-    case LSHIFT: std::cerr << "LSHIFT\n"; break;
-    case RSHIFT: std::cerr << "RSHIFT\n"; break;
-    case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
-    case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
-    case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
-    case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
-    case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
-    case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
-    case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
-    case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;
-    case EXPR_NE: std::cerr << "EXPR_NE\n"; break;
-    case EXPR_GE: std::cerr << "EXPR_GE\n"; break;
-    case EXPR_GT: std::cerr << "EXPR_GT\n"; break;
-    case LEFTDIV: std::cerr << "LEFTDIV\n"; break;
-    case EMUL: std::cerr << "EMUL\n"; break;
-    case EDIV: std::cerr << "EDIV\n"; break;
-    case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
-    case EPLUS: std::cerr << "EPLUS\n"; break;
-    case EMINUS: std::cerr << "EMINUS\n"; break;
-    case QUOTE: std::cerr << "QUOTE\n"; break;
-    case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
-    case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
-    case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
-    case POW: std::cerr << "POW\n"; break;
-    case EPOW: std::cerr << "EPOW\n"; break;
-
-    case NUM:
-    case IMAG_NUM:
-      std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
-                << " [" << yylval.tok_val->number () << "]\n";
-      break;
-
-    case STRUCT_ELT:
-      std::cerr << "STRUCT_ELT [" << yylval.tok_val->text () << "]\n"; break;
-
-    case NAME:
-      {
-        symbol_table::symbol_record *sr = yylval.tok_val->sym_rec ();
-        std::cerr << "NAME";
-        if (sr)
-          std::cerr << " [" << sr->name () << "]";
-        std::cerr << "\n";
-      }
-      break;
-
-    case END: std::cerr << "END\n"; break;
-
-    case DQ_STRING:
-    case SQ_STRING:
-      std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
-                << " [" << yylval.tok_val->text () << "]\n";
-      break;
-
-    case FOR: std::cerr << "FOR\n"; break;
-    case WHILE: std::cerr << "WHILE\n"; break;
-    case DO: std::cerr << "DO\n"; break;
-    case UNTIL: std::cerr << "UNTIL\n"; break;
-    case IF: std::cerr << "IF\n"; break;
-    case ELSEIF: std::cerr << "ELSEIF\n"; break;
-    case ELSE: std::cerr << "ELSE\n"; break;
-    case SWITCH: std::cerr << "SWITCH\n"; break;
-    case CASE: std::cerr << "CASE\n"; break;
-    case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
-    case BREAK: std::cerr << "BREAK\n"; break;
-    case CONTINUE: std::cerr << "CONTINUE\n"; break;
-    case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
-    case UNWIND: std::cerr << "UNWIND\n"; break;
-    case CLEANUP: std::cerr << "CLEANUP\n"; break;
-    case TRY: std::cerr << "TRY\n"; break;
-    case CATCH: std::cerr << "CATCH\n"; break;
-    case GLOBAL: std::cerr << "GLOBAL\n"; break;
-    case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
-    case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
-    case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
-    case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
-    case FCN: std::cerr << "FCN\n"; break;
-    case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
-    case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
-    case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
-    case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
-    case METAQUERY: std::cerr << "METAQUERY\n"; break;
-    case GET: std::cerr << "GET\n"; break;
-    case SET: std::cerr << "SET\n"; break;
-    case PROPERTIES: std::cerr << "PROPERTIES\n"; break;
-    case METHODS: std::cerr << "METHODS\n"; break;
-    case EVENTS: std::cerr << "EVENTS\n"; break;
-    case CLASSDEF: std::cerr << "CLASSDEF\n"; break;
-    case '\n': std::cerr << "\\n\n"; break;
-    case '\r': std::cerr << "\\r\n"; break;
-    case '\t': std::cerr << "TAB\n"; break;
-    default:
-      {
-        if (tok < 256)
-          std::cerr << static_cast<char> (tok) << "\n";
-        else
-          std::cerr << "UNKNOWN(" << tok << ")\n";
-      }
-      break;
-    }
-}
-
-static void
-display_state (void)
-{
-  std::cerr << "S: ";
-
-  switch (YY_START)
-    {
-    case INITIAL:
-      std::cerr << "INITIAL" << std::endl;
-      break;
-
-    case COMMAND_START:
-      std::cerr << "COMMAND_START" << std::endl;
-      break;
-
-    case MATRIX_START:
-      std::cerr << "MATRIX_START" << std::endl;
-      break;
-
-    case SCRIPT_FILE_BEGIN:
-      std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
-      break;
-
-    case FUNCTION_FILE_BEGIN:
-      std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
-      break;
-
-    default:
-      std::cerr << "UNKNOWN START STATE!" << std::endl;
-      break;
-    }
-}
-
-static void
-lexer_debug (const char *pattern, const char *text)
-{
-  std::cerr << std::endl;
-
-  display_state ();
-
-  std::cerr << "P: " << pattern << std::endl;
-  std::cerr << "T: " << text << std::endl;
-}
-
-DEFUN (__display_tokens__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __display_tokens__ ()\n\
-Query or set the internal variable that determines whether Octave's\n\
-lexer displays tokens as they are read.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (display_tokens);
-}
-
-DEFUN (__token_count__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __token_count__ ()\n\
-Number of language tokens processed since Octave startup.\n\
-@end deftypefn")
-{
-  return octave_value (Vtoken_count);
-}
-
-DEFUN (__lexer_debug_flag__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val}))\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  retval = set_internal_variable (lexer_debug_flag, args, nargout,
-                                  "__lexer_debug_flag__");
-
-  return retval;
 }

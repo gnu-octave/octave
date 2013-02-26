@@ -223,14 +223,6 @@ lexical_feedback lexer_flags;
 // problems on some systems.
 std::stack <token*> token_stack;
 
-// Did eat_whitespace() eat a space or tab, or a newline, or both?
-
-typedef int yum_yum;
-
-const yum_yum ATE_NOTHING = 0;
-const yum_yum ATE_SPACE_OR_TAB = 1;
-const yum_yum ATE_NEWLINE = 2;
-
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
@@ -261,8 +253,8 @@ static int handle_identifier (void);
 static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
 static void scan_for_comments (const char *);
-static yum_yum eat_whitespace (void);
-static yum_yum eat_continuation (void);
+static int eat_whitespace (void);
+static int eat_continuation (void);
 static int octave_read (char *buf, unsigned int max_size);
 static void maybe_warn_separator_insert (char sep);
 static void gripe_single_quote_string (void);
@@ -396,7 +388,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
-    int cont_is_spc = eat_continuation ();
+    bool cont_is_spc = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
     int tok_to_return = handle_close_bracket (spc_gobbled, ']');
 
@@ -422,7 +414,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
-    int cont_is_spc = eat_continuation ();
+    bool cont_is_spc = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
     int tok_to_return = handle_close_bracket (spc_gobbled, '}');
 
@@ -452,7 +444,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (! lexer_flags.looking_at_object_index.front ())
       {
-        if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+        if ((tmp & lexical_feedback::NEWLINE) == lexical_feedback::NEWLINE)
           {
             maybe_warn_separator_insert (';');
 
@@ -489,7 +481,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
             && lexer_flags.nesting_level.is_bracket_or_brace ()
             && lexer_flags.convert_spaces_to_comma)
           {
-            if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+            if ((tmp & lexical_feedback::NEWLINE) == lexical_feedback::NEWLINE)
               {
                 maybe_warn_separator_insert (';');
 
@@ -1031,7 +1023,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 void
 do_comma_insert_check (void)
 {
-  int spc_gobbled = eat_continuation ();
+  bool spc_gobbled = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
 
   int c = text_yyinput ();
 
@@ -2211,19 +2203,13 @@ scan_for_comments (const char *text)
 }
 
 // Discard whitespace, including comments and continuations.
-//
-// Return value is logical OR of the following values:
-//
-//  ATE_NOTHING      : no spaces to eat
-//  ATE_SPACE_OR_TAB : space or tab in input
-//  ATE_NEWLINE      : bare new line in input
 
 // FIXME -- we need to handle block comments here.
 
-static yum_yum
+static int
 eat_whitespace (void)
 {
-  yum_yum retval = ATE_NOTHING;
+  int retval = lexical_feedback::NO_WHITESPACE;
 
   std::string comment_buf;
 
@@ -2245,11 +2231,11 @@ eat_whitespace (void)
               comment_buf += static_cast<char> (c);
               beginning_of_comment = false;
             }
-          retval |= ATE_SPACE_OR_TAB;
+          retval |= lexical_feedback::SPACE_OR_TAB;
           break;
 
         case '\n':
-          retval |= ATE_NEWLINE;
+          retval |= lexical_feedback::NEWLINE;
           if (in_comment)
             {
               comment_buf += static_cast<char> (c);
@@ -2502,13 +2488,11 @@ have_ellipsis_continuation (bool trailing_comments_ok)
 
 // See if we have a continuation line.  If so, eat it and the leading
 // whitespace on the next line.
-//
-// Return value is the same as described for eat_whitespace().
 
-static yum_yum
+static int
 eat_continuation (void)
 {
-  int retval = ATE_NOTHING;
+  int retval = lexical_feedback::NO_WHITESPACE;
 
   int c = text_yyinput ();
 
@@ -3165,7 +3149,7 @@ handle_identifier (void)
 
   int c = yytext[yyleng-1];
 
-  int cont_is_spc = eat_continuation ();
+  bool cont_is_spc = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
 
   int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
 

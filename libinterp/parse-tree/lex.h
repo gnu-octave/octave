@@ -61,6 +61,24 @@ lexical_feedback
 {
 public:
 
+  // Did eat_whitespace or eat_continuation eat a space or tab, or a
+  // newline, or both?
+  //
+  // Functions that return this type will return a logical OR of the
+  // following values:
+  //
+  //  NO_WHITESPACE  no spaces to eat
+  //  SPACE_OR_TAB   space or tab in input
+  //  NEWLINE        bare new line in input
+
+  enum whitespace_type
+    {
+      NO_WHITESPACE = 1,
+      SPACE_OR_TAB = 2,
+      NEWLINE = 4
+    };
+
+
   // Track nesting of square brackets, curly braces, and parentheses.
 
   class bbp_nesting_level

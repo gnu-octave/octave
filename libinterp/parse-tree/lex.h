@@ -54,6 +54,23 @@ extern bool is_keyword (const std::string& s);
 extern void prep_lexer_for_script_file (void);
 extern void prep_lexer_for_function_file (void);
 
+class
+stream_reader
+{
+public:
+  virtual int getc (void) = 0;
+  virtual int ungetc (int c) = 0;
+
+protected:
+  stream_reader (void) { }
+  ~stream_reader (void) { }
+
+private:
+
+  // No copying!
+  stream_reader (const stream_reader&);
+  stream_reader& operator = (const stream_reader&);
+};
 
 // Forward decl for lexical_feedback::token_stack.
 class token;
@@ -188,6 +205,77 @@ public:
     looking_at_object_index.push_front (false);
   }
 
+  void do_comma_insert_check (void);
+
+  int text_yyinput (void);
+
+  void xunput (char c, char *buf);
+
+  void fixup_column_count (char *s);
+
+  bool inside_any_object_index (void);
+
+  int is_keyword_token (const std::string& s);
+
+  bool is_variable (const std::string& name);
+
+  std::string grab_block_comment (stream_reader& reader, bool& eof);
+
+  std::string grab_comment_block (stream_reader& reader, bool at_bol,
+                                  bool& eof);
+
+  int process_comment (bool start_in_block, bool& eof);
+
+  bool next_token_is_sep_op (void);
+
+  bool next_token_is_postfix_unary_op (bool spc_prev);
+
+  bool next_token_is_bin_op (bool spc_prev);
+
+  void scan_for_comments (const char *text);
+
+  int eat_whitespace (void);
+
+  void handle_number (void);
+
+  bool have_continuation (bool trailing_comments_ok = true);
+
+  bool have_ellipsis_continuation (bool trailing_comments_ok = true);
+
+  int eat_continuation (void);
+
+  int handle_string (char delim);
+
+  bool next_token_is_assign_op (void);
+
+  bool next_token_is_index_op (void);
+
+  int handle_close_bracket (bool spc_gobbled, int bracket_type);
+
+  void maybe_unput_comma (int spc_gobbled);
+
+  bool next_token_can_follow_bin_op (void);
+
+  bool looks_like_command_arg (void);
+
+  int handle_superclass_identifier (void);
+
+  int handle_meta_identifier (void);
+
+  int handle_identifier (void);
+
+  void maybe_warn_separator_insert (char sep);
+
+  void gripe_single_quote_string (void);
+
+  void gripe_matlab_incompatible (const std::string& msg);
+
+  void maybe_gripe_matlab_incompatible_comment (char c);
+
+  void gripe_matlab_incompatible_continuation (void);
+
+  void gripe_matlab_incompatible_operator (const std::string& op);
+
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
   bool convert_spaces_to_comma;
@@ -297,27 +385,6 @@ private:
 
   lexical_feedback& operator = (const lexical_feedback&);
 };
-
-class
-stream_reader
-{
-public:
-  virtual int getc (void) = 0;
-  virtual int ungetc (int c) = 0;
-
-protected:
-  stream_reader (void) { }
-  ~stream_reader (void) { }
-
-private:
-
-  // No copying!
-  stream_reader (const stream_reader&);
-  stream_reader& operator = (const stream_reader&);
-};
-
-extern std::string
-grab_comment_block (stream_reader& reader, bool at_bol, bool& eof);
 
 // The current state of the lexer.
 extern lexical_feedback *curr_lexer;

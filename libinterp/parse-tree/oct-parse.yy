@@ -3412,7 +3412,7 @@ gobble_leading_white_space (FILE *ffile, bool& eof)
       if (eof)
         break;
 
-      txt = grab_comment_block (stdio_reader, true, eof);
+      txt = curr_lexer->grab_comment_block (stdio_reader, true, eof);
 
       if (txt.empty ())
         break;

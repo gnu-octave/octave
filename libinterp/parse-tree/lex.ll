@@ -1423,176 +1423,6 @@ octave_read (char *buf, unsigned max_size)
   return status;
 }
 
-void
-lexical_feedback::display_token (int tok)
-{
-  switch (tok)
-    {
-    case '=': std::cerr << "'='\n"; break;
-    case ':': std::cerr << "':'\n"; break;
-    case '-': std::cerr << "'-'\n"; break;
-    case '+': std::cerr << "'+'\n"; break;
-    case '*': std::cerr << "'*'\n"; break;
-    case '/': std::cerr << "'/'\n"; break;
-    case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
-    case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
-    case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
-    case DIV_EQ: std::cerr << "DIV_EQ\n"; break;
-    case LEFTDIV_EQ: std::cerr << "LEFTDIV_EQ\n"; break;
-    case POW_EQ: std::cerr << "POW_EQ\n"; break;
-    case EMUL_EQ: std::cerr << "EMUL_EQ\n"; break;
-    case EDIV_EQ: std::cerr << "EDIV_EQ\n"; break;
-    case ELEFTDIV_EQ: std::cerr << "ELEFTDIV_EQ\n"; break;
-    case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
-    case AND_EQ: std::cerr << "AND_EQ\n"; break;
-    case OR_EQ: std::cerr << "OR_EQ\n"; break;
-    case LSHIFT_EQ: std::cerr << "LSHIFT_EQ\n"; break;
-    case RSHIFT_EQ: std::cerr << "RSHIFT_EQ\n"; break;
-    case LSHIFT: std::cerr << "LSHIFT\n"; break;
-    case RSHIFT: std::cerr << "RSHIFT\n"; break;
-    case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
-    case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
-    case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
-    case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
-    case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
-    case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
-    case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
-    case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;
-    case EXPR_NE: std::cerr << "EXPR_NE\n"; break;
-    case EXPR_GE: std::cerr << "EXPR_GE\n"; break;
-    case EXPR_GT: std::cerr << "EXPR_GT\n"; break;
-    case LEFTDIV: std::cerr << "LEFTDIV\n"; break;
-    case EMUL: std::cerr << "EMUL\n"; break;
-    case EDIV: std::cerr << "EDIV\n"; break;
-    case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
-    case EPLUS: std::cerr << "EPLUS\n"; break;
-    case EMINUS: std::cerr << "EMINUS\n"; break;
-    case QUOTE: std::cerr << "QUOTE\n"; break;
-    case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
-    case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
-    case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
-    case POW: std::cerr << "POW\n"; break;
-    case EPOW: std::cerr << "EPOW\n"; break;
-
-    case NUM:
-    case IMAG_NUM:
-      std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
-                << " [" << yylval.tok_val->number () << "]\n";
-      break;
-
-    case STRUCT_ELT:
-      std::cerr << "STRUCT_ELT [" << yylval.tok_val->text () << "]\n"; break;
-
-    case NAME:
-      {
-        symbol_table::symbol_record *sr = yylval.tok_val->sym_rec ();
-        std::cerr << "NAME";
-        if (sr)
-          std::cerr << " [" << sr->name () << "]";
-        std::cerr << "\n";
-      }
-      break;
-
-    case END: std::cerr << "END\n"; break;
-
-    case DQ_STRING:
-    case SQ_STRING:
-      std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
-                << " [" << yylval.tok_val->text () << "]\n";
-      break;
-
-    case FOR: std::cerr << "FOR\n"; break;
-    case WHILE: std::cerr << "WHILE\n"; break;
-    case DO: std::cerr << "DO\n"; break;
-    case UNTIL: std::cerr << "UNTIL\n"; break;
-    case IF: std::cerr << "IF\n"; break;
-    case ELSEIF: std::cerr << "ELSEIF\n"; break;
-    case ELSE: std::cerr << "ELSE\n"; break;
-    case SWITCH: std::cerr << "SWITCH\n"; break;
-    case CASE: std::cerr << "CASE\n"; break;
-    case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
-    case BREAK: std::cerr << "BREAK\n"; break;
-    case CONTINUE: std::cerr << "CONTINUE\n"; break;
-    case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
-    case UNWIND: std::cerr << "UNWIND\n"; break;
-    case CLEANUP: std::cerr << "CLEANUP\n"; break;
-    case TRY: std::cerr << "TRY\n"; break;
-    case CATCH: std::cerr << "CATCH\n"; break;
-    case GLOBAL: std::cerr << "GLOBAL\n"; break;
-    case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
-    case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
-    case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
-    case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
-    case FCN: std::cerr << "FCN\n"; break;
-    case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
-    case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
-    case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
-    case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
-    case METAQUERY: std::cerr << "METAQUERY\n"; break;
-    case GET: std::cerr << "GET\n"; break;
-    case SET: std::cerr << "SET\n"; break;
-    case PROPERTIES: std::cerr << "PROPERTIES\n"; break;
-    case METHODS: std::cerr << "METHODS\n"; break;
-    case EVENTS: std::cerr << "EVENTS\n"; break;
-    case CLASSDEF: std::cerr << "CLASSDEF\n"; break;
-    case '\n': std::cerr << "\\n\n"; break;
-    case '\r': std::cerr << "\\r\n"; break;
-    case '\t': std::cerr << "TAB\n"; break;
-    default:
-      {
-        if (tok < 256)
-          std::cerr << static_cast<char> (tok) << "\n";
-        else
-          std::cerr << "UNKNOWN(" << tok << ")\n";
-      }
-      break;
-    }
-}
-
-static void
-display_state (int state)
-{
-  std::cerr << "S: ";
-
-  switch (state)
-    {
-    case INITIAL:
-      std::cerr << "INITIAL" << std::endl;
-      break;
-
-    case COMMAND_START:
-      std::cerr << "COMMAND_START" << std::endl;
-      break;
-
-    case MATRIX_START:
-      std::cerr << "MATRIX_START" << std::endl;
-      break;
-
-    case SCRIPT_FILE_BEGIN:
-      std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
-      break;
-
-    case FUNCTION_FILE_BEGIN:
-      std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
-      break;
-
-    default:
-      std::cerr << "UNKNOWN START STATE!" << std::endl;
-      break;
-    }
-}
-
-void
-lexical_feedback::lexer_debug (const char *pattern, const char *text)
-{
-  std::cerr << std::endl;
-
-  display_state (YY_START);
-
-  std::cerr << "P: " << pattern << std::endl;
-  std::cerr << "T: " << text << std::endl;
-}
-
 DEFUN (__display_tokens__, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __display_tokens__ ()\n\
@@ -3694,4 +3524,174 @@ lexical_feedback::gripe_matlab_incompatible_operator (const std::string& op)
   if (t[n-1] == '\n')
     t.resize (n-1);
   gripe_matlab_incompatible (t + " used as operator");
+}
+
+void
+lexical_feedback::display_token (int tok)
+{
+  switch (tok)
+    {
+    case '=': std::cerr << "'='\n"; break;
+    case ':': std::cerr << "':'\n"; break;
+    case '-': std::cerr << "'-'\n"; break;
+    case '+': std::cerr << "'+'\n"; break;
+    case '*': std::cerr << "'*'\n"; break;
+    case '/': std::cerr << "'/'\n"; break;
+    case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
+    case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
+    case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
+    case DIV_EQ: std::cerr << "DIV_EQ\n"; break;
+    case LEFTDIV_EQ: std::cerr << "LEFTDIV_EQ\n"; break;
+    case POW_EQ: std::cerr << "POW_EQ\n"; break;
+    case EMUL_EQ: std::cerr << "EMUL_EQ\n"; break;
+    case EDIV_EQ: std::cerr << "EDIV_EQ\n"; break;
+    case ELEFTDIV_EQ: std::cerr << "ELEFTDIV_EQ\n"; break;
+    case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
+    case AND_EQ: std::cerr << "AND_EQ\n"; break;
+    case OR_EQ: std::cerr << "OR_EQ\n"; break;
+    case LSHIFT_EQ: std::cerr << "LSHIFT_EQ\n"; break;
+    case RSHIFT_EQ: std::cerr << "RSHIFT_EQ\n"; break;
+    case LSHIFT: std::cerr << "LSHIFT\n"; break;
+    case RSHIFT: std::cerr << "RSHIFT\n"; break;
+    case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
+    case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
+    case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
+    case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
+    case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
+    case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
+    case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
+    case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;
+    case EXPR_NE: std::cerr << "EXPR_NE\n"; break;
+    case EXPR_GE: std::cerr << "EXPR_GE\n"; break;
+    case EXPR_GT: std::cerr << "EXPR_GT\n"; break;
+    case LEFTDIV: std::cerr << "LEFTDIV\n"; break;
+    case EMUL: std::cerr << "EMUL\n"; break;
+    case EDIV: std::cerr << "EDIV\n"; break;
+    case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
+    case EPLUS: std::cerr << "EPLUS\n"; break;
+    case EMINUS: std::cerr << "EMINUS\n"; break;
+    case QUOTE: std::cerr << "QUOTE\n"; break;
+    case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
+    case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
+    case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
+    case POW: std::cerr << "POW\n"; break;
+    case EPOW: std::cerr << "EPOW\n"; break;
+
+    case NUM:
+    case IMAG_NUM:
+      std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
+                << " [" << yylval.tok_val->number () << "]\n";
+      break;
+
+    case STRUCT_ELT:
+      std::cerr << "STRUCT_ELT [" << yylval.tok_val->text () << "]\n"; break;
+
+    case NAME:
+      {
+        symbol_table::symbol_record *sr = yylval.tok_val->sym_rec ();
+        std::cerr << "NAME";
+        if (sr)
+          std::cerr << " [" << sr->name () << "]";
+        std::cerr << "\n";
+      }
+      break;
+
+    case END: std::cerr << "END\n"; break;
+
+    case DQ_STRING:
+    case SQ_STRING:
+      std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
+                << " [" << yylval.tok_val->text () << "]\n";
+      break;
+
+    case FOR: std::cerr << "FOR\n"; break;
+    case WHILE: std::cerr << "WHILE\n"; break;
+    case DO: std::cerr << "DO\n"; break;
+    case UNTIL: std::cerr << "UNTIL\n"; break;
+    case IF: std::cerr << "IF\n"; break;
+    case ELSEIF: std::cerr << "ELSEIF\n"; break;
+    case ELSE: std::cerr << "ELSE\n"; break;
+    case SWITCH: std::cerr << "SWITCH\n"; break;
+    case CASE: std::cerr << "CASE\n"; break;
+    case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
+    case BREAK: std::cerr << "BREAK\n"; break;
+    case CONTINUE: std::cerr << "CONTINUE\n"; break;
+    case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
+    case UNWIND: std::cerr << "UNWIND\n"; break;
+    case CLEANUP: std::cerr << "CLEANUP\n"; break;
+    case TRY: std::cerr << "TRY\n"; break;
+    case CATCH: std::cerr << "CATCH\n"; break;
+    case GLOBAL: std::cerr << "GLOBAL\n"; break;
+    case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
+    case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
+    case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
+    case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
+    case FCN: std::cerr << "FCN\n"; break;
+    case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
+    case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
+    case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
+    case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
+    case METAQUERY: std::cerr << "METAQUERY\n"; break;
+    case GET: std::cerr << "GET\n"; break;
+    case SET: std::cerr << "SET\n"; break;
+    case PROPERTIES: std::cerr << "PROPERTIES\n"; break;
+    case METHODS: std::cerr << "METHODS\n"; break;
+    case EVENTS: std::cerr << "EVENTS\n"; break;
+    case CLASSDEF: std::cerr << "CLASSDEF\n"; break;
+    case '\n': std::cerr << "\\n\n"; break;
+    case '\r': std::cerr << "\\r\n"; break;
+    case '\t': std::cerr << "TAB\n"; break;
+    default:
+      {
+        if (tok < 256)
+          std::cerr << static_cast<char> (tok) << "\n";
+        else
+          std::cerr << "UNKNOWN(" << tok << ")\n";
+      }
+      break;
+    }
+}
+
+static void
+display_state (int state)
+{
+  std::cerr << "S: ";
+
+  switch (state)
+    {
+    case INITIAL:
+      std::cerr << "INITIAL" << std::endl;
+      break;
+
+    case COMMAND_START:
+      std::cerr << "COMMAND_START" << std::endl;
+      break;
+
+    case MATRIX_START:
+      std::cerr << "MATRIX_START" << std::endl;
+      break;
+
+    case SCRIPT_FILE_BEGIN:
+      std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
+      break;
+
+    case FUNCTION_FILE_BEGIN:
+      std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
+      break;
+
+    default:
+      std::cerr << "UNKNOWN START STATE!" << std::endl;
+      break;
+    }
+}
+
+void
+lexical_feedback::lexer_debug (const char *pattern, const char *text)
+{
+  std::cerr << std::endl;
+
+  display_state (YY_START);
+
+  std::cerr << "P: " << pattern << std::endl;
+  std::cerr << "T: " << text << std::endl;
 }

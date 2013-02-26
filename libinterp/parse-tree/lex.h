@@ -85,7 +85,7 @@ public:
   {
   private:
 
-    enum
+    enum bracket_type
       {
         BRACKET = 1,
         BRACE = 2,

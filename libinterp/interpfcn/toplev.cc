@@ -632,7 +632,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (parser_end_of_input)
+              else if (lexer_flags.parser_end_of_input)
                 break;
             }
         }

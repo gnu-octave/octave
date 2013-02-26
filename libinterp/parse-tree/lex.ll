@@ -210,9 +210,6 @@ along with Octave; see the file COPYING.  If not, see
     } \
   while (0)
 
-// TRUE means that we have encountered EOF on the input stream.
-bool parser_end_of_input = false;
-
 // The state of the lexer.
 lexical_feedback lexer_flags;
 
@@ -1111,8 +1108,6 @@ reset_parser (void)
 {
   // Start off on the right foot.
   BEGIN (INITIAL);
-
-  parser_end_of_input = false;
 
   parser_symtab_context.clear ();
 

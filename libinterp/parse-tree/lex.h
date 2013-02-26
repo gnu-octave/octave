@@ -71,7 +71,8 @@ public:
       looking_for_object_index (false), 
       looking_at_indirect_ref (false), parsing_class_method (false),
       maybe_classdef_get_set_method (false), parsing_classdef (false),
-      quote_is_transpose (false), bracketflag (0), braceflag (0),
+      quote_is_transpose (false), parser_end_of_input (false),
+      bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
       looking_at_object_index (), parsed_function_name (),
       pending_local_variables ()
@@ -95,6 +96,7 @@ public:
       maybe_classdef_get_set_method (lf.maybe_classdef_get_set_method),
       parsing_classdef (lf.parsing_classdef),
       quote_is_transpose (lf.quote_is_transpose),
+      parser_end_of_input (lf.parser_end_of_input),
       bracketflag (lf.bracketflag),
       braceflag (lf.braceflag),
       looping (lf.looping),
@@ -124,6 +126,7 @@ public:
         maybe_classdef_get_set_method = lf.maybe_classdef_get_set_method;
         parsing_classdef = lf.parsing_classdef;
         quote_is_transpose = lf.quote_is_transpose;
+        parser_end_of_input = lf.parser_end_of_input;
         bracketflag = lf.bracketflag;
         braceflag = lf.braceflag;
         looping = lf.looping;
@@ -199,6 +202,9 @@ public:
   // Return transpose or start a string?
   bool quote_is_transpose;
 
+  // TRUE means that we have encountered EOF on the input stream.
+  bool parser_end_of_input;
+
   // Square bracket level count.
   int bracketflag;
 
@@ -247,9 +253,6 @@ private:
 
 extern std::string
 grab_comment_block (stream_reader& reader, bool at_bol, bool& eof);
-
-// TRUE means that we have encountered EOF on the input stream.
-extern bool parser_end_of_input;
 
 // Flags that need to be shared between the lexer and parser.
 extern lexical_feedback lexer_flags;

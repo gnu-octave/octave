@@ -562,7 +562,7 @@ input1          : '\n'
                   { $$ = 0; }
                 | END_OF_INPUT
                   {
-                    parser_end_of_input = 1;
+                    lexer_flags.parser_end_of_input = 1;
                     $$ = 0;
                   }
                 | simple_list
@@ -3517,16 +3517,17 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
         {
           std::string file_type;
 
+          frame.protect_var (lexer_flags);
+
           frame.protect_var (get_input_from_eval_string);
-          frame.protect_var (parser_end_of_input);
           frame.protect_var (reading_fcn_file);
           frame.protect_var (reading_script_file);
           frame.protect_var (reading_classdef_file);
           frame.protect_var (Vecho_executing_commands);
 
+          lexer_flags = lexical_feedback ();
 
           get_input_from_eval_string = false;
-          parser_end_of_input = false;
 
           if (! force_script && looking_at_function_keyword (ffile))
             {
@@ -4312,10 +4313,11 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   unwind_protect frame;
 
+  frame.protect_var (lexer_flags);
+
   frame.protect_var (input_line_number);
   frame.protect_var (current_input_column);
   frame.protect_var (get_input_from_eval_string);
-  frame.protect_var (parser_end_of_input);
   frame.protect_var (line_editing);
   frame.protect_var (current_eval_string);
   frame.protect_var (current_function_depth);
@@ -4327,10 +4329,11 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (reading_script_file);
   frame.protect_var (reading_classdef_file);
 
+  lexer_flags = lexical_feedback ();
+
   input_line_number = 1;
   current_input_column = 1;
   get_input_from_eval_string = true;
-  parser_end_of_input = false;
   line_editing = false;
   current_function_depth = 0;
   function_scopes.clear ();
@@ -4427,7 +4430,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                   || tree_continue_command::continuing)
                 break;
             }
-          else if (parser_end_of_input)
+          else if (lexer_flags.parser_end_of_input)
             break;
         }
     }

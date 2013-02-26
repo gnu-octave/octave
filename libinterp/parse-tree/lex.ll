@@ -1485,6 +1485,12 @@ lexical_feedback::octave_read (char *buf, unsigned max_size)
   return status;
 }
 
+char *
+lexical_feedback::flex_yytext (void)
+{
+  return yytext;
+}
+
 // GAG.
 //
 // If we're reading a matrix and the next character is '[', make sure
@@ -1563,7 +1569,8 @@ lexical_feedback::xunput (char c, char *buf)
 void
 lexical_feedback::xunput (char c)
 {
-  xunput (c, yytext);
+  char *yytxt = flex_yytext ();
+  xunput (c, yytxt);
 }
 
 // If we read some newlines, we need figure out what column we're
@@ -2084,7 +2091,8 @@ lexical_feedback::process_comment (bool start_in_block, bool& eof)
   if (! help_buf.empty ())
     help_txt = help_buf.top ();
 
-  flex_stream_reader flex_reader (this, yytext);
+  char *yytxt = flex_yytext ();
+  flex_stream_reader flex_reader (this, yytxt);
 
   // process_comment is only supposed to be called when we are not
   // initially looking at a block comment.
@@ -2470,17 +2478,19 @@ lexical_feedback::handle_number (void)
   double value = 0.0;
   int nread = 0;
 
-  if (looks_like_hex (yytext, strlen (yytext)))
+  char *yytxt = flex_yytext ();
+
+  if (looks_like_hex (yytxt, strlen (yytxt)))
     {
       unsigned long ival;
 
-      nread = sscanf (yytext, "%lx", &ival);
+      nread = sscanf (yytxt, "%lx", &ival);
 
       value = static_cast<double> (ival);
     }
   else
     {
-      char *tmp = strsave (yytext);
+      char *tmp = strsave (yytxt);
 
       char *idx = strpbrk (tmp, "Dd");
 
@@ -2501,7 +2511,7 @@ lexical_feedback::handle_number (void)
   looking_for_object_index = false;
   at_beginning_of_statement = false;
 
-  curr_lexer->push_token (new token (value, yytext, input_line_number,
+  curr_lexer->push_token (new token (value, yytxt, input_line_number,
                                      current_input_column));
 
   current_input_column += yyleng;
@@ -3208,7 +3218,8 @@ lexical_feedback::handle_superclass_identifier (void)
   eat_continuation ();
 
   std::string pkg;
-  std::string meth = strip_trailing_whitespace (yytext);
+  char *yytxt = flex_yytext ();
+  std::string meth = strip_trailing_whitespace (yytxt);
   size_t pos = meth.find ("@");
   std::string cls = meth.substr (pos).substr (1);
   meth = meth.substr (0, pos - 1);
@@ -3246,7 +3257,8 @@ lexical_feedback::handle_meta_identifier (void)
   eat_continuation ();
 
   std::string pkg;
-  std::string cls = strip_trailing_whitespace (yytext).substr (1);
+  char *yytxt = flex_yytext ();
+  std::string cls = strip_trailing_whitespace (yytxt).substr (1);
   size_t pos = cls.find (".");
 
   if (pos != std::string::npos)
@@ -3282,9 +3294,11 @@ lexical_feedback::handle_identifier (void)
 {
   bool at_bos = at_beginning_of_statement;
 
-  std::string tok = strip_trailing_whitespace (yytext);
+  char *yytxt = flex_yytext ();
 
-  int c = yytext[yyleng-1];
+  std::string tok = strip_trailing_whitespace (yytxt);
+
+  int c = yytxt[yyleng-1];
 
   bool cont_is_spc = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
 

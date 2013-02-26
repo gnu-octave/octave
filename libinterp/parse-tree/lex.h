@@ -210,6 +210,8 @@ public:
 
   int octave_read (char *buf, unsigned int max_size);
 
+  char *flex_yytext (void);
+
   void do_comma_insert_check (void);
 
   int text_yyinput (void);

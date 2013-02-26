@@ -150,6 +150,7 @@ public:
       input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
+      block_comment_nesting_level (0),
       looking_at_object_index (), parsed_function_name (),
       pending_local_variables (), nesting_level ()
   {
@@ -180,6 +181,7 @@ public:
       looping (lf.looping),
       defining_func (lf.defining_func),
       looking_at_function_handle (lf.looking_at_function_handle),
+      block_comment_nesting_level (lf.block_comment_nesting_level),
       looking_at_object_index (lf.looking_at_object_index),
       parsed_function_name (lf.parsed_function_name),
       pending_local_variables (lf.pending_local_variables),
@@ -213,6 +215,7 @@ public:
         looping = lf.looping;
         defining_func = lf.defining_func;
         looking_at_function_handle = lf.looking_at_function_handle;
+        block_comment_nesting_level = lf.block_comment_nesting_level,
         looking_at_object_index = lf.looking_at_object_index;
         parsed_function_name = lf.parsed_function_name;
         pending_local_variables = lf.pending_local_variables;
@@ -307,6 +310,9 @@ public:
 
   // Nonzero means we are parsing a function handle.
   int looking_at_function_handle;
+
+  // Nestng level for blcok comments.
+  int block_comment_nesting_level;
 
   // If the front of the list is TRUE, the closest paren, brace, or
   // bracket nesting is an index for an object.

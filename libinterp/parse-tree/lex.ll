@@ -235,10 +235,6 @@ static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
 
-// The start state that was in effect when the beginning of a block
-// comment was noticed.
-static int block_comment_nesting_level = 0;
-
 // Internal variable for lexer debugging state.
 static bool lexer_debug_flag = false;
 
@@ -661,7 +657,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <<EOF>> {
     LEXER_DEBUG ("<<EOF>>");
 
-    if (block_comment_nesting_level != 0)
+    if (lexer_flags.block_comment_nesting_level != 0)
       {
         warning ("block comment open at end of input");
 
@@ -839,7 +835,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.input_line_number++;
     lexer_flags.current_input_column = 1;
-    block_comment_nesting_level++;
+    lexer_flags.block_comment_nesting_level++;
     promptflag--;
 
     bool eof = false;
@@ -1062,9 +1058,6 @@ reset_parser (void)
 
   // We do want a prompt by default.
   promptflag = 1;
-
-  // We are not in a block comment.
-  block_comment_nesting_level = 0;
 
   // Clear out the stack of token info used to track line and column
   // numbers.
@@ -1680,15 +1673,15 @@ grab_block_comment (stream_reader& reader, bool& eof)
 
                         if (type == '{')
                           {
-                            block_comment_nesting_level++;
+                            lexer_flags.block_comment_nesting_level++;
                             promptflag--;
                           }
                         else
                           {
-                            block_comment_nesting_level--;
+                            lexer_flags.block_comment_nesting_level--;
                             promptflag++;
 
-                            if (block_comment_nesting_level == 0)
+                            if (lexer_flags.block_comment_nesting_level == 0)
                               {
                                 buf += grab_comment_block (reader, true, eof);
 
@@ -1788,7 +1781,7 @@ grab_comment_block (stream_reader& reader, bool at_bol,
                         at_bol = true;
                         done = true;
 
-                        block_comment_nesting_level++;
+                        lexer_flags.block_comment_nesting_level++;
                         promptflag--;
 
                         buf += grab_block_comment (reader, eof);

@@ -126,11 +126,11 @@ along with Octave; see the file COPYING.  If not, see
     { \
       int tok_val = tok; \
       if (Vdisplay_tokens) \
-        display_token (tok_val); \
+        curr_lexer->display_token (tok_val); \
       if (lexer_debug_flag) \
         { \
           std::cerr << "R: "; \
-          display_token (tok_val); \
+          curr_lexer->display_token (tok_val); \
           std::cerr << std::endl;  \
         } \
       return tok_val; \
@@ -207,7 +207,7 @@ along with Octave; see the file COPYING.  If not, see
   do \
     { \
       if (lexer_debug_flag) \
-        lexer_debug (pattern, yytext); \
+        curr_lexer->lexer_debug (pattern, yytext); \
     } \
   while (0)
 
@@ -226,8 +226,6 @@ static bool lexer_debug_flag = false;
 
 static std::string strip_trailing_whitespace (char *s);
 static int octave_read (char *buf, unsigned int max_size);
-static void display_token (int tok);
-static void lexer_debug (const char *pattern, const char *text);
 
 %}
 
@@ -1425,8 +1423,8 @@ octave_read (char *buf, unsigned max_size)
   return status;
 }
 
-static void
-display_token (int tok)
+void
+lexical_feedback::display_token (int tok)
 {
   switch (tok)
     {
@@ -1552,11 +1550,11 @@ display_token (int tok)
 }
 
 static void
-display_state (void)
+display_state (int state)
 {
   std::cerr << "S: ";
 
-  switch (YY_START)
+  switch (state)
     {
     case INITIAL:
       std::cerr << "INITIAL" << std::endl;
@@ -1584,12 +1582,12 @@ display_state (void)
     }
 }
 
-static void
-lexer_debug (const char *pattern, const char *text)
+void
+lexical_feedback::lexer_debug (const char *pattern, const char *text)
 {
   std::cerr << std::endl;
 
-  display_state ();
+  display_state (YY_START);
 
   std::cerr << "P: " << pattern << std::endl;
   std::cerr << "T: " << text << std::endl;

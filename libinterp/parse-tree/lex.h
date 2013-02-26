@@ -276,6 +276,10 @@ public:
 
   void gripe_matlab_incompatible_operator (const std::string& op);
 
+  void display_token (int tok);
+
+  void lexer_debug (const char *pattern, const char *text);
+
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
   bool convert_spaces_to_comma;

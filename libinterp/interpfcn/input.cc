@@ -684,19 +684,21 @@ get_debug_input (const std::string& prompt)
 
   while (Vdebugging)
     {
+      unwind_protect middle_frame;
+
       reset_error_handler ();
 
       curr_lexer->reset_parser ();
 
       // Save current value of global_command.
-      frame.protect_var (global_command);
+      middle_frame.protect_var (global_command);
 
       global_command = 0;
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
-      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+      middle_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
       int retval = octave_parse_input ();
 
@@ -715,10 +717,6 @@ get_debug_input (const std::string& prompt)
           if (octave_completion_matches_called)
             octave_completion_matches_called = false;
         }
-
-      // Unmark forced variables.
-      // Restore previous value of global_command.
-      frame.run (2);
 
       octave_quit ();
     }

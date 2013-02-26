@@ -113,13 +113,7 @@ along with Octave; see the file COPYING.  If not, see
 #undef YY_FATAL_ERROR
 #endif
 #define YY_FATAL_ERROR(msg) \
-  do \
-    { \
-      error (msg); \
-      OCTAVE_QUIT; \
-      yy_fatal_error (msg); \
-    } \
-  while (0)
+  curr_lexer->fatal_error (msg)
 
 #define DISPLAY_TOK_AND_RETURN(tok) \
   do \
@@ -3706,6 +3700,16 @@ display_state (int state)
       std::cerr << "UNKNOWN START STATE!" << std::endl;
       break;
     }
+}
+
+void
+lexical_feedback::fatal_error (const char *msg)
+{
+  error (msg);
+
+  OCTAVE_QUIT;
+
+  yy_fatal_error (msg);
 }
 
 void

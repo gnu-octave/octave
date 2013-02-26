@@ -291,6 +291,8 @@ public:
 
   void display_token (int tok);
 
+  void fatal_error (const char *msg);
+
   void lexer_debug (const char *pattern, const char *text);
 
   // TRUE means that we should convert spaces to a comma inside a

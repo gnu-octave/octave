@@ -103,7 +103,7 @@ along with Octave; see the file COPYING.  If not, see
 #undef YY_INPUT
 #endif
 #define YY_INPUT(buf, result, max_size) \
-  result = octave_read (buf, max_size)
+  result = curr_lexer->octave_read (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
 // The call to yy_fatal_error should never happen, but it avoids a
@@ -225,7 +225,6 @@ static bool lexer_debug_flag = false;
 // file that are needed inside the lexer actions.
 
 static std::string strip_trailing_whitespace (char *s);
-static int octave_read (char *buf, unsigned int max_size);
 
 %}
 
@@ -1359,8 +1358,8 @@ strip_trailing_whitespace (char *s)
   return retval;
 }
 
-static int
-octave_read (char *buf, unsigned max_size)
+int
+lexical_feedback::octave_read (char *buf, unsigned max_size)
 {
   static const char * const eol = "\n";
   static std::string input_buf;

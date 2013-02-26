@@ -205,6 +205,8 @@ public:
     looking_at_object_index.push_front (false);
   }
 
+  int octave_read (char *buf, unsigned int max_size);
+
   void do_comma_insert_check (void);
 
   int text_yyinput (void);

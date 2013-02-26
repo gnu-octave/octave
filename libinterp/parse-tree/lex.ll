@@ -1233,30 +1233,6 @@ delete_input_buffer (void *buf)
   delete_buffer (static_cast<YY_BUFFER_STATE> (buf));
 }
 
-class
-flex_stream_reader : public stream_reader
-{
-public:
-  flex_stream_reader (lexical_feedback *l, char *buf_arg)
-    : lexer (l), stream_reader (), buf (buf_arg)
-  { }
-
-  int getc (void) { return lexer->text_yyinput (); }
-  int ungetc (int c) { lexer->xunput (c, buf); return 0; }
-
-private:
-
-  // No copying!
-
-  flex_stream_reader (const flex_stream_reader&);
-
-  flex_stream_reader& operator = (const flex_stream_reader&);
-
-  lexical_feedback *lexer;
-
-  char *buf;
-};
-
 // Return 1 if the given character matches any character in the given
 // string.
 
@@ -1651,6 +1627,30 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+class
+flex_stream_reader : public stream_reader
+{
+public:
+  flex_stream_reader (lexical_feedback *l, char *buf_arg)
+    : stream_reader (), lexer (l), buf (buf_arg)
+  { }
+
+  int getc (void) { return lexer->text_yyinput (); }
+  int ungetc (int c) { lexer->xunput (c, buf); return 0; }
+
+private:
+
+  // No copying!
+
+  flex_stream_reader (const flex_stream_reader&);
+
+  flex_stream_reader& operator = (const flex_stream_reader&);
+
+  lexical_feedback *lexer;
+
+  char *buf;
+};
 
 lexical_feedback::~lexical_feedback (void)
 {

@@ -583,8 +583,7 @@ main_loop (void)
 
           global_command = 0;
 
-          // This is the same as yyparse in parse.y.
-          retval = octave_parse ();
+          retval = octave_parse_input ();
 
           if (retval == 0)
             {

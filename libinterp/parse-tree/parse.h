@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 extern void reset_parser (void);
 extern int octave_lex (void);
-extern int octave_parse (void);
 
 class tree;
 class tree_matrix;
@@ -106,5 +105,7 @@ extern OCTINTERP_API octave_value
 eval_string (const std::string&, bool silent, int& parse_status);
 
 extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
+
+extern OCTINTERP_API int octave_parse_input (void);
 
 #endif

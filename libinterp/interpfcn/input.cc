@@ -694,8 +694,7 @@ get_debug_input (const std::string& prompt)
       symbol_table::scope_id scope = symbol_table::top_scope ();
       frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      // This is the same as yyparse in parse.y.
-      int retval = octave_parse ();
+      int retval = octave_parse_input ();
 
       if (retval == 0 && global_command)
         {

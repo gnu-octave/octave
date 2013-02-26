@@ -3587,7 +3587,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           global_command = 0;
 
-          int status = yyparse ();
+          int status = octave_parse_input ();
 
           // Use an unwind-protect cleanup function so that the
           // global_command list will be deleted in the event of an
@@ -4355,7 +4355,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
       symbol_table::scope_id scope = symbol_table::top_scope ();
       frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      parse_status = yyparse ();
+      parse_status = octave_parse_input ();
 
       tree_statement_list *command_list = global_command;
 
@@ -4462,6 +4462,12 @@ cleanup_statement_list (tree_statement_list **lst)
       delete *lst;
       *lst = 0;
     }
+}
+
+int
+octave_parse_input (void)
+{
+  octave_parse ();
 }
 
 DEFUN (eval, args, nargout,

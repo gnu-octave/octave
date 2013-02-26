@@ -4468,7 +4468,7 @@ cleanup_statement_list (tree_statement_list **lst)
 int
 octave_parse_input (void)
 {
-  octave_parse ();
+  return octave_parse ();
 }
 
 DEFUN (eval, args, nargout,

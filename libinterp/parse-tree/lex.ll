@@ -1358,70 +1358,6 @@ strip_trailing_whitespace (char *s)
   return retval;
 }
 
-int
-lexical_feedback::octave_read (char *buf, unsigned max_size)
-{
-  static const char * const eol = "\n";
-  static std::string input_buf;
-  static const char *pos = 0;
-  static size_t chars_left = 0;
-  static bool eof = false;
-
-  int status = 0;
-
-  if (chars_left == 0)
-    {
-      pos = 0;
-
-      input_buf = get_user_input (eof);
-
-      chars_left = input_buf.length ();
-
-      pos = input_buf.c_str ();
-    }
-
-  if (chars_left > 0)
-    {
-      size_t len = max_size > chars_left ? chars_left : max_size;
-      assert (len > 0);
-
-      memcpy (buf, pos, len);
-
-      chars_left -= len;
-      pos += len;
-
-      // Make sure input ends with a new line character.
-      if (chars_left == 0 && buf[len-1] != '\n')
-        {
-          if (len < max_size)
-            {
-              // There is enough room to plug the newline character in
-              // the buffer.
-              buf[len++] = '\n';
-            }
-          else
-            {
-              // There isn't enough room to plug the newline character
-              // in the buffer so make sure it is returned on the next
-              // octave_read call.
-              pos = eol;
-              chars_left = 1;
-            }
-        }
-
-      status = len;
-    }
-  else
-    {
-      status = YY_NULL;
-
-      if (! eof)
-        YY_FATAL_ERROR ("octave_read () in flex scanner failed");
-    }
-
-  return status;
-}
-
 DEFUN (__display_tokens__, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __display_tokens__ ()\n\
@@ -1489,6 +1425,70 @@ lexical_feedback::~lexical_feedback (void)
       delete token_stack.top ();
       token_stack.pop ();
     }
+}
+
+int
+lexical_feedback::octave_read (char *buf, unsigned max_size)
+{
+  static const char * const eol = "\n";
+  static std::string input_buf;
+  static const char *pos = 0;
+  static size_t chars_left = 0;
+  static bool eof = false;
+
+  int status = 0;
+
+  if (chars_left == 0)
+    {
+      pos = 0;
+
+      input_buf = get_user_input (eof);
+
+      chars_left = input_buf.length ();
+
+      pos = input_buf.c_str ();
+    }
+
+  if (chars_left > 0)
+    {
+      size_t len = max_size > chars_left ? chars_left : max_size;
+      assert (len > 0);
+
+      memcpy (buf, pos, len);
+
+      chars_left -= len;
+      pos += len;
+
+      // Make sure input ends with a new line character.
+      if (chars_left == 0 && buf[len-1] != '\n')
+        {
+          if (len < max_size)
+            {
+              // There is enough room to plug the newline character in
+              // the buffer.
+              buf[len++] = '\n';
+            }
+          else
+            {
+              // There isn't enough room to plug the newline character
+              // in the buffer so make sure it is returned on the next
+              // octave_read call.
+              pos = eol;
+              chars_left = 1;
+            }
+        }
+
+      status = len;
+    }
+  else
+    {
+      status = YY_NULL;
+
+      if (! eof)
+        YY_FATAL_ERROR ("octave_read () in flex scanner failed");
+    }
+
+  return status;
 }
 
 // GAG.

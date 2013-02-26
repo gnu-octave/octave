@@ -976,34 +976,6 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 %%
 
-void
-lexical_feedback::reset_parser (void)
-{
-  // Start off on the right foot.
-  BEGIN (INITIAL);
-
-  parser_symtab_context.clear ();
-
-  // We do want a prompt by default.
-  promptflag = 1;
-
-  // Only ask for input from stdin if we are expecting interactive
-  // input.
-
-  if (! quitting_gracefully
-      && (interactive || forced_interactive)
-      && ! (reading_fcn_file
-            || reading_classdef_file
-            || reading_script_file
-            || get_input_from_eval_string
-            || input_from_startup_file))
-    yyrestart (stdin);
-
-  // Clear the buffer for help text.
-  while (! help_buf.empty ())
-    help_buf.pop ();
-}
-
 static void
 display_character (char c)
 {
@@ -1419,6 +1391,34 @@ lexical_feedback::~lexical_feedback (void)
       delete token_stack.top ();
       token_stack.pop ();
     }
+}
+
+void
+lexical_feedback::reset_parser (void)
+{
+  // Start off on the right foot.
+  BEGIN (INITIAL);
+
+  parser_symtab_context.clear ();
+
+  // We do want a prompt by default.
+  promptflag = 1;
+
+  // Only ask for input from stdin if we are expecting interactive
+  // input.
+
+  if (! quitting_gracefully
+      && (interactive || forced_interactive)
+      && ! (reading_fcn_file
+            || reading_classdef_file
+            || reading_script_file
+            || get_input_from_eval_string
+            || input_from_startup_file))
+    yyrestart (stdin);
+
+  // Clear the buffer for help text.
+  while (! help_buf.empty ())
+    help_buf.pop ();
 }
 
 int

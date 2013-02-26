@@ -283,6 +283,10 @@ public:
 
   void gripe_matlab_incompatible_operator (const std::string& op);
 
+  void push_token (token *);
+
+  token *current_token (void);
+
   void display_token (int tok);
 
   void lexer_debug (const char *pattern, const char *text);
@@ -383,15 +387,15 @@ public:
   // a paren?
   bbp_nesting_level nesting_level;
 
-  // Stack to hold tokens so that we can delete them when the parser is
-  // reset and avoid growing forever just because we are stashing some
-  // information.
-  std::stack <token*> token_stack;
-
   // For unwind protect.
   static void cleanup (lexical_feedback *lexer) { delete lexer; }
 
 private:
+
+  // Stack to hold tokens so that we can delete them when the parser is
+  // reset and avoid growing forever just because we are stashing some
+  // information.
+  std::stack <token*> token_stack;
 
   // No copying!
 

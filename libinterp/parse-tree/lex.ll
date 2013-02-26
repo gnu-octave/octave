@@ -158,9 +158,9 @@ along with Octave; see the file COPYING.  If not, see
 #define TOK_PUSH_AND_RETURN(name, tok) \
   do \
     { \
-      yylval.tok_val = new token (name, curr_lexer->input_line_number, \
-                                  curr_lexer->current_input_column); \
-      curr_lexer->token_stack.push (yylval.tok_val); \
+      curr_lexer->push_token \
+        (new token (name, curr_lexer->input_line_number, \
+         curr_lexer->current_input_column)); \
       TOK_RETURN (tok); \
     } \
   while (0)
@@ -168,9 +168,9 @@ along with Octave; see the file COPYING.  If not, see
 #define BIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
   do \
     { \
-      yylval.tok_val = new token (curr_lexer->input_line_number, \
-                                  curr_lexer->current_input_column); \
-      curr_lexer->token_stack.push (yylval.tok_val); \
+      curr_lexer->push_token \
+        (new token (curr_lexer->input_line_number, \
+         curr_lexer->current_input_column)); \
       curr_lexer->current_input_column += yyleng; \
       curr_lexer->quote_is_transpose = qit; \
       curr_lexer->convert_spaces_to_comma = convert; \
@@ -1617,7 +1617,7 @@ lexical_feedback::is_keyword_token (const std::string& s)
 
   if (kw)
     {
-      yylval.tok_val = 0;
+      token *tok_val = 0;
 
       switch (kw->kw_id)
         {
@@ -1662,72 +1662,72 @@ lexical_feedback::is_keyword_token (const std::string& s)
                             || parsed_function_name.top ()))))
             return 0;
 
-          yylval.tok_val = new token (token::simple_end, l, c);
+          tok_val = new token (token::simple_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case end_try_catch_kw:
-          yylval.tok_val = new token (token::try_catch_end, l, c);
+          tok_val = new token (token::try_catch_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case end_unwind_protect_kw:
-          yylval.tok_val = new token (token::unwind_protect_end, l, c);
+          tok_val = new token (token::unwind_protect_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endfor_kw:
-          yylval.tok_val = new token (token::for_end, l, c);
+          tok_val = new token (token::for_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endfunction_kw:
-          yylval.tok_val = new token (token::function_end, l, c);
+          tok_val = new token (token::function_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endif_kw:
-          yylval.tok_val = new token (token::if_end, l, c);
+          tok_val = new token (token::if_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endparfor_kw:
-          yylval.tok_val = new token (token::parfor_end, l, c);
+          tok_val = new token (token::parfor_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endswitch_kw:
-          yylval.tok_val = new token (token::switch_end, l, c);
+          tok_val = new token (token::switch_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endwhile_kw:
-          yylval.tok_val = new token (token::while_end, l, c);
+          tok_val = new token (token::while_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endclassdef_kw:
-          yylval.tok_val = new token (token::classdef_end, l, c);
+          tok_val = new token (token::classdef_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endenumeration_kw:
-          yylval.tok_val = new token (token::enumeration_end, l, c);
+          tok_val = new token (token::enumeration_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endevents_kw:
-          yylval.tok_val = new token (token::events_end, l, c);
+          tok_val = new token (token::events_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endmethods_kw:
-          yylval.tok_val = new token (token::methods_end, l, c);
+          tok_val = new token (token::methods_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endproperties_kw:
-          yylval.tok_val = new token (token::properties_end, l, c);
+          tok_val = new token (token::properties_end, l, c);
           at_beginning_of_statement = true;
           break;
 
@@ -1795,24 +1795,24 @@ lexical_feedback::is_keyword_token (const std::string& s)
             if ((reading_fcn_file || reading_script_file
                  || reading_classdef_file)
                 && ! curr_fcn_file_full_name.empty ())
-              yylval.tok_val = new token (curr_fcn_file_full_name, l, c);
+              tok_val = new token (curr_fcn_file_full_name, l, c);
             else
-              yylval.tok_val = new token ("stdin", l, c);
+              tok_val = new token ("stdin", l, c);
           }
           break;
 
         case magic_line_kw:
-          yylval.tok_val = new token (static_cast<double> (l), "", l, c);
+          tok_val = new token (static_cast<double> (l), "", l, c);
           break;
 
         default:
           panic_impossible ();
         }
 
-      if (! yylval.tok_val)
-        yylval.tok_val = new token (l, c);
+      if (! tok_val)
+        tok_val = new token (l, c);
 
-      token_stack.push (yylval.tok_val);
+      curr_lexer->push_token (tok_val);
 
       return kw->tok;
     }
@@ -2501,10 +2501,8 @@ lexical_feedback::handle_number (void)
   looking_for_object_index = false;
   at_beginning_of_statement = false;
 
-  yylval.tok_val = new token (value, yytext, input_line_number,
-                              current_input_column);
-
-  token_stack.push (yylval.tok_val);
+  curr_lexer->push_token (new token (value, yytext, input_line_number,
+                                     current_input_column));
 
   current_input_column += yyleng;
 
@@ -2718,8 +2716,7 @@ lexical_feedback::handle_string (char delim)
                   quote_is_transpose = true;
                   convert_spaces_to_comma = true;
 
-                  yylval.tok_val = new token (s, bos_line, bos_col);
-                  token_stack.push (yylval.tok_val);
+                  curr_lexer->push_token (new token (s, bos_line, bos_col));
 
                   if (delim == '"')
                     gripe_matlab_incompatible ("\" used as string delimiter");
@@ -3231,13 +3228,11 @@ lexical_feedback::handle_superclass_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  yylval.tok_val
-    = new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
-                 cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                 input_line_number,
-                 current_input_column);
-  token_stack.push (yylval.tok_val);
+  curr_lexer->push_token
+    (new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
+                cls.empty () ? 0 : &(symbol_table::insert (cls)),
+                pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
+                input_line_number, current_input_column));
 
   convert_spaces_to_comma = true;
   current_input_column += yyleng;
@@ -3267,13 +3262,10 @@ lexical_feedback::handle_meta_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  yylval.tok_val
-    = new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                 input_line_number,
-                 current_input_column);
-
-  token_stack.push (yylval.tok_val);
+  curr_lexer->push_token
+    (new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
+                pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
+                input_line_number, current_input_column));
 
   convert_spaces_to_comma = true;
   current_input_column += yyleng;
@@ -3309,10 +3301,8 @@ lexical_feedback::handle_identifier (void)
 
       maybe_unput_comma (spc_gobbled);
 
-      yylval.tok_val = new token (tok, input_line_number,
-                                  current_input_column);
-
-      token_stack.push (yylval.tok_val);
+      curr_lexer->push_token (new token (tok, input_line_number,
+                                         current_input_column));
 
       quote_is_transpose = true;
       convert_spaces_to_comma = true;
@@ -3346,10 +3336,8 @@ lexical_feedback::handle_identifier (void)
         }
       else
         {
-          yylval.tok_val = new token (tok, input_line_number,
-                                      current_input_column);
-
-          token_stack.push (yylval.tok_val);
+          curr_lexer->push_token (new token (tok, input_line_number,
+                                             current_input_column));
 
           current_input_column += yyleng;
           quote_is_transpose = false;
@@ -3429,11 +3417,8 @@ lexical_feedback::handle_identifier (void)
   if (tok == "end")
     tok = "__end__";
 
-  yylval.tok_val = new token (&(symbol_table::insert (tok)),
-                              input_line_number,
-                              current_input_column);
-
-  token_stack.push (yylval.tok_val);
+  curr_lexer->push_token (new token (&(symbol_table::insert (tok)),
+                                     input_line_number, current_input_column));
 
   // After seeing an identifer, it is ok to convert spaces to a comma
   // (if needed).
@@ -3526,6 +3511,19 @@ lexical_feedback::gripe_matlab_incompatible_operator (const std::string& op)
 }
 
 void
+lexical_feedback::push_token (token *tok)
+{
+  yylval.tok_val = tok;
+  token_stack.push (tok);
+}
+
+token *
+lexical_feedback::current_token (void)
+{
+  return yylval.tok_val;
+}
+
+void
 lexical_feedback::display_token (int tok)
 {
   switch (tok)
@@ -3578,16 +3576,24 @@ lexical_feedback::display_token (int tok)
 
     case NUM:
     case IMAG_NUM:
-      std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
-                << " [" << yylval.tok_val->number () << "]\n";
+      {
+        token *tok_val = curr_lexer->current_token ();
+        std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
+                  << " [" << tok_val->number () << "]\n";
+      }
       break;
 
     case STRUCT_ELT:
-      std::cerr << "STRUCT_ELT [" << yylval.tok_val->text () << "]\n"; break;
+      {
+        token *tok_val = curr_lexer->current_token ();
+        std::cerr << "STRUCT_ELT [" << tok_val->text () << "]\n";
+      }
+      break;
 
     case NAME:
       {
-        symbol_table::symbol_record *sr = yylval.tok_val->sym_rec ();
+        token *tok_val = curr_lexer->current_token ();
+        symbol_table::symbol_record *sr = tok_val->sym_rec ();
         std::cerr << "NAME";
         if (sr)
           std::cerr << " [" << sr->name () << "]";
@@ -3599,8 +3605,12 @@ lexical_feedback::display_token (int tok)
 
     case DQ_STRING:
     case SQ_STRING:
-      std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
-                << " [" << yylval.tok_val->text () << "]\n";
+      {
+        token *tok_val = curr_lexer->current_token ();
+
+        std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
+                  << " [" << tok_val->text () << "]\n";
+      }
       break;
 
     case FOR: std::cerr << "FOR\n"; break;

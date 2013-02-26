@@ -86,12 +86,6 @@ along with Octave; see the file COPYING.  If not, see
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
-// The current input line number.
-int input_line_number = 1;
-
-// The column of the current token.
-int current_input_column = 1;
-
 // Buffer for help text snagged from function files.
 std::stack<std::string> help_buf;
 
@@ -1345,8 +1339,8 @@ return_list1    : identifier
 script_file     : SCRIPT_FILE opt_list END_OF_INPUT
                   {
                     tree_statement *end_of_script
-                      = make_end ("endscript", input_line_number,
-                                  current_input_column);
+                      = make_end ("endscript", lexer_flags.input_line_number,
+                                  lexer_flags.current_input_column);
 
                     make_script ($2, end_of_script);
 
@@ -1469,8 +1463,8 @@ function_end    : END
                         YYABORT;
                       }
 
-                    $$ = make_end ("endfunction", input_line_number,
-                                   current_input_column);
+                    $$ = make_end ("endfunction", lexer_flags.input_line_number,
+                                   lexer_flags.current_input_column);
                   }
                 ;
 
@@ -1693,12 +1687,12 @@ opt_comma       : // empty
 static void
 yyerror (const char *s)
 {
-  int err_col = current_input_column - 1;
+  int err_col = lexer_flags.current_input_column - 1;
 
   std::ostringstream output_buf;
 
   if (reading_fcn_file || reading_script_file || reading_classdef_file)
-    output_buf << "parse error near line " << input_line_number
+    output_buf << "parse error near line " << lexer_flags.input_line_number
                << " of file " << curr_fcn_file_full_name;
   else
     output_buf << "parse error:";
@@ -2130,8 +2124,8 @@ static tree_anon_fcn_handle *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
-  int l = input_line_number;
-  int c = current_input_column;
+  int l = lexer_flags.input_line_number;
+  int c = lexer_flags.current_input_column;
 
   tree_parameter_list *ret_list = 0;
 
@@ -2909,7 +2903,8 @@ frob_function (const std::string& fname, octave_user_function *fcn)
     }
 
   fcn->stash_function_name (id_name);
-  fcn->stash_fcn_location (input_line_number, current_input_column);
+  fcn->stash_fcn_location (lexer_flags.input_line_number,
+                           lexer_flags.current_input_column);
 
   if (! help_buf.empty () && current_function_depth == 1
       && ! parsing_subfunctions)
@@ -3318,7 +3313,7 @@ text_getc (FILE *f)
     }
 
   if (c == '\n')
-    input_line_number++;
+    lexer_flags.input_line_number++;
 
   return c;
 }
@@ -3333,7 +3328,7 @@ public:
   int ungetc (int c)
   {
     if (c == '\n')
-      input_line_number--;
+      lexer_flags.input_line_number--;
 
     return ::ungetc (c, f);
   }
@@ -3359,11 +3354,11 @@ skip_white_space (stream_reader& reader)
         {
         case ' ':
         case '\t':
-          current_input_column++;
+          lexer_flags.current_input_column++;
           break;
 
         case '\n':
-          current_input_column = 1;
+          lexer_flags.current_input_column = 1;
           break;
 
         default:
@@ -3473,8 +3468,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   frame.protect_var (ff_instream);
 
-  frame.protect_var (input_line_number);
-  frame.protect_var (current_input_column);
   frame.protect_var (reading_fcn_file);
   frame.protect_var (line_editing);
   frame.protect_var (current_class_name);
@@ -3484,8 +3477,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   frame.protect_var (parsing_subfunctions);
   frame.protect_var (endfunction_found);
 
-  input_line_number = 1;
-  current_input_column = 1;
   reading_fcn_file = true;
   line_editing = false;
   current_class_name = dispatch_type;
@@ -3508,6 +3499,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
     {
       bool eof;
 
+      frame.protect_var (lexer_flags);
+
+      // Also resets lexer_flags.
+      reset_parser ();
+
       std::string help_txt = gobble_leading_white_space (ffile, eof);
 
       if (! help_txt.empty ())
@@ -3517,15 +3513,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
         {
           std::string file_type;
 
-          frame.protect_var (lexer_flags);
-
           frame.protect_var (get_input_from_eval_string);
           frame.protect_var (reading_fcn_file);
           frame.protect_var (reading_script_file);
           frame.protect_var (reading_classdef_file);
           frame.protect_var (Vecho_executing_commands);
-
-          lexer_flags = lexical_feedback ();
 
           get_input_from_eval_string = false;
 
@@ -3575,8 +3567,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
           frame.protect_var (primary_fcn_ptr);
           primary_fcn_ptr = 0;
 
-          reset_parser ();
-
           // Do this with an unwind-protect cleanup function so that
           // the forced variables will be unmarked in the event of an
           // interrupt.
@@ -3614,7 +3604,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       else
         {
           tree_statement *end_of_script
-            = make_end ("endscript", input_line_number, current_input_column);
+            = make_end ("endscript", lexer_flags.input_line_number,
+                        lexer_flags.current_input_column);
 
           make_script (0, end_of_script);
 
@@ -4315,8 +4306,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   frame.protect_var (lexer_flags);
 
-  frame.protect_var (input_line_number);
-  frame.protect_var (current_input_column);
   frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);
   frame.protect_var (current_eval_string);
@@ -4331,8 +4320,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   lexer_flags = lexical_feedback ();
 
-  input_line_number = 1;
-  current_input_column = 1;
   get_input_from_eval_string = true;
   line_editing = false;
   current_function_depth = 0;

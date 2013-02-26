@@ -44,12 +44,6 @@ class octave_function;
 // Nonzero means print parser debugging info (-d).
 extern int octave_debug;
 
-// The current input line number.
-extern int input_line_number;
-
-// The column of the current token.
-extern int current_input_column;
-
 // Buffer for help text snagged from function files.
 extern std::stack<std::string> help_buf;
 

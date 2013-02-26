@@ -148,7 +148,7 @@ along with Octave; see the file COPYING.  If not, see
 #define TOK_RETURN(tok) \
   do \
     { \
-      current_input_column += yyleng; \
+      lexer_flags.current_input_column += yyleng; \
       lexer_flags.quote_is_transpose = false; \
       lexer_flags.convert_spaces_to_comma = true; \
       COUNT_TOK_AND_RETURN (tok); \
@@ -158,8 +158,8 @@ along with Octave; see the file COPYING.  If not, see
 #define TOK_PUSH_AND_RETURN(name, tok) \
   do \
     { \
-      yylval.tok_val = new token (name, input_line_number, \
-                                  current_input_column); \
+      yylval.tok_val = new token (name, lexer_flags.input_line_number, \
+                                  lexer_flags.current_input_column); \
       token_stack.push (yylval.tok_val); \
       TOK_RETURN (tok); \
     } \
@@ -168,9 +168,10 @@ along with Octave; see the file COPYING.  If not, see
 #define BIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
   do \
     { \
-      yylval.tok_val = new token (input_line_number, current_input_column); \
+      yylval.tok_val = new token (lexer_flags.input_line_number, \
+                                  lexer_flags.current_input_column); \
       token_stack.push (yylval.tok_val); \
-      current_input_column += yyleng; \
+      lexer_flags.current_input_column += yyleng; \
       lexer_flags.quote_is_transpose = qit; \
       lexer_flags.convert_spaces_to_comma = convert; \
       lexer_flags.looking_for_object_index = false; \
@@ -378,8 +379,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<COMMAND_START>{NL}");
 
     BEGIN (INITIAL);
-    input_line_number++;
-    current_input_column = 1;
+    lexer_flags.input_line_number++;
+    lexer_flags.current_input_column = 1;
 
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
@@ -408,7 +409,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.at_beginning_of_statement = false;
 
-    current_input_column++;
+    lexer_flags.current_input_column++;
     int tok = handle_string (yytext[0]);
 
     COUNT_TOK_AND_RETURN (tok);
@@ -496,7 +497,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{S}*\,{S}* {
     LEXER_DEBUG ("<MATRIX_START>{S}*\\,{S}*");
 
-    current_input_column += yyleng;
+    lexer_flags.current_input_column += yyleng;
 
     int tmp = eat_continuation ();
 
@@ -528,7 +529,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{S}+ {
     LEXER_DEBUG ("<MATRIX_START>{S}+");
 
-    current_input_column += yyleng;
+    lexer_flags.current_input_column += yyleng;
 
     lexer_flags.at_beginning_of_statement = false;
 
@@ -624,7 +625,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.looking_at_object_index.push_front (false);
 
-    current_input_column += yyleng;
+    lexer_flags.current_input_column += yyleng;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.looking_for_object_index = false;
@@ -686,7 +687,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {S}* {
-    current_input_column += yyleng;
+    lexer_flags.current_input_column += yyleng;
   }
 
 %{
@@ -701,8 +702,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       gripe_matlab_incompatible_continuation ();
     scan_for_comments (yytext);
     promptflag--;
-    input_line_number++;
-    current_input_column = 1;
+    lexer_flags.input_line_number++;
+    lexer_flags.current_input_column = 1;
   }
 
 %{
@@ -719,7 +720,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
         if ((reading_fcn_file || reading_script_file || reading_classdef_file)
             && ! curr_fcn_file_name.empty ())
           warning ("near line %d of file '%s.m'",
-                   input_line_number, curr_fcn_file_name.c_str ());
+                   lexer_flags.input_line_number, curr_fcn_file_name.c_str ());
       }
 
     TOK_RETURN (END_OF_INPUT);
@@ -782,7 +783,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "@" {
     LEXER_DEBUG ("@");
 
-    current_input_column++;
+    lexer_flags.current_input_column++;
 
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = false;
@@ -803,8 +804,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {NL} {
     LEXER_DEBUG ("{NL}");
 
-    input_line_number++;
-    current_input_column = 1;
+    lexer_flags.input_line_number++;
+    lexer_flags.current_input_column = 1;
 
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
@@ -831,7 +832,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "'" {
     LEXER_DEBUG ("'");
 
-    current_input_column++;
+    lexer_flags.current_input_column++;
     lexer_flags.convert_spaces_to_comma = true;
 
     if (lexer_flags.quote_is_transpose)
@@ -853,7 +854,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \" {
     LEXER_DEBUG ("\"");
 
-    current_input_column++;
+    lexer_flags.current_input_column++;
     int tok = handle_string ('"');
 
     COUNT_TOK_AND_RETURN (tok);
@@ -888,8 +889,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.looking_for_object_index = false;
 
-    input_line_number++;
-    current_input_column = 1;
+    lexer_flags.input_line_number++;
+    lexer_flags.current_input_column = 1;
     block_comment_nesting_level++;
     promptflag--;
 
@@ -971,7 +972,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG (")");
 
     nesting_level.remove ();
-    current_input_column++;
+    lexer_flags.current_input_column++;
 
     lexer_flags.looking_at_object_index.pop_front ();
 
@@ -1024,7 +1025,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_at_object_index.push_front
       (lexer_flags.looking_for_object_index);
 
-    current_input_column += yyleng;
+    lexer_flags.current_input_column += yyleng;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.looking_for_object_index = false;
@@ -1064,11 +1065,11 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (c != EOF)
       {
-        current_input_column++;
+        lexer_flags.current_input_column++;
 
         error ("invalid character '%s' (ASCII %d) near line %d, column %d",
                undo_string_escape (static_cast<char> (c)), c,
-               input_line_number, current_input_column);
+               lexer_flags.input_line_number, lexer_flags.current_input_column);
 
         return LEXICAL_ERROR;
       }
@@ -1126,13 +1127,6 @@ reset_parser (void)
     {
       delete token_stack.top ();
       token_stack.pop ();
-    }
-
-  // Can be reset by defining a function.
-  if (! (reading_script_file || reading_fcn_file || reading_classdef_file))
-    {
-      current_input_column = 1;
-      input_line_number = command_editor::current_command_number ();
     }
 
   // Only ask for input from stdin if we are expecting interactive
@@ -1334,7 +1328,7 @@ text_yyinput (void)
     }
 
   if (c == '\n')
-    input_line_number++;
+    lexer_flags.input_line_number++;
 
   return c;
 }
@@ -1350,7 +1344,7 @@ xunput (char c, char *buf)
     }
 
   if (c == '\n')
-    input_line_number--;
+    lexer_flags.input_line_number--;
 
   yyunput (c, buf);
 }
@@ -1366,11 +1360,11 @@ fixup_column_count (char *s)
     {
       if (c == '\n')
         {
-          input_line_number++;
-          current_input_column = 1;
+          lexer_flags.input_line_number++;
+          lexer_flags.current_input_column = 1;
         }
       else
-        current_input_column++;
+        lexer_flags.current_input_column++;
     }
 }
 
@@ -1473,8 +1467,8 @@ inside_any_object_index (void)
 static int
 is_keyword_token (const std::string& s)
 {
-  int l = input_line_number;
-  int c = current_input_column;
+  int l = lexer_flags.input_line_number;
+  int c = lexer_flags.current_input_column;
 
   int len = s.length ();
 
@@ -1502,12 +1496,12 @@ is_keyword_token (const std::string& s)
               && ! curr_fcn_file_full_name.empty ())
             warning_with_id ("Octave:deprecated-keyword",
                              "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d of file '%s'",
-                             input_line_number,
+                             lexer_flags.input_line_number,
                              curr_fcn_file_full_name.c_str ());
           else
             warning_with_id ("Octave:deprecated-keyword",
                              "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d",
-                             input_line_number);
+                             lexer_flags.input_line_number);
           // fall through ...
 
         case persistent_kw:
@@ -1652,7 +1646,7 @@ is_keyword_token (const std::string& s)
 
           if (! (reading_fcn_file || reading_script_file
                  || reading_classdef_file))
-            input_line_number = 1;
+            lexer_flags.input_line_number = 1;
           break;
 
         case magic_file_kw:
@@ -1707,7 +1701,7 @@ grab_block_comment (stream_reader& reader, bool& eof)
 
   while ((c = reader.getc ()) != EOF)
     {
-      current_input_column++;
+      lexer_flags.current_input_column++;
 
       if (look_for_marker)
         {
@@ -1724,7 +1718,7 @@ grab_block_comment (stream_reader& reader, bool& eof)
 
               while ((c = reader.getc ()) != EOF && ! done)
                 {
-                  current_input_column++;
+                  lexer_flags.current_input_column++;
 
                   switch (c)
                     {
@@ -1735,7 +1729,7 @@ grab_block_comment (stream_reader& reader, bool& eof)
 
                     case '\n':
                       {
-                        current_input_column = 0;
+                        lexer_flags.current_input_column = 0;
                         at_bol = true;
                         done = true;
 
@@ -1787,7 +1781,7 @@ grab_block_comment (stream_reader& reader, bool& eof)
 
           if (c == '\n')
             {
-              current_input_column = 0;
+              lexer_flags.current_input_column = 0;
               at_bol = true;
             }
         }
@@ -1817,7 +1811,7 @@ grab_comment_block (stream_reader& reader, bool at_bol,
 
   while ((c = reader.getc ()) != EOF)
     {
-      current_input_column++;
+      lexer_flags.current_input_column++;
 
       if (begin_comment)
         {
@@ -1834,7 +1828,7 @@ grab_comment_block (stream_reader& reader, bool at_bol,
 
               while ((c = reader.getc ()) != EOF && ! done)
                 {
-                  current_input_column++;
+                  lexer_flags.current_input_column++;
 
                   switch (c)
                     {
@@ -1845,7 +1839,7 @@ grab_comment_block (stream_reader& reader, bool at_bol,
 
                     case '\n':
                       {
-                        current_input_column = 0;
+                        lexer_flags.current_input_column = 0;
                         at_bol = true;
                         done = true;
 
@@ -1884,7 +1878,7 @@ grab_comment_block (stream_reader& reader, bool at_bol,
           if (c == '\n')
             {
               at_bol = true;
-              current_input_column = 0;
+              lexer_flags.current_input_column = 0;
               in_comment = false;
 
               // FIXME -- bailing out here prevents things like
@@ -1924,7 +1918,7 @@ grab_comment_block (stream_reader& reader, bool at_bol,
               break;
 
             default:
-              current_input_column--;
+              lexer_flags.current_input_column--;
               reader.ungetc (c);
               goto done;
             }
@@ -1991,7 +1985,7 @@ process_comment (bool start_in_block, bool& eof)
 
   octave_comment_buffer::append (txt);
 
-  current_input_column = 1;
+  lexer_flags.current_input_column = 1;
   lexer_flags.quote_is_transpose = false;
   lexer_flags.convert_spaces_to_comma = true;
   lexer_flags.at_beginning_of_statement = true;
@@ -2302,7 +2296,7 @@ eat_whitespace (void)
 
   while ((c = text_yyinput ()) != EOF)
     {
-      current_input_column++;
+      lexer_flags.current_input_column++;
 
       switch (c)
         {
@@ -2326,7 +2320,7 @@ eat_whitespace (void)
               in_comment = false;
               beginning_of_comment = false;
             }
-          current_input_column = 0;
+          lexer_flags.current_input_column = 0;
           break;
 
         case '#':
@@ -2391,7 +2385,7 @@ eat_whitespace (void)
 
  done:
   xunput (c, yytext);
-  current_input_column--;
+  lexer_flags.current_input_column--;
   return retval;
 }
 
@@ -2438,12 +2432,12 @@ handle_number (void)
   lexer_flags.looking_for_object_index = false;
   lexer_flags.at_beginning_of_statement = false;
 
-  yylval.tok_val = new token (value, yytext, input_line_number,
-                              current_input_column);
+  yylval.tok_val = new token (value, yytext, lexer_flags.input_line_number,
+                              lexer_flags.current_input_column);
 
   token_stack.push (yylval.tok_val);
 
-  current_input_column += yyleng;
+  lexer_flags.current_input_column += yyleng;
 
   do_comma_insert_check ();
 }
@@ -2512,7 +2506,7 @@ have_continuation (bool trailing_comments_ok)
               comment_buf += static_cast<char> (c);
               octave_comment_buffer::append (comment_buf);
             }
-          current_input_column = 0;
+          lexer_flags.current_input_column = 0;
           promptflag--;
           gripe_matlab_incompatible_continuation ();
           return true;
@@ -2594,15 +2588,15 @@ handle_string (char delim)
 {
   std::ostringstream buf;
 
-  int bos_line = input_line_number;
-  int bos_col = current_input_column;
+  int bos_line = lexer_flags.input_line_number;
+  int bos_col = lexer_flags.current_input_column;
 
   int c;
   int escape_pending = 0;
 
   while ((c = text_yyinput ()) != EOF)
     {
-      current_input_column++;
+      lexer_flags.current_input_column++;
 
       if (c == '\\')
         {
@@ -3174,11 +3168,12 @@ handle_superclass_identifier (void)
     = new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
                  cls.empty () ? 0 : &(symbol_table::insert (cls)),
                  pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                 input_line_number, current_input_column);
+                 lexer_flags.input_line_number,
+                 lexer_flags.current_input_column);
   token_stack.push (yylval.tok_val);
 
   lexer_flags.convert_spaces_to_comma = true;
-  current_input_column += yyleng;
+  lexer_flags.current_input_column += yyleng;
 
   return SUPERCLASSREF;
 }
@@ -3208,12 +3203,13 @@ handle_meta_identifier (void)
   yylval.tok_val
     = new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
                  pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                 input_line_number, current_input_column);
+                 lexer_flags.input_line_number,
+                 lexer_flags.current_input_column);
 
   token_stack.push (yylval.tok_val);
 
   lexer_flags.convert_spaces_to_comma = true;
-  current_input_column += yyleng;
+  lexer_flags.current_input_column += yyleng;
 
   return METAQUERY;
 }
@@ -3246,8 +3242,8 @@ handle_identifier (void)
 
       maybe_unput_comma (spc_gobbled);
 
-      yylval.tok_val = new token (tok, input_line_number,
-                                  current_input_column);
+      yylval.tok_val = new token (tok, lexer_flags.input_line_number,
+                                  lexer_flags.current_input_column);
 
       token_stack.push (yylval.tok_val);
 
@@ -3255,7 +3251,7 @@ handle_identifier (void)
       lexer_flags.convert_spaces_to_comma = true;
       lexer_flags.looking_for_object_index = true;
 
-      current_input_column += yyleng;
+      lexer_flags.current_input_column += yyleng;
 
       return STRUCT_ELT;
     }
@@ -3283,12 +3279,12 @@ handle_identifier (void)
         }
       else
         {
-          yylval.tok_val = new token (tok, input_line_number,
-                                      current_input_column);
+          yylval.tok_val = new token (tok, lexer_flags.input_line_number,
+                                      lexer_flags.current_input_column);
 
           token_stack.push (yylval.tok_val);
 
-          current_input_column += yyleng;
+          lexer_flags.current_input_column += yyleng;
           lexer_flags.quote_is_transpose = false;
           lexer_flags.convert_spaces_to_comma = true;
           lexer_flags.looking_for_object_index = true;
@@ -3304,7 +3300,7 @@ handle_identifier (void)
     {
       if (kw_token >= 0)
         {
-          current_input_column += yyleng;
+          lexer_flags.current_input_column += yyleng;
           lexer_flags.quote_is_transpose = false;
           lexer_flags.convert_spaces_to_comma = true;
           lexer_flags.looking_for_object_index = false;
@@ -3367,7 +3363,8 @@ handle_identifier (void)
     tok = "__end__";
 
   yylval.tok_val = new token (&(symbol_table::insert (tok)),
-                              input_line_number, current_input_column);
+                              lexer_flags.input_line_number,
+                              lexer_flags.current_input_column);
 
   token_stack.push (yylval.tok_val);
 
@@ -3385,7 +3382,7 @@ handle_identifier (void)
       maybe_unput_comma (spc_gobbled);
     }
 
-  current_input_column += yyleng;
+  lexer_flags.current_input_column += yyleng;
 
   if (tok != "__end__")
     lexer_flags.looking_for_object_index = true;
@@ -3547,11 +3544,11 @@ maybe_warn_separator_insert (char sep)
   if (nm.empty ())
     warning_with_id ("Octave:separator-insert",
                      "potential auto-insertion of '%c' near line %d",
-                     sep, input_line_number);
+                     sep, lexer_flags.input_line_number);
   else
     warning_with_id ("Octave:separator-insert",
                      "potential auto-insertion of '%c' near line %d of file %s",
-                     sep, input_line_number, nm.c_str ());
+                     sep, lexer_flags.input_line_number, nm.c_str ());
 }
 
 static void
@@ -3562,11 +3559,11 @@ gripe_single_quote_string (void)
   if (nm.empty ())
     warning_with_id ("Octave:single-quote-string",
                      "single quote delimited string near line %d",
-                     input_line_number);
+                     lexer_flags.input_line_number);
   else
     warning_with_id ("Octave:single-quote-string",
                      "single quote delimited string near line %d of file %s",
-                     input_line_number, nm.c_str ());
+                     lexer_flags.input_line_number, nm.c_str ());
 }
 
 static void
@@ -3581,7 +3578,7 @@ gripe_matlab_incompatible (const std::string& msg)
   else
     warning_with_id ("Octave:matlab-incompatible",
                      "potential Matlab compatibility problem: %s near line %d offile %s",
-                     msg.c_str (), input_line_number, nm.c_str ());
+                     msg.c_str (), lexer_flags.input_line_number, nm.c_str ());
 }
 
 static void

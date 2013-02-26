@@ -72,6 +72,7 @@ public:
       looking_at_indirect_ref (false), parsing_class_method (false),
       maybe_classdef_get_set_method (false), parsing_classdef (false),
       quote_is_transpose (false), parser_end_of_input (false),
+      input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
       looking_at_object_index (), parsed_function_name (),
@@ -97,6 +98,8 @@ public:
       parsing_classdef (lf.parsing_classdef),
       quote_is_transpose (lf.quote_is_transpose),
       parser_end_of_input (lf.parser_end_of_input),
+      input_line_number (lf.input_line_number),
+      current_input_column (lf.current_input_column),
       bracketflag (lf.bracketflag),
       braceflag (lf.braceflag),
       looping (lf.looping),
@@ -127,6 +130,8 @@ public:
         parsing_classdef = lf.parsing_classdef;
         quote_is_transpose = lf.quote_is_transpose;
         parser_end_of_input = lf.parser_end_of_input;
+        input_line_number = lf.input_line_number;
+        current_input_column = lf.current_input_column;
         bracketflag = lf.bracketflag;
         braceflag = lf.braceflag;
         looping = lf.looping;
@@ -204,6 +209,12 @@ public:
 
   // TRUE means that we have encountered EOF on the input stream.
   bool parser_end_of_input;
+
+  // The current input line number.
+  int input_line_number;
+
+  // The column of the current token.
+  int current_input_column;
 
   // Square bracket level count.
   int bracketflag;

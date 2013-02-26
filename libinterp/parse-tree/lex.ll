@@ -160,7 +160,7 @@ along with Octave; see the file COPYING.  If not, see
     { \
       yylval.tok_val = new token (name, curr_lexer->input_line_number, \
                                   curr_lexer->current_input_column); \
-      token_stack.push (yylval.tok_val); \
+      curr_lexer->token_stack.push (yylval.tok_val); \
       TOK_RETURN (tok); \
     } \
   while (0)
@@ -170,7 +170,7 @@ along with Octave; see the file COPYING.  If not, see
     { \
       yylval.tok_val = new token (curr_lexer->input_line_number, \
                                   curr_lexer->current_input_column); \
-      token_stack.push (yylval.tok_val); \
+      curr_lexer->token_stack.push (yylval.tok_val); \
       curr_lexer->current_input_column += yyleng; \
       curr_lexer->quote_is_transpose = qit; \
       curr_lexer->convert_spaces_to_comma = convert; \
@@ -213,15 +213,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // The state of the lexer.
 lexical_feedback *curr_lexer = 0;
-
-// Stack to hold tokens so that we can delete them when the parser is
-// reset and avoid growing forever just because we are stashing some
-// information.  This has to appear before lex.h is included, because
-// one of the macros defined there uses token_stack.
-//
-// FIXME -- this should really be static, but that causes
-// problems on some systems.
-std::stack <token*> token_stack;
 
 static bool Vdisplay_tokens = false;
 
@@ -1051,14 +1042,6 @@ reset_parser (void)
   // We do want a prompt by default.
   promptflag = 1;
 
-  // Clear out the stack of token info used to track line and column
-  // numbers.
-  while (! token_stack.empty ())
-    {
-      delete token_stack.top ();
-      token_stack.pop ();
-    }
-
   // Only ask for input from stdin if we are expecting interactive
   // input.
 
@@ -1220,6 +1203,18 @@ display_character (char c)
         std::cerr << "DEL";
         break;
       }
+}
+
+lexical_feedback::~lexical_feedback (void)
+{
+  // Clear out the stack of token info used to track line and
+  // column numbers.
+
+  while (! token_stack.empty ())
+    {
+      delete token_stack.top ();
+      token_stack.pop ();
+    }
 }
 
 static int
@@ -1598,7 +1593,7 @@ is_keyword_token (const std::string& s)
       if (! yylval.tok_val)
         yylval.tok_val = new token (l, c);
 
-      token_stack.push (yylval.tok_val);
+      curr_lexer->token_stack.push (yylval.tok_val);
 
       return kw->tok;
     }
@@ -2356,7 +2351,7 @@ handle_number (void)
   yylval.tok_val = new token (value, yytext, curr_lexer->input_line_number,
                               curr_lexer->current_input_column);
 
-  token_stack.push (yylval.tok_val);
+  curr_lexer->token_stack.push (yylval.tok_val);
 
   curr_lexer->current_input_column += yyleng;
 
@@ -2571,7 +2566,7 @@ handle_string (char delim)
                   curr_lexer->convert_spaces_to_comma = true;
 
                   yylval.tok_val = new token (s, bos_line, bos_col);
-                  token_stack.push (yylval.tok_val);
+                  curr_lexer->token_stack.push (yylval.tok_val);
 
                   if (delim == '"')
                     gripe_matlab_incompatible ("\" used as string delimiter");
@@ -3089,7 +3084,7 @@ handle_superclass_identifier (void)
                  pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
                  curr_lexer->input_line_number,
                  curr_lexer->current_input_column);
-  token_stack.push (yylval.tok_val);
+  curr_lexer->token_stack.push (yylval.tok_val);
 
   curr_lexer->convert_spaces_to_comma = true;
   curr_lexer->current_input_column += yyleng;
@@ -3125,7 +3120,7 @@ handle_meta_identifier (void)
                  curr_lexer->input_line_number,
                  curr_lexer->current_input_column);
 
-  token_stack.push (yylval.tok_val);
+  curr_lexer->token_stack.push (yylval.tok_val);
 
   curr_lexer->convert_spaces_to_comma = true;
   curr_lexer->current_input_column += yyleng;
@@ -3164,7 +3159,7 @@ handle_identifier (void)
       yylval.tok_val = new token (tok, curr_lexer->input_line_number,
                                   curr_lexer->current_input_column);
 
-      token_stack.push (yylval.tok_val);
+      curr_lexer->token_stack.push (yylval.tok_val);
 
       curr_lexer->quote_is_transpose = true;
       curr_lexer->convert_spaces_to_comma = true;
@@ -3201,7 +3196,7 @@ handle_identifier (void)
           yylval.tok_val = new token (tok, curr_lexer->input_line_number,
                                       curr_lexer->current_input_column);
 
-          token_stack.push (yylval.tok_val);
+          curr_lexer->token_stack.push (yylval.tok_val);
 
           curr_lexer->current_input_column += yyleng;
           curr_lexer->quote_is_transpose = false;
@@ -3285,7 +3280,7 @@ handle_identifier (void)
                               curr_lexer->input_line_number,
                               curr_lexer->current_input_column);
 
-  token_stack.push (yylval.tok_val);
+  curr_lexer->token_stack.push (yylval.tok_val);
 
   // After seeing an identifer, it is ok to convert spaces to a comma
   // (if needed).

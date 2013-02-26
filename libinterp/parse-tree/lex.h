@@ -54,6 +54,10 @@ extern bool is_keyword (const std::string& s);
 extern void prep_lexer_for_script_file (void);
 extern void prep_lexer_for_function_file (void);
 
+
+// Forward decl for lexical_feedback::token_stack.
+class token;
+
 // For communication between the lexer and parser.
 
 class
@@ -175,7 +179,7 @@ public:
     init ();
   }
 
-  ~lexical_feedback (void) { }
+  ~lexical_feedback (void);
 
   void init (void)
   {
@@ -279,6 +283,11 @@ public:
   // Is the closest nesting level a square bracket, squiggly brace or
   // a paren?
   bbp_nesting_level nesting_level;
+
+  // Stack to hold tokens so that we can delete them when the parser is
+  // reset and avoid growing forever just because we are stashing some
+  // information.
+  std::stack <token*> token_stack;
 
 private:
 

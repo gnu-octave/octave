@@ -231,58 +231,6 @@ const yum_yum ATE_NOTHING = 0;
 const yum_yum ATE_SPACE_OR_TAB = 1;
 const yum_yum ATE_NEWLINE = 2;
 
-// Is the closest nesting level a square bracket, squiggly brace or a paren?
-
-class bracket_brace_paren_nesting_level
-{
-public:
-
-  bracket_brace_paren_nesting_level (void) : context () { }
-
-  ~bracket_brace_paren_nesting_level (void) { }
-
-  void bracket (void) { context.push (BRACKET); }
-  bool is_bracket (void)
-    { return ! context.empty () && context.top () == BRACKET; }
-
-  void brace (void) {  context.push (BRACE); }
-  bool is_brace (void)
-    { return ! context.empty () && context.top () == BRACE; }
-
-  void paren (void) {  context.push (PAREN); }
-  bool is_paren (void)
-    { return ! context.empty () && context.top () == PAREN; }
-
-  bool is_bracket_or_brace (void)
-    { return (! context.empty ()
-              && (context.top () == BRACKET || context.top () == BRACE)); }
-
-  bool none (void) { return context.empty (); }
-
-  void remove (void) { if (! context.empty ()) context.pop (); }
-
-  void clear (void) { while (! context.empty ()) context.pop (); }
-
-private:
-
-  std::stack<int> context;
-
-  static const int BRACKET;
-  static const int BRACE;
-  static const int PAREN;
-
-  bracket_brace_paren_nesting_level (const bracket_brace_paren_nesting_level&);
-
-  bracket_brace_paren_nesting_level&
-  operator = (const bracket_brace_paren_nesting_level&);
-};
-
-const int bracket_brace_paren_nesting_level::BRACKET = 1;
-const int bracket_brace_paren_nesting_level::BRACE = 2;
-const int bracket_brace_paren_nesting_level::PAREN = 3;
-
-static bracket_brace_paren_nesting_level nesting_level;
-
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
@@ -542,7 +490,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
         bool sep_op = next_token_is_sep_op ();
 
         if (! (postfix_un_op || bin_op || sep_op)
-            && nesting_level.is_bracket_or_brace ()
+            && lexer_flags.nesting_level.is_bracket_or_brace ()
             && lexer_flags.convert_spaces_to_comma)
           {
             if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
@@ -606,11 +554,11 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.convert_spaces_to_comma = true;
     lexer_flags.at_beginning_of_statement = false;
 
-    if (nesting_level.none ())
+    if (lexer_flags.nesting_level.none ())
       return LEXICAL_ERROR;
 
     if (! lexer_flags.looking_at_object_index.front ()
-        && nesting_level.is_bracket_or_brace ())
+        && lexer_flags.nesting_level.is_bracket_or_brace ())
       {
         maybe_warn_separator_insert (';');
 
@@ -621,7 +569,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \[{S}* {
     LEXER_DEBUG ("\\[{S}*");
 
-    nesting_level.bracket ();
+    lexer_flags.nesting_level.bracket ();
 
     lexer_flags.looking_at_object_index.push_front (false);
 
@@ -648,7 +596,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \] {
     LEXER_DEBUG ("\\]");
 
-    nesting_level.remove ();
+    lexer_flags.nesting_level.remove ();
 
     lexer_flags.looking_at_object_index.pop_front ();
 
@@ -810,17 +758,17 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.convert_spaces_to_comma = true;
 
-    if (nesting_level.none ())
+    if (lexer_flags.nesting_level.none ())
       {
         lexer_flags.at_beginning_of_statement = true;
         COUNT_TOK_AND_RETURN ('\n');
       }
-    else if (nesting_level.is_paren ())
+    else if (lexer_flags.nesting_level.is_paren ())
       {
         lexer_flags.at_beginning_of_statement = false;
         gripe_matlab_incompatible ("bare newline inside parentheses");
       }
-    else if (nesting_level.is_bracket_or_brace ())
+    else if (lexer_flags.nesting_level.is_bracket_or_brace ())
       return LEXICAL_ERROR;
   }
 
@@ -962,7 +910,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_for_object_index = false;
     lexer_flags.at_beginning_of_statement = false;
 
-    nesting_level.paren ();
+    lexer_flags.nesting_level.paren ();
     promptflag--;
 
     TOK_RETURN ('(');
@@ -971,14 +919,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 ")" {
     LEXER_DEBUG (")");
 
-    nesting_level.remove ();
+    lexer_flags.nesting_level.remove ();
     lexer_flags.current_input_column++;
 
     lexer_flags.looking_at_object_index.pop_front ();
 
     lexer_flags.quote_is_transpose = true;
     lexer_flags.convert_spaces_to_comma
-      = (nesting_level.is_bracket_or_brace ()
+      = (lexer_flags.nesting_level.is_bracket_or_brace ()
          && ! lexer_flags.looking_at_anon_fcn_args);
     lexer_flags.looking_for_object_index = true;
     lexer_flags.at_beginning_of_statement = false;
@@ -1020,7 +968,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \{{S}* {
     LEXER_DEBUG ("\\{{S}*");
 
-    nesting_level.brace ();
+    lexer_flags.nesting_level.brace ();
 
     lexer_flags.looking_at_object_index.push_front
       (lexer_flags.looking_for_object_index);
@@ -1047,7 +995,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_for_object_index = true;
     lexer_flags.at_beginning_of_statement = false;
 
-    nesting_level.remove ();
+    lexer_flags.nesting_level.remove ();
 
     TOK_RETURN ('}');
   }
@@ -1117,9 +1065,6 @@ reset_parser (void)
 
   // We are not in a block comment.
   block_comment_nesting_level = 0;
-
-  // Error may have occurred inside some brackets, braces, or parentheses.
-  nesting_level.clear ();
 
   // Clear out the stack of token info used to track line and column
   // numbers.
@@ -1975,7 +1920,7 @@ process_comment (bool start_in_block, bool& eof)
   if (lexer_debug_flag)
     std::cerr << "C: " << txt << std::endl;
 
-  if (help_txt.empty () && nesting_level.none ())
+  if (help_txt.empty () && lexer_flags.nesting_level.none ())
     {
       if (! help_buf.empty ())
         help_buf.pop ();
@@ -1993,9 +1938,9 @@ process_comment (bool start_in_block, bool& eof)
   if (YY_START == COMMAND_START)
     BEGIN (INITIAL);
 
-  if (nesting_level.none ())
+  if (lexer_flags.nesting_level.none ())
     return '\n';
-  else if (nesting_level.is_bracket_or_brace ())
+  else if (lexer_flags.nesting_level.is_bracket_or_brace ())
     return ';';
   else
     return 0;
@@ -2774,9 +2719,9 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
   int retval = bracket_type;
 
-  if (! nesting_level.none ())
+  if (! lexer_flags.nesting_level.none ())
     {
-      nesting_level.remove ();
+      lexer_flags.nesting_level.remove ();
 
       if (bracket_type == ']')
         lexer_flags.bracketflag--;
@@ -2797,8 +2742,8 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
     }
   else if ((lexer_flags.bracketflag || lexer_flags.braceflag)
            && lexer_flags.convert_spaces_to_comma
-           && (nesting_level.is_bracket ()
-               || (nesting_level.is_brace ()
+           && (lexer_flags.nesting_level.is_bracket ()
+               || (lexer_flags.nesting_level.is_brace ()
                    && ! lexer_flags.looking_at_object_index.front ())))
     {
       bool index_op = next_token_is_index_op ();
@@ -2838,8 +2783,8 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
 static void
 maybe_unput_comma (int spc_gobbled)
 {
-  if (nesting_level.is_bracket ()
-      || (nesting_level.is_brace ()
+  if (lexer_flags.nesting_level.is_bracket ()
+      || (lexer_flags.nesting_level.is_brace ()
           && ! lexer_flags.looking_at_object_index.front ()))
     {
       int bin_op = next_token_is_bin_op (spc_gobbled);

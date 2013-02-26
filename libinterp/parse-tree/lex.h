@@ -61,6 +61,81 @@ lexical_feedback
 {
 public:
 
+  // Track nesting of square brackets, curly braces, and parentheses.
+
+  class bbp_nesting_level
+  {
+  private:
+
+    enum
+      {
+        BRACKET = 1,
+        BRACE = 2,
+        PAREN = 3
+      };
+
+  public:
+
+    bbp_nesting_level (void) : context () { }
+
+    bbp_nesting_level (const bbp_nesting_level& nl) : context (nl.context) { }
+
+    bbp_nesting_level& operator = (const bbp_nesting_level& nl)
+    {
+      if (&nl != this)
+        context = nl.context;
+
+      return *this;
+    }
+
+    ~bbp_nesting_level (void) { }
+
+    void bracket (void) { context.push (BRACKET); }
+
+    bool is_bracket (void)
+    {
+      return ! context.empty () && context.top () == BRACKET;
+    }
+
+    void brace (void) { context.push (BRACE); }
+
+    bool is_brace (void)
+    {
+      return ! context.empty () && context.top () == BRACE;
+    }
+
+    void paren (void) { context.push (PAREN); }
+
+    bool is_paren (void)
+    {
+      return ! context.empty () && context.top () == PAREN;
+    }
+
+    bool is_bracket_or_brace (void)
+    {
+      return (! context.empty ()
+              && (context.top () == BRACKET || context.top () == BRACE));
+    }
+
+    bool none (void) { return context.empty (); }
+
+    void remove (void)
+    {
+      if (! context.empty ())
+        context.pop ();
+    }
+
+    void clear (void)
+    {
+      while (! context.empty ())
+        context.pop ();
+    }
+
+  private:
+
+    std::stack<int> context;
+  };
+
   lexical_feedback (void)
     : convert_spaces_to_comma (true), do_comma_insert (false),
       at_beginning_of_statement (true),
@@ -76,7 +151,7 @@ public:
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
       looking_at_object_index (), parsed_function_name (),
-      pending_local_variables ()
+      pending_local_variables (), nesting_level ()
   {
     init ();
   }
@@ -107,7 +182,8 @@ public:
       looking_at_function_handle (lf.looking_at_function_handle),
       looking_at_object_index (lf.looking_at_object_index),
       parsed_function_name (lf.parsed_function_name),
-      pending_local_variables (lf.pending_local_variables)
+      pending_local_variables (lf.pending_local_variables),
+      nesting_level (lf.nesting_level)
   { }
 
   lexical_feedback& operator = (const lexical_feedback& lf)
@@ -140,6 +216,7 @@ public:
         looking_at_object_index = lf.looking_at_object_index;
         parsed_function_name = lf.parsed_function_name;
         pending_local_variables = lf.pending_local_variables;
+        nesting_level = lf.nesting_level;
       }
 
     return *this;
@@ -242,6 +319,10 @@ public:
 
   // Set of identifiers that might be local variable names.
   std::set<std::string> pending_local_variables;
+
+  // Is the closest nesting level a square bracket, squiggly brace or
+  // a paren?
+  bbp_nesting_level nesting_level;
 };
 
 class

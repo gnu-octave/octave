@@ -61,20 +61,19 @@ lexical_feedback
 public:
 
   lexical_feedback (void)
-
-    : bracketflag (0), braceflag (0), looping (0),
-      convert_spaces_to_comma (true), at_beginning_of_statement (true),
-      defining_func (0), looking_at_function_handle (0),
-      looking_at_anon_fcn_args (true),
-      looking_at_return_list (false), looking_at_parameter_list (false),
-      looking_at_decl_list (false), looking_at_initializer_expression (false),
-      looking_at_matrix_or_assign_lhs (false), looking_at_object_index (),
-      looking_for_object_index (false), do_comma_insert (false),
-      looking_at_indirect_ref (false), parsed_function_name (),
-      parsing_class_method (false), maybe_classdef_get_set_method (false),
-      parsing_classdef (false), quote_is_transpose (false),
+    : convert_spaces_to_comma (true), do_comma_insert (false),
+      at_beginning_of_statement (true),
+      looking_at_anon_fcn_args (true), looking_at_return_list (false),
+      looking_at_parameter_list (false), looking_at_decl_list (false),
+      looking_at_initializer_expression (false),
+      looking_at_matrix_or_assign_lhs (false),
+      looking_for_object_index (false), 
+      looking_at_indirect_ref (false), parsing_class_method (false),
+      maybe_classdef_get_set_method (false), parsing_classdef (false),
+      quote_is_transpose (false), bracketflag (0), braceflag (0),
+      looping (0), defining_func (0), looking_at_function_handle (0),
+      looking_at_object_index (), parsed_function_name (),
       pending_local_variables ()
-
     {
       init ();
     }
@@ -83,28 +82,16 @@ public:
 
   void init (void);
 
-  // Square bracket level count.
-  int bracketflag;
-
-  // Curly brace level count.
-  int braceflag;
-
-  // TRUE means we're in the middle of defining a loop.
-  int looping;
-
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
   bool convert_spaces_to_comma;
 
+  // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
+  bool do_comma_insert;
+
   // TRUE means we are at the beginning of a statement, where a
   // command name is possible.
   bool at_beginning_of_statement;
-
-  // Nonzero means we're in the middle of defining a function.
-  int defining_func;
-
-  // Nonzero means we are parsing a function handle.
-  int looking_at_function_handle;
 
   // TRUE means we are parsing an anonymous function argument list.
   bool looking_at_anon_fcn_args;
@@ -127,24 +114,12 @@ public:
   // multi-value assignment statement.
   bool looking_at_matrix_or_assign_lhs;
 
-  // If the front of the list is TRUE, the closest paren, brace, or
-  // bracket nesting is an index for an object.
-  std::list<bool> looking_at_object_index;
-
   // Object index not possible until we've seen something.
   bool looking_for_object_index;
-
-  // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
-  bool do_comma_insert;
 
   // TRUE means we're looking at an indirect reference to a
   // structure element.
   bool looking_at_indirect_ref;
-
-  // If the top of the stack is TRUE, then we've already seen the name
-  // of the current function.  Should only matter if
-  // current_function_level > 0
-  std::stack<bool> parsed_function_name;
 
   // TRUE means we are parsing a class method in function or classdef file.
   bool parsing_class_method;
@@ -159,6 +134,30 @@ public:
 
   // Return transpose or start a string?
   bool quote_is_transpose;
+
+  // Square bracket level count.
+  int bracketflag;
+
+  // Curly brace level count.
+  int braceflag;
+
+  // TRUE means we're in the middle of defining a loop.
+  int looping;
+
+  // Nonzero means we're in the middle of defining a function.
+  int defining_func;
+
+  // Nonzero means we are parsing a function handle.
+  int looking_at_function_handle;
+
+  // If the front of the list is TRUE, the closest paren, brace, or
+  // bracket nesting is an index for an object.
+  std::list<bool> looking_at_object_index;
+
+  // If the top of the stack is TRUE, then we've already seen the name
+  // of the current function.  Should only matter if
+  // current_function_level > 0
+  std::stack<bool> parsed_function_name;
 
   // Set of identifiers that might be local variable names.
   std::set<std::string> pending_local_variables;

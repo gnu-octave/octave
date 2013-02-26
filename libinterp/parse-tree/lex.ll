@@ -213,7 +213,7 @@ along with Octave; see the file COPYING.  If not, see
 // TRUE means that we have encountered EOF on the input stream.
 bool parser_end_of_input = false;
 
-// Flags that need to be shared between the lexer and parser.
+// The state of the lexer.
 lexical_feedback lexer_flags;
 
 // Stack to hold tokens so that we can delete them when the parser is
@@ -3401,33 +3401,16 @@ handle_identifier (void)
 void
 lexical_feedback::init (void)
 {
-  // Not initially defining a matrix list.
-  bracketflag = 0;
+  // No need to do comma insert or convert spaces to comma at
+  // beginning of input.
+  convert_spaces_to_comma = true;
+  do_comma_insert = false;
 
-  // Not initially defining a cell array list.
-  braceflag = 0;
-
-  // Not initially inside a loop or if statement.
-  looping = 0;
-
-  // Not initially defining a function.
-  defining_func = 0;
-
-  // Not parsing an object index.
-  while (! parsed_function_name.empty ())
-    parsed_function_name.pop ();
-
-  parsing_class_method = false;
-
-  // Not initially defining a class with classdef.
-  maybe_classdef_get_set_method = false;
-  parsing_classdef = false;
-
-  // Not initiallly looking at a function handle.
-  looking_at_function_handle = 0;
+  // Yes, we are at the beginning of a statement.
+  at_beginning_of_statement = true;
 
   // Not initiallly looking at an anonymous function argument list.
-  looking_at_anon_fcn_args = 0;
+  looking_at_anon_fcn_args = false;
 
   // Not parsing a function return, parameter, or declaration list.
   looking_at_return_list = false;
@@ -3441,28 +3424,48 @@ lexical_feedback::init (void)
   // assignment statement.
   looking_at_matrix_or_assign_lhs = false;
 
-  // Not parsing an object index.
-  while (! looking_at_object_index.empty ())
-    looking_at_object_index.pop_front ();
-
-  looking_at_object_index.push_front (false);
-
   // Object index not possible until we've seen something.
   looking_for_object_index = false;
-
-  // Yes, we are at the beginning of a statement.
-  at_beginning_of_statement = true;
-
-  // No need to do comma insert or convert spaces to comma at
-  // beginning of input.
-  convert_spaces_to_comma = true;
-  do_comma_insert = false;
 
   // Not initially looking at indirect references.
   looking_at_indirect_ref = false;
 
+  // Not initially parsing a class method.
+  parsing_class_method = false;
+
+  // Not initially defining a class with classdef.
+  maybe_classdef_get_set_method = false;
+  parsing_classdef = false;
+
   // Quote marks strings intially.
   quote_is_transpose = false;
+
+  // Not initially defining a matrix list.
+  bracketflag = 0;
+
+  // Not initially defining a cell array list.
+  braceflag = 0;
+
+  // Not initially inside a loop or if statement.
+  looping = 0;
+
+  // Not initially defining a function.
+  defining_func = 0;
+
+  // Not initiallly looking at a function handle.
+  looking_at_function_handle = 0;
+
+  // Not parsing an object index.
+  while (! looking_at_object_index.empty ())
+    looking_at_object_index.pop_front ();
+
+  // Not parsing an object index.
+  while (! parsed_function_name.empty ())
+    parsed_function_name.pop ();
+
+  // The closest paren, brace, or bracket nesting is not an object
+  // index.
+  looking_at_object_index.push_front (false);
 
   // Set of identifiers that might be local variable names is empty.
   pending_local_variables.clear ();

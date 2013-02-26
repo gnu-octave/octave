@@ -680,6 +680,7 @@ get_debug_input (const std::string& prompt)
 
   frame.protect_var (curr_lexer);
   curr_lexer = new lexical_feedback ();
+  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
   while (Vdebugging)
     {

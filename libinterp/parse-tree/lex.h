@@ -377,6 +377,9 @@ public:
   // information.
   std::stack <token*> token_stack;
 
+  // For unwind protect.
+  static void cleanup (lexical_feedback *lexer) { delete lexer; }
+
 private:
 
   // No copying!

@@ -3500,8 +3500,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       bool eof;
 
       frame.protect_var (curr_lexer);
-
       curr_lexer = new lexical_feedback ();
+      frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
       reset_parser ();
 
@@ -4306,6 +4306,8 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   unwind_protect frame;
 
   frame.protect_var (curr_lexer);
+  curr_lexer = new lexical_feedback ();
+  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
   frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);
@@ -4318,8 +4320,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (reading_fcn_file);
   frame.protect_var (reading_script_file);
   frame.protect_var (reading_classdef_file);
-
-  curr_lexer = new lexical_feedback ();
 
   get_input_from_eval_string = true;
   line_editing = false;

@@ -561,6 +561,7 @@ main_loop (void)
 
   frame.protect_var (curr_lexer);
   curr_lexer = new lexical_feedback ();
+  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
   // The big loop.
 

@@ -281,9 +281,9 @@ SPARSE_XLDFLAGS = \
 
 ## Order matters, at least on some systems (Cygwin, for example).
 SPARSE_XLIBS = \
-    $(CHOLMOD_LIBS) $(UMFPACK_LIBS) \
-    $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
-    $(CCOLAMD_LIBS) $(CXSPARSE_LIBS)
+  $(CHOLMOD_LIBS) $(UMFPACK_LIBS) \
+  $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
+  $(CCOLAMD_LIBS) $(CXSPARSE_LIBS)
 
 TERM_LIBS = @TERM_LIBS@
 
@@ -699,38 +699,9 @@ $(SED) < $< \
   -e "s|%AWK%|${AWK}|g" \
   -e "s|%FIND%|${FIND}|g" \
   -e "s|%SED%|${SED}|g" \
-  -e "s|%library_path_var%|${library_path_var}|g" \
-  -e "s|%liboctinterp%|${SHLPRE}octinterp.${SHLEXT}|g" \
-  -e "s|%liboctave%|${SHLPRE}octave.${SHLEXT}|g" \
-  -e "s|%ldpreloadsep%|${ldpreloadsep}|g" \
-  -e "s|%srcdir%|${srcdir}|" \
-  -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
   -e "s|%builddir%|$(shell pwd)|" > $@-t
 $(simple_move_if_change_rule)
-endef
-
-define do_script_install
-$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
-for f in $(FCN_FILES); do \
-  fbase=`basename $$f`; \
-  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$fbase; \
-  $(INSTALL_DATA) $$f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$fbase; \
-done
-$(top_srcdir)/mkpkgadd $(DESTDIR)$(fcnfiledir)/$(script_sub_dir) > $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t
-if [ -n "`cat $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t`" ]; then \
-  $(INSTALL_DATA) $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD ; \
-else \
-  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t ; \
-fi
-endef
-
-define do_script_uninstall
-for f in $(FCN_FILES_NO_DIR); \
-  do rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
-done
-rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD
--rmdir $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
 endef
 
 define test-file-commands

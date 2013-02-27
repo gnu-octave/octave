@@ -21,6 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 %option prefix = "octave_"
+%option noyywrap
 
 %top {
 #ifdef HAVE_CONFIG_H
@@ -1114,14 +1115,6 @@ display_character (char c)
         std::cerr << "DEL";
         break;
       }
-}
-
-// Include these so that we don't have to link to libfl.a.
-
-int
-yywrap (void)
-{
-  return 1;
 }
 
 // Tell us all what the current buffer is.

@@ -326,6 +326,9 @@ public:
   append_statement_list (tree_statement_list *list, char sep,
                          tree_statement *stmt, bool warn_missing_semi);
 
+  // Generic error messages.
+  void bison_error (const char *s);
+
   // TRUE means that we have encountered EOF on the input stream.
   bool end_of_input;
 

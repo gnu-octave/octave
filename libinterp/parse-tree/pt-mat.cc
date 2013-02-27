@@ -402,7 +402,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
               first_elem = false;
               dv = this_elt_dv;
             }
-          else if (! dv.hvcat (this_elt_dv, 1))
+          else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
             {
               eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
               break;
@@ -644,7 +644,7 @@ tm_const::init (const tree_matrix& tm)
                 dv(1) = this_elt_nc;
               dv(0) += this_elt_nr;
             }
-          else if (! dv.hvcat (this_elt_dv, 0))
+          else if ((!any_class) && (!dv.hvcat (this_elt_dv, 0)))
             {
               eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
               return;

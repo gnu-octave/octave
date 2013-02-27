@@ -62,7 +62,7 @@ and @ref{Advanced Plotting}.
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
-* Use of @code{axis}@comma{} @code{line}@comma{} and @code{patch} Functions::
+* Use of axis@comma{} line@comma{} and patch Functions::
 * Manipulation of Plot Windows::
 * Use of the @code{interpreter} Property::
 * Printing and Saving Plots::              
@@ -521,8 +521,8 @@ the second a cosine wave.  Figure numbers must be positive integers.
 
 @DOCSTRING(figure)
 
-@node Use of @code{axis}@comma{} @code{line}@comma{} and @code{patch} Functions
-@subsection Use of @code{axis}@comma{} @code{line}@comma{} and @code{patch} Functions
+@node Use of axis@comma{} line@comma{} and patch Functions
+@subsection Use of axis@comma{} line@comma{} and patch Functions
 
 You can create axes, line, and patch objects directly using the
 @code{axes}, @code{line}, and @code{patch} functions.  These objects

@@ -1540,6 +1540,12 @@ yyerror (const char *s)
   parse_error ("%s", msg.c_str ());
 }
 
+int
+octave_parser::run (void)
+{
+  return octave_parse ();
+}
+
 // Error mesages for mismatched end tokens.
 
 void
@@ -3424,7 +3430,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           global_command = 0;
 
-          int status = octave_parse_input ();
+          int status = curr_parser->run ();
 
           // Use an unwind-protect cleanup function so that the
           // global_command list will be deleted in the event of an
@@ -4196,7 +4202,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
       symbol_table::scope_id scope = symbol_table::top_scope ();
       frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      parse_status = octave_parse_input ();
+      parse_status = curr_parser->run ();
 
       tree_statement_list *command_list = global_command;
 
@@ -4303,12 +4309,6 @@ cleanup_statement_list (tree_statement_list **lst)
       delete *lst;
       *lst = 0;
     }
-}
-
-int
-octave_parse_input (void)
-{
-  return octave_parse ();
 }
 
 DEFUN (eval, args, nargout,

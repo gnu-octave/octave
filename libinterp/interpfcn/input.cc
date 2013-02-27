@@ -704,7 +704,7 @@ get_debug_input (const std::string& prompt)
       symbol_table::scope_id scope = symbol_table::top_scope ();
       middle_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      int retval = octave_parse_input ();
+      int retval = curr_parser->run ();
 
       if (retval == 0 && global_command)
         {

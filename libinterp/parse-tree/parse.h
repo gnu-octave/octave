@@ -131,8 +131,6 @@ eval_string (const std::string&, bool silent, int& parse_status);
 
 extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
-extern OCTINTERP_API int octave_parse_input (void);
-
 class
 octave_parser
 {
@@ -141,6 +139,8 @@ public:
   octave_parser (void) { }
 
   ~octave_parser (void) { }
+
+  int run (void);
 
   // Error mesages for mismatched end tokens.
   void end_error (const char *type, token::end_tok_type ettype, int l, int c);

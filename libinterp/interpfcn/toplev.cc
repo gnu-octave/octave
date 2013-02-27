@@ -593,7 +593,7 @@ main_loop (void)
 
           global_command = 0;
 
-          retval = octave_parse_input ();
+          retval = curr_parser->run ();
 
           if (retval == 0)
             {

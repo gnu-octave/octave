@@ -1376,7 +1376,7 @@ lexical_feedback::~lexical_feedback (void)
 }
 
 void
-lexical_feedback::reset_parser (void)
+lexical_feedback::reset (void)
 {
   // Start off on the right foot.
   BEGIN (INITIAL);

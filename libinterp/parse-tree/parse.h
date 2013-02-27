@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <stack>
 
+#include "lex.h"
 #include "token.h"
 
 extern int octave_lex (void);
@@ -136,9 +137,14 @@ octave_parser
 {
 public:
 
-  octave_parser (void) { }
+  octave_parser (void) : end_of_input (false) { }
 
   ~octave_parser (void) { }
+
+  void reset (void)
+  {
+    curr_lexer->reset ();
+  }
 
   int run (void);
 
@@ -319,6 +325,9 @@ public:
   tree_statement_list *
   append_statement_list (tree_statement_list *list, char sep,
                          tree_statement *stmt, bool warn_missing_semi);
+
+  // TRUE means that we have encountered EOF on the input stream.
+  bool end_of_input;
 
   // For unwind protect.
   static void cleanup (octave_parser *parser) { delete parser; }

@@ -365,7 +365,7 @@ input1          : '\n'
                   { $$ = 0; }
                 | END_OF_INPUT
                   {
-                    curr_lexer->parser_end_of_input = 1;
+                    curr_parser->end_of_input = true;
                     $$ = 0;
                   }
                 | simple_list
@@ -3345,7 +3345,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       curr_parser = new octave_parser ();
       frame.add_fcn (octave_parser::cleanup, curr_parser);
 
-      curr_lexer->reset_parser ();
+      curr_parser->reset ();
 
       std::string help_txt = gobble_leading_white_space (ffile, eof);
 
@@ -4190,7 +4190,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   do
     {
-      curr_lexer->reset_parser ();
+      curr_parser->reset ();
 
       frame.protect_var (global_command);
 
@@ -4264,7 +4264,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                   || tree_continue_command::continuing)
                 break;
             }
-          else if (curr_lexer->parser_end_of_input)
+          else if (curr_parser->end_of_input)
             break;
         }
     }

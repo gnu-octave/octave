@@ -578,7 +578,7 @@ main_loop (void)
 
           reset_error_handler ();
 
-          curr_lexer->reset_parser ();
+          curr_parser->reset ();
 
           if (symbol_table::at_top_level ())
             tree_evaluator::reset_debug_state ();
@@ -641,7 +641,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (curr_lexer->parser_end_of_input)
+              else if (curr_parser->end_of_input)
                 break;
             }
         }

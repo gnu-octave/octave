@@ -86,6 +86,9 @@ along with Octave; see the file COPYING.  If not, see
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
+// The state of the parser.
+octave_parser *curr_parser = 0;
+
 // Buffer for help text snagged from function files.
 std::stack<std::string> help_buf;
 
@@ -155,200 +158,6 @@ static std::map<std::string, std::string> autoload_map;
 // Generic error messages.
 static void
 yyerror (const char *s);
-
-// Error mesages for mismatched end tokens.
-static void
-end_error (const char *type, token::end_tok_type ettype, int l, int c);
-
-// Check to see that end tokens are properly matched.
-static bool
-end_token_ok (token *tok, token::end_tok_type expected);
-
-// Maybe print a warning if an assignment expression is used as the
-// test in a logical expression.
-static void
-maybe_warn_assign_as_truth_value (tree_expression *expr);
-
-// Maybe print a warning about switch labels that aren't constants.
-static void
-maybe_warn_variable_switch_label (tree_expression *expr);
-
-// Finish building a range.
-static tree_expression *
-finish_colon_expression (tree_colon_expression *e);
-
-// Build a constant.
-static tree_constant *
-make_constant (int op, token *tok_val);
-
-// Build a function handle.
-static tree_fcn_handle *
-make_fcn_handle (token *tok_val);
-
-// Build an anonymous function handle.
-static tree_anon_fcn_handle *
-make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt);
-
-// Build a binary expression.
-static tree_expression *
-make_binary_op (int op, tree_expression *op1, token *tok_val,
-                tree_expression *op2);
-
-// Build a boolean expression.
-static tree_expression *
-make_boolean_op (int op, tree_expression *op1, token *tok_val,
-                 tree_expression *op2);
-
-// Build a prefix expression.
-static tree_expression *
-make_prefix_op (int op, tree_expression *op1, token *tok_val);
-
-// Build a postfix expression.
-static tree_expression *
-make_postfix_op (int op, tree_expression *op1, token *tok_val);
-
-// Build an unwind-protect command.
-static tree_command *
-make_unwind_command (token *unwind_tok, tree_statement_list *body,
-                     tree_statement_list *cleanup, token *end_tok,
-                     octave_comment_list *lc, octave_comment_list *mc);
-
-// Build a try-catch command.
-static tree_command *
-make_try_command (token *try_tok, tree_statement_list *body,
-                  tree_statement_list *cleanup, token *end_tok,
-                  octave_comment_list *lc, octave_comment_list *mc);
-
-// Build a while command.
-static tree_command *
-make_while_command (token *while_tok, tree_expression *expr,
-                    tree_statement_list *body, token *end_tok,
-                    octave_comment_list *lc);
-
-// Build a do-until command.
-static tree_command *
-make_do_until_command (token *until_tok, tree_statement_list *body,
-                       tree_expression *expr, octave_comment_list *lc);
-
-// Build a for command.
-static tree_command *
-make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_expression *maxproc,
-                  tree_statement_list *body, token *end_tok,
-                  octave_comment_list *lc);
-
-// Build a break command.
-static tree_command *
-make_break_command (token *break_tok);
-
-// Build a continue command.
-static tree_command *
-make_continue_command (token *continue_tok);
-
-// Build a return command.
-static tree_command *
-make_return_command (token *return_tok);
-
-// Start an if command.
-static tree_if_command_list *
-start_if_command (tree_expression *expr, tree_statement_list *list);
-
-// Finish an if command.
-static tree_if_command *
-finish_if_command (token *if_tok, tree_if_command_list *list,
-                   token *end_tok, octave_comment_list *lc);
-
-// Build an elseif clause.
-static tree_if_clause *
-make_elseif_clause (token *elseif_tok, tree_expression *expr,
-                    tree_statement_list *list, octave_comment_list *lc);
-
-// Finish a switch command.
-static tree_switch_command *
-finish_switch_command (token *switch_tok, tree_expression *expr,
-                       tree_switch_case_list *list, token *end_tok,
-                       octave_comment_list *lc);
-
-// Build a switch case.
-static tree_switch_case *
-make_switch_case (token *case_tok, tree_expression *expr,
-                  tree_statement_list *list, octave_comment_list *lc);
-
-// Build an assignment to a variable.
-static tree_expression *
-make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
-                tree_expression *rhs);
-
-// Define a script.
-static void
-make_script (tree_statement_list *cmds, tree_statement *end_script);
-
-// Begin defining a function.
-static octave_user_function *
-start_function (tree_parameter_list *param_list, tree_statement_list *body,
-                tree_statement *end_function);
-
-// Create a no-op statement for end_function.
-static tree_statement *
-make_end (const std::string& type, int l, int c);
-
-// Do most of the work for defining a function.
-static octave_user_function *
-frob_function (const std::string& fname, octave_user_function *fcn);
-
-// Finish defining a function.
-static tree_function_def *
-finish_function (tree_parameter_list *ret_list,
-                 octave_user_function *fcn, octave_comment_list *lc);
-
-// Reset state after parsing function.
-static void
-recover_from_parsing_function (void);
-
-// Make an index expression.
-static tree_index_expression *
-make_index_expression (tree_expression *expr,
-                       tree_argument_list *args, char type);
-
-// Make an indirect reference expression.
-static tree_index_expression *
-make_indirect_ref (tree_expression *expr, const std::string&);
-
-// Make an indirect reference expression with dynamic field name.
-static tree_index_expression *
-make_indirect_ref (tree_expression *expr, tree_expression *field);
-
-// Make a declaration command.
-static tree_decl_command *
-make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
-
-// Validate argument list forming a matrix or cell row.
-static tree_argument_list *
-validate_matrix_row (tree_argument_list *row);
-
-// Finish building a matrix list.
-static tree_expression *
-finish_matrix (tree_matrix *m);
-
-// Finish building a cell list.
-static tree_expression *
-finish_cell (tree_cell *c);
-
-// Maybe print a warning.  Duh.
-static void
-maybe_warn_missing_semi (tree_statement_list *);
-
-// Set the print flag for a statement based on the separator type.
-static tree_statement_list *
-set_stmt_print_flag (tree_statement_list *, char, bool);
-
-// Create a statement list.
-static tree_statement_list *make_statement_list (tree_statement *stmt);
-
-// Append a statement to an existing statement list.
-static tree_statement_list *
-append_statement_list (tree_statement_list *list, char sep,
-                       tree_statement *stmt, bool warn_missing_semi);
 
 // Finish building a statement.
 template <class T>
@@ -556,7 +365,7 @@ input1          : '\n'
                   { $$ = 0; }
                 | END_OF_INPUT
                   {
-                    curr_lexer->parser_end_of_input = 1;
+                    curr_parser->end_of_input = true;
                     $$ = 0;
                   }
                 | simple_list
@@ -568,13 +377,13 @@ input1          : '\n'
                 ;
 
 simple_list     : simple_list1 opt_sep_no_nl
-                  { $$ = set_stmt_print_flag ($1, $2, false); }
+                  { $$ = curr_parser->set_stmt_print_flag ($1, $2, false); }
                 ;
 
 simple_list1    : statement
-                  { $$ = make_statement_list ($1); }
+                  { $$ = curr_parser->make_statement_list ($1); }
                 | simple_list1 sep_no_nl statement
-                  { $$ = append_statement_list ($1, $2, $3, false); }
+                  { $$ = curr_parser->append_statement_list ($1, $2, $3, false); }
                 ;
 
 opt_list        : // empty
@@ -584,13 +393,13 @@ opt_list        : // empty
                 ;
 
 list            : list1 opt_sep
-                  { $$ = set_stmt_print_flag ($1, $2, true); }
+                  { $$ = curr_parser->set_stmt_print_flag ($1, $2, true); }
                 ;
 
 list1           : statement
-                  { $$ = make_statement_list ($1); }
+                  { $$ = curr_parser->make_statement_list ($1); }
                 | list1 sep statement
-                  { $$ = append_statement_list ($1, $2, $3, true); }
+                  { $$ = curr_parser->append_statement_list ($1, $2, $3, true); }
                 ;
 
 statement       : expression
@@ -610,7 +419,7 @@ statement       : expression
 // WHILE, etc.
 
 word_list_cmd   : identifier word_list
-                  { $$ = make_index_expression ($1, $2, '('); }
+                  { $$ = curr_parser->make_index_expression ($1, $2, '('); }
                 ;
 
 word_list       : string
@@ -643,15 +452,15 @@ meta_identifier : METAQUERY
                 ;
 
 string          : DQ_STRING
-                  { $$ = make_constant (DQ_STRING, $1); }
+                  { $$ = curr_parser->make_constant (DQ_STRING, $1); }
                 | SQ_STRING
-                  { $$ = make_constant (SQ_STRING, $1); }
+                  { $$ = curr_parser->make_constant (SQ_STRING, $1); }
                 ;
 
 constant        : NUM
-                  { $$ = make_constant (NUM, $1); }
+                  { $$ = curr_parser->make_constant (NUM, $1); }
                 | IMAG_NUM
-                  { $$ = make_constant (IMAG_NUM, $1); }
+                  { $$ = curr_parser->make_constant (IMAG_NUM, $1); }
                 | string
                   { $$ = $1; }
                 ;
@@ -676,7 +485,7 @@ matrix          : '[' ']'
                   }
                 | '[' matrix_rows ']'
                   {
-                    $$ = finish_matrix ($2);
+                    $$ = curr_parser->finish_matrix ($2);
                     curr_lexer->looking_at_matrix_or_assign_lhs = false;
                     curr_lexer->pending_local_variables.clear ();
                   }
@@ -702,7 +511,7 @@ cell            : '{' '}'
                 | '{' ';' '}'
                   { $$ = new tree_constant (octave_value (Cell ())); }
                 | '{' cell_rows '}'
-                  { $$ = finish_cell ($2); }
+                  { $$ = curr_parser->finish_cell ($2); }
                 ;
 
 cell_rows       : cell_rows1
@@ -722,14 +531,14 @@ cell_rows1      : cell_or_matrix_row
 
 cell_or_matrix_row
                 : arg_list
-                  { $$ = validate_matrix_row ($1); }
+                  { $$ = curr_parser->validate_matrix_row ($1); }
                 | arg_list ','  // Ignore trailing comma.
-                  { $$ = validate_matrix_row ($1); }
+                  { $$ = curr_parser->validate_matrix_row ($1); }
                 ;
 
 fcn_handle      : '@' FCN_HANDLE
                   {
-                    $$ = make_fcn_handle ($2);
+                    $$ = curr_parser->make_fcn_handle ($2);
                     curr_lexer->looking_at_function_handle--;
                   }
                 ;
@@ -737,7 +546,7 @@ fcn_handle      : '@' FCN_HANDLE
 anon_fcn_handle : '@' param_list statement
                   {
                     curr_lexer->quote_is_transpose = false;
-                    $$ = make_anon_fcn_handle ($2, $3);
+                    $$ = curr_parser->make_anon_fcn_handle ($2, $3);
                   }
                 ;
 
@@ -802,63 +611,63 @@ indirect_ref_op : '.'
 oper_expr       : primary_expr
                   { $$ = $1; }
                 | oper_expr PLUS_PLUS
-                  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
+                  { $$ = curr_parser->make_postfix_op (PLUS_PLUS, $1, $2); }
                 | oper_expr MINUS_MINUS
-                  { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
+                  { $$ = curr_parser->make_postfix_op (MINUS_MINUS, $1, $2); }
                 | oper_expr '(' ')'
-                  { $$ = make_index_expression ($1, 0, '('); }
+                  { $$ = curr_parser->make_index_expression ($1, 0, '('); }
                 | oper_expr '(' arg_list ')'
-                  { $$ = make_index_expression ($1, $3, '('); }
+                  { $$ = curr_parser->make_index_expression ($1, $3, '('); }
                 | oper_expr '{' '}'
-                  { $$ = make_index_expression ($1, 0, '{'); }
+                  { $$ = curr_parser->make_index_expression ($1, 0, '{'); }
                 | oper_expr '{' arg_list '}'
-                  { $$ = make_index_expression ($1, $3, '{'); }
+                  { $$ = curr_parser->make_index_expression ($1, $3, '{'); }
                 | oper_expr QUOTE
-                  { $$ = make_postfix_op (QUOTE, $1, $2); }
+                  { $$ = curr_parser->make_postfix_op (QUOTE, $1, $2); }
                 | oper_expr TRANSPOSE
-                  { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
+                  { $$ = curr_parser->make_postfix_op (TRANSPOSE, $1, $2); }
                 | oper_expr indirect_ref_op STRUCT_ELT
-                  { $$ = make_indirect_ref ($1, $3->text ()); }
+                  { $$ = curr_parser->make_indirect_ref ($1, $3->text ()); }
                 | oper_expr indirect_ref_op '(' expression ')'
-                  { $$ = make_indirect_ref ($1, $4); }
+                  { $$ = curr_parser->make_indirect_ref ($1, $4); }
                 | PLUS_PLUS oper_expr %prec UNARY
-                  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
+                  { $$ = curr_parser->make_prefix_op (PLUS_PLUS, $2, $1); }
                 | MINUS_MINUS oper_expr %prec UNARY
-                  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
+                  { $$ = curr_parser->make_prefix_op (MINUS_MINUS, $2, $1); }
                 | EXPR_NOT oper_expr %prec UNARY
-                  { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
+                  { $$ = curr_parser->make_prefix_op (EXPR_NOT, $2, $1); }
                 | '+' oper_expr %prec UNARY
-                  { $$ = make_prefix_op ('+', $2, $1); }
+                  { $$ = curr_parser->make_prefix_op ('+', $2, $1); }
                 | '-' oper_expr %prec UNARY
-                  { $$ = make_prefix_op ('-', $2, $1); }
+                  { $$ = curr_parser->make_prefix_op ('-', $2, $1); }
                 | oper_expr POW oper_expr
-                  { $$ = make_binary_op (POW, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (POW, $1, $2, $3); }
                 | oper_expr EPOW oper_expr
-                  { $$ = make_binary_op (EPOW, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EPOW, $1, $2, $3); }
                 | oper_expr '+' oper_expr
-                  { $$ = make_binary_op ('+', $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op ('+', $1, $2, $3); }
                 | oper_expr '-' oper_expr
-                  { $$ = make_binary_op ('-', $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op ('-', $1, $2, $3); }
                 | oper_expr '*' oper_expr
-                  { $$ = make_binary_op ('*', $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op ('*', $1, $2, $3); }
                 | oper_expr '/' oper_expr
-                  { $$ = make_binary_op ('/', $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op ('/', $1, $2, $3); }
                 | oper_expr EPLUS oper_expr
-                  { $$ = make_binary_op ('+', $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op ('+', $1, $2, $3); }
                 | oper_expr EMINUS oper_expr
-                  { $$ = make_binary_op ('-', $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op ('-', $1, $2, $3); }
                 | oper_expr EMUL oper_expr
-                  { $$ = make_binary_op (EMUL, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EMUL, $1, $2, $3); }
                 | oper_expr EDIV oper_expr
-                  { $$ = make_binary_op (EDIV, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EDIV, $1, $2, $3); }
                 | oper_expr LEFTDIV oper_expr
-                  { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (LEFTDIV, $1, $2, $3); }
                 | oper_expr ELEFTDIV oper_expr
-                  { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (ELEFTDIV, $1, $2, $3); }
                 ;
 
 colon_expr      : colon_expr1
-                  { $$ = finish_colon_expression ($1); }
+                  { $$ = curr_parser->finish_colon_expression ($1); }
                 ;
 
 colon_expr1     : oper_expr
@@ -873,29 +682,29 @@ colon_expr1     : oper_expr
 simple_expr     : colon_expr
                   { $$ = $1; }
                 | simple_expr LSHIFT simple_expr
-                  { $$ = make_binary_op (LSHIFT, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (LSHIFT, $1, $2, $3); }
                 | simple_expr RSHIFT simple_expr
-                  { $$ = make_binary_op (RSHIFT, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (RSHIFT, $1, $2, $3); }
                 | simple_expr EXPR_LT simple_expr
-                  { $$ = make_binary_op (EXPR_LT, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_LT, $1, $2, $3); }
                 | simple_expr EXPR_LE simple_expr
-                  { $$ = make_binary_op (EXPR_LE, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_LE, $1, $2, $3); }
                 | simple_expr EXPR_EQ simple_expr
-                  { $$ = make_binary_op (EXPR_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_EQ, $1, $2, $3); }
                 | simple_expr EXPR_GE simple_expr
-                  { $$ = make_binary_op (EXPR_GE, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_GE, $1, $2, $3); }
                 | simple_expr EXPR_GT simple_expr
-                  { $$ = make_binary_op (EXPR_GT, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_GT, $1, $2, $3); }
                 | simple_expr EXPR_NE simple_expr
-                  { $$ = make_binary_op (EXPR_NE, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_NE, $1, $2, $3); }
                 | simple_expr EXPR_AND simple_expr
-                  { $$ = make_binary_op (EXPR_AND, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_AND, $1, $2, $3); }
                 | simple_expr EXPR_OR simple_expr
-                  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
+                  { $$ = curr_parser->make_binary_op (EXPR_OR, $1, $2, $3); }
                 | simple_expr EXPR_AND_AND simple_expr
-                  { $$ = make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
+                  { $$ = curr_parser->make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
                 | simple_expr EXPR_OR_OR simple_expr
-                  { $$ = make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
+                  { $$ = curr_parser->make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
                 ;
 
 // Arrange for the lexer to return CLOSE_BRACE for ']' by looking ahead
@@ -921,35 +730,35 @@ assign_lhs      : simple_expr
                 ;
 
 assign_expr     : assign_lhs '=' expression
-                  { $$ = make_assign_op ('=', $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op ('=', $1, $2, $3); }
                 | assign_lhs ADD_EQ expression
-                  { $$ = make_assign_op (ADD_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (ADD_EQ, $1, $2, $3); }
                 | assign_lhs SUB_EQ expression
-                  { $$ = make_assign_op (SUB_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (SUB_EQ, $1, $2, $3); }
                 | assign_lhs MUL_EQ expression
-                  { $$ = make_assign_op (MUL_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (MUL_EQ, $1, $2, $3); }
                 | assign_lhs DIV_EQ expression
-                  { $$ = make_assign_op (DIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (DIV_EQ, $1, $2, $3); }
                 | assign_lhs LEFTDIV_EQ expression
-                  { $$ = make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
                 | assign_lhs POW_EQ expression
-                  { $$ = make_assign_op (POW_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (POW_EQ, $1, $2, $3); }
                 | assign_lhs LSHIFT_EQ expression
-                  { $$ = make_assign_op (LSHIFT_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (LSHIFT_EQ, $1, $2, $3); }
                 | assign_lhs RSHIFT_EQ expression
-                  { $$ = make_assign_op (RSHIFT_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (RSHIFT_EQ, $1, $2, $3); }
                 | assign_lhs EMUL_EQ expression
-                  { $$ = make_assign_op (EMUL_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (EMUL_EQ, $1, $2, $3); }
                 | assign_lhs EDIV_EQ expression
-                  { $$ = make_assign_op (EDIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (EDIV_EQ, $1, $2, $3); }
                 | assign_lhs ELEFTDIV_EQ expression
-                  { $$ = make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
                 | assign_lhs EPOW_EQ expression
-                  { $$ = make_assign_op (EPOW_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (EPOW_EQ, $1, $2, $3); }
                 | assign_lhs AND_EQ expression
-                  { $$ = make_assign_op (AND_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (AND_EQ, $1, $2, $3); }
                 | assign_lhs OR_EQ expression
-                  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
+                  { $$ = curr_parser->make_assign_op (OR_EQ, $1, $2, $3); }
                 ;
 
 expression      : simple_expr
@@ -992,12 +801,12 @@ parsing_decl_list
 
 declaration     : GLOBAL parsing_decl_list decl1
                   {
-                    $$ = make_decl_command (GLOBAL, $1, $3);
+                    $$ = curr_parser->make_decl_command (GLOBAL, $1, $3);
                     curr_lexer->looking_at_decl_list = false;
                   }
                 | PERSISTENT parsing_decl_list decl1
                   {
-                    $$ = make_decl_command (PERSISTENT, $1, $3);
+                    $$ = curr_parser->make_decl_command (PERSISTENT, $1, $3);
                     curr_lexer->looking_at_decl_list = false;
                   }
                 ;
@@ -1043,7 +852,7 @@ select_command  : if_command
 
 if_command      : IF stash_comment if_cmd_list END
                   {
-                    if (! ($$ = finish_if_command ($1, $3, $4, $2)))
+                    if (! ($$ = curr_parser->finish_if_command ($1, $3, $4, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1061,7 +870,7 @@ if_cmd_list1    : expression opt_sep opt_list
                   {
                     $1->mark_braindead_shortcircuit (curr_fcn_file_full_name);
 
-                    $$ = start_if_command ($1, $3);
+                    $$ = curr_parser->start_if_command ($1, $3);
                   }
                 | if_cmd_list1 elseif_clause
                   {
@@ -1074,7 +883,7 @@ elseif_clause   : ELSEIF stash_comment opt_sep expression opt_sep opt_list
                   {
                     $4->mark_braindead_shortcircuit (curr_fcn_file_full_name);
 
-                    $$ = make_elseif_clause ($1, $4, $6, $2);
+                    $$ = curr_parser->make_elseif_clause ($1, $4, $6, $2);
                   }
                 ;
 
@@ -1088,7 +897,7 @@ else_clause     : ELSE stash_comment opt_sep opt_list
 
 switch_command  : SWITCH stash_comment expression opt_sep case_list END
                   {
-                    if (! ($$ = finish_switch_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = curr_parser->finish_switch_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1116,7 +925,7 @@ case_list1      : switch_case
                 ;
 
 switch_case     : CASE stash_comment opt_sep expression opt_sep opt_list
-                  { $$ = make_switch_case ($1, $4, $6, $2); }
+                  { $$ = curr_parser->make_switch_case ($1, $4, $6, $2); }
                 ;
 
 default_case    : OTHERWISE stash_comment opt_sep opt_list
@@ -1133,35 +942,35 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   {
                     $3->mark_braindead_shortcircuit (curr_fcn_file_full_name);
 
-                    if (! ($$ = make_while_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = curr_parser->make_while_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
                   }
                 | DO stash_comment opt_sep opt_list UNTIL expression
                   {
-                    if (! ($$ = make_do_until_command ($5, $4, $6, $2)))
+                    if (! ($$ = curr_parser->make_do_until_command ($5, $4, $6, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command (FOR, $1, $3, $5, 0,
+                    if (! ($$ = curr_parser->make_for_command (FOR, $1, $3, $5, 0,
                                                   $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command (FOR, $1, $4, $6, 0,
+                    if (! ($$ = curr_parser->make_for_command (FOR, $1, $4, $6, 0,
                                                   $9, $10, $2)))
                       ABORT_PARSE;
                   }
                 | PARFOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command (PARFOR, $1, $3, $5,
+                    if (! ($$ = curr_parser->make_for_command (PARFOR, $1, $3, $5,
                                                   0, $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command (PARFOR, $1, $4, $6,
+                    if (! ($$ = curr_parser->make_for_command (PARFOR, $1, $4, $6,
                                                   $8, $11, $12, $2)))
                       ABORT_PARSE;
                   }
@@ -1173,17 +982,17 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
 
 jump_command    : BREAK
                   {
-                    if (! ($$ = make_break_command ($1)))
+                    if (! ($$ = curr_parser->make_break_command ($1)))
                       ABORT_PARSE;
                   }
                 | CONTINUE
                   {
-                    if (! ($$ = make_continue_command ($1)))
+                    if (! ($$ = curr_parser->make_continue_command ($1)))
                       ABORT_PARSE;
                   }
                 | FUNC_RET
                   {
-                    if (! ($$ = make_return_command ($1)))
+                    if (! ($$ = curr_parser->make_return_command ($1)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1195,18 +1004,18 @@ jump_command    : BREAK
 except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                   stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = make_unwind_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = curr_parser->make_unwind_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list CATCH
                   stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = make_try_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = curr_parser->make_try_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = make_try_command ($1, $4, 0, $5, $2, 0)))
+                    if (! ($$ = curr_parser->make_try_command ($1, $4, 0, $5, $2, 0)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1339,10 +1148,11 @@ return_list1    : identifier
 script_file     : SCRIPT_FILE opt_list END_OF_INPUT
                   {
                     tree_statement *end_of_script
-                      = make_end ("endscript", curr_lexer->input_line_number,
-                                  curr_lexer->current_input_column);
+                      = curr_parser->make_end ("endscript",
+                                               curr_lexer->input_line_number,
+                                               curr_lexer->current_input_column);
 
-                    make_script ($2, end_of_script);
+                    curr_parser->make_script ($2, end_of_script);
 
                     $$ = 0;
                   }
@@ -1375,13 +1185,13 @@ function_beg    : push_fcn_symtab FCN stash_comment
 
 function        : function_beg function1
                   {
-                    $$ = finish_function (0, $2, $1);
-                    recover_from_parsing_function ();
+                    $$ = curr_parser->finish_function (0, $2, $1);
+                    curr_parser->recover_from_parsing_function ();
                   }
                 | function_beg return_list '=' function1
                   {
-                    $$ = finish_function ($2, $4, $1);
-                    recover_from_parsing_function ();
+                    $$ = curr_parser->finish_function ($2, $4, $1);
+                    curr_parser->recover_from_parsing_function ();
                   }
                 ;
 
@@ -1414,22 +1224,22 @@ function1       : fcn_name function2
 
                     delete $1;
 
-                    if (! ($$ = frob_function (fname, $2)))
+                    if (! ($$ = curr_parser->frob_function (fname, $2)))
                       ABORT_PARSE;
                   }
                 ;
 
 function2       : param_list opt_sep opt_list function_end
-                  { $$ = start_function ($1, $3, $4); }
+                  { $$ = curr_parser->start_function ($1, $3, $4); }
                 | opt_sep opt_list function_end
-                  { $$ = start_function (0, $2, $3); }
+                  { $$ = curr_parser->start_function (0, $2, $3); }
                 ;
 
 function_end    : END
                   {
                     endfunction_found = true;
-                    if (end_token_ok ($1, token::function_end))
-                      $$ = make_end ("endfunction", $1->line (), $1->column ());
+                    if (curr_parser->end_token_ok ($1, token::function_end))
+                      $$ = curr_parser->make_end ("endfunction", $1->line (), $1->column ());
                     else
                       ABORT_PARSE;
                   }
@@ -1463,8 +1273,9 @@ function_end    : END
                         YYABORT;
                       }
 
-                    $$ = make_end ("endfunction", curr_lexer->input_line_number,
-                                   curr_lexer->current_input_column);
+                    $$ = curr_parser->make_end ("endfunction",
+                                                curr_lexer->input_line_number,
+                                                curr_lexer->current_input_column);
                   }
                 ;
 
@@ -1483,8 +1294,8 @@ classdef_end    : END
                   {
                     curr_lexer->parsing_classdef = false;
 
-                    if (end_token_ok ($1, token::classdef_end))
-                      $$ = make_end ("endclassdef", $1->line (), $1->column ());
+                    if (curr_parser->end_token_ok ($1, token::classdef_end))
+                      $$ = curr_parser->make_end ("endclassdef", $1->line (), $1->column ());
                     else
                       ABORT_PARSE;
                   }
@@ -1729,10 +1540,17 @@ yyerror (const char *s)
   parse_error ("%s", msg.c_str ());
 }
 
+int
+octave_parser::run (void)
+{
+  return octave_parse ();
+}
+
 // Error mesages for mismatched end tokens.
 
-static void
-end_error (const char *type, token::end_tok_type ettype, int l, int c)
+void
+octave_parser::end_error (const char *type, token::end_tok_type ettype,
+                          int l, int c)
 {
   static const char *fmt
     = "'%s' command matched by '%s' near line %d column %d";
@@ -1783,8 +1601,8 @@ end_error (const char *type, token::end_tok_type ettype, int l, int c)
 
 // Check to see that end tokens are properly matched.
 
-static bool
-end_token_ok (token *tok, token::end_tok_type expected)
+bool
+octave_parser::end_token_ok (token *tok, token::end_tok_type expected)
 {
   bool retval = true;
 
@@ -1853,8 +1671,8 @@ end_token_ok (token *tok, token::end_tok_type expected)
 // Maybe print a warning if an assignment expression is used as the
 // test in a logical expression.
 
-static void
-maybe_warn_assign_as_truth_value (tree_expression *expr)
+void
+octave_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
   if (expr->is_assignment_expression ()
       && expr->paren_count () < 2)
@@ -1873,8 +1691,8 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
 
 // Maybe print a warning about switch labels that aren't constants.
 
-static void
-maybe_warn_variable_switch_label (tree_expression *expr)
+void
+octave_parser::maybe_warn_variable_switch_label (tree_expression *expr)
 {
   if (! expr->is_constant ())
     {
@@ -1980,8 +1798,8 @@ fold (tree_unary_expression *e)
 
 // Finish building a range.
 
-static tree_expression *
-finish_colon_expression (tree_colon_expression *e)
+tree_expression *
+octave_parser::finish_colon_expression (tree_colon_expression *e)
 {
   tree_expression *retval = e;
 
@@ -2044,8 +1862,8 @@ finish_colon_expression (tree_colon_expression *e)
 
 // Make a constant.
 
-static tree_constant *
-make_constant (int op, token *tok_val)
+tree_constant *
+octave_parser::make_constant (int op, token *tok_val)
 {
   int l = tok_val->line ();
   int c = tok_val->column ();
@@ -2107,8 +1925,8 @@ make_constant (int op, token *tok_val)
 
 // Make a function handle.
 
-static tree_fcn_handle *
-make_fcn_handle (token *tok_val)
+tree_fcn_handle *
+octave_parser::make_fcn_handle (token *tok_val)
 {
   int l = tok_val->line ();
   int c = tok_val->column ();
@@ -2120,8 +1938,9 @@ make_fcn_handle (token *tok_val)
 
 // Make an anonymous function handle.
 
-static tree_anon_fcn_handle *
-make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
+tree_anon_fcn_handle *
+octave_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
+                                     tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
   int l = curr_lexer->input_line_number;
@@ -2153,9 +1972,9 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
 // Build a binary expression.
 
-static tree_expression *
-make_binary_op (int op, tree_expression *op1, token *tok_val,
-                tree_expression *op2)
+tree_expression *
+octave_parser::make_binary_op (int op, tree_expression *op1, token *tok_val,
+                               tree_expression *op2)
 {
   octave_value::binary_op t = octave_value::unknown_binary_op;
 
@@ -2257,9 +2076,9 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 
 // Build a boolean expression.
 
-static tree_expression *
-make_boolean_op (int op, tree_expression *op1, token *tok_val,
-                 tree_expression *op2)
+tree_expression *
+octave_parser::make_boolean_op (int op, tree_expression *op1, token *tok_val,
+                                tree_expression *op2)
 {
   tree_boolean_expression::type t;
 
@@ -2289,8 +2108,8 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
 
 // Build a prefix expression.
 
-static tree_expression *
-make_prefix_op (int op, tree_expression *op1, token *tok_val)
+tree_expression *
+octave_parser::make_prefix_op (int op, tree_expression *op1, token *tok_val)
 {
   octave_value::unary_op t = octave_value::unknown_unary_op;
 
@@ -2332,8 +2151,8 @@ make_prefix_op (int op, tree_expression *op1, token *tok_val)
 
 // Build a postfix expression.
 
-static tree_expression *
-make_postfix_op (int op, tree_expression *op1, token *tok_val)
+tree_expression *
+octave_parser::make_postfix_op (int op, tree_expression *op1, token *tok_val)
 {
   octave_value::unary_op t = octave_value::unknown_unary_op;
 
@@ -2371,10 +2190,13 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val)
 
 // Build an unwind-protect command.
 
-static tree_command *
-make_unwind_command (token *unwind_tok, tree_statement_list *body,
-                     tree_statement_list *cleanup, token *end_tok,
-                     octave_comment_list *lc, octave_comment_list *mc)
+tree_command *
+octave_parser::make_unwind_command (token *unwind_tok,
+                                    tree_statement_list *body,
+                                    tree_statement_list *cleanup_stmts,
+                                    token *end_tok,
+                                    octave_comment_list *lc,
+                                    octave_comment_list *mc)
 {
   tree_command *retval = 0;
 
@@ -2385,7 +2207,7 @@ make_unwind_command (token *unwind_tok, tree_statement_list *body,
       int l = unwind_tok->line ();
       int c = unwind_tok->column ();
 
-      retval = new tree_unwind_protect_command (body, cleanup,
+      retval = new tree_unwind_protect_command (body, cleanup_stmts,
                                                 lc, mc, tc, l, c);
     }
 
@@ -2394,10 +2216,12 @@ make_unwind_command (token *unwind_tok, tree_statement_list *body,
 
 // Build a try-catch command.
 
-static tree_command *
-make_try_command (token *try_tok, tree_statement_list *body,
-                  tree_statement_list *cleanup, token *end_tok,
-                  octave_comment_list *lc, octave_comment_list *mc)
+tree_command *
+octave_parser::make_try_command (token *try_tok, tree_statement_list *body,
+                                 tree_statement_list *cleanup_stmts,
+                                 token *end_tok,
+                                 octave_comment_list *lc,
+                                 octave_comment_list *mc)
 {
   tree_command *retval = 0;
 
@@ -2408,7 +2232,7 @@ make_try_command (token *try_tok, tree_statement_list *body,
       int l = try_tok->line ();
       int c = try_tok->column ();
 
-      retval = new tree_try_catch_command (body, cleanup,
+      retval = new tree_try_catch_command (body, cleanup_stmts,
                                            lc, mc, tc, l, c);
     }
 
@@ -2417,10 +2241,10 @@ make_try_command (token *try_tok, tree_statement_list *body,
 
 // Build a while command.
 
-static tree_command *
-make_while_command (token *while_tok, tree_expression *expr,
-                    tree_statement_list *body, token *end_tok,
-                    octave_comment_list *lc)
+tree_command *
+octave_parser::make_while_command (token *while_tok, tree_expression *expr,
+                                   tree_statement_list *body, token *end_tok,
+                                   octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
@@ -2443,9 +2267,11 @@ make_while_command (token *while_tok, tree_expression *expr,
 
 // Build a do-until command.
 
-static tree_command *
-make_do_until_command (token *until_tok, tree_statement_list *body,
-                       tree_expression *expr, octave_comment_list *lc)
+tree_command *
+octave_parser::make_do_until_command (token *until_tok,
+                                      tree_statement_list *body,
+                                      tree_expression *expr,
+                                      octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
@@ -2465,11 +2291,13 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 
 // Build a for command.
 
-static tree_command *
-make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_expression *maxproc,
-                  tree_statement_list *body, token *end_tok,
-                  octave_comment_list *lc)
+tree_command *
+octave_parser::make_for_command (int tok_id, token *for_tok,
+                                 tree_argument_list *lhs,
+                                 tree_expression *expr,
+                                 tree_expression *maxproc,
+                                 tree_statement_list *body, token *end_tok,
+                                 octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
@@ -2508,8 +2336,8 @@ make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
 
 // Build a break command.
 
-static tree_command *
-make_break_command (token *break_tok)
+tree_command *
+octave_parser::make_break_command (token *break_tok)
 {
   tree_command *retval = 0;
 
@@ -2523,8 +2351,8 @@ make_break_command (token *break_tok)
 
 // Build a continue command.
 
-static tree_command *
-make_continue_command (token *continue_tok)
+tree_command *
+octave_parser::make_continue_command (token *continue_tok)
 {
   tree_command *retval = 0;
 
@@ -2538,8 +2366,8 @@ make_continue_command (token *continue_tok)
 
 // Build a return command.
 
-static tree_command *
-make_return_command (token *return_tok)
+tree_command *
+octave_parser::make_return_command (token *return_tok)
 {
   tree_command *retval = 0;
 
@@ -2553,8 +2381,9 @@ make_return_command (token *return_tok)
 
 // Start an if command.
 
-static tree_if_command_list *
-start_if_command (tree_expression *expr, tree_statement_list *list)
+tree_if_command_list *
+octave_parser::start_if_command (tree_expression *expr,
+                                 tree_statement_list *list)
 {
   maybe_warn_assign_as_truth_value (expr);
 
@@ -2565,9 +2394,9 @@ start_if_command (tree_expression *expr, tree_statement_list *list)
 
 // Finish an if command.
 
-static tree_if_command *
-finish_if_command (token *if_tok, tree_if_command_list *list,
-                   token *end_tok, octave_comment_list *lc)
+tree_if_command *
+octave_parser::finish_if_command (token *if_tok, tree_if_command_list *list,
+                                  token *end_tok, octave_comment_list *lc)
 {
   tree_if_command *retval = 0;
 
@@ -2597,9 +2426,10 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
 
 // Build an elseif clause.
 
-static tree_if_clause *
-make_elseif_clause (token *elseif_tok, tree_expression *expr,
-                    tree_statement_list *list, octave_comment_list *lc)
+tree_if_clause *
+octave_parser::make_elseif_clause (token *elseif_tok, tree_expression *expr,
+                                   tree_statement_list *list,
+                                   octave_comment_list *lc)
 {
   maybe_warn_assign_as_truth_value (expr);
 
@@ -2611,10 +2441,10 @@ make_elseif_clause (token *elseif_tok, tree_expression *expr,
 
 // Finish a switch command.
 
-static tree_switch_command *
-finish_switch_command (token *switch_tok, tree_expression *expr,
-                       tree_switch_case_list *list, token *end_tok,
-                       octave_comment_list *lc)
+tree_switch_command *
+octave_parser::finish_switch_command (token *switch_tok, tree_expression *expr,
+                                      tree_switch_case_list *list,
+                                      token *end_tok, octave_comment_list *lc)
 {
   tree_switch_command *retval = 0;
 
@@ -2644,9 +2474,10 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
 
 // Build a switch case.
 
-static tree_switch_case *
-make_switch_case (token *case_tok, tree_expression *expr,
-                  tree_statement_list *list, octave_comment_list *lc)
+tree_switch_case *
+octave_parser::make_switch_case (token *case_tok, tree_expression *expr,
+                                 tree_statement_list *list,
+                                 octave_comment_list *lc)
 {
   maybe_warn_variable_switch_label (expr);
 
@@ -2658,9 +2489,9 @@ make_switch_case (token *case_tok, tree_expression *expr,
 
 // Build an assignment to a variable.
 
-static tree_expression *
-make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
-                tree_expression *rhs)
+tree_expression *
+octave_parser::make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
+                               tree_expression *rhs)
 {
   tree_expression *retval = 0;
 
@@ -2754,8 +2585,9 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
 
 // Define a script.
 
-static void
-make_script (tree_statement_list *cmds, tree_statement *end_script)
+void
+octave_parser::make_script (tree_statement_list *cmds,
+                            tree_statement *end_script)
 {
   std::string doc_string;
 
@@ -2788,9 +2620,10 @@ make_script (tree_statement_list *cmds, tree_statement *end_script)
 
 // Begin defining a function.
 
-static octave_user_function *
-start_function (tree_parameter_list *param_list, tree_statement_list *body,
-                tree_statement *end_fcn_stmt)
+octave_user_function *
+octave_parser::start_function (tree_parameter_list *param_list,
+                               tree_statement_list *body,
+                               tree_statement *end_fcn_stmt)
 {
   // We'll fill in the return list later.
 
@@ -2813,16 +2646,17 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body,
   return fcn;
 }
 
-static tree_statement *
-make_end (const std::string& type, int l, int c)
+tree_statement *
+octave_parser::make_end (const std::string& type, int l, int c)
 {
   return make_statement (new tree_no_op_command (type, l, c));
 }
 
 // Do most of the work for defining a function.
 
-static octave_user_function *
-frob_function (const std::string& fname, octave_user_function *fcn)
+octave_user_function *
+octave_parser::frob_function (const std::string& fname,
+                              octave_user_function *fcn)
 {
   std::string id_name = fname;
 
@@ -2921,9 +2755,10 @@ frob_function (const std::string& fname, octave_user_function *fcn)
   return fcn;
 }
 
-static tree_function_def *
-finish_function (tree_parameter_list *ret_list,
-                 octave_user_function *fcn, octave_comment_list *lc)
+tree_function_def *
+octave_parser::finish_function (tree_parameter_list *ret_list,
+                                octave_user_function *fcn,
+                                octave_comment_list *lc)
 {
   tree_function_def *retval = 0;
 
@@ -2991,8 +2826,8 @@ finish_function (tree_parameter_list *ret_list,
   return retval;
 }
 
-static void
-recover_from_parsing_function (void)
+void
+octave_parser::recover_from_parsing_function (void)
 {
   if (parser_symtab_context.empty ())
     panic_impossible ();
@@ -3014,9 +2849,9 @@ recover_from_parsing_function (void)
 
 // Make an index expression.
 
-static tree_index_expression *
-make_index_expression (tree_expression *expr, tree_argument_list *args,
-                       char type)
+tree_index_expression *
+octave_parser::make_index_expression (tree_expression *expr,
+                                      tree_argument_list *args, char type)
 {
   tree_index_expression *retval = 0;
 
@@ -3047,8 +2882,9 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
 
 // Make an indirect reference expression.
 
-static tree_index_expression *
-make_indirect_ref (tree_expression *expr, const std::string& elt)
+tree_index_expression *
+octave_parser::make_indirect_ref (tree_expression *expr,
+                                  const std::string& elt)
 {
   tree_index_expression *retval = 0;
 
@@ -3073,8 +2909,8 @@ make_indirect_ref (tree_expression *expr, const std::string& elt)
 
 // Make an indirect reference expression with dynamic field name.
 
-static tree_index_expression *
-make_indirect_ref (tree_expression *expr, tree_expression *elt)
+tree_index_expression *
+octave_parser::make_indirect_ref (tree_expression *expr, tree_expression *elt)
 {
   tree_index_expression *retval = 0;
 
@@ -3099,8 +2935,9 @@ make_indirect_ref (tree_expression *expr, tree_expression *elt)
 
 // Make a declaration command.
 
-static tree_decl_command *
-make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
+tree_decl_command *
+octave_parser::make_decl_command (int tok, token *tok_val,
+                                  tree_decl_init_list *lst)
 {
   tree_decl_command *retval = 0;
 
@@ -3134,8 +2971,8 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
   return retval;
 }
 
-static tree_argument_list *
-validate_matrix_row (tree_argument_list *row)
+tree_argument_list *
+octave_parser::validate_matrix_row (tree_argument_list *row)
 {
   if (row && row->has_magic_tilde ())
     yyerror ("invalid use of tilde (~) in matrix expression");
@@ -3144,8 +2981,8 @@ validate_matrix_row (tree_argument_list *row)
 
 // Finish building a matrix list.
 
-static tree_expression *
-finish_matrix (tree_matrix *m)
+tree_expression *
+octave_parser::finish_matrix (tree_matrix *m)
 {
   tree_expression *retval = m;
 
@@ -3188,14 +3025,14 @@ finish_matrix (tree_matrix *m)
 
 // Finish building a cell list.
 
-static tree_expression *
-finish_cell (tree_cell *c)
+tree_expression *
+octave_parser::finish_cell (tree_cell *c)
 {
   return finish_matrix (c);
 }
 
-static void
-maybe_warn_missing_semi (tree_statement_list *t)
+void
+octave_parser::maybe_warn_missing_semi (tree_statement_list *t)
 {
   if (current_function_depth > 0)
     {
@@ -3209,9 +3046,9 @@ maybe_warn_missing_semi (tree_statement_list *t)
     }
 }
 
-static tree_statement_list *
-set_stmt_print_flag (tree_statement_list *list, char sep,
-                     bool warn_missing_semi)
+tree_statement_list *
+octave_parser::set_stmt_print_flag (tree_statement_list *list, char sep,
+                                    bool warn_missing_semi)
 {
   tree_statement *tmp = list->back ();
 
@@ -3246,15 +3083,16 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
   return list;
 }
 
-static tree_statement_list *
-make_statement_list (tree_statement *stmt)
+tree_statement_list *
+octave_parser::make_statement_list (tree_statement *stmt)
 {
   return new tree_statement_list (stmt);
 }
 
-static tree_statement_list *
-append_statement_list (tree_statement_list *list, char sep,
-                       tree_statement *stmt, bool warn_missing_semi)
+tree_statement_list *
+octave_parser::append_statement_list (tree_statement_list *list, char sep,
+                                      tree_statement *stmt,
+                                      bool warn_missing_semi)
 {
   set_stmt_print_flag (list, sep, warn_missing_semi);
 
@@ -3500,10 +3338,14 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       bool eof;
 
       frame.protect_var (curr_lexer);
-
       curr_lexer = new lexical_feedback ();
+      frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
-      reset_parser ();
+      frame.protect_var (curr_parser);
+      curr_parser = new octave_parser ();
+      frame.add_fcn (octave_parser::cleanup, curr_parser);
+
+      curr_parser->reset ();
 
       std::string help_txt = gobble_leading_white_space (ffile, eof);
 
@@ -3578,9 +3420,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
             help_buf.push (help_txt);
 
           if (reading_script_file)
-            prep_lexer_for_script_file ();
+            curr_lexer->prep_for_script_file ();
           else
-            prep_lexer_for_function_file ();
+            curr_lexer->prep_for_function_file ();
 
           curr_lexer->parsing_class_method = ! dispatch_type.empty ();
 
@@ -3588,7 +3430,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           global_command = 0;
 
-          int status = octave_parse_input ();
+          int status = curr_parser->run ();
 
           // Use an unwind-protect cleanup function so that the
           // global_command list will be deleted in the event of an
@@ -3605,10 +3447,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       else
         {
           tree_statement *end_of_script
-            = make_end ("endscript", curr_lexer->input_line_number,
-                        curr_lexer->current_input_column);
+            = curr_parser->make_end ("endscript", curr_lexer->input_line_number,
+                                     curr_lexer->current_input_column);
 
-          make_script (0, end_of_script);
+          curr_parser->make_script (0, end_of_script);
 
           fcn_ptr = primary_fcn_ptr;
         }
@@ -4306,6 +4148,12 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   unwind_protect frame;
 
   frame.protect_var (curr_lexer);
+  curr_lexer = new lexical_feedback ();
+  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
+
+  frame.protect_var (curr_parser);
+  curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
 
   frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);
@@ -4318,8 +4166,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (reading_fcn_file);
   frame.protect_var (reading_script_file);
   frame.protect_var (reading_classdef_file);
-
-  curr_lexer = new lexical_feedback ();
 
   get_input_from_eval_string = true;
   line_editing = false;
@@ -4344,7 +4190,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   do
     {
-      reset_parser ();
+      curr_parser->reset ();
 
       frame.protect_var (global_command);
 
@@ -4356,7 +4202,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
       symbol_table::scope_id scope = symbol_table::top_scope ();
       frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      parse_status = octave_parse_input ();
+      parse_status = curr_parser->run ();
 
       tree_statement_list *command_list = global_command;
 
@@ -4418,7 +4264,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                   || tree_continue_command::continuing)
                 break;
             }
-          else if (curr_lexer->parser_end_of_input)
+          else if (curr_parser->end_of_input)
             break;
         }
     }
@@ -4463,12 +4309,6 @@ cleanup_statement_list (tree_statement_list **lst)
       delete *lst;
       *lst = 0;
     }
-}
-
-int
-octave_parse_input (void)
-{
-  return octave_parse ();
 }
 
 DEFUN (eval, args, nargout,

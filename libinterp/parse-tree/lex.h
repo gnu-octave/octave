@@ -51,9 +51,6 @@ extern OCTINTERP_API void cleanup_parser (void);
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
 
-extern void prep_lexer_for_script_file (void);
-extern void prep_lexer_for_function_file (void);
-
 class
 stream_reader
 {
@@ -185,7 +182,7 @@ public:
       looking_for_object_index (false), 
       looking_at_indirect_ref (false), parsing_class_method (false),
       maybe_classdef_get_set_method (false), parsing_classdef (false),
-      quote_is_transpose (false), parser_end_of_input (false),
+      quote_is_transpose (false),
       input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
@@ -205,11 +202,25 @@ public:
     looking_at_object_index.push_front (false);
   }
 
+  void reset (void);
+
+  void prep_for_script_file (void);
+
+  void prep_for_function_file (void);
+
+  int octave_read (char *buf, unsigned int max_size);
+
+  char *flex_yytext (void);
+
+  int flex_yyleng (void);
+
   void do_comma_insert_check (void);
 
   int text_yyinput (void);
 
   void xunput (char c, char *buf);
+
+  void xunput (char c);
 
   void fixup_column_count (char *s);
 
@@ -276,6 +287,16 @@ public:
 
   void gripe_matlab_incompatible_operator (const std::string& op);
 
+  void push_token (token *);
+
+  token *current_token (void);
+
+  void display_token (int tok);
+
+  void fatal_error (const char *msg);
+
+  void lexer_debug (const char *pattern, const char *text);
+
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
   bool convert_spaces_to_comma;
@@ -329,9 +350,6 @@ public:
   // Return transpose or start a string?
   bool quote_is_transpose;
 
-  // TRUE means that we have encountered EOF on the input stream.
-  bool parser_end_of_input;
-
   // The current input line number.
   int input_line_number;
 
@@ -372,12 +390,15 @@ public:
   // a paren?
   bbp_nesting_level nesting_level;
 
+  // For unwind protect.
+  static void cleanup (lexical_feedback *lexer) { delete lexer; }
+
+private:
+
   // Stack to hold tokens so that we can delete them when the parser is
   // reset and avoid growing forever just because we are stashing some
   // information.
   std::stack <token*> token_stack;
-
-private:
 
   // No copying!
 

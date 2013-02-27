@@ -1,6 +1,7 @@
 #! /bin/sh
 
 set -e
+GREP=${GREP:-grep}
 SED=${SED:-sed}
 
 srcdir="$1"
@@ -13,7 +14,7 @@ do
   else
     file="$srcdir/$arg"
   fi
-  if [ "`grep -l '^%!' $file`" ]; then
+  if [ "`$GREP -l '^%!' $file`" ]; then
     echo "$file" | $SED "s,\\$srcdir/,,";
   fi
 done

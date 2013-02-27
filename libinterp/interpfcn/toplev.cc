@@ -561,6 +561,11 @@ main_loop (void)
 
   frame.protect_var (curr_lexer);
   curr_lexer = new lexical_feedback ();
+  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
+
+  frame.protect_var (curr_parser);
+  curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
 
   // The big loop.
 
@@ -573,7 +578,7 @@ main_loop (void)
 
           reset_error_handler ();
 
-          reset_parser ();
+          curr_parser->reset ();
 
           if (symbol_table::at_top_level ())
             tree_evaluator::reset_debug_state ();
@@ -588,7 +593,7 @@ main_loop (void)
 
           global_command = 0;
 
-          retval = octave_parse_input ();
+          retval = curr_parser->run ();
 
           if (retval == 0)
             {
@@ -636,7 +641,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (curr_lexer->parser_end_of_input)
+              else if (curr_parser->end_of_input)
                 break;
             }
         }

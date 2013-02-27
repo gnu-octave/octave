@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "symtab.h"
+
 class
 token
 {

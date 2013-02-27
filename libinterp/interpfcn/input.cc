@@ -680,24 +680,31 @@ get_debug_input (const std::string& prompt)
 
   frame.protect_var (curr_lexer);
   curr_lexer = new lexical_feedback ();
+  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
+
+  frame.protect_var (curr_parser);
+  curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
 
   while (Vdebugging)
     {
+      unwind_protect middle_frame;
+
       reset_error_handler ();
 
-      reset_parser ();
+      curr_parser->reset ();
 
       // Save current value of global_command.
-      frame.protect_var (global_command);
+      middle_frame.protect_var (global_command);
 
       global_command = 0;
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
-      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+      middle_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      int retval = octave_parse_input ();
+      int retval = curr_parser->run ();
 
       if (retval == 0 && global_command)
         {
@@ -714,10 +721,6 @@ get_debug_input (const std::string& prompt)
           if (octave_completion_matches_called)
             octave_completion_matches_called = false;
         }
-
-      // Unmark forced variables.
-      // Restore previous value of global_command.
-      frame.run (2);
 
       octave_quit ();
     }

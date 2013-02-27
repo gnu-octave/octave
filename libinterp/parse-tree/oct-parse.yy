@@ -155,9 +155,7 @@ static std::map<std::string, std::string> autoload_map;
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
-// Generic error messages.
-static void
-yyerror (const char *s);
+static void yyerror (const char *s);
 
 // Finish building a statement.
 template <class T>
@@ -1042,7 +1040,7 @@ push_fcn_symtab : // empty
                       primary_fcn_scope = symbol_table::current_scope ();
 
                     if (reading_script_file && current_function_depth > 1)
-                      yyerror ("nested functions not implemented in this context");
+                      curr_parser->bison_error ("nested functions not implemented in this context");
                   }
                 ;
 
@@ -1078,7 +1076,7 @@ param_list      : param_list_beg param_list1 param_list_end
                   }
                 | param_list_beg error
                   {
-                    yyerror ("invalid parameter list");
+                    curr_parser->bison_error ("invalid parameter list");
                     $$ = 0;
                     ABORT_PARSE;
                   }
@@ -1248,13 +1246,13 @@ function_end    : END
 // A lot of tests are based on the assumption that this is OK
 //                  if (reading_script_file)
 //                    {
-//                      yyerror ("function body open at end of script");
+//                      curr_parser->bison_error ("function body open at end of script");
 //                      YYABORT;
 //                    }
 
                     if (endfunction_found)
                       {
-                        yyerror ("inconsistent function endings -- "
+                        curr_parser->bison_error ("inconsistent function endings -- "
                                  "if one function is explicitly ended, "
                                  "so must all the others");
                         YYABORT;
@@ -1263,13 +1261,13 @@ function_end    : END
                     if (! (reading_fcn_file || reading_script_file
                            || get_input_from_eval_string))
                       {
-                        yyerror ("function body open at end of input");
+                        curr_parser->bison_error ("function body open at end of input");
                         YYABORT;
                       }
 
                     if (reading_classdef_file)
                       {
-                        yyerror ("classdef body open at end of input");
+                        curr_parser->bison_error ("classdef body open at end of input");
                         YYABORT;
                       }
 
@@ -1445,7 +1443,7 @@ stash_comment   : // empty
                 ;
 
 parse_error     : LEXICAL_ERROR
-                  { yyerror ("parse error"); }
+                  { curr_parser->bison_error ("parse error"); }
                 | error
                 ;
 
@@ -1497,6 +1495,12 @@ opt_comma       : // empty
 
 static void
 yyerror (const char *s)
+{
+  curr_parser->bison_error (s);
+}
+
+void
+octave_parser::bison_error (const char *s)
 {
   int err_col = curr_lexer->current_input_column - 1;
 
@@ -1612,7 +1616,7 @@ octave_parser::end_token_ok (token *tok, token::end_tok_type expected)
     {
       retval = false;
 
-      yyerror ("parse error");
+      bison_error ("parse error");
 
       int l = tok->line ();
       int c = tok->column ();
@@ -2324,7 +2328,7 @@ octave_parser::make_for_command (int tok_id, token *for_tok,
       else
         {
           if (parfor)
-            yyerror ("invalid syntax for parfor statement");
+            bison_error ("invalid syntax for parfor statement");
           else
             retval = new tree_complex_for_command (lhs, expr, body,
                                                    lc, tc, l, c);
@@ -2578,7 +2582,7 @@ octave_parser::make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
   else if (t == octave_value::op_asn_eq)
     return new tree_multi_assignment (lhs, rhs, false, l, c);
   else
-    yyerror ("computed multiple assignment not allowed");
+    bison_error ("computed multiple assignment not allowed");
 
   return retval;
 }
@@ -2857,7 +2861,7 @@ octave_parser::make_index_expression (tree_expression *expr,
 
   if (args && args->has_magic_tilde ())
     {
-      yyerror ("invalid use of empty argument (~) in index expression");
+      bison_error ("invalid use of empty argument (~) in index expression");
       return retval;
     }
 
@@ -2975,7 +2979,7 @@ tree_argument_list *
 octave_parser::validate_matrix_row (tree_argument_list *row)
 {
   if (row && row->has_magic_tilde ())
-    yyerror ("invalid use of tilde (~) in matrix expression");
+    bison_error ("invalid use of tilde (~) in matrix expression");
   return row;
 }
 

@@ -3,11 +3,14 @@ CROSS_TOOL_PREFIX = @CROSS_TOOL_PREFIX@
 AWK = @AWK@
 export AWK
 
-SED = @SED@
-export SED
+GREP = @GREP@
+export GREP
 
 FIND = @FIND@
 export FIND
+
+SED = @SED@
+export SED
 
 PERL = @PERL@
 export PERL
@@ -731,7 +734,7 @@ rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD
 endef
 
 define test-file-commands
-( echo "## DO NOT EDIT!  Generated automatically from $(<F) by Make."; grep '^%!' $< ) > $@-t
+( echo "## DO NOT EDIT!  Generated automatically from $(<F) by Make."; $(GREP) '^%!' $< ) > $@-t
 mv $@-t $@
 endef
 

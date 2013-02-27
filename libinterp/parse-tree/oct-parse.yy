@@ -86,6 +86,9 @@ along with Octave; see the file COPYING.  If not, see
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
+// The state of the parser.
+octave_parser *curr_parser = 0;
+
 // Buffer for help text snagged from function files.
 std::stack<std::string> help_buf;
 
@@ -3503,6 +3506,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       curr_lexer = new lexical_feedback ();
       frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
+      frame.protect_var (curr_parser);
+      curr_parser = new octave_parser ();
+      frame.add_fcn (octave_parser::cleanup, curr_parser);
+
       curr_lexer->reset_parser ();
 
       std::string help_txt = gobble_leading_white_space (ffile, eof);
@@ -4308,6 +4315,10 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (curr_lexer);
   curr_lexer = new lexical_feedback ();
   frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
+
+  frame.protect_var (curr_parser);
+  curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
 
   frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);

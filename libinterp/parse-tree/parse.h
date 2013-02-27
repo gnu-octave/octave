@@ -107,4 +107,28 @@ extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
 extern OCTINTERP_API int octave_parse_input (void);
 
+class
+octave_parser
+{
+public:
+
+  octave_parser (void) { }
+
+  ~octave_parser (void) { }
+
+  // For unwind protect.
+  static void cleanup (octave_parser *parser) { delete parser; }
+
+private:
+
+  // No copying!
+
+  octave_parser (const octave_parser&);
+
+  octave_parser& operator = (const octave_parser&);
+};
+
+// The current state of the parser.
+extern octave_parser *curr_parser;
+
 #endif

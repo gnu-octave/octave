@@ -682,6 +682,10 @@ get_debug_input (const std::string& prompt)
   curr_lexer = new lexical_feedback ();
   frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
 
+  frame.protect_var (curr_parser);
+  curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
+
   while (Vdebugging)
     {
       unwind_protect middle_frame;

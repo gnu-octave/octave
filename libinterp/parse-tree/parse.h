@@ -143,196 +143,180 @@ public:
   ~octave_parser (void) { }
 
   // Error mesages for mismatched end tokens.
-  static void
-  end_error (const char *type, token::end_tok_type ettype, int l, int c);
+  void end_error (const char *type, token::end_tok_type ettype, int l, int c);
 
   // Check to see that end tokens are properly matched.
-  static bool
-  end_token_ok (token *tok, token::end_tok_type expected);
+  bool end_token_ok (token *tok, token::end_tok_type expected);
 
   // Maybe print a warning if an assignment expression is used as the
   // test in a logical expression.
-  static void
-  maybe_warn_assign_as_truth_value (tree_expression *expr);
+  void maybe_warn_assign_as_truth_value (tree_expression *expr);
 
   // Maybe print a warning about switch labels that aren't constants.
-  static void
-  maybe_warn_variable_switch_label (tree_expression *expr);
+  void maybe_warn_variable_switch_label (tree_expression *expr);
 
   // Finish building a range.
-  static tree_expression *
-  finish_colon_expression (tree_colon_expression *e);
+  tree_expression *finish_colon_expression (tree_colon_expression *e);
 
   // Build a constant.
-  static tree_constant *
-  make_constant (int op, token *tok_val);
+  tree_constant *make_constant (int op, token *tok_val);
 
   // Build a function handle.
-  static tree_fcn_handle *
-  make_fcn_handle (token *tok_val);
+  tree_fcn_handle *make_fcn_handle (token *tok_val);
 
   // Build an anonymous function handle.
-  static tree_anon_fcn_handle *
+  tree_anon_fcn_handle *
   make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt);
 
   // Build a binary expression.
-  static tree_expression *
+  tree_expression *
   make_binary_op (int op, tree_expression *op1, token *tok_val,
                   tree_expression *op2);
 
   // Build a boolean expression.
-  static tree_expression *
+  tree_expression *
   make_boolean_op (int op, tree_expression *op1, token *tok_val,
                    tree_expression *op2);
 
   // Build a prefix expression.
-  static tree_expression *
+  tree_expression *
   make_prefix_op (int op, tree_expression *op1, token *tok_val);
 
   // Build a postfix expression.
-  static tree_expression *
+  tree_expression *
   make_postfix_op (int op, tree_expression *op1, token *tok_val);
 
   // Build an unwind-protect command.
-  static tree_command *
+  tree_command *
   make_unwind_command (token *unwind_tok, tree_statement_list *body,
                        tree_statement_list *cleanup, token *end_tok,
                        octave_comment_list *lc, octave_comment_list *mc);
 
   // Build a try-catch command.
-  static tree_command *
+  tree_command *
   make_try_command (token *try_tok, tree_statement_list *body,
                     tree_statement_list *cleanup, token *end_tok,
                     octave_comment_list *lc, octave_comment_list *mc);
 
   // Build a while command.
-  static tree_command *
+  tree_command *
   make_while_command (token *while_tok, tree_expression *expr,
                       tree_statement_list *body, token *end_tok,
                       octave_comment_list *lc);
 
   // Build a do-until command.
-  static tree_command *
+  tree_command *
   make_do_until_command (token *until_tok, tree_statement_list *body,
                          tree_expression *expr, octave_comment_list *lc);
 
   // Build a for command.
-  static tree_command *
+  tree_command *
   make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
                     tree_expression *expr, tree_expression *maxproc,
                     tree_statement_list *body, token *end_tok,
                     octave_comment_list *lc);
 
   // Build a break command.
-  static tree_command *
-  make_break_command (token *break_tok);
+  tree_command *make_break_command (token *break_tok);
 
   // Build a continue command.
-  static tree_command *
-  make_continue_command (token *continue_tok);
+  tree_command *make_continue_command (token *continue_tok);
 
   // Build a return command.
-  static tree_command *
-  make_return_command (token *return_tok);
+  tree_command *make_return_command (token *return_tok);
 
   // Start an if command.
-  static tree_if_command_list *
+  tree_if_command_list *
   start_if_command (tree_expression *expr, tree_statement_list *list);
 
   // Finish an if command.
-  static tree_if_command *
+  tree_if_command *
   finish_if_command (token *if_tok, tree_if_command_list *list,
                      token *end_tok, octave_comment_list *lc);
 
   // Build an elseif clause.
-  static tree_if_clause *
+  tree_if_clause *
   make_elseif_clause (token *elseif_tok, tree_expression *expr,
                       tree_statement_list *list, octave_comment_list *lc);
 
   // Finish a switch command.
-  static tree_switch_command *
+  tree_switch_command *
   finish_switch_command (token *switch_tok, tree_expression *expr,
                          tree_switch_case_list *list, token *end_tok,
                          octave_comment_list *lc);
 
   // Build a switch case.
-  static tree_switch_case *
+  tree_switch_case *
   make_switch_case (token *case_tok, tree_expression *expr,
                     tree_statement_list *list, octave_comment_list *lc);
 
   // Build an assignment to a variable.
-  static tree_expression *
+  tree_expression *
   make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
                   tree_expression *rhs);
 
   // Define a script.
-  static void
-  make_script (tree_statement_list *cmds, tree_statement *end_script);
+  void make_script (tree_statement_list *cmds, tree_statement *end_script);
 
   // Begin defining a function.
-  static octave_user_function *
+  octave_user_function *
   start_function (tree_parameter_list *param_list, tree_statement_list *body,
                   tree_statement *end_function);
 
   // Create a no-op statement for end_function.
-  static tree_statement *
-  make_end (const std::string& type, int l, int c);
+  tree_statement *make_end (const std::string& type, int l, int c);
 
   // Do most of the work for defining a function.
-  static octave_user_function *
+  octave_user_function *
   frob_function (const std::string& fname, octave_user_function *fcn);
 
   // Finish defining a function.
-  static tree_function_def *
+  tree_function_def *
   finish_function (tree_parameter_list *ret_list,
                    octave_user_function *fcn, octave_comment_list *lc);
 
   // Reset state after parsing function.
-  static void
+  void
   recover_from_parsing_function (void);
 
   // Make an index expression.
-  static tree_index_expression *
+  tree_index_expression *
   make_index_expression (tree_expression *expr,
                          tree_argument_list *args, char type);
 
   // Make an indirect reference expression.
-  static tree_index_expression *
+  tree_index_expression *
   make_indirect_ref (tree_expression *expr, const std::string&);
 
   // Make an indirect reference expression with dynamic field name.
-  static tree_index_expression *
+  tree_index_expression *
   make_indirect_ref (tree_expression *expr, tree_expression *field);
 
   // Make a declaration command.
-  static tree_decl_command *
+  tree_decl_command *
   make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
 
   // Validate argument list forming a matrix or cell row.
-  static tree_argument_list *
-  validate_matrix_row (tree_argument_list *row);
+  tree_argument_list *validate_matrix_row (tree_argument_list *row);
 
   // Finish building a matrix list.
-  static tree_expression *
-  finish_matrix (tree_matrix *m);
+  tree_expression *finish_matrix (tree_matrix *m);
 
   // Finish building a cell list.
-  static tree_expression *
-  finish_cell (tree_cell *c);
+  tree_expression *finish_cell (tree_cell *c);
 
   // Maybe print a warning.  Duh.
-  static void
-  maybe_warn_missing_semi (tree_statement_list *);
+  void maybe_warn_missing_semi (tree_statement_list *);
 
   // Set the print flag for a statement based on the separator type.
-  static tree_statement_list *
+  tree_statement_list *
   set_stmt_print_flag (tree_statement_list *, char, bool);
 
   // Create a statement list.
-  static tree_statement_list *make_statement_list (tree_statement *stmt);
+  tree_statement_list *make_statement_list (tree_statement *stmt);
 
   // Append a statement to an existing statement list.
-  static tree_statement_list *
+  tree_statement_list *
   append_statement_list (tree_statement_list *list, char sep,
                          tree_statement *stmt, bool warn_missing_semi);
 

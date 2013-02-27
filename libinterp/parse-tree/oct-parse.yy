@@ -2187,7 +2187,7 @@ octave_parser::make_postfix_op (int op, tree_expression *op1, token *tok_val)
 tree_command *
 octave_parser::make_unwind_command (token *unwind_tok,
                                     tree_statement_list *body,
-                                    tree_statement_list *cleanup,
+                                    tree_statement_list *cleanup_stmts,
                                     token *end_tok,
                                     octave_comment_list *lc,
                                     octave_comment_list *mc)
@@ -2201,7 +2201,7 @@ octave_parser::make_unwind_command (token *unwind_tok,
       int l = unwind_tok->line ();
       int c = unwind_tok->column ();
 
-      retval = new tree_unwind_protect_command (body, cleanup,
+      retval = new tree_unwind_protect_command (body, cleanup_stmts,
                                                 lc, mc, tc, l, c);
     }
 
@@ -2212,7 +2212,8 @@ octave_parser::make_unwind_command (token *unwind_tok,
 
 tree_command *
 octave_parser::make_try_command (token *try_tok, tree_statement_list *body,
-                                 tree_statement_list *cleanup, token *end_tok,
+                                 tree_statement_list *cleanup_stmts,
+                                 token *end_tok,
                                  octave_comment_list *lc,
                                  octave_comment_list *mc)
 {
@@ -2225,7 +2226,7 @@ octave_parser::make_try_command (token *try_tok, tree_statement_list *body,
       int l = try_tok->line ();
       int c = try_tok->column ();
 
-      retval = new tree_try_catch_command (body, cleanup,
+      retval = new tree_try_catch_command (body, cleanup_stmts,
                                            lc, mc, tc, l, c);
     }
 

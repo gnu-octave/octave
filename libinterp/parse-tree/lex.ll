@@ -20,14 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// We are using the pure parser interface and the reentrant lexer
-// interface but the Octave parser and lexer are NOT properly
-// reentrant because both still use many global variables.  It should be
-// safe to create a parser object and call it while anotehr parser
-// object is active (to parse a callback function while the main
-// interactive parser is waiting for input, for example) if you take
-// care to properly save and restore (typically with an unwind_protect
-// object) relevant global values before and after the nested call.
+/*
+We are using the pure parser interface and the reentrant lexer
+interface but the Octave parser and lexer are NOT properly
+reentrant because both still use many global variables.  It should be
+safe to create a parser object and call it while anotehr parser
+object is active (to parse a callback function while the main
+interactive parser is waiting for input, for example) if you take
+care to properly save and restore (typically with an unwind_protect
+object) relevant global values before and after the nested call.
+*/
 
 %option prefix = "octave_"
 %option noyywrap

@@ -1812,7 +1812,7 @@ lexical_feedback::is_keyword_token (const std::string& s)
       if (! tok_val)
         tok_val = new token (l, c);
 
-      curr_lexer->push_token (tok_val);
+      push_token (tok_val);
 
       return kw->tok;
     }
@@ -2504,8 +2504,8 @@ lexical_feedback::handle_number (void)
   looking_for_object_index = false;
   at_beginning_of_statement = false;
 
-  curr_lexer->push_token (new token (value, yytxt, input_line_number,
-                                     current_input_column));
+  push_token (new token (value, yytxt, input_line_number,
+                         current_input_column));
 
   current_input_column += flex_yyleng ();
 
@@ -2719,7 +2719,7 @@ lexical_feedback::handle_string (char delim)
                   quote_is_transpose = true;
                   convert_spaces_to_comma = true;
 
-                  curr_lexer->push_token (new token (s, bos_line, bos_col));
+                  push_token (new token (s, bos_line, bos_col));
 
                   if (delim == '"')
                     gripe_matlab_incompatible ("\" used as string delimiter");
@@ -3232,11 +3232,10 @@ lexical_feedback::handle_superclass_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  curr_lexer->push_token
-    (new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
-                cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                input_line_number, current_input_column));
+  push_token (new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
+                         cls.empty () ? 0 : &(symbol_table::insert (cls)),
+                         pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
+                         input_line_number, current_input_column));
 
   convert_spaces_to_comma = true;
   current_input_column += flex_yyleng ();
@@ -3267,10 +3266,9 @@ lexical_feedback::handle_meta_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  curr_lexer->push_token
-    (new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                input_line_number, current_input_column));
+  push_token (new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
+                         pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
+                         input_line_number, current_input_column));
 
   convert_spaces_to_comma = true;
   current_input_column += flex_yyleng ();
@@ -3308,8 +3306,8 @@ lexical_feedback::handle_identifier (void)
 
       maybe_unput_comma (spc_gobbled);
 
-      curr_lexer->push_token (new token (tok, input_line_number,
-                                         current_input_column));
+      push_token (new token (tok, input_line_number,
+                             current_input_column));
 
       quote_is_transpose = true;
       convert_spaces_to_comma = true;
@@ -3343,8 +3341,8 @@ lexical_feedback::handle_identifier (void)
         }
       else
         {
-          curr_lexer->push_token (new token (tok, input_line_number,
-                                             current_input_column));
+          push_token (new token (tok, input_line_number,
+                                 current_input_column));
 
           current_input_column += flex_yyleng ();
           quote_is_transpose = false;
@@ -3424,8 +3422,8 @@ lexical_feedback::handle_identifier (void)
   if (tok == "end")
     tok = "__end__";
 
-  curr_lexer->push_token (new token (&(symbol_table::insert (tok)),
-                                     input_line_number, current_input_column));
+  push_token (new token (&(symbol_table::insert (tok)),
+                         input_line_number, current_input_column));
 
   // After seeing an identifer, it is ok to convert spaces to a comma
   // (if needed).
@@ -3584,7 +3582,7 @@ lexical_feedback::display_token (int tok)
     case NUM:
     case IMAG_NUM:
       {
-        token *tok_val = curr_lexer->current_token ();
+        token *tok_val = current_token ();
         std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
                   << " [" << tok_val->number () << "]\n";
       }
@@ -3592,14 +3590,14 @@ lexical_feedback::display_token (int tok)
 
     case STRUCT_ELT:
       {
-        token *tok_val = curr_lexer->current_token ();
+        token *tok_val = current_token ();
         std::cerr << "STRUCT_ELT [" << tok_val->text () << "]\n";
       }
       break;
 
     case NAME:
       {
-        token *tok_val = curr_lexer->current_token ();
+        token *tok_val = current_token ();
         symbol_table::symbol_record *sr = tok_val->sym_rec ();
         std::cerr << "NAME";
         if (sr)
@@ -3613,7 +3611,7 @@ lexical_feedback::display_token (int tok)
     case DQ_STRING:
     case SQ_STRING:
       {
-        token *tok_val = curr_lexer->current_token ();
+        token *tok_val = current_token ();
 
         std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
                   << " [" << tok_val->text () << "]\n";

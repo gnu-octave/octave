@@ -1499,51 +1499,6 @@ yyerror (const char *s)
   curr_parser->bison_error (s);
 }
 
-void
-octave_parser::bison_error (const char *s)
-{
-  int err_col = curr_lexer->current_input_column - 1;
-
-  std::ostringstream output_buf;
-
-  if (reading_fcn_file || reading_script_file || reading_classdef_file)
-    output_buf << "parse error near line " << curr_lexer->input_line_number
-               << " of file " << curr_fcn_file_full_name;
-  else
-    output_buf << "parse error:";
-
-  if (s && strcmp (s, "parse error") != 0)
-    output_buf << "\n\n  " << s;
-
-  output_buf << "\n\n";
-
-  if (! current_input_line.empty ())
-    {
-      size_t len = current_input_line.length ();
-
-      if (current_input_line[len-1] == '\n')
-        current_input_line.resize (len-1);
-
-      // Print the line, maybe with a pointer near the error token.
-
-      output_buf << ">>> " << current_input_line << "\n";
-
-      if (err_col == 0)
-        err_col = len;
-
-      for (int i = 0; i < err_col + 3; i++)
-        output_buf << " ";
-
-      output_buf << "^";
-    }
-
-  output_buf << "\n";
-
-  std::string msg = output_buf.str ();
-
-  parse_error ("%s", msg.c_str ());
-}
-
 int
 octave_parser::run (void)
 {
@@ -3103,6 +3058,51 @@ octave_parser::append_statement_list (tree_statement_list *list, char sep,
   list->append (stmt);
 
   return list;
+}
+
+void
+octave_parser::bison_error (const char *s)
+{
+  int err_col = curr_lexer->current_input_column - 1;
+
+  std::ostringstream output_buf;
+
+  if (reading_fcn_file || reading_script_file || reading_classdef_file)
+    output_buf << "parse error near line " << curr_lexer->input_line_number
+               << " of file " << curr_fcn_file_full_name;
+  else
+    output_buf << "parse error:";
+
+  if (s && strcmp (s, "parse error") != 0)
+    output_buf << "\n\n  " << s;
+
+  output_buf << "\n\n";
+
+  if (! current_input_line.empty ())
+    {
+      size_t len = current_input_line.length ();
+
+      if (current_input_line[len-1] == '\n')
+        current_input_line.resize (len-1);
+
+      // Print the line, maybe with a pointer near the error token.
+
+      output_buf << ">>> " << current_input_line << "\n";
+
+      if (err_col == 0)
+        err_col = len;
+
+      for (int i = 0; i < err_col + 3; i++)
+        output_buf << " ";
+
+      output_buf << "^";
+    }
+
+  output_buf << "\n";
+
+  std::string msg = output_buf.str ();
+
+  parse_error ("%s", msg.c_str ());
 }
 
 static void

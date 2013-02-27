@@ -557,16 +557,6 @@ main_loop (void)
 
   octave_initialized = true;
 
-  unwind_protect frame;
-
-  frame.protect_var (curr_lexer);
-  curr_lexer = new lexical_feedback ();
-  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
-
-  frame.protect_var (curr_parser);
-  curr_parser = new octave_parser ();
-  frame.add_fcn (octave_parser::cleanup, curr_parser);
-
   // The big loop.
 
   int retval = 0;
@@ -574,7 +564,13 @@ main_loop (void)
     {
       try
         {
-          unwind_protect inner_frame;
+          unwind_protect frame;
+
+          // octave_parser constructor sets this for us.
+          frame.protect_var (CURR_LEXER);
+
+          octave_parser *curr_parser = new octave_parser ();
+          frame.add_fcn (octave_parser::cleanup, curr_parser);
 
           reset_error_handler ();
 

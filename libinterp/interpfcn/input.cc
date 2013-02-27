@@ -667,28 +667,17 @@ get_debug_input (const std::string& prompt)
 
       frame.protect_var (get_input_from_eval_string);
       get_input_from_eval_string = false;
-
-      YY_BUFFER_STATE old_buf = current_buffer ();
-      YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
-
-      // FIXME: are these safe?
-      frame.add_fcn (switch_to_buffer, old_buf);
-      frame.add_fcn (delete_buffer, new_buf);
-
-      switch_to_buffer (new_buf);
     }
-
-  frame.protect_var (curr_lexer);
-  curr_lexer = new lexical_feedback ();
-  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
-
-  frame.protect_var (curr_parser);
-  curr_parser = new octave_parser ();
-  frame.add_fcn (octave_parser::cleanup, curr_parser);
 
   while (Vdebugging)
     {
       unwind_protect middle_frame;
+
+      // octave_parser constructor sets this for us.
+      middle_frame.protect_var (CURR_LEXER);
+
+      octave_parser *curr_parser = new octave_parser ();
+      middle_frame.add_fcn (octave_parser::cleanup, curr_parser);
 
       reset_error_handler ();
 
@@ -1199,33 +1188,28 @@ static hook_fcn_map_type hook_fcn_map;
 static int
 input_event_hook (void)
 {
-  if (! curr_lexer->defining_func)
+  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+
+  while (p != hook_fcn_map.end ())
     {
-      hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+      std::string hook_fcn = p->first;
+      octave_value user_data = p->second;
 
-      while (p != hook_fcn_map.end ())
+      hook_fcn_map_type::iterator q = p++;
+
+      if (is_valid_function (hook_fcn))
         {
-          std::string hook_fcn = p->first;
-          octave_value user_data = p->second;
-
-          hook_fcn_map_type::iterator q = p++;
-
-          if (is_valid_function (hook_fcn))
-            {
-              if (user_data.is_defined ())
-                feval (hook_fcn, user_data, 0);
-              else
-                feval (hook_fcn, octave_value_list (), 0);
-            }
+          if (user_data.is_defined ())
+            feval (hook_fcn, user_data, 0);
           else
-            hook_fcn_map.erase (q);
+            feval (hook_fcn, octave_value_list (), 0);
         }
-
-      if (hook_fcn_map.empty ())
-        command_editor::remove_event_hook (input_event_hook);
+      else
+        hook_fcn_map.erase (q);
     }
 
-  return 0;
+  if (hook_fcn_map.empty ())
+    command_editor::remove_event_hook (input_event_hook);
 }
 
 DEFUN (add_input_event_hook, args, ,

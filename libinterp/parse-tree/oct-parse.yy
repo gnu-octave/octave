@@ -77,6 +77,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
+// oct-parse.h must be included after pt-all.h
+#include <oct-parse.h>
+
+extern int octave_lex (YYSTYPE *, void *);
+
+// Global access to currently active lexer.
+// FIXME -- to be removed after more parser+lexer refactoring.
+lexical_feedback *CURR_LEXER = 0;
+
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from
 // Bison without the namespace tag.  Redefine them so we will use them
@@ -85,9 +94,6 @@ along with Octave; see the file COPYING.  If not, see
 #define fprintf GNULIB_NAMESPACE::fprintf
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
-
-// The state of the parser.
-octave_parser *curr_parser = 0;
 
 // Buffer for help text snagged from function files.
 std::stack<std::string> help_buf;
@@ -155,7 +161,7 @@ static std::map<std::string, std::string> autoload_map;
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
-static void yyerror (const char *s);
+static void yyerror (octave_parser *curr_parser, const char *s);
 
 // Finish building a statement.
 template <class T>
@@ -182,6 +188,9 @@ make_statement (T *arg)
     } \
   while (0)
 
+#define curr_lexer curr_parser->curr_lexer
+#define scanner curr_lexer->scanner
+
 %}
 
 // Bison declarations.
@@ -190,6 +199,19 @@ make_statement (T *arg)
 // bison to fail to properly recognize the directive.
 
 %name-prefix="octave_"
+
+// We are using the pure parser interface and the reentrant lexer
+// interface but the Octave parser and lexer are NOT properly
+// reentrant because both still use many global variables.  It should be
+// safe to create a parser object and call it while anotehr parser
+// object is active (to parse a callback function while the main
+// interactive parser is waiting for input, for example) if you take
+// care to properly save and restore (typically with an unwind_protect
+// object) relevant global values before and after the nested call.
+
+%define api.pure
+%parse-param { octave_parser *curr_parser }
+%lex-param { void *scanner }
 
 %union
 {
@@ -1493,8 +1515,10 @@ opt_comma       : // empty
 
 // Generic error messages.
 
+#undef curr_lexer
+
 static void
-yyerror (const char *s)
+yyerror (octave_parser *curr_parser, const char *s)
 {
   curr_parser->bison_error (s);
 }
@@ -1502,7 +1526,7 @@ yyerror (const char *s)
 int
 octave_parser::run (void)
 {
-  return octave_parse ();
+  return octave_parse (this);
 }
 
 // Error mesages for mismatched end tokens.
@@ -3281,7 +3305,7 @@ gobble_leading_white_space (FILE *ffile, bool& eof, int& line_num,
       if (eof)
         break;
 
-      txt = curr_lexer->grab_comment_block (stdio_reader, true, eof);
+      txt = CURR_LEXER->grab_comment_block (stdio_reader, true, eof);
 
       if (txt.empty ())
         break;
@@ -3377,17 +3401,19 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
     {
       bool eof;
 
-      frame.protect_var (curr_lexer);
-      curr_lexer = new lexical_feedback ();
-      frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
+      // octave_parser constructor sets this for us.
+      frame.protect_var (CURR_LEXER);
 
-      frame.protect_var (curr_parser);
-      curr_parser = new octave_parser ();
+      octave_parser *curr_parser = new octave_parser ();
       frame.add_fcn (octave_parser::cleanup, curr_parser);
 
       curr_parser->reset ();
 
-      std::string help_txt = gobble_leading_white_space (ffile, eof);
+      std::string help_txt
+        = gobble_leading_white_space
+            (ffile, eof,
+             curr_parser->curr_lexer->input_line_number,
+             curr_parser->curr_lexer->current_input_column);
 
       if (! help_txt.empty ())
         help_buf.push (help_txt);
@@ -3439,14 +3465,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
               reading_script_file = true;
             }
 
-          YY_BUFFER_STATE old_buf = current_buffer ();
-          YY_BUFFER_STATE new_buf = create_buffer (ffile);
-
-          frame.add_fcn (switch_to_buffer, old_buf);
-          frame.add_fcn (delete_buffer, new_buf);
-
-          switch_to_buffer (new_buf);
-
           frame.protect_var (primary_fcn_ptr);
           primary_fcn_ptr = 0;
 
@@ -3460,11 +3478,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
             help_buf.push (help_txt);
 
           if (reading_script_file)
-            curr_lexer->prep_for_script_file ();
+            curr_parser->curr_lexer->prep_for_script_file ();
           else
-            curr_lexer->prep_for_function_file ();
+            curr_parser->curr_lexer->prep_for_function_file ();
 
-          curr_lexer->parsing_class_method = ! dispatch_type.empty ();
+          curr_parser->curr_lexer->parsing_class_method = ! dispatch_type.empty ();
 
           frame.protect_var (global_command);
 
@@ -3486,9 +3504,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
         }
       else
         {
+          int l = curr_parser->curr_lexer->input_line_number;
+          int c = curr_parser->curr_lexer->current_input_column;
+
           tree_statement *end_of_script
-            = curr_parser->make_end ("endscript", curr_lexer->input_line_number,
-                                     curr_lexer->current_input_column);
+            = curr_parser->make_end ("endscript", l, c);
 
           curr_parser->make_script (0, end_of_script);
 
@@ -4187,12 +4207,10 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   unwind_protect frame;
 
-  frame.protect_var (curr_lexer);
-  curr_lexer = new lexical_feedback ();
-  frame.add_fcn (lexical_feedback::cleanup, curr_lexer);
+  // octave_parser constructor sets this for us.
+  frame.protect_var (CURR_LEXER);
 
-  frame.protect_var (curr_parser);
-  curr_parser = new octave_parser ();
+  octave_parser *curr_parser = new octave_parser ();
   frame.add_fcn (octave_parser::cleanup, curr_parser);
 
   frame.protect_var (get_input_from_eval_string);
@@ -4219,14 +4237,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   reading_classdef_file = false;
 
   current_eval_string = s;
-
-  YY_BUFFER_STATE old_buf = current_buffer ();
-  YY_BUFFER_STATE new_buf = create_buffer (0);
-
-  frame.add_fcn (switch_to_buffer, old_buf);
-  frame.add_fcn (delete_buffer, new_buf);
-
-  switch_to_buffer (new_buf);
 
   do
     {

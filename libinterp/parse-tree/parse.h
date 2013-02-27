@@ -32,8 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lex.h"
 #include "token.h"
 
-extern int octave_lex (void);
-
 class octave_comment_list;
 class octave_function;
 class octave_user_function;
@@ -132,14 +130,25 @@ eval_string (const std::string&, bool silent, int& parse_status);
 
 extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
+// Global access to currently active lexer.
+// FIXME -- to be removed after more parser+lexer refactoring.
+extern lexical_feedback *CURR_LEXER;
+
 class
 octave_parser
 {
 public:
 
-  octave_parser (void) : end_of_input (false) { }
+  octave_parser (void)
+    : end_of_input (false), curr_lexer (new lexical_feedback ())
+  {
+    CURR_LEXER = curr_lexer;
+  }
 
-  ~octave_parser (void) { }
+  ~octave_parser (void)
+  {
+    delete curr_lexer;
+  }
 
   void reset (void)
   {
@@ -332,6 +341,9 @@ public:
   // TRUE means that we have encountered EOF on the input stream.
   bool end_of_input;
 
+  // State of the lexer.
+  lexical_feedback *curr_lexer;
+
   // For unwind protect.
   static void cleanup (octave_parser *parser) { delete parser; }
 
@@ -343,8 +355,5 @@ private:
 
   octave_parser& operator = (const octave_parser&);
 };
-
-// The current state of the parser.
-extern octave_parser *curr_parser;
 
 #endif

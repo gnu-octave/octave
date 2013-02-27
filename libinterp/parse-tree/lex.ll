@@ -20,8 +20,19 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// We are using the pure parser interface and the reentrant lexer
+// interface but the Octave parser and lexer are NOT properly
+// reentrant because both still use many global variables.  It should be
+// safe to create a parser object and call it while anotehr parser
+// object is active (to parse a callback function while the main
+// interactive parser is waiting for input, for example) if you take
+// care to properly save and restore (typically with an unwind_protect
+// object) relevant global values before and after the nested call.
+
 %option prefix = "octave_"
 %option noyywrap
+%option reentrant
+%option bison-bridge
 
 %top {
 #ifdef HAVE_CONFIG_H
@@ -96,7 +107,8 @@ along with Octave; see the file COPYING.  If not, see
 #error lex.l requires flex version 2.5.4 or later
 #endif
 
-#define yylval octave_lval
+#define YY_EXTRA_TYPE lexical_feedback *
+#define curr_lexer yyextra
 
 // Arrange to get input via readline.
 
@@ -107,14 +119,12 @@ along with Octave; see the file COPYING.  If not, see
   result = curr_lexer->octave_read (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
-// The call to yy_fatal_error should never happen, but it avoids a
-// 'static function defined but not used' warning from gcc.
 
 #ifdef YY_FATAL_ERROR
 #undef YY_FATAL_ERROR
 #endif
 #define YY_FATAL_ERROR(msg) \
-  curr_lexer->fatal_error (msg)
+  (yyget_extra (yyscanner))->fatal_error (msg)
 
 #define DISPLAY_TOK_AND_RETURN(tok) \
   do \
@@ -205,9 +215,6 @@ along with Octave; see the file COPYING.  If not, see
         curr_lexer->lexer_debug (pattern, yytext); \
     } \
   while (0)
-
-// The state of the lexer.
-lexical_feedback *curr_lexer = 0;
 
 static bool Vdisplay_tokens = false;
 
@@ -1117,70 +1124,9 @@ display_character (char c)
       }
 }
 
-// Tell us all what the current buffer is.
-
-YY_BUFFER_STATE
-current_buffer (void)
-{
-  return YY_CURRENT_BUFFER;
-}
-
-// Create a new buffer.
-
-YY_BUFFER_STATE
-create_buffer (FILE *f)
-{
-  return yy_create_buffer (f, YY_BUF_SIZE);
-}
-
-// Start reading a new buffer.
-
-void
-switch_to_buffer (YY_BUFFER_STATE buf)
-{
-  yy_switch_to_buffer (buf);
-}
-
-// Delete a buffer.
-
-void
-delete_buffer (YY_BUFFER_STATE buf)
-{
-  yy_delete_buffer (buf);
-
-  // Prevent invalid yyin from being used by yyrestart.
-  if (! current_buffer ())
-    yyin = 0; 
-}
-
-// Delete all buffers from the stack.
-void
-clear_all_buffers (void)
-{                 
-  while (current_buffer ())
-    octave_pop_buffer_state ();
-}
-
 void
 cleanup_parser (void)
 {
-  clear_all_buffers ();
-}
-
-// Restore a buffer (for unwind-prot).
-
-void
-restore_input_buffer (void *buf)
-{
-  switch_to_buffer (static_cast<YY_BUFFER_STATE> (buf));
-}
-
-// Delete a buffer (for unwind-prot).
-
-void
-delete_input_buffer (void *buf)
-{
-  delete_buffer (static_cast<YY_BUFFER_STATE> (buf));
 }
 
 // Return 1 if the given character matches any character in the given
@@ -1366,11 +1312,38 @@ lexical_feedback::~lexical_feedback (void)
       delete token_stack.top ();
       token_stack.pop ();
     }
+
+  yylex_destroy (scanner);
 }
+
+void
+lexical_feedback::init (void)
+{
+  // The closest paren, brace, or bracket nesting is not an object
+  // index.
+  looking_at_object_index.push_front (false);
+
+  yylex_init (&scanner);
+
+  // Make lexical_feedback object available through yyextra in
+  // flex-generated lexer.
+  yyset_extra (this, scanner);
+}
+
+// Inside Flex-generated functions, yyg is the scanner cast to its real
+// type.  The BEGIN macro uses yyg and we want to use that in
+// lexical_feedback member functions.  If we could set the start state
+// by calling a function instead of using the BEGIN macro, we could
+// eliminate the OCTAVE_YYG macro.
+
+#define OCTAVE_YYG \
+  struct yyguts_t *yyg = static_cast<struct yyguts_t*> (scanner)
 
 void
 lexical_feedback::reset (void)
 {
+  OCTAVE_YYG;
+
   // Start off on the right foot.
   BEGIN (INITIAL);
 
@@ -1389,7 +1362,7 @@ lexical_feedback::reset (void)
             || reading_script_file
             || get_input_from_eval_string
             || input_from_startup_file))
-    yyrestart (stdin);
+    yyrestart (stdin, scanner);
 
   // Clear the buffer for help text.
   while (! help_buf.empty ())
@@ -1399,12 +1372,16 @@ lexical_feedback::reset (void)
 void
 lexical_feedback::prep_for_script_file (void)
 {
+  OCTAVE_YYG;
+
   BEGIN (SCRIPT_FILE_BEGIN);
 }
 
 void
 lexical_feedback::prep_for_function_file (void)
 {
+  OCTAVE_YYG;
+
   BEGIN (FUNCTION_FILE_BEGIN);
 }
 
@@ -1466,7 +1443,7 @@ lexical_feedback::octave_read (char *buf, unsigned max_size)
       status = YY_NULL;
 
       if (! eof)
-        YY_FATAL_ERROR ("octave_read () in flex scanner failed");
+        fatal_error ("octave_read () in flex scanner failed");
     }
 
   return status;
@@ -1475,13 +1452,13 @@ lexical_feedback::octave_read (char *buf, unsigned max_size)
 char *
 lexical_feedback::flex_yytext (void)
 {
-  return yytext;
+  return yyget_text (scanner);
 }
 
 int
 lexical_feedback::flex_yyleng (void)
 {
-  return yyleng;
+  return yyget_leng (scanner);
 }
 
 // GAG.
@@ -1508,7 +1485,7 @@ lexical_feedback::do_comma_insert_check (void)
 int
 lexical_feedback::text_yyinput (void)
 {
-  int c = yyinput ();
+  int c = yyinput (scanner);
 
   if (lexer_debug_flag)
     {
@@ -1521,7 +1498,7 @@ lexical_feedback::text_yyinput (void)
 
   if (c == '\r')
     {
-      c = yyinput ();
+      c = yyinput (scanner);
 
       if (lexer_debug_flag)
         {
@@ -1556,13 +1533,14 @@ lexical_feedback::xunput (char c, char *buf)
   if (c == '\n')
     input_line_number--;
 
-  yyunput (c, buf);
+  yyunput (c, buf, scanner);
 }
 
 void
 lexical_feedback::xunput (char c)
 {
   char *yytxt = flex_yytext ();
+
   xunput (c, yytxt);
 }
 
@@ -2077,6 +2055,8 @@ lexical_feedback::grab_comment_block (stream_reader& reader, bool at_bol,
 int
 lexical_feedback::process_comment (bool start_in_block, bool& eof)
 {
+  OCTAVE_YYG;
+
   eof = false;
 
   std::string help_txt;
@@ -2839,6 +2819,8 @@ lexical_feedback::next_token_is_index_op (void)
 int
 lexical_feedback::handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
+  OCTAVE_YYG;
+
   int retval = bracket_type;
 
   if (! nesting_level.none ())
@@ -3283,6 +3265,8 @@ lexical_feedback::handle_meta_identifier (void)
 int
 lexical_feedback::handle_identifier (void)
 {
+  OCTAVE_YYG;
+
   bool at_bos = at_beginning_of_statement;
 
   char *yytxt = flex_yytext ();
@@ -3518,14 +3502,16 @@ lexical_feedback::gripe_matlab_incompatible_operator (const std::string& op)
 void
 lexical_feedback::push_token (token *tok)
 {
-  yylval.tok_val = tok;
+  YYSTYPE *lval = yyget_lval (scanner);
+  lval->tok_val = tok;
   token_stack.push (tok);
 }
 
 token *
 lexical_feedback::current_token (void)
 {
-  return yylval.tok_val;
+  YYSTYPE *lval = yyget_lval (scanner);
+  return lval->tok_val;
 }
 
 void
@@ -3706,12 +3692,14 @@ lexical_feedback::fatal_error (const char *msg)
 
   OCTAVE_QUIT;
 
-  yy_fatal_error (msg);
+  yy_fatal_error (msg, scanner);
 }
 
 void
 lexical_feedback::lexer_debug (const char *pattern, const char *text)
 {
+  OCTAVE_YYG;
+
   std::cerr << std::endl;
 
   display_state (YY_START);

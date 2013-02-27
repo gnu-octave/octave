@@ -997,9 +997,6 @@ octave_execute_interpreter (void)
   // Now argv should have the full set of args.
   intern_argv (octave_cmdline_argc, octave_cmdline_argv);
 
-  if (! octave_embedded)
-    switch_to_buffer (create_buffer (get_input_from_stdin ()));
-
   // Force input to be echoed if not really interactive, but the user
   // has forced interactive behavior.
 

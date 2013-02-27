@@ -27,25 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <stack>
 
-// FIXME -- these input buffer things should be members of a
-// parser input stream class.
-
-typedef struct yy_buffer_state *YY_BUFFER_STATE;
-
-// Associate a buffer with a new file to read.
-extern OCTINTERP_API YY_BUFFER_STATE create_buffer (FILE *f);
-
-// Report the current buffer.
-extern OCTINTERP_API YY_BUFFER_STATE current_buffer (void);
-
-// Connect to new buffer buffer.
-extern OCTINTERP_API void switch_to_buffer (YY_BUFFER_STATE buf);
-
-// Delete a buffer.
-extern OCTINTERP_API void delete_buffer (YY_BUFFER_STATE buf);
-
-extern OCTINTERP_API void clear_all_buffers (void);
-
 extern OCTINTERP_API void cleanup_parser (void);
 
 // Is the given string a keyword?
@@ -173,8 +154,8 @@ public:
   };
 
   lexical_feedback (void)
-    : convert_spaces_to_comma (true), do_comma_insert (false),
-      at_beginning_of_statement (true),
+    : scanner (0), convert_spaces_to_comma (true),
+      do_comma_insert (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
       looking_at_initializer_expression (false),
@@ -195,12 +176,7 @@ public:
 
   ~lexical_feedback (void);
 
-  void init (void)
-  {
-    // The closest paren, brace, or bracket nesting is not an object
-    // index.
-    looking_at_object_index.push_front (false);
-  }
+  void init (void);
 
   void reset (void);
 
@@ -296,6 +272,9 @@ public:
   void fatal_error (const char *msg);
 
   void lexer_debug (const char *pattern, const char *text);
+
+  // Internal state of the flex-generated lexer.
+  void *scanner;
 
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
@@ -406,8 +385,5 @@ private:
 
   lexical_feedback& operator = (const lexical_feedback&);
 };
-
-// The current state of the lexer.
-extern lexical_feedback *curr_lexer;
 
 #endif

@@ -3154,9 +3154,6 @@ text_getc (FILE *f)
         }
     }
 
-  if (c == '\n')
-    curr_lexer->input_line_number++;
-
   return c;
 }
 
@@ -3164,19 +3161,52 @@ class
 stdio_stream_reader : public stream_reader
 {
 public:
-  stdio_stream_reader (FILE *f_arg) : stream_reader (), f (f_arg) { }
 
-  int getc (void) { return ::text_getc (f); }
+  stdio_stream_reader (FILE *f_arg, int& l, int& c)
+    : stream_reader (), f (f_arg), line_num (l), column_num (c)
+  { }
+
+  int getc (void)
+  {
+    char c = ::text_getc (f);
+
+    if (c == '\n')
+      {
+        line_num++;
+        column_num = 0;
+      }
+    else
+      {
+        // FIXME -- try to be smarter about tabs?
+        column_num++;
+      }
+        
+    return c;
+  }
+
   int ungetc (int c)
   {
     if (c == '\n')
-      curr_lexer->input_line_number--;
+      {   
+        line_num--;
+        column_num = 0;
+      }
+    else
+      {
+        // FIXME -- try to be smarter about tabs?
+        column_num--;
+      }
 
     return ::ungetc (c, f);
   }
 
 private:
+
   FILE *f;
+
+  int& line_num;
+
+  int& column_num;
 
   // No copying!
 
@@ -3196,11 +3226,7 @@ skip_white_space (stream_reader& reader)
         {
         case ' ':
         case '\t':
-          curr_lexer->current_input_column++;
-          break;
-
         case '\n':
-          curr_lexer->current_input_column = 1;
           break;
 
         default:
@@ -3234,7 +3260,8 @@ looking_at_classdef_keyword (FILE *ffile)
  }
 
 static std::string
-gobble_leading_white_space (FILE *ffile, bool& eof)
+gobble_leading_white_space (FILE *ffile, bool& eof, int& line_num,
+                            int& column_num)
 {
   std::string help_txt;
 
@@ -3245,7 +3272,7 @@ gobble_leading_white_space (FILE *ffile, bool& eof)
 
   std::string txt;
 
-  stdio_stream_reader stdio_reader (ffile);
+  stdio_stream_reader stdio_reader (ffile, line_num, column_num);
 
   while (true)
     {
@@ -3272,6 +3299,15 @@ gobble_leading_white_space (FILE *ffile, bool& eof)
     }
 
   return help_txt;
+}
+
+static std::string
+gobble_leading_white_space (FILE *ffile, bool& eof)
+{
+  int line_num = 1;
+  int column_num = 1;
+
+  return gobble_leading_white_space (ffile, eof, line_num, column_num);
 }
 
 static bool

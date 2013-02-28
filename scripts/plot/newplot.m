@@ -17,13 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} newplot ()
+## @deftypefn  {Function File} {} newplot ()
+## @deftypefnx {Function File} {@var{h} =} newplot ()
 ## Prepare graphics engine to produce a new plot.  This function is
 ## called at the beginning of all high-level plotting functions.
 ## It is not normally required in user programs.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## axes (not figure).
 ## @end deftypefn
 
-function newplot ()
+function h = newplot ()
 
   if (nargin == 0)
     cf = gcf ();
@@ -59,6 +63,9 @@ function newplot ()
       otherwise
         error ("newplot: unrecognized nextplot property for current axes");
     endswitch
+    if (nargout > 0)
+      h = ca;
+    endif
   else
     print_usage ();
   endif
@@ -70,7 +77,8 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   p = plot ([0, 1]);
-%!   newplot;
+%!   ha = newplot ();
+%!   assert (ha, gca);
 %!   assert (isempty (get (gca, "children")));
 %! unwind_protect_cleanup
 %!   close (hf);

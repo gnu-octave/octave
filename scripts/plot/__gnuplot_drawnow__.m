@@ -23,10 +23,10 @@
 
 ## Author: jwe
 
-function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
+function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
 
-  if (nargin < 4)
-    mono = false;
+  if (nargin < 1 || nargin > 5 || nargin == 2)
+    print_usage ();
   endif
 
   if (nargin >= 3 && nargin <= 5)
@@ -39,7 +39,7 @@ function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
       plot_stream = __gnuplot_open_stream__ (2, h);
       gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream);
       if (gnuplot_supports_term)
-        enhanced = gnuplot_set_term (plot_stream (1), true, h, term, file);
+        enhanced = gnuplot_set_term (plot_stream(1), true, h, term, file);
         __go_draw_figure__ (h, plot_stream(1), enhanced, mono);
         if (nargin == 5)
           fid = fopen (debug_file, "wb");
@@ -47,7 +47,7 @@ function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
           __go_draw_figure__ (h, fid, enhanced, mono);
         endif
       else
-        error ("__gnuplot_drawnow__: the gnuplot terminal, \"%s\", is not available",
+        error ('__gnuplot_drawnow__: the gnuplot terminal, "%s", is not available',
                gnuplot_trim_term (term));
       endif
     unwind_protect_cleanup
@@ -65,7 +65,7 @@ function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
         fclose (fid);
       endif
     end_unwind_protect
-  elseif (nargin == 1)
+  else  # nargin == 1
     ##  Graphics terminal for display.
     plot_stream = get (h, "__plot_stream__");
     if (isempty (plot_stream))
@@ -78,13 +78,13 @@ function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
     if (strcmp (term, "dumb"))
       ## popen2 eats stdout of gnuplot, use temporary file instead
       dumb_tmp_file = tmpnam ();
-      enhanced = gnuplot_set_term (plot_stream (1), new_stream, h, ...
+      enhanced = gnuplot_set_term (plot_stream(1), new_stream, h,
                                    term, dumb_tmp_file);
     else
-      enhanced = gnuplot_set_term (plot_stream (1), new_stream, h, term);
+      enhanced = gnuplot_set_term (plot_stream(1), new_stream, h, term);
     endif
-    __go_draw_figure__ (h, plot_stream (1), enhanced, mono);
-    fflush (plot_stream (1));
+    __go_draw_figure__ (h, plot_stream(1), enhanced, mono);
+    fflush (plot_stream(1));
     if (strcmp (term, "dumb"))
       fid = -1;
       while (fid < 0)
@@ -94,17 +94,14 @@ function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
       ## reprint the plot on screen
       [a, count] = fscanf (fid, '%c', Inf);
       fclose (fid);
-      if (count>0)
-        if (a(1)==12)
-          ## avoid ^L at the beginning
-          a = a(2:end);
+      if (count > 0)
+        if (a(1) == 12)
+          a = a(2:end);  # avoid ^L at the beginning
         endif
         puts (a);
       endif
       unlink (dumb_tmp_file);
     endif
-  else
-    print_usage ();
   endif
 
 endfunction
@@ -117,9 +114,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     term = gnuplot_default_term (plot_stream);
     opts_str = "";
   else
-    ## Get the one word terminal id and save the remaining as options to
-    ## be passed on to gnuplot.  The terminal may respect the graphics
-    ## toolkit.
+    ## Get the one word terminal id and save the remaining as options to be
+    ## passed on to gnuplot.  The terminal may respect the graphics toolkit.
     [term, opts_str] = gnuplot_trim_term (term);
     term = lower (term);
     if (strcmp (term, "lua"))
@@ -149,7 +145,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       ## Generate gnuplot title string for plot windows.
       if (output_to_screen (term) && ! strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
-        fig.name = strrep (get (h, "name"), "\"", "\\\"");
+        fig.name = strrep (get (h, "name"), '"', '\"');
         if (strcmp (get (h, "numbertitle"), "on"))
           title_str = sprintf ("Figure %d", h);
         else
@@ -161,11 +157,11 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           title_str = fig.name;
         endif
         if (! isempty (title_str))
-          title_str = sprintf ("title \"%s\"", title_str);
+          title_str = sprintf ('title "%s"', title_str);
         endif
         if (strcmp (term, "aqua"))
           ## Adjust axes-label and tick-label spacing.
-          opts_str = sprintf ("%s font \"%s,%d\"", opts_str,
+          opts_str = sprintf ('%s font "%s,%d"', opts_str,
                               get (0, "defaultaxesfontname"),
                               get (0, "defaultaxesfontsize") / 1.5);
         endif
@@ -195,8 +191,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         if (all (gnuplot_size > 0))
           terminals_with_size = {"canvas", "emf", "epslatex", "fig", ...
                                  "gif", "jpeg", "latex", "pbm", "pdf", ...
-                                 "pdfcairo", "postscript", "png", "pngcairo", ...
-                                 "pstex", "pslatex", "svg", "tikz"};
+                                 "pdfcairo", "postscript", "png", ...
+                                 "pngcairo", "pstex", "pslatex", "svg", "tikz"};
           if (__gnuplot_has_feature__ ("windows_figure_position"))
             terminals_with_size{end+1} = "windows";
           endif
@@ -207,27 +203,27 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
             terminals_with_size{end+1} = "wxt";
           endif
           switch (term)
-          case terminals_with_size
-            size_str = sprintf ("size %.12g,%.12g", gnuplot_size);
-          case "tikz"
-            size_str = sprintf ("size %gin,%gin", gnuplot_size);
-          case "dumb"
-            new_stream = 1;
-            if (! isempty (getenv ("COLUMNS")) && ! isempty (getenv ("LINES")))
-              ## Let dumb use full text screen size (minus prompt lines).
-              n = sprintf ("%i", -2 - length (find (sprintf ("%s", PS1) == "\n")));
-              ## n = the number of times \n appears in PS1
-              size_str = ["size ", getenv("COLUMNS"), ",", getenv("LINES"), n];
-            else
-              ## Use the gnuplot default.
+            case terminals_with_size
+              size_str = sprintf ("size %.12g,%.12g", gnuplot_size);
+            case "tikz"
+              size_str = sprintf ("size %gin,%gin", gnuplot_size);
+            case "dumb"
+              new_stream = 1;
+              if (! isempty (getenv ("COLUMNS")) && ! isempty (getenv ("LINES")))
+                ## Let dumb use full text screen size (minus prompt lines).
+                n = sprintf ("%i", -2 - length (find (sprintf ("%s", PS1) == "\n")));
+                ## n = the number of times \n appears in PS1
+                size_str = ["size ", getenv("COLUMNS"), ",", getenv("LINES"), n];
+              else
+                ## Use the gnuplot default.
+                size_str = "";
+              endif
+            case {"aqua", "fig", "corel"}
+              size_str = sprintf ("size %g %g", gnuplot_size);
+            case "dxf"
               size_str = "";
-            endif
-          case {"aqua", "fig", "corel"}
-            size_str = sprintf ("size %g %g", gnuplot_size);
-          case "dxf"
-            size_str = "";
-          otherwise
-            size_str = "";
+            otherwise
+              size_str = "";
           endswitch
           if ((strncmpi (term, "x11", 3)
                && __gnuplot_has_feature__ ("x11_figure_position"))
@@ -269,34 +265,44 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     endif
 
     ## Set the gnuplot terminal (type, enhanced, title, options & size).
-    term_str = sprintf ("set terminal %s", term);
+    term_str = ["set terminal " term];
     if (! isempty (enh_str))
-      term_str = sprintf ("%s %s", term_str, enh_str);
+      term_str = [term_str " " enh_str];
     endif
     if (! isempty (title_str))
-      term_str = sprintf ("%s %s", term_str, title_str);
+      term_str = [term_str " " title_str];
     endif
     if (isempty (strfind (term, "corel")))
       if (! isempty (size_str) && new_stream)
         ## size_str comes after other options to permit specification of
         ## the canvas size for terminals cdr/corel.
-        term_str = sprintf ("%s %s", term_str, size_str);
+        term_str = [term_str " " size_str];
       endif
       if (nargin > 3 && ischar (opts_str))
         ## Options must go last.
-        term_str = sprintf ("%s %s", term_str, opts_str);
+        term_str = [term_str " " opts_str];
       endif
     else
       if (nargin > 3 && ischar (opts_str))
         ## Options must go last.
-        term_str = sprintf ("%s %s", term_str, opts_str);
+        term_str = [term_str " " opts_str];
       endif
       if (! isempty (size_str) && new_stream)
         ## size_str comes after other options to permit specification of
         ## the canvas size for terminals cdr/corel.
-        term_str = sprintf ("%s %s", term_str, size_str);
+        term_str = [term_str " " size_str];
       endif
     endif
+    if (! __gnuplot_has_feature__ ("has_termoption_dashed"))
+      ## If "set termoption dashed" isn't available add "dashed" option
+      ## to the "set terminal ..." command, if it is supported.
+      if (any (strcmpi (term, {"aqua", "cgm", "eepic", "emf", "epslatex", \
+                               "fig", "pcl5", "mp", "next", "openstep", "pdf", \
+                               "pdfcairo", "pngcairo", "postscript", \
+                               "pslatex", "pstext", "svg", "tgif", "x11"})))
+        term_str = [term_str " dashed"];
+      endif
+    end
 
     ## Work around the gnuplot feature of growing the x11 window and
     ## flickering window (x11, windows, & wxt) when the mouse and
@@ -321,7 +327,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         endif
       endif
     endif
-    fprintf (plot_stream, "set termoption dashed\n")
+    if (__gnuplot_has_feature__ ("has_termoption_dashed"))
+      fprintf (plot_stream, "set termoption dashed\n")
+    endif
   else
     ## gnuplot will pick up the GNUTERM environment variable itself
     ## so no need to set the terminal type if not also setting the
@@ -331,7 +339,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
 endfunction
 
 function term = gnuplot_default_term (plot_stream)
-  term = getenv ("GNUTERM");
+  term = lower (getenv ("GNUTERM"));
   ## If not specified, guess the terminal type.
   if (isempty (term) || ! __gnuplot_has_terminal__ (term, plot_stream))
     if (isguirunning () && __gnuplot_has_terminal__ ("qt", plot_stream))
@@ -350,35 +358,31 @@ endfunction
 
 function [term, opts] = gnuplot_trim_term (string)
   ## Extract the terminal type and terminal options (from print.m)
-  string = deblank (string);
-  n = strfind (string, ' ');
-  if (isempty (n))
-    term = string;
-    opts = "";
-  else
-    term = string(1:(n-1));
-    opts = string((n+1):end);
+  string = strtrim (string);
+  [term, opts] = strtok (string, ' ');
+  if (! isempty (opts))
+    opts(1) = "";  # trim extra space from strtok
   endif
 endfunction
 
 function have_enhanced = gnuplot_is_enhanced_term (plot_stream, term)
-  persistent enhanced_terminals;
-  if (isempty (enhanced_terminals))
-    ## Don't include pstex, pslatex or epslatex here as the TeX commands
-    ## should not be interpreted in that case.
-    enhanced_terminals = {"aqua", "canvas", "dumb", "emf", "gif", "jpeg", ...
-                          "pdf", "pdfcairo", "pm", "png", "pngcairo", ...
-                          "postscript", "qt", "svg", "windows", "wxt", "x11"};
-  endif
+  ## Don't include pstex, pslatex or epslatex here as the TeX commands
+  ## should not be interpreted in that case.
+  persistent enhanced_terminals = {"aqua", "canvas", "dumb", "emf", "gif", ...
+                                   "jpeg", "pdf", "pdfcairo", "pm", "png", ...
+                                   "pngcairo", "postscript", "qt", "svg",  ...
+                                   "windows", "wxt", "x11"};
+
   if (nargin < 2)
     ## Determine the default gnuplot terminal.
     term = gnuplot_default_term (plot_stream);
   endif
-  have_enhanced = any (strncmp (enhanced_terminals, term, min (numel (term), 3)));
+  have_enhanced = any (strcmp (term, enhanced_terminals));
 endfunction
 
 function ret = output_to_screen (term)
-  ret = any (strcmpi ({"aqua", "dumb", "pm", "qt", "windows", "wxt", "x11"}, term));
+  ret = any (strcmpi (term, 
+                     {"aqua", "dumb", "pm", "qt", "windows", "wxt", "x11"}));
 endfunction
 
 function retval = have_non_legend_axes (h)

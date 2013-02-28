@@ -207,11 +207,10 @@
 ## is sent to a file the size is determined by the plot box defined by
 ## the figure's "paperposition" property.
 ##
-## @itemx -append
-##   Append Postscript or PDF output to a pre-existing file of the
-## same type.
+## @item -append
+##   Append Postscript or PDF output to a pre-existing file of the same type.
 ##
-## @itemx -r@var{NUM}
+## @item -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and
 ## SVG the default is the screen resolution; for other formats it is 150 dpi.
 ## To specify screen resolution, use "-r0".

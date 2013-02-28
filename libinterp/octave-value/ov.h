@@ -419,6 +419,12 @@ public:
                                   std::list<octave_value_list>& idx,
                                   size_t skip = 1);
 
+  octave_value_list next_subsref (int nargout,
+                                  const std::string& type, const
+                                  std::list<octave_value_list>& idx,
+                                  const std::list<octave_lvalue> *lvalue_list,
+                                  size_t skip = 1);
+
   octave_value next_subsref (bool auto_add, const std::string& type, const
                              std::list<octave_value_list>& idx,
                              size_t skip = 1);

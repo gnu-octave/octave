@@ -4729,7 +4729,17 @@ if fewer than two values are requested.\n\
     }
 
   if (nargin == 3)
-    npoints = args(2).idx_type_value ();
+    {
+      // Apparently undocumented Matlab.  If the third arg is an empty
+      // numeric value, the number of points defaults to 1.
+
+      octave_value arg_3 = args(2);
+
+      if (arg_3.is_numeric_type () && arg_3.is_empty ())
+        npoints = 1;
+      else
+        npoints = arg_3.idx_type_value ();
+    }
 
   if (! error_state)
     {
@@ -4769,6 +4779,8 @@ if fewer than two values are requested.\n\
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
 
 %assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
+
+%assert (linspace (0, 1, []), 1)
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)

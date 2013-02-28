@@ -23,25 +23,22 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef HISTORYDOCKWIDGET_H
 #define HISTORYDOCKWIDGET_H
 
-#include <QDockWidget>
 #include <QLineEdit>
 #include <QListView>
 #include <QSortFilterProxyModel>
 #include <QStringListModel>
 #include <QTimer>
+#include "octave-dock-widget.h"
 
-class history_dock_widget : public QDockWidget
+class history_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
   public:
   history_dock_widget (QWidget *parent = 0);
 
 public slots:
-  void handle_visibility_changed (bool visible);
   void request_history_model_update ();
   void reset_model ();
-  /** Slot when floating property changes */
-  void top_level_changed (bool floating);
 
 signals:
   void information (const QString& message);
@@ -49,10 +46,8 @@ signals:
   /** Emitted, whenever the user double-clicked a command in the history. */
   void command_double_clicked (const QString& command);
 
-  /** Custom signal that tells if a user has clicked away that dock widget. */
-  void active_changed (bool active);
 protected:
-  void closeEvent (QCloseEvent *event);
+
 private slots:
   void handle_double_click (QModelIndex modelIndex);
   void handle_contextmenu_copy(bool flag);
@@ -71,6 +66,7 @@ private:
   QTimer _update_history_model_timer;
 
   void update_history_callback (void);
+  bool _update_event_enabled;
 };
 
 #endif // HISTORYDOCKWIDGET_H

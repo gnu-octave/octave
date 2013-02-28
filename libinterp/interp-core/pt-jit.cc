@@ -36,11 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "variables.h"
 
+#ifdef HAVE_LLVM
+
 static bool Venable_jit_debugging = false;
 
 static bool Venable_jit_compiler = true;
-
-#ifdef HAVE_LLVM
 
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>

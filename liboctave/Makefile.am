@@ -135,5 +135,7 @@ liboctavetestsdir := $(octtestsdir)/liboctave
 
 nobase_liboctavetests_DATA = $(TST_FILES)
 
-DISTCLEANFILES += $(BUILT_INCS)
+DISTCLEANFILES += \
+  $(BUILT_INCS) \
+  $(TST_FILES)
 

@@ -619,8 +619,9 @@ DEFALIAS (setenv, putenv);
 
 DEFUN (kbhit, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} kbhit ()\n\
-Read a single keystroke from the keyboard.  If called with one\n\
+@deftypefn  {Built-in Function} {} kbhit ()\n\
+@deftypefnx {Built-in Function} {} kbhit (1)\n\
+Read a single keystroke from the keyboard.  If called with an\n\
 argument, don't wait for a keypress.  For example,\n\
 \n\
 @example\n\
@@ -636,8 +637,9 @@ x = kbhit (1);\n\
 @end example\n\
 \n\
 @noindent\n\
-identical to the above example, but don't wait for a keypress,\n\
+is identical to the above example, but doesn't wait for a keypress,\n\
 returning the empty string if no key is available.\n\
+@seealso{input}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -653,7 +655,7 @@ returning the empty string if no key is available.\n\
       if (c == -1)
         c = 0;
 
-      char s[2] = {c, '\0'};
+      char s[2] = { static_cast<char> (c), '\0' };
 
       retval = s;
     }

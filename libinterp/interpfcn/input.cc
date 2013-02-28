@@ -100,10 +100,6 @@ std::string current_eval_string;
 // TRUE means get input from current_eval_string.
 bool get_input_from_eval_string = false;
 
-// TRUE means we haven't been asked for the input from
-// current_eval_string yet.
-bool input_from_eval_string_pending = false;
-
 // TRUE means that input is coming from a file that was named on
 // the command line.
 bool input_from_command_line_file = false;
@@ -191,16 +187,16 @@ do_input_echo (const std::string& input_string)
 }
 
 std::string
-gnu_readline (const std::string& s, bool force_readline)
+gnu_readline (const std::string& s, bool& eof, bool force_readline)
 {
   octave_quit ();
+
+  eof = false;
 
   std::string retval;
 
   if (line_editing || force_readline)
     {
-      bool eof;
-
       retval = command_editor::readline (s, eof);
 
       if (! eof && retval.empty ())
@@ -221,14 +217,22 @@ gnu_readline (const std::string& s, bool force_readline)
       if (reading_fcn_file || reading_script_file || reading_classdef_file)
         curr_stream = ff_instream;
 
-      retval = octave_fgets (curr_stream);
+      retval = octave_fgets (curr_stream, eof);
     }
 
   return retval;
 }
 
+extern std::string
+gnu_readline (const std::string& s, bool force_readline)
+{
+  bool eof = false;
+
+  return gnu_readline (s, eof, force_readline);
+}
+
 static inline std::string
-interactive_input (const std::string& s, bool force_readline = false)
+interactive_input (const std::string& s, bool& eof, bool force_readline)
 {
   Vlast_prompt_time.stamp ();
 
@@ -247,13 +251,23 @@ interactive_input (const std::string& s, bool force_readline = false)
         return "\n";
     }
 
-  return gnu_readline (s, force_readline);
+  return gnu_readline (s, eof, force_readline);
+}
+
+static inline std::string
+interactive_input (const std::string& s, bool force_readline = false)
+{
+  bool eof = false;
+
+  return interactive_input (s, eof, force_readline);
 }
 
 static std::string
-octave_gets (void)
+octave_gets (bool& eof)
 {
   octave_quit ();
+
+  eof = false;
 
   std::string retval;
 
@@ -280,7 +294,7 @@ octave_gets (void)
 
       octave_diary << prompt;
 
-      retval = interactive_input (prompt);
+      retval = interactive_input (prompt, eof, false);
 
       // There is no need to update the load_path cache if there is no
       // user input.
@@ -301,7 +315,7 @@ octave_gets (void)
         }
     }
   else
-    retval = gnu_readline ("");
+    retval = gnu_readline ("", eof, false);
 
   current_input_line = retval;
 
@@ -329,97 +343,33 @@ octave_gets (void)
 
 // Read a line from the input stream.
 
-static std::string
-get_user_input (void)
+std::string
+get_user_input (bool& eof)
 {
   octave_quit ();
+
+  eof = false;
 
   std::string retval;
 
   if (get_input_from_eval_string)
     {
-      if (input_from_eval_string_pending)
-        {
-          input_from_eval_string_pending = false;
+      retval = current_eval_string;
 
-          retval = current_eval_string;
+      size_t len = retval.length ();
 
-          size_t len = retval.length ();
+      // Clear the global eval string so that the next call will return
+      // an empty character string with EOF = true.
+      current_eval_string = "";
 
-          if (len > 0 && retval[len-1] != '\n')
-            retval.append ("\n");
-        }
+      eof = true;
     }
   else
-    retval = octave_gets ();
+    retval = octave_gets (eof);
 
   current_input_line = retval;
 
   return retval;
-}
-
-int
-octave_read (char *buf, unsigned max_size)
-{
-  // FIXME -- is this a safe way to buffer the input?
-
-  static const char * const eol = "\n";
-  static std::string input_buf;
-  static const char *pos = 0;
-  static size_t chars_left = 0;
-
-  int status = 0;
-  if (chars_left == 0)
-    {
-      pos = 0;
-
-      input_buf = get_user_input ();
-
-      chars_left = input_buf.length ();
-
-      pos = input_buf.c_str ();
-    }
-
-  if (chars_left > 0)
-    {
-      size_t len = max_size > chars_left ? chars_left : max_size;
-      assert (len > 0);
-
-      memcpy (buf, pos, len);
-
-      chars_left -= len;
-      pos += len;
-
-      // Make sure input ends with a new line character.
-      if (chars_left == 0 && buf[len-1] != '\n')
-        {
-          if (len < max_size)
-            {
-              // There is enough room to plug the newline character in
-              // the buffer.
-              buf[len++] = '\n';
-            }
-          else
-            {
-              // There isn't enough room to plug the newline character
-              // in the buffer so make sure it is returned on the next
-              // octave_read call.
-              pos = eol;
-              chars_left = 1;
-            }
-        }
-
-      status = len;
-
-    }
-  else if (chars_left == 0)
-    {
-      status = 0;
-    }
-  else
-    status = -1;
-
-  return status;
 }
 
 // Fix things up so that input can come from file 'name', printing a
@@ -717,35 +667,33 @@ get_debug_input (const std::string& prompt)
 
       frame.protect_var (get_input_from_eval_string);
       get_input_from_eval_string = false;
-
-      YY_BUFFER_STATE old_buf = current_buffer ();
-      YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
-
-      // FIXME: are these safe?
-      frame.add_fcn (switch_to_buffer, old_buf);
-      frame.add_fcn (delete_buffer, new_buf);
-
-      switch_to_buffer (new_buf);
     }
+
+  // octave_parser constructor sets this for us.
+  frame.protect_var (CURR_LEXER);
+
+  octave_parser *curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
 
   while (Vdebugging)
     {
+      unwind_protect middle_frame;
+
       reset_error_handler ();
 
-      reset_parser ();
+      curr_parser->reset ();
 
       // Save current value of global_command.
-      frame.protect_var (global_command);
+      middle_frame.protect_var (global_command);
 
       global_command = 0;
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
-      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+      middle_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      // This is the same as yyparse in parse.y.
-      int retval = octave_parse ();
+      int retval = curr_parser->run ();
 
       if (retval == 0 && global_command)
         {
@@ -762,10 +710,6 @@ get_debug_input (const std::string& prompt)
           if (octave_completion_matches_called)
             octave_completion_matches_called = false;
         }
-
-      // Unmark forced variables.
-      // Restore previous value of global_command.
-      frame.run (2);
 
       octave_quit ();
     }
@@ -843,8 +787,8 @@ get_user_input (const octave_value_list& args, int nargout)
 
 DEFUN (input, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} input (@var{prompt})\n\
-@deftypefnx {Built-in Function} {} input (@var{prompt}, \"s\")\n\
+@deftypefn  {Built-in Function} {@var{ans} =} input (@var{prompt})\n\
+@deftypefnx {Built-in Function} {@var{ans} =} input (@var{prompt}, \"s\")\n\
 Print a prompt and wait for user input.  For example,\n\
 \n\
 @example\n\
@@ -874,7 +818,8 @@ directly, without evaluating it first.\n\
 Because there may be output waiting to be displayed by the pager, it is\n\
 a good idea to always call @code{fflush (stdout)} before calling\n\
 @code{input}.  This will ensure that all pending output is written to\n\
-the screen before your prompt.  @xref{Input and Output}.\n\
+the screen before your prompt.\n\
+@seealso{yes_or_no, kbhit}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -909,12 +854,14 @@ octave_yes_or_no (const std::string& prompt)
 
 DEFUN (yes_or_no, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} yes_or_no (@var{prompt})\n\
-Ask the user a yes-or-no question.  Return 1 if the answer is yes.\n\
-Takes one argument, which is the string to display to ask the\n\
-question.  It should end in a space; @samp{yes-or-no-p} adds\n\
-@samp{(yes or no) } to it.  The user must confirm the answer with\n\
-RET and can edit it until it has been confirmed.\n\
+@deftypefn {Built-in Function} {@var{ans} =} yes_or_no (\"@var{prompt}\")\n\
+Ask the user a yes-or-no question.  Return logical true if the answer is yes\n\
+or false if the answer is no.  Takes one argument, @var{prompt}, which is\n\
+the string to display when asking the question.  @var{prompt} should end in\n\
+a space; @code{yes-or-no} adds the string @samp{(yes or no) } to it.  The\n\
+user must confirm the answer with @key{RET} and can edit it until it has\n\
+been confirmed.\n\
+@seealso{input}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -986,7 +933,7 @@ do_keyboard (const octave_value_list& args)
 DEFUN (keyboard, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} keyboard ()\n\
-@deftypefnx {Built-in Function} {} keyboard (@var{prompt})\n\
+@deftypefnx {Built-in Function} {} keyboard (\"@var{prompt}\")\n\
 This function is normally used for simple debugging.  When the\n\
 @code{keyboard} function is executed, Octave prints a prompt and waits\n\
 for user input.  The input strings are then evaluated and the results\n\
@@ -1241,31 +1188,28 @@ static hook_fcn_map_type hook_fcn_map;
 static int
 input_event_hook (void)
 {
-  if (! lexer_flags.defining_func)
+  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+
+  while (p != hook_fcn_map.end ())
     {
-      hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+      std::string hook_fcn = p->first;
+      octave_value user_data = p->second;
 
-      while (p != hook_fcn_map.end ())
+      hook_fcn_map_type::iterator q = p++;
+
+      if (is_valid_function (hook_fcn))
         {
-          std::string hook_fcn = p->first;
-          octave_value user_data = p->second;
-
-          hook_fcn_map_type::iterator q = p++;
-
-          if (is_valid_function (hook_fcn))
-            {
-              if (user_data.is_defined ())
-                feval (hook_fcn, user_data, 0);
-              else
-                feval (hook_fcn, octave_value_list (), 0);
-            }
+          if (user_data.is_defined ())
+            feval (hook_fcn, user_data, 0);
           else
-            hook_fcn_map.erase (q);
+            feval (hook_fcn, octave_value_list (), 0);
         }
-
-      if (hook_fcn_map.empty ())
-        command_editor::remove_event_hook (input_event_hook);
+      else
+        hook_fcn_map.erase (q);
     }
+
+  if (hook_fcn_map.empty ())
+    command_editor::remove_event_hook (input_event_hook);
 
   return 0;
 }

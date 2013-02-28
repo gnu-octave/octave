@@ -30,9 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-sysdep.h"
 
-extern void sysdep_init (void);
+extern OCTINTERP_API void sysdep_init (void);
 
-extern void sysdep_cleanup (void);
+extern OCTINTERP_API void sysdep_cleanup (void);
 
 extern OCTINTERP_API void raw_mode (bool, bool wait = true);
 

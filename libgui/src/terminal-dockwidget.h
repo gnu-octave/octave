@@ -23,25 +23,21 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef TERMINALDOCKWIDGET_H
 #define TERMINALDOCKWIDGET_H
 
-#include <QDockWidget>
 #include "QTerminal.h"
+#include "octave-dock-widget.h"
 
-class terminal_dock_widget : public QDockWidget
+class terminal_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
   public:
   terminal_dock_widget (QTerminal *terminal, QWidget *parent = 0);
 
 signals:
-  void active_changed (bool active);
 
 public slots:
-  void handle_visibility_changed (bool visible);
-  /** Slot when floating property changes */
-  void top_level_changed (bool floating);
 
 protected:
-  void closeEvent (QCloseEvent *event);
+
 };
 
 

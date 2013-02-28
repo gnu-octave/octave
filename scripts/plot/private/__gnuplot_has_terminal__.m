@@ -25,11 +25,10 @@
 ## Created: 2010-09-13
 
 function gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream)
-  term = deblank (term);
-  n = find (term == " ", 1);
-  if (! isempty (n))
-    term = term(1:n-1);
-  endif
+
+  term = strtrim (term);
+  term = lower (strtok (term, " "));
+
   if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
     if (nargin < 2)
       plot_stream = __gnuplot_open_stream__ (2);
@@ -59,6 +58,8 @@ function gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream)
                            "svg", "texdraw", "tgif", "tkcanvas", ...
                            "tpic", "windows", "x11", "xlib", "xterm"};
   endif
-  gnuplot_supports_term = any (strcmpi (available_terminals, term));
+
+  gnuplot_supports_term = any (strcmp (term, available_terminals));
+
 endfunction
 

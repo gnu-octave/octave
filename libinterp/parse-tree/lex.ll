@@ -20,7 +20,21 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+/*
+We are using the pure parser interface and the reentrant lexer
+interface but the Octave parser and lexer are NOT properly
+reentrant because both still use many global variables.  It should be
+safe to create a parser object and call it while anotehr parser
+object is active (to parse a callback function while the main
+interactive parser is waiting for input, for example) if you take
+care to properly save and restore (typically with an unwind_protect
+object) relevant global values before and after the nested call.
+*/
+
 %option prefix = "octave_"
+%option noyywrap
+%option reentrant
+%option bison-bridge
 
 %top {
 #ifdef HAVE_CONFIG_H
@@ -54,9 +68,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "lo-mappers.h"
 
-// These would be alphabetical, but y.tab.h must be included before
-// oct-gperf.h and y.tab.h must be included after token.h and the tree
-// class declarations.  We can't include y.tab.h in oct-gperf.h
+// These would be alphabetical, but oct-parse.h must be included before
+// oct-gperf.h and oct-parse.h must be included after token.h and the tree
+// class declarations.  We can't include oct-parse.h in oct-gperf.h
 // because it may not be protected to allow it to be included multiple
 // times.
 
@@ -96,7 +110,8 @@ along with Octave; see the file COPYING.  If not, see
 #error lex.l requires flex version 2.5.4 or later
 #endif
 
-#define yylval octave_lval
+#define YY_EXTRA_TYPE lexical_feedback *
+#define curr_lexer yyextra
 
 // Arrange to get input via readline.
 
@@ -104,35 +119,26 @@ along with Octave; see the file COPYING.  If not, see
 #undef YY_INPUT
 #endif
 #define YY_INPUT(buf, result, max_size) \
-  if ((result = octave_read (buf, max_size)) < 0) \
-    YY_FATAL_ERROR ("octave_read () in flex scanner failed");
+  result = curr_lexer->octave_read (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
-// The call to yy_fatal_error should never happen, but it avoids a
-// 'static function defined but not used' warning from gcc.
 
 #ifdef YY_FATAL_ERROR
 #undef YY_FATAL_ERROR
 #endif
 #define YY_FATAL_ERROR(msg) \
-  do \
-    { \
-      error (msg); \
-      OCTAVE_QUIT; \
-      yy_fatal_error (msg); \
-    } \
-  while (0)
+  (yyget_extra (yyscanner))->fatal_error (msg)
 
 #define DISPLAY_TOK_AND_RETURN(tok) \
   do \
     { \
       int tok_val = tok; \
       if (Vdisplay_tokens) \
-        display_token (tok_val); \
+        curr_lexer->display_token (tok_val); \
       if (lexer_debug_flag) \
         { \
           std::cerr << "R: "; \
-          display_token (tok_val); \
+          curr_lexer->display_token (tok_val); \
           std::cerr << std::endl;  \
         } \
       return tok_val; \
@@ -150,9 +156,9 @@ along with Octave; see the file COPYING.  If not, see
 #define TOK_RETURN(tok) \
   do \
     { \
-      current_input_column += yyleng; \
-      lexer_flags.quote_is_transpose = false; \
-      lexer_flags.convert_spaces_to_comma = true; \
+      curr_lexer->current_input_column += yyleng; \
+      curr_lexer->quote_is_transpose = false; \
+      curr_lexer->convert_spaces_to_comma = true; \
       COUNT_TOK_AND_RETURN (tok); \
     } \
   while (0)
@@ -160,9 +166,9 @@ along with Octave; see the file COPYING.  If not, see
 #define TOK_PUSH_AND_RETURN(name, tok) \
   do \
     { \
-      yylval.tok_val = new token (name, input_line_number, \
-                                  current_input_column); \
-      token_stack.push (yylval.tok_val); \
+      curr_lexer->push_token \
+        (new token (name, curr_lexer->input_line_number, \
+         curr_lexer->current_input_column)); \
       TOK_RETURN (tok); \
     } \
   while (0)
@@ -170,13 +176,14 @@ along with Octave; see the file COPYING.  If not, see
 #define BIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
   do \
     { \
-      yylval.tok_val = new token (input_line_number, current_input_column); \
-      token_stack.push (yylval.tok_val); \
-      current_input_column += yyleng; \
-      lexer_flags.quote_is_transpose = qit; \
-      lexer_flags.convert_spaces_to_comma = convert; \
-      lexer_flags.looking_for_object_index = false; \
-      lexer_flags.at_beginning_of_statement = bos; \
+      curr_lexer->push_token \
+        (new token (curr_lexer->input_line_number, \
+         curr_lexer->current_input_column)); \
+      curr_lexer->current_input_column += yyleng; \
+      curr_lexer->quote_is_transpose = qit; \
+      curr_lexer->convert_spaces_to_comma = convert; \
+      curr_lexer->looking_for_object_index = false; \
+      curr_lexer->at_beginning_of_statement = bos; \
       COUNT_TOK_AND_RETURN (tok); \
     } \
   while (0)
@@ -184,7 +191,7 @@ along with Octave; see the file COPYING.  If not, see
 #define XBIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
   do \
     { \
-      gripe_matlab_incompatible_operator (yytext); \
+      curr_lexer->gripe_matlab_incompatible_operator (yytext); \
       BIN_OP_RETURN_INTERNAL (tok, convert, bos, qit); \
     } \
   while (0)
@@ -199,7 +206,7 @@ along with Octave; see the file COPYING.  If not, see
 #define XBIN_OP_RETURN(tok, convert, bos) \
   do \
     { \
-      gripe_matlab_incompatible_operator (yytext); \
+      curr_lexer->gripe_matlab_incompatible_operator (yytext); \
       BIN_OP_RETURN (tok, convert, bos); \
     } \
   while (0)
@@ -208,129 +215,21 @@ along with Octave; see the file COPYING.  If not, see
   do \
     { \
       if (lexer_debug_flag) \
-        lexer_debug (pattern, yytext); \
+        curr_lexer->lexer_debug (pattern, yytext); \
     } \
   while (0)
-
-// TRUE means that we have encountered EOF on the input stream.
-bool parser_end_of_input = false;
-
-// Flags that need to be shared between the lexer and parser.
-lexical_feedback lexer_flags;
-
-// Stack to hold tokens so that we can delete them when the parser is
-// reset and avoid growing forever just because we are stashing some
-// information.  This has to appear before lex.h is included, because
-// one of the macros defined there uses token_stack.
-//
-// FIXME -- this should really be static, but that causes
-// problems on some systems.
-std::stack <token*> token_stack;
-
-// Did eat_whitespace() eat a space or tab, or a newline, or both?
-
-typedef int yum_yum;
-
-const yum_yum ATE_NOTHING = 0;
-const yum_yum ATE_SPACE_OR_TAB = 1;
-const yum_yum ATE_NEWLINE = 2;
-
-// Is the closest nesting level a square bracket, squiggly brace or a paren?
-
-class bracket_brace_paren_nesting_level
-{
-public:
-
-  bracket_brace_paren_nesting_level (void) : context () { }
-
-  ~bracket_brace_paren_nesting_level (void) { }
-
-  void bracket (void) { context.push (BRACKET); }
-  bool is_bracket (void)
-    { return ! context.empty () && context.top () == BRACKET; }
-
-  void brace (void) {  context.push (BRACE); }
-  bool is_brace (void)
-    { return ! context.empty () && context.top () == BRACE; }
-
-  void paren (void) {  context.push (PAREN); }
-  bool is_paren (void)
-    { return ! context.empty () && context.top () == PAREN; }
-
-  bool is_bracket_or_brace (void)
-    { return (! context.empty ()
-              && (context.top () == BRACKET || context.top () == BRACE)); }
-
-  bool none (void) { return context.empty (); }
-
-  void remove (void) { if (! context.empty ()) context.pop (); }
-
-  void clear (void) { while (! context.empty ()) context.pop (); }
-
-private:
-
-  std::stack<int> context;
-
-  static const int BRACKET;
-  static const int BRACE;
-  static const int PAREN;
-
-  bracket_brace_paren_nesting_level (const bracket_brace_paren_nesting_level&);
-
-  bracket_brace_paren_nesting_level&
-  operator = (const bracket_brace_paren_nesting_level&);
-};
-
-const int bracket_brace_paren_nesting_level::BRACKET = 1;
-const int bracket_brace_paren_nesting_level::BRACE = 2;
-const int bracket_brace_paren_nesting_level::PAREN = 3;
-
-static bracket_brace_paren_nesting_level nesting_level;
 
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
 
-// The start state that was in effect when the beginning of a block
-// comment was noticed.
-static int block_comment_nesting_level = 0;
-
 // Internal variable for lexer debugging state.
 static bool lexer_debug_flag = false;
 
 // Forward declarations for functions defined at the bottom of this
-// file.
+// file that are needed inside the lexer actions.
 
-static int text_yyinput (void);
-static void xunput (char c, char *buf);
-static void fixup_column_count (char *s);
-static void do_comma_insert_check (void);
-static int is_keyword_token (const std::string& s);
-static int process_comment (bool start_in_block, bool& eof);
-static bool match_any (char c, const char *s);
-static bool next_token_is_sep_op (void);
-static bool next_token_is_bin_op (bool spc_prev);
-static bool next_token_is_postfix_unary_op (bool spc_prev);
 static std::string strip_trailing_whitespace (char *s);
-static void handle_number (void);
-static int handle_string (char delim);
-static int handle_close_bracket (bool spc_gobbled, int bracket_type);
-static int handle_superclass_identifier (void);
-static int handle_meta_identifier (void);
-static int handle_identifier (void);
-static bool have_continuation (bool trailing_comments_ok = true);
-static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
-static void scan_for_comments (const char *);
-static yum_yum eat_whitespace (void);
-static yum_yum eat_continuation (void);
-static void maybe_warn_separator_insert (char sep);
-static void gripe_single_quote_string (void);
-static void gripe_matlab_incompatible (const std::string& msg);
-static void maybe_gripe_matlab_incompatible_comment (char c);
-static void gripe_matlab_incompatible_continuation (void);
-static void gripe_matlab_incompatible_operator (const std::string& op);
-static void display_token (int tok);
-static void lexer_debug (const char *pattern, const char *text);
 
 %}
 
@@ -362,7 +261,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<SCRIPT_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
-    xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
     COUNT_TOK_AND_RETURN (SCRIPT_FILE);
   }
 
@@ -370,7 +269,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<FUNCTION_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
-    xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
     COUNT_TOK_AND_RETURN (FUNCTION_FILE);
   }
 
@@ -378,7 +277,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<CLASSDEF_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
-    xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0], yytext);
     COUNT_TOK_AND_RETURN (CLASSDEF_FILE);
   }
 
@@ -390,13 +289,13 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("<COMMAND_START>{NL}");
 
     BEGIN (INITIAL);
-    input_line_number++;
-    current_input_column = 1;
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
 
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = true;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = true;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = true;
 
     COUNT_TOK_AND_RETURN ('\n');
   }
@@ -404,8 +303,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <COMMAND_START>[\;\,] {
     LEXER_DEBUG ("<COMMAND_START>[\\;\\,]");
 
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = true;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = true;
 
     BEGIN (INITIAL);
 
@@ -418,10 +317,10 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <COMMAND_START>[\"\'] {
     LEXER_DEBUG ("<COMMAND_START>[\\\"\\']");
 
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->at_beginning_of_statement = false;
 
-    current_input_column++;
-    int tok = handle_string (yytext[0]);
+    curr_lexer->current_input_column++;
+    int tok = curr_lexer->handle_string (yytext[0]);
 
     COUNT_TOK_AND_RETURN (tok);
   }
@@ -431,8 +330,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     std::string tok = strip_trailing_whitespace (yytext);
 
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
     TOK_PUSH_AND_RETURN (tok, SQ_STRING);
   }
@@ -454,21 +353,21 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{SNLCMT}*\]{S}* {
     LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*\\]{S}*");
 
-    scan_for_comments (yytext);
-    fixup_column_count (yytext);
+    curr_lexer->scan_for_comments (yytext);
+    curr_lexer->fixup_column_count (yytext);
 
-    lexer_flags.looking_at_object_index.pop_front ();
+    curr_lexer->looking_at_object_index.pop_front ();
 
-    lexer_flags.looking_for_object_index = true;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
-    int cont_is_spc = eat_continuation ();
+    bool cont_is_spc = (curr_lexer->eat_continuation () != lexical_feedback::NO_WHITESPACE);
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    int tok_to_return = handle_close_bracket (spc_gobbled, ']');
+    int tok_to_return = curr_lexer->handle_close_bracket (spc_gobbled, ']');
 
     if (spc_gobbled)
-      xunput (' ', yytext);
+      curr_lexer->xunput (' ');
 
     COUNT_TOK_AND_RETURN (tok_to_return);
   }
@@ -480,21 +379,21 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{SNLCMT}*\}{S}* {
     LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*\\}{S}*");
 
-    scan_for_comments (yytext);
-    fixup_column_count (yytext);
+    curr_lexer->scan_for_comments (yytext);
+    curr_lexer->fixup_column_count (yytext);
 
-    lexer_flags.looking_at_object_index.pop_front ();
+    curr_lexer->looking_at_object_index.pop_front ();
 
-    lexer_flags.looking_for_object_index = true;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
-    int cont_is_spc = eat_continuation ();
+    bool cont_is_spc = (curr_lexer->eat_continuation () != lexical_feedback::NO_WHITESPACE);
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    int tok_to_return = handle_close_bracket (spc_gobbled, '}');
+    int tok_to_return = curr_lexer->handle_close_bracket (spc_gobbled, '}');
 
     if (spc_gobbled)
-      xunput (' ', yytext);
+      curr_lexer->xunput (' ');
 
     COUNT_TOK_AND_RETURN (tok_to_return);
   }
@@ -508,22 +407,22 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{S}*\,{S}* {
     LEXER_DEBUG ("<MATRIX_START>{S}*\\,{S}*");
 
-    current_input_column += yyleng;
+    curr_lexer->current_input_column += yyleng;
 
-    int tmp = eat_continuation ();
+    int tmp = curr_lexer->eat_continuation ();
 
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = true;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
-    if (! lexer_flags.looking_at_object_index.front ())
+    if (! curr_lexer->looking_at_object_index.front ())
       {
-        if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+        if ((tmp & lexical_feedback::NEWLINE) == lexical_feedback::NEWLINE)
           {
-            maybe_warn_separator_insert (';');
+            curr_lexer->maybe_warn_separator_insert (';');
 
-            xunput (';', yytext);
+            curr_lexer->xunput (';');
           }
       }
 
@@ -540,34 +439,34 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{S}+ {
     LEXER_DEBUG ("<MATRIX_START>{S}+");
 
-    current_input_column += yyleng;
+    curr_lexer->current_input_column += yyleng;
 
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->at_beginning_of_statement = false;
 
-    int tmp = eat_continuation ();
+    int tmp = curr_lexer->eat_continuation ();
 
-    if (! lexer_flags.looking_at_object_index.front ())
+    if (! curr_lexer->looking_at_object_index.front ())
       {
-        bool bin_op = next_token_is_bin_op (true);
-        bool postfix_un_op = next_token_is_postfix_unary_op (true);
-        bool sep_op = next_token_is_sep_op ();
+        bool bin_op = curr_lexer->next_token_is_bin_op (true);
+        bool postfix_un_op = curr_lexer->next_token_is_postfix_unary_op (true);
+        bool sep_op = curr_lexer->next_token_is_sep_op ();
 
         if (! (postfix_un_op || bin_op || sep_op)
-            && nesting_level.is_bracket_or_brace ()
-            && lexer_flags.convert_spaces_to_comma)
+            && curr_lexer->nesting_level.is_bracket_or_brace ()
+            && curr_lexer->convert_spaces_to_comma)
           {
-            if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+            if ((tmp & lexical_feedback::NEWLINE) == lexical_feedback::NEWLINE)
               {
-                maybe_warn_separator_insert (';');
+                curr_lexer->maybe_warn_separator_insert (';');
 
-                xunput (';', yytext);
+                curr_lexer->xunput (';');
               }
 
-            lexer_flags.quote_is_transpose = false;
-            lexer_flags.convert_spaces_to_comma = true;
-            lexer_flags.looking_for_object_index = false;
+            curr_lexer->quote_is_transpose = false;
+            curr_lexer->convert_spaces_to_comma = true;
+            curr_lexer->looking_for_object_index = false;
 
-            maybe_warn_separator_insert (',');
+            curr_lexer->maybe_warn_separator_insert (',');
 
             COUNT_TOK_AND_RETURN (',');
           }
@@ -585,14 +484,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{SNLCMT}*;{SNLCMT}* {
     LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*;{SNLCMT}*");
 
-    scan_for_comments (yytext);
-    fixup_column_count (yytext);
-    eat_whitespace ();
+    curr_lexer->scan_for_comments (yytext);
+    curr_lexer->fixup_column_count (yytext);
+    curr_lexer->eat_whitespace ();
 
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = true;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
     COUNT_TOK_AND_RETURN (';');
   }
@@ -609,21 +508,21 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX_START>{S}*{NL}{SNLCMT}* {
     LEXER_DEBUG ("<MATRIX_START>{S}*{COMMENT}{SNLCMT}*|<MATRIX_START>{S}*{NL}{SNLCMT}*");
 
-    scan_for_comments (yytext);
-    fixup_column_count (yytext);
-    eat_whitespace ();
+    curr_lexer->scan_for_comments (yytext);
+    curr_lexer->fixup_column_count (yytext);
+    curr_lexer->eat_whitespace ();
 
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = true;
+    curr_lexer->at_beginning_of_statement = false;
 
-    if (nesting_level.none ())
+    if (curr_lexer->nesting_level.none ())
       return LEXICAL_ERROR;
 
-    if (! lexer_flags.looking_at_object_index.front ()
-        && nesting_level.is_bracket_or_brace ())
+    if (! curr_lexer->looking_at_object_index.front ()
+        && curr_lexer->nesting_level.is_bracket_or_brace ())
       {
-        maybe_warn_separator_insert (';');
+        curr_lexer->maybe_warn_separator_insert (';');
 
         COUNT_TOK_AND_RETURN (';');
       }
@@ -632,26 +531,26 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \[{S}* {
     LEXER_DEBUG ("\\[{S}*");
 
-    nesting_level.bracket ();
+    curr_lexer->nesting_level.bracket ();
 
-    lexer_flags.looking_at_object_index.push_front (false);
+    curr_lexer->looking_at_object_index.push_front (false);
 
-    current_input_column += yyleng;
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = true;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
-    if (lexer_flags.defining_func
-        && ! lexer_flags.parsed_function_name.top ())
-      lexer_flags.looking_at_return_list = true;
+    if (curr_lexer->defining_func
+        && ! curr_lexer->parsed_function_name.top ())
+      curr_lexer->looking_at_return_list = true;
     else
-      lexer_flags.looking_at_matrix_or_assign_lhs = true;
+      curr_lexer->looking_at_matrix_or_assign_lhs = true;
 
     promptflag--;
-    eat_whitespace ();
+    curr_lexer->eat_whitespace ();
 
-    lexer_flags.bracketflag++;
+    curr_lexer->bracketflag++;
     BEGIN (MATRIX_START);
     COUNT_TOK_AND_RETURN ('[');
   }
@@ -659,12 +558,12 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \] {
     LEXER_DEBUG ("\\]");
 
-    nesting_level.remove ();
+    curr_lexer->nesting_level.remove ();
 
-    lexer_flags.looking_at_object_index.pop_front ();
+    curr_lexer->looking_at_object_index.pop_front ();
 
-    lexer_flags.looking_for_object_index = true;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
 
     TOK_RETURN (']');
   }
@@ -676,7 +575,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {NUMBER}{Im} {
     LEXER_DEBUG ("{NUMBER}{Im}");
 
-    handle_number ();
+    curr_lexer->handle_number ();
     COUNT_TOK_AND_RETURN (IMAG_NUM);
   }
 
@@ -688,7 +587,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {D}+/\.[\*/\\^\'] |
 {NUMBER} {
     LEXER_DEBUG ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
-    handle_number ();
+    curr_lexer->handle_number ();
     COUNT_TOK_AND_RETURN (NUM);
   }
 
@@ -698,7 +597,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {S}* {
-    current_input_column += yyleng;
+    curr_lexer->current_input_column += yyleng;
   }
 
 %{
@@ -710,11 +609,11 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     LEXER_DEBUG ("{CONT}{S}*{NL}|{CONT}{S}*{COMMENT}");
 
     if (yytext[0] == '\\')
-      gripe_matlab_incompatible_continuation ();
-    scan_for_comments (yytext);
+      curr_lexer->gripe_matlab_incompatible_continuation ();
+    curr_lexer->scan_for_comments (yytext);
     promptflag--;
-    input_line_number++;
-    current_input_column = 1;
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
   }
 
 %{
@@ -724,14 +623,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <<EOF>> {
     LEXER_DEBUG ("<<EOF>>");
 
-    if (block_comment_nesting_level != 0)
+    if (curr_lexer->block_comment_nesting_level != 0)
       {
         warning ("block comment open at end of input");
 
         if ((reading_fcn_file || reading_script_file || reading_classdef_file)
             && ! curr_fcn_file_name.empty ())
           warning ("near line %d of file '%s.m'",
-                   input_line_number, curr_fcn_file_name.c_str ());
+                   curr_lexer->input_line_number, curr_fcn_file_name.c_str ());
       }
 
     TOK_RETURN (END_OF_INPUT);
@@ -745,7 +644,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {IDENT}{S}* {
     LEXER_DEBUG ("{IDENT}{S}*");
 
-    int id_tok = handle_identifier ();
+    int id_tok = curr_lexer->handle_identifier ();
 
     if (id_tok >= 0)
       COUNT_TOK_AND_RETURN (id_tok);
@@ -759,11 +658,11 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {IDENT}@{IDENT}.{IDENT}{S}* {
     LEXER_DEBUG ("{IDENT}@{IDENT}{S}*|{IDENT}@{IDENT}.{IDENT}{S}*");
 
-    int id_tok = handle_superclass_identifier ();
+    int id_tok = curr_lexer->handle_superclass_identifier ();
 
     if (id_tok >= 0)
       {
-        lexer_flags.looking_for_object_index = true;
+        curr_lexer->looking_for_object_index = true;
 
         COUNT_TOK_AND_RETURN (id_tok);
       }
@@ -777,11 +676,11 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \?{IDENT}\.{IDENT}{S}* {
     LEXER_DEBUG ("\\?{IDENT}{S}*|\\?{IDENT}\\.{IDENT}{S}*");
 
-    int id_tok = handle_meta_identifier ();
+    int id_tok = curr_lexer->handle_meta_identifier ();
 
     if (id_tok >= 0)
       {
-        lexer_flags.looking_for_object_index = true;
+        curr_lexer->looking_for_object_index = true;
 
         COUNT_TOK_AND_RETURN (id_tok);
       }
@@ -794,13 +693,13 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "@" {
     LEXER_DEBUG ("@");
 
-    current_input_column++;
+    curr_lexer->current_input_column++;
 
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = false;
-    lexer_flags.looking_at_function_handle++;
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = false;
+    curr_lexer->looking_at_function_handle++;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
     COUNT_TOK_AND_RETURN ('@');
 
@@ -815,23 +714,23 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {NL} {
     LEXER_DEBUG ("{NL}");
 
-    input_line_number++;
-    current_input_column = 1;
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
 
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = true;
 
-    if (nesting_level.none ())
+    if (curr_lexer->nesting_level.none ())
       {
-        lexer_flags.at_beginning_of_statement = true;
+        curr_lexer->at_beginning_of_statement = true;
         COUNT_TOK_AND_RETURN ('\n');
       }
-    else if (nesting_level.is_paren ())
+    else if (curr_lexer->nesting_level.is_paren ())
       {
-        lexer_flags.at_beginning_of_statement = false;
-        gripe_matlab_incompatible ("bare newline inside parentheses");
+        curr_lexer->at_beginning_of_statement = false;
+        curr_lexer->gripe_matlab_incompatible ("bare newline inside parentheses");
       }
-    else if (nesting_level.is_bracket_or_brace ())
+    else if (curr_lexer->nesting_level.is_bracket_or_brace ())
       return LEXICAL_ERROR;
   }
 
@@ -843,17 +742,17 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "'" {
     LEXER_DEBUG ("'");
 
-    current_input_column++;
-    lexer_flags.convert_spaces_to_comma = true;
+    curr_lexer->current_input_column++;
+    curr_lexer->convert_spaces_to_comma = true;
 
-    if (lexer_flags.quote_is_transpose)
+    if (curr_lexer->quote_is_transpose)
       {
-        do_comma_insert_check ();
+        curr_lexer->do_comma_insert_check ();
         COUNT_TOK_AND_RETURN (QUOTE);
       }
     else
       {
-        int tok = handle_string ('\'');
+        int tok = curr_lexer->handle_string ('\'');
         COUNT_TOK_AND_RETURN (tok);
       }
   }
@@ -865,8 +764,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \" {
     LEXER_DEBUG ("\"");
 
-    current_input_column++;
-    int tok = handle_string ('"');
+    curr_lexer->current_input_column++;
+    int tok = curr_lexer->handle_string ('"');
 
     COUNT_TOK_AND_RETURN (tok);
 }
@@ -878,12 +777,12 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {CCHAR} {
     LEXER_DEBUG ("{CCHAR}");
 
-    lexer_flags.looking_for_object_index = false;
+    curr_lexer->looking_for_object_index = false;
 
-    xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
 
     bool eof = false;
-    int tok = process_comment (false, eof);
+    int tok = curr_lexer->process_comment (false, eof);
 
     if (eof)
       TOK_RETURN (END_OF_INPUT);
@@ -898,15 +797,15 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 ^{S}*{CCHAR}\{{S}*{NL} {
     LEXER_DEBUG ("^{S}*{CCHAR}\\{{S}*{NL}");
 
-    lexer_flags.looking_for_object_index = false;
+    curr_lexer->looking_for_object_index = false;
 
-    input_line_number++;
-    current_input_column = 1;
-    block_comment_nesting_level++;
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+    curr_lexer->block_comment_nesting_level++;
     promptflag--;
 
     bool eof = false;
-    process_comment (true, eof);
+    curr_lexer->process_comment (true, eof);
   }
 
 %{
@@ -922,9 +821,9 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 ".\\"   { LEXER_DEBUG (".\\"); BIN_OP_RETURN (ELEFTDIV, false, false); }
 ".^"    { LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false, false); }
 ".**"   { LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false, false); }
-".'"    { LEXER_DEBUG (".'"); do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true, false); }
-"++"    { LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (PLUS_PLUS, true, false, true); }
-"--"    { LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (MINUS_MINUS, true, false, true); }
+".'"    { LEXER_DEBUG (".'"); curr_lexer->do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true, false); }
+"++"    { LEXER_DEBUG ("++"); curr_lexer->do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (PLUS_PLUS, true, false, true); }
+"--"    { LEXER_DEBUG ("--"); curr_lexer->do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (MINUS_MINUS, true, false, true); }
 "<="    { LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false, false); }
 "=="    { LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false, false); }
 "~="    { LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false, false); }
@@ -940,7 +839,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "/"     { LEXER_DEBUG ("/"); BIN_OP_RETURN ('/', false, false); }
 "\\"    { LEXER_DEBUG ("\\"); BIN_OP_RETURN (LEFTDIV, false, false); }
 ";"     { LEXER_DEBUG (";"); BIN_OP_RETURN (';', true, true); }
-","     { LEXER_DEBUG (","); BIN_OP_RETURN (',', true, ! lexer_flags.looking_at_object_index.front ()); }
+","     { LEXER_DEBUG (","); BIN_OP_RETURN (',', true, ! curr_lexer->looking_at_object_index.front ()); }
 "^"     { LEXER_DEBUG ("^"); BIN_OP_RETURN (POW, false, false); }
 "**"    { LEXER_DEBUG ("**"); XBIN_OP_RETURN (POW, false, false); }
 "="     { LEXER_DEBUG ("="); BIN_OP_RETURN ('=', true, false); }
@@ -966,14 +865,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     // is current (so that we can pop it off the stack when we find
     // the matching close paren).
 
-    lexer_flags.looking_at_object_index.push_front
-      (lexer_flags.looking_for_object_index);
+    curr_lexer->looking_at_object_index.push_front
+      (curr_lexer->looking_for_object_index);
 
-    lexer_flags.looking_at_indirect_ref = false;
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->looking_at_indirect_ref = false;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
-    nesting_level.paren ();
+    curr_lexer->nesting_level.paren ();
     promptflag--;
 
     TOK_RETURN ('(');
@@ -982,22 +881,22 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 ")" {
     LEXER_DEBUG (")");
 
-    nesting_level.remove ();
-    current_input_column++;
+    curr_lexer->nesting_level.remove ();
+    curr_lexer->current_input_column++;
 
-    lexer_flags.looking_at_object_index.pop_front ();
+    curr_lexer->looking_at_object_index.pop_front ();
 
-    lexer_flags.quote_is_transpose = true;
-    lexer_flags.convert_spaces_to_comma
-      = (nesting_level.is_bracket_or_brace ()
-         && ! lexer_flags.looking_at_anon_fcn_args);
-    lexer_flags.looking_for_object_index = true;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->quote_is_transpose = true;
+    curr_lexer->convert_spaces_to_comma
+      = (curr_lexer->nesting_level.is_bracket_or_brace ()
+         && ! curr_lexer->looking_at_anon_fcn_args);
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
 
-    if (lexer_flags.looking_at_anon_fcn_args)
-      lexer_flags.looking_at_anon_fcn_args = false;
+    if (curr_lexer->looking_at_anon_fcn_args)
+      curr_lexer->looking_at_anon_fcn_args = false;
 
-    do_comma_insert_check ();
+    curr_lexer->do_comma_insert_check ();
 
     COUNT_TOK_AND_RETURN (')');
   }
@@ -1005,8 +904,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "." {
     LEXER_DEBUG (".");
 
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
     TOK_RETURN ('.');
   }
@@ -1031,21 +930,21 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 \{{S}* {
     LEXER_DEBUG ("\\{{S}*");
 
-    nesting_level.brace ();
+    curr_lexer->nesting_level.brace ();
 
-    lexer_flags.looking_at_object_index.push_front
-      (lexer_flags.looking_for_object_index);
+    curr_lexer->looking_at_object_index.push_front
+      (curr_lexer->looking_for_object_index);
 
-    current_input_column += yyleng;
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
-    lexer_flags.looking_for_object_index = false;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->quote_is_transpose = false;
+    curr_lexer->convert_spaces_to_comma = true;
+    curr_lexer->looking_for_object_index = false;
+    curr_lexer->at_beginning_of_statement = false;
 
     promptflag--;
-    eat_whitespace ();
+    curr_lexer->eat_whitespace ();
 
-    lexer_flags.braceflag++;
+    curr_lexer->braceflag++;
     BEGIN (MATRIX_START);
     COUNT_TOK_AND_RETURN ('{');
   }
@@ -1053,12 +952,12 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "}" {
     LEXER_DEBUG ("}");
 
-    lexer_flags.looking_at_object_index.pop_front ();
+    curr_lexer->looking_at_object_index.pop_front ();
 
-    lexer_flags.looking_for_object_index = true;
-    lexer_flags.at_beginning_of_statement = false;
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
 
-    nesting_level.remove ();
+    curr_lexer->nesting_level.remove ();
 
     TOK_RETURN ('}');
   }
@@ -1070,17 +969,17 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     LEXER_DEBUG (".");
 
-    xunput (yytext[0], yytext);
+    curr_lexer->xunput (yytext[0]);
 
-    int c = text_yyinput ();
+    int c = curr_lexer->text_yyinput ();
 
     if (c != EOF)
       {
-        current_input_column++;
+        curr_lexer->current_input_column++;
 
         error ("invalid character '%s' (ASCII %d) near line %d, column %d",
                undo_string_escape (static_cast<char> (c)), c,
-               input_line_number, current_input_column);
+               curr_lexer->input_line_number, curr_lexer->current_input_column);
 
         return LEXICAL_ERROR;
       }
@@ -1089,85 +988,6 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 %%
-
-// GAG.
-//
-// If we're reading a matrix and the next character is '[', make sure
-// that we insert a comma ahead of it.
-
-void
-do_comma_insert_check (void)
-{
-  int spc_gobbled = eat_continuation ();
-
-  int c = text_yyinput ();
-
-  xunput (c, yytext);
-
-  if (spc_gobbled)
-    xunput (' ', yytext);
-
-  lexer_flags.do_comma_insert = (! lexer_flags.looking_at_object_index.front ()
-                                 && lexer_flags.bracketflag && c == '[');
-}
-
-// Fix things up for errors or interrupts.  The parser is never called
-// recursively, so it is always safe to reinitialize its state before
-// doing any parsing.
-
-void
-reset_parser (void)
-{
-  // Start off on the right foot.
-  BEGIN (INITIAL);
-
-  parser_end_of_input = false;
-
-  parser_symtab_context.clear ();
-
-  // We do want a prompt by default.
-  promptflag = 1;
-
-  // We are not in a block comment.
-  block_comment_nesting_level = 0;
-
-  // Error may have occurred inside some brackets, braces, or parentheses.
-  nesting_level.clear ();
-
-  // Clear out the stack of token info used to track line and column
-  // numbers.
-  while (! token_stack.empty ())
-    {
-      delete token_stack.top ();
-      token_stack.pop ();
-    }
-
-  // Can be reset by defining a function.
-  if (! (reading_script_file || reading_fcn_file || reading_classdef_file))
-    {
-      current_input_column = 1;
-      input_line_number = command_editor::current_command_number ();
-    }
-
-  // Only ask for input from stdin if we are expecting interactive
-  // input.
-
-  if (! quitting_gracefully
-      && (interactive || forced_interactive)
-      && ! (reading_fcn_file
-            || reading_classdef_file
-            || reading_script_file
-            || get_input_from_eval_string
-            || input_from_startup_file))
-    yyrestart (stdin);
-
-  // Clear the buffer for help text.
-  while (! help_buf.empty ())
-    help_buf.pop ();
-
-  // Reset other flags.
-  lexer_flags.init ();
-}
 
 static void
 display_character (char c)
@@ -1315,10 +1135,376 @@ display_character (char c)
       }
 }
 
-static int
-text_yyinput (void)
+void
+cleanup_parser (void)
 {
-  int c = yyinput ();
+}
+
+// Return 1 if the given character matches any character in the given
+// string.
+
+static bool
+match_any (char c, const char *s)
+{
+  char tmp;
+  while ((tmp = *s++) != '\0')
+    {
+      if (c == tmp)
+        return true;
+    }
+  return false;
+}
+
+// Given information about the spacing surrounding an operator,
+// return 1 if it looks like it should be treated as a binary
+// operator.  For example,
+//
+//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==>  binary
+//
+//   [ 1 +2 ]  ==>  unary
+
+static bool
+looks_like_bin_op (bool spc_prev, int next_char)
+{
+  bool spc_next = (next_char == ' ' || next_char == '\t');
+
+  return ((spc_prev && spc_next) || ! spc_prev);
+}
+
+bool
+is_keyword (const std::string& s)
+{
+  // Parsing function names like "set.property_name" inside
+  // classdef-style class definitions is simplified by handling the
+  // "set" and "get" portions of the names using the same mechanism as
+  // is used for keywords.  However, they are not really keywords in
+  // the language, so omit them from the list of possible keywords.
+
+  return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
+          && ! (s == "set" || s == "get"));
+}
+
+DEFUN (iskeyword, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} iskeyword ()\n\
+@deftypefnx {Built-in Function} {} iskeyword (@var{name})\n\
+Return true if @var{name} is an Octave keyword.  If @var{name}\n\
+is omitted, return a list of keywords.\n\
+@seealso{isvarname, exist}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("iskeyword");
+
+  if (error_state)
+    return retval;
+
+  if (argc == 1)
+    {
+      // Neither set and get are keywords.  See the note in the
+      // is_keyword function for additional details.
+
+      string_vector lst (TOTAL_KEYWORDS);
+
+      int j = 0;
+
+      for (int i = 0; i < TOTAL_KEYWORDS; i++)
+        {
+          std::string tmp = wordlist[i].name;
+
+          if (! (tmp == "set" || tmp == "get"))
+            lst[j++] = tmp;
+        }
+
+      lst.resize (j);
+
+      retval = Cell (lst.sort ());
+    }
+  else if (argc == 2)
+    {
+      retval = is_keyword (argv[1]);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+%!assert (iskeyword ("for"))
+%!assert (iskeyword ("fort"), false)
+%!assert (iskeyword ("fft"), false)
+
+*/
+
+// Used to delete trailing white space from tokens.
+
+static std::string
+strip_trailing_whitespace (char *s)
+{
+  std::string retval = s;
+
+  size_t pos = retval.find_first_of (" \t");
+
+  if (pos != std::string::npos)
+    retval.resize (pos);
+
+  return retval;
+}
+
+DEFUN (__display_tokens__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __display_tokens__ ()\n\
+Query or set the internal variable that determines whether Octave's\n\
+lexer displays tokens as they are read.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (display_tokens);
+}
+
+DEFUN (__token_count__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __token_count__ ()\n\
+Number of language tokens processed since Octave startup.\n\
+@end deftypefn")
+{
+  return octave_value (Vtoken_count);
+}
+
+DEFUN (__lexer_debug_flag__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val}))\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  retval = set_internal_variable (lexer_debug_flag, args, nargout,
+                                  "__lexer_debug_flag__");
+
+  return retval;
+}
+
+class
+flex_stream_reader : public stream_reader
+{
+public:
+  flex_stream_reader (lexical_feedback *l, char *buf_arg)
+    : stream_reader (), lexer (l), buf (buf_arg)
+  { }
+
+  int getc (void) { return lexer->text_yyinput (); }
+  int ungetc (int c) { lexer->xunput (c, buf); return 0; }
+
+private:
+
+  // No copying!
+
+  flex_stream_reader (const flex_stream_reader&);
+
+  flex_stream_reader& operator = (const flex_stream_reader&);
+
+  lexical_feedback *lexer;
+
+  char *buf;
+};
+
+lexical_feedback::~lexical_feedback (void)
+{
+  // Clear out the stack of token info used to track line and
+  // column numbers.
+
+  while (! token_stack.empty ())
+    {
+      delete token_stack.top ();
+      token_stack.pop ();
+    }
+
+  yylex_destroy (scanner);
+}
+
+void
+lexical_feedback::init (void)
+{
+  // The closest paren, brace, or bracket nesting is not an object
+  // index.
+  looking_at_object_index.push_front (false);
+
+  yylex_init (&scanner);
+
+  // Make lexical_feedback object available through yyextra in
+  // flex-generated lexer.
+  yyset_extra (this, scanner);
+}
+
+// Inside Flex-generated functions, yyg is the scanner cast to its real
+// type.  The BEGIN macro uses yyg and we want to use that in
+// lexical_feedback member functions.  If we could set the start state
+// by calling a function instead of using the BEGIN macro, we could
+// eliminate the OCTAVE_YYG macro.
+
+#define OCTAVE_YYG \
+  struct yyguts_t *yyg = static_cast<struct yyguts_t*> (scanner)
+
+void
+lexical_feedback::reset (void)
+{
+  OCTAVE_YYG;
+
+  // Start off on the right foot.
+  BEGIN (INITIAL);
+
+  parser_symtab_context.clear ();
+
+  // We do want a prompt by default.
+  promptflag = 1;
+
+  // Only ask for input from stdin if we are expecting interactive
+  // input.
+
+  if (! quitting_gracefully
+      && (interactive || forced_interactive)
+      && ! (reading_fcn_file
+            || reading_classdef_file
+            || reading_script_file
+            || get_input_from_eval_string
+            || input_from_startup_file))
+    yyrestart (stdin, scanner);
+
+  // Clear the buffer for help text.
+  while (! help_buf.empty ())
+    help_buf.pop ();
+}
+
+void
+lexical_feedback::prep_for_script_file (void)
+{
+  OCTAVE_YYG;
+
+  BEGIN (SCRIPT_FILE_BEGIN);
+}
+
+void
+lexical_feedback::prep_for_function_file (void)
+{
+  OCTAVE_YYG;
+
+  BEGIN (FUNCTION_FILE_BEGIN);
+}
+
+void
+lexical_feedback::prep_for_classdef_file (void)
+{
+  OCTAVE_YYG;
+
+  BEGIN (CLASSDEF_FILE_BEGIN);
+}
+
+int
+lexical_feedback::octave_read (char *buf, unsigned max_size)
+{
+  static const char * const eol = "\n";
+  static std::string input_buf;
+  static const char *pos = 0;
+  static size_t chars_left = 0;
+  static bool eof = false;
+
+  int status = 0;
+
+  if (chars_left == 0)
+    {
+      pos = 0;
+
+      input_buf = get_user_input (eof);
+
+      chars_left = input_buf.length ();
+
+      pos = input_buf.c_str ();
+    }
+
+  if (chars_left > 0)
+    {
+      size_t len = max_size > chars_left ? chars_left : max_size;
+      assert (len > 0);
+
+      memcpy (buf, pos, len);
+
+      chars_left -= len;
+      pos += len;
+
+      // Make sure input ends with a new line character.
+      if (chars_left == 0 && buf[len-1] != '\n')
+        {
+          if (len < max_size)
+            {
+              // There is enough room to plug the newline character in
+              // the buffer.
+              buf[len++] = '\n';
+            }
+          else
+            {
+              // There isn't enough room to plug the newline character
+              // in the buffer so make sure it is returned on the next
+              // octave_read call.
+              pos = eol;
+              chars_left = 1;
+            }
+        }
+
+      status = len;
+    }
+  else
+    {
+      status = YY_NULL;
+
+      if (! eof)
+        fatal_error ("octave_read () in flex scanner failed");
+    }
+
+  return status;
+}
+
+char *
+lexical_feedback::flex_yytext (void)
+{
+  return yyget_text (scanner);
+}
+
+int
+lexical_feedback::flex_yyleng (void)
+{
+  return yyget_leng (scanner);
+}
+
+// GAG.
+//
+// If we're reading a matrix and the next character is '[', make sure
+// that we insert a comma ahead of it.
+
+void
+lexical_feedback::do_comma_insert_check (void)
+{
+  bool spc_gobbled = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
+
+  int c = text_yyinput ();
+
+  xunput (c);
+
+  if (spc_gobbled)
+    xunput (' ');
+
+  do_comma_insert = (! looking_at_object_index.front ()
+                     && bracketflag && c == '[');
+}
+
+int
+lexical_feedback::text_yyinput (void)
+{
+  int c = yyinput (scanner);
 
   if (lexer_debug_flag)
     {
@@ -1331,7 +1517,7 @@ text_yyinput (void)
 
   if (c == '\r')
     {
-      c = yyinput ();
+      c = yyinput (scanner);
 
       if (lexer_debug_flag)
         {
@@ -1342,7 +1528,7 @@ text_yyinput (void)
 
       if (c != '\n')
         {
-          xunput (c, yytext);
+          xunput (c);
           c = '\n';
         }
     }
@@ -1353,8 +1539,8 @@ text_yyinput (void)
   return c;
 }
 
-static void
-xunput (char c, char *buf)
+void
+lexical_feedback::xunput (char c, char *buf)
 {
   if (lexer_debug_flag)
     {
@@ -1366,14 +1552,22 @@ xunput (char c, char *buf)
   if (c == '\n')
     input_line_number--;
 
-  yyunput (c, buf);
+  yyunput (c, buf, scanner);
+}
+
+void
+lexical_feedback::xunput (char c)
+{
+  char *yytxt = flex_yytext ();
+
+  xunput (c, yytxt);
 }
 
 // If we read some newlines, we need figure out what column we're
 // really looking at.
 
-static void
-fixup_column_count (char *s)
+void
+lexical_feedback::fixup_column_count (char *s)
 {
   char c;
   while ((c = *s++) != '\0')
@@ -1388,89 +1582,13 @@ fixup_column_count (char *s)
     }
 }
 
-// Include these so that we don't have to link to libfl.a.
-
-int
-yywrap (void)
-{
-  return 1;
-}
-
-// Tell us all what the current buffer is.
-
-YY_BUFFER_STATE
-current_buffer (void)
-{
-  return YY_CURRENT_BUFFER;
-}
-
-// Create a new buffer.
-
-YY_BUFFER_STATE
-create_buffer (FILE *f)
-{
-  return yy_create_buffer (f, YY_BUF_SIZE);
-}
-
-// Start reading a new buffer.
-
-void
-switch_to_buffer (YY_BUFFER_STATE buf)
-{
-  yy_switch_to_buffer (buf);
-}
-
-// Delete a buffer.
-
-void
-delete_buffer (YY_BUFFER_STATE buf)
-{
-  yy_delete_buffer (buf);
-
-  // Prevent invalid yyin from being used by yyrestart.
-  if (! current_buffer ())
-    yyin = 0; 
-}
-
-// Delete all buffers from the stack.
-void
-clear_all_buffers (void)
-{                 
-  while (current_buffer ())
-    octave_pop_buffer_state ();
-}
-
-void
-cleanup_parser (void)
-{
-  reset_parser ();
-
-  clear_all_buffers ();
-}
-
-// Restore a buffer (for unwind-prot).
-
-void
-restore_input_buffer (void *buf)
-{
-  switch_to_buffer (static_cast<YY_BUFFER_STATE> (buf));
-}
-
-// Delete a buffer (for unwind-prot).
-
-void
-delete_input_buffer (void *buf)
-{
-  delete_buffer (static_cast<YY_BUFFER_STATE> (buf));
-}
-
-static bool
-inside_any_object_index (void)
+bool
+lexical_feedback::inside_any_object_index (void)
 {
   bool retval = false;
 
-  for (std::list<bool>::const_iterator i = lexer_flags.looking_at_object_index.begin ();
-       i != lexer_flags.looking_at_object_index.end (); i++)
+  for (std::list<bool>::const_iterator i = looking_at_object_index.begin ();
+       i != looking_at_object_index.end (); i++)
     {
       if (*i)
         {
@@ -1484,8 +1602,8 @@ inside_any_object_index (void)
 
 // Handle keywords.  Return -1 if the keyword should be ignored.
 
-static int
-is_keyword_token (const std::string& s)
+int
+lexical_feedback::is_keyword_token (const std::string& s)
 {
   int l = input_line_number;
   int c = current_input_column;
@@ -1496,7 +1614,7 @@ is_keyword_token (const std::string& s)
 
   if (kw)
     {
-      yylval.tok_val = 0;
+      token *tok_val = 0;
 
       switch (kw->kw_id)
         {
@@ -1507,7 +1625,7 @@ is_keyword_token (const std::string& s)
         case otherwise_kw:
         case return_kw:
         case unwind_protect_cleanup_kw:
-          lexer_flags.at_beginning_of_statement = true;
+          at_beginning_of_statement = true;
           break;
 
         case static_kw:
@@ -1536,78 +1654,78 @@ is_keyword_token (const std::string& s)
         case end_kw:
           if (inside_any_object_index ()
               || (! reading_classdef_file
-                  && (lexer_flags.defining_func
-                      && ! (lexer_flags.looking_at_return_list
-                            || lexer_flags.parsed_function_name.top ()))))
+                  && (defining_func
+                      && ! (looking_at_return_list
+                            || parsed_function_name.top ()))))
             return 0;
 
-          yylval.tok_val = new token (token::simple_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::simple_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case end_try_catch_kw:
-          yylval.tok_val = new token (token::try_catch_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::try_catch_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case end_unwind_protect_kw:
-          yylval.tok_val = new token (token::unwind_protect_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::unwind_protect_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endfor_kw:
-          yylval.tok_val = new token (token::for_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::for_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endfunction_kw:
-          yylval.tok_val = new token (token::function_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::function_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endif_kw:
-          yylval.tok_val = new token (token::if_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::if_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endparfor_kw:
-          yylval.tok_val = new token (token::parfor_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::parfor_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endswitch_kw:
-          yylval.tok_val = new token (token::switch_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::switch_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endwhile_kw:
-          yylval.tok_val = new token (token::while_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::while_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endclassdef_kw:
-          yylval.tok_val = new token (token::classdef_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::classdef_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endenumeration_kw:
-          yylval.tok_val = new token (token::enumeration_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::enumeration_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endevents_kw:
-          yylval.tok_val = new token (token::events_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::events_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endmethods_kw:
-          yylval.tok_val = new token (token::methods_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::methods_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
         case endproperties_kw:
-          yylval.tok_val = new token (token::properties_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
+          tok_val = new token (token::properties_end, l, c);
+          at_beginning_of_statement = true;
           break;
 
 
@@ -1615,18 +1733,18 @@ is_keyword_token (const std::string& s)
         case parfor_kw:
         case while_kw:
           promptflag--;
-          lexer_flags.looping++;
+          looping++;
           break;
 
         case do_kw:
-          lexer_flags.at_beginning_of_statement = true;
+          at_beginning_of_statement = true;
           promptflag--;
-          lexer_flags.looping++;
+          looping++;
           break;
 
         case try_kw:
         case unwind_protect_kw:
-          lexer_flags.at_beginning_of_statement = true;
+          at_beginning_of_statement = true;
           promptflag--;
           break;
 
@@ -1639,7 +1757,7 @@ is_keyword_token (const std::string& s)
         case set_kw:
           // 'get' and 'set' are keywords in classdef method
           // declarations.
-          if (! lexer_flags.maybe_classdef_get_set_method)
+          if (! maybe_classdef_get_set_method)
             return 0;
           break;
 
@@ -1649,7 +1767,7 @@ is_keyword_token (const std::string& s)
         case properties_kw:
           // 'properties', 'methods' and 'events' are keywords for
           // classdef blocks.
-          if (! lexer_flags.parsing_classdef)
+          if (! parsing_classdef)
             return 0;
           // fall through ...
 
@@ -1661,8 +1779,8 @@ is_keyword_token (const std::string& s)
         case function_kw:
           promptflag--;
 
-          lexer_flags.defining_func++;
-          lexer_flags.parsed_function_name.push (false);
+          defining_func++;
+          parsed_function_name.push (false);
 
           if (! (reading_fcn_file || reading_script_file
                  || reading_classdef_file))
@@ -1674,24 +1792,24 @@ is_keyword_token (const std::string& s)
             if ((reading_fcn_file || reading_script_file
                  || reading_classdef_file)
                 && ! curr_fcn_file_full_name.empty ())
-              yylval.tok_val = new token (curr_fcn_file_full_name, l, c);
+              tok_val = new token (curr_fcn_file_full_name, l, c);
             else
-              yylval.tok_val = new token ("stdin", l, c);
+              tok_val = new token ("stdin", l, c);
           }
           break;
 
         case magic_line_kw:
-          yylval.tok_val = new token (static_cast<double> (l), "", l, c);
+          tok_val = new token (static_cast<double> (l), "", l, c);
           break;
 
         default:
           panic_impossible ();
         }
 
-      if (! yylval.tok_val)
-        yylval.tok_val = new token (l, c);
+      if (! tok_val)
+        tok_val = new token (l, c);
 
-      token_stack.push (yylval.tok_val);
+      push_token (tok_val);
 
       return kw->tok;
     }
@@ -1699,16 +1817,16 @@ is_keyword_token (const std::string& s)
   return 0;
 }
 
-static bool
-is_variable (const std::string& name)
+bool
+lexical_feedback::is_variable (const std::string& name)
 {
   return (symbol_table::is_variable (name)
-          || (lexer_flags.pending_local_variables.find (name)
-              != lexer_flags.pending_local_variables.end ()));
+          || (pending_local_variables.find (name)
+              != pending_local_variables.end ()));
 }
 
-static std::string
-grab_block_comment (stream_reader& reader, bool& eof)
+std::string
+lexical_feedback::grab_block_comment (stream_reader& reader, bool& eof)
 {
   std::string buf;
 
@@ -1814,8 +1932,8 @@ grab_block_comment (stream_reader& reader, bool& eof)
 }
 
 std::string
-grab_comment_block (stream_reader& reader, bool at_bol,
-                    bool& eof)
+lexical_feedback::grab_comment_block (stream_reader& reader, bool at_bol,
+                                      bool& eof)
 {
   std::string buf;
 
@@ -1953,29 +2071,11 @@ grab_comment_block (stream_reader& reader, bool at_bol,
   return buf;
 }
 
-class
-flex_stream_reader : public stream_reader
+int
+lexical_feedback::process_comment (bool start_in_block, bool& eof)
 {
-public:
-  flex_stream_reader (char *buf_arg) : stream_reader (), buf (buf_arg) { }
+  OCTAVE_YYG;
 
-  int getc (void) { return ::text_yyinput (); }
-  int ungetc (int c) { ::xunput (c, buf); return 0; }
-
-private:
-
-  // No copying!
-
-  flex_stream_reader (const flex_stream_reader&);
-
-  flex_stream_reader& operator = (const flex_stream_reader&);
-
-  char *buf;
-};
-
-static int
-process_comment (bool start_in_block, bool& eof)
-{
   eof = false;
 
   std::string help_txt;
@@ -1983,7 +2083,8 @@ process_comment (bool start_in_block, bool& eof)
   if (! help_buf.empty ())
     help_txt = help_buf.top ();
 
-  flex_stream_reader flex_reader (yytext);
+  char *yytxt = flex_yytext ();
+  flex_stream_reader flex_reader (this, yytxt);
 
   // process_comment is only supposed to be called when we are not
   // initially looking at a block comment.
@@ -2006,9 +2107,9 @@ process_comment (bool start_in_block, bool& eof)
   octave_comment_buffer::append (txt);
 
   current_input_column = 1;
-  lexer_flags.quote_is_transpose = false;
-  lexer_flags.convert_spaces_to_comma = true;
-  lexer_flags.at_beginning_of_statement = true;
+  quote_is_transpose = false;
+  convert_spaces_to_comma = true;
+  at_beginning_of_statement = true;
 
   if (YY_START == COMMAND_START)
     BEGIN (INITIAL);
@@ -2021,42 +2122,11 @@ process_comment (bool start_in_block, bool& eof)
     return 0;
 }
 
-// Return 1 if the given character matches any character in the given
-// string.
-
-static bool
-match_any (char c, const char *s)
-{
-  char tmp;
-  while ((tmp = *s++) != '\0')
-    {
-      if (c == tmp)
-        return true;
-    }
-  return false;
-}
-
-// Given information about the spacing surrounding an operator,
-// return 1 if it looks like it should be treated as a binary
-// operator.  For example,
-//
-//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==>  binary
-//
-//   [ 1 +2 ]  ==>  unary
-
-static bool
-looks_like_bin_op (bool spc_prev, int next_char)
-{
-  bool spc_next = (next_char == ' ' || next_char == '\t');
-
-  return ((spc_prev && spc_next) || ! spc_prev);
-}
-
 // Recognize separators.  If the separator is a CRLF pair, it is
 // replaced by a single LF.
 
-static bool
-next_token_is_sep_op (void)
+bool
+lexical_feedback::next_token_is_sep_op (void)
 {
   bool retval = false;
 
@@ -2064,7 +2134,7 @@ next_token_is_sep_op (void)
 
   retval = match_any (c, ",;\n]");
 
-  xunput (c, yytext);
+  xunput (c);
 
   return retval;
 }
@@ -2072,8 +2142,8 @@ next_token_is_sep_op (void)
 // Try to determine if the next token should be treated as a postfix
 // unary operator.  This is ugly, but it seems to do the right thing.
 
-static bool
-next_token_is_postfix_unary_op (bool spc_prev)
+bool
+lexical_feedback::next_token_is_postfix_unary_op (bool spc_prev)
 {
   bool un_op = false;
 
@@ -2087,22 +2157,22 @@ next_token_is_postfix_unary_op (bool spc_prev)
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '\'');
-      xunput (c1, yytext);
+      xunput (c1);
     }
   else if (c0 == '+')
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '+');
-      xunput (c1, yytext);
+      xunput (c1);
     }
   else if (c0 == '-')
     {
       int c1 = text_yyinput ();
       un_op = (c1 == '-');
-      xunput (c1, yytext);
+      xunput (c1);
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return un_op;
 }
@@ -2119,8 +2189,8 @@ next_token_is_postfix_unary_op (bool spc_prev)
 // (e.g., the characters '[' 'a' ' ' '+' '\' LFD 'b' ']') will be
 // parsed as a binary operator.
 
-static bool
-next_token_is_bin_op (bool spc_prev)
+bool
+lexical_feedback::next_token_is_bin_op (bool spc_prev)
 {
   bool bin_op = false;
 
@@ -2151,7 +2221,7 @@ next_token_is_bin_op (bool spc_prev)
             break;
           }
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2175,7 +2245,7 @@ next_token_is_bin_op (bool spc_prev)
           // A structure element reference is a binary op.
           bin_op = true;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2205,7 +2275,7 @@ next_token_is_bin_op (bool spc_prev)
         if (c1 == '=')
           bin_op = true;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2213,30 +2283,15 @@ next_token_is_bin_op (bool spc_prev)
       break;
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return bin_op;
 }
 
-// Used to delete trailing white space from tokens.
-
-static std::string
-strip_trailing_whitespace (char *s)
-{
-  std::string retval = s;
-
-  size_t pos = retval.find_first_of (" \t");
-
-  if (pos != std::string::npos)
-    retval.resize (pos);
-
-  return retval;
-}
-
 // FIXME -- we need to handle block comments here.
 
-static void
-scan_for_comments (const char *text)
+void
+lexical_feedback::scan_for_comments (const char *text)
 {
   std::string comment_buf;
 
@@ -2293,19 +2348,13 @@ scan_for_comments (const char *text)
 }
 
 // Discard whitespace, including comments and continuations.
-//
-// Return value is logical OR of the following values:
-//
-//  ATE_NOTHING      : no spaces to eat
-//  ATE_SPACE_OR_TAB : space or tab in input
-//  ATE_NEWLINE      : bare new line in input
 
 // FIXME -- we need to handle block comments here.
 
-static yum_yum
-eat_whitespace (void)
+int
+lexical_feedback::eat_whitespace (void)
 {
-  yum_yum retval = ATE_NOTHING;
+  int retval = lexical_feedback::NO_WHITESPACE;
 
   std::string comment_buf;
 
@@ -2327,11 +2376,11 @@ eat_whitespace (void)
               comment_buf += static_cast<char> (c);
               beginning_of_comment = false;
             }
-          retval |= ATE_SPACE_OR_TAB;
+          retval |= lexical_feedback::SPACE_OR_TAB;
           break;
 
         case '\n':
-          retval |= ATE_NEWLINE;
+          retval |= lexical_feedback::NEWLINE;
           if (in_comment)
             {
               comment_buf += static_cast<char> (c);
@@ -2404,7 +2453,7 @@ eat_whitespace (void)
     octave_comment_buffer::append (comment_buf);
 
  done:
-  xunput (c, yytext);
+  xunput (c);
   current_input_column--;
   return retval;
 }
@@ -2415,23 +2464,25 @@ looks_like_hex (const char *s, int len)
   return (len > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X'));
 }
 
-static void
-handle_number (void)
+void
+lexical_feedback::handle_number (void)
 {
   double value = 0.0;
   int nread = 0;
 
-  if (looks_like_hex (yytext, strlen (yytext)))
+  char *yytxt = flex_yytext ();
+
+  if (looks_like_hex (yytxt, strlen (yytxt)))
     {
       unsigned long ival;
 
-      nread = sscanf (yytext, "%lx", &ival);
+      nread = sscanf (yytxt, "%lx", &ival);
 
       value = static_cast<double> (ival);
     }
   else
     {
-      char *tmp = strsave (yytext);
+      char *tmp = strsave (yytxt);
 
       char *idx = strpbrk (tmp, "Dd");
 
@@ -2447,17 +2498,15 @@ handle_number (void)
 
   assert (nread == 1);
 
-  lexer_flags.quote_is_transpose = true;
-  lexer_flags.convert_spaces_to_comma = true;
-  lexer_flags.looking_for_object_index = false;
-  lexer_flags.at_beginning_of_statement = false;
+  quote_is_transpose = true;
+  convert_spaces_to_comma = true;
+  looking_for_object_index = false;
+  at_beginning_of_statement = false;
 
-  yylval.tok_val = new token (value, yytext, input_line_number,
-                              current_input_column);
+  push_token (new token (value, yytxt, input_line_number,
+                         current_input_column));
 
-  token_stack.push (yylval.tok_val);
-
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   do_comma_insert_check ();
 }
@@ -2473,8 +2522,8 @@ handle_number (void)
 
 // FIXME -- we need to handle block comments here.
 
-static bool
-have_continuation (bool trailing_comments_ok)
+bool
+lexical_feedback::have_continuation (bool trailing_comments_ok)
 {
   std::ostringstream buf;
 
@@ -2543,7 +2592,7 @@ have_continuation (bool trailing_comments_ok)
         }
     }
 
-  xunput (c, yytext);
+  xunput (c);
   return false;
 
 cleanup:
@@ -2552,7 +2601,7 @@ cleanup:
 
   int len = s.length ();
   while (len--)
-    xunput (s[len], yytext);
+    xunput (s[len]);
 
   return false;
 }
@@ -2561,8 +2610,8 @@ cleanup:
 // continuation.  If so, this eats it, up to and including the new
 // line character.
 
-static bool
-have_ellipsis_continuation (bool trailing_comments_ok)
+bool
+lexical_feedback::have_ellipsis_continuation (bool trailing_comments_ok)
 {
   char c1 = text_yyinput ();
   if (c1 == '.')
@@ -2572,25 +2621,23 @@ have_ellipsis_continuation (bool trailing_comments_ok)
         return true;
       else
         {
-          xunput (c2, yytext);
-          xunput (c1, yytext);
+          xunput (c2);
+          xunput (c1);
         }
     }
   else
-    xunput (c1, yytext);
+    xunput (c1);
 
   return false;
 }
 
 // See if we have a continuation line.  If so, eat it and the leading
 // whitespace on the next line.
-//
-// Return value is the same as described for eat_whitespace().
 
-static yum_yum
-eat_continuation (void)
+int
+lexical_feedback::eat_continuation (void)
 {
-  int retval = ATE_NOTHING;
+  int retval = lexical_feedback::NO_WHITESPACE;
 
   int c = text_yyinput ();
 
@@ -2598,13 +2645,13 @@ eat_continuation (void)
       || (c == '\\' && have_continuation ()))
     retval = eat_whitespace ();
   else
-    xunput (c, yytext);
+    xunput (c);
 
   return retval;
 }
 
-static int
-handle_string (char delim)
+int
+lexical_feedback::handle_string (char delim)
 {
   std::ostringstream buf;
 
@@ -2661,26 +2708,25 @@ handle_string (char delim)
               else
                 {
                   std::string s;
-                  xunput (c, yytext);
+                  xunput (c);
 
                   if (delim == '\'')
                     s = buf.str ();
                   else
                     s = do_string_escapes (buf.str ());
 
-                  lexer_flags.quote_is_transpose = true;
-                  lexer_flags.convert_spaces_to_comma = true;
+                  quote_is_transpose = true;
+                  convert_spaces_to_comma = true;
 
-                  yylval.tok_val = new token (s, bos_line, bos_col);
-                  token_stack.push (yylval.tok_val);
+                  push_token (new token (s, bos_line, bos_col));
 
                   if (delim == '"')
                     gripe_matlab_incompatible ("\" used as string delimiter");
                   else if (delim == '\'')
                     gripe_single_quote_string ();
 
-                  lexer_flags.looking_for_object_index = true;
-                  lexer_flags.at_beginning_of_statement = false;
+                  looking_for_object_index = true;
+                  at_beginning_of_statement = false;
 
                   return delim == '"' ? DQ_STRING : SQ_STRING;
                 }
@@ -2697,8 +2743,8 @@ handle_string (char delim)
   return LEXICAL_ERROR;
 }
 
-static bool
-next_token_is_assign_op (void)
+bool
+lexical_feedback::next_token_is_assign_op (void)
 {
   bool retval = false;
 
@@ -2709,7 +2755,7 @@ next_token_is_assign_op (void)
     case '=':
       {
         int c1 = text_yyinput ();
-        xunput (c1, yytext);
+        xunput (c1);
         if (c1 != '=')
           retval = true;
       }
@@ -2724,7 +2770,7 @@ next_token_is_assign_op (void)
     case '|':
       {
         int c1 = text_yyinput ();
-        xunput (c1, yytext);
+        xunput (c1);
         if (c1 == '=')
           retval = true;
       }
@@ -2736,11 +2782,11 @@ next_token_is_assign_op (void)
         if (match_any (c1, "+-*/\\"))
           {
             int c2 = text_yyinput ();
-            xunput (c2, yytext);
+            xunput (c2);
             if (c2 == '=')
               retval = true;
           }
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2750,11 +2796,11 @@ next_token_is_assign_op (void)
         if (c1 == '>')
           {
             int c2 = text_yyinput ();
-            xunput (c2, yytext);
+            xunput (c2);
             if (c2 == '=')
               retval = true;
           }
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2764,11 +2810,11 @@ next_token_is_assign_op (void)
         if (c1 == '<')
           {
             int c2 = text_yyinput ();
-            xunput (c2, yytext);
+            xunput (c2);
             if (c2 == '=')
               retval = true;
           }
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -2776,22 +2822,24 @@ next_token_is_assign_op (void)
       break;
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return retval;
 }
 
-static bool
-next_token_is_index_op (void)
+bool
+lexical_feedback::next_token_is_index_op (void)
 {
   int c = text_yyinput ();
-  xunput (c, yytext);
+  xunput (c);
   return c == '(' || c == '{';
 }
 
-static int
-handle_close_bracket (bool spc_gobbled, int bracket_type)
+int
+lexical_feedback::handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
+  OCTAVE_YYG;
+
   int retval = bracket_type;
 
   if (! nesting_level.none ())
@@ -2799,27 +2847,27 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
       nesting_level.remove ();
 
       if (bracket_type == ']')
-        lexer_flags.bracketflag--;
+        bracketflag--;
       else if (bracket_type == '}')
-        lexer_flags.braceflag--;
+        braceflag--;
       else
         panic_impossible ();
     }
 
-  if (lexer_flags.bracketflag == 0 && lexer_flags.braceflag == 0)
+  if (bracketflag == 0 && braceflag == 0)
     BEGIN (INITIAL);
 
   if (bracket_type == ']'
       && next_token_is_assign_op ()
-      && ! lexer_flags.looking_at_return_list)
+      && ! looking_at_return_list)
     {
       retval = CLOSE_BRACE;
     }
-  else if ((lexer_flags.bracketflag || lexer_flags.braceflag)
-           && lexer_flags.convert_spaces_to_comma
+  else if ((bracketflag || braceflag)
+           && convert_spaces_to_comma
            && (nesting_level.is_bracket ()
                || (nesting_level.is_brace ()
-                   && ! lexer_flags.looking_at_object_index.front ())))
+                   && ! looking_at_object_index.front ())))
     {
       bool index_op = next_token_is_index_op ();
 
@@ -2843,24 +2891,24 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
             {
               maybe_warn_separator_insert (',');
 
-              xunput (',', yytext);
+              xunput (',');
               return retval;
             }
         }
     }
 
-  lexer_flags.quote_is_transpose = true;
-  lexer_flags.convert_spaces_to_comma = true;
+  quote_is_transpose = true;
+  convert_spaces_to_comma = true;
 
   return retval;
 }
 
-static void
-maybe_unput_comma (int spc_gobbled)
+void
+lexical_feedback::maybe_unput_comma (int spc_gobbled)
 {
   if (nesting_level.is_bracket ()
       || (nesting_level.is_brace ()
-          && ! lexer_flags.looking_at_object_index.front ()))
+          && ! looking_at_object_index.front ()))
     {
       int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -2869,8 +2917,8 @@ maybe_unput_comma (int spc_gobbled)
       int c1 = text_yyinput ();
       int c2 = text_yyinput ();
 
-      xunput (c2, yytext);
-      xunput (c1, yytext);
+      xunput (c2);
+      xunput (c1);
 
       int sep_op = next_token_is_sep_op ();
 
@@ -2890,12 +2938,12 @@ maybe_unput_comma (int spc_gobbled)
 
       maybe_warn_separator_insert (',');
 
-      xunput (',', yytext);
+      xunput (',');
     }
 }
 
-static bool
-next_token_can_follow_bin_op (void)
+bool
+lexical_feedback::next_token_can_follow_bin_op (void)
 {
   std::stack<char> buf;
 
@@ -2915,7 +2963,7 @@ next_token_can_follow_bin_op (void)
   // Restore input.
   while (! buf.empty ())
     {
-      xunput (buf.top (), yytext);
+      xunput (buf.top ());
 
       buf.pop ();
     }
@@ -2936,8 +2984,8 @@ can_be_command (const std::string& tok)
             || tok == "NaN" || tok == "nan");
 }
 
-static bool
-looks_like_command_arg (void)
+bool
+lexical_feedback::looks_like_command_arg (void)
 {
   bool retval = true;
 
@@ -2958,12 +3006,12 @@ looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3013,12 +3061,12 @@ looks_like_command_arg (void)
                   && next_token_can_follow_bin_op ())
                 retval = false;
 
-              xunput (c2, yytext);
+              xunput (c2);
             }
             break;
           }
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3033,7 +3081,7 @@ looks_like_command_arg (void)
             && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3054,13 +3102,13 @@ looks_like_command_arg (void)
                     && next_token_can_follow_bin_op ())
                   retval = false;
 
-                xunput (c3, yytext);
+                xunput (c3);
               }
             else if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
                      && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n")
                  && (! isdigit (c1) && c1 != ' ' && c1 != '\t'
@@ -3071,7 +3119,7 @@ looks_like_command_arg (void)
             retval = false;
           }
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3090,13 +3138,13 @@ looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
                  && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3114,13 +3162,13 @@ looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
                  && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3139,13 +3187,13 @@ looks_like_command_arg (void)
                 && next_token_can_follow_bin_op ())
               retval = false;
 
-            xunput (c2, yytext);
+            xunput (c2);
           }
         else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
                  && next_token_can_follow_bin_op ())
           retval = false;
 
-        xunput (c1, yytext);
+        xunput (c1);
       }
       break;
 
@@ -3153,17 +3201,18 @@ looks_like_command_arg (void)
       break;
     }
 
-  xunput (c0, yytext);
+  xunput (c0);
 
   return retval;
 }
 
-static int
-handle_superclass_identifier (void)
+int
+lexical_feedback::handle_superclass_identifier (void)
 {
-  int c = yytext[yyleng-1];
+  char *yytxt = flex_yytext ();
+  int c = yytxt[flex_yyleng()-1];
 
-  std::string meth = strip_trailing_whitespace (yytext);
+  std::string meth = strip_trailing_whitespace (yytxt);
 
   int cont_is_spc = eat_continuation ();
 
@@ -3189,23 +3238,23 @@ handle_superclass_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  yylval.tok_val = new token (meth, pkg, cls, input_line_number,
-                              current_input_column);
-  token_stack.push (yylval.tok_val);
+  push_token (new token (meth, pkg, cls, input_line_number,
+                         current_input_column));
 
   do_comma_insert_check ();
   maybe_unput_comma (spc_gobbled);
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   return SUPERCLASSREF;
 }
 
-static int
-handle_meta_identifier (void)
+int
+lexical_feedback::handle_meta_identifier (void)
 {
-  int c = yytext[yyleng-1];
+  char *yytxt = flex_yytext ();
+  int c = yytxt[flex_yyleng()-1];
 
-  std::string cls = strip_trailing_whitespace (yytext).substr (1);
+  std::string cls = strip_trailing_whitespace (yytxt).substr (1);
 
   int cont_is_spc = eat_continuation ();
 
@@ -3226,13 +3275,12 @@ handle_meta_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  yylval.tok_val = new token (pkg, cls, input_line_number,
-                              current_input_column);
-  token_stack.push (yylval.tok_val);
+  push_token (new token (pkg, cls, input_line_number,
+                         current_input_column));
 
   do_comma_insert_check ();
   maybe_unput_comma (spc_gobbled);
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   return METAQUERY;
 }
@@ -3241,16 +3289,20 @@ handle_meta_identifier (void)
 // an identifier.  Handles keywords.  Return -1 if the identifier
 // should be ignored.
 
-static int
-handle_identifier (void)
+int
+lexical_feedback::handle_identifier (void)
 {
-  bool at_bos = lexer_flags.at_beginning_of_statement;
+  OCTAVE_YYG;
 
-  std::string tok = strip_trailing_whitespace (yytext);
+  bool at_bos = at_beginning_of_statement;
 
-  int c = yytext[yyleng-1];
+  char *yytxt = flex_yytext ();
 
-  int cont_is_spc = eat_continuation ();
+  std::string tok = strip_trailing_whitespace (yytxt);
+
+  int c = yytxt[flex_yyleng()-1];
+
+  bool cont_is_spc = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
 
   int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
 
@@ -3259,30 +3311,28 @@ handle_identifier (void)
   // a string that is also a valid identifier.  But first, we have to
   // decide whether to insert a comma.
 
-  if (lexer_flags.looking_at_indirect_ref)
+  if (looking_at_indirect_ref)
     {
       do_comma_insert_check ();
 
       maybe_unput_comma (spc_gobbled);
 
-      yylval.tok_val = new token (tok, input_line_number,
-                                  current_input_column);
+      push_token (new token (tok, input_line_number,
+                             current_input_column));
 
-      token_stack.push (yylval.tok_val);
+      quote_is_transpose = true;
+      convert_spaces_to_comma = true;
+      looking_for_object_index = true;
 
-      lexer_flags.quote_is_transpose = true;
-      lexer_flags.convert_spaces_to_comma = true;
-      lexer_flags.looking_for_object_index = true;
-
-      current_input_column += yyleng;
+      current_input_column += flex_yyleng ();
 
       return STRUCT_ELT;
     }
 
-  lexer_flags.at_beginning_of_statement = false;
+  at_beginning_of_statement = false;
 
   // The is_keyword_token may reset
-  // lexer_flags.at_beginning_of_statement.  For example, if it sees
+  // at_beginning_of_statement.  For example, if it sees
   // an else token, then the next token is at the beginning of a
   // statement.
 
@@ -3292,7 +3342,7 @@ handle_identifier (void)
   // is already set.  Otherwise, we won't be at the beginning of a
   // statement.
 
-  if (lexer_flags.looking_at_function_handle)
+  if (looking_at_function_handle)
     {
       if (kw_token)
         {
@@ -3302,15 +3352,13 @@ handle_identifier (void)
         }
       else
         {
-          yylval.tok_val = new token (tok, input_line_number,
-                                      current_input_column);
+          push_token (new token (tok, input_line_number,
+                                 current_input_column));
 
-          token_stack.push (yylval.tok_val);
-
-          current_input_column += yyleng;
-          lexer_flags.quote_is_transpose = false;
-          lexer_flags.convert_spaces_to_comma = true;
-          lexer_flags.looking_for_object_index = true;
+          current_input_column += flex_yyleng ();
+          quote_is_transpose = false;
+          convert_spaces_to_comma = true;
+          looking_for_object_index = true;
 
           return FCN_HANDLE;
         }
@@ -3323,10 +3371,10 @@ handle_identifier (void)
     {
       if (kw_token >= 0)
         {
-          current_input_column += yyleng;
-          lexer_flags.quote_is_transpose = false;
-          lexer_flags.convert_spaces_to_comma = true;
-          lexer_flags.looking_for_object_index = false;
+          current_input_column += flex_yyleng ();
+          quote_is_transpose = false;
+          convert_spaces_to_comma = true;
+          looking_for_object_index = false;
         }
 
       return kw_token;
@@ -3340,13 +3388,13 @@ handle_identifier (void)
   if (c1 == '=')
     {
       int c2 = text_yyinput ();
-      xunput (c2, yytext);
+      xunput (c2);
 
       if (c2 != '=')
         next_tok_is_eq = true;
     }
 
-  xunput (c1, yytext);
+  xunput (c1);
 
   // Kluge alert.
   //
@@ -3366,16 +3414,16 @@ handle_identifier (void)
           BEGIN (COMMAND_START);
         }
       else if (next_tok_is_eq
-               || lexer_flags.looking_at_decl_list
-               || lexer_flags.looking_at_return_list
-               || (lexer_flags.looking_at_parameter_list
-                   && ! lexer_flags.looking_at_initializer_expression))
+               || looking_at_decl_list
+               || looking_at_return_list
+               || (looking_at_parameter_list
+                   && ! looking_at_initializer_expression))
         {
           symbol_table::force_variable (tok);
         }
-      else if (lexer_flags.looking_at_matrix_or_assign_lhs)
+      else if (looking_at_matrix_or_assign_lhs)
         {
-          lexer_flags.pending_local_variables.insert (tok);
+          pending_local_variables.insert (tok);
         }
     }
 
@@ -3385,195 +3433,33 @@ handle_identifier (void)
   if (tok == "end")
     tok = "__end__";
 
-  yylval.tok_val = new token (&(symbol_table::insert (tok)),
-                              input_line_number, current_input_column);
-
-  token_stack.push (yylval.tok_val);
+  push_token (new token (&(symbol_table::insert (tok)),
+                         input_line_number, current_input_column));
 
   // After seeing an identifer, it is ok to convert spaces to a comma
   // (if needed).
 
-  lexer_flags.convert_spaces_to_comma = true;
+  convert_spaces_to_comma = true;
 
   if (! (next_tok_is_eq || YY_START == COMMAND_START))
     {
-      lexer_flags.quote_is_transpose = true;
+      quote_is_transpose = true;
 
       do_comma_insert_check ();
 
       maybe_unput_comma (spc_gobbled);
     }
 
-  current_input_column += yyleng;
+  current_input_column += flex_yyleng ();
 
   if (tok != "__end__")
-    lexer_flags.looking_for_object_index = true;
+    looking_for_object_index = true;
 
   return NAME;
 }
 
 void
-lexical_feedback::init (void)
-{
-  // Not initially defining a matrix list.
-  bracketflag = 0;
-
-  // Not initially defining a cell array list.
-  braceflag = 0;
-
-  // Not initially inside a loop or if statement.
-  looping = 0;
-
-  // Not initially defining a function.
-  defining_func = 0;
-
-  // Not parsing an object index.
-  while (! parsed_function_name.empty ())
-    parsed_function_name.pop ();
-
-  parsing_class_method = false;
-
-  // Not initially defining a class with classdef.
-  maybe_classdef_get_set_method = false;
-  parsing_classdef = false;
-  parsing_classdef_get_method = false;
-  parsing_classdef_set_method = false;
-
-  // Not initiallly looking at a function handle.
-  looking_at_function_handle = 0;
-
-  // Not initiallly looking at an anonymous function argument list.
-  looking_at_anon_fcn_args = 0;
-
-  // Not parsing a function return, parameter, or declaration list.
-  looking_at_return_list = false;
-  looking_at_parameter_list = false;
-  looking_at_decl_list = false;
-
-  // Not looking at an argument list initializer expression.
-  looking_at_initializer_expression = false;
-
-  // Not parsing a matrix or the left hand side of multi-value
-  // assignment statement.
-  looking_at_matrix_or_assign_lhs = false;
-
-  // Not parsing an object index.
-  while (! looking_at_object_index.empty ())
-    looking_at_object_index.pop_front ();
-
-  looking_at_object_index.push_front (false);
-
-  // Object index not possible until we've seen something.
-  looking_for_object_index = false;
-
-  // Yes, we are at the beginning of a statement.
-  at_beginning_of_statement = true;
-
-  // No need to do comma insert or convert spaces to comma at
-  // beginning of input.
-  convert_spaces_to_comma = true;
-  do_comma_insert = false;
-
-  // Not initially looking at indirect references.
-  looking_at_indirect_ref = false;
-
-  // Quote marks strings intially.
-  quote_is_transpose = false;
-
-  // Set of identifiers that might be local variable names is empty.
-  pending_local_variables.clear ();
-}
-
-bool
-is_keyword (const std::string& s)
-{
-  // Parsing function names like "set.property_name" inside
-  // classdef-style class definitions is simplified by handling the
-  // "set" and "get" portions of the names using the same mechanism as
-  // is used for keywords.  However, they are not really keywords in
-  // the language, so omit them from the list of possible keywords.
-
-  return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
-          && ! (s == "set" || s == "get"));
-}
-
-DEFUN (iskeyword, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} iskeyword ()\n\
-@deftypefnx {Built-in Function} {} iskeyword (@var{name})\n\
-Return true if @var{name} is an Octave keyword.  If @var{name}\n\
-is omitted, return a list of keywords.\n\
-@seealso{isvarname, exist}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("iskeyword");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 1)
-    {
-      // Neither set and get are keywords.  See the note in the
-      // is_keyword function for additional details.
-
-      string_vector lst (TOTAL_KEYWORDS);
-
-      int j = 0;
-
-      for (int i = 0; i < TOTAL_KEYWORDS; i++)
-        {
-          std::string tmp = wordlist[i].name;
-
-          if (! (tmp == "set" || tmp == "get"))
-            lst[j++] = tmp;
-        }
-
-      lst.resize (j);
-
-      retval = Cell (lst.sort ());
-    }
-  else if (argc == 2)
-    {
-      retval = is_keyword (argv[1]);
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-/*
-
-%!assert (iskeyword ("for"))
-%!assert (iskeyword ("fort"), false)
-%!assert (iskeyword ("fft"), false)
-
-*/
-
-void
-prep_lexer_for_script_file (void)
-{
-  BEGIN (SCRIPT_FILE_BEGIN);
-}
-
-void
-prep_lexer_for_function_file (void)
-{
-  BEGIN (FUNCTION_FILE_BEGIN);
-}
-
-void
-prep_lexer_for_classdef_file (void)
-{
-  BEGIN (CLASSDEF_FILE_BEGIN);
-}
-
-static void
-maybe_warn_separator_insert (char sep)
+lexical_feedback::maybe_warn_separator_insert (char sep)
 {
   std::string nm = curr_fcn_file_full_name;
 
@@ -3587,8 +3473,8 @@ maybe_warn_separator_insert (char sep)
                      sep, input_line_number, nm.c_str ());
 }
 
-static void
-gripe_single_quote_string (void)
+void
+lexical_feedback::gripe_single_quote_string (void)
 {
   std::string nm = curr_fcn_file_full_name;
 
@@ -3602,8 +3488,8 @@ gripe_single_quote_string (void)
                      input_line_number, nm.c_str ());
 }
 
-static void
-gripe_matlab_incompatible (const std::string& msg)
+void
+lexical_feedback::gripe_matlab_incompatible (const std::string& msg)
 {
   std::string nm = curr_fcn_file_full_name;
 
@@ -3617,21 +3503,21 @@ gripe_matlab_incompatible (const std::string& msg)
                      msg.c_str (), input_line_number, nm.c_str ());
 }
 
-static void
-maybe_gripe_matlab_incompatible_comment (char c)
+void
+lexical_feedback::maybe_gripe_matlab_incompatible_comment (char c)
 {
   if (c == '#')
     gripe_matlab_incompatible ("# used as comment character");
 }
 
-static void
-gripe_matlab_incompatible_continuation (void)
+void
+lexical_feedback::gripe_matlab_incompatible_continuation (void)
 {
   gripe_matlab_incompatible ("\\ used as line continuation marker");
 }
 
-static void
-gripe_matlab_incompatible_operator (const std::string& op)
+void
+lexical_feedback::gripe_matlab_incompatible_operator (const std::string& op)
 {
   std::string t = op;
   int n = t.length ();
@@ -3640,8 +3526,23 @@ gripe_matlab_incompatible_operator (const std::string& op)
   gripe_matlab_incompatible (t + " used as operator");
 }
 
-static void
-display_token (int tok)
+void
+lexical_feedback::push_token (token *tok)
+{
+  YYSTYPE *lval = yyget_lval (scanner);
+  lval->tok_val = tok;
+  token_stack.push (tok);
+}
+
+token *
+lexical_feedback::current_token (void)
+{
+  YYSTYPE *lval = yyget_lval (scanner);
+  return lval->tok_val;
+}
+
+void
+lexical_feedback::display_token (int tok)
 {
   switch (tok)
     {
@@ -3693,16 +3594,24 @@ display_token (int tok)
 
     case NUM:
     case IMAG_NUM:
-      std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
-                << " [" << yylval.tok_val->number () << "]\n";
+      {
+        token *tok_val = current_token ();
+        std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
+                  << " [" << tok_val->number () << "]\n";
+      }
       break;
 
     case STRUCT_ELT:
-      std::cerr << "STRUCT_ELT [" << yylval.tok_val->text () << "]\n"; break;
+      {
+        token *tok_val = current_token ();
+        std::cerr << "STRUCT_ELT [" << tok_val->text () << "]\n";
+      }
+      break;
 
     case NAME:
       {
-        symbol_table::symbol_record *sr = yylval.tok_val->sym_rec ();
+        token *tok_val = current_token ();
+        symbol_table::symbol_record *sr = tok_val->sym_rec ();
         std::cerr << "NAME";
         if (sr)
           std::cerr << " [" << sr->name () << "]";
@@ -3714,8 +3623,12 @@ display_token (int tok)
 
     case DQ_STRING:
     case SQ_STRING:
-      std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
-                << " [" << yylval.tok_val->text () << "]\n";
+      {
+        token *tok_val = current_token ();
+
+        std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
+                  << " [" << tok_val->text () << "]\n";
+      }
       break;
 
     case FOR: std::cerr << "FOR\n"; break;
@@ -3768,11 +3681,11 @@ display_token (int tok)
 }
 
 static void
-display_state (void)
+display_state (int state)
 {
   std::cerr << "S: ";
 
-  switch (YY_START)
+  switch (state)
     {
     case INITIAL:
       std::cerr << "INITIAL" << std::endl;
@@ -3804,46 +3717,25 @@ display_state (void)
     }
 }
 
-static void
-lexer_debug (const char *pattern, const char *text)
+void
+lexical_feedback::fatal_error (const char *msg)
 {
+  error (msg);
+
+  OCTAVE_QUIT;
+
+  yy_fatal_error (msg, scanner);
+}
+
+void
+lexical_feedback::lexer_debug (const char *pattern, const char *text)
+{
+  OCTAVE_YYG;
+
   std::cerr << std::endl;
 
-  display_state ();
+  display_state (YY_START);
 
   std::cerr << "P: " << pattern << std::endl;
   std::cerr << "T: " << text << std::endl;
-}
-
-DEFUN (__display_tokens__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __display_tokens__ ()\n\
-Query or set the internal variable that determines whether Octave's\n\
-lexer displays tokens as they are read.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (display_tokens);
-}
-
-DEFUN (__token_count__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __token_count__ ()\n\
-Number of language tokens processed since Octave startup.\n\
-@end deftypefn")
-{
-  return octave_value (Vtoken_count);
-}
-
-DEFUN (__lexer_debug_flag__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val}))\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  retval = set_internal_variable (lexer_debug_flag, args, nargout,
-                                  "__lexer_debug_flag__");
-
-  return retval;
 }

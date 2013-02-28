@@ -123,9 +123,6 @@ public slots:
   void handle_mru_add_file (const QString& file_name);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
-  /** Slot when floating property changes */
-  void top_level_changed (bool floating);
-
   /** Tells the editor to react on changed settings. */
   void notice_settings ();
 

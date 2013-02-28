@@ -22,8 +22,9 @@
 ## Query or set the name of the program invoked by the plot command
 ## when the graphics toolkit is set to "gnuplot".  Additional arguments to
 ## pass to the external plotting program may also be given.
-## The default value is @code{"gnuplot"} without additional arguments.
+## The default value is @code{"gnuplot"} with no additional arguments.
 ## @xref{Installation}.
+## @seealso{graphics_toolkit}
 ## @end deftypefn
 
 ## Author: jwe
@@ -39,23 +40,26 @@ function [prog, args] = gnuplot_binary (new_prog, varargin)
   endif
 
   if (nargin == 1)
-    if (ischar (new_prog))
-      if (! isempty (new_prog))
-	gp_binary = new_prog;
-      else
-	error ("gnuplot_binary: value must not be empty");
-      endif
-    else
-      error ("gnuplot_binary: expecting program to be a character string");
+    if (! ischar (new_prog) || isempty (new_prog))
+      error ("gnuplot_binary: NEW_PROG must be a non-empty string");
     endif
+    gp_binary = new_prog;
   endif
 
   if (nargin > 1)
-    if (iscellstr (varargin))
-      gp_args = varargin;
-    else
-      error ("gnuplot_binary: expecting arguments to be character strings");
+    if (! iscellstr (varargin))
+      error ("gnuplot_binary: arguments must be character strings");
     endif
+    gp_args = varargin;
   endif
 
 endfunction
+
+
+%!test
+%! orig_val = gnuplot_binary ();
+%! old_val = gnuplot_binary ("X");
+%! assert (orig_val, old_val);
+%! assert (gnuplot_binary (), "X");
+%! gnuplot_binary (orig_val);
+%! assert (gnuplot_binary (), orig_val);

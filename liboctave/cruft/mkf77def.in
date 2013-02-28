@@ -25,19 +25,19 @@ F77_TOLOWER="@F77_APPEND_UNDERSCORE@"
 F77_APPEND_UNDERSCORE="@F77_APPEND_UNDERSCORE@"
 F77_APPEND_EXTRA_UNDERSCORE="@F77_APPEND_EXTRA_UNDERSCORE@"
 
-if $F77_TOLOWER; then
+if test x$F77_TOLOWER = xyes; then
   case_cmd="tolower";
 else
   case_cmd="toupper";
 fi
 
-if $F77_APPEND_UNDERSCORE; then
+if test x$F77_APPEND_UNDERSCORE = xyes; then
   uscore="_";
 else
   uscore="";
 fi
 
-if $F77_APPEND_EXTRA_UNDERSCORE; then
+if test x$F77_APPEND_EXTRA_UNDERSCORE = xyes; then
   awkcmd="$AWK '{ if (\$0 ~ /_/) extra = \"_\"; else extra = \"\"; printf (\"%s%s%s\n\", $case_cmd (\$0), \"$uscore\", extra); }'"
 else
   awkcmd="$AWK '{ printf (\"%s%s\n\", tolower (\$0), \"$uscore\"); }'"

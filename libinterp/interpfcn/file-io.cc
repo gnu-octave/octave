@@ -43,9 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 #include <limits>
-#include <locale>
 #include <stack>
-#include <stdexcept>
 #include <vector>
 
 #include <fcntl.h>
@@ -646,23 +644,23 @@ must also open the file in binary mode.\n\
 The parameter @var{arch} is a string specifying the default data format\n\
 for the file.  Valid values for @var{arch} are:\n\
 \n\
-@table @asis\n\
-@samp{native}\n\
+@table @samp\n\
+@item native\n\
 The format of the current machine (this is the default).\n\
 \n\
-@samp{ieee-be}\n\
+@item ieee-be\n\
 IEEE big endian format.\n\
 \n\
-@samp{ieee-le}\n\
+@item ieee-le\n\
 IEEE little endian format.\n\
 \n\
-@samp{vaxd}\n\
+@item vaxd\n\
 VAX D floating format.\n\
 \n\
-@samp{vaxg}\n\
+@item vaxg\n\
 VAX G floating format.\n\
 \n\
-@samp{cray}\n\
+@item cray\n\
 Cray floating format.\n\
 @end table\n\
 \n\
@@ -1087,7 +1085,7 @@ converted.\n\
 DEFUN (fscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{locale})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, \"C\")\n\
 In the first form, read from @var{fid} according to @var{template},\n\
 returning the result in the matrix @var{val}.\n\
 \n\
@@ -1126,10 +1124,7 @@ In the second form, read from @var{fid} according to @var{template},\n\
 with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
-conversions is returned in @var{count}.  It permits to explicitly\n\
-specify a locale to take into account language specific features, \n\
-such as decimal separator.  This operation restores the previous locales\n\
-setting at the end of the conversion.\n\
+conversions is returned in @var{count}\n\
 @ifclear OCTAVE_MANUAL\n\
 \n\
 See the Formatted Input section of the GNU Octave manual for a\n\
@@ -1151,25 +1146,7 @@ complete description of the syntax of the template string.\n\
       if (! error_state)
         {
           if (args(1).is_string ())
-            {
-              std::locale oldloc;
-              try
-                {
-                  // Use args(2) val as the new locale setting. Keep
-                  // old val for restoring afterwards.
-                  oldloc = 
-                    os.imbue (std::locale (args(2).string_value ().c_str ()));
-
-                }
-              catch (std::runtime_error)
-                {
-                  // Display a warning if the specified locale is unknown
-                  warning ("fscanf: invalid locale. Try 'locale -a' for a list of supported values.");
-                  oldloc = std::locale::classic ();
-                }
-              retval = os.oscanf (args(1), who);
-              os.imbue (oldloc);
-            }
+            retval = os.oscanf (args(1), who);
           else
             ::error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
@@ -1237,7 +1214,7 @@ get_sscanf_data (const octave_value& val)
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{locale})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.  In addition to the values\n\
@@ -1262,22 +1239,8 @@ is returned in @var{pos}.\n\
 
           if (os.is_valid ())
             {
-              if (args(1).is_string ()) 
-                {
-                  // Use args(2) val as the new locale setting. As the os
-                  // object is short lived, we don't need to restore
-                  // locale afterwards.
-                  try
-                    {  
-                      os.imbue (std::locale (args(2).string_value ().c_str ()));
-                    }
-                  catch (std::runtime_error)
-                    {
-                      // Display a warning if the specified locale is unknown
-                      warning ("sscanf: invalid locale. Try 'locale -a' for a list of supported values.");
-                    }
-                  retval = os.oscanf (args(1), who);
-                }              
+              if (args(1).is_string ())
+                retval = os.oscanf (args(1), who);
               else
                 ::error ("%s: format TEMPLATE must be a string", who.c_str ());
             }
@@ -1345,16 +1308,10 @@ is returned in @var{pos}.\n\
   return retval;
 }
 
-/*
-%!test
-%! assert (sscanf ("1,2", "%f", "C"), 1)
-%! assert (sscanf ("1,2", "%f", "fr_FR"), 1.2)
-*/
-
 DEFUN (scanf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} scanf (@var{template}, @var{locale})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, \"C\")\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\

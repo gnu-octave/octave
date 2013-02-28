@@ -97,6 +97,7 @@ PKG_PROG_PKG_CONFIG
 
 ## Programs used in Makefiles.
 AC_PROG_AWK
+AC_PROG_GREP
 OCTAVE_PROG_FIND
 OCTAVE_PROG_SED
 OCTAVE_PROG_PERL
@@ -180,24 +181,24 @@ AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
 ### matrix classes.  This slows down some operations a bit, so it is turned off
 ### by default.
 
-BOUNDS_CHECKING=false
+BOUNDS_CHECKING=no
 AC_ARG_ENABLE([bounds-check],
   [AS_HELP_STRING([--enable-bounds-check],
     [enable bounds checking for indexing in internal array classes])],
-  [if test "$enableval" = yes; then BOUNDS_CHECKING=true; fi], [])
-if $BOUNDS_CHECKING; then
+  [if test "$enableval" = yes; then BOUNDS_CHECKING=yes; fi], [])
+if test $BOUNDS_CHECKING = yes; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
 fi
 
 ### Use Octave's built-in memory allocator rather than straightforward malloc.
 ### Disabled by default.
 
-USE_OCTAVE_ALLOCATOR=false
+USE_OCTAVE_ALLOCATOR=no
 AC_ARG_ENABLE([octave-allocator],
   [AS_HELP_STRING([--enable-octave-allocator],
     [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.])],
-  [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=true; fi], [])
-if $USE_OCTAVE_ALLOCATOR; then
+  [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=yes; fi], [])
+if test $USE_OCTAVE_ALLOCATOR = yes; then
   AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1,
     [Define to 1 to use octave_allocator class.])
 fi
@@ -206,12 +207,12 @@ fi
 ### for thread-safe behavior but incurs a significant slowdown, and is thus
 ### disabled by default.
 
-USE_ATOMIC_REFCOUNT=false
+USE_ATOMIC_REFCOUNT=no
 AC_ARG_ENABLE([atomic-refcount],
   [AS_HELP_STRING([--enable-atomic-refcount],
     [use atomic operations for internal reference counting.  This is required for thread-safe behavior but does not by itself make Octave internals thread safe.])],
-  [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=true; fi], [])
-if $USE_ATOMIC_REFCOUNT; then
+  [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=yes; fi], [])
+if test $USE_ATOMIC_REFCOUNT = yes; then
   AC_DEFINE(USE_ATOMIC_REFCOUNT, 1,
     [Define to 1 to use atomic operations for reference counting.])
 fi
@@ -232,13 +233,13 @@ AC_SUBST(DOCDIR)
 
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
-USE_64_BIT_IDX_T=false
+USE_64_BIT_IDX_T=no
 OCTAVE_IDX_TYPE=int
 AC_ARG_ENABLE(64,
   [AS_HELP_STRING([--enable-64],
     [(EXPERIMENTAL) use 64-bit integers for array dimensions and indexing])],
-  [if test "$enableval" = yes; then USE_64_BIT_IDX_T=true; fi], [])
-if $USE_64_BIT_IDX_T; then
+  [if test "$enableval" = yes; then USE_64_BIT_IDX_T=yes; fi], [])
+if test $USE_64_BIT_IDX_T = yes; then
   AC_CHECK_SIZEOF([void *])
   AC_CHECK_SIZEOF([int])
   AC_CHECK_SIZEOF([long])
@@ -251,18 +252,18 @@ if $USE_64_BIT_IDX_T; then
     else
       warn_64_bit="no suitable type found for octave_idx_type so disabling 64-bit features"
       OCTAVE_CONFIGURE_WARNING([warn_64_bit])
-      USE_64_BIT_IDX_T=false
+      USE_64_BIT_IDX_T=no
     fi
   else
     warn_64_bit="pointers are not 64-bits wide; disabling 64-bit features"
     OCTAVE_CONFIGURE_WARNING([warn_64_bit])
-    USE_64_BIT_IDX_T=false
+    USE_64_BIT_IDX_T=no
   fi
 fi
 AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
-if $USE_64_BIT_IDX_T; then
+if test $USE_64_BIT_IDX_T = yes; then
   AC_DEFINE(USE_64_BIT_IDX_T, 1,
     [Define to 1 if using 64-bit integers for array dimensions and indexing.])
 fi
@@ -350,7 +351,7 @@ AC_SUBST(GCC_VERSION)
 ### Determine the compiler flag necessary to create dependencies
 
 ## Assume GCC.
-INCLUDE_DEPS=true
+INCLUDE_DEPS=yes
 DEPEND_FLAGS="-M"
 DEPEND_EXTRA_SED_PATTERN=""
 if test "$GCC" != yes; then
@@ -363,11 +364,11 @@ if test "$GCC" != yes; then
     ;;
     *-*-mingw*)
       if test $have_msvc = no; then
-        INCLUDE_DEPS=false
+        INCLUDE_DEPS=no
       fi
     ;;
     *)
-      INCLUDE_DEPS=false
+      INCLUDE_DEPS=no
     ;;
   esac
 fi
@@ -466,12 +467,12 @@ AC_SUBST(XTRA_CXXFLAGS)
 ### Test whether the compiler supports OpenMP.  This is experimental so disable
 ### it by default.  Enable it with the flag --enable-openmp.
 
-USE_OPENMP=false
+USE_OPENMP=no
 AC_ARG_ENABLE([openmp],
   [AS_HELP_STRING([--enable-openmp],
     [(EXPERIMENTAL) use OpenMP SMP multi-threading])],
-  [if test "$enableval" = yes; then USE_OPENMP=true; fi], [])
-if $USE_OPENMP; then
+  [if test "$enableval" = yes; then USE_OPENMP=yes; fi], [])
+if test $USE_OPENMP = yes; then
   case $host_os in
     mingw* | cygwin* | *-gnu*)
       OCTAVE_CHECK_OPENMP(-fopenmp)
@@ -538,18 +539,18 @@ AC_F77_LIBRARY_LDFLAGS
 AC_F77_DUMMY_MAIN
 AC_F77_WRAPPERS
 
-F77_TOLOWER=true
-F77_APPEND_UNDERSCORE=true
-F77_APPEND_EXTRA_UNDERSCORE=true
+F77_TOLOWER=yes
+F77_APPEND_UNDERSCORE=yes
+F77_APPEND_EXTRA_UNDERSCORE=yes
 
 case $ac_cv_f77_mangling in
-  "upper case") F77_TOLOWER=false ;;
+  "upper case") F77_TOLOWER=no ;;
 esac
 case $ac_cv_f77_mangling in
-  "no underscore") F77_APPEND_UNDERSCORE=false ;;
+  "no underscore") F77_APPEND_UNDERSCORE=no ;;
 esac
 case $ac_cv_f77_mangling in
-  "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=false ;;
+  "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=no ;;
 esac
 
 case $canonical_host_type in
@@ -593,7 +594,7 @@ AC_SUBST(F77_ISNAN_MACRO)
 
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
 if test $octave_cv_sizeof_fortran_integer = no; then
-  if $USE_64_BIT_IDX_T; then
+  if test $USE_64_BIT_IDX_T = yes; then
     case $F77 in
       *gfortran*)
         case $F77_INTEGER_8_FLAG in
@@ -703,12 +704,12 @@ OCTAVE_CHECK_LIB(z, ZLIB,
 
 ### Check for the LLVM library
 
-build_jit=false
+build_jit=no
 AC_ARG_ENABLE([jit],
   [AS_HELP_STRING([--enable-jit],
     [(EXPERIMENTAL) enable JIT compiler])],
   [if test "$enableval" = yes; then
-     build_jit=true
+     build_jit=yes
    fi],
   [])
 
@@ -717,7 +718,7 @@ LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
 
-if test $build_jit = true; then
+if test $build_jit = yes; then
 
   ## Find llvm-config program from environment variable or by searching
   AC_ARG_VAR([LLVM_CONFIG], [path to llvm-config utility])
@@ -763,7 +764,7 @@ if test $build_jit = true; then
   if test -z "$warn_llvm"; then
     AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
   else
-    build_jit=false
+    build_jit=no
     LLVM_CPPFLAGS=
     LLVM_CXXFLAGS=
     LLVM_LDFLAGS=
@@ -816,16 +817,16 @@ OCTAVE_CHECK_LIB(fftw3f, FFTW3F,
 
 ## Check for the multithreaded FFTW library.
 ## Fallback to singlethreaded if not found or disabled
-build_fftw_threads=true
+build_fftw_threads=yes
 AC_ARG_ENABLE([fftw-threads],
   [AS_HELP_STRING([--disable-fftw-threads],
     [disable Multi-threaded FFTW])],
   [if test "$enableval" = no; then
-     build_fftw_threads=false
+     build_fftw_threads=no
    fi],
   [])
 
-if test $build_fftw_threads = true; then
+if test $build_fftw_threads = yes; then
   OCTAVE_CHECK_FFTW_THREADS(fftw3, fftw_plan_with_nthreads)
   OCTAVE_CHECK_FFTW_THREADS(fftw3f, fftwf_plan_with_nthreads)
 fi
@@ -861,18 +862,18 @@ OCTAVE_CHECK_LIB(curl, cURL,
 if test -z "$warn_curl"; then
   ## Additional check on cURL library that was found
   AC_CACHE_CHECK([for CURLOPT_DIRLISTONLY in curl/curl.h],
-    [octave_cv_header_define_curlopt_dirlistonly],
+    [octave_cv_curl_has_curlopt_dirlistonly],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
       #include <curl/curl.h>
       ]], [[
       curl_easy_setopt ((CURL*)NULL, CURLOPT_DIRLISTONLY, 0);
       ]])],
-      [octave_cv_header_define_curlopt_dirlistonly=no],
-      [octave_cv_header_define_curlopt_dirlistonly=yes])
+      [octave_cv_curl_has_curlopt_dirlistonly=yes],
+      [octave_cv_curl_has_curlopt_dirlistonly=no])
     ])
-  if test $octave_cv_header_define_curlopt_dirlistonly = yes; then
+  if test $octave_cv_curl_has_curlopt_dirlistonly = no; then
     AC_DEFINE(CURLOPT_DIRLISTONLY, CURLOPT_FTPLISTONLY,
-      [Define to the legacy option name if using an older version of cURL.])]
+      [Define to the legacy option name if using an older version of cURL.])
   fi
 fi
 LIBS="$save_LIBS"
@@ -977,24 +978,24 @@ fi
 
 ### Check for list of libraries needed for native graphics renderer.
 
-native_graphics=true
+native_graphics=yes
 warn_freetype=""
 
-check_opengl=false
+check_opengl=no
 AC_ARG_WITH([opengl],
   [AS_HELP_STRING([--without-opengl],
     [don't use OpenGL libraries, disable native graphics])],
   [if test x"$withval" = x"no"; then
-     native_graphics=false
+     native_graphics=no
      warn_opengl="--without-opengl specified.  Native graphics will be disabled."
      OCTAVE_CONFIGURE_WARNING([warn_opengl])
    else
-     check_opengl=true
+     check_opengl=yes
    fi],
-  [check_opengl=true])
+  [check_opengl=yes])
 
 ## Check for OpenGL library
-if $check_opengl; then
+if test $check_opengl = yes; then
   OCTAVE_CHECK_LIB_OPENGL
 fi
 
@@ -1002,8 +1003,8 @@ GRAPHICS_LIBS=
 GRAPHICS_CFLAGS=
 
 if test -z "$OPENGL_LIBS"; then
-  if $check_opengl; then
-    native_graphics=false
+  if test $check_opengl = yes; then
+    native_graphics=no
     warn_fltk_opengl="OpenGL libs (GL and GLU) not found.  Native graphics will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
   fi
@@ -1030,7 +1031,7 @@ if test -n "$OPENGL_LIBS"; then
 
   if test -n "$warn_freetype"; then
     OCTAVE_CONFIGURE_WARNING([warn_freetype])
-    native_graphics=false
+    native_graphics=no
   fi
 
   ## Check for fontconfig library
@@ -1047,7 +1048,7 @@ if test -n "$OPENGL_LIBS"; then
   fi
 
   if test -n "$warn_fontconfig"; then
-    native_graphics=false
+    native_graphics=no
     OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
   fi
 
@@ -1085,7 +1086,7 @@ if test -n "$OPENGL_LIBS"; then
   warn_fltk_opengl=""
 
   if test "$FLTK_CONFIG" = no; then
-    native_graphics=false
+    native_graphics=no
     warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
   else
@@ -1121,7 +1122,7 @@ if test -n "$OPENGL_LIBS"; then
       GRAPHICS_CFLAGS="$FLTK_CFLAGS"
       GRAPHICS_LIBS="$FLTK_LDFLAGS"
     else
-      native_graphics=false
+      native_graphics=no
       OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
     fi
   fi
@@ -1154,15 +1155,15 @@ LT_PREREQ([2.2.2])
 LT_INIT([disable-static dlopen win32-dll])
 
 if test x"$enable_shared" = x"yes"; then
-  SHARED_LIBS=true
+  SHARED_LIBS=yes
 else
-  SHARED_LIBS=false
+  SHARED_LIBS=no
 fi
 
 if test x"$enable_static" = x"yes"; then
-  STATIC_LIBS=true
+  STATIC_LIBS=yes
 else
-  STATIC_LIBS=false
+  STATIC_LIBS=no
 fi
 
 XTRA_CRUFT_SH_LDFLAGS=
@@ -1244,7 +1245,7 @@ if test $ax_blas_f77_func_ok = no; then
 fi
 
 if test $ax_blas_f77_func_ok = no; then
-  if $USE_64_BIT_IDX_T && test $ax_blas_integer_size_ok = no; then
+  if test $USE_64_BIT_IDX_T = yes && test $ax_blas_integer_size_ok = no; then
     ## Attempt to be more informative.
     AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers.  This is incompatible with --enable-64.])
   else
@@ -1432,13 +1433,13 @@ AC_ARG_ENABLE([dl],
   [AS_HELP_STRING([--disable-dl],
     [disable loading of dynamically linked modules])],
   [case $enableval in
-     yes) ENABLE_DYNAMIC_LINKING=true ;;
-     no) ENABLE_DYNAMIC_LINKING=false ;;
+     yes) ENABLE_DYNAMIC_LINKING=yes ;;
+     no) ENABLE_DYNAMIC_LINKING=no ;;
      *) AC_MSG_ERROR([bad value $enableval for --enable-dl]) ;;
    esac],
-  [ENABLE_DYNAMIC_LINKING=true])
+  [ENABLE_DYNAMIC_LINKING=no])
 
-if ! $STATIC_LIBS && ! $SHARED_LIBS; then
+if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
   AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
 fi
 
@@ -1472,7 +1473,7 @@ OCTGUI_DLL_DEFS=
 OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 ldpreloadsep=" "
-BUILD_COMPILED_AUX_PROGRAMS=false
+BUILD_COMPILED_AUX_PROGRAMS=no
 case $canonical_host_type in
   *-*-386bsd* | *-*-netbsd*)
     SH_LD=ld
@@ -1525,7 +1526,7 @@ case $canonical_host_type in
     ldpreloadsep=":"
   ;;
   *-*-mingw*)
-    BUILD_COMPILED_AUX_PROGRAMS=true
+    BUILD_COMPILED_AUX_PROGRAMS=yes
     if test $have_msvc = yes; then
       DL_LDFLAGS="-shared"
       CPICFLAG=
@@ -1545,7 +1546,6 @@ case $canonical_host_type in
       fi
       NO_OCT_FILE_STRIP=true
       library_path_var=PATH
-      NO_OCT_FILE_STRIP=true
       ## Extra compilation flags.
       CRUFT_DLL_DEFS="-DCRUFT_DLL"
       OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
@@ -1567,7 +1567,7 @@ case $canonical_host_type in
   ;;
 
   *-*-msdosmsvc)
-    BUILD_COMPILED_AUX_PROGRAMS=true
+    BUILD_COMPILED_AUX_PROGRAMS=yes
     DL_LDFLAGS="-shared"
     CPICFLAG=
     CXXPICFLAG=
@@ -1586,7 +1586,6 @@ case $canonical_host_type in
     fi
     NO_OCT_FILE_STRIP=true
     library_path_var=PATH
-    NO_OCT_FILE_STRIP=true
     ## Extra compilation flags.
     CRUFT_DLL_DEFS="-DCRUFT_DLL"
     OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
@@ -1666,7 +1665,7 @@ case $canonical_host_type in
 esac
 
 AM_CONDITIONAL([AMCOND_BUILD_COMPILED_AUX_PROGRAMS],
-  [test x$BUILD_COMPILED_AUX_PROGRAMS = xtrue])
+  [test $BUILD_COMPILED_AUX_PROGRAMS = yes])
 
 AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
 AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
@@ -1745,13 +1744,13 @@ AC_ARG_ENABLE([link-all-dependencies],
   [AS_HELP_STRING([--enable-link-all-dependencies],
     [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
   [case $enableval in
-     yes) link_all_deps=true ;;
-     no)  link_all_deps=false ;;
+     yes) link_all_deps=yes ;;
+     no)  link_all_deps=no ;;
      *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-depenencies])
      ;;
    esac],
-  [link_all_deps=false])
-AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = true])
+  [link_all_deps=no])
+AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
 ## Dynamic linking is now enabled only if we are building shared
 ## libs and some API for dynamic linking has been detected.
@@ -1762,35 +1761,35 @@ AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = true])
 LD_CXX='$(CXX)'
 RDYNAMIC_FLAG=
 DL_API_MSG=""
-dlopen_api=false
-shl_load_api=false
-loadlibrary_api=false
-dyld_api=false
+dlopen_api=no
+shl_load_api=no
+loadlibrary_api=no
+dyld_api=no
 
-if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
+if test $SHARED_LIBS = yes || test $ENABLE_DYNAMIC_LINKING = yes; then
 
   case $lt_cv_dlopen in
     dlopen)
-      dlopen_api=true
+      dlopen_api=yes
       DL_API_MSG="(dlopen)"
       AC_DEFINE(HAVE_DLOPEN_API, 1,
         [Define to 1 if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
       OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
     ;;
     shl_load)
-      shl_load_api=true
+      shl_load_api=yes
       DL_API_MSG="(shl_load)"
       AC_DEFINE(HAVE_SHL_LOAD_API, 1,
         [Define to 1 if your system has shl_load and shl_findsym for dynamic linking.])
     ;;
     LoadLibrary)
-      loadlibrary_api=true
+      loadlibrary_api=yes
       DL_API_MSG="(LoadLibrary)"
       AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
         [Define to 1 if your system has LoadLibrary for dynamic linking.])
     ;;
     dyld)
-      dyld_api=true
+      dyld_api=yes
       DL_API_MSG="(dyld)"
       AC_DEFINE(HAVE_DYLD_API, 1,
         [Define to 1 if your system has dyld for dynamic linking.])
@@ -1801,21 +1800,25 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
   AC_SUBST(DL_LIBS)
 
   ## Disable dynamic linking if capability is not present.
-  if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
-    :  # some form of dynamic linking present
+  if test $dlopen_api = yes \
+      || test $shl_load_api = yes \
+      || test $loadlibrary_api = yes \
+      || test $dyld_api = yes; then
+    # some form of dynamic linking present
+    ENABLE_DYNAMIC_LINKING=yes
   else
-    ENABLE_DYNAMIC_LINKING=false
+    ENABLE_DYNAMIC_LINKING=no
   fi
 fi
 
-if $ENABLE_DYNAMIC_LINKING; then
+if test $ENABLE_DYNAMIC_LINKING = yes; then
   AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define to 1 if using dynamic linking.])
 fi
 
 AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
-  [test x"$ENABLE_DYNAMIC_LINKING" = x"true"])
+  [test $ENABLE_DYNAMIC_LINKING = yes])
 
-if $SHARED_LIBS; then
+if test $SHARED_LIBS = yes; then
   LIBOCTINTERP="-loctinterp$SHLLINKEXT"
   LIBOCTAVE="-loctave$SHLLINKEXT"
 else
@@ -1895,8 +1898,8 @@ AC_HEADER_SYS_WAIT
 ## C headers
 
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h grp.h])
-AC_CHECK_HEADERS([ieeefp.h inttypes.h locale.h memory.h ncurses.h])
+AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h fpu_control.h])
+AC_CHECK_HEADERS([grp.h ieeefp.h inttypes.h locale.h memory.h ncurses.h])
 AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
 AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h ])
 AC_CHECK_HEADERS([sys/select.h sys/utsname.h termcap.h])
@@ -2211,17 +2214,17 @@ GCC_EXTRA_FLAGS="-Wall -W -Wshadow -Wformat -Wpointer-arith -Wmissing-prototypes
 
 GXX_EXTRA_FLAGS="-Wall -W -Wshadow -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
 
-try_extra_warning_flags=true
+try_extra_warning_flags=yes
 
 AC_ARG_ENABLE([extra-warning-flags],
   [AS_HELP_STRING([--disable-extra-warning-flags],
     [don't add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = no; then
-     try_extra_warning_flags=false
+     try_extra_warning_flags=no
    fi],
   [])
 
-if $try_extra_warning_flags; then
+if test $try_extra_warning_flags = yes; then
   for flag in $GCC_EXTRA_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
@@ -2238,17 +2241,17 @@ GCC_STRICT_FLAGS="-Wconversion"
 
 GXX_STRICT_FLAGS="-Wconversion -Weffc++"
 
-try_strict_warning_flags=false
+try_strict_warning_flags=no
 
 AC_ARG_ENABLE([strict-warning-flags],
   [AS_HELP_STRING([--enable-strict-warning-flags],
     [add extra strict warning options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = yes; then
-     try_strict_warning_flags=true
+     try_strict_warning_flags=yes
    fi],
   [])
 
-if $try_strict_warning_flags; then
+if test $try_strict_warning_flags = yes; then
   for flag in $GCC_STRICT_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
@@ -2266,12 +2269,12 @@ AC_SUBST(WARN_CXXFLAGS)
 
 ### Check for Java.
 
-build_java=true
+build_java=yes
 AC_ARG_ENABLE([java],
   [AS_HELP_STRING([--disable-java],
     [disable Java interface])],
   [if test "$enableval" = no; then
-     build_java=false
+     build_java=no
    fi],
   [])
 
@@ -2302,10 +2305,10 @@ JAR=
 JAVA_LIBS=
 
 ## Fake loop so that "break" can be used to skip code blocks.
-while test $build_java = true
+while test $build_java = yes
 do
   ## Unset build_java.  Variable is set only if all configuration tests pass.
-  build_java=false
+  build_java=no
 
   ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
   if test -z "$JAVA_HOME"; then
@@ -2384,7 +2387,7 @@ do
   ## the required paths to compile and link against JDK.
   case $host_os in
     msdosmsvc)
-      build_java=true
+      build_java=yes
       JAVA_LIBS=-ladvapi32
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
@@ -2392,7 +2395,7 @@ do
     ;;
     mingw*)
       if test $have_msvc = yes; then
-        build_java=true
+        build_java=yes
         JAVA_LIBS=-ladvapi32
         AC_DEFINE(HAVE_JAVA, 1,
           [Define to 1 if Java is available and is at least version 1.5])
@@ -2509,11 +2512,11 @@ do
 
   ## Verify jni.h include file exists.
   JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
-  have_jni=false
+  have_jni=no
   for dir in $JNI_PATH; do 
-    if test -f "${dir}/jni.h"; then have_jni=true; break; fi
+    if test -f "${dir}/jni.h"; then have_jni=yes; break; fi
   done
-  if test $have_jni = true; then
+  if test $have_jni = yes; then
     AC_MSG_RESULT([$dir])
   else
     AC_MSG_RESULT([not found])
@@ -2522,13 +2525,13 @@ do
   fi
 
   ## Passed all configuration tests.  A workable Java installation was found.
-  build_java=true
+  build_java=yes
   AC_DEFINE(HAVE_JAVA, 1,
     [Define to 1 if Java is available and is at least version 1.5])
   break
 done
 
-AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = true])
+AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = yes])
 AC_SUBST(JAVA)
 AC_SUBST(JAVAC)
 AC_SUBST(JAR)
@@ -2982,15 +2985,15 @@ warn_msg_printed=false
 
 OCTAVE_CONFIGURE_WARNING_SUMMARY
 
-if $ENABLE_DYNAMIC_LINKING; then
-  if test $SHARED_LIBS = false; then
+if test $ENABLE_DYNAMIC_LINKING = yes; then
+  if test $SHARED_LIBS = no; then
     AC_MSG_WARN([You used --enable-dl but not --enable-shared.])
     AC_MSG_WARN([Are you sure that is what you want to do?])
     warn_msg_printed=true
   fi
 fi
 
-if $USE_64_BIT_IDX_T; then
+if test $USE_64_BIT_IDX_T = yes; then
   AC_MSG_WARN([])
   AC_MSG_WARN([You used the EXPERIMENTAL --enable-64 option.])
   AC_MSG_WARN([Are you sure that is what you want to do?])
@@ -3007,7 +3010,7 @@ if $USE_64_BIT_IDX_T; then
   warn_msg_printed=true
 fi
 
-if $USE_OPENMP; then
+if test $USE_OPENMP = yes; then
   AC_MSG_WARN([])
   AC_MSG_WARN([You used the EXPERIMENTAL --enable-openmp option.])
   AC_MSG_WARN([Are you sure that is what you want to do?])
@@ -3020,7 +3023,7 @@ if $USE_OPENMP; then
   warn_msg_printed=true
 fi
 
-if test $native_graphics = false; then
+if test $native_graphics != yes; then
   AC_MSG_WARN([])
   AC_MSG_WARN([I didn't find the necessary libraries to compile native])
   AC_MSG_WARN([graphics.  It isn't necessary to have native graphics,])
@@ -3031,7 +3034,7 @@ if test $native_graphics = false; then
 fi
 
 if test -n "$warn_gnuplot"; then
-  if $native_graphics; then
+  if test $native_graphics = yes; then
     AC_MSG_WARN([])
     AC_MSG_WARN([I didn't find gnuplot.  Plotting commands will use the])
     AC_MSG_WARN([native graphics toolkit.])
@@ -3055,7 +3058,7 @@ if test -n "$warn_gnuplot"; then
   warn_msg_printed=true
 fi
 
-if $USE_ATOMIC_REFCOUNT; then
+if test $USE_ATOMIC_REFCOUNT = yes; then
   AC_MSG_WARN([])
   AC_MSG_WARN([Using atomic reference counting.])
   AC_MSG_WARN([This feature allows access to Octave data safely from])
@@ -3063,7 +3066,7 @@ if $USE_ATOMIC_REFCOUNT; then
   AC_MSG_WARN([results in a small performance penalty in the Octave])
   AC_MSG_WARN([interpreter.])
   AC_MSG_WARN([])
-  if $USE_OCTAVE_ALLOCATOR; then
+  if test $USE_OCTAVE_ALLOCATOR = yes; then
     AC_MSG_WARN([Thread-safe behavior is not guaranteed unless you also])
     AC_MSG_WARN([disable the use of the octave_allocator class.])
     AC_MSG_WARN([])

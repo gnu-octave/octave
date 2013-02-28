@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Eric Chassande-Mottin, CNRS (France)
+## Copyright (C) 2009-2013 Eric Chassande-Mottin, CNRS (France)
 ##
 ## This file is part of Octave.
 ##
@@ -79,10 +79,22 @@ function varargout = textread (filename, format = "%f", varargin)
 
   ## Skip header lines if requested
   headerlines = find (strcmpi (varargin, "headerlines"), 1);
-  ## Beware of zero valued headerline, fskipl would skip to EOF
-  if (! isempty (headerlines) && (varargin{headerlines + 1} > 0))
-    fskipl (fid, varargin{headerlines + 1});
-    varargin(headerlines:headerlines+1) = [];
+  if (! isempty (headerlines))
+    ## Beware of missing or wrong headerline value
+    if (headerlines  == numel (varargin)
+       || ! isnumeric (varargin{headerlines + 1}))
+      error ("missing or illegal value for 'headerlines'" );
+    endif
+    ## Avoid conveying floats to fskipl
+    varargin{headerlines + 1} = round (varargin{headerlines + 1});
+    ## Beware of zero valued headerline, fskipl would skip to EOF
+    if (varargin{headerlines + 1} > 0)
+      fskipl (fid, varargin{headerlines + 1});
+      varargin(headerlines:headerlines+1) = [];
+      nargin = nargin - 2;
+    elseif (varargin{headerlines + 1} < 0)
+      warning ("textread: negative headerline value ignored");
+    endif
   endif
   st_pos = ftell (fid);
 
@@ -98,7 +110,7 @@ function varargout = textread (filename, format = "%f", varargin)
   if (! isempty (endofline))
     ## 'endofline' option set by user.
     if (! ischar (varargin{endofline + 1}));
-      error ("textread: character value required for EndOfLine");
+      error ("character value required for EndOfLine");
     endif
   else
     ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
@@ -188,4 +200,6 @@ endfunction
 %!error textread (1)
 %!error <arguments must be strings> textread (1, "%f")
 %!error <arguments must be strings> textread ("fname", 1)
-
+%!error <missing or illegal value for> textread (file_in_loadpath ("textread.m"), "", "headerlines")
+%!error <missing or illegal value for> textread (file_in_loadpath ("textread.m"), "", "headerlines", 'hh')
+%!error <character value required for> textread (file_in_loadpath ("textread.m"), "%s", "endofline", true)

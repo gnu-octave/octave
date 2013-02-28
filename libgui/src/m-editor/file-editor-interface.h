@@ -23,22 +23,19 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef FILEEDITORINTERFACE_H
 #define FILEEDITORINTERFACE_H
 
-#include <QDockWidget>
 #include <QMenu>
 #include <QToolBar>
+#include "octave-dock-widget.h"
 
-class file_editor_interface : public QDockWidget
+class file_editor_interface : public octave_dock_widget
 {
   Q_OBJECT
 
   public:
   file_editor_interface (QWidget *p)
-    : QDockWidget (p)
+    : octave_dock_widget (p)
   {
     setObjectName ("FileEditor");
-
-    connect (this, SIGNAL (visibilityChanged (bool)), this,
-             SLOT (handle_visibility_changed (bool)));
   }
 
   virtual ~file_editor_interface () { }
@@ -56,22 +53,12 @@ public slots:
   virtual void request_open_file () = 0;
   virtual void request_open_file (const QString& fileName) = 0;
 
-signals:
-  void active_changed (bool active);
+//signals:
 
-protected:
-  void closeEvent (QCloseEvent *e)
-  {
-    emit active_changed (false);
-    QDockWidget::closeEvent (e);
-  }
+//protected:
 
-protected slots:
-  void handle_visibility_changed (bool visible)
-  {
-    if (visible)
-      emit active_changed (true);
-  }
+//protected slots:
+
 };
 
 #endif // FILEEDITORINTERFACE_H

@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHeaderView>
 
 files_dock_widget::files_dock_widget (QWidget *p)
-  : QDockWidget (p)
+  : octave_dock_widget (p)
 {
   setObjectName ("FilesDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
@@ -113,11 +113,6 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QCompleter *
     completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);
-
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility_changed (bool)));
-  // topLevelChanged is emitted when floating property changes (floating = true)
-  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
 
   setFocusProxy (_current_directory);
 }
@@ -202,29 +197,4 @@ files_dock_widget::notice_settings ()
   _file_tree_view->setAlternatingRowColors (settings->value ("useAlternatingRowColors").toBool ());
   //if (settings.value ("showHiddenFiles").toBool ())
   // TODO: React on option for hidden files.
-}
-
-void
-files_dock_widget::handle_visibility_changed (bool visible)
-{
-  if (visible)
-    emit active_changed (true);
-}
-
-void
-files_dock_widget::closeEvent (QCloseEvent *e)
-{
-  emit active_changed (false);
-  QDockWidget::closeEvent (e);
-}
-
-// slot for signal that is emitted when floating property changes
-void
-files_dock_widget::top_level_changed (bool floating)
-{
-  if(floating)
-    {
-      setWindowFlags(Qt::Window);  // make a window from the widget when floating
-      show();                      // make it visible again since setWindowFlags hides it
-    }
 }

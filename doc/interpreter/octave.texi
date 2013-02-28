@@ -90,7 +90,8 @@ modified versions.
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
-@flushright @image{octave_logo,2.1in} @end flushright
+@flushright @image{octave_logo,2.1in}
+@end flushright
 @tab
 @c this is a spacer column
 @tab
@@ -497,6 +498,9 @@ High-Level Plotting
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
+* Use of axis@comma{} line@comma{} and patch Functions::
+* Manipulation of Plot Windows::
+* Use of the @code{interpreter} Property::
 * Printing and Saving Plots::              
 * Interacting with Plots::      
 * Test Plotting Functions::     

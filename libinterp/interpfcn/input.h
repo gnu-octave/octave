@@ -35,8 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
-extern OCTINTERP_API int octave_read (char *buf, unsigned max_size);
-extern OCTINTERP_API FILE *get_input_from_file (const std::string& name, int warn = 1);
+extern OCTINTERP_API std::string get_user_input (bool& eof);
+
+extern OCTINTERP_API FILE *get_input_from_file (const std::string& name,
+                                                int warn = 1);
+
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
 // Global pointer for eval().
@@ -44,10 +47,6 @@ extern std::string current_eval_string;
 
 // TRUE means get input from current_eval_string.
 extern bool get_input_from_eval_string;
-
-// TRUE means we haven't been asked for the input from
-// current_eval_string yet.
-extern bool input_from_eval_string_pending;
 
 // TRUE means that input is coming from a file that was named on
 // the command line.

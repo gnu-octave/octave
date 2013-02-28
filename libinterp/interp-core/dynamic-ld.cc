@@ -197,109 +197,6 @@ octave_shlib_list::display (void)
     instance->do_display ();
 }
 
-class
-octave_mex_file_list
-{
-public:
-
-  typedef std::list<octave_shlib>::iterator iterator;
-  typedef std::list<octave_shlib>::const_iterator const_iterator;
-
-  static void append (const octave_shlib& shl);
-
-  static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
-
-private:
-
-  octave_mex_file_list (void) : file_list () { }
-
-  ~octave_mex_file_list (void) { }
-
-  void do_append (const octave_shlib& shl);
-
-  void do_remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
-
-  static octave_mex_file_list *instance;
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
-  static bool instance_ok (void);
-
-  // List of libraries we have loaded.
-  std::list<octave_shlib> file_list;
-
-  // No copying!
-
-  octave_mex_file_list (const octave_mex_file_list&);
-
-  octave_mex_file_list& operator = (const octave_mex_file_list&);
-};
-
-octave_mex_file_list *octave_mex_file_list::instance = 0;
-
-void
-octave_mex_file_list::do_append (const octave_shlib& shl)
-{
-  file_list.push_back (shl);
-}
-
-void
-octave_mex_file_list::do_remove (octave_shlib& shl,
-                                 octave_shlib::close_hook cl_hook)
-{
-  for (iterator p = file_list.begin (); p != file_list.end (); p++)
-    {
-      if (*p == shl)
-        {
-          // Erase first to avoid potentially invalidating the pointer by the
-          // following hooks.
-          file_list.erase (p);
-
-          shl.close (cl_hook);
-
-          break;
-        }
-    }
-}
-
-bool
-octave_mex_file_list::instance_ok (void)
-{
-  bool retval = true;
-
-  if (! instance)
-    {
-      instance = new octave_mex_file_list ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
-
-  if (! instance)
-    {
-      ::error ("unable to create shared library list object!");
-
-      retval = false;
-    }
-
-  return retval;
-}
-
-void
-octave_mex_file_list::append (const octave_shlib& shl)
-{
-  if (instance_ok ())
-    instance->do_append (shl);
-}
-
-void
-octave_mex_file_list::remove (octave_shlib& shl,
-                              octave_shlib::close_hook cl_hook)
-{
-  if (instance_ok ())
-    instance->do_remove (shl, cl_hook);
-}
-
 octave_dynamic_loader *octave_dynamic_loader::instance = 0;
 
 bool octave_dynamic_loader::doing_load = false;
@@ -444,8 +341,6 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
           bool have_fmex = false;
 
-          octave_mex_file_list::append (mex_file);
-
           function = mex_file.search (fcn_name, mex_mangler);
 
           if (! function)
@@ -513,7 +408,7 @@ octave_dynamic_loader::do_remove_mex (const std::string& fcn_name,
       retval = shl.remove (fcn_name);
 
       if (shl.number_of_functions_loaded () == 0)
-        octave_mex_file_list::remove (shl);
+        octave_shlib_list::remove (shl);
     }
 
   return retval;

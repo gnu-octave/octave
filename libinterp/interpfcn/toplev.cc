@@ -559,16 +559,24 @@ main_loop (void)
 
   // The big loop.
 
+  unwind_protect frame;
+
+  // octave_parser constructor sets this for us.
+  frame.protect_var (CURR_LEXER);
+
+  octave_parser *curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
+
   int retval = 0;
   do
     {
       try
         {
-          unwind_protect frame;
+          unwind_protect inner_frame;
 
           reset_error_handler ();
 
-          reset_parser ();
+          curr_parser->reset ();
 
           if (symbol_table::at_top_level ())
             tree_evaluator::reset_debug_state ();
@@ -577,14 +585,13 @@ main_loop (void)
           // the forced variables will be unmarked in the event of an
           // interrupt.
           symbol_table::scope_id scope = symbol_table::top_scope ();
-          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+          inner_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-          frame.protect_var (global_command);
+          inner_frame.protect_var (global_command);
 
           global_command = 0;
 
-          // This is the same as yyparse in parse.y.
-          retval = octave_parse ();
+          retval = curr_parser->run ();
 
           if (retval == 0)
             {
@@ -632,7 +639,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (parser_end_of_input)
+              else if (curr_parser->end_of_input)
                 break;
             }
         }

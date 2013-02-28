@@ -28,8 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include <stack>
+#include <vector>
+#include <map>
 
 #include "lex.h"
+#include "symtab.h"
 #include "token.h"
 
 class octave_comment_list;
@@ -78,10 +81,6 @@ extern bool reading_startup_message_printed;
 
 // TRUE means input is coming from startup file.
 extern bool input_from_startup_file;
-
-// Name of the current class when we are parsing class methods or
-// constructors.
-extern std::string current_class_name;
 
 extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
@@ -140,7 +139,12 @@ octave_parser
 public:
 
   octave_parser (void)
-    : end_of_input (false), curr_lexer (new lexical_feedback ())
+    : end_of_input (false), endfunction_found (false),
+      autoloading (false), fcn_file_from_relative_lookup (false),
+      parsing_subfunctions (false), max_fcn_depth (0),
+      curr_fcn_depth (0), primary_fcn_scope (-1),
+      curr_class_name (), function_scopes (), primary_fcn_ptr (0),
+      curr_lexer (new lexical_feedback ())
   {
     CURR_LEXER = curr_lexer;
   }
@@ -340,6 +344,47 @@ public:
 
   // TRUE means that we have encountered EOF on the input stream.
   bool end_of_input;
+
+  // Have we found an explicit end to a function?
+  bool endfunction_found;
+
+  // TRUE means we are in the process of autoloading a function.
+  bool autoloading;
+
+  // TRUE means the current function file was found in a relative path
+  // element.
+  bool fcn_file_from_relative_lookup;
+
+  // FALSE if we are still at the primary function. Subfunctions can
+  // only be declared inside function files.
+  bool parsing_subfunctions;
+
+  // Maximum function depth detected.  Used to determine whether
+  // we have nested functions or just implicitly ended subfunctions.
+  int max_fcn_depth;
+
+  // = 0 currently outside any function.
+  // = 1 inside the primary function or a subfunction.
+  // > 1 means we are looking at a function definition that seems to be
+  //     inside a function. Note that the function still might not be a
+  //     nested function.
+  int curr_fcn_depth;
+
+  // Scope where we install all subfunctions and nested functions. Only
+  // used while reading function files.
+  symbol_table::scope_id primary_fcn_scope;
+
+  // Name of the current class when we are parsing class methods or
+  // constructors.
+  std::string curr_class_name;
+
+  // A stack holding the nested function scopes being parsed.
+  // We don't use std::stack, because we want the clear method. Also, we
+  // must access one from the top
+  std::vector<symbol_table::scope_id> function_scopes;
+
+  // Pointer to the primary user function or user script function.
+  octave_function *primary_fcn_ptr;
 
   // State of the lexer.
   lexical_feedback *curr_lexer;

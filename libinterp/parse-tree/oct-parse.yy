@@ -98,9 +98,6 @@ lexical_feedback *CURR_LEXER = 0;
 // Buffer for help text snagged from function files.
 std::stack<std::string> help_buf;
 
-// Buffer for comments appearing before a function statement.
-static std::string fcn_comment_header;
-
 // TRUE means we are using readline.
 // (--no-line-editing)
 bool line_editing = true;
@@ -111,49 +108,8 @@ bool reading_startup_message_printed = false;
 // TRUE means input is coming from startup file.
 bool input_from_startup_file = false;
 
-// = 0 currently outside any function.
-// = 1 inside the primary function or a subfunction.
-// > 1 means we are looking at a function definition that seems to be
-//     inside a function. Note that the function still might not be a
-//     nested function.
-static int current_function_depth = 0;
-
-// A stack holding the nested function scopes being parsed.
-// We don't use std::stack, because we want the clear method. Also, we
-// must access one from the top
-static std::vector<symbol_table::scope_id> function_scopes;
-
-// Maximum function depth detected. Just here to determine whether
-// we have nested functions or just implicitly ended subfunctions.
-static int max_function_depth = 0;
-
-// FALSE if we are still at the primary function. Subfunctions can
-// only be declared inside function files.
-static int parsing_subfunctions = false;
-
-// Have we found an explicit end to a function?
-static bool endfunction_found = false;
-
 // Keep track of symbol table information when parsing functions.
 symtab_context parser_symtab_context;
-
-// Name of the current class when we are parsing class methods or
-// constructors.
-std::string current_class_name;
-
-// TRUE means we are in the process of autoloading a function.
-static bool autoloading = false;
-
-// TRUE means the current function file was found in a relative path
-// element.
-static bool fcn_file_from_relative_lookup = false;
-
-// Pointer to the primary user function or user script function.
-static octave_function *primary_fcn_ptr = 0;
-
-// Scope where we install all subfunctions and nested functions. Only
-// used while reading function files.
-static symbol_table::scope_id primary_fcn_scope;
 
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
@@ -1046,22 +1002,22 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
 
 push_fcn_symtab : // empty
                   {
-                    current_function_depth++;
+                    curr_parser->curr_fcn_depth++;
 
-                    if (max_function_depth < current_function_depth)
-                      max_function_depth = current_function_depth;
+                    if (curr_parser->max_fcn_depth < curr_parser->curr_fcn_depth)
+                      curr_parser->max_fcn_depth = curr_parser->curr_fcn_depth;
 
                     parser_symtab_context.push ();
 
                     symbol_table::set_scope (symbol_table::alloc_scope ());
 
-                    function_scopes.push_back (symbol_table::current_scope ());
+                    curr_parser->function_scopes.push_back (symbol_table::current_scope ());
 
-                    if (! reading_script_file && current_function_depth == 1
-                        && ! parsing_subfunctions)
-                      primary_fcn_scope = symbol_table::current_scope ();
+                    if (! reading_script_file && curr_parser->curr_fcn_depth == 1
+                        && ! curr_parser->parsing_subfunctions)
+                      curr_parser->primary_fcn_scope = symbol_table::current_scope ();
 
-                    if (reading_script_file && current_function_depth > 1)
+                    if (reading_script_file && curr_parser->curr_fcn_depth > 1)
                       curr_parser->bison_error ("nested functions not implemented in this context");
                   }
                 ;
@@ -1257,7 +1213,7 @@ function2       : param_list opt_sep opt_list function_end
 
 function_end    : END
                   {
-                    endfunction_found = true;
+                    curr_parser->endfunction_found = true;
                     if (curr_parser->end_token_ok ($1, token::function_end))
                       $$ = curr_parser->make_end ("endfunction", $1->line (), $1->column ());
                     else
@@ -1272,7 +1228,7 @@ function_end    : END
 //                      YYABORT;
 //                    }
 
-                    if (endfunction_found)
+                    if (curr_parser->endfunction_found)
                       {
                         curr_parser->bison_error ("inconsistent function endings -- "
                                  "if one function is explicitly ended, "
@@ -2648,7 +2604,7 @@ octave_parser::frob_function (const std::string& fname,
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
   if (! autoloading && reading_fcn_file
-      && current_function_depth == 1 && ! parsing_subfunctions)
+      && curr_fcn_depth == 1 && ! parsing_subfunctions)
   {
     // FIXME -- should curr_fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a
@@ -2683,11 +2639,11 @@ octave_parser::frob_function (const std::string& fname,
       if (fcn_file_from_relative_lookup)
         fcn->mark_relative ();
 
-      if (current_function_depth > 1 || parsing_subfunctions)
+      if (curr_fcn_depth > 1 || parsing_subfunctions)
         {
           fcn->stash_parent_fcn_name (curr_fcn_file_name);
 
-          if (current_function_depth > 1)
+          if (curr_fcn_depth > 1)
             fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
           else
             fcn->stash_parent_fcn_scope (primary_fcn_scope);
@@ -2695,12 +2651,12 @@ octave_parser::frob_function (const std::string& fname,
 
       if (curr_lexer->parsing_class_method)
         {
-          if (current_class_name == id_name)
+          if (curr_class_name == id_name)
             fcn->mark_as_class_constructor ();
           else
             fcn->mark_as_class_method ();
 
-          fcn->stash_dispatch_class (current_class_name);
+          fcn->stash_dispatch_class (curr_class_name);
         }
 
       std::string nm = fcn->fcn_file_name ();
@@ -2723,7 +2679,7 @@ octave_parser::frob_function (const std::string& fname,
   fcn->stash_fcn_location (curr_lexer->input_line_number,
                            curr_lexer->current_input_column);
 
-  if (! help_buf.empty () && current_function_depth == 1
+  if (! help_buf.empty () && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     {
       fcn->document (help_buf.top ());
@@ -2731,7 +2687,7 @@ octave_parser::frob_function (const std::string& fname,
       help_buf.pop ();
     }
 
-  if (reading_fcn_file && current_function_depth == 1
+  if (reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     primary_fcn_ptr = fcn;
 
@@ -2764,7 +2720,7 @@ octave_parser::finish_function (tree_parameter_list *ret_list,
 
       fcn->define_ret_list (ret_list);
 
-      if (current_function_depth > 1 || parsing_subfunctions)
+      if (curr_fcn_depth > 1 || parsing_subfunctions)
         {
           fcn->mark_as_subfunction ();
 
@@ -2781,10 +2737,10 @@ octave_parser::finish_function (tree_parameter_list *ret_list,
                                                primary_fcn_scope);
         }
 
-      if (current_function_depth == 1 && fcn)
+      if (curr_fcn_depth == 1 && fcn)
         symbol_table::update_nest (fcn->scope ());
 
-      if (! reading_fcn_file && current_function_depth == 1)
+      if (! reading_fcn_file && curr_fcn_depth == 1)
         {
           // We are either reading a script file or defining a function
           // at the command line, so this definition creates a
@@ -2817,11 +2773,11 @@ octave_parser::recover_from_parsing_function (void)
 
   parser_symtab_context.pop ();
 
-  if (reading_fcn_file && current_function_depth == 1
+  if (reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     parsing_subfunctions = true;
 
-  current_function_depth--;
+  curr_fcn_depth--;
   function_scopes.pop_back ();
 
   curr_lexer->defining_func--;
@@ -2934,7 +2890,7 @@ octave_parser::make_decl_command (int tok, token *tok_val,
       break;
 
     case PERSISTENT:
-      if (current_function_depth > 0)
+      if (curr_fcn_depth > 0)
         retval = new tree_persistent_command (lst, l, c);
       else
         {
@@ -3017,7 +2973,7 @@ octave_parser::finish_cell (tree_cell *c)
 void
 octave_parser::maybe_warn_missing_semi (tree_statement_list *t)
 {
-  if (current_function_depth > 0)
+  if (curr_fcn_depth > 0)
     {
       tree_statement *tmp = t->back ();
 
@@ -3355,8 +3311,8 @@ looking_at_function_keyword (FILE *ffile)
 
 static octave_function *
 parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
-                bool force_script = false, bool require_file = true,
-                const std::string& warn_for = std::string ())
+                bool require_file, bool force_script, bool autoload,    
+                bool relative_lookup, const std::string& warn_for)
 {
   unwind_protect frame;
 
@@ -3372,21 +3328,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   frame.protect_var (reading_fcn_file);
   frame.protect_var (line_editing);
-  frame.protect_var (current_class_name);
-  frame.protect_var (current_function_depth);
-  frame.protect_var (function_scopes);
-  frame.protect_var (max_function_depth);
-  frame.protect_var (parsing_subfunctions);
-  frame.protect_var (endfunction_found);
 
   reading_fcn_file = true;
   line_editing = false;
-  current_class_name = dispatch_type;
-  current_function_depth = 0;
-  function_scopes.clear ();
-  max_function_depth = 0;
-  parsing_subfunctions = false;
-  endfunction_found = false;
 
   frame.add_fcn (command_history::ignore_entries,
                  command_history::ignoring_entries ());
@@ -3406,6 +3350,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
       octave_parser *curr_parser = new octave_parser ();
       frame.add_fcn (octave_parser::cleanup, curr_parser);
+
+      curr_parser->curr_class_name = dispatch_type;
+      curr_parser->autoloading = autoload;
+      curr_parser->fcn_file_from_relative_lookup = relative_lookup;
 
       std::string help_txt
         = gobble_leading_white_space
@@ -3463,9 +3411,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
               reading_script_file = true;
             }
 
-          frame.protect_var (primary_fcn_ptr);
-          primary_fcn_ptr = 0;
-
           // Do this with an unwind-protect cleanup function so that
           // the forced variables will be unmarked in the event of an
           // interrupt.
@@ -3494,7 +3439,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           frame.add_fcn (cleanup_statement_list, &global_command);
 
-          fcn_ptr = primary_fcn_ptr;
+          fcn_ptr = curr_parser->primary_fcn_ptr;
 
           if (status != 0)
             error ("parse error while reading %s file %s",
@@ -3510,7 +3455,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           curr_parser->make_script (0, end_of_script);
 
-          fcn_ptr = primary_fcn_ptr;
+          fcn_ptr = curr_parser->primary_fcn_ptr;
         }
     }
   else if (require_file)
@@ -3545,7 +3490,9 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 
           if (retval.empty ())
             {
-              octave_function *fcn = parse_fcn_file (file, "");
+              octave_function *fcn = parse_fcn_file (file, "", true,
+                                                     false, false,
+                                                     false, "");
 
               if (fcn)
                 {
@@ -3623,9 +3570,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
   std::string file;
 
-  frame.protect_var (fcn_file_from_relative_lookup);
-
-  fcn_file_from_relative_lookup = false;
+  bool relative_lookup = false;
 
   file = nm;
 
@@ -3641,13 +3586,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
         nm = nm.substr (pos+1);
     }
 
-  if (autoload)
-    {
-      frame.protect_var (autoloading);
-      autoloading = true;
-    }
-
-  fcn_file_from_relative_lookup = ! octave_env::absolute_pathname (file);
+  relative_lookup = ! octave_env::absolute_pathname (file);
 
   file = octave_env::make_absolute (file);
 
@@ -3658,7 +3597,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       if (autoload && ! fcn_name.empty ())
         nm = fcn_name;
 
-      retval = octave_dynamic_loader::load_oct (nm, file, fcn_file_from_relative_lookup);
+      retval = octave_dynamic_loader::load_oct (nm, file, relative_lookup);
     }
   else if (len > 4 && file.substr (len-4, len-1) == ".mex")
     {
@@ -3671,10 +3610,11 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       curr_fcn_file_full_name = file.substr (0, len - 2);
 
       octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
-                                                dispatch_type, autoloading,
-                                                false);
+                                                dispatch_type, false,
+                                                autoload, autoload,
+                                                relative_lookup, "");
 
-      retval = octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup);
+      retval = octave_dynamic_loader::load_mex (nm, file, relative_lookup);
 
       if (tmpfcn)
         retval->document (tmpfcn->doc_string ());
@@ -3690,7 +3630,8 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       curr_fcn_file_name = nm;
       curr_fcn_file_full_name = file;
 
-      retval = parse_fcn_file (file, dispatch_type, autoloading);
+      retval = parse_fcn_file (file, dispatch_type, true, autoload,
+                               autoload, relative_lookup, "");
     }
 
   if (retval)
@@ -3893,8 +3834,9 @@ source_file (const std::string& file_name, const std::string& context,
 
   if (! error_state)
     {
-      octave_function *fcn = parse_fcn_file (file_full_name, "", true,
-                                             require_file, warn_for);
+      octave_function *fcn = parse_fcn_file (file_full_name, "",
+                                             require_file, true, false,
+                                             false, warn_for);
 
       if (! error_state)
         {
@@ -4214,22 +4156,12 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);
   frame.protect_var (current_eval_string);
-  frame.protect_var (current_function_depth);
-  frame.protect_var (function_scopes);
-  frame.protect_var (max_function_depth);
-  frame.protect_var (parsing_subfunctions);
-  frame.protect_var (endfunction_found);
   frame.protect_var (reading_fcn_file);
   frame.protect_var (reading_script_file);
   frame.protect_var (reading_classdef_file);
 
   get_input_from_eval_string = true;
   line_editing = false;
-  current_function_depth = 0;
-  function_scopes.clear ();
-  max_function_depth = 0;
-  parsing_subfunctions = false;
-  endfunction_found = false;
   reading_fcn_file = false;
   reading_script_file = false;
   reading_classdef_file = false;

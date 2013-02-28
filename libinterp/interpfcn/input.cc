@@ -356,8 +356,6 @@ get_user_input (bool& eof)
     {
       retval = current_eval_string;
 
-      size_t len = retval.length ();
-
       // Clear the global eval string so that the next call will return
       // an empty character string with EOF = true.
       current_eval_string = "";

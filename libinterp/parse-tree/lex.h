@@ -50,13 +50,13 @@ private:
   stream_reader& operator = (const stream_reader&);
 };
 
-// Forward decl for lexical_feedback::token_stack.
+// Forward decl for octave_lexer::token_stack.
 class token;
 
 // For communication between the lexer and parser.
 
 class
-lexical_feedback
+octave_lexer
 {
 public:
 
@@ -153,7 +153,7 @@ public:
     std::stack<int> context;
   };
 
-  lexical_feedback (void)
+  octave_lexer (void)
     : scanner (0), convert_spaces_to_comma (true),
       do_comma_insert (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
@@ -174,7 +174,7 @@ public:
     init ();
   }
 
-  ~lexical_feedback (void);
+  ~octave_lexer (void);
 
   void init (void);
 
@@ -370,7 +370,7 @@ public:
   bbp_nesting_level nesting_level;
 
   // For unwind protect.
-  static void cleanup (lexical_feedback *lexer) { delete lexer; }
+  static void cleanup (octave_lexer *lexer) { delete lexer; }
 
 private:
 
@@ -381,9 +381,9 @@ private:
 
   // No copying!
 
-  lexical_feedback (const lexical_feedback&);
+  octave_lexer (const octave_lexer&);
 
-  lexical_feedback& operator = (const lexical_feedback&);
+  octave_lexer& operator = (const octave_lexer&);
 };
 
 #endif

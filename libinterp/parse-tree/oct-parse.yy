@@ -84,7 +84,7 @@ extern int octave_lex (YYSTYPE *, void *);
 
 // Global access to currently active lexer.
 // FIXME -- to be removed after more parser+lexer refactoring.
-lexical_feedback *CURR_LEXER = 0;
+octave_lexer *CURR_LEXER = 0;
 
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from
@@ -166,6 +166,7 @@ make_statement (T *arg)
 // object) relevant global values before and after the nested call.
 
 %define api.pure
+%define api.push-pull both
 %parse-param { octave_parser *curr_parser }
 %lex-param { void *scanner }
 
@@ -1479,10 +1480,66 @@ yyerror (octave_parser *curr_parser, const char *s)
   curr_parser->bison_error (s);
 }
 
+octave_parser::~octave_parser (void)
+{
+#if defined (USE_PUSH_PARSER)
+  yypstate_delete (parser_state);
+#endif
+
+delete curr_lexer;
+}
+void octave_parser::init (void)
+{
+#if defined (USE_PUSH_PARSER)
+  parser_state = yypstate_new ();
+#endif
+
+  CURR_LEXER = curr_lexer;
+}
+
 int
 octave_parser::run (void)
 {
-  return octave_parse (this);
+  int status = 0;
+
+#if defined (USE_PUSH_PARSER)
+
+  for (;;)
+    {
+      unwind_protect frame;
+
+      frame.protect_var (current_input_line);
+
+      bool eof = false;
+
+      get_user_input (eof);
+
+      do
+        {
+          octave_char = eof ? END_OF_INPUT : octave_lex ();
+
+          if (octave_char == 0)
+            {
+              // Attempt to get more input.
+              status = -1;
+              break;
+            }
+
+          status = octave_push_parse (pstate);
+        }
+      while (status == YYPUSH_MORE);
+
+      if (status >= 0)
+        break;
+    }
+
+#else
+
+  status = octave_parse (this);
+
+#endif
+
+  return status;
 }
 
 // Error mesages for mismatched end tokens.

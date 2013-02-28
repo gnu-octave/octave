@@ -1210,6 +1210,8 @@ input_event_hook (void)
 
   if (hook_fcn_map.empty ())
     command_editor::remove_event_hook (input_event_hook);
+
+  return 0;
 }
 
 DEFUN (add_input_event_hook, args, ,

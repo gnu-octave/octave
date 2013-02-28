@@ -144,15 +144,14 @@ public:
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
       curr_class_name (), function_scopes (), primary_fcn_ptr (0),
-      curr_lexer (new lexical_feedback ())
+      curr_lexer (new lexical_feedback ()), parser_state (0)
   {
-    CURR_LEXER = curr_lexer;
+    init ();
   }
 
-  ~octave_parser (void)
-  {
-    delete curr_lexer;
-  }
+  ~octave_parser (void);
+
+  void init (void);
 
   void reset (void)
   {
@@ -388,6 +387,10 @@ public:
 
   // State of the lexer.
   lexical_feedback *curr_lexer;
+
+  // Internal state of the parser.  Only used if USE_PUSH_PARSER is
+  // defined.
+  void *parser_state;
 
   // For unwind protect.
   static void cleanup (octave_parser *parser) { delete parser; }

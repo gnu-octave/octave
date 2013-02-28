@@ -67,9 +67,9 @@ object) relevant global values before and after the nested call.
 #include "quit.h"
 #include "lo-mappers.h"
 
-// These would be alphabetical, but y.tab.h must be included before
-// oct-gperf.h and y.tab.h must be included after token.h and the tree
-// class declarations.  We can't include y.tab.h in oct-gperf.h
+// These would be alphabetical, but oct-parse.h must be included before
+// oct-gperf.h and oct-parse.h must be included after token.h and the tree
+// class declarations.  We can't include oct-parse.h in oct-gperf.h
 // because it may not be protected to allow it to be included multiple
 // times.
 

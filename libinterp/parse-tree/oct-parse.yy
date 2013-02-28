@@ -3407,8 +3407,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       octave_parser *curr_parser = new octave_parser ();
       frame.add_fcn (octave_parser::cleanup, curr_parser);
 
-      curr_parser->reset ();
-
       std::string help_txt
         = gobble_leading_white_space
             (ffile, eof,

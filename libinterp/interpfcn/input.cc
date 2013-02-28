@@ -669,15 +669,15 @@ get_debug_input (const std::string& prompt)
       get_input_from_eval_string = false;
     }
 
+  // octave_parser constructor sets this for us.
+  frame.protect_var (CURR_LEXER);
+
+  octave_parser *curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
+
   while (Vdebugging)
     {
       unwind_protect middle_frame;
-
-      // octave_parser constructor sets this for us.
-      middle_frame.protect_var (CURR_LEXER);
-
-      octave_parser *curr_parser = new octave_parser ();
-      middle_frame.add_fcn (octave_parser::cleanup, curr_parser);
 
       reset_error_handler ();
 

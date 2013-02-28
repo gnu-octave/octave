@@ -559,18 +559,20 @@ main_loop (void)
 
   // The big loop.
 
+  unwind_protect frame;
+
+  // octave_parser constructor sets this for us.
+  frame.protect_var (CURR_LEXER);
+
+  octave_parser *curr_parser = new octave_parser ();
+  frame.add_fcn (octave_parser::cleanup, curr_parser);
+
   int retval = 0;
   do
     {
       try
         {
-          unwind_protect frame;
-
-          // octave_parser constructor sets this for us.
-          frame.protect_var (CURR_LEXER);
-
-          octave_parser *curr_parser = new octave_parser ();
-          frame.add_fcn (octave_parser::cleanup, curr_parser);
+          unwind_protect inner_frame;
 
           reset_error_handler ();
 
@@ -583,9 +585,9 @@ main_loop (void)
           // the forced variables will be unmarked in the event of an
           // interrupt.
           symbol_table::scope_id scope = symbol_table::top_scope ();
-          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+          inner_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-          frame.protect_var (global_command);
+          inner_frame.protect_var (global_command);
 
           global_command = 0;
 

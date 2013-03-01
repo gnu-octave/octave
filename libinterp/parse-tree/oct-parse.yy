@@ -1482,15 +1482,15 @@ yyerror (octave_parser *curr_parser, const char *s)
 
 octave_parser::~octave_parser (void)
 {
-#if defined (USE_PUSH_PARSER)
-  yypstate_delete (parser_state);
+#if defined (OCTAVE_USE_PUSH_PARSER)
+  yypstate_delete (static_cast<yypstate *> (parser_state));
 #endif
 
 delete curr_lexer;
 }
 void octave_parser::init (void)
 {
-#if defined (USE_PUSH_PARSER)
+#if defined (OCTAVE_USE_PUSH_PARSER)
   parser_state = yypstate_new ();
 #endif
 
@@ -1502,36 +1502,19 @@ octave_parser::run (void)
 {
   int status = 0;
 
-#if defined (USE_PUSH_PARSER)
+#if defined (OCTAVE_USE_PUSH_PARSER)
 
-  for (;;)
+  do
     {
-      unwind_protect frame;
+      YYSTYPE lval;
 
-      frame.protect_var (current_input_line);
+      int token = octave_lex (&lval, scanner);
 
-      bool eof = false;
+      yypstate *pstate = static_cast<yypstate *> (parser_state);
 
-      get_user_input (eof);
-
-      do
-        {
-          octave_char = eof ? END_OF_INPUT : octave_lex ();
-
-          if (octave_char == 0)
-            {
-              // Attempt to get more input.
-              status = -1;
-              break;
-            }
-
-          status = octave_push_parse (pstate);
-        }
-      while (status == YYPUSH_MORE);
-
-      if (status >= 0)
-        break;
+      status = octave_push_parse (pstate, token, &lval, this);
     }
+  while (status == YYPUSH_MORE);
 
 #else
 

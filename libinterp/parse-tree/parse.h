@@ -139,7 +139,7 @@ octave_parser
 public:
 
   octave_parser (void)
-    : end_of_input (false), endfunction_found (false),
+    : endfunction_found (false),
       autoloading (false), fcn_file_from_relative_lookup (false),
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
@@ -340,9 +340,6 @@ public:
 
   // Generic error messages.
   void bison_error (const char *s);
-
-  // TRUE means that we have encountered EOF on the input stream.
-  bool end_of_input;
 
   // Have we found an explicit end to a function?
   bool endfunction_found;

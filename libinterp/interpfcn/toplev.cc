@@ -639,7 +639,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (curr_parser->end_of_input)
+              else if (curr_parser->curr_lexer->end_of_input)
                 break;
             }
         }

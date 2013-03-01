@@ -612,19 +612,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <<EOF>> {
-    LEXER_DEBUG ("<<EOF>>");
-
-    if (curr_lexer->block_comment_nesting_level != 0)
-      {
-        warning ("block comment open at end of input");
-
-        if ((reading_fcn_file || reading_script_file || reading_classdef_file)
-            && ! curr_fcn_file_name.empty ())
-          warning ("near line %d of file '%s.m'",
-                   curr_lexer->input_line_number, curr_fcn_file_name.c_str ());
-      }
-
-    TOK_RETURN (END_OF_INPUT);
+   return curr_lexer->handle_end_of_input ();
   }
 
 %{
@@ -776,7 +764,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int tok = curr_lexer->process_comment (false, eof);
 
     if (eof)
-      TOK_RETURN (END_OF_INPUT);
+      return curr_lexer->handle_end_of_input ();
     else if (tok > 0)
       COUNT_TOK_AND_RETURN (tok);
   }
@@ -975,7 +963,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
         return LEXICAL_ERROR;
       }
     else
-      TOK_RETURN (END_OF_INPUT);
+      return curr_lexer->handle_end_of_input ();
   }
 
 %%
@@ -1451,6 +1439,28 @@ octave_lexer::octave_read (char *buf, unsigned max_size)
   return status;
 }
 
+int
+octave_lexer::handle_end_of_input (void)
+{
+  // FIXME -- we need this because of the way TOK_RETURN is defined.  DO
+  // something better than that...
+  OCTAVE_YYG;
+
+  LEXER_DEBUG ("<<EOF>>");
+
+  if (block_comment_nesting_level != 0)
+    {
+      warning ("block comment open at end of input");
+
+      if ((reading_fcn_file || reading_script_file || reading_classdef_file)
+          && ! curr_fcn_file_name.empty ())
+        warning ("near line %d of file '%s.m'",
+                 input_line_number, curr_fcn_file_name.c_str ());
+    }
+
+  TOK_RETURN (END_OF_INPUT);
+}
+
 char *
 octave_lexer::flex_yytext (void)
 {
@@ -1525,17 +1535,20 @@ octave_lexer::text_yyinput (void)
 void
 octave_lexer::xunput (char c, char *buf)
 {
-  if (lexer_debug_flag)
+  if (c != EOF)
     {
-      std::cerr << "U: ";
-      display_character (c);
-      std::cerr << std::endl;
+      if (lexer_debug_flag)
+        {
+          std::cerr << "U: ";
+          display_character (c);
+          std::cerr << std::endl;
+        }
+
+      if (c == '\n')
+        input_line_number--;
+
+      yyunput (c, buf, scanner);
     }
-
-  if (c == '\n')
-    input_line_number--;
-
-  yyunput (c, buf, scanner);
 }
 
 void

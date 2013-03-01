@@ -154,7 +154,7 @@ public:
   };
 
   octave_lexer (void)
-    : scanner (0), convert_spaces_to_comma (true),
+    : scanner (0), end_of_input (false), convert_spaces_to_comma (true),
       do_comma_insert (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
@@ -185,6 +185,8 @@ public:
   void prep_for_function_file (void);
 
   int octave_read (char *buf, unsigned int max_size);
+
+  int handle_end_of_input (void);
 
   char *flex_yytext (void);
 
@@ -275,6 +277,9 @@ public:
 
   // Internal state of the flex-generated lexer.
   void *scanner;
+
+  // TRUE means that we have encountered EOF on the input stream.
+  bool end_of_input;
 
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.

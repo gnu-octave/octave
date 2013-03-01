@@ -342,7 +342,7 @@ input1          : '\n'
                   { $$ = 0; }
                 | END_OF_INPUT
                   {
-                    curr_parser->end_of_input = true;
+                    curr_lexer->end_of_input = true;
                     $$ = 0;
                   }
                 | simple_list
@@ -4301,7 +4301,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                   || tree_continue_command::continuing)
                 break;
             }
-          else if (curr_parser->end_of_input)
+          else if (curr_parser->curr_lexer->end_of_input)
             break;
         }
     }

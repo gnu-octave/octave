@@ -360,7 +360,8 @@ get_user_input (bool& eof)
       // an empty character string with EOF = true.
       current_eval_string = "";
 
-      eof = true;
+      if (retval.empty ())
+        eof = true;
     }
   else
     retval = octave_gets (eof);

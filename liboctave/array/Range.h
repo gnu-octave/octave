@@ -50,7 +50,13 @@ Range
       rng_nelem (nelem_internal ()), cache () { }
 
   // For operators' usage (to preserve element count).
-  Range (double b, double i, octave_idx_type n);
+  Range (double b, double i, octave_idx_type n)
+    : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
+      rng_nelem (n), cache ()
+    {
+      if (! xfinite (b) || ! xfinite (i))
+        rng_nelem = -2;
+    }
 
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
@@ -80,14 +86,7 @@ Range
 
   double checkelem (octave_idx_type i) const;
 
-  double elem (octave_idx_type i) const
-    {
-#if defined (BOUNDS_CHECKING)
-      return checkelem (i);
-#else
-      return rng_base + rng_inc * i;
-#endif
-    }
+  double elem (octave_idx_type i) const;
 
   Array<double> index (const idx_vector& i) const;
 

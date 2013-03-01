@@ -3658,7 +3658,7 @@ octave_lexer::display_token (int tok)
     case '\t': std::cerr << "TAB\n"; break;
     default:
       {
-        if (tok < 256)
+        if (tok < 256 && tok > 31)
           std::cerr << static_cast<char> (tok) << "\n";
         else
           std::cerr << "UNKNOWN(" << tok << ")\n";

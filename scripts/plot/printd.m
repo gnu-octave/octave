@@ -20,9 +20,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} printd (@var{obj}, @var{filename})
+## @deftypefnx {Function File} {@var{out_file} =} printd (@dots{})
 ##
 ## Convert any object acceptable to @code{disp} into the format
-## selected by the suffix of @var{filename}.
+## selected by the suffix of @var{filename}.  If the return argument
+## @var{out_file} is given, the name of the created file is returned.
 ##
 ## This function is intended to facilitate manipulation of the output
 ## of functions such as @code{stemleaf}.
@@ -32,7 +34,7 @@
 ## Author: Michael D. Godfrey <michaeldgodfrey@gmail.com>
 ## Description: Convert objects into other file formats.
 
-function printd (obj, filename)
+function pr_out = printd (obj, filename)
   ## Convert any object acceptable to disp() into various display formats.
   ## obj is the input object.
   ## filename is the output file (with required suffix).
@@ -79,19 +81,31 @@ function printd (obj, filename)
   endswitch
   fclose (pf);
   delete (tempf);
-  printf ("%s file %s written\n", opt, filename);
+  pr_out =  sprintf ("%s file %s written\n", opt, filename);
 endfunction
 
 %!demo
-%!  r2 = ["stem step: 10, data: unsorted.\nHinges:    lo: 12, hi: 42\n";...
-%! "   1 | 22118";"   2 | 28";"   3 | 98";"   4 | 244";"   5 | 2"];
+%! r2 = char (
+%! "stem step: 10, data: unsorted.",
+%! "Hinges:    lo: 12, hi: 42"     ,
+%! "   1 | 22118"                  ,
+%! "   2 | 28"                     ,
+%! "   3 | 98"                     ,
+%! "   4 | 244"                    ,
+%! "   5 | 2"                      );
 %! printd (r2, "test_p.txt");
 %! system ("cat test_p.txt");
 %! delete ("test_p.txt");
 
 %!test
-%! r2 = ["stem step: 10, data: unsorted.\nHinges:    lo: 12, hi: 42\n";...
-%! "   1 | 22118";"   2 | 28";"   3 | 98";"   4 | 244";"   5 | 2"];
+%! r2 = char (
+%! "stem step: 10, data: unsorted.",
+%! "Hinges:    lo: 12, hi: 42"     ,
+%! "   1 | 22118"                  ,
+%! "   2 | 28"                     ,
+%! "   3 | 98"                     ,
+%! "   4 | 244"                    ,
+%! "   5 | 2"                      );
 %! printd (r2, "test_p.txt");
 %! r4 = fileread ("test_p.txt");
 %! delete ("test_p.txt");

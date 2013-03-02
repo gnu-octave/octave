@@ -427,6 +427,7 @@ file_editor::mru_menu_update ()
     QSettings *settings = resource_manager::get_settings ();
     // FIXME -- what should happen if settings is 0?
     settings->setValue ("editor/mru_file_list",_mru_files);
+    settings->sync ();
 }
 
 void

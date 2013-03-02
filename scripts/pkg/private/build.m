@@ -35,7 +35,7 @@ function build (files, handle_deps, autoload, verbose)
     endif
   endif
   [builddir, status] = canonicalize_file_name (builddir);
-  if (! status)
+  if (status != 0)
     error ("cannot find directory %s", builddir);
   endif
   installdir = fullfile (builddir, "install");

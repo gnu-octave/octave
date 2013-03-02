@@ -423,7 +423,7 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = prefix;
         global_packages = archprefix;
       elseif (length (files) >= 1 && nargout <= 2 && ischar (files{1}))
-        prefix = files{1};
+        prefix = tilde_expand (files{1});
         if (! exist (prefix, "dir"))
           [status, msg, msgid] = mkdir (prefix);
           if (status == 0)
@@ -434,7 +434,7 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = prefix = canonicalize_file_name (prefix);
         user_prefix = true;
         if (length (files) >= 2 && ischar (files{2}))
-          archprefix = files{2};
+          archprefix = tilde_expand (files{2});
           if (! exist (archprefix, "dir"))
             [status, msg, msgid] = mkdir (archprefix);
             if (status == 0)

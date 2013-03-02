@@ -2845,17 +2845,8 @@ dnl ------------------------------------------------------------
 ### Make all AC_DEFINES available to testif feature of test.m function.
 ### This must reside at the bottom of configure.ac after all AC_DEFINES
 ### have been made.
-### Use UGLY_DEFS to hold all the -D options.  These are ultimately placed
-### in the DEFS field of the struct returned by octave_config_info, which
-### is used by test.m.
 
 AC_OUTPUT_MAKE_DEFS
-
-## We have to insert extra levels of backslash quoting here so that
-## the right thing ends up in oct-conf.h.
-UGLY_DEFS=`echo $DEFS | $SED 's,\\",\\\\\\\\\\\\\\\\\\",g'`
-AC_MSG_NOTICE([defining UGLY_DEFS to be $UGLY_DEFS])
-AC_SUBST(UGLY_DEFS)
 
 ### Do the substitutions in all the Makefiles.
 

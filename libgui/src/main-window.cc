@@ -129,7 +129,7 @@ void
 main_window::handle_save_workspace_request ()
 {
   QString selectedFile =
-    QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
+    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"),
                                   resource_manager::get_home_path ());
   if (!selectedFile.isEmpty ())
     octave_link::post_event (this, &main_window::save_workspace_callback,
@@ -698,7 +698,8 @@ main_window::construct ()
 
   QAction *new_script_action
     = new_menu->addAction (QIcon(":/actions/icons/filenew.png"), tr ("Script"));
-  new_script_action->setShortcut (Qt::ControlModifier + Qt::Key_N);
+  new_script_action->setShortcut (QKeySequence::New);
+  new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
   QAction *new_function_action = new_menu->addAction (tr ("Function"));
   new_function_action->setEnabled (false); // TODO: Make this work.
@@ -717,24 +718,24 @@ main_window::construct ()
 
   QAction *open_action
     = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open..."));
-  open_action->setShortcut (Qt::ControlModifier + Qt::Key_O);
+  open_action->setShortcut (QKeySequence::Open);
+  open_action->setShortcutContext (Qt::ApplicationShortcut);
 
   file_menu->addMenu(_file_editor->get_mru_menu ());
 
   QAction *close_command_window_action
     = file_menu->addAction (tr ("Close Command Window"));
-  close_command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_W);
+  close_command_window_action->setShortcut (QKeySequence::Close);
   close_command_window_action->setEnabled (false); // TODO: Make this work.
 
   file_menu->addSeparator (); /////
 
   QAction *import_data_action
-    = file_menu->addAction (tr ("Import Data..."));
+    = file_menu->addAction (tr ("Import Data"));
   import_data_action->setEnabled (false); // TODO: Make this work.
 
   QAction *save_workspace_action
-    = file_menu->addAction (tr ("Save Workspace..."));
-  save_workspace_action->setShortcut (Qt::ControlModifier + Qt::Key_S);
+    = file_menu->addAction (tr ("Save Workspace As"));
 
   file_menu->addSeparator (); /////
 
@@ -749,7 +750,7 @@ main_window::construct ()
   page_setup_action->setEnabled (false); // TODO: Make this work.
   QAction *print_action
     = file_menu->addAction (tr ("Print"));
-  print_action->setShortcut (Qt::ControlModifier + Qt::Key_P);
+  print_action->setShortcut (QKeySequence::Print);
   print_action->setEnabled (false); // TODO: Make this work.
   QAction *print_selection_action
     = file_menu->addAction (tr ("Print Selection..."));
@@ -758,7 +759,7 @@ main_window::construct ()
   file_menu->addSeparator (); /////
 
   QAction *exit_action = file_menu->addAction (tr ("Exit"));
-  exit_action->setShortcut (Qt::ControlModifier + Qt::Key_Q);
+  exit_action->setShortcut (QKeySequence::Quit);
 
 
   QMenu *edit_menu = menuBar ()->addMenu (tr ("&Edit"));
@@ -879,58 +880,61 @@ main_window::construct ()
   show_command_window_action->setCheckable (true);
   show_command_window_action->setShortcut (Qt::ControlModifier
                                            + Qt::ShiftModifier + Qt::Key_0);
-
+  show_command_window_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * show_history_action
     = window_menu->addAction (tr ("Show Command History"));
   show_history_action->setCheckable (true);
   show_history_action->setShortcut (Qt::ControlModifier
                                     + Qt::ShiftModifier + Qt::Key_1);
+  show_history_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * show_file_browser_action
     = window_menu->addAction (tr ("Show Current Directory"));
   show_file_browser_action->setCheckable (true);
   show_file_browser_action->setShortcut (Qt::ControlModifier
                                          + Qt::ShiftModifier + Qt::Key_2);
-
+  show_file_browser_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * show_workspace_action
     = window_menu->addAction (tr ("Show Workspace"));
   show_workspace_action->setCheckable (true);
   show_workspace_action->setShortcut (Qt::ControlModifier
                                       + Qt::ShiftModifier + Qt::Key_3);
-
+  show_workspace_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * show_editor_action = window_menu->addAction (tr ("Show Editor"));
   show_editor_action->setCheckable (true);
   show_editor_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
                                    + Qt::Key_4);
-
+  show_editor_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * show_documentation_action = window_menu->addAction (tr ("Show Documentation"));
   show_documentation_action->setCheckable (true);
   show_documentation_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
                                           + Qt::Key_5);
+  show_documentation_action->setShortcutContext (Qt::ApplicationShortcut);
   window_menu->addSeparator (); /////
 
   QAction * command_window_action
     = window_menu->addAction (tr ("Command Window"));
   command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_0);
-
+  command_window_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * history_action
     = window_menu->addAction (tr ("Command History"));
   history_action->setShortcut (Qt::ControlModifier + Qt::Key_1);
-
+  history_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * file_browser_action
     = window_menu->addAction (tr ("Current Directory"));
   file_browser_action->setShortcut (Qt::ControlModifier + Qt::Key_2);
-
+  file_browser_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * workspace_action
     = window_menu->addAction (tr ("Workspace"));
   workspace_action->setShortcut (Qt::ControlModifier + Qt::Key_3);
-
+  workspace_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * editor_action
     = window_menu->addAction (tr ("Editor"));
   editor_action->setShortcut (Qt::ControlModifier + Qt::Key_4);
-
+  editor_action->setShortcutContext (Qt::ApplicationShortcut);
   QAction * documentation_action
     = window_menu->addAction (tr ("Documentation"));
   documentation_action->setShortcut (Qt::ControlModifier + Qt::Key_5);
+  documentation_action->setShortcutContext (Qt::ApplicationShortcut);
 
   window_menu->addSeparator (); /////
 

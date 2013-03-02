@@ -166,7 +166,7 @@ make_statement (T *arg)
 // object) relevant global values before and after the nested call.
 
 %define api.pure
-%define api.push-pull both
+%PUSH_PULL_DECL%
 %parse-param { octave_parser *curr_parser }
 %lex-param { void *scanner }
 

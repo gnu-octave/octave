@@ -65,7 +65,8 @@ BUILT_SOURCES = \
 
 BUILT_DISTFILES = \
   parse-tree/oct-gperf.h \
-  parse-tree/oct-parse.h
+  parse-tree/oct-parse.h \
+  parse-tree/oct-parse.yy
 
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
@@ -97,6 +98,7 @@ EXTRA_DIST = \
   mkdefs \
   mkops \
   oct-conf.in.h \
+  oct-parse.in.yy \
   version.in.h \
   $(BUILT_DISTFILES)
 
@@ -196,7 +198,11 @@ liboctinterp_la_LDFLAGS = \
   $(LIBOCTINTERP_LINK_OPTS)
 
 ## Section for defining and creating DEF_FILES
-SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
+
+ULT_DIST_SRC := \
+  $(filter-out parse-tree/oct-parse.yy, $(DIST_SRC)) parse-tree/oct-parse.in.yy
+
+SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
 DLDFCN_DEF_FILES = $(DLDFCN_SRC:.cc=.df)
 
@@ -236,7 +242,7 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 ## Rules to build test files
 
-TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(DIST_SRC) $(DLDFCN_SRC))
+TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))
 
 TST_FILES := $(addsuffix -tst,$(TST_FILES_SRC))
 

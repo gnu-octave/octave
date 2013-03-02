@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "oct-conf.h"
+#include "oct-conf-features.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-obj.h"
@@ -1441,6 +1442,8 @@ specified option.\n\
 
       m.assign ("words_little_endian",
                 octave_value (oct_mach_info::words_little_endian ()));
+
+      m.assign ("features", octave_value (octave_config_features ()));
 
       int i = 0;
 

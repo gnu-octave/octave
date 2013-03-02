@@ -463,15 +463,16 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       ## Strip comment any comment from testif line before looking for features
       __feat_line = strtok (__code(1:__e), '#%'); 
       __feat = regexp (__feat_line, '\w+', 'match');
-      __have_feat = strfind (octave_config_info ("DEFS"), __feat); 
-      if (any (cellfun ("isempty", __have_feat)))
+      __feat = strrep (__feat, "HAVE_", "");
+      __have_feat = __have_feature__ (__feat);
+      if (__have_feat)
+        __istest = 1;
+        __code = __code(__e + 1 : end);
+      else
         __xskip++;
         __istest = 0;
         __code = ""; # Skip the code.
         __msg = sprintf ("%sskipped test\n", __signal_skip);
-      else
-        __istest = 1;
-        __code = __code(__e + 1 : end);
       endif
 
 ### TEST
@@ -678,19 +679,6 @@ function body = __extract_test_code (nm)
     fclose (fid);
   endif
 endfunction
-
-### Test for test for missing features
-%!testif OCTAVE_SOURCE
-%! ## This test should be run
-%! assert (true);
-
-### Disable this test to avoid spurious skipped test for "make check"
-% !testif HAVE_FOOBAR
-% ! ## missing feature. Fail if this test is run
-% ! error ("Failed missing feature test");
-
-### Test for a known failure
-%!xtest error ("This test is known to fail")
 
 ### example from toeplitz
 %!shared msg1,msg2

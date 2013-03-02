@@ -58,6 +58,7 @@ BUILT_SOURCES = \
   parse-tree/oct-gperf.h \
   parse-tree/oct-parse.cc \
   oct-conf.h \
+  oct-conf-features.h \
   version.h \
   builtin-defun-decls.h \
   builtins.cc
@@ -76,6 +77,7 @@ BUILT_NODISTFILES = \
   builtin-defun-decls.h \
   operators/ops.cc \
   oct-conf.h \
+  oct-conf-features.h \
   version.h \
   $(OPT_HANDLERS) \
   $(OPT_INC) \
@@ -85,6 +87,7 @@ BUILT_NODISTFILES = \
 EXTRA_DIST = \
   Makefile.in \
   DOCSTRINGS \
+  config-featurs.sh \
   find-defun-files.sh \
   gendoc.pl \
   genprops.awk \
@@ -162,6 +165,7 @@ nodist_liboctinterp_la_SOURCES = \
   builtin-defun-decls.h \
   builtins.cc \
   oct-conf.h \
+  oct-conf-features.h \
   version.h \
   $(OPT_INC)
 
@@ -255,6 +259,10 @@ nobase_libinterptests_DATA = $(TST_FILES)
 ## Makefile.am and trigger the rules below.
 oct-conf.h: oct-conf.in.h Makefile
 	@$(do_subst_config_vals)
+
+oct-conf-features.h: $(top_builddir)/config.h config-features.sh
+	$(srcdir)/config-features.sh $< > $@-t
+	mv $@-t $@
 
 version.h: version.in.h Makefile
 	$(SED) < $< \

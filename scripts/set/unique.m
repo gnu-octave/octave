@@ -52,9 +52,9 @@ function [y, i, j] = unique (x, varargin)
     ## parse options
     if (iscellstr (varargin))
       varargin = unique (varargin);
-      optfirst = strmatch ("first", varargin, "exact") > 0;
-      optlast = strmatch ("last", varargin, "exact") > 0;
-      optrows = strmatch ("rows", varargin, "exact") > 0;
+      optfirst = ismember ("first", varargin);
+      optlast = ismember ("last", varargin);
+      optrows = ismember ("rows", varargin);
       if (optfirst && optlast)
         error ('unique: cannot specify both "last" and "first"');
       elseif (optfirst + optlast + optrows != nargin-1)
@@ -214,3 +214,7 @@ endfunction
 %! assert (A(i,:), a);
 %! assert (a(j,:), A);
 
+%!error unique({"a", "b", "c"}, "UnknownOption")
+%!error unique({"a", "b", "c"}, "UnknownOption1", "UnknownOption2")
+%!error unique({"a", "b", "c"}, "rows", "UnknownOption2")
+%!error unique({"a", "b", "c"}, "UnknownOption1", "last")

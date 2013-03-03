@@ -37,6 +37,7 @@ EXTRA_DIST = \
   INSTALL.OCTAVE \
   NEWS \
   README \
+  CITATION \
   bootstrap \
   bootstrap.conf \
   build-aux/find-files-with-tests.sh \
@@ -132,7 +133,9 @@ ChangeLog:
 	mv $@.t $@
 .PHONY: ChangeLog
 
-octetc_DATA = NEWS
+octetc_DATA = \
+  NEWS \
+  CITATION
 
 DIRS_TO_MAKE = \
   $(localfcnfiledir) \

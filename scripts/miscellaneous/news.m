@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} news
-## @deftypefnx {Function File} {} news (@var{package})
+## @deftypefn  {Command} {} news
+## @deftypefnx {Command} {} news @var{package}
 ## Display the current NEWS file for Octave or an installed package.
 ##
 ## When called without an argument, display the NEWS file for Octave.
@@ -30,42 +30,13 @@ function news (package = "octave")
 
   if (nargin > 1)
     print_usage ();
-  elseif (! ischar (package))
-    error ("news: PACKAGE must be a string");
-  endif
-
-  if (strcmpi (package, "octave"))
-    octetcdir = octave_config_info ("octetcdir");
-    newsfile  = fullfile (octetcdir, "NEWS");
   else
-    installed = pkg ("list");
-    names     = cellfun (@(x) x.name, installed, "UniformOutput", false);
-    ## we are nice and let the user use any case on the package name
-    pos = strcmpi (names, package);
-    if (!any (pos))
-      error ("Package '%s' is not installed.", package);
-    endif
-    newsfile = fullfile (installed{pos}.dir, "packinfo", "NEWS");
+    display_info_file ("news", package, "NEWS");
   endif
-
-  if (! exist (newsfile, "file"))
-    if (strcmpi (package, "octave"))
-      error ("news: unable to locate NEWS file");
-    else
-      error ("news: unable to locate NEWS file for package %s", package);
-    endif
-  endif
-
-  fid = fopen (newsfile, "r");
-  while (ischar (line = fgets (fid)))
-    puts (line);
-  endwhile
-  fclose (fid);
 
 endfunction
 
 
 %!error news (1, 2)
-%!error <PACKAGE must be a string> news (1)
-%!error <Package .* is not installed> news ("__NOT_A_VALID_PKG_NAME__")
-
+%!error <news: PACKAGE must be a string> news (1)
+%!error <news: package .* is not installed> news ("__NOT_A_VALID_PKG_NAME__")

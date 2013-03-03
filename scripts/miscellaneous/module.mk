@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += miscellaneous
 
 miscellaneous_PRIVATE_FCN_FILES = \
+  miscellaneous/private/display_info_file.m \
   miscellaneous/private/__xzip__.m
 
 miscellaneous_FCN_FILES = \
@@ -10,6 +11,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/bunzip2.m \
   miscellaneous/bzip2.m \
   miscellaneous/cast.m \
+  miscellaneous/citation.m \
   miscellaneous/comma.m \
   miscellaneous/compare_versions.m \
   miscellaneous/computer.m \

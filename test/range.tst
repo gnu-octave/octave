@@ -101,7 +101,7 @@
 %!assert (signbit (min (rrev)), true)
 
 %!assert (max (rneg), -0)
-%!assert (signbit (min (rneg)), true)
+%!assert (signbit (max (rneg)), true)
 
 %!assert (sort (r, "descend"), [3 2 1 -0])
 %!assert (signbit (sort (r, "descend")), logical ([0 0 0 1]))

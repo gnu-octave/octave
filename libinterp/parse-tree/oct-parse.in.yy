@@ -132,7 +132,6 @@ make_statement (T *arg)
 #define ABORT_PARSE \
   do \
     { \
-      global_command = 0; \
       yyerrok; \
       if (! parser_symtab_context.empty ()) \
         parser_symtab_context.pop (); \
@@ -326,7 +325,7 @@ make_statement (T *arg)
 
 input           : input1
                   {
-                    global_command = $1;
+                    curr_parser->stmt_list = $1;
                     promptflag = 1;
                     YYACCEPT;
                   }
@@ -1486,7 +1485,9 @@ octave_parser::~octave_parser (void)
   yypstate_delete (static_cast<yypstate *> (parser_state));
 #endif
 
-delete curr_lexer;
+  delete stmt_list;
+
+  delete curr_lexer;
 }
 void octave_parser::init (void)
 {
@@ -1495,6 +1496,16 @@ void octave_parser::init (void)
 #endif
 
   CURR_LEXER = curr_lexer;
+}
+
+void
+octave_parser::reset (void)
+{
+  delete stmt_list;
+
+  stmt_list = 0;
+
+  curr_lexer->reset ();
 }
 
 int
@@ -3467,17 +3478,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           curr_parser->curr_lexer->parsing_class_method = ! dispatch_type.empty ();
 
-          frame.protect_var (global_command);
-
-          global_command = 0;
-
           int status = curr_parser->run ();
-
-          // Use an unwind-protect cleanup function so that the
-          // global_command list will be deleted in the event of an
-          // interrupt.
-
-          frame.add_fcn (cleanup_statement_list, &global_command);
 
           fcn_ptr = curr_parser->primary_fcn_ptr;
 
@@ -4212,10 +4213,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
     {
       curr_parser->reset ();
 
-      frame.protect_var (global_command);
-
-      global_command = 0;
-
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an
       // interrupt.
@@ -4224,28 +4221,17 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
       parse_status = curr_parser->run ();
 
-      tree_statement_list *command_list = global_command;
-
       // Unmark forced variables.
-      // Restore previous value of global_command.
-      frame.run (2);
+      frame.run (1);
 
       if (parse_status == 0)
         {
-          if (command_list)
+          if (curr_parser->stmt_list)
             {
-              unwind_protect inner_frame;
-
-              // Use an unwind-protect cleanup function so that the
-              // global_command list will be deleted in the event of an
-              // interrupt.
-
-              inner_frame.add_fcn (cleanup_statement_list, &command_list);
-
               tree_statement *stmt = 0;
 
-              if (command_list->length () == 1
-                  && (stmt = command_list->front ())
+              if (curr_parser->stmt_list->length () == 1
+                  && (stmt = curr_parser->stmt_list->front ())
                   && stmt->is_expression ())
                 {
                   tree_expression *expr = stmt->expression ();
@@ -4274,7 +4260,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                     retval = octave_value_list ();
                 }
               else if (nargout == 0)
-                command_list->accept (*current_evaluator);
+                curr_parser->stmt_list->accept (*current_evaluator);
               else
                 error ("eval: invalid use of statement list");
 

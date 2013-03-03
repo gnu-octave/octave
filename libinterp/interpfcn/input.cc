@@ -682,11 +682,6 @@ get_debug_input (const std::string& prompt)
 
       curr_parser->reset ();
 
-      // Save current value of global_command.
-      middle_frame.protect_var (global_command);
-
-      global_command = 0;
-
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
@@ -694,17 +689,9 @@ get_debug_input (const std::string& prompt)
 
       int retval = curr_parser->run ();
 
-      if (retval == 0 && global_command)
+      if (retval == 0 && curr_parser->stmt_list)
         {
-          unwind_protect inner_frame;
-
-          // Use an unwind-protect cleanup function so that the
-          // global_command list will be deleted in the event of an
-          // interrupt.
-
-          inner_frame.add_fcn (cleanup_statement_list, &global_command);
-
-          global_command->accept (*current_evaluator);
+          curr_parser->stmt_list->accept (*current_evaluator);
 
           if (octave_completion_matches_called)
             octave_completion_matches_called = false;

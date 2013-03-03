@@ -99,9 +99,6 @@ bool octave_interpreter_ready = false;
 // TRUE means we've processed all the init code and we are good to go.
 bool octave_initialized = false;
 
-// Current command to execute.
-tree_statement_list *global_command = 0;
-
 octave_call_stack *octave_call_stack::instance = 0;
 
 void
@@ -588,23 +585,13 @@ main_loop (void)
           symbol_table::scope_id scope = symbol_table::top_scope ();
           inner_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-          inner_frame.protect_var (global_command);
-
-          global_command = 0;
-
           retval = curr_parser->run ();
 
           if (retval == 0)
             {
-              if (global_command)
+              if (curr_parser->stmt_list)
                 {
-                  // Use an unwind-protect cleanup function so that the
-                  // global_command list will be deleted in the event of
-                  // an interrupt.
-
-                  frame.add_fcn (cleanup_statement_list, &global_command);
-
-                  global_command->accept (*current_evaluator);
+                  curr_parser->stmt_list->accept (*current_evaluator);
 
                   octave_quit ();
 

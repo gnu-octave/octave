@@ -144,6 +144,7 @@ public:
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
       curr_class_name (), function_scopes (), primary_fcn_ptr (0),
+      stmt_list (0),
       curr_lexer (new octave_lexer ()), parser_state (0)
   {
     init ();
@@ -153,10 +154,7 @@ public:
 
   void init (void);
 
-  void reset (void)
-  {
-    curr_lexer->reset ();
-  }
+  void reset (void);
 
   int run (void);
 
@@ -381,6 +379,9 @@ public:
 
   // Pointer to the primary user function or user script function.
   octave_function *primary_fcn_ptr;
+
+  // Result of parsing input.
+  tree_statement_list *stmt_list;
 
   // State of the lexer.
   octave_lexer *curr_lexer;

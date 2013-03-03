@@ -197,7 +197,8 @@ public:
       looping (0), defining_func (0), looking_at_function_handle (0),
       block_comment_nesting_level (0),
       looking_at_object_index (), parsed_function_name (),
-      pending_local_variables (), nesting_level (), input_buf ()
+      pending_local_variables (), nesting_level (), input_buf (),
+      token_stack ()
   {
     init ();
   }

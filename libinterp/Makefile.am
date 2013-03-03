@@ -98,7 +98,7 @@ EXTRA_DIST = \
   mkdefs \
   mkops \
   oct-conf.in.h \
-  oct-parse.in.yy \
+  parse-tree/oct-parse.in.yy \
   version.in.h \
   $(BUILT_DISTFILES)
 

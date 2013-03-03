@@ -29,18 +29,19 @@
 ## will be converted to integer by @code{@var{x} = fix (@var{x})}.  By default
 ## each element of @var{x} will be plotted with the last digit of the element
 ## as a leaf value and the remaining digits as the stem.  For example, 123
-## will be plotted with the stem @samp{12} and the leaf @samp{3}. The second
-## argument, @var{caption}, should be a char array which provides a description
-## of the data. It is included as a heading for the output.
+## will be plotted with the stem @samp{12} and the leaf @samp{3}.  The second
+## argument, @var{caption}, should be a character array which provides a
+## description of the data.  It is included as a heading for the output.
 ##
 ## The optional input @var{stem_sz} sets the width of each stem.
 ## The stem width is determined by @code{10^(@var{stem_sz} + 1)}.
 ## The default stem width is 10.
 ##
-## The output of stemleaf is composed of two parts:  a "Fenced Letter Display,"
-## followed by the stem-and-leaf plot itself.  The Fenced Letter Display is
-## described in @cite{Exploratory Data Analysis}.  Briefly, the entries
-## are as shown:
+## The output of @code{stemleaf} is composed of two parts: a
+## "Fenced Letter Display," followed by the stem-and-leaf plot itself.
+## The Fenced Letter Display is described in @cite{Exploratory Data Analysis}.
+## Briefly, the entries are as shown:
+##
 ## @example
 ## @group
 ##
@@ -105,7 +106,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   ##
   ## I doubt if providing other options is worthwhile.  The code can
   ## quite easily be modified to provide specific display results.  Or,
-  ## the returned output string can be edited. The returned output is an
+  ## the returned output string can be edited.  The returned output is an
   ## array of strings with each row containing a line of the plot
   ## preceded by the lines of header text as the first row.  This
   ## facilitates annotation.
@@ -122,7 +123,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   ##
   ## Michael D. Godfrey   January 2013
 
-  ## More could be implemented for better data scaling. And, of course,
+  ## More could be implemented for better data scaling.  And, of course,
   ## other options for the kinds of plots described by Tukey could be
   ## provided.  This may best be left to users.
 
@@ -132,10 +133,6 @@ function plotstr = stemleaf (x, caption, stem_sz)
 
   if (! isvector (x))
     error ("stemleaf: X must be a vector");
-  endif
-
-  if (! ischar (caption))
-    error ("stemleaf: CAPTION must be a character array");
   endif
 
   if (isinteger (x))
@@ -152,8 +149,11 @@ function plotstr = stemleaf (x, caption, stem_sz)
     error ("stemleaf: X must be a numeric vector");
   endif
 
+  if (! ischar (caption))
+    error ("stemleaf: CAPTION must be a character array");
+  endif
+
   if (nargin == 2)
-    stem_sz   = 0;
     stem_step = 10;
   else
     if (isscalar (stem_sz) && stem_sz >= 0 && isreal (stem_sz))
@@ -195,7 +195,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   n_far_h   = sum (x>o_fence_h);
 
   # display table similar to that on pg. 33
-  plot_out = sprintf("       Data: %s", caption);
+  plot_out = sprintf ("       Data: %s", caption);
   plot_out = [plot_out; sprintf(" ")];
   plot_out = [plot_out; sprintf("         Fenced Letter Display")];
   plot_out = [plot_out; sprintf(" ")];
@@ -218,12 +218,8 @@ function plotstr = stemleaf (x, caption, stem_sz)
     stems = [fix(min(x)/stem_step) : (fix(max(x)/stem_step)+1)];
   elseif (max_x < 0)  # all stems < 0
     stems = [(fix(min_x/stem_step)-1) : fix(max_x/stem_step)];
-    if (stems(end) == 0)
-      stems(end) = -0;  # Fix signbit on 0 lost by ':' operator
-    endif
   elseif (min_x < 0 && max_x > 0)  # range crosses 0
-    stems = [(fix(min_x/stem_step)-1) : -1 , -0];
-    stems = [stems, 0 : fix(max_x/stem_step)+1 ];
+    stems = [(fix(min_x/stem_step)-1) : -0, 0 : fix(max_x/stem_step)+1 ];
   else   # one endpoint is a zero which may be +0 or -0
     if (min_x == 0)
       if (any (x == 0 & signbit (x)))
@@ -241,22 +237,15 @@ function plotstr = stemleaf (x, caption, stem_sz)
     endif
     stems = [];
     if (signbit (min_x))
-      stems = [(fix(min_x/stem_step)-1) : -1 , -0];
+      stems = [(fix(min_x/stem_step)-1) : -0];
     endif
     if (! signbit (max_x))
       stems = [stems, 0 : fix(max_x/stem_step)+1 ];
     endif
   endif
 
-  if (issorted (x))
-    hsort = "sorted.";
-  else
-    hsort = "unsorted.";
-  endif
-
-  ## Vectorized version provided by Rik Webring (Rik@ortave.org)
+  ## Vectorized version provided by Rik Wehbring (rik@octave.org)
   ## Determine leaves for each stem:
-  prev_line = "none";
   new_line  = 1;
   for kx = 2: numel (stems)
 
@@ -271,14 +260,14 @@ function plotstr = stemleaf (x, caption, stem_sz)
       xlf = abs (x(idx) - stems(kx-1)*stem_step);
     endif
     ## Convert leaves to a string
-    if (stem_sz == 0)
+    if (stem_step == 10)
       lf_str = sprintf ("%d", xlf);
     else
       lf_str = "";
-      if (numel(xlf) > 0)
-      lf_str = sprintf ("%d", xlf(1,1));
+      if (! isempty (xlf))
+        lf_str = sprintf ("%d", xlf(1));
         if (numel (xlf) > 1)
-          lf_str = [lf_str sprintf(",%d", xlf(1,2:numel(xlf)))];
+          lf_str = [lf_str sprintf(",%d", xlf(2:end))];
         endif
       endif
     endif
@@ -294,7 +283,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
       line = "";
     endif
 
-    if ((!strcmp (lf_str, "")) || (stems(kx) == 0)|| stems(kx-1) == 0)
+    if (! isempty (lf_str) || stems(kx) == 0 || stems(kx-1) == 0)
       plot_out = [plot_out; line];
       new_line = 1;
     else
@@ -305,11 +294,13 @@ function plotstr = stemleaf (x, caption, stem_sz)
     endif
 
   endfor    # kx = 2: numel (stems)
+
   if (nargout == 0)
     disp (plot_out);
   else
     plotstr = plot_out;
   endif
+
 endfunction
 
 
@@ -366,25 +357,25 @@ endfunction
 %! "         |    0            0|  out" ,
 %! "        F| -228          374|"      ,
 %! "         |    0            0|  far" ,
-%! " "                            ,
-%! "  -2 | 82"                    ,
-%! "  -1 | 3"                     ,
-%! "  -0 | 2"                     ,
-%! "   0 | 00177"                 ,
-%! "   1 | 00112288"              ,
-%! "   2 | 001133577777899"       ,
-%! "   3 | 000111123456777889"    ,
-%! "   4 | 00122233344456788"     ,
-%! "   5 | 223788"                ,
-%! "   6 | 138"                   ,
-%! "   7 | 11"                    ,
-%! "     : "                      ,
-%! "   9 | 69"                    ,
-%! "  10 | 04555567999"           ,
-%! "  11 | 0133344455566667777899",
-%! "  12 | 0011223444555677788"   ,
-%! "  13 | 1239"                  ,
-%! "  14 | 16"                    );
+%! " "                                  ,
+%! "  -2 | 82"                          ,
+%! "  -1 | 3"                           ,
+%! "  -0 | 2"                           ,
+%! "   0 | 00177"                       ,
+%! "   1 | 00112288"                    ,
+%! "   2 | 001133577777899"             ,
+%! "   3 | 000111123456777889"          ,
+%! "   4 | 00122233344456788"           ,
+%! "   5 | 223788"                      ,
+%! "   6 | 138"                         ,
+%! "   7 | 11"                          ,
+%! "     : "                            ,
+%! "   9 | 69"                          ,
+%! "  10 | 04555567999"                 ,
+%! "  11 | 0133344455566667777899"      ,
+%! "  12 | 0011223444555677788"         ,
+%! "  13 | 1239"                        ,
+%! "  14 | 16"                          );
 %! r = stemleaf (x, "test minus to plus", 0);
 %! assert (r, rexp);
 
@@ -392,27 +383,27 @@ endfunction
 %! ## positive values above 0
 %! x = [5 22 12 28 52 39 12 11 11 42 38 44 18 44];
 %! rexp = char (
-%! "       Data: positive values above 0"    ,
-%! " "                                  ,
-%! "         Fenced Letter Display"     ,
-%! " "                                  ,
-%! "     # 14|___________________"      ,     
-%! "     M  7|          22      |"      ,     
-%! "     H  4|   12           42|   30" ,
-%! "     1   |    5           52|"      ,
-%! "               _______"             ,
-%! "         ______|   45|_______"      ,
-%! "        f|  -33           87|"      ,     
-%! "         |    0            0|  out" ,
-%! "        F|  -78          132|"      ,
-%! "         |    0            0|  far" ,
-%! " "                              ,
-%! "   0 | 5"                       ,
-%! "   1 | 22118"                   ,
-%! "   2 | 28"                      ,
-%! "   3 | 98"                      ,
-%! "   4 | 244"                     ,
-%! "   5 | 2"                       );
+%! "       Data: positive values above 0",
+%! " "                                   ,
+%! "         Fenced Letter Display"      ,
+%! " "                                   ,
+%! "     # 14|___________________"       ,     
+%! "     M  7|          22      |"       ,     
+%! "     H  4|   12           42|   30"  ,
+%! "     1   |    5           52|"       ,
+%! "               _______"              ,
+%! "         ______|   45|_______"       ,
+%! "        f|  -33           87|"       ,     
+%! "         |    0            0|  out"  ,
+%! "        F|  -78          132|"       ,
+%! "         |    0            0|  far"  ,
+%! " "                                   ,
+%! "   0 | 5"                            ,
+%! "   1 | 22118"                        ,
+%! "   2 | 28"                           ,
+%! "   3 | 98"                           ,
+%! "   4 | 244"                          ,
+%! "   5 | 2"                            );
 %! r = stemleaf (x, "positive values above 0");
 %! assert (r, rexp);
 
@@ -421,27 +412,27 @@ endfunction
 %! x = [5 22 12 28 52 39 12 11 11 42 38 44 18 44];
 %! x = -x;
 %! rexp = char (
-%! "       Data: negative values below 0"    ,
-%! " "                                  ,
-%! "         Fenced Letter Display"     ,
-%! " "                                  ,
-%! "     # 14|___________________"      ,     
-%! "     M  7|         -28      |"      ,     
-%! "     H  4|  -42          -12|   30" ,
-%! "     1   |  -52           -5|"      ,
-%! "               _______"             ,
-%! "         ______|   45|_______"      ,
-%! "        f|  -87           33|"      ,     
-%! "         |    0            0|  out" ,
-%! "        F| -132           78|"      ,
-%! "         |    0            0|  far" ,
-%! " "                              ,
-%! "  -5 | 2"                       ,
-%! "  -4 | 244"                     ,
-%! "  -3 | 98"                      ,
-%! "  -2 | 28"                      ,
-%! "  -1 | 22118"                   ,
-%! "  -0 | 5"                       );
+%! "       Data: negative values below 0",
+%! " "                                   ,
+%! "         Fenced Letter Display"      ,
+%! " "                                   ,
+%! "     # 14|___________________"       ,     
+%! "     M  7|         -28      |"       ,     
+%! "     H  4|  -42          -12|   30"  ,
+%! "     1   |  -52           -5|"       ,
+%! "               _______"              ,
+%! "         ______|   45|_______"       ,
+%! "        f|  -87           33|"       ,     
+%! "         |    0            0|  out"  ,
+%! "        F| -132           78|"       ,
+%! "         |    0            0|  far"  ,
+%! " "                                   ,
+%! "  -5 | 2"                            ,
+%! "  -4 | 244"                          ,
+%! "  -3 | 98"                           ,
+%! "  -2 | 28"                           ,
+%! "  -1 | 22118"                        ,
+%! "  -0 | 5"                            );
 %! r = stemleaf (x, "negative values below 0");
 %! assert (r, rexp);
 
@@ -449,7 +440,7 @@ endfunction
 %! ## positive values from 0
 %! x = [22 12 28 52 39 2 12 0 11 11 42 38 44 18 44];
 %! rexp = char (
-%! "       Data: positive values from 0"    ,
+%! "       Data: positive values from 0",
 %! " "                                  ,
 %! "         Fenced Letter Display"     ,
 %! " "                                  ,
@@ -463,13 +454,13 @@ endfunction
 %! "         |    0            0|  out" ,
 %! "        F|  -82          135|"      ,
 %! "         |    0            0|  far" ,
-%! " "                              ,
-%! "   0 | 20"                      ,
-%! "   1 | 22118"                   ,
-%! "   2 | 28"                      ,
-%! "   3 | 98"                      ,
-%! "   4 | 244"                     ,
-%! "   5 | 2"                       );
+%! " "                                  ,
+%! "   0 | 20"                          ,
+%! "   1 | 22118"                       ,
+%! "   2 | 28"                          ,
+%! "   3 | 98"                          ,
+%! "   4 | 244"                         ,
+%! "   5 | 2"                           );
 %! r = stemleaf (x, "positive values from 0");
 %! assert (r, rexp);
 
@@ -478,7 +469,7 @@ endfunction
 %! x = [22 12 28 52 39 2 12 0 11 11 42 38 44 18 44];
 %! x = -x;
 %! rexp = char (
-%! "       Data: negative values from 0"    ,
+%! "       Data: negative values from 0",
 %! " "                                  ,
 %! "         Fenced Letter Display"     ,
 %! " "                                  ,
@@ -492,13 +483,13 @@ endfunction
 %! "         |    0            0|  out" ,
 %! "        F| -135           82|"      ,
 %! "         |    0            0|  far" ,
-%! " "                              ,
-%! "  -5 | 2"                       ,
-%! "  -4 | 244"                     ,
-%! "  -3 | 98"                      ,
-%! "  -2 | 28"                      ,
-%! "  -1 | 22118"                   ,
-%! "  -0 | 20"                      );
+%! " "                                  ,
+%! "  -5 | 2"                           ,
+%! "  -4 | 244"                         ,
+%! "  -3 | 98"                          ,
+%! "  -2 | 28"                          ,
+%! "  -1 | 22118"                       ,
+%! "  -0 | 20"                          );
 %! r = stemleaf (x, "negative values from 0");
 %! assert (r, rexp);
 
@@ -506,7 +497,7 @@ endfunction
 %! ## both +0 and -0 present
 %! x = [-9 -7 -0 0 -0];
 %! rexp = char (
-%! "       Data: both +0 and -0 present"    ,
+%! "       Data: both +0 and -0 present",
 %! " "                                  ,
 %! "         Fenced Letter Display"     ,
 %! " "                                  ,
@@ -520,9 +511,9 @@ endfunction
 %! "         |    0            0|  out" ,
 %! "        F|  -28           21|"      ,
 %! "         |    0            0|  far" ,
-%! " "                            ,
-%! "  -0 | 9700"                  ,
-%! "   0 | 0"                     );
+%! " "                                  ,
+%! "  -0 | 9700"                        ,
+%! "   0 | 0"                           );
 %! r = stemleaf (x, "both +0 and -0 present");
 %! assert (r, rexp);
 
@@ -530,24 +521,23 @@ endfunction
 %! ## both <= 0 and -0 present
 %! x = [-9 -7 0 -0];
 %! rexp = char (
-%! "       Data: both <= 0 and -0 present"    ,
-%! " "                                  ,
-%! "         Fenced Letter Display"     ,
-%! " "                                  ,
-%! "     #  4|___________________"      ,     
-%! "     M  2|          -7      |"      ,     
-%! "     H  1|   -9            0|   9"  ,
-%! "     1   |   -9            0|"      ,
-%! "               _______"             ,
-%! "         ______|   13|_______"      ,
-%! "        f|  -22           13|"      ,     
-%! "         |    0            0|  out" ,
-%! "        F|  -36           27|"      ,
-%! "         |    0            0|  far" ,
-
-%! " "                            ,
-%! "  -0 | 970"                   ,
-%! "   0 | 0"                     );
+%! "       Data: both <= 0 and -0 present",
+%! " "                                    ,
+%! "         Fenced Letter Display"       ,
+%! " "                                    ,
+%! "     #  4|___________________"        ,     
+%! "     M  2|          -7      |"        ,     
+%! "     H  1|   -9            0|   9"    ,
+%! "     1   |   -9            0|"        ,
+%! "               _______"               ,
+%! "         ______|   13|_______"        ,
+%! "        f|  -22           13|"        ,     
+%! "         |    0            0|  out"   ,
+%! "        F|  -36           27|"        ,
+%! "         |    0            0|  far"   ,
+%! " "                                    ,
+%! "  -0 | 970"                           ,
+%! "   0 | 0"                             );
 %! r = stemleaf (x, "both <= 0 and -0 present");
 %! assert (r, rexp);
 
@@ -587,8 +577,7 @@ endfunction
 %! "  17 | 75"                              ,
 %! "     :"                                 ,
 %! "  19 | 95"                              );
-
-%! r = stemleaf(x, "Chevrolet Prices EDA pg.30", 1);
+%! r = stemleaf (x, "Chevrolet Prices EDA pg.30", 1);
 %! assert (r, rexp);
 
 ## Test input validation
@@ -597,6 +586,8 @@ endfunction
 %!error <X must be a vector> stemleaf (ones (2,2), "")
 %!warning <X truncated to integer values> tmp = stemleaf ([0 0.5 1],"");
 %!error <X must be a numeric vector> stemleaf ("Hello World", "data")
+%!error <CAPTION must be a character array> stemleaf (1, 2)
 %!error <STEM_SZ must be a real integer> stemleaf (1, "", ones (2,2))
 %!error <STEM_SZ must be a real integer> stemleaf (1, "", -1)
 %!error <STEM_SZ must be a real integer> stemleaf (1, "", 1+i)
+

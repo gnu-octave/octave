@@ -88,7 +88,7 @@ BUILT_NODISTFILES = \
 EXTRA_DIST = \
   Makefile.in \
   DOCSTRINGS \
-  config-featurs.sh \
+  config-features.sh \
   find-defun-files.sh \
   gendoc.pl \
   genprops.awk \

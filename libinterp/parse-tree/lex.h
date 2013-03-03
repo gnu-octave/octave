@@ -153,6 +153,34 @@ public:
     std::stack<int> context;
   };
 
+  // Handle buffering of input for lexer.
+
+  class input_buffer
+  {
+  public:
+
+    input_buffer (void)
+      : buffer (), pos (0), chars_left (0), eof (false)
+    { }
+
+    // Grab more input from the current input source.
+    void read (void);
+
+    // Copy at most max_size characters to buf.
+    int copy_chunk (char *buf, size_t max_size);
+
+    bool empty (void) const { return chars_left == 0; }
+
+    bool at_eof (void) const { return eof; }
+
+  private:
+
+    std::string buffer;
+    const char *pos;
+    size_t chars_left;
+    bool eof;
+  };
+
   octave_lexer (void)
     : scanner (0), end_of_input (false), convert_spaces_to_comma (true),
       do_comma_insert (false), at_beginning_of_statement (true),
@@ -169,7 +197,7 @@ public:
       looping (0), defining_func (0), looking_at_function_handle (0),
       block_comment_nesting_level (0),
       looking_at_object_index (), parsed_function_name (),
-      pending_local_variables (), nesting_level ()
+      pending_local_variables (), nesting_level (), input_buf ()
   {
     init ();
   }
@@ -373,6 +401,9 @@ public:
   // Is the closest nesting level a square bracket, squiggly brace or
   // a paren?
   bbp_nesting_level nesting_level;
+
+  // Object that reads and buffers input.
+  input_buffer input_buf;
 
   // For unwind protect.
   static void cleanup (octave_lexer *lexer) { delete lexer; }

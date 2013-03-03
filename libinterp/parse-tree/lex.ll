@@ -1292,6 +1292,49 @@ private:
   char *buf;
 };
 
+void
+octave_lexer::input_buffer::read (void)
+{
+  buffer = get_user_input (eof);
+  chars_left = buffer.length ();
+  pos = buffer.c_str ();
+}
+
+int
+octave_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
+{
+  static const char * const eol = "\n";
+
+  size_t len = max_size > chars_left ? chars_left : max_size;
+  assert (len > 0);
+
+  memcpy (buf, pos, len);
+
+  chars_left -= len;
+  pos += len;
+
+  // Make sure input ends with a new line character.
+  if (chars_left == 0 && buf[len-1] != '\n')
+    {
+      if (len < max_size)
+        {
+          // There is enough room to plug the newline character in
+          // the buffer.
+          buf[len++] = '\n';
+        }
+      else
+        {
+          // There isn't enough room to plug the newline character
+          // in the buffer so arrange to have it returned on the next
+          // call to octave_read.
+          pos = eol;
+          chars_left = 1;
+        }
+    }
+
+  return len;
+}
+
 octave_lexer::~octave_lexer (void)
 {
   // Clear out the stack of token info used to track line and
@@ -1378,61 +1421,18 @@ octave_lexer::prep_for_function_file (void)
 int
 octave_lexer::octave_read (char *buf, unsigned max_size)
 {
-  static const char * const eol = "\n";
-  static std::string input_buf;
-  static const char *pos = 0;
-  static size_t chars_left = 0;
-  static bool eof = false;
-
   int status = 0;
 
-  if (chars_left == 0)
-    {
-      pos = 0;
+  if (input_buf.empty ())
+    input_buf.read ();
 
-      input_buf = get_user_input (eof);
-
-      chars_left = input_buf.length ();
-
-      pos = input_buf.c_str ();
-    }
-
-  if (chars_left > 0)
-    {
-      size_t len = max_size > chars_left ? chars_left : max_size;
-      assert (len > 0);
-
-      memcpy (buf, pos, len);
-
-      chars_left -= len;
-      pos += len;
-
-      // Make sure input ends with a new line character.
-      if (chars_left == 0 && buf[len-1] != '\n')
-        {
-          if (len < max_size)
-            {
-              // There is enough room to plug the newline character in
-              // the buffer.
-              buf[len++] = '\n';
-            }
-          else
-            {
-              // There isn't enough room to plug the newline character
-              // in the buffer so make sure it is returned on the next
-              // octave_read call.
-              pos = eol;
-              chars_left = 1;
-            }
-        }
-
-      status = len;
-    }
+  if (! input_buf.empty ())
+    status = input_buf.copy_chunk (buf, max_size);
   else
     {
       status = YY_NULL;
 
-      if (! eof)
+      if (! input_buf.at_eof ())
         fatal_error ("octave_read () in flex scanner failed");
     }
 

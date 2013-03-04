@@ -607,7 +607,7 @@ octave_history_write_timestamp (void)
 DEFUN (edit_history, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} edit_history\n\
-@deftypefnx {Command} {} edit_history @var{first}\n\
+@deftypefnx {Command} {} edit_history @var{cmd_number}\n\
 @deftypefnx {Command} {} edit_history @var{first} @var{last}\n\
 Edit the history list using the editor named by the variable\n\
 @w{@env{EDITOR}}.\n\
@@ -615,45 +615,28 @@ Edit the history list using the editor named by the variable\n\
 The commands to be edited are first copied to a temporary file.  When you\n\
 exit the editor, Octave executes the commands that remain in the file.  It\n\
 is often more convenient to use @code{edit_history} to define functions\n\
-rather than attempting to enter them directly on the command line.  By\n\
-default, the block of commands is executed as soon as you exit the editor.  \n\
+rather than attempting to enter them directly on the command line.\n\
+The block of commands is executed as soon as you exit the editor.\n\
 To avoid executing any commands, simply delete all the lines from the buffer\n\
-before exiting the editor.\n\
+before leaving the editor.\n\
 \n\
-When invoked with no arguments, edit the previously executed command.\n\
-Otherwise, @code{edit_history} accepts two optional arguments specifying\n\
-the history numbers of the first and last commands to edit.  For example,\n\
-the command\n\
-\n\
-@example\n\
-edit_history 13\n\
-@end example\n\
-\n\
-@noindent\n\
-extracts all the commands from the 13th through the last in the history\n\
-list.  The command\n\
-\n\
-@example\n\
-edit_history 13 169\n\
-@end example\n\
-\n\
-@noindent\n\
-extracts only commands 13 through 169.  The command numbers\n\
-may also be negative where -1 refers to the most recently executed\n\
-command.\n\
-\n\
-Specifying a larger number for the first command than the last command\n\
-reverses the list of commands before placing them in the buffer to be\n\
-edited.\n\
-\n\
-The following are equivalent and run the most recently executed command.\n\
+When invoked with no arguments, edit the previously executed command;\n\
+With one argument, edit the specified command @var{cmd_number};\n\
+With two arguments, edit the list of commands between @var{first} and\n\
+@var{last}.  Command number specifiers may also be negative where -1\n\
+refers to the most recently executed command.\n\
+The following are equivalent and edit the most recently executed command.\n\
 \n\
 @example\n\
 @group\n\
-run_history\n\
-run_history -1\n\
+edit_history\n\
+edit_history -1\n\
 @end group\n\
 @end example\n\
+\n\
+When using ranges, specifying a larger number for the first command than the\n\
+last command reverses the list of commands before they are placed in the\n\
+buffer to be edited.\n\
 @seealso{run_history}\n\
 @end deftypefn")
 {
@@ -713,21 +696,27 @@ argument as a cell string and will not be output to screen.\n\
 DEFUN (run_history, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} run_history\n\
-@deftypefnx {Command} {} run_history @var{first}\n\
+@deftypefnx {Command} {} run_history @var{cmd_number}\n\
 @deftypefnx {Command} {} run_history @var{first} @var{last}\n\
 Run commands from the history list.\n\
 \n\
-When invoked with no arguments, run the last executed command.\n\
-Otherwise, @code{run_history} accepts two arguments specifying\n\
-the history numbers of the first and last commands to run.\n\
+When invoked with no arguments, run the previously executed command;\n\
+With one argument, run the specified command @var{cmd_number};\n\
+With two arguments, run the list of commands between @var{first} and\n\
+@var{last}.  Command number specifiers may also be negative where -1\n\
+refers to the most recently executed command.\n\
 For example, the command\n\
 \n\
 @example\n\
-run_history 13\n\
+@group\n\
+run_history\n\
+     OR\n\
+run_history -1\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
-executes all commands from the 13th through the last in the history list.\n\
+executes the most recent command again.\n\
 The command\n\
 \n\
 @example\n\
@@ -735,9 +724,7 @@ run_history 13 169\n\
 @end example\n\
 \n\
 @noindent\n\
-only executes commands 13 through 169.  The command numbers\n\
-may also be negative where -1 refers to the most recently executed\n\
-command.\n\
+executes commands 13 through 169.\n\
 \n\
 Specifying a larger number for the first command than the last command\n\
 reverses the list of commands before executing them.\n\
@@ -748,6 +735,7 @@ For example:\n\
 disp (1)\n\
 disp (2)\n\
 run_history -1 -2\n\
+@result{}\n\
  2\n\
  1\n\
 @end group\n\

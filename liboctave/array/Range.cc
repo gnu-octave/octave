@@ -123,13 +123,11 @@ Range::elem (octave_idx_type i) const
 #endif
 }
 
-// Pseudo-class used for idx_vector.loop () function call
-struct _rangeidx_helper
+// Helper class used solely for idx_vector.loop () function call
+class __rangeidx_helper
 {
-  double *array, base, inc, limit;
-  octave_idx_type nmax;
-
-  _rangeidx_helper (double *a, double b, double i, double l, octave_idx_type n)
+ public:
+  __rangeidx_helper (double *a, double b, double i, double l, octave_idx_type n)
     : array (a), base (b), inc (i), limit (l), nmax (n-1) { }
 
   void operator () (octave_idx_type i)
@@ -141,13 +139,18 @@ struct _rangeidx_helper
       else
         {
           double end = base + i * inc;
-          if ((inc > 0 && end >= limit)
-              || (inc < 0 && end <= limit))
+          if ((inc > 0 && end >= limit) || (inc < 0 && end <= limit))
             *array++ = limit;
           else
             *array++ = end;
         }
     }
+
+ private:
+
+  double *array, base, inc, limit;
+  octave_idx_type nmax;
+
 };
 
 Array<double>
@@ -175,15 +178,17 @@ Range::index (const idx_vector& i) const
 
       retval.clear (rd);
 
-      // idx_vector loop across all values in i, executing _rangeidx_helper (i) foreach i
-      i.loop (n, _rangeidx_helper (retval.fortran_vec (),
-                                   rng_base, rng_inc, rng_limit, rng_nelem));
+      // idx_vector loop across all values in i,
+      // executing __rangeidx_helper (i) for each i
+      i.loop (n, __rangeidx_helper (retval.fortran_vec (),
+                                    rng_base, rng_inc, rng_limit, rng_nelem));
     }
 
   return retval;
 }
 
 // NOTE: max and min only return useful values if nelem > 0.
+//       do_minmax_body() in max.cc avoids calling Range::min/max if nelem == 0.
 
 double
 Range::min (void) const

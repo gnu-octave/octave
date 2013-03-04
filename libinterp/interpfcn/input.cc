@@ -671,8 +671,7 @@ get_debug_input (const std::string& prompt)
   // octave_parser constructor sets this for us.
   frame.protect_var (CURR_LEXER);
 
-  octave_parser *curr_parser = new octave_parser ();
-  frame.add_fcn (octave_parser::cleanup, curr_parser);
+  octave_parser curr_parser;
 
   while (Vdebugging)
     {
@@ -680,18 +679,18 @@ get_debug_input (const std::string& prompt)
 
       reset_error_handler ();
 
-      curr_parser->reset ();
+      curr_parser.reset ();
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
       middle_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      int retval = curr_parser->run ();
+      int retval = curr_parser.run ();
 
-      if (retval == 0 && curr_parser->stmt_list)
+      if (retval == 0 && curr_parser.stmt_list)
         {
-          curr_parser->stmt_list->accept (*current_evaluator);
+          curr_parser.stmt_list->accept (*current_evaluator);
 
           if (octave_completion_matches_called)
             octave_completion_matches_called = false;

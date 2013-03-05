@@ -299,6 +299,11 @@ edit_history_readline (std::fstream& stream)
 // appear in the history list.  This way you can do 'run_history' to
 // your heart's content.
 
+// FIXME: Don't delete this block of code until memory
+//        leak in edit_history has been plugged and
+//        it is clear that this code can be removed.
+//        See additional FIXME in do_edit_history.
+/*
 static void
 edit_history_repl_hist (const std::string& command)
 {
@@ -329,6 +334,7 @@ edit_history_repl_hist (const std::string& command)
         }
     }
 }
+*/
 
 static void
 edit_history_add_hist (const std::string& line)
@@ -532,8 +538,7 @@ do_edit_history (const octave_value_list& args)
       // FIXME: Don't delete this block of code until memory
       //        leak in edit_history has been plugged and
       //        it is clear that this code can be removed.
-      // Command 'edit history' has already been removed in
-      // mk_tmp_hist_file ()
+      // Command 'edit history' has already been removed in mk_tmp_hist_file ()
       //if (first)
       //  {
       //    first = 0;

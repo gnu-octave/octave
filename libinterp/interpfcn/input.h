@@ -50,9 +50,6 @@ extern std::string curr_fcn_file_name;
 // Full name of file we are reading.
 extern std::string curr_fcn_file_full_name;
 
-// Fix things up so that input can come from file 'name', printing a
-// warning if the file doesn't exist.
-
 // TRUE means this is an interactive shell.
 extern bool interactive;
 

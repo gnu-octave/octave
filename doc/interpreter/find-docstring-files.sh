@@ -5,7 +5,7 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-## if there is a file in teh build directory tree, assume it is
+## if there is a file in the build directory tree, assume it is
 ## the file we are looking for.  Otherwise, get the one from the
 ## source tree.
 

@@ -1292,6 +1292,26 @@ private:
   char *buf;
 };
 
+lexical_feedback::~lexical_feedback (void)
+{
+  // Clear out the stack of token info used to track line and
+  // column numbers.
+
+  while (! token_stack.empty ())
+    {
+      delete token_stack.top ();
+      token_stack.pop ();
+    }
+}
+
+void
+lexical_feedback::init (void)
+{
+  // The closest paren, brace, or bracket nesting is not an object
+  // index.
+  looking_at_object_index.push_front (false);
+}
+
 void
 octave_lexer::input_buffer::read (void)
 {
@@ -1337,25 +1357,12 @@ octave_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
 
 octave_lexer::~octave_lexer (void)
 {
-  // Clear out the stack of token info used to track line and
-  // column numbers.
-
-  while (! token_stack.empty ())
-    {
-      delete token_stack.top ();
-      token_stack.pop ();
-    }
-
   yylex_destroy (scanner);
 }
 
 void
 octave_lexer::init (void)
 {
-  // The closest paren, brace, or bracket nesting is not an object
-  // index.
-  looking_at_object_index.push_front (false);
-
   yylex_init (&scanner);
 
   // Make octave_lexer object available through yyextra in

@@ -116,9 +116,6 @@ std::string curr_fcn_file_full_name;
 // TRUE means we're parsing a script file.
 bool reading_script_file = false;
 
-// If we are reading from an M-file, this is it.
-FILE *ff_instream = 0;
-
 // TRUE means this is an interactive shell.
 bool interactive = false;
 
@@ -180,53 +177,25 @@ do_input_echo (const std::string& input_string)
     }
 }
 
-std::string
-gnu_readline (const std::string& s, bool& eof, bool force_readline)
+static std::string
+gnu_readline (const std::string& s, bool& eof)
 {
   octave_quit ();
 
   eof = false;
 
-  std::string retval;
+  assert (line_editing);
 
-  if (line_editing || force_readline)
-    {
-      retval = command_editor::readline (s, eof);
+  std::string retval = command_editor::readline (s, eof);
 
-      if (! eof && retval.empty ())
-        retval = "\n";
-    }
-  else
-    {
-      if (! s.empty () && (interactive || forced_interactive))
-        {
-          FILE *stream = command_editor::get_output_stream ();
-
-          gnulib::fputs (s.c_str (), stream);
-          gnulib::fflush (stream);
-        }
-
-      FILE *curr_stream = command_editor::get_input_stream ();
-
-      if (reading_fcn_file || reading_script_file || reading_classdef_file)
-        curr_stream = ff_instream;
-
-      retval = octave_fgets (curr_stream, eof);
-    }
+  if (! eof && retval.empty ())
+    retval = "\n";
 
   return retval;
 }
 
-extern std::string
-gnu_readline (const std::string& s, bool force_readline)
-{
-  bool eof = false;
-
-  return gnu_readline (s, eof, force_readline);
-}
-
 static inline std::string
-interactive_input (const std::string& s, bool& eof, bool force_readline)
+interactive_input (const std::string& s, bool& eof)
 {
   Vlast_prompt_time.stamp ();
 
@@ -245,15 +214,7 @@ interactive_input (const std::string& s, bool& eof, bool force_readline)
         return "\n";
     }
 
-  return gnu_readline (s, eof, force_readline);
-}
-
-static inline std::string
-interactive_input (const std::string& s, bool force_readline = false)
-{
-  bool eof = false;
-
-  return interactive_input (s, eof, force_readline);
+  return gnu_readline (s, eof);
 }
 
 std::string
@@ -267,93 +228,57 @@ octave_base_reader::octave_gets (bool& eof)
 
   bool history_skip_auto_repeated_debugging_command = false;
 
-  if ((interactive || forced_interactive)
-      && (! (reading_fcn_file
-             || reading_classdef_file
-             || reading_script_file
-             || input_from_startup_file
-             || input_from_command_line_file)))
+  std::string ps = (promptflag > 0) ? VPS1 : VPS2;
+
+  std::string prompt = command_editor::decode_prompt_string (ps);
+
+  pipe_handler_error_count = 0;
+
+  flush_octave_stdout ();
+
+  octave_pager_stream::reset ();
+  octave_diary_stream::reset ();
+
+  octave_diary << prompt;
+
+  retval = interactive_input (prompt, eof);
+
+  // There is no need to update the load_path cache if there is no
+  // user input.
+  if (! retval.empty ()
+      && retval.find_first_not_of (" \t\n\r") != std::string::npos)
     {
-      std::string ps = (promptflag > 0) ? VPS1 : VPS2;
+      load_path::update ();
 
-      std::string prompt = command_editor::decode_prompt_string (ps);
-
-      pipe_handler_error_count = 0;
-
-      flush_octave_stdout ();
-
-      octave_pager_stream::reset ();
-      octave_diary_stream::reset ();
-
-      octave_diary << prompt;
-
-      retval = interactive_input (prompt, eof, false);
-
-      // There is no need to update the load_path cache if there is no
-      // user input.
-      if (! retval.empty ()
-          && retval.find_first_not_of (" \t\n\r") != std::string::npos)
-        {
-          load_path::update ();
-
-          if (Vdebugging)
-            last_debugging_command = retval;
-          else
-            last_debugging_command = std::string ();
-        }
-      else if (Vdebugging)
-        {
-          retval = last_debugging_command;
-          history_skip_auto_repeated_debugging_command = true;
-        }
+      if (Vdebugging)
+        last_debugging_command = retval;
+      else
+        last_debugging_command = std::string ();
     }
-  else
-    retval = gnu_readline ("", eof, false);
+  else if (Vdebugging)
+    {
+      retval = last_debugging_command;
+      history_skip_auto_repeated_debugging_command = true;
+    }
 
   current_input_line = retval;
 
   if (! current_input_line.empty ())
     {
-      if (! (input_from_startup_file || input_from_command_line_file
-             || history_skip_auto_repeated_debugging_command))
+      if (! history_skip_auto_repeated_debugging_command)
         command_history::add (current_input_line);
 
-      if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
-        {
-          octave_diary << current_input_line;
+      octave_diary << current_input_line;
 
-          if (current_input_line[current_input_line.length () - 1] != '\n')
-            octave_diary << "\n";
-        }
+      if (current_input_line[current_input_line.length () - 1] != '\n')
+        octave_diary << "\n";
 
       do_input_echo (current_input_line);
     }
-  else if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
+  else
     octave_diary << "\n";
 
   return retval;
-}
-
-// Fix things up so that input can come from file 'name', printing a
-// warning if the file doesn't exist.
-
-FILE *
-get_input_from_file (const std::string& name, int warn)
-{
-  FILE *instream = 0;
-
-  if (name.length () > 0)
-    instream = gnulib::fopen (name.c_str (), "rb");
-
-  if (! instream && warn)
-    warning ("%s: no such file or directory", name.c_str ());
-
-  if (reading_fcn_file || reading_script_file || reading_classdef_file)
-    ff_instream = instream;
-  else
-    command_editor::set_input_stream (instream);
-
-  return instream;
 }
 
 // Fix things up so that input can come from the standard input.  This
@@ -748,7 +673,9 @@ get_user_input (const octave_value_list& args, int nargout)
 
   octave_diary << prompt;
 
-  std::string input_buf = interactive_input (prompt.c_str (), true);
+  bool eof = false;
+
+  std::string input_buf = interactive_input (prompt.c_str (), eof);
 
   if (! (error_state || input_buf.empty ()))
     {
@@ -845,7 +772,9 @@ octave_yes_or_no (const std::string& prompt)
 
   while (1)
     {
-      std::string input_buf = interactive_input (prompt_string, true);
+      bool eof = false;
+
+      std::string input_buf = interactive_input (prompt_string, eof);
 
       if (input_buf == "yes")
         return true;

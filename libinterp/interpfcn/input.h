@@ -35,9 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
-extern OCTINTERP_API FILE *get_input_from_file (const std::string& name,
-                                                int warn = 1);
-
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
 // TRUE means that input is coming from a file that was named on
@@ -62,8 +59,8 @@ extern bool reading_script_file;
 // TRUE means we're parsing a classdef file.
 extern bool reading_classdef_file;
 
-// If we are reading from an M-file, this is it.
-extern FILE *ff_instream;
+// Fix things up so that input can come from file 'name', printing a
+// warning if the file doesn't exist.
 
 // TRUE means this is an interactive shell.
 extern bool interactive;
@@ -86,8 +83,6 @@ extern OCTINTERP_API bool Vdrawnow_requested;
 
 // TRUE if we are in debugging mode.
 extern OCTINTERP_API bool Vdebugging;
-
-extern std::string gnu_readline (const std::string& s, bool force_readline = false);
 
 extern void initialize_command_input (void);
 

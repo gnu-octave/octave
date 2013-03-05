@@ -3375,8 +3375,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   frame.add_fcn (command_editor::set_input_stream, in_stream);
 
-  frame.protect_var (ff_instream);
-
   frame.protect_var (reading_fcn_file);
   frame.protect_var (line_editing);
 
@@ -3388,7 +3386,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   command_history::ignore_entries ();
 
-  FILE *ffile = get_input_from_file (ff, 0);
+  FILE *ffile = 0;
+
+  if (! ff.empty ())
+    ffile = gnulib::fopen (ff.c_str (), "rb");
 
   frame.add_fcn (safe_fclose, ffile);
 

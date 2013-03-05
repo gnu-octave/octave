@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <stack>
 
+#include "input.h"
+
 extern OCTINTERP_API void cleanup_parser (void);
 
 // Is the given string a keyword?
@@ -317,8 +319,7 @@ public:
       : buffer (), pos (0), chars_left (0), eof (false)
     { }
 
-    // Grab more input from the current input source.
-    void read (void);
+    void fill (const std::string& input, bool eof_arg);
 
     // Copy at most max_size characters to buf.
     int copy_chunk (char *buf, size_t max_size);
@@ -336,7 +337,21 @@ public:
   };
 
   octave_lexer (void)
-    : lexical_feedback (), scanner (0), input_buf ()
+    : lexical_feedback (), scanner (0), input_buf (), input_reader ()
+  {
+    init ();
+  }
+
+  octave_lexer (FILE *file)
+    : lexical_feedback (), scanner (0), input_buf (),
+      input_reader (file)
+  {
+    init ();
+  }
+
+  octave_lexer (const std::string& eval_string)
+    : lexical_feedback (), scanner (0), input_buf (),
+      input_reader (eval_string)
   {
     init ();
   }
@@ -351,7 +366,7 @@ public:
 
   void prep_for_function_file (void);
 
-  int octave_read (char *buf, unsigned int max_size);
+  int read (char *buf, unsigned int max_size);
 
   int handle_end_of_input (void);
 
@@ -447,6 +462,18 @@ public:
 
   // Object that reads and buffers input.
   input_buffer input_buf;
+
+  octave_input_reader input_reader;
+
+  std::string input_source (void) const
+  {
+    return input_reader.input_source ();
+  }
+
+  bool input_from_eval_string (void) const
+  {
+    return input_source () == "eval_string";
+  }
 
   // For unwind protect.
   static void cleanup (octave_lexer *lexer) { delete lexer; }

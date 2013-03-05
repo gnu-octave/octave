@@ -118,7 +118,7 @@ object) relevant global values before and after the nested call.
 #undef YY_INPUT
 #endif
 #define YY_INPUT(buf, result, max_size) \
-  result = curr_lexer->octave_read (buf, max_size)
+  result = curr_lexer->read (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
 
@@ -1360,11 +1360,12 @@ lexical_feedback::reset_token_stack (void)
 }
 
 void
-octave_lexer::input_buffer::read (void)
+octave_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
 {
-  buffer = get_user_input (eof);
+  buffer = input;
   chars_left = buffer.length ();
   pos = buffer.c_str ();
+  eof = eof_arg;
 }
 
 int
@@ -1393,7 +1394,7 @@ octave_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
         {
           // There isn't enough room to plug the newline character
           // in the buffer so arrange to have it returned on the next
-          // call to octave_read.
+          // call to octave_lexer::read.
           pos = eol;
           chars_left = 1;
         }
@@ -1447,7 +1448,7 @@ octave_lexer::reset (void)
       && ! (reading_fcn_file
             || reading_classdef_file
             || reading_script_file
-            || get_input_from_eval_string
+            || input_from_eval_string ()
             || input_from_startup_file))
     yyrestart (stdin, scanner);
 
@@ -1475,12 +1476,16 @@ octave_lexer::prep_for_function_file (void)
 }
 
 int
-octave_lexer::octave_read (char *buf, unsigned max_size)
+octave_lexer::read (char *buf, unsigned max_size)
 {
   int status = 0;
 
   if (input_buf.empty ())
-    input_buf.read ();
+    {
+      bool eof = false;
+      std::string input = input_reader.get_input (eof);
+      input_buf.fill (input, eof);
+    }
 
   if (! input_buf.empty ())
     status = input_buf.copy_chunk (buf, max_size);
@@ -1489,7 +1494,7 @@ octave_lexer::octave_read (char *buf, unsigned max_size)
       status = YY_NULL;
 
       if (! input_buf.at_eof ())
-        fatal_error ("octave_read () in flex scanner failed");
+        fatal_error ("octave_lexer::read () in flex scanner failed");
     }
 
   return status;

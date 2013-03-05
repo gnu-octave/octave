@@ -94,12 +94,6 @@ octave_time Vlast_prompt_time = 0.0;
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
 
-// Global pointer for eval().
-std::string current_eval_string;
-
-// TRUE means get input from current_eval_string.
-bool get_input_from_eval_string = false;
-
 // TRUE means that input is coming from a file that was named on
 // the command line.
 bool input_from_command_line_file = false;
@@ -262,8 +256,8 @@ interactive_input (const std::string& s, bool force_readline = false)
   return interactive_input (s, eof, force_readline);
 }
 
-static std::string
-octave_gets (bool& eof)
+std::string
+octave_base_reader::octave_gets (bool& eof)
 {
   octave_quit ();
 
@@ -277,7 +271,6 @@ octave_gets (bool& eof)
       && (! (reading_fcn_file
              || reading_classdef_file
              || reading_script_file
-             || get_input_from_eval_string
              || input_from_startup_file
              || input_from_command_line_file)))
     {
@@ -337,36 +330,6 @@ octave_gets (bool& eof)
     }
   else if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
     octave_diary << "\n";
-
-  return retval;
-}
-
-// Read a line from the input stream.
-
-std::string
-get_user_input (bool& eof)
-{
-  octave_quit ();
-
-  eof = false;
-
-  std::string retval;
-
-  if (get_input_from_eval_string)
-    {
-      retval = current_eval_string;
-
-      // Clear the global eval string so that the next call will return
-      // an empty character string with EOF = true.
-      current_eval_string = "";
-
-      if (retval.empty ())
-        eof = true;
-    }
-  else
-    retval = octave_gets (eof);
-
-  current_input_line = retval;
 
   return retval;
 }
@@ -642,7 +605,7 @@ get_debug_input (const std::string& prompt)
       || (reading_fcn_file
           || reading_classdef_file
           || reading_script_file
-          || get_input_from_eval_string
+          || CURR_LEXER->input_from_eval_string ()
           || input_from_startup_file
           || input_from_command_line_file))
     {
@@ -663,9 +626,6 @@ get_debug_input (const std::string& prompt)
 
       frame.protect_var (input_from_command_line_file);
       input_from_command_line_file = false;
-
-      frame.protect_var (get_input_from_eval_string);
-      get_input_from_eval_string = false;
     }
 
   // octave_parser constructor sets this for us.
@@ -698,6 +658,65 @@ get_debug_input (const std::string& prompt)
 
       octave_quit ();
     }
+}
+
+const std::string octave_base_reader::in_src ("invalid");
+
+const std::string octave_terminal_reader::in_src ("terminal");
+
+std::string
+octave_terminal_reader::get_input (bool& eof)
+{
+  octave_quit ();
+
+  eof = false;
+
+  std::string retval = octave_gets (eof);
+
+  current_input_line = retval;
+
+  return retval;
+}
+
+const std::string octave_file_reader::in_src ("file");
+
+std::string
+octave_file_reader::get_input (bool& eof)
+{
+  octave_quit ();
+
+  eof = false;
+
+  std::string retval = octave_fgets (file, eof);
+
+  current_input_line = retval;
+
+  return retval;
+}
+
+const std::string octave_eval_string_reader::in_src ("eval_string");
+
+std::string
+octave_eval_string_reader::get_input (bool& eof)
+{
+  octave_quit ();
+
+  eof = false;
+
+  std::string retval;
+
+  retval = eval_string;
+
+  // Clear the eval string so that the next call will return
+  // an empty character string with EOF = true.
+  eval_string = "";
+
+  if (retval.empty ())
+    eof = true;
+
+  current_input_line = retval;
+
+  return retval;
 }
 
 // If the user simply hits return, this will produce an empty matrix.

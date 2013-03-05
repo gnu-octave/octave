@@ -150,6 +150,30 @@ public:
     init ();
   }
 
+  octave_parser (FILE *file)
+    : endfunction_found (false),
+      autoloading (false), fcn_file_from_relative_lookup (false),
+      parsing_subfunctions (false), max_fcn_depth (0),
+      curr_fcn_depth (0), primary_fcn_scope (-1),
+      curr_class_name (), function_scopes (), primary_fcn_ptr (0),
+      stmt_list (0),
+      curr_lexer (new octave_lexer (file)), parser_state (0)
+  {
+    init ();
+  }
+
+  octave_parser (const std::string& eval_string)
+    : endfunction_found (false),
+      autoloading (false), fcn_file_from_relative_lookup (false),
+      parsing_subfunctions (false), max_fcn_depth (0),
+      curr_fcn_depth (0), primary_fcn_scope (-1),
+      curr_class_name (), function_scopes (), primary_fcn_ptr (0),
+      stmt_list (0),
+      curr_lexer (new octave_lexer (eval_string)), parser_state (0)
+  {
+    init ();
+  }
+
   ~octave_parser (void);
 
   void init (void);

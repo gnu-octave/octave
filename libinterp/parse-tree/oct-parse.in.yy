@@ -136,7 +136,7 @@ make_statement (T *arg)
       if (! parser_symtab_context.empty ()) \
         parser_symtab_context.pop (); \
       if ((interactive || forced_interactive)   \
-          && ! get_input_from_eval_string)      \
+          && ! (curr_lexer)->input_from_eval_string ()) \
         YYACCEPT; \
       else \
         YYABORT; \
@@ -1237,7 +1237,7 @@ function_end    : END
                       }
 
                     if (! (reading_fcn_file || reading_script_file
-                           || get_input_from_eval_string))
+                           || (curr_lexer)->input_from_eval_string ()))
                       {
                         curr_parser.bison_error ("function body open at end of input");
                         YYABORT;
@@ -3399,7 +3399,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       // octave_parser constructor sets this for us.
       frame.protect_var (CURR_LEXER);
 
-      octave_parser curr_parser;
+      octave_parser curr_parser (ffile);
 
       curr_parser.curr_class_name = dispatch_type;
       curr_parser.autoloading = autoload;
@@ -3418,13 +3418,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
         {
           std::string file_type;
 
-          frame.protect_var (get_input_from_eval_string);
           frame.protect_var (reading_fcn_file);
           frame.protect_var (reading_script_file);
           frame.protect_var (reading_classdef_file);
           frame.protect_var (Vecho_executing_commands);
-
-          get_input_from_eval_string = false;
 
           if (! force_script && looking_at_function_keyword (ffile))
             {
@@ -4181,7 +4178,8 @@ another function for the given type signature.\n\
 }
 
 octave_value_list
-eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
+eval_string (const std::string& eval_str, bool silent,
+             int& parse_status, int nargout)
 {
   octave_value_list retval;
 
@@ -4190,22 +4188,17 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   // octave_parser constructor sets this for us.
   frame.protect_var (CURR_LEXER);
 
-  octave_parser curr_parser;
+  octave_parser curr_parser (eval_str);
 
-  frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);
-  frame.protect_var (current_eval_string);
   frame.protect_var (reading_fcn_file);
   frame.protect_var (reading_script_file);
   frame.protect_var (reading_classdef_file);
 
-  get_input_from_eval_string = true;
   line_editing = false;
   reading_fcn_file = false;
   reading_script_file = false;
   reading_classdef_file = false;
-
-  current_eval_string = s;
 
   do
     {
@@ -4278,11 +4271,11 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 }
 
 octave_value
-eval_string (const std::string& s, bool silent, int& parse_status)
+eval_string (const std::string& eval_str, bool silent, int& parse_status)
 {
   octave_value retval;
 
-  octave_value_list tmp = eval_string (s, silent, parse_status, 1);
+  octave_value_list tmp = eval_string (eval_str, silent, parse_status, 1);
 
   if (! tmp.empty ())
     retval = tmp(0);

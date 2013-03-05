@@ -488,7 +488,6 @@ execute_command_line_file (const std::string& fname)
   octave_initialized = true;
 
   frame.protect_var (interactive);
-  frame.protect_var (reading_script_file);
   frame.protect_var (input_from_command_line_file);
 
   frame.protect_var (curr_fcn_file_name);
@@ -498,7 +497,6 @@ execute_command_line_file (const std::string& fname)
   frame.protect_var (octave_program_name);
 
   interactive = false;
-  reading_script_file = true;
   input_from_command_line_file = true;
 
   curr_fcn_file_name = fname;

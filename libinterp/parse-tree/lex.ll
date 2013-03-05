@@ -1324,6 +1324,9 @@ lexical_feedback::reset (void)
   maybe_classdef_get_set_method = false;
   parsing_classdef = false;
   quote_is_transpose = false;
+  reading_fcn_file = false;
+  reading_script_file = false;
+  reading_classdef_file = false;
   input_line_number = 1;
   current_input_column = 1;
   bracketflag = 0;

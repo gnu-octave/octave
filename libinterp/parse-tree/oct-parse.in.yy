@@ -1013,11 +1013,11 @@ push_fcn_symtab : // empty
 
                     curr_parser.function_scopes.push_back (symbol_table::current_scope ());
 
-                    if (! reading_script_file && curr_parser.curr_fcn_depth == 1
+                    if (! curr_lexer->reading_script_file && curr_parser.curr_fcn_depth == 1
                         && ! curr_parser.parsing_subfunctions)
                       curr_parser.primary_fcn_scope = symbol_table::current_scope ();
 
-                    if (reading_script_file && curr_parser.curr_fcn_depth > 1)
+                    if (curr_lexer->reading_script_file && curr_parser.curr_fcn_depth > 1)
                       curr_parser.bison_error ("nested functions not implemented in this context");
                   }
                 ;
@@ -1154,7 +1154,7 @@ function_beg    : push_fcn_symtab FCN stash_comment
                   {
                     $$ = $3;
 
-                    if (reading_classdef_file || curr_lexer->parsing_classdef)
+                    if (curr_lexer->reading_classdef_file || curr_lexer->parsing_classdef)
                       curr_lexer->maybe_classdef_get_set_method = true;
                   }
                 ;
@@ -1222,7 +1222,7 @@ function_end    : END
                 | END_OF_INPUT
                   {
 // A lot of tests are based on the assumption that this is OK
-//                  if (reading_script_file)
+//                  if (curr_lexer->reading_script_file)
 //                    {
 //                      curr_parser.bison_error ("function body open at end of script");
 //                      YYABORT;
@@ -1236,14 +1236,14 @@ function_end    : END
                         YYABORT;
                       }
 
-                    if (! (reading_fcn_file || reading_script_file
+                    if (! (curr_lexer->reading_fcn_file || curr_lexer->reading_script_file
                            || (curr_lexer)->input_from_eval_string ()))
                       {
                         curr_parser.bison_error ("function body open at end of input");
                         YYABORT;
                       }
 
-                    if (reading_classdef_file)
+                    if (curr_lexer->reading_classdef_file)
                       {
                         curr_parser.bison_error ("classdef body open at end of input");
                         YYABORT;
@@ -2654,7 +2654,7 @@ octave_parser::frob_function (const std::string& fname,
   // the file does not match the name of the function stated in the
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
-  if (! autoloading && reading_fcn_file
+  if (! autoloading && curr_lexer->reading_fcn_file
       && curr_fcn_depth == 1 && ! parsing_subfunctions)
   {
     // FIXME -- should curr_fcn_file_name already be
@@ -2679,7 +2679,7 @@ octave_parser::frob_function (const std::string& fname,
       }
   }
 
-  if (reading_fcn_file || reading_classdef_file || autoloading)
+  if (curr_lexer->reading_fcn_file || curr_lexer->reading_classdef_file || autoloading)
     {
       octave_time now;
 
@@ -2719,7 +2719,7 @@ octave_parser::frob_function (const std::string& fname,
                          "time stamp for '%s' is in the future", nm.c_str ());
     }
   else if (! (input_from_tmp_history_file || input_from_startup_file)
-           && reading_script_file
+           && curr_lexer->reading_script_file
            && curr_fcn_file_name == id_name)
     {
       warning ("function '%s' defined within script file '%s'",
@@ -2738,7 +2738,7 @@ octave_parser::frob_function (const std::string& fname,
       help_buf.pop ();
     }
 
-  if (reading_fcn_file && curr_fcn_depth == 1
+  if (curr_lexer->reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     primary_fcn_ptr = fcn;
 
@@ -2791,7 +2791,7 @@ octave_parser::finish_function (tree_parameter_list *ret_list,
       if (curr_fcn_depth == 1 && fcn)
         symbol_table::update_nest (fcn->scope ());
 
-      if (! reading_fcn_file && curr_fcn_depth == 1)
+      if (! curr_lexer->reading_fcn_file && curr_fcn_depth == 1)
         {
           // We are either reading a script file or defining a function
           // at the command line, so this definition creates a
@@ -2824,7 +2824,7 @@ octave_parser::recover_from_parsing_function (void)
 
   parser_symtab_context.pop ();
 
-  if (reading_fcn_file && curr_fcn_depth == 1
+  if (curr_lexer->reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     parsing_subfunctions = true;
 
@@ -2945,7 +2945,7 @@ octave_parser::make_decl_command (int tok, token *tok_val,
         retval = new tree_persistent_command (lst, l, c);
       else
         {
-          if (reading_script_file)
+          if (curr_lexer->reading_script_file)
             warning ("ignoring persistent declaration near line %d of file '%s'",
                      l, curr_fcn_file_full_name.c_str ());
           else
@@ -3098,7 +3098,7 @@ octave_parser::bison_error (const char *s)
 
   std::ostringstream output_buf;
 
-  if (reading_fcn_file || reading_script_file || reading_classdef_file)
+  if (curr_lexer->reading_fcn_file || curr_lexer->reading_script_file || curr_lexer->reading_classdef_file)
     output_buf << "parse error near line " << curr_lexer->input_line_number
                << " of file " << curr_fcn_file_full_name;
   else
@@ -3375,10 +3375,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   frame.add_fcn (command_editor::set_input_stream, in_stream);
 
-  frame.protect_var (reading_fcn_file);
   frame.protect_var (line_editing);
 
-  reading_fcn_file = true;
   line_editing = false;
 
   frame.add_fcn (command_history::ignore_entries,
@@ -3402,6 +3400,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
       octave_parser curr_parser (ffile);
 
+      curr_parser.curr_lexer->reading_fcn_file = true;
+
       curr_parser.curr_class_name = dispatch_type;
       curr_parser.autoloading = autoload;
       curr_parser.fcn_file_from_relative_lookup = relative_lookup;
@@ -3419,44 +3419,36 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
         {
           std::string file_type;
 
-          frame.protect_var (reading_fcn_file);
-          frame.protect_var (reading_script_file);
-          frame.protect_var (reading_classdef_file);
           frame.protect_var (Vecho_executing_commands);
+
+          Vecho_executing_commands = ECHO_OFF;
 
           if (! force_script && looking_at_function_keyword (ffile))
             {
               file_type = "function";
-
-              Vecho_executing_commands = ECHO_OFF;
-
-              reading_classdef_file = false;
-              reading_fcn_file = true;
-              reading_script_file = false;
-            }
-          else if (! force_script && looking_at_classdef_keyword (ffile))
-            {
-              file_type = "classdef";
-
-              Vecho_executing_commands = ECHO_OFF;
-
-              reading_classdef_file = true;
-              reading_fcn_file = false;
-              // FIXME -- Should classdef files be handled as
-              // scripts or separately?  Currently, without setting up
-              // for reading script files, parsing classdef files
-              // fails.
-              reading_script_file = true;
             }
           else
             {
-              file_type = "script";
+              curr_parser.curr_lexer->reading_fcn_file = false;
 
-              Vecho_executing_commands = ECHO_OFF;
+              if (! force_script && looking_at_classdef_keyword (ffile))
+                {
+                  file_type = "classdef";
 
-              reading_classdef_file = false;
-              reading_fcn_file = false;
-              reading_script_file = true;
+                  curr_parser.curr_lexer->reading_classdef_file = true;
+
+                  // FIXME -- Should classdef files be handled as
+                  // scripts or separately?  Currently, without
+                  // setting up for reading script files, parsing
+                  // classdef files fails.
+                  curr_parser.curr_lexer->reading_script_file = true;
+                }
+              else
+                {
+                  file_type = "script";
+
+                  curr_parser.curr_lexer->reading_script_file = true;
+                }
             }
 
           // Do this with an unwind-protect cleanup function so that
@@ -3468,7 +3460,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
           if (! help_txt.empty ())
             help_buf.push (help_txt);
 
-          if (reading_script_file)
+          if (curr_parser.curr_lexer->reading_script_file)
             curr_parser.curr_lexer->prep_for_script_file ();
           else
             curr_parser.curr_lexer->prep_for_function_file ();
@@ -4192,14 +4184,8 @@ eval_string (const std::string& eval_str, bool silent,
   octave_parser curr_parser (eval_str);
 
   frame.protect_var (line_editing);
-  frame.protect_var (reading_fcn_file);
-  frame.protect_var (reading_script_file);
-  frame.protect_var (reading_classdef_file);
 
   line_editing = false;
-  reading_fcn_file = false;
-  reading_script_file = false;
-  reading_classdef_file = false;
 
   do
     {

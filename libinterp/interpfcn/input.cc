@@ -101,20 +101,11 @@ bool input_from_command_line_file = false;
 // TRUE means that stdin is a terminal, not a pipe or redirected file.
 bool stdin_is_tty = false;
 
-// TRUE means we're parsing a function file.
-bool reading_fcn_file = false;
-
-// TRUE means we're parsing a classdef file.
-bool reading_classdef_file = false;
-
 // Simple name of function file we are reading.
 std::string curr_fcn_file_name;
 
 // Full name of file we are reading.
 std::string curr_fcn_file_full_name;
-
-// TRUE means we're parsing a script file.
-bool reading_script_file = false;
 
 // TRUE means this is an interactive shell.
 bool interactive = false;
@@ -151,7 +142,7 @@ char Vfilemarker = '>';
 static void
 do_input_echo (const std::string& input_string)
 {
-  int do_echo = reading_script_file ?
+  int do_echo = CURR_LEXER->reading_script_file ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
       : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
 
@@ -527,24 +518,15 @@ get_debug_input (const std::string& prompt)
   VPS1 = prompt;
 
   if (! (interactive || forced_interactive)
-      || (reading_fcn_file
-          || reading_classdef_file
-          || reading_script_file
+      || (CURR_LEXER->reading_fcn_file
+          || CURR_LEXER->reading_classdef_file
+          || CURR_LEXER->reading_script_file
           || CURR_LEXER->input_from_eval_string ()
           || input_from_startup_file
           || input_from_command_line_file))
     {
       frame.protect_var (forced_interactive);
       forced_interactive = true;
-
-      frame.protect_var (reading_fcn_file);
-      reading_fcn_file = false;
-
-      frame.protect_var (reading_classdef_file);
-      reading_classdef_file = false;
-
-      frame.protect_var (reading_script_file);
-      reading_script_file = false;
 
       frame.protect_var (input_from_startup_file);
       input_from_startup_file = false;

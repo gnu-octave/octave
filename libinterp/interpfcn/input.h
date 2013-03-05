@@ -44,20 +44,11 @@ extern bool input_from_command_line_file;
 // TRUE means that stdin is a terminal, not a pipe or redirected file.
 extern bool stdin_is_tty;
 
-// TRUE means we're parsing a function file.
-extern bool reading_fcn_file;
-
 // Simple name of function file we are reading.
 extern std::string curr_fcn_file_name;
 
 // Full name of file we are reading.
 extern std::string curr_fcn_file_full_name;
-
-// TRUE means we're parsing a script file.
-extern bool reading_script_file;
-
-// TRUE means we're parsing a classdef file.
-extern bool reading_classdef_file;
 
 // Fix things up so that input can come from file 'name', printing a
 // warning if the file doesn't exist.

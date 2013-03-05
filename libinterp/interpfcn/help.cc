@@ -902,11 +902,6 @@ raw_help_from_file (const std::string& nm, std::string& h,
 {
   bool retval = false;
 
-  // FIXME -- this is a bit of a kluge...
-  unwind_protect frame;
-  frame.protect_var (reading_script_file);
-  reading_script_file = true;
-
   h = get_help_from_file (nm, symbol_found, file);
 
   if (h.length () > 0)

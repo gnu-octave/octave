@@ -106,6 +106,12 @@ public:
 
     ~bbp_nesting_level (void) { }
 
+    void reset (void)
+    {
+      while (! context.empty ())
+        context.pop ();
+    }
+
     void bracket (void) { context.push (BRACKET); }
 
     bool is_bracket (void)
@@ -176,7 +182,9 @@ public:
   ~lexical_feedback (void);
 
   void init (void);
-  
+
+  void reset (void);
+
   // true means that we have encountered eof on the input stream.
   bool end_of_input;
 
@@ -279,6 +287,8 @@ public:
   std::stack <token*> token_stack;
 
 private:
+
+  void reset_token_stack (void);
 
   // No copying!
 

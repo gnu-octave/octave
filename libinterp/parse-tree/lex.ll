@@ -1294,14 +1294,7 @@ private:
 
 lexical_feedback::~lexical_feedback (void)
 {
-  // Clear out the stack of token info used to track line and
-  // column numbers.
-
-  while (! token_stack.empty ())
-    {
-      delete token_stack.top ();
-      token_stack.pop ();
-    }
+  reset_token_stack ();
 }
 
 void
@@ -1310,6 +1303,60 @@ lexical_feedback::init (void)
   // The closest paren, brace, or bracket nesting is not an object
   // index.
   looking_at_object_index.push_front (false);
+}
+
+void
+lexical_feedback::reset (void)
+{
+  end_of_input = false;
+  convert_spaces_to_comma = true;
+  do_comma_insert = false;
+  at_beginning_of_statement = true;
+  looking_at_anon_fcn_args = false;
+  looking_at_return_list = false;
+  looking_at_parameter_list = false;
+  looking_at_decl_list = false;
+  looking_at_initializer_expression = false;
+  looking_at_matrix_or_assign_lhs = false;
+  looking_for_object_index = false; 
+  looking_at_indirect_ref = false;
+  parsing_class_method = false;
+  maybe_classdef_get_set_method = false;
+  parsing_classdef = false;
+  quote_is_transpose = false;
+  input_line_number = 1;
+  current_input_column = 1;
+  bracketflag = 0;
+  braceflag = 0;
+  looping = 0;
+  defining_func = 0;
+  looking_at_function_handle = 0;
+  block_comment_nesting_level = 0;
+
+  looking_at_object_index.clear ();
+  looking_at_object_index.push_front (false);
+
+  while (! parsed_function_name.empty ())
+    parsed_function_name.pop ();
+
+  pending_local_variables.clear ();
+
+  nesting_level.reset ();
+
+  reset_token_stack ();
+}
+
+void
+lexical_feedback::reset_token_stack (void)
+{
+  // Clear out the stack of token info used to track line and
+  // column numbers.
+
+  while (! token_stack.empty ())
+    {
+      delete token_stack.top ();
+      token_stack.pop ();
+    }
 }
 
 void
@@ -1407,6 +1454,8 @@ octave_lexer::reset (void)
   // Clear the buffer for help text.
   while (! help_buf.empty ())
     help_buf.pop ();
+
+  lexical_feedback::reset ();
 }
 
 void

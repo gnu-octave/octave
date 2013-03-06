@@ -23,9 +23,9 @@ function sparseimages (nm, typ)
     set (0, "defaulttextfontname", "*");
   endif
 
-  if (! isempty (findstr (octave_config_info ("DEFS"), "HAVE_COLAMD"))
-      && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_CHOLMOD"))
-      && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_UMFPACK")))
+  if (__have_feature__ ("COLAMD")
+      && __have_feature__ ("CHOLMOD")
+      && __have_feature__ ("UMFPACK"))
     if (strcmp(typ,"txt"))
       txtimages (nm, 15, typ);
     else
@@ -86,8 +86,8 @@ function txtimages(nm, n, typ)
   elseif (strcmp (nm, "spmatrix"))
     printsparse(a,cstrcat("spmatrix.",typ));
   else
-    if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
-        !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
+    if (__have_feature__ ("COLAMD")
+        && __have_feature__ ("CHOLMOD"))
       if (strcmp (nm, "spchol"))
         r1 = chol(a);
         printsparse(r1,cstrcat("spchol.",typ));
@@ -116,8 +116,8 @@ function otherimages(nm, n, typ)
     print(cstrcat("spmatrix.",typ), d_typ)
     hide_output ();
   else
-    if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
-        !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
+    if (__have_feature__ ("COLAMD")
+        && __have_feature__ ("CHOLMOD"))
       if (strcmp (nm, "spchol"))
         r1 = chol(a);
         spy(r1);
@@ -182,9 +182,9 @@ function femimages (nm, typ)
     d_typ = cstrcat ("-d", typ);
   endif
 
-  if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
-      !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")) &&
-      !isempty(findstr(octave_config_info ("DEFS"),"HAVE_UMFPACK")))
+  if (__have_feature__ ("COLAMD")
+      && __have_feature__ ("CHOLMOD")
+      && __have_feature__ ("UMFPACK"))
     ## build a rectangle
     node_y = [1;1.2;1.5;1.8;2]*ones(1,11);
     node_x = ones(5,1)*[1,1.05,1.1,1.2,1.3,1.5,1.7,1.8,1.9,1.95,2];

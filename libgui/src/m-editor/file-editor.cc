@@ -427,6 +427,7 @@ file_editor::mru_menu_update ()
     QSettings *settings = resource_manager::get_settings ();
     // FIXME -- what should happen if settings is 0?
     settings->setValue ("editor/mru_file_list",_mru_files);
+    settings->sync ();
 }
 
 void
@@ -600,6 +601,10 @@ file_editor::construct ()
   _cut_action->setEnabled(false);
   _run_action->setShortcut                      (Qt::ControlModifier+ Qt::Key_R);
   _run_action->setShortcutContext               (Qt::WindowShortcut);
+  save_action->setShortcut                      (QKeySequence::Save);
+  save_action->setShortcutContext               (Qt::WindowShortcut);
+  save_as_action->setShortcut                   (QKeySequence::SaveAs);
+  save_as_action->setShortcutContext            (Qt::WindowShortcut);
   next_bookmark_action->setShortcut             (Qt::Key_F2);
   next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);
   previous_bookmark_action->setShortcut         (Qt::SHIFT + Qt::Key_F2);
@@ -610,7 +615,7 @@ file_editor::construct ()
   comment_selection_action->setShortcutContext  (Qt::WindowShortcut);
   uncomment_selection_action->setShortcut       (Qt::ControlModifier + Qt::Key_8);
   uncomment_selection_action->setShortcutContext(Qt::WindowShortcut);
-  find_action->setShortcut                      (Qt::ControlModifier+Qt::Key_F);
+  find_action->setShortcut                      (QKeySequence::Find);
   find_action->setShortcutContext               (Qt::WindowShortcut);
 
   // toolbar

@@ -46,9 +46,13 @@ object) relevant global values before and after the nested call.
 %s COMMAND_START
 %s MATRIX_START
 
+<<<<<<< local
 %x SCRIPT_FILE_BEGIN
 %x FUNCTION_FILE_BEGIN
 %x CLASSDEF_FILE_BEGIN
+=======
+%x INPUT_FILE_BEGIN
+>>>>>>> other
 
 %{
 
@@ -110,7 +114,7 @@ object) relevant global values before and after the nested call.
 #error lex.l requires flex version 2.5.4 or later
 #endif
 
-#define YY_EXTRA_TYPE lexical_feedback *
+#define YY_EXTRA_TYPE octave_lexer *
 #define curr_lexer yyextra
 
 // Arrange to get input via readline.
@@ -119,7 +123,7 @@ object) relevant global values before and after the nested call.
 #undef YY_INPUT
 #endif
 #define YY_INPUT(buf, result, max_size) \
-  result = curr_lexer->octave_read (buf, max_size)
+  result = curr_lexer->read (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
 
@@ -148,7 +152,11 @@ object) relevant global values before and after the nested call.
 #define COUNT_TOK_AND_RETURN(tok) \
   do \
     { \
-      Vtoken_count++; \
+      if (tok != '\n') \
+        { \
+          Vtoken_count++; \
+          curr_lexer->token_count++; \
+        } \
       DISPLAY_TOK_AND_RETURN (tok); \
     } \
   while (0)
@@ -257,20 +265,17 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // the parser go down a special path.
 %}
 
-<SCRIPT_FILE_BEGIN>. {
-    LEXER_DEBUG ("<SCRIPT_FILE_BEGIN>.");
+<INPUT_FILE_BEGIN>. {
+    LEXER_DEBUG ("<INPUT_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
     curr_lexer->xunput (yytext[0]);
-    COUNT_TOK_AND_RETURN (SCRIPT_FILE);
-  }
 
-<FUNCTION_FILE_BEGIN>. {
-    LEXER_DEBUG ("<FUNCTION_FILE_BEGIN>.");
+    // May be reset later if we see "function" or "classdef" appears
+    // as the first token.
+    curr_lexer->reading_script_file = true;
 
-    BEGIN (INITIAL);
-    curr_lexer->xunput (yytext[0]);
-    COUNT_TOK_AND_RETURN (FUNCTION_FILE);
+    DISPLAY_TOK_AND_RETURN (INPUT_FILE);
   }
 
 <CLASSDEF_FILE_BEGIN>. {
@@ -362,7 +367,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
-    bool cont_is_spc = (curr_lexer->eat_continuation () != lexical_feedback::NO_WHITESPACE);
+    bool cont_is_spc = (curr_lexer->eat_continuation () != octave_lexer::NO_WHITESPACE);
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
     int tok_to_return = curr_lexer->handle_close_bracket (spc_gobbled, ']');
 
@@ -388,7 +393,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->at_beginning_of_statement = false;
 
     int c = yytext[yyleng-1];
-    bool cont_is_spc = (curr_lexer->eat_continuation () != lexical_feedback::NO_WHITESPACE);
+    bool cont_is_spc = (curr_lexer->eat_continuation () != octave_lexer::NO_WHITESPACE);
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
     int tok_to_return = curr_lexer->handle_close_bracket (spc_gobbled, '}');
 
@@ -418,7 +423,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (! curr_lexer->looking_at_object_index.front ())
       {
-        if ((tmp & lexical_feedback::NEWLINE) == lexical_feedback::NEWLINE)
+        if ((tmp & octave_lexer::NEWLINE) == octave_lexer::NEWLINE)
           {
             curr_lexer->maybe_warn_separator_insert (';');
 
@@ -455,7 +460,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
             && curr_lexer->nesting_level.is_bracket_or_brace ()
             && curr_lexer->convert_spaces_to_comma)
           {
-            if ((tmp & lexical_feedback::NEWLINE) == lexical_feedback::NEWLINE)
+            if ((tmp & octave_lexer::NEWLINE) == octave_lexer::NEWLINE)
               {
                 curr_lexer->maybe_warn_separator_insert (';');
 
@@ -621,19 +626,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <<EOF>> {
-    LEXER_DEBUG ("<<EOF>>");
-
-    if (curr_lexer->block_comment_nesting_level != 0)
-      {
-        warning ("block comment open at end of input");
-
-        if ((reading_fcn_file || reading_script_file || reading_classdef_file)
-            && ! curr_fcn_file_name.empty ())
-          warning ("near line %d of file '%s.m'",
-                   curr_lexer->input_line_number, curr_fcn_file_name.c_str ());
-      }
-
-    TOK_RETURN (END_OF_INPUT);
+   return curr_lexer->handle_end_of_input ();
   }
 
 %{
@@ -785,7 +778,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int tok = curr_lexer->process_comment (false, eof);
 
     if (eof)
-      TOK_RETURN (END_OF_INPUT);
+      return curr_lexer->handle_end_of_input ();
     else if (tok > 0)
       COUNT_TOK_AND_RETURN (tok);
   }
@@ -984,7 +977,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
         return LEXICAL_ERROR;
       }
     else
-      TOK_RETURN (END_OF_INPUT);
+      return curr_lexer->handle_end_of_input ();
   }
 
 %%
@@ -1293,7 +1286,7 @@ class
 flex_stream_reader : public stream_reader
 {
 public:
-  flex_stream_reader (lexical_feedback *l, char *buf_arg)
+  flex_stream_reader (octave_lexer *l, char *buf_arg)
     : stream_reader (), lexer (l), buf (buf_arg)
   { }
 
@@ -1308,12 +1301,74 @@ private:
 
   flex_stream_reader& operator = (const flex_stream_reader&);
 
-  lexical_feedback *lexer;
+  octave_lexer *lexer;
 
   char *buf;
 };
 
 lexical_feedback::~lexical_feedback (void)
+{
+  reset_token_stack ();
+}
+
+void
+lexical_feedback::init (void)
+{
+  // The closest paren, brace, or bracket nesting is not an object
+  // index.
+  looking_at_object_index.push_front (false);
+}
+
+void
+lexical_feedback::reset (void)
+{
+  end_of_input = false;
+  convert_spaces_to_comma = true;
+  do_comma_insert = false;
+  at_beginning_of_statement = true;
+  looking_at_anon_fcn_args = false;
+  looking_at_return_list = false;
+  looking_at_parameter_list = false;
+  looking_at_decl_list = false;
+  looking_at_initializer_expression = false;
+  looking_at_matrix_or_assign_lhs = false;
+  looking_for_object_index = false; 
+  looking_at_indirect_ref = false;
+  parsing_class_method = false;
+  maybe_classdef_get_set_method = false;
+  parsing_classdef = false;
+  quote_is_transpose = false;
+  force_script = false;
+  reading_fcn_file = false;
+  reading_script_file = false;
+  reading_classdef_file = false;
+  input_line_number = 1;
+  current_input_column = 1;
+  bracketflag = 0;
+  braceflag = 0;
+  looping = 0;
+  defining_func = 0;
+  looking_at_function_handle = 0;
+  block_comment_nesting_level = 0;
+  token_count = 0;
+  help_text = "";
+  fcn_file_name = "";
+  fcn_file_full_name = "";
+  looking_at_object_index.clear ();
+  looking_at_object_index.push_front (false);
+
+  while (! parsed_function_name.empty ())
+    parsed_function_name.pop ();
+
+  pending_local_variables.clear ();
+
+  nesting_level.reset ();
+
+  reset_token_stack ();
+}
+
+void
+lexical_feedback::reset_token_stack (void)
 {
   // Clear out the stack of token info used to track line and
   // column numbers.
@@ -1323,27 +1378,70 @@ lexical_feedback::~lexical_feedback (void)
       delete token_stack.top ();
       token_stack.pop ();
     }
+}
 
+void
+octave_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
+{
+  buffer = input;
+  chars_left = buffer.length ();
+  pos = buffer.c_str ();
+  eof = eof_arg;
+}
+
+int
+octave_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
+{
+  static const char * const eol = "\n";
+
+  size_t len = max_size > chars_left ? chars_left : max_size;
+  assert (len > 0);
+
+  memcpy (buf, pos, len);
+
+  chars_left -= len;
+  pos += len;
+
+  // Make sure input ends with a new line character.
+  if (chars_left == 0 && buf[len-1] != '\n')
+    {
+      if (len < max_size)
+        {
+          // There is enough room to plug the newline character in
+          // the buffer.
+          buf[len++] = '\n';
+        }
+      else
+        {
+          // There isn't enough room to plug the newline character
+          // in the buffer so arrange to have it returned on the next
+          // call to octave_lexer::read.
+          pos = eol;
+          chars_left = 1;
+        }
+    }
+
+  return len;
+}
+
+octave_lexer::~octave_lexer (void)
+{
   yylex_destroy (scanner);
 }
 
 void
-lexical_feedback::init (void)
+octave_lexer::init (void)
 {
-  // The closest paren, brace, or bracket nesting is not an object
-  // index.
-  looking_at_object_index.push_front (false);
-
   yylex_init (&scanner);
 
-  // Make lexical_feedback object available through yyextra in
+  // Make octave_lexer object available through yyextra in
   // flex-generated lexer.
   yyset_extra (this, scanner);
 }
 
 // Inside Flex-generated functions, yyg is the scanner cast to its real
 // type.  The BEGIN macro uses yyg and we want to use that in
-// lexical_feedback member functions.  If we could set the start state
+// octave_lexer member functions.  If we could set the start state
 // by calling a function instead of using the BEGIN macro, we could
 // eliminate the OCTAVE_YYG macro.
 
@@ -1351,7 +1449,7 @@ lexical_feedback::init (void)
   struct yyguts_t *yyg = static_cast<struct yyguts_t*> (scanner)
 
 void
-lexical_feedback::reset (void)
+octave_lexer::reset (void)
 {
   OCTAVE_YYG;
 
@@ -1371,26 +1469,26 @@ lexical_feedback::reset (void)
       && ! (reading_fcn_file
             || reading_classdef_file
             || reading_script_file
-            || get_input_from_eval_string
-            || input_from_startup_file))
+            || input_from_eval_string ()))
     yyrestart (stdin, scanner);
 
-  // Clear the buffer for help text.
-  while (! help_buf.empty ())
-    help_buf.pop ();
+  lexical_feedback::reset ();
 }
 
 void
-lexical_feedback::prep_for_script_file (void)
+octave_lexer::prep_for_file (void)
 {
   OCTAVE_YYG;
 
-  BEGIN (SCRIPT_FILE_BEGIN);
+  reading_script_file = true;
+
+  BEGIN (INPUT_FILE_BEGIN);
 }
 
-void
-lexical_feedback::prep_for_function_file (void)
+int
+octave_lexer::read (char *buf, unsigned max_size)
 {
+<<<<<<< local
   OCTAVE_YYG;
 
   BEGIN (FUNCTION_FILE_BEGIN);
@@ -1413,69 +1511,60 @@ lexical_feedback::octave_read (char *buf, unsigned max_size)
   static size_t chars_left = 0;
   static bool eof = false;
 
+=======
+>>>>>>> other
   int status = 0;
 
-  if (chars_left == 0)
+  if (input_buf.empty ())
     {
-      pos = 0;
-
-      input_buf = get_user_input (eof);
-
-      chars_left = input_buf.length ();
-
-      pos = input_buf.c_str ();
+      bool eof = false;
+      std::string input = input_reader.get_input (eof);
+      input_buf.fill (input, eof);
     }
 
-  if (chars_left > 0)
-    {
-      size_t len = max_size > chars_left ? chars_left : max_size;
-      assert (len > 0);
-
-      memcpy (buf, pos, len);
-
-      chars_left -= len;
-      pos += len;
-
-      // Make sure input ends with a new line character.
-      if (chars_left == 0 && buf[len-1] != '\n')
-        {
-          if (len < max_size)
-            {
-              // There is enough room to plug the newline character in
-              // the buffer.
-              buf[len++] = '\n';
-            }
-          else
-            {
-              // There isn't enough room to plug the newline character
-              // in the buffer so make sure it is returned on the next
-              // octave_read call.
-              pos = eol;
-              chars_left = 1;
-            }
-        }
-
-      status = len;
-    }
+  if (! input_buf.empty ())
+    status = input_buf.copy_chunk (buf, max_size);
   else
     {
       status = YY_NULL;
 
-      if (! eof)
-        fatal_error ("octave_read () in flex scanner failed");
+      if (! input_buf.at_eof ())
+        fatal_error ("octave_lexer::read () in flex scanner failed");
     }
 
   return status;
 }
 
+int
+octave_lexer::handle_end_of_input (void)
+{
+  // FIXME -- we need this because of the way TOK_RETURN is defined.  DO
+  // something better than that...
+  OCTAVE_YYG;
+
+  LEXER_DEBUG ("<<EOF>>");
+
+  if (block_comment_nesting_level != 0)
+    {
+      warning ("block comment open at end of input");
+
+      if ((reading_fcn_file || reading_script_file || reading_classdef_file)
+          && ! fcn_file_name.empty ())
+        warning ("near line %d of file '%s.m'",
+                 input_line_number, fcn_file_name.c_str ());
+    }
+
+  TOK_RETURN (END_OF_INPUT);
+}
+
 char *
-lexical_feedback::flex_yytext (void)
+octave_lexer::flex_yytext (void)
 {
   return yyget_text (scanner);
 }
 
 int
-lexical_feedback::flex_yyleng (void)
+octave_lexer::flex_yyleng (void)
 {
   return yyget_leng (scanner);
 }
@@ -1486,9 +1575,9 @@ lexical_feedback::flex_yyleng (void)
 // that we insert a comma ahead of it.
 
 void
-lexical_feedback::do_comma_insert_check (void)
+octave_lexer::do_comma_insert_check (void)
 {
-  bool spc_gobbled = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
+  bool spc_gobbled = (eat_continuation () != octave_lexer::NO_WHITESPACE);
 
   int c = text_yyinput ();
 
@@ -1502,7 +1591,7 @@ lexical_feedback::do_comma_insert_check (void)
 }
 
 int
-lexical_feedback::text_yyinput (void)
+octave_lexer::text_yyinput (void)
 {
   int c = yyinput (scanner);
 
@@ -1540,23 +1629,26 @@ lexical_feedback::text_yyinput (void)
 }
 
 void
-lexical_feedback::xunput (char c, char *buf)
+octave_lexer::xunput (char c, char *buf)
 {
-  if (lexer_debug_flag)
+  if (c != EOF)
     {
-      std::cerr << "U: ";
-      display_character (c);
-      std::cerr << std::endl;
+      if (lexer_debug_flag)
+        {
+          std::cerr << "U: ";
+          display_character (c);
+          std::cerr << std::endl;
+        }
+
+      if (c == '\n')
+        input_line_number--;
+
+      yyunput (c, buf, scanner);
     }
-
-  if (c == '\n')
-    input_line_number--;
-
-  yyunput (c, buf, scanner);
 }
 
 void
-lexical_feedback::xunput (char c)
+octave_lexer::xunput (char c)
 {
   char *yytxt = flex_yytext ();
 
@@ -1567,7 +1659,7 @@ lexical_feedback::xunput (char c)
 // really looking at.
 
 void
-lexical_feedback::fixup_column_count (char *s)
+octave_lexer::fixup_column_count (char *s)
 {
   char c;
   while ((c = *s++) != '\0')
@@ -1583,7 +1675,7 @@ lexical_feedback::fixup_column_count (char *s)
 }
 
 bool
-lexical_feedback::inside_any_object_index (void)
+octave_lexer::inside_any_object_index (void)
 {
   bool retval = false;
 
@@ -1603,7 +1695,7 @@ lexical_feedback::inside_any_object_index (void)
 // Handle keywords.  Return -1 if the keyword should be ignored.
 
 int
-lexical_feedback::is_keyword_token (const std::string& s)
+octave_lexer::is_keyword_token (const std::string& s)
 {
   int l = input_line_number;
   int c = current_input_column;
@@ -1631,11 +1723,11 @@ lexical_feedback::is_keyword_token (const std::string& s)
         case static_kw:
           if ((reading_fcn_file || reading_script_file
                || reading_classdef_file)
-              && ! curr_fcn_file_full_name.empty ())
+              && ! fcn_file_full_name.empty ())
             warning_with_id ("Octave:deprecated-keyword",
                              "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d of file '%s'",
                              input_line_number,
-                             curr_fcn_file_full_name.c_str ());
+                             fcn_file_full_name.c_str ());
           else
             warning_with_id ("Octave:deprecated-keyword",
                              "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d",
@@ -1774,6 +1866,12 @@ lexical_feedback::is_keyword_token (const std::string& s)
         case classdef_kw:
           // 'classdef' is always a keyword.
           promptflag--;
+
+          if (! force_script && token_count == 0 && input_from_file ())
+            {
+              reading_classdef_file = true;
+              reading_script_file = false;
+            }
           break;
 
         case function_kw:
@@ -1781,6 +1879,12 @@ lexical_feedback::is_keyword_token (const std::string& s)
 
           defining_func++;
           parsed_function_name.push (false);
+
+          if (! force_script && token_count == 0 && input_from_file ())
+            {
+              reading_fcn_file = true;
+              reading_script_file = false;
+            }
 
           if (! (reading_fcn_file || reading_script_file
                  || reading_classdef_file))
@@ -1791,8 +1895,8 @@ lexical_feedback::is_keyword_token (const std::string& s)
           {
             if ((reading_fcn_file || reading_script_file
                  || reading_classdef_file)
-                && ! curr_fcn_file_full_name.empty ())
-              tok_val = new token (curr_fcn_file_full_name, l, c);
+                && ! fcn_file_full_name.empty ())
+              tok_val = new token (fcn_file_full_name, l, c);
             else
               tok_val = new token ("stdin", l, c);
           }
@@ -1818,7 +1922,7 @@ lexical_feedback::is_keyword_token (const std::string& s)
 }
 
 bool
-lexical_feedback::is_variable (const std::string& name)
+octave_lexer::is_variable (const std::string& name)
 {
   return (symbol_table::is_variable (name)
           || (pending_local_variables.find (name)
@@ -1826,7 +1930,7 @@ lexical_feedback::is_variable (const std::string& name)
 }
 
 std::string
-lexical_feedback::grab_block_comment (stream_reader& reader, bool& eof)
+octave_lexer::grab_block_comment (stream_reader& reader, bool& eof)
 {
   std::string buf;
 
@@ -1932,8 +2036,8 @@ lexical_feedback::grab_block_comment (stream_reader& reader, bool& eof)
 }
 
 std::string
-lexical_feedback::grab_comment_block (stream_reader& reader, bool at_bol,
-                                      bool& eof)
+octave_lexer::grab_comment_block (stream_reader& reader, bool at_bol,
+                                  bool& eof)
 {
   std::string buf;
 
@@ -2071,17 +2175,27 @@ lexical_feedback::grab_comment_block (stream_reader& reader, bool at_bol,
   return buf;
 }
 
+static bool
+looks_like_copyright (const std::string& s)
+{
+  bool retval = false;
+
+  if (! s.empty ())
+    {
+      size_t offset = s.find_first_not_of (" \t");
+
+      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
+    }
+
+  return retval;
+}
+
 int
-lexical_feedback::process_comment (bool start_in_block, bool& eof)
+octave_lexer::process_comment (bool start_in_block, bool& eof)
 {
   OCTAVE_YYG;
 
   eof = false;
-
-  std::string help_txt;
-
-  if (! help_buf.empty ())
-    help_txt = help_buf.top ();
 
   char *yytxt = flex_yytext ();
   flex_stream_reader flex_reader (this, yytxt);
@@ -2096,13 +2210,9 @@ lexical_feedback::process_comment (bool start_in_block, bool& eof)
   if (lexer_debug_flag)
     std::cerr << "C: " << txt << std::endl;
 
-  if (help_txt.empty () && nesting_level.none ())
-    {
-      if (! help_buf.empty ())
-        help_buf.pop ();
-
-      help_buf.push (txt);
-    }
+  if (nesting_level.none () && help_text.empty () && ! txt.empty ()
+      && ! looks_like_copyright (txt))
+    help_text = txt;
 
   octave_comment_buffer::append (txt);
 
@@ -2126,7 +2236,7 @@ lexical_feedback::process_comment (bool start_in_block, bool& eof)
 // replaced by a single LF.
 
 bool
-lexical_feedback::next_token_is_sep_op (void)
+octave_lexer::next_token_is_sep_op (void)
 {
   bool retval = false;
 
@@ -2143,7 +2253,7 @@ lexical_feedback::next_token_is_sep_op (void)
 // unary operator.  This is ugly, but it seems to do the right thing.
 
 bool
-lexical_feedback::next_token_is_postfix_unary_op (bool spc_prev)
+octave_lexer::next_token_is_postfix_unary_op (bool spc_prev)
 {
   bool un_op = false;
 
@@ -2190,7 +2300,7 @@ lexical_feedback::next_token_is_postfix_unary_op (bool spc_prev)
 // parsed as a binary operator.
 
 bool
-lexical_feedback::next_token_is_bin_op (bool spc_prev)
+octave_lexer::next_token_is_bin_op (bool spc_prev)
 {
   bool bin_op = false;
 
@@ -2291,7 +2401,7 @@ lexical_feedback::next_token_is_bin_op (bool spc_prev)
 // FIXME -- we need to handle block comments here.
 
 void
-lexical_feedback::scan_for_comments (const char *text)
+octave_lexer::scan_for_comments (const char *text)
 {
   std::string comment_buf;
 
@@ -2352,9 +2462,9 @@ lexical_feedback::scan_for_comments (const char *text)
 // FIXME -- we need to handle block comments here.
 
 int
-lexical_feedback::eat_whitespace (void)
+octave_lexer::eat_whitespace (void)
 {
-  int retval = lexical_feedback::NO_WHITESPACE;
+  int retval = octave_lexer::NO_WHITESPACE;
 
   std::string comment_buf;
 
@@ -2376,11 +2486,11 @@ lexical_feedback::eat_whitespace (void)
               comment_buf += static_cast<char> (c);
               beginning_of_comment = false;
             }
-          retval |= lexical_feedback::SPACE_OR_TAB;
+          retval |= octave_lexer::SPACE_OR_TAB;
           break;
 
         case '\n':
-          retval |= lexical_feedback::NEWLINE;
+          retval |= octave_lexer::NEWLINE;
           if (in_comment)
             {
               comment_buf += static_cast<char> (c);
@@ -2465,7 +2575,7 @@ looks_like_hex (const char *s, int len)
 }
 
 void
-lexical_feedback::handle_number (void)
+octave_lexer::handle_number (void)
 {
   double value = 0.0;
   int nread = 0;
@@ -2523,7 +2633,7 @@ lexical_feedback::handle_number (void)
 // FIXME -- we need to handle block comments here.
 
 bool
-lexical_feedback::have_continuation (bool trailing_comments_ok)
+octave_lexer::have_continuation (bool trailing_comments_ok)
 {
   std::ostringstream buf;
 
@@ -2611,7 +2721,7 @@ cleanup:
 // line character.
 
 bool
-lexical_feedback::have_ellipsis_continuation (bool trailing_comments_ok)
+octave_lexer::have_ellipsis_continuation (bool trailing_comments_ok)
 {
   char c1 = text_yyinput ();
   if (c1 == '.')
@@ -2635,9 +2745,9 @@ lexical_feedback::have_ellipsis_continuation (bool trailing_comments_ok)
 // whitespace on the next line.
 
 int
-lexical_feedback::eat_continuation (void)
+octave_lexer::eat_continuation (void)
 {
-  int retval = lexical_feedback::NO_WHITESPACE;
+  int retval = octave_lexer::NO_WHITESPACE;
 
   int c = text_yyinput ();
 
@@ -2651,7 +2761,7 @@ lexical_feedback::eat_continuation (void)
 }
 
 int
-lexical_feedback::handle_string (char delim)
+octave_lexer::handle_string (char delim)
 {
   std::ostringstream buf;
 
@@ -2744,7 +2854,7 @@ lexical_feedback::handle_string (char delim)
 }
 
 bool
-lexical_feedback::next_token_is_assign_op (void)
+octave_lexer::next_token_is_assign_op (void)
 {
   bool retval = false;
 
@@ -2828,7 +2938,7 @@ lexical_feedback::next_token_is_assign_op (void)
 }
 
 bool
-lexical_feedback::next_token_is_index_op (void)
+octave_lexer::next_token_is_index_op (void)
 {
   int c = text_yyinput ();
   xunput (c);
@@ -2836,7 +2946,7 @@ lexical_feedback::next_token_is_index_op (void)
 }
 
 int
-lexical_feedback::handle_close_bracket (bool spc_gobbled, int bracket_type)
+octave_lexer::handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
   OCTAVE_YYG;
 
@@ -2904,7 +3014,7 @@ lexical_feedback::handle_close_bracket (bool spc_gobbled, int bracket_type)
 }
 
 void
-lexical_feedback::maybe_unput_comma (int spc_gobbled)
+octave_lexer::maybe_unput_comma (int spc_gobbled)
 {
   if (nesting_level.is_bracket ()
       || (nesting_level.is_brace ()
@@ -2943,7 +3053,7 @@ lexical_feedback::maybe_unput_comma (int spc_gobbled)
 }
 
 bool
-lexical_feedback::next_token_can_follow_bin_op (void)
+octave_lexer::next_token_can_follow_bin_op (void)
 {
   std::stack<char> buf;
 
@@ -2985,7 +3095,7 @@ can_be_command (const std::string& tok)
 }
 
 bool
-lexical_feedback::looks_like_command_arg (void)
+octave_lexer::looks_like_command_arg (void)
 {
   bool retval = true;
 
@@ -3207,7 +3317,7 @@ lexical_feedback::looks_like_command_arg (void)
 }
 
 int
-lexical_feedback::handle_superclass_identifier (void)
+octave_lexer::handle_superclass_identifier (void)
 {
   char *yytxt = flex_yytext ();
   int c = yytxt[flex_yyleng()-1];
@@ -3249,7 +3359,7 @@ lexical_feedback::handle_superclass_identifier (void)
 }
 
 int
-lexical_feedback::handle_meta_identifier (void)
+octave_lexer::handle_meta_identifier (void)
 {
   char *yytxt = flex_yytext ();
   int c = yytxt[flex_yyleng()-1];
@@ -3290,7 +3400,7 @@ lexical_feedback::handle_meta_identifier (void)
 // should be ignored.
 
 int
-lexical_feedback::handle_identifier (void)
+octave_lexer::handle_identifier (void)
 {
   OCTAVE_YYG;
 
@@ -3302,7 +3412,7 @@ lexical_feedback::handle_identifier (void)
 
   int c = yytxt[flex_yyleng()-1];
 
-  bool cont_is_spc = (eat_continuation () != lexical_feedback::NO_WHITESPACE);
+  bool cont_is_spc = (eat_continuation () != octave_lexer::NO_WHITESPACE);
 
   int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
 
@@ -3459,9 +3569,9 @@ lexical_feedback::handle_identifier (void)
 }
 
 void
-lexical_feedback::maybe_warn_separator_insert (char sep)
+octave_lexer::maybe_warn_separator_insert (char sep)
 {
-  std::string nm = curr_fcn_file_full_name;
+  std::string nm = fcn_file_full_name;
 
   if (nm.empty ())
     warning_with_id ("Octave:separator-insert",
@@ -3474,9 +3584,9 @@ lexical_feedback::maybe_warn_separator_insert (char sep)
 }
 
 void
-lexical_feedback::gripe_single_quote_string (void)
+octave_lexer::gripe_single_quote_string (void)
 {
-  std::string nm = curr_fcn_file_full_name;
+  std::string nm = fcn_file_full_name;
 
   if (nm.empty ())
     warning_with_id ("Octave:single-quote-string",
@@ -3489,9 +3599,9 @@ lexical_feedback::gripe_single_quote_string (void)
 }
 
 void
-lexical_feedback::gripe_matlab_incompatible (const std::string& msg)
+octave_lexer::gripe_matlab_incompatible (const std::string& msg)
 {
-  std::string nm = curr_fcn_file_full_name;
+  std::string nm = fcn_file_full_name;
 
   if (nm.empty ())
     warning_with_id ("Octave:matlab-incompatible",
@@ -3504,20 +3614,20 @@ lexical_feedback::gripe_matlab_incompatible (const std::string& msg)
 }
 
 void
-lexical_feedback::maybe_gripe_matlab_incompatible_comment (char c)
+octave_lexer::maybe_gripe_matlab_incompatible_comment (char c)
 {
   if (c == '#')
     gripe_matlab_incompatible ("# used as comment character");
 }
 
 void
-lexical_feedback::gripe_matlab_incompatible_continuation (void)
+octave_lexer::gripe_matlab_incompatible_continuation (void)
 {
   gripe_matlab_incompatible ("\\ used as line continuation marker");
 }
 
 void
-lexical_feedback::gripe_matlab_incompatible_operator (const std::string& op)
+octave_lexer::gripe_matlab_incompatible_operator (const std::string& op)
 {
   std::string t = op;
   int n = t.length ();
@@ -3527,7 +3637,7 @@ lexical_feedback::gripe_matlab_incompatible_operator (const std::string& op)
 }
 
 void
-lexical_feedback::push_token (token *tok)
+octave_lexer::push_token (token *tok)
 {
   YYSTYPE *lval = yyget_lval (scanner);
   lval->tok_val = tok;
@@ -3535,14 +3645,14 @@ lexical_feedback::push_token (token *tok)
 }
 
 token *
-lexical_feedback::current_token (void)
+octave_lexer::current_token (void)
 {
   YYSTYPE *lval = yyget_lval (scanner);
   return lval->tok_val;
 }
 
 void
-lexical_feedback::display_token (int tok)
+octave_lexer::display_token (int tok)
 {
   switch (tok)
     {
@@ -3655,9 +3765,13 @@ lexical_feedback::display_token (int tok)
     case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
     case FCN: std::cerr << "FCN\n"; break;
     case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
+<<<<<<< local
     case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
     case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
     case CLASSDEF_FILE: std::cerr << "CLASSDEF_FILE\n"; break;
+=======
+    case INPUT_FILE: std::cerr << "INPUT_FILE\n"; break;
+>>>>>>> other
     case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
     case METAQUERY: std::cerr << "METAQUERY\n"; break;
     case GET: std::cerr << "GET\n"; break;
@@ -3671,7 +3785,7 @@ lexical_feedback::display_token (int tok)
     case '\t': std::cerr << "TAB\n"; break;
     default:
       {
-        if (tok < 256)
+        if (tok < 256 && tok > 31)
           std::cerr << static_cast<char> (tok) << "\n";
         else
           std::cerr << "UNKNOWN(" << tok << ")\n";
@@ -3699,12 +3813,8 @@ display_state (int state)
       std::cerr << "MATRIX_START" << std::endl;
       break;
 
-    case SCRIPT_FILE_BEGIN:
-      std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
-      break;
-
-    case FUNCTION_FILE_BEGIN:
-      std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
+    case INPUT_FILE_BEGIN:
+      std::cerr << "INPUT_FILE_BEGIN" << std::endl;
       break;
 
     case CLASSDEF_FILE_BEGIN:
@@ -3718,7 +3828,7 @@ display_state (int state)
 }
 
 void
-lexical_feedback::fatal_error (const char *msg)
+octave_lexer::fatal_error (const char *msg)
 {
   error (msg);
 
@@ -3728,7 +3838,7 @@ lexical_feedback::fatal_error (const char *msg)
 }
 
 void
-lexical_feedback::lexer_debug (const char *pattern, const char *text)
+octave_lexer::lexer_debug (const char *pattern, const char *text)
 {
   OCTAVE_YYG;
 

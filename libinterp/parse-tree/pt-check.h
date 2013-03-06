@@ -35,7 +35,7 @@ tree_checker : public tree_walker
 public:
 
   tree_checker (void)
-    : do_lvalue_check (false) { }
+    : do_lvalue_check (false), file_name () { }
 
   ~tree_checker (void) { }
 
@@ -126,6 +126,8 @@ public:
 private:
 
   bool do_lvalue_check;
+
+  std::string file_name;
 
   void do_decl_command (tree_decl_command&);
 

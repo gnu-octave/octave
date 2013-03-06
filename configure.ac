@@ -190,6 +190,17 @@ if test $BOUNDS_CHECKING = yes; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
 fi
 
+### Enable experimental push parser.
+
+OCTAVE_USE_PUSH_PARSER=no
+AC_ARG_ENABLE([push-parser],
+  [AS_HELP_STRING([--enable-push-parser],
+    [enable experimental push parser])],
+  [if test "$enableval" = yes; then OCTAVE_USE_PUSH_PARSER=yes; fi], [])
+if test $OCTAVE_USE_PUSH_PARSER = yes; then
+  AC_DEFINE(OCTAVE_USE_PUSH_PARSER, 1, [Define to 1 to use experimental push parser.])
+fi
+
 ### Use Octave's built-in memory allocator rather than straightforward malloc.
 ### Disabled by default.
 
@@ -2834,17 +2845,8 @@ dnl ------------------------------------------------------------
 ### Make all AC_DEFINES available to testif feature of test.m function.
 ### This must reside at the bottom of configure.ac after all AC_DEFINES
 ### have been made.
-### Use UGLY_DEFS to hold all the -D options.  These are ultimately placed
-### in the DEFS field of the struct returned by octave_config_info, which
-### is used by test.m.
 
 AC_OUTPUT_MAKE_DEFS
-
-## We have to insert extra levels of backslash quoting here so that
-## the right thing ends up in oct-conf.h.
-UGLY_DEFS=`echo $DEFS | $SED 's,\\",\\\\\\\\\\\\\\\\\\",g'`
-AC_MSG_NOTICE([defining UGLY_DEFS to be $UGLY_DEFS])
-AC_SUBST(UGLY_DEFS)
 
 ### Do the substitutions in all the Makefiles.
 
@@ -2974,6 +2976,7 @@ Octave is now configured for $canonical_host_type
   Build Java interface:               $build_java
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
+  Use push parser:                    $OCTAVE_USE_PUSH_PARSER
   Build static libraries:             $STATIC_LIBS
   Build shared libraries:             $SHARED_LIBS
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG

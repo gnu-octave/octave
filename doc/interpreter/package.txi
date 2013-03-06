@@ -182,6 +182,11 @@ following be referred to as @code{package} and may contain the
 following files:
 
 @table @code
+@item package/CITATION
+This is am optional file describing instructions on how to cite
+the package for publication.  It will be displayed verbatim by the
+function @code{citation}.
+
 @item package/COPYING
 This is a required file containing the license of the package.  No
 restrictions is made on the license in general.  If however the

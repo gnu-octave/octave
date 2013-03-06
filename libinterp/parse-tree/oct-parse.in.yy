@@ -86,7 +86,7 @@ extern int octave_lex (YYSTYPE *, void *);
 
 // Global access to currently active lexer.
 // FIXME -- to be removed after more parser+lexer refactoring.
-lexical_feedback *CURR_LEXER = 0;
+octave_lexer *CURR_LEXER = 0;
 
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from
@@ -97,18 +97,12 @@ lexical_feedback *CURR_LEXER = 0;
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
-// Buffer for help text snagged from function files.
-std::stack<std::string> help_buf;
-
 // TRUE means we are using readline.
 // (--no-line-editing)
 bool line_editing = true;
 
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
-
-// TRUE means input is coming from startup file.
-bool input_from_startup_file = false;
 
 // Keep track of symbol table information when parsing functions.
 symtab_context parser_symtab_context;
@@ -119,7 +113,7 @@ static std::map<std::string, std::string> autoload_map;
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
-static void yyerror (octave_parser *curr_parser, const char *s);
+static void yyerror (octave_parser& curr_parser, const char *s);
 
 // Finish building a statement.
 template <class T>
@@ -134,19 +128,18 @@ make_statement (T *arg)
 #define ABORT_PARSE \
   do \
     { \
-      global_command = 0; \
       yyerrok; \
       if (! parser_symtab_context.empty ()) \
         parser_symtab_context.pop (); \
       if ((interactive || forced_interactive)   \
-          && ! get_input_from_eval_string)      \
+          && ! (curr_lexer)->input_from_eval_string ()) \
         YYACCEPT; \
       else \
         YYABORT; \
     } \
   while (0)
 
-#define curr_lexer curr_parser->curr_lexer
+#define curr_lexer curr_parser.curr_lexer
 #define scanner curr_lexer->scanner
 
 %}
@@ -168,7 +161,8 @@ make_statement (T *arg)
 // object) relevant global values before and after the nested call.
 
 %define api.pure
-%parse-param { octave_parser *curr_parser }
+%PUSH_PULL_DECL%
+%parse-param { octave_parser& curr_parser }
 %lex-param { void *scanner }
 
 %union
@@ -261,14 +255,24 @@ make_statement (T *arg)
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
+<<<<<<< local
 %token FCN SCRIPT_FILE CLASSDEF_FILE FUNCTION_FILE
+=======
+%token FCN INPUT_FILE CLASSDEF
+>>>>>>> other
 // %token VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
 // Nonterminals we construct.
+<<<<<<< local
 %type <comment_type> stash_comment function_beg
 %type <tok_type> classdef_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep opt_comma
+=======
+%type <comment_type> stash_comment function_beg classdef_beg
+%type <comment_type> properties_beg methods_beg events_beg enum_beg
+%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep opt_comma
+>>>>>>> other
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -288,11 +292,16 @@ make_statement (T *arg)
 %type <tree_parameter_list_type> param_list param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
+<<<<<<< local
 %type <tree_command_type> jump_command except_command
 %type <tree_function_def_type> function
 %type <tree_classdef_type> classdef
 %type <tree_command_type> script_file classdef_file
 %type <tree_command_type> function_file function_list
+=======
+%type <tree_command_type> jump_command except_command function
+%type <tree_command_type> file classdef
+>>>>>>> other
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -350,14 +359,17 @@ make_statement (T *arg)
 
 input           : input1
                   {
-                    global_command = $1;
+                    curr_parser.stmt_list = $1;
                     promptflag = 1;
                     YYACCEPT;
                   }
+<<<<<<< local
                 | function_file
                   { YYACCEPT; }
                 | classdef_file
                   { YYACCEPT; }
+=======
+>>>>>>> other
                 | simple_list parse_error
                   { ABORT_PARSE; }
                 | parse_error
@@ -368,7 +380,7 @@ input1          : '\n'
                   { $$ = 0; }
                 | END_OF_INPUT
                   {
-                    curr_parser->end_of_input = true;
+                    curr_lexer->end_of_input = true;
                     $$ = 0;
                   }
                 | simple_list
@@ -380,13 +392,13 @@ input1          : '\n'
                 ;
 
 simple_list     : simple_list1 opt_sep_no_nl
-                  { $$ = curr_parser->set_stmt_print_flag ($1, $2, false); }
+                  { $$ = curr_parser.set_stmt_print_flag ($1, $2, false); }
                 ;
 
 simple_list1    : statement
-                  { $$ = curr_parser->make_statement_list ($1); }
+                  { $$ = curr_parser.make_statement_list ($1); }
                 | simple_list1 sep_no_nl statement
-                  { $$ = curr_parser->append_statement_list ($1, $2, $3, false); }
+                  { $$ = curr_parser.append_statement_list ($1, $2, $3, false); }
                 ;
 
 opt_list        : // empty
@@ -396,13 +408,13 @@ opt_list        : // empty
                 ;
 
 list            : list1 opt_sep
-                  { $$ = curr_parser->set_stmt_print_flag ($1, $2, true); }
+                  { $$ = curr_parser.set_stmt_print_flag ($1, $2, true); }
                 ;
 
 list1           : statement
-                  { $$ = curr_parser->make_statement_list ($1); }
+                  { $$ = curr_parser.make_statement_list ($1); }
                 | list1 sep statement
-                  { $$ = curr_parser->append_statement_list ($1, $2, $3, true); }
+                  { $$ = curr_parser.append_statement_list ($1, $2, $3, true); }
                 ;
 
 statement       : expression
@@ -422,7 +434,7 @@ statement       : expression
 // WHILE, etc.
 
 word_list_cmd   : identifier word_list
-                  { $$ = curr_parser->make_index_expression ($1, $2, '('); }
+                  { $$ = curr_parser.make_index_expression ($1, $2, '('); }
                 ;
 
 word_list       : string
@@ -470,15 +482,15 @@ meta_identifier : METAQUERY
                 ;
 
 string          : DQ_STRING
-                  { $$ = curr_parser->make_constant (DQ_STRING, $1); }
+                  { $$ = curr_parser.make_constant (DQ_STRING, $1); }
                 | SQ_STRING
-                  { $$ = curr_parser->make_constant (SQ_STRING, $1); }
+                  { $$ = curr_parser.make_constant (SQ_STRING, $1); }
                 ;
 
 constant        : NUM
-                  { $$ = curr_parser->make_constant (NUM, $1); }
+                  { $$ = curr_parser.make_constant (NUM, $1); }
                 | IMAG_NUM
-                  { $$ = curr_parser->make_constant (IMAG_NUM, $1); }
+                  { $$ = curr_parser.make_constant (IMAG_NUM, $1); }
                 | string
                   { $$ = $1; }
                 ;
@@ -503,7 +515,7 @@ matrix          : '[' ']'
                   }
                 | '[' matrix_rows ']'
                   {
-                    $$ = curr_parser->finish_matrix ($2);
+                    $$ = curr_parser.finish_matrix ($2);
                     curr_lexer->looking_at_matrix_or_assign_lhs = false;
                     curr_lexer->pending_local_variables.clear ();
                   }
@@ -529,7 +541,7 @@ cell            : '{' '}'
                 | '{' ';' '}'
                   { $$ = new tree_constant (octave_value (Cell ())); }
                 | '{' cell_rows '}'
-                  { $$ = curr_parser->finish_cell ($2); }
+                  { $$ = curr_parser.finish_cell ($2); }
                 ;
 
 cell_rows       : cell_rows1
@@ -549,14 +561,14 @@ cell_rows1      : cell_or_matrix_row
 
 cell_or_matrix_row
                 : arg_list
-                  { $$ = curr_parser->validate_matrix_row ($1); }
+                  { $$ = curr_parser.validate_matrix_row ($1); }
                 | arg_list ','  // Ignore trailing comma.
-                  { $$ = curr_parser->validate_matrix_row ($1); }
+                  { $$ = curr_parser.validate_matrix_row ($1); }
                 ;
 
 fcn_handle      : '@' FCN_HANDLE
                   {
-                    $$ = curr_parser->make_fcn_handle ($2);
+                    $$ = curr_parser.make_fcn_handle ($2);
                     curr_lexer->looking_at_function_handle--;
                   }
                 ;
@@ -564,7 +576,7 @@ fcn_handle      : '@' FCN_HANDLE
 anon_fcn_handle : '@' param_list statement
                   {
                     curr_lexer->quote_is_transpose = false;
-                    $$ = curr_parser->make_anon_fcn_handle ($2, $3);
+                    $$ = curr_parser.make_anon_fcn_handle ($2, $3);
                   }
                 ;
 
@@ -629,63 +641,63 @@ indirect_ref_op : '.'
 oper_expr       : primary_expr
                   { $$ = $1; }
                 | oper_expr PLUS_PLUS
-                  { $$ = curr_parser->make_postfix_op (PLUS_PLUS, $1, $2); }
+                  { $$ = curr_parser.make_postfix_op (PLUS_PLUS, $1, $2); }
                 | oper_expr MINUS_MINUS
-                  { $$ = curr_parser->make_postfix_op (MINUS_MINUS, $1, $2); }
+                  { $$ = curr_parser.make_postfix_op (MINUS_MINUS, $1, $2); }
                 | oper_expr '(' ')'
-                  { $$ = curr_parser->make_index_expression ($1, 0, '('); }
+                  { $$ = curr_parser.make_index_expression ($1, 0, '('); }
                 | oper_expr '(' arg_list ')'
-                  { $$ = curr_parser->make_index_expression ($1, $3, '('); }
+                  { $$ = curr_parser.make_index_expression ($1, $3, '('); }
                 | oper_expr '{' '}'
-                  { $$ = curr_parser->make_index_expression ($1, 0, '{'); }
+                  { $$ = curr_parser.make_index_expression ($1, 0, '{'); }
                 | oper_expr '{' arg_list '}'
-                  { $$ = curr_parser->make_index_expression ($1, $3, '{'); }
+                  { $$ = curr_parser.make_index_expression ($1, $3, '{'); }
                 | oper_expr QUOTE
-                  { $$ = curr_parser->make_postfix_op (QUOTE, $1, $2); }
+                  { $$ = curr_parser.make_postfix_op (QUOTE, $1, $2); }
                 | oper_expr TRANSPOSE
-                  { $$ = curr_parser->make_postfix_op (TRANSPOSE, $1, $2); }
+                  { $$ = curr_parser.make_postfix_op (TRANSPOSE, $1, $2); }
                 | oper_expr indirect_ref_op STRUCT_ELT
-                  { $$ = curr_parser->make_indirect_ref ($1, $3->text ()); }
+                  { $$ = curr_parser.make_indirect_ref ($1, $3->text ()); }
                 | oper_expr indirect_ref_op '(' expression ')'
-                  { $$ = curr_parser->make_indirect_ref ($1, $4); }
+                  { $$ = curr_parser.make_indirect_ref ($1, $4); }
                 | PLUS_PLUS oper_expr %prec UNARY
-                  { $$ = curr_parser->make_prefix_op (PLUS_PLUS, $2, $1); }
+                  { $$ = curr_parser.make_prefix_op (PLUS_PLUS, $2, $1); }
                 | MINUS_MINUS oper_expr %prec UNARY
-                  { $$ = curr_parser->make_prefix_op (MINUS_MINUS, $2, $1); }
+                  { $$ = curr_parser.make_prefix_op (MINUS_MINUS, $2, $1); }
                 | EXPR_NOT oper_expr %prec UNARY
-                  { $$ = curr_parser->make_prefix_op (EXPR_NOT, $2, $1); }
+                  { $$ = curr_parser.make_prefix_op (EXPR_NOT, $2, $1); }
                 | '+' oper_expr %prec UNARY
-                  { $$ = curr_parser->make_prefix_op ('+', $2, $1); }
+                  { $$ = curr_parser.make_prefix_op ('+', $2, $1); }
                 | '-' oper_expr %prec UNARY
-                  { $$ = curr_parser->make_prefix_op ('-', $2, $1); }
+                  { $$ = curr_parser.make_prefix_op ('-', $2, $1); }
                 | oper_expr POW oper_expr
-                  { $$ = curr_parser->make_binary_op (POW, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (POW, $1, $2, $3); }
                 | oper_expr EPOW oper_expr
-                  { $$ = curr_parser->make_binary_op (EPOW, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EPOW, $1, $2, $3); }
                 | oper_expr '+' oper_expr
-                  { $$ = curr_parser->make_binary_op ('+', $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op ('+', $1, $2, $3); }
                 | oper_expr '-' oper_expr
-                  { $$ = curr_parser->make_binary_op ('-', $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op ('-', $1, $2, $3); }
                 | oper_expr '*' oper_expr
-                  { $$ = curr_parser->make_binary_op ('*', $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op ('*', $1, $2, $3); }
                 | oper_expr '/' oper_expr
-                  { $$ = curr_parser->make_binary_op ('/', $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op ('/', $1, $2, $3); }
                 | oper_expr EPLUS oper_expr
-                  { $$ = curr_parser->make_binary_op ('+', $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op ('+', $1, $2, $3); }
                 | oper_expr EMINUS oper_expr
-                  { $$ = curr_parser->make_binary_op ('-', $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op ('-', $1, $2, $3); }
                 | oper_expr EMUL oper_expr
-                  { $$ = curr_parser->make_binary_op (EMUL, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EMUL, $1, $2, $3); }
                 | oper_expr EDIV oper_expr
-                  { $$ = curr_parser->make_binary_op (EDIV, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EDIV, $1, $2, $3); }
                 | oper_expr LEFTDIV oper_expr
-                  { $$ = curr_parser->make_binary_op (LEFTDIV, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (LEFTDIV, $1, $2, $3); }
                 | oper_expr ELEFTDIV oper_expr
-                  { $$ = curr_parser->make_binary_op (ELEFTDIV, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (ELEFTDIV, $1, $2, $3); }
                 ;
 
 colon_expr      : colon_expr1
-                  { $$ = curr_parser->finish_colon_expression ($1); }
+                  { $$ = curr_parser.finish_colon_expression ($1); }
                 ;
 
 colon_expr1     : oper_expr
@@ -700,29 +712,29 @@ colon_expr1     : oper_expr
 simple_expr     : colon_expr
                   { $$ = $1; }
                 | simple_expr LSHIFT simple_expr
-                  { $$ = curr_parser->make_binary_op (LSHIFT, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (LSHIFT, $1, $2, $3); }
                 | simple_expr RSHIFT simple_expr
-                  { $$ = curr_parser->make_binary_op (RSHIFT, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (RSHIFT, $1, $2, $3); }
                 | simple_expr EXPR_LT simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_LT, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_LT, $1, $2, $3); }
                 | simple_expr EXPR_LE simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_LE, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_LE, $1, $2, $3); }
                 | simple_expr EXPR_EQ simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_EQ, $1, $2, $3); }
                 | simple_expr EXPR_GE simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_GE, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_GE, $1, $2, $3); }
                 | simple_expr EXPR_GT simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_GT, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_GT, $1, $2, $3); }
                 | simple_expr EXPR_NE simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_NE, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_NE, $1, $2, $3); }
                 | simple_expr EXPR_AND simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_AND, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_AND, $1, $2, $3); }
                 | simple_expr EXPR_OR simple_expr
-                  { $$ = curr_parser->make_binary_op (EXPR_OR, $1, $2, $3); }
+                  { $$ = curr_parser.make_binary_op (EXPR_OR, $1, $2, $3); }
                 | simple_expr EXPR_AND_AND simple_expr
-                  { $$ = curr_parser->make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
+                  { $$ = curr_parser.make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
                 | simple_expr EXPR_OR_OR simple_expr
-                  { $$ = curr_parser->make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
+                  { $$ = curr_parser.make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
                 ;
 
 // Arrange for the lexer to return CLOSE_BRACE for ']' by looking ahead
@@ -748,35 +760,35 @@ assign_lhs      : simple_expr
                 ;
 
 assign_expr     : assign_lhs '=' expression
-                  { $$ = curr_parser->make_assign_op ('=', $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op ('=', $1, $2, $3); }
                 | assign_lhs ADD_EQ expression
-                  { $$ = curr_parser->make_assign_op (ADD_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (ADD_EQ, $1, $2, $3); }
                 | assign_lhs SUB_EQ expression
-                  { $$ = curr_parser->make_assign_op (SUB_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (SUB_EQ, $1, $2, $3); }
                 | assign_lhs MUL_EQ expression
-                  { $$ = curr_parser->make_assign_op (MUL_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (MUL_EQ, $1, $2, $3); }
                 | assign_lhs DIV_EQ expression
-                  { $$ = curr_parser->make_assign_op (DIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (DIV_EQ, $1, $2, $3); }
                 | assign_lhs LEFTDIV_EQ expression
-                  { $$ = curr_parser->make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
                 | assign_lhs POW_EQ expression
-                  { $$ = curr_parser->make_assign_op (POW_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (POW_EQ, $1, $2, $3); }
                 | assign_lhs LSHIFT_EQ expression
-                  { $$ = curr_parser->make_assign_op (LSHIFT_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (LSHIFT_EQ, $1, $2, $3); }
                 | assign_lhs RSHIFT_EQ expression
-                  { $$ = curr_parser->make_assign_op (RSHIFT_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (RSHIFT_EQ, $1, $2, $3); }
                 | assign_lhs EMUL_EQ expression
-                  { $$ = curr_parser->make_assign_op (EMUL_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (EMUL_EQ, $1, $2, $3); }
                 | assign_lhs EDIV_EQ expression
-                  { $$ = curr_parser->make_assign_op (EDIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (EDIV_EQ, $1, $2, $3); }
                 | assign_lhs ELEFTDIV_EQ expression
-                  { $$ = curr_parser->make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
                 | assign_lhs EPOW_EQ expression
-                  { $$ = curr_parser->make_assign_op (EPOW_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (EPOW_EQ, $1, $2, $3); }
                 | assign_lhs AND_EQ expression
-                  { $$ = curr_parser->make_assign_op (AND_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (AND_EQ, $1, $2, $3); }
                 | assign_lhs OR_EQ expression
-                  { $$ = curr_parser->make_assign_op (OR_EQ, $1, $2, $3); }
+                  { $$ = curr_parser.make_assign_op (OR_EQ, $1, $2, $3); }
                 ;
 
 expression      : simple_expr
@@ -803,7 +815,7 @@ command         : declaration
                   { $$ = $1; }
                 | function
                   { $$ = $1; }
-                | script_file
+                | file
                   { $$ = $1; }
                 ;
 
@@ -817,12 +829,12 @@ parsing_decl_list
 
 declaration     : GLOBAL parsing_decl_list decl1
                   {
-                    $$ = curr_parser->make_decl_command (GLOBAL, $1, $3);
+                    $$ = curr_parser.make_decl_command (GLOBAL, $1, $3);
                     curr_lexer->looking_at_decl_list = false;
                   }
                 | PERSISTENT parsing_decl_list decl1
                   {
-                    $$ = curr_parser->make_decl_command (PERSISTENT, $1, $3);
+                    $$ = curr_parser.make_decl_command (PERSISTENT, $1, $3);
                     curr_lexer->looking_at_decl_list = false;
                   }
                 ;
@@ -868,7 +880,7 @@ select_command  : if_command
 
 if_command      : IF stash_comment if_cmd_list END
                   {
-                    if (! ($$ = curr_parser->finish_if_command ($1, $3, $4, $2)))
+                    if (! ($$ = curr_parser.finish_if_command ($1, $3, $4, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -884,9 +896,9 @@ if_cmd_list     : if_cmd_list1
 
 if_cmd_list1    : expression opt_sep opt_list
                   {
-                    $1->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+                    $1->mark_braindead_shortcircuit (curr_lexer->fcn_file_full_name);
 
-                    $$ = curr_parser->start_if_command ($1, $3);
+                    $$ = curr_parser.start_if_command ($1, $3);
                   }
                 | if_cmd_list1 elseif_clause
                   {
@@ -897,9 +909,9 @@ if_cmd_list1    : expression opt_sep opt_list
 
 elseif_clause   : ELSEIF stash_comment opt_sep expression opt_sep opt_list
                   {
-                    $4->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+                    $4->mark_braindead_shortcircuit (curr_lexer->fcn_file_full_name);
 
-                    $$ = curr_parser->make_elseif_clause ($1, $4, $6, $2);
+                    $$ = curr_parser.make_elseif_clause ($1, $4, $6, $2);
                   }
                 ;
 
@@ -913,7 +925,7 @@ else_clause     : ELSE stash_comment opt_sep opt_list
 
 switch_command  : SWITCH stash_comment expression opt_sep case_list END
                   {
-                    if (! ($$ = curr_parser->finish_switch_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = curr_parser.finish_switch_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -941,7 +953,7 @@ case_list1      : switch_case
                 ;
 
 switch_case     : CASE stash_comment opt_sep expression opt_sep opt_list
-                  { $$ = curr_parser->make_switch_case ($1, $4, $6, $2); }
+                  { $$ = curr_parser.make_switch_case ($1, $4, $6, $2); }
                 ;
 
 default_case    : OTHERWISE stash_comment opt_sep opt_list
@@ -956,37 +968,37 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 
 loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   {
-                    $3->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+                    $3->mark_braindead_shortcircuit (curr_lexer->fcn_file_full_name);
 
-                    if (! ($$ = curr_parser->make_while_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = curr_parser.make_while_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
                   }
                 | DO stash_comment opt_sep opt_list UNTIL expression
                   {
-                    if (! ($$ = curr_parser->make_do_until_command ($5, $4, $6, $2)))
+                    if (! ($$ = curr_parser.make_do_until_command ($5, $4, $6, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser->make_for_command (FOR, $1, $3, $5, 0,
+                    if (! ($$ = curr_parser.make_for_command (FOR, $1, $3, $5, 0,
                                                   $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser->make_for_command (FOR, $1, $4, $6, 0,
+                    if (! ($$ = curr_parser.make_for_command (FOR, $1, $4, $6, 0,
                                                   $9, $10, $2)))
                       ABORT_PARSE;
                   }
                 | PARFOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser->make_for_command (PARFOR, $1, $3, $5,
+                    if (! ($$ = curr_parser.make_for_command (PARFOR, $1, $3, $5,
                                                   0, $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser->make_for_command (PARFOR, $1, $4, $6,
+                    if (! ($$ = curr_parser.make_for_command (PARFOR, $1, $4, $6,
                                                   $8, $11, $12, $2)))
                       ABORT_PARSE;
                   }
@@ -998,17 +1010,17 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
 
 jump_command    : BREAK
                   {
-                    if (! ($$ = curr_parser->make_break_command ($1)))
+                    if (! ($$ = curr_parser.make_break_command ($1)))
                       ABORT_PARSE;
                   }
                 | CONTINUE
                   {
-                    if (! ($$ = curr_parser->make_continue_command ($1)))
+                    if (! ($$ = curr_parser.make_continue_command ($1)))
                       ABORT_PARSE;
                   }
                 | FUNC_RET
                   {
-                    if (! ($$ = curr_parser->make_return_command ($1)))
+                    if (! ($$ = curr_parser.make_return_command ($1)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1020,18 +1032,18 @@ jump_command    : BREAK
 except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                   stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser->make_unwind_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = curr_parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list CATCH
                   stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser->make_try_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = curr_parser.make_try_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser->make_try_command ($1, $4, 0, $5, $2, 0)))
+                    if (! ($$ = curr_parser.make_try_command ($1, $4, 0, $5, $2, 0)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1042,23 +1054,25 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
 
 push_fcn_symtab : // empty
                   {
-                    curr_parser->curr_fcn_depth++;
+                    curr_parser.curr_fcn_depth++;
 
-                    if (curr_parser->max_fcn_depth < curr_parser->curr_fcn_depth)
-                      curr_parser->max_fcn_depth = curr_parser->curr_fcn_depth;
+                    if (curr_parser.max_fcn_depth < curr_parser.curr_fcn_depth)
+                      curr_parser.max_fcn_depth = curr_parser.curr_fcn_depth;
 
                     parser_symtab_context.push ();
 
                     symbol_table::set_scope (symbol_table::alloc_scope ());
 
-                    curr_parser->function_scopes.push_back (symbol_table::current_scope ());
+                    curr_parser.function_scopes.push_back (symbol_table::current_scope ());
 
-                    if (! reading_script_file && curr_parser->curr_fcn_depth == 1
-                        && ! curr_parser->parsing_subfunctions)
-                      curr_parser->primary_fcn_scope = symbol_table::current_scope ();
+                    if (! curr_lexer->reading_script_file
+                        && curr_parser.curr_fcn_depth == 1
+                        && ! curr_parser.parsing_subfunctions)
+                      curr_parser.primary_fcn_scope = symbol_table::current_scope ();
 
-                    if (reading_script_file && curr_parser->curr_fcn_depth > 1)
-                      curr_parser->bison_error ("nested functions not implemented in this context");
+                    if (curr_lexer->reading_script_file
+                        && curr_parser.curr_fcn_depth > 1)
+                      curr_parser.bison_error ("nested functions not implemented in this context");
                   }
                 ;
 
@@ -1094,7 +1108,7 @@ param_list      : param_list_beg param_list1 param_list_end
                   }
                 | param_list_beg error
                   {
-                    curr_parser->bison_error ("invalid parameter list");
+                    curr_parser.bison_error ("invalid parameter list");
                     $$ = 0;
                     ABORT_PARSE;
                   }
@@ -1157,33 +1171,24 @@ return_list1    : identifier
                   }
                 ;
 
-// ===========
-// Script file
-// ===========
+// =======================
+// Script or function file
+// =======================
 
-script_file     : SCRIPT_FILE opt_list END_OF_INPUT
+file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
-                    tree_statement *end_of_script
-                      = curr_parser->make_end ("endscript",
-                                               curr_lexer->input_line_number,
-                                               curr_lexer->current_input_column);
+                    if (! curr_lexer->reading_fcn_file)
+                      {
+                        tree_statement *end_of_script
+                          = curr_parser.make_end ("endscript",
+                                                  curr_lexer->input_line_number,
+                                                  curr_lexer->current_input_column);
 
-                    curr_parser->make_script ($2, end_of_script);
+                        curr_parser.make_script ($3, end_of_script);
+                      }
 
                     $$ = 0;
                   }
-                ;
-
-// =============
-// Function file
-// =============
-
-function_file   : FUNCTION_FILE function_list opt_sep END_OF_INPUT
-                  { $$ = 0; }
-                ;
-
-function_list   : function
-                | function_list sep function
                 ;
 
 // ===================
@@ -1193,21 +1198,21 @@ function_list   : function
 function_beg    : push_fcn_symtab FCN stash_comment
                   {
                     $$ = $3;
-
-                    if (reading_classdef_file || curr_lexer->parsing_classdef)
+                    if (curr_lexer->reading_classdef_file
+                        || curr_lexer->parsing_classdef)
                       curr_lexer->maybe_classdef_get_set_method = true;
                   }
                 ;
 
 function        : function_beg function1
                   {
-                    $$ = curr_parser->finish_function (0, $2, $1);
-                    curr_parser->recover_from_parsing_function ();
+                    $$ = curr_parser.finish_function (0, $2, $1);
+                    curr_parser.recover_from_parsing_function ();
                   }
                 | function_beg return_list '=' function1
                   {
-                    $$ = curr_parser->finish_function ($2, $4, $1);
-                    curr_parser->recover_from_parsing_function ();
+                    $$ = curr_parser.finish_function ($2, $4, $1);
+                    curr_parser.recover_from_parsing_function ();
                   }
                 ;
 
@@ -1242,56 +1247,56 @@ function1       : fcn_name function2
 
                     delete $1;
 
-                    if (! ($$ = curr_parser->frob_function (fname, $2)))
+                    if (! ($$ = curr_parser.frob_function (fname, $2)))
                       ABORT_PARSE;
                   }
                 ;
 
 function2       : param_list opt_sep opt_list function_end
-                  { $$ = curr_parser->start_function ($1, $3, $4); }
+                  { $$ = curr_parser.start_function ($1, $3, $4); }
                 | opt_sep opt_list function_end
-                  { $$ = curr_parser->start_function (0, $2, $3); }
+                  { $$ = curr_parser.start_function (0, $2, $3); }
                 ;
 
 function_end    : END
                   {
-                    curr_parser->endfunction_found = true;
-                    if (curr_parser->end_token_ok ($1, token::function_end))
-                      $$ = curr_parser->make_end ("endfunction", $1->line (), $1->column ());
+                    curr_parser.endfunction_found = true;
+                    if (curr_parser.end_token_ok ($1, token::function_end))
+                      $$ = curr_parser.make_end ("endfunction", $1->line (), $1->column ());
                     else
                       ABORT_PARSE;
                   }
                 | END_OF_INPUT
                   {
 // A lot of tests are based on the assumption that this is OK
-//                  if (reading_script_file)
+//                  if (curr_lexer->reading_script_file)
 //                    {
-//                      curr_parser->bison_error ("function body open at end of script");
+//                      curr_parser.bison_error ("function body open at end of script");
 //                      YYABORT;
 //                    }
 
-                    if (curr_parser->endfunction_found)
+                    if (curr_parser.endfunction_found)
                       {
-                        curr_parser->bison_error ("inconsistent function endings -- "
+                        curr_parser.bison_error ("inconsistent function endings -- "
                                  "if one function is explicitly ended, "
                                  "so must all the others");
                         YYABORT;
                       }
 
-                    if (! (reading_fcn_file || reading_script_file
-                           || get_input_from_eval_string))
+                    if (! (curr_lexer->reading_fcn_file || curr_lexer->reading_script_file
+                           || (curr_lexer)->input_from_eval_string ()))
                       {
-                        curr_parser->bison_error ("function body open at end of input");
+                        curr_parser.bison_error ("function body open at end of input");
                         YYABORT;
                       }
 
-                    if (reading_classdef_file)
+                    if (curr_lexer->reading_classdef_file)
                       {
-                        curr_parser->bison_error ("classdef body open at end of input");
+                        curr_parser.bison_error ("classdef body open at end of input");
                         YYABORT;
                       }
 
-                    $$ = curr_parser->make_end ("endfunction",
+                    $$ = curr_parser.make_end ("endfunction",
                                                 curr_lexer->input_line_number,
                                                 curr_lexer->current_input_column);
                   }
@@ -1328,7 +1333,14 @@ classdef_beg    : CLASSDEF
 classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep class_body opt_sep END
                   {
                     curr_lexer->parsing_classdef = false;
+<<<<<<< local
                     if (! ($$ = curr_parser->make_classdef ($1, $3, $4, $5, $7, $9, $2)))
+=======
+
+                    if (curr_parser.end_token_ok ($1, token::classdef_end))
+                      $$ = curr_parser.make_end ("endclassdef", $1->line (), $1->column ());
+                    else
+>>>>>>> other
                       ABORT_PARSE;
                   }
                 ;
@@ -1518,7 +1530,7 @@ stash_comment   : // empty
                 ;
 
 parse_error     : LEXICAL_ERROR
-                  { curr_parser->bison_error ("parse error"); }
+                  { curr_parser.bison_error ("parse error"); }
                 | error
                 ;
 
@@ -1535,6 +1547,18 @@ sep_no_nl       : ','
 opt_sep_no_nl   : // empty
                   { $$ = 0; }
                 | sep_no_nl
+                  { $$ = $1; }
+                ;
+
+opt_nl          : // empty
+                  { $$ = 0; }
+                | nl
+                  { $$ = $1; }
+                ;
+
+nl              : '\n'
+                  { $$ = '\n'; }
+                | nl '\n'
                   { $$ = $1; }
                 ;
 
@@ -1571,15 +1595,66 @@ opt_comma       : // empty
 #undef curr_lexer
 
 static void
-yyerror (octave_parser *curr_parser, const char *s)
+yyerror (octave_parser& curr_parser, const char *s)
 {
-  curr_parser->bison_error (s);
+  curr_parser.bison_error (s);
+}
+
+octave_parser::~octave_parser (void)
+{
+#if defined (OCTAVE_USE_PUSH_PARSER)
+  yypstate_delete (static_cast<yypstate *> (parser_state));
+#endif
+
+  delete stmt_list;
+
+  delete curr_lexer;
+}
+void octave_parser::init (void)
+{
+#if defined (OCTAVE_USE_PUSH_PARSER)
+  parser_state = yypstate_new ();
+#endif
+
+  CURR_LEXER = curr_lexer;
+}
+
+void
+octave_parser::reset (void)
+{
+  delete stmt_list;
+
+  stmt_list = 0;
+
+  curr_lexer->reset ();
 }
 
 int
 octave_parser::run (void)
 {
-  return octave_parse (this);
+  int status = 0;
+
+#if defined (OCTAVE_USE_PUSH_PARSER)
+
+  do
+    {
+      YYSTYPE lval;
+
+      int token = octave_lex (&lval, scanner);
+
+      yypstate *pstate = static_cast<yypstate *> (parser_state);
+
+      status = octave_push_parse (pstate, token, &lval, *this);
+    }
+  while (status == YYPUSH_MORE);
+
+#else
+
+  status = octave_parse (*this);
+
+#endif
+
+  return status;
 }
 
 // Error mesages for mismatched end tokens.
@@ -1713,7 +1788,7 @@ octave_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
   if (expr->is_assignment_expression ()
       && expr->paren_count () < 2)
     {
-      if (curr_fcn_file_full_name.empty ())
+      if (curr_lexer->fcn_file_full_name.empty ())
         warning_with_id
           ("Octave:assign-as-truth-value",
            "suggest parenthesis around assignment used as truth value");
@@ -1721,7 +1796,7 @@ octave_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
         warning_with_id
           ("Octave:assign-as-truth-value",
            "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
+           expr->line (), expr->column (), curr_lexer->fcn_file_full_name.c_str ());
     }
 }
 
@@ -1732,14 +1807,14 @@ octave_parser::maybe_warn_variable_switch_label (tree_expression *expr)
 {
   if (! expr->is_constant ())
     {
-      if (curr_fcn_file_full_name.empty ())
+      if (curr_lexer->fcn_file_full_name.empty ())
         warning_with_id ("Octave:variable-switch-label",
                          "variable switch label");
       else
         warning_with_id
           ("Octave:variable-switch-label",
            "variable switch label near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
+           expr->line (), expr->column (), curr_lexer->fcn_file_full_name.c_str ());
     }
 }
 
@@ -2001,7 +2076,7 @@ octave_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
   // FIXME: Stash the filename.  This does not work and produces
   // errors when executed.
-  //retval->stash_file_name (curr_fcn_file_name);
+  //retval->stash_file_name (curr_lexer->fcn_file_name);
 
   return retval;
 }
@@ -2625,22 +2700,17 @@ void
 octave_parser::make_script (tree_statement_list *cmds,
                             tree_statement *end_script)
 {
-  std::string doc_string;
-
-  if (! help_buf.empty ())
-    {
-      doc_string = help_buf.top ();
-      help_buf.pop ();
-    }
-
   if (! cmds)
     cmds = new tree_statement_list ();
 
   cmds->append (end_script);
 
   octave_user_script *script
-    = new octave_user_script (curr_fcn_file_full_name, curr_fcn_file_name,
-                              cmds, doc_string);
+    = new octave_user_script (curr_lexer->fcn_file_full_name,
+                              curr_lexer->fcn_file_name,
+                              cmds, curr_lexer->help_text);
+
+  curr_lexer->help_text = "";
 
   octave_time now;
 
@@ -2700,36 +2770,36 @@ octave_parser::frob_function (const std::string& fname,
   // the file does not match the name of the function stated in the
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
-  if (! autoloading && reading_fcn_file
+  if (! autoloading && curr_lexer->reading_fcn_file
       && curr_fcn_depth == 1 && ! parsing_subfunctions)
   {
-    // FIXME -- should curr_fcn_file_name already be
+    // FIXME -- should curr_lexer->fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a
     // problem with relative file names.
 
-    std::string nm = curr_fcn_file_name;
+    std::string nm = curr_lexer->fcn_file_name;
 
     size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
-      nm = curr_fcn_file_name.substr (pos+1);
+      nm = curr_lexer->fcn_file_name.substr (pos+1);
 
     if (nm != id_name)
       {
         warning_with_id
           ("Octave:function-name-clash",
            "function name '%s' does not agree with function file name '%s'",
-           id_name.c_str (), curr_fcn_file_full_name.c_str ());
+           id_name.c_str (), curr_lexer->fcn_file_full_name.c_str ());
 
         id_name = nm;
       }
   }
 
-  if (reading_fcn_file || reading_classdef_file || autoloading)
+  if (curr_lexer->reading_fcn_file || curr_lexer->reading_classdef_file || autoloading)
     {
       octave_time now;
 
-      fcn->stash_fcn_file_name (curr_fcn_file_full_name);
+      fcn->stash_fcn_file_name (curr_lexer->fcn_file_full_name);
       fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
 
@@ -2738,7 +2808,7 @@ octave_parser::frob_function (const std::string& fname,
 
       if (curr_fcn_depth > 1 || parsing_subfunctions)
         {
-          fcn->stash_parent_fcn_name (curr_fcn_file_name);
+          fcn->stash_parent_fcn_name (curr_lexer->fcn_file_name);
 
           if (curr_fcn_depth > 1)
             fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
@@ -2764,27 +2834,28 @@ octave_parser::frob_function (const std::string& fname,
         warning_with_id ("Octave:future-time-stamp",
                          "time stamp for '%s' is in the future", nm.c_str ());
     }
-  else if (! (input_from_tmp_history_file || input_from_startup_file)
-           && reading_script_file
-           && curr_fcn_file_name == id_name)
+  else if (! input_from_tmp_history_file
+           && ! curr_lexer->force_script
+           && curr_lexer->reading_script_file
+           && curr_lexer->fcn_file_name == id_name)
     {
       warning ("function '%s' defined within script file '%s'",
-               id_name.c_str (), curr_fcn_file_full_name.c_str ());
+               id_name.c_str (), curr_lexer->fcn_file_full_name.c_str ());
     }
 
   fcn->stash_function_name (id_name);
   fcn->stash_fcn_location (curr_lexer->input_line_number,
                            curr_lexer->current_input_column);
 
-  if (! help_buf.empty () && curr_fcn_depth == 1
+  if (! curr_lexer->help_text.empty () && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     {
-      fcn->document (help_buf.top ());
+      fcn->document (curr_lexer->help_text);
 
-      help_buf.pop ();
+      curr_lexer->help_text = "";
     }
 
-  if (reading_fcn_file && curr_fcn_depth == 1
+  if (curr_lexer->reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     primary_fcn_ptr = fcn;
 
@@ -2837,7 +2908,7 @@ octave_parser::finish_function (tree_parameter_list *ret_list,
       if (curr_fcn_depth == 1 && fcn)
         symbol_table::update_nest (fcn->scope ());
 
-      if (! reading_fcn_file && curr_fcn_depth == 1)
+      if (! curr_lexer->reading_fcn_file && curr_fcn_depth == 1)
         {
           // We are either reading a script file or defining a function
           // at the command line, so this definition creates a
@@ -2870,7 +2941,7 @@ octave_parser::recover_from_parsing_function (void)
 
   parser_symtab_context.pop ();
 
-  if (reading_fcn_file && curr_fcn_depth == 1
+  if (curr_lexer->reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     parsing_subfunctions = true;
 
@@ -3164,9 +3235,9 @@ octave_parser::make_decl_command (int tok, token *tok_val,
         retval = new tree_persistent_command (lst, l, c);
       else
         {
-          if (reading_script_file)
+          if (curr_lexer->reading_script_file)
             warning ("ignoring persistent declaration near line %d of file '%s'",
-                     l, curr_fcn_file_full_name.c_str ());
+                     l, curr_lexer->fcn_file_full_name.c_str ());
           else
             warning ("ignoring persistent declaration near line %d", l);
         }
@@ -3251,7 +3322,7 @@ octave_parser::maybe_warn_missing_semi (tree_statement_list *t)
         warning_with_id
           ("Octave:missing-semicolon",
            "missing semicolon near line %d, column %d in file '%s'",
-            tmp->line (), tmp->column (), curr_fcn_file_full_name.c_str ());
+            tmp->line (), tmp->column (), curr_lexer->fcn_file_full_name.c_str ());
     }
 }
 
@@ -3318,9 +3389,9 @@ octave_parser::bison_error (const char *s)
 
   std::ostringstream output_buf;
 
-  if (reading_fcn_file || reading_script_file || reading_classdef_file)
+  if (curr_lexer->reading_fcn_file || curr_lexer->reading_script_file || curr_lexer->reading_classdef_file)
     output_buf << "parse error near line " << curr_lexer->input_line_number
-               << " of file " << curr_fcn_file_full_name;
+               << " of file " << curr_lexer->fcn_file_full_name;
   else
     output_buf << "parse error:";
 
@@ -3372,216 +3443,9 @@ safe_fclose (FILE *f)
     fclose (static_cast<FILE *> (f));
 }
 
-static bool
-looks_like_copyright (const std::string& s)
-{
-  bool retval = false;
-
-  if (! s.empty ())
-    {
-      size_t offset = s.find_first_not_of (" \t");
-
-      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
-    }
-
-  return retval;
-}
-
-static int
-text_getc (FILE *f)
-{
-  int c = gnulib::getc (f);
-
-  // Convert CRLF into just LF and single CR into LF.
-
-  if (c == '\r')
-    {
-      c = gnulib::getc (f);
-
-      if (c != '\n')
-        {
-          ungetc (c, f);
-          c = '\n';
-        }
-    }
-
-  return c;
-}
-
-class
-stdio_stream_reader : public stream_reader
-{
-public:
-
-  stdio_stream_reader (FILE *f_arg, int& l, int& c)
-    : stream_reader (), f (f_arg), line_num (l), column_num (c)
-  { }
-
-  int getc (void)
-  {
-    char c = ::text_getc (f);
-
-    if (c == '\n')
-      {
-        line_num++;
-        column_num = 0;
-      }
-    else
-      {
-        // FIXME -- try to be smarter about tabs?
-        column_num++;
-      }
-        
-    return c;
-  }
-
-  int ungetc (int c)
-  {
-    if (c == '\n')
-      {   
-        line_num--;
-        column_num = 0;
-      }
-    else
-      {
-        // FIXME -- try to be smarter about tabs?
-        column_num--;
-      }
-
-    return ::ungetc (c, f);
-  }
-
-private:
-
-  FILE *f;
-
-  int& line_num;
-
-  int& column_num;
-
-  // No copying!
-
-  stdio_stream_reader (const  stdio_stream_reader&);
-
-  stdio_stream_reader & operator = (const  stdio_stream_reader&);
-};
-
-static bool
-skip_white_space (stream_reader& reader)
-{
-  int c = 0;
-
-  while ((c = reader.getc ()) != EOF)
-    {
-      switch (c)
-        {
-        case ' ':
-        case '\t':
-        case '\n':
-          break;
-
-        default:
-          reader.ungetc (c);
-          goto done;
-        }
-    }
-
- done:
-
-  return (c == EOF);
-}
-
-static bool
-looking_at_classdef_keyword (FILE *ffile)
-{
-  bool status = false;
-
-  long pos = gnulib::ftell (ffile);
-
-  char buf [10];
-  gnulib::fgets (buf, 10, ffile);
-  size_t len = strlen (buf);
-  if (len > 8 && strncmp (buf, "classdef", 8) == 0
-      && ! (isalnum (buf[8]) || buf[8] == '_'))
-    status = true;
-
-  gnulib::fseek (ffile, pos, SEEK_SET);
-
-  return status;
- }
-
-static std::string
-gobble_leading_white_space (FILE *ffile, bool& eof, int& line_num,
-                            int& column_num)
-{
-  std::string help_txt;
-
-  eof = false;
-
-  // TRUE means we have already cached the help text.
-  bool have_help_text = false;
-
-  std::string txt;
-
-  stdio_stream_reader stdio_reader (ffile, line_num, column_num);
-
-  while (true)
-    {
-      eof = skip_white_space (stdio_reader);
-
-      if (eof)
-        break;
-
-      txt = CURR_LEXER->grab_comment_block (stdio_reader, true, eof);
-
-      if (txt.empty ())
-        break;
-
-      if (! (have_help_text || looks_like_copyright (txt)))
-        {
-          help_txt = txt;
-          have_help_text = true;
-        }
-
-      octave_comment_buffer::append (txt);
-
-      if (eof)
-        break;
-    }
-
-  return help_txt;
-}
-
-static std::string
-gobble_leading_white_space (FILE *ffile, bool& eof)
-{
-  int line_num = 1;
-  int column_num = 1;
-
-  return gobble_leading_white_space (ffile, eof, line_num, column_num);
-}
-
-static bool
-looking_at_function_keyword (FILE *ffile)
-{
-  bool status = false;
-
-  long pos = gnulib::ftell (ffile);
-
-  char buf [10];
-  gnulib::fgets (buf, 10, ffile);
-  size_t len = strlen (buf);
-  if (len > 8 && strncmp (buf, "function", 8) == 0
-      && ! (isalnum (buf[8]) || buf[8] == '_'))
-    status = true;
-
-  gnulib::fseek (ffile, pos, SEEK_SET);
-
-  return status;
-}
-
 static octave_function *
-parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
+parse_fcn_file (const std::string& full_file, const std::string& file,
+                const std::string& dispatch_type,
                 bool require_file, bool force_script, bool autoload,    
                 bool relative_lookup, const std::string& warn_for)
 {
@@ -3595,12 +3459,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   frame.add_fcn (command_editor::set_input_stream, in_stream);
 
-  frame.protect_var (ff_instream);
-
-  frame.protect_var (reading_fcn_file);
   frame.protect_var (line_editing);
 
-  reading_fcn_file = true;
   line_editing = false;
 
   frame.add_fcn (command_history::ignore_entries,
@@ -3608,7 +3468,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   command_history::ignore_entries ();
 
-  FILE *ffile = get_input_from_file (ff, 0);
+  FILE *ffile = 0;
+
+  if (! full_file.empty ())
+    ffile = gnulib::fopen (full_file.c_str (), "rb");
 
   frame.add_fcn (safe_fclose, ffile);
 
@@ -3619,34 +3482,72 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       // octave_parser constructor sets this for us.
       frame.protect_var (CURR_LEXER);
 
+<<<<<<< local
       octave_parser *curr_parser = new octave_parser ();
       frame.add_fcn (octave_parser::cleanup, curr_parser);
+=======
+      octave_parser curr_parser (ffile);
+>>>>>>> other
 
+<<<<<<< local
       curr_parser->curr_class_name = dispatch_type;
       curr_parser->autoloading = autoload;
       curr_parser->fcn_file_from_relative_lookup = relative_lookup;
+=======
+      curr_parser.curr_class_name = dispatch_type;
+      curr_parser.autoloading = autoload;
+      curr_parser.fcn_file_from_relative_lookup = relative_lookup;
+>>>>>>> other
 
+<<<<<<< local
       std::string help_txt
         = gobble_leading_white_space
             (ffile, eof,
              curr_parser->curr_lexer->input_line_number,
              curr_parser->curr_lexer->current_input_column);
+=======
+      // Do this with an unwind-protect cleanup function so that
+      // the forced variables will be unmarked in the event of an
+      // interrupt.
+      symbol_table::scope_id scope = symbol_table::top_scope ();
+      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+>>>>>>> other
 
+<<<<<<< local
       if (! help_txt.empty ())
         help_buf.push (help_txt);
+=======
+      curr_parser.curr_lexer->force_script = force_script;
+      curr_parser.curr_lexer->prep_for_file ();
+      curr_parser.curr_lexer->parsing_class_method = ! dispatch_type.empty ();
+>>>>>>> other
 
+<<<<<<< local
       if (! eof)
         {
           std::string file_type;
+=======
+      curr_parser.curr_lexer->fcn_file_name = file;
+      curr_parser.curr_lexer->fcn_file_full_name = full_file;
+>>>>>>> other
 
+<<<<<<< local
           frame.protect_var (get_input_from_eval_string);
           frame.protect_var (reading_fcn_file);
           frame.protect_var (reading_script_file);
           frame.protect_var (reading_classdef_file);
           frame.protect_var (Vecho_executing_commands);
+=======
+      int status = curr_parser.run ();
+>>>>>>> other
 
+<<<<<<< local
           get_input_from_eval_string = false;
+=======
+      fcn_ptr = curr_parser.primary_fcn_ptr;
+>>>>>>> other
 
+<<<<<<< local
           if (! force_script && looking_at_function_keyword (ffile))
             {
               file_type = "function";
@@ -3742,50 +3643,56 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           fcn_ptr = curr_parser->primary_fcn_ptr;
         }
+=======
+      if (status != 0)
+        error ("parse error while reading file %s", full_file.c_str ());
+>>>>>>> other
     }
   else if (require_file)
-    error ("no such file, '%s'", ff.c_str ());
+    error ("no such file, '%s'", full_file.c_str ());
   else if (! warn_for.empty ())
-    error ("%s: unable to open file '%s'", warn_for.c_str (), ff.c_str ());
+    error ("%s: unable to open file '%s'", warn_for.c_str (),
+           full_file.c_str ());
 
   return fcn_ptr;
 }
 
 std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
-                    std::string& file)
+                    std::string& full_file)
 {
   std::string retval;
 
-  file = fcn_file_in_path (nm);
+  full_file = fcn_file_in_path (nm);
+
+  std::string file = full_file;
+
+  size_t file_len = file.length ();
+
+  if ((file_len > 4 && file.substr (file_len-4) == ".oct")
+      || (file_len > 4 && file.substr (file_len-4) == ".mex")
+      || (file_len > 2 && file.substr (file_len-2) == ".m"))
+    {
+      file = octave_env::base_pathname (file);
+      file = file.substr (0, file.find_last_of ('.'));
+
+      size_t pos = file.find_last_of (file_ops::dir_sep_str ());
+      if (pos != std::string::npos)
+        file = file.substr (pos+1);
+    }
 
   if (! file.empty ())
     {
       symbol_found = true;
 
-      FILE *fptr = gnulib::fopen (file.c_str (), "r");
+      octave_function *fcn
+        = parse_fcn_file (full_file, file, "", true, false, false, false, "");
 
-      if (fptr)
+      if (fcn)
         {
-          unwind_protect frame;
-          frame.add_fcn (safe_fclose, fptr);
+          retval = fcn->doc_string ();
 
-          bool eof;
-          retval = gobble_leading_white_space (fptr, eof);
-
-          if (retval.empty ())
-            {
-              octave_function *fcn = parse_fcn_file (file, "", true,
-                                                     false, false,
-                                                     false, "");
-
-              if (fcn)
-                {
-                  retval = fcn->doc_string ();
-
-                  delete fcn;
-                }
-            }
+          delete fcn;
         }
     }
 
@@ -3888,14 +3795,9 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     {
       // Temporarily load m-file version of mex-file, if it exists,
       // to get the help-string to use.
-      frame.protect_var (curr_fcn_file_name);
-      frame.protect_var (curr_fcn_file_full_name);
-
-      curr_fcn_file_name = nm;
-      curr_fcn_file_full_name = file.substr (0, len - 2);
 
       octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
-                                                dispatch_type, false,
+                                                nm, dispatch_type, false,
                                                 autoload, autoload,
                                                 relative_lookup, "");
 
@@ -3907,15 +3809,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     }
   else if (len > 2)
     {
-      // These are needed by yyparse.
-
-      frame.protect_var (curr_fcn_file_name);
-      frame.protect_var (curr_fcn_file_full_name);
-
-      curr_fcn_file_name = nm;
-      curr_fcn_file_full_name = file;
-
-      retval = parse_fcn_file (file, dispatch_type, true, autoload,
+      retval = parse_fcn_file (file, nm, dispatch_type, true, autoload,
                                autoload, relative_lookup, "");
     }
 
@@ -4085,12 +3979,6 @@ source_file (const std::string& file_name, const std::string& context,
 
   unwind_protect frame;
 
-  frame.protect_var (curr_fcn_file_name);
-  frame.protect_var (curr_fcn_file_full_name);
-
-  curr_fcn_file_name = file_name;
-  curr_fcn_file_full_name = file_full_name;
-
   if (source_call_depth.find (file_full_name) == source_call_depth.end ())
     source_call_depth[file_full_name] = -1;
 
@@ -4119,9 +4007,9 @@ source_file (const std::string& file_name, const std::string& context,
 
   if (! error_state)
     {
-      octave_function *fcn = parse_fcn_file (file_full_name, "",
-                                             require_file, true, false,
-                                             false, warn_for);
+      octave_function *fcn = parse_fcn_file (file_full_name, file_name,
+                                             "", require_file, true,
+                                             false, false, warn_for);
 
       if (! error_state)
         {
@@ -4426,7 +4314,8 @@ another function for the given type signature.\n\
 }
 
 octave_value_list
-eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
+eval_string (const std::string& eval_str, bool silent,
+             int& parse_status, int nargout)
 {
   octave_value_list retval;
 
@@ -4435,31 +4324,15 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   // octave_parser constructor sets this for us.
   frame.protect_var (CURR_LEXER);
 
-  octave_parser *curr_parser = new octave_parser ();
-  frame.add_fcn (octave_parser::cleanup, curr_parser);
+  octave_parser curr_parser (eval_str);
 
-  frame.protect_var (get_input_from_eval_string);
   frame.protect_var (line_editing);
-  frame.protect_var (current_eval_string);
-  frame.protect_var (reading_fcn_file);
-  frame.protect_var (reading_script_file);
-  frame.protect_var (reading_classdef_file);
 
-  get_input_from_eval_string = true;
   line_editing = false;
-  reading_fcn_file = false;
-  reading_script_file = false;
-  reading_classdef_file = false;
-
-  current_eval_string = s;
 
   do
     {
-      curr_parser->reset ();
-
-      frame.protect_var (global_command);
-
-      global_command = 0;
+      curr_parser.reset ();
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an
@@ -4467,30 +4340,19 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
       symbol_table::scope_id scope = symbol_table::top_scope ();
       frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      parse_status = curr_parser->run ();
-
-      tree_statement_list *command_list = global_command;
+      parse_status = curr_parser.run ();
 
       // Unmark forced variables.
-      // Restore previous value of global_command.
-      frame.run (2);
+      frame.run (1);
 
       if (parse_status == 0)
         {
-          if (command_list)
+          if (curr_parser.stmt_list)
             {
-              unwind_protect inner_frame;
-
-              // Use an unwind-protect cleanup function so that the
-              // global_command list will be deleted in the event of an
-              // interrupt.
-
-              inner_frame.add_fcn (cleanup_statement_list, &command_list);
-
               tree_statement *stmt = 0;
 
-              if (command_list->length () == 1
-                  && (stmt = command_list->front ())
+              if (curr_parser.stmt_list->length () == 1
+                  && (stmt = curr_parser.stmt_list->front ())
                   && stmt->is_expression ())
                 {
                   tree_expression *expr = stmt->expression ();
@@ -4519,7 +4381,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                     retval = octave_value_list ();
                 }
               else if (nargout == 0)
-                command_list->accept (*current_evaluator);
+                curr_parser.stmt_list->accept (*current_evaluator);
               else
                 error ("eval: invalid use of statement list");
 
@@ -4529,7 +4391,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                   || tree_continue_command::continuing)
                 break;
             }
-          else if (curr_parser->end_of_input)
+          else if (curr_parser.curr_lexer->end_of_input)
             break;
         }
     }
@@ -4539,11 +4401,11 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 }
 
 octave_value
-eval_string (const std::string& s, bool silent, int& parse_status)
+eval_string (const std::string& eval_str, bool silent, int& parse_status)
 {
   octave_value retval;
 
-  octave_value_list tmp = eval_string (s, silent, parse_status, 1);
+  octave_value_list tmp = eval_string (eval_str, silent, parse_status, 1);
 
   if (! tmp.empty ())
     retval = tmp(0);

@@ -97,13 +97,11 @@ workspace_view::workspace_view (QWidget *p)
 workspace_view::~workspace_view ()
 {
   QSettings *settings = resource_manager::get_settings ();
-
-  // FIXME -- what should happen if settings is 0?
-
   settings->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
   settings->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
   settings->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
   settings->setValue("workspaceview/column_state", _workspace_tree_view->header ()->saveState ());
+  settings->sync ();
 }
 
 void

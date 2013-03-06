@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 John W. Eaton
+## Copyright (C) 2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,26 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} news
-## @deftypefnx {Command} {} news @var{package}
-## Display the current NEWS file for Octave or an installed package.
-##
-## When called without an argument, display the NEWS file for Octave.
-## When given a package name @var{package}, display the current NEWS file for
-## that package.
+## @deftypefn  {Function File} {} __have_feature__ (feature)
+## Undocumented internal function.
 ## @end deftypefn
 
-function news (package = "octave")
-
-  if (nargin > 1)
-    print_usage ();
+function retval = __have_feature__ (feature)
+  features = octave_config_info ("features");
+  if (iscellstr (feature))
+    retval = (all (isfield (features, feature))
+              && cellfun (@(x) features.(x), feature));
+  elseif (ischar (feature))
+    retval = isfield (features, feature) && features.(feature);
   else
-    display_info_file ("news", package, "NEWS");
+    retval = false;
   endif
-
 endfunction
-
-
-%!error news (1, 2)
-%!error <news: PACKAGE must be a string> news (1)
-%!error <news: package .* is not installed> news ("__NOT_A_VALID_PKG_NAME__")

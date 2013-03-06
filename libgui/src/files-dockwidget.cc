@@ -124,7 +124,8 @@ files_dock_widget::~files_dock_widget ()
   Qt::SortOrder sort_order = _file_tree_view->header ()->sortIndicatorOrder ();
   settings->setValue ("filesdockwidget/sort_files_by_column", sort_column);
   settings->setValue ("filesdockwidget/sort_files_by_order", sort_order);
-  settings->setValue ("filesdockwidget/column_state", _file_tree_view->header ()->saveState ()); 
+  settings->setValue ("filesdockwidget/column_state", _file_tree_view->header ()->saveState ());
+  settings->sync ();
 }
 
 void

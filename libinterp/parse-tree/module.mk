@@ -96,6 +96,18 @@ parse-tree/oct-gperf.h: parse-tree/octave.gperf
 	mv $@-t $@
 	rm -f $@-t1
 
+parse-tree/oct-parse.yy: parse-tree/oct-parse.in.yy
+	case "$(BISON_PUSH_PULL_DECL_STYLE)" in \
+          *quote*) quote='"' ;; \
+	  *) quote="" ;; \
+        esac; \
+        case "$(BISON_PUSH_PULL_DECL_STYLE)" in \
+          *dash*) decl="%define api.push-pull $${quote}both$${quote}"; ;; \
+          *underscore*) decl="%define api.push_pull $${quote}both$${quote}"; ;; \
+        esac; \
+	$(SED) "s/%PUSH_PULL_DECL%/$$decl/" $< > $@-t
+	mv $@-t $@
+
 noinst_LTLIBRARIES += parse-tree/libparse-tree.la
 
 parse_tree_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)

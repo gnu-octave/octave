@@ -94,36 +94,8 @@ octave_time Vlast_prompt_time = 0.0;
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
 
-// Global pointer for eval().
-std::string current_eval_string;
-
-// TRUE means get input from current_eval_string.
-bool get_input_from_eval_string = false;
-
-// TRUE means that input is coming from a file that was named on
-// the command line.
-bool input_from_command_line_file = false;
-
 // TRUE means that stdin is a terminal, not a pipe or redirected file.
 bool stdin_is_tty = false;
-
-// TRUE means we're parsing a function file.
-bool reading_fcn_file = false;
-
-// TRUE means we're parsing a classdef file.
-bool reading_classdef_file = false;
-
-// Simple name of function file we are reading.
-std::string curr_fcn_file_name;
-
-// Full name of file we are reading.
-std::string curr_fcn_file_full_name;
-
-// TRUE means we're parsing a script file.
-bool reading_script_file = false;
-
-// If we are reading from an M-file, this is it.
-FILE *ff_instream = 0;
 
 // TRUE means this is an interactive shell.
 bool interactive = false;
@@ -160,7 +132,7 @@ char Vfilemarker = '>';
 static void
 do_input_echo (const std::string& input_string)
 {
-  int do_echo = reading_script_file ?
+  int do_echo = CURR_LEXER->reading_script_file ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
       : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
 
@@ -186,53 +158,25 @@ do_input_echo (const std::string& input_string)
     }
 }
 
-std::string
-gnu_readline (const std::string& s, bool& eof, bool force_readline)
+static std::string
+gnu_readline (const std::string& s, bool& eof)
 {
   octave_quit ();
 
   eof = false;
 
-  std::string retval;
+  assert (line_editing);
 
-  if (line_editing || force_readline)
-    {
-      retval = command_editor::readline (s, eof);
+  std::string retval = command_editor::readline (s, eof);
 
-      if (! eof && retval.empty ())
-        retval = "\n";
-    }
-  else
-    {
-      if (! s.empty () && (interactive || forced_interactive))
-        {
-          FILE *stream = command_editor::get_output_stream ();
-
-          gnulib::fputs (s.c_str (), stream);
-          gnulib::fflush (stream);
-        }
-
-      FILE *curr_stream = command_editor::get_input_stream ();
-
-      if (reading_fcn_file || reading_script_file || reading_classdef_file)
-        curr_stream = ff_instream;
-
-      retval = octave_fgets (curr_stream, eof);
-    }
+  if (! eof && retval.empty ())
+    retval = "\n";
 
   return retval;
 }
 
-extern std::string
-gnu_readline (const std::string& s, bool force_readline)
-{
-  bool eof = false;
-
-  return gnu_readline (s, eof, force_readline);
-}
-
 static inline std::string
-interactive_input (const std::string& s, bool& eof, bool force_readline)
+interactive_input (const std::string& s, bool& eof)
 {
   Vlast_prompt_time.stamp ();
 
@@ -251,19 +195,11 @@ interactive_input (const std::string& s, bool& eof, bool force_readline)
         return "\n";
     }
 
-  return gnu_readline (s, eof, force_readline);
+  return gnu_readline (s, eof);
 }
 
-static inline std::string
-interactive_input (const std::string& s, bool force_readline = false)
-{
-  bool eof = false;
-
-  return interactive_input (s, eof, force_readline);
-}
-
-static std::string
-octave_gets (bool& eof)
+std::string
+octave_base_reader::octave_gets (bool& eof)
 {
   octave_quit ();
 
@@ -273,125 +209,57 @@ octave_gets (bool& eof)
 
   bool history_skip_auto_repeated_debugging_command = false;
 
-  if ((interactive || forced_interactive)
-      && (! (reading_fcn_file
-             || reading_classdef_file
-             || reading_script_file
-             || get_input_from_eval_string
-             || input_from_startup_file
-             || input_from_command_line_file)))
+  std::string ps = (promptflag > 0) ? VPS1 : VPS2;
+
+  std::string prompt = command_editor::decode_prompt_string (ps);
+
+  pipe_handler_error_count = 0;
+
+  flush_octave_stdout ();
+
+  octave_pager_stream::reset ();
+  octave_diary_stream::reset ();
+
+  octave_diary << prompt;
+
+  retval = interactive_input (prompt, eof);
+
+  // There is no need to update the load_path cache if there is no
+  // user input.
+  if (! retval.empty ()
+      && retval.find_first_not_of (" \t\n\r") != std::string::npos)
     {
-      std::string ps = (promptflag > 0) ? VPS1 : VPS2;
+      load_path::update ();
 
-      std::string prompt = command_editor::decode_prompt_string (ps);
-
-      pipe_handler_error_count = 0;
-
-      flush_octave_stdout ();
-
-      octave_pager_stream::reset ();
-      octave_diary_stream::reset ();
-
-      octave_diary << prompt;
-
-      retval = interactive_input (prompt, eof, false);
-
-      // There is no need to update the load_path cache if there is no
-      // user input.
-      if (! retval.empty ()
-          && retval.find_first_not_of (" \t\n\r") != std::string::npos)
-        {
-          load_path::update ();
-
-          if (Vdebugging)
-            last_debugging_command = retval;
-          else
-            last_debugging_command = std::string ();
-        }
-      else if (Vdebugging)
-        {
-          retval = last_debugging_command;
-          history_skip_auto_repeated_debugging_command = true;
-        }
+      if (Vdebugging)
+        last_debugging_command = retval;
+      else
+        last_debugging_command = std::string ();
     }
-  else
-    retval = gnu_readline ("", eof, false);
+  else if (Vdebugging)
+    {
+      retval = last_debugging_command;
+      history_skip_auto_repeated_debugging_command = true;
+    }
 
   current_input_line = retval;
 
   if (! current_input_line.empty ())
     {
-      if (! (input_from_startup_file || input_from_command_line_file
-             || history_skip_auto_repeated_debugging_command))
+      if (! history_skip_auto_repeated_debugging_command)
         command_history::add (current_input_line);
 
-      if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
-        {
-          octave_diary << current_input_line;
+      octave_diary << current_input_line;
 
-          if (current_input_line[current_input_line.length () - 1] != '\n')
-            octave_diary << "\n";
-        }
+      if (current_input_line[current_input_line.length () - 1] != '\n')
+        octave_diary << "\n";
 
       do_input_echo (current_input_line);
     }
-  else if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
+  else
     octave_diary << "\n";
 
   return retval;
-}
-
-// Read a line from the input stream.
-
-std::string
-get_user_input (bool& eof)
-{
-  octave_quit ();
-
-  eof = false;
-
-  std::string retval;
-
-  if (get_input_from_eval_string)
-    {
-      retval = current_eval_string;
-
-      size_t len = retval.length ();
-
-      // Clear the global eval string so that the next call will return
-      // an empty character string with EOF = true.
-      current_eval_string = "";
-
-      eof = true;
-    }
-  else
-    retval = octave_gets (eof);
-
-  current_input_line = retval;
-
-  return retval;
-}
-
-// Fix things up so that input can come from file 'name', printing a
-// warning if the file doesn't exist.
-
-FILE *
-get_input_from_file (const std::string& name, int warn)
-{
-  FILE *instream = 0;
-
-  if (name.length () > 0)
-    instream = gnulib::fopen (name.c_str (), "rb");
-
-  if (! instream && warn)
-    warning ("%s: no such file or directory", name.c_str ());
-
-  if (reading_fcn_file || reading_script_file || reading_classdef_file)
-    ff_instream = instream;
-  else
-    command_editor::set_input_stream (instream);
-
-  return instream;
 }
 
 // Fix things up so that input can come from the standard input.  This
@@ -640,40 +508,19 @@ get_debug_input (const std::string& prompt)
   VPS1 = prompt;
 
   if (! (interactive || forced_interactive)
-      || (reading_fcn_file
-          || reading_classdef_file
-          || reading_script_file
-          || get_input_from_eval_string
-          || input_from_startup_file
-          || input_from_command_line_file))
+      || CURR_LEXER->reading_fcn_file
+      || CURR_LEXER->reading_classdef_file
+      || CURR_LEXER->reading_script_file
+      || CURR_LEXER->input_from_eval_string ())
     {
       frame.protect_var (forced_interactive);
       forced_interactive = true;
-
-      frame.protect_var (reading_fcn_file);
-      reading_fcn_file = false;
-
-      frame.protect_var (reading_classdef_file);
-      reading_classdef_file = false;
-
-      frame.protect_var (reading_script_file);
-      reading_script_file = false;
-
-      frame.protect_var (input_from_startup_file);
-      input_from_startup_file = false;
-
-      frame.protect_var (input_from_command_line_file);
-      input_from_command_line_file = false;
-
-      frame.protect_var (get_input_from_eval_string);
-      get_input_from_eval_string = false;
     }
 
   // octave_parser constructor sets this for us.
   frame.protect_var (CURR_LEXER);
 
-  octave_parser *curr_parser = new octave_parser ();
-  frame.add_fcn (octave_parser::cleanup, curr_parser);
+  octave_parser curr_parser;
 
   while (Vdebugging)
     {
@@ -681,31 +528,18 @@ get_debug_input (const std::string& prompt)
 
       reset_error_handler ();
 
-      curr_parser->reset ();
-
-      // Save current value of global_command.
-      middle_frame.protect_var (global_command);
-
-      global_command = 0;
+      curr_parser.reset ();
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
       middle_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      int retval = curr_parser->run ();
+      int retval = curr_parser.run ();
 
-      if (retval == 0 && global_command)
+      if (retval == 0 && curr_parser.stmt_list)
         {
-          unwind_protect inner_frame;
-
-          // Use an unwind-protect cleanup function so that the
-          // global_command list will be deleted in the event of an
-          // interrupt.
-
-          inner_frame.add_fcn (cleanup_statement_list, &global_command);
-
-          global_command->accept (*current_evaluator);
+          curr_parser.stmt_list->accept (*current_evaluator);
 
           if (octave_completion_matches_called)
             octave_completion_matches_called = false;
@@ -713,6 +547,65 @@ get_debug_input (const std::string& prompt)
 
       octave_quit ();
     }
+}
+
+const std::string octave_base_reader::in_src ("invalid");
+
+const std::string octave_terminal_reader::in_src ("terminal");
+
+std::string
+octave_terminal_reader::get_input (bool& eof)
+{
+  octave_quit ();
+
+  eof = false;
+
+  std::string retval = octave_gets (eof);
+
+  current_input_line = retval;
+
+  return retval;
+}
+
+const std::string octave_file_reader::in_src ("file");
+
+std::string
+octave_file_reader::get_input (bool& eof)
+{
+  octave_quit ();
+
+  eof = false;
+
+  std::string retval = octave_fgets (file, eof);
+
+  current_input_line = retval;
+
+  return retval;
+}
+
+const std::string octave_eval_string_reader::in_src ("eval_string");
+
+std::string
+octave_eval_string_reader::get_input (bool& eof)
+{
+  octave_quit ();
+
+  eof = false;
+
+  std::string retval;
+
+  retval = eval_string;
+
+  // Clear the eval string so that the next call will return
+  // an empty character string with EOF = true.
+  eval_string = "";
+
+  if (retval.empty ())
+    eof = true;
+
+  current_input_line = retval;
+
+  return retval;
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -744,13 +637,12 @@ get_user_input (const octave_value_list& args, int nargout)
 
   octave_diary << prompt;
 
-  std::string input_buf = interactive_input (prompt.c_str (), true);
+  bool eof = false;
+
+  std::string input_buf = interactive_input (prompt.c_str (), eof);
 
   if (! (error_state || input_buf.empty ()))
     {
-      if (! input_from_startup_file)
-        command_history::add (input_buf);
-
       size_t len = input_buf.length ();
 
       octave_diary << input_buf;
@@ -841,7 +733,9 @@ octave_yes_or_no (const std::string& prompt)
 
   while (1)
     {
-      std::string input_buf = interactive_input (prompt_string, true);
+      bool eof = false;
+
+      std::string input_buf = interactive_input (prompt_string, eof);
 
       if (input_buf == "yes")
         return true;

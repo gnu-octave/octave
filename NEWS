@@ -177,6 +177,9 @@ Summary of important user-visible changes for version 3.8:
       CC_VERSION  (now GCC_VERSION)
       CXX_VERSION (now GXX_VERSION)
 
+ ** A citation command has been added to display information on how to
+    cite Octave and packages in publications.  The package system will
+    look for and install CITATION files from packages.
 
 Summary of important user-visible changes for version 3.6:
 ---------------------------------------------------------

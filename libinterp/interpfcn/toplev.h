@@ -67,9 +67,6 @@ octave_add_atexit_function (const std::string& fname);
 extern OCTINTERP_API bool
 octave_remove_atexit_function (const std::string& fname);
 
-// Current command to execute.
-extern OCTINTERP_API tree_statement_list *global_command;
-
 // TRUE means we are ready to interpret commands, but not everything
 // is ready for interactive use.
 extern OCTINTERP_API bool octave_interpreter_ready;

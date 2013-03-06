@@ -309,13 +309,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Test overloaded vertcat() for the Snork class
-%% See bug #38170 (http://savannah.gnu.org/bugs/?38170)
+%% See bug #38128 (http://savannah.gnu.org/bugs/?38128)
 %!test   s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
 %!xtest  s = [s1; x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
 %!xtest  s = [x1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
 
 %% Test overloaded horzcat() for the Snork class
-%% See bug #38170 (http://savannah.gnu.org/bugs/?38170)
+%% See bug #38128 (http://savannah.gnu.org/bugs/?38128)
 %!test   s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 %!xtest  s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 %!xtest  s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));

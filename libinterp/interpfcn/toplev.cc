@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "oct-conf.h"
+#include "oct-conf-features.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-obj.h"
@@ -97,9 +98,6 @@ bool octave_interpreter_ready = false;
 
 // TRUE means we've processed all the init code and we are good to go.
 bool octave_initialized = false;
-
-// Current command to execute.
-tree_statement_list *global_command = 0;
 
 octave_call_stack *octave_call_stack::instance = 0;
 
@@ -564,8 +562,7 @@ main_loop (void)
   // octave_parser constructor sets this for us.
   frame.protect_var (CURR_LEXER);
 
-  octave_parser *curr_parser = new octave_parser ();
-  frame.add_fcn (octave_parser::cleanup, curr_parser);
+  octave_parser curr_parser;
 
   int retval = 0;
   do
@@ -576,7 +573,7 @@ main_loop (void)
 
           reset_error_handler ();
 
-          curr_parser->reset ();
+          curr_parser.reset ();
 
           if (symbol_table::at_top_level ())
             tree_evaluator::reset_debug_state ();
@@ -587,23 +584,13 @@ main_loop (void)
           symbol_table::scope_id scope = symbol_table::top_scope ();
           inner_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-          inner_frame.protect_var (global_command);
-
-          global_command = 0;
-
-          retval = curr_parser->run ();
+          retval = curr_parser.run ();
 
           if (retval == 0)
             {
-              if (global_command)
+              if (curr_parser.stmt_list)
                 {
-                  // Use an unwind-protect cleanup function so that the
-                  // global_command list will be deleted in the event of
-                  // an interrupt.
-
-                  frame.add_fcn (cleanup_statement_list, &global_command);
-
-                  global_command->accept (*current_evaluator);
+                  curr_parser.stmt_list->accept (*current_evaluator);
 
                   octave_quit ();
 
@@ -639,7 +626,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (curr_parser->end_of_input)
+              else if (curr_parser.curr_lexer->end_of_input)
                 break;
             }
         }
@@ -1373,7 +1360,6 @@ specified option.\n\
       { false, "SONAME_FLAGS", OCTAVE_CONF_SONAME_FLAGS },
       { false, "STATIC_LIBS", OCTAVE_CONF_STATIC_LIBS },
       { false, "TERM_LIBS", OCTAVE_CONF_TERM_LIBS },
-      { false, "UGLY_DEFS", OCTAVE_CONF_UGLY_DEFS },
       { false, "UMFPACK_CPPFLAGS", OCTAVE_CONF_UMFPACK_CPPFLAGS },
       { false, "UMFPACK_LDFLAGS", OCTAVE_CONF_UMFPACK_LDFLAGS },
       { false, "UMFPACK_LIBS", OCTAVE_CONF_UMFPACK_LIBS },
@@ -1441,6 +1427,8 @@ specified option.\n\
 
       m.assign ("words_little_endian",
                 octave_value (oct_mach_info::words_little_endian ()));
+
+      m.assign ("features", octave_value (octave_config_features ()));
 
       int i = 0;
 

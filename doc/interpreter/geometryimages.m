@@ -29,7 +29,7 @@ function geometryimages (nm, typ)
     d_typ = cstrcat ("-d", typ);
   endif
 
-  if (isempty (findstr (octave_config_info ("DEFS"), "HAVE_QHULL"))
+  if (! __have_feature__ ("QHULL")
       && (strcmp (nm, "voronoi") || strcmp (nm, "griddata")
           || strcmp (nm, "convhull") || strcmp (nm, "delaunay")
           || strcmp (nm, "triplot")))

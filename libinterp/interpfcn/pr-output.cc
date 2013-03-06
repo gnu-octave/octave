@@ -2724,14 +2724,17 @@ octave_print_internal (std::ostream& os, const Range& r,
                 {
                   octave_quit ();
 
-                  double val = base + i * increment;
+                  double val;
+                  if (i == 0)
+                    val = base;
+                  else
+                    val = base + i * increment;
 
                   if (i == num_elem - 1)
                     {
                       // See the comments in Range::matrix_value.
-
-                      if ((increment > 0 && val > limit)
-                          || (increment < 0 && val < limit))
+                      if ((increment > 0 && val >= limit)
+                          || (increment < 0 && val <= limit))
                         val = limit;
                     }
 

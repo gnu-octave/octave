@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <stack>
 
+#include "input.h"
+
 extern OCTINTERP_API void cleanup_parser (void);
 
 // Is the given string a keyword?
@@ -50,7 +52,7 @@ private:
   stream_reader& operator = (const stream_reader&);
 };
 
-// Forward decl for lexical_feedback::token_stack.
+// Forward decl for octave_lexer::token_stack.
 class token;
 
 // For communication between the lexer and parser.
@@ -106,6 +108,12 @@ public:
 
     ~bbp_nesting_level (void) { }
 
+    void reset (void)
+    {
+      while (! context.empty ())
+        context.pop ();
+    }
+
     void bracket (void) { context.push (BRACKET); }
 
     bool is_bracket (void)
@@ -151,9 +159,9 @@ public:
 
     std::stack<int> context;
   };
-
+  
   lexical_feedback (void)
-    : scanner (0), convert_spaces_to_comma (true),
+    : end_of_input (false), convert_spaces_to_comma (true),
       do_comma_insert (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
@@ -162,13 +170,16 @@ public:
       looking_for_object_index (false), 
       looking_at_indirect_ref (false), parsing_class_method (false),
       maybe_classdef_get_set_method (false), parsing_classdef (false),
-      quote_is_transpose (false),
+      quote_is_transpose (false), force_script (false),
+      reading_fcn_file (false), reading_script_file (false),
+      reading_classdef_file (false),
       input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
-      block_comment_nesting_level (0),
+      block_comment_nesting_level (0), token_count (0),
+      help_text (), fcn_file_name (), fcn_file_full_name (),
       looking_at_object_index (), parsed_function_name (),
-      pending_local_variables (), nesting_level ()
+      pending_local_variables (), nesting_level (), token_stack ()
   {
     init ();
   }
@@ -179,13 +190,220 @@ public:
 
   void reset (void);
 
-  void prep_for_script_file (void);
+  // true means that we have encountered eof on the input stream.
+  bool end_of_input;
 
-  void prep_for_function_file (void);
+  // true means that we should convert spaces to a comma inside a
+  // matrix definition.
+  bool convert_spaces_to_comma;
 
+<<<<<<< local
   void prep_for_classdef_file (void);
+=======
+  // gag.  stupid kludge so that [[1,2][3,4]] will work.
+  bool do_comma_insert;
+>>>>>>> other
 
+<<<<<<< local
   int octave_read (char *buf, unsigned int max_size);
+=======
+  // true means we are at the beginning of a statement, where a
+  // command name is possible.
+  bool at_beginning_of_statement;
+
+  // true means we are parsing an anonymous function argument list.
+  bool looking_at_anon_fcn_args;
+
+  // true means we're parsing the return list for a function.
+  bool looking_at_return_list;
+
+  // true means we're parsing the parameter list for a function.
+  bool looking_at_parameter_list;
+
+  // true means we're parsing a declaration list (global or
+  // persistent).
+  bool looking_at_decl_list;
+
+  // true means we are looking at the initializer expression for a
+  // parameter list element.
+  bool looking_at_initializer_expression;
+
+  // true means we're parsing a matrix or the left hand side of
+  // multi-value assignment statement.
+  bool looking_at_matrix_or_assign_lhs;
+
+  // object index not possible until we've seen something.
+  bool looking_for_object_index;
+
+  // true means we're looking at an indirect reference to a
+  // structure element.
+  bool looking_at_indirect_ref;
+
+  // true means we are parsing a class method in function or classdef file.
+  bool parsing_class_method;
+
+  // true means we are parsing a class method declaration line in a
+  // classdef file and can accept a property get or set method name.
+  // for example, "get.propertyname" is recognized as a function name.
+  bool maybe_classdef_get_set_method;
+
+  // true means we are parsing a classdef file
+  bool parsing_classdef;
+
+  // return transpose or start a string?
+  bool quote_is_transpose;
+
+  // TRUE means treat the current file as a script even if the first
+  // token is "function" or "classdef".
+  bool force_script;
+
+  // TRUE means we're parsing a function file.
+  bool reading_fcn_file;
+
+  // TRUE means we're parsing a script file.
+  bool reading_script_file;
+
+  // TRUE means we're parsing a classdef file.
+  bool reading_classdef_file;
+
+  // the current input line number.
+  int input_line_number;
+
+  // the column of the current token.
+  int current_input_column;
+
+  // square bracket level count.
+  int bracketflag;
+
+  // curly brace level count.
+  int braceflag;
+
+  // true means we're in the middle of defining a loop.
+  int looping;
+
+  // nonzero means we're in the middle of defining a function.
+  int defining_func;
+
+  // nonzero means we are parsing a function handle.
+  int looking_at_function_handle;
+
+  // nestng level for blcok comments.
+  int block_comment_nesting_level;
+
+  // Count of tokens recognized by this lexer since initialized or
+  // since the last reset.
+  size_t token_count;
+
+  // The current help text.
+  std::string help_text;
+
+  // Simple name of function file we are reading.
+  std::string fcn_file_name;
+
+  // Full name of file we are reading.
+  std::string fcn_file_full_name;
+
+  // if the front of the list is true, the closest paren, brace, or
+  // bracket nesting is an index for an object.
+  std::list<bool> looking_at_object_index;
+
+  // if the top of the stack is true, then we've already seen the name
+  // of the current function.  should only matter if
+  // current_function_level > 0
+  std::stack<bool> parsed_function_name;
+
+  // set of identifiers that might be local variable names.
+  std::set<std::string> pending_local_variables;
+
+  // is the closest nesting level a square bracket, squiggly brace or
+  // a paren?
+  bbp_nesting_level nesting_level;
+
+  // Stack to hold tokens so that we can delete them when the parser is
+  // reset and avoid growing forever just because we are stashing some
+  // information.
+  std::stack <token*> token_stack;
+
+private:
+
+  void reset_token_stack (void);
+
+  // No copying!
+
+  lexical_feedback (const lexical_feedback&);
+
+  lexical_feedback& operator = (const lexical_feedback&);
+};
+
+// octave_lexer inherits from lexical_feedback because we will
+// eventually have several different constructors and it is easier to
+// intialize if everything is grouped in a parent class rather than
+// listing all the members in the octave_lexer class.
+
+class
+octave_lexer : public lexical_feedback
+{
+public:
+
+  // Handle buffering of input for lexer.
+
+  class input_buffer
+  {
+  public:
+
+    input_buffer (void)
+      : buffer (), pos (0), chars_left (0), eof (false)
+    { }
+
+    void fill (const std::string& input, bool eof_arg);
+
+    // Copy at most max_size characters to buf.
+    int copy_chunk (char *buf, size_t max_size);
+
+    bool empty (void) const { return chars_left == 0; }
+
+    bool at_eof (void) const { return eof; }
+
+  private:
+
+    std::string buffer;
+    const char *pos;
+    size_t chars_left;
+    bool eof;
+  };
+
+  octave_lexer (void)
+    : lexical_feedback (), scanner (0), input_buf (), input_reader ()
+  {
+    init ();
+  }
+
+  octave_lexer (FILE *file)
+    : lexical_feedback (), scanner (0), input_buf (),
+      input_reader (file)
+  {
+    init ();
+  }
+
+  octave_lexer (const std::string& eval_string)
+    : lexical_feedback (), scanner (0), input_buf (),
+      input_reader (eval_string)
+  {
+    init ();
+  }
+
+  ~octave_lexer (void);
+
+  void init (void);
+
+  void reset (void);
+
+  void prep_for_file (void);
+
+  int read (char *buf, unsigned int max_size);
+
+  int handle_end_of_input (void);
+>>>>>>> other
 
   char *flex_yytext (void);
 
@@ -277,23 +495,27 @@ public:
   // Internal state of the flex-generated lexer.
   void *scanner;
 
-  // TRUE means that we should convert spaces to a comma inside a
-  // matrix definition.
-  bool convert_spaces_to_comma;
+  // Object that reads and buffers input.
+  input_buffer input_buf;
 
-  // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
-  bool do_comma_insert;
+  octave_input_reader input_reader;
 
-  // TRUE means we are at the beginning of a statement, where a
-  // command name is possible.
-  bool at_beginning_of_statement;
+  std::string input_source (void) const
+  {
+    return input_reader.input_source ();
+  }
 
-  // TRUE means we are parsing an anonymous function argument list.
-  bool looking_at_anon_fcn_args;
+  bool input_from_terminal (void) const
+  {
+    return input_source () == "terminal";
+  }
 
-  // TRUE means we're parsing the return list for a function.
-  bool looking_at_return_list;
+  bool input_from_file (void) const
+  {
+    return input_source () == "file";
+  }
 
+<<<<<<< local
   // TRUE means we're parsing the parameter list for a function.
   bool looking_at_parameter_list;
 
@@ -375,22 +597,23 @@ public:
   // Is the closest nesting level a square bracket, squiggly brace or
   // a paren?
   bbp_nesting_level nesting_level;
+=======
+  bool input_from_eval_string (void) const
+  {
+    return input_source () == "eval_string";
+  }
+>>>>>>> other
 
   // For unwind protect.
-  static void cleanup (lexical_feedback *lexer) { delete lexer; }
+  static void cleanup (octave_lexer *lexer) { delete lexer; }
 
 private:
 
-  // Stack to hold tokens so that we can delete them when the parser is
-  // reset and avoid growing forever just because we are stashing some
-  // information.
-  std::stack <token*> token_stack;
-
   // No copying!
 
-  lexical_feedback (const lexical_feedback&);
+  octave_lexer (const octave_lexer&);
 
-  lexical_feedback& operator = (const lexical_feedback&);
+  octave_lexer& operator = (const octave_lexer&);
 };
 
 #endif

@@ -564,6 +564,11 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
   return pixels;
 }
 
+// Note:
+// x-extent accurately measures width of glyphs.
+// y-extent is overly large because it is measured from baseline-to-baseline.
+// Calling routines, such as ylabel, may need to account for this mismatch.
+
 Matrix
 ft_render::get_extent (text_element *elt, double rotation)
 {

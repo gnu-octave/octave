@@ -5194,11 +5194,20 @@ axes::properties::update_ylabel_position (void)
       graphics_xform xform = get_transform ();
 
       Matrix ext (1, 2, 0.0);
+
+      // The underlying get_extents() from FreeType produces mismatched values.
+      // x-extent accurately measures the width of the glyphs.
+      // y-extent instead measures from baseline-to-baseline.
+      // Pad x-extent (+4) so that it approximately matches y-extent.
+      // This keeps ylabels about the same distance from y-axis as
+      // xlabels are from x-axis.
+      // ALWAYS use an even number for padding or horizontal alignment
+      // will be off.
       ext = get_ticklabel_extents (get_ytick ().matrix_value (),
                                    get_yticklabel ().all_strings (),
                                    get_ylim ().matrix_value ());
 
-      double wmax = ext(0), hmax = ext(1), angle = 0;
+      double wmax = ext(0)+4, hmax = ext(1), angle = 0;
       ColumnVector p =
         graphics_xform::xform_vector (xpTick, (ypTickN+ypTick)/2, zpTick);
 

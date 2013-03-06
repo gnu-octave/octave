@@ -170,12 +170,14 @@ public:
       looking_for_object_index (false), 
       looking_at_indirect_ref (false), parsing_class_method (false),
       maybe_classdef_get_set_method (false), parsing_classdef (false),
-      quote_is_transpose (false), reading_fcn_file (false),
-      reading_script_file (false), reading_classdef_file (false),
+      quote_is_transpose (false), force_script (false),
+      reading_fcn_file (false), reading_script_file (false),
+      reading_classdef_file (false),
       input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
-      block_comment_nesting_level (0),
+      block_comment_nesting_level (0), token_count (0),
+      help_text (), fcn_file_name (), fcn_file_full_name (),
       looking_at_object_index (), parsed_function_name (),
       pending_local_variables (), nesting_level (), token_stack ()
   {
@@ -244,6 +246,10 @@ public:
   // return transpose or start a string?
   bool quote_is_transpose;
 
+  // TRUE means treat the current file as a script even if the first
+  // token is "function" or "classdef".
+  bool force_script;
+
   // TRUE means we're parsing a function file.
   bool reading_fcn_file;
 
@@ -276,6 +282,19 @@ public:
 
   // nestng level for blcok comments.
   int block_comment_nesting_level;
+
+  // Count of tokens recognized by this lexer since initialized or
+  // since the last reset.
+  size_t token_count;
+
+  // The current help text.
+  std::string help_text;
+
+  // Simple name of function file we are reading.
+  std::string fcn_file_name;
+
+  // Full name of file we are reading.
+  std::string fcn_file_full_name;
 
   // if the front of the list is true, the closest paren, brace, or
   // bracket nesting is an index for an object.
@@ -372,9 +391,7 @@ public:
 
   void reset (void);
 
-  void prep_for_script_file (void);
-
-  void prep_for_function_file (void);
+  void prep_for_file (void);
 
   int read (char *buf, unsigned int max_size);
 
@@ -478,6 +495,16 @@ public:
   std::string input_source (void) const
   {
     return input_reader.input_source ();
+  }
+
+  bool input_from_terminal (void) const
+  {
+    return input_source () == "terminal";
+  }
+
+  bool input_from_file (void) const
+  {
+    return input_source () == "file";
   }
 
   bool input_from_eval_string (void) const

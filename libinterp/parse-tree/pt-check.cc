@@ -554,8 +554,8 @@ tree_checker::visit_do_until_command (tree_do_until_command& cmd)
 void
 tree_checker::gripe (const std::string& msg, int line)
 {
-  if (curr_fcn_file_name.empty ())
+  if (file_name.empty ())
     error ("%s", msg.c_str ());
   else
-    error ("%s: %d: %s", curr_fcn_file_name.c_str (), line, msg.c_str ());
+    error ("%s: %d: %s", file_name.c_str (), line, msg.c_str ());
 }

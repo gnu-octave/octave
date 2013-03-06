@@ -95,18 +95,12 @@ octave_lexer *CURR_LEXER = 0;
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
-// Buffer for help text snagged from function files.
-std::stack<std::string> help_buf;
-
 // TRUE means we are using readline.
 // (--no-line-editing)
 bool line_editing = true;
 
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
-
-// TRUE means input is coming from startup file.
-bool input_from_startup_file = false;
 
 // Keep track of symbol table information when parsing functions.
 symtab_context parser_symtab_context;
@@ -238,14 +232,14 @@ make_statement (T *arg)
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN SCRIPT_FILE FUNCTION_FILE CLASSDEF
+%token FCN INPUT_FILE CLASSDEF
 // %token VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
 %type <comment_type> properties_beg methods_beg events_beg enum_beg
-%type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep opt_comma
+%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep opt_comma
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -267,8 +261,7 @@ make_statement (T *arg)
 %type <tree_parameter_list_type> superclasses opt_superclasses
 %type <tree_command_type> command select_command loop_command
 %type <tree_command_type> jump_command except_command function
-%type <tree_command_type> script_file classdef
-%type <tree_command_type> function_file function_list
+%type <tree_command_type> file classdef
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -329,8 +322,6 @@ input           : input1
                     promptflag = 1;
                     YYACCEPT;
                   }
-                | function_file
-                  { YYACCEPT; }
                 | simple_list parse_error
                   { ABORT_PARSE; }
                 | parse_error
@@ -761,7 +752,7 @@ command         : declaration
                   { $$ = $1; }
                 | function
                   { $$ = $1; }
-                | script_file
+                | file
                   { $$ = $1; }
                 | classdef
                   { $$ = $1; }
@@ -844,7 +835,7 @@ if_cmd_list     : if_cmd_list1
 
 if_cmd_list1    : expression opt_sep opt_list
                   {
-                    $1->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+                    $1->mark_braindead_shortcircuit (curr_lexer->fcn_file_full_name);
 
                     $$ = curr_parser.start_if_command ($1, $3);
                   }
@@ -857,7 +848,7 @@ if_cmd_list1    : expression opt_sep opt_list
 
 elseif_clause   : ELSEIF stash_comment opt_sep expression opt_sep opt_list
                   {
-                    $4->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+                    $4->mark_braindead_shortcircuit (curr_lexer->fcn_file_full_name);
 
                     $$ = curr_parser.make_elseif_clause ($1, $4, $6, $2);
                   }
@@ -916,7 +907,7 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 
 loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   {
-                    $3->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+                    $3->mark_braindead_shortcircuit (curr_lexer->fcn_file_full_name);
 
                     if (! ($$ = curr_parser.make_while_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
@@ -1013,11 +1004,13 @@ push_fcn_symtab : // empty
 
                     curr_parser.function_scopes.push_back (symbol_table::current_scope ());
 
-                    if (! curr_lexer->reading_script_file && curr_parser.curr_fcn_depth == 1
+                    if (! curr_lexer->reading_script_file
+                        && curr_parser.curr_fcn_depth == 1
                         && ! curr_parser.parsing_subfunctions)
                       curr_parser.primary_fcn_scope = symbol_table::current_scope ();
 
-                    if (curr_lexer->reading_script_file && curr_parser.curr_fcn_depth > 1)
+                    if (curr_lexer->reading_script_file
+                        && curr_parser.curr_fcn_depth > 1)
                       curr_parser.bison_error ("nested functions not implemented in this context");
                   }
                 ;
@@ -1117,33 +1110,24 @@ return_list1    : identifier
                   }
                 ;
 
-// ===========
-// Script file
-// ===========
+// =======================
+// Script or function file
+// =======================
 
-script_file     : SCRIPT_FILE opt_list END_OF_INPUT
+file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
-                    tree_statement *end_of_script
-                      = curr_parser.make_end ("endscript",
-                                               curr_lexer->input_line_number,
-                                               curr_lexer->current_input_column);
+                    if (! curr_lexer->reading_fcn_file)
+                      {
+                        tree_statement *end_of_script
+                          = curr_parser.make_end ("endscript",
+                                                  curr_lexer->input_line_number,
+                                                  curr_lexer->current_input_column);
 
-                    curr_parser.make_script ($2, end_of_script);
+                        curr_parser.make_script ($3, end_of_script);
+                      }
 
                     $$ = 0;
                   }
-                ;
-
-// =============
-// Function file
-// =============
-
-function_file   : FUNCTION_FILE function_list opt_sep END_OF_INPUT
-                  { $$ = 0; }
-                ;
-
-function_list   : function
-                | function_list sep function
                 ;
 
 // ===================
@@ -1153,8 +1137,8 @@ function_list   : function
 function_beg    : push_fcn_symtab FCN stash_comment
                   {
                     $$ = $3;
-
-                    if (curr_lexer->reading_classdef_file || curr_lexer->parsing_classdef)
+                    if (curr_lexer->reading_classdef_file
+                        || curr_lexer->parsing_classdef)
                       curr_lexer->maybe_classdef_get_set_method = true;
                   }
                 ;
@@ -1441,6 +1425,18 @@ opt_sep_no_nl   : // empty
                   { $$ = $1; }
                 ;
 
+opt_nl          : // empty
+                  { $$ = 0; }
+                | nl
+                  { $$ = $1; }
+                ;
+
+nl              : '\n'
+                  { $$ = '\n'; }
+                | nl '\n'
+                  { $$ = $1; }
+                ;
+
 sep             : ','
                   { $$ = ','; }
                 | ';'
@@ -1667,7 +1663,7 @@ octave_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
   if (expr->is_assignment_expression ()
       && expr->paren_count () < 2)
     {
-      if (curr_fcn_file_full_name.empty ())
+      if (curr_lexer->fcn_file_full_name.empty ())
         warning_with_id
           ("Octave:assign-as-truth-value",
            "suggest parenthesis around assignment used as truth value");
@@ -1675,7 +1671,7 @@ octave_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
         warning_with_id
           ("Octave:assign-as-truth-value",
            "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
+           expr->line (), expr->column (), curr_lexer->fcn_file_full_name.c_str ());
     }
 }
 
@@ -1686,14 +1682,14 @@ octave_parser::maybe_warn_variable_switch_label (tree_expression *expr)
 {
   if (! expr->is_constant ())
     {
-      if (curr_fcn_file_full_name.empty ())
+      if (curr_lexer->fcn_file_full_name.empty ())
         warning_with_id ("Octave:variable-switch-label",
                          "variable switch label");
       else
         warning_with_id
           ("Octave:variable-switch-label",
            "variable switch label near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
+           expr->line (), expr->column (), curr_lexer->fcn_file_full_name.c_str ());
     }
 }
 
@@ -1955,7 +1951,7 @@ octave_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
   // FIXME: Stash the filename.  This does not work and produces
   // errors when executed.
-  //retval->stash_file_name (curr_fcn_file_name);
+  //retval->stash_file_name (curr_lexer->fcn_file_name);
 
   return retval;
 }
@@ -2579,22 +2575,17 @@ void
 octave_parser::make_script (tree_statement_list *cmds,
                             tree_statement *end_script)
 {
-  std::string doc_string;
-
-  if (! help_buf.empty ())
-    {
-      doc_string = help_buf.top ();
-      help_buf.pop ();
-    }
-
   if (! cmds)
     cmds = new tree_statement_list ();
 
   cmds->append (end_script);
 
   octave_user_script *script
-    = new octave_user_script (curr_fcn_file_full_name, curr_fcn_file_name,
-                              cmds, doc_string);
+    = new octave_user_script (curr_lexer->fcn_file_full_name,
+                              curr_lexer->fcn_file_name,
+                              cmds, curr_lexer->help_text);
+
+  curr_lexer->help_text = "";
 
   octave_time now;
 
@@ -2657,23 +2648,23 @@ octave_parser::frob_function (const std::string& fname,
   if (! autoloading && curr_lexer->reading_fcn_file
       && curr_fcn_depth == 1 && ! parsing_subfunctions)
   {
-    // FIXME -- should curr_fcn_file_name already be
+    // FIXME -- should curr_lexer->fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a
     // problem with relative file names.
 
-    std::string nm = curr_fcn_file_name;
+    std::string nm = curr_lexer->fcn_file_name;
 
     size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
-      nm = curr_fcn_file_name.substr (pos+1);
+      nm = curr_lexer->fcn_file_name.substr (pos+1);
 
     if (nm != id_name)
       {
         warning_with_id
           ("Octave:function-name-clash",
            "function name '%s' does not agree with function file name '%s'",
-           id_name.c_str (), curr_fcn_file_full_name.c_str ());
+           id_name.c_str (), curr_lexer->fcn_file_full_name.c_str ());
 
         id_name = nm;
       }
@@ -2683,7 +2674,7 @@ octave_parser::frob_function (const std::string& fname,
     {
       octave_time now;
 
-      fcn->stash_fcn_file_name (curr_fcn_file_full_name);
+      fcn->stash_fcn_file_name (curr_lexer->fcn_file_full_name);
       fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
 
@@ -2692,7 +2683,7 @@ octave_parser::frob_function (const std::string& fname,
 
       if (curr_fcn_depth > 1 || parsing_subfunctions)
         {
-          fcn->stash_parent_fcn_name (curr_fcn_file_name);
+          fcn->stash_parent_fcn_name (curr_lexer->fcn_file_name);
 
           if (curr_fcn_depth > 1)
             fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
@@ -2718,24 +2709,25 @@ octave_parser::frob_function (const std::string& fname,
         warning_with_id ("Octave:future-time-stamp",
                          "time stamp for '%s' is in the future", nm.c_str ());
     }
-  else if (! (input_from_tmp_history_file || input_from_startup_file)
+  else if (! input_from_tmp_history_file
+           && ! curr_lexer->force_script
            && curr_lexer->reading_script_file
-           && curr_fcn_file_name == id_name)
+           && curr_lexer->fcn_file_name == id_name)
     {
       warning ("function '%s' defined within script file '%s'",
-               id_name.c_str (), curr_fcn_file_full_name.c_str ());
+               id_name.c_str (), curr_lexer->fcn_file_full_name.c_str ());
     }
 
   fcn->stash_function_name (id_name);
   fcn->stash_fcn_location (curr_lexer->input_line_number,
                            curr_lexer->current_input_column);
 
-  if (! help_buf.empty () && curr_fcn_depth == 1
+  if (! curr_lexer->help_text.empty () && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     {
-      fcn->document (help_buf.top ());
+      fcn->document (curr_lexer->help_text);
 
-      help_buf.pop ();
+      curr_lexer->help_text = "";
     }
 
   if (curr_lexer->reading_fcn_file && curr_fcn_depth == 1
@@ -2947,7 +2939,7 @@ octave_parser::make_decl_command (int tok, token *tok_val,
         {
           if (curr_lexer->reading_script_file)
             warning ("ignoring persistent declaration near line %d of file '%s'",
-                     l, curr_fcn_file_full_name.c_str ());
+                     l, curr_lexer->fcn_file_full_name.c_str ());
           else
             warning ("ignoring persistent declaration near line %d", l);
         }
@@ -3032,7 +3024,7 @@ octave_parser::maybe_warn_missing_semi (tree_statement_list *t)
         warning_with_id
           ("Octave:missing-semicolon",
            "missing semicolon near line %d, column %d in file '%s'",
-            tmp->line (), tmp->column (), curr_fcn_file_full_name.c_str ());
+            tmp->line (), tmp->column (), curr_lexer->fcn_file_full_name.c_str ());
     }
 }
 
@@ -3100,7 +3092,7 @@ octave_parser::bison_error (const char *s)
 
   if (curr_lexer->reading_fcn_file || curr_lexer->reading_script_file || curr_lexer->reading_classdef_file)
     output_buf << "parse error near line " << curr_lexer->input_line_number
-               << " of file " << curr_fcn_file_full_name;
+               << " of file " << curr_lexer->fcn_file_full_name;
   else
     output_buf << "parse error:";
 
@@ -3152,216 +3144,9 @@ safe_fclose (FILE *f)
     fclose (static_cast<FILE *> (f));
 }
 
-static bool
-looks_like_copyright (const std::string& s)
-{
-  bool retval = false;
-
-  if (! s.empty ())
-    {
-      size_t offset = s.find_first_not_of (" \t");
-
-      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
-    }
-
-  return retval;
-}
-
-static int
-text_getc (FILE *f)
-{
-  int c = gnulib::getc (f);
-
-  // Convert CRLF into just LF and single CR into LF.
-
-  if (c == '\r')
-    {
-      c = gnulib::getc (f);
-
-      if (c != '\n')
-        {
-          ungetc (c, f);
-          c = '\n';
-        }
-    }
-
-  return c;
-}
-
-class
-stdio_stream_reader : public stream_reader
-{
-public:
-
-  stdio_stream_reader (FILE *f_arg, int& l, int& c)
-    : stream_reader (), f (f_arg), line_num (l), column_num (c)
-  { }
-
-  int getc (void)
-  {
-    char c = ::text_getc (f);
-
-    if (c == '\n')
-      {
-        line_num++;
-        column_num = 0;
-      }
-    else
-      {
-        // FIXME -- try to be smarter about tabs?
-        column_num++;
-      }
-        
-    return c;
-  }
-
-  int ungetc (int c)
-  {
-    if (c == '\n')
-      {   
-        line_num--;
-        column_num = 0;
-      }
-    else
-      {
-        // FIXME -- try to be smarter about tabs?
-        column_num--;
-      }
-
-    return ::ungetc (c, f);
-  }
-
-private:
-
-  FILE *f;
-
-  int& line_num;
-
-  int& column_num;
-
-  // No copying!
-
-  stdio_stream_reader (const  stdio_stream_reader&);
-
-  stdio_stream_reader & operator = (const  stdio_stream_reader&);
-};
-
-static bool
-skip_white_space (stream_reader& reader)
-{
-  int c = 0;
-
-  while ((c = reader.getc ()) != EOF)
-    {
-      switch (c)
-        {
-        case ' ':
-        case '\t':
-        case '\n':
-          break;
-
-        default:
-          reader.ungetc (c);
-          goto done;
-        }
-    }
-
- done:
-
-  return (c == EOF);
-}
-
-static bool
-looking_at_classdef_keyword (FILE *ffile)
-{
-  bool status = false;
-
-  long pos = gnulib::ftell (ffile);
-
-  char buf [10];
-  gnulib::fgets (buf, 10, ffile);
-  size_t len = strlen (buf);
-  if (len > 8 && strncmp (buf, "classdef", 8) == 0
-      && ! (isalnum (buf[8]) || buf[8] == '_'))
-    status = true;
-
-  gnulib::fseek (ffile, pos, SEEK_SET);
-
-  return status;
- }
-
-static std::string
-gobble_leading_white_space (FILE *ffile, bool& eof, int& line_num,
-                            int& column_num)
-{
-  std::string help_txt;
-
-  eof = false;
-
-  // TRUE means we have already cached the help text.
-  bool have_help_text = false;
-
-  std::string txt;
-
-  stdio_stream_reader stdio_reader (ffile, line_num, column_num);
-
-  while (true)
-    {
-      eof = skip_white_space (stdio_reader);
-
-      if (eof)
-        break;
-
-      txt = CURR_LEXER->grab_comment_block (stdio_reader, true, eof);
-
-      if (txt.empty ())
-        break;
-
-      if (! (have_help_text || looks_like_copyright (txt)))
-        {
-          help_txt = txt;
-          have_help_text = true;
-        }
-
-      octave_comment_buffer::append (txt);
-
-      if (eof)
-        break;
-    }
-
-  return help_txt;
-}
-
-static std::string
-gobble_leading_white_space (FILE *ffile, bool& eof)
-{
-  int line_num = 1;
-  int column_num = 1;
-
-  return gobble_leading_white_space (ffile, eof, line_num, column_num);
-}
-
-static bool
-looking_at_function_keyword (FILE *ffile)
-{
-  bool status = false;
-
-  long pos = gnulib::ftell (ffile);
-
-  char buf [10];
-  gnulib::fgets (buf, 10, ffile);
-  size_t len = strlen (buf);
-  if (len > 8 && strncmp (buf, "function", 8) == 0
-      && ! (isalnum (buf[8]) || buf[8] == '_'))
-    status = true;
-
-  gnulib::fseek (ffile, pos, SEEK_SET);
-
-  return status;
-}
-
 static octave_function *
-parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
+parse_fcn_file (const std::string& full_file, const std::string& file,
+                const std::string& dispatch_type,
                 bool require_file, bool force_script, bool autoload,    
                 bool relative_lookup, const std::string& warn_for)
 {
@@ -3386,8 +3171,8 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   FILE *ffile = 0;
 
-  if (! ff.empty ())
-    ffile = gnulib::fopen (ff.c_str (), "rb");
+  if (! full_file.empty ())
+    ffile = gnulib::fopen (full_file.c_str (), "rb");
 
   frame.add_fcn (safe_fclose, ffile);
 
@@ -3400,137 +3185,75 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
       octave_parser curr_parser (ffile);
 
-      curr_parser.curr_lexer->reading_fcn_file = true;
-
       curr_parser.curr_class_name = dispatch_type;
       curr_parser.autoloading = autoload;
       curr_parser.fcn_file_from_relative_lookup = relative_lookup;
 
-      std::string help_txt
-        = gobble_leading_white_space
-            (ffile, eof,
-             curr_parser.curr_lexer->input_line_number,
-             curr_parser.curr_lexer->current_input_column);
+      // Do this with an unwind-protect cleanup function so that
+      // the forced variables will be unmarked in the event of an
+      // interrupt.
+      symbol_table::scope_id scope = symbol_table::top_scope ();
+      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-      if (! help_txt.empty ())
-        help_buf.push (help_txt);
+      curr_parser.curr_lexer->force_script = force_script;
+      curr_parser.curr_lexer->prep_for_file ();
+      curr_parser.curr_lexer->parsing_class_method = ! dispatch_type.empty ();
 
-      if (! eof)
-        {
-          std::string file_type;
+      curr_parser.curr_lexer->fcn_file_name = file;
+      curr_parser.curr_lexer->fcn_file_full_name = full_file;
 
-          frame.protect_var (Vecho_executing_commands);
+      int status = curr_parser.run ();
 
-          Vecho_executing_commands = ECHO_OFF;
+      fcn_ptr = curr_parser.primary_fcn_ptr;
 
-          if (! force_script && looking_at_function_keyword (ffile))
-            {
-              file_type = "function";
-            }
-          else
-            {
-              curr_parser.curr_lexer->reading_fcn_file = false;
-
-              if (! force_script && looking_at_classdef_keyword (ffile))
-                {
-                  file_type = "classdef";
-
-                  curr_parser.curr_lexer->reading_classdef_file = true;
-
-                  // FIXME -- Should classdef files be handled as
-                  // scripts or separately?  Currently, without
-                  // setting up for reading script files, parsing
-                  // classdef files fails.
-                  curr_parser.curr_lexer->reading_script_file = true;
-                }
-              else
-                {
-                  file_type = "script";
-
-                  curr_parser.curr_lexer->reading_script_file = true;
-                }
-            }
-
-          // Do this with an unwind-protect cleanup function so that
-          // the forced variables will be unmarked in the event of an
-          // interrupt.
-          symbol_table::scope_id scope = symbol_table::top_scope ();
-          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
-
-          if (! help_txt.empty ())
-            help_buf.push (help_txt);
-
-          if (curr_parser.curr_lexer->reading_script_file)
-            curr_parser.curr_lexer->prep_for_script_file ();
-          else
-            curr_parser.curr_lexer->prep_for_function_file ();
-
-          curr_parser.curr_lexer->parsing_class_method = ! dispatch_type.empty ();
-
-          int status = curr_parser.run ();
-
-          fcn_ptr = curr_parser.primary_fcn_ptr;
-
-          if (status != 0)
-            error ("parse error while reading %s file %s",
-                   file_type.c_str (), ff.c_str ());
-        }
-      else
-        {
-          int l = curr_parser.curr_lexer->input_line_number;
-          int c = curr_parser.curr_lexer->current_input_column;
-
-          tree_statement *end_of_script
-            = curr_parser.make_end ("endscript", l, c);
-
-          curr_parser.make_script (0, end_of_script);
-
-          fcn_ptr = curr_parser.primary_fcn_ptr;
-        }
+      if (status != 0)
+        error ("parse error while reading file %s", full_file.c_str ());
     }
   else if (require_file)
-    error ("no such file, '%s'", ff.c_str ());
+    error ("no such file, '%s'", full_file.c_str ());
   else if (! warn_for.empty ())
-    error ("%s: unable to open file '%s'", warn_for.c_str (), ff.c_str ());
+    error ("%s: unable to open file '%s'", warn_for.c_str (),
+           full_file.c_str ());
 
   return fcn_ptr;
 }
 
 std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
-                    std::string& file)
+                    std::string& full_file)
 {
   std::string retval;
 
-  file = fcn_file_in_path (nm);
+  full_file = fcn_file_in_path (nm);
+
+  std::string file = full_file;
+
+  size_t file_len = file.length ();
+
+  if ((file_len > 4 && file.substr (file_len-4) == ".oct")
+      || (file_len > 4 && file.substr (file_len-4) == ".mex")
+      || (file_len > 2 && file.substr (file_len-2) == ".m"))
+    {
+      file = octave_env::base_pathname (file);
+      file = file.substr (0, file.find_last_of ('.'));
+
+      size_t pos = file.find_last_of (file_ops::dir_sep_str ());
+      if (pos != std::string::npos)
+        file = file.substr (pos+1);
+    }
 
   if (! file.empty ())
     {
       symbol_found = true;
 
-      FILE *fptr = gnulib::fopen (file.c_str (), "r");
+      octave_function *fcn
+        = parse_fcn_file (full_file, file, "", true, false, false, false, "");
 
-      if (fptr)
+      if (fcn)
         {
-          unwind_protect frame;
-          frame.add_fcn (safe_fclose, fptr);
+          retval = fcn->doc_string ();
 
-          bool eof;
-          retval = gobble_leading_white_space (fptr, eof);
-
-          if (retval.empty ())
-            {
-              octave_function *fcn = parse_fcn_file (file, "", true,
-                                                     false, false,
-                                                     false, "");
-
-              if (fcn)
-                {
-                  retval = fcn->doc_string ();
-
-                  delete fcn;
-                }
-            }
+          delete fcn;
         }
     }
 
@@ -3633,14 +3356,9 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     {
       // Temporarily load m-file version of mex-file, if it exists,
       // to get the help-string to use.
-      frame.protect_var (curr_fcn_file_name);
-      frame.protect_var (curr_fcn_file_full_name);
-
-      curr_fcn_file_name = nm;
-      curr_fcn_file_full_name = file.substr (0, len - 2);
 
       octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
-                                                dispatch_type, false,
+                                                nm, dispatch_type, false,
                                                 autoload, autoload,
                                                 relative_lookup, "");
 
@@ -3652,15 +3370,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     }
   else if (len > 2)
     {
-      // These are needed by yyparse.
-
-      frame.protect_var (curr_fcn_file_name);
-      frame.protect_var (curr_fcn_file_full_name);
-
-      curr_fcn_file_name = nm;
-      curr_fcn_file_full_name = file;
-
-      retval = parse_fcn_file (file, dispatch_type, true, autoload,
+      retval = parse_fcn_file (file, nm, dispatch_type, true, autoload,
                                autoload, relative_lookup, "");
     }
 
@@ -3830,12 +3540,6 @@ source_file (const std::string& file_name, const std::string& context,
 
   unwind_protect frame;
 
-  frame.protect_var (curr_fcn_file_name);
-  frame.protect_var (curr_fcn_file_full_name);
-
-  curr_fcn_file_name = file_name;
-  curr_fcn_file_full_name = file_full_name;
-
   if (source_call_depth.find (file_full_name) == source_call_depth.end ())
     source_call_depth[file_full_name] = -1;
 
@@ -3864,9 +3568,9 @@ source_file (const std::string& file_name, const std::string& context,
 
   if (! error_state)
     {
-      octave_function *fcn = parse_fcn_file (file_full_name, "",
-                                             require_file, true, false,
-                                             false, warn_for);
+      octave_function *fcn = parse_fcn_file (file_full_name, file_name,
+                                             "", require_file, true,
+                                             false, false, warn_for);
 
       if (! error_state)
         {

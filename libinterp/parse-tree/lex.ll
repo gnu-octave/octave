@@ -46,8 +46,7 @@ object) relevant global values before and after the nested call.
 %s COMMAND_START
 %s MATRIX_START
 
-%x SCRIPT_FILE_BEGIN
-%x FUNCTION_FILE_BEGIN
+%x INPUT_FILE_BEGIN
 
 %{
 
@@ -147,7 +146,11 @@ object) relevant global values before and after the nested call.
 #define COUNT_TOK_AND_RETURN(tok) \
   do \
     { \
-      Vtoken_count++; \
+      if (tok != '\n') \
+        { \
+          Vtoken_count++; \
+          curr_lexer->token_count++; \
+        } \
       DISPLAY_TOK_AND_RETURN (tok); \
     } \
   while (0)
@@ -256,20 +259,17 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // the parser go down a special path.
 %}
 
-<SCRIPT_FILE_BEGIN>. {
-    LEXER_DEBUG ("<SCRIPT_FILE_BEGIN>.");
+<INPUT_FILE_BEGIN>. {
+    LEXER_DEBUG ("<INPUT_FILE_BEGIN>.");
 
     BEGIN (INITIAL);
     curr_lexer->xunput (yytext[0]);
-    COUNT_TOK_AND_RETURN (SCRIPT_FILE);
-  }
 
-<FUNCTION_FILE_BEGIN>. {
-    LEXER_DEBUG ("<FUNCTION_FILE_BEGIN>.");
+    // May be reset later if we see "function" or "classdef" appears
+    // as the first token.
+    curr_lexer->reading_script_file = true;
 
-    BEGIN (INITIAL);
-    curr_lexer->xunput (yytext[0]);
-    COUNT_TOK_AND_RETURN (FUNCTION_FILE);
+    DISPLAY_TOK_AND_RETURN (INPUT_FILE);
   }
 
 %{
@@ -1324,6 +1324,7 @@ lexical_feedback::reset (void)
   maybe_classdef_get_set_method = false;
   parsing_classdef = false;
   quote_is_transpose = false;
+  force_script = false;
   reading_fcn_file = false;
   reading_script_file = false;
   reading_classdef_file = false;
@@ -1335,7 +1336,10 @@ lexical_feedback::reset (void)
   defining_func = 0;
   looking_at_function_handle = 0;
   block_comment_nesting_level = 0;
-
+  token_count = 0;
+  help_text = "";
+  fcn_file_name = "";
+  fcn_file_full_name = "";
   looking_at_object_index.clear ();
   looking_at_object_index.push_front (false);
 
@@ -1451,31 +1455,20 @@ octave_lexer::reset (void)
       && ! (reading_fcn_file
             || reading_classdef_file
             || reading_script_file
-            || input_from_eval_string ()
-            || input_from_startup_file))
+            || input_from_eval_string ()))
     yyrestart (stdin, scanner);
-
-  // Clear the buffer for help text.
-  while (! help_buf.empty ())
-    help_buf.pop ();
 
   lexical_feedback::reset ();
 }
 
 void
-octave_lexer::prep_for_script_file (void)
+octave_lexer::prep_for_file (void)
 {
   OCTAVE_YYG;
 
-  BEGIN (SCRIPT_FILE_BEGIN);
-}
+  reading_script_file = true;
 
-void
-octave_lexer::prep_for_function_file (void)
-{
-  OCTAVE_YYG;
-
-  BEGIN (FUNCTION_FILE_BEGIN);
+  BEGIN (INPUT_FILE_BEGIN);
 }
 
 int
@@ -1517,9 +1510,9 @@ octave_lexer::handle_end_of_input (void)
       warning ("block comment open at end of input");
 
       if ((reading_fcn_file || reading_script_file || reading_classdef_file)
-          && ! curr_fcn_file_name.empty ())
+          && ! fcn_file_name.empty ())
         warning ("near line %d of file '%s.m'",
-                 input_line_number, curr_fcn_file_name.c_str ());
+                 input_line_number, fcn_file_name.c_str ());
     }
 
   TOK_RETURN (END_OF_INPUT);
@@ -1691,11 +1684,11 @@ octave_lexer::is_keyword_token (const std::string& s)
         case static_kw:
           if ((reading_fcn_file || reading_script_file
                || reading_classdef_file)
-              && ! curr_fcn_file_full_name.empty ())
+              && ! fcn_file_full_name.empty ())
             warning_with_id ("Octave:deprecated-keyword",
                              "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d of file '%s'",
                              input_line_number,
-                             curr_fcn_file_full_name.c_str ());
+                             fcn_file_full_name.c_str ());
           else
             warning_with_id ("Octave:deprecated-keyword",
                              "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d",
@@ -1834,6 +1827,12 @@ octave_lexer::is_keyword_token (const std::string& s)
         case classdef_kw:
           // 'classdef' is always a keyword.
           promptflag--;
+
+          if (! force_script && token_count == 0 && input_from_file ())
+            {
+              reading_classdef_file = true;
+              reading_script_file = false;
+            }
           break;
 
         case function_kw:
@@ -1841,6 +1840,12 @@ octave_lexer::is_keyword_token (const std::string& s)
 
           defining_func++;
           parsed_function_name.push (false);
+
+          if (! force_script && token_count == 0 && input_from_file ())
+            {
+              reading_fcn_file = true;
+              reading_script_file = false;
+            }
 
           if (! (reading_fcn_file || reading_script_file
                  || reading_classdef_file))
@@ -1851,8 +1856,8 @@ octave_lexer::is_keyword_token (const std::string& s)
           {
             if ((reading_fcn_file || reading_script_file
                  || reading_classdef_file)
-                && ! curr_fcn_file_full_name.empty ())
-              tok_val = new token (curr_fcn_file_full_name, l, c);
+                && ! fcn_file_full_name.empty ())
+              tok_val = new token (fcn_file_full_name, l, c);
             else
               tok_val = new token ("stdin", l, c);
           }
@@ -2131,17 +2136,27 @@ octave_lexer::grab_comment_block (stream_reader& reader, bool at_bol,
   return buf;
 }
 
+static bool
+looks_like_copyright (const std::string& s)
+{
+  bool retval = false;
+
+  if (! s.empty ())
+    {
+      size_t offset = s.find_first_not_of (" \t");
+
+      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
+    }
+
+  return retval;
+}
+
 int
 octave_lexer::process_comment (bool start_in_block, bool& eof)
 {
   OCTAVE_YYG;
 
   eof = false;
-
-  std::string help_txt;
-
-  if (! help_buf.empty ())
-    help_txt = help_buf.top ();
 
   char *yytxt = flex_yytext ();
   flex_stream_reader flex_reader (this, yytxt);
@@ -2156,13 +2171,9 @@ octave_lexer::process_comment (bool start_in_block, bool& eof)
   if (lexer_debug_flag)
     std::cerr << "C: " << txt << std::endl;
 
-  if (help_txt.empty () && nesting_level.none ())
-    {
-      if (! help_buf.empty ())
-        help_buf.pop ();
-
-      help_buf.push (txt);
-    }
+  if (nesting_level.none () && help_text.empty () && ! txt.empty ()
+      && ! looks_like_copyright (txt))
+    help_text = txt;
 
   octave_comment_buffer::append (txt);
 
@@ -3513,7 +3524,7 @@ octave_lexer::handle_identifier (void)
 void
 octave_lexer::maybe_warn_separator_insert (char sep)
 {
-  std::string nm = curr_fcn_file_full_name;
+  std::string nm = fcn_file_full_name;
 
   if (nm.empty ())
     warning_with_id ("Octave:separator-insert",
@@ -3528,7 +3539,7 @@ octave_lexer::maybe_warn_separator_insert (char sep)
 void
 octave_lexer::gripe_single_quote_string (void)
 {
-  std::string nm = curr_fcn_file_full_name;
+  std::string nm = fcn_file_full_name;
 
   if (nm.empty ())
     warning_with_id ("Octave:single-quote-string",
@@ -3543,7 +3554,7 @@ octave_lexer::gripe_single_quote_string (void)
 void
 octave_lexer::gripe_matlab_incompatible (const std::string& msg)
 {
-  std::string nm = curr_fcn_file_full_name;
+  std::string nm = fcn_file_full_name;
 
   if (nm.empty ())
     warning_with_id ("Octave:matlab-incompatible",
@@ -3707,8 +3718,7 @@ octave_lexer::display_token (int tok)
     case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
     case FCN: std::cerr << "FCN\n"; break;
     case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
-    case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
-    case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
+    case INPUT_FILE: std::cerr << "INPUT_FILE\n"; break;
     case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
     case METAQUERY: std::cerr << "METAQUERY\n"; break;
     case GET: std::cerr << "GET\n"; break;
@@ -3750,12 +3760,8 @@ display_state (int state)
       std::cerr << "MATRIX_START" << std::endl;
       break;
 
-    case SCRIPT_FILE_BEGIN:
-      std::cerr << "SCRIPT_FILE_BEGIN" << std::endl;
-      break;
-
-    case FUNCTION_FILE_BEGIN:
-      std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
+    case INPUT_FILE_BEGIN:
+      std::cerr << "INPUT_FILE_BEGIN" << std::endl;
       break;
 
     default:

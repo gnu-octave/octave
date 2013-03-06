@@ -94,18 +94,8 @@ octave_time Vlast_prompt_time = 0.0;
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
 
-// TRUE means that input is coming from a file that was named on
-// the command line.
-bool input_from_command_line_file = false;
-
 // TRUE means that stdin is a terminal, not a pipe or redirected file.
 bool stdin_is_tty = false;
-
-// Simple name of function file we are reading.
-std::string curr_fcn_file_name;
-
-// Full name of file we are reading.
-std::string curr_fcn_file_full_name;
 
 // TRUE means this is an interactive shell.
 bool interactive = false;
@@ -518,21 +508,13 @@ get_debug_input (const std::string& prompt)
   VPS1 = prompt;
 
   if (! (interactive || forced_interactive)
-      || (CURR_LEXER->reading_fcn_file
-          || CURR_LEXER->reading_classdef_file
-          || CURR_LEXER->reading_script_file
-          || CURR_LEXER->input_from_eval_string ()
-          || input_from_startup_file
-          || input_from_command_line_file))
+      || CURR_LEXER->reading_fcn_file
+      || CURR_LEXER->reading_classdef_file
+      || CURR_LEXER->reading_script_file
+      || CURR_LEXER->input_from_eval_string ())
     {
       frame.protect_var (forced_interactive);
       forced_interactive = true;
-
-      frame.protect_var (input_from_startup_file);
-      input_from_startup_file = false;
-
-      frame.protect_var (input_from_command_line_file);
-      input_from_command_line_file = false;
     }
 
   // octave_parser constructor sets this for us.
@@ -661,9 +643,6 @@ get_user_input (const octave_value_list& args, int nargout)
 
   if (! (error_state || input_buf.empty ()))
     {
-      if (! input_from_startup_file)
-        command_history::add (input_buf);
-
       size_t len = input_buf.length ();
 
       octave_diary << input_buf;

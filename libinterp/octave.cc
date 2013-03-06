@@ -355,10 +355,6 @@ execute_startup_files (void)
 {
   unwind_protect frame;
 
-  frame.protect_var (input_from_startup_file);
-
-  input_from_startup_file = true;
-
   std::string context;
 
   bool verbose = (verbose_flag && ! inhibit_startup_message);
@@ -488,28 +484,18 @@ execute_command_line_file (const std::string& fname)
   octave_initialized = true;
 
   frame.protect_var (interactive);
-  frame.protect_var (input_from_command_line_file);
-
-  frame.protect_var (curr_fcn_file_name);
-  frame.protect_var (curr_fcn_file_full_name);
 
   frame.protect_var (octave_program_invocation_name);
   frame.protect_var (octave_program_name);
 
   interactive = false;
-  input_from_command_line_file = true;
 
-  curr_fcn_file_name = fname;
-  curr_fcn_file_full_name = curr_fcn_file_name;
+  octave_program_invocation_name = fname;
 
-  octave_program_invocation_name = curr_fcn_file_name;
+  size_t pos = fname.find_last_of (file_ops::dir_sep_chars ());
 
-  size_t pos = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars ());
-
-  std::string tmp = (pos != std::string::npos)
-    ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
-
-  octave_program_name = tmp;
+  octave_program_name
+    = (pos != std::string::npos) ? fname.substr (pos+1) : fname;
 
   std::string context;
   bool verbose = false;

@@ -37,18 +37,8 @@ class octave_value;
 
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
-// TRUE means that input is coming from a file that was named on
-// the command line.
-extern bool input_from_command_line_file;
-
 // TRUE means that stdin is a terminal, not a pipe or redirected file.
 extern bool stdin_is_tty;
-
-// Simple name of function file we are reading.
-extern std::string curr_fcn_file_name;
-
-// Full name of file we are reading.
-extern std::string curr_fcn_file_full_name;
 
 // TRUE means this is an interactive shell.
 extern bool interactive;

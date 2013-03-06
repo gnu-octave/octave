@@ -70,17 +70,11 @@ class tree_switch_command;
 // Nonzero means print parser debugging info (-d).
 extern int octave_debug;
 
-// Buffer for help text snagged from function files.
-extern std::stack<std::string> help_buf;
-
 // TRUE means we are using readline.
 extern bool line_editing;
 
 // TRUE means we printed messages about reading startup files.
 extern bool reading_startup_message_printed;
-
-// TRUE means input is coming from startup file.
-extern bool input_from_startup_file;
 
 extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,

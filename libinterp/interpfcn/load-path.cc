@@ -1956,10 +1956,6 @@ execute_pkg_add_or_del (const std::string& dir,
 
   unwind_protect frame;
 
-  frame.protect_var (input_from_startup_file);
-
-  input_from_startup_file = true;
-
   std::string file = file_ops::concat (dir, script_file);
 
   file_stat fs (file);

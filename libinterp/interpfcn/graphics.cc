@@ -3904,7 +3904,7 @@ axes::properties::init (void)
   xset (title.handle_value (), "horizontalalignment", "center");
   xset (title.handle_value (), "horizontalalignmentmode", "auto");
 
-  xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (xlabel.handle_value (), "verticalalignment", "top");
   xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "verticalalignment", "bottom");
   xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
@@ -4412,7 +4412,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xset (title.handle_value (), "horizontalalignment", "center");
   xset (title.handle_value (), "horizontalalignmentmode", "auto");
 
-  xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (xlabel.handle_value (), "verticalalignment", "top");
   xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "verticalalignment", "bottom");
   xset (ylabel.handle_value (), "verticalalignmentmode", "auto");

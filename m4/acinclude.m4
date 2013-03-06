@@ -1442,7 +1442,7 @@ EOF
           break
         fi
       done
-      rm -f conftest.yy y.tab.h
+      rm -f conftest.yy y.tab.h y.tab.c
       ])
     ;;
   esac

@@ -7022,12 +7022,14 @@ text::properties::update_text_extent (void)
   else if (horizontalalignment_is ("right"))
     halign = 2;
 
-  if (verticalalignment_is ("top"))
+  if (verticalalignment_is ("middle"))
+    valign = 1;
+  else if (verticalalignment_is ("top"))
     valign = 2;
   else if (verticalalignment_is ("baseline"))
     valign = 3;
-  else if (verticalalignment_is ("middle"))
-    valign = 1;
+  else if (verticalalignment_is ("cap"))
+    valign = 4;
 
   Matrix bbox;
 

@@ -1,3 +1,5 @@
+# -*- mode: conf; -*-
+
 # Doxyfile for Doxygen 1.7.1
 
 # This file describes the settings to be used by the documentation system
@@ -22,7 +24,7 @@ DOXYFILE_ENCODING      = UTF-8
 
 # Who we are. :-)
 
-PROJECT_NAME           = GNU Octave
+PROJECT_NAME           = "GNU Octave"
 
 # The public stable API version (unrelated to the internal API
 # version).
@@ -148,9 +150,13 @@ CASE_SENSE_NAMES       = YES
 
 FORCE_LOCAL_INCLUDES   = YES
 
-# Show members in declaration order instead of alphabetically.
+# Show members alphabetically
 
-SORT_MEMBER_DOCS       = NO
+SORT_MEMBER_DOCS       = YES
+
+# Also sort the brief descriptions
+
+SORT_BRIEF_DOCS        = YES
 
 # Put ctors first.
 
@@ -159,12 +165,6 @@ SORT_MEMBERS_CTORS_1ST = YES
 # Show which directories the file is in.
 
 SHOW_DIRECTORIES       = YES
-
-# Set the SHOW_FILES tag to NO to disable the generation of the Files page.
-# This will remove the Files entry from the Quick Index and from the
-# Folder Tree View (if specified). The default is YES.
-
-SHOW_FILES             = YES
 
 # We don't have namespaces, so don't show them.
 
@@ -260,3 +260,8 @@ HIDE_UNDOC_RELATIONS   = NO
 # Use dot from graphviz to generate class diagrams.
 
 HAVE_DOT               = YES
+
+# Remove intermediate dot files.
+
+DOT_CLEANUP            = YES
+

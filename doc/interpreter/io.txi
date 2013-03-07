@@ -178,10 +178,6 @@ A
 
 @DOCSTRING(save)
 
-@DOCSTRING(load)
-
-@DOCSTRING(fileread)
-
 There are three functions that modify the behavior of @code{save}.
 
 @DOCSTRING(default_save_options)
@@ -189,6 +185,10 @@ There are three functions that modify the behavior of @code{save}.
 @DOCSTRING(save_precision)
 
 @DOCSTRING(save_header_format_string)
+
+@DOCSTRING(load)
+
+@DOCSTRING(fileread)
 
 @DOCSTRING(native_float_format)
 

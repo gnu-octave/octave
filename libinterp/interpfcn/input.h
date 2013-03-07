@@ -37,20 +37,11 @@ class octave_value;
 
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
-// TRUE means that stdin is a terminal, not a pipe or redirected file.
-extern bool stdin_is_tty;
-
 // TRUE means this is an interactive shell.
 extern bool interactive;
 
 // TRUE means the user forced this shell to be interactive (-i).
 extern bool forced_interactive;
-
-// Should we issue a prompt?
-extern int promptflag;
-
-// A line of input.
-extern std::string current_input_line;
 
 // TRUE after a call to completion_matches.
 extern bool octave_completion_matches_called;
@@ -91,7 +82,7 @@ public:
 
   friend class octave_input_reader;
 
-  octave_base_reader (void) : count (1) { }
+  octave_base_reader (void) : count (1), pflag (0) { }
 
   octave_base_reader (const octave_base_reader&) : count (1) { }
 
@@ -101,11 +92,30 @@ public:
 
   virtual std::string input_source (void) const { return in_src; }
 
+  void reset (void) { promptflag (1); }
+
+  void increment_promptflag (void) { pflag++; }
+
+  void decrement_promptflag (void) { pflag--; }
+
+  int promptflag (void) const { return pflag; }
+
+  int promptflag (int n)
+  {
+    int retval = pflag;
+    pflag = n;
+    return retval;
+  }
+
   std::string octave_gets (bool& eof);
 
 private:
 
   int count;
+
+  int pflag;
+
+  void do_input_echo (const std::string&) const;
 
   static const std::string in_src;
 };
@@ -203,6 +213,16 @@ public:
     if (--rep->count == 0)
       delete rep;
   }
+
+  void reset (void) { return rep->reset (); }
+
+  void increment_promptflag (void) { rep->increment_promptflag (); }
+
+  void decrement_promptflag (void) { rep->decrement_promptflag (); }
+
+  int promptflag (void) const { return rep->promptflag (); }
+
+  int promptflag (int n) { return rep->promptflag (n); }
 
   std::string get_input (bool& eof)
   {

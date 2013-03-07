@@ -650,6 +650,7 @@ ft_render::text_to_pixels (const std::string& txt,
     case 1: box(1) = -box(3)/2; break;
     case 2: box(1) = -box(3); break;
     case 3: break;
+    case 4: box(1) = -box(3)-box(1); break;
     }
 
   switch (rot_mode)

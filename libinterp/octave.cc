@@ -98,6 +98,10 @@ octave_program_invocation_name;
 // The last component of octave_program_invocation_name.
 static std::string octave_program_name;
 
+// TRUE means we are using readline.
+// (--no-line-editing)
+static bool line_editing = true;
+
 // TRUE means we read ~/.octaverc and ./.octaverc.
 // (--norc; --no-init-file; -f)
 static bool read_init_files = true;
@@ -901,7 +905,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   // If stdin is not a tty, then we are reading commands from a pipe or
   // a redirected file.
-  stdin_is_tty = gnulib::isatty (fileno (stdin));
+  bool stdin_is_tty = gnulib::isatty (fileno (stdin));
 
   interactive = (! embedded && stdin_is_tty
                  && gnulib::isatty (fileno (stdout)));

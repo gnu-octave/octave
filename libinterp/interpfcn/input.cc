@@ -94,20 +94,11 @@ octave_time Vlast_prompt_time = 0.0;
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
 
-// TRUE means that stdin is a terminal, not a pipe or redirected file.
-bool stdin_is_tty = false;
-
 // TRUE means this is an interactive shell.
 bool interactive = false;
 
 // TRUE means the user forced this shell to be interactive (-i).
 bool forced_interactive = false;
-
-// Should we issue a prompt?
-int promptflag = 1;
-
-// The current line of input, from wherever.
-std::string current_input_line;
 
 // TRUE after a call to completion_matches.
 bool octave_completion_matches_called = false;
@@ -129,8 +120,8 @@ static bool Vgud_mode = false;
 // The filemarker used to separate filenames from subfunction names
 char Vfilemarker = '>';
 
-static void
-do_input_echo (const std::string& input_string)
+void
+octave_base_reader::do_input_echo (const std::string& input_string) const
 {
   int do_echo = CURR_LEXER->reading_script_file ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
@@ -140,7 +131,7 @@ do_input_echo (const std::string& input_string)
     {
       if (forced_interactive)
         {
-          if (promptflag > 0)
+          if (pflag > 0)
             octave_stdout << command_editor::decode_prompt_string (VPS1);
           else
             octave_stdout << command_editor::decode_prompt_string (VPS2);
@@ -164,8 +155,6 @@ gnu_readline (const std::string& s, bool& eof)
   octave_quit ();
 
   eof = false;
-
-  assert (line_editing);
 
   std::string retval = command_editor::readline (s, eof);
 
@@ -209,7 +198,7 @@ octave_base_reader::octave_gets (bool& eof)
 
   bool history_skip_auto_repeated_debugging_command = false;
 
-  std::string ps = (promptflag > 0) ? VPS1 : VPS2;
+  std::string ps = (pflag > 0) ? VPS1 : VPS2;
 
   std::string prompt = command_editor::decode_prompt_string (ps);
 
@@ -242,19 +231,17 @@ octave_base_reader::octave_gets (bool& eof)
       history_skip_auto_repeated_debugging_command = true;
     }
 
-  current_input_line = retval;
-
-  if (! current_input_line.empty ())
+  if (! retval.empty ())
     {
       if (! history_skip_auto_repeated_debugging_command)
-        command_history::add (current_input_line);
+        command_history::add (retval);
 
-      octave_diary << current_input_line;
+      octave_diary << retval;
 
-      if (current_input_line[current_input_line.length () - 1] != '\n')
+      if (retval[retval.length () - 1] != '\n')
         octave_diary << "\n";
 
-      do_input_echo (current_input_line);
+      do_input_echo (retval);
     }
   else
     octave_diary << "\n";
@@ -560,11 +547,7 @@ octave_terminal_reader::get_input (bool& eof)
 
   eof = false;
 
-  std::string retval = octave_gets (eof);
-
-  current_input_line = retval;
-
-  return retval;
+  return octave_gets (eof);
 }
 
 const std::string octave_file_reader::in_src ("file");
@@ -576,11 +559,7 @@ octave_file_reader::get_input (bool& eof)
 
   eof = false;
 
-  std::string retval = octave_fgets (file, eof);
-
-  current_input_line = retval;
-
-  return retval;
+  return octave_fgets (file, eof);
 }
 
 const std::string octave_eval_string_reader::in_src ("eval_string");
@@ -602,8 +581,6 @@ octave_eval_string_reader::get_input (bool& eof)
 
   if (retval.empty ())
     eof = true;
-
-  current_input_line = retval;
 
   return retval;
 }

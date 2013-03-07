@@ -3904,7 +3904,7 @@ axes::properties::init (void)
   xset (title.handle_value (), "horizontalalignment", "center");
   xset (title.handle_value (), "horizontalalignmentmode", "auto");
 
-  xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (xlabel.handle_value (), "verticalalignment", "top");
   xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "verticalalignment", "bottom");
   xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
@@ -4412,7 +4412,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xset (title.handle_value (), "horizontalalignment", "center");
   xset (title.handle_value (), "horizontalalignmentmode", "auto");
 
-  xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (xlabel.handle_value (), "verticalalignment", "top");
   xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "verticalalignment", "bottom");
   xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
@@ -7022,12 +7022,14 @@ text::properties::update_text_extent (void)
   else if (horizontalalignment_is ("right"))
     halign = 2;
 
-  if (verticalalignment_is ("top"))
+  if (verticalalignment_is ("middle"))
+    valign = 1;
+  else if (verticalalignment_is ("top"))
     valign = 2;
   else if (verticalalignment_is ("baseline"))
     valign = 3;
-  else if (verticalalignment_is ("middle"))
-    valign = 1;
+  else if (verticalalignment_is ("cap"))
+    valign = 4;
 
   Matrix bbox;
 

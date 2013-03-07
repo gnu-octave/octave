@@ -97,10 +97,6 @@ octave_lexer *CURR_LEXER = 0;
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
-// TRUE means we are using readline.
-// (--no-line-editing)
-bool line_editing = true;
-
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
 
@@ -344,7 +340,6 @@ make_statement (T *arg)
 input           : input1
                   {
                     curr_parser.stmt_list = $1;
-                    promptflag = 1;
                     YYACCEPT;
                   }
                 | simple_list parse_error
@@ -3366,16 +3361,18 @@ octave_parser::bison_error (const char *s)
 
   output_buf << "\n\n";
 
-  if (! current_input_line.empty ())
-    {
-      size_t len = current_input_line.length ();
+  std::string curr_line = curr_lexer->current_input_line;
 
-      if (current_input_line[len-1] == '\n')
-        current_input_line.resize (len-1);
+  if (! curr_line.empty ())
+    {
+      size_t len = curr_line.length ();
+
+      if (curr_line[len-1] == '\n')
+        curr_line.resize (len-1);
 
       // Print the line, maybe with a pointer near the error token.
 
-      output_buf << ">>> " << current_input_line << "\n";
+      output_buf << ">>> " << curr_line << "\n";
 
       if (err_col == 0)
         err_col = len;
@@ -3424,10 +3421,6 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
   FILE *in_stream = command_editor::get_input_stream ();
 
   frame.add_fcn (command_editor::set_input_stream, in_stream);
-
-  frame.protect_var (line_editing);
-
-  line_editing = false;
 
   frame.add_fcn (command_history::ignore_entries,
                  command_history::ignoring_entries ());
@@ -4166,10 +4159,6 @@ eval_string (const std::string& eval_str, bool silent,
   frame.protect_var (CURR_LEXER);
 
   octave_parser curr_parser (eval_str);
-
-  frame.protect_var (line_editing);
-
-  line_editing = false;
 
   do
     {

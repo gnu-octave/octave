@@ -179,9 +179,10 @@ public:
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
       block_comment_nesting_level (0), token_count (0),
-      help_text (), fcn_file_name (), fcn_file_full_name (),
-      looking_at_object_index (), parsed_function_name (),
-      pending_local_variables (), nesting_level (), token_stack ()
+      current_input_line (), help_text (), fcn_file_name (),
+      fcn_file_full_name (), looking_at_object_index (),
+      parsed_function_name (), pending_local_variables (),
+      nesting_level (), token_stack ()
   {
     init ();
   }
@@ -294,6 +295,9 @@ public:
   // Count of tokens recognized by this lexer since initialized or
   // since the last reset.
   size_t token_count;
+
+  // The current line of input.
+  std::string current_input_line;
 
   // The current help text.
   std::string help_text;
@@ -499,6 +503,14 @@ public:
   input_buffer input_buf;
 
   octave_input_reader input_reader;
+
+  void increment_promptflag (void) { input_reader.increment_promptflag (); }
+
+  void decrement_promptflag (void) { input_reader.decrement_promptflag (); }
+
+  int promptflag (void) const { return input_reader.promptflag (); }
+
+  int promptflag (int n) { return input_reader.promptflag (n); }
 
   std::string input_source (void) const
   {

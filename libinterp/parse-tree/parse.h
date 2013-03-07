@@ -83,9 +83,6 @@ class tree_switch_command;
 // Nonzero means print parser debugging info (-d).
 extern int octave_debug;
 
-// TRUE means we are using readline.
-extern bool line_editing;
-
 // TRUE means we printed messages about reading startup files.
 extern bool reading_startup_message_printed;
 

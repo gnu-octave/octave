@@ -898,7 +898,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   // If stdin is not a tty, then we are reading commands from a pipe or
   // a redirected file.
-  stdin_is_tty = gnulib::isatty (fileno (stdin));
+  bool stdin_is_tty = gnulib::isatty (fileno (stdin));
 
   interactive = (! embedded && stdin_is_tty
                  && gnulib::isatty (fileno (stdout)));

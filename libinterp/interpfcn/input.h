@@ -37,9 +37,6 @@ class octave_value;
 
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
-// TRUE means that stdin is a terminal, not a pipe or redirected file.
-extern bool stdin_is_tty;
-
 // TRUE means this is an interactive shell.
 extern bool interactive;
 

@@ -94,9 +94,6 @@ octave_time Vlast_prompt_time = 0.0;
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
 
-// TRUE means that stdin is a terminal, not a pipe or redirected file.
-bool stdin_is_tty = false;
-
 // TRUE means this is an interactive shell.
 bool interactive = false;
 

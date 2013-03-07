@@ -538,7 +538,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     else
       curr_lexer->looking_at_matrix_or_assign_lhs = true;
 
-    promptflag--;
+    curr_lexer->decrement_promptflag ();
     curr_lexer->eat_whitespace ();
 
     curr_lexer->bracketflag++;
@@ -602,7 +602,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (yytext[0] == '\\')
       curr_lexer->gripe_matlab_incompatible_continuation ();
     curr_lexer->scan_for_comments (yytext);
-    promptflag--;
+    curr_lexer->decrement_promptflag ();
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
   }
@@ -781,7 +781,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
     curr_lexer->block_comment_nesting_level++;
-    promptflag--;
+    curr_lexer->decrement_promptflag ();
 
     bool eof = false;
     curr_lexer->process_comment (true, eof);
@@ -852,7 +852,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->at_beginning_of_statement = false;
 
     curr_lexer->nesting_level.paren ();
-    promptflag--;
+    curr_lexer->decrement_promptflag ();
 
     TOK_RETURN ('(');
   }
@@ -920,7 +920,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = false;
 
-    promptflag--;
+    curr_lexer->decrement_promptflag ();
     curr_lexer->eat_whitespace ();
 
     curr_lexer->braceflag++;
@@ -1446,7 +1446,7 @@ octave_lexer::reset (void)
   parser_symtab_context.clear ();
 
   // We do want a prompt by default.
-  promptflag = 1;
+  promptflag (1);
 
   // Only ask for input from stdin if we are expecting interactive
   // input.
@@ -1458,6 +1458,8 @@ octave_lexer::reset (void)
             || reading_script_file
             || input_from_eval_string ()))
     yyrestart (stdin, scanner);
+
+  input_reader.reset ();
 
   lexical_feedback::reset ();
 }
@@ -1786,25 +1788,25 @@ octave_lexer::is_keyword_token (const std::string& s)
         case for_kw:
         case parfor_kw:
         case while_kw:
-          promptflag--;
+          decrement_promptflag ();
           looping++;
           break;
 
         case do_kw:
           at_beginning_of_statement = true;
-          promptflag--;
+          decrement_promptflag ();
           looping++;
           break;
 
         case try_kw:
         case unwind_protect_kw:
           at_beginning_of_statement = true;
-          promptflag--;
+          decrement_promptflag ();
           break;
 
         case if_kw:
         case switch_kw:
-          promptflag--;
+          decrement_promptflag ();
           break;
 
         case get_kw:
@@ -1827,7 +1829,7 @@ octave_lexer::is_keyword_token (const std::string& s)
 
         case classdef_kw:
           // 'classdef' is always a keyword.
-          promptflag--;
+          decrement_promptflag ();
 
           if (! force_script && token_count == 0 && input_from_file ())
             {
@@ -1837,7 +1839,7 @@ octave_lexer::is_keyword_token (const std::string& s)
           break;
 
         case function_kw:
-          promptflag--;
+          decrement_promptflag ();
 
           defining_func++;
           parsed_function_name.push (false);
@@ -1940,12 +1942,12 @@ octave_lexer::grab_block_comment (stream_reader& reader, bool& eof)
                         if (type == '{')
                           {
                             block_comment_nesting_level++;
-                            promptflag--;
+                            decrement_promptflag ();
                           }
                         else
                           {
                             block_comment_nesting_level--;
-                            promptflag++;
+                            increment_promptflag ();
 
                             if (block_comment_nesting_level == 0)
                               {
@@ -2048,7 +2050,7 @@ octave_lexer::grab_comment_block (stream_reader& reader, bool at_bol,
                         done = true;
 
                         block_comment_nesting_level++;
-                        promptflag--;
+                        decrement_promptflag ();
 
                         buf += grab_block_comment (reader, eof);
 
@@ -2648,7 +2650,7 @@ octave_lexer::have_continuation (bool trailing_comments_ok)
               octave_comment_buffer::append (comment_buf);
             }
           current_input_column = 0;
-          promptflag--;
+          decrement_promptflag ();
           gripe_matlab_incompatible_continuation ();
           return true;
 

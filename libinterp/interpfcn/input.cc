@@ -100,9 +100,6 @@ bool interactive = false;
 // TRUE means the user forced this shell to be interactive (-i).
 bool forced_interactive = false;
 
-// Should we issue a prompt?
-int promptflag = 1;
-
 // TRUE after a call to completion_matches.
 bool octave_completion_matches_called = false;
 
@@ -123,8 +120,8 @@ static bool Vgud_mode = false;
 // The filemarker used to separate filenames from subfunction names
 char Vfilemarker = '>';
 
-static void
-do_input_echo (const std::string& input_string)
+void
+octave_base_reader::do_input_echo (const std::string& input_string) const
 {
   int do_echo = CURR_LEXER->reading_script_file ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
@@ -134,7 +131,7 @@ do_input_echo (const std::string& input_string)
     {
       if (forced_interactive)
         {
-          if (promptflag > 0)
+          if (pflag > 0)
             octave_stdout << command_editor::decode_prompt_string (VPS1);
           else
             octave_stdout << command_editor::decode_prompt_string (VPS2);
@@ -203,7 +200,7 @@ octave_base_reader::octave_gets (bool& eof)
 
   bool history_skip_auto_repeated_debugging_command = false;
 
-  std::string ps = (promptflag > 0) ? VPS1 : VPS2;
+  std::string ps = (pflag > 0) ? VPS1 : VPS2;
 
   std::string prompt = command_editor::decode_prompt_string (ps);
 

@@ -496,6 +496,14 @@ public:
 
   octave_input_reader input_reader;
 
+  void increment_promptflag (void) { input_reader.increment_promptflag (); }
+
+  void decrement_promptflag (void) { input_reader.decrement_promptflag (); }
+
+  int promptflag (void) const { return input_reader.promptflag (); }
+
+  int promptflag (int n) { return input_reader.promptflag (n); }
+
   std::string input_source (void) const
   {
     return input_reader.input_source ();

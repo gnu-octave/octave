@@ -319,7 +319,6 @@ make_statement (T *arg)
 input           : input1
                   {
                     curr_parser.stmt_list = $1;
-                    promptflag = 1;
                     YYACCEPT;
                   }
                 | simple_list parse_error

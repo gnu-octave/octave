@@ -51,14 +51,17 @@ function [y, i, j] = unique (x, varargin)
   if (nargin > 1)
     ## parse options
     if (iscellstr (varargin))
-      varargin = unique (varargin);
-      optfirst = ismember ("first", varargin);
-      optlast = ismember ("last", varargin);
-      optrows = ismember ("rows", varargin);
+      optfirst = strcmp ("first", varargin);
+      optlast  = strcmp ("last", varargin);
+      optrows  = strcmp ("rows", varargin);
+      if (! all (optfirst | optlast | optrows))
+        error ("unique: invalid option");
+      endif
+      optfirst = any (optfirst);
+      optlast  = any (optlast);
+      optrows  = any (optrows);
       if (optfirst && optlast)
         error ('unique: cannot specify both "last" and "first"');
-      elseif (optfirst + optlast + optrows != nargin-1)
-        error ("unique: invalid option");
       endif
     else
       error ("unique: options must be strings");

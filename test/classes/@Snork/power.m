@@ -1,7 +1,7 @@
-function s = power(s1, x)
+function s = power (s1, x)
 
-  if ~isa(s1, 'Snork') || isa(x, 'Snork')
-    error('power Snork!!!');
+  if (~isa (s1, 'Snork') || isa (x, 'Snork'))
+    error ('power Snork!!!');
   end
 
   s = s1;

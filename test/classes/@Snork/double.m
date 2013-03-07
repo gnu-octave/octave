@@ -1,4 +1,4 @@
-function x = double(snk)
+function x = double (snk)
 
   x = snk.gick;
 

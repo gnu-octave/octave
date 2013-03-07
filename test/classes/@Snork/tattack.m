@@ -1,5 +1,5 @@
-function s = tattack(x, y)
-  
+function s = tattack (x, y)
+
   s = 'Snork';
-  
+
 end

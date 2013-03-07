@@ -361,7 +361,7 @@
 %! else
 %!   assert ("/", d1);
 %! endif
-%! assert (pwd(), xdir);
+%! assert (pwd (), xdir);
 
 %% test/octave.test/system/cd-2.m
 %!error cd (1)

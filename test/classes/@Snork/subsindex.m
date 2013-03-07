@@ -1,5 +1,5 @@
-function [ out ] = subsindex( obj )
+function out = subsindex (obj)
 
   out = 0;
-        
+
 end

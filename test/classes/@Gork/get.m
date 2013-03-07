@@ -1,4 +1,4 @@
-function [ v ] = get( s, propName )
+function v = get (s, propName)
 
   switch propName
     case 'cork'
@@ -8,7 +8,7 @@ function [ v ] = get( s, propName )
     otherwise
       % Note that get/set for multiple parents is hard.  We only do one
       % branch of the parent tree just to test this stuff out.
-      v = get(s.Dork,propName);
+      v = get (s.Dork,propName);
   end
 
 end

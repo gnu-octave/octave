@@ -93,13 +93,13 @@
 %! m3 = [];
 
 %!test
-%! __fntestfunc__("triu", m1, {"struct"});
+%! __fntestfunc__ ("triu", m1, {"struct"});
 %!test
 %! __fntestfunc__ ("triu", m1, {"struct"}, -1);
 %!test
 %! __fntestfunc__ ("triu", m1, {"struct"}, 1);
 %!test
-%! __fntestfunc__("triu", m3, {"struct"});
+%! __fntestfunc__ ("triu", m3, {"struct"});
 %!test
 %! __fntestfunc__ ("tril", m1, {"struct"});
 %!test
@@ -107,7 +107,7 @@
 %!test
 %! __fntestfunc__ ("tril", m1, {"struct"}, 1);
 %!test
-%! __fntestfunc__("tril", m3, {"struct"});
+%! __fntestfunc__ ("tril", m3, {"struct"});
 %!test
 %! __fntestfunc__ ("squeeze", m2);
 %!test

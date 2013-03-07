@@ -137,7 +137,7 @@
 %! save_precision (1);
 %! x = pi;
 %! nm = tmpnam ();
-%! save("-text", nm, "x");
+%! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);
 %! unlink (nm);
@@ -150,7 +150,7 @@
 %! save_precision (5);
 %! x = pi;
 %! nm = tmpnam ();
-%! save("-text", nm, "x");
+%! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);
 %! unlink (nm);

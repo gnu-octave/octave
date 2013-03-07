@@ -23,7 +23,7 @@
 %!  y = 2;
 %!endfunction
 %!
-%!assert(f(), 1)
+%!assert (f (), 1)
 
 %% test/octave.test/return/return-2.m
 %!test

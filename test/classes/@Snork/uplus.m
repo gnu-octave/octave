@@ -1,4 +1,4 @@
-function s = uplus(s1)
+function s = uplus (s1)
 
   s = s1;
 

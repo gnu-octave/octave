@@ -32,7 +32,7 @@
 %!    case 33
 %!      x(:, :, slice) = 2;
 %!    otherwise
-%!      error("invalid dim, '%d'", dim);
+%!      error ("invalid dim, '%d'", dim);
 %!  endswitch
 %!endfunction
 

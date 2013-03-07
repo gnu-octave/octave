@@ -59,10 +59,10 @@
 %! ws = warning ("query", "backtrace");
 %! warning ("on", "backtrace");
 %! st.state = "on";
-%! assert(warning ("query", "backtrace"), st);
+%! assert (warning ("query", "backtrace"), st);
 %! warning ("off", "backtrace");
 %! st.state = "off";
-%! assert(warning ("query", "backtrace"), st);
+%! assert (warning ("query", "backtrace"), st);
 %! warning (ws.state, "backtrace");
 
 ## Test usage() function

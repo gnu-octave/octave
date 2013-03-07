@@ -175,14 +175,14 @@ cat >>$TESTS <<EOF
 
 %!test # segfault test from edd@debian.org
 %! n = 510;
-%! sparse (kron ((1:n)', ones(n,1)), kron (ones(n,1), (1:n)'), ones (n)); 
+%! sparse (kron ((1:n)', ones (n,1)), kron (ones (n,1), (1:n)'), ones (n));
 
 %% segfault tests from Fabian@isas-berlin.de
 %% Note that the last four do not fail, but rather give a warning
 %% of a singular matrix, which is consistent with the full matrix
 %% behaviour.  They are therefore disabled.
 %!testif HAVE_UMFPACK
-%! assert (inv (sparse ([1,1;1,1+i])), sparse([1-1i,1i;1i,-1i]), 10*eps);
+%! assert (inv (sparse ([1,1;1,1+i])), sparse ([1-1i,1i;1i,-1i]), 10*eps);
 %#!error inv ( sparse ([1,1;1,1]  ) );
 %#!error inv ( sparse ([0,0;0,1]  ) );
 %#!error inv ( sparse ([0,0;0,1+i]) );
@@ -259,13 +259,13 @@ function [passes,total] = test_sprandom
   disp ("appending test output to sprandomtest.log");
   fid = fopen ("sprandomtest.log", "at");
   test ("sprandom.tst", "normal", fid);
-  ##[passes, total] = test("sprandomtest","normal",fid);
+  ##[passes, total] = test ("sprandomtest", "normal", fid);
   fclose (fid);
 endfunction
 
 EOF
     fi
-    
+
 }
 
 
@@ -405,7 +405,7 @@ gen_matrixdiag_tests() {
 %!assert (diag (as(:)',-1), sparse (diag (af(:)',-1)))
 %!assert (spdiags (as,[0,1]), [diag(af,0), diag(af,1)])
 %!test
-%! [tb,tc]=spdiags(as); 
+%! [tb,tc] = spdiags (as); 
 %! assert (spdiags (tb,tc,sparse (zeros (size (as)))), as);
 %! assert (spdiags (tb,tc,size (as,1),size (as,2)), as);
 
@@ -416,12 +416,12 @@ EOF
 gen_matrixreshape_tests() {
     cat >>$TESTS <<EOF
 %% Matrix diagonal tests (uses af,as,bf,bs)
-%!assert(reshape(as,1,prod(size(as))),sparse(reshape(af,1,prod(size(af)))))
-%!assert(reshape(as,prod(size(as)),1),sparse(reshape(af,prod(size(af)),1)))
-%!assert(reshape(as,fliplr(size(as))),sparse(reshape(af,fliplr(size(af)))))
-%!assert(reshape(bs,1,prod(size(as))),sparse(reshape(bf,1,prod(size(af)))))
-%!assert(reshape(bs,prod(size(as)),1),sparse(reshape(bf,prod(size(af)),1)))
-%!assert(reshape(bs,fliplr(size(as))),sparse(reshape(bf,fliplr(size(af)))))
+%!assert (reshape (as,1,prod(size(as))), sparse (reshape (af,1,prod(size(af)))))
+%!assert (reshape (as,prod(size(as)),1), sparse (reshape (af,prod(size(af)),1)))
+%!assert (reshape (as,fliplr(size(as))), sparse (reshape (af,fliplr(size(af)))))
+%!assert (reshape (bs,1,prod(size(as))), sparse (reshape (bf,1,prod(size(af)))))
+%!assert (reshape (bs,prod(size(as)),1), sparse (reshape (bf,prod(size(af)),1)))
+%!assert (reshape (bs,fliplr(size(as))), sparse (reshape (bf,fliplr(size(af)))))
 
 EOF
 }
@@ -552,7 +552,7 @@ gen_unaryop_tests() {
 %!assert (cumprod (as,2), sparse (cumprod (af,2)))
 
 %!assert (min (as), sparse (min (af)))
-%!assert (full (min (as(:))),min (af(:)))
+%!assert (full (min (as(:))), min (af(:)))
 %!assert (min (as,[],1), sparse (min (af,[],1)))
 %!assert (min (as,[],2), sparse (min (af,[],2)))
 %!assert (min (as,[],1), sparse (min (af,[],1)))
@@ -582,8 +582,8 @@ gen_unaryop_tests() {
 %!assert (as',  sparse (af'));
 %!assert (-as, sparse (-af));
 %!assert (~as, sparse (~af));
-%!error [i,j]=size (af);as(i-1,j+1);
-%!error [i,j]=size (af);as(i+1,j-1);
+%!error [i,j] = size (af);as(i-1,j+1);
+%!error [i,j] = size (af);as(i+1,j-1);
 %!test
 %! [Is,Js,Vs] = find (as);
 %! [If,Jf,Vf] = find (af);
@@ -635,7 +635,7 @@ gen_square_tests() {
 
     cat >>$TESTS <<EOF
 %!testif HAVE_UMFPACK
-%! assert(det(bs+speye(size(bs))),det(bf+eye(size(bf))),100*eps*abs(det(bf+eye(size(bf)))))
+%! assert(det(bs+speye(size(bs))), det(bf+eye(size(bf))), 100*eps*abs(det(bf+eye(size(bf)))))
 
 %!testif HAVE_UMFPACK 
 %! [l,u] = lu (sparse ([1,1;1,1]));
@@ -727,19 +727,19 @@ EOF
 
 # test scalar operations: uses af and real scalar bf; modifies as,bf,bs
 gen_scalar_tests() {
-    echo '%!test as=sparse(af);' >> $TESTS
-    echo '%!test bs=bf;' >> $TESTS
+    echo '%!test as = sparse (af);' >> $TESTS
+    echo '%!test bs = bf;' >> $TESTS
     gen_elementop_tests
     gen_ordering_tests
-    echo '%!test bf=bf+1i;' >>$TESTS
-    echo '%!test bs=bf;' >> $TESTS
+    echo '%!test bf = bf+1i;' >>$TESTS
+    echo '%!test bs = bf;' >> $TESTS
     gen_elementop_tests
 }
 
 # test matrix operations: uses af and bf; modifies as,bs
 gen_rectangular_tests() {
-    echo '%!test as=sparse(af);' >> $TESTS
-    echo '%!test bs=sparse(bf);' >>$TESTS
+    echo '%!test as = sparse(af);' >> $TESTS
+    echo '%!test bs = sparse(bf);' >>$TESTS
     gen_mapper_tests
     gen_real_mapper_tests
     gen_unaryop_tests
@@ -806,7 +806,7 @@ cat >>$TESTS <<EOF
 %! funiq = fsum = zeros (m,n);
 %! funiq(r(:) + m*(c(:)-1) ) = ones (size (r(:)));
 %! funiq = sparse (funiq);
-%! for k=1:length(r)
+%! for k=1:length (r)
 %!   fsum(r(k),c(k)) += 1;
 %! endfor
 %! fsum = sparse (fsum);
@@ -847,7 +847,7 @@ EOF
 
 gen_select_tests() {
     cat >>$TESTS <<EOF
-%!test as=sparse(af);
+%!test as = sparse (af);
 
 %% Point tests
 %!test idx = ridx(:) + rows (as) * (cidx (:)-1);
@@ -875,16 +875,16 @@ gen_select_tests() {
 
 %% Assignment test
 %!test
-%! ts=as; ts(:,:) = ts(fliplr (1:size (as,1)),:);
-%! tf=af; tf(:,:) = tf(fliplr (1:size (af,1)),:);
+%! ts = as; ts(:,:) = ts(fliplr (1:size (as,1)),:);
+%! tf = af; tf(:,:) = tf(fliplr (1:size (af,1)),:);
 %! assert (ts, sparse (tf));
 %!test
-%! ts=as; ts(fliplr (1:size (as,1)),:) = ts;
-%! tf=af; tf(fliplr (1:size (af,1)),:) = tf;
+%! ts = as; ts(fliplr (1:size (as,1)),:) = ts;
+%! tf = af; tf(fliplr (1:size (af,1)),:) = tf;
 %! assert (ts, sparse (tf));
 %!test
-%! ts=as; ts(:,fliplr (1:size (as,2))) = ts;
-%! tf=af; tf(:,fliplr (1:size (af,2))) = tf;
+%! ts = as; ts(:,fliplr (1:size (as,2))) = ts;
+%! tf = af; tf(:,fliplr (1:size (af,2))) = tf;
 %! assert (ts, sparse (tf));
 %!test
 %! ts(fliplr (1:size (as,1))) = as(:,1);
@@ -893,10 +893,10 @@ gen_select_tests() {
 
 %% Deletion tests
 %!test
-%! ts=as; ts(1,:)=[]; tf=af; tf(1,:)=[];
+%! ts = as; ts(1,:) = []; tf = af; tf(1,:) = [];
 %! assert (ts, sparse (tf));
 %!test
-%! ts=as; ts(:,1)=[]; tf=af; tf(:,1)=[];
+%! ts = as; ts(:,1) = []; tf = af; tf(:,1) = [];
 %! assert (ts, sparse (tf));
 
 %% Test "end" keyword
@@ -921,7 +921,7 @@ gen_save_tests() {
 %! clear as_save;
 %! load (savefile, "as_save");
 %! unlink (savefile);
-%! assert (as_save, sparse(af));
+%! assert (as_save, sparse (af));
 %!test # save binary
 %! savefile = tmpnam ();
 %! as_save = as;
@@ -929,7 +929,7 @@ gen_save_tests() {
 %! clear as_save;
 %! load (savefile, "as_save");
 %! unlink (savefile);
-%! assert (as_save, sparse(af));
+%! assert (as_save, sparse (af));
 %!testif HAVE_HDF5   # save hdf5
 %! savefile = tmpnam ();
 %! as_save = as;
@@ -937,7 +937,7 @@ gen_save_tests() {
 %! clear as_save;
 %! load (savefile, "as_save");
 %! unlink (savefile);
-%! assert (as_save, sparse(af));
+%! assert (as_save, sparse (af));
 ## FIXME: We should skip (or mark as an expected failure) the test for
 ## saving sparse matrices to MAT files when using 64-bit indexing since
 ## that is not implemented yet.
@@ -948,7 +948,7 @@ gen_save_tests() {
 %! clear as_save;
 %! load (savefile, "as_save");
 %! unlink (savefile);
-%! assert (as_save, sparse(af));
+%! assert (as_save, sparse (af));
 EOF
 }
 
@@ -975,11 +975,11 @@ fi
 
 cat >>$TESTS <<EOF
 %! df = diag (1:n).* alpha; ds = sparse (df);
-%! pdf = df(randperm (n),randperm (n));
+%! pdf = df(randperm (n), randperm (n));
 %! pds = sparse (pdf);
-%! plf = lf(randperm (n),randperm (n));
+%! plf = lf(randperm (n), randperm (n));
 %! pls = sparse (plf);
-%! puf = uf(randperm (n),randperm (n));
+%! puf = uf(randperm (n), randperm (n));
 %! pus = sparse (puf);
 %! bs = spdiags (repmat ([1:n]',1,4),-2:1,n,n).*alpha;
 %! bf = full (bs);
@@ -1024,7 +1024,7 @@ EOF
 cat >>$TESTS <<EOF
 %% QR solver tests
 
-%!function f(a, sz, feps)
+%!function f (a, sz, feps)
 %! b = randn (sz);
 %! x = a \ b; 
 %! assert (a * x, b, feps);
@@ -1040,12 +1040,12 @@ cat >>$TESTS <<EOF
 %!endfunction
 %!testif HAVE_UMFPACK
 %! a = alpha*sprandn (10,11,0.2) + speye (10,11);
-%! f(a,[10,2],1e-10);
+%! f (a,[10,2],1e-10);
 %! ## Test this by forcing matrix_type, as can't get a certain 
 %! ## result for over-determined systems.
-%! a = alpha*sprandn(10,10,0.2) + speye(10,10);
+%! a = alpha*sprandn (10,10,0.2) + speye (10,10);
 %! matrix_type (a, "Singular");
-%! f(a,[10,2],1e-10);
+%! f (a,[10,2],1e-10);
 
 %% Rectanguar solver tests that don't use QR
 
@@ -1194,25 +1194,25 @@ gen_rectangular_tests
 gen_section
 gen_save_tests
 gen_section
-echo '%!test bf=real(bf);' >> $TESTS
+echo '%!test bf = real (bf);' >> $TESTS
 gen_rectangular_tests
 gen_section
 gen_sparsesparse_ordering_tests
 gen_section
-echo '%!test af=real(af);' >> $TESTS
+echo '%!test af = real (af);' >> $TESTS
 gen_rectangular_tests
 gen_section
 gen_save_tests
 gen_section
-echo '%!test bf=bf+1i*(bf~=0);' >> $TESTS
+echo '%!test bf = bf+1i*(bf~=0);' >> $TESTS
 gen_rectangular_tests
 gen_section
 
 # square operations
 if $preset; then
-    echo '%!test af=[1+1i,2-1i,0,0;0,0,0,3+2i;0,0,0,4];' >> $TESTS
-    echo '%! as=sparse(af);' >> $TESTS
-    echo '%!test bf=[0,1-1i,0,0;2+1i,0,0,0;3-1i,2+3i,0,0];' >> $TESTS
+    echo '%!test af = [1+1i,2-1i,0,0;0,0,0,3+2i;0,0,0,4];' >> $TESTS
+    echo '%! as = sparse (af);' >> $TESTS
+    echo '%!test bf = [0,1-1i,0,0;2+1i,0,0,0;3-1i,2+3i,0,0];' >> $TESTS
 else
     cat >>$TESTS <<EOF
 %!test
@@ -1234,34 +1234,34 @@ EOF
 
 gen_square_tests
 gen_section
-echo '%!test bf=real(bf);' >> $TESTS
-echo '%! bs=sparse(bf);' >> $TESTS
+echo '%!test bf = real (bf);' >> $TESTS
+echo '%! bs = sparse (bf);' >> $TESTS
 gen_square_tests
 gen_section
-echo '%!test af=real(af);' >> $TESTS
-echo '%! as=sparse(af);' >> $TESTS
+echo '%!test af = real (af);' >> $TESTS
+echo '%! as = sparse (af);' >> $TESTS
 gen_square_tests
 gen_section
-echo '%!test bf=bf+1i*(bf~=0);' >> $TESTS
-echo '%! bs=sparse(bf);' >> $TESTS
+echo '%!test bf = bf+1i*(bf~=0);' >> $TESTS
+echo '%! bs = sparse (bf);' >> $TESTS
 gen_square_tests
 gen_section
 
 # cholesky tests
 if $preset; then
-  echo '%!test bf=[5,0,1+1i,0;0,5,0,1-2i;1-1i,0,5,0;0,1+2i,0,5];' >> $TESTS
-  echo '%! bs=sparse(bf);' >> $TESTS
+  echo '%!test bf = [5,0,1+1i,0;0,5,0,1-2i;1-1i,0,5,0;0,1+2i,0,5];' >> $TESTS
+  echo '%! bs = sparse (bf);' >> $TESTS
 else
   echo '# This has a small chance of failing to create a positive definite matrix' >> $TESTS
-  echo '%!test n=floor (lognrnd (8,2)+1)' >> $TESTS
+  echo '%!test n = floor (lognrnd (8,2)+1)' >> $TESTS
   echo '%! bs = n*speye (n,n) + sprandn (n,n,0.3);' >> $TESTS
   echo '%! bf = full (bs);' >> $TESTS
 fi
 
 gen_cholesky_tests
 gen_section
-echo '%!test bf=real(bf);' >> $TESTS
-echo '%! bs=sparse(bf);' >> $TESTS
+echo '%!test bf = real (bf);' >> $TESTS
+echo '%! bs = sparse (bf);' >> $TESTS
 gen_cholesky_tests
 gen_section
 
@@ -1311,16 +1311,16 @@ EOF
 fi
 gen_scalar_select_tests
 gen_select_tests
-echo '%!test af=real(af);' >> $TESTS
+echo '%!test af = real (af);' >> $TESTS
 gen_select_tests
 gen_section
 echo '%!shared alpha,beta,df,pdf,lf,plf,uf,puf,bf,cf,bcf,tf,tcf,xf,ds,pds,ls,pls,us,pus,bs,cs,bcs,ts,tcs,xs' >>$TESTS
-echo '%!test alpha=1;beta=1;' >> $TESTS
+echo '%!test alpha=1; beta=1;' >> $TESTS
 gen_solver_tests
-echo '%!test alpha=1;beta=1i;' >> $TESTS
+echo '%!test alpha=1; beta=1i;' >> $TESTS
 gen_solver_tests
-echo '%!test alpha=1i;beta=1;' >> $TESTS
+echo '%!test alpha=1i; beta=1;' >> $TESTS
 gen_solver_tests
-echo '%!test alpha=1i;beta=1i;' >> $TESTS
+echo '%!test alpha=1i; beta=1i;' >> $TESTS
 gen_solver_tests
 gen_section

@@ -48,7 +48,7 @@
 %!endfunction
 %!test
 %! eval ("clear a; a; str='';", "str = mangle (lasterr);");
-%! assert (mangle(lasterr)(1:14), "<'a' undefined");
+%! assert (mangle (lasterr)(1:14), "<'a' undefined");
 %! assert (str(1:14), "<'a' undefined");
 
 %% test/octave.test/eval-catch/eval-catch-8.m

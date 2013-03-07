@@ -1,4 +1,5 @@
 % function TWO returns item "Y"
 
-function a=one(m)
-  a=m.y;
+function a = one (m)
+  a = m.y;
+endfunction

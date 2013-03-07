@@ -26,7 +26,7 @@
 %!  endif
 %!endfunction
 %!
-%!assert(f (5), 120);
+%!assert (f (5), 120)
 
 %% test/octave.test/recursion/recursion-2.m
 %!function y = f (x)
@@ -38,6 +38,7 @@
 %!  endif
 %!endfunction
 %!
-%!assert(f (5), 120);
+%!assert (f (5), 120)
 
 %%FIXME: Need test for maximum recursion depth
+

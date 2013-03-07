@@ -35,11 +35,11 @@
 %!  ## scalar
 %!  a1 = 1;
 %!  ## matrix
-%!  persistent a2 = hilb(3);
+%!  persistent a2 = hilb (3);
 %!  ## complex scalar
 %!  persistent a3 = 1 + 1i;
 %!  ## complex matrix
-%!  persistent a4 = hilb(3) + 1i*hilb(3);
+%!  persistent a4 = hilb (3) + 1i*hilb (3);
 %!  ## bool
 %!  persistent a5 = (1 == 1);
 %!  ## bool matrix
@@ -211,7 +211,7 @@
 %! save -binary struct.dat -struct STR matrix_fld str*_fld;
 %! STR = load ("struct.dat");
 %!
-%! assert (!isfield(STR,"scalar_fld") && ...
+%! assert (!isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
 %!         STR.string_fld == "Octave" && ...
 %!         STR.struct_fld.x == 0 && ...
@@ -305,13 +305,13 @@
 %% test/octave.test/io/printf-1.m
 %!test
 %! nm = tmpnam ();
-%! fid1 = fopen(nm,"w");
+%! fid1 = fopen (nm,"w");
 %! x = fprintf (fid1, "%s: %d\n", "test", 1);
-%! fclose(fid1);
-%! fid2 = fopen(nm,"r");
-%! str = fscanf(fid2,"%s");
-%! fclose(fid2);
-%! unlink(nm);
+%! fclose (fid1);
+%! fid2 = fopen (nm,"r");
+%! str = fscanf (fid2,"%s");
+%! fclose (fid2);
+%! unlink (nm);
 %! assert (x, 8);
 %! assert (str, "test:1");
 

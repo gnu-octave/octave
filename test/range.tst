@@ -40,14 +40,14 @@
 %!assert ([ r ; sparse(z)          ], sparse (expect))
 %!assert ([ r ; sparse(logical(z)) ], sparse (expect))
 
-%!assert ([ r ; int8(z)            ], int8(expect))
-%!assert ([ r ; int16(z)           ], int16(expect))
-%!assert ([ r ; int32(z)           ], int32(expect))
-%!assert ([ r ; int64(z)           ], int64(expect))
-%!assert ([ r ; uint8(z)           ], uint8(expect))
-%!assert ([ r ; uint16(z)          ], uint16(expect))
-%!assert ([ r ; uint32(z)          ], uint32(expect))
-%!assert ([ r ; uint64(z)          ], uint64(expect))
+%!assert ([ r ; int8(z)            ], int8 (expect))
+%!assert ([ r ; int16(z)           ], int16 (expect))
+%!assert ([ r ; int32(z)           ], int32 (expect))
+%!assert ([ r ; int64(z)           ], int64 (expect))
+%!assert ([ r ; uint8(z)           ], uint8 (expect))
+%!assert ([ r ; uint16(z)          ], uint16 (expect))
+%!assert ([ r ; uint32(z)          ], uint32 (expect))
+%!assert ([ r ; uint64(z)          ], uint64 (expect))
 
 ## Test mixing non-integer range with other types
 
@@ -63,14 +63,14 @@
 %!assert ([ r ; sparse(z)          ], sparse (expect))
 %!assert ([ r ; sparse(logical(z)) ], sparse (expect))
 
-%!assert ([ r ; int8(z)            ], int8(expect))
-%!assert ([ r ; int16(z)           ], int16(expect))
-%!assert ([ r ; int32(z)           ], int32(expect))
-%!assert ([ r ; int64(z)           ], int64(expect))
-%!assert ([ r ; uint8(z)           ], uint8(expect))
-%!assert ([ r ; uint16(z)          ], uint16(expect))
-%!assert ([ r ; uint32(z)          ], uint32(expect))
-%!assert ([ r ; uint64(z)          ], uint64(expect))
+%!assert ([ r ; int8(z)            ], int8 (expect))
+%!assert ([ r ; int16(z)           ], int16 (expect))
+%!assert ([ r ; int32(z)           ], int32 (expect))
+%!assert ([ r ; int64(z)           ], int64 (expect))
+%!assert ([ r ; uint8(z)           ], uint8 (expect))
+%!assert ([ r ; uint16(z)          ], uint16 (expect))
+%!assert ([ r ; uint32(z)          ], uint32 (expect))
+%!assert ([ r ; uint64(z)          ], uint64 (expect))
 
 ## Test corner cases of ranges (base and limit)
 

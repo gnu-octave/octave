@@ -151,12 +151,8 @@ public:
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
       curr_class_name (), function_scopes (), primary_fcn_ptr (0),
-<<<<<<< local
-      classdef_object (0), curr_lexer (new lexical_feedback ())
-=======
-      stmt_list (0),
+      classdef_object (0), stmt_list (0),
       curr_lexer (new octave_lexer ()), parser_state (0)
->>>>>>> other
   {
     init ();
   }
@@ -456,13 +452,11 @@ public:
   // Pointer to the primary user function or user script function.
   octave_function *primary_fcn_ptr;
 
-<<<<<<< local
   // Pointer to the classdef object we just parsed, if any.
   tree_classdef *classdef_object;
-=======
+
   // Result of parsing input.
   tree_statement_list *stmt_list;
->>>>>>> other
 
   // State of the lexer.
   octave_lexer *curr_lexer;

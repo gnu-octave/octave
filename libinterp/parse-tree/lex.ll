@@ -46,13 +46,7 @@ object) relevant global values before and after the nested call.
 %s COMMAND_START
 %s MATRIX_START
 
-<<<<<<< local
-%x SCRIPT_FILE_BEGIN
-%x FUNCTION_FILE_BEGIN
-%x CLASSDEF_FILE_BEGIN
-=======
 %x INPUT_FILE_BEGIN
->>>>>>> other
 
 %{
 
@@ -276,14 +270,6 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->reading_script_file = true;
 
     DISPLAY_TOK_AND_RETURN (INPUT_FILE);
-  }
-
-<CLASSDEF_FILE_BEGIN>. {
-    LEXER_DEBUG ("<CLASSDEF_FILE_BEGIN>.");
-
-    BEGIN (INITIAL);
-    curr_lexer->xunput (yytext[0], yytext);
-    COUNT_TOK_AND_RETURN (CLASSDEF_FILE);
   }
 
 %{
@@ -1335,8 +1321,10 @@ lexical_feedback::reset (void)
   looking_for_object_index = false; 
   looking_at_indirect_ref = false;
   parsing_class_method = false;
-  maybe_classdef_get_set_method = false;
   parsing_classdef = false;
+  maybe_classdef_get_set_method = false;
+  parsing_classdef_get_method = false;
+  parsing_classdef_set_method = false;
   quote_is_transpose = false;
   force_script = false;
   reading_fcn_file = false;
@@ -1480,39 +1468,12 @@ octave_lexer::prep_for_file (void)
 {
   OCTAVE_YYG;
 
-  reading_script_file = true;
-
   BEGIN (INPUT_FILE_BEGIN);
 }
 
 int
 octave_lexer::read (char *buf, unsigned max_size)
 {
-<<<<<<< local
-  OCTAVE_YYG;
-
-  BEGIN (FUNCTION_FILE_BEGIN);
-}
-
-void
-lexical_feedback::prep_for_classdef_file (void)
-{
-  OCTAVE_YYG;
-
-  BEGIN (CLASSDEF_FILE_BEGIN);
-}
-
-int
-lexical_feedback::octave_read (char *buf, unsigned max_size)
-{
-  static const char * const eol = "\n";
-  static std::string input_buf;
-  static const char *pos = 0;
-  static size_t chars_left = 0;
-  static bool eof = false;
-
-=======
->>>>>>> other
   int status = 0;
 
   if (input_buf.empty ())
@@ -3765,13 +3726,7 @@ octave_lexer::display_token (int tok)
     case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
     case FCN: std::cerr << "FCN\n"; break;
     case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
-<<<<<<< local
-    case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
-    case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
-    case CLASSDEF_FILE: std::cerr << "CLASSDEF_FILE\n"; break;
-=======
     case INPUT_FILE: std::cerr << "INPUT_FILE\n"; break;
->>>>>>> other
     case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
     case METAQUERY: std::cerr << "METAQUERY\n"; break;
     case GET: std::cerr << "GET\n"; break;
@@ -3815,10 +3770,6 @@ display_state (int state)
 
     case INPUT_FILE_BEGIN:
       std::cerr << "INPUT_FILE_BEGIN" << std::endl;
-      break;
-
-    case CLASSDEF_FILE_BEGIN:
-      std::cerr << "CLASSDEF_FILE_BEGIN" << std::endl;
       break;
 
     default:

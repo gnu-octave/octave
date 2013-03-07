@@ -255,24 +255,14 @@ make_statement (T *arg)
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-<<<<<<< local
-%token FCN SCRIPT_FILE CLASSDEF_FILE FUNCTION_FILE
-=======
-%token FCN INPUT_FILE CLASSDEF
->>>>>>> other
+%token FCN INPUT_FILE
 // %token VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
 // Nonterminals we construct.
-<<<<<<< local
 %type <comment_type> stash_comment function_beg
 %type <tok_type> classdef_beg
-%type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep opt_comma
-=======
-%type <comment_type> stash_comment function_beg classdef_beg
-%type <comment_type> properties_beg methods_beg events_beg enum_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep opt_comma
->>>>>>> other
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -292,16 +282,10 @@ make_statement (T *arg)
 %type <tree_parameter_list_type> param_list param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
-<<<<<<< local
 %type <tree_command_type> jump_command except_command
 %type <tree_function_def_type> function
 %type <tree_classdef_type> classdef
-%type <tree_command_type> script_file classdef_file
-%type <tree_command_type> function_file function_list
-=======
-%type <tree_command_type> jump_command except_command function
-%type <tree_command_type> file classdef
->>>>>>> other
+%type <tree_command_type> file
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -363,13 +347,6 @@ input           : input1
                     promptflag = 1;
                     YYACCEPT;
                   }
-<<<<<<< local
-                | function_file
-                  { YYACCEPT; }
-                | classdef_file
-                  { YYACCEPT; }
-=======
->>>>>>> other
                 | simple_list parse_error
                   { ABORT_PARSE; }
                 | parse_error
@@ -464,9 +441,9 @@ superclass_identifier
                     std::string package_nm = $1->superclass_package_name ();
                     std::string class_nm = $1->superclass_class_name ();
 
-                    $$ = curr_parser->make_superclass_ref
-                                        (method_nm, package_nm, class_nm,
-                                         $1->line (), $1->column ());
+                    $$ = curr_parser.make_superclass_ref
+                                       (method_nm, package_nm, class_nm,
+                                        $1->line (), $1->column ());
                   }
                 ;
 
@@ -475,9 +452,9 @@ meta_identifier : METAQUERY
                     std::string package_nm = $1->meta_package_name ();
                     std::string class_nm = $1->meta_class_name ();
 
-                    $$ = curr_parser->make_meta_class_query
-                                        (package_nm, class_nm,
-                                         $1->line (), $1->column ());
+                    $$ = curr_parser.make_meta_class_query
+                                       (package_nm, class_nm,
+                                        $1->line (), $1->column ());
                   }
                 ;
 
@@ -1189,6 +1166,13 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
 
                     $$ = 0;
                   }
+                | INPUT_FILE opt_nl classdef opt_sep END_OF_INPUT
+                  {
+                    if (curr_lexer->reading_classdef_file)
+                      curr_parser.classdef_object = $3;
+
+                    $$ = 0;
+                  }
                 ;
 
 // ===================
@@ -1302,26 +1286,15 @@ function_end    : END
                   }
                 ;
 
-// =============
-// Classdef file
-// =============
-
-classdef_file   : CLASSDEF_FILE classdef opt_sep END_OF_INPUT
-                  {
-                    curr_parser->classdef_object = $2;
-                    $$ = 0;
-                  }
-                ;
-
 // ========
 // Classdef
 // ========
 
 classdef_beg    : CLASSDEF
                   {
-                    if (! reading_classdef_file)
+                    if (! curr_lexer->reading_classdef_file)
                       {
-                        curr_parser->bison_error ("classdef must appear inside a file containing only a class definition");
+                        curr_parser.bison_error ("classdef must appear inside a file containing only a class definition");
                         YYABORT;
                       }
 
@@ -1333,14 +1306,7 @@ classdef_beg    : CLASSDEF
 classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep class_body opt_sep END
                   {
                     curr_lexer->parsing_classdef = false;
-<<<<<<< local
-                    if (! ($$ = curr_parser->make_classdef ($1, $3, $4, $5, $7, $9, $2)))
-=======
-
-                    if (curr_parser.end_token_ok ($1, token::classdef_end))
-                      $$ = curr_parser.make_end ("endclassdef", $1->line (), $1->column ());
-                    else
->>>>>>> other
+                    if (! ($$ = curr_parser.make_classdef ($1, $3, $4, $5, $7, $9, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1426,8 +1392,8 @@ class_body      : properties_block
 properties_block
                 : PROPERTIES stash_comment opt_attr_list opt_sep property_list opt_sep END
                   {
-                    if (! ($$ = curr_parser->make_classdef_properties_block
-                                               ($1, $3, $5, $7, $2)))
+                    if (! ($$ = curr_parser.make_classdef_properties_block
+                                              ($1, $3, $5, $7, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1453,8 +1419,8 @@ class_property  : identifier
 
 methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_sep END
                   {
-                    if (! ($$ = curr_parser->make_classdef_methods_block
-                                               ($1, $3, $5, $7, $2)))
+                    if (! ($$ = curr_parser.make_classdef_methods_block
+                                              ($1, $3, $5, $7, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1481,8 +1447,8 @@ methods_list    : function
 
 events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep END
                   {
-                    if (! ($$ = curr_parser->make_classdef_events_block
-                                               ($1, $3, $5, $7, $2)))
+                    if (! ($$ = curr_parser.make_classdef_events_block
+                                              ($1, $3, $5, $7, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1502,8 +1468,8 @@ class_event     : identifier
 
 enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_sep END
                   {
-                    if (! ($$ = curr_parser->make_classdef_enum_block
-                                               ($1, $3, $5, $7, $2)))
+                    if (! ($$ = curr_parser.make_classdef_enum_block
+                                              ($1, $3, $5, $7, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -3006,12 +2972,12 @@ octave_parser::make_classdef (token *tok_val,
 
   std::string cls_name = id->name ();
 
-  std::string nm = curr_fcn_file_name;
+  std::string nm = curr_lexer->fcn_file_name;
 
   size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
 
   if (pos != std::string::npos)
-    nm = curr_fcn_file_name.substr (pos+1);
+    nm = curr_lexer->fcn_file_name.substr (pos+1);
 
   if (nm != cls_name)
     {
@@ -3482,171 +3448,46 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
       // octave_parser constructor sets this for us.
       frame.protect_var (CURR_LEXER);
 
-<<<<<<< local
-      octave_parser *curr_parser = new octave_parser ();
-      frame.add_fcn (octave_parser::cleanup, curr_parser);
-=======
       octave_parser curr_parser (ffile);
->>>>>>> other
 
-<<<<<<< local
-      curr_parser->curr_class_name = dispatch_type;
-      curr_parser->autoloading = autoload;
-      curr_parser->fcn_file_from_relative_lookup = relative_lookup;
-=======
       curr_parser.curr_class_name = dispatch_type;
       curr_parser.autoloading = autoload;
       curr_parser.fcn_file_from_relative_lookup = relative_lookup;
->>>>>>> other
 
-<<<<<<< local
-      std::string help_txt
-        = gobble_leading_white_space
-            (ffile, eof,
-             curr_parser->curr_lexer->input_line_number,
-             curr_parser->curr_lexer->current_input_column);
-=======
       // Do this with an unwind-protect cleanup function so that
       // the forced variables will be unmarked in the event of an
       // interrupt.
       symbol_table::scope_id scope = symbol_table::top_scope ();
       frame.add_fcn (symbol_table::unmark_forced_variables, scope);
->>>>>>> other
 
-<<<<<<< local
-      if (! help_txt.empty ())
-        help_buf.push (help_txt);
-=======
       curr_parser.curr_lexer->force_script = force_script;
       curr_parser.curr_lexer->prep_for_file ();
       curr_parser.curr_lexer->parsing_class_method = ! dispatch_type.empty ();
->>>>>>> other
 
-<<<<<<< local
-      if (! eof)
-        {
-          std::string file_type;
-=======
       curr_parser.curr_lexer->fcn_file_name = file;
       curr_parser.curr_lexer->fcn_file_full_name = full_file;
->>>>>>> other
 
-<<<<<<< local
-          frame.protect_var (get_input_from_eval_string);
-          frame.protect_var (reading_fcn_file);
-          frame.protect_var (reading_script_file);
-          frame.protect_var (reading_classdef_file);
-          frame.protect_var (Vecho_executing_commands);
-=======
       int status = curr_parser.run ();
->>>>>>> other
 
-<<<<<<< local
-          get_input_from_eval_string = false;
-=======
       fcn_ptr = curr_parser.primary_fcn_ptr;
->>>>>>> other
 
-<<<<<<< local
-          if (! force_script && looking_at_function_keyword (ffile))
+      if (status == 0)
+        {
+          if (curr_parser.curr_lexer->reading_classdef_file
+              && curr_parser.classdef_object)
             {
-              file_type = "function";
+              // Convert parse tree for classdef object to
+              // meta.class info (and stash it in the symbol
+              // table?).  Return pointer to constructor?
 
-              Vecho_executing_commands = ECHO_OFF;
+              if (fcn_ptr)
+                panic_impossible ();
 
-              reading_classdef_file = false;
-              reading_fcn_file = true;
-              reading_script_file = false;
-            }
-          else if (! force_script && looking_at_classdef_keyword (ffile))
-            {
-              file_type = "classdef";
-
-              Vecho_executing_commands = ECHO_OFF;
-
-              reading_classdef_file = true;
-              reading_fcn_file = false;
-              reading_script_file = false;
-            }
-          else
-            {
-              file_type = "script";
-
-              Vecho_executing_commands = ECHO_OFF;
-
-              reading_classdef_file = false;
-              reading_fcn_file = false;
-              reading_script_file = true;
-            }
-
-          // Do this with an unwind-protect cleanup function so that
-          // the forced variables will be unmarked in the event of an
-          // interrupt.
-          symbol_table::scope_id scope = symbol_table::top_scope ();
-          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
-
-          if (! help_txt.empty ())
-            help_buf.push (help_txt);
-
-          if (reading_script_file)
-            curr_parser->curr_lexer->prep_for_script_file ();
-          else if (reading_classdef_file)
-            curr_parser->curr_lexer->prep_for_classdef_file ();
-          else
-            curr_parser->curr_lexer->prep_for_function_file ();
-
-          curr_parser->curr_lexer->parsing_class_method = ! dispatch_type.empty ();
-
-          frame.protect_var (global_command);
-
-          global_command = 0;
-
-          int status = curr_parser->run ();
-
-          // Use an unwind-protect cleanup function so that the
-          // global_command list will be deleted in the event of an
-          // interrupt.
-
-          frame.add_fcn (cleanup_statement_list, &global_command);
-
-          fcn_ptr = curr_parser->primary_fcn_ptr;
-
-          if (status == 0)
-            {
-              if (reading_classdef_file && curr_parser->classdef_object)
-                {
-                  // Convert parse tree for classdef object to
-                  // meta.class info (and stash it in the symbol
-                  // table?).  Return pointer to constructor?
-
-                  if (fcn_ptr)
-                    panic_impossible ();
-
-                  fcn_ptr = curr_parser->classdef_object->make_meta_class ();
-                }
-            }
-          else
-            {
-              error ("parse error while reading %s file %s",
-                     file_type.c_str(), ff.c_str ());
+              fcn_ptr = curr_parser.classdef_object->make_meta_class ();
             }
         }
       else
-        {
-          int l = curr_parser->curr_lexer->input_line_number;
-          int c = curr_parser->curr_lexer->current_input_column;
-
-          tree_statement *end_of_script
-            = curr_parser->make_end ("endscript", l, c);
-
-          curr_parser->make_script (0, end_of_script);
-
-          fcn_ptr = curr_parser->primary_fcn_ptr;
-        }
-=======
-      if (status != 0)
         error ("parse error while reading file %s", full_file.c_str ());
->>>>>>> other
     }
   else if (require_file)
     error ("no such file, '%s'", full_file.c_str ());

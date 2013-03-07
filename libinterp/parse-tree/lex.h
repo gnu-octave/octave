@@ -169,7 +169,9 @@ public:
       looking_at_matrix_or_assign_lhs (false),
       looking_for_object_index (false), 
       looking_at_indirect_ref (false), parsing_class_method (false),
-      maybe_classdef_get_set_method (false), parsing_classdef (false),
+      parsing_classdef (false), maybe_classdef_get_set_method (false),
+      parsing_classdef_get_method (false),
+      parsing_classdef_set_method (false), 
       quote_is_transpose (false), force_script (false),
       reading_fcn_file (false), reading_script_file (false),
       reading_classdef_file (false),
@@ -197,16 +199,9 @@ public:
   // matrix definition.
   bool convert_spaces_to_comma;
 
-<<<<<<< local
-  void prep_for_classdef_file (void);
-=======
   // gag.  stupid kludge so that [[1,2][3,4]] will work.
   bool do_comma_insert;
->>>>>>> other
 
-<<<<<<< local
-  int octave_read (char *buf, unsigned int max_size);
-=======
   // true means we are at the beginning of a statement, where a
   // command name is possible.
   bool at_beginning_of_statement;
@@ -242,13 +237,19 @@ public:
   // true means we are parsing a class method in function or classdef file.
   bool parsing_class_method;
 
+  // true means we are parsing a classdef file
+  bool parsing_classdef;
+
   // true means we are parsing a class method declaration line in a
   // classdef file and can accept a property get or set method name.
   // for example, "get.propertyname" is recognized as a function name.
   bool maybe_classdef_get_set_method;
 
-  // true means we are parsing a classdef file
-  bool parsing_classdef;
+  // TRUE means we are parsing a classdef get.method.
+  bool parsing_classdef_get_method;
+
+  // TRUE means we are parsing a classdef set.method.
+  bool parsing_classdef_set_method;
 
   // return transpose or start a string?
   bool quote_is_transpose;
@@ -403,7 +404,6 @@ public:
   int read (char *buf, unsigned int max_size);
 
   int handle_end_of_input (void);
->>>>>>> other
 
   char *flex_yytext (void);
 
@@ -515,94 +515,10 @@ public:
     return input_source () == "file";
   }
 
-<<<<<<< local
-  // TRUE means we're parsing the parameter list for a function.
-  bool looking_at_parameter_list;
-
-  // TRUE means we're parsing a declaration list (global or
-  // persistent).
-  bool looking_at_decl_list;
-
-  // TRUE means we are looking at the initializer expression for a
-  // parameter list element.
-  bool looking_at_initializer_expression;
-
-  // TRUE means we're parsing a matrix or the left hand side of
-  // multi-value assignment statement.
-  bool looking_at_matrix_or_assign_lhs;
-
-  // Object index not possible until we've seen something.
-  bool looking_for_object_index;
-
-  // TRUE means we're looking at an indirect reference to a
-  // structure element.
-  bool looking_at_indirect_ref;
-
-  // TRUE means we are parsing a class method in function or classdef file.
-  bool parsing_class_method;
-
-  // TRUE means we are parsing a class method declaration line in a
-  // classdef file and can accept a property get or set method name.
-  // For example, "get.PropertyName" is recognized as a function name.
-  bool maybe_classdef_get_set_method;
-
-  // TRUE means we are parsing a classdef file
-  bool parsing_classdef;
-
-  // TRUE means we are parsing a classdef get.method.
-  bool parsing_classdef_get_method;
-
-  // TRUE means we are parsing a classdef set.method.
-  bool parsing_classdef_set_method;
-
-  // Return transpose or start a string?
-  bool quote_is_transpose;
-
-  // The current input line number.
-  int input_line_number;
-
-  // The column of the current token.
-  int current_input_column;
-
-  // Square bracket level count.
-  int bracketflag;
-
-  // Curly brace level count.
-  int braceflag;
-
-  // TRUE means we're in the middle of defining a loop.
-  int looping;
-
-  // Nonzero means we're in the middle of defining a function.
-  int defining_func;
-
-  // Nonzero means we are parsing a function handle.
-  int looking_at_function_handle;
-
-  // Nestng level for blcok comments.
-  int block_comment_nesting_level;
-
-  // If the front of the list is TRUE, the closest paren, brace, or
-  // bracket nesting is an index for an object.
-  std::list<bool> looking_at_object_index;
-
-  // If the top of the stack is TRUE, then we've already seen the name
-  // of the current function.  Should only matter if
-  // current_function_level > 0
-  std::stack<bool> parsed_function_name;
-
-  // Set of identifiers that might be local variable names.
-  std::set<std::string> pending_local_variables;
-
-  // Is the closest nesting level a square bracket, squiggly brace or
-  // a paren?
-  bbp_nesting_level nesting_level;
-=======
   bool input_from_eval_string (void) const
   {
     return input_source () == "eval_string";
   }
->>>>>>> other
 
   // For unwind protect.
   static void cleanup (octave_lexer *lexer) { delete lexer; }

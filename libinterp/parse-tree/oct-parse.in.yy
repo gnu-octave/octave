@@ -3101,16 +3101,18 @@ octave_parser::bison_error (const char *s)
 
   output_buf << "\n\n";
 
-  if (! current_input_line.empty ())
-    {
-      size_t len = current_input_line.length ();
+  std::string curr_line = curr_lexer->current_input_line;
 
-      if (current_input_line[len-1] == '\n')
-        current_input_line.resize (len-1);
+  if (! curr_line.empty ())
+    {
+      size_t len = curr_line.length ();
+
+      if (curr_line[len-1] == '\n')
+        curr_line.resize (len-1);
 
       // Print the line, maybe with a pointer near the error token.
 
-      output_buf << ">>> " << current_input_line << "\n";
+      output_buf << ">>> " << curr_line << "\n";
 
       if (err_col == 0)
         err_col = len;

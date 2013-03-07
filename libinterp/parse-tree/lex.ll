@@ -1337,6 +1337,7 @@ lexical_feedback::reset (void)
   looking_at_function_handle = 0;
   block_comment_nesting_level = 0;
   token_count = 0;
+  current_input_line = "";
   help_text = "";
   fcn_file_name = "";
   fcn_file_full_name = "";
@@ -1479,8 +1480,8 @@ octave_lexer::read (char *buf, unsigned max_size)
   if (input_buf.empty ())
     {
       bool eof = false;
-      std::string input = input_reader.get_input (eof);
-      input_buf.fill (input, eof);
+      current_input_line = input_reader.get_input (eof);
+      input_buf.fill (current_input_line, eof);
     }
 
   if (! input_buf.empty ())

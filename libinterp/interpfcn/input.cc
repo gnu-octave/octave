@@ -106,9 +106,6 @@ bool forced_interactive = false;
 // Should we issue a prompt?
 int promptflag = 1;
 
-// The current line of input, from wherever.
-std::string current_input_line;
-
 // TRUE after a call to completion_matches.
 bool octave_completion_matches_called = false;
 
@@ -242,19 +239,17 @@ octave_base_reader::octave_gets (bool& eof)
       history_skip_auto_repeated_debugging_command = true;
     }
 
-  current_input_line = retval;
-
-  if (! current_input_line.empty ())
+  if (! retval.empty ())
     {
       if (! history_skip_auto_repeated_debugging_command)
-        command_history::add (current_input_line);
+        command_history::add (retval);
 
-      octave_diary << current_input_line;
+      octave_diary << retval;
 
-      if (current_input_line[current_input_line.length () - 1] != '\n')
+      if (retval[retval.length () - 1] != '\n')
         octave_diary << "\n";
 
-      do_input_echo (current_input_line);
+      do_input_echo (retval);
     }
   else
     octave_diary << "\n";
@@ -560,11 +555,7 @@ octave_terminal_reader::get_input (bool& eof)
 
   eof = false;
 
-  std::string retval = octave_gets (eof);
-
-  current_input_line = retval;
-
-  return retval;
+  return octave_gets (eof);
 }
 
 const std::string octave_file_reader::in_src ("file");
@@ -576,11 +567,7 @@ octave_file_reader::get_input (bool& eof)
 
   eof = false;
 
-  std::string retval = octave_fgets (file, eof);
-
-  current_input_line = retval;
-
-  return retval;
+  return octave_fgets (file, eof);
 }
 
 const std::string octave_eval_string_reader::in_src ("eval_string");
@@ -602,8 +589,6 @@ octave_eval_string_reader::get_input (bool& eof)
 
   if (retval.empty ())
     eof = true;
-
-  current_input_line = retval;
 
   return retval;
 }

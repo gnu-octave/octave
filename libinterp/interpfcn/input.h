@@ -49,9 +49,6 @@ extern bool forced_interactive;
 // Should we issue a prompt?
 extern int promptflag;
 
-// A line of input.
-extern std::string current_input_line;
-
 // TRUE after a call to completion_matches.
 extern bool octave_completion_matches_called;
 

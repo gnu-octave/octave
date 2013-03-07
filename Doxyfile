@@ -27,7 +27,7 @@ PROJECT_NAME           = GNU Octave
 # The public stable API version (unrelated to the internal API
 # version).
 
-PROJECT_NUMBER         = 3.6
+PROJECT_NUMBER         = 3.7
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
@@ -176,7 +176,7 @@ SHOW_NAMESPACES        = NO
 
 # Which directories contain Octave source code
 
-INPUT                  = src/ liboctave/ libcruft/
+INPUT                  = src/ liboctave/ libinterp/
 
 # Search subdirectories for input.
 

@@ -1,6 +1,6 @@
 function out = gick (in, val)
 
-  if (nargin == 1) 
+  if (nargin == 1)
     out = in.gick;
   else
     in.gick = val;

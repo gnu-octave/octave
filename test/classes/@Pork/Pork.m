@@ -13,7 +13,7 @@ function s = Pork (geek, gurk)
       s.gurk = gurk;
     end
     s = class (s, 'Pork', s0);
-   end 
+   end
    superiorto ('Dork');
 
 end

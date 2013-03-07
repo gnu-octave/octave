@@ -1,6 +1,6 @@
 function out = click (in, val)
 
-  if (nargin == 1) 
+  if (nargin == 1)
     out = in.click;
   else
     in.click = val;

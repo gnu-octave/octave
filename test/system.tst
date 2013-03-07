@@ -155,14 +155,14 @@
 %! s1 = stat (nm);
 %! fclose (id);
 %! unlink (nm);
-%! 
+%!
 %! umask (777);
 %! nm = tmpnam ();
 %! id = fopen (nm, "wb");
 %! s2 = stat (nm);
 %! fclose (id);
 %! unlink (nm);
-%! 
+%!
 %! assert (deblank (s1.modestr), "-rw-rw-rw-");
 %! assert (deblank (s2.modestr), "----------");
 %! # Restore original umask value
@@ -372,7 +372,7 @@
 %% test/octave.test/system/getpwent-1.m
 %!testif HAVE_GETPWENT
 %! s = getpwent ();
-%! endpwent (); 
+%! endpwent ();
 %! assert ((isstruct (s)
 %! && isfield (s, "name")
 %! && isfield (s, "passwd")
@@ -389,7 +389,7 @@
 %!testif HAVE_GETPWUID
 %! x = getpwent ();
 %! y = getpwuid (x.uid);
-%! endpwent (); 
+%! endpwent ();
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/getpwuid-2.m
@@ -402,7 +402,7 @@
 %!testif HAVE_GETPWNAM
 %! x = getpwent ();
 %! y = getpwnam (x.name);
-%! endpwent (); 
+%! endpwent ();
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/getpwnam-2.m
@@ -416,7 +416,7 @@
 %! x = getpwent ();
 %! setpwent ();
 %! y = getpwent ();
-%! endpwent (); 
+%! endpwent ();
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/setpwent-2.m

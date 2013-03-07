@@ -1,6 +1,6 @@
 function out = gurk (in, val)
 
-  if (nargin == 1) 
+  if (nargin == 1)
     out = in.gurk;
   else
     in.gurk = val;

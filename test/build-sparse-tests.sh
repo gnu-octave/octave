@@ -19,7 +19,7 @@
 # <http://www.gnu.org/licenses/>.
 
 # Some tests are commented out because they are known to be broken!
-# Search for "# fails"   
+# Search for "# fails"
 
 # ./build_sparse_tests.sh preset
 #    creates sparse.tst with preset tests.
@@ -36,13 +36,13 @@
 # uses randomly generated matrices.
 #
 # The tests are mostly identical for each case but the code is different,
-# so it is important that the tests be run on all cases.  Because our test 
+# so it is important that the tests be run on all cases.  Because our test
 # harness doesn't have support for looping or macros (it is only needed
 # for new data types), but sh does, we use sh to generate inline versions of
 # the tests for each case.
 #
 # Our 'macros' use shared variables as parameters.  This allows us to
-# for example define A complex and include all the unary ops tests, 
+# for example define A complex and include all the unary ops tests,
 # then set A=real(A) and include all the unary ops tests.  Thus the
 # same tests work for real and complex.  For binary tests it is even
 # more complicated because we want full X sparse, sparse X full and
@@ -59,7 +59,7 @@
 #    helper gen_eat_zeros
 #        make sure sparse-scalar ops which generate 0 work
 #    gen_specific_tests
-#        specific and eat zeros tests 
+#        specific and eat zeros tests
 #    helper gen_ordering_tests
 #        ordered comparison operators for real valued tests
 #    helper gen_sparsesparse_ordering_tests
@@ -71,12 +71,12 @@
 #        element-wise matrix binary operators, for sparse-sparse ops.
 #        horizontal/vertical concatenation are here as well.
 #    helper gen_divop_tests
-#        left and right matrix division operators of rectangular matrices. 
+#        left and right matrix division operators of rectangular matrices.
 #        Needs QR solvers
 #    helper gen_square_divop_tests
-#        left and right matrix division operators of square matrices. 
+#        left and right matrix division operators of square matrices.
 #    helper gen_matrixop_tests
-#        rectangular matrix binary operators: * 
+#        rectangular matrix binary operators: *
 #    helper gen_matrixdiag_tests
 #        Tests extract of diag and creation of diagonal matrices using
 #        diag and spdiags functions
@@ -146,7 +146,7 @@ EOF
 # Specific preset tests
 
 # =======================================================
-# If a sparse operation yields zeros, then those elements 
+# If a sparse operation yields zeros, then those elements
 # of the returned sparse matrix should be eaten.
 gen_eat_zeros() {
 cat >>$TESTS <<EOF
@@ -405,7 +405,7 @@ gen_matrixdiag_tests() {
 %!assert (diag (as(:)',-1), sparse (diag (af(:)',-1)))
 %!assert (spdiags (as,[0,1]), [diag(af,0), diag(af,1)])
 %!test
-%! [tb,tc] = spdiags (as); 
+%! [tb,tc] = spdiags (as);
 %! assert (spdiags (tb,tc,sparse (zeros (size (as)))), as);
 %! assert (spdiags (tb,tc,size (as,1),size (as,2)), as);
 
@@ -637,7 +637,7 @@ gen_square_tests() {
 %!testif HAVE_UMFPACK
 %! assert(det(bs+speye(size(bs))), det(bf+eye(size(bf))), 100*eps*abs(det(bf+eye(size(bf)))))
 
-%!testif HAVE_UMFPACK 
+%!testif HAVE_UMFPACK
 %! [l,u] = lu (sparse ([1,1;1,1]));
 %! assert (l*u, [1,1;1,1], 10*eps);
 
@@ -701,7 +701,7 @@ gen_cholesky_tests() {
     cat >>$TESTS <<EOF
 %!testif HAVE_CHOLMOD
 %! assert (chol (bs)'*chol (bs), bs, 1e-10);
-%!testif HAVE_CHOLMOD 
+%!testif HAVE_CHOLMOD
 %! assert (chol (bs,'lower')*chol (bs,'lower')', bs, 1e-10);
 %!testif HAVE_CHOLMOD
 %! assert (chol (bs,'lower'), chol (bs)', 1e-10);
@@ -1026,22 +1026,22 @@ cat >>$TESTS <<EOF
 
 %!function f (a, sz, feps)
 %! b = randn (sz);
-%! x = a \ b; 
+%! x = a \ b;
 %! assert (a * x, b, feps);
 %! b = randn (sz) + 1i*randn (sz);
-%! x = a \ b;  
+%! x = a \ b;
 %! assert (a * x, b, feps);
 %! b = sprandn (sz(1),sz(2),0.2);
 %! x = a \ b;
 %! assert (sparse (a * x), b, feps);
 %! b = sprandn (sz(1),sz(2),0.2) + 1i*sprandn (sz(1),sz(2),0.2);
-%! x = a \ b; 
+%! x = a \ b;
 %! assert (sparse (a * x), b, feps);
 %!endfunction
 %!testif HAVE_UMFPACK
 %! a = alpha*sprandn (10,11,0.2) + speye (10,11);
 %! f (a,[10,2],1e-10);
-%! ## Test this by forcing matrix_type, as can't get a certain 
+%! ## Test this by forcing matrix_type, as can't get a certain
 %! ## result for over-determined systems.
 %! a = alpha*sprandn (10,10,0.2) + speye (10,10);
 %! matrix_type (a, "Singular");
@@ -1149,7 +1149,7 @@ gen_function
 gen_section
 
 # specific tests
-if $preset; then 
+if $preset; then
     gen_specific_tests
     gen_section
 fi

@@ -4,7 +4,7 @@ function g = subsasgn (g, s, x)
   case '.'
     switch s.subs
     case 'gyrk'
-      g.gyrk = x; 
+      g.gyrk = x;
   end
 
 end

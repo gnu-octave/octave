@@ -16,8 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This piece of test code ensures that all operations which work on 
-## dimensions alone (squeeze, triu, etc.) work for all objects and 
+## This piece of test code ensures that all operations which work on
+## dimensions alone (squeeze, triu, etc.) work for all objects and
 ## preserve type. Even if the object is an empty matrix. This code is
 ## not to check that the function itself returns teh correct result,
 ## just that the results are consistent for all types.

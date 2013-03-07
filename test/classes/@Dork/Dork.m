@@ -13,6 +13,6 @@ function s = Dork (gick, gack)
       s.gack = gack;
     end
     s = class (s, 'Dork', s0);
-   end 
+   end
 
 end

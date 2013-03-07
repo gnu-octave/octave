@@ -1,4 +1,4 @@
-function display (s) 
+function display (s)
 %  Display the critical info for an amplifier
 
    gick = get (s, 'gick');

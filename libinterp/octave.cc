@@ -97,6 +97,10 @@ octave_program_invocation_name;
 // The last component of octave_program_invocation_name.
 static std::string octave_program_name;
 
+// TRUE means we are using readline.
+// (--no-line-editing)
+static bool line_editing = true;
+
 // TRUE means we read ~/.octaverc and ./.octaverc.
 // (--norc; --no-init-file; -f)
 static bool read_init_files = true;

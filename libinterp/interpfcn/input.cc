@@ -156,8 +156,6 @@ gnu_readline (const std::string& s, bool& eof)
 
   eof = false;
 
-  assert (line_editing);
-
   std::string retval = command_editor::readline (s, eof);
 
   if (! eof && retval.empty ())

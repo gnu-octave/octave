@@ -95,10 +95,6 @@ octave_lexer *CURR_LEXER = 0;
 #define malloc GNULIB_NAMESPACE::malloc
 #endif
 
-// TRUE means we are using readline.
-// (--no-line-editing)
-bool line_editing = true;
-
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
 
@@ -3161,10 +3157,6 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
   frame.add_fcn (command_editor::set_input_stream, in_stream);
 
-  frame.protect_var (line_editing);
-
-  line_editing = false;
-
   frame.add_fcn (command_history::ignore_entries,
                  command_history::ignoring_entries ());
 
@@ -3887,10 +3879,6 @@ eval_string (const std::string& eval_str, bool silent,
   frame.protect_var (CURR_LEXER);
 
   octave_parser curr_parser (eval_str);
-
-  frame.protect_var (line_editing);
-
-  line_editing = false;
 
   do
     {

@@ -514,9 +514,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   if (read_mat5_tag (is, swap, type, element_length))
     return retval;                      // EOF
 
-#ifdef HAVE_ZLIB
   if (type == miCOMPRESSED)
     {
+#ifdef HAVE_ZLIB
       // If C++ allowed us direct access to the file descriptor of an
       // ifstream in a uniform way, the code below could be vastly
       // simplified, and additional copies of the data in memory
@@ -598,6 +598,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         error ("load: error probing size of compressed data element");
 
       return retval;
+#else // HAVE_ZLIB
+      error ("load: zlib unavailable, cannot read compressed data element");
     }
 #endif
 

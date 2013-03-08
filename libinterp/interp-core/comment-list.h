@@ -42,6 +42,7 @@ public:
   {
     unknown,
     block,
+    full_line,
     end_of_line,
     doc_string,
     copyright

@@ -48,6 +48,9 @@ object) relevant global values before and after the nested call.
 
 %x INPUT_FILE_START
 
+%x BLOCK_COMMENT_START
+%x LINE_COMMENT_START
+
 %{
 
 #include <cctype>
@@ -252,6 +255,9 @@ EPOW    (\.{POW})
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
 EXPON   ([DdEe][+-]?{D}+)
 NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
+
+ANY_INCLUDING_NL (.|{NL})
+
 %%
 
 %{
@@ -259,8 +265,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // the parser go down a special path.
 %}
 
-<INPUT_FILE_START>. {
-    LEXER_DEBUG ("<INPUT_FILE_START>.");
+<INPUT_FILE_START>{ANY_INCLUDING_NL} {
+    LEXER_DEBUG ("<INPUT_FILE_START>{ANY_INCLUDING_NL}");
 
     curr_lexer->xunput (yytext[0]);
 
@@ -564,6 +570,157 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 %{
+// Gobble comments.
+%}
+
+%{
+// Start of a block comment.  If the comment marker appears immediately
+// after a block of full-line comments, finish the full line comment
+// block.
+%}
+
+^{S}*{CCHAR}\{{S}*{NL} {
+    LEXER_DEBUG ("^{S}*{CCHAR}\{{S}*{NL}");
+
+    int tok = 0;
+
+    if (curr_lexer->start_state () == LINE_COMMENT_START)
+      {
+        if (! curr_lexer->comment_text.empty ())
+          tok = curr_lexer->finish_comment (octave_comment_elt::full_line);
+
+        curr_lexer->pop_start_state ();
+      }
+
+    curr_lexer->push_start_state (BLOCK_COMMENT_START);
+
+    yyless (0);
+
+    if (tok > 0)
+      COUNT_TOK_AND_RETURN (tok);
+  }
+
+<BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
+    LEXER_DEBUG ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    if (curr_lexer->block_comment_nesting_level)
+      curr_lexer->comment_text = "\n";
+
+    curr_lexer->block_comment_nesting_level++;
+  }
+
+%{
+// End of a block comment.  If this block comment is nested inside
+// another, wait for the outermost block comment block to be closed
+// before storing the comment.
+%}
+
+<BLOCK_COMMENT_START>^{S}*{CCHAR}\}{S}*{NL} {
+    LEXER_DEBUG ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\}{S}*{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    int tok = 0;
+
+    if (curr_lexer->block_comment_nesting_level > 1)
+      curr_lexer->comment_text = "\n";
+    else
+      tok = curr_lexer->finish_comment (octave_comment_elt::block);
+
+    curr_lexer->block_comment_nesting_level--;
+    curr_lexer->pop_start_state ();
+
+    if (tok > 0)
+      COUNT_TOK_AND_RETURN (tok);
+  }
+
+%{
+// Body of a block comment.
+%}
+
+<BLOCK_COMMENT_START>.*{NL} {
+    LEXER_DEBUG ("<BLOCK_COMMENT_START>.*{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+    curr_lexer->comment_text += yytext;
+  }
+
+%{
+// Full-line or end-of-line comment.
+%}
+
+{S}*{CCHAR}.*{NL} {
+    LEXER_DEBUG ("{S}*{CCHAR}.*{NL}");
+
+    curr_lexer->push_start_state (LINE_COMMENT_START);
+    yyless (0);
+  }
+
+<LINE_COMMENT_START>{S}*{CCHAR}.*{NL} {
+    LEXER_DEBUG ("<LINE_COMMENT_START>{S}*{CCHAR}.*{NL}");
+
+    bool full_line_comment = curr_lexer->current_input_column == 1;
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    size_t len = yyleng;
+    size_t i = 0;
+    while (i < len)
+      {
+        char c = yytext[i];
+        if (c == '#' || c == '%' || c == ' ' || c == '\t')
+          i++;
+        else
+          break;
+      }
+      
+    curr_lexer->comment_text += &yytext[i];
+
+    int tok = 0;
+
+    if (! full_line_comment)
+      {
+        tok = curr_lexer->finish_comment (octave_comment_elt::end_of_line);
+
+        curr_lexer->pop_start_state ();
+
+        if (curr_lexer->start_state () == COMMAND_START)
+          {
+            // Allow the actions for the end of a COMMAND line to be
+            // executed next.
+
+            tok = 0;
+            curr_lexer->xunput ('\n');
+          }
+      }
+
+    if (tok > 0)
+      COUNT_TOK_AND_RETURN (tok);
+  }
+
+%{
+// End of a block of full-line comments.
+%}
+
+<LINE_COMMENT_START>{ANY_INCLUDING_NL} {
+    LEXER_DEBUG ("<LINE_COMMENT_START>{ANY_INCLUDING_NL}");
+
+    curr_lexer->xunput (yytext[0]);
+
+    int tok = curr_lexer->finish_comment (octave_comment_elt::full_line);  
+
+    curr_lexer->pop_start_state ();
+
+    if (tok > 0)
+      COUNT_TOK_AND_RETURN (tok);
+  }
+
+%{
 // Imaginary numbers.
 %}
 
@@ -752,44 +909,6 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     COUNT_TOK_AND_RETURN (tok);
 }
-
-%{
-// Gobble comments.
-%}
-
-{CCHAR} {
-    LEXER_DEBUG ("{CCHAR}");
-
-    curr_lexer->looking_for_object_index = false;
-
-    curr_lexer->xunput (yytext[0]);
-
-    bool eof = false;
-    int tok = curr_lexer->process_comment (false, eof);
-
-    if (eof)
-      return curr_lexer->handle_end_of_input ();
-    else if (tok > 0)
-      COUNT_TOK_AND_RETURN (tok);
-  }
-
-%{
-// Block comments.
-%}
-
-^{S}*{CCHAR}\{{S}*{NL} {
-    LEXER_DEBUG ("^{S}*{CCHAR}\\{{S}*{NL}");
-
-    curr_lexer->looking_for_object_index = false;
-
-    curr_lexer->input_line_number++;
-    curr_lexer->current_input_column = 1;
-    curr_lexer->block_comment_nesting_level++;
-    curr_lexer->decrement_promptflag ();
-
-    bool eof = false;
-    curr_lexer->process_comment (true, eof);
-  }
 
 %{
 // Other operators.
@@ -1344,6 +1463,7 @@ lexical_feedback::reset (void)
   block_comment_nesting_level = 0;
   token_count = 0;
   current_input_line = "";
+  comment_text = "";
   help_text = "";
   fcn_file_name = "";
   fcn_file_full_name = "";
@@ -1358,6 +1478,51 @@ lexical_feedback::reset (void)
   nesting_level.reset ();
 
   reset_token_stack ();
+}
+
+static bool
+looks_like_copyright (const std::string& s)
+{
+  bool retval = false;
+
+  if (! s.empty ())
+    {
+      size_t offset = s.find_first_not_of (" \t");
+
+      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
+    }
+
+  return retval;
+}
+
+int
+lexical_feedback::finish_comment (octave_comment_elt::comment_type typ)
+{
+  bool copyright = looks_like_copyright (comment_text);
+
+  if (nesting_level.none () && help_text.empty ()
+    && ! comment_text.empty () && ! copyright)
+    help_text = comment_text;
+
+  if (copyright)
+    typ = octave_comment_elt::copyright;
+
+  octave_comment_buffer::append (comment_text, typ);
+
+  comment_text = "";
+
+  quote_is_transpose = false;
+  convert_spaces_to_comma = true;
+  at_beginning_of_statement = true;
+
+  if (nesting_level.none ())
+    return '\n';
+  else if (nesting_level.is_bracket_or_brace ())
+    // FIXME -- this result will be different if the comment follows a
+    // continuation token.
+    return ';';
+  else
+    return 0;
 }
 
 void
@@ -1895,307 +2060,6 @@ octave_lexer::is_variable (const std::string& name)
   return (symbol_table::is_variable (name)
           || (pending_local_variables.find (name)
               != pending_local_variables.end ()));
-}
-
-std::string
-octave_lexer::grab_block_comment (stream_reader& reader, bool& eof)
-{
-  std::string buf;
-
-  bool at_bol = true;
-  bool look_for_marker = false;
-
-  bool warned_incompatible = false;
-
-  int c = 0;
-
-  while ((c = reader.getc ()) != EOF)
-    {
-      current_input_column++;
-
-      if (look_for_marker)
-        {
-          at_bol = false;
-          look_for_marker = false;
-
-          if (c == '{' || c == '}')
-            {
-              std::string tmp_buf (1, static_cast<char> (c));
-
-              int type = c;
-
-              bool done = false;
-
-              while ((c = reader.getc ()) != EOF && ! done)
-                {
-                  current_input_column++;
-
-                  switch (c)
-                    {
-                    case ' ':
-                    case '\t':
-                      tmp_buf += static_cast<char> (c);
-                      break;
-
-                    case '\n':
-                      {
-                        current_input_column = 0;
-                        at_bol = true;
-                        done = true;
-
-                        if (type == '{')
-                          {
-                            block_comment_nesting_level++;
-                            decrement_promptflag ();
-                          }
-                        else
-                          {
-                            block_comment_nesting_level--;
-                            increment_promptflag ();
-
-                            if (block_comment_nesting_level == 0)
-                              {
-                                buf += grab_comment_block (reader, true, eof);
-
-                                return buf;
-                              }
-                          }
-                      }
-                      break;
-
-                    default:
-                      at_bol = false;
-                      tmp_buf += static_cast<char> (c);
-                      buf += tmp_buf;
-                      done = true;
-                      break;
-                    }
-                }
-            }
-        }
-
-      if (at_bol && (c == '%' || c == '#'))
-        {
-          if (c == '#' && ! warned_incompatible)
-            {
-              warned_incompatible = true;
-              maybe_gripe_matlab_incompatible_comment (c);
-            }
-
-          at_bol = false;
-          look_for_marker = true;
-        }
-      else
-        {
-          buf += static_cast<char> (c);
-
-          if (c == '\n')
-            {
-              current_input_column = 0;
-              at_bol = true;
-            }
-        }
-    }
-
-  if (c == EOF)
-    eof = true;
-
-  return buf;
-}
-
-std::string
-octave_lexer::grab_comment_block (stream_reader& reader, bool at_bol,
-                                  bool& eof)
-{
-  std::string buf;
-
-  // TRUE means we are at the beginning of a comment block.
-  bool begin_comment = false;
-
-  // TRUE means we are currently reading a comment block.
-  bool in_comment = false;
-
-  bool warned_incompatible = false;
-
-  int c = 0;
-
-  while ((c = reader.getc ()) != EOF)
-    {
-      current_input_column++;
-
-      if (begin_comment)
-        {
-          if (c == '%' || c == '#')
-            {
-              at_bol = false;
-              continue;
-            }
-          else if (at_bol && c == '{')
-            {
-              std::string tmp_buf (1, static_cast<char> (c));
-
-              bool done = false;
-
-              while ((c = reader.getc ()) != EOF && ! done)
-                {
-                  current_input_column++;
-
-                  switch (c)
-                    {
-                    case ' ':
-                    case '\t':
-                      tmp_buf += static_cast<char> (c);
-                      break;
-
-                    case '\n':
-                      {
-                        current_input_column = 0;
-                        at_bol = true;
-                        done = true;
-
-                        block_comment_nesting_level++;
-                        decrement_promptflag ();
-
-                        buf += grab_block_comment (reader, eof);
-
-                        in_comment = false;
-
-                        if (eof)
-                          goto done;
-                      }
-                      break;
-
-                    default:
-                      at_bol = false;
-                      tmp_buf += static_cast<char> (c);
-                      buf += tmp_buf;
-                      done = true;
-                      break;
-                    }
-                }
-            }
-          else
-            {
-              at_bol = false;
-              begin_comment = false;
-            }
-        }
-
-      if (in_comment)
-        {
-          buf += static_cast<char> (c);
-
-          if (c == '\n')
-            {
-              at_bol = true;
-              current_input_column = 0;
-              in_comment = false;
-
-              // FIXME -- bailing out here prevents things like
-              //
-              //    octave> # comment
-              //    octave> x = 1
-              //
-              // from failing at the command line, while still
-              // allowing blocks of comments to be grabbed properly
-              // for function doc strings.  But only the first line of
-              // a mult-line doc string will be picked up for
-              // functions defined on the command line.  We need a
-              // better way of collecting these comments...
-              if (! (reading_fcn_file || reading_script_file))
-                goto done;
-            }
-        }
-      else
-        {
-          switch (c)
-            {
-            case ' ':
-            case '\t':
-              break;
-
-            case '#':
-              if (! warned_incompatible)
-                {
-                  warned_incompatible = true;
-                  maybe_gripe_matlab_incompatible_comment (c);
-                }
-              // fall through...
-
-            case '%':
-              in_comment = true;
-              begin_comment = true;
-              break;
-
-            default:
-              current_input_column--;
-              reader.ungetc (c);
-              goto done;
-            }
-        }
-    }
-
- done:
-
-  if (c == EOF)
-    eof = true;
-
-  return buf;
-}
-
-static bool
-looks_like_copyright (const std::string& s)
-{
-  bool retval = false;
-
-  if (! s.empty ())
-    {
-      size_t offset = s.find_first_not_of (" \t");
-
-      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
-    }
-
-  return retval;
-}
-
-int
-octave_lexer::process_comment (bool start_in_block, bool& eof)
-{
-  eof = false;
-
-  char *yytxt = flex_yytext ();
-  flex_stream_reader flex_reader (this, yytxt);
-
-  // process_comment is only supposed to be called when we are not
-  // initially looking at a block comment.
-
-  std::string txt = start_in_block
-    ? grab_block_comment (flex_reader, eof)
-    : grab_comment_block (flex_reader, false, eof);
-
-  if (lexer_debug_flag)
-    std::cerr << "C: " << txt << std::endl;
-
-  if (nesting_level.none () && help_text.empty () && ! txt.empty ()
-      && ! looks_like_copyright (txt))
-    help_text = txt;
-
-  octave_comment_buffer::append (txt);
-
-  current_input_column = 1;
-  quote_is_transpose = false;
-  convert_spaces_to_comma = true;
-  at_beginning_of_statement = true;
-
-  if (start_state () == COMMAND_START)
-    pop_start_state ();
-
-  if (nesting_level.none ())
-    return '\n';
-  else if (nesting_level.is_bracket_or_brace ())
-    return ';';
-  else
-    return 0;
 }
 
 // Recognize separators.  If the separator is a CRLF pair, it is
@@ -3814,6 +3678,14 @@ octave_lexer::display_start_state (void) const
 
     case INPUT_FILE_START:
       std::cerr << "INPUT_FILE_BEGIN" << std::endl;
+      break;
+
+    case BLOCK_COMMENT_START:
+      std::cerr << "BLOCK_COMMENT_START" << std::endl;
+      break;
+
+    case LINE_COMMENT_START:
+      std::cerr << "LINE_COMMENT_START" << std::endl;
       break;
 
     default:

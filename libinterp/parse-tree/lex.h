@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <stack>
 
+#include "comment-list.h"
 #include "input.h"
 
 extern OCTINTERP_API void cleanup_parser (void);
@@ -177,8 +178,8 @@ public:
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
       block_comment_nesting_level (0), token_count (0),
-      current_input_line (), help_text (), fcn_file_name (),
-      fcn_file_full_name (), looking_at_object_index (),
+      current_input_line (), comment_text (), help_text (),
+      fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
       parsed_function_name (), pending_local_variables (),
       nesting_level (), token_stack ()
   {
@@ -190,6 +191,8 @@ public:
   void init (void);
 
   void reset (void);
+
+  int finish_comment (octave_comment_elt::comment_type typ);
 
   // true means that we have encountered eof on the input stream.
   bool end_of_input;
@@ -290,6 +293,9 @@ public:
 
   // The current line of input.
   std::string current_input_line;
+
+  // The current comment text.
+  std::string comment_text;
 
   // The current help text.
   std::string help_text;
@@ -420,13 +426,6 @@ public:
   int is_keyword_token (const std::string& s);
 
   bool is_variable (const std::string& name);
-
-  std::string grab_block_comment (stream_reader& reader, bool& eof);
-
-  std::string grab_comment_block (stream_reader& reader, bool at_bol,
-                                  bool& eof);
-
-  int process_comment (bool start_in_block, bool& eof);
 
   bool next_token_is_sep_op (void);
 

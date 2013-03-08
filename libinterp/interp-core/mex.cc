@@ -2950,7 +2950,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
 
   mex context (curr_mex_fcn);
 
-  frame.add (mex::cleanup, static_cast<void *> (&context));
+  frame.add_fcn (mex::cleanup, static_cast<void *> (&context));
 
   for (int i = 0; i < nargin; i++)
     argin[i] = context.make_value (args(i));

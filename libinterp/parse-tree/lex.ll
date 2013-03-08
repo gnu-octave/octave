@@ -46,7 +46,7 @@ object) relevant global values before and after the nested call.
 %s COMMAND_START
 %s MATRIX_START
 
-%x INPUT_FILE_BEGIN
+%x INPUT_FILE_START
 
 %{
 
@@ -259,15 +259,16 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // the parser go down a special path.
 %}
 
-<INPUT_FILE_BEGIN>. {
-    LEXER_DEBUG ("<INPUT_FILE_BEGIN>.");
+<INPUT_FILE_START>. {
+    LEXER_DEBUG ("<INPUT_FILE_START>.");
 
-    BEGIN (INITIAL);
     curr_lexer->xunput (yytext[0]);
 
     // May be reset later if we see "function" or "classdef" appears
     // as the first token.
     curr_lexer->reading_script_file = true;
+
+    curr_lexer->pop_start_state ();
 
     DISPLAY_TOK_AND_RETURN (INPUT_FILE);
   }
@@ -279,7 +280,6 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <COMMAND_START>{NL} {
     LEXER_DEBUG ("<COMMAND_START>{NL}");
 
-    BEGIN (INITIAL);
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
@@ -287,6 +287,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->convert_spaces_to_comma = true;
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = true;
+
+    curr_lexer->pop_start_state ();
 
     COUNT_TOK_AND_RETURN ('\n');
   }
@@ -297,7 +299,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = true;
 
-    BEGIN (INITIAL);
+    curr_lexer->pop_start_state ();
 
     if (strcmp (yytext, ",") == 0)
       TOK_RETURN (',');
@@ -542,7 +544,9 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->eat_whitespace ();
 
     curr_lexer->bracketflag++;
-    BEGIN (MATRIX_START);
+
+    curr_lexer->push_start_state (MATRIX_START);
+
     COUNT_TOK_AND_RETURN ('[');
   }
 
@@ -924,7 +928,9 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->eat_whitespace ();
 
     curr_lexer->braceflag++;
-    BEGIN (MATRIX_START);
+
+    curr_lexer->push_start_state (MATRIX_START);
+
     COUNT_TOK_AND_RETURN ('{');
   }
 
@@ -1424,13 +1430,15 @@ octave_lexer::init (void)
   // Make octave_lexer object available through yyextra in
   // flex-generated lexer.
   yyset_extra (this, scanner);
+
+  clear_start_state ();
 }
 
 // Inside Flex-generated functions, yyg is the scanner cast to its real
-// type.  The BEGIN macro uses yyg and we want to use that in
-// octave_lexer member functions.  If we could set the start state
-// by calling a function instead of using the BEGIN macro, we could
-// eliminate the OCTAVE_YYG macro.
+// type.  Some flex macros that we use in octave_lexer member functions
+// (for example, BEGIN) use yyg.  If we could perform the actions of
+// these macros with functions instead, we could eliminate the
+// OCTAVE_YYG macro.
 
 #define OCTAVE_YYG \
   struct yyguts_t *yyg = static_cast<struct yyguts_t*> (scanner)
@@ -1438,10 +1446,8 @@ octave_lexer::init (void)
 void
 octave_lexer::reset (void)
 {
-  OCTAVE_YYG;
-
   // Start off on the right foot.
-  BEGIN (INITIAL);
+  clear_start_state ();
 
   parser_symtab_context.clear ();
 
@@ -1467,11 +1473,9 @@ octave_lexer::reset (void)
 void
 octave_lexer::prep_for_file (void)
 {
-  OCTAVE_YYG;
-
   reading_script_file = true;
 
-  BEGIN (INPUT_FILE_BEGIN);
+  push_start_state (INPUT_FILE_START);
 }
 
 int
@@ -2157,8 +2161,6 @@ looks_like_copyright (const std::string& s)
 int
 octave_lexer::process_comment (bool start_in_block, bool& eof)
 {
-  OCTAVE_YYG;
-
   eof = false;
 
   char *yytxt = flex_yytext ();
@@ -2185,8 +2187,8 @@ octave_lexer::process_comment (bool start_in_block, bool& eof)
   convert_spaces_to_comma = true;
   at_beginning_of_statement = true;
 
-  if (YY_START == COMMAND_START)
-    BEGIN (INITIAL);
+  if (start_state () == COMMAND_START)
+    pop_start_state ();
 
   if (nesting_level.none ())
     return '\n';
@@ -2912,8 +2914,6 @@ octave_lexer::next_token_is_index_op (void)
 int
 octave_lexer::handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
-  OCTAVE_YYG;
-
   int retval = bracket_type;
 
   if (! nesting_level.none ())
@@ -2928,8 +2928,7 @@ octave_lexer::handle_close_bracket (bool spc_gobbled, int bracket_type)
         panic_impossible ();
     }
 
-  if (bracketflag == 0 && braceflag == 0)
-    BEGIN (INITIAL);
+  pop_start_state ();
 
   if (bracket_type == ']'
       && next_token_is_assign_op ()
@@ -3477,7 +3476,7 @@ octave_lexer::handle_identifier (void)
       if (at_bos && spc_gobbled && can_be_command (tok)
           && looks_like_command_arg ())
         {
-          BEGIN (COMMAND_START);
+          push_start_state (COMMAND_START);
         }
       else if (next_tok_is_eq
                || looking_at_decl_list
@@ -3744,35 +3743,6 @@ octave_lexer::display_token (int tok)
     }
 }
 
-static void
-display_state (int state)
-{
-  std::cerr << "S: ";
-
-  switch (state)
-    {
-    case INITIAL:
-      std::cerr << "INITIAL" << std::endl;
-      break;
-
-    case COMMAND_START:
-      std::cerr << "COMMAND_START" << std::endl;
-      break;
-
-    case MATRIX_START:
-      std::cerr << "MATRIX_START" << std::endl;
-      break;
-
-    case INPUT_FILE_BEGIN:
-      std::cerr << "INPUT_FILE_BEGIN" << std::endl;
-      break;
-
-    default:
-      std::cerr << "UNKNOWN START STATE!" << std::endl;
-      break;
-    }
-}
-
 void
 octave_lexer::fatal_error (const char *msg)
 {
@@ -3786,12 +3756,68 @@ octave_lexer::fatal_error (const char *msg)
 void
 octave_lexer::lexer_debug (const char *pattern, const char *text)
 {
-  OCTAVE_YYG;
-
   std::cerr << std::endl;
 
-  display_state (YY_START);
+  display_start_state ();
 
   std::cerr << "P: " << pattern << std::endl;
   std::cerr << "T: " << text << std::endl;
+}
+
+void
+octave_lexer::push_start_state (int state)
+{
+  OCTAVE_YYG;
+
+  start_state_stack.push (state);
+
+  BEGIN (start_state ());
+}
+
+void
+octave_lexer::pop_start_state (void)
+{
+  OCTAVE_YYG;
+
+  start_state_stack.pop ();
+
+  BEGIN (start_state ());
+}
+
+void
+octave_lexer::clear_start_state (void)
+{
+  while (! start_state_stack.empty ())
+    start_state_stack.pop ();
+
+  push_start_state (INITIAL);
+}
+
+void
+octave_lexer::display_start_state (void) const
+{
+  std::cerr << "S: ";
+
+  switch (start_state ())
+    {
+    case INITIAL:
+      std::cerr << "INITIAL" << std::endl;
+      break;
+
+    case COMMAND_START:
+      std::cerr << "COMMAND_START" << std::endl;
+      break;
+
+    case MATRIX_START:
+      std::cerr << "MATRIX_START" << std::endl;
+      break;
+
+    case INPUT_FILE_START:
+      std::cerr << "INPUT_FILE_BEGIN" << std::endl;
+      break;
+
+    default:
+      std::cerr << "UNKNOWN START STATE!" << std::endl;
+      break;
+    }
 }

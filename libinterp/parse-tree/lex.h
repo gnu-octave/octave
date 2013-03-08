@@ -524,10 +524,22 @@ public:
     return input_source () == "eval_string";
   }
 
+  void push_start_state (int state);
+
+  void pop_start_state (void);
+
+  void clear_start_state (void);
+
+  int start_state (void) const { return start_state_stack.top (); }
+
+  void display_start_state (void) const;
+
   // For unwind protect.
   static void cleanup (octave_lexer *lexer) { delete lexer; }
 
 private:
+
+  std::stack<int> start_state_stack;
 
   // No copying!
 

@@ -600,8 +600,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       return retval;
 #else // HAVE_ZLIB
       error ("load: zlib unavailable, cannot read compressed data element");
-    }
 #endif
+    }
 
   std::streampos pos;
 

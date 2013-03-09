@@ -600,9 +600,9 @@ public:
   int handle_op_internal (const char *pattern, int tok, bool convert,
                           bool bos, bool qit, bool compat);
 
-  int push_token (const std::string& name, int tok);
+  int handle_token (const std::string& name, int tok);
 
-  int handle_token (int tok);
+  int handle_token (int tok, token *tok_val = 0);
 
   int count_token (int tok);
 

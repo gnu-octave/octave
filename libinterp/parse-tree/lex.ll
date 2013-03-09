@@ -235,7 +235,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = false;
 
-    return curr_lexer->push_token (tok, SQ_STRING);
+    return curr_lexer->handle_token (tok, SQ_STRING);
   }
 
 %{
@@ -3633,16 +3633,21 @@ octave_lexer::handle_op_internal (const char *pattern, int tok, bool convert,
 }
 
 int
-octave_lexer::push_token (const std::string& name, int tok)
+octave_lexer::handle_token (const std::string& name, int tok)
 {
-  push_token (new token (name, input_line_number, current_input_column));
+  token *tok_val = new token (name, input_line_number, current_input_column);
 
-  return handle_token (tok);
+  return handle_token (tok, tok_val);
 }
 
 int
-octave_lexer::handle_token (int tok)
+octave_lexer::handle_token (int tok, token *tok_val)
 {
+  if (! tok_val)
+    tok_val = new token (input_line_number, current_input_column);
+
+  push_token (tok_val);
+
   current_input_column += flex_yyleng ();
   quote_is_transpose = false;
   convert_spaces_to_comma = true;

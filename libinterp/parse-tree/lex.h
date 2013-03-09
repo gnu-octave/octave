@@ -485,7 +485,7 @@ public:
 
   void fatal_error (const char *msg);
 
-  void lexer_debug (const char *pattern, const char *text);
+  void lexer_debug (const char *pattern);
 
   // Internal state of the flex-generated lexer.
   void *scanner;
@@ -532,6 +532,24 @@ public:
   int start_state (void) const { return start_state_stack.top (); }
 
   void display_start_state (void) const;
+
+  int handle_op (const char *pattern, int tok, bool convert = false,
+                 bool bos = false, bool qit = false);
+
+  int handle_incompatible_op (const char *pattern, int tok,
+                              bool convert = false, bool bos = false,
+                              bool qit = false);
+
+  int handle_op_internal (const char *pattern, int tok, bool convert,
+                          bool bos, bool qit, bool compat);
+
+  int push_token (const std::string& name, int tok);
+
+  int handle_token (int tok);
+
+  int count_token (int tok);
+
+  int show_token (int tok);
 
   // For unwind protect.
   static void cleanup (octave_lexer *lexer) { delete lexer; }

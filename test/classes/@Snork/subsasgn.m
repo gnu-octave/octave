@@ -1,4 +1,5 @@
 function snk = subsasgn (snk, s, val)
+
   if (length (s) < 1)
     error ('Snork: needs index');
   end
@@ -35,4 +36,5 @@ function snk = subsasgn (snk, s, val)
     otherwise
       error ('invalid subscript type');
   end
+
 end

@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## FIXME -- we should skip (or mark as an expected failure) the test for
+## FIXME: we should skip (or mark as an expected failure) the test for
 ## saving sparse matrices to MAT files when using 64-bit indexing since
 ## that is not implemented yet.
 
@@ -35,11 +35,11 @@
 %!  ## scalar
 %!  a1 = 1;
 %!  ## matrix
-%!  persistent a2 = hilb(3);
+%!  persistent a2 = hilb (3);
 %!  ## complex scalar
 %!  persistent a3 = 1 + 1i;
 %!  ## complex matrix
-%!  persistent a4 = hilb(3) + 1i*hilb(3);
+%!  persistent a4 = hilb (3) + 1i*hilb (3);
 %!  ## bool
 %!  persistent a5 = (1 == 1);
 %!  ## bool matrix
@@ -119,11 +119,11 @@
 %!      if (! isequal (a8, b8))
 %!        error ("failed: %s struct", file);
 %!      endif
-%!      
+%!
 %!      if (! isequal (a9, b9))
 %!        error ("failed: %s cell", file);
 %!      endif
-%!      
+%!
 %!      if (! isequal (a10, b10))
 %!        error ("failed: %s string", file);
 %!      endif
@@ -171,7 +171,7 @@
 %!          || isglobal ("a13") || isglobal ("a14") || isglobal ("a15")
 %!          || isglobal ("a16") || isglobal ("a17") || isglobal ("a18")
 %!          || isglobal ("a19") || isglobal ("a20"))
-%!        error ("failed: %s global test", file); 
+%!        error ("failed: %s global test", file);
 %!      endif
 %!    endfor
 %!  endif
@@ -180,24 +180,24 @@
 %!endfunction
 
 %!test
-%! 
+%!
 %! [save_status, save_files] = testls (0);
 %! [load_status, load_files] = testls (1);
-%! 
+%!
 %! for f = [save_files, load_files]
 %!   unlink (f{1});
 %! endfor
-%! 
+%!
 %! assert (save_status && load_status);
 
 %!test
-%! 
+%!
 %! STR.scalar_fld = 1;
 %! STR.matrix_fld = [1.1,2;3,4];
 %! STR.string_fld = "Octave";
 %! STR.struct_fld.x = 0;
 %! STR.struct_fld.y = 1;
-%! 
+%!
 %! save struct.dat -struct STR;
 %! STR = load ("struct.dat");
 %!
@@ -211,7 +211,7 @@
 %! save -binary struct.dat -struct STR matrix_fld str*_fld;
 %! STR = load ("struct.dat");
 %!
-%! assert (!isfield(STR,"scalar_fld") && ...
+%! assert (!isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
 %!         STR.string_fld == "Octave" && ...
 %!         STR.struct_fld.x == 0 && ...
@@ -282,7 +282,7 @@
 %! [a, b, c] = sscanf ("1.2 3 foo", "%f%d%s", "C");
 %! [v1, c1, m1] = sscanf ("1 2 3 4 5 6", "%d");
 %! [v2, c2, m2] = sscanf ("1 2 bar 3 4 5 6", "%d");
-%! 
+%!
 %! assert ((a == 1.2 && b == 3 && c == "foo"
 %! && v1 == [1; 2; 3; 4; 5; 6] && c1 == 6 && ischar (m1)
 %! && v2 == [1; 2] && c2 == 2 && ischar (m2)));
@@ -305,13 +305,13 @@
 %% test/octave.test/io/printf-1.m
 %!test
 %! nm = tmpnam ();
-%! fid1 = fopen(nm,"w");
+%! fid1 = fopen (nm,"w");
 %! x = fprintf (fid1, "%s: %d\n", "test", 1);
-%! fclose(fid1);
-%! fid2 = fopen(nm,"r");
-%! str = fscanf(fid2,"%s");
-%! fclose(fid2);
-%! unlink(nm);
+%! fclose (fid1);
+%! fid2 = fopen (nm,"r");
+%! str = fscanf (fid2,"%s");
+%! fclose (fid2);
+%! unlink (nm);
 %! assert (x, 8);
 %! assert (str, "test:1");
 
@@ -324,7 +324,7 @@
 %% test/octave.test/io/sprintf-1.m
 %!test
 %! [s, msg, status] = sprintf ("%s: %d\n", "test", 1);
-%! 
+%!
 %! assert (s == "test: 1\n" && ischar (msg) && status == 8);
 
 %% test/octave.test/io/sprintf-2.m
@@ -336,9 +336,9 @@
 %% test/octave.test/io/fopen-1.m
 %!test
 %! arch_list = ["native"; "ieee-le"; "ieee-be"; "vaxd"; "vaxg"; "cray"];
-%! 
+%!
 %! status = 1;
-%! 
+%!
 %! for i = 1:6
 %!   arch = deblank (arch_list (i,:));
 %!   for j = 1:6
@@ -386,7 +386,7 @@
 %!     break;
 %!   endif
 %! endfor
-%! 
+%!
 %! assert (status == 1);
 
 %% test/octave.test/io/fopen-2.m
@@ -433,7 +433,7 @@
 %! "uint"; "unsigned int"; "long"; "ulong"; "unsigned long";
 %! "float"; "float32"; "real*4"; "double"; "float64";
 %! "real*8"; "int16"; "integer*2"; "int32"; "integer*4"];
-%! 
+%!
 %! n = rows (type_list);
 %! nm = tmpnam ();
 %! id = fopen (nm, "wb");
@@ -443,20 +443,20 @@
 %!   endfor
 %!
 %!   fclose (id);
-%!   
+%!
 %!   id = fopen (nm, "rb");
 %!   if (id > 0)
 %!     x = zeros (1, n);
 %!     for i = 1:n
 %!       x(i) = fread (id, [1, 1], deblank (type_list(i,:)));
 %!     endfor
-%!     
+%!
 %!     if (x == 1:n)
 %!       __printf_assert__ ("ok\n");
 %!     endif
 %!   endif
 %! endif
-%! 
+%!
 %! unlink (nm);
 %! assert (__prog_output_assert__ ("ok"));
 

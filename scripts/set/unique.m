@@ -51,14 +51,17 @@ function [y, i, j] = unique (x, varargin)
   if (nargin > 1)
     ## parse options
     if (iscellstr (varargin))
-      varargin = unique (varargin);
-      optfirst = strmatch ("first", varargin, "exact") > 0;
-      optlast = strmatch ("last", varargin, "exact") > 0;
-      optrows = strmatch ("rows", varargin, "exact") > 0;
+      optfirst = strcmp ("first", varargin);
+      optlast  = strcmp ("last", varargin);
+      optrows  = strcmp ("rows", varargin);
+      if (! all (optfirst | optlast | optrows))
+        error ("unique: invalid option");
+      endif
+      optfirst = any (optfirst);
+      optlast  = any (optlast);
+      optrows  = any (optrows);
       if (optfirst && optlast)
         error ('unique: cannot specify both "last" and "first"');
-      elseif (optfirst + optlast + optrows != nargin-1)
-        error ("unique: invalid option");
       endif
     else
       error ("unique: options must be strings");
@@ -214,3 +217,7 @@ endfunction
 %! assert (A(i,:), a);
 %! assert (a(j,:), A);
 
+%!error unique({"a", "b", "c"}, "UnknownOption")
+%!error unique({"a", "b", "c"}, "UnknownOption1", "UnknownOption2")
+%!error unique({"a", "b", "c"}, "rows", "UnknownOption2")
+%!error unique({"a", "b", "c"}, "UnknownOption1", "last")

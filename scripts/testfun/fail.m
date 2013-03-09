@@ -29,10 +29,19 @@
 ## is a string and if @var{code} runs successfully, the error produced is:
 ##
 ## @example
-##           expected error but got none
+##           expected error <.> but got none
 ## @end example
 ##
-## If the code fails with a different error, the message produced is:
+##
+## Code must be in the form of a string that may be passed by
+## @code{fail} to the Octave interpreter via the @code{evalin} function,
+## that is, a (quoted) string constant or a string variable.
+##
+## If called with two arguments, the behavior is similar to
+## @code{fail (@var{code})}, except the return value will only be true if
+## code fails with an error message containing pattern (case sensitive).
+## If the code fails with a different error to that given in pattern,
+## the message produced is:
 ##
 ## @example
 ## @group

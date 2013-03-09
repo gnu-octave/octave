@@ -16,8 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This piece of test code ensures that all operations which work on 
-## dimensions alone (squeeze, triu, etc.) work for all objects and 
+## This piece of test code ensures that all operations which work on
+## dimensions alone (squeeze, triu, etc.) work for all objects and
 ## preserve type. Even if the object is an empty matrix. This code is
 ## not to check that the function itself returns teh correct result,
 ## just that the results are consistent for all types.
@@ -93,13 +93,13 @@
 %! m3 = [];
 
 %!test
-%! __fntestfunc__("triu", m1, {"struct"});
+%! __fntestfunc__ ("triu", m1, {"struct"});
 %!test
 %! __fntestfunc__ ("triu", m1, {"struct"}, -1);
 %!test
 %! __fntestfunc__ ("triu", m1, {"struct"}, 1);
 %!test
-%! __fntestfunc__("triu", m3, {"struct"});
+%! __fntestfunc__ ("triu", m3, {"struct"});
 %!test
 %! __fntestfunc__ ("tril", m1, {"struct"});
 %!test
@@ -107,7 +107,7 @@
 %!test
 %! __fntestfunc__ ("tril", m1, {"struct"}, 1);
 %!test
-%! __fntestfunc__("tril", m3, {"struct"});
+%! __fntestfunc__ ("tril", m3, {"struct"});
 %!test
 %! __fntestfunc__ ("squeeze", m2);
 %!test

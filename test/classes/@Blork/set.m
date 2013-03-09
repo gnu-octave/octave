@@ -1,7 +1,7 @@
-function [ s ] = set( s, varargin )
+function s = set (s, varargin)
 
   propArgs = varargin;
-  while (length(propArgs) >= 2)
+  while (length (propArgs) >= 2)
     propName  = propArgs{1};
     propValue = propArgs{2};
     propArgs  = propArgs(3:end);
@@ -9,7 +9,7 @@ function [ s ] = set( s, varargin )
       case 'bleek'
         s.bleek = propValue;
       otherwise
-        error([propName, ' is not a valid Blork property']);
+        error ([propName, ' is not a valid Blork property']);
     end
   end
 

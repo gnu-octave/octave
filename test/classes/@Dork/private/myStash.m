@@ -1,4 +1,4 @@
-function [ out ] = myStash ()
+function out = myStash ()
 
   out = 2;
 

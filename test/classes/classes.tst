@@ -41,7 +41,7 @@
 %% methods that the others don't so we can test indexing and other
 %% features.
 %!shared snk, snk1, snk2
-%!test snk = Snork();
+%!test snk = Snork ();
 %! assert (isequal (gick (snk), 1));
 %! assert (isequal (snk.gick, 1));
 %! assert (isequal (snk(2), 1));
@@ -64,10 +64,10 @@
 %! assert (~ismethod (snk, 'bletch'));
 %! assert (exist ('snk') == 1);
 %! assert (exist ('blink') == 0);
-%!test snk1 = Snork(snk);
+%!test snk1 = Snork (snk);
 %! assert (isequal (class (snk1), 'Snork'));
 %! assert (isequal (gick (snk1), 4));
-%!test snk2 = Snork(-3);
+%!test snk2 = Snork (-3);
 %! assert (isequal (class (snk2), 'Snork'));
 %! assert (isequal (gick (snk2), -3));
 %!test x = [1 2 3 4];
@@ -83,7 +83,7 @@
 %% sure that we haven't bollixed up the Spork class if we should make
 %% changes.  We use Spork in the class hierarchy.
 %!shared sprk
-%!test sprk = Spork();
+%!test sprk = Spork ();
 %! assert (isequal (geek (sprk), 1));
 %!test sprk = geek (sprk, 3);
 %! assert (isequal (geek (sprk), 3));
@@ -97,7 +97,7 @@
 %%  sure that we haven't bollixed up the Blork class if we should make
 %%  changes.  We use Blork in the class hierarchy.
 %!shared blrk
-%!test blrk = Blork();
+%!test blrk = Blork ();
 %! assert (isequal (bleek(blrk), 1));
 %!test blrk = bleek (blrk, 3);
 %! assert (isequal (bleek (blrk), 3));
@@ -111,7 +111,7 @@
 %%  sure that we haven't bollixed up the Cork class if we should make
 %%  changes.  We use Cork in the class hierarchy.
 %!shared crk
-%!test crk = Cork(23);
+%!test crk = Cork (23);
 %! assert (isequal (click(crk), 23));
 %!test crk = click(crk,3);
 %! assert (isequal (click(crk), 3));
@@ -122,7 +122,7 @@
 
 %%  The Dork class tests single inheritance.
 %!shared drk
-%!test drk = Dork();
+%!test drk = Dork ();
 %! assert (isequal (gack (drk),0));
 %!test drk = gack (drk,-2);
 %! assert (isequal (gack (drk),-2));
@@ -135,12 +135,12 @@
 %! assert (isa (drk, 'Dork'));
 %! assert (isa (drk, 'Snork'));
 %! assert (isequal (getStash (drk), 2));
-%!test drk1 = Dork(drk);
+%!test drk1 = Dork (drk);
 %! assert (isequal (class (drk1), 'Dork'));
 %! assert (isa (drk1, 'Snork'));
 %! assert (isequal (gick (drk1), 3));
 %! assert (isequal (gack (drk1), -3));
-%!test drk2 = Dork(-4, 4);
+%!test drk2 = Dork (-4, 4);
 %! assert (isequal (class (drk2), 'Dork'));
 %! assert (isa (drk2, 'Snork'));
 %! assert (isequal (gick (drk2), -4));
@@ -149,7 +149,7 @@
 %%  The Pork class is essentially a clone of Dork.  It is used as part
 %%  of the multiple inheritance test.
 %!shared prk, drk
-%!test prk = Pork();
+%!test prk = Pork ();
 %! assert (isequal (geek (prk), 1));
 %! assert (isequal (gurk (prk), 0));
 %!test prk = gurk (prk,-3);
@@ -159,13 +159,13 @@
 %! assert (isequal (class (prk), 'Pork'));
 %! assert (isa (prk, 'Pork'));
 %! assert (isa (prk, 'Spork'));
-%!test drk = Dork();                   % Precedence.
+%!test drk = Dork ();                   % Precedence.
 %! assert (isequal (bling (drk, prk), 2));
 %! assert (isequal (bling (prk, drk), 2));
 
 %%  The Gork class tests aggregation and multiple inheritance.
 %!shared grk
-%!test grk = Gork();
+%!test grk = Gork ();
 %! assert (isequal (gick (grk), 1));
 %! assert (isequal (geek (grk), 1));
 %! assert (isequal (gack (grk), 0));
@@ -189,7 +189,7 @@
 %! assert (isequal (gark (grk), -6));
 %! assert (isequal (click (cork (grk)), 23));
 %!test
-%! cork1 = Cork(13);
+%! cork1 = Cork (13);
 %! grk = set (grk, 'gick', -5, 'gack', -6, 'gark', -7, 'cork', cork1);
 %! assert (isequal (get (grk, 'gick'), -5));
 %! assert (isequal (get (grk, 'gack'), -6));
@@ -212,9 +212,9 @@
 
 %% Common variables for testing overloaded operators
 %!shared x1, x2, x3, s1, s2, s3
-%!  x1 = 1 + rand(3);    s1 = Snork(x1);
-%!  x2 = 1 + rand(3);    s2 = Snork(x2);
-%!  x3 = diag([1 2 3]);  s3 = Snork(x3);
+%!  x1 = 1 + rand (3);    s1 = Snork (x1);
+%!  x2 = 1 + rand (3);    s2 = Snork (x2);
+%!  x3 = diag ([1 2 3]);  s3 = Snork (x3);
 
 %% Test overloaded plus (+) and uplus (unitary +) for the Snork class
 %!test  s = s1 + s2;  assert (isa (s, 'Snork') && isequal (s.gick, x1 + x2));
@@ -226,7 +226,7 @@
 %!test  s = s1 - s2;  assert (isa (s, 'Snork') && isequal (s.gick, x1 - x2));
 %!test  s = s1 - x2;  assert (isa (s, 'Snork') && isequal (s.gick, x1 - x2));
 %!test  s = x1 - s2;  assert (isa (s, 'Snork') && isequal (s.gick, x1 - x2));
-%!test  s = -s1;      assert (isequal (s, Snork(-x1)));
+%!test  s = -s1;      assert (isequal (s, Snork (-x1)));
 
 %% Test overloaded mtimes (*) for the Snork class
 %!test  s = s1 * s2;  assert (isa (s, 'Snork') && isequal (s.gick, x1 * x2));
@@ -322,7 +322,7 @@
 
 %% Test with the Blork class, where neither vertcat() nor horzcat() is overloaded
 %!shared x1, x2, x3
-%!test x1 = Blork();
+%!test x1 = Blork ();
 %!test x2 = [x1 x1];
 %!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]));
 %!test x2 = [x1 51];
@@ -340,23 +340,24 @@
 
 %% default: leftmost object wins
 %!shared A, B
-%!test A = Snork(rand(2));
-%!test B = CPrecedenceTester1();  % no call to inferiorto/superiorto
+%!test A = Snork (rand (2));
+%!test B = CPrecedenceTester1 ();  % no call to inferiorto/superiorto
 %!assert (isequal (tattack (A, B), 'Snork'))
 %!assert (isequal (tattack (B, A), 'CPrecedenceTester1'))  % idem
 
 %!shared A, B
-%!test A = Snork(rand(2));
-%!test B = CPrecedenceTester2(1);  % CPrecedenceTester2 > Snork
+%!test A = Snork (rand (2));
+%!test B = CPrecedenceTester2 (1);  % CPrecedenceTester2 > Snork
 %!assert (isequal (tattack (A, B), 'CPrecedenceTester2'))
 %!assert (isequal (tattack (B, A), 'CPrecedenceTester2'))
 %% Trying to change to CPrecendenceTester < Snork
-%!error D = CPrecedenceTester2(2);
+%!error D = CPrecedenceTester2 (2);
 
 %!shared A, B
-%!test A = Snork(rand(2));
-%!test B = CPrecedenceTester3(2);  % CPrecedenceTester3 < Snork
+%!test A = Snork (rand (2));
+%!test B = CPrecedenceTester3 (2);  % CPrecedenceTester3 < Snork
 %!assert (isequal (tattack (A, B), 'Snork'))
 %!assert (isequal (tattack (B, A), 'Snork'))
 %% Trying to change to CPrecendenceTester3 > Snork
-%!error D = CPrecedenceTester3(1);
+%!error D = CPrecedenceTester3 (1);
+

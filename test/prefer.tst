@@ -95,14 +95,14 @@
 %!test
 %! wrre = warning ("query", "Octave:resize-on-range-error");
 %! warning ("off", "Octave:resize-on-range-error");
-%! clear a; 
-%! a(2) = 1; a(3) = 2; 
+%! clear a;
+%! a(2) = 1; a(3) = 2;
 %! assert (all (a == [0,1,2]));
 %! warning (wrre.state, "Octave:resize-on-range-error");
 
 %% test/octave.test/prefer/prefer-18.m
 %!test
-%! clear a; 
+%! clear a;
 %! a(1) = 1; a(2) = 2;
 %! assert (all (a == [1,2]));
 
@@ -137,7 +137,7 @@
 %! save_precision (1);
 %! x = pi;
 %! nm = tmpnam ();
-%! save("-text", nm, "x");
+%! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);
 %! unlink (nm);
@@ -150,14 +150,14 @@
 %! save_precision (5);
 %! x = pi;
 %! nm = tmpnam ();
-%! save("-text", nm, "x");
+%! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);
 %! unlink (nm);
 %! assert (x, 3.1416);
 %! save_precision (sp);
 
-%% FIXME: How to capture standard output for comparison? 
+%% FIXME: How to capture standard output for comparison?
 %% test/octave.test/prefer/prefer-29.m
 %!function f ()
 %! 1
@@ -169,7 +169,7 @@
 %! assert (??);
 %! silent_functions (sf);
 
-%% FIXME Same problem as above!!!
+%% FIXME: Same problem as above!!!
 %% test/octave.test/prefer/prefer-30.m
 %!function f ()
 %! 1

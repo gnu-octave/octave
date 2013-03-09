@@ -36,7 +36,7 @@
 %!endfunction
 %!test
 %! global G = 1;
-%! f();
+%! f ();
 
 %% test/octave.test/global/global-4.m
 %!function f ()
@@ -54,7 +54,7 @@
 %!function g ()
 %!  fail ("H");
 %!test
-%! g();
+%! g ();
 
 %% test/octave.test/global/global-6.m
 %!function f ()
@@ -65,8 +65,8 @@
 %!  assert (H,1);
 %!endfunction
 %!test
-%! f();
-%! g();
+%! f ();
+%! g ();
 
 %% test/octave.test/global/global-7.m
 %!test

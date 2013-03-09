@@ -46,7 +46,10 @@ object) relevant global values before and after the nested call.
 %s COMMAND_START
 %s MATRIX_START
 
-%x INPUT_FILE_BEGIN
+%x INPUT_FILE_START
+
+%x BLOCK_COMMENT_START
+%x LINE_COMMENT_START
 
 %{
 
@@ -127,100 +130,6 @@ object) relevant global values before and after the nested call.
 #define YY_FATAL_ERROR(msg) \
   (yyget_extra (yyscanner))->fatal_error (msg)
 
-#define DISPLAY_TOK_AND_RETURN(tok) \
-  do \
-    { \
-      int tok_val = tok; \
-      if (Vdisplay_tokens) \
-        curr_lexer->display_token (tok_val); \
-      if (lexer_debug_flag) \
-        { \
-          std::cerr << "R: "; \
-          curr_lexer->display_token (tok_val); \
-          std::cerr << std::endl;  \
-        } \
-      return tok_val; \
-    } \
-  while (0)
-
-#define COUNT_TOK_AND_RETURN(tok) \
-  do \
-    { \
-      if (tok != '\n') \
-        { \
-          Vtoken_count++; \
-          curr_lexer->token_count++; \
-        } \
-      DISPLAY_TOK_AND_RETURN (tok); \
-    } \
-  while (0)
-
-#define TOK_RETURN(tok) \
-  do \
-    { \
-      curr_lexer->current_input_column += yyleng; \
-      curr_lexer->quote_is_transpose = false; \
-      curr_lexer->convert_spaces_to_comma = true; \
-      COUNT_TOK_AND_RETURN (tok); \
-    } \
-  while (0)
-
-#define TOK_PUSH_AND_RETURN(name, tok) \
-  do \
-    { \
-      curr_lexer->push_token \
-        (new token (name, curr_lexer->input_line_number, \
-         curr_lexer->current_input_column)); \
-      TOK_RETURN (tok); \
-    } \
-  while (0)
-
-#define BIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
-  do \
-    { \
-      curr_lexer->push_token \
-        (new token (curr_lexer->input_line_number, \
-         curr_lexer->current_input_column)); \
-      curr_lexer->current_input_column += yyleng; \
-      curr_lexer->quote_is_transpose = qit; \
-      curr_lexer->convert_spaces_to_comma = convert; \
-      curr_lexer->looking_for_object_index = false; \
-      curr_lexer->at_beginning_of_statement = bos; \
-      COUNT_TOK_AND_RETURN (tok); \
-    } \
-  while (0)
-
-#define XBIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
-  do \
-    { \
-      curr_lexer->gripe_matlab_incompatible_operator (yytext); \
-      BIN_OP_RETURN_INTERNAL (tok, convert, bos, qit); \
-    } \
-  while (0)
-
-#define BIN_OP_RETURN(tok, convert, bos) \
-  do \
-    { \
-      BIN_OP_RETURN_INTERNAL (tok, convert, bos, false); \
-    } \
-  while (0)
-
-#define XBIN_OP_RETURN(tok, convert, bos) \
-  do \
-    { \
-      curr_lexer->gripe_matlab_incompatible_operator (yytext); \
-      BIN_OP_RETURN (tok, convert, bos); \
-    } \
-  while (0)
-
-#define LEXER_DEBUG(pattern) \
-  do \
-    { \
-      if (lexer_debug_flag) \
-        curr_lexer->lexer_debug (pattern, yytext); \
-    } \
-  while (0)
-
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
@@ -246,12 +155,12 @@ Im      [iIjJ]
 CCHAR   [#%]
 COMMENT ({CCHAR}.*{NL})
 SNLCMT  ({SNL}|{COMMENT})
-NOT     ((\~)|(\!))
-POW     ((\*\*)|(\^))
-EPOW    (\.{POW})
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
 EXPON   ([DdEe][+-]?{D}+)
 NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
+
+ANY_INCLUDING_NL (.|{NL})
+
 %%
 
 %{
@@ -259,17 +168,18 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // the parser go down a special path.
 %}
 
-<INPUT_FILE_BEGIN>. {
-    LEXER_DEBUG ("<INPUT_FILE_BEGIN>.");
+<INPUT_FILE_START>{ANY_INCLUDING_NL} {
+    curr_lexer->lexer_debug ("<INPUT_FILE_START>{ANY_INCLUDING_NL}");
 
-    BEGIN (INITIAL);
     curr_lexer->xunput (yytext[0]);
 
     // May be reset later if we see "function" or "classdef" appears
     // as the first token.
     curr_lexer->reading_script_file = true;
 
-    DISPLAY_TOK_AND_RETURN (INPUT_FILE);
+    curr_lexer->pop_start_state ();
+
+    return curr_lexer->show_token (INPUT_FILE);
   }
 
 %{
@@ -277,9 +187,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <COMMAND_START>{NL} {
-    LEXER_DEBUG ("<COMMAND_START>{NL}");
+    curr_lexer->lexer_debug ("<COMMAND_START>{NL}");
 
-    BEGIN (INITIAL);
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
@@ -288,43 +197,45 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = true;
 
-    COUNT_TOK_AND_RETURN ('\n');
+    curr_lexer->pop_start_state ();
+
+    return curr_lexer->count_token ('\n');
   }
 
 <COMMAND_START>[\;\,] {
-    LEXER_DEBUG ("<COMMAND_START>[\\;\\,]");
+    curr_lexer->lexer_debug ("<COMMAND_START>[\\;\\,]");
 
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = true;
 
-    BEGIN (INITIAL);
+    curr_lexer->pop_start_state ();
 
     if (strcmp (yytext, ",") == 0)
-      TOK_RETURN (',');
+      return curr_lexer->handle_token (',');
     else
-      TOK_RETURN (';');
+      return curr_lexer->handle_token (';');
   }
 
 <COMMAND_START>[\"\'] {
-    LEXER_DEBUG ("<COMMAND_START>[\\\"\\']");
+    curr_lexer->lexer_debug ("<COMMAND_START>[\\\"\\']");
 
     curr_lexer->at_beginning_of_statement = false;
 
     curr_lexer->current_input_column++;
     int tok = curr_lexer->handle_string (yytext[0]);
 
-    COUNT_TOK_AND_RETURN (tok);
+    return curr_lexer->count_token (tok);
   }
 
 <COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}* {
-    LEXER_DEBUG ("<COMMAND_START>[^#% \\t\\r\\n\\;\\,\\\"\\'][^ \\t\\r\\n\\;\\,]*{S}*");
+    curr_lexer->lexer_debug ("<COMMAND_START>[^#% \\t\\r\\n\\;\\,\\\"\\'][^ \\t\\r\\n\\;\\,]*{S}*");
 
     std::string tok = strip_trailing_whitespace (yytext);
 
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = false;
 
-    TOK_PUSH_AND_RETURN (tok, SQ_STRING);
+    return curr_lexer->handle_token (tok, SQ_STRING);
   }
 
 %{
@@ -342,7 +253,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{SNLCMT}*\]{S}* {
-    LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*\\]{S}*");
+    curr_lexer->lexer_debug ("<MATRIX_START>{SNLCMT}*\\]{S}*");
 
     curr_lexer->scan_for_comments (yytext);
     curr_lexer->fixup_column_count (yytext);
@@ -360,7 +271,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (spc_gobbled)
       curr_lexer->xunput (' ');
 
-    COUNT_TOK_AND_RETURN (tok_to_return);
+    return curr_lexer->count_token (tok_to_return);
   }
 
 %{
@@ -368,7 +279,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{SNLCMT}*\}{S}* {
-    LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*\\}{S}*");
+    curr_lexer->lexer_debug ("<MATRIX_START>{SNLCMT}*\\}{S}*");
 
     curr_lexer->scan_for_comments (yytext);
     curr_lexer->fixup_column_count (yytext);
@@ -386,7 +297,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (spc_gobbled)
       curr_lexer->xunput (' ');
 
-    COUNT_TOK_AND_RETURN (tok_to_return);
+    return curr_lexer->count_token (tok_to_return);
   }
 
 %{
@@ -396,7 +307,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{S}*\,{S}* {
-    LEXER_DEBUG ("<MATRIX_START>{S}*\\,{S}*");
+    curr_lexer->lexer_debug ("<MATRIX_START>{S}*\\,{S}*");
 
     curr_lexer->current_input_column += yyleng;
 
@@ -417,7 +328,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
           }
       }
 
-    COUNT_TOK_AND_RETURN (',');
+    return curr_lexer->count_token (',');
   }
 
 %{
@@ -428,7 +339,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{S}+ {
-    LEXER_DEBUG ("<MATRIX_START>{S}+");
+    curr_lexer->lexer_debug ("<MATRIX_START>{S}+");
 
     curr_lexer->current_input_column += yyleng;
 
@@ -459,7 +370,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
             curr_lexer->maybe_warn_separator_insert (',');
 
-            COUNT_TOK_AND_RETURN (',');
+            return curr_lexer->count_token (',');
           }
       }
   }
@@ -473,7 +384,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX_START>{SNLCMT}*;{SNLCMT}* {
-    LEXER_DEBUG ("<MATRIX_START>{SNLCMT}*;{SNLCMT}*");
+    curr_lexer->lexer_debug ("<MATRIX_START>{SNLCMT}*;{SNLCMT}*");
 
     curr_lexer->scan_for_comments (yytext);
     curr_lexer->fixup_column_count (yytext);
@@ -484,7 +395,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = false;
 
-    COUNT_TOK_AND_RETURN (';');
+    return curr_lexer->count_token (';');
   }
 
 %{
@@ -497,7 +408,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <MATRIX_START>{S}*{COMMENT}{SNLCMT}* |
 <MATRIX_START>{S}*{NL}{SNLCMT}* {
-    LEXER_DEBUG ("<MATRIX_START>{S}*{COMMENT}{SNLCMT}*|<MATRIX_START>{S}*{NL}{SNLCMT}*");
+    curr_lexer->lexer_debug ("<MATRIX_START>{S}*{COMMENT}{SNLCMT}*|<MATRIX_START>{S}*{NL}{SNLCMT}*");
 
     curr_lexer->scan_for_comments (yytext);
     curr_lexer->fixup_column_count (yytext);
@@ -515,12 +426,12 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
         curr_lexer->maybe_warn_separator_insert (';');
 
-        COUNT_TOK_AND_RETURN (';');
+        return curr_lexer->count_token (';');
       }
   }
 
 \[{S}* {
-    LEXER_DEBUG ("\\[{S}*");
+    curr_lexer->lexer_debug ("\\[{S}*");
 
     curr_lexer->nesting_level.bracket ();
 
@@ -542,12 +453,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->eat_whitespace ();
 
     curr_lexer->bracketflag++;
-    BEGIN (MATRIX_START);
-    COUNT_TOK_AND_RETURN ('[');
+
+    curr_lexer->push_start_state (MATRIX_START);
+
+    return curr_lexer->count_token ('[');
   }
 
 \] {
-    LEXER_DEBUG ("\\]");
+    curr_lexer->lexer_debug ("\\]");
 
     curr_lexer->nesting_level.remove ();
 
@@ -556,7 +469,158 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->looking_for_object_index = true;
     curr_lexer->at_beginning_of_statement = false;
 
-    TOK_RETURN (']');
+    return curr_lexer->handle_token (']');
+  }
+
+%{
+// Gobble comments.
+%}
+
+%{
+// Start of a block comment.  If the comment marker appears immediately
+// after a block of full-line comments, finish the full line comment
+// block.
+%}
+
+^{S}*{CCHAR}\{{S}*{NL} {
+    curr_lexer->lexer_debug ("^{S}*{CCHAR}\{{S}*{NL}");
+
+    int tok = 0;
+
+    if (curr_lexer->start_state () == LINE_COMMENT_START)
+      {
+        if (! curr_lexer->comment_text.empty ())
+          tok = curr_lexer->finish_comment (octave_comment_elt::full_line);
+
+        curr_lexer->pop_start_state ();
+      }
+
+    curr_lexer->push_start_state (BLOCK_COMMENT_START);
+
+    yyless (0);
+
+    if (tok > 0)
+      return curr_lexer->count_token (tok);
+  }
+
+<BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
+    curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    if (curr_lexer->block_comment_nesting_level)
+      curr_lexer->comment_text = "\n";
+
+    curr_lexer->block_comment_nesting_level++;
+  }
+
+%{
+// End of a block comment.  If this block comment is nested inside
+// another, wait for the outermost block comment block to be closed
+// before storing the comment.
+%}
+
+<BLOCK_COMMENT_START>^{S}*{CCHAR}\}{S}*{NL} {
+    curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\\}{S}*{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    int tok = 0;
+
+    if (curr_lexer->block_comment_nesting_level > 1)
+      curr_lexer->comment_text = "\n";
+    else
+      tok = curr_lexer->finish_comment (octave_comment_elt::block);
+
+    curr_lexer->block_comment_nesting_level--;
+    curr_lexer->pop_start_state ();
+
+    if (tok > 0)
+      return curr_lexer->count_token (tok);
+  }
+
+%{
+// Body of a block comment.
+%}
+
+<BLOCK_COMMENT_START>.*{NL} {
+    curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>.*{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+    curr_lexer->comment_text += yytext;
+  }
+
+%{
+// Full-line or end-of-line comment.
+%}
+
+{S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("{S}*{CCHAR}.*{NL}");
+
+    curr_lexer->push_start_state (LINE_COMMENT_START);
+    yyless (0);
+  }
+
+<LINE_COMMENT_START>{S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("<LINE_COMMENT_START>{S}*{CCHAR}.*{NL}");
+
+    bool full_line_comment = curr_lexer->current_input_column == 1;
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    size_t len = yyleng;
+    size_t i = 0;
+    while (i < len)
+      {
+        char c = yytext[i];
+        if (c == '#' || c == '%' || c == ' ' || c == '\t')
+          i++;
+        else
+          break;
+      }
+      
+    curr_lexer->comment_text += &yytext[i];
+
+    int tok = 0;
+
+    if (! full_line_comment)
+      {
+        tok = curr_lexer->finish_comment (octave_comment_elt::end_of_line);
+
+        curr_lexer->pop_start_state ();
+
+        if (curr_lexer->start_state () == COMMAND_START)
+          {
+            // Allow the actions for the end of a COMMAND line to be
+            // executed next.
+
+            tok = 0;
+            curr_lexer->xunput ('\n');
+          }
+      }
+
+    if (tok > 0)
+      return curr_lexer->count_token (tok);
+  }
+
+%{
+// End of a block of full-line comments.
+%}
+
+<LINE_COMMENT_START>{ANY_INCLUDING_NL} {
+    curr_lexer->lexer_debug ("<LINE_COMMENT_START>{ANY_INCLUDING_NL}");
+
+    curr_lexer->xunput (yytext[0]);
+
+    int tok = curr_lexer->finish_comment (octave_comment_elt::full_line);  
+
+    curr_lexer->pop_start_state ();
+
+    if (tok > 0)
+      return curr_lexer->count_token (tok);
   }
 
 %{
@@ -564,10 +628,10 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {NUMBER}{Im} {
-    LEXER_DEBUG ("{NUMBER}{Im}");
+    curr_lexer->lexer_debug ("{NUMBER}{Im}");
 
     curr_lexer->handle_number ();
-    COUNT_TOK_AND_RETURN (IMAG_NUM);
+    return curr_lexer->count_token (IMAG_NUM);
   }
 
 %{
@@ -577,9 +641,9 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {D}+/\.[\*/\\^\'] |
 {NUMBER} {
-    LEXER_DEBUG ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
+    curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
     curr_lexer->handle_number ();
-    COUNT_TOK_AND_RETURN (NUM);
+    return curr_lexer->count_token (NUM);
   }
 
 %{
@@ -597,7 +661,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {CONT}{S}*{NL} |
 {CONT}{S}*{COMMENT} {
-    LEXER_DEBUG ("{CONT}{S}*{NL}|{CONT}{S}*{COMMENT}");
+    curr_lexer->lexer_debug ("{CONT}{S}*{NL}|{CONT}{S}*{COMMENT}");
 
     if (yytext[0] == '\\')
       curr_lexer->gripe_matlab_incompatible_continuation ();
@@ -621,12 +685,12 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {IDENT}{S}* {
-    LEXER_DEBUG ("{IDENT}{S}*");
+    curr_lexer->lexer_debug ("{IDENT}{S}*");
 
     int id_tok = curr_lexer->handle_identifier ();
 
     if (id_tok >= 0)
-      COUNT_TOK_AND_RETURN (id_tok);
+      return curr_lexer->count_token (id_tok);
   }
 
 %{
@@ -635,7 +699,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {IDENT}@{IDENT}{S}* |
 {IDENT}@{IDENT}.{IDENT}{S}* {
-    LEXER_DEBUG ("{IDENT}@{IDENT}{S}*|{IDENT}@{IDENT}.{IDENT}{S}*");
+    curr_lexer->lexer_debug ("{IDENT}@{IDENT}{S}*|{IDENT}@{IDENT}.{IDENT}{S}*");
 
     int id_tok = curr_lexer->handle_superclass_identifier ();
 
@@ -643,7 +707,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
         curr_lexer->looking_for_object_index = true;
 
-        COUNT_TOK_AND_RETURN (id_tok);
+        return curr_lexer->count_token (id_tok);
       }
   }
 
@@ -653,7 +717,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 \?{IDENT}{S}* |
 \?{IDENT}\.{IDENT}{S}* {
-    LEXER_DEBUG ("\\?{IDENT}{S}*|\\?{IDENT}\\.{IDENT}{S}*");
+    curr_lexer->lexer_debug ("\\?{IDENT}{S}*|\\?{IDENT}\\.{IDENT}{S}*");
 
     int id_tok = curr_lexer->handle_meta_identifier ();
 
@@ -661,7 +725,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
         curr_lexer->looking_for_object_index = true;
 
-        COUNT_TOK_AND_RETURN (id_tok);
+        return curr_lexer->count_token (id_tok);
       }
   }
 
@@ -670,7 +734,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 "@" {
-    LEXER_DEBUG ("@");
+    curr_lexer->lexer_debug ("@");
 
     curr_lexer->current_input_column++;
 
@@ -680,7 +744,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = false;
 
-    COUNT_TOK_AND_RETURN ('@');
+    return curr_lexer->count_token ('@');
 
   }
 
@@ -691,7 +755,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {NL} {
-    LEXER_DEBUG ("{NL}");
+    curr_lexer->lexer_debug ("{NL}");
 
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
@@ -702,7 +766,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (curr_lexer->nesting_level.none ())
       {
         curr_lexer->at_beginning_of_statement = true;
-        COUNT_TOK_AND_RETURN ('\n');
+        return curr_lexer->count_token ('\n');
       }
     else if (curr_lexer->nesting_level.is_paren ())
       {
@@ -719,7 +783,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 "'" {
-    LEXER_DEBUG ("'");
+    curr_lexer->lexer_debug ("'");
 
     curr_lexer->current_input_column++;
     curr_lexer->convert_spaces_to_comma = true;
@@ -727,12 +791,12 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (curr_lexer->quote_is_transpose)
       {
         curr_lexer->do_comma_insert_check ();
-        COUNT_TOK_AND_RETURN (QUOTE);
+        return curr_lexer->count_token (QUOTE);
       }
     else
       {
         int tok = curr_lexer->handle_string ('\'');
-        COUNT_TOK_AND_RETURN (tok);
+        return curr_lexer->count_token (tok);
       }
   }
 
@@ -741,103 +805,76 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 \" {
-    LEXER_DEBUG ("\"");
+    curr_lexer->lexer_debug ("\"");
 
     curr_lexer->current_input_column++;
     int tok = curr_lexer->handle_string ('"');
 
-    COUNT_TOK_AND_RETURN (tok);
+    return curr_lexer->count_token (tok);
 }
-
-%{
-// Gobble comments.
-%}
-
-{CCHAR} {
-    LEXER_DEBUG ("{CCHAR}");
-
-    curr_lexer->looking_for_object_index = false;
-
-    curr_lexer->xunput (yytext[0]);
-
-    bool eof = false;
-    int tok = curr_lexer->process_comment (false, eof);
-
-    if (eof)
-      return curr_lexer->handle_end_of_input ();
-    else if (tok > 0)
-      COUNT_TOK_AND_RETURN (tok);
-  }
-
-%{
-// Block comments.
-%}
-
-^{S}*{CCHAR}\{{S}*{NL} {
-    LEXER_DEBUG ("^{S}*{CCHAR}\\{{S}*{NL}");
-
-    curr_lexer->looking_for_object_index = false;
-
-    curr_lexer->input_line_number++;
-    curr_lexer->current_input_column = 1;
-    curr_lexer->block_comment_nesting_level++;
-    curr_lexer->decrement_promptflag ();
-
-    bool eof = false;
-    curr_lexer->process_comment (true, eof);
-  }
 
 %{
 // Other operators.
 %}
 
-":"     { LEXER_DEBUG (":"); BIN_OP_RETURN (':', false, false); }
+":"     { return curr_lexer->handle_op (":", ':'); }
+".+"    { return curr_lexer->handle_incompatible_op (".+", EPLUS); }
+".-"    { return curr_lexer->handle_incompatible_op (".-", EMINUS); }
+".*"    { return curr_lexer->handle_op (".*", EMUL); }
+"./"    { return curr_lexer->handle_op ("./", EDIV); }
+".\\"   { return curr_lexer->handle_op (".\\", ELEFTDIV); }
+".^"    { return curr_lexer->handle_op (".^", EPOW); }
+".**"   { return curr_lexer->handle_incompatible_op (".**", EPOW); }
+"<="    { return curr_lexer->handle_op ("<=", EXPR_LE); }
+"=="    { return curr_lexer->handle_op ("==", EXPR_EQ); }
+"~="    { return curr_lexer->handle_op ("~=", EXPR_NE); }
+"!="    { return curr_lexer->handle_incompatible_op ("!=", EXPR_NE); }
+">="    { return curr_lexer->handle_op (">=", EXPR_GE); }
+"&"     { return curr_lexer->handle_op ("&", EXPR_AND); }
+"|"     { return curr_lexer->handle_op ("|", EXPR_OR); }
+"<"     { return curr_lexer->handle_op ("<", EXPR_LT); }
+">"     { return curr_lexer->handle_op (">", EXPR_GT); }
+"+"     { return curr_lexer->handle_op ("+", '+'); }
+"-"     { return curr_lexer->handle_op ("-", '-'); }
+"*"     { return curr_lexer->handle_op ("*", '*'); }
+"/"     { return curr_lexer->handle_op ("/", '/'); }
+"\\"    { return curr_lexer->handle_op ("\\", LEFTDIV); }
+"^"     { return curr_lexer->handle_op ("^", POW); }
+"**"    { return curr_lexer->handle_incompatible_op ("**", POW); }
+"="     { return curr_lexer->handle_op ("=", '=', true, false); }
+"&&"    { return curr_lexer->handle_op ("&&", EXPR_AND_AND); }
+"||"    { return curr_lexer->handle_op ("||", EXPR_OR_OR); }
+"<<"    { return curr_lexer->handle_incompatible_op ("<<", LSHIFT); }
+">>"    { return curr_lexer->handle_incompatible_op (">>", RSHIFT); }
+"~"     { return curr_lexer->handle_op ("~", EXPR_NOT); }
+"!"     { return curr_lexer->handle_incompatible_op ("!", EXPR_NOT); }
+";"     { return curr_lexer->handle_op (";", ';', true, true); }
 
-".+"    { LEXER_DEBUG (".+"); XBIN_OP_RETURN (EPLUS, false, false); }
-".-"    { LEXER_DEBUG (".-"); XBIN_OP_RETURN (EMINUS, false, false); }
-".*"    { LEXER_DEBUG (".*"); BIN_OP_RETURN (EMUL, false, false); }
-"./"    { LEXER_DEBUG ("./"); BIN_OP_RETURN (EDIV, false, false); }
-".\\"   { LEXER_DEBUG (".\\"); BIN_OP_RETURN (ELEFTDIV, false, false); }
-".^"    { LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false, false); }
-".**"   { LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false, false); }
-".'"    { LEXER_DEBUG (".'"); curr_lexer->do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true, false); }
-"++"    { LEXER_DEBUG ("++"); curr_lexer->do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (PLUS_PLUS, true, false, true); }
-"--"    { LEXER_DEBUG ("--"); curr_lexer->do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (MINUS_MINUS, true, false, true); }
-"<="    { LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false, false); }
-"=="    { LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false, false); }
-"~="    { LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false, false); }
-"!="    { LEXER_DEBUG ("!="); XBIN_OP_RETURN (EXPR_NE, false, false); }
-">="    { LEXER_DEBUG (">="); BIN_OP_RETURN (EXPR_GE, false, false); }
-"&"     { LEXER_DEBUG ("&"); BIN_OP_RETURN (EXPR_AND, false, false); }
-"|"     { LEXER_DEBUG ("|"); BIN_OP_RETURN (EXPR_OR, false, false); }
-"<"     { LEXER_DEBUG ("<"); BIN_OP_RETURN (EXPR_LT, false, false); }
-">"     { LEXER_DEBUG (">"); BIN_OP_RETURN (EXPR_GT, false, false); }
-"+"     { LEXER_DEBUG ("+"); BIN_OP_RETURN ('+', false, false); }
-"-"     { LEXER_DEBUG ("-"); BIN_OP_RETURN ('-', false, false); }
-"*"     { LEXER_DEBUG ("*"); BIN_OP_RETURN ('*', false, false); }
-"/"     { LEXER_DEBUG ("/"); BIN_OP_RETURN ('/', false, false); }
-"\\"    { LEXER_DEBUG ("\\"); BIN_OP_RETURN (LEFTDIV, false, false); }
-";"     { LEXER_DEBUG (";"); BIN_OP_RETURN (';', true, true); }
-","     { LEXER_DEBUG (","); BIN_OP_RETURN (',', true, ! curr_lexer->looking_at_object_index.front ()); }
-"^"     { LEXER_DEBUG ("^"); BIN_OP_RETURN (POW, false, false); }
-"**"    { LEXER_DEBUG ("**"); XBIN_OP_RETURN (POW, false, false); }
-"="     { LEXER_DEBUG ("="); BIN_OP_RETURN ('=', true, false); }
-"&&"    { LEXER_DEBUG ("&&"); BIN_OP_RETURN (EXPR_AND_AND, false, false); }
-"||"    { LEXER_DEBUG ("||"); BIN_OP_RETURN (EXPR_OR_OR, false, false); }
-"<<"    { LEXER_DEBUG ("<<"); XBIN_OP_RETURN (LSHIFT, false, false); }
-">>"    { LEXER_DEBUG (">>"); XBIN_OP_RETURN (RSHIFT, false, false); }
+"," {
+    return curr_lexer->handle_op
+      (",", ',', true, ! curr_lexer->looking_at_object_index.front ());
+  }
 
-{NOT} {
-    LEXER_DEBUG ("{NOT}");
+".'" {
+    curr_lexer->do_comma_insert_check ();
+    return curr_lexer->handle_op (".'", TRANSPOSE, true, false);
+  }
 
-    if (yytext[0] == '~')
-      BIN_OP_RETURN (EXPR_NOT, false, false);
-    else
-      XBIN_OP_RETURN (EXPR_NOT, false, false);
+"++" {
+    curr_lexer->do_comma_insert_check ();
+    return curr_lexer->handle_incompatible_op
+      ("++", PLUS_PLUS, true, false, true);
+  }
+
+"--" {
+    ;
+    curr_lexer->do_comma_insert_check ();
+    return curr_lexer->handle_incompatible_op
+      ("--", MINUS_MINUS, true, false, true);
   }
 
 "(" {
-    LEXER_DEBUG ("(");
+    curr_lexer->lexer_debug ("(");
 
     // If we are looking for an object index, then push TRUE for
     // looking_at_object_index.  Otherwise, just push whatever state
@@ -854,11 +891,11 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->nesting_level.paren ();
     curr_lexer->decrement_promptflag ();
 
-    TOK_RETURN ('(');
+    return curr_lexer->handle_token ('(');
   }
 
 ")" {
-    LEXER_DEBUG (")");
+    curr_lexer->lexer_debug (")");
 
     curr_lexer->nesting_level.remove ();
     curr_lexer->current_input_column++;
@@ -877,37 +914,43 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     curr_lexer->do_comma_insert_check ();
 
-    COUNT_TOK_AND_RETURN (')');
+    return curr_lexer->count_token (')');
   }
 
 "." {
-    LEXER_DEBUG (".");
+    curr_lexer->lexer_debug (".");
 
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = false;
 
-    TOK_RETURN ('.');
+    return curr_lexer->handle_token ('.');
   }
 
-"+="    { LEXER_DEBUG ("+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
-"-="    { LEXER_DEBUG ("-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
-"*="    { LEXER_DEBUG ("*="); XBIN_OP_RETURN (MUL_EQ, false, false); }
-"/="    { LEXER_DEBUG ("/="); XBIN_OP_RETURN (DIV_EQ, false, false); }
-"\\="   { LEXER_DEBUG ("\\="); XBIN_OP_RETURN (LEFTDIV_EQ, false, false); }
-".+="   { LEXER_DEBUG (".+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
-".-="   { LEXER_DEBUG (".-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
-".*="   { LEXER_DEBUG (".*="); XBIN_OP_RETURN (EMUL_EQ, false, false); }
-"./="   { LEXER_DEBUG ("./="); XBIN_OP_RETURN (EDIV_EQ, false, false); }
-".\\="  { LEXER_DEBUG (".\\="); XBIN_OP_RETURN (ELEFTDIV_EQ, false, false); }
-{POW}=  { LEXER_DEBUG ("{POW}="); XBIN_OP_RETURN (POW_EQ, false, false); }
-{EPOW}= { LEXER_DEBUG ("{EPOW}="); XBIN_OP_RETURN (EPOW_EQ, false, false); }
-"&="    { LEXER_DEBUG ("&="); XBIN_OP_RETURN (AND_EQ, false, false); }
-"|="    { LEXER_DEBUG ("|="); XBIN_OP_RETURN (OR_EQ, false, false); }
-"<<="   { LEXER_DEBUG ("<<="); XBIN_OP_RETURN (LSHIFT_EQ, false, false); }
-">>="   { LEXER_DEBUG (">>="); XBIN_OP_RETURN (RSHIFT_EQ, false, false); }
+%{
+// op= operators.
+%}
+
+"+="    { return curr_lexer->handle_incompatible_op ("+=", ADD_EQ); }
+"-="    { return curr_lexer->handle_incompatible_op ("-=", SUB_EQ); }
+"*="    { return curr_lexer->handle_incompatible_op ("*=", MUL_EQ); }
+"/="    { return curr_lexer->handle_incompatible_op ("/=", DIV_EQ); }
+"\\="   { return curr_lexer->handle_incompatible_op ("\\=", LEFTDIV_EQ); }
+".+="   { return curr_lexer->handle_incompatible_op (".+=", ADD_EQ); }
+".-="   { return curr_lexer->handle_incompatible_op (".-=", SUB_EQ); }
+".*="   { return curr_lexer->handle_incompatible_op (".*=", EMUL_EQ); }
+"./="   { return curr_lexer->handle_incompatible_op ("./=", EDIV_EQ); }
+".\\="  { return curr_lexer->handle_incompatible_op (".\\=", ELEFTDIV_EQ); }
+"^="    { return curr_lexer->handle_incompatible_op ("^=", POW_EQ); }
+"**="   { return curr_lexer->handle_incompatible_op ("^=", POW_EQ); }
+".^="   { return curr_lexer->handle_incompatible_op (".^=", EPOW_EQ); }
+".**="  { return curr_lexer->handle_incompatible_op (".^=", EPOW_EQ); }
+"&="    { return curr_lexer->handle_incompatible_op ("&=", AND_EQ); }
+"|="    { return curr_lexer->handle_incompatible_op ("|=", OR_EQ); }
+"<<="   { return curr_lexer->handle_incompatible_op ("<<=", LSHIFT_EQ); }
+">>="   { return curr_lexer->handle_incompatible_op (">>=", RSHIFT_EQ); }
 
 \{{S}* {
-    LEXER_DEBUG ("\\{{S}*");
+    curr_lexer->lexer_debug ("\\{{S}*");
 
     curr_lexer->nesting_level.brace ();
 
@@ -924,12 +967,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     curr_lexer->eat_whitespace ();
 
     curr_lexer->braceflag++;
-    BEGIN (MATRIX_START);
-    COUNT_TOK_AND_RETURN ('{');
+
+    curr_lexer->push_start_state (MATRIX_START);
+
+    return curr_lexer->count_token ('{');
   }
 
 "}" {
-    LEXER_DEBUG ("}");
+    curr_lexer->lexer_debug ("}");
 
     curr_lexer->looking_at_object_index.pop_front ();
 
@@ -938,7 +983,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     curr_lexer->nesting_level.remove ();
 
-    TOK_RETURN ('}');
+    return curr_lexer->handle_token ('}');
   }
 
 %{
@@ -946,7 +991,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 . {
-    LEXER_DEBUG (".");
+    curr_lexer->lexer_debug (".");
 
     curr_lexer->xunput (yytext[0]);
 
@@ -1294,7 +1339,7 @@ private:
 
 lexical_feedback::~lexical_feedback (void)
 {
-  reset_token_stack ();
+  tokens.clear ();
 }
 
 void
@@ -1340,6 +1385,7 @@ lexical_feedback::reset (void)
   block_comment_nesting_level = 0;
   token_count = 0;
   current_input_line = "";
+  comment_text = "";
   help_text = "";
   fcn_file_name = "";
   fcn_file_full_name = "";
@@ -1353,20 +1399,52 @@ lexical_feedback::reset (void)
 
   nesting_level.reset ();
 
-  reset_token_stack ();
+  tokens.clear ();
 }
 
-void
-lexical_feedback::reset_token_stack (void)
+static bool
+looks_like_copyright (const std::string& s)
 {
-  // Clear out the stack of token info used to track line and
-  // column numbers.
+  bool retval = false;
 
-  while (! token_stack.empty ())
+  if (! s.empty ())
     {
-      delete token_stack.top ();
-      token_stack.pop ();
+      size_t offset = s.find_first_not_of (" \t");
+
+      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
     }
+
+  return retval;
+}
+
+int
+lexical_feedback::finish_comment (octave_comment_elt::comment_type typ)
+{
+  bool copyright = looks_like_copyright (comment_text);
+
+  if (nesting_level.none () && help_text.empty ()
+    && ! comment_text.empty () && ! copyright)
+    help_text = comment_text;
+
+  if (copyright)
+    typ = octave_comment_elt::copyright;
+
+  octave_comment_buffer::append (comment_text, typ);
+
+  comment_text = "";
+
+  quote_is_transpose = false;
+  convert_spaces_to_comma = true;
+  at_beginning_of_statement = true;
+
+  if (nesting_level.none ())
+    return '\n';
+  else if (nesting_level.is_bracket_or_brace ())
+    // FIXME -- this result will be different if the comment follows a
+    // continuation token.
+    return ';';
+  else
+    return 0;
 }
 
 void
@@ -1426,13 +1504,15 @@ octave_lexer::init (void)
   // Make octave_lexer object available through yyextra in
   // flex-generated lexer.
   yyset_extra (this, scanner);
+
+  clear_start_state ();
 }
 
 // Inside Flex-generated functions, yyg is the scanner cast to its real
-// type.  The BEGIN macro uses yyg and we want to use that in
-// octave_lexer member functions.  If we could set the start state
-// by calling a function instead of using the BEGIN macro, we could
-// eliminate the OCTAVE_YYG macro.
+// type.  Some flex macros that we use in octave_lexer member functions
+// (for example, BEGIN) use yyg.  If we could perform the actions of
+// these macros with functions instead, we could eliminate the
+// OCTAVE_YYG macro.
 
 #define OCTAVE_YYG \
   struct yyguts_t *yyg = static_cast<struct yyguts_t*> (scanner)
@@ -1440,10 +1520,8 @@ octave_lexer::init (void)
 void
 octave_lexer::reset (void)
 {
-  OCTAVE_YYG;
-
   // Start off on the right foot.
-  BEGIN (INITIAL);
+  clear_start_state ();
 
   parser_symtab_context.clear ();
 
@@ -1469,9 +1547,9 @@ octave_lexer::reset (void)
 void
 octave_lexer::prep_for_file (void)
 {
-  OCTAVE_YYG;
+  reading_script_file = true;
 
-  BEGIN (INPUT_FILE_BEGIN);
+  push_start_state (INPUT_FILE_START);
 }
 
 int
@@ -1502,11 +1580,7 @@ octave_lexer::read (char *buf, unsigned max_size)
 int
 octave_lexer::handle_end_of_input (void)
 {
-  // FIXME -- we need this because of the way TOK_RETURN is defined.  DO
-  // something better than that...
-  OCTAVE_YYG;
-
-  LEXER_DEBUG ("<<EOF>>");
+  lexer_debug ("<<EOF>>");
 
   if (block_comment_nesting_level != 0)
     {
@@ -1518,7 +1592,7 @@ octave_lexer::handle_end_of_input (void)
                  input_line_number, fcn_file_name.c_str ());
     }
 
-  TOK_RETURN (END_OF_INPUT);
+  return handle_token (END_OF_INPUT);
 }
 
 char *
@@ -1891,309 +1965,6 @@ octave_lexer::is_variable (const std::string& name)
   return (symbol_table::is_variable (name)
           || (pending_local_variables.find (name)
               != pending_local_variables.end ()));
-}
-
-std::string
-octave_lexer::grab_block_comment (stream_reader& reader, bool& eof)
-{
-  std::string buf;
-
-  bool at_bol = true;
-  bool look_for_marker = false;
-
-  bool warned_incompatible = false;
-
-  int c = 0;
-
-  while ((c = reader.getc ()) != EOF)
-    {
-      current_input_column++;
-
-      if (look_for_marker)
-        {
-          at_bol = false;
-          look_for_marker = false;
-
-          if (c == '{' || c == '}')
-            {
-              std::string tmp_buf (1, static_cast<char> (c));
-
-              int type = c;
-
-              bool done = false;
-
-              while ((c = reader.getc ()) != EOF && ! done)
-                {
-                  current_input_column++;
-
-                  switch (c)
-                    {
-                    case ' ':
-                    case '\t':
-                      tmp_buf += static_cast<char> (c);
-                      break;
-
-                    case '\n':
-                      {
-                        current_input_column = 0;
-                        at_bol = true;
-                        done = true;
-
-                        if (type == '{')
-                          {
-                            block_comment_nesting_level++;
-                            decrement_promptflag ();
-                          }
-                        else
-                          {
-                            block_comment_nesting_level--;
-                            increment_promptflag ();
-
-                            if (block_comment_nesting_level == 0)
-                              {
-                                buf += grab_comment_block (reader, true, eof);
-
-                                return buf;
-                              }
-                          }
-                      }
-                      break;
-
-                    default:
-                      at_bol = false;
-                      tmp_buf += static_cast<char> (c);
-                      buf += tmp_buf;
-                      done = true;
-                      break;
-                    }
-                }
-            }
-        }
-
-      if (at_bol && (c == '%' || c == '#'))
-        {
-          if (c == '#' && ! warned_incompatible)
-            {
-              warned_incompatible = true;
-              maybe_gripe_matlab_incompatible_comment (c);
-            }
-
-          at_bol = false;
-          look_for_marker = true;
-        }
-      else
-        {
-          buf += static_cast<char> (c);
-
-          if (c == '\n')
-            {
-              current_input_column = 0;
-              at_bol = true;
-            }
-        }
-    }
-
-  if (c == EOF)
-    eof = true;
-
-  return buf;
-}
-
-std::string
-octave_lexer::grab_comment_block (stream_reader& reader, bool at_bol,
-                                  bool& eof)
-{
-  std::string buf;
-
-  // TRUE means we are at the beginning of a comment block.
-  bool begin_comment = false;
-
-  // TRUE means we are currently reading a comment block.
-  bool in_comment = false;
-
-  bool warned_incompatible = false;
-
-  int c = 0;
-
-  while ((c = reader.getc ()) != EOF)
-    {
-      current_input_column++;
-
-      if (begin_comment)
-        {
-          if (c == '%' || c == '#')
-            {
-              at_bol = false;
-              continue;
-            }
-          else if (at_bol && c == '{')
-            {
-              std::string tmp_buf (1, static_cast<char> (c));
-
-              bool done = false;
-
-              while ((c = reader.getc ()) != EOF && ! done)
-                {
-                  current_input_column++;
-
-                  switch (c)
-                    {
-                    case ' ':
-                    case '\t':
-                      tmp_buf += static_cast<char> (c);
-                      break;
-
-                    case '\n':
-                      {
-                        current_input_column = 0;
-                        at_bol = true;
-                        done = true;
-
-                        block_comment_nesting_level++;
-                        decrement_promptflag ();
-
-                        buf += grab_block_comment (reader, eof);
-
-                        in_comment = false;
-
-                        if (eof)
-                          goto done;
-                      }
-                      break;
-
-                    default:
-                      at_bol = false;
-                      tmp_buf += static_cast<char> (c);
-                      buf += tmp_buf;
-                      done = true;
-                      break;
-                    }
-                }
-            }
-          else
-            {
-              at_bol = false;
-              begin_comment = false;
-            }
-        }
-
-      if (in_comment)
-        {
-          buf += static_cast<char> (c);
-
-          if (c == '\n')
-            {
-              at_bol = true;
-              current_input_column = 0;
-              in_comment = false;
-
-              // FIXME -- bailing out here prevents things like
-              //
-              //    octave> # comment
-              //    octave> x = 1
-              //
-              // from failing at the command line, while still
-              // allowing blocks of comments to be grabbed properly
-              // for function doc strings.  But only the first line of
-              // a mult-line doc string will be picked up for
-              // functions defined on the command line.  We need a
-              // better way of collecting these comments...
-              if (! (reading_fcn_file || reading_script_file))
-                goto done;
-            }
-        }
-      else
-        {
-          switch (c)
-            {
-            case ' ':
-            case '\t':
-              break;
-
-            case '#':
-              if (! warned_incompatible)
-                {
-                  warned_incompatible = true;
-                  maybe_gripe_matlab_incompatible_comment (c);
-                }
-              // fall through...
-
-            case '%':
-              in_comment = true;
-              begin_comment = true;
-              break;
-
-            default:
-              current_input_column--;
-              reader.ungetc (c);
-              goto done;
-            }
-        }
-    }
-
- done:
-
-  if (c == EOF)
-    eof = true;
-
-  return buf;
-}
-
-static bool
-looks_like_copyright (const std::string& s)
-{
-  bool retval = false;
-
-  if (! s.empty ())
-    {
-      size_t offset = s.find_first_not_of (" \t");
-
-      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
-    }
-
-  return retval;
-}
-
-int
-octave_lexer::process_comment (bool start_in_block, bool& eof)
-{
-  OCTAVE_YYG;
-
-  eof = false;
-
-  char *yytxt = flex_yytext ();
-  flex_stream_reader flex_reader (this, yytxt);
-
-  // process_comment is only supposed to be called when we are not
-  // initially looking at a block comment.
-
-  std::string txt = start_in_block
-    ? grab_block_comment (flex_reader, eof)
-    : grab_comment_block (flex_reader, false, eof);
-
-  if (lexer_debug_flag)
-    std::cerr << "C: " << txt << std::endl;
-
-  if (nesting_level.none () && help_text.empty () && ! txt.empty ()
-      && ! looks_like_copyright (txt))
-    help_text = txt;
-
-  octave_comment_buffer::append (txt);
-
-  current_input_column = 1;
-  quote_is_transpose = false;
-  convert_spaces_to_comma = true;
-  at_beginning_of_statement = true;
-
-  if (YY_START == COMMAND_START)
-    BEGIN (INITIAL);
-
-  if (nesting_level.none ())
-    return '\n';
-  else if (nesting_level.is_bracket_or_brace ())
-    return ';';
-  else
-    return 0;
 }
 
 // Recognize separators.  If the separator is a CRLF pair, it is
@@ -2912,8 +2683,6 @@ octave_lexer::next_token_is_index_op (void)
 int
 octave_lexer::handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
-  OCTAVE_YYG;
-
   int retval = bracket_type;
 
   if (! nesting_level.none ())
@@ -2928,8 +2697,7 @@ octave_lexer::handle_close_bracket (bool spc_gobbled, int bracket_type)
         panic_impossible ();
     }
 
-  if (bracketflag == 0 && braceflag == 0)
-    BEGIN (INITIAL);
+  pop_start_state ();
 
   if (bracket_type == ']'
       && next_token_is_assign_op ()
@@ -3366,8 +3134,6 @@ octave_lexer::handle_meta_identifier (void)
 int
 octave_lexer::handle_identifier (void)
 {
-  OCTAVE_YYG;
-
   bool at_bos = at_beginning_of_statement;
 
   char *yytxt = flex_yytext ();
@@ -3485,7 +3251,7 @@ octave_lexer::handle_identifier (void)
       if (at_bos && spc_gobbled && can_be_command (tok)
           && looks_like_command_arg ())
         {
-          BEGIN (COMMAND_START);
+          push_start_state (COMMAND_START);
         }
       else if (next_tok_is_eq
                || looking_at_decl_list
@@ -3515,7 +3281,7 @@ octave_lexer::handle_identifier (void)
 
   convert_spaces_to_comma = true;
 
-  if (! (next_tok_is_eq || YY_START == COMMAND_START))
+  if (! (next_tok_is_eq || start_state () == COMMAND_START))
     {
       quote_is_transpose = true;
 
@@ -3605,7 +3371,7 @@ octave_lexer::push_token (token *tok)
 {
   YYSTYPE *lval = yyget_lval (scanner);
   lval->tok_val = tok;
-  token_stack.push (tok);
+  tokens.push (tok);
 }
 
 token *
@@ -3752,12 +3518,65 @@ octave_lexer::display_token (int tok)
     }
 }
 
-static void
-display_state (int state)
+void
+octave_lexer::fatal_error (const char *msg)
+{
+  error (msg);
+
+  OCTAVE_QUIT;
+
+  yy_fatal_error (msg, scanner);
+}
+
+void
+octave_lexer::lexer_debug (const char *pattern)
+{
+  if (lexer_debug_flag)
+    {
+      std::cerr << std::endl;
+
+      display_start_state ();
+
+      std::cerr << "P: " << pattern << std::endl;
+      std::cerr << "T: " << flex_yytext () << std::endl;
+    }
+}
+
+void
+octave_lexer::push_start_state (int state)
+{
+  OCTAVE_YYG;
+
+  start_state_stack.push (state);
+
+  BEGIN (start_state ());
+}
+
+void
+octave_lexer::pop_start_state (void)
+{
+  OCTAVE_YYG;
+
+  start_state_stack.pop ();
+
+  BEGIN (start_state ());
+}
+
+void
+octave_lexer::clear_start_state (void)
+{
+  while (! start_state_stack.empty ())
+    start_state_stack.pop ();
+
+  push_start_state (INITIAL);
+}
+
+void
+octave_lexer::display_start_state (void) const
 {
   std::cerr << "S: ";
 
-  switch (state)
+  switch (start_state ())
     {
     case INITIAL:
       std::cerr << "INITIAL" << std::endl;
@@ -3771,8 +3590,16 @@ display_state (int state)
       std::cerr << "MATRIX_START" << std::endl;
       break;
 
-    case INPUT_FILE_BEGIN:
+    case INPUT_FILE_START:
       std::cerr << "INPUT_FILE_BEGIN" << std::endl;
+      break;
+
+    case BLOCK_COMMENT_START:
+      std::cerr << "BLOCK_COMMENT_START" << std::endl;
+      break;
+
+    case LINE_COMMENT_START:
+      std::cerr << "LINE_COMMENT_START" << std::endl;
       break;
 
     default:
@@ -3781,25 +3608,87 @@ display_state (int state)
     }
 }
 
-void
-octave_lexer::fatal_error (const char *msg)
+int
+octave_lexer::handle_op (const char *pattern, int tok, bool convert,
+                         bool bos, bool qit)
 {
-  error (msg);
-
-  OCTAVE_QUIT;
-
-  yy_fatal_error (msg, scanner);
+  return handle_op_internal (pattern, tok, convert, bos, qit, true);
 }
 
-void
-octave_lexer::lexer_debug (const char *pattern, const char *text)
+int
+octave_lexer::handle_incompatible_op (const char *pattern, int tok,
+                                      bool convert, bool bos, bool qit)
 {
-  OCTAVE_YYG;
+  return handle_op_internal (pattern, tok, convert, bos, qit, false);
+}
 
-  std::cerr << std::endl;
+int
+octave_lexer::handle_op_internal (const char *pattern, int tok, bool convert,
+                                  bool bos, bool qit, bool compat)
+{
+  lexer_debug (pattern);
 
-  display_state (YY_START);
+  if (! compat)
+    gripe_matlab_incompatible_operator (flex_yytext ());
 
-  std::cerr << "P: " << pattern << std::endl;
-  std::cerr << "T: " << text << std::endl;
+  push_token (new token (input_line_number, current_input_column));
+
+  current_input_column += flex_yyleng ();
+  quote_is_transpose = qit;
+  convert_spaces_to_comma = convert;
+  looking_for_object_index = false;
+  at_beginning_of_statement = bos;
+
+  return count_token (tok);
+}
+
+int
+octave_lexer::handle_token (const std::string& name, int tok)
+{
+  token *tok_val = new token (name, input_line_number, current_input_column);
+
+  return handle_token (tok, tok_val);
+}
+
+int
+octave_lexer::handle_token (int tok, token *tok_val)
+{
+  if (! tok_val)
+    tok_val = new token (input_line_number, current_input_column);
+
+  push_token (tok_val);
+
+  current_input_column += flex_yyleng ();
+  quote_is_transpose = false;
+  convert_spaces_to_comma = true;
+
+  return count_token (tok);
+}
+
+int
+octave_lexer::count_token (int tok)
+{
+  if (tok != '\n')
+    {
+      Vtoken_count++;
+      token_count++;
+    }
+
+  return show_token (tok);
+}
+
+int
+octave_lexer::show_token (int tok)
+{
+  if (Vdisplay_tokens)
+    display_token (tok);
+
+  if (lexer_debug_flag)
+    {
+      std::cerr << "R: ";
+      display_token (tok);
+      std::cerr << std::endl; 
+    }
+
+  return tok;
 }

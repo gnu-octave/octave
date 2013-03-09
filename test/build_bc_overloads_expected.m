@@ -6,7 +6,7 @@
 % to generate the overloaded functions.
 %
 ex.double = 1;
-ex.single = single(1);
+ex.single = single (1);
 ex.logical = true;
 ex.char = 'char';
 ex.int8  = int8 (1);

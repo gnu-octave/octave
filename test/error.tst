@@ -19,20 +19,20 @@
 ## Test %!error usage
 
 %% test/octave.test/error/error-1.m
-%!function g () 
+%!function g ()
 %!  error ("foo");
 %!endfunction
-%!function f () 
-%!  g (); 
+%!function f ()
+%!  g ();
 %!endfunction
 %!error <foo> f ()
 
 %% test/octave.test/error/error-2.m
-%!function g () 
+%!function g ()
 %!  error ("foo\n");
 %!endfunction
-%!function f () 
-%!  g 
+%!function f ()
+%!  g
 %!endfunction
 %!error <foo> f ()
 
@@ -59,29 +59,29 @@
 %! ws = warning ("query", "backtrace");
 %! warning ("on", "backtrace");
 %! st.state = "on";
-%! assert(warning ("query", "backtrace"), st);
+%! assert (warning ("query", "backtrace"), st);
 %! warning ("off", "backtrace");
 %! st.state = "off";
-%! assert(warning ("query", "backtrace"), st);
+%! assert (warning ("query", "backtrace"), st);
 %! warning (ws.state, "backtrace");
 
 ## Test usage() function
 
 %% test/octave.test/error/usage-1.m
-%!function g () 
+%!function g ()
 %!  usage ("foo");
 %!endfunction
-%!function f () 
-%!  g (); 
+%!function f ()
+%!  g ();
 %!endfunction
 %!error <foo> f ()
 
 %% test/octave.test/error/usage-2.m
-%!function g () 
+%!function g ()
 %!  usage ("foo");
 %!endfunction
-%!function f () 
-%!  g 
+%!function f ()
+%!  g
 %!endfunction
 %!error <foo> f ()
 

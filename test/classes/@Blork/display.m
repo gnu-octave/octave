@@ -1,7 +1,7 @@
-function display( s )
+function display (s)
 
-  disp([inputname(1),'.bleek = '])
-  disp(' ');
-  disp(s.bleek);
+  disp ([inputname(1),'.bleek = ']);
+  disp (' ');
+  disp (s.bleek);
 
 end

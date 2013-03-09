@@ -267,6 +267,45 @@ in the log file but not executed.  For example:
 @end group
 @end example
 
+@noindent
+The following trivial code snippet provides examples for the use of
+fail, assert, error and xtest:
+
+@example
+@group
+function output = must_be_zero (@var{input})
+  if (@var{input} != 0)
+    error ("Non-zero input!")
+  endif
+  output = input;
+endfunction
+
+%!fail ("must_be_zero (1)");
+%!assert (must_be_zero (0), 0);
+%!error <Non-zero> must_be_zero (1);
+%!xtest error ("This code generates an error");
+@end group
+@end example
+
+@noindent
+When putting this a file @file{must_be_zero.m}, and running the test, we see
+
+@example
+@group
+test must_be_zero verbose
+
+@result{}
+>>>>> /path/to/must_be_zero.m
+  ***** fail ("must_be_zero (1)");
+  ***** assert (must_be_zero (0), 0);
+  ***** error <Non-zero> must_be_zero (1);
+  ***** xtest error ("This code generates an error");
+!!!!! known failure
+This code generates an error
+PASSES 4 out of 4 tests (1 expected failures)
+@end group
+@end example
+
 @subsubheading Block type summary:
 
 @table @code

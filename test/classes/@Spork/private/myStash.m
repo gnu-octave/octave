@@ -1,5 +1,5 @@
-function [ out ] = myStash ()
+function out = myStash ()
 
   out = 3;
-        
+
 end

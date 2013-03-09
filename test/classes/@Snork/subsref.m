@@ -1,4 +1,5 @@
 function b = subsref (snk, s)
+
   if (isempty (s))
     error ('Snork: missing index');
   end
@@ -27,4 +28,5 @@ function b = subsref (snk, s)
     otherwise
       error ('invalid subscript type');
   end
+
 end

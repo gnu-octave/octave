@@ -1,7 +1,7 @@
-function [ s ] = set( s, varargin )
+function s = set (s, varargin)
 
   propArgs = varargin;
-  while (length(propArgs) >= 2)
+  while (length (propArgs) >= 2)
     propName  = propArgs{1};
     propValue = propArgs{2};
     propArgs  = propArgs(3:end);
@@ -9,7 +9,7 @@ function [ s ] = set( s, varargin )
       case 'gack'
         s.gack = propValue;
       otherwise
-        s.Snork = set(s.Snork, propName, propValue);
+        s.Snork = set (s.Snork, propName, propValue);
     end
   end
 

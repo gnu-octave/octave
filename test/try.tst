@@ -68,7 +68,7 @@
 %! assert (lasterr()(1:13), "'a' undefined");
 
 %% test/octave.test/try/try-6.m
-%!test 
+%!test
 %! try
 %!   error ("user-defined error");
 %! catch

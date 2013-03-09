@@ -39,7 +39,6 @@ octave_main_thread::octave_main_thread () : QThread ()
 void
 octave_main_thread::run ()
 {
-  setlocale (LC_ALL, "en_US.UTF-8");
   // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
   setlocale (LC_NUMERIC, "C");
 

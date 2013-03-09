@@ -1,4 +1,4 @@
-function x = subsref(g, s)
+function x = subsref (g, s)
 
   switch s.type
   case '.'
@@ -6,4 +6,5 @@ function x = subsref(g, s)
     case 'gyrk'
       x = g.gyrk;
   end
+
 end

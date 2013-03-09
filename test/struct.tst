@@ -152,8 +152,8 @@
 %! c(4, 4, 4, 4).name  = "a";
 %! c(3, 3, 3, 3).value = 1;
 %! [c([1, 3], 2, :, [3, 4]).value] = deal (1);
-%! assert (length(find([c.value] == 1)), 17);
-%! assert (length(find([c.value])), 17);
+%! assert (length (find ([c.value] == 1)), 17);
+%! assert (length (find ([c.value])), 17);
 
 ## swap elements of struct array
 %!test
@@ -166,7 +166,7 @@
 %! c(4, 4, 4, 4).value = 3;
 %! c(1, 2, 3, 4).value = 2;
 %! c(3, 3, 3, 3).value = 1;
-%! d = reshape ({c.value}, size(c));
+%! d = reshape ({c.value}, size (c));
 %! assert ([d{4, 4, 4, 4}, d{1, 2, 3, 4}, d{3, 3, 3, 3}],
 %!         [3, 2, 1]);
 

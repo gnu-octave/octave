@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_base_list_h)
 #define octave_base_list_h 1
 
+#include <cstdlib>
+
 #include <list>
 
 template <typename elt_type>

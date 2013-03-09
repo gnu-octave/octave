@@ -21,6 +21,7 @@ PARSER_SRC = \
 PARSE_TREE_INC = \
   parse-tree/pt-all.h \
   parse-tree/pt-arg-list.h \
+  parse-tree/pt-array-list.h \
   parse-tree/pt-assign.h \
   parse-tree/pt-binop.h \
   parse-tree/pt-bp.h \
@@ -52,6 +53,7 @@ PARSE_TREE_INC = \
 
 PARSE_TREE_SRC = \
   parse-tree/pt-arg-list.cc \
+  parse-tree/pt-array-list.cc \
   parse-tree/pt-assign.cc \
   parse-tree/pt-binop.cc \
   parse-tree/pt-bp.cc \

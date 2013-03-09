@@ -32,6 +32,7 @@ class tree_argument_list;
 class tree_walker;
 
 #include "base-list.h"
+#include "pt-array-list.h"
 #include "pt-exp.h"
 #include "symtab.h"
 
@@ -39,23 +40,15 @@ class tree_walker;
 // other matrices, variables, and functions.
 
 class
-tree_matrix : public tree_expression,
-              public octave_base_list<tree_argument_list *>
+tree_matrix : public tree_array_list
 {
 public:
 
   tree_matrix (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_expression (l, c)
-  {
-    if (row)
-      append (row);
-  }
+    : tree_array_list (row, l, c)
+  { }
 
-  ~tree_matrix (void);
-
-  bool has_magic_end (void) const;
-
-  bool all_elements_are_constant (void) const;
+  ~tree_matrix (void) { }
 
   bool rvalue_ok (void) const { return true; }
 

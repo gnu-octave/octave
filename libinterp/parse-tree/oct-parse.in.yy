@@ -2956,12 +2956,12 @@ octave_parser::validate_matrix_row (tree_argument_list *row)
   return row;
 }
 
-// Finish building a matrix list.
+// Finish building an array_list.
 
 tree_expression *
-octave_parser::finish_matrix (tree_matrix *m)
+octave_parser::finish_array_list (tree_array_list *array_list)
 {
-  tree_expression *retval = m;
+  tree_expression *retval = array_list;
 
   unwind_protect frame;
 
@@ -2974,24 +2974,25 @@ octave_parser::finish_matrix (tree_matrix *m)
   discard_error_messages = true;
   discard_warning_messages = true;
 
-  if (m->all_elements_are_constant ())
+  if (array_list->all_elements_are_constant ())
     {
-      octave_value tmp = m->rvalue1 ();
+      octave_value tmp = array_list->rvalue1 ();
 
       if (! (error_state || warning_state))
         {
           tree_constant *tc_retval
-            = new tree_constant (tmp, m->line (), m->column ());
+            = new tree_constant (tmp, array_list->line (),
+                                 array_list->column ());
 
           std::ostringstream buf;
 
           tree_print_code tpc (buf);
 
-          m->accept (tpc);
+          array_list->accept (tpc);
 
           tc_retval->stash_original_text (buf.str ());
 
-          delete m;
+          delete array_list;
 
           retval = tc_retval;
         }
@@ -3000,12 +3001,20 @@ octave_parser::finish_matrix (tree_matrix *m)
   return retval;
 }
 
+// Finish building a matrix list.
+
+tree_expression *
+octave_parser::finish_matrix (tree_matrix *m)
+{
+  return finish_array_list (m);
+}
+
 // Finish building a cell list.
 
 tree_expression *
 octave_parser::finish_cell (tree_cell *c)
 {
-  return finish_matrix (c);
+  return finish_array_list (c);
 }
 
 void

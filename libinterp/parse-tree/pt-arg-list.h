@@ -33,6 +33,7 @@ class tree_walker;
 #include "str-vec.h"
 
 #include "base-list.h"
+#include "symtab.h"
 
 // Argument lists.  Used to hold the list of expressions that are the
 // arguments in a function call or index expression.

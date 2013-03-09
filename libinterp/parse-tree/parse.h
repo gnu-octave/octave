@@ -41,6 +41,7 @@ class octave_user_function;
 class tree;
 class tree_anon_fcn_handle;
 class tree_argument_list;
+class tree_array_list;
 class tree_cell;
 class tree_colon_expression;
 class tree_command;
@@ -329,6 +330,10 @@ public:
 
   // Validate argument list forming a matrix or cell row.
   tree_argument_list *validate_matrix_row (tree_argument_list *row);
+
+  // Finish building an array_list (common action for finish_matrix
+  // and finish_cell).
+  tree_expression *finish_array_list (tree_array_list *a);
 
   // Finish building a matrix list.
   tree_expression *finish_matrix (tree_matrix *m);

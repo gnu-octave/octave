@@ -31,6 +31,7 @@ locales = \
   languages/de_DE.qm \
   languages/en_US.qm \
   languages/es_ES.qm \
+  languages/nl_NL.qm \
   languages/pt_BR.qm \
   languages/ru_RU.qm \
   languages/uk_UA.qm

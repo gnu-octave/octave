@@ -27,17 +27,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "Cell.h"
-#include "defun.h"
-#include "error.h"
 #include "oct-obj.h"
 #include "pt-arg-list.h"
-#include "pt-bp.h"
 #include "pt-exp.h"
 #include "pt-cell.h"
 #include "pt-walk.h"
-#include "utils.h"
 #include "ov.h"
-#include "variables.h"
 
 octave_value
 tree_cell::rvalue1 (int)
@@ -107,14 +102,7 @@ tree_cell::dup (symbol_table::scope_id scope,
 {
   tree_cell *new_cell = new tree_cell (0, line (), column ());
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_argument_list *elt = *p;
-
-      new_cell->append (elt ? elt->dup (scope, context) : 0);
-    }
-
-  new_cell->copy_base (*this);
+  new_cell->copy_base (*this, scope, context);
 
   return new_cell;
 }

@@ -258,7 +258,8 @@ make_statement (T *arg)
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg
 %type <tok_type> classdef_beg
-%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep opt_comma
+%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
+%type <sep_type> opt_comma opt_semi
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -493,9 +494,7 @@ matrix          : '[' ']'
                   }
                 ;
 
-matrix_rows     : matrix_rows1
-                  { $$ = $1; }
-                | matrix_rows1 ';'      // Ignore trailing semicolon.
+matrix_rows     : matrix_rows1 opt_semi
                   { $$ = $1; }
                 ;
 
@@ -516,9 +515,7 @@ cell            : '{' '}'
                   { $$ = curr_parser.finish_cell ($2); }
                 ;
 
-cell_rows       : cell_rows1
-                  { $$ = $1; }
-                | cell_rows1 ';'        // Ignore trailing semicolon.
+cell_rows       : cell_rows1 opt_semi
                   { $$ = $1; }
                 ;
 
@@ -532,9 +529,7 @@ cell_rows1      : cell_or_matrix_row
                 ;
 
 cell_or_matrix_row
-                : arg_list
-                  { $$ = curr_parser.validate_matrix_row ($1); }
-                | arg_list ','  // Ignore trailing comma.
+                : arg_list opt_comma
                   { $$ = curr_parser.validate_matrix_row ($1); }
                 ;
 
@@ -1547,6 +1542,12 @@ opt_comma       : // empty
                   { $$ = 0; }
                 | ','
                   { $$ = ','; }
+                ;
+
+opt_semi        : // empty
+                  { $$ = 0; }
+                | ';'
+                  { $$ = ';'; }
                 ;
 
 %%
@@ -3220,12 +3221,12 @@ octave_parser::validate_matrix_row (tree_argument_list *row)
   return row;
 }
 
-// Finish building a matrix list.
+// Finish building an array_list.
 
 tree_expression *
-octave_parser::finish_matrix (tree_matrix *m)
+octave_parser::finish_array_list (tree_array_list *array_list)
 {
-  tree_expression *retval = m;
+  tree_expression *retval = array_list;
 
   unwind_protect frame;
 
@@ -3238,24 +3239,25 @@ octave_parser::finish_matrix (tree_matrix *m)
   discard_error_messages = true;
   discard_warning_messages = true;
 
-  if (m->all_elements_are_constant ())
+  if (array_list->all_elements_are_constant ())
     {
-      octave_value tmp = m->rvalue1 ();
+      octave_value tmp = array_list->rvalue1 ();
 
       if (! (error_state || warning_state))
         {
           tree_constant *tc_retval
-            = new tree_constant (tmp, m->line (), m->column ());
+            = new tree_constant (tmp, array_list->line (),
+                                 array_list->column ());
 
           std::ostringstream buf;
 
           tree_print_code tpc (buf);
 
-          m->accept (tpc);
+          array_list->accept (tpc);
 
           tc_retval->stash_original_text (buf.str ());
 
-          delete m;
+          delete array_list;
 
           retval = tc_retval;
         }
@@ -3264,12 +3266,20 @@ octave_parser::finish_matrix (tree_matrix *m)
   return retval;
 }
 
+// Finish building a matrix list.
+
+tree_expression *
+octave_parser::finish_matrix (tree_matrix *m)
+{
+  return finish_array_list (m);
+}
+
 // Finish building a cell list.
 
 tree_expression *
 octave_parser::finish_cell (tree_cell *c)
 {
-  return finish_matrix (c);
+  return finish_array_list (c);
 }
 
 void

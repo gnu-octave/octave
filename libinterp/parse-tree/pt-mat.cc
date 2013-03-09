@@ -655,48 +655,6 @@ tm_const::init (const tree_matrix& tm)
   ok = ! error_state;
 }
 
-tree_matrix::~tree_matrix (void)
-{
-  while (! empty ())
-    {
-      iterator p = begin ();
-      delete *p;
-      erase (p);
-    }
-}
-
-bool
-tree_matrix::has_magic_end (void) const
-{
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      octave_quit ();
-
-      tree_argument_list *elt = *p;
-
-      if (elt && elt->has_magic_end ())
-        return true;
-    }
-
-  return false;
-}
-
-bool
-tree_matrix::all_elements_are_constant (void) const
-{
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      octave_quit ();
-
-      tree_argument_list *elt = *p;
-
-      if (! elt->all_elements_are_constant ())
-        return false;
-    }
-
-  return true;
-}
-
 octave_value_list
 tree_matrix::rvalue (int nargout)
 {
@@ -1174,14 +1132,7 @@ tree_matrix::dup (symbol_table::scope_id scope,
 {
   tree_matrix *new_matrix = new tree_matrix (0, line (), column ());
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_argument_list *elt = *p;
-
-      new_matrix->append (elt ? elt->dup (scope, context) : 0);
-    }
-
-  new_matrix->copy_base (*this);
+  new_matrix->copy_base (*this, scope, context);
 
   return new_matrix;
 }

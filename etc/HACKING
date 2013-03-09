@@ -21,7 +21,6 @@ the maintainer tools we depend upon, including:
   - Automake <http://www.gnu.org/software/automake/>
   - Bison <http://www.gnu.org/software/bison/>
   - Flex <http://www.gnu.org/software/flex/>
-  - Git <http://git-scm.com/>
   - Gnulib <http://www.gnu.org/software/gnulib/>
   - GNU Make <http://www.gnu.org/software/make/>
   - Gzip <http://www.gnu.org/software/gzip/>

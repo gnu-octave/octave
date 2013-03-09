@@ -1339,7 +1339,7 @@ private:
 
 lexical_feedback::~lexical_feedback (void)
 {
-  reset_token_stack ();
+  tokens.clear ();
 }
 
 void
@@ -1397,7 +1397,7 @@ lexical_feedback::reset (void)
 
   nesting_level.reset ();
 
-  reset_token_stack ();
+  tokens.clear ();
 }
 
 static bool
@@ -1443,19 +1443,6 @@ lexical_feedback::finish_comment (octave_comment_elt::comment_type typ)
     return ';';
   else
     return 0;
-}
-
-void
-lexical_feedback::reset_token_stack (void)
-{
-  // Clear out the stack of token info used to track line and
-  // column numbers.
-
-  while (! token_stack.empty ())
-    {
-      delete token_stack.top ();
-      token_stack.pop ();
-    }
 }
 
 void
@@ -3374,7 +3361,7 @@ octave_lexer::push_token (token *tok)
 {
   YYSTYPE *lval = yyget_lval (scanner);
   lval->tok_val = tok;
-  token_stack.push (tok);
+  tokens.push (tok);
 }
 
 token *

@@ -141,7 +141,7 @@ do_history (const octave_value_list& args, int nargout)
 
   int nargin = args.length ();
 
-  // Number of history lines to show
+  // Number of history lines to show (-1 = all)
   int limit = -1;
 
   for (octave_idx_type i = 0; i < nargin; i++)
@@ -155,6 +155,8 @@ do_history (const octave_value_list& args, int nargout)
       else if (arg.is_numeric_type ())
         {
           limit = arg.int_value ();
+          if (limit < 0)
+            limit = -limit;
           continue;
         }
       else
@@ -210,7 +212,13 @@ do_history (const octave_value_list& args, int nargout)
           int tmp;
 
           if (sscanf (option.c_str (), "%d", &tmp) == 1)
-            limit = tmp;
+            {
+              if (tmp > 0)
+                limit = tmp;
+              else
+                limit = -tmp;
+            }
+          
           else
             {
               if (option.length () > 0 && option[0] == '-')
@@ -223,8 +231,8 @@ do_history (const octave_value_list& args, int nargout)
         }
     }
 
-  if (limit < 0)
-    limit = -limit;
+//  if (limit < 0)
+//    limit = -limit;
 
   hlist = command_history::list (limit, numbered_output);
 

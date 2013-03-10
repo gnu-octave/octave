@@ -253,8 +253,6 @@ public:
 
   void reset (void);
 
-  int finish_comment (octave_comment_elt::comment_type typ);
-
   // true means that we have encountered eof on the input stream.
   bool end_of_input;
 
@@ -495,6 +493,11 @@ public:
   int eat_whitespace (void);
 
   void handle_number (void);
+
+  void handle_continuation (void);
+
+  void finish_comment (octave_comment_elt::comment_type typ,
+                       bool looking_at_continuation = false);
 
   bool have_continuation (bool trailing_comments_ok = true);
 

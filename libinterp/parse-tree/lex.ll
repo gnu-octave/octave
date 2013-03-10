@@ -485,22 +485,18 @@ ANY_INCLUDING_NL (.|{NL})
 ^{S}*{CCHAR}\{{S}*{NL} {
     curr_lexer->lexer_debug ("^{S}*{CCHAR}\{{S}*{NL}");
 
-    int tok = 0;
+    yyless (0);
 
     if (curr_lexer->start_state () == LINE_COMMENT_START)
       {
         if (! curr_lexer->comment_text.empty ())
-          tok = curr_lexer->finish_comment (octave_comment_elt::full_line);
+          curr_lexer->finish_comment (octave_comment_elt::full_line);
 
         curr_lexer->pop_start_state ();
       }
 
     curr_lexer->push_start_state (BLOCK_COMMENT_START);
 
-    yyless (0);
-
-    if (tok > 0)
-      return curr_lexer->count_token (tok);
   }
 
 <BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
@@ -527,18 +523,13 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
-    int tok = 0;
-
     if (curr_lexer->block_comment_nesting_level > 1)
       curr_lexer->comment_text = "\n";
     else
-      tok = curr_lexer->finish_comment (octave_comment_elt::block);
+      curr_lexer->finish_comment (octave_comment_elt::block);
 
     curr_lexer->block_comment_nesting_level--;
     curr_lexer->pop_start_state ();
-
-    if (tok > 0)
-      return curr_lexer->count_token (tok);
   }
 
 %{
@@ -584,26 +575,12 @@ ANY_INCLUDING_NL (.|{NL})
       
     curr_lexer->comment_text += &yytext[i];
 
-    int tok = 0;
-
     if (! full_line_comment)
       {
-        tok = curr_lexer->finish_comment (octave_comment_elt::end_of_line);
+        curr_lexer->finish_comment (octave_comment_elt::end_of_line);
 
         curr_lexer->pop_start_state ();
-
-        if (curr_lexer->start_state () == COMMAND_START)
-          {
-            // Allow the actions for the end of a COMMAND line to be
-            // executed next.
-
-            tok = 0;
-            curr_lexer->xunput ('\n');
-          }
       }
-
-    if (tok > 0)
-      return curr_lexer->count_token (tok);
   }
 
 %{
@@ -615,12 +592,9 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->xunput (yytext[0]);
 
-    int tok = curr_lexer->finish_comment (octave_comment_elt::full_line);  
+    curr_lexer->finish_comment (octave_comment_elt::full_line);  
 
     curr_lexer->pop_start_state ();
-
-    if (tok > 0)
-      return curr_lexer->count_token (tok);
   }
 
 %{
@@ -660,15 +634,10 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 {CONT}{S}*{NL} |
-{CONT}{S}*{COMMENT} {
-    curr_lexer->lexer_debug ("{CONT}{S}*{NL}|{CONT}{S}*{COMMENT}");
+{CONT}{S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("{CONT}{S}*{NL}|{CONT}{S}*{CCHAR}.*{NL}");
 
-    if (yytext[0] == '\\')
-      curr_lexer->gripe_matlab_incompatible_continuation ();
-    curr_lexer->scan_for_comments (yytext);
-    curr_lexer->decrement_promptflag ();
-    curr_lexer->input_line_number++;
-    curr_lexer->current_input_column = 1;
+    curr_lexer->handle_continuation ();
   }
 
 %{
@@ -1413,36 +1382,6 @@ looks_like_copyright (const std::string& s)
     }
 
   return retval;
-}
-
-int
-lexical_feedback::finish_comment (octave_comment_elt::comment_type typ)
-{
-  bool copyright = looks_like_copyright (comment_text);
-
-  if (nesting_level.none () && help_text.empty ()
-    && ! comment_text.empty () && ! copyright)
-    help_text = comment_text;
-
-  if (copyright)
-    typ = octave_comment_elt::copyright;
-
-  octave_comment_buffer::append (comment_text, typ);
-
-  comment_text = "";
-
-  quote_is_transpose = false;
-  convert_spaces_to_comma = true;
-  at_beginning_of_statement = true;
-
-  if (nesting_level.none ())
-    return '\n';
-  else if (nesting_level.is_bracket_or_brace ())
-    // FIXME -- this result will be different if the comment follows a
-    // continuation token.
-    return ';';
-  else
-    return 0;
 }
 
 void
@@ -2352,6 +2291,81 @@ octave_lexer::handle_number (void)
   current_input_column += flex_yyleng ();
 
   do_comma_insert_check ();
+}
+
+void
+octave_lexer::handle_continuation (void)
+{
+  char *yytxt = flex_yytext ();
+  int yylng = flex_yyleng ();
+
+  size_t offset = 1;
+  if (yytxt[0] == '\\')
+    gripe_matlab_incompatible_continuation ();
+  else
+    offset = 3;
+
+  bool have_space = false;
+  while (offset < yylng)
+    {
+      char c = yytxt[offset];
+      if (c == ' ' || c == '\t')
+        {
+          have_space = true;
+          offset++;
+        }
+      else
+        break;
+    }
+
+  bool have_comment = false;
+  while (offset < yylng)
+    {
+      char c = yytxt[offset];
+      if (c == '#' || c == '%')
+        {
+          have_comment = true;
+          offset++;
+        }
+      else
+        break;
+    }
+
+  if (have_comment)
+    {
+      comment_text = &yytxt[offset];
+
+      finish_comment (octave_comment_elt::end_of_line, true);
+    }
+
+  decrement_promptflag ();
+  input_line_number++;
+  current_input_column = 1;
+}
+
+void
+octave_lexer::finish_comment (octave_comment_elt::comment_type typ,
+                              bool looking_at_continuation)
+{
+  bool copyright = looks_like_copyright (comment_text);
+
+  if (nesting_level.none () && help_text.empty ()
+    && ! comment_text.empty () && ! copyright)
+    help_text = comment_text;
+
+  if (copyright)
+    typ = octave_comment_elt::copyright;
+
+  octave_comment_buffer::append (comment_text, typ);
+
+  comment_text = "";
+
+  quote_is_transpose = false;
+  convert_spaces_to_comma = true;
+  at_beginning_of_statement = true;
+
+  if (! looking_at_continuation)
+    xunput ('\n');
 }
 
 // We have seen a backslash and need to find out if it should be

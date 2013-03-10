@@ -235,8 +235,7 @@ make_statement (T *arg)
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
 %type <comment_type> properties_beg methods_beg events_beg enum_beg
-%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
-%type <sep_type> opt_comma opt_semi
+%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep opt_comma
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -454,7 +453,9 @@ matrix          : '[' ']'
                   }
                 ;
 
-matrix_rows     : matrix_rows1 opt_semi
+matrix_rows     : matrix_rows1
+                  { $$ = $1; }
+                | matrix_rows1 ';'      // Ignore trailing semicolon.
                   { $$ = $1; }
                 ;
 
@@ -475,7 +476,9 @@ cell            : '{' '}'
                   { $$ = curr_parser.finish_cell ($2); }
                 ;
 
-cell_rows       : cell_rows1 opt_semi
+cell_rows       : cell_rows1
+                  { $$ = $1; }
+                | cell_rows1 ';'        // Ignore trailing semicolon.
                   { $$ = $1; }
                 ;
 
@@ -489,7 +492,9 @@ cell_rows1      : cell_or_matrix_row
                 ;
 
 cell_or_matrix_row
-                : arg_list opt_comma
+                : arg_list
+                  { $$ = curr_parser.validate_matrix_row ($1); }
+                | arg_list ','          // Ignore trailing comma.
                   { $$ = curr_parser.validate_matrix_row ($1); }
                 ;
 
@@ -1451,12 +1456,6 @@ opt_comma       : // empty
                   { $$ = 0; }
                 | ','
                   { $$ = ','; }
-                ;
-
-opt_semi        : // empty
-                  { $$ = 0; }
-                | ';'
-                  { $$ = ';'; }
                 ;
 
 %%

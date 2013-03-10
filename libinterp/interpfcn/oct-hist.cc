@@ -231,9 +231,6 @@ do_history (const octave_value_list& args, int nargout)
         }
     }
 
-//  if (limit < 0)
-//    limit = -limit;
-
   hlist = command_history::list (limit, numbered_output);
 
   int len = hlist.length ();
@@ -578,7 +575,7 @@ do_edit_history (const octave_value_list& args)
 static void
 do_run_history (const octave_value_list& args)
 {
-  std::string name = mk_tmp_hist_file (args, true, "run_history");
+  std::string name = mk_tmp_hist_file (args, false, "run_history");
 
   if (name.empty ())
     return;

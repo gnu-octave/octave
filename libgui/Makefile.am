@@ -90,3 +90,5 @@ ui-%.h: %.ui
 qrc-%.cc: %.qrc
 	@RCC@ -o $@ $<
 
+%.qm: %.ts
+	@LRELEASE@ $<

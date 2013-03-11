@@ -230,12 +230,12 @@ make_statement (T *arg)
 %token END_OF_INPUT LEXICAL_ERROR
 %token FCN INPUT_FILE CLASSDEF
 // %token VARARGIN VARARGOUT
-%token CLOSE_BRACE
+%token CHOOSE_ASSIGNMENT
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
 %type <comment_type> properties_beg methods_beg events_beg enum_beg
-%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep opt_comma
+%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -430,25 +430,21 @@ constant        : NUM
 matrix          : '[' ']'
                   {
                     $$ = new tree_constant (octave_null_matrix::instance);
-                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
                     curr_lexer->pending_local_variables.clear ();
                   }
                 | '[' ';' ']'
                   {
                     $$ = new tree_constant (octave_null_matrix::instance);
-                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
                     curr_lexer->pending_local_variables.clear ();
                   }
                 | '[' ',' ']'
                   {
                     $$ = new tree_constant (octave_null_matrix::instance);
-                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
                     curr_lexer->pending_local_variables.clear ();
                   }
                 | '[' matrix_rows ']'
                   {
                     $$ = curr_parser.finish_matrix ($2);
-                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
                     curr_lexer->pending_local_variables.clear ();
                   }
                 ;
@@ -493,9 +489,9 @@ cell_rows1      : cell_or_matrix_row
 
 cell_or_matrix_row
                 : arg_list
-                  { $$ = curr_parser.validate_matrix_row ($1); }
+                  { $$ = $1; }
                 | arg_list ','          // Ignore trailing comma.
-                  { $$ = curr_parser.validate_matrix_row ($1); }
+                  { $$ = $1; }
                 ;
 
 fcn_handle      : '@' FCN_HANDLE
@@ -519,7 +515,10 @@ primary_expr    : identifier
                 | fcn_handle
                   { $$ = $1; }
                 | matrix
-                  { $$ = $1; }
+                  {
+                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
+                    $$ = $1;
+                  }
                 | cell
                   { $$ = $1; }
                 | meta_identifier
@@ -669,17 +668,15 @@ simple_expr     : colon_expr
                   { $$ = curr_parser.make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
                 ;
 
-// Arrange for the lexer to return CLOSE_BRACE for ']' by looking ahead
-// one token for an assignment op.
-
 assign_lhs      : simple_expr
                   {
                     $$ = new tree_argument_list ($1);
                     $$->mark_as_simple_assign_lhs ();
                   }
-                | '[' arg_list opt_comma CLOSE_BRACE
+                | matrix CHOOSE_ASSIGNMENT
                   {
-                    $$ = $2;
+                    tree_matrix *tmp = dynamic_cast<tree_matrix *> ($1);
+                    $$ = tmp->front ();
                     curr_lexer->looking_at_matrix_or_assign_lhs = false;
                     for (std::set<std::string>::const_iterator p = curr_lexer->pending_local_variables.begin ();
                          p != curr_lexer->pending_local_variables.end ();
@@ -1450,12 +1447,6 @@ opt_sep         : // empty
                   { $$ = 0; }
                 | sep
                   { $$ = $1; }
-                ;
-
-opt_comma       : // empty
-                  { $$ = 0; }
-                | ','
-                  { $$ = ','; }
                 ;
 
 %%

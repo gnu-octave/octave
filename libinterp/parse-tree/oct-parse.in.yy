@@ -3181,8 +3181,6 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
   if (ffile)
     {
-      bool eof;
-
       // octave_parser constructor sets this for us.
       frame.protect_var (CURR_LEXER);
 

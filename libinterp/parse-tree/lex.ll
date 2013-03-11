@@ -1429,30 +1429,6 @@ Undocumented internal function.\n\
   return retval;
 }
 
-class
-flex_stream_reader : public stream_reader
-{
-public:
-  flex_stream_reader (octave_lexer *l, char *buf_arg)
-    : stream_reader (), lexer (l), buf (buf_arg)
-  { }
-
-  int getc (void) { return lexer->text_yyinput (); }
-  int ungetc (int c) { lexer->xunput (c, buf); return 0; }
-
-private:
-
-  // No copying!
-
-  flex_stream_reader (const flex_stream_reader&);
-
-  flex_stream_reader& operator = (const flex_stream_reader&);
-
-  octave_lexer *lexer;
-
-  char *buf;
-};
-
 lexical_feedback::~lexical_feedback (void)
 {
   tokens.clear ();
@@ -2437,35 +2413,6 @@ octave_lexer::handle_close_bracket (int bracket_type)
   pop_start_state ();
 
   return retval;
-}
-
-bool
-octave_lexer::next_token_can_follow_bin_op (void)
-{
-  std::stack<char> buf;
-
-  int c = EOF;
-
-  // Skip whitespace in current statement on current line
-  while (true)
-    {
-      c = text_yyinput ();
-
-      buf.push (c);
-
-      if (match_any (c, ",;\n") || (c != ' ' && c != '\t'))
-        break;
-    }
-
-  // Restore input.
-  while (! buf.empty ())
-    {
-      xunput (buf.top ());
-
-      buf.pop ();
-    }
-
-  return (isalnum (c) || match_any (c, "!\"'(-[_{~"));
 }
 
 bool

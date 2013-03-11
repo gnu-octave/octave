@@ -542,7 +542,10 @@ fcn_handle      : '@' FCN_HANDLE
                 ;
 
 anon_fcn_handle : '@' param_list statement
-                  { $$ = curr_parser.make_anon_fcn_handle ($2, $3); }
+                  {
+                    $$ = curr_parser.make_anon_fcn_handle ($2, $3);
+                    curr_lexer->nesting_level.remove ();
+                  }
                 ;
 
 primary_expr    : identifier

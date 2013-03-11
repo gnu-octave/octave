@@ -821,7 +821,14 @@ ANY_INCLUDING_NL (.|{NL})
 "||"    { return curr_lexer->handle_op ("||", EXPR_OR_OR); }
 "<<"    { return curr_lexer->handle_incompatible_op ("<<", LSHIFT); }
 ">>"    { return curr_lexer->handle_incompatible_op (">>", RSHIFT); }
-";"     { return curr_lexer->handle_op (";", ';', true, true); }
+
+";" {
+    bool at_beginning_of_statement
+      = (! (curr_lexer->whitespace_is_significant ()
+            || curr_lexer->looking_at_object_index.front ()));
+
+    return curr_lexer->handle_op (";", ';', true, at_beginning_of_statement);
+  }
 
 "+" {
    int tok = curr_lexer->handle_unary_op ("+", '+');
@@ -887,8 +894,12 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 "," {
+    bool at_beginning_of_statement
+      = (! (curr_lexer->whitespace_is_significant ()
+            || curr_lexer->looking_at_object_index.front ()));
+
     return curr_lexer->handle_op
-      (",", ',', true, ! curr_lexer->looking_at_object_index.front ());
+      (",", ',', true, at_beginning_of_statement);
   }
 
 ".'" {
@@ -974,7 +985,10 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->at_beginning_of_statement = false;
 
     if (curr_lexer->looking_at_anon_fcn_args)
-      curr_lexer->looking_at_anon_fcn_args = false;
+      {
+        curr_lexer->looking_at_anon_fcn_args = false;
+        curr_lexer->nesting_level.anon_fcn_body ();
+      }
 
     return curr_lexer->count_token (')');
   }

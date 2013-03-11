@@ -130,6 +130,55 @@ object) relevant global values before and after the nested call.
 #define YY_FATAL_ERROR(msg) \
   (yyget_extra (yyscanner))->fatal_error (msg)
 
+#define CMD_OR_OP(PATTERN, TOK, COMPAT) \
+ \
+  do \
+    { \
+      curr_lexer->lexer_debug (PATTERN); \
+ \
+      if (curr_lexer->looks_like_command_arg ()) \
+        { \
+          yyless (0); \
+          curr_lexer->push_start_state (COMMAND_START); \
+        } \
+      else \
+        { \
+          return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
+        } \
+    } \
+  while (0)
+
+#define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT) \
+ \
+  do \
+    { \
+      curr_lexer->lexer_debug (PATTERN); \
+ \
+      if (curr_lexer->looks_like_command_arg ()) \
+        { \
+          yyless (0); \
+          curr_lexer->push_start_state (COMMAND_START); \
+        } \
+      else \
+        { \
+          int tok \
+            = (COMPAT \
+               ? curr_lexer->handle_unary_op (TOK) \
+               : curr_lexer->handle_incompatible_unary_op (TOK)); \
+ \
+          if (tok < 0) \
+            { \
+              yyless (0); \
+              curr_lexer->xunput (','); \
+            } \
+          else \
+            { \
+              return tok; \
+            } \
+        } \
+    } \
+  while (0)
+
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
@@ -298,7 +347,7 @@ ANY_INCLUDING_NL (.|{NL})
 \[ {
     curr_lexer->lexer_debug ("\\[");
 
-    bool unput_comma = false;
+        bool unput_comma = false;
 
     if (curr_lexer->whitespace_is_significant ()
         && curr_lexer->space_follows_previous_token ())
@@ -528,21 +577,21 @@ ANY_INCLUDING_NL (.|{NL})
 {NUMBER} {
     curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
 
-    int tok = curr_lexer->previous_token_value ();
+     int tok = curr_lexer->previous_token_value ();
 
-    if (curr_lexer->whitespace_is_significant ()
-        && curr_lexer->space_follows_previous_token ()
-        && ! (tok == '[' || tok == '{'
-              || curr_lexer->previous_token_is_binop ()))
-      {
-        yyless (0);
-        unput (',');
-      }
-    else
-      {
-        curr_lexer->handle_number ();
-        return curr_lexer->count_token_internal (NUM);
-      }
+     if (curr_lexer->whitespace_is_significant ()
+         && curr_lexer->space_follows_previous_token ()
+         && ! (tok == '[' || tok == '{'
+               || curr_lexer->previous_token_is_binop ()))
+       {
+         yyless (0);
+         unput (',');
+       }
+     else
+       {
+         curr_lexer->handle_number ();
+         return curr_lexer->count_token_internal (NUM);
+       }
   }
 
 %{
@@ -646,10 +695,6 @@ ANY_INCLUDING_NL (.|{NL})
       }
   }
 
-%{
-// Function handles and superclass references
-%}
-
 "@" {
     curr_lexer->lexer_debug ("@");
 
@@ -660,7 +705,6 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->at_beginning_of_statement = false;
 
     return curr_lexer->count_token ('@');
-
   }
 
 %{
@@ -697,30 +741,52 @@ ANY_INCLUDING_NL (.|{NL})
 "'" {
     curr_lexer->lexer_debug ("'");
 
-    int tok = curr_lexer->previous_token_value ();
-
-    bool transpose = false;
-
-    if (curr_lexer->whitespace_is_significant ())
+    if (curr_lexer->previous_token_may_be_command ()
+        &&  curr_lexer->space_follows_previous_token ())
       {
-        if (curr_lexer->space_follows_previous_token ())
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      {
+        int tok = curr_lexer->previous_token_value ();
+
+        bool transpose = false;
+
+        if (curr_lexer->whitespace_is_significant ())
           {
-            if (tok == '[' || tok == '{'
-                || curr_lexer->previous_token_is_binop ())
+            if (curr_lexer->space_follows_previous_token ())
               {
-                curr_lexer->current_input_column++;
-                int retval = curr_lexer->handle_string ('\'');
-                return curr_lexer->count_token_internal (retval);
+                if (tok == '[' || tok == '{'
+                    || curr_lexer->previous_token_is_binop ())
+                  {
+                    curr_lexer->current_input_column++;
+                    int retval = curr_lexer->handle_string ('\'');
+                    return curr_lexer->count_token_internal (retval);
+                  }
+                else
+                  {
+                    yyless (0);
+                    curr_lexer->xunput (',');
+                  }
               }
             else
               {
-                yyless (0);
-                curr_lexer->xunput (',');
+                if (tok == '[' || tok == '{'
+                    || curr_lexer->previous_token_is_binop ()
+                    || curr_lexer->previous_token_is_keyword ())
+                  {
+                    curr_lexer->current_input_column++;
+                    int retval = curr_lexer->handle_string ('\'');
+                    return curr_lexer->count_token_internal (retval);
+                  }
+                else
+                  return curr_lexer->count_token (QUOTE);
               }
           }
         else
           {
-            if (tok == '[' || tok == '{'
+            if (! tok || tok == '[' || tok == '{' || tok == '('
                 || curr_lexer->previous_token_is_binop ()
                 || curr_lexer->previous_token_is_keyword ())
               {
@@ -732,19 +798,6 @@ ANY_INCLUDING_NL (.|{NL})
               return curr_lexer->count_token (QUOTE);
           }
       }
-    else
-      {
-        if (! tok || tok == '[' || tok == '{' || tok == '('
-            || curr_lexer->previous_token_is_binop ()
-            || curr_lexer->previous_token_is_keyword ())
-          {
-            curr_lexer->current_input_column++;
-            int retval = curr_lexer->handle_string ('\'');
-            return curr_lexer->count_token_internal (retval);
-          }
-        else
-          return curr_lexer->count_token (QUOTE);
-      }
   }
 
 %{
@@ -754,25 +807,40 @@ ANY_INCLUDING_NL (.|{NL})
 \" {
     curr_lexer->lexer_debug ("\"");
 
-    int tok = curr_lexer->previous_token_value ();
-
-    bool transpose = false;
-
-    if (curr_lexer->whitespace_is_significant ())
+    if (curr_lexer->previous_token_may_be_command ()
+        &&  curr_lexer->space_follows_previous_token ())
       {
-        if (curr_lexer->space_follows_previous_token ())
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      {
+        int tok = curr_lexer->previous_token_value ();
+
+        bool transpose = false;
+
+        if (curr_lexer->whitespace_is_significant ())
           {
-            if (tok == '[' || tok == '{'
-                || curr_lexer->previous_token_is_binop ())
+            if (curr_lexer->space_follows_previous_token ())
+              {
+                if (tok == '[' || tok == '{'
+                    || curr_lexer->previous_token_is_binop ())
+                  {
+                    curr_lexer->current_input_column++;
+                    int retval = curr_lexer->handle_string ('"');
+                    return curr_lexer->count_token_internal (retval);
+                  }
+                else
+                  {
+                    yyless (0);
+                    curr_lexer->xunput (',');
+                  }
+              }
+            else
               {
                 curr_lexer->current_input_column++;
                 int retval = curr_lexer->handle_string ('"');
                 return curr_lexer->count_token_internal (retval);
-              }
-            else
-              {
-                yyless (0);
-                curr_lexer->xunput (',');
               }
           }
         else
@@ -782,149 +850,75 @@ ANY_INCLUDING_NL (.|{NL})
             return curr_lexer->count_token_internal (retval);
           }
       }
-    else
-      {
-        curr_lexer->current_input_column++;
-        int retval = curr_lexer->handle_string ('"');
-        return curr_lexer->count_token_internal (retval);
-      }
   }
 
 %{
 // Other operators.
 %}
 
-":"   { return curr_lexer->handle_op (":", ':'); }
-".+"  { return curr_lexer->handle_incompatible_op (".+", EPLUS); }
-".-"  { return curr_lexer->handle_incompatible_op (".-", EMINUS); }
-".*"  { return curr_lexer->handle_op (".*", EMUL); }
-"./"  { return curr_lexer->handle_op ("./", EDIV); }
-".\\" { return curr_lexer->handle_op (".\\", ELEFTDIV); }
-".^"  { return curr_lexer->handle_op (".^", EPOW); }
-".**" { return curr_lexer->handle_incompatible_op (".**", EPOW); }
-"<="  { return curr_lexer->handle_op ("<=", EXPR_LE); }
-"=="  { return curr_lexer->handle_op ("==", EXPR_EQ); }
-"~="  { return curr_lexer->handle_op ("~=", EXPR_NE); }
-"!="  { return curr_lexer->handle_incompatible_op ("!=", EXPR_NE); }
-">="  { return curr_lexer->handle_op (">=", EXPR_GE); }
-"&"   { return curr_lexer->handle_op ("&", EXPR_AND); }
-"|"   { return curr_lexer->handle_op ("|", EXPR_OR); }
-"<"   { return curr_lexer->handle_op ("<", EXPR_LT); }
-">"   { return curr_lexer->handle_op (">", EXPR_GT); }
-"*"   { return curr_lexer->handle_op ("*", '*'); }
+":"   { CMD_OR_OP (":", ':', true); }
+".+"  { CMD_OR_OP (".+", EPLUS, false); }
+".-"  { CMD_OR_OP (".-", EMINUS, false); }
+".*"  { CMD_OR_OP (".*", EMUL, true); }
+"./"  { CMD_OR_OP ("./", EDIV, true); }
+".\\" { CMD_OR_OP (".\\", ELEFTDIV, true); }
+".^"  { CMD_OR_OP (".^", EPOW, true); }
+".**" { CMD_OR_OP (".**", EPOW, false); }
+"<="  { CMD_OR_OP ("<=", EXPR_LE, true); }
+"=="  { CMD_OR_OP ("==", EXPR_EQ, true); }
+"~="  { CMD_OR_OP ("~=", EXPR_NE, true); }
+"!="  { CMD_OR_OP ("!=", EXPR_NE, false); }
+">="  { CMD_OR_OP (">=", EXPR_GE, true); }
+"&"   { CMD_OR_OP ("&", EXPR_AND, true); }
+"|"   { CMD_OR_OP ("|", EXPR_OR, true); }
+"<"   { CMD_OR_OP ("<", EXPR_LT, true); }
+">"   { CMD_OR_OP (">", EXPR_GT, true); }
+"*"   { CMD_OR_OP ("*", '*', true); }
+"/"   { CMD_OR_OP ("/", '/', true); }
 
-"/" {
-    int prev_tok = curr_lexer->previous_token_value ();
-    bool space_before = curr_lexer->space_follows_previous_token ();
-    int c = curr_lexer->text_yyinput ();
-    curr_lexer->xunput (c);
-    bool space_after = (c == ' ' || c == '\t');
+%{
+// In Matlab, '\' may also trigger command syntax.
+%}
 
-    if (space_before && ! space_after
-        && curr_lexer->previous_token_may_be_command ())
-      {
-        yyless (0);
-        curr_lexer->push_start_state (COMMAND_START);
-      }
-    else
-      return curr_lexer->handle_op ("/", '/');
-  }
+"\\"  { return curr_lexer->handle_op ("\\", LEFTDIV); }
 
-"\\" { return curr_lexer->handle_op ("\\", LEFTDIV); }
-"^"  { return curr_lexer->handle_op ("^", POW); }
-"**" { return curr_lexer->handle_incompatible_op ("**", POW); }
-"&&" { return curr_lexer->handle_op ("&&", EXPR_AND_AND); }
-"||" { return curr_lexer->handle_op ("||", EXPR_OR_OR); }
-"<<" { return curr_lexer->handle_incompatible_op ("<<", LSHIFT); }
-">>" { return curr_lexer->handle_incompatible_op (">>", RSHIFT); }
+"^"   { CMD_OR_OP ("^", POW, true); }
+"**"  { CMD_OR_OP ("**", POW, false); }
+"&&"  { CMD_OR_OP ("&&", EXPR_AND_AND, true); }
+"||"  { CMD_OR_OP ("||", EXPR_OR_OR, true); }
+"<<"  { CMD_OR_OP ("<<", LSHIFT, false); }
+">>"  { CMD_OR_OP (">>", RSHIFT, false); }
 
 ";" {
     bool at_beginning_of_statement
       = (! (curr_lexer->whitespace_is_significant ()
             || curr_lexer->looking_at_object_index.front ()));
 
-    return curr_lexer->handle_op (";", ';', true, at_beginning_of_statement);
+    return curr_lexer->handle_op (";", ';', at_beginning_of_statement);
   }
 
-"+" {
-   int tok = curr_lexer->handle_unary_op ("+", '+');
+"+" { CMD_OR_UNARY_OP ("+", '+', true); }
+"-" { CMD_OR_UNARY_OP ("-", '-', true); }
 
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput (',');
-      }
-    else
-      return tok;
-  }
-
-"-" {
-    int prev_tok = curr_lexer->previous_token_value ();
-    bool space_before = curr_lexer->space_follows_previous_token ();
-    int c = curr_lexer->text_yyinput ();
-    curr_lexer->xunput (c);
-    bool space_after = (c == ' ' || c == '\t');
-
-    if (space_before && ! space_after
-        && curr_lexer->previous_token_may_be_command ())
-      {
-        yyless (0);
-        curr_lexer->push_start_state (COMMAND_START);
-      }
-    else
-      {
-        int tok = curr_lexer->handle_unary_op ("-", '-');
-
-        if (tok < 0)
-          {
-            yyless (0);
-            curr_lexer->xunput (',');
-          }
-        else
-          return tok;
-      }
-  }
-
-"~" {
-    int tok = curr_lexer->handle_unary_op ("~", EXPR_NOT);
-
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput (',');
-      }
-    else
-      return tok;
-  }
-
-"!" {
-    int tok = curr_lexer->handle_incompatible_unary_op ("!", EXPR_NOT);
-
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput (',');
-      }
-    else
-      return tok;
-  }
+"~" { CMD_OR_UNARY_OP ("~", EXPR_NOT, true); }
+"!" { CMD_OR_UNARY_OP ("!", EXPR_NOT, false); }
 
 "," {
     bool at_beginning_of_statement
       = (! (curr_lexer->whitespace_is_significant ()
             || curr_lexer->looking_at_object_index.front ()));
 
-    return curr_lexer->handle_op
-      (",", ',', true, at_beginning_of_statement);
+    return curr_lexer->handle_op (",", ',', at_beginning_of_statement);
   }
 
 ".'" {
-    return curr_lexer->handle_op (".'", TRANSPOSE, true, false);
+    return curr_lexer->handle_op (".'", TRANSPOSE, false);
   }
 
 "++" {
-    int tok = curr_lexer->handle_incompatible_unary_op
-                ("++", PLUS_PLUS, true, false, true);
+    curr_lexer->lexer_debug ("++");
+
+    int tok = curr_lexer->handle_incompatible_unary_op (PLUS_PLUS, false);
 
     if (tok < 0)
       {
@@ -936,8 +930,9 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 "--" {
-    int tok = curr_lexer->handle_incompatible_unary_op
-                ("--", MINUS_MINUS, true, false, true);
+    curr_lexer->lexer_debug ("--");
+
+    int tok = curr_lexer->handle_incompatible_unary_op (MINUS_MINUS, false);
 
     if (tok < 0)
       {
@@ -1041,6 +1036,10 @@ ANY_INCLUDING_NL (.|{NL})
 "|="   { return curr_lexer->handle_incompatible_op ("|=", OR_EQ); }
 "<<="  { return curr_lexer->handle_incompatible_op ("<<=", LSHIFT_EQ); }
 ">>="  { return curr_lexer->handle_incompatible_op (">>=", RSHIFT_EQ); }
+
+%{
+// In Matlab, '{' may also trigger command syntax.
+%}
 
 "{" {
     curr_lexer->lexer_debug ("{");
@@ -1796,6 +1795,14 @@ octave_lexer::xunput (char c)
 }
 
 bool
+octave_lexer::looking_at_space (void)
+{
+  int c = text_yyinput ();
+  xunput (c);
+  return (c == ' ' || c == '\t');
+}
+
+bool
 octave_lexer::inside_any_object_index (void)
 {
   bool retval = false;
@@ -2453,223 +2460,11 @@ octave_lexer::next_token_can_follow_bin_op (void)
 bool
 octave_lexer::looks_like_command_arg (void)
 {
-  bool retval = true;
+  bool space_before = space_follows_previous_token ();
+  bool space_after = looking_at_space ();
 
-  int c0 = text_yyinput ();
-
-  switch (c0)
-    {
-    // = ==
-    case '=':
-      {
-        int c1 = text_yyinput ();
-
-        if (c1 == '=')
-          {
-            int c2 = text_yyinput ();
-
-            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-                && next_token_can_follow_bin_op ())
-              retval = false;
-
-            xunput (c2);
-          }
-        else
-          retval = false;
-
-        xunput (c1);
-      }
-      break;
-
-    case '(':
-    case '{':
-      // Indexing.
-      retval = false;
-      break;
-
-    case '\n':
-      // EOL.
-      break;
-
-    case '\'':
-    case '"':
-      // Beginning of a character string.
-      break;
-
-    // + - ++ -- += -=
-    case '+':
-    case '-':
-      {
-        int c1 = text_yyinput ();
-
-        switch (c1)
-          {
-          case '\n':
-            // EOL.
-          case '+':
-          case '-':
-            // Unary ops, spacing doesn't matter.
-            break;
-
-          case '\t':
-          case ' ':
-            {
-              if (next_token_can_follow_bin_op ())
-                retval = false;
-            }
-            break;
-
-          case '=':
-            {
-              int c2 = text_yyinput ();
-
-              if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-                  && next_token_can_follow_bin_op ())
-                retval = false;
-
-              xunput (c2);
-            }
-            break;
-          }
-
-        xunput (c1);
-      }
-      break;
-
-    case ':':
-    case '/':
-    case '\\':
-    case '^':
-      {
-        int c1 = text_yyinput ();
-
-        if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-            && next_token_can_follow_bin_op ())
-          retval = false;
-
-        xunput (c1);
-      }
-      break;
-
-    // .+ .- ./ .\ .^ .* .**
-    case '.':
-      {
-        int c1 = text_yyinput ();
-
-        if (match_any (c1, "+-/\\^*"))
-          {
-            int c2 = text_yyinput ();
-
-            if (c2 == '=')
-              {
-                int c3 = text_yyinput ();
-
-                if (! match_any (c3, ",;\n") && (c3 == ' ' || c3 == '\t')
-                    && next_token_can_follow_bin_op ())
-                  retval = false;
-
-                xunput (c3);
-              }
-            else if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-                     && next_token_can_follow_bin_op ())
-              retval = false;
-
-            xunput (c2);
-          }
-        else if (! match_any (c1, ",;\n")
-                 && (! isdigit (c1) && c1 != ' ' && c1 != '\t'
-                     && c1 != '.'))
-          {
-            // Structure reference.  FIXME -- is this a complete check?
-
-            retval = false;
-          }
-
-        xunput (c1);
-      }
-      break;
-
-    // & && | || * **
-    case '&':
-    case '|':
-    case '*':
-      {
-        int c1 = text_yyinput ();
-
-        if (c1 == c0)
-          {
-            int c2 = text_yyinput ();
-
-            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-                && next_token_can_follow_bin_op ())
-              retval = false;
-
-            xunput (c2);
-          }
-        else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-                 && next_token_can_follow_bin_op ())
-          retval = false;
-
-        xunput (c1);
-      }
-      break;
-
-    // < <= > >=
-    case '<':
-    case '>':
-      {
-        int c1 = text_yyinput ();
-
-        if (c1 == '=')
-          {
-            int c2 = text_yyinput ();
-
-            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-                && next_token_can_follow_bin_op ())
-              retval = false;
-
-            xunput (c2);
-          }
-        else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-                 && next_token_can_follow_bin_op ())
-          retval = false;
-
-        xunput (c1);
-      }
-      break;
-
-    // ~= !=
-    case '~':
-    case '!':
-      {
-        int c1 = text_yyinput ();
-
-        // ~ and ! can be unary ops, so require following =.
-        if (c1 == '=')
-          {
-            int c2 = text_yyinput ();
-
-            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-                && next_token_can_follow_bin_op ())
-              retval = false;
-
-            xunput (c2);
-          }
-        else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-                 && next_token_can_follow_bin_op ())
-          retval = false;
-
-        xunput (c1);
-      }
-      break;
-
-    default:
-      break;
-    }
-
-  xunput (c0);
-
-  return retval;
+  return (space_before && ! space_after
+          && previous_token_may_be_command ());
 }
 
 int
@@ -3154,21 +2949,19 @@ octave_lexer::display_start_state (void) const
 }
 
 int
-octave_lexer::handle_op (const char *pattern, int tok, bool convert,
-                         bool bos, bool qit)
+octave_lexer::handle_op (const char *pattern, int tok, bool bos)
 {
   lexer_debug (pattern);
 
-  return handle_op_internal (pattern, tok, convert, bos, qit, true);
+  return handle_op_internal (tok, bos, true);
 }
 
 int
-octave_lexer::handle_incompatible_op (const char *pattern, int tok,
-                                      bool convert, bool bos, bool qit)
+octave_lexer::handle_incompatible_op (const char *pattern, int tok, bool bos)
 {
   lexer_debug (pattern);
 
-  return handle_op_internal (pattern, tok, convert, bos, qit, false);
+  return handle_op_internal (tok, bos, false);
 }
 
 bool
@@ -3195,28 +2988,21 @@ octave_lexer::maybe_unput_comma_before_unary_op (int tok)
 }
 
 int
-octave_lexer::handle_unary_op (const char *pattern, int tok, bool convert,
-                               bool bos, bool qit)
+octave_lexer::handle_unary_op (int tok, bool bos)
 {
-  lexer_debug (pattern);
-
   return maybe_unput_comma_before_unary_op (tok)
-    ? -1 : handle_op_internal (pattern, tok, convert, bos, qit, true);
+    ? -1 : handle_op_internal (tok, bos, true);
 }
 
 int
-octave_lexer::handle_incompatible_unary_op (const char *pattern, int tok,
-                                            bool convert, bool bos, bool qit)
+octave_lexer::handle_incompatible_unary_op (int tok, bool bos)
 {
-  lexer_debug (pattern);
-
   return maybe_unput_comma_before_unary_op (tok)
-    ? -1 : handle_op_internal (pattern, tok, convert, bos, qit, false);
+    ? -1 : handle_op_internal (tok, bos, false);
 }
 
 int
-octave_lexer::handle_op_internal (const char *pattern, int tok, bool convert,
-                                  bool bos, bool qit, bool compat)
+octave_lexer::handle_op_internal (int tok, bool bos, bool compat)
 {
   if (! compat)
     gripe_matlab_incompatible_operator (flex_yytext ());

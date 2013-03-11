@@ -2990,8 +2990,6 @@ octave_lexer::handle_identifier (void)
 
       current_input_column += flex_yyleng ();
 
-      at_beginning_of_statement = false;
-
       return STRUCT_ELT;
     }
 
@@ -3000,7 +2998,7 @@ octave_lexer::handle_identifier (void)
   // an else token, then the next token is at the beginning of a
   // statement.
 
-  // May set begenning_of_statement to true.
+  // May set at_beginning_of_statement to true.
   int kw_token = is_keyword_token (tok);
 
   // If we found a keyword token, then the beginning_of_statement flag

@@ -562,12 +562,25 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
+    bool have_space = false;
     size_t len = yyleng;
     size_t i = 0;
     while (i < len)
       {
         char c = yytext[i];
-        if (c == '#' || c == '%' || c == ' ' || c == '\t')
+        if (c == ' ' || c == '\t')
+          {
+            have_space = true;
+            i++;
+          }
+        else
+          break;
+      }
+
+    while (i < len)
+      {
+        char c = yytext[i];
+        if (c == '#' || c == '%')
           i++;
         else
           break;
@@ -577,6 +590,9 @@ ANY_INCLUDING_NL (.|{NL})
 
     if (! full_line_comment)
       {
+        if (have_space)
+          curr_lexer->mark_previous_token_trailing_space ();
+
         curr_lexer->finish_comment (octave_comment_elt::end_of_line);
 
         curr_lexer->pop_start_state ();
@@ -627,6 +643,8 @@ ANY_INCLUDING_NL (.|{NL})
 
 {S}* {
     curr_lexer->current_input_column += yyleng;
+
+    curr_lexer->mark_previous_token_trailing_space ();
   }
 
 %{
@@ -1369,6 +1387,35 @@ lexical_feedback::reset (void)
   tokens.clear ();
 }
 
+int
+lexical_feedback::previous_token_value (void) const
+{
+  const token *tok = tokens.front ();
+  return tok ? tok->token_value () : 0;
+}
+
+bool
+lexical_feedback::previous_token_value_is (int tok_val) const
+{
+  const token *tok = tokens.front ();
+  return tok ? tok->token_value_is (tok_val) : false;
+}
+
+void
+lexical_feedback::mark_previous_token_trailing_space (void)
+{
+  token *tok = tokens.front ();
+  if (tok && ! previous_token_value_is ('\n'))
+    tok->mark_trailing_space ();
+}
+
+bool
+lexical_feedback::space_follows_previous_token (void) const
+{
+  const token *tok = tokens.front ();
+  return tok ? tok->space_follows_token () : false;
+}
+
 static bool
 looks_like_copyright (const std::string& s)
 {
@@ -1726,72 +1773,74 @@ octave_lexer::is_keyword_token (const std::string& s)
                             || parsed_function_name.top ()))))
             return 0;
 
-          tok_val = new token (token::simple_end, l, c);
+          tok_val = new token (end_kw, token::simple_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case end_try_catch_kw:
-          tok_val = new token (token::try_catch_end, l, c);
+          tok_val = new token (end_try_catch_kw, token::try_catch_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case end_unwind_protect_kw:
-          tok_val = new token (token::unwind_protect_end, l, c);
+          tok_val = new token (end_unwind_protect_kw,
+                               token::unwind_protect_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endfor_kw:
-          tok_val = new token (token::for_end, l, c);
+          tok_val = new token (endfor_kw, token::for_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endfunction_kw:
-          tok_val = new token (token::function_end, l, c);
+          tok_val = new token (endfunction_kw, token::function_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endif_kw:
-          tok_val = new token (token::if_end, l, c);
+          tok_val = new token (endif_kw, token::if_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endparfor_kw:
-          tok_val = new token (token::parfor_end, l, c);
+          tok_val = new token (endparfor_kw, token::parfor_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endswitch_kw:
-          tok_val = new token (token::switch_end, l, c);
+          tok_val = new token (endswitch_kw, token::switch_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endwhile_kw:
-          tok_val = new token (token::while_end, l, c);
+          tok_val = new token (endwhile_kw, token::while_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endclassdef_kw:
-          tok_val = new token (token::classdef_end, l, c);
+          tok_val = new token (endclassdef_kw, token::classdef_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endenumeration_kw:
-          tok_val = new token (token::enumeration_end, l, c);
+          tok_val = new token (endenumeration_kw, token::enumeration_end,
+                               l, c);
           at_beginning_of_statement = true;
           break;
 
         case endevents_kw:
-          tok_val = new token (token::events_end, l, c);
+          tok_val = new token (endevents_kw, token::events_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endmethods_kw:
-          tok_val = new token (token::methods_end, l, c);
+          tok_val = new token (endmethods_kw, token::methods_end, l, c);
           at_beginning_of_statement = true;
           break;
 
         case endproperties_kw:
-          tok_val = new token (token::properties_end, l, c);
+          tok_val = new token (endproperties_kw, token::properties_end, l, c);
           at_beginning_of_statement = true;
           break;
 
@@ -1871,14 +1920,15 @@ octave_lexer::is_keyword_token (const std::string& s)
             if ((reading_fcn_file || reading_script_file
                  || reading_classdef_file)
                 && ! fcn_file_full_name.empty ())
-              tok_val = new token (fcn_file_full_name, l, c);
+              tok_val = new token (magic_file_kw, fcn_file_full_name, l, c);
             else
-              tok_val = new token ("stdin", l, c);
+              tok_val = new token (magic_file_kw, "stdin", l, c);
           }
           break;
 
         case magic_line_kw:
-          tok_val = new token (static_cast<double> (l), "", l, c);
+          tok_val = new token (magic_line_kw, static_cast<double> (l),
+                               "", l, c);
           break;
 
         default:
@@ -1886,7 +1936,7 @@ octave_lexer::is_keyword_token (const std::string& s)
         }
 
       if (! tok_val)
-        tok_val = new token (l, c);
+        tok_val = new token (kw->tok, l, c);
 
       push_token (tok_val);
 
@@ -2285,7 +2335,7 @@ octave_lexer::handle_number (void)
   looking_for_object_index = false;
   at_beginning_of_statement = false;
 
-  push_token (new token (value, yytxt, input_line_number,
+  push_token (new token (NUM, value, yytxt, input_line_number,
                          current_input_column));
 
   current_input_column += flex_yyleng ();
@@ -2317,6 +2367,9 @@ octave_lexer::handle_continuation (void)
       else
         break;
     }
+
+  if (have_space)
+    mark_previous_token_trailing_space ();
 
   bool have_comment = false;
   while (offset < yylng)
@@ -2575,8 +2628,6 @@ octave_lexer::handle_string (char delim)
                   quote_is_transpose = true;
                   convert_spaces_to_comma = true;
 
-                  push_token (new token (s, bos_line, bos_col));
-
                   if (delim == '"')
                     gripe_matlab_incompatible ("\" used as string delimiter");
                   else if (delim == '\'')
@@ -2585,7 +2636,11 @@ octave_lexer::handle_string (char delim)
                   looking_for_object_index = true;
                   at_beginning_of_statement = false;
 
-                  return delim == '"' ? DQ_STRING : SQ_STRING;
+                  int tok = delim == '"' ? DQ_STRING : SQ_STRING;
+
+                  push_token (new token (tok, s, bos_line, bos_col));
+
+                  return tok;
                 }
             }
         }
@@ -3087,7 +3142,8 @@ octave_lexer::handle_superclass_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  push_token (new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
+  push_token (new token (SUPERCLASSREF,
+                         meth.empty () ? 0 : &(symbol_table::insert (meth)),
                          cls.empty () ? 0 : &(symbol_table::insert (cls)),
                          pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
                          input_line_number, current_input_column));
@@ -3121,7 +3177,8 @@ octave_lexer::handle_meta_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  push_token (new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
+  push_token (new token (METAQUERY,
+                         cls.empty () ? 0 : &(symbol_table::insert (cls)),
                          pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
                          input_line_number, current_input_column));
 
@@ -3161,7 +3218,7 @@ octave_lexer::handle_identifier (void)
 
       maybe_unput_comma (spc_gobbled);
 
-      push_token (new token (tok, input_line_number,
+      push_token (new token (STRUCT_ELT, tok, input_line_number,
                              current_input_column));
 
       quote_is_transpose = true;
@@ -3196,7 +3253,7 @@ octave_lexer::handle_identifier (void)
         }
       else
         {
-          push_token (new token (tok, input_line_number,
+          push_token (new token (FCN_HANDLE, tok, input_line_number,
                                  current_input_column));
 
           current_input_column += flex_yyleng ();
@@ -3277,7 +3334,7 @@ octave_lexer::handle_identifier (void)
   if (tok == "end")
     tok = "__end__";
 
-  push_token (new token (&(symbol_table::insert (tok)),
+  push_token (new token (NAME, &(symbol_table::insert (tok)),
                          input_line_number, current_input_column));
 
   // After seeing an identifer, it is ok to convert spaces to a comma
@@ -3635,7 +3692,7 @@ octave_lexer::handle_op_internal (const char *pattern, int tok, bool convert,
   if (! compat)
     gripe_matlab_incompatible_operator (flex_yytext ());
 
-  push_token (new token (input_line_number, current_input_column));
+  push_token (new token (tok, input_line_number, current_input_column));
 
   current_input_column += flex_yyleng ();
   quote_is_transpose = qit;
@@ -3649,7 +3706,8 @@ octave_lexer::handle_op_internal (const char *pattern, int tok, bool convert,
 int
 octave_lexer::handle_token (const std::string& name, int tok)
 {
-  token *tok_val = new token (name, input_line_number, current_input_column);
+  token *tok_val = new token (tok, name, input_line_number,
+                              current_input_column);
 
   return handle_token (tok, tok_val);
 }
@@ -3658,7 +3716,7 @@ int
 octave_lexer::handle_token (int tok, token *tok_val)
 {
   if (! tok_val)
-    tok_val = new token (input_line_number, current_input_column);
+    tok_val = new token (tok, input_line_number, current_input_column);
 
   push_token (tok_val);
 

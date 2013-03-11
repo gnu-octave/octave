@@ -63,23 +63,6 @@ lexical_feedback
 {
 public:
 
-  // Did eat_whitespace or eat_continuation eat a space or tab, or a
-  // newline, or both?
-  //
-  // Functions that return this type will return a logical OR of the
-  // following values:
-  //
-  //  NO_WHITESPACE  no spaces to eat
-  //  SPACE_OR_TAB   space or tab in input
-  //  NEWLINE        bare new line in input
-
-  enum whitespace_type
-    {
-      NO_WHITESPACE = 1,
-      SPACE_OR_TAB = 2,
-      NEWLINE = 4
-    };
-
   // Track nesting of square brackets, curly braces, and parentheses.
 
   class bbp_nesting_level
@@ -244,8 +227,7 @@ public:
   };
   
   lexical_feedback (void)
-    : end_of_input (false), convert_spaces_to_comma (true),
-      do_comma_insert (false), at_beginning_of_statement (true),
+    : end_of_input (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
       looking_at_initializer_expression (false),
@@ -288,13 +270,6 @@ public:
 
   // true means that we have encountered eof on the input stream.
   bool end_of_input;
-
-  // true means that we should convert spaces to a comma inside a
-  // matrix definition.
-  bool convert_spaces_to_comma;
-
-  // gag.  stupid kludge so that [[1,2][3,4]] will work.
-  bool do_comma_insert;
 
   // true means we are at the beginning of a statement, where a
   // command name is possible.
@@ -499,31 +474,17 @@ public:
 
   int flex_yyleng (void);
 
-  void do_comma_insert_check (void);
-
   int text_yyinput (void);
 
   void xunput (char c, char *buf);
 
   void xunput (char c);
 
-  void fixup_column_count (char *s);
-
   bool inside_any_object_index (void);
 
   int is_keyword_token (const std::string& s);
 
   bool is_variable (const std::string& name);
-
-  bool next_token_is_sep_op (void);
-
-  bool next_token_is_postfix_unary_op (bool spc_prev);
-
-  bool next_token_is_bin_op (bool spc_prev);
-
-  void scan_for_comments (const char *text);
-
-  int eat_whitespace (void);
 
   bool whitespace_is_significant (void);
 
@@ -538,17 +499,9 @@ public:
 
   bool have_ellipsis_continuation (bool trailing_comments_ok = true);
 
-  int eat_continuation (void);
-
   int handle_string (char delim);
 
-  bool next_token_is_assign_op (void);
-
-  bool next_token_is_index_op (void);
-
-  int handle_close_bracket (bool spc_gobbled, int bracket_type);
-
-  void maybe_unput_comma (int spc_gobbled);
+  int handle_close_bracket (int bracket_type);
 
   bool next_token_can_follow_bin_op (void);
 

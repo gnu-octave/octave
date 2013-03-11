@@ -382,8 +382,11 @@ public:
   tree_decl_command *
   make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
 
-  // Validate argument list forming a matrix or cell row.
-  tree_argument_list *validate_matrix_row (tree_argument_list *row);
+  // Validate matrix or cell
+  bool validate_array_list (tree_expression *e);
+
+  // Validate matrix object used in "[lhs] = ..." assignments.
+  tree_argument_list *validate_matrix_for_assignment (tree_expression *e);
 
   // Finish building an array_list (common action for finish_matrix
   // and finish_cell).

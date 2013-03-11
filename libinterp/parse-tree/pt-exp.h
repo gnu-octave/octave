@@ -52,7 +52,9 @@ public:
 
   virtual bool is_constant (void) const { return false; }
 
-  virtual bool is_matrix_constant (void) const { return false; }
+  virtual bool is_matrix (void) const { return false; }
+
+  virtual bool is_cell (void) const { return false; }
 
   virtual bool is_identifier (void) const { return false; }
 

@@ -51,8 +51,6 @@ object) relevant global values before and after the nested call.
 %x BLOCK_COMMENT_START
 %x LINE_COMMENT_START
 
-%x KLUGE
-
 %{
 
 #include <cctype>
@@ -251,12 +249,6 @@ ANY_INCLUDING_NL (.|{NL})
         if (! (tok == ';' || tok == '[' || tok == '{'))
           curr_lexer->xunput (';');
       }
-  }
-
-<KLUGE>@ {
-    curr_lexer->lexer_debug ("<KLUGE>@");
-    curr_lexer->pop_start_state ();
-    return curr_lexer->count_token (CHOOSE_ASSIGNMENT);
   }
 
 %{
@@ -802,24 +794,24 @@ ANY_INCLUDING_NL (.|{NL})
 // Other operators.
 %}
 
-":"     { return curr_lexer->handle_op (":", ':'); }
-".+"    { return curr_lexer->handle_incompatible_op (".+", EPLUS); }
-".-"    { return curr_lexer->handle_incompatible_op (".-", EMINUS); }
-".*"    { return curr_lexer->handle_op (".*", EMUL); }
-"./"    { return curr_lexer->handle_op ("./", EDIV); }
-".\\"   { return curr_lexer->handle_op (".\\", ELEFTDIV); }
-".^"    { return curr_lexer->handle_op (".^", EPOW); }
-".**"   { return curr_lexer->handle_incompatible_op (".**", EPOW); }
-"<="    { return curr_lexer->handle_op ("<=", EXPR_LE); }
-"=="    { return curr_lexer->handle_op ("==", EXPR_EQ); }
-"~="    { return curr_lexer->handle_op ("~=", EXPR_NE); }
-"!="    { return curr_lexer->handle_incompatible_op ("!=", EXPR_NE); }
-">="    { return curr_lexer->handle_op (">=", EXPR_GE); }
-"&"     { return curr_lexer->handle_op ("&", EXPR_AND); }
-"|"     { return curr_lexer->handle_op ("|", EXPR_OR); }
-"<"     { return curr_lexer->handle_op ("<", EXPR_LT); }
-">"     { return curr_lexer->handle_op (">", EXPR_GT); }
-"*"     { return curr_lexer->handle_op ("*", '*'); }
+":"   { return curr_lexer->handle_op (":", ':'); }
+".+"  { return curr_lexer->handle_incompatible_op (".+", EPLUS); }
+".-"  { return curr_lexer->handle_incompatible_op (".-", EMINUS); }
+".*"  { return curr_lexer->handle_op (".*", EMUL); }
+"./"  { return curr_lexer->handle_op ("./", EDIV); }
+".\\" { return curr_lexer->handle_op (".\\", ELEFTDIV); }
+".^"  { return curr_lexer->handle_op (".^", EPOW); }
+".**" { return curr_lexer->handle_incompatible_op (".**", EPOW); }
+"<="  { return curr_lexer->handle_op ("<=", EXPR_LE); }
+"=="  { return curr_lexer->handle_op ("==", EXPR_EQ); }
+"~="  { return curr_lexer->handle_op ("~=", EXPR_NE); }
+"!="  { return curr_lexer->handle_incompatible_op ("!=", EXPR_NE); }
+">="  { return curr_lexer->handle_op (">=", EXPR_GE); }
+"&"   { return curr_lexer->handle_op ("&", EXPR_AND); }
+"|"   { return curr_lexer->handle_op ("|", EXPR_OR); }
+"<"   { return curr_lexer->handle_op ("<", EXPR_LT); }
+">"   { return curr_lexer->handle_op (">", EXPR_GT); }
+"*"   { return curr_lexer->handle_op ("*", '*'); }
 
 "/" {
     int prev_tok = curr_lexer->previous_token_value ();
@@ -838,13 +830,13 @@ ANY_INCLUDING_NL (.|{NL})
       return curr_lexer->handle_op ("/", '/');
   }
 
-"\\"    { return curr_lexer->handle_op ("\\", LEFTDIV); }
-"^"     { return curr_lexer->handle_op ("^", POW); }
-"**"    { return curr_lexer->handle_incompatible_op ("**", POW); }
-"&&"    { return curr_lexer->handle_op ("&&", EXPR_AND_AND); }
-"||"    { return curr_lexer->handle_op ("||", EXPR_OR_OR); }
-"<<"    { return curr_lexer->handle_incompatible_op ("<<", LSHIFT); }
-">>"    { return curr_lexer->handle_incompatible_op (">>", RSHIFT); }
+"\\" { return curr_lexer->handle_op ("\\", LEFTDIV); }
+"^"  { return curr_lexer->handle_op ("^", POW); }
+"**" { return curr_lexer->handle_incompatible_op ("**", POW); }
+"&&" { return curr_lexer->handle_op ("&&", EXPR_AND_AND); }
+"||" { return curr_lexer->handle_op ("||", EXPR_OR_OR); }
+"<<" { return curr_lexer->handle_incompatible_op ("<<", LSHIFT); }
+">>" { return curr_lexer->handle_incompatible_op (">>", RSHIFT); }
 
 ";" {
     bool at_beginning_of_statement
@@ -1030,233 +1022,25 @@ ANY_INCLUDING_NL (.|{NL})
 // = and op= operators.
 %}
 
-"=" {
-    int tok = curr_lexer->handle_assign_op ("=", '=');
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"+=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("+=", ADD_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"-=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("-=", SUB_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"*=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("*=", MUL_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"/=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("/=", DIV_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"\\=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("\\=", LEFTDIV_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-".+=" {
-    int tok = curr_lexer->handle_incompatible_assign_op (".+=", ADD_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-".-=" {
-    int tok = curr_lexer->handle_incompatible_assign_op (".-=", SUB_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-".*=" {
-    int tok = curr_lexer->handle_incompatible_assign_op (".*=", EMUL_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"./=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("./=", EDIV_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-".\\=" {
-    int tok = curr_lexer->handle_incompatible_assign_op (".\\=", ELEFTDIV_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"^=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("^=", POW_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"**=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("^=", POW_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-".^=" {
-    int tok = curr_lexer->handle_incompatible_assign_op (".^=", EPOW_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-".**=" {
-    int tok = curr_lexer->handle_incompatible_assign_op (".^=", EPOW_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"&=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("&=", AND_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"|=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("|=", OR_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-"<<=" {
-    int tok = curr_lexer->handle_incompatible_assign_op ("<<=", LSHIFT_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
-
-">>=" {
-    int tok = curr_lexer->handle_incompatible_assign_op (">>=", RSHIFT_EQ);
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput ('@');
-        curr_lexer->push_start_state (KLUGE);
-      }
-    else
-      return tok;
-  }
+"="    { return curr_lexer->handle_op ("=", '='); }
+"+="   { return curr_lexer->handle_incompatible_op ("+=", ADD_EQ); }
+"-="   { return curr_lexer->handle_incompatible_op ("-=", SUB_EQ); }
+"*="   { return curr_lexer->handle_incompatible_op ("*=", MUL_EQ); }
+"/="   { return curr_lexer->handle_incompatible_op ("/=", DIV_EQ); }
+"\\="  { return curr_lexer->handle_incompatible_op ("\\=", LEFTDIV_EQ); }
+".+="  { return curr_lexer->handle_incompatible_op (".+=", ADD_EQ); }
+".-="  { return curr_lexer->handle_incompatible_op (".-=", SUB_EQ); }
+".*="  { return curr_lexer->handle_incompatible_op (".*=", EMUL_EQ); }
+"./="  { return curr_lexer->handle_incompatible_op ("./=", EDIV_EQ); }
+".\\=" { return curr_lexer->handle_incompatible_op (".\\=", ELEFTDIV_EQ); }
+"^="   { return curr_lexer->handle_incompatible_op ("^=", POW_EQ); }
+"**="  { return curr_lexer->handle_incompatible_op ("^=", POW_EQ); }
+".^="  { return curr_lexer->handle_incompatible_op (".^=", EPOW_EQ); }
+".**=" { return curr_lexer->handle_incompatible_op (".^=", EPOW_EQ); }
+"&="   { return curr_lexer->handle_incompatible_op ("&=", AND_EQ); }
+"|="   { return curr_lexer->handle_incompatible_op ("|=", OR_EQ); }
+"<<="  { return curr_lexer->handle_incompatible_op ("<<=", LSHIFT_EQ); }
+">>="  { return curr_lexer->handle_incompatible_op (">>=", RSHIFT_EQ); }
 
 "{" {
     curr_lexer->lexer_debug ("{");
@@ -3041,48 +2825,6 @@ octave_lexer::handle_identifier (void)
       return kw_token;
     }
 
-  // See if we have a plot keyword (title, using, with, or clear).
-
-  int c1 = text_yyinput ();
-
-  bool next_tok_is_eq = false;
-  if (c1 == '=')
-    {
-      int c2 = text_yyinput ();
-      xunput (c2);
-
-      if (c2 != '=')
-        next_tok_is_eq = true;
-    }
-
-  xunput (c1);
-
-  // Kluge alert.
-  //
-  // If we are looking at a text style function, set up to gobble its
-  // arguments.
-  //
-  // If the following token is '=', or if we are parsing a function
-  // return list or function parameter list, or if we are looking at
-  // something like [ab,cd] = foo (), force the symbol to be inserted
-  // as a variable in the current symbol table.
-
-  if (! is_variable (tok))
-    {
-      if (next_tok_is_eq
-          || looking_at_decl_list
-          || looking_at_return_list
-          || (looking_at_parameter_list
-              && ! looking_at_initializer_expression))
-        {
-          symbol_table::force_variable (tok);
-        }
-      else if (looking_at_matrix_or_assign_lhs)
-        {
-          pending_local_variables.insert (tok);
-        }
-    }
-
   // Find the token in the symbol table.  Beware the magic
   // transformation of the end keyword...
 
@@ -3308,7 +3050,6 @@ octave_lexer::display_token (int tok)
     case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
     case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
     case FCN: std::cerr << "FCN\n"; break;
-    case CHOOSE_ASSIGNMENT: std::cerr << "CHOOSE_ASSIGNMENT\n"; break;
     case INPUT_FILE: std::cerr << "INPUT_FILE\n"; break;
     case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
     case METAQUERY: std::cerr << "METAQUERY\n"; break;
@@ -3416,10 +3157,6 @@ octave_lexer::display_start_state (void) const
       std::cerr << "LINE_COMMENT_START" << std::endl;
       break;
 
-    case KLUGE:
-      std::cerr << "KLUGE" << std::endl;
-      break;
-
     default:
       std::cerr << "UNKNOWN START STATE!" << std::endl;
       break;
@@ -3485,24 +3222,6 @@ octave_lexer::handle_incompatible_unary_op (const char *pattern, int tok,
 
   return maybe_unput_comma_before_unary_op (tok)
     ? -1 : handle_op_internal (pattern, tok, convert, bos, qit, false);
-}
-
-int
-octave_lexer::handle_assign_op (const char *pattern, int tok)
-{
-  lexer_debug (pattern);
-
-  return (previous_token_value_is (']') && looking_at_matrix_or_assign_lhs)
-    ? -1 : handle_op_internal (pattern, tok, false, false, false, true);
-}
-
-int
-octave_lexer::handle_incompatible_assign_op (const char *pattern, int tok)
-{
-  lexer_debug (pattern);
-
-  return (previous_token_value_is (']') && looking_at_matrix_or_assign_lhs)
-    ? -1 : handle_op_internal (pattern, tok, false, false, false, false);
 }
 
 int

@@ -41,8 +41,12 @@ generates an error, then the test is said to fail.
 
 Since @code{eval()} will stop at the first error it encounters, you must
 divide your tests up into blocks, with anything in a separate
-block evaluated separately.  Blocks are introduced by the keyword
-@code{test} immediately following @samp{%!}.  For example:
+block evaluated separately.  Blocks are introduced by valid keywords like
+@code{test}, @code{function}, or @code{assert} immediately following @samp{%!}.
+A block is defined by indentation as in Python.  Lines beginning with
+@samp{%!<whitespace>} are part of the preceeding block.
+ 
+For example:
 
 @example
 @group
@@ -196,6 +200,24 @@ You can also share test functions:
 
 Note that all previous variables and values are lost when a new 
 shared block is declared.
+
+Remember that @code{%!function} begins a new block and that 
+@code{%!endfunction} ends this block.  Be aware that until a new block
+is started, lines starting with @samp{%!<space>} will be discarded as comments.
+The following is nearly identical to the example above, but does nothing.
+
+@example
+@group
+%!function @var{a} = fn (@var{b})
+%!  @var{a} = 2*@var{b};
+%!endfunction
+%! assert (fn(2), 4);
+@end group
+@end example
+
+@noindent
+Because there is a space after @samp{%!} the @code{assert} statement does
+not begin a new block and this line is treated as a comment.
 
 Error and warning blocks are like test blocks, but they only succeed 
 if the code generates an error.  You can check the text of the error

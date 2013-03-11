@@ -542,10 +542,7 @@ fcn_handle      : '@' FCN_HANDLE
                 ;
 
 anon_fcn_handle : '@' param_list statement
-                  {
-                    curr_lexer->quote_is_transpose = false;
-                    $$ = curr_parser.make_anon_fcn_handle ($2, $3);
-                  }
+                  { $$ = curr_parser.make_anon_fcn_handle ($2, $3); }
                 ;
 
 primary_expr    : identifier
@@ -1071,10 +1068,7 @@ param_list_end  : ')'
                 ;
 
 param_list      : param_list_beg param_list1 param_list_end
-                  {
-                    curr_lexer->quote_is_transpose = false;
-                    $$ = $2;
-                  }
+                  { $$ = $2; }
                 | param_list_beg error
                   {
                     curr_parser.bison_error ("invalid parameter list");

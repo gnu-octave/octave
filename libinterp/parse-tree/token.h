@@ -74,6 +74,9 @@ public:
 
   ~token (void);
 
+  void mark_may_be_command (void) { maybe_cmd = true; }
+  bool may_be_command (void) const { return maybe_cmd; }
+
   void mark_trailing_space (void) { tspc = true; }
   bool space_follows_token (void) const { return tspc; }
 
@@ -105,6 +108,7 @@ private:
 
   token& operator = (const token& tok);
 
+  bool maybe_cmd;
   bool tspc;
   int line_num;
   int column_num;

@@ -284,6 +284,10 @@ public:
 
   bool space_follows_previous_token (void) const;
 
+  bool previous_token_is_binop (void) const;
+
+  bool previous_token_may_be_command (void) const;
+
   // true means that we have encountered eof on the input stream.
   bool end_of_input;
 
@@ -529,6 +533,8 @@ public:
 
   int eat_whitespace (void);
 
+  bool whitespace_is_significant (void);
+
   void handle_number (void);
 
   void handle_continuation (void);
@@ -637,6 +643,10 @@ public:
                               bool convert = false, bool bos = false,
                               bool qit = false);
 
+  int handle_assign_op (const char *pattern, int tok);
+
+  int handle_incompatible_assign_op (const char *pattern, int tok);
+
   int handle_op_internal (const char *pattern, int tok, bool convert,
                           bool bos, bool qit, bool compat);
 
@@ -645,6 +655,8 @@ public:
   int handle_token (int tok, token *tok_val = 0);
 
   int count_token (int tok);
+
+  int count_token_internal (int tok);
 
   int show_token (int tok);
 

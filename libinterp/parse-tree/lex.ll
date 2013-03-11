@@ -244,8 +244,8 @@ ANY_INCLUDING_NL (.|{NL})
 
     int tok = curr_lexer->previous_token_value ();
 
-    if (! (tok == ',' || tok == ';' || tok == '[' || tok == '{'))
-      curr_lexer->xunput (',');
+    if (! (tok == ';' || tok == '[' || tok == '{'))
+      curr_lexer->xunput (';');
   }
 
 <KLUGE>@ {
@@ -301,27 +301,47 @@ ANY_INCLUDING_NL (.|{NL})
 \[ {
     curr_lexer->lexer_debug ("\\[");
 
-    curr_lexer->nesting_level.bracket ();
+    bool unput_comma = false;
 
-    curr_lexer->looking_at_object_index.push_front (false);
+    if (curr_lexer->whitespace_is_significant ()
+        && curr_lexer->space_follows_previous_token ())
+      {
+        int tok = curr_lexer->previous_token_value ();
 
-    curr_lexer->current_input_column += yyleng;
-    curr_lexer->looking_for_object_index = false;
-    curr_lexer->at_beginning_of_statement = false;
+        if (! (tok == ';' || tok == ',' || tok == '[' || tok == '{'
+               || curr_lexer->previous_token_is_binop ()))
+          unput_comma = true;
+      }
 
-    if (curr_lexer->defining_func
-        && ! curr_lexer->parsed_function_name.top ())
-      curr_lexer->looking_at_return_list = true;
+    if (unput_comma)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
     else
-      curr_lexer->looking_at_matrix_or_assign_lhs = true;
+      {
+        curr_lexer->nesting_level.bracket ();
 
-    curr_lexer->decrement_promptflag ();
+        curr_lexer->looking_at_object_index.push_front (false);
 
-    curr_lexer->bracketflag++;
+        curr_lexer->current_input_column += yyleng;
+        curr_lexer->looking_for_object_index = false;
+        curr_lexer->at_beginning_of_statement = false;
 
-    curr_lexer->push_start_state (MATRIX_START);
+        if (curr_lexer->defining_func
+            && ! curr_lexer->parsed_function_name.top ())
+          curr_lexer->looking_at_return_list = true;
+        else
+          curr_lexer->looking_at_matrix_or_assign_lhs = true;
 
-    return curr_lexer->count_token ('[');
+        curr_lexer->decrement_promptflag ();
+
+        curr_lexer->bracketflag++;
+
+        curr_lexer->push_start_state (MATRIX_START);
+
+        return curr_lexer->count_token ('[');
+      }
   }
 
 \] {
@@ -485,9 +505,12 @@ ANY_INCLUDING_NL (.|{NL})
 {NUMBER}{Im} {
     curr_lexer->lexer_debug ("{NUMBER}{Im}");
 
+    int tok = curr_lexer->previous_token_value ();
+
     if (curr_lexer->whitespace_is_significant ()
         && curr_lexer->space_follows_previous_token ()
-        && ! curr_lexer->previous_token_is_binop ())
+        && ! (tok == '[' || tok == '{'
+              || curr_lexer->previous_token_is_binop ()))
       {
         yyless (0);
         unput (',');
@@ -508,9 +531,12 @@ ANY_INCLUDING_NL (.|{NL})
 {NUMBER} {
     curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
 
+    int tok = curr_lexer->previous_token_value ();
+
     if (curr_lexer->whitespace_is_significant ()
         && curr_lexer->space_follows_previous_token ()
-        && ! curr_lexer->previous_token_is_binop ())
+        && ! (tok == '[' || tok == '{'
+              || curr_lexer->previous_token_is_binop ()))
       {
         yyless (0);
         unput (',');
@@ -571,7 +597,8 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
-        if (curr_lexer->previous_token_may_be_command ())
+        if (! curr_lexer->looking_at_decl_list
+            && curr_lexer->previous_token_may_be_command ())
           {
             yyless (0);
             curr_lexer->push_start_state (COMMAND_START);
@@ -696,7 +723,7 @@ ANY_INCLUDING_NL (.|{NL})
           }
         else
           {
-            if (tok == ',' || tok == ';'
+            if (tok == ',' || tok == ';' || tok == '[' || tok == '{'
                 || curr_lexer->previous_token_is_binop ())
               {
                 curr_lexer->current_input_column++;
@@ -736,7 +763,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         if (curr_lexer->space_follows_previous_token ())
           {
-            if (tok == '[' || tok == '{'
+            if (tok == ',' || tok == ';' || tok == '[' || tok == '{'
                 || curr_lexer->previous_token_is_binop ())
               {
                 curr_lexer->current_input_column++;
@@ -785,8 +812,6 @@ ANY_INCLUDING_NL (.|{NL})
 "|"     { return curr_lexer->handle_op ("|", EXPR_OR); }
 "<"     { return curr_lexer->handle_op ("<", EXPR_LT); }
 ">"     { return curr_lexer->handle_op (">", EXPR_GT); }
-"+"     { return curr_lexer->handle_op ("+", '+'); }
-"-"     { return curr_lexer->handle_op ("-", '-'); }
 "*"     { return curr_lexer->handle_op ("*", '*'); }
 "/"     { return curr_lexer->handle_op ("/", '/'); }
 "\\"    { return curr_lexer->handle_op ("\\", LEFTDIV); }
@@ -796,9 +821,70 @@ ANY_INCLUDING_NL (.|{NL})
 "||"    { return curr_lexer->handle_op ("||", EXPR_OR_OR); }
 "<<"    { return curr_lexer->handle_incompatible_op ("<<", LSHIFT); }
 ">>"    { return curr_lexer->handle_incompatible_op (">>", RSHIFT); }
-"~"     { return curr_lexer->handle_op ("~", EXPR_NOT); }
-"!"     { return curr_lexer->handle_incompatible_op ("!", EXPR_NOT); }
 ";"     { return curr_lexer->handle_op (";", ';', true, true); }
+
+"+" {
+   int tok = curr_lexer->handle_unary_op ("+", '+');
+
+    if (tok < 0)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
+    else
+      return tok;
+  }
+
+"-" {
+    int prev_tok = curr_lexer->previous_token_value ();
+    bool space_before = curr_lexer->space_follows_previous_token ();
+    int c = curr_lexer->text_yyinput ();
+    curr_lexer->xunput (c);
+    bool space_after = (c == ' ' || c == '\t');
+
+    if (space_before && ! space_after
+        && curr_lexer->previous_token_may_be_command ())
+      {
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      {
+        int tok = curr_lexer->handle_unary_op ("-", '-');
+
+        if (tok < 0)
+          {
+            yyless (0);
+            curr_lexer->xunput (',');
+          }
+        else
+          return tok;
+      }
+  }
+
+"~" {
+    int tok = curr_lexer->handle_unary_op ("~", EXPR_NOT);
+
+    if (tok < 0)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
+    else
+      return tok;
+  }
+
+"!" {
+    int tok = curr_lexer->handle_incompatible_unary_op ("!", EXPR_NOT);
+
+    if (tok < 0)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
+    else
+      return tok;
+  }
 
 "," {
     return curr_lexer->handle_op
@@ -810,35 +896,70 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 "++" {
-    return curr_lexer->handle_incompatible_op
-      ("++", PLUS_PLUS, true, false, true);
+    int tok = curr_lexer->handle_incompatible_unary_op
+                ("++", PLUS_PLUS, true, false, true);
+
+    if (tok < 0)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
+    else
+      return tok;
   }
 
 "--" {
-    ;
-    return curr_lexer->handle_incompatible_op
-      ("--", MINUS_MINUS, true, false, true);
+    int tok = curr_lexer->handle_incompatible_unary_op
+                ("--", MINUS_MINUS, true, false, true);
+
+    if (tok < 0)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
+    else
+      return tok;
   }
 
 "(" {
     curr_lexer->lexer_debug ("(");
 
-    // If we are looking for an object index, then push TRUE for
-    // looking_at_object_index.  Otherwise, just push whatever state
-    // is current (so that we can pop it off the stack when we find
-    // the matching close paren).
+    bool unput_comma = false;
 
-    curr_lexer->looking_at_object_index.push_front
-      (curr_lexer->looking_for_object_index);
+    if (curr_lexer->whitespace_is_significant ()
+        && curr_lexer->space_follows_previous_token ())
+      {
+        int tok = curr_lexer->previous_token_value ();
 
-    curr_lexer->looking_at_indirect_ref = false;
-    curr_lexer->looking_for_object_index = false;
-    curr_lexer->at_beginning_of_statement = false;
+        if (! (tok == ';' || tok == ',' || tok == '[' || tok == '{'
+               || curr_lexer->previous_token_is_binop ()))
+          unput_comma = true;
+      }
 
-    curr_lexer->nesting_level.paren ();
-    curr_lexer->decrement_promptflag ();
+    if (unput_comma)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
+    else
+      {
+        // If we are looking for an object index, then push TRUE for
+        // looking_at_object_index.  Otherwise, just push whatever state
+        // is current (so that we can pop it off the stack when we find
+        // the matching close paren).
 
-    return curr_lexer->handle_token ('(');
+        curr_lexer->looking_at_object_index.push_front
+          (curr_lexer->looking_for_object_index);
+
+        curr_lexer->looking_at_indirect_ref = false;
+        curr_lexer->looking_for_object_index = false;
+        curr_lexer->at_beginning_of_statement = false;
+
+        curr_lexer->nesting_level.paren ();
+        curr_lexer->decrement_promptflag ();
+
+        return curr_lexer->handle_token ('(');
+      }
   }
 
 ")" {
@@ -1102,22 +1223,42 @@ ANY_INCLUDING_NL (.|{NL})
 "{" {
     curr_lexer->lexer_debug ("{");
 
-    curr_lexer->nesting_level.brace ();
+    bool unput_comma = false;
 
-    curr_lexer->looking_at_object_index.push_front
-      (curr_lexer->looking_for_object_index);
+    if (curr_lexer->whitespace_is_significant ()
+        && curr_lexer->space_follows_previous_token ())
+      {
+        int tok = curr_lexer->previous_token_value ();
 
-    curr_lexer->current_input_column += yyleng;
-    curr_lexer->looking_for_object_index = false;
-    curr_lexer->at_beginning_of_statement = false;
+        if (! (tok == ';' || tok == ',' || tok == '[' || tok == '{'
+               || curr_lexer->previous_token_is_binop ()))
+          unput_comma = true;
+      }
 
-    curr_lexer->decrement_promptflag ();
+    if (unput_comma)
+      {
+        yyless (0);
+        curr_lexer->xunput (',');
+      }
+    else
+      {
+        curr_lexer->nesting_level.brace ();
 
-    curr_lexer->braceflag++;
+        curr_lexer->looking_at_object_index.push_front
+          (curr_lexer->looking_for_object_index);
 
-    curr_lexer->push_start_state (MATRIX_START);
+        curr_lexer->current_input_column += yyleng;
+        curr_lexer->looking_for_object_index = false;
+        curr_lexer->at_beginning_of_statement = false;
 
-    return curr_lexer->count_token ('{');
+        curr_lexer->decrement_promptflag ();
+
+        curr_lexer->braceflag++;
+
+        curr_lexer->push_start_state (MATRIX_START);
+
+        return curr_lexer->count_token ('{');
+      }
   }
 
 "}" {
@@ -1904,11 +2045,12 @@ octave_lexer::is_keyword_token (const std::string& s)
           // fall through ...
 
         case persistent_kw:
+        case global_kw:
+          looking_at_decl_list = true;
           break;
 
         case case_kw:
         case elseif_kw:
-        case global_kw:
         case until_kw:
           break;
 
@@ -3269,6 +3411,8 @@ int
 octave_lexer::handle_op (const char *pattern, int tok, bool convert,
                          bool bos, bool qit)
 {
+  lexer_debug (pattern);
+
   return handle_op_internal (pattern, tok, convert, bos, qit, true);
 }
 
@@ -3276,7 +3420,53 @@ int
 octave_lexer::handle_incompatible_op (const char *pattern, int tok,
                                       bool convert, bool bos, bool qit)
 {
+  lexer_debug (pattern);
+
   return handle_op_internal (pattern, tok, convert, bos, qit, false);
+}
+
+bool
+octave_lexer::maybe_unput_comma_before_unary_op (int tok)
+{
+  int prev_tok = previous_token_value ();
+
+  bool unput_comma = false;
+
+  if (whitespace_is_significant () && space_follows_previous_token ())
+    {
+      int c = text_yyinput ();
+      xunput (c);
+
+      bool space_after = (c == ' ' || c == '\t');
+
+      if (! (prev_tok == ';' || prev_tok == ','
+             || prev_tok == '[' || prev_tok == '{'
+             || previous_token_is_binop ()
+             || ((tok == '+' || tok == '-') && space_after)))
+        unput_comma = true;
+    }
+
+  return unput_comma;
+}
+
+int
+octave_lexer::handle_unary_op (const char *pattern, int tok, bool convert,
+                               bool bos, bool qit)
+{
+  lexer_debug (pattern);
+
+  return maybe_unput_comma_before_unary_op (tok)
+    ? -1 : handle_op_internal (pattern, tok, convert, bos, qit, true);
+}
+
+int
+octave_lexer::handle_incompatible_unary_op (const char *pattern, int tok,
+                                            bool convert, bool bos, bool qit)
+{
+  lexer_debug (pattern);
+
+  return maybe_unput_comma_before_unary_op (tok)
+    ? -1 : handle_op_internal (pattern, tok, convert, bos, qit, false);
 }
 
 int
@@ -3301,8 +3491,6 @@ int
 octave_lexer::handle_op_internal (const char *pattern, int tok, bool convert,
                                   bool bos, bool qit, bool compat)
 {
-  lexer_debug (pattern);
-
   if (! compat)
     gripe_matlab_incompatible_operator (flex_yytext ());
 

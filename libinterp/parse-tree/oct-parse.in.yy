@@ -789,18 +789,14 @@ command         : declaration
 // Declaration statemnts
 // =====================
 
-parsing_decl_list
-                : // empty
-                  { curr_lexer->looking_at_decl_list = true; }
-
-declaration     : GLOBAL parsing_decl_list decl1
+declaration     : GLOBAL decl1
                   {
-                    $$ = curr_parser.make_decl_command (GLOBAL, $1, $3);
+                    $$ = curr_parser.make_decl_command (GLOBAL, $1, $2);
                     curr_lexer->looking_at_decl_list = false;
                   }
-                | PERSISTENT parsing_decl_list decl1
+                | PERSISTENT decl1
                   {
-                    $$ = curr_parser.make_decl_command (PERSISTENT, $1, $3);
+                    $$ = curr_parser.make_decl_command (PERSISTENT, $1, $2);
                     curr_lexer->looking_at_decl_list = false;
                   }
                 ;

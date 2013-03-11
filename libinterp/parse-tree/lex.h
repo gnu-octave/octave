@@ -274,6 +274,8 @@ public:
 
   bool previous_token_is_binop (void) const;
 
+  bool previous_token_is_keyword (void) const;
+
   bool previous_token_may_be_command (void) const;
 
   // true means that we have encountered eof on the input stream.

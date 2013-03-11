@@ -242,10 +242,15 @@ ANY_INCLUDING_NL (.|{NL})
 <MATRIX_START>{NL} {
     curr_lexer->lexer_debug ("<MATRIX_START>{NL}");
 
-    int tok = curr_lexer->previous_token_value ();
+    if (curr_lexer->nesting_level.is_paren ())
+      curr_lexer->gripe_matlab_incompatible ("bare newline inside parentheses");
+    else
+      {
+        int tok = curr_lexer->previous_token_value ();
 
-    if (! (tok == ';' || tok == '[' || tok == '{'))
-      curr_lexer->xunput (';');
+        if (! (tok == ';' || tok == '[' || tok == '{'))
+          curr_lexer->xunput (';');
+      }
   }
 
 <KLUGE>@ {
@@ -308,7 +313,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         int tok = curr_lexer->previous_token_value ();
 
-        if (! (tok == ';' || tok == ',' || tok == '[' || tok == '{'
+        if (! (tok == '[' || tok == '{'
                || curr_lexer->previous_token_is_binop ()))
           unput_comma = true;
       }
@@ -723,8 +728,9 @@ ANY_INCLUDING_NL (.|{NL})
           }
         else
           {
-            if (tok == ',' || tok == ';' || tok == '[' || tok == '{'
-                || curr_lexer->previous_token_is_binop ())
+            if (tok == '[' || tok == '{'
+                || curr_lexer->previous_token_is_binop ()
+                || curr_lexer->previous_token_is_keyword ())
               {
                 curr_lexer->current_input_column++;
                 int retval = curr_lexer->handle_string ('\'');
@@ -736,15 +742,16 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
-        if (tok == NAME || tok == NUM || tok == IMAG_NUM
-            || tok == ')' || tok == ']' || tok == '}')
-          return curr_lexer->count_token (QUOTE);
-        else
+        if (! tok || tok == '[' || tok == '{' || tok == '('
+            || curr_lexer->previous_token_is_binop ()
+            || curr_lexer->previous_token_is_keyword ())
           {
             curr_lexer->current_input_column++;
             int retval = curr_lexer->handle_string ('\'');
             return curr_lexer->count_token_internal (retval);
           }
+        else
+          return curr_lexer->count_token (QUOTE);
       }
   }
 
@@ -763,7 +770,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         if (curr_lexer->space_follows_previous_token ())
           {
-            if (tok == ',' || tok == ';' || tok == '[' || tok == '{'
+            if (tok == '[' || tok == '{'
                 || curr_lexer->previous_token_is_binop ())
               {
                 curr_lexer->current_input_column++;
@@ -813,7 +820,24 @@ ANY_INCLUDING_NL (.|{NL})
 "<"     { return curr_lexer->handle_op ("<", EXPR_LT); }
 ">"     { return curr_lexer->handle_op (">", EXPR_GT); }
 "*"     { return curr_lexer->handle_op ("*", '*'); }
-"/"     { return curr_lexer->handle_op ("/", '/'); }
+
+"/" {
+    int prev_tok = curr_lexer->previous_token_value ();
+    bool space_before = curr_lexer->space_follows_previous_token ();
+    int c = curr_lexer->text_yyinput ();
+    curr_lexer->xunput (c);
+    bool space_after = (c == ' ' || c == '\t');
+
+    if (space_before && ! space_after
+        && curr_lexer->previous_token_may_be_command ())
+      {
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      return curr_lexer->handle_op ("/", '/');
+  }
+
 "\\"    { return curr_lexer->handle_op ("\\", LEFTDIV); }
 "^"     { return curr_lexer->handle_op ("^", POW); }
 "**"    { return curr_lexer->handle_incompatible_op ("**", POW); }
@@ -942,7 +966,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         int tok = curr_lexer->previous_token_value ();
 
-        if (! (tok == ';' || tok == ',' || tok == '[' || tok == '{'
+        if (! (tok == '[' || tok == '{'
                || curr_lexer->previous_token_is_binop ()))
           unput_comma = true;
       }
@@ -1244,7 +1268,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         int tok = curr_lexer->previous_token_value ();
 
-        if (! (tok == ';' || tok == ',' || tok == '[' || tok == '{'
+        if (! (tok == '[' || tok == '{'
                || curr_lexer->previous_token_is_binop ()))
           unput_comma = true;
       }
@@ -1750,6 +1774,13 @@ lexical_feedback::previous_token_is_binop (void) const
 }
 
 bool
+lexical_feedback::previous_token_is_keyword (void) const
+{
+  const token *tok = tokens.front ();
+  return tok ? tok->is_keyword () : false;
+}
+
+bool
 lexical_feedback::previous_token_may_be_command (void) const
 {
   const token *tok = tokens.front ();
@@ -2125,8 +2156,7 @@ octave_lexer::is_keyword_token (const std::string& s)
           break;
 
         case endenumeration_kw:
-          tok_val = new token (endenumeration_kw, token::enumeration_end,
-                               l, c);
+          tok_val = new token (endenumeration_kw, token::enumeration_end, l, c);
           at_beginning_of_statement = true;
           break;
 
@@ -2221,7 +2251,8 @@ octave_lexer::is_keyword_token (const std::string& s)
             if ((reading_fcn_file || reading_script_file
                  || reading_classdef_file)
                 && ! fcn_file_full_name.empty ())
-              tok_val = new token (magic_file_kw, fcn_file_full_name, l, c);
+              tok_val = new token (magic_file_kw, true,
+                                   fcn_file_full_name, l, c);
             else
               tok_val = new token (magic_file_kw, "stdin", l, c);
           }
@@ -2237,7 +2268,7 @@ octave_lexer::is_keyword_token (const std::string& s)
         }
 
       if (! tok_val)
-        tok_val = new token (kw->tok, l, c);
+        tok_val = new token (kw->tok, true, l, c);
 
       push_token (tok_val);
 
@@ -3443,8 +3474,7 @@ octave_lexer::maybe_unput_comma_before_unary_op (int tok)
 
       bool space_after = (c == ' ' || c == '\t');
 
-      if (! (prev_tok == ';' || prev_tok == ','
-             || prev_tok == '[' || prev_tok == '{'
+      if (! (prev_tok == '[' || prev_tok == '{'
              || previous_token_is_binop ()
              || ((tok == '+' || tok == '-') && space_after)))
         unput_comma = true;

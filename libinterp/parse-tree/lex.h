@@ -588,6 +588,15 @@ public:
                               bool convert = false, bool bos = false,
                               bool qit = false);
 
+  bool maybe_unput_comma_before_unary_op (int tok);
+
+  int handle_unary_op (const char *pattern, int tok, bool convert = false,
+                       bool bos = false, bool qit = false);
+
+  int handle_incompatible_unary_op (const char *pattern, int tok,
+                                    bool convert = false, bool bos = false,
+                                    bool qit = false);
+
   int handle_assign_op (const char *pattern, int tok);
 
   int handle_incompatible_assign_op (const char *pattern, int tok);

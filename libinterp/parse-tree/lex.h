@@ -496,8 +496,6 @@ public:
 
   int is_keyword_token (const std::string& s);
 
-  bool is_variable (const std::string& name);
-
   bool whitespace_is_significant (void);
 
   void handle_number (void);

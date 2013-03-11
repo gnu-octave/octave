@@ -578,12 +578,6 @@ main_loop (void)
           if (symbol_table::at_top_level ())
             tree_evaluator::reset_debug_state ();
 
-          // Do this with an unwind-protect cleanup function so that
-          // the forced variables will be unmarked in the event of an
-          // interrupt.
-          symbol_table::scope_id scope = symbol_table::top_scope ();
-          inner_frame.add_fcn (symbol_table::unmark_forced_variables, scope);
-
           retval = curr_parser.run ();
 
           if (retval == 0)

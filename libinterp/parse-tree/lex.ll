@@ -1483,8 +1483,6 @@ lexical_feedback::reset (void)
   while (! parsed_function_name.empty ())
     parsed_function_name.pop ();
 
-  pending_local_variables.clear ();
-
   nesting_level.reset ();
 
   tokens.clear ();
@@ -2051,14 +2049,6 @@ octave_lexer::is_keyword_token (const std::string& s)
     }
 
   return 0;
-}
-
-bool
-octave_lexer::is_variable (const std::string& name)
-{
-  return (symbol_table::is_variable (name)
-          || (pending_local_variables.find (name)
-              != pending_local_variables.end ()));
 }
 
 bool

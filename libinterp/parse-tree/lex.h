@@ -498,6 +498,8 @@ public:
 
   void xunput (char c);
 
+  bool looking_at_space (void);
+
   bool inside_any_object_index (void);
 
   int is_keyword_token (const std::string& s);
@@ -599,28 +601,21 @@ public:
 
   void display_start_state (void) const;
 
-  int handle_op (const char *pattern, int tok, bool convert = false,
-                 bool bos = false, bool qit = false);
+  int handle_op (const char *pattern, int tok, bool bos = false);
 
-  int handle_incompatible_op (const char *pattern, int tok,
-                              bool convert = false, bool bos = false,
-                              bool qit = false);
+  int handle_incompatible_op (const char *pattern, int tok, bool bos = false);
 
   bool maybe_unput_comma_before_unary_op (int tok);
 
-  int handle_unary_op (const char *pattern, int tok, bool convert = false,
-                       bool bos = false, bool qit = false);
+  int handle_unary_op (int tok, bool bos = false);
 
-  int handle_incompatible_unary_op (const char *pattern, int tok,
-                                    bool convert = false, bool bos = false,
-                                    bool qit = false);
+  int handle_incompatible_unary_op (int tok, bool bos = false);
 
   int handle_assign_op (const char *pattern, int tok);
 
   int handle_incompatible_assign_op (const char *pattern, int tok);
 
-  int handle_op_internal (const char *pattern, int tok, bool convert,
-                          bool bos, bool qit, bool compat);
+  int handle_op_internal (int tok, bool bos, bool compat);
 
   int handle_token (const std::string& name, int tok);
 

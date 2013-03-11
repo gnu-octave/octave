@@ -521,8 +521,6 @@ public:
 
   int handle_close_bracket (int bracket_type);
 
-  bool next_token_can_follow_bin_op (void);
-
   bool looks_like_command_arg (void);
 
   int handle_superclass_identifier (void);

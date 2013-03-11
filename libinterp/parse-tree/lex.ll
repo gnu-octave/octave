@@ -794,7 +794,7 @@ ANY_INCLUDING_NL (.|{NL})
                     return curr_lexer->count_token_internal (retval);
                   }
                 else
-                  return curr_lexer->count_token (QUOTE);
+                  return curr_lexer->count_token (HERMITIAN);
               }
           }
         else
@@ -808,7 +808,7 @@ ANY_INCLUDING_NL (.|{NL})
                 return curr_lexer->count_token_internal (retval);
               }
             else
-              return curr_lexer->count_token (QUOTE);
+              return curr_lexer->count_token (HERMITIAN);
           }
       }
   }
@@ -1428,30 +1428,6 @@ Undocumented internal function.\n\
 
   return retval;
 }
-
-class
-flex_stream_reader : public stream_reader
-{
-public:
-  flex_stream_reader (octave_lexer *l, char *buf_arg)
-    : stream_reader (), lexer (l), buf (buf_arg)
-  { }
-
-  int getc (void) { return lexer->text_yyinput (); }
-  int ungetc (int c) { lexer->xunput (c, buf); return 0; }
-
-private:
-
-  // No copying!
-
-  flex_stream_reader (const flex_stream_reader&);
-
-  flex_stream_reader& operator = (const flex_stream_reader&);
-
-  octave_lexer *lexer;
-
-  char *buf;
-};
 
 lexical_feedback::~lexical_feedback (void)
 {
@@ -2442,35 +2418,6 @@ octave_lexer::handle_close_bracket (int bracket_type)
 }
 
 bool
-octave_lexer::next_token_can_follow_bin_op (void)
-{
-  std::stack<char> buf;
-
-  int c = EOF;
-
-  // Skip whitespace in current statement on current line
-  while (true)
-    {
-      c = text_yyinput ();
-
-      buf.push (c);
-
-      if (match_any (c, ",;\n") || (c != ' ' && c != '\t'))
-        break;
-    }
-
-  // Restore input.
-  while (! buf.empty ())
-    {
-      xunput (buf.top ());
-
-      buf.pop ();
-    }
-
-  return (isalnum (c) || match_any (c, "!\"'(-[_{~"));
-}
-
-bool
 octave_lexer::looks_like_command_arg (void)
 {
   bool space_before = space_follows_previous_token ();
@@ -2773,7 +2720,7 @@ octave_lexer::display_token (int tok)
     case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
     case EPLUS: std::cerr << "EPLUS\n"; break;
     case EMINUS: std::cerr << "EMINUS\n"; break;
-    case QUOTE: std::cerr << "QUOTE\n"; break;
+    case HERMITIAN: std::cerr << "HERMITIAN\n"; break;
     case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
     case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
     case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;

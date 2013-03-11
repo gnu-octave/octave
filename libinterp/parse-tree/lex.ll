@@ -149,14 +149,9 @@ static std::string strip_trailing_whitespace (char *s);
 D       [0-9]
 S       [ \t]
 NL      ((\n)|(\r)|(\r\n))
-SNL     ({S}|{NL})
-EL      (\.\.\.)
-BS      (\\)
-CONT    ({EL}|{BS})
+CONT    ((\.\.\.)|(\\))
 Im      [iIjJ]
 CCHAR   [#%]
-COMMENT ({CCHAR}.*{NL})
-SNLCMT  ({SNL}|{COMMENT})
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
 EXPON   ([DdEe][+-]?{D}+)
 NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
@@ -249,7 +244,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     int tok = curr_lexer->previous_token_value ();
 
-    if (! (tok == ';' || tok == '[' || tok == '{'))
+    if (! (tok == ',' || tok == ';' || tok == '[' || tok == '{'))
       curr_lexer->xunput (',');
   }
 
@@ -595,9 +590,9 @@ ANY_INCLUDING_NL (.|{NL})
 // Superclass method identifiers.
 %}
 
-{IDENT}@{IDENT}{S}* |
-{IDENT}@{IDENT}.{IDENT}{S}* {
-    curr_lexer->lexer_debug ("{IDENT}@{IDENT}{S}*|{IDENT}@{IDENT}.{IDENT}{S}*");
+{IDENT}@{IDENT} |
+{IDENT}@{IDENT}.{IDENT} {
+    curr_lexer->lexer_debug ("{IDENT}@{IDENT}|{IDENT}@{IDENT}.{IDENT}");
 
     int id_tok = curr_lexer->handle_superclass_identifier ();
 
@@ -613,9 +608,9 @@ ANY_INCLUDING_NL (.|{NL})
 // Metaclass query
 %}
 
-\?{IDENT}{S}* |
-\?{IDENT}\.{IDENT}{S}* {
-    curr_lexer->lexer_debug ("\\?{IDENT}{S}*|\\?{IDENT}\\.{IDENT}{S}*");
+\?{IDENT} |
+\?{IDENT}\.{IDENT} {
+    curr_lexer->lexer_debug ("\\?{IDENT}|\\?{IDENT}\\.{IDENT}");
 
     int id_tok = curr_lexer->handle_meta_identifier ();
 
@@ -678,8 +673,6 @@ ANY_INCLUDING_NL (.|{NL})
 "'" {
     curr_lexer->lexer_debug ("'");
 
-    curr_lexer->current_input_column++;
-
     int tok = curr_lexer->previous_token_value ();
 
     bool transpose = false;
@@ -691,6 +684,7 @@ ANY_INCLUDING_NL (.|{NL})
             if (tok == '[' || tok == '{'
                 || curr_lexer->previous_token_is_binop ())
               {
+                curr_lexer->current_input_column++;
                 int retval = curr_lexer->handle_string ('\'');
                 return curr_lexer->count_token_internal (retval);
               }
@@ -705,6 +699,7 @@ ANY_INCLUDING_NL (.|{NL})
             if (tok == ',' || tok == ';'
                 || curr_lexer->previous_token_is_binop ())
               {
+                curr_lexer->current_input_column++;
                 int retval = curr_lexer->handle_string ('\'');
                 return curr_lexer->count_token_internal (retval);
               }
@@ -719,6 +714,7 @@ ANY_INCLUDING_NL (.|{NL})
           return curr_lexer->count_token (QUOTE);
         else
           {
+            curr_lexer->current_input_column++;
             int retval = curr_lexer->handle_string ('\'');
             return curr_lexer->count_token_internal (retval);
           }
@@ -732,11 +728,41 @@ ANY_INCLUDING_NL (.|{NL})
 \" {
     curr_lexer->lexer_debug ("\"");
 
-    curr_lexer->current_input_column++;
-    int tok = curr_lexer->handle_string ('"');
+    int tok = curr_lexer->previous_token_value ();
 
-    return curr_lexer->count_token_internal (tok);
-}
+    bool transpose = false;
+
+    if (curr_lexer->whitespace_is_significant ())
+      {
+        if (curr_lexer->space_follows_previous_token ())
+          {
+            if (tok == '[' || tok == '{'
+                || curr_lexer->previous_token_is_binop ())
+              {
+                curr_lexer->current_input_column++;
+                int retval = curr_lexer->handle_string ('"');
+                return curr_lexer->count_token_internal (retval);
+              }
+            else
+              {
+                yyless (0);
+                curr_lexer->xunput (',');
+              }
+          }
+        else
+          {
+            curr_lexer->current_input_column++;
+            int retval = curr_lexer->handle_string ('"');
+            return curr_lexer->count_token_internal (retval);
+          }
+      }
+    else
+      {
+        curr_lexer->current_input_column++;
+        int retval = curr_lexer->handle_string ('"');
+        return curr_lexer->count_token_internal (retval);
+      }
+  }
 
 %{
 // Other operators.
@@ -2791,10 +2817,6 @@ octave_lexer::handle_identifier (void)
   char *yytxt = flex_yytext ();
 
   std::string tok = yytxt;
-
-  int c = yytxt[flex_yyleng()-1];
-
-  bool spc_gobbled = false;
 
   // If we are expecting a structure element, avoid recognizing
   // keywords and other special names and return STRUCT_ELT, which is

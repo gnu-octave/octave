@@ -47,6 +47,8 @@ public:
 
   ~tree_cell (void) { }
 
+  bool is_cell (void) const { return true; }
+
   bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue1 (int nargout = 1);

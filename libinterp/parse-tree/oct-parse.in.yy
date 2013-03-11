@@ -230,7 +230,6 @@ make_statement (T *arg)
 %token END_OF_INPUT LEXICAL_ERROR
 %token FCN INPUT_FILE CLASSDEF
 // %token VARARGIN VARARGOUT
-%token CHOOSE_ASSIGNMENT
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
@@ -670,21 +669,19 @@ simple_expr     : colon_expr
 
 assign_lhs      : simple_expr
                   {
-                    $$ = new tree_argument_list ($1);
-                    $$->mark_as_simple_assign_lhs ();
-                  }
-                | matrix CHOOSE_ASSIGNMENT
-                  {
-                    tree_matrix *tmp = dynamic_cast<tree_matrix *> ($1);
-                    $$ = tmp->front ();
-                    curr_lexer->looking_at_matrix_or_assign_lhs = false;
-                    for (std::set<std::string>::const_iterator p = curr_lexer->pending_local_variables.begin ();
-                         p != curr_lexer->pending_local_variables.end ();
-                         p++)
+                    $$ = curr_parser.validate_matrix_for_assignment ($1);
+
+                    if ($$)
                       {
-                        symbol_table::force_variable (*p);
+                        curr_lexer->looking_at_matrix_or_assign_lhs = false;
+                        curr_lexer->pending_local_variables.clear ();
                       }
-                    curr_lexer->pending_local_variables.clear ();
+                    else
+                      {
+                        // validate_matrix_for_assignment deleted $1
+                        // for us.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -721,7 +718,20 @@ assign_expr     : assign_lhs '=' expression
                 ;
 
 expression      : simple_expr
-                  { $$ = $1; }
+                  {
+                    if ($1 && ($1->is_matrix () || $1->is_cell ()))
+                      {
+                        if (curr_parser.validate_array_list ($1))
+                          $$ = $1;
+                        else
+                          {
+                            delete $1;
+                            ABORT_PARSE;
+                          }
+                      }
+                    else
+                      $$ = $1;
+                  }
                 | assign_expr
                   { $$ = $1; }
                 | anon_fcn_handle
@@ -2932,12 +2942,64 @@ octave_parser::make_decl_command (int tok, token *tok_val,
   return retval;
 }
 
-tree_argument_list *
-octave_parser::validate_matrix_row (tree_argument_list *row)
+bool
+octave_parser::validate_array_list (tree_expression *e)
 {
-  if (row && row->has_magic_tilde ())
-    bison_error ("invalid use of tilde (~) in matrix expression");
-  return row;
+  bool retval = true;
+
+  tree_array_list *al = dynamic_cast<tree_array_list *> (e);
+
+  for (tree_array_list::iterator i = al->begin (); i != al->end (); i++)
+    {
+      tree_argument_list *row = *i;
+
+      if (row && row->has_magic_tilde ())
+        {
+          retval = false;
+          if (e->is_matrix ())
+             bison_error ("invalid use of tilde (~) in matrix expression");
+           else
+             bison_error ("invalid use of tilde (~) in cell expression");
+          break;
+        }
+    }
+
+  return retval;
+}
+
+tree_argument_list *
+octave_parser::validate_matrix_for_assignment (tree_expression *e)
+{
+  tree_argument_list *retval = 0;
+
+  if (e->is_constant ())
+    {
+      bison_error ("invalid empty LHS in [] = ... assignment");
+      delete e;
+    }
+  else if (e->is_matrix ())
+    {
+      tree_matrix *mat = dynamic_cast<tree_matrix *> (e);
+
+      if (mat && mat->size () == 1)
+        {
+          retval = mat->front ();
+          mat->pop_front ();
+          delete e;
+        }
+      else
+        {
+          bison_error ("invalid LHS in '[LHS] = ...' assignment");
+          delete e;
+        }
+    }
+  else
+    {
+      retval = new tree_argument_list (e);
+      retval->mark_as_simple_assign_lhs ();
+    }
+
+  return retval;
 }
 
 // Finish building an array_list.

@@ -50,6 +50,8 @@ public:
 
   ~tree_matrix (void) { }
 
+  bool is_matrix (void) const { return true; }
+
   bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue1 (int nargout = 1);

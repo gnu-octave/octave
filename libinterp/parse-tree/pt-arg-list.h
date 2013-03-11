@@ -77,6 +77,8 @@ public:
 
   bool all_elements_are_constant (void) const;
 
+  bool is_valid_lvalue_list (void) const;
+
   octave_value_list convert_to_const_vector (const octave_value *object = 0);
 
   std::list<octave_lvalue> lvalue_list (void);

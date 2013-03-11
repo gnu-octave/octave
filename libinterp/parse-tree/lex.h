@@ -188,15 +188,36 @@ public:
     }
 
     // Direct access.
-    token *at (size_t n) { return buffer.at (n); }
-    const token *at (size_t n) const { return buffer.at (n); }
+    token *at (size_t n)
+    {
+      return empty () ? 0 : buffer.at (n);
+    }
+
+    const token *at (size_t n) const
+    {
+      return empty () ? 0 : buffer.at (n);
+    }
 
     // Most recently pushed.
-    token *front (void) { return buffer.front (); }
-    const token *front (void) const { return buffer.front (); }
+    token *front (void)
+    {
+      return empty () ? 0 : buffer.front ();
+    }
 
-    token *back (void) { return buffer.back (); }
-    const token *back (void) const { return buffer.back (); }
+    const token *front (void) const
+    {
+      return empty () ? 0 : buffer.front ();
+    }
+
+    token *back (void)
+    {
+      return empty () ? 0 : buffer.back ();
+    }
+
+    const token *back (void) const
+    {
+      return empty () ? 0 : buffer.back ();
+    }
 
     // Number of elements currently in the buffer, max of sz.
     size_t size (void) const { return buffer.size (); }
@@ -254,6 +275,14 @@ public:
   void init (void);
 
   void reset (void);
+
+  int previous_token_value (void) const;
+
+  bool previous_token_value_is (int tok_val) const;
+
+  void mark_previous_token_trailing_space (void);
+
+  bool space_follows_previous_token (void) const;
 
   // true means that we have encountered eof on the input stream.
   bool end_of_input;

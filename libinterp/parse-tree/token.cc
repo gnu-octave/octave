@@ -32,60 +32,75 @@ along with Octave; see the file COPYING.  If not, see
 #include "token.h"
 #include "utils.h"
 
-token::token (int l, int c)
+token::token (int tv, int l, int c)
 {
+  tspc = false;
   line_num = l;
   column_num = c;
+  tok_val = tv;
   type_tag = generic_token;
 }
 
-token::token (const std::string& s, int l, int c)
+token::token (int tv, const std::string& s, int l, int c)
 {
+  tspc = false;
   line_num = l;
   column_num = c;
+  tok_val = tv;
   type_tag = string_token;
   str = new std::string (s);
 }
 
-token::token (double d, const std::string& s, int l, int c)
+token::token (int tv, double d, const std::string& s, int l, int c)
 {
+  tspc = false;
   line_num = l;
   column_num = c;
+  tok_val = tv;
   type_tag = double_token;
   num = d;
   orig_text = s;
 }
 
-token::token (end_tok_type t, int l, int c)
+token::token (int tv, end_tok_type t, int l, int c)
 {
+  tspc = false;
   line_num = l;
   column_num = c;
+  tok_val = tv;
   type_tag = ettype_token;
   et = t;
 }
 
-token::token (symbol_table::symbol_record *s, int l, int c)
+token::token (int tv, symbol_table::symbol_record *s, int l, int c)
 {
+  tspc = false;
   line_num = l;
   column_num = c;
+  tok_val = tv;
   type_tag = sym_rec_token;
   sr = s;
 }
 
-token::token (const std::string& pkg, const std::string& cls, int l, int c)
+token::token (int tv, const std::string& pkg, const std::string& cls,
+              int l, int c)
 {
+  tspc = false;
   line_num = l;
   column_num = c;
+  tok_val = tv;
   type_tag = meta_name_token;
   mc.package_nm = new std::string (pkg);
   mc.class_nm = new std::string (cls);
 }
 
-token::token (const std::string& mth, const std::string& pkg,
+token::token (int tv, const std::string& mth, const std::string& pkg,
               const std::string& cls, int l, int c)
 {
+  tspc = false;
   line_num = l;
   column_num = c;
+  tok_val = tv;
   type_tag = scls_name_token;
   sc.method_nm = new std::string (mth);
   sc.package_nm = new std::string (pkg);
@@ -112,21 +127,21 @@ token::~token (void)
 }
 
 std::string
-token::text (void)
+token::text (void) const
 {
   assert (type_tag == string_token);
   return *str;
 }
 
 double
-token::number (void)
+token::number (void) const
 {
   assert (type_tag == double_token);
   return num;
 }
 
 token::end_tok_type
-token::ettype (void)
+token::ettype (void) const
 {
   assert (type_tag == ettype_token);
   return et;

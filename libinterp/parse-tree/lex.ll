@@ -170,6 +170,8 @@ object) relevant global values before and after the nested call.
             { \
               yyless (0); \
               curr_lexer->xunput (','); \
+              /* Adjust for comma that was not really in the input stream. */ \
+              curr_lexer->current_input_column--; \
             } \
           else \
             { \
@@ -289,6 +291,9 @@ ANY_INCLUDING_NL (.|{NL})
 <MATRIX_START>{NL} {
     curr_lexer->lexer_debug ("<MATRIX_START>{NL}");
 
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
     if (curr_lexer->nesting_level.is_paren ())
       curr_lexer->gripe_matlab_incompatible ("bare newline inside parentheses");
     else
@@ -296,7 +301,11 @@ ANY_INCLUDING_NL (.|{NL})
         int tok = curr_lexer->previous_token_value ();
 
         if (! (tok == ';' || tok == '[' || tok == '{'))
-          curr_lexer->xunput (';');
+          {
+            curr_lexer->xunput (';');
+            // Adjust for semicolon that was not really in the input stream.
+            curr_lexer->current_input_column--;
+          }
       }
   }
 
@@ -363,6 +372,8 @@ ANY_INCLUDING_NL (.|{NL})
       {
         yyless (0);
         curr_lexer->xunput (',');
+        // Adjust for comma that was not really in the input stream.
+        curr_lexer->current_input_column--;
       }
     else
       {
@@ -768,6 +779,8 @@ ANY_INCLUDING_NL (.|{NL})
                   {
                     yyless (0);
                     curr_lexer->xunput (',');
+                    // Adjust for comma that was not really in the input stream.
+                    curr_lexer->current_input_column--;
                   }
               }
             else
@@ -834,6 +847,8 @@ ANY_INCLUDING_NL (.|{NL})
                   {
                     yyless (0);
                     curr_lexer->xunput (',');
+                    // Adjust for comma that was not really in the input stream.
+                    curr_lexer->current_input_column--;
                   }
               }
             else
@@ -924,6 +939,8 @@ ANY_INCLUDING_NL (.|{NL})
       {
         yyless (0);
         curr_lexer->xunput (',');
+        // Adjust for comma that was not really in the input stream.
+        curr_lexer->current_input_column--;
       }
     else
       return tok;
@@ -938,6 +955,8 @@ ANY_INCLUDING_NL (.|{NL})
       {
         yyless (0);
         curr_lexer->xunput (',');
+        // Adjust for comma that was not really in the input stream.
+        curr_lexer->current_input_column--;
       }
     else
       return tok;
@@ -962,6 +981,8 @@ ANY_INCLUDING_NL (.|{NL})
       {
         yyless (0);
         curr_lexer->xunput (',');
+        // Adjust for comma that was not really in the input stream.
+        curr_lexer->current_input_column--;
       }
     else
       {
@@ -1060,6 +1081,8 @@ ANY_INCLUDING_NL (.|{NL})
       {
         yyless (0);
         curr_lexer->xunput (',');
+        // Adjust for comma that was not really in the input stream.
+        curr_lexer->current_input_column--;
       }
     else
       {
@@ -1759,9 +1782,6 @@ octave_lexer::text_yyinput (void)
         }
     }
 
-  if (c == '\n')
-    input_line_number++;
-
   return c;
 }
 
@@ -1776,9 +1796,6 @@ octave_lexer::xunput (char c, char *buf)
           display_character (c);
           std::cerr << std::endl;
         }
-
-      if (c == '\n')
-        input_line_number--;
 
       yyunput (c, buf, scanner);
     }
@@ -2181,7 +2198,11 @@ octave_lexer::finish_comment (octave_comment_elt::comment_type typ,
   at_beginning_of_statement = true;
 
   if (! looking_at_continuation)
-    xunput ('\n');
+    {
+      xunput ('\n');
+      // Adjust for newline that was not really in the input stream.
+      input_line_number--;
+    }
 }
 
 // We have seen a backslash and need to find out if it should be

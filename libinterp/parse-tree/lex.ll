@@ -2462,14 +2462,7 @@ octave_lexer::looks_like_command_arg (void)
 int
 octave_lexer::handle_superclass_identifier (void)
 {
-  char *yytxt = flex_yytext ();
-  int c = yytxt[flex_yyleng()-1];
-
-  std::string meth = strip_trailing_whitespace (yytxt);
-
-  int cont_is_spc = eat_continuation ();
-
-  int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
+  std::string meth = flex_yytext ();
 
   size_t pos = meth.find ("@");
   std::string cls = meth.substr (pos + 1);
@@ -2502,14 +2495,7 @@ octave_lexer::handle_superclass_identifier (void)
 int
 octave_lexer::handle_meta_identifier (void)
 {
-  char *yytxt = flex_yytext ();
-  int c = yytxt[flex_yyleng()-1];
-
-  std::string cls = strip_trailing_whitespace (yytxt).substr (1);
-
-  int cont_is_spc = eat_continuation ();
-
-  int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
+  std::string cls = std::string(flex_yytext ()).substr (1);
 
   std::string pkg;
   size_t pos = cls.find (".");

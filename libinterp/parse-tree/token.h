@@ -35,6 +35,7 @@ public:
   enum token_type
     {
       generic_token,
+      keyword_token,
       string_token,
       double_token,
       ettype_token,
@@ -62,6 +63,7 @@ public:
     };
 
   token (int tv, int l = -1, int c = -1);
+  token (int tv, bool is_keyword, int l = -1, int c = -1);
   token (int tv, const std::string& s, int l = -1, int c = -1);
   token (int tv, double d, const std::string& s = std::string (),
          int l = -1, int c = -1);
@@ -86,8 +88,14 @@ public:
   int line (void) const { return line_num; }
   int column (void) const { return column_num; }
 
+  bool is_keyword (void) const
+  {
+    return type_tag == keyword_token || type_tag == ettype_token;
+  }
+
   std::string text (void) const;
   double number (void) const;
+  token_type ttype (void) const;
   end_tok_type ettype (void) const;
   symbol_table::symbol_record *sym_rec (void);
 

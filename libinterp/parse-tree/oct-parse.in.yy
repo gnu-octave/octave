@@ -467,25 +467,13 @@ constant        : NUM
                 ;
 
 matrix          : '[' ']'
-                  {
-                    $$ = new tree_constant (octave_null_matrix::instance);
-                    curr_lexer->pending_local_variables.clear ();
-                  }
+                  { $$ = new tree_constant (octave_null_matrix::instance); }
                 | '[' ';' ']'
-                  {
-                    $$ = new tree_constant (octave_null_matrix::instance);
-                    curr_lexer->pending_local_variables.clear ();
-                  }
+                  { $$ = new tree_constant (octave_null_matrix::instance); }
                 | '[' ',' ']'
-                  {
-                    $$ = new tree_constant (octave_null_matrix::instance);
-                    curr_lexer->pending_local_variables.clear ();
-                  }
+                  { $$ = new tree_constant (octave_null_matrix::instance); }
                 | '[' matrix_rows ']'
-                  {
-                    $$ = curr_parser.finish_matrix ($2);
-                    curr_lexer->pending_local_variables.clear ();
-                  }
+                  { $$ = curr_parser.finish_matrix ($2); }
                 ;
 
 matrix_rows     : matrix_rows1
@@ -712,14 +700,10 @@ assign_lhs      : simple_expr
                     $$ = curr_parser.validate_matrix_for_assignment ($1);
 
                     if ($$)
-                      {
-                        curr_lexer->looking_at_matrix_or_assign_lhs = false;
-                        curr_lexer->pending_local_variables.clear ();
-                      }
+                      { curr_lexer->looking_at_matrix_or_assign_lhs = false; }
                     else
                       {
-                        // validate_matrix_for_assignment deleted $1
-                        // for us.
+                        // validate_matrix_for_assignment deleted $1.
                         ABORT_PARSE;
                       }
                   }
@@ -2672,11 +2656,6 @@ octave_parser::make_script (tree_statement_list *cmds,
   script->stash_fcn_file_time (now);
 
   primary_fcn_ptr = script;
-
-  // Unmark any symbols that may have been tagged as local variables
-  // while parsing (for example, by force_local_variable in lex.l).
-
-  symbol_table::unmark_forced_variables ();
 }
 
 // Begin defining a function.
@@ -2877,12 +2856,6 @@ octave_parser::finish_function (tree_parameter_list *ret_list,
 
           retval = new tree_function_def (fcn);
         }
-
-      // Unmark any symbols that may have been tagged as local
-      // variables while parsing (for example, by force_local_variable
-      // in lex.l).
-
-      symbol_table::unmark_forced_variables (fcn->scope ());
     }
 
   return retval;
@@ -3501,12 +3474,6 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
       curr_parser.curr_class_name = dispatch_type;
       curr_parser.autoloading = autoload;
       curr_parser.fcn_file_from_relative_lookup = relative_lookup;
-
-      // Do this with an unwind-protect cleanup function so that
-      // the forced variables will be unmarked in the event of an
-      // interrupt.
-      symbol_table::scope_id scope = symbol_table::top_scope ();
-      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
       curr_parser.curr_lexer->force_script = force_script;
       curr_parser.curr_lexer->prep_for_file ();
@@ -4218,12 +4185,6 @@ eval_string (const std::string& eval_str, bool silent,
   do
     {
       curr_parser.reset ();
-
-      // Do this with an unwind-protect cleanup function so that the
-      // forced variables will be unmarked in the event of an
-      // interrupt.
-      symbol_table::scope_id scope = symbol_table::top_scope ();
-      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
       parse_status = curr_parser.run ();
 

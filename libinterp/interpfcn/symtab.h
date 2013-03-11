@@ -196,12 +196,9 @@ public:
     // not cleared at function exit
     static const unsigned int persistent = 64;
 
-    // temporary variables forced into symbol table for parsing
-    static const unsigned int forced = 128;
-
     // this symbol may NOT become a variable.
     // (symbol added to a static workspace)
-    static const unsigned int added_static = 256;
+    static const unsigned int added_static = 128;
 
   private:
 
@@ -216,17 +213,6 @@ public:
           storage_class (sc), finfo (), valid (true), count (1)
       {
         value_stack.push_back (v);
-      }
-
-      void force_variable (context_id context = xdefault_context)
-      {
-        if (context == xdefault_context)
-          context = active_context ();
-
-        octave_value& val = varref (context);
-
-        if (! val.is_defined ())
-          mark_forced ();
       }
 
       octave_value& varref (context_id context = xdefault_context)
@@ -341,7 +327,7 @@ public:
         if (context == xdefault_context)
           context = active_context ();
 
-        return (! is_local () || is_defined (context) || is_forced ());
+        return (! is_local () || is_defined (context));
       }
 
       bool is_local (void) const { return storage_class & local; }
@@ -351,7 +337,6 @@ public:
       bool is_inherited (void) const { return storage_class & inherited; }
       bool is_global (void) const { return storage_class & global; }
       bool is_persistent (void) const { return storage_class & persistent; }
-      bool is_forced (void) const { return storage_class & forced; }
       bool is_added_static (void) const {return storage_class & added_static; }
 
       void mark_local (void) { storage_class |= local; }
@@ -373,7 +358,6 @@ public:
         else
           storage_class |= persistent;
       }
-      void mark_forced (void) { storage_class |= forced; }
       void mark_added_static (void) { storage_class |= added_static; }
 
       void unmark_local (void) { storage_class &= ~local; }
@@ -383,7 +367,6 @@ public:
       void unmark_inherited (void) { storage_class &= ~inherited; }
       void unmark_global (void) { storage_class &= ~global; }
       void unmark_persistent (void) { storage_class &= ~persistent; }
-      void unmark_forced (void) { storage_class &= ~forced; }
       void unmark_added_static (void) { storage_class &= ~added_static; }
 
       void init_persistent (void)
@@ -496,11 +479,6 @@ public:
     octave_value
     find (const octave_value_list& args = octave_value_list ()) const;
 
-    void force_variable (context_id context = xdefault_context)
-    {
-      rep->force_variable (context);
-    }
-
     octave_value& varref (context_id context = xdefault_context)
     {
       return rep->varref (context);
@@ -541,7 +519,6 @@ public:
     bool is_hidden (void) const { return rep->is_hidden (); }
     bool is_inherited (void) const { return rep->is_inherited (); }
     bool is_persistent (void) const { return rep->is_persistent (); }
-    bool is_forced (void) const { return rep->is_forced (); }
     bool is_added_static (void) const { return rep->is_added_static (); }
 
     void mark_local (void) { rep->mark_local (); }
@@ -551,7 +528,6 @@ public:
     void mark_inherited (void) { rep->mark_inherited (); }
     void mark_global (void) { rep->mark_global (); }
     void mark_persistent (void) { rep->mark_persistent (); }
-    void mark_forced (void) { rep->mark_forced (); }
     void mark_added_static (void) { rep->mark_added_static (); }
 
     void unmark_local (void) { rep->unmark_local (); }
@@ -561,7 +537,6 @@ public:
     void unmark_inherited (void) { rep->unmark_inherited (); }
     void unmark_global (void) { rep->unmark_global (); }
     void unmark_persistent (void) { rep->unmark_persistent (); }
-    void unmark_forced (void) { rep->unmark_forced (); }
     void unmark_added_static (void) { rep->unmark_added_static (); }
 
     void init_persistent (void) { rep->init_persistent (); }
@@ -1205,16 +1180,6 @@ public:
     return inst ? inst->do_insert (name) : foobar;
   }
 
-  static void force_variable (const std::string& name,
-                              scope_id scope = xcurrent_scope,
-                              context_id context = xdefault_context)
-  {
-    symbol_table *inst = get_instance (scope);
-
-    if (inst)
-      inst->do_force_variable (name, context);
-  }
-
   static octave_value& varref (const std::string& name,
                                scope_id scope = xcurrent_scope,
                                context_id context = xdefault_context,
@@ -1493,14 +1458,6 @@ public:
 
     if (inst)
       inst->do_clear_objects ();
-  }
-
-  static void unmark_forced_variables (scope_id scope = xcurrent_scope)
-  {
-    symbol_table *inst = get_instance (scope);
-
-    if (inst)
-      inst->do_unmark_forced_variables ();
   }
 
   static void clear_functions (void)
@@ -2326,20 +2283,6 @@ private:
       return p->second;
   }
 
-  void do_force_variable (const std::string& name, context_id context)
-  {
-    table_iterator p = table.find (name);
-
-    if (p == table.end ())
-      {
-        symbol_record& sr = do_insert (name);
-
-        sr.force_variable (context);
-      }
-    else
-      p->second.force_variable (context);
-  }
-
   octave_value& do_varref (const std::string& name, context_id context, bool force_add)
   {
     table_iterator p = table.find (name);
@@ -2432,12 +2375,6 @@ private:
         if (val.is_object ())
           p->second.clear (my_scope);
       }
-  }
-
- void do_unmark_forced_variables (void)
-  {
-    for (table_iterator p = table.begin (); p != table.end (); p++)
-      p->second.unmark_forced ();
   }
 
   void do_clear_global (const std::string& name)

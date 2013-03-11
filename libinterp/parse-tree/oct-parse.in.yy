@@ -206,7 +206,7 @@ make_statement (T *arg)
 %token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
 %token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
 %token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV EPLUS EMINUS
-%token <tok_val> QUOTE TRANSPOSE
+%token <tok_val> HERMITIAN TRANSPOSE
 %token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
 %token <tok_val> NUM IMAG_NUM
 %token <tok_val> STRUCT_ELT
@@ -298,7 +298,7 @@ make_statement (T *arg)
 %left '-' '+' EPLUS EMINUS
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
 %right UNARY EXPR_NOT
-%left POW EPOW QUOTE TRANSPOSE
+%left POW EPOW HERMITIAN TRANSPOSE
 %right PLUS_PLUS MINUS_MINUS
 %left '(' '.' '{'
 
@@ -570,8 +570,8 @@ oper_expr       : primary_expr
                   { $$ = curr_parser.make_index_expression ($1, 0, '{'); }
                 | oper_expr '{' arg_list '}'
                   { $$ = curr_parser.make_index_expression ($1, $3, '{'); }
-                | oper_expr QUOTE
-                  { $$ = curr_parser.make_postfix_op (QUOTE, $1, $2); }
+                | oper_expr HERMITIAN
+                  { $$ = curr_parser.make_postfix_op (HERMITIAN, $1, $2); }
                 | oper_expr TRANSPOSE
                   { $$ = curr_parser.make_postfix_op (TRANSPOSE, $1, $2); }
                 | oper_expr indirect_ref_op STRUCT_ELT
@@ -2117,7 +2117,7 @@ octave_parser::make_postfix_op (int op, tree_expression *op1, token *tok_val)
 
   switch (op)
     {
-    case QUOTE:
+    case HERMITIAN:
       t = octave_value::op_hermitian;
       break;
 

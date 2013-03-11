@@ -794,7 +794,7 @@ ANY_INCLUDING_NL (.|{NL})
                     return curr_lexer->count_token_internal (retval);
                   }
                 else
-                  return curr_lexer->count_token (QUOTE);
+                  return curr_lexer->count_token (HERMITIAN);
               }
           }
         else
@@ -808,7 +808,7 @@ ANY_INCLUDING_NL (.|{NL})
                 return curr_lexer->count_token_internal (retval);
               }
             else
-              return curr_lexer->count_token (QUOTE);
+              return curr_lexer->count_token (HERMITIAN);
           }
       }
   }
@@ -2724,7 +2724,7 @@ octave_lexer::display_token (int tok)
     case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
     case EPLUS: std::cerr << "EPLUS\n"; break;
     case EMINUS: std::cerr << "EMINUS\n"; break;
-    case QUOTE: std::cerr << "QUOTE\n"; break;
+    case HERMITIAN: std::cerr << "HERMITIAN\n"; break;
     case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
     case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
     case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;

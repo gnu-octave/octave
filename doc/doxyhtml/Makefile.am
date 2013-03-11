@@ -1,4 +1,4 @@
-# Makefile for Octave's doc directory
+# Makefile for Octave's doc/doxyhtml directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -20,14 +20,13 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-## Avoid making multiple subdirs in parallel
-## which can lead to a confusing error message stream.
-.NOTPARALLEL:
+doxyhtml:
+	cd ../..; doxygen doc/doxyhtml/Doxygen.cfg 
 
 EXTRA_DIST = \
+  Doxygen.cfg \
   Makefile.am \
-  texinfo.tex \
-  texmf.cnf
+  README
 
-SUBDIRS = doxyhtml icons interpreter liboctave refcard
-
+maintainer-clean-local:
+	rm -rf `ls | $(GREP) -v Doxygen.cfg | $(GREP) -v Makefile.am | $(GREP) -v Makefile.in | $(GREP) -v README`

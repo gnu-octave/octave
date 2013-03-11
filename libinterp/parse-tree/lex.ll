@@ -1505,22 +1505,6 @@ match_any (char c, const char *s)
   return false;
 }
 
-// Given information about the spacing surrounding an operator,
-// return 1 if it looks like it should be treated as a binary
-// operator.  For example,
-//
-//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==>  binary
-//
-//   [ 1 +2 ]  ==>  unary
-
-static bool
-looks_like_bin_op (bool spc_prev, int next_char)
-{
-  bool spc_next = (next_char == ' ' || next_char == '\t');
-
-  return ((spc_prev && spc_next) || ! spc_prev);
-}
-
 bool
 is_keyword (const std::string& s)
 {
@@ -2682,19 +2666,6 @@ octave_lexer::next_token_can_follow_bin_op (void)
   return (isalnum (c) || match_any (c, "!\"'(-[_{~"));
 }
 
-static bool
-can_be_command (const std::string& tok)
-{
-  // Don't allow these names to be treated as commands to avoid
-  // surprises when parsing things like "NaN ^2".
-
-  return ! (tok == "e"
-            || tok == "I" || tok == "i"
-            || tok == "J" || tok == "j"
-            || tok == "Inf" || tok == "inf"
-            || tok == "NaN" || tok == "nan");
-}
-
 bool
 octave_lexer::looks_like_command_arg (void)
 {
@@ -3113,7 +3084,12 @@ octave_lexer::handle_identifier (void)
   token *tok_val = new token (NAME, &(symbol_table::insert (tok)),
                               input_line_number, current_input_column);
 
-  if (at_beginning_of_statement)
+  if (at_beginning_of_statement
+      && (! (tok == "e"
+             || tok == "I" || tok == "i"
+             || tok == "J" || tok == "j"
+             || tok == "Inf" || tok == "inf"
+             || tok == "NaN" || tok == "nan")))
     tok_val->mark_may_be_command ();
 
   push_token (tok_val);

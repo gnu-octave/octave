@@ -560,9 +560,9 @@ main_loop (void)
   unwind_protect frame;
 
   // octave_parser constructor sets this for us.
-  frame.protect_var (CURR_LEXER);
+  frame.protect_var (LEXER);
 
-  octave_parser curr_parser;
+  octave_parser parser;
 
   int retval = 0;
   do
@@ -573,18 +573,18 @@ main_loop (void)
 
           reset_error_handler ();
 
-          curr_parser.reset ();
+          parser.reset ();
 
           if (symbol_table::at_top_level ())
             tree_evaluator::reset_debug_state ();
 
-          retval = curr_parser.run ();
+          retval = parser.run ();
 
           if (retval == 0)
             {
-              if (curr_parser.stmt_list)
+              if (parser.stmt_list)
                 {
-                  curr_parser.stmt_list->accept (*current_evaluator);
+                  parser.stmt_list->accept (*current_evaluator);
 
                   octave_quit ();
 
@@ -620,7 +620,7 @@ main_loop (void)
                         command_editor::increment_current_command_number ();
                     }
                 }
-              else if (curr_parser.curr_lexer->end_of_input)
+              else if (parser.lexer.end_of_input)
                 break;
             }
         }

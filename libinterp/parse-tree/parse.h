@@ -136,56 +136,30 @@ extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
 // Global access to currently active lexer.
 // FIXME -- to be removed after more parser+lexer refactoring.
-extern octave_lexer *CURR_LEXER;
+extern octave_lexer *LEXER;
 
 class
-octave_parser
+octave_base_parser
 {
 public:
 
-  octave_parser (void)
+  octave_base_parser (octave_lexer& lxr)
     : endfunction_found (false),
       autoloading (false), fcn_file_from_relative_lookup (false),
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
       curr_class_name (), function_scopes (), primary_fcn_ptr (0),
       classdef_object (0), stmt_list (0),
-      curr_lexer (new octave_lexer ()), parser_state (0)
+      lexer (lxr), parser_state (0)
   {
     init ();
   }
 
-  octave_parser (FILE *file)
-    : endfunction_found (false),
-      autoloading (false), fcn_file_from_relative_lookup (false),
-      parsing_subfunctions (false), max_fcn_depth (0),
-      curr_fcn_depth (0), primary_fcn_scope (-1),
-      curr_class_name (), function_scopes (), primary_fcn_ptr (0),
-      stmt_list (0),
-      curr_lexer (new octave_lexer (file)), parser_state (0)
-  {
-    init ();
-  }
-
-  octave_parser (const std::string& eval_string)
-    : endfunction_found (false),
-      autoloading (false), fcn_file_from_relative_lookup (false),
-      parsing_subfunctions (false), max_fcn_depth (0),
-      curr_fcn_depth (0), primary_fcn_scope (-1),
-      curr_class_name (), function_scopes (), primary_fcn_ptr (0),
-      stmt_list (0),
-      curr_lexer (new octave_lexer (eval_string)), parser_state (0)
-  {
-    init ();
-  }
-
-  ~octave_parser (void);
+  virtual ~octave_base_parser (void);
 
   void init (void);
 
   void reset (void);
-
-  int run (void);
 
   // Error mesages for mismatched end tokens.
   void end_error (const char *type, token::end_tok_type ettype, int l, int c);
@@ -464,14 +438,41 @@ public:
   tree_statement_list *stmt_list;
 
   // State of the lexer.
-  octave_lexer *curr_lexer;
+  octave_lexer& lexer;
 
   // Internal state of the parser.  Only used if USE_PUSH_PARSER is
   // defined.
   void *parser_state;
 
-  // For unwind protect.
-  static void cleanup (octave_parser *parser) { delete parser; }
+private:
+
+  // No copying!
+
+  octave_base_parser (const octave_base_parser&);
+
+  octave_base_parser& operator = (const octave_base_parser&);
+};
+
+class
+octave_parser : public octave_base_parser
+{
+public:
+
+  octave_parser (void)
+    : octave_base_parser (*(new octave_lexer ()))
+  { }
+
+  octave_parser (FILE *file)
+    : octave_base_parser (*(new octave_lexer (file)))
+  { }
+
+  octave_parser (const std::string& eval_string)
+    : octave_base_parser (*(new octave_lexer (eval_string)))
+  { }
+
+  ~octave_parser (void) { }
+
+  int run (void);
 
 private:
 

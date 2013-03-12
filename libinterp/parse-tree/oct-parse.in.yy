@@ -84,7 +84,7 @@ extern int octave_lex (YYSTYPE *, void *);
 
 // Global access to currently active lexer.
 // FIXME -- to be removed after more parser+lexer refactoring.
-octave_lexer *CURR_LEXER = 0;
+octave_lexer *LEXER = 0;
 
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from
@@ -107,7 +107,7 @@ static std::map<std::string, std::string> autoload_map;
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
-static void yyerror (octave_base_parser& curr_parser, const char *s);
+static void yyerror (octave_base_parser& parser, const char *s);
 
 // Finish building a statement.
 template <class T>
@@ -126,15 +126,15 @@ make_statement (T *arg)
       if (! parser_symtab_context.empty ()) \
         parser_symtab_context.pop (); \
       if ((interactive || forced_interactive)   \
-          && ! curr_lexer.input_from_eval_string ()) \
+          && ! lexer.input_from_eval_string ()) \
         YYACCEPT; \
       else \
         YYABORT; \
     } \
   while (0)
 
-#define curr_lexer curr_parser.curr_lexer
-#define scanner curr_lexer.scanner
+#define lexer parser.lexer
+#define scanner lexer.scanner
 
 %}
 
@@ -156,7 +156,7 @@ make_statement (T *arg)
 
 %define api.pure
 %PUSH_PULL_DECL%
-%parse-param { octave_base_parser& curr_parser }
+%parse-param { octave_base_parser& parser }
 %lex-param { void *scanner }
 
 %union
@@ -313,7 +313,7 @@ make_statement (T *arg)
 
 input           : input1
                   {
-                    curr_parser.stmt_list = $1;
+                    parser.stmt_list = $1;
                     YYACCEPT;
                   }
                 | simple_list parse_error
@@ -326,7 +326,7 @@ input1          : '\n'
                   { $$ = 0; }
                 | END_OF_INPUT
                   {
-                    curr_lexer.end_of_input = true;
+                    lexer.end_of_input = true;
                     $$ = 0;
                   }
                 | simple_list
@@ -338,13 +338,13 @@ input1          : '\n'
                 ;
 
 simple_list     : simple_list1 opt_sep_no_nl
-                  { $$ = curr_parser.set_stmt_print_flag ($1, $2, false); }
+                  { $$ = parser.set_stmt_print_flag ($1, $2, false); }
                 ;
 
 simple_list1    : statement
-                  { $$ = curr_parser.make_statement_list ($1); }
+                  { $$ = parser.make_statement_list ($1); }
                 | simple_list1 sep_no_nl statement
-                  { $$ = curr_parser.append_statement_list ($1, $2, $3, false); }
+                  { $$ = parser.append_statement_list ($1, $2, $3, false); }
                 ;
 
 opt_list        : // empty
@@ -354,13 +354,13 @@ opt_list        : // empty
                 ;
 
 list            : list1 opt_sep
-                  { $$ = curr_parser.set_stmt_print_flag ($1, $2, true); }
+                  { $$ = parser.set_stmt_print_flag ($1, $2, true); }
                 ;
 
 list1           : statement
-                  { $$ = curr_parser.make_statement_list ($1); }
+                  { $$ = parser.make_statement_list ($1); }
                 | list1 sep statement
-                  { $$ = curr_parser.append_statement_list ($1, $2, $3, true); }
+                  { $$ = parser.append_statement_list ($1, $2, $3, true); }
                 ;
 
 statement       : expression
@@ -380,7 +380,7 @@ statement       : expression
 // WHILE, etc.
 
 word_list_cmd   : identifier word_list
-                  { $$ = curr_parser.make_index_expression ($1, $2, '('); }
+                  { $$ = parser.make_index_expression ($1, $2, '('); }
                 ;
 
 word_list       : string
@@ -413,15 +413,15 @@ meta_identifier : METAQUERY
                 ;
 
 string          : DQ_STRING
-                  { $$ = curr_parser.make_constant (DQ_STRING, $1); }
+                  { $$ = parser.make_constant (DQ_STRING, $1); }
                 | SQ_STRING
-                  { $$ = curr_parser.make_constant (SQ_STRING, $1); }
+                  { $$ = parser.make_constant (SQ_STRING, $1); }
                 ;
 
 constant        : NUM
-                  { $$ = curr_parser.make_constant (NUM, $1); }
+                  { $$ = parser.make_constant (NUM, $1); }
                 | IMAG_NUM
-                  { $$ = curr_parser.make_constant (IMAG_NUM, $1); }
+                  { $$ = parser.make_constant (IMAG_NUM, $1); }
                 | string
                   { $$ = $1; }
                 ;
@@ -433,7 +433,7 @@ matrix          : '[' ']'
                 | '[' ',' ']'
                   { $$ = new tree_constant (octave_null_matrix::instance); }
                 | '[' matrix_rows ']'
-                  { $$ = curr_parser.finish_matrix ($2); }
+                  { $$ = parser.finish_matrix ($2); }
                 ;
 
 matrix_rows     : matrix_rows1
@@ -456,7 +456,7 @@ cell            : '{' '}'
                 | '{' ';' '}'
                   { $$ = new tree_constant (octave_value (Cell ())); }
                 | '{' cell_rows '}'
-                  { $$ = curr_parser.finish_cell ($2); }
+                  { $$ = parser.finish_cell ($2); }
                 ;
 
 cell_rows       : cell_rows1
@@ -483,15 +483,15 @@ cell_or_matrix_row
 
 fcn_handle      : '@' FCN_HANDLE
                   {
-                    $$ = curr_parser.make_fcn_handle ($2);
-                    curr_lexer.looking_at_function_handle--;
+                    $$ = parser.make_fcn_handle ($2);
+                    lexer.looking_at_function_handle--;
                   }
                 ;
 
 anon_fcn_handle : '@' param_list statement
                   {
-                    $$ = curr_parser.make_anon_fcn_handle ($2, $3);
-                    curr_lexer.nesting_level.remove ();
+                    $$ = parser.make_anon_fcn_handle ($2, $3);
+                    lexer.nesting_level.remove ();
                   }
                 ;
 
@@ -503,7 +503,7 @@ primary_expr    : identifier
                   { $$ = $1; }
                 | matrix
                   {
-                    curr_lexer.looking_at_matrix_or_assign_lhs = false;
+                    lexer.looking_at_matrix_or_assign_lhs = false;
                     $$ = $1;
                   }
                 | cell
@@ -553,69 +553,69 @@ arg_list        : expression
                 ;
 
 indirect_ref_op : '.'
-                  { curr_lexer.looking_at_indirect_ref = true; }
+                  { lexer.looking_at_indirect_ref = true; }
                 ;
 
 oper_expr       : primary_expr
                   { $$ = $1; }
                 | oper_expr PLUS_PLUS
-                  { $$ = curr_parser.make_postfix_op (PLUS_PLUS, $1, $2); }
+                  { $$ = parser.make_postfix_op (PLUS_PLUS, $1, $2); }
                 | oper_expr MINUS_MINUS
-                  { $$ = curr_parser.make_postfix_op (MINUS_MINUS, $1, $2); }
+                  { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
                 | oper_expr '(' ')'
-                  { $$ = curr_parser.make_index_expression ($1, 0, '('); }
+                  { $$ = parser.make_index_expression ($1, 0, '('); }
                 | oper_expr '(' arg_list ')'
-                  { $$ = curr_parser.make_index_expression ($1, $3, '('); }
+                  { $$ = parser.make_index_expression ($1, $3, '('); }
                 | oper_expr '{' '}'
-                  { $$ = curr_parser.make_index_expression ($1, 0, '{'); }
+                  { $$ = parser.make_index_expression ($1, 0, '{'); }
                 | oper_expr '{' arg_list '}'
-                  { $$ = curr_parser.make_index_expression ($1, $3, '{'); }
+                  { $$ = parser.make_index_expression ($1, $3, '{'); }
                 | oper_expr HERMITIAN
-                  { $$ = curr_parser.make_postfix_op (HERMITIAN, $1, $2); }
+                  { $$ = parser.make_postfix_op (HERMITIAN, $1, $2); }
                 | oper_expr TRANSPOSE
-                  { $$ = curr_parser.make_postfix_op (TRANSPOSE, $1, $2); }
+                  { $$ = parser.make_postfix_op (TRANSPOSE, $1, $2); }
                 | oper_expr indirect_ref_op STRUCT_ELT
-                  { $$ = curr_parser.make_indirect_ref ($1, $3->text ()); }
+                  { $$ = parser.make_indirect_ref ($1, $3->text ()); }
                 | oper_expr indirect_ref_op '(' expression ')'
-                  { $$ = curr_parser.make_indirect_ref ($1, $4); }
+                  { $$ = parser.make_indirect_ref ($1, $4); }
                 | PLUS_PLUS oper_expr %prec UNARY
-                  { $$ = curr_parser.make_prefix_op (PLUS_PLUS, $2, $1); }
+                  { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
                 | MINUS_MINUS oper_expr %prec UNARY
-                  { $$ = curr_parser.make_prefix_op (MINUS_MINUS, $2, $1); }
+                  { $$ = parser.make_prefix_op (MINUS_MINUS, $2, $1); }
                 | EXPR_NOT oper_expr %prec UNARY
-                  { $$ = curr_parser.make_prefix_op (EXPR_NOT, $2, $1); }
+                  { $$ = parser.make_prefix_op (EXPR_NOT, $2, $1); }
                 | '+' oper_expr %prec UNARY
-                  { $$ = curr_parser.make_prefix_op ('+', $2, $1); }
+                  { $$ = parser.make_prefix_op ('+', $2, $1); }
                 | '-' oper_expr %prec UNARY
-                  { $$ = curr_parser.make_prefix_op ('-', $2, $1); }
+                  { $$ = parser.make_prefix_op ('-', $2, $1); }
                 | oper_expr POW oper_expr
-                  { $$ = curr_parser.make_binary_op (POW, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (POW, $1, $2, $3); }
                 | oper_expr EPOW oper_expr
-                  { $$ = curr_parser.make_binary_op (EPOW, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EPOW, $1, $2, $3); }
                 | oper_expr '+' oper_expr
-                  { $$ = curr_parser.make_binary_op ('+', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ('+', $1, $2, $3); }
                 | oper_expr '-' oper_expr
-                  { $$ = curr_parser.make_binary_op ('-', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ('-', $1, $2, $3); }
                 | oper_expr '*' oper_expr
-                  { $$ = curr_parser.make_binary_op ('*', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ('*', $1, $2, $3); }
                 | oper_expr '/' oper_expr
-                  { $$ = curr_parser.make_binary_op ('/', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ('/', $1, $2, $3); }
                 | oper_expr EPLUS oper_expr
-                  { $$ = curr_parser.make_binary_op ('+', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ('+', $1, $2, $3); }
                 | oper_expr EMINUS oper_expr
-                  { $$ = curr_parser.make_binary_op ('-', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ('-', $1, $2, $3); }
                 | oper_expr EMUL oper_expr
-                  { $$ = curr_parser.make_binary_op (EMUL, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EMUL, $1, $2, $3); }
                 | oper_expr EDIV oper_expr
-                  { $$ = curr_parser.make_binary_op (EDIV, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EDIV, $1, $2, $3); }
                 | oper_expr LEFTDIV oper_expr
-                  { $$ = curr_parser.make_binary_op (LEFTDIV, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (LEFTDIV, $1, $2, $3); }
                 | oper_expr ELEFTDIV oper_expr
-                  { $$ = curr_parser.make_binary_op (ELEFTDIV, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (ELEFTDIV, $1, $2, $3); }
                 ;
 
 colon_expr      : colon_expr1
-                  { $$ = curr_parser.finish_colon_expression ($1); }
+                  { $$ = parser.finish_colon_expression ($1); }
                 ;
 
 colon_expr1     : oper_expr
@@ -630,37 +630,37 @@ colon_expr1     : oper_expr
 simple_expr     : colon_expr
                   { $$ = $1; }
                 | simple_expr LSHIFT simple_expr
-                  { $$ = curr_parser.make_binary_op (LSHIFT, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (LSHIFT, $1, $2, $3); }
                 | simple_expr RSHIFT simple_expr
-                  { $$ = curr_parser.make_binary_op (RSHIFT, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (RSHIFT, $1, $2, $3); }
                 | simple_expr EXPR_LT simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_LT, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_LT, $1, $2, $3); }
                 | simple_expr EXPR_LE simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_LE, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_LE, $1, $2, $3); }
                 | simple_expr EXPR_EQ simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_EQ, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_EQ, $1, $2, $3); }
                 | simple_expr EXPR_GE simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_GE, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_GE, $1, $2, $3); }
                 | simple_expr EXPR_GT simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_GT, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_GT, $1, $2, $3); }
                 | simple_expr EXPR_NE simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_NE, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_NE, $1, $2, $3); }
                 | simple_expr EXPR_AND simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_AND, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_AND, $1, $2, $3); }
                 | simple_expr EXPR_OR simple_expr
-                  { $$ = curr_parser.make_binary_op (EXPR_OR, $1, $2, $3); }
+                  { $$ = parser.make_binary_op (EXPR_OR, $1, $2, $3); }
                 | simple_expr EXPR_AND_AND simple_expr
-                  { $$ = curr_parser.make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
+                  { $$ = parser.make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
                 | simple_expr EXPR_OR_OR simple_expr
-                  { $$ = curr_parser.make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
+                  { $$ = parser.make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
                 ;
 
 assign_lhs      : simple_expr
                   {
-                    $$ = curr_parser.validate_matrix_for_assignment ($1);
+                    $$ = parser.validate_matrix_for_assignment ($1);
 
                     if ($$)
-                      { curr_lexer.looking_at_matrix_or_assign_lhs = false; }
+                      { lexer.looking_at_matrix_or_assign_lhs = false; }
                     else
                       {
                         // validate_matrix_for_assignment deleted $1.
@@ -670,42 +670,42 @@ assign_lhs      : simple_expr
                 ;
 
 assign_expr     : assign_lhs '=' expression
-                  { $$ = curr_parser.make_assign_op ('=', $1, $2, $3); }
+                  { $$ = parser.make_assign_op ('=', $1, $2, $3); }
                 | assign_lhs ADD_EQ expression
-                  { $$ = curr_parser.make_assign_op (ADD_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (ADD_EQ, $1, $2, $3); }
                 | assign_lhs SUB_EQ expression
-                  { $$ = curr_parser.make_assign_op (SUB_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (SUB_EQ, $1, $2, $3); }
                 | assign_lhs MUL_EQ expression
-                  { $$ = curr_parser.make_assign_op (MUL_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (MUL_EQ, $1, $2, $3); }
                 | assign_lhs DIV_EQ expression
-                  { $$ = curr_parser.make_assign_op (DIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (DIV_EQ, $1, $2, $3); }
                 | assign_lhs LEFTDIV_EQ expression
-                  { $$ = curr_parser.make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
                 | assign_lhs POW_EQ expression
-                  { $$ = curr_parser.make_assign_op (POW_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (POW_EQ, $1, $2, $3); }
                 | assign_lhs LSHIFT_EQ expression
-                  { $$ = curr_parser.make_assign_op (LSHIFT_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (LSHIFT_EQ, $1, $2, $3); }
                 | assign_lhs RSHIFT_EQ expression
-                  { $$ = curr_parser.make_assign_op (RSHIFT_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (RSHIFT_EQ, $1, $2, $3); }
                 | assign_lhs EMUL_EQ expression
-                  { $$ = curr_parser.make_assign_op (EMUL_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (EMUL_EQ, $1, $2, $3); }
                 | assign_lhs EDIV_EQ expression
-                  { $$ = curr_parser.make_assign_op (EDIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (EDIV_EQ, $1, $2, $3); }
                 | assign_lhs ELEFTDIV_EQ expression
-                  { $$ = curr_parser.make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
                 | assign_lhs EPOW_EQ expression
-                  { $$ = curr_parser.make_assign_op (EPOW_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (EPOW_EQ, $1, $2, $3); }
                 | assign_lhs AND_EQ expression
-                  { $$ = curr_parser.make_assign_op (AND_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (AND_EQ, $1, $2, $3); }
                 | assign_lhs OR_EQ expression
-                  { $$ = curr_parser.make_assign_op (OR_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op (OR_EQ, $1, $2, $3); }
                 ;
 
 expression      : simple_expr
                   {
                     if ($1 && ($1->is_matrix () || $1->is_cell ()))
                       {
-                        if (curr_parser.validate_array_list ($1))
+                        if (parser.validate_array_list ($1))
                           $$ = $1;
                         else
                           {
@@ -750,13 +750,13 @@ command         : declaration
 
 declaration     : GLOBAL decl1
                   {
-                    $$ = curr_parser.make_decl_command (GLOBAL, $1, $2);
-                    curr_lexer.looking_at_decl_list = false;
+                    $$ = parser.make_decl_command (GLOBAL, $1, $2);
+                    lexer.looking_at_decl_list = false;
                   }
                 | PERSISTENT decl1
                   {
-                    $$ = curr_parser.make_decl_command (PERSISTENT, $1, $2);
-                    curr_lexer.looking_at_decl_list = false;
+                    $$ = parser.make_decl_command (PERSISTENT, $1, $2);
+                    lexer.looking_at_decl_list = false;
                   }
                 ;
 
@@ -770,13 +770,13 @@ decl1           : decl2
                 ;
 
 decl_param_init : // empty
-                { curr_lexer.looking_at_initializer_expression = true; }
+                { lexer.looking_at_initializer_expression = true; }
 
 decl2           : identifier
                   { $$ = new tree_decl_elt ($1); }
                 | identifier '=' decl_param_init expression
                   {
-                    curr_lexer.looking_at_initializer_expression = false;
+                    lexer.looking_at_initializer_expression = false;
                     $$ = new tree_decl_elt ($1, $4);
                   }
                 | magic_tilde
@@ -801,7 +801,7 @@ select_command  : if_command
 
 if_command      : IF stash_comment if_cmd_list END
                   {
-                    if (! ($$ = curr_parser.finish_if_command ($1, $3, $4, $2)))
+                    if (! ($$ = parser.finish_if_command ($1, $3, $4, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -817,9 +817,9 @@ if_cmd_list     : if_cmd_list1
 
 if_cmd_list1    : expression opt_sep opt_list
                   {
-                    $1->mark_braindead_shortcircuit (curr_lexer.fcn_file_full_name);
+                    $1->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
 
-                    $$ = curr_parser.start_if_command ($1, $3);
+                    $$ = parser.start_if_command ($1, $3);
                   }
                 | if_cmd_list1 elseif_clause
                   {
@@ -830,9 +830,9 @@ if_cmd_list1    : expression opt_sep opt_list
 
 elseif_clause   : ELSEIF stash_comment opt_sep expression opt_sep opt_list
                   {
-                    $4->mark_braindead_shortcircuit (curr_lexer.fcn_file_full_name);
+                    $4->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
 
-                    $$ = curr_parser.make_elseif_clause ($1, $4, $6, $2);
+                    $$ = parser.make_elseif_clause ($1, $4, $6, $2);
                   }
                 ;
 
@@ -846,7 +846,7 @@ else_clause     : ELSE stash_comment opt_sep opt_list
 
 switch_command  : SWITCH stash_comment expression opt_sep case_list END
                   {
-                    if (! ($$ = curr_parser.finish_switch_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = parser.finish_switch_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -874,7 +874,7 @@ case_list1      : switch_case
                 ;
 
 switch_case     : CASE stash_comment opt_sep expression opt_sep opt_list
-                  { $$ = curr_parser.make_switch_case ($1, $4, $6, $2); }
+                  { $$ = parser.make_switch_case ($1, $4, $6, $2); }
                 ;
 
 default_case    : OTHERWISE stash_comment opt_sep opt_list
@@ -889,37 +889,37 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 
 loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   {
-                    $3->mark_braindead_shortcircuit (curr_lexer.fcn_file_full_name);
+                    $3->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
 
-                    if (! ($$ = curr_parser.make_while_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = parser.make_while_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
                   }
                 | DO stash_comment opt_sep opt_list UNTIL expression
                   {
-                    if (! ($$ = curr_parser.make_do_until_command ($5, $4, $6, $2)))
+                    if (! ($$ = parser.make_do_until_command ($5, $4, $6, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser.make_for_command (FOR, $1, $3, $5, 0,
+                    if (! ($$ = parser.make_for_command (FOR, $1, $3, $5, 0,
                                                   $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser.make_for_command (FOR, $1, $4, $6, 0,
+                    if (! ($$ = parser.make_for_command (FOR, $1, $4, $6, 0,
                                                   $9, $10, $2)))
                       ABORT_PARSE;
                   }
                 | PARFOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser.make_for_command (PARFOR, $1, $3, $5,
+                    if (! ($$ = parser.make_for_command (PARFOR, $1, $3, $5,
                                                   0, $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser.make_for_command (PARFOR, $1, $4, $6,
+                    if (! ($$ = parser.make_for_command (PARFOR, $1, $4, $6,
                                                   $8, $11, $12, $2)))
                       ABORT_PARSE;
                   }
@@ -931,17 +931,17 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
 
 jump_command    : BREAK
                   {
-                    if (! ($$ = curr_parser.make_break_command ($1)))
+                    if (! ($$ = parser.make_break_command ($1)))
                       ABORT_PARSE;
                   }
                 | CONTINUE
                   {
-                    if (! ($$ = curr_parser.make_continue_command ($1)))
+                    if (! ($$ = parser.make_continue_command ($1)))
                       ABORT_PARSE;
                   }
                 | FUNC_RET
                   {
-                    if (! ($$ = curr_parser.make_return_command ($1)))
+                    if (! ($$ = parser.make_return_command ($1)))
                       ABORT_PARSE;
                   }
                 ;
@@ -953,18 +953,18 @@ jump_command    : BREAK
 except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                   stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list CATCH
                   stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser.make_try_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = parser.make_try_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = curr_parser.make_try_command ($1, $4, 0, $5, $2, 0)))
+                    if (! ($$ = parser.make_try_command ($1, $4, 0, $5, $2, 0)))
                       ABORT_PARSE;
                   }
                 ;
@@ -975,25 +975,25 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
 
 push_fcn_symtab : // empty
                   {
-                    curr_parser.curr_fcn_depth++;
+                    parser.curr_fcn_depth++;
 
-                    if (curr_parser.max_fcn_depth < curr_parser.curr_fcn_depth)
-                      curr_parser.max_fcn_depth = curr_parser.curr_fcn_depth;
+                    if (parser.max_fcn_depth < parser.curr_fcn_depth)
+                      parser.max_fcn_depth = parser.curr_fcn_depth;
 
                     parser_symtab_context.push ();
 
                     symbol_table::set_scope (symbol_table::alloc_scope ());
 
-                    curr_parser.function_scopes.push_back (symbol_table::current_scope ());
+                    parser.function_scopes.push_back (symbol_table::current_scope ());
 
-                    if (! curr_lexer.reading_script_file
-                        && curr_parser.curr_fcn_depth == 1
-                        && ! curr_parser.parsing_subfunctions)
-                      curr_parser.primary_fcn_scope = symbol_table::current_scope ();
+                    if (! lexer.reading_script_file
+                        && parser.curr_fcn_depth == 1
+                        && ! parser.parsing_subfunctions)
+                      parser.primary_fcn_scope = symbol_table::current_scope ();
 
-                    if (curr_lexer.reading_script_file
-                        && curr_parser.curr_fcn_depth > 1)
-                      curr_parser.bison_error ("nested functions not implemented in this context");
+                    if (lexer.reading_script_file
+                        && parser.curr_fcn_depth > 1)
+                      parser.bison_error ("nested functions not implemented in this context");
                   }
                 ;
 
@@ -1003,22 +1003,22 @@ push_fcn_symtab : // empty
 
 param_list_beg  : '('
                   {
-                    curr_lexer.looking_at_parameter_list = true;
+                    lexer.looking_at_parameter_list = true;
 
-                    if (curr_lexer.looking_at_function_handle)
+                    if (lexer.looking_at_function_handle)
                       {
                         parser_symtab_context.push ();
                         symbol_table::set_scope (symbol_table::alloc_scope ());
-                        curr_lexer.looking_at_function_handle--;
-                        curr_lexer.looking_at_anon_fcn_args = true;
+                        lexer.looking_at_function_handle--;
+                        lexer.looking_at_anon_fcn_args = true;
                       }
                   }
                 ;
 
 param_list_end  : ')'
                   {
-                    curr_lexer.looking_at_parameter_list = false;
-                    curr_lexer.looking_for_object_index = false;
+                    lexer.looking_at_parameter_list = false;
+                    lexer.looking_for_object_index = false;
                   }
                 ;
 
@@ -1026,7 +1026,7 @@ param_list      : param_list_beg param_list1 param_list_end
                   { $$ = $2; }
                 | param_list_beg error
                   {
-                    curr_parser.bison_error ("invalid parameter list");
+                    parser.bison_error ("invalid parameter list");
                     $$ = 0;
                     ABORT_PARSE;
                   }
@@ -1059,12 +1059,12 @@ param_list2     : decl2
 
 return_list     : '[' ']'
                   {
-                    curr_lexer.looking_at_return_list = false;
+                    lexer.looking_at_return_list = false;
                     $$ = new tree_parameter_list ();
                   }
                 | return_list1
                   {
-                    curr_lexer.looking_at_return_list = false;
+                    lexer.looking_at_return_list = false;
                     if ($1->validate (tree_parameter_list::out))
                       $$ = $1;
                     else
@@ -1072,7 +1072,7 @@ return_list     : '[' ']'
                   }
                 | '[' return_list1 ']'
                   {
-                    curr_lexer.looking_at_return_list = false;
+                    lexer.looking_at_return_list = false;
                     if ($2->validate (tree_parameter_list::out))
                       $$ = $2;
                     else
@@ -1095,14 +1095,14 @@ return_list1    : identifier
 
 file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
-                    if (! curr_lexer.reading_fcn_file)
+                    if (! lexer.reading_fcn_file)
                       {
                         tree_statement *end_of_script
-                          = curr_parser.make_end ("endscript",
-                                                  curr_lexer.input_line_number,
-                                                  curr_lexer.current_input_column);
+                          = parser.make_end ("endscript",
+                                                  lexer.input_line_number,
+                                                  lexer.current_input_column);
 
-                        curr_parser.make_script ($3, end_of_script);
+                        parser.make_script ($3, end_of_script);
                       }
 
                     $$ = 0;
@@ -1116,21 +1116,21 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
 function_beg    : push_fcn_symtab FCN stash_comment
                   {
                     $$ = $3;
-                    if (curr_lexer.reading_classdef_file
-                        || curr_lexer.parsing_classdef)
-                      curr_lexer.maybe_classdef_get_set_method = true;
+                    if (lexer.reading_classdef_file
+                        || lexer.parsing_classdef)
+                      lexer.maybe_classdef_get_set_method = true;
                   }
                 ;
 
 function        : function_beg function1
                   {
-                    $$ = curr_parser.finish_function (0, $2, $1);
-                    curr_parser.recover_from_parsing_function ();
+                    $$ = parser.finish_function (0, $2, $1);
+                    parser.recover_from_parsing_function ();
                   }
                 | function_beg return_list '=' function1
                   {
-                    $$ = curr_parser.finish_function ($2, $4, $1);
-                    curr_parser.recover_from_parsing_function ();
+                    $$ = parser.finish_function ($2, $4, $1);
+                    parser.recover_from_parsing_function ();
                   }
                 ;
 
@@ -1138,21 +1138,21 @@ fcn_name        : identifier
                   {
                     std::string id_name = $1->name ();
 
-                    curr_lexer.parsed_function_name.top () = true;
-                    curr_lexer.maybe_classdef_get_set_method = false;
+                    lexer.parsed_function_name.top () = true;
+                    lexer.maybe_classdef_get_set_method = false;
 
                     $$ = $1;
                   }
                 | GET '.' identifier
                   {
-                    curr_lexer.parsed_function_name.top () = true;
-                    curr_lexer.maybe_classdef_get_set_method = false;
+                    lexer.parsed_function_name.top () = true;
+                    lexer.maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
                 | SET '.' identifier
                   {
-                    curr_lexer.parsed_function_name.top () = true;
-                    curr_lexer.maybe_classdef_get_set_method = false;
+                    lexer.parsed_function_name.top () = true;
+                    lexer.maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
                 ;
@@ -1163,58 +1163,58 @@ function1       : fcn_name function2
 
                     delete $1;
 
-                    if (! ($$ = curr_parser.frob_function (fname, $2)))
+                    if (! ($$ = parser.frob_function (fname, $2)))
                       ABORT_PARSE;
                   }
                 ;
 
 function2       : param_list opt_sep opt_list function_end
-                  { $$ = curr_parser.start_function ($1, $3, $4); }
+                  { $$ = parser.start_function ($1, $3, $4); }
                 | opt_sep opt_list function_end
-                  { $$ = curr_parser.start_function (0, $2, $3); }
+                  { $$ = parser.start_function (0, $2, $3); }
                 ;
 
 function_end    : END
                   {
-                    curr_parser.endfunction_found = true;
-                    if (curr_parser.end_token_ok ($1, token::function_end))
-                      $$ = curr_parser.make_end ("endfunction", $1->line (), $1->column ());
+                    parser.endfunction_found = true;
+                    if (parser.end_token_ok ($1, token::function_end))
+                      $$ = parser.make_end ("endfunction", $1->line (), $1->column ());
                     else
                       ABORT_PARSE;
                   }
                 | END_OF_INPUT
                   {
 // A lot of tests are based on the assumption that this is OK
-//                  if (curr_lexer.reading_script_file)
+//                  if (lexer.reading_script_file)
 //                    {
-//                      curr_parser.bison_error ("function body open at end of script");
+//                      parser.bison_error ("function body open at end of script");
 //                      YYABORT;
 //                    }
 
-                    if (curr_parser.endfunction_found)
+                    if (parser.endfunction_found)
                       {
-                        curr_parser.bison_error ("inconsistent function endings -- "
+                        parser.bison_error ("inconsistent function endings -- "
                                  "if one function is explicitly ended, "
                                  "so must all the others");
                         YYABORT;
                       }
 
-                    if (! (curr_lexer.reading_fcn_file || curr_lexer.reading_script_file
-                           || curr_lexer.input_from_eval_string ()))
+                    if (! (lexer.reading_fcn_file || lexer.reading_script_file
+                           || lexer.input_from_eval_string ()))
                       {
-                        curr_parser.bison_error ("function body open at end of input");
+                        parser.bison_error ("function body open at end of input");
                         YYABORT;
                       }
 
-                    if (curr_lexer.reading_classdef_file)
+                    if (lexer.reading_classdef_file)
                       {
-                        curr_parser.bison_error ("classdef body open at end of input");
+                        parser.bison_error ("classdef body open at end of input");
                         YYABORT;
                       }
 
-                    $$ = curr_parser.make_end ("endfunction",
-                                                curr_lexer.input_line_number,
-                                                curr_lexer.current_input_column);
+                    $$ = parser.make_end ("endfunction",
+                                                lexer.input_line_number,
+                                                lexer.current_input_column);
                   }
                 ;
 
@@ -1225,16 +1225,16 @@ function_end    : END
 classdef_beg    : CLASSDEF stash_comment
                   {
                     $$ = 0;
-                    curr_lexer.parsing_classdef = true;
+                    lexer.parsing_classdef = true;
                   }
                 ;
 
 classdef_end    : END
                   {
-                    curr_lexer.parsing_classdef = false;
+                    lexer.parsing_classdef = false;
 
-                    if (curr_parser.end_token_ok ($1, token::classdef_end))
-                      $$ = curr_parser.make_end ("endclassdef", $1->line (), $1->column ());
+                    if (parser.end_token_ok ($1, token::classdef_end))
+                      $$ = parser.make_end ("endclassdef", $1->line (), $1->column ());
                     else
                       ABORT_PARSE;
                   }
@@ -1384,7 +1384,7 @@ stash_comment   : // empty
                 ;
 
 parse_error     : LEXICAL_ERROR
-                  { curr_parser.bison_error ("parse error"); }
+                  { parser.bison_error ("parse error"); }
                 | error
                 ;
 
@@ -1440,12 +1440,12 @@ opt_sep         : // empty
 
 // Generic error messages.
 
-#undef curr_lexer
+#undef lexer
 
 static void
-yyerror (octave_base_parser& curr_parser, const char *s)
+yyerror (octave_base_parser& parser, const char *s)
 {
-  curr_parser.bison_error (s);
+  parser.bison_error (s);
 }
 
 octave_base_parser::~octave_base_parser (void)
@@ -1456,7 +1456,7 @@ octave_base_parser::~octave_base_parser (void)
 
   delete stmt_list;
 
-  delete &curr_lexer;
+  delete &lexer;
 }
 
 void octave_base_parser::init (void)
@@ -1465,7 +1465,7 @@ void octave_base_parser::init (void)
   parser_state = yypstate_new ();
 #endif
 
-  CURR_LEXER = &curr_lexer;
+  LEXER = &lexer;
 }
 
 void
@@ -1475,7 +1475,7 @@ octave_base_parser::reset (void)
 
   stmt_list = 0;
 
-  curr_lexer.reset ();
+  lexer.reset ();
 }
 
 // Error mesages for mismatched end tokens.
@@ -1609,7 +1609,7 @@ octave_base_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
   if (expr->is_assignment_expression ()
       && expr->paren_count () < 2)
     {
-      if (curr_lexer.fcn_file_full_name.empty ())
+      if (lexer.fcn_file_full_name.empty ())
         warning_with_id
           ("Octave:assign-as-truth-value",
            "suggest parenthesis around assignment used as truth value");
@@ -1617,7 +1617,7 @@ octave_base_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
         warning_with_id
           ("Octave:assign-as-truth-value",
            "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), curr_lexer.fcn_file_full_name.c_str ());
+           expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
     }
 }
 
@@ -1628,14 +1628,14 @@ octave_base_parser::maybe_warn_variable_switch_label (tree_expression *expr)
 {
   if (! expr->is_constant ())
     {
-      if (curr_lexer.fcn_file_full_name.empty ())
+      if (lexer.fcn_file_full_name.empty ())
         warning_with_id ("Octave:variable-switch-label",
                          "variable switch label");
       else
         warning_with_id
           ("Octave:variable-switch-label",
            "variable switch label near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), curr_lexer.fcn_file_full_name.c_str ());
+           expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
     }
 }
 
@@ -1875,8 +1875,8 @@ octave_base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
                                           tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
-  int l = curr_lexer.input_line_number;
-  int c = curr_lexer.current_input_column;
+  int l = lexer.input_line_number;
+  int c = lexer.current_input_column;
 
   tree_parameter_list *ret_list = 0;
 
@@ -1897,7 +1897,7 @@ octave_base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
   // FIXME: Stash the filename.  This does not work and produces
   // errors when executed.
-  //retval->stash_file_name (curr_lexer.fcn_file_name);
+  //retval->stash_file_name (lexer.fcn_file_name);
 
   return retval;
 }
@@ -2191,7 +2191,7 @@ octave_base_parser::make_while_command (token *while_tok,
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
-      curr_lexer.looping--;
+      lexer.looping--;
 
       int l = while_tok->line ();
       int c = while_tok->column ();
@@ -2216,7 +2216,7 @@ octave_base_parser::make_do_until_command (token *until_tok,
 
   octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
-  curr_lexer.looping--;
+  lexer.looping--;
 
   int l = until_tok->line ();
   int c = until_tok->column ();
@@ -2245,7 +2245,7 @@ octave_base_parser::make_for_command (int tok_id, token *for_tok,
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
-      curr_lexer.looping--;
+      lexer.looping--;
 
       int l = for_tok->line ();
       int c = for_tok->column ();
@@ -2539,11 +2539,11 @@ octave_base_parser::make_script (tree_statement_list *cmds,
   cmds->append (end_script);
 
   octave_user_script *script
-    = new octave_user_script (curr_lexer.fcn_file_full_name,
-                              curr_lexer.fcn_file_name,
-                              cmds, curr_lexer.help_text);
+    = new octave_user_script (lexer.fcn_file_full_name,
+                              lexer.fcn_file_name,
+                              cmds, lexer.help_text);
 
-  curr_lexer.help_text = "";
+  lexer.help_text = "";
 
   octave_time now;
 
@@ -2598,36 +2598,36 @@ octave_base_parser::frob_function (const std::string& fname,
   // the file does not match the name of the function stated in the
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
-  if (! autoloading && curr_lexer.reading_fcn_file
+  if (! autoloading && lexer.reading_fcn_file
       && curr_fcn_depth == 1 && ! parsing_subfunctions)
   {
-    // FIXME -- should curr_lexer.fcn_file_name already be
+    // FIXME -- should lexer.fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a
     // problem with relative file names.
 
-    std::string nm = curr_lexer.fcn_file_name;
+    std::string nm = lexer.fcn_file_name;
 
     size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
-      nm = curr_lexer.fcn_file_name.substr (pos+1);
+      nm = lexer.fcn_file_name.substr (pos+1);
 
     if (nm != id_name)
       {
         warning_with_id
           ("Octave:function-name-clash",
            "function name '%s' does not agree with function file name '%s'",
-           id_name.c_str (), curr_lexer.fcn_file_full_name.c_str ());
+           id_name.c_str (), lexer.fcn_file_full_name.c_str ());
 
         id_name = nm;
       }
   }
 
-  if (curr_lexer.reading_fcn_file || curr_lexer.reading_classdef_file || autoloading)
+  if (lexer.reading_fcn_file || lexer.reading_classdef_file || autoloading)
     {
       octave_time now;
 
-      fcn->stash_fcn_file_name (curr_lexer.fcn_file_full_name);
+      fcn->stash_fcn_file_name (lexer.fcn_file_full_name);
       fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
 
@@ -2636,7 +2636,7 @@ octave_base_parser::frob_function (const std::string& fname,
 
       if (curr_fcn_depth > 1 || parsing_subfunctions)
         {
-          fcn->stash_parent_fcn_name (curr_lexer.fcn_file_name);
+          fcn->stash_parent_fcn_name (lexer.fcn_file_name);
 
           if (curr_fcn_depth > 1)
             fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
@@ -2644,7 +2644,7 @@ octave_base_parser::frob_function (const std::string& fname,
             fcn->stash_parent_fcn_scope (primary_fcn_scope);
         }
 
-      if (curr_lexer.parsing_class_method)
+      if (lexer.parsing_class_method)
         {
           if (curr_class_name == id_name)
             fcn->mark_as_class_constructor ();
@@ -2663,27 +2663,27 @@ octave_base_parser::frob_function (const std::string& fname,
                          "time stamp for '%s' is in the future", nm.c_str ());
     }
   else if (! input_from_tmp_history_file
-           && ! curr_lexer.force_script
-           && curr_lexer.reading_script_file
-           && curr_lexer.fcn_file_name == id_name)
+           && ! lexer.force_script
+           && lexer.reading_script_file
+           && lexer.fcn_file_name == id_name)
     {
       warning ("function '%s' defined within script file '%s'",
-               id_name.c_str (), curr_lexer.fcn_file_full_name.c_str ());
+               id_name.c_str (), lexer.fcn_file_full_name.c_str ());
     }
 
   fcn->stash_function_name (id_name);
-  fcn->stash_fcn_location (curr_lexer.input_line_number,
-                           curr_lexer.current_input_column);
+  fcn->stash_fcn_location (lexer.input_line_number,
+                           lexer.current_input_column);
 
-  if (! curr_lexer.help_text.empty () && curr_fcn_depth == 1
+  if (! lexer.help_text.empty () && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     {
-      fcn->document (curr_lexer.help_text);
+      fcn->document (lexer.help_text);
 
-      curr_lexer.help_text = "";
+      lexer.help_text = "";
     }
 
-  if (curr_lexer.reading_fcn_file && curr_fcn_depth == 1
+  if (lexer.reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     primary_fcn_ptr = fcn;
 
@@ -2736,7 +2736,7 @@ octave_base_parser::finish_function (tree_parameter_list *ret_list,
       if (curr_fcn_depth == 1 && fcn)
         symbol_table::update_nest (fcn->scope ());
 
-      if (! curr_lexer.reading_fcn_file && curr_fcn_depth == 1)
+      if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
         {
           // We are either reading a script file or defining a function
           // at the command line, so this definition creates a
@@ -2763,17 +2763,17 @@ octave_base_parser::recover_from_parsing_function (void)
 
   parser_symtab_context.pop ();
 
-  if (curr_lexer.reading_fcn_file && curr_fcn_depth == 1
+  if (lexer.reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
     parsing_subfunctions = true;
 
   curr_fcn_depth--;
   function_scopes.pop_back ();
 
-  curr_lexer.defining_func--;
-  curr_lexer.parsed_function_name.pop ();
-  curr_lexer.looking_at_return_list = false;
-  curr_lexer.looking_at_parameter_list = false;
+  lexer.defining_func--;
+  lexer.parsed_function_name.pop ();
+  lexer.looking_at_return_list = false;
+  lexer.looking_at_parameter_list = false;
 }
 
 // Make an index expression.
@@ -2832,7 +2832,7 @@ octave_base_parser::make_indirect_ref (tree_expression *expr,
   else
     retval = new tree_index_expression (expr, elt, l, c);
 
-  curr_lexer.looking_at_indirect_ref = false;
+  lexer.looking_at_indirect_ref = false;
 
   return retval;
 }
@@ -2858,7 +2858,7 @@ octave_base_parser::make_indirect_ref (tree_expression *expr, tree_expression *e
   else
     retval = new tree_index_expression (expr, elt, l, c);
 
-  curr_lexer.looking_at_indirect_ref = false;
+  lexer.looking_at_indirect_ref = false;
 
   return retval;
 }
@@ -2885,9 +2885,9 @@ octave_base_parser::make_decl_command (int tok, token *tok_val,
         retval = new tree_persistent_command (lst, l, c);
       else
         {
-          if (curr_lexer.reading_script_file)
+          if (lexer.reading_script_file)
             warning ("ignoring persistent declaration near line %d of file '%s'",
-                     l, curr_lexer.fcn_file_full_name.c_str ());
+                     l, lexer.fcn_file_full_name.c_str ());
           else
             warning ("ignoring persistent declaration near line %d", l);
         }
@@ -3050,7 +3050,7 @@ octave_base_parser::maybe_warn_missing_semi (tree_statement_list *t)
         warning_with_id
           ("Octave:missing-semicolon",
            "missing semicolon near line %d, column %d in file '%s'",
-            tmp->line (), tmp->column (), curr_lexer.fcn_file_full_name.c_str ());
+            tmp->line (), tmp->column (), lexer.fcn_file_full_name.c_str ());
     }
 }
 
@@ -3112,13 +3112,13 @@ octave_base_parser::append_statement_list (tree_statement_list *list,
 void
 octave_base_parser::bison_error (const char *s)
 {
-  int err_col = curr_lexer.current_input_column - 1;
+  int err_col = lexer.current_input_column - 1;
 
   std::ostringstream output_buf;
 
-  if (curr_lexer.reading_fcn_file || curr_lexer.reading_script_file || curr_lexer.reading_classdef_file)
-    output_buf << "parse error near line " << curr_lexer.input_line_number
-               << " of file " << curr_lexer.fcn_file_full_name;
+  if (lexer.reading_fcn_file || lexer.reading_script_file || lexer.reading_classdef_file)
+    output_buf << "parse error near line " << lexer.input_line_number
+               << " of file " << lexer.fcn_file_full_name;
   else
     output_buf << "parse error:";
 
@@ -3127,7 +3127,7 @@ octave_base_parser::bison_error (const char *s)
 
   output_buf << "\n\n";
 
-  std::string curr_line = curr_lexer.current_input_line;
+  std::string curr_line = lexer.current_input_line;
 
   if (! curr_line.empty ())
     {
@@ -3209,24 +3209,24 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
   if (ffile)
     {
       // octave_base_parser constructor sets this for us.
-      frame.protect_var (CURR_LEXER);
+      frame.protect_var (LEXER);
 
-      octave_parser curr_parser (ffile);
+      octave_parser parser (ffile);
 
-      curr_parser.curr_class_name = dispatch_type;
-      curr_parser.autoloading = autoload;
-      curr_parser.fcn_file_from_relative_lookup = relative_lookup;
+      parser.curr_class_name = dispatch_type;
+      parser.autoloading = autoload;
+      parser.fcn_file_from_relative_lookup = relative_lookup;
 
-      curr_parser.curr_lexer.force_script = force_script;
-      curr_parser.curr_lexer.prep_for_file ();
-      curr_parser.curr_lexer.parsing_class_method = ! dispatch_type.empty ();
+      parser.lexer.force_script = force_script;
+      parser.lexer.prep_for_file ();
+      parser.lexer.parsing_class_method = ! dispatch_type.empty ();
 
-      curr_parser.curr_lexer.fcn_file_name = file;
-      curr_parser.curr_lexer.fcn_file_full_name = full_file;
+      parser.lexer.fcn_file_name = file;
+      parser.lexer.fcn_file_full_name = full_file;
 
-      int status = curr_parser.run ();
+      int status = parser.run ();
 
-      fcn_ptr = curr_parser.primary_fcn_ptr;
+      fcn_ptr = parser.primary_fcn_ptr;
 
       if (status != 0)
         error ("parse error while reading file %s", full_file.c_str ());
@@ -3905,27 +3905,27 @@ eval_string (const std::string& eval_str, bool silent,
   unwind_protect frame;
 
   // octave_base_parser constructor sets this for us.
-  frame.protect_var (CURR_LEXER);
+  frame.protect_var (LEXER);
 
-  octave_parser curr_parser (eval_str);
+  octave_parser parser (eval_str);
 
   do
     {
-      curr_parser.reset ();
+      parser.reset ();
 
-      parse_status = curr_parser.run ();
+      parse_status = parser.run ();
 
       // Unmark forced variables.
       frame.run (1);
 
       if (parse_status == 0)
         {
-          if (curr_parser.stmt_list)
+          if (parser.stmt_list)
             {
               tree_statement *stmt = 0;
 
-              if (curr_parser.stmt_list->length () == 1
-                  && (stmt = curr_parser.stmt_list->front ())
+              if (parser.stmt_list->length () == 1
+                  && (stmt = parser.stmt_list->front ())
                   && stmt->is_expression ())
                 {
                   tree_expression *expr = stmt->expression ();
@@ -3954,7 +3954,7 @@ eval_string (const std::string& eval_str, bool silent,
                     retval = octave_value_list ();
                 }
               else if (nargout == 0)
-                curr_parser.stmt_list->accept (*current_evaluator);
+                parser.stmt_list->accept (*current_evaluator);
               else
                 error ("eval: invalid use of statement list");
 
@@ -3964,7 +3964,7 @@ eval_string (const std::string& eval_str, bool silent,
                   || tree_continue_command::continuing)
                 break;
             }
-          else if (curr_parser.curr_lexer.end_of_input)
+          else if (parser.lexer.end_of_input)
             break;
         }
     }

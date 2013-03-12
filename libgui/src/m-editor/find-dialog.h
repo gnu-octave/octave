@@ -42,6 +42,8 @@
 #ifndef FIND_DIALOG_H
 #define FIND_DIALOG_H
 
+#ifdef HAVE_QSCINTILLA
+
 #include <QDialog>
 #include <Qsci/qsciscintilla.h>
 
@@ -86,5 +88,7 @@ private:
   bool               _find_result_available;
 };
 
-#endif // FIND_DIALOG_H
+#endif  // HAVE_QSCINTILLA
+
+#endif  // FIND_DIALOG_H
 

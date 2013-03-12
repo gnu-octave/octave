@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef LEXEROCTAVE_H
 #define LEXEROCTAVE_H
 
+#ifdef HAVE_QSCINTILLA
+
 #include "resource-manager.h"
 #include <QObject>
 #include <Qsci/qsciglobal.h>
@@ -63,4 +65,6 @@ private:
   QsciAPIs *lexer_api;
 };
 
-#endif
+#endif  // HAVE_QSCINTILLA
+
+#endif  // LEXEROCTAVE_H

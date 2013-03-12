@@ -37,7 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QIcon>
 
+#ifdef HAVE_QSCINTILLA
 #include "file-editor.h"
+#endif
 #include "main-window.h"
 #include "octave-link.h"
 #include "settings-dialog.h"
@@ -721,7 +723,9 @@ main_window::construct ()
   open_action->setShortcut (QKeySequence::Open);
   open_action->setShortcutContext (Qt::ApplicationShortcut);
 
+#ifdef HAVE_QSCINTILLA
   file_menu->addMenu(_file_editor->get_mru_menu ());
+#endif
 
   QAction *close_command_window_action
     = file_menu->addAction (tr ("Close Command Window"));

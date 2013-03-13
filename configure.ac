@@ -2653,7 +2653,7 @@ if test $build_gui = no; then
   GUIDIR=
 fi
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
-AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test $octave_cv_lib_qscintilla = yes])
+AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test "$octave_cv_lib_qscintilla" = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)

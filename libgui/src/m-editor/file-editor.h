@@ -23,8 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef FILEEDITORMDISUBWINDOW_H
 #define FILEEDITORMDISUBWINDOW_H
 
-#ifdef HAVE_QSCINTILLA
-
 #include <QToolBar>
 #include <QAction>
 #include <QMenuBar>
@@ -156,6 +154,4 @@ private:
 
 };
 
-#endif  // HAVE_QSCINTILLA
-
-#endif  // FILEEDITORMDISUBWINDOW_H
+#endif // FILEEDITORMDISUBWINDOW_H

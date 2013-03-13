@@ -55,12 +55,18 @@ octave_gui_ICONS = \
   src/icons/zoom-in.png \
   src/icons/zoom-out.png
 
-octave_gui_MOC = \
+octave_gui_MOC =
+
+if AMCOND_HAVE_QSCINTILLA
+octave_gui_MOC += \
   src/m-editor/moc-file-editor-interface.cc \
   src/m-editor/moc-file-editor-tab.cc \
   src/m-editor/moc-file-editor.cc \
   src/m-editor/moc-find-dialog.cc \
-  src/m-editor/moc-lexer-octave-gui.cc \
+  src/m-editor/moc-lexer-octave-gui.cc
+endif
+
+octave_gui_MOC += \
   src/moc-documentation-dockwidget.cc \
   src/moc-files-dockwidget.cc \
   src/moc-history-dockwidget.cc \

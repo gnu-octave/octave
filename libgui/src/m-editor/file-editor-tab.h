@@ -23,8 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef FILEEDITORTAB_H
 #define FILEEDITORTAB_H
 
-#ifdef HAVE_QSCINTILLA
-
 #include <Qsci/qsciscintilla.h>
 #include <QWidget>
 #include <QCloseEvent>
@@ -158,6 +156,4 @@ private:
   QRect                 _find_dialog_geometry;
 };
 
-#endif  // HAVE_QSCINTILLA
-
-#endif  // FILEEDITORTAB_H
+#endif // FILEEDITORTAB_H

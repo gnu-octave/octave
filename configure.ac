@@ -2634,6 +2634,8 @@ if test $build_gui = yes; then
       AC_DEFINE(HAVE_QSCINTILLA, 1, 
         [Define to 1 if the QScintilla library and header files are available])
     fi
+    AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA],
+      [test $octave_cv_lib_qscintilla = yes])
 
     AC_CHECK_FUNCS([setlocale], [],
       [AC_MSG_WARN([setlocale not found -- disabling GUI])

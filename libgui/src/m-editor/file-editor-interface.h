@@ -23,8 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef FILEEDITORINTERFACE_H
 #define FILEEDITORINTERFACE_H
 
-#ifdef HAVE_QSCINTILLA
-
 #include <QMenu>
 #include <QToolBar>
 #include "octave-dock-widget.h"
@@ -63,6 +61,4 @@ public slots:
 
 };
 
-#endif  // HAVE_QSCINTILLA
-
-#endif  // FILEEDITORINTERFACE_H
+#endif // FILEEDITORINTERFACE_H

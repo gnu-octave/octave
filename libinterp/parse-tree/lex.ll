@@ -111,7 +111,7 @@ object) relevant global values before and after the nested call.
 #error lex.l requires flex version 2.5.4 or later
 #endif
 
-#define YY_EXTRA_TYPE octave_lexer *
+#define YY_EXTRA_TYPE octave_base_lexer *
 #define curr_lexer yyextra
 
 // Arrange to get input via readline.
@@ -120,7 +120,7 @@ object) relevant global values before and after the nested call.
 #undef YY_INPUT
 #endif
 #define YY_INPUT(buf, result, max_size) \
-  result = curr_lexer->read (buf, max_size)
+  result = curr_lexer->fill_flex_buffer (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
 
@@ -1547,7 +1547,7 @@ looks_like_copyright (const std::string& s)
 }
 
 void
-octave_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
+octave_base_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
 {
   buffer = input;
   chars_left = buffer.length ();
@@ -1556,7 +1556,7 @@ octave_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
 }
 
 int
-octave_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
+octave_base_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
 {
   static const char * const eol = "\n";
 
@@ -1581,7 +1581,7 @@ octave_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
         {
           // There isn't enough room to plug the newline character
           // in the buffer so arrange to have it returned on the next
-          // call to octave_lexer::read.
+          // call to octave_base_lexer::read.
           pos = eol;
           chars_left = 1;
         }
@@ -1590,17 +1590,17 @@ octave_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
   return len;
 }
 
-octave_lexer::~octave_lexer (void)
+octave_base_lexer::~octave_base_lexer (void)
 {
   yylex_destroy (scanner);
 }
 
 void
-octave_lexer::init (void)
+octave_base_lexer::init (void)
 {
   yylex_init (&scanner);
 
-  // Make octave_lexer object available through yyextra in
+  // Make octave_base_lexer object available through yyextra in
   // flex-generated lexer.
   yyset_extra (this, scanner);
 
@@ -1608,7 +1608,7 @@ octave_lexer::init (void)
 }
 
 // Inside Flex-generated functions, yyg is the scanner cast to its real
-// type.  Some flex macros that we use in octave_lexer member functions
+// type.  Some flex macros that we use in octave_base_lexer member functions
 // (for example, BEGIN) use yyg.  If we could perform the actions of
 // these macros with functions instead, we could eliminate the
 // OCTAVE_YYG macro.
@@ -1617,7 +1617,7 @@ octave_lexer::init (void)
   struct yyguts_t *yyg = static_cast<struct yyguts_t*> (scanner)
 
 void
-octave_lexer::reset (void)
+octave_base_lexer::reset (void)
 {
   // Start off on the right foot.
   clear_start_state ();
@@ -1638,13 +1638,11 @@ octave_lexer::reset (void)
             || input_from_eval_string ()))
     yyrestart (stdin, scanner);
 
-  input_reader.reset ();
-
   lexical_feedback::reset ();
 }
 
 void
-octave_lexer::prep_for_file (void)
+octave_base_lexer::prep_for_file (void)
 {
   reading_script_file = true;
 
@@ -1652,32 +1650,7 @@ octave_lexer::prep_for_file (void)
 }
 
 int
-octave_lexer::read (char *buf, unsigned max_size)
-{
-  int status = 0;
-
-  if (input_buf.empty ())
-    {
-      bool eof = false;
-      current_input_line = input_reader.get_input (eof);
-      input_buf.fill (current_input_line, eof);
-    }
-
-  if (! input_buf.empty ())
-    status = input_buf.copy_chunk (buf, max_size);
-  else
-    {
-      status = YY_NULL;
-
-      if (! input_buf.at_eof ())
-        fatal_error ("octave_lexer::read () in flex scanner failed");
-    }
-
-  return status;
-}
-
-int
-octave_lexer::handle_end_of_input (void)
+octave_base_lexer::handle_end_of_input (void)
 {
   lexer_debug ("<<EOF>>");
 
@@ -1695,19 +1668,19 @@ octave_lexer::handle_end_of_input (void)
 }
 
 char *
-octave_lexer::flex_yytext (void)
+octave_base_lexer::flex_yytext (void)
 {
   return yyget_text (scanner);
 }
 
 int
-octave_lexer::flex_yyleng (void)
+octave_base_lexer::flex_yyleng (void)
 {
   return yyget_leng (scanner);
 }
 
 int
-octave_lexer::text_yyinput (void)
+octave_base_lexer::text_yyinput (void)
 {
   int c = yyinput (scanner);
 
@@ -1742,7 +1715,7 @@ octave_lexer::text_yyinput (void)
 }
 
 void
-octave_lexer::xunput (char c, char *buf)
+octave_base_lexer::xunput (char c, char *buf)
 {
   if (c != EOF)
     {
@@ -1758,7 +1731,7 @@ octave_lexer::xunput (char c, char *buf)
 }
 
 void
-octave_lexer::xunput (char c)
+octave_base_lexer::xunput (char c)
 {
   char *yytxt = flex_yytext ();
 
@@ -1766,7 +1739,7 @@ octave_lexer::xunput (char c)
 }
 
 bool
-octave_lexer::looking_at_space (void)
+octave_base_lexer::looking_at_space (void)
 {
   int c = text_yyinput ();
   xunput (c);
@@ -1774,7 +1747,7 @@ octave_lexer::looking_at_space (void)
 }
 
 bool
-octave_lexer::inside_any_object_index (void)
+octave_base_lexer::inside_any_object_index (void)
 {
   bool retval = false;
 
@@ -1794,7 +1767,7 @@ octave_lexer::inside_any_object_index (void)
 // Handle keywords.  Return -1 if the keyword should be ignored.
 
 int
-octave_lexer::is_keyword_token (const std::string& s)
+octave_base_lexer::is_keyword_token (const std::string& s)
 {
   int l = input_line_number;
   int c = current_input_column;
@@ -2025,7 +1998,7 @@ octave_lexer::is_keyword_token (const std::string& s)
 }
 
 bool
-octave_lexer::whitespace_is_significant (void)
+octave_base_lexer::whitespace_is_significant (void)
 {
   return (nesting_level.is_bracket ()
           || (nesting_level.is_brace ()
@@ -2039,7 +2012,7 @@ looks_like_hex (const char *s, int len)
 }
 
 void
-octave_lexer::handle_number (void)
+octave_base_lexer::handle_number (void)
 {
   double value = 0.0;
   int nread = 0;
@@ -2082,7 +2055,7 @@ octave_lexer::handle_number (void)
 }
 
 void
-octave_lexer::handle_continuation (void)
+octave_base_lexer::handle_continuation (void)
 {
   char *yytxt = flex_yytext ();
   int yylng = flex_yyleng ();
@@ -2135,8 +2108,8 @@ octave_lexer::handle_continuation (void)
 }
 
 void
-octave_lexer::finish_comment (octave_comment_elt::comment_type typ,
-                              bool looking_at_continuation)
+octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ,
+                                   bool looking_at_continuation)
 {
   bool copyright = looks_like_copyright (comment_text);
 
@@ -2173,7 +2146,7 @@ octave_lexer::finish_comment (octave_comment_elt::comment_type typ,
 // FIXME -- we need to handle block comments here.
 
 bool
-octave_lexer::have_continuation (bool trailing_comments_ok)
+octave_base_lexer::have_continuation (bool trailing_comments_ok)
 {
   std::ostringstream buf;
 
@@ -2261,7 +2234,7 @@ cleanup:
 // line character.
 
 bool
-octave_lexer::have_ellipsis_continuation (bool trailing_comments_ok)
+octave_base_lexer::have_ellipsis_continuation (bool trailing_comments_ok)
 {
   char c1 = text_yyinput ();
   if (c1 == '.')
@@ -2282,7 +2255,7 @@ octave_lexer::have_ellipsis_continuation (bool trailing_comments_ok)
 }
 
 int
-octave_lexer::handle_string (char delim)
+octave_base_lexer::handle_string (char delim)
 {
   std::ostringstream buf;
 
@@ -2374,7 +2347,7 @@ octave_lexer::handle_string (char delim)
 }
 
 int
-octave_lexer::handle_close_bracket (int bracket_type)
+octave_base_lexer::handle_close_bracket (int bracket_type)
 {
   int retval = bracket_type;
 
@@ -2396,7 +2369,7 @@ octave_lexer::handle_close_bracket (int bracket_type)
 }
 
 bool
-octave_lexer::looks_like_command_arg (void)
+octave_base_lexer::looks_like_command_arg (void)
 {
   bool space_before = space_follows_previous_token ();
   bool space_after = looking_at_space ();
@@ -2406,7 +2379,7 @@ octave_lexer::looks_like_command_arg (void)
 }
 
 int
-octave_lexer::handle_superclass_identifier (void)
+octave_base_lexer::handle_superclass_identifier (void)
 {
   std::string pkg;
   char *yytxt = flex_yytext ();
@@ -2442,7 +2415,7 @@ octave_lexer::handle_superclass_identifier (void)
 }
 
 int
-octave_lexer::handle_meta_identifier (void)
+octave_base_lexer::handle_meta_identifier (void)
 {
   std::string pkg;
   char *yytxt = flex_yytext ();
@@ -2477,7 +2450,7 @@ octave_lexer::handle_meta_identifier (void)
 // should be ignored.
 
 int
-octave_lexer::handle_identifier (void)
+octave_base_lexer::handle_identifier (void)
 {
   char *yytxt = flex_yytext ();
 
@@ -2578,7 +2551,7 @@ octave_lexer::handle_identifier (void)
 }
 
 void
-octave_lexer::maybe_warn_separator_insert (char sep)
+octave_base_lexer::maybe_warn_separator_insert (char sep)
 {
   std::string nm = fcn_file_full_name;
 
@@ -2593,7 +2566,7 @@ octave_lexer::maybe_warn_separator_insert (char sep)
 }
 
 void
-octave_lexer::gripe_single_quote_string (void)
+octave_base_lexer::gripe_single_quote_string (void)
 {
   std::string nm = fcn_file_full_name;
 
@@ -2608,7 +2581,7 @@ octave_lexer::gripe_single_quote_string (void)
 }
 
 void
-octave_lexer::gripe_matlab_incompatible (const std::string& msg)
+octave_base_lexer::gripe_matlab_incompatible (const std::string& msg)
 {
   std::string nm = fcn_file_full_name;
 
@@ -2623,20 +2596,20 @@ octave_lexer::gripe_matlab_incompatible (const std::string& msg)
 }
 
 void
-octave_lexer::maybe_gripe_matlab_incompatible_comment (char c)
+octave_base_lexer::maybe_gripe_matlab_incompatible_comment (char c)
 {
   if (c == '#')
     gripe_matlab_incompatible ("# used as comment character");
 }
 
 void
-octave_lexer::gripe_matlab_incompatible_continuation (void)
+octave_base_lexer::gripe_matlab_incompatible_continuation (void)
 {
   gripe_matlab_incompatible ("\\ used as line continuation marker");
 }
 
 void
-octave_lexer::gripe_matlab_incompatible_operator (const std::string& op)
+octave_base_lexer::gripe_matlab_incompatible_operator (const std::string& op)
 {
   std::string t = op;
   int n = t.length ();
@@ -2646,7 +2619,7 @@ octave_lexer::gripe_matlab_incompatible_operator (const std::string& op)
 }
 
 void
-octave_lexer::push_token (token *tok)
+octave_base_lexer::push_token (token *tok)
 {
   YYSTYPE *lval = yyget_lval (scanner);
   lval->tok_val = tok;
@@ -2654,14 +2627,14 @@ octave_lexer::push_token (token *tok)
 }
 
 token *
-octave_lexer::current_token (void)
+octave_base_lexer::current_token (void)
 {
   YYSTYPE *lval = yyget_lval (scanner);
   return lval->tok_val;
 }
 
 void
-octave_lexer::display_token (int tok)
+octave_base_lexer::display_token (int tok)
 {
   switch (tok)
     {
@@ -2797,7 +2770,7 @@ octave_lexer::display_token (int tok)
 }
 
 void
-octave_lexer::fatal_error (const char *msg)
+octave_base_lexer::fatal_error (const char *msg)
 {
   error (msg);
 
@@ -2807,7 +2780,7 @@ octave_lexer::fatal_error (const char *msg)
 }
 
 void
-octave_lexer::lexer_debug (const char *pattern)
+octave_base_lexer::lexer_debug (const char *pattern)
 {
   if (lexer_debug_flag)
     {
@@ -2821,7 +2794,7 @@ octave_lexer::lexer_debug (const char *pattern)
 }
 
 void
-octave_lexer::push_start_state (int state)
+octave_base_lexer::push_start_state (int state)
 {
   OCTAVE_YYG;
 
@@ -2831,7 +2804,7 @@ octave_lexer::push_start_state (int state)
 }
 
 void
-octave_lexer::pop_start_state (void)
+octave_base_lexer::pop_start_state (void)
 {
   OCTAVE_YYG;
 
@@ -2841,7 +2814,7 @@ octave_lexer::pop_start_state (void)
 }
 
 void
-octave_lexer::clear_start_state (void)
+octave_base_lexer::clear_start_state (void)
 {
   while (! start_state_stack.empty ())
     start_state_stack.pop ();
@@ -2850,7 +2823,7 @@ octave_lexer::clear_start_state (void)
 }
 
 void
-octave_lexer::display_start_state (void) const
+octave_base_lexer::display_start_state (void) const
 {
   std::cerr << "S: ";
 
@@ -2887,7 +2860,7 @@ octave_lexer::display_start_state (void) const
 }
 
 int
-octave_lexer::handle_op (const char *pattern, int tok, bool bos)
+octave_base_lexer::handle_op (const char *pattern, int tok, bool bos)
 {
   lexer_debug (pattern);
 
@@ -2895,7 +2868,8 @@ octave_lexer::handle_op (const char *pattern, int tok, bool bos)
 }
 
 int
-octave_lexer::handle_incompatible_op (const char *pattern, int tok, bool bos)
+octave_base_lexer::handle_incompatible_op (const char *pattern, int tok,
+                                           bool bos)
 {
   lexer_debug (pattern);
 
@@ -2903,7 +2877,7 @@ octave_lexer::handle_incompatible_op (const char *pattern, int tok, bool bos)
 }
 
 bool
-octave_lexer::maybe_unput_comma_before_unary_op (int tok)
+octave_base_lexer::maybe_unput_comma_before_unary_op (int tok)
 {
   int prev_tok = previous_token_value ();
 
@@ -2926,21 +2900,21 @@ octave_lexer::maybe_unput_comma_before_unary_op (int tok)
 }
 
 int
-octave_lexer::handle_unary_op (int tok, bool bos)
+octave_base_lexer::handle_unary_op (int tok, bool bos)
 {
   return maybe_unput_comma_before_unary_op (tok)
     ? -1 : handle_op_internal (tok, bos, true);
 }
 
 int
-octave_lexer::handle_incompatible_unary_op (int tok, bool bos)
+octave_base_lexer::handle_incompatible_unary_op (int tok, bool bos)
 {
   return maybe_unput_comma_before_unary_op (tok)
     ? -1 : handle_op_internal (tok, bos, false);
 }
 
 int
-octave_lexer::handle_op_internal (int tok, bool bos, bool compat)
+octave_base_lexer::handle_op_internal (int tok, bool bos, bool compat)
 {
   if (! compat)
     gripe_matlab_incompatible_operator (flex_yytext ());
@@ -2955,7 +2929,7 @@ octave_lexer::handle_op_internal (int tok, bool bos, bool compat)
 }
 
 int
-octave_lexer::handle_token (const std::string& name, int tok)
+octave_base_lexer::handle_token (const std::string& name, int tok)
 {
   token *tok_val = new token (tok, name, input_line_number,
                               current_input_column);
@@ -2964,7 +2938,7 @@ octave_lexer::handle_token (const std::string& name, int tok)
 }
 
 int
-octave_lexer::handle_token (int tok, token *tok_val)
+octave_base_lexer::handle_token (int tok, token *tok_val)
 {
   if (! tok_val)
     tok_val = new token (tok, input_line_number, current_input_column);
@@ -2977,7 +2951,7 @@ octave_lexer::handle_token (int tok, token *tok_val)
 }
 
 int
-octave_lexer::count_token (int tok)
+octave_base_lexer::count_token (int tok)
 {
   token *tok_val = new token (tok, input_line_number, current_input_column);
 
@@ -2987,7 +2961,7 @@ octave_lexer::count_token (int tok)
 }
 
 int
-octave_lexer::count_token_internal (int tok)
+octave_base_lexer::count_token_internal (int tok)
 {
   if (tok != '\n')
     {
@@ -2999,7 +2973,7 @@ octave_lexer::count_token_internal (int tok)
 }
 
 int
-octave_lexer::show_token (int tok)
+octave_base_lexer::show_token (int tok)
 {
   if (Vdisplay_tokens)
     display_token (tok);
@@ -3012,4 +2986,29 @@ octave_lexer::show_token (int tok)
     }
 
   return tok;
+}
+
+int
+octave_lexer::fill_flex_buffer (char *buf, unsigned max_size)
+{
+  int status = 0;
+
+  if (input_buf.empty ())
+    {
+      bool eof = false;
+      current_input_line = input_reader.get_input (eof);
+      input_buf.fill (current_input_line, eof);
+    }
+
+  if (! input_buf.empty ())
+    status = input_buf.copy_chunk (buf, max_size);
+  else
+    {
+      status = YY_NULL;
+
+      if (! input_buf.at_eof ())
+        fatal_error ("octave_base_lexer::fill_flex_buffer failed");
+    }
+
+  return status;
 }

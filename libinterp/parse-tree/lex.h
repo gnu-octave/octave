@@ -391,13 +391,13 @@ private:
   lexical_feedback& operator = (const lexical_feedback&);
 };
 
-// octave_lexer inherits from lexical_feedback because we will
+// octave_base_lexer inherits from lexical_feedback because we will
 // eventually have several different constructors and it is easier to
 // intialize if everything is grouped in a parent class rather than
-// listing all the members in the octave_lexer class.
+// listing all the members in the octave_base_lexer class.
 
 class
-octave_lexer : public lexical_feedback
+octave_base_lexer : public lexical_feedback
 {
 public:
 
@@ -428,35 +428,21 @@ public:
     bool eof;
   };
 
-  octave_lexer (void)
-    : lexical_feedback (), scanner (0), input_buf (), input_reader ()
+  octave_base_lexer (void)
+    : lexical_feedback (), scanner (0), input_buf ()
   {
     init ();
   }
 
-  octave_lexer (FILE *file)
-    : lexical_feedback (), scanner (0), input_buf (),
-      input_reader (file)
-  {
-    init ();
-  }
-
-  octave_lexer (const std::string& eval_string)
-    : lexical_feedback (), scanner (0), input_buf (),
-      input_reader (eval_string)
-  {
-    init ();
-  }
-
-  ~octave_lexer (void);
+  virtual ~octave_base_lexer (void);
 
   void init (void);
 
-  void reset (void);
+  virtual void reset (void);
 
   void prep_for_file (void);
 
-  int read (char *buf, unsigned int max_size);
+  virtual int fill_flex_buffer (char *buf, unsigned int max_size) = 0;
 
   int handle_end_of_input (void);
 
@@ -529,35 +515,21 @@ public:
   // Object that reads and buffers input.
   input_buffer input_buf;
 
-  octave_input_reader input_reader;
+  virtual void increment_promptflag (void) = 0;
 
-  void increment_promptflag (void) { input_reader.increment_promptflag (); }
+  virtual void decrement_promptflag (void) = 0;
 
-  void decrement_promptflag (void) { input_reader.decrement_promptflag (); }
+  virtual int promptflag (void) const = 0;
 
-  int promptflag (void) const { return input_reader.promptflag (); }
+  virtual int promptflag (int) = 0;
 
-  int promptflag (int n) { return input_reader.promptflag (n); }
+  virtual std::string input_source (void) const { return "unknown"; }
 
-  std::string input_source (void) const
-  {
-    return input_reader.input_source ();
-  }
+  virtual bool input_from_terminal (void) const { return false; }
 
-  bool input_from_terminal (void) const
-  {
-    return input_source () == "terminal";
-  }
+  virtual bool input_from_file (void) const { return false; }
 
-  bool input_from_file (void) const
-  {
-    return input_source () == "file";
-  }
-
-  bool input_from_eval_string (void) const
-  {
-    return input_source () == "eval_string";
-  }
+  virtual bool input_from_eval_string (void) const { return false; }
 
   void push_start_state (int state);
 
@@ -596,11 +568,76 @@ public:
   int show_token (int tok);
 
   // For unwind protect.
-  static void cleanup (octave_lexer *lexer) { delete lexer; }
+  static void cleanup (octave_base_lexer *lexer) { delete lexer; }
 
-private:
+protected:
 
   std::stack<int> start_state_stack;
+
+  // No copying!
+
+  octave_base_lexer (const octave_base_lexer&);
+
+  octave_base_lexer& operator = (const octave_base_lexer&);
+};
+
+class
+octave_lexer : public octave_base_lexer
+{
+public:
+
+  octave_lexer (void)
+    : octave_base_lexer (), input_reader ()
+  { }
+
+  octave_lexer (FILE *file)
+    : octave_base_lexer (), input_reader (file)
+  { }
+
+  octave_lexer (const std::string& eval_string)
+    : octave_base_lexer (), input_reader (eval_string)
+  { }
+
+  void reset (void)
+  {
+    input_reader.reset ();
+
+    octave_base_lexer::reset ();
+  }
+
+  void increment_promptflag (void) { input_reader.increment_promptflag (); }
+
+  void decrement_promptflag (void) { input_reader.decrement_promptflag (); }
+
+  int promptflag (void) const { return input_reader.promptflag (); }
+
+  int promptflag (int n) { return input_reader.promptflag (n); }
+
+  std::string input_source (void) const
+  {
+    return input_reader.input_source ();
+  }
+
+  bool input_from_terminal (void) const
+  {
+    return input_source () == "terminal";
+  }
+
+  bool input_from_file (void) const
+  {
+    return input_source () == "file";
+  }
+
+  bool input_from_eval_string (void) const
+  {
+    return input_source () == "eval_string";
+  }
+
+  int fill_flex_buffer (char *buf, unsigned int max_size);
+
+  octave_input_reader input_reader;
+
+protected:
 
   // No copying!
 

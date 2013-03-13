@@ -123,14 +123,14 @@ extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
 // Global access to currently active lexer.
 // FIXME -- to be removed after more parser+lexer refactoring.
-extern octave_lexer *LEXER;
+extern octave_base_lexer *LEXER;
 
 class
 octave_base_parser
 {
 public:
 
-  octave_base_parser (octave_lexer& lxr)
+  octave_base_parser (octave_base_lexer& lxr)
     : endfunction_found (false),
       autoloading (false), fcn_file_from_relative_lookup (false),
       parsing_subfunctions (false), max_fcn_depth (0),
@@ -142,7 +142,7 @@ public:
     init ();
   }
 
-  virtual ~octave_base_parser (void);
+  ~octave_base_parser (void);
 
   void init (void);
 
@@ -381,7 +381,7 @@ public:
   tree_statement_list *stmt_list;
 
   // State of the lexer.
-  octave_lexer& lexer;
+  octave_base_lexer& lexer;
 
   // Internal state of the parser.  Only used if USE_PUSH_PARSER is
   // defined.

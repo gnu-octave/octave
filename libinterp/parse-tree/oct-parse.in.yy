@@ -84,7 +84,7 @@ extern int octave_lex (YYSTYPE *, void *);
 
 // Global access to currently active lexer.
 // FIXME -- to be removed after more parser+lexer refactoring.
-octave_lexer *LEXER = 0;
+octave_base_lexer *LEXER = 0;
 
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from

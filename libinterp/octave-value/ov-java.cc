@@ -1224,6 +1224,15 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
           jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid));
           jobj = jni_env->NewObject (dcls, mid, dval);
         }
+      else if (val.is_bool_type ())
+        {
+          bool bval = val.bool_value ();
+          jclass_ref bcls (jni_env, jni_env->FindClass ("java/lang/Boolean"));
+          jfieldID fid = jni_env->GetStaticFieldID (bcls, "TYPE", "Ljava/lang/Class;");
+          jmethodID mid = jni_env->GetMethodID (bcls, "<init>", "(Z)V");
+          jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (bcls, fid));
+          jobj = jni_env->NewObject (bcls, mid, bval);
+        }
       else
         {
           float fval = val.float_scalar_value ();
@@ -1243,15 +1252,6 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (icls, fid));
       jobj = jni_env->NewObject (icls, mid, ival);
     }
-  else if (val.is_bool_scalar ())
-   {
-      bool bval = val.bool_value ();
-      jclass_ref bcls (jni_env, jni_env->FindClass ("java/lang/Boolean"));
-      jfieldID fid = jni_env->GetStaticFieldID (bcls, "TYPE", "Ljava/lang/Class;");
-      jmethodID mid = jni_env->GetMethodID (bcls, "<init>", "(Z)V");
-      jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (bcls, fid));
-      jobj = jni_env->NewObject (bcls, mid, bval);
-   }
   else if (val.is_empty ())
     {
       jobj = 0;

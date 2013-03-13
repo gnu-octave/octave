@@ -125,6 +125,7 @@ DIST_SRC = \
   octave.cc \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
+  $(PARSER_SRC) \
   $(INTERP_CORE_SRC) \
   $(INTERPFCN_SRC) \
   $(COREFCN_SRC)
@@ -178,6 +179,7 @@ include link-deps.mk
 liboctinterp_la_LIBADD = \
   octave-value/liboctave-value.la \
   parse-tree/libparse-tree.la \
+  parse-tree/libparser.la \
   interp-core/libinterp-core.la \
   interpfcn/libinterpfcn.la \
   corefcn/libcorefcn.la \

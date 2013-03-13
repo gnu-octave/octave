@@ -11,13 +11,6 @@ PARSER_SRC = \
   parse-tree/lex.ll \
   parse-tree/oct-parse.yy
 
-## FIXME: Automake does not support per-object rules.
-##        These rules could be emulated by creating a new convenience
-##        library and using per-library rules.  Or we can just live
-##        with the extra warnings about old-sytle-casts. (09/18/2012)
-#lex.lo lex.o oct-parse.lo oct-parse.o: \
-#  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
-
 PARSE_TREE_INC = \
   parse-tree/pt-all.h \
   parse-tree/pt-arg-list.h \
@@ -48,8 +41,7 @@ PARSE_TREE_INC = \
   parse-tree/pt-unop.h \
   parse-tree/pt-walk.h \
   parse-tree/pt.h \
-  parse-tree/token.h \
-  $(PARSER_INC)
+  parse-tree/token.h
 
 PARSE_TREE_SRC = \
   parse-tree/pt-arg-list.cc \
@@ -79,8 +71,7 @@ PARSE_TREE_SRC = \
   parse-tree/pt-stmt.cc \
   parse-tree/pt-unop.cc \
   parse-tree/pt.cc \
-  parse-tree/token.cc \
-  $(PARSER_SRC)
+  parse-tree/token.cc
 
 ## Special rules for sources which must be built before rest of compilation.
 
@@ -106,7 +97,14 @@ parse-tree/oct-parse.yy: parse-tree/oct-parse.in.yy
 	$(SED) "s/%PUSH_PULL_DECL%/$$decl/" $< > $@-t
 	mv $@-t $@
 
-noinst_LTLIBRARIES += parse-tree/libparse-tree.la
+noinst_LTLIBRARIES += \
+  parse-tree/libparse-tree.la \
+  parse-tree/libparser.la
 
 parse_tree_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)
 parse_tree_libparse_tree_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)
+
+parse_tree_libparser_la_SOURCES = $(PARSER_SRC)
+parse_tree_libparser_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)
+parse_tree_libparser_la_CXXFLAGS = \
+  $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))

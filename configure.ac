@@ -2623,8 +2623,6 @@ if test $build_gui = yes; then
       AC_DEFINE(HAVE_QSCINTILLA, 1, 
         [Define to 1 if the QScintilla library and header files are available])
     fi
-    AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA],
-      [test $octave_cv_lib_qscintilla = yes])
 
     AC_CHECK_FUNCS([setlocale], [],
       [AC_MSG_WARN([setlocale not found -- disabling GUI])
@@ -2655,6 +2653,7 @@ if test $build_gui = no; then
   GUIDIR=
 fi
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
+AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test $octave_cv_lib_qscintilla = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)

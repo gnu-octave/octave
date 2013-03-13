@@ -331,7 +331,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->looking_for_object_index = true;
     curr_lexer->at_beginning_of_statement = false;
 
-    int tok_to_return = curr_lexer->handle_close_bracket (']');
+    curr_lexer->handle_close_bracket (']');
 
     return curr_lexer->count_token (']');
   }
@@ -348,7 +348,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->looking_for_object_index = true;
     curr_lexer->at_beginning_of_statement = false;
 
-    int tok_to_return = curr_lexer->handle_close_bracket ('}');
+    curr_lexer->handle_close_bracket ('}');
 
     return curr_lexer->count_token ('}');
   }
@@ -762,8 +762,6 @@ ANY_INCLUDING_NL (.|{NL})
       {
         int tok = curr_lexer->previous_token_value ();
 
-        bool transpose = false;
-
         if (curr_lexer->whitespace_is_significant ())
           {
             if (curr_lexer->space_follows_previous_token ())
@@ -829,8 +827,6 @@ ANY_INCLUDING_NL (.|{NL})
     else
       {
         int tok = curr_lexer->previous_token_value ();
-
-        bool transpose = false;
 
         if (curr_lexer->whitespace_is_significant ())
           {

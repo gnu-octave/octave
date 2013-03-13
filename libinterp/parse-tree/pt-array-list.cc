@@ -93,8 +93,8 @@ tree_array_list::copy_base (const tree_array_list& array_list,
 }
 
 tree_expression *
-tree_array_list::dup (symbol_table::scope_id scope,
-                      symbol_table::context_id context) const
+tree_array_list::dup (symbol_table::scope_id,
+                      symbol_table::context_id) const
 {
   panic_impossible ();
   return 0;

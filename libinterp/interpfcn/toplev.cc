@@ -1058,8 +1058,6 @@ do_octave_atexit (void)
 
       OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 
-      OCTAVE_SAFE_CALL (cleanup_parser, ());
-
       OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 
       OCTAVE_SAFE_CALL (flush_octave_stdout, ());

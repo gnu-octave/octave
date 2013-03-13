@@ -1291,26 +1291,6 @@ display_character (char c)
       }
 }
 
-void
-cleanup_parser (void)
-{
-}
-
-// Return 1 if the given character matches any character in the given
-// string.
-
-static bool
-match_any (char c, const char *s)
-{
-  char tmp;
-  while ((tmp = *s++) != '\0')
-    {
-      if (c == tmp)
-        return true;
-    }
-  return false;
-}
-
 bool
 is_keyword (const std::string& s)
 {

@@ -33,28 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "token.h"
 
-extern OCTINTERP_API void cleanup_parser (void);
-
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
-
-class
-stream_reader
-{
-public:
-  virtual int getc (void) = 0;
-  virtual int ungetc (int c) = 0;
-
-protected:
-  stream_reader (void) { }
-  ~stream_reader (void) { }
-
-private:
-
-  // No copying!
-  stream_reader (const stream_reader&);
-  stream_reader& operator = (const stream_reader&);
-};
 
 // For communication between the lexer and parser.
 

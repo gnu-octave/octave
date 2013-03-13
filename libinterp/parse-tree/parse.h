@@ -137,7 +137,7 @@ public:
       curr_fcn_depth (0), primary_fcn_scope (-1),
       curr_class_name (), function_scopes (), primary_fcn_ptr (0),
       stmt_list (0),
-      lexer (lxr), parser_state (0)
+      lexer (lxr)
   {
     init ();
   }
@@ -383,10 +383,6 @@ public:
   // State of the lexer.
   octave_base_lexer& lexer;
 
-  // Internal state of the parser.  Only used if USE_PUSH_PARSER is
-  // defined.
-  void *parser_state;
-
 private:
 
   // No copying!
@@ -424,6 +420,35 @@ private:
   octave_parser (const octave_parser&);
 
   octave_parser& operator = (const octave_parser&);
+};
+
+class
+octave_push_parser : public octave_base_parser
+{
+public:
+
+  octave_push_parser (void)
+    : octave_base_parser (*(new octave_push_lexer ())), parser_state (0)
+  {
+    init ();
+  }
+
+  ~octave_push_parser (void);
+
+  void init (void);
+
+  int run (const std::string& input, bool eof);
+
+private:
+
+  // Internal state of the Bison parser.
+  void *parser_state;
+
+  // No copying!
+
+  octave_push_parser (const octave_push_parser&);
+
+  octave_push_parser& operator = (const octave_push_parser&);
 };
 
 #endif

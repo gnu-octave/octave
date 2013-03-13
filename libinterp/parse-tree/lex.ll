@@ -1129,7 +1129,11 @@ ANY_INCLUDING_NL (.|{NL})
 
     int c = curr_lexer->text_yyinput ();
 
-    if (c != EOF)
+    if (c == 1)
+      return -1;
+    else if (c == EOF)
+      return curr_lexer->handle_end_of_input ();
+    else
       {
         curr_lexer->current_input_column++;
 
@@ -1139,8 +1143,6 @@ ANY_INCLUDING_NL (.|{NL})
 
         return LEXICAL_ERROR;
       }
-    else
-      return curr_lexer->handle_end_of_input ();
   }
 
 %%
@@ -3000,6 +3002,27 @@ octave_lexer::fill_flex_buffer (char *buf, unsigned max_size)
       input_buf.fill (current_input_line, eof);
     }
 
+  if (! input_buf.empty ())
+    status = input_buf.copy_chunk (buf, max_size);
+  else
+    {
+      status = YY_NULL;
+
+      if (! input_buf.at_eof ())
+        fatal_error ("octave_base_lexer::fill_flex_buffer failed");
+    }
+
+  return status;
+}
+
+int
+octave_push_lexer::fill_flex_buffer (char *buf, unsigned max_size)
+{
+  int status = 0;
+
+  if (input_buf.empty () && ! input_buf.at_eof ())
+    input_buf.fill (std::string (1, static_cast<char> (1)), false);
+ 
   if (! input_buf.empty ())
     status = input_buf.copy_chunk (buf, max_size);
   else

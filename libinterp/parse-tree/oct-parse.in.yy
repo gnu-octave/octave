@@ -1450,10 +1450,6 @@ yyerror (octave_base_parser& parser, const char *s)
 
 octave_base_parser::~octave_base_parser (void)
 {
-#if defined (OCTAVE_USE_PUSH_PARSER)
-  yypstate_delete (static_cast<yypstate *> (parser_state));
-#endif
-
   delete stmt_list;
 
   delete &lexer;
@@ -1461,10 +1457,6 @@ octave_base_parser::~octave_base_parser (void)
 
 void octave_base_parser::init (void)
 {
-#if defined (OCTAVE_USE_PUSH_PARSER)
-  parser_state = yypstate_new ();
-#endif
-
   LEXER = &lexer;
 }
 
@@ -3160,6 +3152,53 @@ int
 octave_parser::run (void)
 {
   return octave_parse (*this);
+}
+
+octave_push_parser::~octave_push_parser (void)
+{
+  yypstate_delete (static_cast<yypstate *> (parser_state));
+}
+
+void
+octave_push_parser::init (void)
+{
+  parser_state = yypstate_new ();
+
+  octave_base_parser::init ();
+}
+
+// Parse input from INPUT.  Pass TRUE for EOF if the end of INPUT should
+// finish the parse.
+
+int
+octave_push_parser::run (const std::string& input, bool eof)
+{
+  int status = -1;
+
+  dynamic_cast<octave_push_lexer&> (lexer).append_input (input, eof);
+
+  do
+    {   
+      YYSTYPE lval;
+
+      int token = octave_lex (&lval, scanner);
+
+      if (token < 0)
+        {
+          if (! eof && lexer.at_end_of_buffer ())
+            {
+              status = -1;
+              break;
+            }
+        }
+
+      yypstate *pstate = static_cast<yypstate *> (parser_state);
+
+      status = octave_push_parse (pstate, token, &lval, *this);
+    }
+  while (status == YYPUSH_MORE);
+
+  return status;
 }
 
 static void

@@ -190,17 +190,6 @@ if test $BOUNDS_CHECKING = yes; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
 fi
 
-### Enable experimental push parser.
-
-OCTAVE_USE_PUSH_PARSER=no
-AC_ARG_ENABLE([push-parser],
-  [AS_HELP_STRING([--enable-push-parser],
-    [enable experimental push parser])],
-  [if test "$enableval" = yes; then OCTAVE_USE_PUSH_PARSER=yes; fi], [])
-if test $OCTAVE_USE_PUSH_PARSER = yes; then
-  AC_DEFINE(OCTAVE_USE_PUSH_PARSER, 1, [Define to 1 to use experimental push parser.])
-fi
-
 ### Use Octave's built-in memory allocator rather than straightforward malloc.
 ### Disabled by default.
 
@@ -2980,7 +2969,6 @@ Octave is now configured for $canonical_host_type
   Build Java interface:               $build_java
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
-  Use push parser:                    $OCTAVE_USE_PUSH_PARSER
   Build static libraries:             $STATIC_LIBS
   Build shared libraries:             $SHARED_LIBS
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG

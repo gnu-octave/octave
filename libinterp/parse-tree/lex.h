@@ -438,11 +438,17 @@ public:
 
   void init (void);
 
+  virtual bool is_push_lexer (void) const { return false; }
+
   virtual void reset (void);
 
   void prep_for_file (void);
 
   virtual int fill_flex_buffer (char *buf, unsigned int max_size) = 0;
+
+  bool at_end_of_buffer (void) const { return input_buf.empty (); }
+
+  bool at_end_of_file (void) const { return input_buf.at_eof (); }
 
   int handle_end_of_input (void);
 
@@ -644,6 +650,60 @@ protected:
   octave_lexer (const octave_lexer&);
 
   octave_lexer& operator = (const octave_lexer&);
+};
+
+class
+octave_push_lexer : public octave_base_lexer
+{
+public:
+
+  octave_push_lexer (const std::string& input = std::string (),
+                     bool eof = false)
+    : octave_base_lexer (), pflag (1)
+  {
+    append_input (input, eof);
+  }
+
+  bool is_push_lexer (void) const { return true; }
+
+  void reset (void)
+  {
+    promptflag (1);
+
+    octave_base_lexer::reset ();
+  }
+
+  void append_input (const std::string& input, bool eof)
+  {
+    input_buf.fill (input, eof);
+  }
+
+  void increment_promptflag (void) { pflag++; }
+
+  void decrement_promptflag (void) { pflag--; }
+
+  int promptflag (void) const { return pflag; }
+
+  int promptflag (int n)
+  {
+    int retval = pflag;
+    pflag = n;
+    return retval;
+  }
+
+  std::string input_source (void) const { return "push buffer"; }
+
+  int fill_flex_buffer (char *buf, unsigned int max_size);
+
+protected:
+
+  int pflag;
+
+  // No copying!
+
+  octave_push_lexer (const octave_push_lexer&);
+
+  octave_push_lexer& operator = (const octave_push_lexer&);
 };
 
 #endif

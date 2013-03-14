@@ -2102,7 +2102,7 @@ int
 save_mat5_element_length (const octave_value& tc, const std::string& name,
                           bool save_as_floats, bool mat7_format)
 {
-  size_t max_namelen = (mat7_format ? 63 : 31);
+  size_t max_namelen = 63;
   size_t len = name.length ();
   std::string cname = tc.class_name ();
   int ret = 32;
@@ -2286,7 +2286,7 @@ save_mat5_binary_element (std::ostream& os,
   int32_t flags = 0;
   int32_t nnz_32 = 0;
   std::string cname = tc.class_name ();
-  size_t max_namelen = (mat7_format ? 63 : 31);
+  size_t max_namelen = 63;
 
   dim_vector dv = tc.dims ();
   int nd = tc.ndims ();
@@ -2456,7 +2456,7 @@ save_mat5_binary_element (std::ostream& os,
     size_t namelen = name.length ();
 
     if (namelen > max_namelen)
-      namelen = max_namelen; // only 31 or 63 char names permitted in mat file
+      namelen = max_namelen;  // Truncate names if necessary
 
     int paddedlength = PAD (namelen);
 
@@ -2634,7 +2634,7 @@ save_mat5_binary_element (std::ostream& os,
           size_t namelen = classname.length ();
 
           if (namelen > max_namelen)
-            namelen = max_namelen; // only 31 or 63 char names permitted
+            namelen = max_namelen; // Truncate names if necessary
 
           int paddedlength = PAD (namelen);
 

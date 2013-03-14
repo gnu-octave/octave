@@ -380,7 +380,11 @@ statement       : expression
 // WHILE, etc.
 
 word_list_cmd   : identifier word_list
-                  { $$ = parser.make_index_expression ($1, $2, '('); }
+                  {
+                    $$ = parser.make_index_expression ($1, $2, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 ;
 
 word_list       : string
@@ -563,13 +567,29 @@ oper_expr       : primary_expr
                 | oper_expr MINUS_MINUS
                   { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
                 | oper_expr '(' ')'
-                  { $$ = parser.make_index_expression ($1, 0, '('); }
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr '(' arg_list ')'
-                  { $$ = parser.make_index_expression ($1, $3, '('); }
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr '{' '}'
-                  { $$ = parser.make_index_expression ($1, 0, '{'); }
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '{');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr '{' arg_list '}'
-                  { $$ = parser.make_index_expression ($1, $3, '{'); }
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '{');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr HERMITIAN
                   { $$ = parser.make_postfix_op (HERMITIAN, $1, $2); }
                 | oper_expr TRANSPOSE

@@ -291,8 +291,8 @@ function varargout = strread (str, format = "%f", varargin)
   ## First parse of FORMAT
   if (strcmpi (strtrim (format), "%f"))
     ## Default format specified.  Expand it (to desired nargout)
-    fmt_words = cell (nargout, 1);
-    fmt_words (1:nargout) = format;
+    fmt_words = cell (max (nargout, 1), 1);
+    fmt_words (1:max (nargout, 1)) = format;
   else
     ## Determine the number of words per line as a first guess.  Forms
     ## like %f<literal>) (w/o delimiter in between) are fixed further on
@@ -964,6 +964,10 @@ endfunction
 %! [a, b] = strread (" 1. 1 \n  2 3 \n", "%f %f", "endofline", "\n");
 %! assert (a, [1; 2], 1e-15);
 %! assert (b, [1; 3], 1e-15);
+
+%% Test for no output arg (interactive use)
+%!test
+%! assert (strread (",2,,4\n5,,7,", "", "delimiter", ","), [NaN; 2; NaN; 4; 5; NaN; 7]);
 
 %% Unsupported format specifiers
 %!test

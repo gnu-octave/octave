@@ -183,7 +183,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       elseif (args{headerlines + 1} < 0)
         warning ("textscan.m: negative headerline value ignored");
       endif
-    endif
+    endif    
+    ## Read a first file chunk. Rest follows after endofline processing
+    [str, count] = fscanf (fid, "%c", BUFLENGTH);
+
   endif
 
   ## Check for empty result
@@ -506,6 +509,19 @@ endfunction
 %!   rh = strtrim (rh);
 %!   assert (strcmp (lh, rh));
 %! end
+
+%% Test reading from a real file
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! d = rand (1, 4);
+%! fprintf (fid, "  %f %f   %f  %f ", d);
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "%f %f");
+%! fclose (fid);
+%! unlink (f);
+%! assert (A{1}, [d(1); d(3)], 1e-6);
+%! assert (A{2}, [d(2); d(4)], 1e-6);
 
 %!error <missing or illegal value for> textread (file_in_loadpath ("textscan.m"), "", "headerlines")
 %!error <missing or illegal value for> textread (file_in_loadpath ("textscan.m"), "", "headerlines", 'hh')

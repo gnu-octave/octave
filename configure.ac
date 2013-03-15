@@ -1276,6 +1276,16 @@ if test $octave_cv_lib_qrupdate = yes; then
 fi
 LIBS="$save_LIBS"
 
+if test $USE_64_BIT_IDX_T = yes; then
+  CHOLMOD_TAG="_l_"
+  CXSPARSE_TAG="_dl_"
+  UMFPACK_TAG="_zl_"
+else
+  CHOLMOD_TAG="_"
+  CXSPARSE_TAG="_di_"
+  UMFPACK_TAG="_zi_"
+fi
+
 ### Check for AMD library
 
 OCTAVE_CHECK_LIB(amd, AMD,
@@ -1317,7 +1327,7 @@ LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIB
 OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
-  [cholmod_start],
+  [cholmod${CHOLMOD_TAG}start],
   [], [don't use CHOLMOD library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
 
@@ -1326,7 +1336,7 @@ LIBS="$save_LIBS"
 OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h],
-  [cs_di_sqr],
+  [cs${CXSPARSE_TAG}sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
 ### Check for UMFPACK library.
@@ -1338,21 +1348,21 @@ CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
 OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
-  [umfpack_zi_get_determinant],
+  [umfpack${UMFPACK_TAG}get_determinant],
   [], [don't use UMFPACK, disable some sparse matrix functionality])
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 
 if test -z "$UMFPACK_LIBS"; then
   ## Invalidate the cache and try again with -lcblas.
-  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+  $as_unset ac_cv_lib_umfpack_umfpack${UMFPACK_TAG}get_determinant
   $as_unset octave_cv_lib_umfpack
   save_LIBS="$LIBS"
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   OCTAVE_CHECK_LIB([umfpack], UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
     [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
-    [umfpack_zi_get_determinant],
+    [umfpack${UMFPACK_TAG}get_determinant],
     [], [don't use UMFPACK, disable some sparse matrix functionality])
   if test -n "$UMFPACK_LIBS"; then
     UMFPACK_LIBS="$UMFPACK_LIBS -lcblas"

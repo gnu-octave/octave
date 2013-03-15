@@ -861,13 +861,10 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
       LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
       AC_LANG_PUSH(C)
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-          #include <assert.h> ]], [[
+          #include <assert.h>
+          #include <stdint.h> ]], [[
           #ifdef USE_64_BIT_IDX_T
-          #if IDX_TYPE_LONG
-            typedef long octave_idx_type;
-          #else
-            typedef int octave_idx_type;
-          #endif
+            typedef int64_t octave_idx_type;
           #else
             typedef int octave_idx_type;
           #endif

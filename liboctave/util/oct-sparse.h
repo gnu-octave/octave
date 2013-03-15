@@ -87,7 +87,7 @@ along with Octave; see the file COPYING.  If not, see
      || defined (HAVE_UFSPARSE_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_H))
-#ifdef IDX_TYPE_LONG
+#ifdef USE_64_BIT_IDX_T
 #define CHOLMOD_NAME(name) cholmod_l_ ## name
 #else
 #define CHOLMOD_NAME(name) cholmod_ ## name

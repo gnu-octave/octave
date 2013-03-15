@@ -202,7 +202,7 @@ extern OCTINTERP_API herr_t
 hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id,
                       const char *attr_name, void *buf);
 
-#ifdef IDX_TYPE_LONG
+#ifdef USE_64_BIT_IDX_T
 #define H5T_NATIVE_IDX H5T_NATIVE_LONG
 #else
 #define H5T_NATIVE_IDX H5T_NATIVE_INT

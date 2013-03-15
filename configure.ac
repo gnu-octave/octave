@@ -243,17 +243,9 @@ if test $USE_64_BIT_IDX_T = yes; then
   AC_CHECK_SIZEOF([void *])
   AC_CHECK_SIZEOF([int])
   AC_CHECK_SIZEOF([long])
+  AC_CHECK_SIZEOF([int64_t])
   if test $ac_cv_sizeof_void_p -eq 8; then
-    if test $ac_cv_sizeof_int -eq 8; then
-      OCTAVE_IDX_TYPE=int
-    elif test $ac_cv_sizeof_long -eq 8; then
-      OCTAVE_IDX_TYPE=long
-      AC_DEFINE(IDX_TYPE_LONG, 1, [Define to 1 if octave index type is long.])
-    else
-      warn_64_bit="no suitable type found for octave_idx_type so disabling 64-bit features"
-      OCTAVE_CONFIGURE_WARNING([warn_64_bit])
-      USE_64_BIT_IDX_T=no
-    fi
+    OCTAVE_IDX_TYPE=int64_t
   else
     warn_64_bit="pointers are not 64-bits wide; disabling 64-bit features"
     OCTAVE_CONFIGURE_WARNING([warn_64_bit])
@@ -2749,7 +2741,7 @@ typedef unsigned long ino_t;
 #endif
 
 #ifdef USE_64_BIT_IDX_T
-#define SIZEOF_OCTAVE_IDX_TYPE 8
+#define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
 #else
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
 #endif
@@ -2822,9 +2814,9 @@ typedef unsigned long ino_t;
 
 /* oct-types.h */
 
-typedef OCTAVE_IDX_TYPE octave_idx_type;
-
 #include <stdint.h>
+
+typedef OCTAVE_IDX_TYPE octave_idx_type;
 
 /* Tag indicating Octave config.h has been included */
 #define OCTAVE_CONFIG_INCLUDED 1

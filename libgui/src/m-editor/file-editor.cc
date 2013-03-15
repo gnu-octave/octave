@@ -431,7 +431,8 @@ file_editor::mru_menu_update ()
 }
 
 void
-file_editor::handle_file_name_changed (const QString& fileName, const QString& toolTip)
+file_editor::handle_file_name_changed (const QString& fname,
+                                       const QString& tip)
 {
   QObject *fileEditorTab = sender();
   if (fileEditorTab)
@@ -440,8 +441,8 @@ file_editor::handle_file_name_changed (const QString& fileName, const QString& t
         {
           if (_tab_widget->widget (i) == fileEditorTab)
             {
-              _tab_widget->setTabText (i, fileName);
-              _tab_widget->setTabToolTip (i, toolTip);
+              _tab_widget->setTabText (i, fname);
+              _tab_widget->setTabToolTip (i, tip);
             }
         }
     }

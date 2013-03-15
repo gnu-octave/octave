@@ -730,15 +730,17 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
-    if (curr_lexer->nesting_level.none ())
+    if (curr_lexer->nesting_level.is_paren ())
+      {
+        curr_lexer->at_beginning_of_statement = false;
+        curr_lexer->gripe_matlab_incompatible
+          ("bare newline inside parentheses");
+      }
+    else if (curr_lexer->nesting_level.none ()
+        || curr_lexer->nesting_level.is_anon_fcn_body ())
       {
         curr_lexer->at_beginning_of_statement = true;
         return curr_lexer->count_token ('\n');
-      }
-    else if (curr_lexer->nesting_level.is_paren ())
-      {
-        curr_lexer->at_beginning_of_statement = false;
-        curr_lexer->gripe_matlab_incompatible ("bare newline inside parentheses");
       }
     else if (curr_lexer->nesting_level.is_bracket_or_brace ())
       return LEXICAL_ERROR;

@@ -62,9 +62,10 @@ function entries = __xzip__ (commandname, extension,
     files = glob (files);
 
     ## Ignore any file with the compress extension
-    files(cellfun (@(x) length (x) > length (extension)
-      && strcmp (x((end - length (extension) + 1):end), extension),
-      files)) = [];
+    files(cellfun (@(x) (length (x) > length (extension)
+                         && strcmp (x((end - length (extension) + 1):end),
+                                    extension)),
+                   files)) = [];
 
     copyfile (files, outdir);
 

@@ -1876,7 +1876,7 @@ endwhile\n\
   return retval;
 }
 
-DEFUN (pclose, args, ,
+DEFUNX ("pclose", Fpclose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} pclose (@var{fid})\n\
 Close a file identifier that was opened by @code{popen}.  You may also\n\

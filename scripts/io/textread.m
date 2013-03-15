@@ -116,12 +116,12 @@ function varargout = textread (filename, format = "%f", varargin)
     ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
-    if (! isempty (strfind ("\r\n", str(1 : eol_srch_len))))
+    if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))
       eol_char = "\r\n";
     ## Perhaps old Macintosh? (CR)
-    elseif (! isempty (strfind ("\r", str(1 : eol_srch_len))))
+    elseif (! isempty (strfind (str(1 : eol_srch_len), "\r")))
       eol_char = "\r";
-    ## Otherwise, use plain UNIX (LF)
+    ## Otherwise, use plain *nix (LF)
     else
       eol_char = "\n";
     endif

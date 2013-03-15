@@ -211,10 +211,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
-    if (! isempty (strfind ("\r\n", str(1 : eol_srch_len))))
+    if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))
       eol_char = "\r\n";
     ## Perhaps old Macintosh? (CR)
-    elseif (! isempty (strfind ("\r", str(1 : eol_srch_len))))
+    elseif (! isempty (strfind (str(1 : eol_srch_len), "\r")))
       eol_char = "\r";
     ## Otherwise, use plain UNIX (LF)
     else
@@ -266,9 +266,6 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       str = fread (fid, "char=>char").';
     endif
   endif
-
-  ## Determine the number of data fields
-  num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
 
   ## Strip trailing EOL to avoid returning stray missing values (f. strread).
   ## However, in case of CollectOutput request, presence of EOL is required

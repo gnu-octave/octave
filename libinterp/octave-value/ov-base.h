@@ -461,6 +461,10 @@ public:
 
   virtual unsigned long int ulong_value (bool = false, bool = false) const;
 
+  virtual int64_t int64_value (bool = false, bool = false) const;
+
+  virtual uint64_t uint64_value (bool = false, bool = false) const;
+
   virtual double double_value (bool = false) const;
 
   virtual float float_value (bool = false) const;

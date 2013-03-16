@@ -484,6 +484,9 @@ INT_CONV_METHOD (unsigned int, uint)
 INT_CONV_METHOD (long int, long)
 INT_CONV_METHOD (unsigned long int, ulong)
 
+INT_CONV_METHOD (int64_t, int64)
+INT_CONV_METHOD (uint64_t, uint64)
+
 int
 octave_base_value::nint_value (bool frc_str_conv) const
 {

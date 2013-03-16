@@ -26,17 +26,19 @@ MOC_CPPFLAGS =
 
 octlib_LTLIBRARIES = liboctgui.la
 
-locales = \
-  languages/be_BY.qm \
-  languages/de_DE.qm \
-  languages/en_US.qm \
-  languages/es_ES.qm \
-  languages/nl_NL.qm \
-  languages/pt_BR.qm \
-  languages/ru_RU.qm \
-  languages/uk_UA.qm
+translations = \
+  languages/be_BY.ts \
+  languages/de_DE.ts \
+  languages/en_US.ts \
+  languages/es_ES.ts \
+  languages/nl_NL.ts \
+  languages/pt_BR.ts \
+  languages/ru_RU.ts \
+  languages/uk_UA.ts
 
-EXTRA_DIST = default-qt-settings $(locales)
+locales = $(patsubst languages/%.ts, languages/%.qm, $(translations))
+
+EXTRA_DIST = default-qt-settings $(translations)
 CLEANFILES =
 
 BUILT_SOURCES =

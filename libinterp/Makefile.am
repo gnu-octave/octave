@@ -110,6 +110,7 @@ octinclude_HEADERS = \
   octave.h \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
+  $(PARSER_INC) \
   $(OPERATORS_INC) \
   $(INTERP_CORE_INC) \
   $(INTERPFCN_INC)

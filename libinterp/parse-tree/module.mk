@@ -4,8 +4,7 @@ EXTRA_DIST += \
 
 PARSER_INC = \
   parse-tree/lex.h \
-  parse-tree/parse.h \
-  parse-tree/parse-private.h
+  parse-tree/parse.h
 
 PARSER_SRC = \
   parse-tree/lex.ll \

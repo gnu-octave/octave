@@ -91,4 +91,5 @@ qrc-%.cc: %.qrc
 	$(RCC) -o $@ $<
 
 %.qm: %.ts
-	$(LRELEASE) $<
+	$(MKDIR_P) languages
+	$(LRELEASE) -qm $@ $<

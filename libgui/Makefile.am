@@ -82,13 +82,13 @@ octetc_DATA = default-qt-settings
 octlocale_DATA = $(locales)
 
 moc-%.cc: %.h
-	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
+	$(MOC) -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
 
 ui-%.h: %.ui
-	@UIC@ -o $@ $<
+	$(UIC) -o $@ $<
 
 qrc-%.cc: %.qrc
-	@RCC@ -o $@ $<
+	$(RCC) -o $@ $<
 
 %.qm: %.ts
-	@LRELEASE@ $<
+	$(LRELEASE) $<

@@ -70,7 +70,11 @@ EXTRA_DIST = \
 include m4/module.mk
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = libgnu liboctave libinterp @GUIDIR@ src scripts @DOCDIR@ examples test
+SUBDIRS = libgnu liboctave libinterp
+if AMCOND_BUILD_GUI
+SUBDIRS += libgui
+endif
+SUBDIRS += src scripts @DOCDIR@ examples test
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:

@@ -2549,7 +2549,6 @@ QT_LDFLAGS=
 QT_LIBS=
 win32_terminal=no
 build_gui=yes
-GUIDIR=libgui
 AC_ARG_ENABLE([gui],
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
   [if test "$enableval" = no; then build_gui=no; fi], [])
@@ -2650,17 +2649,12 @@ if test $build_gui = yes; then
   fi
 fi
 
-if test $build_gui = no; then
-  ## GUI disabled.  Eliminate building GUIDIR directory
-  GUIDIR=
-fi
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
 AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test "$octave_cv_lib_qscintilla" = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_SUBST(QT_LIBS)
-AC_SUBST(GUIDIR)
 
 ### Run configure in subdirectories.
 

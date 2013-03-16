@@ -2578,7 +2578,7 @@ if test $build_gui = yes; then
     AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
     AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
     AC_CHECK_PROGS(RCC, [rcc])
-    AC_CHECK_PROGS(LRELEASE, [lrelease])
+    AC_CHECK_PROGS(LRELEASE, [lrelease-qt5 lrelease-qt4 lrelease])
     if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
       AC_DEFINE(HAVE_QT, 1, 
         [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])

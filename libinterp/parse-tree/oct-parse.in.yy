@@ -68,7 +68,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
-#include "parse-private.h"
 #include "pt-all.h"
 #include "pt-eval.h"
 #include "symtab.h"
@@ -98,9 +97,6 @@ octave_base_lexer *LEXER = 0;
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
 
-// Keep track of symbol table information when parsing functions.
-symtab_context parser_symtab_context;
-
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
 
@@ -123,9 +119,7 @@ make_statement (T *arg)
   do \
     { \
       yyerrok; \
-      if (! parser_symtab_context.empty ()) \
-        parser_symtab_context.pop (); \
-      if ((interactive || forced_interactive)   \
+      if ((interactive || forced_interactive) \
           && ! lexer.input_from_eval_string ()) \
         YYACCEPT; \
       else \
@@ -1000,16 +994,16 @@ push_fcn_symtab : // empty
                     if (parser.max_fcn_depth < parser.curr_fcn_depth)
                       parser.max_fcn_depth = parser.curr_fcn_depth;
 
-                    parser_symtab_context.push ();
+                    lexer.symtab_context.push (symbol_table::alloc_scope ());
 
-                    symbol_table::set_scope (symbol_table::alloc_scope ());
-
-                    parser.function_scopes.push_back (symbol_table::current_scope ());
+                    parser.function_scopes.push_back
+                     (lexer.symtab_context.curr_scope ());
 
                     if (! lexer.reading_script_file
                         && parser.curr_fcn_depth == 1
                         && ! parser.parsing_subfunctions)
-                      parser.primary_fcn_scope = symbol_table::current_scope ();
+                      parser.primary_fcn_scope
+                        = lexer.symtab_context.curr_scope ();
 
                     if (lexer.reading_script_file
                         && parser.curr_fcn_depth > 1)
@@ -1027,8 +1021,7 @@ param_list_beg  : '('
 
                     if (lexer.looking_at_function_handle)
                       {
-                        parser_symtab_context.push ();
-                        symbol_table::set_scope (symbol_table::alloc_scope ());
+                        lexer.symtab_context.push (symbol_table::alloc_scope ());
                         lexer.looking_at_function_handle--;
                         lexer.looking_at_anon_fcn_args = true;
                       }
@@ -1892,12 +1885,12 @@ octave_base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
 
   tree_parameter_list *ret_list = 0;
 
-  symbol_table::scope_id fcn_scope = symbol_table::current_scope ();
+  symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
 
-  if (parser_symtab_context.empty ())
+  if (lexer.symtab_context.empty ())
     panic_impossible ();
 
-  parser_symtab_context.pop ();
+  lexer.symtab_context.pop ();
 
   stmt->set_print_flag (false);
 
@@ -2579,7 +2572,7 @@ octave_base_parser::start_function (tree_parameter_list *param_list,
   body->append (end_fcn_stmt);
 
   octave_user_function *fcn
-    = new octave_user_function (symbol_table::current_scope (),
+    = new octave_user_function (lexer.symtab_context.curr_scope (),
                                 param_list, 0, body);
 
   if (fcn)
@@ -2770,10 +2763,10 @@ octave_base_parser::finish_function (tree_parameter_list *ret_list,
 void
 octave_base_parser::recover_from_parsing_function (void)
 {
-  if (parser_symtab_context.empty ())
+  if (lexer.symtab_context.empty ())
     panic_impossible ();
 
-  parser_symtab_context.pop ();
+  lexer.symtab_context.pop ();
 
   if (lexer.reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)

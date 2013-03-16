@@ -1171,11 +1171,12 @@ public:
   static octave_value builtin_find (const std::string& name);
 
   // Insert a new name in the table.
-  static symbol_record& insert (const std::string& name)
+  static symbol_record& insert (const std::string& name,
+                                scope_id scope = xcurrent_scope)
   {
     static symbol_record foobar;
 
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_insert (name) : foobar;
   }

@@ -43,6 +43,55 @@ lexical_feedback
 {
 public:
 
+  // Track symbol table information when parsing functions.
+
+  class symbol_table_context
+  {
+  public:
+
+    symbol_table_context (void)
+      : frame_stack (), init_scope (symbol_table::current_scope ())
+    {
+      push (init_scope);
+    }
+
+    void clear (void)
+    {
+      while (! frame_stack.empty ())
+        frame_stack.pop ();
+
+      push (init_scope);
+    }
+
+    bool empty (void) const { return frame_stack.empty (); }
+
+    void pop (void)
+    {
+      frame_stack.pop ();
+    }
+
+    void push (symbol_table::scope_id scope)
+    {
+      frame_stack.push (scope);
+    }
+
+    void push (void)
+    {
+      push (symbol_table::current_scope ());
+    }
+
+    symbol_table::scope_id curr_scope (void) const
+    {
+      return frame_stack.top ();
+    }
+
+  private:
+
+    std::stack<symbol_table::scope_id> frame_stack;
+
+    symbol_table::scope_id init_scope;
+  };
+
   // Track nesting of square brackets, curly braces, and parentheses.
 
   class bbp_nesting_level
@@ -233,7 +282,7 @@ public:
       current_input_line (), comment_text (), help_text (),
       fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
       parsed_function_name (), pending_local_variables (),
-      nesting_level (), tokens ()
+      symtab_context (), nesting_level (), tokens ()
   {
     init ();
   }
@@ -374,6 +423,9 @@ public:
 
   // set of identifiers that might be local variable names.
   std::set<std::string> pending_local_variables;
+
+  // Track current symbol table scope and context.
+  symbol_table_context symtab_context;
 
   // is the closest nesting level a square bracket, squiggly brace,
   // a paren, or an anonymous function body?

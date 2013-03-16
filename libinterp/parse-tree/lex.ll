@@ -84,7 +84,6 @@ object) relevant global values before and after the nested call.
 #include "lex.h"
 #include "ov.h"
 #include "parse.h"
-#include "parse-private.h"
 #include "pt-all.h"
 #include "symtab.h"
 #include "token.h"
@@ -1622,7 +1621,7 @@ octave_base_lexer::reset (void)
   // Start off on the right foot.
   clear_start_state ();
 
-  parser_symtab_context.clear ();
+  symtab_context.clear ();
 
   // We do want a prompt by default.
   promptflag (1);
@@ -2403,11 +2402,14 @@ octave_base_lexer::handle_superclass_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  push_token (new token (SUPERCLASSREF,
-                         meth.empty () ? 0 : &(symbol_table::insert (meth)),
-                         cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                         pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                         input_line_number, current_input_column));
+  symbol_table::scope_id sid = symtab_context.curr_scope ();
+
+  push_token (new token
+              (SUPERCLASSREF,
+               meth.empty () ? 0 : &(symbol_table::insert (meth, sid)),
+               cls.empty () ? 0 : &(symbol_table::insert (cls, sid)),
+               pkg.empty () ? 0 : &(symbol_table::insert (pkg, sid)),
+               input_line_number, current_input_column));
 
   current_input_column += flex_yyleng ();
 
@@ -2435,10 +2437,13 @@ octave_base_lexer::handle_meta_identifier (void)
       return LEXICAL_ERROR;
     }
 
-  push_token (new token (METAQUERY,
-                         cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                         pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                         input_line_number, current_input_column));
+  symbol_table::scope_id sid = symtab_context.curr_scope ();
+
+  push_token (new token
+              (METAQUERY,
+               cls.empty () ? 0 : &(symbol_table::insert (cls, sid)),
+               pkg.empty () ? 0 : &(symbol_table::insert (pkg, sid)),
+               input_line_number, current_input_column));
 
   current_input_column += flex_yyleng ();
 
@@ -2527,7 +2532,9 @@ octave_base_lexer::handle_identifier (void)
   if (tok == "end")
     tok = "__end__";
 
-  token *tok_val = new token (NAME, &(symbol_table::insert (tok)),
+  symbol_table::scope_id sid = symtab_context.curr_scope ();
+
+  token *tok_val = new token (NAME, &(symbol_table::insert (tok, sid)),
                               input_line_number, current_input_column);
 
   if (at_beginning_of_statement

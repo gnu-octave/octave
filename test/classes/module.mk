@@ -77,6 +77,7 @@ class_Snork_FCN_FILES = \
   classes/@Snork/subsasgn.m \
   classes/@Snork/subsindex.m \
   classes/@Snork/subsref.m \
+  classes/@Snork/tattack.m \
   classes/@Snork/times.m \
   classes/@Snork/uminus.m \
   classes/@Snork/uplus.m \

@@ -1025,10 +1025,19 @@ ANY_INCLUDING_NL (.|{NL})
 "." {
     curr_lexer->lexer_debug (".");
 
-    curr_lexer->looking_for_object_index = false;
-    curr_lexer->at_beginning_of_statement = false;
+    if (curr_lexer->previous_token_may_be_command ()
+        && curr_lexer->space_follows_previous_token ())
+      {
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      {
+        curr_lexer->looking_for_object_index = false;
+        curr_lexer->at_beginning_of_statement = false;
 
-    return curr_lexer->handle_token ('.');
+        return curr_lexer->handle_token ('.');
+      }
   }
 
 %{

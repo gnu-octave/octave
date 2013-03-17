@@ -37,7 +37,7 @@ dnl FIXME: We should auto-insert the Mercurial changeset ID into the
 dnl        AC_REVISION field whenever configure.ac is modified.
 dnl AC_REVISION($Revision: 1.603 $)
 AC_CONFIG_SRCDIR([libinterp/octave.cc])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([config.h:config.in.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -2662,172 +2662,7 @@ export CC
 export CXX
 export F77
 
-### Some things to add to the bottom of config.h.
-
-dnl ------------------------------------------------------------
-
-AH_BOTTOM([
-#if !defined (GNULIB_NAMESPACE)
-#define GNULIB_NAMESPACE gnulib
-#endif
-
-#if defined (__GNUC__)
-#define GCC_ATTR_DEPRECATED __attribute__ ((__deprecated__))
-#define HAVE_ATTR_DEPRECATED
-
-#define GCC_ATTR_NORETURN __attribute__ ((__noreturn__))
-#define HAVE_ATTR_NORETURN
-
-#define GCC_ATTR_UNUSED __attribute__ ((__unused__))
-#define HAVE_ATTR_UNUSED
-#else
-#define GCC_ATTR_DEPRECATED
-#define GCC_ATTR_NORETURN
-#define GCC_ATTR_UNUSED
-#endif
-
-#define X_CAST(T, E) (T) (E)
-
-#if defined (CXX_BROKEN_REINTERPRET_CAST)
-#define FCN_PTR_CAST(T, E) (T) (E)
-#else
-#define FCN_PTR_CAST(T, E) reinterpret_cast<T> (E)
-#endif
-
-#if ! defined (HAVE_DEV_T)
-typedef short dev_t;
-#endif
-
-#if ! defined (HAVE_INO_T)
-typedef unsigned long ino_t;
-#endif
-
-#if defined (_MSC_VER)
-#define __WIN32__
-#define WIN32
-/* missing parameters in macros */
-#pragma warning (disable: 4003)
-/* missing implementations in template instantiation */
-#pragma warning (disable: 4996)
-/* deprecated function names (FIXME?) */
-#pragma warning (disable: 4661)
-#endif
-
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#elif defined (__CYGWIN__)
-#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#else
-#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#endif
-
-/* Define to 1 if we expect to have <windows.h>, Sleep, etc. */
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-#define OCTAVE_USE_WINDOWS_API 1
-#endif
-
-#if defined (__APPLE__) && defined (__MACH__)
-#define OCTAVE_USE_OS_X_API 1
-#endif
-
-/* sigsetjmp is a macro, not a function. */
-#if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
-#define OCTAVE_HAVE_SIG_JUMP
-#endif
-
-#if defined (_UNICOS)
-#define F77_USES_CRAY_CALLING_CONVENTION
-#endif
-
-#if 0
-#define F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION
-#endif
-
-#ifdef USE_64_BIT_IDX_T
-#define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
-#else
-#define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
-#endif
-
-/* To be able to use long doubles for 64-bit mixed arithmetics, we need
-   them at least 80 bits wide and we need roundl declared in math.h.
-   FIXME: Maybe substitute this by a more precise check in the future?  */
-#if (SIZEOF_LONG_DOUBLE >= 10) && defined (HAVE_ROUNDL)
-#define OCTAVE_INT_USE_LONG_DOUBLE
-#endif
-
-#define OCTAVE_EMPTY_CPP_ARG
-
-/* Octave is currently unable to use FFTW unless both float
-   and double versions are available.  */
-#if defined (HAVE_FFTW3) && defined (HAVE_FFTW3F)
-#define HAVE_FFTW
-#endif
-
-/* Backward compatibility.  */
-#if defined (HAVE_Z)
-#define HAVE_ZLIB
-#endif
-
-/* oct-dlldefs.h */
-
-#if defined (_MSC_VER)
-#define OCTAVE_EXPORT __declspec(dllexport)
-#define OCTAVE_IMPORT __declspec(dllimport)
-#else
-/* All other compilers, at least for now. */
-#define OCTAVE_EXPORT
-#define OCTAVE_IMPORT
-#endif
-
-/* API macro for libcruft */
-#ifdef CRUFT_DLL
-#define CRUFT_API OCTAVE_EXPORT
-#else
-#define CRUFT_API OCTAVE_IMPORT
-#endif
-
-/* API macro for liboctave */
-#ifdef OCTAVE_DLL
-#define OCTAVE_API OCTAVE_EXPORT
-#else
-#define OCTAVE_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libinterp */
-#ifdef OCTINTERP_DLL
-#define OCTINTERP_API OCTAVE_EXPORT
-#else
-#define OCTINTERP_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libinterp/graphics */
-#ifdef OCTGRAPHICS_DLL
-#define OCTGRAPHICS_API OCTAVE_EXPORT
-#else
-#define OCTGRAPHICS_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libgui */
-#ifdef OCTGUI_DLL
-#define OCTGUI_API OCTAVE_EXPORT
-#else
-#define OCTGUI_API OCTAVE_IMPORT
-#endif
-
-/* oct-types.h */
-
-#include <stdint.h>
-
-typedef OCTAVE_IDX_TYPE octave_idx_type;
-
-/* Tag indicating Octave config.h has been included */
-#define OCTAVE_CONFIG_INCLUDED 1
-])
-
-dnl end of AH_BOTTOM
-dnl ------------------------------------------------------------
+AH_BOTTOM([#include "oct-conf-post.h"])
 
 ### Make all AC_DEFINES available to testif feature of test.m function.
 ### This must reside at the bottom of configure.ac after all AC_DEFINES
@@ -2841,6 +2676,7 @@ AC_SUBST(ac_config_files)
 AC_SUBST(ac_config_headers)
 
 AC_CONFIG_FILES([
+  oct-conf-post.h:oct-conf-post.in.h
   Makefile 
   doc/Makefile
   doc/doxyhtml/Makefile

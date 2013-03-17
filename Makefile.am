@@ -101,6 +101,7 @@ MAINTAINERCLEANFILES = $(BUILT_DISTFILES)
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 nodist_octinclude_HEADERS = config.h
+octinclude_HEADERS = oct-conf-post.h
 
 all-local: $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo ""

@@ -694,6 +694,11 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files.],
   [zlib.h], [gzclearerr])
 
+### Also define HAVE_ZLIB if libz is found.
+if test $octave_cv_lib_z = yes; then
+  AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
+fi
+
 ### Check for the LLVM library
 
 build_jit=no
@@ -823,8 +828,15 @@ if test $build_fftw_threads = yes; then
   OCTAVE_CHECK_FFTW_THREADS(fftw3f, fftwf_plan_with_nthreads)
 fi
 
+## Octave is currently unable to use FFTW unless both float
+## and double versions are available.
+
 AM_CONDITIONAL([AMCOND_HAVE_FFTW],
   [test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"])
+
+if test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"; then
+  AC_DEFINE(HAVE_FFTW, 1, [Define if you have both FFTW3 and FFTW3F libraries.])
+fi
 
 ## Subdirectory of liboctave/cruft to build if FFTW is not found.
 FFT_DIR="fftpack"

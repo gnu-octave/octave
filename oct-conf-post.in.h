@@ -112,17 +112,6 @@ typedef unsigned long ino_t;
 
 #define OCTAVE_EMPTY_CPP_ARG
 
-/* Octave is currently unable to use FFTW unless both float
-   and double versions are available.  */
-#if defined (HAVE_FFTW3) && defined (HAVE_FFTW3F)
-#define HAVE_FFTW
-#endif
-
-/* Backward compatibility.  */
-#if defined (HAVE_Z)
-#define HAVE_ZLIB
-#endif
-
 /* oct-dlldefs.h */
 
 #if defined (_MSC_VER)

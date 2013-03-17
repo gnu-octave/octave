@@ -69,12 +69,16 @@ EXTRA_DIST = \
 
 include m4/module.mk
 
-# Subdirectories in which to run `make all'.
+# Subdirectories in which to run `make all'.  Including "." here
+# is an attempt to force all preceding directories in the list to
+# be processed before the current directory so that the
+# scripts/DOCSTRINGS libinterp/DOCSTRINGS files are built before
+# attempting to build AUTHORS and BUGS.
 SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts @DOCDIR@ examples test
+SUBDIRS += src scripts . @DOCDIR@ examples test
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:

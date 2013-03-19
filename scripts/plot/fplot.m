@@ -42,26 +42,17 @@
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function fplot (fn, limits, n, fmt)
+function fplot (fn, limits, n = 0.002, fmt = "")
+
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
-  if (!isreal (limits) || (numel (limits) != 2 && numel (limits) != 4))
-    error ("fplot: second input argument must be a real vector with 2 or 4 elements");
-  endif
-
-  if (nargin < 3)
-    n = 0.002;
-  endif
-
-  have_linespec = true;
-  if (nargin < 4)
-    have_linespec = false;
+  if (iscomplex (limits) || (numel (limits) != 2 && numel (limits) != 4))
+    error ("fplot: LIMITS must be a real vector with 2 or 4 elements");
   endif
 
   if (ischar (n))
-    have_linespec = true;
     fmt = n;
     n = 0.002;
   endif
@@ -74,13 +65,13 @@ function fplot (fn, limits, n, fmt)
   elseif (all (isalnum (fn)))
     nam = fn;
   elseif (ischar (fn))
-     fn = vectorize (inline (fn));
-     nam = formula (fn);
+    fn = vectorize (inline (fn));
+    nam = formula (fn);
   else
-    error ("fplot: first input argument must be a function handle, inline function or string");
+    error ("fplot: FN must be a function handle, inline function, or string");
   endif
 
-  if (floor (n) != n)
+  if (n != fix (n))
     tol = n;
     x0 = linspace (limits(1), limits(2), 5)';
     y0 = feval (fn, x0);
@@ -92,7 +83,7 @@ function fplot (fn, limits, n, fmt)
     while (n < 2 .^ 20)
       y00 = interp1 (x0, y0, x, "linear");
       err = 0.5 * max (abs ((y00 - y) ./ (y00 + y))(:));
-      if (err == err0 || 0.5 * max (abs ((y00 - y) ./ (y00 + y))(:)) < tol)
+      if (err == err0 || err < tol)
         break;
       endif
       x0 = x;
@@ -107,11 +98,7 @@ function fplot (fn, limits, n, fmt)
     y = feval (fn, x);
   endif
 
-  if (have_linespec)
-    plot (x, y, fmt);
-  else
-    plot (x, y);
-  endif
+  plot (x, y, fmt);
 
   if (length (limits) > 2)
     axis (limits);
@@ -125,6 +112,7 @@ function fplot (fn, limits, n, fmt)
     endfor
     legend (nams{:});
   endif
+
 endfunction
 
 

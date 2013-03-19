@@ -563,7 +563,11 @@ main_loop (void)
   // octave_parser constructor sets this for us.
   frame.protect_var (LEXER);
 
-  octave_parser parser;
+  octave_lexer *lxr = ((interactive || forced_interactive)
+                       ? new octave_lexer ()
+                       : new octave_lexer (stdin));
+
+  octave_parser parser (*lxr);
 
   int retval = 0;
   do

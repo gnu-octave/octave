@@ -409,6 +409,10 @@ public:
     : octave_base_parser (*(new octave_lexer (eval_string)))
   { }
 
+  octave_parser (octave_lexer& lxr)
+    : octave_base_parser (lxr)
+  { }
+
   ~octave_parser (void) { }
 
   int run (void);

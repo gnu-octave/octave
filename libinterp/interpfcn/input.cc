@@ -112,7 +112,7 @@ bool Vdebugging = false;
 
 // If we are in debugging mode, this is the last command entered, so
 // that we can repeat the previous command if the user just types RET.
-static std::string last_debugging_command;
+static std::string last_debugging_command = "\n";
 
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
@@ -215,7 +215,7 @@ octave_base_reader::octave_gets (bool& eof)
 
   // There is no need to update the load_path cache if there is no
   // user input.
-  if (! retval.empty ()
+  if (retval != "\n"
       && retval.find_first_not_of (" \t\n\r") != std::string::npos)
     {
       load_path::update ();
@@ -223,7 +223,7 @@ octave_base_reader::octave_gets (bool& eof)
       if (Vdebugging)
         last_debugging_command = retval;
       else
-        last_debugging_command = std::string ();
+        last_debugging_command = "\n";
     }
   else if (Vdebugging)
     {
@@ -231,7 +231,7 @@ octave_base_reader::octave_gets (bool& eof)
       history_skip_auto_repeated_debugging_command = true;
     }
 
-  if (! retval.empty ())
+  if (retval != "\n")
     {
       if (! history_skip_auto_repeated_debugging_command)
         command_history::add (retval);

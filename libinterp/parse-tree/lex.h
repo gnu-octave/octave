@@ -526,8 +526,7 @@ public:
 
   void handle_continuation (void);
 
-  void finish_comment (octave_comment_elt::comment_type typ,
-                       bool looking_at_continuation = false);
+  void finish_comment (octave_comment_elt::comment_type typ);
 
   bool have_continuation (bool trailing_comments_ok = true);
 

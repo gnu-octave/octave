@@ -537,6 +537,9 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->finish_comment (octave_comment_elt::end_of_line);
 
         curr_lexer->pop_start_state ();
+
+        curr_lexer->xunput ('\n');
+        curr_lexer->input_line_number--;
       }
   }
 
@@ -2116,7 +2119,7 @@ octave_base_lexer::handle_continuation (void)
     {
       comment_text = &yytxt[offset];
 
-      finish_comment (octave_comment_elt::end_of_line, true);
+      finish_comment (octave_comment_elt::end_of_line);
     }
 
   decrement_promptflag ();
@@ -2125,8 +2128,7 @@ octave_base_lexer::handle_continuation (void)
 }
 
 void
-octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ,
-                                   bool looking_at_continuation)
+octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ)
 {
   bool copyright = looks_like_copyright (comment_text);
 
@@ -2142,13 +2144,6 @@ octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ,
   comment_text = "";
 
   at_beginning_of_statement = true;
-
-  if (! looking_at_continuation)
-    {
-      xunput ('\n');
-      // Adjust for newline that was not really in the input stream.
-      input_line_number--;
-    }
 }
 
 // We have seen a backslash and need to find out if it should be

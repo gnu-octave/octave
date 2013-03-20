@@ -118,20 +118,21 @@ Summary of important user-visible changes for version 3.8:
  ** The default name of the Octave crash dump file is now called
     octave-workspace instead of octave-core.
 
+ ** A citation command has been added to display information on how to
+    cite Octave and packages in publications.  The package system will
+    look for and install CITATION files from packages.
+
  ** The java package from Octave Forge is now part of core Octave.  The
     following new functions are available for interacting with Java
     directly from Octave:
 
-      java                  java_invoke
-      java2mat              java_new
-      javaArray             java_set
-      javaMethod            java_unsigned_conversion
-      javaObject            javaaddpath
-      java_convert_matrix   javaclasspath
-      java_debug            javafields
-      java_exit             javamem
-      java_get              javamethods
-      java_init             javarmpath
+      debug_java     java_matrix_autoconversion
+      isjava         java_unsigned_autoconversion
+      java2mat       javaaddpath
+      javaArray      javaclasspath
+      javaMethod     javamem
+      javaObject     javarmpath
+                     usejava
 
     In addition, the following functions that use the Java interface
     are now available (provided that Octave is compiled with support for
@@ -162,7 +163,15 @@ Summary of important user-visible changes for version 3.8:
     be removed from Octave 3.12 (or whatever version is the second major
     release after 3.8):
 
-      <none yet>
+      java_convert_matrix
+      java_debug
+      java_get
+      java_invoke
+      java_new
+      java_set
+      java_unsigned_conversion
+      javafields
+      javamethods
 
     The following keywords have been deprecated in Octave 3.8 and will
     be removed from Octave 3.12 (or whatever version is the second major
@@ -176,10 +185,6 @@ Summary of important user-visible changes for version 3.8:
 
       CC_VERSION  (now GCC_VERSION)
       CXX_VERSION (now GXX_VERSION)
-
- ** A citation command has been added to display information on how to
-    cite Octave and packages in publications.  The package system will
-    look for and install CITATION files from packages.
 
 Summary of important user-visible changes for version 3.6:
 ---------------------------------------------------------

@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Built-in Function} {@var{val} =} java_debug ()
 ## @deftypefnx {Built-in Function} {@var{old_val} =} java_debug (@var{new_val})
-## @deftypefnx {Built-in Function} {} java_debug (@var{new_val}, \"local\")
+## @deftypefnx {Built-in Function} {} java_debug (@var{new_val}, "local")
 ## Query or set the internal variable that determines whether extra debugging
 ## information regarding the initialization of the JVM and any Java exceptions
 ## is printed.
 ## 
-## When called from inside a function with the \"local\" option, the variable is
+## When called from inside a function with the "local" option, the variable is
 ## changed locally for the function and any subroutines it calls.  The original
 ## variable value is restored when exiting the function.
 ## @seealso{debug_java, java_convert_matrix, java_unsigned_conversion}

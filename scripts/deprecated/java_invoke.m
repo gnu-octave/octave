@@ -30,8 +30,8 @@
 ## 
 ## @example
 ## @group
-##   ret = java_invoke (x, \"method1\", 1.0, \"a string\")
-##   ret = x.method1 (1.0, \"a string\")
+##   ret = java_invoke (x, "method1", 1.0, "a string")
+##   ret = x.method1 (1.0, "a string")
 ## @end group
 ## @end example
 ## 

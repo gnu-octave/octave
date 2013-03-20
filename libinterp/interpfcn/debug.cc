@@ -764,13 +764,18 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
         {
           char ch;
           int line = 1;
+          bool isnewline = true;
 
-          if (line >= start && line <= end)
-            os << line << "\t";
-
-          while (fs.get (ch))
+          // FIXME: Why not use line-oriented input here [getline()]?
+          while (fs.get (ch) && line <= end)
             {
-              if (line >= start && line <= end)
+              if (isnewline && line >= start)
+                {
+                  os << line << "\t";
+                  isnewline = false;
+                }
+
+              if (line >= start)
                 {
                   os << ch;
                 }
@@ -778,8 +783,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
               if (ch == '\n')
                 {
                   line++;
-                  if (line >= start && line <= end)
-                    os << line << "\t";
+                  isnewline = true;
                 }
             }
         }

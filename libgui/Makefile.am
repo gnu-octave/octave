@@ -26,7 +26,7 @@ MOC_CPPFLAGS =
 
 octlib_LTLIBRARIES = liboctgui.la
 
-translations = \
+TRANSLATIONS = \
   languages/be_BY.ts \
   languages/de_DE.ts \
   languages/en_US.ts \
@@ -36,9 +36,9 @@ translations = \
   languages/ru_RU.ts \
   languages/uk_UA.ts
 
-locales = $(patsubst languages/%.ts, languages/%.qm, $(translations))
+LOCALES = $(patsubst languages/%.ts, languages/%.qm, $(TRANSLATIONS))
 
-EXTRA_DIST = default-qt-settings $(translations)
+EXTRA_DIST = default-qt-settings $(TRANSLATIONS)
 CLEANFILES =
 
 BUILT_SOURCES =
@@ -81,7 +81,7 @@ liboctgui_la_LDFLAGS = \
 
 octetc_DATA = default-qt-settings
 
-octlocale_DATA = $(locales)
+octlocale_DATA = $(LOCALES)
 
 moc-%.cc: %.h
 	$(MOC) -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
@@ -95,3 +95,7 @@ qrc-%.cc: %.qrc
 %.qm: %.ts
 	$(MKDIR_P) languages
 	$(LRELEASE) -qm $@ $<
+
+DISTCLEANFILES = \
+  $(LOCALES)
+

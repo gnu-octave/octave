@@ -48,7 +48,7 @@ signals:
   /** Custom signal that tells if a user has clicked away
    *  that dock widget, i.e the active dock widget has
    *  changed. */
-  virtual void active_changed (bool active);
+  void active_changed (bool active);
 
 protected:
   virtual void closeEvent (QCloseEvent *e)

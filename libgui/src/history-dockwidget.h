@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QListView>
 #include <QSortFilterProxyModel>
 #include <QStringListModel>
-#include <QTimer>
 #include "octave-dock-widget.h"
 
 class history_dock_widget : public octave_dock_widget
@@ -35,6 +34,8 @@ class history_dock_widget : public octave_dock_widget
   Q_OBJECT
   public:
   history_dock_widget (QWidget *parent = 0);
+
+  void update_history_callback (void);
 
 public slots:
   void request_history_model_update ();
@@ -45,8 +46,6 @@ signals:
 
   /** Emitted, whenever the user double-clicked a command in the history. */
   void command_double_clicked (const QString& command);
-
-protected:
 
 private slots:
   void handle_double_click (QModelIndex modelIndex);
@@ -62,11 +61,6 @@ private:
 
   /** Stores the current history_model. */
   QStringListModel *_history_model;
-
-  QTimer _update_history_model_timer;
-
-  void update_history_callback (void);
-  bool _update_event_enabled;
 };
 
 #endif // HISTORYDOCKWIDGET_H

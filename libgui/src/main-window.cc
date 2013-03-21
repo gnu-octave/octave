@@ -300,6 +300,18 @@ main_window::current_working_directory_has_changed (const QString& directory)
 }
 
 void
+main_window::update_workspace (void)
+{
+  _workspace_view->model_changed ();
+}
+
+void
+main_window::update_history (void)
+{
+  _history_dock_widget->update_history_callback ();
+}
+
+void
 main_window::change_current_working_directory ()
 {
   QString directory =
@@ -1123,6 +1135,16 @@ main_window::construct ()
            SIGNAL (current_directory_has_changed_signal (QString)),
            this,
            SLOT (current_working_directory_has_changed (QString)));
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (update_workspace_signal ()),
+           this,
+           SLOT (update_workspace ()));
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (update_history_signal ()),
+           this,
+           SLOT (update_history ()));
 
   connect (_octave_qt_event_listener,
            SIGNAL (entered_debug_mode_signal ()),

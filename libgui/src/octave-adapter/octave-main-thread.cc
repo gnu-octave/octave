@@ -27,10 +27,33 @@ along with Octave; see the file COPYING.  If not, see
 #include <clocale>
 #include <string>
 
+#include "builtin-defun-decls.h"
 #include "octave.h"
+#include "ov-builtin.h"
+#include "ov-fcn-handle.h"
 
 #include "octave-main-thread.h"
 #include "octave-link.h"
+
+static octave_value_list
+pre_input_event_hook_fcn (const octave_value_list&, int)
+{
+  octave_value_list retval;
+
+  octave_link::pre_input_event_hook_fcn ();
+
+  return retval;
+}
+
+static octave_value_list
+post_input_event_hook_fcn (const octave_value_list&, int)
+{
+  octave_value_list retval;
+
+  octave_link::post_input_event_hook_fcn ();
+
+  return retval;
+}
 
 octave_main_thread::octave_main_thread () : QThread ()
 {
@@ -46,6 +69,17 @@ octave_main_thread::run ()
 
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
+
+  octave_value pre_fcn (new octave_builtin (pre_input_event_hook_fcn));
+  octave_value pre_fcn_handle (new octave_fcn_handle (pre_fcn));
+  Fadd_pre_input_event_hook (pre_fcn_handle);
+
+  octave_value post_fcn (new octave_builtin (post_input_event_hook_fcn));
+  octave_value post_fcn_handle (new octave_fcn_handle (post_fcn));
+  Fadd_post_input_event_hook (post_fcn_handle);
+
+  // Prime the history list.
+  octave_link::update_history ();
 
   octave_execute_interpreter ();
 }

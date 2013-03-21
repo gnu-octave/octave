@@ -134,6 +134,40 @@ octave_link::do_last_working_directory (void)
   return last_cwd;
 }
 
+void
+octave_link::do_update_workspace (void)
+{
+  if (event_listener)
+    {
+      event_listener->update_workspace ();
+
+      do_process_events ();
+    }
+}
+
+void
+octave_link::do_update_history (void)
+{
+  if (event_listener)
+    {
+      event_listener->update_history ();
+
+      do_process_events ();
+    }
+}
+
+void
+octave_link::do_pre_input_event_hook_fcn (void)
+{
+  do_update_workspace ();
+}
+
+void
+octave_link::do_post_input_event_hook_fcn (void)
+{
+  do_update_history ();
+}
+
 bool
 octave_link::instance_ok (void)
 {

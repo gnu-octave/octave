@@ -77,17 +77,6 @@ history_dock_widget::construct ()
   connect (_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (handle_double_click (QModelIndex)));
 
-  _update_event_enabled = true;
-  _update_history_model_timer.setInterval (500);
-  _update_history_model_timer.setSingleShot (false);
-
-  connect (&_update_history_model_timer,
-           SIGNAL (timeout ()),
-           this,
-           SLOT (request_history_model_update ()));
-
-  _update_history_model_timer.start ();
-
   setFocusProxy (_filter_line_edit);
 }
 
@@ -133,11 +122,7 @@ history_dock_widget::handle_double_click (QModelIndex modelIndex)
 void
 history_dock_widget::request_history_model_update ()
 {
-  if (_update_event_enabled)
-    {
-      _update_event_enabled = false;  // no more update until this one is processed
-      octave_link::post_event (this, &history_dock_widget::update_history_callback);
-    }
+  octave_link::post_event (this, &history_dock_widget::update_history_callback);
 }
 
 void
@@ -185,8 +170,4 @@ history_dock_widget::update_history_callback (void)
 
       _history_list_view->scrollToBottom ();
     }
-
-  // update is processed, re-enable further updates events triggered by timer
-    _update_event_enabled = true;
-
 }

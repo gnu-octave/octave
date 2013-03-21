@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QAbstractItemModel>
 #include <QVector>
 #include <QSemaphore>
-#include <QTimer>
 
 #include "symbol-information.h"
 
@@ -132,6 +131,8 @@ class workspace_model
   void insert_top_level_item (int at, tree_item *treeItem);
   tree_item *top_level_item (int at);
 
+  void update_workspace_callback (void);
+
 public slots:
   void request_update_workspace ();
 
@@ -139,14 +140,6 @@ signals:
   void model_changed ();
 
 private:
-
-  bool _update_event_enabled;
-
-  void update_workspace_callback (void);
-
-  /** Timer for periodically updating the workspace model from the current
-   * symbol information. */
-  QTimer _update_workspace_model_timer;
 
   /** Stores the current symbol information. */
   QList <symbol_information> _symbol_information;

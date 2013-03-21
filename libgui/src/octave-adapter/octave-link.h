@@ -120,6 +120,30 @@ public:
       ? instance->do_last_working_directory () : std::string ();
   }
 
+  static void update_workspace (void)
+  {
+    if (instance_ok ())
+      instance->do_update_workspace ();
+  }
+
+  static void update_history (void)
+  {
+    if (instance_ok ())
+      instance->do_update_history ();
+  }
+
+  static void pre_input_event_hook_fcn (void)
+  {
+    if (instance_ok ())
+      instance->do_pre_input_event_hook_fcn ();
+  }
+
+  static void post_input_event_hook_fcn (void)
+  {
+    if (instance_ok ())
+      instance->do_post_input_event_hook_fcn ();
+  }
+
 private:
 
   static octave_link *instance;
@@ -180,6 +204,11 @@ private:
   void do_finished_readline_hook (void) { }
 
   std::string do_last_working_directory (void);
+  void do_update_workspace (void);
+  void do_update_history (void);
+
+  void do_pre_input_event_hook_fcn (void);
+  void do_post_input_event_hook_fcn (void);
 };
 
 #endif // OCTAVELINK_H

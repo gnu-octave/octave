@@ -40,6 +40,18 @@ octave_qt_event_listener::current_directory_has_changed (const std::string& dire
 }
 
 void
+octave_qt_event_listener::update_workspace (void)
+{
+  emit update_workspace_signal ();
+}
+
+void
+octave_qt_event_listener::update_history (void)
+{
+  emit update_history_signal ();
+}
+
+void
 octave_qt_event_listener::about_to_exit ()
 {
   qApp->quit ();

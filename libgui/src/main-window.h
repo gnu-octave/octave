@@ -96,6 +96,8 @@ public slots:
   void prepare_for_quit ();
   void reset_windows ();
   void current_working_directory_has_changed (const QString& directory);
+  void update_workspace (void);
+  void update_history (void);
   void change_current_working_directory ();
   void set_current_working_directory (const QString& directory);
   void current_working_directory_up ();

@@ -46,16 +46,6 @@ workspace_model::workspace_model(QObject *p)
   insert_top_level_item(0, new tree_item ("Local"));
   insert_top_level_item(1, new tree_item ("Global"));
   insert_top_level_item(2, new tree_item ("Persistent"));
-
-  connect(&_update_workspace_model_timer,
-          SIGNAL (timeout ()),
-          this,
-          SLOT (request_update_workspace()));
-
-  _update_event_enabled = true;
-  _update_workspace_model_timer.setInterval (500);
-  _update_workspace_model_timer.setSingleShot (false);
-  _update_workspace_model_timer.start ();
 }
 
 workspace_model::~workspace_model()
@@ -66,11 +56,7 @@ workspace_model::~workspace_model()
 void
 workspace_model::request_update_workspace ()
 {
-  if (_update_event_enabled)
-    {
-      _update_event_enabled = false;  // no more update until this one is processed
-      octave_link::post_event (this, &workspace_model::update_workspace_callback);
-    }
+  octave_link::post_event (this, &workspace_model::update_workspace_callback);
 }
 
 QModelIndex
@@ -226,9 +212,4 @@ workspace_model::update_workspace_callback (void)
     }
 
   endResetModel();
-  emit model_changed();
-
-  // update is processed, re-enable further updates events triggered by timer
-  _update_event_enabled = true;
-
 }

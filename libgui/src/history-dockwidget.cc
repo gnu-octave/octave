@@ -134,8 +134,6 @@ history_dock_widget::reset_model ()
 void
 history_dock_widget::update_history_callback (void)
 {
-  static bool scroll_window = false;
-
   // Determine the client's (our) history length and the one of the server.
   int clientHistoryLength = _history_model->rowCount ();
   int serverHistoryLength = command_history::length ();
@@ -155,18 +153,6 @@ history_dock_widget::update_history_callback (void)
           _history_model->setData (_history_model->index (i),
                       QString::fromUtf8 (entry.data (), entry.size ()));
         }
-
-      // FIXME -- does this behavior make sense?  Calling
-      // _history_list_view->scrollToBottom () here doesn't seem to
-      // have any effect.  Instead, we need to request that action
-      // and wait until the next event occurs in which no items
-      // are added to the history list.
-
-      scroll_window = true;
-    }
-  else if (scroll_window)
-    {
-      scroll_window = false;
 
       _history_list_view->scrollToBottom ();
     }

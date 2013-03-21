@@ -1021,6 +1021,8 @@ do_octave_atexit (void)
 {
   static bool deja_vu = false;
 
+  OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
+
   while (! octave_atexit_functions.empty ())
     {
       std::string fcn = octave_atexit_functions.front ();

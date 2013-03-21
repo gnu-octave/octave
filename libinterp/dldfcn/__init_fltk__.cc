@@ -35,8 +35,10 @@ To initialize:
 #include <config.h>
 #endif
 
+#include "builtin-defun-decls.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "ov-fcn-handle.h"
 
 #ifdef HAVE_FLTK
 
@@ -1834,7 +1836,9 @@ class fltk_graphics_toolkit : public base_graphics_toolkit
 {
 public:
   fltk_graphics_toolkit (void)
-    : base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME) { }
+    : base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
+      input_event_hook_fcn_id ()
+  { }
 
   ~fltk_graphics_toolkit (void) { }
 
@@ -1971,20 +1975,43 @@ public:
         munlock ("__init_fltk__");
 
         figure_manager::close_all ();
-        gtk_manager::unload_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
-        toolkit_loaded = false;
 
-        octave_value_list args;
-        args(0) = "__fltk_redraw__";
-        feval ("remove_input_event_hook", args, 0);
+        octave_value_list args = input_event_hook_fcn_id;
+        args.append (false);
+        Fremove_input_event_hook (args, 0);
+
+        input_event_hook_fcn_id = octave_value_list ();
 
         // FIXME ???
         Fl::wait (fltk_maxtime);
       }
   }
+
+  void set_input_event_hook_id (const octave_value_list& id)
+  {
+    input_event_hook_fcn_id = id;
+  }
+
+private:
+  octave_value_list input_event_hook_fcn_id;
 };
 
 #endif
+
+DEFUN_DLD (__fltk_redraw__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __fltk_redraw__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+#ifdef HAVE_FLTK
+  __fltk_redraw__ ();
+#else
+  error ("__fltk_redraw__: not available without OpenGL and FLTK libraries");
+#endif
+
+  return octave_value ();
+}
 
 // Initialize the fltk graphics toolkit.
 
@@ -1999,31 +2026,19 @@ Undocumented internal function.\n\
     {
       mlock ();
 
-      graphics_toolkit tk (new fltk_graphics_toolkit ());
+      fltk_graphics_toolkit *fltk = new fltk_graphics_toolkit ();
+      graphics_toolkit tk (fltk);
       gtk_manager::load_toolkit (tk);
       toolkit_loaded = true;
 
-      octave_value_list args;
-      args(0) = "__fltk_redraw__";
-      feval ("add_input_event_hook", args, 0);
+      octave_value fcn (new octave_builtin (F__fltk_redraw__));
+      octave_value fcn_handle (new octave_fcn_handle (fcn, "@__fltk_redraw__"));
+      octave_value_list id = Fadd_input_event_hook (fcn_handle, 1);
+
+      fltk->set_input_event_hook_id (id);
     }
 #else
   error ("__init_fltk__: not available without OpenGL and FLTK libraries");
-#endif
-
-  return octave_value ();
-}
-
-DEFUN_DLD (__fltk_redraw__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __fltk_redraw__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-#ifdef HAVE_FLTK
-  __fltk_redraw__ ();
-#else
-  error ("__fltk_redraw__: not available without OpenGL and FLTK libraries");
 #endif
 
   return octave_value ();

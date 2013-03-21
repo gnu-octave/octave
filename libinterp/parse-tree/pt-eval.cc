@@ -557,9 +557,6 @@ tree_evaluator::visit_if_clause (tree_if_clause&)
 void
 tree_evaluator::visit_if_command (tree_if_command& cmd)
 {
-  if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
-
   tree_if_command_list *lst = cmd.cmd_list ();
 
   if (lst)
@@ -574,6 +571,9 @@ tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
       tree_if_clause *tic = *p;
 
       tree_expression *expr = tic->condition ();
+
+      if (statement_context == function || statement_context == script)
+        octave_call_stack::set_location (tic->line (), tic->column ());
 
       if (debug_mode && ! tic->is_else_clause ())
         do_breakpoint (tic->is_breakpoint ());
@@ -703,7 +703,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
           // the state of the program we are debugging.
 
           if (! Vdebugging)
-            octave_call_stack::set_statement (&stmt);
+            octave_call_stack::set_location (stmt.line (), stmt.column ());
 
           // FIXME -- we need to distinguish functions from scripts to
           // get this right.
@@ -865,9 +865,6 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
             {
               tree_switch_case *t = *p;
 
-              if (debug_mode && ! t->is_default_case ())
-                do_breakpoint (t->is_breakpoint ());
-
               if (t->is_default_case () || t->label_matches (val))
                 {
                   if (error_state)
@@ -946,10 +943,12 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   frame.protect_var (error_state);
   error_state = 0;
 
-  // We want to preserve the last statement indicator for possible
+  // We want to preserve the last location info for possible
   // backtracking.
-  frame.add_fcn (octave_call_stack::set_statement,
-                 octave_call_stack::current_statement ());
+  frame.add_fcn (octave_call_stack::set_line,
+                 octave_call_stack::current_line ());
+  frame.add_fcn (octave_call_stack::set_column,
+                 octave_call_stack::current_column ());
 
   // Similarly, if we have seen a return or break statement, allow all
   // the cleanup code to run before returning or handling the break.

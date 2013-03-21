@@ -118,17 +118,29 @@ octave_call_stack::create_instance (void)
 int
 octave_call_stack::do_current_line (void) const
 {
-  tree_statement *stmt = do_current_statement ();
+  int retval = -1;
 
-  return stmt ? stmt->line () : -1;
+  if (! cs.empty ())
+    {
+      const call_stack_elt& elt = cs[curr_frame];
+      retval = elt.line;
+    }
+
+  return retval;
 }
 
 int
 octave_call_stack::do_current_column (void) const
 {
-  tree_statement *stmt = do_current_statement ();
+  int retval = -1;
 
-  return stmt ? stmt->column () : -1;
+  if (! cs.empty ())
+    {
+      const call_stack_elt& elt = cs[curr_frame];
+      retval = elt.column;
+    }
+
+  return retval;
 }
 
 int
@@ -146,11 +158,9 @@ octave_call_stack::do_caller_user_code_line (void) const
 
       if (f && f->is_user_code ())
         {
-          tree_statement *stmt = elt.stmt;
-
-          if (stmt)
+          if (elt.line > 0)
             {
-              retval = stmt->line ();
+              retval = elt.line;
               break;
             }
         }
@@ -174,11 +184,9 @@ octave_call_stack::do_caller_user_code_column (void) const
 
       if (f && f->is_user_code ())
         {
-          tree_statement *stmt = elt.stmt;
-
-          if (stmt)
+          if (elt.column)
             {
-              retval = stmt->column ();
+              retval = elt.column;
               break;
             }
         }
@@ -310,18 +318,8 @@ octave_call_stack::do_backtrace (size_t nskip,
                   else
                     name(k) = f->parent_fcn_name () + Vfilemarker + f->name ();
 
-                  tree_statement *stmt = elt.stmt;
-
-                  if (stmt)
-                    {
-                      line(k) = stmt->line ();
-                      column(k) = stmt->column ();
-                    }
-                  else
-                    {
-                      line(k) = -1;
-                      column(k) = -1;
-                    }
+                  line(k) = elt.line;
+                  column(k) = elt.column;
 
                   k++;
                 }
@@ -352,17 +350,9 @@ octave_call_stack::do_goto_frame (size_t n, bool verbose)
           octave_function *f = elt.fcn;
           std::string nm = f ? f->name () : std::string ("<unknown>");
 
-          tree_statement *s = elt.stmt;
-          int l = -1;
-          int c = -1;
-          if (s)
-            {
-              l = s->line ();
-              c = s->column ();
-            }
-
           octave_stdout << "stopped in " << nm
-                        << " at line " << l << " column " << c
+                        << " at line " << elt.line
+                        << " column " << elt.column
                         << " (" << elt.scope << "[" << elt.context << "])"
                         << std::endl;
         }
@@ -416,14 +406,8 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
                   std::ostringstream buf;
 
                   if (f)
-                    {
-                      tree_statement *s = elt.stmt;
-
-                      int l = s ? s->line () : -1;
-
-                      buf << "stopped in " << f->name ()
-                          << " at line " << l << std::endl;
-                    }
+                    buf << "stopped in " << f->name ()
+                        << " at line " << elt.line << std::endl;
                   else
                     buf << "at top level" << std::endl;
 
@@ -509,7 +493,6 @@ octave_call_stack::do_backtrace_error_message (void) const
       const call_stack_elt& elt = cs.back ();
 
       octave_function *fcn = elt.fcn;
-      tree_statement *stmt = elt.stmt;
 
       std::string fcn_name = "?unknown?";
 
@@ -521,11 +504,8 @@ octave_call_stack::do_backtrace_error_message (void) const
             fcn_name = fcn->name ();
         }
 
-      int line = stmt ? stmt->line () : -1;
-      int column = stmt ? stmt->column () : -1;
-
       error ("  %s at line %d, column %d",
-             fcn_name.c_str (), line, column);
+             fcn_name.c_str (), elt.line, elt.column);
     }
 }
 

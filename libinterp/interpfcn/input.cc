@@ -121,6 +121,201 @@ static bool Vgud_mode = false;
 // The filemarker used to separate filenames from subfunction names
 char Vfilemarker = '>';
 
+class
+base_hook_function
+{
+public:
+
+  friend class hook_function;
+
+  base_hook_function (void) : count (1) { }
+
+  base_hook_function (const base_hook_function&) : count (1) { }
+
+  virtual ~base_hook_function (void) { }
+
+  virtual std::string id (void) { return std::string (); }
+
+  virtual bool is_valid (void) { return false; }
+
+  virtual void eval (void) { }
+
+protected:
+
+  size_t count;
+};
+
+class
+hook_function
+{
+public:
+
+  hook_function (void)
+  {
+    static base_hook_function nil_rep;
+    rep = &nil_rep;
+    rep->count++;
+  }
+
+  hook_function (const octave_value& f,
+                 const octave_value& d = octave_value ());
+
+  ~hook_function (void)
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
+
+  hook_function (const hook_function& hf)
+    : rep (hf.rep)
+  {
+    rep->count++;
+  }
+
+  hook_function& operator = (const hook_function& hf)
+  {
+    if (rep != hf.rep)
+      {
+        if (--rep->count == 0)
+          delete rep;
+
+        rep = hf.rep;
+        rep->count++;
+      }
+
+    return *this;
+  }
+
+  std::string id (void) { return rep->id (); }
+
+  bool is_valid (void) { return rep->is_valid (); }
+
+  void eval (void) { rep->eval (); }
+
+private:
+
+  base_hook_function *rep;
+};
+
+class
+named_hook_function : public base_hook_function
+{
+public:
+
+  named_hook_function (const std::string& n, const octave_value& d)
+    : name (n), data (d)
+  { }
+
+  void eval (void)
+  {
+    if (data.is_defined ())
+      feval (name, data, 0);
+    else
+      feval (name, octave_value_list (), 0);
+  }
+
+  std::string id (void) { return name; }
+
+  bool is_valid (void) { return is_valid_function (name); }
+
+private:
+
+  std::string name;
+
+  octave_value data;
+};
+
+class
+fcn_handle_hook_function : public base_hook_function
+{
+public:
+
+  fcn_handle_hook_function (const octave_value& fh_arg, const octave_value& d)
+    : ident (), valid (false), fcn_handle (fh_arg), data (d)
+  {
+    octave_fcn_handle *fh = fcn_handle.fcn_handle_value (true);
+
+    if (fh)
+      {
+        valid = true;
+
+        std::ostringstream buf;
+        buf << fh;
+        ident = fh->fcn_name () + ":" + buf.str ();
+      }
+  }
+
+  void eval (void)
+  {
+    if (data.is_defined ())
+      fcn_handle.do_multi_index_op (0, data);
+    else
+      fcn_handle.do_multi_index_op (0, octave_value_list ());
+  }
+
+  std::string id (void) { return ident; }
+
+  bool is_valid (void) { return valid; }
+
+private:
+
+  std::string ident;
+
+  bool valid;
+
+  octave_value fcn_handle;
+
+  octave_value data;
+};
+
+hook_function::hook_function (const octave_value& f, const octave_value& d)
+{
+  if (f.is_string ())
+    {
+      std::string name = f.string_value ();
+
+      rep = new named_hook_function (name, d);
+    }
+  else if (f.is_function_handle ())
+    {
+      rep = new fcn_handle_hook_function (f, d);
+    }
+  else
+    error ("invalid hook function");
+}
+
+typedef std::map<std::string, hook_function> hook_fcn_map_type;
+
+static hook_fcn_map_type pre_input_event_hook_fcn_map;
+static hook_fcn_map_type input_event_hook_fcn_map;
+static hook_fcn_map_type post_input_event_hook_fcn_map;
+
+static void
+process_input_event_hook_functions (hook_fcn_map_type& hook_fcn_map)
+{
+  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+
+  while (p != hook_fcn_map.end ())
+    {
+      std::string hook_fcn_id = p->first;
+      hook_function hook_fcn = p->second;
+
+      hook_fcn_map_type::iterator q = p++;
+
+      if (hook_fcn.is_valid ())
+        hook_fcn.eval ();
+      else
+        hook_fcn_map.erase (q);
+    }
+}
+
+// For octave_quit.
+void
+remove_input_event_hook_functions (void)
+{
+  input_event_hook_fcn_map.clear ();
+}
+
 void
 octave_base_reader::do_input_echo (const std::string& input_string) const
 {
@@ -197,6 +392,12 @@ octave_base_reader::octave_gets (bool& eof)
 
   std::string retval;
 
+  // Process pre input event hook function prior to flushing output and
+  // printing the prompt.
+
+  if (interactive || forced_interactive)
+    process_input_event_hook_functions (pre_input_event_hook_fcn_map);
+
   bool history_skip_auto_repeated_debugging_command = false;
 
   std::string ps = (pflag > 0) ? VPS1 : VPS2;
@@ -246,6 +447,12 @@ octave_base_reader::octave_gets (bool& eof)
     }
   else
     octave_diary << "\n";
+
+  // Process post input event hook function after the internal history
+  // list has been updated.
+
+  if (interactive || forced_interactive)
+    process_input_event_hook_functions (post_input_event_hook_fcn_map);
 
   return retval;
 }
@@ -1048,199 +1255,97 @@ for details.\n\
   return retval;
 }
 
-class
-base_hook_function
+DEFUN (add_pre_input_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{id} =} add_pre_input_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {@var{id} =} add_pre_input_event_hook (@var{fcn}, @var{data})\n\
+Add the named function or function handle @var{fcn} to the list of functions to call\n\
+immediately prior to prompting for interactive user input.  The\n\
+function should have the form\n\
+\n\
+@example\n\
+@var{fcn} (@var{data})\n\
+@end example\n\
+\n\
+If @var{data} is omitted, Octave calls the function without any\n\
+arguments.\n\
+\n\
+The returned identifier may be used to remove the function handle from\n\
+the list of input hook functions.\n\
+@seealso{remove_pre_input_event_hook}\n\
+@end deftypefn")
 {
-public:
+  octave_value_list retval;
 
-  friend class hook_function;
+  int nargin = args.length ();
 
-  base_hook_function (void) : count (1) { }
-
-  base_hook_function (const base_hook_function&) : count (1) { }
-
-  virtual ~base_hook_function (void) { }
-
-  virtual std::string id (void) { return std::string (); }
-
-  virtual bool is_valid (void) { return false; }
-
-  virtual void eval (void) { }
-
-protected:
-
-  size_t count;
-};
-
-class
-hook_function
-{
-public:
-
-  hook_function (void)
-  {
-    static base_hook_function nil_rep;
-    rep = &nil_rep;
-    rep->count++;
-  }
-
-  hook_function (const octave_value& f,
-                 const octave_value& d = octave_value ());
-
-  ~hook_function (void)
-  {
-    if (--rep->count == 0)
-      delete rep;
-  }
-
-  hook_function (const hook_function& hf)
-    : rep (hf.rep)
-  {
-    rep->count++;
-  }
-
-  hook_function& operator = (const hook_function& hf)
-  {
-    if (rep != hf.rep)
-      {
-        if (--rep->count == 0)
-          delete rep;
-
-        rep = hf.rep;
-        rep->count++;
-      }
-
-    return *this;
-  }
-
-  std::string id (void) { return rep->id (); }
-
-  bool is_valid (void) { return rep->is_valid (); }
-
-  void eval (void) { rep->eval (); }
-
-private:
-
-  base_hook_function *rep;
-};
-
-class
-named_hook_function : public base_hook_function
-{
-public:
-
-  named_hook_function (const std::string& n, const octave_value& d)
-    : name (n), data (d)
-  { }
-
-  void eval (void)
-  {
-    if (data.is_defined ())
-      feval (name, data, 0);
-    else
-      feval (name, octave_value_list (), 0);
-  }
-
-  std::string id (void) { return name; }
-
-  bool is_valid (void) { return is_valid_function (name); }
-
-private:
-
-  std::string name;
-
-  octave_value data;
-};
-
-class
-fcn_handle_hook_function : public base_hook_function
-{
-public:
-
-  fcn_handle_hook_function (const octave_value& fh_arg, const octave_value& d)
-    : ident (), valid (false), fcn_handle (fh_arg), data (d)
-  {
-    octave_fcn_handle *fh = fcn_handle.fcn_handle_value (true);
-
-    if (fh)
-      {
-        valid = true;
-
-        std::ostringstream buf;
-        buf << fh;
-        ident = fh->fcn_name () + ":" + buf.str ();
-      }
-  }
-
-  void eval (void)
-  {
-    if (data.is_defined ())
-      fcn_handle.do_multi_index_op (0, data);
-    else
-      fcn_handle.do_multi_index_op (0, octave_value_list ());
-  }
-
-  std::string id (void) { return ident; }
-
-  bool is_valid (void) { return valid; }
-
-private:
-
-  std::string ident;
-
-  bool valid;
-
-  octave_value fcn_handle;
-
-  octave_value data;
-};
-
-hook_function::hook_function (const octave_value& f, const octave_value& d)
-{
-  if (f.is_string ())
+  if (nargin == 1 || nargin == 2)
     {
-      std::string name = f.string_value ();
+      octave_value user_data;
 
-      rep = new named_hook_function (name, d);
-    }
-  else if (f.is_function_handle ())
-    {
-      rep = new fcn_handle_hook_function (f, d);
+      if (nargin == 2)
+        user_data = args(1);
+
+      hook_function hook_fcn (args(0), user_data);
+
+      if (! error_state)
+        pre_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+      else
+        error ("add_pre_input_event_hook: expecting string as first arg");
     }
   else
-    error ("invalid hook function");
+    print_usage ();
+
+  return retval;
 }
 
-typedef std::map<std::string, hook_function> hook_fcn_map_type;
-
-static hook_fcn_map_type hook_fcn_map;
-
-void
-remove_input_event_hook_functions (void)
+DEFUN (remove_pre_input_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} remove_pre_input_event_hook (@var{name})\n\
+@deftypefnx {Built-in Function} {} remove_input_event_hook (@var{fcn_id})\n\
+Remove the named function or function handle with the given identifier\n\
+from the list of functions to call immediately prior to prompting for\n\
+interactive user input.\n\
+@seealso{add_pre_input_event_hook}\n\
+@end deftypefn")
 {
-  hook_fcn_map.clear ();
-}
+  octave_value_list retval;
 
-static int
-input_event_hook (void)
-{
-  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+  int nargin = args.length ();
 
-  while (p != hook_fcn_map.end ())
+  if (nargin == 1 || nargin == 2)
     {
-      std::string hook_fcn_id = p->first;
-      hook_function hook_fcn = p->second;
+      std::string hook_fcn_id = args(0).string_value ();
 
-      hook_fcn_map_type::iterator q = p++;
+      bool warn = (nargin < 2);
 
-      if (hook_fcn.is_valid ())
-        hook_fcn.eval ();
+      if (! error_state)
+        {
+          hook_fcn_map_type::iterator p
+            = pre_input_event_hook_fcn_map.find (hook_fcn_id);
+
+          if (p != pre_input_event_hook_fcn_map.end ())
+            pre_input_event_hook_fcn_map.erase (p);
+          else if (warn)
+            warning ("remove_pre_input_event_hook: %s not found in list",
+                     hook_fcn_id.c_str ());
+        }
       else
-        hook_fcn_map.erase (q);
+        error ("remove_pre_input_event_hook: argument not valid as a hook function name or id");
     }
+  else
+    print_usage ();
 
-  if (hook_fcn_map.empty ())
-    command_editor::remove_event_hook (input_event_hook);
+  return retval;
+}
+ 
+static int
+internal_input_event_hook_fcn (void)
+{
+  process_input_event_hook_functions (input_event_hook_fcn_map);
+
+  if (input_event_hook_fcn_map.empty ())
+    command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
   return 0;
 }
@@ -1249,7 +1354,7 @@ DEFUN (add_input_event_hook, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn})\n\
 @deftypefnx {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
-Add the named function @var{fcn} to the list of functions to call\n\
+Add the named function or function handle @var{fcn} to the list of functions to call\n\
 periodically when Octave is waiting for input.  The function should\n\
 have the form\n\
 \n\
@@ -1280,10 +1385,10 @@ the list of input hook functions.\n\
 
       if (! error_state)
         {
-          if (hook_fcn_map.empty ())
-            command_editor::add_event_hook (input_event_hook);
+          if (input_event_hook_fcn_map.empty ())
+            command_editor::add_event_hook (internal_input_event_hook_fcn);
 
-          hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+          input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
 
           retval = hook_fcn.id ();
         }
@@ -1318,19 +1423,104 @@ for input.\n\
 
       if (! error_state)
         {
-          hook_fcn_map_type::iterator p = hook_fcn_map.find (hook_fcn_id);
+          hook_fcn_map_type::iterator p
+            = input_event_hook_fcn_map.find (hook_fcn_id);
 
-          if (p != hook_fcn_map.end ())
-            hook_fcn_map.erase (p);
+          if (p != input_event_hook_fcn_map.end ())
+            input_event_hook_fcn_map.erase (p);
           else if (warn)
             warning ("remove_input_event_hook: %s not found in list",
                      hook_fcn_id.c_str ());
 
-          if (hook_fcn_map.empty ())
-            command_editor::remove_event_hook (input_event_hook);
+          if (input_event_hook_fcn_map.empty ())
+            command_editor::remove_event_hook (internal_input_event_hook_fcn);
         }
       else
         error ("remove_input_event_hook: argument not valid as a hook function name or id");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (add_post_input_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{id} =} add_post_input_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {@var{id} =} add_post_input_event_hook (@var{fcn}, @var{data})\n\
+Add the named function or function handle @var{fcn} to the list of functions to call\n\
+immediately after accepting interactive user input.  The function\n\
+should have the form\n\
+\n\
+@example\n\
+@var{fcn} (@var{data})\n\
+@end example\n\
+\n\
+If @var{data} is omitted, Octave calls the function without any\n\
+arguments.\n\
+\n\
+The returned identifier may be used to remove the function handle from\n\
+the list of input hook functions.\n\
+@seealso{remove_post_input_event_hook}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      octave_value user_data;
+
+      if (nargin == 2)
+        user_data = args(1);
+
+      hook_function hook_fcn (args(0), user_data);
+
+      if (! error_state)
+        post_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+      else
+        error ("add_post_input_event_hook: expecting string as first arg");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (remove_post_input_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} remove_post_input_event_hook (@var{name})\n\
+@deftypefnx {Built-in Function} {} remove_post_input_event_hook (@var{fcn_id})\n\
+Remove the named function or function handle with the given identifier\n\
+from the list of functions to call immediately after accepting\n\
+interactive user input.\n\
+@seealso{add_post_input_event_hook}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string hook_fcn_id = args(0).string_value ();
+
+      bool warn = (nargin < 2);
+
+      if (! error_state)
+        {
+          hook_fcn_map_type::iterator p
+            = post_input_event_hook_fcn_map.find (hook_fcn_id);
+
+          if (p != post_input_event_hook_fcn_map.end ())
+            post_input_event_hook_fcn_map.erase (p);
+          else if (warn)
+            warning ("remove_post_input_event_hook: %s not found in list",
+                     hook_fcn_id.c_str ());
+        }
+      else
+        error ("remove_post_input_event_hook: argument not valid as a hook function name or id");
     }
   else
     print_usage ();

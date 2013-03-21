@@ -49,8 +49,8 @@ function map = copper (n)
     x = linspace (0, 1, n)';
     r = (x < 4/5) .* (5/4 * x) ...
       + (x >= 4/5);
-    g = 4/5 * x;
-    b = 1/2 * x;
+    g = 0.7812 * x;
+    b = 0.4975 * x;
     map = [r, g, b];
   else
     map = zeros (0, 3);

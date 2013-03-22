@@ -438,6 +438,12 @@ uninstall-pkg-add:
 	done
 .PHONY: uninstall-pkg-add
 
+if AMCOND_HAVE_JAVA
+else
+dist-hook:
+	@echo "Packaging distribution requires Java." ; exit 1;
+endif
+
 EXTRA_DIST += \
   $(IMAGES) \
   $(FCN_FILES) \

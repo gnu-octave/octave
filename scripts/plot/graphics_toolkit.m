@@ -18,17 +18,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{name} =} graphics_toolkit ()
-## Return the default graphics toolkit.  The default graphics toolkit value
-## is assigned to new figures.
 ## @deftypefnx {Function File} {@var{name} =} graphics_toolkit (@var{hlist})
-## Return the graphics toolkits for the figures with handles @var{hlist}.
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{name})
-## Set the default graphics toolkit to @var{name}.  If the toolkit is not
-## already loaded, it is initialized by calling the function
-## @code{__init_@var{name}__}.
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
-## Set the graphics toolkit for the figures with handles @var{hlist} to
-## @var{name}.
+## 
+## @code{graphics_toolkit (@var{hlist})} returns the default graphics toolkit.  
+## The default graphics toolkit value is assigned to new figures.
+## 
+## @code{graphics_toolkit (@var{name})} returns the graphics toolkits 
+## for the figures with handles @var{hlist}.
+## 
+## @code{graphics_toolkit (@var{name})} sets the default graphics toolkit 
+## to @var{name}.  If the toolkit is not already loaded, it is initialized 
+## by calling the function @code{__init_@var{name}__}.
+## 
+## @code{graphics_toolkit (@var{hlist}, @var{name})} sets the graphics toolkit 
+## for the figures with handles @var{hlist} to @var{name}.
+## 
 ## @seealso{available_graphics_toolkits}
 ## @end deftypefn
 

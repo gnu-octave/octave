@@ -18,6 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
+## @deftypefnx {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
+## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
+## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
+## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "beta", @var{beta})
+## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "order", @var{order})
+## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
+##
 ## Fit a piecewise cubic spline with breaks (knots) @var{breaks} to the
 ## noisy data, @var{x} and @var{y}.  @var{x} is a vector, and @var{y}
 ## a vector or N-D array.  If @var{y} is an N-D array, then @var{x}(j)
@@ -26,16 +33,9 @@
 ## The fitted spline is returned as a piecewise polynomial, @var{pp}, and
 ## may be evaluated using @code{ppval}.
 ##
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
 ## @var{p} is a positive integer defining the number of intervals along @var{x},
 ## and @var{p}+1 is the number of breaks.  The number of points in each interval
 ## differ by no more than 1.
-##
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "beta", @var{beta})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "order", @var{order})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
 ##
 ## The optional property @var{periodic} is a logical value which specifies
 ## whether a periodic boundary condition is applied to the spline.  The

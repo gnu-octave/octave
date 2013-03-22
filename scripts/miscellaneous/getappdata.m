@@ -16,10 +16,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{value} =} getappdata (@var{h}, @var{name})
+## @deftypefnx {Function File} {@var{appdata} =} getappdata (@var{h})
+## 
 ## Return the @var{value} for named application data for the object(s) with
 ## handle(s) @var{h}.
-## @deftypefnx {Function File} {@var{appdata} =} getappdata (@var{h})
-## Return a structure, @var{appdata}, whose fields correspond to the appdata
+## 
+## @code{getappdata(@var{h})} returns a structure, @var{appdata}, whose fields correspond to the appdata
 ## properties.
 ## @end deftypefn
 

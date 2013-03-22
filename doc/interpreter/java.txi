@@ -145,7 +145,6 @@ of dialog box.
 * How to make Java classes available?::  
 * How to create an instance of a Java class?::  
 * How can I handle memory limitations?::  
-* How to compile the java package in Octave?::  
 * Which @TeX{} symbols are implemented in the dialog functions?::  
 @end menu
 
@@ -210,31 +209,39 @@ classpath}.  Classes appearing in the @var{static} as well as in the
 and loaded from this location.  Classes which shall be used regularly or must
 be available to all users should be added to the @var{static classpath}.  The
 @var{static classpath} is populated once from the contents of a plain text file
-named @file{classpath.txt} when the Java Virtual Machine starts.  This file
-contains one line for each individual classpath to be added to the @var{static
-classpath}.  These lines can identify single class files, directories containing
-class files or Java archives with complete class file hierarchies.  Comment
-lines starting with a @code{#} or a @code{%} character are ignored.
+named @file{classpath.txt} or @file{javaclasspath.txt} when the Java Virtual
+Machine starts.  This file contains one line for each individual classpath to be
+added to the @var{static classpath}.  These lines can identify single class
+files, directories containing class files or Java archives with complete class
+file hierarchies.  Comment lines starting with a @code{#} or a @code{%}
+character are ignored.
 
-The search rules for the file @file{classpath.txt} are:
+The search rules for the file @file{classpath.txt} (or @file{javaclasspath.txt})
+are:
 
 @itemize
-@item First, Octave searches for the file @file{classpath.txt} in your home directory,
-If such a file is found, it is read and defines the initial @var{static
-classpath}.  Thus it is possible to build an initial static classpath on a 'per
-user' basis.
+@item First, Octave tries to locate it in the current directory (where Octave
+was started from). If such a file is found, it is read and defines the initial
+@var{static classpath}. So it is possible to define a static classpath on a 'per
+Octave invocation' basis.
 
-@item Next, Octave looks for another file @file{classpath.txt} in the package
-installation directory.  This is where @file{javaclasspath.m} resides, usually
-something like @file{@dots{}\share\Octave\packages\java-1.2.8}.  You can find
-this directory by executing the command 
+@item Next, Octave searches in the user's home directory. If a file
+@file{classpath.txt} (or @file{javaclasspath.txt}) exists here, its contents
+are appended to the static classpath (if any). Thus it is possible to build an
+initial static classpath on a 'per user' basis.
+
+@item Finally, Octave looks for a next occurrence of file @file{classpath.txt}
+(@file{javaclasspath.txt}) in the m-files directory where Octave Java functions
+live. This is where @file{javaclasspath.m} resides, usually something like 
+@file{@dots{}/share/octave/packages/<version>/m/java}. You can find this
+directory by executing the command 
 
 @example
-pkg list
+which javaclasspath
 @end example
 
-If this file exists, its contents is also appended to the static classpath.
-Note that the archives and class directories defined in this file will affect
+If this file exists here, its contents are also appended to the static classpath.
+Note that the archives and class directories defined in this last step will affect
 all users.
 @end itemize
 
@@ -391,197 +398,6 @@ ans = 12.34
 @end example
 
 @seealso{javamem}
-
-@c ------------------------------------------------------------------------
-@node How to compile the java package in Octave?
-@subsection How to compile the java package in Octave?
-@c - index -
-@cindex package, how to compile?
-@cindex compiling the java package, how? 
-@cindex java package, how to compile?
-@cindex java package, how to install?
-@cindex java package, how to uninstall?
-@c - index -
-
-Most Octave installations come with the @var{java} package pre-installed.  In
-case you want to replace this package with a more recent version, you must
-perform the following steps: 
-
-@c ---------
-@menu
-* Uninstall the currently installed package @var{java}::  
-* Make sure that the build environment is configured properly::  
-* Compile and install the package in Octave::  
-* Test the java package installation::  
-@end menu
-
-@node Uninstall the currently installed package @var{java}
-@subsubsection Uninstall the currently installed package @var{java}
-Check whether the @var{java} package is already installed by issuing
-the @code{pkg list} command:
-
-@example
-@group
-octave> pkg list
-Package Name  | Version | Installation directory
---------------+---------+-----------------------
-        java *|   1.2.8 | /home/octavio/octave/java-1.2.8
-octave> 
-@end group
-@end example
-
-@noindent
-If the @var{java} package appears in the list you must uninstall it first by
-issuing the command 
-
-@example
-@group
-octave> pkg uninstall java
-octave> pkg list
-@end group
-@end example
-
-Now the java package should not be listed anymore.  If you have used the
-@var{java} package during the current session of Octave, you have to exit and
-restart Octave before you can uninstall the package.  This is because the
-system keeps certain libraries in memory after they have been loaded once.
-
-@c ---------
-@node Make sure that the build environment is configured properly
-@subsubsection Make sure that the build environment is configured properly
-The installation process requires that the environment variable
-@w{@env{JAVA_HOME}} points to the Java Development Kit (JDK) on your computer. 
-
-@itemize @bullet
-@item
-Note that JDK is not equal to JRE (Java Runtime Environment).  The JDK home
-directory contains subdirectories with include, library and executable files
-which are required to compile the @var{java} package.  These files are not part
-of the JRE, so you definitely need the JDK. 
-
-@item
-Do not use backslashes but ordinary slashes in the path. 
-@end itemize
-
-Set the environment variable @w{@env{JAVA_HOME}} according to your local JDK
-installation.  Please adapt the path in the following examples according to the
-JDK installation on your system.  If you are using a Windows system that might
-be: 
-
-@example
-octave> setenv("JAVA_HOME","C:/Java/jdk1.6.0_21");
-@end example
-
-Note, that on both system types, Windows as well as Linux, you must use the
-forward slash '/' as the separator, not the backslash '\'.
-
-If you are using a Linux system this would look probably more like: 
-
-@example
-octave> setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
-@end example
-
-@c ---------
-@node Compile and install the package in Octave
-@subsubsection Compile and install the package in Octave
-If you have for example saved the package archive on your @file{z:} drive the
-command would be: 
-
-@example
-Octave> pkg install -verbose z:/java-1.2.8.tar.gz
-@end example
-
-@noindent
-or if you have Linux and the package file is stored in your home directory: 
-
-@example
-octave> pkg install -verbose ~/java-1.2.8.tar.gz
-@end example
-
-The option @option{-verbose} will produce some lengthy output, which should not
-show any errors (maybe a few warnings at best). 
-
-You can then produce a list of all installed packages: 
-
-@example
-octave> pkg list
-@end example
-
-This list of packages should now include the package @var{java}:
-
-@example
-@group
-octave> pkg list
-Package Name  | Version | Installation directory
---------------+---------+-----------------------
-        java *|   1.2.8 | /home/octavio/octave/java-1.2.8
-octave> 
-@end group
-@end example
-
-@c ---------
-@node Test the java package installation
-@subsubsection Test the java package installation
-
-The following code creates a Java string object, which however is automatically
-converted to an Octave string: 
-
-@example
-@group
-octave> s = javaObject('java.lang.String', 'Hello OctaveString') 
-s = Hello OctaveString 
-@end group
-@end example
-
-Note that the java package automatically transforms the Java String object to
-an Octave string.  This means that you cannot apply Java String methods to the
-result. 
-
-This "auto boxing" scheme seems to be implemented for the following Java
-classes: 
-
-@itemize @bullet
-@item
-java.lang.Integer
-
-@item
-java.lang.Double 
-
-@item
-java.lang.Boolean 
-
-@item
-java.lang.String 
-@end itemize
-
-If you instead create an object for which no "auto-boxing" is implemented,
-@code{javaObject} returns the genuine Java object: 
-
-@example
-@group
-octave> v = javaObject('java.util.Vector') 
-v = 
-<Java object: java.util.Vector> 
-octave> v.add(12); 
-octave> v.get(0) 
-ans = 12 
-@end group
-@end example
-
-If you have created such a Java object, you can apply all methods of the Java
-class to the returned object.  Note also that for some objects you must specify
-an initializer: 
-
-@example
-@group
-% not: 
-octave> d = javaObject('java.lang.Double') 
-error: [java] java.lang.NoSuchMethodException: java.lang.Double 
-% but: 
-octave> d = javaObject('java.lang.Double',12.34) 
-d = 12.340 
-@end group
-@end example
 
 @c ------------------------------------------------------------------------
 @node Which @TeX{} symbols are implemented in the dialog functions?

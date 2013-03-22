@@ -44,6 +44,11 @@
 ## The optional input @var{n} specifies the number of data lines to read; in
 ## this sense it differs slightly from the format repeat count in strread.
 ##
+## If the format string is empty (not: omitted) and the file contains only
+## numeric data (excluding headerlines), textread will return a rectangular
+## matrix with the number of columns matching the number of numeric fields on
+## the first data line of the file. Empty fields are returned as zero values.
+##
 ## @seealso{strread, load, dlmread, fscanf, textscan}
 ## @end deftypefn
 
@@ -174,8 +179,45 @@ function varargout = textread (filename, format = "%f", varargin)
   ## Call strread to make it do the real work
   [varargout{1:max (nargout, 1)}] = strread (str, format, varargin {:});
 
-endfunction
+  ## Hack to concatenate/reshape numeric output into 2D array (undocumented ML)
+  ## In ML this only works in case of an empty format string
+  if (isempty (format))
+    ## Get number of fields per line. 
+    ## 1. Get eol_char position
+    iwhsp = find (strcmpi ("whitespace", varargin));
+    whsp = varargin{iwhsp + 1};
+    idx = regexp (str, eol_char, "once");
+    ## 2. Get first data line til EOL. Avoid corner case of just one line
+    if (! isempty (idx))
+      str = str(1:idx-1);
+    endif
+    idelimiter = find (strcmpi (varargin, "delimiter"), 1);
+    if (isempty (idelimiter))
+      ## Assume delimiter = whitespace
+      ## 3A. whitespace incl. consecutive whitespace => single space
+      str = regexprep (str, sprintf ("[%s]+", whsp), ' ');
+      ## 4A. Remove possible leading & trailing spaces
+      str = strtrim (str);
+      ## 5A. Count spaces, add one to get nr of data fields per line
+      ncols = numel (strfind (str, " ")) + 1;
+    else
+      ## 3B. Just count delimiters. FIXME: delimiters could occur in literals
+      delimiter = varargin {idelimiter+1};
+      ncols = numel (regexp (str, sprintf ("[%s]", delimiter))) + 1;
+    endif
+    ## 6. Reshape; watch out, we need a transpose
+    nrows = ceil (numel (varargout{1}) / ncols);
+    pad = mod (numel (varargout{1}), ncols);
+    if (pad > 0)
+      pad = ncols - pad;
+      varargout{1}(end+1 : end+pad) = NaN;
+    endif
+    varargout{1} = reshape (varargout{1}, ncols, nrows)';
+    ## ML replaces empty values with NaNs
+    varargout{1}(find (isnan (varargout{1}))) = 0;
+  endif
 
+endfunction
 
 %!test
 %! f = tmpnam ();
@@ -194,6 +236,76 @@ endfunction
 %! [a, b] = textread (f, "%f, %f", "headerlines", 1);
 %! unlink (f);
 %! assert (a, d(2:7, 1), 1e-2);
+
+%% Test reading 2D matrix with empty format
+%!test
+%! f = tmpnam ();
+%! d = rand (5, 2);
+%! dlmwrite (f, d, "precision", "%5.2f");
+%! A = textread (f, "", "headerlines", 3);
+%! unlink (f);
+%! assert (A, d(4:5, :), 1e-2);
+
+%% Read multiple lines using empty format string
+%!test
+%! f = tmpnam ();
+%! unlink (f);
+%! fid = fopen (f, "w");
+%! d = rand (1, 4);
+%! fprintf (fid, "  %f %f   %f  %f ", d);
+%! fclose (fid);
+%! A = textread (f, "");
+%! unlink (f);
+%! assert (A, d, 1e-6);
+
+%% Empty format, corner case = one line w/o EOL
+%!test
+%! f = tmpnam ();
+%! unlink (f);
+%! fid = fopen (f, "w");
+%! d = rand (1, 4);
+%! fprintf (fid, "  %f %f   %f  %f ", d);
+%! fclose (fid);
+%! A = textread (f, "");
+%! unlink (f);
+%! assert (A, d, 1e-6);
+
+%% Read multiple lines using empty format string, missing data (should be 0)
+%!test
+%! f = tmpnam ();
+%! unlink (f);
+%! fid = fopen (f, "w");
+%! d = rand (1, 4);
+%! fprintf (fid, "%f, %f, ,  %f,  %f ", d);
+%! fclose (fid);
+%! A = textread (f, "");
+%! unlink (f);
+%! assert (A, [ d(1:2) 0 d(3:4)], 1e-6);
+
+%% Test with empty positions - ML returns 0 for empty fields
+%!test
+%! f = tmpnam ();
+%! unlink (f);
+%! fid = fopen (f, "w");
+%! d = rand (1, 4);
+%! fprintf (fid, ",2,,4\n5,,7,\n");
+%! fclose (fid);
+%! A = textread (f, "", "delimiter", ",");
+%! unlink (f);
+%! assert (A, [0 2 0 4; 5 0 7 0], 1e-6);
+
+%% Another test with empty format + positions, now with more incomplete lower
+%% row (must be appended with zeros to get rectangular matrix)
+%!test
+%! f = tmpnam ();
+%! unlink (f);
+%! fid = fopen (f, "w");
+%! d = rand (1, 4);
+%! fprintf (fid, ",2,,4\n5,\n");
+%! fclose (fid);
+%! A = textread (f, "", "delimiter", ",");
+%! unlink (f);
+%! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
 
 %% Test input validation
 %!error textread ()

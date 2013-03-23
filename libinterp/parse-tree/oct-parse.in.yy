@@ -1036,7 +1036,12 @@ param_list_end  : ')'
                 ;
 
 param_list      : param_list_beg param_list1 param_list_end
-                  { $$ = $2; }
+                  {
+                    if ($2)
+                      lexer.mark_as_variables ($2->variable_names ());
+
+                    $$ = $2;
+                  }
                 | param_list_beg error
                   {
                     parser.bison_error ("invalid parameter list");
@@ -1051,7 +1056,10 @@ param_list1     : // empty
                   {
                     $1->mark_as_formal_parameters ();
                     if ($1->validate (tree_parameter_list::in))
-                      $$ = $1;
+                      {
+                        lexer.mark_as_variables ($1->variable_names ());
+                        $$ = $1;
+                      }
                     else
                       ABORT_PARSE;
                   }
@@ -2969,7 +2977,10 @@ octave_base_parser::validate_matrix_for_assignment (tree_expression *e)
         tmp = new tree_argument_list (e);
 
       if (tmp && tmp->is_valid_lvalue_list ())
-        retval = tmp;
+        {
+          lexer.mark_as_variables (tmp->variable_names ());
+          retval = tmp;
+        }
       else
         {
           bison_error ("invalid left hand side of assignment");

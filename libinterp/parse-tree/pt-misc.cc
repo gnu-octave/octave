@@ -228,6 +228,21 @@ tree_parameter_list::undefine (void)
     }
 }
 
+std::list<std::string>
+tree_parameter_list::variable_names (void) const
+{
+  std::list<std::string> retval;
+
+  for (const_iterator p = begin (); p != end (); p++)
+    {
+      tree_decl_elt *elt = *p;
+      
+      retval.push_back (elt->name ());
+    }
+
+  return retval;
+}
+
 octave_value_list
 tree_parameter_list::convert_to_const_vector (int nargout,
                                               const Cell& varargout)

@@ -307,6 +307,11 @@ public:
 
   bool previous_token_may_be_command (void) const;
 
+  void maybe_mark_previous_token_as_variable (void);
+
+  void mark_as_variable (const std::string& nm);
+  void mark_as_variables (const std::list<std::string>& lst);
+
   // true means that we have encountered eof on the input stream.
   bool end_of_input;
 
@@ -517,6 +522,8 @@ public:
   bool looking_at_space (void);
 
   bool inside_any_object_index (void);
+
+  bool is_variable (const std::string& name);
 
   int is_keyword_token (const std::string& s);
 

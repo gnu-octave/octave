@@ -94,7 +94,13 @@ public:
     return type_tag == keyword_token || type_tag == ettype_token;
   }
 
+  bool is_symbol (void) const
+  {
+    return type_tag == sym_rec_token;
+  }
+
   std::string text (void) const;
+  std::string symbol_name (void) const;
   double number (void) const;
   token_type ttype (void) const;
   end_tok_type ettype (void) const;

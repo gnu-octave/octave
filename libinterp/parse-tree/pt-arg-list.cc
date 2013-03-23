@@ -283,6 +283,26 @@ tree_argument_list::get_arg_names (void) const
   return retval;
 }
 
+std::list<std::string>
+tree_argument_list::variable_names (void) const
+{
+  std::list<std::string> retval;
+
+  for (const_iterator p = begin (); p != end (); p++)
+    {
+      tree_expression *elt = *p;
+
+      if (elt->is_identifier ())
+        {
+          tree_identifier *id = dynamic_cast<tree_identifier *> (elt);
+      
+          retval.push_back (id->name ());
+        }
+    }
+
+  return retval;
+}
+
 tree_argument_list *
 tree_argument_list::dup (symbol_table::scope_id scope,
                          symbol_table::context_id context) const

@@ -1056,7 +1056,12 @@ ANY_INCLUDING_NL (.|{NL})
 // = and op= operators.
 %}
 
-"="    { return curr_lexer->handle_op ("=", '='); }
+"=" {
+    curr_lexer->maybe_mark_previous_token_as_variable ();
+
+    return curr_lexer->handle_op ("=", '=');
+  }
+
 "+="   { return curr_lexer->handle_incompatible_op ("+=", ADD_EQ); }
 "-="   { return curr_lexer->handle_incompatible_op ("-=", SUB_EQ); }
 "*="   { return curr_lexer->handle_incompatible_op ("*=", MUL_EQ); }
@@ -1551,6 +1556,24 @@ lexical_feedback::previous_token_may_be_command (void) const
   return tok ? tok->may_be_command () : false;
 }
 
+void
+lexical_feedback::maybe_mark_previous_token_as_variable (void)
+{
+  token *tok = tokens.front ();
+  if (tok->is_symbol ())
+    pending_local_variables.insert (tok->symbol_name ());
+}
+
+void
+lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
+{
+  for (std::list<std::string>::const_iterator p = lst.begin ();
+       p != lst.end (); p++)
+    {
+      pending_local_variables.insert (*p);
+    }
+}
+
 static bool
 looks_like_copyright (const std::string& s)
 {
@@ -1782,6 +1805,14 @@ octave_base_lexer::inside_any_object_index (void)
     }
 
   return retval;
+}
+
+bool
+octave_base_lexer::is_variable (const std::string& name)
+{
+  return (symbol_table::is_variable (name)
+          || (pending_local_variables.find (name)
+              != pending_local_variables.end ()));
 }
 
 // Handle keywords.  Return -1 if the keyword should be ignored.
@@ -2551,7 +2582,8 @@ octave_base_lexer::handle_identifier (void)
                               input_line_number, current_input_column);
 
   if (at_beginning_of_statement
-      && (! (tok == "e"
+      && (! (is_variable (tok)
+             || tok == "e"
              || tok == "I" || tok == "i"
              || tok == "J" || tok == "j"
              || tok == "Inf" || tok == "inf"

@@ -564,20 +564,29 @@ ANY_INCLUDING_NL (.|{NL})
 {NUMBER}{Im} {
     curr_lexer->lexer_debug ("{NUMBER}{Im}");
 
-    int tok = curr_lexer->previous_token_value ();
-
-    if (curr_lexer->whitespace_is_significant ()
-        && curr_lexer->space_follows_previous_token ()
-        && ! (tok == '[' || tok == '{'
-              || curr_lexer->previous_token_is_binop ()))
+    if (curr_lexer->previous_token_may_be_command ()
+        &&  curr_lexer->space_follows_previous_token ())
       {
         yyless (0);
-        unput (',');
+        curr_lexer->push_start_state (COMMAND_START);
       }
     else
       {
-        curr_lexer->handle_number ();
-        return curr_lexer->count_token_internal (IMAG_NUM);
+        int tok = curr_lexer->previous_token_value ();
+
+        if (curr_lexer->whitespace_is_significant ()
+            && curr_lexer->space_follows_previous_token ()
+            && ! (tok == '[' || tok == '{'
+                  || curr_lexer->previous_token_is_binop ()))
+          {
+            yyless (0);
+            unput (',');
+          }
+        else
+          {
+            curr_lexer->handle_number ();
+            return curr_lexer->count_token_internal (IMAG_NUM);
+          }
       }
   }
 
@@ -590,21 +599,30 @@ ANY_INCLUDING_NL (.|{NL})
 {NUMBER} {
     curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
 
-     int tok = curr_lexer->previous_token_value ();
+    if (curr_lexer->previous_token_may_be_command ()
+        &&  curr_lexer->space_follows_previous_token ())
+      {
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      {
+        int tok = curr_lexer->previous_token_value ();
 
-     if (curr_lexer->whitespace_is_significant ()
-         && curr_lexer->space_follows_previous_token ()
-         && ! (tok == '[' || tok == '{'
-               || curr_lexer->previous_token_is_binop ()))
-       {
-         yyless (0);
-         unput (',');
-       }
-     else
-       {
-         curr_lexer->handle_number ();
-         return curr_lexer->count_token_internal (NUM);
-       }
+        if (curr_lexer->whitespace_is_significant ()
+            && curr_lexer->space_follows_previous_token ()
+            && ! (tok == '[' || tok == '{'
+                  || curr_lexer->previous_token_is_binop ()))
+          {
+            yyless (0);
+            unput (',');
+          }
+        else
+          {
+            curr_lexer->handle_number ();
+            return curr_lexer->count_token_internal (NUM);
+          }
+      }
   }
 
 %{

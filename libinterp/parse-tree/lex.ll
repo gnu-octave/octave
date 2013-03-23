@@ -518,18 +518,49 @@ ANY_INCLUDING_NL (.|{NL})
           break;
       }
 
+    size_t num_comment_chars = 0;
+
     while (i < len)
       {
         char c = yytext[i];
         if (c == '#' || c == '%')
-          i++;
+          {
+            num_comment_chars++;
+            i++;
+          }
         else
           break;
       }
-      
+
     curr_lexer->comment_text += &yytext[i];
 
-    if (! full_line_comment)
+    if (full_line_comment)
+      {
+        if (yytext[i++] == '{')
+          {
+            bool looks_like_block_comment = true;
+
+            while (i < len)
+              {
+                char c = yytext[i++];
+                if (! (c == ' ' || c == '\t' || c == '\n'))
+                  {
+                    looks_like_block_comment = false;
+                    break;
+                  }
+              }      
+
+            if (looks_like_block_comment)
+              {
+                yyless (0);
+
+                curr_lexer->finish_comment (octave_comment_elt::full_line);
+
+                curr_lexer->pop_start_state ();
+              }
+          }
+      }
+    else
       {
         if (have_space)
           curr_lexer->mark_previous_token_trailing_space ();
@@ -630,7 +661,7 @@ ANY_INCLUDING_NL (.|{NL})
 // the <MATRIX_START> start state code above.
 %}
 
-{S}* {
+{S}+ {
     curr_lexer->current_input_column += yyleng;
 
     curr_lexer->mark_previous_token_trailing_space ();

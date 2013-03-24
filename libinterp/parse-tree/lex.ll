@@ -470,7 +470,9 @@ ANY_INCLUDING_NL (.|{NL})
       curr_lexer->finish_comment (octave_comment_elt::block);
 
     curr_lexer->block_comment_nesting_level--;
-    curr_lexer->pop_start_state ();
+
+    if (curr_lexer->block_comment_nesting_level == 0)
+      curr_lexer->pop_start_state ();
   }
 
 %{

@@ -436,6 +436,8 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->pop_start_state ();
       }
 
+    curr_lexer->decrement_promptflag ();
+
     curr_lexer->push_start_state (BLOCK_COMMENT_START);
 
   }
@@ -472,7 +474,11 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->block_comment_nesting_level--;
 
     if (curr_lexer->block_comment_nesting_level == 0)
-      curr_lexer->pop_start_state ();
+      {
+        curr_lexer->increment_promptflag ();
+
+        curr_lexer->pop_start_state ();
+      }
   }
 
 %{

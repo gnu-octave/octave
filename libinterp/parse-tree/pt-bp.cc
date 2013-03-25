@@ -214,16 +214,10 @@ tree_breakpoint::visit_if_clause (tree_if_clause&)
 void
 tree_breakpoint::visit_if_command (tree_if_command& cmd)
 {
-  if (cmd.line () >= line)
-    take_action (cmd);
+  tree_if_command_list *lst = cmd.cmd_list ();
 
-  if (! found)
-    {
-      tree_if_command_list *lst = cmd.cmd_list ();
-
-      if (lst)
-        lst->accept (*this);
-    }
+  if (lst)
+    lst->accept (*this);
 }
 
 void

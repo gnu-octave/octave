@@ -92,6 +92,30 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
   return *this;
 }
 
+charNDArray
+charNDArray::max (int dim) const
+{
+  return do_mx_minmax_op<char> (*this, dim, mx_inline_max);
+}
+
+charNDArray
+charNDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
+{
+  return do_mx_minmax_op<char> (*this, idx_arg, dim, mx_inline_max);
+}
+
+charNDArray
+charNDArray::min (int dim) const
+{
+  return do_mx_minmax_op<char> (*this, dim, mx_inline_min);
+}
+
+charNDArray
+charNDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
+{
+  return do_mx_minmax_op<char> (*this, idx_arg, dim, mx_inline_min);
+}
+
 charNDArray&
 charNDArray::insert (const charNDArray& a, octave_idx_type r, octave_idx_type c)
 {
@@ -137,6 +161,48 @@ charNDArray
 charNDArray::diag (octave_idx_type m, octave_idx_type n) const
 {
   return Array<char>::diag (m, n);
+}
+
+charNDArray
+min (char d, const charNDArray& m)
+{
+  return do_sm_binary_op<charNDArray::element_type, char, charNDArray::element_type>
+           (d, m, mx_inline_xmin);
+}
+
+charNDArray
+min (const charNDArray& m, char d)
+{
+  return do_ms_binary_op<charNDArray::element_type, charNDArray::element_type, char>
+           (m, d, mx_inline_xmin);
+}
+
+charNDArray
+min (const charNDArray& a, const charNDArray& b)
+{
+  return do_mm_binary_op<charNDArray::element_type, charNDArray::element_type, charNDArray::element_type>
+           (a, b, mx_inline_xmin, mx_inline_xmin, mx_inline_xmin, "min");
+}
+
+charNDArray
+max (char d, const charNDArray& m)
+{
+  return do_sm_binary_op<charNDArray::element_type, char, charNDArray::element_type>
+           (d, m, mx_inline_xmax);
+}
+
+charNDArray
+max (const charNDArray& m, char d)
+{
+  return do_ms_binary_op<charNDArray::element_type, charNDArray::element_type, char>
+           (m, d, mx_inline_xmax);
+}
+
+charNDArray
+max (const charNDArray& a, const charNDArray& b)
+{
+  return do_mm_binary_op<charNDArray::element_type, charNDArray::element_type, charNDArray::element_type>
+           (a, b, mx_inline_xmax, mx_inline_xmax, mx_inline_xmax, "max");
 }
 
 NDS_CMP_OPS (charNDArray, char)

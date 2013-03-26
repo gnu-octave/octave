@@ -296,6 +296,7 @@ typedef std::map<std::string, hook_function> hook_fcn_map_type;
 static hook_fcn_map_type pre_input_event_hook_fcn_map;
 static hook_fcn_map_type input_event_hook_fcn_map;
 static hook_fcn_map_type post_input_event_hook_fcn_map;
+static hook_fcn_map_type dbstop_event_hook_fcn_map;
 
 static void
 process_input_event_hook_functions
@@ -692,6 +693,16 @@ get_debug_input (const std::string& prompt)
 
           if (have_file)
             {
+              octave_scalar_map location_info_map;
+
+              location_info_map.setfield ("file", nm);
+              location_info_map.setfield ("line", curr_debug_line);
+
+              octave_value location_info (location_info_map);
+
+              process_input_event_hook_functions (dbstop_event_hook_fcn_map,
+                                                  location_info);
+
               std::string line_buf
                 = get_file_line (nm, curr_debug_line);
 
@@ -1538,6 +1549,103 @@ interactive user input.\n\
         }
       else
         error ("remove_post_input_event_hook: argument not valid as a hook function name or id");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (add_dbstop_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{id} =} add_dbstop_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {@var{id} =} add_dbstop_event_hook (@var{fcn}, @var{data})\n\
+Add the named function or function handle @var{fcn} to the list of\n\
+functions to call when a debugger breakpoint is reached.  The function\n\
+should have the form\n\
+\n\
+@example\n\
+@var{fcn} (@var{location}, @var{data})\n\
+@end example\n\
+\n\
+in which @var{location} is a structure containing the following elements:\n\
+\n\
+@table @code\n\
+@item file\n\
+The name of the file where the breakpoint is located.\n\
+@item line\n\
+The line number corresponding to the breakpoint.\n\
+@end table\n\
+\n\
+If @var{data} is omitted when the hook function is added, the hook\n\
+function is called with a single argument.\n\
+\n\
+The returned identifier may be used to remove the function handle from\n\
+the list of input hook functions.\n\
+@seealso{remove_dbstop_event_hook}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      octave_value user_data;
+
+      if (nargin == 2)
+        user_data = args(1);
+
+      hook_function hook_fcn (args(0), user_data);
+
+      if (! error_state)
+        {
+          dbstop_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+
+          retval = hook_fcn.id ();
+        }
+      else
+        error ("add_dbstop_event_hook: expecting string as first arg");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (remove_dbstop_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} remove_dbstop_event_hook (@var{name})\n\
+@deftypefnx {Built-in Function} {} remove_dbstop_event_hook (@var{fcn_id})\n\
+Remove the named function or function handle with the given identifier\n\
+from the list of functions to call immediately after accepting\n\
+interactive user input.\n\
+@seealso{add_dbstop_event_hook}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string hook_fcn_id = args(0).string_value ();
+
+      bool warn = (nargin < 2);
+
+      if (! error_state)
+        {
+          hook_fcn_map_type::iterator p
+            = dbstop_event_hook_fcn_map.find (hook_fcn_id);
+
+          if (p != dbstop_event_hook_fcn_map.end ())
+            dbstop_event_hook_fcn_map.erase (p);
+          else if (warn)
+            warning ("remove_dbstop_event_hook: %s not found in list",
+                     hook_fcn_id.c_str ());
+        }
+      else
+        error ("remove_dbstop_event_hook: argument not valid as a hook function name or id");
     }
   else
     print_usage ();

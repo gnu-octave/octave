@@ -1275,7 +1275,7 @@ the list of input hook functions.\n\
 @seealso{remove_pre_input_event_hook}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1289,7 +1289,11 @@ the list of input hook functions.\n\
       hook_function hook_fcn (args(0), user_data);
 
       if (! error_state)
-        pre_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+        {
+          pre_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+
+          retval = hook_fcn.id ();
+        }
       else
         error ("add_pre_input_event_hook: expecting string as first arg");
     }
@@ -1464,7 +1468,7 @@ the list of input hook functions.\n\
 @seealso{remove_post_input_event_hook}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1478,7 +1482,11 @@ the list of input hook functions.\n\
       hook_function hook_fcn (args(0), user_data);
 
       if (! error_state)
-        post_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+        {
+          post_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+
+          retval = hook_fcn.id ();
+        }
       else
         error ("add_post_input_event_hook: expecting string as first arg");
     }

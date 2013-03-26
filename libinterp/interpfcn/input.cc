@@ -138,7 +138,7 @@ public:
 
   virtual bool is_valid (void) { return false; }
 
-  virtual void eval (void) { }
+  virtual void eval (const octave_value_list&) { }
 
 protected:
 
@@ -190,7 +190,10 @@ public:
 
   bool is_valid (void) { return rep->is_valid (); }
 
-  void eval (void) { rep->eval (); }
+  void eval (const octave_value_list& initial_args)
+  {
+    rep->eval (initial_args);
+  }
 
 private:
 
@@ -206,12 +209,14 @@ public:
     : name (n), data (d)
   { }
 
-  void eval (void)
+  void eval (const octave_value_list& initial_args)
   {
+    octave_value_list args = initial_args;
+
     if (data.is_defined ())
-      feval (name, data, 0);
-    else
-      feval (name, octave_value_list (), 0);
+      args.append (data);
+
+    feval (name, args, 0);
   }
 
   std::string id (void) { return name; }
@@ -245,12 +250,14 @@ public:
       }
   }
 
-  void eval (void)
+  void eval (const octave_value_list& initial_args)
   {
+    octave_value_list args = initial_args;
+
     if (data.is_defined ())
-      fcn_handle.do_multi_index_op (0, data);
-    else
-      fcn_handle.do_multi_index_op (0, octave_value_list ());
+      args.append (data);
+
+    fcn_handle.do_multi_index_op (0, args);
   }
 
   std::string id (void) { return ident; }
@@ -291,7 +298,9 @@ static hook_fcn_map_type input_event_hook_fcn_map;
 static hook_fcn_map_type post_input_event_hook_fcn_map;
 
 static void
-process_input_event_hook_functions (hook_fcn_map_type& hook_fcn_map)
+process_input_event_hook_functions
+  (hook_fcn_map_type& hook_fcn_map,
+   const octave_value_list& initial_args = octave_value_list ())
 {
   hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
 
@@ -303,7 +312,7 @@ process_input_event_hook_functions (hook_fcn_map_type& hook_fcn_map)
       hook_fcn_map_type::iterator q = p++;
 
       if (hook_fcn.is_valid ())
-        hook_fcn.eval ();
+        hook_fcn.eval (initial_args);
       else
         hook_fcn_map.erase (q);
     }

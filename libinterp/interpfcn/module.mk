@@ -11,6 +11,7 @@ INTERPFCN_INC = \
   interpfcn/error.h \
   interpfcn/file-io.h \
   interpfcn/help.h \
+  interpfcn/hook-fcn.h \
   interpfcn/input.h \
   interpfcn/load-path.h \
   interpfcn/load-save.h \

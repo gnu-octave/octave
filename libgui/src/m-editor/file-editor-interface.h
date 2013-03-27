@@ -46,12 +46,14 @@ class file_editor_interface : public octave_dock_widget
 
   virtual void handle_entered_debug_mode () = 0;
   virtual void handle_quit_debug_mode () = 0;
+  virtual void handle_dbstop_request (const QString& file, int line) = 0;
   virtual void set_focus () = 0;
 
 public slots:
   virtual void request_new_file () = 0;
   virtual void request_open_file () = 0;
-  virtual void request_open_file (const QString& fileName) = 0;
+  virtual void request_open_file (const QString& fileName, int line = -1,
+                                  bool set_marker = false) = 0;
 
 //signals:
 

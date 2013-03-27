@@ -118,6 +118,7 @@ public slots:
 
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
+  void handle_dbstop_request (const QString& file, int line);
   void debug_continue ();
   void debug_step_into ();
   void debug_step_over ();

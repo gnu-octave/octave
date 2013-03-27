@@ -55,6 +55,16 @@ post_input_event_hook_fcn (const octave_value_list&, int)
   return retval;
 }
 
+static octave_value_list
+dbstop_event_hook_fcn (const octave_value_list& args, int)
+{
+  octave_value_list retval;
+
+  octave_link::dbstop_event_hook_fcn (args);
+
+  return retval;
+}
+
 octave_main_thread::octave_main_thread () : QThread ()
 {
 }
@@ -77,6 +87,10 @@ octave_main_thread::run ()
   octave_value post_fcn (new octave_builtin (post_input_event_hook_fcn));
   octave_value post_fcn_handle (new octave_fcn_handle (post_fcn));
   Fadd_post_input_event_hook (post_fcn_handle);
+
+  octave_value dbstop_fcn (new octave_builtin (dbstop_event_hook_fcn));
+  octave_value dbstop_fcn_handle (new octave_fcn_handle (dbstop_fcn));
+  Fadd_dbstop_event_hook (dbstop_fcn_handle);
 
   // Prime the history list.
   octave_link::update_history ();

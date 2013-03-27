@@ -157,6 +157,40 @@ octave_link::do_update_history (void)
 }
 
 void
+octave_link::do_dbstop (const octave_value_list& args)
+{
+  if (event_listener)
+    {
+      if (args.length () == 1)
+        {
+          octave_scalar_map m = args(0).scalar_map_value ();
+
+          if (! error_state)
+            {
+              octave_value ov_file = m.getfield ("file");
+              octave_value ov_line = m.getfield ("line");
+
+              std::string file = ov_file.string_value ();
+              int line = ov_line.int_value ();
+
+              if (! error_state)
+                {
+                  event_listener->dbstop (file, line);
+
+                  do_process_events ();
+                }
+              else
+                ::error ("invalid struct in dbstop callback");
+            }
+          else
+            ::error ("expecting struct in dbstop callback");
+        }
+      else
+        ::error ("invalid call to dbstop callback");
+    }
+}
+
+void
 octave_link::do_pre_input_event_hook_fcn (void)
 {
   do_update_workspace ();
@@ -166,6 +200,12 @@ void
 octave_link::do_post_input_event_hook_fcn (void)
 {
   do_update_history ();
+}
+
+void
+octave_link::do_dbstop_event_hook_fcn (const octave_value_list& args)
+{
+  do_dbstop (args);
 }
 
 bool

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <iostream>
+
 #include "octave-qt-event-listener.h"
 #include <QApplication>
 
@@ -49,6 +51,12 @@ void
 octave_qt_event_listener::update_history (void)
 {
   emit update_history_signal ();
+}
+
+void
+octave_qt_event_listener::dbstop (const std::string& file, int line)
+{
+  emit dbstop_signal (QString::fromStdString (file), line);
 }
 
 void

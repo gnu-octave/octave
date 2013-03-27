@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_mutex;
 
+#include "oct-obj.h"
+
 #include "event-queue.h"
 
 #include "octave-main-thread.h"
@@ -132,6 +134,12 @@ public:
       instance->do_update_history ();
   }
 
+  static void dbstop (const octave_value_list& args)
+  {
+    if (instance_ok ())
+      instance->do_dbstop (args);
+  }
+
   static void pre_input_event_hook_fcn (void)
   {
     if (instance_ok ())
@@ -142,6 +150,12 @@ public:
   {
     if (instance_ok ())
       instance->do_post_input_event_hook_fcn ();
+  }
+
+  static void dbstop_event_hook_fcn (const octave_value_list& args)
+  {
+    if (instance_ok ())
+      instance->do_dbstop_event_hook_fcn (args);
   }
 
 private:
@@ -206,9 +220,11 @@ private:
   std::string do_last_working_directory (void);
   void do_update_workspace (void);
   void do_update_history (void);
+  void do_dbstop (const octave_value_list& args);
 
   void do_pre_input_event_hook_fcn (void);
   void do_post_input_event_hook_fcn (void);
+  void do_dbstop_event_hook_fcn (const octave_value_list& args);
 };
 
 #endif // OCTAVELINK_H

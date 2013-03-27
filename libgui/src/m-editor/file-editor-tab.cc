@@ -629,19 +629,26 @@ file_editor_tab::find (const QWidget* ID)
 }
 
 void
-file_editor_tab::goto_line (const QWidget* ID)
+file_editor_tab::goto_line (const QWidget* ID, int line)
 {
   if (ID != this)
     return;
 
-  int line, index;
+  bool ok = true;
 
-  _edit_area->getCursorPosition(&line, &index);
+  if (line <= 0)
+    {
+      bool ok = false;
 
-  bool ok = false;
+      int index;
 
-  line = QInputDialog::getInt (_edit_area, "Goto line", "Line number", 
-                               line+1, 1, _edit_area->lines(), 1, &ok);
+      _edit_area->getCursorPosition(&line, &index);
+
+
+      line = QInputDialog::getInt (_edit_area, "Goto line", "Line number", 
+                                   line+1, 1, _edit_area->lines(), 1, &ok);
+    }
+
   if (ok)
     _edit_area->setCursorPosition (line-1, 0);
 }
@@ -1103,7 +1110,7 @@ file_editor_tab::file_name_query (const QWidget* ID)
 
   // Unnamed files shouldn't be transmitted.
   if (!_file_name.isEmpty ())
-    emit add_filename_to_list (_file_name);
+    emit add_filename_to_list (_file_name, this);
 }
 
 void
@@ -1140,8 +1147,11 @@ file_editor_tab::handle_file_resave_answer (int decision)
 }
 
 void
-file_editor_tab::set_debugger_position (int line)
+file_editor_tab::set_debugger_position (const QWidget *ID, int line)
 {
+  if (ID != this || ID == 0)
+    return;
+
   _edit_area->markerDeleteAll (debugger_position);
   if (line > 0)
     {

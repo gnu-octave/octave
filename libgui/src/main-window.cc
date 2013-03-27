@@ -512,6 +512,14 @@ main_window::handle_quit_debug_mode ()
 }
 
 void
+main_window::handle_dbstop_request (const QString& file, int line)
+{
+#ifdef HAVE_QSCINTILLA
+  _file_editor->handle_dbstop_request (file, line);
+#endif
+}
+
+void
 main_window::debug_continue ()
 {
   octave_link::post_event (this, &main_window::debug_continue_callback);
@@ -1155,6 +1163,10 @@ main_window::construct ()
            SIGNAL (quit_debug_mode_signal ()),
            this,
            SLOT (handle_quit_debug_mode ()));
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (dbstop_signal (const QString&, int)), this,
+           SLOT (handle_dbstop_request (const QString&, int)));
 }
 
 void

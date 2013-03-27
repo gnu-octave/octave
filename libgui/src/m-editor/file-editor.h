@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCloseEvent>
 #include <QTabWidget>
 
+#include <map>
+
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
 
@@ -85,7 +87,8 @@ signals:
   void fetab_comment_selected_text (const QWidget* ID);
   void fetab_uncomment_selected_text (const QWidget* ID);
   void fetab_find (const QWidget* ID);
-  void fetab_goto_line (const QWidget* ID);
+  void fetab_goto_line (const QWidget* ID, int line = -1);
+  void fetab_set_debugger_position (const QWidget* ID, int line = -1);
   void fetab_set_focus (const QWidget* ID);
 
 public slots:
@@ -120,17 +123,19 @@ public slots:
   void handle_file_name_changed (const QString& fileName, const QString& toolTip);
   void handle_tab_close_request (int index);
   void handle_tab_remove_request ();
-  void handle_add_filename_to_list (const QString& fileName);
+  void handle_add_filename_to_list (const QString& fileName, QWidget *ID);
   void active_tab_changed (int index);
   void handle_editor_state_changed (bool enableCopy, const QString& fileName);
   void handle_mru_add_file (const QString& file_name);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
+  void handle_dbstop_request (const QString& file, int line);
+
   /** Tells the editor to react on changed settings. */
   void notice_settings ();
 
 private slots:
-  void request_open_file (const QString& fileName);
+  void request_open_file (const QString& fileName, int line = -1, bool = false);
 
 private:
   void construct ();
@@ -138,7 +143,8 @@ private:
   void save_file_as (QWidget *fetabID = 0);
   void mru_menu_update ();
 
-  QStringList fetFileNames;
+  std::map<QString, QWidget *> editor_tab_map;
+
   QString ced;
 
   QMenuBar *        _menu_bar;

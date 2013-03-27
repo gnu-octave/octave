@@ -37,6 +37,7 @@ class octave_qt_event_listener
   void current_directory_has_changed (const std::string& directory);
   void update_workspace (void);
   void update_history (void);
+  void dbstop (const std::string& file, int line);
   void about_to_exit ();
 
   void entered_debug_mode ();
@@ -46,6 +47,7 @@ signals:
   void current_directory_has_changed_signal (const QString& directory);
   void update_workspace_signal (void);
   void update_history_signal (void);
+  void dbstop_signal (const QString& file, int line);
   void entered_debug_mode_signal ();
   void quit_debug_mode_signal ();
 };

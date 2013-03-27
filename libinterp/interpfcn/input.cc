@@ -291,39 +291,90 @@ hook_function::hook_function (const octave_value& f, const octave_value& d)
     error ("invalid hook function");
 }
 
-typedef std::map<std::string, hook_function> hook_fcn_map_type;
-
-static hook_fcn_map_type pre_input_event_hook_fcn_map;
-static hook_fcn_map_type input_event_hook_fcn_map;
-static hook_fcn_map_type post_input_event_hook_fcn_map;
-static hook_fcn_map_type dbstop_event_hook_fcn_map;
-
-static void
-process_input_event_hook_functions
-  (hook_fcn_map_type& hook_fcn_map,
-   const octave_value_list& initial_args = octave_value_list ())
+class
+hook_function_list
 {
-  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+public:
 
-  while (p != hook_fcn_map.end ())
-    {
-      std::string hook_fcn_id = p->first;
-      hook_function hook_fcn = p->second;
+  typedef std::map<std::string, hook_function> map_type;
 
-      hook_fcn_map_type::iterator q = p++;
+  typedef map_type::iterator iterator;
+  typedef map_type::const_iterator const_iterator;
 
-      if (hook_fcn.is_valid ())
-        hook_fcn.eval (initial_args);
-      else
-        hook_fcn_map.erase (q);
-    }
-}
+  hook_function_list (void) : fcn_map () { }
+
+  ~hook_function_list (void) { }
+
+  hook_function_list (const hook_function_list& lst)
+    : fcn_map (lst.fcn_map)
+  { }
+
+  hook_function_list& operator = (const hook_function_list& lst)
+  {
+    if (&lst != this)
+      fcn_map = lst.fcn_map;
+
+    return *this;
+  }
+
+  bool empty (void) const { return fcn_map.empty (); }
+
+  void clear (void) { fcn_map.clear (); }
+
+  void insert (const std::string& id, const hook_function& f)
+  {
+    fcn_map[id] = f;
+  }
+
+  iterator find (const std::string& id)
+  {
+    return fcn_map.find (id);
+  }
+
+  const_iterator find (const std::string& id) const
+  {
+    return fcn_map.find (id);
+  }
+
+  iterator end (void) { return fcn_map.end (); }
+
+  const_iterator end (void) const { return fcn_map.end (); }
+
+  void erase (iterator p) { fcn_map.erase (p); }
+
+  void run (const octave_value_list& initial_args = octave_value_list ())
+  {
+    iterator p = fcn_map.begin ();
+
+    while (p != fcn_map.end ())
+      {
+        std::string hook_fcn_id = p->first;
+        hook_function hook_fcn = p->second;
+
+        iterator q = p++;
+
+        if (hook_fcn.is_valid ())
+          hook_fcn.eval (initial_args);
+        else
+          fcn_map.erase (q);
+      }
+  }
+
+private:
+
+  map_type fcn_map;
+};
+
+static hook_function_list pre_input_event_hook_functions;
+static hook_function_list input_event_hook_functions;
+static hook_function_list post_input_event_hook_functions;
+static hook_function_list dbstop_event_hook_functions;
 
 // For octave_quit.
 void
 remove_input_event_hook_functions (void)
 {
-  input_event_hook_fcn_map.clear ();
+  input_event_hook_functions.clear ();
 }
 
 void
@@ -406,7 +457,7 @@ octave_base_reader::octave_gets (bool& eof)
   // printing the prompt.
 
   if (interactive || forced_interactive)
-    process_input_event_hook_functions (pre_input_event_hook_fcn_map);
+    pre_input_event_hook_functions.run ();
 
   bool history_skip_auto_repeated_debugging_command = false;
 
@@ -462,7 +513,7 @@ octave_base_reader::octave_gets (bool& eof)
   // list has been updated.
 
   if (interactive || forced_interactive)
-    process_input_event_hook_functions (post_input_event_hook_fcn_map);
+    post_input_event_hook_functions.run ();
 
   return retval;
 }
@@ -700,8 +751,7 @@ get_debug_input (const std::string& prompt)
 
               octave_value location_info (location_info_map);
 
-              process_input_event_hook_functions (dbstop_event_hook_fcn_map,
-                                                  location_info);
+              dbstop_event_hook_functions.run (location_info);
 
               std::string line_buf
                 = get_file_line (nm, curr_debug_line);
@@ -1310,7 +1360,7 @@ the list of input hook functions.\n\
 
       if (! error_state)
         {
-          pre_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+          pre_input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
           retval = hook_fcn.id ();
         }
@@ -1345,11 +1395,11 @@ interactive user input.\n\
 
       if (! error_state)
         {
-          hook_fcn_map_type::iterator p
-            = pre_input_event_hook_fcn_map.find (hook_fcn_id);
+          hook_function_list::iterator p
+            = pre_input_event_hook_functions.find (hook_fcn_id);
 
-          if (p != pre_input_event_hook_fcn_map.end ())
-            pre_input_event_hook_fcn_map.erase (p);
+          if (p != pre_input_event_hook_functions.end ())
+            pre_input_event_hook_functions.erase (p);
           else if (warn)
             warning ("remove_pre_input_event_hook: %s not found in list",
                      hook_fcn_id.c_str ());
@@ -1366,9 +1416,9 @@ interactive user input.\n\
 static int
 internal_input_event_hook_fcn (void)
 {
-  process_input_event_hook_functions (input_event_hook_fcn_map);
+  input_event_hook_functions.run ();
 
-  if (input_event_hook_fcn_map.empty ())
+  if (input_event_hook_functions.empty ())
     command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
   return 0;
@@ -1409,10 +1459,10 @@ the list of input hook functions.\n\
 
       if (! error_state)
         {
-          if (input_event_hook_fcn_map.empty ())
+          if (input_event_hook_functions.empty ())
             command_editor::add_event_hook (internal_input_event_hook_fcn);
 
-          input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+          input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
           retval = hook_fcn.id ();
         }
@@ -1447,16 +1497,16 @@ for input.\n\
 
       if (! error_state)
         {
-          hook_fcn_map_type::iterator p
-            = input_event_hook_fcn_map.find (hook_fcn_id);
+          hook_function_list::iterator p
+            = input_event_hook_functions.find (hook_fcn_id);
 
-          if (p != input_event_hook_fcn_map.end ())
-            input_event_hook_fcn_map.erase (p);
+          if (p != input_event_hook_functions.end ())
+            input_event_hook_functions.erase (p);
           else if (warn)
             warning ("remove_input_event_hook: %s not found in list",
                      hook_fcn_id.c_str ());
 
-          if (input_event_hook_fcn_map.empty ())
+          if (input_event_hook_functions.empty ())
             command_editor::remove_event_hook (internal_input_event_hook_fcn);
         }
       else
@@ -1503,7 +1553,7 @@ the list of input hook functions.\n\
 
       if (! error_state)
         {
-          post_input_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+          post_input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
           retval = hook_fcn.id ();
         }
@@ -1538,11 +1588,11 @@ interactive user input.\n\
 
       if (! error_state)
         {
-          hook_fcn_map_type::iterator p
-            = post_input_event_hook_fcn_map.find (hook_fcn_id);
+          hook_function_list::iterator p
+            = post_input_event_hook_functions.find (hook_fcn_id);
 
-          if (p != post_input_event_hook_fcn_map.end ())
-            post_input_event_hook_fcn_map.erase (p);
+          if (p != post_input_event_hook_functions.end ())
+            post_input_event_hook_functions.erase (p);
           else if (warn)
             warning ("remove_post_input_event_hook: %s not found in list",
                      hook_fcn_id.c_str ());
@@ -1600,7 +1650,7 @@ the list of input hook functions.\n\
 
       if (! error_state)
         {
-          dbstop_event_hook_fcn_map[hook_fcn.id ()] = hook_fcn;
+          dbstop_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
           retval = hook_fcn.id ();
         }
@@ -1635,11 +1685,11 @@ interactive user input.\n\
 
       if (! error_state)
         {
-          hook_fcn_map_type::iterator p
-            = dbstop_event_hook_fcn_map.find (hook_fcn_id);
+          hook_function_list::iterator p
+            = dbstop_event_hook_functions.find (hook_fcn_id);
 
-          if (p != dbstop_event_hook_fcn_map.end ())
-            dbstop_event_hook_fcn_map.erase (p);
+          if (p != dbstop_event_hook_functions.end ())
+            dbstop_event_hook_functions.erase (p);
           else if (warn)
             warning ("remove_dbstop_event_hook: %s not found in list",
                      hook_fcn_id.c_str ());

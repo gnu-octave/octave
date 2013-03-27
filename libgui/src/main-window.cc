@@ -78,9 +78,6 @@ main_window::~main_window ()
   if (_terminal_dock_widget)
     delete _terminal_dock_widget;
 
-  if (_terminal)
-    delete _terminal;
-
   if (_status_bar)
     delete _status_bar;
 

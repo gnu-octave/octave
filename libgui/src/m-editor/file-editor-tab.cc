@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QTextStream>
 #include <QVBoxLayout>
+#include <QInputDialog>
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
@@ -626,6 +627,25 @@ file_editor_tab::find (const QWidget* ID)
   _find_dialog->init_search_text ();
 
 }
+
+void
+file_editor_tab::goto_line (const QWidget* ID)
+{
+  if (ID != this)
+    return;
+
+  int line, index;
+
+  _edit_area->getCursorPosition(&line, &index);
+
+  bool ok = false;
+
+  line = QInputDialog::getInt (_edit_area, "Goto line", "Line number", 
+                               line+1, 1, _edit_area->lines(), 1, &ok);
+  if (ok)
+    _edit_area->setCursorPosition (line-1, 0);
+}
+
 
 void
 file_editor_tab::do_comment_selected_text (bool comment)

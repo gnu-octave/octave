@@ -75,6 +75,7 @@ public slots:
   void comment_selected_text (const QWidget* ID);
   void uncomment_selected_text (const QWidget* ID);
   void find (const QWidget* ID);
+  void goto_line (const QWidget* ID);
 
   void set_debugger_position (int line);
 

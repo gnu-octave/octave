@@ -85,6 +85,7 @@ signals:
   void fetab_comment_selected_text (const QWidget* ID);
   void fetab_uncomment_selected_text (const QWidget* ID);
   void fetab_find (const QWidget* ID);
+  void fetab_goto_line (const QWidget* ID);
   void fetab_set_focus (const QWidget* ID);
 
 public slots:
@@ -113,6 +114,8 @@ public slots:
   void request_comment_selected_text ();
   void request_uncomment_selected_text ();
   void request_find ();
+
+  void request_goto_line ();
 
   void handle_file_name_changed (const QString& fileName, const QString& toolTip);
   void handle_tab_close_request (int index);

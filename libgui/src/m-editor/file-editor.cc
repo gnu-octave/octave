@@ -397,6 +397,13 @@ file_editor::request_find ()
 }
 
 void
+file_editor::request_goto_line ()
+{
+  emit fetab_goto_line (_tab_widget->currentWidget ());
+}
+
+
+void
 file_editor::handle_mru_add_file (const QString& file_name)
 {
   _mru_files.removeAll (file_name);
@@ -587,6 +594,8 @@ file_editor::construct ()
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
                              tr("Save File And Run"), _tool_bar);
 
+  QAction *goto_line_action  = new QAction (tr ("Go&to Line"), _tool_bar);
+
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
   // FIXME -- what should happen if settings is 0?
@@ -671,6 +680,8 @@ file_editor::construct ()
   editMenu->addAction (next_bookmark_action);
   editMenu->addAction (previous_bookmark_action);
   editMenu->addAction (remove_bookmark_action);
+  editMenu->addSeparator ();
+  editMenu->addAction (goto_line_action);
   _menu_bar->addMenu (editMenu);
 
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
@@ -736,6 +747,10 @@ file_editor::construct ()
            SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
   connect (find_action,
            SIGNAL (triggered ()), this, SLOT (request_find ()));
+
+  connect (goto_line_action,
+           SIGNAL (triggered ()), this, SLOT (request_goto_line ()));
+ 
   // The actions of the mru file menu
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
@@ -832,6 +847,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (uncomment_selected_text (const QWidget*)));
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
+  connect (this, SIGNAL (fetab_goto_line (const QWidget*)),
+           f, SLOT (goto_line (const QWidget*)));
   connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
            f, SLOT (set_focus (const QWidget*)));
 

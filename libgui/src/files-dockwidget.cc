@@ -191,11 +191,13 @@ files_dock_widget::notice_settings ()
 
   // FIXME -- what should happen if settings is 0?
 
-  _file_tree_view->setColumnHidden (0, !settings->value ("showFilenames").toBool ());
-  _file_tree_view->setColumnHidden (1, !settings->value ("showFileSize").toBool ());
-  _file_tree_view->setColumnHidden (2, !settings->value ("showFileType").toBool ());
-  _file_tree_view->setColumnHidden (3, !settings->value ("showLastModified").toBool ());
-  _file_tree_view->setAlternatingRowColors (settings->value ("useAlternatingRowColors").toBool ());
-  //if (settings.value ("showHiddenFiles").toBool ())
-  // TODO: React on option for hidden files.
+  _file_tree_view->setColumnHidden (0, !settings->value ("showFilenames",true).toBool ());
+  _file_tree_view->setColumnHidden (1, !settings->value ("showFileSize",false).toBool ());
+  _file_tree_view->setColumnHidden (2, !settings->value ("showFileType",false).toBool ());
+  _file_tree_view->setColumnHidden (3, !settings->value ("showLastModified",false).toBool ());
+  _file_tree_view->setAlternatingRowColors (settings->value ("useAlternatingRowColors",true).toBool ());
+  if (settings->value ("showHiddenFiles",false).toBool ())
+    {
+      // TODO: React on option for hidden files.
+    }
 }

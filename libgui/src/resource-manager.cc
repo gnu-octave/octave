@@ -165,7 +165,7 @@ resource_manager::do_update_network_settings (void)
 {
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
 
-  if (settings->value ("useProxyServer").toBool ())
+  if (settings->value ("useProxyServer",false).toBool ())
     {
       QString proxyTypeString = settings->value ("proxyType").toString ();
 
@@ -179,7 +179,7 @@ resource_manager::do_update_network_settings (void)
 
   proxy.setType (proxyType);
   proxy.setHostName (settings->value ("proxyHostName").toString ());
-  proxy.setPort (settings->value ("proxyPort").toInt ());
+  proxy.setPort (settings->value ("proxyPort",80).toInt ());
   proxy.setUser (settings->value ("proxyUserName").toString ());
   proxy.setPassword (settings->value ("proxyPassword").toString ());
 

@@ -215,12 +215,12 @@ main_window::notice_settings ()
 
   // Set terminal font:
   QFont term_font = QFont();
-  term_font.setFamily(settings->value("terminal/fontName").toString());
-  term_font.setPointSize(settings->value("terminal/fontSize").toInt ());
+  term_font.setFamily(settings->value("terminal/fontName","Courier New").toString());
+  term_font.setPointSize(settings->value("terminal/fontSize",10).toInt ());
   _terminal->setTerminalFont (term_font);
 
-  QString cursorType = settings->value ("terminal/cursorType").toString ();
-  bool cursorBlinking = settings->value ("terminal/cursorBlinking").toBool ();
+  QString cursorType = settings->value ("terminal/cursorType","ibeam").toString ();
+  bool cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
   if (cursorType == "ibeam")
     _terminal->setCursorType(QTerminalInterface::IBeamCursor, cursorBlinking);
   else if (cursorType == "block")
@@ -1126,14 +1126,25 @@ main_window::construct ()
 
   setWindowTitle ("Octave");
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
-  addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
-  addDockWidget (Qt::LeftDockWidgetArea, _history_dock_widget);
-  addDockWidget (Qt::RightDockWidgetArea, _files_dock_widget);
+  addDockWidget (Qt::RightDockWidgetArea, _terminal_dock_widget);
+  addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
+  tabifyDockWidget(_terminal_dock_widget,_documentation_dock_widget);
 #ifdef HAVE_QSCINTILLA
   addDockWidget (Qt::RightDockWidgetArea, _file_editor);
+  tabifyDockWidget(_terminal_dock_widget,_file_editor);
 #endif
-  addDockWidget (Qt::BottomDockWidgetArea, _terminal_dock_widget);
-  addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
+  addDockWidget (Qt::LeftDockWidgetArea, _files_dock_widget);
+  addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
+  addDockWidget (Qt::LeftDockWidgetArea, _history_dock_widget);
+
+  int win_x = QApplication::desktop()->width();
+  int win_y = QApplication::desktop()->height();
+  if (win_x > 960)
+    win_x = 960;
+  if (win_y > 720)
+    win_y = 720;
+  setGeometry (0,0,win_x,win_y);
+
   setStatusBar (_status_bar);
 
   _octave_qt_event_listener = new octave_qt_event_listener ();

@@ -247,7 +247,7 @@ file_editor_tab::update_lexer ()
   if (settings)
     lexer->setDefaultFont (QFont (
                                   settings->value ("editor/fontName",
-                                                   "Courier").toString (),
+                                                   "Courier New").toString (),
                                   settings->value ("editor/fontSize",
                                                    10).toInt ()));
 
@@ -1043,7 +1043,7 @@ file_editor_tab::notice_settings ()
   else
     _edit_area->setAutoCompletionThreshold (-1);
 
-  QFont xfont (settings->value ("editor/fontName","Courier").toString (),
+  QFont xfont (settings->value ("editor/fontName","Courier New").toString (),
                settings->value ("editor/fontSize",10).toInt ());
 
   if (settings->value ("editor/showLineNumbers",true).toBool ())

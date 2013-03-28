@@ -185,22 +185,6 @@ private:
   octave_value data;
 };
 
-hook_function::hook_function (const octave_value& f, const octave_value& d)
-{
-  if (f.is_string ())
-    {
-      std::string name = f.string_value ();
-
-      rep = new named_hook_function (name, d);
-    }
-  else if (f.is_function_handle ())
-    {
-      rep = new fcn_handle_hook_function (f, d);
-    }
-  else
-    error ("invalid hook function");
-}
-
 class
 hook_function_list
 {

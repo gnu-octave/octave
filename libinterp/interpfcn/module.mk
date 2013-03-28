@@ -37,6 +37,7 @@ INTERPFCN_SRC = \
   interpfcn/file-io.cc \
   interpfcn/graphics.cc \
   interpfcn/help.cc \
+  interpfcn/hook-fcn.cc \
   interpfcn/input.cc \
   interpfcn/load-path.cc \
   interpfcn/load-save.cc \

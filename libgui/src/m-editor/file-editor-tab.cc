@@ -1156,6 +1156,11 @@ file_editor_tab::set_debugger_position (const QWidget *ID, int line)
   if (line > 0)
     {
       _edit_area->markerAdd (line, debugger_position);
+      int first_line = _edit_area->firstVisibleLine ();
+      long int visible_lines = _edit_area->SendScintilla
+                                        (QsciScintillaBase::SCI_LINESONSCREEN);
+      first_line = first_line + (line - first_line - visible_lines/2);
+      _edit_area->setFirstVisibleLine (first_line);
     }
 }
 

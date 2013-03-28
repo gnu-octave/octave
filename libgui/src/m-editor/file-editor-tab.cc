@@ -432,33 +432,19 @@ file_editor_tab::add_breakpoint_callback (const bp_info& info)
   octave_env::chdir (info.path);
   intmap = bp_table::add_breakpoint (info.function_name, intmap);
   octave_env::chdir (previous_directory);
-
-  if (intmap.size () > 0)
-    {
-    // FIXME -- Check file.
-      _edit_area->markerAdd (info.line, breakpoint);
-    }
+  // bp_table::add_breakpoint also sets the marker in the editor
 }
 
 void
 file_editor_tab::remove_breakpoint_callback (const bp_info& info)
 {
   bp_table::intmap intmap;
-  intmap[0] = info.line;
+  intmap[0] = info.line + 1;
 
   std::string previous_directory = octave_env::get_current_directory ();
   octave_env::chdir (info.path);
   bp_table::remove_breakpoint (info.function_name, intmap);
   octave_env::chdir (previous_directory);
-
-  // FIXME -- check result
-  bool success = true;
-
-  if (success)
-    {
-      // FIXME -- check file.
-      _edit_area->markerDelete (info.line, breakpoint);
-    }
 }
 
 void

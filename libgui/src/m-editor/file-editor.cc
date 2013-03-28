@@ -148,7 +148,8 @@ file_editor::request_open_file ()
 
 void
 file_editor::request_open_file (const QString& openFileName, int line,
-                                bool set_marker)
+                                bool debug_pointer,
+                                bool dbstop_marker, bool insert)
 {
   if (openFileName.isEmpty ())
     {
@@ -171,8 +172,11 @@ file_editor::request_open_file (const QString& openFileName, int line,
             {
               emit fetab_goto_line (p->second, line);
 
-              if (set_marker)
+              if (debug_pointer)
                 emit fetab_set_debugger_position (p->second, line-1);
+
+              if (dbstop_marker)
+                emit fetab_do_dbstop_marker (insert, p->second, line-1);
             }
 
           emit fetab_set_focus (p->second);
@@ -196,8 +200,11 @@ file_editor::request_open_file (const QString& openFileName, int line,
                     {
                       emit fetab_goto_line (fileEditorTab, line);
 
-                      if (set_marker)
+                      if (debug_pointer)
                         emit fetab_set_debugger_position (fileEditorTab, line-1);
+                      if (dbstop_marker)
+                        emit fetab_do_dbstop_marker
+                          (insert, fileEditorTab, line-1);
                     }
                 }
               else
@@ -295,6 +302,13 @@ void
 file_editor::handle_update_debug_pointer_request (const QString& file, int line)
 {
   request_open_file (file, line, true);
+}
+
+void
+file_editor::handle_update_dbstop_marker_request (bool insert,
+                                                  const QString& file, int line)
+{
+  request_open_file (file, line, false, true, insert);
 }
 
 void
@@ -870,6 +884,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (set_focus (const QWidget*)));
   connect (this, SIGNAL (fetab_set_debugger_position (const QWidget *, int)),
            f, SLOT (set_debugger_position (const QWidget *, int)));
+  connect (this, SIGNAL (fetab_do_dbstop_marker (bool, const QWidget *, int)),
+           f, SLOT (do_dbstop_marker (bool, const QWidget *, int)));
 
   _tab_widget->setCurrentWidget (f);
 }

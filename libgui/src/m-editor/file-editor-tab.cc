@@ -638,7 +638,7 @@ file_editor_tab::goto_line (const QWidget* ID, int line)
 
   if (line <= 0)
     {
-      bool ok = false;
+      ok = false;
 
       int index;
 
@@ -1156,6 +1156,21 @@ file_editor_tab::set_debugger_position (const QWidget *ID, int line)
   if (line > 0)
     {
       _edit_area->markerAdd (line, debugger_position);
+    }
+}
+
+void
+file_editor_tab::do_dbstop_marker (bool insert, const QWidget *ID, int line)
+{
+  if (ID != this || ID == 0)
+    return;
+
+  if (line > 0)
+    {
+      if (insert)
+        _edit_area->markerAdd (line, breakpoint);
+      else
+        _edit_area->markerDelete (line, breakpoint);
     }
 }
 

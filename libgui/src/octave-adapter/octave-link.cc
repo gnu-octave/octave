@@ -180,13 +180,13 @@ octave_link::do_update_debug_pointer (const octave_value_list& args)
                   do_process_events ();
                 }
               else
-                ::error ("invalid struct in dbstop callback");
+                ::error ("invalid struct in debug pointer callback");
             }
           else
-            ::error ("expecting struct in dbstop callback");
+            ::error ("expecting struct in debug pointer callback");
         }
       else
-        ::error ("invalid call to dbstop callback");
+        ::error ("invalid call to debug pointer callback");
     }
 }
 
@@ -206,6 +206,41 @@ void
 octave_link::do_debug_input_event_hook_fcn (const octave_value_list& args)
 {
   do_update_debug_pointer (args);
+}
+
+void
+octave_link::do_update_breakpoint_hook_fcn
+  (bool insert, const octave_value_list& args)
+{
+  if (event_listener)
+    {
+      if (args.length () == 1)
+        {
+          octave_scalar_map m = args(0).scalar_map_value ();
+
+          if (! error_state)
+            {
+              octave_value ov_file = m.getfield ("file");
+              octave_value ov_line = m.getfield ("line");
+
+              std::string file = ov_file.string_value ();
+              int line = ov_line.int_value ();
+
+              if (! error_state)
+                {
+                  event_listener->update_dbstop_marker (insert, file, line);
+
+                  do_process_events ();
+                }
+              else
+                ::error ("invalid struct in dbstop marker callback");
+            }
+          else
+            ::error ("expecting struct in dbstop marker callback");
+        }
+      else
+        ::error ("invalid call to dbstop marker callback");
+    }
 }
 
 bool

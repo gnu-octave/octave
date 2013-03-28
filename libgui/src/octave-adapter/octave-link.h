@@ -152,6 +152,13 @@ public:
       instance->do_debug_input_event_hook_fcn (args);
   }
 
+  static void
+  update_breakpoint_hook_fcn (bool insert, const octave_value_list& args)
+  {
+    if (instance_ok ())
+      instance->do_update_breakpoint_hook_fcn (insert, args);
+  }
+
 private:
 
   static octave_link *instance;
@@ -219,6 +226,8 @@ private:
   void do_pre_input_event_hook_fcn (void);
   void do_post_input_event_hook_fcn (void);
   void do_debug_input_event_hook_fcn (const octave_value_list& args);
+  void do_update_breakpoint_hook_fcn (bool insert,
+                                      const octave_value_list& args);
 };
 
 #endif // OCTAVELINK_H

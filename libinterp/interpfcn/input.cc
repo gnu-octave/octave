@@ -501,14 +501,8 @@ get_debug_input (const std::string& prompt)
 
           if (have_file)
             {
-              octave_scalar_map location_info_map;
-
-              location_info_map.setfield ("file", nm);
-              location_info_map.setfield ("line", curr_debug_line);
-
-              octave_value location_info (location_info_map);
-
-              debug_input_event_hook_functions.run (location_info);
+              debug_input_event_hook_functions.run
+                (location_info (nm, curr_debug_line));
 
               std::string line_buf
                 = get_file_line (nm, curr_debug_line);

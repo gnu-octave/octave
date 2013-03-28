@@ -78,6 +78,7 @@ public slots:
   void goto_line (const QWidget* ID, int line = -1);
 
   void set_debugger_position (const QWidget *ID, int line = -1);
+  void do_dbstop_marker (bool insert, const QWidget *ID, int line = -1);
 
   void set_modified (bool modified = true);
 

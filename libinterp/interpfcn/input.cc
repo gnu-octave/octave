@@ -125,7 +125,7 @@ char Vfilemarker = '>';
 static hook_function_list pre_input_event_hook_functions;
 static hook_function_list input_event_hook_functions;
 static hook_function_list post_input_event_hook_functions;
-static hook_function_list dbstop_event_hook_functions;
+static hook_function_list debug_input_event_hook_functions;
 
 // For octave_quit.
 void
@@ -508,7 +508,7 @@ get_debug_input (const std::string& prompt)
 
               octave_value location_info (location_info_map);
 
-              dbstop_event_hook_functions.run (location_info);
+              debug_input_event_hook_functions.run (location_info);
 
               std::string line_buf
                 = get_file_line (nm, curr_debug_line);
@@ -1368,10 +1368,10 @@ interactive user input.\n\
   return retval;
 }
 
-DEFUN (add_dbstop_event_hook, args, ,
+DEFUN (add_debug_input_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{id} =} add_dbstop_event_hook (@var{fcn})\n\
-@deftypefnx {Built-in Function} {@var{id} =} add_dbstop_event_hook (@var{fcn}, @var{data})\n\
+@deftypefn  {Built-in Function} {@var{id} =} add_debug_input_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {@var{id} =} add_debug_input_event_hook (@var{fcn}, @var{data})\n\
 Add the named function or function handle @var{fcn} to the list of\n\
 functions to call when a debugger breakpoint is reached.  The function\n\
 should have the form\n\
@@ -1394,7 +1394,7 @@ function is called with a single argument.\n\
 \n\
 The returned identifier may be used to remove the function handle from\n\
 the list of input hook functions.\n\
-@seealso{remove_dbstop_event_hook}\n\
+@seealso{remove_debug_input_event_hook}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1412,12 +1412,12 @@ the list of input hook functions.\n\
 
       if (! error_state)
         {
-          dbstop_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
+          debug_input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
           retval = hook_fcn.id ();
         }
       else
-        error ("add_dbstop_event_hook: expecting string as first arg");
+        error ("add_debug_input_event_hook: expecting string as first arg");
     }
   else
     print_usage ();
@@ -1425,14 +1425,14 @@ the list of input hook functions.\n\
   return retval;
 }
 
-DEFUN (remove_dbstop_event_hook, args, ,
+DEFUN (remove_debug_input_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} remove_dbstop_event_hook (@var{name})\n\
-@deftypefnx {Built-in Function} {} remove_dbstop_event_hook (@var{fcn_id})\n\
+@deftypefn {Built-in Function} {} remove_debug_input_event_hook (@var{name})\n\
+@deftypefnx {Built-in Function} {} remove_debug_input_event_hook (@var{fcn_id})\n\
 Remove the named function or function handle with the given identifier\n\
 from the list of functions to call immediately after accepting\n\
 interactive user input.\n\
-@seealso{add_dbstop_event_hook}\n\
+@seealso{add_debug_input_event_hook}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1448,16 +1448,16 @@ interactive user input.\n\
       if (! error_state)
         {
           hook_function_list::iterator p
-            = dbstop_event_hook_functions.find (hook_fcn_id);
+            = debug_input_event_hook_functions.find (hook_fcn_id);
 
-          if (p != dbstop_event_hook_functions.end ())
-            dbstop_event_hook_functions.erase (p);
+          if (p != debug_input_event_hook_functions.end ())
+            debug_input_event_hook_functions.erase (p);
           else if (warn)
-            warning ("remove_dbstop_event_hook: %s not found in list",
+            warning ("remove_debug_input_event_hook: %s not found in list",
                      hook_fcn_id.c_str ());
         }
       else
-        error ("remove_dbstop_event_hook: argument not valid as a hook function name or id");
+        error ("remove_debug_input_event_hook: argument not valid as a hook function name or id");
     }
   else
     print_usage ();

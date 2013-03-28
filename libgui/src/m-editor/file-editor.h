@@ -129,7 +129,7 @@ public slots:
   void handle_mru_add_file (const QString& file_name);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
-  void handle_dbstop_request (const QString& file, int line);
+  void handle_update_debug_pointer_request (const QString& file, int line);
 
   /** Tells the editor to react on changed settings. */
   void notice_settings ();

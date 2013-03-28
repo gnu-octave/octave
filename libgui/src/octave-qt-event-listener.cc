@@ -54,9 +54,10 @@ octave_qt_event_listener::update_history (void)
 }
 
 void
-octave_qt_event_listener::dbstop (const std::string& file, int line)
+octave_qt_event_listener::update_debug_pointer (const std::string& file,
+                                                int line)
 {
-  emit dbstop_signal (QString::fromStdString (file), line);
+  emit update_debug_pointer_signal (QString::fromStdString (file), line);
 }
 
 void

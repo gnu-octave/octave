@@ -157,7 +157,7 @@ octave_link::do_update_history (void)
 }
 
 void
-octave_link::do_dbstop (const octave_value_list& args)
+octave_link::do_update_debug_pointer (const octave_value_list& args)
 {
   if (event_listener)
     {
@@ -175,7 +175,7 @@ octave_link::do_dbstop (const octave_value_list& args)
 
               if (! error_state)
                 {
-                  event_listener->dbstop (file, line);
+                  event_listener->update_debug_pointer (file, line);
 
                   do_process_events ();
                 }
@@ -203,9 +203,9 @@ octave_link::do_post_input_event_hook_fcn (void)
 }
 
 void
-octave_link::do_dbstop_event_hook_fcn (const octave_value_list& args)
+octave_link::do_debug_input_event_hook_fcn (const octave_value_list& args)
 {
-  do_dbstop (args);
+  do_update_debug_pointer (args);
 }
 
 bool

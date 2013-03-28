@@ -292,7 +292,7 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
 }
 
 void
-file_editor::handle_dbstop_request (const QString& file, int line)
+file_editor::handle_update_debug_pointer_request (const QString& file, int line)
 {
   request_open_file (file, line, true);
 }

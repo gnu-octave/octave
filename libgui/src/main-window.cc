@@ -510,10 +510,10 @@ main_window::handle_quit_debug_mode ()
 }
 
 void
-main_window::handle_dbstop_request (const QString& file, int line)
+main_window::handle_update_debug_pointer_request (const QString& file, int line)
 {
 #ifdef HAVE_QSCINTILLA
-  _file_editor->handle_dbstop_request (file, line);
+  _file_editor->handle_update_debug_pointer_request (file, line);
 #endif
 }
 
@@ -1174,8 +1174,8 @@ main_window::construct ()
            SLOT (handle_quit_debug_mode ()));
 
   connect (_octave_qt_event_listener,
-           SIGNAL (dbstop_signal (const QString&, int)), this,
-           SLOT (handle_dbstop_request (const QString&, int)));
+           SIGNAL (update_debug_pointer_signal (const QString&, int)), this,
+           SLOT (handle_update_debug_pointer_request (const QString&, int)));
 }
 
 void

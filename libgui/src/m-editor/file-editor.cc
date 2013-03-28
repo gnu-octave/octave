@@ -658,6 +658,8 @@ file_editor::construct ()
   uncomment_selection_action->setShortcutContext(Qt::WindowShortcut);
   find_action->setShortcut                      (QKeySequence::Find);
   find_action->setShortcutContext               (Qt::WindowShortcut);
+  goto_line_action->setShortcut                 (Qt::ControlModifier+ Qt::Key_G);
+  goto_line_action->setShortcutContext          (Qt::WindowShortcut);
 
   // toolbar
   _tool_bar->addAction (new_action);

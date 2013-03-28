@@ -620,23 +620,23 @@ file_editor_tab::goto_line (const QWidget* ID, int line)
   if (ID != this)
     return;
 
-  bool ok = true;
-
-  if (line <= 0)
+  if (line <= 0)  // ask for desired line
     {
-      ok = false;
-
+      bool ok = false;
       int index;
-
       _edit_area->getCursorPosition(&line, &index);
-
-
-      line = QInputDialog::getInt (_edit_area, "Goto line", "Line number", 
+      line = QInputDialog::getInt (_edit_area, tr("Goto line"), tr("Line number"),
                                    line+1, 1, _edit_area->lines(), 1, &ok);
+      if (ok)
+        {
+          _edit_area->setCursorPosition (line-1, 0);
+          center_current_line ();
+        }
     }
-
-  if (ok)
-    _edit_area->setCursorPosition (line-1, 0);
+  else  // go to given line without dialog
+    {
+      _edit_area->setCursorPosition (line-1, 0);
+    }
 }
 
 
@@ -1142,11 +1142,7 @@ file_editor_tab::set_debugger_position (const QWidget *ID, int line)
   if (line > 0)
     {
       _edit_area->markerAdd (line, debugger_position);
-      int first_line = _edit_area->firstVisibleLine ();
-      long int visible_lines = _edit_area->SendScintilla
-                                        (QsciScintillaBase::SCI_LINESONSCREEN);
-      first_line = first_line + (line - first_line - visible_lines/2);
-      _edit_area->setFirstVisibleLine (first_line);
+      center_current_line ();
     }
 }
 
@@ -1162,6 +1158,22 @@ file_editor_tab::do_dbstop_marker (bool insert, const QWidget *ID, int line)
         _edit_area->markerAdd (line, breakpoint);
       else
         _edit_area->markerDelete (line, breakpoint);
+    }
+}
+
+
+void
+file_editor_tab::center_current_line ()
+{
+  long int visible_lines = _edit_area->SendScintilla
+                                    (QsciScintillaBase::SCI_LINESONSCREEN);
+  if (visible_lines > 2)
+    {
+      int line, index;
+      _edit_area->getCursorPosition(&line,&index);
+      int first_line = _edit_area->firstVisibleLine ();
+      first_line = first_line + (line - first_line - (visible_lines-1)/2);
+      _edit_area->setFirstVisibleLine (first_line);
     }
 }
 

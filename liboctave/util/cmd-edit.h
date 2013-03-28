@@ -37,7 +37,7 @@ command_editor
 protected:
 
   command_editor (void)
-    : command_number (0) { }
+    : command_number (0), interrupted (false) { }
 
 public:
 
@@ -146,6 +146,8 @@ public:
   static bool filename_completion_desired (bool);
 
   static bool filename_quoting_desired (bool);
+
+  static bool interrupt (bool);
 
   static int current_command_number (void);
 
@@ -287,6 +289,8 @@ protected:
 
   virtual bool do_filename_quoting_desired (bool) { return false; }
 
+  virtual void do_interrupt (bool) { }
+
   int read_octal (const std::string& s);
 
   void error (int);
@@ -295,6 +299,8 @@ protected:
 
   // The current command number.
   int command_number;
+
+  bool interrupted;
 };
 
 #endif

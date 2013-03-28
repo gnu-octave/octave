@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "version.h"
 
+#include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "oct-env.h"
 
@@ -1215,22 +1216,35 @@ main_window::debug_continue_callback (void)
   Fdbcont ();
 }
 
+// The next three callbacks are invoked by GUI buttons.  Those buttons
+// should only be active when we are doing debugging, which means that
+// Octave is waiting for input in get_debug_input.  Calling
+// command_editor::interrupt will force readline to return even if it
+// has not read any input, and then get_debug_input will return,
+// allowing the evaluator to continue and execute the next statement.
+
 void
 main_window::debug_step_into_callback (void)
 {
   Fdbstep (ovl ("in"));
+
+  command_editor::interrupt (true);
 }
 
 void
 main_window::debug_step_over_callback (void)
 {
   Fdbstep ();
+
+  command_editor::interrupt (true);
 }
 
 void
 main_window::debug_step_out_callback (void)
 {
   Fdbstep (ovl ("out"));
+
+  command_editor::interrupt (true);
 }
 
 void

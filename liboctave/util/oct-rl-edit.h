@@ -90,6 +90,8 @@ extern int octave_rl_filename_completion_desired (int);
 
 extern int octave_rl_filename_quoting_desired (int);
 
+extern void octave_rl_done (int);
+
 extern char *octave_rl_filename_completion_function (const char *, int);
 
 extern void octave_rl_set_basic_word_break_characters (const char *);

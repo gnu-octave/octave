@@ -163,6 +163,8 @@ public:
 
   bool do_filename_quoting_desired (bool);
 
+  void do_interrupt (bool);
+
   static int operate_and_get_next (int, int);
 
   static int history_search_backward (int, int);
@@ -585,6 +587,12 @@ bool
 gnu_readline::do_filename_quoting_desired (bool arg)
 {
   return ::octave_rl_filename_quoting_desired (arg);
+}
+
+void
+gnu_readline::do_interrupt (bool arg)
+{
+  ::octave_rl_done (arg);
 }
 
 int
@@ -1268,6 +1276,26 @@ command_editor::filename_quoting_desired (bool arg)
 {
   return (instance_ok ())
     ? instance->do_filename_quoting_desired (arg) : false;
+}
+
+bool
+command_editor::interrupt (bool arg)
+{
+  bool retval;
+
+  if (instance_ok ())
+    {
+      // Return the current interrupt state.
+      retval = instance->interrupted;
+
+      instance->do_interrupt (arg);
+
+      instance->interrupted = arg;
+    }
+  else
+    retval = false;
+
+  return retval;
 }
 
 // Return a string which will be printed as a prompt.  The string may

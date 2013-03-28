@@ -218,6 +218,12 @@ octave_rl_filename_quoting_desired (int arg)
   return retval;
 }
 
+void
+octave_rl_done (int arg)
+{
+  rl_done = arg;
+}
+
 char *
 octave_rl_filename_completion_function (const char *text, int state)
 {

@@ -554,15 +554,20 @@ get_debug_input (const std::string& prompt)
 
       int retval = curr_parser.run ();
 
-      if (retval == 0 && curr_parser.stmt_list)
+      if (command_editor::interrupt (false))
+        break;
+      else
         {
-          curr_parser.stmt_list->accept (*current_evaluator);
+          if (retval == 0 && curr_parser.stmt_list)
+            {
+              curr_parser.stmt_list->accept (*current_evaluator);
 
-          if (octave_completion_matches_called)
-            octave_completion_matches_called = false;
+              if (octave_completion_matches_called)
+                octave_completion_matches_called = false;
+            }
+
+          octave_quit ();
         }
-
-      octave_quit ();
     }
 }
 

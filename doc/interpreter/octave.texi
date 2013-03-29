@@ -379,16 +379,17 @@ Statements
 * The try Statement::           
 * Continuation Lines::          
 
-The @code{switch} Statement
+The switch Statement
 
 * Notes for the C Programmer::  
 
-The @code{for} Statement
+The for Statement
 
 * Looping Over Structure Elements::  
 
 Functions and Scripts
 
+* Introduction to Function and Script Files::
 * Defining Functions::          
 * Multiple Return Values::      
 * Variable-length Argument Lists::  
@@ -407,6 +408,7 @@ Function Files
 * Manipulating the Load Path::
 * Subfunctions::
 * Private Functions::
+* Nested Functions::
 * Overloading and Autoloading::
 * Function Locking::
 * Function Precedence::
@@ -760,6 +762,20 @@ Networking Utilities
 
 * FTP Objects::
 * URL Manipulation::
+
+Java Interface
+
+* Java Interface Functions::
+* Dialog Box Functions::
+* FAQ - Frequently asked Questions::
+
+FAQ - Frequently asked Questions
+
+* How to distinguish between Octave and @sc{matlab}?::
+* How to make Java classes available?::
+* How to create an instance of a Java class?::
+* How can I handle memory limitations?::
+* Which @TeX{} symbols are implemented in the dialog functions?::
 
 Packages
 

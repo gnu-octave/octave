@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStyle>
 #include <QToolBar>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QIcon>

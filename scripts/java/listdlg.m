@@ -24,40 +24,40 @@
 ## closed the box with the OK button, otherwise it is 0 and @var{sel} is
 ## empty.
 ##
-## The indices in @var{sel} are 1 based.
+## The indices in @var{sel} are 1-based.
 ##
 ## The arguments are specified in form of @var{key}, @var{value} pairs. 
-## The @code{"ListString"} argument pair must be specified.
+## The "ListString" argument pair must be specified.
 ##
 ## Valid @var{key} and @var{value} pairs are:
 ##
-## @table @code
+## @table @asis
 ## @item "ListString"
-##    a cell array of strings comprising the content of the list.
+## a cell array of strings comprising the content of the list.
 ##
 ## @item "SelectionMode"
-##    can be either @code{"Single"} or @code{"Multiple"} (default).
+## can be either "Single" or "Multiple" (default).
 ##
 ## @item "ListSize"
-##    a vector with two elements @var{width} and @var{height} defining
-##    the size of the list field in pixels.  Default is [160 300].
+## a vector with two elements @var{width} and @var{height} defining
+## the size of the list field in pixels.  Default is [160 300].
 ##
 ## @item "InitialValue"
-##    a vector containing 1-based indices of preselected elements.  Default
-##    is 1 (first item).
+## a vector containing 1-based indices of preselected elements.  Default
+## is 1 (first item).
 ##
 ## @item "Name"
-##    a string to be used as the dialog caption.  Default is "".
+## a string to be used as the dialog caption.  Default is "".
 ##
 ## @item "PromptString"
-##    a cell array of strings to be displayed above the list field.  Default
-##    is @{@}.
+## a cell array of strings to be displayed above the list field.  Default
+## is @{@}.
 ##
 ## @item "OKString"
-##    a string used to label the OK button.  Default is "OK".
+## a string used to label the OK button.  Default is "OK".
 ##
 ## @item "CancelString"
-##    a string used to label the Cancel button.  Default is "Cancel".
+## a string used to label the Cancel button.  Default is "Cancel".
 ## @end table
 ##
 ## Example:

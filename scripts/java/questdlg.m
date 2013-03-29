@@ -28,13 +28,13 @@
 ## The dialog may contain two or three buttons which will all close the dialog.
 ##
 ## The message may have multiple lines separated by newline characters
-## (@code{"\n"}), or it may be a cellstr array with one element for each
+## ("\n"), or it may be a cellstr array with one element for each
 ## line.  The optional @var{title} (character string) can be used to
 ## decorate the dialog caption.
 ##
 ## The string @var{default} identifies the default button, 
-## which is activated by pressing the @kbd{ENTER} key.
-## It must match one of the strings given in @var{btn1}, @var{btn2} or
+## which is activated by pressing the @key{ENTER} key.
+## It must match one of the strings given in @var{btn1}, @var{btn2}, or
 ## @var{btn3}.
 ##
 ## If only @var{msg} and @var{title} are specified, three buttons with

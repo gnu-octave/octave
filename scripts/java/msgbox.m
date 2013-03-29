@@ -28,7 +28,7 @@
 ## decorate the dialog caption.
 ##
 ## The optional argument @var{icon} selects a dialog icon. 
-## It can be one of @code{"none"} (default), @code{"error"}, @code{"help"} or
+## It can be one of @code{"none"} (default), @code{"error"}, @code{"help"}, or
 ## @code{"warn"}.
 ##
 ## The return value is always 1.

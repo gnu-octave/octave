@@ -31,13 +31,13 @@
 ## your computer's total memory (which comprises physical RAM and
 ## virtual memory / swap space on hard disk).
 ##
-## The maximum allowable memory usage can be set using the file java.opts
-## (in the same subdirectory where javaaddpath.m lives, see 
-## "which javaaddpath".  Usually that is:
+## The maximum allowable memory usage can be configured using the file
+## @file{java.opts}.  The directory where this file resides is
+## determined by the environment variable @w{@env{OCTAVE_JAVA_DIR}}.
+## If unset, the directory where @file{javaaddpath.m} resides is used instead
+## (typically @file{@env{OCTAVE_HOME}/share/octave/@env{OCTAVE_VERSION}/m/java/}
 ##
-## @file{OCTAVE_HOME/share/octave/OCTAVE_VERSION/m/java/}
-##
-## java.opts is a plain text file with one option per line.  The
+## @file{java.opts} is a plain text file with one option per line.  The
 ## default initial memory size and default maximum memory size (which
 ## are both system dependent) can be overridden like so:
 ##
@@ -45,7 +45,7 @@
 ##
 ## @nospell{-Xmx512m}
 ##
-## (in megabytes in this example.)
+## (in megabytes in this example).
 ## You can adapt these values to your own requirements if your system
 ## has limited available physical memory or if you get Java memory
 ## errors.

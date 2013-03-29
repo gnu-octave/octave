@@ -24,18 +24,18 @@
 @cindex calling Java from Octave
 @cindex Java, calling from Octave
 @cindex calling Octave from Java
-@cindex  Octave, calling from Java
+@cindex Octave, calling from Java
 
 The Java Interface is designed for calling Java functions from within Octave.
 If you want to do the reverse, and call Octave from within Java, try
-a library like 
+a library like
 @code{javaOctave} (@url{http://kenai.com/projects/javaOctave}) or
-@code{joPas} (@url{http://jopas.sourceforge.net}). 
+@code{joPas} (@url{http://jopas.sourceforge.net}).
 
 @menu
-* Java Interface Functions::         
-* Dialog Box Functions::         
-* FAQ - Frequently asked Questions::  
+* Java Interface Functions::
+* Dialog Box Functions::
+* FAQ - Frequently asked Questions::
 @end menu
 
 @node Java Interface Functions
@@ -43,21 +43,21 @@ a library like
 
 The following functions are the core of the Java Interface.  They provide
 a way to create a Java object, get and set its data fields, and call Java
-methods which return results to Octave. 
+methods which return results to Octave.
 
 @cindex object, creating a Java object
 @DOCSTRING(javaObject)
 
 @cindex fields, displaying available fields of a Java object
-FIXME: Need documentation on how fieldnames() is overloaded to return
+@strong{FIXME:} Need documentation on how fieldnames() is overloaded to return
 the methods of a Java object.
 
 @cindex field, returning value of Java object field
-FIXME: Need documentation on how to use structure-like indexing
+@strong{FIXME:} Need documentation on how to use structure-like indexing
 to get fields from Java object.
 
 @cindex field, setting value of Java object field
-FIXME: Need documentation on how to use structure-like indexing
+@strong{FIXME:} Need documentation on how to use structure-like indexing
 to set fields from Java object.
 
 @DOCSTRING(isjava)
@@ -69,7 +69,7 @@ to set fields from Java object.
 @DOCSTRING(javaMethod)
 
 @cindex methods, displaying available methods of a Java object
-FIXME: Need documentation on how methods() is overloaded to return
+@strong{FIXME:} Need documentation on how methods() is overloaded to return
 the methods of a Java object.
 
 The following three functions are used to display and modify the
@@ -141,43 +141,43 @@ of dialog box.
 @section FAQ - Frequently asked Questions
 
 @menu
-* How to distinguish between Octave and Matlab?::  
-* How to make Java classes available?::  
-* How to create an instance of a Java class?::  
-* How can I handle memory limitations?::  
-* Which @TeX{} symbols are implemented in the dialog functions?::  
+* How to distinguish between Octave and @sc{matlab}?::
+* How to make Java classes available?::
+* How to create an instance of a Java class?::
+* How can I handle memory limitations?::
+* Which @TeX{} symbols are implemented in the dialog functions?::
 @end menu
 
 @c ------------------------------------------------------------------------
-@node How to distinguish between Octave and Matlab?
-@subsection How to distinguish between Octave and Matlab? 
+@node How to distinguish between Octave and @sc{matlab}?
+@subsection How to distinguish between Octave and @sc{matlab}?
 @anchor{doc-FAQ}
 @c - index -
-@cindex Octave and Matlab, how to distinguish between
+@cindex Octave and @sc{matlab}, how to distinguish between
 @c - index -
 
-Octave and @sc{matlab} are very similar, but handle Java slightly different. 
+Octave and @sc{matlab} are very similar, but handle Java slightly different.
 Therefore it may be necessary to detect the environment and use the appropriate
 functions.  The following function can be used to detect the environment.  Due
 to the persistent variable it can be called repeatedly without a heavy
-performance hit. 
+performance hit.
 
-Example: 
+Example:
 
 @example
 @group
 %% 
-%% Return: true if the environment is Octave. 
+%% Return: true if the environment is Octave.
 %% 
-function ret = isOctave 
-  persistent retval;  % speeds up repeated calls 
+function retval = isOctave
+  persistent cacheval;  % speeds up repeated calls
 
-  if isempty(retval)
-    retval = (exist('Octave_VERSION','builtin') > 0); 
-  end 
+  if isempty (cacheval)
+    cacheval = (exist ('OCTAVE_VERSION', 'builtin') > 0);
+  end
 
-  ret = retval; 
-end 
+  retval = cacheval;
+end
 @end group
 @end example
 
@@ -189,13 +189,14 @@ end
 @cindex classpath, difference between static and dynamic
 @cindex static classpath
 @cindex dynamic classpath
+@cindex @file{javaclasspath.txt}
 @cindex @file{classpath.txt}
 @cindex classes, making available to Octave
 @c - index -
 
 Java finds classes by searching a @var{classpath}.  This is a list of Java
-archive files and/or directories containing class files.  In Octave and
-@sc{matlab} the @var{classpath} is composed of two parts:
+archive files and/or directories containing class files.  In Octave
+the @var{classpath} is composed of two parts:
 
 @itemize
 @item the @var{static classpath} is initialized once at startup of the JVM, and
@@ -206,74 +207,74 @@ archive files and/or directories containing class files.  In Octave and
 Octave searches the @var{static classpath} first, then the @var{dynamic
 classpath}.  Classes appearing in the @var{static} as well as in the
 @var{dynamic classpath} will therefore be found in the @var{static classpath}
-and loaded from this location.  Classes which shall be used regularly or must
+and loaded from this location.  Classes which will be used frequently or must
 be available to all users should be added to the @var{static classpath}.  The
 @var{static classpath} is populated once from the contents of a plain text file
-named @file{classpath.txt} or @file{javaclasspath.txt} when the Java Virtual
-Machine starts.  This file contains one line for each individual classpath to be
-added to the @var{static classpath}.  These lines can identify single class
-files, directories containing class files or Java archives with complete class
-file hierarchies.  Comment lines starting with a @code{#} or a @code{%}
-character are ignored.
+named @file{javaclasspath.txt} (or @file{classpath.txt} historically) when the
+Java Virtual Machine starts.  This file contains one line for each individual
+classpath to be added to the @var{static classpath}.  These lines can identify
+single class files, directories containing class files, or Java archives with
+complete class file hierarchies.  Comment lines starting with a @samp{#} or a
+@samp{%} character are ignored.
 
-The search rules for the file @file{classpath.txt} (or @file{javaclasspath.txt})
-are:
+The search rules for the file @file{javaclasspath.txt}
+(or @file{classpath.txt}) are:
 
 @itemize
 @item First, Octave tries to locate it in the current directory (where Octave
-was started from). If such a file is found, it is read and defines the initial
-@var{static classpath}. So it is possible to define a static classpath on a 'per
-Octave invocation' basis.
+was started from).  If such a file is found, it is read and defines the initial
+@var{static classpath}.  Thus, it is possible to define a static classpath on a
+'per Octave invocation' basis.
 
-@item Next, Octave searches in the user's home directory. If a file
-@file{classpath.txt} (or @file{javaclasspath.txt}) exists here, its contents
-are appended to the static classpath (if any). Thus it is possible to build an
-initial static classpath on a 'per user' basis.
+@item Next, Octave searches in the user's home directory.  If a file
+@file{javaclasspath.txt} exists here, its contents are appended to the static
+classpath (if any).  Thus, it is possible to build an initial static classpath
+on a 'per user' basis.
 
-@item Finally, Octave looks for a next occurrence of file @file{classpath.txt}
-(@file{javaclasspath.txt}) in the m-files directory where Octave Java functions
-live. This is where @file{javaclasspath.m} resides, usually something like 
-@file{@dots{}/share/octave/packages/<version>/m/java}. You can find this
-directory by executing the command 
+@item Finally, Octave looks for a next occurrence of file
+@file{javaclasspath.txt} in the m-files directory where Octave Java functions 
+live.  This is where @file{javaclasspath.m} resides, usually something like
+@file{@env{OCTAVE_HOME}/share/octave/@env{OCTAVE_VERSION}/m/java/}.  You can
+find this directory by executing the command
 
 @example
 which javaclasspath
 @end example
 
-If this file exists here, its contents are also appended to the static classpath.
-Note that the archives and class directories defined in this last step will affect
-all users.
+If this file exists here, its contents are also appended to the static
+classpath.  Note that the archives and class directories defined in this last
+step will affect all users.
 @end itemize
 
 Classes which are used only by a specific script should be placed in the
 @var{dynamic classpath}.  This portion of the classpath can be modified at
-runtime using the @code{javaaddpath} and @code{javarmpath} functions. 
+runtime using the @code{javaaddpath} and @code{javarmpath} functions.
 
-Example: 
+Example:
 
 @example
-octave> base_path = 'C:/Octave/java_files'; 
+octave> base_path = 'C:/Octave/java_files';
 
-octave> % add two JARchives to the dynamic classpath 
-octave> javaaddpath([base_path, '/someclasses.jar']); 
-octave> javaaddpath([base_path, '/moreclasses.jar']); 
+octave> % add two JARchives to the dynamic classpath
+octave> javaaddpath ([base_path, '/someclasses.jar']);
+octave> javaaddpath ([base_path, '/moreclasses.jar']);
 
-octave> % check the dynamic classpath 
-octave> p = javaclasspath; 
-octave> disp(p@{1@}); 
+octave> % check the dynamic classpath
+octave> p = javaclasspath;
+octave> disp (p@{1@});
 C:/Octave/java_files/someclasses.jar
-octave> disp(p@{2@}); 
+octave> disp (p@{2@});
 C:/Octave/java_files/moreclasses.jar
 
-octave> % remove the first element from the classpath 
-octave> javarmpath([base_path, '/someclasses.jar']); 
-octave> p = javaclasspath; 
-octave> disp(p@{1@}); 
+octave> % remove the first element from the classpath
+octave> javarmpath ([base_path, '/someclasses.jar']);
+octave> p = javaclasspath;
+octave> disp (p@{1@});
 C:/Octave/java_files/moreclasses.jar
 
 octave> % provoke an error
-octave> disp(p@{2@}); 
-error: A(I): Index exceeds matrix dimension. 
+octave> disp (p@{2@});
+error: A(I): Index exceeds matrix dimension.
 @end example
 
 Another way to add files to the @var{dynamic classpath} exclusively for your
@@ -281,13 +282,13 @@ user account is to use the file @file{.octaverc} which is stored in your home
 directory.  All Octave commands in this file are executed each time you start a
 new instance of Octave.  The following example adds the directory @file{octave}
 to Octave's search path and the archive @file{myclasses.jar} in this directory
-to the Java search path. 
+to the Java search path.
 
 @example
 @group
-% content of .octaverc:
-addpath('~/octave');
-javaaddpath('~/octave/myclasses.jar');
+% contents of .octaverc:
+addpath ('~/octave');
+javaaddpath ('~/octave/myclasses.jar');
 @end group
 @end example
 
@@ -301,10 +302,10 @@ javaaddpath('~/octave/myclasses.jar');
 
 The function @code{javaObject} can be used to create Java objects..
 
-Example: 
+Example:
 
 @example
-   Passenger = javaObject ('package.FirstClass', row, seat);
+Passenger = javaObject ('package.FirstClass', row, seat);
 @end example
 
 @c ------------------------------------------------------------------------
@@ -312,35 +313,36 @@ Example:
 @subsection How can I handle memory limitations?
 @cindex memory, limitations
 
-In order to execute Java code Octave creates a Java Virtual Machine (JVM). 
+In order to execute Java code Octave creates a Java Virtual Machine (JVM).
 Such a JVM allocates a fixed amount of initial memory and may expand this pool
 up to a fixed maximum memory limit.  The default values depend on the Java
-version (see @ref{doc-javamem,,javamem}).  The memory pool is shared by all Java
-objects running in the JVM@.  This strict memory limit is intended mainly to
-avoid that runaway applications inside web browsers or in enterprise servers
+version (see @ref{doc-javamem,,javamem}).  The memory pool is shared by all
+Java objects running in the JVM@.  This strict memory limit is intended mainly
+to avoid that runaway applications inside web browsers or in enterprise servers
 can consume all memory and crash the system.  When the maximum memory limit is
 hit, Java code will throw exceptions so that applications will fail or behave
 unexpectedly.
 
-You can specify options for the creation of the JVM inside a file named 
-@file{java.opts}.  This is a text file where you can enter lines containing 
-@option{-X} and @option{-D} options handed to the JVM during initialization. 
+You can specify options for the creation of the JVM inside a file named
+@file{java.opts}.  This is a text file where you can enter lines containing
+@option{-X} and @option{-D} options handed to the JVM during initialization.
 
-The Java options file must be located in the directory where 
-@file{javaclasspath.m} resides, usually something like
- @file{@dots{}/share/Octave/<version>/m/java}. You can find this directory 
-by executing 
+The directory where the Java options file is located is specified by the
+environment variable @w{@env{OCTAVE_JAVA_DIR}}.  If unset the directory where
+@file{javaclasspath.m} resides is used instead (typically
+@file{@env{OCTAVE_HOME}/share/octave/@env{OCTAVE_VERSION}/m/java/}).  You can
+find this directory by executing
 
 @example
 which javaclasspath
 @end example
 
 The @option{-X} options allow you to increase the maximum amount of memory
-available to the JVM to 256 Megabytes by adding the following line to the
-@file{java.opts} file: 
+available to the JVM@.  The following example allows up to 256 Megabytes to
+be used by adding the following line to the @file{java.opts} file:
 
 @example
--Xmx256m 
+-Xmx256m
 @end example
 
 The maximum possible amount of memory depends on your system.  On a Windows
@@ -350,33 +352,32 @@ about 1 Gigabyte.
 If your application requires a large amount of memory from the beginning, you
 can also specify the initial amount of memory allocated to the JVM@.  Adding
 the following line to the @file{java.opts} file starts the JVM with 64
-Megabytes of initial memory: 
+Megabytes of initial memory:
 
 @example
--Xms64m 
+-Xms64m
 @end example
 
 For more details on the available @option{-X} options of your Java Virtual
 Machine issue the command @samp{java -X} at the operating system command prompt
 and consult the Java documentation.
 
-
 The @option{-D} options can be used to define system properties which can then
 be used by Java classes inside Octave.  System properties can be retrieved by
-using the @code{getProperty()} methods of the @code{java.lang.System} class. 
+using the @code{getProperty()} methods of the @code{java.lang.System} class.
 The following example line defines the property @var{MyProperty} and assigns it
-the string @code{12.34}. 
+the string @code{12.34}.
 
 @example
 -DMyProperty=12.34
 @end example
 
 The value of this property can then be retrieved as a string by a Java object
-or in Octave: 
+or in Octave:
 
 @example
 @group
-octave> javaMethod('getProperty', 'java.lang.System', 'MyProperty');
+octave> javaMethod ('getProperty', 'java.lang.System', 'MyProperty');
 ans = 12.34
 @end group
 @end example
@@ -392,7 +393,7 @@ ans = 12.34
 @cindex translation table for @TeX{} symbols
 @c - index -
 
-The dialog functions contain a translation table for @TeX{} like symbol codes. 
+The dialog functions contain a translation table for @TeX{} like symbol codes.
 Thus messages and labels can be tailored to show some common mathematical
 symbols or Greek characters.  No further @TeX{} formatting codes are supported.
  The characters are translated to their Unicode equivalent.  However, not all
@@ -411,7 +412,7 @@ produce the literal text @var{'\alpha=12.0'}.
 @ifhtml
 @float Table
 The table below shows each @TeX{} character code and the corresponding Unicode
-character: 
+character:
 @multitable @columnfractions 0.18 0.1 0.05 0.18 0.1 0.05 0.18 0.1
 @item \alpha
 @tab 'α'
@@ -679,7 +680,8 @@ character:
 @c ---------------------------------
 @iftex
 @float Table
-The table below shows each @TeX{} character code and the corresponding Unicode character: 
+The table below shows each @TeX{} character code and the corresponding Unicode
+character:
 @multitable @columnfractions 0.18 0.1 0.05 0.18 0.1 0.05 0.18 0.1
 @headitem @TeX{} code
 @tab Symbol

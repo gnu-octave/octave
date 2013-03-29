@@ -299,21 +299,12 @@ javaaddpath('~/octave/myclasses.jar');
 @cindex instance, how to create
 @c - index -
 
-If your code shall work under Octave as well as @sc{matlab} you should use the
-function @code{javaObject} to create Java objects.  The function
-@code{java_new} is Octave specific and does not exist in the @sc{matlab}
-environment.
+The function @code{javaObject} can be used to create Java objects..
 
-Example 1, suitable for Octave but not for @sc{matlab}: 
+Example: 
 
 @example
-   Passenger = java_new('package.FirstClass', row, seat);
-@end example
-
-Example 2, which works in Octave as well as in @sc{matlab}: 
-
-@example
-   Passenger = javaObject('package.FirstClass', row, seat);
+   Passenger = javaObject ('package.FirstClass', row, seat);
 @end example
 
 @c ------------------------------------------------------------------------
@@ -331,25 +322,18 @@ can consume all memory and crash the system.  When the maximum memory limit is
 hit, Java code will throw exceptions so that applications will fail or behave
 unexpectedly.
 
-In Octave as well as in @sc{matlab}, you can specify options for the creation
-of the JVM inside a file named @file{java.opts}.  This is a text file where you
-can enter lines containing @option{-X} and @option{-D} options handed to the
-JVM during initialization. 
+You can specify options for the creation of the JVM inside a file named 
+@file{java.opts}.  This is a text file where you can enter lines containing 
+@option{-X} and @option{-D} options handed to the JVM during initialization. 
 
-In Octave, the Java options file must be located in the directory where
-@file{javaclasspath.m} resides, i.e., the package installation directory,
-usually something like @file{@dots{}\share\Octave\packages\java-1.2.8}.  You can
-find this directory by executing 
+The Java options file must be located in the directory where 
+@file{javaclasspath.m} resides, usually something like
+ @file{@dots{}/share/Octave/<version>/m/java}. You can find this directory 
+by executing 
 
 @example
-pkg list
+which javaclasspath
 @end example
-
-In @sc{matlab}, the options file goes into the @file{MATLABROOT/bin/ARCH}
-directory or in your personal @sc{matlab} startup directory (can be determined
-by a @samp{pwd} command).  @var{MATLABROOT} is the @sc{matlab} root directory
-and @var{ARCH} is your system architecture, which you find by issuing the
-commands @samp{matlabroot} respectively @samp{computer('arch')}.
 
 The @option{-X} options allow you to increase the maximum amount of memory
 available to the JVM to 256 Megabytes by adding the following line to the
@@ -392,7 +376,7 @@ or in Octave:
 
 @example
 @group
-octave> javaMethod('java.lang.System', 'getProperty', 'MyProperty');
+octave> javaMethod('getProperty', 'java.lang.System', 'MyProperty');
 ans = 12.34
 @end group
 @end example

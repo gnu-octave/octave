@@ -1,17 +1,12 @@
 # u_vr.m
 
-cmd = "\
-function __demo__ () \
-  df_vr; \
-  v = vr * 2; \
-endfunction \
-";
+## define and exectute "__demo__" once
+eval ("function __demo__ ();  df_vr;  v = vr * 2; endfunction");
+__demo__;
 
-for ii = 1:2
-  unwind_protect
-    eval (cmd);
-    __demo__;
-  unwind_protect_cleanup
-    clear __demo__
-  end_unwind_protect
-endfor
+## clear definition of "__demo__"
+clear __demo__
+
+## define and exectute "__demo__" once more
+eval ("function __demo__ ();  df_vr;  v = vr * 2; endfunction");
+__demo__;

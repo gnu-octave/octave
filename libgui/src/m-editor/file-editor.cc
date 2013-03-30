@@ -173,7 +173,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
               emit fetab_goto_line (p->second, line);
 
               if (debug_pointer)
-                emit fetab_set_debugger_position (p->second, line-1);
+                emit fetab_insert_debugger_pointer (p->second, line-1);
 
               if (dbstop_marker)
                 emit fetab_do_dbstop_marker (insert, p->second, line-1);
@@ -201,7 +201,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                       emit fetab_goto_line (fileEditorTab, line);
 
                       if (debug_pointer)
-                        emit fetab_set_debugger_position (fileEditorTab, line-1);
+                        emit fetab_insert_debugger_pointer (fileEditorTab, line-1);
                       if (dbstop_marker)
                         emit fetab_do_dbstop_marker
                           (insert, fileEditorTab, line-1);
@@ -299,9 +299,32 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
 }
 
 void
-file_editor::handle_update_debug_pointer_request (const QString& file, int line)
+file_editor::handle_insert_debugger_pointer_request (const QString& file, int line)
 {
   request_open_file (file, line, true);
+}
+
+void
+file_editor::handle_delete_debugger_pointer_request (const QString& file, int line)
+{
+  if (! file.isEmpty ())
+    {
+      // Have all file editor tabs signal what their file names are.
+      editor_tab_map.clear ();
+      emit fetab_file_name_query (0);
+
+      // Check whether this file is already open in the editor.
+      std::map<QString, QWidget *>::const_iterator p = editor_tab_map.find (file);
+      if (p != editor_tab_map.end ())
+        {
+          _tab_widget->setCurrentWidget (p->second);
+
+          if (line > 0)
+            emit fetab_delete_debugger_pointer (p->second, line-1);
+
+          emit fetab_set_focus (p->second);
+        }
+    }
 }
 
 void
@@ -884,8 +907,10 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (goto_line (const QWidget *, int)));
   connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
            f, SLOT (set_focus (const QWidget*)));
-  connect (this, SIGNAL (fetab_set_debugger_position (const QWidget *, int)),
-           f, SLOT (set_debugger_position (const QWidget *, int)));
+  connect (this, SIGNAL (fetab_insert_debugger_pointer (const QWidget *, int)),
+           f, SLOT (insert_debugger_pointer (const QWidget *, int)));
+  connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget *, int)),
+           f, SLOT (delete_debugger_pointer (const QWidget *, int)));
   connect (this, SIGNAL (fetab_do_dbstop_marker (bool, const QWidget *, int)),
            f, SLOT (do_dbstop_marker (bool, const QWidget *, int)));
 

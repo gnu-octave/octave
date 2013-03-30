@@ -40,7 +40,11 @@ class octave_event_listener
     virtual void
     update_history (void) = 0;
 
-    virtual void update_debug_pointer (const std::string& file, int line) = 0;
+    virtual void
+    insert_debugger_pointer (const std::string& file, int line) = 0;
+
+    virtual void
+    delete_debugger_pointer (const std::string& file, int line) = 0;
 
     virtual void
     update_dbstop_marker (bool insert, const std::string& file, int line) = 0;

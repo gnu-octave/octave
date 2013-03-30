@@ -46,8 +46,12 @@ class file_editor_interface : public octave_dock_widget
 
   virtual void handle_entered_debug_mode () = 0;
   virtual void handle_quit_debug_mode () = 0;
-  virtual void handle_update_debug_pointer_request (const QString& file,
-                                                    int line) = 0;
+
+  virtual void
+  handle_insert_debugger_pointer_request (const QString& file, int line) = 0;
+
+  virtual void
+  handle_delete_debugger_pointer_request (const QString& file, int line) = 0;
 
   virtual void handle_update_dbstop_marker_request (bool insert,
                                                     const QString& file,

@@ -1133,17 +1133,26 @@ file_editor_tab::handle_file_resave_answer (int decision)
 }
 
 void
-file_editor_tab::set_debugger_position (const QWidget *ID, int line)
+file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
 {
   if (ID != this || ID == 0)
     return;
 
-  _edit_area->markerDeleteAll (debugger_position);
   if (line > 0)
     {
       _edit_area->markerAdd (line, debugger_position);
       center_current_line ();
     }
+}
+
+void
+file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
+{
+  if (ID != this || ID == 0)
+    return;
+
+  if (line > 0)
+    _edit_area->markerDelete (line, debugger_position);
 }
 
 void

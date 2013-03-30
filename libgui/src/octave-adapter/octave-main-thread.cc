@@ -56,11 +56,21 @@ post_input_event_hook_fcn (const octave_value_list&, int)
 }
 
 static octave_value_list
-debug_input_event_hook_fcn (const octave_value_list& args, int)
+enter_debugger_event_hook_fcn (const octave_value_list& args, int)
 {
   octave_value_list retval;
 
-  octave_link::debug_input_event_hook_fcn (args);
+  octave_link::enter_debugger_event_hook_fcn (args);
+
+  return retval;
+}
+
+static octave_value_list
+exit_debugger_event_hook_fcn (const octave_value_list& args, int)
+{
+  octave_value_list retval;
+
+  octave_link::exit_debugger_event_hook_fcn (args);
 
   return retval;
 }
@@ -108,9 +118,13 @@ octave_main_thread::run ()
   octave_value post_fcn_handle (new octave_fcn_handle (post_fcn));
   Fadd_post_input_event_hook (post_fcn_handle);
 
-  octave_value debug_fcn (new octave_builtin (debug_input_event_hook_fcn));
-  octave_value debug_fcn_handle (new octave_fcn_handle (debug_fcn));
-  Fadd_debug_input_event_hook (debug_fcn_handle);
+  octave_value enter_debugger_fcn (new octave_builtin (enter_debugger_event_hook_fcn));
+  octave_value enter_debugger_fcn_handle (new octave_fcn_handle (enter_debugger_fcn));
+  Fadd_enter_debugger_event_hook (enter_debugger_fcn_handle);
+
+  octave_value exit_debugger_fcn (new octave_builtin (exit_debugger_event_hook_fcn));
+  octave_value exit_debugger_fcn_handle (new octave_fcn_handle (exit_debugger_fcn));
+  Fadd_exit_debugger_event_hook (exit_debugger_fcn_handle);
 
   octave_value dbstop_fcn (new octave_builtin (dbstop_hook_fcn));
   octave_value dbstop_fcn_handle (new octave_fcn_handle (dbstop_fcn));

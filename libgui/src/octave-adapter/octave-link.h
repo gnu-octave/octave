@@ -146,10 +146,16 @@ public:
       instance->do_post_input_event_hook_fcn ();
   }
 
-  static void debug_input_event_hook_fcn (const octave_value_list& args)
+  static void enter_debugger_event_hook_fcn (const octave_value_list& args)
   {
     if (instance_ok ())
-      instance->do_debug_input_event_hook_fcn (args);
+      instance->do_enter_debugger_event_hook_fcn (args);
+  }
+
+  static void exit_debugger_event_hook_fcn (const octave_value_list& args)
+  {
+    if (instance_ok ())
+      instance->do_exit_debugger_event_hook_fcn (args);
   }
 
   static void
@@ -221,11 +227,13 @@ private:
   std::string do_last_working_directory (void);
   void do_update_workspace (void);
   void do_update_history (void);
-  void do_update_debug_pointer (const octave_value_list& args);
+  void do_insert_debugger_pointer (const octave_value_list& args);
+  void do_delete_debugger_pointer (const octave_value_list& args);
 
   void do_pre_input_event_hook_fcn (void);
   void do_post_input_event_hook_fcn (void);
-  void do_debug_input_event_hook_fcn (const octave_value_list& args);
+  void do_enter_debugger_event_hook_fcn (const octave_value_list& args);
+  void do_exit_debugger_event_hook_fcn (const octave_value_list& args);
   void do_update_breakpoint_hook_fcn (bool insert,
                                       const octave_value_list& args);
 };

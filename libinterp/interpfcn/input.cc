@@ -125,7 +125,8 @@ char Vfilemarker = '>';
 static hook_function_list pre_input_event_hook_functions;
 static hook_function_list input_event_hook_functions;
 static hook_function_list post_input_event_hook_functions;
-static hook_function_list debug_input_event_hook_functions;
+static hook_function_list enter_debugger_event_hook_functions;
+static hook_function_list exit_debugger_event_hook_functions;
 
 // For octave_quit.
 void
@@ -457,8 +458,16 @@ initialize_command_input (void)
 }
 
 static void
+exit_debugger_cleanup (const octave_value& loc_info)
+{
+  exit_debugger_event_hook_functions.run (loc_info);
+}
+
+static void
 get_debug_input (const std::string& prompt)
 {
+  unwind_protect frame;
+
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
 
@@ -501,8 +510,11 @@ get_debug_input (const std::string& prompt)
 
           if (have_file)
             {
-              debug_input_event_hook_functions.run
-                (location_info (nm, curr_debug_line));
+              octave_value loc_info = location_info (nm, curr_debug_line);
+
+              enter_debugger_event_hook_functions.run (loc_info);
+
+              frame.add_fcn (exit_debugger_cleanup, loc_info);
 
               std::string line_buf
                 = get_file_line (nm, curr_debug_line);
@@ -517,8 +529,6 @@ get_debug_input (const std::string& prompt)
 
   if (! msg.empty ())
     std::cerr << msg << std::endl;
-
-  unwind_protect frame;
 
   frame.protect_var (VPS1);
   VPS1 = prompt;
@@ -1362,10 +1372,10 @@ interactive user input.\n\
   return retval;
 }
 
-DEFUN (add_debug_input_event_hook, args, ,
+DEFUN (add_enter_debugger_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{id} =} add_debug_input_event_hook (@var{fcn})\n\
-@deftypefnx {Built-in Function} {@var{id} =} add_debug_input_event_hook (@var{fcn}, @var{data})\n\
+@deftypefn  {Built-in Function} {@var{id} =} add_enter_debugger_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {@var{id} =} add_enter_debugger_event_hook (@var{fcn}, @var{data})\n\
 Add the named function or function handle @var{fcn} to the list of\n\
 functions to call when a debugger breakpoint is reached.  The function\n\
 should have the form\n\
@@ -1388,7 +1398,7 @@ function is called with a single argument.\n\
 \n\
 The returned identifier may be used to remove the function handle from\n\
 the list of input hook functions.\n\
-@seealso{remove_debug_input_event_hook}\n\
+@seealso{remove_enter_debugger_event_hook}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1406,12 +1416,12 @@ the list of input hook functions.\n\
 
       if (! error_state)
         {
-          debug_input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
+          enter_debugger_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
           retval = hook_fcn.id ();
         }
       else
-        error ("add_debug_input_event_hook: expecting string as first arg");
+        error ("add_enter_debugger_event_hook: expecting string as first arg");
     }
   else
     print_usage ();
@@ -1419,14 +1429,14 @@ the list of input hook functions.\n\
   return retval;
 }
 
-DEFUN (remove_debug_input_event_hook, args, ,
+DEFUN (remove_enter_debugger_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} remove_debug_input_event_hook (@var{name})\n\
-@deftypefnx {Built-in Function} {} remove_debug_input_event_hook (@var{fcn_id})\n\
+@deftypefn {Built-in Function} {} remove_enter_debugger_event_hook (@var{name})\n\
+@deftypefnx {Built-in Function} {} remove_enter_debugger_event_hook (@var{fcn_id})\n\
 Remove the named function or function handle with the given identifier\n\
 from the list of functions to call immediately after accepting\n\
 interactive user input.\n\
-@seealso{add_debug_input_event_hook}\n\
+@seealso{add_enter_debugger_event_hook}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1442,16 +1452,113 @@ interactive user input.\n\
       if (! error_state)
         {
           hook_function_list::iterator p
-            = debug_input_event_hook_functions.find (hook_fcn_id);
+            = enter_debugger_event_hook_functions.find (hook_fcn_id);
 
-          if (p != debug_input_event_hook_functions.end ())
-            debug_input_event_hook_functions.erase (p);
+          if (p != enter_debugger_event_hook_functions.end ())
+            enter_debugger_event_hook_functions.erase (p);
           else if (warn)
-            warning ("remove_debug_input_event_hook: %s not found in list",
+            warning ("remove_enter_debugger_event_hook: %s not found in list",
                      hook_fcn_id.c_str ());
         }
       else
-        error ("remove_debug_input_event_hook: argument not valid as a hook function name or id");
+        error ("remove_enter_debugger_event_hook: argument not valid as a hook function name or id");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (add_exit_debugger_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{id} =} add_exit_debugger_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {@var{id} =} add_exit_debugger_event_hook (@var{fcn}, @var{data})\n\
+Add the named function or function handle @var{fcn} to the list of\n\
+functions to call when continuing execution after a debugger breakpoint.\n\
+The function should have the form\n\
+\n\
+@example\n\
+@var{fcn} (@var{location}, @var{data})\n\
+@end example\n\
+\n\
+in which @var{location} is a structure containing the following elements:\n\
+\n\
+@table @code\n\
+@item file\n\
+The name of the file where the breakpoint is located.\n\
+@item line\n\
+The line number corresponding to the breakpoint.\n\
+@end table\n\
+\n\
+If @var{data} is omitted when the hook function is added, the hook\n\
+function is called with a single argument.\n\
+\n\
+The returned identifier may be used to remove the function handle from\n\
+the list of input hook functions.\n\
+@seealso{remove_exit_debugger_event_hook}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      octave_value user_data;
+
+      if (nargin == 2)
+        user_data = args(1);
+
+      hook_function hook_fcn (args(0), user_data);
+
+      if (! error_state)
+        {
+          exit_debugger_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
+
+          retval = hook_fcn.id ();
+        }
+      else
+        error ("add_exit_debugger_event_hook: expecting string as first arg");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (remove_exit_debugger_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} remove_exit_debugger_event_hook (@var{name})\n\
+@deftypefnx {Built-in Function} {} remove_exit_debugger_event_hook (@var{fcn_id})\n\
+Remove the named function or function handle with the given identifier\n\
+from the list of functions to call immediately after accepting\n\
+interactive user input.\n\
+@seealso{add_exit_debugger_event_hook}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string hook_fcn_id = args(0).string_value ();
+
+      bool warn = (nargin < 2);
+
+      if (! error_state)
+        {
+          hook_function_list::iterator p
+            = exit_debugger_event_hook_functions.find (hook_fcn_id);
+
+          if (p != exit_debugger_event_hook_functions.end ())
+            exit_debugger_event_hook_functions.erase (p);
+          else if (warn)
+            warning ("remove_exit_debugger_event_hook: %s not found in list",
+                     hook_fcn_id.c_str ());
+        }
+      else
+        error ("remove_exit_debugger_event_hook: argument not valid as a hook function name or id");
     }
   else
     print_usage ();

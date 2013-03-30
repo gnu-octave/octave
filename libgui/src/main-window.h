@@ -118,7 +118,8 @@ public slots:
 
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
-  void handle_update_debug_pointer_request (const QString& file, int line);
+  void handle_insert_debugger_pointer_request (const QString& file, int line);
+  void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_dbstop_marker_request (bool insert, const QString& file, int line);
   void debug_continue ();
   void debug_step_into ();

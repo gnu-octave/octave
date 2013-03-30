@@ -88,7 +88,8 @@ signals:
   void fetab_uncomment_selected_text (const QWidget* ID);
   void fetab_find (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
-  void fetab_set_debugger_position (const QWidget* ID, int line = -1);
+  void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
+  void fetab_delete_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_do_dbstop_marker (bool insert, const QWidget* ID, int line = -1);
   void fetab_set_focus (const QWidget* ID);
 
@@ -130,7 +131,8 @@ public slots:
   void handle_mru_add_file (const QString& file_name);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
-  void handle_update_debug_pointer_request (const QString& file, int line);
+  void handle_insert_debugger_pointer_request (const QString& file, int line);
+  void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_dbstop_marker_request (bool insert, const QString& file,
                                             int line);
 

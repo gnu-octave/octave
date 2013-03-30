@@ -1179,6 +1179,17 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
             }
 
         }
+      else if (dbstep_flag == 1
+               && octave_call_stack::current_frame () < current_frame)
+        {
+          // We stepped out from the end of a function.
+
+          current_frame = octave_call_stack::current_frame ();
+
+          break_on_this_statement = true;
+
+          dbstep_flag = 0;
+        }
     }
   else if (dbstep_flag == -1)
     {
@@ -1192,9 +1203,14 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
     }
   else if (dbstep_flag == -2)
     {
-      // We get here if we are doing a "dbstep out".
+      // We get here if we are doing a "dbstep out".  Check for end of
+      // function and whether the current frame is the same as the
+      // cached value because we want to step out from the frame where
+      // "dbstep out" was evaluated, not from any functions called from
+      // that frame.
 
-      if (is_end_of_fcn_or_script)
+      if (is_end_of_fcn_or_script
+          && octave_call_stack::current_frame () == current_frame)
         dbstep_flag = -1;
     }
 

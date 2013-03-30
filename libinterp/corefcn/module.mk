@@ -27,6 +27,7 @@ $(OPT_INC) : %.h : %.in
 COREFCN_SRC = \
   corefcn/__contourc__.cc \
   corefcn/__dispatch__.cc \
+  corefcn/__execute_edit_hook__.cc \
   corefcn/__lin_interpn__.cc \
   corefcn/__pchip_deriv__.cc \
   corefcn/__qp__.cc \

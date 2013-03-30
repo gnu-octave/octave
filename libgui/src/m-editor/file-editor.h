@@ -135,6 +135,7 @@ public slots:
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_dbstop_marker_request (bool insert, const QString& file,
                                             int line);
+  void handle_edit_file_request (const QString& file);
 
   /** Tells the editor to react on changed settings. */
   void notice_settings ();

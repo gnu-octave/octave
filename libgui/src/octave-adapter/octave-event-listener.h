@@ -49,6 +49,8 @@ class octave_event_listener
     virtual void
     update_dbstop_marker (bool insert, const std::string& file, int line) = 0;
 
+    virtual void edit_file (const std::string& file) = 0;
+
     virtual void about_to_exit () = 0;
 
     virtual void entered_debug_mode () = 0;

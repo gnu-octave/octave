@@ -536,6 +536,14 @@ main_window::handle_update_dbstop_marker_request (bool insert,
 }
 
 void
+main_window::handle_edit_file_request (const QString& file)
+{
+#ifdef HAVE_QSCINTILLA
+  _file_editor->handle_edit_file_request (file);
+#endif
+}
+
+void
 main_window::debug_continue ()
 {
   octave_link::post_event (this, &main_window::debug_continue_callback);
@@ -1203,6 +1211,11 @@ main_window::construct ()
            SIGNAL (update_dbstop_marker_signal (bool, const QString&, int)),
            this,
            SLOT (handle_update_dbstop_marker_request (bool, const QString&, int)));
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (edit_file_signal (const QString&)),
+           this,
+           SLOT (handle_edit_file_request(const QString&)));
 }
 
 void

@@ -283,6 +283,29 @@ octave_link::do_update_breakpoint_hook_fcn
     }
 }
 
+void
+octave_link::do_edit_file (const octave_value_list& args)
+{
+  if (event_listener)
+    {
+      if (args.length () == 1)
+        {
+          std::string file = args(0).string_value ();
+
+          if (! error_state)
+            {
+              event_listener->edit_file (file);
+              do_process_events ();
+
+            }
+          else
+            ::error ("expecting file name in edit file callback");
+        }
+      else
+        ::error ("invalid call to edit file callback");
+    }
+}
+
 bool
 octave_link::instance_ok (void)
 {

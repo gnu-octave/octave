@@ -335,6 +335,12 @@ file_editor::handle_update_dbstop_marker_request (bool insert,
 }
 
 void
+file_editor::handle_edit_file_request (const QString& file)
+{
+  request_open_file (file);
+}
+
+void
 file_editor::request_undo ()
 {
   emit fetab_undo (_tab_widget->currentWidget ());

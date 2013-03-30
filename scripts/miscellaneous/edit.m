@@ -241,13 +241,16 @@ function ret = edit (varargin)
 
   ## Start the editor without a file if no file is given.
   if (nargin < 1)
-    if (exist (FUNCTION.HOME, "dir") == 7 && (isunix () || ! ispc ()))
-      system (cstrcat ("cd \"", FUNCTION.HOME, "\" ; ",
-                      sprintf (undo_string_escapes (FUNCTION.EDITOR), "")),
-              [], FUNCTION.MODE);
+    if (exist (FUNCTION.HOME, "dir") == 7)
+      curr_dir = pwd ();
+      unwind_protect
+        chdir (FUNCTION.HOME);
+        do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
+      unwind_protect_cleanup
+        chdir (curr_dir);
+      end_unwind_protect
     else
-      system (sprintf (undo_string_escapes (FUNCTION.EDITOR), ""),
-              [], FUNCTION.MODE);
+      do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
     endif
     return;
   endif
@@ -329,9 +332,7 @@ function ret = edit (varargin)
       ## If the file exists, then edit it.
       if (FUNCTION.EDITINPLACE)
         ## Edit in place even if it is protected.
-        system (sprintf (undo_string_escapes (FUNCTION.EDITOR),
-                         cstrcat ("\"", fileandpath, "\"")),
-                [], FUNCTION.MODE);
+        do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
         return;
       else
         ## If the file is modifiable in place then edit it, otherwise make
@@ -347,9 +348,7 @@ function ret = edit (varargin)
         else
           fclose (fid);
         endif
-        system (sprintf (undo_string_escapes (FUNCTION.EDITOR),
-                         cstrcat ("\"", fileandpath, "\"")),
-                [], FUNCTION.MODE);
+        do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
         return;
       endif
     endif
@@ -364,9 +363,7 @@ function ret = edit (varargin)
       case {"cc", "m"}
         0;
       otherwise
-        system (sprintf (undo_string_escapes (FUNCTION.EDITOR),
-                         cstrcat ("\"", fileandpath, "\"")),
-                [], FUNCTION.MODE);
+        do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
         return;
     endswitch
 
@@ -515,10 +512,7 @@ function ret = edit (varargin)
     fputs (fid, text);
     fclose (fid);
 
-    ## Finally we are ready to edit it!
-    system (sprintf (undo_string_escapes (FUNCTION.EDITOR),
-                     cstrcat ("\"", fileandpath, "\"")),
-            [], FUNCTION.MODE);
+    do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
             
   endif
 
@@ -560,6 +554,21 @@ function ret = default_user (long_form)
     endif
   else
     ret = ent.name;
+  endif
+
+endfunction
+
+function do_edit (editor, file, mode)
+
+  ## Give the hook function a chance.  If that fails, fall back
+  ## on running an editor with the system function.
+
+  status = __execute_edit_hook__ (file);
+
+  if (! status)
+    system (sprintf (undo_string_escapes (editor),
+                     cstrcat ("\"", file, "\"")),
+            [], mode);
   endif
 
 endfunction

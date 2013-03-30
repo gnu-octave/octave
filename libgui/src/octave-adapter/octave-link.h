@@ -165,6 +165,13 @@ public:
       instance->do_update_breakpoint_hook_fcn (insert, args);
   }
 
+  static void
+  edit_file (const octave_value_list& args)
+  {
+    if (instance_ok ())
+      instance->do_edit_file (args);
+  }
+
 private:
 
   static octave_link *instance;
@@ -236,6 +243,8 @@ private:
   void do_exit_debugger_event_hook_fcn (const octave_value_list& args);
   void do_update_breakpoint_hook_fcn (bool insert,
                                       const octave_value_list& args);
+
+  void do_edit_file (const octave_value_list& args);
 };
 
 #endif // OCTAVELINK_H

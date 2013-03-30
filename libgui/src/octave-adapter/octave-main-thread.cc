@@ -95,6 +95,16 @@ dbclear_hook_fcn (const octave_value_list& args, int)
   return retval;
 }
 
+static octave_value_list
+edit_hook_fcn (const octave_value_list& args, int)
+{
+  octave_value_list retval;
+
+  octave_link::edit_file (args);
+
+  return retval;
+}
+
 octave_main_thread::octave_main_thread () : QThread ()
 {
 }
@@ -133,6 +143,10 @@ octave_main_thread::run ()
   octave_value dbclear_fcn (new octave_builtin (dbclear_hook_fcn));
   octave_value dbclear_fcn_handle (new octave_fcn_handle (dbclear_fcn));
   Fadd_dbclear_hook (dbclear_fcn_handle);
+
+  octave_value edit_fcn (new octave_builtin (edit_hook_fcn));
+  octave_value edit_fcn_handle (new octave_fcn_handle (edit_fcn));
+  Fadd_edit_hook (edit_fcn_handle);
 
   // Prime the history list.
   octave_link::update_history ();

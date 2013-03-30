@@ -1241,6 +1241,8 @@ void
 main_window::debug_continue_callback (void)
 {
   Fdbcont ();
+
+  command_editor::interrupt (true);
 }
 
 // The next three callbacks are invoked by GUI buttons.  Those buttons
@@ -1278,6 +1280,8 @@ void
 main_window::debug_quit_callback (void)
 {
   Fdbquit ();
+
+  command_editor::interrupt (true);
 }
 
 void

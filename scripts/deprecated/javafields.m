@@ -40,7 +40,7 @@ function fld_names = javafields (javaobj)
   endif
   
   c_methods = javaMethod ("getFields", "org.octave.ClassHelper", javaobj);
-  method_list = strsplit (c_methods, ';');
+  method_list = strsplit (c_methods, ';', false);
 
   if (nargout == 0)
     if (! isempty (method_list))

@@ -66,10 +66,10 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
   endif
 
   ## Search functions in new path dirs.
-  orig_path = strsplit (__pathorig__ (), pathsep ());
+  orig_path = strsplit (__pathorig__ (), pathsep (), false);
 
   ## ditto for path.
-  new_path = strsplit (path (), pathsep ());
+  new_path = strsplit (path (), pathsep (), false);
 
   ## scratch out directories already covered by orig_path.
   if (had_core_cache)

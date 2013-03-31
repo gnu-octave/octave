@@ -17,6 +17,45 @@ Summary of important user-visible changes for version 4.0:
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
+ ** strsplit has been modified to be compatible with Matlab.  There
+    are three instances where backward compatibility is broken.
+
+    (1) Delimiters are now string vectors, not scalars.
+
+    Octave's conventioal behavior
+
+      strsplit ("1 2, 3", ", ")
+      ans = 
+      {
+       [1,1] = 1
+       [1,2] = 2
+       [1,3] = 
+       [1,4] = 3
+      }
+
+    Matlab compatible behavior
+
+      strsplit ("1 2, 3", ", ")
+      ans = 
+      {
+       [1,1] = 1 2
+       [1,2] = 3
+      }
+
+    (2) By default, Matlab treats consecutive delimiters are as a single
+    delimiter.  By default, Octave's conventional behavior was to return
+    an empty string.
+
+    (3) Octave's conventional implementation supported splitting 2D
+    character arrays.  The Matlab compatible version requires the input
+    string be a row vector.
+
+    Where the conventional behavior is desired, the in-line function below
+    may be substituted.
+
+    cstrsplit = @(str,del, collapsedelimiters = false) strsplit (strjoin ...
+      (cellstr (str), del(1)), num2cell (del(:)), collapsedelimiters);
+
  ** Octave now supports nested functions with scoping rules that are
     compatible with Matlab.  A nested function is one declared and defined
     within the body of another function.  The nested function is only

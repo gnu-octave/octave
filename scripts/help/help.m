@@ -142,7 +142,7 @@ function retval = do_list_functions ()
   builtins = sprintf ("*** builtins:\n\n%s\n\n",
                       list_in_columns (__builtins__ ()));
 
-  dirs = strsplit (path, pathsep);
+  dirs = strsplit (path, pathsep, false);
   flist = "";
   for i = 2:numel (dirs)
     files = sort ({dir(fullfile (dirs{i}, "*.m")).name, ...

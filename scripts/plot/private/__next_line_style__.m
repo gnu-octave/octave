@@ -41,7 +41,7 @@ function [linestyle, marker] = __next_line_style__ (reset)
       elseif (reset || isempty (style_rotation))
         style_rotation = get (gca (), "linestyleorder");
         if (ischar (style_rotation))
-          style_rotation = strsplit (style_rotation, "|");
+          style_rotation = strsplit (style_rotation, "|", false);
         endif
         num_styles = length (style_rotation);
         style_index = 1;

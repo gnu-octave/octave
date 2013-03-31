@@ -194,7 +194,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     if (output(length (output)) == "\n")
       output(length (output)) = [];
     endif
-    files = parser (strsplit (output, "\n"))';
+    files = parser (strsplit (output, "\n", false))';
 
     ## Move files if necessary
     if (needmove)

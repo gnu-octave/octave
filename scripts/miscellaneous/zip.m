@@ -62,7 +62,7 @@ function entries = zip (zipfile, files, rootdir = ".")
     if (entries(end) == "\n")
       entries(end) = [];
     endif
-    entries = strsplit (entries, "\n");
+    entries = strsplit (entries, "\n", false);
   endif
 
 endfunction

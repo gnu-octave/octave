@@ -91,7 +91,7 @@ function configure_make (desc, packdir, verbose)
       if (filenames(end) == "\n")
         filenames(end) = [];
       endif
-      filenames = strtrim (strsplit (filenames, "\n"));
+      filenames = strtrim (strsplit (filenames, "\n", false));
       delete_idx =  [];
       for i = 1:length (filenames)
         if (! all (isspace (filenames{i})))

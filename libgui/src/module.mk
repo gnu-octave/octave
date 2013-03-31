@@ -74,6 +74,7 @@ octave_gui_MOC += \
   src/moc-octave-qt-event-listener.cc \
   src/moc-settings-dialog.cc \
   src/moc-terminal-dockwidget.cc \
+  src/moc-color-picker.cc \
   src/moc-welcome-wizard.cc \
   src/moc-workspace-model.cc \
   src/moc-workspace-view.cc \
@@ -114,6 +115,7 @@ noinst_HEADERS += \
   src/settings-dialog.h \
   src/symbol-information.h \
   src/terminal-dockwidget.h \
+  src/color-picker.h \
   src/welcome-wizard.h \
   src/workspace-model.h \
   src/workspace-view.h
@@ -137,6 +139,7 @@ src_libgui_src_la_SOURCES = \
   src/settings-dialog.cc \
   src/symbol-information.cc \
   src/terminal-dockwidget.cc \
+  src/color-picker.cc \
   src/welcome-wizard.cc \
   src/workspace-model.cc \
   src/workspace-view.cc

@@ -242,21 +242,9 @@ file_editor_tab::update_lexer ()
     }
 
   QSettings *settings = resource_manager::get_settings ();
-
-  // Editor font (default or from settings)
-  if (settings)
-    lexer->setDefaultFont (QFont (
-                                  settings->value ("editor/fontName",
-                                                   "Courier New").toString (),
-                                  settings->value ("editor/fontSize",
-                                                   10).toInt ()));
-
-  // TODO: Autoindent not working as it should
-  lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
-                             QsciScintilla::AiOpening  ||
-                             QsciScintilla::AiClosing);
-
+  lexer->readSettings (*settings);
   _edit_area->setLexer (lexer);
+
 }
 
 // slot for fetab_set_focus: sets the focus to the current edit area
@@ -1017,6 +1005,8 @@ file_editor_tab::file_has_changed (const QString&)
 void
 file_editor_tab::notice_settings ()
 {
+  update_lexer ();
+  QFontMetrics lexer_font_metrics (_edit_area->lexer ()->defaultFont (0));
   QSettings *settings = resource_manager::get_settings ();
 
   if (settings==NULL)
@@ -1029,23 +1019,16 @@ file_editor_tab::notice_settings ()
   else
     _edit_area->setAutoCompletionThreshold (-1);
 
-  QFont xfont (settings->value ("editor/fontName","Courier New").toString (),
-               settings->value ("editor/fontSize",10).toInt ());
-
   if (settings->value ("editor/showLineNumbers",true).toBool ())
     {
       _edit_area->setMarginLineNumbers (2, true);
-      _edit_area->setMarginsFont (xfont);
-      QFontMetrics metrics (xfont);
-      _edit_area->setMarginWidth(2, metrics.width("9999"));
+      _edit_area->setMarginWidth(2, lexer_font_metrics.width("9999"));
     }
   else
     {
       _edit_area->setMarginLineNumbers (2, false);
       _edit_area->setMarginWidth(2, 0);
     }
-
-  update_lexer ();
 
   _long_title = settings->value ("editor/longWindowTitle",false).toBool ();
 

@@ -34,33 +34,27 @@ along with Octave; see the file COPYING.  If not, see
 // Some basic functions
 // -----------------------------------------------------
 lexer_octave_gui::lexer_octave_gui (QObject *p)
-  : QsciLexer (p)
+  : QsciLexerOctave (p)
 {
   // The API info that is used for auto completion
   // TODO: Where to store a file with API info (raw or prepared?)?
   // TODO: Also provide infos on octave-forge functions?
   // TODO: Also provide infos on function parameters?
   // By now, use the keywords-list from syntax highlighting
-
   QString keyword;
   QStringList keywordList;
-
-  // get whole string with all keywords
-  keyword = this->keywords (1);
-  // split into single strings
-  keywordList = keyword.split (QRegExp ("\\s+"));
-
+  keyword = this->keywords (1);           // get whole string with all keywords
+  keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
   lexer_api = new QsciAPIs (this);
   if (lexer_api)
     {
-      for (int i = 0; i < keywordList.size (); i++)
-        {
-          // add single strings to the API
-          lexer_api->add (keywordList.at (i));
-        }
-      // prepare API info ... this may take some time
-      lexer_api->prepare ();
+      for (int i = 0; i < keywordList.size (); i++)  // add all keywords to API
+        lexer_api->add (keywordList.at (i));
+      lexer_api->prepare ();   // prepare API info ... this may take some time
     }
+
+  // get the settings from the settings file
+  QSettings *settings = resource_manager::get_settings ();
 }
 
 lexer_octave_gui::~lexer_octave_gui()
@@ -69,111 +63,14 @@ lexer_octave_gui::~lexer_octave_gui()
     delete lexer_api;
 }
 
-const char *lexer_octave_gui::language() const
-{
-  return "Octave";  // return the name of the language
-}
-
-const char *lexer_octave_gui::lexer() const
-{
-  return "octave";  // return the name of the lexer
-}
-
-// -----------------------------------------------------
-// The colors for syntax highlighting
-// -----------------------------------------------------
-QColor lexer_octave_gui::defaultColor(int style) const
-{
-  switch (style)
-    {
-    case Default:  // black
-      return QColor(0x00,0x00,0x00);
-    case Operator: // red
-      return QColor(0xef,0x00,0x00);
-    case Comment:  // gray
-      return QColor(0x7f,0x7f,0x7f);
-    case Command:  // blue-green
-      return QColor(0x00,0x7f,0x7f);
-    case Number:   // orange
-      return QColor(0x7f,0x7f,0x00);
-    case Keyword:  // blue
-      return QColor(0x00,0x00,0xbf);
-    case SingleQuotedString: // green
-      return QColor(0x00,0x7f,0x00);
-    case DoubleQuotedString: // green-yellow
-      return QColor(0x4f,0x7f,0x00);
-    }
-  return QsciLexer::defaultColor(style);
-}
-
-
-// -----------------------------------------------------
-// The font decorations for highlighting
-// -----------------------------------------------------
-QFont lexer_octave_gui::defaultFont(int style) const
-{
-  QFont f;
-
-  switch (style)
-    {
-    case Comment: // default but italic
-      f = QsciLexer::defaultFont(style);
-      f.setItalic(true);
-      break;
-    case Keyword: // default
-      f = QsciLexer::defaultFont(style);
-      break;
-    case Operator:  // default
-      f = QsciLexer::defaultFont(style);
-      break;
-    default:        // default
-      f = QsciLexer::defaultFont(style);
-      break;
-    }
-  return f;   // return the selected font
-}
-
-
-// -----------------------------------------------------
-// Style names
-// -----------------------------------------------------
-QString lexer_octave_gui::description(int style) const
-{
-  switch (style)
-    {
-    case Default:
-      return tr("Default");
-    case Comment:
-      return tr("Comment");
-    case Command:
-      return tr("Command");
-    case Number:
-      return tr("Number");
-    case Keyword:
-      return tr("Keyword");
-    case SingleQuotedString:
-      return tr("Single-quoted string");
-    case Operator:
-      return tr("Operator");
-    case Identifier:
-      return tr("Identifier");
-    case DoubleQuotedString:
-      return tr("Double-quoted string");
-    }
-  return QString();
-}
-
-
 // -----------------------------------------------------
 // The set of keywords for highlighting
-// TODO: How to define a second set?
 // -----------------------------------------------------
 const char *lexer_octave_gui::keywords(int set) const
 {
   if (set == 1)
-    {
       return resource_manager::octave_keywords ();
-    }
+
   return 0;
 }
 

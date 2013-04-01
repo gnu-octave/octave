@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QStyle>
 #include <QTextStream>
+#include <QProcess>
 
 #include "octave-link.h"
 
@@ -151,6 +152,19 @@ file_editor::request_open_file (const QString& openFileName, int line,
                                 bool debug_pointer,
                                 bool dbstop_marker, bool insert)
 {
+  // Check if the user wants to use a custom file editor.
+  QSettings *settings = resource_manager::get_settings ();
+  if (settings->value ("useCustomFileEditor").toBool ())
+    {
+      QString editor = settings->value ("customFileEditor").toString ();
+      editor.replace ("%f",openFileName);
+      editor.replace ("%l",QString::number (line));
+      QProcess::startDetached (editor);
+      if (line < 0)
+        handle_mru_add_file(QDir::cleanPath (openFileName));
+      return;
+    }
+
   if (openFileName.isEmpty ())
     {
       // ??  Not sure this will happen.  This routine isn't even called

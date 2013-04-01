@@ -76,7 +76,7 @@ function write_index (desc, dir, index_file, global_install)
   endif
   categories = strtrim (strsplit (desc.categories, ",", false));
   if (length (categories) < 1)
-      error ("the Category field is empty");
+    error ("the Category field is empty");
   endif
 
   ## Write INDEX.

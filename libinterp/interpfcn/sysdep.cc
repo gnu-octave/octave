@@ -167,8 +167,6 @@ void
 MINGW_signal_cleanup (void)
 {
   w32_set_quiet_shutdown ();
-
-  w32_raise_final ();
 }
 #endif
 
@@ -177,11 +175,6 @@ static void
 MINGW_init (void)
 {
   w32_set_octave_home ();
-
-  // Init mutex to protect setjmp/longjmp and get main thread context
-  w32_sigint_init ();
-
-  w32_set_quiet_shutdown ();
 }
 #endif
 
@@ -190,11 +183,6 @@ static void
 MSVC_init (void)
 {
   w32_set_octave_home ();
-
-  // Init mutex to protect setjmp/longjmp and get main thread context
-  w32_sigint_init ();
-
-  w32_set_quiet_shutdown ();
 }
 #endif
 

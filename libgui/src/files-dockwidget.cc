@@ -78,9 +78,6 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _file_tree_view->setSortingEnabled (true);
   _file_tree_view->setAlternatingRowColors (true);
   _file_tree_view->setAnimated (true);
-  _file_tree_view->setColumnHidden (1, true);
-  _file_tree_view->setColumnHidden (2, true);
-  _file_tree_view->setColumnHidden (3, true);
   _file_tree_view->setStatusTip (tr ("Doubleclick a file to open it."));
 
   // get sort column and order as well as cloumn state (order and width)
@@ -190,8 +187,8 @@ files_dock_widget::notice_settings ()
   QSettings *settings = resource_manager::get_settings ();
 
   // FIXME -- what should happen if settings is 0?
-
-  _file_tree_view->setColumnHidden (0, !settings->value ("showFilenames",true).toBool ());
+  // file names are always shown, other columns can be hidden by settings
+  _file_tree_view->setColumnHidden (0, false);
   _file_tree_view->setColumnHidden (1, !settings->value ("showFileSize",false).toBool ());
   _file_tree_view->setColumnHidden (2, !settings->value ("showFileType",false).toBool ());
   _file_tree_view->setColumnHidden (3, !settings->value ("showLastModified",false).toBool ());

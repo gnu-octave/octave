@@ -403,13 +403,6 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QCheckBox" name="showFilenames">
-         <property name="text">
-          <string>Show filenames</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="showFileSize">
          <property name="text">
           <string>Show file size</string>

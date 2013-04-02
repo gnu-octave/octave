@@ -85,7 +85,6 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
   ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());
-  ui->showFilenames->setChecked (settings->value ("showFilenames",true).toBool());
   ui->showFileSize->setChecked (settings->value ("showFileSize",false).toBool());
   ui->showFileType->setChecked (settings->value ("showFileType",false).toBool());
   ui->showLastModified->setChecked (settings->value ("showLastModified",false).toBool());
@@ -256,7 +255,6 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
   settings->setValue ("terminal/fontName", ui->terminal_fontName->currentFont().family());
-  settings->setValue ("showFilenames", ui->showFilenames->isChecked ());
   settings->setValue ("showFileSize", ui->showFileSize->isChecked ());
   settings->setValue ("showFileType", ui->showFileType->isChecked ());
   settings->setValue ("showLastModified", ui->showLastModified->isChecked ());

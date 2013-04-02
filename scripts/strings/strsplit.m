@@ -22,11 +22,11 @@
 ## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@var{s}, @var{del}, @var{collapsedelimiters})
 ## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@dots{}, @var{name}, @var{value})
 ## @deftypefnx {Function File} {[@var{cstr}, @var{matches}] =} strsplit (@dots{})
-## Split the string @var{s} using the delimiters specified by @var{del} and return
-## a cell array of strings.  For a single delimiter, @var{del} may be a string,
-## or a scalar cell-string.  For multible delimiters, @var{del} must be a cell-string
-## array.  Unless @var{collapsedelimiters} is specified to be @var{false}, consecutive
-## delimiters are collapsed into one.
+## Split the string @var{s} using the delimiters specified by @var{del}
+## and return a cell array of strings.  For a single delimiter, @var{del}
+## may be a string, or a scalar cell-string.  For multible delimiters, 
+## @var{del} must be a cell-string array.  Unless @var{collapsedelimiters} is
+## specified to be @var{false}, consecutive delimiters are collapsed into one.
 ##
 ## The second output, @var{matches}, returns the delmiters which were matched
 ## in the original string.  The matched delimiters are uneffected by the
@@ -76,10 +76,15 @@
 ## Supported @var{name}/@var{value} pair arguments are;
 ##
 ## @itemize
-## @item @code{collapsedelimiters} may take the value of @var{true} or @var{false}
+## @item @var{collapsedelimiters} may take the value of @var{true} or @var{false}
 ## with the default being @var{false}.
-## @item @code{delimitertype} may take the value of @code{simple} or @code{regularexpression},
-## with the default being @code{simple}.
+## @item @var{delimitertype} may take the value of @code{legacy},
+## @code{simple} or @code{regularexpression}.
+## If @var{delimitertype} is equal to @code{legacy}, each individual
+## character of @var{del} is used to split the input.
+## If the specified delimiters are single characters, the default is
+## @var{delimitertype} is @code{legacy}.  Otherwise the default
+## @var{delimitertype} is @code{simple}.
 ## @end itemize
 ## 
 ## Example:
@@ -104,6 +109,16 @@
 ##             [1,5] = c
 ##           @}
 ## 
+## strsplit ("a,,b, c", ", ", false, "delimitertype", "legacy")
+##       @result{}
+##           @{
+##             [1,1] = a
+##             [1,2] = 
+##             [1,3] = b
+##             [1,4] = 
+##             [1,5] = c
+##           @}
+## 
 ## strsplit ("a,\t,b, c", @{',', '\s'@}, "delimitertype", "regularexpression")
 ##       @result{}
 ##           @{
@@ -114,13 +129,13 @@
 ## @end group
 ## @end example
 ## 
-## @seealso{strtok, regexp}
+## @seealso{strjoin, strtok, regexp}
 ## @end deftypefn
 
 function [result, matches] = strsplit (str, del, varargin)
 
   args.collapsedelimiters = true;
-  args.delimitertype = "simple";
+  args.delimitertype = "default";
 
   [reg, params] = parseparams (varargin);
 
@@ -145,6 +160,18 @@ function [result, matches] = strsplit (str, del, varargin)
     endif
   endfor
 
+  if (strcmpi (args.delimitertype, "default"))
+    if (nargin == 1 || numel (del) == 1
+      || (nargin > 1 && (islogical (del) || isnumeric (del)))
+      || iscell (del) && all (cellfun (@numel, del) < 2))
+      ## For single character delimiters, default to "legacy"
+      args.delimitertype = "legacy";
+    else
+      ## For multi-character delimiters, default to "simple"
+      args.delimitertype = "simple";
+    endif
+  endif
+
   # Save the length of the "delimitertype" parameter
   length_deltype = numel (args.delimitertype);
 
@@ -156,6 +183,8 @@ function [result, matches] = strsplit (str, del, varargin)
     ## Set proper default for the delimiter type
     if (strncmpi (args.delimitertype, "simple", numel (args.delimitertype)))
       del = {" ","\f","\n","\r","\t","\v"};
+    elseif (strncmpi (args.delimitertype, "legacy", numel (args.delimitertype)))
+      del = " \f\n\r\t\v";
     else
       del = "\\s";
     endif
@@ -165,8 +194,6 @@ function [result, matches] = strsplit (str, del, varargin)
     print_usage ();
   elseif (! ischar (str) || (! ischar (del) && ! iscellstr (del)))
     error ("strsplit: S and DEL must be string values");
-  elseif (rows (str) > 1)
-    error ("strsplit: S must be a string value");
   elseif (! isscalar (args.collapsedelimiters))
     error ("strsplit: COLLAPSEDELIMITERS must be a scalar value");
   endif
@@ -180,8 +207,55 @@ function [result, matches] = strsplit (str, del, varargin)
     endif
   endif
 
+  if (rows (str) > 1)
+    tmp = char (del(1));
+    str = [str, repmat(tmp,rows(str),1)];
+    str = reshape (str.', 1, numel (str));
+    str(end-numel(tmp)+1:end) = [];
+  endif
+
   if (isempty (str))
     result = {str};
+  elseif (strncmpi (args.delimitertype, "legacy", length_deltype))
+    ## Conventional splitting is preserved for its speed.  Its delimiter type
+    ##
+    if (! ischar (del))
+      if (iscell (del) && all (cellfun (@numel, del) < 2))
+        del = [del{:}];
+      else
+        error ("strsplit:legacy_delimiter_must_be_char",
+          "%s %s", "strsplit: for DELIMITERTYPE = ""legacy"" ", 
+           "DEL must be a string, or a cell array scalar character elements.")
+      endif
+    endif
+    ## Split s according to delimiter
+    if (isscalar (del))
+      ## Single separator
+      idx = find (str == del);
+    else
+      ## Multiple separators
+      idx = strchr (str, del);
+    endif
+
+    ## Get substring lengths.
+    if (isempty (idx))
+      strlens = length (str);
+    else
+      strlens = [idx(1)-1, diff(idx)-1, numel(str)-idx(end)];
+    endif
+    if (nargout > 1)
+      ## Grab the separators
+      matches = num2cell (str(idx)(:)).';
+    endif
+    ## Remove separators.
+    str(idx) = [];
+    if (args.collapsedelimiters)
+      ## Omit zero lengths.
+      strlens = strlens(strlens != 0);
+    endif
+
+    ## Convert!
+    result = mat2cell (str, 1, strlens);
   elseif (strncmpi (args.delimitertype, "regularexpression", length_deltype)
           || strncmpi (args.delimitertype, "simple", length_deltype))
     if (iscellstr (del))
@@ -217,6 +291,9 @@ function str = regexp2simple (str, reverse = false)
   endif
 endfunction
 
+% Mimic the old strsplit()
+%!assert (cellfun (@numel, strsplit (["a,b,c";"1,2   "], ",")), [1 1 2 1 4])
+
 %!shared str
 %! str = "The rain in Spain stays mainly in the plain.";
 % Split on all whitespace.
@@ -246,7 +323,8 @@ endfunction
 %!assert (strsplit ("road to hell", " "), {"road", "to", "hell"})
 %!assert (strsplit ("road to^hell", {" ","^"}), {"road", "to", "hell"})
 %!assert (strsplit ("road   to--hell", {" ","-"}, true), {"road", "to", "hell"})
-%!assert (strsplit (["a,bc,,de"], ",", false), {"a", "bc", "", "de"})
+%!assert (strsplit (["a,bc,,de"], ",", false, "delimitertype", "s"), {"a", "bc", "", "de"})
+%!assert (strsplit (["a,bc,,de"], ",", false), {"a", "bc", char(ones(1,0)), "de"})
 %!assert (strsplit (["a,bc,de"], ",", true), {"a", "bc", "de"})
 %!assert (strsplit (["a,bc,de"], {","," "}, true), {"a", "bc", "de"})
 %!test
@@ -263,6 +341,13 @@ endfunction
 %!assert (strsplit (["a,bc,de"], ",", true, "delimitertype", "r"), {"a", "bc", "de"})
 %!assert (strsplit (["a,bc,de"], "[, ]", true, "delimitertype", "r"), {"a", "bc", "de"})
 %!assert (strsplit ("hello \t world", 1, "delimitertype", "r"), {"hello", "world"});
+
+%!assert (strsplit ("road to hell", " ", false, "delimitertype", "l"), {"road", "to", "hell"})
+%!assert (strsplit ("road to^hell", " ^", false, "delimitertype", "l"), {"road", "to", "hell"})
+%!assert (strsplit ("road   to--hell", " -", true, "delimitertype", "l"), {"road", "to", "hell"})
+%!assert (strsplit (["a,bc";",de"], ",", false, "delimitertype", "l"), {"a", "bc", char(ones(1,0)), "de "})
+%!assert (strsplit (["a,bc";",de"], ",", true, "delimitertype", "l"), {"a", "bc", "de "})
+%!assert (strsplit (["a,bc";",de"], ", ", true, "delimitertype", "l"), {"a", "bc", "de"})
 
 %% Test input validation
 %!error strsplit ()

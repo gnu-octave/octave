@@ -161,9 +161,8 @@ main_window::handle_clear_history_request()
 }
 
 void
-main_window::handle_command_double_clicked (const QString& command)
+main_window::handle_command_double_clicked (const QString&)
 {
-  _terminal->sendText (command);
   focus_command_window ();
 }
 
@@ -199,34 +198,18 @@ main_window::process_settings_dialog_request ()
   if (change_settings == QDialog::Accepted)
     {
       settingsDialog->write_changed_settings ();
-      emit settings_changed ();
+      QSettings *settings = resource_manager::get_settings ();
+      if (settings)
+        emit settings_changed (settings);
     }
   delete settingsDialog;
 }
 
 
 void
-main_window::notice_settings ()
+main_window::notice_settings (const QSettings *settings)
 {
-  QSettings *settings = resource_manager::get_settings ();
-
-  // FIXME -- what should happen if settings is 0?
-
-  // Set terminal font:
-  QFont term_font = QFont();
-  term_font.setFamily(settings->value("terminal/fontName","Courier New").toString());
-  term_font.setPointSize(settings->value("terminal/fontSize",10).toInt ());
-  _terminal->setTerminalFont (term_font);
-
-  QString cursorType = settings->value ("terminal/cursorType","ibeam").toString ();
-  bool cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
-  if (cursorType == "ibeam")
-    _terminal->setCursorType(QTerminalInterface::IBeamCursor, cursorBlinking);
-  else if (cursorType == "block")
-    _terminal->setCursorType(QTerminalInterface::BlockCursor, cursorBlinking);
-  else if (cursorType == "underline")
-    _terminal->setCursorType(QTerminalInterface::UnderlineCursor,
-                             cursorBlinking);
+  // QSettings pointer is checked before emitting.
 
   // the widget's icons (when floating)
   QString icon_set = settings->value ("DockWidgets/widget_icon_set","NONE").
@@ -365,9 +348,9 @@ main_window::focus_command_window ()
   _terminal_dock_widget->activateWindow ();
   _terminal_dock_widget->raise ();
 
-  _terminal->setFocus ();
-  _terminal->activateWindow ();
-  _terminal->raise ();
+  _terminal_dock_widget->widget ()->setFocus ();
+  _terminal_dock_widget->widget ()->activateWindow ();
+  _terminal_dock_widget->widget ()->raise ();
 }
 
 void
@@ -592,8 +575,11 @@ void
 main_window::read_settings ()
 {
   QSettings *settings = resource_manager::get_settings ();
-
-  // FIXME -- what should happen if settings is 0?
+  if (!settings)
+    {
+      qDebug("Error: QSettings pointer from resource manager is NULL.");
+      return;
+    }
 
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   settings->beginGroup ("DockWidgets");
@@ -621,15 +607,18 @@ main_window::read_settings ()
     {
       _current_directory_combo_box->addItem (curr_dirs.at (i));
     }
-  emit settings_changed ();
+  emit settings_changed (settings);
 }
 
 void
 main_window::write_settings ()
 {
   QSettings *settings = resource_manager::get_settings ();
-
-  // FIXME -- what should happen if settings is 0?
+  if (!settings)
+    {
+      qDebug("Error: QSettings pointer from resource manager is NULL.");
+      return;
+    }
 
   settings->setValue ("MainWindow/geometry", saveGeometry ());
   settings->beginGroup ("DockWidgets");
@@ -719,10 +708,10 @@ main_window::construct ()
   current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
 
   // Octave Terminal subwindow.
-  _terminal = new QTerminal (this);
-  _terminal->setObjectName ("OctaveTerminal");
-  _terminal->setFocusPolicy (Qt::StrongFocus);
-  _terminal_dock_widget = new terminal_dock_widget (_terminal, this);
+  QTerminal *terminal = new QTerminal (this);
+  terminal->setObjectName ("OctaveTerminal");
+  terminal->setFocusPolicy (Qt::StrongFocus);
+  _terminal_dock_widget = new terminal_dock_widget (terminal, this);
 
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
@@ -1101,21 +1090,25 @@ main_window::construct ()
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));
 #ifdef HAVE_QSCINTILLA
-  connect (this,                        SIGNAL (settings_changed ()),
-           _file_editor,                SLOT   (notice_settings ()));
+  connect (this,                        SIGNAL (settings_changed (const QSettings *)),
+           _file_editor,                SLOT   (notice_settings (const QSettings *)));
 #endif
-  connect (this,                        SIGNAL (settings_changed ()),
-           _files_dock_widget,          SLOT   (notice_settings ()));
-  connect (this,                        SIGNAL (settings_changed ()),
-           this,                        SLOT   (notice_settings ()));
+  connect (this,                        SIGNAL (settings_changed (const QSettings *)),
+           terminal,                    SLOT   (notice_settings (const QSettings *)));
+  connect (this,                        SIGNAL (settings_changed (const QSettings *)),
+           _files_dock_widget,          SLOT   (notice_settings (const QSettings *)));
+  connect (this,                        SIGNAL (settings_changed (const QSettings *)),
+           this,                        SLOT   (notice_settings (const QSettings *)));
   connect (_files_dock_widget,          SIGNAL (open_file (QString)),
            this,                        SLOT   (open_file (QString)));
   connect (_files_dock_widget,          SIGNAL (displayed_directory_changed(QString)),
            this,                        SLOT   (set_current_working_directory(QString)));
   connect (_history_dock_widget,        SIGNAL (information (QString)),
            this,                        SLOT   (report_status_message (QString)));
-  connect (_history_dock_widget,        SIGNAL (command_double_clicked (QString)),
-           this,                        SLOT   (handle_command_double_clicked (QString)));
+  connect (_history_dock_widget,        SIGNAL (command_double_clicked (const QString&)),
+           this,                        SLOT   (handle_command_double_clicked (const QString&)));
+  connect (_history_dock_widget,        SIGNAL (command_double_clicked (const QString&)),
+           terminal,                    SLOT   (relay_command (const QString&)));
   connect (save_workspace_action,       SIGNAL (triggered ()),
            this,                        SLOT   (handle_save_workspace_request ()));
   connect (load_workspace_action,       SIGNAL (triggered ()),
@@ -1127,9 +1120,9 @@ main_window::construct ()
   connect (current_directory_up_tool_button, SIGNAL (clicked ()),
            this,                        SLOT   (current_working_directory_up()));
   connect (copy_action,                 SIGNAL (triggered()),
-           _terminal,                   SLOT   (copyClipboard ()));
+           terminal,                    SLOT   (copyClipboard ()));
   connect (paste_action,                SIGNAL (triggered()),
-           _terminal,                   SLOT   (pasteClipboard ()));
+           terminal,                    SLOT   (pasteClipboard ()));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (set_current_working_directory (QString)));
   connect (_current_directory_line_edit, SIGNAL (returnPressed ()),

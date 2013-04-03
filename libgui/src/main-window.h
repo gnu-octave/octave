@@ -62,19 +62,8 @@ class main_window : public QMainWindow
   main_window (QWidget * parent = 0);
   ~main_window ();
 
-  QTerminal *get_terminal_view () { return _terminal; }
-  history_dock_widget *get_history_dock_widget ()
-  {
-    return _history_dock_widget;
-  }
-  files_dock_widget *get_files_dock_widget ()
-  {
-    return _files_dock_widget;
-  }
-  bool is_closing () { return _closing; }
-
 signals:
-  void settings_changed ();
+  void settings_changed (const QSettings *);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -92,7 +81,7 @@ public slots:
   void open_agora_page ();
   void process_settings_dialog_request ();
   void show_about_octave ();
-  void notice_settings ();
+  void notice_settings (const QSettings *settings);
   void prepare_for_quit ();
   void reset_windows ();
   void current_working_directory_has_changed (const QString& directory);
@@ -161,7 +150,6 @@ private:
 
   void exit_callback (void);
 
-  QTerminal *               _terminal;
 #ifdef HAVE_QSCINTILLA
   file_editor_interface *   _file_editor;
 #endif

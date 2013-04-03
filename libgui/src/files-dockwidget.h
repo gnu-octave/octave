@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QAction>
 #include <QTreeView>
+#include <QSettings>
 
 #include <QLineEdit>
 #include "octave-dock-widget.h"
@@ -67,7 +68,7 @@ public slots:
   void display_directory (const QString& directory);
 
   /** Tells the widget to react on changed settings. */
-  void notice_settings ();
+  void notice_settings (const QSettings *settings);
 
 signals:
   /** Emitted, whenever the user requested to open a file. */

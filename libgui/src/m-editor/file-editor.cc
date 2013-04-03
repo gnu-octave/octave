@@ -594,10 +594,10 @@ file_editor::handle_editor_state_changed (bool copy_available, const QString& fi
 }
 
 void
-file_editor::notice_settings ()
+file_editor::notice_settings (const QSettings *settings)
 {
   // Relay signal to file editor tabs.
-  emit fetab_settings_changed ();
+  emit fetab_settings_changed (settings);
 }
 
 void
@@ -874,8 +874,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            parent (), SLOT (handle_command_double_clicked (const QString&)));
   
   // Signals from the file_editor non-trivial operations
-  connect (this, SIGNAL (fetab_settings_changed ()),
-           f, SLOT (notice_settings ()));
+  connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
+           f, SLOT (notice_settings (const QSettings *)));
   connect (this, SIGNAL (fetab_close_request (const QWidget*)),
            f, SLOT (conditional_close (const QWidget*)));
   connect (this, SIGNAL (fetab_change_request (const QWidget*)),

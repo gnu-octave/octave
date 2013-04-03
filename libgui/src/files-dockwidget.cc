@@ -182,11 +182,10 @@ files_dock_widget::display_directory (const QString& directory)
 }
 
 void
-files_dock_widget::notice_settings ()
+files_dock_widget::notice_settings (const QSettings *settings)
 {
-  QSettings *settings = resource_manager::get_settings ();
+  // Qsettings pointer is checked before emitting.
 
-  // FIXME -- what should happen if settings is 0?
   // file names are always shown, other columns can be hidden by settings
   _file_tree_view->setColumnHidden (0, false);
   _file_tree_view->setColumnHidden (1, !settings->value ("showFileSize",false).toBool ());

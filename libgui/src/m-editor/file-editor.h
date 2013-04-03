@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QTabWidget>
+#include <QSettings>
 
 #include <map>
 
@@ -60,7 +61,7 @@ class file_editor : public file_editor_interface
   void handle_quit_debug_mode ();
 
 signals:
-  void fetab_settings_changed ();
+  void fetab_settings_changed (const QSettings *settings);
   void fetab_close_request (const QWidget* ID);
   void fetab_change_request (const QWidget* ID);
   void fetab_file_name_query (const QWidget* ID);
@@ -138,7 +139,7 @@ public slots:
   void handle_edit_file_request (const QString& file);
 
   /** Tells the editor to react on changed settings. */
-  void notice_settings ();
+  void notice_settings (const QSettings *settings);
 
 private slots:
   void request_open_file (const QString& fileName, int line = -1,

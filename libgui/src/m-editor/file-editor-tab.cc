@@ -116,7 +116,9 @@ file_editor_tab::file_editor_tab (QString directory)
   connect (&_file_system_watcher, SIGNAL (fileChanged (QString)),
            this, SLOT (file_has_changed (QString)));
 
-  notice_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+  if (settings)
+    notice_settings (settings);
 }
 
 file_editor_tab::~file_editor_tab ()
@@ -242,7 +244,8 @@ file_editor_tab::update_lexer ()
     }
 
   QSettings *settings = resource_manager::get_settings ();
-  lexer->readSettings (*settings);
+  if (settings)
+    lexer->readSettings (*settings);
   _edit_area->setLexer (lexer);
 
 }
@@ -1003,14 +1006,12 @@ file_editor_tab::file_has_changed (const QString&)
 }
 
 void
-file_editor_tab::notice_settings ()
+file_editor_tab::notice_settings (const QSettings *settings)
 {
+  // QSettings pointer is checked before emitting.
+
   update_lexer ();
   QFontMetrics lexer_font_metrics (_edit_area->lexer ()->defaultFont (0));
-  QSettings *settings = resource_manager::get_settings ();
-
-  if (settings==NULL)
-    return; // this shouldn't happen!
 
   _edit_area->setCaretLineVisible(settings->value ("editor/highlightCurrentLine",true).toBool ());
 

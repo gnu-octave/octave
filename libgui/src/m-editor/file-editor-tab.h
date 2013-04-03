@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWidget>
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
+#include <QSettings>
 
 #include "find-dialog.h"
 
@@ -44,7 +45,7 @@ public slots:
   void handle_margin_clicked (int line, int margin, Qt::KeyboardModifiers state);
 
   /** Tells the editor tab to react on changed settings. */
-  void notice_settings ();
+  void notice_settings (const QSettings *settings);
   /** Will initiate close if associated with the identifier tag. */
   void conditional_close (const QWidget* ID);
   /** Change to a different editor tab by identifier tag. */

@@ -36,46 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 
 static octave_value_list
-pre_input_event_hook_fcn (const octave_value_list&, int)
-{
-  octave_value_list retval;
-
-  octave_link::pre_input_event ();
-
-  return retval;
-}
-
-static octave_value_list
-post_input_event_hook_fcn (const octave_value_list&, int)
-{
-  octave_value_list retval;
-
-  octave_link::post_input_event ();
-
-  return retval;
-}
-
-static octave_value_list
-enter_debugger_event_hook_fcn (const octave_value_list& args, int)
-{
-  octave_value_list retval;
-
-  octave_link::enter_debugger_event (args);
-
-  return retval;
-}
-
-static octave_value_list
-exit_debugger_event_hook_fcn (const octave_value_list& args, int)
-{
-  octave_value_list retval;
-
-  octave_link::exit_debugger_event (args);
-
-  return retval;
-}
-
-static octave_value_list
 dbstop_hook_fcn (const octave_value_list& args, int)
 {
   octave_value_list retval;
@@ -119,22 +79,6 @@ octave_main_thread::run ()
 
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
-
-  octave_value pre_fcn (new octave_builtin (pre_input_event_hook_fcn));
-  octave_value pre_fcn_handle (new octave_fcn_handle (pre_fcn));
-  Fadd_pre_input_event_hook (pre_fcn_handle);
-
-  octave_value post_fcn (new octave_builtin (post_input_event_hook_fcn));
-  octave_value post_fcn_handle (new octave_fcn_handle (post_fcn));
-  Fadd_post_input_event_hook (post_fcn_handle);
-
-  octave_value enter_debugger_fcn (new octave_builtin (enter_debugger_event_hook_fcn));
-  octave_value enter_debugger_fcn_handle (new octave_fcn_handle (enter_debugger_fcn));
-  Fadd_enter_debugger_event_hook (enter_debugger_fcn_handle);
-
-  octave_value exit_debugger_fcn (new octave_builtin (exit_debugger_event_hook_fcn));
-  octave_value exit_debugger_fcn_handle (new octave_fcn_handle (exit_debugger_fcn));
-  Fadd_exit_debugger_event_hook (exit_debugger_fcn_handle);
 
   octave_value dbstop_fcn (new octave_builtin (dbstop_hook_fcn));
   octave_value dbstop_fcn_handle (new octave_fcn_handle (dbstop_fcn));

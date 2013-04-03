@@ -40,7 +40,7 @@ pre_input_event_hook_fcn (const octave_value_list&, int)
 {
   octave_value_list retval;
 
-  octave_link::pre_input_event_hook_fcn ();
+  octave_link::pre_input_event ();
 
   return retval;
 }
@@ -50,7 +50,7 @@ post_input_event_hook_fcn (const octave_value_list&, int)
 {
   octave_value_list retval;
 
-  octave_link::post_input_event_hook_fcn ();
+  octave_link::post_input_event ();
 
   return retval;
 }
@@ -60,7 +60,7 @@ enter_debugger_event_hook_fcn (const octave_value_list& args, int)
 {
   octave_value_list retval;
 
-  octave_link::enter_debugger_event_hook_fcn (args);
+  octave_link::enter_debugger_event (args);
 
   return retval;
 }
@@ -70,7 +70,7 @@ exit_debugger_event_hook_fcn (const octave_value_list& args, int)
 {
   octave_value_list retval;
 
-  octave_link::exit_debugger_event_hook_fcn (args);
+  octave_link::exit_debugger_event (args);
 
   return retval;
 }
@@ -80,7 +80,7 @@ dbstop_hook_fcn (const octave_value_list& args, int)
 {
   octave_value_list retval;
 
-  octave_link::update_breakpoint_hook_fcn (true, args);
+  octave_link::update_breakpoint (true, args);
 
   return retval;
 }
@@ -90,7 +90,7 @@ dbclear_hook_fcn (const octave_value_list& args, int)
 {
   octave_value_list retval;
 
-  octave_link::update_breakpoint_hook_fcn (false, args);
+  octave_link::update_breakpoint (false, args);
 
   return retval;
 }

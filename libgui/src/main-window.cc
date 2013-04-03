@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor.h"
 #endif
 #include "main-window.h"
-#include "octave-link.h"
+#include "octave-qt-link.h"
 #include "settings-dialog.h"
 
 #include "builtins.h"
@@ -60,7 +60,6 @@ main_window::main_window (QWidget *p)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
-  octave_link::launch_octave ();
 }
 
 main_window::~main_window ()
@@ -1165,7 +1164,6 @@ main_window::construct ()
   setStatusBar (_status_bar);
 
   _octave_qt_event_listener = new octave_qt_event_listener ();
-  octave_link::register_event_listener (_octave_qt_event_listener);
 
   connect (_octave_qt_event_listener,
            SIGNAL (current_directory_has_changed_signal (QString)),
@@ -1209,6 +1207,12 @@ main_window::construct ()
            SIGNAL (edit_file_signal (const QString&)),
            this,
            SLOT (handle_edit_file_request(const QString&)));
+
+  // FIXME -- is it possible to eliminate the event_listenter?
+
+  octave_link::connect (new octave_qt_link ());
+
+  octave_link::register_event_listener (_octave_qt_event_listener);
 }
 
 void

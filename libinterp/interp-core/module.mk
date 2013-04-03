@@ -35,6 +35,8 @@ INTERP_CORE_INC = \
   interp-core/mex.h \
   interp-core/mexproto.h \
   interp-core/mxarray.in.h \
+  interp-core/octave-event-listener.h \
+  interp-core/octave-link.h \
   interp-core/oct-errno.h \
   interp-core/oct-fstrm.h \
   interp-core/oct-hdf5.h \
@@ -90,6 +92,7 @@ INTERP_CORE_SRC = \
   interp-core/ls-oct-binary.cc \
   interp-core/ls-utils.cc \
   interp-core/mex.cc \
+  interp-core/octave-link.cc \
   interp-core/oct-fstrm.cc \
   interp-core/oct-iostrm.cc \
   interp-core/oct-lvalue.cc \

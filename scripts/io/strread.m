@@ -772,7 +772,7 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
   endif
 
   ## Split text string along delimiters
-  out = strsplit (text, num2cell (sep(:)), mult_dlms_s1);
+  out = strsplit (text, sep, mult_dlms_s1, "delimitertype", "legacy");
   if (index (sep, eol_char)); out = strrep (out, char (255), ''); endif
   ## In case of trailing delimiter, strip stray last empty word
   if (!isempty (out) && any (sep == text(end)))

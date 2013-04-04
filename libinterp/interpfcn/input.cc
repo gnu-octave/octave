@@ -273,7 +273,7 @@ octave_base_reader::octave_gets (bool& eof)
   // list has been updated.
 
   if (interactive || forced_interactive)
-    octave_link::pre_input_event ();
+    octave_link::post_input_event ();
 
   return retval;
 }

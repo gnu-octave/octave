@@ -27,15 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class octave_mutex;
-
-#include "oct-obj.h"
-
-#include "event-queue.h"
+#include <QObject>
+#include <QString>
 
 #include "octave-link.h"
 #include "octave-main-thread.h"
-#include "octave-event-listener.h"
 
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
@@ -45,8 +41,10 @@ class octave_mutex;
 // buffering access operations to octave and executing them in the
 // readline event hook, which lives in the octave thread.
 
-class octave_qt_link : public octave_link
+class octave_qt_link : public QObject, public octave_link
 {
+  Q_OBJECT
+
 public:
 
   octave_qt_link (void);
@@ -57,18 +55,15 @@ public:
 
   void do_update_history (void);
 
-  void do_insert_debugger_pointer (const octave_value_list& args);
-  void do_delete_debugger_pointer (const octave_value_list& args);
-
   void do_pre_input_event (void);
   void do_post_input_event (void);
 
-  void do_enter_debugger_event (const octave_value_list& args);
-  void do_exit_debugger_event (const octave_value_list& args);
+  void do_enter_debugger_event (const std::string& file, int line);
+  void do_exit_debugger_event (const std::string& file, int line);
 
-  void do_update_breakpoint (bool insert, const octave_value_list& args);
+  void do_update_breakpoint (bool insert, const std::string& file, int line);
 
-  void do_edit_file (const octave_value_list& args);
+  bool do_edit_file (const std::string& file);
 
 private:
 
@@ -78,8 +73,22 @@ private:
 
   octave_qt_link& operator = (const octave_qt_link&);
 
+  void do_insert_debugger_pointer (const std::string& file, int line);
+
+  void do_delete_debugger_pointer (const std::string& file, int line);
+
   // Thread running octave_main.
   octave_main_thread *main_thread;
+
+signals:
+
+  void update_dbstop_marker_signal (bool insert, const QString& file, int line);
+
+  void edit_file_signal (const QString& file);
+
+  void insert_debugger_pointer_signal (const QString&, int);
+
+  void delete_debugger_pointer_signal (const QString&, int);
 };
 
-#endif // OCTAVELINK_H
+#endif

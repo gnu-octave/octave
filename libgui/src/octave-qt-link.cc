@@ -26,13 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "cmd-edit.h"
-#include "oct-env.h"
-#include "oct-mutex.h"
-#include "singleton-cleanup.h"
-#include "symtab.h"
-#include "toplev.h"
-
 #include "octave-qt-link.h"
 
 octave_qt_link::octave_qt_link (void)
@@ -65,74 +58,6 @@ octave_qt_link::do_update_history (void)
 }
 
 void
-octave_qt_link::do_insert_debugger_pointer (const octave_value_list& args)
-{
-  if (event_listener)
-    {
-      if (args.length () == 1)
-        {
-          octave_scalar_map m = args(0).scalar_map_value ();
-
-          if (! error_state)
-            {
-              octave_value ov_file = m.getfield ("file");
-              octave_value ov_line = m.getfield ("line");
-
-              std::string file = ov_file.string_value ();
-              int line = ov_line.int_value ();
-
-              if (! error_state)
-                {
-                  event_listener->insert_debugger_pointer (file, line);
-
-                  do_process_events ();
-                }
-              else
-                ::error ("invalid struct in debug pointer callback");
-            }
-          else
-            ::error ("expecting struct in debug pointer callback");
-        }
-      else
-        ::error ("invalid call to debug pointer callback");
-    }
-}
-
-void
-octave_qt_link::do_delete_debugger_pointer (const octave_value_list& args)
-{
-  if (event_listener)
-    {
-      if (args.length () == 1)
-        {
-          octave_scalar_map m = args(0).scalar_map_value ();
-
-          if (! error_state)
-            {
-              octave_value ov_file = m.getfield ("file");
-              octave_value ov_line = m.getfield ("line");
-
-              std::string file = ov_file.string_value ();
-              int line = ov_line.int_value ();
-
-              if (! error_state)
-                {
-                  event_listener->delete_debugger_pointer (file, line);
-
-                  do_process_events ();
-                }
-              else
-                ::error ("invalid struct in debug pointer callback");
-            }
-          else
-            ::error ("expecting struct in debug pointer callback");
-        }
-      else
-        ::error ("invalid call to debug pointer callback");
-    }
-}
-
-void
 octave_qt_link::do_pre_input_event (void)
 {
   do_update_workspace ();
@@ -145,71 +70,40 @@ octave_qt_link::do_post_input_event (void)
 }
 
 void
-octave_qt_link::do_enter_debugger_event (const octave_value_list& args)
+octave_qt_link::do_enter_debugger_event (const std::string& file, int line)
 {
-  do_insert_debugger_pointer (args);
+  do_insert_debugger_pointer (file, line);
 }
 
 void
-octave_qt_link::do_exit_debugger_event (const octave_value_list& args)
+octave_qt_link::do_exit_debugger_event (const std::string& file, int line)
 {
-  do_delete_debugger_pointer (args);
+  do_delete_debugger_pointer (file, line);
 }
 
 void
 octave_qt_link::do_update_breakpoint (bool insert,
-                                      const octave_value_list& args)
+                                      const std::string& file, int line)
 {
-  if (event_listener)
-    {
-      if (args.length () == 1)
-        {
-          octave_scalar_map m = args(0).scalar_map_value ();
+  emit update_dbstop_marker_signal (insert, QString::fromStdString (file), line);
+}
 
-          if (! error_state)
-            {
-              octave_value ov_file = m.getfield ("file");
-              octave_value ov_line = m.getfield ("line");
+bool
+octave_qt_link::do_edit_file (const std::string& file)
+{
+  emit edit_file_signal (QString::fromStdString (file));
 
-              std::string file = ov_file.string_value ();
-              int line = ov_line.int_value ();
-
-              if (! error_state)
-                {
-                  event_listener->update_dbstop_marker (insert, file, line);
-
-                  do_process_events ();
-                }
-              else
-                ::error ("invalid struct in dbstop marker callback");
-            }
-          else
-            ::error ("expecting struct in dbstop marker callback");
-        }
-      else
-        ::error ("invalid call to dbstop marker callback");
-    }
+  return true;
 }
 
 void
-octave_qt_link::do_edit_file (const octave_value_list& args)
+octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
 {
-  if (event_listener)
-    {
-      if (args.length () == 1)
-        {
-          std::string file = args(0).string_value ();
+  emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
+}
 
-          if (! error_state)
-            {
-              event_listener->edit_file (file);
-              do_process_events ();
-
-            }
-          else
-            ::error ("expecting file name in edit file callback");
-        }
-      else
-        ::error ("invalid call to edit file callback");
-    }
+void
+octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
+{
+  emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
 }

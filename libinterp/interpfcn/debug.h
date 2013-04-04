@@ -131,6 +131,4 @@ private:
 
 extern std::string get_file_line (const std::string& fname, size_t line);
 
-extern octave_value location_info (const std::string& fname, int line);
-
 #endif

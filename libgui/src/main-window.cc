@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor.h"
 #endif
 #include "main-window.h"
-#include "octave-qt-link.h"
 #include "settings-dialog.h"
 
 #include "builtins.h"
@@ -70,6 +69,9 @@ main_window::~main_window ()
 
   if (_octave_qt_event_listener)
     delete _octave_qt_event_listener;
+
+  octave_link::connect_link (0);
+  delete _octave_qt_link;
 
 #ifdef HAVE_QSCINTILLA
   if (_file_editor)
@@ -489,39 +491,6 @@ main_window::handle_quit_debug_mode ()
   _debug_quit->setEnabled (false);
 #ifdef HAVE_QSCINTILLA
   _file_editor->handle_quit_debug_mode ();
-#endif
-}
-
-void
-main_window::handle_insert_debugger_pointer_request (const QString& file, int line)
-{
-#ifdef HAVE_QSCINTILLA
-  _file_editor->handle_insert_debugger_pointer_request (file, line);
-#endif
-}
-
-void
-main_window::handle_delete_debugger_pointer_request (const QString& file, int line)
-{
-#ifdef HAVE_QSCINTILLA
-  _file_editor->handle_delete_debugger_pointer_request (file, line);
-#endif
-}
-
-void
-main_window::handle_update_dbstop_marker_request (bool insert,
-                                                  const QString& file, int line)
-{
-#ifdef HAVE_QSCINTILLA
-  _file_editor->handle_update_dbstop_marker_request (insert, file, line);
-#endif
-}
-
-void
-main_window::handle_edit_file_request (const QString& file)
-{
-#ifdef HAVE_QSCINTILLA
-  _file_editor->handle_edit_file_request (file);
 #endif
 }
 
@@ -1190,27 +1159,31 @@ main_window::construct ()
            this,
            SLOT (handle_quit_debug_mode ()));
 
-  connect (_octave_qt_event_listener,
-           SIGNAL (insert_debugger_pointer_signal (const QString&, int)), this,
-           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
-
-  connect (_octave_qt_event_listener,
-           SIGNAL (delete_debugger_pointer_signal (const QString&, int)), this,
-           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
-
-  connect (_octave_qt_event_listener,
-           SIGNAL (update_dbstop_marker_signal (bool, const QString&, int)),
-           this,
-           SLOT (handle_update_dbstop_marker_request (bool, const QString&, int)));
-
-  connect (_octave_qt_event_listener,
-           SIGNAL (edit_file_signal (const QString&)),
-           this,
-           SLOT (handle_edit_file_request(const QString&)));
-
   // FIXME -- is it possible to eliminate the event_listenter?
 
-  octave_link::connect (new octave_qt_link ());
+  _octave_qt_link = new octave_qt_link ();
+
+  connect (_octave_qt_link,
+           SIGNAL (update_dbstop_marker_signal (bool, const QString&, int)),
+           _file_editor,
+           SLOT (handle_update_dbstop_marker_request (bool, const QString&, int)));
+
+  connect (_octave_qt_link,
+           SIGNAL (edit_file_signal (const QString&)),
+           _file_editor,
+           SLOT (handle_edit_file_request (const QString&)));
+
+  connect (_octave_qt_link,
+           SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+           _file_editor,
+           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+
+  connect (_octave_qt_link,
+           SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+           _file_editor,
+           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+
+  octave_link::connect_link (_octave_qt_link);
 
   octave_link::register_event_listener (_octave_qt_event_listener);
 }

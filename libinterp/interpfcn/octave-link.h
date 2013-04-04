@@ -27,13 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class octave_mutex;
-
-#include "oct-obj.h"
-
 #include "event-queue.h"
-
 #include "octave-event-listener.h"
+
+class octave_mutex;
 
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
@@ -140,33 +137,32 @@ public:
       instance->do_post_input_event ();
   }
 
-  static void enter_debugger_event (const octave_value_list& args)
+  static void enter_debugger_event (const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_enter_debugger_event (args);
+      instance->do_enter_debugger_event (file, line);
   }
 
-  static void exit_debugger_event (const octave_value_list& args)
+  static void exit_debugger_event (const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_exit_debugger_event (args);
-  }
-
-  static void
-  update_breakpoint (bool insert, const octave_value_list& args)
-  {
-    if (instance_ok ())
-      instance->do_update_breakpoint (insert, args);
+      instance->do_exit_debugger_event (file, line);
   }
 
   static void
-  edit_file (const octave_value_list& args)
+  update_breakpoint (bool insert, const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_edit_file (args);
+      instance->do_update_breakpoint (insert, file, line);
   }
 
-  static void connect (octave_link *);
+  static bool
+  edit_file (const std::string& file)
+  {
+    return instance_ok () ? instance->do_edit_file (file) : false;
+  }
+
+  static void connect_link (octave_link *);
 
 private:
 
@@ -231,19 +227,16 @@ protected:
 
   virtual void do_update_history (void) = 0;
 
-  virtual void do_insert_debugger_pointer (const octave_value_list& args) = 0;
-  virtual void do_delete_debugger_pointer (const octave_value_list& args) = 0;
-
   virtual void do_pre_input_event (void) = 0;
   virtual void do_post_input_event (void) = 0;
 
-  virtual void do_enter_debugger_event (const octave_value_list& args) = 0;
-  virtual void do_exit_debugger_event (const octave_value_list& args) = 0;
+  virtual void do_enter_debugger_event (const std::string& file, int line) = 0;
+  virtual void do_exit_debugger_event (const std::string& file, int line) = 0;
 
   virtual void do_update_breakpoint (bool insert,
-                                     const octave_value_list& args) = 0;
+                                     const std::string& file, int line) = 0;
 
-  virtual void do_edit_file (const octave_value_list& args) = 0;
+  virtual bool do_edit_file (const std::string& file) = 0;
 };
 
 #endif // OCTAVELINK_H

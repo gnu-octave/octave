@@ -455,6 +455,12 @@ initialize_command_input (void)
 }
 
 static void
+exit_debugger_handler (const std::pair<std::string, int>& arg)
+{
+  octave_link::exit_debugger_event (arg.first, arg.second);
+}
+
+static void
 get_debug_input (const std::string& prompt)
 {
   unwind_protect frame;
@@ -501,13 +507,10 @@ get_debug_input (const std::string& prompt)
 
           if (have_file)
             {
-              octave_value loc_info = location_info (nm, curr_debug_line);
+              octave_link::enter_debugger_event (nm, curr_debug_line);
 
-              octave_value_list args (loc_info);
-
-              octave_link::enter_debugger_event (args);
-
-              frame.add_fcn (octave_link::exit_debugger_event, args);
+              frame.add_fcn (exit_debugger_handler,
+                             std::pair<std::string, int> (nm, curr_debug_line));
 
               std::string line_buf
                 = get_file_line (nm, curr_debug_line);

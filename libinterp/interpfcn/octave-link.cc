@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "cmd-edit.h"
+#include "defun.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
 #include "singleton-cleanup.h"
@@ -63,18 +64,17 @@ octave_link::octave_link (void)
   octave_exit = octave_exit_hook;
 }
 
-// OBJ should be a new object of a class that is derived from
-// the base class octave_link.  It will be cleaned up by octave_link.
+// OBJ should be an object of a class that is derived from the base
+// class octave_link, or 0 to disconnect the link.  It is the
+// responsibility of the caller to delete obj.
 
 void
-octave_link::connect (octave_link* obj)
+octave_link::connect_link (octave_link* obj)
 {
-  if (instance)
+  if (obj && instance)
     ::error ("octave_link is already linked!");
   else
     instance = obj;
-
-  singleton_cleanup_list::add (cleanup_instance);
 }
 
 void
@@ -143,4 +143,25 @@ bool
 octave_link::instance_ok (void)
 {
   return instance != 0;
+}
+
+DEFUN (__octave_link_edit_file__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_edit_file__ (@var{file})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string file = args(0).string_value ();
+
+      if (! error_state)
+        retval = octave_link::edit_file (file);
+      else
+        error ("expecting file name as argument");
+    }
+
+  return retval;
 }

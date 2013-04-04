@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -24,40 +25,31 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <iostream>
+#include <clocale>
+#include <string>
 
-#include "octave-qt-event-listener.h"
-#include <QApplication>
+#include "builtin-defun-decls.h"
+#include "octave.h"
+#include "ov-builtin.h"
+#include "ov-fcn-handle.h"
 
-octave_qt_event_listener::octave_qt_event_listener (QObject *p)
-  : QObject (p), octave_event_listener ()
+#include "octave-main-thread.h"
+#include "octave-link.h"
+
+void
+octave_main_thread::run (void)
 {
+  // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
+  setlocale (LC_NUMERIC, "C");
+
+  octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
+                                 octave_embedded);
+
+  octave_execute_interpreter ();
 }
 
 void
-octave_qt_event_listener::current_directory_has_changed (const std::string& directory)
+octave_main_thread::execute_interpreter (void)
 {
-  emit current_directory_has_changed_signal
-    (QString::fromUtf8 (directory.data (), directory.size ()));
+  start ();
 }
-
-void
-octave_qt_event_listener::update_workspace (void)
-{
-  emit update_workspace_signal ();
-}
-
-void
-octave_qt_event_listener::about_to_exit ()
-{
-  qApp->quit ();
-}
-
-void
-octave_qt_event_listener::entered_debug_mode ()
-{ emit entered_debug_mode_signal (); }
-
-void
-octave_qt_event_listener::quit_debug_mode ()
-{ emit quit_debug_mode_signal (); }
-

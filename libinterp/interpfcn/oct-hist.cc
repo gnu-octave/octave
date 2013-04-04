@@ -48,6 +48,7 @@ Software Foundation, Inc.
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-mappers.h"
+#include "octave-link.h"
 #include "oct-env.h"
 #include "oct-time.h"
 #include "str-vec.h"
@@ -186,17 +187,28 @@ do_history (const octave_value_list& args, int nargout)
             command_history::write ();
 
           else if (option == "-r")
-            // Read entire file.
-            command_history::read ();
+            {
+              // Read entire file.
+              command_history::read ();
+              octave_link::set_history (command_history::list ());
+            }
 
           else if (option == "-n")
-            // Read 'new' history from file.
-            command_history::read_range ();
+            {
+              // Read 'new' history from file.
+              command_history::read_range ();
+              octave_link::set_history (command_history::list ());
+            }
 
           else
             panic_impossible ();
 
           return hlist;
+        }
+      else if (option == "-c")
+        {
+          command_history::clear ();
+          octave_link::clear_history ();
         }
       else if (option == "-q")
         numbered_output = false;
@@ -354,7 +366,10 @@ edit_history_add_hist (const std::string& line)
         tmp.resize (len - 1);
 
       if (! tmp.empty ())
-        command_history::add (tmp);
+        {
+          command_history::add (tmp);
+          octave_link::append_history (tmp);
+        }
     }
 }
 
@@ -601,6 +616,8 @@ initialize_history (bool read_history_file)
                                default_history_file (),
                                default_history_size (),
                                octave_env::getenv ("OCTAVE_HISTCONTROL"));
+
+  octave_link::set_history (command_history::list ());
 }
 
 void
@@ -611,7 +628,10 @@ octave_history_write_timestamp (void)
   std::string timestamp = now.strftime (Vhistory_timestamp_format_string);
 
   if (! timestamp.empty ())
-    command_history::add (timestamp);
+    {
+      command_history::add (timestamp); 
+      octave_link::append_history (timestamp);
+   }
 }
 
 DEFUN (edit_history, args, ,
@@ -670,6 +690,9 @@ that you have executed.  Valid options are:\n\
 @item   @var{n}\n\
 @itemx -@var{n}\n\
 Display only the most recent @var{n} lines of history.\n\
+\n\
+@item -c\n\
+Clear the history list.\n\
 \n\
 @item -q\n\
 Don't number the displayed lines of history.  This is useful for cutting\n\

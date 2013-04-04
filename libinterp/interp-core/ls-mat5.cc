@@ -82,6 +82,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #define PAD(l) (((l) > 0 && (l) <= 4) ? 4 : (((l)+7)/8)*8)
+#define INT8(l) ((l) == miINT8 || (l) == miUINT8 || (l) == miUTF8)
 
 
 // The subsystem data block
@@ -674,7 +675,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       dims(1) = 1;
     }
 
-  if (read_mat5_tag (is, swap, type, len) || type != miINT8)
+  if (read_mat5_tag (is, swap, type, len) || !INT8(type))
     {
       error ("load: invalid array name subelement");
       goto early_read_error;
@@ -1059,7 +1060,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             int32_t fn_type;
             int32_t fn_len;
-            if (read_mat5_tag (is, swap, fn_type, fn_len) || fn_type != miINT8)
+            if (read_mat5_tag (is, swap, fn_type, fn_len) || !INT8(fn_type))
               {
                 error ("load: invalid field name subelement");
                 goto data_read_error;
@@ -1120,7 +1121,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       {
         isclass = true;
 
-        if (read_mat5_tag (is, swap, type, len) || type != miINT8)
+        if (read_mat5_tag (is, swap, type, len) || !INT8(type))
           {
             error ("load: invalid class name");
             goto skip_ahead;
@@ -1170,7 +1171,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         // field name subelement.  The length of this subelement tells
         // us how many fields there are.
-        if (read_mat5_tag (is, swap, fn_type, fn_len) || fn_type != miINT8)
+        if (read_mat5_tag (is, swap, fn_type, fn_len) || !INT8(fn_type))
           {
             error ("load: invalid field name subelement");
             goto data_read_error;

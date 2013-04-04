@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -32,19 +33,17 @@ along with Octave; see the file COPYING.  If not, see
   */
 class octave_main_thread : public QThread
 {
-  Q_OBJECT
 public:
-  /** Creates a new thread running octave_main. */
-  octave_main_thread ();
+  // Create a new thread for running the octave interpreter.
+  octave_main_thread (void) : QThread () { }
 
-signals:
-  /** This signal will be emitted when the thread is about to actually
-    * run octave_main. */
-  void ready();
+  // Start the thread and initialize and execute the octave
+  // interpreter.
+  void execute_interpreter (void);
 
 protected:
-  /** Runs octave_main. */
-  void run ();
+  // Avoid exec.  Run the octave interpreter in the new thread.
+  void run (void);
 };
 
 #endif // OCTAVEMAINTHREAD_H

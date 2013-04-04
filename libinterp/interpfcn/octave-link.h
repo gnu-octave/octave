@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 Copyright (C) 2011-2012 John P. Swensen
 
@@ -21,19 +22,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef OCTAVELINK_H
-#define OCTAVELINK_H
+#if !defined (octave_link_h)
+#define octave_link_h 1
 
 #include <string>
 
-class octave_mutex;
-
-#include "oct-obj.h"
-
 #include "event-queue.h"
-
-#include "octave-main-thread.h"
 #include "octave-event-listener.h"
+
+class octave_mutex;
+class string_vector;
 
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
@@ -51,13 +49,7 @@ protected:
 
 public:
 
-  ~octave_link (void) { }
-
-  static void launch_octave (void)
-  {
-    if (instance_ok ())
-      instance->do_launch_octave ();
-  }
+  virtual ~octave_link (void) { }
 
   static void register_event_listener (octave_event_listener *el)
   {
@@ -128,49 +120,62 @@ public:
       instance->do_update_workspace ();
   }
 
-  static void update_history (void)
+  static void set_history (const string_vector& hist)
   {
     if (instance_ok ())
-      instance->do_update_history ();
+      instance->do_set_history (hist);
   }
 
-  static void pre_input_event_hook_fcn (void)
+  static void append_history (const std::string& hist_entry)
   {
     if (instance_ok ())
-      instance->do_pre_input_event_hook_fcn ();
+      instance->do_append_history (hist_entry);
   }
 
-  static void post_input_event_hook_fcn (void)
+  static void clear_history (void)
   {
     if (instance_ok ())
-      instance->do_post_input_event_hook_fcn ();
+      instance->do_clear_history ();
   }
 
-  static void enter_debugger_event_hook_fcn (const octave_value_list& args)
+  static void pre_input_event (void)
   {
     if (instance_ok ())
-      instance->do_enter_debugger_event_hook_fcn (args);
+      instance->do_pre_input_event ();
   }
 
-  static void exit_debugger_event_hook_fcn (const octave_value_list& args)
+  static void post_input_event (void)
   {
     if (instance_ok ())
-      instance->do_exit_debugger_event_hook_fcn (args);
+      instance->do_post_input_event ();
+  }
+
+  static void enter_debugger_event (const std::string& file, int line)
+  {
+    if (instance_ok ())
+      instance->do_enter_debugger_event (file, line);
+  }
+
+  static void exit_debugger_event (const std::string& file, int line)
+  {
+    if (instance_ok ())
+      instance->do_exit_debugger_event (file, line);
   }
 
   static void
-  update_breakpoint_hook_fcn (bool insert, const octave_value_list& args)
+  update_breakpoint (bool insert, const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_update_breakpoint_hook_fcn (insert, args);
+      instance->do_update_breakpoint (insert, file, line);
   }
 
-  static void
-  edit_file (const octave_value_list& args)
+  static bool
+  edit_file (const std::string& file)
   {
-    if (instance_ok ())
-      instance->do_edit_file (args);
+    return instance_ok () ? instance->do_edit_file (file) : false;
   }
+
+  static void connect_link (octave_link *);
 
 private:
 
@@ -186,10 +191,9 @@ private:
 
   static bool instance_ok (void);
 
-  octave_event_listener *event_listener;
+protected:
 
-  // Thread running octave_main.
-  octave_main_thread *main_thread;
+  octave_event_listener *event_listener;
 
   // Semaphore to lock access to the event queue.
   octave_mutex *event_queue_mutex;
@@ -202,7 +206,6 @@ private:
 
   bool debugging;
 
-  void do_launch_octave (void);
   void do_register_event_listener (octave_event_listener *oel);
 
   void do_generate_events (void);
@@ -232,19 +235,23 @@ private:
   void do_finished_readline_hook (void) { }
 
   std::string do_last_working_directory (void);
-  void do_update_workspace (void);
-  void do_update_history (void);
-  void do_insert_debugger_pointer (const octave_value_list& args);
-  void do_delete_debugger_pointer (const octave_value_list& args);
 
-  void do_pre_input_event_hook_fcn (void);
-  void do_post_input_event_hook_fcn (void);
-  void do_enter_debugger_event_hook_fcn (const octave_value_list& args);
-  void do_exit_debugger_event_hook_fcn (const octave_value_list& args);
-  void do_update_breakpoint_hook_fcn (bool insert,
-                                      const octave_value_list& args);
+  virtual void do_update_workspace (void) = 0;
 
-  void do_edit_file (const octave_value_list& args);
+  virtual void do_set_history (const string_vector& hist) = 0;
+  virtual void do_append_history (const std::string& hist_entry) = 0;
+  virtual void do_clear_history (void) = 0;
+
+  virtual void do_pre_input_event (void) = 0;
+  virtual void do_post_input_event (void) = 0;
+
+  virtual void do_enter_debugger_event (const std::string& file, int line) = 0;
+  virtual void do_exit_debugger_event (const std::string& file, int line) = 0;
+
+  virtual void do_update_breakpoint (bool insert,
+                                     const std::string& file, int line) = 0;
+
+  virtual bool do_edit_file (const std::string& file) = 0;
 };
 
 #endif // OCTAVELINK_H

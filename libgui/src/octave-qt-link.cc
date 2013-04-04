@@ -26,13 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "cmd-edit.h"
-#include "oct-env.h"
-#include "oct-mutex.h"
-#include "singleton-cleanup.h"
-#include "symtab.h"
-#include "toplev.h"
-
 #include "octave-qt-link.h"
 
 octave_qt_link::octave_qt_link (void)

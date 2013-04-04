@@ -27,15 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class octave_mutex;
-
-#include "oct-obj.h"
-
-#include "event-queue.h"
-
 #include "octave-link.h"
 #include "octave-main-thread.h"
-#include "octave-event-listener.h"
 
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
@@ -82,4 +75,4 @@ private:
   octave_main_thread *main_thread;
 };
 
-#endif // OCTAVELINK_H
+#endif

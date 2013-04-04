@@ -37,9 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "help.h"
-#include "hook-fcn.h"
 #include "input.h"
 #include "pager.h"
+#include "octave-link.h"
 #include "oct-obj.h"
 #include "utils.h"
 #include "parse.h"
@@ -285,201 +285,6 @@ bp_table::instance_ok (void)
   return retval;
 }
 
-static hook_function_list dbstop_hook_functions;
-static hook_function_list dbclear_hook_functions;
-
-DEFUN (add_dbstop_hook, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{id} =} add_dbstop_hook (@var{fcn})\n\
-@deftypefnx {Built-in Function} {@var{id} =} add_dbstop_hook (@var{fcn}, @var{data})\n\
-Add the named function or function handle @var{fcn} to the list of\n\
-functions to call when a debugger breakpoint is set.  The function\n\
-should have the form\n\
-\n\
-@example\n\
-@var{fcn} (@var{location}, @var{data})\n\
-@end example\n\
-\n\
-in which @var{location} is a structure containing the following elements:\n\
-\n\
-@table @code\n\
-@item file\n\
-The name of the file where the breakpoint is located.\n\
-@item line\n\
-The line number corresponding to the breakpoint.\n\
-@end table\n\
-\n\
-If @var{data} is omitted when the hook function is added, the hook\n\
-function is called with a single argument.\n\
-\n\
-The returned identifier may be used to remove the function handle from\n\
-the list of input hook functions.\n\
-@seealso{remove_dbstop_hook}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 || nargin == 2)
-    {
-      octave_value user_data;
-
-      if (nargin == 2)
-        user_data = args(1);
-
-      hook_function hook_fcn (args(0), user_data);
-
-      if (! error_state)
-        {
-          dbstop_hook_functions.insert (hook_fcn.id (), hook_fcn);
-
-          retval = hook_fcn.id ();
-        }
-      else
-        error ("add_dbstop_hook: expecting string as first arg");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (remove_dbstop_hook, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} remove_dbstop_hook (@var{name})\n\
-@deftypefnx {Built-in Function} {} remove_dbstop_hook (@var{fcn_id})\n\
-Remove the named function or function handle with the given identifier\n\
-from the list of functions to call when a debugger breakpoint is set.\n\
-@seealso{add_dbstop_hook}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 || nargin == 2)
-    {
-      std::string hook_fcn_id = args(0).string_value ();
-
-      bool warn = (nargin < 2);
-
-      if (! error_state)
-        {
-          hook_function_list::iterator p
-            = dbstop_hook_functions.find (hook_fcn_id);
-
-          if (p != dbstop_hook_functions.end ())
-            dbstop_hook_functions.erase (p);
-          else if (warn)
-            warning ("remove_dbstop_hook: %s not found in list",
-                     hook_fcn_id.c_str ());
-        }
-      else
-        error ("remove_dbstop_hook: argument not valid as a hook function name or id");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (add_dbclear_hook, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{id} =} add_dbclear_hook (@var{fcn})\n\
-@deftypefnx {Built-in Function} {@var{id} =} add_dbclear_hook (@var{fcn}, @var{data})\n\
-Add the named function or function handle @var{fcn} to the list of\n\
-functions to call when a debugger breakpoint is cleared.  The function\n\
-should have the form\n\
-\n\
-@example\n\
-@var{fcn} (@var{location}, @var{data})\n\
-@end example\n\
-\n\
-in which @var{location} is a structure containing the following elements:\n\
-\n\
-@table @code\n\
-@item file\n\
-The name of the file where the breakpoint is located.\n\
-@item line\n\
-The line number corresponding to the breakpoint.\n\
-@end table\n\
-\n\
-If @var{data} is omitted when the hook function is added, the hook\n\
-function is called with a single argument.\n\
-\n\
-The returned identifier may be used to remove the function handle from\n\
-the list of input hook functions.\n\
-@seealso{remove_dbclear_hook}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 || nargin == 2)
-    {
-      octave_value user_data;
-
-      if (nargin == 2)
-        user_data = args(1);
-
-      hook_function hook_fcn (args(0), user_data);
-
-      if (! error_state)
-        {
-          dbclear_hook_functions.insert (hook_fcn.id (), hook_fcn);
-
-          retval = hook_fcn.id ();
-        }
-      else
-        error ("add_dbclear_hook: expecting string as first arg");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (remove_dbclear_hook, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} remove_dbclear_hook (@var{name})\n\
-@deftypefnx {Built-in Function} {} remove_dbclear_hook (@var{fcn_id})\n\
-Remove the named function or function handle with the given identifier\n\
-from the list of functions to call when a debugger breakpoint is cleared.\n\
-@seealso{add_dbclear_hook}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 || nargin == 2)
-    {
-      std::string hook_fcn_id = args(0).string_value ();
-
-      bool warn = (nargin < 2);
-
-      if (! error_state)
-        {
-          hook_function_list::iterator p
-            = dbclear_hook_functions.find (hook_fcn_id);
-
-          if (p != dbclear_hook_functions.end ())
-            dbclear_hook_functions.erase (p);
-          else if (warn)
-            warning ("remove_dbclear_hook: %s not found in list",
-                     hook_fcn_id.c_str ());
-        }
-      else
-        error ("remove_dbclear_hook: argument not valid as a hook function name or id");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
 bp_table::intmap
 bp_table::do_add_breakpoint (const std::string& fname,
                              const bp_table::intmap& line)
@@ -513,8 +318,12 @@ bp_table::do_add_breakpoint (const std::string& fname,
                       std::string file = dbg_fcn->fcn_file_name ();
 
                       if (! file.empty ())
-                        dbstop_hook_functions.run
-                          (location_info (file, retval[i]));
+                        {
+                          octave_value_list
+                            args (location_info (file, retval[i]));
+
+                          octave_link::update_breakpoint (true, args);
+                        }
                     }
                 }
             }
@@ -569,8 +378,12 @@ bp_table::do_remove_breakpoint (const std::string& fname,
                           cmds->delete_breakpoint (lineno);
 
                           if (! file.empty ())
-                            dbclear_hook_functions.run
-                              (location_info (file, lineno));
+                            {
+                              octave_value_list
+                                args (location_info (file, lineno));
+                              
+                              octave_link::update_breakpoint (false, args);
+                            }
                         }
                     }
 
@@ -619,7 +432,11 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
               retval[i] = lineno;
 
               if (! file.empty ())
-                dbclear_hook_functions.run (location_info (file, lineno));
+                {
+                  octave_value_list args (location_info (file, lineno));
+
+                  octave_link::update_breakpoint (false, args);
+                }
             }
 
           bp_set_iterator it = bp_set.find (fname);

@@ -36,26 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 
 static octave_value_list
-dbstop_hook_fcn (const octave_value_list& args, int)
-{
-  octave_value_list retval;
-
-  octave_link::update_breakpoint (true, args);
-
-  return retval;
-}
-
-static octave_value_list
-dbclear_hook_fcn (const octave_value_list& args, int)
-{
-  octave_value_list retval;
-
-  octave_link::update_breakpoint (false, args);
-
-  return retval;
-}
-
-static octave_value_list
 edit_hook_fcn (const octave_value_list& args, int)
 {
   octave_value_list retval;
@@ -79,14 +59,6 @@ octave_main_thread::run ()
 
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
-
-  octave_value dbstop_fcn (new octave_builtin (dbstop_hook_fcn));
-  octave_value dbstop_fcn_handle (new octave_fcn_handle (dbstop_fcn));
-  Fadd_dbstop_hook (dbstop_fcn_handle);
-
-  octave_value dbclear_fcn (new octave_builtin (dbclear_hook_fcn));
-  octave_value dbclear_fcn_handle (new octave_fcn_handle (dbclear_fcn));
-  Fadd_dbclear_hook (dbclear_fcn_handle);
 
   octave_value edit_fcn (new octave_builtin (edit_hook_fcn));
   octave_value edit_fcn_handle (new octave_fcn_handle (edit_fcn));

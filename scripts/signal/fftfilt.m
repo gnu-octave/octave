@@ -101,17 +101,9 @@ function y = fftfilt (b, x, n)
   ## - If b is real and x is imaginary, y should be imaginary.
   ## - If b is imaginary and x is real, y should be imaginary.
   ## - If both b and x are imaginary, y should be real.
-  xisreal = zeros (1,size(x,2));
-  xisimag = xisreal;
-  for cx = 1:size(x,2)
-    if (all (imag (x(:,cx)) == 0))
-      xisreal (cx) = 1;
-    elseif (all (real (x (:,cx)) == 0))
-      xisimag (cx) = 1;
-    endif
-  endfor
-  xisreal = find(xisreal);
-  xisimag = find(xisimag);
+  xisreal = all (imag (x) == 0);
+  xisimag = all (real (x) == 0);
+
   if (all (imag (b) == 0))
     y (:,xisreal) = real (y (:,xisreal));
     y (:,xisimag) = complex (real (y (:,xisimag)) * 0, imag (y (:,xisimag)));

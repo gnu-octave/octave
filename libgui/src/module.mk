@@ -71,14 +71,15 @@ octave_gui_MOC += \
   src/moc-files-dockwidget.cc \
   src/moc-history-dockwidget.cc \
   src/moc-main-window.cc \
+  src/moc-octave-main-thread.cc \
   src/moc-octave-qt-event-listener.cc \
+  src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
   src/moc-terminal-dockwidget.cc \
   src/moc-color-picker.cc \
   src/moc-welcome-wizard.cc \
   src/moc-workspace-model.cc \
   src/moc-workspace-view.cc \
-  src/octave-adapter/moc-octave-main-thread.cc \
   src/qtinfo/moc-parser.cc \
   src/qtinfo/moc-webinfo.cc \
   src/moc-octave-dock-widget.cc
@@ -104,11 +105,10 @@ noinst_HEADERS += \
   src/m-editor/find-dialog.h \
   src/m-editor/lexer-octave-gui.h \
   src/main-window.h \
-  src/octave-adapter/octave-event-listener.h \
-  src/octave-adapter/octave-link.h \
-  src/octave-adapter/octave-main-thread.h \
   src/octave-gui.h \
+  src/octave-main-thread.h \
   src/octave-qt-event-listener.h \
+  src/octave-qt-link.h \
   src/qtinfo/parser.h \
   src/qtinfo/webinfo.h \
   src/resource-manager.h \
@@ -129,10 +129,10 @@ src_libgui_src_la_SOURCES = \
   src/m-editor/find-dialog.cc \
   src/m-editor/lexer-octave-gui.cc \
   src/main-window.cc \
-  src/octave-adapter/octave-link.cc \
-  src/octave-adapter/octave-main-thread.cc \
   src/octave-gui.cc \
+  src/octave-main-thread.cc \
   src/octave-qt-event-listener.cc \
+  src/octave-qt-link.cc \
   src/qtinfo/parser.cc \
   src/qtinfo/webinfo.cc \
   src/resource-manager.cc \
@@ -153,7 +153,6 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(srcdir)/qterminal/libqterminal \
   -Isrc -I$(srcdir)/src \
   -I$(srcdir)/src/m-editor \
-  -I$(srcdir)/src/octave-adapter \
   -I$(srcdir)/src/qtinfo \
   -I$(top_srcdir)/liboctave/cruft/misc \
   -I$(top_srcdir)/liboctave/array \

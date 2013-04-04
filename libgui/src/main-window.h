@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "terminal-dockwidget.h"
 #include "documentation-dockwidget.h"
 #include "octave-qt-event-listener.h"
+#include "octave-qt-link.h"
 
 /**
  * \class MainWindow
@@ -107,10 +108,6 @@ public slots:
 
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
-  void handle_insert_debugger_pointer_request (const QString& file, int line);
-  void handle_delete_debugger_pointer_request (const QString& file, int line);
-  void handle_update_dbstop_marker_request (bool insert, const QString& file, int line);
-  void handle_edit_file_request (const QString& file);
   void debug_continue ();
   void debug_step_into ();
   void debug_step_over ();
@@ -177,6 +174,8 @@ private:
   QLineEdit *               _current_directory_line_edit;
 
   octave_qt_event_listener *_octave_qt_event_listener;
+
+  octave_qt_link *_octave_qt_link;
 
   // Flag for closing whole application
   bool                      _closing;

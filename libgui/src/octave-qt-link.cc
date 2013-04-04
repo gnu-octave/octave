@@ -107,12 +107,7 @@ void
 octave_qt_link::do_update_breakpoint (bool insert,
                                       const std::string& file, int line)
 {
-  if (event_listener)
-    {
-      event_listener->update_dbstop_marker (insert, file, line);
-
-      do_process_events ();
-    }
+  emit update_dbstop_marker_signal (insert, QString::fromStdString (file), line);
 }
 
 bool

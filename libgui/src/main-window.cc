@@ -1214,6 +1214,11 @@ main_window::construct ()
 
   _octave_qt_link = new octave_qt_link ();
 
+  connect (_octave_qt_link,
+           SIGNAL (update_dbstop_marker_signal (bool, const QString&, int)),
+           _file_editor,
+           SLOT (handle_update_dbstop_marker_request (bool, const QString&, int)));
+
   octave_link::connect_link (_octave_qt_link);
 
   octave_link::register_event_listener (_octave_qt_event_listener);

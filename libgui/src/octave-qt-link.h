@@ -27,6 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include <QObject>
+#include <QString>
+
 #include "octave-link.h"
 #include "octave-main-thread.h"
 
@@ -38,8 +41,10 @@ along with Octave; see the file COPYING.  If not, see
 // buffering access operations to octave and executing them in the
 // readline event hook, which lives in the octave thread.
 
-class octave_qt_link : public octave_link
+class octave_qt_link : public QObject, public octave_link
 {
+  Q_OBJECT
+
 public:
 
   octave_qt_link (void);
@@ -73,6 +78,10 @@ private:
 
   // Thread running octave_main.
   octave_main_thread *main_thread;
+
+signals:
+
+  void update_dbstop_marker_signal (bool insert, const QString& file, int line);
 };
 
 #endif

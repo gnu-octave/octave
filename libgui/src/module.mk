@@ -73,6 +73,7 @@ octave_gui_MOC += \
   src/moc-main-window.cc \
   src/moc-octave-main-thread.cc \
   src/moc-octave-qt-event-listener.cc \
+  src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
   src/moc-terminal-dockwidget.cc \
   src/moc-color-picker.cc \

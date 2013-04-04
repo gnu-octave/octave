@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor.h"
 #endif
 #include "main-window.h"
-#include "octave-qt-link.h"
 #include "settings-dialog.h"
 
 #include "builtins.h"
@@ -70,6 +69,9 @@ main_window::~main_window ()
 
   if (_octave_qt_event_listener)
     delete _octave_qt_event_listener;
+
+  octave_link::connect_link (0);
+  delete _octave_qt_link;
 
 #ifdef HAVE_QSCINTILLA
   if (_file_editor)
@@ -1210,7 +1212,9 @@ main_window::construct ()
 
   // FIXME -- is it possible to eliminate the event_listenter?
 
-  octave_link::connect (new octave_qt_link ());
+  _octave_qt_link = new octave_qt_link ();
+
+  octave_link::connect_link (_octave_qt_link);
 
   octave_link::register_event_listener (_octave_qt_event_listener);
 }

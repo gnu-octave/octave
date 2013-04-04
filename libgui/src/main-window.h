@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "terminal-dockwidget.h"
 #include "documentation-dockwidget.h"
 #include "octave-qt-event-listener.h"
+#include "octave-qt-link.h"
 
 /**
  * \class MainWindow
@@ -177,6 +178,8 @@ private:
   QLineEdit *               _current_directory_line_edit;
 
   octave_qt_event_listener *_octave_qt_event_listener;
+
+  octave_qt_link *_octave_qt_link;
 
   // Flag for closing whole application
   bool                      _closing;

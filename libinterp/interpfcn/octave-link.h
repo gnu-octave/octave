@@ -162,7 +162,7 @@ public:
     return instance_ok () ? instance->do_edit_file (file) : false;
   }
 
-  static void connect (octave_link *);
+  static void connect_link (octave_link *);
 
 private:
 

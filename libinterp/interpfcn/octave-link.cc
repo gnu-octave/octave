@@ -64,18 +64,17 @@ octave_link::octave_link (void)
   octave_exit = octave_exit_hook;
 }
 
-// OBJ should be a new object of a class that is derived from
-// the base class octave_link.  It will be cleaned up by octave_link.
+// OBJ should be an object of a class that is derived from the base
+// class octave_link, or 0 to disconnect the link.  It is the
+// responsibility of the caller to delete obj.
 
 void
-octave_link::connect (octave_link* obj)
+octave_link::connect_link (octave_link* obj)
 {
-  if (instance)
+  if (obj && instance)
     ::error ("octave_link is already linked!");
   else
     instance = obj;
-
-  singleton_cleanup_list::add (cleanup_instance);
 }
 
 void

@@ -50,8 +50,5 @@ octave_main_thread::run ()
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
 
-  // Prime the history list.
-  octave_link::update_history ();
-
   octave_execute_interpreter ();
 }

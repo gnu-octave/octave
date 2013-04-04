@@ -48,12 +48,6 @@ octave_qt_event_listener::update_workspace (void)
 }
 
 void
-octave_qt_event_listener::update_history (void)
-{
-  emit update_history_signal ();
-}
-
-void
 octave_qt_event_listener::about_to_exit ()
 {
   qApp->quit ();

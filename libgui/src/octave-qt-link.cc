@@ -26,6 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <QStringList>
+
+#include "str-vec.h"
+
 #include "octave-qt-link.h"
 
 octave_qt_link::octave_qt_link (void)
@@ -47,14 +51,26 @@ octave_qt_link::do_update_workspace (void)
 }
 
 void
-octave_qt_link::do_update_history (void)
+octave_qt_link::do_set_history (const string_vector& hist)
 {
-  if (event_listener)
-    {
-      event_listener->update_history ();
+  QStringList qt_hist;
 
-      do_process_events ();
-    }
+  for (octave_idx_type i = 0; i < hist.length (); i++)
+    qt_hist.append (QString::fromStdString (hist[i]));
+
+  emit set_history_signal (qt_hist);
+}
+
+void
+octave_qt_link::do_append_history (const std::string& hist_entry)
+{
+  emit append_history_signal (QString::fromStdString (hist_entry));
+}
+
+void
+octave_qt_link::do_clear_history (void)
+{
+  emit clear_history_signal ();
 }
 
 void
@@ -66,7 +82,6 @@ octave_qt_link::do_pre_input_event (void)
 void
 octave_qt_link::do_post_input_event (void)
 {
-  do_update_history ();
 }
 
 void

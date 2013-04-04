@@ -156,7 +156,7 @@ main_window::handle_clear_workspace_request ()
 }
 
 void
-main_window::handle_clear_history_request()
+main_window::handle_clear_history_request (void)
 {
   octave_link::post_event (this, &main_window::clear_history_callback);
 }
@@ -286,12 +286,6 @@ void
 main_window::update_workspace (void)
 {
   _workspace_view->model_changed ();
-}
-
-void
-main_window::update_history (void)
-{
-  _history_dock_widget->update_history_callback ();
 }
 
 void
@@ -1145,11 +1139,6 @@ main_window::construct ()
            SLOT (update_workspace ()));
 
   connect (_octave_qt_event_listener,
-           SIGNAL (update_history_signal ()),
-           this,
-           SLOT (update_history ()));
-
-  connect (_octave_qt_event_listener,
            SIGNAL (entered_debug_mode_signal ()),
            this,
            SLOT(handle_entered_debug_mode ()));
@@ -1162,6 +1151,18 @@ main_window::construct ()
   // FIXME -- is it possible to eliminate the event_listenter?
 
   _octave_qt_link = new octave_qt_link ();
+
+  connect (_octave_qt_link,
+           SIGNAL (set_history_signal (const QStringList&)),
+           _history_dock_widget, SLOT (set_history (const QStringList&)));
+
+  connect (_octave_qt_link,
+           SIGNAL (append_history_signal (const QString&)),
+           _history_dock_widget, SLOT (append_history (const QString&)));
+
+  connect (_octave_qt_link,
+           SIGNAL (clear_history_signal (void)),
+           _history_dock_widget, SLOT (clear_history (void)));
 
   connect (_octave_qt_link,
            SIGNAL (update_dbstop_marker_signal (bool, const QString&, int)),
@@ -1209,9 +1210,7 @@ main_window::clear_workspace_callback (void)
 void
 main_window::clear_history_callback (void)
 {
-  command_history::clear ();
-
-  _history_dock_widget->reset_model ();
+  Fhistory (ovl ("-c"));
 }
 
 void

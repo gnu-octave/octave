@@ -53,7 +53,9 @@ public:
 
   void do_update_workspace (void);
 
-  void do_update_history (void);
+  void do_set_history (const string_vector& hist);
+  void do_append_history (const std::string& hist_entry);
+  void do_clear_history (void);
 
   void do_pre_input_event (void);
   void do_post_input_event (void);
@@ -81,6 +83,10 @@ private:
   octave_main_thread *main_thread;
 
 signals:
+
+  void set_history_signal (const QStringList& hist);
+  void append_history_signal (const QString& hist_entry);
+  void clear_history_signal (void);
 
   void update_dbstop_marker_signal (bool insert, const QString& file, int line);
 

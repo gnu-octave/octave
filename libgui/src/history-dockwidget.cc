@@ -120,40 +120,24 @@ history_dock_widget::handle_double_click (QModelIndex modelIndex)
 }
 
 void
-history_dock_widget::request_history_model_update ()
+history_dock_widget::set_history (const QStringList& hist)
 {
-  octave_link::post_event (this, &history_dock_widget::update_history_callback);
+  _history_model->setStringList (hist);
+  _history_list_view->scrollToBottom ();
 }
 
 void
-history_dock_widget::reset_model ()
+history_dock_widget::append_history (const QString& hist_entry)
+{
+  QStringList lst = _history_model->stringList ();
+  lst.append (hist_entry);
+  _history_model->setStringList (lst);
+  _history_list_view->scrollToBottom ();
+}
+
+void
+history_dock_widget::clear_history (void)
 {
   _history_model->setStringList (QStringList ());
 }
 
-void
-history_dock_widget::update_history_callback (void)
-{
-  // Determine the client's (our) history length and the one of the server.
-  int clientHistoryLength = _history_model->rowCount ();
-  int serverHistoryLength = command_history::length ();
-
-  // If were behind the server, iterate through all new entries and add
-  // them to our history.
-  if (clientHistoryLength < serverHistoryLength)
-    {
-      int elts_to_add = serverHistoryLength - clientHistoryLength;
-
-      _history_model->insertRows (clientHistoryLength, elts_to_add);
-
-      for (int i = clientHistoryLength; i < serverHistoryLength; i++)
-        {
-          std::string entry = command_history::get_entry (i);
-
-          _history_model->setData (_history_model->index (i),
-                      QString::fromUtf8 (entry.data (), entry.size ()));
-        }
-
-      _history_list_view->scrollToBottom ();
-    }
-}

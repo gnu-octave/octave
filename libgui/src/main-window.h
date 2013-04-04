@@ -71,7 +71,7 @@ public slots:
   void handle_save_workspace_request ();
   void handle_load_workspace_request ();
   void handle_clear_workspace_request ();
-  void handle_clear_history_request ();
+  void handle_clear_history_request (void);
   void handle_command_double_clicked (const QString& command);
   void new_file ();
   void open_file ();
@@ -87,7 +87,6 @@ public slots:
   void reset_windows ();
   void current_working_directory_has_changed (const QString& directory);
   void update_workspace (void);
-  void update_history (void);
   void change_current_working_directory ();
   void set_current_working_directory (const QString& directory);
   void current_working_directory_up ();

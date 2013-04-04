@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-event-listener.h"
 
 class octave_mutex;
+class string_vector;
 
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
@@ -119,10 +120,22 @@ public:
       instance->do_update_workspace ();
   }
 
-  static void update_history (void)
+  static void set_history (const string_vector& hist)
   {
     if (instance_ok ())
-      instance->do_update_history ();
+      instance->do_set_history (hist);
+  }
+
+  static void append_history (const std::string& hist_entry)
+  {
+    if (instance_ok ())
+      instance->do_append_history (hist_entry);
+  }
+
+  static void clear_history (void)
+  {
+    if (instance_ok ())
+      instance->do_clear_history ();
   }
 
   static void pre_input_event (void)
@@ -225,7 +238,9 @@ protected:
 
   virtual void do_update_workspace (void) = 0;
 
-  virtual void do_update_history (void) = 0;
+  virtual void do_set_history (const string_vector& hist) = 0;
+  virtual void do_append_history (const std::string& hist_entry) = 0;
+  virtual void do_clear_history (void) = 0;
 
   virtual void do_pre_input_event (void) = 0;
   virtual void do_post_input_event (void) = 0;

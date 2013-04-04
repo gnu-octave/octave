@@ -35,11 +35,10 @@ class history_dock_widget : public octave_dock_widget
   public:
   history_dock_widget (QWidget *parent = 0);
 
-  void update_history_callback (void);
-
 public slots:
-  void request_history_model_update ();
-  void reset_model ();
+  void set_history (const QStringList& hist);
+  void append_history (const QString& hist_entry);
+  void clear_history (void);
 
 signals:
   void information (const QString& message);

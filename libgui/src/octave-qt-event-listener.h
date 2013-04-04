@@ -40,7 +40,6 @@ class octave_qt_event_listener
   void insert_debugger_pointer (const std::string& file, int line);
   void delete_debugger_pointer (const std::string& file, int line);
   void update_dbstop_marker (bool insert, const std::string& file, int line);
-  void edit_file (const std::string& file);
   void about_to_exit ();
 
   void entered_debug_mode ();
@@ -53,7 +52,6 @@ signals:
   void insert_debugger_pointer_signal (const QString& file, int line);
   void delete_debugger_pointer_signal (const QString& file, int line);
   void update_dbstop_marker_signal (bool insert, const QString& file, int line);
-  void edit_file_signal (const QString& file);
   void entered_debug_mode_signal ();
   void quit_debug_mode_signal ();
 };

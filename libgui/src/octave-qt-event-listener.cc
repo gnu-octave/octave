@@ -77,12 +77,6 @@ octave_qt_event_listener::update_dbstop_marker (bool insert,
 }
 
 void
-octave_qt_event_listener::edit_file (const std::string& file)
-{
-  emit edit_file_signal (QString::fromStdString (file));
-}
-
-void
 octave_qt_event_listener::about_to_exit ()
 {
   qApp->quit ();

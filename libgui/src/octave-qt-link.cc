@@ -113,16 +113,7 @@ octave_qt_link::do_update_breakpoint (bool insert,
 bool
 octave_qt_link::do_edit_file (const std::string& file)
 {
-  bool retval = false;
+  emit edit_file_signal (QString::fromStdString (file));
 
-  if (event_listener)
-    {
-      event_listener->edit_file (file);
-
-      do_process_events ();
-
-      retval = true;
-    }
-
-  return retval;
+  return true;
 }

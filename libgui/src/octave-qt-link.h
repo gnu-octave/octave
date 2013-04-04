@@ -82,6 +82,8 @@ private:
 signals:
 
   void update_dbstop_marker_signal (bool insert, const QString& file, int line);
+
+  void edit_file_signal (const QString& file);
 };
 
 #endif

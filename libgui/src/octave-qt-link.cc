@@ -35,8 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 octave_qt_link::octave_qt_link (void)
   : octave_link (), main_thread (new octave_main_thread)
 {
-  // Start the first one.
-  main_thread->start ();
+}
+
+void
+octave_qt_link::execute_interpreter (void)
+{
+  main_thread->execute_interpreter ();
 }
 
 void

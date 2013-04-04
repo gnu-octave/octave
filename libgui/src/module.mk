@@ -71,7 +71,6 @@ octave_gui_MOC += \
   src/moc-files-dockwidget.cc \
   src/moc-history-dockwidget.cc \
   src/moc-main-window.cc \
-  src/moc-octave-main-thread.cc \
   src/moc-octave-qt-event-listener.cc \
   src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \

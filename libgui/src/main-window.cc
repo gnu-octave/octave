@@ -1184,6 +1184,8 @@ main_window::construct ()
            _file_editor,
            SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
 
+  _octave_qt_link->execute_interpreter ();
+
   octave_link::connect_link (_octave_qt_link);
 
   octave_link::register_event_listener (_octave_qt_event_listener);

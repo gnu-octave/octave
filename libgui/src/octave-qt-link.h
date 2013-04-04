@@ -51,6 +51,8 @@ public:
 
   ~octave_qt_link (void) { }
 
+  void execute_interpreter (void);
+
   void do_update_workspace (void);
 
   void do_set_history (const string_vector& hist);

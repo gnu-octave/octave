@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -35,20 +36,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-main-thread.h"
 #include "octave-link.h"
 
-octave_main_thread::octave_main_thread () : QThread ()
-{
-}
-
 void
-octave_main_thread::run ()
+octave_main_thread::run (void)
 {
   // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
   setlocale (LC_NUMERIC, "C");
-
-  emit ready ();
 
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
 
   octave_execute_interpreter ();
+}
+
+void
+octave_main_thread::execute_interpreter (void)
+{
+  start ();
 }

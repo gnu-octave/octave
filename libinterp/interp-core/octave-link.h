@@ -140,23 +140,23 @@ public:
       instance->do_post_input_event ();
   }
 
-  static void enter_debugger_event (const octave_value_list& args)
+  static void enter_debugger_event (const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_enter_debugger_event (args);
+      instance->do_enter_debugger_event (file, line);
   }
 
-  static void exit_debugger_event (const octave_value_list& args)
+  static void exit_debugger_event (const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_exit_debugger_event (args);
+      instance->do_exit_debugger_event (file, line);
   }
 
   static void
-  update_breakpoint (bool insert, const octave_value_list& args)
+  update_breakpoint (bool insert, const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_update_breakpoint (insert, args);
+      instance->do_update_breakpoint (insert, file, line);
   }
 
   static void
@@ -231,17 +231,20 @@ protected:
 
   virtual void do_update_history (void) = 0;
 
-  virtual void do_insert_debugger_pointer (const octave_value_list& args) = 0;
-  virtual void do_delete_debugger_pointer (const octave_value_list& args) = 0;
+  virtual void
+  do_insert_debugger_pointer (const std::string& file, int line) = 0;
+
+  virtual void
+  do_delete_debugger_pointer (const std::string& file, int line) = 0;
 
   virtual void do_pre_input_event (void) = 0;
   virtual void do_post_input_event (void) = 0;
 
-  virtual void do_enter_debugger_event (const octave_value_list& args) = 0;
-  virtual void do_exit_debugger_event (const octave_value_list& args) = 0;
+  virtual void do_enter_debugger_event (const std::string& file, int line) = 0;
+  virtual void do_exit_debugger_event (const std::string& file, int line) = 0;
 
   virtual void do_update_breakpoint (bool insert,
-                                     const octave_value_list& args) = 0;
+                                     const std::string& file, int line) = 0;
 
   virtual void do_edit_file (const octave_value_list& args) = 0;
 };

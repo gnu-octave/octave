@@ -57,16 +57,16 @@ public:
 
   void do_update_history (void);
 
-  void do_insert_debugger_pointer (const octave_value_list& args);
-  void do_delete_debugger_pointer (const octave_value_list& args);
+  void do_insert_debugger_pointer (const std::string& file, int line);
+  void do_delete_debugger_pointer (const std::string& file, int line);
 
   void do_pre_input_event (void);
   void do_post_input_event (void);
 
-  void do_enter_debugger_event (const octave_value_list& args);
-  void do_exit_debugger_event (const octave_value_list& args);
+  void do_enter_debugger_event (const std::string& file, int line);
+  void do_exit_debugger_event (const std::string& file, int line);
 
-  void do_update_breakpoint (bool insert, const octave_value_list& args);
+  void do_update_breakpoint (bool insert, const std::string& file, int line);
 
   void do_edit_file (const octave_value_list& args);
 

@@ -65,70 +65,24 @@ octave_qt_link::do_update_history (void)
 }
 
 void
-octave_qt_link::do_insert_debugger_pointer (const octave_value_list& args)
+octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
 {
   if (event_listener)
     {
-      if (args.length () == 1)
-        {
-          octave_scalar_map m = args(0).scalar_map_value ();
+      event_listener->insert_debugger_pointer (file, line);
 
-          if (! error_state)
-            {
-              octave_value ov_file = m.getfield ("file");
-              octave_value ov_line = m.getfield ("line");
-
-              std::string file = ov_file.string_value ();
-              int line = ov_line.int_value ();
-
-              if (! error_state)
-                {
-                  event_listener->insert_debugger_pointer (file, line);
-
-                  do_process_events ();
-                }
-              else
-                ::error ("invalid struct in debug pointer callback");
-            }
-          else
-            ::error ("expecting struct in debug pointer callback");
-        }
-      else
-        ::error ("invalid call to debug pointer callback");
+      do_process_events ();
     }
 }
 
 void
-octave_qt_link::do_delete_debugger_pointer (const octave_value_list& args)
+octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
 {
   if (event_listener)
     {
-      if (args.length () == 1)
-        {
-          octave_scalar_map m = args(0).scalar_map_value ();
+      event_listener->delete_debugger_pointer (file, line);
 
-          if (! error_state)
-            {
-              octave_value ov_file = m.getfield ("file");
-              octave_value ov_line = m.getfield ("line");
-
-              std::string file = ov_file.string_value ();
-              int line = ov_line.int_value ();
-
-              if (! error_state)
-                {
-                  event_listener->delete_debugger_pointer (file, line);
-
-                  do_process_events ();
-                }
-              else
-                ::error ("invalid struct in debug pointer callback");
-            }
-          else
-            ::error ("expecting struct in debug pointer callback");
-        }
-      else
-        ::error ("invalid call to debug pointer callback");
+      do_process_events ();
     }
 }
 
@@ -145,49 +99,26 @@ octave_qt_link::do_post_input_event (void)
 }
 
 void
-octave_qt_link::do_enter_debugger_event (const octave_value_list& args)
+octave_qt_link::do_enter_debugger_event (const std::string& file, int line)
 {
-  do_insert_debugger_pointer (args);
+  do_insert_debugger_pointer (file, line);
 }
 
 void
-octave_qt_link::do_exit_debugger_event (const octave_value_list& args)
+octave_qt_link::do_exit_debugger_event (const std::string& file, int line)
 {
-  do_delete_debugger_pointer (args);
+  do_delete_debugger_pointer (file, line);
 }
 
 void
 octave_qt_link::do_update_breakpoint (bool insert,
-                                      const octave_value_list& args)
+                                      const std::string& file, int line)
 {
   if (event_listener)
     {
-      if (args.length () == 1)
-        {
-          octave_scalar_map m = args(0).scalar_map_value ();
+      event_listener->update_dbstop_marker (insert, file, line);
 
-          if (! error_state)
-            {
-              octave_value ov_file = m.getfield ("file");
-              octave_value ov_line = m.getfield ("line");
-
-              std::string file = ov_file.string_value ();
-              int line = ov_line.int_value ();
-
-              if (! error_state)
-                {
-                  event_listener->update_dbstop_marker (insert, file, line);
-
-                  do_process_events ();
-                }
-              else
-                ::error ("invalid struct in dbstop marker callback");
-            }
-          else
-            ::error ("expecting struct in dbstop marker callback");
-        }
-      else
-        ::error ("invalid call to dbstop marker callback");
+      do_process_events ();
     }
 }
 

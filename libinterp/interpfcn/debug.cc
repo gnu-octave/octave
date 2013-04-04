@@ -186,17 +186,6 @@ get_user_code (const std::string& fname = std::string ())
   return dbg_fcn;
 }
 
-octave_value
-location_info (const std::string& fname, int line)
-{
-  octave_scalar_map location_info_map;
-
-  location_info_map.setfield ("file", fname);
-  location_info_map.setfield ("line", line);
-
-  return octave_value (location_info_map);
-}
-
 static void
 parse_dbfunction_params (const char *who, const octave_value_list& args,
                          std::string& symbol_name, bp_table::intmap& lines)
@@ -318,12 +307,7 @@ bp_table::do_add_breakpoint (const std::string& fname,
                       std::string file = dbg_fcn->fcn_file_name ();
 
                       if (! file.empty ())
-                        {
-                          octave_value_list
-                            args (location_info (file, retval[i]));
-
-                          octave_link::update_breakpoint (true, args);
-                        }
+                        octave_link::update_breakpoint (true, file, retval[i]);
                     }
                 }
             }
@@ -378,12 +362,7 @@ bp_table::do_remove_breakpoint (const std::string& fname,
                           cmds->delete_breakpoint (lineno);
 
                           if (! file.empty ())
-                            {
-                              octave_value_list
-                                args (location_info (file, lineno));
-                              
-                              octave_link::update_breakpoint (false, args);
-                            }
+                            octave_link::update_breakpoint (false, file, lineno);
                         }
                     }
 
@@ -432,11 +411,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
               retval[i] = lineno;
 
               if (! file.empty ())
-                {
-                  octave_value_list args (location_info (file, lineno));
-
-                  octave_link::update_breakpoint (false, args);
-                }
+                octave_link::update_breakpoint (false, file, lineno);
             }
 
           bp_set_iterator it = bp_set.find (fname);

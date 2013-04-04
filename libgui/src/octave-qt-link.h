@@ -68,7 +68,7 @@ public:
 
   void do_update_breakpoint (bool insert, const std::string& file, int line);
 
-  void do_edit_file (const octave_value_list& args);
+  bool do_edit_file (const std::string& file);
 
 private:
 

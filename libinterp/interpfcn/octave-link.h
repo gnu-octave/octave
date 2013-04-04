@@ -27,13 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class octave_mutex;
-
-#include "oct-obj.h"
-
 #include "event-queue.h"
-
 #include "octave-event-listener.h"
+
+class octave_mutex;
 
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
@@ -159,11 +156,10 @@ public:
       instance->do_update_breakpoint (insert, file, line);
   }
 
-  static void
-  edit_file (const octave_value_list& args)
+  static bool
+  edit_file (const std::string& file)
   {
-    if (instance_ok ())
-      instance->do_edit_file (args);
+    return instance_ok () ? instance->do_edit_file (file) : false;
   }
 
   static void connect (octave_link *);
@@ -246,7 +242,7 @@ protected:
   virtual void do_update_breakpoint (bool insert,
                                      const std::string& file, int line) = 0;
 
-  virtual void do_edit_file (const octave_value_list& args) = 0;
+  virtual bool do_edit_file (const std::string& file) = 0;
 };
 
 #endif // OCTAVELINK_H

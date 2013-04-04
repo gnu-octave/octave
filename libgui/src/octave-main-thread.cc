@@ -35,16 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-main-thread.h"
 #include "octave-link.h"
 
-static octave_value_list
-edit_hook_fcn (const octave_value_list& args, int)
-{
-  octave_value_list retval;
-
-  octave_link::edit_file (args);
-
-  return retval;
-}
-
 octave_main_thread::octave_main_thread () : QThread ()
 {
 }
@@ -59,10 +49,6 @@ octave_main_thread::run ()
 
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
-
-  octave_value edit_fcn (new octave_builtin (edit_hook_fcn));
-  octave_value edit_fcn_handle (new octave_fcn_handle (edit_fcn));
-  Fadd_edit_hook (edit_fcn_handle);
 
   // Prime the history list.
   octave_link::update_history ();

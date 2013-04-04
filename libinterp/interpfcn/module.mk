@@ -16,6 +16,7 @@ INTERPFCN_INC = \
   interpfcn/load-path.h \
   interpfcn/load-save.h \
   interpfcn/ls-oct-ascii.h \
+  interpfcn/octave-link.h \
   interpfcn/oct-hist.h \
   interpfcn/pager.h \
   interpfcn/pr-output.h \
@@ -42,6 +43,7 @@ INTERPFCN_SRC = \
   interpfcn/load-path.cc \
   interpfcn/load-save.cc \
   interpfcn/ls-oct-ascii.cc \
+  interpfcn/octave-link.cc \
   interpfcn/oct-hist.cc \
   interpfcn/pager.cc \
   interpfcn/pr-output.cc \

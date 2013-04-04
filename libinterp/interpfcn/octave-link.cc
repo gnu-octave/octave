@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "cmd-edit.h"
+#include "defun.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
 #include "singleton-cleanup.h"
@@ -143,4 +144,25 @@ bool
 octave_link::instance_ok (void)
 {
   return instance != 0;
+}
+
+DEFUN (__octave_link_edit_file__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_edit_file__ (@var{file})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string file = args(0).string_value ();
+
+      if (! error_state)
+        retval = octave_link::edit_file (file);
+      else
+        error ("expecting file name as argument");
+    }
+
+  return retval;
 }

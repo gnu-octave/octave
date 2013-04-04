@@ -563,7 +563,7 @@ function do_edit (editor, file, mode)
   ## Give the hook function a chance.  If that fails, fall back
   ## on running an editor with the system function.
 
-  status = __execute_edit_hook__ (file);
+  status = __octave_link_edit_file__ (file);
 
   if (! status)
     system (sprintf (undo_string_escapes (editor),

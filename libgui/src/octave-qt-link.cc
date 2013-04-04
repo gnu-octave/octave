@@ -122,25 +122,19 @@ octave_qt_link::do_update_breakpoint (bool insert,
     }
 }
 
-void
-octave_qt_link::do_edit_file (const octave_value_list& args)
+bool
+octave_qt_link::do_edit_file (const std::string& file)
 {
+  bool retval = false;
+
   if (event_listener)
     {
-      if (args.length () == 1)
-        {
-          std::string file = args(0).string_value ();
+      event_listener->edit_file (file);
 
-          if (! error_state)
-            {
-              event_listener->edit_file (file);
-              do_process_events ();
+      do_process_events ();
 
-            }
-          else
-            ::error ("expecting file name in edit file callback");
-        }
-      else
-        ::error ("invalid call to edit file callback");
+      retval = true;
     }
+
+  return retval;
 }

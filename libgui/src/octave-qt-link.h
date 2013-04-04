@@ -55,9 +55,6 @@ public:
 
   void do_update_history (void);
 
-  void do_insert_debugger_pointer (const std::string& file, int line);
-  void do_delete_debugger_pointer (const std::string& file, int line);
-
   void do_pre_input_event (void);
   void do_post_input_event (void);
 
@@ -76,6 +73,10 @@ private:
 
   octave_qt_link& operator = (const octave_qt_link&);
 
+  void do_insert_debugger_pointer (const std::string& file, int line);
+
+  void do_delete_debugger_pointer (const std::string& file, int line);
+
   // Thread running octave_main.
   octave_main_thread *main_thread;
 
@@ -84,6 +85,10 @@ signals:
   void update_dbstop_marker_signal (bool insert, const QString& file, int line);
 
   void edit_file_signal (const QString& file);
+
+  void insert_debugger_pointer_signal (const QString&, int);
+
+  void delete_debugger_pointer_signal (const QString&, int);
 };
 
 #endif

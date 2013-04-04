@@ -58,28 +58,6 @@ octave_qt_link::do_update_history (void)
 }
 
 void
-octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
-{
-  if (event_listener)
-    {
-      event_listener->insert_debugger_pointer (file, line);
-
-      do_process_events ();
-    }
-}
-
-void
-octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
-{
-  if (event_listener)
-    {
-      event_listener->delete_debugger_pointer (file, line);
-
-      do_process_events ();
-    }
-}
-
-void
 octave_qt_link::do_pre_input_event (void)
 {
   do_update_workspace ();
@@ -116,4 +94,16 @@ octave_qt_link::do_edit_file (const std::string& file)
   emit edit_file_signal (QString::fromStdString (file));
 
   return true;
+}
+
+void
+octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
+{
+  emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
+}
+
+void
+octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
+{
+  emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
 }

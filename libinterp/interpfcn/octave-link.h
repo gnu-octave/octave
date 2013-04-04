@@ -227,12 +227,6 @@ protected:
 
   virtual void do_update_history (void) = 0;
 
-  virtual void
-  do_insert_debugger_pointer (const std::string& file, int line) = 0;
-
-  virtual void
-  do_delete_debugger_pointer (const std::string& file, int line) = 0;
-
   virtual void do_pre_input_event (void) = 0;
   virtual void do_post_input_event (void) = 0;
 

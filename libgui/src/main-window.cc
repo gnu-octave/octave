@@ -495,22 +495,6 @@ main_window::handle_quit_debug_mode ()
 }
 
 void
-main_window::handle_insert_debugger_pointer_request (const QString& file, int line)
-{
-#ifdef HAVE_QSCINTILLA
-  _file_editor->handle_insert_debugger_pointer_request (file, line);
-#endif
-}
-
-void
-main_window::handle_delete_debugger_pointer_request (const QString& file, int line)
-{
-#ifdef HAVE_QSCINTILLA
-  _file_editor->handle_delete_debugger_pointer_request (file, line);
-#endif
-}
-
-void
 main_window::debug_continue ()
 {
   octave_link::post_event (this, &main_window::debug_continue_callback);
@@ -1175,14 +1159,6 @@ main_window::construct ()
            this,
            SLOT (handle_quit_debug_mode ()));
 
-  connect (_octave_qt_event_listener,
-           SIGNAL (insert_debugger_pointer_signal (const QString&, int)), this,
-           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
-
-  connect (_octave_qt_event_listener,
-           SIGNAL (delete_debugger_pointer_signal (const QString&, int)), this,
-           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
-
   // FIXME -- is it possible to eliminate the event_listenter?
 
   _octave_qt_link = new octave_qt_link ();
@@ -1196,6 +1172,16 @@ main_window::construct ()
            SIGNAL (edit_file_signal (const QString&)),
            _file_editor,
            SLOT (handle_edit_file_request (const QString&)));
+
+  connect (_octave_qt_link,
+           SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+           _file_editor,
+           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+
+  connect (_octave_qt_link,
+           SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+           _file_editor,
+           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
 
   octave_link::connect_link (_octave_qt_link);
 

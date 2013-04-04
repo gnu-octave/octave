@@ -40,12 +40,6 @@ class octave_event_listener
     virtual void
     update_history (void) = 0;
 
-    virtual void
-    insert_debugger_pointer (const std::string& file, int line) = 0;
-
-    virtual void
-    delete_debugger_pointer (const std::string& file, int line) = 0;
-
     virtual void about_to_exit () = 0;
 
     virtual void entered_debug_mode () = 0;

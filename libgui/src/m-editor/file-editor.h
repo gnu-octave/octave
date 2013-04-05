@@ -76,6 +76,7 @@ signals:
   void fetab_paste (const QWidget* ID);
   void fetab_save_file (const QWidget* ID);
   void fetab_save_file_as (const QWidget* ID);
+  void fetab_print_file (const QWidget* ID);
   void fetab_run_file (const QWidget* ID);
   void fetab_toggle_bookmark (const QWidget* ID);
   void fetab_next_bookmark (const QWidget* ID);
@@ -98,6 +99,7 @@ public slots:
   void request_new_file ();
   void request_open_file ();
   void request_mru_open_file ();
+  void request_print_file ();
 
   void request_undo ();
   void request_redo ();

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexerperl.h>
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexerdiff.h>
+#include <Qsci/qsciprinter.h>
 #include "resource-manager.h"
 #include <QApplication>
 #include <QFileDialog>
@@ -42,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTextStream>
 #include <QVBoxLayout>
 #include <QInputDialog>
+#include <QPrintDialog>
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
@@ -330,6 +332,24 @@ file_editor_tab::save_file_as (const QWidget* ID)
 
   save_file_as ();
 }
+
+void
+file_editor_tab::print_file (const QWidget* ID)
+{
+  if (ID != this)
+    return;
+
+  QsciPrinter * printer = new QsciPrinter( QPrinter::HighResolution );
+
+  QPrintDialog printDlg(printer, this);
+
+  if(printDlg.exec() == QDialog::Accepted)
+    {
+       printer->printRange(_edit_area);
+    }
+  delete printer;
+}
+
 
 void
 file_editor_tab::run_file_callback (void)

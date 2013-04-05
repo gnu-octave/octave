@@ -397,6 +397,13 @@ file_editor::request_save_file_as ()
 }
 
 void
+file_editor::request_print_file ()
+{
+   emit fetab_print_file (_tab_widget->currentWidget ());
+}
+
+
+void
 file_editor::request_run_file ()
 {
   emit fetab_run_file (_tab_widget->currentWidget ());
@@ -626,6 +633,10 @@ file_editor::construct ()
     = new QAction (QIcon(":/actions/icons/filesaveas.png"),
                    tr("Save File &As"), _tool_bar);
 
+  QAction *print_action
+    = new QAction ( QIcon(":/actions/icons/fileprint.png"),
+                    tr ("Print"), _tool_bar);
+
   QAction *undo_action = new QAction (QIcon(":/actions/icons/undo.png"),
                                       tr("&Undo"), _tool_bar);
 
@@ -689,6 +700,10 @@ file_editor::construct ()
   save_action->setShortcutContext               (Qt::WindowShortcut);
   save_as_action->setShortcut                   (QKeySequence::SaveAs);
   save_as_action->setShortcutContext            (Qt::WindowShortcut);
+
+  print_action->setShortcut                     (QKeySequence::Print);
+  print_action->setShortcutContext              (Qt::WindowShortcut);
+
   next_bookmark_action->setShortcut             (Qt::Key_F2);
   next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);
   previous_bookmark_action->setShortcut         (Qt::SHIFT + Qt::Key_F2);
@@ -709,6 +724,8 @@ file_editor::construct ()
   _tool_bar->addAction (open_action);
   _tool_bar->addAction (save_action);
   _tool_bar->addAction (save_as_action);
+  _tool_bar->addSeparator ();
+  _tool_bar->addAction(print_action);
   _tool_bar->addSeparator ();
   _tool_bar->addAction (undo_action);
   _tool_bar->addAction (redo_action);
@@ -738,6 +755,9 @@ file_editor::construct ()
     }
   fileMenu->addMenu (_mru_file_menu);
   _menu_bar->addMenu (fileMenu);
+
+  fileMenu->addSeparator ();
+  fileMenu->addAction (print_action);
 
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
   editMenu->addAction (undo_action);
@@ -799,6 +819,8 @@ file_editor::construct ()
            SIGNAL (triggered ()), this, SLOT (request_save_file ()));
   connect (save_as_action,
            SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
+  connect (print_action,
+           SIGNAL (triggered ()), this, SLOT (request_print_file ()));
   connect (_run_action,
            SIGNAL (triggered ()), this, SLOT (request_run_file ()));
   connect (toggle_bookmark_action,
@@ -899,6 +921,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (save_file (const QWidget*)));
   connect (this, SIGNAL (fetab_save_file_as (const QWidget*)),
            f, SLOT (save_file_as (const QWidget*)));
+  connect (this, SIGNAL (fetab_print_file (const QWidget*)),
+           f, SLOT (print_file (const QWidget*)));
   connect (this, SIGNAL (fetab_run_file (const QWidget*)),
            f, SLOT (run_file (const QWidget*)));
   connect (this, SIGNAL (fetab_toggle_bookmark (const QWidget*)),

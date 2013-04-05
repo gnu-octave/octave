@@ -153,13 +153,27 @@ public:
   static void enter_debugger_event (const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_enter_debugger_event (file, line);
+      {
+        instance->debugging = true;
+
+        instance->do_enter_debugger_event (file, line);
+      }
   }
 
-  static void exit_debugger_event (const std::string& file, int line)
+  static void execute_in_debugger_event (const std::string& file, int line)
   {
     if (instance_ok ())
-      instance->do_exit_debugger_event (file, line);
+      instance->do_execute_in_debugger_event (file, line);
+  }
+
+  static void exit_debugger_event (void)
+  {
+    if (instance_ok () && instance->debugging)
+      {
+        instance->debugging = false;
+
+        instance->do_exit_debugger_event ();
+      }
   }
 
   static void
@@ -243,7 +257,8 @@ protected:
   virtual void do_post_input_event (void) = 0;
 
   virtual void do_enter_debugger_event (const std::string& file, int line) = 0;
-  virtual void do_exit_debugger_event (const std::string& file, int line) = 0;
+  virtual void do_execute_in_debugger_event (const std::string& file, int line) = 0;
+  virtual void do_exit_debugger_event (void) = 0;
 
   virtual void do_update_breakpoint (bool insert,
                                      const std::string& file, int line) = 0;

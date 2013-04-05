@@ -106,8 +106,8 @@ public slots:
   void handle_editor_visible (bool);
   void handle_documentation_visible (bool);
 
-  void handle_entered_debug_mode ();
-  void handle_quit_debug_mode ();
+  void handle_enter_debugger (void);
+  void handle_exit_debugger (void);
   void debug_continue ();
   void debug_step_into ();
   void debug_step_over ();

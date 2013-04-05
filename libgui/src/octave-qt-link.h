@@ -65,7 +65,8 @@ public:
   void do_post_input_event (void);
 
   void do_enter_debugger_event (const std::string& file, int line);
-  void do_exit_debugger_event (const std::string& file, int line);
+  void do_execute_in_debugger_event (const std::string& file, int line);
+  void do_exit_debugger_event (void);
 
   void do_update_breakpoint (bool insert, const std::string& file, int line);
 
@@ -93,6 +94,9 @@ signals:
   void set_history_signal (const QStringList& hist);
   void append_history_signal (const QString& hist_entry);
   void clear_history_signal (void);
+
+  void enter_debugger_signal (void);
+  void exit_debugger_signal (void);
 
   void update_dbstop_marker_signal (bool insert, const QString& file, int line);
 

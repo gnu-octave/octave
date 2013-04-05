@@ -44,8 +44,8 @@ class file_editor_interface : public octave_dock_widget
   virtual QMenu *debug_menu () = 0;
   virtual QToolBar *toolbar () = 0;
 
-  virtual void handle_entered_debug_mode () = 0;
-  virtual void handle_quit_debug_mode () = 0;
+  virtual void handle_enter_debug_mode (void) = 0;
+  virtual void handle_exit_debug_mode (void) = 0;
 
   virtual void
   handle_insert_debugger_pointer_request (const QString& file, int line) = 0;

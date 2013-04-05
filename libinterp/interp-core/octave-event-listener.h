@@ -35,9 +35,6 @@ class octave_event_listener
     update_workspace (void) = 0;
 
     virtual void about_to_exit () = 0;
-
-    virtual void entered_debug_mode () = 0;
-    virtual void quit_debug_mode () = 0;
 };
 
 #endif // OCTAVEEVENTLISTENER_H

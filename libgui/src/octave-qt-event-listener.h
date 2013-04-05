@@ -38,14 +38,9 @@ class octave_qt_event_listener
   void update_workspace (void);
   void about_to_exit ();
 
-  void entered_debug_mode ();
-  void quit_debug_mode ();
-
 signals:
   void current_directory_has_changed_signal (const QString& directory);
   void update_workspace_signal (void);
-  void entered_debug_mode_signal ();
-  void quit_debug_mode_signal ();
 };
 
 #endif // OCTAVEQTEVENTLISTENER_H

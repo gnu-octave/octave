@@ -100,13 +100,13 @@ file_editor::toolbar ()
 }
 
 void
-file_editor::handle_entered_debug_mode ()
+file_editor::handle_enter_debug_mode (void)
 {
   _run_action->setEnabled (false);
 }
 
 void
-file_editor::handle_quit_debug_mode ()
+file_editor::handle_exit_debug_mode (void)
 {
   _run_action->setEnabled (true);
 }

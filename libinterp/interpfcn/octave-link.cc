@@ -86,18 +86,6 @@ octave_link::do_register_event_listener (octave_event_listener *el)
 void
 octave_link::do_generate_events (void)
 {
-  if (debugging != Vdebugging)
-    {
-      debugging = Vdebugging;
-
-      if (event_listener)
-        {
-          if (debugging)
-            event_listener->entered_debug_mode ();
-          else
-            event_listener->quit_debug_mode ();
-        }
-    }
 }
 
 void

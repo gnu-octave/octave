@@ -98,12 +98,20 @@ void
 octave_qt_link::do_enter_debugger_event (const std::string& file, int line)
 {
   do_insert_debugger_pointer (file, line);
+
+  emit enter_debugger_signal ();
 }
 
 void
-octave_qt_link::do_exit_debugger_event (const std::string& file, int line)
+octave_qt_link::do_execute_in_debugger_event (const std::string& file, int line)
 {
   do_delete_debugger_pointer (file, line);
+}
+
+void
+octave_qt_link::do_exit_debugger_event (void)
+{
+  emit exit_debugger_signal ();
 }
 
 void

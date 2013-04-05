@@ -212,7 +212,12 @@ octave_base_reader::octave_gets (bool& eof)
   // printing the prompt.
 
   if (interactive || forced_interactive)
-    octave_link::pre_input_event ();
+    {
+      if (! Vdebugging)
+        octave_link::exit_debugger_event ();
+
+      octave_link::pre_input_event ();
+    }
 
   bool history_skip_auto_repeated_debugging_command = false;
 
@@ -460,9 +465,9 @@ initialize_command_input (void)
 }
 
 static void
-exit_debugger_handler (const std::pair<std::string, int>& arg)
+execute_in_debugger_handler (const std::pair<std::string, int>& arg)
 {
-  octave_link::exit_debugger_event (arg.first, arg.second);
+  octave_link::execute_in_debugger_event (arg.first, arg.second);
 }
 
 static void
@@ -514,7 +519,7 @@ get_debug_input (const std::string& prompt)
             {
               octave_link::enter_debugger_event (nm, curr_debug_line);
 
-              frame.add_fcn (exit_debugger_handler,
+              frame.add_fcn (execute_in_debugger_handler,
                              std::pair<std::string, int> (nm, curr_debug_line));
 
               std::string line_buf

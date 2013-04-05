@@ -57,8 +57,8 @@ class file_editor : public file_editor_interface
   QToolBar *        toolbar ();
 
   void set_focus ();
-  void handle_entered_debug_mode ();
-  void handle_quit_debug_mode ();
+  void handle_enter_debug_mode (void);
+  void handle_exit_debug_mode (void);
 
 signals:
   void fetab_settings_changed (const QSettings *settings);

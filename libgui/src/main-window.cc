@@ -476,30 +476,34 @@ main_window::handle_documentation_visible (bool visible)
 }
 
 void
-main_window::handle_entered_debug_mode ()
+main_window::handle_enter_debugger (void)
 {
   setWindowTitle ("Octave (Debugging)");
+
   _debug_continue->setEnabled (true);
   _debug_step_into->setEnabled (true);
   _debug_step_over->setEnabled (true);
   _debug_step_out->setEnabled (true);
   _debug_quit->setEnabled (true);
+
 #ifdef HAVE_QSCINTILLA
-  _file_editor->handle_entered_debug_mode ();
+  _file_editor->handle_enter_debug_mode ();
 #endif
 }
 
 void
-main_window::handle_quit_debug_mode ()
+main_window::handle_exit_debugger (void)
 {
   setWindowTitle ("Octave");
+
   _debug_continue->setEnabled (false);
   _debug_step_into->setEnabled (false);
   _debug_step_over->setEnabled (false);
   _debug_step_out->setEnabled (false);
   _debug_quit->setEnabled (false);
+
 #ifdef HAVE_QSCINTILLA
-  _file_editor->handle_quit_debug_mode ();
+  _file_editor->handle_exit_debug_mode ();
 #endif
 }
 
@@ -1148,16 +1152,6 @@ main_window::construct ()
            this,
            SLOT (update_workspace ()));
 
-  connect (_octave_qt_event_listener,
-           SIGNAL (entered_debug_mode_signal ()),
-           this,
-           SLOT(handle_entered_debug_mode ()));
-
-  connect (_octave_qt_event_listener,
-           SIGNAL (quit_debug_mode_signal ()),
-           this,
-           SLOT (handle_quit_debug_mode ()));
-
   // FIXME -- is it possible to eliminate the event_listenter?
 
   _octave_qt_link = new octave_qt_link ();
@@ -1176,6 +1170,12 @@ main_window::construct ()
   connect (_octave_qt_link,
            SIGNAL (clear_history_signal (void)),
            _history_dock_widget, SLOT (clear_history (void)));
+
+  connect (_octave_qt_link, SIGNAL (enter_debugger_signal ()),
+           this, SLOT (handle_enter_debugger ()));
+
+  connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
+           this, SLOT (handle_exit_debugger ()));
 
   connect (_octave_qt_link,
            SIGNAL (update_dbstop_marker_signal (bool, const QString&, int)),

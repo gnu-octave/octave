@@ -57,15 +57,15 @@ public slots:
   void item_double_clicked (const QModelIndex & index);
 
   /** Slot for handling the up-directory button in the toolbar. */
-  void do_up_directory ();
+  void change_directory_up ();
 
   /** Sets the current directory being displayed. */
-  void set_current_directory (const QString& currentDirectory);
+  void set_current_directory (const QString& dir);
 
   /** Accepts user input a the line edit for the current directory. */
-  void handle_directory_entered ();
+  void accept_directory_line_edit ();
 
-  void display_directory (const QString& directory);
+  void display_directory (const QString& dir);
 
   /** Tells the widget to react on changed settings. */
   void notice_settings (const QSettings *settings);
@@ -75,14 +75,12 @@ signals:
   void open_file (const QString& fileName);
 
   /** Emitted, whenever the currently displayed directory changed. */
-  void displayed_directory_changed (const QString& directory);
+  void displayed_directory_changed (const QString& dir);
 
 protected:
 
 private:
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
-
-  QString           _last_current_directory;
 
   /** Toolbar for file and directory manipulation. */
   QToolBar *        _navigation_tool_bar;

@@ -348,8 +348,6 @@ file_editor_tab::run_file (const QWidget* ID)
 
   QFileInfo file_info (_file_name);
   QString path = file_info.absolutePath ();
-  QString current_path
-    = QString::fromStdString (octave_link::last_working_directory ());
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.

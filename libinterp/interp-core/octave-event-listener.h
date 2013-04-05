@@ -32,9 +32,6 @@ class octave_event_listener
     virtual ~octave_event_listener () { }
 
     virtual void
-    current_directory_has_changed (const std::string& directory) = 0;
-
-    virtual void
     update_workspace (void) = 0;
 
     virtual void about_to_exit () = 0;

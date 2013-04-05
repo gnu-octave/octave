@@ -57,7 +57,7 @@ octave_link *octave_link::instance = 0;
 
 octave_link::octave_link (void)
   : event_listener (0), event_queue_mutex (new octave_mutex ()),
-    gui_event_queue (), last_cwd (), debugging (false)
+    gui_event_queue (), debugging (false)
 {
   command_editor::add_event_hook (octave_readline_hook);
 
@@ -86,16 +86,6 @@ octave_link::do_register_event_listener (octave_event_listener *el)
 void
 octave_link::do_generate_events (void)
 {
-  std::string current_working_directory = octave_env::get_current_directory ();
-
-  if (current_working_directory != last_cwd)
-    {
-      last_cwd = current_working_directory;
-
-      if (event_listener)
-        event_listener->current_directory_has_changed (last_cwd);
-    }
-
   if (debugging != Vdebugging)
     {
       debugging = Vdebugging;
@@ -131,12 +121,6 @@ octave_link::do_about_to_exit (void)
 
   if (event_listener)
     event_listener->about_to_exit ();
-}
-
-std::string
-octave_link::do_last_working_directory (void)
-{
-  return last_cwd;
 }
 
 bool

@@ -40,7 +40,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
 {
   setObjectName ("FilesDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
-  setWindowTitle (tr ("Current Directory"));
+  setWindowTitle (tr ("File Browser"));
   setWidget (new QWidget (this));
 
   // Create a toolbar
@@ -53,14 +53,13 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _directory_up_action = new QAction (_directory_icon, "", _navigation_tool_bar);
   _directory_up_action->setStatusTip (tr ("Move up one directory."));
 
-  _last_current_directory = "";
   _current_directory = new QLineEdit (_navigation_tool_bar);
   _current_directory->setStatusTip (tr ("Enter the path or filename."));
 
   _navigation_tool_bar->addAction (_directory_up_action);
   _navigation_tool_bar->addWidget (_current_directory);
   connect (_directory_up_action, SIGNAL (triggered ()), this,
-           SLOT (do_up_directory ()));
+           SLOT (change_directory_up ()));
 
   // TODO: Add other buttons for creating directories
 
@@ -105,7 +104,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 
   connect (_current_directory, SIGNAL (returnPressed ()),
-           this, SLOT (handle_directory_entered ()));
+           this, SLOT (accept_directory_line_edit ()));
 
   QCompleter *
     completer = new QCompleter (_file_system_model, this);
@@ -126,27 +125,30 @@ files_dock_widget::~files_dock_widget ()
 }
 
 void
-files_dock_widget::item_double_clicked (const QModelIndex & index)
+files_dock_widget::item_double_clicked (const QModelIndex& index)
 {
   // Retrieve the file info associated with the model index.
   QFileInfo fileInfo = _file_system_model->fileInfo (index);
-  display_directory (fileInfo.absoluteFilePath ());
+
+  set_current_directory (fileInfo.absoluteFilePath ());
 }
 
 void
-files_dock_widget::set_current_directory (const QString& currentDirectory)
+files_dock_widget::set_current_directory (const QString& dir)
 {
-  display_directory (currentDirectory);
+  display_directory (dir);
+
+  emit displayed_directory_changed (dir);
 }
 
 void
-files_dock_widget::handle_directory_entered ()
+files_dock_widget::accept_directory_line_edit (void)
 {
   display_directory (_current_directory->text ());
 }
 
 void
-files_dock_widget::do_up_directory ()
+files_dock_widget::change_directory_up (void)
 {
   QDir dir = QDir (_file_system_model->filePath (_file_tree_view->rootIndex ()));
   dir.cdUp ();
@@ -154,9 +156,9 @@ files_dock_widget::do_up_directory ()
 }
 
 void
-files_dock_widget::display_directory (const QString& directory)
+files_dock_widget::display_directory (const QString& dir)
 {
-  QFileInfo fileInfo (directory);
+  QFileInfo fileInfo (dir);
   if (fileInfo.exists ())
     {
       if (fileInfo.isDir ())
@@ -164,14 +166,8 @@ files_dock_widget::display_directory (const QString& directory)
           _file_tree_view->setRootIndex (_file_system_model->
                                          index (fileInfo.absoluteFilePath ()));
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
+          _file_system_model->sort (0, Qt::AscendingOrder);
           _current_directory->setText (fileInfo.absoluteFilePath ());
-
-          if (_last_current_directory != fileInfo.absoluteFilePath ())
-            {
-              emit displayed_directory_changed (fileInfo.absoluteFilePath ());
-            }
-
-          _last_current_directory = fileInfo.absoluteFilePath ();
         }
       else
         {

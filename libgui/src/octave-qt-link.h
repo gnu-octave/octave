@@ -53,6 +53,8 @@ public:
 
   void execute_interpreter (void);
 
+  void do_change_directory (const std::string& dir);
+
   void do_update_workspace (void);
 
   void do_set_history (const string_vector& hist);
@@ -85,6 +87,8 @@ private:
   octave_main_thread *main_thread;
 
 signals:
+
+  void change_directory_signal (const QString& dir);
 
   void set_history_signal (const QStringList& hist);
   void append_history_signal (const QString& hist_entry);

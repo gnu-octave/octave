@@ -108,10 +108,10 @@ public:
       instance->do_finished_readline_hook ();
   }
 
-  static std::string last_working_directory (void)
+  static void change_directory (const std::string& dir)
   {
-    return instance_ok ()
-      ? instance->do_last_working_directory () : std::string ();
+    if (instance_ok ())
+      instance->do_change_directory (dir);
   }
 
   static void update_workspace (void)
@@ -201,9 +201,6 @@ protected:
   // Event Queue.
   event_queue gui_event_queue;
 
-  // Stores the last known current working directory of octave.
-  std::string last_cwd;
-
   bool debugging;
 
   void do_register_event_listener (octave_event_listener *oel);
@@ -234,7 +231,7 @@ protected:
   void do_entered_readline_hook (void) { }
   void do_finished_readline_hook (void) { }
 
-  std::string do_last_working_directory (void);
+  virtual void do_change_directory (const std::string& dir) = 0;
 
   virtual void do_update_workspace (void) = 0;
 

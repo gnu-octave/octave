@@ -44,6 +44,12 @@ octave_qt_link::execute_interpreter (void)
 }
 
 void
+octave_qt_link::do_change_directory (const std::string& dir)
+{
+  emit change_directory_signal (QString::fromStdString (dir));
+}
+
+void
 octave_qt_link::do_update_workspace (void)
 {
   if (event_listener)

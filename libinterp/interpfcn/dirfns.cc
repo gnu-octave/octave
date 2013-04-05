@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "input.h"
 #include "load-path.h"
+#include "octave-link.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "procstream.h"
@@ -70,16 +71,20 @@ octave_time Vlast_chdir_time = 0.0;
 static int
 octave_change_to_directory (const std::string& newdir)
 {
-  int cd_ok = octave_env::chdir (file_ops::tilde_expand (newdir));
+  std::string xdir = file_ops::tilde_expand (newdir);
+
+  int cd_ok = octave_env::chdir (xdir);
 
   if (cd_ok)
     {
       Vlast_chdir_time.stamp ();
 
-      // FIXME -- should this be handled as a list of functions
+      // FIXME -- should these actions be handled as a list of functions
       // to call so users can add their own chdir handlers?
 
       load_path::update ();
+
+      octave_link::change_directory (xdir);
     }
   else
     error ("%s: %s", newdir.c_str (), gnulib::strerror (errno));

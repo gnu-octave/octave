@@ -270,65 +270,80 @@ main_window::reset_windows ()
 }
 
 void
-main_window::current_working_directory_has_changed (const QString& directory)
-{
-  int index = _current_directory_combo_box->findText (directory);
-  if ( index >= 0 )  // directory already in list -> remove it
-    { 
-      _current_directory_combo_box->removeItem (index);
-    }
-  _current_directory_combo_box->insertItem (0,directory);  // add (on top)
-  _current_directory_combo_box->setCurrentIndex (0);  // top is actual
-  _files_dock_widget->set_current_directory (directory);
-}
-
-void
 main_window::update_workspace (void)
 {
   _workspace_view->model_changed ();
 }
 
 void
-main_window::change_current_working_directory ()
+main_window::change_directory (const QString& dir)
 {
-  QString directory =
-    QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
+  // Remove existing entry, if any, then add new directory at top and
+  // mark it as the current directory.  Finally, update the file list
+  // widget.
 
-  if (!directory.isEmpty ())
-    {
-      std::string dir = directory.toUtf8 ().data ();
-      octave_link::post_event (this, &main_window::change_directory_callback,dir);
-    }
+  int index = _current_directory_combo_box->findText (dir);
+
+  if (index >= 0)
+    _current_directory_combo_box->removeItem (index);
+
+  _current_directory_combo_box->insertItem (0, dir);
+  _current_directory_combo_box->setCurrentIndex (0);
+
+  _files_dock_widget->display_directory (dir);
 }
 
 void
-main_window::set_current_working_directory (const QString& directory)
+main_window::browse_for_directory (void)
 {
-  QFileInfo fileInfo (directory);  // check whether this is an existing dir
-  if (fileInfo.exists () && fileInfo.isDir ())   // is dir and exists
-    {
-      std::string dir = directory.toUtf8 ().data ();
-      octave_link::post_event (this, &main_window::change_directory_callback,dir);
-    }
+  QString dir =
+    QFileDialog::getExistingDirectory (this, tr ("Set working directory"));
+
+  if (! dir.isEmpty ())
+    octave_link::post_event (this,
+                             &main_window::change_directory_callback,
+                             dir.toStdString ());
 }
 
 void
-main_window::current_working_directory_up ()
+main_window::set_current_working_directory (const QString& dir)
 {
-  set_current_working_directory ("..");
+  // Change to dir if it is an existing directory.
+
+  QString xdir = dir.isEmpty () ? "." : dir;
+    
+  QFileInfo fileInfo (xdir);
+
+  if (fileInfo.exists () && fileInfo.isDir ())
+    octave_link::post_event (this, &main_window::change_directory_callback,
+                             xdir.toStdString ());
 }
 
-// Slot that is called if return is pressed in the line edit of the combobox
-// -> a new or a directory that is already in the drop down list was entered
 void
-main_window::current_working_directory_entered ()
+main_window::change_directory_up (void)
 {
-  QString dir = _current_directory_line_edit->text ();  // get new directory
-  int index = _current_directory_combo_box->findText (dir);  // already in list?
-  if ( index < 0 )  // directory not yet in list -> set directory
+  QDir dir ("..");
+
+  set_current_working_directory (dir.absolutePath ());
+}
+
+// Slot that is called if return is pressed in the line edit of the
+// combobox to change to a new directory or a directory that is already
+// in the drop down list.
+
+void
+main_window::accept_directory_line_edit (void)
+{
+  // Get new directory name, and change to it if it is new.  Otherwise,
+  // the combo box will triggers the "activated" signal to change to the
+  // directory.
+
+  QString dir = _current_directory_line_edit->text ();
+
+  int index = _current_directory_combo_box->findText (dir);
+
+  if (index < 0)
     set_current_working_directory (dir);
-  // if directory already in list, combobox triggers signal activated ()
-  // to change directory
 }
 
 void
@@ -1078,9 +1093,9 @@ main_window::construct ()
   connect (clear_workspace_action,      SIGNAL (triggered ()),
            this,                        SLOT   (handle_clear_workspace_request ()));
   connect (current_directory_tool_button, SIGNAL (clicked ()),
-           this,                        SLOT   (change_current_working_directory ()));
+           this,                        SLOT   (browse_for_directory ()));
   connect (current_directory_up_tool_button, SIGNAL (clicked ()),
-           this,                        SLOT   (current_working_directory_up()));
+           this,                        SLOT   (change_directory_up ()));
   connect (copy_action,                 SIGNAL (triggered()),
            terminal,                    SLOT   (copyClipboard ()));
   connect (paste_action,                SIGNAL (triggered()),
@@ -1088,7 +1103,7 @@ main_window::construct ()
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (set_current_working_directory (QString)));
   connect (_current_directory_line_edit, SIGNAL (returnPressed ()),
-           this,                        SLOT (current_working_directory_entered ()));
+           this,                        SLOT (accept_directory_line_edit ()));
   connect (_debug_continue,             SIGNAL (triggered ()),
            this,                        SLOT (debug_continue ()));
   connect (_debug_step_into,            SIGNAL (triggered ()),
@@ -1129,11 +1144,6 @@ main_window::construct ()
   _octave_qt_event_listener = new octave_qt_event_listener ();
 
   connect (_octave_qt_event_listener,
-           SIGNAL (current_directory_has_changed_signal (QString)),
-           this,
-           SLOT (current_working_directory_has_changed (QString)));
-
-  connect (_octave_qt_event_listener,
            SIGNAL (update_workspace_signal ()),
            this,
            SLOT (update_workspace ()));
@@ -1151,6 +1161,9 @@ main_window::construct ()
   // FIXME -- is it possible to eliminate the event_listenter?
 
   _octave_qt_link = new octave_qt_link ();
+
+  connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+           this, SLOT (change_directory (QString)));
 
   connect (_octave_qt_link,
            SIGNAL (set_history_signal (const QStringList&)),
@@ -1189,6 +1202,9 @@ main_window::construct ()
   octave_link::connect_link (_octave_qt_link);
 
   octave_link::register_event_listener (_octave_qt_event_listener);
+
+  QDir curr_dir;
+  set_current_working_directory (curr_dir.absolutePath ());
 }
 
 void

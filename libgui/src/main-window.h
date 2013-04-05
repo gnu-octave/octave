@@ -85,12 +85,13 @@ public slots:
   void notice_settings (const QSettings *settings);
   void prepare_for_quit ();
   void reset_windows ();
-  void current_working_directory_has_changed (const QString& directory);
   void update_workspace (void);
-  void change_current_working_directory ();
-  void set_current_working_directory (const QString& directory);
-  void current_working_directory_up ();
-  void current_working_directory_entered ();
+
+  void change_directory (const QString& dir);
+  void browse_for_directory (void);
+  void set_current_working_directory (const QString& dir);
+  void change_directory_up (void);
+  void accept_directory_line_edit (void);
 
   void focus_command_window ();
   void focus_command_history ();

@@ -69,11 +69,11 @@ public:
 
   ~main_window ();
 
+  void focus_command_window (void);
+
 signals:
   void settings_changed (const QSettings *);
   void relay_command_signal (const QString&);
-  void focus_command_window_signal (void);
-  void focus_history_window_signal (void);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -103,8 +103,6 @@ public slots:
 
   void handle_command_double_clicked (const QString& command);
 
-  void focus_command_window (void);
-  void focus_history_window (void);
   void focus_current_directory ();
   void focus_workspace ();
   void focus_editor ();

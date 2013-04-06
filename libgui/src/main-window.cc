@@ -90,6 +90,12 @@ main_window::~main_window ()
 }
 
 void
+main_window::focus_command_window (void)
+{
+  command_window.focus ();
+}
+
+void
 main_window::new_file ()
 {
 #ifdef HAVE_QSCINTILLA
@@ -157,7 +163,8 @@ void
 main_window::handle_command_double_clicked (const QString& command)
 {
   emit relay_command_signal (command);
-  emit focus_command_window_signal ();
+
+  command_window.focus ();
 }
 
 void
@@ -337,18 +344,6 @@ main_window::accept_directory_line_edit (void)
 
   if (index < 0)
     set_current_working_directory (dir);
-}
-
-void
-main_window::focus_command_window (void)
-{
-  emit focus_command_window_signal ();
-}
-
-void
-main_window::focus_history_window (void)
-{
-  emit focus_history_window_signal ();
 }
 
 void
@@ -1011,13 +1006,10 @@ main_window::construct ()
   connect (command_window_action,       SIGNAL (triggered ()),
            &command_window,             SLOT (focus ()));
 
-  connect (this, SIGNAL (focus_command_window_signal ()),
-           &command_window, SLOT (focus ()));
-
   connect (workspace_action,            SIGNAL (triggered ()),
            this,                        SLOT (focus_workspace ()));
   connect (history_action,              SIGNAL (triggered ()),
-           this,                        SLOT (focus_command_history ()));
+           &history_window,             SLOT (focus ()));
   connect (file_browser_action,         SIGNAL (triggered ()),
            this,                        SLOT (focus_current_directory ()));
   connect (editor_action,               SIGNAL (triggered ()),

@@ -114,6 +114,8 @@ workspace_view::handle_visibility_changed (bool visible)
 void
 workspace_view::model_changed ()
 {
+  _workspace_model->update_workspace_callback ();
+
   // This code is very quirky and requires some explanation.
   // Usually, we should not deal with collapsing or expanding ourselves,
   // because the view itself determines (based on the model) whether it

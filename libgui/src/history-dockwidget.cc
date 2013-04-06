@@ -81,10 +81,10 @@ history_dock_widget::construct ()
 }
 
 void history_dock_widget::ctxMenu(const QPoint &xpos) {
-    QMenu *menu = new QMenu;
-    menu->addAction(tr("Copy"), this, SLOT(handle_contextmenu_copy(bool)));
-    menu->addAction(tr("Evaluate"), this, SLOT(handle_contextmenu_evaluate(bool)));
-    menu->exec(_history_list_view->mapToGlobal(xpos));
+    QMenu menu(this);
+    menu.addAction(tr("Copy"), this, SLOT(handle_contextmenu_copy(bool)));
+    menu.addAction(tr("Evaluate"), this, SLOT(handle_contextmenu_evaluate(bool)));
+    menu.exec(_history_list_view->mapToGlobal(xpos));
 }
 
 void history_dock_widget::handle_contextmenu_copy(bool)

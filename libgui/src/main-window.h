@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Own includes
 #include "resource-manager.h"
+#include "workspace-model.h"
 #include "workspace-view.h"
 #include "history-dockwidget.h"
 #include "files-dockwidget.h"
@@ -157,6 +158,9 @@ private:
   QAction *                 _debug_step_over;
   QAction *                 _debug_step_out;
   QAction *                 _debug_quit;
+
+  // Data models.
+  workspace_model *         _workspace_model;
 
   // Dock widgets.
   workspace_view *          _workspace_view;

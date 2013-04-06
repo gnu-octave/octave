@@ -38,23 +38,19 @@ workspace_view::workspace_view (QWidget *p)
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Workspace"));
 
-  // Create a new workspace model.
-  _workspace_model = new workspace_model ();
-
-  _workspace_tree_view = new QTreeView (this);            // Create a new tree view.
-  _workspace_tree_view->setHeaderHidden (false);          // Do not show header columns.
-  _workspace_tree_view->setAlternatingRowColors (true);   // Activate alternating row colors.
-  _workspace_tree_view->setAnimated (false);              // Deactivate animations because of strange glitches.
-  _workspace_tree_view->setTextElideMode (Qt::ElideRight);// Elide text to the right side of the cells.
-  _workspace_tree_view->setWordWrap (false);              // No wordwrapping in cells.
-  _workspace_tree_view->setModel (_workspace_model);      // Assign model.
+  view = new QTreeView (this);            // Create a new tree view.
+  view->setHeaderHidden (false);          // Do not show header columns.
+  view->setAlternatingRowColors (true);   // Activate alternating row colors.
+  view->setAnimated (false);              // Deactivate animations because of strange glitches.
+  view->setTextElideMode (Qt::ElideRight);// Elide text to the right side of the cells.
+  view->setWordWrap (false);              // No wordwrapping in cells.
 
   // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
 
   // Create a new layout and add widgets to it.
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
-  vbox_layout->addWidget (_workspace_tree_view);
+  vbox_layout->addWidget (view);
   vbox_layout->setMargin (2);
 
   // Set the empty widget to have our layout.
@@ -72,21 +68,18 @@ workspace_view::workspace_view (QWidget *p)
 
   // Initialize column order and width of the workspace
   
-  _workspace_tree_view->header ()->restoreState (settings->value("workspaceview/column_state").toByteArray ());
+  view->header ()->restoreState (settings->value("workspaceview/column_state").toByteArray ());
 
   // Connect signals and slots.
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT(handle_visibility_changed (bool)));
 
-  connect (_workspace_model, SIGNAL (model_changed ()),
-           this, SLOT (model_changed ()));
-
-  connect (_workspace_tree_view, SIGNAL (collapsed (QModelIndex)),
+  connect (view, SIGNAL (collapsed (QModelIndex)),
            this, SLOT (collapse_requested (QModelIndex)));
-  connect (_workspace_tree_view, SIGNAL (expanded (QModelIndex)),
+  connect (view, SIGNAL (expanded (QModelIndex)),
            this, SLOT (expand_requested (QModelIndex)));
 
-  connect (_workspace_tree_view, SIGNAL (doubleClicked (QModelIndex)),
+  connect (view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (item_double_clicked (QModelIndex)));
 
   // topLevelChanged is emitted when floating property changes (floating = true)
@@ -100,7 +93,7 @@ workspace_view::~workspace_view ()
   settings->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
   settings->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
   settings->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
-  settings->setValue("workspaceview/column_state", _workspace_tree_view->header ()->saveState ());
+  settings->setValue("workspaceview/column_state", view->header ()->saveState ());
   settings->sync ();
 }
 
@@ -114,7 +107,9 @@ workspace_view::handle_visibility_changed (bool visible)
 void
 workspace_view::model_changed ()
 {
-  _workspace_model->update_workspace_callback ();
+  QAbstractItemModel *m = view->model ();
+
+  dynamic_cast<workspace_model *> (m)->update_workspace_callback ();
 
   // This code is very quirky and requires some explanation.
   // Usually, we should not deal with collapsing or expanding ourselves,
@@ -130,26 +125,26 @@ workspace_view::model_changed ()
   // In order to make collapsing/expanding work again, we need to set
   // flags ourselves here.
 
-  QModelIndex local_model_index = _workspace_model->index (0, 0);
-  QModelIndex global_model_index = _workspace_model->index (1, 0);
-  QModelIndex persistent_model_index = _workspace_model->index (2, 0);
+  QModelIndex local_model_index = m->index (0, 0);
+  QModelIndex global_model_index = m->index (1, 0);
+  QModelIndex persistent_model_index = m->index (2, 0);
 
   if (_explicit_collapse.local) {
-    _workspace_tree_view->collapse (local_model_index);
+    view->collapse (local_model_index);
   } else {
-    _workspace_tree_view->expand (local_model_index);
+    view->expand (local_model_index);
   }
 
   if (_explicit_collapse.global) {
-    _workspace_tree_view->collapse (global_model_index);
+    view->collapse (global_model_index);
   } else {
-    _workspace_tree_view->expand (global_model_index);
+    view->expand (global_model_index);
   }
 
   if (_explicit_collapse.persistent) {
-    _workspace_tree_view->collapse (persistent_model_index);
+    view->collapse (persistent_model_index);
   } else {
-    _workspace_tree_view->expand (persistent_model_index);
+    view->expand (persistent_model_index);
   }
 }
 
@@ -169,8 +164,9 @@ workspace_view::collapse_requested (QModelIndex index)
   //
   // In order to make collapsing/expanding work again, we need to set
   // flags ourselves here.
-  QMap<int, QVariant> item_data
-    = _workspace_model->itemData (index);
+  QAbstractItemModel *m = view->model ();
+
+  QMap<int, QVariant> item_data = m->itemData (index);
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = true;
@@ -196,8 +192,9 @@ workspace_view::expand_requested (QModelIndex index)
   //
   // In order to make collapsing/expanding work again, we need to do set
   // flags ourselves here.
-  QMap<int, QVariant> item_data
-    = _workspace_model->itemData (index);
+  QAbstractItemModel *m = view->model ();
+
+  QMap<int, QVariant> item_data = m->itemData (index);
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = false;

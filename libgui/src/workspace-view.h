@@ -36,6 +36,10 @@ class workspace_view : public QDockWidget
   workspace_view (QWidget * parent = 0);
   ~workspace_view ();
 
+public:
+
+  void setModel (workspace_model *model) { view->setModel (model); }
+
 public slots:
   void handle_visibility_changed (bool visible);
   void model_changed ();
@@ -55,10 +59,7 @@ protected slots:
   void item_double_clicked (QModelIndex index);
 
 private:
-  QTreeView *_workspace_tree_view;
-
-  /** Stores the current workspace model. */
-  workspace_model *_workspace_model;
+  QTreeView *view;
 
   struct
   {

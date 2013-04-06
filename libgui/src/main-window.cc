@@ -93,8 +93,8 @@ main_window::~main_window ()
   if (_history_dock_widget)
     delete _history_dock_widget;
 
-  if (_workspace_view)
-    delete _workspace_view;
+  delete _workspace_model;
+  delete _workspace_view;
 }
 
 void
@@ -661,9 +661,18 @@ main_window::construct ()
   _closing = false;   // flag for editor files when closed
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
 
+  // Create a new workspace model.
+  _workspace_model = new workspace_model ();
+
   // Setup dockable widgets and the status bar.
   _workspace_view           = new workspace_view (this);
+
+  _workspace_view->setModel (_workspace_model);
   _workspace_view->setStatusTip (tr ("View the variables in the active workspace."));
+
+  connect (_workspace_model, SIGNAL (model_changed ()),
+           _workspace_view, SLOT (model_changed ()));
+
   _history_dock_widget      = new history_dock_widget (this);
   _history_dock_widget->setStatusTip (tr ("Browse and search the command history."));
   _files_dock_widget        = new files_dock_widget (this);

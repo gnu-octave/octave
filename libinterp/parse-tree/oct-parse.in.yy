@@ -4224,7 +4224,7 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
               if (! error_state)
                 {
                   if (valid_identifier (nm))
-                    symbol_table::varref (nm) = args(2);
+                    symbol_table::assign (nm, args(2));
                   else
                     error ("assignin: invalid variable name in argument VARNAME");
                 }

@@ -32,12 +32,12 @@ along with Octave; see the file COPYING.  If not, see
 void
 octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 {
-  if (val)
+  if (! is_black_hole ())
     {
       if (idx.empty ())
-        val->assign (op, rhs);
+        sym->assign (op, rhs);
       else
-        val->assign (op, type, idx, rhs);
+        sym->assign (op, type, idx, rhs);
     }
 }
 
@@ -57,33 +57,33 @@ octave_lvalue::set_index (const std::string& t,
 void
 octave_lvalue::do_unary_op (octave_value::unary_op op)
 {
-  if (val)
+  if (! is_black_hole ())
     {
       if (idx.empty ())
-        val->do_non_const_unary_op (op);
+        sym->do_non_const_unary_op (op);
       else
-        val->do_non_const_unary_op (op, type, idx);
+        sym->do_non_const_unary_op (op, type, idx);
     }
-  else
-    error ("internal: invalid operation on ~");
 }
 
 octave_value
-octave_lvalue::value (void)
+octave_lvalue::value (void) const
 {
   octave_value retval;
 
-  if (val)
+  if (! is_black_hole ())
     {
+      octave_value val = sym->varval ();
+
       if (idx.empty ())
-        retval = *val;
+        retval = val;
       else
         {
-          if (val->is_constant ())
-            retval = val->subsref (type, idx);
+          if (val.is_constant ())
+            retval = val.subsref (type, idx);
           else
             {
-              octave_value_list t = val->subsref (type, idx, 1);
+              octave_value_list t = val.subsref (type, idx, 1);
               if (t.length () > 0)
                 retval = t(0);
             }

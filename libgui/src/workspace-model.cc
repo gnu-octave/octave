@@ -56,7 +56,6 @@ workspace_model::~workspace_model()
 void
 workspace_model::request_update_workspace ()
 {
-  octave_link::post_event (this, &workspace_model::update_workspace_callback);
 }
 
 QModelIndex
@@ -168,6 +167,7 @@ workspace_model::data(const QModelIndex &idx, int role) const
   return item->data(idx.column());
 }
 
+#if 0
 void
 workspace_model::update_workspace_callback (void)
 {
@@ -213,3 +213,4 @@ workspace_model::update_workspace_callback (void)
 
   endResetModel();
 }
+#endif

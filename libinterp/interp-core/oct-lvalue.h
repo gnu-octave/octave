@@ -30,26 +30,27 @@ class octave_value_list;
 
 #include "oct-obj.h"
 #include "pt-idx.h"
+#include "symtab.h"
 
 class
 octave_lvalue
 {
 public:
 
-  octave_lvalue (octave_value *v = 0)
-    : val (v), type (), idx (), nel (1)
-    { }
+  octave_lvalue (const symbol_table::symbol_reference& s
+                   = symbol_table::symbol_reference ())
+    : sym (s), type (), idx (), nel (1)
+  { }
 
   octave_lvalue (const octave_lvalue& vr)
-    : val (vr.val), type (vr.type), idx (vr.idx), nel (vr.nel)
-    {
-    }
+    : sym (vr.sym), type (vr.type), idx (vr.idx), nel (vr.nel)
+  { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
     {
       if (this != &vr)
         {
-          val = vr.val;
+          sym = vr.sym;
           type = vr.type;
           idx = vr.idx;
           nel = vr.nel;
@@ -60,19 +61,24 @@ public:
 
   ~octave_lvalue (void) { }
 
-  bool is_black_hole (void) const { return val == 0; }
+  bool is_black_hole (void) const { return sym.is_black_hole (); }
 
-  bool is_defined (void) const { return val && val->is_defined (); }
+  bool is_defined (void) const
+  {
+    return ! is_black_hole () && sym->is_defined ();
+  }
 
-  bool is_undefined (void) const { return ! val || val->is_undefined (); }
+  bool is_undefined (void) const
+  {
+    return is_black_hole () || sym->is_undefined ();
+  }
 
-  bool is_map (void) const { return val && val->is_map (); }
+  bool is_map (void) const
+  {
+    return value().is_map ();
+  }
 
-  void define (const octave_value& v)
-    {
-      if (val)
-        *val = v;
-    }
+  void define (const octave_value& v) { sym->assign (v); }
 
   void assign (octave_value::assign_op, const octave_value&);
 
@@ -86,13 +92,11 @@ public:
 
   void do_unary_op (octave_value::unary_op op);
 
-  octave_value value (void);
-
-  const octave_value *object (void) const { return val; }
+  octave_value value (void) const;
 
 private:
 
-  octave_value *val;
+  symbol_table::symbol_reference sym;
 
   std::string type;
 

@@ -538,7 +538,7 @@ tree_evaluator::visit_function_def (tree_function_def& cmd)
       // Make sure that any variable with the same name as the new
       // function is cleared.
 
-      symbol_table::varref (nm) = octave_value ();
+      symbol_table::assign (nm);
     }
 }
 

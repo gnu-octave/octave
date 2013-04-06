@@ -1013,7 +1013,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0)(0);
 
-                    symbol_table::varref (key, local_scope, 0) = val;
+                    symbol_table::assign (key, val, local_scope, 0);
                   }
               }
 

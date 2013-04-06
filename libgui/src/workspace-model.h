@@ -131,8 +131,6 @@ class workspace_model
   void insert_top_level_item (int at, tree_item *treeItem);
   tree_item *top_level_item (int at);
 
-  void update_workspace_callback (void);
-
 public slots:
   void request_update_workspace ();
 

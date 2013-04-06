@@ -616,7 +616,7 @@ get_global_value (const std::string& nm, bool silent)
 void
 set_global_value (const std::string& nm, const octave_value& val)
 {
-  symbol_table::global_varref (nm) = val;
+  symbol_table::global_assign (nm, val);
 }
 
 octave_value
@@ -633,7 +633,7 @@ get_top_level_value (const std::string& nm, bool silent)
 void
 set_top_level_value (const std::string& nm, const octave_value& val)
 {
-  symbol_table::top_level_varref (nm) = val;
+  symbol_table::top_level_assign (nm, val);
 }
 
 // Variable values.
@@ -1881,7 +1881,7 @@ bind_ans (const octave_value& val, bool print)
         }
       else
         {
-          symbol_table::force_varref (ans) = val;
+          symbol_table::force_assign (ans, val);
 
           if (print)
             val.print_with_name (octave_stdout, ans);

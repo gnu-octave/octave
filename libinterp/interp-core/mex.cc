@@ -3250,7 +3250,7 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
           if (! error_state)
             frame.add_fcn (octave_call_stack::pop);
 
-          symbol_table::varref (name) = mxArray::as_octave_value (ptr);
+          symbol_table::assign (name, mxArray::as_octave_value (ptr));
         }
       else
         mexErrMsgTxt ("mexPutVariable: symbol table does not exist");

@@ -126,7 +126,7 @@ tree_identifier::lvalue (void)
   if (sym->is_added_static ())
     static_workspace_error ();
 
-  return octave_lvalue (&(sym->varref ()));
+  return octave_lvalue (sym);
 }
 
 tree_identifier *

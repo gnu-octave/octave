@@ -243,7 +243,7 @@ intern_argv (int argc, char **argv)
 {
   assert (symbol_table::at_top_level ());
 
-  symbol_table::varref (".nargin.") = argc - 1;
+  symbol_table::assign (".nargin.", argc - 1);
 
   symbol_table::mark_hidden (".nargin.");
 

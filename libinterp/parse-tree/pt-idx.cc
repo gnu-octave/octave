@@ -443,12 +443,7 @@ tree_index_expression::lvalue (void)
 
   if (! error_state)
     {
-      const octave_value *tro = retval.object ();
-
-      octave_value tmp;
-
-      if (tro)
-        tmp = *tro;
+      octave_value tmp = retval.value ();
 
       octave_idx_type tmpi = 0;
       std::list<octave_value_list> tmpidx;

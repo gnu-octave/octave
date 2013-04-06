@@ -1345,8 +1345,8 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                   m.contents ("identifier") = ids;
                   m.contents ("state") = states;
 
-                  symbol_table::varref
-                    (".saved_warning_states.", scope, context) = m;
+                  symbol_table::assign
+                    (".saved_warning_states.", m, scope, context);
 
                   // Now ignore the "local" argument and continue to
                   // handle the current setting.

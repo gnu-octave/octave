@@ -108,6 +108,12 @@ public:
       instance->do_finished_readline_hook ();
   }
 
+  static bool
+  edit_file (const std::string& file)
+  {
+    return instance_ok () ? instance->do_edit_file (file) : false;
+  }
+
   static void change_directory (const std::string& dir)
   {
     if (instance_ok ())
@@ -183,12 +189,6 @@ public:
       instance->do_update_breakpoint (insert, file, line);
   }
 
-  static bool
-  edit_file (const std::string& file)
-  {
-    return instance_ok () ? instance->do_edit_file (file) : false;
-  }
-
   static void connect_link (octave_link *);
 
 private:
@@ -245,6 +245,8 @@ protected:
   void do_entered_readline_hook (void) { }
   void do_finished_readline_hook (void) { }
 
+  virtual bool do_edit_file (const std::string& file) = 0;
+
   virtual void do_change_directory (const std::string& dir) = 0;
 
   virtual void do_update_workspace (void) = 0;
@@ -262,8 +264,6 @@ protected:
 
   virtual void do_update_breakpoint (bool insert,
                                      const std::string& file, int line) = 0;
-
-  virtual bool do_edit_file (const std::string& file) = 0;
 };
 
 #endif // OCTAVELINK_H

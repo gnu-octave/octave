@@ -92,7 +92,7 @@ signals:
   void fetab_goto_line (const QWidget* ID, int line = -1);
   void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_delete_debugger_pointer (const QWidget* ID, int line = -1);
-  void fetab_do_dbstop_marker (bool insert, const QWidget* ID, int line = -1);
+  void fetab_do_breakpoint_marker (bool insert, const QWidget* ID, int line = -1);
   void fetab_set_focus (const QWidget* ID);
 
 public slots:
@@ -136,7 +136,7 @@ public slots:
 
   void handle_insert_debugger_pointer_request (const QString& file, int line);
   void handle_delete_debugger_pointer_request (const QString& file, int line);
-  void handle_update_dbstop_marker_request (bool insert, const QString& file,
+  void handle_update_breakpoint_marker_request (bool insert, const QString& file,
                                             int line);
   void handle_edit_file_request (const QString& file);
 
@@ -146,7 +146,7 @@ public slots:
 private slots:
   void request_open_file (const QString& fileName, int line = -1,
                           bool debug_pointer = false,
-                          bool dbstop_marker = false, bool insert = true);
+                          bool breakpoint_marker = false, bool insert = true);
 
 private:
   void construct ();

@@ -53,6 +53,8 @@ public:
 
   void execute_interpreter (void);
 
+  bool do_edit_file (const std::string& file);
+
   void do_change_directory (const std::string& dir);
 
   void do_update_workspace (void);
@@ -70,8 +72,6 @@ public:
 
   void do_update_breakpoint (bool insert, const std::string& file, int line);
 
-  bool do_edit_file (const std::string& file);
-
 private:
 
   // No copying!
@@ -81,13 +81,14 @@ private:
   octave_qt_link& operator = (const octave_qt_link&);
 
   void do_insert_debugger_pointer (const std::string& file, int line);
-
   void do_delete_debugger_pointer (const std::string& file, int line);
 
   // Thread running octave_main.
   octave_main_thread *main_thread;
 
 signals:
+
+  void edit_file_signal (const QString& file);
 
   void change_directory_signal (const QString& dir);
 
@@ -98,12 +99,10 @@ signals:
   void enter_debugger_signal (void);
   void exit_debugger_signal (void);
 
-  void update_dbstop_marker_signal (bool insert, const QString& file, int line);
-
-  void edit_file_signal (const QString& file);
+  void update_breakpoint_marker_signal (bool insert, const QString& file,
+                                        int line);
 
   void insert_debugger_pointer_signal (const QString&, int);
-
   void delete_debugger_pointer_signal (const QString&, int);
 };
 

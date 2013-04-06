@@ -43,6 +43,14 @@ octave_qt_link::execute_interpreter (void)
   main_thread->execute_interpreter ();
 }
 
+bool
+octave_qt_link::do_edit_file (const std::string& file)
+{
+  emit edit_file_signal (QString::fromStdString (file));
+
+  return true;
+}
+
 void
 octave_qt_link::do_change_directory (const std::string& dir)
 {
@@ -118,15 +126,7 @@ void
 octave_qt_link::do_update_breakpoint (bool insert,
                                       const std::string& file, int line)
 {
-  emit update_dbstop_marker_signal (insert, QString::fromStdString (file), line);
-}
-
-bool
-octave_qt_link::do_edit_file (const std::string& file)
-{
-  emit edit_file_signal (QString::fromStdString (file));
-
-  return true;
+  emit update_breakpoint_marker_signal (insert, QString::fromStdString (file), line);
 }
 
 void

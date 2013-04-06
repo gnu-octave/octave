@@ -1158,7 +1158,7 @@ file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
 }
 
 void
-file_editor_tab::do_dbstop_marker (bool insert, const QWidget *ID, int line)
+file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line)
 {
   if (ID != this || ID == 0)
     return;

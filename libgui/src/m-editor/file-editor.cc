@@ -150,7 +150,7 @@ file_editor::request_open_file ()
 void
 file_editor::request_open_file (const QString& openFileName, int line,
                                 bool debug_pointer,
-                                bool dbstop_marker, bool insert)
+                                bool breakpoint_marker, bool insert)
 {
   // Check if the user wants to use a custom file editor.
   QSettings *settings = resource_manager::get_settings ();
@@ -189,8 +189,8 @@ file_editor::request_open_file (const QString& openFileName, int line,
               if (debug_pointer)
                 emit fetab_insert_debugger_pointer (p->second, line-1);
 
-              if (dbstop_marker)
-                emit fetab_do_dbstop_marker (insert, p->second, line-1);
+              if (breakpoint_marker)
+                emit fetab_do_breakpoint_marker (insert, p->second, line-1);
             }
 
           emit fetab_set_focus (p->second);
@@ -216,8 +216,8 @@ file_editor::request_open_file (const QString& openFileName, int line,
 
                       if (debug_pointer)
                         emit fetab_insert_debugger_pointer (fileEditorTab, line-1);
-                      if (dbstop_marker)
-                        emit fetab_do_dbstop_marker
+                      if (breakpoint_marker)
+                        emit fetab_do_breakpoint_marker
                           (insert, fileEditorTab, line-1);
                     }
                 }
@@ -342,7 +342,7 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file, int li
 }
 
 void
-file_editor::handle_update_dbstop_marker_request (bool insert,
+file_editor::handle_update_breakpoint_marker_request (bool insert,
                                                   const QString& file, int line)
 {
   request_open_file (file, line, false, true, insert);
@@ -955,8 +955,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (insert_debugger_pointer (const QWidget *, int)));
   connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget *, int)),
            f, SLOT (delete_debugger_pointer (const QWidget *, int)));
-  connect (this, SIGNAL (fetab_do_dbstop_marker (bool, const QWidget *, int)),
-           f, SLOT (do_dbstop_marker (bool, const QWidget *, int)));
+  connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget *, int)),
+           f, SLOT (do_breakpoint_marker (bool, const QWidget *, int)));
 
   _tab_widget->setCurrentWidget (f);
 }

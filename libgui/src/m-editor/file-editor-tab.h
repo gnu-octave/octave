@@ -82,7 +82,7 @@ public slots:
   void insert_debugger_pointer (const QWidget *ID, int line = -1);
   void delete_debugger_pointer (const QWidget *ID, int line = -1);
 
-  void do_dbstop_marker (bool insert, const QWidget *ID, int line = -1);
+  void do_breakpoint_marker (bool insert, const QWidget *ID, int line = -1);
 
   void set_modified (bool modified = true);
 

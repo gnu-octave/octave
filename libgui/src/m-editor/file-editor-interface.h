@@ -53,9 +53,9 @@ class file_editor_interface : public octave_dock_widget
   virtual void
   handle_delete_debugger_pointer_request (const QString& file, int line) = 0;
 
-  virtual void handle_update_dbstop_marker_request (bool insert,
-                                                    const QString& file,
-                                                    int line) = 0;
+  virtual void
+  handle_update_breakpoint_marker_request (bool insert, const QString& file,
+                                           int line) = 0;
 
   virtual void handle_edit_file_request (const QString& file) = 0;
 
@@ -66,7 +66,7 @@ public slots:
   virtual void request_open_file () = 0;
   virtual void request_open_file (const QString& openFileName, int line = -1,
                                   bool debug_pointer = false,
-                                  bool dbstop_marker = false,
+                                  bool breakpoint_marker = false,
                                   bool insert = true) = 0;
 //signals:
 

@@ -1178,9 +1178,9 @@ main_window::construct ()
            this, SLOT (handle_exit_debugger ()));
 
   connect (_octave_qt_link,
-           SIGNAL (update_dbstop_marker_signal (bool, const QString&, int)),
+           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
            _file_editor,
-           SLOT (handle_update_dbstop_marker_request (bool, const QString&, int)));
+           SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
 
   connect (_octave_qt_link,
            SIGNAL (edit_file_signal (const QString&)),

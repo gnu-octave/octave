@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -55,7 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 
 main_window::main_window (QWidget *p)
-  : QMainWindow (p), command_window (this)
+  : QMainWindow (p), command_window (this), history_window (this)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -86,9 +87,6 @@ main_window::~main_window ()
 
   if (_files_dock_widget)
     delete _files_dock_widget;
-
-  if (_history_dock_widget)
-    delete _history_dock_widget;
 
   delete _workspace_model;
   delete _workspace_view;
@@ -351,16 +349,9 @@ main_window::focus_command_window (void)
 }
 
 void
-main_window::focus_command_history ()
+main_window::focus_history_window (void)
 {
-  if (!_history_dock_widget->isVisible ())
-    {
-      _history_dock_widget->setVisible (true);
-    }
-
-  _history_dock_widget->setFocus ();
-  _history_dock_widget->activateWindow ();
-  _history_dock_widget->raise ();
+  emit focus_history_window_signal ();
 }
 
 void
@@ -410,14 +401,6 @@ main_window::focus_documentation ()
   _documentation_dock_widget->setFocus ();
   _documentation_dock_widget->activateWindow ();
   _documentation_dock_widget->raise ();
-}
-
-void
-main_window::handle_command_history_visible (bool visible)
-{
-  // if changed to visible and widget is not floating
-  if (visible && !_history_dock_widget->isFloating ())
-    focus_command_history ();
 }
 
 void
@@ -617,11 +600,10 @@ void
 main_window::connect_visibility_changed ()
 {
   command_window.connect_visibility_changed ();
+  history_window.connect_visibility_changed ();
 
   connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
            this,                  SLOT (handle_workspace_visible (bool)));
-  connect (_history_dock_widget,  SIGNAL (visibilityChanged (bool)),
-           this,                  SLOT (handle_command_history_visible (bool)));
   connect (_files_dock_widget,    SIGNAL (visibilityChanged (bool)),
            this,                  SLOT (handle_current_directory_visible (bool)));
 #ifdef HAVE_QSCINTILLA
@@ -652,8 +634,6 @@ main_window::construct ()
   connect (_workspace_model, SIGNAL (model_changed ()),
            _workspace_view, SLOT (model_changed ()));
 
-  _history_dock_widget      = new history_dock_widget (this);
-  _history_dock_widget->setStatusTip (tr ("Browse and search the command history."));
   _files_dock_widget        = new files_dock_widget (this);
   _files_dock_widget->setStatusTip (tr ("Browse your files."));
   _documentation_dock_widget= new documentation_dock_widget (this);
@@ -1017,8 +997,8 @@ main_window::construct ()
   connect (_workspace_view,             SIGNAL (active_changed (bool)),
            show_workspace_action,       SLOT   (setChecked (bool)));
   connect (show_history_action,         SIGNAL (toggled (bool)),
-           _history_dock_widget,        SLOT   (setVisible (bool)));
-  connect (_history_dock_widget,        SIGNAL (active_changed (bool)),
+           &history_window,             SLOT   (setVisible (bool)));
+  connect (&history_window,             SIGNAL (active_changed (bool)),
            show_history_action,         SLOT   (setChecked (bool)));
   connect (show_file_browser_action,    SIGNAL (toggled (bool)),
            _files_dock_widget,          SLOT   (setVisible (bool)));
@@ -1070,10 +1050,6 @@ main_window::construct ()
            this,                        SLOT   (open_file (QString)));
   connect (_files_dock_widget,          SIGNAL (displayed_directory_changed(QString)),
            this,                        SLOT   (set_current_working_directory(QString)));
-  connect (_history_dock_widget,        SIGNAL (information (QString)),
-           this,                        SLOT   (report_status_message (QString)));
-  connect (_history_dock_widget,        SIGNAL (command_double_clicked (const QString&)),
-           this,                        SLOT   (handle_command_double_clicked (const QString&)));
   connect (this,                        SIGNAL (relay_command_signal (const QString&)),
            &command_window,             SLOT   (relay_command (const QString&)));
   connect (save_workspace_action,       SIGNAL (triggered ()),
@@ -1119,7 +1095,7 @@ main_window::construct ()
 #endif
   addDockWidget (Qt::LeftDockWidgetArea, _files_dock_widget);
   addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
-  addDockWidget (Qt::LeftDockWidgetArea, _history_dock_widget);
+  addDockWidget (Qt::LeftDockWidgetArea, &history_window);
 
   int win_x = QApplication::desktop()->width();
   int win_y = QApplication::desktop()->height();
@@ -1147,15 +1123,15 @@ main_window::construct ()
 
   connect (_octave_qt_link,
            SIGNAL (set_history_signal (const QStringList&)),
-           _history_dock_widget, SLOT (set_history (const QStringList&)));
+           &history_window, SLOT (set_history (const QStringList&)));
 
   connect (_octave_qt_link,
            SIGNAL (append_history_signal (const QString&)),
-           _history_dock_widget, SLOT (append_history (const QString&)));
+           &history_window, SLOT (append_history (const QString&)));
 
   connect (_octave_qt_link,
            SIGNAL (clear_history_signal (void)),
-           _history_dock_widget, SLOT (clear_history (void)));
+           &history_window, SLOT (clear_history (void)));
 
   connect (_octave_qt_link, SIGNAL (enter_debugger_signal ()),
            this, SLOT (handle_enter_debugger ()));

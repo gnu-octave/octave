@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -20,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#if !defined (main_window_h)
+#define main_window_h 1
 
 // Qt includes
 #include <QtGui/QMainWindow>
@@ -72,6 +73,7 @@ signals:
   void settings_changed (const QSettings *);
   void relay_command_signal (const QString&);
   void focus_command_window_signal (void);
+  void focus_history_window_signal (void);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -102,12 +104,11 @@ public slots:
   void handle_command_double_clicked (const QString& command);
 
   void focus_command_window (void);
-  void focus_command_history ();
+  void focus_history_window (void);
   void focus_current_directory ();
   void focus_workspace ();
   void focus_editor ();
   void focus_documentation ();
-  void handle_command_history_visible (bool);
   void handle_current_directory_visible (bool);
   void handle_workspace_visible (bool);
   void handle_editor_visible (bool);
@@ -156,6 +157,8 @@ private:
 
   terminal_dock_widget command_window;
 
+  history_dock_widget history_window;
+
 #ifdef HAVE_QSCINTILLA
   file_editor_interface *   _file_editor;
 #endif
@@ -172,7 +175,6 @@ private:
 
   // Dock widgets.
   workspace_view *          _workspace_view;
-  history_dock_widget *     _history_dock_widget;
   files_dock_widget *       _files_dock_widget;
   documentation_dock_widget*_documentation_dock_widget;
 

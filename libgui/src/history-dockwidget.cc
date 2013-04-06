@@ -34,13 +34,27 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-hist.h"
 
 #include "history-dockwidget.h"
-#include "octave-link.h"
 
-history_dock_widget::history_dock_widget (QWidget * p)
+history_dock_widget::history_dock_widget (QWidget *p)
   : octave_dock_widget (p)
 {
   setObjectName ("HistoryDockWidget");
+  setStatusTip (tr ("Browse and search the command history."));
+
+  connect (this, SIGNAL (information (QString)),
+           p, SLOT (report_status_message (QString)));
+
+  connect (this, SIGNAL (command_double_clicked (const QString&)),
+           p, SLOT (handle_command_double_clicked (const QString&)));
+
   construct ();
+}
+
+void
+history_dock_widget::connect_visibility_changed (void)
+{
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility (bool)));
 }
 
 void
@@ -139,5 +153,23 @@ void
 history_dock_widget::clear_history (void)
 {
   _history_model->setStringList (QStringList ());
+}
+
+void
+history_dock_widget::focus (void)
+{
+  if (! isVisible ())
+    setVisible (true);
+
+  setFocus ();
+  activateWindow ();
+  raise ();
+}
+
+void
+history_dock_widget::handle_visibility (bool visible)
+{
+  if (visible && ! isFloating ())
+    focus ();
 }
 

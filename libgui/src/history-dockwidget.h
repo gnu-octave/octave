@@ -32,27 +32,38 @@ along with Octave; see the file COPYING.  If not, see
 class history_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
-  public:
+
+public:
+
   history_dock_widget (QWidget *parent = 0);
 
+  void connect_visibility_changed (void);
+
 public slots:
+
   void set_history (const QStringList& hist);
   void append_history (const QString& hist_entry);
   void clear_history (void);
 
+  void focus (void);
+  void handle_visibility (bool);
+
 signals:
+
   void information (const QString& message);
 
   /** Emitted, whenever the user double-clicked a command in the history. */
   void command_double_clicked (const QString& command);
 
 private slots:
+
   void handle_double_click (QModelIndex modelIndex);
   void handle_contextmenu_copy(bool flag);
   void handle_contextmenu_evaluate(bool flag);
   void ctxMenu(const QPoint &pos);
 
 private:
+
   void construct ();
   QListView *_history_list_view;
   QLineEdit *_filter_line_edit;

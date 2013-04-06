@@ -56,7 +56,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 
 main_window::main_window (QWidget *p)
-  : QMainWindow (p), command_window (this), history_window (this)
+  : QMainWindow (p), _workspace_model (), status_bar (),
+    command_window (this), history_window (this)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -79,16 +80,12 @@ main_window::~main_window ()
     delete _file_editor;
 #endif
 
-  if (_status_bar)
-    delete _status_bar;
-
   if (_documentation_dock_widget)
     delete _documentation_dock_widget;
 
   if (_files_dock_widget)
     delete _files_dock_widget;
 
-  delete _workspace_model;
   delete _workspace_view;
 }
 
@@ -119,7 +116,7 @@ main_window::open_file (const QString& file_name)
 void
 main_window::report_status_message (const QString& statusMessage)
 {
-  _status_bar->showMessage (statusMessage, 1000);
+  status_bar.showMessage (statusMessage, 1000);
 }
 
 void
@@ -622,23 +619,19 @@ main_window::construct ()
   _closing = false;   // flag for editor files when closed
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
 
-  // Create a new workspace model.
-  _workspace_model = new workspace_model ();
-
   // Setup dockable widgets and the status bar.
   _workspace_view           = new workspace_view (this);
 
-  _workspace_view->setModel (_workspace_model);
+  _workspace_view->setModel (&_workspace_model);
   _workspace_view->setStatusTip (tr ("View the variables in the active workspace."));
 
-  connect (_workspace_model, SIGNAL (model_changed ()),
+  connect (&_workspace_model, SIGNAL (model_changed ()),
            _workspace_view, SLOT (model_changed ()));
 
   _files_dock_widget        = new files_dock_widget (this);
   _files_dock_widget->setStatusTip (tr ("Browse your files."));
   _documentation_dock_widget= new documentation_dock_widget (this);
   _documentation_dock_widget->setStatusTip (tr ("See the documentation for help."));
-  _status_bar               = new QStatusBar (this);
 
   _current_directory_line_edit = new QLineEdit (this);
   _current_directory_combo_box = new QComboBox (this);
@@ -1105,7 +1098,7 @@ main_window::construct ()
     win_y = 720;
   setGeometry (0,0,win_x,win_y);
 
-  setStatusBar (_status_bar);
+  setStatusBar (&status_bar);
 
   _octave_qt_event_listener = new octave_qt_event_listener ();
 

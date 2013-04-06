@@ -155,8 +155,14 @@ private:
 
   void exit_callback (void);
 
-  terminal_dock_widget command_window;
+  // Data models.
+  workspace_model _workspace_model;
 
+  // Toolbars.
+  QStatusBar status_bar;
+
+  // Subwindows.
+  terminal_dock_widget command_window;
   history_dock_widget history_window;
 
 #ifdef HAVE_QSCINTILLA
@@ -170,16 +176,12 @@ private:
   QAction *                 _debug_step_out;
   QAction *                 _debug_quit;
 
-  // Data models.
-  workspace_model *         _workspace_model;
-
   // Dock widgets.
   workspace_view *          _workspace_view;
   files_dock_widget *       _files_dock_widget;
   documentation_dock_widget*_documentation_dock_widget;
 
   // Toolbars.
-  QStatusBar *              _status_bar;
   QComboBox *               _current_directory_combo_box;
   static const int        current_directory_width       = 300;
   static const int        current_directory_max_visible = 16;

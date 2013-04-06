@@ -45,6 +45,19 @@
 ## @table @asis
 ## @item @qcode{"displayrange"}
 ## @var{value1} is the display range as described above.
+## 
+## @item "xdata"
+## If @var{value1} is a two element vector, it must contain horizontal axis
+## limits in the form [xmin xmax]; Otherwise @var{value1} must be a
+## vector and only the first and last elements will be used for xmin and
+## xmax respectively.
+## 
+## @item "ydata"
+## If @var{value1} is a two element vector, it must contain vertical axis
+## limits in the form [ymin ymax]; Otherwise @var{value1} must be a
+## vector and only the first and last elements will be used for ymin and
+## ymax respectively.
+##
 ## @end table
 ##
 ## The optional return value @var{h} is a graphics handle to the image.
@@ -64,6 +77,7 @@ function h = imshow (im, varargin)
   display_range = NA;
   true_color = false;
   indexed = false;
+  xdata = ydata = [];
 
   ## Get the image.
   if (ischar (im))
@@ -105,9 +119,21 @@ function h = imshow (im, varargin)
         error ("imshow: argument number %d is invalid", narg+1);
       endif
     elseif (ischar (arg))
-      switch (arg)
+      switch (tolower (arg))
         case "displayrange";
           display_range = varargin{narg++};
+        case "xdata";
+          xdata = varargin{narg++};
+          if (! isvector (xdata))
+            error ("imshow: xdata must be a vector")
+          endif
+          xdata = [xdata(1) xdata(end)];
+        case "ydata";
+          ydata = varargin{narg++};
+          if (isvector (xdata))
+            error ("imshow: expect a vector for ydata")
+          endif
+          ydata = [ydata(1) ydata(end)];
         case {"truesize", "initialmagnification"}
           warning ("image: zoom argument ignored -- use GUI features");
         otherwise
@@ -161,9 +187,9 @@ function h = imshow (im, varargin)
   endif
 
   if (true_color || indexed)
-    tmp = image ([], [], im);
+    tmp = image (xdata, ydata, im);
   else
-    tmp = image (im);
+    tmp = image (xdata, ydata, im);
     set (tmp, "cdatamapping", "scaled");
     ## The backend is responsible for scaling to clim if necessary.
     set (gca (), "clim", display_range);

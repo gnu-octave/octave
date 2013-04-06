@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 
 main_window::main_window (QWidget *p)
-  : QMainWindow (p)
+  : QMainWindow (p), command_window (this)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -77,9 +77,6 @@ main_window::~main_window ()
   if (_file_editor)
     delete _file_editor;
 #endif
-
-  if (_terminal_dock_widget)
-    delete _terminal_dock_widget;
 
   if (_status_bar)
     delete _status_bar;
@@ -162,9 +159,10 @@ main_window::handle_clear_history_request (void)
 }
 
 void
-main_window::handle_command_double_clicked (const QString&)
+main_window::handle_command_double_clicked (const QString& command)
 {
-  focus_command_window ();
+  emit relay_command_signal (command);
+  emit focus_command_window_signal ();
 }
 
 void
@@ -347,20 +345,9 @@ main_window::accept_directory_line_edit (void)
 }
 
 void
-main_window::focus_command_window ()
+main_window::focus_command_window (void)
 {
-  if (!_terminal_dock_widget->isVisible ())
-    {
-      _terminal_dock_widget->setVisible (true);
-    }
-
-  _terminal_dock_widget->setFocus ();
-  _terminal_dock_widget->activateWindow ();
-  _terminal_dock_widget->raise ();
-
-  _terminal_dock_widget->widget ()->setFocus ();
-  _terminal_dock_widget->widget ()->activateWindow ();
-  _terminal_dock_widget->widget ()->raise ();
+  emit focus_command_window_signal ();
 }
 
 void
@@ -423,14 +410,6 @@ main_window::focus_documentation ()
   _documentation_dock_widget->setFocus ();
   _documentation_dock_widget->activateWindow ();
   _documentation_dock_widget->raise ();
-}
-
-void
-main_window::handle_command_window_visible (bool visible)
-{
-  // if widget is changed to visible and is not floating
-  if (visible && !_terminal_dock_widget->isFloating ())
-    focus_command_window ();
 }
 
 void
@@ -637,8 +616,8 @@ main_window::write_settings ()
 void
 main_window::connect_visibility_changed ()
 {
-  connect (_terminal_dock_widget, SIGNAL (visibilityChanged (bool)),
-           this,                  SLOT (handle_command_window_visible (bool)));
+  command_window.connect_visibility_changed ();
+
   connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
            this,                  SLOT (handle_workspace_visible (bool)));
   connect (_history_dock_widget,  SIGNAL (visibilityChanged (bool)),
@@ -696,12 +675,6 @@ main_window::construct ()
 
   QToolButton *current_directory_up_tool_button = new QToolButton (this);
   current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
-
-  // Octave Terminal subwindow.
-  QTerminal *terminal = new QTerminal (this);
-  terminal->setObjectName ("OctaveTerminal");
-  terminal->setFocusPolicy (Qt::StrongFocus);
-  _terminal_dock_widget = new terminal_dock_widget (terminal, this);
 
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
@@ -1036,8 +1009,8 @@ main_window::construct ()
   connect (about_octave_action,         SIGNAL (triggered ()),
            this,                        SLOT   (show_about_octave ()));
   connect (show_command_window_action,  SIGNAL (toggled (bool)),
-           _terminal_dock_widget,       SLOT   (setVisible (bool)));
-  connect (_terminal_dock_widget,       SIGNAL (active_changed (bool)),
+           &command_window,             SLOT   (setVisible (bool)));
+  connect (&command_window,             SIGNAL (active_changed (bool)),
            show_command_window_action,  SLOT   (setChecked (bool)));
   connect (show_workspace_action,       SIGNAL (toggled (bool)),
            _workspace_view,             SLOT   (setVisible (bool)));
@@ -1063,7 +1036,11 @@ main_window::construct ()
            show_documentation_action,   SLOT   (setChecked (bool)));
 
   connect (command_window_action,       SIGNAL (triggered ()),
-           this,                        SLOT (focus_command_window ()));
+           &command_window,             SLOT (focus ()));
+
+  connect (this, SIGNAL (focus_command_window_signal ()),
+           &command_window, SLOT (focus ()));
+
   connect (workspace_action,            SIGNAL (triggered ()),
            this,                        SLOT (focus_workspace ()));
   connect (history_action,              SIGNAL (triggered ()),
@@ -1084,7 +1061,7 @@ main_window::construct ()
            _file_editor,                SLOT   (notice_settings (const QSettings *)));
 #endif
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
-           terminal,                    SLOT   (notice_settings (const QSettings *)));
+           &command_window,             SLOT   (notice_settings (const QSettings *)));
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
            _files_dock_widget,          SLOT   (notice_settings (const QSettings *)));
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
@@ -1097,8 +1074,8 @@ main_window::construct ()
            this,                        SLOT   (report_status_message (QString)));
   connect (_history_dock_widget,        SIGNAL (command_double_clicked (const QString&)),
            this,                        SLOT   (handle_command_double_clicked (const QString&)));
-  connect (_history_dock_widget,        SIGNAL (command_double_clicked (const QString&)),
-           terminal,                    SLOT   (relay_command (const QString&)));
+  connect (this,                        SIGNAL (relay_command_signal (const QString&)),
+           &command_window,             SLOT   (relay_command (const QString&)));
   connect (save_workspace_action,       SIGNAL (triggered ()),
            this,                        SLOT   (handle_save_workspace_request ()));
   connect (load_workspace_action,       SIGNAL (triggered ()),
@@ -1110,9 +1087,9 @@ main_window::construct ()
   connect (current_directory_up_tool_button, SIGNAL (clicked ()),
            this,                        SLOT   (change_directory_up ()));
   connect (copy_action,                 SIGNAL (triggered()),
-           terminal,                    SLOT   (copyClipboard ()));
+           &command_window,             SLOT   (copyClipboard ()));
   connect (paste_action,                SIGNAL (triggered()),
-           terminal,                    SLOT   (pasteClipboard ()));
+           &command_window,             SLOT   (pasteClipboard ()));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (set_current_working_directory (QString)));
   connect (_current_directory_line_edit, SIGNAL (returnPressed ()),
@@ -1133,12 +1110,12 @@ main_window::construct ()
 
   setWindowTitle ("Octave");
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
-  addDockWidget (Qt::RightDockWidgetArea, _terminal_dock_widget);
+  addDockWidget (Qt::RightDockWidgetArea, &command_window);
   addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
-  tabifyDockWidget(_terminal_dock_widget,_documentation_dock_widget);
+  tabifyDockWidget (&command_window, _documentation_dock_widget);
 #ifdef HAVE_QSCINTILLA
   addDockWidget (Qt::RightDockWidgetArea, _file_editor);
-  tabifyDockWidget(_terminal_dock_widget,_file_editor);
+  tabifyDockWidget (&command_window, _file_editor);
 #endif
   addDockWidget (Qt::LeftDockWidgetArea, _files_dock_widget);
   addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);

@@ -60,12 +60,18 @@ along with Octave; see the file COPYING.  If not, see
  */
 class main_window : public QMainWindow
 {
-  Q_OBJECT public:
-  main_window (QWidget * parent = 0);
+  Q_OBJECT
+
+public:
+
+  main_window (QWidget *parent = 0);
+
   ~main_window ();
 
 signals:
   void settings_changed (const QSettings *);
+  void relay_command_signal (const QString&);
+  void focus_command_window_signal (void);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -73,7 +79,6 @@ public slots:
   void handle_load_workspace_request ();
   void handle_clear_workspace_request ();
   void handle_clear_history_request (void);
-  void handle_command_double_clicked (const QString& command);
   void new_file ();
   void open_file ();
   void open_file (const QString& file_name);
@@ -94,13 +99,14 @@ public slots:
   void change_directory_up (void);
   void accept_directory_line_edit (void);
 
-  void focus_command_window ();
+  void handle_command_double_clicked (const QString& command);
+
+  void focus_command_window (void);
   void focus_command_history ();
   void focus_current_directory ();
   void focus_workspace ();
   void focus_editor ();
   void focus_documentation ();
-  void handle_command_window_visible (bool);
   void handle_command_history_visible (bool);
   void handle_current_directory_visible (bool);
   void handle_workspace_visible (bool);
@@ -148,6 +154,8 @@ private:
 
   void exit_callback (void);
 
+  terminal_dock_widget command_window;
+
 #ifdef HAVE_QSCINTILLA
   file_editor_interface *   _file_editor;
 #endif
@@ -166,7 +174,6 @@ private:
   workspace_view *          _workspace_view;
   history_dock_widget *     _history_dock_widget;
   files_dock_widget *       _files_dock_widget;
-  terminal_dock_widget *    _terminal_dock_widget;
   documentation_dock_widget*_documentation_dock_widget;
 
   // Toolbars.

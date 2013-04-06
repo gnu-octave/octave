@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -23,22 +24,50 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef TERMINALDOCKWIDGET_H
 #define TERMINALDOCKWIDGET_H
 
+#include <QString>
+
 #include "QTerminal.h"
 #include "octave-dock-widget.h"
 
 class terminal_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
-  public:
-  terminal_dock_widget (QTerminal *terminal, QWidget *parent = 0);
+
+public:
+
+  terminal_dock_widget (QWidget *parent = 0);
+
+  void connect_visibility_changed (void);
 
 signals:
 
 public slots:
 
-protected:
+  void focus (void);
 
+  void handle_visibility (bool visible);
+
+  void notice_settings (const QSettings *settings);
+
+  void relay_command (const QString& command);
+
+  void copyClipboard (void);
+
+  void pasteClipboard (void);
+
+signals:
+
+  void notice_settings_signal (const QSettings *settings); 
+
+  void relay_command_signal (const QString& command);
+
+  void copyClipboard_signal (void);
+
+  void pasteClipboard_signal (void);
+
+private:
+
+  QTerminal terminal;
 };
-
 
 #endif // TERMINALDOCKWIDGET_H

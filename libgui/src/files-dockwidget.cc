@@ -41,10 +41,14 @@ files_dock_widget::files_dock_widget (QWidget *p)
   setObjectName ("FilesDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("File Browser"));
-  setWidget (new QWidget (this));
+  setStatusTip (tr ("Browse your files."));
+
+  QWidget *container = new QWidget (this);
+
+  setWidget (container);
 
   // Create a toolbar
-  _navigation_tool_bar = new QToolBar ("", widget ());
+  _navigation_tool_bar = new QToolBar ("", container);
   _navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
   _navigation_tool_bar->setMovable (false);
   _navigation_tool_bar->setIconSize (QSize (20, 20));
@@ -71,7 +75,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QModelIndex rootPathIndex = _file_system_model->setRootPath (homePath);
 
   // Attach the model to the QTreeView and set the root index
-  _file_tree_view = new QTreeView (widget ());
+  _file_tree_view = new QTreeView (container);
   _file_tree_view->setModel (_file_system_model);
   _file_tree_view->setRootIndex (rootPathIndex);
   _file_tree_view->setSortingEnabled (true);
@@ -91,8 +95,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _current_directory->setText(_file_system_model->fileInfo (rootPathIndex).
                               absoluteFilePath ());
 
-  connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)), this,
-           SLOT (item_double_clicked (const QModelIndex &)));
+  connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)),
+           this, SLOT (item_double_clicked (const QModelIndex &)));
 
   // Layout the widgets vertically with the toolbar on top
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
@@ -100,14 +104,15 @@ files_dock_widget::files_dock_widget (QWidget *p)
   vbox_layout->addWidget (_navigation_tool_bar);
   vbox_layout->addWidget (_file_tree_view);
   vbox_layout->setMargin (1);
-  widget ()->setLayout (vbox_layout);
+
+  container->setLayout (vbox_layout);
+
   // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 
   connect (_current_directory, SIGNAL (returnPressed ()),
            this, SLOT (accept_directory_line_edit ()));
 
-  QCompleter *
-    completer = new QCompleter (_file_system_model, this);
+  QCompleter *completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);
 
   setFocusProxy (_current_directory);
@@ -122,6 +127,13 @@ files_dock_widget::~files_dock_widget ()
   settings->setValue ("filesdockwidget/sort_files_by_order", sort_order);
   settings->setValue ("filesdockwidget/column_state", _file_tree_view->header ()->saveState ());
   settings->sync ();
+}
+
+void
+files_dock_widget::connect_visibility_changed (void)
+{
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility (bool)));
 }
 
 void
@@ -193,3 +205,22 @@ files_dock_widget::notice_settings (const QSettings *settings)
       // TODO: React on option for hidden files.
     }
 }
+
+void
+files_dock_widget::focus (void)
+{
+  if (! isVisible ())
+    setVisible (true);
+
+  setFocus ();
+  activateWindow ();
+  raise ();
+}
+
+void
+files_dock_widget::handle_visibility (bool visible)
+{
+  if (visible && ! isFloating ())
+    focus ();
+}
+

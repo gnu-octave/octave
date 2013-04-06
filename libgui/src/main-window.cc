@@ -57,7 +57,8 @@ along with Octave; see the file COPYING.  If not, see
 
 main_window::main_window (QWidget *p)
   : QMainWindow (p), _workspace_model (), status_bar (),
-    command_window (this), history_window (this)
+    command_window (this), history_window (this),
+    file_browser_window (new files_dock_widget (this))
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -65,6 +66,8 @@ main_window::main_window (QWidget *p)
 
 main_window::~main_window ()
 {
+  delete file_browser_window;
+
   // Clean up all dynamically created objects to ensure they are
   // deleted before this main_window is.  Otherwise, some will be
   // attached to a non-existent parent.
@@ -82,9 +85,6 @@ main_window::~main_window ()
 
   if (_documentation_dock_widget)
     delete _documentation_dock_widget;
-
-  if (_files_dock_widget)
-    delete _files_dock_widget;
 
   delete _workspace_view;
 }
@@ -290,7 +290,7 @@ main_window::change_directory (const QString& dir)
   _current_directory_combo_box->insertItem (0, dir);
   _current_directory_combo_box->setCurrentIndex (0);
 
-  _files_dock_widget->display_directory (dir);
+  file_browser_window->display_directory (dir);
 }
 
 void
@@ -347,19 +347,6 @@ main_window::accept_directory_line_edit (void)
 }
 
 void
-main_window::focus_current_directory ()
-{
-  if (!_files_dock_widget->isVisible ())
-    {
-      _files_dock_widget->setVisible (true);
-    }
-
-  _files_dock_widget->setFocus ();
-  _files_dock_widget->activateWindow ();
-  _files_dock_widget->raise ();
-}
-
-void
 main_window::focus_workspace ()
 {
   if (!_workspace_view->isVisible ())
@@ -393,14 +380,6 @@ main_window::focus_documentation ()
   _documentation_dock_widget->setFocus ();
   _documentation_dock_widget->activateWindow ();
   _documentation_dock_widget->raise ();
-}
-
-void
-main_window::handle_current_directory_visible (bool visible)
-{
-  // if changed to visible and widget is not floating
-  if (visible && !_files_dock_widget->isFloating ())
-    focus_current_directory ();
 }
 
 void
@@ -593,15 +572,16 @@ main_window::connect_visibility_changed ()
 {
   command_window.connect_visibility_changed ();
   history_window.connect_visibility_changed ();
+  file_browser_window->connect_visibility_changed ();
 
   connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
            this,                  SLOT (handle_workspace_visible (bool)));
-  connect (_files_dock_widget,    SIGNAL (visibilityChanged (bool)),
-           this,                  SLOT (handle_current_directory_visible (bool)));
+
 #ifdef HAVE_QSCINTILLA
   connect (_file_editor,          SIGNAL (visibilityChanged (bool)),
            this,                  SLOT (handle_editor_visible (bool)));
 #endif
+
   connect (_documentation_dock_widget,  SIGNAL (visibilityChanged (bool)),
            this,                  SLOT (handle_documentation_visible (bool)));
 }
@@ -623,8 +603,6 @@ main_window::construct ()
   connect (&_workspace_model, SIGNAL (model_changed ()),
            _workspace_view, SLOT (model_changed ()));
 
-  _files_dock_widget        = new files_dock_widget (this);
-  _files_dock_widget->setStatusTip (tr ("Browse your files."));
   _documentation_dock_widget= new documentation_dock_widget (this);
   _documentation_dock_widget->setStatusTip (tr ("See the documentation for help."));
 
@@ -989,8 +967,8 @@ main_window::construct ()
   connect (&history_window,             SIGNAL (active_changed (bool)),
            show_history_action,         SLOT   (setChecked (bool)));
   connect (show_file_browser_action,    SIGNAL (toggled (bool)),
-           _files_dock_widget,          SLOT   (setVisible (bool)));
-  connect (_files_dock_widget,          SIGNAL (active_changed (bool)),
+           file_browser_window,         SLOT   (setVisible (bool)));
+  connect (file_browser_window,         SIGNAL (active_changed (bool)),
            show_file_browser_action,    SLOT   (setChecked (bool)));
 #ifdef HAVE_QSCINTILLA
   connect (show_editor_action,          SIGNAL (toggled (bool)),
@@ -1011,7 +989,7 @@ main_window::construct ()
   connect (history_action,              SIGNAL (triggered ()),
            &history_window,             SLOT (focus ()));
   connect (file_browser_action,         SIGNAL (triggered ()),
-           this,                        SLOT (focus_current_directory ()));
+           file_browser_window,         SLOT (focus ()));
   connect (editor_action,               SIGNAL (triggered ()),
            this,                        SLOT (focus_editor ()));
   connect (documentation_action,        SIGNAL (triggered ()),
@@ -1028,12 +1006,12 @@ main_window::construct ()
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
            &command_window,             SLOT   (notice_settings (const QSettings *)));
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
-           _files_dock_widget,          SLOT   (notice_settings (const QSettings *)));
+           file_browser_window,         SLOT   (notice_settings (const QSettings *)));
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
            this,                        SLOT   (notice_settings (const QSettings *)));
-  connect (_files_dock_widget,          SIGNAL (open_file (QString)),
+  connect (file_browser_window,         SIGNAL (open_file (QString)),
            this,                        SLOT   (open_file (QString)));
-  connect (_files_dock_widget,          SIGNAL (displayed_directory_changed(QString)),
+  connect (file_browser_window,         SIGNAL (displayed_directory_changed(QString)),
            this,                        SLOT   (set_current_working_directory(QString)));
   connect (this,                        SIGNAL (relay_command_signal (const QString&)),
            &command_window,             SLOT   (relay_command (const QString&)));
@@ -1078,7 +1056,7 @@ main_window::construct ()
   addDockWidget (Qt::RightDockWidgetArea, _file_editor);
   tabifyDockWidget (&command_window, _file_editor);
 #endif
-  addDockWidget (Qt::LeftDockWidgetArea, _files_dock_widget);
+  addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
   addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
   addDockWidget (Qt::LeftDockWidgetArea, &history_window);
 

@@ -103,11 +103,9 @@ public slots:
 
   void handle_command_double_clicked (const QString& command);
 
-  void focus_current_directory ();
   void focus_workspace ();
   void focus_editor ();
   void focus_documentation ();
-  void handle_current_directory_visible (bool);
   void handle_workspace_visible (bool);
   void handle_editor_visible (bool);
   void handle_documentation_visible (bool);
@@ -162,6 +160,7 @@ private:
   // Subwindows.
   terminal_dock_widget command_window;
   history_dock_widget history_window;
+  files_dock_widget *file_browser_window;
 
 #ifdef HAVE_QSCINTILLA
   file_editor_interface *   _file_editor;
@@ -176,7 +175,6 @@ private:
 
   // Dock widgets.
   workspace_view *          _workspace_view;
-  files_dock_widget *       _files_dock_widget;
   documentation_dock_widget*_documentation_dock_widget;
 
   // Toolbars.

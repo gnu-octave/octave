@@ -46,10 +46,14 @@ along with Octave; see the file COPYING.  If not, see
 class files_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
-  public:
-  /** Constructs a new files_dock_widget. */
+
+public:
+
   files_dock_widget (QWidget *parent = 0);
+
   ~files_dock_widget ();
+
+  void connect_visibility_changed (void);
 
 public slots:
 
@@ -69,6 +73,10 @@ public slots:
 
   /** Tells the widget to react on changed settings. */
   void notice_settings (const QSettings *settings);
+
+  void focus (void);
+
+  void handle_visibility (bool visible);
 
 signals:
   /** Emitted, whenever the user requested to open a file. */

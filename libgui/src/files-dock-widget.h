@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTreeView>
 #include <QSettings>
 
-#include <QLineEdit>
+#include <QComboBox>
 #include "octave-dock-widget.h"
 
 /**
@@ -97,7 +97,9 @@ private:
 
   /** The file system view. */
   QTreeView *       _file_tree_view;
-  QLineEdit *       _current_directory;
+  QComboBox *       _current_directory;
+
+  enum { MaxMRUDirs = 10 };
 };
 
 #endif // FILESDOCKWIDGET_H

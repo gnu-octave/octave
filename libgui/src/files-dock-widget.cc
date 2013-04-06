@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QProcess>
 #include <QDebug>
 #include <QHeaderView>
+#include <QLineEdit>
+#include <QSizePolicy>
 
 files_dock_widget::files_dock_widget (QWidget *p)
   : octave_dock_widget (p)
@@ -67,8 +69,13 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _directory_up_action = new QAction (_directory_icon, "", _navigation_tool_bar);
   _directory_up_action->setStatusTip (tr ("Move up one directory."));
 
-  _current_directory = new QLineEdit (_navigation_tool_bar);
+  _current_directory = new QComboBox (_navigation_tool_bar);
   _current_directory->setStatusTip (tr ("Enter the path or filename."));
+  _current_directory->setEditable(true);
+  _current_directory->setMaxCount(MaxMRUDirs);
+  _current_directory->setInsertPolicy(QComboBox::NoInsert);
+  QSizePolicy sizePol(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  _current_directory->setSizePolicy(sizePol);
 
   _navigation_tool_bar->addAction (_directory_up_action);
   _navigation_tool_bar->addWidget (_current_directory);
@@ -102,7 +109,10 @@ files_dock_widget::files_dock_widget (QWidget *p)
   );
   _file_tree_view->header ()->restoreState (settings->value ("filesdockwidget/column_state").toByteArray ());
   
-  _current_directory->setText(_file_system_model->fileInfo (rootPathIndex).
+  QStringList mru_dirs = settings->value ("filesdockwidget/mru_dir_list").toStringList ();
+  _current_directory->addItems(mru_dirs);
+
+  _current_directory->setEditText(_file_system_model->fileInfo (rootPathIndex).
                               absoluteFilePath ());
 
   connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)),
@@ -119,8 +129,11 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 
-  connect (_current_directory, SIGNAL (returnPressed ()),
-           this, SLOT (accept_directory_line_edit ()));
+  connect (_current_directory->lineEdit(), SIGNAL (returnPressed ()),
+            this, SLOT (accept_directory_line_edit ()));
+
+  connect (_current_directory, SIGNAL (activated (const QString &)),
+           this, SLOT (set_current_directory (const QString &)));
 
   QCompleter *completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);
@@ -136,6 +149,14 @@ files_dock_widget::~files_dock_widget ()
   settings->setValue ("filesdockwidget/sort_files_by_column", sort_column);
   settings->setValue ("filesdockwidget/sort_files_by_order", sort_order);
   settings->setValue ("filesdockwidget/column_state", _file_tree_view->header ()->saveState ());
+
+  QStringList dirs;
+  for(int i=0; i< _current_directory->count(); i++)
+  {
+    dirs.append(_current_directory->itemText(i));
+  }
+  settings->setValue ("filesdockwidget/mru_dir_list", dirs);
+
   settings->sync ();
 }
 
@@ -159,7 +180,7 @@ files_dock_widget::set_current_directory (const QString& dir)
 void
 files_dock_widget::accept_directory_line_edit (void)
 {
-  display_directory (_current_directory->text ());
+  display_directory (_current_directory->currentText ());
 }
 
 void
@@ -182,7 +203,15 @@ files_dock_widget::display_directory (const QString& dir)
                                          index (fileInfo.absoluteFilePath ()));
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
           _file_system_model->sort (0, Qt::AscendingOrder);
-          _current_directory->setText (fileInfo.absoluteFilePath ());
+
+          // see if its in the list, and if it is, remove it and then, put at top of the list
+          int index = _current_directory->findText(fileInfo.absoluteFilePath ());
+          if(index != -1)
+          {
+             _current_directory->removeItem(index);
+          }
+          _current_directory->insertItem(0, fileInfo.absoluteFilePath ());
+          _current_directory->setCurrentIndex(0);
         }
       else
         {

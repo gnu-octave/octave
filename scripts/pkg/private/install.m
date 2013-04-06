@@ -181,7 +181,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 
     ## Did we find any unsatisfied dependencies?
     if (! ok)
-      error ("the following dependencies where unsatisfied:\n  %s", error_text);
+      error ("the following dependencies were unsatisfied:\n  %s", error_text);
     endif
   endif
 

@@ -104,9 +104,6 @@ public slots:
 
   void handle_command_double_clicked (const QString& command);
 
-  void focus_workspace (void);
-  void handle_workspace_visible (bool);
-
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
   void debug_continue (void);
@@ -184,6 +181,7 @@ private:
   files_dock_widget *file_browser_window;
   documentation_dock_widget *doc_browser_window;
   file_editor_interface *editor_window;
+  workspace_view *workspace_window;
 
   QMenu *_debug_menu;
 
@@ -201,9 +199,6 @@ private:
   QAction *_paste_action;
   QAction *_undo_action;
   QAction *_redo_action;
-
-  // Dock widgets.
-  workspace_view *_workspace_view;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;

@@ -37,6 +37,7 @@ workspace_view::workspace_view (QWidget *p)
   setObjectName ("WorkspaceView");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Workspace"));
+  setStatusTip (tr ("View the variables in the active workspace."));
 
   view = new QTreeView (this);            // Create a new tree view.
   view->setHeaderHidden (false);          // Do not show header columns.
@@ -71,11 +72,9 @@ workspace_view::workspace_view (QWidget *p)
   view->header ()->restoreState (settings->value("workspaceview/column_state").toByteArray ());
 
   // Connect signals and slots.
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT(handle_visibility_changed (bool)));
-
   connect (view, SIGNAL (collapsed (QModelIndex)),
            this, SLOT (collapse_requested (QModelIndex)));
+
   connect (view, SIGNAL (expanded (QModelIndex)),
            this, SLOT (expand_requested (QModelIndex)));
 
@@ -98,10 +97,10 @@ workspace_view::~workspace_view ()
 }
 
 void
-workspace_view::handle_visibility_changed (bool visible)
+workspace_view::connect_visibility_changed (void)
 {
-  if (visible)
-    emit active_changed (true);
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility (bool)));
 }
 
 void
@@ -226,4 +225,23 @@ workspace_view::top_level_changed (bool floating)
       setWindowFlags(Qt::Window);  // make a window from the widget when floating
       show();                      // make it visible again since setWindowFlags hides it
     }
+}
+
+void
+workspace_view::focus (void)
+{
+  if (! isVisible ())
+    setVisible (true);
+
+  setFocus ();
+  activateWindow ();
+  raise ();
+}
+
+void
+workspace_view::handle_visibility (bool visible)
+{
+  // if changed to visible and widget is not floating
+  if (visible && ! isFloating ())
+    focus ();
 }

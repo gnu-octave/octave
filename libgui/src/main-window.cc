@@ -73,7 +73,8 @@ main_window::main_window (QWidget *p)
     history_window (new history_dock_widget (this)),
     file_browser_window (new files_dock_widget (this)),
     doc_browser_window (new documentation_dock_widget (this)),
-    editor_window (create_default_editor (this))
+    editor_window (create_default_editor (this)),
+    workspace_window (new workspace_view (this))
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -88,6 +89,7 @@ main_window::~main_window (void)
   delete file_browser_window;
   delete doc_browser_window;
   delete editor_window;
+  delete workspace_window;
 
   // Clean up all dynamically created objects to ensure they are
   // deleted before this main_window is.  Otherwise, some will be
@@ -98,8 +100,6 @@ main_window::~main_window (void)
 
   octave_link::connect_link (0);
   delete _octave_qt_link;
-
-  delete _workspace_view;
 }
 
 void
@@ -278,7 +278,7 @@ main_window::reset_windows ()
 void
 main_window::update_workspace (void)
 {
-  _workspace_view->model_changed ();
+  workspace_window->model_changed ();
 }
 
 void
@@ -350,28 +350,6 @@ main_window::accept_directory_line_edit (void)
 
   if (index < 0)
     set_current_working_directory (dir);
-}
-
-void
-main_window::focus_workspace (void)
-{
-  if (!_workspace_view->isVisible ())
-    {
-      _workspace_view->setVisible (true);
-    }
-
-  _workspace_view->setFocus ();
-  _workspace_view->activateWindow ();
-  _workspace_view->raise ();
-}
-
-
-void
-main_window::handle_workspace_visible (bool visible)
-{
-  // if changed to visible and widget is not floating
-  if (visible && !_workspace_view->isFloating ())
-    focus_workspace ();
 }
 
 void
@@ -543,9 +521,7 @@ main_window::connect_visibility_changed (void)
 #ifdef HAVE_QSCINTILLA
   editor_window->connect_visibility_changed ();
 #endif
-
-  connect (_workspace_view, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_workspace_visible (bool)));
+  workspace_window->connect_visibility_changed ();
 }
 
 
@@ -556,14 +532,10 @@ main_window::construct (void)
   _closing = false;   // flag for editor files when closed
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
-  // Setup dockable widgets and the status bar.
-  _workspace_view           = new workspace_view (this);
-
-  _workspace_view->setModel (_workspace_model);
-  _workspace_view->setStatusTip (tr ("View the variables in the active workspace."));
+  workspace_window->setModel (_workspace_model);
 
   connect (_workspace_model, SIGNAL (model_changed ()),
-           _workspace_view, SLOT (model_changed ()));
+           workspace_window, SLOT (model_changed ()));
 
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
@@ -602,7 +574,7 @@ main_window::construct (void)
 #endif
 
   addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
-  addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
+  addDockWidget (Qt::LeftDockWidgetArea, workspace_window);
   addDockWidget (Qt::LeftDockWidgetArea, history_window);
 
   int win_x = QApplication::desktop()->width();
@@ -1033,9 +1005,9 @@ main_window::construct_window_menu (QMenuBar *p)
            show_command_window_action, SLOT (setChecked (bool)));
 
   connect (show_workspace_action, SIGNAL (toggled (bool)),
-           _workspace_view, SLOT (setVisible (bool)));
+           workspace_window, SLOT (setVisible (bool)));
 
-  connect (_workspace_view, SIGNAL (active_changed (bool)),
+  connect (workspace_window, SIGNAL (active_changed (bool)),
            show_workspace_action, SLOT (setChecked (bool)));
 
   connect (show_history_action, SIGNAL (toggled (bool)),
@@ -1068,7 +1040,7 @@ main_window::construct_window_menu (QMenuBar *p)
            command_window, SLOT (focus ()));
 
   connect (workspace_action, SIGNAL (triggered ()),
-           this, SLOT (focus_workspace ()));
+           workspace_window, SLOT (focus ()));
 
   connect (history_action, SIGNAL (triggered ()),
            history_window, SLOT (focus ()));

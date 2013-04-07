@@ -32,19 +32,29 @@ along with Octave; see the file COPYING.  If not, see
 class workspace_view : public QDockWidget
 {
   Q_OBJECT
-  public:
+
+public:
+
   workspace_view (QWidget * parent = 0);
+
   ~workspace_view ();
+
+  void connect_visibility_changed (void);
 
 public:
 
   void setModel (workspace_model *model) { view->setModel (model); }
 
 public slots:
-  void handle_visibility_changed (bool visible);
+
   void model_changed ();
+
   /** Slot when floating property changes */
   void top_level_changed (bool floating);
+
+  void focus (void);
+
+  void handle_visibility (bool visible);
 
 signals:
   /** Custom signal that tells if a user has clicke away that dock widget. */

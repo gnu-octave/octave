@@ -61,7 +61,8 @@ main_window::main_window (QWidget *p)
     status_bar (new QStatusBar ()),
     command_window (new terminal_dock_widget (this)),
     history_window (new history_dock_widget (this)),
-    file_browser_window (new files_dock_widget (this))
+    file_browser_window (new files_dock_widget (this)),
+    doc_browser_window (new documentation_dock_widget (this))
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -74,6 +75,7 @@ main_window::~main_window ()
   delete command_window;
   delete history_window;
   delete file_browser_window;
+  delete doc_browser_window;
 
   // Clean up all dynamically created objects to ensure they are
   // deleted before this main_window is.  Otherwise, some will be
@@ -89,9 +91,6 @@ main_window::~main_window ()
   if (_file_editor)
     delete _file_editor;
 #endif
-
-  if (_documentation_dock_widget)
-    delete _documentation_dock_widget;
 
   delete _workspace_view;
 }
@@ -377,19 +376,6 @@ main_window::focus_editor ()
 }
 
 void
-main_window::focus_documentation ()
-{
-  if (!_documentation_dock_widget->isVisible ())
-    {
-      _documentation_dock_widget->setVisible (true);
-    }
-
-  _documentation_dock_widget->setFocus ();
-  _documentation_dock_widget->activateWindow ();
-  _documentation_dock_widget->raise ();
-}
-
-void
 main_window::handle_workspace_visible (bool visible)
 {
   // if changed to visible and widget is not floating
@@ -405,14 +391,6 @@ main_window::handle_editor_visible (bool visible)
   if (visible && !_file_editor->isFloating ())
     focus_editor ();
 #endif
-}
-
-void
-main_window::handle_documentation_visible (bool visible)
-{
-  // if changed to visible and widget is not floating
-  if (visible && !_documentation_dock_widget->isFloating ())
-    focus_documentation ();
 }
 
 void
@@ -580,6 +558,7 @@ main_window::connect_visibility_changed ()
   command_window->connect_visibility_changed ();
   history_window->connect_visibility_changed ();
   file_browser_window->connect_visibility_changed ();
+  doc_browser_window->connect_visibility_changed ();
 
   connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
            this,                  SLOT (handle_workspace_visible (bool)));
@@ -589,8 +568,6 @@ main_window::connect_visibility_changed ()
            this,                  SLOT (handle_editor_visible (bool)));
 #endif
 
-  connect (_documentation_dock_widget,  SIGNAL (visibilityChanged (bool)),
-           this,                  SLOT (handle_documentation_visible (bool)));
 }
 
 
@@ -609,9 +586,6 @@ main_window::construct ()
 
   connect (_workspace_model, SIGNAL (model_changed ()),
            _workspace_view, SLOT (model_changed ()));
-
-  _documentation_dock_widget= new documentation_dock_widget (this);
-  _documentation_dock_widget->setStatusTip (tr ("See the documentation for help."));
 
   _current_directory_line_edit = new QLineEdit (this);
   _current_directory_combo_box = new QComboBox (this);
@@ -984,8 +958,8 @@ main_window::construct ()
            show_editor_action,          SLOT   (setChecked (bool)));
 #endif
   connect (show_documentation_action,   SIGNAL (toggled (bool)),
-           _documentation_dock_widget,  SLOT   (setVisible (bool)));
-  connect (_documentation_dock_widget,  SIGNAL (active_changed (bool)),
+           doc_browser_window,          SLOT   (setVisible (bool)));
+  connect (doc_browser_window,          SIGNAL (active_changed (bool)),
            show_documentation_action,   SLOT   (setChecked (bool)));
 
   connect (command_window_action,       SIGNAL (triggered ()),
@@ -1000,9 +974,9 @@ main_window::construct ()
   connect (editor_action,               SIGNAL (triggered ()),
            this,                        SLOT (focus_editor ()));
   connect (documentation_action,        SIGNAL (triggered ()),
-           this,                        SLOT (focus_documentation ()));
+           doc_browser_window,          SLOT (focus ()));
   connect (ondisk_documentation_action, SIGNAL (triggered ()),
-           this,                        SLOT (focus_documentation ()));
+           doc_browser_window,          SLOT (focus ()));
 
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));
@@ -1059,8 +1033,8 @@ main_window::construct ()
   setWindowTitle ("Octave");
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
   addDockWidget (Qt::RightDockWidgetArea, command_window);
-  addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
-  tabifyDockWidget (command_window, _documentation_dock_widget);
+  addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
+  tabifyDockWidget (command_window, doc_browser_window);
 #ifdef HAVE_QSCINTILLA
   addDockWidget (Qt::RightDockWidgetArea, _file_editor);
   tabifyDockWidget (command_window, _file_editor);

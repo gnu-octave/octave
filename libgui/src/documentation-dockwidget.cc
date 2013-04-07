@@ -27,42 +27,38 @@ along with Octave; see the file COPYING.  If not, see
 #include "documentation-dockwidget.h"
 
 documentation_dock_widget::documentation_dock_widget (QWidget *p)
-  : QDockWidget (p)
+  : octave_dock_widget (p)
 {
   setObjectName ("DocumentationDockWidget");
-  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
   setWindowTitle (tr ("Documentation"));
-
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility_changed (bool)));
-  // topLevelChanged is emitted when floating property changes (floating = true)
-  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
+  setStatusTip (tr ("See the documentation for help."));
 
   _webinfo = new webinfo (this);
   setWidget (_webinfo);
 }
 
 void
-documentation_dock_widget::handle_visibility_changed (bool visible)
+documentation_dock_widget::connect_visibility_changed (void)
 {
-  if (visible)
-    emit active_changed (true);
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility (bool)));
 }
 
 void
-documentation_dock_widget::closeEvent (QCloseEvent *e)
+documentation_dock_widget::focus (void)
 {
-  emit active_changed (false);
-  QDockWidget::closeEvent (e);
+  if (! isVisible ())
+    setVisible (true);
+
+  setFocus ();
+  activateWindow ();
+  raise ();
 }
 
-// slot for signal that is emitted when floating property changes
 void
-documentation_dock_widget::top_level_changed (bool floating)
+documentation_dock_widget::handle_visibility (bool visible)
 {
-  if(floating)
-    {
-      setWindowFlags(Qt::Window);  // make a window from the widget when floating
-      show();                      // make it visible again since setWindowFlags hides it
-    }
+  if (visible && ! isFloating ())
+    focus ();
 }

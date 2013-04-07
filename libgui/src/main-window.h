@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -104,10 +105,8 @@ public slots:
 
   void focus_workspace ();
   void focus_editor ();
-  void focus_documentation ();
   void handle_workspace_visible (bool);
   void handle_editor_visible (bool);
-  void handle_documentation_visible (bool);
 
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
@@ -160,6 +159,7 @@ private:
   terminal_dock_widget *command_window;
   history_dock_widget *history_window;
   files_dock_widget *file_browser_window;
+  documentation_dock_widget *doc_browser_window;
 
 #ifdef HAVE_QSCINTILLA
   file_editor_interface *   _file_editor;
@@ -174,7 +174,6 @@ private:
 
   // Dock widgets.
   workspace_view *          _workspace_view;
-  documentation_dock_widget*_documentation_dock_widget;
 
   // Toolbars.
   QComboBox *               _current_directory_combo_box;

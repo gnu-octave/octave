@@ -23,30 +23,28 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef DOCUMENTATIONDOCKWIDGET_H
 #define DOCUMENTATIONDOCKWIDGET_H
 
-#include <QObject>
-#include <QDockWidget>
+#include "octave-dock-widget.h"
+
 #include "webinfo.h"
 
-class documentation_dock_widget : public QDockWidget
+class documentation_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
-  public:
+
+public:
+
   documentation_dock_widget (QWidget *parent = 0);
 
+  void connect_visibility_changed (void);
+
 public slots:
-  /** Slot to steer changing visibility from outside. */
-  void handle_visibility_changed (bool visible);
-  /** Slot when floating property changes */
-  void top_level_changed (bool floating);
 
-signals:
-  /** Custom signal that tells if a user has clicked away that dock widget. */
-  void active_changed (bool active);
+  void focus (void);
 
-protected:
-  void closeEvent (QCloseEvent *event);
+  void handle_visibility (bool);
 
 private:
+
   webinfo *_webinfo;
 };
 

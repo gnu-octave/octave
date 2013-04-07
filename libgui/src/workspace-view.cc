@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QMenu>
 
 workspace_view::workspace_view (QWidget *p)
   : QDockWidget (p)
@@ -45,6 +46,7 @@ workspace_view::workspace_view (QWidget *p)
   view->setAnimated (false);              // Deactivate animations because of strange glitches.
   view->setTextElideMode (Qt::ElideRight);// Elide text to the right side of the cells.
   view->setWordWrap (false);              // No wordwrapping in cells.
+  view->setContextMenuPolicy (Qt::CustomContextMenu);
 
   // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
@@ -80,6 +82,12 @@ workspace_view::workspace_view (QWidget *p)
 
   connect (view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (item_double_clicked (QModelIndex)));
+
+  connect (view, SIGNAL (customContextMenuRequested(const QPoint&)),
+           this, SLOT(contextmenu_requested (const QPoint&)));
+
+  connect (this, SIGNAL (command_requested (const QString&)),
+           p, SLOT (handle_command_double_clicked(const QString&)));
 
   // topLevelChanged is emitted when floating property changes (floating = true)
   connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
@@ -244,4 +252,67 @@ workspace_view::handle_visibility (bool visible)
   // if changed to visible and widget is not floating
   if (visible && ! isFloating ())
     focus ();
+}
+
+void
+workspace_view::contextmenu_requested (const QPoint& pos)
+{
+  QMenu menu (this);
+
+  QModelIndex index = view->indexAt (pos);
+  QAbstractItemModel *m = view->model ();
+
+  // if it isnt Local, Glocal etc, allow the ctx menu
+  if (index.parent() != QModelIndex())
+    {
+      QMap<int, QVariant> item_data = m->itemData (index);
+  
+      QString var_name = item_data[0].toString ();
+
+      menu.addAction ("disp(" + var_name + ")", this,
+                      SLOT (handle_contextmenu_disp ()));
+
+      menu.addAction ("plot(" + var_name + ")", this,
+                      SLOT (handle_contextmenu_plot ()));
+
+      menu.addAction ("stem(" + var_name + ")", this,
+                      SLOT (handle_contextmenu_stem ()));
+
+      menu.exec (view->mapToGlobal (pos));
+    }
+}
+
+void
+workspace_view::handle_contextmenu_disp (void)
+{
+  relay_contextmenu_command ("disp"); 
+}
+
+void
+workspace_view::handle_contextmenu_plot (void)
+{
+  relay_contextmenu_command("figure;\nplot"); 
+}
+
+void
+workspace_view::handle_contextmenu_stem (void)
+{
+  relay_contextmenu_command ("figure;\nstem"); 
+}
+
+void
+workspace_view::relay_contextmenu_command (const QString& cmdname)
+{
+  QModelIndex index = view->currentIndex ();
+
+  if (index.parent () != QModelIndex ())
+    {
+      QAbstractItemModel *m = view->model ();
+
+      QMap<int, QVariant> item_data = m->itemData (index);
+  
+      QString var_name = item_data[0].toString ();
+
+      emit command_requested (cmdname + "(" + var_name + ")\n");
+    }
 }

@@ -59,6 +59,8 @@ public slots:
 signals:
   /** Custom signal that tells if a user has clicke away that dock widget. */
   void active_changed (bool active);
+  /** signal that user had requested a command on a variable */
+  void command_requested (const QString& cmd);
 
 protected:
   void closeEvent (QCloseEvent *event);
@@ -67,8 +69,14 @@ protected slots:
   void collapse_requested (QModelIndex index);
   void expand_requested (QModelIndex index);
   void item_double_clicked (QModelIndex index);
-
+  void contextmenu_requested (const QPoint& pos);
+  // context menu slots
+  void handle_contextmenu_disp ();
+  void handle_contextmenu_plot ();
+  void handle_contextmenu_stem ();
 private:
+  void relay_contextmenu_command (const QString& cmdname);
+
   QTreeView *view;
 
   struct

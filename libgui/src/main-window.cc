@@ -895,7 +895,7 @@ main_window::construct_debug_menu_item (const char *icon_file,
   QAction *action = _debug_menu->addAction (QIcon (icon_file), item);
 
   action->setEnabled (false);
-  action->setShortcut (Qt::Key_F10);
+  action->setShortcut (key);
 
 #ifdef HAVE_QSCINTILLA
   editor_window->debug_menu ()->addAction (action);

@@ -801,6 +801,9 @@ file_editor::construct ()
   editor_widget->setLayout (vbox_layout);
   setWidget (editor_widget);
 
+  connect (parent (), SIGNAL (settings_changed (const QSettings *)),
+           this, SLOT (notice_settings (const QSettings *)));
+
   connect (new_action,
            SIGNAL (triggered ()), this, SLOT (request_new_file ()));
   connect (open_action,

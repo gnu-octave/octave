@@ -609,31 +609,8 @@ main_window::construct ()
   connect (qApp, SIGNAL (aboutToQuit ()),
            this, SLOT (prepare_for_quit ()));
 
-#ifdef HAVE_QSCINTILLA
-  connect (this, SIGNAL (settings_changed (const QSettings *)),
-           _file_editor, SLOT (notice_settings (const QSettings *)));
-#endif
-
-  connect (this, SIGNAL (settings_changed (const QSettings *)),
-           command_window, SLOT (notice_settings (const QSettings *)));
-
-  connect (this, SIGNAL (settings_changed (const QSettings *)),
-           file_browser_window, SLOT (notice_settings (const QSettings *)));
-
   connect (this, SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
-
-  connect (file_browser_window, SIGNAL (open_file (QString)),
-           this, SLOT (open_file (QString)));
-
-  connect (file_browser_window, SIGNAL (displayed_directory_changed(QString)),
-           this, SLOT (set_current_working_directory(QString)));
-
-  connect (this, SIGNAL (relay_command_signal (const QString&)),
-           command_window, SLOT (relay_command (const QString&)));
-
-  connect (history_window, SIGNAL (command_create_script (const QString&)),
-           this, SLOT (new_file (const QString&)));
 
   setWindowTitle ("Octave");
 

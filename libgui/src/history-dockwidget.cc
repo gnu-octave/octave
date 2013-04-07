@@ -41,8 +41,11 @@ history_dock_widget::history_dock_widget (QWidget *p)
   setObjectName ("HistoryDockWidget");
   setStatusTip (tr ("Browse and search the command history."));
 
-  connect (this, SIGNAL (information (QString)),
-           p, SLOT (report_status_message (QString)));
+  connect (this, SIGNAL (command_create_script (const QString&)),
+           p, SLOT (new_file (const QString&)));
+
+  connect (this, SIGNAL (information (const QString&)),
+           p, SLOT (report_status_message (const QString&)));
 
   connect (this, SIGNAL (command_double_clicked (const QString&)),
            p, SLOT (handle_command_double_clicked (const QString&)));

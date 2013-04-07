@@ -38,8 +38,14 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   setWindowTitle (tr ("Command Window"));
   setWidget (&terminal);
 
+  connect (parent (), SIGNAL (settings_changed (const QSettings *)),
+           this, SLOT (notice_settings (const QSettings *)));
+
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility (bool)));
+
+  connect (parent (), SIGNAL (relay_command_signal (const QString&)),
+           this, SLOT (relay_command (const QString&)));
 
   // topLevelChanged is emitted when floating property changes (floating
   // = true)

@@ -56,8 +56,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 
 main_window::main_window (QWidget *p)
-  : QMainWindow (p), _workspace_model (), status_bar (),
-    command_window (this), history_window (this),
+  : QMainWindow (p),
+    _workspace_model (new workspace_model ()),
+    status_bar (new QStatusBar ()),
+    command_window (new terminal_dock_widget (this)),
+    history_window (new history_dock_widget (this)),
     file_browser_window (new files_dock_widget (this))
 {
   // We have to set up all our windows, before we finally launch octave.
@@ -66,6 +69,10 @@ main_window::main_window (QWidget *p)
 
 main_window::~main_window ()
 {
+  delete _workspace_model;
+  delete status_bar;
+  delete command_window;
+  delete history_window;
   delete file_browser_window;
 
   // Clean up all dynamically created objects to ensure they are
@@ -92,7 +99,7 @@ main_window::~main_window ()
 void
 main_window::focus_command_window (void)
 {
-  command_window.focus ();
+  command_window->focus ();
 }
 
 void
@@ -122,7 +129,7 @@ main_window::open_file (const QString& file_name)
 void
 main_window::report_status_message (const QString& statusMessage)
 {
-  status_bar.showMessage (statusMessage, 1000);
+  status_bar->showMessage (statusMessage, 1000);
 }
 
 void
@@ -164,7 +171,7 @@ main_window::handle_command_double_clicked (const QString& command)
 {
   emit relay_command_signal (command);
 
-  command_window.focus ();
+  command_window->focus ();
 }
 
 void
@@ -570,8 +577,8 @@ main_window::write_settings ()
 void
 main_window::connect_visibility_changed ()
 {
-  command_window.connect_visibility_changed ();
-  history_window.connect_visibility_changed ();
+  command_window->connect_visibility_changed ();
+  history_window->connect_visibility_changed ();
   file_browser_window->connect_visibility_changed ();
 
   connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
@@ -597,10 +604,10 @@ main_window::construct ()
   // Setup dockable widgets and the status bar.
   _workspace_view           = new workspace_view (this);
 
-  _workspace_view->setModel (&_workspace_model);
+  _workspace_view->setModel (_workspace_model);
   _workspace_view->setStatusTip (tr ("View the variables in the active workspace."));
 
-  connect (&_workspace_model, SIGNAL (model_changed ()),
+  connect (_workspace_model, SIGNAL (model_changed ()),
            _workspace_view, SLOT (model_changed ()));
 
   _documentation_dock_widget= new documentation_dock_widget (this);
@@ -955,16 +962,16 @@ main_window::construct ()
   connect (about_octave_action,         SIGNAL (triggered ()),
            this,                        SLOT   (show_about_octave ()));
   connect (show_command_window_action,  SIGNAL (toggled (bool)),
-           &command_window,             SLOT   (setVisible (bool)));
-  connect (&command_window,             SIGNAL (active_changed (bool)),
+           command_window,              SLOT   (setVisible (bool)));
+  connect (command_window,              SIGNAL (active_changed (bool)),
            show_command_window_action,  SLOT   (setChecked (bool)));
   connect (show_workspace_action,       SIGNAL (toggled (bool)),
            _workspace_view,             SLOT   (setVisible (bool)));
   connect (_workspace_view,             SIGNAL (active_changed (bool)),
            show_workspace_action,       SLOT   (setChecked (bool)));
   connect (show_history_action,         SIGNAL (toggled (bool)),
-           &history_window,             SLOT   (setVisible (bool)));
-  connect (&history_window,             SIGNAL (active_changed (bool)),
+           history_window,              SLOT   (setVisible (bool)));
+  connect (history_window,              SIGNAL (active_changed (bool)),
            show_history_action,         SLOT   (setChecked (bool)));
   connect (show_file_browser_action,    SIGNAL (toggled (bool)),
            file_browser_window,         SLOT   (setVisible (bool)));
@@ -982,12 +989,12 @@ main_window::construct ()
            show_documentation_action,   SLOT   (setChecked (bool)));
 
   connect (command_window_action,       SIGNAL (triggered ()),
-           &command_window,             SLOT (focus ()));
+           command_window,              SLOT (focus ()));
 
   connect (workspace_action,            SIGNAL (triggered ()),
            this,                        SLOT (focus_workspace ()));
   connect (history_action,              SIGNAL (triggered ()),
-           &history_window,             SLOT (focus ()));
+           history_window,              SLOT (focus ()));
   connect (file_browser_action,         SIGNAL (triggered ()),
            file_browser_window,         SLOT (focus ()));
   connect (editor_action,               SIGNAL (triggered ()),
@@ -1004,7 +1011,7 @@ main_window::construct ()
            _file_editor,                SLOT   (notice_settings (const QSettings *)));
 #endif
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
-           &command_window,             SLOT   (notice_settings (const QSettings *)));
+           command_window,              SLOT   (notice_settings (const QSettings *)));
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
            file_browser_window,         SLOT   (notice_settings (const QSettings *)));
   connect (this,                        SIGNAL (settings_changed (const QSettings *)),
@@ -1014,7 +1021,7 @@ main_window::construct ()
   connect (file_browser_window,         SIGNAL (displayed_directory_changed(QString)),
            this,                        SLOT   (set_current_working_directory(QString)));
   connect (this,                        SIGNAL (relay_command_signal (const QString&)),
-           &command_window,             SLOT   (relay_command (const QString&)));
+           command_window,              SLOT   (relay_command (const QString&)));
   connect (save_workspace_action,       SIGNAL (triggered ()),
            this,                        SLOT   (handle_save_workspace_request ()));
   connect (load_workspace_action,       SIGNAL (triggered ()),
@@ -1026,9 +1033,9 @@ main_window::construct ()
   connect (current_directory_up_tool_button, SIGNAL (clicked ()),
            this,                        SLOT   (change_directory_up ()));
   connect (copy_action,                 SIGNAL (triggered()),
-           &command_window,             SLOT   (copyClipboard ()));
+           command_window,              SLOT   (copyClipboard ()));
   connect (paste_action,                SIGNAL (triggered()),
-           &command_window,             SLOT   (pasteClipboard ()));
+           command_window,              SLOT   (pasteClipboard ()));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (set_current_working_directory (QString)));
   connect (_current_directory_line_edit, SIGNAL (returnPressed ()),
@@ -1049,16 +1056,16 @@ main_window::construct ()
 
   setWindowTitle ("Octave");
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
-  addDockWidget (Qt::RightDockWidgetArea, &command_window);
+  addDockWidget (Qt::RightDockWidgetArea, command_window);
   addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
-  tabifyDockWidget (&command_window, _documentation_dock_widget);
+  tabifyDockWidget (command_window, _documentation_dock_widget);
 #ifdef HAVE_QSCINTILLA
   addDockWidget (Qt::RightDockWidgetArea, _file_editor);
-  tabifyDockWidget (&command_window, _file_editor);
+  tabifyDockWidget (command_window, _file_editor);
 #endif
   addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
   addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
-  addDockWidget (Qt::LeftDockWidgetArea, &history_window);
+  addDockWidget (Qt::LeftDockWidgetArea, history_window);
 
   int win_x = QApplication::desktop()->width();
   int win_y = QApplication::desktop()->height();
@@ -1068,7 +1075,7 @@ main_window::construct ()
     win_y = 720;
   setGeometry (0,0,win_x,win_y);
 
-  setStatusBar (&status_bar);
+  setStatusBar (status_bar);
 
   _octave_qt_event_listener = new octave_qt_event_listener ();
 
@@ -1086,15 +1093,15 @@ main_window::construct ()
 
   connect (_octave_qt_link,
            SIGNAL (set_history_signal (const QStringList&)),
-           &history_window, SLOT (set_history (const QStringList&)));
+           history_window, SLOT (set_history (const QStringList&)));
 
   connect (_octave_qt_link,
            SIGNAL (append_history_signal (const QString&)),
-           &history_window, SLOT (append_history (const QString&)));
+           history_window, SLOT (append_history (const QString&)));
 
   connect (_octave_qt_link,
            SIGNAL (clear_history_signal (void)),
-           &history_window, SLOT (clear_history (void)));
+           history_window, SLOT (clear_history (void)));
 
   connect (_octave_qt_link, SIGNAL (enter_debugger_signal ()),
            this, SLOT (handle_enter_debugger ()));

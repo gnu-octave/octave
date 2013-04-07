@@ -152,14 +152,14 @@ private:
   void exit_callback (void);
 
   // Data models.
-  workspace_model _workspace_model;
+  workspace_model *_workspace_model;
 
   // Toolbars.
-  QStatusBar status_bar;
+  QStatusBar *status_bar;
 
   // Subwindows.
-  terminal_dock_widget command_window;
-  history_dock_widget history_window;
+  terminal_dock_widget *command_window;
+  history_dock_widget *history_window;
   files_dock_widget *file_browser_window;
 
 #ifdef HAVE_QSCINTILLA

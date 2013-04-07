@@ -20,41 +20,66 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef OCTAVEDOCKWIDGET_H
-#define OCTAVEDOCKWIDGET_H
+#if !defined (octave_dock_widget_h)
+#define octave_dock_widget_h 1
 
 #include <QDockWidget>
-//#include <QMenu>
-//#include <QToolBar>
 
 class octave_dock_widget : public QDockWidget
 {
   Q_OBJECT
 
-  public:
+public:
+
   octave_dock_widget (QWidget *p)
     : QDockWidget (p)
   {
     connect (this, SIGNAL (visibilityChanged (bool)),
              this, SLOT (handle_visibility_changed (bool)));
 
-    connect (this, SIGNAL (topLevelChanged(bool)),
-             this, SLOT(top_level_changed(bool)));
+    connect (this, SIGNAL (topLevelChanged (bool)),
+             this, SLOT (top_level_changed (bool)));
   }
 
   virtual ~octave_dock_widget () { }
 
+  virtual void connect_visibility_changed (void)
+  {
+    connect (this, SIGNAL (visibilityChanged (bool)),
+             this, SLOT (handle_visibility (bool)));
+  }
+
 signals:
-  /** Custom signal that tells if a user has clicked away
+
+  /** Custom signal that tells whether a user has clicked away
    *  that dock widget, i.e the active dock widget has
    *  changed. */
   void active_changed (bool active);
 
 protected:
+
   virtual void closeEvent (QCloseEvent *e)
   {
     emit active_changed (false);
     QDockWidget::closeEvent (e);
+  }
+
+public slots:
+
+  virtual void focus (void)
+  {
+    if (! isVisible ())
+      setVisible (true);
+
+    setFocus ();
+    activateWindow ();
+    raise ();
+  }
+
+  virtual void handle_visibility (bool visible)
+  {
+    if (visible && ! isFloating ())
+      focus ();
   }
 
 protected slots:
@@ -69,13 +94,14 @@ protected slots:
   /** Slot when floating property changes */
   virtual void top_level_changed (bool floating)
   {
-    if(floating)
+    if (floating)
       {
-        setWindowFlags(Qt::Window);  // make a window from the widget when floating
-        show();                      // make it visible again since setWindowFlags hides it
+        // Make a window from the widget when floating and make it
+        // visible again since setWindowFlags hides it.
+        setWindowFlags (Qt::Window);
+        show();
       }
   }
-
 };
 
-#endif // OCTAVEDOCKWIDGET_H
+#endif

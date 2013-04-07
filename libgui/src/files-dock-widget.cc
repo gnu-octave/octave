@@ -136,13 +136,6 @@ files_dock_widget::~files_dock_widget ()
 }
 
 void
-files_dock_widget::connect_visibility_changed (void)
-{
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility (bool)));
-}
-
-void
 files_dock_widget::item_double_clicked (const QModelIndex& index)
 {
   // Retrieve the file info associated with the model index.
@@ -211,22 +204,3 @@ files_dock_widget::notice_settings (const QSettings *settings)
       // TODO: React on option for hidden files.
     }
 }
-
-void
-files_dock_widget::focus (void)
-{
-  if (! isVisible ())
-    setVisible (true);
-
-  setFocus ();
-  activateWindow ();
-  raise ();
-}
-
-void
-files_dock_widget::handle_visibility (bool visible)
-{
-  if (visible && ! isFloating ())
-    focus ();
-}
-

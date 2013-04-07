@@ -37,15 +37,9 @@ public:
 
   terminal_dock_widget (QWidget *parent = 0);
 
-  void connect_visibility_changed (void);
-
 signals:
 
 public slots:
-
-  void focus (void);
-
-  void handle_visibility (bool visible);
 
   void notice_settings (const QSettings *settings);
 
@@ -54,6 +48,8 @@ public slots:
   void copyClipboard (void);
 
   void pasteClipboard (void);
+
+  void focus (void);
 
 signals:
 

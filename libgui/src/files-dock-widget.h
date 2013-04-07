@@ -53,8 +53,6 @@ public:
 
   ~files_dock_widget ();
 
-  void connect_visibility_changed (void);
-
 public slots:
 
   /** Slot for handling a change in directory via double click. */
@@ -74,20 +72,16 @@ public slots:
   /** Tells the widget to react on changed settings. */
   void notice_settings (const QSettings *settings);
 
-  void focus (void);
-
-  void handle_visibility (bool visible);
-
 signals:
+
   /** Emitted, whenever the user requested to open a file. */
   void open_file (const QString& fileName);
 
   /** Emitted, whenever the currently displayed directory changed. */
   void displayed_directory_changed (const QString& dir);
 
-protected:
-
 private:
+
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
 
   /** Toolbar for file and directory manipulation. */

@@ -35,14 +35,6 @@ public:
 
   documentation_dock_widget (QWidget *parent = 0);
 
-  void connect_visibility_changed (void);
-
-public slots:
-
-  void focus (void);
-
-  void handle_visibility (bool);
-
 private:
 
   webinfo *_webinfo;

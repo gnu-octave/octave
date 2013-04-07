@@ -54,13 +54,6 @@ history_dock_widget::history_dock_widget (QWidget *p)
 }
 
 void
-history_dock_widget::connect_visibility_changed (void)
-{
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility (bool)));
-}
-
-void
 history_dock_widget::construct ()
 {
   _history_model = new QStringListModel ();
@@ -176,22 +169,3 @@ history_dock_widget::clear_history (void)
 {
   _history_model->setStringList (QStringList ());
 }
-
-void
-history_dock_widget::focus (void)
-{
-  if (! isVisible ())
-    setVisible (true);
-
-  setFocus ();
-  activateWindow ();
-  raise ();
-}
-
-void
-history_dock_widget::handle_visibility (bool visible)
-{
-  if (visible && ! isFloating ())
-    focus ();
-}
-

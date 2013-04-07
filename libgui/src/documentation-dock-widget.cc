@@ -37,28 +37,3 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
   _webinfo = new webinfo (this);
   setWidget (_webinfo);
 }
-
-void
-documentation_dock_widget::connect_visibility_changed (void)
-{
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility (bool)));
-}
-
-void
-documentation_dock_widget::focus (void)
-{
-  if (! isVisible ())
-    setVisible (true);
-
-  setFocus ();
-  activateWindow ();
-  raise ();
-}
-
-void
-documentation_dock_widget::handle_visibility (bool visible)
-{
-  if (visible && ! isFloating ())
-    focus ();
-}

@@ -47,11 +47,6 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   connect (parent (), SIGNAL (relay_command_signal (const QString&)),
            this, SLOT (relay_command (const QString&)));
 
-  // topLevelChanged is emitted when floating property changes (floating
-  // = true)
-  connect (this, SIGNAL (topLevelChanged (bool)),
-           this, SLOT (top_level_changed (bool)));
-
   // Forward signals to QTerminal widget.
 
   connect (this, SIGNAL (notice_settings_signal (const QSettings *)),
@@ -65,37 +60,6 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
 
   connect (this, SIGNAL (pasteClipboard_signal (void)),
            &terminal, SLOT (pasteClipboard (void)));
-}
-
-void
-terminal_dock_widget::connect_visibility_changed (void)
-{
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility_changed (bool)));
-}
-
-void
-terminal_dock_widget::focus (void)
-{
-  if (! isVisible ())
-    setVisible (true);
-
-  setFocus ();
-  activateWindow ();
-  raise ();
-
-  widget ()->setFocus ();
-  widget ()->activateWindow ();
-  widget ()->raise ();
-}
-
-void
-terminal_dock_widget::handle_visibility (bool visible)
-{
-  // if widget is changed to visible and is not floating
-
-  if (visible && ! isFloating ())
-    focus ();
 }
 
 void
@@ -120,4 +84,16 @@ void
 terminal_dock_widget::pasteClipboard (void)
 {
   emit pasteClipboard_signal ();
+}
+
+void
+terminal_dock_widget::focus (void)
+{
+  octave_dock_widget::focus ();
+
+  QWidget *w = widget ();
+
+  w->setFocus ();
+  w->activateWindow ();
+  w->raise ();
 }

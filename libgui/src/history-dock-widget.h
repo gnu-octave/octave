@@ -37,16 +37,11 @@ public:
 
   history_dock_widget (QWidget *parent = 0);
 
-  void connect_visibility_changed (void);
-
 public slots:
 
   void set_history (const QStringList& hist);
   void append_history (const QString& hist_entry);
   void clear_history (void);
-
-  void focus (void);
-  void handle_visibility (bool);
 
 signals:
 

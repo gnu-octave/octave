@@ -61,6 +61,8 @@ class file_editor_interface : public octave_dock_widget
 
   virtual void set_focus () = 0;
 
+  virtual void connect_visibility_changed (void) = 0;
+
 public slots:
   virtual void request_new_file (const QString& command = QString ()) = 0;
   virtual void request_open_file () = 0;

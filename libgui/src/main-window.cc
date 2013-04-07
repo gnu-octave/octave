@@ -55,6 +55,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-hist.h"
 #include "oct-env.h"
 
+static file_editor_interface *
+create_default_editor (QWidget *p)
+{
+#ifdef HAVE_QSCINTILLA
+  return new file_editor (p);
+#else
+  return 0;
+#endif
+}
+
 main_window::main_window (QWidget *p)
   : QMainWindow (p),
     _workspace_model (new workspace_model ()),
@@ -62,7 +72,8 @@ main_window::main_window (QWidget *p)
     command_window (new terminal_dock_widget (this)),
     history_window (new history_dock_widget (this)),
     file_browser_window (new files_dock_widget (this)),
-    doc_browser_window (new documentation_dock_widget (this))
+    doc_browser_window (new documentation_dock_widget (this)),
+    editor_window (create_default_editor (this))
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -76,6 +87,7 @@ main_window::~main_window (void)
   delete history_window;
   delete file_browser_window;
   delete doc_browser_window;
+  delete editor_window;
 
   // Clean up all dynamically created objects to ensure they are
   // deleted before this main_window is.  Otherwise, some will be
@@ -86,11 +98,6 @@ main_window::~main_window (void)
 
   octave_link::connect_link (0);
   delete _octave_qt_link;
-
-#ifdef HAVE_QSCINTILLA
-  if (_file_editor)
-    delete _file_editor;
-#endif
 
   delete _workspace_view;
 }
@@ -104,25 +111,13 @@ main_window::focus_command_window (void)
 void
 main_window::new_file (const QString& commands)
 {
-#ifdef HAVE_QSCINTILLA
-  _file_editor->request_new_file (commands);
-#endif
-}
-
-void
-main_window::open_file (void)
-{
-#ifdef HAVE_QSCINTILLA
-  _file_editor->request_open_file ();
-#endif
+  emit new_file_signal (commands);
 }
 
 void
 main_window::open_file (const QString& file_name)
 {
-#ifdef HAVE_QSCINTILLA
-  _file_editor->request_open_file (file_name);
-#endif
+  emit open_file_signal (file_name);
 }
 
 void
@@ -372,30 +367,11 @@ main_window::focus_workspace (void)
 
 
 void
-main_window::focus_editor (void)
-{
-#ifdef HAVE_QSCINTILLA
-  // call own function of editor in order to set focus to the current editor tab
-  _file_editor->set_focus ();
-#endif
-}
-
-void
 main_window::handle_workspace_visible (bool visible)
 {
   // if changed to visible and widget is not floating
   if (visible && !_workspace_view->isFloating ())
     focus_workspace ();
-}
-
-void
-main_window::handle_editor_visible (bool visible)
-{
-  // if changed to visible and widget is not floating
-#ifdef HAVE_QSCINTILLA
-  if (visible && !_file_editor->isFloating ())
-    focus_editor ();
-#endif
 }
 
 void
@@ -410,7 +386,7 @@ main_window::handle_enter_debugger (void)
   _debug_quit->setEnabled (true);
 
 #ifdef HAVE_QSCINTILLA
-  _file_editor->handle_enter_debug_mode ();
+  editor_window->handle_enter_debug_mode ();
 #endif
 }
 
@@ -426,7 +402,7 @@ main_window::handle_exit_debugger (void)
   _debug_quit->setEnabled (false);
 
 #ifdef HAVE_QSCINTILLA
-  _file_editor->handle_exit_debug_mode ();
+  editor_window->handle_exit_debug_mode ();
 #endif
 }
 
@@ -564,15 +540,12 @@ main_window::connect_visibility_changed (void)
   history_window->connect_visibility_changed ();
   file_browser_window->connect_visibility_changed ();
   doc_browser_window->connect_visibility_changed ();
+#ifdef HAVE_QSCINTILLA
+  editor_window->connect_visibility_changed ();
+#endif
 
   connect (_workspace_view, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_workspace_visible (bool)));
-
-#ifdef HAVE_QSCINTILLA
-  connect (_file_editor, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_editor_visible (bool)));
-#endif
-
 }
 
 
@@ -603,10 +576,6 @@ main_window::construct (void)
   dummyWidget->hide ();
   setCentralWidget (dummyWidget);
 
-#ifdef HAVE_QSCINTILLA
-  _file_editor = new file_editor (this);
-#endif
-
   construct_menu_bar ();
 
   construct_tool_bar ();
@@ -628,8 +597,8 @@ main_window::construct (void)
   tabifyDockWidget (command_window, doc_browser_window);
 
 #ifdef HAVE_QSCINTILLA
-  addDockWidget (Qt::RightDockWidgetArea, _file_editor);
-  tabifyDockWidget (command_window, _file_editor);
+  addDockWidget (Qt::RightDockWidgetArea, editor_window);
+  tabifyDockWidget (command_window, editor_window);
 #endif
 
   addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
@@ -690,22 +659,22 @@ main_window::construct_octave_qt_link (void)
 
   connect (_octave_qt_link,
            SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
-           _file_editor,
+           editor_window,
            SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
 
   connect (_octave_qt_link,
            SIGNAL (edit_file_signal (const QString&)),
-           _file_editor,
+           editor_window,
            SLOT (handle_edit_file_request (const QString&)));
 
   connect (_octave_qt_link,
            SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-           _file_editor,
+           editor_window,
            SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
 
   connect (_octave_qt_link,
            SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-           _file_editor,
+           editor_window,
            SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
 
   _octave_qt_link->execute_interpreter ();
@@ -747,7 +716,7 @@ main_window::construct_file_menu (QMenuBar *p)
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
 
 #ifdef HAVE_QSCINTILLA
-  file_menu->addMenu (_file_editor->get_mru_menu ());
+  file_menu->addMenu (editor_window->get_mru_menu ());
 #endif
 
   QAction *close_command_window_action
@@ -794,7 +763,7 @@ main_window::construct_file_menu (QMenuBar *p)
            this, SLOT (process_settings_dialog_request ()));
 
   connect (_open_action, SIGNAL (triggered ()),
-           this, SLOT (open_file ()));
+           editor_window, SLOT (request_open_file ()));
 
   connect (save_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_save_workspace_request ()));
@@ -835,7 +804,7 @@ main_window::construct_new_menu (QMenu *p)
   new_gui_action->setEnabled (false); // TODO: Make this work.
 
   connect (_new_script_action, SIGNAL (triggered ()),
-           this, SLOT (new_file ()));
+           editor_window, SLOT (request_new_file ()));
 }
 
 void
@@ -929,8 +898,8 @@ main_window::construct_debug_menu_item (const char *icon_file,
   action->setShortcut (Qt::Key_F10);
 
 #ifdef HAVE_QSCINTILLA
-  _file_editor->debug_menu ()->addAction (action);
-  _file_editor->toolbar ()->addAction (action);
+  editor_window->debug_menu ()->addAction (action);
+  editor_window->toolbar ()->addAction (action);
 #endif
 
   return action;
@@ -956,7 +925,7 @@ main_window::construct_debug_menu (QMenuBar *p)
 
   _debug_menu->addSeparator ();
 #ifdef HAVE_QSCINTILLA
-  _file_editor->debug_menu ()->addSeparator ();
+  editor_window->debug_menu ()->addSeparator ();
 #endif
 
   _debug_quit = construct_debug_menu_item
@@ -1083,9 +1052,9 @@ main_window::construct_window_menu (QMenuBar *p)
 
 #ifdef HAVE_QSCINTILLA
   connect (show_editor_action, SIGNAL (toggled (bool)),
-           _file_editor, SLOT (setVisible (bool)));
+           editor_window, SLOT (setVisible (bool)));
 
-  connect (_file_editor, SIGNAL (active_changed (bool)),
+  connect (editor_window, SIGNAL (active_changed (bool)),
            show_editor_action, SLOT (setChecked (bool)));
 #endif
 
@@ -1108,7 +1077,7 @@ main_window::construct_window_menu (QMenuBar *p)
            file_browser_window, SLOT (focus ()));
 
   connect (editor_action, SIGNAL (triggered ()),
-           this, SLOT (focus_editor ()));
+           editor_window, SLOT (focus ()));
 
   connect (documentation_action, SIGNAL (triggered ()),
            doc_browser_window, SLOT (focus ()));

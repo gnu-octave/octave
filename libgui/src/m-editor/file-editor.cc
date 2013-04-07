@@ -73,6 +73,26 @@ file_editor::~file_editor ()
     delete _mru_file_menu;
 }
 
+void
+file_editor::focus (void)
+{
+  set_focus ();
+}
+
+void
+file_editor::handle_visibility (bool visible)
+{
+  if (visible && ! isFloating ())
+    focus ();
+}
+
+void
+file_editor::connect_visibility_changed (void)
+{
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility (bool)));
+}
+
 // set focus to editor and its current tab
 void
 file_editor::set_focus ()
@@ -803,6 +823,12 @@ file_editor::construct ()
 
   connect (parent (), SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
+
+  connect (parent (), SIGNAL (new_file_signal (const QString&)),
+           this, SLOT (request_new_file (const QString&)));
+
+  connect (parent (), SIGNAL (open_file_signal (const QString&)),
+           this, SLOT (request_open_file (const QString&)));
 
   connect (new_action,
            SIGNAL (triggered ()), this, SLOT (request_new_file ()));

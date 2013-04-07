@@ -47,9 +47,13 @@ class file_editor : public file_editor_interface
 {
   Q_OBJECT
 
-  public:
+public:
+
   file_editor (QWidget *p);
   ~file_editor ();
+
+  void connect_visibility_changed (void);
+
   void loadFile (const QString& fileName);
 
   QMenu *           get_mru_menu ( ) { return _mru_file_menu; }
@@ -96,6 +100,9 @@ signals:
   void fetab_set_focus (const QWidget* ID);
 
 public slots:
+  void focus (void);
+  void handle_visibility (bool visible);
+
   void request_new_file (const QString& commands);
   void request_open_file ();
   void request_mru_open_file ();

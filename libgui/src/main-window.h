@@ -74,6 +74,8 @@ public:
 signals:
   void settings_changed (const QSettings *);
   void relay_command_signal (const QString&);
+  void new_file_signal (const QString&);
+  void open_file_signal (const QString&);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -82,8 +84,7 @@ public slots:
   void handle_clear_workspace_request (void);
   void handle_clear_history_request (void);
   void new_file (const QString& commands = QString ());
-  void open_file (void);
-  void open_file (const QString& file_name);
+  void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
   void open_bug_tracker_page (void);
   void open_octave_forge_page (void);
@@ -104,9 +105,7 @@ public slots:
   void handle_command_double_clicked (const QString& command);
 
   void focus_workspace (void);
-  void focus_editor (void);
   void handle_workspace_visible (bool);
-  void handle_editor_visible (bool);
 
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
@@ -184,10 +183,7 @@ private:
   history_dock_widget *history_window;
   files_dock_widget *file_browser_window;
   documentation_dock_widget *doc_browser_window;
-
-#ifdef HAVE_QSCINTILLA
-  file_editor_interface *_file_editor;
-#endif
+  file_editor_interface *editor_window;
 
   QMenu *_debug_menu;
 

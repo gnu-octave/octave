@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -33,19 +34,20 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 
 workspace_view::workspace_view (QWidget *p)
-  : QDockWidget (p)
+  : octave_dock_widget (p)
 {
   setObjectName ("WorkspaceView");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Workspace"));
   setStatusTip (tr ("View the variables in the active workspace."));
 
-  view = new QTreeView (this);            // Create a new tree view.
-  view->setHeaderHidden (false);          // Do not show header columns.
-  view->setAlternatingRowColors (true);   // Activate alternating row colors.
-  view->setAnimated (false);              // Deactivate animations because of strange glitches.
-  view->setTextElideMode (Qt::ElideRight);// Elide text to the right side of the cells.
-  view->setWordWrap (false);              // No wordwrapping in cells.
+  view = new QTreeView (this);
+
+  view->setHeaderHidden (false);
+  view->setAlternatingRowColors (true);
+  view->setAnimated (false);
+  view->setTextElideMode (Qt::ElideRight);
+  view->setWordWrap (false);
   view->setContextMenuPolicy (Qt::CustomContextMenu);
 
   // Set an empty widget, so we can assign a layout to it.
@@ -65,13 +67,18 @@ workspace_view::workspace_view (QWidget *p)
 
   // FIXME -- what should happen if settings is 0?
 
-  _explicit_collapse.local      = settings->value ("workspaceview/local_collapsed", false).toBool ();
-  _explicit_collapse.global     = settings->value ("workspaceview/global_collapsed", false).toBool ();;
-  _explicit_collapse.persistent = settings->value ("workspaceview/persistent_collapsed", false).toBool ();;
+  _explicit_collapse.local
+    = settings->value ("workspaceview/local_collapsed", false).toBool ();
+
+  _explicit_collapse.global
+    = settings->value ("workspaceview/global_collapsed", false).toBool ();
+
+  _explicit_collapse.persistent
+    = settings->value ("workspaceview/persistent_collapsed", false).toBool ();
 
   // Initialize column order and width of the workspace
   
-  view->header ()->restoreState (settings->value("workspaceview/column_state").toByteArray ());
+  view->header ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
 
   // Connect signals and slots.
   connect (view, SIGNAL (collapsed (QModelIndex)),
@@ -88,27 +95,25 @@ workspace_view::workspace_view (QWidget *p)
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (handle_command_double_clicked(const QString&)));
-
-  // topLevelChanged is emitted when floating property changes (floating = true)
-  connect (this, SIGNAL (topLevelChanged(bool)), this, SLOT(top_level_changed(bool)));
-
 }
 
-workspace_view::~workspace_view ()
+workspace_view::~workspace_view (void)
 {
   QSettings *settings = resource_manager::get_settings ();
-  settings->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
-  settings->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
-  settings->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
-  settings->setValue("workspaceview/column_state", view->header ()->saveState ());
-  settings->sync ();
-}
 
-void
-workspace_view::connect_visibility_changed (void)
-{
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility (bool)));
+  settings->setValue ("workspaceview/local_collapsed",
+                      _explicit_collapse.local);
+
+  settings->setValue ("workspaceview/global_collapsed",
+                      _explicit_collapse.global);
+
+  settings->setValue ("workspaceview/persistent_collapsed",
+                      _explicit_collapse.persistent);
+
+  settings->setValue("workspaceview/column_state",
+                     view->header ()->saveState ());
+
+  settings->sync ();
 }
 
 void
@@ -136,23 +141,20 @@ workspace_view::model_changed ()
   QModelIndex global_model_index = m->index (1, 0);
   QModelIndex persistent_model_index = m->index (2, 0);
 
-  if (_explicit_collapse.local) {
+  if (_explicit_collapse.local)
     view->collapse (local_model_index);
-  } else {
+  else
     view->expand (local_model_index);
-  }
 
-  if (_explicit_collapse.global) {
+  if (_explicit_collapse.global)
     view->collapse (global_model_index);
-  } else {
+  else
     view->expand (global_model_index);
-  }
 
-  if (_explicit_collapse.persistent) {
+  if (_explicit_collapse.persistent)
     view->collapse (persistent_model_index);
-  } else {
+  else
     view->expand (persistent_model_index);
-  }
 }
 
 void
@@ -177,8 +179,10 @@ workspace_view::collapse_requested (QModelIndex index)
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = true;
+
   if (item_data[0] == "Global")
     _explicit_collapse.global = true;
+
   if (item_data[0] == "Persistent")
     _explicit_collapse.persistent = true;
 }
@@ -205,8 +209,10 @@ workspace_view::expand_requested (QModelIndex index)
 
   if (item_data[0] == "Local")
     _explicit_collapse.local = false;
+
   if (item_data[0] == "Global")
     _explicit_collapse.global = false;
+
   if (item_data[0] == "Persistent")
     _explicit_collapse.persistent = false;
 }
@@ -214,7 +220,8 @@ workspace_view::expand_requested (QModelIndex index)
 void
 workspace_view::item_double_clicked (QModelIndex)
 {
-  // TODO: Implement opening a dialog that allows the user to change a variable in the workspace.
+  // TODO: Implement opening a dialog that allows the user to change a
+  // variable in the workspace.
 }
 
 void
@@ -222,36 +229,6 @@ workspace_view::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
   QDockWidget::closeEvent (e);
-}
-
-// slot for signal that is emitted when floating property changes
-void
-workspace_view::top_level_changed (bool floating)
-{
-  if(floating)
-    {
-      setWindowFlags(Qt::Window);  // make a window from the widget when floating
-      show();                      // make it visible again since setWindowFlags hides it
-    }
-}
-
-void
-workspace_view::focus (void)
-{
-  if (! isVisible ())
-    setVisible (true);
-
-  setFocus ();
-  activateWindow ();
-  raise ();
-}
-
-void
-workspace_view::handle_visibility (bool visible)
-{
-  // if changed to visible and widget is not floating
-  if (visible && ! isFloating ())
-    focus ();
 }
 
 void
@@ -291,7 +268,7 @@ workspace_view::handle_contextmenu_disp (void)
 void
 workspace_view::handle_contextmenu_plot (void)
 {
-  relay_contextmenu_command("figure;\nplot"); 
+  relay_contextmenu_command ("figure;\nplot"); 
 }
 
 void

@@ -55,11 +55,16 @@ signals:
   /** Emitted, whenever the user double-clicked a command in the history. */
   void command_double_clicked (const QString& command);
 
+  /** Emitted whenever the user selects command and chooses Create
+      script from popupmenu. */
+  void command_create_script (const QString& commands);
+
 private slots:
 
   void handle_double_click (QModelIndex modelIndex);
   void handle_contextmenu_copy(bool flag);
   void handle_contextmenu_evaluate(bool flag);
+  void handle_contextmenu_create_script(bool flag);
   void ctxMenu(const QPoint &pos);
 
 private:

@@ -794,10 +794,10 @@ file_editor_tab::load_file(const QString& fileName)
 }
 
 void
-file_editor_tab::new_file ()
+file_editor_tab::new_file (const QString &commands)
 {
   update_window_title (false); // window title (no modification)
-  _edit_area->setText ("");
+  _edit_area->setText (commands);
   _edit_area->setModified (false); // new file is not modified yet
 }
 

@@ -1,6 +1,5 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -81,7 +80,7 @@ public slots:
   void handle_load_workspace_request ();
   void handle_clear_workspace_request ();
   void handle_clear_history_request (void);
-  void new_file ();
+  void new_file (const QString& commands = QString ());
   void open_file ();
   void open_file (const QString& file_name);
   void open_online_documentation_page ();

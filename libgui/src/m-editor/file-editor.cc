@@ -112,7 +112,7 @@ file_editor::handle_exit_debug_mode (void)
 }
 
 void
-file_editor::request_new_file ()
+file_editor::request_new_file (const QString& commands)
 {
   // New file isn't a file_editor_tab function since the file
   // editor tab has yet to be created and there is no object to
@@ -122,7 +122,7 @@ file_editor::request_new_file ()
   if (fileEditorTab)
     {
       add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
-      fileEditorTab->new_file ();               // title is updated here
+      fileEditorTab->new_file (commands);       // title is updated here
       set_focus ();                             // focus editor and new tab
     }
 }

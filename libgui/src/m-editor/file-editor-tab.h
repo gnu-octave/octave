@@ -87,7 +87,7 @@ public slots:
   void set_modified (bool modified = true);
 
   QString load_file (const QString& fileName);
-  void new_file ();
+  void new_file (const QString& commands = QString ());
 
   void file_has_changed (const QString& fileName);
 

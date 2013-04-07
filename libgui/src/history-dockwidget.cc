@@ -98,6 +98,7 @@ void history_dock_widget::ctxMenu(const QPoint &xpos) {
     QMenu menu(this);
     menu.addAction(tr("Copy"), this, SLOT(handle_contextmenu_copy(bool)));
     menu.addAction(tr("Evaluate"), this, SLOT(handle_contextmenu_evaluate(bool)));
+    menu.addAction(tr("Create script"), this, SLOT(handle_contextmenu_create_script(bool)));
     menu.exec(_history_list_view->mapToGlobal(xpos));
 }
 
@@ -126,6 +127,24 @@ void history_dock_widget::handle_contextmenu_evaluate(bool)
     }
   }
 }
+
+void
+history_dock_widget::handle_contextmenu_create_script (bool)
+{
+  QString text;
+  QItemSelectionModel *selectionModel = _history_list_view->selectionModel ();
+  QModelIndexList rows = selectionModel->selectedRows ();
+
+  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    {
+      if ((*it).isValid ())
+        text += (*it).data().toString() + "\n";
+    }
+
+  if (text.length () > 0)
+    emit command_create_script (text);
+}
+
 
 void
 history_dock_widget::handle_double_click (QModelIndex modelIndex)

@@ -96,7 +96,7 @@ signals:
   void fetab_set_focus (const QWidget* ID);
 
 public slots:
-  void request_new_file ();
+  void request_new_file (const QString& commands);
   void request_open_file ();
   void request_mru_open_file ();
   void request_print_file ();

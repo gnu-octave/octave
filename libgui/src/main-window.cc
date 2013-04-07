@@ -103,10 +103,10 @@ main_window::focus_command_window (void)
 }
 
 void
-main_window::new_file ()
+main_window::new_file (const QString& commands)
 {
 #ifdef HAVE_QSCINTILLA
-  _file_editor->request_new_file ();
+  _file_editor->request_new_file (commands);
 #endif
 }
 
@@ -1022,6 +1022,8 @@ main_window::construct ()
            this,                        SLOT   (set_current_working_directory(QString)));
   connect (this,                        SIGNAL (relay_command_signal (const QString&)),
            command_window,              SLOT   (relay_command (const QString&)));
+  connect (history_window,              SIGNAL (command_create_script (const QString&)),
+           this,                        SLOT   (new_file (const QString&)));
   connect (save_workspace_action,       SIGNAL (triggered ()),
            this,                        SLOT   (handle_save_workspace_request ()));
   connect (load_workspace_action,       SIGNAL (triggered ()),

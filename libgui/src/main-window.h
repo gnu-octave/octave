@@ -124,7 +124,31 @@ protected:
   void closeEvent (QCloseEvent * closeEvent);
 
 private:
+
   void construct ();
+
+  void construct_octave_qt_link (void);
+
+  void construct_menu_bar (void);
+  void construct_file_menu (QMenuBar *p);
+  void construct_new_menu (QMenu *p);
+  void construct_edit_menu (QMenuBar *p);
+  void construct_debug_menu_item (QMenu *p, const QString& item,
+                                  const QKeySequence& key);
+  QAction *construct_debug_menu_item (const char *icon_file,
+                                      const QString& item,
+                                      const QKeySequence& key);
+  void construct_debug_menu (QMenuBar *p);
+  void construct_desktop_menu (QMenuBar *p);
+  QAction *construct_window_menu_item (QMenu *p, const QString& item,
+                                       bool checkable,
+                                       const QKeySequence& key);
+  void construct_window_menu (QMenuBar *p);
+  void construct_help_menu (QMenuBar *p);
+  void construct_documentation_menu (QMenu *p);
+
+  void construct_tool_bar (void);
+
   void establish_octave_link ();
 
   void save_workspace_callback (const std::string& file);
@@ -164,13 +188,23 @@ private:
 #ifdef HAVE_QSCINTILLA
   file_editor_interface *   _file_editor;
 #endif
-  QMenu *                   _debug_menu;
 
-  QAction *                 _debug_continue;
-  QAction *                 _debug_step_into;
-  QAction *                 _debug_step_over;
-  QAction *                 _debug_step_out;
-  QAction *                 _debug_quit;
+  QMenu *_debug_menu;
+
+  QAction *_debug_continue;
+  QAction *_debug_step_into;
+  QAction *_debug_step_over;
+  QAction *_debug_step_out;
+  QAction *_debug_quit;
+
+  QAction *_new_script_action;
+  QAction *_open_action;
+
+  QAction *_cut_action;
+  QAction *_copy_action;
+  QAction *_paste_action;
+  QAction *_undo_action;
+  QAction *_redo_action;
 
   // Dock widgets.
   workspace_view *          _workspace_view;

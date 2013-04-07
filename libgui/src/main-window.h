@@ -67,7 +67,7 @@ public:
 
   main_window (QWidget *parent = 0);
 
-  ~main_window ();
+  ~main_window (void);
 
   void focus_command_window (void);
 
@@ -77,22 +77,22 @@ signals:
 
 public slots:
   void report_status_message (const QString& statusMessage);
-  void handle_save_workspace_request ();
-  void handle_load_workspace_request ();
-  void handle_clear_workspace_request ();
+  void handle_save_workspace_request (void);
+  void handle_load_workspace_request (void);
+  void handle_clear_workspace_request (void);
   void handle_clear_history_request (void);
   void new_file (const QString& commands = QString ());
-  void open_file ();
+  void open_file (void);
   void open_file (const QString& file_name);
-  void open_online_documentation_page ();
-  void open_bug_tracker_page ();
-  void open_octave_forge_page ();
-  void open_agora_page ();
-  void process_settings_dialog_request ();
-  void show_about_octave ();
+  void open_online_documentation_page (void);
+  void open_bug_tracker_page (void);
+  void open_octave_forge_page (void);
+  void open_agora_page (void);
+  void process_settings_dialog_request (void);
+  void show_about_octave (void);
   void notice_settings (const QSettings *settings);
-  void prepare_for_quit ();
-  void reset_windows ();
+  void prepare_for_quit (void);
+  void reset_windows (void);
   void update_workspace (void);
 
   void change_directory (const QString& dir);
@@ -103,29 +103,29 @@ public slots:
 
   void handle_command_double_clicked (const QString& command);
 
-  void focus_workspace ();
-  void focus_editor ();
+  void focus_workspace (void);
+  void focus_editor (void);
   void handle_workspace_visible (bool);
   void handle_editor_visible (bool);
 
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
-  void debug_continue ();
-  void debug_step_into ();
-  void debug_step_over ();
-  void debug_step_out ();
-  void debug_quit ();
+  void debug_continue (void);
+  void debug_step_into (void);
+  void debug_step_over (void);
+  void debug_step_out (void);
+  void debug_quit (void);
 
-  void read_settings ();
-  void write_settings ();
-  void connect_visibility_changed ();
+  void read_settings (void);
+  void write_settings (void);
+  void connect_visibility_changed (void);
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
 
 private:
 
-  void construct ();
+  void construct (void);
 
   void construct_octave_qt_link (void);
 
@@ -149,7 +149,7 @@ private:
 
   void construct_tool_bar (void);
 
-  void establish_octave_link ();
+  void establish_octave_link (void);
 
   void save_workspace_callback (const std::string& file);
 
@@ -186,7 +186,7 @@ private:
   documentation_dock_widget *doc_browser_window;
 
 #ifdef HAVE_QSCINTILLA
-  file_editor_interface *   _file_editor;
+  file_editor_interface *_file_editor;
 #endif
 
   QMenu *_debug_menu;
@@ -207,21 +207,21 @@ private:
   QAction *_redo_action;
 
   // Dock widgets.
-  workspace_view *          _workspace_view;
+  workspace_view *_workspace_view;
 
   // Toolbars.
-  QComboBox *               _current_directory_combo_box;
-  static const int        current_directory_width       = 300;
-  static const int        current_directory_max_visible = 16;
-  static const int        current_directory_max_count   = 16;
-  QLineEdit *               _current_directory_line_edit;
+  QComboBox *_current_directory_combo_box;
+  static const int current_directory_width = 300;
+  static const int current_directory_max_visible = 16;
+  static const int current_directory_max_count = 16;
+  QLineEdit *_current_directory_line_edit;
 
   octave_qt_event_listener *_octave_qt_event_listener;
 
   octave_qt_link *_octave_qt_link;
 
-  // Flag for closing whole application
-  bool                      _closing;
+  // Flag for closing whole application.
+  bool _closing;
 };
 
 #endif // MAINWINDOW_H

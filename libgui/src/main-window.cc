@@ -68,7 +68,7 @@ main_window::main_window (QWidget *p)
   construct ();
 }
 
-main_window::~main_window ()
+main_window::~main_window (void)
 {
   delete _workspace_model;
   delete status_bar;
@@ -110,7 +110,7 @@ main_window::new_file (const QString& commands)
 }
 
 void
-main_window::open_file ()
+main_window::open_file (void)
 {
 #ifdef HAVE_QSCINTILLA
   _file_editor->request_open_file ();
@@ -132,7 +132,7 @@ main_window::report_status_message (const QString& statusMessage)
 }
 
 void
-main_window::handle_save_workspace_request ()
+main_window::handle_save_workspace_request (void)
 {
   QString selectedFile =
     QFileDialog::getSaveFileName (this, tr ("Save Workspace As"),
@@ -143,7 +143,7 @@ main_window::handle_save_workspace_request ()
 }
 
 void
-main_window::handle_load_workspace_request ()
+main_window::handle_load_workspace_request (void)
 {
   QString selectedFile =
     QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
@@ -154,7 +154,7 @@ main_window::handle_load_workspace_request ()
 }
 
 void
-main_window::handle_clear_workspace_request ()
+main_window::handle_clear_workspace_request (void)
 {
   octave_link::post_event (this, &main_window::clear_workspace_callback);
 }
@@ -174,31 +174,31 @@ main_window::handle_command_double_clicked (const QString& command)
 }
 
 void
-main_window::open_online_documentation_page ()
+main_window::open_online_documentation_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://gnu.org/software/octave/doc/interpreter"));
 }
 
 void
-main_window::open_bug_tracker_page ()
+main_window::open_bug_tracker_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://bugs.octave.org"));
 }
 
 void
-main_window::open_octave_forge_page ()
+main_window::open_octave_forge_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://octave.sourceforge.net/"));
 }
 
 void
-main_window::open_agora_page ()
+main_window::open_agora_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://agora.octave.org/"));
 }
 
 void
-main_window::process_settings_dialog_request ()
+main_window::process_settings_dialog_request (void)
 {
   settings_dialog *settingsDialog = new settings_dialog (this);
   int change_settings = settingsDialog->exec ();
@@ -219,13 +219,15 @@ main_window::notice_settings (const QSettings *settings)
   // QSettings pointer is checked before emitting.
 
   // the widget's icons (when floating)
-  QString icon_set = settings->value ("DockWidgets/widget_icon_set","NONE").
-                                      toString ();
+  QString icon_set
+    = settings->value ("DockWidgets/widget_icon_set", "NONE").toString ();
+
   static struct
     {
       QString name;
       QString path;
     }
+
   widget_icon_data[] =
     { // array of possible icon sets (name, path (complete for NONE))
       // the first entry here is the default!
@@ -234,8 +236,10 @@ main_window::notice_settings (const QSettings *settings)
       {"LETTER",  ":/actions/icons/letter_logo_"},
       {"", ""} // end marker has empty name
     };
+
   int count = 0;
   int icon_set_found = 0; // default
+
   while (!widget_icon_data[count].name.isEmpty ())
     { // while not end of data
       if (widget_icon_data[count].name == icon_set)
@@ -245,11 +249,12 @@ main_window::notice_settings (const QSettings *settings)
         }
       count++;
     }
+
   QString icon;
   foreach (QObject *obj, children ())
     {
       QString name = obj->objectName ();
-      if (obj->inherits("QDockWidget") && ! name.isEmpty ())
+      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
         { // if children is a dockwidget with a name
           QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
           icon = widget_icon_data[icon_set_found].path; // prefix or octave-logo
@@ -264,7 +269,7 @@ main_window::notice_settings (const QSettings *settings)
 
 
 void
-main_window::prepare_for_quit ()
+main_window::prepare_for_quit (void)
 {
   write_settings ();
 }
@@ -353,7 +358,7 @@ main_window::accept_directory_line_edit (void)
 }
 
 void
-main_window::focus_workspace ()
+main_window::focus_workspace (void)
 {
   if (!_workspace_view->isVisible ())
     {
@@ -367,7 +372,7 @@ main_window::focus_workspace ()
 
 
 void
-main_window::focus_editor ()
+main_window::focus_editor (void)
 {
 #ifdef HAVE_QSCINTILLA
   // call own function of editor in order to set focus to the current editor tab
@@ -426,37 +431,37 @@ main_window::handle_exit_debugger (void)
 }
 
 void
-main_window::debug_continue ()
+main_window::debug_continue (void)
 {
   octave_link::post_event (this, &main_window::debug_continue_callback);
 }
 
 void
-main_window::debug_step_into ()
+main_window::debug_step_into (void)
 {
   octave_link::post_event (this, &main_window::debug_step_into_callback);
 }
 
 void
-main_window::debug_step_over ()
+main_window::debug_step_over (void)
 {
   octave_link::post_event (this, &main_window::debug_step_over_callback);
 }
 
 void
-main_window::debug_step_out ()
+main_window::debug_step_out (void)
 {
   octave_link::post_event (this, &main_window::debug_step_out_callback);
 }
 
 void
-main_window::debug_quit ()
+main_window::debug_quit (void)
 {
   octave_link::post_event (this, &main_window::debug_quit_callback);
 }
 
 void
-main_window::show_about_octave ()
+main_window::show_about_octave (void)
 {
   QString message = OCTAVE_STARTUP_MESSAGE;
 
@@ -471,7 +476,7 @@ main_window::closeEvent (QCloseEvent *e)
 }
 
 void
-main_window::read_settings ()
+main_window::read_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
   if (!settings)
@@ -486,13 +491,13 @@ main_window::read_settings ()
   foreach (QObject *obj, children ())
     {
       QString name = obj->objectName ();
-      if (obj->inherits("QDockWidget") && ! name.isEmpty ())
+      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
         {
           QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
           QVariant val = settings->value (name);
           widget->restoreGeometry (val.toByteArray ());
-          bool floating = settings->value (name+"Floating",false).toBool ();
-          bool visible = settings->value (name+"Visible",true).toBool ();
+          bool floating = settings->value (name+"Floating", false).toBool ();
+          bool visible = settings->value (name+"Visible", true).toBool ();
           if (floating)
             widget->setWindowFlags (Qt::Window); // if floating, make window from widget
           widget->setVisible (visible);          // make widget visible if desired (setWindowFlags hides widget)
@@ -510,7 +515,7 @@ main_window::read_settings ()
 }
 
 void
-main_window::write_settings ()
+main_window::write_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
   if (!settings)
@@ -531,10 +536,10 @@ main_window::write_settings ()
           settings->setValue (name, widget->saveGeometry ());
           bool floating = widget->isFloating ();
           bool visible = widget->isVisible ();
-          settings->setValue (name+"Floating",floating);  // store floating state
-          settings->setValue (name+"Visible",visible);    // store visibility
+          settings->setValue (name+"Floating", floating);  // store floating state
+          settings->setValue (name+"Visible", visible);    // store visibility
           if (floating)
-            widget->setWindowFlags(Qt::Widget); // if floating, recover the widget state such that the widget's
+            widget->setWindowFlags (Qt::Widget); // if floating, recover the widget state such that the widget's
         }                                       // state is correctly saved by the saveSate () below
     }
   settings->endGroup();
@@ -545,7 +550,7 @@ main_window::write_settings ()
     {
       curr_dirs.append (_current_directory_combo_box->itemText (i));
     }
-  settings->setValue ("MainWindow/current_directory_list",curr_dirs);
+  settings->setValue ("MainWindow/current_directory_list", curr_dirs);
   settings->sync ();
 }
 
@@ -553,19 +558,19 @@ main_window::write_settings ()
 // Connecting the signals emitted when the visibility of a widget changes.
 // This has to be done after the window is shown (see octave-gui.cc)
 void
-main_window::connect_visibility_changed ()
+main_window::connect_visibility_changed (void)
 {
   command_window->connect_visibility_changed ();
   history_window->connect_visibility_changed ();
   file_browser_window->connect_visibility_changed ();
   doc_browser_window->connect_visibility_changed ();
 
-  connect (_workspace_view,       SIGNAL (visibilityChanged (bool)),
-           this,                  SLOT (handle_workspace_visible (bool)));
+  connect (_workspace_view, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_workspace_visible (bool)));
 
 #ifdef HAVE_QSCINTILLA
-  connect (_file_editor,          SIGNAL (visibilityChanged (bool)),
-           this,                  SLOT (handle_editor_visible (bool)));
+  connect (_file_editor, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_editor_visible (bool)));
 #endif
 
 }
@@ -573,10 +578,10 @@ main_window::connect_visibility_changed ()
 
 // Main subroutine of the constructor
 void
-main_window::construct ()
+main_window::construct (void)
 {
   _closing = false;   // flag for editor files when closed
-  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
   // Setup dockable widgets and the status bar.
   _workspace_view           = new workspace_view (this);
@@ -736,7 +741,7 @@ main_window::construct_file_menu (QMenuBar *p)
   construct_new_menu (file_menu);
 
   _open_action
-    = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"),
+    = file_menu->addAction (QIcon (":/actions/icons/fileopen.png"),
                             tr ("Open..."));
   _open_action->setShortcut (QKeySequence::Open);
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
@@ -762,7 +767,7 @@ main_window::construct_file_menu (QMenuBar *p)
   file_menu->addSeparator ();
 
   QAction *preferences_action
-    = file_menu->addAction (QIcon(":/actions/icons/configure.png"),
+    = file_menu->addAction (QIcon (":/actions/icons/configure.png"),
                             tr ("Preferences..."));
 
   file_menu->addSeparator ();
@@ -804,7 +809,7 @@ main_window::construct_new_menu (QMenu *p)
   QMenu *new_menu = p->addMenu (tr ("New"));
 
   _new_script_action
-    = new_menu->addAction (QIcon(":/actions/icons/filenew.png"), tr ("Script"));
+    = new_menu->addAction (QIcon (":/actions/icons/filenew.png"), tr ("Script"));
   _new_script_action->setShortcut (QKeySequence::New);
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
@@ -841,25 +846,25 @@ main_window::construct_edit_menu (QMenuBar *p)
   QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
   _undo_action
-    = edit_menu->addAction (QIcon(":/actions/icons/undo.png"), tr ("Undo"));
+    = edit_menu->addAction (QIcon (":/actions/icons/undo.png"), tr ("Undo"));
   _undo_action->setShortcut (QKeySequence::Undo);
 
   _redo_action
-    = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
+    = edit_menu->addAction (QIcon (":/actions/icons/redo.png"), tr ("Redo"));
   _redo_action->setShortcut (QKeySequence::Redo);
 
   edit_menu->addSeparator ();
 
   _cut_action
-    = edit_menu->addAction (QIcon(":/actions/icons/editcut.png"), tr ("Cut"));
+    = edit_menu->addAction (QIcon (":/actions/icons/editcut.png"), tr ("Cut"));
   _cut_action->setShortcut (ctrl_shift + Qt::Key_X);
 
   _copy_action
-    = edit_menu->addAction (QIcon(":/actions/icons/editcopy.png"), tr ("Copy"));
+    = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"), tr ("Copy"));
   _copy_action->setShortcut (ctrl_shift + Qt::Key_C);
 
   _paste_action
-    = edit_menu->addAction (QIcon(":/actions/icons/editpaste.png"), tr ("Paste"));
+    = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"), tr ("Paste"));
   _paste_action->setShortcut (ctrl_shift + Qt::Key_V);
 
   QAction *paste_to_workspace_action
@@ -1196,10 +1201,10 @@ main_window::construct_tool_bar (void)
   _current_directory_combo_box->setMaxCount (current_directory_max_count);
 
   QToolButton *current_directory_tool_button = new QToolButton (this);
-  current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));
+  current_directory_tool_button->setIcon (QIcon (":/actions/icons/search.png"));
 
   QToolButton *current_directory_up_tool_button = new QToolButton (this);
-  current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
+  current_directory_up_tool_button->setIcon (QIcon (":/actions/icons/up.png"));
 
   // addWidget takes ownership of the objects so there is no
   // need to delete these upon destroying this main_window.

@@ -154,31 +154,47 @@ settings_dialog::~settings_dialog ()
 
 
 #ifdef HAVE_QSCINTILLA
+int
+settings_dialog::get_valid_lexer_styles (QsciLexer *lexer, int styles[])
+{
+  int max_style = 0;
+  int actual_style = 0;
+  while (actual_style < MaxStyleNumber && max_style < MaxLexerStyles)
+    {
+      if ((lexer->description(actual_style)) != "")  // valid style
+        styles[max_style++] = actual_style;
+      actual_style++;
+    }
+  return max_style;
+}
+
 void
 settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
 {
   lexer->readSettings (*settings);
-  int styles = 0;
-  while (lexer->description(styles) != "")
-    styles++;
+  int styles[MaxLexerStyles];  // array for saving valid styles (enum is not continuous)
+  int max_style = get_valid_lexer_styles (lexer, styles);
   QGridLayout *style_grid = new QGridLayout ();
-  QLabel *description[styles];
-  QFontComboBox *select_font[styles];
-  QSpinBox *font_size[styles];
-  QCheckBox *attrib_font[3][styles];
-  color_picker *color[styles];
+  QLabel *description[max_style];
+  QFontComboBox *select_font[max_style];
+  QSpinBox *font_size[max_style];
+  QCheckBox *attrib_font[3][max_style];
+  color_picker *color[max_style];
   int default_size = 10;
   QFont default_font = QFont ();
-  for (int i = 0; i < styles; i++)  // create dialog elements for all styles
+  for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
     {
-      QString actual_name = lexer->description (i);
-      QFont   actual_font = lexer->font (i);
+      QString actual_name = lexer->description (styles[i]);
+      QFont   actual_font = lexer->font (styles[i]);
       description[i] = new QLabel (actual_name);
+      description[i]->setWordWrap (true);
+      description[i]->setMaximumSize (180,QWIDGETSIZE_MAX);
+      description[i]->setMinimumSize (180,1);
       select_font[i] = new QFontComboBox ();
       select_font[i]->setObjectName (actual_name+"_font");
       font_size[i] = new QSpinBox ();
       font_size[i]->setObjectName (actual_name+"_size");
-      if (i == 0) // the default
+      if (styles[i] == 0) // the default
         {
           select_font[i]->setCurrentFont (actual_font);
           default_font = actual_font;
@@ -204,7 +220,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
       attrib_font[1][i]->setObjectName (actual_name+"_italic");
       attrib_font[2][i]->setChecked(Qt::Checked && actual_font.underline ());
       attrib_font[2][i]->setObjectName (actual_name+"_underline");
-      color[i] = new color_picker (lexer->color (i));
+      color[i] = new color_picker (lexer->color (styles[i]));
       color[i]->setObjectName (actual_name+"_color");
       int column = 1;
       style_grid->addWidget (description[i],   i,column++);
@@ -311,18 +327,17 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
 {
   QWidget *tab = ui->tabs_editor_styles->
             findChild <QWidget *>(QString (lexer->language ())+"_styles");
-  int styles = 0;
-  while (lexer->description(styles) != "")
-    styles++;
+  int styles[MaxLexerStyles];  // array for saving valid styles (enum is not continuous)
+  int max_style = get_valid_lexer_styles (lexer, styles);
   QFontComboBox *select_font;
   QSpinBox *font_size;
   QCheckBox *attrib_font[3];
   color_picker *color;
   int default_size = 10;
   QFont default_font = QFont ("Courier New",10,-1,0);
-  for (int i = 0; i < styles; i++)  // get dialog elements and their contents
+  for (int i = 0; i < max_style; i++)  // get dialog elements and their contents
     {
-      QString actual_name = lexer->description (i);
+      QString actual_name = lexer->description (styles[i]);
       select_font    = tab->findChild <QFontComboBox *>(actual_name+"_font");
       font_size      = tab->findChild <QSpinBox *>(actual_name+"_size");
       attrib_font[0] = tab->findChild <QCheckBox *>(actual_name+"_bold");
@@ -333,7 +348,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
       if (select_font)
         {
           new_font = select_font->currentFont ();
-          if (i == 0)
+          if (styles[i] == 0)
             default_font = new_font;
           else
             if (select_font->currentText () == lexer->description (0))
@@ -341,7 +356,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
         }
       if (font_size)
         {
-          if (i == 0)
+          if (styles[i] == 0)
             {
               default_size = font_size->value ();
               new_font.setPointSize (font_size->value ());
@@ -355,11 +370,11 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
         new_font.setItalic (attrib_font[1]->isChecked ());
       if (attrib_font[2])
         new_font.setUnderline (attrib_font[2]->isChecked ());
-      lexer->setFont (new_font,i);
-      if (i == 0)
+      lexer->setFont (new_font,styles[i]);
+      if (styles[i] == 0)
         lexer->setDefaultFont (new_font);
       if (color)
-        lexer->setColor (color->color (),i);
+        lexer->setColor (color->color (),styles[i]);
     }
   lexer->writeSettings (*settings);
 }

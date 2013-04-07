@@ -250,7 +250,7 @@ main_window::notice_settings (const QSettings *settings)
     {
       QString name = obj->objectName ();
       if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
-        { // if children is a dockwidget with a name
+        { // if children is a dock widget with a name
           QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
           icon = widget_icon_data[icon_set_found].path; // prefix or octave-logo
           if (widget_icon_data[icon_set_found].name != "NONE")

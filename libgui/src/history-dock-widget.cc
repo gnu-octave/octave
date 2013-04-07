@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-hist.h"
 
-#include "history-dockwidget.h"
+#include "history-dock-widget.h"
 
 history_dock_widget::history_dock_widget (QWidget *p)
   : octave_dock_widget (p)

@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "resource-manager.h"
-#include "files-dockwidget.h"
+#include "files-dock-widget.h"
 
 #include <QApplication>
 #include <QFileInfo>

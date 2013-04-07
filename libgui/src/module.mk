@@ -68,14 +68,14 @@ octave_gui_MOC += \
 endif
 
 octave_gui_MOC += \
-  src/moc-documentation-dockwidget.cc \
-  src/moc-files-dockwidget.cc \
-  src/moc-history-dockwidget.cc \
+  src/moc-documentation-dock-widget.cc \
+  src/moc-files-dock-widget.cc \
+  src/moc-history-dock-widget.cc \
   src/moc-main-window.cc \
   src/moc-octave-qt-event-listener.cc \
   src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
-  src/moc-terminal-dockwidget.cc \
+  src/moc-terminal-dock-widget.cc \
   src/moc-color-picker.cc \
   src/moc-welcome-wizard.cc \
   src/moc-workspace-model.cc \
@@ -96,9 +96,9 @@ BUILT_SOURCES += $(octave_gui_UI_H)
 
 noinst_HEADERS += \
   src/octave-dock-widget.h \
-  src/documentation-dockwidget.h \
-  src/files-dockwidget.h \
-  src/history-dockwidget.h \
+  src/documentation-dock-widget.h \
+  src/files-dock-widget.h \
+  src/history-dock-widget.h \
   src/m-editor/file-editor-interface.h \
   src/m-editor/file-editor-tab.h \
   src/m-editor/file-editor.h \
@@ -114,16 +114,16 @@ noinst_HEADERS += \
   src/resource-manager.h \
   src/settings-dialog.h \
   src/symbol-information.h \
-  src/terminal-dockwidget.h \
+  src/terminal-dock-widget.h \
   src/color-picker.h \
   src/welcome-wizard.h \
   src/workspace-model.h \
   src/workspace-view.h
 
 src_libgui_src_la_SOURCES = \
-  src/documentation-dockwidget.cc \
-  src/files-dockwidget.cc \
-  src/history-dockwidget.cc \
+  src/documentation-dock-widget.cc \
+  src/files-dock-widget.cc \
+  src/history-dock-widget.cc \
   src/m-editor/file-editor-tab.cc \
   src/m-editor/file-editor.cc \
   src/m-editor/find-dialog.cc \
@@ -138,7 +138,7 @@ src_libgui_src_la_SOURCES = \
   src/resource-manager.cc \
   src/settings-dialog.cc \
   src/symbol-information.cc \
-  src/terminal-dockwidget.cc \
+  src/terminal-dock-widget.cc \
   src/color-picker.cc \
   src/welcome-wizard.cc \
   src/workspace-model.cc \

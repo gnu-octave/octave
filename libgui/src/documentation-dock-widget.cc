@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "documentation-dockwidget.h"
+#include "documentation-dock-widget.h"
 
 documentation_dock_widget::documentation_dock_widget (QWidget *p)
   : octave_dock_widget (p)

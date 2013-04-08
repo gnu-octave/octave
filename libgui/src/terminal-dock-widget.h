@@ -63,7 +63,7 @@ signals:
 
 private:
 
-  QTerminal terminal;
+  QTerminal *terminal;
 };
 
 #endif // TERMINALDOCKWIDGET_H

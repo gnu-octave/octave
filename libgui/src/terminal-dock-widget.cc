@@ -28,15 +28,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "terminal-dock-widget.h"
 
 terminal_dock_widget::terminal_dock_widget (QWidget *p)
-  : octave_dock_widget (p), terminal (p)
+  : octave_dock_widget (p), terminal (new QTerminal (p))
 {
-  terminal.setObjectName ("OctaveTerminal");
-  terminal.setFocusPolicy (Qt::StrongFocus);
+  terminal->setObjectName ("OctaveTerminal");
+  terminal->setFocusPolicy (Qt::StrongFocus);
 
   setObjectName ("TerminalDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Command Window"));
-  setWidget (&terminal);
+  setWidget (terminal);
 
   connect (parent (), SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
@@ -50,16 +50,16 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   // Forward signals to QTerminal widget.
 
   connect (this, SIGNAL (notice_settings_signal (const QSettings *)),
-           &terminal, SLOT (notice_settings (const QSettings *)));
+           terminal, SLOT (notice_settings (const QSettings *)));
 
   connect (this, SIGNAL (relay_command_signal (const QString&)),
-           &terminal, SLOT (relay_command (const QString&)));
+           terminal, SLOT (relay_command (const QString&)));
 
   connect (this, SIGNAL (copyClipboard_signal (void)),
-           &terminal, SLOT (copyClipboard (void)));
+           terminal, SLOT (copyClipboard (void)));
 
   connect (this, SIGNAL (pasteClipboard_signal (void)),
-           &terminal, SLOT (pasteClipboard (void)));
+           terminal, SLOT (pasteClipboard (void)));
 }
 
 void

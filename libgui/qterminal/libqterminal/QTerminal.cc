@@ -22,8 +22,6 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "QTerminal.h"
 
-#include <QSettings>
-
 void
 QTerminal::notice_settings (const QSettings *settings)
 {

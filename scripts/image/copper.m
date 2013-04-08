@@ -46,7 +46,7 @@ function map = copper (n)
   if (n == 1)
     map = [0, 0, 0];
   elseif (n > 1)
-    x = linspace (0, 1, n)';
+    x = [0:(n-1)]' / (n - 1);
     r = (x < 4/5) .* (5/4 * x) ...
       + (x >= 4/5);
     g = 0.7812 * x;

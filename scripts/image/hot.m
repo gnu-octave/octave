@@ -45,23 +45,21 @@ function map = hot (n)
 
   if (n == 1)
     map = [1, 1, 1];
-  elseif (n > 1)
+  elseif (n == 2)
+    map = [1, 1, 1/2
+           1, 1,  1 ];
+  elseif (n > 2)
     idx = floor (3/8 * n);
     nel = idx;
 
     r = ones (n, 1);
-    if (nel > 0) 
-      r(1:idx, 1) = [1:nel]' / nel;
-    endif
+    r(1:idx, 1) = [1:nel]' / nel;
 
     g = zeros (n, 1);
     g(idx+1:2*idx, 1) = r(1:idx);
     g(2*idx+1:end, 1) = 1;
 
-    idx = floor (3/4 * n);
-    if (any (mod (n, 8) == [0, 1, 3, 6]))
-      idx++;
-    endif
+    idx = 2*idx + 1;   # approximately 3/4 *n
     nel = n - idx + 1;
 
     b = zeros (n, 1);

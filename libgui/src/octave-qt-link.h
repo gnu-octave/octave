@@ -25,8 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef OCTAVE_QT_LINK_H
 #define OCTAVE_QT_LINK_H
 
+#include <list>
 #include <string>
 
+#include <QList>
 #include <QObject>
 #include <QString>
 
@@ -57,7 +59,8 @@ public:
 
   void do_change_directory (const std::string& dir);
 
-  void do_update_workspace (void);
+  void do_set_workspace (const std::list<workspace_element>& ws);
+  void do_clear_workspace (void);
 
   void do_set_history (const string_vector& hist);
   void do_append_history (const std::string& hist_entry);
@@ -91,6 +94,14 @@ signals:
   void edit_file_signal (const QString& file);
 
   void change_directory_signal (const QString& dir);
+
+  void set_workspace_signal (const QString& scopes,
+                             const QStringList& symbols,
+                             const QStringList& class_names,
+                             const QStringList& dimensions,
+                             const QStringList& values);
+
+  void clear_workspace_signal (void);
 
   void set_history_signal (const QStringList& hist);
   void append_history_signal (const QString& hist_entry);

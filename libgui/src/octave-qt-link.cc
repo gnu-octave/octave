@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
+#include "workspace-element.h"
+
 #include "octave-qt-link.h"
 
 octave_qt_link::octave_qt_link (void)
@@ -58,14 +60,31 @@ octave_qt_link::do_change_directory (const std::string& dir)
 }
 
 void
-octave_qt_link::do_update_workspace (void)
+octave_qt_link::do_set_workspace (const std::list<workspace_element>& ws)
 {
-  if (event_listener)
-    {
-      event_listener->update_workspace ();
+  QString scopes;
+  QStringList symbols;
+  QStringList class_names;
+  QStringList dimensions;
+  QStringList values;
 
-      do_process_events ();
+  for (std::list<workspace_element>::const_iterator it = ws.begin ();
+       it != ws.end (); it++)
+    {
+      scopes.append (it->scope ());
+      symbols.append (QString::fromStdString (it->symbol ()));
+      class_names.append (QString::fromStdString (it->class_name ()));
+      dimensions.append (QString::fromStdString (it->dimension ()));
+      values.append (QString::fromStdString (it->value ()));
     }
+
+  emit set_workspace_signal (scopes, symbols, class_names, dimensions, values);
+}
+
+void
+octave_qt_link::do_clear_workspace (void)
+{
+  emit clear_workspace_signal ();
 }
 
 void
@@ -94,7 +113,6 @@ octave_qt_link::do_clear_history (void)
 void
 octave_qt_link::do_pre_input_event (void)
 {
-  do_update_workspace ();
 }
 
 void

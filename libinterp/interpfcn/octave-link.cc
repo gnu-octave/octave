@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-mutex.h"
 #include "singleton-cleanup.h"
-#include "symtab.h"
 #include "toplev.h"
 
 #include "octave-link.h"

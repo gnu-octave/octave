@@ -138,6 +138,8 @@ public:
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
+  std::string short_disp (void) const;
+
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<ST *> (&scalar); }

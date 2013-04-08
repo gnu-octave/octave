@@ -121,8 +121,6 @@ workspace_view::model_changed ()
 {
   QAbstractItemModel *m = view->model ();
 
-  dynamic_cast<workspace_model *> (m)->update_workspace_callback ();
-
   // This code is very quirky and requires some explanation.
   // Usually, we should not deal with collapsing or expanding ourselves,
   // because the view itself determines (based on the model) whether it

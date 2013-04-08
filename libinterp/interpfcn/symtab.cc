@@ -1380,6 +1380,41 @@ symbol_table::do_builtin_find (const std::string& name)
   return retval;
 }
 
+std::list<workspace_element>
+symbol_table::do_workspace_info (void) const
+{
+  std::list<workspace_element> retval;
+
+  for (table_const_iterator p = table.begin (); p != table.end (); p++)
+    {
+      std::string nm = p->first;
+      symbol_record sr = p->second;
+
+      if (! sr.is_hidden ())
+        {
+          octave_value val = sr.varval ();
+
+          if (val.is_defined ())
+            {
+              dim_vector dv = val.dims ();
+
+              char storage = ' ';
+              if (sr.is_global ())
+                storage = 'g';
+              else if (sr.is_persistent ())
+                storage = 'p';
+
+              workspace_element elt (storage, nm, val.class_name (),
+                                     val.short_disp (), dv.str ());
+
+              retval.push_back (elt);
+            }
+        }
+    }
+
+  return retval;
+}
+
 void
 symbol_table::do_dump (std::ostream& os)
 {

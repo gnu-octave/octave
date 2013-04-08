@@ -616,6 +616,8 @@ public:
   print_with_name (std::ostream& output_buf, const std::string& name,
                    bool print_padding = true);
 
+  virtual std::string short_disp (void) const { return "..."; }
+
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 
   virtual bool save_ascii (std::ostream& os);

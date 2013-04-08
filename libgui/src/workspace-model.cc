@@ -1,6 +1,7 @@
 
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -28,8 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTreeWidget>
 #include <QTime>
 
-#include <list>
-
 #include "symtab.h"
 #include "variables.h"
 
@@ -51,12 +50,6 @@ workspace_model::workspace_model(QObject *p)
 workspace_model::~workspace_model()
 {
   delete _rootItem;
-}
-
-void
-workspace_model::request_update_workspace ()
-{
-  octave_link::post_event (this, &workspace_model::update_workspace_callback);
 }
 
 QModelIndex
@@ -169,47 +162,84 @@ workspace_model::data(const QModelIndex &idx, int role) const
 }
 
 void
-workspace_model::update_workspace_callback (void)
+workspace_model::set_workspace (const QString& scopes,
+                                const QStringList& symbols,
+                                const QStringList& class_names,
+                                const QStringList& dimensions,
+                                const QStringList& values)
 {
-  std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
+  _scopes = scopes;
+  _symbols = symbols;
+  _class_names = class_names;
+  _dimensions = dimensions;
+  _values = values;
 
-  _symbol_information.clear ();
-  for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
-       iterator != symbolTable.end (); iterator++)
-    _symbol_information.push_back (symbol_information (*iterator));
+  update_tree ();
 
+  emit model_changed ();
+}
+
+void
+workspace_model::clear_workspace (void)
+{
+  clear_data ();
+
+  update_tree ();
+
+  emit model_changed ();
+}
+
+void
+workspace_model::clear_data (void)
+{
+  _scopes = QString ();
+  _symbols = QStringList ();
+  _class_names = QStringList ();
+  _dimensions = QStringList ();
+  _values = QStringList ();
+}
+
+void
+workspace_model::clear_tree (void)
+{
+  top_level_item(0)->delete_child_items ();
+  top_level_item(1)->delete_child_items ();
+  top_level_item(2)->delete_child_items ();
+}
+
+void
+workspace_model::update_tree (void)
+{
   beginResetModel();
-  top_level_item (0)->delete_child_items ();
-  top_level_item (1)->delete_child_items ();
-  top_level_item (2)->delete_child_items ();
 
-  foreach (const symbol_information& s, _symbol_information)
-    {
-      tree_item *child = new tree_item ();
+  clear_tree ();
 
-      child->set_data (0, s.symbol ());
-      child->set_data (1, s.class_name ());
-      child->set_data (2, s.dimension ());
-      child->set_data (3, s.value ());
+  for (int i = 0; i < _symbols.size (); i++)
+    append_tree (_scopes[i], _symbols[i], _class_names[i], _dimensions[i],
+                 _values[i]);
 
-      switch (s.scope ())
-        {
-        case symbol_information::local:
-          top_level_item (0)->add_child (child);
-          break;
+  endResetModel ();
 
-        case symbol_information::global:
-          top_level_item (1)->add_child (child);
-          break;
+  emit model_changed ();
+}
 
-        case symbol_information::persistent:
-          top_level_item (2)->add_child (child);
-          break;
+void
+workspace_model::append_tree (QChar scope, const QString& symbol,
+                              const QString& class_name,
+                              const QString& dimension,
+                              const QString& value)
+{
+  tree_item *child = new tree_item ();
 
-        default:
-          break;
-        }
-    }
+  child->set_data (0, symbol);
+  child->set_data (1, class_name);
+  child->set_data (2, dimension);
+  child->set_data (3, value);
 
-  endResetModel();
+  if (scope == 'p')
+    top_level_item(2)->add_child (child);
+  else if (scope == 'g')
+    top_level_item(1)->add_child (child);
+  else
+    top_level_item(0)->add_child (child);
 }

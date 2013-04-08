@@ -255,6 +255,8 @@ public:
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
+  std::string short_disp (void) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);

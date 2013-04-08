@@ -45,15 +45,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "main-window.h"
 #include "settings-dialog.h"
 
-#include "builtins.h"
-#include "defaults.h"
-#include "load-save.h"
-#include "toplev.h"
-#include "version.h"
-
 #include "cmd-edit.h"
-#include "cmd-hist.h"
-#include "oct-env.h"
+
+#include "builtin-defun-decls.h"
+#include "defaults.h"
+#include "version.h"
 
 static file_editor_interface *
 create_default_editor (QWidget *p)
@@ -264,7 +260,7 @@ main_window::notice_settings (const QSettings *settings)
 
 
 void
-main_window::prepare_for_quit (void)
+main_window::prepare_to_exit (void)
 {
   write_settings ();
 }
@@ -273,12 +269,6 @@ void
 main_window::reset_windows ()
 {
   // TODO: Implement.
-}
-
-void
-main_window::update_workspace (void)
-{
-  workspace_window->model_changed ();
 }
 
 void
@@ -553,7 +543,7 @@ main_window::construct (void)
   construct_tool_bar ();
 
   connect (qApp, SIGNAL (aboutToQuit ()),
-           this, SLOT (prepare_for_quit ()));
+           this, SLOT (prepare_to_exit ()));
 
   connect (this, SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
@@ -592,9 +582,6 @@ main_window::construct (void)
 
   _octave_qt_event_listener = new octave_qt_event_listener ();
 
-  connect (_octave_qt_event_listener, SIGNAL (update_workspace_signal ()),
-           this, SLOT (update_workspace ()));
-
   // FIXME -- is it possible to eliminate the event_listenter?
 
   construct_octave_qt_link ();
@@ -607,6 +594,18 @@ void
 main_window::construct_octave_qt_link (void)
 {
   _octave_qt_link = new octave_qt_link ();
+
+  connect (_octave_qt_link,
+           SIGNAL (set_workspace_signal
+                   (const QString&, const QStringList&, const QStringList&,
+                    const QStringList&, const QStringList&)),
+           _workspace_model,
+           SLOT (set_workspace
+                 (const QString&, const QStringList&,const QStringList&,
+                  const QStringList&, const QStringList&)));
+
+  connect (_octave_qt_link, SIGNAL (clear_workspace_signal ()),
+           _workspace_model, SLOT (clear_workspace ()));
 
   connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
            this, SLOT (change_directory (QString)));

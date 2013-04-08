@@ -92,9 +92,8 @@ public slots:
   void process_settings_dialog_request (void);
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
-  void prepare_for_quit (void);
+  void prepare_to_exit (void);
   void reset_windows (void);
-  void update_workspace (void);
 
   void change_directory (const QString& dir);
   void browse_for_directory (void);

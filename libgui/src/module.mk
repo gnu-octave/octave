@@ -113,7 +113,6 @@ noinst_HEADERS += \
   src/qtinfo/webinfo.h \
   src/resource-manager.h \
   src/settings-dialog.h \
-  src/symbol-information.h \
   src/terminal-dock-widget.h \
   src/color-picker.h \
   src/welcome-wizard.h \
@@ -137,7 +136,6 @@ src_libgui_src_la_SOURCES = \
   src/qtinfo/webinfo.cc \
   src/resource-manager.cc \
   src/settings-dialog.cc \
-  src/symbol-information.cc \
   src/terminal-dock-widget.cc \
   src/color-picker.cc \
   src/welcome-wizard.cc \

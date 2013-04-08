@@ -37,6 +37,7 @@ class tree_argument_list;
 class octave_user_function;
 
 #include "oct-obj.h"
+#include "workspace-element.h"
 #include "oct-refcount.h"
 #include "ov.h"
 
@@ -2126,6 +2127,14 @@ public:
       }
   }
 
+  static std::list<workspace_element> workspace_info (void)
+  {
+    symbol_table *inst = get_instance (xcurrent_scope);
+
+    return inst
+      ? inst->do_workspace_info () : std::list<workspace_element> ();
+  }
+
   static void dump (std::ostream& os, scope_id scope = xcurrent_scope);
 
   static void dump_global (std::ostream& os);
@@ -2794,6 +2803,8 @@ private:
 
     return p != table.end () && p->second.is_global ();
   }
+
+  std::list<workspace_element> do_workspace_info (void) const;
 
   void do_dump (std::ostream& os);
 

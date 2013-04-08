@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_mutex;
 class string_vector;
+class workspace_element;
 
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
@@ -120,10 +121,16 @@ public:
       instance->do_change_directory (dir);
   }
 
-  static void update_workspace (void)
+  static void set_workspace (const std::list<workspace_element>& ws)
   {
     if (instance_ok ())
-      instance->do_update_workspace ();
+      instance->do_set_workspace (ws);
+  }
+
+  static void clear_workspace (void)
+  {
+    if (instance_ok ())
+      instance->do_clear_workspace ();
   }
 
   static void set_history (const string_vector& hist)
@@ -249,7 +256,10 @@ protected:
 
   virtual void do_change_directory (const std::string& dir) = 0;
 
-  virtual void do_update_workspace (void) = 0;
+  virtual void
+  do_set_workspace (const std::list<workspace_element>& ws) = 0;
+
+  virtual void do_clear_workspace (void) = 0;
 
   virtual void do_set_history (const string_vector& hist) = 0;
   virtual void do_append_history (const std::string& hist_entry) = 0;
@@ -258,8 +268,12 @@ protected:
   virtual void do_pre_input_event (void) = 0;
   virtual void do_post_input_event (void) = 0;
 
-  virtual void do_enter_debugger_event (const std::string& file, int line) = 0;
-  virtual void do_execute_in_debugger_event (const std::string& file, int line) = 0;
+  virtual void
+  do_enter_debugger_event (const std::string& file, int line) = 0;
+
+  virtual void
+  do_execute_in_debugger_event (const std::string& file, int line) = 0;
+
   virtual void do_exit_debugger_event (void) = 0;
 
   virtual void do_update_breakpoint (bool insert,

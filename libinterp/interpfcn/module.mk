@@ -26,7 +26,8 @@ INTERPFCN_INC = \
   interpfcn/sysdep.h \
   interpfcn/toplev.h \
   interpfcn/utils.h \
-  interpfcn/variables.h
+  interpfcn/variables.h \
+  interpfcn/workspace-element.h
 
 INTERPFCN_SRC = \
   interpfcn/data.cc \

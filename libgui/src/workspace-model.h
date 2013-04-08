@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -20,15 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef WORKSPACEMODEL_H
-#define WORKSPACEMODEL_H
+#if !defined (workspace_model_h)
+#define workspace_model_h 1
 
-// Qt includes
 #include <QAbstractItemModel>
 #include <QVector>
 #include <QSemaphore>
-
-#include "symbol-information.h"
+#include <QStringList>
 
 class tree_item
 {
@@ -114,35 +113,64 @@ class workspace_model
 {
   Q_OBJECT
 
-  public:
+public:
+
   workspace_model (QObject *parent = 0);
-  ~workspace_model ();
+
+  ~workspace_model (void);
 
   QVariant data (const QModelIndex &index, int role) const;
+
   Qt::ItemFlags flags (const QModelIndex &index) const;
+
   QVariant headerData (int section, Qt::Orientation orientation,
                        int role = Qt::DisplayRole) const;
+
   QModelIndex index (int row, int column,
                      const QModelIndex &parent = QModelIndex ()) const;
+
   QModelIndex parent (const QModelIndex &index) const;
+
   int rowCount (const QModelIndex &parent = QModelIndex ()) const;
+
   int columnCount (const QModelIndex &parent = QModelIndex ()) const;
 
   void insert_top_level_item (int at, tree_item *treeItem);
+
   tree_item *top_level_item (int at);
 
-  void update_workspace_callback (void);
-
 public slots:
-  void request_update_workspace ();
+
+  void set_workspace (const QString& scopes,
+                      const QStringList& symbols,
+                      const QStringList& class_names,
+                      const QStringList& dimensions,
+                      const QStringList& values);
+
+  void clear_workspace (void);
 
 signals:
-  void model_changed ();
+
+  void model_changed (void);
 
 private:
 
-  /** Stores the current symbol information. */
-  QList <symbol_information> _symbol_information;
+  void clear_data (void);
+
+  void clear_tree (void);
+
+  void update_tree (void);
+
+  void append_tree (QChar scope, const QString& symbol,
+                    const QString& class_name, const QString& dimension,
+                    const QString& value);
+
+  QString _scopes;
+  QStringList _symbols;
+  QStringList _class_names;
+  QStringList _dimensions;
+  QStringList _values;
+
   tree_item *_rootItem;
 };
 

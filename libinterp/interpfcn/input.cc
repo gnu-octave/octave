@@ -67,6 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-eval.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
+#include "symtab.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
@@ -217,6 +218,8 @@ octave_base_reader::octave_gets (bool& eof)
         octave_link::exit_debugger_event ();
 
       octave_link::pre_input_event ();
+
+      octave_link::set_workspace (symbol_table::workspace_info ());
     }
 
   bool history_skip_auto_repeated_debugging_command = false;
@@ -518,6 +521,8 @@ get_debug_input (const std::string& prompt)
           if (have_file)
             {
               octave_link::enter_debugger_event (nm, curr_debug_line);
+
+              octave_link::set_workspace (symbol_table::workspace_info ());
 
               frame.add_fcn (execute_in_debugger_handler,
                              std::pair<std::string, int> (nm, curr_debug_line));

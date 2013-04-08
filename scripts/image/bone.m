@@ -44,16 +44,38 @@ function map = bone (n)
   endif
 
   if (n == 1)
-    map = [0.125, 0.125, 0.125];
-  elseif (n > 1)
-    x = linspace (0, 1, n)';
-    r = (x < 3/4) .* (7/8 * x) ...
-      + (x >= 3/4) .* (11/8 * x - 3/8);
-    g = (x < 3/8) .* (7/8 * x) ...
-      + (x >= 3/8 & x < 3/4) .* (29/24 * x - 1/8) ...
-      + (x >= 3/4) .* (7/8 * x + 1/8);
-    b = (x < 3/8) .* (29/24 * x) ...
-      + (x >= 3/8) .* (7/8 * x + 1/8);
+    map = [1/8 1/8 1/8];
+  elseif (n == 2)
+    map = [1/16 1/8 1/8
+            1    1   1 ];
+  elseif (n > 2)
+    x = [0:n-1]' / (n-1);
+
+    idx = floor (3/4*n);
+    nel = n - idx + 1;    # number of elements
+    rem = mod (n, 8);
+    switch (rem)
+      case {2, 4}
+        base = 1 / (16 + 2*(n-rem));
+      case {5, 7}
+        base = 1 / (24 + 2*(n-rem));
+      otherwise
+        base = 0;
+    endswitch
+    r(1:idx,1) = 7/8 * x(1:idx);
+    r(idx:n,1) = linspace (7/8 * x(idx) + base, 1, nel);
+
+    idx = floor (3/8 * n);
+    nel = idx + 1;
+    g(1:idx,1) = 7/8 * x(1:idx);
+    g(idx:2*idx,1) = linspace (7/8 * x(idx), 7/8 * x(2*idx) + 1/8, nel);
+    g(2*idx+1:n,1) = 7/8 * x(2*idx+1:n) + 1/8;
+    
+    base = 1 / (8*idx);
+    nel = idx;
+    b(1:idx,1) = linspace (base, 7/8 * x(idx) + 1/8, nel);
+    b(idx:n,1) = 7/8 * x(idx:n) + 1/8;
+
     map = [r, g, b];
   else
     map = zeros (0, 3);

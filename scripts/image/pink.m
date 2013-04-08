@@ -51,15 +51,7 @@ function map = pink (n)
   elseif (n > 2)
     x = [0:(n-1)]' / (n-1);
     idx = floor (3/8 * n);
-    base = floor (n/8);
-    switch (mod (n, 8))
-      case {0, 1, 2}
-        base = 1 / (9*base);
-      case {3, 4, 5}
-        base = 1 / (9*base + 3);
-      case {6, 7}
-        base = 1 / (9*base + 6);
-    endswitch
+    base = 1 / (3 * idx);
 
     nel = idx;   # number of elements
     r(1:idx,1) = linspace (base, 2/3*x(idx) + 1/3, nel);

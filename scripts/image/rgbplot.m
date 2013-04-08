@@ -44,7 +44,7 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-function h = rgbplot (cmap, style)
+function h = rgbplot (cmap, style = "profile")
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -87,4 +87,6 @@ endfunction
 %!error rgbplot ()
 %!error rgbplot (1,2)
 %!error <CMAP must be a valid colormap> rgbplot ({0 1 0})
+%!error <STYLE must be a string> rgbplot ([0 1 0], 2)
+%!error <unknown style `nostyle'> rgbplot ([0 1 0], "nostyle")
 

@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "event-queue.h"
-#include "octave-event-listener.h"
 
 class octave_mutex;
 class string_vector;
@@ -52,12 +51,6 @@ public:
 
   virtual ~octave_link (void) { }
 
-  static void register_event_listener (octave_event_listener *el)
-  {
-    if (instance_ok ())
-      instance->do_register_event_listener (el);
-  }
-
   static void generate_events (void)
   {
     if (instance_ok ())
@@ -68,6 +61,18 @@ public:
   {
     if (instance_ok ())
       instance->do_process_events ();
+  }
+
+  static void discard_events (void)
+  {
+    if (instance_ok ())
+      instance->do_discard_events ();
+  }
+
+  static void exit (int status)
+  {
+    if (instance_ok ())
+      instance->do_exit (status);
   }
 
   template <class T>
@@ -89,12 +94,6 @@ public:
   {
     if (instance_ok ())
       instance->do_post_event (obj, method, arg);
-  }
-
-  static void about_to_exit (void)
-  {
-    if (instance_ok ())
-      instance->do_about_to_exit ();
   }
 
   static void entered_readline_hook (void)
@@ -214,8 +213,6 @@ private:
 
 protected:
 
-  octave_event_listener *event_listener;
-
   // Semaphore to lock access to the event queue.
   octave_mutex *event_queue_mutex;
 
@@ -224,30 +221,34 @@ protected:
 
   bool debugging;
 
-  void do_register_event_listener (octave_event_listener *oel);
+  bool accepting_events;
 
   void do_generate_events (void);
   void do_process_events (void);
+  void do_discard_events (void);
+
+  void do_exit (int status);
 
   template <class T>
   void do_post_event (T *obj, void (T::*method) (void))
   {
-    gui_event_queue.add_method (obj, method);
+    if (accepting_events)
+      gui_event_queue.add_method (obj, method);
   }
 
   template <class T, class A>
   void do_post_event (T *obj, void (T::*method) (A), A arg)
   {
-    gui_event_queue.add_method (obj, method, arg);
+    if (accepting_events)
+      gui_event_queue.add_method (obj, method, arg);
   }
 
   template <class T, class A>
   void do_post_event (T *obj, void (T::*method) (const A&), const A& arg)
   {
-    gui_event_queue.add_method (obj, method, arg);
+    if (accepting_events)
+      gui_event_queue.add_method (obj, method, arg);
   }
-
-  void do_about_to_exit (void);
 
   void do_entered_readline_hook (void) { }
   void do_finished_readline_hook (void) { }

@@ -72,7 +72,6 @@ octave_gui_MOC += \
   src/moc-files-dock-widget.cc \
   src/moc-history-dock-widget.cc \
   src/moc-main-window.cc \
-  src/moc-octave-qt-event-listener.cc \
   src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
   src/moc-terminal-dock-widget.cc \
@@ -107,7 +106,6 @@ noinst_HEADERS += \
   src/main-window.h \
   src/octave-gui.h \
   src/octave-main-thread.h \
-  src/octave-qt-event-listener.h \
   src/octave-qt-link.h \
   src/qtinfo/parser.h \
   src/qtinfo/webinfo.h \
@@ -130,7 +128,6 @@ src_libgui_src_la_SOURCES = \
   src/main-window.cc \
   src/octave-gui.cc \
   src/octave-main-thread.cc \
-  src/octave-qt-event-listener.cc \
   src/octave-qt-link.cc \
   src/qtinfo/parser.cc \
   src/qtinfo/webinfo.cc \

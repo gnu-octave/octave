@@ -37,6 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 octave_qt_link::octave_qt_link (void)
   : octave_link (), main_thread (new octave_main_thread)
 {
+  connect (main_thread, SIGNAL (finished ()),
+           this, SIGNAL (octave_thread_finished ()));
+}
+
+octave_qt_link::~octave_qt_link (void)
+{
+  delete main_thread;
 }
 
 void

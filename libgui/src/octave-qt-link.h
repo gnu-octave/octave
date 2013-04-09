@@ -51,7 +51,7 @@ public:
 
   octave_qt_link (void);
 
-  ~octave_qt_link (void) { }
+  ~octave_qt_link (void);
 
   void execute_interpreter (void);
 
@@ -115,6 +115,8 @@ signals:
 
   void insert_debugger_pointer_signal (const QString&, int);
   void delete_debugger_pointer_signal (const QString&, int);
+
+  void octave_thread_finished (void);
 };
 
 #endif

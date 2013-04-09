@@ -91,9 +91,6 @@ main_window::~main_window (void)
   // deleted before this main_window is.  Otherwise, some will be
   // attached to a non-existent parent.
 
-  if (_octave_qt_event_listener)
-    delete _octave_qt_event_listener;
-
   octave_link::connect_link (0);
   delete _octave_qt_link;
 }
@@ -263,6 +260,12 @@ void
 main_window::prepare_to_exit (void)
 {
   write_settings ();
+}
+
+void
+main_window::exit (void)
+{
+  qApp->quit ();
 }
 
 void
@@ -577,10 +580,6 @@ main_window::construct (void)
 
   setStatusBar (status_bar);
 
-  _octave_qt_event_listener = new octave_qt_event_listener ();
-
-  // FIXME -- is it possible to eliminate the event_listenter?
-
   construct_octave_qt_link ();
 
   QDir curr_dir;
@@ -591,6 +590,9 @@ void
 main_window::construct_octave_qt_link (void)
 {
   _octave_qt_link = new octave_qt_link ();
+
+  connect (_octave_qt_link, SIGNAL (octave_thread_finished ()),
+           this, SLOT (exit ()));
 
   connect (_octave_qt_link,
            SIGNAL (set_workspace_signal
@@ -648,8 +650,6 @@ main_window::construct_octave_qt_link (void)
   _octave_qt_link->execute_interpreter ();
 
   octave_link::connect_link (_octave_qt_link);
-
-  octave_link::register_event_listener (_octave_qt_event_listener);
 }
 
 void

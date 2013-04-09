@@ -46,21 +46,15 @@ octave_readline_hook (void)
   return 0;
 }
 
-static void
-octave_exit_hook (int)
-{
-  octave_link::about_to_exit ();
-}
-
 octave_link *octave_link::instance = 0;
 
 octave_link::octave_link (void)
-  : event_listener (0), event_queue_mutex (new octave_mutex ()),
-    gui_event_queue (), debugging (false)
+  : event_queue_mutex (new octave_mutex ()), gui_event_queue (),
+    debugging (false), accepting_events (true)
 {
   command_editor::add_event_hook (octave_readline_hook);
 
-  octave_exit = octave_exit_hook;
+  octave_exit = octave_link::exit;
 }
 
 // OBJ should be an object of a class that is derived from the base
@@ -74,12 +68,6 @@ octave_link::connect_link (octave_link* obj)
     ::error ("octave_link is already linked!");
   else
     instance = obj;
-}
-
-void
-octave_link::do_register_event_listener (octave_event_listener *el)
-{
-  event_listener = el;
 }
 
 void
@@ -98,16 +86,21 @@ octave_link::do_process_events (void)
 }
 
 void
-octave_link::do_about_to_exit (void)
+octave_link::do_discard_events (void)
 {
   event_queue_mutex->lock ();
 
   gui_event_queue.discard ();
 
   event_queue_mutex->unlock ();
+}
 
-  if (event_listener)
-    event_listener->about_to_exit ();
+void
+octave_link::do_exit (int)
+{
+  accepting_events = false;
+
+  do_process_events ();
 }
 
 bool

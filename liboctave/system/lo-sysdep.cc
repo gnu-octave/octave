@@ -140,4 +140,37 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
   return pid;
 }
 
+void
+w32_clear_console_window (void)
+{
+  HANDLE console = GetStdHandle (STD_OUTPUT_HANDLE);
+
+  // Get the number of character cells in the current buffer.
+
+  CONSOLE_SCREEN_BUFFER_INFO csbi; 
+
+  if (GetConsoleScreenBufferInfo (console, &csbi))
+    {
+      DWORD screen_size = csbi.dwSize.X * csbi.dwSize.Y;
+
+      // Fill the entire screen with blanks.
+
+      COORD home = { 0, 0 };
+      DWORD nchars;
+
+      if (FillConsoleOutputCharacter (console, static_cast<TCHAR> (' '),
+                                      screen_size, home, &nchars))
+        {
+          if (GetConsoleScreenBufferInfo (console, &csbi))
+            {
+              if (FillConsoleOutputAttribute (console, csbi.wAttributes,
+                                              screen_size, home, &nchars))
+                {
+                  SetConsoleCursorPosition (console, home);
+                }
+            }
+        }
+    }
+}
+
 #endif

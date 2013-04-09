@@ -93,15 +93,6 @@ flush_stdout (void)
 void
 octave_rl_clear_screen (void)
 {
-  /* This is a bit of a kluge, but I think it will work (I know, famous
-     last words).  */
-
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-
-  system ("cls");
-
-#else
-
   int ignore1 = 0;
   int ignore2 = 0;
 
@@ -111,8 +102,6 @@ octave_rl_clear_screen (void)
   rl_clear_screen (ignore1, ignore2);
 
   rl_redisplay_function = saved_redisplay_function;
-
-#endif
 }
 
 void

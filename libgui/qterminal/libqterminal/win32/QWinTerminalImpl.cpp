@@ -116,6 +116,7 @@ private:
 private:
   QFont m_font;
   QColor m_backgroundColor;
+  QColor m_foregroundColor;
   QString m_command;
   QConsoleColors m_colors;
   bool m_inWheelEvent;
@@ -224,10 +225,13 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   GetConsoleTitleW (titleBuf, sizeof (titleBuf));
   q->setWindowTitle (QString::fromWCharArray (titleBuf));
 
+  m_backgroundColor = Qt::white;
+  m_foregroundColor = Qt::black;
+  SetConsoleTextAttribute (m_stdOut, 0x0F);
+
   m_font.setFamily ("Lucida Console");
   m_font.setPointSize (9);
   m_font.setStyleHint (QFont::TypeWriter);
-  m_backgroundColor = Qt::white;
 
   m_buffer = m_tmpBuffer = 0;
 
@@ -748,7 +752,7 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
     return;
 
   p.setFont (d->m_font);
-  p.setPen (Qt::black);
+  p.setPen (d->m_foregroundColor);
 
   ascent = p.fontMetrics ().ascent ();
   stride = d->m_consoleRect.width ();
@@ -787,8 +791,8 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
               // Update current pen and store current attributes
               // FIXME: what about background?
               attr = (ci->Attributes & 0x00ff);
-              p.setPen (Qt::black);
-              p.setBrush (Qt::black);
+              p.setPen (d->m_colors[attr & 0x000f]);
+              p.setBrush (d->m_colors[(attr >> 4) & 0x000f]);
             }
 
           // Append current character to the string buffer

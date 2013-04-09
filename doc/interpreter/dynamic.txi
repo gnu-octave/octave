@@ -1719,7 +1719,7 @@ which is compiled and run as before as a standalone application with
 @group
 $ mkoctfile --link-stand-alone embedded.cc -o embedded
 $ ./embedded
-GCD of [5, 10] is 5
+GCD of [10, 15] is 5
 $
 @end group
 @end example

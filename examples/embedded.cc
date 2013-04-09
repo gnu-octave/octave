@@ -16,7 +16,7 @@ main (void)
   octave_value_list in;
 
   for (octave_idx_type i = 0; i < n; i++)  
-    in(i) = octave_value (5 * (i + 1));
+    in(i) = octave_value (5 * (i + 2));
   
   octave_value_list out = feval ("gcd", in, 1);
 

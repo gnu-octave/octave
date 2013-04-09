@@ -140,6 +140,36 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
   return pid;
 }
 
+int
+w32_terminal_rows (void)
+{
+  int retval = 0;
+
+  HANDLE console = GetStdHandle (STD_OUTPUT_HANDLE);
+
+  CONSOLE_SCREEN_BUFFER_INFO csbi; 
+
+  if (GetConsoleScreenBufferInfo (console, &csbi))
+    retval = csbi.dwSize.Y;
+
+  return retval;
+}
+
+int
+w32_terminal_cols (void)
+{
+  int retval = 0;
+
+  HANDLE console = GetStdHandle (STD_OUTPUT_HANDLE);
+
+  CONSOLE_SCREEN_BUFFER_INFO csbi; 
+
+  if (GetConsoleScreenBufferInfo (console, &csbi))
+    retval = csbi.dwSize.X;
+
+  return retval;
+}
+
 void
 w32_clear_console_window (void)
 {

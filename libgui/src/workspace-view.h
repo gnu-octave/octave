@@ -36,7 +36,7 @@ class workspace_view : public octave_dock_widget
 
 public:
 
-  workspace_view (QWidget * parent = 0);
+  workspace_view (QWidget *parent = 0);
 
   ~workspace_view (void);
 

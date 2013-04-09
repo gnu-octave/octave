@@ -38,18 +38,18 @@ public:
 
   workspace_model (QObject *parent = 0);
 
-  ~workspace_model (void);
+  ~workspace_model (void) { }
 
-  QVariant data (const QModelIndex &index, int role) const;
+  QVariant data (const QModelIndex& index, int role) const;
 
-  Qt::ItemFlags flags (const QModelIndex &index) const;
+  Qt::ItemFlags flags (const QModelIndex& index) const;
 
   QVariant headerData (int section, Qt::Orientation orientation,
                        int role = Qt::DisplayRole) const;
 
-  int rowCount (const QModelIndex &parent = QModelIndex ()) const;
+  int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
-  int columnCount (const QModelIndex &parent = QModelIndex ()) const;
+  int columnCount (const QModelIndex& parent = QModelIndex ()) const;
 
 public slots:
 
@@ -79,4 +79,4 @@ private:
   QStringList _columnNames;
 };
 
-#endif // WORKSPACEMODEL_H
+#endif

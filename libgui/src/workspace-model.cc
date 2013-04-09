@@ -1,4 +1,3 @@
-
 /*
 
 Copyright (C) 2013 John W. Eaton
@@ -27,79 +26,77 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QTreeWidget>
-#include <QTime>
 
 #include "symtab.h"
 #include "variables.h"
 
 #include "workspace-model.h"
-#include "octave-link.h"
 
-workspace_model::workspace_model(QObject *p)
+workspace_model::workspace_model (QObject *p)
   : QAbstractTableModel (p)
 {
-  _columnNames.append(tr("Name"));
-  _columnNames.append(tr("Class"));
-  _columnNames.append(tr("Dimension"));
-  _columnNames.append(tr("Value"));
-}
-
-workspace_model::~workspace_model()
-{
+  _columnNames.append (tr ("Name"));
+  _columnNames.append (tr ("Class"));
+  _columnNames.append (tr ("Dimension"));
+  _columnNames.append (tr ("Value"));
 }
 
 int
-workspace_model::rowCount(const QModelIndex &p) const
+workspace_model::rowCount(const QModelIndex& p) const
 {
-  return _symbols.size();
+  return _symbols.size ();
 }
 
 int
-workspace_model::columnCount(const QModelIndex &p) const
+workspace_model::columnCount (const QModelIndex& p) const
 {
-  return _columnNames.size();
+  return _columnNames.size ();
 }
 
 Qt::ItemFlags
-workspace_model::flags(const QModelIndex &idx) const
+workspace_model::flags (const QModelIndex& idx) const
 {
-  if (!idx.isValid())
+  if (! idx.isValid ())
     return 0;
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant
-workspace_model::headerData(int section, Qt::Orientation orientation, int role) const
+workspace_model::headerData (int section, Qt::Orientation orientation,
+                             int role) const
 {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-  {
-     return _columnNames[section];
-  }
-
-  return QVariant();
+    return _columnNames[section];
+  else
+    return QVariant();
 }
 
 QVariant
-workspace_model::data(const QModelIndex &idx, int role) const
+workspace_model::data (const QModelIndex& idx, int role) const
 {
   if (!idx.isValid())
     return QVariant();
-  if (role != Qt::DisplayRole)
-    return QVariant();
 
-  switch(idx.column())
-  {
-  case 0:
-    return QVariant(_symbols[idx.row()]);
-  case 1:
-    return QVariant(_class_names[idx.row()]);
-  case 2:
-    return QVariant(_dimensions[idx.row()]);
-  case 3:
-    return QVariant(_values[idx.row()]);
-  }
-  return QVariant();
+  if (role != Qt::DisplayRole)
+    return QVariant ();
+
+  switch (idx.column ())
+    {
+    case 0:
+      return QVariant(_symbols[idx.row()]);
+
+    case 1:
+      return QVariant(_class_names[idx.row()]);
+
+    case 2:
+      return QVariant(_dimensions[idx.row()]);
+
+    case 3:
+      return QVariant(_values[idx.row()]);
+    }
+
+  return QVariant ();
 }
 
 void
@@ -109,7 +106,6 @@ workspace_model::set_workspace (const QString& scopes,
                                 const QStringList& dimensions,
                                 const QStringList& values)
 {
-
   _scopes = scopes;
   _symbols = symbols;
   _class_names = class_names;
@@ -145,10 +141,9 @@ workspace_model::update_table (void)
 {
   beginResetModel();
 
-  // nothing to do except tell the world to recalc
+  // Nothing to do except tell the world to recalc.
 
   endResetModel ();
 
   emit model_changed ();
 }
-

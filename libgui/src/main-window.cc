@@ -524,9 +524,6 @@ main_window::construct (void)
 
   workspace_window->setModel (_workspace_model);
 
-  connect (_workspace_model, SIGNAL (model_changed ()),
-           workspace_window, SLOT (model_changed ()));
-
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
   // destroying this main_window.

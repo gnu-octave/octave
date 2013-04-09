@@ -37,7 +37,7 @@ workspace_view::workspace_view (QWidget *p)
   : octave_dock_widget (p)
 {
   setObjectName ("WorkspaceView");
-  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
   setWindowTitle (tr ("Workspace"));
   setStatusTip (tr ("View the variables in the active workspace."));
 
@@ -72,11 +72,11 @@ workspace_view::workspace_view (QWidget *p)
   connect (view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (item_double_clicked (QModelIndex)));
 
-  connect (view, SIGNAL (customContextMenuRequested(const QPoint&)),
+  connect (view, SIGNAL (customContextMenuRequested (const QPoint&)),
            this, SLOT(contextmenu_requested (const QPoint&)));
 
   connect (this, SIGNAL (command_requested (const QString&)),
-           p, SLOT (handle_command_double_clicked(const QString&)));
+           p, SLOT (handle_command_double_clicked (const QString&)));
 }
 
 workspace_view::~workspace_view (void)
@@ -114,7 +114,7 @@ workspace_view::contextmenu_requested (const QPoint& pos)
   // if it isnt Local, Glocal etc, allow the ctx menu
   if (index.isValid())
     {
-      index = index.sibling(index.row(), 0);
+      index = index.sibling (index.row(), 0);
 
       QMap<int, QVariant> item_data = m->itemData (index);
   

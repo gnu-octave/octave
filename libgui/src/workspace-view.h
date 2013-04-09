@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (workspace_view_h)
 #define workspace_view_h 1
 
-#include <QTreeView>
+#include <QTableView>
 #include <QSemaphore>
 
 #include "octave-dock-widget.h"
@@ -44,9 +44,6 @@ public:
 
   void setModel (workspace_model *model) { view->setModel (model); }
 
-public slots:
-
-  void model_changed (void);
 
 signals:
 
@@ -59,8 +56,6 @@ protected:
 
 protected slots:
 
-  void collapse_requested (QModelIndex index);
-  void expand_requested (QModelIndex index);
   void item_double_clicked (QModelIndex index);
   void contextmenu_requested (const QPoint& pos);
 
@@ -73,14 +68,7 @@ private:
 
   void relay_contextmenu_command (const QString& cmdname);
 
-  QTreeView *view;
-
-  struct
-  {
-    bool local;
-    bool global;
-    bool persistent;
-  } _explicit_collapse;
+  QTableView * view;
 };
 
 #endif

@@ -41,12 +41,8 @@ workspace_view::workspace_view (QWidget *p)
   setWindowTitle (tr ("Workspace"));
   setStatusTip (tr ("View the variables in the active workspace."));
 
-  view = new QTreeView (this);
+  view = new QTableView (this);
 
-  view->setHeaderHidden (false);
-  view->setAlternatingRowColors (true);
-  view->setAnimated (false);
-  view->setTextElideMode (Qt::ElideRight);
   view->setWordWrap (false);
   view->setContextMenuPolicy (Qt::CustomContextMenu);
 
@@ -67,25 +63,11 @@ workspace_view::workspace_view (QWidget *p)
 
   // FIXME -- what should happen if settings is 0?
 
-  _explicit_collapse.local
-    = settings->value ("workspaceview/local_collapsed", false).toBool ();
-
-  _explicit_collapse.global
-    = settings->value ("workspaceview/global_collapsed", false).toBool ();
-
-  _explicit_collapse.persistent
-    = settings->value ("workspaceview/persistent_collapsed", false).toBool ();
-
   // Initialize column order and width of the workspace
   
-  view->header ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
+  view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
 
   // Connect signals and slots.
-  connect (view, SIGNAL (collapsed (QModelIndex)),
-           this, SLOT (collapse_requested (QModelIndex)));
-
-  connect (view, SIGNAL (expanded (QModelIndex)),
-           this, SLOT (expand_requested (QModelIndex)));
 
   connect (view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (item_double_clicked (QModelIndex)));
@@ -101,118 +83,10 @@ workspace_view::~workspace_view (void)
 {
   QSettings *settings = resource_manager::get_settings ();
 
-  settings->setValue ("workspaceview/local_collapsed",
-                      _explicit_collapse.local);
-
-  settings->setValue ("workspaceview/global_collapsed",
-                      _explicit_collapse.global);
-
-  settings->setValue ("workspaceview/persistent_collapsed",
-                      _explicit_collapse.persistent);
-
   settings->setValue("workspaceview/column_state",
-                     view->header ()->saveState ());
+                     view->horizontalHeader ()->saveState ());
 
   settings->sync ();
-}
-
-void
-workspace_view::model_changed ()
-{
-  QAbstractItemModel *m = view->model ();
-
-  // This code is very quirky and requires some explanation.
-  // Usually, we should not deal with collapsing or expanding ourselves,
-  // because the view itself determines (based on the model) whether it
-  // is appropriate to collapse or expand items.
-  //
-  // Now, the logic requires that we update our model item by item, which
-  // would make it work correctly, but this is extremely slow and scales
-  // very bad (O(n^2)). That's why we throw away our model and rebuild it
-  // completely from scratch (O(n)), which is why the view renders all
-  // displayed data as invalid.
-  //
-  // In order to make collapsing/expanding work again, we need to set
-  // flags ourselves here.
-
-  QModelIndex local_model_index = m->index (0, 0);
-  QModelIndex global_model_index = m->index (1, 0);
-  QModelIndex persistent_model_index = m->index (2, 0);
-
-  if (_explicit_collapse.local)
-    view->collapse (local_model_index);
-  else
-    view->expand (local_model_index);
-
-  if (_explicit_collapse.global)
-    view->collapse (global_model_index);
-  else
-    view->expand (global_model_index);
-
-  if (_explicit_collapse.persistent)
-    view->collapse (persistent_model_index);
-  else
-    view->expand (persistent_model_index);
-}
-
-void
-workspace_view::collapse_requested (QModelIndex index)
-{
-  // This code is very quirky and requires some explanation.
-  // Usually, we should not deal with collapsing or expanding ourselves,
-  // because the view itself determines (based on the model) whether it
-  // is appropriate to collapse or expand items.
-  //
-  // Now, the logic requires that we update our model item by item, which
-  // would make it work correctly, but this is extremely slow and scales
-  // very bad (O(n^2)). That's why we throw away our model and rebuild it
-  // completely from scratch (O(n)), which is why the view renders all
-  // displayed data as invalid.
-  //
-  // In order to make collapsing/expanding work again, we need to set
-  // flags ourselves here.
-  QAbstractItemModel *m = view->model ();
-
-  QMap<int, QVariant> item_data = m->itemData (index);
-
-  if (item_data[0] == "Local")
-    _explicit_collapse.local = true;
-
-  if (item_data[0] == "Global")
-    _explicit_collapse.global = true;
-
-  if (item_data[0] == "Persistent")
-    _explicit_collapse.persistent = true;
-}
-
-void
-workspace_view::expand_requested (QModelIndex index)
-{
-  // This code is very quirky and requires some explanation.
-  // Usually, we should not deal with collapsing or expanding ourselves,
-  // because the view itself determines (based on the model) whether it
-  // is appropriate to collapse or expand items.
-  //
-  // Now, the logic requires that we update our model item by item, which
-  // would make it work correctly, but this is extremely slow and scales
-  // very bad (O(n^2)). That's why we throw away our model and rebuild it
-  // completely from scratch (O(n)), which is why the view renders all
-  // displayed data as invalid.
-  //
-  // In order to make collapsing/expanding work again, we need to do set
-  // flags ourselves here.
-  QAbstractItemModel *m = view->model ();
-
-  QMap<int, QVariant> item_data = m->itemData (index);
-
-  if (item_data[0] == "Local")
-    _explicit_collapse.local = false;
-
-  if (item_data[0] == "Global")
-    _explicit_collapse.global = false;
-
-  if (item_data[0] == "Persistent")
-    _explicit_collapse.persistent = false;
 }
 
 void
@@ -238,8 +112,10 @@ workspace_view::contextmenu_requested (const QPoint& pos)
   QAbstractItemModel *m = view->model ();
 
   // if it isnt Local, Glocal etc, allow the ctx menu
-  if (index.parent() != QModelIndex())
+  if (index.isValid())
     {
+      index = index.sibling(index.row(), 0);
+
       QMap<int, QVariant> item_data = m->itemData (index);
   
       QString var_name = item_data[0].toString ();
@@ -280,8 +156,10 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 {
   QModelIndex index = view->currentIndex ();
 
-  if (index.parent () != QModelIndex ())
+  if (index.isValid ())
     {
+      index = index.sibling(index.row(), 0);
+
       QAbstractItemModel *m = view->model ();
 
       QMap<int, QVariant> item_data = m->itemData (index);

@@ -36,97 +36,28 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 
 workspace_model::workspace_model(QObject *p)
-  : QAbstractItemModel (p)
+  : QAbstractTableModel (p)
 {
-  QList<QVariant> rootData;
-  rootData << tr ("Name") << tr ("Class") << tr("Dimension") << tr ("Value");
-  _rootItem = new tree_item(rootData);
-
-  insert_top_level_item(0, new tree_item ("Local"));
-  insert_top_level_item(1, new tree_item ("Global"));
-  insert_top_level_item(2, new tree_item ("Persistent"));
+  _columnNames.append(tr("Name"));
+  _columnNames.append(tr("Class"));
+  _columnNames.append(tr("Dimension"));
+  _columnNames.append(tr("Value"));
 }
 
 workspace_model::~workspace_model()
 {
-  delete _rootItem;
-}
-
-QModelIndex
-workspace_model::index(int row, int column, const QModelIndex &p) const
-{
-  if (!hasIndex(row, column, p))
-    return QModelIndex();
-
-  tree_item *parentItem;
-
-  if (!p.isValid())
-    parentItem = _rootItem;
-  else
-    parentItem = static_cast<tree_item*>(p.internalPointer());
-
-  tree_item *childItem = parentItem->child(row);
-  if (childItem)
-    return createIndex(row, column, childItem);
-  else
-    return QModelIndex();
-}
-
-QModelIndex
-workspace_model::parent(const QModelIndex &idx) const
-{
-  if (!idx.isValid())
-    return QModelIndex();
-
-  tree_item *childItem = static_cast<tree_item*>(idx.internalPointer());
-
-  if (childItem)
-    {
-      tree_item *parentItem = childItem->parent();
-
-      if (! parentItem || parentItem == _rootItem)
-        return QModelIndex();
-
-      return createIndex(parentItem->row(), 0, parentItem);
-    }
-  else
-    return QModelIndex ();
 }
 
 int
 workspace_model::rowCount(const QModelIndex &p) const
 {
-  tree_item *parentItem;
-  if (p.column() > 0)
-    return 0;
-
-  if (!p.isValid())
-    parentItem = _rootItem;
-  else
-    parentItem = static_cast<tree_item*>(p.internalPointer());
-
-  return parentItem->child_count();
+  return _symbols.size();
 }
 
 int
 workspace_model::columnCount(const QModelIndex &p) const
 {
-  if (p.isValid())
-    return static_cast<tree_item*>(p.internalPointer())->column_count();
-  else
-    return _rootItem->column_count();
-}
-
-void
-workspace_model::insert_top_level_item(int at, tree_item *treeItem)
-{
-  _rootItem->insert_child_item(at, treeItem);
-}
-
-tree_item *
-workspace_model::top_level_item (int at)
-{
-  return _rootItem->child(at);
+  return _columnNames.size();
 }
 
 Qt::ItemFlags
@@ -142,7 +73,9 @@ QVariant
 workspace_model::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-    return _rootItem->data(section);
+  {
+     return _columnNames[section];
+  }
 
   return QVariant();
 }
@@ -152,13 +85,21 @@ workspace_model::data(const QModelIndex &idx, int role) const
 {
   if (!idx.isValid())
     return QVariant();
-
   if (role != Qt::DisplayRole)
     return QVariant();
 
-  tree_item *item = static_cast<tree_item*>(idx.internalPointer());
-
-  return item->data(idx.column());
+  switch(idx.column())
+  {
+  case 0:
+    return QVariant(_symbols[idx.row()]);
+  case 1:
+    return QVariant(_class_names[idx.row()]);
+  case 2:
+    return QVariant(_dimensions[idx.row()]);
+  case 3:
+    return QVariant(_values[idx.row()]);
+  }
+  return QVariant();
 }
 
 void
@@ -168,13 +109,14 @@ workspace_model::set_workspace (const QString& scopes,
                                 const QStringList& dimensions,
                                 const QStringList& values)
 {
+
   _scopes = scopes;
   _symbols = symbols;
   _class_names = class_names;
   _dimensions = dimensions;
   _values = values;
 
-  update_tree ();
+  update_table ();
 
   emit model_changed ();
 }
@@ -183,8 +125,7 @@ void
 workspace_model::clear_workspace (void)
 {
   clear_data ();
-
-  update_tree ();
+  update_table ();
 
   emit model_changed ();
 }
@@ -200,46 +141,14 @@ workspace_model::clear_data (void)
 }
 
 void
-workspace_model::clear_tree (void)
-{
-  top_level_item(0)->delete_child_items ();
-  top_level_item(1)->delete_child_items ();
-  top_level_item(2)->delete_child_items ();
-}
-
-void
-workspace_model::update_tree (void)
+workspace_model::update_table (void)
 {
   beginResetModel();
 
-  clear_tree ();
-
-  for (int i = 0; i < _symbols.size (); i++)
-    append_tree (_scopes[i], _symbols[i], _class_names[i], _dimensions[i],
-                 _values[i]);
+  // nothing to do except tell the world to recalc
 
   endResetModel ();
 
   emit model_changed ();
 }
 
-void
-workspace_model::append_tree (QChar scope, const QString& symbol,
-                              const QString& class_name,
-                              const QString& dimension,
-                              const QString& value)
-{
-  tree_item *child = new tree_item ();
-
-  child->set_data (0, symbol);
-  child->set_data (1, class_name);
-  child->set_data (2, dimension);
-  child->set_data (3, value);
-
-  if (scope == 'p')
-    top_level_item(2)->add_child (child);
-  else if (scope == 'g')
-    top_level_item(1)->add_child (child);
-  else
-    top_level_item(0)->add_child (child);
-}

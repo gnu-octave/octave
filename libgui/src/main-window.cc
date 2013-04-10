@@ -78,9 +78,12 @@ main_window::main_window (QWidget *p)
 
 main_window::~main_window (void)
 {
++  // Destroy the terminal first so that STDERR stream is redirected back
++  // to its original pipe to capture error messages at exit.
+
+  delete command_window;
   delete _workspace_model;
   delete status_bar;
-  delete command_window;
   delete history_window;
   delete file_browser_window;
   delete doc_browser_window;

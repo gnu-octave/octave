@@ -30,10 +30,13 @@
 class QUnixTerminalImpl : public QTerminalInterface
 {
     Q_OBJECT
+
+    int fdstderr;
+
 public:
     QUnixTerminalImpl(QWidget *parent = 0);
     virtual ~QUnixTerminalImpl();
-    
+
     void setTerminalFont(const QFont &font); 
     void setSize(int h, int v);
     void sendText(const QString& text);
@@ -43,12 +46,12 @@ public:
 public slots:
     void copyClipboard();
     void pasteClipboard();
-        
+
 protected:
     void focusInEvent(QFocusEvent *focusEvent);
     void showEvent(QShowEvent *);
     virtual void resizeEvent(QResizeEvent *);   
-    
+
 private:
     void initialize();
     void connectToPty();

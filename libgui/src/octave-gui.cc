@@ -80,7 +80,7 @@ dissociate_terminal (void)
 int
 octave_start_gui (int argc, char *argv[])
 {
-  // dissociate_terminal ();
+  dissociate_terminal ();
 
   QApplication application (argc, argv);
 

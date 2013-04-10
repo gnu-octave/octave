@@ -53,6 +53,10 @@ files_dock_widget::files_dock_widget (QWidget *p)
   connect (this, SIGNAL (displayed_directory_changed (const QString&)),
            parent (), SLOT (set_current_working_directory (const QString&)));
 
+  connect (parent (), SIGNAL (settings_changed (const QSettings *)),
+           this, SLOT (notice_settings (const QSettings *)));
+
+
   // Create a toolbar
   _navigation_tool_bar = new QToolBar ("", container);
   _navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);

@@ -49,11 +49,13 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (void);
+  octave_qt_link (octave_main_thread *mt);
 
   ~octave_qt_link (void);
 
   void execute_interpreter (void);
+
+  bool do_exit (int status);
 
   bool do_edit_file (const std::string& file);
 
@@ -91,6 +93,8 @@ private:
 
 signals:
 
+  void exit_signal (int status);
+
   void edit_file_signal (const QString& file);
 
   void change_directory_signal (const QString& dir);
@@ -115,8 +119,6 @@ signals:
 
   void insert_debugger_pointer_signal (const QString&, int);
   void delete_debugger_pointer_signal (const QString&, int);
-
-  void octave_thread_finished (void);
 };
 
 #endif

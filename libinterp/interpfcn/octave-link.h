@@ -53,118 +53,130 @@ public:
 
   static void generate_events (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_generate_events ();
   }
 
-  static void process_events (void)
+  // If disable is TRUE, then no additional events will be processed
+  // other than exit.
+
+  static void process_events (bool disable = false)
   {
-    if (instance_ok ())
-      instance->do_process_events ();
+    if (enabled ())
+      {
+        if (disable)
+          instance->link_enabled = false;
+
+        instance->do_process_events ();
+      }
   }
 
   static void discard_events (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_discard_events ();
   }
 
-  static void exit (int status)
+  static bool exit (int status)
   {
+    bool retval = false;
+
     if (instance_ok ())
-      instance->do_exit (status);
+      retval = instance->do_exit (status);
+
+    return retval;
   }
 
   template <class T>
   static void post_event (T *obj, void (T::*method) (void))
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_post_event (obj, method);
   }
 
   template <class T, class A>
   static void post_event (T *obj, void (T::*method) (A), A arg)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_post_event (obj, method, arg);
   }
 
   template <class T, class A>
   static void post_event (T *obj, void (T::*method) (const A&), const A& arg)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_post_event (obj, method, arg);
   }
 
   static void entered_readline_hook (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_entered_readline_hook ();
   }
 
   static void finished_readline_hook (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_finished_readline_hook ();
   }
 
   static bool
   edit_file (const std::string& file)
   {
-    return instance_ok () ? instance->do_edit_file (file) : false;
+    return enabled () ? instance->do_edit_file (file) : false;
   }
 
   static void change_directory (const std::string& dir)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_change_directory (dir);
   }
 
   static void set_workspace (const std::list<workspace_element>& ws)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_set_workspace (ws);
   }
 
   static void clear_workspace (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_clear_workspace ();
   }
 
   static void set_history (const string_vector& hist)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_set_history (hist);
   }
 
   static void append_history (const std::string& hist_entry)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_append_history (hist_entry);
   }
 
   static void clear_history (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_clear_history ();
   }
 
   static void pre_input_event (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_pre_input_event ();
   }
 
   static void post_input_event (void)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_post_input_event ();
   }
 
   static void enter_debugger_event (const std::string& file, int line)
   {
-    if (instance_ok ())
+    if (enabled ())
       {
         instance->debugging = true;
 
@@ -174,13 +186,13 @@ public:
 
   static void execute_in_debugger_event (const std::string& file, int line)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_execute_in_debugger_event (file, line);
   }
 
   static void exit_debugger_event (void)
   {
-    if (instance_ok () && instance->debugging)
+    if (enabled () && instance->debugging)
       {
         instance->debugging = false;
 
@@ -191,7 +203,7 @@ public:
   static void
   update_breakpoint (bool insert, const std::string& file, int line)
   {
-    if (instance_ok ())
+    if (enabled ())
       instance->do_update_breakpoint (insert, file, line);
   }
 
@@ -201,15 +213,18 @@ private:
 
   static octave_link *instance;
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
   // No copying!
 
   octave_link (const octave_link&);
 
   octave_link& operator = (const octave_link&);
 
-  static bool instance_ok (void);
+  static bool instance_ok (void) { return instance != 0; }
+
+  static bool enabled (void)
+  {
+    return instance_ok () ? instance->link_enabled : false;
+  }
 
 protected:
 
@@ -220,38 +235,34 @@ protected:
   event_queue gui_event_queue;
 
   bool debugging;
-
-  bool accepting_events;
+  bool link_enabled;
 
   void do_generate_events (void);
   void do_process_events (void);
   void do_discard_events (void);
 
-  void do_exit (int status);
-
   template <class T>
   void do_post_event (T *obj, void (T::*method) (void))
   {
-    if (accepting_events)
-      gui_event_queue.add_method (obj, method);
+    gui_event_queue.add_method (obj, method);
   }
 
   template <class T, class A>
   void do_post_event (T *obj, void (T::*method) (A), A arg)
   {
-    if (accepting_events)
-      gui_event_queue.add_method (obj, method, arg);
+    gui_event_queue.add_method (obj, method, arg);
   }
 
   template <class T, class A>
   void do_post_event (T *obj, void (T::*method) (const A&), const A& arg)
   {
-    if (accepting_events)
-      gui_event_queue.add_method (obj, method, arg);
+    gui_event_queue.add_method (obj, method, arg);
   }
 
   void do_entered_readline_hook (void) { }
   void do_finished_readline_hook (void) { }
+
+  virtual bool do_exit (int status) = 0;
 
   virtual bool do_edit_file (const std::string& file) = 0;
 

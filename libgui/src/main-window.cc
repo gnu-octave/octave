@@ -70,7 +70,9 @@ main_window::main_window (QWidget *p)
     file_browser_window (new files_dock_widget (this)),
     doc_browser_window (new documentation_dock_widget (this)),
     editor_window (create_default_editor (this)),
-    workspace_window (new workspace_view (this))
+    workspace_window (new workspace_view (this)),
+    _octave_main_thread (0),
+    _octave_qt_link (0)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -78,23 +80,18 @@ main_window::main_window (QWidget *p)
 
 main_window::~main_window (void)
 {
-+  // Destroy the terminal first so that STDERR stream is redirected back
-+  // to its original pipe to capture error messages at exit.
+  // Destroy the terminal first so that STDERR stream is redirected back
+  // to its original pipe to capture error messages at exit.
 
   delete command_window;
-  delete _workspace_model;
-  delete status_bar;
-  delete history_window;
-  delete file_browser_window;
-  delete doc_browser_window;
-  delete editor_window;
   delete workspace_window;
-
-  // Clean up all dynamically created objects to ensure they are
-  // deleted before this main_window is.  Otherwise, some will be
-  // attached to a non-existent parent.
-
-  octave_link::connect_link (0);
+  delete editor_window;
+  delete doc_browser_window;
+  delete file_browser_window;
+  delete history_window;
+  delete status_bar;
+  delete _workspace_model;
+  delete _octave_main_thread;
   delete _octave_qt_link;
 }
 
@@ -266,9 +263,9 @@ main_window::prepare_to_exit (void)
 }
 
 void
-main_window::exit (void)
+main_window::exit (int status)
 {
-  qApp->quit ();
+  qApp->exit (status);
 }
 
 void
@@ -545,9 +542,6 @@ main_window::construct (void)
 
   construct_tool_bar ();
 
-  connect (qApp, SIGNAL (aboutToQuit ()),
-           this, SLOT (prepare_to_exit ()));
-
   connect (this, SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
 
@@ -592,10 +586,12 @@ main_window::construct (void)
 void
 main_window::construct_octave_qt_link (void)
 {
-  _octave_qt_link = new octave_qt_link ();
+  _octave_main_thread = new octave_main_thread ();
 
-  connect (_octave_qt_link, SIGNAL (octave_thread_finished ()),
-           this, SLOT (exit ()));
+  _octave_qt_link = new octave_qt_link (_octave_main_thread);
+
+  connect (_octave_qt_link, SIGNAL (exit_signal (int)),
+           this, SLOT (exit (int)));
 
   connect (_octave_qt_link,
            SIGNAL (set_workspace_signal

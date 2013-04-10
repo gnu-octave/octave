@@ -92,7 +92,7 @@ public slots:
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
   void prepare_to_exit (void);
-  void exit (void);
+  void exit (int status);
   void reset_windows (void);
 
   void change_directory (const QString& dir);
@@ -205,6 +205,8 @@ private:
   static const int current_directory_max_visible = 16;
   static const int current_directory_max_count = 16;
   QLineEdit *_current_directory_line_edit;
+
+  octave_main_thread *_octave_main_thread;
 
   octave_qt_link *_octave_qt_link;
 

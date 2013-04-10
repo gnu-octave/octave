@@ -891,12 +891,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   if (no_window_system)
     display_info::no_window_system ();
 
-  // Make sure we clean up when we exit.  Also allow users to register
-  // functions.  If we don't have atexit or on_exit, we're going to
-  // leave some junk files around if we exit abnormally.
-
-  atexit (do_octave_atexit);
-
   // Is input coming from a terminal?  If so, we are probably
   // interactive.
 
@@ -1008,14 +1002,11 @@ octave_execute_interpreter (void)
 
   int retval = main_loop ();
 
-  if (retval == 1 && ! error_state)
-    retval = 0;
-
   quitting_gracefully = true;
 
-  clean_up_and_exit (retval);
+  clean_up_and_exit (retval, true);
 
-  return 0;
+  return retval;
 }
 
 static bool

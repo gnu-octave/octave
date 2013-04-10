@@ -52,14 +52,11 @@ extern OCTINTERP_API bool quitting_gracefully;
 extern OCTINTERP_API int exit_status;
 
 extern OCTINTERP_API void
-clean_up_and_exit (int);
+clean_up_and_exit (int status, bool safe_to_return = false);
 
 extern OCTINTERP_API void recover_from_exception (void);
 
 extern OCTINTERP_API int main_loop (void);
-
-extern OCTINTERP_API void
-do_octave_atexit (void);
 
 extern OCTINTERP_API void
 octave_add_atexit_function (const std::string& fname);

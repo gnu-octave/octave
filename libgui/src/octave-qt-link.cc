@@ -34,22 +34,24 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-qt-link.h"
 
-octave_qt_link::octave_qt_link (void)
-  : octave_link (), main_thread (new octave_main_thread)
-{
-  connect (main_thread, SIGNAL (finished ()),
-           this, SIGNAL (octave_thread_finished ()));
-}
+octave_qt_link::octave_qt_link (octave_main_thread *mt)
+  : octave_link (), main_thread (mt)
+{ }
 
-octave_qt_link::~octave_qt_link (void)
-{
-  delete main_thread;
-}
+octave_qt_link::~octave_qt_link (void) { }
 
 void
 octave_qt_link::execute_interpreter (void)
 {
   main_thread->execute_interpreter ();
+}
+
+bool
+octave_qt_link::do_exit (int status)
+{
+  emit exit_signal (status);
+
+  return true;
 }
 
 bool

@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "lex.h"
+#include "octave-link.h"
 #include "oct-conf.h"
 #include "oct-conf-features.h"
 #include "oct-hist.h"
@@ -614,10 +615,7 @@ main_loop (void)
           recover_from_exception ();
           octave_stdout << "\n";
           if (quitting_gracefully)
-            {
-              clean_up_and_exit (exit_status);
-              break; // If user has overriden the exit func.
-            }
+            return exit_status;
         }
       catch (octave_execution_exception)
         {
@@ -641,13 +639,120 @@ main_loop (void)
 
 // Fix up things before exiting.
 
+static std::list<std::string> octave_atexit_functions;
+
+static void
+do_octave_atexit (void)
+{
+  static bool deja_vu = false;
+
+  OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
+
+  while (! octave_atexit_functions.empty ())
+    {
+      std::string fcn = octave_atexit_functions.front ();
+
+      octave_atexit_functions.pop_front ();
+
+      OCTAVE_SAFE_CALL (reset_error_handler, ());
+
+      OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
+
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+    }
+
+  if (! deja_vu)
+    {
+      deja_vu = true;
+
+      // Process pending events and disasble octave_link event
+      // processing with this call.
+
+      octave_link::process_events (true);
+
+      // Do this explicitly so that destructors for mex file objects
+      // are called, so that functions registered with mexAtExit are
+      // called.
+      OCTAVE_SAFE_CALL (clear_mex_functions, ());
+
+      OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
+
+      // FIXME -- is this needed?  Can it cause any trouble?
+      OCTAVE_SAFE_CALL (raw_mode, (0));
+
+      OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
+
+      if (! command_history::ignoring_entries ())
+        OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
+
+      OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
+
+      OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
+
+      OCTAVE_SAFE_CALL (close_files, ());
+
+      OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
+
+      OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
+
+      OCTAVE_SAFE_CALL (sysdep_cleanup, ());
+
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+
+      if (! quitting_gracefully && (interactive || forced_interactive))
+        {
+          octave_stdout << "\n";
+
+          // Yes, we want this to be separate from the call to
+          // flush_octave_stdout above.
+
+          OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+        }
+
+      // Don't call singleton_cleanup_list::cleanup until we have the
+      // problems with registering/unregistering types worked out.  For
+      // example, uncomment the following line, then use the make_int
+      // function from the examples directory to create an integer
+      // object and then exit Octave.  Octave should crash with a
+      // segfault when cleaning up the typinfo singleton.  We need some
+      // way to force new octave_value_X types that are created in
+      // .oct files to be unregistered when the .oct file shared library
+      // is unloaded.
+      //
+      // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+
+      OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
+    }
+}
+
 void
-clean_up_and_exit (int retval)
+clean_up_and_exit (int retval, bool safe_to_return)
 {
   do_octave_atexit ();
 
-  if (octave_exit)
-    (*octave_exit) (retval == EOF ? 0 : retval);
+  if (octave_link::exit (retval))
+    {
+      if (safe_to_return)
+        return;
+      else
+        {
+          // What should we do here?  We might be called from some
+          // location other than the end of octave_execute_interpreter,
+          // so it might not be safe to return.
+
+          // We have nothing else to do at this point, and the
+          // octave_link::exit function is supposed to take care of
+          // exiting for us.  Assume that job won't take more than a
+          // day...
+
+          gnulib::sleep (86400);
+        }
+    }
+  else
+    {
+      if (octave_exit)
+        (*octave_exit) (retval == EOF ? 0 : retval);
+    }
 }
 
 DEFUN (quit, args, ,
@@ -991,89 +1096,6 @@ command shell that is started to run the command.\n\
 %!error system ()
 %!error system (1, 2, 3)
 */
-
-// FIXME -- this should really be static, but that causes
-// problems on some systems.
-std::list<std::string> octave_atexit_functions;
-
-void
-do_octave_atexit (void)
-{
-  static bool deja_vu = false;
-
-  OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
-
-  while (! octave_atexit_functions.empty ())
-    {
-      std::string fcn = octave_atexit_functions.front ();
-
-      octave_atexit_functions.pop_front ();
-
-      OCTAVE_SAFE_CALL (reset_error_handler, ());
-
-      OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
-
-      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-    }
-
-  if (! deja_vu)
-    {
-      deja_vu = true;
-
-      // Do this explicitly so that destructors for mex file objects
-      // are called, so that functions registered with mexAtExit are
-      // called.
-      OCTAVE_SAFE_CALL (clear_mex_functions, ());
-
-      OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
-
-      // FIXME -- is this needed?  Can it cause any trouble?
-      OCTAVE_SAFE_CALL (raw_mode, (0));
-
-      OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
-
-      if (! command_history::ignoring_entries ())
-        OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
-
-      OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
-
-      OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
-
-      OCTAVE_SAFE_CALL (close_files, ());
-
-      OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
-
-      OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
-
-      OCTAVE_SAFE_CALL (sysdep_cleanup, ());
-
-      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-
-      if (! quitting_gracefully && (interactive || forced_interactive))
-        {
-          octave_stdout << "\n";
-
-          // Yes, we want this to be separate from the call to
-          // flush_octave_stdout above.
-
-          OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-        }
-
-      // Don't call singleton_cleanup_list::cleanup until we have the
-      // problems with registering/unregistering types worked out.  For
-      // example, uncomment the following line, then use the make_int
-      // function from the examples directory to create an integer
-      // object and then exit Octave.  Octave should crash with a
-      // segfault when cleaning up the typinfo singleton.  We need some
-      // way to force new octave_value_X types that are created in
-      // .oct files to be unregistered when the .oct file shared library
-      // is unloaded.
-      //
-      // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
-
-      OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
-    }
-}
 
 void
 octave_add_atexit_function (const std::string& fname)

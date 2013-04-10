@@ -50,11 +50,9 @@ octave_link *octave_link::instance = 0;
 
 octave_link::octave_link (void)
   : event_queue_mutex (new octave_mutex ()), gui_event_queue (),
-    debugging (false), accepting_events (true)
+    debugging (false), link_enabled (true)
 {
   command_editor::add_event_hook (octave_readline_hook);
-
-  octave_exit = octave_link::exit;
 }
 
 // OBJ should be an object of a class that is derived from the base
@@ -93,20 +91,6 @@ octave_link::do_discard_events (void)
   gui_event_queue.discard ();
 
   event_queue_mutex->unlock ();
-}
-
-void
-octave_link::do_exit (int)
-{
-  accepting_events = false;
-
-  do_process_events ();
-}
-
-bool
-octave_link::instance_ok (void)
-{
-  return instance != 0;
 }
 
 DEFUN (__octave_link_edit_file__, args, ,

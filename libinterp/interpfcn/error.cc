@@ -1703,6 +1703,7 @@ set to their default values.\n\
           else if (args(0).is_map ())
             {
               octave_scalar_map new_err = args(0).scalar_map_value ();
+              octave_scalar_map new_err_stack;
               std::string new_error_message;
               std::string new_error_id;
               std::string new_error_file;
@@ -1726,7 +1727,7 @@ set to their default values.\n\
 
               if (! error_state && new_err.contains ("stack"))
                 {
-                  octave_scalar_map new_err_stack =
+                  new_err_stack = 
                     new_err.getfield ("stack").scalar_map_value ();
 
                   if (! error_state && new_err_stack.contains ("file"))
@@ -1763,10 +1764,22 @@ set to their default values.\n\
                   Vlast_error_message = new_error_message;
                   Vlast_error_id = new_error_id;
 
-                  octave_idx_type curr_frame = -1;
+                  if (new_err.contains ("stack"))
+                    {
+                      new_err_stack.setfield ("file", new_error_file);
+                      new_err_stack.setfield ("name", new_error_name);
+                      new_err_stack.setfield ("line", new_error_line);
+                      new_err_stack.setfield ("column", new_error_column);
+                      Vlast_error_stack = new_err_stack;
+                    }
+                  else
+                    {
+                      // No stack field.  Fill it in with backtrace info.
+                      octave_idx_type curr_frame = -1;
 
-                  Vlast_error_stack
-                    = octave_call_stack::backtrace (0, curr_frame);
+                      Vlast_error_stack
+                        = octave_call_stack::backtrace (0, curr_frame);
+                    }
                 }
             }
           else

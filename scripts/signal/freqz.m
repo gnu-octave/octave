@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
+## @deftypefn  {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
 ## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
 ## @deftypefnx {Function File} {[@dots{}] =} freqz (@dots{}, @var{Fs})
 ## @deftypefnx {Function File} {} freqz (@dots{})
@@ -36,7 +36,15 @@
 ## @noindent
 ## The output value @var{w} is a vector of the frequencies.
 ##
-## If the fourth argument is omitted, the response is evaluated at
+## If @var{a} is omitted, the denominator is assumed to be 1 (this
+## corresponds to a simple FIR filter).
+##
+## If @var{n} is omitted, a value of 512 is assumed.
+##
+## For fastest computation, @var{n} should factor into a small number of
+## small primes.
+##
+## If the fourth argument, "whole", is omitted the response is evaluated at
 ## frequencies between 0 and
 ## @ifnottex
 ##  pi.
@@ -45,24 +53,19 @@
 ##  $\pi$.
 ## @end tex
 ##
-## If @var{n} is omitted, a value of 512 is assumed.
-##
-## If @var{a} is omitted, the denominator is assumed to be 1 (this
-## corresponds to a simple FIR filter).
-##
-## For fastest computation, @var{n} should factor into a small number of
-## small primes.
-##
 ## @code{freqz (@var{b}, @var{a}, @var{w})}
+##
 ## Evaluate the response at the specific frequencies in the vector @var{w}.
 ## The values for @var{w} are measured in radians.
 ##
 ## @code{[@dots{}] = freqz (@dots{}, @var{Fs})}
+##
 ## Return frequencies in Hz instead of radians assuming a sampling rate
 ## @var{Fs}.  If you are evaluating the response at specific frequencies
 ## @var{w}, those frequencies should be requested in Hz rather than radians.
 ##
 ## @code{freqz (@dots{})}
+##
 ## Plot the pass band, stop band and phase response of @var{h} rather
 ## than returning them.
 ## @end deftypefn

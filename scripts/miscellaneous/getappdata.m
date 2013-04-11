@@ -15,14 +15,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} getappdata (@var{h}, @var{name})
+## @deftypefn  {Function File} {@var{value} =} getappdata (@var{h}, @var{name})
 ## @deftypefnx {Function File} {@var{appdata} =} getappdata (@var{h})
 ## 
 ## Return the @var{value} for named application data for the object(s) with
 ## handle(s) @var{h}.
 ## 
-## @code{getappdata(@var{h})} returns a structure, @var{appdata}, whose fields correspond to the appdata
-## properties.
+## @code{getappdata(@var{h})} returns a structure, @var{appdata}, whose fields
+## correspond to the appdata properties.
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>

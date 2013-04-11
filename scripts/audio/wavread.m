@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} wavread (@var{filename})
+## @deftypefn  {Function File} {@var{y} =} wavread (@var{filename})
 ## @deftypefnx {Function File} {[@var{y}, @var{Fs}, @var{bps}] =} wavread (@var{filename})
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
-## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n1} @var{n2})
+## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, [@var{n1} @var{n2}])
 ## @deftypefnx {Function File} {[@var{samples}, @var{channels}] =} wavread (@var{filename}, "size")
 ## 
 ## Load the RIFF/WAVE sound file @var{filename}, and return the samples
@@ -28,17 +28,21 @@
 ## @var{y} is a matrix with the channels represented as columns.
 ##
 ## @code{[@var{y}, @var{Fs}, @var{bps}] = wavread (@var{filename})}
+##
 ## Additionally return the sample rate (@var{fs}) in Hz and the number of bits
 ## per sample (@var{bps}).
 ##
 ## @code{[@dots{}] = wavread (@var{filename}, @var{n})}
+##
 ## Read only the first @var{n} samples from each channel.
 ##
-## @code{wavread (@var{filename}, @var{n1} @var{n2})}
+## @code{wavread (@var{filename}, [@var{n1} @var{n2}])}
+##
 ## Read only samples @var{n1} through @var{n2} from each channel.
 ##
 ## @code{[@var{samples}, @var{channels}] = wavread (@var{filename}, "size")}
-## Return the number of samples (@var{n}) and channels (@var{ch})
+##
+## Return the number of samples (@var{n}) and number of channels (@var{ch})
 ## instead of the audio data.
 ## @seealso{wavwrite}
 ## @end deftypefn

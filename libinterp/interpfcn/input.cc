@@ -220,6 +220,10 @@ octave_base_reader::octave_gets (bool& eof)
       octave_link::pre_input_event ();
 
       octave_link::set_workspace (symbol_table::workspace_info ());
+
+      // FIXME -- this call should happen any time the terminal window
+      // size changes, not just prior to prompting for input.
+      command_editor::reset_screen_size ();
     }
 
   bool history_skip_auto_repeated_debugging_command = false;

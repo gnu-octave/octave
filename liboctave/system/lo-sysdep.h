@@ -36,8 +36,6 @@ extern int octave_chdir (const std::string&);
 extern pid_t octave_popen2 (const std::string&, const string_vector&,
     bool, int *, std::string&);
 
-extern int w32_terminal_rows (void);
-extern int w32_terminal_cols (void);
 extern void w32_clear_console_window (void);
 
 #endif

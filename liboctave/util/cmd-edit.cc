@@ -302,11 +302,7 @@ gnu_readline::do_get_output_stream (void)
 int
 gnu_readline::do_terminal_rows (void)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-  int sh = w32_terminal_rows ();
-#else
   int sh = ::octave_rl_screen_height ();
-#endif
 
   return sh > 0 ? sh : 24;
 }
@@ -314,11 +310,7 @@ gnu_readline::do_terminal_rows (void)
 int
 gnu_readline::do_terminal_cols (void)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-  int sw = w32_terminal_cols ();
-#else
   int sw = ::octave_rl_screen_width ();
-#endif
 
   return sw > 0 ? sw : 80;
 }

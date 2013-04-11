@@ -289,7 +289,7 @@ main_window::change_directory (const QString& dir)
   _current_directory_combo_box->insertItem (0, dir);
   _current_directory_combo_box->setCurrentIndex (0);
 
-  file_browser_window->display_directory (dir);
+  file_browser_window->update_octave_directory (dir);
 }
 
 void
@@ -958,7 +958,7 @@ main_window::construct_window_menu (QMenuBar *p)
     (window_menu, tr ("Show Command History"), true, ctrl_shift + Qt::Key_1);
 
   QAction *show_file_browser_action =  construct_window_menu_item
-    (window_menu, tr ("Show Current Directory"), true, ctrl_shift + Qt::Key_2);
+    (window_menu, tr ("Show File Browser"), true, ctrl_shift + Qt::Key_2);
 
   QAction *show_workspace_action = construct_window_menu_item
     (window_menu, tr ("Show Workspace"), true, ctrl_shift + Qt::Key_3);
@@ -978,7 +978,7 @@ main_window::construct_window_menu (QMenuBar *p)
     (window_menu, tr ("Command History"), false, ctrl + Qt::Key_1);
 
   QAction *file_browser_action = construct_window_menu_item
-    (window_menu, tr ("Current Directory"), false, ctrl + Qt::Key_2);
+    (window_menu, tr ("File Browser"), false, ctrl + Qt::Key_2);
 
   QAction *workspace_action = construct_window_menu_item
     (window_menu, tr ("Workspace"), false, ctrl + Qt::Key_3);

@@ -44,9 +44,11 @@ octave_gui_ICONS = \
   src/icons/letter_logo_TerminalDockWidget.png \
   src/icons/letter_logo_WorkspaceView.png \
   src/icons/logo.png \
+  src/icons/ok.png \
   src/icons/question.png \
   src/icons/redled.png \
   src/icons/redo.png \
+  src/icons/reload.png \
   src/icons/search.png \
   src/icons/star.png \
   src/icons/stop.png \

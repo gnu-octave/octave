@@ -431,6 +431,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="sync_octave_directory">
+         <property name="text">
+          <string>Synchronize octave directory with the file browser</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="useAlternatingRowColors">
          <property name="text">
           <string>Alternating row colors</string>

@@ -61,13 +61,20 @@ public slots:
   /** Slot for handling the up-directory button in the toolbar. */
   void change_directory_up ();
 
+  /** Slot for handling the sync octave directory button in the toolbar. */
+  void do_sync_octave_directory ();
+
+  /** Slot for handling the sync browser directory button in the toolbar. */
+  void do_sync_browser_directory ();
+
   /** Sets the current directory being displayed. */
   void set_current_directory (const QString& dir);
 
   /** Accepts user input a the line edit for the current directory. */
   void accept_directory_line_edit ();
 
-  void display_directory (const QString& dir);
+  /** set the internal variable that holds the actual octave variable **/
+  void update_octave_directory (const QString& dir);
 
   /** Tells the widget to react on changed settings. */
   void notice_settings (const QSettings *settings);
@@ -84,13 +91,12 @@ private:
 
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
 
-  /** Toolbar for file and directory manipulation. */
-  QToolBar *        _navigation_tool_bar;
+  /** set a new directory or open a file **/
+  void display_directory (const QString& dir, bool set_octave_dir = true);
 
-  /** Variables for the up-directory action. */
-  QIcon             _directory_icon;
-  QAction *         _directory_up_action;
-  QToolButton *     _up_directory_button;
+  /** Variables for the actions **/
+  QAction *         _sync_octave_directory_action;
+  QAction *         _sync_browser_directory_action;
 
   /** The file system model. */
   QFileSystemModel *_file_system_model;
@@ -98,6 +104,10 @@ private:
   /** The file system view. */
   QTreeView *       _file_tree_view;
   QComboBox *       _current_directory;
+
+  /** Internal variables **/
+  bool              _sync_octave_dir;    // flag if syncing with octave
+  QString           _octave_dir;         // the actual octave dir
 
   enum { MaxMRUDirs = 10 };
 };

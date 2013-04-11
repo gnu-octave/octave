@@ -8,7 +8,9 @@
         <file>icons/fileopen.png</file>
         <file>icons/filesave.png</file>
         <file>icons/fileprint.png</file>
+        <file>icons/ok.png</file>
         <file>icons/redo.png</file>
+        <file>icons/reload.png</file>
         <file>icons/search.png</file>
         <file>icons/undo.png</file>
         <file>icons/up.png</file>

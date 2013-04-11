@@ -43,7 +43,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   setObjectName ("FilesDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("File Browser"));
-  setStatusTip (tr ("Browse your files."));
+  setToolTip (tr ("Browse your files."));
 
   QWidget *container = new QWidget (this);
 
@@ -58,29 +58,46 @@ files_dock_widget::files_dock_widget (QWidget *p)
   connect (parent (), SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
 
-
   // Create a toolbar
-  _navigation_tool_bar = new QToolBar ("", container);
-  _navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
-  _navigation_tool_bar->setMovable (false);
-  _navigation_tool_bar->setIconSize (QSize (20, 20));
+  QToolBar *navigation_tool_bar = new QToolBar ("", container);
+  navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
+  navigation_tool_bar->setMovable (false);
+  navigation_tool_bar->setIconSize (QSize (20, 20));
 
-  _directory_icon = QIcon(":/actions/icons/up.png");
-  _directory_up_action = new QAction (_directory_icon, "", _navigation_tool_bar);
-  _directory_up_action->setStatusTip (tr ("Move up one directory."));
-
-  _current_directory = new QComboBox (_navigation_tool_bar);
-  _current_directory->setStatusTip (tr ("Enter the path or filename."));
+  _current_directory = new QComboBox (navigation_tool_bar);
+  _current_directory->setToolTip (tr ("Enter the path or filename"));
   _current_directory->setEditable(true);
   _current_directory->setMaxCount(MaxMRUDirs);
   _current_directory->setInsertPolicy(QComboBox::NoInsert);
+  _current_directory->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
   QSizePolicy sizePol(QSizePolicy::Expanding, QSizePolicy::Preferred);
   _current_directory->setSizePolicy(sizePol);
 
-  _navigation_tool_bar->addAction (_directory_up_action);
-  _navigation_tool_bar->addWidget (_current_directory);
-  connect (_directory_up_action, SIGNAL (triggered ()), this,
+  QAction *directory_up_action = new QAction (QIcon(":/actions/icons/up.png"),
+                                              "", navigation_tool_bar);
+  directory_up_action->setToolTip (tr ("Move up one directory"));
+
+  _sync_browser_directory_action = new QAction (QIcon(":/actions/icons/reload.png"),
+                                                "", navigation_tool_bar);
+  _sync_browser_directory_action->setToolTip (tr ("Goto current octave directory"));
+  _sync_browser_directory_action->setEnabled ("false");
+
+  _sync_octave_directory_action = new QAction (QIcon(":/actions/icons/ok.png"),
+                                               "", navigation_tool_bar);
+  _sync_octave_directory_action->setToolTip (tr ("Set octave directroy to current browser directory"));
+  _sync_octave_directory_action->setEnabled ("false");
+
+  navigation_tool_bar->addWidget (_current_directory);
+  navigation_tool_bar->addAction (directory_up_action);
+  navigation_tool_bar->addAction (_sync_browser_directory_action);
+  navigation_tool_bar->addAction (_sync_octave_directory_action);
+
+  connect (directory_up_action, SIGNAL (triggered ()), this,
            SLOT (change_directory_up ()));
+  connect (_sync_octave_directory_action, SIGNAL (triggered ()), this,
+           SLOT (do_sync_octave_directory ()));
+  connect (_sync_browser_directory_action, SIGNAL (triggered ()), this,
+           SLOT (do_sync_browser_directory ()));
 
   // TODO: Add other buttons for creating directories
 
@@ -98,7 +115,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _file_tree_view->setSortingEnabled (true);
   _file_tree_view->setAlternatingRowColors (true);
   _file_tree_view->setAnimated (true);
-  _file_tree_view->setStatusTip (tr ("Doubleclick a file to open it."));
+  _file_tree_view->setToolTip (tr ("Doubleclick a file to open it"));
 
   // get sort column and order as well as cloumn state (order and width)
   QSettings *settings = resource_manager::get_settings ();
@@ -121,7 +138,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   // Layout the widgets vertically with the toolbar on top
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
   vbox_layout->setSpacing (0);
-  vbox_layout->addWidget (_navigation_tool_bar);
+  vbox_layout->addWidget (navigation_tool_bar);
   vbox_layout->addWidget (_file_tree_view);
   vbox_layout->setMargin (1);
 
@@ -139,6 +156,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _current_directory->setCompleter (completer);
 
   setFocusProxy (_current_directory);
+  
+  _sync_octave_dir = true;   // default, overwirtten with notice_settings ()
+  _octave_dir = "";
 }
 
 files_dock_widget::~files_dock_widget ()
@@ -165,7 +185,6 @@ files_dock_widget::item_double_clicked (const QModelIndex& index)
 {
   // Retrieve the file info associated with the model index.
   QFileInfo fileInfo = _file_system_model->fileInfo (index);
-
   set_current_directory (fileInfo.absoluteFilePath ());
 }
 
@@ -173,8 +192,6 @@ void
 files_dock_widget::set_current_directory (const QString& dir)
 {
   display_directory (dir);
-
-  emit displayed_directory_changed (dir);
 }
 
 void
@@ -192,7 +209,28 @@ files_dock_widget::change_directory_up (void)
 }
 
 void
-files_dock_widget::display_directory (const QString& dir)
+files_dock_widget::do_sync_octave_directory (void)
+{
+  QDir dir = QDir (_file_system_model->filePath (_file_tree_view->rootIndex ()));
+  emit displayed_directory_changed (dir.absolutePath ());
+}
+
+void
+files_dock_widget::do_sync_browser_directory (void)
+{
+  display_directory (_octave_dir,false);  // false: no sync of octave dir
+}
+
+void
+files_dock_widget::update_octave_directory (const QString& dir)
+{
+  _octave_dir = dir;
+  if (_sync_octave_dir)
+    display_directory (_octave_dir,false);  // false: no sync of octave dir
+}
+
+void
+files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
 {
   QFileInfo fileInfo (dir);
   if (fileInfo.exists ())
@@ -203,6 +241,8 @@ files_dock_widget::display_directory (const QString& dir)
                                          index (fileInfo.absoluteFilePath ()));
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
           _file_system_model->sort (0, Qt::AscendingOrder);
+          if (_sync_octave_dir && set_octave_dir)
+            emit displayed_directory_changed (fileInfo.absoluteFilePath ());
 
           // see if its in the list, and if it is, remove it and then, put at top of the list
           int index = _current_directory->findText(fileInfo.absoluteFilePath ());
@@ -228,12 +268,20 @@ files_dock_widget::notice_settings (const QSettings *settings)
 
   // file names are always shown, other columns can be hidden by settings
   _file_tree_view->setColumnHidden (0, false);
-  _file_tree_view->setColumnHidden (1, !settings->value ("showFileSize",false).toBool ());
-  _file_tree_view->setColumnHidden (2, !settings->value ("showFileType",false).toBool ());
-  _file_tree_view->setColumnHidden (3, !settings->value ("showLastModified",false).toBool ());
-  _file_tree_view->setAlternatingRowColors (settings->value ("useAlternatingRowColors",true).toBool ());
-  if (settings->value ("showHiddenFiles",false).toBool ())
+  _file_tree_view->setColumnHidden (1, !settings->value ("filesdockwidget/showFileSize",false).toBool ());
+  _file_tree_view->setColumnHidden (2, !settings->value ("filesdockwidget/showFileType",false).toBool ());
+  _file_tree_view->setColumnHidden (3, !settings->value ("filesdockwidget/showLastModified",false).toBool ());
+  _file_tree_view->setAlternatingRowColors (settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
+  if (settings->value ("filesdockwidget/showHiddenFiles",false).toBool ())
     {
       // TODO: React on option for hidden files.
     }
+  // enalbe the buttons to sync octave/browser dir only if this is not done by default
+  _sync_octave_dir = settings->value ("filesdockwidget/sync_octave_directory",false).toBool ();
+  _sync_octave_directory_action->setEnabled (!_sync_octave_dir);
+  _sync_browser_directory_action->setEnabled (!_sync_octave_dir);
+
+  if (_sync_octave_dir)
+    display_directory (_octave_dir);  // sync browser to octave dir
+
 }

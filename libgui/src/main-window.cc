@@ -542,6 +542,9 @@ main_window::construct (void)
 
   construct_tool_bar ();
 
+  connect (qApp, SIGNAL (aboutToQuit ()),
+           this, SLOT (prepare_to_exit ()));
+
   connect (this, SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
 

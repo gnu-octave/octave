@@ -21,6 +21,7 @@ octave_gui_ICONS = \
   src/icons/db_stop.png \
   src/icons/editcopy.png \
   src/icons/editcut.png \
+  src/icons/editdelete.png \
   src/icons/editpaste.png \
   src/icons/filenew.png \
   src/icons/fileopen.png \
@@ -28,6 +29,7 @@ octave_gui_ICONS = \
   src/icons/filesaveas.png \
   src/icons/filesave.png \
   src/icons/find.png \
+  src/icons/folder_new.png \
   src/icons/graphic_logo_DocumentationDockWidget.png \
   src/icons/graphic_logo_FileEditor.png \
   src/icons/graphic_logo_FilesDockWidget.png \

@@ -285,19 +285,30 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
     { 
       QFileInfo info = _file_system_model->fileInfo(index);
 
-      menu.addAction(tr("Open"), this, SLOT(contextmenu_open(bool)));
-      menu.addAction(QIcon(":/actions/icons/artsbuilderexecute.png"), tr("Run"), this, SLOT(contextmenu_run(bool)));
-      menu.addAction(tr("Load Data"), this, SLOT(contextmenu_load(bool)));
+      menu.addAction(QIcon(":/actions/icons/fileopen.png"), tr("Open"),
+                     this, SLOT(contextmenu_open(bool)));
+      QAction *run_action = menu.addAction(
+                     QIcon(":/actions/icons/artsbuilderexecute.png"), tr("Run"),
+                     this, SLOT(contextmenu_run(bool)));
+      run_action->setEnabled (info.isFile () && info.suffix () == "m");
+      QAction *load_action = menu.addAction(tr("Load Data"),
+                     this, SLOT(contextmenu_load(bool)));
+      load_action->setEnabled (info.isFile ());
+
       menu.addSeparator();
       menu.addAction(tr("Rename"), this, SLOT(contextmenu_rename(bool)));
-      menu.addAction(tr("Delete"), this, SLOT(contextmenu_delete(bool)));
+      menu.addAction(QIcon(":/actions/icons/editdelete.png"), tr("Delete"),
+                     this, SLOT(contextmenu_delete(bool)));
 
-      if(info.isDir())
-        {
-          menu.addSeparator();
-          menu.addAction(tr("New File"), this, SLOT(contextmenu_newfile(bool)));
-          menu.addAction(tr("New Directory"), this, SLOT(contextmenu_newdir(bool)));
-        }
+      menu.addSeparator();
+      QAction *new_file_action = menu.addAction(
+                   QIcon(":/actions/icons/filenew.png"),
+                   tr("New File"), this, SLOT(contextmenu_newfile(bool)));
+      new_file_action->setEnabled (info.isDir());
+      QAction *new_dir_action  = menu.addAction(
+                   QIcon(":/actions/icons/folder_new.png"),
+                   tr("New Directory"), this, SLOT(contextmenu_newdir(bool)));
+      new_dir_action->setEnabled (info.isDir());
 
       menu.exec(_file_tree_view->mapToGlobal(mpos));
 
@@ -345,14 +356,11 @@ files_dock_widget::contextmenu_run (bool)
 
       QFileInfo info = _file_system_model->fileInfo(index);
 
-      if (info.isFile() && info.suffix () == "m")
-        {
-          QString function_name = info.fileName ();
-          // We have to cut off the suffix, because octave appends it.
-          function_name.chop (info.suffix ().length () + 1);
-          emit run_file_signal (QString ("cd \'%1\'\n%2\n")
+      QString function_name = info.fileName ();
+      // We have to cut off the suffix, because octave appends it.
+      function_name.chop (info.suffix ().length () + 1);
+      emit run_file_signal (QString ("cd \'%1\'\n%2\n")
                             .arg(info.absolutePath ()).arg (function_name));
-        }
     }
 }
 

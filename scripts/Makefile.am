@@ -74,6 +74,7 @@ include statistics/tests/module.mk
 include strings/module.mk
 include testfun/module.mk
 include time/module.mk
+include ui/module.mk
 
 nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES) $(JAR_FILES)
 
@@ -213,6 +214,10 @@ time/PKG_ADD: $(time_FCN_FILES) $(time_GEN_FCN_FILES) time/$(octave_dirstamp) mk
 	$(srcdir)/mk-pkg-add $(srcdir) $(time_FCN_FILES) -- $(time_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
+ui/PKG_ADD: $(ui_FCN_FILES) $(ui_GEN_FCN_FILES) ui/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(ui_FCN_FILES) -- $(ui_GEN_FCN_FILES) > $@-t
+	mv $@-t $@
+
 $(@ftp_GEN_FCN_FILES): @ftp/$(octave_dirstamp)
 $(audio_GEN_FCN_FILES): audio/$(octave_dirstamp)
 $(deprecated_GEN_FCN_FILES): deprecated/$(octave_dirstamp)
@@ -244,6 +249,7 @@ $(statistics_tests_GEN_FCN_FILES): statistics/tests/$(octave_dirstamp)
 $(strings_GEN_FCN_FILES): strings/$(octave_dirstamp)
 $(testfun_GEN_FCN_FILES): testfun/$(octave_dirstamp)
 $(time_GEN_FCN_FILES): time/$(octave_dirstamp)
+$(ui_GEN_FCN_FILES): ui/$(octave_dirstamp)
 
 @ftp/$(octave_dirstamp):
 	$(MKDIR_P) @ftp
@@ -338,6 +344,9 @@ testfun/$(octave_dirstamp):
 time/$(octave_dirstamp):
 	$(MKDIR_P) time
 	: > time/$(octave_dirstamp)
+ui/$(octave_dirstamp):
+	$(MKDIR_P) ui
+	: > ui/$(octave_dirstamp)
 
 if AMCOND_BUILD_DOCS
 
@@ -464,4 +473,3 @@ distclean-local:
 	if [ "x$(srcdir)" != "x." ]; then \
 	  rm $(java_JAVA_IMAGES); \
 	fi
-	

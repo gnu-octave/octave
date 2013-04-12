@@ -85,6 +85,7 @@ private slots:
 
   /* context menu actions */
   void contextmenu_open (bool);
+  void contextmenu_load (bool);
   void contextmenu_rename (bool);
   void contextmenu_delete (bool);
   void contextmenu_newfile (bool);
@@ -97,6 +98,9 @@ signals:
 
   /** Emitted, whenever the currently displayed directory changed. */
   void displayed_directory_changed (const QString& dir);
+
+  /** Emitted, whenever the user requested to load a file. */
+  void load_file_signal (const QString& fileName);
 
 private:
 

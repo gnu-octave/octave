@@ -81,7 +81,7 @@ signals:
 public slots:
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
-  void handle_load_workspace_request (void);
+  void handle_load_workspace_request (const QString& file = QString ());
   void handle_clear_workspace_request (void);
   void handle_clear_history_request (void);
   void handle_rename_variable_request (const QString& old_name,

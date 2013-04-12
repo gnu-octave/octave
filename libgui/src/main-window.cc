@@ -134,14 +134,16 @@ main_window::handle_save_workspace_request (void)
 }
 
 void
-main_window::handle_load_workspace_request (void)
+main_window::handle_load_workspace_request (const QString& file_arg)
 {
-  QString selectedFile =
-    QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
-                                  resource_manager::get_home_path ());
-  if (!selectedFile.isEmpty ())
+  QString file = file_arg;
+
+  if (file.isEmpty ())
+    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
+                                         resource_manager::get_home_path ());
+  if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::load_workspace_callback,
-                             selectedFile.toStdString ());
+                             file.toStdString ());
 }
 
 void
@@ -561,6 +563,9 @@ main_window::construct (void)
 
   connect (this, SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
+
+  connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
+           this, SLOT (handle_load_workspace_request (const QString&)));
 
   setWindowTitle ("Octave");
 
@@ -1197,6 +1202,8 @@ void
 main_window::load_workspace_callback (const std::string& file)
 {
   Fload (ovl (file));
+
+  octave_link::set_workspace (true, symbol_table::workspace_info ());
 }
 
 void

@@ -283,6 +283,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
       QFileInfo info = _file_system_model->fileInfo(index);
 
       menu.addAction(tr("Open"), this, SLOT(contextmenu_open(bool)));
+      menu.addAction(tr("Load Data"), this, SLOT(contextmenu_load(bool)));
       menu.addSeparator();
       menu.addAction(tr("Rename"), this, SLOT(contextmenu_rename(bool)));
       menu.addAction(tr("Delete"), this, SLOT(contextmenu_delete(bool)));
@@ -309,6 +310,22 @@ files_dock_widget::contextmenu_open (bool)
   for( QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
     {
       item_double_clicked(*it);
+    }
+}
+
+void 
+files_dock_widget::contextmenu_load (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  if (rows.size () > 0)
+    {
+      QModelIndex index = rows[0];
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+
+      emit load_file_signal (info.fileName ());
     }
 }
 

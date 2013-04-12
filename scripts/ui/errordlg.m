@@ -36,20 +36,7 @@ function h = errordlg (msg, title = "Error Dialog")
     print_usage ();
   endif
 
-  if (! ischar (msg))
-    if (iscell (msg))
-      msg = sprintf ("%s\n", msg{:});
-      msg(end) = "";
-    else
-      error ("errordlg: MSG must be a string or cellstr array");
-    endif
-  endif
-
-  if (! ischar (title))
-    error ("errordlg: TITLE must be a character string");
-  endif
-
-  h = javaMethod ("errordlg", "org.octave.JDialogBox", msg, title);
+  retval = message_dialog ("errdlg", msg, title);
 
 endfunction
 

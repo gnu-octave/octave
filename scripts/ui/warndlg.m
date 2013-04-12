@@ -35,20 +35,7 @@ function retval = warndlg (msg, title = "Warning Dialog")
     print_usage ();
   endif
 
-  if (! ischar (msg))
-    if (iscell (msg))
-      msg = sprintf ("%s\n", msg{:});
-      msg(end) = "";
-    else
-      error ("warndlg: MSG must be a string or cellstr array");
-    endif
-  endif
-
-  if (! ischar (title))
-    error ("warndlg: TITLE must be a character string");
-  endif
-
-  retval = javaMethod ("warndlg", "org.octave.JDialogBox", msg, title);
+  retval = message_dialog ("warndlg", msg, title);
 
 endfunction
 

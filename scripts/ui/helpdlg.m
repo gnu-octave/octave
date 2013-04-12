@@ -36,20 +36,7 @@ function h = helpdlg (msg, title = "Help Dialog")
     print_usage ();
   endif
 
-  if (! ischar (msg))
-    if (iscell (msg))
-      msg = sprintf ("%s\n", msg{:});
-      msg(end) = "";
-    else
-      error ("helpdlg: MSG must be a string or cellstr array");
-    endif
-  endif
-
-  if (! ischar (title))
-    error ("helpdlg: TITLE must be a character string");
-  endif
-
-  h = javaMethod ("helpdlg", "org.octave.JDialogBox", msg, title);
+  retval = message_dialog ("helpdlg", msg, title);
 
 endfunction
 

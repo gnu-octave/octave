@@ -35,42 +35,13 @@
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, questdlg, warndlg}
 ## @end deftypefn
 
-function h = msgbox (msg, title = "", icon)
+function retval = msgbox (msg, title = "", varargin)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (! ischar (msg))
-    if (iscell (msg))
-      msg = sprintf ("%s\n", msg{:});
-      msg(end) = "";
-    else
-      error ("msgbox: MSG must be a character string or cellstr array");
-    endif
-  endif
-
-  if (! ischar (title))
-    error ("msgbox: TITLE must be a character string");
-  endif
-  
-  dlg = "emptydlg";
-  if (nargin == 3)
-    switch (icon)
-      case "error"
-        dlg = "errordlg";
-      case "help"
-        dlg = "helpdlg";
-      case "warn"
-        dlg = "warndlg";
-      case "none"
-        dlg = "emptydlg";
-      otherwise
-        error ("msgbox: ICON is not a valid type");
-    endswitch
-  endif
-
-  h = javaMethod (dlg, "org.octave.JDialogBox", msg, title);
+  retval = message_dialog ("msgbox", msg, title, varargin{:});
 
 endfunction
 

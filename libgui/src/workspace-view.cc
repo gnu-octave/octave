@@ -49,6 +49,7 @@ workspace_view::workspace_view (QWidget *p)
 
   view->setWordWrap (false);
   view->setContextMenuPolicy (Qt::CustomContextMenu);
+  view_previous_row_count = 0;
 
   // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
@@ -96,11 +97,11 @@ workspace_view::closeEvent (QCloseEvent *e)
 }
 
 void
-workspace_view::contextmenu_requested (const QPoint& pos)
+workspace_view::contextmenu_requested (const QPoint& qpos)
 {
   QMenu menu (this);
 
-  QModelIndex index = view->indexAt (pos);
+  QModelIndex index = view->indexAt (qpos);
   QAbstractItemModel *m = view->model ();
 
   // if it isnt Local, Glocal etc, allow the ctx menu
@@ -137,7 +138,7 @@ workspace_view::contextmenu_requested (const QPoint& pos)
       menu.addAction ("stem(" + var_name + ")", this,
                       SLOT (handle_contextmenu_stem ()));
 
-      menu.exec (view->mapToGlobal (pos));
+      menu.exec (view->mapToGlobal (qpos));
     }
 }
 
@@ -227,4 +228,17 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 
       emit command_requested (cmdname + "(" + var_name + ")\n");
     }
+}
+
+void
+workspace_view::handle_model_changed (void)
+{
+  // Just modify those rows that have been added rather than go through
+  // the whole list.  For-loop test will handle when number of rows reduced.
+  QFontMetrics fm = view->fontMetrics ();
+  int row_height =  fm.height ();
+  int new_row_count = view->model ()->rowCount ();
+  for (int i = view_previous_row_count; i < new_row_count; i++)
+    view->setRowHeight (i, row_height);
+  view_previous_row_count = new_row_count;
 }

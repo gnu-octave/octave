@@ -65,11 +65,14 @@ protected slots:
   void handle_contextmenu_plot (void);
   void handle_contextmenu_stem (void);
 
+  void handle_model_changed (void);
+
 private:
 
   void relay_contextmenu_command (const QString& cmdname);
 
   QTableView *view;
+  int view_previous_row_count;
 };
 
 #endif

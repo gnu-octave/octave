@@ -670,6 +670,8 @@ main_window::construct (void)
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
   workspace_window->setModel (_workspace_model);
+  connect (_workspace_model, SIGNAL (model_changed (void)),
+           workspace_window, SLOT (handle_model_changed (void)));
 
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon

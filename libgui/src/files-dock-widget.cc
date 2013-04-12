@@ -36,6 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QSizePolicy>
+#include <QMenu>
+#include <QInputDialog>
+#include <QMessageBox>
 
 files_dock_widget::files_dock_widget (QWidget *p)
   : octave_dock_widget (p)
@@ -134,6 +137,11 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)),
            this, SLOT (item_double_clicked (const QModelIndex &)));
+
+  // add context menu to tree_view
+  _file_tree_view->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(_file_tree_view, SIGNAL(customContextMenuRequested(const QPoint &)), 
+           this, SLOT(contextmenu_requested(const QPoint &)));
 
   // Layout the widgets vertically with the toolbar on top
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
@@ -260,6 +268,169 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
         }
     }
 }
+
+void 
+files_dock_widget::contextmenu_requested (const QPoint& mpos)
+{
+
+  QMenu menu(this);
+
+  QModelIndex index = _file_tree_view->indexAt (mpos);
+  //QAbstractItemModel *m = _file_tree_view->model ();
+
+  if (index.isValid())
+    { 
+      QFileInfo info = _file_system_model->fileInfo(index);
+
+      menu.addAction(tr("Open"), this, SLOT(contextmenu_open(bool)));
+      menu.addSeparator();
+      menu.addAction(tr("Rename"), this, SLOT(contextmenu_rename(bool)));
+      menu.addAction(tr("Delete"), this, SLOT(contextmenu_delete(bool)));
+
+      if(info.isDir())
+        {
+          menu.addSeparator();
+          menu.addAction(tr("New File"), this, SLOT(contextmenu_newfile(bool)));
+          menu.addAction(tr("New Directory"), this, SLOT(contextmenu_newdir(bool)));
+        }
+
+      menu.exec(_file_tree_view->mapToGlobal(mpos));
+
+    }
+}
+
+void 
+files_dock_widget::contextmenu_open (bool)
+{
+
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  for( QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    {
+      item_double_clicked(*it);
+    }
+}
+
+void 
+files_dock_widget::contextmenu_rename (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+  if(rows.size() > 0)
+    {
+      QModelIndex index = rows[0];
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+      QDir path = info.absoluteDir();
+      QString old_name = info.fileName();
+      bool ok;
+
+      QString new_name = QInputDialog::getText (this, tr("Rename file/directory"), 
+                                                tr("Rename file/directory:\n") + old_name + tr("\n to: "),
+                                                QLineEdit::Normal, old_name, &ok);
+      if(ok && new_name.length()>0)
+        {
+          new_name = path.absolutePath() + "/" + new_name;
+          old_name = path.absolutePath() + "/" + old_name;
+          path.rename(old_name, new_name);
+          _file_system_model->revert();
+        }
+    }
+
+}
+
+void 
+files_dock_widget::contextmenu_delete (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  for( QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    {
+      QModelIndex index = *it;
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+
+      if(QMessageBox::question(this, tr("Delete file/directory"), 
+                               tr("Are you sre you want to delete\n") + info.filePath(),
+                               QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes) 
+        {
+           if(info.isDir())
+             {
+               // see if direcory is empty
+               QDir path(info.absoluteFilePath());
+               QList<QFileInfo> fileLst = path.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+
+               if(fileLst.count() != 0)
+                 QMessageBox::warning(this, tr("Delete file/directory"),
+                                      tr("Can not delete a directory that is not empty"));
+               else
+                 _file_system_model->rmdir(index);
+             }
+           else
+             {
+               _file_system_model->remove(index);
+             }
+
+           _file_system_model->revert();
+
+        }
+    }
+}
+
+void 
+files_dock_widget::contextmenu_newfile (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  if(rows.size() > 0)
+    {
+      QModelIndex index = rows[0];
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+      QString parent_dir = info.filePath();
+      bool ok;
+
+      QString name = QInputDialog::getText (this, tr("Create File"), tr("Create file in\n") + parent_dir,
+                                       QLineEdit::Normal, "New File.txt", &ok);
+      if(ok && name.length()>0)
+        {
+          name = parent_dir + "/" + name;
+
+          QFile file(name);
+          file.open(QIODevice::WriteOnly);
+          _file_system_model->revert();
+        }
+    }
+}
+
+void 
+files_dock_widget::contextmenu_newdir (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  if(rows.size() > 0)
+    {
+      QModelIndex index = rows[0];
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+      QString parent_dir = info.filePath();
+      bool ok;
+
+      QString name = QInputDialog::getText (this, tr("Create Directory"), tr("Create folder in\n") + parent_dir,
+                                       QLineEdit::Normal, "New Directory", &ok);
+      if(ok && name.length()>0)
+        {
+          _file_system_model->mkdir(index, name);
+        }
+    }
+}
+
+
+
 
 void
 files_dock_widget::notice_settings (const QSettings *settings)

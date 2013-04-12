@@ -79,6 +79,17 @@ public slots:
   /** Tells the widget to react on changed settings. */
   void notice_settings (const QSettings *settings);
 
+private slots:
+  /** context menu wanted */
+  void contextmenu_requested (const QPoint& pos);
+
+  /* context menu actions */
+  void contextmenu_open (bool);
+  void contextmenu_rename (bool);
+  void contextmenu_delete (bool);
+  void contextmenu_newfile (bool);
+  void contextmenu_newdir (bool);
+
 signals:
 
   /** Emitted, whenever the user requested to open a file. */

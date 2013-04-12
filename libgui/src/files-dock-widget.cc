@@ -160,6 +160,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
   connect (_current_directory, SIGNAL (activated (const QString &)),
            this, SLOT (set_current_directory (const QString &)));
 
+  connect (this, SIGNAL (run_file_signal (const QString&)),
+           parent (), SLOT (handle_command_double_clicked (const QString&)));
+
   QCompleter *completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);
 
@@ -283,6 +286,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
       QFileInfo info = _file_system_model->fileInfo(index);
 
       menu.addAction(tr("Open"), this, SLOT(contextmenu_open(bool)));
+      menu.addAction(QIcon(":/actions/icons/artsbuilderexecute.png"), tr("Run"), this, SLOT(contextmenu_run(bool)));
       menu.addAction(tr("Load Data"), this, SLOT(contextmenu_load(bool)));
       menu.addSeparator();
       menu.addAction(tr("Rename"), this, SLOT(contextmenu_rename(bool)));
@@ -300,7 +304,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
     }
 }
 
-void 
+void
 files_dock_widget::contextmenu_open (bool)
 {
 
@@ -313,7 +317,7 @@ files_dock_widget::contextmenu_open (bool)
     }
 }
 
-void 
+void
 files_dock_widget::contextmenu_load (bool)
 {
   QItemSelectionModel *m = _file_tree_view->selectionModel ();
@@ -326,6 +330,29 @@ files_dock_widget::contextmenu_load (bool)
       QFileInfo info = _file_system_model->fileInfo(index);
 
       emit load_file_signal (info.fileName ());
+    }
+}
+
+void
+files_dock_widget::contextmenu_run (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  if (rows.size () > 0)
+    {
+      QModelIndex index = rows[0];
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+
+      if (info.isFile() && info.suffix () == "m")
+        {
+          QString function_name = info.fileName ();
+          // We have to cut off the suffix, because octave appends it.
+          function_name.chop (info.suffix ().length () + 1);
+          emit run_file_signal (QString ("cd \'%1\'\n%2\n")
+                            .arg(info.absolutePath ()).arg (function_name));
+        }
     }
 }
 

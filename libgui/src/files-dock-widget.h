@@ -85,6 +85,7 @@ private slots:
 
   /* context menu actions */
   void contextmenu_open (bool);
+  void contextmenu_run (bool);
   void contextmenu_load (bool);
   void contextmenu_rename (bool);
   void contextmenu_delete (bool);
@@ -101,6 +102,9 @@ signals:
 
   /** Emitted, whenever the user requested to load a file. */
   void load_file_signal (const QString& fileName);
+
+  /** Emitted, whenever the user requested to run a file. */
+  void run_file_signal (const QString& fileName);
 
 private:
 

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 // Some basic functions
 // -----------------------------------------------------
 lexer_octave_gui::lexer_octave_gui (QObject *p)
-  : QsciLexerOctave (p)
+  : QsciLexer (p)
 {
   // The API info that is used for auto completion
   // TODO: Where to store a file with API info (raw or prepared?)?
@@ -52,15 +52,55 @@ lexer_octave_gui::lexer_octave_gui (QObject *p)
         lexer_api->add (keywordList.at (i));
       lexer_api->prepare ();   // prepare API info ... this may take some time
     }
-
-  // get the settings from the settings file
-  QSettings *settings = resource_manager::get_settings ();
 }
 
 lexer_octave_gui::~lexer_octave_gui()
 {
   if (lexer_api)
     delete lexer_api;
+}
+
+// -----------------------------------------------------------------------------
+// Redefined functions to make an octave lexer from the abtract class Qscilexer.
+//   Scintilla has an octave/matlab-lexer but the interface in Qscintilla is
+//   only available in version 2.5.1. Redefining the following purely virtual
+//   functions of the class QsciLexer () and the enum of available styles (see
+//   lexer-octave-gui.h provides the functionality of the octave lexer.
+// -----------------------------------------------------------------------------
+const char *lexer_octave_gui::language() const
+{
+  return "Octave";  // return the name of the language
+}
+
+const char *lexer_octave_gui::lexer() const
+{
+  return "octave";  // return the name of the lexer
+}
+
+QString lexer_octave_gui::description(int style) const
+{
+    switch (style)
+    {
+    case Default:
+        return tr("Default");
+    case Comment:
+        return tr("Comment");
+    case Command:
+        return tr("Command");
+    case Number:
+        return tr("Number");
+    case Keyword:
+        return tr("Keyword");
+    case SingleQuotedString:
+        return tr("Single-quoted string");
+    case Operator:
+        return tr("Operator");
+    case Identifier:
+        return tr("Identifier");
+    case DoubleQuotedString:
+        return tr("Double-quoted string");
+    }
+    return QString();  // no valid style, return empty string
 }
 
 // -----------------------------------------------------

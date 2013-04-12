@@ -26,18 +26,34 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include <QObject>
 #include <Qsci/qsciglobal.h>
-#include <Qsci/qscilexeroctave.h>
+#include <Qsci/qscilexer.h>
 #include <Qsci/qsciapis.h>
 
-class lexer_octave_gui : public QsciLexerOctave
+class lexer_octave_gui : public QsciLexer
 {
   Q_OBJECT
 
 public:
 
+  enum {
+        Default = 0,
+        Comment = 1,
+        Command = 2,
+        Number = 3,
+        Keyword = 4,
+        SingleQuotedString = 5,
+        Operator = 6,
+        Identifier = 7,
+        DoubleQuotedString = 8
+    };
+
+
   lexer_octave_gui (QObject *parent = 0);
   ~lexer_octave_gui ();
   virtual const char *keywords (int set) const;
+  virtual const char *lexer () const;
+  virtual const char *language () const;
+  QString description(int style) const;
 
 private:
   lexer_octave_gui (const lexer_octave_gui &);

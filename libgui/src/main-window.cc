@@ -39,6 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QIcon>
 
+#include <utility>
+
 #ifdef HAVE_QSCINTILLA
 #include "file-editor.h"
 #endif
@@ -49,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
+#include "symtab.h"
 #include "version.h"
 
 static file_editor_interface *
@@ -145,6 +148,17 @@ void
 main_window::handle_clear_workspace_request (void)
 {
   octave_link::post_event (this, &main_window::clear_workspace_callback);
+}
+
+void
+main_window::handle_rename_variable_request (const QString& old_name,
+                                             const QString& new_name)
+
+{
+  name_pair names (old_name.toStdString (), new_name.toStdString ());
+
+  octave_link::post_event (this, &main_window::rename_variable_callback,
+                           names);
 }
 
 void
@@ -598,12 +612,14 @@ main_window::construct_octave_qt_link (void)
 
   connect (_octave_qt_link,
            SIGNAL (set_workspace_signal
-                   (const QString&, const QStringList&, const QStringList&,
-                    const QStringList&, const QStringList&)),
+                   (bool, const QString&, const QStringList&,
+                    const QStringList&, const QStringList&,
+                    const QStringList&)),
            _workspace_model,
            SLOT (set_workspace
-                 (const QString&, const QStringList&,const QStringList&,
-                  const QStringList&, const QStringList&)));
+                 (bool, const QString&, const QStringList&,
+                  const QStringList&, const QStringList&,
+                  const QStringList&)));
 
   connect (_octave_qt_link, SIGNAL (clear_workspace_signal ()),
            _workspace_model, SLOT (clear_workspace ()));
@@ -648,6 +664,12 @@ main_window::construct_octave_qt_link (void)
            SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
            editor_window,
            SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+
+  connect (_workspace_model,
+           SIGNAL (rename_variable (const QString&, const QString&)),
+           this,
+           SLOT (handle_rename_variable_request (const QString&,
+                                                 const QString&)));
 
   _octave_qt_link->execute_interpreter ();
 
@@ -1181,6 +1203,18 @@ void
 main_window::clear_workspace_callback (void)
 {
   Fclear ();
+}
+
+void
+main_window::rename_variable_callback (const main_window::name_pair& names)
+{
+  /* bool status = */ symbol_table::rename (names.first, names.second);
+
+  // if (status)
+    octave_link::set_workspace (true, symbol_table::workspace_info ());
+
+  //  else
+  //    ; // we need an octave_link action that runs a GUI error option.
 }
 
 void

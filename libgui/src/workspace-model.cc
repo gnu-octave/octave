@@ -27,8 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QTreeWidget>
 
-#include "symtab.h"
-#include "variables.h"
+#include "utils.h"
 
 #include "workspace-model.h"
 
@@ -56,10 +55,15 @@ workspace_model::columnCount (const QModelIndex& p) const
 Qt::ItemFlags
 workspace_model::flags (const QModelIndex& idx) const
 {
-  if (! idx.isValid ())
-    return 0;
+  Qt::ItemFlags retval = 0;
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  if (idx.isValid ())
+    retval |= Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+  if (idx.column () == 0)
+    retval |= Qt::ItemIsEditable;
+
+  return retval;
 }
 
 QVariant
@@ -75,37 +79,73 @@ workspace_model::headerData (int section, Qt::Orientation orientation,
 QVariant
 workspace_model::data (const QModelIndex& idx, int role) const
 {
-  if (!idx.isValid())
-    return QVariant();
+  QVariant retval;
 
-  if (role != Qt::DisplayRole)
-    return QVariant ();
-
-  switch (idx.column ())
+  if (idx.isValid ()
+      && (role == Qt::DisplayRole
+          || (idx.column () == 0 && role == Qt::EditRole)))
     {
-    case 0:
-      return QVariant(_symbols[idx.row()]);
+      switch (idx.column ())
+        {
+        case 0:
+          retval = QVariant (_symbols[idx.row()]);
+          break;
 
-    case 1:
-      return QVariant(_class_names[idx.row()]);
+        case 1:
+          retval = QVariant (_class_names[idx.row()]);
+          break;
 
-    case 2:
-      return QVariant(_dimensions[idx.row()]);
+        case 2:
+          retval = QVariant (_dimensions[idx.row()]);
+          break;
 
-    case 3:
-      return QVariant(_values[idx.row()]);
+        case 3:
+          retval = QVariant (_values[idx.row()]);
+          break;
+
+        default:
+          break;
+        }
     }
 
-  return QVariant ();
+  return retval;
 }
 
+bool
+workspace_model::setData (const QModelIndex& idx, const QVariant& value,
+                          int role)
+{
+  bool retval = false;
+
+  if (idx.column () == 0 && role == Qt::EditRole)
+    {
+      QString qold_name = _symbols[idx.row()];
+
+      QString qnew_name = value.toString ();
+
+      std::string new_name = qnew_name.toStdString ();
+
+      if (valid_identifier (new_name))
+        {
+          emit rename_variable (qold_name, qnew_name);
+
+          retval = true;
+        }
+    }
+
+  return retval;
+}
+
+
 void
-workspace_model::set_workspace (const QString& scopes,
+workspace_model::set_workspace (bool top_level,
+                                const QString& scopes,
                                 const QStringList& symbols,
                                 const QStringList& class_names,
                                 const QStringList& dimensions,
                                 const QStringList& values)
 {
+  _top_level = top_level;
   _scopes = scopes;
   _symbols = symbols;
   _class_names = class_names;
@@ -129,6 +169,7 @@ workspace_model::clear_workspace (void)
 void
 workspace_model::clear_data (void)
 {
+  _top_level = false;
   _scopes = QString ();
   _symbols = QStringList ();
   _class_names = QStringList ();

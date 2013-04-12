@@ -108,6 +108,14 @@ public:
       instance->do_post_event (obj, method, arg);
   }
 
+  template <class T, class A, class B>
+  static void post_event (T *obj, void (T::*method) (const A&, const B&),
+                          const A& arg_a, const B& arg_b)
+  {
+    if (enabled ())
+      instance->do_post_event (obj, method, arg_a, arg_b);
+  }
+
   static void entered_readline_hook (void)
   {
     if (enabled ())
@@ -132,10 +140,11 @@ public:
       instance->do_change_directory (dir);
   }
 
-  static void set_workspace (const std::list<workspace_element>& ws)
+  static void set_workspace (bool top_level,
+                             const std::list<workspace_element>& ws)
   {
     if (enabled ())
-      instance->do_set_workspace (ws);
+      instance->do_set_workspace (top_level, ws);
   }
 
   static void clear_workspace (void)
@@ -269,7 +278,8 @@ protected:
   virtual void do_change_directory (const std::string& dir) = 0;
 
   virtual void
-  do_set_workspace (const std::list<workspace_element>& ws) = 0;
+  do_set_workspace (bool top_level,
+                    const std::list<workspace_element>& ws) = 0;
 
   virtual void do_clear_workspace (void) = 0;
 

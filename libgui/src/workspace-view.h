@@ -24,11 +24,33 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (workspace_view_h)
 #define workspace_view_h 1
 
+#include <QItemDelegate>
 #include <QTableView>
 #include <QSemaphore>
 
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
+
+class variable_name_editor : public QItemDelegate
+{
+  Q_OBJECT
+
+public:
+
+  variable_name_editor (QObject *p = 0) : QItemDelegate (p) { }
+
+  QWidget *createEditor (QWidget *p, const QStyleOptionViewItem& option,
+                         const QModelIndex& index) const;
+
+  void setEditorData (QWidget *editor, const QModelIndex& index) const;
+
+  void setModelData (QWidget *editor, QAbstractItemModel *model,
+                     const QModelIndex& index) const;
+
+  void updateEditorGeometry (QWidget *editor,
+                             const QStyleOptionViewItem& option,
+                             const QModelIndex&) const;
+};
 
 class workspace_view : public octave_dock_widget
 {
@@ -44,7 +66,6 @@ public:
 
   void setModel (workspace_model *model) { view->setModel (model); }
 
-
 signals:
 
   /** signal that user had requested a command on a variable */
@@ -56,7 +77,6 @@ protected:
 
 protected slots:
 
-  void item_double_clicked (QModelIndex index);
   void contextmenu_requested (const QPoint& pos);
 
   // context menu slots
@@ -68,7 +88,9 @@ private:
 
   void relay_contextmenu_command (const QString& cmdname);
 
-  QTableView * view;
+  QTableView *view;
+
+  variable_name_editor *var_name_editor;
 };
 
 #endif

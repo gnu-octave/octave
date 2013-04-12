@@ -25,23 +25,84 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "workspace-view.h"
-#include "resource-manager.h"
+#include <QMessageBox>
+#include <QLineEdit>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QMenu>
 
+#include "workspace-view.h"
+#include "resource-manager.h"
+
+QWidget *
+variable_name_editor::createEditor (QWidget *p, const QStyleOptionViewItem&,
+                                    const QModelIndex& index) const
+{
+  QWidget *retval = 0;
+
+  const QAbstractItemModel *m = index.model ();
+
+  const workspace_model *wm = static_cast<const workspace_model *> (m);
+
+  if (wm->is_top_level ())
+    retval = new QLineEdit (p);
+  else
+    {
+      QMessageBox *msg_box
+        = new QMessageBox (QMessageBox::Critical,
+                           tr ("Workspace Viewer"),
+                           tr ("Only top-level symbols may be renamed.\n"),
+                           QMessageBox::Ok);
+
+      msg_box->setWindowModality (Qt::NonModal);
+      msg_box->setAttribute (Qt::WA_DeleteOnClose);
+      msg_box->show ();
+    }
+
+  return retval;
+}
+
+void
+variable_name_editor::setEditorData (QWidget *editor,
+                                     const QModelIndex& index) const
+{
+  QLineEdit *line_editor = static_cast<QLineEdit *> (editor);
+
+  const QAbstractItemModel *m = index.model ();
+
+  QVariant d =  m->data (index, Qt::EditRole);
+
+  line_editor->insert (d.toString ());
+}
+
+void
+variable_name_editor::setModelData (QWidget *editor,
+                                    QAbstractItemModel *model,
+                                    const QModelIndex& index) const
+{
+  QLineEdit *line_editor = static_cast<QLineEdit*> (editor);
+
+  model->setData (index, line_editor->text (), Qt::EditRole);
+}
+
+void
+variable_name_editor::updateEditorGeometry (QWidget *editor,
+                                            const QStyleOptionViewItem& option,
+                                            const QModelIndex&) const
+{
+  editor->setGeometry (option.rect);
+}
+
 workspace_view::workspace_view (QWidget *p)
-  : octave_dock_widget (p)
+  : octave_dock_widget (p), view (new QTableView (this)),
+    var_name_editor (new variable_name_editor (this))
 {
   setObjectName ("WorkspaceView");
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
   setWindowTitle (tr ("Workspace"));
   setStatusTip (tr ("View the variables in the active workspace."));
-
-  view = new QTableView (this);
 
   view->setWordWrap (false);
   view->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -61,16 +122,13 @@ workspace_view::workspace_view (QWidget *p)
 
   QSettings *settings = resource_manager::get_settings ();
 
-  // FIXME -- what should happen if settings is 0?
-
   // Initialize column order and width of the workspace
   
   view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
 
-  // Connect signals and slots.
+  view->setItemDelegateForColumn (0, var_name_editor);
 
-  connect (view, SIGNAL (doubleClicked (QModelIndex)),
-           this, SLOT (item_double_clicked (QModelIndex)));
+  // Connect signals and slots.
 
   connect (view, SIGNAL (customContextMenuRequested (const QPoint&)),
            this, SLOT(contextmenu_requested (const QPoint&)));
@@ -87,13 +145,8 @@ workspace_view::~workspace_view (void)
                      view->horizontalHeader ()->saveState ());
 
   settings->sync ();
-}
 
-void
-workspace_view::item_double_clicked (QModelIndex)
-{
-  // TODO: Implement opening a dialog that allows the user to change a
-  // variable in the workspace.
+  delete var_name_editor;
 }
 
 void

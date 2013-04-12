@@ -64,6 +64,8 @@ class main_window : public QMainWindow
 
 public:
 
+  typedef std::pair <std::string, std::string> name_pair;
+
   main_window (QWidget *parent = 0);
 
   ~main_window (void);
@@ -82,6 +84,8 @@ public slots:
   void handle_load_workspace_request (void);
   void handle_clear_workspace_request (void);
   void handle_clear_history_request (void);
+  void handle_rename_variable_request (const QString& old_name,
+                                       const QString& new_name);
   void new_file (const QString& commands = QString ());
   void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
@@ -149,6 +153,8 @@ private:
   void save_workspace_callback (const std::string& file);
 
   void load_workspace_callback (const std::string& file);
+
+  void rename_variable_callback (const name_pair& names);
 
   void clear_workspace_callback (void);
 

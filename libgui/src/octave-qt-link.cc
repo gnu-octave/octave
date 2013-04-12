@@ -69,7 +69,8 @@ octave_qt_link::do_change_directory (const std::string& dir)
 }
 
 void
-octave_qt_link::do_set_workspace (const std::list<workspace_element>& ws)
+octave_qt_link::do_set_workspace (bool top_level,
+                                  const std::list<workspace_element>& ws)
 {
   QString scopes;
   QStringList symbols;
@@ -87,7 +88,8 @@ octave_qt_link::do_set_workspace (const std::list<workspace_element>& ws)
       values.append (QString::fromStdString (it->value ()));
     }
 
-  emit set_workspace_signal (scopes, symbols, class_names, dimensions, values);
+  emit set_workspace_signal (top_level, scopes, symbols, class_names,
+                             dimensions, values);
 }
 
 void

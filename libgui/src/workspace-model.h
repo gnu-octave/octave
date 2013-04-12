@@ -42,6 +42,9 @@ public:
 
   QVariant data (const QModelIndex& index, int role) const;
 
+  bool setData (const QModelIndex& index, const QVariant& value,
+                int role = Qt::EditRole);
+
   Qt::ItemFlags flags (const QModelIndex& index) const;
 
   QVariant headerData (int section, Qt::Orientation orientation,
@@ -51,9 +54,12 @@ public:
 
   int columnCount (const QModelIndex& parent = QModelIndex ()) const;
 
+  bool is_top_level (void) const { return _top_level; }
+
 public slots:
 
-  void set_workspace (const QString& scopes,
+  void set_workspace (bool top_level,
+                      const QString& scopes,
                       const QStringList& symbols,
                       const QStringList& class_names,
                       const QStringList& dimensions,
@@ -65,11 +71,14 @@ signals:
 
   void model_changed (void);
 
+  void rename_variable (const QString& old_name, const QString& new_name);
+
 private:
 
   void clear_data (void);
   void update_table (void);
 
+  bool _top_level;
   QString _scopes;
   QStringList _symbols;
   QStringList _class_names;

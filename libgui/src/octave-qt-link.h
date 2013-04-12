@@ -61,7 +61,9 @@ public:
 
   void do_change_directory (const std::string& dir);
 
-  void do_set_workspace (const std::list<workspace_element>& ws);
+  void do_set_workspace (bool top_level,
+                         const std::list<workspace_element>& ws);
+
   void do_clear_workspace (void);
 
   void do_set_history (const string_vector& hist);
@@ -99,7 +101,8 @@ signals:
 
   void change_directory_signal (const QString& dir);
 
-  void set_workspace_signal (const QString& scopes,
+  void set_workspace_signal (bool top_level,
+                             const QString& scopes,
                              const QStringList& symbols,
                              const QStringList& class_names,
                              const QStringList& dimensions,

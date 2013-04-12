@@ -527,6 +527,8 @@ public:
 
     const std::string& name (void) const { return rep->name; }
 
+    void rename (const std::string& new_name) { rep->name = new_name; }
+
     octave_value
     find (const octave_value_list& args = octave_value_list ()) const;
 
@@ -1281,6 +1283,16 @@ public:
     symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_insert (name) : foobar;
+  }
+
+  static void rename (const std::string& old_name,
+                      const std::string& new_name,
+                      scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_rename (old_name, new_name);
   }
 
   static void assign (const std::string& name,
@@ -2460,6 +2472,22 @@ private:
       }
     else
       return p->second;
+  }
+
+  void do_rename (const std::string& old_name, const std::string& new_name)
+  {
+    table_iterator p = table.find (old_name);
+
+    if (p != table.end ())
+      {
+        symbol_record sr = p->second;
+
+        sr.rename (new_name);
+
+        table.erase (p);
+
+        table[new_name] = sr;
+      }
   }
 
   void do_assign (const std::string& name, const octave_value& value,

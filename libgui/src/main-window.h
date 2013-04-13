@@ -83,6 +83,7 @@ public slots:
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
   void handle_load_workspace_request (const QString& file = QString ());
+  void handle_clear_command_window_request (void);
   void handle_clear_workspace_request (void);
   void handle_clear_history_request (void);
   void handle_rename_variable_request (const QString& old_name,
@@ -175,6 +176,8 @@ private:
   void load_workspace_callback (const std::string& file);
 
   void rename_variable_callback (const name_pair& names);
+
+  void clear_command_window_callback (void);
 
   void clear_workspace_callback (void);
 

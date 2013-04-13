@@ -164,6 +164,12 @@ main_window::handle_rename_variable_request (const QString& old_name,
 }
 
 void
+main_window::handle_clear_command_window_request (void)
+{
+  octave_link::post_event (this, &main_window::clear_command_window_callback);
+}
+
+void
 main_window::handle_clear_history_request (void)
 {
   octave_link::post_event (this, &main_window::clear_history_callback);
@@ -960,7 +966,6 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   QAction *clear_command_window_action
     = edit_menu->addAction (tr ("Clear Command Window"));
-  clear_command_window_action->setEnabled (false); // TODO: Make this work.
 
   QAction *clear_command_history
     = edit_menu->addAction(tr ("Clear Command History"));
@@ -973,6 +978,9 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   connect (_paste_action, SIGNAL (triggered()),
            command_window, SLOT (pasteClipboard ()));
+
+  connect (clear_command_window_action, SIGNAL (triggered ()),
+           this, SLOT (handle_clear_command_window_request ()));
 
   connect (clear_command_history, SIGNAL (triggered ()),
            this, SLOT (handle_clear_history_request ()));
@@ -1320,6 +1328,14 @@ main_window::rename_variable_callback (const main_window::name_pair& names)
   //  else
   //    ; // we need an octave_link action that runs a GUI error option.
 }
+
+void
+main_window::clear_command_window_callback (void)
+{
+  Fclc ();
+  command_editor::interrupt (true);
+}
+
 
 void
 main_window::clear_history_callback (void)

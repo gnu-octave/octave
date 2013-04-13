@@ -104,12 +104,12 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   // TODO: Add other buttons for creating directories
 
-  // Create the QFileSystemModel starting in the home directory
-  QString homePath = QDir::homePath ();
-
+  // Create the QFileSystemModel starting in the actual directory
+  QDir curr_dir;
   _file_system_model = new QFileSystemModel (this);
   _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
-  QModelIndex rootPathIndex = _file_system_model->setRootPath (homePath);
+  QModelIndex rootPathIndex = _file_system_model->setRootPath (
+                                                  curr_dir.absolutePath ());
 
   // Attach the model to the QTreeView and set the root index
   _file_tree_view = new QTreeView (container);

@@ -60,6 +60,7 @@ class find_dialog : public QDialog
   void init_search_text ();
 
 private slots:
+  void handle_backward_search_changed (int);
   void search_next ();
   void replace ();
   void replace_all ();

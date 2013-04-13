@@ -53,7 +53,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   : QDialog (p)
 {
   setWindowTitle ("Find and Replace");
-  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowIcon (QIcon(":/actions/icons/search.png"));
 
   _search_label = new QLabel (tr ("Find &what:"));
   _search_line_edit = new QLineEdit;
@@ -98,6 +98,8 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
            this,                SLOT (replace ()));
   connect (_replace_all_button, SIGNAL (clicked ()),
            this,                SLOT (replace_all ()));
+  connect (_backward_check_box, SIGNAL (stateChanged (int)),
+           this,                SLOT (handle_backward_search_changed (int)));
 
   QVBoxLayout *extension_layout = new QVBoxLayout ();
   extension_layout->setMargin (0);
@@ -128,8 +130,20 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   setLayout (main_layout);
 
   _extension->hide ();
+
+  _find_result_available = false;
+
 }
 
+// set text of "search from start" depending on backward search
+void
+find_dialog::handle_backward_search_changed (int backward)
+{
+  if (backward)
+    _from_start_check_box->setText (tr ("Search from end"));
+  else
+    _from_start_check_box->setText (tr ("Search from start"));
+}
 
 // initialize search text with selected text if this is in one single line
 void
@@ -149,12 +163,26 @@ void
 find_dialog::search_next ()
 {
   int line = -1, col = -1;
+  bool do_wrap = _wrap_check_box->isChecked ();
+
+  if (_find_result_available)
+    { // we found a match last time
+      if (_backward_check_box->isChecked ())
+        {  // backward: go back one position or we will find the same again
+          _edit_area->getCursorPosition (&line,&col);
+          if (col > 0)
+            _edit_area->setCursorPosition (line,--col);
+        }
+    }
 
   _find_result_available = false;
+
   if (_from_start_check_box->isChecked ())
     {
-      line = 1;
-      col  = 1;
+      line = 0;
+      col  = 0;
+      if (_backward_check_box->isChecked ())
+        do_wrap = true;
     }
 
   if (_edit_area)
@@ -163,7 +191,7 @@ find_dialog::search_next ()
                                                       _regex_check_box->isChecked (),
                                                       _case_check_box->isChecked (),
                                                       _whole_words_check_box->isChecked (),
-                                                      _wrap_check_box->isChecked (),
+                                                      do_wrap,
                                                       !_backward_check_box->isChecked (),
                                                       line,col,
                                                       true
@@ -171,6 +199,14 @@ find_dialog::search_next ()
                                                       , true
 #endif
                                                       );
+    }
+  if (_find_result_available)
+    _from_start_check_box->setChecked (0);
+  else
+    {
+     	QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
+                           tr ("No more matches found"), QMessageBox::Ok, this);
+      msg_box.exec ();
     }
 }
 

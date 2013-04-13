@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "QTerminal.h"
 
 // Own includes
+#include "dialog.h"
 #include "resource-manager.h"
 #include "workspace-model.h"
 #include "workspace-view.h"
@@ -118,6 +119,25 @@ public slots:
   void read_settings (void);
   void write_settings (void);
   void connect_visibility_changed (void);
+
+  void connect_uiwidget_links ();
+
+  void handle_create_dialog (const QString& message, const QString& title,
+                             const QString& icon, const QStringList& button,
+                             const QString& defbutton,
+                             const QStringList& role);
+
+  void handle_create_listview (const QStringList& list, const QString& mode,
+                               int width, int height,
+                               const QIntList& initial,
+                               const QString& name,
+                               const QString& prompt_string,
+                               const QString& ok_string,
+                               const QString& cancel_string);
+
+  void handle_create_inputlayout (const QStringList&, const QString&,
+                                  const QIntList&, const QIntList&,
+                                  const QStringList&);
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);

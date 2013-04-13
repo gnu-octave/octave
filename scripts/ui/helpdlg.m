@@ -40,3 +40,10 @@ function h = helpdlg (msg, title = "Help Dialog")
 
 endfunction
 
+%!demo
+%!  disp('- test helpdlg with a help message only.');
+%!  helpdlg("Below, you should see 3 lines:\nline #1\nline #2, and\nline #3.");
+
+%!demo
+%!  disp('- test helpdlg with help message and caption.');
+%!  helpdlg('You should see a single line.','A help dialog');

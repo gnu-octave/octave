@@ -533,6 +533,101 @@ main_window::connect_visibility_changed (void)
   workspace_window->connect_visibility_changed ();
 }
 
+// Connect the signals emitted when the Octave thread wants to create
+// a dialog box of some sort.  Perhaps a better place for this would be
+// as part of the QUIWidgetCreator class.  However, mainWindow currently
+// is not a global variable and not accessible for connecting.
+
+void
+main_window::connect_uiwidget_links ()
+{
+  connect (&uiwidget_creator,
+           SIGNAL (create_dialog (const QString&, const QString&,
+                                  const QString&, const QStringList&,
+                                  const QString&, const QStringList&)),
+           this,
+           SLOT (handle_create_dialog (const QString&, const QString&,
+                                       const QString&, const QStringList&,
+                                       const QString&, const QStringList&)));
+
+  // Register QIntList so that list of ints may be part of a signal.
+  qRegisterMetaType<QIntList> ("QIntList");
+  connect (&uiwidget_creator,
+           SIGNAL (create_listview (const QStringList&, const QString&,
+                                    int, int, const QIntList&,
+                                    const QString&, const QString&,
+                                    const QString&, const QString&)),
+           this,
+           SLOT (handle_create_listview (const QStringList&, const QString&,
+                                         int, int, const QIntList&,
+                                         const QString&, const QString&,
+                                         const QString&, const QString&)));
+
+  // Register QFloatList so that list of ints may be part of a signal.
+  qRegisterMetaType<QFloatList> ("QFloatList");
+  connect (&uiwidget_creator,
+           SIGNAL (create_inputlayout (const QStringList&, const QString&,
+                                       const QIntList&, const QIntList&,
+                                       const QStringList&)),
+           this,
+           SLOT (handle_create_inputlayout (const QStringList&, const QString&,
+                                            const QIntList&, const QIntList&,
+                                            const QStringList&)));
+}
+
+// Create a message dialog with specified string, buttons and decorative
+// text.
+
+void
+main_window::handle_create_dialog (const QString& message,
+                                   const QString& title,
+                                   const QString& icon,
+                                   const QStringList& button,
+                                   const QString& defbutton,
+                                   const QStringList& role)
+{
+  MessageDialog *message_dialog = new MessageDialog (message, title, icon,
+                                                     button, defbutton, role);
+  message_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  message_dialog->show ();
+}
+
+// Create a list dialog with specified list, initially selected, mode,
+// view size and decorative text.
+
+void
+main_window::handle_create_listview (const QStringList& list,
+                                     const QString& mode,
+                                     int wd, int ht,
+                                     const QIntList& initial,
+                                     const QString& name,
+                                     const QString& prompt_string,
+                                     const QString& ok_string,
+                                     const QString& cancel_string)
+{
+  ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
+                                            initial, name, prompt_string,
+                                            ok_string, cancel_string);
+
+  list_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  list_dialog->show ();
+}
+
+// Create an input dialog with specified prompts and defaults, title and
+// row/column size specifications.
+void
+main_window::handle_create_inputlayout (const QStringList& prompt,
+                                        const QString& title,
+                                        const QIntList& nr,
+                                        const QIntList& nc,
+                                        const QStringList& defaults)
+{
+  InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
+                                               defaults);
+
+  input_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  input_dialog->show ();
+}
 
 // Main subroutine of the constructor
 void
@@ -566,6 +661,8 @@ main_window::construct (void)
 
   connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
            this, SLOT (handle_load_workspace_request (const QString&)));
+
+  connect_uiwidget_links ();
 
   setWindowTitle ("Octave");
 

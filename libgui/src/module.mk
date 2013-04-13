@@ -72,6 +72,7 @@ octave_gui_MOC += \
 endif
 
 octave_gui_MOC += \
+  src/moc-dialog.cc \
   src/moc-documentation-dock-widget.cc \
   src/moc-files-dock-widget.cc \
   src/moc-history-dock-widget.cc \
@@ -98,6 +99,7 @@ octave_gui_UI_H = $(patsubst src/%.ui, src/ui-%.h, $(octave_gui_UI))
 BUILT_SOURCES += $(octave_gui_UI_H)
 
 noinst_HEADERS += \
+  src/dialog.h \
   src/octave-dock-widget.h \
   src/documentation-dock-widget.h \
   src/files-dock-widget.h \
@@ -122,6 +124,7 @@ noinst_HEADERS += \
   src/workspace-view.h
 
 src_libgui_src_la_SOURCES = \
+  src/dialog.cc \
   src/documentation-dock-widget.cc \
   src/files-dock-widget.cc \
   src/history-dock-widget.cc \

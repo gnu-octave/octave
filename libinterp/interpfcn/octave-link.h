@@ -134,6 +134,42 @@ public:
     return enabled () ? instance->do_edit_file (file) : false;
   }
 
+  static int
+  message_dialog (const std::string& dlg, const std::string& msg,
+                  const std::string& title)
+  {
+    return enabled () ? instance->do_message_dialog (dlg, msg, title) : 0;
+  }
+
+  static std::pair<std::list<int>, int>
+  list_dialog (const std::list<std::string>& list,
+               const std::string& mode,
+               int width, int height,
+               const std::list<int>& initial_value,
+               const std::string& name,
+               const std::string& prompt_string,
+               const std::string& ok_string,
+               const std::string& cancel_string)
+  {
+    return enabled ()
+      ? instance->do_list_dialog (list, mode, width, height,
+                                  initial_value, name, prompt_string,
+                                  ok_string, cancel_string)
+      : std::pair<std::list<int>, int> ();
+  }
+
+  static std::list<std::string>
+  input_dialog (const std::list<std::string>& prompt,
+                const std::string& title,
+                const std::list<int>& nr,
+                const std::list<int>& nc,
+                const std::list<std::string>& defaults)
+  {
+    return enabled ()
+      ? instance->do_input_dialog (prompt, title, nr, nc, defaults)
+      : std::list<std::string> ();
+  }
+
   static void change_directory (const std::string& dir)
   {
     if (enabled ())
@@ -274,6 +310,27 @@ protected:
   virtual bool do_exit (int status) = 0;
 
   virtual bool do_edit_file (const std::string& file) = 0;
+
+  virtual int
+  do_message_dialog (const std::string& dlg, const std::string& msg,
+                     const std::string& title) = 0;
+
+  virtual std::pair<std::list<int>, int>
+  do_list_dialog (const std::list<std::string>& list,
+                  const std::string& mode,
+                  int width, int height,
+                  const std::list<int>& initial_value,
+                  const std::string& name,
+                  const std::string& prompt_string,
+                  const std::string& ok_string,
+                  const std::string& cancel_string) = 0;
+
+  virtual std::list<std::string>
+  do_input_dialog (const std::list<std::string>& prompt,
+                   const std::string& title,
+                   const std::list<int>& nr,
+                   const std::list<int>& nc,
+                   const std::list<std::string>& defaults) = 0;
 
   virtual void do_change_directory (const std::string& dir) = 0;
 

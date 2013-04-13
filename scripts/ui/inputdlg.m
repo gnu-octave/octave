@@ -126,13 +126,90 @@ function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
   defs = cellfun (@num2str, defaults, "UniformOutput", false);
   rc = arrayfun (@num2str, rowscols, "UniformOutput", false);
 
-  user_inputs = javaMethod ("inputdlg", "org.octave.JDialogBox",
-                             prompt, title, rc, defs);
-  
-   if (isempty (user_inputs))
-     cstr = {};
-   else
-     cstr = cellstr (user_inputs);
-   endif
+  cstr = __octave_link_input_dialog__ (prompt, title, rowscols, defs);
+
+  if (iscell (cstr))
+    return;
+  endif
+
+  if (__have_feature__ ("JAVA"))
+    user_inputs = javaMethod ("inputdlg", "org.octave.JDialogBox",
+                              prompt, title, rc, defs);
+    
+    if (isempty (user_inputs))
+      cstr = {};
+    else
+      cstr = cellstr (user_inputs);
+    endif
+
+    return;
+
+  endif
+
+  ## FIXME -- provide terminal-based implementation here?
+
+  error ("inputdlg is not available in this version of Octave");
 
 endfunction
+
+%!demo
+%!  disp('- test inputdlg with prompt and caption only.');
+%!  prompt = {'Width','Height','Depth'};
+%!  dims = inputdlg ( prompt, 'Enter Box Dimensions' );
+%!  if isempty(dims)
+%!     helpdlg('Canceled by user', 'Information');
+%!  else
+%!     volume  = str2num(dims{1}) * str2num(dims{2}) * str2num(dims{3});
+%!     surface = 2 * (str2num(dims{1}) * str2num(dims{2}) + ...
+%!                    str2num(dims{2}) * str2num(dims{3}) + ...
+%!                    str2num(dims{1}) * str2num(dims{3}));
+%!     helpdlg(sprintf('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!  end
+
+%!demo
+%!  disp('- test inputdlg with prescribed scalar (2 lines per text field) and defaults.');
+%!  prompt = {'Width','Height','Depth'};
+%!  default = {'1.1','2.2','3.3'};
+%!  rc = 2;
+%!  dims = inputdlg ( prompt, 'Enter Box Dimensions',rc,default );
+%!  if isempty(dims)
+%!     helpdlg('Canceled by user', 'Information');
+%!  else
+%!     volume  = str2num(dims{1}) * str2num(dims{2}) * str2num(dims{3});
+%!     surface = 2 * (str2num(dims{1}) * str2num(dims{2}) + ...
+%!                    str2num(dims{2}) * str2num(dims{3}) + ...
+%!                    str2num(dims{1}) * str2num(dims{3}));
+%!     helpdlg(sprintf('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!  end
+
+%!demo
+%!  disp('- test inputdlg with prescribed vector [1,2,3] for # of lines per text field and defaults.');
+%!  prompt = {'Width','Height','Depth'};
+%!  default = {'1.10', '2.10', '3.10'};
+%!  rc = [1,2,3];  % NOTE: must be an array
+%!  dims = inputdlg ( prompt, 'Enter Box Dimensions',rc,default );
+%!  if isempty(dims)
+%!     helpdlg('Canceled by user', 'Information');
+%!  else
+%!     volume  = str2num(dims{1}) * str2num(dims{2}) * str2num(dims{3});
+%!     surface = 2 * (str2num(dims{1}) * str2num(dims{2}) + ...
+%!                    str2num(dims{2}) * str2num(dims{3}) + ...
+%!                    str2num(dims{1}) * str2num(dims{3}));
+%!     helpdlg(sprintf('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!  end
+
+%!demo
+%!  disp('- test inputdlg with prescribed row by column sizes and defaults.');
+%!  prompt = {'Width','Height','Depth'};
+%!  default = {'1.10', '2.20', '3.30'};
+%!  rc = [1,10; 2,20; 3,30];  % NOTE: must be an array
+%!  dims = inputdlg ( prompt, 'Enter Box Dimensions',rc,default );
+%!  if isempty(dims)
+%!     helpdlg('Canceled by user', 'Information');
+%!  else
+%!     volume  = str2num(dims{1}) * str2num(dims{2}) * str2num(dims{3});
+%!     surface = 2 * (str2num(dims{1}) * str2num(dims{2}) + ...
+%!                    str2num(dims{2}) * str2num(dims{3}) + ...
+%!                    str2num(dims{1}) * str2num(dims{3}));
+%!     helpdlg(sprintf('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!  end

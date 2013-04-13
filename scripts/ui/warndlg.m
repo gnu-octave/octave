@@ -39,3 +39,10 @@ function retval = warndlg (msg, title = "Warning Dialog")
 
 endfunction
 
+%!demo
+%!  disp('- test warndlg with prompt only.');
+%!  warndlg('Oh, a warning occured');
+
+%!demo
+%!  disp('- test warndlg with prompt and caption.');
+%!  warndlg('Oh, No...','This is the last Warning');

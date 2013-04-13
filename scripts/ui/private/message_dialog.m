@@ -52,16 +52,21 @@ function retval = message_dialog (caller, msg, title = "", icon)
     endswitch
   endif
 
+  retval = __octave_link_message_dialog__ (dlg, msg, title);
+  if (retval > 0)
+    return;
+  endif
+
   if (__have_feature__ ("JAVA"))
     retval = javaMethod (dlg, "org.octave.JDialogBox", msg, title);
-    if (retval)
+    if (retval > 0)
       return;
     endif
   endif
 
   ## FIXME -- provide terminal-based implementation here?
 
-  if (! retval)
+  if (retval <= 0)
     error ("%s is not available in this version of Octave", dlg);
   endif
 

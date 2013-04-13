@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
+#include "dialog.h"
 #include "workspace-element.h"
 
 #include "octave-qt-link.h"
@@ -60,6 +61,97 @@ octave_qt_link::do_edit_file (const std::string& file)
   emit edit_file_signal (QString::fromStdString (file));
 
   return true;
+}
+
+int
+octave_qt_link::do_message_dialog (const std::string& dlg,
+                                   const std::string& msg,
+                                   const std::string& title)
+{
+  uiwidget_creator.signal_dialog (QString::fromStdString (msg),
+                                  QString::fromStdString (title),
+                                  QString (), QStringList (),
+                                  QString (), QStringList ());
+
+  // Wait while the user is responding to message box.
+  uiwidget_creator.wait ();
+
+  // The GUI has sent a signal and the process has been awakened.
+  return uiwidget_creator.get_dialog_result ();
+}
+
+static QStringList
+make_qstring_list (const std::list<std::string>& lst)
+{
+  QStringList retval;
+
+  for (std::list<std::string>::const_iterator it = lst.begin ();
+       it != lst.end (); it++)
+    {
+      retval.append (QString::fromStdString (*it));
+    }
+
+  return retval;
+}
+
+
+std::pair<std::list<int>, int>
+octave_qt_link::do_list_dialog (const std::list<std::string>& list,
+                                const std::string& mode,
+                                int width, int height,
+                                const std::list<int>& initial,
+                                const std::string& name,
+                                const std::string& prompt_string,
+                                const std::string& ok_string,
+                                const std::string& cancel_string)
+{
+  uiwidget_creator.signal_listview (make_qstring_list (list),
+                                    QString::fromStdString (mode),
+                                    width, height,
+                                    QList<int>::fromStdList (initial),
+                                    QString::fromStdString (name),
+                                    QString::fromStdString (prompt_string),
+                                    QString::fromStdString (ok_string),
+                                    QString::fromStdString (cancel_string));
+
+  // Wait while the user is responding to message box.
+  uiwidget_creator.wait ();
+
+  // The GUI has sent a signal and the process has been awakened.
+  const QIntList *selected = uiwidget_creator.get_list_index ();
+  int ok = uiwidget_creator.get_dialog_result ();
+
+  return std::pair<std::list<int>, int> (selected->toStdList (), ok);
+}
+
+std::list<std::string>
+octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
+                                 const std::string& title,
+                                 const std::list<int>& nr,
+                                 const std::list<int>& nc,
+                                 const std::list<std::string>& defaults)
+{
+  std::list<std::string> retval;
+
+  uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
+                                       QString::fromStdString (title),
+                                       QList<int>::fromStdList (nr),
+                                       QList<int>::fromStdList (nc),
+                                       make_qstring_list (defaults));
+
+  // Wait while the user is responding to message box.
+  uiwidget_creator.wait ();
+
+  // The GUI has sent a signal and the process has been awakened.
+  const QStringList *inputLine = uiwidget_creator.get_string_list ();
+
+  for (QStringList::const_iterator it = inputLine->begin ();
+       it != inputLine->end (); it++)
+    {
+      retval.push_back (it->toStdString ());
+    }
+
+  return retval;
 }
 
 void

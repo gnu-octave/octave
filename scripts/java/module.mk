@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += java
 
 java_FCN_FILES = \
-  java/dlgtest.m \
   java/javaArray.m \
   java/javaaddpath.m \
   java/javaclasspath.m \

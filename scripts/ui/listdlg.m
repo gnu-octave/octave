@@ -77,7 +77,7 @@
 ## @seealso{errordlg, helpdlg, inputdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
-function varargout = listdlg (varargin)
+function [sel, ok] = listdlg (varargin)
 
    if (nargin < 2)
      print_usage ();
@@ -122,21 +122,60 @@ function varargout = listdlg (varargin)
    if (! iscell (listcell))
      listcell = {listcell};
    endif
-   
-   ## transform matrices to cell arrays of strings
-   ## swap width and height to correct calling format for JDialogBox
-   listsize = {num2str(listsize(2)), num2str(listsize(1))};
-   initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
-   
-   ret = javaMethod ("listdlg", "org.octave.JDialogBox", listcell,
-                      selmode, listsize, initialvalue, name, prompt,
-                      okstring, cancelstring);
 
-   if (numel (ret) > 0)
-     varargout = {ret, 1};
-   else
-     varargout = {{}, 0};
+   [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
+                                            initialvalue, name, prompt,
+                                            okstring, cancelstring);
+   if (ok > 0)
+     return;
    endif
+
+   if (__have_feature__ ("JAVA"))
+     ## transform matrices to cell arrays of strings
+     ## swap width and height to correct calling format for JDialogBox
+     listsize = {num2str(listsize(2)), num2str(listsize(1))};
+     initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
+     
+     ret = javaMethod ("listdlg", "org.octave.JDialogBox", listcell,
+                       selmode, listsize, initialvalue, name, prompt,
+                       okstring, cancelstring);
+
+     if (numel (ret) > 0)
+       sel = ret;
+       ok = 1;
+     else
+       sel = {};
+       ok = 0;
+     endif
+
+     return;
+
+   endif
+
+   ## FIXME -- provide terminal-based implementation here?
+
+   error ("listdlg is not available in this version of Octave");
 
 endfunction
 
+%!demo
+%!  disp('- test listdlg with selectionmode single. No caption, no prompt.');
+%!  itemlist = {'An item \\alpha', 'another', 'yet another'};
+%!  s = listdlg ( 'ListString',itemlist, 'SelectionMode','Single' );
+%!  imax = numel (s);
+%!  for i=1:1:imax
+%!     disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
+%!  end
+
+%!demo
+%!  disp('- test listdlg with selectionmode and preselection. Has caption and two lines prompt.');
+%!  itemlist = {'An item \\alpha', 'another', 'yet another'};
+%!  s = listdlg ( 'ListString',itemlist, ...
+%!                'SelectionMode','Multiple', ...
+%!                'Name','Selection Dialog', ...
+%!                'InitialValue',[1,2,3,4],
+%!                'PromptString',{'Select an item...', '...or multiple items'} );
+%!  imax = numel (s);
+%!  for i=1:1:imax
+%!     disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
+%!  end

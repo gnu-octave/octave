@@ -295,6 +295,13 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
                      this, SLOT(contextmenu_load(bool)));
       load_action->setEnabled (info.isFile ());
 
+      if (info.isDir ())
+        {
+          menu.addSeparator ();
+          menu.addAction (tr ("Set Current Directory"),
+                          this, SLOT (contextmenu_setcurrentdir (bool)));
+        }
+
       menu.addSeparator();
       menu.addAction(tr("Rename"), this, SLOT(contextmenu_rename(bool)));
       menu.addAction(QIcon(":/actions/icons/editdelete.png"), tr("Delete"),
@@ -481,8 +488,24 @@ files_dock_widget::contextmenu_newdir (bool)
     }
 }
 
+void 
+files_dock_widget::contextmenu_setcurrentdir (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
 
+  if(rows.size() > 0)
+    {
+      QModelIndex index = rows[0];
 
+      QFileInfo info = _file_system_model->fileInfo(index);
+
+      if(info.isDir())
+        {
+          emit displayed_directory_changed (info.absoluteFilePath ());
+        }
+    }
+}
 
 void
 files_dock_widget::notice_settings (const QSettings *settings)

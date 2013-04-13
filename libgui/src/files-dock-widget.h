@@ -91,6 +91,7 @@ private slots:
   void contextmenu_delete (bool);
   void contextmenu_newfile (bool);
   void contextmenu_newdir (bool);
+  void contextmenu_setcurrentdir (bool);
 
 signals:
 

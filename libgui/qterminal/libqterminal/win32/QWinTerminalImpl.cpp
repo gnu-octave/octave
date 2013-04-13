@@ -227,7 +227,7 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
 
   m_backgroundColor = Qt::white;
   m_foregroundColor = Qt::black;
-  SetConsoleTextAttribute (m_stdOut, 0x0F);
+  SetConsoleTextAttribute (m_stdOut, 0xF0);
 
   m_font.setFamily ("Lucida Console");
   m_font.setPointSize (9);

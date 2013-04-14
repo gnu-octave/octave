@@ -359,7 +359,7 @@ main_window::accept_directory_line_edit (void)
   // the combo box will triggers the "activated" signal to change to the
   // directory.
 
-  QString dir = _current_directory_line_edit->text ();
+  QString dir = _current_directory_combo_box->currentText ();
 
   int index = _current_directory_combo_box->findText (dir);
 
@@ -1261,25 +1261,27 @@ main_window::construct_tool_bar (void)
 
   main_tool_bar->addSeparator ();
 
-  _current_directory_line_edit = new QLineEdit (this);
   _current_directory_combo_box = new QComboBox (this);
   _current_directory_combo_box->setFixedWidth (current_directory_width);
   _current_directory_combo_box->setEditable (true);
-  // setLineEdit takes ownership -> no need to delete line_edit in ~main_window
-  _current_directory_combo_box->setLineEdit (_current_directory_line_edit);
-  _current_directory_combo_box->setInsertPolicy (QComboBox::InsertAtTop);
+  _current_directory_combo_box->setInsertPolicy(QComboBox::NoInsert);
+  _current_directory_combo_box->setToolTip (tr ("Enter directory name"));
   _current_directory_combo_box->setMaxVisibleItems (current_directory_max_visible);
   _current_directory_combo_box->setMaxCount (current_directory_max_count);
+  QSizePolicy sizePol(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  _current_directory_combo_box->setSizePolicy(sizePol);
 
   QToolButton *current_directory_tool_button = new QToolButton (this);
   current_directory_tool_button->setIcon (QIcon (":/actions/icons/search.png"));
+  current_directory_tool_button->setToolTip (tr ("Browse directories"));
 
   QToolButton *current_directory_up_tool_button = new QToolButton (this);
   current_directory_up_tool_button->setIcon (QIcon (":/actions/icons/up.png"));
+  current_directory_up_tool_button->setToolTip (tr ("One directory up"));
 
   // addWidget takes ownership of the objects so there is no
   // need to delete these upon destroying this main_window.
-  main_tool_bar->addWidget (new QLabel (tr ("Current Directory:")));
+  main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
   main_tool_bar->addWidget (_current_directory_combo_box);
   main_tool_bar->addWidget (current_directory_tool_button);
   main_tool_bar->addWidget (current_directory_up_tool_button);
@@ -1287,8 +1289,8 @@ main_window::construct_tool_bar (void)
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this, SLOT (set_current_working_directory (QString)));
 
-  connect (_current_directory_line_edit, SIGNAL (returnPressed ()),
-           this, SLOT (accept_directory_line_edit ()));
+  connect (_current_directory_combo_box->lineEdit(), SIGNAL (returnPressed ()),
+            this, SLOT (accept_directory_line_edit ()));
 
   connect (current_directory_tool_button, SIGNAL (clicked ()),
            this, SLOT (browse_for_directory ()));

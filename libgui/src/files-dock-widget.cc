@@ -285,37 +285,37 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
     { 
       QFileInfo info = _file_system_model->fileInfo(index);
 
-      menu.addAction(QIcon(":/actions/icons/fileopen.png"), tr("Open"),
+      menu.addAction (QIcon (":/actions/icons/fileopen.png"), tr("Open"),
                      this, SLOT(contextmenu_open(bool)));
-      QAction *run_action = menu.addAction(
-                     QIcon(":/actions/icons/artsbuilderexecute.png"), tr("Run"),
-                     this, SLOT(contextmenu_run(bool)));
-      run_action->setEnabled (info.isFile () && info.suffix () == "m");
-      QAction *load_action = menu.addAction(tr("Load Data"),
-                     this, SLOT(contextmenu_load(bool)));
-      load_action->setEnabled (info.isFile ());
+      if (info.isFile () && info.suffix () == "m")
+        menu.addAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
+                        tr("Run"), this, SLOT(contextmenu_run(bool)));
+      if (info.isFile ())
+        menu.addAction (tr("Load Data"), this, SLOT(contextmenu_load(bool)));
 
       if (info.isDir ())
         {
           menu.addSeparator ();
-          menu.addAction (tr ("Set Current Directory"),
+          menu.addAction (QIcon (":/actions/icons/ok.png"),
+                          tr ("Set Current Directory"),
                           this, SLOT (contextmenu_setcurrentdir (bool)));
         }
 
       menu.addSeparator();
-      menu.addAction(tr("Rename"), this, SLOT(contextmenu_rename(bool)));
-      menu.addAction(QIcon(":/actions/icons/editdelete.png"), tr("Delete"),
-                     this, SLOT(contextmenu_delete(bool)));
+      menu.addAction (tr ("Rename"), this, SLOT(contextmenu_rename(bool)));
+      menu.addAction (QIcon(":/actions/icons/editdelete.png"), tr("Delete"),
+                      this, SLOT(contextmenu_delete(bool)));
 
-      menu.addSeparator();
-      QAction *new_file_action = menu.addAction(
-                   QIcon(":/actions/icons/filenew.png"),
-                   tr("New File"), this, SLOT(contextmenu_newfile(bool)));
-      new_file_action->setEnabled (info.isDir());
-      QAction *new_dir_action  = menu.addAction(
-                   QIcon(":/actions/icons/folder_new.png"),
-                   tr("New Directory"), this, SLOT(contextmenu_newdir(bool)));
-      new_dir_action->setEnabled (info.isDir());
+      if (info.isDir())
+        {
+          menu.addSeparator();
+          menu.addAction (QIcon (":/actions/icons/filenew.png"),
+                          tr ("New File"),
+                          this, SLOT(contextmenu_newfile(bool)));
+          menu.addAction (QIcon (":/actions/icons/folder_new.png"),
+                          tr("New Directory"),
+                          this, SLOT(contextmenu_newdir(bool)));
+        }
 
       menu.exec(_file_tree_view->mapToGlobal(mpos));
 

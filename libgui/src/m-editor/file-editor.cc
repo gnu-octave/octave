@@ -693,7 +693,7 @@ file_editor::construct ()
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
-  QAction *find_action = new QAction (QIcon(":/actions/icons/find.png"),
+  QAction *find_action = new QAction (QIcon(":/actions/icons/search.png"),
                                       tr ("&Find and Replace"), _tool_bar);
 
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),

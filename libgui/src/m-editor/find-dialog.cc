@@ -67,7 +67,6 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _wrap_check_box = new QCheckBox (tr ("&Wrap while searching"));
   _wrap_check_box->setChecked(true);
   _find_next_button = new QPushButton (tr ("&Find Next"));
-  _find_next_button->setDefault (true);
   _replace_button = new QPushButton (tr ("&Replace"));
   _replace_all_button = new QPushButton (tr ("Replace &All"));
 
@@ -80,6 +79,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _button_box->addButton (_replace_button, QDialogButtonBox::ActionRole);
   _button_box->addButton (_replace_all_button, QDialogButtonBox::ActionRole);
   _button_box->addButton (_more_button, QDialogButtonBox::ActionRole);
+  _button_box->addButton (QDialogButtonBox::Close);
 
   _extension = new QWidget (this);
   _whole_words_check_box = new QCheckBox (tr ("&Whole words"));
@@ -100,6 +100,8 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
            this,                SLOT (replace_all ()));
   connect (_backward_check_box, SIGNAL (stateChanged (int)),
            this,                SLOT (handle_backward_search_changed (int)));
+  connect (_button_box,         SIGNAL (rejected ()),
+           this,                SLOT (close ()));
 
   QVBoxLayout *extension_layout = new QVBoxLayout ();
   extension_layout->setMargin (0);
@@ -126,11 +128,11 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   main_layout->setSizeConstraint (QLayout::SetFixedSize);
   main_layout->addLayout (left_layout, 0, 0);
   main_layout->addWidget (_button_box, 0, 1);
-  main_layout->addWidget (_extension, 1, 0, 1, 2);
+  main_layout->addWidget (_extension, 1, 0);
   setLayout (main_layout);
 
   _extension->hide ();
-
+  _find_next_button->setDefault (true);
   _find_result_available = false;
 
 }

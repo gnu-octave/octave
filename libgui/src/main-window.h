@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "terminal-dock-widget.h"
 #include "documentation-dock-widget.h"
 #include "octave-qt-link.h"
+#include "find-files-dialog.h"
 
 /**
  * \class MainWindow
@@ -140,6 +141,9 @@ public slots:
                                   const QIntList&, const QIntList&,
                                   const QStringList&);
 
+  // find files dialog 
+  void find_files(const QString &startdir=QDir::currentPath());
+  void find_files_finished(int);
 protected:
   void closeEvent (QCloseEvent * closeEvent);
 
@@ -234,6 +238,9 @@ private:
   static const int current_directory_max_visible = 16;
   static const int current_directory_max_count = 16;
   QLineEdit *_current_directory_line_edit;
+
+  // Find files dialog
+  find_files_dialog * find_files_dlg;
 
   octave_main_thread *_octave_main_thread;
 

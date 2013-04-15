@@ -84,6 +84,7 @@ octave_gui_MOC += \
   src/moc-welcome-wizard.cc \
   src/moc-workspace-model.cc \
   src/moc-workspace-view.cc \
+  src/moc-find-files-dialog.cc \
   src/qtinfo/moc-parser.cc \
   src/qtinfo/moc-webinfo.cc \
   src/moc-octave-dock-widget.cc
@@ -120,6 +121,8 @@ noinst_HEADERS += \
   src/terminal-dock-widget.h \
   src/color-picker.h \
   src/welcome-wizard.h \
+  src/find-files-dialog.h \
+  src/find-files-model.h \
   src/workspace-model.h \
   src/workspace-view.h
 
@@ -143,6 +146,8 @@ src_libgui_src_la_SOURCES = \
   src/terminal-dock-widget.cc \
   src/color-picker.cc \
   src/welcome-wizard.cc \
+  src/find-files-dialog.cc \
+  src/find-files-model.cc \
   src/workspace-model.cc \
   src/workspace-view.cc
 

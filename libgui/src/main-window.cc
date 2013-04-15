@@ -74,6 +74,7 @@ main_window::main_window (QWidget *p)
     doc_browser_window (new documentation_dock_widget (this)),
     editor_window (create_default_editor (this)),
     workspace_window (new workspace_view (this)),
+    find_files_dlg (0),
     _octave_main_thread (0),
     _octave_qt_link (0)
 {
@@ -94,6 +95,11 @@ main_window::~main_window (void)
   delete history_window;
   delete status_bar;
   delete _workspace_model;
+  if (find_files_dlg) 
+    {
+      delete find_files_dlg;
+      find_files_dlg = 0;
+    }
   delete _octave_main_thread;
   delete _octave_qt_link;
 }
@@ -960,7 +966,6 @@ main_window::construct_edit_menu (QMenuBar *p)
   QAction *find_files_action
     = edit_menu->addAction (tr ("Find Files..."));
   find_files_action->setShortcut (ctrl_shift + Qt::Key_F);
-  find_files_action->setEnabled (false); // TODO: Make this work.
 
   edit_menu->addSeparator ();
 
@@ -978,6 +983,9 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   connect (_paste_action, SIGNAL (triggered()),
            command_window, SLOT (pasteClipboard ()));
+
+  connect (find_files_action, SIGNAL (triggered()),
+           this, SLOT (find_files ()));
 
   connect (clear_command_window_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_command_window_request ()));
@@ -1403,3 +1411,41 @@ main_window::exit_callback (void)
 {
   Fquit ();
 }
+
+void
+main_window::find_files(const QString &start_dir)
+{
+
+  if (! find_files_dlg)
+    {
+      find_files_dlg = new find_files_dialog (this);
+
+      connect (find_files_dlg, SIGNAL (finished (int)),
+               this, SLOT (find_files_finished (int)));
+
+      connect (find_files_dlg, SIGNAL (dir_selected(const QString &)),
+               file_browser_window, SLOT(set_current_directory(const QString&)));
+
+      connect (find_files_dlg, SIGNAL (file_selected(const QString &)),
+               this, SLOT(open_file(const QString &)));
+
+      find_files_dlg->setWindowModality (Qt::NonModal);
+    }
+
+  if (! find_files_dlg->isVisible ())
+    {
+      find_files_dlg->show ();
+    }
+
+  find_files_dlg->set_search_dir(start_dir);
+
+  find_files_dlg->activateWindow ();
+
+}
+
+void 
+main_window::find_files_finished(int button)
+{
+
+}
+

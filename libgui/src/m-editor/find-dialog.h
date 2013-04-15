@@ -1,9 +1,28 @@
 /****************************************************************************
-**
-** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
-** All rights reserved.
-** Contact: Nokia Corporation (qt-info@nokia.com)
-**
+
+Find dialog derived from an example from Qt Toolkit (license below (**))
+
+Copyright (C) 2012-2013 Torsten <ttl@justmail.de>
+Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
+ All rights reserved.
+ Contact: Nokia Corporation (qt-info@nokia.com)
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
 ** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
@@ -61,11 +80,14 @@ class find_dialog : public QDialog
 
 private slots:
   void handle_backward_search_changed (int);
-  void search_next ();
+  void find (bool forward = true);
+  void find_next ();
+  void find_prev ();
   void replace ();
   void replace_all ();
 
 private:
+  void no_matches_message ();
   QLabel            *_search_label;
   QLineEdit         *_search_line_edit;
   QLabel            *_replace_label;
@@ -79,6 +101,7 @@ private:
   QCheckBox         *_backward_check_box;
   QDialogButtonBox  *_button_box;
   QPushButton       *_find_next_button;
+  QPushButton       *_find_prev_button;
   QPushButton       *_replace_button;
   QPushButton       *_replace_all_button;
   QPushButton       *_more_button;

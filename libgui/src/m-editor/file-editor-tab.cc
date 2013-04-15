@@ -604,7 +604,8 @@ file_editor_tab::find (const QWidget* ID)
 
   if (!_find_dialog)
     {
-       _find_dialog = new find_dialog (_edit_area);
+      _find_dialog = new find_dialog (_edit_area, 
+                                      qobject_cast<QWidget *>(sender ()));
       connect (_find_dialog, SIGNAL (finished (int)),
                this, SLOT (handle_find_dialog_finished (int)));
       _find_dialog->setWindowModality (Qt::NonModal);

@@ -1,9 +1,28 @@
 /****************************************************************************
-**
-** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
-** All rights reserved.
-** Contact: Nokia Corporation (qt-info@nokia.com)
-**
+
+Find dialog derived from an example from Qt Toolkit (license below (**))
+
+Copyright (C) 2012-2013 Torsten <ttl@justmail.de>
+Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
+ All rights reserved.
+ Contact: Nokia Corporation (qt-info@nokia.com)
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
 ** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
@@ -67,6 +86,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _wrap_check_box = new QCheckBox (tr ("&Wrap while searching"));
   _wrap_check_box->setChecked(true);
   _find_next_button = new QPushButton (tr ("&Find Next"));
+  _find_prev_button = new QPushButton (tr ("Find &Previous"));
   _replace_button = new QPushButton (tr ("&Replace"));
   _replace_all_button = new QPushButton (tr ("Replace &All"));
 
@@ -76,6 +96,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
 
   _button_box = new QDialogButtonBox (Qt::Vertical);
   _button_box->addButton (_find_next_button, QDialogButtonBox::ActionRole);
+  _button_box->addButton (_find_prev_button, QDialogButtonBox::ActionRole);
   _button_box->addButton (_replace_button, QDialogButtonBox::ActionRole);
   _button_box->addButton (_replace_all_button, QDialogButtonBox::ActionRole);
   _button_box->addButton (_more_button, QDialogButtonBox::ActionRole);
@@ -91,7 +112,9 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
 
   _edit_area = edit_area;
   connect (_find_next_button,   SIGNAL (clicked ()),
-           this,                SLOT (search_next ()));
+           this,                SLOT (find_next ()));
+  connect (_find_prev_button,   SIGNAL (clicked ()),
+           this,                SLOT (find_prev ()));
   connect (_more_button,        SIGNAL (toggled (bool)),
            _extension,          SLOT (setVisible (bool)));
   connect (_replace_button,     SIGNAL (clicked ()),
@@ -135,6 +158,8 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _find_next_button->setDefault (true);
   _find_result_available = false;
 
+  move (p->x() + p->frameGeometry ().width (), p->y());
+
 }
 
 // set text of "search from start" depending on backward search
@@ -160,17 +185,30 @@ find_dialog::init_search_text ()
     }
 }
 
+void
+find_dialog::find_next ()
+{
+  find (!_backward_check_box->isChecked ());
+}
 
 void
-find_dialog::search_next ()
+find_dialog::find_prev ()
+{
+  find (_backward_check_box->isChecked ());
+}
+
+void
+find_dialog::find (bool forward)
 {
   int line = -1, col = -1;
   bool do_wrap = _wrap_check_box->isChecked ();
+  bool do_forward = true;
 
   if (_find_result_available)
-    { // we found a match last time
-      if (_backward_check_box->isChecked ())
+    { // we found a match last time, cursor is at the end of the match
+      if (!forward)
         {  // backward: go back one position or we will find the same again
+          do_forward = false;
           _edit_area->getCursorPosition (&line,&col);
           if (col > 0)
             _edit_area->setCursorPosition (line,--col);
@@ -194,7 +232,7 @@ find_dialog::search_next ()
                                                       _case_check_box->isChecked (),
                                                       _whole_words_check_box->isChecked (),
                                                       do_wrap,
-                                                      !_backward_check_box->isChecked (),
+                                                      do_forward,
                                                       line,col,
                                                       true
 #ifdef HAVE_FINDFIRST_MODERN
@@ -205,11 +243,7 @@ find_dialog::search_next ()
   if (_find_result_available)
     _from_start_check_box->setChecked (0);
   else
-    {
-     	QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
-                           tr ("No more matches found"), QMessageBox::Ok, this);
-      msg_box.exec ();
-    }
+    no_matches_message ();
 }
 
 
@@ -219,7 +253,8 @@ find_dialog::replace ()
   if (_edit_area)
     {
       _edit_area->replace (_replace_line_edit->text ());
-      _edit_area->findNext();
+      if (!_edit_area->findNext())
+        no_matches_message ();
     }
 }
 
@@ -244,15 +279,28 @@ find_dialog::replace_all ()
   // replace all if strings are different
   if (_edit_area && strDiff )
     {
-      search_next ();  // find first occurence
+      find (!_backward_check_box->isChecked ());  // find first occurence
       while (_find_result_available)   // while search string is found
         {
           _edit_area->replace (_replace_line_edit->text ());   // replace
           count++;                                             // inc counter
-          _find_result_available = _edit_area->findNext();                     // and find next
+          _find_result_available = _edit_area->findNext();     // and find next
         }
+      QMessageBox msg_box (QMessageBox::Information, tr ("Replace Result"),
+                           tr ("%1 items replaced").arg(count),
+                           QMessageBox::Ok, this);
+      msg_box.exec ();
     }
   // TODO: Show number of replaced strings
 }
+
+void
+find_dialog::no_matches_message ()
+{
+ 	QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
+                       tr ("No more matches found"), QMessageBox::Ok, this);
+  msg_box.exec ();
+}
+
 
 #endif

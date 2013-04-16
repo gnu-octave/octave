@@ -25,6 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <QInputDialog>
+#include <QApplication>
+#include <QClipboard>
 #include <QMessageBox>
 #include <QLineEdit>
 #include <QHeaderView>
@@ -36,68 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-view.h"
 #include "resource-manager.h"
 
-QWidget *
-variable_name_editor::createEditor (QWidget *p, const QStyleOptionViewItem&,
-                                    const QModelIndex& index) const
-{
-  QWidget *retval = 0;
-
-  const QAbstractItemModel *m = index.model ();
-
-  const workspace_model *wm = static_cast<const workspace_model *> (m);
-
-  if (wm->is_top_level ())
-    retval = new QLineEdit (p);
-  else
-    {
-      QMessageBox *msg_box
-        = new QMessageBox (QMessageBox::Critical,
-                           tr ("Workspace Viewer"),
-                           tr ("Only top-level symbols may be renamed.\n"),
-                           QMessageBox::Ok);
-
-      msg_box->setWindowModality (Qt::NonModal);
-      msg_box->setAttribute (Qt::WA_DeleteOnClose);
-      msg_box->show ();
-    }
-
-  return retval;
-}
-
-void
-variable_name_editor::setEditorData (QWidget *editor,
-                                     const QModelIndex& index) const
-{
-  QLineEdit *line_editor = static_cast<QLineEdit *> (editor);
-
-  const QAbstractItemModel *m = index.model ();
-
-  QVariant d =  m->data (index, Qt::EditRole);
-
-  line_editor->insert (d.toString ());
-}
-
-void
-variable_name_editor::setModelData (QWidget *editor,
-                                    QAbstractItemModel *model,
-                                    const QModelIndex& index) const
-{
-  QLineEdit *line_editor = static_cast<QLineEdit*> (editor);
-
-  model->setData (index, line_editor->text (), Qt::EditRole);
-}
-
-void
-variable_name_editor::updateEditorGeometry (QWidget *editor,
-                                            const QStyleOptionViewItem& option,
-                                            const QModelIndex&) const
-{
-  editor->setGeometry (option.rect);
-}
-
 workspace_view::workspace_view (QWidget *p)
-  : octave_dock_widget (p), view (new QTableView (this)),
-    var_name_editor (new variable_name_editor (this))
+  : octave_dock_widget (p), view (new QTableView (this))
 {
   setObjectName ("WorkspaceView");
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
@@ -126,8 +69,6 @@ workspace_view::workspace_view (QWidget *p)
   
   view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
 
-  view->setItemDelegateForColumn (0, var_name_editor);
-
   // Connect signals and slots.
 
   connect (view, SIGNAL (customContextMenuRequested (const QPoint&)),
@@ -145,8 +86,6 @@ workspace_view::~workspace_view (void)
                      view->horizontalHeader ()->saveState ());
 
   settings->sync ();
-
-  delete var_name_editor;
 }
 
 void
@@ -165,13 +104,29 @@ workspace_view::contextmenu_requested (const QPoint& pos)
   QAbstractItemModel *m = view->model ();
 
   // if it isnt Local, Glocal etc, allow the ctx menu
-  if (index.isValid())
+  if (index.isValid() && index.column () == 0)
     {
       index = index.sibling (index.row(), 0);
 
       QMap<int, QVariant> item_data = m->itemData (index);
   
       QString var_name = item_data[0].toString ();
+
+      menu.addAction (tr ("Copy"), this,
+                      SLOT (handle_contextmenu_copy ()));
+
+      QAction *rename = menu.addAction (tr ("Rename"), this,
+                                        SLOT (handle_contextmenu_rename ()));
+
+      const workspace_model *wm = static_cast<const workspace_model *> (m);
+
+      if (! wm->is_top_level ())
+        {
+          rename->setDisabled (true);
+          rename->setToolTip (tr ("Only top-level symbols may be renamed."));
+        }
+
+      menu.addSeparator ();
 
       menu.addAction ("disp(" + var_name + ")", this,
                       SLOT (handle_contextmenu_disp ()));
@@ -183,6 +138,57 @@ workspace_view::contextmenu_requested (const QPoint& pos)
                       SLOT (handle_contextmenu_stem ()));
 
       menu.exec (view->mapToGlobal (pos));
+    }
+}
+
+void
+workspace_view::handle_contextmenu_copy (void)
+{
+  QModelIndex index = view->currentIndex ();
+
+  if (index.isValid ())
+    {
+      index = index.sibling(index.row(), 0);
+
+      QAbstractItemModel *m = view->model ();
+
+      QMap<int, QVariant> item_data = m->itemData (index);
+  
+      QString var_name = item_data[0].toString ();
+
+      QClipboard *clipboard = QApplication::clipboard ();
+
+      clipboard->setText (var_name);
+    }
+}
+
+void
+workspace_view::handle_contextmenu_rename (void)
+{
+  QModelIndex index = view->currentIndex ();
+
+  if (index.isValid ())
+    {
+      index = index.sibling(index.row(), 0);
+
+      QAbstractItemModel *m = view->model ();
+
+      QMap<int, QVariant> item_data = m->itemData (index);
+  
+      QString var_name = item_data[0].toString ();
+
+      QInputDialog* inputDialog = new QInputDialog ();
+
+      inputDialog->setOptions (QInputDialog::NoButtons);
+
+      bool ok = false;
+
+      QString new_name
+        =  inputDialog->getText (0, "Rename Variable", "New name:",
+                                 QLineEdit::Normal, var_name, &ok);
+
+      if (ok && ! new_name.isEmpty ())
+        m->setData (index, new_name, Qt::EditRole);
     }
 }
 

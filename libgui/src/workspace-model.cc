@@ -58,10 +58,12 @@ workspace_model::flags (const QModelIndex& idx) const
   Qt::ItemFlags retval = 0;
 
   if (idx.isValid ())
-    retval |= Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    {
+      retval |= Qt::ItemIsEnabled;
 
-  if (idx.column () == 0)
-    retval |= Qt::ItemIsEditable;
+      if (_top_level && idx.column () == 0)
+        retval |= Qt::ItemIsSelectable;
+    }
 
   return retval;
 }
@@ -83,12 +85,16 @@ workspace_model::data (const QModelIndex& idx, int role) const
 
   if (idx.isValid ()
       && (role == Qt::DisplayRole
-          || (idx.column () == 0 && role == Qt::EditRole)))
+          || (idx.column () == 0 && (role == Qt::EditRole
+                                     || role == Qt::ToolTipRole))))
     {
       switch (idx.column ())
         {
         case 0:
-          retval = QVariant (_symbols[idx.row()]);
+          if (role == Qt::ToolTipRole)
+            retval = QVariant (tr ("Right click to copy, rename, or display"));
+          else
+            retval = QVariant (_symbols[idx.row()]);
           break;
 
         case 1:

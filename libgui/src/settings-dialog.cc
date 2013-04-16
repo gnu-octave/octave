@@ -68,6 +68,8 @@ settings_dialog::settings_dialog (QWidget *p):
   else
     ui->comboBox_language->setCurrentIndex (0);  // System is default
 
+  ui->toolbar_icon_size->setValue (settings->value ("toolbar_icon_size",24).toInt ());
+
   // which icon has to be selected
   QString widget_icon_set =
       settings->value ("DockWidgets/widget_icon_set","NONE").toString ();
@@ -263,6 +265,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("language", language);
 
   // other settings
+  settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
   settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());

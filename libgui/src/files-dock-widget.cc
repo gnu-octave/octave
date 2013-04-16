@@ -62,12 +62,11 @@ files_dock_widget::files_dock_widget (QWidget *p)
            this, SLOT (notice_settings (const QSettings *)));
 
   // Create a toolbar
-  QToolBar *navigation_tool_bar = new QToolBar ("", container);
-  navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
-  navigation_tool_bar->setMovable (false);
-  navigation_tool_bar->setIconSize (QSize (20, 20));
+  _navigation_tool_bar = new QToolBar ("", container);
+  _navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
+  _navigation_tool_bar->setMovable (false);
 
-  _current_directory = new QComboBox (navigation_tool_bar);
+  _current_directory = new QComboBox (_navigation_tool_bar);
   _current_directory->setToolTip (tr ("Enter the path or filename"));
   _current_directory->setEditable(true);
   _current_directory->setMaxCount(MaxMRUDirs);
@@ -77,23 +76,23 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _current_directory->setSizePolicy(sizePol);
 
   QAction *directory_up_action = new QAction (QIcon(":/actions/icons/up.png"),
-                                              "", navigation_tool_bar);
+                                              "", _navigation_tool_bar);
   directory_up_action->setToolTip (tr ("Move up one directory"));
 
   _sync_browser_directory_action = new QAction (QIcon(":/actions/icons/reload.png"),
-                                                "", navigation_tool_bar);
+                                                "", _navigation_tool_bar);
   _sync_browser_directory_action->setToolTip (tr ("Goto current octave directory"));
   _sync_browser_directory_action->setEnabled ("false");
 
   _sync_octave_directory_action = new QAction (QIcon(":/actions/icons/ok.png"),
-                                               "", navigation_tool_bar);
+                                               "", _navigation_tool_bar);
   _sync_octave_directory_action->setToolTip (tr ("Set octave directroy to current browser directory"));
   _sync_octave_directory_action->setEnabled ("false");
 
-  navigation_tool_bar->addWidget (_current_directory);
-  navigation_tool_bar->addAction (directory_up_action);
-  navigation_tool_bar->addAction (_sync_browser_directory_action);
-  navigation_tool_bar->addAction (_sync_octave_directory_action);
+  _navigation_tool_bar->addWidget (_current_directory);
+  _navigation_tool_bar->addAction (directory_up_action);
+  _navigation_tool_bar->addAction (_sync_browser_directory_action);
+  _navigation_tool_bar->addAction (_sync_octave_directory_action);
 
   connect (directory_up_action, SIGNAL (triggered ()), this,
            SLOT (change_directory_up ()));
@@ -146,7 +145,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   // Layout the widgets vertically with the toolbar on top
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
   vbox_layout->setSpacing (0);
-  vbox_layout->addWidget (navigation_tool_bar);
+  vbox_layout->addWidget (_navigation_tool_bar);
   vbox_layout->addWidget (_file_tree_view);
   vbox_layout->setMargin (1);
 
@@ -511,6 +510,11 @@ void
 files_dock_widget::notice_settings (const QSettings *settings)
 {
   // Qsettings pointer is checked before emitting.
+
+  int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
+  if (icon_size > 16)
+    icon_size = icon_size - 4;
+  _navigation_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
   // file names are always shown, other columns can be hidden by settings
   _file_tree_view->setColumnHidden (0, false);

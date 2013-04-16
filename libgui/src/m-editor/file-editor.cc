@@ -623,6 +623,8 @@ file_editor::handle_editor_state_changed (bool copy_available, const QString& fi
 void
 file_editor::notice_settings (const QSettings *settings)
 {
+  int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
+  _tool_bar->setIconSize (QSize (icon_size,icon_size));
   // Relay signal to file editor tabs.
   emit fetab_settings_changed (settings);
 }

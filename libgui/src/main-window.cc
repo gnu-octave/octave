@@ -280,6 +280,9 @@ main_window::notice_settings (const QSettings *settings)
         }
     }
 
+  int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
+  _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
+
   resource_manager::update_network_settings ();
 }
 
@@ -1253,21 +1256,21 @@ main_window::construct_documentation_menu (QMenu *p)
 void
 main_window::construct_tool_bar (void)
 {
-  QToolBar *main_tool_bar = addToolBar ("Main");
+  _main_tool_bar = addToolBar ("Main");
 
-  main_tool_bar->setObjectName ("MainToolBar");
-  main_tool_bar->addAction (_new_script_action);
-  main_tool_bar->addAction (_open_action);
+  _main_tool_bar->setObjectName ("MainToolBar");
+  _main_tool_bar->addAction (_new_script_action);
+  _main_tool_bar->addAction (_open_action);
 
-  main_tool_bar->addSeparator ();
+  _main_tool_bar->addSeparator ();
 
-  main_tool_bar->addAction (_cut_action);
-  main_tool_bar->addAction (_copy_action);
-  main_tool_bar->addAction (_paste_action);
-  main_tool_bar->addAction (_undo_action);
-  main_tool_bar->addAction (_redo_action);
+  _main_tool_bar->addAction (_cut_action);
+  _main_tool_bar->addAction (_copy_action);
+  _main_tool_bar->addAction (_paste_action);
+  _main_tool_bar->addAction (_undo_action);
+  _main_tool_bar->addAction (_redo_action);
 
-  main_tool_bar->addSeparator ();
+  _main_tool_bar->addSeparator ();
 
   _current_directory_combo_box = new QComboBox (this);
   _current_directory_combo_box->setFixedWidth (current_directory_width);
@@ -1279,20 +1282,16 @@ main_window::construct_tool_bar (void)
   QSizePolicy sizePol(QSizePolicy::Expanding, QSizePolicy::Preferred);
   _current_directory_combo_box->setSizePolicy(sizePol);
 
-  QToolButton *current_directory_tool_button = new QToolButton (this);
-  current_directory_tool_button->setIcon (QIcon (":/actions/icons/search.png"));
-  current_directory_tool_button->setToolTip (tr ("Browse directories"));
-
-  QToolButton *current_directory_up_tool_button = new QToolButton (this);
-  current_directory_up_tool_button->setIcon (QIcon (":/actions/icons/up.png"));
-  current_directory_up_tool_button->setToolTip (tr ("One directory up"));
-
   // addWidget takes ownership of the objects so there is no
   // need to delete these upon destroying this main_window.
-  main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
-  main_tool_bar->addWidget (_current_directory_combo_box);
-  main_tool_bar->addWidget (current_directory_tool_button);
-  main_tool_bar->addWidget (current_directory_up_tool_button);
+  _main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
+  _main_tool_bar->addWidget (_current_directory_combo_box);
+  QAction *current_dir_up = _main_tool_bar->addAction (
+                                          QIcon (":/actions/icons/up.png"),
+                                          tr ("One directory up"));
+  QAction *current_dir_search = _main_tool_bar->addAction (
+                                          QIcon (":/actions/icons/search.png"),
+                                          tr ("Browse directories"));
 
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this, SLOT (set_current_working_directory (QString)));
@@ -1300,10 +1299,10 @@ main_window::construct_tool_bar (void)
   connect (_current_directory_combo_box->lineEdit(), SIGNAL (returnPressed ()),
             this, SLOT (accept_directory_line_edit ()));
 
-  connect (current_directory_tool_button, SIGNAL (clicked ()),
+  connect (current_dir_search, SIGNAL (triggered ()),
            this, SLOT (browse_for_directory ()));
 
-  connect (current_directory_up_tool_button, SIGNAL (clicked ()),
+  connect (current_dir_up, SIGNAL (triggered ()),
            this, SLOT (change_directory_up ()));
 }
 

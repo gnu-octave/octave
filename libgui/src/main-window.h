@@ -215,6 +215,7 @@ private:
   file_editor_interface *editor_window;
   workspace_view *workspace_window;
 
+  QToolBar *_main_tool_bar;
   QMenu *_debug_menu;
 
   QAction *_debug_continue;

@@ -115,6 +115,7 @@ private:
   void display_directory (const QString& dir, bool set_octave_dir = true);
 
   /** Variables for the actions **/
+  QToolBar *        _navigation_tool_bar;
   QAction *         _sync_octave_directory_action;
   QAction *         _sync_browser_directory_action;
 

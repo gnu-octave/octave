@@ -219,9 +219,7 @@ octave_base_reader::octave_gets (bool& eof)
 
       octave_link::pre_input_event ();
 
-      octave_link::set_workspace ((symbol_table::current_scope ()
-                                   == symbol_table::top_scope ()),
-                                  symbol_table::workspace_info ());
+      octave_link::set_workspace ();
 
       // FIXME -- this call should happen any time the terminal window
       // size changes, not just prior to prompting for input.
@@ -528,9 +526,7 @@ get_debug_input (const std::string& prompt)
             {
               octave_link::enter_debugger_event (nm, curr_debug_line);
 
-              octave_link::set_workspace ((symbol_table::current_scope ()
-                                           == symbol_table::top_scope ()),
-                                          symbol_table::workspace_info ());
+              octave_link::set_workspace ();
 
               frame.add_fcn (execute_in_debugger_handler,
                              std::pair<std::string, int> (nm, curr_debug_line));

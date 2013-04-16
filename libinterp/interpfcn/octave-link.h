@@ -176,6 +176,8 @@ public:
       instance->do_change_directory (dir);
   }
 
+  static void set_workspace (void);
+
   static void set_workspace (bool top_level,
                              const std::list<workspace_element>& ws)
   {

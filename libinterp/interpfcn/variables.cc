@@ -2457,9 +2457,7 @@ without the dash as well.\n\
                     }
                 }
 
-              octave_link::set_workspace ((symbol_table::current_scope ()
-                                           == symbol_table::top_scope ()),
-                                          symbol_table::workspace_info ());
+              octave_link::set_workspace ();
             }
         }
     }

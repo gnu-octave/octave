@@ -55,6 +55,15 @@ octave_link::octave_link (void)
   command_editor::add_event_hook (octave_readline_hook);
 }
 
+void
+octave_link::set_workspace (void)
+{
+  if (enabled ())
+    instance->do_set_workspace ((symbol_table::current_scope ()
+                                 == symbol_table::top_scope ()),
+                                symbol_table::workspace_info ());
+}
+
 // OBJ should be an object of a class that is derived from the base
 // class octave_link, or 0 to disconnect the link.  It is the
 // responsibility of the caller to delete obj.

@@ -67,6 +67,9 @@ GHOSTSCRIPT = @GHOSTSCRIPT@
 
 DEFAULT_PAGER = @DEFAULT_PAGER@
 
+DEFAULT_TERMINAL_FONT = @DEFAULT_TERMINAL_FONT@
+DEFAULT_TERMINAL_FONT_SIZE = @DEFAULT_TERMINAL_FONT_SIZE@
+
 ENABLE_DYNAMIC_LINKING = @ENABLE_DYNAMIC_LINKING@
 
 SHLEXT = @SHLEXT@
@@ -699,6 +702,14 @@ $(SED) < $< \
   -e "s|%SED%|${SED}|g" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
   -e "s|%builddir%|$(shell pwd)|" > $@-t
+$(simple_move_if_change_rule)
+endef
+
+define do_subst_qt_settings
+echo "making $@ from $<"
+$(SED) < $< \
+  -e "s|%DEFAULT_TERMINAL_FONT%|${DEFAULT_TERMINAL_FONT}|" \
+  -e "s|%DEFAULT_TERMINAL_FONT_SIZE%|${DEFAULT_TERMINAL_FONT_SIZE}|" > $@-t
 $(simple_move_if_change_rule)
 endef
 

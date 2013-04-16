@@ -79,7 +79,7 @@ if [ $# -gt 0 ]; then
 fi
 
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
-OCTAVE_DEFAULT_QT_SETTINGS="$top_srcdir/libgui/default-qt-settings" \
+OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings" \
 OCTAVE_LOCALE_DIR="$top_srcdir/libgui/languages" \
 OCTAVE_JAVA_DIR="$builddir/scripts/java" \
   exec $builddir/libtool --mode=execute $driver \

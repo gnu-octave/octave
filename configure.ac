@@ -130,6 +130,19 @@ OCTAVE_PROG_GNUPLOT
 OCTAVE_PROG_PAGER
 OCTAVE_PROG_PYTHON
 
+### Default terminal font for the GUI
+case $host_os in
+  mingw* | msdosmsvc)
+    DEFAULT_TERMINAL_FONT="Lucida Console"
+  ;;
+  *)
+    DEFAULT_TERMINAL_FONT="Courier"
+  ;;
+esac
+DEFAULT_TERMINAL_FONT_SIZE=10
+AC_SUBST(DEFAULT_TERMINAL_FONT)
+AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
+
 ### Path separator.
 
 sepchar=':'

@@ -38,7 +38,7 @@ TRANSLATIONS = \
 
 LOCALES = $(patsubst languages/%.ts, languages/%.qm, $(TRANSLATIONS))
 
-EXTRA_DIST = default-qt-settings $(TRANSLATIONS)
+EXTRA_DIST = default-qt-settings.in $(TRANSLATIONS)
 CLEANFILES =
 
 BUILT_SOURCES =
@@ -82,6 +82,9 @@ liboctgui_la_LDFLAGS = \
 octetc_DATA = default-qt-settings
 
 octlocale_DATA = $(LOCALES)
+
+default-qt-settings: default-qt-settings.in
+	$(do_subst_qt_settings)
 
 moc-%.cc: %.h
 	$(MOC) -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<

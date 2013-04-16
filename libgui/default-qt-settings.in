@@ -21,8 +21,8 @@ restoreSession=false
 savedSessionTabs=@Invalid()
 
 [terminal]
-fontSize=10
-fontName=Courier
+fontSize=%DEFAULT_TERMINAL_FONT_SIZE%
+fontName=%DEFAULT_TERMINAL_FONT%
 cursorBlinking=true
 cursorType=ibeam
 

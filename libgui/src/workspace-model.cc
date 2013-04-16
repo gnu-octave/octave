@@ -38,6 +38,7 @@ workspace_model::workspace_model (QObject *p)
   _columnNames.append (tr ("Class"));
   _columnNames.append (tr ("Dimension"));
   _columnNames.append (tr ("Value"));
+  _columnNames.append (tr ("Storage Class"));
 }
 
 int
@@ -108,6 +109,24 @@ workspace_model::data (const QModelIndex& idx, int role) const
         case 3:
           retval = QVariant (_values[idx.row()]);
           break;
+
+        case 4:
+          {
+            QChar c = _scopes[idx.row()];
+
+            if (c == 'g')
+              retval = QVariant (tr ("global"));
+            else if (c == 'p')
+              retval = QVariant (tr ("persistent"));
+            else if (c == 'a')
+              retval = QVariant (tr ("automatic"));
+            else if (c == 'f')
+              retval = QVariant (tr ("function parameter"));
+            else if (c == 'h')
+              retval = QVariant (tr ("hidden"));
+            else if (c == 'i')
+              retval = QVariant (tr ("inherited"));
+          }
 
         default:
           break;

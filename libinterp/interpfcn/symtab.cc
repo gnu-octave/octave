@@ -1403,6 +1403,14 @@ symbol_table::do_workspace_info (void) const
                 storage = 'g';
               else if (sr.is_persistent ())
                 storage = 'p';
+              else if (sr.is_automatic ())
+                storage = 'a';
+              else if (sr.is_formal ())
+                storage = 'f';
+              else if (sr.is_hidden ())
+                storage = 'h';
+              else if (sr.is_inherited ())
+                storage = 'i';
 
               workspace_element elt (storage, nm, val.class_name (),
                                      val.short_disp (), dv.str ());

@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
+#include "octave-link.h"
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -2342,6 +2343,8 @@ without the dash as well.\n\
         {
           do_clear_globals (argv, argc, true);
           do_clear_variables (argv, argc, true);
+
+          octave_link::clear_workspace ();
         }
       else
         {
@@ -2453,6 +2456,10 @@ without the dash as well.\n\
                       do_clear_symbols (argv, argc, idx, exclusive);
                     }
                 }
+
+              octave_link::set_workspace ((symbol_table::current_scope ()
+                                           == symbol_table::top_scope ()),
+                                          symbol_table::workspace_info ());
             }
         }
     }

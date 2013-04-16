@@ -84,7 +84,7 @@ octave_change_to_directory (const std::string& newdir)
 
       load_path::update ();
 
-      octave_link::change_directory (xdir);
+      octave_link::change_directory (octave_env::get_current_directory ());
     }
   else
     error ("%s: %s", newdir.c_str (), gnulib::strerror (errno));

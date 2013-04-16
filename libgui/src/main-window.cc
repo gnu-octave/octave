@@ -352,9 +352,7 @@ main_window::set_current_working_directory (const QString& dir)
 void
 main_window::change_directory_up (void)
 {
-  QDir dir ("..");
-
-  set_current_working_directory (dir.absolutePath ());
+  set_current_working_directory ("..");
 }
 
 // Slot that is called if return is pressed in the line edit of the

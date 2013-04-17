@@ -37,7 +37,7 @@ public:
 public slots:
   void link_clicked (const QUrl& link);
   void current_tab_changed (int index);
-  void close_tab ();
+  void close_tab (int index);
   void search ();
   void zoom_in ();
   void zoom_out ();
@@ -46,7 +46,6 @@ private:
   QTextBrowser        *_text_browser;
   QTabBar             *_tab_bar;
   QStackedWidget      *_stacked_widget;
-  QPushButton         *_close_tab_button;
   QLineEdit           *_search_line_edit;
   QCheckBox           *_search_check_box;
   QToolButton         *_zoom_in_button;
@@ -56,5 +55,4 @@ private:
   QFont               _font_web;
 
   QTextBrowser *addNewTab (const QString& name);
-  void closeTab(int index);
 };

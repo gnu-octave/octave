@@ -43,14 +43,11 @@ webinfo::webinfo (QWidget *p)
   hbox_layout->setMargin (2);
   vbox_layout->addLayout (hbox_layout);
 
-  _close_tab_button = new QPushButton (this);
-  _close_tab_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
-  _close_tab_button->setIcon (QIcon (":/actions/icons/stop.png"));
-  hbox_layout->addWidget (_close_tab_button);
-
   _tab_bar = new QTabBar (this);
   _tab_bar->setSizePolicy (QSizePolicy::Preferred,QSizePolicy::Preferred);
   _tab_bar->setExpanding (false);
+  _tab_bar->setTabsClosable (true);
+  _tab_bar->setMovable (true);
   hbox_layout->addWidget (_tab_bar);
 
   _zoom_in_button = new QToolButton (this);
@@ -78,7 +75,7 @@ webinfo::webinfo (QWidget *p)
   _search_check_box = new QCheckBox (tr ("Global search"));
   hbox_layout->addWidget (_search_check_box);
 
-  connect (_close_tab_button, SIGNAL (clicked ()), this, SLOT (close_tab ()));
+  connect (_tab_bar, SIGNAL (tabCloseRequested (int)), this, SLOT (close_tab (int)));
   connect (_tab_bar, SIGNAL (currentChanged (int)), this, SLOT (current_tab_changed (int)));
   connect (_zoom_in_button, SIGNAL (clicked ()), this, SLOT (zoom_in ()));
   connect (_zoom_out_button, SIGNAL (clicked ()), this, SLOT (zoom_out ()));
@@ -170,22 +167,17 @@ webinfo::addNewTab (const QString& name)
 }
 
 void
-webinfo::close_tab ()
+webinfo::close_tab (int index)
 {
-  int index = _tab_bar->currentIndex ();
-  if (_tab_bar->tabText (index) != "Top")
-    closeTab (index);
-}
+  if (_tab_bar->count () > 1)
+    {
+      QVariant tab_data = _tab_bar->tabData (index);
+      QWidget *w = static_cast<QWidget*> (tab_data.value<void*> ());
+      _stacked_widget->removeWidget (w);
+      delete w;
 
-void
-webinfo::closeTab (int index)
-{
-  QVariant tab_data = _tab_bar->tabData (index);
-  QWidget *w = static_cast<QWidget*> (tab_data.value<void*> ());
-  _stacked_widget->removeWidget (w);
-  delete w;
-
-  _tab_bar->removeTab (index);
+      _tab_bar->removeTab (index);
+    }
 }
 
 void

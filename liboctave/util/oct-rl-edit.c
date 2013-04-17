@@ -111,12 +111,6 @@ octave_rl_resize_terminal (void)
 }
 
 void
-octave_rl_reset_screen_size (void)
-{
-  rl_reset_screen_size ();
-}
-
-void
 octave_rl_restore_terminal_state ()
 {
   if (rl_deprep_term_function)

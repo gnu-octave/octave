@@ -60,8 +60,6 @@ extern void octave_rl_clear_screen (void);
 
 extern void octave_rl_resize_terminal (void);
 
-extern void octave_rl_reset_screen_size (void);
-
 extern void octave_rl_restore_terminal_state (void);
 
 extern void octave_rl_insert_text (const char *);

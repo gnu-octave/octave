@@ -95,8 +95,6 @@ public:
 
   void do_resize_terminal (void);
 
-  void do_reset_screen_size (void);
-
   std::string newline_chars (void);
 
   void do_restore_terminal_state (void);
@@ -331,12 +329,6 @@ void
 gnu_readline::do_resize_terminal (void)
 {
   ::octave_rl_resize_terminal ();
-}
-
-void
-gnu_readline::do_reset_screen_size (void)
-{
-  ::octave_rl_reset_screen_size ();
 }
 
 std::string
@@ -1000,13 +992,6 @@ command_editor::resize_terminal (void)
 {
   if (instance_ok ())
     instance->do_resize_terminal ();
-}
-
-void
-command_editor::reset_screen_size (void)
-{
-  if (instance_ok ())
-    instance->do_reset_screen_size ();
 }
 
 std::string

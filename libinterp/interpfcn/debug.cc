@@ -280,38 +280,16 @@ bp_table::do_add_breakpoint (const std::string& fname,
 {
   intmap retval;
 
-  octave_idx_type len = line.size ();
-
   octave_user_code *dbg_fcn = get_user_code (fname);
 
   if (dbg_fcn)
     {
       tree_statement_list *cmds = dbg_fcn->body ();
 
+      std::string file = dbg_fcn->fcn_file_name ();
+
       if (cmds)
-        {
-          for (int i = 0; i < len; i++)
-            {
-              const_intmap_iterator p = line.find (i);
-
-              if (p != line.end ())
-                {
-                  int lineno = p->second;
-
-                  retval[i] = cmds->set_breakpoint (lineno);
-
-                  if (retval[i] != 0)
-                    {
-                      bp_set.insert (fname);
-
-                      std::string file = dbg_fcn->fcn_file_name ();
-
-                      if (! file.empty ())
-                        octave_link::update_breakpoint (true, file, retval[i]);
-                    }
-                }
-            }
-        }
+        retval = cmds->add_breakpoint (file, line);
     }
   else
     error ("add_breakpoint: unable to find the requested function\n");
@@ -345,6 +323,8 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 
           tree_statement_list *cmds = dbg_fcn->body ();
 
+          // FIXME -- move the operation on cmds to the
+          // tree_statement_list class?
           if (cmds)
             {
               octave_value_list results = cmds->list_breakpoints ();
@@ -402,17 +382,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
 
       if (cmds)
         {
-          octave_value_list bkpts = cmds->list_breakpoints ();
-
-          for (int i = 0; i < bkpts.length (); i++)
-            {
-              int lineno = static_cast<int> (bkpts(i).int_value ());
-              cmds->delete_breakpoint (lineno);
-              retval[i] = lineno;
-
-              if (! file.empty ())
-                octave_link::update_breakpoint (false, file, lineno);
-            }
+          retval = cmds->remove_all_breakpoints (file);
 
           bp_set_iterator it = bp_set.find (fname);
           if (it != bp_set.end ())
@@ -473,6 +443,8 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
             {
               tree_statement_list *cmds = f->body ();
 
+              // FIXME -- move the operation on cmds to the
+              // tree_statement_list class?
               if (cmds)
                 {
                   octave_value_list bkpts = cmds->list_breakpoints ();

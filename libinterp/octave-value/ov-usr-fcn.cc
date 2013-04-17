@@ -97,6 +97,9 @@ octave_user_script::octave_user_script (const std::string& fnm,
 
 octave_user_script::~octave_user_script (void)
 {
+  if (cmd_list)
+    cmd_list->remove_all_breakpoints (file_name);
+
   delete cmd_list;
 }
 
@@ -207,6 +210,9 @@ octave_user_function::octave_user_function
 
 octave_user_function::~octave_user_function (void)
 {
+  if (cmd_list)
+    cmd_list->remove_all_breakpoints (file_name);
+
   delete param_list;
   delete ret_list;
   delete cmd_list;

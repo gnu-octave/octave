@@ -289,7 +289,18 @@ bp_table::do_add_breakpoint (const std::string& fname,
       std::string file = dbg_fcn->fcn_file_name ();
 
       if (cmds)
-        retval = cmds->add_breakpoint (file, line);
+        {
+          retval = cmds->add_breakpoint (file, line);
+
+          for (intmap_iterator p = retval.begin (); p != retval.end (); p++)
+            {
+              if (p->second != 0)
+                {
+                  bp_set.insert (fname);
+                  break;
+                }
+            }
+        }
     }
   else
     error ("add_breakpoint: unable to find the requested function\n");

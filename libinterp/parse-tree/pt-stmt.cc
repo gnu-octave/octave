@@ -202,7 +202,7 @@ tree_statement_list::add_breakpoint (const std::string& file,
 
   for (int i = 0; i < len; i++)
     {
-      const_intmap_iterator p = line.find (i);
+      bp_table::const_intmap_iterator p = line.find (i);
 
       if (p != line.end ())
         {
@@ -210,13 +210,8 @@ tree_statement_list::add_breakpoint (const std::string& file,
 
           retval[i] = set_breakpoint (lineno);
 
-          if (retval[i] != 0)
-            {
-              bp_set.insert (fname);
-
-              if (! file.empty ())
-                octave_link::update_breakpoint (true, file, retval[i]);
-            }
+          if (retval[i] != 0 && ! file.empty ())
+            octave_link::update_breakpoint (true, file, retval[i]);
         }
     }
 

@@ -62,6 +62,7 @@ private:
   QPushButton * _stop_button;
   QPushButton * _find_button;
   QPushButton * _close_button;
+  QPushButton * _browse_button;
   QTableView   * _file_list;
   QTimer      * _timer;
   QCheckBox   * _recurse_dirs_check;

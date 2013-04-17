@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#include  "find-files-dialog.h"
-#include  "find-files-model.h"
+#include "find-files-dialog.h"
+#include "find-files-model.h"
 #include "resource-manager.h"
 #include <QPushButton>
 #include <QDialogButtonBox>
@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTimer>
 #include <QDirIterator>
 #include <QTextStream>
+#include <QGroupBox>
 
 find_files_dialog::find_files_dialog (QWidget * p)
  : QDialog (p)
@@ -67,9 +68,9 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _start_dir_edit->setToolTip (tr ("Enter the start directory"));
   start_dir_label->setBuddy (_start_dir_edit);
 
-  QPushButton * browse_button = new QPushButton (tr ("Browse...")); 
-  browse_button->setToolTip (tr ("Browse for start directory"));
-  connect(browse_button, SIGNAL(clicked()), this, SLOT(browse_folders()));
+  _browse_button = new QPushButton (tr ("Browse..."));
+  _browse_button->setToolTip (tr ("Browse for start directory"));
+  connect(_browse_button, SIGNAL(clicked()), this, SLOT(browse_folders()));
 
   _recurse_dirs_check = new QCheckBox (tr ("Recurse directories"));
   _recurse_dirs_check->setChecked (settings->value ("findfiles/recurse_dirs", false).toBool());
@@ -100,6 +101,9 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _file_list->setWordWrap (false);
   _file_list->setModel (model);
   _file_list->setShowGrid (false);
+  _file_list->setSelectionBehavior(QAbstractItemView::SelectRows);
+  _file_list->setSelectionMode(QAbstractItemView::SingleSelection);
+  _file_list->setAlternatingRowColors(true);
   _file_list->setToolTip (tr ("Search results"));
   _file_list->horizontalHeader ()->restoreState (settings->value ("findfiles/column_state").toByteArray ());
   _file_list->sortByColumn (
@@ -121,40 +125,52 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _stop_button->setEnabled (false);
   connect (_stop_button, SIGNAL(clicked()), this, SLOT(stop_find()));
 
-  _close_button =  new QPushButton (tr("Close"));
-  _close_button->setToolTip (tr ("Close the search window"));
-  connect (_close_button, SIGNAL(clicked()), this, SLOT(accept()));
-
   // layout everything
   QDialogButtonBox * button_box = new QDialogButtonBox (Qt::Vertical);
   button_box->addButton (_find_button, QDialogButtonBox::ActionRole);
   button_box->addButton (_stop_button, QDialogButtonBox::ActionRole);
-  button_box->addButton (_close_button, QDialogButtonBox::ActionRole);
- 
-  QGridLayout * left_layout = new QGridLayout;
-  left_layout->addWidget (file_name_label,1,1, 1,1);
-  left_layout->addWidget (_file_name_edit,1,2, 1,-1);
 
-  left_layout->addWidget (start_dir_label,2,1);
-  left_layout->addWidget (_start_dir_edit,2,2,1,3);
-  left_layout->addWidget (browse_button,2,5);
-  left_layout->setColumnStretch (2,1);
+  // add dialog close button
+  _close_button = button_box->addButton (QDialogButtonBox::Close);
+  connect (button_box,    SIGNAL (rejected ()),
+           this,          SLOT (close ()));
 
-  left_layout->addWidget (_recurse_dirs_check,3,1);
-  left_layout->addWidget (_include_dirs_check,3,2);
-  left_layout->addWidget (_name_case_check,3,3);
+  // name options
+  QGroupBox * name_group = new QGroupBox(tr("File name/location"));
+  QGridLayout * name_layout = new QGridLayout;
+  name_group->setLayout(name_layout);
 
-  left_layout->addWidget (_contains_text_check,4,1);
-  left_layout->addWidget (_contains_text_edit,4,2,1,3);
-  left_layout->addWidget (_content_case_check,5,1);
+  name_layout->addWidget (file_name_label,1,1, 1,1);
+  name_layout->addWidget (_file_name_edit,1,2, 1,-1);
+
+  name_layout->addWidget (start_dir_label,2,1);
+  name_layout->addWidget (_start_dir_edit,2,2,1,3);
+  name_layout->addWidget (_browse_button,2,5);
+  name_layout->setColumnStretch (2,1);
+
+  name_layout->addWidget (_recurse_dirs_check,3,1);
+  name_layout->addWidget (_include_dirs_check,3,2);
+  name_layout->addWidget (_name_case_check,3,3);
+
+  // content options
+  QGroupBox * content_group = new QGroupBox(tr("File contents"));
+  QGridLayout * content_layout = new QGridLayout;
+  content_group->setLayout(content_layout);
+  content_layout->addWidget (_contains_text_check,4,1);
+  content_layout->addWidget (_contains_text_edit,4,2,1,3);
+  content_layout->setColumnStretch (2,1);
+  content_layout->addWidget (_content_case_check,5,1);
+
 
   QGridLayout *main_layout = new QGridLayout;
   main_layout->setSizeConstraint (QLayout::SetFixedSize);
-  main_layout->addLayout (left_layout, 0, 0);
-  main_layout->addWidget (button_box, 0, 1);
-  main_layout->addWidget (_file_list,1,0);
-  main_layout->setRowStretch (1,1);
-  main_layout->addWidget (_status_bar,2,0,1,-1);
+  main_layout->addWidget (name_group, 0, 0);
+  main_layout->addWidget (content_group, 1, 0);
+  main_layout->addWidget (button_box, 0, 1,3,1);
+  main_layout->addWidget (_file_list,2,0);
+  main_layout->setRowStretch (2,1);
+  main_layout->addWidget (_status_bar,3,0,1,-1);
+
 
   setLayout (main_layout);
 
@@ -227,6 +243,7 @@ find_files_dialog::start_find ()
   _find_button->setEnabled (false);
   _stop_button->setEnabled (true);
   _close_button->setEnabled (false);
+  _browse_button->setEnabled (false);
   _start_dir_edit->setEnabled (false);
   _file_name_edit->setEnabled (false);
   _recurse_dirs_check->setEnabled (false);
@@ -248,6 +265,7 @@ find_files_dialog::stop_find ()
   _find_button->setEnabled (true);
   _stop_button->setEnabled (false);
   _close_button->setEnabled (true);
+  _browse_button->setEnabled (true);
   _start_dir_edit->setEnabled (true);
   _file_name_edit->setEnabled (true);
   _recurse_dirs_check->setEnabled (true);
@@ -279,14 +297,23 @@ find_files_dialog::browse_folders ()
 void 
 find_files_dialog::item_double_clicked (const QModelIndex &idx)
 {
-  find_files_model *m = static_cast<find_files_model *> (_file_list->model());
+  find_files_model *m = static_cast<find_files_model *> (_file_list->model ());
 
   QFileInfo info = m->fileInfo (idx);
 
-  if(info.isDir())
-    emit dir_selected (info.absoluteFilePath());
+  if(idx.column () == 1)
+    {
+      // clicked in directory part
+      emit dir_selected (info.absolutePath());
+    }
   else
-    emit file_selected (info.absoluteFilePath());
+    {
+      // clicked in filename part
+      if(info.isDir ())
+        emit dir_selected (info.absoluteFilePath());
+      else
+        emit file_selected (info.absoluteFilePath());
+    }
 }
 
 void

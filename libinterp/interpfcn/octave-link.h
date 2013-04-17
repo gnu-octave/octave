@@ -256,6 +256,13 @@ public:
 
   static void connect_link (octave_link *);
 
+  static void set_default_prompts (std::string& ps1, std::string& ps2,
+                                   std::string& ps4)
+  {
+    if (enabled ())
+      instance->do_set_default_prompts (ps1, ps2, ps4);
+  }
+
 private:
 
   static octave_link *instance;
@@ -359,6 +366,9 @@ protected:
 
   virtual void do_update_breakpoint (bool insert,
                                      const std::string& file, int line) = 0;
+
+  virtual void do_set_default_prompts (std::string& ps1, std::string& ps2,
+                                       std::string& ps4) = 0;
 };
 
 #endif // OCTAVELINK_H

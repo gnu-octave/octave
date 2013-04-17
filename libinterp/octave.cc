@@ -178,6 +178,9 @@ static bool persist = false;
 // If TRUE, the GUI should be started.
 static bool start_gui = false;
 
+// If TRUE use traditional settings (--traditional)
+static bool traditional = false;
+
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
 #define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
@@ -644,10 +647,6 @@ octave_main (int argc, char **argv, int embedded)
 {
   octave_process_command_line (argc, argv);
 
-  sysdep_init ();
-
-  install_defaults ();
-
   octave_initialize_interpreter (argc, argv, embedded);
 
   return octave_execute_interpreter ();
@@ -814,7 +813,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case TRADITIONAL_OPTION:
-          maximum_braindamage ();
+          traditional = true;
           break;
 
         default:
@@ -848,6 +847,13 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   octave_program_name = octave_env::get_program_name ();
 
   octave_thread::init ();
+
+  sysdep_init ();
+
+  install_defaults ();
+
+  if (traditional)
+    maximum_braindamage ();
 
   init_signals ();
 

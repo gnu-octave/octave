@@ -33,10 +33,6 @@ main (int argc, char **argv)
 {
   octave_process_command_line (argc, argv);
 
-  sysdep_init ();
-
-  install_defaults ();
-
   octave_initialize_interpreter (argc, argv, 0);
 
   return octave_execute_interpreter ();

@@ -61,6 +61,8 @@ extern octave_value do_keyboard (const octave_value_list& args = octave_value_li
 
 extern void remove_input_event_hook_functions (void);
 
+extern void set_default_prompts (void);
+
 extern std::string VPS4;
 
 extern char Vfilemarker;

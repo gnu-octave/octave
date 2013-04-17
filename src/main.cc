@@ -36,10 +36,6 @@ main (int argc, char **argv)
 
   octave_process_command_line (argc, argv);
 
-  sysdep_init ();
-
-  install_defaults ();
-
   if (octave_starting_gui ())
     retval = octave_start_gui (argc, argv);
   else

@@ -99,6 +99,9 @@ public:
 
   void do_update_breakpoint (bool insert, const std::string& file, int line);
 
+  void do_set_default_prompts (std::string& ps1, std::string& ps2,
+                               std::string& ps4);
+
 private:
 
   // No copying!

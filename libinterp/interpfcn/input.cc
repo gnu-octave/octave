@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-hist.h"
 #include "toplev.h"
+#include "octave-link.h"
 #include "oct-obj.h"
 #include "ov-fcn-handle.h"
 #include "pager.h"
@@ -75,10 +76,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 // Primary prompt string.
-static std::string VPS1 = "\\s:\\#> ";
+static std::string VPS1;
 
 // Secondary prompt string.
-static std::string VPS2 = "> ";
+static std::string VPS2;
 
 // String printed before echoed input (enabled by --echo-input).
 std::string VPS4 = "+ ";
@@ -131,6 +132,16 @@ void
 remove_input_event_hook_functions (void)
 {
   input_event_hook_functions.clear ();
+}
+
+void
+set_default_prompts (void)
+{
+  VPS1 = "\\s:\\#> ";
+  VPS2 = "> ";
+  VPS4 = "+ ";
+
+  octave_link::set_default_prompts (VPS1, VPS2, VPS4);
 }
 
 void

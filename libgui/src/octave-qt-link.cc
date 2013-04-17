@@ -251,6 +251,16 @@ octave_qt_link::do_update_breakpoint (bool insert,
 }
 
 void
+octave_qt_link::do_set_default_prompts (std::string& ps1, std::string& ps2,
+                                        std::string& ps4)
+{
+  ps1 = ">> ";
+  ps2 = "";
+  ps4 = "";
+}
+
+
+void
 octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
 {
   emit insert_debugger_pointer_signal (QString::fromStdString (file), line);

@@ -35,9 +35,6 @@ extern int octave_chdir (const std::string&);
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 extern pid_t octave_popen2 (const std::string&, const string_vector&,
     bool, int *, std::string&);
-
-extern void w32_clear_console_window (void);
-
 #endif
 
 #endif

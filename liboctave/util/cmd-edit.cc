@@ -38,7 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-error.h"
-#include "lo-sysdep.h"
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
@@ -318,11 +317,7 @@ gnu_readline::do_terminal_cols (void)
 void
 gnu_readline::do_clear_screen (void)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-  w32_clear_console_window ();
-#else
   ::octave_rl_clear_screen ();
-#endif
 }
 
 void

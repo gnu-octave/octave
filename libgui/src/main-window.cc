@@ -131,12 +131,12 @@ main_window::report_status_message (const QString& statusMessage)
 void
 main_window::handle_save_workspace_request (void)
 {
-  QString selectedFile =
-    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"),
-                                  resource_manager::get_home_path ());
-  if (!selectedFile.isEmpty ())
+  QString file =
+    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".");
+
+  if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::save_workspace_callback,
-                             selectedFile.toStdString ());
+                             file.toStdString ());
 }
 
 void
@@ -145,8 +145,8 @@ main_window::handle_load_workspace_request (const QString& file_arg)
   QString file = file_arg;
 
   if (file.isEmpty ())
-    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
-                                         resource_manager::get_home_path ());
+    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".");
+
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::load_workspace_callback,
                              file.toStdString ());

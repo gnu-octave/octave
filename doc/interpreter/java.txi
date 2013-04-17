@@ -141,7 +141,7 @@ of dialog box.
 @section FAQ - Frequently asked Questions
 
 @menu
-* How to distinguish between Octave and @sc{matlab}?::
+* How to distinguish between Octave and Matlab?::
 * How to make Java classes available?::
 * How to create an instance of a Java class?::
 * How can I handle memory limitations?::
@@ -149,8 +149,8 @@ of dialog box.
 @end menu
 
 @c ------------------------------------------------------------------------
-@node How to distinguish between Octave and @sc{matlab}?
-@subsection How to distinguish between Octave and @sc{matlab}?
+@node How to distinguish between Octave and Matlab?
+@subsection How to distinguish between Octave and Matlab?
 @anchor{doc-FAQ}
 @c - index -
 @cindex Octave and @sc{matlab}, how to distinguish between

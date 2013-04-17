@@ -771,7 +771,7 @@ Java Interface
 
 FAQ - Frequently asked Questions
 
-* How to distinguish between Octave and @sc{matlab}?::
+* How to distinguish between Octave and Matlab?::
 * How to make Java classes available?::
 * How to create an instance of a Java class?::
 * How can I handle memory limitations?::

@@ -93,6 +93,10 @@ private slots:
   void contextmenu_newdir (bool);
   void contextmenu_setcurrentdir (bool);
 
+  /* popdown menu options */
+  void popdownmenu_newfile(bool);
+  void popdownmenu_newdir(bool);
+
 signals:
 
   /** Emitted, whenever the user requested to open a file. */
@@ -108,8 +112,9 @@ signals:
   void run_file_signal (const QString& fileName);
 
 private:
-
-  // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
+  void process_new_file(const QString &parent_name);
+  void process_new_dir(const QString &parent_name);
+  void process_set_current_dir(const QString &parent_name);
 
   /** set a new directory or open a file **/
   void display_directory (const QString& dir, bool set_octave_dir = true);

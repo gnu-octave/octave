@@ -29,6 +29,7 @@ octave_gui_ICONS = \
   src/icons/filesaveas.png \
   src/icons/filesave.png \
   src/icons/find.png \
+  src/icons/gear.png \
   src/icons/folder_new.png \
   src/icons/graphic_logo_DocumentationDockWidget.png \
   src/icons/graphic_logo_FileEditor.png \

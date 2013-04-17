@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QToolButton>
 
 files_dock_widget::files_dock_widget (QWidget *p)
   : octave_dock_widget (p)
@@ -80,19 +81,35 @@ files_dock_widget::files_dock_widget (QWidget *p)
   directory_up_action->setToolTip (tr ("Move up one directory"));
 
   _sync_browser_directory_action = new QAction (QIcon(":/actions/icons/reload.png"),
-                                                "", _navigation_tool_bar);
+                                                tr("Show octave directory"), _navigation_tool_bar);
   _sync_browser_directory_action->setToolTip (tr ("Goto current octave directory"));
   _sync_browser_directory_action->setEnabled ("false");
 
   _sync_octave_directory_action = new QAction (QIcon(":/actions/icons/ok.png"),
-                                               "", _navigation_tool_bar);
+                                               tr("Set octave directory"), _navigation_tool_bar);
   _sync_octave_directory_action->setToolTip (tr ("Set octave directroy to current browser directory"));
   _sync_octave_directory_action->setEnabled ("false");
 
+  QToolButton * popdown_button = new QToolButton();
+  popdown_button->setToolTip(tr ("Actions on current directory"));
+  QMenu * popdown_menu = new QMenu();
+  popdown_menu->addAction(_sync_browser_directory_action);
+  popdown_menu->addAction(_sync_octave_directory_action);
+  popdown_button->setMenu(popdown_menu);
+  popdown_button->setPopupMode(QToolButton::InstantPopup);
+  popdown_button->setDefaultAction(new QAction(QIcon(":/actions/icons/gear.png"),"", _navigation_tool_bar));
+
+  popdown_menu->addSeparator();
+  popdown_menu->addAction(QIcon(":/actions/icons/filenew.png"),
+                          tr ("New File"),
+                          this, SLOT(popdownmenu_newfile(bool)));
+  popdown_menu->addAction(QIcon(":/actions/icons/folder_new.png"),
+                          tr ("New Directory"),
+                          this, SLOT(popdownmenu_newdir(bool)));
+
   _navigation_tool_bar->addWidget (_current_directory);
   _navigation_tool_bar->addAction (directory_up_action);
-  _navigation_tool_bar->addAction (_sync_browser_directory_action);
-  _navigation_tool_bar->addAction (_sync_octave_directory_action);
+  _navigation_tool_bar->addWidget (popdown_button);
 
   connect (directory_up_action, SIGNAL (triggered ()), this,
            SLOT (change_directory_up ()));
@@ -100,8 +117,6 @@ files_dock_widget::files_dock_widget (QWidget *p)
            SLOT (do_sync_octave_directory ()));
   connect (_sync_browser_directory_action, SIGNAL (triggered ()), this,
            SLOT (do_sync_browser_directory ()));
-
-  // TODO: Add other buttons for creating directories
 
   // Create the QFileSystemModel starting in the actual directory
   QDir curr_dir;
@@ -252,7 +267,7 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
           _file_system_model->setRootPath (fileInfo.absoluteFilePath ());
           _file_system_model->sort (0, Qt::AscendingOrder);
           if (_sync_octave_dir && set_octave_dir)
-            emit displayed_directory_changed (fileInfo.absoluteFilePath ());
+            process_set_current_dir(fileInfo.absoluteFilePath ());
 
           // see if its in the list, and if it is, remove it and then, put at top of the list
           int index = _current_directory->findText(fileInfo.absoluteFilePath ());
@@ -449,18 +464,8 @@ files_dock_widget::contextmenu_newfile (bool)
 
       QFileInfo info = _file_system_model->fileInfo(index);
       QString parent_dir = info.filePath();
-      bool ok;
 
-      QString name = QInputDialog::getText (this, tr("Create File"), tr("Create file in\n") + parent_dir,
-                                       QLineEdit::Normal, "New File.txt", &ok);
-      if(ok && name.length()>0)
-        {
-          name = parent_dir + "/" + name;
-
-          QFile file(name);
-          file.open(QIODevice::WriteOnly);
-          _file_system_model->revert();
-        }
+      process_new_file(parent_dir);
     }
 }
 
@@ -476,14 +481,8 @@ files_dock_widget::contextmenu_newdir (bool)
 
       QFileInfo info = _file_system_model->fileInfo(index);
       QString parent_dir = info.filePath();
-      bool ok;
 
-      QString name = QInputDialog::getText (this, tr("Create Directory"), tr("Create folder in\n") + parent_dir,
-                                       QLineEdit::Normal, "New Directory", &ok);
-      if(ok && name.length()>0)
-        {
-          _file_system_model->mkdir(index, name);
-        }
+      process_new_dir(parent_dir);
     }
 }
 
@@ -501,7 +500,7 @@ files_dock_widget::contextmenu_setcurrentdir (bool)
 
       if(info.isDir())
         {
-          emit displayed_directory_changed (info.absoluteFilePath ());
+          process_set_current_dir(info.absoluteFilePath ());
         }
     }
 }
@@ -535,3 +534,53 @@ files_dock_widget::notice_settings (const QSettings *settings)
     display_directory (_octave_dir);  // sync browser to octave dir
 
 }
+
+void
+files_dock_widget::popdownmenu_newdir (bool)
+{
+      process_new_dir(_file_system_model->rootPath());
+}
+
+void
+files_dock_widget::popdownmenu_newfile (bool)
+{
+      process_new_file(_file_system_model->rootPath());
+}
+
+void
+files_dock_widget::process_new_file (const QString &parent_dir)
+{
+  bool ok;
+
+  QString name = QInputDialog::getText (this, tr("Create File"), tr("Create file in\n") + parent_dir,
+                                       QLineEdit::Normal, "New File.txt", &ok);
+  if(ok && name.length()>0)
+    {
+      name = parent_dir + "/" + name;
+
+      QFile file(name);
+      file.open(QIODevice::WriteOnly);
+      _file_system_model->revert();
+    }
+}
+
+void
+files_dock_widget::process_new_dir (const QString &parent_dir)
+{
+  bool ok;
+
+  QString name = QInputDialog::getText (this, tr("Create Directory"), tr("Create folder in\n") + parent_dir,
+                                       QLineEdit::Normal, "New Directory", &ok);
+  if(ok && name.length()>0)
+    {
+     QDir dir(parent_dir);
+      dir.mkdir(name);
+      _file_system_model->revert();
+    }
+}
+
+void files_dock_widget::process_set_current_dir(const QString & dir)
+{
+  emit displayed_directory_changed (dir);
+}
+

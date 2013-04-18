@@ -49,6 +49,8 @@
 #include "unix/ScreenWindow.h"
 #include "unix/TerminalCharacterDecoder.h"
 
+#include <signal.h>
+
 #ifndef loc
 #define loc(X,Y) ((Y)*_columns+(X))
 #endif
@@ -1408,6 +1410,9 @@ void TerminalView::updateImageSize()
     {
       //qDebug("%s %d updateImageSize", __FILE__, __LINE__);
       showResizeNotification();
+#if defined (SIGWINCH)
+      ::raise (SIGWINCH);
+#endif
       emit changedContentSizeSignal(_contentHeight, _contentWidth); // expose resizeEvent
     }
   //qDebug("%s %d updateImageSize", __FILE__, __LINE__);

@@ -647,6 +647,10 @@ octave_main (int argc, char **argv, int embedded)
 {
   octave_process_command_line (argc, argv);
 
+  sysdep_init ();
+
+  install_defaults ();
+
   octave_initialize_interpreter (argc, argv, embedded);
 
   return octave_execute_interpreter ();
@@ -848,9 +852,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   octave_thread::init ();
 
-  sysdep_init ();
-
-  install_defaults ();
+  set_default_prompts ();
 
   if (traditional)
     maximum_braindamage ();

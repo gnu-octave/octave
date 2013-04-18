@@ -463,8 +463,6 @@ install_defaults (void)
   set_site_defaults_file ();
 
   set_built_in_docstrings_file ();
-
-  set_default_prompts ();
 }
 
 DEFUN (EDITOR, args, nargout,

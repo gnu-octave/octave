@@ -86,6 +86,8 @@ public:
 
   FILE *do_get_output_stream (void);
 
+  void do_redisplay (void);
+
   int do_terminal_rows (void);
 
   int do_terminal_cols (void);
@@ -142,6 +144,8 @@ public:
   void do_newline (void);
 
   void do_accept_line (void);
+
+  bool do_undo (void);
 
   void do_clear_undo_list (void);
 
@@ -290,6 +294,12 @@ FILE *
 gnu_readline::do_get_output_stream (void)
 {
   return ::octave_rl_get_output_stream ();
+}
+
+void
+gnu_readline::do_redisplay (void)
+{
+  ::octave_rl_redisplay ();
 }
 
 // GNU readline handles SIGWINCH, so these values have a good chance
@@ -528,6 +538,12 @@ void
 gnu_readline::do_accept_line (void)
 {
   command_accept_line (1, '\n');
+}
+
+bool
+gnu_readline::do_undo (void)
+{
+  return ::octave_rl_do_undo ();
 }
 
 void
@@ -961,6 +977,13 @@ command_editor::get_output_stream (void)
     ? instance->do_get_output_stream () : 0;
 }
 
+void
+command_editor::redisplay (void)
+{
+  if (instance_ok ())
+    instance->do_redisplay ();
+}
+
 int
 command_editor::terminal_rows (void)
 {
@@ -1175,6 +1198,12 @@ command_editor::accept_line (void)
 {
   if (instance_ok ())
     instance->do_accept_line ();
+}
+
+bool
+command_editor::undo (void)
+{
+  return instance_ok () ? instance->do_undo () : false;
 }
 
 void

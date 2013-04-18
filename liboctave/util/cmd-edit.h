@@ -71,6 +71,8 @@ public:
 
   static FILE *get_output_stream (void);
 
+  static void redisplay (void);
+
   static int terminal_rows (void);
 
   static int terminal_cols (void);
@@ -126,6 +128,8 @@ public:
   static void newline (void);
 
   static void accept_line (void);
+
+  static bool undo (void);
 
   static void clear_undo_list (void);
 
@@ -213,6 +217,8 @@ protected:
 
   virtual FILE *do_get_output_stream (void) = 0;
 
+  virtual void do_redisplay (void) { }
+
   virtual int do_terminal_rows (void) { return 24; }
 
   virtual int do_terminal_cols (void) { return 80; }
@@ -270,6 +276,8 @@ protected:
   virtual void do_newline (void) = 0;
 
   virtual void do_accept_line (void) = 0;
+
+  virtual bool do_undo (void) { return false; }
 
   virtual void do_clear_undo_list (void) { }
 

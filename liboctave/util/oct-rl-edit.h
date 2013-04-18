@@ -46,7 +46,7 @@ extern "C"
 {
 #endif
 
-  extern void octave_rl_redisplay (void);
+extern void octave_rl_redisplay (void);
 
 extern int octave_rl_screen_height (void);
 
@@ -67,6 +67,8 @@ extern void octave_rl_insert_text (const char *);
 extern int octave_rl_newline (int, int);
 
 extern const char *octave_rl_line_buffer (void);
+
+extern int octave_rl_do_undo (void);
 
 extern void octave_rl_clear_undo_list (void);
 

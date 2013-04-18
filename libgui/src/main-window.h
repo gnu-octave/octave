@@ -89,6 +89,7 @@ public slots:
   void handle_clear_history_request (void);
   void handle_rename_variable_request (const QString& old_name,
                                        const QString& new_name);
+  void handle_undo_request (void);
   void new_file (const QString& commands = QString ());
   void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
@@ -180,6 +181,8 @@ private:
   void load_workspace_callback (const std::string& file);
 
   void rename_variable_callback (const name_pair& names);
+
+  void command_window_undo_callback (void);
 
   void clear_command_window_callback (void);
 

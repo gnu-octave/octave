@@ -141,6 +141,12 @@ octave_rl_line_buffer (void)
   return rl_line_buffer;
 }
 
+int
+octave_rl_do_undo (void)
+{
+  return rl_do_undo ();
+}
+
 void
 octave_rl_clear_undo_list (void)
 {

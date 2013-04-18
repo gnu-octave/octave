@@ -170,6 +170,12 @@ main_window::handle_rename_variable_request (const QString& old_name,
 }
 
 void
+main_window::handle_undo_request (void)
+{
+  octave_link::post_event (this, &main_window::command_window_undo_callback);
+}
+
+void
 main_window::handle_clear_command_window_request (void)
 {
   octave_link::post_event (this, &main_window::clear_command_window_callback);
@@ -1302,6 +1308,9 @@ main_window::construct_tool_bar (void)
 
   connect (current_dir_up, SIGNAL (triggered ()),
            this, SLOT (change_directory_up ()));
+
+  connect (_undo_action, SIGNAL (triggered ()),
+           this, SLOT (handle_undo_request ()));
 }
 
 void
@@ -1337,12 +1346,18 @@ main_window::rename_variable_callback (const main_window::name_pair& names)
 }
 
 void
+main_window::command_window_undo_callback (void)
+{
+  command_editor::undo ();
+  command_editor::redisplay ();
+}
+
+void
 main_window::clear_command_window_callback (void)
 {
   Fclc ();
   command_editor::interrupt (true);
 }
-
 
 void
 main_window::clear_history_callback (void)

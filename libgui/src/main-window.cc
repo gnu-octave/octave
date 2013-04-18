@@ -719,6 +719,8 @@ main_window::construct (void)
 
   QDir curr_dir;
   set_current_working_directory (curr_dir.absolutePath ());
+
+  octave_link::post_event (this, &main_window::resize_command_window_callback);
 }
 
 void
@@ -1357,6 +1359,12 @@ main_window::clear_command_window_callback (void)
 {
   Fclc ();
   command_editor::interrupt (true);
+}
+
+void
+main_window::resize_command_window_callback (void)
+{
+  command_editor::resize_terminal ();
 }
 
 void

@@ -186,6 +186,8 @@ private:
 
   void clear_command_window_callback (void);
 
+  void resize_command_window_callback (void);
+
   void clear_workspace_callback (void);
 
   void clear_history_callback (void);

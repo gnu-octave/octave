@@ -523,7 +523,9 @@ DEFUN (clc, , ,
 Clear the terminal screen and move the cursor to the upper left corner.\n\
 @end deftypefn")
 {
-  command_editor::clear_screen ();
+  bool skip_redisplay = true;
+
+  command_editor::clear_screen (skip_redisplay);
 
   return octave_value_list ();
 }

@@ -56,7 +56,7 @@ extern void octave_rl_enable_paren_matching (int);
 
 extern void octave_rl_init (void);
 
-extern void octave_rl_clear_screen (void);
+extern void octave_rl_clear_screen (int skip_redisplay);
 
 extern void octave_rl_resize_terminal (void);
 

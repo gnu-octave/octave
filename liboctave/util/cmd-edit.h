@@ -75,7 +75,7 @@ public:
 
   static int terminal_cols (void);
 
-  static void clear_screen (void);
+  static void clear_screen (bool skip_redisplay = false);
 
   static void resize_terminal (void);
 
@@ -217,7 +217,7 @@ protected:
 
   virtual int do_terminal_cols (void) { return 80; }
 
-  virtual void do_clear_screen (void) { }
+  virtual void do_clear_screen (bool) { }
 
   virtual void do_resize_terminal (void) { }
 

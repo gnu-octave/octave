@@ -90,7 +90,7 @@ public:
 
   int do_terminal_cols (void);
 
-  void do_clear_screen (void);
+  void do_clear_screen (bool skip_redisplay);
 
   void do_resize_terminal (void);
 
@@ -315,9 +315,9 @@ gnu_readline::do_terminal_cols (void)
 }
 
 void
-gnu_readline::do_clear_screen (void)
+gnu_readline::do_clear_screen (bool skip_redisplay)
 {
-  ::octave_rl_clear_screen ();
+  ::octave_rl_clear_screen (skip_redisplay);
 }
 
 void
@@ -976,10 +976,10 @@ command_editor::terminal_cols (void)
 }
 
 void
-command_editor::clear_screen (void)
+command_editor::clear_screen (bool skip_redisplay)
 {
   if (instance_ok ())
-    instance->do_clear_screen ();
+    instance->do_clear_screen (skip_redisplay);
 }
 
 void

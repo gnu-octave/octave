@@ -91,17 +91,23 @@ flush_stdout (void)
 }
 
 void
-octave_rl_clear_screen (void)
+octave_rl_clear_screen (int skip_redisplay)
 {
   int ignore1 = 0;
   int ignore2 = 0;
 
-  rl_voidfunc_t *saved_redisplay_function = rl_redisplay_function;
-  rl_redisplay_function = flush_stdout;
+  if (skip_redisplay)
+    {
+      rl_voidfunc_t *saved_redisplay_function = rl_redisplay_function;
 
-  rl_clear_screen (ignore1, ignore2);
+      rl_redisplay_function = flush_stdout;
 
-  rl_redisplay_function = saved_redisplay_function;
+      rl_clear_screen (ignore1, ignore2);
+
+      rl_redisplay_function = saved_redisplay_function;
+    }
+  else
+    rl_clear_screen (ignore1, ignore2);
 }
 
 void

@@ -236,7 +236,6 @@ private:
   QAction *_copy_action;
   QAction *_paste_action;
   QAction *_undo_action;
-  QAction *_redo_action;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;

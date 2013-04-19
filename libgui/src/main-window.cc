@@ -933,10 +933,6 @@ main_window::construct_edit_menu (QMenuBar *p)
     = edit_menu->addAction (QIcon (":/actions/icons/undo.png"), tr ("Undo"));
   _undo_action->setShortcut (QKeySequence::Undo);
 
-  _redo_action
-    = edit_menu->addAction (QIcon (":/actions/icons/redo.png"), tr ("Redo"));
-  _redo_action->setShortcut (QKeySequence::Redo);
-
   edit_menu->addSeparator ();
 
   _cut_action
@@ -1274,7 +1270,6 @@ main_window::construct_tool_bar (void)
   _main_tool_bar->addAction (_copy_action);
   _main_tool_bar->addAction (_paste_action);
   _main_tool_bar->addAction (_undo_action);
-  _main_tool_bar->addAction (_redo_action);
 
   _main_tool_bar->addSeparator ();
 

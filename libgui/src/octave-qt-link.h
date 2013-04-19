@@ -79,6 +79,11 @@ public:
                    const std::list<int>& nc,
                    const std::list<std::string>& defaults);
 
+  int
+  do_debug_cd_or_addpath_error (const std::string& file,
+                                const std::string& dir,
+                                bool addpath_option);
+
   void do_change_directory (const std::string& dir);
 
   void do_set_workspace (bool top_level,

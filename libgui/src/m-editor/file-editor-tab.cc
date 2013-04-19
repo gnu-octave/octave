@@ -47,10 +47,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
-#include "octave-link.h"
 
+#include "builtin-defun-decls.h"
 #include "debug.h"
+#include "load-path.h"
+#include "octave-link.h"
 #include "oct-env.h"
+#include "utils.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -195,13 +198,9 @@ file_editor_tab::handle_margin_clicked(int margin, int line,
       else
         {
           if (markers_mask && (1 << breakpoint))
-            {
-              request_remove_breakpoint (line);
-            }
+            request_remove_breakpoint (line);
           else
-            {
-              request_add_breakpoint (line);
-            }
+            request_add_breakpoint (line);
         }
     }
 }
@@ -431,42 +430,96 @@ file_editor_tab::remove_bookmark (const QWidget* ID)
   _edit_area->markerDeleteAll (bookmark);
 }
 
+bool
+file_editor_tab::file_in_path (const bp_info& info)
+{
+  bool ok = false;
+  bool addpath_option = true;
+
+  std::string curr_dir = octave_env::get_current_directory ();
+
+  if (curr_dir == info.path)
+    ok = true;
+  else
+    {
+      bool dir_in_load_path = load_path::contains_canonical (info.path);
+
+      std::string base_file = octave_env::base_pathname (info.file);
+      std::string lp_file = load_path::find_file (base_file);
+
+      if (dir_in_load_path)
+        {
+          if (same_file (lp_file, info.file))
+            ok = true;
+        }
+      else
+        {
+          // File directory is not in path.  Is the file in the path in
+          // the current directory?  If so, then changing the current
+          // directory will be needed.  Adding directory to path is
+          // not enough because the file in the current directory would
+          // still be found.
+
+          if (same_file (lp_file, base_file))
+            {
+              if (same_file (curr_dir, info.path))
+                ok = true;
+              else
+                addpath_option = false;
+            }
+        }
+    }
+
+  if (! ok)
+    {
+      int action
+        = octave_link::debug_cd_or_addpath_error (info.file, info.path,
+                                                  addpath_option);
+      switch (action)
+        {
+        case 1:
+          Fcd (ovl (info.path));
+          ok = true;
+          break;
+
+        case 2:
+          load_path::prepend (info.path);
+          ok = true;
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  return ok;
+}
+
 void
 file_editor_tab::add_breakpoint_callback (const bp_info& info)
 {
-  bp_table::intmap intmap;
-  intmap[0] = info.line + 1;
+  bp_table::intmap line_info;
+  line_info[0] = info.line;
 
-  std::string previous_directory = octave_env::get_current_directory ();
-  octave_env::chdir (info.path);
-  intmap = bp_table::add_breakpoint (info.function_name, intmap);
-  octave_env::chdir (previous_directory);
-  // bp_table::add_breakpoint also sets the marker in the editor
+  if (file_in_path (info))
+    bp_table::add_breakpoint (info.function_name, line_info);
 }
 
 void
 file_editor_tab::remove_breakpoint_callback (const bp_info& info)
 {
-  bp_table::intmap intmap;
-  intmap[0] = info.line + 1;
+  bp_table::intmap line_info;
+  line_info[0] = info.line;
 
-  std::string previous_directory = octave_env::get_current_directory ();
-  octave_env::chdir (info.path);
-  bp_table::remove_breakpoint (info.function_name, intmap);
-  octave_env::chdir (previous_directory);
+  if (file_in_path (info))
+    bp_table::remove_breakpoint (info.function_name, line_info);
 }
 
 void
 file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
 {
-  bp_table::intmap intmap;
-  std::string previous_directory = octave_env::get_current_directory ();
-  octave_env::chdir (info.path);
-  intmap = bp_table::remove_all_breakpoints_in_file (info.function_name, true);
-  octave_env::chdir (previous_directory);
-
-  if (intmap.size() > 0)
-    _edit_area->markerDeleteAll (breakpoint);
+  if (file_in_path (info))
+    bp_table::remove_all_breakpoints_in_file (info.function_name, true);
 }
 
 void
@@ -479,7 +532,7 @@ file_editor_tab::request_add_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (path, function_name, line);
+  bp_info info (_file_name, path, function_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::add_breakpoint_callback, info);
@@ -495,7 +548,7 @@ file_editor_tab::request_remove_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (path, function_name, line);
+  bp_info info (_file_name, path, function_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_breakpoint_callback, info);
@@ -556,7 +609,7 @@ file_editor_tab::remove_all_breakpoints (const QWidget* ID)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (path, function_name, 0);
+  bp_info info (_file_name, path, function_name, 0);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_all_breakpoints_callback, info);
@@ -1143,7 +1196,7 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
 
   if (line > 0)
     {
-      _edit_area->markerAdd (line, debugger_position);
+      _edit_area->markerAdd (line-1, debugger_position);
       center_current_line ();
     }
 }
@@ -1155,7 +1208,7 @@ file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
     return;
 
   if (line > 0)
-    _edit_area->markerDelete (line, debugger_position);
+    _edit_area->markerDelete (line-1, debugger_position);
 }
 
 void
@@ -1167,9 +1220,9 @@ file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line)
   if (line > 0)
     {
       if (insert)
-        _edit_area->markerAdd (line, breakpoint);
+        _edit_area->markerAdd (line-1, breakpoint);
       else
-        _edit_area->markerDelete (line, breakpoint);
+        _edit_area->markerDelete (line-1, breakpoint);
     }
 }
 

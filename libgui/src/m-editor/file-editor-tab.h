@@ -122,10 +122,12 @@ private:
 
   struct bp_info
   {
-    bp_info (const QString& p, const QString& fn, int l)
-      : path (p.toStdString ()), function_name (fn.toStdString ()), line (l)
+    bp_info (const QString& f, const QString& p, const QString& fn, int l)
+      : file (f.toStdString ()), path (p.toStdString ()),
+        function_name (fn.toStdString ()), line (l)
     { }
 
+    std::string file;
     std::string path;
     std::string function_name;
     int line;
@@ -143,6 +145,9 @@ private:
   void do_comment_selected_text (bool comment);
 
   void run_file_callback (void);
+
+  bool file_in_path (const bp_info& info);
+
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);
   void remove_all_breakpoints_callback (const bp_info& info);

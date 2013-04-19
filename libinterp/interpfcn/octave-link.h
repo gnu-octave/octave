@@ -170,6 +170,14 @@ public:
       : std::list<std::string> ();
   }
 
+  static int debug_cd_or_addpath_error (const std::string& file,
+                                        const std::string& dir,
+                                        bool addpath_option)
+  {
+    return enabled ()
+      ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option) : 0;
+  }
+
   static void change_directory (const std::string& dir)
   {
     if (enabled ())
@@ -340,6 +348,11 @@ protected:
                    const std::list<int>& nr,
                    const std::list<int>& nc,
                    const std::list<std::string>& defaults) = 0;
+
+  virtual int
+  do_debug_cd_or_addpath_error (const std::string& file,
+                                const std::string& dir,
+                                bool addpath_option) = 0;
 
   virtual void do_change_directory (const std::string& dir) = 0;
 

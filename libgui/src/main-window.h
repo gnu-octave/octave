@@ -142,6 +142,9 @@ public slots:
                                   const QIntList&, const QIntList&,
                                   const QStringList&);
 
+  void handle_create_debug_cd_or_addpath_dialog (const QString& file,
+                                                 const QString& dir,
+                                                 bool addpath_option);
   // find files dialog 
   void find_files(const QString &startdir=QDir::currentPath());
   void find_files_finished(int);

@@ -230,10 +230,10 @@ file_editor::request_open_file (const QString& openFileName, int line,
               emit fetab_goto_line (tab, line);
 
               if (debug_pointer)
-                emit fetab_insert_debugger_pointer (tab, line-1);
+                emit fetab_insert_debugger_pointer (tab, line);
 
               if (breakpoint_marker)
-                emit fetab_do_breakpoint_marker (insert, tab, line-1);
+                emit fetab_do_breakpoint_marker (insert, tab, line);
             }
 
           emit fetab_set_focus (tab);
@@ -258,10 +258,11 @@ file_editor::request_open_file (const QString& openFileName, int line,
                       emit fetab_goto_line (fileEditorTab, line);
 
                       if (debug_pointer)
-                        emit fetab_insert_debugger_pointer (fileEditorTab, line-1);
+                        emit fetab_insert_debugger_pointer (fileEditorTab,
+                                                            line);
                       if (breakpoint_marker)
-                        emit fetab_do_breakpoint_marker
-                          (insert, fileEditorTab, line-1);
+                        emit fetab_do_breakpoint_marker (insert, fileEditorTab,
+                                                         line);
                     }
                 }
               else
@@ -380,7 +381,7 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file, int li
           _tab_widget->setCurrentWidget (tab);
 
           if (line > 0)
-            emit fetab_delete_debugger_pointer (tab, line-1);
+            emit fetab_delete_debugger_pointer (tab, line);
 
           emit fetab_set_focus (tab);
         }

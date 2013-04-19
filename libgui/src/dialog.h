@@ -101,6 +101,17 @@ public:
     return true;
   };
 
+  // The debug dialog functionality may not really belong here, but it
+  // seems like the easiest thing to do at the moment.
+
+  bool signal_debug_cd_or_addpath (const QString& file, const QString& dir,
+                                   bool addpath_option)
+  {
+    emit create_debug_cd_or_addpath_dialog (file, dir, addpath_option);
+
+    return true;
+  }
+
   const QStringList *get_string_list (void) { return string_list; }
   
   void wait (void)
@@ -121,6 +132,8 @@ signals:
   void create_inputlayout (const QStringList&, const QString&,
                            const QIntList&, const QIntList&,
                            const QStringList&);
+
+  void create_debug_cd_or_addpath_dialog (const QString&, const QString&, bool);
 
 public slots:
 
@@ -213,6 +226,26 @@ signals:
 public slots:
 
   void buttonOk_clicked (void);
+
+  void buttonCancel_clicked (void);
+
+  void reject (void);
+};
+
+class cd_or_addpath_dialog : public QDialog
+{
+  Q_OBJECT
+
+public:
+
+  cd_or_addpath_dialog (const QString& file, const QString& dir,
+                        bool addpath_option);
+
+public slots:
+
+  void buttonCd_clicked (void);
+
+  void buttonAddpath_clicked (void);
 
   void buttonCancel_clicked (void);
 

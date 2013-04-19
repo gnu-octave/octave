@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "dialog.h"
+#include "error.h"
 #include "workspace-element.h"
 
 #include "octave-qt-link.h"
@@ -152,6 +153,20 @@ octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
     }
 
   return retval;
+}
+
+int
+octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
+                                              const std::string& dir,
+                                              bool addpath_option)
+{
+  uiwidget_creator.signal_debug_cd_or_addpath (QString::fromStdString (file),
+                                               QString::fromStdString (dir),
+                                               addpath_option);
+
+  uiwidget_creator.wait ();
+
+  return uiwidget_creator.get_dialog_result ();
 }
 
 void

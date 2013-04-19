@@ -89,6 +89,11 @@ public:
       instance->do_update ();
   }
 
+  static bool contains_canonical (const std::string& dir_name)
+  {
+    return instance_ok () ? instance->do_contains_canonical (dir_name) : false;
+  }
+
   static std::string find_method (const std::string& class_name,
                                   const std::string& meth,
                                   std::string& dir_name)
@@ -464,6 +469,8 @@ private:
   dir_info_list_iterator find_dir_info (const std::string& dir);
 
   bool contains (const std::string& dir) const;
+
+  bool do_contains_canonical (const std::string& dir) const;
 
   void move_fcn_map (const std::string& dir,
                      const string_vector& fcn_files, bool at_end);

@@ -377,9 +377,89 @@ InputDialog::buttonCancel_clicked (void)
   done (QDialog::Rejected);
 }
 
-
+  
 void
 InputDialog::reject (void)
+{
+  buttonCancel_clicked ();
+}
+
+
+cd_or_addpath_dialog::cd_or_addpath_dialog (const QString& file,
+                                            const QString& dir,
+                                            bool addpath_option)
+  : QDialog ()
+{
+  QString prompt_string
+    = (addpath_option
+       ? tr ("The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg(file).arg(dir)
+       : tr ("The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.").arg(file).arg(dir));
+
+  QLabel *label = new QLabel (prompt_string);
+  label->setFixedWidth (500);
+  label->setWordWrap (true);
+  //    QIcon *question_mark = new QIcon;
+  QHBoxLayout *horizontalLayout = new QHBoxLayout;
+  //    horizontalLayout->addWidget (question_mark);
+  horizontalLayout->addWidget (label);
+
+  QPushButton *buttonCd = new QPushButton (tr ("Change directory"));
+  QPushButton *buttonAddpath = 0;
+  if (addpath_option)
+    buttonAddpath = new QPushButton (tr ("Add directory to load path"));
+  QPushButton *buttonCancel = new QPushButton (tr ("Cancel"));
+
+  QHBoxLayout *buttonsLayout = new QHBoxLayout;
+  buttonsLayout->addStretch (1);
+  buttonsLayout->addWidget (buttonCd);
+  if (addpath_option)
+    buttonsLayout->addWidget (buttonAddpath);
+  buttonsLayout->addWidget (buttonCancel);
+
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  mainLayout->addLayout (horizontalLayout);
+  mainLayout->addSpacing (12);
+  mainLayout->addLayout (buttonsLayout);
+  setLayout (mainLayout);
+
+  setWindowTitle (tr ("Change Directory or Add Directory to Load Path"));
+
+  connect (buttonCd, SIGNAL (clicked ()),
+           this, SLOT (buttonCd_clicked ()));
+
+  connect (buttonAddpath, SIGNAL (clicked ()),
+           this, SLOT (buttonAddpath_clicked ()));
+
+  connect (buttonCancel, SIGNAL (clicked ()),
+           this, SLOT (buttonCancel_clicked ()));
+
+  connect (this, SIGNAL (finished (int)),
+           &uiwidget_creator, SLOT (dialog_finished (int)));
+}
+
+void
+cd_or_addpath_dialog::buttonCd_clicked (void)
+{
+  emit finished (1);
+  done (QDialog::Accepted);
+}
+
+void
+cd_or_addpath_dialog::buttonAddpath_clicked (void)
+{
+  emit finished (2);
+  done (QDialog::Accepted);
+}
+
+void
+cd_or_addpath_dialog::buttonCancel_clicked (void)
+{
+  emit finished (-1);
+  done (QDialog::Rejected);
+}
+  
+void
+cd_or_addpath_dialog::reject (void)
 {
   buttonCancel_clicked ();
 }

@@ -403,9 +403,9 @@ maybe_initialize_magick (void)
 
 DEFUN_DLD (__magick_read__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{m} =} __magick_read__ (@var{fname}, @var{index})\n\
-@deftypefnx {Function File} {[@var{m}, @var{colormap}] =} __magick_read__ (@var{fname}, @var{index})\n\
-@deftypefnx {Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{index})\n\
+@deftypefn  {Loadable Function} {@var{m} =} __magick_read__ (@var{fname}, @var{index})\n\
+@deftypefnx {Loadable Function} {[@var{m}, @var{colormap}] =} __magick_read__ (@var{fname}, @var{index})\n\
+@deftypefnx {Loadable Function} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{index})\n\
 Read images with ImageMagick++.  In general you should not be using this\n\
 function.  Instead use @code{imread}.\n\
 @seealso{imread}\n\
@@ -871,8 +871,8 @@ write_image (const std::string& filename, const std::string& fmt,
 
 DEFUN_DLD (__magick_write__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img})\n\
-@deftypefnx {Function File} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
+@deftypefn  {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img})\n\
+@deftypefnx {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
 Write images with ImageMagick++.  In general you should not be using this\n\
 function.  Instead use @code{imwrite}.\n\
 @seealso{imread}\n\
@@ -1159,7 +1159,7 @@ not be using this function.  Instead use @code{imfinfo}.\n\
 
 DEFUN_DLD (__magick_format_list__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __magick_format_list__ (@var{formats})\n\
+@deftypefn {Loadable Function} {} __magick_format_list__ (@var{formats})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

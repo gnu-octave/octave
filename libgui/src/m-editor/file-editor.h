@@ -49,6 +49,9 @@ class file_editor : public file_editor_interface
 
 public:
 
+  typedef std::map<QString, QWidget *>::iterator editor_tab_map_iterator;
+  typedef std::map<QString, QWidget *>::const_iterator editor_tab_map_const_iterator;
+
   file_editor (QWidget *p);
   ~file_editor ();
 
@@ -160,6 +163,8 @@ private:
   void add_file_editor_tab(file_editor_tab *f, const QString &fn);
   void save_file_as (QWidget *fetabID = 0);
   void mru_menu_update ();
+
+  QWidget *find_tab_widget (const QString& openFileName) const;
 
   std::map<QString, QWidget *> editor_tab_map;
 

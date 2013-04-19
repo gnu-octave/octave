@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QProcess>
 
 #include "octave-link.h"
+#include "utils.h"
 
 file_editor::file_editor (QWidget *p)
   : file_editor_interface (p)
@@ -62,7 +63,7 @@ file_editor::~file_editor ()
       emit fetab_file_name_query (0);
     }
   QStringList fetFileNames;
-  for (std::map<QString, QWidget *>::const_iterator p = editor_tab_map.begin ();
+  for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
     fetFileNames.append (p->first);
 
@@ -167,6 +168,27 @@ file_editor::request_open_file ()
   fileDialog->show ();
 }
 
+// Check whether this file is already open in the editor.
+QWidget *
+file_editor::find_tab_widget (const QString& file) const
+{
+  QWidget *retval = 0;
+
+  for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
+       p != editor_tab_map.end (); p++)
+    {
+      QString tab_file = p->first;
+
+      if (same_file (file.toStdString (), tab_file.toStdString ()))
+        {
+          retval = p->second;
+          break;
+        }
+    }
+
+  return retval;
+}    
+
 void
 file_editor::request_open_file (const QString& openFileName, int line,
                                 bool debug_pointer,
@@ -197,23 +219,24 @@ file_editor::request_open_file (const QString& openFileName, int line,
       emit fetab_file_name_query (0);
 
       // Check whether this file is already open in the editor.
-      std::map<QString, QWidget *>::const_iterator p = editor_tab_map.find (openFileName);
-      if (p != editor_tab_map.end ())
+      QWidget *tab = find_tab_widget (openFileName);
+
+      if (tab)
         {
-          _tab_widget->setCurrentWidget (p->second);
+          _tab_widget->setCurrentWidget (tab);
 
           if (line > 0)
             {
-              emit fetab_goto_line (p->second, line);
+              emit fetab_goto_line (tab, line);
 
               if (debug_pointer)
-                emit fetab_insert_debugger_pointer (p->second, line-1);
+                emit fetab_insert_debugger_pointer (tab, line-1);
 
               if (breakpoint_marker)
-                emit fetab_do_breakpoint_marker (insert, p->second, line-1);
+                emit fetab_do_breakpoint_marker (insert, tab, line-1);
             }
 
-          emit fetab_set_focus (p->second);
+          emit fetab_set_focus (tab);
         }
       else
         {
@@ -281,8 +304,10 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
   editor_tab_map.clear ();
   emit fetab_file_name_query (0);
 
-  std::map<QString, QWidget *>::const_iterator p = editor_tab_map.find (saveFileName);
-  if (p != editor_tab_map.end ())
+  // Check whether this file is already open in the editor.
+  QWidget *tab = find_tab_widget (saveFileName);
+
+  if (tab)
     {
       // Note: to overwrite the contents of some other file editor tab
       // with the same name requires identifying which file editor tab
@@ -348,15 +373,16 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file, int li
       emit fetab_file_name_query (0);
 
       // Check whether this file is already open in the editor.
-      std::map<QString, QWidget *>::const_iterator p = editor_tab_map.find (file);
-      if (p != editor_tab_map.end ())
+      QWidget *tab = find_tab_widget (file);
+
+      if (tab)
         {
-          _tab_widget->setCurrentWidget (p->second);
+          _tab_widget->setCurrentWidget (tab);
 
           if (line > 0)
-            emit fetab_delete_debugger_pointer (p->second, line-1);
+            emit fetab_delete_debugger_pointer (tab, line-1);
 
-          emit fetab_set_focus (p->second);
+          emit fetab_set_focus (tab);
         }
     }
 }

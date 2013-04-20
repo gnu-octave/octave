@@ -70,6 +70,13 @@ do_regexp_ptn_string_escapes (const std::string& s)
               retval[i] = '\b';
               break;
 
+            // Translate \< and \> to PCRE word boundary
+            case '<': // begin word boundary
+            case '>': // end word boundary
+              retval[i] = '\\';
+              retval[++i] = 'b';
+              break;
+
 #if 0
 // FIXME : To be complete, we need to handle \oN, \o{N}.
 //         The PCRE library already handles \N where N

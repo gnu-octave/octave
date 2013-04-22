@@ -102,6 +102,15 @@ octave_link::do_discard_events (void)
   event_queue_mutex->unlock ();
 }
 
+DEFUN (__octave_link_enabled__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_enabled__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  return octave_value (octave_link::enabled ());
+}
+
 DEFUN (__octave_link_edit_file__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_edit_file__ (@var{file})\n\

@@ -280,6 +280,11 @@ public:
       instance->do_set_default_prompts (ps1, ps2, ps4);
   }
 
+  static bool enabled (void)
+  {
+    return instance_ok () ? instance->link_enabled : false;
+  }
+
 private:
 
   static octave_link *instance;
@@ -291,11 +296,6 @@ private:
   octave_link& operator = (const octave_link&);
 
   static bool instance_ok (void) { return instance != 0; }
-
-  static bool enabled (void)
-  {
-    return instance_ok () ? instance->link_enabled : false;
-  }
 
 protected:
 

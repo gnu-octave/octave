@@ -23,6 +23,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef QTERMINAL_H
 #define QTERMINAL_H
 
+#include <QSettings>
 #include <QtGlobal>
 
 #ifdef Q_OS_WIN32
@@ -34,6 +35,10 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
         QTerminal(QWidget *xparent = 0)
             : QWinTerminalImpl(xparent) { }
         ~QTerminal() { }
+
+    public slots:
+        void notice_settings (const QSettings *settings);
+        void relay_command (const QString& text);
     };
 #else
     #include "unix/QUnixTerminalImpl.h"
@@ -44,6 +49,10 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
         QTerminal(QWidget *xparent = 0)
             : QUnixTerminalImpl(xparent) { }
         ~QTerminal() { }
+
+    public slots:
+        void notice_settings (const QSettings *settings);
+        void relay_command (const QString& command);
     };
 #endif
 

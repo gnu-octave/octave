@@ -74,6 +74,47 @@ do_minmax_red_op (const octave_value& arg,
   return retval;
 }
 
+// Matlab returns double arrays for min/max operations on character
+// arrays, so we specialize here to get that behavior.  Other possible
+// solutions are to convert the argument to double here and call the
+// code for double, but that could waste memory, or to have the
+// underlying charNDArray::min/max functions return NDArray instead of
+// charNDArray, but that is inconsistent with the way other min/max
+// functions work.
+
+template <>
+octave_value_list
+do_minmax_red_op<charNDArray> (const octave_value& arg,
+                               int nargout, int dim, bool ismin)
+{
+  octave_value_list retval;
+  charNDArray array = octave_value_extract<charNDArray> (arg);
+
+  if (error_state)
+    return retval;
+
+  if (nargout == 2)
+    {
+      retval.resize (2);
+      Array<octave_idx_type> idx;
+      if (ismin)
+        retval(0) = NDArray (array.min (idx, dim));
+      else
+        retval(0) = NDArray (array.max (idx, dim));
+
+      retval(1) = octave_value (idx, true, true);
+    }
+  else
+    {
+      if (ismin)
+        retval(0) = NDArray (array.min (dim));
+      else
+        retval(0) = NDArray (array.max (dim));
+    }
+
+  return retval;
+}
+
 // Specialization for bool arrays.
 template <>
 octave_value_list
@@ -154,6 +195,61 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
   return retval;
 }
 
+// Matlab returns double arrays for min/max operations on character
+// arrays, so we specialize here to get that behavior.  Other possible
+// solutions are to convert the arguments to double here and call the
+// code for double, but that could waste a lot of memory, or to have the
+// underlying charNDArray::min/max functions return NDArray instead of
+// charNDArray, but that is inconsistent with the way other min/max
+// functions work.
+
+template <>
+octave_value
+do_minmax_bin_op<charNDArray> (const octave_value& argx,
+                               const octave_value& argy, bool ismin)
+{
+  octave_value retval;
+
+  if (argx.is_scalar_type () == 1)
+    {
+      char x = octave_value_extract<char> (argx);
+      charNDArray y = octave_value_extract<charNDArray> (argy);
+
+      if (error_state)
+        ;
+      else if (ismin)
+        retval = NDArray (min (x, y));
+      else
+        retval = NDArray (max (x, y));
+    }
+  else if (argy.is_scalar_type () == 1)
+    {
+      charNDArray x = octave_value_extract<charNDArray> (argx);
+      char y = octave_value_extract<char> (argy);
+
+      if (error_state)
+        ;
+      else if (ismin)
+        retval = NDArray (min (x, y));
+      else
+        retval = NDArray (max (x, y));
+    }
+  else
+    {
+      charNDArray x = octave_value_extract<charNDArray> (argx);
+      charNDArray y = octave_value_extract<charNDArray> (argy);
+
+      if (error_state)
+        ;
+      else if (ismin)
+        retval = NDArray (min (x, y));
+      else
+        retval = NDArray (max (x, y));
+    }
+
+  return retval;
+}
+
 static octave_value_list
 do_minmax_body (const octave_value_list& args,
                 int nargout, bool ismin)
@@ -227,6 +323,9 @@ do_minmax_body (const octave_value_list& args,
         case btyp_float_complex:
           retval = do_minmax_red_op<FloatComplexNDArray> (arg, nargout, dim, ismin);
           break;
+        case btyp_char:
+          retval = do_minmax_red_op<charNDArray> (arg, nargout, dim, ismin);
+          break;
 #define MAKE_INT_BRANCH(X) \
         case btyp_ ## X: \
           retval = do_minmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
@@ -251,7 +350,11 @@ do_minmax_body (const octave_value_list& args,
     {
       octave_value argx = args(0), argy = args(1);
       builtin_type_t xtyp = argx.builtin_type (), ytyp = argy.builtin_type ();
-      builtin_type_t rtyp = btyp_mixed_numeric (xtyp, ytyp);
+      builtin_type_t rtyp;
+      if (xtyp == btyp_char && ytyp == btyp_char)
+        rtyp = btyp_char;
+      else
+        rtyp = btyp_mixed_numeric (xtyp, ytyp);
 
       switch (rtyp)
         {
@@ -280,6 +383,9 @@ do_minmax_body (const octave_value_list& args,
           break;
         case btyp_float_complex:
           retval = do_minmax_bin_op<FloatComplexNDArray> (argx, argy, ismin);
+          break;
+        case btyp_char:
+          retval = do_minmax_bin_op<charNDArray> (argx, argy, ismin);
           break;
 #define MAKE_INT_BRANCH(X) \
         case btyp_ ## X: \
@@ -361,6 +467,10 @@ minimum value(s).  Thus,\n\
 %!assert (min ([1, 4, 2, 3]), 1)
 %!assert (min ([1; -10; 5; -2]), -10)
 %!assert (min ([4, i; -2, 2]), [-2, i])
+%!assert (min (char(42)), 42)
+%!assert (min (char(21), char(3)), 3)
+%!assert (min([char(21), char(3)]), 3)
+%!assert (min([char(100) char(3)], [char(42) char(42)]), [42 3])
 
 %!test
 %! x = reshape (1:8, [2,2,2]);

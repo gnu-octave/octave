@@ -34,6 +34,7 @@ class tree_walker;
 
 #include "base-list.h"
 #include "comment-list.h"
+#include "debug.h"
 #include "symtab.h"
 #include "pt.h"
 
@@ -159,6 +160,11 @@ public:
   void delete_breakpoint (int line);
 
   octave_value_list list_breakpoints (void);
+
+  bp_table::intmap add_breakpoint (const std::string& file,
+                                   const bp_table::intmap& line);
+
+  bp_table::intmap remove_all_breakpoints (const std::string& file);
 
   tree_statement_list *dup (symbol_table::scope_id scope,
                             symbol_table::context_id context) const;

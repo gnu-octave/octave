@@ -36,8 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QStyle>
 #include <QTextStream>
+#include <QProcess>
 
 #include "octave-link.h"
+#include "utils.h"
 
 file_editor::file_editor (QWidget *p)
   : file_editor_interface (p)
@@ -54,17 +56,42 @@ file_editor::file_editor (QWidget *p)
 file_editor::~file_editor ()
 {
   QSettings *settings = resource_manager::get_settings ();
-  fetFileNames.clear ();
+  editor_tab_map.clear ();
   if (settings->value ("editor/restoreSession",true).toBool ())
     {
       // Have all file editor tabs signal what their file names are.
       emit fetab_file_name_query (0);
     }
+  QStringList fetFileNames;
+  for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
+       p != editor_tab_map.end (); p++)
+    fetFileNames.append (p->first);
+
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();
 
   if (_mru_file_menu)
     delete _mru_file_menu;
+}
+
+void
+file_editor::focus (void)
+{
+  set_focus ();
+}
+
+void
+file_editor::handle_visibility (bool visible)
+{
+  if (visible && ! isFloating ())
+    focus ();
+}
+
+void
+file_editor::connect_visibility_changed (void)
+{
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility (bool)));
 }
 
 // set focus to editor and its current tab
@@ -94,19 +121,19 @@ file_editor::toolbar ()
 }
 
 void
-file_editor::handle_entered_debug_mode ()
+file_editor::handle_enter_debug_mode (void)
 {
   _run_action->setEnabled (false);
 }
 
 void
-file_editor::handle_quit_debug_mode ()
+file_editor::handle_exit_debug_mode (void)
 {
   _run_action->setEnabled (true);
 }
 
 void
-file_editor::request_new_file ()
+file_editor::request_new_file (const QString& commands)
 {
   // New file isn't a file_editor_tab function since the file
   // editor tab has yet to be created and there is no object to
@@ -116,7 +143,7 @@ file_editor::request_new_file ()
   if (fileEditorTab)
     {
       add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
-      fileEditorTab->new_file ();               // title is updated here
+      fileEditorTab->new_file (commands);       // title is updated here
       set_focus ();                             // focus editor and new tab
     }
 }
@@ -141,9 +168,45 @@ file_editor::request_open_file ()
   fileDialog->show ();
 }
 
-void
-file_editor::request_open_file (const QString& openFileName)
+// Check whether this file is already open in the editor.
+QWidget *
+file_editor::find_tab_widget (const QString& file) const
 {
+  QWidget *retval = 0;
+
+  for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
+       p != editor_tab_map.end (); p++)
+    {
+      QString tab_file = p->first;
+
+      if (same_file (file.toStdString (), tab_file.toStdString ()))
+        {
+          retval = p->second;
+          break;
+        }
+    }
+
+  return retval;
+}    
+
+void
+file_editor::request_open_file (const QString& openFileName, int line,
+                                bool debug_pointer,
+                                bool breakpoint_marker, bool insert)
+{
+  // Check if the user wants to use a custom file editor.
+  QSettings *settings = resource_manager::get_settings ();
+  if (settings->value ("useCustomFileEditor").toBool ())
+    {
+      QString editor = settings->value ("customFileEditor").toString ();
+      editor.replace ("%f",openFileName);
+      editor.replace ("%l",QString::number (line));
+      QProcess::startDetached (editor);
+      if (line < 0)
+        handle_mru_add_file(QDir::cleanPath (openFileName));
+      return;
+    }
+
   if (openFileName.isEmpty ())
     {
       // ??  Not sure this will happen.  This routine isn't even called
@@ -152,63 +215,74 @@ file_editor::request_open_file (const QString& openFileName)
   else
     {
       // Have all file editor tabs signal what their file names are.
-      fetFileNames.clear ();
+      editor_tab_map.clear ();
       emit fetab_file_name_query (0);
 
       // Check whether this file is already open in the editor.
-      if (fetFileNames.contains (openFileName, Qt::CaseSensitive))
+      QWidget *tab = find_tab_widget (openFileName);
+
+      if (tab)
         {
-          // Create a NonModal message so nothing is blocked and
-          // bring the existing file forward.
-          QMessageBox* msgBox = new QMessageBox (
-                  QMessageBox::Critical, tr ("Octave Editor"),
-                  tr ("File %1 is already open in the editor.").
-                  arg (openFileName), QMessageBox::Ok, 0);
-          msgBox->setWindowModality (Qt::NonModal);
-          msgBox->setAttribute (Qt::WA_DeleteOnClose);
-          msgBox->show ();
-          QFileInfo file(openFileName);
-          QString short_openFileName = file.fileName();  // get file name only
-          for(int i = 0; i < _tab_widget->count (); i++)
-            { // check whether tab title is file name (long or short)
-              if (_tab_widget->tabText (i) == openFileName ||
-                  _tab_widget->tabText (i) == short_openFileName)
+          _tab_widget->setCurrentWidget (tab);
+
+          if (line > 0)
+            {
+              emit fetab_goto_line (tab, line);
+
+              if (debug_pointer)
+                emit fetab_insert_debugger_pointer (tab, line);
+
+              if (breakpoint_marker)
+                emit fetab_do_breakpoint_marker (insert, tab, line);
+            }
+
+          emit fetab_set_focus (tab);
+        }
+      else
+        {
+          file_editor_tab *fileEditorTab = new file_editor_tab ();
+          if (fileEditorTab)
+            {
+              QString result = fileEditorTab->load_file(openFileName);
+              if (result == "")
                 {
-                  _tab_widget->setCurrentIndex (i);
-                  break;
+                  // Supply empty title then have the file_editor_tab update
+                  // with full or short name.
+                  add_file_editor_tab (fileEditorTab, "");
+                  fileEditorTab->update_window_title (false);
+                  // file already loaded, add file to mru list here
+                  handle_mru_add_file(QDir::cleanPath (openFileName));
+
+                  if (line > 0)
+                    {
+                      emit fetab_goto_line (fileEditorTab, line);
+
+                      if (debug_pointer)
+                        emit fetab_insert_debugger_pointer (fileEditorTab,
+                                                            line);
+                      if (breakpoint_marker)
+                        emit fetab_do_breakpoint_marker (insert, fileEditorTab,
+                                                         line);
+                    }
+                }
+              else
+                {
+                  delete fileEditorTab;
+                  // Create a NonModal message about error.
+                  QMessageBox* msgBox = new QMessageBox (
+                                                         QMessageBox::Critical, tr ("Octave Editor"),
+                                                         tr ("Could not open file %1 for read:\n%2.").
+                                                         arg (openFileName).arg (result),
+                                                         QMessageBox::Ok, 0);
+                  msgBox->setWindowModality (Qt::NonModal);
+                  msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                  msgBox->show ();
                 }
             }
-          return;
-        }
 
-      file_editor_tab *fileEditorTab = new file_editor_tab ();
-      if (fileEditorTab)
-        {
-          QString result = fileEditorTab->load_file(openFileName);
-          if (result == "")
-            {
-              // Supply empty title then have the file_editor_tab update
-              // with full or short name.
-              add_file_editor_tab (fileEditorTab, "");
-              fileEditorTab->update_window_title (false);
-              // file already loaded, add file to mru list here
-              handle_mru_add_file(QDir::cleanPath (openFileName));
-            }
-          else
-            {
-              delete fileEditorTab;
-              // Create a NonModal message about error.
-              QMessageBox* msgBox = new QMessageBox (
-                      QMessageBox::Critical, tr ("Octave Editor"),
-                      tr ("Could not open file %1 for read:\n%2.").
-                      arg (openFileName).arg (result),
-                      QMessageBox::Ok, 0);
-              msgBox->setWindowModality (Qt::NonModal);
-              msgBox->setAttribute (Qt::WA_DeleteOnClose);
-              msgBox->show ();
-            }
+          // really show editor and the current editor tab
+          set_focus ();
         }
-      set_focus ();  // really show editor and the current editor tab
     }
 }
 
@@ -228,11 +302,13 @@ void
 file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_success)
 {
   // Have all file editor tabs signal what their file names are.
-  fetFileNames.clear ();
+  editor_tab_map.clear ();
   emit fetab_file_name_query (0);
 
-  // If one of those names matches the desired name, that's a conflict.
-  if (fetFileNames.contains (saveFileName, Qt::CaseSensitive))
+  // Check whether this file is already open in the editor.
+  QWidget *tab = find_tab_widget (saveFileName);
+
+  if (tab)
     {
       // Note: to overwrite the contents of some other file editor tab
       // with the same name requires identifying which file editor tab
@@ -283,6 +359,49 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
 }
 
 void
+file_editor::handle_insert_debugger_pointer_request (const QString& file, int line)
+{
+  request_open_file (file, line, true);
+}
+
+void
+file_editor::handle_delete_debugger_pointer_request (const QString& file, int line)
+{
+  if (! file.isEmpty ())
+    {
+      // Have all file editor tabs signal what their file names are.
+      editor_tab_map.clear ();
+      emit fetab_file_name_query (0);
+
+      // Check whether this file is already open in the editor.
+      QWidget *tab = find_tab_widget (file);
+
+      if (tab)
+        {
+          _tab_widget->setCurrentWidget (tab);
+
+          if (line > 0)
+            emit fetab_delete_debugger_pointer (tab, line);
+
+          emit fetab_set_focus (tab);
+        }
+    }
+}
+
+void
+file_editor::handle_update_breakpoint_marker_request (bool insert,
+                                                  const QString& file, int line)
+{
+  request_open_file (file, line, false, true, insert);
+}
+
+void
+file_editor::handle_edit_file_request (const QString& file)
+{
+  request_open_file (file);
+}
+
+void
 file_editor::request_undo ()
 {
   emit fetab_undo (_tab_widget->currentWidget ());
@@ -323,6 +442,13 @@ file_editor::request_save_file_as ()
 {
    emit fetab_save_file_as (_tab_widget->currentWidget ());
 }
+
+void
+file_editor::request_print_file ()
+{
+   emit fetab_print_file (_tab_widget->currentWidget ());
+}
+
 
 void
 file_editor::request_run_file ()
@@ -397,6 +523,13 @@ file_editor::request_find ()
 }
 
 void
+file_editor::request_goto_line ()
+{
+  emit fetab_goto_line (_tab_widget->currentWidget ());
+}
+
+
+void
 file_editor::handle_mru_add_file (const QString& file_name)
 {
   _mru_files.removeAll (file_name);
@@ -431,7 +564,8 @@ file_editor::mru_menu_update ()
 }
 
 void
-file_editor::handle_file_name_changed (const QString& fileName, const QString& toolTip)
+file_editor::handle_file_name_changed (const QString& fname,
+                                       const QString& tip)
 {
   QObject *fileEditorTab = sender();
   if (fileEditorTab)
@@ -440,8 +574,8 @@ file_editor::handle_file_name_changed (const QString& fileName, const QString& t
         {
           if (_tab_widget->widget (i) == fileEditorTab)
             {
-              _tab_widget->setTabText (i, fileName);
-              _tab_widget->setTabToolTip (i, toolTip);
+              _tab_widget->setTabText (i, fname);
+              _tab_widget->setTabToolTip (i, tip);
             }
         }
     }
@@ -476,9 +610,11 @@ file_editor::handle_tab_remove_request ()
 }
 
 void
-file_editor::handle_add_filename_to_list (const QString& fileName)
+file_editor::handle_add_filename_to_list (const QString& fileName, QWidget *ID)
 {
-  fetFileNames.append (fileName);
+  // Should we allow multiple tabs for a single file?
+
+  editor_tab_map[fileName] = ID;
 }
 
 void
@@ -512,10 +648,12 @@ file_editor::handle_editor_state_changed (bool copy_available, const QString& fi
 }
 
 void
-file_editor::notice_settings ()
+file_editor::notice_settings (const QSettings *settings)
 {
+  int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
+  _tool_bar->setIconSize (QSize (icon_size,icon_size));
   // Relay signal to file editor tabs.
-  emit fetab_settings_changed ();
+  emit fetab_settings_changed (settings);
 }
 
 void
@@ -543,6 +681,10 @@ file_editor::construct ()
   QAction *save_as_action
     = new QAction (QIcon(":/actions/icons/filesaveas.png"),
                    tr("Save File &As"), _tool_bar);
+
+  QAction *print_action
+    = new QAction ( QIcon(":/actions/icons/fileprint.png"),
+                    tr ("Print"), _tool_bar);
 
   QAction *undo_action = new QAction (QIcon(":/actions/icons/undo.png"),
                                       tr("&Undo"), _tool_bar);
@@ -580,11 +722,13 @@ file_editor::construct ()
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
-  QAction *find_action = new QAction (QIcon(":/actions/icons/find.png"),
+  QAction *find_action = new QAction (QIcon(":/actions/icons/search.png"),
                                       tr ("&Find and Replace"), _tool_bar);
 
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
                              tr("Save File And Run"), _tool_bar);
+
+  QAction *goto_line_action  = new QAction (tr ("Go&to Line"), _tool_bar);
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
@@ -605,6 +749,10 @@ file_editor::construct ()
   save_action->setShortcutContext               (Qt::WindowShortcut);
   save_as_action->setShortcut                   (QKeySequence::SaveAs);
   save_as_action->setShortcutContext            (Qt::WindowShortcut);
+
+  print_action->setShortcut                     (QKeySequence::Print);
+  print_action->setShortcutContext              (Qt::WindowShortcut);
+
   next_bookmark_action->setShortcut             (Qt::Key_F2);
   next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);
   previous_bookmark_action->setShortcut         (Qt::SHIFT + Qt::Key_F2);
@@ -617,12 +765,16 @@ file_editor::construct ()
   uncomment_selection_action->setShortcutContext(Qt::WindowShortcut);
   find_action->setShortcut                      (QKeySequence::Find);
   find_action->setShortcutContext               (Qt::WindowShortcut);
+  goto_line_action->setShortcut                 (Qt::ControlModifier+ Qt::Key_G);
+  goto_line_action->setShortcutContext          (Qt::WindowShortcut);
 
   // toolbar
   _tool_bar->addAction (new_action);
   _tool_bar->addAction (open_action);
   _tool_bar->addAction (save_action);
   _tool_bar->addAction (save_as_action);
+  _tool_bar->addSeparator ();
+  _tool_bar->addAction(print_action);
   _tool_bar->addSeparator ();
   _tool_bar->addAction (undo_action);
   _tool_bar->addAction (redo_action);
@@ -653,6 +805,9 @@ file_editor::construct ()
   fileMenu->addMenu (_mru_file_menu);
   _menu_bar->addMenu (fileMenu);
 
+  fileMenu->addSeparator ();
+  fileMenu->addAction (print_action);
+
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
   editMenu->addAction (undo_action);
   editMenu->addAction (redo_action);
@@ -670,6 +825,8 @@ file_editor::construct ()
   editMenu->addAction (next_bookmark_action);
   editMenu->addAction (previous_bookmark_action);
   editMenu->addAction (remove_bookmark_action);
+  editMenu->addSeparator ();
+  editMenu->addAction (goto_line_action);
   _menu_bar->addMenu (editMenu);
 
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
@@ -693,6 +850,15 @@ file_editor::construct ()
   editor_widget->setLayout (vbox_layout);
   setWidget (editor_widget);
 
+  connect (parent (), SIGNAL (settings_changed (const QSettings *)),
+           this, SLOT (notice_settings (const QSettings *)));
+
+  connect (parent (), SIGNAL (new_file_signal (const QString&)),
+           this, SLOT (request_new_file (const QString&)));
+
+  connect (parent (), SIGNAL (open_file_signal (const QString&)),
+           this, SLOT (request_open_file (const QString&)));
+
   connect (new_action,
            SIGNAL (triggered ()), this, SLOT (request_new_file ()));
   connect (open_action,
@@ -711,6 +877,8 @@ file_editor::construct ()
            SIGNAL (triggered ()), this, SLOT (request_save_file ()));
   connect (save_as_action,
            SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
+  connect (print_action,
+           SIGNAL (triggered ()), this, SLOT (request_print_file ()));
   connect (_run_action,
            SIGNAL (triggered ()), this, SLOT (request_run_file ()));
   connect (toggle_bookmark_action,
@@ -735,6 +903,10 @@ file_editor::construct ()
            SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
   connect (find_action,
            SIGNAL (triggered ()), this, SLOT (request_find ()));
+
+  connect (goto_line_action,
+           SIGNAL (triggered ()), this, SLOT (request_goto_line ()));
+ 
   // The actions of the mru file menu
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
@@ -772,8 +944,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            this, SLOT (handle_editor_state_changed (bool, const QString&)));
   connect (f, SIGNAL (tab_remove_request ()),
            this, SLOT (handle_tab_remove_request ()));
-  connect (f, SIGNAL (add_filename_to_list (const QString&)),
-           this, SLOT (handle_add_filename_to_list (const QString&)));
+  connect (f, SIGNAL (add_filename_to_list (const QString&, QWidget *)),
+           this, SLOT (handle_add_filename_to_list (const QString&, QWidget *)));
   connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
            this, SLOT (check_conflict_save (const QString&, bool)));
   connect (f, SIGNAL (mru_add_file (const QString&)),
@@ -782,8 +954,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            parent (), SLOT (handle_command_double_clicked (const QString&)));
   
   // Signals from the file_editor non-trivial operations
-  connect (this, SIGNAL (fetab_settings_changed ()),
-           f, SLOT (notice_settings ()));
+  connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
+           f, SLOT (notice_settings (const QSettings *)));
   connect (this, SIGNAL (fetab_close_request (const QWidget*)),
            f, SLOT (conditional_close (const QWidget*)));
   connect (this, SIGNAL (fetab_change_request (const QWidget*)),
@@ -807,6 +979,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (save_file (const QWidget*)));
   connect (this, SIGNAL (fetab_save_file_as (const QWidget*)),
            f, SLOT (save_file_as (const QWidget*)));
+  connect (this, SIGNAL (fetab_print_file (const QWidget*)),
+           f, SLOT (print_file (const QWidget*)));
   connect (this, SIGNAL (fetab_run_file (const QWidget*)),
            f, SLOT (run_file (const QWidget*)));
   connect (this, SIGNAL (fetab_toggle_bookmark (const QWidget*)),
@@ -831,8 +1005,16 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
            f, SLOT (uncomment_selected_text (const QWidget*)));
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
+  connect (this, SIGNAL (fetab_goto_line (const QWidget *, int)),
+           f, SLOT (goto_line (const QWidget *, int)));
   connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
            f, SLOT (set_focus (const QWidget*)));
+  connect (this, SIGNAL (fetab_insert_debugger_pointer (const QWidget *, int)),
+           f, SLOT (insert_debugger_pointer (const QWidget *, int)));
+  connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget *, int)),
+           f, SLOT (delete_debugger_pointer (const QWidget *, int)));
+  connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget *, int)),
+           f, SLOT (do_breakpoint_marker (bool, const QWidget *, int)));
 
   _tab_widget->setCurrentWidget (f);
 }

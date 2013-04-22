@@ -861,13 +861,10 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
       LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
       AC_LANG_PUSH(C)
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-          #include <assert.h> ]], [[
+          #include <assert.h>
+          #include <stdint.h> ]], [[
           #ifdef USE_64_BIT_IDX_T
-          #if IDX_TYPE_LONG
-            typedef long octave_idx_type;
-          #else
-            typedef int octave_idx_type;
-          #endif
+            typedef int64_t octave_idx_type;
           #else
             typedef int octave_idx_type;
           #endif
@@ -1795,6 +1792,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
   AC_MSG_CHECKING([for UMFPACK separate complex matrix and rhs split])
   AC_CACHE_VAL([octave_cv_umfpack_separate_split],
     [AC_RUN_IFELSE([AC_LANG_SOURCE([[
+        #include <stdint.h>
         #include <stdlib.h>
         #include <math.h>
         #if defined (HAVE_SUITESPARSE_UMFPACK_H)
@@ -1806,9 +1804,16 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
         #elif defined (HAVE_UMFPACK_H)
         # include <umfpack.h>
         #endif
-        int n = 5;
-        int Ap[] = {0, 2, 5, 9, 10, 12};
-        int Ai[]  = {0, 1, 0, 2, 4, 1, 2, 3, 4, 2, 1, 4};
+        #ifdef USE_64_BIT_IDX_T
+        typedef uint64_t idx_type;
+        #define UMFPACK_NAME(name) umfpack_zl_ ## name
+        #else
+        typedef int idx_type;
+        #define UMFPACK_NAME(name) umfpack_zi_ ## name
+        #endif
+        idx_type n = 5;
+        idx_type Ap[] = {0, 2, 5, 9, 10, 12};
+        idx_type Ai[]  = {0, 1, 0, 2, 4, 1, 2, 3, 4, 2, 1, 4};
         double Ax[] = {2., 0., 3., 0., 3., 0., -1., 0., 4., 0., 4., 0., 
                       -3., 0., 1., 0., 2., 0., 2., 0., 6., 0., 1., 0.};
         double br[] = {8., 45., -3., 3., 19.};
@@ -1817,14 +1822,14 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
         {
           double *null = (double *) NULL ;
           double *x = (double *)malloc (2 * n * sizeof(double));
-          int i ;
+          idx_type i ;
           void *Symbolic, *Numeric ;
-          (void) umfpack_zi_symbolic (n, n, Ap, Ai, Ax, null, &Symbolic, null, null) ;
-          (void) umfpack_zi_numeric (Ap, Ai, Ax, null, Symbolic, &Numeric, null, null) ;
-          umfpack_zi_free_symbolic (&Symbolic) ;
-          (void) umfpack_zi_solve (0, Ap, Ai, Ax, null, x, null, br, bi, 
+          (void) UMFPACK_NAME (symbolic) (n, n, Ap, Ai, Ax, null, &Symbolic, null, null) ;
+          (void) UMFPACK_NAME (numeric) (Ap, Ai, Ax, null, Symbolic, &Numeric, null, null) ;
+          UMFPACK_NAME (free_symbolic) (&Symbolic) ;
+          (void) UMFPACK_NAME (solve) (0, Ap, Ai, Ax, null, x, null, br, bi, 
                                    Numeric, null, null) ;
-          umfpack_zi_free_numeric (&Numeric) ;
+          UMFPACK_NAME (free_numeric) (&Numeric) ;
           for (i = 0; i < n; i++, x+=2) 
             if (fabs (*x - i - 1.) > 1.e-13)
               return (1);

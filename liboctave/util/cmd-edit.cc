@@ -86,11 +86,13 @@ public:
 
   FILE *do_get_output_stream (void);
 
+  void do_redisplay (void);
+
   int do_terminal_rows (void);
 
   int do_terminal_cols (void);
 
-  void do_clear_screen (void);
+  void do_clear_screen (bool skip_redisplay);
 
   void do_resize_terminal (void);
 
@@ -143,6 +145,8 @@ public:
 
   void do_accept_line (void);
 
+  bool do_undo (void);
+
   void do_clear_undo_list (void);
 
   void set_startup_hook (startup_hook_fcn f);
@@ -162,6 +166,8 @@ public:
   bool do_filename_completion_desired (bool);
 
   bool do_filename_quoting_desired (bool);
+
+  void do_interrupt (bool);
 
   static int operate_and_get_next (int, int);
 
@@ -290,6 +296,12 @@ gnu_readline::do_get_output_stream (void)
   return ::octave_rl_get_output_stream ();
 }
 
+void
+gnu_readline::do_redisplay (void)
+{
+  ::octave_rl_redisplay ();
+}
+
 // GNU readline handles SIGWINCH, so these values have a good chance
 // of being correct even if the window changes size (they may be
 // wrong if, for example, the luser changes the window size while the
@@ -313,9 +325,9 @@ gnu_readline::do_terminal_cols (void)
 }
 
 void
-gnu_readline::do_clear_screen (void)
+gnu_readline::do_clear_screen (bool skip_redisplay)
 {
-  ::octave_rl_clear_screen ();
+  ::octave_rl_clear_screen (skip_redisplay);
 }
 
 void
@@ -528,6 +540,12 @@ gnu_readline::do_accept_line (void)
   command_accept_line (1, '\n');
 }
 
+bool
+gnu_readline::do_undo (void)
+{
+  return ::octave_rl_do_undo ();
+}
+
 void
 gnu_readline::do_clear_undo_list ()
 {
@@ -585,6 +603,12 @@ bool
 gnu_readline::do_filename_quoting_desired (bool arg)
 {
   return ::octave_rl_filename_quoting_desired (arg);
+}
+
+void
+gnu_readline::do_interrupt (bool arg)
+{
+  ::octave_rl_done (arg);
 }
 
 int
@@ -953,6 +977,13 @@ command_editor::get_output_stream (void)
     ? instance->do_get_output_stream () : 0;
 }
 
+void
+command_editor::redisplay (void)
+{
+  if (instance_ok ())
+    instance->do_redisplay ();
+}
+
 int
 command_editor::terminal_rows (void)
 {
@@ -968,10 +999,10 @@ command_editor::terminal_cols (void)
 }
 
 void
-command_editor::clear_screen (void)
+command_editor::clear_screen (bool skip_redisplay)
 {
   if (instance_ok ())
-    instance->do_clear_screen ();
+    instance->do_clear_screen (skip_redisplay);
 }
 
 void
@@ -1169,6 +1200,12 @@ command_editor::accept_line (void)
     instance->do_accept_line ();
 }
 
+bool
+command_editor::undo (void)
+{
+  return instance_ok () ? instance->do_undo () : false;
+}
+
 void
 command_editor::clear_undo_list (void)
 {
@@ -1268,6 +1305,26 @@ command_editor::filename_quoting_desired (bool arg)
 {
   return (instance_ok ())
     ? instance->do_filename_quoting_desired (arg) : false;
+}
+
+bool
+command_editor::interrupt (bool arg)
+{
+  bool retval;
+
+  if (instance_ok ())
+    {
+      // Return the current interrupt state.
+      retval = instance->interrupted;
+
+      instance->do_interrupt (arg);
+
+      instance->interrupted = arg;
+    }
+  else
+    retval = false;
+
+  return retval;
 }
 
 // Return a string which will be printed as a prompt.  The string may

@@ -110,6 +110,7 @@ octinclude_HEADERS = \
   octave.h \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
+  $(PARSER_INC) \
   $(OPERATORS_INC) \
   $(INTERP_CORE_INC) \
   $(INTERPFCN_INC)
@@ -125,6 +126,7 @@ DIST_SRC = \
   octave.cc \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
+  $(PARSER_SRC) \
   $(INTERP_CORE_SRC) \
   $(INTERPFCN_SRC) \
   $(COREFCN_SRC)
@@ -178,6 +180,7 @@ include link-deps.mk
 liboctinterp_la_LIBADD = \
   octave-value/liboctave-value.la \
   parse-tree/libparse-tree.la \
+  parse-tree/libparser.la \
   interp-core/libinterp-core.la \
   interpfcn/libinterpfcn.la \
   corefcn/libcorefcn.la \

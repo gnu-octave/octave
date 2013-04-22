@@ -35,7 +35,7 @@ function unload_packages (files, handle_deps, local_list, global_list)
   endfor
 
   ## Get the current octave path.
-  p = strtrim (strsplit (path (), pathsep ()));
+  p = strtrim (strsplit (path (), pathsep (), false));
 
   if (length (files) == 1 && strcmp (files{1}, "all"))
     ## Unload all.

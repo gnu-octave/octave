@@ -159,7 +159,7 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) >= 1 && arg(1) == "-")
         error ("print: unknown option '%s'", arg);
       elseif (length (arg) > 0)
-        arg_st.name = arg;
+        arg_st.name = tilde_expand (arg);
       endif
     elseif (isfigure (arg))
       arg_st.figure = arg;

@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "ov.h"
+#include "octave-link.h"
 #include "oct-lvalue.h"
 #include "input.h"
 #include "pager.h"
@@ -190,6 +191,55 @@ tree_statement_list::list_breakpoints (void)
 
   return tbp.get_list ();
 }
+
+bp_table::intmap
+tree_statement_list::add_breakpoint (const std::string& file,
+                                     const bp_table::intmap& line)
+{
+  bp_table::intmap retval;
+
+  octave_idx_type len = line.size ();
+
+  for (int i = 0; i < len; i++)
+    {
+      bp_table::const_intmap_iterator p = line.find (i);
+
+      if (p != line.end ())
+        {
+          int lineno = p->second;
+
+          retval[i] = set_breakpoint (lineno);
+
+          if (retval[i] != 0 && ! file.empty ())
+            octave_link::update_breakpoint (true, file, retval[i]);
+        }
+    }
+
+  return retval;
+}
+
+bp_table::intmap
+tree_statement_list::remove_all_breakpoints (const std::string& file)
+{
+  bp_table::intmap retval;
+
+  octave_value_list bkpts = list_breakpoints ();
+
+  for (int i = 0; i < bkpts.length (); i++)
+    {
+      int lineno = static_cast<int> (bkpts(i).int_value ());
+
+      delete_breakpoint (lineno);
+
+      retval[i] = lineno;
+
+      if (! file.empty ())
+        octave_link::update_breakpoint (false, file, lineno);
+    }
+
+  return retval;
+}
+
 
 tree_statement_list *
 tree_statement_list::dup (symbol_table::scope_id scope,

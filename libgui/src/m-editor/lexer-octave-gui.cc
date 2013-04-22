@@ -41,25 +41,16 @@ lexer_octave_gui::lexer_octave_gui (QObject *p)
   // TODO: Also provide infos on octave-forge functions?
   // TODO: Also provide infos on function parameters?
   // By now, use the keywords-list from syntax highlighting
-
   QString keyword;
   QStringList keywordList;
-
-  // get whole string with all keywords
-  keyword = this->keywords (1);
-  // split into single strings
-  keywordList = keyword.split (QRegExp ("\\s+"));
-
+  keyword = this->keywords (1);           // get whole string with all keywords
+  keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
   lexer_api = new QsciAPIs (this);
   if (lexer_api)
     {
-      for (int i = 0; i < keywordList.size (); i++)
-        {
-          // add single strings to the API
-          lexer_api->add (keywordList.at (i));
-        }
-      // prepare API info ... this may take some time
-      lexer_api->prepare ();
+      for (int i = 0; i < keywordList.size (); i++)  // add all keywords to API
+        lexer_api->add (keywordList.at (i));
+      lexer_api->prepare ();   // prepare API info ... this may take some time
     }
 }
 
@@ -69,6 +60,13 @@ lexer_octave_gui::~lexer_octave_gui()
     delete lexer_api;
 }
 
+// -----------------------------------------------------------------------------
+// Redefined functions to make an octave lexer from the abtract class Qscilexer.
+//   Scintilla has an octave/matlab-lexer but the interface in Qscintilla is
+//   only available in version 2.5.1. Redefining the following purely virtual
+//   functions of the class QsciLexer () and the enum of available styles (see
+//   lexer-octave-gui.h provides the functionality of the octave lexer.
+// -----------------------------------------------------------------------------
 const char *lexer_octave_gui::language() const
 {
   return "Octave";  // return the name of the language
@@ -79,101 +77,40 @@ const char *lexer_octave_gui::lexer() const
   return "octave";  // return the name of the lexer
 }
 
-// -----------------------------------------------------
-// The colors for syntax highlighting
-// -----------------------------------------------------
-QColor lexer_octave_gui::defaultColor(int style) const
-{
-  switch (style)
-    {
-    case Default:  // black
-      return QColor(0x00,0x00,0x00);
-    case Operator: // red
-      return QColor(0xef,0x00,0x00);
-    case Comment:  // gray
-      return QColor(0x7f,0x7f,0x7f);
-    case Command:  // blue-green
-      return QColor(0x00,0x7f,0x7f);
-    case Number:   // orange
-      return QColor(0x7f,0x7f,0x00);
-    case Keyword:  // blue
-      return QColor(0x00,0x00,0xbf);
-    case SingleQuotedString: // green
-      return QColor(0x00,0x7f,0x00);
-    case DoubleQuotedString: // green-yellow
-      return QColor(0x4f,0x7f,0x00);
-    }
-  return QsciLexer::defaultColor(style);
-}
-
-
-// -----------------------------------------------------
-// The font decorations for highlighting
-// -----------------------------------------------------
-QFont lexer_octave_gui::defaultFont(int style) const
-{
-  QFont f;
-
-  switch (style)
-    {
-    case Comment: // default but italic
-      f = QsciLexer::defaultFont(style);
-      f.setItalic(true);
-      break;
-    case Keyword: // default
-      f = QsciLexer::defaultFont(style);
-      break;
-    case Operator:  // default
-      f = QsciLexer::defaultFont(style);
-      break;
-    default:        // default
-      f = QsciLexer::defaultFont(style);
-      break;
-    }
-  return f;   // return the selected font
-}
-
-
-// -----------------------------------------------------
-// Style names
-// -----------------------------------------------------
 QString lexer_octave_gui::description(int style) const
 {
-  switch (style)
+    switch (style)
     {
     case Default:
-      return tr("Default");
+        return tr("Default");
     case Comment:
-      return tr("Comment");
+        return tr("Comment");
     case Command:
-      return tr("Command");
+        return tr("Command");
     case Number:
-      return tr("Number");
+        return tr("Number");
     case Keyword:
-      return tr("Keyword");
+        return tr("Keyword");
     case SingleQuotedString:
-      return tr("Single-quoted string");
+        return tr("Single-quoted string");
     case Operator:
-      return tr("Operator");
+        return tr("Operator");
     case Identifier:
-      return tr("Identifier");
+        return tr("Identifier");
     case DoubleQuotedString:
-      return tr("Double-quoted string");
+        return tr("Double-quoted string");
     }
-  return QString();
+    return QString();  // no valid style, return empty string
 }
-
 
 // -----------------------------------------------------
 // The set of keywords for highlighting
-// TODO: How to define a second set?
 // -----------------------------------------------------
 const char *lexer_octave_gui::keywords(int set) const
 {
   if (set == 1)
-    {
       return resource_manager::octave_keywords ();
-    }
+
   return 0;
 }
 

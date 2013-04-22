@@ -19,13 +19,13 @@ dnl Copyright (C) 1993-2012 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.62])
-AC_INIT([GNU Octave], [3.7.2+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.7.3+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 OCTAVE_API_VERSION_NUMBER="48"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2013-02-09"
+OCTAVE_RELEASE_DATE="2013-04-22"
 OCTAVE_COPYRIGHT="Copyright (C) 2013 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
@@ -37,7 +37,7 @@ dnl FIXME: We should auto-insert the Mercurial changeset ID into the
 dnl        AC_REVISION field whenever configure.ac is modified.
 dnl AC_REVISION($Revision: 1.603 $)
 AC_CONFIG_SRCDIR([libinterp/octave.cc])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([config.h:config.in.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -130,6 +130,19 @@ OCTAVE_PROG_GNUPLOT
 OCTAVE_PROG_PAGER
 OCTAVE_PROG_PYTHON
 
+### Default terminal font for the GUI
+case $host_os in
+  mingw* | msdosmsvc)
+    DEFAULT_TERMINAL_FONT="Lucida Console"
+  ;;
+  *)
+    DEFAULT_TERMINAL_FONT="Courier"
+  ;;
+esac
+DEFAULT_TERMINAL_FONT_SIZE=10
+AC_SUBST(DEFAULT_TERMINAL_FONT)
+AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
+
 ### Path separator.
 
 sepchar=':'
@@ -190,17 +203,6 @@ if test $BOUNDS_CHECKING = yes; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
 fi
 
-### Enable experimental push parser.
-
-OCTAVE_USE_PUSH_PARSER=no
-AC_ARG_ENABLE([push-parser],
-  [AS_HELP_STRING([--enable-push-parser],
-    [enable experimental push parser])],
-  [if test "$enableval" = yes; then OCTAVE_USE_PUSH_PARSER=yes; fi], [])
-if test $OCTAVE_USE_PUSH_PARSER = yes; then
-  AC_DEFINE(OCTAVE_USE_PUSH_PARSER, 1, [Define to 1 to use experimental push parser.])
-fi
-
 ### Use Octave's built-in memory allocator rather than straightforward malloc.
 ### Disabled by default.
 
@@ -254,17 +256,9 @@ if test $USE_64_BIT_IDX_T = yes; then
   AC_CHECK_SIZEOF([void *])
   AC_CHECK_SIZEOF([int])
   AC_CHECK_SIZEOF([long])
+  AC_CHECK_SIZEOF([int64_t])
   if test $ac_cv_sizeof_void_p -eq 8; then
-    if test $ac_cv_sizeof_int -eq 8; then
-      OCTAVE_IDX_TYPE=int
-    elif test $ac_cv_sizeof_long -eq 8; then
-      OCTAVE_IDX_TYPE=long
-      AC_DEFINE(IDX_TYPE_LONG, 1, [Define to 1 if octave index type is long.])
-    else
-      warn_64_bit="no suitable type found for octave_idx_type so disabling 64-bit features"
-      OCTAVE_CONFIGURE_WARNING([warn_64_bit])
-      USE_64_BIT_IDX_T=no
-    fi
+    OCTAVE_IDX_TYPE=int64_t
   else
     warn_64_bit="pointers are not 64-bits wide; disabling 64-bit features"
     OCTAVE_CONFIGURE_WARNING([warn_64_bit])
@@ -713,6 +707,11 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files.],
   [zlib.h], [gzclearerr])
 
+### Also define HAVE_ZLIB if libz is found.
+if test $octave_cv_lib_z = yes; then
+  AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
+fi
+
 ### Check for the LLVM library
 
 build_jit=no
@@ -842,8 +841,15 @@ if test $build_fftw_threads = yes; then
   OCTAVE_CHECK_FFTW_THREADS(fftw3f, fftwf_plan_with_nthreads)
 fi
 
+## Octave is currently unable to use FFTW unless both float
+## and double versions are available.
+
 AM_CONDITIONAL([AMCOND_HAVE_FFTW],
   [test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"])
+
+if test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"; then
+  AC_DEFINE(HAVE_FFTW, 1, [Define if you have both FFTW3 and FFTW3F libraries.])
+fi
 
 ## Subdirectory of liboctave/cruft to build if FFTW is not found.
 FFT_DIR="fftpack"
@@ -1295,6 +1301,16 @@ if test $octave_cv_lib_qrupdate = yes; then
 fi
 LIBS="$save_LIBS"
 
+if test $USE_64_BIT_IDX_T = yes; then
+  CHOLMOD_TAG="_l_"
+  CXSPARSE_TAG="_dl_"
+  UMFPACK_TAG="_zl_"
+else
+  CHOLMOD_TAG="_"
+  CXSPARSE_TAG="_di_"
+  UMFPACK_TAG="_zi_"
+fi
+
 ### Check for AMD library
 
 OCTAVE_CHECK_LIB(amd, AMD,
@@ -1336,7 +1352,7 @@ LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIB
 OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
-  [cholmod_start],
+  [cholmod${CHOLMOD_TAG}start],
   [], [don't use CHOLMOD library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
 
@@ -1345,7 +1361,7 @@ LIBS="$save_LIBS"
 OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h],
-  [cs_di_sqr],
+  [cs${CXSPARSE_TAG}sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
 ### Check for UMFPACK library.
@@ -1357,21 +1373,21 @@ CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
 OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
-  [umfpack_zi_get_determinant],
+  [umfpack${UMFPACK_TAG}get_determinant],
   [], [don't use UMFPACK, disable some sparse matrix functionality])
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 
 if test -z "$UMFPACK_LIBS"; then
   ## Invalidate the cache and try again with -lcblas.
-  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+  $as_unset ac_cv_lib_umfpack_umfpack${UMFPACK_TAG}get_determinant
   $as_unset octave_cv_lib_umfpack
   save_LIBS="$LIBS"
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   OCTAVE_CHECK_LIB([umfpack], UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
     [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
-    [umfpack_zi_get_determinant],
+    [umfpack${UMFPACK_TAG}get_determinant],
     [], [don't use UMFPACK, disable some sparse matrix functionality])
   if test -n "$UMFPACK_LIBS"; then
     UMFPACK_LIBS="$UMFPACK_LIBS -lcblas"
@@ -2382,7 +2398,7 @@ do
 
   ## Check Java version is recent enough.
   AC_MSG_CHECKING([for Java version])
-  java_version=[`"$JAVA" -version 2>&1 | sed -n -e 's/^java version[^0-9"]*"\([^"]*\)"/\1/p'`]
+  java_version=[`"$JAVA" -version 2>&1 | sed -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)"/\1/p'`]
   AC_MSG_RESULT([$java_version])
   java_major=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
   java_minor=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
@@ -2558,7 +2574,6 @@ QT_LDFLAGS=
 QT_LIBS=
 win32_terminal=no
 build_gui=yes
-GUIDIR=libgui
 AC_ARG_ENABLE([gui],
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
   [if test "$enableval" = no; then build_gui=no; fi], [])
@@ -2587,7 +2602,7 @@ if test $build_gui = yes; then
     AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
     AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
     AC_CHECK_PROGS(RCC, [rcc])
-    AC_CHECK_PROGS(LRELEASE, [lrelease])
+    AC_CHECK_PROGS(LRELEASE, [lrelease-qt5 lrelease-qt4 lrelease])
     if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
       AC_DEFINE(HAVE_QT, 1, 
         [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
@@ -2659,16 +2674,12 @@ if test $build_gui = yes; then
   fi
 fi
 
-if test $build_gui = no; then
-  ## GUI disabled.  Eliminate building GUIDIR directory
-  GUIDIR=
-fi
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
+AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test "$octave_cv_lib_qscintilla" = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_SUBST(QT_LIBS)
-AC_SUBST(GUIDIR)
 
 ### Run configure in subdirectories.
 
@@ -2676,172 +2687,7 @@ export CC
 export CXX
 export F77
 
-### Some things to add to the bottom of config.h.
-
-dnl ------------------------------------------------------------
-
-AH_BOTTOM([
-#if !defined (GNULIB_NAMESPACE)
-#define GNULIB_NAMESPACE gnulib
-#endif
-
-#if defined (__GNUC__)
-#define GCC_ATTR_DEPRECATED __attribute__ ((__deprecated__))
-#define HAVE_ATTR_DEPRECATED
-
-#define GCC_ATTR_NORETURN __attribute__ ((__noreturn__))
-#define HAVE_ATTR_NORETURN
-
-#define GCC_ATTR_UNUSED __attribute__ ((__unused__))
-#define HAVE_ATTR_UNUSED
-#else
-#define GCC_ATTR_DEPRECATED
-#define GCC_ATTR_NORETURN
-#define GCC_ATTR_UNUSED
-#endif
-
-#define X_CAST(T, E) (T) (E)
-
-#if defined (CXX_BROKEN_REINTERPRET_CAST)
-#define FCN_PTR_CAST(T, E) (T) (E)
-#else
-#define FCN_PTR_CAST(T, E) reinterpret_cast<T> (E)
-#endif
-
-#if ! defined (HAVE_DEV_T)
-typedef short dev_t;
-#endif
-
-#if ! defined (HAVE_INO_T)
-typedef unsigned long ino_t;
-#endif
-
-#if defined (_MSC_VER)
-#define __WIN32__
-#define WIN32
-/* missing parameters in macros */
-#pragma warning (disable: 4003)
-/* missing implementations in template instantiation */
-#pragma warning (disable: 4996)
-/* deprecated function names (FIXME?) */
-#pragma warning (disable: 4661)
-#endif
-
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#elif defined (__CYGWIN__)
-#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#else
-#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#endif
-
-/* Define to 1 if we expect to have <windows.h>, Sleep, etc. */
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-#define OCTAVE_USE_WINDOWS_API 1
-#endif
-
-#if defined (__APPLE__) && defined (__MACH__)
-#define OCTAVE_USE_OS_X_API 1
-#endif
-
-/* sigsetjmp is a macro, not a function. */
-#if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
-#define OCTAVE_HAVE_SIG_JUMP
-#endif
-
-#if defined (_UNICOS)
-#define F77_USES_CRAY_CALLING_CONVENTION
-#endif
-
-#if 0
-#define F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION
-#endif
-
-#ifdef USE_64_BIT_IDX_T
-#define SIZEOF_OCTAVE_IDX_TYPE 8
-#else
-#define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
-#endif
-
-/* To be able to use long doubles for 64-bit mixed arithmetics, we need
-   them at least 80 bits wide and we need roundl declared in math.h.
-   FIXME: Maybe substitute this by a more precise check in the future?  */
-#if (SIZEOF_LONG_DOUBLE >= 10) && defined (HAVE_ROUNDL)
-#define OCTAVE_INT_USE_LONG_DOUBLE
-#endif
-
-#define OCTAVE_EMPTY_CPP_ARG
-
-/* Octave is currently unable to use FFTW unless both float
-   and double versions are available.  */
-#if defined (HAVE_FFTW3) && defined (HAVE_FFTW3F)
-#define HAVE_FFTW
-#endif
-
-/* Backward compatibility.  */
-#if defined (HAVE_Z)
-#define HAVE_ZLIB
-#endif
-
-/* oct-dlldefs.h */
-
-#if defined (_MSC_VER)
-#define OCTAVE_EXPORT __declspec(dllexport)
-#define OCTAVE_IMPORT __declspec(dllimport)
-#else
-/* All other compilers, at least for now. */
-#define OCTAVE_EXPORT
-#define OCTAVE_IMPORT
-#endif
-
-/* API macro for libcruft */
-#ifdef CRUFT_DLL
-#define CRUFT_API OCTAVE_EXPORT
-#else
-#define CRUFT_API OCTAVE_IMPORT
-#endif
-
-/* API macro for liboctave */
-#ifdef OCTAVE_DLL
-#define OCTAVE_API OCTAVE_EXPORT
-#else
-#define OCTAVE_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libinterp */
-#ifdef OCTINTERP_DLL
-#define OCTINTERP_API OCTAVE_EXPORT
-#else
-#define OCTINTERP_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libinterp/graphics */
-#ifdef OCTGRAPHICS_DLL
-#define OCTGRAPHICS_API OCTAVE_EXPORT
-#else
-#define OCTGRAPHICS_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libgui */
-#ifdef OCTGUI_DLL
-#define OCTGUI_API OCTAVE_EXPORT
-#else
-#define OCTGUI_API OCTAVE_IMPORT
-#endif
-
-/* oct-types.h */
-
-typedef OCTAVE_IDX_TYPE octave_idx_type;
-
-#include <stdint.h>
-
-/* Tag indicating Octave config.h has been included */
-#define OCTAVE_CONFIG_INCLUDED 1
-])
-
-dnl end of AH_BOTTOM
-dnl ------------------------------------------------------------
+AH_BOTTOM([#include "oct-conf-post.h"])
 
 ### Make all AC_DEFINES available to testif feature of test.m function.
 ### This must reside at the bottom of configure.ac after all AC_DEFINES
@@ -2855,6 +2701,7 @@ AC_SUBST(ac_config_files)
 AC_SUBST(ac_config_headers)
 
 AC_CONFIG_FILES([
+  oct-conf-post.h:oct-conf-post.in.h
   Makefile 
   doc/Makefile
   doc/doxyhtml/Makefile
@@ -2978,7 +2825,6 @@ Octave is now configured for $canonical_host_type
   Build Java interface:               $build_java
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
-  Use push parser:                    $OCTAVE_USE_PUSH_PARSER
   Build static libraries:             $STATIC_LIBS
   Build shared libraries:             $SHARED_LIBS
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG

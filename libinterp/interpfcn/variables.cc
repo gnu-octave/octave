@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
+#include "octave-link.h"
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -616,7 +617,7 @@ get_global_value (const std::string& nm, bool silent)
 void
 set_global_value (const std::string& nm, const octave_value& val)
 {
-  symbol_table::global_varref (nm) = val;
+  symbol_table::global_assign (nm, val);
 }
 
 octave_value
@@ -633,7 +634,7 @@ get_top_level_value (const std::string& nm, bool silent)
 void
 set_top_level_value (const std::string& nm, const octave_value& val)
 {
-  symbol_table::top_level_varref (nm) = val;
+  symbol_table::top_level_assign (nm, val);
 }
 
 // Variable values.
@@ -1881,7 +1882,7 @@ bind_ans (const octave_value& val, bool print)
         }
       else
         {
-          symbol_table::force_varref (ans) = val;
+          symbol_table::force_assign (ans, val);
 
           if (print)
             val.print_with_name (octave_stdout, ans);
@@ -2342,6 +2343,8 @@ without the dash as well.\n\
         {
           do_clear_globals (argv, argc, true);
           do_clear_variables (argv, argc, true);
+
+          octave_link::clear_workspace ();
         }
       else
         {
@@ -2453,6 +2456,8 @@ without the dash as well.\n\
                       do_clear_symbols (argv, argc, idx, exclusive);
                     }
                 }
+
+              octave_link::set_workspace ();
             }
         }
     }

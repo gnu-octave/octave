@@ -11,10 +11,12 @@ INTERPFCN_INC = \
   interpfcn/error.h \
   interpfcn/file-io.h \
   interpfcn/help.h \
+  interpfcn/hook-fcn.h \
   interpfcn/input.h \
   interpfcn/load-path.h \
   interpfcn/load-save.h \
   interpfcn/ls-oct-ascii.h \
+  interpfcn/octave-link.h \
   interpfcn/oct-hist.h \
   interpfcn/pager.h \
   interpfcn/pr-output.h \
@@ -24,7 +26,8 @@ INTERPFCN_INC = \
   interpfcn/sysdep.h \
   interpfcn/toplev.h \
   interpfcn/utils.h \
-  interpfcn/variables.h
+  interpfcn/variables.h \
+  interpfcn/workspace-element.h
 
 INTERPFCN_SRC = \
   interpfcn/data.cc \
@@ -36,10 +39,12 @@ INTERPFCN_SRC = \
   interpfcn/file-io.cc \
   interpfcn/graphics.cc \
   interpfcn/help.cc \
+  interpfcn/hook-fcn.cc \
   interpfcn/input.cc \
   interpfcn/load-path.cc \
   interpfcn/load-save.cc \
   interpfcn/ls-oct-ascii.cc \
+  interpfcn/octave-link.cc \
   interpfcn/oct-hist.cc \
   interpfcn/pager.cc \
   interpfcn/pr-output.cc \

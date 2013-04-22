@@ -167,8 +167,6 @@ void
 MINGW_signal_cleanup (void)
 {
   w32_set_quiet_shutdown ();
-
-  w32_raise_final ();
 }
 #endif
 
@@ -177,11 +175,6 @@ static void
 MINGW_init (void)
 {
   w32_set_octave_home ();
-
-  // Init mutex to protect setjmp/longjmp and get main thread context
-  w32_sigint_init ();
-
-  w32_set_quiet_shutdown ();
 }
 #endif
 
@@ -190,11 +183,6 @@ static void
 MSVC_init (void)
 {
   w32_set_octave_home ();
-
-  // Init mutex to protect setjmp/longjmp and get main thread context
-  w32_sigint_init ();
-
-  w32_set_quiet_shutdown ();
 }
 #endif
 
@@ -535,7 +523,9 @@ DEFUN (clc, , ,
 Clear the terminal screen and move the cursor to the upper left corner.\n\
 @end deftypefn")
 {
-  command_editor::clear_screen ();
+  bool skip_redisplay = true;
+
+  command_editor::clear_screen (skip_redisplay);
 
   return octave_value_list ();
 }

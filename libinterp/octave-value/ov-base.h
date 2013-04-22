@@ -461,6 +461,10 @@ public:
 
   virtual unsigned long int ulong_value (bool = false, bool = false) const;
 
+  virtual int64_t int64_value (bool = false, bool = false) const;
+
+  virtual uint64_t uint64_value (bool = false, bool = false) const;
+
   virtual double double_value (bool = false) const;
 
   virtual float float_value (bool = false) const;
@@ -611,6 +615,8 @@ public:
   virtual void
   print_with_name (std::ostream& output_buf, const std::string& name,
                    bool print_padding = true);
+
+  virtual std::string short_disp (void) const { return "..."; }
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 

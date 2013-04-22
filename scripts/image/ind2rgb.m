@@ -46,15 +46,14 @@ function [R, G, B] = ind2rgb (x, map)
   [x, map] = ind2x ("ind2rgb", x, map);
 
   ## Compute result
-  [row, col] = size (x);
-  R = reshape (map(x(:), 1), row, col);
-  G = reshape (map(x(:), 2), row, col);
-  B = reshape (map(x(:), 3), row, col);
+  sz = size (x);
+  R = reshape (map(x(:), 1), sz);
+  G = reshape (map(x(:), 2), sz);
+  B = reshape (map(x(:), 3), sz);
 
-  ## Use 3D array if only one output is requested.
+  ## Use ND array if only one output is requested.
   if (nargout <= 1)
-    R(:,:,2) = G;
-    R(:,:,3) = B;
+    R = reshape ([R(:); G(:); B(:)], [sz, 3]);
   endif
 
 endfunction

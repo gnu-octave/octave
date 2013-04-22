@@ -69,7 +69,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
-#include "parse-private.h"
 #include "pt-all.h"
 #include "pt-eval.h"
 #include "pt-funcall.h"
@@ -86,7 +85,7 @@ extern int octave_lex (YYSTYPE *, void *);
 
 // Global access to currently active lexer.
 // FIXME -- to be removed after more parser+lexer refactoring.
-octave_lexer *LEXER = 0;
+octave_base_lexer *LEXER = 0;
 
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from
@@ -99,9 +98,6 @@ octave_lexer *LEXER = 0;
 
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
-
-// Keep track of symbol table information when parsing functions.
-symtab_context parser_symtab_context;
 
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
@@ -125,9 +121,7 @@ make_statement (T *arg)
   do \
     { \
       yyerrok; \
-      if (! parser_symtab_context.empty ()) \
-        parser_symtab_context.pop (); \
-      if ((interactive || forced_interactive)   \
+      if ((interactive || forced_interactive) \
           && ! lexer.input_from_eval_string ()) \
         YYACCEPT; \
       else \
@@ -405,7 +399,11 @@ statement       : expression
 // WHILE, etc.
 
 word_list_cmd   : identifier word_list
-                  { $$ = parser.make_index_expression ($1, $2, '('); }
+                  {
+                    $$ = parser.make_index_expression ($1, $2, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 ;
 
 word_list       : string
@@ -603,13 +601,29 @@ oper_expr       : primary_expr
                 | oper_expr MINUS_MINUS
                   { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
                 | oper_expr '(' ')'
-                  { $$ = parser.make_index_expression ($1, 0, '('); }
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr '(' arg_list ')'
-                  { $$ = parser.make_index_expression ($1, $3, '('); }
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr '{' '}'
-                  { $$ = parser.make_index_expression ($1, 0, '{'); }
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '{');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr '{' arg_list '}'
-                  { $$ = parser.make_index_expression ($1, $3, '{'); }
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '{');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
                 | oper_expr HERMITIAN
                   { $$ = parser.make_postfix_op (HERMITIAN, $1, $2); }
                 | oper_expr TRANSPOSE
@@ -1018,16 +1032,16 @@ push_fcn_symtab : // empty
                     if (parser.max_fcn_depth < parser.curr_fcn_depth)
                       parser.max_fcn_depth = parser.curr_fcn_depth;
 
-                    parser_symtab_context.push ();
+                    lexer.symtab_context.push (symbol_table::alloc_scope ());
 
-                    symbol_table::set_scope (symbol_table::alloc_scope ());
-
-                    parser.function_scopes.push_back (symbol_table::current_scope ());
+                    parser.function_scopes.push_back
+                     (lexer.symtab_context.curr_scope ());
 
                     if (! lexer.reading_script_file
                         && parser.curr_fcn_depth == 1
                         && ! parser.parsing_subfunctions)
-                      parser.primary_fcn_scope = symbol_table::current_scope ();
+                      parser.primary_fcn_scope
+                        = lexer.symtab_context.curr_scope ();
 
                     if (lexer.reading_script_file
                         && parser.curr_fcn_depth > 1)
@@ -1045,8 +1059,7 @@ param_list_beg  : '('
 
                     if (lexer.looking_at_function_handle)
                       {
-                        parser_symtab_context.push ();
-                        symbol_table::set_scope (symbol_table::alloc_scope ());
+                        lexer.symtab_context.push (symbol_table::alloc_scope ());
                         lexer.looking_at_function_handle--;
                         lexer.looking_at_anon_fcn_args = true;
                       }
@@ -1061,7 +1074,12 @@ param_list_end  : ')'
                 ;
 
 param_list      : param_list_beg param_list1 param_list_end
-                  { $$ = $2; }
+                  {
+                    if ($2)
+                      lexer.mark_as_variables ($2->variable_names ());
+
+                    $$ = $2;
+                  }
                 | param_list_beg error
                   {
                     parser.bison_error ("invalid parameter list");
@@ -1076,7 +1094,10 @@ param_list1     : // empty
                   {
                     $1->mark_as_formal_parameters ();
                     if ($1->validate (tree_parameter_list::in))
-                      $$ = $1;
+                      {
+                        lexer.mark_as_variables ($1->variable_names ());
+                        $$ = $1;
+                      }
                     else
                       ABORT_PARSE;
                   }
@@ -1541,10 +1562,6 @@ yyerror (octave_base_parser& parser, const char *s)
 
 octave_base_parser::~octave_base_parser (void)
 {
-#if defined (OCTAVE_USE_PUSH_PARSER)
-  yypstate_delete (static_cast<yypstate *> (parser_state));
-#endif
-
   delete stmt_list;
 
   delete &lexer;
@@ -1552,10 +1569,6 @@ octave_base_parser::~octave_base_parser (void)
 
 void octave_base_parser::init (void)
 {
-#if defined (OCTAVE_USE_PUSH_PARSER)
-  parser_state = yypstate_new ();
-#endif
-
   LEXER = &lexer;
 }
 
@@ -1971,12 +1984,12 @@ octave_base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
 
   tree_parameter_list *ret_list = 0;
 
-  symbol_table::scope_id fcn_scope = symbol_table::current_scope ();
+  symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
 
-  if (parser_symtab_context.empty ())
+  if (lexer.symtab_context.empty ())
     panic_impossible ();
 
-  parser_symtab_context.pop ();
+  lexer.symtab_context.pop ();
 
   stmt->set_print_flag (false);
 
@@ -2658,7 +2671,7 @@ octave_base_parser::start_function (tree_parameter_list *param_list,
   body->append (end_fcn_stmt);
 
   octave_user_function *fcn
-    = new octave_user_function (symbol_table::current_scope (),
+    = new octave_user_function (lexer.symtab_context.curr_scope (),
                                 param_list, 0, body);
 
   if (fcn)
@@ -2849,10 +2862,10 @@ octave_base_parser::finish_function (tree_parameter_list *ret_list,
 void
 octave_base_parser::recover_from_parsing_function (void)
 {
-  if (parser_symtab_context.empty ())
+  if (lexer.symtab_context.empty ())
     panic_impossible ();
 
-  parser_symtab_context.pop ();
+  lexer.symtab_context.pop ();
 
   if (lexer.reading_fcn_file && curr_fcn_depth == 1
       && ! parsing_subfunctions)
@@ -3229,7 +3242,10 @@ octave_base_parser::validate_matrix_for_assignment (tree_expression *e)
         tmp = new tree_argument_list (e);
 
       if (tmp && tmp->is_valid_lvalue_list ())
-        retval = tmp;
+        {
+          lexer.mark_as_variables (tmp->variable_names ());
+          retval = tmp;
+        }
       else
         {
           bison_error ("invalid left hand side of assignment");
@@ -3425,6 +3441,53 @@ int
 octave_parser::run (void)
 {
   return octave_parse (*this);
+}
+
+octave_push_parser::~octave_push_parser (void)
+{
+  yypstate_delete (static_cast<yypstate *> (parser_state));
+}
+
+void
+octave_push_parser::init (void)
+{
+  parser_state = yypstate_new ();
+
+  octave_base_parser::init ();
+}
+
+// Parse input from INPUT.  Pass TRUE for EOF if the end of INPUT should
+// finish the parse.
+
+int
+octave_push_parser::run (const std::string& input, bool eof)
+{
+  int status = -1;
+
+  dynamic_cast<octave_push_lexer&> (lexer).append_input (input, eof);
+
+  do
+    {   
+      YYSTYPE lval;
+
+      int token = octave_lex (&lval, scanner);
+
+      if (token < 0)
+        {
+          if (! eof && lexer.at_end_of_buffer ())
+            {
+              status = -1;
+              break;
+            }
+        }
+
+      yypstate *pstate = static_cast<yypstate *> (parser_state);
+
+      status = octave_push_parse (pstate, token, &lval, *this);
+    }
+  while (status == YYPUSH_MORE);
+
+  return status;
 }
 
 static void
@@ -4441,7 +4504,7 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
               if (! error_state)
                 {
                   if (valid_identifier (nm))
-                    symbol_table::varref (nm) = args(2);
+                    symbol_table::assign (nm, args(2));
                   else
                     error ("assignin: invalid variable name in argument VARNAME");
                 }

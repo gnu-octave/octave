@@ -605,23 +605,24 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
         fmt = float_format ();
       else
         {
-          int ex = 4;
-          if (digits > 100)
-            ex++;
+          // e+ddd
+          int ex = 5;
 
           if (print_eng)
             {
-              fw = 4 + prec + ex;
+              // -ddd.
+              fw = 5 + prec + ex;
               if (inf_or_nan && fw < 6)
                 fw = 6;
               fmt = float_format (fw, ex, prec - 1, std::ios::fixed);
             }
           else
             {
-              fw = 2 + prec + ex;
+              // -d.
+              fw = 3 + prec + ex;
               if (inf_or_nan && fw < 4)
                 fw = 4;
-              fmt = float_format (fw, prec - 1, std::ios::scientific);
+              fmt = float_format (fw, ex, prec - 1, std::ios::scientific);
             }
         }
 

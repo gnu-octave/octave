@@ -33,28 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "token.h"
 
-extern OCTINTERP_API void cleanup_parser (void);
-
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
-
-class
-stream_reader
-{
-public:
-  virtual int getc (void) = 0;
-  virtual int ungetc (int c) = 0;
-
-protected:
-  stream_reader (void) { }
-  ~stream_reader (void) { }
-
-private:
-
-  // No copying!
-  stream_reader (const stream_reader&);
-  stream_reader& operator = (const stream_reader&);
-};
 
 // For communication between the lexer and parser.
 
@@ -62,6 +42,55 @@ class
 lexical_feedback
 {
 public:
+
+  // Track symbol table information when parsing functions.
+
+  class symbol_table_context
+  {
+  public:
+
+    symbol_table_context (void)
+      : frame_stack (), init_scope (symbol_table::current_scope ())
+    {
+      push (init_scope);
+    }
+
+    void clear (void)
+    {
+      while (! frame_stack.empty ())
+        frame_stack.pop ();
+
+      push (init_scope);
+    }
+
+    bool empty (void) const { return frame_stack.empty (); }
+
+    void pop (void)
+    {
+      frame_stack.pop ();
+    }
+
+    void push (symbol_table::scope_id scope)
+    {
+      frame_stack.push (scope);
+    }
+
+    void push (void)
+    {
+      push (symbol_table::current_scope ());
+    }
+
+    symbol_table::scope_id curr_scope (void) const
+    {
+      return frame_stack.top ();
+    }
+
+  private:
+
+    std::stack<symbol_table::scope_id> frame_stack;
+
+    symbol_table::scope_id init_scope;
+  };
 
   // Track nesting of square brackets, curly braces, and parentheses.
 
@@ -255,7 +284,7 @@ public:
       current_input_line (), comment_text (), help_text (),
       fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
       parsed_function_name (), pending_local_variables (),
-      nesting_level (), tokens ()
+      symtab_context (), nesting_level (), tokens ()
   {
     init ();
   }
@@ -279,6 +308,11 @@ public:
   bool previous_token_is_keyword (void) const;
 
   bool previous_token_may_be_command (void) const;
+
+  void maybe_mark_previous_token_as_variable (void);
+
+  void mark_as_variable (const std::string& nm);
+  void mark_as_variables (const std::list<std::string>& lst);
 
   // true means that we have encountered eof on the input stream.
   bool end_of_input;
@@ -403,6 +437,9 @@ public:
   // set of identifiers that might be local variable names.
   std::set<std::string> pending_local_variables;
 
+  // Track current symbol table scope and context.
+  symbol_table_context symtab_context;
+
   // is the closest nesting level a square bracket, squiggly brace,
   // a paren, or an anonymous function body?
   bbp_nesting_level nesting_level;
@@ -419,13 +456,13 @@ private:
   lexical_feedback& operator = (const lexical_feedback&);
 };
 
-// octave_lexer inherits from lexical_feedback because we will
+// octave_base_lexer inherits from lexical_feedback because we will
 // eventually have several different constructors and it is easier to
 // intialize if everything is grouped in a parent class rather than
-// listing all the members in the octave_lexer class.
+// listing all the members in the octave_base_lexer class.
 
 class
-octave_lexer : public lexical_feedback
+octave_base_lexer : public lexical_feedback
 {
 public:
 
@@ -456,35 +493,27 @@ public:
     bool eof;
   };
 
-  octave_lexer (void)
-    : lexical_feedback (), scanner (0), input_buf (), input_reader ()
+  octave_base_lexer (void)
+    : lexical_feedback (), scanner (0), input_buf ()
   {
     init ();
   }
 
-  octave_lexer (FILE *file)
-    : lexical_feedback (), scanner (0), input_buf (),
-      input_reader (file)
-  {
-    init ();
-  }
-
-  octave_lexer (const std::string& eval_string)
-    : lexical_feedback (), scanner (0), input_buf (),
-      input_reader (eval_string)
-  {
-    init ();
-  }
-
-  ~octave_lexer (void);
+  virtual ~octave_base_lexer (void);
 
   void init (void);
 
-  void reset (void);
+  virtual bool is_push_lexer (void) const { return false; }
+
+  virtual void reset (void);
 
   void prep_for_file (void);
 
-  int read (char *buf, unsigned int max_size);
+  virtual int fill_flex_buffer (char *buf, unsigned int max_size) = 0;
+
+  bool at_end_of_buffer (void) const { return input_buf.empty (); }
+
+  bool at_end_of_file (void) const { return input_buf.at_eof (); }
 
   int handle_end_of_input (void);
 
@@ -502,6 +531,8 @@ public:
 
   bool inside_any_object_index (void);
 
+  bool is_variable (const std::string& name);
+
   int is_keyword_token (const std::string& s);
 
   bool whitespace_is_significant (void);
@@ -510,8 +541,7 @@ public:
 
   void handle_continuation (void);
 
-  void finish_comment (octave_comment_elt::comment_type typ,
-                       bool looking_at_continuation = false);
+  void finish_comment (octave_comment_elt::comment_type typ);
 
   bool have_continuation (bool trailing_comments_ok = true);
 
@@ -557,35 +587,21 @@ public:
   // Object that reads and buffers input.
   input_buffer input_buf;
 
-  octave_input_reader input_reader;
+  virtual void increment_promptflag (void) = 0;
 
-  void increment_promptflag (void) { input_reader.increment_promptflag (); }
+  virtual void decrement_promptflag (void) = 0;
 
-  void decrement_promptflag (void) { input_reader.decrement_promptflag (); }
+  virtual int promptflag (void) const = 0;
 
-  int promptflag (void) const { return input_reader.promptflag (); }
+  virtual int promptflag (int) = 0;
 
-  int promptflag (int n) { return input_reader.promptflag (n); }
+  virtual std::string input_source (void) const { return "unknown"; }
 
-  std::string input_source (void) const
-  {
-    return input_reader.input_source ();
-  }
+  virtual bool input_from_terminal (void) const { return false; }
 
-  bool input_from_terminal (void) const
-  {
-    return input_source () == "terminal";
-  }
+  virtual bool input_from_file (void) const { return false; }
 
-  bool input_from_file (void) const
-  {
-    return input_source () == "file";
-  }
-
-  bool input_from_eval_string (void) const
-  {
-    return input_source () == "eval_string";
-  }
+  virtual bool input_from_eval_string (void) const { return false; }
 
   void push_start_state (int state);
 
@@ -624,17 +640,136 @@ public:
   int show_token (int tok);
 
   // For unwind protect.
-  static void cleanup (octave_lexer *lexer) { delete lexer; }
+  static void cleanup (octave_base_lexer *lexer) { delete lexer; }
 
-private:
+protected:
 
   std::stack<int> start_state_stack;
+
+  // No copying!
+
+  octave_base_lexer (const octave_base_lexer&);
+
+  octave_base_lexer& operator = (const octave_base_lexer&);
+};
+
+class
+octave_lexer : public octave_base_lexer
+{
+public:
+
+  octave_lexer (void)
+    : octave_base_lexer (), input_reader ()
+  { }
+
+  octave_lexer (FILE *file)
+    : octave_base_lexer (), input_reader (file)
+  { }
+
+  octave_lexer (const std::string& eval_string)
+    : octave_base_lexer (), input_reader (eval_string)
+  { }
+
+  void reset (void)
+  {
+    input_reader.reset ();
+
+    octave_base_lexer::reset ();
+  }
+
+  void increment_promptflag (void) { input_reader.increment_promptflag (); }
+
+  void decrement_promptflag (void) { input_reader.decrement_promptflag (); }
+
+  int promptflag (void) const { return input_reader.promptflag (); }
+
+  int promptflag (int n) { return input_reader.promptflag (n); }
+
+  std::string input_source (void) const
+  {
+    return input_reader.input_source ();
+  }
+
+  bool input_from_terminal (void) const
+  {
+    return input_source () == "terminal";
+  }
+
+  bool input_from_file (void) const
+  {
+    return input_source () == "file";
+  }
+
+  bool input_from_eval_string (void) const
+  {
+    return input_source () == "eval_string";
+  }
+
+  int fill_flex_buffer (char *buf, unsigned int max_size);
+
+  octave_input_reader input_reader;
+
+protected:
 
   // No copying!
 
   octave_lexer (const octave_lexer&);
 
   octave_lexer& operator = (const octave_lexer&);
+};
+
+class
+octave_push_lexer : public octave_base_lexer
+{
+public:
+
+  octave_push_lexer (const std::string& input = std::string (),
+                     bool eof = false)
+    : octave_base_lexer (), pflag (1)
+  {
+    append_input (input, eof);
+  }
+
+  bool is_push_lexer (void) const { return true; }
+
+  void reset (void)
+  {
+    promptflag (1);
+
+    octave_base_lexer::reset ();
+  }
+
+  void append_input (const std::string& input, bool eof)
+  {
+    input_buf.fill (input, eof);
+  }
+
+  void increment_promptflag (void) { pflag++; }
+
+  void decrement_promptflag (void) { pflag--; }
+
+  int promptflag (void) const { return pflag; }
+
+  int promptflag (int n)
+  {
+    int retval = pflag;
+    pflag = n;
+    return retval;
+  }
+
+  std::string input_source (void) const { return "push buffer"; }
+
+  int fill_flex_buffer (char *buf, unsigned int max_size);
+
+protected:
+
+  int pflag;
+
+  // No copying!
+
+  octave_push_lexer (const octave_push_lexer&);
+
+  octave_push_lexer& operator = (const octave_push_lexer&);
 };
 
 #endif

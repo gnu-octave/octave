@@ -24,6 +24,7 @@ FCN_FILES = \
   fntests.m \
   args.tst \
   bug-31371.tst \
+  bug-38576.tst \
   diag-perm.tst \
   error.tst \
   eval-catch.tst \

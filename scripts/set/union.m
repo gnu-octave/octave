@@ -20,8 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} union (@var{a}, @var{b})
 ## @deftypefnx {Function File} {} union (@var{a}, @var{b}, "rows")
+## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} union (@var{a}, @var{b})
+##
 ## Return the set of elements that are in either of the sets @var{a} and
-## @var{b}.  @var{a}, @var{b} may be cell arrays of string(s).
+## @var{b}.  @var{a}, @var{b} may be cell arrays of strings.
 ## For example:
 ##
 ## @example
@@ -31,8 +33,8 @@
 ## @end group
 ## @end example
 ##
-## If the optional third input argument is the string "rows" each row of
-## the matrices @var{a} and @var{b} will be considered an element of sets.
+## If the optional third input argument is the string "rows" then each row of
+## the matrices @var{a} and @var{b} will be considered as a single set element.
 ## For example:
 ##
 ## @example
@@ -44,10 +46,8 @@
 ## @end group
 ## @end example
 ##
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} union (@var{a}, @var{b})
-##
-## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and
-## @code{b(ib)} are disjoint sets whose union is @var{c}.
+## The optional outputs @var{ia} and @var{ib} are index vectors such that
+## @code{a(ia)} and @code{b(ib)} are disjoint sets whose union is @var{c}.
 ##
 ## @seealso{intersect, setdiff, unique}
 ## @end deftypefn

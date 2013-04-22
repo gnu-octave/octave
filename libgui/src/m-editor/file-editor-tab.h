@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWidget>
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
+#include <QSettings>
 
 #include "find-dialog.h"
 
@@ -44,7 +45,7 @@ public slots:
   void handle_margin_clicked (int line, int margin, Qt::KeyboardModifiers state);
 
   /** Tells the editor tab to react on changed settings. */
-  void notice_settings ();
+  void notice_settings (const QSettings *settings);
   /** Will initiate close if associated with the identifier tag. */
   void conditional_close (const QWidget* ID);
   /** Change to a different editor tab by identifier tag. */
@@ -61,6 +62,7 @@ public slots:
   void save_file (const QWidget* ID);
   void save_file (const QWidget* ID, const QString& fileName, bool remove_on_success);
   void save_file_as (const QWidget* ID);
+  void print_file (const QWidget* ID);
   void run_file (const QWidget* ID);
   void toggle_bookmark (const QWidget* ID);
   void next_bookmark (const QWidget* ID);
@@ -75,13 +77,17 @@ public slots:
   void comment_selected_text (const QWidget* ID);
   void uncomment_selected_text (const QWidget* ID);
   void find (const QWidget* ID);
+  void goto_line (const QWidget* ID, int line = -1);
 
-  void set_debugger_position (int line);
+  void insert_debugger_pointer (const QWidget *ID, int line = -1);
+  void delete_debugger_pointer (const QWidget *ID, int line = -1);
+
+  void do_breakpoint_marker (bool insert, const QWidget *ID, int line = -1);
 
   void set_modified (bool modified = true);
 
   QString load_file (const QString& fileName);
-  void new_file ();
+  void new_file (const QString& commands = QString ());
 
   void file_has_changed (const QString& fileName);
 
@@ -89,7 +95,7 @@ signals:
   void file_name_changed (const QString& fileName, const QString& toolTip);
   void editor_state_changed (bool copy_available, const QString& fileName);
   void tab_remove_request ();
-  void add_filename_to_list (const QString& fileName);
+  void add_filename_to_list (const QString&, QWidget *);
   void mru_add_file (const QString& file_name);
   void editor_check_conflict_save (const QString& saveFileName, bool remove_on_success);
   void process_octave_code (const QString& command);
@@ -116,10 +122,12 @@ private:
 
   struct bp_info
   {
-    bp_info (const QString& p, const QString& fn, int l)
-      : path (p.toStdString ()), function_name (fn.toStdString ()), line (l)
+    bp_info (const QString& f, const QString& p, const QString& fn, int l)
+      : file (f.toStdString ()), path (p.toStdString ()),
+        function_name (fn.toStdString ()), line (l)
     { }
 
+    std::string file;
     std::string path;
     std::string function_name;
     int line;
@@ -137,9 +145,13 @@ private:
   void do_comment_selected_text (bool comment);
 
   void run_file_callback (void);
+
+  bool file_in_path (const bp_info& info);
+
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);
   void remove_all_breakpoints_callback (const bp_info& info);
+  void center_current_line ();
 
   QsciScintilla *       _edit_area;
 

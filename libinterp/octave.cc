@@ -179,6 +179,9 @@ static bool persist = false;
 // If TRUE, the GUI should be started.
 static bool start_gui = false;
 
+// If TRUE use traditional settings (--traditional)
+static bool traditional = false;
+
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
 #define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
@@ -244,7 +247,7 @@ intern_argv (int argc, char **argv)
 {
   assert (symbol_table::at_top_level ());
 
-  symbol_table::varref (".nargin.") = argc - 1;
+  symbol_table::assign (".nargin.", argc - 1);
 
   symbol_table::mark_hidden (".nargin.");
 
@@ -815,7 +818,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case TRADITIONAL_OPTION:
-          maximum_braindamage ();
+          traditional = true;
           break;
 
         default:
@@ -849,6 +852,11 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   octave_program_name = octave_env::get_program_name ();
 
   octave_thread::init ();
+
+  set_default_prompts ();
+
+  if (traditional)
+    maximum_braindamage ();
 
   init_signals ();
 
@@ -893,12 +901,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (no_window_system)
     display_info::no_window_system ();
-
-  // Make sure we clean up when we exit.  Also allow users to register
-  // functions.  If we don't have atexit or on_exit, we're going to
-  // leave some junk files around if we exit abnormally.
-
-  atexit (do_octave_atexit);
 
   // Is input coming from a terminal?  If so, we are probably
   // interactive.
@@ -1011,14 +1013,11 @@ octave_execute_interpreter (void)
 
   int retval = main_loop ();
 
-  if (retval == 1 && ! error_state)
-    retval = 0;
-
   quitting_gracefully = true;
 
-  clean_up_and_exit (retval);
+  clean_up_and_exit (retval, true);
 
-  return 0;
+  return retval;
 }
 
 static bool

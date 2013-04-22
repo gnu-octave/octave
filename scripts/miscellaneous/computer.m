@@ -49,7 +49,7 @@
 function [c, maxsize, endian] = computer (a)
 
   if (nargin == 1 && ischar (a) && strcmpi (a, "arch"))
-    tmp = strsplit (octave_config_info ("canonical_host_type"), "-");
+    tmp = strsplit (octave_config_info ("canonical_host_type"), "-", false);
     if (numel (tmp) == 4)
       c = sprintf ("%s-%s-%s", tmp{4}, tmp{3}, tmp{1});
     else

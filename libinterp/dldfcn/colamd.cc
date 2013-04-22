@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "oct-locbuf.h"
 
-#ifdef IDX_TYPE_LONG
+#ifdef USE_64_BIT_IDX_T
 #define COLAMD_NAME(name) colamd_l ## name
 #define SYMAMD_NAME(name) symamd_l ## name
 #else

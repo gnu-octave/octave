@@ -132,7 +132,7 @@ factorization as determined by @var{typ}.\n\
   A->packed = true;
   A->sorted = true;
   A->nz = 0;
-#ifdef IDX_TYPE_LONG
+#ifdef USE_64_BIT_IDX_T
   A->itype = CHOLMOD_LONG;
 #else
   A->itype = CHOLMOD_INT;
@@ -292,8 +292,9 @@ factorization as determined by @var{typ}.\n\
             W[j] = L.xcidx (j);
 
           // get workspace for computing one row of L
-          cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, false, true,
-                                                       0, CHOLMOD_PATTERN, cm);
+          cholmod_sparse *R
+            = CHOLMOD_NAME (allocate_sparse) (n, 1, n, false, true,
+                                              0, CHOLMOD_PATTERN, cm);
           octave_idx_type *Rp = static_cast<octave_idx_type *>(R->p);
           octave_idx_type *Ri = static_cast<octave_idx_type *>(R->i);
 
@@ -310,7 +311,7 @@ factorization as determined by @var{typ}.\n\
             }
 
           // free workspace
-          cholmod_free_sparse (&R, cm) ;
+          CHOLMOD_NAME (free_sparse) (&R, cm) ;
 
 
           // transpose L to get R, or leave as is

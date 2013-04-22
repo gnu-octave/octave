@@ -23,7 +23,7 @@ SelfListener::SelfListener(int a, QObject *parent) :
 }
 
 void SelfListener::run() {
-    char buf[4096];
+    char buf[4096 + 1];
     int len;
     bool running = true;
     while(running) {

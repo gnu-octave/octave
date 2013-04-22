@@ -2188,7 +2188,7 @@ jit_info::execute (const vmap& extra_vars) const
 
       // do not store for loop bounds temporary
       if (name.size () && name[0] != '#')
-        symbol_table::varref (arguments[i].first) = real_arguments[i];
+        symbol_table::assign (arguments[i].first, real_arguments[i]);
     }
 
   octave_quit ();

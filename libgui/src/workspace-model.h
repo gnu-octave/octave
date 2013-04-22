@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -20,137 +21,71 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef WORKSPACEMODEL_H
-#define WORKSPACEMODEL_H
+#if !defined (workspace_model_h)
+#define workspace_model_h 1
 
-// Qt includes
-#include <QAbstractItemModel>
+#include <QAbstractTableModel>
 #include <QVector>
 #include <QSemaphore>
-#include <QTimer>
-
-#include "symbol-information.h"
-
-class tree_item
-{
-public:
-  tree_item (const QList<QVariant> &d, tree_item *p = 0) {
-    _parent_item = p;
-    _item_data = d;
-  }
-
-  tree_item (QVariant d = QVariant(), tree_item *p = 0) {
-    QList<QVariant> variantList;
-    variantList << d << QVariant () << QVariant () << QVariant ();
-    _parent_item = p;
-    _item_data = variantList;
-  }
-
-  ~tree_item () {
-    qDeleteAll (_child_items);
-  }
-
-  void insert_child_item (int at, tree_item *item) {
-    item->_parent_item = this;
-    _child_items.insert (at, item);
-  }
-
-  void add_child (tree_item *item) {
-    item->_parent_item = this;
-    _child_items.append (item);
-  }
-
-  void delete_child_items () {
-    qDeleteAll (_child_items);
-    _child_items.clear ();
-  }
-
-  void remove_child (tree_item *item) {
-    _child_items.removeAll (item);
-  }
-
-  QVariant data (int column) const
-  {
-    return _item_data[column];
-  }
-
-  void set_data (int column, QVariant d)
-  {
-    _item_data[column] = d;
-  }
-
-  tree_item *child (int r) {
-    return _child_items[r];
-  }
-
-  int child_count () const {
-    return _child_items.count();
-  }
-
-  int column_count () const
-  {
-    return _item_data.count();
-  }
-
-  int row () const {
-    if (_parent_item)
-      return _parent_item->_child_items.indexOf (const_cast<tree_item*>(this));
-
-    return 0;
-  }
-
-  tree_item *parent ()
-  {
-    return _parent_item;
-  }
-
-private:
-  QList<tree_item*> _child_items;
-  QList<QVariant> _item_data;
-  tree_item *_parent_item;
-};
+#include <QStringList>
 
 class workspace_model
-  : public QAbstractItemModel
+  : public QAbstractTableModel
 {
   Q_OBJECT
 
-  public:
-  workspace_model (QObject *parent = 0);
-  ~workspace_model ();
+public:
 
-  QVariant data (const QModelIndex &index, int role) const;
-  Qt::ItemFlags flags (const QModelIndex &index) const;
+  workspace_model (QObject *parent = 0);
+
+  ~workspace_model (void) { }
+
+  QVariant data (const QModelIndex& index, int role) const;
+
+  bool setData (const QModelIndex& index, const QVariant& value,
+                int role = Qt::EditRole);
+
+  Qt::ItemFlags flags (const QModelIndex& index) const;
+
   QVariant headerData (int section, Qt::Orientation orientation,
                        int role = Qt::DisplayRole) const;
-  QModelIndex index (int row, int column,
-                     const QModelIndex &parent = QModelIndex ()) const;
-  QModelIndex parent (const QModelIndex &index) const;
-  int rowCount (const QModelIndex &parent = QModelIndex ()) const;
-  int columnCount (const QModelIndex &parent = QModelIndex ()) const;
 
-  void insert_top_level_item (int at, tree_item *treeItem);
-  tree_item *top_level_item (int at);
+  int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+
+  int columnCount (const QModelIndex& parent = QModelIndex ()) const;
+
+  bool is_top_level (void) const { return _top_level; }
 
 public slots:
-  void request_update_workspace ();
+
+  void set_workspace (bool top_level,
+                      const QString& scopes,
+                      const QStringList& symbols,
+                      const QStringList& class_names,
+                      const QStringList& dimensions,
+                      const QStringList& values);
+
+  void clear_workspace (void);
 
 signals:
-  void model_changed ();
+
+  void model_changed (void);
+
+  void rename_variable (const QString& old_name, const QString& new_name);
 
 private:
 
-  bool _update_event_enabled;
+  void clear_data (void);
+  void update_table (void);
 
-  void update_workspace_callback (void);
+  bool _top_level;
+  QString _scopes;
+  QStringList _symbols;
+  QStringList _class_names;
+  QStringList _dimensions;
+  QStringList _values;
 
-  /** Timer for periodically updating the workspace model from the current
-   * symbol information. */
-  QTimer _update_workspace_model_timer;
-
-  /** Stores the current symbol information. */
-  QList <symbol_information> _symbol_information;
-  tree_item *_rootItem;
+  QStringList _columnNames;
 };
 
-#endif // WORKSPACEMODEL_H
+#endif

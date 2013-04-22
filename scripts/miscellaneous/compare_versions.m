@@ -113,8 +113,8 @@ function out = compare_versions (v1, v2, operator)
     v2nochar = v2;
   endif
 
-  v1n = str2num (char (strsplit (v1nochar, ".")));
-  v2n = str2num (char (strsplit (v2nochar, ".")));
+  v1n = str2num (char (strsplit (v1nochar, ".", false)));
+  v2n = str2num (char (strsplit (v2nochar, ".", false)));
   if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty (v2c)))
     error ("compare_versions: given version strings are not valid: %s %s",
            v1, v2);

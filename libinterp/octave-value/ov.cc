@@ -1541,12 +1541,10 @@ octave_value::cell_value (void) const
 octave_idx_type
 octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 {
-#if SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_LONG
-  return long_value (req_int, frc_str_conv);
-#elif SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_INT
-  return int_value (req_int, frc_str_conv);
+#if defined (USE_64_BIT_IDX_T)
+  return int64_value (req_int, frc_str_conv);
 #else
-#error "no octave_value extractor for octave_idx_type"
+  return int_value (req_int, frc_str_conv);
 #endif
 }
 

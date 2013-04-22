@@ -78,7 +78,7 @@ function y = postpad (x, l, c, dim)
     y = x(idx{:});
   else
     sz (dim) = l - d;
-    y = cat (dim, x, c * ones (sz));
+    y = cat (dim, x, c(ones (sz)));
   endif
 
 endfunction

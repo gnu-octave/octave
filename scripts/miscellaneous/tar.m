@@ -59,7 +59,7 @@ function entries = tar (tarfile, files, root = ".")
     if (output(end) == "\n")
       output(end) = [];
     endif
-    entries = strsplit (output, "\n");
+    entries = strsplit (output, "\n", false);
     entries = entries';
   endif
 

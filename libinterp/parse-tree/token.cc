@@ -150,6 +150,13 @@ token::text (void) const
   return *str;
 }
 
+std::string
+token::symbol_name (void) const
+{
+  assert (type_tag == sym_rec_token);
+  return sr->name ();
+}
+
 double
 token::number (void) const
 {

@@ -26,17 +26,19 @@ MOC_CPPFLAGS =
 
 octlib_LTLIBRARIES = liboctgui.la
 
-locales = \
-  languages/be_BY.qm \
-  languages/de_DE.qm \
-  languages/en_US.qm \
-  languages/es_ES.qm \
-  languages/nl_NL.qm \
-  languages/pt_BR.qm \
-  languages/ru_RU.qm \
-  languages/uk_UA.qm
+TRANSLATIONS = \
+  languages/be_BY.ts \
+  languages/de_DE.ts \
+  languages/en_US.ts \
+  languages/es_ES.ts \
+  languages/nl_NL.ts \
+  languages/pt_BR.ts \
+  languages/ru_RU.ts \
+  languages/uk_UA.ts
 
-EXTRA_DIST = default-qt-settings $(locales)
+LOCALES = $(patsubst languages/%.ts, languages/%.qm, $(TRANSLATIONS))
+
+EXTRA_DIST = default-qt-settings.in $(TRANSLATIONS)
 CLEANFILES =
 
 BUILT_SOURCES =
@@ -79,16 +81,24 @@ liboctgui_la_LDFLAGS = \
 
 octetc_DATA = default-qt-settings
 
-octlocale_DATA = $(locales)
+octlocale_DATA = $(LOCALES)
+
+default-qt-settings: default-qt-settings.in
+	$(do_subst_qt_settings)
 
 moc-%.cc: %.h
-	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
+	$(MOC) -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
 
 ui-%.h: %.ui
-	@UIC@ -o $@ $<
+	$(UIC) -o $@ $<
 
 qrc-%.cc: %.qrc
-	@RCC@ -o $@ $<
+	$(RCC) -o $@ $<
 
 %.qm: %.ts
-	@LRELEASE@ $<
+	$(MKDIR_P) languages
+	$(LRELEASE) -qm $@ $<
+
+DISTCLEANFILES = \
+  $(LOCALES)
+

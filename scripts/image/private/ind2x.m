@@ -22,7 +22,7 @@
 function [x, map] = ind2x (caller, x, map)
 
   ## Check if X is an indexed image.
-  if (ndims (x) != 2 || issparse (x) || (isfloat (x) && ! isindex (x)) ||
+  if (ndims (x) < 2 || issparse (x) || (isfloat (x) && ! isindex (x)) ||
       ! any (strcmp (class (x), {"uint8", "uint16", "single", "double"})))
     error ("%s: X must be an indexed image", caller);
   endif

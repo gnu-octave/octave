@@ -146,13 +146,12 @@ install_loaded_variable (const std::string& name,
 {
   if (global)
     {
-      symbol_table::symbol_record& sr = symbol_table::insert (name);
-      sr.clear ();
-      sr.mark_global ();
-      sr.varref () = val;
+      symbol_table::clear (name);
+      symbol_table::mark_global (name);
+      symbol_table::global_assign (name, val);
     }
   else
-    symbol_table::varref (name) = val;
+    symbol_table::assign (name, val);
 }
 
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
@@ -1281,7 +1280,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
           return;
         }
 
-      octave_value struct_var = symbol_table::varref (struct_name);
+      octave_value struct_var = symbol_table::varval (struct_name);
 
       if (! struct_var.is_map () || struct_var.numel () != 1)
         {

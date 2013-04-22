@@ -17,25 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
-## Fit a piecewise cubic spline with breaks (knots) @var{breaks} to the
-## noisy data, @var{x} and @var{y}.  @var{x} is a vector, and @var{y}
-## a vector or N-D array.  If @var{y} is an N-D array, then @var{x}(j)
-## is matched to @var{y}(:,@dots{},:,j).
-##
-## The fitted spline is returned as a piecewise polynomial, @var{pp}, and
-## may be evaluated using @code{ppval}.
-##
+## @deftypefn  {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
-## @var{p} is a positive integer defining the number of intervals along @var{x},
-## and @var{p}+1 is the number of breaks.  The number of points in each interval
-## differ by no more than 1.
-##
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "beta", @var{beta})
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "order", @var{order})
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
+##
+## Fit a piecewise cubic spline with breaks (knots) @var{breaks} to the
+## noisy data, @var{x} and @var{y}.  @var{x} is a vector, and @var{y}
+## is a vector or N-D array.  If @var{y} is an N-D array, then @var{x}(j)
+## is matched to @var{y}(:,@dots{},:,j).
+##
+## The fitted spline is returned as a piecewise polynomial, @var{pp}, and
+## may be evaluated using @code{ppval}.
+##
+## @var{p} is a positive integer defining the number of intervals along @var{x},
+## and @var{p}+1 is the number of breaks.  The number of points in each interval
+## differ by no more than 1.
 ##
 ## The optional property @var{periodic} is a logical value which specifies
 ## whether a periodic boundary condition is applied to the spline.  The
@@ -67,7 +67,7 @@
 ## Vector of the x-locations of the constraints.
 ##
 ## @item "yc"
-## Constraining values at the locations, @var{xc}.
+## Constraining values at the locations @var{xc}.
 ## The default is an array of zeros.
 ##
 ## @item "cc"
@@ -91,6 +91,59 @@
 ##
 ## @seealso{interp1, unmkpp, ppval, spline, pchip, ppder, ppint, ppjumps}
 ## @end deftypefn
+
+function pp = splinefit (x, y, breaks, varargin)
+  if (nargin > 3)
+    n = cellfun (@ischar, varargin, "uniformoutput", true);
+    varargin(n) = lower (varargin(n));
+    try
+      props = struct (varargin{:});
+    catch
+      print_usage ();
+    end_try_catch
+  else
+    props = struct ();
+  endif
+  fields = fieldnames (props);
+  for f = 1:numel (fields)
+    if (! any (strcmp (fields{f},
+                       {"periodic", "robust", "beta", "order", "constraints"})))
+      error ("splinefit:invalidproperty",
+             "unrecognized property '%s'", fields{f});
+    endif
+  endfor
+  args = {};
+  if (isfield (props, "periodic") && props.periodic)
+    args{end+1} = "p";
+  endif
+  if (isfield (props, "robust") && props.robust)
+    args{end+1} = "r";
+  endif
+  if (isfield (props, "beta"))
+    if (0 < props.beta && props.beta < 1)
+      args{end+1} = props.beta;
+    else
+      error ("splinefit:invalidbeta", "invalid beta parameter (0 < beta < 1)");
+    endif
+  endif
+  if (isfield (props, "order"))
+    if (props.order >= 0)
+      args{end+1} = props.order + 1;
+    else
+      error ("splinefit:invalidorder", "invalid order");
+    endif
+  endif
+  if (isfield (props, "constraints"))
+    args{end+1} = props.constraints;
+  endif
+  if (nargin < 3)
+    print_usage ();
+  elseif (! isnumeric (breaks) || ! isvector (breaks))
+    print_usage ();
+  endif
+  pp = __splinefit__ (x, y, breaks, args{:});
+endfunction
+
 
 %!demo
 %! % Noisy data
@@ -168,59 +221,6 @@
 %! legend ({"data", "fit", "breaks"})
 %! axis tight
 %! ylim auto
-
-function pp = splinefit (x, y, breaks, varargin)
-  if (nargin > 3)
-    n = cellfun (@ischar, varargin, "uniformoutput", true);
-    varargin(n) = lower (varargin(n));
-    try
-      props = struct (varargin{:});
-    catch
-      print_usage ();
-    end_try_catch
-  else
-    props = struct ();
-  endif
-  fields = fieldnames (props);
-  for f = 1:numel (fields)
-    if (! any (strcmp (fields{f},
-                       {"periodic", "robust", "beta", "order", "constraints"})))
-      error ("splinefit:invalidproperty",
-             "unrecognized property '%s'", fields{f});
-    endif
-  endfor
-  args = {};
-  if (isfield (props, "periodic") && props.periodic)
-    args{end+1} = "p";
-  endif
-  if (isfield (props, "robust") && props.robust)
-    args{end+1} = "r";
-  endif
-  if (isfield (props, "beta"))
-    if (0 < props.beta && props.beta < 1)
-      args{end+1} = props.beta;
-    else
-      error ("splinefit:invalidbeta", "invalid beta parameter (0 < beta < 1)");
-    endif
-  endif
-  if (isfield (props, "order"))
-    if (props.order >= 0)
-      args{end+1} = props.order + 1;
-    else
-      error ("splinefit:invalidorder", "invalid order");
-    endif
-  endif
-  if (isfield (props, "constraints"))
-    args{end+1} = props.constraints;
-  endif
-  if (nargin < 3)
-    print_usage ();
-  elseif (! isnumeric (breaks) || ! isvector (breaks))
-    print_usage ();
-  endif
-  pp = __splinefit__ (x, y, breaks, args{:});
-endfunction
-
 
 %!shared xb, yb, x
 %! xb = 0:2:10;

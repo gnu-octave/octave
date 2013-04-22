@@ -1721,7 +1721,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
     rcon = octave_Inf;
   else
     {
-      int typ = mattype.type ();
+      volatile int typ = mattype.type ();
 
       if (typ == MatrixType::Unknown)
         typ = mattype.type (*this);

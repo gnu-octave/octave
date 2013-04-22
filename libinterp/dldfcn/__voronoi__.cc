@@ -90,7 +90,7 @@ Undocumented internal function.\n\
 
   std::string options;
 
-  if (dim <= 4)
+  if (dim <= 3)
     options = " Qbb";
   else
     options = " Qbb Qx";

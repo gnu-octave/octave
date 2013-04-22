@@ -45,15 +45,26 @@ function map = pink (n)
 
   if (n == 1)
     map = sqrt ([1/3, 1/3, 1/3]);
-  elseif (n > 1)
-    x = linspace (0, 1, n)';
-    r = (x < 3/8) .* (14/9 * x) ...
-      + (x >= 3/8) .* (2/3 * x + 1/3);
-    g = (x < 3/8) .* (2/3 * x) ...
-      + (x >= 3/8 & x < 3/4) .* (14/9 * x - 1/3) ...
-      + (x >= 3/4) .* (2/3 * x + 1/3);
-    b = (x < 3/4) .* (2/3 * x) ...
-      + (x >= 3/4) .* (2 * x - 1);
+  elseif (n == 2)
+    map = sqrt ([1/3, 1/3, 1/6
+                  1    1    1 ]);
+  elseif (n > 2)
+    x = [0:(n-1)]' / (n-1);
+    idx = floor (3/8 * n);
+    base = 1 / (3 * idx);
+
+    nel = idx;   # number of elements
+    r(1:idx,1) = linspace (base, 2/3*x(idx) + 1/3, nel);
+    r(idx+1:n,1) = 2/3*x(idx+1:n) + 1/3;
+
+    g(1:idx,1) = 2/3*x(1:idx);
+    g(idx:2*idx,1) = linspace (2/3*x(idx), 2/3*x(2*idx) + 1/3, nel+1);
+    g(2*idx+1:n,1) = 2/3*x(2*idx+1:n) + 1/3;
+
+    nel = n - 2*idx + 1;
+    b(1:2*idx,1) = 2/3*x(1:2*idx);
+    b(2*idx:n,1) = linspace (2/3*x(2*idx), 1, nel);
+
     map = sqrt ([r, g, b]);
   else
     map = zeros (0, 3);

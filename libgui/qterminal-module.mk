@@ -46,7 +46,8 @@ if WIN32_TERMINAL
 
 qterminal_libqterminal_la_SOURCES = \
   qterminal/libqterminal/win32/QTerminalColors.cpp \
-  qterminal/libqterminal/win32/QWinTerminalImpl.cpp
+  qterminal/libqterminal/win32/QWinTerminalImpl.cpp \
+  qterminal/libqterminal/QTerminal.cc
 
 qterminal_libqterminal_la_MOC += \
   qterminal/libqterminal/win32/moc-QWinTerminalImpl.cc
@@ -73,7 +74,8 @@ qterminal_libqterminal_la_SOURCES = \
   qterminal/libqterminal/unix/Vt102Emulation.cpp \
   qterminal/libqterminal/unix/SelfListener.cpp \
   qterminal/libqterminal/unix/TerminalModel.cpp \
-  qterminal/libqterminal/unix/TerminalView.cpp
+  qterminal/libqterminal/unix/TerminalView.cpp \
+  qterminal/libqterminal/QTerminal.cc
 
 qterminal_libqterminal_la_MOC += \
   qterminal/libqterminal/unix/moc-Emulation.cc \

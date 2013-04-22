@@ -427,6 +427,8 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(strfind)
 
+@DOCSTRING(strjoin)
+
 @DOCSTRING(strmatch)
 
 @DOCSTRING(strtok)

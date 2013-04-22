@@ -1789,9 +1789,9 @@ property_list::set (const caseless_str& name, const octave_value& val)
               bool remove = false;
               if (val.is_string ())
                 {
-                  caseless_str tval = val.string_value ();
+                  std::string tval = val.string_value ();
 
-                  remove = tval.compare ("remove");
+                  remove = (tval.compare ("remove") == 0);
                 }
 
               pval_map_type& pval_map = plist_map[pfx];
@@ -2105,11 +2105,11 @@ graphics_object::set_value_or_default (const caseless_str& name,
 {
   if (val.is_string ())
     {
-      caseless_str tval = val.string_value ();
+      std::string tval = val.string_value ();
 
       octave_value default_val;
 
-      if (tval.compare ("default"))
+      if (tval.compare ("default") == 0)
         {
           default_val = get_default (name);
 
@@ -2118,7 +2118,7 @@ graphics_object::set_value_or_default (const caseless_str& name,
 
           rep->set (name, default_val);
         }
-      else if (tval.compare ("factory"))
+      else if (tval.compare ("factory") == 0)
         {
           default_val = get_factory_default (name);
 
@@ -2128,7 +2128,15 @@ graphics_object::set_value_or_default (const caseless_str& name,
           rep->set (name, default_val);
         }
       else
-        rep->set (name, val);
+        {
+          // Matlab specifically uses "\default" to escape string setting 
+          if (tval.compare ("\\default") == 0)
+            rep->set (name, "default");
+          else if (tval.compare ("\\factory") == 0)
+            rep->set (name, "factory");
+          else
+            rep->set (name, val);
+        }
     }
   else
     rep->set (name, val);

@@ -124,7 +124,7 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
   octave_value retval;
 
   if (is_global ())
-    retval = symbol_table::global_varref (name ());
+    retval = symbol_table::global_varval (name ());
   else
     {
       retval = varval ();
@@ -1361,13 +1361,11 @@ symbol_table::do_find (const std::string& name,
         {
           symbol_record sr = p->second;
 
-          // FIXME -- should we be using something other than varref here?
-
           if (sr.is_global ())
-            return symbol_table::global_varref (name);
+            return symbol_table::global_varval (name);
           else
             {
-              octave_value& val = sr.varref ();
+              octave_value val = sr.varval ();
 
               if (val.is_defined ())
                 return val;
@@ -1413,6 +1411,49 @@ symbol_table::do_builtin_find (const std::string& name)
         fcn_table[name] = finfo;
 
       return fcn;
+    }
+
+  return retval;
+}
+
+std::list<workspace_element>
+symbol_table::do_workspace_info (void) const
+{
+  std::list<workspace_element> retval;
+
+  for (table_const_iterator p = table.begin (); p != table.end (); p++)
+    {
+      std::string nm = p->first;
+      symbol_record sr = p->second;
+
+      if (! sr.is_hidden ())
+        {
+          octave_value val = sr.varval ();
+
+          if (val.is_defined ())
+            {
+              dim_vector dv = val.dims ();
+
+              char storage = ' ';
+              if (sr.is_global ())
+                storage = 'g';
+              else if (sr.is_persistent ())
+                storage = 'p';
+              else if (sr.is_automatic ())
+                storage = 'a';
+              else if (sr.is_formal ())
+                storage = 'f';
+              else if (sr.is_hidden ())
+                storage = 'h';
+              else if (sr.is_inherited ())
+                storage = 'i';
+
+              workspace_element elt (storage, nm, val.class_name (),
+                                     val.short_disp (), dv.str ());
+
+              retval.push_back (elt);
+            }
+        }
     }
 
   return retval;
@@ -1703,7 +1744,7 @@ DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
       std::string name = args(0).string_value ();
 
       if (! error_state)
-        symbol_table::varref (name) = args(1);
+        symbol_table::assign (name, args(1));
       else
         error ("set_variable: expecting variable name as first argument");
     }

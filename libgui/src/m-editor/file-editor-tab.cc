@@ -35,19 +35,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexerperl.h>
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexerdiff.h>
+#include <Qsci/qsciprinter.h>
 #include "resource-manager.h"
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
 #include <QVBoxLayout>
+#include <QInputDialog>
+#include <QPrintDialog>
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
-#include "octave-link.h"
 
+#include "builtin-defun-decls.h"
 #include "debug.h"
+#include "load-path.h"
+#include "octave-link.h"
 #include "oct-env.h"
+#include "utils.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -115,7 +121,9 @@ file_editor_tab::file_editor_tab (QString directory)
   connect (&_file_system_watcher, SIGNAL (fileChanged (QString)),
            this, SLOT (file_has_changed (QString)));
 
-  notice_settings ();
+  QSettings *settings = resource_manager::get_settings ();
+  if (settings)
+    notice_settings (settings);
 }
 
 file_editor_tab::~file_editor_tab ()
@@ -190,13 +198,9 @@ file_editor_tab::handle_margin_clicked(int margin, int line,
       else
         {
           if (markers_mask && (1 << breakpoint))
-            {
-              request_remove_breakpoint (line);
-            }
+            request_remove_breakpoint (line);
           else
-            {
-              request_add_breakpoint (line);
-            }
+            request_add_breakpoint (line);
         }
     }
 }
@@ -241,21 +245,10 @@ file_editor_tab::update_lexer ()
     }
 
   QSettings *settings = resource_manager::get_settings ();
-
-  // Editor font (default or from settings)
   if (settings)
-    lexer->setDefaultFont (QFont (
-                                  settings->value ("editor/fontName",
-                                                   "Courier").toString (),
-                                  settings->value ("editor/fontSize",
-                                                   10).toInt ()));
-
-  // TODO: Autoindent not working as it should
-  lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
-                             QsciScintilla::AiOpening  ||
-                             QsciScintilla::AiClosing);
-
+    lexer->readSettings (*settings);
   _edit_area->setLexer (lexer);
+
 }
 
 // slot for fetab_set_focus: sets the focus to the current edit area
@@ -340,6 +333,24 @@ file_editor_tab::save_file_as (const QWidget* ID)
 }
 
 void
+file_editor_tab::print_file (const QWidget* ID)
+{
+  if (ID != this)
+    return;
+
+  QsciPrinter * printer = new QsciPrinter( QPrinter::HighResolution );
+
+  QPrintDialog printDlg(printer, this);
+
+  if(printDlg.exec() == QDialog::Accepted)
+    {
+       printer->printRange(_edit_area);
+    }
+  delete printer;
+}
+
+
+void
 file_editor_tab::run_file_callback (void)
 {
   // Maybe someday we will do something here?
@@ -356,8 +367,6 @@ file_editor_tab::run_file (const QWidget* ID)
 
   QFileInfo file_info (_file_name);
   QString path = file_info.absolutePath ();
-  QString current_path
-    = QString::fromStdString (octave_link::last_working_directory ());
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.
@@ -421,56 +430,96 @@ file_editor_tab::remove_bookmark (const QWidget* ID)
   _edit_area->markerDeleteAll (bookmark);
 }
 
+bool
+file_editor_tab::file_in_path (const bp_info& info)
+{
+  bool ok = false;
+  bool addpath_option = true;
+
+  std::string curr_dir = octave_env::get_current_directory ();
+
+  if (curr_dir == info.path)
+    ok = true;
+  else
+    {
+      bool dir_in_load_path = load_path::contains_canonical (info.path);
+
+      std::string base_file = octave_env::base_pathname (info.file);
+      std::string lp_file = load_path::find_file (base_file);
+
+      if (dir_in_load_path)
+        {
+          if (same_file (lp_file, info.file))
+            ok = true;
+        }
+      else
+        {
+          // File directory is not in path.  Is the file in the path in
+          // the current directory?  If so, then changing the current
+          // directory will be needed.  Adding directory to path is
+          // not enough because the file in the current directory would
+          // still be found.
+
+          if (same_file (lp_file, base_file))
+            {
+              if (same_file (curr_dir, info.path))
+                ok = true;
+              else
+                addpath_option = false;
+            }
+        }
+    }
+
+  if (! ok)
+    {
+      int action
+        = octave_link::debug_cd_or_addpath_error (info.file, info.path,
+                                                  addpath_option);
+      switch (action)
+        {
+        case 1:
+          Fcd (ovl (info.path));
+          ok = true;
+          break;
+
+        case 2:
+          load_path::prepend (info.path);
+          ok = true;
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  return ok;
+}
+
 void
 file_editor_tab::add_breakpoint_callback (const bp_info& info)
 {
-  bp_table::intmap intmap;
-  intmap[0] = info.line + 1;
+  bp_table::intmap line_info;
+  line_info[0] = info.line;
 
-  std::string previous_directory = octave_env::get_current_directory ();
-  octave_env::chdir (info.path);
-  intmap = bp_table::add_breakpoint (info.function_name, intmap);
-  octave_env::chdir (previous_directory);
-
-  if (intmap.size () > 0)
-    {
-    // FIXME -- Check file.
-      _edit_area->markerAdd (info.line, breakpoint);
-    }
+  if (file_in_path (info))
+    bp_table::add_breakpoint (info.function_name, line_info);
 }
 
 void
 file_editor_tab::remove_breakpoint_callback (const bp_info& info)
 {
-  bp_table::intmap intmap;
-  intmap[0] = info.line;
+  bp_table::intmap line_info;
+  line_info[0] = info.line;
 
-  std::string previous_directory = octave_env::get_current_directory ();
-  octave_env::chdir (info.path);
-  bp_table::remove_breakpoint (info.function_name, intmap);
-  octave_env::chdir (previous_directory);
-
-  // FIXME -- check result
-  bool success = true;
-
-  if (success)
-    {
-      // FIXME -- check file.
-      _edit_area->markerDelete (info.line, breakpoint);
-    }
+  if (file_in_path (info))
+    bp_table::remove_breakpoint (info.function_name, line_info);
 }
 
 void
 file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
 {
-  bp_table::intmap intmap;
-  std::string previous_directory = octave_env::get_current_directory ();
-  octave_env::chdir (info.path);
-  intmap = bp_table::remove_all_breakpoints_in_file (info.function_name, true);
-  octave_env::chdir (previous_directory);
-
-  if (intmap.size() > 0)
-    _edit_area->markerDeleteAll (breakpoint);
+  if (file_in_path (info))
+    bp_table::remove_all_breakpoints_in_file (info.function_name, true);
 }
 
 void
@@ -483,7 +532,7 @@ file_editor_tab::request_add_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (path, function_name, line);
+  bp_info info (_file_name, path, function_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::add_breakpoint_callback, info);
@@ -499,7 +548,7 @@ file_editor_tab::request_remove_breakpoint (int line)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (path, function_name, line);
+  bp_info info (_file_name, path, function_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_breakpoint_callback, info);
@@ -560,7 +609,7 @@ file_editor_tab::remove_all_breakpoints (const QWidget* ID)
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (path, function_name, 0);
+  bp_info info (_file_name, path, function_name, 0);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_all_breakpoints_callback, info);
@@ -608,7 +657,8 @@ file_editor_tab::find (const QWidget* ID)
 
   if (!_find_dialog)
     {
-       _find_dialog = new find_dialog (_edit_area);
+      _find_dialog = new find_dialog (_edit_area, 
+                                      qobject_cast<QWidget *>(sender ()));
       connect (_find_dialog, SIGNAL (finished (int)),
                this, SLOT (handle_find_dialog_finished (int)));
       _find_dialog->setWindowModality (Qt::NonModal);
@@ -626,6 +676,32 @@ file_editor_tab::find (const QWidget* ID)
   _find_dialog->init_search_text ();
 
 }
+
+void
+file_editor_tab::goto_line (const QWidget* ID, int line)
+{
+  if (ID != this)
+    return;
+
+  if (line <= 0)  // ask for desired line
+    {
+      bool ok = false;
+      int index;
+      _edit_area->getCursorPosition(&line, &index);
+      line = QInputDialog::getInt (_edit_area, tr("Goto line"), tr("Line number"),
+                                   line+1, 1, _edit_area->lines(), 1, &ok);
+      if (ok)
+        {
+          _edit_area->setCursorPosition (line-1, 0);
+          center_current_line ();
+        }
+    }
+  else  // go to given line without dialog
+    {
+      _edit_area->setCursorPosition (line-1, 0);
+    }
+}
+
 
 void
 file_editor_tab::do_comment_selected_text (bool comment)
@@ -772,10 +848,10 @@ file_editor_tab::load_file(const QString& fileName)
 }
 
 void
-file_editor_tab::new_file ()
+file_editor_tab::new_file (const QString &commands)
 {
   update_window_title (false); // window title (no modification)
-  _edit_area->setText ("");
+  _edit_area->setText (commands);
   _edit_area->setModified (false); // new file is not modified yet
 }
 
@@ -1002,12 +1078,12 @@ file_editor_tab::file_has_changed (const QString&)
 }
 
 void
-file_editor_tab::notice_settings ()
+file_editor_tab::notice_settings (const QSettings *settings)
 {
-  QSettings *settings = resource_manager::get_settings ();
+  // QSettings pointer is checked before emitting.
 
-  if (settings==NULL)
-    return; // this shouldn't happen!
+  update_lexer ();
+  QFontMetrics lexer_font_metrics (_edit_area->lexer ()->defaultFont (0));
 
   _edit_area->setCaretLineVisible(settings->value ("editor/highlightCurrentLine",true).toBool ());
 
@@ -1016,23 +1092,16 @@ file_editor_tab::notice_settings ()
   else
     _edit_area->setAutoCompletionThreshold (-1);
 
-  QFont xfont (settings->value ("editor/fontName","Courier").toString (),
-               settings->value ("editor/fontSize",10).toInt ());
-
   if (settings->value ("editor/showLineNumbers",true).toBool ())
     {
       _edit_area->setMarginLineNumbers (2, true);
-      _edit_area->setMarginsFont (xfont);
-      QFontMetrics metrics (xfont);
-      _edit_area->setMarginWidth(2, metrics.width("9999"));
+      _edit_area->setMarginWidth(2, lexer_font_metrics.width("9999"));
     }
   else
     {
       _edit_area->setMarginLineNumbers (2, false);
       _edit_area->setMarginWidth(2, 0);
     }
-
-  update_lexer ();
 
   _long_title = settings->value ("editor/longWindowTitle",false).toBool ();
 
@@ -1083,7 +1152,7 @@ file_editor_tab::file_name_query (const QWidget* ID)
 
   // Unnamed files shouldn't be transmitted.
   if (!_file_name.isEmpty ())
-    emit add_filename_to_list (_file_name);
+    emit add_filename_to_list (_file_name, this);
 }
 
 void
@@ -1120,12 +1189,56 @@ file_editor_tab::handle_file_resave_answer (int decision)
 }
 
 void
-file_editor_tab::set_debugger_position (int line)
+file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
 {
-  _edit_area->markerDeleteAll (debugger_position);
+  if (ID != this || ID == 0)
+    return;
+
   if (line > 0)
     {
-      _edit_area->markerAdd (line, debugger_position);
+      _edit_area->markerAdd (line-1, debugger_position);
+      center_current_line ();
+    }
+}
+
+void
+file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
+{
+  if (ID != this || ID == 0)
+    return;
+
+  if (line > 0)
+    _edit_area->markerDelete (line-1, debugger_position);
+}
+
+void
+file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line)
+{
+  if (ID != this || ID == 0)
+    return;
+
+  if (line > 0)
+    {
+      if (insert)
+        _edit_area->markerAdd (line-1, breakpoint);
+      else
+        _edit_area->markerDelete (line-1, breakpoint);
+    }
+}
+
+
+void
+file_editor_tab::center_current_line ()
+{
+  long int visible_lines = _edit_area->SendScintilla
+                                    (QsciScintillaBase::SCI_LINESONSCREEN);
+  if (visible_lines > 2)
+    {
+      int line, index;
+      _edit_area->getCursorPosition(&line,&index);
+      int first_line = _edit_area->firstVisibleLine ();
+      first_line = first_line + (line - first_line - (visible_lines-1)/2);
+      _edit_area->setFirstVisibleLine (first_line);
     }
 }
 

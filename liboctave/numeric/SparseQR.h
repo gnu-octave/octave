@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CSparse.h"
 #include "oct-sparse.h"
 
-#ifdef IDX_TYPE_LONG
+#ifdef USE_64_BIT_IDX_T
 #define CXSPARSE_DNAME(name) cs_dl ## name
 #else
 #define CXSPARSE_DNAME(name) cs_di ## name

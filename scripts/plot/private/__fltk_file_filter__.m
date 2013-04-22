@@ -34,7 +34,7 @@ function retval = __fltk_file_filter__ (file_filter)
   for idx = 1 : r
 
     curr_ext = file_filter{idx, 1};
-    curr_ext = strsplit (curr_ext, ";");
+    curr_ext = strsplit (curr_ext, ";", false);
 
     if (length (curr_ext) > 1)
       curr_ext = regexprep (curr_ext, '\*\.', ',');

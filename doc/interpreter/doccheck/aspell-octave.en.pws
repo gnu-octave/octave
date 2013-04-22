@@ -126,6 +126,8 @@ cindex
 circ
 circshift
 circum
+classpath
+classpaths
 Clenshaw
 clim
 cloglog
@@ -263,6 +265,7 @@ Errorbar
 errorbar
 Errorbars
 errorbars
+errordlg
 ErrorHandler
 Esmond
 et
@@ -385,6 +388,7 @@ HDF
 hdf
 headerlines
 heartsuit
+helpdlg
 Helvetica
 Hermitian
 Hessenberg
@@ -432,6 +436,7 @@ init
 inline
 Inline
 inpolygon
+inputdlg
 internet
 interp
 interpderiv
@@ -455,12 +460,15 @@ ith
 iy
 Jacobian
 Jacobians
+javaaddpath
+javamem
 ji
 JIT
 jpeg
 JPEG
 jpg
 jvm
+JVM's
 keybindings
 keypress
 Kolmogorov
@@ -506,6 +514,7 @@ linesearch
 linespec
 linespoints
 linkprop
+listdlg
 literalspacing
 Liu
 LLVM
@@ -592,6 +601,7 @@ mpoles
 mpower
 mput
 mrdivide
+msgbox
 MSYS
 mtimes
 Multi
@@ -746,6 +756,7 @@ quadv
 quantile
 Quantile
 quantiles
+questdlg
 Quickhull
 qz
 QZ
@@ -796,6 +807,7 @@ Rossum
 rpath
 RPMs
 rr
+runtime
 sa
 Saad
 Sandia
@@ -931,6 +943,7 @@ tex
 texinfo
 Texinfo
 TextAlphaBits
+textfield
 textscan
 th
 ths
@@ -1029,6 +1042,7 @@ Wa
 waitbar
 waitbars
 wallis
+warndlg
 wblcdf
 wblinv
 wblpdf

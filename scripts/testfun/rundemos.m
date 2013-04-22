@@ -30,7 +30,7 @@
 function rundemos (directory)
 
   if (nargin == 0)
-    dirs = strsplit (path (), pathsep ());
+    dirs = strsplit (path (), pathsep (), false);
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};

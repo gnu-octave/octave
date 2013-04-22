@@ -1,20 +1,12 @@
 FCN_FILE_DIRS += java
 
 java_FCN_FILES = \
-  java/dlgtest.m \
-  java/errordlg.m \
-  java/helpdlg.m \
-  java/inputdlg.m \
   java/javaArray.m \
   java/javaaddpath.m \
   java/javaclasspath.m \
   java/javamem.m \
   java/javarmpath.m \
-  java/listdlg.m \
-  java/msgbox.m \
-  java/questdlg.m \
-  java/usejava.m \
-  java/warndlg.m
+  java/usejava.m
 
 FCN_FILES += $(java_FCN_FILES)
 

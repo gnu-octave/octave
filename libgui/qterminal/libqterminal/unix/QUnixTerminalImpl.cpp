@@ -75,6 +75,10 @@ void QUnixTerminalImpl::initialize()
 
 void QUnixTerminalImpl::connectToPty()
 {
+    // Store the file descriptor associated with the STDERR stream onto
+    // another temporary file descriptor for reconnect in the destructor.
+    fdstderr = dup (STDERR_FILENO);
+
     int fds = m_kpty->slaveFd();
 
     dup2 (fds, STDIN_FILENO);
@@ -96,6 +100,9 @@ void QUnixTerminalImpl::connectToPty()
 
 QUnixTerminalImpl::~QUnixTerminalImpl()
 {
+    // Restore stderr so that any errors at exit might appear somewhere.
+    dup2 (fdstderr, STDERR_FILENO);
+
     emit destroyed();
 }
 

@@ -469,20 +469,6 @@ private:
   jit_function_info *jit_info;
 #endif
 
-#if 0
-  // The symbol record for argn in the local symbol table.
-  octave_value& argn_varref;
-
-  // The symbol record for nargin in the local symbol table.
-  octave_value& nargin_varref;
-
-  // The symbol record for nargout in the local symbol table.
-  octave_value& nargout_varref;
-
-  // The symbol record for varargin in the local symbol table.
-  octave_value& varargin_varref;
-#endif
-
   void print_code_function_header (void);
 
   void print_code_function_trailer (void);

@@ -47,7 +47,6 @@ extern void w32_set_quiet_shutdown (void);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 extern void MINGW_signal_cleanup (void);
-#define USE_W32_SIGINT 1
 #define MINGW_SIGNAL_CLEANUP() MINGW_signal_cleanup ()
 #else
 #define MINGW_SIGNAL_CLEANUP() do { } while (0)

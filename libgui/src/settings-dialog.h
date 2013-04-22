@@ -24,6 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
+#ifdef HAVE_QSCINTILLA
+#include "lexer-octave-gui.h"
+#endif
 
 namespace Ui
 {
@@ -39,6 +42,13 @@ class settings_dialog:public QDialog
 
 private:
   Ui::settings_dialog * ui;
+#ifdef HAVE_QSCINTILLA
+  void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
+  void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
+  int  get_valid_lexer_styles (QsciLexer *lexer, int styles[]);
+  enum { MaxLexerStyles = 64,
+         MaxStyleNumber = 128 };
+#endif
 };
 
 #endif // SETTINGSDIALOG_H

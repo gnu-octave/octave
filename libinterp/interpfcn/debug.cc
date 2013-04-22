@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "input.h"
 #include "pager.h"
+#include "octave-link.h"
 #include "oct-obj.h"
 #include "utils.h"
 #include "parse.h"
@@ -279,30 +280,24 @@ bp_table::do_add_breakpoint (const std::string& fname,
 {
   intmap retval;
 
-  octave_idx_type len = line.size ();
-
   octave_user_code *dbg_fcn = get_user_code (fname);
 
   if (dbg_fcn)
     {
       tree_statement_list *cmds = dbg_fcn->body ();
 
+      std::string file = dbg_fcn->fcn_file_name ();
+
       if (cmds)
         {
-          for (int i = 0; i < len; i++)
+          retval = cmds->add_breakpoint (file, line);
+
+          for (intmap_iterator p = retval.begin (); p != retval.end (); p++)
             {
-              const_intmap_iterator p = line.find (i);
-
-              if (p != line.end ())
+              if (p->second != 0)
                 {
-                  int lineno = p->second;
-
-                  retval[i] = cmds->set_breakpoint (lineno);
-
-                  if (retval[i] != 0)
-                    {
-                      bp_set.insert (fname);
-                    }
+                  bp_set.insert (fname);
+                  break;
                 }
             }
         }
@@ -335,8 +330,12 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 
       if (dbg_fcn)
         {
+          std::string file = dbg_fcn->fcn_file_name ();
+
           tree_statement_list *cmds = dbg_fcn->body ();
 
+          // FIXME -- move the operation on cmds to the
+          // tree_statement_list class?
           if (cmds)
             {
               octave_value_list results = cmds->list_breakpoints ();
@@ -348,7 +347,14 @@ bp_table::do_remove_breakpoint (const std::string& fname,
                       const_intmap_iterator p = line.find (i);
 
                       if (p != line.end ())
-                        cmds->delete_breakpoint (p->second);
+                        {
+                          int lineno = p->second;
+
+                          cmds->delete_breakpoint (lineno);
+
+                          if (! file.empty ())
+                            octave_link::update_breakpoint (false, file, lineno);
+                        }
                     }
 
                   results = cmds->list_breakpoints ();
@@ -356,7 +362,6 @@ bp_table::do_remove_breakpoint (const std::string& fname,
                   bp_set_iterator it = bp_set.find (fname);
                   if (results.length () == 0 && it != bp_set.end ())
                     bp_set.erase (it);
-
                 }
 
               retval = results.length ();
@@ -382,23 +387,17 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
 
   if (dbg_fcn)
     {
+      std::string file = dbg_fcn->fcn_file_name ();
+
       tree_statement_list *cmds = dbg_fcn->body ();
 
       if (cmds)
         {
-          octave_value_list bkpts = cmds->list_breakpoints ();
-
-          for (int i = 0; i < bkpts.length (); i++)
-            {
-              int lineno = static_cast<int> (bkpts(i).int_value ());
-              cmds->delete_breakpoint (lineno);
-              retval[i] = lineno;
-            }
+          retval = cmds->remove_all_breakpoints (file);
 
           bp_set_iterator it = bp_set.find (fname);
           if (it != bp_set.end ())
             bp_set.erase (it);
-
         }
     }
   else if (! silent)
@@ -455,6 +454,8 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
             {
               tree_statement_list *cmds = f->body ();
 
+              // FIXME -- move the operation on cmds to the
+              // tree_statement_list class?
               if (cmds)
                 {
                   octave_value_list bkpts = cmds->list_breakpoints ();
@@ -764,13 +765,18 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
         {
           char ch;
           int line = 1;
+          bool isnewline = true;
 
-          if (line >= start && line <= end)
-            os << line << "\t";
-
-          while (fs.get (ch))
+          // FIXME: Why not use line-oriented input here [getline()]?
+          while (fs.get (ch) && line <= end)
             {
-              if (line >= start && line <= end)
+              if (isnewline && line >= start)
+                {
+                  os << line << "\t";
+                  isnewline = false;
+                }
+
+              if (line >= start)
                 {
                   os << ch;
                 }
@@ -778,8 +784,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
               if (ch == '\n')
                 {
                   line++;
-                  if (line >= start && line <= end)
-                    os << line << "\t";
+                  isnewline = true;
                 }
             }
         }

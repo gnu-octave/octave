@@ -46,7 +46,7 @@ extern "C"
 {
 #endif
 
-  extern void octave_rl_redisplay (void);
+extern void octave_rl_redisplay (void);
 
 extern int octave_rl_screen_height (void);
 
@@ -56,7 +56,7 @@ extern void octave_rl_enable_paren_matching (int);
 
 extern void octave_rl_init (void);
 
-extern void octave_rl_clear_screen (void);
+extern void octave_rl_clear_screen (int skip_redisplay);
 
 extern void octave_rl_resize_terminal (void);
 
@@ -67,6 +67,8 @@ extern void octave_rl_insert_text (const char *);
 extern int octave_rl_newline (int, int);
 
 extern const char *octave_rl_line_buffer (void);
+
+extern int octave_rl_do_undo (void);
 
 extern void octave_rl_clear_undo_list (void);
 
@@ -89,6 +91,8 @@ extern void octave_rl_re_read_init_file (void);
 extern int octave_rl_filename_completion_desired (int);
 
 extern int octave_rl_filename_quoting_desired (int);
+
+extern void octave_rl_done (int);
 
 extern char *octave_rl_filename_completion_function (const char *, int);
 

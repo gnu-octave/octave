@@ -81,7 +81,7 @@ function name = __default_filtername__ (filterext)
   endswitch
 
   if (isempty (name))
-    extlist = strsplit (filterext, ";");
+    extlist = strsplit (filterext, ";", false);
     extlist = strrep (extlist, "*.", "");
     extlist = toupper (extlist);
     extlist(end+1, :) = repmat ({","}, 1, length (extlist));

@@ -19,11 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Built-in Function} {@var{val} =} java_convert_matrix ()
 ## @deftypefnx {Built-in Function} {@var{old_val} =} java_convert_matrix (@var{new_val})
-## @deftypefnx {Built-in Function} {} java_convert_matrix (@var{new_val}, \"local\")
+## @deftypefnx {Built-in Function} {} java_convert_matrix (@var{new_val}, "local")
 ## Query or set the internal variable that controls whether Java arrays are
 ## automatically converted to Octave matrices.  The default value is false.
 ## 
-## When called from inside a function with the \"local\" option, the variable is
+## When called from inside a function with the "local" option, the variable is
 ## changed locally for the function and any subroutines it calls.  The original
 ## variable value is restored when exiting the function.
 ## @seealso{java_matrix_autoconversion, java_unsigned_conversion, java_debug}

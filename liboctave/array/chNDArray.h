@@ -73,6 +73,11 @@ public:
   charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
   charNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
+  charNDArray max (int dim = -1) const;
+  charNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
+  charNDArray min (int dim = -1) const;
+  charNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
+
   charNDArray& insert (const charNDArray& a, octave_idx_type r, octave_idx_type c);
   charNDArray& insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx);
 
@@ -96,6 +101,13 @@ public:
 
   charNDArray diag (octave_idx_type m, octave_idx_type n) const;
 };
+
+extern OCTAVE_API charNDArray min (char d, const charNDArray& m);
+extern OCTAVE_API charNDArray min (const charNDArray& m, char d);
+extern OCTAVE_API charNDArray min (const charNDArray& a, const charNDArray& b);
+extern OCTAVE_API charNDArray max (char d, const charNDArray& m);
+extern OCTAVE_API charNDArray max (const charNDArray& m, char d);
+extern OCTAVE_API charNDArray max (const charNDArray& a, const charNDArray& b);
 
 NDS_CMP_OP_DECLS (charNDArray, char, OCTAVE_API)
 NDS_BOOL_OP_DECLS (charNDArray, char, OCTAVE_API)

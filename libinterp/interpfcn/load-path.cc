@@ -353,6 +353,25 @@ load_path::contains (const std::string& dir) const
   return find_dir_info (dir) != dir_info_list.end ();
 }
 
+bool
+load_path::do_contains_canonical (const std::string& dir) const
+{
+  bool retval = false;
+
+  for (const_dir_info_list_iterator i = dir_info_list.begin ();
+       i != dir_info_list.end ();
+       i++)
+    {
+      if (same_file (dir, i->dir_name))
+        {
+          retval = true;
+          break;
+        }
+    }
+
+  return retval;
+}
+
 void
 load_path::move_fcn_map (const std::string& dir_name,
                          const string_vector& fcn_files, bool at_end)

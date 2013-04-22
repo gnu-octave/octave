@@ -469,7 +469,7 @@ SPARSE_SMSM_BOOL_OP_DECLS (SparseMatrix, SparseMatrix, OCTAVE_API)
 
 SPARSE_FORWARD_DEFS (MSparse, SparseMatrix, Matrix, double)
 
-#ifdef IDX_TYPE_LONG
+#ifdef USE_64_BIT_IDX_T
 #define UMFPACK_DNAME(name) umfpack_dl_ ## name
 #else
 #define UMFPACK_DNAME(name) umfpack_di_ ## name

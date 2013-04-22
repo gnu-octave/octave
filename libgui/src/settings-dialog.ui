@@ -9,20 +9,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>700</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>600</width>
-    <height>400</height>
+    <width>700</width>
+    <height>480</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>600</width>
-    <height>400</height>
+    <width>700</width>
+    <height>480</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -46,105 +46,146 @@
         <rect>
          <x>9</x>
          <y>10</y>
-         <width>561</width>
-         <height>131</height>
+         <width>651</width>
+         <height>371</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Icon set for dock widgets</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Language (requires restart)</string>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_language">
-            <property name="insertPolicy">
-             <enum>QComboBox::InsertAtBottom</enum>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Icon size</string>
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+          <item row="2" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QSpinBox" name="toolbar_icon_size">
+              <property name="minimum">
+               <number>16</number>
+              </property>
+              <property name="maximum">
+               <number>32</number>
+              </property>
+              <property name="singleStep">
+               <number>4</number>
+              </property>
+              <property name="value">
+               <number>24</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QComboBox" name="comboBox_language">
+              <property name="insertPolicy">
+               <enum>QComboBox::InsertAtBottom</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QRadioButton" name="general_icon_octave">
+              <property name="text">
+               <string>Octave logo only</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="general_icon_letter">
+              <property name="text">
+               <string>Letter icons</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="general_icon_graphic">
+              <property name="text">
+               <string>Graphic  icons</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
-          <property name="title">
-           <string>Icon set for dock widgets</string>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-          <widget class="QRadioButton" name="general_icon_octave">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>20</y>
-             <width>151</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Octave logo only</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-          <widget class="QRadioButton" name="general_icon_letter">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>40</y>
-             <width>151</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Letter icons</string>
-           </property>
-          </widget>
-          <widget class="QRadioButton" name="general_icon_graphic">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>60</y>
-             <width>151</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Graphic  icons</string>
-           </property>
-          </widget>
-         </widget>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -157,58 +198,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>Font</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QFontComboBox" name="editor_fontName">
-             <property name="editable">
-              <bool>false</bool>
-             </property>
-             <property name="fontFilters">
-              <set>QFontComboBox::MonospacedFonts</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>Font Size</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="editor_fontSize">
-             <property name="minimum">
-              <number>2</number>
-             </property>
-             <property name="maximum">
-              <number>96</number>
-             </property>
-             <property name="value">
-              <number>10</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="horizontalLayout_4"/>
          </item>
          <item>
           <widget class="QCheckBox" name="editor_showLineNumbers">
@@ -273,14 +263,24 @@
         </spacer>
        </item>
        <item>
+        <widget class="QCheckBox" name="useCustomFileEditor">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Use custom file editor</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QCheckBox" name="useCustomFileEditor">
+          <widget class="QLabel" name="customEditorLabel">
            <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="text">
-            <string>Use custom file editor:</string>
+            <string>Command  line (%f=file, %l=line):</string>
            </property>
           </widget>
          </item>
@@ -297,6 +297,21 @@
         </layout>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="tab_6">
+      <attribute name="title">
+       <string>Editor Styles</string>
+      </attribute>
+      <widget class="QTabWidget" name="tabs_editor_styles">
+       <property name="geometry">
+        <rect>
+         <x>2</x>
+         <y>9</y>
+         <width>671</width>
+         <height>381</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_5">
       <attribute name="title">
@@ -429,13 +444,6 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QCheckBox" name="showFilenames">
-         <property name="text">
-          <string>Show filenames</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="showFileSize">
          <property name="text">
           <string>Show file size</string>
@@ -460,6 +468,13 @@
         <widget class="QCheckBox" name="showHiddenFiles">
          <property name="text">
           <string>Show hidden files</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="sync_octave_directory">
+         <property name="text">
+          <string>Synchronize octave directory with the file browser</string>
          </property>
         </widget>
        </item>
@@ -819,6 +834,22 @@
     <hint type="destinationlabel">
      <x>299</x>
      <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useCustomFileEditor</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>customEditorLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>349</x>
+     <y>383</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>111</x>
+     <y>413</y>
     </hint>
    </hints>
   </connection>

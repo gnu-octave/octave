@@ -52,14 +52,11 @@ extern OCTINTERP_API bool quitting_gracefully;
 extern OCTINTERP_API int exit_status;
 
 extern OCTINTERP_API void
-clean_up_and_exit (int);
+clean_up_and_exit (int status, bool safe_to_return = false);
 
 extern OCTINTERP_API void recover_from_exception (void);
 
 extern OCTINTERP_API int main_loop (void);
-
-extern OCTINTERP_API void
-do_octave_atexit (void);
 
 extern OCTINTERP_API void
 octave_add_atexit_function (const std::string& fname);
@@ -84,14 +81,17 @@ private:
   {
     call_stack_elt (octave_function *f, symbol_table::scope_id s,
                     symbol_table::context_id c, size_t p = 0)
-      : fcn (f), stmt (0), scope (s), context (c), prev (p) { }
+      : fcn (f), line (-1), column (-1), scope (s), context (c), prev (p)
+    { }
 
     call_stack_elt (const call_stack_elt& elt)
-      : fcn (elt.fcn), stmt (elt.stmt), scope (elt.scope),
-        context (elt.context), prev (elt.prev) { }
+      : fcn (elt.fcn), line (elt.line), column (elt.column),
+        scope (elt.scope), context (elt.context), prev (elt.prev)
+    { }
 
     octave_function *fcn;
-    tree_statement *stmt;
+    int line;
+    int column;
     symbol_table::scope_id scope;
     symbol_table::context_id context;
     size_t prev;
@@ -132,12 +132,6 @@ public:
   static octave_function *current (void)
   {
     return instance_ok () ? instance->do_current () : 0;
-  }
-
-  // Current statement (top of stack).
-  static tree_statement *current_statement (void)
-  {
-    return instance_ok () ? instance->do_current_statement () : 0;
   }
 
   // Current line in current function.
@@ -226,10 +220,22 @@ public:
       instance->do_push (0, scope, context);
   }
 
-  static void set_statement (tree_statement *s)
+  static void set_location (int l, int c)
   {
     if (instance_ok ())
-      instance->do_set_statement (s);
+      instance->do_set_location (l, c);
+  }
+
+  static void set_line (int l)
+  {
+    if (instance_ok ())
+      instance->do_set_line (l);
+  }
+
+  static void set_column (int c)
+  {
+    if (instance_ok ())
+      instance->do_set_column (c);
   }
 
   static bool goto_frame (size_t n = 0, bool verbose = false)
@@ -365,25 +371,34 @@ private:
     return retval;
   }
 
-  tree_statement *do_current_statement (void) const
-  {
-    tree_statement *retval = 0;
-
-    if (! cs.empty ())
-      {
-        const call_stack_elt& elt = cs[curr_frame];
-        retval = elt.stmt;
-      }
-
-    return retval;
-  }
-
-  void do_set_statement (tree_statement *s)
+  void do_set_location (int l, int c)
   {
     if (! cs.empty ())
       {
         call_stack_elt& elt = cs.back ();
-        elt.stmt = s;
+
+        elt.line = l;
+        elt.column = c;
+      }
+  }
+
+  void do_set_line (int l)
+  {
+    if (! cs.empty ())
+      {
+        call_stack_elt& elt = cs.back ();
+
+        elt.line = l;
+      }
+  }
+
+  void do_set_column (int c)
+  {
+    if (! cs.empty ())
+      {
+        call_stack_elt& elt = cs.back ();
+
+        elt.column = c;
       }
   }
 

@@ -17,13 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ver ()
+## @deftypefn  {Function File} {} ver ()
+## @deftypefnx {Function File} {v =} ver ()
+## @deftypefnx {Function File} {v =} ver ("Octave")
+## @deftypefnx {Function File} {v =} ver (@var{package})
+## 
 ## Display a header containing the current Octave version number, license
-## string and operating system, followed by the installed package names,
+## string, and operating system followed by a list of installed packages,
 ## versions, and installation directories.
 ##
-## @deftypefnx {Function File} {v =} ver ()
-## Return a vector of structures, respecting Octave and each installed package.
+## @code{v = ver ()}
+##
+## Return a vector of structures describing Octave and each installed package.
 ## The structure includes the following fields.
 ##
 ## @table @code
@@ -37,13 +42,15 @@
 ## Revision of the package.
 ##
 ## @item Date
-## Date respecting the version/revision.
+## Date of the version/revision.
 ## @end table
 ##
-## @deftypefnx {Function File} {v =} ver ("Octave")
+## @code{v = ver ("Octave")}
+##
 ## Return version information for Octave only.
 ##
-## @deftypefnx {Function File} {v =} ver (@var{package})
+## @code{v = ver (@var{package})}
+##
 ## Return version information for @var{package}.
 ##
 ## @seealso{version, octave_config_info}

@@ -169,6 +169,15 @@ octave_base_scalar<ST>::print_name_tag (std::ostream& os,
 }
 
 template <class ST>
+std::string
+octave_base_scalar<ST>::short_disp (void) const
+{
+  std::ostringstream buf;
+  octave_print_internal (buf, scalar);
+  return buf.str ();
+}
+
+template <class ST>
 bool
 octave_base_scalar<ST>::fast_elem_insert_self (void *where, builtin_type_t btyp) const
 {

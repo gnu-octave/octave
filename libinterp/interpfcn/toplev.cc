@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
+#include <sys/select.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -56,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "lex.h"
+#include "octave-link.h"
 #include "oct-conf.h"
 #include "oct-conf-features.h"
 #include "oct-hist.h"
@@ -117,17 +119,29 @@ octave_call_stack::create_instance (void)
 int
 octave_call_stack::do_current_line (void) const
 {
-  tree_statement *stmt = do_current_statement ();
+  int retval = -1;
 
-  return stmt ? stmt->line () : -1;
+  if (! cs.empty ())
+    {
+      const call_stack_elt& elt = cs[curr_frame];
+      retval = elt.line;
+    }
+
+  return retval;
 }
 
 int
 octave_call_stack::do_current_column (void) const
 {
-  tree_statement *stmt = do_current_statement ();
+  int retval = -1;
 
-  return stmt ? stmt->column () : -1;
+  if (! cs.empty ())
+    {
+      const call_stack_elt& elt = cs[curr_frame];
+      retval = elt.column;
+    }
+
+  return retval;
 }
 
 int
@@ -145,11 +159,9 @@ octave_call_stack::do_caller_user_code_line (void) const
 
       if (f && f->is_user_code ())
         {
-          tree_statement *stmt = elt.stmt;
-
-          if (stmt)
+          if (elt.line > 0)
             {
-              retval = stmt->line ();
+              retval = elt.line;
               break;
             }
         }
@@ -173,11 +185,9 @@ octave_call_stack::do_caller_user_code_column (void) const
 
       if (f && f->is_user_code ())
         {
-          tree_statement *stmt = elt.stmt;
-
-          if (stmt)
+          if (elt.column)
             {
-              retval = stmt->column ();
+              retval = elt.column;
               break;
             }
         }
@@ -309,18 +319,8 @@ octave_call_stack::do_backtrace (size_t nskip,
                   else
                     name(k) = f->parent_fcn_name () + Vfilemarker + f->name ();
 
-                  tree_statement *stmt = elt.stmt;
-
-                  if (stmt)
-                    {
-                      line(k) = stmt->line ();
-                      column(k) = stmt->column ();
-                    }
-                  else
-                    {
-                      line(k) = -1;
-                      column(k) = -1;
-                    }
+                  line(k) = elt.line;
+                  column(k) = elt.column;
 
                   k++;
                 }
@@ -351,17 +351,9 @@ octave_call_stack::do_goto_frame (size_t n, bool verbose)
           octave_function *f = elt.fcn;
           std::string nm = f ? f->name () : std::string ("<unknown>");
 
-          tree_statement *s = elt.stmt;
-          int l = -1;
-          int c = -1;
-          if (s)
-            {
-              l = s->line ();
-              c = s->column ();
-            }
-
           octave_stdout << "stopped in " << nm
-                        << " at line " << l << " column " << c
+                        << " at line " << elt.line
+                        << " column " << elt.column
                         << " (" << elt.scope << "[" << elt.context << "])"
                         << std::endl;
         }
@@ -415,14 +407,8 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
                   std::ostringstream buf;
 
                   if (f)
-                    {
-                      tree_statement *s = elt.stmt;
-
-                      int l = s ? s->line () : -1;
-
-                      buf << "stopped in " << f->name ()
-                          << " at line " << l << std::endl;
-                    }
+                    buf << "stopped in " << f->name ()
+                        << " at line " << elt.line << std::endl;
                   else
                     buf << "at top level" << std::endl;
 
@@ -508,7 +494,6 @@ octave_call_stack::do_backtrace_error_message (void) const
       const call_stack_elt& elt = cs.back ();
 
       octave_function *fcn = elt.fcn;
-      tree_statement *stmt = elt.stmt;
 
       std::string fcn_name = "?unknown?";
 
@@ -520,11 +505,8 @@ octave_call_stack::do_backtrace_error_message (void) const
             fcn_name = fcn->name ();
         }
 
-      int line = stmt ? stmt->line () : -1;
-      int column = stmt ? stmt->column () : -1;
-
       error ("  %s at line %d, column %d",
-             fcn_name.c_str (), line, column);
+             fcn_name.c_str (), elt.line, elt.column);
     }
 }
 
@@ -562,7 +544,11 @@ main_loop (void)
   // octave_parser constructor sets this for us.
   frame.protect_var (LEXER);
 
-  octave_parser parser;
+  octave_lexer *lxr = ((interactive || forced_interactive)
+                       ? new octave_lexer ()
+                       : new octave_lexer (stdin));
+
+  octave_parser parser (*lxr);
 
   int retval = 0;
   do
@@ -629,10 +615,7 @@ main_loop (void)
           recover_from_exception ();
           octave_stdout << "\n";
           if (quitting_gracefully)
-            {
-              clean_up_and_exit (exit_status);
-              break; // If user has overriden the exit func.
-            }
+            return exit_status;
         }
       catch (octave_execution_exception)
         {
@@ -656,13 +639,120 @@ main_loop (void)
 
 // Fix up things before exiting.
 
+static std::list<std::string> octave_atexit_functions;
+
+static void
+do_octave_atexit (void)
+{
+  static bool deja_vu = false;
+
+  OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
+
+  while (! octave_atexit_functions.empty ())
+    {
+      std::string fcn = octave_atexit_functions.front ();
+
+      octave_atexit_functions.pop_front ();
+
+      OCTAVE_SAFE_CALL (reset_error_handler, ());
+
+      OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
+
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+    }
+
+  if (! deja_vu)
+    {
+      deja_vu = true;
+
+      // Process pending events and disasble octave_link event
+      // processing with this call.
+
+      octave_link::process_events (true);
+
+      // Do this explicitly so that destructors for mex file objects
+      // are called, so that functions registered with mexAtExit are
+      // called.
+      OCTAVE_SAFE_CALL (clear_mex_functions, ());
+
+      OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
+
+      // FIXME -- is this needed?  Can it cause any trouble?
+      OCTAVE_SAFE_CALL (raw_mode, (0));
+
+      OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
+
+      if (! command_history::ignoring_entries ())
+        OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
+
+      OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
+
+      OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
+
+      OCTAVE_SAFE_CALL (close_files, ());
+
+      OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
+
+      OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
+
+      OCTAVE_SAFE_CALL (sysdep_cleanup, ());
+
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+
+      if (! quitting_gracefully && (interactive || forced_interactive))
+        {
+          octave_stdout << "\n";
+
+          // Yes, we want this to be separate from the call to
+          // flush_octave_stdout above.
+
+          OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+        }
+
+      // Don't call singleton_cleanup_list::cleanup until we have the
+      // problems with registering/unregistering types worked out.  For
+      // example, uncomment the following line, then use the make_int
+      // function from the examples directory to create an integer
+      // object and then exit Octave.  Octave should crash with a
+      // segfault when cleaning up the typinfo singleton.  We need some
+      // way to force new octave_value_X types that are created in
+      // .oct files to be unregistered when the .oct file shared library
+      // is unloaded.
+      //
+      // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+
+      OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
+    }
+}
+
 void
-clean_up_and_exit (int retval)
+clean_up_and_exit (int retval, bool safe_to_return)
 {
   do_octave_atexit ();
 
-  if (octave_exit)
-    (*octave_exit) (retval == EOF ? 0 : retval);
+  if (octave_link::exit (retval))
+    {
+      if (safe_to_return)
+        return;
+      else
+        {
+          // What should we do here?  We might be called from some
+          // location other than the end of octave_execute_interpreter,
+          // so it might not be safe to return.
+
+          // We have nothing else to do at this point, and the
+          // octave_link::exit function is supposed to take care of
+          // exiting for us.  Assume that job won't take more than a
+          // day...
+
+          gnulib::sleep (86400);
+        }
+    }
+  else
+    {
+      if (octave_exit)
+        (*octave_exit) (retval == EOF ? 0 : retval);
+    }
 }
 
 DEFUN (quit, args, ,
@@ -1006,89 +1096,6 @@ command shell that is started to run the command.\n\
 %!error system ()
 %!error system (1, 2, 3)
 */
-
-// FIXME -- this should really be static, but that causes
-// problems on some systems.
-std::list<std::string> octave_atexit_functions;
-
-void
-do_octave_atexit (void)
-{
-  static bool deja_vu = false;
-
-  while (! octave_atexit_functions.empty ())
-    {
-      std::string fcn = octave_atexit_functions.front ();
-
-      octave_atexit_functions.pop_front ();
-
-      OCTAVE_SAFE_CALL (reset_error_handler, ());
-
-      OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
-
-      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-    }
-
-  if (! deja_vu)
-    {
-      deja_vu = true;
-
-      // Do this explicitly so that destructors for mex file objects
-      // are called, so that functions registered with mexAtExit are
-      // called.
-      OCTAVE_SAFE_CALL (clear_mex_functions, ());
-
-      OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
-
-      // FIXME -- is this needed?  Can it cause any trouble?
-      OCTAVE_SAFE_CALL (raw_mode, (0));
-
-      OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
-
-      if (! command_history::ignoring_entries ())
-        OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
-
-      OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
-
-      OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
-
-      OCTAVE_SAFE_CALL (close_files, ());
-
-      OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
-
-      OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
-
-      OCTAVE_SAFE_CALL (cleanup_parser, ());
-
-      OCTAVE_SAFE_CALL (sysdep_cleanup, ());
-
-      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-
-      if (! quitting_gracefully && (interactive || forced_interactive))
-        {
-          octave_stdout << "\n";
-
-          // Yes, we want this to be separate from the call to
-          // flush_octave_stdout above.
-
-          OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-        }
-
-      // Don't call singleton_cleanup_list::cleanup until we have the
-      // problems with registering/unregistering types worked out.  For
-      // example, uncomment the following line, then use the make_int
-      // function from the examples directory to create an integer
-      // object and then exit Octave.  Octave should crash with a
-      // segfault when cleaning up the typinfo singleton.  We need some
-      // way to force new octave_value_X types that are created in
-      // .oct files to be unregistered when the .oct file shared library
-      // is unloaded.
-      //
-      // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
-
-      OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
-    }
-}
 
 void
 octave_add_atexit_function (const std::string& fname)

@@ -78,6 +78,8 @@ public:
 
   bool is_defined (void);
 
+  std::list<std::string> variable_names (void) const;
+
   octave_value_list convert_to_const_vector (int nargout, const Cell& varargout);
 
   tree_parameter_list *dup (symbol_table::scope_id scope,

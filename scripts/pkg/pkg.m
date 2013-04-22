@@ -263,7 +263,7 @@
 function [local_packages, global_packages] = pkg (varargin)
   ## Installation prefix (FIXME: what should these be on windows?)
   persistent user_prefix = false;
-  persistent prefix = -1;
+  persistent prefix = false;
   persistent archprefix = -1;
   persistent local_list = tilde_expand (fullfile ("~", ".octave_packages"));
   persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave",
@@ -277,7 +277,7 @@ function [local_packages, global_packages] = pkg (varargin)
   ## FIXME: is it OK to set this always true on windows?
   global_install = ((ispc () && ! isunix ()) || (geteuid () == 0));
 
-  if (prefix == -1)
+  if (isbool (prefix))
     if (global_install)
       prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
       archprefix = fullfile (octave_config_info ("libdir"),

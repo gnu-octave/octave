@@ -32,6 +32,9 @@
 
 ## Author: jwe
 
+## Note: The following code is rigged for Matlab compatibility and is
+##       full of hidden assumptions.  Be very wary when modifying.
+
 function h = text (varargin)
 
   nargs = nargin;
@@ -40,7 +43,6 @@ function h = text (varargin)
   if (nargs > 2 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
     x = varargin{1};
     y = varargin{2};
-    offset = 3;
 
     if (nargin > 3 && isnumeric (varargin{3}))
       z = varargin{3};
@@ -56,72 +58,92 @@ function h = text (varargin)
     nx = numel (x);
     ny = numel (y);
     nz = numel (z);
-    if (ischar (label) || isnumeric (label))
+    if (ischar (label))
+
+      do_keyword_repl = true;
       nt = rows (label);
-      if (nx > 1 && nt == 1)
-        ## Mutiple text objects with same string
-        label = repmat ({label}, [nx, 1]);
-        nt = nx;
+      if (nx == 1 && nt == 1)
+        ## Single text object with one line
+        label = {label};
+      elseif (nx == 1 && nt > 1)
+        ## Single text object with multiple lines
+        ## FIXME: "default" or "factory" as first row
+        ##        should be escaped to "\default" or "\factory"
+        ##        Other rows do not require escaping.
+        do_keyword_repl = false;
+        label = {label};
       elseif (nx > 1 && nt == nx)
         ## Mutiple text objects with different strings
         label = cellstr (label);
-      elseif (ischar (label))
-        ## Single text object with one or more lines
-        label = {label};
-      endif
-    elseif (iscell (label))
-      nt = numel (label);
-      if (nx > 1 && nt == 1)
+      else 
+        ## Mutiple text objects with same string
         label = repmat ({label}, [nx, 1]);
         nt = nx;
-      elseif (! (nx > 1 && nt == nx))
+      endif
+
+      ## Escape special keywords
+      if (do_keyword_repl)
+        label = regexprep (label, '^(default|factory)$', '\\$1');
+      endif
+
+    elseif (iscell (label))
+
+      nt = numel (label);
+      if (nx == 1)      
+        ## Single text object with one or more lines
         label = {label};
         nt = 1;
+      elseif (nx > 1 && nt == nx)
+        ## Mutiple text objects with different strings
+      else
+        ## Mutiple text objects with same string
+        label = repmat ({label}, [nx, 1]);
+        nt = nx;
       endif
+
     else
-      error ("text: expecting LABEL to be a character string or cell array of character strings");
+
+      error ("text: LABEL must be a character string or cell array of character strings");
+
     endif
-  else
+  else  # Only PROP/VALUE pairs
     x = y = z = 0;
     nx = ny = nz = 1;
     label = {""};
     nt = 1;
   endif
 
-  if (rem (numel (varargin), 2) == 0)
-
-    if (nx == ny && nx == nz && (nt == nx || nt == 1 || nx == 1))
-      pos = [x(:), y(:), z(:)];
-      ca = gca ();
-      tmp = zeros (nt, 1);
-      if (nx == 1)
-        ## TODO - Modify __go_text__() to accept cell-strings
-        tmp = __go_text__ (ca, "string", "foobar",
-                           varargin{:},
-                           "position", pos);
-        set (tmp, "string", label{1});
-      elseif (nt == nx)
-        for n = 1:nt
-          tmp(n) = __go_text__ (ca, "string", label{n},
-                                varargin{:},
-                                "position", pos(n,:));
-        endfor
-        __request_drawnow__ ();
-      else
-        error ("text: dimension mismatch for coordinates and LABEL");
-      endif
-    elseif (nt == nx || nt == 1 || nx == 1)
-      error ("text: dimension mismatch for coordinates");
-    else
-      error ("text: mismatch betwween coordinates and strings");
-    endif
-
-    if (nargout > 0)
-      h = tmp;
-    endif
-
-  else
+  ## Any remaining inputs must occur as PROPERTY/VALUE pairs
+  if (rem (numel (varargin), 2) != 0)
     print_usage ();
+  endif
+
+  if (nx == ny && nx == nz && (nt == nx || nt == 1 || nx == 1))
+    pos = [x(:), y(:), z(:)];
+    ca = gca ();
+    htmp = zeros (nt, 1);
+    if (nx == 1)
+      htmp = __go_text__ (ca, "string", label{1},
+                          varargin{:},
+                          "position", pos);
+    elseif (nx == nt)
+      for n = 1:nt
+        htmp(n) = __go_text__ (ca, "string", label{n},
+                               varargin{:},
+                               "position", pos(n,:));
+      endfor
+      __request_drawnow__ ();
+    else
+      error ("text: dimension mismatch for coordinates and LABEL");
+    endif
+  elseif (nt == nx || nt == 1 || nx == 1)
+    error ("text: dimension mismatch for coordinates");
+  else
+    error ("text: dimension mismatch between coordinates and strings");
+  endif
+
+  if (nargout > 0)
+    h = htmp;
   endif
 
 endfunction
@@ -225,30 +247,70 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   h = text (0.5, 0.3, "char");
-%!   assert ("char", class (get (h, "string")));
+%!   ## Single object with one line
+%!   h = text (0.5, 0.3, "single object with one line");
+%!   obs = get (h, "string");
+%!   assert (class (obs), "char");
+%!   assert (obs, "single object with one line");
+%!
+%!   ## Single object with multiple lines
 %!   h = text (0.5, 0.4, ["char row 1"; "char row 2"]);
-%!   assert ("char", class (get (h, "string")));
-%!   h = text (0.5, 0.6, {"cell2str (1,1)", "cell2str (1,2)"; "cell2str (2,1)", "cell2str (2,2)"});
-%!   assert ("cell", class (get (h, "string")));
-%!   h = text (0.5, 0.8, "foobar");
-%!   set (h, "string", 1:3);
-%!   h = text ([0.1, 0.1], [0.3, 0.4], "one string & two objects");
-%!   assert ("char", class (get (h(1), "string")));
-%!   assert ("char", class (get (h(2), "string")));
-%!   h = text ([0.1, 0.1], [0.5, 0.6], {"one cellstr & two objects"});
-%!   assert ("cell", class (get (h(1), "string")));
-%!   assert ("cell", class (get (h(2), "string")));
-%!   h = text ([0.1, 0.1], [0.7, 0.8], {"cellstr 1 object 1", "cellstr 2 object 2"});
-%!   assert ("char", class (get (h(1), "string")));
-%!   assert ("char", class (get (h(2), "string")));
-%!   h = text ([0.1, 0.1], [0.1, 0.2], ["1st string & 1st object"; "2nd string & 2nd object"]);
-%!   assert ("char", class (get (h(1), "string")));
-%!   assert ("char", class (get (h(2), "string")));
-%!   h = text (0.7, 0.6, "single string");
-%!   assert ("char", class (get (h, "string")));
-%!   h = text (0.7, 0.5, {"single cell-string"});
-%!   assert ("cell", class (get (h, "string")));
+%!   obs = get (h, "string");
+%!   assert (class (obs), "char");
+%!   assert (obs, ["char row 1"; "char row 2"]);
+%!
+%!   ## Multiple objects with single line
+%!   h = text ([0.1, 0.1], [0.3, 0.4], "two objects with same string");
+%!   assert (class (get (h(1), "string")), "char");
+%!   assert (class (get (h(2), "string")), "char");
+%!   assert (get (h(1), "string"), "two objects with same string");
+%!   assert (get (h(2), "string"), "two objects with same string");
+%!
+%!   ## Multiple objects with multiple lines
+%!   h = text ([0.1, 0.1], [0.3, 0.4], ["string1"; "string2"]);
+%!   assert (class (get (h(1), "string")), "char");
+%!   assert (class (get (h(2), "string")), "char");
+%!   assert (get (h(1), "string"), "string1");
+%!   assert (get (h(2), "string"), "string2");
+%!
+%!   ### Tests repeated with cell input ###
+%!
+%!   ## Single object with one line
+%!   h = text (0.5, 0.3, {"single object with one line"});
+%!   obs = get (h, "string");
+%!   assert (class (obs), "cell");
+%!   assert (obs, {"single object with one line"});
+%!
+%!   ## Single object with multiple lines
+%!   h = text (0.5, 0.6, {"cell2str (1,1)", "cell2str (1,2)";
+%!                        "cell2str (2,1)", "cell2str (2,2)"});
+%!   obs = get (h, "string");
+%!   assert (class (obs), "cell");
+%!   assert (obs, {"cell2str (1,1)"; "cell2str (2,1)";
+%!                 "cell2str (1,2)"; "cell2str (2,2)"});
+%!
+%!   ## Multiple objects with single line
+%!   h = text ([0.1, 0.1], [0.5, 0.6], {"two objects with same cellstr"});
+%!   assert (class (get (h(1), "string")), "cell");
+%!   assert (class (get (h(2), "string")), "cell");
+%!   ## FIXME: is return value of cellstr, rather than string, Matlab-verified?
+%!   assert (get (h(1), "string"), {"two objects with same cellstr"});
+%!   assert (get (h(2), "string"), {"two objects with same cellstr"});
+%!
+%!   ## Multiple objects with multiple lines
+%!   h = text ([0.1, 0.1], [0.7, 0.8], {"cellstr1", "cellstr2"});
+%!   ## FIXME: is return value really char in Matlab?
+%!   assert (class (get (h(1), "string")), "char");
+%!   assert (class (get (h(2), "string")), "char");
+%!   assert (get (h(1), "string"), "cellstr1");
+%!   assert (get (h(2), "string"), "cellstr2");
+%!
+%!   ## Test special keyword processing
+%!   h = text (0.5, 0.5, "default");
+%!   assert (get (h, "string"), "default")
+%!   h = text (0.5, 0.5, "factory");
+%!   assert (get (h, "string"), "factory")
+%!
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -136,7 +136,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   ac->packed = true;
   ac->sorted = true;
   ac->nz = 0;
-#ifdef IDX_TYPE_LONG
+#ifdef USE_64_BIT_IDX_T
   ac->itype = CHOLMOD_LONG;
 #else
   ac->itype = CHOLMOD_INT;

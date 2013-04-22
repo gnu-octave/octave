@@ -37,7 +37,7 @@ command_editor
 protected:
 
   command_editor (void)
-    : command_number (0) { }
+    : command_number (0), interrupted (false) { }
 
 public:
 
@@ -71,11 +71,13 @@ public:
 
   static FILE *get_output_stream (void);
 
+  static void redisplay (void);
+
   static int terminal_rows (void);
 
   static int terminal_cols (void);
 
-  static void clear_screen (void);
+  static void clear_screen (bool skip_redisplay = false);
 
   static void resize_terminal (void);
 
@@ -127,6 +129,8 @@ public:
 
   static void accept_line (void);
 
+  static bool undo (void);
+
   static void clear_undo_list (void);
 
   static void add_startup_hook (startup_hook_fcn f);
@@ -146,6 +150,8 @@ public:
   static bool filename_completion_desired (bool);
 
   static bool filename_quoting_desired (bool);
+
+  static bool interrupt (bool);
 
   static int current_command_number (void);
 
@@ -211,11 +217,13 @@ protected:
 
   virtual FILE *do_get_output_stream (void) = 0;
 
+  virtual void do_redisplay (void) { }
+
   virtual int do_terminal_rows (void) { return 24; }
 
   virtual int do_terminal_cols (void) { return 80; }
 
-  virtual void do_clear_screen (void) { }
+  virtual void do_clear_screen (bool) { }
 
   virtual void do_resize_terminal (void) { }
 
@@ -269,6 +277,8 @@ protected:
 
   virtual void do_accept_line (void) = 0;
 
+  virtual bool do_undo (void) { return false; }
+
   virtual void do_clear_undo_list (void) { }
 
   virtual void set_startup_hook (startup_hook_fcn) { }
@@ -287,6 +297,8 @@ protected:
 
   virtual bool do_filename_quoting_desired (bool) { return false; }
 
+  virtual void do_interrupt (bool) { }
+
   int read_octal (const std::string& s);
 
   void error (int);
@@ -295,6 +307,8 @@ protected:
 
   // The current command number.
   int command_number;
+
+  bool interrupted;
 };
 
 #endif

@@ -364,7 +364,7 @@ xfopen (const std::string& filename, const char *mode)
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
     DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename.c_str (), mode,
-             reinterpret_cast<unsigned long> (f));
+             reinterpret_cast<intptr_t> (f));
 
   return f;
 }

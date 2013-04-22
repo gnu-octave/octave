@@ -69,8 +69,16 @@ EXTRA_DIST = \
 
 include m4/module.mk
 
-# Subdirectories in which to run `make all'.
-SUBDIRS = libgnu liboctave libinterp @GUIDIR@ src scripts @DOCDIR@ examples test
+# Subdirectories in which to run `make all'.  Including "." here
+# is an attempt to force all preceding directories in the list to
+# be processed before the current directory so that the
+# scripts/DOCSTRINGS libinterp/DOCSTRINGS files are built before
+# attempting to build AUTHORS and BUGS.
+SUBDIRS = libgnu liboctave libinterp
+if AMCOND_BUILD_GUI
+SUBDIRS += libgui
+endif
+SUBDIRS += src scripts . @DOCDIR@ examples test
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:
@@ -97,6 +105,7 @@ MAINTAINERCLEANFILES = $(BUILT_DISTFILES)
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 nodist_octinclude_HEADERS = config.h
+octinclude_HEADERS = oct-conf-post.h
 
 all-local: $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo ""

@@ -67,19 +67,26 @@
 ## The second output, @var{position}, provides the position, in characters,
 ## from the beginning of the file.
 ##
+## If the format string is empty (not: omitted) and the file contains only
+## numeric data (excluding headerlines), textscan will return data in a number
+## of columns matching the number of numeric fields on the first data line of
+## the file.
+##
 ## @seealso{dlmread, fscanf, load, strread, textread}
 ## @end deftypefn
 
 function [C, position] = textscan (fid, format = "%f", varargin)
 
   BUFLENGTH = 4096;               ## Read buffer
-  
+  emptfmt = 0;                    ## Signals deliberately empty format string
+
   ## Check input
   if (nargin < 1)
     print_usage ();
   endif
 
   if (isempty (format))
+    emptfmt = 1;
     format = "%f";
   endif
 
@@ -132,6 +139,9 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Matlab says default delimiter = whitespace.
     ## strread() will pick this up further
     args(end+1:end+2) = {'delimiter', ""};
+    delimiter = "";
+  else
+    delimiter = args{find (strcmpi (args, "delimiter")) + 1};
   endif
 
   collop = false;
@@ -157,6 +167,15 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     args(end+1:end+2) = {"returnonerror", 1};
   endif
 
+  ## Check if a headerlines argument is specified
+  headerlines = find (strcmpi (args, "headerlines"), 1);
+  if (! isempty (headerlines))
+    ## Yep. But it is stray when reading from strings...
+    if (ischar (fid))
+      warning ("textscan: 'headerlines' ignored when reading from strings");
+    endif
+  endif
+
   if (ischar (fid))
     ## Read from a text string
     if (nargout == 2)
@@ -166,7 +185,6 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   else
     st_pos = ftell (fid);
     ## Skip header lines if requested
-    headerlines = find (strcmpi (args, "headerlines"), 1);
     if (! isempty (headerlines))
       ## Beware of missing or wrong headerline value
       if (headerlines  == numel (args)
@@ -183,7 +201,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       elseif (args{headerlines + 1} < 0)
         warning ("textscan.m: negative headerline value ignored");
       endif
-    endif
+    endif    
+    ## Read a first file chunk. Rest follows after endofline processing
+    [str, count] = fscanf (fid, "%c", BUFLENGTH);
+
   endif
 
   ## Check for empty result
@@ -208,10 +229,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
-    if (! isempty (strfind ("\r\n", str(1 : eol_srch_len))))
+    if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))
       eol_char = "\r\n";
     ## Perhaps old Macintosh? (CR)
-    elseif (! isempty (strfind ("\r", str(1 : eol_srch_len))))
+    elseif (! isempty (strfind (str(1 : eol_srch_len), "\r")))
       eol_char = "\r";
     ## Otherwise, use plain UNIX (LF)
     else
@@ -264,13 +285,11 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     endif
   endif
 
-  ## Determine the number of data fields
-  num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
-
   ## Strip trailing EOL to avoid returning stray missing values (f. strread).
-  ## However, in case of CollectOutput request, presence of EOL is required
+  ## However, in case of CollectOutput request, presence of EOL is required;
+  ## also in case of deliberately entered empty format string
   eol_at_end = strcmp (str(end-length (eol_char) + 1 : end), eol_char);
-  if (collop)
+  if (collop || emptfmt)
     if (! eol_at_end)
       str(end+1 : end+length (eol_char)) = eol_char;
     endif
@@ -284,6 +303,36 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   C = cell (1, num_fields);
   [C{:}] = strread (str, format, args{:});
 
+  ## I.c.o. empty format, match nr. of cols to nr. of fields on first read line
+  if (emptfmt)
+    ## Find end of first line
+    eoi = index (str, eol_char);
+    if (eoi)
+      ## str contains an EOL, proceed with assessing nr. of columns
+      ncols = countcols (C, str(1 : eoi-1), delimiter, whitespace);
+      ## See if lowermost data row must be completed
+      pad = mod (numel (C{1}), ncols);
+      if (pad)
+        ## Textscan returns NaNs for empty fields
+        C(1) = [C{1}; NaN(ncols - pad, 1)]; 
+      endif
+      ## Replace NaNs with EmptyValue, if any
+      ipos = find (strcmpi (args, "emptyvalue"));
+      if (ipos)
+        C{1}(find (isnan (C{1}))) = args{ipos+1};
+      endif
+      ## Compute nr. of rows
+      nrows = floor (numel (C{1}) / ncols);
+      ## Reshape C; watch out, transpose needed
+      C(1) = reshape (C{1}, ncols, numel (C{1}) / ncols)';
+      ## Distribute columns over C and wipe cols 2:end of C{1}
+      for ii=2:ncols
+        C(ii) = C{1}(:, ii);
+      endfor
+      C{1} = C{1}(:, 1);
+    endif 
+  endif
+
   ## If requested, collect output columns of same class
   if (collop)
     C = colloutp (C);
@@ -292,6 +341,21 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   if (nargout == 2)
     ## Remember file position (persistent var)
     position = ftell (fid);
+  endif
+
+endfunction
+
+
+## Assess nr of data fields on first line of data
+function ncols = countcols (C, str, dlm, wsp)
+
+  if (isempty (dlm))
+    ## Field separator = whitespace. Fold multiple whitespace into one
+    str = regexprep (str, sprintf ("[%s]", wsp), " ");
+    str = strtrim (str);
+    ncols = numel (strfind (str, " ")) + 1;
+  else
+    ncols = numel (regexp (str, sprintf ("[%s]", dlm))) + 1;
   endif
 
 endfunction
@@ -507,6 +571,90 @@ endfunction
 %!   assert (strcmp (lh, rh));
 %! end
 
-%!error <missing or illegal value for> textread (file_in_loadpath ("textscan.m"), "", "headerlines")
-%!error <missing or illegal value for> textread (file_in_loadpath ("textscan.m"), "", "headerlines", 'hh')
-%!error <character value required for> textread (file_in_loadpath ("textscan.m"), "", "endofline", true)
+%% Test reading from a real file
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! d = rand (1, 4);
+%! fprintf (fid, "  %f %f   %f  %f ", d);
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "%f %f");
+%! fclose (fid);
+%! unlink (f);
+%! assert (A{1}, [d(1); d(3)], 1e-6);
+%! assert (A{2}, [d(2); d(4)], 1e-6);
+
+%% Tests reading with empty format, should return proper nr of columns
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, " 1 2 3 4\n5 6 7 8");
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "");
+%! fclose (fid);
+%! unlink (f);
+%! assert (A{1}, [1 ; 5], 1e-6);
+%! assert (A{2}, [2 ; 6], 1e-6);
+%! assert (A{3}, [3 ; 7], 1e-6);
+%! assert (A{4}, [4 ; 8], 1e-6);
+
+%% Tests reading with empty format; empty fields & incomplete lower row
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, " ,2,,4\n5,6");
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "", "delimiter", ",", "EmptyValue", 999, "CollectOutput" , 1);
+%! fclose (fid);
+%! unlink (f);
+%! assert (A{1}, [999, 2, 999, 4; 5, 6, 999, 999], 1e-6);
+
+%% Error message tests
+
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! msg1 = "Missing or illegal value for 'headerlines'";
+%! try
+%! A = textscan (fid, "", "headerlines");
+%! end_try_catch;
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);
+
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! msg1 = "Missing or illegal value for 'headerlines'";
+%! try
+%! A = textscan (fid, "", "headerlines", "hh");
+%! end_try_catch;
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);
+
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid,"some_string");
+%! fseek (fid, 0, "bof");
+%! msg1 = "textscan: illegal EndOfLine character value specified";
+%! try
+%! A = textscan (fid, "%f", "EndOfLine", "\n\r");
+%! end_try_catch;
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);
+
+%!test
+%! f = tmpnam ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid,"some_string");
+%! fseek (fid, 0, "bof");
+%! msg1 = "textscan: character value required for EndOfLine";
+%! try
+%! A = textscan (fid, "%f", "EndOfLine", 33);
+%! end_try_catch;
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);

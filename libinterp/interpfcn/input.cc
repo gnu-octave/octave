@@ -49,13 +49,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
+#include "hook-fcn.h"
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
+#include "octave-link.h"
 #include "oct-map.h"
 #include "oct-hist.h"
 #include "toplev.h"
+#include "octave-link.h"
 #include "oct-obj.h"
+#include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathlen.h"
@@ -64,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-eval.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
+#include "symtab.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
@@ -71,10 +76,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 // Primary prompt string.
-static std::string VPS1 = "\\s:\\#> ";
+static std::string VPS1;
 
 // Secondary prompt string.
-static std::string VPS2 = "> ";
+static std::string VPS2;
 
 // String printed before echoed input (enabled by --echo-input).
 std::string VPS4 = "+ ";
@@ -112,13 +117,32 @@ bool Vdebugging = false;
 
 // If we are in debugging mode, this is the last command entered, so
 // that we can repeat the previous command if the user just types RET.
-static std::string last_debugging_command;
+static std::string last_debugging_command = "\n";
 
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
 
 // The filemarker used to separate filenames from subfunction names
 char Vfilemarker = '>';
+
+static hook_function_list input_event_hook_functions;
+
+// For octave_quit.
+void
+remove_input_event_hook_functions (void)
+{
+  input_event_hook_functions.clear ();
+}
+
+void
+set_default_prompts (void)
+{
+  VPS1 = "\\s:\\#> ";
+  VPS2 = "> ";
+  VPS4 = "+ ";
+
+  octave_link::set_default_prompts (VPS1, VPS2, VPS4);
+}
 
 void
 octave_base_reader::do_input_echo (const std::string& input_string) const
@@ -196,6 +220,19 @@ octave_base_reader::octave_gets (bool& eof)
 
   std::string retval;
 
+  // Process pre input event hook function prior to flushing output and
+  // printing the prompt.
+
+  if (interactive || forced_interactive)
+    {
+      if (! Vdebugging)
+        octave_link::exit_debugger_event ();
+
+      octave_link::pre_input_event ();
+
+      octave_link::set_workspace ();
+    }
+
   bool history_skip_auto_repeated_debugging_command = false;
 
   std::string ps = (pflag > 0) ? VPS1 : VPS2;
@@ -215,7 +252,7 @@ octave_base_reader::octave_gets (bool& eof)
 
   // There is no need to update the load_path cache if there is no
   // user input.
-  if (! retval.empty ()
+  if (retval != "\n"
       && retval.find_first_not_of (" \t\n\r") != std::string::npos)
     {
       load_path::update ();
@@ -223,7 +260,7 @@ octave_base_reader::octave_gets (bool& eof)
       if (Vdebugging)
         last_debugging_command = retval;
       else
-        last_debugging_command = std::string ();
+        last_debugging_command = "\n";
     }
   else if (Vdebugging)
     {
@@ -231,10 +268,15 @@ octave_base_reader::octave_gets (bool& eof)
       history_skip_auto_repeated_debugging_command = true;
     }
 
-  if (! retval.empty ())
+  if (retval != "\n")
     {
       if (! history_skip_auto_repeated_debugging_command)
-        command_history::add (retval);
+        {
+          command_history::add (retval);
+
+          if (! command_history::ignoring_entries ())
+            octave_link::append_history (retval);
+        }
 
       octave_diary << retval;
 
@@ -245,6 +287,12 @@ octave_base_reader::octave_gets (bool& eof)
     }
   else
     octave_diary << "\n";
+
+  // Process post input event hook function after the internal history
+  // list has been updated.
+
+  if (interactive || forced_interactive)
+    octave_link::post_input_event ();
 
   return retval;
 }
@@ -431,8 +479,16 @@ initialize_command_input (void)
 }
 
 static void
+execute_in_debugger_handler (const std::pair<std::string, int>& arg)
+{
+  octave_link::execute_in_debugger_event (arg.first, arg.second);
+}
+
+static void
 get_debug_input (const std::string& prompt)
 {
+  unwind_protect frame;
+
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
 
@@ -475,6 +531,13 @@ get_debug_input (const std::string& prompt)
 
           if (have_file)
             {
+              octave_link::enter_debugger_event (nm, curr_debug_line);
+
+              octave_link::set_workspace ();
+
+              frame.add_fcn (execute_in_debugger_handler,
+                             std::pair<std::string, int> (nm, curr_debug_line));
+
               std::string line_buf
                 = get_file_line (nm, curr_debug_line);
 
@@ -488,8 +551,6 @@ get_debug_input (const std::string& prompt)
 
   if (! msg.empty ())
     std::cerr << msg << std::endl;
-
-  unwind_protect frame;
 
   frame.protect_var (VPS1);
   VPS1 = prompt;
@@ -519,15 +580,20 @@ get_debug_input (const std::string& prompt)
 
       int retval = curr_parser.run ();
 
-      if (retval == 0 && curr_parser.stmt_list)
+      if (command_editor::interrupt (false))
+        break;
+      else
         {
-          curr_parser.stmt_list->accept (*current_evaluator);
+          if (retval == 0 && curr_parser.stmt_list)
+            {
+              curr_parser.stmt_list->accept (*current_evaluator);
 
-          if (octave_completion_matches_called)
-            octave_completion_matches_called = false;
+              if (octave_completion_matches_called)
+                octave_completion_matches_called = false;
+            }
+
+          octave_quit ();
         }
-
-      octave_quit ();
     }
 }
 
@@ -1047,44 +1113,22 @@ for details.\n\
   return retval;
 }
 
-typedef std::map<std::string, octave_value> hook_fcn_map_type;
-
-static hook_fcn_map_type hook_fcn_map;
-
 static int
-input_event_hook (void)
+internal_input_event_hook_fcn (void)
 {
-  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
+  input_event_hook_functions.run ();
 
-  while (p != hook_fcn_map.end ())
-    {
-      std::string hook_fcn = p->first;
-      octave_value user_data = p->second;
-
-      hook_fcn_map_type::iterator q = p++;
-
-      if (is_valid_function (hook_fcn))
-        {
-          if (user_data.is_defined ())
-            feval (hook_fcn, user_data, 0);
-          else
-            feval (hook_fcn, octave_value_list (), 0);
-        }
-      else
-        hook_fcn_map.erase (q);
-    }
-
-  if (hook_fcn_map.empty ())
-    command_editor::remove_event_hook (input_event_hook);
+  if (input_event_hook_functions.empty ())
+    command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
   return 0;
 }
 
 DEFUN (add_input_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} add_input_event_hook (@var{fcn})\n\
-@deftypefnx {Built-in Function} {} add_input_event_hook (@var{fcn}, @var{data})\n\
-Add the named function @var{fcn} to the list of functions to call\n\
+@deftypefn  {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
+Add the named function or function handle @var{fcn} to the list of functions to call\n\
 periodically when Octave is waiting for input.  The function should\n\
 have the form\n\
 \n\
@@ -1094,10 +1138,13 @@ have the form\n\
 \n\
 If @var{data} is omitted, Octave calls the function without any\n\
 arguments.\n\
+\n\
+The returned identifier may be used to remove the function handle from\n\
+the list of input hook functions.\n\
 @seealso{remove_input_event_hook}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1108,17 +1155,19 @@ arguments.\n\
       if (nargin == 2)
         user_data = args(1);
 
-      std::string hook_fcn = args(0).string_value ();
+      hook_function hook_fcn (args(0), user_data);
 
       if (! error_state)
         {
-          if (hook_fcn_map.empty ())
-            command_editor::add_event_hook (input_event_hook);
+          if (input_event_hook_functions.empty ())
+            command_editor::add_event_hook (internal_input_event_hook_fcn);
 
-          hook_fcn_map[hook_fcn] = user_data;
+          input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
+
+          retval = hook_fcn.id ();
         }
       else
-        error ("add_input_event_hook: expecting string as first arg");
+        error ("add_input_event_hook: expecting function handle or character string as first argument");
     }
   else
     print_usage ();
@@ -1128,9 +1177,11 @@ arguments.\n\
 
 DEFUN (remove_input_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} remove_input_event_hook (@var{fcn})\n\
-Remove the named function @var{fcn} from the list of functions to call\n\
-periodically when Octave is waiting for input.\n\
+@deftypefn {Built-in Function} {} remove_input_event_hook (@var{name})\n\
+@deftypefnx {Built-in Function} {} remove_input_event_hook (@var{fcn_id})\n\
+Remove the named function or function handle with the given identifier\n\
+from the list of functions to call periodically when Octave is waiting\n\
+for input.\n\
 @seealso{add_input_event_hook}\n\
 @end deftypefn")
 {
@@ -1138,25 +1189,28 @@ periodically when Octave is waiting for input.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 1 || nargin == 2)
     {
-      std::string hook_fcn = args(0).string_value ();
+      std::string hook_fcn_id = args(0).string_value ();
+
+      bool warn = (nargin < 2);
 
       if (! error_state)
         {
-          hook_fcn_map_type::iterator p = hook_fcn_map.find (hook_fcn);
+          hook_function_list::iterator p
+            = input_event_hook_functions.find (hook_fcn_id);
 
-          if (p != hook_fcn_map.end ())
-            hook_fcn_map.erase (p);
-          else
-            error ("remove_input_event_hook: %s not found in list",
-                   hook_fcn.c_str ());
+          if (p != input_event_hook_functions.end ())
+            input_event_hook_functions.erase (p);
+          else if (warn)
+            warning ("remove_input_event_hook: %s not found in list",
+                     hook_fcn_id.c_str ());
 
-          if (hook_fcn_map.empty ())
-            command_editor::remove_event_hook (input_event_hook);
+          if (input_event_hook_functions.empty ())
+            command_editor::remove_event_hook (internal_input_event_hook_fcn);
         }
       else
-        error ("remove_input_event_hook: expecting string as first arg");
+        error ("remove_input_event_hook: argument not valid as a hook function name or id");
     }
   else
     print_usage ();

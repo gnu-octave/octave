@@ -161,7 +161,7 @@ public:
 
   octave_lvalue lvalue (void)
     {
-      return octave_lvalue (0); // black hole lvalue
+      return octave_lvalue (); // black hole lvalue
     }
 };
 

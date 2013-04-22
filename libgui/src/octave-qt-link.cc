@@ -71,14 +71,47 @@ octave_qt_link::do_message_dialog (const std::string& dlg,
 {
   uiwidget_creator.signal_dialog (QString::fromStdString (msg),
                                   QString::fromStdString (title),
-                                  QString (), QStringList (),
-                                  QString (), QStringList ());
+                                  QString::fromStdString (dlg),
+                                  QStringList (), QString (),
+                                  QStringList ());
 
   // Wait while the user is responding to message box.
   uiwidget_creator.wait ();
 
   // The GUI has sent a signal and the process has been awakened.
   return uiwidget_creator.get_dialog_result ();
+}
+
+std::string
+octave_qt_link::do_question_dialog (const std::string& msg,
+                                    const std::string& title,
+                                    const std::string& btn1,
+                                    const std::string& btn2,
+                                    const std::string& btn3,
+                                    const std::string& btndef)
+{
+  QStringList btn;
+  QStringList role;
+  role << "AcceptRole" << "AcceptRole" << "AcceptRole";
+  btn << QString::fromStdString (btn1);
+  if (btn2 == "")
+    role.removeAt (0);
+  else
+    btn << QString::fromStdString (btn2);
+  btn << QString::fromStdString (btn3);
+
+  uiwidget_creator.signal_dialog (QString::fromStdString (msg),
+                                  QString::fromStdString (title),
+                                  "quest",
+                                  btn,
+                                  QString::fromStdString (btndef),
+                                  role);
+
+  // Wait while the user is responding to message box.
+  uiwidget_creator.wait ();
+
+  // The GUI has sent a signal and the process has been awakened.
+  return uiwidget_creator.get_dialog_button ()->toStdString ();
 }
 
 static QStringList
@@ -102,7 +135,7 @@ octave_qt_link::do_list_dialog (const std::list<std::string>& list,
                                 int width, int height,
                                 const std::list<int>& initial,
                                 const std::string& name,
-                                const std::string& prompt_string,
+                                const std::list<std::string>& prompt,
                                 const std::string& ok_string,
                                 const std::string& cancel_string)
 {
@@ -111,7 +144,7 @@ octave_qt_link::do_list_dialog (const std::list<std::string>& list,
                                     width, height,
                                     QList<int>::fromStdList (initial),
                                     QString::fromStdString (name),
-                                    QString::fromStdString (prompt_string),
+                                    make_qstring_list (prompt),
                                     QString::fromStdString (ok_string),
                                     QString::fromStdString (cancel_string));
 
@@ -128,16 +161,16 @@ octave_qt_link::do_list_dialog (const std::list<std::string>& list,
 std::list<std::string>
 octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
                                  const std::string& title,
-                                 const std::list<int>& nr,
-                                 const std::list<int>& nc,
+                                 const std::list<float>& nr,
+                                 const std::list<float>& nc,
                                  const std::list<std::string>& defaults)
 {
   std::list<std::string> retval;
 
   uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
                                        QString::fromStdString (title),
-                                       QList<int>::fromStdList (nr),
-                                       QList<int>::fromStdList (nc),
+                                       QFloatList::fromStdList (nr),
+                                       QFloatList::fromStdList (nc),
                                        make_qstring_list (defaults));
 
   // Wait while the user is responding to message box.

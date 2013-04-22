@@ -574,23 +574,23 @@ main_window::connect_uiwidget_links ()
   connect (&uiwidget_creator,
            SIGNAL (create_listview (const QStringList&, const QString&,
                                     int, int, const QIntList&,
-                                    const QString&, const QString&,
+                                    const QString&, const QStringList&,
                                     const QString&, const QString&)),
            this,
            SLOT (handle_create_listview (const QStringList&, const QString&,
                                          int, int, const QIntList&,
-                                         const QString&, const QString&,
+                                         const QString&, const QStringList&,
                                          const QString&, const QString&)));
 
-  // Register QFloatList so that list of ints may be part of a signal.
+  // Register QFloatList so that list of floats may be part of a signal.
   qRegisterMetaType<QFloatList> ("QFloatList");
   connect (&uiwidget_creator,
            SIGNAL (create_inputlayout (const QStringList&, const QString&,
-                                       const QIntList&, const QIntList&,
+                                       const QFloatList&, const QFloatList&,
                                        const QStringList&)),
            this,
            SLOT (handle_create_inputlayout (const QStringList&, const QString&,
-                                            const QIntList&, const QIntList&,
+                                            const QFloatList&, const QFloatList&,
                                             const QStringList&)));
 
   connect (&uiwidget_creator,
@@ -628,12 +628,12 @@ main_window::handle_create_listview (const QStringList& list,
                                      int wd, int ht,
                                      const QIntList& initial,
                                      const QString& name,
-                                     const QString& prompt_string,
+                                     const QStringList& prompt,
                                      const QString& ok_string,
                                      const QString& cancel_string)
 {
   ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
-                                            initial, name, prompt_string,
+                                            initial, name, prompt,
                                             ok_string, cancel_string);
 
   list_dialog->setAttribute (Qt::WA_DeleteOnClose);
@@ -645,8 +645,8 @@ main_window::handle_create_listview (const QStringList& list,
 void
 main_window::handle_create_inputlayout (const QStringList& prompt,
                                         const QString& title,
-                                        const QIntList& nr,
-                                        const QIntList& nc,
+                                        const QFloatList& nr,
+                                        const QFloatList& nc,
                                         const QStringList& defaults)
 {
   InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
@@ -1480,7 +1480,7 @@ main_window::find_files(const QString &start_dir)
 }
 
 void 
-main_window::find_files_finished(int button)
+main_window::find_files_finished(int)
 {
 
 }

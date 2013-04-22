@@ -62,21 +62,26 @@ public:
   int do_message_dialog (const std::string& dlg, const std::string& msg,
                          const std::string& title);
 
+  std::string
+  do_question_dialog (const std::string& msg, const std::string& title,
+                      const std::string& btn1, const std::string& btn2,
+                      const std::string& btn3, const std::string& btndef);
+
   std::pair<std::list<int>, int>
   do_list_dialog (const std::list<std::string>& list,
                   const std::string& mode,
                   int width, int height,
                   const std::list<int>& initial_value,
                   const std::string& name,
-                  const std::string& prompt_string,
+                  const std::list<std::string>& prompt,
                   const std::string& ok_string,
                   const std::string& cancel_string);
 
   std::list<std::string>
   do_input_dialog (const std::list<std::string>& prompt,
                    const std::string& title,
-                   const std::list<int>& nr,
-                   const std::list<int>& nc,
+                   const std::list<float>& nr,
+                   const std::list<float>& nc,
                    const std::list<std::string>& defaults);
 
   int

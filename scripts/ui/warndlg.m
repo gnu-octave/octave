@@ -35,7 +35,7 @@ function retval = warndlg (msg, title = "Warning Dialog")
     print_usage ();
   endif
 
-  retval = message_dialog ("warndlg", msg, title);
+  retval = message_dialog ("warndlg", msg, title, "warn");
 
 endfunction
 

@@ -79,82 +79,82 @@
 
 function [sel, ok] = listdlg (varargin)
 
-   if (nargin < 2)
-     print_usage ();
-   endif
-   
-   listcell = {""};
-   selmode = "multiple";
-   listsize = [160, 300];
-   initialvalue = 1;
-   name = "";
-   prompt = {""};
-   okstring = "OK";
-   cancelstring = "Cancel";
-   
-   ## handle key, value pairs
-   for i = 1:2:nargin-1
-     if strcmp (varargin{i}, "ListString")
-       listcell = varargin{i+1};
-     elseif strcmp (varargin{i}, "SelectionMode")
-       selmode = varargin{i+1};
-     elseif strcmp (varargin{i}, "ListSize")
-       listsize = varargin{i+1};
-     elseif strcmp (varargin{i}, "InitialValue")
-       initialvalue = varargin{i+1};
-     elseif strcmp (varargin{i}, "Name")
-       name = varargin{i+1};
-     elseif strcmp (varargin{i}, "PromptString")
-       prompt = varargin{i+1};
-     elseif strcmp (varargin{i}, "OKString")
-       okstring = varargin{i+1};
-     elseif strcmp (varargin{i}, "CancelString")
-       cancelstring = varargin{i+1};
-     endif
-   endfor
+  if (nargin < 2)
+    print_usage ();
+  endif
 
-   ## make sure prompt strings are a cell array
-   if (! iscell (prompt))
-     prompt = {prompt};
-   endif
+  listcell = {""};
+  selmode = "Multiple";
+  listsize = [160, 300];
+  initialvalue = 1;
+  name = "";
+  prompt = {};
+  okstring = "OK";
+  cancelstring = "Cancel";
 
-   ## make sure listcell strings are a cell array
-   if (! iscell (listcell))
-     listcell = {listcell};
-   endif
+  ## handle key, value pairs
+  for i = 1:2:nargin-1
+    if strcmp (varargin{i}, "ListString")
+      listcell = varargin{i+1};
+    elseif strcmp (varargin{i}, "SelectionMode")
+      selmode = varargin{i+1};
+    elseif strcmp (varargin{i}, "ListSize")
+      listsize = varargin{i+1};
+    elseif strcmp (varargin{i}, "InitialValue")
+      initialvalue = varargin{i+1};
+    elseif strcmp (varargin{i}, "Name")
+      name = varargin{i+1};
+    elseif strcmp (varargin{i}, "PromptString")
+      prompt = varargin{i+1};
+    elseif strcmp (varargin{i}, "OKString")
+      okstring = varargin{i+1};
+    elseif strcmp (varargin{i}, "CancelString")
+      cancelstring = varargin{i+1};
+    endif
+  endfor
 
-   [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
+  ## make sure prompt strings are a cell array
+  if (! iscell (prompt))
+    prompt = {prompt};
+  endif
+
+  ## make sure listcell strings are a cell array
+  if (! iscell (listcell))
+    listcell = {listcell};
+  endif
+
+  ## make sure valid selection mode
+  if (! strcmp (selmode, "Multiple") && ! strcmp (selmode, "Single"))
+    error ("invalid SelectionMode");
+  endif
+
+  if (__octave_link_enabled__ ())
+    [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
                                             initialvalue, name, prompt,
                                             okstring, cancelstring);
-   if (ok > 0)
-     return;
-   endif
+  elseif (__have_feature__ ("JAVA"))
+    ## transform matrices to cell arrays of strings
+    ## swap width and height to correct calling format for JDialogBox
+    listsize = {num2str(listsize(2)), num2str(listsize(1))};
+    initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
+    if isempty(prompt)
+      prompt = {""};
+    endif
 
-   if (__have_feature__ ("JAVA"))
-     ## transform matrices to cell arrays of strings
-     ## swap width and height to correct calling format for JDialogBox
-     listsize = {num2str(listsize(2)), num2str(listsize(1))};
-     initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
-     
-     ret = javaMethod ("listdlg", "org.octave.JDialogBox", listcell,
-                       selmode, listsize, initialvalue, name, prompt,
-                       okstring, cancelstring);
+    ret = javaMethod ("listdlg", "org.octave.JDialogBox", listcell,
+                      selmode, listsize, initialvalue, name, prompt,
+                      okstring, cancelstring);
 
-     if (numel (ret) > 0)
-       sel = ret;
-       ok = 1;
-     else
-       sel = {};
-       ok = 0;
-     endif
-
-     return;
-
-   endif
-
-   ## FIXME -- provide terminal-based implementation here?
-
-   error ("listdlg is not available in this version of Octave");
+    if (numel (ret) > 0)
+      sel = ret;
+      ok = 1;
+    else
+      sel = {};
+      ok = 0;
+    endif
+  else
+    error ("listdlg is not available in this version of Octave");
+  endif
 
 endfunction
 
@@ -174,7 +174,18 @@ endfunction
 %!                'SelectionMode','Multiple', ...
 %!                'Name','Selection Dialog', ...
 %!                'InitialValue',[1,2,3,4],
-%!                'PromptString',{'Select an item...', '...or multiple items'} );
+%!                'PromptString',{'Select <b>an</b> item...', '...or <b>multiple</b> items'} );
+%!  imax = numel (s);
+%!  for i=1:1:imax
+%!     disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
+%!  end
+
+%!demo
+%!  disp('- test listdlg with listsize.');
+%!  itemlist = {"Neutron","Electron","Quark","Proton","Neutrino"};
+%!  s = listdlg ( "ListString",itemlist,
+%!                "Name","Bits and Pieces",
+%!                "ListSize",[200 75] );
 %!  imax = numel (s);
 %!  for i=1:1:imax
 %!     disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);

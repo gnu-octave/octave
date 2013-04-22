@@ -35,7 +35,7 @@ function retval = message_dialog (caller, msg, title = "", icon)
   if (! ischar (title))
     error ("%s: TITLE must be a character string", caller);
   endif
-  
+
   dlg = "emptydlg";
   if (nargin == 4)
     switch (icon)
@@ -50,23 +50,15 @@ function retval = message_dialog (caller, msg, title = "", icon)
       otherwise
         error ("%s: ICON is not a valid type", caller);
     endswitch
+  else
+    icon = "none";
   endif
 
-  retval = __octave_link_message_dialog__ (dlg, msg, title);
-  if (retval > 0)
-    return;
-  endif
-
-  if (__have_feature__ ("JAVA"))
+  if (__octave_link_enabled__ ())
+    retval = __octave_link_message_dialog__ (icon, msg, title);
+  elseif (__have_feature__ ("JAVA"))
     retval = javaMethod (dlg, "org.octave.JDialogBox", msg, title);
-    if (retval > 0)
-      return;
-    endif
-  endif
-
-  ## FIXME -- provide terminal-based implementation here?
-
-  if (retval <= 0)
+  else
     error ("%s is not available in this version of Octave", dlg);
   endif
 

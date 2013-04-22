@@ -30,13 +30,13 @@
 ## @seealso{helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
-function h = errordlg (msg, title = "Error Dialog")
+function retval = errordlg (msg, title = "Error Dialog")
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  retval = message_dialog ("errdlg", msg, title);
+  retval = message_dialog ("errdlg", msg, title, "error");
 
 endfunction
 

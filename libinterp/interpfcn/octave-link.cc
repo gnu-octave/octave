@@ -154,6 +154,36 @@ Undocumented internal function.\n\
   return retval;
 }
 
+DEFUN (__octave_link_question_dialog__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 6)
+    {
+      std::string msg = args(0).string_value ();
+      std::string title = args(1).string_value ();
+      std::string btn1 = args(2).string_value ();
+      std::string btn2 = args(3).string_value ();
+      std::string btn3 = args(4).string_value ();
+      std::string btndef = args(5).string_value ();
+
+      if (! error_state)
+        {
+          flush_octave_stdout ();
+
+          retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3, btndef);
+        }
+      else
+        error ("invalid arguments");
+    }
+
+  return retval;
+}
+
 DEFUN (__octave_link_list_dialog__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{intial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})\n\
@@ -165,7 +195,7 @@ Undocumented internal function.\n\
   if (args.length () == 8)
     {
       Cell list = args(0).cell_value ();
-      const Array<std::string> tlist= list.cellstr_value ();
+      const Array<std::string> tlist = list.cellstr_value ();
       octave_idx_type nel = tlist.numel ();
       std::list<std::string> list_lst;
       for (octave_idx_type i = 0; i < nel; i++)
@@ -184,7 +214,12 @@ Undocumented internal function.\n\
         initial_lst.push_back (initial_matrix(i));
 
       std::string name = args(4).string_value ();
-      std::string prompt_string = args(5).string_value ();
+      list = args(5).cell_value ();
+      const Array<std::string> plist = list.cellstr_value ();
+      nel = plist.numel ();
+      std::list<std::string> prompt_lst;
+      for (octave_idx_type i = 0; i < nel; i++)
+        prompt_lst.push_back (plist(i));
       std::string ok_string = args(6).string_value ();
       std::string cancel_string = args(7).string_value ();
 
@@ -194,7 +229,7 @@ Undocumented internal function.\n\
 
           std::pair<std::list<int>, int> result
             = octave_link::list_dialog (list_lst, mode, width, height,
-                                        initial_lst, name, prompt_string,
+                                        initial_lst, name, prompt_lst,
                                         ok_string, cancel_string);
 
           std::list<int> items_lst = result.first;
@@ -238,8 +273,8 @@ Undocumented internal function.\n\
 
       Matrix rc = args(2).matrix_value ();
       nel = rc.rows ();
-      std::list<int> nr;
-      std::list<int> nc;
+      std::list<float> nr;
+      std::list<float> nc;
       for (octave_idx_type i = 0; i < nel; i++)
         {
           nr.push_back (rc(i,0));

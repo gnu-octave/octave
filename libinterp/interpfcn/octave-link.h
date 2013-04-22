@@ -141,19 +141,28 @@ public:
     return enabled () ? instance->do_message_dialog (dlg, msg, title) : 0;
   }
 
+  static std::string
+  question_dialog (const std::string& msg, const std::string& title,
+                   const std::string& btn1, const std::string& btn2,
+                   const std::string& btn3, const std::string& btndef)
+  {
+    return enabled () ? instance->do_question_dialog (msg, title, btn1,
+                                                      btn2, btn3, btndef) : 0;
+  }
+
   static std::pair<std::list<int>, int>
   list_dialog (const std::list<std::string>& list,
                const std::string& mode,
                int width, int height,
                const std::list<int>& initial_value,
                const std::string& name,
-               const std::string& prompt_string,
+               const std::list<std::string>& prompt,
                const std::string& ok_string,
                const std::string& cancel_string)
   {
     return enabled ()
       ? instance->do_list_dialog (list, mode, width, height,
-                                  initial_value, name, prompt_string,
+                                  initial_value, name, prompt,
                                   ok_string, cancel_string)
       : std::pair<std::list<int>, int> ();
   }
@@ -161,8 +170,8 @@ public:
   static std::list<std::string>
   input_dialog (const std::list<std::string>& prompt,
                 const std::string& title,
-                const std::list<int>& nr,
-                const std::list<int>& nc,
+                const std::list<float>& nr,
+                const std::list<float>& nc,
                 const std::list<std::string>& defaults)
   {
     return enabled ()
@@ -332,21 +341,26 @@ protected:
   do_message_dialog (const std::string& dlg, const std::string& msg,
                      const std::string& title) = 0;
 
+  virtual std::string
+  do_question_dialog (const std::string& msg, const std::string& title,
+                      const std::string& btn1, const std::string& btn2,
+                      const std::string& btn3, const std::string& btndef) = 0;
+
   virtual std::pair<std::list<int>, int>
   do_list_dialog (const std::list<std::string>& list,
                   const std::string& mode,
                   int width, int height,
                   const std::list<int>& initial_value,
                   const std::string& name,
-                  const std::string& prompt_string,
+                  const std::list<std::string>& prompt,
                   const std::string& ok_string,
                   const std::string& cancel_string) = 0;
 
   virtual std::list<std::string>
   do_input_dialog (const std::list<std::string>& prompt,
                    const std::string& title,
-                   const std::list<int>& nr,
-                   const std::list<int>& nc,
+                   const std::list<float>& nr,
+                   const std::list<float>& nc,
                    const std::list<std::string>& defaults) = 0;
 
   virtual int

@@ -116,39 +116,29 @@ function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
     else
       error ("inputdlg: ROWSCOLS matrix does not match size of PROMPT");
     endif
-
   else
     ## dunno
     error ("inputdlg: unknown form of ROWSCOLS argument");
   endif
+  rowscols = ceil (rowscols);
   
   ## convert numeric values in defaults cell array to strings
   defs = cellfun (@num2str, defaults, "UniformOutput", false);
   rc = arrayfun (@num2str, rowscols, "UniformOutput", false);
 
-  cstr = __octave_link_input_dialog__ (prompt, title, rowscols, defs);
-
-  if (iscell (cstr))
-    return;
-  endif
-
-  if (__have_feature__ ("JAVA"))
+  if (__octave_link_enabled__ ())
+    cstr = __octave_link_input_dialog__ (prompt, title, rowscols, defs);
+  elseif (__have_feature__ ("JAVA"))
     user_inputs = javaMethod ("inputdlg", "org.octave.JDialogBox",
-                              prompt, title, rc, defs);
-    
+                              prompt, title, rc, defs);  
     if (isempty (user_inputs))
       cstr = {};
     else
       cstr = cellstr (user_inputs);
     endif
-
-    return;
-
+  else
+    error ("inputdlg is not available in this version of Octave");
   endif
-
-  ## FIXME -- provide terminal-based implementation here?
-
-  error ("inputdlg is not available in this version of Octave");
 
 endfunction
 

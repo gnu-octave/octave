@@ -58,7 +58,7 @@ public:
   {
 
     // Use the last button in the list as the reject result, i.e., when no
-    // button is pressed such as in the case of <esc> and close button.
+    // button is pressed such as in the case of the upper right close tab.
     if (!button.isEmpty ())
       dialog_button = button.last ();
 
@@ -75,14 +75,14 @@ public:
 
   bool signal_listview (const QStringList& list, const QString& mode,
                         int wd, int ht, const QList<int>& initial,
-                        const QString& name, const QString& prompt_string,
+                        const QString& name, const QStringList& prompt,
                         const QString& ok_string, const QString& cancel_string)
   {
     if (list.isEmpty ())
       return false;
 
     emit create_listview (list, mode, wd, ht, initial, name,
-                          prompt_string, ok_string, cancel_string);
+                          prompt, ok_string, cancel_string);
 
     return true;
   };
@@ -90,7 +90,7 @@ public:
   const QIntList *get_list_index (void) { return list_index; }
 
   bool signal_inputlayout (const QStringList& prompt, const QString& title,
-                           const QIntList& nr, const QIntList& nc,
+                           const QFloatList& nr, const QFloatList& nc,
                            const QStringList& defaults)
   {
     if (prompt.isEmpty ())
@@ -126,18 +126,16 @@ signals:
                       const QStringList&, const QString&, const QStringList&);
 
   void create_listview (const QStringList&, const QString&, int, int,
-                        const QIntList&, const QString&, const QString&,
+                        const QIntList&, const QString&, const QStringList&,
                         const QString&, const QString&);
 
   void create_inputlayout (const QStringList&, const QString&,
-                           const QIntList&, const QIntList&,
+                           const QFloatList&, const QFloatList&,
                            const QStringList&);
 
   void create_debug_cd_or_addpath_dialog (const QString&, const QString&, bool);
 
 public slots:
-
-  void dialog_finished (int result);
 
   void dialog_button_clicked (QAbstractButton *button);
 
@@ -167,6 +165,7 @@ private:
 
 extern QUIWidgetCreator uiwidget_creator;
 
+
 class MessageDialog : public QMessageBox
 {
   Q_OBJECT
@@ -177,6 +176,15 @@ public:
                           const QString& icon, const QStringList& button,
                           const QString& defbutton,
                           const QStringList& role);
+
+private:
+
+  void closeEvent (QCloseEvent *)
+  {
+    // Reroute the close tab to a button click so there is only a single
+    // route to waking the wait condition.
+    emit buttonClicked (0);
+  }
 };
 
 
@@ -190,7 +198,7 @@ public:
 
   explicit ListDialog (const QStringList& list, const QString& mode,
                        int width, int height, const QList<int>& initial,
-                       const QString& name, const QString& prompt_string,
+                       const QString& name, const QStringList& prompt,
                        const QString& ok_string, const QString& cancel_string);
 
 signals:
@@ -216,7 +224,7 @@ class InputDialog : public QDialog
 public:
 
   explicit InputDialog (const QStringList& prompt, const QString& title,
-                        const QIntList& nr, const QIntList& nc,
+                        const QFloatList& nr, const QFloatList& nc,
                         const QStringList& defaults);
 
 signals:

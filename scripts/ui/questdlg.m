@@ -70,10 +70,18 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
   options{3} = "Cancel";   # button3
   options{4} = "Yes";      # default
 
+  defbtn_error_msg = "questdlg: DEFAULT must match one of the button options";
+
   switch (numel (varargin))
+    case 0
+      ## use default default
+
     case 1
       ## default button string
       options{4} = varargin{1};  # default
+      if (! any (strcmp (options{4}, options(1:3))))
+        error (defbtn_error_msg);
+      end
 
     case 3
       ## two buttons and default button string
@@ -81,6 +89,9 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{2} = "";           # not used, no middle button
       options{3} = varargin{2};  # button3
       options{4} = varargin{3};  # default
+      if (! any (strcmp (options{4}, options([1 3]))))
+        error (defbtn_error_msg);
+      end
 
     case 4
       ## three buttons and default button string
@@ -88,14 +99,76 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{2} = varargin{2};  # button2
       options{3} = varargin{3};  # button3
       options{4} = varargin{4};  # default
+      if (! any (strcmp (options{4}, options(1:3))))
+        error (defbtn_error_msg);
+      end
 
     otherwise
       print_usage ();
 
   endswitch
 
-  btn = javaMethod ("questdlg", "org.octave.JDialogBox", msg,
-                     title, options);
+  if (__octave_link_enabled__ ())
+    btn = __octave_link_question_dialog__ (msg, title, options{1}, options{2},
+                                           options{3}, options{4});
+  elseif (__have_feature__ ("JAVA"))
+    btn = javaMethod ("questdlg", "org.octave.JDialogBox", msg,
+                      title, options);
+  else
+    error ("questdlg is not available in this version of Octave");
+  endif
 
 endfunction
+
+%!demo
+%!  disp('- test questdlg with two buttons');
+%!  a = questdlg('Would you like some free money?',...
+%!               '$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $',...
+%!               'No', 'Cancel', 'Cancel');
+%!  if strcmp (a, 'No')
+%!    msgbox('Suit yourself.', 'Message Box');
+%!  endif
+
+%!demo
+%!  disp('- test questdlg with message and title only.');
+%!  a = 'No';
+%!  c = 0;
+%!  while (strcmp(a, 'No') || !c)
+%!    a = questdlg('Close this Question Dialog?', 'Reductio Ad Absurdum');
+%!    if strcmp(a, 'Yes')
+%!      q = 'Are you sure?';
+%!      while (strcmp(a, 'Yes') && !c)
+%!        a = questdlg(q, 'Reductio Ad Absurdum');
+%!        word = ' really';
+%!        i = strfind(q, word);
+%!        if isempty( i )
+%!          i = strfind(q, ' sure');
+%!          q = [q '!'];
+%!        else
+%!          word = [word ','];
+%!        endif
+%!        q = [q(1:i-1) word q(i:end)];
+%!      endwhile
+%!    endif
+%!    if strcmp(a, 'Cancel')
+%!      warndlg('Answer "Yes" or "No".', 'Warning Dialog');
+%!      a = 'No';
+%!      c = 1;
+%!    endif
+%!  endwhile
+%!  msgbox('Whew!');
+
+%!demo
+%!  disp('- test questdlg with five inputs');
+%!  ans = questdlg('Are you ready Steve?', 'Brian', 'No', 'Uh huh', 'Uh huh');
+%!  if !strcmp (ans, 'No')
+%!    ans = questdlg ('Andy?', 'Brian', 'No', 'Yeah', 'Yeah');
+%!    if !strcmp (ans, 'No')
+%!      ans = questdlg ('Mick?', 'Brian', 'No', 'Okay', 'Okay');
+%!      if !strcmp (ans, 'No')
+%!        ans = msgbox ("Well all right, fellas.    \n\n     Let''s GO!!!!!",...
+%!                      'Ballroom Blitz', 'none');
+%!      endif
+%!    endif
+%!  endif
 

@@ -134,12 +134,12 @@ public slots:
                                int width, int height,
                                const QIntList& initial,
                                const QString& name,
-                               const QString& prompt_string,
+                               const QStringList& prompt,
                                const QString& ok_string,
                                const QString& cancel_string);
 
   void handle_create_inputlayout (const QStringList&, const QString&,
-                                  const QIntList&, const QIntList&,
+                                  const QFloatList&, const QFloatList&,
                                   const QStringList&);
 
   void handle_create_debug_cd_or_addpath_dialog (const QString& file,

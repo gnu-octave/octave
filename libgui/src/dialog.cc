@@ -427,8 +427,9 @@ cd_or_addpath_dialog::cd_or_addpath_dialog (const QString& file,
   connect (buttonCd, SIGNAL (clicked ()),
            this, SLOT (buttonCd_clicked ()));
 
-  connect (buttonAddpath, SIGNAL (clicked ()),
-           this, SLOT (buttonAddpath_clicked ()));
+  if (addpath_option)
+    connect (buttonAddpath, SIGNAL (clicked ()),
+             this, SLOT (buttonAddpath_clicked ()));
 
   connect (buttonCancel, SIGNAL (clicked ()),
            this, SLOT (buttonCancel_clicked ()));

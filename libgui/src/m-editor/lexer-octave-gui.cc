@@ -67,17 +67,20 @@ lexer_octave_gui::~lexer_octave_gui()
 //   functions of the class QsciLexer () and the enum of available styles (see
 //   lexer-octave-gui.h provides the functionality of the octave lexer.
 // -----------------------------------------------------------------------------
-const char *lexer_octave_gui::language() const
+const char *
+lexer_octave_gui::language() const
 {
   return "Octave";  // return the name of the language
 }
 
-const char *lexer_octave_gui::lexer() const
+const char *
+lexer_octave_gui::lexer() const
 {
   return "octave";  // return the name of the lexer
 }
 
-QString lexer_octave_gui::description(int style) const
+QString
+lexer_octave_gui::description(int style) const
 {
     switch (style)
     {
@@ -103,10 +106,66 @@ QString lexer_octave_gui::description(int style) const
     return QString();  // no valid style, return empty string
 }
 
+
+// -----------------------------------------------------
+// The set of default colors
+// -----------------------------------------------------
+QColor
+lexer_octave_gui::defaultColor (int style) const
+{
+  switch (style)
+    {
+      case Default:
+      case Operator:
+        return QColor (0x00,0x00,0x00);
+
+      case Comment:
+        return QColor (0x00,0x7f,0x00);
+
+      case Command:
+        return QColor (0x7f,0x7f,0x00);
+
+      case Number:
+        return QColor (0x00,0x7f,0x7f);
+
+      case Keyword:
+        return QColor (0x00,0x00,0x7f);
+
+      case SingleQuotedString:
+      case DoubleQuotedString:
+        return QColor (0x7f,0x00,0x7f);
+    }
+
+    return QsciLexer::defaultColor (style);
+}
+
+// -----------------------------------------------------
+// The defaulot fonts
+// -----------------------------------------------------
+QFont
+lexer_octave_gui::defaultFont (int style) const
+{
+  QFont font;
+
+  switch (style)
+    {
+      case Keyword:
+        font = QsciLexer::defaultFont (style);
+        font.setBold(true);
+        break;
+
+      default:
+        font = QsciLexer::defaultFont (style);
+    }
+
+  return font;
+}
+
 // -----------------------------------------------------
 // The set of keywords for highlighting
 // -----------------------------------------------------
-const char *lexer_octave_gui::keywords(int set) const
+const char *
+lexer_octave_gui::keywords(int set) const
 {
   if (set == 1)
       return resource_manager::octave_keywords ();

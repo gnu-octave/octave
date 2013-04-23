@@ -53,7 +53,9 @@ public:
   virtual const char *keywords (int set) const;
   virtual const char *lexer () const;
   virtual const char *language () const;
-  QString description(int style) const;
+  QString description (int style) const;
+  QColor defaultColor (int style) const;
+  QFont defaultFont (int style) const;
 
 private:
   lexer_octave_gui (const lexer_octave_gui &);

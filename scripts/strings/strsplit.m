@@ -246,6 +246,16 @@ function [result, matches] = strsplit (str, del, varargin)
     if (nargout > 1)
       ## Grab the separators
       matches = num2cell (str(idx)(:)).';
+      if (args.collapsedelimiters)
+        ## Collapse the consequtive delimiters
+        ## TODO - is there a vectorized way?
+        for m = numel(matches):-1:2
+          if (strlens(m) == 0)
+            matches{m-1} = [matches{m-1:m}];
+            matches(m) = [];
+          endif
+        end
+      endif
     endif
     ## Remove separators.
     str(idx) = [];
@@ -262,10 +272,10 @@ function [result, matches] = strsplit (str, del, varargin)
       del = sprintf ('%s|', del{:});
       del(end) = [];
     endif
-    [result, ~, ~, ~, matches] = regexp (str, del, "split");
     if (args.collapsedelimiters)
-      result(cellfun (@isempty, result)) = [];
+      del = ["(", del, ")+"];
     endif
+    [result, ~, ~, ~, matches] = regexp (str, del, "split");
     if (strncmpi (args.delimitertype, "simple", length_deltype))
       matches = cellfun (@(x) regexp2simple (x, true), matches,
         "uniformoutput", false);
@@ -312,7 +322,7 @@ endfunction
 %!test
 %! [s, m] = strsplit (str, {"\\s", "ain"}, true, "delimitertype", "r");
 %! assert (s, {"The", "r", "in", "Sp", "stays", "m", "ly", "in", "the", "pl", "."})
-%! assert (m, {" ", "ain", " ", " ", "ain", " ", " ", "ain", " ", " ", " ", "ain"})
+%! assert (m, {" ", "ain ", " ", "ain ", " ", "ain", " ", " ", " ", "ain"})
 % Split on " " and "ain", and treat multiple delimiters separately.
 %!test
 %! [s, m] = strsplit (str, {" ", "ain"}, "collapsedelimiters", false);
@@ -327,10 +337,6 @@ endfunction
 %!assert (strsplit (["a,bc,,de"], ",", false), {"a", "bc", char(ones(1,0)), "de"})
 %!assert (strsplit (["a,bc,de"], ",", true), {"a", "bc", "de"})
 %!assert (strsplit (["a,bc,de"], {","," "}, true), {"a", "bc", "de"})
-%!test
-%! [s, m] = strsplit ("hello \t world", 1);
-%! assert (s, {"hello", "world"});
-%! assert (m, {" ", "\t", " "});
 
 %!assert (strsplit ("road to hell", " ", "delimitertype", "r"), {"road", "to", "hell"})
 %!assert (strsplit ("road to^hell", '\^| ', "delimitertype", "r"), {"road", "to", "hell"})
@@ -348,6 +354,33 @@ endfunction
 %!assert (strsplit (["a,bc";",de"], ",", false, "delimitertype", "l"), {"a", "bc", char(ones(1,0)), "de "})
 %!assert (strsplit (["a,bc";",de"], ",", true, "delimitertype", "l"), {"a", "bc", "de "})
 %!assert (strsplit (["a,bc";",de"], ", ", true, "delimitertype", "l"), {"a", "bc", "de"})
+
+## Test "match" for consecutive delmiters
+%!test
+%! [a, m] = strsplit ("a\t \nb", '\s', 'delimitertype', 'regularexpression',
+%!   'collapsedelimiters', false);
+%! assert (a, {"a", "", "", "b"})
+%! assert (m, {"\t", " ", "\n"})
+%!test
+%! [a, m] = strsplit ("a\t \nb", '\s', false, 'delimitertype', 'regularexpression');
+%! assert (a, {"a", "", "", "b"})
+%! assert (m, {"\t", " ", "\n"})
+%!test
+%! [a, m] = strsplit ("a\t \nb", '\s', "delimitertype", "regularexpression");
+%! assert (a, {"a", "b"})
+%! assert (m, {"\t \n"})
+%!test
+%! [a, m] = strsplit ("a\t \nb", {"\t", " ", "\n"}, "delimitertype", "simple");
+%! assert (a, {"a", "b"})
+%! assert (m, {"\t \n"})
+%!test
+%! [a, m] = strsplit ("a123b", "123", "delimitertype", "legacy");
+%! assert (a, {"a", "b"})
+%! assert (m, {"123"})
+%!test
+%! [s, m] = strsplit ("hello \t world", 1);
+%! assert (s, {"hello", "world"});
+%! assert (m, {" \t "});
 
 %% Test input validation
 %!error strsplit ()

@@ -31,4 +31,6 @@ extern bool
 save_mat_ascii_data (std::ostream& os, const octave_value& val_arg,
                      int precision, bool tabs = false);
 
+extern bool looks_like_mat_ascii_file (const std::string& filename);
+
 #endif

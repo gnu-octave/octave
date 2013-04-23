@@ -107,7 +107,10 @@ get_mat_data_input_line (std::istream& is)
 }
 
 static void
-get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx_type& nr, octave_idx_type& nc)
+get_lines_and_columns (std::istream& is, 
+                       octave_idx_type& nr, octave_idx_type& nc,
+                       const std::string& filename = std::string (),
+                       bool quiet = false, bool check_numeric = false)
 {
   std::streampos pos = is.tellg ();
 
@@ -147,6 +150,25 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
 
           if (end != std::string::npos)
             {
+              if (check_numeric)
+                {
+                  std::istringstream tmp_stream (buf.substr (beg, end-beg));
+
+                  octave_read_double (tmp_stream);
+
+                  if (tmp_stream.fail ())
+                    {
+                      if (! quiet)
+                        error ("load: %s: non-numeric data found near line %d",
+                               filename.c_str (), file_line_number);
+
+                      nr = 0;
+                      nc = 0;
+
+                      goto done;
+                    }
+                }
+
               beg = buf.find_first_not_of (", \t", end);
 
               if (beg == std::string::npos || (buf[beg] == '\r' &&
@@ -172,13 +194,23 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
           else if (nc == tmp_nc)
             nr++;
           else
-            error ("load: %s: inconsistent number of columns near line %d",
-                   filename.c_str (), file_line_number);
+            {
+              if (! quiet)
+                error ("load: %s: inconsistent number of columns near line %d",
+                       filename.c_str (), file_line_number);
+
+              nr = 0;
+              nc = 0;
+
+              goto done;
+            }
         }
     }
 
-  if (nr == 0 || nc == 0)
+  if (! quiet && (nr == 0 || nc == 0))
     error ("load: file '%s' seems to be empty!", filename.c_str ());
+
+ done:
 
   is.clear ();
   is.seekg (pos);
@@ -233,7 +265,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
       int total_count = 0;
 
-      get_lines_and_columns (is, filename, nr, nc);
+      get_lines_and_columns (is, nr, nc, filename);
 
       octave_quit ();
 
@@ -375,4 +407,24 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
     }
 
   return (os && success);
+}
+
+bool
+looks_like_mat_ascii_file (const std::string& filename)
+{
+  bool retval = false;
+
+  std::ifstream is (filename.c_str ());
+
+  if (is)
+    {
+      int nr = 0;
+      int nc = 0;
+
+      get_lines_and_columns (is, nr, nc, filename, true, true);
+
+      retval = (nr != 0 && nc != 0);
+    }
+
+  return retval;
 }

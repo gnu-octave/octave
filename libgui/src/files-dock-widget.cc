@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QToolButton>
 
+#include "load-save.h"
+
 files_dock_widget::files_dock_widget (QWidget *p)
   : octave_dock_widget (p)
 {
@@ -280,8 +282,15 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
         }
       else
         {
-          if (QFile::exists (fileInfo.absoluteFilePath ()))
-            emit open_file (fileInfo.absoluteFilePath ());
+          QString abs_fname = fileInfo.absoluteFilePath ();
+
+          if (QFile::exists (abs_fname))
+            {
+              if (is_octave_data_file (abs_fname.toStdString ()))
+                emit load_file_signal (abs_fname);
+              else
+                emit open_file (fileInfo.absoluteFilePath ());
+            }
         }
     }
 }

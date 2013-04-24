@@ -80,7 +80,7 @@ fi
 
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
 OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings" \
-OCTAVE_LOCALE_DIR="$top_srcdir/libgui/languages" \
+OCTAVE_LOCALE_DIR="$builddir/libgui/languages" \
 OCTAVE_JAVA_DIR="$builddir/scripts/java" \
   exec $builddir/libtool --mode=execute $driver \
     "$octave_executable" --no-init-path --path="$LOADPATH" \

@@ -20,64 +20,75 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef FILEEDITORTAB_H
-#define FILEEDITORTAB_H
+#if !defined (file_editor_tab_h)
+#define file_editor_tab_h 1
 
-#include <Qsci/qsciscintilla.h>
 #include <QWidget>
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
 #include <QSettings>
 
+#include <Qsci/qsciscintilla.h>
+
 #include "find-dialog.h"
 
 class file_editor;
+
 class file_editor_tab : public QWidget
 {
   Q_OBJECT
-  public:
-  file_editor_tab (QString directory = "");
-  ~file_editor_tab ();
+
+public:
+
+  file_editor_tab (const QString& directory = "");
+
+  ~file_editor_tab (void);
 
 public slots:
-  void update_window_title(bool modified);
-  void handle_copy_available(bool enableCopy);
-  void handle_margin_clicked (int line, int margin, Qt::KeyboardModifiers state);
 
-  /** Tells the editor tab to react on changed settings. */
+  void update_window_title (bool modified);
+  void handle_copy_available (bool enableCopy);
+  void handle_margin_clicked (int line, int margin,
+                              Qt::KeyboardModifiers state);
+
+  // Tells the editor tab to react on changed settings.
   void notice_settings (const QSettings *settings);
-  /** Will initiate close if associated with the identifier tag. */
-  void conditional_close (const QWidget* ID);
-  /** Change to a different editor tab by identifier tag. */
-  void change_editor_state (const QWidget* ID);
-  /** Simply transmit file name. */
-  void file_name_query (const QWidget* ID);
 
-  void set_focus (const QWidget* ID);
-  void undo (const QWidget* ID);
-  void redo (const QWidget* ID);
-  void copy (const QWidget* ID);
-  void cut (const QWidget* ID);
-  void paste (const QWidget* ID);
-  void save_file (const QWidget* ID);
-  void save_file (const QWidget* ID, const QString& fileName, bool remove_on_success);
-  void save_file_as (const QWidget* ID);
-  void print_file (const QWidget* ID);
-  void run_file (const QWidget* ID);
-  void toggle_bookmark (const QWidget* ID);
-  void next_bookmark (const QWidget* ID);
-  void previous_bookmark (const QWidget* ID);
-  void remove_bookmark (const QWidget* ID);
+  // Will initiate close if associated with the identifier tag.
+  void conditional_close (const QWidget *ID);
 
-  void toggle_breakpoint (const QWidget* ID);
-  void next_breakpoint (const QWidget* ID);
-  void previous_breakpoint (const QWidget* ID);
-  void remove_all_breakpoints (const QWidget* ID);
+  // Change to a different editor tab by identifier tag.
+  void change_editor_state (const QWidget *ID);
 
-  void comment_selected_text (const QWidget* ID);
-  void uncomment_selected_text (const QWidget* ID);
-  void find (const QWidget* ID);
-  void goto_line (const QWidget* ID, int line = -1);
+  // Simply transmit file name.
+  void file_name_query (const QWidget *ID);
+
+  void set_focus (const QWidget *ID);
+  void undo (const QWidget *ID);
+  void redo (const QWidget *ID);
+  void copy (const QWidget *ID);
+  void cut (const QWidget *ID);
+  void paste (const QWidget *ID);
+  void save_file (const QWidget *ID);
+  void save_file (const QWidget *ID, const QString& fileName,
+                  bool remove_on_success);
+  void save_file_as (const QWidget *ID);
+  void print_file (const QWidget *ID);
+  void run_file (const QWidget *ID);
+  void toggle_bookmark (const QWidget *ID);
+  void next_bookmark (const QWidget *ID);
+  void previous_bookmark (const QWidget *ID);
+  void remove_bookmark (const QWidget *ID);
+
+  void toggle_breakpoint (const QWidget *ID);
+  void next_breakpoint (const QWidget *ID);
+  void previous_breakpoint (const QWidget *ID);
+  void remove_all_breakpoints (const QWidget *ID);
+
+  void comment_selected_text (const QWidget *ID);
+  void uncomment_selected_text (const QWidget *ID);
+  void find (const QWidget *ID);
+  void goto_line (const QWidget *ID, int line = -1);
 
   void insert_debugger_pointer (const QWidget *ID, int line = -1);
   void delete_debugger_pointer (const QWidget *ID, int line = -1);
@@ -92,33 +103,48 @@ public slots:
   void file_has_changed (const QString& fileName);
 
 signals:
+
   void file_name_changed (const QString& fileName, const QString& toolTip);
   void editor_state_changed (bool copy_available, const QString& fileName);
   void tab_remove_request ();
   void add_filename_to_list (const QString&, QWidget *);
   void mru_add_file (const QString& file_name);
-  void editor_check_conflict_save (const QString& saveFileName, bool remove_on_success);
+  void editor_check_conflict_save (const QString& saveFileName,
+                                   bool remove_on_success);
   void process_octave_code (const QString& command);
 
 protected:
+
   void closeEvent (QCloseEvent *event);
   void set_file_name (const QString& fileName);
 
 private slots:
-  /** When user closes message box for reload question. */
+
+  // When user closes message box for reload question.
   void handle_file_reload_answer (int decision);
-  /** When user closes message box for resave question. */
+
+  // When user closes message box for resave question.
   void handle_file_resave_answer (int decision);
-  /** When user closes message box for modified question. */
+
+  // When user closes message box for modified question.
   void handle_file_modified_answer (int decision);
-  /** When user closes find_dialog box. */
+
+  // When user closes find_dialog box.
   void handle_find_dialog_finished (int decision);
-  /** When user closes QFileDialog box. */
+
+  // When user closes QFileDialog box.
   void handle_save_file_as_answer (const QString& fileName);
   void handle_save_file_as_answer_close (const QString& fileName);
   void handle_save_file_as_answer_cancel ();
 
 private:
+
+  enum editor_markers
+    {
+      bookmark,
+      breakpoint,
+      debugger_position
+    };
 
   struct bp_info
   {
@@ -153,19 +179,19 @@ private:
   void remove_all_breakpoints_callback (const bp_info& info);
   void center_current_line ();
 
-  QsciScintilla *       _edit_area;
+  QsciScintilla *_edit_area;
 
-  QString               _file_name;
-  QString               _file_name_short;
+  QString _file_name;
+  QString _file_name_short;
 
-  bool                  _long_title;
-  bool                  _copy_available;
+  bool _long_title;
+  bool _copy_available;
 
-  QFileSystemWatcher    _file_system_watcher;
+  QFileSystemWatcher _file_system_watcher;
 
-  find_dialog *         _find_dialog;
-  bool                  _find_dialog_is_visible;
-  QRect                 _find_dialog_geometry;
+  find_dialog *_find_dialog;
+  bool _find_dialog_is_visible;
+  QRect _find_dialog_geometry;
 };
 
-#endif // FILEEDITORTAB_H
+#endif

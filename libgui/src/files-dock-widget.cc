@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "files-dock-widget.h"
 
 #include <QApplication>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QFileInfo>
 #include <QCompleter>
 #include <QSettings>
@@ -289,7 +291,9 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
               if (is_octave_data_file (abs_fname.toStdString ()))
                 emit load_file_signal (abs_fname);
               else
-                emit open_file (fileInfo.absoluteFilePath ());
+                QDesktopServices::openUrl (QUrl::fromLocalFile (abs_fname));
+        
+              // emit open_file (fileInfo.absoluteFilePath ());
             }
         }
     }

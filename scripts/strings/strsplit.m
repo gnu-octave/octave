@@ -81,7 +81,13 @@
 ## @item @var{delimitertype} may take the value of @code{legacy},
 ## @code{simple} or @code{regularexpression}.
 ## If @var{delimitertype} is equal to @code{legacy}, each individual
-## character of @var{del} is used to split the input.
+## character of @var{del} is used to split the input.  For both @code{simple}
+## and @code{regularexpression}, the string is split at the boundaries of the
+## delimiter string.  If @var{delimiter} is a cell-string, then the string
+## is split at the boundaries of each of the cells' strings.  @var{simple}
+## delimiters may contain escaped characters, but are otherwise treated as
+## literal strings.
+##
 ## If the specified delimiters are single characters, the default is
 ## @var{delimitertype} is @code{legacy}.  Otherwise the default
 ## @var{delimitertype} is @code{simple}.
@@ -200,11 +206,11 @@ function [result, matches] = strsplit (str, del, varargin)
 
   if (strncmpi (args.delimitertype, "simple", length_deltype))
     if (iscellstr (del))
-      del = cellfun (@(x) regexp2simple (x, false), del, "uniformoutput",
-        false);
+      del = cellfun (@do_string_escapes, del, "uniformoutput", false);
     else
-      del = regexp2simple (del, false);
+      del = do_string_escapes (del);
     endif
+    del = regexprep (del, '([^\w])', '\\$1');
   endif
 
   if (rows (str) > 1)
@@ -217,8 +223,7 @@ function [result, matches] = strsplit (str, del, varargin)
   if (isempty (str))
     result = {str};
   elseif (strncmpi (args.delimitertype, "legacy", length_deltype))
-    ## Conventional splitting is preserved for its speed.  Its delimiter type
-    ##
+    ## Legacy splitting is fast
     if (! ischar (del))
       if (iscell (del) && all (cellfun (@numel, del) < 2))
         del = [del{:}];
@@ -228,7 +233,10 @@ function [result, matches] = strsplit (str, del, varargin)
            "DEL must be a string, or a cell array scalar character elements.")
       endif
     endif
-    ## Split s according to delimiter
+    if (strcmp (typeinfo (del), "sq_string"))
+      del = do_string_escapes (del);
+    endif
+    ## Split str at each character contained in del
     if (isscalar (del))
       ## Single separator
       idx = find (str == del);
@@ -276,28 +284,9 @@ function [result, matches] = strsplit (str, del, varargin)
       del = ["(", del, ")+"];
     endif
     [result, ~, ~, ~, matches] = regexp (str, del, "split");
-    if (strncmpi (args.delimitertype, "simple", length_deltype))
-      matches = cellfun (@(x) regexp2simple (x, true), matches,
-        "uniformoutput", false);
-    endif
   else
     error ("strsplit:invalid_delimitertype", 
       sprintf ("strsplit: Invalid DELIMITERTYPE"))
-  endif
-endfunction
-
-function str = regexp2simple (str, reverse = false)
-  rep = {'\', '[', ']', '{', '}', '$', '^', '(', ')', '*', '+', '.', '?', '|'};
-  if (reverse)
-    ## backslash must go last
-    for r = numel(rep):-1:1
-      str = strrep (str, [char(92), rep{r}], rep{r});
-    endfor
-  else
-    ## backslash must go first
-    for r = 1:numel(rep)
-      str = strrep (str, rep{r}, [char(92), rep{r}]);
-    endfor
   endif
 endfunction
 
@@ -354,6 +343,10 @@ endfunction
 %!assert (strsplit (["a,bc";",de"], ",", false, "delimitertype", "l"), {"a", "bc", char(ones(1,0)), "de "})
 %!assert (strsplit (["a,bc";",de"], ",", true, "delimitertype", "l"), {"a", "bc", "de "})
 %!assert (strsplit (["a,bc";",de"], ", ", true, "delimitertype", "l"), {"a", "bc", "de"})
+
+%!assert (strsplit ("foo\tbar", '\t', "delimitertype", "l"), {"foo", "bar"})
+%!assert (strsplit ("foo\tbar", '\t', "delimitertype", "r"), {"foo", "bar"})
+%!assert (strsplit ("foo\tbar", '\t', "delimitertype", "s"), {"foo", "bar"})
 
 ## Test "match" for consecutive delmiters
 %!test

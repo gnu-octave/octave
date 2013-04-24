@@ -159,7 +159,7 @@ file_editor::request_open_file (void)
 
   // Create a NonModal message.
   QFileDialog *fileDialog = new QFileDialog (this);
-  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*.*)"));
+  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
   fileDialog->setDirectory (ced);

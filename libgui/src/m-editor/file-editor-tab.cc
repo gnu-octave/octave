@@ -975,7 +975,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
         }
     }
 
-  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*.*)"));
+  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
   fileDialog->setDefaultSuffix ("m");
   fileDialog->setAcceptMode (QFileDialog::AcceptSave);
   fileDialog->setViewMode (QFileDialog::Detail);

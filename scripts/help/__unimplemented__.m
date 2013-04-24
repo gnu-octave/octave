@@ -402,7 +402,6 @@ function list = missing_functions ()
   "visdiff",
   "volumebounds",
   "waitfor",
-  "waterfall",
   "wavfinfo",
   "wavplay",
   "wavrecord",

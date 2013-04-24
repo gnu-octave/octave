@@ -392,6 +392,8 @@ three-dimensional plots.
 
 @DOCSTRING(scatter3)
 
+@DOCSTRING(waterfall)
+
 @menu
 * Aspect Ratio::
 * Three-dimensional Function Plotting::  

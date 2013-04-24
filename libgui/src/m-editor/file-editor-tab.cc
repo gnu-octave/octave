@@ -213,7 +213,9 @@ file_editor_tab::update_lexer ()
   QsciLexer *lexer = _edit_area->lexer ();
   delete lexer;
 
-  if (_file_name.endsWith (".m") || _file_name.endsWith (".M"))
+  if (_file_name.endsWith (".m")
+      || _file_name.endsWith (".M")
+      || _file_name.endsWith ("octaverc"))
     {
       lexer = new lexer_octave_gui ();
     }

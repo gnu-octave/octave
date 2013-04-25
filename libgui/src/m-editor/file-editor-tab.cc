@@ -370,13 +370,13 @@ file_editor_tab::run_file (const QWidget *ID)
     save_file (_file_name);
 
   QFileInfo file_info (_file_name);
-  QString path = file_info.absolutePath ();
+  QString dir = file_info.absolutePath ();
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
   emit process_octave_code (QString ("cd \'%1\'\n%2\n")
-                            .arg (path).arg (function_name));
+                            .arg (dir).arg (function_name));
  
   // TODO: Sending a run event crashes for long scripts. Find out why.
   // octave_link::post_event
@@ -449,11 +449,11 @@ file_editor_tab::file_in_path (const bp_info& info)
 
   std::string curr_dir = octave_env::get_current_directory ();
 
-  if (same_file (curr_dir, info.path))
+  if (same_file (curr_dir, info.dir))
     ok = true;
   else
     {
-      bool dir_in_load_path = load_path::contains_canonical (info.path);
+      bool dir_in_load_path = load_path::contains_canonical (info.dir);
 
       std::string base_file = octave_env::base_pathname (info.file);
       std::string lp_file = load_path::find_file (base_file);
@@ -473,7 +473,7 @@ file_editor_tab::file_in_path (const bp_info& info)
 
           if (same_file (lp_file, base_file))
             {
-              if (same_file (curr_dir, info.path))
+              if (same_file (curr_dir, info.dir))
                 ok = true;
               else
                 addpath_option = false;
@@ -484,17 +484,17 @@ file_editor_tab::file_in_path (const bp_info& info)
   if (! ok)
     {
       int action
-        = octave_link::debug_cd_or_addpath_error (info.file, info.path,
+        = octave_link::debug_cd_or_addpath_error (info.file, info.dir,
                                                   addpath_option);
       switch (action)
         {
         case 1:
-          Fcd (ovl (info.path));
+          Fcd (ovl (info.dir));
           ok = true;
           break;
 
         case 2:
-          load_path::prepend (info.path);
+          load_path::prepend (info.dir);
           ok = true;
           break;
 
@@ -537,13 +537,13 @@ void
 file_editor_tab::request_add_breakpoint (int line)
 {
   QFileInfo file_info (_file_name);
-  QString path = file_info.absolutePath ();
+  QString dir = file_info.absolutePath ();
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (_file_name, path, function_name, line+1);
+  bp_info info (_file_name, dir, function_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::add_breakpoint_callback, info);
@@ -553,13 +553,13 @@ void
 file_editor_tab::request_remove_breakpoint (int line)
 {
   QFileInfo file_info (_file_name);
-  QString path = file_info.absolutePath ();
+  QString dir = file_info.absolutePath ();
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (_file_name, path, function_name, line+1);
+  bp_info info (_file_name, dir, function_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_breakpoint_callback, info);
@@ -621,13 +621,13 @@ file_editor_tab::remove_all_breakpoints (const QWidget *ID)
     return;
 
   QFileInfo file_info (_file_name);
-  QString path = file_info.absolutePath ();
+  QString dir = file_info.absolutePath ();
   QString function_name = file_info.fileName ();
 
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
 
-  bp_info info (_file_name, path, function_name, 0);
+  bp_info info (_file_name, dir, function_name, 0);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_all_breakpoints_callback, info);

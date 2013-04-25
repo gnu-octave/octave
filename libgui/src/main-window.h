@@ -111,6 +111,10 @@ public slots:
 
   void handle_command_double_clicked (const QString& command);
 
+  void handle_new_figure_request (void);
+
+  void handle_new_variable_request (void);
+
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
   void debug_continue (void);
@@ -164,7 +168,6 @@ private:
                                       const QString& item,
                                       const QKeySequence& key);
   void construct_debug_menu (QMenuBar *p);
-  void construct_desktop_menu (QMenuBar *p);
   QAction *construct_window_menu_item (QMenu *p, const QString& item,
                                        bool checkable,
                                        const QKeySequence& key);
@@ -191,6 +194,8 @@ private:
   void clear_workspace_callback (void);
 
   void clear_history_callback (void);
+
+  void new_figure_callback (void);
 
   void change_directory_callback (const std::string& directory);
 

@@ -103,6 +103,8 @@ public slots:
   void handle_visibility (bool visible);
 
   void request_new_file (const QString& commands);
+  void request_new_script (const QString& commands);
+  void request_new_function (const QString& commands);
   void request_open_file (void);
   void request_mru_open_file (void);
   void request_print_file (void);

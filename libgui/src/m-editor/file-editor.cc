@@ -151,6 +151,31 @@ file_editor::request_new_file (const QString& commands)
 }
 
 void
+file_editor::request_new_script (const QString& commands)
+{
+  request_new_file (commands);
+}
+
+void
+file_editor::request_new_function (const QString& commands)
+{
+  QString text = commands;
+
+  if (text.isEmpty ())
+    text = "## Copyright (C)\n"
+      "\n"
+      "## -*- texinfo -*-\n"
+      "## @deftypefn {Function File} {[outputs] =} unamed_function (inputs)\n"
+      "## @end deftypefn\n"
+      "\n"
+      "function [outputs] = unnamed_function (inputs)\n"
+      "\n"
+      "endfunction\n";
+
+  request_new_file (text);
+}
+
+void
 file_editor::request_open_file (void)
 {
   // Open file isn't a file_editor_tab function since the file

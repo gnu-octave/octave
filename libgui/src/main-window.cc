@@ -196,6 +196,19 @@ main_window::handle_command_double_clicked (const QString& command)
 }
 
 void
+main_window::handle_new_figure_request (void)
+{
+  octave_link::post_event (this, &main_window::new_figure_callback);
+}
+
+void
+main_window::handle_new_variable_request (void)
+{
+  QMessageBox::about (this, tr ("New Variable"),
+                      tr ("The new variable action is not implemented."));
+}
+
+void
 main_window::open_online_documentation_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://gnu.org/software/octave/doc/interpreter"));
@@ -810,8 +823,6 @@ main_window::construct_menu_bar (void)
 
   construct_debug_menu (menu_bar);
 
-  construct_desktop_menu (menu_bar);
-
   construct_window_menu (menu_bar);
 
   construct_help_menu (menu_bar);
@@ -834,16 +845,10 @@ main_window::construct_file_menu (QMenuBar *p)
   file_menu->addMenu (editor_window->get_mru_menu ());
 #endif
 
-  QAction *close_command_window_action
-    = file_menu->addAction (tr ("Close Command Window"));
-  close_command_window_action->setShortcut (QKeySequence::Close);
-  close_command_window_action->setEnabled (false); // TODO: Make this work.
-
   file_menu->addSeparator ();
 
-  QAction *import_data_action
-    = file_menu->addAction (tr ("Import Data"));
-  import_data_action->setEnabled (false); // TODO: Make this work.
+  QAction *load_workspace_action
+    = file_menu->addAction (tr ("Load workspace"));
 
   QAction *save_workspace_action
     = file_menu->addAction (tr ("Save Workspace As"));
@@ -856,21 +861,6 @@ main_window::construct_file_menu (QMenuBar *p)
 
   file_menu->addSeparator ();
 
-  QAction *page_setup_action
-    = file_menu->addAction (tr ("Page Setup..."));
-  page_setup_action->setEnabled (false); // TODO: Make this work.
-
-  QAction *print_action
-    = file_menu->addAction (tr ("Print"));
-  print_action->setShortcut (QKeySequence::Print);
-  print_action->setEnabled (false); // TODO: Make this work.
-
-  QAction *print_selection_action
-    = file_menu->addAction (tr ("Print Selection..."));
-  print_selection_action->setEnabled (false); // TODO: Make this work.
-
-  file_menu->addSeparator ();
-
   QAction *exit_action = file_menu->addAction (tr ("Exit"));
   exit_action->setShortcut (QKeySequence::Quit);
 
@@ -879,6 +869,9 @@ main_window::construct_file_menu (QMenuBar *p)
 
   connect (_open_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_open_file ()));
+
+  connect (load_workspace_action, SIGNAL (triggered ()),
+           this, SLOT (handle_load_workspace_request ()));
 
   connect (save_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_save_workspace_request ()));
@@ -893,33 +886,29 @@ main_window::construct_new_menu (QMenu *p)
   QMenu *new_menu = p->addMenu (tr ("New"));
 
   _new_script_action
-    = new_menu->addAction (QIcon (":/actions/icons/filenew.png"), tr ("Script"));
-  _new_script_action->setShortcut (QKeySequence::New);
-  _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
+    = new_menu->addAction (QIcon (":/actions/icons/filenew.png"),
+                           tr ("Script"));
 
   QAction *new_function_action = new_menu->addAction (tr ("Function"));
-  new_function_action->setEnabled (false); // TODO: Make this work.
-
-  QAction *new_class_action = new_menu->addAction (tr ("Class"));
-  new_class_action->setEnabled (false); // TODO: Make this work.
-
-  QAction *new_enumeration_action = new_menu->addAction (tr ("Enumeration"));
-  new_enumeration_action->setEnabled (false); // TODO: Make this work.
+  new_function_action->setEnabled (true);
 
   QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
-  new_figure_action->setEnabled (false); // TODO: Make this work.
+  new_figure_action->setEnabled (true);
 
   QAction *new_variable_action = new_menu->addAction (tr ("Variable"));
-  new_variable_action->setEnabled (false); // TODO: Make this work.
-
-  QAction *new_model_action = new_menu->addAction (tr ("Model"));
-  new_model_action->setEnabled (false); // TODO: Make this work.
-
-  QAction *new_gui_action = new_menu->addAction (tr ("GUI"));
-  new_gui_action->setEnabled (false); // TODO: Make this work.
+  new_variable_action->setEnabled (true);
 
   connect (_new_script_action, SIGNAL (triggered ()),
-           editor_window, SLOT (request_new_file ()));
+           editor_window, SLOT (request_new_script ()));
+
+  connect (new_function_action, SIGNAL (triggered ()),
+           editor_window, SLOT (request_new_function ()));
+
+  connect (new_figure_action, SIGNAL (triggered ()),
+           this, SLOT (handle_new_figure_request ()));
+
+  connect (new_variable_action, SIGNAL (triggered ()),
+           this, SLOT (handle_new_variable_request ()));
 }
 
 void
@@ -947,12 +936,6 @@ main_window::construct_edit_menu (QMenuBar *p)
     = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"), tr ("Paste"));
   _paste_action->setShortcut (ctrl_shift + Qt::Key_V);
 
-  QAction *paste_to_workspace_action
-    = edit_menu->addAction (tr ("Paste To Workspace..."));
-  paste_to_workspace_action->setEnabled (false); // TODO: Make this work.
-
-  edit_menu->addSeparator ();
-
   QAction *select_all_action
     = edit_menu->addAction (tr ("Select All"));
   select_all_action->setEnabled (false); // TODO: Make this work.
@@ -963,10 +946,6 @@ main_window::construct_edit_menu (QMenuBar *p)
   delete_action->setEnabled (false); // TODO: Make this work.
 
   edit_menu->addSeparator ();
-
-  QAction *find_action
-    = edit_menu->addAction (tr ("Find..."));
-  find_action->setEnabled (false); // TODO: Make this work.
 
   QAction *find_files_action
     = edit_menu->addAction (tr ("Find Files..."));
@@ -1061,17 +1040,6 @@ main_window::construct_debug_menu (QMenuBar *p)
 
   connect (_debug_quit, SIGNAL (triggered ()),
            this, SLOT (debug_quit ()));
-}
-
-void
-main_window::construct_desktop_menu (QMenuBar *p)
-{
-  QMenu *desktop_menu = p->addMenu (tr ("&Desktop"));
-
-  QAction *load_workspace_action = desktop_menu->addAction (tr ("Load workspace"));
-
-  connect (load_workspace_action, SIGNAL (triggered ()),
-           this, SLOT (handle_load_workspace_request ()));
 }
 
 QAction *
@@ -1366,6 +1334,13 @@ void
 main_window::clear_history_callback (void)
 {
   Fhistory (ovl ("-c"));
+}
+
+void
+main_window::new_figure_callback (void)
+{
+  Fbuiltin (ovl ("figure"));
+  Fdrawnow ();
 }
 
 void

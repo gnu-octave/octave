@@ -449,7 +449,7 @@ file_editor_tab::file_in_path (const bp_info& info)
 
   std::string curr_dir = octave_env::get_current_directory ();
 
-  if (curr_dir == info.path)
+  if (same_file (curr_dir, info.path))
     ok = true;
   else
     {

@@ -111,7 +111,7 @@ octave_qt_link::do_question_dialog (const std::string& msg,
   uiwidget_creator.wait ();
 
   // The GUI has sent a signal and the process has been awakened.
-  return uiwidget_creator.get_dialog_button ()->toStdString ();
+  return uiwidget_creator.get_dialog_button().toStdString ();
 }
 
 static QStringList
@@ -193,13 +193,47 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
                                               const std::string& dir,
                                               bool addpath_option)
 {
-  uiwidget_creator.signal_debug_cd_or_addpath (QString::fromStdString (file),
-                                               QString::fromStdString (dir),
-                                               addpath_option);
+  int retval = -1;
 
+  QString qdir = QString::fromStdString (dir);
+  QString qfile = QString::fromStdString (file);
+
+  QString msg
+    = (addpath_option
+       ? tr ("The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg(qfile).arg(qdir)
+       : tr ("The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.").arg(qfile).arg(qdir));
+
+  QString title = tr ("Change Directory or Add Directory to Load Path");
+
+  QString cd_txt = tr ("Change Directory");
+  QString addpath_txt = tr ("Add Directory to Load Path");
+  QString cancel_txt = tr ("Cancel");
+
+  QStringList btn;
+  QStringList role;
+  btn << cd_txt;
+  role << "AcceptRole";
+  if (addpath_option)
+    {
+      btn << addpath_txt;
+      role << "AcceptRole";
+    }
+  btn << cancel_txt;
+  role << "AcceptRole";
+
+  uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
+
+  // Wait while the user is responding to message box.
   uiwidget_creator.wait ();
 
-  return uiwidget_creator.get_dialog_result ();
+  QString result = uiwidget_creator.get_dialog_button ();
+
+  if (result == cd_txt)
+    retval = 1;
+  else if (result == addpath_txt)
+    retval = 2;
+
+  return retval;
 }
 
 void

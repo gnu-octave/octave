@@ -592,14 +592,6 @@ main_window::connect_uiwidget_links ()
            SLOT (handle_create_inputlayout (const QStringList&, const QString&,
                                             const QFloatList&, const QFloatList&,
                                             const QStringList&)));
-
-  connect (&uiwidget_creator,
-           SIGNAL (create_debug_cd_or_addpath_dialog (const QString&,
-                                                      const QString&, bool)),
-           this,
-           SLOT (handle_create_debug_cd_or_addpath_dialog (const QString&,
-                                                           const QString&,
-                                                           bool)));
 }
 
 // Create a message dialog with specified string, buttons and decorative
@@ -654,19 +646,6 @@ main_window::handle_create_inputlayout (const QStringList& prompt,
 
   input_dialog->setAttribute (Qt::WA_DeleteOnClose);
   input_dialog->show ();
-}
-
-void
-main_window::handle_create_debug_cd_or_addpath_dialog (const QString& file,
-                                                       const QString& dir,
-                                                       bool addpath_option)
-
-{
-  cd_or_addpath_dialog *dialog
-    = new cd_or_addpath_dialog (file, dir, addpath_option);
-
-  dialog->setAttribute (Qt::WA_DeleteOnClose);
-  dialog->show ();
 }
 
 // Main subroutine of the constructor

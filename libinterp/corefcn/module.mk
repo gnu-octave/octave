@@ -45,6 +45,7 @@ COREFCN_SRC = \
   corefcn/dlmread.cc \
   corefcn/dot.cc \
   corefcn/eig.cc \
+  corefcn/ellipj.cc \
   corefcn/fft.cc \
   corefcn/fft2.cc \
   corefcn/fftn.cc \

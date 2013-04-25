@@ -287,6 +287,10 @@ cos (pi/2)
 
 @DOCSTRING(dawson)
 
+@DOCSTRING(ellipj)
+
+@DOCSTRING(ellipke)
+
 @DOCSTRING(erf)
 
 @DOCSTRING(erfc)
@@ -298,6 +302,8 @@ cos (pi/2)
 @DOCSTRING(erfinv)
 
 @DOCSTRING(erfcinv)
+
+@DOCSTRING(expint)
 
 @DOCSTRING(gamma)
 

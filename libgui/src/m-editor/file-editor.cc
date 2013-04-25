@@ -1040,7 +1040,7 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            this, SLOT (handle_mru_add_file (const QString&)));
 
   connect (f, SIGNAL (process_octave_code (const QString&)),
-           parent (), SLOT (handle_command_double_clicked (const QString&)));
+           parent (), SLOT (execute_command_in_terminal (const QString&)));
   
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),

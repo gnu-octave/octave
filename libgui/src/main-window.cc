@@ -188,11 +188,12 @@ main_window::handle_clear_history_request (void)
 }
 
 void
-main_window::handle_command_double_clicked (const QString& command)
+main_window::execute_command_in_terminal (const QString& command)
 {
-  emit relay_command_signal (command);
+  octave_link::post_event (this, &main_window::execute_command_callback,
+                           command.toStdString ());
 
-  command_window->focus ();
+  focus_command_window ();
 }
 
 void
@@ -762,6 +763,10 @@ main_window::construct_octave_qt_link (void)
 
   connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
            this, SLOT (change_directory (QString)));
+
+  connect (_octave_qt_link,
+           SIGNAL (execute_command_in_terminal_signal (QString)),
+           this, SLOT (execute_command_in_terminal (QString)));
 
   connect (_octave_qt_link,
            SIGNAL (set_history_signal (const QStringList&)),
@@ -1334,6 +1339,21 @@ void
 main_window::clear_history_callback (void)
 {
   Fhistory (ovl ("-c"));
+}
+
+void
+main_window::execute_command_callback (const std::string& command)
+{
+  std::string pending_input = command_editor::get_current_line ();
+
+  command_editor::set_initial_input (pending_input);
+
+  command_editor::replace_line (command);
+  command_editor::redisplay ();
+
+  // We are executing inside the command editor event loop.  Force
+  // the current line to be returned for processing.
+  command_editor::interrupt ();
 }
 
 void

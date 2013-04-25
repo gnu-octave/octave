@@ -38,7 +38,6 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
     public slots:
         void notice_settings (const QSettings *settings);
-        void relay_command (const QString& text);
     };
 #else
     #include "unix/QUnixTerminalImpl.h"
@@ -52,7 +51,6 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
     public slots:
         void notice_settings (const QSettings *settings);
-        void relay_command (const QString& command);
     };
 #endif
 

@@ -44,16 +44,10 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility (bool)));
 
-  connect (parent (), SIGNAL (relay_command_signal (const QString&)),
-           this, SLOT (relay_command (const QString&)));
-
   // Forward signals to QTerminal widget.
 
   connect (this, SIGNAL (notice_settings_signal (const QSettings *)),
            terminal, SLOT (notice_settings (const QSettings *)));
-
-  connect (this, SIGNAL (relay_command_signal (const QString&)),
-           terminal, SLOT (relay_command (const QString&)));
 
   connect (this, SIGNAL (copyClipboard_signal (void)),
            terminal, SLOT (copyClipboard (void)));
@@ -66,12 +60,6 @@ void
 terminal_dock_widget::notice_settings (const QSettings *settings)
 {
   emit notice_settings_signal (settings);
-}
-
-void
-terminal_dock_widget::relay_command (const QString& command)
-{
-  emit relay_command_signal (command);
 }
 
 void

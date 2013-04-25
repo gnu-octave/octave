@@ -75,7 +75,7 @@ workspace_view::workspace_view (QWidget *p)
            this, SLOT(contextmenu_requested (const QPoint&)));
 
   connect (this, SIGNAL (command_requested (const QString&)),
-           p, SLOT (handle_command_double_clicked (const QString&)));
+           p, SLOT (execute_command_in_terminal (const QString&)));
 }
 
 workspace_view::~workspace_view (void)

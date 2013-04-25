@@ -48,6 +48,8 @@ command_editor *command_editor::instance = 0;
 
 std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
 
+std::set<command_editor::pre_input_hook_fcn> command_editor::pre_input_hook_set;
+
 std::set<command_editor::event_hook_fcn> command_editor::event_hook_set;
 
 static octave_mutex event_hook_lock;
@@ -65,6 +67,8 @@ gnu_readline : public command_editor
 public:
 
   typedef command_editor::startup_hook_fcn startup_hook_fcn;
+
+  typedef command_editor::pre_input_hook_fcn pre_input_hook_fcn;
 
   typedef command_editor::event_hook_fcn event_hook_fcn;
 
@@ -139,6 +143,10 @@ public:
 
   std::string do_get_line_buffer (void) const;
 
+  std::string do_get_current_line (void) const;
+
+  void do_replace_line (const std::string& text, bool clear_undo);
+
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
@@ -152,6 +160,10 @@ public:
   void set_startup_hook (startup_hook_fcn f);
 
   void restore_startup_hook (void);
+
+  void set_pre_input_hook (pre_input_hook_fcn f);
+
+  void restore_pre_input_hook (void);
 
   void set_event_hook (event_hook_fcn f);
 
@@ -179,6 +191,8 @@ private:
 
   startup_hook_fcn previous_startup_hook;
 
+  pre_input_hook_fcn previous_pre_input_hook;
+
   event_hook_fcn previous_event_hook;
 
   completion_fcn completion_function;
@@ -205,6 +219,7 @@ private:
 
 gnu_readline::gnu_readline ()
   : command_editor (), previous_startup_hook (0),
+    previous_pre_input_hook (0),
     previous_event_hook (0), completion_function (0),
     quoting_function (0), dequoting_function (0),
     char_is_quoted_function (0), user_accept_line_function (0)
@@ -522,6 +537,22 @@ gnu_readline::do_get_line_buffer (void) const
   return ::octave_rl_line_buffer ();
 }
 
+std::string
+gnu_readline::do_get_current_line (void) const
+{
+  std::string retval;
+  char *buf = ::octave_rl_copy_line ();
+  retval = buf;
+  free (buf);
+  return retval;
+}
+
+void
+gnu_readline::do_replace_line (const std::string& text, bool clear_undo)
+{
+  ::octave_rl_replace_line (text.c_str (), clear_undo);
+}
+
 void
 gnu_readline::do_insert_text (const std::string& text)
 {
@@ -565,6 +596,21 @@ void
 gnu_readline::restore_startup_hook (void)
 {
   ::octave_rl_set_startup_hook (previous_startup_hook);
+}
+
+void
+gnu_readline::set_pre_input_hook (pre_input_hook_fcn f)
+{
+  previous_pre_input_hook = ::octave_rl_get_pre_input_hook ();
+
+  if (f != previous_pre_input_hook)
+    ::octave_rl_set_pre_input_hook (f);
+}
+
+void
+gnu_readline::restore_pre_input_hook (void)
+{
+  ::octave_rl_set_pre_input_hook (previous_pre_input_hook);
 }
 
 void
@@ -767,7 +813,11 @@ public:
 
   std::string do_get_line_buffer (void) const;
 
-  void do_insert_text (const std::string&);
+  std::string do_get_current_line (void) const;
+
+  void do_replace_line (const std::string& text, bool clear_undo);
+
+  void do_insert_text (const std::string& text);
 
   void do_newline (void);
 
@@ -832,6 +882,19 @@ default_command_editor::do_get_line_buffer (void) const
   return "";
 }
 
+std::string
+default_command_editor::do_get_current_line (void) const
+{
+  // FIXME
+  return std::string ();
+}
+
+void
+default_command_editor::do_replace_line (const std::string&, bool)
+{
+  // FIXME
+}
+
 void
 default_command_editor::do_insert_text (const std::string&)
 {
@@ -891,6 +954,19 @@ command_editor::force_default_editor (void)
   instance = new default_command_editor ();
 }
 
+void
+command_editor::set_initial_input (const std::string& text)
+{
+  if (instance_ok ())
+    instance->initial_input = text;
+}
+
+int
+command_editor::insert_initial_input (void)
+{
+  return instance_ok () ? instance->do_insert_initial_input () : 0;
+}
+
 int
 command_editor::startup_handler (void)
 {
@@ -898,6 +974,21 @@ command_editor::startup_handler (void)
        p != startup_hook_set.end (); p++)
     {
       startup_hook_fcn f = *p;
+
+      if (f)
+        f ();
+    }
+
+  return 0;
+}
+
+int
+command_editor::pre_input_handler (void)
+{
+  for (pre_input_hook_set_iterator p = pre_input_hook_set.begin ();
+       p != pre_input_hook_set.end (); p++)
+    {
+      pre_input_hook_fcn f = *p;
 
       if (f)
         f ();
@@ -945,8 +1036,17 @@ command_editor::readline (const std::string& prompt)
 std::string
 command_editor::readline (const std::string& prompt, bool& eof)
 {
-  return (instance_ok ())
-    ? instance->do_readline (prompt, eof) : std::string ();
+  std::string retval;
+
+  if (instance_ok ())
+    {
+      if (! instance->initial_input.empty ())
+        add_pre_input_hook (command_editor::insert_initial_input);
+
+      retval = instance->do_readline (prompt, eof);
+    }
+
+  return retval;
 }
 
 void
@@ -1179,6 +1279,19 @@ command_editor::get_line_buffer (void)
   return (instance_ok ()) ? instance->do_get_line_buffer () : "";
 }
 
+std::string
+command_editor::get_current_line (void)
+{
+  return (instance_ok ()) ? instance->do_get_current_line () : "";
+}
+
+void
+command_editor::replace_line (const std::string& text, bool clear_undo)
+{
+  if (instance_ok ())
+    instance->do_replace_line (text, clear_undo);
+}
+
 void
 command_editor::insert_text (const std::string& text)
 {
@@ -1236,6 +1349,32 @@ command_editor::remove_startup_hook (startup_hook_fcn f)
 
       if (startup_hook_set.empty ())
         instance->restore_startup_hook ();
+    }
+}
+
+void
+command_editor::add_pre_input_hook (pre_input_hook_fcn f)
+{
+  if (instance_ok ())
+    {
+      pre_input_hook_set.insert (f);
+
+      instance->set_pre_input_hook (pre_input_handler);
+    }
+}
+
+void
+command_editor::remove_pre_input_hook (pre_input_hook_fcn f)
+{
+  if (instance_ok ())
+    {
+      pre_input_hook_set_iterator p = pre_input_hook_set.find (f);
+
+      if (p != pre_input_hook_set.end ())
+        pre_input_hook_set.erase (p);
+
+      if (pre_input_hook_set.empty ())
+        instance->restore_pre_input_hook ();
     }
 }
 
@@ -1584,6 +1723,21 @@ command_editor::do_decode_prompt_string (const std::string& s)
     }
 
   return result;
+}
+
+int
+command_editor::do_insert_initial_input (void)
+{
+  std::string input = initial_input;
+
+  initial_input = "";
+
+  do_insert_text (input);
+
+  // Is it really right to redisplay here?
+  do_redisplay ();
+
+  return 0;
 }
 
 // Return the octal number parsed from STRING, or -1 to indicate that

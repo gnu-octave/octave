@@ -170,7 +170,7 @@ private:
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
 
-  void run_file_callback (void);
+  void run_file_callback (const bp_info& info);
 
   bool file_in_path (const std::string& file, const std::string& dir);
 

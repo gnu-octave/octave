@@ -76,7 +76,6 @@ public:
 
 signals:
   void settings_changed (const QSettings *);
-  void relay_command_signal (const QString&);
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
 
@@ -109,7 +108,7 @@ public slots:
   void change_directory_up (void);
   void accept_directory_line_edit (void);
 
-  void handle_command_double_clicked (const QString& command);
+  void execute_command_in_terminal(const QString& dir);
 
   void handle_new_figure_request (void);
 
@@ -194,6 +193,8 @@ private:
   void clear_workspace_callback (void);
 
   void clear_history_callback (void);
+
+  void execute_command_callback (const std::string& command);
 
   void new_figure_callback (void);
 

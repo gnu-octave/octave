@@ -243,6 +243,12 @@ octave_qt_link::do_change_directory (const std::string& dir)
 }
 
 void
+octave_qt_link::do_execute_command_in_terminal (const std::string& command)
+{
+  emit execute_command_in_terminal_signal (QString::fromStdString (command));
+}
+
+void
 octave_qt_link::do_set_workspace (bool top_level,
                                   const std::list<workspace_element>& ws)
 {

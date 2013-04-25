@@ -48,6 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-tab.h"
 #include "file-editor.h"
 
+#include "cmd-edit.h"
+
 #include "builtin-defun-decls.h"
 #include "debug.h"
 #include "load-path.h"
@@ -355,9 +357,21 @@ file_editor_tab::print_file (const QWidget *ID)
 
 
 void
-file_editor_tab::run_file_callback (void)
+file_editor_tab::run_file_callback (const bp_info& info)
 {
-  // Maybe someday we will do something here?
+  if (file_in_path (info.file, info.dir))
+    {
+      std::string pending_input = command_editor::get_current_line ();
+
+      command_editor::set_initial_input (pending_input);
+
+      command_editor::replace_line (info.function_name);
+      command_editor::redisplay ();
+
+      // We are executing inside the command editor event loop.  Force
+      // the current line to be returned for processing.
+      command_editor::interrupt ();
+    }
 }
 
 void
@@ -372,15 +386,11 @@ file_editor_tab::run_file (const QWidget *ID)
   QFileInfo file_info (_file_name);
   QString dir = file_info.absolutePath ();
   QString function_name = file_info.fileName ();
-
-  // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
-  emit process_octave_code (QString ("cd \'%1\'\n%2\n")
-                            .arg (dir).arg (function_name));
- 
-  // TODO: Sending a run event crashes for long scripts. Find out why.
-  // octave_link::post_event
-  //   (this, &file_editor_tab::run_file_callback, _file_name.toStdString ()));
+
+  bp_info info (_file_name, dir, function_name, 1);
+
+  octave_link::post_event (this, &file_editor_tab::run_file_callback, info);
 }
 
 void

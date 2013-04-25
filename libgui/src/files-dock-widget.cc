@@ -177,7 +177,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
            this, SLOT (set_current_directory (const QString &)));
 
   connect (this, SIGNAL (run_file_signal (const QString&)),
-           parent (), SLOT (handle_command_double_clicked (const QString&)));
+           parent (), SLOT (execute_command_in_terminal (const QString&)));
 
   QCompleter *completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);

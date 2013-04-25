@@ -42,9 +42,3 @@ QTerminal::notice_settings (const QSettings *settings)
   else if (cursorType == "underline")
     setCursorType(QTerminalInterface::UnderlineCursor, cursorBlinking);
 }
-
-void
-QTerminal::relay_command (const QString& command)
-{
-  sendText (command);
-}

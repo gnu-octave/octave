@@ -91,6 +91,8 @@ public:
 
   void do_change_directory (const std::string& dir);
 
+  void do_execute_command_in_terminal (const std::string& command);
+
   void do_set_workspace (bool top_level,
                          const std::list<workspace_element>& ws);
 
@@ -133,6 +135,8 @@ signals:
   void edit_file_signal (const QString& file);
 
   void change_directory_signal (const QString& dir);
+
+  void execute_command_in_terminal_signal (const QString& command);
 
   void set_workspace_signal (bool top_level,
                              const QString& scopes,

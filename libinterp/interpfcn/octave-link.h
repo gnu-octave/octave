@@ -193,6 +193,13 @@ public:
       instance->do_change_directory (dir);
   }
 
+  // Preserves pending input.
+  static void execute_command_in_terminal (const std::string& command)
+  {
+    if (enabled ())
+      instance->do_execute_command_in_terminal (command);
+  }
+
   static void set_workspace (void);
 
   static void set_workspace (bool top_level,
@@ -369,6 +376,8 @@ protected:
                                 bool addpath_option) = 0;
 
   virtual void do_change_directory (const std::string& dir) = 0;
+
+  virtual void do_execute_command_in_terminal (const std::string& command) = 0;
 
   virtual void
   do_set_workspace (bool top_level,

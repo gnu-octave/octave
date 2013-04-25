@@ -442,25 +442,25 @@ file_editor_tab::remove_bookmark (const QWidget *ID)
 }
 
 bool
-file_editor_tab::file_in_path (const bp_info& info)
+file_editor_tab::file_in_path (const std::string& file, const std::string& dir)
 {
   bool ok = false;
   bool addpath_option = true;
 
   std::string curr_dir = octave_env::get_current_directory ();
 
-  if (same_file (curr_dir, info.dir))
+  if (same_file (curr_dir, dir))
     ok = true;
   else
     {
-      bool dir_in_load_path = load_path::contains_canonical (info.dir);
+      bool dir_in_load_path = load_path::contains_canonical (dir);
 
-      std::string base_file = octave_env::base_pathname (info.file);
+      std::string base_file = octave_env::base_pathname (file);
       std::string lp_file = load_path::find_file (base_file);
 
       if (dir_in_load_path)
         {
-          if (same_file (lp_file, info.file))
+          if (same_file (lp_file, file))
             ok = true;
         }
       else
@@ -473,7 +473,7 @@ file_editor_tab::file_in_path (const bp_info& info)
 
           if (same_file (lp_file, base_file))
             {
-              if (same_file (curr_dir, info.dir))
+              if (same_file (curr_dir, dir))
                 ok = true;
               else
                 addpath_option = false;
@@ -484,17 +484,16 @@ file_editor_tab::file_in_path (const bp_info& info)
   if (! ok)
     {
       int action
-        = octave_link::debug_cd_or_addpath_error (info.file, info.dir,
-                                                  addpath_option);
+        = octave_link::debug_cd_or_addpath_error (file, dir, addpath_option);
       switch (action)
         {
         case 1:
-          Fcd (ovl (info.dir));
+          Fcd (ovl (dir));
           ok = true;
           break;
 
         case 2:
-          load_path::prepend (info.dir);
+          load_path::prepend (dir);
           ok = true;
           break;
 
@@ -512,7 +511,7 @@ file_editor_tab::add_breakpoint_callback (const bp_info& info)
   bp_table::intmap line_info;
   line_info[0] = info.line;
 
-  if (file_in_path (info))
+  if (file_in_path (info.file, info.dir))
     bp_table::add_breakpoint (info.function_name, line_info);
 }
 
@@ -522,14 +521,14 @@ file_editor_tab::remove_breakpoint_callback (const bp_info& info)
   bp_table::intmap line_info;
   line_info[0] = info.line;
 
-  if (file_in_path (info))
+  if (file_in_path (info.file, info.dir))
     bp_table::remove_breakpoint (info.function_name, line_info);
 }
 
 void
 file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
 {
-  if (file_in_path (info))
+  if (file_in_path (info.file, info.dir))
     bp_table::remove_all_breakpoints_in_file (info.function_name, true);
 }
 

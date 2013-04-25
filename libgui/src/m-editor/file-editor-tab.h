@@ -172,7 +172,7 @@ private:
 
   void run_file_callback (void);
 
-  bool file_in_path (const bp_info& info);
+  bool file_in_path (const std::string& file, const std::string& dir);
 
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);

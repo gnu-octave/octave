@@ -315,6 +315,11 @@ function varargout = strread (str, format = "%f", varargin)
     for jj = 1:numel (a)
       ## From right to left to avoid losing track
       ii = numel (a) - jj + 1;
+      ## Check for illegal format specifiers
+      if (isempty (b{ii}))
+        error ("strread: unknown format specifier #%d ('%s')\n",
+              ii, fmt_words{idy2(ii)});
+      endif
       if (! (length (fmt_words{idy2(ii)}) == b{ii}(1)))
         ## Split fmt_words(ii) into % conv specifier and trailing literal
         fmt_words(idy2(ii)+1 : end+1) = fmt_words(idy2(ii) : end);
@@ -985,3 +990,7 @@ endfunction
 %!error <format specifiers are not supported> strread ("a", "%*f64 %s")
 %!error <format specifiers are not supported> strread ("a", "%u32")
 %!error <format specifiers are not supported> strread ("a", "%*u32 %d")
+
+%% Illegal format specifiers
+%!test
+%!error <unknown format specifier> strread ("1.0", "%z")

@@ -179,12 +179,12 @@ public:
       : std::list<std::string> ();
   }
 
+  typedef std::list<std::pair<std::string, std::string> > filter_list;
+
   static std::list<std::string>
-  file_dialog ( const std::list< std::pair< std::string, std::string > > filter,
-                const std::string& title,
-                const std::string& filename,
-                const std::string& dirname,
-                bool multiselect)
+  file_dialog (const filter_list& filter, const std::string& title,
+               const std::string& filename, const std::string& dirname,
+               bool multiselect)
   {
     return enabled ()
       ? instance->do_file_dialog (filter, title, filename, dirname, multiselect)
@@ -384,10 +384,8 @@ protected:
                    const std::list<std::string>& defaults) = 0;
 
   virtual std::list<std::string>
-  do_file_dialog (const std::list< std::pair< std::string, std::string > > filter,
-                  const std::string& title,
-                  const std::string& filename,
-                  const std::string& dirname,
+  do_file_dialog (const filter_list& filter, const std::string& title,
+                  const std::string& filename, const std::string& dirname,
                   bool multiselect) = 0;
 
   virtual int

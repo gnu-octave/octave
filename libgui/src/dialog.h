@@ -104,15 +104,15 @@ public:
 
   const QStringList *get_string_list (void) { return string_list; }
 
-  bool signal_filedialog (const QStringList &filters, const QString &title, 
-                          const QString &filename, const QString &dirname, 
+  bool signal_filedialog (const QStringList& filters, const QString& title, 
+                          const QString& filename, const QString& dirname, 
                           bool multiselect)
   {
     emit create_filedialog (filters, title, filename, dirname, multiselect);
     return true;
   }
 
-  const QString * get_dialog_path(void) { return path_name; }
+  const QString *get_dialog_path (void) { return path_name; }
 
   void wait (void)
   {
@@ -133,21 +133,19 @@ signals:
                            const QFloatList&, const QFloatList&,
                            const QStringList&);
 
-  void create_filedialog (const QStringList &filters,
-                          const QString &title,
-                          const QString &filename,
-                          const QString &dirname,
+  void create_filedialog (const QStringList& filters, const QString& title,
+                          const QString& filename, const QString& dirname,
                           bool multiselect);
 public slots:
 
   void dialog_button_clicked (QAbstractButton *button);
 
-  void list_select_finished (const QIntList& selected,
-                             const int button_pressed);
+  void list_select_finished (const QIntList& selected, int button_pressed);
 
-  void input_finished (const QStringList& input, const int button_pressed);
+  void input_finished (const QStringList& input, int button_pressed);
 
-  void filedialog_finished (const QStringList& files, const QString &path, const int filterindex);
+  void filedialog_finished (const QStringList& files, const QString& path,
+                            int filterindex);
 
 private:
 
@@ -159,7 +157,7 @@ private:
   QStringList *string_list;
   QIntList *list_index;
 
-  QString * path_name;
+  QString *path_name;
 
   // GUI objects cannot be accessed in the non-GUI thread.  However,
   // signals can be sent to slots across threads with proper
@@ -210,7 +208,7 @@ public:
 
 signals:
 
-  void finish_selection (const QIntList&, const int);
+  void finish_selection (const QIntList&, int);
 
 public slots:
 
@@ -236,7 +234,7 @@ public:
 
 signals:
 
-  void finish_input (const QStringList&, const int);
+  void finish_input (const QStringList&, int);
 
 public slots:
 
@@ -253,18 +251,19 @@ class FileDialog : public QFileDialog
 
 public:
 
-  explicit FileDialog (const QStringList &filters,
+  explicit FileDialog (const QStringList& filters,
                        const QString& title, const QString& filename, 
                        const QString& dirname, bool multiselect);
 
 signals:
 
-  void finish_input (const QStringList&, const QString &, const int);
+  void finish_input (const QStringList&, const QString&, int);
 
 private slots:
-  void reject();
-  void accept();
 
+  void reject (void);
+
+  void accept (void);
 };
 
 #endif

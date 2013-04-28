@@ -85,10 +85,8 @@ public:
                    const std::list<std::string>& defaults);
 
   std::list<std::string>
-  do_file_dialog (const std::list< std::pair< std::string, std::string > > filter,
-                  const std::string& title, 
-                  const std::string &filename,
-                  const std::string &pathname,
+  do_file_dialog (const filter_list& filter, const std::string& title, 
+                  const std::string &filename, const std::string &pathname,
                   bool multiselect);
 
   int

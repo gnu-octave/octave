@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px} @var{py}])
 ## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "MultiSelect", @var{mode})
 ##
-## Open a GUI dialog for selecting a file.  It returns the filename @var{fname},
+## Open a GUI dialog for selecting a file and return the filename @var{fname},
 ## the path to this file @var{fpath}, and the filter index @var{fltidx}.
 ## @var{flt} contains a (list of) file filter string(s) in one of the following
 ## formats:

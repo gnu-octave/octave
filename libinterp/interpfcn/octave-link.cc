@@ -199,7 +199,7 @@ DEFUN (__octave_link_file_dialog__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value_list retval(3, octave_value (0));
+  octave_value_list retval;
 
   if (args.length () == 6)
     {
@@ -212,60 +212,64 @@ Undocumented internal function.\n\
       std::string pathname = args (5).string_value ();
 
       octave_idx_type nel = flist.numel ();
-      std::list< std::pair<std::string, std::string> > filter_lst;
+      octave_link::filter_list filter_lst;
 
-      for(octave_idx_type i = 0; i < flist.rows (); i++)
-        {
-          filter_lst.push_back ( std::make_pair (flist.elem (i,0), flist.columns ()>1 ? flist.elem (i, 1) : "" ) );
-        }
+      for (octave_idx_type i = 0; i < flist.rows (); i++)
+        filter_lst.push_back (std::make_pair (flist(i,0),
+                                              (flist.columns () > 1
+                                               ? flist(i,1) : "")));
 
       if (! error_state)
         {
-
           flush_octave_stdout ();
 
           std::list<std::string> items_lst
-            = octave_link::file_dialog (filter_lst, title, filename, pathname, multi_on == "on" ? true : false);
+            = octave_link::file_dialog (filter_lst, title, filename, pathname,
+                                        multi_on == "on" ? true : false);
 
           nel = items_lst.size ();
 
-          // if 3, then is filename, dolder and selected index,
-          if (items_lst.size () <= 3)
-            {
-             int idx = 0;
-             for (std::list<std::string>::iterator it = items_lst.begin ();
-                  it != items_lst.end (); it++)
-               {
-                 retval (idx++) = *(it);
+          retval.resize (3);
 
-                 if (idx == 1 && retval (0).string_value ().length () == 0)
-                   retval (0) = 0;
-                 if(idx == 3) retval (2) = atoi (retval (2).string_value ().c_str ());
-               }
+          // If 3, then is filename, directory and selected index.
+          if (nel <= 3)
+            {
+              int idx = 0;
+              for (std::list<std::string>::iterator it = items_lst.begin ();
+                   it != items_lst.end (); it++)
+                {
+                  retval(idx++) = *it;
+
+                  if (idx == 1 && retval (0).string_value ().length () == 0)
+                    retval(0) = 0;
+
+                  if (idx == 3)
+                    retval(2) = atoi (retval (2).string_value ().c_str ());
+                }
             }
           else
             {
-              // multiple files
+              // Multiple files.
               nel = items_lst.size ();
               Cell items (dim_vector (1, nel));
 
               std::list<std::string>::iterator it = items_lst.begin ();
-              for (int idx=0;idx<items_lst.size ()-2;idx++)
+
+              for (int idx = 0; idx < items_lst.size ()-2; idx++)
                 {
                   items.xelem (idx) = *it;
                   it++;
                 }
-              retval (0) = items;
-              retval (1) = *it;
-              it++;
-              retval (2) = atoi ((*it).c_str ());
-            }
 
+              retval(0) = items;
+              retval(1) = *it++;
+              retval(2) = atoi (it->c_str ());
+            }
         }
       else
         error ("invalid arguments");
-
     }
+
   return retval;
 }
 

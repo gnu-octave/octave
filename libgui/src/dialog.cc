@@ -74,7 +74,8 @@ QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
 
 
 void
-QUIWidgetCreator::list_select_finished (const QIntList& selected, const int button_pressed)
+QUIWidgetCreator::list_select_finished (const QIntList& selected,
+                                        int button_pressed)
 {
   // Store the value so that builtin functions can retrieve.
   *list_index = selected;
@@ -86,7 +87,7 @@ QUIWidgetCreator::list_select_finished (const QIntList& selected, const int butt
 
 
 void
-QUIWidgetCreator::input_finished (const QStringList& input, const int button_pressed)
+QUIWidgetCreator::input_finished (const QStringList& input, int button_pressed)
 {
   // Store the value so that builtin functions can retrieve.
   *string_list = input;
@@ -97,7 +98,8 @@ QUIWidgetCreator::input_finished (const QStringList& input, const int button_pre
 }
 
 void
-QUIWidgetCreator::filedialog_finished (const QStringList& files, const QString & path, const int filterindex)
+QUIWidgetCreator::filedialog_finished (const QStringList& files,
+                                       const QString& path, int filterindex)
 {
   // Store the value so that builtin functions can retrieve.
   *string_list = files;
@@ -276,9 +278,9 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   connect (buttonCancel, SIGNAL (clicked ()),
            this, SLOT (buttonCancel_clicked ()));
 
-  connect (this, SIGNAL (finish_selection (const QIntList&, const int)),
+  connect (this, SIGNAL (finish_selection (const QIntList&, int)),
            &uiwidget_creator,
-           SLOT (list_select_finished (const QIntList&, const int)));
+           SLOT (list_select_finished (const QIntList&, int)));
 }
 
 
@@ -383,9 +385,9 @@ InputDialog::InputDialog (const QStringList& prompt, const QString& title,
     connect (buttonCancel, SIGNAL (clicked ()),
              this, SLOT (buttonCancel_clicked ()));
 
-    connect (this, SIGNAL (finish_input (const QStringList&, const int)),
+    connect (this, SIGNAL (finish_input (const QStringList&, int)),
              &uiwidget_creator,
-             SLOT (input_finished (const QStringList&, const int)));
+             SLOT (input_finished (const QStringList&, int)));
 }
 
 
@@ -418,10 +420,10 @@ InputDialog::reject (void)
   buttonCancel_clicked ();
 }
 
-FileDialog::FileDialog (const QStringList &filters,
+FileDialog::FileDialog (const QStringList& filters,
                         const QString& title,
                         const QString& filename,
-                        const QString &dirname,
+                        const QString& dirname,
                         bool multiselect)
   : QFileDialog()
 {
@@ -440,9 +442,11 @@ FileDialog::FileDialog (const QStringList &filters,
   setAcceptMode (QFileDialog::AcceptOpen);
   selectFile (filename);
   
-  connect (this, SIGNAL (finish_input (const QStringList&, const QString &, const int)),
+  connect (this,
+           SIGNAL (finish_input (const QStringList&, const QString&, int)),
            &uiwidget_creator,
-           SLOT (filedialog_finished (const QStringList&, const QString &, const int)));
+           SLOT (filedialog_finished (const QStringList&, const QString&,
+                                      int)));
 }
 
 void
@@ -460,20 +464,19 @@ void FileDialog::accept(void)
   QString path;
   int idx = 1;
 
-  string_result = selectedFiles();
+  string_result = selectedFiles ();
 
-  // matlab expects just the file name, whereas the file dialog gave us
-  // pull path names, so fix it
-  for(int i=0;i<string_result.size ();i++)
-    {
-      string_result[i] = QFileInfo (string_result[i]).fileName ();
-    }
+  // Matlab expects just the file name, whereas the file dialog gave us
+  // pull path names, so fix it.
+
+  for (int i = 0; i < string_result.size (); i++)
+    string_result[i] = QFileInfo (string_result[i]).fileName ();
 
 
   path = directory ().absolutePath ();
 
   QStringList filters = nameFilters ();
-  idx = filters.indexOf( selectedNameFilter ()) + 1;
+  idx = filters.indexOf (selectedNameFilter ()) + 1;
   
   // send the selected info
   emit finish_input (string_result, path, idx);

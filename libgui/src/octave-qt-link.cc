@@ -129,29 +129,31 @@ make_qstring_list (const std::list<std::string>& lst)
 }
 
 static QStringList
-make_filter_list (const std::list< std::pair<std::string, std::string> >& lst)
+make_filter_list (const octave_link::filter_list& lst)
 {
   QStringList retval;
 
-  // we have pairs of data, first being the list of extensions exta;exb;extc etc
-  // second the name to use as filter name (optional).
-  // Qt wants a a list of filters in the format of 'FilterName (spacfe separated exts)'
+  // We have pairs of data, first being the list of extensions
+  // exta;exb;extc etc second the name to use as filter name
+  // (optional).  Qt wants a a list of filters in the format of
+  // 'FilterName (space separated exts)'.
 
-  for (std::list< std::pair<std::string,std::string> >::const_iterator it = lst.begin ();
+  for (octave_link::filter_list::const_iterator it = lst.begin ();
        it != lst.end (); it++)
     {
-      QString ext = QString::fromStdString ((*it).first);
-      QString name = QString::fromStdString ((*it).second);
+      QString ext = QString::fromStdString (it->first);
+      QString name = QString::fromStdString (it->second);
 
-      // strip out (exts) from name (if any)
-      name.replace(QRegExp("\\(.*\\)"), "");
-      // replace ';' with spaces in ext list
-      ext.replace(";"," ");
+      // Strip out extensions from name and replace ';' with spaces in
+      // list.
+
+      name.replace (QRegExp ("\\(.*\\)"), "");
+      ext.replace (";", " ");
 
       if (name.length() == 0)
         {
-           // no name field - so need build one from teh extendiions
-           name = ext.toUpper() + " Files";
+          // No name field.  Build one from the extensions.
+          name = ext.toUpper() + " Files";
         }
 
       retval.append (name + " (" + ext + ")");
@@ -220,7 +222,7 @@ octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
 }
 
 std::list<std::string>
-octave_qt_link::do_file_dialog (const std::list< std::pair< std::string, std::string > > filter,
+octave_qt_link::do_file_dialog (const filter_list& filter,
                                 const std::string& title,
                                 const std::string& filename,
                                 const std::string& dirname,
@@ -228,23 +230,21 @@ octave_qt_link::do_file_dialog (const std::list< std::pair< std::string, std::st
 {
   std::list<std::string> retval;
 
-  uiwidget_creator.signal_filedialog ( make_filter_list (filter),
-                                       QString::fromStdString (title),
-                                       QString::fromStdString (filename),
-                                       QString::fromStdString (dirname),
-                                       multiselect);
+  uiwidget_creator.signal_filedialog (make_filter_list (filter),
+                                      QString::fromStdString (title),
+                                      QString::fromStdString (filename),
+                                      QString::fromStdString (dirname),
+                                      multiselect);
 
   // Wait while the user is responding to dialog.
   uiwidget_creator.wait ();
 
-  // add all the file dialog result to a string list
+  // Add all the file dialog results to a string list.
   const QStringList *inputLine = uiwidget_creator.get_string_list ();
 
   for (QStringList::const_iterator it = inputLine->begin ();
        it != inputLine->end (); it++)
-    {
-      retval.push_back (it->toStdString ());
-    }
+    retval.push_back (it->toStdString ());
 
   retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
   retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());

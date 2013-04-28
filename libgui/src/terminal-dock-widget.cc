@@ -56,6 +56,14 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
            terminal, SLOT (pasteClipboard (void)));
 }
 
+bool
+terminal_dock_widget::has_focus (void) const
+{
+  QWidget *w = widget ();
+
+  return w->hasFocus ();
+}
+
 void
 terminal_dock_widget::notice_settings (const QSettings *settings)
 {

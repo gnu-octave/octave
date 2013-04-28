@@ -37,6 +37,8 @@ public:
 
   terminal_dock_widget (QWidget *parent = 0);
 
+  bool has_focus (void) const;
+
 signals:
 
 public slots:

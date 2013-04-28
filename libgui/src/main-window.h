@@ -72,12 +72,19 @@ public:
 
   ~main_window (void);
 
+  bool command_window_has_focus (void) const;
+
   void focus_command_window (void);
 
 signals:
   void settings_changed (const QSettings *);
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
+
+  void insert_debugger_pointer_signal (const QString& file, int line);
+  void delete_debugger_pointer_signal (const QString& file, int line);
+  void update_breakpoint_marker_signal (bool insert, const QString& file,
+                                        int line);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -121,6 +128,11 @@ public slots:
   void debug_step_over (void);
   void debug_step_out (void);
   void debug_quit (void);
+
+  void handle_insert_debugger_pointer_request (const QString& file, int line);
+  void handle_delete_debugger_pointer_request (const QString& file, int line);
+  void handle_update_breakpoint_marker_request (bool insert,
+                                                const QString& file, int line);
 
   void read_settings (void);
   void write_settings (void);

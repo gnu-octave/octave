@@ -104,6 +104,12 @@ main_window::~main_window (void)
   delete _octave_qt_link;
 }
 
+bool
+main_window::command_window_has_focus (void) const
+{
+  return command_window->has_focus ();
+}
+
 void
 main_window::focus_command_window (void)
 {
@@ -457,6 +463,43 @@ main_window::debug_quit (void)
 }
 
 void
+main_window::handle_insert_debugger_pointer_request (const QString& file,
+                                                     int line)
+{
+  bool cmd_focus = command_window_has_focus ();
+
+  emit insert_debugger_pointer_signal (file, line);
+
+  if (cmd_focus)
+    focus_command_window ();
+}
+
+void
+main_window::handle_delete_debugger_pointer_request (const QString& file,
+                                                     int line)
+{
+  bool cmd_focus = command_window_has_focus ();
+
+  emit delete_debugger_pointer_signal (file, line);
+
+  if (cmd_focus)
+    focus_command_window ();
+}
+
+void
+main_window::handle_update_breakpoint_marker_request (bool insert,
+                                                      const QString& file,
+                                                      int line)
+{
+  bool cmd_focus = command_window_has_focus ();
+
+  emit update_breakpoint_marker_signal (insert, file, line);
+
+  if (cmd_focus)
+    focus_command_window ();
+}
+
+void
 main_window::show_about_octave (void)
 {
   QString message = OCTAVE_STARTUP_MESSAGE;
@@ -733,6 +776,21 @@ main_window::construct (void)
 
   construct_octave_qt_link ();
 
+  connect (this,
+           SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+           editor_window,
+           SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+
+  connect (this,
+           SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+           editor_window,
+           SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+
+  connect (this,
+           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+           editor_window,
+           SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
+
   QDir curr_dir;
   set_current_working_directory (curr_dir.absolutePath ());
 
@@ -789,24 +847,24 @@ main_window::construct_octave_qt_link (void)
            this, SLOT (handle_exit_debugger ()));
 
   connect (_octave_qt_link,
-           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
-           editor_window,
-           SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
-
-  connect (_octave_qt_link,
            SIGNAL (edit_file_signal (const QString&)),
            editor_window,
            SLOT (handle_edit_file_request (const QString&)));
 
   connect (_octave_qt_link,
            SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-           editor_window,
+           this,
            SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
 
   connect (_octave_qt_link,
            SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-           editor_window,
+           this,
            SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+
+  connect (_octave_qt_link,
+           SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+           this,
+           SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
 
   connect (_workspace_model,
            SIGNAL (rename_variable (const QString&, const QString&)),

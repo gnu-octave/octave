@@ -86,8 +86,16 @@ octlocale_DATA = $(LOCALES)
 default-qt-settings: default-qt-settings.in
 	$(do_subst_qt_settings)
 
+define moc-command
+( echo '#ifdef HAVE_CONFIG_H'; \
+  echo '#include <config.h>'; \
+  echo '#endif'; \
+  $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $< ) > $@-t
+mv $@-t $@
+endef
+
 moc-%.cc: %.h
-	$(MOC) -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $<
+	$(moc-command)
 
 ui-%.h: %.ui
 	$(UIC) -o $@ $<

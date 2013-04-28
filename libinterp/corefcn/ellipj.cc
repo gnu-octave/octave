@@ -406,13 +406,14 @@ return @code{NaN}.\n\
 %! [sn, cn, dn] = ellipj(U,M);
 %!
 %! %% Plotting
-%! figure(2)
 %! c = colormap(hot(64));
 %! data = {sn,cn,dn};
 %! dname = {"sn","cn","dn"};
 %! for i=1:3
 %!   subplot(1,3,i);
-%!   image(m,u,32*clip(data{i},[-1,1])+32); # clip function belongs to audio package
+%!   data{i}(data{i} > 1) = 1;
+%!   data{i}(data{i} < -1) = -1;
+%!   image(m,u,32*data{i}+32);
 %!   title(dname{i});
 %! end
 %! colormap(c);
@@ -911,4 +912,8 @@ return @code{NaN}.\n\
 %! assert(sn,S,8*eps);
 %! assert(cn,C,8*eps);
 %! assert(dn,D,8*eps);
+
+%!error ellipj ()
+%!error ellipj (1)
+%!error ellipj (1,2,3,4)
 */

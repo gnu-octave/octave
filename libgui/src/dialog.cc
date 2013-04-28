@@ -424,7 +424,7 @@ FileDialog::FileDialog (const QStringList& filters,
                         const QString& title,
                         const QString& filename,
                         const QString& dirname,
-                        bool multiselect)
+                        const QString& multimode)
   : QFileDialog()
 {
   // Create a NonModal message.
@@ -433,13 +433,26 @@ FileDialog::FileDialog (const QStringList& filters,
   setWindowTitle (title.isEmpty () ? " " : title);
   setDirectory (dirname);
 
-  if (multiselect)
-    setFileMode (QFileDialog::ExistingFiles);
-  else
-    setFileMode (QFileDialog::ExistingFile);
+  if (multimode == "on")         // uigetfile multiselect=on
+    {
+      setFileMode (QFileDialog::ExistingFiles);
+      setAcceptMode (QFileDialog::AcceptOpen);
+    }
+  else if(multimode == "create") // uiputfile
+    {
+      setFileMode (QFileDialog::AnyFile); 
+      setAcceptMode (QFileDialog::AcceptSave);
+      setOption (QFileDialog::DontConfirmOverwrite, false);
+      setConfirmOverwrite(true);
+    }
+  else                           // uigetfile multiselect=off
+    {
+      setFileMode (QFileDialog::ExistingFile);
+      setAcceptMode (QFileDialog::AcceptOpen);
+    }
 
   setNameFilters (filters);
-  setAcceptMode (QFileDialog::AcceptOpen);
+
   selectFile (filename);
   
   connect (this,

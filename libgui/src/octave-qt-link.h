@@ -87,7 +87,7 @@ public:
   std::list<std::string>
   do_file_dialog (const filter_list& filter, const std::string& title, 
                   const std::string &filename, const std::string &pathname,
-                  bool multiselect);
+                  const std::string& multimode);
 
   int
   do_debug_cd_or_addpath_error (const std::string& file,

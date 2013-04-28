@@ -654,11 +654,11 @@ main_window::connect_uiwidget_links ()
 
   connect (&uiwidget_creator,
            SIGNAL (create_filedialog (const QStringList &,const QString&,
-                                      const QString&, const QString&, bool)),
+                                      const QString&, const QString&, const QString&)),
            this,
            SLOT (handle_create_filedialog (const QStringList &, const QString&,
                                            const QString&, const QString&,
-                                           bool)));
+                                           const QString&)));
 }
 
 // Create a message dialog with specified string, buttons and decorative
@@ -720,10 +720,10 @@ main_window::handle_create_filedialog (const QStringList& filters,
                                        const QString& title, 
                                        const QString& filename, 
                                        const QString& dirname,
-                                       bool multiselect)
+                                       const QString& multimode)
 {
   FileDialog *file_dialog = new FileDialog (filters, title, filename,
-                                            dirname, multiselect);
+                                            dirname, multimode);
 
   file_dialog->setAttribute (Qt::WA_DeleteOnClose);
   file_dialog->show ();

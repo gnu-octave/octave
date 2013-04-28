@@ -184,10 +184,10 @@ public:
   static std::list<std::string>
   file_dialog (const filter_list& filter, const std::string& title,
                const std::string& filename, const std::string& dirname,
-               bool multiselect)
+               const std::string& multimode)
   {
     return enabled ()
-      ? instance->do_file_dialog (filter, title, filename, dirname, multiselect)
+      ? instance->do_file_dialog (filter, title, filename, dirname, multimode)
       : std::list<std::string> ();
   }
 
@@ -386,7 +386,7 @@ protected:
   virtual std::list<std::string>
   do_file_dialog (const filter_list& filter, const std::string& title,
                   const std::string& filename, const std::string& dirname,
-                  bool multiselect) = 0;
+                  const std::string& multimode) = 0;
 
   virtual int
   do_debug_cd_or_addpath_error (const std::string& file,

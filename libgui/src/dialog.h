@@ -106,9 +106,9 @@ public:
 
   bool signal_filedialog (const QStringList& filters, const QString& title, 
                           const QString& filename, const QString& dirname, 
-                          bool multiselect)
+                          const QString &multimode)
   {
-    emit create_filedialog (filters, title, filename, dirname, multiselect);
+    emit create_filedialog (filters, title, filename, dirname, multimode);
     return true;
   }
 
@@ -135,7 +135,7 @@ signals:
 
   void create_filedialog (const QStringList& filters, const QString& title,
                           const QString& filename, const QString& dirname,
-                          bool multiselect);
+                          const QString& multimode);
 public slots:
 
   void dialog_button_clicked (QAbstractButton *button);
@@ -253,7 +253,7 @@ public:
 
   explicit FileDialog (const QStringList& filters,
                        const QString& title, const QString& filename, 
-                       const QString& dirname, bool multiselect);
+                       const QString& dirname, const QString& multimode);
 
 signals:
 

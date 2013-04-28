@@ -226,7 +226,7 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
                                 const std::string& title,
                                 const std::string& filename,
                                 const std::string& dirname,
-                                bool multiselect)
+                                const std::string& multimode)
 {
   std::list<std::string> retval;
 
@@ -234,7 +234,7 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
                                       QString::fromStdString (title),
                                       QString::fromStdString (filename),
                                       QString::fromStdString (dirname),
-                                      multiselect);
+                                      QString::fromStdString (multimode));
 
   // Wait while the user is responding to dialog.
   uiwidget_creator.wait ();

@@ -208,7 +208,7 @@ Undocumented internal function.\n\
       std::string title = args (1).string_value ();
       std::string filename = args (2).string_value ();
       Matrix pos = args (3).matrix_value ();
-      std::string multi_on = args (4).string_value (); // on, off
+      std::string multi_on = args (4).string_value (); // on, off, create
       std::string pathname = args (5).string_value ();
 
       octave_idx_type nel = flist.numel ();
@@ -225,7 +225,7 @@ Undocumented internal function.\n\
 
           std::list<std::string> items_lst
             = octave_link::file_dialog (filter_lst, title, filename, pathname,
-                                        multi_on == "on" ? true : false);
+                                        multi_on);
 
           nel = items_lst.size ();
 

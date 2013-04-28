@@ -160,7 +160,7 @@ public slots:
   void handle_create_filedialog (const QStringList &filters, 
                                  const QString& title, const QString& filename, 
                                  const QString &dirname,
-                                 bool multiselect);
+                                 const QString& multimode);
 
   // find files dialog 
   void find_files(const QString &startdir=QDir::currentPath());

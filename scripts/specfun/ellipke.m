@@ -22,12 +22,13 @@
 ## @deftypefn  {Function File} {} ellipke (@var{m})
 ## @deftypefnx {Function File} {} ellipke (@var{m}, @var{tol})
 ## @deftypefnx {Function File} {[@var{k}, @var{e}] =} ellipke (@dots{})
-## Compute complete elliptic integral of first K(@var{m}) and second E(@var{m}).
+## Compute complete elliptic integral of the first K(@var{m}) and second
+## E(@var{m}) kind.
 ##
-## @var{m} is either real array or scalar with 0 <= m <= 1
+## @var{m} is either real array or scalar with 0 <= m <= 1.
 ##
-## @var{tol} will be ignored (@sc{Matlab} uses this to allow faster, less
-## accurate approximation)
+## @var{tol} is currently ignored (@sc{Matlab} uses this to allow faster,
+## less accurate approximation).
 ##
 ## Ref: Abramowitz, Milton and Stegun, Irene A. Handbook of Mathematical
 ## Functions, Dover, 1965, Chapter 17.

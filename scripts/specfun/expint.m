@@ -19,13 +19,24 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} expint (@var{x})
 ## Compute the exponential integral,
-## @verbatim
-##                    infinity
-##                   /
-##       expint(x) = | exp(t)/t dt
-##                   /
-##                  x
-## @end verbatim
+## @tex
+## $$
+##  E_1 (x) = \int_x^\infty {e^{-t} \over t} dt.
+## $$
+## @end tex
+## @ifnottex
+##
+## @example
+## @group
+##               infinity
+##              /
+## expint (x) = | exp (-t)/t dt
+##              /
+##             x
+## @end group
+## @end example
+##
+## @end ifnottex
 ## @end deftypefn
 
 function y = expint (x)
@@ -44,7 +55,7 @@ endfunction
 ## @verbatim
 ##                    infinity
 ##                   /
-##       expint(x) = | exp(t)/t dt
+##       expint(x) = | exp(-t)/t dt
 ##                   /
 ##                  x
 ## @end verbatim

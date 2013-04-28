@@ -136,9 +136,9 @@ sncndn (Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
 
 DEFUN (ellipj, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}] =} \
-ellipj (@var{u}, @var{m}, @var{err})\n\
-Compute the Jacobi elliptic functions sn, cn, dn of complex argument and real parameter.\n\
+@deftypefn {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
+Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}\n\
+of complex argument @var{u} and real parameter @var{m}.\n\
 \n\
 If @var{m} is a scalar, the results are the same size as @var{u}.\n\
 If @var{u} is a scalar, the results are the same size as @var{m}.\n\
@@ -163,6 +163,7 @@ return @code{NaN}.\n\
  Ref: Abramowitz, Milton and Stegun, Irene A\n\
       Handbook of Mathematical Functions, Dover, 1965\n\
       Chapter 16 (Sections 16.4, 16.13 and 16.15)\n\
+@seealso{ellipke}\n\
 @end deftypefn")
 {
   octave_value_list retval;

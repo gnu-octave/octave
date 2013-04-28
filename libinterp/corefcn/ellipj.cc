@@ -136,7 +136,8 @@ sncndn (Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
 
 DEFUN (ellipj, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
+@deftypefn  {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
+@deftypefnx {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})\n\
 Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}\n\
 of complex argument @var{u} and real parameter @var{m}.\n\
 \n\
@@ -149,6 +150,9 @@ results are matrices with @code{length (@var{u})} rows and\n\
 \n\
 The value of @var{u} may be complex.\n\
 The value of @var{m} must be 0 <= m <= 1.\n\
+\n\
+@var{tol} is currently ignored (@sc{Matlab} uses this to allow faster,\n\
+less accurate approximation).\n\
 \n\
 If requested, @var{err} contains the following status information\n\
 and is the same size as the result.\n\
@@ -170,7 +174,7 @@ return @code{NaN}.\n\
 
   int nargin = args.length ();
 
-  if (nargin != 2 )
+  if (nargin < 2 || nargin > 3)
     {
       print_usage ();
       return retval;

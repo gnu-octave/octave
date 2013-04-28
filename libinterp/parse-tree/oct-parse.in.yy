@@ -1484,8 +1484,18 @@ void octave_base_parser::init (void)
 void
 octave_base_parser::reset (void)
 {
-  delete stmt_list;
+  endfunction_found = false;
+  autoloading = false;
+  fcn_file_from_relative_lookup = false;
+  parsing_subfunctions = false;
+  max_fcn_depth = 0;
+  curr_fcn_depth = 0;
+  primary_fcn_scope = -1;
+  curr_class_name = "";
+  function_scopes.clear ();
+  primary_fcn_ptr  = 0;
 
+  delete stmt_list;
   stmt_list = 0;
 
   lexer.reset ();

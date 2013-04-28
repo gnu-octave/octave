@@ -352,13 +352,15 @@ main_window::change_directory (const QString& dir)
 void
 main_window::browse_for_directory (void)
 {
-  QString dir =
-    QFileDialog::getExistingDirectory (this, tr ("Set working directory"));
+  QString dir
+    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"));
 
-  if (! dir.isEmpty ())
-    octave_link::post_event (this,
-                             &main_window::change_directory_callback,
-                             dir.toStdString ());
+  set_current_working_directory (dir);
+
+  // FIXME -- on Windows systems, the command window freezes after the
+  // previous actions.  Forcing the focus appears to unstick it.
+
+  focus_command_window ();
 }
 
 void

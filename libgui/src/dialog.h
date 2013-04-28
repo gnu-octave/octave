@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialog>
 #include <QMessageBox>
 #include <QLineEdit>
+#include <QFileDialog>
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -102,7 +103,17 @@ public:
   };
 
   const QStringList *get_string_list (void) { return string_list; }
-  
+
+  bool signal_filedialog (const QStringList &filters, const QString &title, 
+                          const QString &filename, const QString &dirname, 
+                          bool multiselect)
+  {
+    emit create_filedialog (filters, title, filename, dirname, multiselect);
+    return true;
+  }
+
+  const QString * get_dialog_path(void) { return path_name; }
+
   void wait (void)
   {
     // Wait while the user is responding to message box.
@@ -122,6 +133,11 @@ signals:
                            const QFloatList&, const QFloatList&,
                            const QStringList&);
 
+  void create_filedialog (const QStringList &filters,
+                          const QString &title,
+                          const QString &filename,
+                          const QString &dirname,
+                          bool multiselect);
 public slots:
 
   void dialog_button_clicked (QAbstractButton *button);
@@ -130,6 +146,8 @@ public slots:
                              const int button_pressed);
 
   void input_finished (const QStringList& input, const int button_pressed);
+
+  void filedialog_finished (const QStringList& files, const QString &path, const int filterindex);
 
 private:
 
@@ -140,6 +158,8 @@ private:
   // stored internally, so keep off of the stack.
   QStringList *string_list;
   QIntList *list_index;
+
+  QString * path_name;
 
   // GUI objects cannot be accessed in the non-GUI thread.  However,
   // signals can be sent to slots across threads with proper
@@ -225,6 +245,26 @@ public slots:
   void buttonCancel_clicked (void);
 
   void reject (void);
+};
+
+class FileDialog : public QFileDialog
+{
+  Q_OBJECT
+
+public:
+
+  explicit FileDialog (const QStringList &filters,
+                       const QString& title, const QString& filename, 
+                       const QString& dirname, bool multiselect);
+
+signals:
+
+  void finish_input (const QStringList&, const QString &, const int);
+
+private slots:
+  void reject();
+  void accept();
+
 };
 
 #endif

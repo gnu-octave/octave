@@ -84,6 +84,13 @@ public:
                    const std::list<float>& nc,
                    const std::list<std::string>& defaults);
 
+  std::list<std::string>
+  do_file_dialog (const std::list< std::pair< std::string, std::string > > filter,
+                  const std::string& title, 
+                  const std::string &filename,
+                  const std::string &pathname,
+                  bool multiselect);
+
   int
   do_debug_cd_or_addpath_error (const std::string& file,
                                 const std::string& dir,
@@ -113,6 +120,7 @@ public:
 
   void do_set_default_prompts (std::string& ps1, std::string& ps2,
                                std::string& ps4);
+
 
 private:
 

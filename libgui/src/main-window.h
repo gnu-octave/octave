@@ -157,6 +157,11 @@ public slots:
                                   const QFloatList&, const QFloatList&,
                                   const QStringList&);
 
+  void handle_create_filedialog (const QStringList &filters, 
+                                 const QString& title, const QString& filename, 
+                                 const QString &dirname,
+                                 bool multiselect);
+
   // find files dialog 
   void find_files(const QString &startdir=QDir::currentPath());
   void find_files_finished(int);

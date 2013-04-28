@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringList>
 #include <QStringListModel>
 #include <QListView>
+#include <QFileInfo>
 // Could replace most of these with #include <QtGui>
 #include <QMessageBox>
 #include <QHBoxLayout>
@@ -45,7 +46,7 @@ QUIWidgetCreator uiwidget_creator;
 
 QUIWidgetCreator::QUIWidgetCreator (void)
   : QObject (), dialog_result (-1), dialog_button (),
-    string_list (new QStringList ()), list_index (new QIntList ())
+    string_list (new QStringList ()), list_index (new QIntList ()), path_name (new QString ())
 { }
 
 
@@ -53,6 +54,7 @@ QUIWidgetCreator::~QUIWidgetCreator (void)
 {
   delete string_list;
   delete list_index;
+  delete path_name;
 }
 
 
@@ -93,6 +95,19 @@ QUIWidgetCreator::input_finished (const QStringList& input, const int button_pre
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
 }
+
+void
+QUIWidgetCreator::filedialog_finished (const QStringList& files, const QString & path, const int filterindex)
+{
+  // Store the value so that builtin functions can retrieve.
+  *string_list = files;
+  dialog_result = filterindex;
+  *path_name = path;
+
+  // Wake up Octave process so that it continues.
+  waitcondition.wakeAll ();
+}
+
 
 
 MessageDialog::MessageDialog (const QString& message,
@@ -386,7 +401,6 @@ InputDialog::buttonOk_clicked (void)
   done (QDialog::Accepted);
 }
 
-
 void
 InputDialog::buttonCancel_clicked (void)
 {
@@ -403,3 +417,66 @@ InputDialog::reject (void)
 {
   buttonCancel_clicked ();
 }
+
+FileDialog::FileDialog (const QStringList &filters,
+                        const QString& title,
+                        const QString& filename,
+                        const QString &dirname,
+                        bool multiselect)
+  : QFileDialog()
+{
+  // Create a NonModal message.
+  setWindowModality (Qt::NonModal);
+
+  setWindowTitle (title.isEmpty () ? " " : title);
+  setDirectory (dirname);
+
+  if (multiselect)
+    setFileMode (QFileDialog::ExistingFiles);
+  else
+    setFileMode (QFileDialog::ExistingFile);
+
+  setNameFilters (filters);
+  setAcceptMode (QFileDialog::AcceptOpen);
+  selectFile (filename);
+  
+  connect (this, SIGNAL (finish_input (const QStringList&, const QString &, const int)),
+           &uiwidget_creator,
+           SLOT (filedialog_finished (const QStringList&, const QString &, const int)));
+}
+
+void
+FileDialog::reject (void)
+{
+  QStringList empty;
+  emit finish_input (empty, "", 0);
+  done (QDialog::Rejected);
+
+}
+
+void FileDialog::accept(void)
+{
+  QStringList string_result;
+  QString path;
+  int idx = 1;
+
+  string_result = selectedFiles();
+
+  // matlab expects just the file name, whereas the file dialog gave us
+  // pull path names, so fix it
+  for(int i=0;i<string_result.size ();i++)
+    {
+      string_result[i] = QFileInfo (string_result[i]).fileName ();
+    }
+
+
+  path = directory ().absolutePath ();
+
+  QStringList filters = nameFilters ();
+  idx = filters.indexOf( selectedNameFilter ()) + 1;
+  
+  // send the selected info
+  emit finish_input (string_result, path, idx);
+  done (QDialog::Accepted);
+}
+

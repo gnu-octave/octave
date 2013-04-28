@@ -65,19 +65,21 @@
 
 function [retfile, retpath, retindex] = uigetfile (varargin)
 
-  defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
-  funcname = ["__uigetfile_", defaulttoolkit, "__"];
-  functype = exist (funcname);
-  if (! __is_function__ (funcname))
-    funcname = "__uigetfile_fltk__";
+  if (! __octave_link_enabled__ ())
+    defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
+    funcname = ["__uigetfile_", defaulttoolkit, "__"];
+    functype = exist (funcname);
     if (! __is_function__ (funcname))
-      error ("uigetfile: fltk graphics toolkit required");
-    elseif (! strcmp (defaulttoolkit, "gnuplot"))
-      warning ("uigetfile: no implementation for toolkit '%s', using 'fltk' instead",
+      funcname = "__uigetfile_fltk__";
+      if (! __is_function__ (funcname))
+        error ("uigetfile: fltk graphics toolkit required");
+      elseif (! strcmp (defaulttoolkit, "gnuplot"))
+        warning ("uigetfile: no implementation for toolkit '%s', using 'fltk' instead",
                defaulttoolkit);
+      endif
     endif
   endif
-
+  
   if (nargin > 7)
     error ("uigetfile: number of input arguments must be less than eight");
   endif
@@ -183,7 +185,11 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     endfor
   endif
 
-  [retfile, retpath, retindex] = feval (funcname, outargs{:});
+  if (__octave_link_enabled__ ())
+    [retfile, retpath, retindex] = __octave_link_file_dialog__ (outargs{:});
+  else
+    [retfile, retpath, retindex] = feval (funcname, outargs{:});
+  endif
 
 endfunction
 

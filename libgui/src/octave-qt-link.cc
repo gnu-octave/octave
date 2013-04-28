@@ -128,6 +128,37 @@ make_qstring_list (const std::list<std::string>& lst)
   return retval;
 }
 
+static QStringList
+make_filter_list (const std::list< std::pair<std::string, std::string> >& lst)
+{
+  QStringList retval;
+
+  // we have pairs of data, first being the list of extensions exta;exb;extc etc
+  // second the name to use as filter name (optional).
+  // Qt wants a a list of filters in the format of 'FilterName (spacfe separated exts)'
+
+  for (std::list< std::pair<std::string,std::string> >::const_iterator it = lst.begin ();
+       it != lst.end (); it++)
+    {
+      QString ext = QString::fromStdString ((*it).first);
+      QString name = QString::fromStdString ((*it).second);
+
+      // strip out (exts) from name (if any)
+      name.replace(QRegExp("\\(.*\\)"), "");
+      // replace ';' with spaces in ext list
+      ext.replace(";"," ");
+
+      if (name.length() == 0)
+        {
+           // no name field - so need build one from teh extendiions
+           name = ext.toUpper() + " Files";
+        }
+
+      retval.append (name + " (" + ext + ")");
+    }
+
+  return retval;
+}
 
 std::pair<std::list<int>, int>
 octave_qt_link::do_list_dialog (const std::list<std::string>& list,
@@ -184,6 +215,39 @@ octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
     {
       retval.push_back (it->toStdString ());
     }
+
+  return retval;
+}
+
+std::list<std::string>
+octave_qt_link::do_file_dialog (const std::list< std::pair< std::string, std::string > > filter,
+                                const std::string& title,
+                                const std::string& filename,
+                                const std::string& dirname,
+                                bool multiselect)
+{
+  std::list<std::string> retval;
+
+  uiwidget_creator.signal_filedialog ( make_filter_list (filter),
+                                       QString::fromStdString (title),
+                                       QString::fromStdString (filename),
+                                       QString::fromStdString (dirname),
+                                       multiselect);
+
+  // Wait while the user is responding to dialog.
+  uiwidget_creator.wait ();
+
+  // add all the file dialog result to a string list
+  const QStringList *inputLine = uiwidget_creator.get_string_list ();
+
+  for (QStringList::const_iterator it = inputLine->begin ();
+       it != inputLine->end (); it++)
+    {
+      retval.push_back (it->toStdString ());
+    }
+
+  retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
+  retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
 
   return retval;
 }

@@ -651,6 +651,11 @@ main_window::connect_uiwidget_links ()
            SLOT (handle_create_inputlayout (const QStringList&, const QString&,
                                             const QFloatList&, const QFloatList&,
                                             const QStringList&)));
+
+  connect (&uiwidget_creator,
+           SIGNAL (create_filedialog (const QStringList &,const QString&, const QString&, const QString&, bool)),
+           this,
+           SLOT (handle_create_filedialog (const QStringList &,const QString&, const QString&,const QString&, bool)));
 }
 
 // Create a message dialog with specified string, buttons and decorative
@@ -705,6 +710,19 @@ main_window::handle_create_inputlayout (const QStringList& prompt,
 
   input_dialog->setAttribute (Qt::WA_DeleteOnClose);
   input_dialog->show ();
+}
+
+void
+main_window::handle_create_filedialog (const QStringList &filters,
+                                       const QString& title, 
+                                       const QString& filename, 
+                                       const QString &dirname,
+                                       bool multiselect)
+{
+  FileDialog * file_dialog = new FileDialog(filters, title, 
+                                            filename, dirname, multiselect);
+  file_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  file_dialog->show ();
 }
 
 // Main subroutine of the constructor

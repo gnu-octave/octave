@@ -179,6 +179,19 @@ public:
       : std::list<std::string> ();
   }
 
+  static std::list<std::string>
+  file_dialog ( const std::list< std::pair< std::string, std::string > > filter,
+                const std::string& title,
+                const std::string& filename,
+                const std::string& dirname,
+                bool multiselect)
+  {
+    return enabled ()
+      ? instance->do_file_dialog (filter, title, filename, dirname, multiselect)
+      : std::list<std::string> ();
+  }
+
+
   static int debug_cd_or_addpath_error (const std::string& file,
                                         const std::string& dir,
                                         bool addpath_option)
@@ -369,6 +382,13 @@ protected:
                    const std::list<float>& nr,
                    const std::list<float>& nc,
                    const std::list<std::string>& defaults) = 0;
+
+  virtual std::list<std::string>
+  do_file_dialog (const std::list< std::pair< std::string, std::string > > filter,
+                  const std::string& title,
+                  const std::string& filename,
+                  const std::string& dirname,
+                  bool multiselect) = 0;
 
   virtual int
   do_debug_cd_or_addpath_error (const std::string& file,

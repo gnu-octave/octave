@@ -196,19 +196,19 @@ workspace_view::handle_contextmenu_rename (void)
 void
 workspace_view::handle_contextmenu_disp (void)
 {
-  relay_contextmenu_command ("disp"); 
+  relay_contextmenu_command ("disp");
 }
 
 void
 workspace_view::handle_contextmenu_plot (void)
 {
-  relay_contextmenu_command ("figure;\nplot"); 
+  relay_contextmenu_command ("figure (); plot");
 }
 
 void
 workspace_view::handle_contextmenu_stem (void)
 {
-  relay_contextmenu_command ("figure;\nstem"); 
+  relay_contextmenu_command ("figure (); stem");
 }
 
 void
@@ -226,7 +226,7 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
   
       QString var_name = item_data[0].toString ();
 
-      emit command_requested (cmdname + "(" + var_name + ")\n");
+      emit command_requested (cmdname + " (" + var_name + ");");
     }
 }
 

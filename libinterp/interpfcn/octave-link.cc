@@ -204,12 +204,12 @@ Undocumented internal function.\n\
   if (args.length () == 6)
     {
 
-      const Array<std::string> flist = args (0).cellstr_value ();
-      std::string title = args (1).string_value ();
-      std::string filename = args (2).string_value ();
-      Matrix pos = args (3).matrix_value ();
-      std::string multi_on = args (4).string_value (); // on, off, create
-      std::string pathname = args (5).string_value ();
+      const Array<std::string> flist = args(0).cellstr_value ();
+      std::string title = args(1).string_value ();
+      std::string filename = args(2).string_value ();
+      Matrix pos = args(3).matrix_value ();
+      std::string multi_on = args(4).string_value (); // on, off, create
+      std::string pathname = args(5).string_value ();
 
       octave_idx_type nel = flist.numel ();
       octave_link::filter_list filter_lst;
@@ -240,11 +240,11 @@ Undocumented internal function.\n\
                 {
                   retval(idx++) = *it;
 
-                  if (idx == 1 && retval (0).string_value ().length () == 0)
+                  if (idx == 1 && retval(0).string_value ().length () == 0)
                     retval(0) = 0;
 
                   if (idx == 3)
-                    retval(2) = atoi (retval (2).string_value ().c_str ());
+                    retval(2) = atoi (retval(2).string_value ().c_str ());
                 }
             }
           else

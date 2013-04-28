@@ -420,10 +420,8 @@ InputDialog::reject (void)
   buttonCancel_clicked ();
 }
 
-FileDialog::FileDialog (const QStringList& filters,
-                        const QString& title,
-                        const QString& filename,
-                        const QString& dirname,
+FileDialog::FileDialog (const QStringList& filters, const QString& title,
+                        const QString& filename, const QString& dirname,
                         const QString& multimode)
   : QFileDialog()
 {
@@ -438,7 +436,7 @@ FileDialog::FileDialog (const QStringList& filters,
       setFileMode (QFileDialog::ExistingFiles);
       setAcceptMode (QFileDialog::AcceptOpen);
     }
-  else if(multimode == "create") // uiputfile
+  else if (multimode == "create") // uiputfile
     {
       setFileMode (QFileDialog::AnyFile); 
       setAcceptMode (QFileDialog::AcceptSave);

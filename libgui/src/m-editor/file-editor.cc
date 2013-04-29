@@ -53,11 +53,13 @@ file_editor::file_editor (QWidget *p)
   setVisible (false);
 }
 
-file_editor::~file_editor ()
+file_editor::~file_editor (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
   editor_tab_map.clear ();
-  if (settings->value ("editor/restoreSession",true).toBool ())
+
+  if (settings->value ("editor/restoreSession", true).toBool ())
     {
       // Have all file editor tabs signal what their file names are.
       emit fetab_file_name_query (0);
@@ -96,7 +98,7 @@ file_editor::connect_visibility_changed (void)
 
 // set focus to editor and its current tab
 void
-file_editor::set_focus ()
+file_editor::set_focus (void)
 {
   if (!isVisible ())
     setVisible (true);
@@ -109,13 +111,13 @@ file_editor::set_focus ()
 }
 
 QMenu *
-file_editor::debug_menu ()
+file_editor::debug_menu (void)
 {
   return _debug_menu;
 }
 
 QToolBar *
-file_editor::toolbar ()
+file_editor::toolbar (void)
 {
   return _tool_bar;
 }
@@ -149,20 +151,47 @@ file_editor::request_new_file (const QString& commands)
 }
 
 void
-file_editor::request_open_file ()
+file_editor::request_new_script (const QString& commands)
+{
+  request_new_file (commands);
+}
+
+void
+file_editor::request_new_function (const QString& commands)
+{
+  QString text = commands;
+
+  if (text.isEmpty ())
+    text = "## Copyright (C)\n"
+      "\n"
+      "## -*- texinfo -*-\n"
+      "## @deftypefn {Function File} {[outputs] =} unamed_function (inputs)\n"
+      "## @end deftypefn\n"
+      "\n"
+      "function [outputs] = unnamed_function (inputs)\n"
+      "\n"
+      "endfunction\n";
+
+  request_new_file (text);
+}
+
+void
+file_editor::request_open_file (void)
 {
   // Open file isn't a file_editor_tab function since the file
   // editor tab has yet to be created and there is no object to
   // pass a signal to.  Hence, functionality is here.
 
   // Create a NonModal message.
-  QFileDialog* fileDialog = new QFileDialog (this);
-  fileDialog->setNameFilter (tr("Octave Files (*.m);;All Files (*.*)"));
+  QFileDialog *fileDialog = new QFileDialog (this);
+  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
   fileDialog->setDirectory (ced);
+
   connect (fileDialog, SIGNAL (fileSelected (const QString&)),
            this, SLOT (request_open_file (const QString&)));
+
   fileDialog->setWindowModality (Qt::NonModal);
   fileDialog->setAttribute (Qt::WA_DeleteOnClose);
   fileDialog->show ();
@@ -199,11 +228,11 @@ file_editor::request_open_file (const QString& openFileName, int line,
   if (settings->value ("useCustomFileEditor").toBool ())
     {
       QString editor = settings->value ("customFileEditor").toString ();
-      editor.replace ("%f",openFileName);
-      editor.replace ("%l",QString::number (line));
+      editor.replace ("%f", openFileName);
+      editor.replace ("%l", QString::number (line));
       QProcess::startDetached (editor);
       if (line < 0)
-        handle_mru_add_file(QDir::cleanPath (openFileName));
+        handle_mru_add_file (QDir::cleanPath (openFileName));
       return;
     }
 
@@ -243,7 +272,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
           file_editor_tab *fileEditorTab = new file_editor_tab ();
           if (fileEditorTab)
             {
-              QString result = fileEditorTab->load_file(openFileName);
+              QString result = fileEditorTab->load_file (openFileName);
               if (result == "")
                 {
                   // Supply empty title then have the file_editor_tab update
@@ -251,7 +280,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                   add_file_editor_tab (fileEditorTab, "");
                   fileEditorTab->update_window_title (false);
                   // file already loaded, add file to mru list here
-                  handle_mru_add_file(QDir::cleanPath (openFileName));
+                  handle_mru_add_file (QDir::cleanPath (openFileName));
 
                   if (line > 0)
                     {
@@ -269,11 +298,13 @@ file_editor::request_open_file (const QString& openFileName, int line,
                 {
                   delete fileEditorTab;
                   // Create a NonModal message about error.
-                  QMessageBox* msgBox = new QMessageBox (
-                                                         QMessageBox::Critical, tr ("Octave Editor"),
-                                                         tr ("Could not open file %1 for read:\n%2.").
-                                                         arg (openFileName).arg (result),
-                                                         QMessageBox::Ok, 0);
+                  QMessageBox *msgBox
+                    = new QMessageBox (QMessageBox::Critical,
+                                       tr ("Octave Editor"),
+                                       tr ("Could not open file %1 for read:\n%2.").
+                                       arg (openFileName).arg (result),
+                                       QMessageBox::Ok, 0);
+
                   msgBox->setWindowModality (Qt::NonModal);
                   msgBox->setAttribute (Qt::WA_DeleteOnClose);
                   msgBox->show ();
@@ -288,9 +319,9 @@ file_editor::request_open_file (const QString& openFileName, int line,
 
 // open a file from the mru list
 void
-file_editor::request_mru_open_file ()
+file_editor::request_mru_open_file (void)
 {
-  QAction *action = qobject_cast<QAction *>(sender ());
+  QAction *action = qobject_cast<QAction *> (sender ());
   if (action)
     {
       request_open_file (action->data ().toString ());
@@ -318,12 +349,13 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
       // somewhat confusing to the user.  For now, opt to do nothing.
 
       // Create a NonModal message about error.
-      QMessageBox* msgBox = new QMessageBox (
-              QMessageBox::Critical, tr ("Octave Editor"),
-              tr ("File not saved! A file with the selected name\n%1\n"
-                   "is already open in the editor").
-              arg (saveFileName),
-              QMessageBox::Ok, 0);
+      QMessageBox *msgBox
+        = new QMessageBox (QMessageBox::Critical, tr ("Octave Editor"),
+                           tr ("File not saved! A file with the selected name\n%1\n"
+                               "is already open in the editor").
+                           arg (saveFileName),
+                           QMessageBox::Ok, 0);
+
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
       msgBox->show ();
@@ -331,9 +363,10 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
       return;
     }
 
-  QObject* saveFileObject = sender ();
-  QWidget* saveFileWidget = 0;
-  for(int i = 0; i < _tab_widget->count (); i++)
+  QObject *saveFileObject = sender ();
+  QWidget *saveFileWidget = 0;
+
+  for (int i = 0; i < _tab_widget->count (); i++)
     {
       if (_tab_widget->widget (i) == saveFileObject)
         {
@@ -344,13 +377,15 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
   if (!saveFileWidget)
     {
       // Create a NonModal message about error.
-      QMessageBox* msgBox = new QMessageBox (
-              QMessageBox::Critical, tr ("Octave Editor"),
-              tr ("The associated file editor tab has disappeared.  It was likely closed by some means."),
-              QMessageBox::Ok, 0);
+      QMessageBox *msgBox
+        = new QMessageBox (QMessageBox::Critical, tr ("Octave Editor"),
+                           tr ("The associated file editor tab has disappeared.  It was likely closed by some means."),
+                           QMessageBox::Ok, 0);
+
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
       msgBox->show ();
+
       return;
     }
 
@@ -359,13 +394,15 @@ file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_su
 }
 
 void
-file_editor::handle_insert_debugger_pointer_request (const QString& file, int line)
+file_editor::handle_insert_debugger_pointer_request (const QString& file,
+                                                     int line)
 {
   request_open_file (file, line, true);
 }
 
 void
-file_editor::handle_delete_debugger_pointer_request (const QString& file, int line)
+file_editor::handle_delete_debugger_pointer_request (const QString& file,
+                                                     int line)
 {
   if (! file.isEmpty ())
     {
@@ -390,7 +427,8 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file, int li
 
 void
 file_editor::handle_update_breakpoint_marker_request (bool insert,
-                                                  const QString& file, int line)
+                                                      const QString& file,
+                                                      int line)
 {
   request_open_file (file, line, false, true, insert);
 }
@@ -402,128 +440,128 @@ file_editor::handle_edit_file_request (const QString& file)
 }
 
 void
-file_editor::request_undo ()
+file_editor::request_undo (void)
 {
   emit fetab_undo (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_redo ()
+file_editor::request_redo (void)
 {
   emit fetab_redo (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_copy ()
+file_editor::request_copy (void)
 {
   emit fetab_copy (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_cut ()
+file_editor::request_cut (void)
 {
   emit fetab_cut (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_paste ()
+file_editor::request_paste (void)
 {
   emit fetab_paste (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_save_file ()
+file_editor::request_save_file (void)
 {
   emit fetab_save_file (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_save_file_as ()
+file_editor::request_save_file_as (void)
 {
    emit fetab_save_file_as (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_print_file ()
+file_editor::request_print_file (void)
 {
    emit fetab_print_file (_tab_widget->currentWidget ());
 }
 
 
 void
-file_editor::request_run_file ()
+file_editor::request_run_file (void)
 {
   emit fetab_run_file (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_toggle_bookmark ()
+file_editor::request_toggle_bookmark (void)
 {
   emit fetab_toggle_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_next_bookmark ()
+file_editor::request_next_bookmark (void)
 {
   emit fetab_next_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_previous_bookmark ()
+file_editor::request_previous_bookmark (void)
 {
   emit fetab_previous_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_remove_bookmark ()
+file_editor::request_remove_bookmark (void)
 {
   emit fetab_remove_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_toggle_breakpoint ()
+file_editor::request_toggle_breakpoint (void)
 {
   emit fetab_toggle_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_next_breakpoint ()
+file_editor::request_next_breakpoint (void)
 {
   emit fetab_next_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_previous_breakpoint ()
+file_editor::request_previous_breakpoint (void)
 {
   emit fetab_previous_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_remove_breakpoint ()
+file_editor::request_remove_breakpoint (void)
 {
   emit fetab_remove_all_breakpoints (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_comment_selected_text ()
+file_editor::request_comment_selected_text (void)
 {
   emit fetab_comment_selected_text (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_uncomment_selected_text ()
+file_editor::request_uncomment_selected_text (void)
 {
   emit fetab_uncomment_selected_text (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_find ()
+file_editor::request_find (void)
 {
   emit fetab_find (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_goto_line ()
+file_editor::request_goto_line (void)
 {
   emit fetab_goto_line (_tab_widget->currentWidget ());
 }
@@ -538,28 +576,33 @@ file_editor::handle_mru_add_file (const QString& file_name)
 }
 
 void
-file_editor::mru_menu_update ()
+file_editor::mru_menu_update (void)
 {
-  int num_files = qMin (_mru_files.size(), int (MaxMRUFiles));
+  int num_files = qMin (_mru_files.size (), int (MaxMRUFiles));
+
   // configure and show active actions of mru-menu
   for (int i = 0; i < num_files; ++i)
     {
-      QString text = tr("&%1 %2").
+      QString text = tr ("&%1 %2").
           arg ((i+1) % int (MaxMRUFiles)).arg (_mru_files.at (i));
       _mru_file_actions[i]->setText (text);
       _mru_file_actions[i]->setData (_mru_files.at (i));
       _mru_file_actions[i]->setVisible (true);
     }
+
     // hide unused mru-menu entries
     for (int j = num_files; j < MaxMRUFiles; ++j)
       _mru_file_actions[j]->setVisible (false);
+
     // delete entries in string-list beyond MaxMRUFiles
     while (_mru_files.size () > MaxMRUFiles)
       _mru_files.removeLast ();
+
     // save actual mru-list in settings
     QSettings *settings = resource_manager::get_settings ();
+
     // FIXME -- what should happen if settings is 0?
-    settings->setValue ("editor/mru_file_list",_mru_files);
+    settings->setValue ("editor/mru_file_list", _mru_files);
     settings->sync ();
 }
 
@@ -567,10 +610,10 @@ void
 file_editor::handle_file_name_changed (const QString& fname,
                                        const QString& tip)
 {
-  QObject *fileEditorTab = sender();
+  QObject *fileEditorTab = sender ();
   if (fileEditorTab)
     {
-      for(int i = 0; i < _tab_widget->count (); i++)
+      for (int i = 0; i < _tab_widget->count (); i++)
         {
           if (_tab_widget->widget (i) == fileEditorTab)
             {
@@ -593,12 +636,12 @@ file_editor::handle_tab_close_request (int index)
 }
 
 void
-file_editor::handle_tab_remove_request ()
+file_editor::handle_tab_remove_request (void)
 {
-  QObject *fileEditorTab = sender();
+  QObject *fileEditorTab = sender ();
   if (fileEditorTab)
     {
-      for(int i = 0; i < _tab_widget->count (); i++)
+      for (int i = 0; i < _tab_widget->count (); i++)
         {
           if (_tab_widget->widget (i) == fileEditorTab)
             {
@@ -624,25 +667,27 @@ file_editor::active_tab_changed (int index)
 }
 
 void
-file_editor::handle_editor_state_changed (bool copy_available, const QString& file_name)
+file_editor::handle_editor_state_changed (bool copy_available,
+                                          const QString& file_name)
 {
   // In case there is some scenario where traffic could be coming from
   // all the file editor tabs, just process info from the current active tab.
-  if (sender() == _tab_widget->currentWidget ())
+  if (sender () == _tab_widget->currentWidget ())
     {
       _copy_action->setEnabled (copy_available);
       _cut_action->setEnabled (copy_available);
+
       if (!file_name.isEmpty ())
         {
           ced = QDir::cleanPath (file_name);
           int lastslash = ced.lastIndexOf ('/');
+
           // Test against > 0 because if somehow the directory is "/" the
           // slash should be retained.  Otherwise, last slash is removed.
           if (lastslash > 0 && lastslash != ced.count ())
-            {
-              ced = ced.left (lastslash);
-            }
+            ced = ced.left (lastslash);
         }
+
       setFocusProxy (_tab_widget->currentWidget ());
     }
 }
@@ -650,14 +695,14 @@ file_editor::handle_editor_state_changed (bool copy_available, const QString& fi
 void
 file_editor::notice_settings (const QSettings *settings)
 {
-  int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
-  _tool_bar->setIconSize (QSize (icon_size,icon_size));
+  int icon_size = settings->value ("toolbar_icon_size", 24).toInt ();
+  _tool_bar->setIconSize (QSize (icon_size, icon_size));
   // Relay signal to file editor tabs.
   emit fetab_settings_changed (settings);
 }
 
 void
-file_editor::construct ()
+file_editor::construct (void)
 {
   QWidget *editor_widget = new QWidget (this);
 
@@ -669,42 +714,50 @@ file_editor::construct ()
   _tab_widget = new QTabWidget (editor_widget);
   _tab_widget->setTabsClosable (true);
 
-  QAction *new_action = new QAction (QIcon(":/actions/icons/filenew.png"),
-                                     tr("&New File"), _tool_bar);
+  QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),
+                                     tr ("&New File"), _tool_bar);
 
-  QAction *open_action = new QAction (QIcon(":/actions/icons/fileopen.png"),
-                                      tr("&Open File"), _tool_bar);
+  QAction *open_action = new QAction (QIcon (":/actions/icons/fileopen.png"),
+                                      tr ("&Open File"), _tool_bar);
 
-  QAction *save_action = new QAction (QIcon(":/actions/icons/filesave.png"),
-                                      tr("&Save File"), _tool_bar);
+  QAction *save_action = new QAction (QIcon (":/actions/icons/filesave.png"),
+                                      tr ("&Save File"), _tool_bar);
 
   QAction *save_as_action
-    = new QAction (QIcon(":/actions/icons/filesaveas.png"),
-                   tr("Save File &As"), _tool_bar);
+    = new QAction (QIcon (":/actions/icons/filesaveas.png"),
+                   tr ("Save File &As"), _tool_bar);
 
   QAction *print_action
-    = new QAction ( QIcon(":/actions/icons/fileprint.png"),
+    = new QAction ( QIcon (":/actions/icons/fileprint.png"),
                     tr ("Print"), _tool_bar);
 
-  QAction *undo_action = new QAction (QIcon(":/actions/icons/undo.png"),
-                                      tr("&Undo"), _tool_bar);
+  QAction *undo_action = new QAction (QIcon (":/actions/icons/undo.png"),
+                                      tr ("&Undo"), _tool_bar);
 
-  QAction *redo_action = new QAction (QIcon(":/actions/icons/redo.png"),
-                                      tr("&Redo"), _tool_bar);
+  QAction *redo_action = new QAction (QIcon (":/actions/icons/redo.png"),
+                                      tr ("&Redo"), _tool_bar);
 
-  _copy_action = new QAction (QIcon(":/actions/icons/editcopy.png"),
+  _copy_action = new QAction (QIcon (":/actions/icons/editcopy.png"),
                               tr ("&Copy"), _tool_bar);
 
-  _cut_action  = new QAction (QIcon(":/actions/icons/editcut.png"),
+  _cut_action = new QAction (QIcon (":/actions/icons/editcut.png"),
                               tr ("Cu&t"), _tool_bar);
 
   QAction *paste_action
     = new QAction (QIcon (":/actions/icons/editpaste.png"),
-                   tr("Paste"), _tool_bar);
-  QAction *next_bookmark_action       = new QAction (tr ("&Next Bookmark"),_tool_bar);
-  QAction *previous_bookmark_action   = new QAction (tr ("Pre&vious Bookmark"),_tool_bar);
-  QAction *toggle_bookmark_action     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
-  QAction *remove_bookmark_action     = new QAction (tr ("&Remove All Bookmarks"),_tool_bar);
+                   tr ("Paste"), _tool_bar);
+
+  QAction *next_bookmark_action
+    = new QAction (tr ("&Next Bookmark"), _tool_bar);
+
+  QAction *previous_bookmark_action
+    = new QAction (tr ("Pre&vious Bookmark"), _tool_bar);
+
+  QAction *toggle_bookmark_action
+    = new QAction (tr ("Toggle &Bookmark"), _tool_bar);
+
+  QAction *remove_bookmark_action
+    = new QAction (tr ("&Remove All Bookmarks"), _tool_bar);
 
   QAction *next_breakpoint_action
     = new QAction (QIcon (":/actions/icons/bp_next.png"),
@@ -719,16 +772,19 @@ file_editor::construct ()
     = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
                    tr ("&Remove All breakpoints"), _tool_bar);
 
-  QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
-  QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
+  QAction *comment_selection_action
+    = new QAction (tr ("&Comment Selected Text"), _tool_bar);
 
-  QAction *find_action = new QAction (QIcon(":/actions/icons/search.png"),
+  QAction *uncomment_selection_action
+    = new QAction (tr ("&Uncomment Selected Text"), _tool_bar);
+
+  QAction *find_action = new QAction (QIcon (":/actions/icons/search.png"),
                                       tr ("&Find and Replace"), _tool_bar);
 
-  _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
-                             tr("Save File And Run"), _tool_bar);
+  _run_action = new QAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
+                             tr ("Save File And Run"), _tool_bar);
 
-  QAction *goto_line_action  = new QAction (tr ("Go&to Line"), _tool_bar);
+  QAction *goto_line_action = new QAction (tr ("Go&to Line"), _tool_bar);
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
@@ -741,32 +797,32 @@ file_editor::construct ()
     }
 
   // some actions are disabled from the beginning
-  _copy_action->setEnabled(false);
-  _cut_action->setEnabled(false);
-  _run_action->setShortcut                      (Qt::ControlModifier+ Qt::Key_R);
-  _run_action->setShortcutContext               (Qt::WindowShortcut);
-  save_action->setShortcut                      (QKeySequence::Save);
-  save_action->setShortcutContext               (Qt::WindowShortcut);
-  save_as_action->setShortcut                   (QKeySequence::SaveAs);
-  save_as_action->setShortcutContext            (Qt::WindowShortcut);
+  _copy_action->setEnabled (false);
+  _cut_action->setEnabled (false);
+  _run_action->setShortcut (Qt::ControlModifier+ Qt::Key_R);
+  _run_action->setShortcutContext (Qt::WindowShortcut);
+  save_action->setShortcut (QKeySequence::Save);
+  save_action->setShortcutContext (Qt::WindowShortcut);
+  save_as_action->setShortcut (QKeySequence::SaveAs);
+  save_as_action->setShortcutContext (Qt::WindowShortcut);
 
-  print_action->setShortcut                     (QKeySequence::Print);
-  print_action->setShortcutContext              (Qt::WindowShortcut);
+  print_action->setShortcut (QKeySequence::Print);
+  print_action->setShortcutContext (Qt::WindowShortcut);
 
-  next_bookmark_action->setShortcut             (Qt::Key_F2);
-  next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);
-  previous_bookmark_action->setShortcut         (Qt::SHIFT + Qt::Key_F2);
-  previous_bookmark_action->setShortcutContext  (Qt::WindowShortcut);
-  toggle_bookmark_action->setShortcut           (Qt::Key_F7);
-  toggle_bookmark_action->setShortcutContext    (Qt::WindowShortcut);
-  comment_selection_action->setShortcut         (Qt::ControlModifier + Qt::Key_7);
-  comment_selection_action->setShortcutContext  (Qt::WindowShortcut);
-  uncomment_selection_action->setShortcut       (Qt::ControlModifier + Qt::Key_8);
-  uncomment_selection_action->setShortcutContext(Qt::WindowShortcut);
-  find_action->setShortcut                      (QKeySequence::Find);
-  find_action->setShortcutContext               (Qt::WindowShortcut);
-  goto_line_action->setShortcut                 (Qt::ControlModifier+ Qt::Key_G);
-  goto_line_action->setShortcutContext          (Qt::WindowShortcut);
+  next_bookmark_action->setShortcut (Qt::Key_F2);
+  next_bookmark_action->setShortcutContext (Qt::WindowShortcut);
+  previous_bookmark_action->setShortcut (Qt::SHIFT + Qt::Key_F2);
+  previous_bookmark_action->setShortcutContext (Qt::WindowShortcut);
+  toggle_bookmark_action->setShortcut (Qt::Key_F7);
+  toggle_bookmark_action->setShortcutContext (Qt::WindowShortcut);
+  comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_7);
+  comment_selection_action->setShortcutContext (Qt::WindowShortcut);
+  uncomment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_8);
+  uncomment_selection_action->setShortcutContext (Qt::WindowShortcut);
+  find_action->setShortcut (QKeySequence::Find);
+  find_action->setShortcutContext (Qt::WindowShortcut);
+  goto_line_action->setShortcut (Qt::ControlModifier+ Qt::Key_G);
+  goto_line_action->setShortcutContext (Qt::WindowShortcut);
 
   // toolbar
   _tool_bar->addAction (new_action);
@@ -774,7 +830,7 @@ file_editor::construct ()
   _tool_bar->addAction (save_action);
   _tool_bar->addAction (save_as_action);
   _tool_bar->addSeparator ();
-  _tool_bar->addAction(print_action);
+  _tool_bar->addAction (print_action);
   _tool_bar->addSeparator ();
   _tool_bar->addAction (undo_action);
   _tool_bar->addAction (redo_action);
@@ -798,10 +854,10 @@ file_editor::construct ()
   fileMenu->addAction (save_as_action);
   fileMenu->addSeparator ();
   _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), fileMenu);
+
   for (int i = 0; i < MaxMRUFiles; ++i)
-    {
-      _mru_file_menu->addAction (_mru_file_actions[i]);
-    }
+    _mru_file_menu->addAction (_mru_file_actions[i]);
+
   fileMenu->addMenu (_mru_file_menu);
   _menu_bar->addMenu (fileMenu);
 
@@ -859,162 +915,226 @@ file_editor::construct ()
   connect (parent (), SIGNAL (open_file_signal (const QString&)),
            this, SLOT (request_open_file (const QString&)));
 
-  connect (new_action,
-           SIGNAL (triggered ()), this, SLOT (request_new_file ()));
-  connect (open_action,
-           SIGNAL (triggered ()), this, SLOT (request_open_file ()));
-  connect (undo_action,
-           SIGNAL (triggered ()), this, SLOT (request_undo ()));
-  connect (redo_action,
-           SIGNAL (triggered ()), this, SLOT (request_redo ()));
-  connect (_copy_action,
-           SIGNAL (triggered ()), this, SLOT (request_copy ()));
-  connect (_cut_action,
-           SIGNAL (triggered ()), this, SLOT (request_cut ()));
-  connect (paste_action,
-           SIGNAL (triggered ()), this, SLOT (request_paste ()));
-  connect (save_action,
-           SIGNAL (triggered ()), this, SLOT (request_save_file ()));
-  connect (save_as_action,
-           SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
-  connect (print_action,
-           SIGNAL (triggered ()), this, SLOT (request_print_file ()));
-  connect (_run_action,
-           SIGNAL (triggered ()), this, SLOT (request_run_file ()));
-  connect (toggle_bookmark_action,
-           SIGNAL (triggered ()), this, SLOT (request_toggle_bookmark ()));
-  connect (next_bookmark_action,
-           SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
-  connect (previous_bookmark_action,
-           SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));
-  connect (remove_bookmark_action,
-           SIGNAL (triggered ()), this, SLOT (request_remove_bookmark ()));
-  connect (toggle_breakpoint_action,
-           SIGNAL (triggered ()), this, SLOT (request_toggle_breakpoint ()));
-  connect (next_breakpoint_action,
-           SIGNAL (triggered ()), this, SLOT (request_next_breakpoint ()));
-  connect (previous_breakpoint_action,
-           SIGNAL (triggered ()), this, SLOT (request_previous_breakpoint ()));
-  connect (remove_all_breakpoints_action,
-           SIGNAL (triggered ()), this, SLOT (request_remove_breakpoint ()));
-  connect (comment_selection_action,
-           SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
-  connect (uncomment_selection_action,
-           SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
-  connect (find_action,
-           SIGNAL (triggered ()), this, SLOT (request_find ()));
+  connect (new_action, SIGNAL (triggered ()),
+           this, SLOT (request_new_file ()));
 
-  connect (goto_line_action,
-           SIGNAL (triggered ()), this, SLOT (request_goto_line ()));
- 
+  connect (open_action, SIGNAL (triggered ()),
+           this, SLOT (request_open_file ()));
+
+  connect (undo_action, SIGNAL (triggered ()),
+           this, SLOT (request_undo ()));
+
+  connect (redo_action, SIGNAL (triggered ()),
+           this, SLOT (request_redo ()));
+
+  connect (_copy_action, SIGNAL (triggered ()),
+           this, SLOT (request_copy ()));
+
+  connect (_cut_action, SIGNAL (triggered ()),
+           this, SLOT (request_cut ()));
+
+  connect (paste_action, SIGNAL (triggered ()),
+           this, SLOT (request_paste ()));
+
+  connect (save_action, SIGNAL (triggered ()),
+           this, SLOT (request_save_file ()));
+
+  connect (save_as_action, SIGNAL (triggered ()),
+           this, SLOT (request_save_file_as ()));
+
+  connect (print_action, SIGNAL (triggered ()),
+           this, SLOT (request_print_file ()));
+
+  connect (_run_action, SIGNAL (triggered ()),
+           this, SLOT (request_run_file ()));
+
+  connect (toggle_bookmark_action, SIGNAL (triggered ()),
+           this, SLOT (request_toggle_bookmark ()));
+
+  connect (next_bookmark_action, SIGNAL (triggered ()),
+           this, SLOT (request_next_bookmark ()));
+
+  connect (previous_bookmark_action, SIGNAL (triggered ()),
+           this, SLOT (request_previous_bookmark ()));
+
+  connect (remove_bookmark_action, SIGNAL (triggered ()),
+           this, SLOT (request_remove_bookmark ()));
+
+  connect (toggle_breakpoint_action, SIGNAL (triggered ()),
+           this, SLOT (request_toggle_breakpoint ()));
+
+  connect (next_breakpoint_action, SIGNAL (triggered ()),
+           this, SLOT (request_next_breakpoint ()));
+
+  connect (previous_breakpoint_action, SIGNAL (triggered ()),
+           this, SLOT (request_previous_breakpoint ()));
+
+  connect (remove_all_breakpoints_action, SIGNAL (triggered ()),
+           this, SLOT (request_remove_breakpoint ()));
+
+  connect (comment_selection_action, SIGNAL (triggered ()),
+           this, SLOT (request_comment_selected_text ()));
+
+  connect (uncomment_selection_action, SIGNAL (triggered ()),
+           this, SLOT (request_uncomment_selected_text ()));
+
+  connect (find_action, SIGNAL (triggered ()),
+           this, SLOT (request_find ()));
+
+  connect (goto_line_action, SIGNAL (triggered ()),
+           this, SLOT (request_goto_line ()));
+
   // The actions of the mru file menu
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
-      connect(_mru_file_actions[i], SIGNAL (triggered ()), this, SLOT (request_mru_open_file ()));
+      connect (_mru_file_actions[i], SIGNAL (triggered ()),
+               this, SLOT (request_mru_open_file ()));
     }
+
   mru_menu_update ();
-  connect (_tab_widget,
-           SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
-  connect (_tab_widget,
-           SIGNAL (currentChanged(int)), this, SLOT (active_tab_changed (int)));
+
+  connect (_tab_widget, SIGNAL (tabCloseRequested (int)),
+           this, SLOT (handle_tab_close_request (int)));
+
+  connect (_tab_widget, SIGNAL (currentChanged (int)),
+           this, SLOT (active_tab_changed (int)));
 
   resize (500, 400);
-  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
   setWindowTitle ("Editor");
 
   //restore previous session
-  if (settings->value ("editor/restoreSession",true).toBool ())
+  if (settings->value ("editor/restoreSession", true).toBool ())
     {
-      QStringList sessionFileNames = settings->value("editor/savedSessionTabs", QStringList()).toStringList ();
+      QStringList sessionFileNames
+        = settings->value ("editor/savedSessionTabs", QStringList ()).toStringList ();
 
-      for (int n=0; n < sessionFileNames.count (); ++n)
+      for (int n = 0; n < sessionFileNames.count (); ++n)
         request_open_file (sessionFileNames.at (n));
     }
 }
 
 void
-file_editor::add_file_editor_tab (file_editor_tab *f, const QString &fn)
+file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 {
   _tab_widget->addTab (f, fn);
 
   // Signals from the file editor_tab
   connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
-           this, SLOT (handle_file_name_changed (const QString&, const QString&)));
+           this, SLOT (handle_file_name_changed (const QString&,
+                                                 const QString&)));
+
   connect (f, SIGNAL (editor_state_changed (bool, const QString&)),
            this, SLOT (handle_editor_state_changed (bool, const QString&)));
+
   connect (f, SIGNAL (tab_remove_request ()),
            this, SLOT (handle_tab_remove_request ()));
-  connect (f, SIGNAL (add_filename_to_list (const QString&, QWidget *)),
-           this, SLOT (handle_add_filename_to_list (const QString&, QWidget *)));
+
+  connect (f, SIGNAL (add_filename_to_list (const QString&, QWidget*)),
+           this, SLOT (handle_add_filename_to_list (const QString&, QWidget*)));
+
   connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
            this, SLOT (check_conflict_save (const QString&, bool)));
+
   connect (f, SIGNAL (mru_add_file (const QString&)),
            this, SLOT (handle_mru_add_file (const QString&)));
+
   connect (f, SIGNAL (process_octave_code (const QString&)),
-           parent (), SLOT (handle_command_double_clicked (const QString&)));
+           parent (), SLOT (execute_command_in_terminal (const QString&)));
   
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
            f, SLOT (notice_settings (const QSettings *)));
+
   connect (this, SIGNAL (fetab_close_request (const QWidget*)),
            f, SLOT (conditional_close (const QWidget*)));
+
   connect (this, SIGNAL (fetab_change_request (const QWidget*)),
            f, SLOT (change_editor_state (const QWidget*)));
+
   connect (this, SIGNAL (fetab_file_name_query (const QWidget*)),
            f, SLOT (file_name_query (const QWidget*)));
-  connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&, bool)),
+
+  connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
+                                          bool)),
            f, SLOT (save_file (const QWidget*, const QString&, bool)));
+
   // Signals from the file_editor trivial operations
   connect (this, SIGNAL (fetab_undo (const QWidget*)),
            f, SLOT (undo (const QWidget*)));
+
   connect (this, SIGNAL (fetab_redo (const QWidget*)),
            f, SLOT (redo (const QWidget*)));
+
   connect (this, SIGNAL (fetab_copy (const QWidget*)),
            f, SLOT (copy (const QWidget*)));
+
   connect (this, SIGNAL (fetab_cut (const QWidget*)),
            f, SLOT (cut (const QWidget*)));
+
   connect (this, SIGNAL (fetab_paste (const QWidget*)),
            f, SLOT (paste (const QWidget*)));
+
   connect (this, SIGNAL (fetab_save_file (const QWidget*)),
            f, SLOT (save_file (const QWidget*)));
+
   connect (this, SIGNAL (fetab_save_file_as (const QWidget*)),
            f, SLOT (save_file_as (const QWidget*)));
+
   connect (this, SIGNAL (fetab_print_file (const QWidget*)),
            f, SLOT (print_file (const QWidget*)));
+
   connect (this, SIGNAL (fetab_run_file (const QWidget*)),
            f, SLOT (run_file (const QWidget*)));
+
   connect (this, SIGNAL (fetab_toggle_bookmark (const QWidget*)),
            f, SLOT (toggle_bookmark (const QWidget*)));
+
   connect (this, SIGNAL (fetab_next_bookmark (const QWidget*)),
            f, SLOT (next_bookmark (const QWidget*)));
+
   connect (this, SIGNAL (fetab_previous_bookmark (const QWidget*)),
            f, SLOT (previous_bookmark (const QWidget*)));
+
   connect (this, SIGNAL (fetab_remove_bookmark (const QWidget*)),
            f, SLOT (remove_bookmark (const QWidget*)));
+
   connect (this, SIGNAL (fetab_toggle_breakpoint (const QWidget*)),
            f, SLOT (toggle_breakpoint (const QWidget*)));
+
   connect (this, SIGNAL (fetab_next_breakpoint (const QWidget*)),
            f, SLOT (next_breakpoint (const QWidget*)));
+
   connect (this, SIGNAL (fetab_previous_breakpoint (const QWidget*)),
            f, SLOT (previous_breakpoint (const QWidget*)));
+
   connect (this, SIGNAL (fetab_remove_all_breakpoints (const QWidget*)),
            f, SLOT (remove_all_breakpoints (const QWidget*)));
+
   connect (this, SIGNAL (fetab_comment_selected_text (const QWidget*)),
            f, SLOT (comment_selected_text (const QWidget*)));
+
   connect (this, SIGNAL (fetab_uncomment_selected_text (const QWidget*)),
            f, SLOT (uncomment_selected_text (const QWidget*)));
+
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
-  connect (this, SIGNAL (fetab_goto_line (const QWidget *, int)),
-           f, SLOT (goto_line (const QWidget *, int)));
+
+  connect (this, SIGNAL (fetab_goto_line (const QWidget*, int)),
+           f, SLOT (goto_line (const QWidget*, int)));
+
   connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
            f, SLOT (set_focus (const QWidget*)));
-  connect (this, SIGNAL (fetab_insert_debugger_pointer (const QWidget *, int)),
-           f, SLOT (insert_debugger_pointer (const QWidget *, int)));
-  connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget *, int)),
-           f, SLOT (delete_debugger_pointer (const QWidget *, int)));
-  connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget *, int)),
-           f, SLOT (do_breakpoint_marker (bool, const QWidget *, int)));
+
+  connect (this, SIGNAL (fetab_insert_debugger_pointer (const QWidget*, int)),
+           f, SLOT (insert_debugger_pointer (const QWidget*, int)));
+
+  connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget*, int)),
+           f, SLOT (delete_debugger_pointer (const QWidget*, int)));
+
+  connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget*,
+                                                     int)),
+           f, SLOT (do_breakpoint_marker (bool, const QWidget*, int)));
 
   _tab_widget->setCurrentWidget (f);
 }

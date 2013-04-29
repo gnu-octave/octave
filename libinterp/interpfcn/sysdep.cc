@@ -196,16 +196,26 @@ same_file_internal (const std::string& file1, const std::string& file2)
 
   bool retval = false;
 
+  const char *f1 = file1.c_str ();
+  const char *f2 = file2.c_str ();
+
+  bool f1_is_dir = GetFileAttributes (f1) & FILE_ATTRIBUTE_DIRECTORY;
+  bool f2_is_dir = GetFileAttributes (f2) & FILE_ATTRIBUTE_DIRECTORY;
+
   // Windows native code
   // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
 
-  HANDLE hfile1 = CreateFile (file1.c_str (), 0, FILE_SHARE_READ, 0,
-                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  DWORD share = FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE;
+
+  HANDLE hfile1
+    = CreateFile (f1, 0, share, 0, OPEN_EXISTING,
+                  f1_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
 
   if (hfile1 != INVALID_HANDLE_VALUE)
     {
-      HANDLE hfile2 = CreateFile (file2.c_str (), 0, FILE_SHARE_READ, 0,
-                                  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+      HANDLE hfile2
+        = CreateFile (f2, 0, share, 0, OPEN_EXISTING,
+                      f2_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
 
       if (hfile2 != INVALID_HANDLE_VALUE)
         {
@@ -214,10 +224,11 @@ same_file_internal (const std::string& file1, const std::string& file2)
 
           if (GetFileInformationByHandle (hfile1, &hfi1)
               && GetFileInformationByHandle (hfile2, &hfi2))
-
-            retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
-                      && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
-                      && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+            {
+              retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
+                        && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
+                        && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+            }
 
           CloseHandle (hfile2);
         }

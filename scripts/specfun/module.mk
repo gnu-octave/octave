@@ -4,6 +4,8 @@ specfun_FCN_FILES = \
   specfun/bessel.m \
   specfun/beta.m \
   specfun/betaln.m \
+  specfun/ellipke.m \
+  specfun/expint.m \
   specfun/factor.m \
   specfun/factorial.m \
   specfun/isprime.m \

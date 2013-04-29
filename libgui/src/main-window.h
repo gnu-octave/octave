@@ -72,13 +72,19 @@ public:
 
   ~main_window (void);
 
+  bool command_window_has_focus (void) const;
+
   void focus_command_window (void);
 
 signals:
   void settings_changed (const QSettings *);
-  void relay_command_signal (const QString&);
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
+
+  void insert_debugger_pointer_signal (const QString& file, int line);
+  void delete_debugger_pointer_signal (const QString& file, int line);
+  void update_breakpoint_marker_signal (bool insert, const QString& file,
+                                        int line);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -109,7 +115,11 @@ public slots:
   void change_directory_up (void);
   void accept_directory_line_edit (void);
 
-  void handle_command_double_clicked (const QString& command);
+  void execute_command_in_terminal(const QString& dir);
+
+  void handle_new_figure_request (void);
+
+  void handle_new_variable_request (void);
 
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
@@ -119,7 +129,13 @@ public slots:
   void debug_step_out (void);
   void debug_quit (void);
 
+  void handle_insert_debugger_pointer_request (const QString& file, int line);
+  void handle_delete_debugger_pointer_request (const QString& file, int line);
+  void handle_update_breakpoint_marker_request (bool insert,
+                                                const QString& file, int line);
+
   void read_settings (void);
+  void set_window_layout (QSettings *settings);
   void write_settings (void);
   void connect_visibility_changed (void);
 
@@ -142,9 +158,11 @@ public slots:
                                   const QFloatList&, const QFloatList&,
                                   const QStringList&);
 
-  void handle_create_debug_cd_or_addpath_dialog (const QString& file,
-                                                 const QString& dir,
-                                                 bool addpath_option);
+  void handle_create_filedialog (const QStringList &filters, 
+                                 const QString& title, const QString& filename, 
+                                 const QString &dirname,
+                                 const QString& multimode);
+
   // find files dialog 
   void find_files(const QString &startdir=QDir::currentPath());
   void find_files_finished(int);
@@ -167,7 +185,6 @@ private:
                                       const QString& item,
                                       const QKeySequence& key);
   void construct_debug_menu (QMenuBar *p);
-  void construct_desktop_menu (QMenuBar *p);
   QAction *construct_window_menu_item (QMenu *p, const QString& item,
                                        bool checkable,
                                        const QKeySequence& key);
@@ -194,6 +211,10 @@ private:
   void clear_workspace_callback (void);
 
   void clear_history_callback (void);
+
+  void execute_command_callback (const std::string& command);
+
+  void new_figure_callback (void);
 
   void change_directory_callback (const std::string& directory);
 

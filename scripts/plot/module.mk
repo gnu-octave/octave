@@ -204,6 +204,7 @@ plot_FCN_FILES = \
   plot/view.m \
   plot/waitbar.m \
   plot/waitforbuttonpress.m \
+  plot/waterfall.m \
   plot/whitebg.m \
   plot/xlabel.m \
   plot/xlim.m \

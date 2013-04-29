@@ -37,11 +37,13 @@ command_editor
 protected:
 
   command_editor (void)
-    : command_number (0), interrupted (false) { }
+    : command_number (0), interrupted (false), initial_input () { }
 
 public:
 
   typedef int (*startup_hook_fcn) (void);
+
+  typedef int (*pre_input_hook_fcn) (void);
 
   typedef int (*event_hook_fcn) (void);
 
@@ -123,6 +125,10 @@ public:
 
   static std::string get_line_buffer (void);
 
+  static std::string get_current_line (void);
+
+  static void replace_line (const std::string& text, bool clear_undo = true);
+
   static void insert_text (const std::string& text);
 
   static void newline (void);
@@ -136,6 +142,10 @@ public:
   static void add_startup_hook (startup_hook_fcn f);
 
   static void remove_startup_hook (startup_hook_fcn f);
+
+  static void add_pre_input_hook (pre_input_hook_fcn f);
+
+  static void remove_pre_input_hook (pre_input_hook_fcn f);
 
   static void add_event_hook (event_hook_fcn f);
 
@@ -151,7 +161,7 @@ public:
 
   static bool filename_quoting_desired (bool);
 
-  static bool interrupt (bool);
+  static bool interrupt (bool = true);
 
   static int current_command_number (void);
 
@@ -160,6 +170,10 @@ public:
   static void increment_current_command_number (void);
 
   static void force_default_editor (void);
+
+  static void set_initial_input (const std::string& text);
+
+  static int insert_initial_input (void);
 
 private:
 
@@ -175,14 +189,21 @@ private:
 
   static int startup_handler (void);
 
+  static int pre_input_handler (void);
+
   static int event_handler (void);
 
   static std::set<startup_hook_fcn> startup_hook_set;
+
+  static std::set<pre_input_hook_fcn> pre_input_hook_set;
 
   static std::set<event_hook_fcn> event_hook_set;
 
   typedef std::set<startup_hook_fcn>::iterator startup_hook_set_iterator;
   typedef std::set<startup_hook_fcn>::const_iterator startup_hook_set_const_iterator;
+
+  typedef std::set<pre_input_hook_fcn>::iterator pre_input_hook_set_iterator;
+  typedef std::set<pre_input_hook_fcn>::const_iterator pre_input_hook_set_const_iterator;
 
   typedef std::set<event_hook_fcn>::iterator event_hook_set_iterator;
   typedef std::set<event_hook_fcn>::const_iterator event_hook_set_const_iterator;
@@ -271,7 +292,11 @@ protected:
 
   virtual std::string do_get_line_buffer (void) const = 0;
 
-  virtual void do_insert_text (const std::string&) = 0;
+  virtual std::string do_get_current_line (void) const = 0;
+
+  virtual void do_replace_line (const std::string& text, bool clear_undo) = 0;
+
+  virtual void do_insert_text (const std::string& text) = 0;
 
   virtual void do_newline (void) = 0;
 
@@ -285,7 +310,11 @@ protected:
 
   virtual void restore_startup_hook (void) { }
 
-  virtual void set_event_hook (startup_hook_fcn) { }
+  virtual void set_pre_input_hook (pre_input_hook_fcn) { }
+
+  virtual void restore_pre_input_hook (void) { }
+
+  virtual void set_event_hook (event_hook_fcn) { }
 
   virtual void restore_event_hook (void) { }
 
@@ -299,6 +328,8 @@ protected:
 
   virtual void do_interrupt (bool) { }
 
+  int do_insert_initial_input (void);
+
   int read_octal (const std::string& s);
 
   void error (int);
@@ -309,6 +340,8 @@ protected:
   int command_number;
 
   bool interrupted;
+
+  std::string initial_input;
 };
 
 #endif

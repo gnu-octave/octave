@@ -130,26 +130,25 @@ cleanup_tmp_files (void)
     }
 }
 
-static std::ios::openmode
-fopen_mode_to_ios_mode (const std::string& mode_arg)
+static void
+normalize_fopen_mode (std::string& mode, bool& use_zlib)
 {
-  std::ios::openmode retval = std::ios::in;
+  use_zlib = false;
 
-  if (! mode_arg.empty ())
+  if (! mode.empty ())
     {
       // Could probably be faster, but does it really matter?
 
-      std::string mode = mode_arg;
-
-      // 'W' and 'R' are accepted as 'w' and 'r', but we warn about
-      // them because Matlab says they perform "automatic flushing"
-      // but we don't know precisely what action that implies.
+      // Accept 'W', 'R', and 'A' as 'w', 'r', and 'a' but we warn about
+      // them because Matlab says they don't perform "automatic
+      // flushing" but we don't know precisely what action that implies.
 
       size_t pos = mode.find ('W');
 
       if (pos != std::string::npos)
         {
-          warning ("fopen: treating mode \"W\" as equivalent to \"w\"");
+          warning_with_id ("Octave:fopen-mode",
+                           "fopen: treating mode \"W\" as equivalent to \"w\"");
           mode[pos] = 'w';
         }
 
@@ -157,8 +156,18 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
       if (pos != std::string::npos)
         {
-          warning ("fopen: treating mode \"R\" as equivalent to \"r\"");
+          warning_with_id ("Octave:fopen-mode",
+                           "fopen: treating mode \"R\" as equivalent to \"r\"");
           mode[pos] = 'r';
+        }
+
+      pos = mode.find ('A');
+
+      if (pos != std::string::npos)
+        {
+          warning_with_id ("Octave:fopen-mode",
+                           "fopen: treating mode \"A\" as equivalent to \"a\"");
+          mode[pos] = 'a';
         }
 
       pos = mode.find ('z');
@@ -166,6 +175,7 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
       if (pos != std::string::npos)
         {
 #if defined (HAVE_ZLIB)
+          use_zlib = true;
           mode.erase (pos, 1);
 #else
           error ("this version of Octave does not support gzipped files");
@@ -174,35 +184,53 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
       if (! error_state)
         {
-          if (mode == "rt")
-            retval = std::ios::in;
-          else if (mode == "wt")
-            retval = std::ios::out | std::ios::trunc;
-          else if (mode == "at")
-            retval = std::ios::out | std::ios::app;
-          else if (mode == "r+t" || mode == "rt+")
-            retval = std::ios::in | std::ios::out;
-          else if (mode == "w+t" || mode == "wt+")
-            retval = std::ios::in | std::ios::out | std::ios::trunc;
-          else if (mode == "a+t" || mode == "at+")
-            retval = std::ios::in | std::ios::out | std::ios::app;
-          else if (mode == "rb" || mode == "r")
-            retval = std::ios::in | std::ios::binary;
-          else if (mode == "wb" || mode == "w")
-            retval = std::ios::out | std::ios::trunc | std::ios::binary;
-          else if (mode == "ab" || mode == "a")
-            retval = std::ios::out | std::ios::app | std::ios::binary;
-          else if (mode == "r+b" || mode == "rb+" || mode == "r+")
-            retval = std::ios::in | std::ios::out | std::ios::binary;
-          else if (mode == "w+b" || mode == "wb+" || mode == "w+")
-            retval = (std::ios::in | std::ios::out | std::ios::trunc
-                      | std::ios::binary);
-          else if (mode == "a+b" || mode == "ab+" || mode == "a+")
-            retval = (std::ios::in | std::ios::out | std::ios::app
-                      | std::ios::binary);
-          else
-            ::error ("invalid mode specified");
+          // Use binary mode if 't' is not specified, but don't add
+          // 'b' if it is already present.
+
+          size_t bpos = mode.find ('b');
+          size_t tpos = mode.find ('t');
+
+          if (bpos == std::string::npos && tpos == std::string::npos)
+            mode += 'b';
         }
+    }
+}
+
+static std::ios::openmode
+fopen_mode_to_ios_mode (const std::string& mode)
+{
+  std::ios::openmode retval = std::ios::in;
+
+  if (! error_state)
+    {
+      if (mode == "rt")
+        retval = std::ios::in;
+      else if (mode == "wt")
+        retval = std::ios::out | std::ios::trunc;
+      else if (mode == "at")
+        retval = std::ios::out | std::ios::app;
+      else if (mode == "r+t" || mode == "rt+")
+        retval = std::ios::in | std::ios::out;
+      else if (mode == "w+t" || mode == "wt+")
+        retval = std::ios::in | std::ios::out | std::ios::trunc;
+      else if (mode == "a+t" || mode == "at+")
+        retval = std::ios::in | std::ios::out | std::ios::app;
+      else if (mode == "rb" || mode == "r")
+        retval = std::ios::in | std::ios::binary;
+      else if (mode == "wb" || mode == "w")
+        retval = std::ios::out | std::ios::trunc | std::ios::binary;
+      else if (mode == "ab" || mode == "a")
+        retval = std::ios::out | std::ios::app | std::ios::binary;
+      else if (mode == "r+b" || mode == "rb+" || mode == "r+")
+        retval = std::ios::in | std::ios::out | std::ios::binary;
+      else if (mode == "w+b" || mode == "wb+" || mode == "w+")
+        retval = (std::ios::in | std::ios::out | std::ios::trunc
+                  | std::ios::binary);
+      else if (mode == "a+b" || mode == "ab+" || mode == "a+")
+        retval = (std::ios::in | std::ios::out | std::ios::app
+                  | std::ios::binary);
+      else
+        ::error ("invalid mode specified");
     }
 
   return retval;
@@ -448,12 +476,16 @@ Returns the number of lines skipped (end-of-line sequences encountered).\n\
 
 
 static octave_stream
-do_stream_open (const std::string& name, const std::string& mode,
+do_stream_open (const std::string& name, const std::string& mode_arg,
                 const std::string& arch, int& fid)
 {
   octave_stream retval;
 
   fid = -1;
+
+  std::string mode = mode_arg;
+  bool use_zlib = false;
+  normalize_fopen_mode (mode, use_zlib);
 
   std::ios::openmode md = fopen_mode_to_ios_mode (mode);
 
@@ -488,29 +520,14 @@ do_stream_open (const std::string& name, const std::string& mode,
 
           if (! fs.is_dir ())
             {
-              std::string tmode = mode;
-
-              // Use binary mode if 't' is not specified, but don't add
-              // 'b' if it is already present.
-
-              size_t bpos = tmode.find ('b');
-              size_t tpos = tmode.find ('t');
-
-              if (bpos == std::string::npos && tpos == std::string::npos)
-                tmode += 'b';
-
 #if defined (HAVE_ZLIB)
-              size_t pos = tmode.find ('z');
-
-              if (pos != std::string::npos)
+              if (use_zlib)
                 {
-                  tmode.erase (pos, 1);
-
-                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), mode.c_str ());
 
                   int fd = fileno (fptr);
 
-                  gzFile gzf = ::gzdopen (fd, tmode.c_str ());
+                  gzFile gzf = ::gzdopen (fd, mode.c_str ());
 
                   if (fptr)
                     retval = octave_zstdiostream::create (fname, gzf, fd,
@@ -521,7 +538,7 @@ do_stream_open (const std::string& name, const std::string& mode,
               else
 #endif
                 {
-                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), mode.c_str ());
 
                   retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 

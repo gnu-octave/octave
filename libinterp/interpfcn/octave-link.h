@@ -179,6 +179,19 @@ public:
       : std::list<std::string> ();
   }
 
+  typedef std::list<std::pair<std::string, std::string> > filter_list;
+
+  static std::list<std::string>
+  file_dialog (const filter_list& filter, const std::string& title,
+               const std::string& filename, const std::string& dirname,
+               const std::string& multimode)
+  {
+    return enabled ()
+      ? instance->do_file_dialog (filter, title, filename, dirname, multimode)
+      : std::list<std::string> ();
+  }
+
+
   static int debug_cd_or_addpath_error (const std::string& file,
                                         const std::string& dir,
                                         bool addpath_option)
@@ -191,6 +204,13 @@ public:
   {
     if (enabled ())
       instance->do_change_directory (dir);
+  }
+
+  // Preserves pending input.
+  static void execute_command_in_terminal (const std::string& command)
+  {
+    if (enabled ())
+      instance->do_execute_command_in_terminal (command);
   }
 
   static void set_workspace (void);
@@ -363,12 +383,19 @@ protected:
                    const std::list<float>& nc,
                    const std::list<std::string>& defaults) = 0;
 
+  virtual std::list<std::string>
+  do_file_dialog (const filter_list& filter, const std::string& title,
+                  const std::string& filename, const std::string& dirname,
+                  const std::string& multimode) = 0;
+
   virtual int
   do_debug_cd_or_addpath_error (const std::string& file,
                                 const std::string& dir,
                                 bool addpath_option) = 0;
 
   virtual void do_change_directory (const std::string& dir) = 0;
+
+  virtual void do_execute_command_in_terminal (const std::string& command) = 0;
 
   virtual void
   do_set_workspace (bool top_level,

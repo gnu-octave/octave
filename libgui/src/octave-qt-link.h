@@ -84,12 +84,19 @@ public:
                    const std::list<float>& nc,
                    const std::list<std::string>& defaults);
 
+  std::list<std::string>
+  do_file_dialog (const filter_list& filter, const std::string& title, 
+                  const std::string &filename, const std::string &pathname,
+                  const std::string& multimode);
+
   int
   do_debug_cd_or_addpath_error (const std::string& file,
                                 const std::string& dir,
                                 bool addpath_option);
 
   void do_change_directory (const std::string& dir);
+
+  void do_execute_command_in_terminal (const std::string& command);
 
   void do_set_workspace (bool top_level,
                          const std::list<workspace_element>& ws);
@@ -112,6 +119,7 @@ public:
   void do_set_default_prompts (std::string& ps1, std::string& ps2,
                                std::string& ps4);
 
+
 private:
 
   // No copying!
@@ -133,6 +141,8 @@ signals:
   void edit_file_signal (const QString& file);
 
   void change_directory_signal (const QString& dir);
+
+  void execute_command_in_terminal_signal (const QString& command);
 
   void set_workspace_signal (bool top_level,
                              const QString& scopes,

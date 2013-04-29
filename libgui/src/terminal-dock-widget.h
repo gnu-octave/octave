@@ -37,13 +37,13 @@ public:
 
   terminal_dock_widget (QWidget *parent = 0);
 
+  bool has_focus (void) const;
+
 signals:
 
 public slots:
 
   void notice_settings (const QSettings *settings);
-
-  void relay_command (const QString& command);
 
   void copyClipboard (void);
 
@@ -54,8 +54,6 @@ public slots:
 signals:
 
   void notice_settings_signal (const QSettings *settings); 
-
-  void relay_command_signal (const QString& command);
 
   void copyClipboard_signal (void);
 

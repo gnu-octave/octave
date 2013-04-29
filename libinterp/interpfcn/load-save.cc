@@ -242,7 +242,8 @@ get_file_format (std::istream& file, const std::string& filename)
 
       int32_t mopt, nr, nc, imag, len;
 
-      int err = read_mat_file_header (file, swap, mopt, nr, nc, imag, len, 1);
+      int err = read_mat_file_header (file, swap, mopt, nr, nc, imag, len,
+                                      true);
 
       if (! err)
         retval = LS_MAT_BINARY;
@@ -277,7 +278,7 @@ get_file_format (std::istream& file, const std::string& filename)
 
 static load_save_format
 get_file_format (const std::string& fname, const std::string& orig_fname,
-                 bool &use_zlib)
+                 bool &use_zlib, bool quiet = false)
 {
   load_save_format retval = LS_UNKNOWN;
 
@@ -309,19 +310,16 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
         }
 #endif
 
-      if (retval == LS_UNKNOWN)
-        {
-          // Try reading the file as numbers only, determining the
-          // number of rows and columns from the data.  We don't
-          // even bother to check to see if the first item in the
-          // file is a number, so that get_complete_line() can
-          // skip any comments that might appear at the top of the
-          // file.
+      // FIXME -- looks_like_mat_ascii_file does not check to see
+      // whether the file contains numbers.  It just skips comments and
+      // checks for the same number of words on each line.  We may need
+      // a better check here.  The best way to do that might be just
+      // to try to read the file and see if it works.
 
-          retval = LS_MAT_ASCII;
-        }
+      if (retval == LS_UNKNOWN && looks_like_mat_ascii_file (fname))
+        retval = LS_MAT_ASCII;
     }
-  else
+  else if (! quiet)
     gripe_file_open ("load", orig_fname);
 
   return retval;
@@ -537,6 +535,12 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
   return fname;
 }
 
+bool
+is_octave_data_file (const std::string& fname)
+{
+  bool use_zlib = false;
+  return get_file_format (fname, fname, use_zlib, true) != LS_UNKNOWN;
+}
 
 DEFUN (load, args, nargout,
   "-*- texinfo -*-\n\

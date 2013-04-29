@@ -48,7 +48,7 @@ history_dock_widget::history_dock_widget (QWidget *p)
            p, SLOT (report_status_message (const QString&)));
 
   connect (this, SIGNAL (command_double_clicked (const QString&)),
-           p, SLOT (handle_command_double_clicked (const QString&)));
+           p, SLOT (execute_command_in_terminal (const QString&)));
 
   construct ();
 }

@@ -46,16 +46,17 @@
 ## @group
 ##
 ##         Fenced Letter Display
-##   #% nx|___________________          nx = numel (x)
-##   M% mi|       md         |          mi median index, md median
-##   H% hi|hl              hu|   hs     hi lower hinge index, hl,hu hinges, hs h_spread
-##   1    |x(1)         x(nx)|          x(1), x(nx) first and last data value
-##              _______   
-##        ______|step |_______          step 1.5*h_spread
-##       f|ifl            ifh|          inner fence, lower and higher
-##        |nfl            nfh|          # data points within fences
-##       F|ofl            ofh|          outer fence, lower and higher
-##        |nFl            nFh|          # data points outside outer fences
+## #% nx|___________________     nx = numel (x)
+## M% mi|       md         |     mi median index, md median
+## H% hi|hl              hu| hs  hi lower hinge index, hl,hu hinges,
+## 1    |x(1)         x(nx)|     hs h_spreadx(1), x(nx) first 
+##            _______            and last data value.
+##      ______|step |_______     step 1.5*h_spread
+##     f|ifl            ifh|     inner fence, lower and higher
+##      |nfl            nfh|     no.\ of data points within fences
+##     F|ofl            ofh|     outer fence, lower and higher
+##      |nFl            nFh|     no.\ of data points outside outer
+##                               fences
 ## @end group
 ## @end example
 ##

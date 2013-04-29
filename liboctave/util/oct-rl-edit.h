@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 typedef int (*rl_startup_hook_fcn_ptr) (void);
 
+typedef int (*rl_pre_input_hook_fcn_ptr) (void);
+
 typedef int (*rl_event_hook_fcn_ptr) (void);
 
 typedef int (*rl_fcn_ptr) (int, int);
@@ -61,6 +63,10 @@ extern void octave_rl_clear_screen (int skip_redisplay);
 extern void octave_rl_resize_terminal (void);
 
 extern void octave_rl_restore_terminal_state (void);
+
+extern char *octave_rl_copy_line (void);
+
+extern void octave_rl_replace_line (const char *s, int clear_undo);
 
 extern void octave_rl_insert_text (const char *);
 
@@ -122,6 +128,10 @@ extern void octave_rl_set_char_is_quoted_function (rl_char_is_quoted_fcn_ptr);
 extern void octave_rl_set_startup_hook (rl_startup_hook_fcn_ptr);
 
 extern rl_startup_hook_fcn_ptr octave_rl_get_startup_hook (void);
+
+extern void octave_rl_set_pre_input_hook (rl_startup_hook_fcn_ptr);
+
+extern rl_pre_input_hook_fcn_ptr octave_rl_get_pre_input_hook (void);
 
 extern void octave_rl_set_event_hook (rl_event_hook_fcn_ptr f);
 

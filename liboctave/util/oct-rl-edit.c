@@ -123,6 +123,18 @@ octave_rl_restore_terminal_state ()
     rl_deprep_term_function ();
 }
 
+char *
+octave_rl_copy_line (void)
+{
+  return rl_copy_text (0, rl_end);
+}
+
+void
+octave_rl_replace_line (const char *s, int clear_undo)
+{
+  rl_replace_line (s, clear_undo);
+}
+
 void
 octave_rl_insert_text (const char *s)
 {
@@ -322,6 +334,18 @@ rl_startup_hook_fcn_ptr
 octave_rl_get_startup_hook (void)
 {
   return rl_startup_hook;
+}
+
+void
+octave_rl_set_pre_input_hook (rl_pre_input_hook_fcn_ptr f)
+{
+  rl_pre_input_hook = f;
+}
+
+rl_pre_input_hook_fcn_ptr
+octave_rl_get_pre_input_hook (void)
+{
+  return rl_pre_input_hook;
 }
 
 void

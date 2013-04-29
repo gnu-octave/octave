@@ -111,7 +111,7 @@ octave_qt_link::do_question_dialog (const std::string& msg,
   uiwidget_creator.wait ();
 
   // The GUI has sent a signal and the process has been awakened.
-  return uiwidget_creator.get_dialog_button ()->toStdString ();
+  return uiwidget_creator.get_dialog_button().toStdString ();
 }
 
 static QStringList
@@ -128,6 +128,39 @@ make_qstring_list (const std::list<std::string>& lst)
   return retval;
 }
 
+static QStringList
+make_filter_list (const octave_link::filter_list& lst)
+{
+  QStringList retval;
+
+  // We have pairs of data, first being the list of extensions
+  // exta;exb;extc etc second the name to use as filter name
+  // (optional).  Qt wants a a list of filters in the format of
+  // 'FilterName (space separated exts)'.
+
+  for (octave_link::filter_list::const_iterator it = lst.begin ();
+       it != lst.end (); it++)
+    {
+      QString ext = QString::fromStdString (it->first);
+      QString name = QString::fromStdString (it->second);
+
+      // Strip out extensions from name and replace ';' with spaces in
+      // list.
+
+      name.replace (QRegExp ("\\(.*\\)"), "");
+      ext.replace (";", " ");
+
+      if (name.length() == 0)
+        {
+          // No name field.  Build one from the extensions.
+          name = ext.toUpper() + " Files";
+        }
+
+      retval.append (name + " (" + ext + ")");
+    }
+
+  return retval;
+}
 
 std::pair<std::list<int>, int>
 octave_qt_link::do_list_dialog (const std::list<std::string>& list,
@@ -188,24 +221,95 @@ octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
   return retval;
 }
 
+std::list<std::string>
+octave_qt_link::do_file_dialog (const filter_list& filter,
+                                const std::string& title,
+                                const std::string& filename,
+                                const std::string& dirname,
+                                const std::string& multimode)
+{
+  std::list<std::string> retval;
+
+  uiwidget_creator.signal_filedialog (make_filter_list (filter),
+                                      QString::fromStdString (title),
+                                      QString::fromStdString (filename),
+                                      QString::fromStdString (dirname),
+                                      QString::fromStdString (multimode));
+
+  // Wait while the user is responding to dialog.
+  uiwidget_creator.wait ();
+
+  // Add all the file dialog results to a string list.
+  const QStringList *inputLine = uiwidget_creator.get_string_list ();
+
+  for (QStringList::const_iterator it = inputLine->begin ();
+       it != inputLine->end (); it++)
+    retval.push_back (it->toStdString ());
+
+  retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
+  retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
+
+  return retval;
+}
+
 int
 octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
                                               const std::string& dir,
                                               bool addpath_option)
 {
-  uiwidget_creator.signal_debug_cd_or_addpath (QString::fromStdString (file),
-                                               QString::fromStdString (dir),
-                                               addpath_option);
+  int retval = -1;
 
+  QString qdir = QString::fromStdString (dir);
+  QString qfile = QString::fromStdString (file);
+
+  QString msg
+    = (addpath_option
+       ? tr ("The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg(qfile).arg(qdir)
+       : tr ("The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.").arg(qfile).arg(qdir));
+
+  QString title = tr ("Change Directory or Add Directory to Load Path");
+
+  QString cd_txt = tr ("Change Directory");
+  QString addpath_txt = tr ("Add Directory to Load Path");
+  QString cancel_txt = tr ("Cancel");
+
+  QStringList btn;
+  QStringList role;
+  btn << cd_txt;
+  role << "AcceptRole";
+  if (addpath_option)
+    {
+      btn << addpath_txt;
+      role << "AcceptRole";
+    }
+  btn << cancel_txt;
+  role << "AcceptRole";
+
+  uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
+
+  // Wait while the user is responding to message box.
   uiwidget_creator.wait ();
 
-  return uiwidget_creator.get_dialog_result ();
+  QString result = uiwidget_creator.get_dialog_button ();
+
+  if (result == cd_txt)
+    retval = 1;
+  else if (result == addpath_txt)
+    retval = 2;
+
+  return retval;
 }
 
 void
 octave_qt_link::do_change_directory (const std::string& dir)
 {
   emit change_directory_signal (QString::fromStdString (dir));
+}
+
+void
+octave_qt_link::do_execute_command_in_terminal (const std::string& command)
+{
+  emit execute_command_in_terminal_signal (QString::fromStdString (command));
 }
 
 void

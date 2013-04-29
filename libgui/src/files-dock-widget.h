@@ -85,6 +85,7 @@ private slots:
 
   /* context menu actions */
   void contextmenu_open (bool);
+  void contextmenu_open_in_app (bool);
   void contextmenu_run (bool);
   void contextmenu_load (bool);
   void contextmenu_rename (bool);
@@ -118,6 +119,8 @@ private:
 
   /** set a new directory or open a file **/
   void display_directory (const QString& dir, bool set_octave_dir = true);
+
+  void open_item_in_app (const QModelIndex& index);
 
   /** Variables for the actions **/
   QToolBar *        _navigation_tool_bar;

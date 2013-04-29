@@ -26,6 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
+#include "mach-info.h"
+#include "symtab.h"
+
 class octave_value;
 
 // FIXME: maybe MAT5 and MAT7 should be options to MAT_BINARY.
@@ -79,6 +82,8 @@ do_load (std::istream& stream, const std::string& orig_fname,
          load_save_format format, oct_mach_info::float_format flt_fmt,
          bool list_only, bool swap, bool verbose,
          const string_vector& argv, int argv_idx, int argc, int nargout);
+
+extern bool is_octave_data_file (const std::string& file);
 
 extern void
 do_save (std::ostream& os, const symbol_table::symbol_record& sr,

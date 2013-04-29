@@ -418,8 +418,8 @@ looks_like_mat_ascii_file (const std::string& filename)
 
   if (is)
     {
-      int nr = 0;
-      int nc = 0;
+      octave_idx_type nr = 0;
+      octave_idx_type nc = 0;
 
       get_lines_and_columns (is, nr, nc, filename, true, true);
 

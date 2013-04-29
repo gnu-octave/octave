@@ -332,7 +332,6 @@ function list = missing_functions ()
   "rbbox",
   "reducepatch",
   "reducevolume",
-  "resample",
   "root",
   "rotate",
   "rotate3d",

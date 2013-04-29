@@ -40,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QToolButton>
+#include <QUrl>
+#include <QDesktopServices>
 
 #include "load-save.h"
 
@@ -295,6 +297,17 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
     }
 }
 
+void
+files_dock_widget::open_item_in_app (const QModelIndex& index)
+{
+  // Retrieve the file info associated with the model index.
+  QFileInfo fileInfo = _file_system_model->fileInfo (index);
+
+  QString file = fileInfo.absoluteFilePath ();
+
+  QDesktopServices::openUrl (QUrl::fromLocalFile (file));
+}
+
 void 
 files_dock_widget::contextmenu_requested (const QPoint& mpos)
 {
@@ -310,9 +323,14 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
 
       menu.addAction (QIcon (":/actions/icons/fileopen.png"), tr("Open"),
                      this, SLOT(contextmenu_open(bool)));
+
+      menu.addAction (tr("Open in Default Application"),
+                      this, SLOT (contextmenu_open_in_app (bool)));
+
       if (info.isFile () && info.suffix () == "m")
         menu.addAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
                         tr("Run"), this, SLOT(contextmenu_run(bool)));
+
       if (info.isFile ())
         menu.addAction (tr("Load Data"), this, SLOT(contextmenu_load(bool)));
 
@@ -356,6 +374,16 @@ files_dock_widget::contextmenu_open (bool)
     {
       item_double_clicked(*it);
     }
+}
+
+void
+files_dock_widget::contextmenu_open_in_app (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    open_item_in_app (*it);
 }
 
 void

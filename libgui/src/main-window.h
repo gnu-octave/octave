@@ -135,6 +135,7 @@ public slots:
                                                 const QString& file, int line);
 
   void read_settings (void);
+  void set_window_layout (QSettings *settings);
   void write_settings (void);
   void connect_visibility_changed (void);
 

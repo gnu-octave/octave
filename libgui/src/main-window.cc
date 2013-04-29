@@ -326,9 +326,11 @@ main_window::exit (int status)
 }
 
 void
-main_window::reset_windows ()
+main_window::reset_windows (void)
 {
-  // TODO: Implement.
+  QSettings *settings = resource_manager::get_default_settings ();
+
+  set_window_layout (settings);
 }
 
 void
@@ -520,32 +522,15 @@ void
 main_window::read_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
   if (!settings)
     {
       qDebug("Error: QSettings pointer from resource manager is NULL.");
       return;
     }
 
-  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
-  settings->beginGroup ("DockWidgets");
-  // restoring the geometry of all dock-widgets
-  foreach (QObject *obj, children ())
-    {
-      QString name = obj->objectName ();
-      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
-        {
-          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
-          QVariant val = settings->value (name);
-          widget->restoreGeometry (val.toByteArray ());
-          bool floating = settings->value (name+"Floating", false).toBool ();
-          bool visible = settings->value (name+"Visible", true).toBool ();
-          if (floating)
-            widget->setWindowFlags (Qt::Window); // if floating, make window from widget
-          widget->setVisible (visible);          // make widget visible if desired (setWindowFlags hides widget)
-        }
-    }
-  settings->endGroup();
-  restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+  set_window_layout (settings);
+
   // restore the list of the last directories
   QStringList curr_dirs = settings->value ("MainWindow/current_directory_list").toStringList ();
   for (int i=0; i < curr_dirs.size (); i++)
@@ -553,6 +538,41 @@ main_window::read_settings (void)
       _current_directory_combo_box->addItem (curr_dirs.at (i));
     }
   emit settings_changed (settings);
+}
+
+void
+main_window::set_window_layout (QSettings *settings)
+{
+  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
+
+  settings->beginGroup ("DockWidgets");
+
+  // Restore the geometry of all dock-widgets
+  foreach (QObject *obj, children ())
+    {
+      QString name = obj->objectName ();
+
+      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
+        {
+          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
+          QVariant val = settings->value (name);
+
+          widget->restoreGeometry (val.toByteArray ());
+
+          // If floating, make window from widget.
+          bool floating = settings->value (name+"Floating", false).toBool ();
+          if (floating)
+            widget->setWindowFlags (Qt::Window);
+
+          // make widget visible if desired (setWindowFlags hides widget).
+          bool visible = settings->value (name+"Visible", true).toBool ();
+          widget->setVisible (visible);
+        }
+    }
+
+  settings->endGroup ();
+
+  restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
 }
 
 void
@@ -1194,9 +1214,7 @@ main_window::construct_window_menu (QMenuBar *p)
   window_menu->addSeparator ();
 
   QAction *reset_windows_action
-    = window_menu->addAction (tr ("Reset Windows"));
-
-  reset_windows_action->setEnabled (false); // TODO: Make this work.
+    = window_menu->addAction (tr ("Reset Default Window Layout"));
 
   connect (show_command_window_action, SIGNAL (toggled (bool)),
            command_window, SLOT (setVisible (bool)));

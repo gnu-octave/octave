@@ -1292,7 +1292,7 @@ file_editor_tab::center_current_line ()
       int first_line = _edit_area->firstVisibleLine ();
       first_line = first_line + (line - first_line - (visible_lines-1)/2);
 
-      _edit_area->setFirstVisibleLine (first_line);
+      _edit_area->SendScintilla (2613,first_line); // SCI_SETFIRSTVISIBLELINE
     }
 }
 

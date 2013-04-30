@@ -274,6 +274,36 @@ bp_table::instance_ok (void)
   return retval;
 }
 
+bool
+bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
+                               const std::string& fname,
+                               const bp_table::intmap& line,
+                               bp_table::intmap& retval)
+{
+  bool found = false;
+
+  tree_statement_list *cmds = fcn->body ();
+
+  std::string file = fcn->fcn_file_name ();
+
+  if (cmds)
+    {
+      retval = cmds->add_breakpoint (file, line);
+
+      for (intmap_iterator p = retval.begin (); p != retval.end (); p++)
+        {
+          if (p->second != 0)
+            {
+              bp_set.insert (fname);
+              found = true;
+              break;
+            }
+        }
+    }
+
+  return found;
+}
+
 bp_table::intmap
 bp_table::do_add_breakpoint (const std::string& fname,
                              const bp_table::intmap& line)
@@ -284,21 +314,21 @@ bp_table::do_add_breakpoint (const std::string& fname,
 
   if (dbg_fcn)
     {
-      tree_statement_list *cmds = dbg_fcn->body ();
-
-      std::string file = dbg_fcn->fcn_file_name ();
-
-      if (cmds)
+      if (! do_add_breakpoint_1 (dbg_fcn, fname, line, retval))
         {
-          retval = cmds->add_breakpoint (file, line);
+          typedef std::map<std::string, octave_value>::const_iterator
+            subfunction_map_const_iterator;
 
-          for (intmap_iterator p = retval.begin (); p != retval.end (); p++)
+          std::map<std::string, octave_value> subfcns
+            = dbg_fcn->subfunctions ();
+
+          for (subfunction_map_const_iterator p = subfcns.begin ();
+               p != subfcns.end (); p++)
             {
-              if (p->second != 0)
-                {
-                  bp_set.insert (fname);
-                  break;
-                }
+              octave_user_code *dbg_subfcn = p->second.user_code_value ();
+
+              if (do_add_breakpoint_1 (dbg_subfcn, fname, line, retval))
+                break;
             }
         }
     }

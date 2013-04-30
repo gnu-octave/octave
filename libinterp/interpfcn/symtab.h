@@ -2175,6 +2175,26 @@ public:
       p->second.unlock_subfunction (scope);
   }
 
+  static std::map<std::string, octave_value>
+  subfunctions_defined_in_scope (scope_id scope = xcurrent_scope)
+  {
+    std::map<std::string, octave_value> retval;
+
+    for (fcn_table_const_iterator p = fcn_table.begin ();
+         p != fcn_table.end (); p++)
+      {
+        std::pair<std::string, octave_value> tmp
+          = p->second.subfunction_defined_in_scope (scope);
+
+        std::string nm = tmp.first;
+
+        if (! nm.empty ())
+          retval[nm] = tmp.second;
+      }
+
+    return retval;
+  }
+
   static void free_scope (scope_id scope)
   {
     if (scope == xglobal_scope || scope == xtop_scope)
@@ -2792,26 +2812,6 @@ private:
       }
 
     retval.sort ();
-
-    return retval;
-  }
-
-  static std::map<std::string, octave_value>
-  subfunctions_defined_in_scope (scope_id scope = xcurrent_scope)
-  {
-    std::map<std::string, octave_value> retval;
-
-    for (fcn_table_const_iterator p = fcn_table.begin ();
-         p != fcn_table.end (); p++)
-      {
-        std::pair<std::string, octave_value> tmp
-          = p->second.subfunction_defined_in_scope (scope);
-
-        std::string nm = tmp.first;
-
-        if (! nm.empty ())
-          retval[nm] = tmp.second;
-      }
 
     return retval;
   }

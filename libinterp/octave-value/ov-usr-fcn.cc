@@ -58,6 +58,13 @@ along with Octave; see the file COPYING.  If not, see
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
 
+
+std::map<std::string, octave_value>
+octave_user_code::subfunctions (void) const
+{
+  return std::map<std::string, octave_value> ();
+}
+
 // User defined scripts.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_user_script);
@@ -304,6 +311,12 @@ void
 octave_user_function::unlock_subfunctions (void)
 {
   symbol_table::unlock_subfunctions (local_scope);
+}
+
+std::map<std::string, octave_value>
+octave_user_function::subfunctions (void) const
+{
+  return symbol_table::subfunctions_defined_in_scope (local_scope);
 }
 
 octave_value_list

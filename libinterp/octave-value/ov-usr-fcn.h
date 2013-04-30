@@ -59,6 +59,8 @@ public:
 
   bool is_user_code (void) const { return true; }
 
+  virtual std::map<std::string, octave_value> subfunctions (void) const;
+
   virtual tree_statement_list *body (void) = 0;
 
 protected:
@@ -261,6 +263,8 @@ public:
   void lock_subfunctions (void);
 
   void unlock_subfunctions (void);
+
+  std::map<std::string, octave_value> subfunctions (void) const;
 
   octave_value_list all_va_args (const octave_value_list& args);
 

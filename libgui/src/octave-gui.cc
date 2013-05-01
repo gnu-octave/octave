@@ -29,6 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include <fcntl.h>
+
+#if defined (HAVE_SYS_IOCTL_H)
+#include <sys/ioctl.h>
+#endif
+
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "syswait.h"
@@ -44,7 +50,12 @@ static void
 dissociate_terminal (void)
 {
 #if ! defined (Q_OS_WIN32) || defined (Q_OS_CYGWIN)
+# if defined (HAVE_SYS_IOCTL_H) && defined (TIOCNOTTY)
 
+  ioctl (0, TIOCNOTTY);
+
+# else
+ 
   pid_t pid = fork ();
 
   if (pid < 0)
@@ -74,6 +85,7 @@ dissociate_terminal (void)
             ? octave_wait::exitstatus (status) : 127);
     }
 
+# endif
 #endif
 }
 

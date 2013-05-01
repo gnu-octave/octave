@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 dissociate_terminal (void)
 {
-#if ! defined (Q_OS_WIN32) || defined (Q_OS_CYGWIN)
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
 # if defined (HAVE_SYS_IOCTL_H) && defined (TIOCNOTTY)
 
   ioctl (0, TIOCNOTTY);
@@ -114,6 +114,17 @@ octave_start_gui (int argc, char *argv[])
 
           // update network-settings
           resource_manager::update_network_settings ();
+
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
+          // If we were started from a launcher, TERM might not be
+          // defined, but we provide a terminal with xterm
+          // capabilities.
+
+          std::string term = octave_env::getenv ("TERM");
+
+          if (term.empty ())
+            octave_env::putenv ("TERM", "xterm");
+#endif
 
           // create main window, read settings, and show window
           main_window w;

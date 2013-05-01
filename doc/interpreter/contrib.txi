@@ -48,17 +48,9 @@ inherently more conservative and follows narrower rules.
 @section Building the Development Sources
 
 In addition to all the tools (both optional and required) that are
-listed in @ref{Build Dependencies} you will need:
-
-@table @asis
-@item Mercurial
-Distributed version control system (@url{http://mercurial.selenic.com}).
+listed in @ref{Build Dependencies} you will need Mercurial, a
+distributed version control system (@url{http://mercurial.selenic.com}).
 Octave's sources are stored in a Mercurial archive.
-
-@item Git
-Distributed version control system (@url{http://git-scm.com}).  The
-gnulib sources that Octave depends on are stored in a Git archive.
-@end table
 
 Once you have the required tools installed, you can build Octave by
 doing

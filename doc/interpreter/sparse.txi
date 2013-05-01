@@ -89,13 +89,15 @@ triplets, with two elements being their position in the array
 easy to grasp, but requires more storage than is strictly needed.
 
 The storage technique used within Octave is the compressed column
-format.  In this format the position of each element in a row and the
-data are stored as previously.  However, if we assume that all elements
-in the same column are stored adjacent in the computers memory, then
-we only need to store information on the number of non-zero elements
-in each column, rather than their positions.  Thus assuming that the
-matrix has more non-zero elements than there are columns in the
-matrix, we win in terms of the amount of memory used.
+format. It is similar to the Yale format.
+@footnote{@url{http://en.wikipedia.org/wiki/Sparse_matrix#Yale_format}}
+In this format the position of each element in a row and the data are
+stored as previously. However, if we assume that all elements in the
+same column are stored adjacent in the computers memory, then we only
+need to store information on the number of non-zero elements in each
+column, rather than their positions. Thus assuming that the matrix has
+more non-zero elements than there are columns in the matrix, we win in
+terms of the amount of memory used.
 
 In fact, the column index contains one more element than the number of
 columns, with the first element always being zero.  The advantage of
@@ -797,18 +799,19 @@ written by Tim Davis and are available at
 http://www.cise.ufl.edu/research/sparse/}.
 @end enumerate
 
-The band density is defined as the number of non-zero values in the matrix
-divided by the number of non-zero values in the matrix.  The banded matrix
-solvers can be entirely disabled by using @dfn{spparms} to set @code{bandden}
-to 1 (i.e., @code{spparms ("bandden", 1)}).
+The band density is defined as the number of non-zero values in the band
+divided by the total number of values in the full band. The banded
+matrix solvers can be entirely disabled by using @dfn{spparms} to set
+@code{bandden} to 1 (i.e., @code{spparms ("bandden", 1)}).
 
-The QR@tie{}solver factorizes the problem with a Dulmage-Mendelsohn, to
-separate the problem into blocks that can be treated as over-determined,
-multiple well determined blocks, and a final over-determined block.  For
-matrices with blocks of strongly connected nodes this is a big win as
-LU@tie{}decomposition can be used for many blocks.  It also significantly
-improves the chance of finding a solution to over-determined problems
-rather than just returning a vector of @dfn{NaN}'s.
+The QR@tie{}solver factorizes the problem with a Dulmage-Mendelsohn
+decomposition, to separate the problem into blocks that can be treated
+as over-determined, multiple well determined blocks, and a final
+over-determined block. For matrices with blocks of strongly connected
+nodes this is a big win as LU@tie{}decomposition can be used for many
+blocks. It also significantly improves the chance of finding a solution
+to over-determined problems rather than just returning a vector of
+@dfn{NaN}'s.
 
 All of the solvers above, can calculate an estimate of the condition
 number.  This can be used to detect numerical stability problems in the

@@ -1882,6 +1882,175 @@ AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
       [Define to 1 if unordered_map requires the use of tr1 namespace.])
   fi
 ])
+dnl
+dnl Check whether IRBuilder.h is in Support directory.
+dnl
+AC_DEFUN([OCTAVE_LLVM_IRBUILDER_HEADER], [
+  AC_CHECK_HEADER([llvm/IRBuilder.h], [
+    octave_irbuilder_header_in_support_dir=no], [
+    AC_CHECK_HEADER([llvm/Support/IRBuilder.h], [
+      octave_irbuilder_header_in_support_dir=yes], [
+      AC_MSG_ERROR("IRBuilder.h is required.")
+    ])
+  ])
+  if test $octave_irbuilder_header_in_support_dir = yes; then
+    AC_DEFINE(IRBUILDER_HEADER_IN_SUPPORT_DIR, 1, 
+      [Define to 1 if IRBuilder.h in Support directory.])
+  fi
+])
+dnl
+dnl Detect TargetData.h or DataLayout.h.
+dnl
+AC_DEFUN([OCTAVE_LLVM_DATALAYOUT_HEADER], [
+  AC_CHECK_HEADER([llvm/DataLayout.h], [
+    octave_is_datalayout_header=yes], [
+    AC_CHECK_HEADER([llvm/Target/TargetData.h], [
+      octave_is_datalayout_header=no], [
+      AC_MSG_ERROR("DataLayout.h or Target/TargetData.h is required.")
+    ])
+  ])
+  if test $octave_is_datalayout_header = yes; then
+    AC_DEFINE(HAVE_DATALAYOUT, 1, 
+      [Define to 1 if DataLayout.h exist.])
+  fi
+])
+dnl
+dnl Check for Function::addAttribute API
+dnl
+AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API], [
+  AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attributes], 
+    [octave_cv_function_addattribute_arg_is_attributes],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Function.h>
+          #include <llvm/Attributes.h>
+          #include <llvm/LLVMContext.h>
+          ]], [[
+          llvm::Function *llvm_function;
+          llvm::AttrBuilder attr_builder;
+          attr_builder.addAttribute(llvm::Attributes::StructRet);
+          llvm::Attributes attrs = llvm::Attributes::get(llvm::getGlobalContext(), attr_builder);
+          llvm_function->addAttribute (1, attrs);
+        ]])],
+        octave_cv_function_addattribute_arg_is_attributes=yes, 
+        octave_cv_function_addattribute_arg_is_attributes=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_function_addattribute_arg_is_attributes = yes; then
+    AC_DEFINE(FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1, 
+      [Define to 1 if llvm::Function:addAttribute arg type is llvm::Attributes.])
+  else
+    AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attribute], 
+      [octave_cv_function_addattribute_arg_is_attribute],
+      [AC_LANG_PUSH(C++)
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[
+            #include <llvm/Function.h>
+            #include <llvm/Attributes.h>
+            ]], [[
+            llvm::Function *llvm_function;
+            llvm_function->addAttribute (1, llvm::Attribute::StructRet);
+          ]])],
+          octave_cv_function_addattribute_arg_is_attribute=yes, 
+          octave_cv_function_addattribute_arg_is_attribute=no)
+      AC_LANG_POP(C++)
+    ])
+    if test $octave_cv_function_addattribute_arg_is_attribute = no; then
+      AC_MSG_ERROR("llvm::Function::addAttribute is required.")      
+    fi
+  fi
+])
+dnl
+dnl Check for Function::addFnAttr API
+dnl
+AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
+  AC_CACHE_CHECK([check LLVM::Function::addFnAttr arg type is llvm::Attributes], 
+    [octave_cv_function_addfnattr_arg_is_attributes],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Function.h>
+          #include <llvm/Attributes.h>
+          ]], [[
+          llvm::Function *llvm_function;
+          llvm_function->addFnAttr (llvm::Attributes::AlwaysInline);
+        ]])],
+        octave_cv_function_addfnattr_arg_is_attributes=yes, 
+        octave_cv_function_addfnattr_arg_is_attributes=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_function_addfnattr_arg_is_attributes = yes; then
+    AC_DEFINE(FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES, 1, 
+      [Define to 1 if llvm::Function:addFnAttr arg type is llvm::Attributes.])
+  else
+    AC_CACHE_CHECK([check llvm::Function::addFnAttr arg type is llvm::Attribute], 
+      [octave_cv_function_addfnattr_arg_is_attribute],
+      [AC_LANG_PUSH(C++)
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[
+            #include <llvm/Function.h>
+            #include <llvm/Attributes.h>
+            ]], [[
+            llvm::Function *llvm_function;
+            llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
+          ]])],
+          octave_cv_function_addfnattr_arg_is_attribute=yes, 
+          octave_cv_function_addfnattr_arg_is_attribute=no)
+      AC_LANG_POP(C++)
+    ])
+    if test $octave_cv_function_addfnattr_arg_is_attribute = no; then
+      AC_MSG_ERROR("llvm::Function::addFnAttr is required.")      
+    fi
+  fi
+])
+dnl
+dnl Check for CallInst::addAttribute API
+dnl
+AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
+  AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attributes], 
+    [octave_cv_callinst_addattribute_arg_is_attributes],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Instructions.h>
+          #include <llvm/Attributes.h>
+          #include <llvm/LLVMContext.h>
+          ]], [[
+          llvm::CallInst *callinst;
+          llvm::AttrBuilder attr_builder;
+          attr_builder.addAttribute(llvm::Attributes::StructRet);
+          llvm::Attributes attrs = llvm::Attributes::get(llvm::getGlobalContext(), attr_builder); 
+          callinst->addAttribute (1, attrs);
+        ]])],
+        octave_cv_callinst_addattribute_arg_is_attributes=yes, 
+        octave_cv_callinst_addattribute_arg_is_attributes=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_callinst_addattribute_arg_is_attributes = yes; then
+    AC_DEFINE(CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1, 
+      [Define to 1 if llvm::CallInst:addAttribute arg type is llvm::Attributes.])
+  else
+    AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attribute], 
+      [octave_cv_callinst_addattribute_arg_is_attribute],
+      [AC_LANG_PUSH(C++)
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[
+            #include <llvm/Instructions.h>
+            #include <llvm/Attributes.h>
+            ]], [[
+            llvm::CallInst *callinst;
+            callinst->addAttribute (1, llvm::Attribute::StructRet);
+          ]])],
+          octave_cv_callinst_addattribute_arg_is_attribute=yes, 
+          octave_cv_callinst_addattribute_arg_is_attribute=no)
+      AC_LANG_POP(C++)
+    ])
+    if test $octave_cv_callinst_addattribute_arg_is_attribute = no; then
+      AC_MSG_ERROR("llvm::CallInst::addAttribute is required.")      
+    fi    
+  fi
+])
 
 dnl         End of macros written by Octave developers
 dnl ------------------------------------------------------------

@@ -55,10 +55,18 @@ static int Vjit_startcnt = 1000;
 #include <llvm/ExecutionEngine/JIT.h>
 #include <llvm/Module.h>
 #include <llvm/PassManager.h>
+#ifdef IRBUILDER_HEADER_IN_SUPPORT_DIR
 #include <llvm/Support/IRBuilder.h>
+#else
+#include <llvm/IRBuilder.h>
+#endif
 #include <llvm/Support/raw_os_ostream.h>
 #include <llvm/Support/TargetSelect.h>
+#ifdef HAVE_DATALAYOUT
+#include <llvm/DataLayout.h>
+#else
 #include <llvm/Target/TargetData.h>
+#endif
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Transforms/Scalar.h>
 
@@ -1864,7 +1872,11 @@ tree_jit::initialize (void)
   module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 
   pass_manager = new llvm::FunctionPassManager (module);
-  pass_manager->add (new llvm::TargetData(*engine->getTargetData ()));
+#if HAVE_DATALAYOUT
+  pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
+#else
+  pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));
+#endif
   pass_manager->add (llvm::createCFGSimplificationPass ());
   pass_manager->add (llvm::createBasicAliasAnalysisPass ());
   pass_manager->add (llvm::createPromoteMemoryToRegisterPass ());

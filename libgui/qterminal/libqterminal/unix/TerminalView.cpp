@@ -530,7 +530,7 @@ void TerminalView::drawCursor(QPainter& painter,
   QRect cursorRect = rect;
   cursorRect.setHeight(_fontHeight - _lineSpacing - 1);
 
-  if (!_cursorBlinking)
+  if (!_cursorBlinking || !hasFocus())
     {
       if ( _cursorColor.isValid() )
         painter.setPen(_cursorColor);

@@ -230,6 +230,7 @@ octave_user_function::~octave_user_function (void)
   delete jit_info;
 #endif
 
+  // FIXME -- this is really playing with fire.
   symbol_table::erase_scope (local_scope);
 }
 

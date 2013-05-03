@@ -844,37 +844,33 @@ public:
 
       template <class T>
       void
-      clear_unlocked (std::map<T, octave_value>& map)
+      clear_map (std::map<T, octave_value>& map, bool force = false)
       {
         typename std::map<T, octave_value>::iterator p = map.begin ();
 
         while (p != map.end ())
           {
-            if (p->second.islocked ())
-              p++;
-            else
+            if (force || ! p->second.islocked ())
               map.erase (p++);
+            else
+              p++;
           }
       }
 
-      void clear_autoload_function (void)
+      void clear_autoload_function (bool force = false)
       {
-        if (! autoload_function.islocked ())
+        if (force || ! autoload_function.islocked ())
           autoload_function = octave_value ();
       }
 
       // We also clear command line functions here, as these are both
       // "user defined"
-      void clear_user_function (void)
+      void clear_user_function (bool force = false)
       {
-        if (! function_on_path.islocked ())
-          {
-            function_on_path.erase_subfunctions ();
+        if (force || ! function_on_path.islocked ())
+          function_on_path = octave_value ();
 
-            function_on_path = octave_value ();
-          }
-
-        if (! cmdline_function.islocked ())
+        if (force || ! cmdline_function.islocked ())
           cmdline_function = octave_value ();
       }
 
@@ -884,14 +880,15 @@ public:
           clear_user_function ();
       }
 
-      void clear (void)
+      void clear (bool force = false)
       {
-        clear_unlocked (subfunctions);
-        clear_unlocked (private_functions);
-        clear_unlocked (class_constructors);
-        clear_unlocked (class_methods);
-        clear_autoload_function ();
-        clear_user_function ();
+        clear_map (subfunctions, force);
+        clear_map (private_functions, force);
+        clear_map (class_constructors, force);
+        clear_map (class_methods, force);
+
+        clear_autoload_function (force);
+        clear_user_function (force);
       }
 
       void add_dispatch (const std::string& type, const std::string& fname)
@@ -1079,11 +1076,17 @@ public:
       rep->install_built_in_function (f);
     }
 
-    void clear (void) { rep->clear (); }
+    void clear (bool force = false) { rep->clear (force); }
 
-    void clear_user_function (void) { rep->clear_user_function (); }
+    void clear_user_function (bool force = false)
+    {
+      rep->clear_user_function (force);
+    }
 
-    void clear_autoload_function (void) { rep->clear_autoload_function (); }
+    void clear_autoload_function (bool force = false)
+    {
+      rep->clear_autoload_function (force);
+    }
 
     void clear_mex_function (void) { rep->clear_mex_function (); }
 
@@ -1181,6 +1184,8 @@ public:
   static void erase_scope (scope_id scope)
   {
     assert (scope != xglobal_scope);
+
+    erase_subfunctions_in_scope (scope);
 
     all_instances_iterator p = all_instances.find (scope);
 
@@ -1532,6 +1537,9 @@ public:
       }
   }
 
+  // Install subfunction FCN named NAME.  SCOPE is the scope of the
+  // primary function corresponding to this subfunction.
+
   static void install_subfunction (const std::string& name,
                                    const octave_value& fcn,
                                    scope_id scope)
@@ -1612,13 +1620,13 @@ public:
     clear_variable (name);
   }
 
-  static void clear_all (void)
+  static void clear_all (bool force = false)
   {
     clear_variables ();
 
     clear_global_pattern ("*");
 
-    clear_functions ();
+    clear_functions (force);
   }
 
   static void clear_variables (scope_id scope)
@@ -1643,10 +1651,10 @@ public:
       inst->do_clear_objects ();
   }
 
-  static void clear_functions (void)
+  static void clear_functions (bool force = false)
   {
     for (fcn_table_iterator p = fcn_table.begin (); p != fcn_table.end (); p++)
-      p->second.clear ();
+      p->second.clear (force);
   }
 
   static void clear_function (const std::string& name)
@@ -2609,10 +2617,12 @@ private:
 
   void do_pop_context (void)
   {
-    for (table_iterator p = table.begin (); p != table.end (); )
+    table_iterator p = table.begin ();
+
+    while (p != table.end ())
       {
         if (p->second.pop_context (my_scope) == 0)
-            table.erase (p++);
+          table.erase (p++);
         else
           p++;
       }
@@ -2674,13 +2684,12 @@ private:
           sr.unmark_global ();
       }
 
+    global_table_iterator q = global_table.begin ();
 
-    for (global_table_iterator q = global_table.begin ();
-         q != global_table.end ();)
+    while (q != global_table.end ())
       {
         if (pattern.match (q->first))
-          global_table.erase (q++); //Gotta be careful to not
-                                    //invalidate iterators
+          global_table.erase (q++);
         else
           q++;
       }

@@ -66,7 +66,7 @@ all-local: .gdbinit
 	@$(gdbinit_install_rule)
 
 check: sparse.tst bc-overload-tests.stamp
-	$(top_builddir)/run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
+	$(top_builddir)/run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
 
 sparse.tst: build-sparse-tests.sh
 	$(srcdir)/build-sparse-tests.sh

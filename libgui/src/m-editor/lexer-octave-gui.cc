@@ -145,20 +145,29 @@ lexer_octave_gui::defaultColor (int style) const
 QFont
 lexer_octave_gui::defaultFont (int style) const
 {
-  QFont font;
+  QFont f;
 
   switch (style)
     {
       case Keyword:
-        font = QsciLexer::defaultFont (style);
-        font.setBold(true);
+        f = QsciLexer::defaultFont (style);
+        f.setBold(true);
         break;
 
       default:
-        font = QsciLexer::defaultFont (style);
+        f = QsciLexer::defaultFont (style);
     }
 
-  return font;
+  return f;
+}
+
+// -----------------------------------------------------
+//  The style used for braces
+// -----------------------------------------------------
+int
+lexer_octave_gui::braceStyle() const
+{
+    return Operator;
 }
 
 // -----------------------------------------------------

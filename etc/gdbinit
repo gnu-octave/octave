@@ -1,3 +1,8 @@
+## Disable the next line if you really need to see the
+## thread create/exit messages.
+
+set print thread-events off
+
 ## Helpful macros for debugging Octave.
 
 ############################################################

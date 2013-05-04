@@ -195,6 +195,28 @@ resource_manager::do_update_network_settings (void)
   QNetworkProxy::setApplicationProxy (proxy);
 }
 
+QStringList 
+resource_manager::storage_class_names (void)
+{
+  return QStringList () << QObject::tr ("automatic")
+                        << QObject::tr ("function")
+                        << QObject::tr ("global")
+                        << QObject::tr ("hidden")
+                        << QObject::tr ("inherited")
+                        << QObject::tr ("persistent");
+}
+
+QList<QColor>
+resource_manager::storage_class_default_colors (void)
+{
+  return QList<QColor> () << QColor(190,255,255)
+                          << QColor(220,255,220)
+                          << QColor(220,220,255)
+                          << QColor(255,255,190)
+                          << QColor(255,220,220)
+                          << QColor(255,190,255);
+}
+
 const char*
 resource_manager::octave_keywords (void)
 {

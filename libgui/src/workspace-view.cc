@@ -77,6 +77,10 @@ workspace_view::workspace_view (QWidget *p)
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
+
+  connect (parent (), SIGNAL (settings_changed (const QSettings *)),
+           this, SLOT (notice_settings (const QSettings *)));
+
 }
 
 workspace_view::~workspace_view (void)
@@ -87,6 +91,12 @@ workspace_view::~workspace_view (void)
                      view->horizontalHeader ()->saveState ());
 
   settings->sync ();
+}
+
+void workspace_view::setModel (workspace_model *model)
+{
+  view->setModel (model);
+  _model = model;
 }
 
 void
@@ -241,4 +251,21 @@ workspace_view::handle_model_changed (void)
   for (int i = view_previous_row_count; i < new_row_count; i++)
     view->setRowHeight (i, row_height);
   view_previous_row_count = new_row_count;
+}
+
+void
+workspace_view::notice_settings (const QSettings *settings)
+{
+  _model->notice_settings (settings); // update colors of model first
+
+  QString tool_tip;
+  tool_tip  =  QString (tr ("View the variables in the active workspace.<br>"));
+  tool_tip +=  QString (tr ("Colors for the storage class:"));
+  for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+    {
+      tool_tip +=  QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
+               .arg (_model->storage_class_color (i).name ())
+               .arg (resource_manager::storage_class_names ().at (i));
+    }
+  setToolTip (tool_tip);
 }

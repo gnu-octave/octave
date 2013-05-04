@@ -29,6 +29,7 @@ color_picker::color_picker (QColor old_color, QWidget* p) : QPushButton (p)
 {
   _color = old_color;
   setFlat (true);
+  setFocusPolicy(Qt::NoFocus);  // no focus, would changes the color
   update_button ();
   connect(this, SIGNAL (clicked ()), SLOT (select_color ()));
 }

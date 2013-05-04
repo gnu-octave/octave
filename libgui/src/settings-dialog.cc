@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "resource-manager.h"
+#include "workspace-model.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
 #include <QSettings>
@@ -124,6 +125,9 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->proxyPort->setText (settings->value ("proxyPort").toString ());
   ui->proxyUserName->setText (settings->value ("proxyUserName").toString ());
   ui->proxyPassword->setText (settings->value ("proxyPassword").toString ());
+
+  // qorkspace colors
+  read_workspace_colors (settings);
 
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
@@ -243,6 +247,44 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
 }
 #endif  
 
+void
+settings_dialog::read_workspace_colors (QSettings *settings)
+{
+
+  QList<QColor> default_colors = resource_manager::storage_class_default_colors ();
+  QStringList class_names = resource_manager::storage_class_names ();
+  QString class_chars = resource_manager::storage_class_chars ();
+  int nr_of_classes = class_chars.length ();
+
+  QGridLayout *style_grid = new QGridLayout ();
+  QLabel *description[nr_of_classes];
+  color_picker *color[nr_of_classes];
+
+  int column = 0;
+  int row = 0;
+  for (int i = 0; i < nr_of_classes; i++)
+    {
+      description[i] = new QLabel (class_names.at (i));
+      description[i]->setAlignment (Qt::AlignRight);
+      QVariant default_var = default_colors.at (i);
+      QColor setting_color = settings->value ("workspaceview/color_"+class_chars.mid (i,1),
+                                              default_var).value<QColor> ();
+      color[i] = new color_picker (setting_color);
+      color[i]->setObjectName ("color_"+class_chars.mid (i,1));
+      color[i]->setMinimumSize (30,10);
+      style_grid->addWidget (description[i], row,3*column);
+      style_grid->addWidget (color[i],       row,3*column+1);
+      if (++column == 3)
+        {
+          row++;
+          column = 0;
+        }
+    }
+
+  // place grid with elements into the tab
+  ui->workspace_colors_box->setLayout (style_grid);
+}
+
 
 void
 settings_dialog::write_changed_settings ()
@@ -322,6 +364,8 @@ settings_dialog::write_changed_settings ()
   write_lexer_settings (lexer,settings);
   delete lexer;
 #endif
+
+  write_workspace_colors (settings);
 }
 
 #ifdef HAVE_QSCINTILLA
@@ -382,3 +426,21 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
   lexer->writeSettings (*settings);
 }
 #endif
+
+void
+settings_dialog::write_workspace_colors (QSettings *settings)
+{
+
+  QString class_chars = resource_manager::storage_class_chars ();
+  color_picker *color;
+
+  for (int i = 0; i < class_chars.length (); i++)
+    {
+      color = ui->workspace_colors_box->findChild <color_picker *>(
+                            "color_"+class_chars.mid (i,1));
+      if (color)
+        settings->setValue ("workspaceview/color_"+class_chars.mid (i,1),
+                            color->color ());
+    }
+  settings->sync ();
+}

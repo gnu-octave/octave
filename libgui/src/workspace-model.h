@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVector>
 #include <QSemaphore>
 #include <QStringList>
+#include <QChar>
+#include <QColor>
+#include <QSettings>
 
 class workspace_model
   : public QAbstractTableModel
@@ -56,6 +59,8 @@ public:
 
   bool is_top_level (void) const { return _top_level; }
 
+  QColor storage_class_color (int s_class) { return _storage_class_colors.at (s_class); }
+
 public slots:
 
   void set_workspace (bool top_level,
@@ -66,6 +71,8 @@ public slots:
                       const QStringList& values);
 
   void clear_workspace (void);
+
+  void notice_settings (const QSettings *);
 
 signals:
 
@@ -86,6 +93,9 @@ private:
   QStringList _values;
 
   QStringList _columnNames;
+
+  QList<QColor>  _storage_class_colors;
+
 };
 
 #endif

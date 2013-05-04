@@ -500,6 +500,24 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_workspace">
+      <attribute name="title">
+       <string>Workspace</string>
+      </attribute>
+      <widget class="QGroupBox" name="workspace_colors_box">
+       <property name="geometry">
+        <rect>
+         <x>19</x>
+         <y>19</y>
+         <width>631</width>
+         <height>81</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Storage Class Colors</string>
+       </property>
+      </widget>
+     </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
        <string>Network</string>

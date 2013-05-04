@@ -49,6 +49,9 @@ private:
   enum { MaxLexerStyles = 64,
          MaxStyleNumber = 128 };
 #endif
+
+  void read_workspace_colors (QSettings *settings);
+  void write_workspace_colors (QSettings *settings);
 };
 
 #endif // SETTINGSDIALOG_H

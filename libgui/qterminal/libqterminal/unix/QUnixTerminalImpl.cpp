@@ -135,14 +135,6 @@ void QUnixTerminalImpl::setCursorType(CursorType type, bool blinking)
     m_terminalView->setBlinkingCursor(blinking);
 }
 
-void QUnixTerminalImpl::focusInEvent(QFocusEvent *focusEvent)
-{
-    Q_UNUSED(focusEvent);
-    m_terminalView->updateImage();
-    m_terminalView->repaint();
-    m_terminalView->update();
-}
-
 void QUnixTerminalImpl::showEvent(QShowEvent *)
 {
     m_terminalView->updateImage();

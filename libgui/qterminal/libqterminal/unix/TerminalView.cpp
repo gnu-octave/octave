@@ -530,7 +530,7 @@ void TerminalView::drawCursor(QPainter& painter,
   QRect cursorRect = rect;
   cursorRect.setHeight(_fontHeight - _lineSpacing - 1);
 
-  if (!_cursorBlinking || !hasFocus())
+  if (!_cursorBlinking)
     {
       if ( _cursorColor.isValid() )
         painter.setPen(_cursorColor);
@@ -1021,6 +1021,11 @@ void TerminalView::setBlinkingCursor(bool blink)
 {
   _hasBlinkingCursor=blink;
 
+  setBlinkingCursorState(blink);
+}
+
+void TerminalView::setBlinkingCursorState(bool blink)
+{
   if (blink && !_blinkCursorTimer->isActive())
     _blinkCursorTimer->start(BLINK_DELAY);
 
@@ -1029,8 +1034,6 @@ void TerminalView::setBlinkingCursor(bool blink)
       _blinkCursorTimer->stop();
       if (_cursorBlinking)
         blinkCursorEvent();
-      else
-        _cursorBlinking = false;
     }
 }
 
@@ -1051,6 +1054,25 @@ void TerminalView::paintEvent( QPaintEvent* pe )
   drawInputMethodPreeditString(paint,preeditRect());
   paintFilters(paint);
   paint.end();
+}
+
+void TerminalView::focusInEvent(QFocusEvent *focusEvent)
+{
+  setBlinkingCursorState(true);
+  updateImage();
+  repaint();
+  update();
+
+  QWidget::focusInEvent(focusEvent);
+}
+
+void TerminalView::focusOutEvent(QFocusEvent *focusEvent)
+{
+  // Force the cursor to be redrawn.
+  _cursorBlinking = true;
+  setBlinkingCursorState(false);
+
+  QWidget::focusOutEvent(focusEvent);
 }
 
 QPoint TerminalView::cursorPosition() const
@@ -1343,7 +1365,10 @@ QRect TerminalView::imageToWidget(const QRect& imageArea) const
 
 void TerminalView::blinkCursorEvent()
 {
-  _cursorBlinking = !_cursorBlinking;
+  if (_hasBlinkingCursor)
+    _cursorBlinking = !_cursorBlinking;
+  else
+    _cursorBlinking = false;
 
   QRect cursorRect = imageToWidget( QRect(cursorPosition(),QSize(1,1)) );
 

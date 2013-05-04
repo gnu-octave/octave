@@ -48,7 +48,6 @@ public slots:
     void pasteClipboard();
 
 protected:
-    void focusInEvent(QFocusEvent *focusEvent);
     void showEvent(QShowEvent *);
     virtual void resizeEvent(QResizeEvent *);   
 

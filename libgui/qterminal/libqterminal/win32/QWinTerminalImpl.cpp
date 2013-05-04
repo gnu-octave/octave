@@ -91,6 +91,14 @@ class QConsolePrivate
   friend class QWinTerminalImpl;
 
 public:
+
+  enum KeyboardCursorType
+    {
+      BlockCursor,
+      UnderlineCursor,
+      IBeamCursor
+    };
+
   QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd = QString ());
   ~QConsolePrivate (void);
 
@@ -103,6 +111,7 @@ public:
   void monitorConsole (void);
   void startCommand (void);
   void sendConsoleText (const QString& s);
+  QRect cursorRect (void);
 
   void log (const char* fmt, ...);
 
@@ -126,6 +135,10 @@ private:
   QSize m_bufferSize;
   QRect m_consoleRect;
   QPoint m_cursorPos;
+  bool m_cursorBlinking;
+  bool m_hasBlinkingCursor;
+  QTimer *m_blinkCursorTimer;
+  KeyboardCursorType m_cursorType;
 
   HANDLE m_stdOut;
   HWND m_consoleWindow;
@@ -137,12 +150,16 @@ private:
   QScrollBar* m_scrollBar;
   QTimer* m_consoleWatcher;
   QConsoleThread *m_consoleThread;
+
+  // The delay in milliseconds between redrawing blinking text.
+  static const int BLINK_DELAY = 500;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
-    : q (parent), m_command (cmd), m_process (NULL), m_inWheelEvent (false)
+  : q (parent), m_command (cmd), m_hasBlinkingCursor (true),
+    m_cursorType (BlockCursor), m_process (NULL), m_inWheelEvent (false)
 {
   log (NULL);
 
@@ -255,7 +272,11 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   m_consoleWatcher = new QTimer (parent);
   m_consoleWatcher->setInterval (10);
   m_consoleWatcher->setSingleShot (false);
-  
+
+  m_blinkCursorTimer = new QTimer (parent);
+  QObject::connect (m_blinkCursorTimer, SIGNAL (timeout()),
+                    q, SLOT (blinkCursorEvent ()));  
+
   QObject::connect (m_scrollBar, SIGNAL (valueChanged (int)),
                     q, SLOT (scrollValueChanged (int)));
   QObject::connect (m_consoleWatcher, SIGNAL (timeout (void)),
@@ -700,6 +721,17 @@ void QConsolePrivate::sendConsoleText (const QString& s)
     }
 }
 
+QRect
+QConsolePrivate::cursorRect (void)
+{
+  int cw = m_charSize.width ();
+  int ch = m_charSize.height ();
+
+  return QRect ((m_cursorPos.x () - m_consoleRect.x ()) * cw,
+                (m_cursorPos.y () - m_consoleRect.y ()) * ch,
+                cw, ch);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
@@ -812,11 +844,77 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
         }
     }
 
-  // Draw cursor
-  p.setCompositionMode (QPainter::RasterOp_SourceXorDestination);
-  p.fillRect ((d->m_cursorPos.x () - d->m_consoleRect.x ()) * cw,
-              (d->m_cursorPos.y () - d->m_consoleRect.y ()) * ch,
-              cw, ch, d->m_colors[7]);
+  if (! d->m_cursorBlinking)
+    {
+      QColor cursorColor = d->m_colors[7];
+      QRect cursorRect = d->cursorRect ();
+
+      p.setPen (d->m_foregroundColor);
+
+      if (d->m_cursorType == QConsolePrivate::BlockCursor)
+        {
+          if (hasFocus ())
+            {
+              p.setCompositionMode (QPainter::RasterOp_SourceXorDestination);
+
+              p.fillRect (cursorRect, cursorColor);
+            }
+          else
+            {
+              // draw the cursor outline, adjusting the area so that
+              // it is draw entirely inside 'rect'
+ 
+              int penWidth = qMax (1, p.pen().width());
+ 
+              p.setBrush (Qt::NoBrush);
+
+              p.drawRect (cursorRect.adjusted (penWidth/2, penWidth/2,
+                                               - penWidth/2 - penWidth%2,
+                                               - penWidth/2 - penWidth%2));
+            }
+        }
+      else if (d->m_cursorType == QConsolePrivate::UnderlineCursor)
+        {
+          p.drawLine (cursorRect.left (), cursorRect.bottom (),
+                      cursorRect.right (), cursorRect.bottom ());
+        }
+      else if (d->m_cursorType == QConsolePrivate::IBeamCursor)
+        {
+          p.drawLine (cursorRect.left (), cursorRect.top (),
+                      cursorRect.left (), cursorRect.bottom ());
+        }
+    }
+}
+
+void QWinTerminalImpl::blinkCursorEvent (void)
+{
+  if (d->m_hasBlinkingCursor)
+    d->m_cursorBlinking = ! d->m_cursorBlinking;
+  else
+    d->m_cursorBlinking = false;
+
+  d->m_consoleView->update (d->cursorRect ());
+}
+
+void QWinTerminalImpl::setBlinkingCursor (bool blink)
+{
+  d->m_hasBlinkingCursor = blink;
+
+  setBlinkingCursorState (blink);
+}
+
+void QWinTerminalImpl::setBlinkingCursorState (bool blink)
+{
+  if (blink && ! d->m_blinkCursorTimer->isActive ())
+    d->m_blinkCursorTimer->start (d->BLINK_DELAY);
+
+  if (! blink && d->m_blinkCursorTimer->isActive ())
+    {
+      d->m_blinkCursorTimer->stop ();
+
+      if (d->m_cursorBlinking)
+        blinkCursorEvent ();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -871,7 +969,32 @@ void QWinTerminalImpl::monitorConsole (void)
 
 void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 {
+  setBlinkingCursorState (true);
+
   QWidget::focusInEvent (event);
+}
+
+void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
+{
+  // Force the cursor to be redrawn.
+  d->m_cursorBlinking = true;
+
+  setBlinkingCursorState (false);
+
+  QWidget::focusOutEvent (event);
+}
+
+void QWinTerminalImpl::keyPressEvent (QKeyEvent* event)
+{
+  if (d->m_hasBlinkingCursor)
+    {
+      d->m_blinkCursorTimer->start (d->BLINK_DELAY);
+
+      if (d->m_cursorBlinking)
+        blinkCursorEvent ();
+    }
+
+  QWidget::keyPressEvent (event);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -886,6 +1009,26 @@ void QWinTerminalImpl::start (void)
 void QWinTerminalImpl::sendText (const QString& s)
 {
   d->sendConsoleText (s);
+}
+
+void QWinTerminalImpl::setCursorType (CursorType type, bool blinking)
+{
+  switch (type)
+    {
+    case UnderlineCursor:
+      d->m_cursorType = QConsolePrivate::UnderlineCursor;
+      break;
+
+    case BlockCursor:
+      d->m_cursorType = QConsolePrivate::BlockCursor;
+      break;
+
+    case IBeamCursor:
+      d->m_cursorType = QConsolePrivate::IBeamCursor;
+      break;
+    }
+
+  setBlinkingCursor (blinking);
 }
 
 //////////////////////////////////////////////////////////////////////////////

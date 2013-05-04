@@ -26,6 +26,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "QTerminalInterface.h"
 class QFocusEvent;
 class QKeyEvent;
+class QPainter;
 class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
@@ -51,10 +52,12 @@ public:
   void setTerminalFont (const QFont& font);
   void setSize (int columns, int lines);
   void sendText (const QString& s);
+  void setCursorType (CursorType type, bool blinking);
 
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);
+  void blinkCursorEvent (void);
 
 signals:
   void terminated (void);
@@ -62,9 +65,13 @@ signals:
 
 protected:
   void viewPaintEvent (QConsoleView*, QPaintEvent*);
+  void setBlinkingCursor (bool blink);
+  void setBlinkingCursorState (bool blink);
   void viewResizeEvent (QConsoleView*, QResizeEvent*);
   void wheelEvent (QWheelEvent*);
   void focusInEvent (QFocusEvent*);
+  void focusOutEvent (QFocusEvent*);
+  void keyPressEvent (QKeyEvent*);
   bool winEvent (MSG*, long*);
   virtual void start (void);
 

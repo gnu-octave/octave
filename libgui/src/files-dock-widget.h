@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QAction>
 #include <QTreeView>
-#include <QSettings>
 
 #include <QComboBox>
 #include "octave-dock-widget.h"

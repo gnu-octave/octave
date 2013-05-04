@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QTabWidget>
-#include <QSettings>
 
 #include <map>
 

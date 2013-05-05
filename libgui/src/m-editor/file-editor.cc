@@ -319,9 +319,8 @@ file_editor::request_open_file (const QString& openFileName, int line,
 
 // open a file from the mru list
 void
-file_editor::request_mru_open_file (void)
+file_editor::request_mru_open_file (QAction *action)
 {
-  QAction *action = qobject_cast<QAction *> (sender ());
   if (action)
     {
       request_open_file (action->data ().toString ());
@@ -981,12 +980,8 @@ file_editor::construct (void)
   connect (goto_line_action, SIGNAL (triggered ()),
            this, SLOT (request_goto_line ()));
 
-  // The actions of the mru file menu
-  for (int i = 0; i < MaxMRUFiles; ++i)
-    {
-      connect (_mru_file_actions[i], SIGNAL (triggered ()),
-               this, SLOT (request_mru_open_file ()));
-    }
+  connect (_mru_file_menu, SIGNAL (triggered (QAction *)),
+           this, SLOT (request_mru_open_file (QAction *)));
 
   mru_menu_update ();
 

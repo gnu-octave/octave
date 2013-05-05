@@ -105,7 +105,7 @@ public slots:
   void request_new_script (const QString& commands);
   void request_new_function (const QString& commands);
   void request_open_file (void);
-  void request_mru_open_file (void);
+  void request_mru_open_file (QAction *action);
   void request_print_file (void);
 
   void request_undo (void);

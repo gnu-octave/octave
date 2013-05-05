@@ -20,6 +20,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <QApplication>
+#include <QClipboard>
 #include <QColor>
 #include <QFont>
 #include <QHBoxLayout>
@@ -30,6 +31,9 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtDebug>
 #include <QThread>
 #include <QTimer>
+#include <QToolTip>
+#include <QCursor>
+#include <QMessageBox>
 
 #include <fcntl.h>
 #include <io.h>
@@ -39,6 +43,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define _WIN32_WINNT 0x0500 
 #include <windows.h>
 #include <cstring>
+#include <limits>
 
 #include "QWinTerminalImpl.h"
 #include "QTerminalColors.h"
@@ -119,6 +124,11 @@ public:
   void setupStandardIO (DWORD stdHandleId, int fd, const char* name,
                         const char* devName);
 
+  QPoint posToCell (const QPoint& pt);
+  QString getSelection (void);
+  void updateSelection (void);
+  void clearSelection (void);
+
 private:
   QWinTerminalImpl* q;
 
@@ -140,6 +150,9 @@ private:
   QTimer *m_blinkCursorTimer;
   KeyboardCursorType m_cursorType;
 
+  QPoint m_beginSelection;
+  QPoint m_endSelection;
+
   HANDLE m_stdOut;
   HWND m_consoleWindow;
   CHAR_INFO* m_buffer;
@@ -155,11 +168,19 @@ private:
   static const int BLINK_DELAY = 500;
 };
 
+static void maybeSwapPoints (QPoint& begin, QPoint& end)
+{
+  if (end.y () < begin.y ()
+      || (end.y () == begin.y () && end.x () < begin.x ()))
+    qSwap (begin, end);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   : q (parent), m_command (cmd), m_hasBlinkingCursor (true),
-    m_cursorType (BlockCursor), m_process (NULL), m_inWheelEvent (false)
+    m_cursorType (BlockCursor), m_beginSelection (0, 0),
+    m_endSelection (0, 0), m_process (NULL), m_inWheelEvent (false)
 {
   log (NULL);
 
@@ -338,6 +359,91 @@ void QConsolePrivate::setupStandardIO (DWORD stdHandleId, int targetFd,
     }
   else
     log ("Failed to open %s: errno=%d.\n", devName, errno);
+}
+
+QPoint QConsolePrivate::posToCell (const QPoint& p)
+{
+  return QPoint (m_consoleRect.left () + p.x () / m_charSize.width (),
+                 m_consoleRect.top () + p.y () / m_charSize.height ());
+}
+
+QString QConsolePrivate::getSelection (void)
+{
+  QString selection;
+
+  QPoint begin = m_beginSelection;
+  QPoint end = m_endSelection;
+
+  maybeSwapPoints (begin, end);
+
+  if (m_beginSelection != m_endSelection)
+    {
+      CHAR_INFO* buf;
+      COORD bufSize, bufCoord;
+      SMALL_RECT bufRect;
+      int nr;
+
+      nr = m_endSelection.y () - m_beginSelection.y () + 1;
+      buf =  new CHAR_INFO[m_bufferSize.width () * nr];
+      bufSize.X = m_bufferSize.width ();
+      bufSize.Y = nr;
+      bufCoord.X = 0;
+      bufCoord.Y = 0;
+
+      bufRect.Left = 0;
+      bufRect.Right = m_bufferSize.width ();
+      bufRect.Top = m_beginSelection.y ();
+      bufRect.Bottom = m_endSelection.y ();
+
+      if (ReadConsoleOutput (m_stdOut, buf, bufSize, bufCoord, &bufRect))
+        {
+          int start = m_beginSelection.x ();
+          int end = (nr - 1) * m_bufferSize.width () + m_endSelection.x ();
+          int lastNonSpace = -1;
+
+          for (int i = start; i <= end; i++)
+            {
+              if (i && (i % m_bufferSize.width ()) == 0)
+                {
+                  if (lastNonSpace >= 0)
+                    selection.truncate (lastNonSpace);
+                  selection.append ('\n');
+                  lastNonSpace = selection.length ();
+                }
+
+              QChar c (buf[i].Char.UnicodeChar);
+
+              selection.append (c);
+              if (! c.isSpace ())
+                lastNonSpace = selection.length ();
+            }
+
+          if (lastNonSpace >= 0)
+            selection.truncate (lastNonSpace);
+        }
+    }
+
+  return selection;
+}
+
+void QConsolePrivate::updateSelection (void)
+{
+  QPoint begin = m_beginSelection;
+  QPoint end = m_endSelection;
+
+  maybeSwapPoints (begin, end);
+
+  begin.rx () = 0;
+  end.rx () = m_consoleRect.width ();
+
+  m_consoleView->update ();
+}
+
+void QConsolePrivate::clearSelection (void)
+{
+  m_beginSelection = m_endSelection = QPoint ();
+
+  m_consoleView->update ();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -753,6 +859,29 @@ QWinTerminalImpl::~QWinTerminalImpl (void)
   delete d;
 }
 
+void QWinTerminalImpl::mouseMoveEvent (QMouseEvent *event)
+{
+  d->m_endSelection = d->posToCell (event->pos ());
+
+  updateSelection ();
+}
+
+void QWinTerminalImpl::mousePressEvent (QMouseEvent *event)
+{
+  if (event->button () == Qt::LeftButton)
+    d->m_beginSelection = d->posToCell (event->pos ());
+}
+
+void QWinTerminalImpl::mouseReleaseEvent (QMouseEvent *event)
+{
+  if (event->button () == Qt::LeftButton)
+    {
+      d->m_endSelection = d->posToCell (event->pos ());
+
+      updateSelection ();
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 void QWinTerminalImpl::viewResizeEvent (QConsoleView*, QResizeEvent*)
@@ -792,12 +921,31 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
   s.reserve (cx2 - cx1 + 1);
   y = ascent + cy1 * ch;;
 
+  QPoint begin = d->m_beginSelection;
+  QPoint end = d->m_endSelection;
+
+  bool haveSelection = (begin != end);
+
+  if (haveSelection)
+    maybeSwapPoints (begin, end);
+
+  if (haveSelection)
+    d->log ("cy1: %d, cy2: %d, begin.y: %d, end.y: %d\n",
+            cy1, cy2, begin.y (), end.y ());
+
+  int scrollOffset = d->m_consoleRect.top ();
+
+  begin.ry () -= scrollOffset;
+  end.ry () -= scrollOffset;
+
   for (int j = cy1; j <= cy2; j++, y += ch)
     {
       // Reset string buffer and starting X coordinate
       s.clear ();
       hasChar = false;
       x = cx1 * cw;
+
+      int charsThisLine = 0;
 
       for (int i = cx1; i <= cx2; i++)
         {
@@ -816,7 +964,9 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
                                     p.brush ());
                       p.drawText (x, y, s);
                     }
-                  x += (s.length () * cw);
+                  int len = s.length ();
+                  charsThisLine += len;
+                  x += (len * cw);
                   s.clear ();
                   hasChar = false;
                 }
@@ -835,12 +985,37 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
 
       if (! s.isEmpty () && (hasChar || (attr & 0x00f0)))
         {
+          int len = s.length ();
+          charsThisLine += len;
+
           // Line end reached, but string buffer not empty -> draw it
           // No need to update s or x, they will be reset on the next
           // for-loop iteration
+
           if (attr & 0x00f0)
-            p.fillRect (x, y-ascent, s.length () * cw, ch, p.brush ());
+            p.fillRect (x, y-ascent, len * cw, ch, p.brush ());
+
           p.drawText (x, y, s);
+        }
+
+      if (haveSelection && j >= begin.y () && j <= end.y ())
+        {
+          int selectionBegin = j == begin.y () ? begin.x (): 0;
+
+          int len = ((j == end.y () && end.x () < charsThisLine)
+                     ? end.x () - selectionBegin + 1
+                     : stride - selectionBegin);
+
+          QColor selectionColor = d->m_colors[7];
+
+          p.save ();
+
+          p.setCompositionMode (QPainter::RasterOp_SourceXorDestination);
+
+          p.fillRect (selectionBegin * cw, y-ascent, len * cw, ch,
+                      selectionColor);
+
+          p.restore ();
         }
     }
 
@@ -965,6 +1140,11 @@ void QWinTerminalImpl::monitorConsole (void)
   d->monitorConsole ();
 }
 
+void QWinTerminalImpl::updateSelection (void)
+{
+  d->updateSelection ();
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
@@ -1052,10 +1232,19 @@ void QWinTerminalImpl::setSize (int columns, int lines)
 
 void QWinTerminalImpl::copyClipboard (void)
 {
+  QClipboard *clipboard = QApplication::clipboard ();
+
+  clipboard->setText (d->getSelection ());
+
+  d->clearSelection ();
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 void QWinTerminalImpl::pasteClipboard (void)
 {
+  QString text = QApplication::clipboard()->text (QClipboard::Clipboard);
+
+  if (! text.isEmpty ())
+    sendText (text);
 }

@@ -30,6 +30,7 @@ class QPainter;
 class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
+class QPoint;
 
 class QConsolePrivate;
 class QConsoleThread;
@@ -74,10 +75,14 @@ protected:
   void keyPressEvent (QKeyEvent*);
   bool winEvent (MSG*, long*);
   virtual void start (void);
+  void mouseMoveEvent (QMouseEvent *event);
+  void mousePressEvent (QMouseEvent *event);
+  void mouseReleaseEvent (QMouseEvent *event);
 
 private slots:
   void scrollValueChanged (int value);
   void monitorConsole (void);
+  void updateSelection (void);
 
 private:
   QConsolePrivate* d;

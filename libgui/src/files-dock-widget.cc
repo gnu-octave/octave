@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QUrl>
 #include <QDesktopServices>
+#include <QFileDialog>
 
 #include "load-save.h"
 
@@ -99,6 +100,10 @@ files_dock_widget::files_dock_widget (QWidget *p)
   popdown_button->setPopupMode(QToolButton::InstantPopup);
   popdown_button->setDefaultAction(new QAction(QIcon(":/actions/icons/gear.png"),"", _navigation_tool_bar));
 
+  popdown_menu->addSeparator();
+  popdown_menu->addAction (QIcon (":/actions/icons/search.png"),
+                           tr ("Search directory"),
+                           this, SLOT (popdownmenu_search_dir (bool)));
   popdown_menu->addSeparator();
   popdown_menu->addAction(QIcon(":/actions/icons/filenew.png"),
                           tr ("New File"),
@@ -566,6 +571,14 @@ files_dock_widget::notice_settings (const QSettings *settings)
   if (_sync_octave_dir)
     display_directory (_octave_dir);  // sync browser to octave dir
 
+}
+
+void
+files_dock_widget::popdownmenu_search_dir (bool)
+{
+  QString dir
+    = QFileDialog::getExistingDirectory (this, tr ("Set directory of file browser"));
+  process_set_current_dir (dir);
 }
 
 void

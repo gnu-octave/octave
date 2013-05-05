@@ -96,6 +96,7 @@ private slots:
   /* popdown menu options */
   void popdownmenu_newfile(bool);
   void popdownmenu_newdir(bool);
+  void popdownmenu_search_dir (bool);
 
 signals:
 

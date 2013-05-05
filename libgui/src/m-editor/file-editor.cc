@@ -624,6 +624,36 @@ file_editor::handle_file_name_changed (const QString& fname,
 }
 
 void
+file_editor::request_close_file (bool)
+{
+  emit fetab_close_request (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::request_close_all_files (bool)
+{
+  int index;
+  while ((index = _tab_widget->currentIndex ()) > -1)
+    emit fetab_close_request (_tab_widget->widget (index));
+}
+
+void
+file_editor::request_close_other_files (bool)
+{
+  int index = 0;
+  QWidget *tabID = _tab_widget->currentWidget ();
+
+  while (_tab_widget->count () > 1)
+    {
+      if (tabID != _tab_widget->widget (index))
+        emit fetab_close_request (_tab_widget->widget (index));
+      else
+        index++;
+    }
+}
+
+
+void
 file_editor::handle_tab_close_request (int index)
 {
   // Signal to the tabs a request to close whomever matches the identifying
@@ -847,21 +877,39 @@ file_editor::construct (void)
 
   // menu bar
   QMenu *fileMenu = new QMenu (tr ("&File"), _menu_bar);
-  fileMenu->addAction (new_action);
-  fileMenu->addAction (open_action);
-  fileMenu->addAction (save_action);
-  fileMenu->addAction (save_as_action);
-  fileMenu->addSeparator ();
-  _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), fileMenu);
 
+  _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), fileMenu);
   for (int i = 0; i < MaxMRUFiles; ++i)
     _mru_file_menu->addAction (_mru_file_actions[i]);
 
+  fileMenu->addAction (new_action);
+  fileMenu->addAction (open_action);
   fileMenu->addMenu (_mru_file_menu);
-  _menu_bar->addMenu (fileMenu);
+
+  fileMenu->addSeparator ();
+  fileMenu->addAction (save_action);
+  fileMenu->addAction (save_as_action);
+
+  fileMenu->addSeparator ();
+  fileMenu->addAction (QIcon::fromTheme("window-close",
+                                      QIcon (":/actions/icons/fileclose.png")),
+                       tr ("&Close"),
+                       this, SLOT (request_close_file (bool)),
+                             QKeySequence::Close);
+  fileMenu->addAction (QIcon::fromTheme("window-close",
+                                      QIcon (":/actions/icons/fileclose.png")),
+                       tr ("Close All"),
+                       this, SLOT (request_close_all_files (bool)));
+  fileMenu->addAction (QIcon::fromTheme("window-close",
+                                      QIcon (":/actions/icons/fileclose.png")),
+                       tr ("Close Other Files"),
+                       this, SLOT (request_close_other_files (bool)));
 
   fileMenu->addSeparator ();
   fileMenu->addAction (print_action);
+
+  _menu_bar->addMenu (fileMenu);
+
 
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
   editMenu->addAction (undo_action);

@@ -129,13 +129,21 @@ public:
   void updateSelection (void);
   void clearSelection (void);
 
+  QColor backgroundColor (void) const;
+  QColor foregroundColor (void) const;
+  QColor selectionColor (void) const;
+  QColor cursorColor (void) const;
+
+  void setBackgroundColor (const QColor& color);
+  void setForegroundColor (const QColor& color);
+  void setSelectionColor (const QColor& color);
+  void setCursorColor (const QColor& color);
+
 private:
   QWinTerminalImpl* q;
 
 private:
   QFont m_font;
-  QColor m_backgroundColor;
-  QColor m_foregroundColor;
   QString m_command;
   QConsoleColors m_colors;
   bool m_inWheelEvent;
@@ -263,10 +271,6 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   GetConsoleTitleW (titleBuf, sizeof (titleBuf));
   q->setWindowTitle (QString::fromWCharArray (titleBuf));
 
-  m_backgroundColor = Qt::white;
-  m_foregroundColor = Qt::black;
-  SetConsoleTextAttribute (m_stdOut, 0xF0);
-
   m_font.setFamily ("Lucida Console");
   m_font.setPointSize (9);
   m_font.setStyleHint (QFont::TypeWriter);
@@ -282,8 +286,16 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   l->addWidget (m_consoleView, 1);
   l->addWidget (m_scrollBar, 0);
 
-  m_consoleView->setPalette (QPalette (m_backgroundColor));
+  SetConsoleTextAttribute (m_stdOut, 0xF0);
+
+  setBackgroundColor (Qt::white);
+  setForegroundColor (Qt::black);
+
+  QPalette palette (backgroundColor ());
+
+  m_consoleView->setPalette (palette);
   m_consoleView->setAutoFillBackground (true);
+
   m_consoleView->setFont (m_font);
   parent->setFocusPolicy (Qt::StrongFocus);
   parent->winId ();
@@ -446,7 +458,32 @@ void QConsolePrivate::clearSelection (void)
   m_consoleView->update ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
+QColor QConsolePrivate::backgroundColor (void) const { return m_colors[15]; }
+QColor QConsolePrivate::foregroundColor (void) const { return m_colors[0]; }
+QColor QConsolePrivate::selectionColor (void) const { return m_colors[7]; }
+QColor QConsolePrivate::cursorColor (void) const { return m_colors[8]; }
+
+void QConsolePrivate::setBackgroundColor (const QColor& color)
+{
+  m_colors[15] = color;
+}
+
+void QConsolePrivate::setForegroundColor (const QColor& color)
+{
+  m_colors[0] = color;
+}
+
+void QConsolePrivate::setSelectionColor (const QColor& color)
+{
+  m_colors[7] = color;
+}
+
+void QConsolePrivate::setCursorColor (const QColor& color)
+{
+  m_colors[8] = color;
+}
+
+/////////////////////////////////////////////////////////////////////////////
 
 void QConsolePrivate::closeStandardIO (int fd, DWORD stdHandleId,
                                        const char* name)
@@ -913,7 +950,7 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
     return;
 
   p.setFont (d->m_font);
-  p.setPen (d->m_foregroundColor);
+  p.setPen (d->foregroundColor ());
 
   ascent = p.fontMetrics ().ascent ();
   stride = d->m_consoleRect.width ();
@@ -1006,14 +1043,13 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
                      ? end.x () - selectionBegin + 1
                      : stride - selectionBegin);
 
-          QColor selectionColor = d->m_colors[7];
+          QColor color = d->selectionColor ();
 
           p.save ();
 
           p.setCompositionMode (QPainter::RasterOp_SourceXorDestination);
 
-          p.fillRect (selectionBegin * cw, y-ascent, len * cw, ch,
-                      selectionColor);
+          p.fillRect (selectionBegin * cw, y-ascent, len * cw, ch, color);
 
           p.restore ();
         }
@@ -1021,10 +1057,10 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
 
   if (! d->m_cursorBlinking)
     {
-      QColor cursorColor = d->m_colors[7];
+      QColor color = d->cursorColor ();
       QRect cursorRect = d->cursorRect ();
 
-      p.setPen (d->m_foregroundColor);
+      p.setPen (d->foregroundColor ());
 
       if (d->m_cursorType == QConsolePrivate::BlockCursor)
         {
@@ -1032,7 +1068,7 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
             {
               p.setCompositionMode (QPainter::RasterOp_SourceXorDestination);
 
-              p.fillRect (cursorRect, cursorColor);
+              p.fillRect (cursorRect, color);
             }
           else
             {

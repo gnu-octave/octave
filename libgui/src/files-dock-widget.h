@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QAction>
 #include <QTreeView>
+#include <QMouseEvent>
 
 #include <QComboBox>
 #include "octave-dock-widget.h"
@@ -85,6 +86,7 @@ private slots:
   /* context menu actions */
   void contextmenu_open (bool);
   void contextmenu_open_in_app (bool);
+  void contextmenu_copy_selection (bool);
   void contextmenu_run (bool);
   void contextmenu_load (bool);
   void contextmenu_rename (bool);

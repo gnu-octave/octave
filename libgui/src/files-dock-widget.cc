@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "files-dock-widget.h"
 
 #include <QApplication>
+#include <QClipboard>
 #include <QFileInfo>
 #include <QCompleter>
 #include <QProcess>
@@ -44,6 +45,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 
 #include "load-save.h"
+
+class FileTreeViewer : public QTreeView
+{
+public:
+
+  FileTreeViewer (QWidget *p) : QTreeView (p) { }
+
+  void mousePressEvent (QMouseEvent *e)
+  {
+    if (e->button () != Qt::RightButton)
+      QTreeView::mousePressEvent (e);
+  }
+};
 
 files_dock_widget::files_dock_widget (QWidget *p)
   : octave_dock_widget (p)
@@ -131,7 +145,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
                                                   curr_dir.absolutePath ());
 
   // Attach the model to the QTreeView and set the root index
-  _file_tree_view = new QTreeView (container);
+  _file_tree_view = new FileTreeViewer (container);
+  _file_tree_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
   _file_tree_view->setModel (_file_system_model);
   _file_tree_view->setRootIndex (rootPathIndex);
   _file_tree_view->setSortingEnabled (true);
@@ -328,6 +343,9 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
       menu.addAction (tr("Open in Default Application"),
                       this, SLOT (contextmenu_open_in_app (bool)));
 
+      menu.addAction (tr("Copy Selection to Clipboard"),
+                      this, SLOT (contextmenu_copy_selection (bool)));
+
       if (info.isFile () && info.suffix () == "m")
         menu.addAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
                         tr("Run"), this, SLOT(contextmenu_run(bool)));
@@ -385,6 +403,26 @@ files_dock_widget::contextmenu_open_in_app (bool)
 
   for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
     open_item_in_app (*it);
+}
+
+void
+files_dock_widget::contextmenu_copy_selection (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  QStringList selection;
+
+  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    {
+      QFileInfo info = _file_system_model->fileInfo (*it);
+
+      selection << info.fileName ();
+    }
+
+  QClipboard *clipboard = QApplication::clipboard ();
+
+  clipboard->setText (selection.join ("\n"));
 }
 
 void

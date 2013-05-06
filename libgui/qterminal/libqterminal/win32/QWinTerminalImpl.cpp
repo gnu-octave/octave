@@ -139,6 +139,17 @@ public:
   void setSelectionColor (const QColor& color);
   void setCursorColor (const QColor& color);
 
+  void drawTextBackground (QPainter& p, int cx1, int cy1, int cx2, int cy2,
+                           int cw, int ch);
+
+  void drawSelection (QPainter& p, int cx1, int cy1, int cx2, int cy2,
+                      int cw, int ch);
+
+  void drawCursor (QPainter& p);
+
+  void drawText (QPainter& p, int cx1, int cy1, int cx2, int cy2,
+                 int cw, int ch);
+
 private:
   QWinTerminalImpl* q;
 
@@ -286,14 +297,21 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   l->addWidget (m_consoleView, 1);
   l->addWidget (m_scrollBar, 0);
 
+  // Choose 15 (0xF) as index into the Windows console color map for the
+  // background and 0 (0x0) as the index for the foreground.  This
+  // selection corresponds to the indices used in the foregroundColor,
+  // setForegroundColor, backgroundColor, and SetBackgroundColor
+  // functions.
+
   SetConsoleTextAttribute (m_stdOut, 0xF0);
 
   setBackgroundColor (Qt::white);
   setForegroundColor (Qt::black);
 
+  // FIXME -- should we set the palette?
   QPalette palette (backgroundColor ());
-
   m_consoleView->setPalette (palette);
+
   m_consoleView->setAutoFillBackground (true);
 
   m_consoleView->setFont (m_font);
@@ -458,6 +476,10 @@ void QConsolePrivate::clearSelection (void)
   m_consoleView->update ();
 }
 
+// FIXME -- maybe we should not be messing with the Windows console
+// colors for things like the selection and cursor which are entirely up
+// to us to draw.
+
 QColor QConsolePrivate::backgroundColor (void) const { return m_colors[15]; }
 QColor QConsolePrivate::foregroundColor (void) const { return m_colors[0]; }
 QColor QConsolePrivate::selectionColor (void) const { return m_colors[7]; }
@@ -481,6 +503,245 @@ void QConsolePrivate::setSelectionColor (const QColor& color)
 void QConsolePrivate::setCursorColor (const QColor& color)
 {
   m_colors[8] = color;
+}
+
+void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
+                                          int cx2, int cy2, int cw, int ch)
+{
+  p.save ();
+
+  int ascent = p.fontMetrics ().ascent ();
+  int stride = m_consoleRect.width ();
+  int y = ascent + cy1 * ch;;
+
+  for (int j = cy1; j <= cy2; j++, y += ch)
+    {
+      int len = 0;
+      bool hasChar = false;
+      int x = cx1 * cw;
+      WORD attr = 0;
+
+      for (int i = cx1; i <= cx2; i++)
+        {
+          CHAR_INFO* ci = &(m_buffer[stride*j+i]);
+
+          if ((ci->Attributes & 0x00ff) != attr)
+            {
+              // Character attributes changed
+              if (len != 0)
+                {
+                  // String buffer not empty -> draw it
+                  if (hasChar || (attr & 0x00f0))
+                    {
+                      if (attr & 0x00f0)
+                        p.fillRect (x, y-ascent, len * cw, ch, p.brush ());
+                    }
+
+                  x += (len * cw);
+                  len = 0;
+                  hasChar = false;
+                }
+              // Update current brush and store current attributes
+              attr = (ci->Attributes & 0x00ff);
+              p.setBrush (m_colors[(attr >> 4) & 0x000f]);
+            }
+
+          // Append current character to the string buffer
+          len++;
+          if (ci->Char.UnicodeChar != L' ')
+            hasChar = true;
+        }
+
+      if (len != 0 && (hasChar || (attr & 0x00f0)))
+        {
+          // Line end reached, but string buffer not empty -> draw it
+          // No need to update s or x, they will be reset on the next
+          // for-loop iteration
+
+          if (attr & 0x00f0)
+            p.fillRect (x, y-ascent, len * cw, ch, p.brush ());
+        }
+    }
+
+  p.restore ();
+}
+
+void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
+                                     int cx2, int cy2, int cw, int ch)
+{
+  p.save ();
+
+  QPoint begin = m_beginSelection;
+  QPoint end = m_endSelection;
+
+  bool haveSelection = (begin != end);
+
+  if (haveSelection)
+    maybeSwapPoints (begin, end);
+
+  int scrollOffset = m_consoleRect.top ();
+
+  begin.ry () -= scrollOffset;
+  end.ry () -= scrollOffset;
+
+  int ascent = p.fontMetrics ().ascent ();
+  int stride = m_consoleRect.width ();
+
+  int y = ascent + cy1 * ch;;
+  for (int j = cy1; j <= cy2; j++, y += ch)
+    {
+      int charsThisLine = 0;
+      int len = 0;
+      bool hasChar = false;
+      WORD attr = 0;
+
+      for (int i = cx1; i <= cx2; i++)
+        {
+          CHAR_INFO* ci = &(m_buffer[stride*j+i]);
+
+          if ((ci->Attributes & 0x00ff) != attr)
+            {
+              // Character attributes changed
+              if (len != 0)
+                {
+                  charsThisLine += len;
+                  len = 0;
+                  hasChar = false;
+                }
+
+              // Store current attributes
+              attr = (ci->Attributes & 0x00ff);
+            }
+
+          // Append current character to the string buffer
+          len++;
+          if (ci->Char.UnicodeChar != L' ')
+            hasChar = true;
+        }
+
+      if (len != 0 && (hasChar || (attr & 0x00f0)))
+        charsThisLine += len;
+
+      if (haveSelection && j >= begin.y () && j <= end.y ())
+        {
+          int selectionBegin = j == begin.y () ? begin.x (): 0;
+
+          int len = ((j == end.y () && end.x () < charsThisLine)
+                     ? end.x () - selectionBegin + 1
+                     : stride - selectionBegin);
+
+          p.fillRect (selectionBegin * cw, y-ascent, len * cw, ch,
+                      selectionColor ());
+        }
+    }
+
+  p.restore ();
+}
+
+void QConsolePrivate::drawCursor (QPainter& p)
+{
+  if (! m_cursorBlinking)
+    {
+      p.save ();
+
+      QRect rect = cursorRect ();
+      QColor color = cursorColor ();
+
+      p.setPen (color);
+
+      if (m_cursorType == QConsolePrivate::BlockCursor)
+        {
+          if (q->hasFocus ())
+            p.fillRect (rect, color);
+          else
+            {
+              // draw the cursor outline, adjusting the area so that
+              // it is draw entirely inside 'rect'
+ 
+              int penWidth = qMax (1, p.pen().width());
+ 
+              p.drawRect (rect.adjusted (penWidth/2, penWidth/2,
+                                         - penWidth/2 - penWidth%2,
+                                         - penWidth/2 - penWidth%2));
+            }
+        }
+      else if (m_cursorType == QConsolePrivate::UnderlineCursor)
+        {
+          p.drawLine (rect.left (), rect.bottom (),
+                      rect.right (), rect.bottom ());
+        }
+      else if (m_cursorType == QConsolePrivate::IBeamCursor)
+        {
+          p.drawLine (rect.left (), rect.top (),
+                      rect.left (), rect.bottom ());
+        }
+
+      p.restore ();
+    }
+}
+
+void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
+                                int cx2, int cy2, int cw, int ch)
+{
+  p.save ();
+
+  p.setFont (m_font);
+  p.setPen (foregroundColor ());
+
+  QString s;
+  s.reserve (cx2 - cx1 + 1);
+
+  int ascent = p.fontMetrics ().ascent ();
+  int stride = m_consoleRect.width ();
+
+  int y = ascent + cy1 * ch;;
+  for (int j = cy1; j <= cy2; j++, y += ch)
+    {
+      // Reset string buffer and starting X coordinate
+      s.clear ();
+      bool hasChar = false;
+      int x = cx1 * cw;
+      WORD attr = 0;
+
+      for (int i = cx1; i <= cx2; i++)
+        {
+          CHAR_INFO* ci = &(m_buffer[stride*j+i]);
+
+          if ((ci->Attributes & 0x00ff) != attr)
+            {
+              // Character attributes changed
+              if (! s.isEmpty ())
+                {
+                  // String buffer not empty -> draw it
+                  if (hasChar || (attr & 0x00f0))
+                    p.drawText (x, y, s);
+
+                  x += (s.length () * cw);
+                  s.clear ();
+                  hasChar = false;
+                }
+              // Update current pen and store current attributes
+              attr = (ci->Attributes & 0x00ff);
+              p.setPen (m_colors[attr & 0x000f]);
+            }
+
+          // Append current character to the string buffer
+          s.append (ci->Char.UnicodeChar);
+          if (ci->Char.UnicodeChar != L' ')
+            hasChar = true;
+        }
+
+      if (! s.isEmpty () && (hasChar || (attr & 0x00f0)))
+        {
+          // Line end reached, but string buffer not empty -> draw it
+          // No need to update s or x, they will be reset on the next
+          // for-loop iteration
+
+          p.drawText (x, y, s);
+        }
+    }
+
+  p.restore ();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -932,169 +1193,25 @@ void QWinTerminalImpl::viewResizeEvent (QConsoleView*, QResizeEvent*)
 void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
 {
   QPainter p (w);
-  int cw = d->m_charSize.width (), ch = d->m_charSize.height ();
-  int ascent, stride, cx1, cy1, cx2, cy2, x, y;
-  WORD attr = 0;
-  QString s;
-  bool hasChar = false;
+
+  int cw = d->m_charSize.width ();
+  int ch = d->m_charSize.height ();
 
   QRect updateRect = event->rect ();
 
-  cx1 = updateRect.left () / cw;
-  cy1 = updateRect.top () / ch;
-  cx2 = qMin (d->m_consoleRect.width () - 1, updateRect.right () / cw);
-  cy2 = qMin (d->m_consoleRect.height () - 1, updateRect.bottom () / ch);
+  int cx1 = updateRect.left () / cw;
+  int cy1 = updateRect.top () / ch;
+  int cx2 = qMin (d->m_consoleRect.width () - 1, updateRect.right () / cw);
+  int cy2 = qMin (d->m_consoleRect.height () - 1, updateRect.bottom () / ch);
 
   if (cx1 > d->m_consoleRect.width () - 1
       || cy1 > d->m_consoleRect.height () - 1)
     return;
 
-  p.setFont (d->m_font);
-  p.setPen (d->foregroundColor ());
-
-  ascent = p.fontMetrics ().ascent ();
-  stride = d->m_consoleRect.width ();
-
-  s.reserve (cx2 - cx1 + 1);
-  y = ascent + cy1 * ch;;
-
-  QPoint begin = d->m_beginSelection;
-  QPoint end = d->m_endSelection;
-
-  bool haveSelection = (begin != end);
-
-  if (haveSelection)
-    maybeSwapPoints (begin, end);
-
-  if (haveSelection)
-    d->log ("cy1: %d, cy2: %d, begin.y: %d, end.y: %d\n",
-            cy1, cy2, begin.y (), end.y ());
-
-  int scrollOffset = d->m_consoleRect.top ();
-
-  begin.ry () -= scrollOffset;
-  end.ry () -= scrollOffset;
-
-  for (int j = cy1; j <= cy2; j++, y += ch)
-    {
-      // Reset string buffer and starting X coordinate
-      s.clear ();
-      hasChar = false;
-      x = cx1 * cw;
-
-      int charsThisLine = 0;
-
-      for (int i = cx1; i <= cx2; i++)
-        {
-          CHAR_INFO* ci = &(d->m_buffer[stride*j+i]);
-
-          if ((ci->Attributes & 0x00ff) != attr)
-            {
-              // Character attributes changed
-              if (! s.isEmpty ())
-                {
-                  // String buffer not empty -> draw it
-                  if (hasChar || (attr & 0x00f0))
-                    {
-                      if (attr & 0x00f0)
-                        p.fillRect (x, y-ascent, s.length () * cw, ch,
-                                    p.brush ());
-                      p.drawText (x, y, s);
-                    }
-                  int len = s.length ();
-                  charsThisLine += len;
-                  x += (len * cw);
-                  s.clear ();
-                  hasChar = false;
-                }
-              // Update current pen and store current attributes
-              // FIXME: what about background?
-              attr = (ci->Attributes & 0x00ff);
-              p.setPen (d->m_colors[attr & 0x000f]);
-              p.setBrush (d->m_colors[(attr >> 4) & 0x000f]);
-            }
-
-          // Append current character to the string buffer
-          s.append (ci->Char.UnicodeChar);
-          if (ci->Char.UnicodeChar != L' ')
-            hasChar = true;
-        }
-
-      if (! s.isEmpty () && (hasChar || (attr & 0x00f0)))
-        {
-          int len = s.length ();
-          charsThisLine += len;
-
-          // Line end reached, but string buffer not empty -> draw it
-          // No need to update s or x, they will be reset on the next
-          // for-loop iteration
-
-          if (attr & 0x00f0)
-            p.fillRect (x, y-ascent, len * cw, ch, p.brush ());
-
-          p.drawText (x, y, s);
-        }
-
-      if (haveSelection && j >= begin.y () && j <= end.y ())
-        {
-          int selectionBegin = j == begin.y () ? begin.x (): 0;
-
-          int len = ((j == end.y () && end.x () < charsThisLine)
-                     ? end.x () - selectionBegin + 1
-                     : stride - selectionBegin);
-
-          QColor color = d->selectionColor ();
-
-          p.save ();
-
-          p.setCompositionMode (QPainter::RasterOp_SourceXorDestination);
-
-          p.fillRect (selectionBegin * cw, y-ascent, len * cw, ch, color);
-
-          p.restore ();
-        }
-    }
-
-  if (! d->m_cursorBlinking)
-    {
-      QColor color = d->cursorColor ();
-      QRect cursorRect = d->cursorRect ();
-
-      p.setPen (d->foregroundColor ());
-
-      if (d->m_cursorType == QConsolePrivate::BlockCursor)
-        {
-          if (hasFocus ())
-            {
-              p.setCompositionMode (QPainter::RasterOp_SourceXorDestination);
-
-              p.fillRect (cursorRect, color);
-            }
-          else
-            {
-              // draw the cursor outline, adjusting the area so that
-              // it is draw entirely inside 'rect'
- 
-              int penWidth = qMax (1, p.pen().width());
- 
-              p.setBrush (Qt::NoBrush);
-
-              p.drawRect (cursorRect.adjusted (penWidth/2, penWidth/2,
-                                               - penWidth/2 - penWidth%2,
-                                               - penWidth/2 - penWidth%2));
-            }
-        }
-      else if (d->m_cursorType == QConsolePrivate::UnderlineCursor)
-        {
-          p.drawLine (cursorRect.left (), cursorRect.bottom (),
-                      cursorRect.right (), cursorRect.bottom ());
-        }
-      else if (d->m_cursorType == QConsolePrivate::IBeamCursor)
-        {
-          p.drawLine (cursorRect.left (), cursorRect.top (),
-                      cursorRect.left (), cursorRect.bottom ());
-        }
-    }
+  d->drawTextBackground (p, cx1, cy1, cx2, cy2, cw, ch);
+  d->drawSelection (p, cx1, cy1, cx2, cy2, cw, ch);
+  d->drawCursor (p);
+  d->drawText (p, cx1, cy1, cx2, cy2, cw, ch);
 }
 
 void QWinTerminalImpl::blinkCursorEvent (void)

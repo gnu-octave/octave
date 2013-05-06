@@ -154,7 +154,9 @@ settings_dialog::settings_dialog (QWidget *p):
   lexer = new QsciLexerBash ();
   read_lexer_settings (lexer,settings);
   delete lexer;
-#endif    
+#endif
+
+  ui->tabWidget->setCurrentIndex (settings->value("settings/last_tab",0).toInt ());
 }
 
 settings_dialog::~settings_dialog ()
@@ -248,6 +250,9 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
   scroll_area_contents->setLayout (style_grid);
   scroll_area->setWidget (scroll_area_contents);
   ui->tabs_editor_styles->addTab (scroll_area,lexer->language ());
+
+  ui->tabs_editor_styles->setCurrentIndex (
+          settings->value("settings/last_editor_styles_tab",0).toInt ());
 }
 #endif  
 
@@ -410,6 +415,8 @@ settings_dialog::write_changed_settings ()
   write_workspace_colors (settings);
 
   write_terminal_colors (settings);
+
+  settings->setValue("settings/last_tab",ui->tabWidget->currentIndex ());
 }
 
 #ifdef HAVE_QSCINTILLA
@@ -468,6 +475,9 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
         lexer->setColor (color->color (),styles[i]);
     }
   lexer->writeSettings (*settings);
+
+  settings->setValue (
+    "settings/last_editor_styles_tab",ui->tabs_editor_styles->currentIndex ());
 }
 #endif
 

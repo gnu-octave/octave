@@ -490,10 +490,10 @@ void QConsolePrivate::updateConsoleSize (bool sync)
   QFontMetrics fm (m_font);
   QSize winSize = m_consoleView->size ();
 
-  m_charSize.rwidth () = fm.maxWidth ();
+  m_charSize.rwidth () = fm.averageCharWidth ();
   m_charSize.rheight () = fm.lineSpacing ();
 
-  m_consoleRect.setWidth (winSize.width () / fm.maxWidth ());
+  m_consoleRect.setWidth (winSize.width () / fm.averageCharWidth ());
   m_consoleRect.setHeight (winSize.height () / fm.lineSpacing ());
 
   m_bufferSize.rwidth () = m_consoleRect.width ();

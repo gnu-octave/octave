@@ -49,8 +49,17 @@ color_picker::select_color ()
 // draw the button with the actual color (using a stylesheet)
 void color_picker::update_button ()
 {
-  QString css = QString("background-color: %1; border: none;" )
-                        .arg(_color.name());
+  // Is this the right place to look for a "foreground" color that would
+  // provide a reasonable border for the color swatches?
+  QWidget *p = parentWidget ();
+
+  QString bordercolor
+    = p ? p->palette().text().color().name() : QString ("#000000");
+
+  QString css = QString("background-color: %1; border: 1px solid %2;")
+                        .arg(_color.name())
+                        .arg(bordercolor);
+
   setStyleSheet(css);
   repaint ();
 }

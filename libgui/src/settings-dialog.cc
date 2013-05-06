@@ -97,6 +97,7 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->useProxyServer->setChecked (settings->value ("useProxyServer",false).toBool ());
   ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
   ui->terminal_cursorBlinking->setChecked (settings->value ("terminal/cursorBlinking",true).toBool ());
+  ui->terminal_cursorUseForegroundColor->setChecked (settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
 
   QString cursorType = settings->value ("terminal/cursorType","ibeam").toString ();
 
@@ -128,6 +129,9 @@ settings_dialog::settings_dialog (QWidget *p):
 
   // qorkspace colors
   read_workspace_colors (settings);
+
+  // terminal colors
+  read_terminal_colors (settings);
 
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
@@ -285,6 +289,43 @@ settings_dialog::read_workspace_colors (QSettings *settings)
   ui->workspace_colors_box->setLayout (style_grid);
 }
 
+void
+settings_dialog::read_terminal_colors (QSettings *settings)
+{
+
+  QList<QColor> default_colors = resource_manager::terminal_default_colors ();
+  QStringList class_names = resource_manager::terminal_color_names ();
+  QString class_chars = resource_manager::terminal_color_chars ();
+  int nr_of_classes = class_chars.length ();
+
+  QGridLayout *style_grid = new QGridLayout ();
+  QLabel *description[nr_of_classes];
+  color_picker *color[nr_of_classes];
+
+  int column = 0;
+  int row = 0;
+  for (int i = 0; i < nr_of_classes; i++)
+    {
+      description[i] = new QLabel (class_names.at (i));
+      description[i]->setAlignment (Qt::AlignRight);
+      QVariant default_var = default_colors.at (i);
+      QColor setting_color = settings->value ("terminal/color_"+class_chars.mid (i,1),
+                                              default_var).value<QColor> ();
+      color[i] = new color_picker (setting_color);
+      color[i]->setObjectName ("terminal_color_"+class_chars.mid (i,1));
+      color[i]->setMinimumSize (30,10);
+      style_grid->addWidget (description[i], row,2*column);
+      style_grid->addWidget (color[i],       row,2*column+1);
+      if (++column == 2)
+        {
+          row++;
+          column = 0;
+        }
+    }
+
+  // place grid with elements into the tab
+  ui->terminal_colors_box->setLayout (style_grid);
+}
 
 void
 settings_dialog::write_changed_settings ()
@@ -330,6 +371,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("proxyUserName", ui->proxyUserName->text ());
   settings->setValue ("proxyPassword", ui->proxyPassword->text ());
   settings->setValue ("terminal/cursorBlinking", ui->terminal_cursorBlinking->isChecked ());
+  settings->setValue ("terminal/cursorUseForegroundColor", ui->terminal_cursorUseForegroundColor->isChecked ());
 
   // the cursor
   QString cursorType;
@@ -366,6 +408,8 @@ settings_dialog::write_changed_settings ()
 #endif
 
   write_workspace_colors (settings);
+
+  write_terminal_colors (settings);
 }
 
 #ifdef HAVE_QSCINTILLA
@@ -440,6 +484,23 @@ settings_dialog::write_workspace_colors (QSettings *settings)
                             "color_"+class_chars.mid (i,1));
       if (color)
         settings->setValue ("workspaceview/color_"+class_chars.mid (i,1),
+                            color->color ());
+    }
+  settings->sync ();
+}
+
+void
+settings_dialog::write_terminal_colors (QSettings *settings)
+{
+  QString class_chars = resource_manager::terminal_color_chars ();
+  color_picker *color;
+
+  for (int i = 0; i < class_chars.length (); i++)
+    {
+      color = ui->terminal_colors_box->findChild <color_picker *>(
+                            "terminal_color_"+class_chars.mid (i,1));
+      if (color)
+        settings->setValue ("terminal/color_"+class_chars.mid (i,1),
                             color->color ());
     }
   settings->sync ();

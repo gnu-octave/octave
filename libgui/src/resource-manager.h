@@ -87,6 +87,10 @@ public:
   static QStringList storage_class_names (void);
   static QList<QColor> storage_class_default_colors (void);
 
+  static QString terminal_color_chars (void) { return "fbsc"; }
+  static QStringList terminal_color_names (void);
+  static QList<QColor> terminal_default_colors (void);
+
 private:
 
   static resource_manager *instance;

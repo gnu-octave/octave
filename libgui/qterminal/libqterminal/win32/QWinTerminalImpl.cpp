@@ -137,7 +137,7 @@ public:
   void setBackgroundColor (const QColor& color);
   void setForegroundColor (const QColor& color);
   void setSelectionColor (const QColor& color);
-  void setCursorColor (const QColor& color);
+  void setCursorColor (bool useForegroundColor, const QColor& color);
 
   void drawTextBackground (QPainter& p, int cx1, int cy1, int cx2, int cy2,
                            int cw, int ch);
@@ -171,6 +171,9 @@ private:
 
   QPoint m_beginSelection;
   QPoint m_endSelection;
+
+  QColor m_selectionColor;
+  QColor m_cursorColor;
 
   HANDLE m_stdOut;
   HWND m_consoleWindow;
@@ -305,8 +308,11 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
 
   SetConsoleTextAttribute (m_stdOut, 0xF0);
 
+  // Defaults.
   setBackgroundColor (Qt::white);
   setForegroundColor (Qt::black);
+  setSelectionColor (Qt::lightGray);
+  setCursorColor (false, Qt::darkGray);
 
   // FIXME -- should we set the palette?
   QPalette palette (backgroundColor ());
@@ -476,14 +482,25 @@ void QConsolePrivate::clearSelection (void)
   m_consoleView->update ();
 }
 
-// FIXME -- maybe we should not be messing with the Windows console
-// colors for things like the selection and cursor which are entirely up
-// to us to draw.
+QColor QConsolePrivate::backgroundColor (void) const
+{
+  return m_colors[15];
+}
 
-QColor QConsolePrivate::backgroundColor (void) const { return m_colors[15]; }
-QColor QConsolePrivate::foregroundColor (void) const { return m_colors[0]; }
-QColor QConsolePrivate::selectionColor (void) const { return m_colors[7]; }
-QColor QConsolePrivate::cursorColor (void) const { return m_colors[8]; }
+QColor QConsolePrivate::foregroundColor (void) const
+{
+  return m_colors[0];
+}
+
+QColor QConsolePrivate::selectionColor (void) const
+{
+  return m_selectionColor;
+}
+
+QColor QConsolePrivate::cursorColor (void) const
+{
+  return m_cursorColor.isValid () ? m_cursorColor : foregroundColor ();
+}
 
 void QConsolePrivate::setBackgroundColor (const QColor& color)
 {
@@ -497,12 +514,13 @@ void QConsolePrivate::setForegroundColor (const QColor& color)
 
 void QConsolePrivate::setSelectionColor (const QColor& color)
 {
-  m_colors[7] = color;
+  m_selectionColor = color;
 }
 
-void QConsolePrivate::setCursorColor (const QColor& color)
+void QConsolePrivate::setCursorColor (bool useForegroundColor,
+                                      const QColor& color)
 {
-  m_colors[8] = color;
+  m_cursorColor = useForegroundColor ? QColor () : color;
 }
 
 void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
@@ -1362,6 +1380,27 @@ void QWinTerminalImpl::setCursorType (CursorType type, bool blinking)
     }
 
   setBlinkingCursor (blinking);
+}
+
+void QWinTerminalImpl::setBackgroundColor (const QColor& color)
+{
+  d->setBackgroundColor (color);
+}
+
+void QWinTerminalImpl::setForegroundColor (const QColor& color)
+{
+  d->setForegroundColor (color);
+}
+
+void QWinTerminalImpl::setSelectionColor (const QColor& color)
+{
+  d->setSelectionColor (color);
+}
+
+void QWinTerminalImpl::setCursorColor (bool useForegroundColor,
+                                       const QColor& color)
+{
+  d->setCursorColor (useForegroundColor, color);
 }
 
 //////////////////////////////////////////////////////////////////////////////

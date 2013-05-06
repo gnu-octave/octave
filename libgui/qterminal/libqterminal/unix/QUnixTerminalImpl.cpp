@@ -135,6 +135,18 @@ void QUnixTerminalImpl::setCursorType(CursorType type, bool blinking)
     m_terminalView->setBlinkingCursor(blinking);
 }
 
+// FIXME -- not sure how to make these work properly given the way the
+// Unix terminal handles colors.
+void QUnixTerminalImpl::setBackgroundColor (const QColor& color) { }
+void QUnixTerminalImpl::setForegroundColor (const QColor& color) { }
+void QUnixTerminalImpl::setSelectionColor (const QColor& color) { }
+
+void QUnixTerminalImpl::setCursorColor (bool useForegroundColor,
+                                        const QColor& color)
+{
+  m_terminalView->setKeyboardCursorColor (useForegroundColor, color);
+}
+
 void QUnixTerminalImpl::showEvent(QShowEvent *)
 {
     m_terminalView->updateImage();

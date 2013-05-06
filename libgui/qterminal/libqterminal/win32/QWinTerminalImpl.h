@@ -55,6 +55,11 @@ public:
   void sendText (const QString& s);
   void setCursorType (CursorType type, bool blinking);
 
+  void setBackgroundColor (const QColor& color);
+  void setForegroundColor (const QColor& color);
+  void setSelectionColor (const QColor& color);
+  void setCursorColor (bool useForegoundColor, const QColor& color);
+
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);

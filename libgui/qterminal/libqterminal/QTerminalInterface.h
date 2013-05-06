@@ -24,6 +24,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define QTERMINALINTERFACE_H
 
 #include <QWidget>
+#include <QColor>
 #include <QMenu>
 
 class QTerminalInterface : public QWidget
@@ -61,7 +62,13 @@ public:
         Q_UNUSED(blinking);
     }
 
-public slots:
+    virtual void setBackgroundColor (const QColor& color) = 0;
+    virtual void setForegroundColor (const QColor& color) = 0;
+    virtual void setSelectionColor (const QColor& color) = 0;
+    virtual void setCursorColor (bool useForegroundColor,
+                                 const QColor& color) = 0;
+
+ public slots:
     virtual void copyClipboard() = 0;
     virtual void pasteClipboard() = 0;
 

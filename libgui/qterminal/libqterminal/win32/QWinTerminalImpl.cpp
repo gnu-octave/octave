@@ -412,14 +412,14 @@ QString QConsolePrivate::getSelection (void)
 
   maybeSwapPoints (begin, end);
 
-  if (m_beginSelection != m_endSelection)
+  if (begin != end)
     {
       CHAR_INFO* buf;
       COORD bufSize, bufCoord;
       SMALL_RECT bufRect;
       int nr;
 
-      nr = m_endSelection.y () - m_beginSelection.y () + 1;
+      nr = end.y () - begin.y () + 1;
       buf =  new CHAR_INFO[m_bufferSize.width () * nr];
       bufSize.X = m_bufferSize.width ();
       bufSize.Y = nr;
@@ -428,16 +428,16 @@ QString QConsolePrivate::getSelection (void)
 
       bufRect.Left = 0;
       bufRect.Right = m_bufferSize.width ();
-      bufRect.Top = m_beginSelection.y ();
-      bufRect.Bottom = m_endSelection.y ();
+      bufRect.Top = begin.y ();
+      bufRect.Bottom = end.y ();
 
       if (ReadConsoleOutput (m_stdOut, buf, bufSize, bufCoord, &bufRect))
         {
-          int start = m_beginSelection.x ();
-          int end = (nr - 1) * m_bufferSize.width () + m_endSelection.x ();
+          int start_pos = begin.x ();
+          int end_pos = (nr - 1) * m_bufferSize.width () + end.x ();
           int lastNonSpace = -1;
 
-          for (int i = start; i <= end; i++)
+          for (int i = start_pos; i <= end_pos; i++)
             {
               if (i && (i % m_bufferSize.width ()) == 0)
                 {

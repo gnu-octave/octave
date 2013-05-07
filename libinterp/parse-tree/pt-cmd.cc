@@ -33,7 +33,8 @@ tree_command *
 tree_no_op_command::dup (symbol_table::scope_id,
                          symbol_table::context_id) const
 {
-  return new tree_no_op_command (orig_cmd, line (), column ());
+  return new tree_no_op_command (orig_cmd, is_end_of_file (),
+                                 line (), column ());
 }
 
 void

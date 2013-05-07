@@ -120,7 +120,13 @@ private:
 
   intmap do_add_breakpoint (const std::string& fname, const intmap& lines);
 
+  int do_remove_breakpoint_1 (octave_user_code *fcn, const std::string&,
+                              const intmap& lines);
+
   int do_remove_breakpoint (const std::string&, const intmap& lines);
+
+  intmap do_remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
+                                              const std::string& fname);
 
   intmap do_remove_all_breakpoints_in_file (const std::string& fname,
                                             bool silent);

@@ -208,6 +208,20 @@ public:
       location_column = col;
     }
 
+  int beginning_line (void) const { return location_line; }
+  int beginning_column (void) const { return location_column; }
+
+  void stash_fcn_end_location (int line, int col)
+    {
+      end_location_line = line;
+      end_location_column = col;
+    }
+
+  int ending_line (void) const { return end_location_line; }
+  int ending_column (void) const { return end_location_column; }
+
+  void maybe_relocate_end (void);
+
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
   void stash_parent_fcn_scope (symbol_table::scope_id ps) { parent_scope = ps; }
@@ -265,6 +279,15 @@ public:
   void unlock_subfunctions (void);
 
   std::map<std::string, octave_value> subfunctions (void) const;
+
+  bool has_subfunctions (void) const;
+
+  void stash_subfunction_names (const std::list<std::string>& names);
+
+  std::list<std::string> subfunction_names (void) const
+  {
+    return subfcn_names;
+  }
 
   octave_value_list all_va_args (const octave_value_list& args);
 
@@ -406,9 +429,15 @@ private:
   // Location where this function was defined.
   int location_line;
   int location_column;
+  int end_location_line;
+  int end_location_column;
 
   // The name of the parent function, if any.
   std::string parent_name;
+
+  // The list of subfunctions (if any) in the order they appear in the
+  // file.
+  std::list<std::string> subfcn_names;
 
   // The time the file was parsed.
   octave_time t_parsed;
@@ -457,6 +486,8 @@ private:
 #ifdef HAVE_LLVM
   jit_function_info *jit_info;
 #endif
+
+  void maybe_relocate_end_internal (void);
 
   void print_code_function_header (void);
 

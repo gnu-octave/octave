@@ -107,6 +107,15 @@ tree_statement::column (void) const
 }
 
 void
+tree_statement::set_location (int l, int c)
+{
+  if (cmd)
+    cmd->set_location (l, c);
+  else if (expr)
+    expr->set_location (l, c);
+}
+
+void
 tree_statement::echo_code (void)
 {
   tree_print_code tpc (octave_stdout, VPS4);
@@ -126,6 +135,23 @@ tree_statement::is_end_of_fcn_or_script (void) const
 
       if (no_op_cmd)
         retval = no_op_cmd->is_end_of_fcn_or_script ();
+    }
+
+  return retval;
+}
+
+bool
+tree_statement::is_end_of_file (void) const
+{
+  bool retval = false;
+
+  if (cmd)
+    {
+      tree_no_op_command *no_op_cmd
+        = dynamic_cast<tree_no_op_command *> (cmd);
+
+      if (no_op_cmd)
+        retval = no_op_cmd->is_end_of_file ();
     }
 
   return retval;

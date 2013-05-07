@@ -1427,8 +1427,6 @@ void QWinTerminalImpl::copyClipboard (void)
   QClipboard *clipboard = QApplication::clipboard ();
 
   clipboard->setText (d->getSelection ());
-
-  d->clearSelection ();
 }
 
 //////////////////////////////////////////////////////////////////////////////

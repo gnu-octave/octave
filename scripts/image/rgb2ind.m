@@ -35,16 +35,20 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B}, @var{tol}, @var{dither_option})
 ## Convert an image in red-green-blue (RGB) color space to an indexed image.
 ##
-## The input image @var{rgb} must be an N-dimensional RGB image (MxNxO...x3 array) where M,N,O... are the
-## image dimensions, and the final dimension contains the values in the red, green and blue
-## channels.  Alternatively, the red, green and blue color channels can be input as separate arrays @var{R}, @var{G} and  @var{B}.
+## The input image @var{rgb} must be an N-dimensional RGB image
+## (MxNxO...x3 array) where M,N,O... are the image dimensions, and the
+## final dimension contains the values in the red, green and blue
+## channels. Alternatively, the red, green and blue color channels can
+## be input as separate arrays @var{R}, @var{G} and  @var{B}.
 ##
-## @var{map} defines the colormap to be used.  Alternatively, @var{n} or @var{tol} may be used to define
-## the maximum number of colors to use in an automatically generated colormap.  @var{n} is related to @var{tol}
-## by:  @var{n} = (floor (1/@var{tol}) + 1)^3;
+## The input @var{map} defines the colormap to be used.  Alternatively,
+## @var{n} or @var{tol} may be used to define the maximum number of
+## colors to use in an automatically generated colormap.  @var{n} is
+## related to @var{tol} by:  @var{n} = (floor (1/@var{tol}) + 1)^3;
 ## @var{tol} must be >0 and <=1.
 ##
-## @var{dither_option} is a string which enables or disables dithering: 'dither' (default) or 'nodither'.
+## @var{dither_option} is a string which enables or disables dithering:
+## 'dither' (default) or 'nodither'.
 ##
 ## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
 ## @end deftypefn
@@ -65,7 +69,7 @@ function [x, map] = rgb2ind (varargin)
       dither_option = varargin{end};
       dither_check  = true;
     else
-      dither_option = 'dither';
+      dither_option = "dither";
       dither_check  = false;
     endif
 
@@ -81,11 +85,11 @@ function [x, map] = rgb2ind (varargin)
       if (nargin-dither_check==2)
         option = varargin{2};
       else
-        dither_option = 'nodither';
+        dither_option = "nodither";
       endif
 
-    ## Read the R,G,B inputs
-    elseif (nargin-dither_check==3 || nargin-dither_check==4)
+      ## Read the R,G,B inputs
+    elseif (nargin - dither_check==3 || nargin - dither_check==4)
 
       R = varargin{1};
       G = varargin{2};
@@ -96,7 +100,7 @@ function [x, map] = rgb2ind (varargin)
       if (nargin-dither_check==4)
         option = varargin{4};
       else
-        dither_option = 'nodither';
+        dither_option = "nodither";
       endif
       
       rgb = reshape ([R(:), G(:), B(:)], [size(R), 3]);
@@ -105,11 +109,11 @@ function [x, map] = rgb2ind (varargin)
   endif
       
   ## Apply a limited colormap if required
-  if (exist ('option','var'))
+  if (exist ("option","var"))
 
-    if (size (option,1)==1)
+    if (size (option, 1)==1)
 
-      if option>0 && option<=1
+      if (option>0 && option<=1)
         ## option: tol
         tol = option;
         n   = (floor (1/option) + 1)^3;
@@ -117,34 +121,35 @@ function [x, map] = rgb2ind (varargin)
         ## option: n
         n   = option;
       endif
-      optionstr = sprintf ('-colors %d',n);
+      optionstr = sprintf ("-colors %d",n);
       
     else
 
       ## option: map
       map = option;
-      if (isequal (map(:,1),map(:,2)) || isequal (map(:,1),map(:,3)) || isequal (map(:,2),map(:,3)))
-        error ('rgb2ind: The colormap cannot contain matching R,G, or B channels.')
+      if (isequal (map(:,1),map(:,2)) || isequal (map(:,1),map(:,3))
+          || isequal (map(:,2),map(:,3)))
+        error ("rgb2ind: The colormap cannot contain matching R,G, or B channels.")
       endif
       fnmap = tmpnam;
       map = reshape (map, size (map, 1), 1, 3);
-      imwrite (map, fnmap, 'tiff');
-      optionstr = sprintf ('-map %s', fnmap);
+      imwrite (map, fnmap, "tiff");
+      optionstr = sprintf ("-map %s", fnmap);
       
     endif
   
     ## Prepare the Graphicsmagick dithering option
-    if strcmp (dither_option, 'nodither')
-      ditherstr = '+dither';
-    elseif strcmp (dither_option, 'dither')
-      ditherstr = '-dither';
+    if strcmp (dither_option, "nodither")
+      ditherstr = "+dither";
+    elseif strcmp (dither_option, "dither")
+      ditherstr = "-dither";
     endif
       
     ## Perform the image processing using Graphicsmagick
     fna = tmpnam;
     fnb = tmpnam;
-    imwrite (rgb, fna, 'tiff');
-    gmstr = sprintf ('gm convert %s %s %s %s', fna, ditherstr, optionstr, fnb);
+    imwrite (rgb, fna, "tiff");
+    gmstr = sprintf ("gm convert %s %s %s %s", fna, ditherstr, optionstr, fnb);
     system (gmstr);
     rgb = imread (fnb);
     

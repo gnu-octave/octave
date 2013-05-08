@@ -108,6 +108,8 @@ function [x, map] = rgb2ind (varargin)
     endif
   endif
       
+  sz = size (rgb);
+
   ## Apply a limited colormap if required
   if (exist ("option","var"))
 
@@ -138,6 +140,12 @@ function [x, map] = rgb2ind (varargin)
       
     endif
   
+    ## If image is an ND array, convert it to a tiled 2D image
+    ## before processing it with Graphicsmagick
+    if numel (sz)>3
+     rgb = reshape (rgb, [prod(sz(1:end-2)), sz(end-1), 3]);
+    end
+
     ## Prepare the Graphicsmagick dithering option
     if strcmp (dither_option, "nodither")
       ditherstr = "+dither";
@@ -156,7 +164,6 @@ function [x, map] = rgb2ind (varargin)
   endif
 
   ## Conversion of rgb image to x,map
-  sz = size (rgb);
   pr = prod (sz(1:end-1));
   x = zeros (sz(1:end-1));
   [map,~,x(:)] = unique (reshape(rgb, [pr, 3]), "rows");

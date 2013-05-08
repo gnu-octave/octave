@@ -52,6 +52,9 @@ private:
 
   void read_workspace_colors (QSettings *settings);
   void write_workspace_colors (QSettings *settings);
+
+  void read_terminal_colors (QSettings *settings);
+  void write_terminal_colors (QSettings *settings);
 };
 
 #endif // SETTINGSDIALOG_H

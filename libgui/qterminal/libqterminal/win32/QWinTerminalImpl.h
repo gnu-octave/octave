@@ -30,6 +30,7 @@ class QPainter;
 class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
+class QPoint;
 
 class QConsolePrivate;
 class QConsoleThread;
@@ -54,6 +55,11 @@ public:
   void sendText (const QString& s);
   void setCursorType (CursorType type, bool blinking);
 
+  void setBackgroundColor (const QColor& color);
+  void setForegroundColor (const QColor& color);
+  void setSelectionColor (const QColor& color);
+  void setCursorColor (bool useForegoundColor, const QColor& color);
+
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);
@@ -74,10 +80,14 @@ protected:
   void keyPressEvent (QKeyEvent*);
   bool winEvent (MSG*, long*);
   virtual void start (void);
+  void mouseMoveEvent (QMouseEvent *event);
+  void mousePressEvent (QMouseEvent *event);
+  void mouseReleaseEvent (QMouseEvent *event);
 
 private slots:
   void scrollValueChanged (int value);
   void monitorConsole (void);
+  void updateSelection (void);
 
 private:
   QConsolePrivate* d;

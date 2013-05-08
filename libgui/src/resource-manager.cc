@@ -217,6 +217,24 @@ resource_manager::storage_class_default_colors (void)
                           << QColor(255,190,255);
 }
 
+QStringList 
+resource_manager::terminal_color_names (void)
+{
+  return QStringList () << QObject::tr ("foreground")
+                        << QObject::tr ("background")
+                        << QObject::tr ("selection")
+                        << QObject::tr ("cursor");
+}
+
+QList<QColor>
+resource_manager::terminal_default_colors (void)
+{
+  return QList<QColor> () << QColor(0,0,0)
+                          << QColor(255,255,255)
+                          << QColor(192,192,192)
+                          << QColor(128,128,128);
+}
+
 const char*
 resource_manager::octave_keywords (void)
 {

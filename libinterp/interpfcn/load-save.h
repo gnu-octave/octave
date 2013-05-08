@@ -83,7 +83,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
          bool list_only, bool swap, bool verbose,
          const string_vector& argv, int argv_idx, int argc, int nargout);
 
-extern bool is_octave_data_file (const std::string& file);
+extern OCTINTERP_API bool is_octave_data_file (const std::string& file);
 
 extern void
 do_save (std::ostream& os, const symbol_table::symbol_record& sr,

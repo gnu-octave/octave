@@ -41,4 +41,33 @@ QTerminal::notice_settings (const QSettings *settings)
     setCursorType(QTerminalInterface::BlockCursor, cursorBlinking);
   else if (cursorType == "underline")
     setCursorType(QTerminalInterface::UnderlineCursor, cursorBlinking);
+
+  bool cursorUseForegroundColor
+    = settings->value ("terminal/cursorUseForegroundColor",true).toBool ();
+
+  // FIXME -- we shouldn't duplicate this information here and in the
+  // resource manager.
+  QList<QColor> default_colors;
+
+  default_colors << QColor(0,0,0)
+                 << QColor(255,255,255)
+                 << QColor(192,192,192)
+                 << QColor(128,128,128);
+
+  setForegroundColor
+    (settings->value ("terminal/color_f",
+                      QVariant (default_colors.at (0))).value<QColor> ());
+
+  setBackgroundColor
+    (settings->value ("terminal/color_b",
+                      QVariant (default_colors.at (1))).value<QColor> ());
+
+  setSelectionColor
+    (settings->value ("terminal/color_s",
+                      QVariant (default_colors.at (2))).value<QColor> ());
+
+  setCursorColor
+    (cursorUseForegroundColor,
+     settings->value ("terminal/color_c",
+                      QVariant (default_colors.at (3))).value<QColor> ());
 }

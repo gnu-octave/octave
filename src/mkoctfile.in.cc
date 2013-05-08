@@ -396,6 +396,13 @@ run_command (const string& cmd)
   return system (cmd.c_str ());
 }
 
+bool
+is_true (const std::string& s)
+{
+  return (s == "yes"
+          || s == "true");
+}
+
 int
 main (int argc, char **argv)
 {
@@ -414,7 +421,7 @@ main (int argc, char **argv)
   string ldflags = "";
   string pass_on_options = "";
   bool strip = false;
-  bool no_oct_file_strip_on_this_platform = %NO_OCT_FILE_STRIP%;
+  bool no_oct_file_strip_on_this_platform = is_true ("%NO_OCT_FILE_STRIP%");
   bool link = true;
   bool link_stand_alone = false;
   string output_ext = ".oct";

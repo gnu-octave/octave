@@ -136,7 +136,7 @@ public:
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
       curr_class_name (), function_scopes (), primary_fcn_ptr (0),
-      stmt_list (0),
+      subfunction_names (), stmt_list (0),
       lexer (lxr)
   {
     init ();
@@ -270,7 +270,7 @@ public:
                   tree_statement *end_function);
 
   // Create a no-op statement for end_function.
-  tree_statement *make_end (const std::string& type, int l, int c);
+  tree_statement *make_end (const std::string& type, bool eof, int l, int c);
 
   // Do most of the work for defining a function.
   octave_user_function *
@@ -279,7 +279,8 @@ public:
   // Finish defining a function.
   tree_function_def *
   finish_function (tree_parameter_list *ret_list,
-                   octave_user_function *fcn, octave_comment_list *lc);
+                   octave_user_function *fcn, octave_comment_list *lc,
+                   int l, int c);
 
   // Reset state after parsing function.
   void
@@ -376,6 +377,11 @@ public:
 
   // Pointer to the primary user function or user script function.
   octave_function *primary_fcn_ptr;
+
+  // List of subfunction names, initially in the order they are
+  // installed in the symbol table, then ordered as they appear in the
+  // file.  Eventually stashed in the primary function object.
+  std::list<std::string> subfunction_names;
 
   // Result of parsing input.
   tree_statement_list *stmt_list;

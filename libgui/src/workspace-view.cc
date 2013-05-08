@@ -78,9 +78,6 @@ workspace_view::workspace_view (QWidget *p)
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
 
-  connect (parent (), SIGNAL (settings_changed (const QSettings *)),
-           this, SLOT (notice_settings (const QSettings *)));
-
 }
 
 workspace_view::~workspace_view (void)

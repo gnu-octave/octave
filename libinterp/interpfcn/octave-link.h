@@ -41,7 +41,9 @@ class workspace_element;
 // buffering access operations to octave and executing them in the
 // readline event hook, which lives in the octave thread.
 
-class octave_link
+class
+OCTINTERP_API
+octave_link
 {
 protected:
 

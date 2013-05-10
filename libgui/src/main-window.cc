@@ -203,6 +203,12 @@ main_window::execute_command_in_terminal (const QString& command)
 }
 
 void
+main_window::run_file_in_terminal (const QFileInfo& info)
+{
+  octave_link::post_event (this, &main_window::run_file_callback, info);
+}
+
+void
 main_window::handle_new_figure_request (void)
 {
   octave_link::post_event (this, &main_window::new_figure_callback);
@@ -1459,6 +1465,17 @@ main_window::execute_command_callback (const std::string& command)
 }
 
 void
+main_window::run_file_callback (const QFileInfo& info)
+{
+  QString dir = info.absolutePath ();
+  QString function_name = info.fileName ();
+  function_name.chop (info.suffix ().length () + 1);
+  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
+                                    dir.toStdString ()))
+    execute_command_callback (function_name.toStdString ());
+}
+
+void
 main_window::new_figure_callback (void)
 {
   Fbuiltin (ovl ("figure"));
@@ -1560,4 +1577,5 @@ main_window::find_files_finished(int)
 {
 
 }
+
 

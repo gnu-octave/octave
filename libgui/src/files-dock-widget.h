@@ -112,7 +112,7 @@ signals:
   void load_file_signal (const QString& fileName);
 
   /** Emitted, whenever the user requested to run a file. */
-  void run_file_signal (const QString& fileName);
+  void run_file_signal (const QFileInfo& info);
 
 private:
   void process_new_file(const QString &parent_name);

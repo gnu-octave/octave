@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
 #include <QSettings>
-
+#include <QFileInfo>
 #include <Qsci/qsciscintilla.h>
 
 #include "find-dialog.h"
@@ -111,7 +111,7 @@ signals:
   void mru_add_file (const QString& file_name);
   void editor_check_conflict_save (const QString& saveFileName,
                                    bool remove_on_success);
-  void process_octave_code (const QString& command);
+  void run_file_signal (const QFileInfo& info);
 
 protected:
 
@@ -169,10 +169,6 @@ private:
 
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
-
-  void run_file_callback (const bp_info& info);
-
-  bool file_in_path (const std::string& file, const std::string& dir);
 
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);

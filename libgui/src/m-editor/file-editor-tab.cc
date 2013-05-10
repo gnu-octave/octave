@@ -48,14 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-tab.h"
 #include "file-editor.h"
 
-#include "cmd-edit.h"
-
-#include "builtin-defun-decls.h"
 #include "debug.h"
-#include "load-path.h"
-#include "octave-link.h"
-#include "oct-env.h"
-#include "utils.h"
+#include "octave-qt-link.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -355,25 +349,6 @@ file_editor_tab::print_file (const QWidget *ID)
   delete printer;
 }
 
-
-void
-file_editor_tab::run_file_callback (const bp_info& info)
-{
-  if (file_in_path (info.file, info.dir))
-    {
-      std::string pending_input = command_editor::get_current_line ();
-
-      command_editor::set_initial_input (pending_input);
-
-      command_editor::replace_line (info.function_name);
-      command_editor::redisplay ();
-
-      // We are executing inside the command editor event loop.  Force
-      // the current line to be returned for processing.
-      command_editor::interrupt ();
-    }
-}
-
 void
 file_editor_tab::run_file (const QWidget *ID)
 {
@@ -383,14 +358,8 @@ file_editor_tab::run_file (const QWidget *ID)
   if (_edit_area->isModified ())
     save_file (_file_name);
 
-  QFileInfo file_info (_file_name);
-  QString dir = file_info.absolutePath ();
-  QString function_name = file_info.fileName ();
-  function_name.chop (file_info.suffix ().length () + 1);
-
-  bp_info info (_file_name, dir, function_name, 1);
-
-  octave_link::post_event (this, &file_editor_tab::run_file_callback, info);
+  QFileInfo info (_file_name);
+  emit run_file_signal (info);
 }
 
 void
@@ -451,77 +420,13 @@ file_editor_tab::remove_bookmark (const QWidget *ID)
   _edit_area->markerDeleteAll (bookmark);
 }
 
-bool
-file_editor_tab::file_in_path (const std::string& file, const std::string& dir)
-{
-  bool ok = false;
-  bool addpath_option = true;
-
-  std::string curr_dir = octave_env::get_current_directory ();
-
-  if (same_file (curr_dir, dir))
-    ok = true;
-  else
-    {
-      bool dir_in_load_path = load_path::contains_canonical (dir);
-
-      std::string base_file = octave_env::base_pathname (file);
-      std::string lp_file = load_path::find_file (base_file);
-
-      if (dir_in_load_path)
-        {
-          if (same_file (lp_file, file))
-            ok = true;
-        }
-      else
-        {
-          // File directory is not in path.  Is the file in the path in
-          // the current directory?  If so, then changing the current
-          // directory will be needed.  Adding directory to path is
-          // not enough because the file in the current directory would
-          // still be found.
-
-          if (same_file (lp_file, base_file))
-            {
-              if (same_file (curr_dir, dir))
-                ok = true;
-              else
-                addpath_option = false;
-            }
-        }
-    }
-
-  if (! ok)
-    {
-      int action
-        = octave_link::debug_cd_or_addpath_error (file, dir, addpath_option);
-      switch (action)
-        {
-        case 1:
-          Fcd (ovl (dir));
-          ok = true;
-          break;
-
-        case 2:
-          load_path::prepend (dir);
-          ok = true;
-          break;
-
-        default:
-          break;
-        }
-    }
-
-  return ok;
-}
-
 void
 file_editor_tab::add_breakpoint_callback (const bp_info& info)
 {
   bp_table::intmap line_info;
   line_info[0] = info.line;
 
-  if (file_in_path (info.file, info.dir))
+  if (octave_qt_link::file_in_path (info.file, info.dir))
     bp_table::add_breakpoint (info.function_name, line_info);
 }
 
@@ -531,14 +436,14 @@ file_editor_tab::remove_breakpoint_callback (const bp_info& info)
   bp_table::intmap line_info;
   line_info[0] = info.line;
 
-  if (file_in_path (info.file, info.dir))
+  if (octave_qt_link::file_in_path (info.file, info.dir))
     bp_table::remove_breakpoint (info.function_name, line_info);
 }
 
 void
 file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
 {
-  if (file_in_path (info.file, info.dir))
+  if (octave_qt_link::file_in_path (info.file, info.dir))
     bp_table::remove_all_breakpoints_in_file (info.function_name, true);
 }
 

@@ -24,18 +24,17 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "color-picker.h"
 #include "resource-manager.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
-#include <QSettings>
 #include <QDir>
 #include <QFileInfo>
 #include <QVector>
 
 #ifdef HAVE_QSCINTILLA
 #include <QScrollArea>
-#include "color-picker.h"
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>

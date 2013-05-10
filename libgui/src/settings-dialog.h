@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
+#include <QSettings>
 #ifdef HAVE_QSCINTILLA
 #include "lexer-octave-gui.h"
 #endif

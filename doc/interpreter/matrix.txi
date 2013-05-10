@@ -235,6 +235,8 @@ Houston, TX 77030.
 
 The following functions return famous matrix forms.
 
+@DOCSTRING(gallery)
+
 @DOCSTRING(hadamard)
 
 @DOCSTRING(hankel)

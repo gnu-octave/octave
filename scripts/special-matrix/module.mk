@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += special-matrix
 
 special_matrix_FCN_FILES = \
+  special-matrix/gallery.m \
   special-matrix/hadamard.m \
   special-matrix/hankel.m \
   special-matrix/hilb.m \

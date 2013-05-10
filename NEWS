@@ -180,7 +180,7 @@ Summary of important user-visible changes for version 3.8:
 
       betaincinv   ellipj    findfigs     polyeig       tetramesh
       cmpermute    ellipke   fminsearch   rgbplot       waterfall
-      cmunique     erfcinv   importdata   shrinkfaces
+      cmunique     erfcinv   importdata   shrinkfaces   gallery
       colorcube    erfi      iscolormap   splinefit
       dawson       expint    lines        strjoin
 

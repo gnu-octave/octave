@@ -57,6 +57,8 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   QString directory = directory_arg;
 
+  _app_closing = false;
+
   // Make sure there is a slash at the end of the directory name
   // for identification when saved later.
   if (directory.count () && directory.at (directory.count () - 1) != '/')
@@ -708,22 +710,40 @@ file_editor_tab::check_file_modified ()
       // File is modified but not saved, ask user what to do.  The file
       // editor tab can't be made parent because it may be deleted depending
       // upon the response.  Instead, change the _edit_area to read only.
+      QMessageBox::StandardButtons buttons = QMessageBox::Save |
+                                             QMessageBox::Discard;
+      QString available_actions;
+
+      if (_app_closing)
+          available_actions = tr ("Do you want to save or discard the changes?");
+      else
+        {
+          buttons = buttons | QMessageBox::Cancel;  // cancel is allowed
+          available_actions
+            = tr ("Do you want to cancel closing, save or discard the changes?");
+        }
+
       QMessageBox* msgBox
         = new QMessageBox (QMessageBox::Warning, tr ("Octave Editor"),
                            tr ("The file\n"
                                "%1\n"
                                "is about to be closed but has been modified.\n"
-                               "Do you want to cancel closing, save or discard the changes?").
-                           arg (_file_name),
-                           QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard, 0);
+                               "%2").
+                           arg (_file_name). arg (available_actions),
+                           buttons, qobject_cast<QWidget *> (parent ()));
 
       msgBox->setDefaultButton (QMessageBox::Save);
       _edit_area->setReadOnly (true);
       connect (msgBox, SIGNAL (finished (int)),
                this, SLOT (handle_file_modified_answer (int)));
-      msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      msgBox->show ();
+      if (_app_closing)  // app is closing, a non modal dialogs prevent
+        msgBox->exec (); // the app of being closed before an answer from user
+      else
+        {
+          msgBox->setWindowModality (Qt::NonModal);
+          msgBox->show ();
+        }
 
       return QMessageBox::Cancel;
     }
@@ -1062,11 +1082,12 @@ file_editor_tab::notice_settings (const QSettings *settings)
 }
 
 void
-file_editor_tab::conditional_close (const QWidget *ID)
+file_editor_tab::conditional_close (const QWidget *ID, bool app_closing)
 {
   if (ID != this)
     return;
 
+  _app_closing = app_closing;
   close ();
 }
 

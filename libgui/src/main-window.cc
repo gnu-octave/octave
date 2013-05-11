@@ -87,9 +87,9 @@ main_window::~main_window (void)
   // Destroy the terminal first so that STDERR stream is redirected back
   // to its original pipe to capture error messages at exit.
 
+  delete editor_window;     // first one for dialogs of modified editor-tabs
   delete command_window;
   delete workspace_window;
-  delete editor_window;
   delete doc_browser_window;
   delete file_browser_window;
   delete history_window;

@@ -72,6 +72,9 @@ file_editor::~file_editor (void)
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();
 
+  for (int index = _tab_widget->count ()-1; index >= 0; index--)
+    emit fetab_close_request (_tab_widget->widget (index),true); // true: app closing
+
   if (_mru_file_menu)
     delete _mru_file_menu;
 }
@@ -1083,8 +1086,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
            f, SLOT (notice_settings (const QSettings *)));
 
-  connect (this, SIGNAL (fetab_close_request (const QWidget*)),
-           f, SLOT (conditional_close (const QWidget*)));
+  connect (this, SIGNAL (fetab_close_request (const QWidget*,bool)),
+           f, SLOT (conditional_close (const QWidget*,bool)));
 
   connect (this, SIGNAL (fetab_change_request (const QWidget*)),
            f, SLOT (change_editor_state (const QWidget*)));

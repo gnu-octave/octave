@@ -55,7 +55,7 @@ public slots:
   void notice_settings (const QSettings *settings);
 
   // Will initiate close if associated with the identifier tag.
-  void conditional_close (const QWidget *ID);
+  void conditional_close (const QWidget *ID, bool app_closing = false);
 
   // Change to a different editor tab by identifier tag.
   void change_editor_state (const QWidget *ID);
@@ -182,6 +182,7 @@ private:
 
   bool _long_title;
   bool _copy_available;
+  bool _app_closing;
 
   QFileSystemWatcher _file_system_watcher;
 

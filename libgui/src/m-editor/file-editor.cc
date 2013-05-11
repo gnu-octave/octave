@@ -632,23 +632,20 @@ file_editor::request_close_file (bool)
 void
 file_editor::request_close_all_files (bool)
 {
-  int index;
-  while ((index = _tab_widget->currentIndex ()) > -1)
+  // loop over all tabs starting from last one otherwise deletion changes index
+  for (int index = _tab_widget->count ()-1; index >= 0; index--)
     emit fetab_close_request (_tab_widget->widget (index));
 }
 
 void
 file_editor::request_close_other_files (bool)
 {
-  int index = 0;
   QWidget *tabID = _tab_widget->currentWidget ();
-
-  while (_tab_widget->count () > 1)
+  // loop over all tabs starting from last one otherwise deletion changes index
+  for (int index = _tab_widget->count ()-1; index >= 0; index--)
     {
       if (tabID != _tab_widget->widget (index))
         emit fetab_close_request (_tab_widget->widget (index));
-      else
-        index++;
     }
 }
 

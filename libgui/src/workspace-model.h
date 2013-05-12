@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSemaphore>
 #include <QStringList>
 #include <QChar>
+#include <QList>
 #include <QColor>
 #include <QSettings>
 
@@ -42,6 +43,10 @@ public:
   workspace_model (QObject *parent = 0);
 
   ~workspace_model (void) { }
+
+  static QList<QColor> storage_class_default_colors (void);
+
+  static QStringList storage_class_names (void);
 
   QVariant data (const QModelIndex& index, int role) const;
 

@@ -26,7 +26,9 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <QSettings>
 #include <QtGlobal>
 #include <QWidget>
+#include <QStringList>
 #include <QColor>
+#include <QList>
 #include <QMenu>
 
 class QTerminal : public QWidget
@@ -36,6 +38,10 @@ class QTerminal : public QWidget
 public:
 
   static QTerminal *create (QWidget *xparent = 0);
+
+  static QList<QColor> default_colors (void);
+
+  static QStringList color_names (void);
 
   virtual ~QTerminal (void) { }
 

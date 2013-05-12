@@ -38,6 +38,38 @@ QTerminal::create (QWidget *xparent)
 #endif
 }
 
+QList<QColor>
+QTerminal::default_colors (void)
+{
+  static QList<QColor> colors;
+
+  if (colors.isEmpty ())
+    {
+      colors << QColor(0,0,0)
+             << QColor(255,255,255)
+             << QColor(192,192,192)
+             << QColor(128,128,128);
+    }
+
+  return colors;
+}
+
+QStringList
+QTerminal::color_names (void)
+{
+  static QStringList names;
+
+  if (names.isEmpty ())
+    {
+      names << QObject::tr ("foreground")
+            << QObject::tr ("background")
+            << QObject::tr ("selection")
+            << QObject::tr ("cursor");
+    }
+
+  return names;
+}
+
 void
 QTerminal::notice_settings (const QSettings *settings)
 {
@@ -68,29 +100,22 @@ QTerminal::notice_settings (const QSettings *settings)
   bool cursorUseForegroundColor
     = settings->value ("terminal/cursorUseForegroundColor", true).toBool ();
 
-  // FIXME -- we shouldn't duplicate this information here and in the
-  // resource manager.
-  QList<QColor> default_colors;
-
-  default_colors << QColor(0,0,0)
-                 << QColor(255,255,255)
-                 << QColor(192,192,192)
-                 << QColor(128,128,128);
+  QList<QColor> colors = default_colors ();
 
   setForegroundColor
     (settings->value ("terminal/color_f",
-                      QVariant (default_colors.at (0))).value<QColor> ());
+                      QVariant (colors.at (0))).value<QColor> ());
 
   setBackgroundColor
     (settings->value ("terminal/color_b",
-                      QVariant (default_colors.at (1))).value<QColor> ());
+                      QVariant (colors.at (1))).value<QColor> ());
 
   setSelectionColor
     (settings->value ("terminal/color_s",
-                      QVariant (default_colors.at (2))).value<QColor> ());
+                      QVariant (colors.at (2))).value<QColor> ());
 
   setCursorColor
     (cursorUseForegroundColor,
      settings->value ("terminal/color_c",
-                      QVariant (default_colors.at (3))).value<QColor> ());
+                      QVariant (colors.at (3))).value<QColor> ());
 }

@@ -33,11 +33,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "file-ops.h"
+#include "help.h"
 #include "oct-env.h"
 #include "singleton-cleanup.h"
 
 #include "defaults.h"
 
+#include "QTerminal.h"
+#include "workspace-model.h"
 #include "resource-manager.h"
 
 resource_manager *resource_manager::instance = 0;
@@ -198,41 +201,25 @@ resource_manager::do_update_network_settings (void)
 QStringList 
 resource_manager::storage_class_names (void)
 {
-  return QStringList () << QObject::tr ("automatic")
-                        << QObject::tr ("function")
-                        << QObject::tr ("global")
-                        << QObject::tr ("hidden")
-                        << QObject::tr ("inherited")
-                        << QObject::tr ("persistent");
+  return workspace_model::storage_class_names ();
 }
 
 QList<QColor>
 resource_manager::storage_class_default_colors (void)
 {
-  return QList<QColor> () << QColor(190,255,255)
-                          << QColor(220,255,220)
-                          << QColor(220,220,255)
-                          << QColor(255,255,190)
-                          << QColor(255,220,220)
-                          << QColor(255,190,255);
+  return workspace_model::storage_class_default_colors ();
 }
 
 QStringList 
 resource_manager::terminal_color_names (void)
 {
-  return QStringList () << QObject::tr ("foreground")
-                        << QObject::tr ("background")
-                        << QObject::tr ("selection")
-                        << QObject::tr ("cursor");
+  return QTerminal::color_names ();
 }
 
 QList<QColor>
 resource_manager::terminal_default_colors (void)
 {
-  return QList<QColor> () << QColor(0,0,0)
-                          << QColor(255,255,255)
-                          << QColor(192,192,192)
-                          << QColor(128,128,128);
+  return QTerminal::default_colors ();
 }
 
 const char*

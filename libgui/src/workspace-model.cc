@@ -46,6 +46,43 @@ workspace_model::workspace_model (QObject *p)
 
 }
 
+QList<QColor>
+workspace_model::storage_class_default_colors (void)
+{
+  QList<QColor> colors;
+
+  if (colors.isEmpty ())
+    {
+      colors << QColor (190,255,255)
+             << QColor (220,255,220)
+             << QColor (220,220,255)
+             << QColor (255,255,190)
+             << QColor (255,220,220)
+             << QColor (255,190,255);
+    }
+
+  return colors;
+}
+
+
+QStringList
+workspace_model::storage_class_names (void)
+{
+  QStringList names;
+
+  if (names.isEmpty ())
+    {
+      names << QObject::tr ("automatic")
+            << QObject::tr ("function")
+            << QObject::tr ("global")
+            << QObject::tr ("hidden")
+            << QObject::tr ("inherited")
+            << QObject::tr ("persistent");
+    }
+
+  return names;
+}
+
 int
 workspace_model::rowCount (const QModelIndex&) const
 {

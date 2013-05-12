@@ -832,6 +832,7 @@ main_window::construct (void)
 
   construct_octave_qt_link ();
 
+#ifdef HAVE_QSCINTILLA
   connect (this,
            SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
            editor_window,
@@ -846,6 +847,7 @@ main_window::construct (void)
            SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
            editor_window,
            SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
+#endif
 
   QDir curr_dir;
   set_current_working_directory (curr_dir.absolutePath ());
@@ -902,10 +904,12 @@ main_window::construct_octave_qt_link (void)
   connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
            this, SLOT (handle_exit_debugger ()));
 
+#ifdef HAVE_QSCINTILLA
   connect (_octave_qt_link,
            SIGNAL (edit_file_signal (const QString&)),
            editor_window,
            SLOT (handle_edit_file_request (const QString&)));
+#endif
 
   connect (_octave_qt_link,
            SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
@@ -986,8 +990,10 @@ main_window::construct_file_menu (QMenuBar *p)
   connect (preferences_action, SIGNAL (triggered ()),
            this, SLOT (process_settings_dialog_request ()));
 
+#ifdef HAVE_QSCINTILLA
   connect (_open_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_open_file ()));
+#endif
 
   connect (load_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_load_workspace_request ()));
@@ -1014,11 +1020,13 @@ main_window::construct_new_menu (QMenu *p)
   QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
   new_figure_action->setEnabled (true);
 
+#ifdef HAVE_QSCINTILLA
   connect (_new_script_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_script ()));
 
   connect (new_function_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_function ()));
+#endif
 
   connect (new_figure_action, SIGNAL (triggered ()),
            this, SLOT (handle_new_figure_request ()));
@@ -1253,8 +1261,10 @@ main_window::construct_window_menu (QMenuBar *p)
   connect (file_browser_action, SIGNAL (triggered ()),
            file_browser_window, SLOT (focus ()));
 
+#ifdef HAVE_QSCINTILLA
   connect (editor_action, SIGNAL (triggered ()),
            editor_window, SLOT (focus ()));
+#endif
 
   connect (documentation_action, SIGNAL (triggered ()),
            doc_browser_window, SLOT (focus ()));

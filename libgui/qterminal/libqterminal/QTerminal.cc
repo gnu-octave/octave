@@ -44,22 +44,29 @@ QTerminal::notice_settings (const QSettings *settings)
   // QSettings pointer is checked before emitting.
 
   // Set terminal font:
-  QFont term_font = QFont();
-  term_font.setFamily(settings->value("terminal/fontName","Courier New").toString());
-  term_font.setPointSize(settings->value("terminal/fontSize",10).toInt ());
+  QFont term_font = QFont ();
+  term_font.setFamily
+    (settings->value ("terminal/fontName", "Courier New").toString ());
+
+  term_font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
+
   setTerminalFont (term_font);
 
-  QString cursorType = settings->value ("terminal/cursorType","ibeam").toString ();
-  bool cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
+  QString cursorType
+    = settings->value ("terminal/cursorType", "ibeam").toString ();
+
+  bool cursorBlinking
+    = settings->value ("terminal/cursorBlinking", true).toBool ();
+
   if (cursorType == "ibeam")
-    setCursorType(QTerminal::IBeamCursor, cursorBlinking);
+    setCursorType (QTerminal::IBeamCursor, cursorBlinking);
   else if (cursorType == "block")
-    setCursorType(QTerminal::BlockCursor, cursorBlinking);
+    setCursorType (QTerminal::BlockCursor, cursorBlinking);
   else if (cursorType == "underline")
-    setCursorType(QTerminal::UnderlineCursor, cursorBlinking);
+    setCursorType (QTerminal::UnderlineCursor, cursorBlinking);
 
   bool cursorUseForegroundColor
-    = settings->value ("terminal/cursorUseForegroundColor",true).toBool ();
+    = settings->value ("terminal/cursorUseForegroundColor", true).toBool ();
 
   // FIXME -- we shouldn't duplicate this information here and in the
   // resource manager.

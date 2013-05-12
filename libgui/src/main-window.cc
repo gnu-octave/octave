@@ -215,13 +215,6 @@ main_window::handle_new_figure_request (void)
 }
 
 void
-main_window::handle_new_variable_request (void)
-{
-  QMessageBox::about (this, tr ("New Variable"),
-                      tr ("The new variable action is not implemented."));
-}
-
-void
 main_window::open_online_documentation_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://gnu.org/software/octave/doc/interpreter"));
@@ -1010,9 +1003,6 @@ main_window::construct_new_menu (QMenu *p)
   QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
   new_figure_action->setEnabled (true);
 
-  QAction *new_variable_action = new_menu->addAction (tr ("Variable"));
-  new_variable_action->setEnabled (true);
-
   connect (_new_script_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_script ()));
 
@@ -1021,9 +1011,6 @@ main_window::construct_new_menu (QMenu *p)
 
   connect (new_figure_action, SIGNAL (triggered ()),
            this, SLOT (handle_new_figure_request ()));
-
-  connect (new_variable_action, SIGNAL (triggered ()),
-           this, SLOT (handle_new_variable_request ()));
 }
 
 void

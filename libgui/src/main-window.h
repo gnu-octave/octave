@@ -120,8 +120,6 @@ public slots:
 
   void handle_new_figure_request (void);
 
-  void handle_new_variable_request (void);
-
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
   void debug_continue (void);

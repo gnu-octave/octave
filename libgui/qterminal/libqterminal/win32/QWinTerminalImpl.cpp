@@ -1157,14 +1157,14 @@ QConsolePrivate::cursorRect (void)
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
-    : QTerminalInterface (parent), d (new QConsolePrivate (this))
+    : QTerminal (parent), d (new QConsolePrivate (this))
 {
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (const QString& cmd, QWidget* parent)
-    : QTerminalInterface (parent), d (new QConsolePrivate (this, cmd))
+    : QTerminal (parent), d (new QConsolePrivate (this, cmd))
 {
 }
 

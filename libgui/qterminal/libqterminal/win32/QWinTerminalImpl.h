@@ -23,7 +23,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define __QConsole_h__ 1
 
 #include <QWidget>
-#include "QTerminalInterface.h"
+#include "QTerminal.h"
 class QFocusEvent;
 class QKeyEvent;
 class QPainter;
@@ -38,7 +38,7 @@ class QConsoleView;
 
 //////////////////////////////////////////////////////////////////////////////
 
-class QWinTerminalImpl : public QTerminalInterface
+class QWinTerminalImpl : public QTerminal
 {
   Q_OBJECT
   friend class QConsolePrivate;

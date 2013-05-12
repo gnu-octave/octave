@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "terminal-dock-widget.h"
 
 terminal_dock_widget::terminal_dock_widget (QWidget *p)
-  : octave_dock_widget (p), terminal (new QTerminal (p))
+  : octave_dock_widget (p), terminal (QTerminal::create (p))
 {
   terminal->setObjectName ("OctaveTerminal");
   terminal->setFocusPolicy (Qt::StrongFocus);

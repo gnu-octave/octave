@@ -25,7 +25,7 @@
 #include <termios.h>
 
 QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
-    : QTerminalInterface(parent) {
+    : QTerminal(parent) {
     setMinimumSize(300, 200);
     initialize();
 }

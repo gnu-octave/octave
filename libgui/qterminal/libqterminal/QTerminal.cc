@@ -22,6 +22,22 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "QTerminal.h"
 
+#if defined (Q_OS_WIN32)
+# include "win32/QWinTerminalImpl.h"
+#else
+# include "unix/QUnixTerminalImpl.h"
+#endif
+
+QTerminal *
+QTerminal::create (QWidget *xparent)
+{
+#if defined (Q_OS_WIN32)
+  return new QWinTerminalImpl (xparent);
+#else
+  return new QUnixTerminalImpl (xparent);
+#endif
+}
+
 void
 QTerminal::notice_settings (const QSettings *settings)
 {
@@ -36,11 +52,11 @@ QTerminal::notice_settings (const QSettings *settings)
   QString cursorType = settings->value ("terminal/cursorType","ibeam").toString ();
   bool cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
   if (cursorType == "ibeam")
-    setCursorType(QTerminalInterface::IBeamCursor, cursorBlinking);
+    setCursorType(QTerminal::IBeamCursor, cursorBlinking);
   else if (cursorType == "block")
-    setCursorType(QTerminalInterface::BlockCursor, cursorBlinking);
+    setCursorType(QTerminal::BlockCursor, cursorBlinking);
   else if (cursorType == "underline")
-    setCursorType(QTerminalInterface::UnderlineCursor, cursorBlinking);
+    setCursorType(QTerminal::UnderlineCursor, cursorBlinking);
 
   bool cursorUseForegroundColor
     = settings->value ("terminal/cursorUseForegroundColor",true).toBool ();

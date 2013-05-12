@@ -3,7 +3,6 @@ EXTRA_DIST += \
 
 noinst_HEADERS += \
   qterminal/libqterminal/QTerminal.h \
-  qterminal/libqterminal/QTerminalInterface.h \
   qterminal/libqterminal/win32/QTerminalColors.h \
   qterminal/libqterminal/win32/QWinTerminalImpl.h \
   qterminal/libqterminal/unix/BlockArray.h \
@@ -28,8 +27,7 @@ noinst_HEADERS += \
   qterminal/libqterminal/unix/TerminalView.h
 
 qterminal_libqterminal_la_MOC = \
-  qterminal/libqterminal/moc-QTerminal.cc \
-  qterminal/libqterminal/moc-QTerminalInterface.cc
+  qterminal/libqterminal/moc-QTerminal.cc
 
 nodist_qterminal_libqterminal_la_SOURCES = $(qterminal_libqterminal_la_MOC)
 

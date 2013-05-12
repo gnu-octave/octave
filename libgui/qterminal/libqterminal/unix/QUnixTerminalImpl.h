@@ -25,9 +25,9 @@
 #include "unix/kpty.h"
 #include "unix/TerminalModel.h"
 #include "unix/TerminalView.h"
-#include "QTerminalInterface.h"
+#include "QTerminal.h"
 
-class QUnixTerminalImpl : public QTerminalInterface
+class QUnixTerminalImpl : public QTerminal
 {
     Q_OBJECT
 

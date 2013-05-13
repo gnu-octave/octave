@@ -23,12 +23,14 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define __QConsole_h__ 1
 
 #include <QWidget>
-#include "QTerminalInterface.h"
+#include "QTerminal.h"
 class QFocusEvent;
 class QKeyEvent;
+class QPainter;
 class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
+class QPoint;
 
 class QConsolePrivate;
 class QConsoleThread;
@@ -36,7 +38,7 @@ class QConsoleView;
 
 //////////////////////////////////////////////////////////////////////////////
 
-class QWinTerminalImpl : public QTerminalInterface
+class QWinTerminalImpl : public QTerminal
 {
   Q_OBJECT
   friend class QConsolePrivate;
@@ -51,10 +53,17 @@ public:
   void setTerminalFont (const QFont& font);
   void setSize (int columns, int lines);
   void sendText (const QString& s);
+  void setCursorType (CursorType type, bool blinking);
+
+  void setBackgroundColor (const QColor& color);
+  void setForegroundColor (const QColor& color);
+  void setSelectionColor (const QColor& color);
+  void setCursorColor (bool useForegoundColor, const QColor& color);
 
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);
+  void blinkCursorEvent (void);
 
 signals:
   void terminated (void);
@@ -62,15 +71,23 @@ signals:
 
 protected:
   void viewPaintEvent (QConsoleView*, QPaintEvent*);
+  void setBlinkingCursor (bool blink);
+  void setBlinkingCursorState (bool blink);
   void viewResizeEvent (QConsoleView*, QResizeEvent*);
   void wheelEvent (QWheelEvent*);
   void focusInEvent (QFocusEvent*);
+  void focusOutEvent (QFocusEvent*);
+  void keyPressEvent (QKeyEvent*);
   bool winEvent (MSG*, long*);
   virtual void start (void);
+  void mouseMoveEvent (QMouseEvent *event);
+  void mousePressEvent (QMouseEvent *event);
+  void mouseReleaseEvent (QMouseEvent *event);
 
 private slots:
   void scrollValueChanged (int value);
   void monitorConsole (void);
+  void updateSelection (void);
 
 private:
   QConsolePrivate* d;

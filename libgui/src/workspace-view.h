@@ -41,9 +41,11 @@ public:
 
   ~workspace_view (void);
 
-public:
+public slots:
 
-  void setModel (workspace_model *model) { view->setModel (model); }
+  void notice_settings (const QSettings *);
+
+  void setModel (workspace_model *model);
 
 signals:
 
@@ -73,6 +75,7 @@ private:
 
   QTableView *view;
   int view_previous_row_count;
+  workspace_model *_model;
 };
 
 #endif

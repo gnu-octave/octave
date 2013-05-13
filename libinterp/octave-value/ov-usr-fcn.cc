@@ -58,6 +58,13 @@ along with Octave; see the file COPYING.  If not, see
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
 
+
+std::map<std::string, octave_value>
+octave_user_code::subfunctions (void) const
+{
+  return std::map<std::string, octave_value> ();
+}
+
 // User defined scripts.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_user_script);
@@ -223,6 +230,7 @@ octave_user_function::~octave_user_function (void)
   delete jit_info;
 #endif
 
+  // FIXME -- this is really playing with fire.
   symbol_table::erase_scope (local_scope);
 }
 
@@ -238,6 +246,70 @@ void
 octave_user_function::stash_fcn_file_name (const std::string& nm)
 {
   file_name = nm;
+}
+
+// If there is no explicit end statement at the end of the function,
+// relocate the no_op that was generated for the end of file condition
+// to appear on the next line after the last statement in the file, or
+// the next line after the function keyword if there are no statements.
+// More precisely, the new location should probably be on the next line
+// after the end of the parameter list, but we aren't tracking that
+// information (yet).
+
+void
+octave_user_function::maybe_relocate_end_internal (void)
+{
+  if (cmd_list && ! cmd_list->empty ())
+    {
+      tree_statement *last_stmt = cmd_list->back ();
+
+      if (last_stmt && last_stmt->is_end_of_fcn_or_script ()
+          && last_stmt->is_end_of_file ())
+        {
+          tree_statement_list::reverse_iterator
+            next_to_last_elt = cmd_list->rbegin ();
+
+          next_to_last_elt++;
+
+          int new_eof_line;
+          int new_eof_col;
+
+          if (next_to_last_elt == cmd_list->rend ())
+            {
+              new_eof_line = beginning_line ();
+              new_eof_col = beginning_column ();
+            }
+          else
+            {
+              tree_statement *next_to_last_stmt = *next_to_last_elt;
+
+              new_eof_line = next_to_last_stmt->line ();
+              new_eof_col = next_to_last_stmt->column ();
+            }
+
+          last_stmt->set_location (new_eof_line + 1, new_eof_col);
+        }
+    }
+}
+
+void
+octave_user_function::maybe_relocate_end (void)
+{
+  std::map<std::string, octave_value> fcns = subfunctions ();
+
+  if (! fcns.empty ())
+    {
+      for (std::map<std::string, octave_value>::iterator p = fcns.begin ();
+           p != fcns.end (); p++)
+        {
+          octave_user_function *f = (p->second).user_function_value ();
+
+          if (f)
+            f->maybe_relocate_end_internal ();
+        }
+    }
+
+  maybe_relocate_end_internal ();
 }
 
 std::string
@@ -304,6 +376,25 @@ void
 octave_user_function::unlock_subfunctions (void)
 {
   symbol_table::unlock_subfunctions (local_scope);
+}
+
+std::map<std::string, octave_value>
+octave_user_function::subfunctions (void) const
+{
+  return symbol_table::subfunctions_defined_in_scope (local_scope);
+}
+
+bool
+octave_user_function::has_subfunctions (void) const
+{
+  return ! subfcn_names.empty ();
+}
+
+void
+octave_user_function::stash_subfunction_names
+  (const std::list<std::string>& names)
+{
+  subfcn_names = names;
 }
 
 octave_value_list

@@ -87,9 +87,9 @@ main_window::~main_window (void)
   // Destroy the terminal first so that STDERR stream is redirected back
   // to its original pipe to capture error messages at exit.
 
+  delete editor_window;     // first one for dialogs of modified editor-tabs
   delete command_window;
   delete workspace_window;
-  delete editor_window;
   delete doc_browser_window;
   delete file_browser_window;
   delete history_window;
@@ -203,16 +203,15 @@ main_window::execute_command_in_terminal (const QString& command)
 }
 
 void
-main_window::handle_new_figure_request (void)
+main_window::run_file_in_terminal (const QFileInfo& info)
 {
-  octave_link::post_event (this, &main_window::new_figure_callback);
+  octave_link::post_event (this, &main_window::run_file_callback, info);
 }
 
 void
-main_window::handle_new_variable_request (void)
+main_window::handle_new_figure_request (void)
 {
-  QMessageBox::about (this, tr ("New Variable"),
-                      tr ("The new variable action is not implemented."));
+  octave_link::post_event (this, &main_window::new_figure_callback);
 }
 
 void
@@ -1004,9 +1003,6 @@ main_window::construct_new_menu (QMenu *p)
   QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
   new_figure_action->setEnabled (true);
 
-  QAction *new_variable_action = new_menu->addAction (tr ("Variable"));
-  new_variable_action->setEnabled (true);
-
   connect (_new_script_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_script ()));
 
@@ -1015,9 +1011,6 @@ main_window::construct_new_menu (QMenu *p)
 
   connect (new_figure_action, SIGNAL (triggered ()),
            this, SLOT (handle_new_figure_request ()));
-
-  connect (new_variable_action, SIGNAL (triggered ()),
-           this, SLOT (handle_new_variable_request ()));
 }
 
 void
@@ -1459,6 +1452,17 @@ main_window::execute_command_callback (const std::string& command)
 }
 
 void
+main_window::run_file_callback (const QFileInfo& info)
+{
+  QString dir = info.absolutePath ();
+  QString function_name = info.fileName ();
+  function_name.chop (info.suffix ().length () + 1);
+  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
+                                    dir.toStdString ()))
+    execute_command_callback (function_name.toStdString ());
+}
+
+void
 main_window::new_figure_callback (void)
 {
   Fbuiltin (ovl ("figure"));
@@ -1560,4 +1564,5 @@ main_window::find_files_finished(int)
 {
 
 }
+
 

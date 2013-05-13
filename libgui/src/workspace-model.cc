@@ -26,9 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QTreeWidget>
+#include <QSettings>
 
 #include "utils.h"
-
+#include "resource-manager.h"
 #include "workspace-model.h"
 
 workspace_model::workspace_model (QObject *p)
@@ -39,16 +40,57 @@ workspace_model::workspace_model (QObject *p)
   _columnNames.append (tr ("Dimension"));
   _columnNames.append (tr ("Value"));
   _columnNames.append (tr ("Storage Class"));
+
+  for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+    _storage_class_colors.append (QColor (Qt::white));
+
+}
+
+QList<QColor>
+workspace_model::storage_class_default_colors (void)
+{
+  QList<QColor> colors;
+
+  if (colors.isEmpty ())
+    {
+      colors << QColor (190,255,255)
+             << QColor (220,255,220)
+             << QColor (220,220,255)
+             << QColor (255,255,190)
+             << QColor (255,220,220)
+             << QColor (255,190,255);
+    }
+
+  return colors;
+}
+
+
+QStringList
+workspace_model::storage_class_names (void)
+{
+  QStringList names;
+
+  if (names.isEmpty ())
+    {
+      names << QObject::tr ("automatic")
+            << QObject::tr ("function")
+            << QObject::tr ("global")
+            << QObject::tr ("hidden")
+            << QObject::tr ("inherited")
+            << QObject::tr ("persistent");
+    }
+
+  return names;
 }
 
 int
-workspace_model::rowCount(const QModelIndex& p) const
+workspace_model::rowCount (const QModelIndex&) const
 {
   return _symbols.size ();
 }
 
 int
-workspace_model::columnCount (const QModelIndex& p) const
+workspace_model::columnCount (const QModelIndex&) const
 {
   return _columnNames.size ();
 }
@@ -84,53 +126,56 @@ workspace_model::data (const QModelIndex& idx, int role) const
 {
   QVariant retval;
 
-  if (idx.isValid ()
-      && (role == Qt::DisplayRole
-          || (idx.column () == 0 && (role == Qt::EditRole
-                                     || role == Qt::ToolTipRole))))
+  if (idx.isValid ())
     {
-      switch (idx.column ())
+      if (role == Qt::BackgroundColorRole)
         {
-        case 0:
-          if (role == Qt::ToolTipRole)
-            retval = QVariant (tr ("Right click to copy, rename, or display"));
+          QString class_chars = resource_manager::storage_class_chars ();
+          int actual_class = class_chars.indexOf (_scopes[idx.row()].toAscii ());
+          if (actual_class >= 0)
+            return QVariant (_storage_class_colors.at (actual_class));
           else
-            retval = QVariant (_symbols[idx.row()]);
-          break;
-
-        case 1:
-          retval = QVariant (_class_names[idx.row()]);
-          break;
-
-        case 2:
-          retval = QVariant (_dimensions[idx.row()]);
-          break;
-
-        case 3:
-          retval = QVariant (_values[idx.row()]);
-          break;
-
-        case 4:
-          {
-            QChar c = _scopes[idx.row()];
-
-            if (c == 'g')
-              retval = QVariant (tr ("global"));
-            else if (c == 'p')
-              retval = QVariant (tr ("persistent"));
-            else if (c == 'a')
-              retval = QVariant (tr ("automatic"));
-            else if (c == 'f')
-              retval = QVariant (tr ("function parameter"));
-            else if (c == 'h')
-              retval = QVariant (tr ("hidden"));
-            else if (c == 'i')
-              retval = QVariant (tr ("inherited"));
-          }
-
-        default:
-          break;
+            return retval;
         }
+
+      if (role == Qt::DisplayRole
+          || (idx.column () == 0 && role == Qt::EditRole)
+          || (idx.column () == 0 && role == Qt::ToolTipRole) )
+        {
+          switch (idx.column ())
+            {
+            case 0:
+              if (role == Qt::ToolTipRole)
+                retval = QVariant (tr ("Right click to copy, rename, or display"));
+              else
+                retval = QVariant (_symbols[idx.row()]);
+              break;
+
+            case 1:
+              retval = QVariant (_class_names[idx.row()]);
+              break;
+
+            case 2:
+              retval = QVariant (_dimensions[idx.row()]);
+              break;
+
+            case 3:
+              retval = QVariant (_values[idx.row()]);
+              break;
+
+            case 4:
+              retval = QVariant ();
+              QString class_chars = resource_manager::storage_class_chars ();
+              int actual_class = class_chars.indexOf (_scopes[idx.row()].toAscii ());
+              if (actual_class >= 0)
+                {
+                  QStringList class_names = resource_manager::storage_class_names ();
+                  retval = QVariant (class_names.at (actual_class));
+                }
+              break;
+
+          }
+      }
     }
 
   return retval;
@@ -212,4 +257,19 @@ workspace_model::update_table (void)
   endResetModel ();
 
   emit model_changed ();
+}
+
+void
+workspace_model::notice_settings (const QSettings *settings)
+{
+  QList<QColor> default_colors = resource_manager::storage_class_default_colors ();
+  QString class_chars = resource_manager::storage_class_chars ();
+
+  for (int i = 0; i < class_chars.length (); i++)
+    {
+      QVariant default_var = default_colors.at (i);
+      QColor setting_color = settings->value ("workspaceview/color_"+class_chars.mid (i,1),
+                                             default_var).value<QColor> ();
+      _storage_class_colors.replace (i,setting_color);
+    }
 }

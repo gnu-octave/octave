@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_dock_widget_h 1
 
 #include <QDockWidget>
+#include <QSettings>
 
 class octave_dock_widget : public QDockWidget
 {
@@ -39,6 +40,9 @@ public:
 
     connect (this, SIGNAL (topLevelChanged (bool)),
              this, SLOT (top_level_changed (bool)));
+
+    connect (p, SIGNAL (settings_changed (const QSettings*)),
+             this, SLOT (notice_settings (const QSettings*)));
   }
 
   virtual ~octave_dock_widget () { }
@@ -48,6 +52,7 @@ public:
     connect (this, SIGNAL (visibilityChanged (bool)),
              this, SLOT (handle_visibility (bool)));
   }
+
 
 signals:
 
@@ -80,6 +85,10 @@ public slots:
   {
     if (visible && ! isFloating ())
       focus ();
+  }
+
+  virtual void notice_settings (const QSettings*)
+  {
   }
 
 protected slots:

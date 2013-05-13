@@ -36,6 +36,9 @@ public:
   typedef typename std::list<elt_type>::iterator iterator;
   typedef typename std::list<elt_type>::const_iterator const_iterator;
 
+  typedef typename std::list<elt_type>::reverse_iterator reverse_iterator;
+  typedef typename std::list<elt_type>::const_reverse_iterator const_reverse_iterator;
+
   bool empty (void) const { return lst.empty (); }
 
   size_t size (void) const { return lst.size (); }
@@ -73,6 +76,12 @@ public:
 
   iterator end (void) { return iterator (lst.end ()); }
   const_iterator end (void) const { return const_iterator (lst.end ()); }
+
+  reverse_iterator rbegin (void) { return reverse_iterator (lst.rbegin ()); }
+  const_reverse_iterator rbegin (void) const { return const_reverse_iterator (lst.rbegin ()); }
+
+  reverse_iterator rend (void) { return reverse_iterator (lst.rend ()); }
+  const_reverse_iterator rend (void) const { return const_reverse_iterator (lst.rend ()); }
 
   elt_type& front (void) { return lst.front (); }
   elt_type& back (void) { return lst.back (); }

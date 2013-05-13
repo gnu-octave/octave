@@ -33,11 +33,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "file-ops.h"
+#include "help.h"
 #include "oct-env.h"
 #include "singleton-cleanup.h"
 
 #include "defaults.h"
 
+#include "QTerminal.h"
+#include "workspace-model.h"
 #include "resource-manager.h"
 
 resource_manager *resource_manager::instance = 0;
@@ -193,6 +196,30 @@ resource_manager::do_update_network_settings (void)
   proxy.setPassword (settings->value ("proxyPassword").toString ());
 
   QNetworkProxy::setApplicationProxy (proxy);
+}
+
+QStringList 
+resource_manager::storage_class_names (void)
+{
+  return workspace_model::storage_class_names ();
+}
+
+QList<QColor>
+resource_manager::storage_class_default_colors (void)
+{
+  return workspace_model::storage_class_default_colors ();
+}
+
+QStringList 
+resource_manager::terminal_color_names (void)
+{
+  return QTerminal::color_names ();
+}
+
+QList<QColor>
+resource_manager::terminal_default_colors (void)
+{
+  return QTerminal::default_colors ();
 }
 
 const char*

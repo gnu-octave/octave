@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QAction>
 #include <QTreeView>
-#include <QSettings>
+#include <QMouseEvent>
 
 #include <QComboBox>
 #include "octave-dock-widget.h"
@@ -86,6 +86,7 @@ private slots:
   /* context menu actions */
   void contextmenu_open (bool);
   void contextmenu_open_in_app (bool);
+  void contextmenu_copy_selection (bool);
   void contextmenu_run (bool);
   void contextmenu_load (bool);
   void contextmenu_rename (bool);
@@ -97,6 +98,7 @@ private slots:
   /* popdown menu options */
   void popdownmenu_newfile(bool);
   void popdownmenu_newdir(bool);
+  void popdownmenu_search_dir (bool);
 
 signals:
 
@@ -110,7 +112,7 @@ signals:
   void load_file_signal (const QString& fileName);
 
   /** Emitted, whenever the user requested to run a file. */
-  void run_file_signal (const QString& fileName);
+  void run_file_signal (const QFileInfo& info);
 
 private:
   void process_new_file(const QString &parent_name);

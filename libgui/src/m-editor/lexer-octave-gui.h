@@ -56,6 +56,7 @@ public:
   QString description (int style) const;
   QColor defaultColor (int style) const;
   QFont defaultFont (int style) const;
+  int braceStyle() const;
 
 private:
   lexer_octave_gui (const lexer_octave_gui &);

@@ -203,7 +203,6 @@ function list = missing_functions ()
   "frame2im",
   "freqspace",
   "funm",
-  "gallery",
   "gammaincinv",
   "getframe",
   "getpixelposition",

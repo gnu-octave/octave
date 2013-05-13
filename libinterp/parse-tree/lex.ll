@@ -3024,7 +3024,7 @@ octave_base_lexer::handle_op_internal (int tok, bool bos, bool compat)
   looking_for_object_index = false;
   at_beginning_of_statement = bos;
 
-  return count_token (tok);
+  return count_token_internal (tok);
 }
 
 int

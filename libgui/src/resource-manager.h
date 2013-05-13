@@ -82,6 +82,14 @@ public:
   }
 
   static const char *octave_keywords (void);
+  
+  static QString storage_class_chars (void) { return "afghip"; }
+  static QStringList storage_class_names (void);
+  static QList<QColor> storage_class_default_colors (void);
+
+  static QString terminal_color_chars (void) { return "fbsc"; }
+  static QStringList terminal_color_names (void);
+  static QList<QColor> terminal_default_colors (void);
 
 private:
 

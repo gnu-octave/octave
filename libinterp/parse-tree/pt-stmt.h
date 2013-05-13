@@ -74,6 +74,8 @@ public:
   int line (void) const;
   int column (void) const;
 
+  void set_location (int l, int c);
+
   void echo_code (void);
 
   tree_command *command (void) { return cmd; }
@@ -85,6 +87,8 @@ public:
   bool is_null_statement (void) const { return ! (cmd || expr || comm); }
 
   bool is_end_of_fcn_or_script (void) const;
+
+  bool is_end_of_file (void) const;
 
   // Allow modification of this statement.  Note that there is no
   // checking.  If you use these, are you sure you knwo what you are

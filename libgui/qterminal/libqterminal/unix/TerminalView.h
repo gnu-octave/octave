@@ -150,6 +150,7 @@ public:
     bool blinkingCursor() { return _hasBlinkingCursor; }
     /** Specifies whether or not the cursor blinks. */
     void setBlinkingCursor(bool blink);
+    void setBlinkingCursorState(bool blink);
 
     void setCtrlDrag(bool enable) { _ctrlDrag=enable; }
     bool ctrlDrag() { return _ctrlDrag; }
@@ -477,6 +478,9 @@ protected:
     virtual bool event( QEvent * );
 
     virtual void paintEvent( QPaintEvent * );
+
+    void focusInEvent(QFocusEvent *focusEvent);
+    void focusOutEvent(QFocusEvent *focusEvent);
 
     virtual void showEvent(QShowEvent*);
     virtual void hideEvent(QHideEvent*);

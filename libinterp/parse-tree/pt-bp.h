@@ -136,7 +136,7 @@ tree_breakpoint : public tree_walker
 
   octave_value_list get_list (void) { return bp_list; }
 
-  int get_line (void) { return line; }
+  int get_line (void) { return found ? line : 0; }
 
  private:
 

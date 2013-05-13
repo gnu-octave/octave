@@ -163,7 +163,7 @@ MessageDialog::MessageDialog (const QString& message,
           // Make the last button the button pressed when <esc> key activated.
           if (i == N-1)
             {
-#define ACTIVE_ESCAPE true
+#define ACTIVE_ESCAPE 1
 #if ACTIVE_ESCAPE
               setEscapeButton (pbutton);
 #else
@@ -231,7 +231,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
       for (int j = 0; j < prompt.length (); j++)
         {
           if (j > 0)
-#define RICH_TEXT true
+#define RICH_TEXT 1
 #if RICH_TEXT
             prompt_string.append ("<br>");
 #else
@@ -327,7 +327,7 @@ InputDialog::InputDialog (const QStringList& prompt, const QString& title,
   : QDialog ()
 {
 
-#define LINE_EDIT_FOLLOWS_PROMPT false
+#define LINE_EDIT_FOLLOWS_PROMPT 0
 
 #if LINE_EDIT_FOLLOWS_PROMPT
     // Prompt on left followed by input on right.

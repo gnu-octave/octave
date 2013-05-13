@@ -25,9 +25,9 @@
 #include "unix/kpty.h"
 #include "unix/TerminalModel.h"
 #include "unix/TerminalView.h"
-#include "QTerminalInterface.h"
+#include "QTerminal.h"
 
-class QUnixTerminalImpl : public QTerminalInterface
+class QUnixTerminalImpl : public QTerminal
 {
     Q_OBJECT
 
@@ -43,12 +43,16 @@ public:
 
     void setCursorType(CursorType type, bool blinking);
 
+    void setBackgroundColor (const QColor& color);
+    void setForegroundColor (const QColor& color);
+    void setSelectionColor (const QColor& color);
+    void setCursorColor (bool useForegroundColor, const QColor& color);
+
 public slots:
     void copyClipboard();
     void pasteClipboard();
 
 protected:
-    void focusInEvent(QFocusEvent *focusEvent);
     void showEvent(QShowEvent *);
     virtual void resizeEvent(QResizeEvent *);   
 

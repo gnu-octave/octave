@@ -25,7 +25,7 @@
 #include <termios.h>
 
 QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
-    : QTerminalInterface(parent) {
+    : QTerminal(parent) {
     setMinimumSize(300, 200);
     initialize();
 }
@@ -135,12 +135,16 @@ void QUnixTerminalImpl::setCursorType(CursorType type, bool blinking)
     m_terminalView->setBlinkingCursor(blinking);
 }
 
-void QUnixTerminalImpl::focusInEvent(QFocusEvent *focusEvent)
+// FIXME -- not sure how to make these work properly given the way the
+// Unix terminal handles colors.
+void QUnixTerminalImpl::setBackgroundColor (const QColor& color) { }
+void QUnixTerminalImpl::setForegroundColor (const QColor& color) { }
+void QUnixTerminalImpl::setSelectionColor (const QColor& color) { }
+
+void QUnixTerminalImpl::setCursorColor (bool useForegroundColor,
+                                        const QColor& color)
 {
-    Q_UNUSED(focusEvent);
-    m_terminalView->updateImage();
-    m_terminalView->repaint();
-    m_terminalView->update();
+  m_terminalView->setKeyboardCursorColor (useForegroundColor, color);
 }
 
 void QUnixTerminalImpl::showEvent(QShowEvent *)

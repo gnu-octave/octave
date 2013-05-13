@@ -116,10 +116,9 @@ public slots:
   void accept_directory_line_edit (void);
 
   void execute_command_in_terminal(const QString& dir);
+  void run_file_in_terminal(const QFileInfo& info);
 
   void handle_new_figure_request (void);
-
-  void handle_new_variable_request (void);
 
   void handle_enter_debugger (void);
   void handle_exit_debugger (void);
@@ -213,6 +212,7 @@ private:
   void clear_history_callback (void);
 
   void execute_command_callback (const std::string& command);
+  void run_file_callback (const QFileInfo& info);
 
   void new_figure_callback (void);
 

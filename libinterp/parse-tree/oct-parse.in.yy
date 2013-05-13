@@ -242,15 +242,16 @@ make_statement (T *arg)
 %token <tok_val> METAQUERY
 %token <tok_val> SUPERCLASSREF
 %token <tok_val> GET SET
+%token <tok_val> FCN
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN INPUT_FILE
+%token INPUT_FILE
 // %token VARARGIN VARARGOUT
 
 // Nonterminals we construct.
-%type <comment_type> stash_comment function_beg
-%type <tok_type> classdef_beg
+%type <comment_type> stash_comment
+%type <tok_type> function_beg classdef_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -1157,9 +1158,9 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                     if (! lexer.reading_fcn_file)
                       {
                         tree_statement *end_of_script
-                          = parser.make_end ("endscript",
-                                                  lexer.input_line_number,
-                                                  lexer.current_input_column);
+                          = parser.make_end ("endscript", true,
+                                             lexer.input_line_number,
+                                             lexer.current_input_column);
 
                         parser.make_script ($3, end_of_script);
                       }
@@ -1179,23 +1180,25 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
 // Function definition
 // ===================
 
-function_beg    : push_fcn_symtab FCN stash_comment
+function_beg    : push_fcn_symtab FCN
                   {
-                    $$ = $3;
+                    $$ = $2;
                     if (lexer.reading_classdef_file
                         || lexer.parsing_classdef)
                       lexer.maybe_classdef_get_set_method = true;
                   }
                 ;
 
-function        : function_beg function1
+function        : function_beg stash_comment function1
                   {
-                    $$ = parser.finish_function (0, $2, $1);
+                    $$ = parser.finish_function (0, $3, $2, $1->line (),
+                                                 $1->column ());
                     parser.recover_from_parsing_function ();
                   }
-                | function_beg return_list '=' function1
+                | function_beg stash_comment return_list '=' function1
                   {
-                    $$ = parser.finish_function ($2, $4, $1);
+                    $$ = parser.finish_function ($3, $5, $2, $1->line (),
+                                                 $1->column ());
                     parser.recover_from_parsing_function ();
                   }
                 ;
@@ -1246,7 +1249,8 @@ function_end    : END
                   {
                     parser.endfunction_found = true;
                     if (parser.end_token_ok ($1, token::function_end))
-                      $$ = parser.make_end ("endfunction", $1->line (), $1->column ());
+                      $$ = parser.make_end ("endfunction", false,
+                                            $1->line (), $1->column ());
                     else
                       ABORT_PARSE;
                   }
@@ -1280,9 +1284,9 @@ function_end    : END
                         YYABORT;
                       }
 
-                    $$ = parser.make_end ("endfunction",
-                                                lexer.input_line_number,
-                                                lexer.current_input_column);
+                    $$ = parser.make_end ("endfunction", true,
+                                          lexer.input_line_number,
+                                          lexer.current_input_column);
                   }
                 ;
 
@@ -1306,6 +1310,7 @@ classdef_beg    : CLASSDEF
 classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep class_body opt_sep END
                   {
                     lexer.parsing_classdef = false;
+
                     if (! ($$ = parser.make_classdef ($1, $3, $4, $5, $7, $9, $2)))
                       ABORT_PARSE;
                   }
@@ -1585,6 +1590,7 @@ octave_base_parser::reset (void)
   curr_class_name = "";
   function_scopes.clear ();
   primary_fcn_ptr  = 0;
+  subfunction_names.clear ();
 
   delete stmt_list;
   stmt_list = 0;
@@ -2689,15 +2695,17 @@ octave_base_parser::start_function (tree_parameter_list *param_list,
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
       fcn->stash_trailing_comment (tc);
+      fcn->stash_fcn_end_location (end_fcn_stmt->line (),
+                                   end_fcn_stmt->column ());
     }
 
   return fcn;
 }
 
 tree_statement *
-octave_base_parser::make_end (const std::string& type, int l, int c)
+octave_base_parser::make_end (const std::string& type, bool eof, int l, int c)
 {
-  return make_statement (new tree_no_op_command (type, l, c));
+  return make_statement (new tree_no_op_command (type, eof, l, c));
 }
 
 // Do most of the work for defining a function.
@@ -2786,8 +2794,6 @@ octave_base_parser::frob_function (const std::string& fname,
     }
 
   fcn->stash_function_name (id_name);
-  fcn->stash_fcn_location (lexer.input_line_number,
-                           lexer.current_input_column);
 
   if (! lexer.help_text.empty () && curr_fcn_depth == 1
       && ! parsing_subfunctions)
@@ -2807,7 +2813,8 @@ octave_base_parser::frob_function (const std::string& fname,
 tree_function_def *
 octave_base_parser::finish_function (tree_parameter_list *ret_list,
                                      octave_user_function *fcn,
-                                     octave_comment_list *lc)
+                                     octave_comment_list *lc,
+                                     int l, int c)
 {
   tree_function_def *retval = 0;
 
@@ -2833,6 +2840,9 @@ octave_base_parser::finish_function (tree_parameter_list *ret_list,
       if (curr_fcn_depth > 1 || parsing_subfunctions)
         {
           fcn->mark_as_subfunction ();
+          fcn->stash_fcn_location (l, c);
+
+          subfunction_names.push_back (nm);
 
           if (endfunction_found && function_scopes.size () > 1)
             {
@@ -3579,6 +3589,18 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
                 panic_impossible ();
 
               fcn_ptr = parser.classdef_object->make_meta_class ();
+            }
+          else if (fcn_ptr)
+            {
+              fcn_ptr->maybe_relocate_end ();
+
+              if (parser.parsing_subfunctions)
+                {
+                  if (! parser.endfunction_found)
+                    parser.subfunction_names.reverse ();
+
+                  fcn_ptr->stash_subfunction_names (parser.subfunction_names);
+                }
             }
         }
       else

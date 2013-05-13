@@ -50,6 +50,12 @@ public:
 
   void column (int c) { column_num = c; }
 
+  void set_location (int l, int c)
+  {
+    line_num = l;
+    column_num = c;
+  }
+
   virtual void set_breakpoint (void) { bp = true; }
 
   virtual void delete_breakpoint (void) { bp = false; }

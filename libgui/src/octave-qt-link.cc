@@ -29,10 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringList>
 
 #include "str-vec.h"
-
 #include "dialog.h"
 #include "error.h"
 #include "workspace-element.h"
+#include "builtin-defun-decls.h"
+#include "load-path.h"
+#include "oct-env.h"
+#include "utils.h"
 
 #include "octave-qt-link.h"
 
@@ -422,4 +425,69 @@ void
 octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
 {
   emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
+}
+
+
+bool
+octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
+{
+
+  bool ok = false;
+  bool addpath_option = true;
+
+  std::string curr_dir = octave_env::get_current_directory ();
+
+  if (same_file (curr_dir, dir))
+    ok = true;
+  else
+    {
+      bool dir_in_load_path = load_path::contains_canonical (dir);
+
+      std::string base_file = octave_env::base_pathname (file);
+      std::string lp_file = load_path::find_file (base_file);
+
+      if (dir_in_load_path)
+        {
+          if (same_file (lp_file, file))
+            ok = true;
+        }
+      else
+        {
+          // File directory is not in path.  Is the file in the path in
+          // the current directory?  If so, then changing the current
+          // directory will be needed.  Adding directory to path is
+          // not enough because the file in the current directory would
+          // still be found.
+
+          if (same_file (lp_file, base_file))
+            {
+              if (same_file (curr_dir, dir))
+                ok = true;
+              else
+                addpath_option = false;
+            }
+        }
+    }
+
+  if (! ok)
+    {
+      int action = debug_cd_or_addpath_error (file, dir, addpath_option);
+      switch (action)
+        {
+        case 1:
+          Fcd (ovl (dir));
+          ok = true;
+          break;
+
+        case 2:
+          load_path::prepend (dir);
+          ok = true;
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  return ok;
 }

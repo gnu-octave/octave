@@ -28,9 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "files-dock-widget.h"
 
 #include <QApplication>
+#include <QClipboard>
 #include <QFileInfo>
 #include <QCompleter>
-#include <QSettings>
 #include <QProcess>
 #include <QDebug>
 #include <QHeaderView>
@@ -42,8 +42,22 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QUrl>
 #include <QDesktopServices>
+#include <QFileDialog>
 
 #include "load-save.h"
+
+class FileTreeViewer : public QTreeView
+{
+public:
+
+  FileTreeViewer (QWidget *p) : QTreeView (p) { }
+
+  void mousePressEvent (QMouseEvent *e)
+  {
+    if (e->button () != Qt::RightButton)
+      QTreeView::mousePressEvent (e);
+  }
+};
 
 files_dock_widget::files_dock_widget (QWidget *p)
   : octave_dock_widget (p)
@@ -62,9 +76,6 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   connect (this, SIGNAL (displayed_directory_changed (const QString&)),
            parent (), SLOT (set_current_working_directory (const QString&)));
-
-  connect (parent (), SIGNAL (settings_changed (const QSettings *)),
-           this, SLOT (notice_settings (const QSettings *)));
 
   // Create a toolbar
   _navigation_tool_bar = new QToolBar ("", container);
@@ -104,6 +115,10 @@ files_dock_widget::files_dock_widget (QWidget *p)
   popdown_button->setDefaultAction(new QAction(QIcon(":/actions/icons/gear.png"),"", _navigation_tool_bar));
 
   popdown_menu->addSeparator();
+  popdown_menu->addAction (QIcon (":/actions/icons/search.png"),
+                           tr ("Search directory"),
+                           this, SLOT (popdownmenu_search_dir (bool)));
+  popdown_menu->addSeparator();
   popdown_menu->addAction(QIcon(":/actions/icons/filenew.png"),
                           tr ("New File"),
                           this, SLOT(popdownmenu_newfile(bool)));
@@ -130,7 +145,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
                                                   curr_dir.absolutePath ());
 
   // Attach the model to the QTreeView and set the root index
-  _file_tree_view = new QTreeView (container);
+  _file_tree_view = new FileTreeViewer (container);
+  _file_tree_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
   _file_tree_view->setModel (_file_system_model);
   _file_tree_view->setRootIndex (rootPathIndex);
   _file_tree_view->setSortingEnabled (true);
@@ -178,8 +194,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
   connect (_current_directory, SIGNAL (activated (const QString &)),
            this, SLOT (set_current_directory (const QString &)));
 
-  connect (this, SIGNAL (run_file_signal (const QString&)),
-           parent (), SLOT (execute_command_in_terminal (const QString&)));
+  connect (this, SIGNAL (run_file_signal (const QFileInfo&)),
+           parent (), SLOT (run_file_in_terminal (const QFileInfo&)));
 
   QCompleter *completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);
@@ -327,6 +343,9 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
       menu.addAction (tr("Open in Default Application"),
                       this, SLOT (contextmenu_open_in_app (bool)));
 
+      menu.addAction (tr("Copy Selection to Clipboard"),
+                      this, SLOT (contextmenu_copy_selection (bool)));
+
       if (info.isFile () && info.suffix () == "m")
         menu.addAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
                         tr("Run"), this, SLOT(contextmenu_run(bool)));
@@ -387,6 +406,26 @@ files_dock_widget::contextmenu_open_in_app (bool)
 }
 
 void
+files_dock_widget::contextmenu_copy_selection (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  QStringList selection;
+
+  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    {
+      QFileInfo info = _file_system_model->fileInfo (*it);
+
+      selection << info.fileName ();
+    }
+
+  QClipboard *clipboard = QApplication::clipboard ();
+
+  clipboard->setText (selection.join ("\n"));
+}
+
+void
 files_dock_widget::contextmenu_load (bool)
 {
   QItemSelectionModel *m = _file_tree_view->selectionModel ();
@@ -413,12 +452,7 @@ files_dock_widget::contextmenu_run (bool)
       QModelIndex index = rows[0];
 
       QFileInfo info = _file_system_model->fileInfo(index);
-
-      QString function_name = info.fileName ();
-      // We have to cut off the suffix, because octave appends it.
-      function_name.chop (info.suffix ().length () + 1);
-      emit run_file_signal (QString ("cd \'%1\'\n%2\n")
-                            .arg(info.absolutePath ()).arg (function_name));
+      emit run_file_signal (info);
     }
 }
 
@@ -573,6 +607,14 @@ files_dock_widget::notice_settings (const QSettings *settings)
 }
 
 void
+files_dock_widget::popdownmenu_search_dir (bool)
+{
+  QString dir
+    = QFileDialog::getExistingDirectory (this, tr ("Set directory of file browser"));
+  process_set_current_dir (dir);
+}
+
+void
 files_dock_widget::popdownmenu_newdir (bool)
 {
       process_new_dir(_file_system_model->rootPath());
@@ -620,4 +662,3 @@ void files_dock_widget::process_set_current_dir(const QString & dir)
 {
   emit displayed_directory_changed (dir);
 }
-

@@ -138,6 +138,18 @@ public:
 
   virtual void unlock_subfunctions (void) { }
 
+  virtual void maybe_relocate_end (void) { }
+
+  // Not valid until after the function is completley parsed.
+  virtual bool has_subfunctions (void) const { return false; }
+
+  virtual void stash_subfunction_names (const std::list<std::string>&) { }
+
+  virtual std::list<std::string> subfunction_names (void) const
+  {
+    return std::list<std::string> ();
+  }
+
   void mark_relative (void) { relative = true; }
 
   bool is_relative (void) const { return relative; }

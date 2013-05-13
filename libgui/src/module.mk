@@ -23,6 +23,7 @@ octave_gui_ICONS = \
   src/icons/editcut.png \
   src/icons/editdelete.png \
   src/icons/editpaste.png \
+  src/icons/fileclose.png \
   src/icons/filenew.png \
   src/icons/fileopen.png \
   src/icons/fileprint.png \

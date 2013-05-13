@@ -124,12 +124,7 @@ run-octave: run-octave.in Makefile
 	chmod a+rx "$@"
 
 .gdbinit: etc/gdbinit
-	@if [ -f .gdbinit ]; then \
-	  echo "refusing to overwrite .gdbinit with newer version from $<" 1>&2; \
-	else \
-	  echo "Installing .gdbinit from version at $<" ; \
-	  cp $< $@; \
-	fi
+	@$(gdbinit_install_rule)
 
 if AMCOND_BUILD_DOCS
 AUTHORS BUGS INSTALL.OCTAVE:

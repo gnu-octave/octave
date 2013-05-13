@@ -274,6 +274,36 @@ bp_table::instance_ok (void)
   return retval;
 }
 
+bool
+bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
+                               const std::string& fname,
+                               const bp_table::intmap& line,
+                               bp_table::intmap& retval)
+{
+  bool found = false;
+
+  tree_statement_list *cmds = fcn->body ();
+
+  std::string file = fcn->fcn_file_name ();
+
+  if (cmds)
+    {
+      retval = cmds->add_breakpoint (file, line);
+
+      for (intmap_iterator p = retval.begin (); p != retval.end (); p++)
+        {
+          if (p->second != 0)
+            {
+              bp_set.insert (fname);
+              found = true;
+              break;
+            }
+        }
+    }
+
+  return found;
+}
+
 bp_table::intmap
 bp_table::do_add_breakpoint (const std::string& fname,
                              const bp_table::intmap& line)
@@ -284,20 +314,28 @@ bp_table::do_add_breakpoint (const std::string& fname,
 
   if (dbg_fcn)
     {
-      tree_statement_list *cmds = dbg_fcn->body ();
-
-      std::string file = dbg_fcn->fcn_file_name ();
-
-      if (cmds)
+      if (! do_add_breakpoint_1 (dbg_fcn, fname, line, retval))
         {
-          retval = cmds->add_breakpoint (file, line);
+          // Search subfunctions in the order they appear in the file.
 
-          for (intmap_iterator p = retval.begin (); p != retval.end (); p++)
+          const std::list<std::string> subfcn_names
+            = dbg_fcn->subfunction_names ();
+
+          std::map<std::string, octave_value> subfcns
+            = dbg_fcn->subfunctions ();
+
+          for (std::list<std::string>::const_iterator p = subfcn_names.begin ();
+               p != subfcn_names.end (); p++)
             {
-              if (p->second != 0)
+              std::map<std::string, octave_value>::const_iterator
+                q = subfcns.find (*p);
+
+              if (q != subfcns.end ())
                 {
-                  bp_set.insert (fname);
-                  break;
+                  octave_user_code *dbg_subfcn = q->second.user_code_value ();
+
+                  if (do_add_breakpoint_1 (dbg_subfcn, fname, line, retval))
+                    break;
                 }
             }
         }
@@ -310,6 +348,56 @@ bp_table::do_add_breakpoint (const std::string& fname,
   return retval;
 }
 
+
+int
+bp_table::do_remove_breakpoint_1 (octave_user_code *fcn,
+                                  const std::string& fname,
+                                  const bp_table::intmap& line)
+{
+  int retval = 0;
+
+  std::string file = fcn->fcn_file_name ();
+
+  tree_statement_list *cmds = fcn->body ();
+
+  // FIXME -- move the operation on cmds to the
+  // tree_statement_list class?
+
+  if (cmds)
+    {
+      octave_value_list results = cmds->list_breakpoints ();
+
+      if (results.length () > 0)
+        {
+          octave_idx_type len = line.size ();
+
+          for (int i = 0; i < len; i++)
+            {
+              const_intmap_iterator p = line.find (i);
+
+              if (p != line.end ())
+                {
+                  int lineno = p->second;
+
+                  cmds->delete_breakpoint (lineno);
+
+                  if (! file.empty ())
+                    octave_link::update_breakpoint (false, file, lineno);
+                }
+            }
+
+          results = cmds->list_breakpoints ();
+
+          bp_set_iterator it = bp_set.find (fname);
+          if (results.length () == 0 && it != bp_set.end ())
+            bp_set.erase (it);
+        }
+
+      retval = results.length ();
+    }
+
+  return retval;
+}
 
 int
 bp_table::do_remove_breakpoint (const std::string& fname,
@@ -330,41 +418,28 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 
       if (dbg_fcn)
         {
-          std::string file = dbg_fcn->fcn_file_name ();
+          retval = do_remove_breakpoint_1 (dbg_fcn, fname, line);
 
-          tree_statement_list *cmds = dbg_fcn->body ();
+          // Search subfunctions in the order they appear in the file.
 
-          // FIXME -- move the operation on cmds to the
-          // tree_statement_list class?
-          if (cmds)
+          const std::list<std::string> subfcn_names
+            = dbg_fcn->subfunction_names ();
+
+          std::map<std::string, octave_value> subfcns
+            = dbg_fcn->subfunctions ();
+
+          for (std::list<std::string>::const_iterator p = subfcn_names.begin ();
+               p != subfcn_names.end (); p++)
             {
-              octave_value_list results = cmds->list_breakpoints ();
+              std::map<std::string, octave_value>::const_iterator
+                q = subfcns.find (*p);
 
-              if (results.length () > 0)
+              if (q != subfcns.end ())
                 {
-                  for (int i = 0; i < len; i++)
-                    {
-                      const_intmap_iterator p = line.find (i);
+                  octave_user_code *dbg_subfcn = q->second.user_code_value ();
 
-                      if (p != line.end ())
-                        {
-                          int lineno = p->second;
-
-                          cmds->delete_breakpoint (lineno);
-
-                          if (! file.empty ())
-                            octave_link::update_breakpoint (false, file, lineno);
-                        }
-                    }
-
-                  results = cmds->list_breakpoints ();
-
-                  bp_set_iterator it = bp_set.find (fname);
-                  if (results.length () == 0 && it != bp_set.end ())
-                    bp_set.erase (it);
+                  retval += do_remove_breakpoint_1 (dbg_subfcn, fname, line);
                 }
-
-              retval = results.length ();
             }
         }
       else
@@ -376,6 +451,27 @@ bp_table::do_remove_breakpoint (const std::string& fname,
   return retval;
 }
 
+bp_table::intmap
+bp_table::do_remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
+                                               const std::string& fname)
+{
+  intmap retval;
+
+  std::string file = fcn->fcn_file_name ();
+
+  tree_statement_list *cmds = fcn->body ();
+
+  if (cmds)
+    {
+      retval = cmds->remove_all_breakpoints (file);
+
+      bp_set_iterator it = bp_set.find (fname);
+      if (it != bp_set.end ())
+        bp_set.erase (it);
+    }
+
+  return retval;
+}
 
 bp_table::intmap
 bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
@@ -387,17 +483,24 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
 
   if (dbg_fcn)
     {
-      std::string file = dbg_fcn->fcn_file_name ();
+      retval = do_remove_all_breakpoints_in_file_1 (dbg_fcn, fname);
 
-      tree_statement_list *cmds = dbg_fcn->body ();
+      // Order is not important here.
 
-      if (cmds)
+      typedef std::map<std::string, octave_value>::const_iterator
+        subfcns_const_iterator;
+
+      std::map<std::string, octave_value> subfcns = dbg_fcn->subfunctions ();
+
+      for (subfcns_const_iterator p = subfcns.begin ();
+           p != subfcns.end (); p++)
         {
-          retval = cmds->remove_all_breakpoints (file);
+          octave_user_code *dbg_subfcn = p->second.user_code_value ();
 
-          bp_set_iterator it = bp_set.find (fname);
-          if (it != bp_set.end ())
-            bp_set.erase (it);
+          intmap tmp = do_remove_all_breakpoints_in_file_1 (dbg_subfcn, fname);
+
+          // Merge new list with retval.
+          retval.insert (tmp.begin (), tmp.end ());
         }
     }
   else if (! silent)

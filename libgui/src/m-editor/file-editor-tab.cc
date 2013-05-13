@@ -27,9 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_QSCINTILLA
 
 #include <Qsci/qsciapis.h>
-// Not available in the Debian repos yet!
-// #include <Qsci/qscilexeroctave.h>
-#include "lexer-octave-gui.h"
+#include <Qsci/qscilexeroctave.h>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>
@@ -215,7 +213,7 @@ file_editor_tab::update_lexer ()
       || _file_name.endsWith (".M")
       || _file_name.endsWith ("octaverc"))
     {
-      lexer = new lexer_octave_gui ();
+      lexer = new QsciLexerOctave ();
     }
   else if (_file_name.endsWith (".c")
            || _file_name.endsWith (".cc")

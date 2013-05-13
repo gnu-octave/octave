@@ -25,8 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDialog>
 #include <QSettings>
+
 #ifdef HAVE_QSCINTILLA
-#include "lexer-octave-gui.h"
+class QsciLexer;
 #endif
 
 namespace Ui

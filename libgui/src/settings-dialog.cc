@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_QSCINTILLA
 #include <QScrollArea>
+#include <Qsci/qscilexeroctave.h>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>
@@ -136,7 +137,7 @@ settings_dialog::settings_dialog (QWidget *p):
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
   QsciLexer *lexer;
-  lexer = new lexer_octave_gui ();
+  lexer = new QsciLexerOctave ();
   read_lexer_settings (lexer,settings);
   delete lexer;
   lexer = new QsciLexerCPP ();
@@ -392,7 +393,7 @@ settings_dialog::write_changed_settings ()
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, get dialog contents, and write settings
   QsciLexer *lexer;
-  lexer = new lexer_octave_gui ();
+  lexer = new QsciLexerOctave ();
   write_lexer_settings (lexer,settings);
   delete lexer;
   lexer = new QsciLexerCPP ();

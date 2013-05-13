@@ -743,7 +743,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         curr_lexer->looking_for_object_index = true;
 
-        return curr_lexer->count_token (id_tok);
+        return curr_lexer->count_token_internal (id_tok);
       }
   }
 
@@ -761,7 +761,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         curr_lexer->looking_for_object_index = true;
 
-        return curr_lexer->count_token (id_tok);
+        return curr_lexer->count_token_internal (id_tok);
       }
   }
 

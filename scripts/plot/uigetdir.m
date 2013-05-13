@@ -58,14 +58,15 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
   endif
 
   if (__octave_link_enabled__ ())
-    dialogargs = {cell(0, 2),        # File Filter
-                 dialog_name,        # Dialog title  
-                 "",                 # Default file name
-                 [240, 120],         # Dialog Position (pixel x/y)
-                 "dir",              # Dialog mode
-                 init_path};         # Initial directory
+    file_filter = cell (0, 2);
+    default_file_name = "";
+    dialog_position = [240, 120];
+    dialog_mode = "dir";
 
-    [filename, dirname, filterindex] = __octave_link_file_dialog__ (dialogargs{:});
+    [filename, dirname, filterindex] ...
+      = __octave_link_file_dialog__ (file_filter, dialog_name,
+                                     default_file_name, dialog_position,
+                                     dialog_mode, init_path);
   else
     dirname = feval (funcname, init_path, dialog_name);
   endif

@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <QKeySequence>
 #include <QApplication>
 #include <QLabel>
 #include <QMenuBar>
@@ -630,6 +631,18 @@ main_window::connect_visibility_changed (void)
   workspace_window->connect_visibility_changed ();
 }
 
+void
+main_window::copyClipboard (void)
+{
+  emit copyClipboard_signal ();
+}
+
+void
+main_window::pasteClipboard (void)
+{
+  emit pasteClipboard_signal ();
+}
+
 // Connect the signals emitted when the Octave thread wants to create
 // a dialog box of some sort.  Perhaps a better place for this would be
 // as part of the QUIWidgetCreator class.  However, mainWindow currently
@@ -946,8 +959,6 @@ main_window::construct_file_menu (QMenuBar *p)
   _open_action
     = file_menu->addAction (QIcon (":/actions/icons/fileopen.png"),
                             tr ("Open..."));
-  _open_action->setShortcut (QKeySequence::Open);
-  _open_action->setShortcutContext (Qt::ApplicationShortcut);
 
 #ifdef HAVE_QSCINTILLA
   file_menu->addMenu (editor_window->get_mru_menu ());
@@ -1026,26 +1037,15 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   edit_menu->addSeparator ();
 
-  _cut_action
-    = edit_menu->addAction (QIcon (":/actions/icons/editcut.png"), tr ("Cut"));
-  _cut_action->setShortcut (ctrl_shift + Qt::Key_X);
-
   _copy_action
-    = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"), tr ("Copy"));
+    = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"),
+                            tr ("Copy"));
   _copy_action->setShortcut (ctrl_shift + Qt::Key_C);
 
   _paste_action
-    = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"), tr ("Paste"));
+    = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
+                            tr ("Paste"));
   _paste_action->setShortcut (ctrl_shift + Qt::Key_V);
-
-  QAction *select_all_action
-    = edit_menu->addAction (tr ("Select All"));
-  select_all_action->setEnabled (false); // TODO: Make this work.
-
-  QAction *delete_action
-    = edit_menu->addAction (tr ("Delete"));
-  delete_action->setShortcut (Qt::Key_Delete);
-  delete_action->setEnabled (false); // TODO: Make this work.
 
   edit_menu->addSeparator ();
 
@@ -1065,10 +1065,10 @@ main_window::construct_edit_menu (QMenuBar *p)
     = edit_menu->addAction (tr ("Clear Workspace"));
 
   connect (_copy_action, SIGNAL (triggered()),
-           command_window, SLOT (copyClipboard ()));
+           this, SLOT (copyClipboard ()));
 
   connect (_paste_action, SIGNAL (triggered()),
-           command_window, SLOT (pasteClipboard ()));
+           this, SLOT (pasteClipboard ()));
 
   connect (find_files_action, SIGNAL (triggered()),
            this, SLOT (find_files ()));
@@ -1334,7 +1334,6 @@ main_window::construct_tool_bar (void)
 
   _main_tool_bar->addSeparator ();
 
-  _main_tool_bar->addAction (_cut_action);
   _main_tool_bar->addAction (_copy_action);
   _main_tool_bar->addAction (_paste_action);
   _main_tool_bar->addAction (_undo_action);

@@ -2264,7 +2264,16 @@ void TerminalView::copyClipboard()
     return;
 
   QString text = _screenWindow->selectedText(_preserveLineBreaks);
-  QApplication::clipboard()->setText(text);
+
+  if (text.isEmpty ())
+    {
+      // FIXME -- interrupt is only appropriate here if CTRL-C is bound
+      // to the copy action.  How can we determine that?
+
+      ::raise (SIGINT);
+    }
+  else
+    QApplication::clipboard()->setText(text);
 }
 
 void TerminalView::pasteClipboard()

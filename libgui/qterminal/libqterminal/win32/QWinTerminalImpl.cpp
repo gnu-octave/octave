@@ -43,6 +43,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define _WIN32_WINNT 0x0500 
 #include <windows.h>
 #include <cstring>
+#include <csignal>
 #include <limits>
 
 #include "QWinTerminalImpl.h"
@@ -1437,7 +1438,18 @@ void QWinTerminalImpl::copyClipboard (void)
 {
   QClipboard *clipboard = QApplication::clipboard ();
 
-  clipboard->setText (d->getSelection ());
+  QString selection = d->getSelection ();
+
+  if (selection.isEmpty ())
+    {
+      ::raise (SIGINT);
+    }
+  else
+    {
+      clipboard->setText (selection);
+
+      emit report_status_message (tr ("copied selection to clipboard"));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -153,7 +153,7 @@ function [t, p] = orderfields (s1, s2)
   else
     n = numel (s1);
     for i = 1:numel (names)
-      el = names(i);
+      el = names{i};
       [t(1:n).(el)] = s1(:).(el);
     endfor
     ## inherit dimensions

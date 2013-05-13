@@ -19,3 +19,8 @@
 ##   sequence for the DOWN arrow.
 
 "\e[B": history-search-forward
+
+## Disable so the usual paste shortcut will work on Windows systems.
+## \C-q should still be available for quoted insert.
+
+"\C-v": ""

@@ -102,20 +102,19 @@ protected:
 
     _contextMenu = new QMenu (this);
 
-    QAction *copyAction  = _contextMenu->addAction ("Copy");
-    QAction *pasteAction = _contextMenu->addAction ("Paste");
+    QAction *copyAction 
+      = _contextMenu->addAction (tr ("Copy"),
+                                 this, SLOT (copyClipboard ()));
+
+    QAction *pasteAction
+      = _contextMenu->addAction (tr ("Paste"),
+                                 this, SLOT (pasteClipboard ()));
 
     copyAction->setShortcut (QKeySequence::Copy);
     pasteAction->setShortcut (QKeySequence::Paste);
 
     addAction (copyAction);
     addAction (pasteAction);
-
-    connect (copyAction, SIGNAL (triggered()),
-             this, SLOT (copyClipboard ()));
-
-    connect (pasteAction, SIGNAL (triggered()),
-             this, SLOT (pasteClipboard ()));
 
     connect (this, SIGNAL (customContextMenuRequested (QPoint)),
              this, SLOT (handleCustomContextMenuRequested (QPoint)));

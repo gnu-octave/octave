@@ -1039,12 +1039,12 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   _copy_action
     = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"),
-                            tr ("Copy"));
+                            tr ("Copy"), this, SLOT (copyClipboard ()));
   _copy_action->setShortcut (ctrl_shift + Qt::Key_C);
 
   _paste_action
     = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
-                            tr ("Paste"));
+                            tr ("Paste"), this, SLOT (pasteClipboard ()));
   _paste_action->setShortcut (ctrl_shift + Qt::Key_V);
 
   edit_menu->addSeparator ();
@@ -1063,12 +1063,6 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   QAction *clear_workspace_action
     = edit_menu->addAction (tr ("Clear Workspace"));
-
-  connect (_copy_action, SIGNAL (triggered()),
-           this, SLOT (copyClipboard ()));
-
-  connect (_paste_action, SIGNAL (triggered()),
-           this, SLOT (pasteClipboard ()));
 
   connect (find_files_action, SIGNAL (triggered()),
            this, SLOT (find_files ()));

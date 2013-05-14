@@ -39,12 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-qt-link.h"
 
-#if defined (Q_OS_WIN32)
-#define WIN32_LEAN_AND_MEAN
-#define _WIN32_WINNT 0x0500 
-#include <windows.h>
-#endif
-
 octave_qt_link::octave_qt_link (octave_main_thread *mt)
   : octave_link (), main_thread (mt)
 { }
@@ -377,25 +371,11 @@ octave_qt_link::do_clear_history (void)
 void
 octave_qt_link::do_pre_input_event (void)
 {
-#if defined (Q_OS_WIN32)
-  // Disable Ctrl-C processing on stdin.
-  HANDLE hStdIn = GetStdHandle (STD_INPUT_HANDLE);
-  DWORD mode;
-  GetConsoleMode (hStdIn, &mode);
-  SetConsoleMode (hStdIn, mode & ~ ENABLE_PROCESSED_INPUT);
-#endif
 }
 
 void
 octave_qt_link::do_post_input_event (void)
 {
-#if defined (Q_OS_WIN32)
-  // Enable Ctrl-C processing on stdin.
-  HANDLE hStdIn = GetStdHandle (STD_INPUT_HANDLE);
-  DWORD mode;
-  GetConsoleMode (hStdIn, &mode);
-  SetConsoleMode (hStdIn, mode | ENABLE_PROCESSED_INPUT);
-#endif
 }
 
 void

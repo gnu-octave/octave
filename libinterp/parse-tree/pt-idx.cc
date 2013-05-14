@@ -217,7 +217,7 @@ tree_index_expression::get_struct_index
 
           if (! error_state)
             {
-              if (t.is_string ())
+              if (t.is_string () && t.rows () == 1)
                 fn = t.string_value ();
               else
                 error ("dynamic structure field names must be character strings");

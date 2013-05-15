@@ -48,8 +48,9 @@ inherently more conservative and follows narrower rules.
 @section Building the Development Sources
 
 The directions for building from the Development sources change from
-time to time, so you should read the resources for developers.  Start
-here: @url{http://www.octave.org/get-involved.html}.
+time to time, so you should read the resources for developers on the web
+or in the development sources archive.  Start here:
+@url{http://www.octave.org/get-involved.html}.
 
 @node Basics of Generating a Changeset
 @section Basics of Generating a Changeset

@@ -27,7 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_QSCINTILLA
 
 #include <Qsci/qsciapis.h>
+#if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
+#define HAVE_LEXER_OCTAVE
 #include <Qsci/qscilexeroctave.h>
+#elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
+#define HAVE_LEXER_MATLAB
+#include <Qsci/qscilexermatlab.h>
+#endif
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>
@@ -208,45 +214,56 @@ file_editor_tab::update_lexer ()
 {
   QsciLexer *lexer = _edit_area->lexer ();
   delete lexer;
+  lexer = 0;
 
   if (_file_name.endsWith (".m")
-      || _file_name.endsWith (".M")
       || _file_name.endsWith ("octaverc"))
     {
+#if defined (HAVE_LEXER_OCTAVE)
       lexer = new QsciLexerOctave ();
+#elif defined (HAVE_LEXER_MATLAB)
+      lexer = new QsciLexerMatlab ();
+#endif
     }
-  else if (_file_name.endsWith (".c")
-           || _file_name.endsWith (".cc")
-           || _file_name.endsWith (".cpp")
-           || _file_name.endsWith (".cxx")
-           || _file_name.endsWith (".c++")
-           || _file_name.endsWith (".h")
-           || _file_name.endsWith (".hh")
-           || _file_name.endsWith (".hpp")
-           || _file_name.endsWith (".h++"))
+
+  if (! lexer)
     {
-      lexer = new QsciLexerCPP ();
-    }
-  else if (_file_name.endsWith (".pl"))
-    {
-      lexer = new QsciLexerPerl ();
-    }
-  else if (_file_name.endsWith (".bat"))
-    {
-      lexer = new QsciLexerBatch ();
-    }
-  else if (_file_name.endsWith (".diff"))
-    {
-      lexer = new QsciLexerDiff ();
-    }
-  else // Default to bash lexer.
-    {
-      lexer = new QsciLexerBash ();
+      if (_file_name.endsWith (".c")
+          || _file_name.endsWith (".cc")
+          || _file_name.endsWith (".cpp")
+          || _file_name.endsWith (".cxx")
+          || _file_name.endsWith (".c++")
+          || _file_name.endsWith (".h")
+          || _file_name.endsWith (".hh")
+          || _file_name.endsWith (".hpp")
+          || _file_name.endsWith (".h++"))
+        {
+          lexer = new QsciLexerCPP ();
+        }
+      else if (_file_name.endsWith (".pl"))
+        {
+          lexer = new QsciLexerPerl ();
+        }
+      else if (_file_name.endsWith (".bat"))
+        {
+          lexer = new QsciLexerBatch ();
+        }
+      else if (_file_name.endsWith (".diff"))
+        {
+          lexer = new QsciLexerDiff ();
+        }
+      else
+        {
+          // FIXME -- why should the bash lexer be the default?
+          lexer = new QsciLexerBash ();
+        }
     }
 
   QSettings *settings = resource_manager::get_settings ();
+
   if (settings)
     lexer->readSettings (*settings);
+
   _edit_area->setLexer (lexer);
 
 }

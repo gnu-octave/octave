@@ -2648,6 +2648,13 @@ if test $build_gui = yes; then
       OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
       AC_DEFINE(HAVE_QSCINTILLA, 1, 
         [Define to 1 if the QScintilla library and header files are available])
+
+      save_CPPFLAGS="$CPPFLAGS"
+      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+      AC_LANG_PUSH(C++)
+      AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
+      AC_LANG_POP(C++)
+      CPPFLAGS="$save_CPPFLAGS"
     fi
 
     AC_CHECK_FUNCS([setlocale], [],

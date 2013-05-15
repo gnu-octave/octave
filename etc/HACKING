@@ -9,6 +9,29 @@ These notes are intended to help people working on sources cloned from
 the savannah source code repository.
 These requirements do not apply when building from a distribution tarball.
 
+* Quick start
+
+  1. Install all the required dependencies.  Precisely how to do that
+     depends on what type of system you are using.  There are more
+     details below.
+
+  2. Clone the Octave sources:
+
+       hg clone http://www.octave.org/hg/octave
+
+  3. Change to the top-level directory of the Octave source tree and run
+     the bootstrap script:
+
+       cd octave
+       ./bootstrap
+
+  4. Create a build directory, cd to it, then run configure and make:
+
+       mkdir .build
+       cd .build
+       ../configure
+       make
+
 ** Requirements
 
 We've opted to keep only the highest-level sources in the repository.
@@ -23,6 +46,7 @@ the maintainer tools we depend upon, including:
   - Flex <http://www.gnu.org/software/flex/>
   - Gnulib <http://www.gnu.org/software/gnulib/>
   - GNU Make <http://www.gnu.org/software/make/>
+  - gperf <http://www.gnu.org/software/gperf/>
   - Gzip <http://www.gnu.org/software/gzip/>
   - Libtool <http://www.gnu.org/software/libtool/>
   - Mercurial <http://mercurial.selenic.com/>
@@ -220,8 +244,6 @@ An overview of the directory layout of Octave's source files:
 
       m-editor       source files for the m-file editor.
 
-      octave-adapter souce files for the octave layer for threadsafe
-                     communication with the octave interpreter.
       qtinfo         source files for the Qt texinfo browser.
 
       icons          icon files that will be compiled into the
@@ -304,7 +326,7 @@ John W. Eaton
 jwe@octave.org
 
 
-Last updated: Thu, 10 Jan 2013 10:46:41 EST
+Last updated: Wed, 15 May 2013 03:02:45 EDT
 
 
 ################################################################################

@@ -35,7 +35,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_QSCINTILLA
 #include <QScrollArea>
+
+#if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
+//#define HAVE_LEXER_OCTAVE
 #include <Qsci/qscilexeroctave.h>
+#elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
+//#define HAVE_LEXER_MATLAB
+#include <Qsci/qscilexermatlab.h>
+#endif
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>
@@ -137,9 +144,15 @@ settings_dialog::settings_dialog (QWidget *p):
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
   QsciLexer *lexer;
+#if defined (HAVE_LEXER_OCTAVE)
   lexer = new QsciLexerOctave ();
   read_lexer_settings (lexer,settings);
   delete lexer;
+#elif defined (HAVE_LEXER_MATLAB)
+  lexer = new QsciLexerMatlab ();
+  read_lexer_settings (lexer,settings);
+  delete lexer;
+#endif
   lexer = new QsciLexerCPP ();
   read_lexer_settings (lexer,settings);
   delete lexer;
@@ -393,9 +406,15 @@ settings_dialog::write_changed_settings ()
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, get dialog contents, and write settings
   QsciLexer *lexer;
+#if defined (HAVE_LEXER_OCTAVE)
   lexer = new QsciLexerOctave ();
   write_lexer_settings (lexer,settings);
   delete lexer;
+#elif defined (HAVE_LEXER_MATLAB)
+  lexer = new QsciLexerMatlab ();
+  write_lexer_settings (lexer,settings);
+  delete lexer;
+#endif
   lexer = new QsciLexerCPP ();
   write_lexer_settings (lexer,settings);
   delete lexer;

@@ -83,7 +83,7 @@
 ## 2002-03-08 Paul Kienzle <pkienzle@users.sf.net>
 ## * Initial revision
 ## 2005-11-27 Bill Denney <bill@givebillmoney.com>
-## * Significant modifications of the input arguements for additional
+## * Significant modifications of the input arguments for additional
 ## functionality.
 
 function dlmwrite (file, M, varargin)

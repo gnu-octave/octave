@@ -35,11 +35,11 @@
 function varargout = ndgrid (varargin)
 
   if (nargin == 1)
-    n = max ([nargout, 2]);
+    n = max ([nargout, 1]);
     ## If only one input argument is given, repeat it n-times
     varargin(1:n) = varargin(1);
-  elseif (nargin >= nargout)
-    n = max ([nargin, 2]);
+  elseif (nargin > 0 && nargin >= nargout)
+    n = max ([nargin, 1]);
   else
     error ("ndgrid: wrong number of input arguments");
   endif
@@ -70,6 +70,17 @@ function varargout = ndgrid (varargin)
 
 endfunction
 
+
+%!test
+%! x = 1:3;
+%! assert (isequal (ndgrid (x), x(:)));
+
+%!test
+%! x = 1:3;
+%! [XX, YY] = ndgrid (x);
+%! assert (size_equal (XX, YY));
+%! assert (isequal (XX, repmat(x(:), 1, numel(x))));
+%! assert (isequal (YY, repmat(x, numel(x), 1)));
 
 %!test
 %! x = 1:2;

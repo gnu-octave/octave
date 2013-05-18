@@ -266,7 +266,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
           std::string dir_name = str.substr (0, xpos);
 
           octave_function *xfcn
-            = load_fcn_from_file (str, dir_name, "", nm);
+            = load_fcn_from_file (str, dir_name, "", "", nm);
 
           if (xfcn)
             {
@@ -296,7 +296,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = str.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (str, dir_name, "", nm);
+          octave_function *xfcn = load_fcn_from_file (str, dir_name, "", "", nm);
 
           if (xfcn)
             {
@@ -319,7 +319,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = fpath.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", nm);
+          octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", "", nm);
 
           if (xfcn)
             {

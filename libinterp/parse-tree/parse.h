@@ -104,6 +104,7 @@ extern OCTINTERP_API octave_function *
 load_fcn_from_file (const std::string& file_name,
                     const std::string& dir_name = std::string (),
                     const std::string& dispatch_type = std::string (),
+                    const std::string& package_name = std::string (),
                     const std::string& fcn_name = std::string (),
                     bool autoload = false);
 
@@ -148,9 +149,9 @@ public:
       autoloading (false), fcn_file_from_relative_lookup (false),
       parsing_subfunctions (false), max_fcn_depth (0),
       curr_fcn_depth (0), primary_fcn_scope (-1),
-      curr_class_name (), function_scopes (), primary_fcn_ptr (0),
-      subfunction_names (), classdef_object (0), stmt_list (0),
-      lexer (lxr)
+      curr_class_name (), curr_package_name (), function_scopes (),
+      primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
+      stmt_list (0), lexer (lxr)
   {
     init ();
   }
@@ -423,6 +424,10 @@ public:
   // Name of the current class when we are parsing class methods or
   // constructors.
   std::string curr_class_name;
+
+  // Name of the current package when we are parsing an element contained
+  // in a package directory (+-directory).
+  std::string curr_package_name;
 
   // A stack holding the nested function scopes being parsed.
   // We don't use std::stack, because we want the clear method. Also, we

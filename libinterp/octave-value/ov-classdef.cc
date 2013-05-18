@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 
 #include "defun.h"
+#include "load-path.h"
 #include "ov-builtin.h"
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
@@ -723,10 +724,9 @@ static cdef_package
 make_package (const std::string& nm,
               const std::string& parent = std::string ())
 {
-  cdef_package pack ("meta.package");
+  cdef_package pack (nm);
 
   pack.set_class (cdef_class::meta_package ());
-  pack.put ("Name", nm);
   if (parent.empty ())
     pack.put ("ContainingPackage", Matrix ());
   else
@@ -779,6 +779,8 @@ octave_classdef::subsasgn (const std::string& type,
                            const std::list<octave_value_list>& idx,
                            const octave_value& rhs)
 {
+  // FIXME: should check "subsasgn" method first
+
   return object.subsasgn (type, idx, rhs);
 }
 
@@ -950,7 +952,7 @@ public:
                         {
                           // I see 2 possible implementations here:
                           // 1) use cdef_object::subsref with a different class
-                          //    context; this avoids duplicating codem but
+                          //    context; this avoids duplicating code, but
                           //    assumes the object is always the first argument
                           // 2) lookup the method manually and call
                           //    cdef_method::execute; this duplicates part of
@@ -2190,12 +2192,14 @@ cdef_class
 cdef_class::make_meta_class (tree_classdef* t)
 {
   cdef_class retval;
-  std::string class_name;
+  std::string class_name, full_class_name;
 
   // Class creation
 
-  class_name = t->ident ()->name ();
-  gnulib::printf ("class: %s\n", class_name.c_str ());
+  class_name = full_class_name = t->ident ()->name ();
+  if (! t->package_name ().empty ())
+    full_class_name = t->package_name () + "." + full_class_name;
+  gnulib::printf ("class: %s\n", full_class_name.c_str ());
 
   std::list<cdef_class> slist;
 
@@ -2219,7 +2223,7 @@ cdef_class::make_meta_class (tree_classdef* t)
               else
                 {
                   ::error ("`%s' cannot inherit from `%s', because it is sealed",
-                           class_name.c_str (), sclass_name.c_str ());
+                           full_class_name.c_str (), sclass_name.c_str ());
                   return retval;
                 }
             }
@@ -2229,10 +2233,20 @@ cdef_class::make_meta_class (tree_classdef* t)
         }
     }
 
-  retval = ::make_class (class_name, slist);
+  retval = ::make_class (full_class_name, slist);
 
   if (error_state)
     return cdef_class ();
+
+  // Package owning this class
+
+  if (! t->package_name ().empty ())
+    {
+      cdef_package pack = cdef_manager::find_package (t->package_name ());
+
+      if (! error_state && pack.ok ())
+        retval.put ("ContainingPackage", to_ov (pack));
+    }
 
   // Class attributes
 
@@ -2770,6 +2784,89 @@ Cell
 cdef_package::cdef_package_rep::get_packages (void) const
 { return map2Cell (package_map); }
 
+octave_value
+cdef_package::cdef_package_rep::find (const std::string& nm)
+{
+  if (scope == -1)
+    scope = symbol_table::alloc_package_scope (get_name ());
+
+  return symbol_table::find (nm, octave_value_list (), true, false, scope);
+}
+
+octave_value_list
+cdef_package::cdef_package_rep::meta_subsref
+  (const std::string& type, const std::list<octave_value_list>& idx,
+   int nargout)
+{
+  octave_value_list retval;
+
+  switch (type[0])
+    {
+    case '.':
+      if (idx.front ().length () == 1)
+        {
+          std::string nm = idx.front ()(0).string_value ();
+
+          if (! error_state)
+            {
+              gnulib::printf ("meta.package query: %s\n", nm.c_str ());
+
+              octave_value o = find (nm);
+
+              if (o.is_defined ())
+                {
+                  if (o.is_function ())
+                    {
+                      octave_function* fcn = o.function_value ();
+
+                      if (! error_state)
+                        {
+                          if (type.size () == 1 ||
+                              ! fcn->is_postfix_index_handled (type[1]))
+                            {
+                              octave_value_list tmp_args;
+
+                              retval = o.do_multi_index_op (nargout,
+                                                            tmp_args);
+                            }
+                          else
+                            retval(0) = o;
+
+                          if (type.size () > 1 && idx.size () > 1)
+                            retval = retval(0).next_subsref (nargout, type,
+                                                             idx, 1);
+                        }
+                    }
+                  else if (type.size () > 1 && idx.size () > 1)
+                    retval = o.next_subsref (nargout, type, idx, 1);
+                  else
+                    retval(0) = o;
+                }
+              else
+                error ("member `%s' in package `%s' does not exist",
+                       nm.c_str (), get_name ().c_str ());
+            }
+          else
+            error ("invalid meta.package indexing, expected a symbol name");
+        }
+      else
+        error ("invalid meta.package indexing");
+      break;
+
+    default:
+      error ("invalid meta.package indexing");
+      break;
+    }
+
+  return retval;
+}
+
+void
+cdef_package::cdef_package_rep::meta_release (void)
+{
+  cdef_manager::unregister_package (wrap ());
+}
+
 cdef_class cdef_class::_meta_class = cdef_class ();
 cdef_class cdef_class::_meta_property = cdef_class ();
 cdef_class cdef_class::_meta_method = cdef_class ();
@@ -2948,11 +3045,23 @@ cdef_manager::do_find_class (const std::string& name,
 
   if (it == all_classes.end ())
     {
-      // FIXME: implement this properly, take package prefix into account
-
       if (load_if_not_found)
         {
-          octave_value ov_cls = symbol_table::find (name);
+          octave_value ov_cls;
+
+          size_t pos = name.rfind ('.');
+
+          if (pos == std::string::npos)
+            ov_cls = symbol_table::find (name);
+          else
+            {
+              std::string pack_name = name.substr (0, pos);
+
+              cdef_package pack = do_find_package (pack_name, false, true);
+
+              if (pack.ok ())
+                ov_cls = pack.find (name.substr (pos+1));
+            }
 
           if (ov_cls.is_defined ())
             it = all_classes.find (name);
@@ -3001,7 +3110,8 @@ cdef_manager::do_find_method_symbol (const std::string& method_name,
 
 cdef_package
 cdef_manager::do_find_package (const std::string& name,
-                               bool error_if_not_found)
+                               bool error_if_not_found,
+                               bool load_if_not_found)
 {
   cdef_package retval;
 
@@ -3015,8 +3125,37 @@ cdef_manager::do_find_package (const std::string& name,
       if (! retval.ok ())
         error ("invalid package `%s'", name.c_str ());
     }
-  else if (error_if_not_found)
-    error ("unknown package `%s'", name.c_str ());
+  else
+    {
+      if (load_if_not_found && load_path::find_package (name))
+        {
+          size_t pos = name.find ('.');
+
+          if (pos == std::string::npos)
+            retval = make_package (name, std::string ());
+          else
+            {
+              std::string parent_name = name.substr (0, pos);
+
+              retval = make_package (name, parent_name);
+            }
+        }
+      else if (error_if_not_found)
+        error ("unknown package `%s'", name.c_str ());
+    }
+
+  return retval;
+}
+
+octave_function*
+cdef_manager::do_find_package_symbol (const std::string& pack_name)
+{
+  octave_function* retval = 0;
+
+  cdef_package pack = find_package (pack_name, false);
+
+  if (pack.ok ())
+    retval = new octave_classdef_meta (pack);
 
   return retval;
 }

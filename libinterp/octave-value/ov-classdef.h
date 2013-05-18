@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-refcount.h"
 #include "ov-base.h"
+#include "symtab.h"
 
 class cdef_object;
 class cdef_class;
@@ -1210,7 +1211,14 @@ private:
   cdef_package_rep : public cdef_meta_object_rep
   {
   public:
-    cdef_package_rep (void) : cdef_meta_object_rep (), member_count (0) { }
+    cdef_package_rep (void)
+      : cdef_meta_object_rep (), member_count (0), scope (-1) { }
+
+    ~cdef_package_rep (void)
+      {
+        if (scope != -1)
+          symbol_table::erase_scope (scope);
+      }
 
     cdef_object_rep* copy (void) const { return new cdef_package_rep (*this); }
 
@@ -1249,7 +1257,19 @@ private:
           delete this;
       }
 
+    octave_value_list
+    meta_subsref (const std::string& type,
+                  const std::list<octave_value_list>& idx, int nargout);
+
+    void meta_release (void);
+
+    bool meta_is_postfix_index_handled (char type) const
+      { return (type == '.'); }
+
+    octave_value find (const std::string& nm);
+
   private:
+    std::string full_name;
     std::map<std::string, cdef_class> class_map;
     std::map<std::string, octave_value> function_map;
     std::map<std::string, cdef_package> package_map;
@@ -1265,11 +1285,21 @@ private:
     typedef std::map<std::string, cdef_package>::iterator package_iterator;
     typedef std::map<std::string, cdef_package>::const_iterator package_const_iterator;
 
+    // The symbol_table scope corresponding to this package.
+    symbol_table::scope_id scope;
+
   private:
     cdef_package_rep (const cdef_package_rep& p)
-      : cdef_meta_object_rep (p), class_map (p.class_map),
-        function_map (p.function_map), package_map (p.package_map),
-        member_count (p.member_count) { }
+      : cdef_meta_object_rep (p), full_name (p.full_name),
+        class_map (p.class_map), function_map (p.function_map),
+        package_map (p.package_map), member_count (p.member_count)
+      { }
+
+    cdef_package wrap (void)
+      {
+        refcount++;
+        return cdef_package (this);
+      }
   };
 
 public:
@@ -1317,6 +1347,8 @@ public:
     { return get_rep ()->get_packages (); }
 
   std::string get_name (void) const { return get_rep ()->get_name (); }
+
+  octave_value find (const std::string& nm) { return get_rep ()->find (nm); }
 
   static const cdef_package& meta (void) { return _meta; }
 
@@ -1494,12 +1526,22 @@ public:
     }
 
   static cdef_package find_package (const std::string& name,
-                                    bool error_if_not_found = true)
+                                    bool error_if_not_found = true,
+                                    bool load_if_not_found = true)
     {
       if (instance_ok ())
-        return instance->do_find_package (name, error_if_not_found);
+        return instance->do_find_package (name, error_if_not_found,
+                                          load_if_not_found);
 
       return cdef_package ();
+    }
+
+  static octave_function* find_package_symbol (const std::string& pack_name)
+    {
+      if (instance_ok ())
+        return instance->do_find_package_symbol (pack_name);
+
+      return 0;
     }
 
   static void register_class (const cdef_class& cls)
@@ -1569,7 +1611,10 @@ private:
                                           const std::string& class_name);
 
   cdef_package do_find_package (const std::string& name,
-                                bool error_if_not_found);
+                                bool error_if_not_found,
+                                bool load_if_not_found);
+
+  octave_function* do_find_package_symbol (const std::string& pack_name);
 
   void do_register_class (const cdef_class& cls)
     { all_classes[cls.get_name ()] = cls; }

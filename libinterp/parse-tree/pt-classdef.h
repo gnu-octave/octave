@@ -598,9 +598,12 @@ public:
   tree_classdef (tree_classdef_attribute_list *a, tree_identifier *i,
                  tree_classdef_superclass_list *sc,
                  tree_classdef_body *b, octave_comment_list *lc,
-                 octave_comment_list *tc, int l = -1, int c = -1)
+                 octave_comment_list *tc,
+                 const std::string& pn = std::string (), int l = -1,
+                 int c = -1)
     : tree_command (l, c), attr_list (a), id (i),
-      supclass_list (sc), element_list (b), lead_comm (lc), trail_comm (tc) { }
+      supclass_list (sc), element_list (b), lead_comm (lc), trail_comm (tc),
+      pack_name (pn) { }
 
   ~tree_classdef (void)
   {
@@ -623,6 +626,8 @@ public:
   octave_comment_list *leading_comment (void) { return lead_comm; }
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
+  const std::string& package_name (void) const { return pack_name; }
+
   octave_function* make_meta_class (void);
 
   tree_classdef *dup (symbol_table::scope_id scope,
@@ -642,6 +647,8 @@ private:
 
   octave_comment_list *lead_comm;
   octave_comment_list *trail_comm;
+
+  std::string pack_name;
 
   // No copying!
 

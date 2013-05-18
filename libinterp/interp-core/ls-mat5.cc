@@ -906,7 +906,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         std::string dir_name = str.substr (0, xpos);
 
                         octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", fname);
+                          = load_fcn_from_file (str, dir_name, "", "", fname);
 
                         if (fcn)
                           {
@@ -934,7 +934,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         std::string dir_name = str.substr (0, xpos);
 
                         octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", fname);
+                          = load_fcn_from_file (str, dir_name, "", "", fname);
 
                         if (fcn)
                           {
@@ -958,7 +958,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string dir_name = fpath.substr (0, xpos);
 
                     octave_function *fcn
-                      = load_fcn_from_file (fpath, dir_name, "", fname);
+                      = load_fcn_from_file (fpath, dir_name, "", "", fname);
 
                     if (fcn)
                       {

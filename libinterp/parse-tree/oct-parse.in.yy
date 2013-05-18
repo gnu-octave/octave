@@ -1588,6 +1588,7 @@ octave_base_parser::reset (void)
   curr_fcn_depth = 0;
   primary_fcn_scope = -1;
   curr_class_name = "";
+  curr_package_name = "";
   function_scopes.clear ();
   primary_fcn_ptr  = 0;
   subfunction_names.clear ();
@@ -2972,7 +2973,8 @@ octave_base_parser::make_classdef (token *tok_val,
       int l = tok_val->line ();
       int c = tok_val->column ();
 
-      retval = new tree_classdef (a, id, sc, body, lc, tc, l, c);
+      retval = new tree_classdef (a, id, sc, body, lc, tc, curr_package_name,
+                                  l, c);
     }
 
   return retval;
@@ -3529,6 +3531,7 @@ safe_fclose (FILE *f)
 static octave_function *
 parse_fcn_file (const std::string& full_file, const std::string& file,
                 const std::string& dispatch_type,
+                const std::string& package_name,
                 bool require_file, bool force_script, bool autoload,    
                 bool relative_lookup, const std::string& warn_for)
 {
@@ -3562,6 +3565,7 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
       octave_parser parser (ffile);
 
       parser.curr_class_name = dispatch_type;
+      parser.curr_package_name = package_name;
       parser.autoloading = autoload;
       parser.fcn_file_from_relative_lookup = relative_lookup;
 
@@ -3644,7 +3648,8 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
       symbol_found = true;
 
       octave_function *fcn
-        = parse_fcn_file (full_file, file, "", true, false, false, false, "");
+        = parse_fcn_file (full_file, file, "", "", true, false, false, false,
+                          "");
 
       if (fcn)
         {
@@ -3708,6 +3713,7 @@ reverse_lookup_autoload (const std::string& nm)
 octave_function *
 load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
                     const std::string& dispatch_type,
+                    const std::string& package_name,
                     const std::string& fcn_name, bool autoload)
 {
   octave_function *retval = 0;
@@ -3755,7 +3761,8 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       // to get the help-string to use.
 
       octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
-                                                nm, dispatch_type, false,
+                                                nm, dispatch_type,
+                                                package_name, false,
                                                 autoload, autoload,
                                                 relative_lookup, "");
 
@@ -3767,8 +3774,8 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     }
   else if (len > 2)
     {
-      retval = parse_fcn_file (file, nm, dispatch_type, true, autoload,
-                               autoload, relative_lookup, "");
+      retval = parse_fcn_file (file, nm, dispatch_type, package_name, true,
+                               autoload, autoload, relative_lookup, "");
     }
 
   if (retval)
@@ -3966,7 +3973,7 @@ source_file (const std::string& file_name, const std::string& context,
   if (! error_state)
     {
       octave_function *fcn = parse_fcn_file (file_full_name, file_name,
-                                             "", require_file, true,
+                                             "", "", require_file, true,
                                              false, false, warn_for);
 
       if (! error_state)

@@ -374,17 +374,24 @@ symbol_table::fcn_info::fcn_info_rep::load_private_function
 }
 
 octave_value
-symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
+symbol_table::fcn_info::fcn_info_rep::load_class_constructor
+  (const std::string& pname)
 {
   octave_value retval;
 
   std::string dir_name;
 
-  std::string file_name = load_path::find_method (name, name, dir_name);
+  std::string full_name = name;
+
+  if (! pname.empty ())
+    full_name = pname + "." + full_name;
+
+  std::string file_name = load_path::find_method (full_name, name, dir_name);
 
   if (! file_name.empty ())
     {
-      octave_function *fcn = load_fcn_from_file (file_name, dir_name, name);
+      octave_function *fcn = load_fcn_from_file (file_name, dir_name, name,
+                                                 pname);
 
       if (fcn)
         {
@@ -402,7 +409,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
 
       octave_value old_function_on_path = function_on_path;
 
-      octave_value maybe_cdef_ctor = find_user_function ();
+      octave_value maybe_cdef_ctor = find_user_function (pname);
 
       if (maybe_cdef_ctor.is_defined ())
         {
@@ -429,7 +436,17 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
   octave_value retval;
 
   if (name == dispatch_type)
-    retval = load_class_constructor ();
+    retval = load_class_constructor (std::string ());
+  else if (dispatch_type.length () > name.length ()
+           && dispatch_type.substr (dispatch_type.length () - name.length ()
+                                    - 1) == ("." + name))
+    {
+      std::string pname =
+        dispatch_type.substr (0,
+                              dispatch_type.length () - name.length () - 1);
+
+      retval = load_class_constructor (pname);
+    }
   else
     {
       octave_function *cm = cdef_manager::find_method_symbol (name,
@@ -647,9 +664,10 @@ get_dispatch_type (const octave_value_list& args)
 
 octave_value
 symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
-                                            bool local_funcs)
+                                            bool local_funcs,
+                                            const std::string& pname)
 {
-  octave_value retval = xfind (args, local_funcs);
+  octave_value retval = xfind (args, local_funcs, pname);
 
   if (! (error_state || retval.is_defined ()))
     {
@@ -659,7 +677,7 @@ symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
 
       load_path::update ();
 
-      retval = xfind (args, local_funcs);
+      retval = xfind (args, local_funcs, pname);
     }
 
   return retval;
@@ -667,7 +685,8 @@ symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
 
 octave_value
 symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
-                                             bool local_funcs)
+                                             bool local_funcs,
+                                             const std::string& pname)
 {
   if (local_funcs)
     {
@@ -750,7 +769,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
 
   if (q == class_constructors.end ())
     {
-      octave_value val = load_class_constructor ();
+      octave_value val = load_class_constructor (pname);
 
       if (val.is_defined ())
         return val;
@@ -766,7 +785,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
         return fval;
       else
         {
-          octave_value val = load_class_constructor ();
+          octave_value val = load_class_constructor (pname);
 
           if (val.is_defined ())
             return val;
@@ -812,7 +831,14 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
 
   // Function on the path.
 
-  fcn = find_user_function ();
+  fcn = find_user_function (pname);
+
+  if (fcn.is_defined ())
+    return fcn;
+
+  // Package
+
+  fcn = find_package (pname);
 
   if (fcn.is_defined ())
     return fcn;
@@ -869,7 +895,7 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
 
   // Function on the path.
 
-  octave_value fcn = find_user_function ();
+  octave_value fcn = find_user_function (std::string ());
 
   if (fcn.is_defined ())
     return fcn;
@@ -1004,7 +1030,7 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 
           std::string dir_name = file_name.substr (0, pos);
 
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+          octave_function *fcn = load_fcn_from_file (file_name, dir_name, "",
                                                      "", name, true);
 
           if (fcn)
@@ -1016,7 +1042,7 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 }
 
 octave_value
-symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
+symbol_table::fcn_info::fcn_info_rep::find_user_function (const std::string& pname)
 {
   // Function on the path.
 
@@ -1027,11 +1053,12 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
     {
       std::string dir_name;
 
-      std::string file_name = load_path::find_fcn (name, dir_name);
+      std::string file_name = load_path::find_fcn (name, dir_name, pname);
 
       if (! file_name.empty ())
         {
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name);
+          octave_function *fcn = load_fcn_from_file (file_name, dir_name, "",
+                                                     pname);
 
           if (fcn)
             function_on_path = octave_value (fcn);
@@ -1039,6 +1066,29 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
     }
 
   return function_on_path;
+}
+
+octave_value
+symbol_table::fcn_info::fcn_info_rep::find_package (const std::string& pname)
+{
+  // FIXME: implement correct way to check out of date package
+  //if (package.is_defined ())
+  //  out_of_date_check (package);
+
+  if (! (error_state || package.is_defined ()))
+    {
+      std::string full_name = name;
+
+      if (! pname.empty ())
+        full_name = pname + "." + full_name;
+
+      octave_function * fcn = cdef_manager::find_package_symbol (full_name);
+
+      if (fcn)
+        package = octave_value (fcn);
+    }
+
+  return package;
 }
 
 // Insert INF_CLASS in the set of class names that are considered
@@ -1176,9 +1226,10 @@ octave_value
 symbol_table::find (const std::string& name,
                     const octave_value_list& args,
                     bool skip_variables,
-                    bool local_funcs)
+                    bool local_funcs,
+                    scope_id scope)
 {
-  symbol_table *inst = get_instance (xcurrent_scope);
+  symbol_table *inst = get_instance (scope);
 
   return inst
     ? inst->do_find (name, args, skip_variables, local_funcs)
@@ -1376,12 +1427,12 @@ symbol_table::do_find (const std::string& name,
   fcn_table_iterator p = fcn_table.find (name);
 
   if (p != fcn_table.end ())
-    return p->second.find (args, local_funcs);
+    return p->second.find (args, local_funcs, package_name);
   else
     {
       fcn_info finfo (name);
 
-      octave_value fcn = finfo.find (args, local_funcs);
+      octave_value fcn = finfo.find (args, local_funcs, package_name);
 
       if (fcn.is_defined ())
         fcn_table[name] = finfo;

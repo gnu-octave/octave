@@ -761,11 +761,12 @@ public:
 
       octave_value load_private_function (const std::string& dir_name);
 
-      octave_value load_class_constructor (void);
+      octave_value load_class_constructor (const std::string& pname);
 
       octave_value load_class_method (const std::string& dispatch_type);
 
-      octave_value find (const octave_value_list& args, bool local_funcs);
+      octave_value find (const octave_value_list& args, bool local_funcs,
+                         const std::string& package_name);
 
       octave_value builtin_find (void);
 
@@ -773,16 +774,19 @@ public:
 
       octave_value find_autoload (void);
 
-      octave_value find_user_function (void);
+      octave_value find_package (const std::string& package_name);
+
+      octave_value find_user_function (const std::string& package_name);
 
       bool is_user_function_defined (void) const
       {
         return function_on_path.is_defined ();
       }
 
-      octave_value find_function (const octave_value_list& args, bool local_funcs)
+      octave_value find_function (const octave_value_list& args, bool local_funcs,
+                                  const std::string& package_name)
       {
-        return find (args, local_funcs);
+        return find (args, local_funcs, package_name);
       }
 
       void lock_subfunction (scope_id scope)
@@ -880,6 +884,11 @@ public:
           clear_user_function ();
       }
 
+      void clear_package (void)
+      {
+        package = octave_value ();
+      }
+
       void clear (bool force = false)
       {
         clear_map (subfunctions, force);
@@ -889,6 +898,7 @@ public:
 
         clear_autoload_function (force);
         clear_user_function (force);
+        clear_package ();
       }
 
       void add_dispatch (const std::string& type, const std::string& fname)
@@ -935,13 +945,16 @@ public:
 
       octave_value function_on_path;
 
+      octave_value package;
+
       octave_value built_in_function;
 
       octave_refcount<size_t> count;
 
     private:
 
-      octave_value xfind (const octave_value_list& args, bool local_funcs);
+      octave_value xfind (const octave_value_list& args, bool local_funcs,
+                          const std::string& package_name);
 
       octave_value x_builtin_find (void);
 
@@ -983,9 +996,10 @@ public:
     }
 
     octave_value find (const octave_value_list& args = octave_value_list (),
-                       bool local_funcs = true)
+                       bool local_funcs = true,
+                       const std::string& package_name = std::string ())
     {
-      return rep->find (args, local_funcs);
+      return rep->find (args, local_funcs, package_name);
     }
 
     octave_value builtin_find (void)
@@ -1013,9 +1027,9 @@ public:
       return rep->find_autoload ();
     }
 
-    octave_value find_user_function (void)
+    octave_value find_user_function (const std::string& pname = std::string ())
     {
-      return rep->find_user_function ();
+      return rep->find_user_function (pname);
     }
 
     bool is_user_function_defined (void) const
@@ -1024,9 +1038,10 @@ public:
     }
 
     octave_value find_function (const octave_value_list& args = octave_value_list (),
-                                bool local_funcs = true)
+                                bool local_funcs = true,
+                                const std::string& package_name = std::string ())
     {
-      return rep->find_function (args, local_funcs);
+      return rep->find_function (args, local_funcs, package_name);
     }
 
     void lock_subfunction (scope_id scope)
@@ -1131,6 +1146,21 @@ public:
   static context_id current_context (void) { return xcurrent_context; }
 
   static scope_id alloc_scope (void) { return scope_id_cache::alloc (); }
+
+  static scope_id alloc_package_scope (const std::string& name)
+  {
+    scope_id retval = alloc_scope ();
+
+    if (retval != -1)
+      {
+        symbol_table* inst = get_instance (retval, true);
+
+        inst->do_cache_name (name);
+        inst->package_name = name;
+      }
+
+    return retval;
+  }
 
   static void set_scope (scope_id scope)
   {
@@ -1275,7 +1305,8 @@ public:
   find (const std::string& name,
         const octave_value_list& args = octave_value_list (),
         bool skip_variables = false,
-        bool local_funcs = true);
+        bool local_funcs = true,
+        scope_id scope = xcurrent_scope);
 
   static octave_value builtin_find (const std::string& name);
 
@@ -2312,6 +2343,10 @@ private:
   // If true then no variables can be added.
   bool static_workspace;
 
+  // The name of the package context associated with this table. This is
+  // only used by classdef packages.
+  std::string package_name;
+
   // Map from names of global variables to values.
   static std::map<std::string, octave_value> global_table;
 
@@ -2352,7 +2387,7 @@ private:
 
   symbol_table (scope_id scope)
     : my_scope (scope), table_name (), table (), nest_children (), nest_parent (0),
-    curr_fcn (0), static_workspace (false), persistent_table () { }
+    curr_fcn (0), static_workspace (false), package_name (), persistent_table () { }
 
   ~symbol_table (void) { }
 

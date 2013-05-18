@@ -147,13 +147,31 @@ object) relevant global values before and after the nested call.
     } \
   while (0)
 
+#define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK) \
+ \
+  do \
+    { \
+      curr_lexer->lexer_debug (PATTERN); \
+ \
+      if (curr_lexer->previous_token_may_be_command ()) \
+        { \
+          yyless (0); \
+          curr_lexer->push_start_state (COMMAND_START); \
+        } \
+      else \
+        { \
+          return curr_lexer->handle_incompatible_op (PATTERN, TOK, false); \
+        } \
+    } \
+  while (0)
+    
 #define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT) \
  \
   do \
     { \
       curr_lexer->lexer_debug (PATTERN); \
  \
-      if (curr_lexer->looks_like_command_arg ()) \
+      if (curr_lexer->previous_token_may_be_command ()) \
         { \
           yyless (0); \
           curr_lexer->push_start_state (COMMAND_START); \
@@ -737,13 +755,21 @@ ANY_INCLUDING_NL (.|{NL})
 {IDENT}@{IDENT}.{IDENT} {
     curr_lexer->lexer_debug ("{IDENT}@{IDENT}|{IDENT}@{IDENT}.{IDENT}");
 
-    int id_tok = curr_lexer->handle_superclass_identifier ();
-
-    if (id_tok >= 0)
+    if (curr_lexer->previous_token_may_be_command ())
       {
-        curr_lexer->looking_for_object_index = true;
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      {
+        int id_tok = curr_lexer->handle_superclass_identifier ();
 
-        return curr_lexer->count_token_internal (SUPERCLASSREF);
+        if (id_tok >= 0)
+          {
+            curr_lexer->looking_for_object_index = true;
+
+            return curr_lexer->count_token_internal (SUPERCLASSREF);
+          }
       }
   }
 
@@ -755,13 +781,22 @@ ANY_INCLUDING_NL (.|{NL})
 \?{IDENT}\.{IDENT} {
     curr_lexer->lexer_debug ("\\?{IDENT}|\\?{IDENT}\\.{IDENT}");
 
-    int id_tok = curr_lexer->handle_meta_identifier ();
-
-    if (id_tok >= 0)
+    if (curr_lexer->previous_token_may_be_command ()
+        &&  curr_lexer->space_follows_previous_token ())
       {
-        curr_lexer->looking_for_object_index = true;
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
+    else
+      {
+        int id_tok = curr_lexer->handle_meta_identifier ();
 
-        return curr_lexer->count_token_internal (METAQUERY);
+        if (id_tok >= 0)
+          {
+            curr_lexer->looking_for_object_index = true;
+
+            return curr_lexer->count_token_internal (METAQUERY);
+          }
       }
   }
 
@@ -996,37 +1031,8 @@ ANY_INCLUDING_NL (.|{NL})
     return curr_lexer->handle_op (".'", TRANSPOSE, false);
   }
 
-"++" {
-    curr_lexer->lexer_debug ("++");
-
-    int tok = curr_lexer->handle_incompatible_unary_op (PLUS_PLUS, false);
-
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput (',');
-        // Adjust for comma that was not really in the input stream.
-        curr_lexer->current_input_column--;
-      }
-    else
-      return tok;
-  }
-
-"--" {
-    curr_lexer->lexer_debug ("--");
-
-    int tok = curr_lexer->handle_incompatible_unary_op (MINUS_MINUS, false);
-
-    if (tok < 0)
-      {
-        yyless (0);
-        curr_lexer->xunput (',');
-        // Adjust for comma that was not really in the input stream.
-        curr_lexer->current_input_column--;
-      }
-    else
-      return tok;
-  }
+"++" { CMD_OR_UNARY_OP ("++", PLUS_PLUS, false); }
+"--" { CMD_OR_UNARY_OP ("--", MINUS_MINUS, false); }
 
 "(" {
     curr_lexer->lexer_debug ("(");
@@ -1119,24 +1125,24 @@ ANY_INCLUDING_NL (.|{NL})
     return curr_lexer->handle_op ("=", '=');
   }
 
-"+="   { return curr_lexer->handle_incompatible_op ("+=", ADD_EQ); }
-"-="   { return curr_lexer->handle_incompatible_op ("-=", SUB_EQ); }
-"*="   { return curr_lexer->handle_incompatible_op ("*=", MUL_EQ); }
-"/="   { return curr_lexer->handle_incompatible_op ("/=", DIV_EQ); }
-"\\="  { return curr_lexer->handle_incompatible_op ("\\=", LEFTDIV_EQ); }
-".+="  { return curr_lexer->handle_incompatible_op (".+=", ADD_EQ); }
-".-="  { return curr_lexer->handle_incompatible_op (".-=", SUB_EQ); }
-".*="  { return curr_lexer->handle_incompatible_op (".*=", EMUL_EQ); }
-"./="  { return curr_lexer->handle_incompatible_op ("./=", EDIV_EQ); }
-".\\=" { return curr_lexer->handle_incompatible_op (".\\=", ELEFTDIV_EQ); }
-"^="   { return curr_lexer->handle_incompatible_op ("^=", POW_EQ); }
-"**="  { return curr_lexer->handle_incompatible_op ("^=", POW_EQ); }
-".^="  { return curr_lexer->handle_incompatible_op (".^=", EPOW_EQ); }
-".**=" { return curr_lexer->handle_incompatible_op (".^=", EPOW_EQ); }
-"&="   { return curr_lexer->handle_incompatible_op ("&=", AND_EQ); }
-"|="   { return curr_lexer->handle_incompatible_op ("|=", OR_EQ); }
-"<<="  { return curr_lexer->handle_incompatible_op ("<<=", LSHIFT_EQ); }
-">>="  { return curr_lexer->handle_incompatible_op (">>=", RSHIFT_EQ); }
+"+="   { CMD_OR_COMPUTED_ASSIGN_OP ("+=", ADD_EQ); }
+"-="   { CMD_OR_COMPUTED_ASSIGN_OP ("-=", SUB_EQ); }
+"*="   { CMD_OR_COMPUTED_ASSIGN_OP ("*=", MUL_EQ); }
+"/="   { CMD_OR_COMPUTED_ASSIGN_OP ("/=", DIV_EQ); }
+"\\="  { CMD_OR_COMPUTED_ASSIGN_OP ("\\=", LEFTDIV_EQ); }
+".+="  { CMD_OR_COMPUTED_ASSIGN_OP (".+=", ADD_EQ); }
+".-="  { CMD_OR_COMPUTED_ASSIGN_OP (".-=", SUB_EQ); }
+".*="  { CMD_OR_COMPUTED_ASSIGN_OP (".*=", EMUL_EQ); }
+"./="  { CMD_OR_COMPUTED_ASSIGN_OP ("./=", EDIV_EQ); }
+".\\=" { CMD_OR_COMPUTED_ASSIGN_OP (".\\=", ELEFTDIV_EQ); }
+"^="   { CMD_OR_COMPUTED_ASSIGN_OP ("^=", POW_EQ); }
+"**="  { CMD_OR_COMPUTED_ASSIGN_OP ("^=", POW_EQ); }
+".^="  { CMD_OR_COMPUTED_ASSIGN_OP (".^=", EPOW_EQ); }
+".**=" { CMD_OR_COMPUTED_ASSIGN_OP (".^=", EPOW_EQ); }
+"&="   { CMD_OR_COMPUTED_ASSIGN_OP ("&=", AND_EQ); }
+"|="   { CMD_OR_COMPUTED_ASSIGN_OP ("|=", OR_EQ); }
+"<<="  { CMD_OR_COMPUTED_ASSIGN_OP ("<<=", LSHIFT_EQ); }
+">>="  { CMD_OR_COMPUTED_ASSIGN_OP (">>=", RSHIFT_EQ); }
 
 %{
 // In Matlab, '{' may also trigger command syntax.

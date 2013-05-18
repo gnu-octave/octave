@@ -1093,8 +1093,30 @@ file_editor_tab::notice_settings (const QSettings *settings)
   _edit_area->setCaretLineVisible
     (settings->value ("editor/highlightCurrentLine", true).toBool ());
 
-  if (settings->value ("editor/codeCompletion", true).toBool ())
-    _edit_area->setAutoCompletionThreshold (1);
+  if (settings->value ("editor/codeCompletion", true).toBool ())  // auto compl.
+    {
+      bool match_keywords = settings->value
+        ("editor/codeCompletion_keywords",true).toBool ();
+      bool match_document = settings->value
+        ("editor/codeCompletion_document",true).toBool ();
+
+      QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
+      if (match_keywords)
+        if (match_document)
+          source = QsciScintilla::AcsAll;
+        else
+          source = QsciScintilla::AcsAPIs;
+      else
+        if (match_document)
+          source = QsciScintilla::AcsDocument;
+      _edit_area->setAutoCompletionSource (source);
+
+      _edit_area->setAutoCompletionReplaceWord
+        (settings->value ("editor/codeCompletion_replace",false).toBool ());
+
+      _edit_area->setAutoCompletionThreshold
+        (settings->value ("editor/codeCompletion_threshold",2).toInt ());
+    }
   else
     _edit_area->setAutoCompletionThreshold (-1);
 

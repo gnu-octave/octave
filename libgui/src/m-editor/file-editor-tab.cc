@@ -259,8 +259,26 @@ file_editor_tab::update_lexer ()
         }
     }
 
-  QSettings *settings = resource_manager::get_settings ();
+  if (lexer)
+    {
+      QsciAPIs *apis = new QsciAPIs(lexer);
+      if (apis)
+        {
+          QString keyword;
+          QStringList keyword_list;
+          int i;
+          for (i=1; i<=3; i++) // load the first 3 keyword sets
+            {
+              keyword = QString(lexer->keywords (i));           // get list
+              keyword_list = keyword.split (QRegExp ("\\s+"));  // split
+              for (i = 0; i < keyword_list.size (); i++)        // add to API
+                apis->add (keyword_list.at (i));
+            }
+          apis->prepare ();
+        }
+    }
 
+  QSettings *settings = resource_manager::get_settings ();
   if (settings)
     lexer->readSettings (*settings);
 

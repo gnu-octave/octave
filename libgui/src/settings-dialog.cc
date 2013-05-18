@@ -37,12 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QScrollArea>
 
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
-//#define HAVE_LEXER_OCTAVE
+#define HAVE_LEXER_OCTAVE
 #include <Qsci/qscilexeroctave.h>
 #elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
-//#define HAVE_LEXER_MATLAB
+#define HAVE_LEXER_MATLAB
 #include <Qsci/qscilexermatlab.h>
 #endif
+
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>

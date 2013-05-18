@@ -85,3 +85,22 @@
 %! end
 %! assert (__prog_output_assert__ ("pass"));
 
+%% test parsing of single-quoted character string appearing at the
+%% beginning of an if condition
+%!test
+%! if (1)
+%!   'foo';
+%!   x = 13;
+%! endif
+%! assert (x, 13);
+
+%% test parsing of single-quoted character string appearing at the
+%% beginning of an if condition
+%!test
+%! if (0)
+%!   x = 42;
+%! elseif (1)
+%!   'foo';
+%!   x = 13;
+%! endif
+%! assert (x, 13);

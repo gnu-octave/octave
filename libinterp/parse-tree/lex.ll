@@ -863,6 +863,12 @@ ANY_INCLUDING_NL (.|{NL})
         yyless (0);
         curr_lexer->push_start_state (COMMAND_START);
       }
+    else if (curr_lexer->at_beginning_of_statement)
+      {
+        curr_lexer->current_input_column++;
+        int retval = curr_lexer->handle_string ('\'');
+        return curr_lexer->count_token_internal (retval);
+      }
     else
       {
         int tok = curr_lexer->previous_token_value ();

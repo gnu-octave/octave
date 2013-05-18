@@ -109,3 +109,11 @@
 %! for i = cat (3, a, cellfun (@(x) 4 + x, a, "UniformOutput", 0))
 %!   assert (i, {1 + 2*j; 2 + 2*j++})
 %! endfor
+
+%% test parsing of single-quoted character string appearing at the
+%% beginning of a for loop
+%!test
+%! for i = 1:5
+%!   'foo';
+%! endfor
+%! assert (i, 5);

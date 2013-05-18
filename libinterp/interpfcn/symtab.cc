@@ -1152,6 +1152,7 @@ symbol_table::fcn_info::fcn_info_rep::dump
      << " ["
      << (cmdline_function.is_defined () ? "c" : "")
      << (built_in_function.is_defined () ? "b" : "")
+     << (package.is_defined () ? "p" : "")
      << "]\n";
 
   std::string tprefix = prefix + "  ";

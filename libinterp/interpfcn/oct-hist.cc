@@ -174,14 +174,14 @@ do_history (const octave_value_list& args, int nargout)
               if (args(i+1).is_string ())
                 command_history::set_file (args(++i).string_value ());
               else
-              {
-                error ("history: expecting file name for %s option",
-                     option.c_str ());
-                return hlist;
-              }
+                {
+                  error ("history: expecting file name for %s option",
+                         option.c_str ());
+                  return hlist;
+                }
             }
           else
-            command_history::set_file ( default_history_file ());
+            command_history::set_file (default_history_file ());
 
           if (option == "-a")
             // Append 'new' lines to file.
@@ -314,49 +314,6 @@ edit_history_readline (std::fstream& stream)
   line[lindex++] = '\0';
   return line;
 }
-
-// Use 'command' to replace the last entry in the history list, which,
-// by this time, is 'run_history blah...'.  The intent is that the
-// new command becomes the history entry, and that 'fc' should never
-// appear in the history list.  This way you can do 'run_history' to
-// your heart's content.
-
-// FIXME: Don't delete this block of code until memory
-//        leak in edit_history has been plugged and
-//        it is clear that this code can be removed.
-//        See additional FIXME in do_edit_history.
-/*
-static void
-edit_history_repl_hist (const std::string& command)
-{
-  if (! command.empty ())
-    {
-      string_vector hlist = command_history::list ();
-
-      int len = hlist.length ();
-
-      if (len > 0)
-        {
-          int i = len - 1;
-
-          std::string histent = command_history::get_entry (i);
-
-          if (! histent.empty ())
-            {
-              std::string cmd = command;
-
-              int cmd_len = cmd.length ();
-
-              if (cmd[cmd_len - 1] == '\n')
-                cmd.resize (cmd_len - 1);
-
-              if (! cmd.empty ())
-                command_history::replace_entry (i, cmd);
-            }
-        }
-    }
-}
-*/
 
 static void
 edit_history_add_hist (const std::string& line)
@@ -560,16 +517,6 @@ do_edit_history (const octave_value_list& args)
           continue;
         }
 
-      // FIXME: Don't delete this block of code until memory
-      //        leak in edit_history has been plugged and
-      //        it is clear that this code can be removed.
-      // Command 'edit history' has already been removed in mk_tmp_hist_file ()
-      //if (first)
-      //  {
-      //    first = 0;
-      //    edit_history_repl_hist (line);
-      //  }
-      //else
       edit_history_add_hist (line);
 
       delete [] line;

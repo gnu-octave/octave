@@ -35,6 +35,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_QSCINTILLA
 #include <QScrollArea>
+
+#if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
+#define HAVE_LEXER_OCTAVE
+#include <Qsci/qscilexeroctave.h>
+#elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
+#define HAVE_LEXER_MATLAB
+#include <Qsci/qscilexermatlab.h>
+#endif
+
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>
@@ -84,6 +93,10 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
   ui->editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine",true).toBool () );
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
+  ui->editor_spinbox_ac_threshold->setValue (settings->value ("editor/codeCompletion_threshold",2).toInt ());
+  ui->editor_checkbox_ac_keywords->setChecked (settings->value ("editor/codeCompletion_keywords",true).toBool ());
+  ui->editor_checkbox_ac_document->setChecked (settings->value ("editor/codeCompletion_document",false).toBool ());
+  ui->editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace",false).toBool ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
@@ -136,9 +149,15 @@ settings_dialog::settings_dialog (QWidget *p):
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
   QsciLexer *lexer;
-  lexer = new lexer_octave_gui ();
+#if defined (HAVE_LEXER_OCTAVE)
+  lexer = new QsciLexerOctave ();
   read_lexer_settings (lexer,settings);
   delete lexer;
+#elif defined (HAVE_LEXER_MATLAB)
+  lexer = new QsciLexerMatlab ();
+  read_lexer_settings (lexer,settings);
+  delete lexer;
+#endif
   lexer = new QsciLexerCPP ();
   read_lexer_settings (lexer,settings);
   delete lexer;
@@ -359,6 +378,10 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());
   settings->setValue ("editor/highlightCurrentLine", ui->editor_highlightCurrentLine->isChecked ());
   settings->setValue ("editor/codeCompletion", ui->editor_codeCompletion->isChecked ());
+  settings->setValue ("editor/codeCompletion_threshold", ui->editor_spinbox_ac_threshold->value ());
+  settings->setValue ("editor/codeCompletion_keywords", ui->editor_checkbox_ac_keywords->isChecked ());
+  settings->setValue ("editor/codeCompletion_document", ui->editor_checkbox_ac_document->isChecked ());
+  settings->setValue ("editor/codeCompletion_replace", ui->editor_checkbox_ac_replace->isChecked ());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
@@ -392,9 +415,15 @@ settings_dialog::write_changed_settings ()
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, get dialog contents, and write settings
   QsciLexer *lexer;
-  lexer = new lexer_octave_gui ();
+#if defined (HAVE_LEXER_OCTAVE)
+  lexer = new QsciLexerOctave ();
   write_lexer_settings (lexer,settings);
   delete lexer;
+#elif defined (HAVE_LEXER_MATLAB)
+  lexer = new QsciLexerMatlab ();
+  write_lexer_settings (lexer,settings);
+  delete lexer;
+#endif
   lexer = new QsciLexerCPP ();
   write_lexer_settings (lexer,settings);
   delete lexer;

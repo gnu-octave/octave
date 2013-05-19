@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include <unistd.h>
 #include <fcntl.h>
 
 #if defined (HAVE_SYS_IOCTL_H)
@@ -49,12 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 dissociate_terminal (void)
 {
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
-# if defined (HAVE_SYS_IOCTL_H) && defined (TIOCNOTTY)
-
-  ioctl (0, TIOCNOTTY);
-
-# else
+#if ! (defined (__WIN32__) || defined (__APPLE__)) || defined (__CYGWIN__)
  
   pid_t pid = fork ();
 
@@ -77,6 +73,9 @@ dissociate_terminal (void)
     {
       // Parent
 
+      // FIXME -- we should catch signals and pass them on to the child
+      // process in some way, possibly translating SIGINT to SIGTERM.
+
       int status;
 
       waitpid (pid, &status, 0);
@@ -85,7 +84,6 @@ dissociate_terminal (void)
             ? octave_wait::exitstatus (status) : 127);
     }
 
-# endif
 #endif
 }
 

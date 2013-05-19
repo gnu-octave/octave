@@ -39,25 +39,7 @@ public:
 
   bool has_focus (void) const;
 
-signals:
-
-public slots:
-
-  void notice_settings (const QSettings *settings);
-
-  void copyClipboard (void);
-
-  void pasteClipboard (void);
-
   void focus (void);
-
-signals:
-
-  void notice_settings_signal (const QSettings *settings); 
-
-  void copyClipboard_signal (void);
-
-  void pasteClipboard_signal (void);
 
 private:
 

@@ -24,7 +24,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define QTERMINAL_H
 
 #include <QSettings>
-#include <QtGlobal>
+#include <QKeySequence>
 #include <QWidget>
 #include <QStringList>
 #include <QColor>
@@ -76,6 +76,10 @@ public:
   virtual void setCursorColor (bool useForegroundColor,
                                const QColor& color) = 0;
 
+signals:
+
+  void report_status_message (const QString&);
+
 public slots:
 
   virtual void copyClipboard (void) = 0;
@@ -94,18 +98,32 @@ protected:
 
   QTerminal (QWidget *xparent = 0) : QWidget (xparent)
   {
-    connect (this, SIGNAL (customContextMenuRequested (QPoint)),
-             this, SLOT (handleCustomContextMenuRequested (QPoint)));
-
     setContextMenuPolicy (Qt::CustomContextMenu);
 
     _contextMenu = new QMenu (this);
 
-    QAction *copyAction  = _contextMenu->addAction ("Copy");
-    QAction *pasteAction = _contextMenu->addAction ("Paste");
+    QAction *copyAction 
+      = _contextMenu->addAction (tr ("Copy"),
+                                 this, SLOT (copyClipboard ()));
 
-    connect (copyAction, SIGNAL (triggered()), this, SLOT (copyClipboard()));
-    connect (pasteAction, SIGNAL (triggered()), this, SLOT (pasteClipboard()));
+    QAction *pasteAction
+      = _contextMenu->addAction (tr ("Paste"),
+                                 this, SLOT (pasteClipboard ()));
+
+    connect (this, SIGNAL (customContextMenuRequested (QPoint)),
+             this, SLOT (handleCustomContextMenuRequested (QPoint)));
+
+    connect (this, SIGNAL (report_status_message (const QString&)),
+             xparent, SLOT (report_status_message (const QString&)));
+
+    connect (xparent, SIGNAL (settings_changed (const QSettings *)),
+             this, SLOT (notice_settings (const QSettings *)));
+
+    connect (xparent, SIGNAL (copyClipboard_signal ()),
+             this, SLOT (copyClipboard ()));
+
+    connect (xparent, SIGNAL (pasteClipboard_signal ()),
+             this, SLOT (pasteClipboard ()));
   }
 
 private:

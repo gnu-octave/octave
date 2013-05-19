@@ -68,3 +68,11 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("34"));
 
+%% test parsing of single-quoted character string appearing immediately
+%% after a while condition.
+%!test
+%! i = 0;
+%! while (++i < 5)
+%!   'foo';
+%! endwhile
+%! assert (i, 5);

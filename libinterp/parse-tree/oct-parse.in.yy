@@ -527,9 +527,9 @@ fcn_handle      : '@' FCN_HANDLE
                   }
                 ;
 
-anon_fcn_handle : '@' param_list statement
+anon_fcn_handle : '@' param_list stmt_begin statement
                   {
-                    $$ = parser.make_anon_fcn_handle ($2, $3);
+                    $$ = parser.make_anon_fcn_handle ($2, $4);
                     lexer.nesting_level.remove ();
                   }
                 ;
@@ -868,11 +868,11 @@ if_cmd_list     : if_cmd_list1
                   }
                 ;
 
-if_cmd_list1    : expression opt_sep opt_list
+if_cmd_list1    : expression stmt_begin opt_sep opt_list
                   {
                     $1->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
 
-                    $$ = parser.start_if_command ($1, $3);
+                    $$ = parser.start_if_command ($1, $4);
                   }
                 | if_cmd_list1 elseif_clause
                   {
@@ -881,11 +881,11 @@ if_cmd_list1    : expression opt_sep opt_list
                   }
                 ;
 
-elseif_clause   : ELSEIF stash_comment opt_sep expression opt_sep opt_list
+elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt_list
                   {
                     $4->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
 
-                    $$ = parser.make_elseif_clause ($1, $4, $6, $2);
+                    $$ = parser.make_elseif_clause ($1, $4, $7, $2);
                   }
                 ;
 
@@ -926,8 +926,8 @@ case_list1      : switch_case
                   }
                 ;
 
-switch_case     : CASE stash_comment opt_sep expression opt_sep opt_list
-                  { $$ = parser.make_switch_case ($1, $4, $6, $2); }
+switch_case     : CASE stash_comment opt_sep expression stmt_begin opt_sep opt_list
+                  { $$ = parser.make_switch_case ($1, $4, $7, $2); }
                 ;
 
 default_case    : OTHERWISE stash_comment opt_sep opt_list
@@ -940,11 +940,11 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 // Looping
 // =======
 
-loop_command    : WHILE stash_comment expression opt_sep opt_list END
+loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   {
                     $3->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
 
-                    if (! ($$ = parser.make_while_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
                       ABORT_PARSE;
                   }
                 | DO stash_comment opt_sep opt_list UNTIL expression
@@ -952,10 +952,10 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
                     if (! ($$ = parser.make_do_until_command ($5, $4, $6, $2)))
                       ABORT_PARSE;
                   }
-                | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
+                | FOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_for_command (FOR, $1, $3, $5, 0,
-                                                  $7, $8, $2)))
+                                                  $8, $9, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
@@ -964,10 +964,10 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
                                                   $9, $10, $2)))
                       ABORT_PARSE;
                   }
-                | PARFOR stash_comment assign_lhs '=' expression opt_sep opt_list END
+                | PARFOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_for_command (PARFOR, $1, $3, $5,
-                                                  0, $7, $8, $2)))
+                                                  0, $8, $9, $2)))
                       ABORT_PARSE;
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
@@ -1495,6 +1495,10 @@ class_enum      : identifier '(' expression ')'
 // =============
 // Miscellaneous
 // =============
+
+stmt_begin      : // empty
+                  { lexer.at_beginning_of_statement = true; }
+                ;
 
 stash_comment   : // empty
                   { $$ = octave_comment_buffer::get_comment (); }

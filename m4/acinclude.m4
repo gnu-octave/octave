@@ -1578,6 +1578,7 @@ I didn't find gperf, but it's only a problem if you need to
 reconstruct oct-gperf.h 
 "
     OCTAVE_CONFIGURE_WARNING([warn_gperf])
+    GPERF='$(top_srcdir)/build-aux/missing gperf'
   fi
   AC_SUBST(GPERF)
 ])

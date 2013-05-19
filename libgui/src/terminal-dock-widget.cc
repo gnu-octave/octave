@@ -36,21 +36,8 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   setObjectName ("TerminalDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
   setWindowTitle (tr ("Command Window"));
+
   setWidget (terminal);
-
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility (bool)));
-
-  // Forward signals to QTerminal widget.
-
-  connect (this, SIGNAL (notice_settings_signal (const QSettings *)),
-           terminal, SLOT (notice_settings (const QSettings *)));
-
-  connect (this, SIGNAL (copyClipboard_signal (void)),
-           terminal, SLOT (copyClipboard (void)));
-
-  connect (this, SIGNAL (pasteClipboard_signal (void)),
-           terminal, SLOT (pasteClipboard (void)));
 }
 
 bool
@@ -59,24 +46,6 @@ terminal_dock_widget::has_focus (void) const
   QWidget *w = widget ();
 
   return w->hasFocus ();
-}
-
-void
-terminal_dock_widget::notice_settings (const QSettings *settings)
-{
-  emit notice_settings_signal (settings);
-}
-
-void
-terminal_dock_widget::copyClipboard (void)
-{
-  emit copyClipboard_signal ();
-}
-
-void
-terminal_dock_widget::pasteClipboard (void)
-{
-  emit pasteClipboard_signal ();
 }
 
 void

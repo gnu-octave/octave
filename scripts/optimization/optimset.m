@@ -131,17 +131,20 @@ function retval = optimset (varargin)
     fnames = fieldnames (old);
     ## skip validation if we're in the internal query
     validation = ! isempty (opts);
-    lopts = tolower (opts);
     for [val, key] = new
       if (validation)
         ## Case insensitive lookup in all options.
-        i = lookup (lopts, tolower (key));
+        i = strncmpi (opts, key, length (key));
+        nmatch = sum (i);
         ## Validate option.
-        if (i > 0 && strcmpi (opts{i}, key))
-          ## Use correct case.
-          key = opts{i};
-        else
+        if (nmatch == 1)
+          key = opts{find (i)};
+        elseif (nmatch == 0)
           warning ("unrecognized option: %s", key);
+        else
+          fmt = sprintf ("ambiguous option: %%s (%s%%s)",
+                         repmat ("%s, ", 1, nmatch-1));
+          warning (fmt, key, opts{i});
         endif
       endif
       old.(key) = val;
@@ -165,6 +168,7 @@ endfunction
 
 %!assert (optimget (optimset ("tolx", 1e-2), "tOLx"), 1e-2)
 %!assert (isfield (optimset ("tolFun", 1e-3), "TolFun"))
+%!warning (optimset ("Max", 10));
+%!warning (optimset ("foobar", 13));
 
 %!error (optimset ("%NOT_A_REAL_FUNCTION_NAME%"))
-

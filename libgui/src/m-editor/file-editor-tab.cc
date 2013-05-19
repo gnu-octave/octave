@@ -27,9 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_QSCINTILLA
 
 #include <Qsci/qsciapis.h>
-// Not available in the Debian repos yet!
-// #include <Qsci/qscilexeroctave.h>
-#include "lexer-octave-gui.h"
+#if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
+#define HAVE_LEXER_OCTAVE
+#include <Qsci/qscilexeroctave.h>
+#elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
+#define HAVE_LEXER_MATLAB
+#include <Qsci/qscilexermatlab.h>
+#endif
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerperl.h>
@@ -210,45 +214,74 @@ file_editor_tab::update_lexer ()
 {
   QsciLexer *lexer = _edit_area->lexer ();
   delete lexer;
+  lexer = 0;
 
   if (_file_name.endsWith (".m")
-      || _file_name.endsWith (".M")
       || _file_name.endsWith ("octaverc"))
     {
-      lexer = new lexer_octave_gui ();
+#if defined (HAVE_LEXER_OCTAVE)
+      lexer = new QsciLexerOctave ();
+#elif defined (HAVE_LEXER_MATLAB)
+      lexer = new QsciLexerMatlab ();
+#endif
     }
-  else if (_file_name.endsWith (".c")
-           || _file_name.endsWith (".cc")
-           || _file_name.endsWith (".cpp")
-           || _file_name.endsWith (".cxx")
-           || _file_name.endsWith (".c++")
-           || _file_name.endsWith (".h")
-           || _file_name.endsWith (".hh")
-           || _file_name.endsWith (".hpp")
-           || _file_name.endsWith (".h++"))
+
+  if (! lexer)
     {
-      lexer = new QsciLexerCPP ();
+      if (_file_name.endsWith (".c")
+          || _file_name.endsWith (".cc")
+          || _file_name.endsWith (".cpp")
+          || _file_name.endsWith (".cxx")
+          || _file_name.endsWith (".c++")
+          || _file_name.endsWith (".h")
+          || _file_name.endsWith (".hh")
+          || _file_name.endsWith (".hpp")
+          || _file_name.endsWith (".h++"))
+        {
+          lexer = new QsciLexerCPP ();
+        }
+      else if (_file_name.endsWith (".pl"))
+        {
+          lexer = new QsciLexerPerl ();
+        }
+      else if (_file_name.endsWith (".bat"))
+        {
+          lexer = new QsciLexerBatch ();
+        }
+      else if (_file_name.endsWith (".diff"))
+        {
+          lexer = new QsciLexerDiff ();
+        }
+      else
+        {
+          // FIXME -- why should the bash lexer be the default?
+          lexer = new QsciLexerBash ();
+        }
     }
-  else if (_file_name.endsWith (".pl"))
+
+  if (lexer)
     {
-      lexer = new QsciLexerPerl ();
-    }
-  else if (_file_name.endsWith (".bat"))
-    {
-      lexer = new QsciLexerBatch ();
-    }
-  else if (_file_name.endsWith (".diff"))
-    {
-      lexer = new QsciLexerDiff ();
-    }
-  else // Default to bash lexer.
-    {
-      lexer = new QsciLexerBash ();
+      QsciAPIs *apis = new QsciAPIs(lexer);
+      if (apis)
+        {
+          QString keyword;
+          QStringList keyword_list;
+          int i;
+          for (i=1; i<=3; i++) // load the first 3 keyword sets
+            {
+              keyword = QString(lexer->keywords (i));           // get list
+              keyword_list = keyword.split (QRegExp ("\\s+"));  // split
+              for (i = 0; i < keyword_list.size (); i++)        // add to API
+                apis->add (keyword_list.at (i));
+            }
+          apis->prepare ();
+        }
     }
 
   QSettings *settings = resource_manager::get_settings ();
   if (settings)
     lexer->readSettings (*settings);
+
   _edit_area->setLexer (lexer);
 
 }
@@ -1060,8 +1093,30 @@ file_editor_tab::notice_settings (const QSettings *settings)
   _edit_area->setCaretLineVisible
     (settings->value ("editor/highlightCurrentLine", true).toBool ());
 
-  if (settings->value ("editor/codeCompletion", true).toBool ())
-    _edit_area->setAutoCompletionThreshold (1);
+  if (settings->value ("editor/codeCompletion", true).toBool ())  // auto compl.
+    {
+      bool match_keywords = settings->value
+        ("editor/codeCompletion_keywords",true).toBool ();
+      bool match_document = settings->value
+        ("editor/codeCompletion_document",true).toBool ();
+
+      QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
+      if (match_keywords)
+        if (match_document)
+          source = QsciScintilla::AcsAll;
+        else
+          source = QsciScintilla::AcsAPIs;
+      else
+        if (match_document)
+          source = QsciScintilla::AcsDocument;
+      _edit_area->setAutoCompletionSource (source);
+
+      _edit_area->setAutoCompletionReplaceWord
+        (settings->value ("editor/codeCompletion_replace",false).toBool ());
+
+      _edit_area->setAutoCompletionThreshold
+        (settings->value ("editor/codeCompletion_threshold",2).toInt ());
+    }
   else
     _edit_area->setAutoCompletionThreshold (-1);
 

@@ -216,7 +216,12 @@ tree_index_expression::get_struct_index
           octave_value t = df->rvalue1 ();
 
           if (! error_state)
-            fn = t.string_value ();
+            {
+              if (t.is_string () && t.rows () == 1)
+                fn = t.string_value ();
+              else
+                error ("dynamic structure field names must be character strings");
+            }
         }
       else
         panic_impossible ();

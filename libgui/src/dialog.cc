@@ -443,6 +443,13 @@ FileDialog::FileDialog (const QStringList& filters, const QString& title,
       setOption (QFileDialog::DontConfirmOverwrite, false);
       setConfirmOverwrite(true);
     }
+  else if (multimode == "dir")    // uigetdir
+    {
+      setFileMode (QFileDialog::Directory);
+      setOption (QFileDialog::ShowDirsOnly, true);
+      setOption (QFileDialog::HideNameFilterDetails, true);
+      setAcceptMode (QFileDialog::AcceptOpen);
+    }
   else                           // uigetfile multiselect=off
     {
       setFileMode (QFileDialog::ExistingFile);

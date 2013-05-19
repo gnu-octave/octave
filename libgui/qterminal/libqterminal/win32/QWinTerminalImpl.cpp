@@ -43,6 +43,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define _WIN32_WINNT 0x0500 
 #include <windows.h>
 #include <cstring>
+#include <csignal>
 #include <limits>
 
 #include "QWinTerminalImpl.h"
@@ -171,6 +172,7 @@ private:
 
   QPoint m_beginSelection;
   QPoint m_endSelection;
+  bool m_settingSelection;
 
   QColor m_selectionColor;
   QColor m_cursorColor;
@@ -202,7 +204,8 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   : q (parent), m_command (cmd), m_hasBlinkingCursor (true),
     m_cursorType (BlockCursor), m_beginSelection (0, 0),
-    m_endSelection (0, 0), m_process (NULL), m_inWheelEvent (false)
+    m_endSelection (0, 0), m_settingSelection (false),
+    m_process (NULL), m_inWheelEvent (false)
 {
   log (NULL);
 
@@ -1177,15 +1180,22 @@ QWinTerminalImpl::~QWinTerminalImpl (void)
 
 void QWinTerminalImpl::mouseMoveEvent (QMouseEvent *event)
 {
-  d->m_endSelection = d->posToCell (event->pos ());
+  if (d->m_settingSelection)
+    {
+      d->m_endSelection = d->posToCell (event->pos ());
 
-  updateSelection ();
+      updateSelection ();
+    }
 }
 
 void QWinTerminalImpl::mousePressEvent (QMouseEvent *event)
 {
   if (event->button () == Qt::LeftButton)
-    d->m_beginSelection = d->posToCell (event->pos ());
+    {
+      d->m_settingSelection = true;
+
+      d->m_beginSelection = d->posToCell (event->pos ());
+    }
 }
 
 void QWinTerminalImpl::mouseReleaseEvent (QMouseEvent *event)
@@ -1195,6 +1205,8 @@ void QWinTerminalImpl::mouseReleaseEvent (QMouseEvent *event)
       d->m_endSelection = d->posToCell (event->pos ());
 
       updateSelection ();
+
+      d->m_settingSelection = false;
     }
 }
 
@@ -1426,7 +1438,18 @@ void QWinTerminalImpl::copyClipboard (void)
 {
   QClipboard *clipboard = QApplication::clipboard ();
 
-  clipboard->setText (d->getSelection ());
+  QString selection = d->getSelection ();
+
+  if (selection.isEmpty ())
+    {
+      ::raise (SIGINT);
+    }
+  else
+    {
+      clipboard->setText (selection);
+
+      emit report_status_message (tr ("copied selection to clipboard"));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

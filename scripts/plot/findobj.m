@@ -185,6 +185,9 @@ function h = findobj (varargin)
   endwhile
 
   numpairs = np - 1;
+  if (~ isempty (logicaloperator))
+    logicaloperator = shift (logicaloperator, 1);
+  endif
 
   ## Load all objects which qualify for being searched.
   idepth = 0;
@@ -243,6 +246,16 @@ function h = findobj (varargin)
   h = reshape (h, [numel(h), 1]);
 endfunction
 
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (1:10);
+%!   set (h, "tag", "foobar")
+%!   g = findobj (gcf (), "tag", "foobar", "type", "line", "color", [0 0 1]);
+%!   assert (g, h)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 %!test
 %! hf = figure ("visible", "off");
@@ -256,4 +269,22 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   subplot (2, 2, 1)
+%!   imagesc (rand (10))
+%!   subplot (2, 2, 2)
+%!   surf (peaks)
+%!   subplot (2, 2, 3)
+%!   contour (peaks)
+%!   subplot (2, 2, 4)
+%!   plot (peaks)
+%!   h1 = findobj (gcf (), "-regexp", "Type", "image|surface|hggroup");
+%!   h2 = findobj (gcf (), "Type", "image", "-or", "Type", "surface", "-or", "Type", "hggroup");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%! assert (h2, h1)
 

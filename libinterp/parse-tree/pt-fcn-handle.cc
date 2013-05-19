@@ -159,6 +159,19 @@ tree_anon_fcn_handle::rvalue1 (int)
 %! g = @(f, x) h (x);
 %! f = @() g (@(x) h, pi);
 %! assert (f () == sin (pi));
+
+The next two tests are intended to test parsing of a character string
+vs. hermitian operator at the beginning of an anonymous function
+expression.  The use of ' for the character string and the spacing is
+intentional, so don't change it.
+
+%!test
+%! f = @() 'foo';
+%! assert (f (), 'foo');
+
+%!test
+%! f = @()'foo';
+%! assert (f (), 'foo');
 */
 
 octave_value_list

@@ -19,13 +19,13 @@ dnl Copyright (C) 1993-2012 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.62])
-AC_INIT([GNU Octave], [3.7.3+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.7.5], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 OCTAVE_API_VERSION_NUMBER="48"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2013-04-22"
+OCTAVE_RELEASE_DATE="2013-05-14"
 OCTAVE_COPYRIGHT="Copyright (C) 2013 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
@@ -2599,10 +2599,10 @@ if test $build_gui = yes; then
   fi
 
   if test $build_gui = yes; then
-    AC_CHECK_PROGS(MOC, [moc-qt5 moc-qt4 moc])
-    AC_CHECK_PROGS(UIC, [uic-qt5 uic-qt4 uic])
-    AC_CHECK_PROGS(RCC, [rcc])
-    AC_CHECK_PROGS(LRELEASE, [lrelease-qt5 lrelease-qt4 lrelease])
+    AC_CHECK_TOOLS(MOC, [moc-qt5 moc-qt4 moc])
+    AC_CHECK_TOOLS(UIC, [uic-qt5 uic-qt4 uic])
+    AC_CHECK_TOOLS(RCC, [rcc])
+    AC_CHECK_TOOLS(LRELEASE, [lrelease-qt5 lrelease-qt4 lrelease])
     if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
       AC_DEFINE(HAVE_QT, 1, 
         [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
@@ -2648,6 +2648,13 @@ if test $build_gui = yes; then
       OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
       AC_DEFINE(HAVE_QSCINTILLA, 1, 
         [Define to 1 if the QScintilla library and header files are available])
+
+      save_CPPFLAGS="$CPPFLAGS"
+      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+      AC_LANG_PUSH(C++)
+      AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
+      AC_LANG_POP(C++)
+      CPPFLAGS="$save_CPPFLAGS"
     fi
 
     AC_CHECK_FUNCS([setlocale], [],

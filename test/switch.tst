@@ -93,3 +93,12 @@
 %% test/octave.test/switch/switch-6.m
 %!error <syntax error> eval ("switch 1 default 1; endswitch")
 
+%% test parsing of single-quoted character string appearing immediately
+%% after a switch case
+%!test
+%! switch (1)
+%!   case 1
+%!     'foo';
+%!     x = 13;
+%! endswitch
+%! assert (x, 13);

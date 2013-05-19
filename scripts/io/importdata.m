@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Erik Kjellson
+## Copyright (C) 2012-2013 Erik Kjellson <erikiiofph7@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##
@@ -59,7 +59,6 @@
 ## @seealso{textscan, dlmread, csvread, load}
 ## @end deftypefn
 
-## Author: Erik Kjellson <erikiiofph7@users.sourceforge.net>
 
 function [output, delimiter, header_rows] = importdata (varargin)
 
@@ -193,8 +192,8 @@ function [output, delimiter, header_rows] = \
   ## Read file into string and count the number of header rows
   file_content = fileread (fname);
 
-  ## Split the file into rows (using \r\n or \n as delimiters between rows).
-  file_content_rows = regexp (file_content, "\r?\n", "split");
+  ## Split the file into rows (using \n and/or \r as delimiters between rows).
+  file_content_rows = regexp (file_content, "\n|\n\r|\r|\r\n", "split");
 
   ## FIXME: guess delimiter, if it isn't defined
   if (isempty (delimiter))
@@ -427,6 +426,19 @@ endfunction
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\r\n0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, "\\t");
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+%!test
+%! # CR for line breaks
+%! A = [3.1 -7.2 0; 0.012 6.5 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\t-7.2\t0\r0.012\t6.5\t128");
 %! fclose (fid);
 %! [a,d,h] = importdata (fn, "\\t");
 %! unlink (fn);

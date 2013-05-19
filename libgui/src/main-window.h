@@ -86,6 +86,9 @@ signals:
   void update_breakpoint_marker_signal (bool insert, const QString& file,
                                         int line);
 
+  void copyClipboard_signal (void);
+  void pasteClipboard_signal (void);
+
 public slots:
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
@@ -137,6 +140,9 @@ public slots:
   void set_window_layout (QSettings *settings);
   void write_settings (void);
   void connect_visibility_changed (void);
+
+  void copyClipboard (void);
+  void pasteClipboard (void);
 
   void connect_uiwidget_links ();
 
@@ -256,7 +262,6 @@ private:
   QAction *_new_script_action;
   QAction *_open_action;
 
-  QAction *_cut_action;
   QAction *_copy_action;
   QAction *_paste_action;
   QAction *_undo_action;

@@ -1212,13 +1212,9 @@ private:
   {
   public:
     cdef_package_rep (void)
-      : cdef_meta_object_rep (), member_count (0), scope (-1) { }
+      : cdef_meta_object_rep (), member_count (0) { }
 
-    ~cdef_package_rep (void)
-      {
-        if (scope != -1)
-          symbol_table::erase_scope (scope);
-      }
+    ~cdef_package_rep (void) { }
 
     cdef_object_rep* copy (void) const { return new cdef_package_rep (*this); }
 
@@ -1284,9 +1280,6 @@ private:
     typedef std::map<std::string, octave_value>::const_iterator function_const_iterator;
     typedef std::map<std::string, cdef_package>::iterator package_iterator;
     typedef std::map<std::string, cdef_package>::const_iterator package_const_iterator;
-
-    // The symbol_table scope corresponding to this package.
-    symbol_table::scope_id scope;
 
   private:
     cdef_package_rep (const cdef_package_rep& p)

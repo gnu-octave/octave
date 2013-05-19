@@ -1148,25 +1148,6 @@ load_path::loader::find_private_fcn (const std::string& dir,
 }
 
 std::string
-load_path::do_find_method (const std::string& class_name,
-                           const std::string& meth,
-                           std::string& dir_name) const
-{
-  size_t pos = class_name.rfind ('.');
-
-  if (pos == std::string::npos)
-    return default_loader.find_method (class_name, meth, dir_name);
-  else
-    {
-      std::string pname = class_name.substr (0, pos);
-
-      std::string cname = class_name.substr (pos+1);
-
-      return get_loader(pname).find_method (cname, meth, dir_name);
-    }
-}
-
-std::string
 load_path::loader::find_method (const std::string& class_name,
                                 const std::string& meth,
                                 std::string& dir_name, int type) const
@@ -1212,23 +1193,6 @@ load_path::loader::find_method (const std::string& class_name,
     }
 
   return retval;
-}
-
-std::list<std::string>
-load_path::do_methods (const std::string& class_name) const
-{
-  size_t pos = class_name.rfind ('.');
-
-  if (pos == std::string::npos)
-    return default_loader.methods (class_name);
-  else
-    {
-      std::string pname = class_name.substr (0, pos);
-
-      std::string cname = class_name.substr (pos+1);
-
-      return get_loader (pname).methods (cname);
-    }
 }
 
 std::list<std::string>

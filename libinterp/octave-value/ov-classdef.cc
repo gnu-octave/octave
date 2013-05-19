@@ -2787,10 +2787,9 @@ cdef_package::cdef_package_rep::get_packages (void) const
 octave_value
 cdef_package::cdef_package_rep::find (const std::string& nm)
 {
-  if (scope == -1)
-    scope = symbol_table::alloc_package_scope (get_name ());
+  std::string symbol_name = get_name () + "." + nm;
 
-  return symbol_table::find (nm, octave_value_list (), true, false, scope);
+  return symbol_table::find (symbol_name, octave_value_list (), true, false);
 }
 
 octave_value_list

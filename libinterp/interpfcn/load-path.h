@@ -95,24 +95,29 @@ public:
 
   static std::string find_method (const std::string& class_name,
                                   const std::string& meth,
-                                  std::string& dir_name)
+                                  std::string& dir_name,
+                                  const std::string& pack_name = std::string ())
   {
     return instance_ok ()
-      ? instance->do_find_method (class_name, meth, dir_name)
+      ? instance->get_loader (pack_name).find_method (class_name, meth,
+                                                      dir_name)
       : std::string ();
   }
 
   static std::string find_method (const std::string& class_name,
-                                  const std::string& meth)
+                                  const std::string& meth,
+                                  const std::string& pack_name = std::string ())
   {
     std::string dir_name;
-    return find_method (class_name, meth, dir_name);
+    return find_method (class_name, meth, dir_name, pack_name);
   }
 
-  static std::list<std::string> methods (const std::string& class_name)
+  static std::list<std::string> methods (const std::string& class_name,
+                                         const std::string& pack_name = std::string ())
   {
     return instance_ok ()
-      ? instance->do_methods (class_name) : std::list<std::string> ();
+      ? instance->get_loader(pack_name).methods (class_name)
+      : std::list<std::string> ();
   }
 
   static std::list<std::string> overloads (const std::string& meth)
@@ -658,12 +663,6 @@ private:
 
     return default_loader;
   }
-
-  std::string do_find_method (const std::string& class_name,
-                              const std::string& meth,
-                              std::string& dir_name) const;
-
-  std::list<std::string> do_methods (const std::string& class_name) const;
 
   std::list<std::string> do_overloads (const std::string& meth) const;
 

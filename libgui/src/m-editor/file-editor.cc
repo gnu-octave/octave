@@ -306,7 +306,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                                        tr ("Octave Editor"),
                                        tr ("Could not open file %1 for read:\n%2.").
                                        arg (openFileName).arg (result),
-                                       QMessageBox::Ok, 0);
+                                       QMessageBox::Ok, this);
 
                   msgBox->setWindowModality (Qt::NonModal);
                   msgBox->setAttribute (Qt::WA_DeleteOnClose);

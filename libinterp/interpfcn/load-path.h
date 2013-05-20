@@ -132,6 +132,14 @@ public:
       ? instance->do_find_package (package_name) : false;
   }
 
+  static std::list<std::string>
+  get_all_package_names (bool only_top_level = true)
+  {
+    return instance_ok ()
+      ? instance->do_get_all_package_names (only_top_level)
+      : std::list<std::string> ();
+  }
+
   static std::string find_fcn (const std::string& fcn, std::string& dir_name,
                                const std::string& pack_name = std::string ())
   {
@@ -670,6 +678,8 @@ private:
   {
     return (loader_map.find (package_name) != loader_map.end ());
   }
+
+  std::list<std::string> do_get_all_package_names (bool only_top_level) const;
 
   std::string do_find_file (const std::string& file) const;
 

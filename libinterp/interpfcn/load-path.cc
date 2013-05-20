@@ -2103,6 +2103,21 @@ genpath (const std::string& dirname, const string_vector& skip)
   return retval;
 }
 
+std::list<std::string>
+load_path::do_get_all_package_names (bool only_top_level) const
+{
+  std::list<std::string> retval;
+
+  for (const_loader_map_iterator l = loader_map.begin ();
+       l != loader_map.end (); ++l)
+    {
+      if (! only_top_level || l->first.find ('.') == std::string::npos)
+        retval.push_back (l->first);
+    }
+
+  return retval;
+}
+
 static void
 execute_pkg_add_or_del (const std::string& dir,
                         const std::string& script_file)

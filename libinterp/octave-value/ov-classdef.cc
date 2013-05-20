@@ -2731,6 +2731,32 @@ package_get_packages (const octave_value_list& args, int /* nargout */)
   return retval;
 }
 
+static octave_value_list
+package_getAllPackages (const octave_value_list& /* args */,
+                        int /* nargout */)
+{
+  std::map<std::string, cdef_package> toplevel_packages;
+
+  std::list<std::string> names = load_path::get_all_package_names ();
+
+  toplevel_packages["meta"] = cdef_manager::find_package ("meta", false,
+                                                          false);
+
+  for (std::list<std::string>::const_iterator it = names.begin ();
+       it != names.end (); ++it)
+    toplevel_packages[*it] = cdef_manager::find_package (*it, false, true);
+
+  Cell c (toplevel_packages.size (), 1);
+
+  int i = 0;
+
+  for (std::map<std::string, cdef_package>::const_iterator it = toplevel_packages.begin ();
+       it != toplevel_packages.end (); ++it)
+    c(i++,0) = to_ov (it->second);
+
+  return octave_value_list (octave_value (c));
+}
+
 void
 cdef_package::cdef_package_rep::install_class (const cdef_class& cls,
                                                const std::string& nm)
@@ -3017,6 +3043,8 @@ install_classdef (void)
 		      make_fcn_handle (package_get_packages, "meta.package>get.Packages"),
 		      "public", Matrix (), "private"));
   meta_package.install_method (make_method (meta_package, "fromName", package_fromName,
+                                            "public", true));
+  meta_package.install_method (make_method (meta_package, "getAllPackages", package_getAllPackages,
                                             "public", true));
 
   /* create "meta" package */

@@ -2863,7 +2863,13 @@ cdef_package::cdef_package_rep::meta_subsref
 void
 cdef_package::cdef_package_rep::meta_release (void)
 {
-  cdef_manager::unregister_package (wrap ());
+  // FIXME: Do we really want to unregister the package, as it
+  //        could still be referenced by classes or sub-packages?
+  //        If the package object is recreated later on, it won't
+  //        match the one already referenced by those classes or
+  //        sub-packages.
+
+  //cdef_manager::unregister_package (wrap ());
 }
 
 cdef_class cdef_class::_meta_class = cdef_class ();
@@ -3021,6 +3027,20 @@ install_classdef (void)
   package_meta.install_class (meta_package,     "package");
   package_meta.install_class (meta_event,       "event");
   package_meta.install_class (meta_dynproperty, "dynproperty");
+
+  /* install built-in classes into the symbol table */
+  symbol_table::install_built_in_function
+    ("meta.class", octave_value (meta_class.get_constructor_function ()));
+  symbol_table::install_built_in_function
+    ("meta.method", octave_value (meta_method.get_constructor_function ()));
+  symbol_table::install_built_in_function
+    ("meta.property", octave_value (meta_property.get_constructor_function ()));
+  symbol_table::install_built_in_function
+    ("meta.package", octave_value (meta_package.get_constructor_function ()));
+  symbol_table::install_built_in_function
+    ("meta.event", octave_value (meta_event.get_constructor_function ()));
+  symbol_table::install_built_in_function
+    ("meta.dynproperty", octave_value (meta_dynproperty.get_constructor_function ()));
 }
 
 //----------------------------------------------------------------------------

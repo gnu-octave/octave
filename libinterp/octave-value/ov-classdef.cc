@@ -1244,6 +1244,38 @@ cdef_object_array::subsref (const std::string& type,
         }
       break;
 
+    case '.':
+      if (type.size () == 1 && idx.size () == 1)
+        {
+          Cell c (dims ());
+
+          octave_idx_type n = array.numel ();
+
+          // dummy variables
+          size_t dummy_skip;
+          cdef_class dummy_cls;
+
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              octave_value_list r = array(i).subsref (type, idx, 1, dummy_skip,
+                                                      dummy_cls);
+
+              if (! error_state)
+                {
+                  if (r.length () > 0)
+                    c(i) = r(0);
+                }
+              else
+                break;
+            }
+
+          if (! error_state)
+            retval(0) = octave_value (c, true);
+
+          break;
+        }
+      // fall through "default"
+
     default:
       ::error ("can't perform indexing operation on array of %s objects",
                class_name ().c_str ());

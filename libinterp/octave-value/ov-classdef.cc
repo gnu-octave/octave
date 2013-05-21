@@ -1125,23 +1125,47 @@ cdef_object_scalar::subsasgn (const std::string& type,
 
               if (prop.ok ())
                 {
-                  if (type.length () == 1)
+                  if (prop.is_constant ())
+                    error ("subsasgn: cannot assign constant property: %s",
+                           name.c_str ());
+                  else
                     {
                       refcount++;
 
                       cdef_object obj (this);
 
-                      prop.set_value (obj, rhs, true, "subsasgn");
+                      if (type.length () == 1)
+                        {
+                          prop.set_value (obj, rhs, true, "subsasgn");
 
-                      if (! error_state)
-                        retval = to_ov (obj);
-                    }
-                  else
-                    {
-                    }
+                          if (! error_state)
+                            retval = to_ov (obj);
+                        }
+                      else
+                        {
+                          octave_value val = 
+                            prop.get_value (obj, true, "subsasgn");
 
-                  if (! error_state)
-                    {
+                          if (! error_state)
+                            {
+                              std::list<octave_value_list> args (idx);
+
+                              args.erase (args.begin ());
+
+                              val = val.assign (octave_value::op_asn_eq,
+                                                type.substr (1), args, rhs);
+
+                              if (! error_state)
+                                {
+                                  if (val.class_name () != "object"
+                                      || ! to_cdef (val).is_handle_object ())
+                                    prop.set_value (obj, val, true, "subsasgn");
+
+                                  if (! error_state)
+                                    retval = to_ov (obj);
+                                }
+                            }
+                        }
                     }
                 }
               else

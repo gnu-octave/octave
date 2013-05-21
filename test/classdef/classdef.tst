@@ -67,7 +67,7 @@
 %! assert (obj.cosine (0.1), cos (2 * pi * 10 * 0.1), eps ())
 %! assert (obj.sine (0.1), sin (2 * pi * 10 * 0.1), eps ())
 
-%!xtest
+%!test
 %! obj = foo_method_changes_property_size (3);
 %! obj = obj.move_element_to_end (2);
 %! assert (obj.element, [1 3 2])

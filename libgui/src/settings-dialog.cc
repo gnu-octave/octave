@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "color-picker.h"
 #include "resource-manager.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
@@ -91,7 +90,18 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",false).toBool ());
   ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
+
+  QVariant default_var = QColor (240, 240, 240);
+  QColor setting_color = settings->value ("editor/highlight_current_line_color",
+                                          default_var).value<QColor> ();
+  _editor_current_line_color = new color_picker (setting_color);
+  ui->editor_grid_current_line->addWidget (_editor_current_line_color,0,3);
+  _editor_current_line_color->setMinimumSize (50,10);
+  _editor_current_line_color->setEnabled (false);
+  connect (ui->editor_highlightCurrentLine, SIGNAL (toggled (bool)),
+           _editor_current_line_color, SLOT (setEnabled (bool)));
   ui->editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine",true).toBool () );
+
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
   ui->editor_spinbox_ac_threshold->setValue (settings->value ("editor/codeCompletion_threshold",2).toInt ());
   ui->editor_checkbox_ac_keywords->setChecked (settings->value ("editor/codeCompletion_keywords",true).toBool ());
@@ -377,6 +387,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());
   settings->setValue ("editor/highlightCurrentLine", ui->editor_highlightCurrentLine->isChecked ());
+  settings->setValue ("editor/highlight_current_line_color",_editor_current_line_color->color ());
   settings->setValue ("editor/codeCompletion", ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold", ui->editor_spinbox_ac_threshold->value ());
   settings->setValue ("editor/codeCompletion_keywords", ui->editor_checkbox_ac_keywords->isChecked ());

@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialog>
 #include <QSettings>
 
+#include "color-picker.h"
+
 #ifdef HAVE_QSCINTILLA
 class QsciLexer;
 #endif
@@ -57,6 +59,8 @@ private:
 
   void read_terminal_colors (QSettings *settings);
   void write_terminal_colors (QSettings *settings);
+  
+  color_picker *_editor_current_line_color;
 };
 
 #endif // SETTINGSDIALOG_H

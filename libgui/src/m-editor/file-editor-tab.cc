@@ -99,9 +99,6 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
   _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
 
-  //highlight current line color
-  _edit_area->setCaretLineBackgroundColor (QColor (245, 245, 245));
-
   // other features
   _edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
   _edit_area->setAutoIndent (true);
@@ -1090,6 +1087,11 @@ file_editor_tab::notice_settings (const QSettings *settings)
 
   QFontMetrics lexer_font_metrics (_edit_area->lexer ()->defaultFont (0));
 
+  //highlight current line color
+  QVariant default_var = QColor (240, 240, 240);
+  QColor setting_color = settings->value ("editor/highlight_current_line_color",
+                                          default_var).value<QColor> ();
+  _edit_area->setCaretLineBackgroundColor (setting_color);
   _edit_area->setCaretLineVisible
     (settings->value ("editor/highlightCurrentLine", true).toBool ());
 

@@ -1174,8 +1174,27 @@ cdef_object_scalar::subsasgn (const std::string& type,
         }
       break;
 
+    case '(':
+        {
+          refcount++;
+
+          cdef_object this_obj (this);
+
+          Array<cdef_object> arr (dim_vector (1, 1), this_obj);
+
+          cdef_object new_obj = cdef_object (new cdef_object_array (arr));
+
+          new_obj.set_class (get_class ());
+
+          octave_value tmp = new_obj.subsasgn (type, idx, rhs);
+
+          if (! error_state)
+            retval = tmp;
+        }
+      break;
+
     default:
-      panic_impossible ();
+      error ("subsasgn: object cannot be index with `%c'", type[0]);
       break;
     }
 

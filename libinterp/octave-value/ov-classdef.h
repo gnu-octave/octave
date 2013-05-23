@@ -289,6 +289,8 @@ public:
   void mark_as_constructed (const cdef_class& cls)
     { rep->mark_as_constructed (cls); }
 
+  bool is (const cdef_object& obj) const { return rep == obj.rep; }
+
 protected:
   cdef_object_rep* get_rep (void) { return rep; }
 

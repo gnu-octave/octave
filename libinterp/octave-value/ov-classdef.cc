@@ -1372,8 +1372,89 @@ cdef_object_array::subsasgn (const std::string& type,
             }
         }
       else
-        ::error ("can't perform indexing operation on array of %s objects",
-                 class_name ().c_str ());
+        {
+          const octave_value_list& ival = idx.front ();
+
+          bool is_scalar = true;
+
+          Array<idx_vector> iv (dim_vector (1, ival.length ()));
+
+          for (int i = 0; ! error_state && i < ival.length (); i++)
+            {
+              iv(i) = ival(i).index_vector ();
+
+              if (! error_state)
+                {
+                  is_scalar = is_scalar && iv(i).is_scalar ();
+
+                  if (! is_scalar)
+                    error ("subsasgn: invalid indexing for object array "
+                           "assignment, the index must reference a single "
+                           "object in the array.");
+                }
+            }
+
+          if (! error_state)
+            {
+              Array<cdef_object> a = array.index (iv, true);
+
+              if (a.numel () != 1)
+                error ("subsasgn: invalid indexing for object array "
+                       "assignment");
+
+              if (! error_state)
+                {
+                  cdef_object obj = a(0);
+
+                  // If the object in 'a' is not valid, this means the index
+                  // was out-of-bound and we need to create a new object.
+
+                  if (! obj.ok ())
+                    obj = get_class ().construct_object (octave_value_list ());
+
+                  std::list<octave_value_list> next_idx (idx);
+
+                  next_idx.erase (next_idx.begin ());
+
+                  octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
+                                                   rhs);
+
+                  if (! error_state)
+                    {
+                      cdef_object robj = to_cdef (tmp);
+
+                      if (robj.ok ()
+                          && ! robj.is_array ()
+                          && robj.get_class () == get_class ())
+                        {
+                          // Small optimization, when dealing with handle
+                          // objects, we don't need to re-assign the result
+                          // of subsasgn back into the array.
+
+                          if (! robj.is (a(0)))
+                            {
+                              Array<cdef_object> rhs_a (dim_vector (1, 1),
+                                                        robj);
+
+                              octave_idx_type n = array.numel ();
+
+                              array.assign (iv, rhs_a);
+
+                              if (array.numel () > n)
+                                fill_empty_values ();
+                            }
+
+                          refcount++;
+
+                          retval = to_ov (cdef_object (this));
+                        }
+                      else
+                        error ("subasgn: invalid assignment into array of %s "
+                               "objects", class_name ().c_str ());
+                    }
+                }
+            }
+        }
       break;
 
     default:

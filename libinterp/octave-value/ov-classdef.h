@@ -108,7 +108,7 @@ public:
 
   virtual octave_value_list
   subsref (const std::string&, const std::list<octave_value_list>&,
-           int, size_t&, const cdef_class&)
+           int, size_t&, const cdef_class&, bool)
     {
       gripe_invalid_object ("subsref");
       return octave_value_list ();
@@ -256,14 +256,15 @@ public:
 
   octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
-           int nargout, size_t& skip, const cdef_class& context)
-    { return rep->subsref (type, idx, nargout, skip, context); }
+           int nargout, size_t& skip, const cdef_class& context,
+           bool auto_add = false)
+    { return rep->subsref (type, idx, nargout, skip, context, auto_add); }
 
   octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
-            const octave_value& rhs)
+            const octave_value& rhs, int ignore_copies = 0)
     {
-      make_unique ();
+      make_unique (ignore_copies);
       return rep->subsasgn (type, idx, rhs);
     }
 
@@ -294,9 +295,9 @@ public:
 protected:
   cdef_object_rep* get_rep (void) { return rep; }
 
-  void make_unique (void)
+  void make_unique (int ignore_copies)
     {
-      if (rep->refcount > 1)
+      if (rep->refcount > ignore_copies + 1)
         *this = clone ();
     }
 
@@ -369,7 +370,8 @@ public:
 
   octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
-           int nargout, size_t& skip, const cdef_class& context);
+           int nargout, size_t& skip, const cdef_class& context,
+           bool auto_add);
 
   octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
@@ -379,7 +381,9 @@ private:
   Array<cdef_object> array;
 
 private:
-  void fill_empty_values (void);
+  void fill_empty_values (void) { fill_empty_values (array); }
+
+  void fill_empty_values (Array<cdef_object>& arr);
 
   // Private copying!
   cdef_object_array (const cdef_object_array& obj)
@@ -417,7 +421,8 @@ public:
 
   octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
-           int nargout, size_t& skip, const cdef_class& context);
+           int nargout, size_t& skip, const cdef_class& context,
+           bool auto_add);
 
   octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
@@ -1414,6 +1419,10 @@ public:
       octave_value_list retval = subsref (type, idx, 1);
       return (retval.length () > 0 ? retval(0) : octave_value ());
     }
+
+  octave_value subsref (const std::string& type,
+			const std::list<octave_value_list>& idx,
+                        bool auto_add);
 
   octave_value subsasgn (const std::string& type,
                          const std::list<octave_value_list>& idx,

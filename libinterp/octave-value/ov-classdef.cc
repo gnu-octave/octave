@@ -775,6 +775,28 @@ octave_classdef::subsref (const std::string& type,
 }
 
 octave_value
+octave_classdef::subsref (const std::string& type,
+                          const std::list<octave_value_list>& idx,
+                          bool auto_add)
+{
+  size_t skip = 0;
+  octave_value_list retval;
+
+  // FIXME: should check "subsref" method first
+  // ? not sure this still applied with auto_add version of subsref
+
+  retval = object.subsref (type, idx, 1, skip, cdef_class (), auto_add);
+
+  if (! error_state)
+    {
+      if (type.length () > skip && idx.size () > skip)
+	retval = retval(0).next_subsref (1, type, idx, skip);
+    }
+
+  return retval.length () > 0 ? retval(0) : octave_value ();
+}
+
+octave_value
 octave_classdef::subsasgn (const std::string& type,
                            const std::list<octave_value_list>& idx,
                            const octave_value& rhs)
@@ -1028,7 +1050,7 @@ octave_value_list
 cdef_object_scalar::subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
                              int nargout, size_t& skip,
-                             const cdef_class& context)
+                             const cdef_class& context, bool auto_add)
 {
   skip = 0;
 
@@ -1096,6 +1118,23 @@ cdef_object_scalar::subsref (const std::string& type,
 	    }
 	  break;
 	}
+
+    case '(':
+        {
+          refcount++;
+
+          cdef_object this_obj (this);
+
+          Array<cdef_object> arr (dim_vector (1, 1), this_obj);
+
+          cdef_object new_obj = cdef_object (new cdef_object_array (arr));
+
+          new_obj.set_class (get_class ());
+
+          retval = new_obj.subsref (type, idx, nargout, skip, cls, auto_add);
+        }
+      break;
+
     default:
       error ("object cannot be indexed with `%c'", type[0]);
       break;
@@ -1221,7 +1260,7 @@ octave_value_list
 cdef_object_array::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
                             int /* nargout */, size_t& skip,
-                            const cdef_class& /* context */)
+                            const cdef_class& /* context */, bool auto_add)
 {
   octave_value_list retval;
 
@@ -1244,10 +1283,17 @@ cdef_object_array::subsref (const std::string& type,
 
           if (! error_state)
             {
-              Array<cdef_object> ires = array.index (iv);
+              Array<cdef_object> ires = array.index (iv, auto_add);
 
               if (! error_state)
                 {
+                  // If resizing is enabled (auto_add = true), it's possible
+                  // indexing was out-of-bound and the result array contains
+                  // invalid cdef_objects.
+
+                  if (auto_add)
+                    fill_empty_values (ires);
+
                   if (is_scalar)
                     retval(0) = to_ov (ires(0));
                   else
@@ -1406,18 +1452,26 @@ cdef_object_array::subsasgn (const std::string& type,
                 {
                   cdef_object obj = a(0);
 
+                  int ignore_copies = 0;
+
                   // If the object in 'a' is not valid, this means the index
                   // was out-of-bound and we need to create a new object.
 
                   if (! obj.ok ())
                     obj = get_class ().construct_object (octave_value_list ());
+                  else
+                    // Optimize the subsasgn call to come. There are 2 copies
+                    // that we can safely ignore:
+                    // - 1 in "array"
+                    // - 1 in "a"
+                    ignore_copies = 2;
 
                   std::list<octave_value_list> next_idx (idx);
 
                   next_idx.erase (next_idx.begin ());
 
                   octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
-                                                   rhs);
+                                                   rhs, ignore_copies);
 
                   if (! error_state)
                     {
@@ -1467,7 +1521,7 @@ cdef_object_array::subsasgn (const std::string& type,
 }
 
 void
-cdef_object_array::fill_empty_values (void)
+cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
 {
   cdef_class cls = get_class ();
 
@@ -1475,21 +1529,21 @@ cdef_object_array::fill_empty_values (void)
     {
       cdef_object obj;
 
-      int n = array.numel ();
+      int n = arr.numel ();
 
       for (int i = 0; ! error_state && i < n; i++)
         {
-          if (! array.xelem (i).ok ())
+          if (! arr.xelem (i).ok ())
             {
               if (! obj.ok ())
                 {
                   obj = cls.construct_object (octave_value_list ());
 
                   if (! error_state)
-                    array.xelem (i) = obj;
+                    arr.xelem (i) = obj;
                 }
               else
-                array.xelem (i) = obj.copy ();
+                arr.xelem (i) = obj.copy ();
             }
         }
     }

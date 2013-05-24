@@ -40,8 +40,14 @@
 @ifnottex
 
 @end ifnottex
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@ifnotinfo
 @noindent
 @strong{See also:} \args\.
+@end ifnotinfo
 @end macro
 
 @c The following macro marks words that aspell should ignore during

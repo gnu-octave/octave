@@ -1234,6 +1234,11 @@ function1       : fcn_name function2
 
                     delete $1;
 
+                    if (lexer.parsing_classdef_get_method)
+                      fname.insert (0, "get.");
+                    else if (lexer.parsing_classdef_set_method)
+                      fname.insert (0, "set.");
+
                     if (! ($$ = parser.frob_function (fname, $2)))
                       ABORT_PARSE;
                   }

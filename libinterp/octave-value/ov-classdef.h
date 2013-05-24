@@ -943,7 +943,7 @@ private:
       : cdef_meta_object_rep (p) { }
 
     bool is_recursive_set (const cdef_object& obj) const;
-
+    
     cdef_property wrap (void)
       {
         refcount++;

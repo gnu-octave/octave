@@ -131,6 +131,17 @@ make_fcn_handle (octave_builtin::fcn ff, const std::string& nm)
   return fcn_handle;
 }
 
+static octave_value
+make_fcn_handle (const octave_value& fcn, const std::string& nm)
+{
+  octave_value retval;
+
+  if (fcn.is_defined ())
+    retval = octave_value (new octave_fcn_handle (fcn, nm));
+
+  return retval;
+}
+
 inline octave_value_list
 execute_ov (octave_value val, const octave_value_list& args, int nargout)
 {
@@ -346,6 +357,51 @@ check_access (const cdef_class& cls, const octave_value& acc)
     error ("invalid property/method access in class `%s'",
            cls.get_name ().c_str ());
   
+  return false;
+}
+
+bool
+is_method_executing (const octave_value& ov, const cdef_object& obj)
+{
+  octave_function* stack_fcn = octave_call_stack::current ();
+
+  octave_function* method_fcn = ov.function_value (true);
+
+  // Does the top of the call stack match our target function?
+
+  if (stack_fcn && stack_fcn == method_fcn)
+    {
+      octave_user_function* uf = method_fcn->user_function_value (true);
+
+      // We can only check the context object for user-function (not builtin),
+      // where we have access to the parameters (arguments and return values).
+      // That's ok as there's no need to call this function for builtin
+      // methods.
+
+      if (uf)
+        {
+          // At this point, the method is executing, but we still need to
+          // check the context object for which the method is executing. For
+          // methods, it's the first argument of the function; for ctors, it
+          // is the first return value.
+
+          tree_parameter_list* pl = uf->is_classdef_constructor ()
+            ? uf->return_list () : uf->parameter_list ();
+
+          if (pl && pl->size () > 0)
+            {
+              octave_value arg0 = pl->front ()->lvalue ().value ();
+
+              if (arg0.is_defined () && arg0.type_name () == "object")
+                {
+                  cdef_object arg0_obj = to_cdef (arg0);
+
+                  return obj.is (arg0_obj);
+                }
+            }
+        }
+    }
+
   return false;
 }
 
@@ -2478,6 +2534,12 @@ cdef_class::make_meta_class (tree_classdef* t)
 
   if (b)
     {
+      // Keep track of the get/set accessor methods. They will be used
+      // later on when creating properties.
+
+      std::map<std::string, octave_value> get_methods;
+      std::map<std::string, octave_value> set_methods;
+
       // Method blocks
 
       std::list<tree_classdef_methods_block *> mb_list = b->methods_list ();
@@ -2499,7 +2561,7 @@ cdef_class::make_meta_class (tree_classdef* t)
                   octave_value avalue = compute_attribute_value (*ait);
 
                   gnulib::printf ("method attribute: %s = %s\n", aname.c_str (),
-                          attribute_value_to_string (*ait, avalue).c_str ());
+                                  attribute_value_to_string (*ait, avalue).c_str ());
                   amap[aname] = avalue;
                 }
             }
@@ -2512,15 +2574,26 @@ cdef_class::make_meta_class (tree_classdef* t)
                    mit != (*it)->element_list ()->end (); ++mit)
                 {
                   std::string mname = mit->function_value ()->name ();
-                  cdef_method meth = make_method (retval, mname, *mit);
+                  std::string mprefix = mname.substr (0, 4);
 
-                  gnulib::printf ("%s: %s\n", (mname == class_name ? "constructor" : "method"),
-                          mname.c_str ());
-                  for (std::map<std::string, octave_value>::iterator ait = amap.begin ();
-                       ait != amap.end (); ++ait)
-                    meth.put (ait->first, ait->second);
+                  if (mprefix == "get.")
+                    get_methods[mname.substr (4)] =
+                      make_fcn_handle (*mit, full_class_name + ">" + mname);
+                  else if (mprefix == "set.")
+                    set_methods[mname.substr (4)] =
+                      make_fcn_handle (*mit, full_class_name + ">" + mname);
+                  else
+                    {
+                      cdef_method meth = make_method (retval, mname, *mit);
 
-                  retval.install_method (meth);
+                      gnulib::printf ("%s: %s\n", (mname == class_name ? "constructor" : "method"),
+                                      mname.c_str ());
+                      for (std::map<std::string, octave_value>::iterator ait = amap.begin ();
+                           ait != amap.end (); ++ait)
+                        meth.put (ait->first, ait->second);
+
+                      retval.install_method (meth);
+                    }
                 }
             }
         }
@@ -2569,7 +2642,9 @@ cdef_class::make_meta_class (tree_classdef* t)
               for (tree_classdef_property_list::iterator pit = (*it)->element_list ()->begin ();
                    pit != (*it)->element_list ()->end (); ++pit)
                 {
-                  cdef_property prop = ::make_property (retval, (*pit)->ident ()->name ());
+                  std::string prop_name = (*pit)->ident ()->name ();
+
+                  cdef_property prop = ::make_property (retval, prop_name);
 
                   gnulib::printf ("property: %s\n", (*pit)->ident ()->name ().c_str ());
                   if ((*pit)->expression ())
@@ -2581,9 +2656,35 @@ cdef_class::make_meta_class (tree_classdef* t)
                       prop.put ("DefaultValue", pvalue);
                     }
 
+                  // Install property attributes. This is done before assigning the
+                  // property accessors so we can do validationby using cdef_property
+                  // methods.
+
                   for (std::map<std::string, octave_value>::iterator ait = amap.begin ();
                        ait != amap.end (); ++ait)
                     prop.put (ait->first, ait->second);
+
+                  // Install property access methods, if any. Remove the accessor
+                  // methods from the temporary storage map, so we can detect which
+                  // ones are invalid and do not correspond to a defined property.
+
+                  std::map<std::string, octave_value>::iterator git =
+                    get_methods.find (prop_name);
+
+                  if (git != get_methods.end ())
+                    {
+                      prop.put ("GetMethod", git->second);
+                      get_methods.erase (git);
+                    }
+
+                  std::map<std::string, octave_value>::iterator sit =
+                    set_methods.find (prop_name);
+
+                  if (sit != set_methods.end ())
+                    {
+                      prop.put ("SetMethod", sit->second);
+                      set_methods.erase (sit);
+                    }
 
                   retval.install_property (prop);
                 }
@@ -2632,7 +2733,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
   // FIXME: should check whether we're already in get accessor method
 
-  if (get_fcn.is_empty ())
+  if (get_fcn.is_empty () || is_method_executing (get_fcn, obj))
     retval = obj.get (get ("Name").string_value ());
   else
     {
@@ -2697,10 +2798,8 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
  
   octave_value set_fcn = get ("SetMethod");
 
-  if (set_fcn.is_empty () || is_recursive_set (obj))
-    {
-      obj.put (get ("Name").string_value (), val);
-    }
+  if (set_fcn.is_empty () || is_method_executing (set_fcn, obj))
+    obj.put (get ("Name").string_value (), val);
   else
     {
       octave_value_list args;

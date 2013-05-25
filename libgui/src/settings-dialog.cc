@@ -106,6 +106,7 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->editor_spinbox_ac_threshold->setValue (settings->value ("editor/codeCompletion_threshold",2).toInt ());
   ui->editor_checkbox_ac_keywords->setChecked (settings->value ("editor/codeCompletion_keywords",true).toBool ());
   ui->editor_checkbox_ac_document->setChecked (settings->value ("editor/codeCompletion_document",false).toBool ());
+  ui->editor_checkbox_ac_case->setChecked (settings->value ("editor/codeCompletion_case",true).toBool ());
   ui->editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace",false).toBool ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
@@ -408,6 +409,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/codeCompletion_threshold", ui->editor_spinbox_ac_threshold->value ());
   settings->setValue ("editor/codeCompletion_keywords", ui->editor_checkbox_ac_keywords->isChecked ());
   settings->setValue ("editor/codeCompletion_document", ui->editor_checkbox_ac_document->isChecked ());
+  settings->setValue ("editor/codeCompletion_case", ui->editor_checkbox_ac_case->isChecked ());
   settings->setValue ("editor/codeCompletion_replace", ui->editor_checkbox_ac_replace->isChecked ());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());

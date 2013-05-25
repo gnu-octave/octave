@@ -1115,7 +1115,8 @@ file_editor_tab::notice_settings (const QSettings *settings)
 
       _edit_area->setAutoCompletionReplaceWord
         (settings->value ("editor/codeCompletion_replace",false).toBool ());
-
+      _edit_area->setAutoCompletionCaseSensitivity
+        (settings->value ("editor/codeCompletion_case",true).toBool ());
       _edit_area->setAutoCompletionThreshold
         (settings->value ("editor/codeCompletion_threshold",2).toInt ());
     }

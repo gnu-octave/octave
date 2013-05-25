@@ -221,18 +221,24 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
   QVector<QSpinBox*> font_size (max_style);
   QVector<QCheckBox*> attrib_font (3 * max_style);
   QVector<color_picker*> color (max_style);
+  QVector<color_picker*> bg_color (max_style);
   int default_size = 10;
   QFont default_font = QFont ();
+  QColor default_color = QColor ();
+  QColor dummy_color = QColor (255,0,255);
+
   for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
     {
       QString actual_name = lexer->description (styles[i]);
       QFont   actual_font = lexer->font (styles[i]);
       description[i] = new QLabel (actual_name);
       description[i]->setWordWrap (true);
-      description[i]->setMaximumSize (180,QWIDGETSIZE_MAX);
-      description[i]->setMinimumSize (180,1);
+      description[i]->setMaximumSize (160,QWIDGETSIZE_MAX);
+      description[i]->setMinimumSize (160,1);
       select_font[i] = new QFontComboBox ();
       select_font[i]->setObjectName (actual_name+"_font");
+      select_font[i]->setMaximumSize (180,QWIDGETSIZE_MAX);
+      select_font[i]->setMinimumSize (180,1);
       font_size[i] = new QSpinBox ();
       font_size[i]->setObjectName (actual_name+"_size");
       if (styles[i] == 0) // the default
@@ -242,6 +248,8 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
           font_size[i]->setRange (6,24);
           default_size = actual_font.pointSize ();
           font_size[i]->setValue (default_size);
+          default_color = lexer->defaultPaper ();
+          bg_color[i] = new color_picker (default_color);
         }
       else   // other styles
         {
@@ -250,7 +258,13 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
             select_font[i]->setEditText (lexer->description (0));
           font_size[i]->setRange (-4,4);
           font_size[i]->setValue (actual_font.pointSize ()-default_size);
-          font_size[i]->setToolTip ("Difference to the defalt size");
+          font_size[i]->setToolTip (tr ("Difference to the defalt size"));
+          if (lexer->paper (styles[i]) == default_color)
+            bg_color[i] = new color_picker (dummy_color);
+          else
+            bg_color[i] = new color_picker (lexer->paper (styles[i]));
+            bg_color[i]->setToolTip
+                  (tr ("Background color, pink (255,0,255) means default"));
         }
       attrib_font[0+3*i] = new QCheckBox (tr("b"));
       attrib_font[1+3*i] = new QCheckBox (tr("i"));
@@ -263,6 +277,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
       attrib_font[2+3*i]->setObjectName (actual_name+"_underline");
       color[i] = new color_picker (lexer->color (styles[i]));
       color[i]->setObjectName (actual_name+"_color");
+      bg_color[i]->setObjectName (actual_name+"_bg_color");
       int column = 1;
       style_grid->addWidget (description[i],     i, column++);
       style_grid->addWidget (select_font[i],     i, column++);
@@ -271,6 +286,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
       style_grid->addWidget (attrib_font[1+3*i], i, column++);
       style_grid->addWidget (attrib_font[2+3*i], i, column++);
       style_grid->addWidget (color[i],           i, column++);
+      style_grid->addWidget (bg_color[i],        i, column++);
     }
   // place grid with elements into the tab
   QScrollArea *scroll_area = new QScrollArea ();
@@ -471,8 +487,12 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
   QSpinBox *font_size;
   QCheckBox *attrib_font[3];
   color_picker *color;
+  color_picker *bg_color;
   int default_size = 10;
   QFont default_font = QFont ("Courier New",10,-1,0);
+  QColor default_color = QColor ();
+  QColor dummy_color = QColor (255,0,255);
+
   for (int i = 0; i < max_style; i++)  // get dialog elements and their contents
     {
       QString actual_name = lexer->description (styles[i]);
@@ -482,6 +502,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
       attrib_font[1] = tab->findChild <QCheckBox *>(actual_name+"_italic");
       attrib_font[2] = tab->findChild <QCheckBox *>(actual_name+"_underline");
       color          = tab->findChild <color_picker *>(actual_name+"_color");
+      bg_color       = tab->findChild <color_picker *>(actual_name+"_bg_color");
       QFont new_font = default_font;
       if (select_font)
         {
@@ -513,7 +534,24 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
         lexer->setDefaultFont (new_font);
       if (color)
         lexer->setColor (color->color (),styles[i]);
+      if (bg_color)
+        {
+          if (styles[i] == 0)
+            {
+              default_color = bg_color->color ();
+              lexer->setPaper (default_color,styles[i]);
+              lexer->setDefaultPaper (default_color);
+            }
+          else
+            {
+              if (bg_color->color () == dummy_color)
+                lexer->setPaper (default_color,styles[i]);
+              else
+                lexer->setPaper (bg_color->color (),styles[i]);
+            }
+        }
     }
+
   lexer->writeSettings (*settings);
 
   settings->setValue (

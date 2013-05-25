@@ -796,6 +796,9 @@ main_window::construct (void)
   connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
            this, SLOT (handle_load_workspace_request (const QString&)));
 
+  connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
+           this, SLOT (find_files (const QString&)));
+
   connect_uiwidget_links ();
 
   setWindowTitle ("Octave");

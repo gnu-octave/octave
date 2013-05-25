@@ -119,6 +119,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
                            tr ("Search directory"),
                            this, SLOT (popdownmenu_search_dir (bool)));
   popdown_menu->addSeparator();
+  popdown_menu->addAction( tr ("Find Files ..."),
+                          this, SLOT(popdownmenu_findfiles(bool)));
+  popdown_menu->addSeparator();
   popdown_menu->addAction(QIcon(":/actions/icons/filenew.png"),
                           tr ("New File"),
                           this, SLOT(popdownmenu_newfile(bool)));
@@ -359,6 +362,8 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
           menu.addAction (QIcon (":/actions/icons/ok.png"),
                           tr ("Set Current Directory"),
                           this, SLOT (contextmenu_setcurrentdir (bool)));
+          menu.addSeparator ();
+          menu.addAction (tr ("Find Files ..."), this, SLOT(contextmenu_findfiles(bool)));
         }
 
       menu.addSeparator();
@@ -576,6 +581,25 @@ files_dock_widget::contextmenu_setcurrentdir (bool)
     }
 }
 
+void 
+files_dock_widget::contextmenu_findfiles (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  if(rows.size() > 0)
+    {
+      QModelIndex index = rows[0];
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+
+      if(info.isDir())
+        {
+          process_find_files(info.absoluteFilePath ());
+        }
+    }
+}
+
 void
 files_dock_widget::notice_settings (const QSettings *settings)
 {
@@ -612,6 +636,12 @@ files_dock_widget::popdownmenu_search_dir (bool)
   QString dir
     = QFileDialog::getExistingDirectory (this, tr ("Set directory of file browser"));
   process_set_current_dir (dir);
+}
+
+void
+files_dock_widget::popdownmenu_findfiles (bool)
+{
+      process_find_files(_file_system_model->rootPath());
 }
 
 void
@@ -662,3 +692,9 @@ void files_dock_widget::process_set_current_dir(const QString & dir)
 {
   emit displayed_directory_changed (dir);
 }
+
+void files_dock_widget::process_find_files(const QString & dir)
+{
+  emit find_files_signal(dir);
+}
+

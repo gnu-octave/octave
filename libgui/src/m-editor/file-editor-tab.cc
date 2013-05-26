@@ -1123,6 +1123,14 @@ file_editor_tab::notice_settings (const QSettings *settings)
   else
     _edit_area->setAutoCompletionThreshold (-1);
 
+  if (settings->value ("editor/show_white_space",false).toBool ())
+    if (settings->value ("editor/show_white_space_indent",false).toBool ())
+      _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
+    else
+      _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
+  else
+    _edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
+
   if (settings->value ("editor/showLineNumbers", true).toBool ())
     {
       _edit_area->setMarginLineNumbers (2, true);

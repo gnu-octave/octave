@@ -208,6 +208,40 @@
           </widget>
          </item>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="editor_ws_checkbox">
+             <property name="text">
+              <string>Show white space</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="editor_ws_indent_checkbox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>But no white spaces used for indentation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_12">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
           <layout class="QGridLayout" name="editor_grid_current_line" rowstretch="0" columnstretch="0,0,0,0,0">
            <item row="0" column="0">
             <widget class="QCheckBox" name="editor_highlightCurrentLine">
@@ -457,17 +491,17 @@
         </spacer>
        </item>
        <item>
-        <widget class="QCheckBox" name="useCustomFileEditor">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Use custom file editor</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="useCustomFileEditor">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Use custom file editor</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QLabel" name="customEditorLabel">
            <property name="enabled">
@@ -1261,6 +1295,22 @@
     <hint type="destinationlabel">
      <x>525</x>
      <y>203</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_ws_checkbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_ws_indent_checkbox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>119</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>119</y>
     </hint>
    </hints>
   </connection>

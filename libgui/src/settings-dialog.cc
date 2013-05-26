@@ -108,6 +108,8 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->editor_checkbox_ac_document->setChecked (settings->value ("editor/codeCompletion_document",false).toBool ());
   ui->editor_checkbox_ac_case->setChecked (settings->value ("editor/codeCompletion_case",true).toBool ());
   ui->editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace",false).toBool ());
+  ui->editor_ws_checkbox->setChecked (settings->value ("editor/show_white_space",false).toBool ());
+  ui->editor_ws_indent_checkbox->setChecked (settings->value ("editor/show_white_space_indent",false).toBool ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
@@ -411,6 +413,8 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/codeCompletion_document", ui->editor_checkbox_ac_document->isChecked ());
   settings->setValue ("editor/codeCompletion_case", ui->editor_checkbox_ac_case->isChecked ());
   settings->setValue ("editor/codeCompletion_replace", ui->editor_checkbox_ac_replace->isChecked ());
+  settings->setValue ("editor/show_white_space", ui->editor_ws_checkbox->isChecked ());
+  settings->setValue ("editor/show_white_space_indent", ui->editor_ws_indent_checkbox->isChecked ());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());

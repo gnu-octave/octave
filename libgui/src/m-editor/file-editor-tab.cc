@@ -1142,6 +1142,18 @@ file_editor_tab::notice_settings (const QSettings *settings)
       _edit_area->setMarginWidth (2, 0);
     }
 
+  _edit_area->setAutoIndent
+        (settings->value ("editor/auto_indent",true).toBool ());
+  _edit_area->setTabIndents
+        (settings->value ("editor/tab_indents_line",false).toBool ());
+  _edit_area->setBackspaceUnindents
+        (settings->value ("editor/backspace_unindents_line",false).toBool ());
+  _edit_area->setIndentationGuides
+        (settings->value ("editor/show_indent_guides",false).toBool ());
+
+  _edit_area->setTabWidth
+        (settings->value ("editor/tab_width",2).toInt ());
+
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
 
   update_window_title (false);

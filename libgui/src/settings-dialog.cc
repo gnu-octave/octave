@@ -110,6 +110,12 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace",false).toBool ());
   ui->editor_ws_checkbox->setChecked (settings->value ("editor/show_white_space",false).toBool ());
   ui->editor_ws_indent_checkbox->setChecked (settings->value ("editor/show_white_space_indent",false).toBool ());
+  ui->editor_auto_ind_checkbox->setChecked (settings->value ("editor/auto_indent",true).toBool ());
+  ui->editor_tab_ind_checkbox->setChecked (settings->value ("editor/tab_indents_line",false).toBool ());
+  ui->editor_bs_unind_checkbox->setChecked (settings->value ("editor/backspace_unindents_line",false).toBool ());
+  ui->editor_ind_guides_checkbox->setChecked (settings->value ("editor/show_indent_guides",false).toBool ());
+  ui->editor_ind_width_spinbox->setValue (settings->value ("editor/indent_width",2).toInt ());
+  ui->editor_tab_width_spinbox->setValue (settings->value ("editor/tab_width",2).toInt ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
@@ -415,6 +421,12 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/codeCompletion_replace", ui->editor_checkbox_ac_replace->isChecked ());
   settings->setValue ("editor/show_white_space", ui->editor_ws_checkbox->isChecked ());
   settings->setValue ("editor/show_white_space_indent", ui->editor_ws_indent_checkbox->isChecked ());
+  settings->setValue ("editor/auto_indent", ui->editor_auto_ind_checkbox->isChecked ());
+  settings->setValue ("editor/tab_indents_line", ui->editor_tab_ind_checkbox->isChecked ());
+  settings->setValue ("editor/backspace_unindents_line", ui->editor_bs_unind_checkbox->isChecked ());
+  settings->setValue ("editor/show_indent_guides", ui->editor_ind_guides_checkbox->isChecked ());
+  settings->setValue ("editor/indent_width", ui->editor_ind_width_spinbox->value ());
+  settings->setValue ("editor/tab_width", ui->editor_tab_width_spinbox->value ());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());

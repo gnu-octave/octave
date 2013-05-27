@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QFileInfo>
 #include <Qsci/qsciscintilla.h>
+#include <Qsci/qsciapis.h>
 
 #include "find-dialog.h"
 
@@ -137,6 +138,9 @@ private slots:
   void handle_save_file_as_answer_close (const QString& fileName);
   void handle_save_file_as_answer_cancel ();
 
+  // When apis preparation has finished and is ready to save
+  void save_apis_info ();
+
 private:
 
   enum editor_markers
@@ -189,6 +193,8 @@ private:
   find_dialog *_find_dialog;
   bool _find_dialog_is_visible;
   QRect _find_dialog_geometry;
+
+  QsciAPIs *_lexer_apis;
 };
 
 #endif

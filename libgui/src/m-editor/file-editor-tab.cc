@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_QSCINTILLA
 
-#include <Qsci/qsciapis.h>
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #define HAVE_LEXER_OCTAVE
 #include <Qsci/qscilexeroctave.h>
@@ -60,7 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   QString directory = directory_arg;
-
+  _lexer_apis = 0;
   _app_closing = false;
 
   // Make sure there is a slash at the end of the directory name
@@ -209,6 +208,9 @@ file_editor_tab::handle_margin_clicked (int margin, int line,
 void
 file_editor_tab::update_lexer ()
 {
+  if (_lexer_apis)
+    _lexer_apis->cancelPreparation ();  // stop preparing if apis exists
+
   QsciLexer *lexer = _edit_area->lexer ();
   delete lexer;
   lexer = 0;
@@ -258,8 +260,8 @@ file_editor_tab::update_lexer ()
 
   if (lexer)
     {
-      QsciAPIs *apis = new QsciAPIs(lexer);
-      if (apis)
+      _lexer_apis = new QsciAPIs(lexer);
+      if (_lexer_apis)
         {
           QString keyword;
           QStringList keyword_list;
@@ -269,9 +271,14 @@ file_editor_tab::update_lexer ()
               keyword = QString(lexer->keywords (i));           // get list
               keyword_list = keyword.split (QRegExp ("\\s+"));  // split
               for (i = 0; i < keyword_list.size (); i++)        // add to API
-                apis->add (keyword_list.at (i));
+                _lexer_apis->add (keyword_list.at (i));
             }
-          apis->prepare ();
+          if (!_lexer_apis->loadPrepared ())
+            {
+              connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
+                       this, SLOT (save_apis_info ()));
+              _lexer_apis->prepare ();
+            }
         }
     }
 
@@ -281,6 +288,12 @@ file_editor_tab::update_lexer ()
 
   _edit_area->setLexer (lexer);
 
+}
+
+void
+file_editor_tab::save_apis_info ()
+{
+  _lexer_apis->savePrepared ();
 }
 
 // slot for fetab_set_focus: sets the focus to the current edit area

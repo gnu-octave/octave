@@ -64,6 +64,8 @@ typedef int bool;
 
 #define mxMAXNAME 64
 
+#include "mexproto.h"
+
 #if defined (__cplusplus)
 extern "C" {
 #endif
@@ -73,8 +75,6 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[]);
 #else
 void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[]);
 #endif
-
-#include "mexproto.h"
 
 /* V4 floating point routines renamed in V5.  */
 #define mexIsNaN mxIsNaN

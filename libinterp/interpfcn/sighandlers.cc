@@ -630,8 +630,16 @@ make_sig_struct (void)
   m.assign ("INT", SIGINT);
 #endif
 
+#ifdef SIGIO
+  m.assign ("IO", SIGIO);
+#endif
+
 #ifdef SIGIOT
   m.assign ("IOT", SIGIOT);
+#endif
+
+#ifdef SIGKILL
+  m.assign ("KILL", SIGKILL);
 #endif
 
 #ifdef SIGLOST
@@ -662,6 +670,10 @@ make_sig_struct (void)
   m.assign ("SEGV", SIGSEGV);
 #endif
 
+#ifdef SIGSTKFLT
+  m.assign ("STKFLT", SIGSTKFLT);
+#endif
+
 #ifdef SIGSTOP
   m.assign ("STOP", SIGSTOP);
 #endif
@@ -690,6 +702,10 @@ make_sig_struct (void)
   m.assign ("TTOU", SIGTTOU);
 #endif
 
+#ifdef SIGUNUSED
+  m.assign ("UNUSED", SIGUNUSED);
+#endif
+
 #ifdef SIGURG
   m.assign ("URG", SIGURG);
 #endif
@@ -704,10 +720,6 @@ make_sig_struct (void)
 
 #ifdef SIGVTALRM
   m.assign ("VTALRM", SIGVTALRM);
-#endif
-
-#ifdef SIGIO
-  m.assign ("IO", SIGIO);
 #endif
 
 #ifdef SIGWINCH

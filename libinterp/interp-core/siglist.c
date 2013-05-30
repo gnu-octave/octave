@@ -122,7 +122,7 @@ init_signals (void)
       sys_siglist[SIGMSG] = "Monitor mode data available";
 # endif
 # ifdef SIGPHONE
-      sys_siglist[SIGWIND] = "SIGPHONE";
+      sys_siglist[SIGPHONE] = "SIGPHONE";
 # endif
 # ifdef SIGPIPE
       sys_siglist[SIGPIPE] = "Broken pipe";
@@ -154,6 +154,9 @@ init_signals (void)
 # ifdef SIGSOUND
       sys_siglist[SIGSOUND] = "Sound completed";
 # endif
+# ifdef SIGSTKFLT
+      sys_siglist[SIGSTKFLT] = "Stack fault";
+# endif
 # ifdef SIGSTOP
       sys_siglist[SIGSTOP] = "Stopped (signal)";
 # endif
@@ -180,6 +183,9 @@ init_signals (void)
 # endif
 # ifdef SIGTTOU
       sys_siglist[SIGTTOU] = "Stopped (tty output)";
+# endif
+# ifdef SIGUNUSED
+      sys_siglist[SIGUNUSED] = "SIGUNUSED";
 # endif
 # ifdef SIGURG
       sys_siglist[SIGURG] = "Urgent I/O condition";

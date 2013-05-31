@@ -251,7 +251,7 @@ Library for manipulating portable data files
 @code{load} and @code{save} commands to read and write HDF data files.
 
 @item LLVM
-Compiler framework, (@url{http://www.llvm.org}). LLVM is required for
+Compiler framework, (@url{http://www.llvm.org}).  LLVM is required for
 Octave's experimental just-in-time (JIT) compilation for speeding up the
 interpreter.
 
@@ -282,7 +282,7 @@ QScintilla is used for syntax highlighting and code completion in the
 GUI.
 
 @item Qt
-GUI and utility libraries (@url{}). Qt is required for building the GUI.
+GUI and utility libraries (@url{}).  Qt is required for building the GUI.
 It is a large framework, but the only components required are the GUI,
 core, WebKit, and network modules.
 

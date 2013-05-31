@@ -3184,13 +3184,18 @@ mexGetVariable (const char *space, const char *name)
 
       if (caller || base)
         {
-          if (caller)
-            octave_call_stack::goto_caller_frame ();
-          else
-            octave_call_stack::goto_base_frame ();
+          // MEX files don't create a separate frame in the call stack,
+          // so we are already in the "caller" frame.
 
-          if (! error_state)
-            frame.add_fcn (octave_call_stack::pop);
+          if (base)
+            {
+              octave_call_stack::goto_base_frame ();
+
+              if (error_state)
+                return retval;
+
+              frame.add_fcn (octave_call_stack::pop);
+            }
 
           val = symbol_table::varval (name);
         }
@@ -3242,13 +3247,18 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
       if (caller || base)
         {
-          if (caller)
-            octave_call_stack::goto_caller_frame ();
-          else
-            octave_call_stack::goto_base_frame ();
+          // MEX files don't create a separate frame in the call stack,
+          // so we are already in the "caller" frame.
 
-          if (! error_state)
-            frame.add_fcn (octave_call_stack::pop);
+          if (base)
+            {
+              octave_call_stack::goto_base_frame ();
+
+              if (error_state)
+                return 1;
+
+              frame.add_fcn (octave_call_stack::pop);
+            }
 
           symbol_table::assign (name, mxArray::as_octave_value (ptr));
         }

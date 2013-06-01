@@ -199,6 +199,5 @@ endfunction
 
 %% Test input validation
 %!error rgb2ind ()
-%!error rgb2ind (1,2)
-%!error rgb2ind (1,2,3,4)
+%!error rgb2ind (1,2,3,4,5,6,7)
 

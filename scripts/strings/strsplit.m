@@ -145,7 +145,9 @@ function [result, matches] = strsplit (str, del, varargin)
 
   [reg, params] = parseparams (varargin);
 
-  if (numel (reg) > 1)
+  if (nargin < 1)
+    print_usage ();
+  elseif (numel (reg) > 1)
     print_usage ();
   elseif (numel (reg) == 1)
     if (islogical (reg{1}) || isnumeric (reg{1}))
@@ -196,9 +198,7 @@ function [result, matches] = strsplit (str, del, varargin)
     endif
   endif
 
-  if (nargin < 1)
-    print_usage ();
-  elseif (! ischar (str) || (! ischar (del) && ! iscellstr (del)))
+  if (! ischar (str) || (! ischar (del) && ! iscellstr (del)))
     error ("strsplit: S and DEL must be string values");
   elseif (! isscalar (args.collapsedelimiters))
     error ("strsplit: COLLAPSEDELIMITERS must be a scalar value");

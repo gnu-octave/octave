@@ -141,6 +141,9 @@ private slots:
   // When apis preparation has finished and is ready to save
   void save_apis_info ();
 
+  // When the numer of lines changes -> adapt width of margin
+  void auto_margin_width ();
+
 private:
 
   enum editor_markers

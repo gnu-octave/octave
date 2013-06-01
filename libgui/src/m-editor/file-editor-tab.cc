@@ -254,48 +254,50 @@ file_editor_tab::update_lexer ()
         }
       else
         {
-          // FIXME -- why should the bash lexer be the default?
+#if defined (HAVE_LEXER_OCTAVE)
+          lexer = new QsciLexerOctave ();
+#elif defined (HAVE_LEXER_MATLAB)
+          lexer = new QsciLexerMatlab ();
+#else
           lexer = new QsciLexerBash ();
+#endif
         }
     }
 
-  if (lexer)
+  _lexer_apis = new QsciAPIs(lexer);
+  if (_lexer_apis)
     {
-      _lexer_apis = new QsciAPIs(lexer);
-      if (_lexer_apis)
+      // create raw apis info
+      QString keyword;
+      QStringList keyword_list;
+      int i;
+      for (i=1; i<=3; i++) // load the first 3 keyword sets
         {
-          // create raw apis info
-          QString keyword;
-          QStringList keyword_list;
-          int i;
-          for (i=1; i<=3; i++) // load the first 3 keyword sets
-            {
-              keyword = QString(lexer->keywords (i));           // get list
-              keyword_list = keyword.split (QRegExp ("\\s+"));  // split
-              for (i = 0; i < keyword_list.size (); i++)        // add to API
-                _lexer_apis->add (keyword_list.at (i));
-            }
-
-          // get path where to store prepared api info
-          QDesktopServices desktopServices;
-          QString prep_apis_path
-            = desktopServices.storageLocation (QDesktopServices::HomeLocation)
-                + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
-
-          // check whether path exists or can be created
-          if (QDir("/").mkpath (prep_apis_path))
-            { // path exists, apis info can be saved there
-              _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
-              if (!_lexer_apis->loadPrepared (_prep_apis_file))
-                { // no prepared info loaded, prepare and save
-                  connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
-                           this, SLOT (save_apis_info ()));
-                  _lexer_apis->prepare ();  // prepare apis info and save
-                }
-            }
-          else
-            _lexer_apis->prepare ();  // prepare apis info wihtout saving
+          keyword = QString(lexer->keywords (i));           // get list
+          keyword_list = keyword.split (QRegExp ("\\s+"));  // split
+          for (i = 0; i < keyword_list.size (); i++)        // add to API
+            _lexer_apis->add (keyword_list.at (i));
         }
+
+     // get path where to store prepared api info
+     QDesktopServices desktopServices;
+     QString prep_apis_path
+          = desktopServices.storageLocation (QDesktopServices::HomeLocation)
+            + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+
+      // check whether path exists or can be created
+      if (QDir("/").mkpath (prep_apis_path))
+        { // path exists, apis info can be saved there
+          _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+          if (!_lexer_apis->loadPrepared (_prep_apis_file))
+            { // no prepared info loaded, prepare and save
+              connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
+                       this, SLOT (save_apis_info ()));
+              _lexer_apis->prepare ();  // prepare apis info and save
+            }
+        }
+      else
+        _lexer_apis->prepare ();  // prepare apis info wihtout saving
     }
 
   QSettings *settings = resource_manager::get_settings ();
@@ -304,6 +306,11 @@ file_editor_tab::update_lexer ()
 
   _edit_area->setLexer (lexer);
 
+  // adapt line number width to the font size of the lexer
+  if (settings->value ("editor/showLineNumbers", true).toBool ())
+    auto_margin_width ();
+  else
+    _edit_area->setMarginWidth (2,0);
 }
 
 void
@@ -1112,9 +1119,8 @@ file_editor_tab::notice_settings (const QSettings *settings)
 {
   // QSettings pointer is checked before emitting.
 
-  update_lexer ();
-
-  QFontMetrics lexer_font_metrics (_edit_area->lexer ()->defaultFont (0));
+  if (!_file_name.isEmpty ())
+    update_lexer (); // do not update lexer when tab is just created
 
   //highlight current line color
   QVariant default_var = QColor (240, 240, 240);
@@ -1163,12 +1169,14 @@ file_editor_tab::notice_settings (const QSettings *settings)
   if (settings->value ("editor/showLineNumbers", true).toBool ())
     {
       _edit_area->setMarginLineNumbers (2, true);
-      _edit_area->setMarginWidth (2, lexer_font_metrics.width ("9999"));
+      auto_margin_width ();
+      connect (_edit_area, SIGNAL (linesChanged ()),
+               this, SLOT (auto_margin_width ()));
     }
   else
     {
       _edit_area->setMarginLineNumbers (2, false);
-      _edit_area->setMarginWidth (2, 0);
+      disconnect (_edit_area, SIGNAL (linesChanged ()), 0, 0);
     }
 
   _edit_area->setAutoIndent
@@ -1186,6 +1194,12 @@ file_editor_tab::notice_settings (const QSettings *settings)
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
 
   update_window_title (false);
+}
+
+void
+file_editor_tab::auto_margin_width ()
+{
+  _edit_area->setMarginWidth (2, "1"+QString::number (_edit_area->lines ()));
 }
 
 void

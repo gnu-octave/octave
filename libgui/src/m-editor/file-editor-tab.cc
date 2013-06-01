@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "debug.h"
 #include "octave-qt-link.h"
+#include "version.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -263,6 +264,7 @@ file_editor_tab::update_lexer ()
       _lexer_apis = new QsciAPIs(lexer);
       if (_lexer_apis)
         {
+          // create raw apis info
           QString keyword;
           QStringList keyword_list;
           int i;
@@ -273,12 +275,26 @@ file_editor_tab::update_lexer ()
               for (i = 0; i < keyword_list.size (); i++)        // add to API
                 _lexer_apis->add (keyword_list.at (i));
             }
-          if (!_lexer_apis->loadPrepared ())
-            {
-              connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
-                       this, SLOT (save_apis_info ()));
-              _lexer_apis->prepare ();
+
+          // get path where to store prepared api info
+          QDesktopServices desktopServices;
+          QString prep_apis_path
+            = desktopServices.storageLocation (QDesktopServices::HomeLocation)
+                + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+
+          // check whether path exists or can be created
+          if (QDir("/").mkpath (prep_apis_path))
+            { // path exists, apis info can be saved there
+              _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+              if (!_lexer_apis->loadPrepared (_prep_apis_file))
+                { // no prepared info loaded, prepare and save
+                  connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
+                           this, SLOT (save_apis_info ()));
+                  _lexer_apis->prepare ();  // prepare apis info and save
+                }
             }
+          else
+            _lexer_apis->prepare ();  // prepare apis info wihtout saving
         }
     }
 
@@ -293,7 +309,7 @@ file_editor_tab::update_lexer ()
 void
 file_editor_tab::save_apis_info ()
 {
-  _lexer_apis->savePrepared ();
+  _lexer_apis->savePrepared (_prep_apis_file);
 }
 
 // slot for fetab_set_focus: sets the focus to the current edit area

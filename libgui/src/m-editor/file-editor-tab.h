@@ -195,6 +195,7 @@ private:
   QRect _find_dialog_geometry;
 
   QsciAPIs *_lexer_apis;
+  QString _prep_apis_file;
 };
 
 #endif

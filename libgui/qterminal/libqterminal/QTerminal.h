@@ -102,13 +102,16 @@ protected:
 
     _contextMenu = new QMenu (this);
 
-    QAction *copyAction 
-      = _contextMenu->addAction (tr ("Copy"),
-                                 this, SLOT (copyClipboard ()));
+    _contextMenu->addAction (QIcon (":/actions/icons/editcopy.png"),
+                             tr ("Copy"), this, SLOT (copyClipboard ()));
 
-    QAction *pasteAction
-      = _contextMenu->addAction (tr ("Paste"),
-                                 this, SLOT (pasteClipboard ()));
+    _contextMenu->addAction (QIcon (":/actions/icons/editpaste.png"),
+                            tr ("Paste"), this, SLOT (pasteClipboard ()));
+
+    _contextMenu->addSeparator ();
+
+    _contextMenu->addAction (tr ("Clear All"), parent (),
+                             SLOT (handle_clear_command_window_request ()));
 
     connect (this, SIGNAL (customContextMenuRequested (QPoint)),
              this, SLOT (handleCustomContextMenuRequested (QPoint)));

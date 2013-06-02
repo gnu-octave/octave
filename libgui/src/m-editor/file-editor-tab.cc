@@ -323,6 +323,21 @@ file_editor_tab::save_apis_info ()
   _lexer_apis->savePrepared (_prep_apis_file);
 }
 
+QString
+file_editor_tab::comment_string (const QString& lexer)
+{
+  if (lexer == "octave" || lexer == "matlab")
+    return QString("%");
+  else if (lexer == "perl" || lexer == "bash" || lexer == "diff")
+    return QString("#");
+  else if (lexer == "cpp")
+    return ("//");
+  else if (lexer == "batch")
+    return ("REM ");
+  else
+    return ("%");  // should never happen
+}
+
 // slot for fetab_set_focus: sets the focus to the current edit area
 void
 file_editor_tab::set_focus (const QWidget *ID)
@@ -714,6 +729,8 @@ file_editor_tab::do_comment_selected_text (bool comment)
       int lineFrom, lineTo, colFrom, colTo;
       _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
 
+      QString comment_str = comment_string (_edit_area->lexer ()->lexer ());
+
       if (colTo == 0)  // the beginning of last line is not selected
         lineTo--;        // stop at line above
 
@@ -722,13 +739,13 @@ file_editor_tab::do_comment_selected_text (bool comment)
       for (int i = lineFrom; i <= lineTo; i++)
         {
           if (comment)
-            _edit_area->insertAt ("%", i, 0);
+            _edit_area->insertAt (comment_str, i, 0);
           else
             {
               QString line (_edit_area->text (i));
-              if (line.startsWith ("%"))
+              if (line.startsWith (comment_str))
                 {
-                  _edit_area->setSelection (i, 0, i, 1);
+                  _edit_area->setSelection (i, 0, i, comment_str.length ());
                   _edit_area->removeSelectedText ();
                 }
             }

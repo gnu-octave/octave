@@ -176,6 +176,7 @@ private:
 
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
+  QString comment_string (const QString&);
 
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);

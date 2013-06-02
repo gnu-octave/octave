@@ -301,10 +301,8 @@ file_editor_tab::update_lexer ()
             { // path exists, apis info can be saved there
               connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
                        this, SLOT (save_apis_info ()));
-              _lexer_apis->prepare ();  // prepare apis info, save when finished
             }
-          else
-            _lexer_apis->prepare ();  // prepare apis info wihtout saving
+          _lexer_apis->prepare ();  // prepare apis info
         }
     }
 

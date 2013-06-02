@@ -252,8 +252,9 @@ file_editor_tab::update_lexer ()
         {
           lexer = new QsciLexerDiff ();
         }
-      else
-        {
+      else if (_file_name.isEmpty ()
+                || _file_name.at (_file_name.count () - 1) == '/')
+        { // new, no yet named file: let us assume it is octave
 #if defined (HAVE_LEXER_OCTAVE)
           lexer = new QsciLexerOctave ();
 #elif defined (HAVE_LEXER_MATLAB)
@@ -261,6 +262,10 @@ file_editor_tab::update_lexer ()
 #else
           lexer = new QsciLexerBash ();
 #endif
+        }
+      else
+        { // other or no extension
+          lexer = new QsciLexerBash ();
         }
     }
 
@@ -1140,8 +1145,7 @@ file_editor_tab::notice_settings (const QSettings *settings)
 {
   // QSettings pointer is checked before emitting.
 
-  if (!_file_name.isEmpty ())
-    update_lexer (); // do not update lexer when tab is just created
+  update_lexer ();
 
   //highlight current line color
   QVariant default_var = QColor (240, 240, 240);
@@ -1214,7 +1218,6 @@ file_editor_tab::notice_settings (const QSettings *settings)
 
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
 
-  update_window_title (false);
 }
 
 void

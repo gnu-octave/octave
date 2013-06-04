@@ -72,7 +72,7 @@ function rval = strjoin (cstr, delimiter)
     delimiter(end+1) = {""};
   endif
 
-  rval = sprintf ("%s", [cstr(:).'; delimiter(:).']{:});
+  rval = [[cstr(:).'; delimiter(:).']{:}];
 
 endfunction
 

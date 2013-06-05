@@ -137,7 +137,11 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   endif
 
   [m, n] = size (A);
-  max_a = max (abs (A(:)));
+  max_a = max (abs (nonzeros (A)));
+  if (isempty (max_a))
+    max_a = 0;
+  endif
+
   if (max_a == 0)
     s = zeros (k, 1);  # special case of zero matrix
   else

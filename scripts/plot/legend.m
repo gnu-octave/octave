@@ -593,6 +593,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           axes (hlegend);
           delete (get (hlegend, "children"));
         endif
+        fontsize = get (hlegend, "fontsize");
         ## Add text label to the axis first, checking their extents
         nentries = numel (hplots);
         texthandle = [];
@@ -603,12 +604,12 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             texthandle = [texthandle, text(0, 0, text_strings{k},
                                            "horizontalalignment", "left",
                                            "userdata", hplots(k),
-                                           "fontsize", ca_fontsize)];
+                                           "fontsize", fontsize)];
           else
             texthandle = [texthandle, text(0, 0, text_strings{k},
                                            "horizontalalignment", "right",
                                            "userdata", hplots(k),
-                                           "fontsize", ca_fontsize)];
+                                           "fontsize", fontsize)];
           endif
           units = get (texthandle(end), "units");
           unwind_protect
@@ -874,7 +875,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (addprops)
           addlistener (hlegend, "edgecolor", @updatelegendtext);
           addlistener (hlegend, "textcolor", @updatelegendtext);
-          addlistener (hlegend, "fontsize", @updatelegendtext);
+          addlistener (hlegend, "fontsize", @updatelegend);
           addlistener (hlegend, "interpreter", @updatelegendtext);
           addlistener (hlegend, "location", @updatelegend);
           addlistener (hlegend, "orientation", @updatelegend);
@@ -1066,11 +1067,11 @@ function updateline (h, d, hlegend, linelength)
   endif
 endfunction
 
-
 %!demo
 %! plot (rand (2));
 %! title ('legend called with cellstr and string inputs for labels');
-%! legend ({'foo'}, 'bar');
+%! h = legend ({'foo'}, 'bar');
+%! set (h, 'fontsize', 20)
 
 %!demo
 %! plot (rand (3));

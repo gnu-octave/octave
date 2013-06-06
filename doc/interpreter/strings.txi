@@ -435,6 +435,8 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(strsplit)
 
+@DOCSTRING(ostrsplit)
+
 @DOCSTRING(strread)
 
 @DOCSTRING(strrep)

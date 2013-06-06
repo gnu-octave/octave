@@ -52,7 +52,7 @@ function names = fieldnames (obj)
       obj = class (obj);
     endif
     names_str = javaMethod ("getFields", "org.octave.ClassHelper", obj);
-    names = strsplit (names_str, ';', false);
+    names = ostrsplit (names_str, ';');
   else
     error ("fieldnames: Invalid input argument"); 
   endif

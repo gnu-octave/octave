@@ -2229,7 +2229,7 @@ function ticklabel = ticklabel_to_cell (ticklabel)
   endif
   if (ischar (ticklabel))
     if (rows (ticklabel) == 1 && any (ticklabel == "|"))
-      ticklabel = strsplit (ticklabel, "|", false);
+      ticklabel = ostrsplit (ticklabel, "|");
     else
       ticklabel = cellstr (ticklabel);
     endif

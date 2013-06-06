@@ -626,13 +626,13 @@ function varargout = strread (str, format = "%f", varargin)
                      strrep (words(icol, jptr), fmt_words{ii}, ...
                      [char(255) char(254)]);
                 wrds(2:2:2*numel (words(icol, jptr))-1) = char (255);
-                wrds = strsplit ([wrds{:}], char (255), false);
+                wrds = ostrsplit ([wrds{:}], char (255));
                 words(icol, jptr) = ...
                   wrds(find (cellfun ("isempty", strfind (wrds, char (254)))));
                 wrds(find (cellfun ("isempty", strfind (wrds, char (254))))) ...
                    = char (255);
-                words(icol+1, jptr) = strsplit (strrep ([wrds{2:end}], ...
-                   char (254), fmt_words{ii}), char (255), false);
+                words(icol+1, jptr) = ostrsplit (strrep ([wrds{2:end}], ...
+                   char (254), fmt_words{ii}), char (255));
                 ## Former trailing literal may now be leading for next specifier
                 --ii;
                 fwptr = [fwptr(1:ii) (++fwptr(ii+1:end))];
@@ -704,7 +704,7 @@ function varargout = strread (str, format = "%f", varargin)
         case {"%0", "%1", "%2", "%3", "%4", "%5", "%6", "%7", "%8", "%9"}
           sw = regexp (fmt_words{m}, '\d', "once");
           ew = regexp (fmt_words{m}, '[nfudsq]') - 1;
-          nfmt = strsplit (fmt_words{m}(2:ew), ".", false);
+          nfmt = ostrsplit (fmt_words{m}(2:ew), ".");
           swidth = str2double (nfmt{1});
           switch fmt_words{m}(ew+1)
             case {"d", "u", "f", "n"}
@@ -777,7 +777,7 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
   endif
 
   ## Split text string along delimiters
-  out = strsplit (text, sep, mult_dlms_s1, "delimitertype", "legacy");
+  out = ostrsplit (text, sep, mult_dlms_s1);
   if (index (sep, eol_char)); out = strrep (out, char (255), ''); endif
   ## In case of trailing delimiter, strip stray last empty word
   if (!isempty (out) && any (sep == text(end)))

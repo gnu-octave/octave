@@ -73,7 +73,7 @@ function retval = int2str (n)
   endif
   tmp = sprintf (fmt, permute (n, [2, 1, 3 : nd]));
   tmp(end) = "";
-  retval = char (strsplit (tmp, "\n", false));
+  retval = char (ostrsplit (tmp, "\n"));
 
 endfunction
 

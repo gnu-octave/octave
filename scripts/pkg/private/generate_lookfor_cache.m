@@ -23,7 +23,7 @@
 ## @end deftypefn
 
 function generate_lookfor_cache (desc)
-  dirs = strtrim (strsplit (genpath (desc.dir), pathsep (), false));
+  dirs = strtrim (ostrsplit (genpath (desc.dir), pathsep ()));
   for i = 1 : length (dirs)
     gen_doc_cache (fullfile (dirs{i}, "doc-cache"), dirs{i});
   endfor

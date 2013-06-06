@@ -74,7 +74,7 @@ function write_index (desc, dir, index_file, global_install)
   if (! isfield (desc, "categories"))
     error ("the DESCRIPTION file must have a Categories field, when no INDEX file is given");
   endif
-  categories = strtrim (strsplit (desc.categories, ",", false));
+  categories = cstrtrim (strsplit (desc.categories, ","));
   if (length (categories) < 1)
     error ("the Category field is empty");
   endif

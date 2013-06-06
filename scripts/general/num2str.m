@@ -118,7 +118,7 @@ function retval = num2str (x, arg)
     fmt = cstrcat (deblank (repmat (fmt, 1, columns (x))), "\n");
     nd = ndims (x);
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
-    retval = strtrim (char (strsplit (tmp(1:end-1), "\n", false)));
+    retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
   else   # Complex matrix input
     if (nargin == 2)
       if (ischar (arg))
@@ -164,7 +164,7 @@ function retval = num2str (x, arg)
     tmp = regexprep (tmp, " +i\n", "i\n");
     tmp = regexprep (tmp, "( +)i", "i$1");
 
-    retval = strtrim (char (strsplit (tmp(1:end-1), "\n", false)));
+    retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
   endif
 
 endfunction

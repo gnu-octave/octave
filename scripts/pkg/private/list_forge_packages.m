@@ -25,7 +25,7 @@
 function list = list_forge_packages ()
   [list, succ] = urlread ("http://packages.octave.org/list_packages.php");
   if (succ)
-    list = strsplit (list, " \n\t", true, "delimitertype", "legacy");
+    list = ostrsplit (list, " \n\t", true);
   else
     error ("pkg: could not read URL, please verify internet connection");
   endif

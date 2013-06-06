@@ -250,7 +250,7 @@ endfunction
 
 function out = wordwrap (w)
   cols = terminal_size ()(2);
-  wc = strsplit (w, " ", false);
+  wc = ostrsplit (w, " ");
   out = "\n";
   i = 1;
   numwords = numel (wc);

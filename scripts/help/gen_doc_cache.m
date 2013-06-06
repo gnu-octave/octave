@@ -117,7 +117,7 @@ endfunction
 function cache = gen_doc_cache_in_dir (directory)
 
   ## If 'directory' is not in the current path, add it so we search it
-  dir_in_path = ismember (directory, strsplit (path (), pathsep (), false));
+  dir_in_path = ismember (directory, ostrsplit (path (), pathsep ()));
 
   # dirs not in path
   if (! iscell (directory))

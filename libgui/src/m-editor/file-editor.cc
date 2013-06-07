@@ -1082,6 +1082,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
            parent (), SLOT (run_file_in_terminal (const QFileInfo&)));
   
+  connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           parent (), SLOT (execute_command_in_terminal (const QString&)));
+
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
            f, SLOT (notice_settings (const QSettings *)));

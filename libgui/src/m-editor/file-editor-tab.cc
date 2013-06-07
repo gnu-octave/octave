@@ -70,7 +70,14 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   _file_name = directory;
 
-  _edit_area = new QsciScintilla (this);
+  _edit_area = new octave_qscintilla (this);
+  // Connect signal for command execution to a slot of this tab which in turn
+  // emits a signal connected to the main window.
+  // Direct connection is not possible because tab's parent is null.
+  connect (_edit_area,
+           SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           this,
+           SLOT (execute_command_in_terminal (const QString&)));
 
   // Leave the find dialog box out of memory until requested.
   _find_dialog = 0;
@@ -159,6 +166,12 @@ file_editor_tab::closeEvent (QCloseEvent *e)
     e->ignore ();
   else
     e->accept ();
+}
+
+void
+file_editor_tab::execute_command_in_terminal (const QString& command)
+{
+  emit execute_command_in_terminal_signal (command); // connected to main window
 }
 
 void

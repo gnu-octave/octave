@@ -146,8 +146,8 @@ Undocumented internal function.\n\
 
   if (args.length () == 3)
     {
-      std::string dlg = args(0).string_value ();
-      std::string msg = args(1).string_value ();
+      std::string dlg   = args(0).string_value ();
+      std::string msg   = args(1).string_value ();
       std::string title = args(2).string_value ();
 
       if (! error_state)
@@ -173,11 +173,11 @@ Undocumented internal function.\n\
 
   if (args.length () == 6)
     {
-      std::string msg = args(0).string_value ();
-      std::string title = args(1).string_value ();
-      std::string btn1 = args(2).string_value ();
-      std::string btn2 = args(3).string_value ();
-      std::string btn3 = args(4).string_value ();
+      std::string msg    = args(0).string_value ();
+      std::string title  = args(1).string_value ();
+      std::string btn1   = args(2).string_value ();
+      std::string btn2   = args(3).string_value ();
+      std::string btn3   = args(4).string_value ();
       std::string btndef = args(5).string_value ();
 
       if (! error_state)

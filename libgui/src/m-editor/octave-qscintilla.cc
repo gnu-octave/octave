@@ -37,6 +37,7 @@ octave_qscintilla::~octave_qscintilla ()
 { }
 
 
+#ifdef HAVE_QSCI_VERSION_2_6_0
 // context menu requested
 void
 octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
@@ -74,6 +75,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 
   context_menu->exec (global_pos);
 }
+#endif
 
 
 // handle the menu entry for calling help

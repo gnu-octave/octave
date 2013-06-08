@@ -2645,7 +2645,7 @@ if test $build_gui = yes; then
       ## Let's assume Qscintilla library is at the same location as
       ## other regular Qt libraries.
       QT_LIBS="$QT_LIBS -lqscintilla2"
-      OCTAVE_CHECK_FUNC_FINDFIRST_MODERN
+      OCTAVE_CHECK_VERSION_2_6_0
       AC_DEFINE(HAVE_QSCINTILLA, 1, 
         [Define to 1 if the QScintilla library and header files are available])
 

@@ -194,14 +194,13 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
   fi
 ])
 dnl
-dnl Check whether Qscintilla FindFirst function is old (16 inputs) or
-dnl new (17 inputs).
+dnl Check whether Qscintilla has version 2.6.0 or later
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?
 dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
-  AC_CACHE_CHECK([whether Qscintilla FindFirst uses 17 input arguments],
-    [octave_cv_func_findfirst_modern],
+AC_DEFUN([OCTAVE_CHECK_VERSION_2_6_0], [
+  AC_CACHE_CHECK([whether Qscintilla has version 2.6.0 or later],
+    [octave_cv_version_2_6_0],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
@@ -212,14 +211,14 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
         #error Old FindFirst function found.
         #endif
         ]])],
-      octave_cv_func_findfirst_modern=yes,
-      octave_cv_func_findfirst_modern=no)
+      octave_cv_version_2_6_0=yes,
+      octave_cv_version_2_6_0=no)
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_findfirst_modern = yes; then
-    AC_DEFINE(HAVE_FINDFIRST_MODERN, 1, 
-      [Define to 1 if Qscintilla FindFirst uses modern form with 17 inputs.])
+  if test $octave_cv_version_2_6_0 = yes; then
+    AC_DEFINE(HAVE_QSCI_VERSION_2_6_0, 1,
+      [Define to 1 if Qscintilla is of Version 2.6.0 or later.])
   fi
 ])
 dnl

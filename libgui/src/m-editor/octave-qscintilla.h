@@ -36,7 +36,9 @@ public:
   octave_qscintilla (QWidget *p);
   ~octave_qscintilla ();
 
+#ifdef HAVE_QSCI_VERSION_2_6_0
   virtual void contextMenuEvent (QContextMenuEvent *e);
+#endif
 
 signals:
 

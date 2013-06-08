@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_QSCINTILLA
 
+#include <Qsci/qscilexer.h>
+
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
 
@@ -44,14 +46,14 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 {
   QMenu *context_menu = createStandardContextMenu ( );  // standard menu
 
-  context_menu->addSeparator ();   // separator before custom entries
+  // the menu's position
+  QPoint global_pos, local_pos;
 
-  // help menu: get the position of the mouse or the text cursor
-  _word_at_cursor = "";
-  QPoint global_pos = e->globalPos ();            // global mouse position
-
-  if (e->reason () == QContextMenuEvent::Mouse)   // context menu by mouse
-    _word_at_cursor = wordAtPoint (e->pos ());
+  if (e->reason () == QContextMenuEvent::Mouse)
+    { // context menu by mouse
+      global_pos = e->globalPos ();            // global mouse position
+      local_pos  = e->pos ();                  // local mouse position
+    }
   else
     { // context menu by keyboard or other: get point of text cursor
       long position = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
@@ -59,20 +61,30 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
                         (QsciScintillaBase::SCI_POINTXFROMPOSITION,0,position);
       long point_y  = SendScintilla
                         (QsciScintillaBase::SCI_POINTYFROMPOSITION,0,position);
-      QPoint local_pos = QPoint (point_x,point_y);  // local position of cursor
+      local_pos = QPoint (point_x,point_y);  // local cursor position
       global_pos = mapToGlobal (local_pos); // global position of cursor
-      QRect editor_rect = geometry ();      // get editor rect and map to global
-      editor_rect.moveTopLeft(parentWidget()->mapToGlobal(editor_rect.topLeft()));
-      if (editor_rect.contains (global_pos))  // is cursor within editor?
-        _word_at_cursor = wordAtPoint (local_pos);
-      else
-        global_pos = editor_rect.topLeft ();
+      QRect editor_rect = geometry ();      // editor rect mapped to global
+      editor_rect.moveTopLeft
+              (parentWidget ()->mapToGlobal (editor_rect.topLeft ()));
+      if (!editor_rect.contains (global_pos))  // is cursor outside editor?
+        global_pos = editor_rect.topLeft ();   // yes, take top left corner
     }
-  // finally create the menu entry if a word at cursor was found
-  if (!_word_at_cursor.isEmpty ())
-    context_menu->addAction (tr ("help") + " " + _word_at_cursor,
-                             this, SLOT (contextmenu_help (bool)));
 
+  // additional custom entries of the context menu
+  context_menu->addSeparator ();   // separator before custom entries
+
+  // help menu: get the position of the mouse or the text cursor
+  // (only for octave files)
+  QString lexer_name = lexer ()->lexer ();
+  if (lexer_name == "octave" || lexer_name == "matlab")
+    {
+      _word_at_cursor = wordAtPoint (local_pos);
+      if (!_word_at_cursor.isEmpty ())
+        context_menu->addAction (tr ("help") + " " + _word_at_cursor,
+                                this, SLOT (contextmenu_help (bool)));
+    }
+
+  // finaly show the menu
   context_menu->exec (global_pos);
 }
 #endif

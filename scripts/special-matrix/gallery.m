@@ -666,11 +666,11 @@ function C = circul (v)
     error ("gallery: V must be numeric for circul matrix.");
   endif
 
-  n = numel (x);
-  if (isscalar (x) && fix (x) == x)
+  n = numel (v);
+  if (isscalar (v) && fix (v) == v)
     n = v;
     v = 1:n;
-  elseif (n > 1 && isvector (x))
+  elseif (n > 1 && isvector (v))
     ## do nothing
   else
     error ("gallery: X must be a scalar or a vector for circul matrix.");

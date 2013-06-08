@@ -37,7 +37,7 @@ public:
 
   ~glps_renderer (void) { }
 
-  void draw (const graphics_object& go);
+  void draw (const graphics_object& go, const std::string print_cmd);
 
 protected:
 

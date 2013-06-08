@@ -35,9 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl2ps.h"
 
 void
-glps_renderer::draw (const graphics_object& go)
+glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 {
   static bool in_draw = false;
+  static std::string old_print_cmd;
 
   if (!in_draw)
     {
@@ -70,6 +71,24 @@ glps_renderer::draw (const graphics_object& go)
 
       while (state == GL2PS_OVERFLOW)
         {
+          // For LaTeX output the fltk print process uses two drawnow() commands.
+          // The first one is for the pdf/ps/eps graph to be included.  The print_cmd
+          // is saved as old_print_cmd.  Then the second drawnow() outputs the tex-file
+          // and the graphic filename to be included is extracted from old_print_cmd.
+          std::string include_graph;
+          std::size_t found_redirect = old_print_cmd.find (">");
+          if (found_redirect != std::string::npos)
+            include_graph = old_print_cmd.substr (found_redirect + 1);
+          else
+            include_graph = old_print_cmd;
+          std::size_t n_begin = include_graph.find_first_not_of (" ");
+          if (n_begin != std::string::npos)
+            {
+              std::size_t n_end = include_graph.find_last_not_of (" ");
+              include_graph = include_graph.substr (n_begin, n_end - n_begin + 1);
+            }
+          else
+            include_graph = "foobar-inc";
           buffsize += 1024*1024;
           gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
                           gl2ps_term, gl2ps_sort,
@@ -78,8 +97,8 @@ glps_renderer::draw (const graphics_object& go)
                            | GL2PS_BEST_ROOT | gl2ps_text
                            | GL2PS_NO_PS3_SHADING),
                           GL_RGBA, 0, NULL, 0, 0, 0,
-                          buffsize, fp, "" );
-
+                          buffsize, fp, include_graph.c_str ());
+          old_print_cmd = print_cmd;
           opengl_renderer::draw (go);
           state = gl2psEndPage ();
         }

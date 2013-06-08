@@ -183,7 +183,7 @@ private:
         FILE *fp = octave_popen (print_cmd.c_str (), "w");
         glps_renderer rend (fp, print_term);
 
-        rend.draw (gh_manager::get_object (number));
+        rend.draw (gh_manager::get_object (number), print_cmd);
 
         octave_pclose (fp);
         print_mode = false;

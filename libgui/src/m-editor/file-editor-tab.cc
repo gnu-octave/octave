@@ -740,17 +740,16 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
 void
 file_editor_tab::do_comment_selected_text (bool comment)
 {
+  QString comment_str = comment_string (_edit_area->lexer ()->lexer ());
+  _edit_area->beginUndoAction ();
+
   if (_edit_area->hasSelectedText ())
     {
       int lineFrom, lineTo, colFrom, colTo;
       _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
 
-      QString comment_str = comment_string (_edit_area->lexer ()->lexer ());
-
       if (colTo == 0)  // the beginning of last line is not selected
         lineTo--;        // stop at line above
-
-      _edit_area->beginUndoAction ();
 
       for (int i = lineFrom; i <= lineTo; i++)
         {
@@ -766,9 +765,26 @@ file_editor_tab::do_comment_selected_text (bool comment)
                 }
             }
         }
-
-      _edit_area->endUndoAction ();
+      //set selection on (un)commented section
+      _edit_area->setSelection (lineFrom, 0, lineTo, _edit_area->text (lineTo).length ());
     }
+  else
+    {
+      int cpline, col;
+      _edit_area->getCursorPosition (&cpline, &col);
+      if (comment)
+        _edit_area->insertAt (comment_str, cpline, 0);
+      else
+        {
+          QString line (_edit_area->text (cpline));
+          if (line.startsWith (comment_str))
+            {
+              _edit_area->setSelection (cpline, 0, cpline, comment_str.length ());
+              _edit_area->removeSelectedText ();
+            }
+        }
+    }
+  _edit_area->endUndoAction ();
 }
 
 void

@@ -802,10 +802,10 @@ file_editor::construct (void)
                    tr ("&Remove All breakpoints"), _tool_bar);
 
   QAction *comment_selection_action
-    = new QAction (tr ("&Comment Selected Text"), _tool_bar);
+    = new QAction (tr ("&Comment"), _tool_bar);
 
   QAction *uncomment_selection_action
-    = new QAction (tr ("&Uncomment Selected Text"), _tool_bar);
+    = new QAction (tr ("&Uncomment"), _tool_bar);
 
   QAction *find_action = new QAction (QIcon (":/actions/icons/search.png"),
                                       tr ("&Find and Replace"), _tool_bar);

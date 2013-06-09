@@ -235,7 +235,7 @@ find_dialog::find (bool forward)
                                                       do_forward,
                                                       line,col,
                                                       true
-#ifdef HAVE_FINDFIRST_MODERN
+#ifdef HAVE_QSCI_VERSION_2_6_0
                                                       , true
 #endif
                                                       );

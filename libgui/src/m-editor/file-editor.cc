@@ -57,17 +57,19 @@ file_editor::~file_editor (void)
 {
   QSettings *settings = resource_manager::get_settings ();
 
+  // Have all file editor tabs signal what their file names are.
   editor_tab_map.clear ();
+  emit fetab_file_name_query (0);
 
-  if (settings->value ("editor/restoreSession", true).toBool ())
-    {
-      // Have all file editor tabs signal what their file names are.
-      emit fetab_file_name_query (0);
-    }
+  // save file names (even if last session will not be restored next time)
   QStringList fetFileNames;
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
-    fetFileNames.append (p->first);
+    {
+      QString file_name = p->first;
+      if (!file_name.isEmpty () && file_name.at (file_name.size () - 1) != '/')
+        fetFileNames.append (p->first);  // do not append unnamed files
+    }
 
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();

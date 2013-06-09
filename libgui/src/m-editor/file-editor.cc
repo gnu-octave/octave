@@ -439,6 +439,7 @@ void
 file_editor::handle_edit_file_request (const QString& file)
 {
   request_open_file (file);
+  set_focus ();
 }
 
 void

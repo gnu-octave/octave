@@ -891,41 +891,50 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="verticalLayoutWidget_2">
+      <widget class="QWidget" name="verticalLayoutWidget_3">
        <property name="geometry">
         <rect>
          <x>10</x>
          <y>90</y>
          <width>631</width>
-         <height>164</height>
+         <height>291</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="Line" name="line_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QGroupBox" name="terminal_colors_box">
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>162</height>
+            <height>81</height>
            </size>
           </property>
           <property name="title">
            <string>Terminal Colors</string>
           </property>
+          <zorder>verticalSpacer_3</zorder>
          </widget>
         </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="verticalLayoutWidget_3">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>260</y>
-         <width>631</width>
-         <height>121</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="Line" name="line_5">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
         <item>
          <spacer name="verticalSpacer_3">
           <property name="orientation">
@@ -1130,7 +1139,6 @@
         </item>
        </layout>
       </widget>
-      <zorder>verticalLayoutWidget_6</zorder>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">

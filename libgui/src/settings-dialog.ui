@@ -1100,8 +1100,6 @@
           <property name="title">
            <string>Storage Class Colors</string>
           </property>
-          <zorder>line_6</zorder>
-          <zorder>line_5</zorder>
          </widget>
         </item>
         <item>
@@ -1133,7 +1131,6 @@
        </layout>
       </widget>
       <zorder>verticalLayoutWidget_6</zorder>
-      <zorder>line_6</zorder>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">

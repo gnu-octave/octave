@@ -3777,9 +3777,9 @@ public:
       bool_property yminortick , "off"
       bool_property zminortick , "off"
       // FIXME -- should be kind of string array.
-      any_property xticklabel m , ""
-      any_property yticklabel m , ""
-      any_property zticklabel m , ""
+      any_property xticklabel S , ""
+      any_property yticklabel S , ""
+      any_property zticklabel S , ""
       radio_property xticklabelmode u , "{auto}|manual"
       radio_property yticklabelmode u , "{auto}|manual"
       radio_property zticklabelmode u , "{auto}|manual"

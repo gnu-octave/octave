@@ -2059,6 +2059,34 @@ graphics_object::set (const octave_map& m)
 }
 
 /*
+## test set ticklabels for compatibility
+%!test
+%! set (gcf (), "visible", "off")
+%! set (gca (), "xticklabel", [0, 0.2, 0.4, 0.6, 0.8, 1])
+%! xticklabel = get (gca (), "xticklabel");
+%! assert (class (xticklabel), "char")
+%! assert (size (xticklabel), [6, 3])
+%!test
+%! set (gcf (), "visible", "off")
+%! set (gca (), "xticklabel", "0|0.2|0.4|0.6|0.8|1")
+%! xticklabel = get (gca (), "xticklabel");
+%! assert (class (xticklabel), "char")
+%! assert (size (xticklabel), [6, 3])
+%!test
+%! set (gcf (), "visible", "off")
+%! set (gca (), "xticklabel", ["0 "; "0.2"; "0.4"; "0.6"; "0.8"; "1 "])
+%! xticklabel = get (gca (), "xticklabel");
+%! assert (class (xticklabel), "char")
+%! assert (size (xticklabel), [6, 3])
+%!xtest
+%! set (gcf (), "visible", "off")
+%! set (gca (), "xticklabel", {"0", "0.2", "0.4", "0.6", "0.8", "1"})
+%! xticklabel = get (gca (), "xticklabel");
+%! assert (class (xticklabel), "cell")
+%! assert (size (xticklabel), [6, 1])
+*/
+
+/*
 ## test set with struct arguments
 %!test
 %! set (gcf, "visible", "off");
@@ -5706,6 +5734,110 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
   ext(3) = ext(3)-ext(1);
 
   return ext;
+}
+
+static octave_value
+convert_ticklabel_string(const octave_value& val)
+{
+  octave_value retval = val;
+
+  if (!val.is_cellstr ())
+    {
+      string_vector str;
+      if (val.is_float_type () || val.is_integer_type ())
+        {
+          NDArray data = val.array_value ();
+          std::ostringstream s;
+          s.precision (5);
+          for (octave_idx_type i = 0; i < val.numel (); i++)
+            {
+              s.str("");
+              s << data(i);
+              str.append (s.str());
+            }
+        }
+      else if (val.is_string () && val.rows () == 1)
+        {
+          std::string tmpstr(val.string_value ());
+          char separator = '|';
+          size_t pos = 0;
+          while (true)
+            {
+              size_t new_pos = tmpstr.find_first_of (separator, pos);
+
+              if (new_pos == std::string::npos)
+                {
+                  std::string tmp = tmpstr.substr (pos);
+                  str.append(tmp);
+                  break;
+                }
+              else
+                {
+                  std::string tmp = tmpstr.substr (pos, new_pos - pos);
+                  str.append (tmp);
+                }
+              pos = new_pos + 1;
+            }
+        }
+      else
+        return retval;
+
+      charMatrix ch(str);
+      for (octave_idx_type i = 0; i < ch.numel(); i++)
+        if (ch(i) == 0)
+          ch(i) = ' ';
+      retval = octave_value(ch);
+
+    }
+  return retval;
+}
+
+void
+axes::properties::set_xticklabel(const octave_value& v)
+{
+  if (!error_state)
+    {
+      if (xticklabel.set(convert_ticklabel_string(v), false))
+        {
+          set_xticklabelmode("manual");
+          xticklabel.run_listeners(POSTSET);
+          mark_modified();
+        }
+      else
+        set_xticklabelmode("manual");
+    }
+}
+
+void
+axes::properties::set_yticklabel(const octave_value& v)
+{
+  if (!error_state)
+    {
+      if (yticklabel.set(convert_ticklabel_string(v), false))
+        {
+          set_yticklabelmode("manual");
+          yticklabel.run_listeners(POSTSET);
+          mark_modified();
+        }
+      else
+        set_yticklabelmode("manual");
+    }
+}
+
+void
+axes::properties::set_zticklabel(const octave_value& v)
+{
+  if (!error_state)
+    {
+      if (zticklabel.set(convert_ticklabel_string(v), false))
+        {
+          set_zticklabelmode("manual");
+          zticklabel.run_listeners(POSTSET);
+          mark_modified();
+        }
+      else
+        set_zticklabelmode("manual");
+    }
 }
 
 void

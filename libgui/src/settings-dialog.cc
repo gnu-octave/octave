@@ -327,7 +327,7 @@ settings_dialog::read_workspace_colors (QSettings *settings)
   int row = 0;
   for (int i = 0; i < nr_of_classes; i++)
     {
-      description[i] = new QLabel (class_names.at (i));
+      description[i] = new QLabel ("    " + class_names.at (i));
       description[i]->setAlignment (Qt::AlignRight);
       QVariant default_var = default_colors.at (i);
       QColor setting_color = settings->value ("workspaceview/color_"+class_chars.mid (i,1),
@@ -339,6 +339,7 @@ settings_dialog::read_workspace_colors (QSettings *settings)
       style_grid->addWidget (color[i],       row, 3*column+1);
       if (++column == 3)
         {
+          style_grid->setColumnStretch (4*column, 10);
           row++;
           column = 0;
         }
@@ -365,7 +366,7 @@ settings_dialog::read_terminal_colors (QSettings *settings)
   int row = 0;
   for (int i = 0; i < nr_of_classes; i++)
     {
-      description[i] = new QLabel (class_names.at (i));
+      description[i] = new QLabel ("    " + class_names.at (i));
       description[i]->setAlignment (Qt::AlignRight);
       QVariant default_var = default_colors.at (i);
       QColor setting_color = settings->value ("terminal/color_"+class_chars.mid (i,1),
@@ -375,12 +376,9 @@ settings_dialog::read_terminal_colors (QSettings *settings)
       color[i]->setMinimumSize (30, 10);
       style_grid->addWidget (description[i], row, 2*column);
       style_grid->addWidget (color[i],       row, 2*column+1);
-      style_grid->setColumnStretch (2*column, 10);
-      style_grid->setColumnStretch (2*column+1, 10);
       if (++column == 2)
         {
           style_grid->setColumnStretch (3*column, 10);
-          style_grid->setColumnStretch (3*column+1, 10);
           row++;
           column = 0;
         }

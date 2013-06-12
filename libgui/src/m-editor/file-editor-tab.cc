@@ -1244,6 +1244,7 @@ file_editor_tab::notice_settings (const QSettings *settings)
         (settings->value ("editor/tab_width",2).toInt ());
 
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
+  update_window_title (_edit_area->isModified ());
 
 }
 

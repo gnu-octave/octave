@@ -69,16 +69,21 @@ EXTRA_DIST = \
 
 include m4/module.mk
 
-# Subdirectories in which to run `make all'.  Including "." here
-# is an attempt to force all preceding directories in the list to
-# be processed before the current directory so that the
+# Subdirectories in which to run `make all'.  Including "." before
+# @DOCDIR@ is an attempt to force all preceding directories in the list
+# to be processed before the current directory so that the
 # scripts/DOCSTRINGS libinterp/DOCSTRINGS files are built before
-# attempting to build AUTHORS and BUGS.
+# attempting to build AUTHORS and BUGS.  Including "." again at the end
+# of the list ensures that we display the "Octave sucessfully built..."
+# message at the very end of the output from Make.  Another fix for
+# these problems would be to continue eliminating the recursive make
+# invocations so that we have better control over the dependencies and
+# the order that things are built.
 SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts . @DOCDIR@ examples test
+SUBDIRS += src scripts . @DOCDIR@ examples test .
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:

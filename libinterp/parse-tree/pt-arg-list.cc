@@ -298,6 +298,13 @@ tree_argument_list::variable_names (void) const
       
           retval.push_back (id->name ());
         }
+      else if (elt->is_index_expression ())
+        {
+          tree_index_expression *idx_expr
+            = dynamic_cast<tree_index_expression *> (elt);
+
+          retval.push_back (idx_expr->name ());
+        }
     }
 
   return retval;

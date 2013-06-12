@@ -1629,7 +1629,8 @@ void
 lexical_feedback::maybe_mark_previous_token_as_variable (void)
 {
   token *tok = tokens.front ();
-  if (tok->is_symbol ())
+
+  if (tok && tok->is_symbol ())
     pending_local_variables.insert (tok->symbol_name ());
 }
 

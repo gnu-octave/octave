@@ -960,7 +960,11 @@ octave_execute_interpreter (void)
       int parse_status = execute_eval_option_code (code_to_eval);
 
       if (! (persist || remaining_args > 0))
-        clean_up_and_exit (parse_status || error_state ? 1 : 0);
+        {
+          quitting_gracefully = true;
+
+          clean_up_and_exit (parse_status || error_state ? 1 : 0);
+        }
     }
 
   if (remaining_args > 0)

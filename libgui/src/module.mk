@@ -39,6 +39,7 @@ octave_gui_ICONS = \
   src/icons/graphic_logo_TerminalDockWidget.png \
   src/icons/graphic_logo_WorkspaceView.png \
   src/icons/help_index.png \
+  src/icons/home.png \
   src/icons/icons_license \
   src/icons/jabber_protocol.png \
   src/icons/letter_logo_DocumentationDockWidget.png \

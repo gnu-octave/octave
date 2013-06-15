@@ -101,6 +101,7 @@ private slots:
   void popdownmenu_newdir(bool);
   void popdownmenu_search_dir (bool);
   void popdownmenu_findfiles (bool);
+  void popdownmenu_home (bool);
 
 signals:
 

@@ -108,6 +108,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QToolButton * popdown_button = new QToolButton();
   popdown_button->setToolTip(tr ("Actions on current directory"));
   QMenu * popdown_menu = new QMenu();
+  popdown_menu->addAction (QIcon (":/actions/icons/home.png"),
+                           tr ("Show Home directory"),
+                           this, SLOT (popdownmenu_home (bool)));
   popdown_menu->addAction(_sync_browser_directory_action);
   popdown_menu->addAction(_sync_octave_directory_action);
   popdown_button->setMenu(popdown_menu);
@@ -628,6 +631,13 @@ files_dock_widget::notice_settings (const QSettings *settings)
   if (_sync_octave_dir)
     display_directory (_octave_dir);  // sync browser to octave dir
 
+}
+
+void
+files_dock_widget::popdownmenu_home (bool)
+{
+  QString dir = QDir::homePath ();
+  set_current_directory (dir);
 }
 
 void

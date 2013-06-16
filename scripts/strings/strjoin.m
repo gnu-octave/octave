@@ -27,11 +27,12 @@
 ## seperated by a space.
 ##
 ## If @var{delimiter} is specified as a string, the cell-string array is
-## joined using the string.
+## joined using the string. Escape sequences are supported.
 ##
 ## If @var{delimiter} is a cell-string array whose length is one less
 ## than @var{cstr}, then the elemennts of @var{cstr} are joined by
-## interleaving the cell-string elements of @var{delimiter}.
+## interleaving the cell-string elements of @var{delimiter}. Escape
+## sequences are not supported.
 ##
 ## @example
 ## @group
@@ -58,6 +59,7 @@ function rval = strjoin (cstr, delimiter)
   endif
 
   if (ischar (delimiter))
+    delimiter = do_string_escapes (delimiter);
     delimiter = {delimiter};
   end
  
@@ -82,3 +84,5 @@ endfunction
 %!  "Octave*Scilab*Lush*Yorick")
 %!assert (strjoin ({"space", "comma", "dash", "semicolon", "done"},
 %!  {" ", ",", "-", ";"}), "space comma,dash-semicolon;done")
+%!assert (strjoin ({'Octave','Scilab'},'\n'), "Octave\nScilab")
+%!assert (strjoin ({'Octave','Scilab'},{'\n'}), "Octave\\nScilab")

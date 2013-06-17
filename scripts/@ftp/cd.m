@@ -17,12 +17,27 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn {Function File} {} cd (@var{f})
 ## @deftypefn {Function File} {} cd (@var{f}, @var{path})
-## Set the remote directory to @var{path} on the FTP connection @var{f}.
+## Get or sets the remote directory on the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
+##
+## If @var{path} is not specified, returns the remote current working
+## directory.  Otherwise, sets the remote directory to @var{path} and
+## returns the new remote working directory.
+##
+## If the directory does not exist, an error message is printed and the
+## working directory is not changed.
 ## @end deftypefn
 
-function cd (f, path)
-  __ftp_cwd__ (f.curlhandle, path);
+function path = cd (f, path)
+  if (nargin != 1 && nargin != 2)
+    print_usage ();
+  endif
+
+  if (nargin == 2)
+    __ftp_cwd__ (f.curlhandle, path);
+  endif
+  path = __ftp_pwd__ (f.curlhandle);
 endfunction

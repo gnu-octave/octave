@@ -152,7 +152,7 @@ function [result, matches] = strsplit (str, del, varargin)
       args.(lower(params{n})) = params{n+1};
     elseif (ischar (varargin{n}))
       error ("strsplit:invalid_parameter_name",
-        sprintf ("strsplit: Invalid parameter name, `%s'", varargin{n}))
+             "strsplit: invalid parameter name, '%s'", varargin{n});
     else
       print_usage ();
     endif
@@ -207,8 +207,8 @@ function [result, matches] = strsplit (str, del, varargin)
     endif
     [result, ~, ~, ~, matches] = regexp (str, del, "split");
   else
-    error ("strsplit:invalid_delimitertype", 
-      sprintf ("strsplit: Invalid DELIMITERTYPE"))
+    error ("strsplit:invalid_delimitertype",
+           "strsplit: Invalid DELIMITERTYPE");
   endif
 endfunction
 

@@ -1495,7 +1495,7 @@ f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
 @end example\n\
 \n\
 @noindent\n\
-which uses the element-by-element `dot' form for all operators.\n\
+which uses the element-by-element ``dot'' form for all operators.\n\
 \n\
 @var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
 or both limits may be infinite.  @code{quadcc} handles an inifinite limit\n\

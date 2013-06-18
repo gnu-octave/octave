@@ -199,7 +199,7 @@
 ##     Produces pdf output from eps
 ##   @end table
 ##
-##   For a complete list, type `system ("gs -h")' to see what formats
+##   For a complete list, type @samp{system ("gs -h")} to see what formats
 ## and devices are available.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined

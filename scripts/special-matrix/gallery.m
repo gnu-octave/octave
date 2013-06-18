@@ -532,7 +532,7 @@ function C = chebspec (n, k = 0)
     case (0), # do nothing
     case (1), n = n + 1;
     otherwise
-      error ("gallery: unknown K `%d' for chebspec matrix.", k);
+      error ("gallery: unknown K '%d' for chebspec matrix.", k);
   endswitch
 
   n = n-1;
@@ -839,7 +839,7 @@ function A = condex (n, k = 4, theta = 100)
     A = eye (n) + theta*P;
 
   else
-    error ("gallery: unknown estimator K `%d' for condex matrix.", k);
+    error ("gallery: unknown estimator K '%d' for condex matrix.", k);
   endif
 
   ## Pad out with identity as necessary.
@@ -999,7 +999,7 @@ function A = dramadah (n, k = 1)
       A = toeplitz (c, [1 1 zeros(1,n-2)]);
 
     otherwise
-      error ("gallery: unknown K `%d' for dramadah matrix.", k);
+      error ("gallery: unknown K '%d' for dramadah matrix.", k);
   endswitch
 endfunction
 
@@ -1827,7 +1827,7 @@ function Q = orthog (n, k = 1)
       Q = cos (m);
 
     otherwise
-      error ("gallery: unknown K `%d' for orthog matrix.", k);
+      error ("gallery: unknown K '%d' for orthog matrix.", k);
   endswitch
 endfunction
 
@@ -2006,7 +2006,7 @@ function A = rando (n, k = 1)
     case (2), A = 2*floor (  rand(m, n) + 0.5) -1;  # {-1, 1}
     case (3), A =   round (3*rand(m, n) - 1.5);     # {-1, 0, 1}
     otherwise
-      error ("gallery: unknown K `%d' for smoke matrix.", k);
+      error ("gallery: unknown K '%d' for smoke matrix.", k);
   endswitch
 
 endfunction
@@ -2097,7 +2097,7 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
       rand ("uniform");
       sigma = exp (-rand (p, 1) * log (kappa));
     otherwise
-      error ("gallery: unknown MODE `%d' for randsvd matrix.", mode);
+      error ("gallery: unknown MODE '%d' for randsvd matrix.", mode);
   endswitch
 
   ##  Convert to diagonal matrix of singular values.
@@ -2616,7 +2616,7 @@ function [A, b] = wilk (n)
     A = diag (abs (-m:m)) + E + E';
 
   else
-    error ("gallery: unknown N `%d' for wilk matrix.", n);
+    error ("gallery: unknown N '%d' for wilk matrix.", n);
   endif
 endfunction
 

@@ -65,7 +65,7 @@ function h = rgbplot (cmap, style = "profile")
       set (gca, 'ytick', []);
       colormap (cmap);
     otherwise
-      error ("rgbplot: unknown style `%s'", style);
+      error ("rgbplot: unknown style '%s'", style);
   endswitch
   xlabel ("color index");
 
@@ -88,5 +88,5 @@ endfunction
 %!error rgbplot (1,2)
 %!error <CMAP must be a valid colormap> rgbplot ({0 1 0})
 %!error <STYLE must be a string> rgbplot ([0 1 0], 2)
-%!error <unknown style `nostyle'> rgbplot ([0 1 0], "nostyle")
+%!error <unknown style 'nostyle'> rgbplot ([0 1 0], "nostyle")
 

@@ -35,8 +35,8 @@
 ## @code{jet} map with 64 entries).  The default colormap is returned.
 ##
 ## @code{colormap ("list")} returns a cell array with all the available
-## colormaps.  The options `register' and `unregister' will add or remove the
-## colormap @var{name} to it.
+## colormaps.  The options @code{"register"} and @code{"unregister"}
+## will add or remove the colormap @var{name} to it.
 ##
 ## With no arguments, @code{colormap} returns the current color map.
 ## @seealso{jet}

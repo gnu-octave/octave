@@ -1139,7 +1139,7 @@ If an error occurs, @var{errmsg} contains a system-dependent error message.\n\
 \n\
 In the second form, read from @var{fid} according to @var{template},\n\
 with each conversion specifier in @var{template} corresponding to a\n\
-single scalar return value.  This form is more `C-like', and also\n\
+single scalar return value.  This form is more ``C-like'', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
 conversions is returned in @var{count}\n\
 @ifclear OCTAVE_MANUAL\n\

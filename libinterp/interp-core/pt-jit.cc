@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Max Brister <max@2bass.com>
+Copyright (C) 2012 Max Brister
 
 This file is part of Octave.
 
@@ -19,6 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
+
+// Author: Max Brister <max@2bass.com>
 
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS

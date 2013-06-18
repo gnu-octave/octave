@@ -1,6 +1,6 @@
-## Copyright (C) 2008-2012 N.J. Higham
-## Copyright (C) 2010 Richard T. Guy <guyrt7@wfu.edu>
-## Copyright (C) 2010 Marco Caliari <marco.caliari@univr.it>
+## Copyright (C) 2008-2012 N. J. Higham
+## Copyright (C) 2010 Richard T. Guy
+## Copyright (C) 2010 Marco Caliari
 ##
 ## This file is part of Octave.
 ##
@@ -38,6 +38,10 @@
 ## Reference: N. J. Higham, Functions of Matrices: Theory and Computation
 ##            (SIAM, 2008.)
 ##
+
+## Author: N. J. Higham
+## Author: Richard T. Guy <guyrt7@wfu.edu>
+## Author: Marco Caliari <marco.caliari@univr.it>
 
 function [s, iters] = logm (A, opt_iters = 100)
 

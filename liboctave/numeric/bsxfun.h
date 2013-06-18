@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Jordi Gutiérrez Hermoso <jordigh@octave.org>
+Copyright (C) 2012 Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
 
@@ -19,6 +19,9 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
+
+// Author: Jordi Gutiérrez Hermoso <jordigh@octave.org>
+
 #if !defined (bsxfun_h)
 #define bsxfun_h 1
 

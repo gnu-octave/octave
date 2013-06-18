@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013 Torsten <ttl@justmail.de>
+Copyright (C) 2013 Torsten
 
 This file is part of Octave.
 
@@ -19,6 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
+
+// Author: Torsten <ttl@justmail.de>
 
 #if !defined (octave_qscintilla_h)
 #define octave_qscintilla_h 1

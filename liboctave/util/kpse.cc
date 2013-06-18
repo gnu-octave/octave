@@ -7,20 +7,23 @@ Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
 Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
 Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Library General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
+This file is part of Octave.
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Library General Public License for more details.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-You should have received a copy of the GNU Library General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301, USA.  */
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
+*/
 
 #if defined (HAVE_CONFIG_H)
 #include <config.h>
@@ -1477,24 +1480,9 @@ kpse_path_expand (const std::string& path)
 }
 
 /* braces.c -- code for doing word expansion in curly braces. Taken from
-   bash 1.14.5.  [Ans subsequently modified for kpatshea.]
+   bash 1.14.5.  [And subsequently modified for kpatshea.]
 
-   Copyright (C) 1987,1991 Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
-   any later version.
-
-   This program is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; see the file COPYING.  If not, write to the
-   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-   MA 02110-1301, USA.  */
+   Copyright (C) 1987,1991 Free Software Foundation, Inc.  */
 
 #define brace_whitespace(c) (! (c) || (c) == ' ' || (c) == '\t' || (c) == '\n')
 

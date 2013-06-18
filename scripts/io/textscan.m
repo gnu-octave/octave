@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Ben Abbott <bpabbott@mac.com>
+## Copyright (C) 2010-2013 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -74,6 +74,8 @@
 ##
 ## @seealso{dlmread, fscanf, load, strread, textread}
 ## @end deftypefn
+
+## Author: Ben Abbott <bpabbott@mac.com>
 
 function [C, position] = textscan (fid, format = "%f", varargin)
 

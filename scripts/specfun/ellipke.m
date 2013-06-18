@@ -1,5 +1,5 @@
-## Copyright (C) 2001 David Billinghurst <David.Billinghurst@riotinto.com>
-## Copyright (C) 2001 Paul Kienzle <pkienzle@users.sf.net>
+## Copyright (C) 2001 David Billinghurst
+## Copyright (C) 2001 Paul Kienzle
 ## Copyright (C) 2003 Jaakko Ruohio
 ##
 ## This file is part of Octave.
@@ -34,6 +34,10 @@
 ## Functions, Dover, 1965, Chapter 17.
 ## @seealso{ellipj}
 ## @end deftypefn
+
+## Author: David Billinghurst <David.Billinghurst@riotinto.com>
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+## Author: Jaakko Ruohio
 
 function [k, e] = ellipke (m)
 

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Parts Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
+## Parts Copyright (C) 2012 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -44,6 +44,9 @@
 ## features may be available if Octave was compiled with the Java Interface
 ## and Java is installed.
 ## @end deftypefn
+
+## Author: Rik Wehbring
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 
 function retval = usejava (feature)
 

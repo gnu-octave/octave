@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001 Leopoldo Cerbaro <redbliss@libero.it>
+// Author: Leopoldo Cerbaro <redbliss@libero.it>
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Erik Kjellson <erikiiofph7@users.sourceforge.net>
+## Copyright (C) 2012-2013 Erik Kjellson
 ##
 ## This file is part of Octave.
 ##
@@ -59,6 +59,7 @@
 ## @seealso{textscan, dlmread, csvread, load}
 ## @end deftypefn
 
+## Author: Erik Kjellson <erikiiofph7@users.sourceforge.net>
 
 function [output, delimiter, header_rows] = importdata (varargin)
 

@@ -1,5 +1,5 @@
-## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@uta.edu>
-## Copyright (C) 2013 Ben Abbott <bpabbott@mac.com>
+## Copyright (C) 2007 Muthiah Annamalai
+## Copyright (C) 2013 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -42,6 +42,9 @@
 ## @end example
 ## @seealso {strsplit}
 ## @end deftypefn
+
+## Author: Muthiah Annamalai <muthiah.annamalai@uta.edu>
+## Author: Ben Abbott <bpabbott@mac.com>
 
 function rval = strjoin (cstr, delimiter)
 

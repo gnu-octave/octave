@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Sylvain Pelissier <sylvain.pelissier@gmail.com>
+## Copyright (C) 2006 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +15,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
+
+## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} expint (@var{x})

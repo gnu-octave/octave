@@ -1069,6 +1069,27 @@ error: nargin != 1\n\
 @end group\n\
 @end example\n\
 \n\
+A null string (\"\") input to @code{error} will be ignored and the code\n\
+will continue running as if the statement were a NOP@.  This is for\n\
+compatibility with @sc{matlab}.  It also makes it possible to write code such\n\
+as\n\
+\n\
+@example\n\
+@group\n\
+err_msg = \"\";\n\
+if (CONDITION 1)\n\
+  err_msg = \"CONDITION 1 found\";\n\
+elseif (CONDITION2)\n\
+  err_msg = \"CONDITION 2 found\";\n\
+@dots{}\n\
+endif\n\
+error (err_msg);\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+which will only stop execution if an error has been found.\n\
+\n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
 sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
 regardless of whether @var{template} has been defined within single quotes\n\

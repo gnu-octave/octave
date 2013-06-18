@@ -119,11 +119,9 @@ function [output, delimiter, header_rows] = importdata (varargin)
 
   switch fileExt
     case {".au", ".snd"}
-      error (sprintf ("importdata: not implemented for file format %s", 
-                      fileExt));
+      error ("importdata: not implemented for file format %s", fileExt);
     case ".avi"
-      error (sprintf ("importdata: not implemented for file format %s", 
-                      fileExt));
+      error ("importdata: not implemented for file format %s", fileExt);
     case {".bmp", ".cur", ".gif", ".hdf", ".ico", ".jpe", ".jpeg", ".jpg", \
           ".pbm", ".pcx", ".pgm", ".png", ".pnm", ".ppm", ".ras", \
           ".tif", ".tiff", ".xwd"}

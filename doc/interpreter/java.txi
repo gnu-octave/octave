@@ -151,7 +151,7 @@ of dialog box.
 @c ------------------------------------------------------------------------
 @node How to distinguish between Octave and Matlab?
 @subsection How to distinguish between Octave and Matlab?
-@anchor{doc-FAQ}
+@anchor{docXFAQ}
 @c - index -
 @cindex Octave and @sc{matlab}, how to distinguish between
 @c - index -
@@ -316,7 +316,7 @@ Passenger = javaObject ('package.FirstClass', row, seat);
 In order to execute Java code Octave creates a Java Virtual Machine (JVM).
 Such a JVM allocates a fixed amount of initial memory and may expand this pool
 up to a fixed maximum memory limit.  The default values depend on the Java
-version (see @ref{doc-javamem,,javamem}).  The memory pool is shared by all
+version (see @ref{docXjavamem,,javamem}).  The memory pool is shared by all
 Java objects running in the JVM@.  This strict memory limit is intended mainly
 to avoid that runaway applications inside web browsers or in enterprise servers
 can consume all memory and crash the system.  When the maximum memory limit is

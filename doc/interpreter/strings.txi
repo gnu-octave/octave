@@ -233,8 +233,8 @@ It has been shown above that strings can be concatenated using matrix notation
 (@pxref{Strings}, @ref{Character Arrays}).  Apart from that, there are several
 functions to concatenate string objects: @code{char},
 @code{strvcat}, @code{strcat} and @code{cstrcat}.  In addition, the general
-purpose concatenation functions can be used: see @ref{doc-cat,,cat},
-@ref{doc-horzcat,,horzcat} and @ref{doc-vertcat,,vertcat}.
+purpose concatenation functions can be used: see @ref{docXcat,,cat},
+@ref{docXhorzcat,,horzcat} and @ref{docXvertcat,,vertcat}.
 
 @itemize @bullet
 @item All string concatenation functions except @code{cstrcat}
@@ -351,7 +351,7 @@ several functions that format numerical data as strings.  @code{mat2str} and
 integer matrices.  @code{int2str} takes the real part of complex values and
 round fractional values to integer.  A more flexible way to format numerical
 data as strings is the @code{sprintf} function (@pxref{Formatted Output},
-@ref{doc-sprintf}).
+@ref{docXsprintf}).
 
 @DOCSTRING(mat2str)
 

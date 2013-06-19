@@ -75,8 +75,8 @@ Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
 
-@item --doc-cache-file @var{filename}
-@cindex @code{--doc-cache-file @var{filename}}
+@item --docXcache-file @var{filename}
+@cindex @code{--docXcache-file @var{filename}}
 Specify the name of the doc cache file to use.  The value of @var{filename}
 specified on the command line will override any value of
 @w{@env{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
@@ -264,8 +264,8 @@ Octave:load-file-in-path
 @noindent
 Note that this does not enable the @code{Octave:matlab-incompatible}
 warning, which you might want if you want to be told about writing code
-that works in Octave but not Matlab (@pxref{doc-warning},
-@pxref{doc-warning_ids}).
+that works in Octave but not Matlab (@pxref{docXwarning},
+@pxref{docXwarning_ids}).
 
 @item  --verbose
 @itemx -V

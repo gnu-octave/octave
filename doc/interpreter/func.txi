@@ -402,7 +402,7 @@ For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
 
 @DOCSTRING(nargoutchk)
 
-@anchor{doc-varargin} @anchor{doc-varargout}
+@anchor{docXvarargin} @anchor{docXvarargout}
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
@@ -1150,7 +1150,7 @@ An overloaded function as defined by @code{dispatch}.
 A function that has been defined on the command-line.
 
 @item Autoload function
-A function that is marked as autoloaded with @xref{doc-autoload}.
+A function that is marked as autoloaded with @xref{docXautoload}.
 
 @item A Function on the Path
 A function that can be found on the users load-path.  There can also be

@@ -1236,7 +1236,7 @@ to go on.\n\
 The optional message identifier allows users to enable or disable\n\
 warnings tagged by @var{id}.  A message identifier is of the form\n\
 \"NAMESPACE:WARNING-NAME\".  Octave's own warnings use the \"Octave\"\n\
-namespace (@pxref{doc-warning_ids}).  The special identifier @samp{\"all\"}\n\
+namespace (@pxref{docXwarning_ids}).  The special identifier @samp{\"all\"}\n\
 may be used to set the state of all warnings.\n\
 \n\
 If the first argument is @samp{\"on\"} or @samp{\"off\"}, set the state\n\

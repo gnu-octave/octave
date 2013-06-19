@@ -42,7 +42,7 @@
 ## used here, as the field name is not a valid Octave identifier. Using
 ## arbitrary strings for field name is incompatible with @sc{Matlab}, so
 ## this usage will warn if the @code{Octave:matlab-incompatible} warning
-## is set. @xref{doc-warning_ids}.
+## is set. @xref{docXwarning_ids}.
 ##
 ## With the second calling form, set a field on a structure array,
 ## possibly nested, with successive nested indices @var{idx1},

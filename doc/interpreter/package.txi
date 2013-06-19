@@ -217,7 +217,7 @@ into @file{package/ONEWS}.
 This is an optional file describing old entries from the @file{NEWS} file.
 
 @cindex PKG_ADD
-@anchor{doc-PKG_ADD}
+@anchor{docXPKG_ADD}
 @item package/PKG_ADD
 An optional file that includes commands that are run when the package
 is added to the users path.  Note that @w{@code{PKG_ADD}} directives in the
@@ -242,7 +242,7 @@ autoload ('bar', which ('foo'));
 directives.
 
 @cindex PKG_DEL
-@anchor{doc-PKG_DEL}
+@anchor{docXPKG_DEL}
 @item package/PKG_DEL
 An optional file that includes commands that are run when the package
 is removed from the users path.  Note that @w{@code{PKG_DEL}} directives in

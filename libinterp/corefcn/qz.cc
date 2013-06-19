@@ -367,7 +367,7 @@ in the closed right half-plane\n\
 @end enumerate\n\
 \n\
 Note: @code{qz} performs permutation balancing, but not scaling\n\
-(@pxref{doc-balance}).  The order of output arguments was selected for\n\
+(@pxref{docXbalance}).  The order of output arguments was selected for\n\
 compatibility with @sc{matlab}.\n\
 @seealso{balance, eig, schur}\n\
 @end deftypefn")

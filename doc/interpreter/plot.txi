@@ -253,8 +253,8 @@ function.
 The @code{xlim}, @code{ylim}, and @code{zlim} functions may be used to
 get or set individual axis limits.  Each has the same form.
 
-@anchor{doc-ylim}
-@anchor{doc-zlim}
+@anchor{docXylim}
+@anchor{docXzlim}
 @DOCSTRING(xlim)
 
 @node Two-dimensional Function Plotting
@@ -464,8 +464,8 @@ border lines are on.
 
 See @ref{Text Properties} for the properties that you can set.
 
-@anchor{doc-ylabel}
-@anchor{doc-zlabel}
+@anchor{docXylabel}
+@anchor{docXzlabel}
 @DOCSTRING(xlabel)
 
 @DOCSTRING(clabel)
@@ -911,7 +911,7 @@ at the Octave prompt should display a three-dimensional plot.
 @node Introduction to Graphics Structures
 @subsection Introduction to Graphics Structures
 @cindex introduction to graphics structures
-@anchor{doc-graphics structures}
+@anchor{docXgraphics structures}
 
 The graphics functions use pointers, which are of class graphics_handle, in
 order to address the data structures which control graphical displays.  A
@@ -931,7 +931,7 @@ functions @code{area}, @code{bar}, @code{barh}, @code{contour},
 @code{contourf}, @code{contour3}, @code{surf}, @code{mesh}, @code{surfc},
 @code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter},
 @code{scatter3}, @code{stair}, @code{stem}, @code{stem3} each return a handle
-as documented in @ref{doc-datasources,, Data Sources}.
+as documented in @ref{docXdatasources,, Data Sources}.
 
 
 The graphics objects are arranged in a hierarchy:
@@ -1014,7 +1014,7 @@ The root figure has index 0.  Its properties may be displayed by:
 @code{get (0, "")}.
 
 The uses of @code{get} and @code{set} are further explained in
-@ref{doc-get,,get}, @ref{doc-set,,set}.
+@ref{docXget,,get}, @ref{docXset,,set}.
 
 @DOCSTRING(isprop)
 
@@ -2831,7 +2831,7 @@ corresponding hggroup elements.
 @node Data Sources in Object Groups
 @subsubsection Data Sources in Object Groups
 @cindex data sources in object groups
-@anchor{doc-datasources}
+@anchor{docXdatasources}
 All of the group objects contain data source parameters.  There are
 string parameters that contain an expression that is evaluated to update
 the relevant data property of the group when the @code{refreshdata}
@@ -2839,7 +2839,7 @@ function is called.
 
 @DOCSTRING(refreshdata)
 
-@anchor{doc-linkdata}
+@anchor{docXlinkdata}
 @c add the description of the linkdata function here when it is written
 @c remove the explicit anchor when you add the corresponding @DOCSTRING
 @c command

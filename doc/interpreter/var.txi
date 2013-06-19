@@ -178,7 +178,7 @@ the function works with a @emph{copy} of its argument.
 @cindex persistent variables
 @cindex @code{persistent} statement
 @cindex variables, persistent
-@anchor{doc-persistent}
+@anchor{docXpersistent}
 
 A variable that has been declared @dfn{persistent} within a function
 will retain its contents in memory between subsequent calls to the

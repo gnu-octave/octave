@@ -32,7 +32,7 @@
 ## optional initial guess for @var{x}.
 ## Currently, @code{lsqnonneg}
 ## recognizes these options: @code{"MaxIter"}, @code{"TolX"}.
-## For a description of these options, see @ref{doc-optimset,,optimset}.
+## For a description of these options, see @ref{docXoptimset,,optimset}.
 ##
 ## Outputs:
 ##

@@ -42,8 +42,8 @@ different arrangements.
 
 It should be noted that the statistics functions don't test for data
 containing NaN, NA, or Inf.  These values need to be detected and dealt
-with explicitly.  See @ref{doc-isnan,,isnan}, @ref{doc-isna,,isna}, 
-@ref{doc-isinf,,isinf}, @ref{doc-isfinite,,isfinite}. 
+with explicitly.  See @ref{docXisnan,,isnan}, @ref{docXisna,,isna}, 
+@ref{docXisinf,,isinf}, @ref{docXisfinite,,isfinite}. 
 
 @menu
 * Descriptive Statistics::

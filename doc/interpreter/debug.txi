@@ -91,32 +91,33 @@ function.  For example:
 @example
 @group
 dbstop ("asind", 1)
-@result{} 28
+@result{} 29
 @end group
 @end example
 
 @noindent
-Note that the return value of @code{27} means that the breakpoint was
-effectively set to line 27.  The status of breakpoints in a function can
+Note that the return value of @code{29} means that the breakpoint was
+effectively set to line 29.  The status of breakpoints in a function can
 be queried with the @code{dbstatus} function.
 
 @DOCSTRING(dbstatus)
 
 @noindent
-Taking the above as an example, @code{dbstatus ("asind")} should return
-28.  The breakpoints can then be cleared with the @code{dbclear} function
+Reusing the previous example, @code{dbstatus ("asind")} will return
+29.  The breakpoints listed can then be cleared with the @code{dbclear}
+function.
 
 @DOCSTRING(dbclear)
 
 @noindent
-These functions can be used to clear all the breakpoints in a function.  For
-example:
+These functions can be used together to clear all the breakpoints in a
+particular function.  For example:
 
 @example
 dbclear ("asind", dbstatus ("asind"));
 @end example
 
-A breakpoint can be set in a subfunction.  For example if a file contains
+A breakpoint may also be set in a subfunction.  For example, if a file contains
 the functions
 
 @example
@@ -151,7 +152,7 @@ use of the @code{keyboard} function.
 
 @noindent
 The @code{keyboard} function is typically placed in a script at the
-point where the user desires that the execution is stopped.  It
+point where the user desires that the execution be stopped.  It
 automatically sets the running script into the debug mode.
 
 @node Debug Mode
@@ -172,7 +173,7 @@ currently active.
 @DOCSTRING(isdebugmode)
 
 Debug mode also allows single line stepping through a function using
-the commands @code{dbstep}.
+the command @code{dbstep}.
 
 @DOCSTRING(dbstep)
 

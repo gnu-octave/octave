@@ -609,7 +609,8 @@ intmap_to_ov (const bp_table::intmap& line)
 DEFUN (dbstop, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
-@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line}, @dots{})\n\
+@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line})\n\
+@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
 Set a breakpoint in function @var{func}.\n\
 \n\
 Arguments are\n\
@@ -654,6 +655,7 @@ DEFUN (dbclear, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} dbclear (\"@var{func}\")\n\
 @deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line}, @dots{})\n\
+@deftypefnx {Built-in Function} {} dbclear (@var{line}, @dots{})\n\
 Delete a breakpoint in the function @var{func}.\n\
 \n\
 Arguments are\n\
@@ -661,7 +663,8 @@ Arguments are\n\
 @table @var\n\
 @item func\n\
 Function name as a string variable.  When already in debug\n\
-mode this should be left out and only the line should be given.\n\
+mode this argument should be omitted and only the line number should be\n\
+given.\n\
 \n\
 @item line\n\
 Line number from which to remove a breakpoint.  Multiple\n\

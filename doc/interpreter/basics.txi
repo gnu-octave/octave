@@ -185,7 +185,8 @@ Disable command-line editing.
 @cindex @code{--no-site-file}
 Don't read the site-wide @file{octaverc} initialization files.
 
-@item --no-window-system
+@item  --no-window-system
+@itemx -W
 @cindex @code{--no-window-system}
 Disable use of a windowing system including graphics.  This forces a
 strictly terminal-only environment.

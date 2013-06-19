@@ -150,12 +150,12 @@ static std::string exec_path;
 static std::string image_path;
 
 // If TRUE, ignore the window system even if it is available.
-// (--no-window-system)
+// (--no-window-system, -W)
 static bool no_window_system = false;
 
 // Usage message
 static const char *usage_string =
-  "octave [-HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
+  "octave [-HVWdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
        [--jit-debugging] [--line-editing] [--no-gui] [--no-history]\n\
@@ -167,7 +167,7 @@ static const char *usage_string =
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the '+' must come first
 // to prevent getopt from permuting arguments!
-static const char *short_opts = "+HVdfhip:qvx";
+static const char *short_opts = "+HWVdfhip:qvx";
 
 // The code to evaluate at startup (--eval CODE)
 static std::string code_to_eval;
@@ -199,10 +199,9 @@ static bool traditional = false;
 #define NO_JIT_COMPILER_OPTION 14
 #define NO_LINE_EDITING_OPTION 15
 #define NO_SITE_FILE_OPTION 16
-#define NO_WINDOW_SYSTEM_OPTION 17
-#define PERSIST_OPTION 18
-#define TEXI_MACROS_FILE_OPTION 19
-#define TRADITIONAL_OPTION 20
+#define PERSIST_OPTION 17
+#define TEXI_MACROS_FILE_OPTION 18
+#define TRADITIONAL_OPTION 19
 struct option long_opts[] = {
   { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
   { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
@@ -226,7 +225,7 @@ struct option long_opts[] = {
   { "no-jit-compiler",          no_argument,       0, NO_JIT_COMPILER_OPTION },
   { "no-line-editing",          no_argument,       0, NO_LINE_EDITING_OPTION },
   { "no-site-file",             no_argument,       0, NO_SITE_FILE_OPTION },
-  { "no-window-system",         no_argument,       0, NO_WINDOW_SYSTEM_OPTION },
+  { "no-window-system",         no_argument,       0, 'W' },
   { "norc",                     no_argument,       0, 'f' },
   { "path",                     required_argument, 0, 'p' },
   { "persist",                  no_argument,       0, PERSIST_OPTION },
@@ -542,7 +541,7 @@ Options:\n\
   --no-jit-compiler       Disable the JIT compiler.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
-  --no-window-system      Disable window system, including graphics.\n\
+  --no-window-system, -W  Disable window system, including graphics.\n\
   --norc, -f              Don't read any initialization files.\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
@@ -685,6 +684,10 @@ octave_process_command_line (int argc, char **argv)
           read_history_file = false;
           break;
 
+        case 'W':
+          no_window_system = true;
+          break;
+
         case 'V':
           verbose_flag = true;
           break;
@@ -801,10 +804,6 @@ octave_process_command_line (int argc, char **argv)
 
         case NO_SITE_FILE_OPTION:
           read_site_files = 0;
-          break;
-
-        case NO_WINDOW_SYSTEM_OPTION:
-          no_window_system = true;
           break;
 
         case PERSIST_OPTION:

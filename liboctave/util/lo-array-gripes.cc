@@ -130,7 +130,11 @@ gripe_invalid_index (void)
   const char *err_id = error_id_invalid_index;
 
   (*current_liboctave_error_with_id_handler)
-    (err_id, "subscript indices must be either positive integers or logicals");
+#ifdef USE_64_BIT_IDX_T
+    (err_id, "subscript indices must be either positive integers less than 2^63 or logicals");
+#else
+    (err_id, "subscript indices must be either positive integers less than 2^31 or logicals");
+#endif
 }
 
 // FIXME -- the following is a common error message to resize,

@@ -3342,6 +3342,11 @@ zero).  Otherwise, return false.\n\
   return retval;
 }
 
+/*
+%% Debian bug #706376
+%!assert (isempty (speye(2^16)), false)
+*/
+
 DEFUN (isnumeric, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\

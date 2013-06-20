@@ -72,6 +72,8 @@ octave_base_sparse : public octave_base_value
 
   ~octave_base_sparse (void) { }
 
+  octave_idx_type numel (void) const { return dims ().safe_numel (); }
+
   octave_idx_type nnz (void) const { return matrix.nnz (); }
 
   octave_idx_type nzmax (void) const { return matrix.nzmax (); }
@@ -136,6 +138,8 @@ octave_base_sparse : public octave_base_value
   bool is_sparse_type (void) const { return true; }
 
   bool is_defined (void) const { return true; }
+
+  bool is_empty (void) const;
 
   bool is_constant (void) const { return true; }
 

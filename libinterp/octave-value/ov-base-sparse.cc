@@ -278,6 +278,15 @@ octave_base_sparse<T>::is_true (void) const
 
 template <class T>
 bool
+octave_base_sparse<T>::is_empty (void) const
+{
+  dim_vector dv = dims ();
+
+  return (dv.any_zero ());
+}
+
+template <class T>
+bool
 octave_base_sparse<T>::print_as_scalar (void) const
 {
   dim_vector dv = dims ();

@@ -331,7 +331,7 @@ public:
 
   virtual bool is_defined (void) const { return false; }
 
-  bool is_empty (void) const { return numel () == 0; }
+  virtual bool is_empty (void) const { return numel () == 0; }
 
   virtual bool is_cell (void) const { return false; }
 

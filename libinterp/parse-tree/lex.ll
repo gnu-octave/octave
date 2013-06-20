@@ -1899,6 +1899,9 @@ octave_base_lexer::is_keyword_token (const std::string& s)
 
   if (kw)
     {
+      // May be reset to true for some token types.
+      at_beginning_of_statement = false;
+
       token *tok_val = 0;
 
       switch (kw->kw_id)
@@ -2589,20 +2592,16 @@ octave_base_lexer::handle_identifier (void)
 
       current_input_column += flex_yyleng ();
 
+      assert (! at_beginning_of_statement);
+
       return STRUCT_ELT;
     }
 
-  // The is_keyword_token may reset
-  // at_beginning_of_statement.  For example, if it sees
-  // an else token, then the next token is at the beginning of a
-  // statement.
+  // If tok is a keyword token, then is_keyword_token will set
+  // at_beginning_of_statement.  For example, if tok is and IF
+  // token, then at_beginning_of_statement will be false.
 
-  // May set at_beginning_of_statement to true.
   int kw_token = is_keyword_token (tok);
-
-  // If we found a keyword token, then the beginning_of_statement flag
-  // is already set.  Otherwise, we won't be at the beginning of a
-  // statement.
 
   if (looking_at_function_handle)
     {
@@ -2636,6 +2635,8 @@ octave_base_lexer::handle_identifier (void)
           current_input_column += flex_yyleng ();
           looking_for_object_index = false;
         }
+
+      // The call to is_keyword_token set at_beginning_of_statement.
 
       return kw_token;
     }

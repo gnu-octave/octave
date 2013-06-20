@@ -173,8 +173,15 @@ object) relevant global values before and after the nested call.
  \
       if (curr_lexer->previous_token_may_be_command ()) \
         { \
-          yyless (0); \
-          curr_lexer->push_start_state (COMMAND_START); \
+          if (curr_lexer->looks_like_command_arg ()) \
+            { \
+              yyless (0); \
+              curr_lexer->push_start_state (COMMAND_START); \
+            } \
+          else \
+            { \
+              return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
+            } \
         } \
       else \
         { \
@@ -2652,9 +2659,16 @@ octave_base_lexer::handle_identifier (void)
   token *tok_val = new token (NAME, &(symbol_table::insert (tok, sid)),
                               input_line_number, current_input_column);
 
+  // The following symbols are handled specially so that things like
+  //
+  //   pi +1
+  //
+  // are parsed as an addition expression instead of as a command-style
+  // function call with the argument "+1".
+
   if (at_beginning_of_statement
       && (! (is_variable (tok)
-             || tok == "e"
+             || tok == "e" || tok == "pi"
              || tok == "I" || tok == "i"
              || tok == "J" || tok == "j"
              || tok == "Inf" || tok == "inf"

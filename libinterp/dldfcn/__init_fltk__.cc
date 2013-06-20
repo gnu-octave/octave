@@ -1286,7 +1286,7 @@ private:
                 set_axes_currentpoint (ax_obj, pos_x, pos_y);
               }
 
-            fp.execute_windowbuttondownfcn ();
+            fp.execute_windowbuttondownfcn (Fl::event_button()); 
 
             if (Fl::event_button () == 1 || Fl::event_button () == 3)
               return 1;

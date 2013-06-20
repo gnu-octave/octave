@@ -85,9 +85,7 @@ endfunction
 
 function ginput_windowbuttondownfcn (src, data)
   point = get (get (src,"currentaxes"), "currentpoint");
-  ## FIXME -- How to get the actual mouse button pressed (1,2,3) into
-  ## "button"?
-  button = 1;
+  button = data;
   ginput_aggregator (1, point(1,1), point(2,1), button);
 endfunction
 

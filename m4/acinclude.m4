@@ -1399,8 +1399,13 @@ dnl Check for bison.
 dnl
 AC_DEFUN([OCTAVE_PROG_BISON], [
   AC_PROG_YACC
-  case "$YACC" in
-    bison*)
+
+  case "`$YACC --version`" in
+    *bison*) tmp_have_bison="yes" ;;
+    *) tmp_have_bison=no ;;
+  esac
+
+  if test "$tmp_have_bison" = yes; then
     AC_CACHE_CHECK([syntax of bison push/pull declaration],
                    [octave_cv_bison_push_pull_decl_style], [
       style="dash underscore"
@@ -1440,8 +1445,7 @@ EOF
       done
       rm -f conftest.yy y.tab.h y.tab.c
       ])
-    ;;
-  esac
+  fi
 
   AC_SUBST(BISON_PUSH_PULL_DECL_STYLE, $octave_cv_bison_push_pull_decl_style)
 
@@ -1455,20 +1459,16 @@ parser in a bison input file so I'm disabling bison.
     OCTAVE_CONFIGURE_WARNING([warn_bison_push_pull_decl_style])
   fi
 
-  case "$YACC" in
-    bison*)
-    ;;
-    *)
-      YACC='$(top_srcdir)/build-aux/missing bison'
-      warn_bison="
+  if test "$tmp_have_bison" = no; then
+    YACC='$(top_srcdir)/build-aux/missing bison'
+    warn_bison="
 
 I didn't find bison, but it's only a problem if you need to
 reconstruct parse.cc, which is the case if you're building from VCS
 sources.
 "
-      OCTAVE_CONFIGURE_WARNING([warn_bison])
-    ;;
-  esac
+    OCTAVE_CONFIGURE_WARNING([warn_bison])
+  fi
 ])
 dnl
 dnl Find desktop-file-install program.
@@ -1497,8 +1497,8 @@ AC_DEFUN([OCTAVE_PROG_FLEX], [
   ## Also make sure that we generate an interactive scanner if we are
   ## using flex.
   AC_PROG_LEX
-  case "$LEX" in
-    flex*)
+  case "`$LEX --version`" in
+    *flex*)
       LFLAGS="-I"
       AC_MSG_RESULT([defining LFLAGS to be $LFLAGS])
       LEXLIB=

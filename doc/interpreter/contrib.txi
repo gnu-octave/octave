@@ -41,7 +41,7 @@ contributions is @email{maintainers@@octave.org}.  This concerns the
 development of Octave core, i.e., code that goes to Octave directly.
 You may consider developing and publishing a package instead; a great
 place for this is the allied Octave-Forge project
-(@url{http://octave.sourceforge.net}).  Note that the Octave project is
+(@url{http://octave.sourceforge.net}).  Note that the Octave core project is
 inherently more conservative and follows narrower rules.
 
 @node Building the Development Sources
@@ -364,7 +364,7 @@ if possible.
 @node Other Sources
 @section Other Sources
 Apart from C++ and Octave language (m-files), Octave's sources include
-files written in C, Fortran, M4, Perl, Unix shell, AWK, Texinfo and
+files written in C, Fortran, M4, Perl, Unix shell, AWK, Texinfo, and
 @TeX{}.  There are not many rules to follow when using these other
 languages; some of them are summarized below.  In any case, the golden
 rule is: if you modify a source file, try to follow any conventions you

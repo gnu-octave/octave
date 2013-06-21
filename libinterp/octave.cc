@@ -155,14 +155,15 @@ static bool no_window_system = false;
 
 // Usage message
 static const char *usage_string =
-  "octave [-HVWdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
-       [--exec-path path] [--force-gui] [--help] [--image-path path]\n\
+  "octave [-HVWdfhiqvx] [--debug] [--doc-cache-file file]\n\
+       [--echo-commands] [--eval CODE] [--exec-path path]\n\
+       [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--jit-debugging] [--line-editing] [--no-gui] [--no-history]\n\
+       [--jit-debug] [--line-editing] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-jit-compiler]\n\
        [--no-line-editing] [--no-site-file] [--no-window-system]\n\
-       [-p path] [--path path] [--silent] [--traditional]\n\
-       [--verbose] [--version] [file]";
+       [--norc] [-p path] [--path path] [--persist] [--silent]\n\
+       [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the '+' must come first
@@ -191,7 +192,7 @@ static bool traditional = false;
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7
 #define INFO_PROG_OPTION 8
-#define JIT_DEBUGGING_OPTION 9
+#define JIT_DEBUG_OPTION 9
 #define LINE_EDITING_OPTION 10
 #define NO_GUI_OPTION 11
 #define NO_INIT_FILE_OPTION 12
@@ -216,7 +217,7 @@ struct option long_opts[] = {
   { "info-file",                required_argument, 0, INFO_FILE_OPTION },
   { "info-program",             required_argument, 0, INFO_PROG_OPTION },
   { "interactive",              no_argument,       0, 'i' },
-  { "jit-debugging",            no_argument,       0, JIT_DEBUGGING_OPTION },
+  { "jit-debug",                no_argument,       0, JIT_DEBUG_OPTION },
   { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
   { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
   { "no-history",               no_argument,       0, 'H' },
@@ -521,6 +522,7 @@ Usage: octave [options] [FILE]\n\
 \n\
 Options:\n\
 \n\
+  --built-in-docstrings-file FILE Use docs for built-ins from FILE.\n\
   --debug, -d             Enter parser debugging mode.\n\
   --doc-cache-file FILE   Use doc cache file FILE.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
@@ -545,7 +547,7 @@ Options:\n\
   --norc, -f              Don't read any initialization files.\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
-  --silent, -q            Don't print message at startup.\n\
+  --silent, --quiet, -q   Don't print message at startup.\n\
   --texi-macros-file FILE Use Texinfo macros in FILE for makeinfo command.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
   --verbose, -V           Enable verbose output in some cases.\n\
@@ -774,7 +776,7 @@ octave_process_command_line (int argc, char **argv)
             Finfo_program (octave_value (optarg));
           break;
 
-        case JIT_DEBUGGING_OPTION:
+        case JIT_DEBUG_OPTION:
           Fenable_jit_debugging (octave_value (true));
           break;
 

@@ -177,31 +177,31 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   nkids = numel (kids);
 
   orientation = "default";
-  position = "default";
+  location = "default";
   show = "create";
   textpos = "default";
   box = "default";
 
-  ## Process old way of specifying position with a number rather than a string.
+  ## Process old way of specifying location with a number rather than a string.
   if (nargs > 0)
     pos = varargin{nargs};
     if (isnumeric (pos) && isscalar (pos) && pos == fix (pos))
       if (pos >= -1 && pos <= 4)
-        position = [{"northeastoutside", "best", "northeast",
+        location = [{"northeastoutside", "best", "northeast",
                      "northwest", "southwest", "southeast"}] {pos + 2};
         nargs--;
       else
-        error ("legend: invalid position specified");
+        error ("legend: invalid location specified");
       endif
     endif
   endif
 
-  ## Find position and orientation property/value pairs
+  ## Find location and orientation property/value pairs
   while (nargs > 1)
     pos = varargin{nargs-1};
     str = varargin{nargs};
     if (strcmpi (pos, "location") && ischar (str))
-      position = lower (str);
+      location = lower (str);
       nargs -= 2;
     elseif (strcmpi (pos, "orientation") && ischar (str))
       orientation = lower (str);
@@ -218,24 +218,24 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       error ("legend: unrecognized legend orientation");
   endswitch
 
-  ## Validate the position type
+  ## Validate the location type
   outside = false;
-  inout = strfind (position, "outside");
+  inout = strfind (location, "outside");
   if (! isempty (inout))
     outside = true;
-    position = position(1:inout-1);
+    location = location(1:inout-1);
   else
     outside = false;
   endif
 
-  switch (position)
+  switch (location)
     case {"north", "south", "east", "west", "northeast", "northwest", ...
           "southeast", "southwest", "default"}
     case "best"
       warning ("legend: 'Best' not yet implemented for location specifier\n");
-      position = "northeast";
+      location = "northeast";
     otherwise
-      error ("legend: unrecognized legend position");
+      error ("legend: unrecognized legend location");
   endswitch
 
   ## Find any existing legend object on figure
@@ -341,28 +341,28 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (! isempty (hlegend))
       set (hlegend, "box", "off", "visible", "off");
     endif
-  elseif (! have_labels && !(strcmp (position, "default") &&
+  elseif (! have_labels && !(strcmp (location, "default") &&
                              strcmp (orientation, "default")))
     ## Changing location or orientation of existing legend
     if (! isempty (hlegend))
       hax = getfield (get (hlegend, "userdata"), "handle");
       [hplots, text_strings] = __getlegenddata__ (hlegend);
 
-      if (strcmp (position, "default"))
+      if (strcmp (location, "default"))
         h = legend (hax, hplots, text_strings, "orientation", orientation);
       elseif (strcmp (orientation, "default"))
         if (outside)
           h = legend (hax, hplots, text_strings, "location",
-                      strcat (position, "outside"));
+                      strcat (location, "outside"));
         else
-          h = legend (hax, hplots, text_strings, "location", position);
+          h = legend (hax, hplots, text_strings, "location", location);
         endif
       else
         if (outside)
           h = legend (hax, hplots, text_strings, "location",
-                      strcat (position, "outside"), "orientation", orientation);
+                      strcat (location, "outside"), "orientation", orientation);
         else
-          h = legend (hax, hplots, text_strings, "location", position,
+          h = legend (hax, hplots, text_strings, "location", location,
                       "orientation", orientation);
         endif
       endif
@@ -523,12 +523,12 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (strcmp (textpos, "default"))
           textpos = get (hlegend, "textposition");
         endif
-        if (strcmp (position, "default"))
-          position = get (hlegend, "location");
-          inout = strfind (position, "outside");
+        if (strcmp (location, "default"))
+          location = get (hlegend, "location");
+          inout = strfind (location, "outside");
           if (! isempty (inout))
             outside = true;
-            position = position(1:inout-1);
+            location = location(1:inout-1);
           else
             outside = false;
           endif
@@ -541,8 +541,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (strcmp (textpos, "default"))
           textpos = "left";
         endif
-        if (strcmp (position, "default"))
-          position = "northeast";
+        if (strcmp (location, "default"))
+          location = "northeast";
         endif
         if (strcmp (orientation, "default"))
           orientation = "vertical";
@@ -669,7 +669,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         else
           lpos = [0, 0, num1 * xstep, num2 * ystep];
         endif
-        switch (position)
+        switch (location)
           case "north"
             if (outside)
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
@@ -868,10 +868,10 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         endif
 
         if (outside)
-          set (hlegend, "location", strcat (position, "outside"),
+          set (hlegend, "location", strcat (location, "outside"),
                "orientation", orientation, "textposition", textpos);
         else
-          set (hlegend, "location", position, "orientation", orientation,
+          set (hlegend, "location", location, "orientation", orientation,
                "textposition", textpos);
         endif
         if (addprops)

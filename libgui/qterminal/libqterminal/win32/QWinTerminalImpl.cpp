@@ -1461,3 +1461,12 @@ void QWinTerminalImpl::pasteClipboard (void)
   if (! text.isEmpty ())
     sendText (text);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+QString QWinTerminalImpl::selectedText ()
+{
+  QString selection = d->getSelection ();
+  return selection;
+}

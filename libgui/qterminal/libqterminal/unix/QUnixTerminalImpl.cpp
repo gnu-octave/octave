@@ -201,3 +201,7 @@ void QUnixTerminalImpl::pasteClipboard()
     m_terminalView->pasteClipboard();
 }
 
+QString QUnixTerminalImpl::selectedText ()
+{
+  return m_terminalView->selectedText ();
+}

@@ -30,6 +30,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <QColor>
 #include <QList>
 #include <QMenu>
+#include <QClipboard>
+#include <QApplication>
 
 class QTerminal : public QWidget
 {
@@ -45,11 +47,13 @@ public:
 
   virtual ~QTerminal (void) { }
 
-  virtual void setTerminalFont(const QFont& font) = 0;
+  virtual void setTerminalFont (const QFont& font) = 0;
 
-  virtual void setSize(int h, int v) = 0;
+  virtual void setSize (int h, int v) = 0;
 
-  virtual void sendText(const QString& text) = 0;
+  virtual void sendText (const QString& text) = 0;
+
+  virtual QString selectedText () = 0;
 
   enum CursorType
     {
@@ -88,6 +92,11 @@ public slots:
 
   virtual void handleCustomContextMenuRequested (const QPoint& at)
   {
+    QClipboard * cb = QApplication::clipboard ();
+
+    _paste_action->setEnabled (cb->text().length() > 0);
+    _copy_action->setEnabled (selectedText().length() > 0);
+    
     _contextMenu->move (mapToGlobal (at));
     _contextMenu->show ();
   }
@@ -102,10 +111,12 @@ protected:
 
     _contextMenu = new QMenu (this);
 
-    _contextMenu->addAction (QIcon (":/actions/icons/editcopy.png"),
+    _copy_action = _contextMenu->addAction (
+                             QIcon (":/actions/icons/editcopy.png"),
                              tr ("Copy"), this, SLOT (copyClipboard ()));
 
-    _contextMenu->addAction (QIcon (":/actions/icons/editpaste.png"),
+    _paste_action = _contextMenu->addAction (
+                            QIcon (":/actions/icons/editpaste.png"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
@@ -132,6 +143,8 @@ protected:
 private:
 
     QMenu *_contextMenu;
+    QAction * _copy_action;
+    QAction * _paste_action;
 };
 
 #endif // QTERMINAL_H

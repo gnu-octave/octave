@@ -48,6 +48,8 @@ public:
     void setSelectionColor (const QColor& color);
     void setCursorColor (bool useForegroundColor, const QColor& color);
 
+    QString selectedText();
+
 public slots:
     void copyClipboard();
     void pasteClipboard();

@@ -2698,3 +2698,9 @@ void TerminalView::setLineSpacing(uint i)
   _lineSpacing = i;
   setVTFont(font()); // Trigger an update.
 }
+
+QString TerminalView::selectedText ()
+{
+  QString text = _screenWindow->selectedText (_preserveLineBreaks);
+  return text;
+}

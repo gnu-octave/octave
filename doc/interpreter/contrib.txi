@@ -56,8 +56,8 @@ or in the development sources archive.  Start here:
 @section Basics of Generating a Changeset
 
 The preferable form of contribution is creating a Mercurial changeset
-and submit it to the @uref{http://savannah.gnu.org/bugs/?group=octave, bug} or
-@uref{http://savannah.gnu.org/patch/?func=additem&group=octave, patch}
+and submit it to the @url{http://savannah.gnu.org/bugs/?group=octave, bug} or
+@url{http://savannah.gnu.org/patch/?func=additem&group=octave, patch}
 trackers@footnote{Please use the patch tracker only for patches which add new
 features.  If you have a patch to submit that fixes a bug, you should use the
 bug tracker instead.}.

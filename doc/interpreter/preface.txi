@@ -98,7 +98,7 @@ CTS-9708497, CTS-9311420, CTS-8957123, and CNS-0540147.
 
 @item
 The industrial members of the Texas-Wisconsin Modeling and Control
-Consortium (@uref{http://www.che.utexas.edu/twmcc, TWMCC}).
+Consortium (@url{http://www.che.utexas.edu/twmcc, TWMCC}).
 
 @item
 The Paul A. Elfers Endowed Chair in Chemical Engineering at the

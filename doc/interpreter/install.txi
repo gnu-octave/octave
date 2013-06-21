@@ -187,7 +187,7 @@ better performance.
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).
 
 @item PCRE
-The Perl Compatible Regular Expression library (http://www.pcre.org).
+The Perl Compatible Regular Expression library (@url{http://www.pcre.org}).
 @end table
 
 The following external package is optional but strongly recommended:

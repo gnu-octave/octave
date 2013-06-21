@@ -796,7 +796,7 @@ using @sc{umfpack}.
 a singular or near singular matrix, find a minimum norm solution using
 @sc{cxsparse}@footnote{The @sc{cholmod}, @sc{umfpack} and @sc{cxsparse} packages were
 written by Tim Davis and are available at
-http://www.cise.ufl.edu/research/sparse/}.
+@url{http://www.cise.ufl.edu/research/sparse/}}.
 @end enumerate
 
 The band density is defined as the number of non-zero values in the band

@@ -38,7 +38,8 @@
 ## dimension.
 ##
 ## The methods available to calculate sample quantiles are the nine methods
-## used by R (http://www.r-project.org/).  The default value is METHOD = 5.
+## used by R (@url{http://www.r-project.org/}).  The default value is
+## @w{METHOD = 5}.
 ##
 ## Discontinuous sample quantile methods 1, 2, and 3
 ##

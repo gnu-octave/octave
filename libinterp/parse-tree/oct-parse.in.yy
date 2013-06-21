@@ -3523,7 +3523,7 @@ the autoload command was run.  @var{file} should not depend on the\n\
 Octave load path.\n\
 \n\
 Normally, calls to @code{autoload} appear in PKG_ADD script files that\n\
-are evaluated when a directory is added to the Octave's load path.  To\n\
+are evaluated when a directory is added to Octave's load path.  To\n\
 avoid having to hardcode directory names in @var{file}, if @var{file}\n\
 is in the same directory as the PKG_ADD script then\n\
 \n\
@@ -3533,14 +3533,14 @@ autoload (\"foo\", \"bar.oct\");\n\
 \n\
 @noindent\n\
 will load the function @code{foo} from the file @code{bar.oct}.  The above\n\
-when @code{bar.oct} is not in the same directory or uses like\n\
+usage when @code{bar.oct} is not in the same directory or usages such as\n\
 \n\
 @example\n\
 autoload (\"foo\", file_in_loadpath (\"bar.oct\"))\n\
 @end example\n\
 \n\
 @noindent\n\
-are strongly discouraged, as their behavior might be unpredictable.\n\
+are strongly discouraged, as their behavior may be unpredictable.\n\
 \n\
 With no arguments, return a structure containing the current autoload map.\n\
 @seealso{PKG_ADD}\n\
@@ -3790,7 +3790,6 @@ of the file name and the extension.\n\
   return retval;
 }
 
-
 DEFUN (source, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} source (@var{file})\n\
@@ -3917,7 +3916,7 @@ DEFUN (feval, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} feval (@var{name}, @dots{})\n\
 Evaluate the function named @var{name}.  Any arguments after the first\n\
-are passed on to the named function.  For example,\n\
+are passed as inputs to the named function.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -3947,8 +3946,9 @@ feval (@var{f}, 1)\n\
 \n\
 @noindent\n\
 are equivalent ways to call the function referred to by @var{f}.  If it\n\
-cannot be predicted beforehand that @var{f} is a function handle or the\n\
-function name in a string, @code{feval} can be used instead.\n\
+cannot be predicted beforehand whether @var{f} is a function handle,\n\
+function name in a string, or inline function then @code{feval} can be used\n\
+instead.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -3965,9 +3965,28 @@ function name in a string, @code{feval} can be used instead.\n\
 
 DEFUN (builtin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@dots{}]} builtin (@var{f}, @dots{})\n\
+@deftypefn {Loadable Function} {[@dots{}] =} builtin (@var{f}, @dots{})\n\
 Call the base function @var{f} even if @var{f} is overloaded to\n\
 another function for the given type signature.\n\
+\n\
+This is normally useful when doing object-oriented programming and there\n\
+is a requirement to call one of Octave's base functions rather than\n\
+the overloaded one of a new class.\n\
+\n\
+A trivial example which redefines the @code{sin} function to be the\n\
+@code{cos} function shows how @code{builtin} works.\n\
+\n\
+@example\n\
+@group\n\
+sin (0)\n\
+  @result{} 0\n\
+function y = sin (x), y = cos (x); endfunction\n\
+sin (0)\n\
+  @result{} 1\n\
+builtin (\"sin\", 0)\n\
+  @result{} 0\n\
+@end group\n\
+@end example\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4121,11 +4140,11 @@ program.  If that fails, evaluate the optional string @var{catch}.\n\
 The string @var{try} is evaluated in the current context,\n\
 so any results remain available after @code{eval} returns.\n\
 \n\
-The following example makes the variable @var{a} with the approximate\n\
+The following example makes the variable @var{A} with the approximate\n\
 value 3.1416 available.\n\
 \n\
 @example\n\
-eval (\"a = acos(-1);\");\n\
+eval (\"A = acos(-1);\");\n\
 @end example\n\
 \n\
 If an error occurs during the evaluation of @var{try} the @var{catch}\n\

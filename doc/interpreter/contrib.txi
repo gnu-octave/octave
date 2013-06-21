@@ -89,7 +89,16 @@ hg export -o ../cool.diff tip
 @end example
 
 You may want to get familiar with Mercurial queues to manage your
-changesets.  Here is a slightly more complex example using Mercurial
+changesets. For working with queues you have to activate the extension
+mq with the following entry in Mercurials config file @file{.hgrc} (or
+@file{Mercurial.ini} on Windows):
+
+@example
+[extensions]
+mq=
+@end example
+
+Here is a slightly more complex example using Mercurial
 queues, where work on two unrelated changesets is done in parallel and
 one of the changesets is updated after discussion on the bug tracker:
 
@@ -121,6 +130,55 @@ hg qref
 hg export -o ../nasty2.diff tip
 # attach ../nasty2.diff to your bug report
 @end example
+
+Mercurial has a more useful extensions that really should be enabled.
+They are not enabled by default due to a number of factors
+(mostly because they don't work in all terminal types).
+
+The following entries in the @file{.hgrc} are recommended
+
+@example
+[extensions]
+graphlog=
+color=
+progress=
+pager=
+@end example
+
+For the colour extension, default colour and formatting
+of @code{hg status} can be modified by
+
+@example
+[color]
+status.modified = magenta bold
+status.added = green bold
+status.removed = red bold
+status.deleted = cyan bold
+status.unknown = black  bold
+status.ignored = black bold
+@end example
+
+Sometimes a few further improvements for the pager extension are
+necessary. The following options should not be enabled unless paging
+isn't working correctly:
+
+@example
+[pager]
+# Some options for the less pager, see less(1) for their meaning.
+pager = LESS='FSRX' less
+
+# Some commands that aren't paged by default; also enable paging
+# for them
+attend = tags, help, annotate, cat, diff, export, status, \
+         outgoing, incoming
+@end example
+
+Enabling the described extensions should immediately lead to a difference
+when using the command line version of hg. Of these options, the only one
+that enables a new command is graphlog. It is recommanded that you use the
+command @code{hg glog} instead of @code{hg log} for a better feel
+what commits are being based on.
+
 
 @node General Guidelines
 @section General Guidelines

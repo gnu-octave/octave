@@ -293,12 +293,11 @@ main_window::notice_settings (const QSettings *settings)
     }
 
   QString icon;
-  foreach (QObject *obj, children ())
+  foreach (octave_dock_widget *widget, dock_widget_list ())
     {
-      QString name = obj->objectName ();
-      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
-        { // if children is a dock widget with a name
-          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
+      QString name = widget->objectName ();
+      if (! name.isEmpty ())
+        { // if children has a name
           icon = widget_icon_data[icon_set_found].path; // prefix or octave-logo
           if (widget_icon_data[icon_set_found].name != "NONE")
             icon = icon + name + ".png"; // add widget name and ext.
@@ -545,8 +544,6 @@ main_window::set_window_layout (QSettings *settings)
 {
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
 
-  settings->beginGroup ("DockWidgets");
-
   // Restore the geometry of all dock-widgets
   foreach (QObject *obj, children ())
     {
@@ -554,23 +551,23 @@ main_window::set_window_layout (QSettings *settings)
 
       if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
         {
-          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
+          octave_dock_widget *widget = qobject_cast<octave_dock_widget *> (obj);
           QVariant val = settings->value (name);
 
           widget->restoreGeometry (val.toByteArray ());
 
           // If floating, make window from widget.
-          bool floating = settings->value (name+"Floating", false).toBool ();
+          bool floating = settings->value
+              ("DockWidgets/" + name + "Floating", false).toBool ();
+          bool visible = settings->value
+              ("DockWidgets/" + name + "Visible", true).toBool ();
           if (floating)
-            widget->setWindowFlags (Qt::Window);
+            widget->make_window (visible);
 
-          // make widget visible if desired (setWindowFlags hides widget).
-          bool visible = settings->value (name+"Visible", true).toBool ();
+          // make widget visible if desired
           widget->setVisible (visible);
         }
     }
-
-  settings->endGroup ();
 
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
 }
@@ -586,24 +583,6 @@ main_window::write_settings (void)
     }
 
   settings->setValue ("MainWindow/geometry", saveGeometry ());
-  settings->beginGroup ("DockWidgets");
-  // saving the geometry of all widgets
-  foreach (QObject *obj, children())
-    {
-      QString name = obj->objectName ();
-      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
-        {
-          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
-          settings->setValue (name, widget->saveGeometry ());
-          bool floating = widget->isFloating ();
-          bool visible = widget->isVisible ();
-          settings->setValue (name+"Floating", floating);  // store floating state
-          settings->setValue (name+"Visible", visible);    // store visibility
-          if (floating)
-            widget->setWindowFlags (Qt::Widget); // if floating, recover the widget state such that the widget's
-        }                                       // state is correctly saved by the saveSate () below
-    }
-  settings->endGroup();
   settings->setValue ("MainWindow/windowState", saveState ());
   // write the list of recent used directories
   QStringList curr_dirs;

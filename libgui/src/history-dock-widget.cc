@@ -72,7 +72,7 @@ history_dock_widget::construct ()
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
 
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
-  setWindowTitle (tr ("Command History"));
+  set_title (tr ("Command History"));
   setWidget (new QWidget ());
 
   vbox_layout->addWidget (_history_list_view);

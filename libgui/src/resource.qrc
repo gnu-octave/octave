@@ -56,5 +56,8 @@
         <file>icons/graphic_logo_HistoryDockWidget.png</file>
         <file>icons/graphic_logo_WorkspaceView.png</file>
         <file>icons/graphic_logo_DocumentationDockWidget.png</file>
+        <file>icons/widget-close.png</file>
+        <file>icons/widget-dock.png</file>
+        <file>icons/widget-undock.png</file>
     </qresource>
 </RCC>

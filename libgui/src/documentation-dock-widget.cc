@@ -31,7 +31,7 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
 {
   setObjectName ("DocumentationDockWidget");
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  setWindowTitle (tr ("Documentation"));
+  set_title (tr ("Documentation"));
   setStatusTip (tr ("See the documentation for help."));
 
   _webinfo = new webinfo (this);

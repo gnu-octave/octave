@@ -64,7 +64,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
 {
   setObjectName ("FilesDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
-  setWindowTitle (tr ("File Browser"));
+  set_title (tr ("File Browser"));
   setToolTip (tr ("Browse your files."));
 
   QWidget *container = new QWidget (this);
@@ -72,10 +72,10 @@ files_dock_widget::files_dock_widget (QWidget *p)
   setWidget (container);
 
   connect (this, SIGNAL (open_file (const QString&)),
-           parent (), SLOT (open_file (const QString&)));
+           main_win (), SLOT (open_file (const QString&)));
 
   connect (this, SIGNAL (displayed_directory_changed (const QString&)),
-           parent (), SLOT (set_current_working_directory (const QString&)));
+           main_win (), SLOT (set_current_working_directory (const QString&)));
 
   // Create a toolbar
   _navigation_tool_bar = new QToolBar ("", container);
@@ -201,7 +201,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
            this, SLOT (set_current_directory (const QString &)));
 
   connect (this, SIGNAL (run_file_signal (const QFileInfo&)),
-           parent (), SLOT (run_file_in_terminal (const QFileInfo&)));
+           main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
 
   QCompleter *completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);

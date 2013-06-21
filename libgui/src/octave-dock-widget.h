@@ -25,6 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDockWidget>
 #include <QSettings>
+#include <QIcon>
+#include <QMainWindow>
+#include <QMouseEvent>
 
 class octave_dock_widget : public QDockWidget
 {
@@ -32,20 +35,8 @@ class octave_dock_widget : public QDockWidget
 
 public:
 
-  octave_dock_widget (QWidget *p)
-    : QDockWidget (p)
-  {
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (handle_visibility_changed (bool)));
-
-    connect (this, SIGNAL (topLevelChanged (bool)),
-             this, SLOT (top_level_changed (bool)));
-
-    connect (p, SIGNAL (settings_changed (const QSettings*)),
-             this, SLOT (notice_settings (const QSettings*)));
-  }
-
-  virtual ~octave_dock_widget () { }
+  octave_dock_widget (QWidget *p = 0);
+  virtual ~octave_dock_widget ();
 
   virtual void connect_visibility_changed (void)
   {
@@ -53,6 +44,9 @@ public:
              this, SLOT (handle_visibility (bool)));
   }
 
+  void make_window (bool visible);
+  void make_widget (bool visible);
+  void set_title (const QString&);
 
 signals:
 
@@ -68,6 +62,7 @@ protected:
     emit active_changed (false);
     QDockWidget::closeEvent (e);
   }
+
 
 public slots:
 
@@ -91,6 +86,8 @@ public slots:
   {
   }
 
+  QMainWindow *main_win () { return _parent; }
+
 protected slots:
 
   /** Slot to steer changing visibility from outside. */
@@ -100,17 +97,16 @@ protected slots:
       emit active_changed (true);
   }
 
-  /** Slot when floating property changes */
-  virtual void top_level_changed (bool floating)
-  {
-    if (floating)
-      {
-        // Make a window from the widget when floating and make it
-        // visible again since setWindowFlags hides it.
-        setWindowFlags (Qt::Window);
-        show();
-      }
-  }
+private slots:
+
+  void change_floating (bool);
+  void change_visibility (bool);
+
+private:
+
+  QMainWindow *_parent;  // store the parent since we are reparenting to 0
+  QAction *_dock_action;
+
 };
 
 #endif

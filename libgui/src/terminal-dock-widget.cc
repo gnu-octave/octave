@@ -35,7 +35,7 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
 
   setObjectName ("TerminalDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
-  setWindowTitle (tr ("Command Window"));
+  set_title (tr ("Command Window"));
 
   setWidget (terminal);
 }

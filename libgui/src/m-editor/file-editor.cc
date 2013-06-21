@@ -956,10 +956,10 @@ file_editor::construct (void)
   editor_widget->setLayout (vbox_layout);
   setWidget (editor_widget);
 
-  connect (parent (), SIGNAL (new_file_signal (const QString&)),
+  connect (main_win (), SIGNAL (new_file_signal (const QString&)),
            this, SLOT (request_new_file (const QString&)));
 
-  connect (parent (), SIGNAL (open_file_signal (const QString&)),
+  connect (main_win (), SIGNAL (open_file_signal (const QString&)),
            this, SLOT (request_open_file (const QString&)));
 
   connect (new_action, SIGNAL (triggered ()),
@@ -1044,7 +1044,7 @@ file_editor::construct (void)
 
   resize (500, 400);
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  setWindowTitle ("Editor");
+  set_title ("Editor");
 
   //restore previous session
   if (settings->value ("editor/restoreSession", true).toBool ())
@@ -1083,10 +1083,10 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            this, SLOT (handle_mru_add_file (const QString&)));
 
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
-           parent (), SLOT (run_file_in_terminal (const QFileInfo&)));
+           main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
   
   connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-           parent (), SLOT (execute_command_in_terminal (const QString&)));
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),

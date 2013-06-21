@@ -60,6 +60,9 @@ octave_gui_ICONS = \
   src/icons/terminal.png \
   src/icons/undo.png \
   src/icons/up.png \
+  src/icons/widget-close.png \
+  src/icons/widget-dock.png \
+  src/icons/widget-undock.png \
   src/icons/zoom-in.png \
   src/icons/zoom-out.png
 
@@ -139,6 +142,7 @@ src_libgui_src_la_SOURCES = \
   src/m-editor/find-dialog.cc \
   src/m-editor/octave-qscintilla.cc \
   src/main-window.cc \
+  src/octave-dock-widget.cc \
   src/octave-gui.cc \
   src/octave-main-thread.cc \
   src/octave-qt-link.cc \

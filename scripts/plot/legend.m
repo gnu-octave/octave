@@ -420,7 +420,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (have_labels || ! have_dname)
       k = nkids;
       if (! have_labels)
-        varargin = arrayfun (@(x) sprintf ("data%d", x), [1:nkids]', "uniformoutput", false);
+        varargin = arrayfun (@(x) sprintf ("data%d", x), [1:nkids]',
+          "uniformoutput", false);
+        have_labels = true;
         nargs = nkids;
       endif
       for i = 1 : nargs

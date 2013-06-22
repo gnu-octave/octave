@@ -511,7 +511,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (isempty (hplots))
       if (! isempty (hlegend))
         fkids = get (fig, "children");
-        delete_legend (fkids(fkids == hlegend));
+        delete (fkids(fkids == hlegend));
         hlegend = [];
         hobjects = [];
         hplots  = [];
@@ -869,13 +869,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         props = {"parent", ca(1), "tag", "legend", ...
                  "handlevisibility", "off", "visible", "off", ...
                  "xliminclude", "off", "yliminclude", "off"};
-        t1 = findall (ca(1), props{:}, "type", "text");
+        t1 = findall (ca(1), props{3:4}, "type", "text");
         if (isempty (t1))
-          ht = findall (ca(1), "type", "text", props{3:end});
-          if (! isempty (ht))
-            set (ht, "deletefcn", "")
-            delete (ht);
-          endif
           t1 = text (0, 0, "", props{:});
           set (t1, "deletefcn", {@deletelegend1, hlegend});
         endif

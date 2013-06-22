@@ -139,8 +139,6 @@ octave_base_sparse : public octave_base_value
 
   bool is_defined (void) const { return true; }
 
-  bool is_empty (void) const;
-
   bool is_constant (void) const { return true; }
 
   bool is_true (void) const;

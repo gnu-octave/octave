@@ -67,6 +67,13 @@ accepts.
 
 
 @table @code
+
+@item --built-in-docstrings-file @var{filename}
+@cindex @code{--built-in-docstrings-file @var{filename}}
+Specify the name of the file containing documentation strings for the
+built-in functions of Octave.  This value is normally correct and should
+only need to specified in extraordinary situations.
+
 @item  --debug
 @itemx -d
 @cindex @code{--debug}
@@ -75,8 +82,8 @@ Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
 
-@item --docXcache-file @var{filename}
-@cindex @code{--docXcache-file @var{filename}}
+@item --doc-cache-file @var{filename}
+@cindex @code{--doc-cache-file @var{filename}}
 Specify the name of the doc cache file to use.  The value of @var{filename}
 specified on the command line will override any value of
 @w{@env{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
@@ -425,6 +432,8 @@ found.
 @DOCSTRING(texi_macros_file)
 
 @DOCSTRING(doc_cache_file)
+
+@DOCSTRING(built_in_docstrings_file)
 
 @DOCSTRING(suppress_verbose_help_message)
 

@@ -935,7 +935,6 @@ raw_help (const std::string& nm, bool& symbol_found)
   return h;
 }
 
-
 DEFUN (built_in_docstrings_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} built_in_docstrings_file ()\n\
@@ -943,9 +942,16 @@ DEFUN (built_in_docstrings_file, args, nargout,
 @deftypefnx {Built-in Function} {} built_in_docstrings_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 file containing docstrings for built-in Octave functions.\n\
+The default value is\n\
+@file{@var{octave-home}/share/octave/@var{version}/etc/built-in-docstrings},\n\
+in which @var{octave-home} is the root directory of the Octave installation,\n\
+and @var{version} is the Octave version number.\n\
+The default value may be overridden by the environment variable\n\
+@w{@env{OCTAVE_BUILT_IN_DOCSTRINGS_FILE}}, or the command line argument\n\
+@samp{--built-in-docstrings-file FNAME}.\n\
 \n\
-Note that this variable is only used when Octave is initializing itself,\n\
-so setting it will have no effect.\n\
+Note: This variable is only used when Octave is initializing itself.\n\
+Modifying it during a running session of Octave will have no effect.\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (built_in_docstrings_file);
@@ -1390,7 +1396,7 @@ in which @var{octave-home} is the root directory of the Octave installation,\n\
 and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
-@samp{--doc-cache-file NAME}.\n\
+@samp{--doc-cache-file FNAME}.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
@@ -1414,7 +1420,7 @@ in which @var{octave-home} is the root directory of the Octave installation,\n\
 and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument\n\
-@samp{--texi-macros-file NAME}.\n\
+@samp{--texi-macros-file FNAME}.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
@@ -1436,7 +1442,7 @@ Octave info file.  The default value is\n\
 which @var{octave-home} is the root directory of the Octave installation.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
-@samp{--info-file NAME}.\n\
+@samp{--info-file FNAME}.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\

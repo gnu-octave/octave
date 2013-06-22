@@ -1565,26 +1565,6 @@ Either @code{"manual"} or @code{"auto"}.
 
 @item interruptible
 
-@item key
-Toggle display of the legend.  --- Values: "on," "off"
-Note that this property is not compatible with @sc{matlab} and may be
-removed in a future version of Octave.
-
-@item keybox
-Toggle display of a box around the
-legend.  --- Values: "on," "off"
-Note that this property is not compatible with @sc{matlab} and
-may be removed in a future version of Octave.
-
-@item keypos
-An integer from 1 to 4 specifying the position of the legend.  1
-indicates upper right corner, 2 indicates upper left, 3 indicates lower
-left, and 4 indicates lower right.  Note that this property is not
-compatible with @sc{matlab} and may be removed in a future version of
-Octave.
-
-@item keyreverse
-
 @item layer
 
 @item linestyleorder

@@ -763,6 +763,7 @@ Networking Utilities
 
 * FTP Objects::
 * URL Manipulation::
+* Base64 and Binary Data Transmission::
 
 Java Interface
 

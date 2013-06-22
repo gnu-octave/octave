@@ -21,8 +21,8 @@
 ## Return the version number of Octave, as a string.
 ##
 ## This is an alias for the function @w{@env{OCTAVE_VERSION}} provided for
-## compatibility
-## @seealso{OCTAVE_VERSION}.
+## compatibility.
+## @seealso{OCTAVE_VERSION}
 ## @end deftypefn
 
 ## Author: jwe

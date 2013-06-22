@@ -214,6 +214,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   ## Validate the orientation
   switch (orientation)
     case {"vertical", "horizontal", "default"}
+      ## These are all accepted orientations.
     otherwise
       error ("legend: unrecognized legend orientation");
   endswitch
@@ -232,7 +233,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     case {"north", "south", "east", "west", "northeast", "northwest", ...
           "southeast", "southwest", "default"}
     case "best"
-      warning ("legend: 'Best' not yet implemented for location specifier\n");
+      warning ("legend: 'best' not yet implemented for location specifier\n");
       location = "northeast";
     otherwise
       error ("legend: unrecognized legend location");
@@ -259,7 +260,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         str = tolower (strtrim (arg));
         switch (str)
           case "off"
-            delete (hlegend)
+            delete (hlegend);
             return;
           case "hide"
             show = "off";
@@ -420,7 +421,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (have_labels || ! have_dname)
       k = nkids;
       if (! have_labels)
-        varargin = arrayfun (@(x) sprintf ("data%d", x), [1:nkids]', 
+        varargin = arrayfun (@(x) sprintf ("data%d", x), [1:nkids]',
                              "uniformoutput", false);
         have_labels = true;
         nargs = nkids;
@@ -481,7 +482,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         endwhile
         if (! (strcmp (typ, "line") || strcmp (typ, "surface")
                || strcmp (typ, "patch") || strcmp (typ, "hggroup")))
-          break
+          break;
         endif
         if (k > 0)
           if (strcmp (get (kids(k), "type"), "hggroup"))
@@ -563,7 +564,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         else
           unmodified_axes_position = get (hlegend, "unmodified_axes_position");
           unmodified_axes_outerposition = get (hlegend, ...
-            "unmodified_axes_outerposition");
+                                               "unmodified_axes_outerposition");
         endif
         ca_pos = unmodified_axes_position;
         ca_outpos = unmodified_axes_outerposition;
@@ -825,13 +826,20 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               hobjects = [hobjects, l1];
             endif
 
-            addlistener (hplots(k), "color", {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "linestyle", {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "marker", {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "markeredgecolor", {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "markerfacecolor", {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "markersize", {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "displayname", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "color",
+                         {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "linestyle",
+                         {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "marker",
+                         {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "markeredgecolor",
+                         {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "markerfacecolor",
+                         {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "markersize",
+                         {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "displayname",
+                         {@updateline, hlegend, linelength});
           case "patch"
             facecolor = get (hplots(k), "facecolor");
             edgecolor = get (hplots(k), "edgecolor");
@@ -841,8 +849,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                                    xoffset + xk * xstep) / lpos(3),
                          "ydata", (lpos(4) - yoffset -
                                    [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                         "facecolor", facecolor, "edgecolor", edgecolor, "cdata", cdata,
-                         "userdata", hplots(k));
+                         "facecolor", facecolor, "edgecolor", edgecolor,
+                         "cdata", cdata, "userdata", hplots(k));
               hobjects = [hobjects, p1];
             endif
           case "surface"
@@ -875,9 +883,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           set (t1, "deletefcn", {@deletelegend1, hlegend});
         endif
         if (isprop (hlegend, "unmodified_axes_position"))
-          set (hlegend, "unmodified_axes_position", unmodified_axes_position)
+          set (hlegend, "unmodified_axes_position", unmodified_axes_position);
           set (hlegend, "unmodified_axes_outerposition", 
-               unmodified_axes_outerposition)
+               unmodified_axes_outerposition);
         else
           addproperty ("unmodified_axes_position", hlegend,
                        "data", unmodified_axes_position);
@@ -912,11 +920,12 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (addprops)
           addproperty ("edgecolor", hlegend, "color", [0, 0, 0]);
           addproperty ("textcolor", hlegend, "color", [0, 0, 0]);
-          locations = {"north", "south", "east", "west", "{northeast}", ...
-            "southeast", "northwest", "southwest", "northoutside", ...
-            "southoutside", "eastoutside", "westoutside", ...
-            "northeastoutside", "southeastoutside", "northwestoutside", ...
-            "southwestoutside"};
+          locations = {"north", "south", "east", "west", ...
+                       "northeast", "southeast", "northwest", "southwest", ...
+                       "northoutside", "southoutside", ...
+                       "eastoutside", "westoutside", ...
+                       "northeastoutside", "southeastoutside", ...
+                       "northwestoutside", "southwestoutside"};
           addproperty ("location", hlegend, "radio", strjoin (locations, "|"));
           addproperty ("orientation", hlegend, "radio",
                        "{vertical}|horizontal");
@@ -960,6 +969,7 @@ endfunction
 
 function updatelegend (h, d)
   persistent recursive = false;
+
   if (! recursive)
     recursive = true;
     unwind_protect
@@ -968,21 +978,22 @@ function updatelegend (h, d)
       position = get (h, "unmodified_axes_position");
       outerposition = get (h, "unmodified_axes_outerposition");
       units = get (hax, "units");
-      set (hax, "units", "points")
+      set (hax, "units", "points");
       switch get (hax, "activepositionproperty")
       case "position"
-        set (hax, "outerposition", outerposition)
-        set (hax, "position", position)
+        set (hax, "outerposition", outerposition);
+        set (hax, "position", position);
       case "outerposition"
-        set (hax, "position", position)
-        set (hax, "outerposition", outerposition)
+        set (hax, "position", position);
+        set (hax, "outerposition", outerposition);
       endswitch
-      set (hax, "units", units)
+      set (hax, "units", units);
       h = legend (hax, hplots, get (h, "string"));
     unwind_protect_cleanup
       recursive = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function updatelegendtext (h, d)
@@ -1103,8 +1114,8 @@ function updateline (h, d, hlegend, linelength)
   elseif ((!isempty (displayname)
            && (! strcmp (marker, "none") || ! strcmp (linestyle, "none")))
           && isempty (lm) && isempty (ll))
-    ## An element was added to the legend. Need to recall the
-    ## legend function to recreate a new legend
+    ## An element was added to the legend.  Need to re-call the
+    ## legend function to recreate a new legend.
     [hplots, text_strings] = __getlegenddata__ (hlegend);
     hplots = [hplots, h];
     text_strings = {text_strings{:}, displayname};
@@ -1141,16 +1152,17 @@ function updateline (h, d, hlegend, linelength)
   endif
 endfunction
 
+
 %!demo
-%! clf ()
+%! clf;
 %! plot (rand (2));
 %! title ('legend called with cellstr and string inputs for labels');
 %! h = legend ({'foo'}, 'bar');
 %! legend location northeastoutside
-%! set (h, 'fontsize', 20)
+%! set (h, 'fontsize', 20);
 
 %!demo
-%! clf ()
+%! clf;
 %! plot (rand (3));
 %! title ('legend() without inputs creates default labels');
 %! h = legend ();
@@ -1160,7 +1172,7 @@ endfunction
 %! x = 0:1;
 %! plot (x,x,';I am Blue;', x,2*x, x,3*x,';I am Red;');
 %! legend location northeastoutside
-%! # Placing legend inside should return axes to original size
+%! ## Placing legend inside should return axes to original size
 %! legend location northeast
 %! title ('Blue and Red keys, with Green missing');
 
@@ -1176,8 +1188,9 @@ endfunction
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ('Legend with keys in horizontal orientation');
-%! legend ({'I am blue', 'I am green'}, 'location', 'east', 'orientation', 'horizontal');
-%! legend boxoff;
+%! legend ({'I am blue', 'I am green'}, ...
+%!         'location', 'east', 'orientation', 'horizontal');
+%! legend boxoff
 %! legend boxon
 
 %!demo
@@ -1185,14 +1198,14 @@ endfunction
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ('Legend with box off');
 %! legend ({'I am blue', 'I am green'}, 'location', 'east');
-%! legend boxoff;
+%! legend boxoff
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ('Legend with text to the right of key');
 %! legend ({'I am blue', 'I am green'}, 'location', 'east');
-%! legend right;
+%! legend right
 
 %!demo
 %! clf;
@@ -1209,7 +1222,7 @@ endfunction
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ('Legend is hidden')
 %! legend ({'I am blue', 'I am green'}, 'location', 'east');
-%! legend hide;
+%! legend hide
 
 %!demo
 %! clf;
@@ -1386,36 +1399,35 @@ endfunction
 
 %!demo % bug 36408
 %! clf;
-%! option = "right";
-%! subplot (3,1,1)
+%! option = 'right';
+%! subplot (3,1,1);
 %! plot (rand (1,4));
-%! title ("Subplots should adjust to the legend placed outside")
-%! legend ({"1"}, "location", "northeastoutside")
-%! legend (option)
-%! subplot (3,1,2)
+%! title ('Subplots should adjust to the legend placed outside');
+%! legend ({'1'}, 'location', 'northeastoutside');
+%! legend (option);
+%! subplot (3,1,2);
 %! plot (rand (1,4));
-%! legend ({"1234567890"}, "location", "eastoutside")
-%! legend (option)
-%! subplot (3,1,3)
+%! legend ({'1234567890'}, 'location', 'eastoutside');
+%! legend (option);
+%! subplot (3,1,3);
 %! plot (rand (1,4));
-%! legend ({"12345678901234567890"}, "location", "southeastoutside")
-%! legend (option)
+%! legend ({'12345678901234567890'}, 'location', 'southeastoutside');
+%! legend (option);
 
 %!demo % bug 36408
 %! clf;
-%! option = "right";
+%! option = 'right';
 %! subplot (3,1,1)
 %! plot (rand (1,4));
-%! title ("Subplots should adjust to the legend placed outside")
-%! legend ({"1"}, "location", "northwestoutside")
-%! legend (option)
-%! subplot (3,1,2)
+%! title ('Subplots should adjust to the legend placed outside');
+%! legend ({'1'}, 'location', 'northwestoutside');
+%! legend (option);
+%! subplot (3,1,2);
 %! plot (rand (1,4));
-%! legend ({"1234567890"}, "location", "westoutside")
-%! legend (option)
-%! subplot (3,1,3)
+%! legend ({'1234567890'}, 'location', 'westoutside');
+%! legend (option);
+%! subplot (3,1,3);
 %! plot (rand (1,4));
-%! legend ({"12345678901234567890"}, "location", "southwestoutside")
-%! legend (option)
-
+%! legend ({'12345678901234567890'}, 'location', 'southwestoutside');
+%! legend (option);
 

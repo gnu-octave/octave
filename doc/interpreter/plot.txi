@@ -1096,6 +1096,8 @@ none exists.
 
 @DOCSTRING(gca)
 
+@DOCSTRING(gco)
+
 The @code{get} and @code{set} functions may be used to examine and set
 properties for graphics objects.  For example,
 

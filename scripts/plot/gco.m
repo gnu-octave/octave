@@ -35,7 +35,7 @@
 ## callback can be interrupted by another callback and the current object
 ## can be modified.
 ##
-##@seealso{gcbo, gcf}
+##@seealso{gcbo, gcf, gca}
 ##@end deftypefn
 
 function h = gco ()

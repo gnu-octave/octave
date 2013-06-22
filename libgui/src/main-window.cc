@@ -542,33 +542,33 @@ main_window::read_settings (void)
 void
 main_window::set_window_layout (QSettings *settings)
 {
-  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
-
   // Restore the geometry of all dock-widgets
-  foreach (QObject *obj, children ())
+  foreach (octave_dock_widget *widget, dock_widget_list ())
     {
-      QString name = obj->objectName ();
+      QString name = widget->objectName ();
 
-      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
+      if (! name.isEmpty ())
         {
-          octave_dock_widget *widget = qobject_cast<octave_dock_widget *> (obj);
-          QVariant val = settings->value (name);
-
-          widget->restoreGeometry (val.toByteArray ());
-
           // If floating, make window from widget.
           bool floating = settings->value
               ("DockWidgets/" + name + "Floating", false).toBool ();
-          bool visible = settings->value
-              ("DockWidgets/" + name + "Visible", true).toBool ();
           if (floating)
-            widget->make_window (visible);
+            widget->make_window (false);
+          else if (! widget->parent ())  // should not be floating but is
+            widget->setParent (this);    // reparent
+
+          // restore geometry
+          QVariant val = settings->value (name);
+          widget->restoreGeometry (val.toByteArray ());
 
           // make widget visible if desired
+          bool visible = settings->value
+              ("DockWidgets/" + name + "Visible", true).toBool ();
           widget->setVisible (visible);
         }
     }
 
+  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
 }
 

@@ -38,12 +38,7 @@ public:
   octave_dock_widget (QWidget *p = 0);
   virtual ~octave_dock_widget ();
 
-  virtual void connect_visibility_changed (void)
-  {
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (handle_visibility (bool)));
-  }
-
+  virtual void connect_visibility_changed (void);
   void make_window (bool visible);
   void make_widget (bool visible);
   void set_title (const QString&);

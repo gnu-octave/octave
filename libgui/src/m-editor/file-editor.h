@@ -47,8 +47,6 @@ public:
   file_editor (QWidget *p);
   ~file_editor (void);
 
-  void connect_visibility_changed (void);
-
   void loadFile (const QString& fileName);
 
   QMenu *get_mru_menu (void) { return _mru_file_menu; }
@@ -99,7 +97,6 @@ signals:
 
 public slots:
   void focus (void);
-  void handle_visibility (bool visible);
 
   void request_new_file (const QString& commands);
   void request_new_script (const QString& commands);

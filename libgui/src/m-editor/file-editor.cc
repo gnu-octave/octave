@@ -87,20 +87,6 @@ file_editor::focus (void)
   set_focus ();
 }
 
-void
-file_editor::handle_visibility (bool visible)
-{
-  if (visible && ! isFloating ())
-    focus ();
-}
-
-void
-file_editor::connect_visibility_changed (void)
-{
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility (bool)));
-}
-
 // set focus to editor and its current tab
 void
 file_editor::set_focus (void)

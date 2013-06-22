@@ -103,6 +103,16 @@ octave_dock_widget::~octave_dock_widget ()
   settings->endGroup ();
 }
 
+// connect signal visibility changed to related slot (called from main-window)
+void
+octave_dock_widget::connect_visibility_changed (void)
+{
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT (handle_visibility (bool)));
+  emit active_changed (isVisible ());  // emit once for init of window menu
+}
+
+
 // set the title in the dockwidgets title bar
 void
 octave_dock_widget::set_title (const QString& title)

@@ -64,6 +64,7 @@ you may have.
 
 @menu
 * Acknowledgements::            
+* Citing Octave in Publications::
 * How You Can Contribute to Octave::  
 * Distribution::                
 @end menu
@@ -145,6 +146,20 @@ Richard Stallman, for writing GNU.
 
 This project would not have been possible without the GNU software used
 in and to produce Octave.
+
+@node Citing Octave in Publications
+@unnumberedsec Citing Octave in Publications
+@cindex Citing Octave
+@cindex Citations
+
+In view of the many contributions made by numerous developers over many years
+it is common courtesy to cite Octave in publications when it has been used 
+during the course of research or the preparation of figures.  The
+@code{citation} function can automatically generate a recommended citation
+text for Octave or any of its packages.  See the help text below on how to
+use @code{citation}.
+
+@DOCSTRING(citation)
 
 @node How You Can Contribute to Octave
 @unnumberedsec How You Can Contribute to Octave

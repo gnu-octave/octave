@@ -200,6 +200,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 Preface
 
 * Acknowledgements::            
+* Citing Octave in Publications::
 * How You Can Contribute to Octave::  
 * Distribution::                
 

@@ -531,7 +531,9 @@ You can create axes, line, and patch objects directly using the
 become children of the current axes object.
 
 @DOCSTRING(axes)
+
 @DOCSTRING(line)
+
 @DOCSTRING(patch)
 
 @DOCSTRING(fill)
@@ -1167,6 +1169,31 @@ objects.
 @DOCSTRING(allchild)
 
 @DOCSTRING(findfigs)
+
+@cindex saving graphics objects
+
+Figures can be printed or saved in many graphics formats with @code{print} and
+@code{saveas}.  Occasionally, however, it may be useful to save the original
+Octave handle graphic directly so that further modifications can be made such
+as modifying a title or legend.  
+
+This can be accomplished with the following functions by 
+
+@example
+@group
+fig_struct = hdl2struct (gcf);
+save myplot.fig -struct fig_struct;
+@dots{}
+fig_struct = load ("myplot.fig");
+struct2hdl (fig_struct);
+@end group
+@end example
+
+@DOCSTRING(hdl2struct)
+
+@DOCSTRING(struct2hdl)
+
+@DOCSTRING(copyobj)
 
 @node Graphics Object Properties
 @subsection Graphics Object Properties

@@ -78,7 +78,7 @@ function rval = strjoin (cstr, delimiter)
   endif
 
   if (num == 0)
-    rval = ""
+    rval = "";
   else
     rval = [[cstr(:).'; delimiter(:).']{:}];
   endif

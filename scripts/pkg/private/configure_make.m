@@ -36,6 +36,7 @@ function configure_make (desc, packdir, verbose)
             "OCTAVE"; octave_binary;
             "INSTALLDIR"; desc.dir};
     scenv = sprintf ("%s=\"%s\" ", cenv{:});
+
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))
       flags = "";
@@ -53,24 +54,23 @@ function configure_make (desc, packdir, verbose)
       endif
       [status, output] = shell (cstrcat ("cd '", src, "'; ", scenv,
                                          "./configure --prefix=\"",
-                                         desc.dir, "\"", flags));
+                                         desc.dir, "\"", flags),
+                                verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
-        error ("the configure script returned the following error: %s", output);
-      elseif (verbose)
-        printf ("%s", output);
+        disp (output);
+        error ("pkg: error running the configure script for %s.", desc.name);
       endif
-
     endif
 
     ## Make.
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell (cstrcat (scenv, "make -C '", src, "'"));
+      [status, output] = shell (cstrcat (scenv, "make -C '", src, "'"),
+                                verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
-        error ("'make' returned the following error: %s", output);
-      elseif (verbose)
-        printf ("%s", output);
+        disp (output);
+        error ("pkg: error running `make' for the %s package.", desc.name);
       endif
     endif
 

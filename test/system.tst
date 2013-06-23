@@ -231,7 +231,7 @@
 
 %% test/octave.test/system/fnmatch-1.m
 %!test
-%! string_fill_char = setstr (0);
+%! string_fill_char = char (0);
 %! assert ((fnmatch ("a*a", {"aba"; "xxxba"; "aa"}) == [1; 0; 1]
 %! && fnmatch ({"a*a"; "b*b"}, "bob")
 %! && fnmatch ("x[0-5]*", {"x1"; "x6"}) == [1; 0]

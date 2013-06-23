@@ -125,7 +125,7 @@
 ## The legend label text is either provided in the call to @code{legend} or
 ## is taken from the DisplayName property of graphics objects.  If no
 ## labels or DisplayNames are available, then the label text is simply
-## "data1", "data2", @dots{}, "dataN".
+## "data1", "data2", @dots{}, @nospell{"dataN"}.
 ## @end deftypefn
 
 function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)

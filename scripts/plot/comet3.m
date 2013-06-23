@@ -26,7 +26,7 @@
 ## is specified then @var{x}, @var{y} default to the indices of @var{z}.
 ##
 ## The speed of the comet may be controlled by @var{p}, which represents the
-## time each point is displayed before moving tothe next one.  The default for
+## time each point is displayed before moving to the next one.  The default for
 ## @var{p} is 0.1 seconds.
 ##
 ## If @var{hax} is specified the animation is produced in that axis rather than

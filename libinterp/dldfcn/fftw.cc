@@ -56,7 +56,7 @@ the @code{fftw} function can be used to import wisdom.  For example,\n\
 will save the existing wisdom used by Octave to the string @var{wisdom}.\n\
 This string can then be saved to a file and restored using the @code{save}\n\
 and @code{load} commands respectively.  This existing wisdom can be\n\
-reimported as follows\n\
+re-imported as follows\n\
 \n\
 @example\n\
 fftw (\"dwisdom\", @var{wisdom})\n\

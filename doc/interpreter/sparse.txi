@@ -391,7 +391,7 @@ One use of sparse matrices is in graph theory, where the
 interconnections between nodes are represented as an adjacency
 matrix.  That is, if the i-th node in a graph is connected to the j-th
 node.  Then the ij-th node (and in the case of undirected graphs the
-ji-th node) of the sparse adjacency matrix is non-zero.  If each node
+@nospell{ji-th} node) of the sparse adjacency matrix is non-zero.  If each node
 is then associated with a set of coordinates, then the @dfn{gplot}
 command can be used to graphically display the interconnections
 between nodes.
@@ -703,7 +703,7 @@ arguments as @code{[r, p, q] = chol (A); spy (r)}.
 
 @float Figure,fig:simplechol
 @center @image{spchol,4in}
-@caption{Structure of the un-permuted Cholesky@tie{}factorization of the above matrix.}
+@caption{Structure of the unpermuted Cholesky@tie{}factorization of the above matrix.}
 @end float
 
 @float Figure,fig:simplecholperm

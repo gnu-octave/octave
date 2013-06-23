@@ -43,9 +43,9 @@
 ## Different file types are supported:
 ##
 ## @itemize
-## @item Ascii table
+## @item ASCII table
 ##
-## Importing ascii table using the specified number of header rows and
+## Importing ASCII table using the specified number of header rows and
 ## the specified delimiter.
 ##
 ## @item Image file
@@ -54,7 +54,7 @@
 ##
 ## @item Spreadsheet files (depending on external software)
 ##
-## @item Wav file
+## @item WAV file
 ##
 ## @end itemize
 ##

@@ -27,7 +27,7 @@
 ## If the last mouse click didn't occur on any child object of the figure,
 ## the current object is the figure itself.
 ##
-## If no mouse click occured in the target figure, this function returns an
+## If no mouse click occurred in the target figure, this function returns an
 ## empty matrix.
 ##
 ## Note that the value returned by this function is not necessarily the same

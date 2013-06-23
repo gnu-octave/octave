@@ -96,7 +96,7 @@ Represents a literal double-quote character, @samp{"}.
 Represents a literal single-quote character, @samp{'}.
 
 @item \0
-Represents the ``nul'' character, control-@@, ASCII code 0.
+Represents the null character, control-@@, ASCII code 0.
 
 @item \a
 Represents the ``alert'' character, control-g, ASCII code 7.
@@ -158,8 +158,8 @@ by using @code{is_dq_string} and @code{is_sq_string}.
 @section Character Arrays
 
 The string representation used by Octave is an array of characters, so
-internally the string "dddddddddd" is actually a row vector of length 10
-containing the value 100 in all places (100 is the ASCII code of "d").  This
+internally the string @nospell{"dddddddddd"} is actually a row vector of length
+10 containing the value 100 in all places (100 is the ASCII code of "d").  This
 lends itself to the obvious generalization to character matrices.  Using a
 matrix of characters, it is possible to represent a collection of same-length
 strings in one variable.  The convention used in Octave is that each row in a

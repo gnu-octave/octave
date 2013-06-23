@@ -24,13 +24,13 @@
 ## string.
 ##
 ## If no @var{delimiter} is specified, the elements of @var{cstr}
-## seperated by a space.
+## separated by a space.
 ##
 ## If @var{delimiter} is specified as a string, the cell-string array is
 ## joined using the string.  Escape sequences are supported.
 ##
 ## If @var{delimiter} is a cell-string array whose length is one less
-## than @var{cstr}, then the elemennts of @var{cstr} are joined by
+## than @var{cstr}, then the elements of @var{cstr} are joined by
 ## interleaving the cell-string elements of @var{delimiter}.  Escape
 ## sequences are not supported.
 ##

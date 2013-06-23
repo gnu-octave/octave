@@ -64,8 +64,8 @@
 ##
 ## @noindent
 ## where there is an additional input argument to @var{errfunc} relative to
-## @var{func}, given by @var{se}.  This is a structure with the elements
-## "identifier", "message" and "index", giving respectively the error
+## @var{func}, given by @nospell{@var{se}}.  This is a structure with the
+## elements "identifier", "message" and "index", giving respectively the error
 ## identifier, the error message, and the index into the input arguments
 ## of the element that caused the error.  For an example on how to use
 ## an error handler, @pxref{docXcellfun, @code{cellfun}}.

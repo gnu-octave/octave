@@ -26,12 +26,13 @@
 ## image, pixels in @var{x} outside the range are mapped to the last color in
 ## the map.
 ##
-## The output may be a single RGB image (MxNx3 matrix where M and N are the
-## original image @var{x} dimensions, one for each of the red, green and blue
-## channels).  Alternatively, the individual red, green, and blue color matrices
-## of size MxN may be returned.
+## The output may be a single RGB image (@nospell{MxNx3} matrix where M and N
+## are the original image @var{x} dimensions, one for each of the red, green
+## and blue channels).  Alternatively, the individual red, green, and blue
+## color matrices of size @nospell{MxN} may be returned.
 ##
-## Multi-dimensional indexed images (of size MxNx1xK) are also supported.
+## Multi-dimensional indexed images (of size @nospell{MxNx1xK}) are also
+## supported.
 ##
 ## @seealso{rgb2ind, ind2gray, hsv2rgb, ntsc2rgb}
 ## @end deftypefn

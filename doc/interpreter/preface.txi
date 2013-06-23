@@ -87,7 +87,7 @@ supporting the development of Octave:
 @itemize @bullet
 @item
 The United States Department of Energy, through grant number
-DE-FG02-04ER25635.
+@nospell{DE-FG02-04ER25635}.
 
 @item
 Ashok Krishnamurthy, David Hudak, Juan Carlos Chaves, and Stanley
@@ -133,7 +133,7 @@ Advanced Technology Program under Grant No. 003658-078.
 Noel Bell, Senior Engineer, Texaco Chemical Company, Austin Texas.
 
 @item
-John A. Turner, Group Leader, Continuum Dynamics (CCS-2), Los Alamos
+John A. Turner, Group Leader, Continuum Dynamics @nospell{(CCS-2)}, Los Alamos
 National Laboratory, for registering the @url{octave.org} domain name.
 
 @item

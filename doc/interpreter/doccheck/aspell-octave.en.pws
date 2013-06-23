@@ -20,6 +20,7 @@ ANOVA
 anova
 Anymap
 API
+appdata
 approximant
 arg
 ARMA
@@ -49,6 +50,7 @@ backend
 Backends
 backends
 bartlett
+BaseValue
 Bateman
 BDF
 bdf
@@ -82,6 +84,7 @@ boxon
 boxxyerrorbars
 bracketx
 brackety
+braindead
 breakpoint
 Brenan
 broadcastable
@@ -97,11 +100,10 @@ bzip
 CallbackObject
 callee's
 camd
+CancelString
 cauchy
 caxis
 ccolamd
-CCR
-CCS
 cd
 cdata
 CDF
@@ -116,6 +118,7 @@ changeset
 changesets
 Chaves
 chdir
+Chebyshev
 chisq
 chisquare
 chol
@@ -129,6 +132,7 @@ circum
 classpath
 classpaths
 Clenshaw
+CLI
 clim
 cloglog
 clubsuit
@@ -176,6 +180,7 @@ cummin
 cumprod
 cumsum
 cURL
+CurrentObject
 Cuthill
 cxsparse
 Cygwin
@@ -192,7 +197,6 @@ datestrings
 davis
 ddd
 dddd
-dddddddddd
 deallocate
 deallocated
 deconv
@@ -206,18 +210,18 @@ deltaX
 demi
 Demmel
 DeskJet
-Deskjet
 det
 diag
 diamondsuit
 dir
 disp
+DisplayName
+DisplayNames
 displayrange
 dMatrix
 dmperm
-DMS
-Dn
 Dobkin
+docstrings
 dOmega
 dotall
 dotexceptnewline
@@ -260,6 +264,7 @@ equidistributed
 equispaced
 erf
 erfc
+erfi
 errno
 Errorbar
 errorbar
@@ -290,7 +295,7 @@ fftn
 fftpack
 FFTs
 fftw
-FG
+Fiedler
 fieldname
 fieldnames
 filename
@@ -309,6 +314,7 @@ fontname
 forall
 foregroundcolor
 formfeed
+Forsythe
 Fortran
 fpdf
 fprintf
@@ -337,7 +343,6 @@ geocdf
 geoinv
 geopdf
 geornd
-GEP
 geq
 gesdd
 gesvd
@@ -394,6 +399,7 @@ Hermitian
 Hessenberg
 heteroscedascity
 hggroup
+hggroups
 hh
 HH
 Higham
@@ -417,13 +423,12 @@ hygernd
 Hyndman
 Hypergeometric
 hypergeometric
+IEC
 IEEE
 ifelse
-iff
 ifft
 ifftn
 ignorecase
-IIP
 ij
 Im
 imag
@@ -433,6 +438,7 @@ Indices
 indices
 infty
 init
+InitialValue
 inline
 Inline
 inpolygon
@@ -446,6 +452,7 @@ interpolant
 Interpolants
 interquartile
 inv
+involutory
 ipermute
 ishandle
 ishghandle
@@ -458,17 +465,19 @@ isvector
 iter
 ith
 iy
+iz
 Jacobian
 Jacobians
 javaaddpath
 javamem
-ji
 JIT
 jpeg
 JPEG
 jpg
 jvm
 JVM's
+Kac
+Kahan
 keybindings
 keypress
 Kolmogorov
@@ -487,6 +496,7 @@ lapack
 laplace
 Larimore
 LaserJet
+Lauchli
 lceil
 ldiv
 ldivide
@@ -496,6 +506,7 @@ Leftarrow
 leftarrow
 Leftrightarrow
 leftrightarrow
+Lehmer
 Lehoucq
 leq
 Levinson
@@ -515,6 +526,8 @@ linespec
 linespoints
 linkprop
 listdlg
+ListSize
+ListString
 literalspacing
 Liu
 LLVM
@@ -532,6 +545,7 @@ lookup
 Lookup
 lookups
 Los
+Lotkin
 Lovato
 lpx
 lr
@@ -594,7 +608,6 @@ mmm
 mmmm
 mmmyy
 mmmyyyy
-modelled
 Moler
 Montanet
 mpoles
@@ -614,6 +627,8 @@ mxArray
 myclass
 myfun
 nabla
+namespace
+NAMESPACE
 NaN
 NaNs
 nargin
@@ -638,11 +653,13 @@ NLP
 nnls
 nnz
 nocompute
+nodither
 nolabel
 noncommercially
 nonconformant
 nonsmooth
 nonzeros
+NOP
 noperm
 normcdf
 normest
@@ -655,13 +672,13 @@ noshare
 notin
 nthargout
 NTSC
-nul
+ntsc
 Numpy
-Nx
 nzmax
 oct
 octaverc
 ODEPACK
+OKString
 OLS
 onCleanup
 online
@@ -680,6 +697,7 @@ paperposition
 papersize
 paperunits
 parseparams
+Parter
 pbm
 PBM
 PBMplus
@@ -693,6 +711,7 @@ PCX
 pcx
 pdf
 PDF
+pentadiagonal
 periodogram
 perp
 Petzold's
@@ -719,6 +738,7 @@ POSIX
 postorder
 PostScript
 Pothen
+powerset
 pre
 preconditioner
 premultiplied
@@ -729,6 +749,8 @@ printf
 priori
 Profiler
 profiler
+prolate
+PromptString
 propto
 proven
 ps
@@ -736,11 +758,10 @@ pseudoinverse
 pseudonorm
 pseudorandom
 Pseudospectra
+pseudospectrum
 ptrace
 punct
-PWS
 Pxx
-Qci
 Qhull
 qhull
 QP
@@ -773,10 +794,10 @@ rdivide
 Readline
 readline
 recursing
+Redheffer
 reentrant
 regex
 regressor
-reimported
 Reindent
 relicensing
 ren
@@ -793,6 +814,7 @@ resparsify
 RET
 returnonerror
 rfloor
+rgb
 RGB
 Riccati
 Rightarrow
@@ -806,13 +828,11 @@ Rosser
 Rossum
 rpath
 RPMs
-rr
 runtime
 sa
 Saad
 Sandia
 SAS
-sB
 Schafer
 schar
 Schur
@@ -821,6 +841,7 @@ screenful
 se
 sed
 seealso
+SelectionMode
 semidefinite
 Sep
 Shampine
@@ -886,6 +907,7 @@ strncmp
 strncmpi
 strread
 strread's
+strsplit
 struct
 structs
 subarrays
@@ -936,6 +958,7 @@ SYMAMD
 symamd
 symbfact
 symrcm
+Szego
 tcdf
 Tcv
 terminal's
@@ -944,6 +967,7 @@ texinfo
 Texinfo
 TextAlphaBits
 textfield
+textread
 textscan
 th
 ths
@@ -972,6 +996,7 @@ tridiagonal
 triplot
 trnd
 Tsang
+Tukey
 tuples
 Tx
 txi
@@ -988,7 +1013,6 @@ ulong
 Ultrix
 umfpack
 uminus
-un
 Unary
 unary
 uncomment
@@ -1009,6 +1033,7 @@ uninstalled
 univariate
 unnormalized
 unpadded
+unpermuted
 unpivoted
 unregister
 unshare
@@ -1038,11 +1063,12 @@ vertices
 Villadsen
 voronoi
 Voronoi
-Wa
 waitbar
 waitbars
 wallis
 warndlg
+Wathen
+WAV
 wblcdf
 wblinv
 wblpdf
@@ -1066,7 +1092,6 @@ Wilks
 windowstyle
 WinRand
 WIPO
-Wl
 wp
 wspace
 xb
@@ -1085,6 +1110,7 @@ xmin
 xPBTRF
 xPOTRF
 xPTSV
+xtest
 xTRTRS
 xu
 xwd
@@ -1104,7 +1130,6 @@ YYYY
 yyyymmdd
 yyyymmddTHHMMSS
 Zechner
-zer
 Ziggurat
 zlib
 zlim

@@ -48,7 +48,7 @@
 ## "@nospell{twosided}" computes spectrum from [0..nfft-1].  These strings
 ## can appear at any position in the list input arguments after window.
 ##
-## @item Pxx: one-, or two-sided power spectrum.
+## @item @nospell{Pxx}: one-, or two-sided power spectrum.
 ##
 ## @item w: angular frequency [0..2*pi) (two-sided) or [0..pi] one-sided.
 ##

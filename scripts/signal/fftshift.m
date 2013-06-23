@@ -24,7 +24,7 @@
 ## center of the vector or matrix.
 ##
 ## If @var{x} is a vector of @math{N} elements corresponding to @math{N}
-## time samples spaced by @math{dt}, then
+## time samples spaced by @nospell{@math{dt}}, then
 ## @code{fftshift (fft (@var{x}))} corresponds to frequencies
 ##
 ## @example
@@ -32,7 +32,7 @@
 ## @end example
 ##
 ## @noindent
-## where @nospell{@math{df}} = 1 / @math{dt}.
+## where @nospell{@math{df} = 1 / @math{dt}}.
 ##
 ## If @var{x} is a matrix, the same holds for rows and columns.  If
 ## @var{x} is an array, then the same holds along each dimension.

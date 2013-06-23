@@ -22,7 +22,7 @@
 Octave supports several ways of reading and writing data to or from the
 prompt or a file.  The simplest functions for data Input and Output
 (I/O) are easy to use, but only provide limited control of how
-data is processed.  For more control, a set of functions modelled
+data is processed.  For more control, a set of functions modeled
 after the C standard library are also provided by Octave.
 
 @menu
@@ -388,7 +388,7 @@ the line @samp{Free Software is needed for Free Science}.
 This section describes how to call @code{printf} and related functions.
 
 The following functions are available for formatted output.  They are
-modelled after the C language functions of the same name, but they
+modeled after the C language functions of the same name, but they
 interpret the format template differently in order to improve the
 performance of printing vector and matrix values.
 

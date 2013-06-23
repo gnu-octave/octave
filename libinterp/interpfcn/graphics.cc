@@ -9925,7 +9925,7 @@ The supported property types are:\n\
 A string property.  @var{arg} contains the default string value.\n\
 \n\
 @item any\n\
-An un-typed property.  This kind of property can hold any octave\n\
+An @nospell{un-typed} property.  This kind of property can hold any octave\n\
 value.  @var{args} contains the default value.\n\
 \n\
 @item radio\n\

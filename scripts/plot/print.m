@@ -175,7 +175,7 @@
 ##
 ##   @table @code
 ##   @item ljet2p
-##     HP LaserJet IIP
+##     HP LaserJet @nospell{IIP}
 ##
 ##   @item ljet3
 ##     HP LaserJet III
@@ -263,7 +263,7 @@
 ## @end group
 ## @end example
 ##
-## Example: Print to an HP Deskjet 550C.
+## Example: Print to an HP DeskJet 550C.
 ##
 ## @example
 ## @group

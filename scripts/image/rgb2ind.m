@@ -36,7 +36,8 @@
 ## Convert an image in red-green-blue (RGB) color space to an indexed image.
 ##
 ## The input image @var{rgb} must be an N-dimensional RGB image
-## (MxNxO@dots{}x3 array) where M,N,O@dots{} are the image dimensions, and the
+## (@nospell{MxNxO}@dots{}x3 array) where M,N,O@dots{} are the image
+## dimensions, and the
 ## final dimension contains the values in the red, green and blue
 ## channels.  Alternatively, the red, green and blue color channels can
 ## be input as separate arrays @var{R}, @var{G} and  @var{B}.

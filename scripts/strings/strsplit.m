@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@dots{}, @var{name}, @var{value})
 ## @deftypefnx {Function File} {[@var{cstr}, @var{matches}] =} strsplit (@dots{})
 ## Split the string @var{s} using the delimiters specified by @var{del}
-## and return a cell-string array of sub-strings.  If a delmiter is not
+## and return a cell-string array of sub-strings.  If a delimiter is not
 ## specified the string, @var{s}, is split at whitespace.  The delimiter,
 ## @var{del} may be a string, a scalar cell-string, or cell-string array.
 ## @var{del} must be a cell-string array.  By default, consecutive

@@ -90,8 +90,8 @@ hg export -o ../cool.diff tip
 
 You may want to get familiar with Mercurial queues to manage your
 changesets.  For working with queues you have to activate the extension
-mq with the following entry in Mercurials config file @file{.hgrc} (or
-@file{Mercurial.ini} on Windows):
+@nospell{mq} with the following entry in Mercurial's configuration file
+@file{.hgrc} (or @file{Mercurial.ini} on Windows):
 
 @example
 @group
@@ -149,7 +149,7 @@ pager=
 @end group
 @end example
 
-For the colour extension, default colour and formatting
+For the color extension, default color and formatting
 of @code{hg status} can be modified by
 
 @example
@@ -182,11 +182,10 @@ attend = tags, help, annotate, cat, diff, export, status, \
 @end example
 
 Enabling the described extensions should immediately lead to a difference
-when using the command line version of hg.  Of these options, the only one
-that enables a new command is graphlog.  It is recommanded that you use the
-command @code{hg glog} instead of @code{hg log} for a better feel
-what commits are being based on.
-
+when using the command line version of @nospell{hg}.  Of these options, the
+only one that enables a new command is @nospell{graphlog}.  It is recommanded
+that you use the command @code{hg glog} instead of @code{hg log} for a better
+feel what commits are being based on.
 
 @node General Guidelines
 @section General Guidelines

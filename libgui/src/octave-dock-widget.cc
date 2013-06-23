@@ -101,6 +101,7 @@ octave_dock_widget::~octave_dock_widget ()
   settings->setValue (name+"Visible", visible);    // store visibility
 
   settings->endGroup ();
+  settings->sync ();
 }
 
 // connect signal visibility changed to related slot (called from main-window)
@@ -134,6 +135,7 @@ octave_dock_widget::make_window ()
   // FIXME: dockWidgetArea always returns 2
   settings->setValue ("DockWidgets/" + objectName () + "_dock_area",
                       _parent->dockWidgetArea (this));
+  settings->sync ();
 
   // remove parent and adjust the (un)dock icon
   setParent (0, Qt::Window);
@@ -154,6 +156,7 @@ octave_dock_widget::make_widget ()
   // save last floating geometry
   settings->setValue ("DockWidgets/" + objectName () + "_floating_geometry",
                       saveGeometry ());
+  settings->sync ();
 
   // add widget to last saved docking area
   int area = settings->value ("DockWidgets/" + objectName () + "_dock_area",

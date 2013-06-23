@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{val}] =} getfield (@var{s}, @var{field})
+## @deftypefn  {Function File} {[@var{val}] =} getfield (@var{s}, @var{field})
 ## @deftypefnx {Function File} {[@var{val}] =} getfield (@var{s}, @var{idx1}, @var{field1}, @var{idx2}, @var{field2}, @dots{})
-## Extract a field from a structure (or a nested structure). The syntax
+## Extract a field from a structure (or a nested structure).  The syntax
 ## is the same as @code{setfield}, except it omits the final @var{val}
 ## argument, returning this value instead of setting it.
 ##

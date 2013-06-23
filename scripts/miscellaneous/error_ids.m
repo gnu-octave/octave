@@ -40,7 +40,7 @@
 ## Indicates that memory couldn't be allocated.
 ##
 ## @item Octave:undefined-function
-## Indicates a call to a function that is not defined. The function may
+## Indicates a call to a function that is not defined.  The function may
 ## exist but Octave is unable to find it in the search path.
 ##
 ## @end table

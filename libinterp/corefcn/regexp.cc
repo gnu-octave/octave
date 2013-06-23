@@ -1305,8 +1305,9 @@ This option is present for compatibility but is ignored.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
 sequences (e.g., \"\\n\" => newline) are processed in both @var{pat}\n\
-and @var{repstr} regardless of whether they were defined within single quotes.  Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
-\"\\\\n\") or use the @code{regexptranslate} function.\n\
+and @var{repstr} regardless of whether they were defined within single\n\
+quotes.  Use a second backslash to stop interpolation of the escape sequence\n\
+(e.g., \"\\\\n\") or use the @code{regexptranslate} function.\n\
 @seealso{regexp, regexpi, strrep}\n\
 @end deftypefn")
 {

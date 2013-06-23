@@ -54,6 +54,7 @@
 ##
 ## @item 3: the algorithm reached stagnation
 ## @end itemize
+##
 ## (the value 2 is unused but skipped for compatibility).
 ##
 ## @item @var{relres} is the final value of the relative residual.

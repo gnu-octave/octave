@@ -38,6 +38,7 @@
 ## iterations is limited to 10 and is at least 2.
 ##
 ## References:
+##
 ## @itemize
 ## @item
 ## N.J. Higham and F. Tisseur, @cite{A Block Algorithm

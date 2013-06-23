@@ -563,6 +563,7 @@ Within a pattern\n\
 @table @code\n\
 @item *\n\
 matches any string, including the null string,\n\
+\n\
 @item ?\n\
 matches any single character, and\n\
 \n\

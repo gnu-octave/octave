@@ -53,7 +53,7 @@
 ##
 ## Notes:
 ##
-## For Matlab compatibility, leading spaces are stripped before returning
+## For @sc{matlab} compatibility, leading spaces are stripped before returning
 ## the string.
 ##
 ## The @code{num2str} function is not very flexible.  For better control

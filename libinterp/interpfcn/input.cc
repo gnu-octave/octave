@@ -1128,8 +1128,8 @@ DEFUN (add_input_event_hook, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn})\n\
 @deftypefnx {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
-Add the named function or function handle @var{fcn} to the list of functions to call\n\
-periodically when Octave is waiting for input.  The function should\n\
+Add the named function or function handle @var{fcn} to the list of functions\n\
+to call periodically when Octave is waiting for input.  The function should\n\
 have the form\n\
 \n\
 @example\n\
@@ -1177,7 +1177,7 @@ the list of input hook functions.\n\
 
 DEFUN (remove_input_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} remove_input_event_hook (@var{name})\n\
+@deftypefn  {Built-in Function} {} remove_input_event_hook (@var{name})\n\
 @deftypefnx {Built-in Function} {} remove_input_event_hook (@var{fcn_id})\n\
 Remove the named function or function handle with the given identifier\n\
 from the list of functions to call periodically when Octave is waiting\n\

@@ -89,13 +89,15 @@ hg export -o ../cool.diff tip
 @end example
 
 You may want to get familiar with Mercurial queues to manage your
-changesets. For working with queues you have to activate the extension
+changesets.  For working with queues you have to activate the extension
 mq with the following entry in Mercurials config file @file{.hgrc} (or
 @file{Mercurial.ini} on Windows):
 
 @example
+@group
 [extensions]
 mq=
+@end group
 @end example
 
 Here is a slightly more complex example using Mercurial
@@ -138,17 +140,20 @@ They are not enabled by default due to a number of factors
 The following entries in the @file{.hgrc} are recommended
 
 @example
+@group
 [extensions]
 graphlog=
 color=
 progress=
 pager=
+@end group
 @end example
 
 For the colour extension, default colour and formatting
 of @code{hg status} can be modified by
 
 @example
+@group
 [color]
 status.modified = magenta bold
 status.added = green bold
@@ -156,13 +161,15 @@ status.removed = red bold
 status.deleted = cyan bold
 status.unknown = black  bold
 status.ignored = black bold
+@end group
 @end example
 
 Sometimes a few further improvements for the pager extension are
-necessary. The following options should not be enabled unless paging
+necessary.  The following options should not be enabled unless paging
 isn't working correctly:
 
 @example
+@group
 [pager]
 # Some options for the less pager, see less(1) for their meaning.
 pager = LESS='FSRX' less
@@ -171,11 +178,12 @@ pager = LESS='FSRX' less
 # for them
 attend = tags, help, annotate, cat, diff, export, status, \
          outgoing, incoming
+@end group
 @end example
 
 Enabling the described extensions should immediately lead to a difference
-when using the command line version of hg. Of these options, the only one
-that enables a new command is graphlog. It is recommanded that you use the
+when using the command line version of hg.  Of these options, the only one
+that enables a new command is graphlog.  It is recommanded that you use the
 command @code{hg glog} instead of @code{hg log} for a better feel
 what commits are being based on.
 

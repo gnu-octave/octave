@@ -50,7 +50,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{c} =} gallery ("circul", @var{v})
+## @deftypefn {Function File} {@var{c} =} gallery ("circul", @var{v})
 ## Create a circulant matrix.
 ##
 ## @end deftypefn
@@ -81,8 +81,8 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {[@var{c},@var{d}, @var{e}] =} gallery ("dorr", @var{n})
-## @deftypefnx {Function File} {[@var{c},@var{d}, @var{e}] =} gallery ("dorr", @var{n}, @var{theta})
+## @deftypefn  {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n})
+## @deftypefnx {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n}, @var{theta})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("dorr", @dots{})
 ## Create a diagonally dominant, ill conditioned, tridiagonal matrix.
 ##
@@ -94,7 +94,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("fiedler", @var{c})
+## @deftypefn {Function File} {@var{a} =} gallery ("fiedler", @var{c})
 ## Create a symmetric Fiedler matrix.
 ##
 ## @end deftypefn
@@ -112,7 +112,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{c} =} gallery ("gcdmat", @var{n})
+## @deftypefn {Function File} {@var{c} =} gallery ("gcdmat", @var{n})
 ## Create a greatest common divisor matrix.
 ##
 ## @var{c} is an @var{n}-by-@var{n} matrix whose values correspond to the
@@ -135,7 +135,8 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("hanowa", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("hanowa", @var{n}, @var{d})
-## Create a matrix whose eigenvalues lie on a vertical line in the complex plane.
+## Create a matrix whose eigenvalues lie on a vertical line in the complex
+## plane.
 ##
 ## @end deftypefn
 ##
@@ -151,7 +152,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("invol", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("invol", @var{n})
 ## Create an involutory matrix.
 ##
 ## @end deftypefn
@@ -194,22 +195,22 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("lehmer", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("lehmer", @var{n})
 ## Create a Lehmer matrix (symmetric positive definite).
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{t} =} gallery ("lesp", @var{n})
+## @deftypefn {Function File} {@var{t} =} gallery ("lesp", @var{n})
 ## Create a tridiagonal matrix with real, sensitive eigenvalues.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("lotkin", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("lotkin", @var{n})
 ## Create a Lotkin matrix.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("minij", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("minij", @var{n})
 ## Create a symmetric positive definite matrix MIN(i,j).
 ##
 ## @end deftypefn
@@ -220,7 +221,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {[@var{a}, @var{t}] =} gallery ("neumann", @var{n})
+## @deftypefn {Function File} {[@var{a}, @var{t}] =} gallery ("neumann", @var{n})
 ## Create a singular matrix from the discrete Neumann problem (sparse).
 ##
 ## @end deftypefn
@@ -231,7 +232,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("parter", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("parter", @var{n})
 ## Create a Parter matrix (a Toeplitz matrix with singular values near pi).
 ##
 ## @end deftypefn
@@ -242,7 +243,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("poisson", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("Poisson", @var{n})
 ## Create a block tridiagonal matrix from Poisson's equation (sparse).
 ##
 ## @end deftypefn
@@ -253,7 +254,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{h} =} gallery ("randhess", @var{x})
+## @deftypefn {Function File} {@var{h} =} gallery ("randhess", @var{x})
 ## Create a random, orthogonal upper Hessenberg matrix.
 ##
 ## @end deftypefn
@@ -273,18 +274,18 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("redheff", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("redheff", @var{n})
 ## Create a zero and ones matrix of Redheffer associated with the Riemann
 ## hypothesis.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("riemann", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("riemann", @var{n})
 ## Create a matrix associated with the Riemann hypothesis.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("ris", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("ris", @var{n})
 ## Create a symmetric Hankel matrix.
 ##
 ## @end deftypefn
@@ -333,7 +334,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {[@var{a}, @var{b}] =} gallery ("wilk", @var{n})
+## @deftypefn {Function File} {[@var{a}, @var{b}] =} gallery ("wilk", @var{n})
 ## Create various specific matrices devised/discussed by Wilkinson.
 ##
 ## @end deftypefn

@@ -26,7 +26,7 @@
 ##
 ## With the optional second argument @code{"rows"}, each row of the set @var{a}
 ## is considered one element of the set.  As a result, @var{a} must then be a
-## numerical 2D matrix.
+## numerical 2-D matrix.
 ##
 ## @seealso{unique, union, setxor, setdiff, ismember}
 ## @end deftypefn

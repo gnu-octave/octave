@@ -31,7 +31,7 @@
 ## channels).  Alternatively, the individual red, green, and blue color matrices
 ## of size MxN may be returned.
 ##
-## Multidimensional indexed images (of size MxNx1xK) are also supported.
+## Multi-dimensional indexed images (of size MxNx1xK) are also supported.
 ##
 ## @seealso{rgb2ind, ind2gray, hsv2rgb, ntsc2rgb}
 ## @end deftypefn

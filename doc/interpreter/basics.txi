@@ -272,7 +272,7 @@ Octave:load-file-in-path
 @noindent
 Note that this does not enable the @code{Octave:matlab-incompatible}
 warning, which you might want if you want to be told about writing code
-that works in Octave but not Matlab (@pxref{docXwarning},
+that works in Octave but not @sc{matlab} (@pxref{docXwarning},
 @pxref{docXwarning_ids}).
 
 @item  --verbose

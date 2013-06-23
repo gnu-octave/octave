@@ -68,7 +68,7 @@
 ## Duplicate points in @var{x} specify a discontinuous interpolant.  There
 ## may be at most 2 consecutive points with the same value.
 ## If @var{x} is increasing, the default discontinuous interpolant is
-## right-continuous. If @var{x} is decreasing, the default discontinuous
+## right-continuous.  If @var{x} is decreasing, the default discontinuous
 ## interpolant is left-continuous.
 ## The continuity condition of the interpolant may be specified by using
 ## the options, "-left" or "-right", to select a left-continuous

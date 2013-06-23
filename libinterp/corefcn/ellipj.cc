@@ -149,9 +149,9 @@ results are matrices with @code{length (@var{u})} rows and\n\
 @var{m} must conform and the results will be the same size.\n\
 \n\
 The value of @var{u} may be complex.\n\
-The value of @var{m} must be 0 <= m <= 1.\n\
+The value of @var{m} must be 0 @leq{} m @leq{} 1.\n\
 \n\
-@var{tol} is currently ignored (@sc{Matlab} uses this to allow faster,\n\
+@var{tol} is currently ignored (@sc{matlab} uses this to allow faster,\n\
 less accurate approximation).\n\
 \n\
 If requested, @var{err} contains the following status information\n\
@@ -160,6 +160,7 @@ and is the same size as the result.\n\
 @enumerate 0\n\
 @item\n\
 Normal return.\n\
+\n\
 @item\n\
 Error---no computation, algorithm termination condition not met,\n\
 return @code{NaN}.\n\

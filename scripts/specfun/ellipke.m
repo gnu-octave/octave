@@ -25,9 +25,9 @@
 ## Compute complete elliptic integral of the first K(@var{m}) and second
 ## E(@var{m}) kind.
 ##
-## @var{m} is either real array or scalar with 0 <= m <= 1.
+## @var{m} is either real array or scalar with 0 @leq{} m @leq{} 1.
 ##
-## @var{tol} is currently ignored (@sc{Matlab} uses this to allow faster,
+## @var{tol} is currently ignored (@sc{matlab} uses this to allow faster,
 ## less accurate approximation).
 ##
 ## Ref: Abramowitz, Milton and Stegun, Irene A. Handbook of Mathematical

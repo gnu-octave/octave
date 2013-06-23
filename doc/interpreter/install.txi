@@ -276,7 +276,7 @@ provide improved performance for the functions @code{qrdelete},
 @code{qrinsert}, @code{qrshift}, and @code{qrupdate}.
 
 @item QScintilla
-Source code highlighter and manipulator; a Qt  port of Scintilla
+Source code highlighter and manipulator; a Qt port of Scintilla
 (@url{http://www.riverbankcomputing.co.uk/software/qscintilla}).
 QScintilla is used for syntax highlighting and code completion in the
 GUI.

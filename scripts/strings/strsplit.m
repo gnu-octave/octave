@@ -34,7 +34,6 @@
 ## Example:
 ##
 ## @example
-## @group
 ## strsplit ("a b c")
 ##       @result{}
 ##           @{
@@ -69,7 +68,6 @@
 ##             [1,5] = c
 ##           @}
 ##
-## @end group
 ## @end example
 ##
 ## Supported @var{name}/@var{value} pair arguments are;
@@ -77,15 +75,15 @@
 ## @itemize
 ## @item @var{collapsedelimiters} may take the value of @var{true} or
 ## @var{false} with the default being @var{false}.
+##
 ## @item @var{delimitertype} may take the value of @code{simple} or
-## @code{regularexpression}. The default is @var{delimitertype} is
+## @code{regularexpression}.  The default is @var{delimitertype} is
 ## @code{simple}.
 ## @end itemize
 ## 
 ## Example:
 ##
 ## @example
-## @group
 ## strsplit ("a foo b,bar c", ",|\\s|foo|bar", "delimitertype", "regularexpression")
 ##       @result{}
 ##           @{
@@ -122,7 +120,6 @@
 ##             [1,5] = 
 ##             [1,6] = c
 ##           @}
-## @end group
 ## @end example
 ## 
 ## @seealso{ostrsplit, strjoin, strtok, regexp}

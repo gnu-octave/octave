@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} __printf_assert__ (@dots{})
+## @deftypefn {Function File} {} __printf_assert__ (@dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 

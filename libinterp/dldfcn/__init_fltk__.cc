@@ -2071,7 +2071,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__have_fltk__, , ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{FLTK_available} =} __have_fltk__ ()\n\
+@deftypefn {Loadable Function} {@var{FLTK_available} =} __have_fltk__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

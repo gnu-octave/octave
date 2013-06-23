@@ -27,19 +27,21 @@
 ## Importing the contents of file @var{fname} into workspace.
 ##
 ## Input parameters:
+##
 ## @itemize
 ## @item @var{fname}
 ## The file name for the file to import.
 ## 
 ## @item @var{delimiter}
-## The character separating columns of data. Use @code{\t} for tab.
+## The character separating columns of data.  Use @code{\t} for tab.
 ## (Only valid for ascii files)
 ##
 ## @item @var{header_rows}
-## Number of header rows before the data begins. (Only valid for ascii files)
+## Number of header rows before the data begins.  (Only valid for ascii files)
 ## @end itemize
 ##
 ## Different file types are supported:
+##
 ## @itemize
 ## @item Ascii table
 ##
@@ -48,7 +50,7 @@
 ##
 ## @item Image file
 ##
-## @item @sc{Matlab} file
+## @item @sc{matlab} file
 ##
 ## @item Spreadsheet files (depending on external software)
 ##

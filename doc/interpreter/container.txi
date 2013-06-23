@@ -38,7 +38,7 @@ another data container, the comma separated list.
 @cindex structures
 @cindex data structures
 
-Octave includes support for organizing data in structures. The current
+Octave includes support for organizing data in structures.  The current
 implementation uses an associative array with indices limited to
 strings, but the syntax is more like C-style structures.
 
@@ -392,7 +392,7 @@ x
 
 @noindent
 Dynamic indexing also allows you to use arbitrary strings, not merely
-valid Octave identifiers (note that this does not work on @sc{Matlab}):
+valid Octave identifiers (note that this does not work on @sc{matlab}):
 
 @example
 @group
@@ -410,7 +410,7 @@ x
 
 @noindent
 The warning id @code{Octave:matlab-incompatible} can be enabled to warn
-about this usage. @xref{docXwarning_ids}.
+about this usage.  @xref{docXwarning_ids}.
 
 More realistically, all of the functions that operate on strings can be used
 to build the correct field name before it is entered into the data structure.

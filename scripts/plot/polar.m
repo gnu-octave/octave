@@ -28,7 +28,7 @@
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##
-## @seealso{plot}
+## @seealso{plot, rose, compass}
 ## @end deftypefn
 
 ## Author: jwe

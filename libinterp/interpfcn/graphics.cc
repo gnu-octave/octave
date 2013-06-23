@@ -8574,6 +8574,7 @@ values give the property values.  In contrast to the previous case, all\n\
 elements of @var{pv} will be set in all handles in @var{h} independent of\n\
 the dimensions of @var{pv}.\n\
 @end itemize\n\
+@seealso{get}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
@@ -8681,11 +8682,13 @@ get_graphics_object_type (const double val)
 
 DEFUN (get, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} get (@var{h}, @var{p})\n\
-Return the named property @var{p} from the graphics handle @var{h}.\n\
-If @var{p} is omitted, return the complete property list for @var{h}.\n\
-If @var{h} is a vector, return a cell array including the property\n\
+@deftypefn  {Built-in Function} {@var{val} =} get (@var{h})\n\
+@deftypefnx {Built-in Function} {@var{val} =} get (@var{h}, @var{p})\n\
+Return the value of the named property @var{p} from the graphics handle\n\
+@var{h}.  If @var{p} is omitted, return the complete property list for\n\
+@var{h}.  If @var{h} is a vector, return a cell array including the property\n\
 values or lists respectively.\n\
+@seealso{set}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;

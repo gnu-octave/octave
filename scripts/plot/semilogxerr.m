@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} semilogxerr (@var{args})
+## @deftypefn  {Function File} {} semilogxerr (@var{args})
+## @deftypefnx {Function File} {@var{h} =} semilogxerr (@var{args})
 ## Produce two-dimensional plots using a logarithmic scale for the @var{x}
 ## axis and errorbars at each data point.  Many different combinations of
-## arguments are possible.  The most used form is
+## arguments are possible.  The most common form is
 ##
 ## @example
 ## semilogxerr (@var{x}, @var{y}, @var{ey}, @var{fmt})

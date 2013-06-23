@@ -38,7 +38,7 @@
 ##
 ## The data are passed as @var{x} and the abscissa as @var{y}.  If @var{y} is
 ## absent, then the abscissa are assumed to be @code{1 : length (@var{x})}.
-## @var{y} can be a string array, a cell array of strings or a numerical
+## @var{y} can be a string array, a cell array of strings, or a numerical
 ## vector.
 ##
 ## The optional return value @var{h} is a 2-element vector with a graphics
@@ -55,6 +55,7 @@
 ## pareto (Sold, Cheese);
 ## @end group
 ## @end example
+## @seealso{bar, barh, pie, plot}
 ## @end deftypefn
 
 function h = pareto (varargin)

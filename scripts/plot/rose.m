@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rose (@var{th}, @var{r})
+## @deftypefn  {Function File} {} rose (@var{th})
+## @deftypefnx {Function File} {} rose (@var{th}, @var{r})
 ## @deftypefnx {Function File} {} rose (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
 ## @deftypefnx {Function File} {[@var{r}, @var{th}] =} rose (@dots{})
 ##
-## Plot an angular histogram.  With one vector argument @var{th}, plots the
-## histogram with 20 angular bins.  If @var{th} is a matrix, then each column
+## Plot an angular histogram.  With one vector argument, @var{th}, plot the
+## histogram with 20 angular bins.  If @var{th} is a matrix then each column
 ## of @var{th} produces a separate histogram.
 ##
 ## If @var{r} is given and is a scalar, then the histogram is produced with
@@ -33,14 +34,13 @@
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing each histogram.
 ##
-## If two output arguments are requested then, rather than plotting the
-## histogram, the polar vectors necessary to plot the histogram are
-## returned.
+## If two output arguments are requested then no plot is made and 
+## the polar vectors necessary to plot the histogram are returned instead.
 ##
 ## @example
 ## @group
-## [r, t] = rose ([2*randn(1e5,1), pi + 2*randn(1e5,1)]);
-## polar (r, t);
+## [r, th] = rose ([2*randn(1e5,1), pi + 2*randn(1e5,1)]);
+## polar (r, th);
 ## @end group
 ## @end example
 ##

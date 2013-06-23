@@ -949,21 +949,21 @@ The graphics objects are arranged in a hierarchy:
 @code{line}, @code{text}, @code{patch},
 @code{surface}, and @code{image} objects.
 
-Graphics handles may be distinguished from function handles (@ref{Function
-Handles}) by means of the function @code{ishandle}.  @code{ishandle} returns
-true if its argument is a handle of a graphics object.  In addition, the figure
-object may be tested using @code{isfigure}.  @code{isfigure} returns true only
-if its argument is a handle of a figure. ishghandle() is synonymous with
-ishandle().  The @code{whos} function can be used to show the object type of
-each currently defined graphics handle.  (Note: this is not true today, but it
-is, I hope, considered an error in whos.  It may be better to have whos just
-show graphics_handle as the class, and provide a new function which, given a
+Graphics handles may be distinguished from function handles
+(@ref{Function Handles}) by means of the function @code{ishandle}.
+@code{ishandle} returns true if its argument is a handle of a graphics object. 
+In addition, the figure object may be tested using @code{isfigure}. 
+@code{isfigure} returns true only if its argument is a handle of a figure.  The
+@code{whos} function can be used to show the object type of each currently
+defined graphics handle.  (Note: this is not true today, but it is, I hope,
+considered an error in whos.  It may be better to have whos just show
+graphics_handle as the class, and provide a new function which, given a
 graphics handle, returns its object type.  This could generalize the ishandle()
 functions and, in fact, replace them.)
 
-The @code{get} and @code{set} commands are
-used to obtain and set the values of properties of graphics objects.  In
-addition, the @code{get} command may be used to obtain property names.
+The @code{get} and @code{set} commands are used to obtain and set the values of
+properties of graphics objects.  In addition, the @code{get} command may be
+used to obtain property names.
 
 For example, the property "type" of the graphics object pointed to by the
 graphics handle h may be displayed by:
@@ -1037,7 +1037,7 @@ graphics objects are always referenced by @dfn{handle}.
 @cindex root figure graphics object
 @cindex graphics object, root figure
 the top level of the hierarchy and the parent of all figure objects.
-The @code{handle} index of the root figure is 0.
+The handle index of the root figure is 0.
 
 @item figure
 @cindex figure graphics object

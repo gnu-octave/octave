@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gca ()
+## @deftypefn {Function File} {@var{h} =} gca ()
 ## Return a handle to the current axis object.  If no axis object
 ## exists, create one and return its handle.  The handle may then be
 ## used to examine or set properties of the axes.  For example,
@@ -32,7 +32,7 @@
 ## @noindent
 ## creates an empty axes object, then changes its location and size in
 ## the figure window.
-## @seealso{get, set}
+## @seealso{gcf, gco, get, set}
 ## @end deftypefn
 
 ## Author: jwe

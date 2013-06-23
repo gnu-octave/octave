@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## contour3 (peaks (19));
-## hold on
+## hold on;
 ## surface (peaks (19), "facecolor", "none", "EdgeColor", "black");
 ## colormap hot;
 ## @end group
@@ -46,7 +46,7 @@
 ## The optional input and output argument @var{h} allows an axis handle to
 ## be passed to @code{contour} and the handles to the contour objects to be
 ## returned.
-## @seealso{contourc, patch, plot}
+## @seealso{contourc, contour, contourf, patch, plot}
 ## @end deftypefn
 
 function [c, h] = contour3 (varargin)

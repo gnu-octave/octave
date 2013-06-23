@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} errorbar (@var{args})
+## @deftypefn  {Function File} {} errorbar (@var{args})
+## @deftypefnx {Function File} {@var{h} =} errorbar (@var{args})
 ## This function produces two-dimensional plots with errorbars.  Many
 ## different combinations of arguments are possible.  The simplest form is
 ##

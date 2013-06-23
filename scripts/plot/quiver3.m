@@ -58,7 +58,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{plot}
+## @seealso{quiver, plot}
 ## @end deftypefn
 
 function retval = quiver3 (varargin)

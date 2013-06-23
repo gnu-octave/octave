@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} loglogerr (@var{args})
+## @deftypefn  {Function File} {} loglogerr (@var{args})
+## @deftypefnx {Function File} {@var{h} =} loglogerr (@var{args})
 ## Produce two-dimensional plots on double logarithm axis with
 ## errorbars.  Many different combinations of arguments are possible.
-## The most used form is
+## The most common form is
 ##
 ## @example
 ## loglogerr (@var{x}, @var{y}, @var{ey}, @var{fmt})

@@ -29,9 +29,9 @@
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
 ##
-## If one output argument is requested, return a graphics handle to the plot.
-## If two output arguments are specified, the data are generated but
-## not plotted.  For example,
+## If one output argument is requested, return a graphics handle to the
+## created plot. If two output arguments are specified, the data are generated
+## but not plotted.  For example,
 ##
 ## @example
 ## stairs (x, y);
@@ -49,8 +49,7 @@
 ##
 ## @noindent
 ## are equivalent.
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, xlabel, ylabel, title}
+## @seealso{plot}
 ## @end deftypefn
 
 ## Author: jwe

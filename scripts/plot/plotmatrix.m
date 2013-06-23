@@ -27,10 +27,10 @@
 ## @code{plotmatrix} plots a set of axes corresponding to
 ##
 ## @example
-## plot (@var{x} (:, i), @var{y} (:, j)
+## plot (@var{x}(:, i), @var{y}(:, j))
 ## @end example
 ##
-## Given a single argument @var{x}, then this is equivalent to
+## Given a single argument @var{x} this is equivalent to
 ##
 ## @example
 ## plotmatrix (@var{x}, @var{x})
@@ -38,7 +38,7 @@
 ##
 ## @noindent
 ## except that the diagonal of the set of axes will be replaced with the
-## histogram @code{hist (@var{x} (:, i))}.
+## histogram @code{hist (@var{x}(:, i))}.
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
 ## string defining a marker in the same manner as the @code{plot}
@@ -57,6 +57,7 @@
 ## plotmatrix (randn (100, 3), "g+")
 ## @end example
 ##
+## @seealso{plot}
 ## @end deftypefn
 
 function [h, ax, bigax, p, pax] = plotmatrix (varargin)

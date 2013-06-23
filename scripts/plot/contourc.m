@@ -17,12 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefn  {Function File} {[@var{c}, @var{lev}] =} contourc (@var{z})
+## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{z}, @var{vn})
+## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
 ## Compute isolines (contour lines) of the matrix @var{z}.
-## Parameters @var{x}, @var{y} and @var{vn} are optional.
+## Parameters @var{x}, @var{y}, and @var{vn} are optional.
 ##
 ## The return value @var{lev} is a vector of the contour levels.
-## The return value @var{c} is a 2 by @var{n} matrix containing the
+## The return value @var{c} is a 2x@var{n} matrix containing the
 ## contour lines in the following format
 ##
 ## @example
@@ -37,9 +40,9 @@
 ## length of @var{lenn}.
 ##
 ## If @var{x} and @var{y} are omitted they are taken as the row/column
-## index of @var{z}.  @var{vn} is either a scalar denoting the number of lines
-## to compute or a vector containing the values of the lines.  If only one
-## value is wanted, set @code{@var{vn} = [val, val]};
+## indices of @var{z}.  @var{vn} is either a scalar denoting the number of
+## contour lines to compute or a vector containing the values of the lines.
+## If only one value is desired, set @code{@var{vn} = [val, val]};
 ## If @var{vn} is omitted it defaults to 10.
 ##
 ## For example:
@@ -54,7 +57,7 @@
 ##         2.0000   1.0000   2.0000   2.0000   2.0000   1.5000
 ## @end group
 ## @end example
-## @seealso{contour}
+## @seealso{contour, contourf, contour3}
 ## @end deftypefn
 
 ## Author: Shai Ayal <shaiay@users.sourceforge.net>

@@ -51,6 +51,7 @@
 ## ylabel (ax(2), "Axis 2");
 ## @end group
 ## @end example
+## @seealso{plot}
 ## @end deftypefn
 
 function [Ax, H1, H2] = plotyy (varargin)

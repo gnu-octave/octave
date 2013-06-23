@@ -21,8 +21,9 @@
 ## @deftypefnx {Function File} {} barh (@var{y})
 ## @deftypefnx {Function File} {} barh (@var{x}, @var{y}, @var{w})
 ## @deftypefnx {Function File} {} barh (@var{x}, @var{y}, @var{w}, @var{style})
-## @deftypefnx {Function File} {@var{h} =} barh (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} barh (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} barh (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} barh (@dots{})
 ## Produce a horizontal bar graph from two vectors of x-y data.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
@@ -36,7 +37,9 @@
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
-## The optional input handle @var{h} allows an axis handle to be passed.
+## Passing the optional input handle @var{h} will draw the resulting plot
+## in the specified handle.
+## 
 ## Properties of the patch graphics object can be changed using
 ## @var{prop}, @var{val} pairs.
 ##

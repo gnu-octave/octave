@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stem (@var{x})
+## @deftypefn  {Function File} {} stem (@var{y})
 ## @deftypefnx {Function File} {} stem (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} stem (@var{x}, @var{y}, @var{linespec})
 ## @deftypefnx {Function File} {} stem (@dots{}, "filled")

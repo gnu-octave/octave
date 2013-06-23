@@ -19,18 +19,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} pcolor (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} pcolor (@var{c})
-## Density plot for given matrices @var{x}, and @var{y} from @code{meshgrid} and
-## a matrix @var{c} corresponding to the @var{x} and @var{y} coordinates of
+## Produce a density plot for matrices @var{x} and @var{y} from @code{meshgrid},## and a matrix @var{c} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh's vertices.  If @var{x} and @var{y} are vectors, then a typical
-## vertex
-## is (@var{x}(j), @var{y}(i), @var{c}(i,j)).  Thus, columns of @var{c}
+## vertex is (@var{x}(j), @var{y}(i), @var{c}(i,j)).  Thus, columns of @var{c}
 ## correspond to different @var{x} values and rows of @var{c} correspond
 ## to different @var{y} values.
 ##
 ## The @code{colormap} is scaled to the extents of @var{c}.
-## Limits may be placed on the color axis by the
-## command @code{caxis}, or by setting the @code{clim} property of the
-## parent axis.
+## Limits may be placed on the color axis by the command @code{caxis}, or by
+## setting the @code{clim} property of the parent axis.
 ##
 ## The face color of each cell of the mesh is determined by interpolating
 ## the values of @var{c} for the cell's vertices.  Contrast this with
@@ -42,7 +39,7 @@
 ## "faceted", which renders a single color for each cell's face with the edge
 ## visible.
 ##
-## @var{h} is the handle to the surface object.
+## The optional return value @var{h} is a handle to the surface object.
 ##
 ## @seealso{caxis, contour, meshgrid, imagesc, shading}
 ## @end deftypefn

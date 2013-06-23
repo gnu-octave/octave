@@ -17,7 +17,6 @@ deprecated_FCN_FILES = \
   deprecated/javafields.m \
   deprecated/javamethods.m \
   deprecated/polyderiv.m \
-  deprecated/setstr.m \
   deprecated/shell_cmd.m \
   deprecated/studentize.m \
   deprecated/sylvester_matrix.m

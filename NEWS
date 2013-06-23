@@ -187,9 +187,9 @@ Summary of important user-visible changes for version 3.8:
     The following functions were deprecated in Octave 3.4 and have been
     removed from Octave 3.8.
                                            
-      autocor    dispatch              is_global    strerror
-      autocov    fstat                 krylovb      values  
-      betai      gammai                perror               
+      autocor    dispatch              is_global    setstr
+      autocov    fstat                 krylovb      strerror
+      betai      gammai                perror       values
       cellidx    glpkmex               replot               
       cquad      is_duplicate_entry    saveimage            
       

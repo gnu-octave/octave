@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 
 class find_files_model : public QAbstractListModel
 {
+  Q_OBJECT
+
 public:
   find_files_model(QObject *p=0);
   ~find_files_model ();

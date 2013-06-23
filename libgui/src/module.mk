@@ -91,6 +91,7 @@ octave_gui_MOC += \
   src/moc-workspace-model.cc \
   src/moc-workspace-view.cc \
   src/moc-find-files-dialog.cc \
+  src/moc-find-files-model.cc \
   src/qtinfo/moc-parser.cc \
   src/qtinfo/moc-webinfo.cc \
   src/moc-octave-dock-widget.cc

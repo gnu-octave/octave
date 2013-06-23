@@ -84,18 +84,19 @@ function pr_out = printd (obj, filename)
   pr_out =  sprintf ("%s file %s written\n", opt, filename);
 endfunction
 
+
 %!demo
 %! r2 = char (
-%! "stem step: 10, data: unsorted.",
-%! "Hinges:    lo: 12, hi: 42"     ,
-%! "   1 | 22118"                  ,
-%! "   2 | 28"                     ,
-%! "   3 | 98"                     ,
-%! "   4 | 244"                    ,
-%! "   5 | 2"                      );
-%! printd (r2, "test_p.txt");
-%! system ("cat test_p.txt");
-%! delete ("test_p.txt");
+%! 'stem step: 10, data: unsorted.',
+%! 'Hinges:    lo: 12, hi: 42'     ,
+%! '   1 | 22118'                  ,
+%! '   2 | 28'                     ,
+%! '   3 | 98'                     ,
+%! '   4 | 244'                    ,
+%! '   5 | 2'                      );
+%! printd (r2, 'test_p.txt');
+%! system ('cat test_p.txt');
+%! delete ('test_p.txt');
 
 %!test
 %! r2 = char (
@@ -110,6 +111,5 @@ endfunction
 %! r4 = fileread ("test_p.txt");
 %! delete ("test_p.txt");
 %! r2 = disp (r2);
-%! assert (r4, r2)
-
+%! assert (r4, r2);
 

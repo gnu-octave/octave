@@ -240,7 +240,7 @@ endfunction
 %! hs = stairs (x(1), y(1));
 %! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
 %! for k=2:N
-%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k))
+%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
 %!   drawnow ();
 %!   pause (0.2);
 %! end

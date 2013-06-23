@@ -149,59 +149,60 @@ function [nf, nv] = shrinkfaces (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! faces = [1 2 3; 1 3 4];
 %! vertices = [0 0; 1 0; 1 1; 0 1];
-%! clf ()
-%! patch ("Faces", faces, "Vertices", vertices, "FaceColor", "none")
+%! patch ('Faces', faces, 'Vertices', vertices, 'FaceColor', 'none');
 %! fv = shrinkfaces (faces, vertices, 0.25);
-%! patch (fv)
-%! axis equal
+%! patch (fv);
+%! axis equal;
 
 %!demo
+%! clf;
 %! faces = [1 2 3 4; 5 6 7 8];
 %! vertices = [0 0; 1 0; 2 1; 1 1; 2 0; 3 0; 4 1; 3.5 1];
-%! clf ()
-%! patch ("Faces", faces, "Vertices", vertices, "FaceColor", "none")
+%! patch ('Faces', faces, 'Vertices', vertices, 'FaceColor', 'none');
 %! fv = shrinkfaces (faces, vertices, 0.25);
-%! patch (fv)
-%! axis equal
-%! grid on
+%! patch (fv);
+%! axis equal;
+%! grid on;
 
 %!demo
+%! clf;
 %! faces = [1 2 3 4];
 %! vertices = [-1 2; 0 0; 1 2; 0 1];
-%! clf ()
-%! patch ("Faces", faces, "Vertices", vertices, "FaceColor", "none")
+%! patch ('Faces', faces, 'Vertices', vertices, 'FaceColor', 'none');
 %! fv = shrinkfaces (faces, vertices, 0.25);
-%! patch (fv)
-%! axis equal
-%! grid on
-%! title "faces which are not convex are clearly not allowed"
+%! patch (fv);
+%! axis equal;
+%! grid on;
+%! title 'faces which are not convex are clearly not allowed'
 
 %!demo
+%! clf;
 %! [phi r] = meshgrid (linspace (0, 1.5*pi, 16), linspace (1, 2, 4));
 %! tri = delaunay (phi(:), r(:));
 %! v = [r(:).*sin(phi(:)) r(:).*cos(phi(:))];
-%! clf ()
-%! p = patch ("Faces", tri, "Vertices", v, "FaceColor", "none");
+%! p = patch ('Faces', tri, 'Vertices', v, 'FaceColor', 'none');
 %! fv = shrinkfaces (p);
-%! patch (fv)
-%! axis equal
-%! grid on
+%! patch (fv);
+%! axis equal;
+%! grid on;
 
 %!demo
-%! N = 10; # N intervals per axis
+%! clf;
+%! N = 10;  % N intervals per axis
 %! [x, y, z] = meshgrid (linspace (-4,4,N+1));
 %! val = x.^3 + y.^3 + z.^3;
 %! fv = isosurface (x, y, z, val, 3, z);
 %!
-%! clf ()
-%! p = patch ("Faces", fv.faces, "Vertices", fv.vertices, "FaceVertexCData", ...
-%!            fv.facevertexcdata, "FaceColor", "interp", "EdgeColor", "black");
-%! axis equal
-%! view (115, 30)
-%! drawnow
+%! p = patch ('Faces', fv.faces, 'Vertices', fv.vertices, 'FaceVertexCData', ...
+%!            fv.facevertexcdata, 'FaceColor', 'interp', 'EdgeColor', 'black');
+%! axis equal;
+%! view (115, 30);
+%! drawnow;
 %! shrinkfaces (p, 0.6);
 
 %!shared faces, vertices, nfv, nfv2
@@ -209,8 +210,9 @@ endfunction
 %! vertices = [0 0 0; 1 0 0; 1 1 0];
 %! nfv = shrinkfaces (faces, vertices, 0.7);
 %! nfv2 = shrinkfaces (nfv, 1/0.7);
-%!assert (isfield (nfv, "faces"));
-%!assert (isfield (nfv, "vertices"));
-%!assert (size (nfv.faces), [1 3]);
-%!assert (size (nfv.vertices), [3 3]);
-%!assert (norm (nfv2.vertices - vertices), 0, 2*eps);
+%!assert (isfield (nfv, "faces"))
+%!assert (isfield (nfv, "vertices"))
+%!assert (size (nfv.faces), [1 3])
+%!assert (size (nfv.vertices), [3 3])
+%!assert (norm (nfv2.vertices - vertices), 0, 2*eps)
+

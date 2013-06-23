@@ -277,11 +277,11 @@ endfunction
 %! y = 5 * cos (t);
 %! [hax, h1, h2] = plotyy (t, x, t, y);
 %! [~, h3, h4] = plotyy (t+1, x, t+1, y);
-%! set ([h3, h4], "linestyle", "--")
-%! xlabel (hax(1), 'xlabel')
-%! title (hax(2), 'title')
-%! ylabel (hax(1), 'Left axis is Blue')
-%! ylabel (hax(2), 'Right axis is Green')
+%! set ([h3, h4], 'linestyle', '--');
+%! xlabel (hax(1), 'xlabel');
+%! title (hax(2), 'title');
+%! ylabel (hax(1), 'Left axis is Blue');
+%! ylabel (hax(2), 'Right axis is Green');
 
 function deleteplotyy (h, d, ax2, t2)
   if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes")

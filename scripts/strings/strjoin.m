@@ -70,14 +70,18 @@ function rval = strjoin (cstr, delimiter)
   if (numel (delimiter) == 1 && num > 1)
     delimiter = repmat (delimiter, 1, num);
     delimiter(end) = {""};
-  elseif (numel (delimiter) != num - 1)
+  elseif (num > 0 && numel (delimiter) != num - 1)
     error ("strjoin:cellstring_delimiter_mismatch",
       "strjoin: the number of delimiters does not match the number of strings")
   else
     delimiter(end+1) = {""};
   endif
 
-  rval = [[cstr(:).'; delimiter(:).']{:}];
+  if (num == 0)
+    rval = ""
+  else
+    rval = [[cstr(:).'; delimiter(:).']{:}];
+  endif
 
 endfunction
 
@@ -89,3 +93,4 @@ endfunction
 %!  {" ", ",", "-", ";"}), "space comma,dash-semicolon;done")
 %!assert (strjoin ({'Octave','Scilab'},'\n'), "Octave\nScilab")
 %!assert (strjoin ({'Octave','Scilab'},{'\n'}), "Octave\\nScilab")
+%!assert (strjoin ({},'foo'), "")

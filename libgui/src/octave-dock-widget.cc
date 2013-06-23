@@ -126,7 +126,7 @@ octave_dock_widget::set_title (const QString& title)
 
 // make the widget floating
 void
-octave_dock_widget::make_window (bool visible)
+octave_dock_widget::make_window ()
 {
   QSettings *settings = resource_manager::get_settings ();
 
@@ -143,14 +143,11 @@ octave_dock_widget::make_window (bool visible)
   // restore the last geometry when floating
   restoreGeometry (settings->value
           ("DockWidgets/" + objectName ()+"_floating_geometry").toByteArray ());
-
-  if (visible)
-    show ();  // make visible if desired
 }
 
 // dock the widget
 void
-octave_dock_widget::make_widget (bool visible)
+octave_dock_widget::make_widget ()
 {
   QSettings *settings = resource_manager::get_settings ();
 
@@ -170,8 +167,6 @@ octave_dock_widget::make_widget (bool visible)
   // adjust the (un)dock icon
   _dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
   _dock_action->setToolTip (tr ("Unock widget"));
-
-  setVisible (visible);
 }
 
 // slot for (un)dock action
@@ -180,11 +175,11 @@ octave_dock_widget::change_floating (bool)
 {
   if (parent())
     {
-      make_window (true);
+      make_window ();
       focus ();
     }
   else
-    make_widget (true);
+    make_widget ();
 }
 
 // slot for hiding the widget

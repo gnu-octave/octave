@@ -39,8 +39,8 @@ public:
   virtual ~octave_dock_widget ();
 
   virtual void connect_visibility_changed (void);
-  void make_window (bool visible);
-  void make_widget (bool visible);
+  void make_window (void);
+  void make_widget (void);
   void set_title (const QString&);
 
 signals:

@@ -553,7 +553,7 @@ main_window::set_window_layout (QSettings *settings)
           bool floating = settings->value
               ("DockWidgets/" + name + "Floating", false).toBool ();
           if (floating)
-            widget->make_window (false);
+            widget->make_window ();
           else if (! widget->parent ())  // should not be floating but is
             widget->setParent (this);    // reparent
 

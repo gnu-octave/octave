@@ -919,7 +919,6 @@
           <property name="title">
            <string>Terminal Colors</string>
           </property>
-          <zorder>verticalSpacer_3</zorder>
          </widget>
         </item>
         <item>

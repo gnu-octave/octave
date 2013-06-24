@@ -661,9 +661,10 @@ uint TerminalView::randomSeed() const { return _randomSeed; }
 */
 void TerminalDisplay::setCursorPos(const int curx, const int cury)
 {
-  QPoint tL  = contentsRect().topLeft();
-  int    tLx = tL.x();
-  int    tLy = tL.y();
+  // Align contents with bottom of view by computing top coordinate
+  QPoint bL  = contentsRect().bottomLeft();
+  int    tLx = bL.x();
+  int    tLy = bL.y()-2*_topMargin-_fontHeight*_lines+1;
 
   int xpos, ypos;
   ypos = _topMargin + tLy + _fontHeight*(cury-1) + _fontAscent;
@@ -715,7 +716,7 @@ void TerminalView::scrollImage(int lines , const QRect& screenWindowRegion)
   void* firstCharPos = &_image[ region.top() * this->_columns ];
   void* lastCharPos = &_image[ (region.top() + abs(lines)) * this->_columns ];
 
-  int top = _topMargin + (region.top() * _fontHeight);
+  int top = contentsRect().height() - _topMargin - (_lines * _fontHeight) + (region.top() * _fontHeight);
   int linesToMove = region.height() - abs(lines);
   int bytesToMove = linesToMove *
       this->_columns *
@@ -830,10 +831,10 @@ void TerminalView::updateImage()
 
   int y,x,len;
 
-  QPoint tL  = contentsRect().topLeft();
-
-  int    tLx = tL.x();
-  int    tLy = tL.y();
+  // Align contents with bottom of view by computing top coordinate
+  QPoint bL  = contentsRect().bottomLeft();
+  int    tLx = bL.x();
+  int    tLy = bL.y()-2*_topMargin-_fontHeight*_lines+1;
   _hasBlinker = false;
 
   CharacterColor cf;       // undefined
@@ -1098,8 +1099,13 @@ QRect TerminalView::preeditRect() const
   if ( preeditLength == 0 )
     return QRect();
 
+  // Align contents with bottom of view by computing top coordinate
+  QPoint bL  = contentsRect().bottomLeft();
+  int    tLx = bL.x();
+  int    tLy = bL.y()-2*_topMargin-_fontHeight*_lines+1;
+
   return QRect(_leftMargin + _fontWidth*cursorPosition().x(),
-               _topMargin + _fontHeight*cursorPosition().y(),
+               _topMargin + tLy + _fontHeight*cursorPosition().y(),
                _fontWidth*preeditLength,
                _fontHeight);
 }
@@ -1213,9 +1219,10 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
 {
   //qDebug("%s %d drawContents and rect x=%d y=%d w=%d h=%d", __FILE__, __LINE__, rect.x(), rect.y(),rect.width(),rect.height());
 
-  QPoint topLeft  = contentsRect().topLeft();
-  // Take the topmost vertical position for the view.
-  int topLeftY = topLeft.y();
+  // Align contents with bottom of view by computing top coordinate
+  QPoint bottomLeft  = contentsRect().bottomLeft();
+  int bottomLeftY = bottomLeft.y();
+  int topLeftY = bottomLeftY-2*_topMargin-_fontHeight*_lines+1;
 
   // In Konsole, the view has been centered. Don't do that here, since there
   // are strange hopping effects during a resize when the view does no match
@@ -1361,10 +1368,15 @@ void TerminalView::blinkEvent()
 
 QRect TerminalView::imageToWidget(const QRect& imageArea) const
 {
+  // Align contents with bottom of view by computing top coordinate
+  QPoint bL  = contentsRect().bottomLeft();
+  int    tLx = bL.x();
+  int    tLy = bL.y()-2*_topMargin-_fontHeight*_lines+1;
+
   //qDebug("%s %d imageToWidget", __FILE__, __LINE__);
   QRect result;
   result.setLeft( _leftMargin + _fontWidth * imageArea.left() );
-  result.setTop( _topMargin + _fontHeight * imageArea.top() );
+  result.setTop( _topMargin + tLy + _fontHeight * imageArea.top() );
   result.setWidth( _fontWidth * imageArea.width() );
   result.setHeight( _fontHeight * imageArea.height() );
 
@@ -1730,9 +1742,10 @@ void TerminalView::extendSelection(const QPoint& position) {
       return;
     }
 
-  QPoint tL  = contentsRect().topLeft();
-  int    tLx = tL.x();
-  int    tLy = tL.y();
+  // Align contents with bottom of view by computing top coordinate
+  QPoint bL  = contentsRect().bottomLeft();
+  int    tLx = bL.x();
+  int    tLy = bL.y()-2*_topMargin-_fontHeight*_lines+1;
   int    scroll = _scrollBar->value();
 
   // we're in the process of moving the mouse with the left button pressed

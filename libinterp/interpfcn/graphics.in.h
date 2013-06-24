@@ -3969,6 +3969,8 @@ public:
     void sync_positions (const Matrix& linset);
     void sync_positions (void);
 
+    void update_insets (void);
+
     void update_outerposition (void)
     {
       set_activepositionproperty ("outerposition");

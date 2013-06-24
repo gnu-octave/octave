@@ -4203,14 +4203,31 @@ axes::properties::sync_positions (const Matrix& linset)
       outerposition = calc_tightbox (outpos);
     }
 
+  update_insets ();
+}
+
+void
+axes::properties::update_insets (void)
+{
+  Matrix pos = position.get ().matrix_value ();
+  Matrix outpos = outerposition.get ().matrix_value ();
+  Matrix tightpos = calc_tightbox (pos);
+  // Determine the tightinset = axes_bbox - position
   Matrix inset (1, 4, 1.0);
+  inset(0) = pos(0)-tightpos(0);
+  inset(1) = pos(1)-tightpos(1);
+  inset(2) = tightpos(0)+tightpos(2)-pos(0)-pos(2);
+  inset(3) = tightpos(1)+tightpos(3)-pos(1)-pos(3);
+  tightinset = inset;
+
+  // Determine the looseinset = outerposition - position
   inset(0) = pos(0)-outpos(0);
   inset(1) = pos(1)-outpos(1);
   inset(2) = outpos(0)+outpos(2)-pos(0)-pos(2);
   inset(3) = outpos(1)+outpos(3)-pos(1)-pos(3);
-
-  tightinset = inset;
+  looseinset = inset;
 }
+
 
 void
 axes::properties::set_text_child (handle_property& hp,
@@ -4405,18 +4422,8 @@ axes::properties::set_defaults (base_graphics_object& obj,
       fontunits = "points";
       fontweight = "normal";
 
-      Matrix touterposition (1, 4, 0.0);
-      touterposition(2) = 1;
-      touterposition(3) = 1;
-      outerposition = touterposition;
-
+      outerposition = default_axes_outerposition ();
       position = default_axes_position ();
-
-      Matrix tlooseinset = default_axes_position ();
-      tlooseinset(2) = 1-tlooseinset(0)-tlooseinset(2);
-      tlooseinset(3) = 1-tlooseinset(1)-tlooseinset(3);
-      looseinset = tlooseinset;
-
       activepositionproperty = "outerposition";
     }
 
@@ -4476,7 +4483,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   adopt (title.handle_value ());
 
   update_transform ();
-
+  update_insets ();
   override_defaults (obj);
 }
 

@@ -51,7 +51,7 @@
 ##
 ## If called with two or three output arguments then return the
 ## information about the faces @var{f}, vertices @var{v} and color data
-## @var{c} as seperate arrays instead of a single structure array.
+## @var{c} as separate arrays instead of a single structure array.
 ##
 ## If called with no output argument then directly process the
 ## isosurface geometry with the @command{patch} command.

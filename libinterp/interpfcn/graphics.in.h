@@ -4355,7 +4355,7 @@ public:
     void update_font (void);
     void update_string (void) { request_autopos (); update_text_extent (); }
     void update_rotation (void) { update_text_extent (); }
-    void update_color (void) { update_font (); }
+    void update_color (void) { update_font (); update_text_extent (); }
     void update_fontname (void) { update_font (); update_text_extent (); }
     void update_fontsize (void) { update_font (); update_text_extent (); }
     void update_fontangle (void) { update_font (); update_text_extent (); }

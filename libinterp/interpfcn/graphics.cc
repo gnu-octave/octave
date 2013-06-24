@@ -5863,6 +5863,7 @@ axes::properties::update_units (const caseless_str& old_units)
   position.set (octave_value (convert_position (get_position ().matrix_value (), old_units, new_units, parent_bb)), false);
   outerposition.set (octave_value (convert_position (get_outerposition ().matrix_value (), old_units, new_units, parent_bb)), false);
   tightinset.set (octave_value (convert_position (get_tightinset ().matrix_value (), old_units, new_units, parent_bb)), false);
+  looseinset.set (octave_value (convert_position (get_looseinset ().matrix_value (), old_units, new_units, parent_bb)), false);
 }
 
 void

@@ -1507,7 +1507,7 @@ a été supprimé ou rénommé. Voulez-vous le sauver maintenant?%2</translation
     <message>
         <location line="+13"/>
         <source>It appears that you have launched Octave GUI for the first time on this computer, since no configuration file could be found at &apos;~/.octave-gui&apos;. This wizard will guide you through the essential settings you should make before you can start using Octave GUI. If you want to transfer your settings you have previously made just close this dialog and copy over the settings file to your home folder. The presence of that file will automatically be detected and will skip this wizard. IMPORTANT: This wizard is not fully functional yet. Just click your way to the end and it will create a standard settings file.</source>
-        <translation type="unfinished">Il semble que vous avez lancé l'Octave GUI pour la première fois sur cet ordinateur, car aucun fichier de configuration se trouve dans &apos;~/octave-gui&apos;. Octave-gui ». Cet assistant va vous guider à travers les paramètres essentiels que vous devez configurer avant de pouvoir commencer à utiliser Octave GUI. Si vous souhaitez transférer vos réglages que vous avez déjà fait il suffit de fermer cette boîte de dialogue et copiez le fichier de paramètres à votre dossier personnel. La présence de ce fichier sera automatiquement détecté et cet assistant serait sauté. IMPORTANT: Cet assistant n'est pas encore totalement fonctionnel. Il suffit de cliquer jusqu'à la fin et il va créer un fichier de paramètres standard.</translation>
+        <translation type="unfinished">Il semble que vous avez lancé l&apos;Octave GUI pour la première fois sur cet ordinateur, car aucun fichier de configuration se trouve dans &apos;~/octave-gui&apos;. Octave-gui ». Cet assistant va vous guider à travers les paramètres essentiels que vous devez configurer avant de pouvoir commencer à utiliser Octave GUI. Si vous souhaitez transférer vos réglages que vous avez déjà fait il suffit de fermer cette boîte de dialogue et copiez le fichier de paramètres à votre dossier personnel. La présence de ce fichier sera automatiquement détecté et cet assistant serait sauté. IMPORTANT: Cet assistant n&apos;est pas encore totalement fonctionnel. Il suffit de cliquer jusqu&apos;à la fin et il va créer un fichier de paramètres standard.</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -1533,12 +1533,12 @@ a été supprimé ou rénommé. Voulez-vous le sauver maintenant?%2</translation
     <message>
         <location line="+7"/>
         <source>This is the development version of Octave with the first official GUI.</source>
-        <translation type="unfinished">Il s'agit de la version de développement de Octave avec le premier GUI officiel.</translation>
+        <translation type="unfinished">Il s&apos;agit de la version de développement de Octave avec le premier GUI officiel.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>You seem to run Octave GUI for the first time on this computer. This assistant will help you to configure this software installation. Click &apos;Finish&apos; to write a configuration file and launch Octave GUI.</source>
-        <translation type="unfinished">Il semble que vous avez lancé l'Octave GUI pour la première fois sur cet ordinateur. Cet assistant va vous guider pour la configuration. Cliquez &apos;Terminer&apos; afin d'écrire un fichier de configuration et lancer Octave GUI.</translation>
+        <translation type="unfinished">Il semble que vous avez lancé l&apos;Octave GUI pour la première fois sur cet ordinateur. Cet assistant va vous guider pour la configuration. Cliquez &apos;Terminer&apos; afin d&apos;écrire un fichier de configuration et lancer Octave GUI.</translation>
     </message>
     <message>
         <location line="+48"/>

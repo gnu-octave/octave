@@ -2061,29 +2061,29 @@ graphics_object::set (const octave_map& m)
 /*
 ## test set ticklabels for compatibility
 %!test
-%! set (gcf (), "visible", "off")
-%! set (gca (), "xticklabel", [0, 0.2, 0.4, 0.6, 0.8, 1])
+%! set (gcf (), "visible", "off");
+%! set (gca (), "xticklabel", [0, 0.2, 0.4, 0.6, 0.8, 1]);
 %! xticklabel = get (gca (), "xticklabel");
-%! assert (class (xticklabel), "char")
-%! assert (size (xticklabel), [6, 3])
+%! assert (class (xticklabel), "char");
+%! assert (size (xticklabel), [6, 3]);
 %!test
-%! set (gcf (), "visible", "off")
-%! set (gca (), "xticklabel", "0|0.2|0.4|0.6|0.8|1")
+%! set (gcf (), "visible", "off");
+%! set (gca (), "xticklabel", "0|0.2|0.4|0.6|0.8|1");
 %! xticklabel = get (gca (), "xticklabel");
-%! assert (class (xticklabel), "char")
-%! assert (size (xticklabel), [6, 3])
+%! assert (class (xticklabel), "char");
+%! assert (size (xticklabel), [6, 3]);
 %!test
-%! set (gcf (), "visible", "off")
-%! set (gca (), "xticklabel", ["0 "; "0.2"; "0.4"; "0.6"; "0.8"; "1 "])
+%! set (gcf (), "visible", "off");
+%! set (gca (), "xticklabel", ["0 "; "0.2"; "0.4"; "0.6"; "0.8"; "1 "]);
 %! xticklabel = get (gca (), "xticklabel");
-%! assert (class (xticklabel), "char")
-%! assert (size (xticklabel), [6, 3])
+%! assert (class (xticklabel), "char");
+%! assert (size (xticklabel), [6, 3]);
 %!xtest
-%! set (gcf (), "visible", "off")
-%! set (gca (), "xticklabel", {"0", "0.2", "0.4", "0.6", "0.8", "1"})
+%! set (gcf (), "visible", "off");
+%! set (gca (), "xticklabel", {"0", "0.2", "0.4", "0.6", "0.8", "1"});
 %! xticklabel = get (gca (), "xticklabel");
-%! assert (class (xticklabel), "cell")
-%! assert (size (xticklabel), [6, 1])
+%! assert (class (xticklabel), "cell");
+%! assert (size (xticklabel), [6, 1]);
 */
 
 /*
@@ -2101,28 +2101,28 @@ graphics_object::set (const octave_map& m)
 %!test
 %! markchanged = @(h, foobar, name) set (h, "userdata", [get(h,"userdata"); {name}]);
 %! figure (1, "visible", "off")
-%! clf ()
+%! clf ();
 %! h = line ();
-%! set (h, "userdata", {})
-%! addlistener (h, "color", {markchanged, "color"})
-%! addlistener (h, "linewidth", {markchanged, "linewidth"})
+%! set (h, "userdata", {});
+%! addlistener (h, "color", {markchanged, "color"});
+%! addlistener (h, "linewidth", {markchanged, "linewidth"});
 %! # "linewidth" first
 %! props.linewidth = 2;
 %! props.color = "r";
 %! set (h, props);
-%! assert (get (h, "userdata"), fieldnames (props))
+%! assert (get (h, "userdata"), fieldnames (props));
 %! clear props
-%! clf ()
+%! clf ();
 %! h = line ();
-%! set (h, "userdata", {})
-%! addlistener (h, "color", {markchanged, "color"})
-%! addlistener (h, "linewidth", {markchanged, "linewidth"})
+%! set (h, "userdata", {});
+%! addlistener (h, "color", {markchanged, "color"});
+%! addlistener (h, "linewidth", {markchanged, "linewidth"});
 %! # "color" first
 %! props.color = "r";
 %! props.linewidth = 2;
 %! set (h, props);
-%! assert (get (h, "userdata"), fieldnames (props))
-%! close (1)
+%! assert (get (h, "userdata"), fieldnames (props));
+%! close (1);
 */
 
 // Set a property to a value or to its (factory) default value.
@@ -3747,25 +3747,25 @@ figure::properties::update_papersize (void)
 %!test
 %! figure (1, "visible", "off");
 %! set (1, "paperunits", "inches");
-%! set (1, "papersize", [5, 4])
+%! set (1, "papersize", [5, 4]);
 %! set (1, "paperunits", "points");
-%! assert (get (1, "papersize"), [5, 4] * 72, 1)
+%! assert (get (1, "papersize"), [5, 4] * 72, 1);
 %! papersize = get (gcf, "papersize");
 %! set (1, "papersize", papersize + 1);
-%! set (1, "papersize", papersize)
-%! assert (get (1, "papersize"), [5, 4] * 72, 1)
-%! close (1)
+%! set (1, "papersize", papersize);
+%! assert (get (1, "papersize"), [5, 4] * 72, 1);
+%! close (1);
 %!test
 %! figure (1, "visible", "off");
 %! set (1, "paperunits", "inches");
-%! set (1, "papersize", [5, 4])
+%! set (1, "papersize", [5, 4]);
 %! set (1, "paperunits", "centimeters");
-%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72)
+%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72);
 %! papersize = get (gcf, "papersize");
 %! set (1, "papersize", papersize + 1);
-%! set (1, "papersize", papersize)
-%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72)
-%! close (1)
+%! set (1, "papersize", papersize);
+%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72);
+%! close (1);
 */
 
 void
@@ -5091,16 +5091,16 @@ axes::properties::update_ticklength (void)
 %!demo
 %! clf;
 %! subplot (2,1,1);
-%! plot (rand (3));
-%! xlabel xlabel;
-%! ylabel ylabel;
-%! title title;
+%!  plot (rand (3));
+%!  xlabel xlabel;
+%!  ylabel ylabel;
+%!  title title;
 %! subplot (2,1,2);
-%! plot (rand (3));
-%! set (gca, "ticklength", get (gca, "ticklength") * 2, "tickdir", "out");
-%! xlabel xlabel;
-%! ylabel ylabel;
-%! title title;
+%!  plot (rand (3));
+%!  set (gca, "ticklength", get (gca, "ticklength") * 2, "tickdir", "out");
+%!  xlabel xlabel;
+%!  ylabel ylabel;
+%!  title title;
 */
 
 static bool updating_xlabel_position = false;
@@ -5744,106 +5744,96 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
 }
 
 static octave_value
-convert_ticklabel_string(const octave_value& val)
+convert_ticklabel_string (const octave_value& val)
 {
   octave_value retval = val;
 
   if (!val.is_cellstr ())
     {
       string_vector str;
-      if (val.is_float_type () || val.is_integer_type ())
+      if (val.is_numeric_type ())
         {
           NDArray data = val.array_value ();
-          std::ostringstream s;
-          s.precision (5);
+          std::ostringstream oss;
+          oss.precision (5);
           for (octave_idx_type i = 0; i < val.numel (); i++)
             {
-              s.str("");
-              s << data(i);
-              str.append (s.str());
+              oss.str ("");
+              oss << data(i);
+              str.append (oss.str ());
             }
         }
       else if (val.is_string () && val.rows () == 1)
         {
-          std::string tmpstr(val.string_value ());
-          char separator = '|';
-          size_t pos = 0;
-          while (true)
-            {
-              size_t new_pos = tmpstr.find_first_of (separator, pos);
+          std::istringstream iss (val.string_value ());
+          std::string tmpstr;
 
-              if (new_pos == std::string::npos)
-                {
-                  std::string tmp = tmpstr.substr (pos);
-                  str.append(tmp);
-                  break;
-                }
-              else
-                {
-                  std::string tmp = tmpstr.substr (pos, new_pos - pos);
-                  str.append (tmp);
-                }
-              pos = new_pos + 1;
+          // Split string with delimiter '|'
+          while (std::getline (iss, tmpstr, '|'))
+            {
+              str.append (tmpstr);
             }
         }
       else
         return retval;
 
-      charMatrix ch(str);
-      for (octave_idx_type i = 0; i < ch.numel(); i++)
+      charMatrix ch (str);
+
+      for (octave_idx_type i = 0; i < ch.numel (); i++)
         if (ch(i) == 0)
           ch(i) = ' ';
-      retval = octave_value(ch);
+
+      retval = octave_value (ch);
 
     }
   return retval;
 }
 
 void
-axes::properties::set_xticklabel(const octave_value& v)
+axes::properties::set_xticklabel (const octave_value& v)
 {
   if (!error_state)
     {
-      if (xticklabel.set(convert_ticklabel_string(v), false))
+      if (xticklabel.set (convert_ticklabel_string (v), false))
         {
-          set_xticklabelmode("manual");
-          xticklabel.run_listeners(POSTSET);
-          mark_modified();
+          set_xticklabelmode ("manual");
+          xticklabel.run_listeners (POSTSET);
+          mark_modified ();
         }
       else
-        set_xticklabelmode("manual");
+        set_xticklabelmode ("manual");
     }
 }
 
 void
-axes::properties::set_yticklabel(const octave_value& v)
+axes::properties::set_yticklabel (const octave_value& v)
 {
   if (!error_state)
     {
-      if (yticklabel.set(convert_ticklabel_string(v), false))
+      if (yticklabel.set (convert_ticklabel_string (v), false))
         {
-          set_yticklabelmode("manual");
-          yticklabel.run_listeners(POSTSET);
-          mark_modified();
+          set_yticklabelmode ("manual");
+          yticklabel.run_listeners (POSTSET);
+          mark_modified ();
         }
       else
-        set_yticklabelmode("manual");
+        set_yticklabelmode ("manual");
     }
 }
 
 void
-axes::properties::set_zticklabel(const octave_value& v)
+axes::properties::set_zticklabel (const octave_value& v)
 {
   if (!error_state)
     {
-      if (zticklabel.set(convert_ticklabel_string(v), false))
+      if (zticklabel.set (convert_ticklabel_string (v), false))
         {
-          set_zticklabelmode("manual");
-          zticklabel.run_listeners(POSTSET);
-          mark_modified();
+          set_zticklabelmode ("manual");
+          zticklabel.run_listeners (POSTSET);
+          mark_modified ();
         }
       else
-        set_zticklabelmode("manual");
+        set_zticklabelmode ("manual");
     }
 }
 

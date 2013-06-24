@@ -2078,7 +2078,7 @@ graphics_object::set (const octave_map& m)
 %! xticklabel = get (gca (), "xticklabel");
 %! assert (class (xticklabel), "char");
 %! assert (size (xticklabel), [6, 3]);
-%!xtest
+%!test
 %! set (gcf (), "visible", "off");
 %! set (gca (), "xticklabel", {"0", "0.2", "0.4", "0.6", "0.8", "1"});
 %! xticklabel = get (gca (), "xticklabel");
@@ -5748,7 +5748,13 @@ convert_ticklabel_string (const octave_value& val)
 {
   octave_value retval = val;
 
-  if (!val.is_cellstr ())
+  if (val.is_cellstr ())
+    {
+      // Always return a column vector for Matlab Compatibility
+      if (val.columns () > 1)
+        retval = val.reshape (dim_vector (val.numel (), 1));
+    }
+  else
     {
       string_vector str;
       if (val.is_numeric_type ())
@@ -5784,8 +5790,8 @@ convert_ticklabel_string (const octave_value& val)
           ch(i) = ' ';
 
       retval = octave_value (ch);
-
     }
+
   return retval;
 }
 

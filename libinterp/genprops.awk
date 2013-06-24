@@ -70,6 +70,10 @@
 ##   S:  There is a custom extern definition for the type-specific set
 ##       function, so we emit only the declaration.
 ##
+################################################################################
+##   'o','O','a' are currently not processed.  They are commented out in code.
+################################################################################
+##    
 ##   o:  There is a custom inline definition for the octave_value version
 ##       of the set function, so we don't emit one.
 ##
@@ -98,6 +102,7 @@
 ##
 ##       constructor, which creates a new radio_property and so cannot
 ##       preserve the old list of possible values.
+################################################################################
 ##
 ##   l:  Add the line
 ##

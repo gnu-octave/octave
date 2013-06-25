@@ -3623,7 +3623,7 @@ not loaded anymore during the current Octave session.\n\
                                "autoload: third argument can only be 'remove'");
 
               // Remove function from symbol table and autoload map.
-              clear_dld_function (argv[1]);
+              symbol_table::clear_dld_function (argv[1]);
               autoload_map.erase (argv[1]);
             }
         }

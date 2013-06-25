@@ -176,12 +176,19 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      betaincinv   dblist    expint       iscolormap    splinefit
-      cmpermute    ellipj    findfigs     lines         strjoin
-      cmunique     ellipke   fminsearch   polyeig       tetramesh
-      colorcube    erfcinv   gallery      rgbplot       waterfall
-      dawson       erfi      importdata   shrinkfaces
-
+      base64_decode               erfcinv        rgbplot                    
+      base64_encode               erfi           shrinkfaces                
+      betaincinv                  expint         splinefit               
+      built_in_docstrings_file    findfigs       strjoin                 
+      cmpermute                   fminsearch     struct2hdl              
+      cmunique                    gallery        tetramesh               
+      colorcube                   gco            waterfall               
+      copyobj                     hdl2struct                  
+      dawson                      importdata                  
+      dblist                      iscolormap  
+      ellipj                      lines   
+      ellipke                     polyeig 
+                               
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.4 and have been

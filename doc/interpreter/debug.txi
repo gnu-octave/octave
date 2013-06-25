@@ -158,7 +158,7 @@ automatically sets the running script into the debug mode.
 @node Debug Mode
 @section Debug Mode
 
-There are two additional support functions that allow the user to
+There are three additional support functions that allow the user to
 interrogate where in the execution of a script Octave entered the debug
 mode and to print the code in the script surrounding the point where
 Octave entered debug mode.
@@ -166,6 +166,8 @@ Octave entered debug mode.
 @DOCSTRING(dbwhere)
 
 @DOCSTRING(dbtype)
+
+@DOCSTRING(dblist)
 
 You may also use @code{isdebugmode} to determine whether the debugger is
 currently active.

@@ -1036,6 +1036,80 @@ numbers.\n\
   return retval;
 }
 
+DEFUN (dblist, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Command} {} dblist\n\
+@deftypefnx {Command} {} dblist var{n}\n\
+In debugging mode, list @var{n} lines of the function being debugged\n\
+centered around the the current line to be executed.  If unspecified @var{n}\n\
+defaults to 10 (+/- 5 lines)\n\
+@seealso{dbwhere, dbtype}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int n = 10;
+
+  if (args.length () == 1)
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_string ())
+        {
+          std::string s_arg = arg.string_value ();
+
+          n = atoi (s_arg.c_str ());
+        }
+      else
+        n = args(0).int_value ();
+
+      if (n < 0)
+        error ("dblist: N must be a non-negative integer");
+    }
+
+  octave_user_code *dbg_fcn = get_user_code ();
+
+  if (dbg_fcn)
+    {
+      bool have_file = true;
+
+      std::string name = dbg_fcn->fcn_file_name ();
+
+      if (name.empty ())
+        {
+          have_file = false;
+          name = dbg_fcn->name ();
+        }
+
+      int l = octave_call_stack::caller_user_code_line ();
+
+      if (l > 0)
+        {
+          if (have_file)
+            {
+              int l_min = std::max (l - n/2, 0);
+              int l_max = l + n/2;
+              do_dbtype (octave_stdout, dbg_fcn->name (), l_min, l-1);
+
+              std::string line = get_file_line (name, l);
+              if (! line.empty ())
+                octave_stdout << l << "-->\t" << line << std::endl;
+
+              do_dbtype (octave_stdout, dbg_fcn->name (), l+1, l_max);
+            }
+        }
+      else
+        {
+          octave_stdout << "dblist: unable to determine source code line"
+                        << std::endl;
+        }
+    }
+  else
+    error ("dblist: must be inside a user function to use dblist\n");
+
+  return retval;
+}
+
 static octave_value_list
 do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 {

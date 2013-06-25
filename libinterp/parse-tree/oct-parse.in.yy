@@ -3515,6 +3515,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 DEFUN (autoload, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
+@deftypefnx {Built-in Function} {} autoload (@dots{}, @asis{\"remove\"})\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
 The second argument, @var{file}, should be an absolute file name or\n\
@@ -3543,6 +3544,10 @@ autoload (\"foo\", file_in_loadpath (\"bar.oct\"))\n\
 are strongly discouraged, as their behavior may be unpredictable.\n\
 \n\
 With no arguments, return a structure containing the current autoload map.\n\
+\n\
+If a third argument @asis{'remove'} is given, the function is cleared and\n\
+not loaded anymore during the current Octave session.\n\
+\n\
 @seealso{PKG_ADD}\n\
 @end deftypefn")
 {
@@ -3572,7 +3577,7 @@ With no arguments, return a structure containing the current autoload map.\n\
 
       retval = m;
     }
-  else if (nargin == 2)
+  else if (nargin == 2 || nargin == 3)
     {
       string_vector argv = args.make_argv ("autoload");
 
@@ -3609,7 +3614,18 @@ With no arguments, return a structure containing the current autoload map.\n\
                                  "autoload: '%s' is not an absolute file name",
                                  nm.c_str ());
             }
-          autoload_map[argv[1]] = nm;
+          if (nargin == 2)
+            autoload_map[argv[1]] = nm;
+          else if (nargin == 3)
+            {
+              if (argv[3].compare ("remove") != 0)
+                error_with_id ("Octave:invalid-input-arg",
+                               "autoload: third argument can only be 'remove'");
+
+              // Remove function from symbol table and autoload map.
+              clear_dld_function (argv[1]);
+              autoload_map.erase (argv[1]);
+            }
         }
     }
   else

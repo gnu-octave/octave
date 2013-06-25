@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} ribbon (@var{x}, @var{y}, @var{width})
 ## @deftypefnx {Function File} {} ribbon (@var{y})
 ## @deftypefnx {Function File} {@var{h} =} ribbon (@dots{})
-## Plot a ribbon plot for the columns of @var{y} vs.  @var{x}.  The
+## Plot a ribbon plot for the columns of @var{y} vs. @var{x}.  The
 ## optional parameter @var{width} specifies the width of a single ribbon
 ## (default is 0.75).  If @var{x} is omitted, a vector containing the
 ## row numbers is assumed (1:rows (Y)).

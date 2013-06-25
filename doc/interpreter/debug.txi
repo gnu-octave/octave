@@ -179,6 +179,11 @@ the command @code{dbstep}.
 
 @DOCSTRING(dbstep)
 
+When in debug mode the @key{RETURN} will execute the last entered command.
+This is useful, for example, after hitting a breakpoint and entering
+@code{dbstep}.  After that one can advance line by line through the code
+with only a single key stroke.
+
 @node Call Stack
 @section Call Stack
 

@@ -1039,7 +1039,7 @@ numbers.\n\
 DEFUN (dblist, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} dblist\n\
-@deftypefnx {Command} {} dblist var{n}\n\
+@deftypefnx {Command} {} dblist @var{n}\n\
 In debugging mode, list @var{n} lines of the function being debugged\n\
 centered around the the current line to be executed.  If unspecified @var{n}\n\
 defaults to 10 (+/- 5 lines)\n\

@@ -23,32 +23,31 @@
 
 ## Return the next line color in the rotation.
 
-## Author: jwe
+## Author: Carl Osterwisch
 
 function rgb = __next_line_color__ (reset)
 
-  persistent color_rotation;
-  persistent num_colors;
-  persistent color_index;
+  persistent reset_colors = true;
 
   if (nargin < 2)
     if (nargin == 1)
-      if (reset || isempty (color_rotation))
-        color_rotation = get (gca (), "colororder");
-        num_colors = rows (color_rotation);
-        color_index = 1;
-      endif
-    elseif (! isempty (color_rotation))
-      rgb = color_rotation(color_index,:);
-      if (++color_index > num_colors)
-        color_index = 1;
-        __next_line_style__ ("incr");
-      endif
+      % Indicates whether the next call will increment or not
+      reset_colors = reset;
     else
-      error ("__next_line_color__: color_rotation not initialized");
+      % Find and return the next line color
+      ca = gca();
+      colorOrder = get(ca, "ColorOrder");
+      if reset_colors
+        color_index = 1;
+      else
+        % Executed when "hold all" is active
+        nChildren = length(get(ca, "Children"));
+        nColors = rows(colorOrder);
+        color_index = mod(nChildren, nColors) + 1;
+      endif
+      rgb = colorOrder(color_index,:);
     endif
   else
     print_usage ();
   endif
-
 endfunction

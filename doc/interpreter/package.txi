@@ -252,16 +252,23 @@ Octave package manager.
 directives.
 
 @item package/pre_install.m
-This is an optional script that is run prior to the installation of a
-package. 
+This is an optional function that is run prior to the installation of a
+package.  This function is called with a single argument, a struct with
+fields names after the data in the @file{DESCRIPTION}, and the paths where
+the package functions will be installed.
 
 @item package/post_install.m
-This is an optional script that is run after the installation of a
-package. 
+This is an optional function that is run after the installation of a
+package.  This function is called with a single argument, a struct with
+fields names after the data in the @file{DESCRIPTION}, and the paths where
+the package functions were installed.
 
 @item package/on_uninstall.m
-This is an optional script that is run prior to the removal of a
-package. 
+This is an optional function that is run prior to the removal of a
+package.  This function is called with a single argument, a struct with
+fields names after the data in the @file{DESCRIPTION}, the paths where
+the package functions are installed, and whether the package is currently
+loaded.
 @end table
 
 Besides the above mentioned files, a package can also contain on or

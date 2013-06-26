@@ -3101,8 +3101,11 @@ mexErrMsgTxt (const char *s)
   if (s && strlen (s) > 0)
     error ("%s: %s", mexFunctionName (), s);
   else
-    // Just set the error state; don't print msg.
-    error ("");
+    {
+      // For compatibility with Matlab, print an empty message.
+      // Octave's error routine requires a non-null input so use a SPACE.
+      error (" ");
+    }
 
   mex_context->abort ();
 }
@@ -3122,8 +3125,11 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
       va_end (args);
     }
   else
-    // Just set the error state; don't print msg.
-    error ("");
+    {
+      // For compatibility with Matlab, print an empty message.
+      // Octave's error routine requires a non-null input so use a SPACE.
+      error (" ");
+    }
 
   mex_context->abort ();
 }

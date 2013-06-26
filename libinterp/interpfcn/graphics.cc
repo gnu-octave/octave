@@ -5756,7 +5756,7 @@ convert_ticklabel_string (const octave_value& val)
     }
   else
     {
-      string_vector str;
+      string_vector sv;
       if (val.is_numeric_type ())
         {
           NDArray data = val.array_value ();
@@ -5766,30 +5766,29 @@ convert_ticklabel_string (const octave_value& val)
             {
               oss.str ("");
               oss << data(i);
-              str.append (oss.str ());
+              sv.append (oss.str ());
             }
         }
       else if (val.is_string () && val.rows () == 1)
         {
-          std::istringstream iss (val.string_value ());
+          std::string valstr = val.string_value ();
+          std::istringstream iss (valstr);
           std::string tmpstr;
 
           // Split string with delimiter '|'
           while (std::getline (iss, tmpstr, '|'))
-            {
-              str.append (tmpstr);
-            }
+            sv.append (tmpstr);
+          
+          // If string ends with '|' Matlab appends a null string
+          if (*valstr.rbegin () == '|')
+            sv.append (std::string (""));
         }
       else
         return retval;
 
-      charMatrix ch (str);
+      charMatrix chmat (sv, ' ');
 
-      for (octave_idx_type i = 0; i < ch.numel (); i++)
-        if (ch(i) == 0)
-          ch(i) = ' ';
-
-      retval = octave_value (ch);
+      retval = octave_value (chmat);
     }
 
   return retval;

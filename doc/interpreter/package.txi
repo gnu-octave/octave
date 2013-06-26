@@ -30,10 +30,10 @@ the time of reading.  Therefore it is recommended to see the Octave
 website for an updated reference.
 
 @menu
-* Installing and Removing Packages::  
-* Using Packages::              
-* Administrating Packages::     
-* Creating Packages::           
+* Installing and Removing Packages::
+* Using Packages::
+* Administrating Packages::
+* Creating Packages::
 @end menu
 
 @findex pkg
@@ -112,24 +112,24 @@ to disable dependency checking.
 @node Using Packages
 @section Using Packages
 
-By default installed packages are available from the Octave prompt,
+By default installed packages are not available from the Octave prompt,
 but it is possible to control this using the @code{pkg load} and 
 @code{pkg unload} commands.  The functions from a package can be 
-removed from the Octave path by typing
-
-@example
-pkg unload package_name
-@end example
-
-@noindent
-where @code{package_name} is the name of the package to be removed
-from the path.
-
-In much the same way a package can be added to the Octave path by
-typing
+added to the Octave path by typing
 
 @example
 pkg load package_name
+@end example
+
+@noindent
+where @code{package_name} is the name of the package to be added
+to the path.
+
+In much the same way a package can be removed from the Octave path by
+typing
+
+@example
+pkg unload package_name
 @end example
 
 @node Administrating Packages
@@ -277,7 +277,7 @@ more of the following directories:
 @table @code
 @item package/inst
 An optional directory containing any files that are directly installed
-by the package.  Typically this will include any @code{m}-files. 
+by the package.  Typically this will include any @code{m}-files.
 
 @item package/src
 An optional directory containing code that must be built prior to the
@@ -306,9 +306,9 @@ external scripts, etc., called by functions within the package.
 @end table
 
 @menu
-* The DESCRIPTION File::        
-* The INDEX File::              
-* PKG_ADD and PKG_DEL Directives::  
+* The DESCRIPTION File::
+* The INDEX File::
+* PKG_ADD and PKG_DEL Directives::
 @end menu
 
 @node The DESCRIPTION File
@@ -346,7 +346,7 @@ Description: A short description of the package.  If this
  description gets too long for one line it can continue
  on the next by adding a space to the beginning of the
  following lines.
-License: GPL version 3 or later
+License: GPLv3+
 @end group
 @end example
 
@@ -496,7 +496,7 @@ This workaround description will not appear when listing functions in the
 package with @code{pkg describe} but they will be published
 in the HTML documentation online.
 Workaround descriptions can use any HTML markup, but
-keep in mind that it will be enclosed in a bold-italic environment.  
+keep in mind that it will be enclosed in a bold-italic environment.
 For the special case of:
 
 @example

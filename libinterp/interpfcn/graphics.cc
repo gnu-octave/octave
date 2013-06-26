@@ -6348,13 +6348,16 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
       double val = ticks(i);
       if (limits(0) <= val && val <= limits(1))
         {
+          std::string label (ticklabels(i));
+          label.erase (0, label.find_first_not_of (" "));
+          label = label.substr (0, label.find_last_not_of (" ")+1);
 #ifdef HAVE_FREETYPE
-          ext = text_renderer.get_extent (ticklabels(i));
+          ext = text_renderer.get_extent (label);
           wmax = std::max (wmax, ext(0));
           hmax = std::max (hmax, ext(1));
 #else
-          //FIXME: find a better approximation
-          int len = ticklabels(i).length ();
+          // FIXME: find a better approximation
+          int len = label.length ();
           wmax = std::max (wmax, 0.5*fontsize*len);
           hmax = fontsize;
 #endif

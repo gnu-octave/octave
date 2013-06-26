@@ -754,28 +754,37 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
                                    int xyz, int ha, int va,
                                    int& wmax, int& hmax)
 {
-  int n = std::min (ticklabels.numel (), ticks.numel ());
+  int nticks  = ticks.numel ();
+  int nlabels = ticklabels.numel ();
 
-  for (int i = 0; i < n; i++)
+  if (nlabels == 0)
+    return;
+
+  for (int i = 0; i < nticks; i++)
     {
       double val = ticks(i);
 
       if (lim1 <= val && val <= lim2)
         {
           Matrix b;
-          // FIXME: as tick text is transparent, shouldn't be
+
+          std::string label (ticklabels(i % nlabels));
+          label.erase (0, label.find_first_not_of (" "));
+          label = label.substr (0, label.find_last_not_of (" ")+1);
+
+          // FIXME: as tick text is transparent, shouldn't it be
           //        drawn after axes object, for correct rendering?
           if (xyz == 0) // X
             {
-              b = render_text (ticklabels(i), val, p1, p2, ha, va);
+              b = render_text (label, val, p1, p2, ha, va);
             }
           else if (xyz == 1) // Y
             {
-              b = render_text (ticklabels(i), p1, val, p2, ha, va);
+              b = render_text (label, p1, val, p2, ha, va);
             }
           else if (xyz == 2) // Z
             {
-              b = render_text (ticklabels(i), p1, p2, val, ha, va);
+              b = render_text (label, p1, p2, val, ha, va);
             }
 
           wmax = std::max (wmax, static_cast<int> (b(2)));

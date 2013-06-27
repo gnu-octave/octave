@@ -83,7 +83,9 @@ resource_manager::get_gui_translation_dir (void)
 }
 
 void
-resource_manager::config_translators (QTranslator *qt_tr,QTranslator *gui_tr)
+resource_manager::config_translators (QTranslator *qt_tr,
+                                      QTranslator *qsci_tr,
+                                      QTranslator *gui_tr)
 {
   QSettings *settings = resource_manager::get_settings ();
   // FIXME -- what should happen if settings is 0?
@@ -93,6 +95,9 @@ resource_manager::config_translators (QTranslator *qt_tr,QTranslator *gui_tr)
       language = QLocale::system().name();    // get system wide locale
   // load the translator file for qt strings
   qt_tr->load("qt_" + language,
+              QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  // load the translator file for qscintilla settings
+  qsci_tr->load("qscintilla_" + language,
               QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   // load the translator file for gui strings
   gui_tr->load (language, get_gui_translation_dir ());

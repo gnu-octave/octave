@@ -136,9 +136,9 @@ settings_dialog::settings_dialog (QWidget *p):
   QStringList items;
   items << QString("0") << QString("1") << QString("2");
   ui->terminal_cursorType->addItems(items);
-  ui->terminal_cursorType->setItemText (0, "IBeam Cursor");
-  ui->terminal_cursorType->setItemText (1, "Block Cursor");
-  ui->terminal_cursorType->setItemText (2, "Underline Cursor");
+  ui->terminal_cursorType->setItemText (0, tr ("IBeam Cursor"));
+  ui->terminal_cursorType->setItemText (1, tr ("Block Cursor"));
+  ui->terminal_cursorType->setItemText (2, tr ("Underline Cursor"));
 
   if (cursorType == "ibeam")
     ui->terminal_cursorType->setCurrentIndex (0);

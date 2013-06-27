@@ -389,14 +389,13 @@ function retval = __plt2ss__ (h, x, y, options, properties)
     options = options(1);
   endif
 
-  [x_nr, x_nc] = size (x);
-  [y_nr, y_nc] = size (y);
-
-  if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
+  if (isscalar (x) && isscalar (y))
     linestyle = options.linestyle;
     marker = options.marker;
     if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
+      ## If unspecified, marker for a single point is always "."
+      linestyle = "-";
+      marker = ".";
     endif
     color = options.color;
     if (isempty (color))

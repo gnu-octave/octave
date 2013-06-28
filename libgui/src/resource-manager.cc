@@ -87,18 +87,27 @@ resource_manager::config_translators (QTranslator *qt_tr,
                                       QTranslator *qsci_tr,
                                       QTranslator *gui_tr)
 {
+  bool loaded;
+
+  QString qt_trans_dir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
   QSettings *settings = resource_manager::get_settings ();
   // FIXME -- what should happen if settings is 0?
+
   // get the locale from the settings
   QString language = settings->value ("language","SYSTEM").toString ();
   if (language == "SYSTEM")
       language = QLocale::system().name();    // get system wide locale
+
   // load the translator file for qt strings
-  qt_tr->load("qt_" + language,
-              QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  loaded = qt_tr->load("qt_" + language, qt_trans_dir);
+  if (!loaded) // try lower case
+    qt_tr->load("qt_" + language.toLower (), qt_trans_dir);
+
   // load the translator file for qscintilla settings
-  qsci_tr->load("qscintilla_" + language,
-              QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  loaded = qsci_tr->load("qscintilla_" + language, qt_trans_dir);
+  if (!loaded) // try lower case
+    qsci_tr->load("qscintilla_" + language.toLower (), qt_trans_dir);
+
   // load the translator file for gui strings
   gui_tr->load (language, get_gui_translation_dir ());
 }

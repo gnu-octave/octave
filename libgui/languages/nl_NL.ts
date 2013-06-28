@@ -14,52 +14,52 @@
     <message>
         <location filename="../src/workspace-model.cc" line="+75"/>
         <source>automatic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Automatisch</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>function</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Functie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>global</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gobaal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>hidden</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verborgen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>inherited</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Overgeërfd</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>persistent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blijvend</translation>
     </message>
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+64"/>
         <source>foreground</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voorgrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Achtergrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Selectie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>cursor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aanwijzer</translation>
     </message>
 </context>
 <context>
@@ -85,7 +85,7 @@
     <message>
         <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1451"/>
         <source>copied selection to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">selectie naar klembord gekopieerd</translation>
     </message>
 </context>
 <context>
@@ -93,42 +93,42 @@
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Standaard</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Etiket</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide command character</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verberg opdrachtteken</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>External command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Externe opdracht</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Variabele</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Operator</translation>
     </message>
 </context>
 <context>
@@ -136,82 +136,82 @@
     <message>
         <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verstekwaarde</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve verstekwaarde</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief C commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C++ commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief C++ commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C commentaar in JavaDoc stijl</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief C commentaar in JavaDoc stijl</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Getal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief getal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst met dubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve tekst met dubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst met aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve tekst met aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -226,22 +226,22 @@
     <message>
         <location line="+3"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Preprocessor blok</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief preprocessor blok</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Operator</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve operator</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -251,97 +251,97 @@
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve identifier</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Niet afgesloten tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve niet afgesloten tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C# letterlijke tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve C# letterlijke tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Javascript reguliere uitdrukking</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inatieve Javascript reguliere uitdrukking</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C++ commentaar in JavaDoc stijl</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief C++ commentaar in JavaDoc stijl</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Secundaire trefwoorden en identifiers</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve secundaire trefwoorden en identifiers</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">JavaDoc sleutelwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief JavaDoc sleutelwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">fout JavaDoc trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactief fout JavaDoc trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Globale klassen en typedefs</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve globale klassen en typedefs</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C++ ruwe tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inactieve C++ ruwe tekst</translation>
     </message>
 </context>
 <context>
@@ -349,42 +349,42 @@
     <message>
         <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verstekwaarde</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Opdracht</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koptekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Positie</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verwijderde regel</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Toegevoegde regel</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gewijzigde regel</translation>
     </message>
 </context>
 <context>
@@ -392,47 +392,47 @@
     <message>
         <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verstekwaarde</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Opdracht</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Getal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Operator</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Identifier</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen dubbele aanhalingstekens</translation>
     </message>
 </context>
 <context>
@@ -440,82 +440,82 @@
     <message>
         <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verstekwaarde</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fout</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Getal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen dubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Operator</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Identifier</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Enkel getal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Array</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Array</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hash</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hash</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Symbol table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Symbooltabel</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Reguliere uitdrukking</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vervanging</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -525,57 +525,57 @@
     <message>
         <location line="+3"/>
         <source>Data section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Data sectie</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Here document  scheidingsteken</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Here document tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Here dicument tussen dubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Backtick here document</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (q)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">q tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">qq tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">qx tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">qr tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qw)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">qw tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">POD letterlijk</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -585,32 +585,32 @@
     <message>
         <location line="+3"/>
         <source>Format identifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sjabloon identifier</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format body</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sjabloon inhoud</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen aanhalingstekens (geïnterpoleerde variabele)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vertaling</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Reguliere uitdrukking (Geïnterpoleerde variabele)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vervanging</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -620,27 +620,27 @@
     <message>
         <location line="+3"/>
         <source>Double-quoted here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Here document tussen dubbele aanhalingstekens (geïnterpoleerde variabele</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Backtick here document (geïnterpoleerde variabele)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen aanhalingstekens (qq, geïnterpoleerde variabele)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen aanhalingstekens (qx, geïnterpoleerde variabele)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekst tussen aanhalingstekens (qr, geïnterpoleerde variabele)</translation>
     </message>
 </context>
 <context>
@@ -668,7 +668,7 @@
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Plakken</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -678,7 +678,7 @@
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation type="unfinished">Alles selecteren</translation>
+        <translation type="unfinished">Alles kiezen</translation>
     </message>
 </context>
 <context>
@@ -722,7 +722,7 @@
 is already open in the editor</source>
         <translation>Bestand niet opgeslagen! Een bestand met de naam
 %1
-is al geopend in de editor</translation>
+is reeds geopend in de editor</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -807,22 +807,22 @@ is al geopend in de editor</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Next breakpoint</source>
-        <translation>Volge&amp;nd breekpunt</translation>
+        <translation>Volge&amp;nd onderbreekpunt</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre&amp;vious breakpoint</source>
-        <translation>&amp;Vorig breekpunt</translation>
+        <translation>&amp;Vorig onderbreekpunt</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Toggle &amp;breakpoint</source>
-        <translation>&amp;Breekpunt invoegen</translation>
+        <translation>&amp;Onderbreekpunt invoegen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Remove All breakpoints</source>
-        <translation>Alle breekpunten ve&amp;rwijderen</translation>
+        <translation>Alle onderbreekpunten ve&amp;rwijderen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -895,7 +895,7 @@ is al geopend in de editor</translation>
     <message>
         <location filename="../src/m-editor/file-editor-tab.cc" line="+726"/>
         <source>Goto line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ga naar regel ...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -910,12 +910,12 @@ is al geopend in de editor</translation>
     <message>
         <location line="+40"/>
         <source>Do you want to save or discard the changes?</source>
-        <translation type="unfinished">Wil je wijzigingen mee opslaan of niet?</translation>
+        <translation type="unfinished">Wil je de wijzigingen opslaan of niet?</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
-        <translation type="unfinished">Wil je niet meer afsluiten, het gewijzigde of het originele bestand opslaan?</translation>
+        <translation type="unfinished">Wil je niet meer afsluiten, het gewijzigde, of het originele bestand opslaan?</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1020,7 +1020,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+1"/>
         <source>Set octave directroy to current browser directory</source>
-        <translation type="unfinished">Stel octave map in op huidige browser map</translation>
+        <translation type="unfinished">Maak huidige browser map de Octave map</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1128,7 +1128,8 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
         <location line="-10"/>
         <source>Are you sre you want to delete
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Weet u zeker dat u dit wilt verwijderen
+        </translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1143,25 +1144,25 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+27"/>
         <source>Create File</source>
-        <translation type="unfinished">Nieuw bestand</translation>
+        <translation type="unfinished">Maak nieuw bestand</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Create file in
 </source>
-        <translation type="unfinished">Nieuw bestand in
+        <translation type="unfinished">Maak nieuw bestand in
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Nieuwe map</translation>
+        <translation type="unfinished">Maak nieuwe map</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Create folder in
 </source>
-        <translation type="unfinished">Nieuwe map in
+        <translation type="unfinished">Maak nieuwe map in
 </translation>
     </message>
 </context>
@@ -1190,7 +1191,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Wrap while searching</source>
-        <translation>Bestandseinde negeren</translation>
+        <translation>Na bestandseinde doorgaan aan begin</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1328,12 +1329,12 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+2"/>
         <source>Name case insensitive</source>
-        <translation type="unfinished">Niet hoofdlettergevoelige naam</translation>
+        <translation type="unfinished">Niet-hoofdlettergevoelige naam</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set matching name is case insensitive</source>
-        <translation type="unfinished">Naam instellen op niet hoofdlettergevoelig</translation>
+        <translation type="unfinished">Naam instellen op niet-hoofdlettergevoelig</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1353,12 +1354,12 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+3"/>
         <source>Text case insensitive</source>
-        <translation type="unfinished">Niet hoofdlettergevoelige tekst</translation>
+        <translation type="unfinished">Niet-hoofdlettergevoelige tekst</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set text content is case insensitive</source>
-        <translation type="unfinished">Tekst instellen op niet hoofdlettergevoelig</translation>
+        <translation type="unfinished">Tekst instellen op niet-hoofdlettergevoelig</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1454,7 +1455,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+1"/>
         <source>Evaluate</source>
-        <translation>Voer uit</translation>
+        <translation>Werk uit</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1624,7 +1625,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+30"/>
         <source>Enter directory name</source>
-        <translation type="unfinished">Voer mapnaam in</translation>
+        <translation type="unfinished">Geef mapnaam op</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1743,7 +1744,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+29"/>
         <source>Unock widget</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Laat widget zweven</translation>
     </message>
 </context>
 <context>
@@ -1862,7 +1863,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+17"/>
         <source>Backspace unindents line</source>
-        <translation type="unfinished">Backspace laat terug inspringen</translation>
+        <translation type="unfinished">Backspace doet terug inspringen</translation>
     </message>
     <message>
         <location line="+84"/>
@@ -2052,7 +2053,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+7"/>
         <source>Icon size</source>
-        <translation type="unfinished">Iccongrootte</translation>
+        <translation type="unfinished">Icoongrootte</translation>
     </message>
     <message>
         <location line="+1098"/>
@@ -2089,17 +2090,17 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="-268"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">I-balkje</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blokje</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Liggend streepje</translation>
     </message>
     <message>
         <location line="+129"/>
@@ -2227,7 +2228,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     <message>
         <location line="+107"/>
         <source>Right click to copy, rename, or display</source>
-        <translation type="unfinished">Klik rechts voor kopiëren, hernoemen of weergeven</translation>
+        <translation type="unfinished">Klik rechts om te kopiëren, hernoemen of weergeven</translation>
     </message>
 </context>
 <context>

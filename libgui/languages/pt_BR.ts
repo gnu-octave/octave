@@ -532,7 +532,7 @@ para:</translation>
     </message>
     <message>
         <location line="-10"/>
-        <source>Are you sre you want to delete
+        <source>Are you sure you want to delete
 </source>
         <translation>Você tem certeza que deseja remover</translation>
     </message>
@@ -1144,11 +1144,6 @@ para:</translation>
         <source>Dock widget</source>
         <translation>Acoplar widget</translation>
     </message>
-    <message>
-        <location line="+29"/>
-        <source>Unock widget</source>
-        <translation>Desacoplar widget</translation>
-    </message>
 </context>
 <context>
     <name>octave_qscintilla</name>
@@ -1215,7 +1210,7 @@ para:</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Graphic  icons</source>
+        <source>Graphic icons</source>
         <translation>Ícones de gráficos</translation>
     </message>
     <message>
@@ -1507,7 +1502,7 @@ para:</translation>
     </message>
     <message>
         <location line="+129"/>
-        <source>Difference to the defalt size</source>
+        <source>Difference to the default size</source>
         <translation>Diferença do tamanho padrão</translation>
     </message>
     <message>

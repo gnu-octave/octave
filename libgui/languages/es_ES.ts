@@ -475,7 +475,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="-10"/>
-        <source>Are you sre you want to delete
+        <source>Are you sure you want to delete
 </source>
         <translation>¿Está seguro que desea eliminar\n</translation>
     </message>
@@ -1092,12 +1092,6 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translatorcomment>Uso &quot;widget&quot; por ser el término usual: http://es.wikipedia.org/wiki/Widget</translatorcomment>
         <translation>Acoplar widget</translation>
     </message>
-    <message>
-        <location line="+29"/>
-        <source>Unock widget</source>
-        <translatorcomment>Uso &quot;widget&quot; por ser el término usual: http://es.wikipedia.org/wiki/Widget</translatorcomment>
-        <translation>Desacoplar widget</translation>
-    </message>
 </context>
 <context>
     <name>octave_qscintilla</name>
@@ -1166,7 +1160,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>Graphic  icons</source>
+        <source>Graphic icons</source>
         <translation>Íconos gráficos</translation>
     </message>
     <message>
@@ -1443,7 +1437,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="-137"/>
-        <source>Difference to the defalt size</source>
+        <source>Difference to the default size</source>
         <translation>Diferencia con el tamaño predeterminado</translation>
     </message>
     <message>

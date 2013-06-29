@@ -1126,7 +1126,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     </message>
     <message>
         <location line="-10"/>
-        <source>Are you sre you want to delete
+        <source>Are you sure you want to delete
 </source>
         <translation type="unfinished">Weet u zeker dat u dit wilt verwijderen
         </translation>
@@ -1741,11 +1741,6 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
         <source>Dock widget</source>
         <translation type="unfinished">Widget in venster opnemen</translation>
     </message>
-    <message>
-        <location line="+29"/>
-        <source>Unock widget</source>
-        <translation type="unfinished">Laat widget zweven</translation>
-    </message>
 </context>
 <context>
     <name>octave_qscintilla</name>
@@ -1812,7 +1807,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Graphic  icons</source>
+        <source>Graphic icons</source>
         <translation>Grafische iconen</translation>
     </message>
     <message>
@@ -2104,7 +2099,7 @@ is gewist of hernoemd. Wil je het nu opslaan?</translation>
     </message>
     <message>
         <location line="+129"/>
-        <source>Difference to the defalt size</source>
+        <source>Difference to the default size</source>
         <translation type="unfinished">Verschil met standaardgrootte</translation>
     </message>
     <message>

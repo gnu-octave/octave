@@ -536,7 +536,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     </message>
     <message>
         <location line="-10"/>
-        <source>Are you sre you want to delete
+        <source>Are you sure you want to delete
 </source>
         <translation>Etes-vous sûr de vouloir supprimer
 </translation>
@@ -1151,11 +1151,6 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
         <source>Dock widget</source>
         <translation>Attacher le widget</translation>
     </message>
-    <message>
-        <location line="+29"/>
-        <source>Unock widget</source>
-        <translation>Détacher le widget</translation>
-    </message>
 </context>
 <context>
     <name>octave_qscintilla</name>
@@ -1222,7 +1217,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     </message>
     <message>
         <location line="+7"/>
-        <source>Graphic  icons</source>
+        <source>Graphic icons</source>
         <translation>Icones graphiques</translation>
     </message>
     <message>
@@ -1514,7 +1509,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     </message>
     <message>
         <location line="+129"/>
-        <source>Difference to the defalt size</source>
+        <source>Difference to the default size</source>
         <translation>Difference avecla taille par défaut</translation>
     </message>
     <message>

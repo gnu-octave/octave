@@ -169,7 +169,7 @@ octave_dock_widget::make_widget ()
 
   // adjust the (un)dock icon
   _dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
-  _dock_action->setToolTip (tr ("Unock widget"));
+  _dock_action->setToolTip (tr ("Undock widget"));
 }
 
 // slot for (un)dock action

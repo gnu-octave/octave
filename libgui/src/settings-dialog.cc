@@ -267,7 +267,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
             select_font[i]->setEditText (lexer->description (0));
           font_size[i]->setRange (-4,4);
           font_size[i]->setValue (actual_font.pointSize ()-default_size);
-          font_size[i]->setToolTip (tr ("Difference to the defalt size"));
+          font_size[i]->setToolTip (tr ("Difference to the default size"));
           if (lexer->paper (styles[i]) == default_color)
             bg_color[i] = new color_picker (dummy_color);
           else

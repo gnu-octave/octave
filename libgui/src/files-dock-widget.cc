@@ -505,7 +505,7 @@ files_dock_widget::contextmenu_delete (bool)
       QFileInfo info = _file_system_model->fileInfo(index);
 
       if(QMessageBox::question(this, tr("Delete file/directory"), 
-                               tr("Are you sre you want to delete\n") + info.filePath(),
+                               tr("Are you sure you want to delete\n") + info.filePath(),
                                QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes) 
         {
            if(info.isDir())

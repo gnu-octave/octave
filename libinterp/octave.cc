@@ -682,7 +682,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case 'H':
-          Fsaving_history (octave_value (false));
+          Fhistory_save (octave_value (false));
           read_history_file = false;
           break;
 

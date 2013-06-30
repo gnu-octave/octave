@@ -176,19 +176,18 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      base64_decode               ellipke         polyeig              
-      base64_encode               erfcinv         rgbplot                   
-      betaincinv                  erfi            save_default_options
-      built_in_docstrings_file    expint          shrinkfaces           
-      cmpermute                   findfigs        splinefit             
-      cmunique                    fminsearch      strjoin               
-      colorcube                   gallery         struct2hdl            
-      copyobj                     gco             tetramesh             
-      dawson                      hdl2struct      waterfall             
-      dblist                      importdata  
-      doc_cache_create            iscolormap
-      ellipj                      lines   
-                           
+      base64_decode               ellipke         lines      
+      base64_encode               erfcinv         polyeig                   
+      betaincinv                  erfi            rgbplot             
+      built_in_docstrings_file    expint          save_default_options  
+      cmpermute                   findfigs        shrinkfaces           
+      cmunique                    fminsearch      splinefit             
+      colorcube                   gallery         strjoin               
+      copyobj                     gco             struct2hdl            
+      dawson                      hdl2struct      tetramesh             
+      dblist                      history_save    waterfall           
+      doc_cache_create            importdata
+      ellipj                      iscolormap
 
  ** Deprecated functions.
 
@@ -216,6 +215,7 @@ Summary of important user-visible changes for version 3.8:
       java_unsigned_conversion
       javafields
       javamethods
+      saving_history
 
     The following keywords have been deprecated in Octave 3.8 and will
     be removed from Octave 3.12 (or whatever version is the second major

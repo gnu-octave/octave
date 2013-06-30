@@ -722,7 +722,7 @@ re-running chunks of commands from the history list.
 Octave also allows you customize the details of when, where, and how history
 is saved.
 
-@DOCSTRING(saving_history)
+@DOCSTRING(history_save)
 
 @DOCSTRING(history_control)
 

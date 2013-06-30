@@ -755,8 +755,8 @@ A value of @code{ignoreboth} is shorthand for @code{ignorespace} and\n\
 matching the current line to be removed from the history list before that\n\
 line is saved.  Any value not in the above list is ignored.  If\n\
 @code{history_control} is the empty string, all commands are saved on\n\
-the history list, subject to the value of @code{saving_history}.\n\
-@seealso{history_file, history_size, history_timestamp_format_string, saving_history}\n\
+the history list, subject to the value of @code{history_save}.\n\
+@seealso{history_file, history_size, history_timestamp_format_string, history_save}\n\
 @end deftypefn")
 {
   std::string old_history_control = command_history::histcontrol ();
@@ -779,7 +779,7 @@ DEFUN (history_size, args, nargout,
 Query or set the internal variable that specifies how many entries\n\
 to store in the history file.  The default value is @code{1000},\n\
 but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
-@seealso{history_file, history_timestamp_format_string, saving_history}\n\
+@seealso{history_file, history_timestamp_format_string, history_save}\n\
 @end deftypefn")
 {
   int old_history_size = command_history::size ();
@@ -804,7 +804,7 @@ Query or set the internal variable that specifies the name of the\n\
 file used to store command history.  The default value is\n\
 @file{~/.octave_hist}, but may be overridden by the environment\n\
 variable @w{@env{OCTAVE_HISTFILE}}.\n\
-@seealso{history_size, saving_history, history_timestamp_format_string}\n\
+@seealso{history_size, history_save, history_timestamp_format_string}\n\
 @end deftypefn")
 {
   std::string old_history_file = command_history::file ();
@@ -837,17 +837,17 @@ value is\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{strftime, history_file, history_size, saving_history}\n\
+@seealso{strftime, history_file, history_size, history_save}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (history_timestamp_format_string);
 }
 
-DEFUN (saving_history, args, nargout,
+DEFUN (history_save, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} saving_history ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} saving_history (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} saving_history (@var{new_val}, \"local\")\n\
+@deftypefn  {Built-in Function} {@var{val} =} history_save ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} history_save (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} history_save (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
 \n\
@@ -857,14 +857,14 @@ variable value is restored when exiting the function.\n\
 @seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
 @end deftypefn")
 {
-  bool old_saving_history = ! command_history::ignoring_entries ();
+  bool old_history_save = ! command_history::ignoring_entries ();
 
-  bool tmp = old_saving_history;
+  bool tmp = old_history_save;
 
   octave_value retval = set_internal_variable (tmp, args, nargout,
-                                               "saving_history");
+                                               "history_save");
 
-  if (tmp != old_saving_history)
+  if (tmp != old_history_save)
     command_history::ignore_entries (! tmp);
 
   return retval;

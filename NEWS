@@ -178,13 +178,13 @@ Summary of important user-visible changes for version 3.8:
 
       base64_decode               ellipke         polyeig              
       base64_encode               erfcinv         rgbplot                   
-      betaincinv                  erfi            shrinkfaces            
-      built_in_docstrings_file    expint          splinefit              
-      cmpermute                   findfigs        strjoin                
-      cmunique                    fminsearch      struct2hdl             
-      colorcube                   gallery         tetramesh              
-      copyobj                     gco             waterfall              
-      dawson                      hdl2struct                  
+      betaincinv                  erfi            save_default_options
+      built_in_docstrings_file    expint          shrinkfaces           
+      cmpermute                   findfigs        splinefit             
+      cmunique                    fminsearch      strjoin               
+      colorcube                   gallery         struct2hdl            
+      copyobj                     gco             tetramesh             
+      dawson                      hdl2struct      waterfall             
       dblist                      importdata  
       doc_cache_create            iscolormap
       ellipj                      lines   
@@ -205,6 +205,7 @@ Summary of important user-visible changes for version 3.8:
     be removed from Octave 3.12 (or whatever version is the second major
     release after 3.8):
 
+      default_save_options
       gen_doc_cache
       java_convert_matrix
       java_debug

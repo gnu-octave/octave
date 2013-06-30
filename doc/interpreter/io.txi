@@ -149,7 +149,7 @@ carriage return.
 The @code{save} and @code{load} commands allow data to be written to and
 read from disk files in various formats.  The default format of files
 written by the @code{save} command can be controlled using the functions
-@code{default_save_options} and @code{save_precision}.
+@code{save_default_options} and @code{save_precision}.
 
 As an example the following code creates a 3-by-3 matrix and saves it
 to the file @samp{myfile.mat}.
@@ -180,7 +180,7 @@ A
 
 There are three functions that modify the behavior of @code{save}.
 
-@DOCSTRING(default_save_options)
+@DOCSTRING(save_default_options)
 
 @DOCSTRING(save_precision)
 

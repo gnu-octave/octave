@@ -103,7 +103,7 @@ static std::string Voctave_core_file_name = "octave-workspace";
 
 // The default output format.  May be one of "binary", "text",
 // "mat-binary", or "hdf5".
-static std::string Vdefault_save_options = "-text";
+static std::string Vsave_default_options = "-text";
 
 // The output format for Octave core files.
 static std::string Voctave_core_file_options = "-binary";
@@ -1470,7 +1470,7 @@ of the scalar structure @var{STRUCT} are saved as if they were variables\n\
 with corresponding names.\n\
 Valid options for the @code{save} command are listed in the following table.\n\
 Options that modify the output format override the format specified by\n\
-@code{default_save_options}.\n\
+@code{save_default_options}.\n\
 \n\
 If save is invoked using the functional form\n\
 \n\
@@ -1576,7 +1576,7 @@ save -binary data a b*\n\
 @noindent\n\
 saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
 the file @file{data} in Octave's binary format.\n\
-@seealso{load, default_save_options, save_header_format_string, dlmread, csvread, fread}\n\
+@seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1600,7 +1600,7 @@ the file @file{data} in Octave's binary format.\n\
   bool use_zlib = false;
 
   // get default options
-  parse_save_options (Vdefault_save_options, format, append, save_as_floats,
+  parse_save_options (Vsave_default_options, format, append, save_as_floats,
                       use_zlib);
 
   // override from command line
@@ -1773,11 +1773,11 @@ variable value is restored when exiting the function.\n\
   return SET_INTERNAL_VARIABLE (crash_dumps_octave_core);
 }
 
-DEFUN (default_save_options, args, nargout,
+DEFUN (save_default_options, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} default_save_options ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} default_save_options (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} default_save_options (@var{new_val}, \"local\")\n\
+@deftypefn  {Built-in Function} {@var{val} =} save_default_options ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} save_default_options (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} save_default_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
 Typical values include @code{\"-ascii\"}, @code{\"-text -zip\"}.\n\
@@ -1789,7 +1789,7 @@ variable value is restored when exiting the function.\n\
 @seealso{save}\n\
 @end deftypefn")
 {
-  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (default_save_options);
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (save_default_options);
 }
 
 DEFUN (octave_core_file_limit, args, nargout,

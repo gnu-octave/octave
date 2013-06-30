@@ -5,6 +5,7 @@ deprecated_FCN_FILES = \
   deprecated/cor.m \
   deprecated/corrcoef.m \
   deprecated/cut.m \
+  deprecated/default_save_options.m \
   deprecated/java_debug.m \
   deprecated/error_text.m \
   deprecated/gen_doc_cache.m \

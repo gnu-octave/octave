@@ -600,6 +600,7 @@ Vectorization and Faster Code Execution
 * Broadcasting::               Broadcasting operations
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
+* JIT Compiler::               Just-In-Time Compiler for loops
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 

@@ -1219,7 +1219,7 @@ private:
               int key_a = key2ascii (key);
               if (key_a && fp.get_keypressfcn ().is_defined ())
                 {
-                  Octave_map evt;
+                  octave_scalar_map evt;
                   evt.assign ("Character", octave_value (key_a));
                   evt.assign ("Key", octave_value (std::tolower (key_a)));
                   evt.assign ("Modifier", octave_value (modifier2cell ()));
@@ -1258,7 +1258,7 @@ private:
               int key_a = key2ascii (key);
               if (key_a && fp.get_keyreleasefcn ().is_defined ())
                 {
-                  Octave_map evt;
+                  octave_scalar_map evt;
                   evt.assign ("Character", octave_value (key_a));
                   evt.assign ("Key", octave_value (std::tolower (key_a)));
                   evt.assign ("Modifier", octave_value (modifier2cell ()));

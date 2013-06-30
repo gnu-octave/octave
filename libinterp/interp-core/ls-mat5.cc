@@ -877,14 +877,14 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         if (! is || error_state)
           goto data_read_error;
 
-        // Octave can handle both "/" and "\" as a directry seperator
-        // and so can ignore the seperator field of m0. I think the
+        // Octave can handle both "/" and "\" as a directory seperator
+        // and so can ignore the separator field of m0. I think the
         // sentinel field is also save to ignore.
-        Octave_map m0 = tc2.map_value ();
-        Octave_map m1 = m0.contents ("function_handle")(0).map_value ();
-        std::string ftype = m1.contents ("type")(0).string_value ();
-        std::string fname = m1.contents ("function")(0).string_value ();
-        std::string fpath = m1.contents ("file")(0).string_value ();
+        octave_scalar_map m0 = tc2.scalar_map_value ();
+        octave_scalar_map m1 = m0.contents ("function_handle").scalar_map_value ();
+        std::string ftype = m1.contents ("type").string_value ();
+        std::string fname = m1.contents ("function").string_value ();
+        std::string fpath = m1.contents ("file").string_value ();
 
         if (ftype == "simple" || ftype == "scopedfunction")
           {
@@ -894,7 +894,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             else
               {
                 std::string mroot =
-                  m0.contents ("matlabroot")(0).string_value ();
+                  m0.contents ("matlabroot").string_value ();
 
                 if ((fpath.length () >= mroot.length ()) &&
                     fpath.substr (0, mroot.length ()) == mroot &&
@@ -931,8 +931,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       }
                     else
                       {
-                        // Next just search for it anywhere in the
-                        // system path
+                        // Next just search for it anywhere in the system path
                         string_vector names(3);
                         names(0) = fname + ".oct";
                         names(1) = fname + ".mex";
@@ -996,13 +995,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           }
         else if (ftype == "anonymous")
           {
-            Octave_map m2 = m1.contents ("workspace")(0).map_value ();
-            uint32NDArray MCOS = m2.contents ("MCOS")(0).uint32_array_value ();
+            octave_scalar_map m2 = m1.contents ("workspace").scalar_map_value ();
+            uint32NDArray MCOS = m2.contents ("MCOS").uint32_array_value ();
             octave_idx_type off = static_cast<octave_idx_type>(MCOS(4).double_value ());
-            m2 = subsys_ov.map_value ();
-            m2 = m2.contents ("MCOS")(0).map_value ();
-            tc2 = m2.contents ("MCOS")(0).cell_value ()(1 + off).cell_value ()(1);
-            m2 = tc2.map_value ();
+            m2 = subsys_ov.scalar_map_value ();
+            m2 = m2.contents ("MCOS").scalar_map_value ();
+            tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);
+            m2 = tc2.scalar_map_value ();
 
             unwind_protect_safe frame;
 
@@ -1021,11 +1020,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               {
                 octave_value tmp;
 
-                for (Octave_map::iterator p0 = m2.begin () ;
+                for (octave_map::iterator p0 = m2.begin () ;
                      p0 != m2.end (); p0++)
                   {
                     std::string key = m2.key (p0);
-                    octave_value val = m2.contents (p0)(0);
+                    octave_value val = m2.contents (p0);
 
                     symbol_table::assign (key, val, local_scope, 0);
                   }
@@ -1066,7 +1065,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     case MAT_FILE_WORKSPACE_CLASS:
       {
-        Octave_map m (dim_vector (1, 1));
+        octave_map m (dim_vector (1, 1));
         int n_fields = 2;
         string_vector field (n_fields);
 
@@ -1074,8 +1073,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             int32_t fn_type;
             int32_t fn_len;
-            if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element) ||
-                !INT8(fn_type))
+            if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
+                || !INT8(fn_type))
               {
                 error ("load: invalid field name subelement");
                 goto data_read_error;
@@ -1164,7 +1163,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       // Fall-through
     case MAT_FILE_STRUCT_CLASS:
       {
-        Octave_map m (dims);
+        octave_map m (dims);
         int32_t fn_type;
         int32_t fn_len;
         int32_t field_name_length;
@@ -1172,10 +1171,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // field name length subelement -- actually the maximum length
         // of a field name.  The Matlab docs promise this will always
         // be 32.  We read and use the actual value, on the theory
-        // that eventually someone will recognize that's a waste of
-        // space.
-        if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element) ||
-            fn_type != miINT32)
+        // that eventually someone will recognize that's a waste of space.
+        if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
+            || fn_type != miINT32)
           {
             error ("load: invalid field name length subelement");
             goto data_read_error;
@@ -1189,8 +1187,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         // field name subelement.  The length of this subelement tells
         // us how many fields there are.
-        if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element) ||
-            !INT8(fn_type))
+        if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
+            || !INT8(fn_type))
           {
             error ("load: invalid field name subelement");
             goto data_read_error;
@@ -2237,7 +2235,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
   else if (tc.is_map () || tc.is_inline_function () || tc.is_object ())
     {
       int fieldcnt = 0;
-      const Octave_map m = tc.map_value ();
+      const octave_map m = tc.map_value ();
       octave_idx_type nel = m.numel ();
 
       if (tc.is_inline_function ())
@@ -2250,7 +2248,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
           ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
         }
 
-      for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+      for (octave_map::const_iterator i = m.begin (); i != m.end (); i++)
         fieldcnt++;
 
       ret += 16 + fieldcnt * (max_namelen + 1);
@@ -2259,7 +2257,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       for (octave_idx_type j = 0; j < nel; j++)
         {
 
-          for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+          for (octave_map::const_iterator i = m.begin (); i != m.end (); i++)
             {
               const Cell elts = m.contents (i);
 
@@ -2667,7 +2665,7 @@ save_mat5_binary_element (std::ostream& os,
           os.write (paddedname, paddedlength);
         }
 
-      Octave_map m;
+      octave_map m;
 
       if (tc.is_object () &&
           load_path::find_method (tc.class_name (), "saveobj") != std::string ())

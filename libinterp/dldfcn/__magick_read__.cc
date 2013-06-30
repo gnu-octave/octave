@@ -541,14 +541,14 @@ function.  Instead use @code{imread}.\n\
 
 static void
 jpg_settings (std::vector<Magick::Image>& imvec,
-              const Octave_map& options,
+              const octave_map& options,
               bool)
 {
   bool something_set = false;
 
   // Quality setting
   octave_value result;
-  Octave_map::const_iterator p;
+  octave_map::const_iterator p;
   bool found_it = false;
 
   for (p = options.begin (); p != options.end (); p++)
@@ -840,7 +840,7 @@ write_image (const std::string& filename, const std::string& fmt,
 
   if (! error_state && params.is_defined ())
     {
-      Octave_map options = params.map_value ();
+      octave_map options = params.map_value ();
 
       // Insert calls here to handle parameters for various image formats
       if (fmt == "jpg" || fmt == "jpeg")
@@ -1064,7 +1064,7 @@ not be using this function.  Instead use @code{imfinfo}.\n\
           0
         };
 
-      Octave_map info (string_vector (fields), dim_vector (nframes, 1));
+      octave_map info (dim_vector (nframes, 1), string_vector (fields));
 
       file_stat fs (filename);
 

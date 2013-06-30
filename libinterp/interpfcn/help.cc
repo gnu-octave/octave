@@ -1401,7 +1401,7 @@ The default value may be overridden by the environment variable\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
+@seealso{doc_cache_create, lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (doc_cache_file);

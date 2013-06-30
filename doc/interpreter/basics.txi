@@ -441,7 +441,7 @@ The following functions are principally used internally by Octave for
 generating the documentation.  They are documented here for completeness
 and because they may occasionally be useful for users.
 
-@DOCSTRING(gen_doc_cache)
+@DOCSTRING(doc_cache_create)
 
 @DOCSTRING(get_help_text)
 

@@ -7,6 +7,7 @@ deprecated_FCN_FILES = \
   deprecated/cut.m \
   deprecated/java_debug.m \
   deprecated/error_text.m \
+  deprecated/gen_doc_cache.m \
   deprecated/isstr.m \
   deprecated/java_convert_matrix.m \
   deprecated/java_get.m \

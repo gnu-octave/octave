@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gen_doc_cache (@var{out_file}, @var{directory})
+## @deftypefn {Function File} {} doc_cache_create (@var{out_file}, @var{directory})
 ## Generate documentation caches for all functions in a given directory.
 ##
 ## A documentation cache is generated for all functions in @var{directory}.
@@ -28,10 +28,10 @@
 ## If no directory is given (or it is the empty matrix), a cache for builtin
 ## operators, etc. is generated.
 ##
-## @seealso{lookfor, path}
+## @seealso{doc_cache_file, lookfor, path}
 ## @end deftypefn
 
-function gen_doc_cache (out_file = "doc-cache", directory = [])
+function doc_cache_create (out_file = "doc-cache", directory = [])
 
   ## Check input
   if (! ischar (out_file))
@@ -45,12 +45,12 @@ function gen_doc_cache (out_file = "doc-cache", directory = [])
     if (all (cellfun (@ischar, directory)))
       cache = gen_doc_cache_in_dir (directory);
     else
-      error ("gen_doc_cache: cell must contain only strings");
+      error ("doc_cache_create: cell must contain only strings");
     endif
   elseif (ischar (directory))
      cache = gen_doc_cache_in_dir (directory);
   else
-     error ("gen_doc_cache: second input argument must be a string or a cell of strings");
+     error ("doc_cache_create: second input argument must be a string or a cell of strings");
   endif
 
   ## Save cache
@@ -82,7 +82,7 @@ function [text, first_sentence, status] = handle_function (f, text, format)
 
   ## Did we get the help text?
   if (status != 0 || isempty (text))
-    warning ("gen_doc_cache: unusable help text found in file '%s'", f);
+    warning ("doc_cache_create: unusable help text found in file '%s'", f);
     return;
   endif
 
@@ -156,4 +156,4 @@ endfunction
 
 %% No true tests desirable for this function.
 %% Test input validation
-%!error gen_doc_cache (1)
+%!error doc_cache_create (1)

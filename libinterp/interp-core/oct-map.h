@@ -473,8 +473,8 @@ template<>
 inline octave_map octave_value_extract<octave_map> (const octave_value& v)
   { return v.map_value (); }
 
-// The original Octave_map object. Octave_map and octave_map are convertible to
-// each other.
+// The original Octave_map object which is now deprecated.
+// Octave_map and octave_map are convertible to each other.
 
 class
 OCTINTERP_API
@@ -654,6 +654,6 @@ private:
       if (! contains (k))
         key_list.push_back (k);
     }
-};
+} GCC_ATTR_DEPRECATED;
 
 #endif

@@ -44,22 +44,22 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+64"/>
         <source>foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>avant plan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation type="unfinished"></translation>
+        <translation>arrière plan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>selection</source>
-        <translation type="unfinished"></translation>
+        <translation>sélection</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>curseur</translation>
     </message>
 </context>
 <context>
@@ -67,17 +67,17 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.h" line="+116"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout Effacer</translation>
     </message>
 </context>
 <context>
@@ -85,7 +85,7 @@
     <message>
         <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1451"/>
         <source>copied selection to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>sélection copiée vers le clipboard</translation>
     </message>
 </context>
 <context>
@@ -518,7 +518,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
         <location line="+1"/>
         <source>Rename file/directory:
 </source>
-        <translation>Rénommer fichier/répertoire
+        <translation>Rénommer fichier/répertoire:
 </translation>
     </message>
     <message>
@@ -809,7 +809,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+17"/>
         <source>File contents</source>
-        <translation type="unfinished">Contenu du fichier</translation>
+        <translation>Contenu du fichier</translation>
     </message>
     <message>
         <location line="+99"/>
@@ -1478,7 +1478,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="-27"/>
         <source>Username:</source>
-        <translation>Nom d&apos;utilisateur</translation>
+        <translation>Nom d&apos;utilisateur :</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -1495,17 +1495,17 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="-268"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Curseur Trait Vertical</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Curseur Block</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Curseur Tiret Bas</translation>
     </message>
     <message>
         <location line="+129"/>
@@ -1646,7 +1646,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1"/>
         <source>View the variables in the active workspace.</source>
-        <translation>Liste des variables dans l&apos;espace de travail</translation>
+        <translation>Liste des variables dans l&apos;espace de travail.</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -1661,12 +1661,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+8"/>
         <source>Only top-level symbols may be renamed.</source>
-        <translation>Seuls les variables de plus haut niveau peuvent etre renommés</translation>
+        <translation>Seuls les variables de plus haut niveau peuvent etre renommés.</translation>
     </message>
     <message>
         <location line="+125"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
-        <translation>Voir les variables dans l&apos;espace de travail. &lt;br&gt;</translation>
+        <translation>Voir les variables dans l&apos;espace de travail.&lt;br&gt;</translation>
     </message>
     <message>
         <location line="+1"/>

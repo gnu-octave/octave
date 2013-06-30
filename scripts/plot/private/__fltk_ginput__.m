@@ -84,7 +84,6 @@ endfunction
 
 function ginput_keypressfcn (src, evt)
   point = get (get (src, "currentaxes"), "currentpoint");
-  keyboard ();
   key = evt.Key;
   if (key == 10)
     ## Enter key stops ginput.

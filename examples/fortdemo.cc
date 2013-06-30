@@ -9,10 +9,11 @@ extern "C"
          F77_CHAR_ARG_LEN_DECL);
 }
 
-DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
+DEFUN_DLD (fortdemo, args, , "Fortran Demo")
 {
   octave_value_list retval;
   int nargin = args.length ();
+
   if (nargin != 1)
     print_usage ();
   else
@@ -21,7 +22,7 @@ DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
       if (! error_state)
         {
           double *av = a.fortran_vec ();
-          octave_idx_type na = a.nelem ();
+          octave_idx_type na = a.numel ();
           OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
           F77_XFCN (fortsub, FORTSUB, (na, av, ctmp

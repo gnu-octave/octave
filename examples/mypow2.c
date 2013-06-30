@@ -1,21 +1,20 @@
 #include "mex.h"
 
 void
-mexFunction (int nlhs, mxArray* plhs[], int nrhs, 
-             const mxArray* prhs[])
+mexFunction (int nlhs, mxArray* plhs[],
+             int nrhs, const mxArray* prhs[])
 {
-  mwIndex i;
   mwSize n;
+  mwIndex i;
   double *vri, *vro;
   
   if (nrhs != 1 || ! mxIsNumeric (prhs[0]))
-    mexErrMsgTxt ("expects matrix");
+    mexErrMsgTxt ("ARG1 must be a matrix");
 
   n = mxGetNumberOfElements (prhs[0]);
-  plhs[0] = (mxArray *) mxCreateNumericArray 
-    (mxGetNumberOfDimensions (prhs[0]),
-     mxGetDimensions (prhs[0]), mxGetClassID (prhs[0]),
-     mxIsComplex (prhs[0]));
+  plhs[0] = mxCreateNumericArray 
+    (mxGetNumberOfDimensions (prhs[0]), mxGetDimensions (prhs[0]),
+     mxGetClassID (prhs[0]), mxIsComplex (prhs[0]));
   vri = mxGetPr (prhs[0]);
   vro = mxGetPr (plhs[0]);
 
@@ -27,13 +26,13 @@ mexFunction (int nlhs, mxArray* plhs[], int nrhs,
 
       for (i = 0; i < n; i++)
         {
-          vro [i] = vri [i] * vri [i] - vii [i] * vii [i];
-          vio [i] = 2 * vri [i] * vii [i];
+          vro[i] = vri[i] * vri[i] - vii[i] * vii[i];
+          vio[i] = 2 * vri[i] * vii[i];
         }
     }
   else
     {
       for (i = 0; i < n; i++)
-        vro [i] = vri [i] * vri [i];
+        vro[i] = vri[i] * vri[i];
     }
 }

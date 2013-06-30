@@ -308,7 +308,7 @@ number of memory allocations.
 The above problem of memory reallocation can be avoided in
 oct-files.  However, the construction of a sparse matrix from an oct-file
 is more complex than can be discussed here, and
-you are referred to chapter @ref{Dynamically Linked Functions}, to have
+you are referred to chapter @ref{External Code Interface}, to have
 a full description of the techniques involved.
 
 @node Information

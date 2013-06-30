@@ -20,7 +20,6 @@ main (void)
   
   octave_value_list out = feval ("gcd", in, 1);
 
-  
   if (!error_state && out.length () > 0)
     std::cout << "GCD of [" 
               << in(0).int_value () 

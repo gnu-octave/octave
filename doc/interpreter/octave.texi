@@ -180,7 +180,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * System Utilities::            
 * Java Interface:: 
 * Packages:: 
-* Dynamically Linked Functions::
+* External Code Interface::
 * Test and Demo Functions::
 * Tips and Standards::                        
 * Contributing Guidelines::
@@ -792,7 +792,7 @@ Creating Packages
 * The INDEX File::              
 * PKG_ADD and PKG_DEL Directives::  
 
-Dynamically Linked Functions
+External Code Interface
 
 * Oct-Files::                   
 * Mex-Files::                   
@@ -943,7 +943,7 @@ Grammar and Parser
 @c ------------------------------------------------------------------------
 @c Appendices start here. 
 
-@include dynamic.texi
+@include external.texi
 @include testfun.texi
 @include tips.texi
 @include contrib.texi

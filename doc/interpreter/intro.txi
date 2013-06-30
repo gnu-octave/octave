@@ -617,7 +617,7 @@ and is part of the compiled Octave binary.
 The function described is written in a language like C++, C, or Fortran.
 On systems that support dynamic linking of user-supplied functions, it
 may be automatically linked while Octave is running, but only if it is
-needed.  @xref{Dynamically Linked Functions}.
+needed.  @xref{External Code Interface}.
 
 @item Mapping Function
 @cindex mapping function

@@ -20,9 +20,11 @@ ANOVA
 anova
 Anymap
 API
+APIs
 appdata
 approximant
 arg
+args
 ARMA
 arpack
 ascii
@@ -140,6 +142,7 @@ CMatrix
 cmd
 cmember
 cntrl
+codebases
 cof
 coffset
 colamd

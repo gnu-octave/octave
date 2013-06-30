@@ -155,11 +155,11 @@ static bool no_window_system = false;
 
 // Usage message
 static const char *usage_string =
-  "octave [-HVWdfhiqvx] [--debug] [--doc-cache-file file]\n\
+  "octave [-HVWdfhiqvx] [--debug] [--debug-jit] [--doc-cache-file file]\n\
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
        [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--jit-debug] [--line-editing] [--no-gui] [--no-history]\n\
+       [--line-editing] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-jit-compiler]\n\
        [--no-line-editing] [--no-site-file] [--no-window-system]\n\
        [--norc] [-p path] [--path path] [--persist] [--silent]\n\
@@ -192,7 +192,7 @@ static bool traditional = false;
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7
 #define INFO_PROG_OPTION 8
-#define JIT_DEBUG_OPTION 9
+#define DEBUG_JIT_OPTION 9
 #define LINE_EDITING_OPTION 10
 #define NO_GUI_OPTION 11
 #define NO_INIT_FILE_OPTION 12
@@ -207,6 +207,7 @@ struct option long_opts[] = {
   { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
   { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
   { "debug",                    no_argument,       0, 'd' },
+  { "debug-jit",                no_argument,       0, DEBUG_JIT_OPTION },
   { "doc-cache-file",           required_argument, 0, DOC_CACHE_FILE_OPTION },
   { "echo-commands",            no_argument,       0, 'x' },
   { "eval",                     required_argument, 0, EVAL_OPTION },
@@ -217,7 +218,6 @@ struct option long_opts[] = {
   { "info-file",                required_argument, 0, INFO_FILE_OPTION },
   { "info-program",             required_argument, 0, INFO_PROG_OPTION },
   { "interactive",              no_argument,       0, 'i' },
-  { "jit-debug",                no_argument,       0, JIT_DEBUG_OPTION },
   { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
   { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
   { "no-history",               no_argument,       0, 'H' },
@@ -524,6 +524,7 @@ Options:\n\
 \n\
   --built-in-docstrings-file FILE Use docs for built-ins from FILE.\n\
   --debug, -d             Enter parser debugging mode.\n\
+  --debug-jit             Enable JIT compiler debugging/tracing.\n\
   --doc-cache-file FILE   Use doc cache file FILE.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
@@ -534,7 +535,6 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
-  --jit-debug             Enable JIT compiler debugging/tracing.\n\
   --line-editing          Force readline use for command-line editing.\n\
   --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
@@ -776,8 +776,8 @@ octave_process_command_line (int argc, char **argv)
             Finfo_program (octave_value (optarg));
           break;
 
-        case JIT_DEBUG_OPTION:
-          Fenable_jit_debugging (octave_value (true));
+        case DEBUG_JIT_OPTION:
+          Fdebug_jit (octave_value (true));
           break;
 
         case LINE_EDITING_OPTION:
@@ -797,7 +797,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case NO_JIT_COMPILER_OPTION:
-          Fenable_jit_compiler (octave_value (false));
+          Fjit_enable (octave_value (false));
           break;
 
         case NO_LINE_EDITING_OPTION:

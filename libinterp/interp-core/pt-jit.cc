@@ -40,9 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_LLVM
 
-static bool Venable_jit_debugging = false;
+static bool Vdebug_jit = false;
 
-static bool Venable_jit_compiler = true;
+static bool Vjit_enable = true;
 
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
@@ -1944,7 +1944,7 @@ tree_jit::enabled (void)
   // Ideally, we should only disable JIT if there is a breakpoint in the code we
   // are about to run. However, we can't figure this out in O(1) time, so we
   // conservatively check for the existence of any breakpoints.
-  return Venable_jit_compiler && ! bp_table::have_breakpoints ()
+  return Vjit_enable && ! bp_table::have_breakpoints ()
     && ! Vdebug_on_interrupt && ! Vdebug_on_error;
 }
 
@@ -1965,13 +1965,13 @@ tree_jit::trip_count (const octave_value& bounds) const
 void
 tree_jit::optimize (llvm::Function *fn)
 {
-  if (Venable_jit_debugging)
+  if (Vdebug_jit)
     llvm::verifyModule (*module);
 
   module_pass_manager->run (*module);
   pass_manager->run (*fn);
 
-  if (Venable_jit_debugging)
+  if (Vdebug_jit)
     {
       std::string error;
       llvm::raw_fd_ostream fout ("test.bc", error,
@@ -2000,7 +2000,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
                        conv.get_variable_map ());
       infer.infer ();
 
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           jit_block_list& blocks = infer.get_blocks ();
           blocks.label ();
@@ -2021,7 +2021,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
                                          factory.constants (), fcn,
                                          argument_types);
 
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           std::cout << "-------------------- raw function ";
           std::cout << "--------------------\n";
@@ -2069,7 +2069,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
       llvm::Function *llvm_function = wrapper.to_llvm ();
       tjit.optimize (llvm_function);
 
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           std::cout << "-------------------- optimized and wrapped ";
           std::cout << "--------------------\n";
@@ -2085,7 +2085,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
     {
       argument_types.clear ();
 
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
@@ -2223,7 +2223,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
       infer.infer ();
 
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           jit_block_list& blocks = infer.get_blocks ();
           blocks.label ();
@@ -2242,7 +2242,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
     }
   catch (const jit_fail_exception& e)
     {
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
@@ -2251,7 +2251,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
   if (llvm_function)
     {
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           std::cout << "-------------------- llvm ir --------------------";
           std::cout << *llvm_function << std::endl;
@@ -2260,7 +2260,7 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
 
       tjit.optimize (llvm_function);
 
-      if (Venable_jit_debugging)
+      if (Vdebug_jit)
         {
           std::cout << "-------------------- optimized llvm ir "
                     << "--------------------\n";
@@ -2282,45 +2282,45 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
-DEFUN (enable_jit_debugging, args, nargout,
+DEFUN (debug_jit, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} enable_jit_debugging ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} enable_jit_debugging (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} enable_jit_debugging (@var{new_val}, \"local\")\n\
+@deftypefn  {Built-in Function} {@var{val} =} debug_jit ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} debug_jit (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_jit (@var{new_val}, \"local\")\n\
 Query or set the internal variable that determines whether\n\
 debugging/tracing is enabled for Octave's JIT compiler.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{enable_jit_compiler}\n\
+@seealso{jit_enable}\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)
-  return SET_INTERNAL_VARIABLE (enable_jit_debugging);
+  return SET_INTERNAL_VARIABLE (debug_jit);
 #else
-  warning ("enable_jit_debugging: JIT compiling not available in this version of Octave");
+  warning ("debug_jit: JIT compiling not available in this version of Octave");
   return octave_value ();
 #endif
 }
 
-DEFUN (enable_jit_compiler, args, nargout,
+DEFUN (jit_enable, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} enable_jit_compiler ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} enable_jit_compiler (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} enable_jit_compiler (@var{new_val}, \"local\")\n\
+@deftypefn  {Built-in Function} {@var{val} =} jit_enable ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} jit_enable (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} jit_enable (@var{new_val}, \"local\")\n\
 Query or set the internal variable that enables Octave's JIT compiler.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{enable_jit_debugging}\n\
+@seealso{debug_jit}\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)
-  return SET_INTERNAL_VARIABLE (enable_jit_compiler);
+  return SET_INTERNAL_VARIABLE (jit_enable);
 #else
-  warning ("enable_jit_compiler: JIT compiling not available in this version of Octave");
+  warning ("jit_enable: JIT compiling not available in this version of Octave");
   return octave_value ();
 #endif
 }

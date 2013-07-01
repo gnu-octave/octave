@@ -184,11 +184,11 @@ Summary of important user-visible changes for version 3.8:
       cmunique                    fminsearch      save_default_options  
       colorcube                   gallery         shrinkfaces           
       copyobj                     gco             splinefit             
-      dawson                      hdl2struct      strjoin               
-      dblist                      history_save    struct2hdl          
-      debug_jit                   importdata      tetramesh           
-      doc_cache_create            iscolormap      waterfall           
-      ellipj                      jit_enable
+      dawson                      hdl2struct      stemleaf           
+      dblist                      history_save    strjoin             
+      debug_jit                   importdata      struct2hdl          
+      doc_cache_create            iscolormap      tetramesh           
+      ellipj                      jit_enable      waterfall  
 
  ** Deprecated functions.
 

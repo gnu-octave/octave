@@ -749,7 +749,7 @@ exact command syntax).  The default configuration file is normally
 Octave provides two commands for initializing Readline and thereby changing
 the command line behavior.
 
-@DOCSTRING(read_readline_init_file)
+@DOCSTRING(readline_read_init_file)
 
 @DOCSTRING(re_read_readline_init_file)
 

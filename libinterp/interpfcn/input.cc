@@ -1065,9 +1065,9 @@ a feature, not a bug.\n\
   return retval;
 }
 
-DEFUN (read_readline_init_file, args, ,
+DEFUN (readline_read_init_file, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} read_readline_init_file (@var{file})\n\
+@deftypefn {Built-in Function} {} readline_read_init_file (@var{file})\n\
 Read the readline library initialization file @var{file}.  If\n\
 @var{file} is omitted, read the default initialization file (normally\n\
 @file{~/.inputrc}).\n\
@@ -1101,6 +1101,7 @@ DEFUN (re_read_readline_init_file, args, ,
 Re-read the last readline library initialization file that was read.\n\
 @xref{Readline Init File, , , readline, GNU Readline Library},\n\
 for details.\n\
+@seealso{readline_read_init_file}\n\
 @end deftypefn")
 {
   octave_value_list retval;

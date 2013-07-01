@@ -169,3 +169,28 @@ history_dock_widget::clear_history (void)
 {
   _history_model->setStringList (QStringList ());
 }
+
+void
+history_dock_widget::copyClipboard ()
+{
+  if(_history_list_view->hasFocus())
+    handle_contextmenu_copy(true);
+  if(_filter_line_edit->hasFocus () && _filter_line_edit->hasSelectedText ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+      clipboard->setText ( _filter_line_edit->selectedText ());
+    }
+}
+
+void
+history_dock_widget::pasteClipboard ()
+{
+  if(_filter_line_edit->hasFocus ())
+  {
+     QClipboard *clipboard = QApplication::clipboard ();
+     QString str =  clipboard->text ();
+     if (str.length() > 0)
+       _filter_line_edit->insert (str);
+  } 
+}
+

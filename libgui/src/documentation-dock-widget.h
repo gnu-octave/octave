@@ -35,6 +35,10 @@ public:
 
   documentation_dock_widget (QWidget *parent = 0);
 
+protected slots:
+  void copyClipboard ();
+  void pasteClipboard ();
+
 private:
 
   webinfo *_webinfo;

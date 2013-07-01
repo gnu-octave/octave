@@ -1171,4 +1171,25 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   _tab_widget->setCurrentWidget (f);
 }
 
+void
+file_editor::copyClipboard ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if(foc_w && foc_w->inherits ("octave_qscintilla"))
+  {
+    request_copy ();
+  }
+}
+void
+file_editor::pasteClipboard ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if(foc_w && foc_w->inherits ("octave_qscintilla"))
+  {
+    request_paste ();
+  }
+}
+
 #endif

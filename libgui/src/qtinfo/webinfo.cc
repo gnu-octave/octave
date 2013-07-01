@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "webinfo.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QApplication>
+#include <QClipboard>
 
 #include "file-ops.h"
 #include "help.h"
@@ -216,5 +218,32 @@ webinfo::zoom_out ()
 {
   _font_web.setPointSize (_font_web.pointSize() - 1);
   _text_browser->setFont (_font_web);
+}
+
+void
+webinfo::copyClipboard ()
+{
+  if (_search_line_edit->hasFocus () && _search_line_edit->hasSelectedText ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+
+      clipboard->setText (_search_line_edit->selectedText ());
+    }
+  if (_text_browser->hasFocus ())
+    {
+      _text_browser->copy ();
+    }
+}
+
+void
+webinfo::pasteClipboard ()
+{
+  if (_search_line_edit->hasFocus ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+      QString str =  clipboard->text ();
+      if (str.length () > 0) 
+        _search_line_edit->insert (str);
+    }
 }
 

@@ -266,3 +266,11 @@ workspace_view::notice_settings (const QSettings *settings)
     }
   setToolTip (tool_tip);
 }
+
+void
+workspace_view::copyClipboard ()
+{
+  if (view->hasFocus ())
+    handle_contextmenu_copy ();
+}
+

@@ -58,6 +58,7 @@ protected:
     QDockWidget::closeEvent (e);
   }
 
+  QWidget * focusWidget();
 
 public slots:
 
@@ -90,6 +91,13 @@ protected slots:
   {
     if (visible)
       emit active_changed (true);
+  }
+  /** slots to handle copy & paste */
+  virtual void copyClipboard ()
+  {
+  }
+  virtual void pasteClipboard ()
+  {
   }
 
 private slots:

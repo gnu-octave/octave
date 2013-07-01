@@ -37,3 +37,14 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
   _webinfo = new webinfo (this);
   setWidget (_webinfo);
 }
+
+void
+documentation_dock_widget::copyClipboard ()
+{
+  _webinfo->copyClipboard ();
+}
+void
+documentation_dock_widget::pasteClipboard ()
+{
+  _webinfo->pasteClipboard ();
+}

@@ -152,6 +152,10 @@ public slots:
   // Tells the editor to react on changed settings.
   void notice_settings (const QSettings *settings);
 
+protected slots:
+  void copyClipboard ();
+  void pasteClipboard ();
+
 private slots:
 
   void request_open_file (const QString& fileName, int line = -1,

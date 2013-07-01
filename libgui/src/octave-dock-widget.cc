@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-
+#include <QApplication>
 #include <QToolBar>
 #include <QToolButton>
 #include <QAction>
@@ -76,6 +76,9 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   title_widget->setLayout (h_layout);
   setTitleBarWidget (title_widget);
 
+  // copy & paste handling
+  connect (p, SIGNAL (copyClipboard_signal ()), this, SLOT (copyClipboard ()));
+  connect (p, SIGNAL (pasteClipboard_signal()), this, SLOT (pasteClipboard ()));
 }
 
 octave_dock_widget::~octave_dock_widget ()
@@ -193,3 +196,11 @@ octave_dock_widget::change_visibility (bool)
   emit active_changed (false);
 }
 
+// get focus widget
+QWidget *
+octave_dock_widget::focusWidget ()
+{
+    QWidget * w = QApplication::focusWidget ();
+    if(w && w->focusProxy ()) w = w->focusProxy ();
+    return w;
+}

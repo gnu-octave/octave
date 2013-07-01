@@ -1436,6 +1436,8 @@ void QWinTerminalImpl::setSize (int columns, int lines)
 
 void QWinTerminalImpl::copyClipboard (void)
 {
+  if(!hasFocus()) return;
+
   QClipboard *clipboard = QApplication::clipboard ();
 
   QString selection = d->getSelection ();
@@ -1456,6 +1458,8 @@ void QWinTerminalImpl::copyClipboard (void)
 
 void QWinTerminalImpl::pasteClipboard (void)
 {
+  if(!hasFocus()) return;
+
   QString text = QApplication::clipboard()->text (QClipboard::Clipboard);
 
   if (! text.isEmpty ())

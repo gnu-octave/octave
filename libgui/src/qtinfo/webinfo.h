@@ -49,6 +49,9 @@ public slots:
   void zoom_in ();
   void zoom_out ();
 
+  void copyClipboard ();
+  void pasteClipboard ();
+
 private:
   QTextBrowser        *_text_browser;
   QTabBar             *_tab_bar;

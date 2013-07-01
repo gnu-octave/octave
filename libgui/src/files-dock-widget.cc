@@ -708,3 +708,35 @@ void files_dock_widget::process_find_files(const QString & dir)
   emit find_files_signal(dir);
 }
 
+void
+files_dock_widget::copyClipboard ()
+{
+  if (_file_tree_view->hasFocus ())
+    contextmenu_copy_selection (true);
+  if (_current_directory->hasFocus ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+
+      QLineEdit * edit = _current_directory->lineEdit ();
+      if (edit && edit->hasSelectedText ())
+        {
+          clipboard->setText (edit->selectedText ());
+        }
+    }
+}
+
+void
+files_dock_widget::pasteClipboard ()
+{
+  if (_current_directory->hasFocus ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+      QString str =  clipboard->text ();
+      QLineEdit * edit = _current_directory->lineEdit ();
+      if (edit && str.length () > 0) 
+        edit->insert (str);
+    }
+}
+
+
+

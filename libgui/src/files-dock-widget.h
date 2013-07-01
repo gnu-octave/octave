@@ -103,6 +103,10 @@ private slots:
   void popdownmenu_findfiles (bool);
   void popdownmenu_home (bool);
 
+  /* from octave_doc_widget */
+  void copyClipboard ();
+  void pasteClipboard ();
+
 signals:
 
   /** Emitted, whenever the user requested to open a file. */

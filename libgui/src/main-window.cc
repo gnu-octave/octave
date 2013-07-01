@@ -613,13 +613,34 @@ main_window::connect_visibility_changed (void)
 void
 main_window::copyClipboard (void)
 {
-  emit copyClipboard_signal ();
+  if (_current_directory_combo_box->hasFocus ())
+    {
+      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      if (edit && edit->hasSelectedText ())
+        {
+          QClipboard *clipboard = QApplication::clipboard ();
+          clipboard->setText (edit->selectedText ()); 
+        }
+    } 
+  else
+    emit copyClipboard_signal ();
 }
 
 void
 main_window::pasteClipboard (void)
 {
-  emit pasteClipboard_signal ();
+  if (_current_directory_combo_box->hasFocus ())
+    {
+      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      QClipboard *clipboard = QApplication::clipboard ();
+      QString str =  clipboard->text ();
+      if (edit && str.length () > 0)
+        {
+          edit->insert (str); 
+        }
+    } 
+  else
+    emit pasteClipboard_signal ();
 }
 
 // Connect the signals emitted when the Octave thread wants to create

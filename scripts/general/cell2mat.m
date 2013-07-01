@@ -53,27 +53,33 @@ function m = cell2mat (c)
       error ("cell2mat: wrong type elements or mixed cells, structs and matrices");
     endif
 
-    ## The goal is to minimize the total number of cat() calls.
-    ## The dimensions can be concatenated along in arbitrary order.
-    ## The numbers of concatenations are:
-    ## n / d1
-    ## n / (d1 * d2)
-    ## n / (d1 * d2 * d3)
-    ## etc.
-    ## This is minimized if d1 >= d2 >= d3...
-
     sc = size (c);
-    nd = ndims (c);
-    [~, isc] = sort (sc);
-    for idim = isc
-      if (sc(idim) == 1)
-        continue;
-      endif
-      xdim = [1:idim-1, idim+1:nd];
-      cc = num2cell (c, xdim);
-      c = cellfun ("cat", {idim}, cc{:}, "uniformoutput", false);
-    endfor
-    m = c{1};
+    if (all (cellfun ("numel", c)(:) == 1))
+      m = reshape (cat (1, c{:}), sc);
+    else
+
+      ## The goal is to minimize the total number of cat() calls.
+      ## The dimensions can be concatenated along in arbitrary order.
+      ## The numbers of concatenations are:
+      ## n / d1
+      ## n / (d1 * d2)
+      ## n / (d1 * d2 * d3)
+      ## etc.
+      ## This is minimized if d1 >= d2 >= d3...
+
+      nd = ndims (c);
+      [~, isc] = sort (sc, "descend");
+      for idim = isc
+        if (sc(idim) == 1)
+          continue;
+        endif
+        xdim = [1:idim-1, idim+1:nd];
+        cc = num2cell (c, xdim);
+        c = cellfun ("cat", {idim}, cc{:}, "uniformoutput", false);
+      endfor
+      m = c{1};
+
+    endif
   endif
 
 endfunction

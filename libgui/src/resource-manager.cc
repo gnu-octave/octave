@@ -1390,6 +1390,7 @@ resource_manager::octave_keywords (void)
       "rdivide "
       "re_read_readline_init_file "
       "readdir "
+      "readline_re_read_init_file "
       "readline_read_init_file "
       "readlink "
       "real "

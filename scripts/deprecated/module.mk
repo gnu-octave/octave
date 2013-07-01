@@ -19,6 +19,7 @@ deprecated_FCN_FILES = \
   deprecated/javafields.m \
   deprecated/javamethods.m \
   deprecated/polyderiv.m \
+  deprecated/re_read_readline_init_file.m \
   deprecated/read_readline_init_file.m \
   deprecated/saving_history.m \
   deprecated/shell_cmd.m \

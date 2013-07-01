@@ -1074,6 +1074,7 @@ Read the readline library initialization file @var{file}.  If\n\
 \n\
 @xref{Readline Init File, , , readline, GNU Readline Library},\n\
 for details.\n\
+@seealso{readline_re_read_init_file}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1095,9 +1096,9 @@ for details.\n\
   return retval;
 }
 
-DEFUN (re_read_readline_init_file, args, ,
+DEFUN (readline_re_read_init_file, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} re_read_readline_init_file ()\n\
+@deftypefn {Built-in Function} {} readline_re_read_init_file ()\n\
 Re-read the last readline library initialization file that was read.\n\
 @xref{Readline Init File, , , readline, GNU Readline Library},\n\
 for details.\n\

@@ -751,7 +751,7 @@ the command line behavior.
 
 @DOCSTRING(readline_read_init_file)
 
-@DOCSTRING(re_read_readline_init_file)
+@DOCSTRING(readline_re_read_init_file)
 
 @node Customizing the Prompt
 @subsection Customizing the Prompt

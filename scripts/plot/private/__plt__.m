@@ -373,7 +373,9 @@ function retval = __plt2sv__ (h, x, y, options, properties = {})
     linestyle = options(i).linestyle;
     marker = options(i).marker;
     if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
+      ## If unspecified, marker for a point is always "."
+      linestyle = "-";
+      marker = ".";
     endif
     color = options(i).color;
     if (isempty (color))
@@ -443,7 +445,9 @@ function retval = __plt2vs__ (h, x, y, options, properties = {})
     linestyle = options(i).linestyle;
     marker = options(i).marker;
     if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
+      ## If unspecified, marker for a point is always "."
+      linestyle = "-";
+      marker = ".";
     endif
     color = options(i).color;
     if (isempty (color))

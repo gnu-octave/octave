@@ -133,6 +133,13 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
         result(count) = f_args.elem (count).is_bool_type ();
       retval(0) = result;
     }
+  else if (name == "isnumeric")
+    {
+      boolNDArray result (f_args.dims ());
+      for (octave_idx_type  count= 0; count < k; count++)
+        result(count) = f_args.elem (count).is_numeric_type ();
+      retval(0) = result;
+    }
   else if (name == "isreal")
     {
       boolNDArray result (f_args.dims ());
@@ -277,6 +284,9 @@ Return 1 for empty elements.\n\
 \n\
 @item islogical\n\
 Return 1 for logical elements.\n\
+\n\
+@item isnumeric\n\
+Return 1 for numeric elements.\n\
 \n\
 @item isreal\n\
 Return 1 for real elements.\n\
@@ -778,7 +788,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (A, [true, false, true, false]);
 
 %% First input argument can be the special string "isreal",
-%% "isempty", "islogical", "length", "ndims" or "prodofsize"
+%% "isempty", "islogical", "isnumeric", "length", "ndims" or "prodofsize"
 %!test
 %! A = cellfun ("isreal", {true, 0.1, {}, i*2, [], "abc"});
 %! assert (A, [true, true, false, false, true, true]);
@@ -788,6 +798,9 @@ v = cellfun (@@det, a); # faster\n\
 %!test
 %! A = cellfun ("islogical", {true, 0.1, false, i*2, [], "abc"});
 %! assert (A, [true, false, true, false, false, false]);
+%!test
+%! A = cellfun ("isnumeric", {true, 0.1, false, i*2, [], "abc"});
+%! assert (A, [false, true, false, true, true, false]);
 %!test
 %! A = cellfun ("length", {true, 0.1, false, i*2, [], "abc"});
 %! assert (A, [1, 1, 1, 1, 0, 3]);
@@ -989,6 +1002,7 @@ v = cellfun (@@det, a); # faster\n\
 %!assert (cellfun ("sin", {0,1}), sin ([0,1]))
 %!assert (cellfun ("isempty", {1,[]}), [false,true])
 %!assert (cellfun ("islogical", {false,pi}), [true,false])
+%!assert (cellfun ("isnumeric", {false,pi,struct()}), [false,true,false])
 %!assert (cellfun ("isreal", {1i,1}), [false,true])
 %!assert (cellfun ("length", {zeros(2,2),1}), [2,1])
 %!assert (cellfun ("prodofsize", {zeros(2,2),1}), [4,1])

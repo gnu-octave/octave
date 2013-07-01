@@ -45,129 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // Simple assignment expressions.
 
-// FIXME -- the following variable and the function that uses it
-// should be removed from some future version of Octave.
-
-static const char *former_built_in_variables[] =
-{
-  "DEFAULT_EXEC_PATH",
-  "DEFAULT_LOADPATH",
-  "EDITOR",
-  "EXEC_PATH",
-  "FFTW_WISDOM_PROGRAM",
-  "IMAGEPATH",
-  "INFO_FILE",
-  "INFO_PROGRAM",
-  "LOADPATH",
-  "MAKEINFO_PROGRAM",
-  "PAGER",
-  "PS1",
-  "PS2",
-  "PS4",
-  "__kluge_procbuf_delay__",
-  "automatic_replot",
-  "beep_on_error",
-  "completion_append_char",
-  "crash_dumps_octave_core",
-  "current_script_file_name",
-  "debug_on_error",
-  "debug_on_interrupt",
-  "debug_on_warning",
-  "debug_symtab_lookups",
-  "echo_executing_commands",
-  "fixed_point_format",
-  "gnuplot_binary",
-  "gnuplot_command_axes",
-  "gnuplot_command_end",
-  "gnuplot_command_plot",
-  "gnuplot_command_replot",
-  "gnuplot_command_splot",
-  "gnuplot_command_title",
-  "gnuplot_command_using",
-  "gnuplot_command_with",
-  "gnuplot_has_frames",
-  "history_file",
-  "history_save",
-  "history_size",
-  "ignore_function_time_stamp",
-  "max_recursion_depth",
-  "octave_core_file_format",
-  "octave_core_file_limit",
-  "octave_core_file_name",
-  "output_max_field_width",
-  "output_precision",
-  "page_output_immediately",
-  "page_screen_output",
-  "print_answer_id_name",
-  "print_empty_dimensions",
-  "print_rhs_assign_val",
-  "save_default_options",
-  "save_header_format_string",
-  "save_precision",
-  "sighup_dumps_octave_core",
-  "sigterm_dumps_octave_core",
-  "silent_functions",
-  "split_long_rows",
-  "string_fill_char",
-  "struct_levels_to_print",
-  "suppress_verbose_help_message",
-  "variables_can_hide_functions",
-  "warn_assign_as_truth_value",
-  "warn_associativity_change",
-  "warn_divide_by_zero",
-  "warn_empty_list_elements",
-  "warn_fortran_indexing",
-  "warn_function_name_clash",
-  "warn_future_time_stamp",
-  "warn_imag_to_real",
-  "warn_matlab_incompatible",
-  "warn_missing_semicolon",
-  "warn_neg_dim_as_zero",
-  "warn_num_to_str",
-  "warn_precedence_change",
-  "warn_reload_forces_clear",
-  "warn_resize_on_range_error",
-  "warn_separator_insert",
-  "warn_single_quote_string",
-  "warn_str_to_num",
-  "warn_undefined_return_values",
-  "warn_variable_switch_label",
-  "whos_line_format",
-  0,
-};
-
-static void
-maybe_warn_former_built_in_variable (const std::string& nm)
-{
-  static bool initialized = false;
-
-  static std::set<std::string> vars;
-
-  if (! initialized)
-    {
-      const char **p = former_built_in_variables;
-
-      while (*p)
-        vars.insert (*p++);
-
-      initialized = true;
-    }
-
-  if (vars.find (nm) != vars.end ())
-    {
-      const char *nm_c_str = nm.c_str ();
-
-      warning_with_id ("Octave:built-in-variable-assignment",
-                       "\
-In recent versions of Octave, %s is a function instead\n\
-of a built-in variable.\n\n\
-By assigning to %s, you have created a variable that hides\n\
-the function %s. To remove the variable and restore the \n\
-function, type \"clear %s\"\n",
-                       nm_c_str, nm_c_str, nm_c_str, nm_c_str);
-    }
-}
-
 tree_simple_assignment::tree_simple_assignment
   (tree_expression *le, tree_expression *re,
    bool plhs, int l, int c, octave_value::assign_op t)
@@ -199,9 +76,6 @@ octave_value
 tree_simple_assignment::rvalue1 (int)
 {
   octave_value retval;
-
-  if (first_execution && lhs)
-    maybe_warn_former_built_in_variable (lhs->name ());
 
   if (error_state)
     return retval;
@@ -344,13 +218,10 @@ tree_multi_assignment::rvalue (int)
 
   if (first_execution)
     {
-      for (tree_argument_list::iterator p = lhs->begin (); p != lhs->end (); p++)
-        {
-          tree_expression *lhs_expr = *p;
-
-          if (lhs_expr)
-            maybe_warn_former_built_in_variable (lhs_expr->name ());
-        }
+      for (tree_argument_list::iterator p = lhs->begin ();
+           p != lhs->end ();
+           p++)
+        tree_expression *lhs_expr = *p;
     }
 
   if (rhs)

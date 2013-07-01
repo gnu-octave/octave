@@ -17,39 +17,6 @@ Summary of important user-visible changes for version 4.0:
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
- ** strsplit has been modified to be compatible with Matlab.  There
-    are two instances where backward compatibility is broken.
-
-    (1) Delimiters are now string vectors, not scalars.
-
-    Octave's legacy behavior
-
-      strsplit ("1 2, 3", ", ")
-      ans = 
-      {
-       [1,1] = 1
-       [1,2] = 2
-       [1,3] = 
-       [1,4] = 3
-      }
-
-    Matlab compatible behavior
-
-      strsplit ("1 2, 3", ", ")
-      ans = 
-      {
-       [1,1] = 1 2
-       [1,2] = 3
-      }
-
-    (2) By default, Matlab treats consecutive delimiters are as a single
-    delimiter.  By default, Octave's legacy behavior was to return an
-    empty string for the part between the delmiters.
-
-    Where the legacy behavior is desired, the call to strsplit() may be
-    replaced by ostrsplit(), which is Octave's original implementation of
-    strsplit().
-
  ** Octave now supports nested functions with scoping rules that are
     compatible with Matlab.  A nested function is one declared and defined
     within the body of another function.  The nested function is only
@@ -115,12 +82,6 @@ Summary of important user-visible changes for version 3.8:
     Octave:array-as-scalar => Octave:array-to-scalar
     Octave:array-as-vector => Octave:array-to-vector
 
- ** The colormap function now provides new options--"list", "register",
-    and "unregister"--to list all available colormap functions, and to
-    add or remove a function name from the list of known colormap
-    functions.  Packages that implement extra colormaps should use these
-    commands with PKG_ADD and PKG_DEL statements.
-
  ** The m-files in the image directory have been overhauled.
 
     The principal benefit is that Octave will now no longer automatically
@@ -132,6 +93,45 @@ Summary of important user-visible changes for version 3.8:
     Other changes include fixes to the way indexed images are read from a
     colormap depending on the image class (integer images have a -1 offset to
     the colormap row number).
+
+ ** The colormap function now provides new options--"list", "register",
+    and "unregister"--to list all available colormap functions, and to
+    add or remove a function name from the list of known colormap
+    functions.  Packages that implement extra colormaps should use these
+    commands with PKG_ADD and PKG_DEL statements.
+
+ ** strsplit has been modified to be compatible with Matlab.  There
+    are two instances where backward compatibility is broken.
+
+    (1) Delimiters are now string vectors, not scalars.
+
+    Octave's legacy behavior
+
+      strsplit ("1 2, 3", ", ")
+      ans = 
+      {
+       [1,1] = 1
+       [1,2] = 2
+       [1,3] = 
+       [1,4] = 3
+      }
+
+    Matlab compatible behavior
+
+      strsplit ("1 2, 3", ", ")
+      ans = 
+      {
+       [1,1] = 1 2
+       [1,2] = 3
+      }
+
+    (2) By default, Matlab treats consecutive delimiters are as a single
+    delimiter.  By default, Octave's legacy behavior was to return an
+    empty string for the part between the delmiters.
+
+    Where the legacy behavior is desired, the call to strsplit() may be
+    replaced by ostrsplit(), which is Octave's original implementation of
+    strsplit().
 
  ** The datevec function has been extended for better Matlab compatibility.
     It now accepts string inputs in the following numerical formats: 12, 21,
@@ -186,8 +186,9 @@ Summary of important user-visible changes for version 3.8:
       copyobj                     gco             splinefit             
       dawson                      hdl2struct      strjoin               
       dblist                      history_save    struct2hdl          
-      doc_cache_create            importdata      tetramesh           
-      ellipj                      iscolormap      waterfall           
+      debug_jit                   importdata      tetramesh           
+      doc_cache_create            iscolormap      waterfall           
+      ellipj                      jit_enable
 
  ** Deprecated functions.
 
@@ -204,21 +205,14 @@ Summary of important user-visible changes for version 3.8:
     be removed from Octave 3.12 (or whatever version is the second major
     release after 3.8):
 
-      default_save_options
-      gen_doc_cache
-      java_convert_matrix
-      java_debug
-      java_get
-      java_invoke
-      java_new
-      java_set
-      java_unsigned_conversion
-      javafields
-      javamethods
-      re_read_readline_init_file
-      read_readline_init_file
-      saving_history
-
+      default_save_options    java_set                  
+      gen_doc_cache           java_unsigned_conversion  
+      java_convert_matrix     javafields                
+      java_debug              javamethods               
+      java_get                re_read_readline_init_file
+      java_invoke             read_readline_init_file   
+      java_new                saving_history            
+      
     The following keywords have been deprecated in Octave 3.8 and will
     be removed from Octave 3.12 (or whatever version is the second major
     release after 3.8):

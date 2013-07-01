@@ -945,7 +945,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (addprops)
           addlistener (hlegend, "edgecolor", @updatelegendtext);
           addlistener (hlegend, "textcolor", @updatelegendtext);
-          addlistener (hlegend, "fontsize", @updatelegend);
+          addlistener (hlegend, "fontsize", @updatelegendtext);
           addlistener (hlegend, "interpreter", @updatelegendtext);
           addlistener (hlegend, "location", @updatelegend);
           addlistener (hlegend, "orientation", @updatelegend);
@@ -1152,6 +1152,20 @@ function updateline (h, d, hlegend, linelength)
   endif
 endfunction
 
+%!test
+%! graphics_toolkit ("gnuplot");
+%! h = figure ("visible", "off", "__graphics_toolkit__", "gnuplot");
+%! unwind_protect
+%!   position = get (h, "position");
+%!   plot (rand (3))
+%!   legend ()
+%!   filename = sprintf ("%s.eps", tmpnam ());
+%!   print (filename)
+%!   unlink (filename);
+%!   assert (get (h, "position"), position)
+%! unwind_protect_cleanup
+%!   close (h)
+%! end_unwind_protect
 
 %!demo
 %! clf;

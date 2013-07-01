@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Built-in Function} {@var{val} =} saving_history ()
 ## @deftypefnx {Built-in Function} {@var{old_val} =} saving_history (@var{new_val})
-## @deftypefnx {Built-in Function} {} saving_history (@var{new_val}, \"local\")
+## @deftypefnx {Built-in Function} {} saving_history (@var{new_val}, "local")
 ## This function has been deprecated.  Use @code{@file{history_save}} instead.
 ## @seealso{history_save}
 ## @end deftypefn

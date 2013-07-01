@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Built-in Function} {@var{val} =} default_save_options ()
 ## @deftypefnx {Built-in Function} {@var{old_val} =} default_save_options (@var{new_val})
-## @deftypefnx {Built-in Function} {} default_save_options (@var{new_val}, \"local\")
+## @deftypefnx {Built-in Function} {} default_save_options (@var{new_val}, "local")
 ## This function has been deprecated.  Use @code{@file{save_default_options}}
 ## instead.
 ## @seealso{save_default_options}

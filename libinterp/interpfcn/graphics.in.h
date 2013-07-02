@@ -577,8 +577,8 @@ public:
   enum desired_enum { string_t, cell_t };
 
   string_array_property (const std::string& s, const graphics_handle& h,
-                  const std::string& val = "", const char& sep = '|',
-                  const desired_enum& typ = string_t)
+                         const std::string& val = "", const char& sep = '|',
+                         const desired_enum& typ = string_t)
     : base_property (s, h), desired_type (typ), separator (sep), str ()
     {
       size_t pos = 0;
@@ -600,8 +600,8 @@ public:
     }
 
   string_array_property (const std::string& s, const graphics_handle& h,
-                  const Cell& c, const char& sep = '|',
-                  const desired_enum& typ = string_t)
+                         const Cell& c, const char& sep = '|',
+                         const desired_enum& typ = string_t)
     : base_property (s, h), desired_type (typ), separator (sep), str ()
     {
       if (c.is_cellstr ())
@@ -659,13 +659,14 @@ public:
 protected:
   bool do_set (const octave_value& val)
     {
-      if (val.is_string ())
+      if (val.is_string () && val.rows () == 1)
         {
           bool replace = false;
           std::string new_str = val.string_value ();
           string_vector strings;
           size_t pos = 0;
 
+          // Split single string on delimiter (usually '|')
           while (pos != std::string::npos)
             {
               size_t new_pos = new_str.find_first_of (separator, pos);
@@ -692,6 +693,30 @@ protected:
             }
           else
             replace = true;
+
+          desired_type = string_t;
+
+          if (replace)
+            {
+              str = strings;
+              return true;
+            }
+        }
+      else if (val.is_string ())  // multi-row character matrix
+        {
+          bool replace = false;
+          charMatrix chm = val.char_matrix_value ();
+          octave_idx_type nel = chm.rows ();
+          string_vector strings (nel);
+
+          if (nel != str.numel ())
+            replace = true;
+          for (octave_idx_type i = 0; i < nel; i++)
+            {
+              strings[i] = chm.row_as_string (i);
+              if (!replace && strings[i] != str[i])
+                replace = true;
+            }
 
           desired_type = string_t;
 

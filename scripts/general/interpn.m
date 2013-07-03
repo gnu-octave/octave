@@ -76,14 +76,14 @@ function vi = interpn (varargin)
 
   if (ischar (varargin{end}))
     method = varargin{end};
-    nargs = nargs - 1;
+    nargs -= 1;
   elseif (nargs > 1 && ischar (varargin{end - 1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("interpn: extrapal is expected to be a numeric scalar");
     endif
     method = varargin{end - 1};
     extrapval = varargin{end};
-    nargs = nargs - 2;
+    nargs -= 2;
   endif
 
   if (nargs < 3)
@@ -102,7 +102,7 @@ function vi = interpn (varargin)
     nd = ndims (v);
     x = cell (1, nd);
     y = cell (1, nd);
-    for i = 1 : nd;
+    for i = 1 : nd
       x{i} = 1 : sz(i);
       y{i} = 1 : (1 / (2 ^ m)) : sz(i);
     endfor
@@ -113,18 +113,18 @@ function vi = interpn (varargin)
     sz = size (v);
     nd = ndims (v);
     x = cell (1, nd);
-    y = varargin (2 : nargs);
-    for i = 1 : nd;
+    y = varargin(2 : nargs);
+    for i = 1 : nd
       x{i} = 1 : sz(i);
     endfor
-  elseif (rem (nargs, 2) == 1 && nargs ==
-          (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
+  elseif (rem (nargs, 2) == 1
+          && nargs == (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
     nv = ceil (nargs / 2);
     v = varargin{nv};
     sz = size (v);
     nd = ndims (v);
-    x = varargin (1 : (nv - 1));
-    y = varargin ((nv + 1) : nargs);
+    x = varargin(1 : (nv - 1));
+    y = varargin((nv + 1) : nargs);
   else
     error ("interpn: wrong number or incorrectly formatted input arguments");
   endif
@@ -134,12 +134,12 @@ function vi = interpn (varargin)
       if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
         error ("interpn: dimensional mismatch");
       endif
-      idx (1 : nd) = {1};
-      idx (i) = ":";
+      idx(1 : nd) = {1};
+      idx(i) = ":";
       x{i} = x{i}(idx{:})(:);
     endfor
-    idx (1 : nd) = {1};
-    idx (1) = ":";
+    idx(1 : nd) = {1};
+    idx(1) = ":";
     x{1} = x{1}(idx{:})(:);
   endif
 
@@ -154,7 +154,7 @@ function vi = interpn (varargin)
 
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
-    vi (isna (vi)) = extrapval;
+    vi(isna (vi)) = extrapval;
   elseif (strcmp (method, "nearest"))
     yshape = size (y{1});
     yidx = cell (1, nd);
@@ -166,7 +166,7 @@ function vi = interpn (varargin)
     for i = 1 : nd
       idx{i} = yidx{i} + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
     endfor
-    vi = v (sub2ind (sz, idx{:}));
+    vi = v(sub2ind (sz, idx{:}));
     idx = zeros (prod (yshape), 1);
     for i = 1 : nd
       idx |= y{i} < min (x{i}(:)) | y{i} > max (x{i}(:));
@@ -179,12 +179,12 @@ function vi = interpn (varargin)
         if (! size_equal (y{1}, y{i}))
           error ("interpn: dimensional mismatch");
         endif
-        idx (1 : nd) = {1};
-        idx (i) = ":";
+        idx(1 : nd) = {1};
+        idx(i) = ":";
         y{i} = y{i}(idx{:});
       endfor
-      idx (1 : nd) = {1};
-      idx (1) = ":";
+      idx(1 : nd) = {1};
+      idx(1) = ":";
       y{1} = y{1}(idx{:});
     endif
 
@@ -196,9 +196,9 @@ function vi = interpn (varargin)
       q = cell (1, nd);
       for i = 1 : ly
         q(:) = i;
-        idx {i} = q;
+        idx{i} = q;
       endfor
-      vi = vi (cellfun (@(x) sub2ind (size (vi), x{:}), idx));
+      vi = vi(cellfun (@(x) sub2ind (size (vi), x{:}), idx));
       vi = reshape (vi, size (y{1}));
     endif
   elseif (strcmp (method, "cubic"))

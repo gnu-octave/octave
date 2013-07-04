@@ -47,7 +47,7 @@ public:
   tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
                           octave_value::assign_op t = octave_value::op_asn_eq)
     : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), ans_ass (),
-      etype (t), first_execution (true) { }
+      etype (t) { }
 
   tree_simple_assignment (tree_expression *le, tree_expression *re,
                           bool plhs = false, int l = -1, int c = -1,
@@ -100,9 +100,6 @@ private:
   // The type of the expression.
   octave_value::assign_op etype;
 
-  // true only on first rvalue() call.
-  bool first_execution;
-
   // No copying!
 
   tree_simple_assignment (const tree_simple_assignment&);
@@ -118,8 +115,7 @@ tree_multi_assignment : public tree_expression
 public:
 
   tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
-    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs),
-      first_execution (true) { }
+    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs) { }
 
   tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
                          bool plhs = false, int l = -1, int c = -1);
@@ -159,9 +155,6 @@ private:
 
   // True if we should not delete the lhs.
   bool preserve;
-
-  // true only on first rvalue() call.
-  bool first_execution;
 
   // No copying!
 

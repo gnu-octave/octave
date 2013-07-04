@@ -77,6 +77,8 @@ file.
 
 @DOCSTRING(imfinfo)
 
+@DOCSTRING(imformats)
+
 @node Displaying Images
 @section Displaying Images
 

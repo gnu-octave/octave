@@ -25,6 +25,7 @@ image_FCN_FILES = \
   image/image.m \
   image/imagesc.m \
   image/imfinfo.m \
+  image/imformats.m \
   image/imread.m \
   image/imshow.m \
   image/imwrite.m \

@@ -1152,6 +1152,59 @@ not be using this function.  Instead use @code{imfinfo}.\n\
 
 #undef GET_PARAM
 
+DEFUN_DLD (__magick_formats__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __magick_imformats__ (@var{formats})\n\
+Fill formats info with GraphicsMagick CoderInfo.\n\
+@end deftypefn")
+{
+  octave_value retval;
+#ifndef HAVE_MAGICK
+  gripe_disabled_feature ("imformats", "Image IO");
+#else
+  if (args.length () != 1 || ! args (0).is_map ())
+    {
+      print_usage ();
+      return retval;
+    }
+  octave_map formats = args(0).map_value ();
+
+  maybe_initialize_magick ();
+  for (octave_idx_type idx = 0; idx < formats.numel (); idx++)
+    {
+      try
+        {
+          octave_scalar_map fmt = formats.checkelem (idx);
+          Magick::CoderInfo coder (fmt.getfield ("coder").string_value ());
+
+          fmt.setfield ("description", octave_value (coder.description ()));
+          fmt.setfield ("multipage", coder.isMultiFrame () ? true : false);
+          // default for read and write is a function handle. If we can't
+          // read or write them, them set it to an empty value
+          if (! coder.isReadable ())
+            fmt.setfield ("read",  Matrix ());
+          if (! coder.isWritable ())
+            fmt.setfield ("write", Matrix ());
+          formats.fast_elem_insert (idx, fmt);
+        }
+      catch (Magick::Exception& e)
+        {
+          // Exception here are missing formats. So we remove the format
+          // from the structure and reduce idx.
+          formats.delete_elements (idx);
+          idx--;
+        }
+    }
+  retval = formats;
+#endif
+  return retval;
+}
+
+/*
+## No test needed for internal helper function.
+%!assert (1)
+*/
+
 // Determine the file formats supported by GraphicsMagick.  This is
 // called once at the beginning of imread or imwrite to determine
 // exactly which file formats are supported, so error messages can be

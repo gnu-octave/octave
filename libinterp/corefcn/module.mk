@@ -1,5 +1,10 @@
 EXTRA_DIST += \
-  corefcn/module.mk
+  corefcn/module.mk \
+  corefcn/defaults.in.h \
+  corefcn/gl2ps.c \
+  corefcn/graphics.in.h \
+  corefcn/mxarray.in.h \
+  corefcn/oct-errno.in.cc
 
 ## Options functions for Fortran packages like LSODE, DASPK.
 ## These are generated automagically by configure and Perl.
@@ -24,7 +29,101 @@ $(OPT_HANDLERS): corefcn/%.cc : $(top_builddir)/liboctave/numeric/%.in
 $(OPT_INC) : %.h : %.in
 	$(MAKE) -C $(top_builddir)/liboctave/numeric $(@F)
 
+JIT_INC = \
+  corefcn/jit-util.h \
+  corefcn/jit-typeinfo.h \
+  corefcn/jit-ir.h \
+  corefcn/pt-jit.h
+
+COREFCN_INC = \
+  corefcn/Cell.h \
+  corefcn/action-container.h \
+  corefcn/c-file-ptr-stream.h \
+  corefcn/comment-list.h \
+  corefcn/cutils.h \
+  corefcn/data.h \
+  corefcn/debug.h \
+  corefcn/defun-dld.h \
+  corefcn/defun-int.h \
+  corefcn/defun.h \
+  corefcn/dirfns.h \
+  corefcn/display.h \
+  corefcn/dynamic-ld.h \
+  corefcn/error.h \
+  corefcn/event-queue.h \
+  corefcn/file-io.h \
+  corefcn/gl-render.h \
+  corefcn/gl2ps-renderer.h \
+  corefcn/gl2ps.h \
+  corefcn/gripes.h \
+  corefcn/help.h \
+  corefcn/hook-fcn.h \
+  corefcn/input.h \
+  corefcn/load-path.h \
+  corefcn/load-save.h \
+  corefcn/ls-ascii-helper.h \
+  corefcn/ls-hdf5.h \
+  corefcn/ls-mat-ascii.h \
+  corefcn/ls-mat4.h \
+  corefcn/ls-mat5.h \
+  corefcn/ls-oct-ascii.h \
+  corefcn/ls-oct-binary.h \
+  corefcn/ls-utils.h \
+  corefcn/mex.h \
+  corefcn/mexproto.h \
+  corefcn/mxarray.in.h \
+  corefcn/oct-errno.h \
+  corefcn/oct-fstrm.h \
+  corefcn/oct-hdf5.h \
+  corefcn/oct-hist.h \
+  corefcn/oct-iostrm.h \
+  corefcn/oct-lvalue.h \
+  corefcn/oct-map.h \
+  corefcn/oct-obj.h \
+  corefcn/oct-prcstrm.h \
+  corefcn/oct-procbuf.h \
+  corefcn/oct-stdstrm.h \
+  corefcn/oct-stream.h \
+  corefcn/oct-strstrm.h \
+  corefcn/oct.h \
+  corefcn/octave-link.h \
+  corefcn/pager.h \
+  corefcn/pr-output.h \
+  corefcn/procstream.h \
+  corefcn/profiler.h \
+  corefcn/sighandlers.h \
+  corefcn/siglist.h \
+  corefcn/sparse-xdiv.h \
+  corefcn/sparse-xpow.h \
+  corefcn/symtab.h \
+  corefcn/sysdep.h \
+  corefcn/toplev.h \
+  corefcn/txt-eng-ft.h \
+  corefcn/txt-eng.h \
+  corefcn/unwind-prot.h \
+  corefcn/utils.h \
+  corefcn/variables.h \
+  corefcn/workspace-element.h \
+  corefcn/xdiv.h \
+  corefcn/xnorm.h \
+  corefcn/xpow.h \
+  corefcn/zfstream.h \
+  $(JIT_INC)
+
+JIT_SRC = \
+  corefcn/jit-util.cc \
+  corefcn/jit-typeinfo.cc \
+  corefcn/jit-ir.cc \
+  corefcn/pt-jit.cc
+
+C_COREFCN_SRC = \
+  corefcn/cutils.c \
+  corefcn/matherr.c \
+  corefcn/siglist.c \
+  corefcn/xgl2ps.c
+
 COREFCN_SRC = \
+  corefcn/Cell.cc \
   corefcn/__contourc__.cc \
   corefcn/__dispatch__.cc \
   corefcn/__lin_interpn__.cc \
@@ -35,20 +134,31 @@ COREFCN_SRC = \
   corefcn/betainc.cc \
   corefcn/bitfcns.cc \
   corefcn/bsxfun.cc \
+  corefcn/c-file-ptr-stream.cc \
   corefcn/cellfun.cc \
   corefcn/colloc.cc \
+  corefcn/comment-list.cc \
   corefcn/conv2.cc \
   corefcn/daspk.cc \
   corefcn/dasrt.cc \
   corefcn/dassl.cc \
+  corefcn/data.cc \
+  corefcn/debug.cc \
+  corefcn/defaults.cc \
+  corefcn/defun.cc \
   corefcn/det.cc \
+  corefcn/dirfns.cc \
+  corefcn/display.cc \
   corefcn/dlmread.cc \
   corefcn/dot.cc \
+  corefcn/dynamic-ld.cc \
   corefcn/eig.cc \
   corefcn/ellipj.cc \
+  corefcn/error.cc \
   corefcn/fft.cc \
   corefcn/fft2.cc \
   corefcn/fftn.cc \
+  corefcn/file-io.cc \
   corefcn/filter.cc \
   corefcn/find.cc \
   corefcn/gammainc.cc \
@@ -57,11 +167,28 @@ COREFCN_SRC = \
   corefcn/getpwent.cc \
   corefcn/getrusage.cc \
   corefcn/givens.cc \
+  corefcn/gl-render.cc \
+  corefcn/gl2ps-renderer.cc \
+  corefcn/graphics.cc \
+  corefcn/gripes.cc \
+  corefcn/help.cc \
   corefcn/hess.cc \
   corefcn/hex2num.cc \
+  corefcn/hook-fcn.cc \
+  corefcn/input.cc \
   corefcn/inv.cc \
   corefcn/kron.cc \
+  corefcn/load-path.cc \
+  corefcn/load-save.cc \
   corefcn/lookup.cc \
+  corefcn/ls-ascii-helper.cc \
+  corefcn/ls-hdf5.cc \
+  corefcn/ls-mat-ascii.cc \
+  corefcn/ls-mat4.cc \
+  corefcn/ls-mat5.cc \
+  corefcn/ls-oct-ascii.cc \
+  corefcn/ls-oct-binary.cc \
+  corefcn/ls-utils.cc \
   corefcn/lsode.cc \
   corefcn/lu.cc \
   corefcn/luinc.cc \
@@ -69,9 +196,25 @@ COREFCN_SRC = \
   corefcn/matrix_type.cc \
   corefcn/max.cc \
   corefcn/md5sum.cc \
+  corefcn/mex.cc \
   corefcn/mgorth.cc \
   corefcn/nproc.cc \
+  corefcn/oct-fstrm.cc \
+  corefcn/oct-hist.cc \
+  corefcn/oct-iostrm.cc \
+  corefcn/oct-lvalue.cc \
+  corefcn/oct-map.cc \
+  corefcn/oct-obj.cc \
+  corefcn/oct-prcstrm.cc \
+  corefcn/oct-procbuf.cc \
+  corefcn/oct-stream.cc \
+  corefcn/oct-strstrm.cc \
+  corefcn/octave-link.cc \
+  corefcn/pager.cc \
   corefcn/pinv.cc \
+  corefcn/pr-output.cc \
+  corefcn/procstream.cc \
+  corefcn/profiler.cc \
   corefcn/quad.cc \
   corefcn/quadcc.cc \
   corefcn/qz.cc \
@@ -79,6 +222,9 @@ COREFCN_SRC = \
   corefcn/rcond.cc \
   corefcn/regexp.cc \
   corefcn/schur.cc \
+  corefcn/sighandlers.cc \
+  corefcn/sparse-xdiv.cc \
+  corefcn/sparse-xpow.cc \
   corefcn/sparse.cc \
   corefcn/spparms.cc \
   corefcn/sqrtm.cc \
@@ -88,10 +234,61 @@ COREFCN_SRC = \
   corefcn/sub2ind.cc \
   corefcn/svd.cc \
   corefcn/syl.cc \
+  corefcn/symtab.cc \
   corefcn/syscalls.cc \
+  corefcn/sysdep.cc \
   corefcn/time.cc \
+  corefcn/toplev.cc \
   corefcn/tril.cc \
-  corefcn/typecast.cc
+  corefcn/txt-eng-ft.cc \
+  corefcn/typecast.cc \
+  corefcn/unwind-prot.cc \
+  corefcn/utils.cc \
+  corefcn/variables.cc \
+  corefcn/xdiv.cc \
+  corefcn/xnorm.cc \
+  corefcn/xpow.cc \
+  corefcn/zfstream.cc \
+  $(JIT_SRC) \
+  $(C_COREFCN_SRC)
+
+## FIXME: Automake does not support per-object rules.
+##        These rules could be emulated by creating a new convenience
+##        library and using per-library rules.  Or we can just live
+##        without the rule since there haven't been any problems. (09/18/2012)
+#display.df display.lo: CPPFLAGS += $(X11_FLAGS)
+
+## Special rules for sources which must be built before rest of compilation.
+
+## defaults.h and graphics.h must depend on Makefile.  Calling configure
+## may change default/config values.  However, calling configure will also
+## regenerate the Makefiles from Makefile.am and trigger the rules below.
+corefcn/defaults.h: corefcn/defaults.in.h Makefile
+	@$(do_subst_default_vals)
+
+corefcn/graphics.h: corefcn/graphics.in.h genprops.awk Makefile
+	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
+	mv $@-t $@
+
+corefcn/graphics-props.cc: corefcn/graphics.in.h genprops.awk Makefile
+	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
+	mv $@-t $@
+
+corefcn/oct-errno.cc: corefcn/oct-errno.in.cc Makefile
+	if test -n "$(PERL)"; then \
+	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
+	elif test -n "$(PYTHON)"; then \
+	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
+	else \
+	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
+	fi
+	mv $@-t $@
+
+corefcn/mxarray.h: corefcn/mxarray.in.h Makefile
+	$(SED) < $< \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
+	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
+	mv $@-t $@
 
 noinst_LTLIBRARIES += corefcn/libcorefcn.la
 

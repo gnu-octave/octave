@@ -177,8 +177,7 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(top_srcdir)/liboctave/util \
   -I$(top_builddir)/libinterp -I$(top_srcdir)/libinterp \
   -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
-  -I$(top_builddir)/libinterp/interp-core -I$(top_srcdir)/libinterp/interp-core \
-  -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \
+  -I$(top_builddir)/libinterp/corefcn -I$(top_srcdir)/libinterp/corefcn \
   -I$(top_srcdir)/libinterp/octave-value
 
 src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)

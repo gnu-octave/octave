@@ -423,30 +423,27 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
 }
 
 idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
-  : data (0), len (0), ext (0), aowner (0), orig_dims ()
+  : data (0), len (bnda.nnz ()), ext (0), aowner (0), orig_dims ()
 {
-  for (octave_idx_type i = 0, l = bnda.nnz (); i < l; i++)
-    if (bnda.data (i)) len++;
+  const dim_vector dv = bnda.dims ();
 
-  dim_vector dv = bnda.dims ();
-
-  orig_dims = ((dv.length () == 2 && dv(0) == 1)
-               ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
+  if (! dv.all_zero ())
+    orig_dims = ((dv.length () == 2 && dv(0) == 1)
+                 ? dim_vector (1, len) : dim_vector (len, 1));
 
   if (len != 0)
     {
       octave_idx_type *d = new octave_idx_type [len];
 
-      octave_idx_type nnz = bnda.nnz ();
-
       octave_idx_type k = 0;
-      // FIXME: I hope this is OK, i.e. the element iterated this way are correctly ordered.
-      for (octave_idx_type i = 0; i < nnz; i++)
-        {
-          if (bnda.data (i))
-            d[k++] = bnda.cidx (i) + bnda.rows () * bnda.ridx (i);
-        }
+      octave_idx_type nc = bnda.cols ();
+      octave_idx_type nr = bnda.rows ();
 
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = bnda.cidx(j); i < bnda.cidx(j+1); i++)
+          if (bnda.data (i))
+            d[k++] = j * nr + bnda.ridx (i);
+ 
       data = d;
 
       ext = d[k-1] + 1;

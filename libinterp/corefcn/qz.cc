@@ -342,7 +342,7 @@ the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix\n\
 \n\
 @table @var\n\
 @item opt\n\
-for ordering eigenvalues of the GEP pencil.  The leading block\n\
+for ordering eigenvalues of the @nospell{GEP} pencil.  The leading block\n\
 of the revised pencil contains all eigenvalues that satisfy:\n\
 \n\
 @table @asis\n\
@@ -367,7 +367,7 @@ in the closed right half-plane\n\
 @end enumerate\n\
 \n\
 Note: @code{qz} performs permutation balancing, but not scaling\n\
-(@pxref{doc-balance}).  The order of output arguments was selected for\n\
+(@pxref{docXbalance}).  The order of output arguments was selected for\n\
 compatibility with @sc{matlab}.\n\
 @seealso{balance, eig, schur}\n\
 @end deftypefn")

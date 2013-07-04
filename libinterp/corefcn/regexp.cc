@@ -1067,7 +1067,7 @@ DEFUN (regexpi, args, nargout,
 \n\
 Case insensitive regular expression string matching.  Search for @var{pat} in\n\
 @var{str} and return the positions and substrings of any matches, or empty\n\
-values if there are none.  @xref{doc-regexp,,regexp}, for details on the\n\
+values if there are none.  @xref{docXregexp,,regexp}, for details on the\n\
 syntax of the search pattern.\n\
 @seealso{regexp}\n\
 @end deftypefn")
@@ -1279,7 +1279,7 @@ DEFUN (regexprep, args, ,
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
 \n\
 The pattern is a regular expression as documented for @code{regexp}.\n\
-@xref{doc-regexp,,regexp}.\n\
+@xref{docXregexp,,regexp}.\n\
 \n\
 The replacement string may contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  For example,\n\
@@ -1305,8 +1305,9 @@ This option is present for compatibility but is ignored.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
 sequences (e.g., \"\\n\" => newline) are processed in both @var{pat}\n\
-and @var{repstr} regardless of whether they were defined within single quotes.  Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
-\"\\\\n\") or use the @code{regexptranslate} function.\n\
+and @var{repstr} regardless of whether they were defined within single\n\
+quotes.  Use a second backslash to stop interpolation of the escape sequence\n\
+(e.g., \"\\\\n\") or use the @code{regexptranslate} function.\n\
 @seealso{regexp, regexpi, strrep}\n\
 @end deftypefn")
 {

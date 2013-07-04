@@ -11,6 +11,7 @@
         <file>icons/filesave.png</file>
         <file>icons/fileprint.png</file>
         <file>icons/folder_new.png</file>
+        <file>icons/home.png</file>
         <file>icons/ok.png</file>
         <file>icons/redo.png</file>
         <file>icons/reload.png</file>
@@ -55,5 +56,8 @@
         <file>icons/graphic_logo_HistoryDockWidget.png</file>
         <file>icons/graphic_logo_WorkspaceView.png</file>
         <file>icons/graphic_logo_DocumentationDockWidget.png</file>
+        <file>icons/widget-close.png</file>
+        <file>icons/widget-dock.png</file>
+        <file>icons/widget-undock.png</file>
     </qresource>
 </RCC>

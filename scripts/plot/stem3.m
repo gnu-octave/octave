@@ -17,7 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} stem3 (@var{x}, @var{y}, @var{z}, @var{linespec})
+## @deftypefn  {Function File} {} stem3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} stem3 (@var{x}, @var{y}, @var{z}, @var{linespec})
+## @deftypefnx {Function File} {@var{h} =} stem3 (@dots{})
 ## Plot a three-dimensional stem graph and return the handles of the line
 ## and marker objects used to draw the stems as "stem series" object.
 ## The default color is @code{"r"} (red).  The default line style is
@@ -35,7 +37,7 @@
 ## @noindent
 ## plots 31 stems with heights from 0 to 6 lying on a circle.  Color
 ## definitions with RGB-triples are not valid!
-## @seealso{bar, barh, stem, plot}
+## @seealso{stem, bar, barh, plot}
 ## @end deftypefn
 
 function h = stem3 (varargin)

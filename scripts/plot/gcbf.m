@@ -21,9 +21,9 @@
 ## Return a handle to the figure containing the object whose callback
 ## is currently executing.  If no callback is executing, this function
 ## returns the empty matrix.  The handle returned by this function is
-## the same as the second output argument of gcbo.
+## the same as the second output argument of @code{gcbo}.
 ##
-##@seealso{gcf, gca, gcbo}
+##@seealso{gcbo, gcf, gca}
 ##@end deftypefn
 
 function fig = gcbf ()

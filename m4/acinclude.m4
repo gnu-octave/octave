@@ -194,14 +194,13 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
   fi
 ])
 dnl
-dnl Check whether Qscintilla FindFirst function is old (16 inputs) or
-dnl new (17 inputs).
+dnl Check whether Qscintilla has version 2.6.0 or later
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?
 dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
-  AC_CACHE_CHECK([whether Qscintilla FindFirst uses 17 input arguments],
-    [octave_cv_func_findfirst_modern],
+AC_DEFUN([OCTAVE_CHECK_VERSION_2_6_0], [
+  AC_CACHE_CHECK([whether Qscintilla has version 2.6.0 or later],
+    [octave_cv_version_2_6_0],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
@@ -212,14 +211,14 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FINDFIRST_MODERN], [
         #error Old FindFirst function found.
         #endif
         ]])],
-      octave_cv_func_findfirst_modern=yes,
-      octave_cv_func_findfirst_modern=no)
+      octave_cv_version_2_6_0=yes,
+      octave_cv_version_2_6_0=no)
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_findfirst_modern = yes; then
-    AC_DEFINE(HAVE_FINDFIRST_MODERN, 1, 
-      [Define to 1 if Qscintilla FindFirst uses modern form with 17 inputs.])
+  if test $octave_cv_version_2_6_0 = yes; then
+    AC_DEFINE(HAVE_QSCI_VERSION_2_6_0, 1,
+      [Define to 1 if Qscintilla is of Version 2.6.0 or later.])
   fi
 ])
 dnl
@@ -1400,8 +1399,13 @@ dnl Check for bison.
 dnl
 AC_DEFUN([OCTAVE_PROG_BISON], [
   AC_PROG_YACC
-  case "$YACC" in
-    bison*)
+
+  case "`$YACC --version`" in
+    *bison*) tmp_have_bison="yes" ;;
+    *) tmp_have_bison=no ;;
+  esac
+
+  if test "$tmp_have_bison" = yes; then
     AC_CACHE_CHECK([syntax of bison push/pull declaration],
                    [octave_cv_bison_push_pull_decl_style], [
       style="dash underscore"
@@ -1441,8 +1445,7 @@ EOF
       done
       rm -f conftest.yy y.tab.h y.tab.c
       ])
-    ;;
-  esac
+  fi
 
   AC_SUBST(BISON_PUSH_PULL_DECL_STYLE, $octave_cv_bison_push_pull_decl_style)
 
@@ -1456,20 +1459,16 @@ parser in a bison input file so I'm disabling bison.
     OCTAVE_CONFIGURE_WARNING([warn_bison_push_pull_decl_style])
   fi
 
-  case "$YACC" in
-    bison*)
-    ;;
-    *)
-      YACC='$(top_srcdir)/build-aux/missing bison'
-      warn_bison="
+  if test "$tmp_have_bison" = no; then
+    YACC='$(top_srcdir)/build-aux/missing bison'
+    warn_bison="
 
 I didn't find bison, but it's only a problem if you need to
 reconstruct parse.cc, which is the case if you're building from VCS
 sources.
 "
-      OCTAVE_CONFIGURE_WARNING([warn_bison])
-    ;;
-  esac
+    OCTAVE_CONFIGURE_WARNING([warn_bison])
+  fi
 ])
 dnl
 dnl Find desktop-file-install program.
@@ -1498,8 +1497,8 @@ AC_DEFUN([OCTAVE_PROG_FLEX], [
   ## Also make sure that we generate an interactive scanner if we are
   ## using flex.
   AC_PROG_LEX
-  case "$LEX" in
-    flex*)
+  case "`$LEX --version`" in
+    *flex*)
       LFLAGS="-I"
       AC_MSG_RESULT([defining LFLAGS to be $LFLAGS])
       LEXLIB=

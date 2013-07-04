@@ -125,23 +125,18 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         break;
       endif
 
-      if (nargin > 1)
-        ## Input argument n was given => stop when k == n.
-        if (k == n)
-          break;
-        endif
-      else
-        ## Input argument n not given => stop when hitting a return key.
-        ## if (button(k) == 0x0D || button(k) == 0x0A)
-        ##   ## hit Return or Enter
-        if (button(k) == 0x0D)
-          ## hit Return
-          x(k:end) = [];
-          y(k:end) = [];
-          button(k:end) = [];
-          break;
-        endif
+      if (button(k) == 0x0D || button(k) == 0x0A)
+        ## Stop when hitting a RETURN or ENTER key.
+        x(k:end) = [];
+        y(k:end) = [];
+        button(k:end) = [];
+        break;
       endif
+      if (nargin > 1 && k == n)
+        ## Input argument n was given, stop when k == n.
+        break;
+      endif
+
     endwhile
 
   unwind_protect_cleanup

@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "terminal-dock-widget.h"
 #include "documentation-dock-widget.h"
 #include "octave-qt-link.h"
+#include "octave-dock-widget.h"
 #include "find-files-dialog.h"
 
 /**
@@ -249,6 +250,17 @@ private:
   documentation_dock_widget *doc_browser_window;
   file_editor_interface *editor_window;
   workspace_view *workspace_window;
+  QList<octave_dock_widget *> dock_widget_list ()
+  {
+    QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
+    list.append (static_cast<octave_dock_widget *> (command_window));
+    list.append (static_cast<octave_dock_widget *> (history_window));
+    list.append (static_cast<octave_dock_widget *> (file_browser_window));
+    list.append (static_cast<octave_dock_widget *> (doc_browser_window));
+    list.append (static_cast<octave_dock_widget *> (editor_window));
+    list.append (static_cast<octave_dock_widget *> (workspace_window));
+    return list;
+  }
 
   QToolBar *_main_tool_bar;
   QMenu *_debug_menu;

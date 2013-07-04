@@ -3,7 +3,7 @@
 // by Harald Jedele, 23.03.01, GPL version 2 or any later version.
 //
 // Copyright (C) FZI Forschungszentrum Informatik Karlsruhe
-// Copyright (C) 2013 Torsten <ttl@justmail.de>
+// Copyright (C) 2013 Torsten
 //
 // This file is part of Octave.
 //
@@ -21,6 +21,8 @@
 // along with Octave; see the file COPYING.  If not, see
 // <http://www.gnu.org/licenses/>.
 //
+
+// Author: Torsten <ttl@justmail.de>
 
 #ifndef COLORPICKER_H
 #define COLORPICKER_H

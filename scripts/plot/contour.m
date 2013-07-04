@@ -45,7 +45,7 @@
 ## The optional input and output argument @var{h} allows an axis handle to
 ## be passed to @code{contour} and the handles to the contour objects to be
 ## returned.
-## @seealso{contourc, patch, plot}
+## @seealso{contourc, contourf, contour3, patch, plot}
 ## @end deftypefn
 
 ## Author: Shai Ayal <shaiay@users.sourceforge.net>

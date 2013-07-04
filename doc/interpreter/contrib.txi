@@ -41,7 +41,7 @@ contributions is @email{maintainers@@octave.org}.  This concerns the
 development of Octave core, i.e., code that goes to Octave directly.
 You may consider developing and publishing a package instead; a great
 place for this is the allied Octave-Forge project
-(@url{http://octave.sourceforge.net}).  Note that the Octave project is
+(@url{http://octave.sourceforge.net}).  Note that the Octave core project is
 inherently more conservative and follows narrower rules.
 
 @node Building the Development Sources
@@ -56,8 +56,8 @@ or in the development sources archive.  Start here:
 @section Basics of Generating a Changeset
 
 The preferable form of contribution is creating a Mercurial changeset
-and submit it to the @uref{http://savannah.gnu.org/bugs/?group=octave, bug} or
-@uref{http://savannah.gnu.org/patch/?func=additem&group=octave, patch}
+and submit it to the @url{http://savannah.gnu.org/bugs/?group=octave, bug} or
+@url{http://savannah.gnu.org/patch/?func=additem&group=octave, patch}
 trackers@footnote{Please use the patch tracker only for patches which add new
 features.  If you have a patch to submit that fixes a bug, you should use the
 bug tracker instead.}.
@@ -89,7 +89,18 @@ hg export -o ../cool.diff tip
 @end example
 
 You may want to get familiar with Mercurial queues to manage your
-changesets.  Here is a slightly more complex example using Mercurial
+changesets.  For working with queues you have to activate the extension
+@nospell{mq} with the following entry in Mercurial's configuration file
+@file{.hgrc} (or @file{Mercurial.ini} on Windows):
+
+@example
+@group
+[extensions]
+mq=
+@end group
+@end example
+
+Here is a slightly more complex example using Mercurial
 queues, where work on two unrelated changesets is done in parallel and
 one of the changesets is updated after discussion on the bug tracker:
 
@@ -121,6 +132,60 @@ hg qref
 hg export -o ../nasty2.diff tip
 # attach ../nasty2.diff to your bug report
 @end example
+
+Mercurial has a more useful extensions that really should be enabled.
+They are not enabled by default due to a number of factors
+(mostly because they don't work in all terminal types).
+
+The following entries in the @file{.hgrc} are recommended
+
+@example
+@group
+[extensions]
+graphlog=
+color=
+progress=
+pager=
+@end group
+@end example
+
+For the color extension, default color and formatting
+of @code{hg status} can be modified by
+
+@example
+@group
+[color]
+status.modified = magenta bold
+status.added = green bold
+status.removed = red bold
+status.deleted = cyan bold
+status.unknown = black  bold
+status.ignored = black bold
+@end group
+@end example
+
+Sometimes a few further improvements for the pager extension are
+necessary.  The following options should not be enabled unless paging
+isn't working correctly:
+
+@example
+@group
+[pager]
+# Some options for the less pager, see less(1) for their meaning.
+pager = LESS='FSRX' less
+
+# Some commands that aren't paged by default; also enable paging
+# for them
+attend = tags, help, annotate, cat, diff, export, status, \
+         outgoing, incoming
+@end group
+@end example
+
+Enabling the described extensions should immediately lead to a difference
+when using the command line version of @nospell{hg}.  Of these options, the
+only one that enables a new command is @nospell{graphlog}.  It is recommanded
+that you use the command @code{hg glog} instead of @code{hg log} for a better
+feel what commits are being based on.
 
 @node General Guidelines
 @section General Guidelines
@@ -364,7 +429,7 @@ if possible.
 @node Other Sources
 @section Other Sources
 Apart from C++ and Octave language (m-files), Octave's sources include
-files written in C, Fortran, M4, Perl, Unix shell, AWK, Texinfo and
+files written in C, Fortran, M4, Perl, Unix shell, AWK, Texinfo, and
 @TeX{}.  There are not many rules to follow when using these other
 languages; some of them are summarized below.  In any case, the golden
 rule is: if you modify a source file, try to follow any conventions you

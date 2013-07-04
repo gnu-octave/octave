@@ -68,7 +68,7 @@ public:
 
   static QString get_gui_translation_dir (void);
 
-  static void config_translators (QTranslator*, QTranslator*);
+  static void config_translators (QTranslator*, QTranslator*, QTranslator*);
 
   static void update_network_settings (void)
   {

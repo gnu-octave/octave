@@ -18,10 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} setfield (@var{s}, @var{field}, @var{val})
+## @deftypefn  {Function File} {@var{s} =} setfield (@var{s}, @var{field}, @var{val})
 ## @deftypefnx {Function File} {@var{s} =} setfield (@var{s}, @var{idx1}, @var{field1}, @var{idx2}, @var{field2}, @dots{}, @var{val})
 ##
-## Set a field member @var{field} in a structure @var{s} equal to @var{val}.  For example:
+## Set a field member @var{field} in a structure @var{s} equal to @var{val}. 
+## For example:
 ##
 ## @example
 ## @group
@@ -39,10 +40,10 @@
 ##
 ## @noindent
 ## Note that ordinary structure syntax @code{@var{s}.foo bar = 42} cannot be
-## used here, as the field name is not a valid Octave identifier. Using
-## arbitrary strings for field name is incompatible with @sc{Matlab}, so
+## used here, as the field name is not a valid Octave identifier.  Using
+## arbitrary strings for field name is incompatible with @sc{matlab}, so
 ## this usage will warn if the @code{Octave:matlab-incompatible} warning
-## is set. @xref{doc-warning_ids}.
+## is set.  @xref{docXwarning_ids}.
 ##
 ## With the second calling form, set a field on a structure array,
 ## possibly nested, with successive nested indices @var{idx1},
@@ -66,7 +67,7 @@
 ## @end example
 ##
 ## Here we first have an ordinary structure array with one field
-## @code{baz} set to 42. Then we set another field in a nested scalar structure
+## @code{baz} set to 42.  Then we set another field in a nested scalar structure
 ## indexing with two single cells containing the unique desired indices.
 ##
 ## Finally an example with nested structure arrays,

@@ -121,7 +121,7 @@ useful.
 
 @DOCSTRING(is_leap_year)
 
-@anchor{doc-toc}
+@anchor{docXtoc}
 @DOCSTRING(tic)
 
 @DOCSTRING(pause)
@@ -177,7 +177,7 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(umask)
 
-@anchor{doc-lstat}
+@anchor{docXlstat}
 @DOCSTRING(stat)
 
 @DOCSTRING(S_ISBLK)
@@ -259,6 +259,7 @@ status information on files; and for manipulating file and path names.
 @menu
 * FTP Objects::
 * URL Manipulation::
+* Base64 and Binary Data Transmission::
 @end menu
 
 @DOCSTRING(gethostname)
@@ -300,6 +301,17 @@ connection.  All FTP functions take an FTP object as the first argument.
 @DOCSTRING(urlread)
 
 @DOCSTRING(urlwrite)
+
+@node Base64 and Binary Data Transmission
+@subsection Base64 and Binary Data Transmission
+
+Some transmission channels can not accept binary data.  It is customary to
+encode binary data in Base64 for transmission and to decode the data upon
+reception.
+
+@DOCSTRING(base64_encode)
+
+@DOCSTRING(base64_decode)
 
 @node Controlling Subprocesses
 @section Controlling Subprocesses

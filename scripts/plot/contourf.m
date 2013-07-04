@@ -18,32 +18,36 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{c}, @var{h}] =} contourf (@var{x}, @var{y}, @var{z}, @var{lvl})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{x}, @var{y}, @var{z}, @var{n})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{z}, @var{n})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{z}, @var{lvl})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{z})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{ax}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@dots{}, @var{"property"}, @var{val})
+## @deftypefn  {Function File} {} contourf (@var{x}, @var{y}, @var{z}, @var{lvl})
+## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z}, @var{n})
+## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} contourf (@var{z}, @var{n})
+## @deftypefnx {Function File} {} contourf (@var{z}, @var{lvl})
+## @deftypefnx {Function File} {} contourf (@var{z})
+## @deftypefnx {Function File} {} contourf (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} contourf (@var{hax}, @dots{})
+## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@dots{})
 ## Compute and plot filled contours of the matrix @var{z}.
 ## Parameters @var{x}, @var{y} and @var{n} or @var{lvl} are optional.
 ##
+## If @var{x} and @var{y} are omitted they are taken as the row/column
+## indices of @var{z}.  @var{n} is a scalar denoting the number of contour
+## lines to compute.  Alternatively @var{lvl} is a vector containing the
+## contour levels.  If only one value (e.g., lvl0) is desired, set
+## @var{lvl} to [lvl0, lvl0].  If both @var{n} or @var{lvl} are omitted
+## a default value of 10 contour levels is assumed.
+##
+## The appearance of the plot can be customized by passing
+## property/value pairs to the function. 
+##
+## If provided, the filled contours are added to the axes object
+## @var{hax} instead of the current axis.
+##
 ## The return value @var{c} is a 2xn matrix containing the contour lines
-## as described in the help to the contourc function.
+## as described in the documentation on the @code{contourc} function.
 ##
 ## The return value @var{h} is handle-vector to the patch objects creating
 ## the filled contours.
-##
-## If @var{x} and @var{y} are omitted they are taken as the row/column
-## index of @var{z}.  @var{n} is a scalar denoting the number of lines
-## to compute.  Alternatively @var{lvl} is a vector containing the
-## contour levels.  If only one value (e.g., lvl0) is wanted, set
-## @var{lvl} to [lvl0, lvl0].  If both @var{n} or @var{lvl} are omitted
-## a default value of 10 contour level is assumed.
-##
-## If provided, the filled contours are added to the axes object
-## @var{ax} instead of the current axis.
 ##
 ## The following example plots filled contours of the @code{peaks}
 ## function.
@@ -54,7 +58,7 @@
 ## contourf (x, y, z, -7:9)
 ## @end group
 ## @end example
-## @seealso{contour, contourc, patch}
+## @seealso{contourc, contour, contour3, patch}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

@@ -105,10 +105,11 @@ octave_start_gui (int argc, char *argv[])
       else
         {
           // install translators for the gui and qt text
-          QTranslator gui_translator, qt_translator;
-          resource_manager::config_translators (&gui_translator,&qt_translator);
-          application.installTranslator (&qt_translator);
-          application.installTranslator (&gui_translator);
+          QTranslator gui_tr, qt_tr, qsci_tr;
+          resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
+          application.installTranslator (&qt_tr);
+          application.installTranslator (&qsci_tr);
+          application.installTranslator (&gui_tr);
 
           // update network-settings
           resource_manager::update_network_settings ();

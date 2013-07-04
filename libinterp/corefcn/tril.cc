@@ -356,9 +356,9 @@ also be set to zero.\n\
 The default value of @var{k} is zero, so that @code{triu} and\n\
 @code{tril} normally include the main diagonal as part of the result.\n\
 \n\
-If the value of @var{k} is nonzero integer, the selection of elements\
-starts at an offset of @var{k} diagonals above or below the main\
-diagonal; above for positive @var{k} and below for negative @var{k}.\
+If the value of @var{k} is nonzero integer, the selection of elements\n\
+starts at an offset of @var{k} diagonals above or below the main\n\
+diagonal; above for positive @var{k} and below for negative @var{k}.\n\
 \n\
 The absolute value of @var{k} must not be greater than the number of\n\
 sub-diagonals or super-diagonals.\n\

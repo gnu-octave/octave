@@ -770,7 +770,7 @@ endfor
 @cindex @code{unwind_protect_cleanup}
 @cindex @code{end_unwind_protect}
 
-Octave supports a limited form of exception handling modelled after the
+Octave supports a limited form of exception handling modeled after the
 unwind-protect form of Lisp.  
 
 The general form of an @code{unwind_protect} block looks like this:

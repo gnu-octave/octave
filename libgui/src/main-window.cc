@@ -293,12 +293,11 @@ main_window::notice_settings (const QSettings *settings)
     }
 
   QString icon;
-  foreach (QObject *obj, children ())
+  foreach (octave_dock_widget *widget, dock_widget_list ())
     {
-      QString name = obj->objectName ();
-      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
-        { // if children is a dock widget with a name
-          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
+      QString name = widget->objectName ();
+      if (! name.isEmpty ())
+        { // if children has a name
           icon = widget_icon_data[icon_set_found].path; // prefix or octave-logo
           if (widget_icon_data[icon_set_found].name != "NONE")
             icon = icon + name + ".png"; // add widget name and ext.
@@ -543,35 +542,33 @@ main_window::read_settings (void)
 void
 main_window::set_window_layout (QSettings *settings)
 {
-  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
-
-  settings->beginGroup ("DockWidgets");
-
   // Restore the geometry of all dock-widgets
-  foreach (QObject *obj, children ())
+  foreach (octave_dock_widget *widget, dock_widget_list ())
     {
-      QString name = obj->objectName ();
+      QString name = widget->objectName ();
 
-      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
+      if (! name.isEmpty ())
         {
-          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
-          QVariant val = settings->value (name);
+          // If floating, make window from widget.
+          bool floating = settings->value
+              ("DockWidgets/" + name + "Floating", false).toBool ();
+          if (floating)
+            widget->make_window ();
+          else if (! widget->parent ())  // should not be floating but is
+            widget->setParent (this);    // reparent
 
+          // restore geometry
+          QVariant val = settings->value (name);
           widget->restoreGeometry (val.toByteArray ());
 
-          // If floating, make window from widget.
-          bool floating = settings->value (name+"Floating", false).toBool ();
-          if (floating)
-            widget->setWindowFlags (Qt::Window);
-
-          // make widget visible if desired (setWindowFlags hides widget).
-          bool visible = settings->value (name+"Visible", true).toBool ();
+          // make widget visible if desired
+          bool visible = settings->value
+              ("DockWidgets/" + name + "Visible", true).toBool ();
           widget->setVisible (visible);
         }
     }
 
-  settings->endGroup ();
-
+  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
 }
 
@@ -586,24 +583,6 @@ main_window::write_settings (void)
     }
 
   settings->setValue ("MainWindow/geometry", saveGeometry ());
-  settings->beginGroup ("DockWidgets");
-  // saving the geometry of all widgets
-  foreach (QObject *obj, children())
-    {
-      QString name = obj->objectName ();
-      if (obj->inherits ("QDockWidget") && ! name.isEmpty ())
-        {
-          QDockWidget *widget = qobject_cast<QDockWidget *> (obj);
-          settings->setValue (name, widget->saveGeometry ());
-          bool floating = widget->isFloating ();
-          bool visible = widget->isVisible ();
-          settings->setValue (name+"Floating", floating);  // store floating state
-          settings->setValue (name+"Visible", visible);    // store visibility
-          if (floating)
-            widget->setWindowFlags (Qt::Widget); // if floating, recover the widget state such that the widget's
-        }                                       // state is correctly saved by the saveSate () below
-    }
-  settings->endGroup();
   settings->setValue ("MainWindow/windowState", saveState ());
   // write the list of recent used directories
   QStringList curr_dirs;
@@ -634,13 +613,34 @@ main_window::connect_visibility_changed (void)
 void
 main_window::copyClipboard (void)
 {
-  emit copyClipboard_signal ();
+  if (_current_directory_combo_box->hasFocus ())
+    {
+      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      if (edit && edit->hasSelectedText ())
+        {
+          QClipboard *clipboard = QApplication::clipboard ();
+          clipboard->setText (edit->selectedText ()); 
+        }
+    } 
+  else
+    emit copyClipboard_signal ();
 }
 
 void
 main_window::pasteClipboard (void)
 {
-  emit pasteClipboard_signal ();
+  if (_current_directory_combo_box->hasFocus ())
+    {
+      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      QClipboard *clipboard = QApplication::clipboard ();
+      QString str =  clipboard->text ();
+      if (edit && str.length () > 0)
+        {
+          edit->insert (str); 
+        }
+    } 
+  else
+    emit pasteClipboard_signal ();
 }
 
 // Connect the signals emitted when the Octave thread wants to create
@@ -795,6 +795,9 @@ main_window::construct (void)
 
   connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
            this, SLOT (handle_load_workspace_request (const QString&)));
+
+  connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
+           this, SLOT (find_files (const QString&)));
 
   connect_uiwidget_links ();
 

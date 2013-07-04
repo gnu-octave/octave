@@ -25,6 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDockWidget>
 #include <QSettings>
+#include <QIcon>
+#include <QMainWindow>
+#include <QMouseEvent>
 
 class octave_dock_widget : public QDockWidget
 {
@@ -32,27 +35,13 @@ class octave_dock_widget : public QDockWidget
 
 public:
 
-  octave_dock_widget (QWidget *p)
-    : QDockWidget (p)
-  {
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (handle_visibility_changed (bool)));
+  octave_dock_widget (QWidget *p = 0);
+  virtual ~octave_dock_widget ();
 
-    connect (this, SIGNAL (topLevelChanged (bool)),
-             this, SLOT (top_level_changed (bool)));
-
-    connect (p, SIGNAL (settings_changed (const QSettings*)),
-             this, SLOT (notice_settings (const QSettings*)));
-  }
-
-  virtual ~octave_dock_widget () { }
-
-  virtual void connect_visibility_changed (void)
-  {
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (handle_visibility (bool)));
-  }
-
+  virtual void connect_visibility_changed (void);
+  void make_window (void);
+  void make_widget (void);
+  void set_title (const QString&);
 
 signals:
 
@@ -68,6 +57,8 @@ protected:
     emit active_changed (false);
     QDockWidget::closeEvent (e);
   }
+
+  QWidget * focusWidget();
 
 public slots:
 
@@ -91,6 +82,8 @@ public slots:
   {
   }
 
+  QMainWindow *main_win () { return _parent; }
+
 protected slots:
 
   /** Slot to steer changing visibility from outside. */
@@ -99,18 +92,24 @@ protected slots:
     if (visible)
       emit active_changed (true);
   }
-
-  /** Slot when floating property changes */
-  virtual void top_level_changed (bool floating)
+  /** slots to handle copy & paste */
+  virtual void copyClipboard ()
   {
-    if (floating)
-      {
-        // Make a window from the widget when floating and make it
-        // visible again since setWindowFlags hides it.
-        setWindowFlags (Qt::Window);
-        show();
-      }
   }
+  virtual void pasteClipboard ()
+  {
+  }
+
+private slots:
+
+  void change_floating (bool);
+  void change_visibility (bool);
+
+private:
+
+  QMainWindow *_parent;  // store the parent since we are reparenting to 0
+  QAction *_dock_action;
+
 };
 
 #endif

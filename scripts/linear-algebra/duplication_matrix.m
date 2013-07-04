@@ -23,7 +23,7 @@
 ##  $D_n$
 ## @end tex
 ## @ifnottex
-##  @math{Dn}
+##  @nospell{@math{Dn}}
 ## @end ifnottex
 ##  which is the unique
 ## @tex
@@ -37,7 +37,7 @@
 ##  $D_n * {\rm vech} (A) = {\rm vec} (A)$
 ## @end tex
 ## @ifnottex
-##  @math{Dn vech (A) = vec (A)}
+##  @nospell{@math{Dn vech (A) = vec (A)}}
 ## @end ifnottex
 ##  for all symmetric
 ## @tex

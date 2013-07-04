@@ -189,7 +189,7 @@ that error IDs are in the format "NAMESPACE:ERROR-NAME".  The namespace
 "Octave" is used for Octave's own errors.  Any other string is available
 as a namespace for user's own errors.
 
-The next example counts indexing errors. The errors are catched using the
+The next example counts indexing errors.  The errors are caught using the
 field identifier of the structure returned by the function @code{lasterror}.
 
 @example

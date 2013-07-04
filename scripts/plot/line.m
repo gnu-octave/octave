@@ -43,20 +43,21 @@ function h = line (varargin)
 
 endfunction
 
+
 %!demo
 %! clf
 %! x = 0:0.3:10;
 %! y1 = cos (x);
 %! y2 = sin (x);
 %! subplot (3,1,1);
-%! args = {"color", "b", "marker", "s"};
-%! line ([x(:), x(:)], [y1(:), y2(:)], args{:})
-%! title ("Test broadcasting for line()")
+%!  args = {'color', 'b', 'marker', 's'};
+%!  line ([x(:), x(:)], [y1(:), y2(:)], args{:});
+%!  title ('Test broadcasting for line()');
 %! subplot (3,1,2);
-%! line (x(:), [y1(:), y2(:)], args{:})
+%!  line (x(:), [y1(:), y2(:)], args{:});
 %! subplot (3,1,3);
-%! line ([x(:), x(:)+pi/2], y1(:), args{:})
-%! xlim ([0 10])
+%!  line ([x(:), x(:)+pi/2], y1(:), args{:});
+%!  xlim ([0 10]);
 
 %!test
 %! hf = figure ("visible", "off");

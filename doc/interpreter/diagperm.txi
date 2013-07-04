@@ -519,6 +519,7 @@ like:
 
 @item permutation matrix * matrix is equivalent to permuting rows
 @end itemize
+
 all of these natural mathematical truths would be invalidated by treating
 assumed zeros as numerical ones.
 

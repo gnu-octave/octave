@@ -22,7 +22,11 @@
 function [x, map] = ind2x (caller, x, map)
 
   ## Check if X is an indexed image.
-  if (ndims (x) < 2 || issparse (x) || (isfloat (x) && ! isindex (x)) ||
+  ## an indexed image is defined has having only 2D, and that's how matlab
+  ## behaves. But we want to support ND images, so we will allow up to 4D
+  ## and check that the 3rd is a singleton
+  if (all (ndims (x) != [2 4]) || size (x, 3) != 1 || issparse (x) ||
+      (isfloat (x) && ! isindex (x)) ||
       ! any (strcmp (class (x), {"uint8", "uint16", "single", "double"})))
     error ("%s: X must be an indexed image", caller);
   endif

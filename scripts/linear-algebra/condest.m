@@ -56,6 +56,7 @@
 ## approximate null vector.
 ##
 ## References:
+##
 ## @itemize
 ## @item
 ## N.J. Higham and F. Tisseur, @cite{A Block Algorithm

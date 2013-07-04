@@ -44,7 +44,7 @@ workspace_view::workspace_view (QWidget *p)
 {
   setObjectName ("WorkspaceView");
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  setWindowTitle (tr ("Workspace"));
+  set_title (tr ("Workspace"));
   setStatusTip (tr ("View the variables in the active workspace."));
 
   view->setWordWrap (false);
@@ -266,3 +266,11 @@ workspace_view::notice_settings (const QSettings *settings)
     }
   setToolTip (tool_tip);
 }
+
+void
+workspace_view::copyClipboard ()
+{
+  if (view->hasFocus ())
+    handle_contextmenu_copy ();
+}
+

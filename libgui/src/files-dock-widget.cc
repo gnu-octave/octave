@@ -64,7 +64,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
 {
   setObjectName ("FilesDockWidget");
   setWindowIcon (QIcon(":/actions/icons/logo.png"));
-  setWindowTitle (tr ("File Browser"));
+  set_title (tr ("File Browser"));
   setToolTip (tr ("Browse your files."));
 
   QWidget *container = new QWidget (this);
@@ -72,10 +72,10 @@ files_dock_widget::files_dock_widget (QWidget *p)
   setWidget (container);
 
   connect (this, SIGNAL (open_file (const QString&)),
-           parent (), SLOT (open_file (const QString&)));
+           main_win (), SLOT (open_file (const QString&)));
 
   connect (this, SIGNAL (displayed_directory_changed (const QString&)),
-           parent (), SLOT (set_current_working_directory (const QString&)));
+           main_win (), SLOT (set_current_working_directory (const QString&)));
 
   // Create a toolbar
   _navigation_tool_bar = new QToolBar ("", container);
@@ -108,6 +108,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QToolButton * popdown_button = new QToolButton();
   popdown_button->setToolTip(tr ("Actions on current directory"));
   QMenu * popdown_menu = new QMenu();
+  popdown_menu->addAction (QIcon (":/actions/icons/home.png"),
+                           tr ("Show Home directory"),
+                           this, SLOT (popdownmenu_home (bool)));
   popdown_menu->addAction(_sync_browser_directory_action);
   popdown_menu->addAction(_sync_octave_directory_action);
   popdown_button->setMenu(popdown_menu);
@@ -118,6 +121,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
   popdown_menu->addAction (QIcon (":/actions/icons/search.png"),
                            tr ("Search directory"),
                            this, SLOT (popdownmenu_search_dir (bool)));
+  popdown_menu->addSeparator();
+  popdown_menu->addAction( tr ("Find Files ..."),
+                          this, SLOT(popdownmenu_findfiles(bool)));
   popdown_menu->addSeparator();
   popdown_menu->addAction(QIcon(":/actions/icons/filenew.png"),
                           tr ("New File"),
@@ -195,7 +201,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
            this, SLOT (set_current_directory (const QString &)));
 
   connect (this, SIGNAL (run_file_signal (const QFileInfo&)),
-           parent (), SLOT (run_file_in_terminal (const QFileInfo&)));
+           main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
 
   QCompleter *completer = new QCompleter (_file_system_model, this);
   _current_directory->setCompleter (completer);
@@ -359,6 +365,8 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
           menu.addAction (QIcon (":/actions/icons/ok.png"),
                           tr ("Set Current Directory"),
                           this, SLOT (contextmenu_setcurrentdir (bool)));
+          menu.addSeparator ();
+          menu.addAction (tr ("Find Files ..."), this, SLOT(contextmenu_findfiles(bool)));
         }
 
       menu.addSeparator();
@@ -497,7 +505,7 @@ files_dock_widget::contextmenu_delete (bool)
       QFileInfo info = _file_system_model->fileInfo(index);
 
       if(QMessageBox::question(this, tr("Delete file/directory"), 
-                               tr("Are you sre you want to delete\n") + info.filePath(),
+                               tr("Are you sure you want to delete\n") + info.filePath(),
                                QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes) 
         {
            if(info.isDir())
@@ -576,6 +584,25 @@ files_dock_widget::contextmenu_setcurrentdir (bool)
     }
 }
 
+void 
+files_dock_widget::contextmenu_findfiles (bool)
+{
+  QItemSelectionModel *m = _file_tree_view->selectionModel ();
+  QModelIndexList rows = m->selectedRows ();
+
+  if(rows.size() > 0)
+    {
+      QModelIndex index = rows[0];
+
+      QFileInfo info = _file_system_model->fileInfo(index);
+
+      if(info.isDir())
+        {
+          process_find_files(info.absoluteFilePath ());
+        }
+    }
+}
+
 void
 files_dock_widget::notice_settings (const QSettings *settings)
 {
@@ -607,11 +634,24 @@ files_dock_widget::notice_settings (const QSettings *settings)
 }
 
 void
+files_dock_widget::popdownmenu_home (bool)
+{
+  QString dir = QDir::homePath ();
+  set_current_directory (dir);
+}
+
+void
 files_dock_widget::popdownmenu_search_dir (bool)
 {
-  QString dir
-    = QFileDialog::getExistingDirectory (this, tr ("Set directory of file browser"));
-  process_set_current_dir (dir);
+  QString dir = QFileDialog::getExistingDirectory
+    (this, tr ("Set directory of file browser"),_file_system_model->rootPath());
+  set_current_directory (dir);
+}
+
+void
+files_dock_widget::popdownmenu_findfiles (bool)
+{
+      process_find_files(_file_system_model->rootPath());
 }
 
 void
@@ -662,3 +702,41 @@ void files_dock_widget::process_set_current_dir(const QString & dir)
 {
   emit displayed_directory_changed (dir);
 }
+
+void files_dock_widget::process_find_files(const QString & dir)
+{
+  emit find_files_signal(dir);
+}
+
+void
+files_dock_widget::copyClipboard ()
+{
+  if (_file_tree_view->hasFocus ())
+    contextmenu_copy_selection (true);
+  if (_current_directory->hasFocus ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+
+      QLineEdit * edit = _current_directory->lineEdit ();
+      if (edit && edit->hasSelectedText ())
+        {
+          clipboard->setText (edit->selectedText ());
+        }
+    }
+}
+
+void
+files_dock_widget::pasteClipboard ()
+{
+  if (_current_directory->hasFocus ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+      QString str =  clipboard->text ();
+      QLineEdit * edit = _current_directory->lineEdit ();
+      if (edit && str.length () > 0) 
+        edit->insert (str);
+    }
+}
+
+
+

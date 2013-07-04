@@ -253,8 +253,8 @@ function.
 The @code{xlim}, @code{ylim}, and @code{zlim} functions may be used to
 get or set individual axis limits.  Each has the same form.
 
-@anchor{doc-ylim}
-@anchor{doc-zlim}
+@anchor{docXylim}
+@anchor{docXzlim}
 @DOCSTRING(xlim)
 
 @node Two-dimensional Function Plotting
@@ -464,8 +464,8 @@ border lines are on.
 
 See @ref{Text Properties} for the properties that you can set.
 
-@anchor{doc-ylabel}
-@anchor{doc-zlabel}
+@anchor{docXylabel}
+@anchor{docXzlabel}
 @DOCSTRING(xlabel)
 
 @DOCSTRING(clabel)
@@ -531,7 +531,9 @@ You can create axes, line, and patch objects directly using the
 become children of the current axes object.
 
 @DOCSTRING(axes)
+
 @DOCSTRING(line)
+
 @DOCSTRING(patch)
 
 @DOCSTRING(fill)
@@ -911,7 +913,7 @@ at the Octave prompt should display a three-dimensional plot.
 @node Introduction to Graphics Structures
 @subsection Introduction to Graphics Structures
 @cindex introduction to graphics structures
-@anchor{doc-graphics structures}
+@anchor{docXgraphics structures}
 
 The graphics functions use pointers, which are of class graphics_handle, in
 order to address the data structures which control graphical displays.  A
@@ -931,7 +933,7 @@ functions @code{area}, @code{bar}, @code{barh}, @code{contour},
 @code{contourf}, @code{contour3}, @code{surf}, @code{mesh}, @code{surfc},
 @code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter},
 @code{scatter3}, @code{stair}, @code{stem}, @code{stem3} each return a handle
-as documented in @ref{doc-datasources,, Data Sources}.
+as documented in @ref{docXdatasources,, Data Sources}.
 
 
 The graphics objects are arranged in a hierarchy:
@@ -947,21 +949,21 @@ The graphics objects are arranged in a hierarchy:
 @code{line}, @code{text}, @code{patch},
 @code{surface}, and @code{image} objects.
 
-Graphics handles may be distinguished from function handles (@ref{Function
-Handles}) by means of the function @code{ishandle}.  @code{ishandle} returns
-true if its argument is a handle of a graphics object.  In addition, the figure
-object may be tested using @code{isfigure}.  @code{isfigure} returns true only
-if its argument is a handle of a figure. ishghandle() is synonymous with
-ishandle().  The @code{whos} function can be used to show the object type of
-each currently defined graphics handle.  (Note: this is not true today, but it
-is, I hope, considered an error in whos.  It may be better to have whos just
-show graphics_handle as the class, and provide a new function which, given a
+Graphics handles may be distinguished from function handles
+(@ref{Function Handles}) by means of the function @code{ishandle}.
+@code{ishandle} returns true if its argument is a handle of a graphics object. 
+In addition, the figure object may be tested using @code{isfigure}. 
+@code{isfigure} returns true only if its argument is a handle of a figure.  The
+@code{whos} function can be used to show the object type of each currently
+defined graphics handle.  (Note: this is not true today, but it is, I hope,
+considered an error in whos.  It may be better to have whos just show
+graphics_handle as the class, and provide a new function which, given a
 graphics handle, returns its object type.  This could generalize the ishandle()
 functions and, in fact, replace them.)
 
-The @code{get} and @code{set} commands are
-used to obtain and set the values of properties of graphics objects.  In
-addition, the @code{get} command may be used to obtain property names.
+The @code{get} and @code{set} commands are used to obtain and set the values of
+properties of graphics objects.  In addition, the @code{get} command may be
+used to obtain property names.
 
 For example, the property "type" of the graphics object pointed to by the
 graphics handle h may be displayed by:
@@ -1014,7 +1016,7 @@ The root figure has index 0.  Its properties may be displayed by:
 @code{get (0, "")}.
 
 The uses of @code{get} and @code{set} are further explained in
-@ref{doc-get,,get}, @ref{doc-set,,set}.
+@ref{docXget,,get}, @ref{docXset,,set}.
 
 @DOCSTRING(isprop)
 
@@ -1035,7 +1037,7 @@ graphics objects are always referenced by @dfn{handle}.
 @cindex root figure graphics object
 @cindex graphics object, root figure
 the top level of the hierarchy and the parent of all figure objects.
-The @code{handle} index of the root figure is 0.
+The handle index of the root figure is 0.
 
 @item figure
 @cindex figure graphics object
@@ -1095,6 +1097,8 @@ none exists.
 @DOCSTRING(gcf)
 
 @DOCSTRING(gca)
+
+@DOCSTRING(gco)
 
 The @code{get} and @code{set} functions may be used to examine and set
 properties for graphics objects.  For example,
@@ -1165,6 +1169,31 @@ objects.
 @DOCSTRING(allchild)
 
 @DOCSTRING(findfigs)
+
+@cindex saving graphics objects
+
+Figures can be printed or saved in many graphics formats with @code{print} and
+@code{saveas}.  Occasionally, however, it may be useful to save the original
+Octave handle graphic directly so that further modifications can be made such
+as modifying a title or legend.  
+
+This can be accomplished with the following functions by 
+
+@example
+@group
+fig_struct = hdl2struct (gcf);
+save myplot.fig -struct fig_struct;
+@dots{}
+fig_struct = load ("myplot.fig");
+struct2hdl (fig_struct);
+@end group
+@end example
+
+@DOCSTRING(hdl2struct)
+
+@DOCSTRING(struct2hdl)
+
+@DOCSTRING(copyobj)
 
 @node Graphics Object Properties
 @subsection Graphics Object Properties
@@ -1564,26 +1593,6 @@ Either @code{"manual"} or @code{"auto"}.
 @item interpreter
 
 @item interruptible
-
-@item key
-Toggle display of the legend.  --- Values: "on," "off"
-Note that this property is not compatible with @sc{matlab} and may be
-removed in a future version of Octave.
-
-@item keybox
-Toggle display of a box around the
-legend.  --- Values: "on," "off"
-Note that this property is not compatible with @sc{matlab} and
-may be removed in a future version of Octave.
-
-@item keypos
-An integer from 1 to 4 specifying the position of the legend.  1
-indicates upper right corner, 2 indicates upper left, 3 indicates lower
-left, and 4 indicates lower right.  Note that this property is not
-compatible with @sc{matlab} and may be removed in a future version of
-Octave.
-
-@item keyreverse
 
 @item layer
 
@@ -2831,7 +2840,7 @@ corresponding hggroup elements.
 @node Data Sources in Object Groups
 @subsubsection Data Sources in Object Groups
 @cindex data sources in object groups
-@anchor{doc-datasources}
+@anchor{docXdatasources}
 All of the group objects contain data source parameters.  There are
 string parameters that contain an expression that is evaluated to update
 the relevant data property of the group when the @code{refreshdata}
@@ -2839,7 +2848,7 @@ function is called.
 
 @DOCSTRING(refreshdata)
 
-@anchor{doc-linkdata}
+@anchor{docXlinkdata}
 @c add the description of the linkdata function here when it is written
 @c remove the explicit anchor when you add the corresponding @DOCSTRING
 @c command

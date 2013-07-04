@@ -39,6 +39,7 @@ octave_gui_ICONS = \
   src/icons/graphic_logo_TerminalDockWidget.png \
   src/icons/graphic_logo_WorkspaceView.png \
   src/icons/help_index.png \
+  src/icons/home.png \
   src/icons/icons_license \
   src/icons/jabber_protocol.png \
   src/icons/letter_logo_DocumentationDockWidget.png \
@@ -59,6 +60,9 @@ octave_gui_ICONS = \
   src/icons/terminal.png \
   src/icons/undo.png \
   src/icons/up.png \
+  src/icons/widget-close.png \
+  src/icons/widget-dock.png \
+  src/icons/widget-undock.png \
   src/icons/zoom-in.png \
   src/icons/zoom-out.png
 
@@ -69,7 +73,8 @@ octave_gui_MOC += \
   src/m-editor/moc-file-editor-interface.cc \
   src/m-editor/moc-file-editor-tab.cc \
   src/m-editor/moc-file-editor.cc \
-  src/m-editor/moc-find-dialog.cc
+  src/m-editor/moc-find-dialog.cc \
+  src/m-editor/moc-octave-qscintilla.cc
 endif
 
 octave_gui_MOC += \
@@ -86,6 +91,7 @@ octave_gui_MOC += \
   src/moc-workspace-model.cc \
   src/moc-workspace-view.cc \
   src/moc-find-files-dialog.cc \
+  src/moc-find-files-model.cc \
   src/qtinfo/moc-parser.cc \
   src/qtinfo/moc-webinfo.cc \
   src/moc-octave-dock-widget.cc
@@ -110,6 +116,7 @@ noinst_HEADERS += \
   src/m-editor/file-editor-tab.h \
   src/m-editor/file-editor.h \
   src/m-editor/find-dialog.h \
+  src/m-editor/octave-qscintilla.h \
   src/main-window.h \
   src/octave-gui.h \
   src/octave-main-thread.h \
@@ -134,7 +141,9 @@ src_libgui_src_la_SOURCES = \
   src/m-editor/file-editor-tab.cc \
   src/m-editor/file-editor.cc \
   src/m-editor/find-dialog.cc \
+  src/m-editor/octave-qscintilla.cc \
   src/main-window.cc \
+  src/octave-dock-widget.cc \
   src/octave-gui.cc \
   src/octave-main-thread.cc \
   src/octave-qt-link.cc \
@@ -168,8 +177,7 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(top_srcdir)/liboctave/util \
   -I$(top_builddir)/libinterp -I$(top_srcdir)/libinterp \
   -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
-  -I$(top_builddir)/libinterp/interp-core -I$(top_srcdir)/libinterp/interp-core \
-  -I$(top_builddir)/libinterp/interpfcn -I$(top_srcdir)/libinterp/interpfcn \
+  -I$(top_builddir)/libinterp/corefcn -I$(top_srcdir)/libinterp/corefcn \
   -I$(top_srcdir)/libinterp/octave-value
 
 src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)

@@ -1,7 +1,8 @@
 #include "mex.h"
 
 void
-mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
+mexFunction (int nlhs, mxArray* plhs[],
+             int nrhs, const mxArray* prhs[])
 {
   double handle;
   char property[256];
@@ -21,5 +22,3 @@ mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
     if (mexSet (handle, property, mxDuplicateArray (prhs[2])))
       mexErrMsgTxt ("failed to set property");
 }
-  
-

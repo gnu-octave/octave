@@ -61,7 +61,7 @@ public:
 
   bool is_complex_type (void) const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_single_type (void) const { return true; }
 
   bool is_float_type (void) const { return true; }
 

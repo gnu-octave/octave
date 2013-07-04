@@ -47,7 +47,7 @@
 ##
 ## @table @var
 ## @item beta
-## If beta = 0, then no reflection need be applied (zer set to 0)
+## If beta = 0, then no reflection need be applied (@nospell{zer} set to 0)
 ##
 ## @item housv
 ## householder vector

@@ -26,7 +26,7 @@
 ## This function returns a cell of structures with the following fields:
 ##   package, version, operator
 function deps_cell = fix_depends (depends)
-  deps = strtrim (strsplit (tolower (depends), ",", false));
+  deps = strtrim (ostrsplit (tolower (depends), ","));
   deps_cell = cell (1, length (deps));
 
   ## For each dependency.

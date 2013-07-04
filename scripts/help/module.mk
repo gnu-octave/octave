@@ -8,7 +8,7 @@ help_FCN_FILES = \
   help/__makeinfo__.m \
   help/__unimplemented__.m \
   help/doc.m \
-  help/gen_doc_cache.m \
+  help/doc_cache_create.m \
   help/get_first_help_sentence.m \
   help/help.m \
   help/lookfor.m \

@@ -53,13 +53,13 @@
 ## @item -R DIR
 ## Add the run-time path to the link command.
 ##
-## @item -Wl,@dots{}
-## Pass flags though the linker like "-Wl,-rpath=@dots{}".
+## @item @nospell{-Wl,@dots{}}
+## Pass flags though the linker like @nospell{"-Wl,-rpath=@dots{}"}.
 ## The quotes are needed since commas are interpreted as command
 ## separators.
 ##
 ## @item -W@dots{}
-## Pass flags though the compiler like "-Wa,OPTION".
+## Pass flags though the compiler like @nospell{"-Wa,OPTION"}.
 ##
 ## @item -c
 ## Compile but do not link.

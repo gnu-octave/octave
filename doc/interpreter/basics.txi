@@ -67,6 +67,13 @@ accepts.
 
 
 @table @code
+
+@item --built-in-docstrings-file @var{filename}
+@cindex @code{--built-in-docstrings-file @var{filename}}
+Specify the name of the file containing documentation strings for the
+built-in functions of Octave.  This value is normally correct and should
+only need to specified in extraordinary situations.
+
 @item  --debug
 @itemx -d
 @cindex @code{--debug}
@@ -74,6 +81,10 @@ accepts.
 Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
+
+@item --debug-jit
+@cindex @code{--debug-jit}
+Enable JIT compiler debugging and tracing.
 
 @item --doc-cache-file @var{filename}
 @cindex @code{--doc-cache-file @var{filename}}
@@ -145,10 +156,6 @@ Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
 to run Octave within Emacs, see @ref{Emacs Octave Support}.
 
-@item --jit-debug
-@cindex @code{--jit-debug}
-Enable JIT compiler debugging and tracing.
-
 @item --line-editing
 @cindex @code{--line-editing}
 Force readline use for command-line editing.
@@ -185,7 +192,8 @@ Disable command-line editing.
 @cindex @code{--no-site-file}
 Don't read the site-wide @file{octaverc} initialization files.
 
-@item --no-window-system
+@item  --no-window-system
+@itemx -W
 @cindex @code{--no-window-system}
 Disable use of a windowing system including graphics.  This forces a
 strictly terminal-only environment.
@@ -240,7 +248,7 @@ allow_noninteger_range_as_index = true
 beep_on_error                   = true
 confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
-default_save_options            = "-mat-binary"
+save_default_options            = "-mat-binary"
 do_braindead_shortcircuit_evaluation = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
@@ -264,8 +272,8 @@ Octave:load-file-in-path
 @noindent
 Note that this does not enable the @code{Octave:matlab-incompatible}
 warning, which you might want if you want to be told about writing code
-that works in Octave but not Matlab (@pxref{doc-warning},
-@pxref{doc-warning_ids}).
+that works in Octave but not @sc{matlab} (@pxref{docXwarning},
+@pxref{docXwarning_ids}).
 
 @item  --verbose
 @itemx -V
@@ -425,13 +433,15 @@ found.
 
 @DOCSTRING(doc_cache_file)
 
+@DOCSTRING(built_in_docstrings_file)
+
 @DOCSTRING(suppress_verbose_help_message)
 
 The following functions are principally used internally by Octave for
 generating the documentation.  They are documented here for completeness
 and because they may occasionally be useful for users.
 
-@DOCSTRING(gen_doc_cache)
+@DOCSTRING(doc_cache_create)
 
 @DOCSTRING(get_help_text)
 
@@ -712,7 +722,7 @@ re-running chunks of commands from the history list.
 Octave also allows you customize the details of when, where, and how history
 is saved.
 
-@DOCSTRING(saving_history)
+@DOCSTRING(history_save)
 
 @DOCSTRING(history_control)
 
@@ -739,9 +749,9 @@ exact command syntax).  The default configuration file is normally
 Octave provides two commands for initializing Readline and thereby changing
 the command line behavior.
 
-@DOCSTRING(read_readline_init_file)
+@DOCSTRING(readline_read_init_file)
 
-@DOCSTRING(re_read_readline_init_file)
+@DOCSTRING(readline_re_read_init_file)
 
 @node Customizing the Prompt
 @subsection Customizing the Prompt

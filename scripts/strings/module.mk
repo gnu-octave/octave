@@ -4,6 +4,7 @@ strings_FCN_FILES = \
   strings/base2dec.m \
   strings/bin2dec.m \
   strings/blanks.m \
+  strings/cstrcat.m \
   strings/deblank.m \
   strings/dec2base.m \
   strings/dec2bin.m \
@@ -14,16 +15,16 @@ strings_FCN_FILES = \
   strings/isletter.m \
   strings/isstrprop.m \
   strings/mat2str.m \
+  strings/ostrsplit.m \
   strings/regexptranslate.m \
   strings/rindex.m \
-  strings/strsplit.m \
   strings/str2num.m \
   strings/strcat.m \
-  strings/cstrcat.m \
   strings/strchr.m \
   strings/strjoin.m \
   strings/strjust.m \
   strings/strmatch.m \
+  strings/strsplit.m \
   strings/strtok.m \
   strings/strtrim.m \
   strings/strtrunc.m \

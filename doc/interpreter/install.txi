@@ -187,7 +187,7 @@ better performance.
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).
 
 @item PCRE
-The Perl Compatible Regular Expression library (http://www.pcre.org).
+The Perl Compatible Regular Expression library (@url{http://www.pcre.org}).
 @end table
 
 The following external package is optional but strongly recommended:
@@ -251,7 +251,7 @@ Library for manipulating portable data files
 @code{load} and @code{save} commands to read and write HDF data files.
 
 @item LLVM
-Compiler framework, (@url{http://www.llvm.org}). LLVM is required for
+Compiler framework, (@url{http://www.llvm.org}).  LLVM is required for
 Octave's experimental just-in-time (JIT) compilation for speeding up the
 interpreter.
 
@@ -276,13 +276,13 @@ provide improved performance for the functions @code{qrdelete},
 @code{qrinsert}, @code{qrshift}, and @code{qrupdate}.
 
 @item QScintilla
-Source code highlighter and manipulator; a Qt  port of Scintilla
+Source code highlighter and manipulator; a Qt port of Scintilla
 (@url{http://www.riverbankcomputing.co.uk/software/qscintilla}).
 QScintilla is used for syntax highlighting and code completion in the
 GUI.
 
 @item Qt
-GUI and utility libraries (@url{}). Qt is required for building the GUI.
+GUI and utility libraries (@url{}).  Qt is required for building the GUI.
 It is a large framework, but the only components required are the GUI,
 core, WebKit, and network modules.
 

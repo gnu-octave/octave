@@ -558,8 +558,11 @@ parameters for @code{dassl}.\n\
 %! assert (x, y, tol);
 
 %!test
+%! old_tol = dassl_options ("absolute tolerance");
 %! dassl_options ("absolute tolerance", eps);
 %! assert (dassl_options ("absolute tolerance") == eps);
+%! ## Restore old value of tolerance
+%! dassl_options ("absolute tolerance", old_tol);
 
 %!error dassl_options ("foo", 1, 2)
 */

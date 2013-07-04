@@ -26,10 +26,13 @@
 ## image, pixels in @var{x} outside the range are mapped to the last color in
 ## the map.
 ##
-## The output may be a single RGB image (MxNx3 matrix where M and N are the
-## original image @var{x} dimensions, one for each of the red, green and blue
-## channels).  Alternatively, the individual red, green, and blue color matrices
-## of size MxN may be returned.
+## The output may be a single RGB image (@nospell{MxNx3} matrix where M and N
+## are the original image @var{x} dimensions, one for each of the red, green
+## and blue channels).  Alternatively, the individual red, green, and blue
+## color matrices of size @nospell{MxN} may be returned.
+##
+## Multi-dimensional indexed images (of size @nospell{MxNx1xK}) are also
+## supported.
 ##
 ## @seealso{rgb2ind, ind2gray, hsv2rgb, ntsc2rgb}
 ## @end deftypefn
@@ -53,7 +56,14 @@ function [R, G, B] = ind2rgb (x, map)
 
   ## Use ND array if only one output is requested.
   if (nargout <= 1)
-    R = reshape ([R(:); G(:); B(:)], [sz, 3]);
+    if (ndims (x) == 2)
+      R = reshape ([R(:); G(:); B(:)], [sz, 3]);
+    elseif (ndims (x) == 4)
+      R = permute (reshape ([R(:); G(:); B(:)], [sz(1) sz(2) sz(4) 3]), [1 2 4 3]);
+    else
+      ## we should never reach here since ind2x() should filter them out
+      error ("ind2rgb: an indexed image must have 2 or 4 dimensions.");
+    endif
   endif
 
 endfunction

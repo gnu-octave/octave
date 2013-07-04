@@ -57,17 +57,19 @@ file_editor::~file_editor (void)
 {
   QSettings *settings = resource_manager::get_settings ();
 
+  // Have all file editor tabs signal what their file names are.
   editor_tab_map.clear ();
+  emit fetab_file_name_query (0);
 
-  if (settings->value ("editor/restoreSession", true).toBool ())
-    {
-      // Have all file editor tabs signal what their file names are.
-      emit fetab_file_name_query (0);
-    }
+  // save file names (even if last session will not be restored next time)
   QStringList fetFileNames;
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
-    fetFileNames.append (p->first);
+    {
+      QString file_name = p->first;
+      if (!file_name.isEmpty () && file_name.at (file_name.size () - 1) != '/')
+        fetFileNames.append (p->first);  // do not append unnamed files
+    }
 
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();
@@ -83,20 +85,6 @@ void
 file_editor::focus (void)
 {
   set_focus ();
-}
-
-void
-file_editor::handle_visibility (bool visible)
-{
-  if (visible && ! isFloating ())
-    focus ();
-}
-
-void
-file_editor::connect_visibility_changed (void)
-{
-  connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT (handle_visibility (bool)));
 }
 
 // set focus to editor and its current tab
@@ -306,7 +294,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                                        tr ("Octave Editor"),
                                        tr ("Could not open file %1 for read:\n%2.").
                                        arg (openFileName).arg (result),
-                                       QMessageBox::Ok, 0);
+                                       QMessageBox::Ok, this);
 
                   msgBox->setWindowModality (Qt::NonModal);
                   msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -439,6 +427,7 @@ void
 file_editor::handle_edit_file_request (const QString& file)
 {
   request_open_file (file);
+  set_focus ();
 }
 
 void
@@ -802,10 +791,10 @@ file_editor::construct (void)
                    tr ("&Remove All breakpoints"), _tool_bar);
 
   QAction *comment_selection_action
-    = new QAction (tr ("&Comment Selected Text"), _tool_bar);
+    = new QAction (tr ("&Comment"), _tool_bar);
 
   QAction *uncomment_selection_action
-    = new QAction (tr ("&Uncomment Selected Text"), _tool_bar);
+    = new QAction (tr ("&Uncomment"), _tool_bar);
 
   QAction *find_action = new QAction (QIcon (":/actions/icons/search.png"),
                                       tr ("&Find and Replace"), _tool_bar);
@@ -953,10 +942,10 @@ file_editor::construct (void)
   editor_widget->setLayout (vbox_layout);
   setWidget (editor_widget);
 
-  connect (parent (), SIGNAL (new_file_signal (const QString&)),
+  connect (main_win (), SIGNAL (new_file_signal (const QString&)),
            this, SLOT (request_new_file (const QString&)));
 
-  connect (parent (), SIGNAL (open_file_signal (const QString&)),
+  connect (main_win (), SIGNAL (open_file_signal (const QString&)),
            this, SLOT (request_open_file (const QString&)));
 
   connect (new_action, SIGNAL (triggered ()),
@@ -1041,7 +1030,7 @@ file_editor::construct (void)
 
   resize (500, 400);
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
-  setWindowTitle ("Editor");
+  set_title ("Editor");
 
   //restore previous session
   if (settings->value ("editor/restoreSession", true).toBool ())
@@ -1080,8 +1069,11 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            this, SLOT (handle_mru_add_file (const QString&)));
 
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
-           parent (), SLOT (run_file_in_terminal (const QFileInfo&)));
+           main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
   
+  connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
+
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
            f, SLOT (notice_settings (const QSettings *)));
@@ -1177,6 +1169,27 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (do_breakpoint_marker (bool, const QWidget*, int)));
 
   _tab_widget->setCurrentWidget (f);
+}
+
+void
+file_editor::copyClipboard ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if(foc_w && foc_w->inherits ("octave_qscintilla"))
+  {
+    request_copy ();
+  }
+}
+void
+file_editor::pasteClipboard ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if(foc_w && foc_w->inherits ("octave_qscintilla"))
+  {
+    request_paste ();
+  }
 }
 
 #endif

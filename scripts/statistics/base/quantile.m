@@ -38,7 +38,8 @@
 ## dimension.
 ##
 ## The methods available to calculate sample quantiles are the nine methods
-## used by R (http://www.r-project.org/).  The default value is METHOD = 5.
+## used by R (@url{http://www.r-project.org/}).  The default value is
+## @w{METHOD = 5}.
 ##
 ## Discontinuous sample quantile methods 1, 2, and 3
 ##
@@ -308,8 +309,7 @@ endfunction
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
 ## The optional input, @var{method}, refers to nine methods available in R
-## (http://www.r-project.org/). The default is @var{method} = 7. For more
-## detail, see `help quantile'.
+## (http://www.r-project.org/). The default is @var{method} = 7.
 ## @seealso{prctile, quantile, statistics}
 
 ## Author: Ben Abbott <bpabbott@mac.com>

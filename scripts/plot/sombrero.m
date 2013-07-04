@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sombrero (@var{n})
+## @deftypefn  {Function File} {} sombrero ()
+## @deftypefnx {Function File} {} sombrero (@var{n})
 ## Produce the familiar three-dimensional sombrero plot using @var{n}
 ## grid lines.  If @var{n} is omitted, a value of 41 is assumed.
 ##

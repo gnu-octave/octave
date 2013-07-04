@@ -25,9 +25,9 @@
 ## @deftypefnx {Function File} {} area (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} area (@dots{})
 ## Area plot of the columns of @var{y}.  This shows the
-## contributions of each column value to the row sum.  It is functionally similar to
-## @code{plot (@var{x}, cumsum (@var{y}, 2))}, except that the area under
-## the curve is shaded.
+## contributions of each column value to the row sum.  It is functionally
+## similar to @code{plot (@var{x}, cumsum (@var{y}, 2))}, except that the
+## area under the curve is shaded.
 ##
 ## If the @var{x} argument is omitted it defaults to 
 ## @code{1 : rows (@var{y})}.  A value @var{lvl} can be defined that determines
@@ -44,10 +44,12 @@
 ## Example: Verify identity sin^2 + cos^2 = 1
 ##
 ## @example
+## @group
 ## t = linspace (0, 2*pi, 100)';
 ## y = [sin(t).^2, cos(t).^2)];
 ## area (t, y);
 ## legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');  
+## @end group
 ## @end example
 ## @seealso{plot, patch}
 ## @end deftypefn

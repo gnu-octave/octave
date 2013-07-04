@@ -175,7 +175,7 @@
 ##
 ##   @table @code
 ##   @item ljet2p
-##     HP LaserJet IIP
+##     HP LaserJet @nospell{IIP}
 ##
 ##   @item ljet3
 ##     HP LaserJet III
@@ -199,7 +199,7 @@
 ##     Produces pdf output from eps
 ##   @end table
 ##
-##   For a complete list, type `system ("gs -h")' to see what formats
+##   For a complete list, type @samp{system ("gs -h")} to see what formats
 ## and devices are available.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined
@@ -263,7 +263,7 @@
 ## @end group
 ## @end example
 ##
-## Example: Print to an HP Deskjet 550C.
+## Example: Print to an HP DeskJet 550C.
 ##
 ## @example
 ## @group

@@ -17,12 +17,14 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{status}, @var{output}] =} shell (@var{cmd})
-## Undocumented internal function.
-## @end deftypefn
+## Executes a shell command. In the end it calls system() but in case of
+## windows will first check if sh.exe works.
+##
+## If VERBOSE is true, it will prints the output to STDOUT in real time and
+## the second output argument will be an empty string. Otherwise, it will
+## contain the output of the execeuted command.
 
-function [status, output] = shell (cmd)
+function [status, output] = shell (cmd, verbose)
   persistent have_sh;
 
   cmd = strrep (cmd, "\\", "/");
@@ -35,12 +37,20 @@ function [status, output] = shell (cmd)
       endif
     endif
     if (have_sh)
-      [status, output] = system (cstrcat ("sh.exe -c \"", cmd, "\""));
+      cmd = cstrcat ("sh.exe -c \"", cmd, "\"");
     else
-      error ("Can not find the command shell");
+      error ("pkg: unable to find the command shell.");
     endif
+  endif
+  ## if verbose, we want to display the output in real time. To do this, we
+  ## must call system with 1 output argument. But then the variable `output'
+  ## won't exist. So we initialize it empty. If an error does occur, and we
+  ## are verbose we will return an empty string but it's all fine since
+  ## the error message has already been displayed.
+  output = "";
+  if (verbose)
+    [status] = system (cmd);
   else
     [status, output] = system (cmd);
   endif
 endfunction
-

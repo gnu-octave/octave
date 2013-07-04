@@ -1,5 +1,5 @@
-## Copyright (C) 2001 David Billinghurst <David.Billinghurst@riotinto.com>
-## Copyright (C) 2001 Paul Kienzle <pkienzle@users.sf.net>
+## Copyright (C) 2001 David Billinghurst
+## Copyright (C) 2001 Paul Kienzle
 ## Copyright (C) 2003 Jaakko Ruohio
 ##
 ## This file is part of Octave.
@@ -25,15 +25,19 @@
 ## Compute complete elliptic integral of the first K(@var{m}) and second
 ## E(@var{m}) kind.
 ##
-## @var{m} is either real array or scalar with 0 <= m <= 1.
+## @var{m} is either real array or scalar with 0 @leq{} m @leq{} 1.
 ##
-## @var{tol} is currently ignored (@sc{Matlab} uses this to allow faster,
+## @var{tol} is currently ignored (@sc{matlab} uses this to allow faster,
 ## less accurate approximation).
 ##
 ## Ref: Abramowitz, Milton and Stegun, Irene A. Handbook of Mathematical
 ## Functions, Dover, 1965, Chapter 17.
 ## @seealso{ellipj}
 ## @end deftypefn
+
+## Author: David Billinghurst <David.Billinghurst@riotinto.com>
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+## Author: Jaakko Ruohio
 
 function [k, e] = ellipke (m)
 

@@ -96,7 +96,7 @@ Represents a literal double-quote character, @samp{"}.
 Represents a literal single-quote character, @samp{'}.
 
 @item \0
-Represents the ``nul'' character, control-@@, ASCII code 0.
+Represents the null character, control-@@, ASCII code 0.
 
 @item \a
 Represents the ``alert'' character, control-g, ASCII code 7.
@@ -158,8 +158,8 @@ by using @code{is_dq_string} and @code{is_sq_string}.
 @section Character Arrays
 
 The string representation used by Octave is an array of characters, so
-internally the string "dddddddddd" is actually a row vector of length 10
-containing the value 100 in all places (100 is the ASCII code of "d").  This
+internally the string @nospell{"dddddddddd"} is actually a row vector of length
+10 containing the value 100 in all places (100 is the ASCII code of "d").  This
 lends itself to the obvious generalization to character matrices.  Using a
 matrix of characters, it is possible to represent a collection of same-length
 strings in one variable.  The convention used in Octave is that each row in a
@@ -233,8 +233,8 @@ It has been shown above that strings can be concatenated using matrix notation
 (@pxref{Strings}, @ref{Character Arrays}).  Apart from that, there are several
 functions to concatenate string objects: @code{char},
 @code{strvcat}, @code{strcat} and @code{cstrcat}.  In addition, the general
-purpose concatenation functions can be used: see @ref{doc-cat,,cat},
-@ref{doc-horzcat,,horzcat} and @ref{doc-vertcat,,vertcat}.
+purpose concatenation functions can be used: see @ref{docXcat,,cat},
+@ref{docXhorzcat,,horzcat} and @ref{docXvertcat,,vertcat}.
 
 @itemize @bullet
 @item All string concatenation functions except @code{cstrcat}
@@ -351,7 +351,7 @@ several functions that format numerical data as strings.  @code{mat2str} and
 integer matrices.  @code{int2str} takes the real part of complex values and
 round fractional values to integer.  A more flexible way to format numerical
 data as strings is the @code{sprintf} function (@pxref{Formatted Output},
-@ref{doc-sprintf}).
+@ref{docXsprintf}).
 
 @DOCSTRING(mat2str)
 
@@ -434,6 +434,8 @@ general regular expressions, the following functions come with Octave.
 @DOCSTRING(strtok)
 
 @DOCSTRING(strsplit)
+
+@DOCSTRING(ostrsplit)
 
 @DOCSTRING(strread)
 

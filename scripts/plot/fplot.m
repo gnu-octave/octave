@@ -79,6 +79,12 @@ function fplot (fn, limits, n = 0.002, fmt = "")
     n = 8;
     x = linspace (limits(1), limits(2), n)';
     y = feval (fn, x);
+   
+    if (! size_equal (x0, y0))
+      ## FN is a constant value function
+      y0 = repmat (y0, size (x0));
+      y = repmat (y, size (x));
+    endif
 
     while (n < 2 .^ 20)
       y00 = interp1 (x0, y0, x, "linear");
@@ -123,4 +129,12 @@ endfunction
 %!demo
 %! clf;
 %! fplot ('[cos(x), sin(x)]', [0, 2*pi]);
+
+%% Test input validation
+%!error fplot (1)
+%!error fplot (1,2,3,4,5)
+%!error <LIMITS must be a real vector> fplot (@cos, [i, 2*i])
+%!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1])
+%!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1 2 3])
+%!error <FN must be a function handle> fplot (1, [0 1])
 

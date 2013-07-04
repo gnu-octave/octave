@@ -5,8 +5,10 @@ deprecated_FCN_FILES = \
   deprecated/cor.m \
   deprecated/corrcoef.m \
   deprecated/cut.m \
+  deprecated/default_save_options.m \
   deprecated/java_debug.m \
   deprecated/error_text.m \
+  deprecated/gen_doc_cache.m \
   deprecated/isstr.m \
   deprecated/java_convert_matrix.m \
   deprecated/java_get.m \
@@ -17,7 +19,9 @@ deprecated_FCN_FILES = \
   deprecated/javafields.m \
   deprecated/javamethods.m \
   deprecated/polyderiv.m \
-  deprecated/setstr.m \
+  deprecated/re_read_readline_init_file.m \
+  deprecated/read_readline_init_file.m \
+  deprecated/saving_history.m \
   deprecated/shell_cmd.m \
   deprecated/studentize.m \
   deprecated/sylvester_matrix.m

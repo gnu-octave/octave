@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "color-picker.h"
 #include "resource-manager.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
@@ -91,12 +90,32 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",false).toBool ());
   ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
+
+  QVariant default_var = QColor (240, 240, 240);
+  QColor setting_color = settings->value ("editor/highlight_current_line_color",
+                                          default_var).value<QColor> ();
+  _editor_current_line_color = new color_picker (setting_color);
+  ui->editor_grid_current_line->addWidget (_editor_current_line_color,0,3);
+  _editor_current_line_color->setMinimumSize (50,10);
+  _editor_current_line_color->setEnabled (false);
+  connect (ui->editor_highlightCurrentLine, SIGNAL (toggled (bool)),
+           _editor_current_line_color, SLOT (setEnabled (bool)));
   ui->editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine",true).toBool () );
+
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
   ui->editor_spinbox_ac_threshold->setValue (settings->value ("editor/codeCompletion_threshold",2).toInt ());
   ui->editor_checkbox_ac_keywords->setChecked (settings->value ("editor/codeCompletion_keywords",true).toBool ());
   ui->editor_checkbox_ac_document->setChecked (settings->value ("editor/codeCompletion_document",false).toBool ());
+  ui->editor_checkbox_ac_case->setChecked (settings->value ("editor/codeCompletion_case",true).toBool ());
   ui->editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace",false).toBool ());
+  ui->editor_ws_checkbox->setChecked (settings->value ("editor/show_white_space",false).toBool ());
+  ui->editor_ws_indent_checkbox->setChecked (settings->value ("editor/show_white_space_indent",false).toBool ());
+  ui->editor_auto_ind_checkbox->setChecked (settings->value ("editor/auto_indent",true).toBool ());
+  ui->editor_tab_ind_checkbox->setChecked (settings->value ("editor/tab_indents_line",false).toBool ());
+  ui->editor_bs_unind_checkbox->setChecked (settings->value ("editor/backspace_unindents_line",false).toBool ());
+  ui->editor_ind_guides_checkbox->setChecked (settings->value ("editor/show_indent_guides",false).toBool ());
+  ui->editor_ind_width_spinbox->setValue (settings->value ("editor/indent_width",2).toInt ());
+  ui->editor_tab_width_spinbox->setValue (settings->value ("editor/tab_width",2).toInt ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
@@ -117,9 +136,9 @@ settings_dialog::settings_dialog (QWidget *p):
   QStringList items;
   items << QString("0") << QString("1") << QString("2");
   ui->terminal_cursorType->addItems(items);
-  ui->terminal_cursorType->setItemText (0, "IBeam Cursor");
-  ui->terminal_cursorType->setItemText (1, "Block Cursor");
-  ui->terminal_cursorType->setItemText (2, "Underline Cursor");
+  ui->terminal_cursorType->setItemText (0, tr ("IBeam Cursor"));
+  ui->terminal_cursorType->setItemText (1, tr ("Block Cursor"));
+  ui->terminal_cursorType->setItemText (2, tr ("Underline Cursor"));
 
   if (cursorType == "ibeam")
     ui->terminal_cursorType->setCurrentIndex (0);
@@ -211,18 +230,24 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
   QVector<QSpinBox*> font_size (max_style);
   QVector<QCheckBox*> attrib_font (3 * max_style);
   QVector<color_picker*> color (max_style);
+  QVector<color_picker*> bg_color (max_style);
   int default_size = 10;
   QFont default_font = QFont ();
+  QColor default_color = QColor ();
+  QColor dummy_color = QColor (255,0,255);
+
   for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
     {
       QString actual_name = lexer->description (styles[i]);
       QFont   actual_font = lexer->font (styles[i]);
       description[i] = new QLabel (actual_name);
       description[i]->setWordWrap (true);
-      description[i]->setMaximumSize (180,QWIDGETSIZE_MAX);
-      description[i]->setMinimumSize (180,1);
+      description[i]->setMaximumSize (160,QWIDGETSIZE_MAX);
+      description[i]->setMinimumSize (160,1);
       select_font[i] = new QFontComboBox ();
       select_font[i]->setObjectName (actual_name+"_font");
+      select_font[i]->setMaximumSize (180,QWIDGETSIZE_MAX);
+      select_font[i]->setMinimumSize (180,1);
       font_size[i] = new QSpinBox ();
       font_size[i]->setObjectName (actual_name+"_size");
       if (styles[i] == 0) // the default
@@ -232,6 +257,8 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
           font_size[i]->setRange (6,24);
           default_size = actual_font.pointSize ();
           font_size[i]->setValue (default_size);
+          default_color = lexer->defaultPaper ();
+          bg_color[i] = new color_picker (default_color);
         }
       else   // other styles
         {
@@ -240,7 +267,13 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
             select_font[i]->setEditText (lexer->description (0));
           font_size[i]->setRange (-4,4);
           font_size[i]->setValue (actual_font.pointSize ()-default_size);
-          font_size[i]->setToolTip ("Difference to the defalt size");
+          font_size[i]->setToolTip (tr ("Difference to the default size"));
+          if (lexer->paper (styles[i]) == default_color)
+            bg_color[i] = new color_picker (dummy_color);
+          else
+            bg_color[i] = new color_picker (lexer->paper (styles[i]));
+            bg_color[i]->setToolTip
+                  (tr ("Background color, pink (255,0,255) means default"));
         }
       attrib_font[0+3*i] = new QCheckBox (tr("b"));
       attrib_font[1+3*i] = new QCheckBox (tr("i"));
@@ -253,6 +286,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
       attrib_font[2+3*i]->setObjectName (actual_name+"_underline");
       color[i] = new color_picker (lexer->color (styles[i]));
       color[i]->setObjectName (actual_name+"_color");
+      bg_color[i]->setObjectName (actual_name+"_bg_color");
       int column = 1;
       style_grid->addWidget (description[i],     i, column++);
       style_grid->addWidget (select_font[i],     i, column++);
@@ -261,6 +295,7 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
       style_grid->addWidget (attrib_font[1+3*i], i, column++);
       style_grid->addWidget (attrib_font[2+3*i], i, column++);
       style_grid->addWidget (color[i],           i, column++);
+      style_grid->addWidget (bg_color[i],        i, column++);
     }
   // place grid with elements into the tab
   QScrollArea *scroll_area = new QScrollArea ();
@@ -292,18 +327,19 @@ settings_dialog::read_workspace_colors (QSettings *settings)
   int row = 0;
   for (int i = 0; i < nr_of_classes; i++)
     {
-      description[i] = new QLabel (class_names.at (i));
+      description[i] = new QLabel ("    " + class_names.at (i));
       description[i]->setAlignment (Qt::AlignRight);
       QVariant default_var = default_colors.at (i);
       QColor setting_color = settings->value ("workspaceview/color_"+class_chars.mid (i,1),
                                               default_var).value<QColor> ();
       color[i] = new color_picker (setting_color);
-      color[i]->setObjectName ("color_"+class_chars.mid (i,1));
-      color[i]->setMinimumSize (30,10);
-      style_grid->addWidget (description[i], row,3*column);
-      style_grid->addWidget (color[i],       row,3*column+1);
+      color[i]->setObjectName ("color_"+class_chars.mid (i, 1));
+      color[i]->setMinimumSize (30, 10);
+      style_grid->addWidget (description[i], row, 3*column);
+      style_grid->addWidget (color[i],       row, 3*column+1);
       if (++column == 3)
         {
+          style_grid->setColumnStretch (4*column, 10);
           row++;
           column = 0;
         }
@@ -330,18 +366,19 @@ settings_dialog::read_terminal_colors (QSettings *settings)
   int row = 0;
   for (int i = 0; i < nr_of_classes; i++)
     {
-      description[i] = new QLabel (class_names.at (i));
+      description[i] = new QLabel ("    " + class_names.at (i));
       description[i]->setAlignment (Qt::AlignRight);
       QVariant default_var = default_colors.at (i);
       QColor setting_color = settings->value ("terminal/color_"+class_chars.mid (i,1),
                                               default_var).value<QColor> ();
       color[i] = new color_picker (setting_color);
-      color[i]->setObjectName ("terminal_color_"+class_chars.mid (i,1));
-      color[i]->setMinimumSize (30,10);
-      style_grid->addWidget (description[i], row,2*column);
-      style_grid->addWidget (color[i],       row,2*column+1);
+      color[i]->setObjectName ("terminal_color_"+class_chars.mid (i, 1));
+      color[i]->setMinimumSize (30, 10);
+      style_grid->addWidget (description[i], row, 2*column);
+      style_grid->addWidget (color[i],       row, 2*column+1);
       if (++column == 2)
         {
+          style_grid->setColumnStretch (3*column, 10);
           row++;
           column = 0;
         }
@@ -377,11 +414,21 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());
   settings->setValue ("editor/highlightCurrentLine", ui->editor_highlightCurrentLine->isChecked ());
+  settings->setValue ("editor/highlight_current_line_color",_editor_current_line_color->color ());
   settings->setValue ("editor/codeCompletion", ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold", ui->editor_spinbox_ac_threshold->value ());
   settings->setValue ("editor/codeCompletion_keywords", ui->editor_checkbox_ac_keywords->isChecked ());
   settings->setValue ("editor/codeCompletion_document", ui->editor_checkbox_ac_document->isChecked ());
+  settings->setValue ("editor/codeCompletion_case", ui->editor_checkbox_ac_case->isChecked ());
   settings->setValue ("editor/codeCompletion_replace", ui->editor_checkbox_ac_replace->isChecked ());
+  settings->setValue ("editor/show_white_space", ui->editor_ws_checkbox->isChecked ());
+  settings->setValue ("editor/show_white_space_indent", ui->editor_ws_indent_checkbox->isChecked ());
+  settings->setValue ("editor/auto_indent", ui->editor_auto_ind_checkbox->isChecked ());
+  settings->setValue ("editor/tab_indents_line", ui->editor_tab_ind_checkbox->isChecked ());
+  settings->setValue ("editor/backspace_unindents_line", ui->editor_bs_unind_checkbox->isChecked ());
+  settings->setValue ("editor/show_indent_guides", ui->editor_ind_guides_checkbox->isChecked ());
+  settings->setValue ("editor/indent_width", ui->editor_ind_width_spinbox->value ());
+  settings->setValue ("editor/tab_width", ui->editor_tab_width_spinbox->value ());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
@@ -460,8 +507,12 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
   QSpinBox *font_size;
   QCheckBox *attrib_font[3];
   color_picker *color;
+  color_picker *bg_color;
   int default_size = 10;
   QFont default_font = QFont ("Courier New",10,-1,0);
+  QColor default_color = QColor ();
+  QColor dummy_color = QColor (255,0,255);
+
   for (int i = 0; i < max_style; i++)  // get dialog elements and their contents
     {
       QString actual_name = lexer->description (styles[i]);
@@ -471,6 +522,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
       attrib_font[1] = tab->findChild <QCheckBox *>(actual_name+"_italic");
       attrib_font[2] = tab->findChild <QCheckBox *>(actual_name+"_underline");
       color          = tab->findChild <color_picker *>(actual_name+"_color");
+      bg_color       = tab->findChild <color_picker *>(actual_name+"_bg_color");
       QFont new_font = default_font;
       if (select_font)
         {
@@ -502,7 +554,24 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
         lexer->setDefaultFont (new_font);
       if (color)
         lexer->setColor (color->color (),styles[i]);
+      if (bg_color)
+        {
+          if (styles[i] == 0)
+            {
+              default_color = bg_color->color ();
+              lexer->setPaper (default_color,styles[i]);
+              lexer->setDefaultPaper (default_color);
+            }
+          else
+            {
+              if (bg_color->color () == dummy_color)
+                lexer->setPaper (default_color,styles[i]);
+              else
+                lexer->setPaper (bg_color->color (),styles[i]);
+            }
+        }
     }
+
   lexer->writeSettings (*settings);
 
   settings->setValue (

@@ -28,9 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileSystemWatcher>
 #include <QSettings>
 #include <QFileInfo>
-#include <Qsci/qsciscintilla.h>
+#include <Qsci/qsciapis.h>
 
 #include "find-dialog.h"
+#include "octave-qscintilla.h"
 
 class file_editor;
 
@@ -102,6 +103,8 @@ public slots:
 
   void file_has_changed (const QString& fileName);
 
+  void execute_command_in_terminal (const QString& command);
+
 signals:
 
   void file_name_changed (const QString& fileName, const QString& toolTip);
@@ -112,6 +115,7 @@ signals:
   void editor_check_conflict_save (const QString& saveFileName,
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
+  void execute_command_in_terminal_signal (const QString&);
 
 protected:
 
@@ -136,6 +140,12 @@ private slots:
   void handle_save_file_as_answer (const QString& fileName);
   void handle_save_file_as_answer_close (const QString& fileName);
   void handle_save_file_as_answer_cancel ();
+
+  // When apis preparation has finished and is ready to save
+  void save_apis_info ();
+
+  // When the numer of lines changes -> adapt width of margin
+  void auto_margin_width ();
 
 private:
 
@@ -169,13 +179,14 @@ private:
 
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
+  QString comment_string (const QString&);
 
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);
   void remove_all_breakpoints_callback (const bp_info& info);
   void center_current_line ();
 
-  QsciScintilla *_edit_area;
+  octave_qscintilla *_edit_area;
 
   QString _file_name;
   QString _file_name_short;
@@ -189,6 +200,9 @@ private:
   find_dialog *_find_dialog;
   bool _find_dialog_is_visible;
   QRect _find_dialog_geometry;
+
+  QsciAPIs *_lexer_apis;
+  QString _prep_apis_file;
 };
 
 #endif

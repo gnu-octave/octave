@@ -58,7 +58,6 @@ EXAMPLE_FILES = \
   $(top_srcdir)/examples/addtwomatrices.cc \
   $(top_srcdir)/examples/celldemo.cc \
   $(top_srcdir)/examples/embedded.cc \
-  $(top_srcdir)/examples/firstmexdemo.c \
   $(top_srcdir)/examples/fortdemo.cc \
   $(top_srcdir)/examples/fortsub.f \
   $(top_srcdir)/examples/funcdemo.cc \
@@ -67,6 +66,7 @@ EXAMPLE_FILES = \
   $(top_srcdir)/examples/mycell.c \
   $(top_srcdir)/examples/myfeval.c \
   $(top_srcdir)/examples/myfunc.c \
+  $(top_srcdir)/examples/myhello.c \
   $(top_srcdir)/examples/mypow2.c \
   $(top_srcdir)/examples/mysparse.c \
   $(top_srcdir)/examples/mystring.c \
@@ -125,7 +125,7 @@ MUNGED_TEXI_SRC = \
   debug.texi \
   diffeq.texi \
   diagperm.texi \
-  dynamic.texi \
+  external.texi \
   emacs.texi \
   errors.texi \
   eval.texi \

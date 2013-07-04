@@ -24,11 +24,11 @@
 ## empty matrix.  This handle is obtained from the root object property
 ## "CallbackObject".
 ##
-## Additionally return the handle of the figure containing the
-## object whose callback is currently executing.  If no callback is
-## executing, the second output is also set to the empty matrix.
+## When called with a second output argument, return the handle of the figure
+## containing the object whose callback is currently executing.  If no callback
+## is executing the second output is also set to the empty matrix.
 ##
-##@seealso{gcf, gca, gcbf}
+##@seealso{gcbf, gco, gcf, gca}
 ##@end deftypefn
 
 function [h, fig] = gcbo ()

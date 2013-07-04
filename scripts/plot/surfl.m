@@ -131,8 +131,7 @@ function retval = surfl (varargin)
     ## Get view vector (vv).
     a = axis;
     [az, el] = view;
-    [vv(1), vv(2), vv(3)] = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
-    vv /= norm (vv);
+    vv = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
 
     if (!have_lv)
       ## Calculate light vector (lv) from view vector.

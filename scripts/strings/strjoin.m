@@ -1,5 +1,5 @@
-## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@uta.edu>
-## Copyright (C) 2013 Ben Abbott <bpabbott@mac.com>
+## Copyright (C) 2007 Muthiah Annamalai
+## Copyright (C) 2013 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -18,20 +18,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{str} =} strjoin (@var{cstr})
+## @deftypefn  {Function File} {@var{str} =} strjoin (@var{cstr})
 ## @deftypefnx {Function File} {@var{str} =} strjoin (@var{cstr}, @var{delimiter})
-## Joins the elements of the cell-string array, @var{cstr}, into a single
+## Join the elements of the cell-string array, @var{cstr}, into a single
 ## string.
 ##
 ## If no @var{delimiter} is specified, the elements of @var{cstr}
-## seperated by a space.
+## separated by a space.
 ##
 ## If @var{delimiter} is specified as a string, the cell-string array is
-## joined using the string.
+## joined using the string.  Escape sequences are supported.
 ##
 ## If @var{delimiter} is a cell-string array whose length is one less
-## than @var{cstr}, then the elemennts of @var{cstr} are joined by
-## interleaving the cell-string elements of @var{delimiter}.
+## than @var{cstr}, then the elements of @var{cstr} are joined by
+## interleaving the cell-string elements of @var{delimiter}.  Escape
+## sequences are not supported.
 ##
 ## @example
 ## @group
@@ -41,6 +42,9 @@
 ## @end example
 ## @seealso {strsplit}
 ## @end deftypefn
+
+## Author: Muthiah Annamalai <muthiah.annamalai@uta.edu>
+## Author: Ben Abbott <bpabbott@mac.com>
 
 function rval = strjoin (cstr, delimiter)
 
@@ -58,6 +62,7 @@ function rval = strjoin (cstr, delimiter)
   endif
 
   if (ischar (delimiter))
+    delimiter = do_string_escapes (delimiter);
     delimiter = {delimiter};
   end
  
@@ -65,14 +70,18 @@ function rval = strjoin (cstr, delimiter)
   if (numel (delimiter) == 1 && num > 1)
     delimiter = repmat (delimiter, 1, num);
     delimiter(end) = {""};
-  elseif (numel (delimiter) != num - 1)
+  elseif (num > 0 && numel (delimiter) != num - 1)
     error ("strjoin:cellstring_delimiter_mismatch",
       "strjoin: the number of delimiters does not match the number of strings")
   else
     delimiter(end+1) = {""};
   endif
 
-  rval = sprintf ("%s", [cstr(:).'; delimiter(:).']{:});
+  if (num == 0)
+    rval = "";
+  else
+    rval = [[cstr(:).'; delimiter(:).']{:}];
+  endif
 
 endfunction
 
@@ -82,3 +91,6 @@ endfunction
 %!  "Octave*Scilab*Lush*Yorick")
 %!assert (strjoin ({"space", "comma", "dash", "semicolon", "done"},
 %!  {" ", ",", "-", ";"}), "space comma,dash-semicolon;done")
+%!assert (strjoin ({'Octave','Scilab'},'\n'), "Octave\nScilab")
+%!assert (strjoin ({'Octave','Scilab'},{'\n'}), "Octave\\nScilab")
+%!assert (strjoin ({},'foo'), "")

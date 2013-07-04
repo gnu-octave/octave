@@ -34,11 +34,13 @@
 
 function varargout = ndgrid (varargin)
 
-  if (nargin == 1)
+  if (nargin == 0)
+    print_usage ();
+  elseif (nargin == 1)
     n = max ([nargout, 1]);
     ## If only one input argument is given, repeat it n-times
     varargin(1:n) = varargin(1);
-  elseif (nargin > 0 && nargin >= nargout)
+  elseif (nargin >= nargout)
     n = max ([nargin, 1]);
   else
     error ("ndgrid: wrong number of input arguments");
@@ -47,12 +49,10 @@ function varargout = ndgrid (varargin)
   ## Determine the size of the output arguments
 
   shape = zeros (1, n);
-
   for i = 1:n
-    if (! isvector (varargin{i}))
+    if (! isvector (varargin{i}) && ! isempty (varargin{i}))
       error ("ndgrid: arguments must be vectors");
     endif
-
     shape(i) = length (varargin{i});
   endfor
 
@@ -107,4 +107,12 @@ endfunction
 %! assert (XX2(end) * YY2(end), x(end) * y(end));
 %! assert (XX1, XX2.');
 %! assert (YY1, YY2.');
+
+%!assert (ndgrid ([]), zeros(0,1))
+%!assert (ndgrid ([], []), zeros(0,0))
+
+%% Test input validation
+%!error ndgrid ()
+%!error <wrong number of input arguments> [a,b,c] = ndgrid (1:3,1:3)
+%!error <arguments must be vectors> ndgrid (ones (2,2))
 

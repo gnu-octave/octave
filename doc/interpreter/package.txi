@@ -24,16 +24,16 @@ programs amongst each other.  To aid this sharing Octave supports the
 installation of extra packages.  The `Octave-Forge' project is a
 community-maintained set of packages that can be downloaded and
 installed in Octave.  At the time of writing the `Octave-Forge' project
-can be found online at @uref{http://octave.sourceforge.net}, but
+can be found online at @url{http://octave.sourceforge.net}, but
 since the Internet is an ever-changing place this may not be true at
 the time of reading.  Therefore it is recommended to see the Octave
 website for an updated reference.
 
 @menu
-* Installing and Removing Packages::  
-* Using Packages::              
-* Administrating Packages::     
-* Creating Packages::           
+* Installing and Removing Packages::
+* Using Packages::
+* Administrating Packages::
+* Creating Packages::
 @end menu
 
 @findex pkg
@@ -112,24 +112,24 @@ to disable dependency checking.
 @node Using Packages
 @section Using Packages
 
-By default installed packages are available from the Octave prompt,
+By default installed packages are not available from the Octave prompt,
 but it is possible to control this using the @code{pkg load} and 
 @code{pkg unload} commands.  The functions from a package can be 
-removed from the Octave path by typing
-
-@example
-pkg unload package_name
-@end example
-
-@noindent
-where @code{package_name} is the name of the package to be removed
-from the path.
-
-In much the same way a package can be added to the Octave path by
-typing
+added to the Octave path by typing
 
 @example
 pkg load package_name
+@end example
+
+@noindent
+where @code{package_name} is the name of the package to be added
+to the path.
+
+In much the same way a package can be removed from the Octave path by
+typing
+
+@example
+pkg unload package_name
 @end example
 
 @node Administrating Packages
@@ -217,7 +217,7 @@ into @file{package/ONEWS}.
 This is an optional file describing old entries from the @file{NEWS} file.
 
 @cindex PKG_ADD
-@anchor{doc-PKG_ADD}
+@anchor{docXPKG_ADD}
 @item package/PKG_ADD
 An optional file that includes commands that are run when the package
 is added to the users path.  Note that @w{@code{PKG_ADD}} directives in the
@@ -242,7 +242,7 @@ autoload ('bar', which ('foo'));
 directives.
 
 @cindex PKG_DEL
-@anchor{doc-PKG_DEL}
+@anchor{docXPKG_DEL}
 @item package/PKG_DEL
 An optional file that includes commands that are run when the package
 is removed from the users path.  Note that @w{@code{PKG_DEL}} directives in
@@ -252,16 +252,23 @@ Octave package manager.
 directives.
 
 @item package/pre_install.m
-This is an optional script that is run prior to the installation of a
-package. 
+This is an optional function that is run prior to the installation of a
+package.  This function is called with a single argument, a struct with
+fields names after the data in the @file{DESCRIPTION}, and the paths where
+the package functions will be installed.
 
 @item package/post_install.m
-This is an optional script that is run after the installation of a
-package. 
+This is an optional function that is run after the installation of a
+package.  This function is called with a single argument, a struct with
+fields names after the data in the @file{DESCRIPTION}, and the paths where
+the package functions were installed.
 
 @item package/on_uninstall.m
-This is an optional script that is run prior to the removal of a
-package. 
+This is an optional function that is run prior to the removal of a
+package.  This function is called with a single argument, a struct with
+fields names after the data in the @file{DESCRIPTION}, the paths where
+the package functions are installed, and whether the package is currently
+loaded.
 @end table
 
 Besides the above mentioned files, a package can also contain on or
@@ -270,7 +277,7 @@ more of the following directories:
 @table @code
 @item package/inst
 An optional directory containing any files that are directly installed
-by the package.  Typically this will include any @code{m}-files. 
+by the package.  Typically this will include any @code{m}-files.
 
 @item package/src
 An optional directory containing code that must be built prior to the
@@ -299,9 +306,9 @@ external scripts, etc., called by functions within the package.
 @end table
 
 @menu
-* The DESCRIPTION File::        
-* The INDEX File::              
-* PKG_ADD and PKG_DEL Directives::  
+* The DESCRIPTION File::
+* The INDEX File::
+* PKG_ADD and PKG_DEL Directives::
 @end menu
 
 @node The DESCRIPTION File
@@ -339,7 +346,7 @@ Description: A short description of the package.  If this
  description gets too long for one line it can continue
  on the next by adding a space to the beginning of the
  following lines.
-License: GPL version 3 or later
+License: GPLv3+
 @end group
 @end example
 
@@ -489,7 +496,7 @@ This workaround description will not appear when listing functions in the
 package with @code{pkg describe} but they will be published
 in the HTML documentation online.
 Workaround descriptions can use any HTML markup, but
-keep in mind that it will be enclosed in a bold-italic environment.  
+keep in mind that it will be enclosed in a bold-italic environment.
 For the special case of:
 
 @example

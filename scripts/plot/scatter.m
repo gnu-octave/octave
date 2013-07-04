@@ -26,16 +26,16 @@
 ## @deftypefnx {Function File} {} scatter (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} scatter (@dots{})
 ##
-## Plot a scatter plot of the data.  A marker is plotted at each point
+## Draw a scatter plot of the data.  A marker is plotted at each point
 ## defined by the points in the vectors @var{x} and @var{y}.  The size of
-## the markers used is determined by the @var{s}, which can be a scalar,
-## a vector of the same length of @var{x} and @var{y}.  If @var{s} is not
+## the markers used is determined by the @var{s}, which can be a scalar or
+## a vector of the same length as @var{x} and @var{y}.  If @var{s} is not
 ## given or is an empty matrix, then the default value of 8 points is used.
 ##
 ## The color of the markers is determined by @var{c}, which can be a string
 ## defining a fixed color; a 3-element vector giving the red, green,and blue
 ## components of the color; a vector of the same length as @var{x} that gives
-## a scaled index into the current colormap; or a @var{n}-by-3 matrix defining
+## a scaled index into the current colormap; or an @var{n}-by-3 matrix defining
 ## the colors of each of the markers individually.
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
@@ -43,7 +43,10 @@
 ## If the argument @code{"filled"} is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
-## The optional return value @var{h} provides a handle to the patch object
+## The optional return value @var{h} is a graphics handle to the created patch
+## object.
+## 
+## Example:
 ##
 ## @example
 ## @group

@@ -183,7 +183,7 @@ private:
         FILE *fp = octave_popen (print_cmd.c_str (), "w");
         glps_renderer rend (fp, print_term);
 
-        rend.draw (gh_manager::get_object (number));
+        rend.draw (gh_manager::get_object (number), print_cmd);
 
         octave_pclose (fp);
         print_mode = false;
@@ -1219,7 +1219,7 @@ private:
               int key_a = key2ascii (key);
               if (key_a && fp.get_keypressfcn ().is_defined ())
                 {
-                  Octave_map evt;
+                  octave_scalar_map evt;
                   evt.assign ("Character", octave_value (key_a));
                   evt.assign ("Key", octave_value (std::tolower (key_a)));
                   evt.assign ("Modifier", octave_value (modifier2cell ()));
@@ -1258,7 +1258,7 @@ private:
               int key_a = key2ascii (key);
               if (key_a && fp.get_keyreleasefcn ().is_defined ())
                 {
-                  Octave_map evt;
+                  octave_scalar_map evt;
                   evt.assign ("Character", octave_value (key_a));
                   evt.assign ("Key", octave_value (std::tolower (key_a)));
                   evt.assign ("Modifier", octave_value (modifier2cell ()));
@@ -1286,7 +1286,7 @@ private:
                 set_axes_currentpoint (ax_obj, pos_x, pos_y);
               }
 
-            fp.execute_windowbuttondownfcn ();
+            fp.execute_windowbuttondownfcn (Fl::event_button()); 
 
             if (Fl::event_button () == 1 || Fl::event_button () == 3)
               return 1;
@@ -2071,7 +2071,7 @@ Undocumented internal function.\n\
 
 DEFUN_DLD (__have_fltk__, , ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{FLTK_available} =} __have_fltk__ ()\n\
+@deftypefn {Loadable Function} {@var{FLTK_available} =} __have_fltk__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

@@ -40,7 +40,7 @@ function mtd_names = javamethods (classname)
   endif
 
   cls_methods = javaMethod ("getMethods", "org.octave.ClassHelper", classname);
-  method_list = strsplit (cls_methods, ';', false);
+  method_list = ostrsplit (cls_methods, ';');
 
   if (nargout == 0)
     if (! isempty (method_list))

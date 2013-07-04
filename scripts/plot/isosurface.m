@@ -51,7 +51,7 @@
 ##
 ## If called with two or three output arguments then return the
 ## information about the faces @var{f}, vertices @var{v} and color data
-## @var{c} as seperate arrays instead of a single structure array.
+## @var{c} as separate arrays instead of a single structure array.
 ##
 ## If called with no output argument then directly process the
 ## isosurface geometry with the @command{patch} command.
@@ -197,9 +197,9 @@ endfunction
 %! isosurface (x, y, z, v, 1);
 
 %!shared x, y, z, val
-%! [x, y, z]  = meshgrid (0:1, 0:1, 0:1); %% Points for single
-%! val        = [0, 0; 0, 0];             %% cube and a 3-D
-%! val(:,:,2) = [0, 0; 1, 0];             %% array of values
+%! [x, y, z]  = meshgrid (0:1, 0:1, 0:1); # Points for single
+%! val        = [0, 0; 0, 0];             # cube and a 3-D
+%! val(:,:,2) = [0, 0; 1, 0];             # array of values
 %!test
 %! fv = isosurface (x, y, z, val, 0.3);
 %! assert (isfield (fv, "vertices"), true);

@@ -106,6 +106,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _file_list->setAlternatingRowColors(true);
   _file_list->setToolTip (tr ("Search results"));
   _file_list->horizontalHeader ()->restoreState (settings->value ("findfiles/column_state").toByteArray ());
+  _file_list->horizontalHeader ()->setStretchLastSection (true);
   _file_list->sortByColumn (
               settings->value ("findfiles/sort_files_by_column",0).toInt (),
               static_cast<Qt::SortOrder>(settings->value ("findfiles/sort_files_by_order",Qt::AscendingOrder).toUInt ()));
@@ -161,7 +162,6 @@ find_files_dialog::find_files_dialog (QWidget * p)
   content_layout->setColumnStretch (2,1);
   content_layout->addWidget (_content_case_check,5,1);
 
-
   QGridLayout *main_layout = new QGridLayout;
   main_layout->setSizeConstraint (QLayout::SetFixedSize);
   main_layout->addWidget (name_group, 0, 0);
@@ -205,7 +205,7 @@ find_files_dialog::~find_files_dialog ()
     delete _dir_iterator;
 }
 
-void find_files_dialog::handle_done (int button)
+void find_files_dialog::handle_done (int)
 {
   // make sure we stopped processing 
   stop_find ();

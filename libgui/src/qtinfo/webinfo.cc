@@ -1,21 +1,28 @@
-/* Copyright (C) 2009 P.L. Lucas
- * Copyright (C) 2012 Jacob Dawid <jacob.dawid@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
- */
+/*
+
+Copyright (C) 2009 P. L. Lucas
+Copyright (C) 2012 Jacob Dawid
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
+*/
+
+// Author: P. L. Lucas
+// Author: Jacob Dawid <jacob.dawid@gmail.com>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -24,6 +31,8 @@
 #include "webinfo.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QApplication>
+#include <QClipboard>
 
 #include "file-ops.h"
 #include "help.h"
@@ -209,5 +218,32 @@ webinfo::zoom_out ()
 {
   _font_web.setPointSize (_font_web.pointSize() - 1);
   _text_browser->setFont (_font_web);
+}
+
+void
+webinfo::copyClipboard ()
+{
+  if (_search_line_edit->hasFocus () && _search_line_edit->hasSelectedText ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+
+      clipboard->setText (_search_line_edit->selectedText ());
+    }
+  if (_text_browser->hasFocus ())
+    {
+      _text_browser->copy ();
+    }
+}
+
+void
+webinfo::pasteClipboard ()
+{
+  if (_search_line_edit->hasFocus ())
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+      QString str =  clipboard->text ();
+      if (str.length () > 0) 
+        _search_line_edit->insert (str);
+    }
 }
 

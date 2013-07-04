@@ -21,8 +21,8 @@
 ## @deftypefnx {Function File} {} bar (@var{y})
 ## @deftypefnx {Function File} {} bar (@var{x}, @var{y}, @var{w})
 ## @deftypefnx {Function File} {} bar (@var{x}, @var{y}, @var{w}, @var{style})
-## @deftypefnx {Function File} {@var{h} =} bar (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} bar (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} bar (@dots{}, @var{prop}, @var{val})
 ## Produce a bar graph from two vectors of x-y data.
 ##
 ## If only one argument is given, @var{y}, it is taken as a vector of y-values
@@ -35,6 +35,9 @@
 ## are plotted side-by-side.  This behavior can be changed by the @var{style}
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
+##
+## Passing the optional input handle @var{h} will draw the resulting plot
+## in the specified handle.
 ##
 ## The optional return value @var{h} is a handle to the created "bar series"
 ## object with one handle per column of the variable @var{y}.  This
@@ -51,8 +54,6 @@
 ##
 ## @noindent
 ## changes the position on the base of all of the bar series.
-##
-## The optional input handle @var{h} allows an axis handle to be passed.
 ##
 ## The bar graph's appearance may be modified by specifying property/value
 ## pairs.  The following example modifies the face and edge colors.

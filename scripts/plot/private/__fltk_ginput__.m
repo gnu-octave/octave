@@ -23,9 +23,6 @@
 
 ## This is ginput.m implementation for fltk.
 
-## FIXME -- Key presses cannot toggle menu items nor hotkey functionality
-## (grid, autoscale) during ginput!
-
 function [x, y, button] = __fltk_ginput__ (f, n = -1)
 
   if (isempty (get (f, "currentaxes")))
@@ -33,7 +30,7 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
   endif
 
   x = y = button = [];
-  ginput_aggregator (0, 0, 0, 0);
+  ginput_accumulator (0, 0, 0, 0);  # initialize accumulator
 
   unwind_protect
 
@@ -43,17 +40,14 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
     orig_ginput_keypressfcn = get (f, "keypressfcn");
     set (f, "keypressfcn", @ginput_keypressfcn);
 
-    while (true)
+    do
       __fltk_redraw__ ();
 
       ## Release CPU.
       sleep (0.01);
 
-      [x, y, n0, button] = ginput_aggregator (-1, 0, 0, 0);
-      if (n0 == n || n0 < 0)
-        break;
-      endif
-    endwhile
+      [x, y, n0, button] = ginput_accumulator (-1, 0, 0, 0);
+    until (n0 == n || n0 < 0)
 
   unwind_protect_cleanup
     set (f, "windowbuttondownfcn", orig_windowbuttondownfcn);
@@ -62,17 +56,15 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
 
 endfunction
 
-function [x, y, n, button] = ginput_aggregator (mode, xn, yn, btn)
+function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
   persistent x y n button;
 
   if (mode == 0)
     ## Initialize.
-    x = [];
-    y = [];
-    button = [];
+    x = y = button = [];
     n = 0;
   elseif (mode == 1)
-    ## Accept mouse button or key press.
+    ## Append mouse button or key press.
     x = [x; xn];
     y = [y; yn];
     button = [button; btn];
@@ -81,25 +73,23 @@ function [x, y, n, button] = ginput_aggregator (mode, xn, yn, btn)
     ## The end due to Enter.
     n = -1;
  endif
+
 endfunction
 
 function ginput_windowbuttondownfcn (src, data)
   point = get (get (src,"currentaxes"), "currentpoint");
-  ## FIXME -- How to get the actual mouse button pressed (1,2,3) into
-  ## "button"?
-  button = 1;
-  ginput_aggregator (1, point(1,1), point(2,1), button);
+  button = data;
+  ginput_accumulator (1, point(1,1), point(2,1), button);
 endfunction
 
 function ginput_keypressfcn (src, evt)
   point = get (get (src, "currentaxes"), "currentpoint");
-  ## FIXME -- use evt.Key or evt.Character?
   key = evt.Key;
   if (key == 10)
-    ## Enter key.
-    ginput_aggregator (2, point(1,1), point(2,1), key);
+    ## Enter key stops ginput.
+    ginput_accumulator (2, NaN, NaN, NaN);
   else
-    ginput_aggregator (1, point(1,1), point(2,1), key);
+    ginput_accumulator (1, point(1,1), point(2,1), key);
   endif
 endfunction
 

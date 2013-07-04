@@ -645,7 +645,7 @@ function arguments will then be in alphabetical order.  It should\n\
 be noted that i, and j are ignored as arguments due to the\n\
 ambiguity between their use as a variable or their use as an inbuilt\n\
 constant.  All arguments followed by a parenthesis are considered\n\
-to be functions. If no arguments are found, a function taking a single\n\
+to be functions.  If no arguments are found, a function taking a single\n\
 argument named @code{x} will be created.\n\
 \n\
 If the second and subsequent arguments are character strings,\n\

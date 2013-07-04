@@ -156,7 +156,7 @@ function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options, hlgnd, tlgnd, setlgn
   endfor
 endfunction
 
-function retval = __plt1__ (h, x1, options, properties)
+function retval = __plt1__ (h, x1, options, properties = {})
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
@@ -164,10 +164,6 @@ function retval = __plt1__ (h, x1, options, properties)
 
   if (nargin < 3 || isempty (options))
     options = __default_plot_options__ ();
-  endif
-
-  if (nargin < 4)
-    properties = {};
   endif
 
   if (! isstruct (options))
@@ -197,7 +193,7 @@ function retval = __plt1__ (h, x1, options, properties)
 
 endfunction
 
-function retval = __plt2__ (h, x1, x2, options, properties)
+function retval = __plt2__ (h, x1, x2, options, properties = {})
 
   if (nargin < 3 || nargin > 5)
     print_usage ();
@@ -207,12 +203,8 @@ function retval = __plt2__ (h, x1, x2, options, properties)
     options = __default_plot_options__ ();
   endif
 
-  if (nargin < 5)
-    properties = {};
-  endif
-
   if (! isstruct (options))
-    error ("__plt1__: options must be a struct array");
+    error ("__plt2__: options must be a struct array");
   endif
 
   if (islogical (x1))
@@ -262,350 +254,243 @@ function retval = __plt2__ (h, x1, x2, options, properties)
 
 endfunction
 
-function retval = __plt2mm__ (h, x, y, options, properties)
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
+function retval = __plt2mm__ (h, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
   endif
 
-  if (nargin < 5)
-    properties = {};
-  endif
-
   [x_nr, x_nc] = size (x);
   [y_nr, y_nc] = size (y);
 
-  k = 1;
-  if (x_nr == y_nr && x_nc == y_nc)
-    if (x_nc > 0)
-      if (numel (options) == 1)
-        options = repmat (options(:), x_nc, 1);
-      endif
-      retval = zeros (x_nc, 1);
-      for i = 1:x_nc
-        linestyle = options(i).linestyle;
-        marker = options(i).marker;
-        if (isempty (marker) && isempty (linestyle))
-           [linestyle, marker] = __next_line_style__ ();
-        endif
-        color = options(i).color;
-        if (isempty (color))
-          color = __next_line_color__ ();
-        endif
-
-        retval(i) = line (x(:,i), y(:,i), "color", color,
-                          "linestyle", linestyle,
-                          "marker", marker, properties{:});
-      endfor
-    else
-      error ("__plt2mm__: arguments must be a matrices");
-    endif
-  else
+  if (x_nr != y_nr && x_nc != y_nc)
     error ("__plt2mm__: matrix dimensions must match");
   endif
 
+  if (numel (options) == 1)
+    options = repmat (options(:), x_nc, 1);
+  endif
+  retval = zeros (x_nc, 1);
+  for i = 1:x_nc
+    linestyle = options(i).linestyle;
+    marker = options(i).marker;
+    if (isempty (marker) && isempty (linestyle))
+      [linestyle, marker] = __next_line_style__ ();
+    endif
+    color = options(i).color;
+    if (isempty (color))
+      color = __next_line_color__ ();
+    endif
+
+    retval(i) = line (x(:,i), y(:,i), "color", color,
+                      "linestyle", linestyle,
+                      "marker", marker, properties{:});
+  endfor
+
 endfunction
 
-function retval = __plt2mv__ (h, x, y, options, properties)
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
+function retval = __plt2mv__ (h, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
   endif
 
-  if (nargin < 5)
-    properties = {};
-  endif
-
-  [x_nr, x_nc] = size (x);
+  y = y(:);
   [y_nr, y_nc] = size (y);
-
-  if (y_nr == 1)
-    y = y';
-    tmp = y_nr;
-    y_nr = y_nc;
-    y_nc = tmp;
-  endif
+  [x_nr, x_nc] = size (x);
 
   if (x_nr == y_nr)
-    1;
+    ## Correctly oriented.  Do nothing.
   elseif (x_nc == y_nr)
-    x = x';
-    tmp = x_nr;
-    x_nr = x_nc;
-    x_nc = tmp;
+    x = x.';
+    [x_nr, x_nc] = deal (x_nc, x_nr);
   else
     error ("__plt2mv__: matrix dimensions must match");
   endif
 
-  if (x_nc > 0)
-    if (numel (options) == 1)
-      options = repmat (options(:), x_nc, 1);
-    endif
-    retval = zeros (x_nc, 1);
-    for i = 1:x_nc
-      linestyle = options(i).linestyle;
-      marker = options(i).marker;
-      if (isempty (marker) && isempty (linestyle))
-        [linestyle, marker] = __next_line_style__ ();
-      endif
-      color = options(i).color;
-      if (isempty (color))
-        color = __next_line_color__ ();
-      endif
-
-      retval(i) = line (x(:,i), y, "color", color,
-                        "linestyle", linestyle,
-                        "marker", marker, properties{:});
-    endfor
-  else
-    error ("__plt2mv__: arguments must be a matrices");
+  if (numel (options) == 1)
+    options = repmat (options(:), x_nc, 1);
   endif
+  retval = zeros (x_nc, 1);
+  for i = 1:x_nc
+    linestyle = options(i).linestyle;
+    marker = options(i).marker;
+    if (isempty (marker) && isempty (linestyle))
+      [linestyle, marker] = __next_line_style__ ();
+    endif
+    color = options(i).color;
+    if (isempty (color))
+      color = __next_line_color__ ();
+    endif
+
+    retval(i) = line (x(:,i), y, "color", color,
+                      "linestyle", linestyle,
+                      "marker", marker, properties{:});
+  endfor
 
 endfunction
 
-function retval = __plt2ss__ (h, x, y, options, properties)
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
+function retval = __plt2ss__ (h, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
-  endif
-
-  if (nargin < 5)
-    properties = {};
   endif
 
   if (numel (options) > 1)
     options = options(1);
   endif
 
-  [x_nr, x_nc] = size (x);
-  [y_nr, y_nc] = size (y);
+  linestyle = options.linestyle;
+  marker = options.marker;
+  if (isempty (marker) && isempty (linestyle))
+    ## If unspecified, marker for a single point is always "."
+    linestyle = "-";
+    marker = ".";
+  endif
+  color = options.color;
+  if (isempty (color))
+    color = __next_line_color__ ();
+  endif
 
-  if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
-    linestyle = options.linestyle;
-    marker = options.marker;
+  retval = line (x, y, "color", color,
+                 "linestyle", linestyle,
+                 "marker", marker, properties{:});
+
+endfunction
+
+function retval = __plt2sv__ (h, x, y, options, properties = {})
+
+  if (nargin < 4 || isempty (options))
+    options = __default_plot_options__ ();
+  endif
+
+  len = numel (y);
+  if (numel (options) == 1)
+    options = repmat (options(:), len, 1);
+  endif
+  retval = zeros (len, 1);
+  for i = 1:len
+    linestyle = options(i).linestyle;
+    marker = options(i).marker;
     if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
+      ## If unspecified, marker for a point is always "."
+      linestyle = "-";
+      marker = ".";
     endif
-    color = options.color;
+    color = options(i).color;
     if (isempty (color))
       color = __next_line_color__ ();
     endif
 
-    retval = line (x, y, "color", color,
-                   "linestyle", linestyle,
-                   "marker", marker, properties{:});
-  else
-    error ("__plt2ss__: arguments must be scalars");
-  endif
+    retval(i) = line (x, y(i), "color", color,
+                      "linestyle", linestyle,
+                      "marker", marker, properties{:});
+  endfor
 
 endfunction
 
-function retval = __plt2sv__ (h, x, y, options, properties)
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
+function retval = __plt2vm__ (h, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
   endif
 
-  if (nargin < 5)
-    properties = {};
-  endif
-
-  if (isscalar (x) && isvector (y))
-    len = numel (y);
-    if (numel (options) == 1)
-      options = repmat (options(:), len, 1);
-    endif
-    retval = zeros (len, 1);
-    for i = 1:len
-      linestyle = options(i).linestyle;
-      marker = options(i).marker;
-      if (isempty (marker) && isempty (linestyle))
-        [linestyle, marker] = __next_line_style__ ();
-      endif
-      color = options(i).color;
-      if (isempty (color))
-        color = __next_line_color__ ();
-      endif
-
-      retval(i) = line (x, y(i), "color", color,
-                        "linestyle", linestyle,
-                        "marker", marker, properties{:});
-    endfor
-  else
-    error ("__plt2sv__: first arg must be scalar, second arg must be vector");
-  endif
-
-endfunction
-
-function retval = __plt2vm__ (h, x, y, options, properties)
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
-
-  if (nargin < 4 || isempty (options))
-    options = __default_plot_options__ ();
-  endif
-
-  if (nargin < 5)
-    properties = {};
-  endif
-
+  x = x(:);
   [x_nr, x_nc] = size (x);
   [y_nr, y_nc] = size (y);
 
-  if (x_nr == 1)
-    x = x';
-    tmp = x_nr;
-    x_nr = x_nc;
-    x_nc = tmp;
-  endif
-
   if (x_nr == y_nr)
-    1;
+    ## Correctly oriented.  Do nothing.
   elseif (x_nr == y_nc)
-    y = y';
-    tmp = y_nr;
-    y_nr = y_nc;
-    y_nc = tmp;
+    y = y.';
+    [y_nr, y_nc] = deal (y_nc, y_nr);
   else
     error ("__plt2vm__: matrix dimensions must match");
   endif
 
-  if (y_nc > 0)
-    if (numel (options) == 1)
-      options = repmat (options(:), y_nc, 1);
-    endif
-    retval = zeros (y_nc, 1);
-    for i = 1:y_nc
-      linestyle = options(i).linestyle;
-      marker = options(i).marker;
-      if (isempty (marker) && isempty (linestyle))
-        [linestyle, marker] = __next_line_style__ ();
-      endif
-      color = options(i).color;
-      if (isempty (color))
-        color = __next_line_color__ ();
-      endif
-
-      retval(i) = line (x, y(:,i), "color", color,
-                        "linestyle", linestyle,
-                        "marker", marker, properties{:});
-    endfor
-  else
-    error ("__plt2vm__: arguments must be a matrices");
+  if (numel (options) == 1)
+    options = repmat (options(:), y_nc, 1);
   endif
+  retval = zeros (y_nc, 1);
+  for i = 1:y_nc
+    linestyle = options(i).linestyle;
+    marker = options(i).marker;
+    if (isempty (marker) && isempty (linestyle))
+      [linestyle, marker] = __next_line_style__ ();
+    endif
+    color = options(i).color;
+    if (isempty (color))
+      color = __next_line_color__ ();
+    endif
+
+    retval(i) = line (x, y(:,i), "color", color,
+                      "linestyle", linestyle,
+                      "marker", marker, properties{:});
+  endfor
 
 endfunction
 
-function retval = __plt2vs__ (h, x, y, options, properties)
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
+function retval = __plt2vs__ (h, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
   endif
 
-  if (nargin < 5)
-    properties = {};
+  len = numel (x);
+  if (numel (options) == 1)
+    options = repmat (options(:), len, 1);
   endif
-
-  if (isvector (x) && isscalar (y))
-    len = numel (x);
-    if (numel (options) == 1)
-      options = repmat (options(:), len, 1);
+  retval = zeros (len, 1);
+  for i = 1:len
+    linestyle = options(i).linestyle;
+    marker = options(i).marker;
+    if (isempty (marker) && isempty (linestyle))
+      ## If unspecified, marker for a point is always "."
+      linestyle = "-";
+      marker = ".";
     endif
-    retval = zeros (len, 1);
-    for i = 1:len
-      linestyle = options(i).linestyle;
-      marker = options(i).marker;
-      if (isempty (marker) && isempty (linestyle))
-        [linestyle, marker] = __next_line_style__ ();
-      endif
-      color = options(i).color;
-      if (isempty (color))
-        color = __next_line_color__ ();
-      endif
+    color = options(i).color;
+    if (isempty (color))
+      color = __next_line_color__ ();
+    endif
 
-      retval(i) = line (x(i), y, "color", color,
-                        "linestyle", linestyle,
-                        "marker", marker, properties{:});
-    endfor
-  else
-    error ("__plt2vs__: first arg must be vector, second arg must be scalar");
-  endif
+    retval(i) = line (x(i), y, "color", color,
+                      "linestyle", linestyle,
+                      "marker", marker, properties{:});
+  endfor
 
 endfunction
 
-function retval = __plt2vv__ (h, x, y, options, properties)
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
+function retval = __plt2vv__ (h, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
-  endif
-
-  if (nargin < 5)
-    properties = {};
   endif
 
   if (numel (options) > 1)
     options = options(1);
   endif
 
-  [x_nr, x_nc] = size (x);
-  [y_nr, y_nc] = size (y);
+  x = x(:);
+  y = y(:);
 
-  if (x_nr == 1)
-    x = x';
-    tmp = x_nr;
-    x_nr = x_nc;
-    x_nc = tmp;
-  endif
-
-  if (y_nr == 1)
-    y = y';
-    tmp = y_nr;
-    y_nr = y_nc;
-    y_nc = tmp;
-  endif
-
-  if (x_nr == y_nr)
-    linestyle = options.linestyle;
-    marker = options.marker;
-    if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
-    endif
-    color = options.color;
-    if (isempty (color))
-      color = __next_line_color__ ();
-    endif
-
-    retval = line (x, y, "color", color,
-              "linestyle", linestyle,
-              "marker", marker, properties{:});
-  else
+  if (length (x) != length (y))
     error ("__plt2vv__: vector lengths must match");
   endif
 
+  linestyle = options.linestyle;
+  marker = options.marker;
+  if (isempty (marker) && isempty (linestyle))
+    [linestyle, marker] = __next_line_style__ ();
+  endif
+  color = options.color;
+  if (isempty (color))
+    color = __next_line_color__ ();
+  endif
+
+  retval = line (x, y, "color", color,
+            "linestyle", linestyle,
+            "marker", marker, properties{:});
+
 endfunction
+

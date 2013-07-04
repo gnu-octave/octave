@@ -347,7 +347,7 @@ therefore looks like this
 @example
 @group
 -*- texinfo -*-
-@@deftypefn@{Function File@} @{@@var@{ret@} =@} fn (@dots{})
+@@deftypefn @{Function File@} @{@@var@{ret@} =@} fn (@dots{})
 @@cindex index term
 Help text in Texinfo format.  Code samples should be marked 
 like @@code@{sample of code@} and variables should be marked
@@ -366,7 +366,7 @@ functions.  The important aspects of the documentation string are
 This string signals Octave that the following text is in Texinfo format,
 and should be the first part of any help string in Texinfo format.
 
-@item @@deftypefn@{class@} @dots{} @@end deftypefn
+@item @@deftypefn @{class@} @dots{} @@end deftypefn
 The entire help string should be enclosed within the block defined by
 deftypefn.
 
@@ -394,7 +394,7 @@ Texinfo format has been designed to generate output for online viewing
 with text terminals as well as generating high-quality printed output.
 To these ends, Texinfo has commands which control the diversion of parts
 of the document into a particular output processor.  Three formats are
-of importance: info, HTML and @TeX{}.  These are selected with
+of importance: info, HTML, and @TeX{}.  These are selected with
 
 @example
 @group
@@ -477,8 +477,8 @@ example
 @example
 @group
 -*- texinfo -*-
-@@deftypefn @{Function File@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
-@@deftypefnx@{Function File@} @{@@var@{a@} =@} fn (@@var@{y@}, @dots{})
+@@deftypefn  @{Function File@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
+@@deftypefnx @{Function File@} @{@@var@{a@} =@} fn (@@var@{y@}, @dots{})
 Help text in Texinfo format.
 @@end deftypefn
 @end group

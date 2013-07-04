@@ -1575,6 +1575,14 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       else
         gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc);
     }
+  else if (nr == 1 && nc == 1)
+    {
+      // Scalars stored as sparse matrices occupy more memory than 
+      // a scalar, so let's just convert the matrix to full, index, 
+      // and sparsify the result.
+
+      retval = Sparse<T> (array_value ().index (idx_i, idx_j));
+    }
   else if (idx_i.is_colon ())
     {
       // Great, we're just manipulating columns. This is going to be quite

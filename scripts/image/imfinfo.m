@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Soren Hauberg <hauberg@gmail.com>
+## Copyright (C) 2008-2012 Soren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -105,6 +105,8 @@
 ##
 ## @seealso{imread, imwrite, imshow}
 ## @end deftypefn
+
+## Author: Soren Hauberg <hauberg@gmail.com>
 
 function info = imfinfo (filename)
 

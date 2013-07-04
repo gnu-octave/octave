@@ -68,7 +68,7 @@ default_numeric_demotion_function (const octave_base_value& a)
 {
   CAST_CONV_ARG (const octave_complex_matrix&);
 
-  return new octave_float_complex_matrix (v.float_complex_matrix_value ());
+  return new octave_float_complex_matrix (v.float_complex_array_value ());
 }
 
 octave_base_value::type_conv_info

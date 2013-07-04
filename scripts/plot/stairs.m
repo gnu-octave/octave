@@ -29,9 +29,9 @@
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
 ##
-## If one output argument is requested, return a graphics handle to the plot.
-## If two output arguments are specified, the data are generated but
-## not plotted.  For example,
+## If one output argument is requested, return a graphics handle to the
+## created plot.  If two output arguments are specified, the data are generated
+## but not plotted.  For example,
 ##
 ## @example
 ## stairs (x, y);
@@ -49,8 +49,7 @@
 ##
 ## @noindent
 ## are equivalent.
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, xlabel, ylabel, title}
+## @seealso{plot}
 ## @end deftypefn
 
 ## Author: jwe
@@ -233,6 +232,19 @@ endfunction
 %! [xs, ys] = stairs (9:-1:1);
 %! plot (xs, ys);
 
+%!demo
+%! clf;
+%! N = 11;
+%! x = 0:(N-1);
+%! y = rand (1, N);
+%! hs = stairs (x(1), y(1));
+%! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
+%! for k=2:N
+%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
+%!   drawnow ();
+%!   pause (0.2);
+%! end
+
 
 function update_props (h, d)
   set (get (h, "children"), "color", get (h, "color"),
@@ -247,6 +259,10 @@ endfunction
 function update_data (h, d)
   x = get (h, "xdata");
   y = get (h, "ydata");
+
+  sz = min ([size(x); size(y)]);
+  x = x(1:sz(1), 1:sz(2));
+  y = y(1:sz(1), 1:sz(2));
 
   nr = length (x);
   len = 2 * nr - 1;

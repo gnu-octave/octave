@@ -1,5 +1,5 @@
-## Copyright (C) 2006   Sylvain Pelissier   <sylvain.pelissier@gmail.com>
-## Copyright (C) 2012   Carlo de Falco
+## Copyright (C) 2006 Sylvain Pelissier
+## Copyright (C) 2012 Carlo de Falco
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@
 ##
 ## @item 3: the algorithm reached stagnation
 ## @end itemize
+##
 ## (the value 2 is unused but skipped for compatibility).
 ##
 ## @item @var{relres} is the final value of the relative residual.
@@ -67,6 +68,8 @@
 ##
 ## @end deftypefn
 
+## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
+## Author: Carlo de Falco
 
 function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
 

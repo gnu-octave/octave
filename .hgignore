@@ -26,7 +26,7 @@ syntax: regexp
 ^build-.*($|/)
 ^configure$
 ^autom4te\.cache($|/)
-^config\.h\.in$
+^config\.in\.h$
 
 # e.g. doc/faq/OctaveFAQ.info
 #      doc/interpreter/octave.info-4

@@ -24,6 +24,8 @@
 
 set -e
 
+SED=${SED:-'sed'}
+
 prefix="$1/"
 shift
 
@@ -32,6 +34,6 @@ do
   if [ "$arg" = "--" ]; then
     prefix=""
   else
-    sed -n 's/^[#%][#%]* *PKG_ADD: *//p' "$prefix$arg"
+    $SED -n 's/^[#%][#%]* *PKG_ADD: *//p' "$prefix$arg"
   fi
 done

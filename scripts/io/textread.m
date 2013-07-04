@@ -47,7 +47,7 @@
 ## If the format string is empty (not: omitted) and the file contains only
 ## numeric data (excluding headerlines), textread will return a rectangular
 ## matrix with the number of columns matching the number of numeric fields on
-## the first data line of the file. Empty fields are returned as zero values.
+## the first data line of the file.  Empty fields are returned as zero values.
 ##
 ## @seealso{strread, load, dlmread, fscanf, textscan}
 ## @end deftypefn

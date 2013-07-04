@@ -31,6 +31,7 @@ TRANSLATIONS = \
   languages/de_DE.ts \
   languages/en_US.ts \
   languages/es_ES.ts \
+  languages/fr_FR.ts \
   languages/nl_NL.ts \
   languages/pt_BR.ts \
   languages/ru_RU.ts \

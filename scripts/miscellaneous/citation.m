@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} citation
 ## @deftypefnx {Command} {} citation @var{package}
-## Display instructions to cite GNU Octave and packages in publications.
+## Display instructions for citing GNU Octave or its packages in publications.
 ##
-## When called without an argument, displays information on how to cite the core
-## GNU Octave system in publications.  When given a package name @var{package},
-## display information on to cite it.  However, note that some packages may not
-## have instructions on how to cite them.
+## When called without an argument, display information on how to cite the core
+## GNU Octave system.  When given a package name @var{package}, display
+## information on citing the specific named package.  Note that some packages
+## may not yet have instructions on how to cite them.
 ##
 ## The GNU Octave developers and its active community of package authors have
 ## invested a lot of time and effort in creating GNU Octave as it is today.
@@ -46,6 +46,9 @@ function citation (package = "octave")
 
 endfunction
 
+
+%% Test input validation
 %!error citation (1, 2)
 %!error <citation: PACKAGE must be a string> citation (1)
 %!error <citation: package .* is not installed> citation ("__NOT_A_VALID_PKG_NAME__")
+

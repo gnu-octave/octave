@@ -768,7 +768,7 @@ True if @var{x} is not equal to @var{y}.
 
 For complex numbers, the following ordering is defined:
 @var{z1} < @var{z2}
-iff
+if and only if
 
 @example
 @group

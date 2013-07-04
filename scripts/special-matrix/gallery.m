@@ -50,7 +50,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{c} =} gallery ("circul", @var{v})
+## @deftypefn {Function File} {@var{c} =} gallery ("circul", @var{v})
 ## Create a circulant matrix.
 ##
 ## @end deftypefn
@@ -81,8 +81,8 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {[@var{c},@var{d}, @var{e}] =} gallery ("dorr", @var{n})
-## @deftypefnx {Function File} {[@var{c},@var{d}, @var{e}] =} gallery ("dorr", @var{n}, @var{theta})
+## @deftypefn  {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n})
+## @deftypefnx {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n}, @var{theta})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("dorr", @dots{})
 ## Create a diagonally dominant, ill conditioned, tridiagonal matrix.
 ##
@@ -94,7 +94,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("fiedler", @var{c})
+## @deftypefn {Function File} {@var{a} =} gallery ("fiedler", @var{c})
 ## Create a symmetric Fiedler matrix.
 ##
 ## @end deftypefn
@@ -112,7 +112,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{c} =} gallery ("gcdmat", @var{n})
+## @deftypefn {Function File} {@var{c} =} gallery ("gcdmat", @var{n})
 ## Create a greatest common divisor matrix.
 ##
 ## @var{c} is an @var{n}-by-@var{n} matrix whose values correspond to the
@@ -135,7 +135,8 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("hanowa", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("hanowa", @var{n}, @var{d})
-## Create a matrix whose eigenvalues lie on a vertical line in the complex plane.
+## Create a matrix whose eigenvalues lie on a vertical line in the complex
+## plane.
 ##
 ## @end deftypefn
 ##
@@ -151,7 +152,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("invol", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("invol", @var{n})
 ## Create an involutory matrix.
 ##
 ## @end deftypefn
@@ -194,22 +195,22 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("lehmer", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("lehmer", @var{n})
 ## Create a Lehmer matrix (symmetric positive definite).
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{t} =} gallery ("lesp", @var{n})
+## @deftypefn {Function File} {@var{t} =} gallery ("lesp", @var{n})
 ## Create a tridiagonal matrix with real, sensitive eigenvalues.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("lotkin", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("lotkin", @var{n})
 ## Create a Lotkin matrix.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("minij", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("minij", @var{n})
 ## Create a symmetric positive definite matrix MIN(i,j).
 ##
 ## @end deftypefn
@@ -220,7 +221,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {[@var{a}, @var{t}] =} gallery ("neumann", @var{n})
+## @deftypefn {Function File} {[@var{a}, @var{t}] =} gallery ("neumann", @var{n})
 ## Create a singular matrix from the discrete Neumann problem (sparse).
 ##
 ## @end deftypefn
@@ -231,7 +232,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("parter", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("parter", @var{n})
 ## Create a Parter matrix (a Toeplitz matrix with singular values near pi).
 ##
 ## @end deftypefn
@@ -242,7 +243,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("poisson", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("Poisson", @var{n})
 ## Create a block tridiagonal matrix from Poisson's equation (sparse).
 ##
 ## @end deftypefn
@@ -253,7 +254,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{h} =} gallery ("randhess", @var{x})
+## @deftypefn {Function File} {@var{h} =} gallery ("randhess", @var{x})
 ## Create a random, orthogonal upper Hessenberg matrix.
 ##
 ## @end deftypefn
@@ -273,18 +274,18 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("redheff", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("redheff", @var{n})
 ## Create a zero and ones matrix of Redheffer associated with the Riemann
 ## hypothesis.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("riemann", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("riemann", @var{n})
 ## Create a matrix associated with the Riemann hypothesis.
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {@var{a} =} gallery ("ris", @var{n})
+## @deftypefn {Function File} {@var{a} =} gallery ("ris", @var{n})
 ## Create a symmetric Hankel matrix.
 ##
 ## @end deftypefn
@@ -333,7 +334,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn  {Function File} {[@var{a}, @var{b}] =} gallery ("wilk", @var{n})
+## @deftypefn {Function File} {[@var{a}, @var{b}] =} gallery ("wilk", @var{n})
 ## Create various specific matrices devised/discussed by Wilkinson.
 ##
 ## @end deftypefn
@@ -532,7 +533,7 @@ function C = chebspec (n, k = 0)
     case (0), # do nothing
     case (1), n = n + 1;
     otherwise
-      error ("gallery: unknown K `%d' for chebspec matrix.", k);
+      error ("gallery: unknown K '%d' for chebspec matrix.", k);
   endswitch
 
   n = n-1;
@@ -666,11 +667,11 @@ function C = circul (v)
     error ("gallery: V must be numeric for circul matrix.");
   endif
 
-  n = numel (x);
-  if (isscalar (x) && fix (x) == x)
+  n = numel (v);
+  if (isscalar (v) && fix (v) == v)
     n = v;
     v = 1:n;
-  elseif (n > 1 && isvector (x))
+  elseif (n > 1 && isvector (v))
     ## do nothing
   else
     error ("gallery: X must be a scalar or a vector for circul matrix.");
@@ -839,7 +840,7 @@ function A = condex (n, k = 4, theta = 100)
     A = eye (n) + theta*P;
 
   else
-    error ("gallery: unknown estimator K `%d' for condex matrix.", k);
+    error ("gallery: unknown estimator K '%d' for condex matrix.", k);
   endif
 
   ## Pad out with identity as necessary.
@@ -999,7 +1000,7 @@ function A = dramadah (n, k = 1)
       A = toeplitz (c, [1 1 zeros(1,n-2)]);
 
     otherwise
-      error ("gallery: unknown K `%d' for dramadah matrix.", k);
+      error ("gallery: unknown K '%d' for dramadah matrix.", k);
   endswitch
 endfunction
 
@@ -1827,7 +1828,7 @@ function Q = orthog (n, k = 1)
       Q = cos (m);
 
     otherwise
-      error ("gallery: unknown K `%d' for orthog matrix.", k);
+      error ("gallery: unknown K '%d' for orthog matrix.", k);
   endswitch
 endfunction
 
@@ -2006,7 +2007,7 @@ function A = rando (n, k = 1)
     case (2), A = 2*floor (  rand(m, n) + 0.5) -1;  # {-1, 1}
     case (3), A =   round (3*rand(m, n) - 1.5);     # {-1, 0, 1}
     otherwise
-      error ("gallery: unknown K `%d' for smoke matrix.", k);
+      error ("gallery: unknown K '%d' for smoke matrix.", k);
   endswitch
 
 endfunction
@@ -2097,7 +2098,7 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
       rand ("uniform");
       sigma = exp (-rand (p, 1) * log (kappa));
     otherwise
-      error ("gallery: unknown MODE `%d' for randsvd matrix.", mode);
+      error ("gallery: unknown MODE '%d' for randsvd matrix.", mode);
   endswitch
 
   ##  Convert to diagonal matrix of singular values.
@@ -2616,7 +2617,7 @@ function [A, b] = wilk (n)
     A = diag (abs (-m:m)) + E + E';
 
   else
-    error ("gallery: unknown N `%d' for wilk matrix.", n);
+    error ("gallery: unknown N '%d' for wilk matrix.", n);
   endif
 endfunction
 

@@ -2260,7 +2260,7 @@ void TerminalView::setSelection(const QString& t)
 
 void TerminalView::copyClipboard()
 {
-  if ( !_screenWindow )
+  if ( !_screenWindow || !hasFocus())
     return;
 
   QString text = _screenWindow->selectedText(_preserveLineBreaks);
@@ -2278,7 +2278,10 @@ void TerminalView::copyClipboard()
 
 void TerminalView::pasteClipboard()
 {
-  emitSelection(false,false);
+  if(hasFocus ())
+    {
+      emitSelection(false,false);
+    }
 }
 
 void TerminalView::pasteSelection()
@@ -2697,4 +2700,10 @@ void TerminalView::setLineSpacing(uint i)
 {
   _lineSpacing = i;
   setVTFont(font()); // Trigger an update.
+}
+
+QString TerminalView::selectedText ()
+{
+  QString text = _screenWindow->selectedText (_preserveLineBreaks);
+  return text;
 }

@@ -220,10 +220,12 @@ function h = findobj (varargin)
                 match = 0;
               endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
-              if (ischar (pvalue{np}))
+              if (ischar (pvalue{np}) && ischar (p.(pname{np})))
                 match = strcmpi (pvalue{np}, p.(pname{np}));
-              else
+              elseif (isnumeric (pvalue{np} && isnumeric (p.(pname{np}))))
                 match = (pvalue{np} == p.(pname{np}));
+              else
+                match = isequal (pvalue{np}, p.(pname{np}));
               endif
             else
               match = 0;
@@ -288,3 +290,12 @@ endfunction
 %! end_unwind_protect
 %! assert (h2, h1)
 
+%!test
+%! hf = figure ("visible", "off");
+%! h1 = subplot (2, 2, 1);
+%! h2 = subplot (2, 2, 2);
+%! h3 = subplot (2, 2, 3);
+%! h4 = subplot (2, 2, 4);
+%! userdata = struct ("foo", "bar");
+%! set (h3, "userdata", userdata);
+%! assert (findobj (hf, "userdata", userdata), h3)

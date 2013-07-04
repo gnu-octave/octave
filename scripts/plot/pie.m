@@ -22,17 +22,17 @@
 ## @deftypefnx {Function File} {} pie (@dots{}, @var{labels})
 ## @deftypefnx {Function File} {} pie (@var{h}, @dots{});
 ## @deftypefnx {Function File} {@var{h} =} pie (@dots{});
-## Produce a 2-D pie chart.
+## Plot a 2-D pie chart.
 ##
-## Called with a single vector argument, produces a pie chart of the
-## elements in @var{x}, with the size of the slice determined by percentage
-## size of the values of @var{x}.
+## When called with a single vector argument, produce a pie chart of the
+## elements in @var{x}.  The size of the ith slice is the percentage that the
+## element @var{x}i represents of the total sum of @var{x}.
 ##
-## The variable @var{explode} is a vector of the same length as @var{x} that
-## if non zero "explodes" the slice from the pie chart.
+## The variable @var{explode} is a vector of the same length as @var{x} that,
+## if non-zero, "explodes" the slice from the pie chart.
 ##
-## If given @var{labels} is a cell array of strings of the same length as
-## @var{x}, giving the labels of each of the slices of the pie chart.
+## The optional input @var{labels} is a cell array of strings of the same
+## length as @var{x} specifying the label for each slice.
 ##
 ## The optional return value @var{h} is a list of handles to the patch
 ## and text objects generating the plot.

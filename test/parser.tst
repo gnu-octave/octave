@@ -257,3 +257,9 @@
 %! R = @(rot) [cos(rot) -sin(rot); sin(rot) cos(rot)];
 %! assert (R(pi/2), [cos(pi/2), -sin(pi/2); sin(pi/2),cos(pi/2)]);
 
+## Check that xyz is tagged as a variable in the parser.  Both
+## expressions must remain on one line for this test to work as
+## intended.
+%!test
+%! xyz(1) = 1; xyz /= 1;
+%! assert (xyz, 1);

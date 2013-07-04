@@ -69,6 +69,8 @@ protected slots:
 
   void handle_model_changed (void);
 
+  void copyClipboard();
+
 private:
 
   void relay_contextmenu_command (const QString& cmdname);

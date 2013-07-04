@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_QSCINTILLA
 
-#include <Qsci/qsciapis.h>
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #define HAVE_LEXER_OCTAVE
 #include <Qsci/qscilexeroctave.h>
@@ -54,13 +53,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "debug.h"
 #include "octave-qt-link.h"
+#include "version.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
 file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   QString directory = directory_arg;
-
+  _lexer_apis = 0;
   _app_closing = false;
 
   // Make sure there is a slash at the end of the directory name
@@ -70,7 +70,14 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   _file_name = directory;
 
-  _edit_area = new QsciScintilla (this);
+  _edit_area = new octave_qscintilla (this);
+  // Connect signal for command execution to a slot of this tab which in turn
+  // emits a signal connected to the main window.
+  // Direct connection is not possible because tab's parent is null.
+  connect (_edit_area,
+           SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           this,
+           SLOT (execute_command_in_terminal (const QString&)));
 
   // Leave the find dialog box out of memory until requested.
   _find_dialog = 0;
@@ -98,9 +105,6 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   // code folding
   _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
   _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
-
-  //highlight current line color
-  _edit_area->setCaretLineBackgroundColor (QColor (245, 245, 245));
 
   // other features
   _edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
@@ -165,6 +169,12 @@ file_editor_tab::closeEvent (QCloseEvent *e)
 }
 
 void
+file_editor_tab::execute_command_in_terminal (const QString& command)
+{
+  emit execute_command_in_terminal_signal (command); // connected to main window
+}
+
+void
 file_editor_tab::set_file_name (const QString& fileName)
 {
   // update tracked file if we really have a file on disk
@@ -212,6 +222,9 @@ file_editor_tab::handle_margin_clicked (int margin, int line,
 void
 file_editor_tab::update_lexer ()
 {
+  if (_lexer_apis)
+    _lexer_apis->cancelPreparation ();  // stop preparing if apis exists
+
   QsciLexer *lexer = _edit_area->lexer ();
   delete lexer;
   lexer = 0;
@@ -252,29 +265,57 @@ file_editor_tab::update_lexer ()
         {
           lexer = new QsciLexerDiff ();
         }
+      else if (_file_name.isEmpty ()
+                || _file_name.at (_file_name.count () - 1) == '/')
+        { // new, no yet named file: let us assume it is octave
+#if defined (HAVE_LEXER_OCTAVE)
+          lexer = new QsciLexerOctave ();
+#elif defined (HAVE_LEXER_MATLAB)
+          lexer = new QsciLexerMatlab ();
+#else
+          lexer = new QsciLexerBash ();
+#endif
+        }
       else
-        {
-          // FIXME -- why should the bash lexer be the default?
+        { // other or no extension
           lexer = new QsciLexerBash ();
         }
     }
 
-  if (lexer)
+  _lexer_apis = new QsciAPIs(lexer);
+  if (_lexer_apis)
     {
-      QsciAPIs *apis = new QsciAPIs(lexer);
-      if (apis)
-        {
+      // get path to prepared api info
+      QDesktopServices desktopServices;
+      QString prep_apis_path
+          = desktopServices.storageLocation (QDesktopServices::HomeLocation)
+            + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+      _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+
+      if (!_lexer_apis->loadPrepared (_prep_apis_file))
+        { // no prepared info loaded, prepare and save if possible
+
+          // create raw apis info
           QString keyword;
           QStringList keyword_list;
-          int i;
-          for (i=1; i<=3; i++) // load the first 3 keyword sets
+          int i,j;
+          for (i=1; i<=3; i++) // test the first 5 keyword sets
             {
               keyword = QString(lexer->keywords (i));           // get list
               keyword_list = keyword.split (QRegExp ("\\s+"));  // split
-              for (i = 0; i < keyword_list.size (); i++)        // add to API
-                apis->add (keyword_list.at (i));
+              for (j = 0; j < keyword_list.size (); j++)        // add to API
+                _lexer_apis->add (keyword_list.at (j));
             }
-          apis->prepare ();
+
+          // dsiconnect slot for saving prepared info if already connected
+          disconnect (_lexer_apis, SIGNAL (apiPreparationFinished ()), 0, 0);
+          // check whether path for prepared info exists or can be created
+          if (QDir("/").mkpath (prep_apis_path))
+            { // path exists, apis info can be saved there
+              connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
+                       this, SLOT (save_apis_info ()));
+            }
+          _lexer_apis->prepare ();  // prepare apis info
         }
     }
 
@@ -284,6 +325,33 @@ file_editor_tab::update_lexer ()
 
   _edit_area->setLexer (lexer);
 
+  // fix line number width with respect to the font size of the lexer
+  if (settings->value ("editor/showLineNumbers", true).toBool ())
+    auto_margin_width ();
+  else
+    _edit_area->setMarginWidth (2,0);
+
+}
+
+void
+file_editor_tab::save_apis_info ()
+{
+  _lexer_apis->savePrepared (_prep_apis_file);
+}
+
+QString
+file_editor_tab::comment_string (const QString& lexer)
+{
+  if (lexer == "octave" || lexer == "matlab")
+    return QString("%");
+  else if (lexer == "perl" || lexer == "bash" || lexer == "diff")
+    return QString("#");
+  else if (lexer == "cpp")
+    return ("//");
+  else if (lexer == "batch")
+    return ("REM ");
+  else
+    return ("%");  // should never happen
 }
 
 // slot for fetab_set_focus: sets the focus to the current edit area
@@ -672,6 +740,9 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
 void
 file_editor_tab::do_comment_selected_text (bool comment)
 {
+  QString comment_str = comment_string (_edit_area->lexer ()->lexer ());
+  _edit_area->beginUndoAction ();
+
   if (_edit_area->hasSelectedText ())
     {
       int lineFrom, lineTo, colFrom, colTo;
@@ -680,25 +751,40 @@ file_editor_tab::do_comment_selected_text (bool comment)
       if (colTo == 0)  // the beginning of last line is not selected
         lineTo--;        // stop at line above
 
-      _edit_area->beginUndoAction ();
-
       for (int i = lineFrom; i <= lineTo; i++)
         {
           if (comment)
-            _edit_area->insertAt ("%", i, 0);
+            _edit_area->insertAt (comment_str, i, 0);
           else
             {
               QString line (_edit_area->text (i));
-              if (line.startsWith ("%"))
+              if (line.startsWith (comment_str))
                 {
-                  _edit_area->setSelection (i, 0, i, 1);
+                  _edit_area->setSelection (i, 0, i, comment_str.length ());
                   _edit_area->removeSelectedText ();
                 }
             }
         }
-
-      _edit_area->endUndoAction ();
+      //set selection on (un)commented section
+      _edit_area->setSelection (lineFrom, 0, lineTo, _edit_area->text (lineTo).length ());
     }
+  else
+    {
+      int cpline, col;
+      _edit_area->getCursorPosition (&cpline, &col);
+      if (comment)
+        _edit_area->insertAt (comment_str, cpline, 0);
+      else
+        {
+          QString line (_edit_area->text (cpline));
+          if (line.startsWith (comment_str))
+            {
+              _edit_area->setSelection (cpline, 0, cpline, comment_str.length ());
+              _edit_area->removeSelectedText ();
+            }
+        }
+    }
+  _edit_area->endUndoAction ();
 }
 
 void
@@ -1088,8 +1174,11 @@ file_editor_tab::notice_settings (const QSettings *settings)
 
   update_lexer ();
 
-  QFontMetrics lexer_font_metrics (_edit_area->lexer ()->defaultFont (0));
-
+  //highlight current line color
+  QVariant default_var = QColor (240, 240, 240);
+  QColor setting_color = settings->value ("editor/highlight_current_line_color",
+                                          default_var).value<QColor> ();
+  _edit_area->setCaretLineBackgroundColor (setting_color);
   _edit_area->setCaretLineVisible
     (settings->value ("editor/highlightCurrentLine", true).toBool ());
 
@@ -1113,27 +1202,56 @@ file_editor_tab::notice_settings (const QSettings *settings)
 
       _edit_area->setAutoCompletionReplaceWord
         (settings->value ("editor/codeCompletion_replace",false).toBool ());
-
+      _edit_area->setAutoCompletionCaseSensitivity
+        (settings->value ("editor/codeCompletion_case",true).toBool ());
       _edit_area->setAutoCompletionThreshold
         (settings->value ("editor/codeCompletion_threshold",2).toInt ());
     }
   else
     _edit_area->setAutoCompletionThreshold (-1);
 
+  if (settings->value ("editor/show_white_space",false).toBool ())
+    if (settings->value ("editor/show_white_space_indent",false).toBool ())
+      _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
+    else
+      _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
+  else
+    _edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
+
   if (settings->value ("editor/showLineNumbers", true).toBool ())
     {
       _edit_area->setMarginLineNumbers (2, true);
-      _edit_area->setMarginWidth (2, lexer_font_metrics.width ("9999"));
+      auto_margin_width ();
+      connect (_edit_area, SIGNAL (linesChanged ()),
+               this, SLOT (auto_margin_width ()));
     }
   else
     {
       _edit_area->setMarginLineNumbers (2, false);
-      _edit_area->setMarginWidth (2, 0);
+      disconnect (_edit_area, SIGNAL (linesChanged ()), 0, 0);
     }
 
-  _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
+  _edit_area->setAutoIndent
+        (settings->value ("editor/auto_indent",true).toBool ());
+  _edit_area->setTabIndents
+        (settings->value ("editor/tab_indents_line",false).toBool ());
+  _edit_area->setBackspaceUnindents
+        (settings->value ("editor/backspace_unindents_line",false).toBool ());
+  _edit_area->setIndentationGuides
+        (settings->value ("editor/show_indent_guides",false).toBool ());
 
-  update_window_title (false);
+  _edit_area->setTabWidth
+        (settings->value ("editor/tab_width",2).toInt ());
+
+  _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
+  update_window_title (_edit_area->isModified ());
+
+}
+
+void
+file_editor_tab::auto_margin_width ()
+{
+  _edit_area->setMarginWidth (2, "1"+QString::number (_edit_area->lines ()));
 }
 
 void

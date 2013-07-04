@@ -89,13 +89,13 @@ triplets, with two elements being their position in the array
 easy to grasp, but requires more storage than is strictly needed.
 
 The storage technique used within Octave is the compressed column
-format. It is similar to the Yale format.
+format.  It is similar to the Yale format.
 @footnote{@url{http://en.wikipedia.org/wiki/Sparse_matrix#Yale_format}}
 In this format the position of each element in a row and the data are
-stored as previously. However, if we assume that all elements in the
+stored as previously.  However, if we assume that all elements in the
 same column are stored adjacent in the computers memory, then we only
 need to store information on the number of non-zero elements in each
-column, rather than their positions. Thus assuming that the matrix has
+column, rather than their positions.  Thus assuming that the matrix has
 more non-zero elements than there are columns in the matrix, we win in
 terms of the amount of memory used.
 
@@ -308,7 +308,7 @@ number of memory allocations.
 The above problem of memory reallocation can be avoided in
 oct-files.  However, the construction of a sparse matrix from an oct-file
 is more complex than can be discussed here, and
-you are referred to chapter @ref{Dynamically Linked Functions}, to have
+you are referred to chapter @ref{External Code Interface}, to have
 a full description of the techniques involved.
 
 @node Information
@@ -391,7 +391,7 @@ One use of sparse matrices is in graph theory, where the
 interconnections between nodes are represented as an adjacency
 matrix.  That is, if the i-th node in a graph is connected to the j-th
 node.  Then the ij-th node (and in the case of undirected graphs the
-ji-th node) of the sparse adjacency matrix is non-zero.  If each node
+@nospell{ji-th} node) of the sparse adjacency matrix is non-zero.  If each node
 is then associated with a set of coordinates, then the @dfn{gplot}
 command can be used to graphically display the interconnections
 between nodes.
@@ -703,7 +703,7 @@ arguments as @code{[r, p, q] = chol (A); spy (r)}.
 
 @float Figure,fig:simplechol
 @center @image{spchol,4in}
-@caption{Structure of the un-permuted Cholesky@tie{}factorization of the above matrix.}
+@caption{Structure of the unpermuted Cholesky@tie{}factorization of the above matrix.}
 @end float
 
 @float Figure,fig:simplecholperm
@@ -796,20 +796,20 @@ using @sc{umfpack}.
 a singular or near singular matrix, find a minimum norm solution using
 @sc{cxsparse}@footnote{The @sc{cholmod}, @sc{umfpack} and @sc{cxsparse} packages were
 written by Tim Davis and are available at
-http://www.cise.ufl.edu/research/sparse/}.
+@url{http://www.cise.ufl.edu/research/sparse/}}.
 @end enumerate
 
 The band density is defined as the number of non-zero values in the band
-divided by the total number of values in the full band. The banded
+divided by the total number of values in the full band.  The banded
 matrix solvers can be entirely disabled by using @dfn{spparms} to set
 @code{bandden} to 1 (i.e., @code{spparms ("bandden", 1)}).
 
 The QR@tie{}solver factorizes the problem with a Dulmage-Mendelsohn
 decomposition, to separate the problem into blocks that can be treated
 as over-determined, multiple well determined blocks, and a final
-over-determined block. For matrices with blocks of strongly connected
+over-determined block.  For matrices with blocks of strongly connected
 nodes this is a big win as LU@tie{}decomposition can be used for many
-blocks. It also significantly improves the chance of finding a solution
+blocks.  It also significantly improves the chance of finding a solution
 to over-determined problems rather than just returning a vector of
 @dfn{NaN}'s.
 

@@ -180,7 +180,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * System Utilities::            
 * Java Interface:: 
 * Packages:: 
-* Dynamically Linked Functions::
+* External Code Interface::
 * Test and Demo Functions::
 * Tips and Standards::                        
 * Contributing Guidelines::
@@ -200,6 +200,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 Preface
 
 * Acknowledgements::            
+* Citing Octave in Publications::
 * How You Can Contribute to Octave::  
 * Distribution::                
 
@@ -599,6 +600,7 @@ Vectorization and Faster Code Execution
 * Broadcasting::               Broadcasting operations
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
+* JIT Compiler::               Just-In-Time Compiler for loops
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 
@@ -762,6 +764,7 @@ Networking Utilities
 
 * FTP Objects::
 * URL Manipulation::
+* Base64 and Binary Data Transmission::
 
 Java Interface
 
@@ -790,7 +793,7 @@ Creating Packages
 * The INDEX File::              
 * PKG_ADD and PKG_DEL Directives::  
 
-Dynamically Linked Functions
+External Code Interface
 
 * Oct-Files::                   
 * Mex-Files::                   
@@ -941,7 +944,7 @@ Grammar and Parser
 @c ------------------------------------------------------------------------
 @c Appendices start here. 
 
-@include dynamic.texi
+@include external.texi
 @include testfun.texi
 @include tips.texi
 @include contrib.texi

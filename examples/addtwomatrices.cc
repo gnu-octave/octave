@@ -3,6 +3,7 @@
 DEFUN_DLD (addtwomatrices, args, , "Add A to B")
 {
   int nargin = args.length ();
+
   if (nargin != 2)
     print_usage ();
   else
@@ -12,5 +13,6 @@ DEFUN_DLD (addtwomatrices, args, , "Add A to B")
       if (! error_state)
         return octave_value (A + B);
     }
+
   return octave_value_list ();
 }

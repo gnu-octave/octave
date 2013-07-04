@@ -62,6 +62,9 @@ private slots:
   void handle_contextmenu_create_script(bool flag);
   void ctxMenu(const QPoint &pos);
 
+  void copyClipboard ();
+  void pasteClipboard ();
+
 private:
 
   void construct ();

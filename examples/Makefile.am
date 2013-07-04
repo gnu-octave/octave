@@ -34,14 +34,13 @@ EXTRA_DIST += \
   addtwomatrices.cc \
   celldemo.cc \
   embedded.cc \
-  firstmexdemo.c \
   fortdemo.cc \
   fortsub.f \
   funcdemo.cc \
   globaldemo.cc \
-  hello.cc \
   helloworld.cc \
   make_int.cc \
+  mex_demo.c \
   mycell.c \
   myfeval.c \
   myfevalf.f \
@@ -53,6 +52,7 @@ EXTRA_DIST += \
   mysparse.c \
   mystring.c \
   mystruct.c \
+  oct_demo.cc \
   oregonator.cc \
   oregonator.m \
   paramdemo.cc \

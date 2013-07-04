@@ -531,27 +531,31 @@ function update_data (h, d)
   z = get (h, "zdata");
 
   if (!isempty (z) && size_equal (x, y, z))
-    error ("stem3: inconsistent size of x, y and z");
-  elseif (numel (x) != numel (y))
-    error ("stem: inconsistent size of x and y");
-  else
-    bl = get (h, "basevalue");
-    nx = numel (x);
-    x = x(:)';
-    xt = [x; x; NaN(1, nx)](:);
-    if (! isempty (z))
-      y = y(:)';
-      yt = [y; y; NaN(1, nx)](:);
-      z = z(:)';
-      zt = [bl * ones(1, nx); z; NaN(1, nx)](:);
-    else
-      y = y(:)';
-      yt = [bl * ones(1, nx); y; NaN(1, nx)](:);
-      zt = [];
-    endif
-
-    kids = get (h, "children");
-    set (kids(2), "xdata", xt, "ydata", yt, "zdata", zt);
-    set (kids(1), "xdata", x, "ydata", y, "zdata", z);
+    sz = min ([size(x); size(y); size(z)]);
+    x = x(1:sz(1),1:sz(2));
+    y = y(1:sz(1),1:sz(2));
+    z = z(1:sz(1),1:sz(2));
+  elseif (numel (x) != numel (y));
+    sz = min ([size(x); size(y)]);
+    x = x(1:sz(1),1:sz(2));
+    y = y(1:sz(1),1:sz(2));
   endif
+  bl = get (h, "basevalue");
+  nx = numel (x);
+  x = x(:)';
+  xt = [x; x; NaN(1, nx)](:);
+  if (! isempty (z))
+    y = y(:)';
+    yt = [y; y; NaN(1, nx)](:);
+    z = z(:)';
+    zt = [bl * ones(1, nx); z; NaN(1, nx)](:);
+  else
+    y = y(:)';
+    yt = [bl * ones(1, nx); y; NaN(1, nx)](:);
+    zt = [];
+  endif
+
+  kids = get (h, "children");
+  set (kids(2), "xdata", xt, "ydata", yt, "zdata", zt);
+  set (kids(1), "xdata", x, "ydata", y, "zdata", z);
 endfunction

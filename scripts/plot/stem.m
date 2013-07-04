@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stem (@var{x})
+## @deftypefn  {Function File} {} stem (@var{y})
 ## @deftypefnx {Function File} {} stem (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} stem (@var{x}, @var{y}, @var{linespec})
 ## @deftypefnx {Function File} {} stem (@dots{}, "filled")
@@ -129,4 +129,17 @@ endfunction
 %! h = stem (x, y);
 %! set (h(2), 'color', 'g');
 %! set (h(1), 'basevalue', -1);
+
+%!demo
+%! clf;
+%! N = 11;
+%! x = 0:(N-1);
+%! y = rand (1, N);
+%! hs = stem (x(1), y(1));
+%! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
+%! for k=2:N
+%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k))
+%!   drawnow ();
+%!   pause (0.2);
+%! end
 

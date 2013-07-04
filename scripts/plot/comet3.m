@@ -18,18 +18,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} comet3 (@var{z})
+## @deftypefnx {Function File} {} comet3 (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} comet3 (@var{x}, @var{y}, @var{z}, @var{p})
-## @deftypefnx {Function File} {} comet3 (@var{ax}, @dots{})
+## @deftypefnx {Function File} {} comet3 (@var{hax}, @dots{})
 ## Produce a simple comet style animation along the trajectory provided by
-## the input coordinate vectors (@var{x}, @var{y}), where @var{x} will default
-## to the indices of @var{y}.
+## the input coordinate vectors (@var{x}, @var{y}, @var{z}).  If only @var{z}
+## is specified then @var{x}, @var{y} default to the indices of @var{z}.
 ##
 ## The speed of the comet may be controlled by @var{p}, which represents the
-## time which passes as the animation passes from one point to the next.  The
-## default for @var{p} is 0.1 seconds.
+## time each point is displayed before moving to the next one.  The default for
+## @var{p} is 0.1 seconds.
 ##
-## If @var{ax} is specified the animation is produced in that axis rather than
-## the @code{gca}.
+## If @var{hax} is specified the animation is produced in that axis rather than
+## the current axis.
+## @seealso{comet}
 ## @end deftypefn
 
 ## Author: jwe

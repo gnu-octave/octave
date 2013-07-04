@@ -173,8 +173,15 @@ object) relevant global values before and after the nested call.
  \
       if (curr_lexer->previous_token_may_be_command ()) \
         { \
-          yyless (0); \
-          curr_lexer->push_start_state (COMMAND_START); \
+          if (curr_lexer->looks_like_command_arg ()) \
+            { \
+              yyless (0); \
+              curr_lexer->push_start_state (COMMAND_START); \
+            } \
+          else \
+            { \
+              return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
+            } \
         } \
       else \
         { \
@@ -1631,7 +1638,8 @@ void
 lexical_feedback::maybe_mark_previous_token_as_variable (void)
 {
   token *tok = tokens.front ();
-  if (tok->is_symbol ())
+
+  if (tok && tok->is_symbol ())
     pending_local_variables.insert (tok->symbol_name ());
 }
 
@@ -1900,6 +1908,9 @@ octave_base_lexer::is_keyword_token (const std::string& s)
 
   if (kw)
     {
+      // May be reset to true for some token types.
+      at_beginning_of_statement = false;
+
       token *tok_val = 0;
 
       switch (kw->kw_id)
@@ -2578,20 +2589,16 @@ octave_base_lexer::handle_identifier (void)
 
       current_input_column += flex_yyleng ();
 
+      assert (! at_beginning_of_statement);
+
       return STRUCT_ELT;
     }
 
-  // The is_keyword_token may reset
-  // at_beginning_of_statement.  For example, if it sees
-  // an else token, then the next token is at the beginning of a
-  // statement.
+  // If tok is a keyword token, then is_keyword_token will set
+  // at_beginning_of_statement.  For example, if tok is and IF
+  // token, then at_beginning_of_statement will be false.
 
-  // May set at_beginning_of_statement to true.
   int kw_token = is_keyword_token (tok);
-
-  // If we found a keyword token, then the beginning_of_statement flag
-  // is already set.  Otherwise, we won't be at the beginning of a
-  // statement.
 
   if (looking_at_function_handle)
     {
@@ -2626,6 +2633,8 @@ octave_base_lexer::handle_identifier (void)
           looking_for_object_index = false;
         }
 
+      // The call to is_keyword_token set at_beginning_of_statement.
+
       return kw_token;
     }
 
@@ -2640,9 +2649,16 @@ octave_base_lexer::handle_identifier (void)
   token *tok_val = new token (NAME, &(symbol_table::insert (tok, sid)),
                               input_line_number, current_input_column);
 
+  // The following symbols are handled specially so that things like
+  //
+  //   pi +1
+  //
+  // are parsed as an addition expression instead of as a command-style
+  // function call with the argument "+1".
+
   if (at_beginning_of_statement
       && (! (is_variable (tok)
-             || tok == "e"
+             || tok == "e" || tok == "pi"
              || tok == "I" || tok == "i"
              || tok == "J" || tok == "j"
              || tok == "Inf" || tok == "inf"

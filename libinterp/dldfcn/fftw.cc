@@ -56,7 +56,7 @@ the @code{fftw} function can be used to import wisdom.  For example,\n\
 will save the existing wisdom used by Octave to the string @var{wisdom}.\n\
 This string can then be saved to a file and restored using the @code{save}\n\
 and @code{load} commands respectively.  This existing wisdom can be\n\
-reimported as follows\n\
+re-imported as follows\n\
 \n\
 @example\n\
 fftw (\"dwisdom\", @var{wisdom})\n\
@@ -120,8 +120,9 @@ transforms can be set with\n\
 fftw (\"threads\", @var{NTHREADS})\n\
 @end example\n\
 \n\
-Note that octave must be compiled with multi-threaded FFTW support for this feature.\n\
-The number of processors available to the current process is used per default.\n\
+Note that octave must be compiled with multi-threaded @sc{fftw} support for\n\
+this feature.  The number of processors available to the current process is\n\
+used per default.\n\
 \n\
 @seealso{fft, ifft, fft2, ifft2, fftn, ifftn}\n\
 @end deftypefn")

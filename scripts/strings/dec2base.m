@@ -66,8 +66,11 @@ function retval = dec2base (d, base, len)
   if (! iscolumn (d))
     d = d(:);
   endif
-
-  if (! isnumeric (d) || iscomplex (d) || any (d < 0 | d != fix (d)))
+  
+  ## Treat logical as numeric for compatibility with ML
+  if (islogical (d))
+    d = double (d);
+  elseif (! isnumeric (d) || iscomplex (d) || any (d < 0 | d != fix (d)))
     error ("dec2base: input must be real non-negative integers");
   endif
 
@@ -150,6 +153,10 @@ endfunction
 %!assert (dec2base (uint64 (2)^63-1, 16), "7FFFFFFFFFFFFFFF")
 %!assert (dec2base ([1, 2; 3, 4], 2, 3), ["001"; "011"; "010"; "100"])
 %!assert (dec2base ({1, 2; 3, 4}, 2, 3), ["001"; "011"; "010"; "100"])
+
+%!test
+%! a = 0:3;
+%! assert (dec2base (!a, 2, 1), ["1"; "0"; "0"; "0"])
 
 %%Test input validation
 %!error dec2base ()

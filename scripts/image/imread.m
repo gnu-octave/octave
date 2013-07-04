@@ -1,7 +1,7 @@
-## Copyright (C) 2008-2012 Thomas L. Scofield <scofield@calvin.edu>
-## Copyright (C) 2008 Kristian Rumberg <kristianrumberg@gmail.com>
-## Copyright (C) 2006 Thomas Weber <thomas.weber.mail@gmail.com>
-## Copyright (C) 2005 Stefan van der Walt <stefan@sun.ac.za>
+## Copyright (C) 2008-2012 Thomas L. Scofield
+## Copyright (C) 2008 Kristian Rumberg
+## Copyright (C) 2006 Thomas Weber
+## Copyright (C) 2005 Stefan van der Walt
 ## Copyright (C) 2002 Andy Adler
 ##
 ## This file is part of Octave.
@@ -19,6 +19,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
+
+## Author: Thomas L. Scofield <scofield@calvin.edu>
+## Author: Kristian Rumberg <kristianrumberg@gmail.com>
+## Author: Thomas Weber <thomas.weber.mail@gmail.com>
+## Author: Stefan van der Walt <stefan@sun.ac.za>
+## Author: Andy Adler
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})

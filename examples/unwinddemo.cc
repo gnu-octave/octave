@@ -2,15 +2,16 @@
 #include <octave/unwind-prot.h>
 
 void
-err_hand (const char *fmt, ...)
+my_err_handler (const char *fmt, ...)
 {
   // Do nothing!!
 }
 
 DEFUN_DLD (unwinddemo, args, nargout, "Unwind Demo")
 {
-  int nargin = args.length ();
   octave_value retval;
+  int nargin = args.length ();
+
   if (nargin < 2)
     print_usage ();
   else
@@ -20,11 +21,13 @@ DEFUN_DLD (unwinddemo, args, nargout, "Unwind Demo")
 
       if (! error_state)
         {
-          unwind_protect::begin_frame ("Funwinddemo");
-          unwind_protect_ptr (current_liboctave_warning_handler);
-          set_liboctave_warning_handler (err_hand);
+          // Declare unwind_protect frame which lasts as long as
+          // the variable frame has scope.
+          unwind_protect frame;
+          frame.protect_var (current_liboctave_warning_handler);
+
+          set_liboctave_warning_handler (my_err_handler);
           retval = octave_value (quotient (a, b));
-          unwind_protect::run_frame ("Funwinddemo");
         }
     }
   return retval;

@@ -83,17 +83,31 @@ resource_manager::get_gui_translation_dir (void)
 }
 
 void
-resource_manager::config_translators (QTranslator *qt_tr,QTranslator *gui_tr)
+resource_manager::config_translators (QTranslator *qt_tr,
+                                      QTranslator *qsci_tr,
+                                      QTranslator *gui_tr)
 {
+  bool loaded;
+
+  QString qt_trans_dir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
   QSettings *settings = resource_manager::get_settings ();
   // FIXME -- what should happen if settings is 0?
+
   // get the locale from the settings
   QString language = settings->value ("language","SYSTEM").toString ();
   if (language == "SYSTEM")
       language = QLocale::system().name();    // get system wide locale
+
   // load the translator file for qt strings
-  qt_tr->load("qt_" + language,
-              QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  loaded = qt_tr->load("qt_" + language, qt_trans_dir);
+  if (!loaded) // try lower case
+    qt_tr->load("qt_" + language.toLower (), qt_trans_dir);
+
+  // load the translator file for qscintilla settings
+  loaded = qsci_tr->load("qscintilla_" + language, qt_trans_dir);
+  if (!loaded) // try lower case
+    qsci_tr->load("qscintilla_" + language.toLower (), qt_trans_dir);
+
   // load the translator file for gui strings
   gui_tr->load (language, get_gui_translation_dir ());
 }
@@ -649,7 +663,6 @@ resource_manager::octave_keywords (void)
       "dec2bin "
       "dec2hex "
       "deconv "
-      "default_save_options "
       "del2 "
       "delaunay "
       "delaunay3 "
@@ -681,6 +694,7 @@ resource_manager::octave_keywords (void)
       "do_braindead_shortcircuit_evaluation "
       "do_string_escapes "
       "doc "
+      "doc_cache_create "
       "doc_cache_file "
       "dos "
       "dot "
@@ -851,7 +865,6 @@ resource_manager::octave_keywords (void)
       "gcd "
       "gcf "
       "ge "
-      "gen_doc_cache "
       "genpath "
       "genvarname "
       "geocdf "
@@ -920,6 +933,7 @@ resource_manager::octave_keywords (void)
       "history "
       "history_control "
       "history_file "
+      "history_save "
       "history_size "
       "history_timestamp_format_string "
       "hold "
@@ -1375,8 +1389,9 @@ resource_manager::octave_keywords (void)
       "rcond "
       "rdivide "
       "re_read_readline_init_file "
-      "read_readline_init_file "
       "readdir "
+      "readline_re_read_init_file "
+      "readline_read_init_file "
       "readlink "
       "real "
       "reallog "
@@ -1434,6 +1449,7 @@ resource_manager::octave_keywords (void)
       "runlength "
       "runtests "
       "save "
+      "save_default_options "
       "save_header_format_string "
       "save_precision "
       "saveas "
@@ -1441,7 +1457,6 @@ resource_manager::octave_keywords (void)
       "saveimage "
       "saveobj "
       "savepath "
-      "saving_history "
       "scanf "
       "scatter "
       "scatter3 "

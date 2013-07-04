@@ -27,10 +27,10 @@ a data structure type, and an array that can contain all data types.
 It is also possible to define new specialized data types by writing a
 small amount of C++ code.  On some systems, new data types can be loaded
 dynamically while Octave is running, so it is not necessary to recompile
-all of Octave just to add a new type.  @xref{Dynamically Linked
-Functions}, for more information about Octave's dynamic linking
-capabilities.  @ref{User-defined Data Types} describes what you must do
-to define a new data type for Octave.
+all of Octave just to add a new type.  @xref{External Code Interface}, for
+more information about Octave's dynamic linking capabilities.
+@ref{User-defined Data Types} describes what you must do to define a
+new data type for Octave.
 
 @DOCSTRING(typeinfo)
 

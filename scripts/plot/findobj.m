@@ -205,7 +205,7 @@ function h = findobj (varargin)
   keepers = ones (size (h));
   if (numpairs > 0)
     for nh = 1 : numel (h)
-      p = get (h (nh));
+      p = get (h(nh));
       for np = 1 : numpairs
         fields = fieldnames (p);
         fieldindex = find (strcmpi (fields, pname{np}), 1);
@@ -233,7 +233,7 @@ function h = findobj (varargin)
             match = all (match);
           endif
           if (strcmpi (logicaloperator{np}, "not"))
-            keepers(nh) = ! keepers(nh) & ! match;
+            keepers(nh) = keepers(nh) & ! match;
           else
             keepers(nh) = feval (logicaloperator{np}, keepers(nh), match);
           endif
@@ -291,11 +291,56 @@ endfunction
 %! assert (h2, h1)
 
 %!test
+%! graphics_toolkit gnuplot;
 %! hf = figure ("visible", "off");
-%! h1 = subplot (2, 2, 1);
-%! h2 = subplot (2, 2, 2);
-%! h3 = subplot (2, 2, 3);
-%! h4 = subplot (2, 2, 4);
-%! userdata = struct ("foo", "bar");
-%! set (h3, "userdata", userdata);
-%! assert (findobj (hf, "userdata", userdata), h3)
+%! unwind_protect
+%!   h1 = subplot (2, 2, 1);
+%!   h2 = subplot (2, 2, 2);
+%!   h3 = subplot (2, 2, 3);
+%!   h4 = subplot (2, 2, 4);
+%!   userdata = struct ("foo", "bar");
+%!   set (h3, "userdata", userdata);
+%!   h = findobj (hf, "userdata", userdata);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%! assert (h, h3)
+
+%!test
+%! graphics_toolkit gnuplot;
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = subplot (2, 2, 1);
+%!   set (h1, 'tag', '1')
+%!   h2 = subplot (2, 2, 2);
+%!   set (h2, 'tag', '2')
+%!   h3 = subplot (2, 2, 3);
+%!   set (h3, 'tag', '3')
+%!   h4 = subplot (2, 2, 4);
+%!   set (h4, 'tag', '4')
+%!   drawnow ()
+%!   h = findobj (hf, 'type', 'axes', '-not', 'tag', '1');
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%! assert (h, [h2; h3; h4])
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = subplot (2, 2, 1);
+%!   set (h1, 'userdata', struct ('column', 1, 'row', 1));
+%!   h2 = subplot (2, 2, 2);
+%!   set (h2, 'userdata', struct ('column', 2, 'row', 1));
+%!   h3 = subplot (2, 2, 3);
+%!   set (h3, 'userdata', struct ('column', 1, 'row', 2));
+%!   h4 = subplot (2, 2, 4);
+%!   set (h4, 'userdata', struct ('column', 2, 'row', 2));
+%!   drawnow ()
+%!   h = findobj (hf, 'type', 'axes', '-not', 'userdata', ...
+%!                struct ('column', 1, 'row', 1));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%! assert (h, [h2; h3; h4])
+

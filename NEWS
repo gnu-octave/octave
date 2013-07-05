@@ -77,6 +77,17 @@ Summary of important user-visible changes for version 3.8:
      c,...
     ] = deal (1,2,3)
 
+ ** Line continuations inside character strings have changed.
+
+    The sequence '...' is no longer recognized as a line continuations
+    are inside character strings.  A backslash followed by a newline
+    character is no longer recognized as a line continuation inside
+    single-quoted character strings.  Inside double-quoted character
+    strings, a backslash followed by a newline character is still
+    recognized as a line continuation but the backslash character must
+    be followed immediately by the newline character.  No whitespace or
+    end-of-linecomment may appear between them.
+
  ** Warning IDs renamed:
 
     Octave:array-as-scalar => Octave:array-to-scalar

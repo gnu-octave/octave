@@ -280,6 +280,7 @@ public:
       looping (0), defining_func (0), looking_at_function_handle (0),
       block_comment_nesting_level (0), token_count (0),
       current_input_line (), comment_text (), help_text (),
+      string_text (), string_line (0), string_column (0),
       fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
       parsed_function_name (), pending_local_variables (),
       symtab_context (), nesting_level (), tokens ()
@@ -411,6 +412,13 @@ public:
   // The current help text.
   std::string help_text;
 
+  // The current character string text.
+  std::string string_text;
+
+  // The position of the beginning of the current character string.
+  int string_line;
+  int string_column;
+
   // Simple name of function file we are reading.
   std::string fcn_file_name;
 
@@ -501,6 +509,8 @@ public:
 
   void prep_for_file (void);
 
+  void begin_string (int state);
+
   virtual int fill_flex_buffer (char *buf, unsigned int max_size) = 0;
 
   bool at_end_of_buffer (void) const { return input_buf.empty (); }
@@ -534,12 +544,6 @@ public:
   void handle_continuation (void);
 
   void finish_comment (octave_comment_elt::comment_type typ);
-
-  bool have_continuation (bool trailing_comments_ok = true);
-
-  bool have_ellipsis_continuation (bool trailing_comments_ok = true);
-
-  int handle_string (char delim);
 
   int handle_close_bracket (int bracket_type);
 

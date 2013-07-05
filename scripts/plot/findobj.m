@@ -318,7 +318,6 @@ endfunction
 %!   set (h3, 'tag', '3')
 %!   h4 = subplot (2, 2, 4);
 %!   set (h4, 'tag', '4')
-%!   drawnow ()
 %!   h = findobj (hf, 'type', 'axes', '-not', 'tag', '1');
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -336,11 +335,23 @@ endfunction
 %!   set (h3, 'userdata', struct ('column', 1, 'row', 2));
 %!   h4 = subplot (2, 2, 4);
 %!   set (h4, 'userdata', struct ('column', 2, 'row', 2));
-%!   drawnow ()
 %!   h = findobj (hf, 'type', 'axes', '-not', 'userdata', ...
 %!                struct ('column', 1, 'row', 1));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 %! assert (h, [h2; h3; h4])
+
+%!xtest
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ha = axes ();
+%!   plot (1:10);
+%!   h = findobj (hf, 'type', 'figure', ...
+%!                '-or', 'parent', 1, ...
+%!                '-and', 'type', 'axes')
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+%! assert (h, [hf; ha])
 

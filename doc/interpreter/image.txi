@@ -19,7 +19,7 @@
 @node Image Processing
 @chapter Image Processing
 
-Since an image basically is a matrix Octave is a very powerful
+Since an image is basically a matrix, Octave is a very powerful
 environment for processing and analyzing images.  To illustrate
 how easy it is to do image processing in Octave, the following
 example will load an image, smooth it by a 5-by-5 averaging filter,
@@ -38,20 +38,19 @@ In this example @code{S} contains the smoothed image, and @code{Dx}
 and @code{Dy} contains the partial spatial derivatives of the image.
 
 @menu
-* Loading and Saving Images::   
-* Displaying Images::           
-* Representing Images::         
-* Plotting on top of Images::   
-* Color Conversion::            
+* Loading and Saving Images::
+* Displaying Images::
+* Representing Images::
+* Plotting on top of Images::
+* Color Conversion::
 @end menu
 
 @node Loading and Saving Images
 @section Loading and Saving Images
 
 The first step in most image processing tasks is to load an image
-into Octave.  This is done using the @code{imread} function, which uses the
-@code{GraphicsMagick} library for reading.  This means a vast number of image
-formats is supported.  The @code{imwrite} function is the corresponding function
+into Octave which is done with the @code{imread} function.
+The @code{imwrite} function is the corresponding function
 for writing images to the disk.
 
 In summary, most image processing code will follow the structure of this code
@@ -76,6 +75,28 @@ provides read access to many of the parameters stored in the header of the image
 file.
 
 @DOCSTRING(imfinfo)
+
+By default, Octave's image IO functions (@code{imread}, @code{imwrite},
+and @code{imfinfo}) use the @code{GraphicsMagick} library for their
+operations.  This means a vast number of image formats is supported
+but considering the large ammount of image formats in science and
+its commonly closed nature, it is impossible to have a library
+capable of reading them all.  Because of this, the function
+@code{imformats} keeps a configurable list of available formats,
+their extensions, and what functions should the image IO functions
+use.  This allows to expand Octave's image IO capabilities by
+creating functions aimed at acting on specific file formats.
+
+While it would be possible to call the extra functions directly,
+properly configuring Octave with @code{imformats} allows to keep a
+consistent code that is abstracted from file formats.
+
+It is important to note that a file format is not actually defined by its
+file extension and that @code{GraphicsMagick} is capable to read and write
+more file formats than the ones listed by @code{imformats}.  What this
+means is that even with an incorrect or missing extension the image may
+still be read correctly, and that even unlisted formats are not necessarily
+unsupported.
 
 @DOCSTRING(imformats)
 

@@ -452,7 +452,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 ^{S}*{CCHAR}\{{S}*{NL} {
-    curr_lexer->lexer_debug ("^{S}*{CCHAR}\{{S}*{NL}");
+    curr_lexer->lexer_debug ("^{S}*{CCHAR}\\{{S}*{NL}");
 
     yyless (0);
 
@@ -471,7 +471,7 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 <BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
-    curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL}");
+    curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\\{{S}*{NL}");
 
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
@@ -629,11 +629,14 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 <DQ_STRING_START>\"\" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\"\\\"");
+
     curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '"';
   }
 
 <DQ_STRING_START>\" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\"");
 
     curr_lexer->pop_start_state ();
 
@@ -650,12 +653,9 @@ ANY_INCLUDING_NL (.|{NL})
     return curr_lexer->count_token_internal (DQ_STRING);
   }
 
-<DQ_STRING_START>{NL} {
-    error ("unterminated character string constant");
-    return LEXICAL_ERROR;
-  }
-
 <DQ_STRING_START>\\[0-7]{1,3} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\[0-7]{1,3}");
+
     int result;
     sscanf (yytext+1, "%o", &result);
 
@@ -665,20 +665,89 @@ ANY_INCLUDING_NL (.|{NL})
       curr_lexer->string_text += static_cast<unsigned char> (result);
   }
 
-<DQ_STRING_START>"\\a" { curr_lexer->string_text += '\a'; }
-<DQ_STRING_START>"\\b" { curr_lexer->string_text += '\b'; }
-<DQ_STRING_START>"\\f" { curr_lexer->string_text += '\f'; }
-<DQ_STRING_START>"\\n" { curr_lexer->string_text += '\n'; }
-<DQ_STRING_START>"\\r" { curr_lexer->string_text += '\r'; }
-<DQ_STRING_START>"\\t" { curr_lexer->string_text += '\t'; }
-<DQ_STRING_START>"\\v" { curr_lexer->string_text += '\v'; }
+<DQ_STRING_START>"\\a" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\a\"");
 
-<DQ_STRING_START>\\{ANY_INCLUDING_NL} {
+    curr_lexer->string_text += '\a';
+  }
+
+<DQ_STRING_START>"\\b" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\b\"");
+
+    curr_lexer->string_text += '\b';
+  }
+
+<DQ_STRING_START>"\\f" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\f\"");
+
+    curr_lexer->string_text += '\f';
+  }
+
+<DQ_STRING_START>"\\n" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\n\"");
+
+    curr_lexer->string_text += '\n';
+  }
+
+<DQ_STRING_START>"\\r" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\r\"");
+
+    curr_lexer->string_text += '\r';
+  }
+
+<DQ_STRING_START>"\\t" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\t\"");
+
+    curr_lexer->string_text += '\t';
+  }
+
+<DQ_STRING_START>"\\v" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\v\"");
+
+    curr_lexer->string_text += '\v';
+  }
+
+<DQ_STRING_START>\\{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{NL}");
+
+    curr_lexer->decrement_promptflag ();
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    // We can't rely on the trick used elsewhere of sticking ASCII 1
+    // in the intput buffer and recognizing it as a special case
+    // because ASCII 1 is a valid character for a character string.
+
+    if (curr_lexer->at_end_of_buffer ())
+      return -1;
+
+    if (curr_lexer->at_end_of_file ())
+      return curr_lexer->handle_end_of_input ();
+
+    // Otherwise, just keep going with the text from the current buffer.
+  }
+
+<DQ_STRING_START>\\. {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\.");
+
     curr_lexer->string_text += yytext[1];
   }
 
-<DQ_STRING_START>[^\\\n\"]+ {
+<DQ_STRING_START>[^\\\r\n\"]+ {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>[^\\\\\\r\\n\\\"]+");
+
     curr_lexer->string_text += yytext;
+  }
+
+<DQ_STRING_START>{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    error ("unterminated character string constant");
+
+    return LEXICAL_ERROR;
   }
 
 %{
@@ -686,6 +755,8 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 <SQ_STRING_START>[^\'\n\r]*\' {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>[^\\'\\n\\r]*\\'");
+
     yytext[yyleng-1] = 0;
     curr_lexer->string_text += yytext;
 
@@ -720,7 +791,13 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 <SQ_STRING_START>{NL} {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
     error ("unterminated character string constant");
+
     return LEXICAL_ERROR;
   }
 
@@ -764,7 +841,7 @@ ANY_INCLUDING_NL (.|{NL})
 
 {D}+/\.[\*/\\^\'] |
 {NUMBER} {
-    curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
+    curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\\\^\\']|{NUMBER}");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
@@ -1034,7 +1111,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 \" {
-    curr_lexer->lexer_debug ("\"");
+    curr_lexer->lexer_debug ("\\\"");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
@@ -2886,6 +2963,14 @@ octave_base_lexer::display_start_state (void) const
 
     case LINE_COMMENT_START:
       std::cerr << "LINE_COMMENT_START" << std::endl;
+      break;
+
+    case DQ_STRING_START:
+      std::cerr << "DQ_STRING_START" << std::endl;
+      break;
+
+    case SQ_STRING_START:
+      std::cerr << "SQ_STRING_START" << std::endl;
       break;
 
     default:

@@ -110,6 +110,7 @@ function h = findobj (varargin)
   pvalue            = {};
   np = 1;
   na = 1;
+  operatorprecedence = {"-not", "-and", "-or", "-xor"};
 
   while (na <= numel (args))
     regularexpression(np) = 0;
@@ -148,17 +149,8 @@ function h = findobj (varargin)
           na = na + 1;
           if (na <= numel (args))
             if (ischar (args{na}))
-              if (strcmpi (args{na}, "-and"))
-                logicaloperator{np} = "and";
-                na = na+1;
-              elseif (strcmpi (args{na}, "-or"))
-                logicaloperator{np} = "or";
-                na = na+1;
-              elseif (strcmpi (args{na}, "-xor"))
-                logicaloperator{np} = "xor";
-                na = na+1;
-              elseif (strcmpi (args{na}, "-not"))
-                logicaloperator{np} = "not";
+              if (any (strcmpi (args{na}, operatorprecedence)))
+                logicaloperator{np} = args{na}(2:end);
                 na = na+1;
               endif
             else
@@ -202,8 +194,8 @@ function h = findobj (varargin)
     idepth = idepth + 1;
   endwhile
 
-  keepers = ones (size (h));
   if (numpairs > 0)
+    match = true (numel (h), numpairs);
     for nh = 1 : numel (h)
       p = get (h(nh));
       for np = 1 : numpairs
@@ -212,41 +204,74 @@ function h = findobj (varargin)
         if (numel (fieldindex))
           pname{np} = fields{fieldindex};
           if (property(np))
-            match = 1;
+            match(nh,np) = true;
           else
             if (regularexpression(np))
-              match = regexp (p.(pname{np}), pvalue{np});
-              if (isempty (match))
-                match = 0;
+              foo = regexp (p.(pname{np}), pvalue{np}, "once");
+              if (isempty (foo))
+                match(nh,np) = false;
+              else
+                match(nh,np) = foo;
               endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
               if (ischar (pvalue{np}) && ischar (p.(pname{np})))
-                match = strcmpi (pvalue{np}, p.(pname{np}));
+                match(nh,np) = strcmpi (pvalue{np}, p.(pname{np}));
               elseif (isnumeric (pvalue{np} && isnumeric (p.(pname{np}))))
-                match = (pvalue{np} == p.(pname{np}));
+                match(nh,np) = (pvalue{np} == p.(pname{np}));
               else
-                match = isequal (pvalue{np}, p.(pname{np}));
+                match(nh,np) = isequal (pvalue{np}, p.(pname{np}));
               endif
             else
-              match = 0;
+              match(nh,np) = false;
             endif
-            match = all (match);
-          endif
-          if (strcmpi (logicaloperator{np}, "not"))
-            keepers(nh) = keepers(nh) & ! match;
-          else
-            keepers(nh) = feval (logicaloperator{np}, keepers(nh), match);
           endif
         else
-          keepers(nh) = 0;
+          match(nh,np) = false;
         endif
       endfor
     endfor
+
+    if (numpairs > 1)
+      for no = 1 : numel (operatorprecedence)
+        pairs = find (strcmp (logicaloperator(2:end), ...
+                              operatorprecedence{no}(2:end)));
+        for np = sort (pairs, "descend")
+          if (no == 1)
+            match(:,np+1) = ! match(:,np+1);
+            logicaloperator(np+1) = {"and"};
+          else
+            match(:,np) = feval (logicaloperator{np+1}, match(:,np), ...
+                                 match(:,np+1));
+            logicaloperator(np+1) = [];
+            match(:,np+1) = [];
+            numpairs = numpairs - 1;
+          endif
+          if (numpairs < 2)
+            break;
+          endif
+        endfor
+        if (numpairs < 2)
+          break;
+        endif
+      endfor
+    endif
+  else
+    match = true (numel (h), 1);
   endif
 
-  h = h (keepers != 0);
-  h = reshape (h, [numel(h), 1]);
+  h = h(match);
+  h = h(:);
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! clf (hf);
+%! unwind_protect
+%!   h = findobj (gca (), "-property", "foo");
+%!   assert (h, zeros (0, 1))
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 %!test
 %! hf = figure ("visible", "off");
@@ -342,16 +367,34 @@ endfunction
 %! end_unwind_protect
 %! assert (h, [h2; h3; h4])
 
-%!xtest
+%!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ha = axes ();
 %!   plot (1:10);
 %!   h = findobj (hf, 'type', 'figure', ...
-%!                '-or', 'parent', 1, ...
-%!                '-and', 'type', 'axes')
+%!                '-or', 'parent', hf, ...
+%!                '-and', 'type', 'axes');
 %! unwind_protect_cleanup
 %!   close (hf)
 %! end_unwind_protect
-%! assert (h, [hf; ha])
+%! assert (h, [ha; hf])
 
+%!test
+%! hf = figure ("visible", "off");
+%! set (hf, 'tag', 'foo');
+%! unwind_protect
+%!   h1 = subplot (2, 2, 1);
+%!   set (h1, 'tag', 'foo');
+%!   h2 = subplot (2, 2, 2);
+%!   set (h2, 'tag', 'bar');
+%!   h3 = subplot (2, 2, 3);
+%!   set (h3, 'tag', 'foo');
+%!   h4 = subplot (2, 2, 4);
+%!   set (h4, 'tag', 'bar')
+%!   h = findobj (hf, 'type', 'axes', '-xor', ...
+%!                'tag', 'foo');
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%! assert (h, [h2; h4; hf])

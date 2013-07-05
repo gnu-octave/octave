@@ -638,6 +638,8 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\"");
 
+    curr_lexer->current_input_column++;
+
     curr_lexer->pop_start_state ();
 
     curr_lexer->looking_for_object_index = true;
@@ -656,6 +658,8 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\\[0-7]{1,3} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\[0-7]{1,3}");
 
+    curr_lexer->current_input_column += yyleng;
+
     int result;
     sscanf (yytext+1, "%o", &result);
 
@@ -668,42 +672,49 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>"\\a" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\a\"");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '\a';
   }
 
 <DQ_STRING_START>"\\b" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\b\"");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '\b';
   }
 
 <DQ_STRING_START>"\\f" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\f\"");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '\f';
   }
 
 <DQ_STRING_START>"\\n" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\n\"");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '\n';
   }
 
 <DQ_STRING_START>"\\r" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\r\"");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '\r';
   }
 
 <DQ_STRING_START>"\\t" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\t\"");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '\t';
   }
 
 <DQ_STRING_START>"\\v" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\v\"");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += '\v';
   }
 
@@ -714,28 +725,35 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
-    // We can't rely on the trick used elsewhere of sticking ASCII 1
-    // in the intput buffer and recognizing it as a special case
-    // because ASCII 1 is a valid character for a character string.
+    if (curr_lexer->is_push_lexer ())
+      {
+        // We can't rely on the trick used elsewhere of sticking ASCII
+        // 1 in the input buffer and recognizing it as a special case
+        // because ASCII 1 is a valid character for a character
+        // string.  If we are at the end of the buffer, ask for more
+        // input.  If we are at the end of the file, deal with it.
+        // Otherwise, just keep going with the text from the current
+        // buffer.
 
-    if (curr_lexer->at_end_of_buffer ())
-      return -1;
+        if (curr_lexer->at_end_of_buffer ())
+          return -1;
 
-    if (curr_lexer->at_end_of_file ())
-      return curr_lexer->handle_end_of_input ();
-
-    // Otherwise, just keep going with the text from the current buffer.
+        if (curr_lexer->at_end_of_file ())
+          return curr_lexer->handle_end_of_input ();
+      }
   }
 
 <DQ_STRING_START>\\. {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\.");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += yytext[1];
   }
 
 <DQ_STRING_START>[^\\\r\n\"]+ {
     curr_lexer->lexer_debug ("<DQ_STRING_START>[^\\\\\\r\\n\\\"]+");
 
+    curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += yytext;
   }
 
@@ -754,40 +772,38 @@ ANY_INCLUDING_NL (.|{NL})
 // Single-quoted character strings.
 %}
 
-<SQ_STRING_START>[^\'\n\r]*\' {
-    curr_lexer->lexer_debug ("<SQ_STRING_START>[^\\'\\n\\r]*\\'");
-
-    yytext[yyleng-1] = 0;
-    curr_lexer->string_text += yytext;
+<SQ_STRING_START>\'\' {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>\\'\\'");
 
     curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\'';
+  }
 
-    int c = curr_lexer->text_yyinput ();
+<SQ_STRING_START>\' {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>\\'");
 
-    if (c == '\'')
-      {
-        curr_lexer->string_text += c;
+    curr_lexer->current_input_column++;
 
-        curr_lexer->current_input_column++;
-      }
-    else
-      {
-        curr_lexer->xunput (c);
+    curr_lexer->pop_start_state ();
 
-        curr_lexer->pop_start_state ();
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
 
-        curr_lexer->looking_for_object_index = true;
-        curr_lexer->at_beginning_of_statement = false;
+    curr_lexer->push_token (new token (SQ_STRING,
+                                       curr_lexer->string_text,
+                                       curr_lexer->string_line,
+                                       curr_lexer->string_column));
 
-        curr_lexer->push_token (new token (SQ_STRING,
-                                           curr_lexer->string_text,
-                                           curr_lexer->string_line,
-                                           curr_lexer->string_column));
+    curr_lexer->string_text = "";
 
-        curr_lexer->string_text = "";
+    return curr_lexer->count_token_internal (SQ_STRING);
+  }
 
-        return curr_lexer->count_token_internal (SQ_STRING);
-      }      
+<SQ_STRING_START>[^\'\n\r]+ {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>[^\\'\\n\\r]+");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += yytext;
   }
 
 <SQ_STRING_START>{NL} {

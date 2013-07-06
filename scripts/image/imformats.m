@@ -86,7 +86,7 @@ function varargout = imformats (arg1, arg2, arg3)
           endif
           arrayfun (@is_valid_format, arg2);
           formats(end + numel (b)) = arg2;
-          varargin{1} = formats;
+          varargout{1} = formats;
 
         case {"remove", "update"},
           if (! ischar (arg2))
@@ -95,7 +95,7 @@ function varargout = imformats (arg1, arg2, arg3)
           ## FIXME: suppose a format with multiple extensions. If one of
           ##        them is requested to be removed, should we remove the
           ##        whole format, or just that extension from the format?
-          match = find_ext_idx (formats, arg2)
+          match = find_ext_idx (formats, arg2);
           if (! any (match))
             error ("imformats: no EXT `%s' found.", arg2);
           endif
@@ -109,19 +109,19 @@ function varargout = imformats (arg1, arg2, arg3)
             is_valid_format (arg3);
             formats(match) = arg3;
           endif
-          varargin{1} = formats;
+          varargout{1} = formats;
 
         case "factory",
           formats = default_formats ();
         otherwise
           ## then we look for a format with that extension.
-          match = find_ext_idx (formats, arg1)
+          match = find_ext_idx (formats, arg1);
           ## For matlab compatibility, if we don't find any format we must
           ## return an empty struct with NO fields. We can't use match as mask
           if (any (match))
-            varargin{1} = formats(match);
+            varargout{1} = formats(match);
           else
-            varargin{1} = struct ();
+            varargout{1} = struct ();
           endif
       endswitch
     else

@@ -92,7 +92,7 @@ function [c, hg] = __contour__ (varargin)
     error ("__contour__: z argument must be a matrix");
   endif
   if (length (varargin) == 4 || length (varargin) == 6)
-    vn = varargin {end};
+    vn = varargin{end};
     vnauto = false;
   else
     vnauto = true;
@@ -100,6 +100,7 @@ function [c, hg] = __contour__ (varargin)
   endif
 
   if (isscalar (vn))
+    ## FIXME - the levels should be determined similarly to {x,y,z}ticks
     lvl = linspace (min (z1(!isinf (z1))), max (z1(!isinf (z1))),
                     vn + 2)(1:end-1);
   else
@@ -191,8 +192,8 @@ function [c, hg] = __contour__ (varargin)
   addlistener (hg, "zlevelmode", @update_zlevel);
   addlistener (hg, "zlevel", @update_zlevel);
 
-  addlistener (hg, "levellist", @update_data);
-  addlistener (hg, "levelstep", @update_data);
+  addlistener (hg, "levellist", {@update_data, "levellist"});
+  addlistener (hg, "levelstep", {@update_data, "levelstep"});
   addlistener (hg, "levellistmode", @update_data);
   addlistener (hg, "levelstepmode", @update_data);
 
@@ -435,7 +436,7 @@ function update_line (h, d)
        "linewidth", get (h, "linewidth"), "linestyle", get (h, "linestyle"));
 endfunction
 
-function update_data (h, d)
+function update_data (h, d, prop = "")
   persistent recursive = false;
 
   if (!recursive)
@@ -443,11 +444,28 @@ function update_data (h, d)
 
     delete (get (h, "children"));
 
-    if (strcmpi (get (h, "levellistmode"), "manual"))
+    switch prop
+    case "levellist"
+      set (h, "levellistmode", "manual")
+    case "levelstep"
+      set (h, "levelstepmode", "manual")
+    endswitch
+
+    if (strcmpi (get (h, "levellistmode"), "manual")
+        && ! strcmp (prop, "levelstep"))
       lvl = get (h, "levellist");
     elseif (strcmpi (get (h, "levelstepmode"), "manual"))
       z = get (h, "zdata");
-      lvl = ceil ((max(z(:)) - min (z(:)) ./ get (h, "levelstep")));
+      lvs = get (h, "levelstep");
+      lvl(1) = ceil (min (z(:)) / lvs) * lvs;
+      lvl(2) = floor (max (z(:)) / lvs) * lvs;
+      if (lvl(1) >= lvl(2))
+        lvl = median (z(:));
+      else
+        lvl = lvl(1) : lvs : lvl(2);
+      endif
+      set (h, "levellist", lvl);
+      set (h, "levellistmode", "auto");
     else
       lvl = 10;
     endif
@@ -488,9 +506,9 @@ function update_data (h, d)
 
     add_patch_children (h);
     update_text (h, d);
+    recursive = false;
   endif
 
-  recursive = false;
 endfunction
 
 function update_text (h, d)

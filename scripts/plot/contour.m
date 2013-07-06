@@ -94,3 +94,33 @@ endfunction
 %! contourf (x, y, z, [0.4, 0.4]);
 %! title ('The hole should be filled with the background color');
 
+%!test
+%! hf = figure ("visible", "off");
+%! clf (hf);
+%! unwind_protect
+%!   [x, y, z] = peaks ();
+%!   [c, h] = contour (x, y, z);
+%!   levellist = (-6):6;
+%!   set (h, "levellist", levellist);
+%!   assert (get (h, "levellist"), levellist)
+%!   assert (get (h, "levellistmode"), "manual")
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! clf (hf);
+%! unwind_protect
+%!   [x, y, z] = peaks ();
+%!   [c, h] = contour (x, y, z);
+%!   levelstep = 3;
+%!   set (h, "levelstep", levelstep);
+%!   assert (get (h, "levelstep"), levelstep)
+%!   assert (get (h, "levelstepmode"), "manual")
+%!   assert (get (h, "levellist"), (-6):levelstep:6)
+%!   assert (get (h, "levellistmode"), "auto")
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+

@@ -241,7 +241,7 @@ function formats = default_formats ()
   endfor
 
   ## the default info, read, and write functions
-  [formats.info ] = deal (@imfinfo);
+  [formats.info ] = deal (@core_imfinfo);
   [formats.read ] = deal (@imread);
   [formats.write] = deal (@imread);
 
@@ -270,7 +270,7 @@ endfunction
 function bool = isa_magick (coder, filename)
   bool = false;
   try
-    info = imfinfo (filename);
+    info = core_imfinfo (filename);
     bool = strcmp (coder, info.Format);
   end_try_catch
 endfunction

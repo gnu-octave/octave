@@ -109,49 +109,10 @@
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
 function info = imfinfo (filename)
-
   if (nargin < 1)
     print_usage ();
-  endif
-
-  if (! ischar (filename))
+  elseif (! ischar (filename))
     error ("imfinfo: FILENAME must be a string");
   endif
-
-  filename = tilde_expand (filename);
-
-  delete_file = false;
-
-  unwind_protect
-
-    fn = file_in_path (IMAGE_PATH, filename);
-
-    if (isempty (fn))
-
-      ## Couldn't find file. See if it's an URL.
-
-      tmp = tmpnam ();
-
-      [fn, status, msg] = urlwrite (filename, tmp);
-
-      if (! status)
-        error ("imfinfo: cannot find %s", filename);
-      endif
-
-      if (! isempty (fn))
-        delete_file = true;
-      endif
-
-    endif
-
-    info = __magick_finfo__ (fn);
-
-  unwind_protect_cleanup
-
-    if (delete_file)
-      unlink (fn);
-    endif
-
-  end_unwind_protect
-
+  info = imageIO (@core_imfinfo, "info", filename, filename);
 endfunction

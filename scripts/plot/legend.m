@@ -569,6 +569,10 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         ca_pos = unmodified_axes_position;
         ca_outpos = unmodified_axes_outerposition;
         ca_fontsize = get (ca(1), "fontsize");
+        tightinset = get (ca(1), "tightinset");
+        for i = 2 : numel (ca)
+          tightinset = max (tightinset, get (ca(i), "tightinset"));
+        endfor
       unwind_protect_cleanup
         set (ca(1), "units", units);
         set (ca(1), "fontunits", fontunits);
@@ -701,6 +705,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           gnuplot_offset = 0;
         endif
 
+        ## For legend's outside the associated axes postion, align their edge
+        ## to the unmodified_axes_outerpostion, and adjust the axes postion
+        ## accordingly.
         switch (location)
           case "north"
             if (outside)
@@ -717,7 +724,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             if (outside)
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
                       ca_outpos(2) + ypad, lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2) + lpos(4), ca_pos(3), ...
+              new_pos = [ca_pos(1), lpos(2) + lpos(4) + 2 * ypad ...
+                      + tightinset(2), ca_pos(3), ...
                          ca_pos(4) - lpos(4)];
             else
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
@@ -727,7 +735,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             if (outside)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ca_pos(4)];
+              new_pos = [ca_pos(1), ca_pos(2), ...
+                         lpos(1) - 2 * xpad - ca_pos(1) - tightinset(3), ...
+                         ca_pos(4)];
               new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
@@ -738,8 +748,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, ...
                       lpos(3), lpos(4)];
-              new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
-                         ca_pos(3) - lpos(3), ca_pos(4)];
+              new_pos = [lpos(1) + lpos(3) + 2 * xpad + tightinset(1), ...
+                         ca_pos(2), ca_pos(3) - lpos(3) - 2 * xpad, ca_pos(4)];
               new_pos(1) = new_pos(1) - gnuplot_offset;
               new_pos(3) = new_pos(3) + gnuplot_offset;
             else
@@ -750,7 +760,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             if (outside)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4), lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ca_pos(4)];
+              new_pos = [ca_pos(1), ca_pos(2), ...
+                         lpos(1) - 2 * xpad - tightinset(3) - ca_pos(1), ...
+                         ca_pos(4)];
               new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
@@ -760,8 +772,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             if (outside)
               lpos = [ca_outpos(1) + ypad , ca_pos(2) + ca_pos(4) - lpos(4), ...
                       lpos(3), lpos(4)];
-              new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
-                         ca_pos(3) - lpos(3), ca_pos(4)];
+              new_pos = [lpos(1) + lpos(3) + 2 * xpad + tightinset(1), ...
+              ca_pos(2), ca_pos(3) - lpos(3) - 2 * xpad, ca_pos(4)];
               new_pos(1) = new_pos(1) - gnuplot_offset;
               new_pos(3) = new_pos(3) + gnuplot_offset;
             else
@@ -773,7 +785,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
                       ca_pos(2), lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ...
-                         ca_pos(3) - lpos(3), ca_pos(4)];
+                         lpos(1) - 2 * xpad - ca_pos(1) - tightinset(3), ...
+                         ca_pos(4)];
               new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
@@ -782,8 +795,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           case "southwest"
             if (outside)
               lpos = [ca_outpos(1) + ypad, ca_pos(2), lpos(3), lpos(4)];
-              new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
-                         ca_pos(3) - lpos(3), ca_pos(4)];
+              new_pos = [lpos(1) + lpos(3) + 2 * xpad + tightinset(1), ...
+              ca_pos(2), ca_pos(3) - lpos(3) - 2 * xpad, ca_pos(4)];
               new_pos(1) = new_pos(1) - gnuplot_offset;
               new_pos(3) = new_pos(3) + gnuplot_offset;
             else
@@ -963,6 +976,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           addlistener (hlegend, "orientation", @updatelegend);
           addlistener (hlegend, "string", @updatelegend);
           addlistener (hlegend, "textposition", @updatelegend);
+          ## TODO - need to add listeners for tighinset and position
+          ##        addlistener (ca, "tightinset", @update????);
+          ##        addlistener (ca, "position", @update????);
         endif
       unwind_protect_cleanup
         set (fig, "currentaxes", curaxes);

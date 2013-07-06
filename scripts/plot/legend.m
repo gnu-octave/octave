@@ -678,26 +678,27 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           lpos = [0, 0, num1 * xstep, num2 * ystep];
         endif
 
-        if (strcmp (get (fig, "__graphics_toolkit__"), "gnuplot"))
+        gnuplot =  strcmp (get (fig, "__graphics_toolkit__"), "gnuplot");
+        if (gnuplot)
           ## Gnuplot places the key (legend) at edge of the figure window.
           ## OpenGL places the legend box at edge of the unmodified axes
           ## position.
           if (isempty (strfind (location, "east")))
-            extra_offset = unmodified_axes_outerposition(1) ...
+            gnuplot_offset = unmodified_axes_outerposition(1) ...
                          + unmodified_axes_outerposition(3) ...
                          - unmodified_axes_position(1) ...
                          - unmodified_axes_position(3);
           else
-            extra_offset = unmodified_axes_position(1) ...
+            gnuplot_offset = unmodified_axes_position(1) ...
                          - unmodified_axes_outerposition(1);
           endif
           ## FIXME - the "fontsize" is added to match the behavior of OpenGL.
           ## This implies that a change in fontsize should trigger a listener
           ## to update the legend.  The "2" was determined using a long legend
           ## key in the absence of any subplots.
-          extra_offset = extra_offset - 2 * fontsize;
+          gnuplot_offset = gnuplot_offset - 2 * fontsize;
         else
-          extra_offset = 0;
+          gnuplot_offset = 0;
         endif
 
         switch (location)
@@ -727,7 +728,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ca_pos(4)];
-              new_pos(3) = new_pos(3) + extra_offset;
+              new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
@@ -739,8 +740,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       lpos(3), lpos(4)];
               new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_pos(1) = new_pos(1) - extra_offset;
-              new_pos(3) = new_pos(3) + extra_offset;
+              new_pos(1) = new_pos(1) - gnuplot_offset;
+              new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) +  ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
@@ -750,7 +751,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4), lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ca_pos(4)];
-              new_pos(3) = new_pos(3) + extra_offset;
+              new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
@@ -761,8 +762,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       lpos(3), lpos(4)];
               new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_pos(1) = new_pos(1) - extra_offset;
-              new_pos(3) = new_pos(3) + extra_offset;
+              new_pos(1) = new_pos(1) - gnuplot_offset;
+              new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
@@ -773,7 +774,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       ca_pos(2), lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_pos(3) = new_pos(3) + extra_offset;
+              new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ypad, lpos(3), lpos(4)];
@@ -783,8 +784,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ypad, ca_pos(2), lpos(3), lpos(4)];
               new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_pos(1) = new_pos(1) - extra_offset;
-              new_pos(3) = new_pos(3) + extra_offset;
+              new_pos(1) = new_pos(1) - gnuplot_offset;
+              new_pos(3) = new_pos(3) + gnuplot_offset;
             else
               lpos = [ca_pos(1) + ypad, ca_pos(2) + ypad, lpos(3), lpos(4)];
             endif
@@ -902,7 +903,16 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             units = get (ca(i), "units");
             unwind_protect
               set (ca(i), "units", "points");
-              set (ca(i), "position", new_pos);
+              if (gnuplot && numel (ca) == 1)
+                ## Let Gnuplot handle the positioning of the keybox.
+                ## This violates strict Matlab compatibility, but reliably
+                ## renders an esthetic result.
+                set (ca(i), "position",  unmodified_axes_position);
+                set (ca(i), "activepositionproperty", "outerposition")
+              else
+                ## numel (ca) > 1 for axes overlays (like plotyy)
+                set (ca(i), "position", new_pos);
+              endif
             unwind_protect_cleanup
               set (ca(i), "units", units);
             end_unwind_protect
@@ -910,9 +920,11 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
           set (hlegend, "deletefcn", {@deletelegend2, ca, ...
                                       unmodified_axes_position, ...
-                                      unmodified_axes_outerposition, t1, hplots});
+                                      unmodified_axes_outerposition, ...
+                                      t1, hplots});
           addlistener (hlegend, "visible", {@hideshowlegend, ca, ...
-                                            unmodified_axes_position, new_pos});
+                                            unmodified_axes_position, ...
+                                            new_pos});
         else
           set (hlegend, "deletefcn", {@deletelegend2, ca, [], [], t1, hplots});
         endif

@@ -208,6 +208,31 @@ object) relevant global values before and after the nested call.
     } \
   while (0)
 
+// We can't rely on the trick used elsewhere of sticking ASCII 1 in
+// the input buffer and recognizing it as a special case because ASCII
+// 1 is a valid character for a character string.  If we are at the
+// end of the buffer, ask for more input.  If we are at the end of the
+// file, deal with it.  Otherwise, just keep going with the text from
+// the current buffer.
+#define HANDLE_STRING_CONTINUATION \
+  do \
+    { \
+      curr_lexer->decrement_promptflag (); \
+      curr_lexer->input_line_number++; \
+      curr_lexer->current_input_column = 1; \
+ \
+      if (curr_lexer->is_push_lexer ()) \
+        { \
+          if (curr_lexer->at_end_of_buffer ()) \
+            return -1; \
+ \
+          if (curr_lexer->at_end_of_file ()) \
+            return curr_lexer->handle_end_of_input (); \
+        } \
+    } \
+  while (0)
+
+
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
@@ -718,29 +743,46 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->string_text += '\v';
   }
 
+<DQ_STRING_START>(\.\.\.){S}*{NL} |
+<DQ_STRING_START>(\.\.\.){S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}|<DQ_STRING_START>(\\.\\.\\.){S}*{CCHAR}.*{NL}");
+
+    static const char *msg = "'...' continuations in double-quoted character strings are obsolete and will not be allowed in a future version of Octave; please use '\\' instead";
+
+    std::string nm = curr_lexer->fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg,
+                       curr_lexer->input_line_number, nm.c_str ());
+
+    HANDLE_STRING_CONTINUATION;
+  }
+
+<DQ_STRING_START>\\{S}+{NL} |
+<DQ_STRING_START>\\{S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}|<DQ_STRING_START>\\\\{S}*{CCHAR}.*{NL}");
+
+    static const char *msg = "white space and comments after continuation markers in double-quoted character strings are obsolete and will not be allowed in a future version of Octave";
+
+    std::string nm = curr_lexer->fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg,
+                       curr_lexer->input_line_number, nm.c_str ());
+
+    HANDLE_STRING_CONTINUATION;
+  }
+
 <DQ_STRING_START>\\{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{NL}");
 
-    curr_lexer->decrement_promptflag ();
-    curr_lexer->input_line_number++;
-    curr_lexer->current_input_column = 1;
-
-    if (curr_lexer->is_push_lexer ())
-      {
-        // We can't rely on the trick used elsewhere of sticking ASCII
-        // 1 in the input buffer and recognizing it as a special case
-        // because ASCII 1 is a valid character for a character
-        // string.  If we are at the end of the buffer, ask for more
-        // input.  If we are at the end of the file, deal with it.
-        // Otherwise, just keep going with the text from the current
-        // buffer.
-
-        if (curr_lexer->at_end_of_buffer ())
-          return -1;
-
-        if (curr_lexer->at_end_of_file ())
-          return curr_lexer->handle_end_of_input ();
-      }
+    HANDLE_STRING_CONTINUATION;
   }
 
 <DQ_STRING_START>\\. {
@@ -750,8 +792,15 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->string_text += yytext[1];
   }
 
-<DQ_STRING_START>[^\\\r\n\"]+ {
-    curr_lexer->lexer_debug ("<DQ_STRING_START>[^\\\\\\r\\n\\\"]+");
+<DQ_STRING_START>\. {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\.");
+
+    curr_lexer->current_input_column++;
+    curr_lexer->string_text += yytext[0];
+  }
+
+<DQ_STRING_START>[^\.\\\r\n\"]+ {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>[^\\.\\\\\\r\\n\\\"]+");
 
     curr_lexer->current_input_column += yyleng;
     curr_lexer->string_text += yytext;

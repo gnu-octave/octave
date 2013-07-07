@@ -227,6 +227,7 @@ endfunction
 %! t = linspace (0, 2*pi, 100)';
 %! y = [sin(t).^2, cos(t).^2];
 %! area (t, y);
+%! axis tight
 %! legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');  
 
 %!demo

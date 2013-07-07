@@ -41,15 +41,60 @@
 ## @seealso{imwrite, imfinfo}
 ## @end deftypefn
 
-function varargout = imread (filename, varargin)
+function varargout = core_imread (filename, varargin)
+
   if (nargin < 1)
     print_usage ();
-  elseif (! ischar (filename))
+  endif
+
+  if (! ischar (filename))
     error ("imread: FILENAME must be a string");
   endif
-  varargout{1:nargout} = imageIO (@core_imread, "read", filename,
-                                  filename, varargin{:});
+
+  filename = tilde_expand (filename);
+
+  fn = file_in_path (IMAGE_PATH, filename);
+
+  if (isempty (fn))
+    error ("imread: cannot find %s", filename);
+  endif
+
+  try
+    [varargout{1:nargout}] = __magick_read__ (fn, varargin{:});
+  catch
+
+    magick_error = lasterr ();
+
+    img_field = false;
+    x_field = false;
+    map_field = false;
+
+    try
+      vars = load (fn);
+      if (isstruct (vars))
+        img_field = isfield (vars, "img");
+        x_field = isfield (vars, "X");
+        map_field = isfield (vars, "map");
+      endif
+    catch
+      error ("imread: invalid image file: %s", magick_error);
+    end_try_catch
+
+    if (map_field && (img_field || x_field))
+      varargout{2} = vars.map;
+      if (img_field)
+        varargout{1} = vars.img;
+      else
+        varargout{1} = vars.X;
+      endif
+    else
+      error ("imread: invalid Octave image file format");
+    endif
+
+  end_try_catch
+
 endfunction
+
 
 %!testif HAVE_MAGICK
 %! vpng = [ ...

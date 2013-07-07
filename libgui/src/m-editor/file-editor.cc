@@ -176,6 +176,12 @@ file_editor::request_open_file (void)
   // Create a NonModal message.
   QFileDialog *fileDialog = new QFileDialog (this);
   fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
+
+  // Giving trouble under KDE (problem is related to Qt signal handling on unix,
+  // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
+  // it had/has no effect on Windows, though)
+  fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
+
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
   fileDialog->setDirectory (ced);

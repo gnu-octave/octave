@@ -1010,6 +1010,11 @@ file_editor_tab::save_file_as (bool remove_on_success)
   else
     fileDialog = new QFileDialog (this);
 
+  // Giving trouble under KDE (problem is related to Qt signal handling on unix,
+  // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
+  // it had/has no effect on Windows, though)
+  fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
+
   if (!_file_name.isEmpty () && _file_name.at (_file_name.count () - 1) != '/')
     {
       fileDialog->selectFile (_file_name);

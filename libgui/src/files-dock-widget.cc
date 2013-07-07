@@ -644,7 +644,8 @@ void
 files_dock_widget::popdownmenu_search_dir (bool)
 {
   QString dir = QFileDialog::getExistingDirectory
-    (this, tr ("Set directory of file browser"),_file_system_model->rootPath());
+    (this, tr ("Set directory of file browser"),_file_system_model->rootPath(),
+     QFileDialog::DontUseNativeDialog);
   set_current_directory (dir);
 }
 

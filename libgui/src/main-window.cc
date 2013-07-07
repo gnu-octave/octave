@@ -139,7 +139,7 @@ void
 main_window::handle_save_workspace_request (void)
 {
   QString file =
-    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".");
+    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".", 0, 0, QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::save_workspace_callback,
@@ -152,7 +152,7 @@ main_window::handle_load_workspace_request (const QString& file_arg)
   QString file = file_arg;
 
   if (file.isEmpty ())
-    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".");
+    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".", 0, 0, QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::load_workspace_callback,
@@ -354,7 +354,7 @@ void
 main_window::browse_for_directory (void)
 {
   QString dir
-    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"));
+    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"), 0, QFileDialog::DontUseNativeDialog);
 
   set_current_working_directory (dir);
 

@@ -63,125 +63,21 @@
 ## @seealso{imread, imfinfo}
 ## @end deftypefn
 
-function imwrite (img, varargin)
-
-  persistent imwrite_possible_formats = {
-    "bmp"; "gif"; "jp2"; "jpg"; "jpx"; "jpeg"; "hdf"; "pbm"; "pcx";
-    "pgm"; "png"; "pnm"; "ppm"; "ras"; "tif"; "tiff"; "xwd" };
-
-  persistent accepted_formats = __magick_format_list__ (imwrite_possible_formats);
-
-  if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
+function imwrite (varargin)
+  if (nargin < 2)
     print_usage ();
   endif
 
-  map = [];
-  fmt = "";
-
-  offset = 1;
-  if (isnumeric (varargin{1}))
-    map = varargin{1};
-    if (isempty (map))
-      error ("imwrite: colormap must not be empty");
-    endif
-    offset = 2;
-  endif
-  if (offset <= length (varargin) && ischar (varargin{offset}))
-    filename = varargin{offset};
-    offset++;
-    if (rem (length (varargin) - offset, 2) == 0 && ischar (varargin{offset}))
-      fmt = varargin{offset};
-      offset++;
-    endif
+  if (ischar (varargin{2}))
+    filename = varargin{2};
+  elseif (nargin >= 3 && iscolormap (varargin{2}) && ! ischar (varargin{3}))
+    filename = varargin{3}'
   else
-    print_usage ();
+    error ("imwrite: no FILENAME specified");
   endif
-  if (offset < length (varargin))
-    has_param_list = 1;
-    for ii = offset:2:(length (varargin) - 1)
-      options.(varargin{ii}) = varargin{ii + 1};
-    endfor
-  else
-    has_param_list = 0;
-  endif
-
-  filename = tilde_expand (filename);
-
-  if (isempty (fmt))
-    [d, n, fmt] = fileparts (filename);
-    if (! isempty (fmt))
-      fmt = fmt(2:end);
-    endif
-  endif
-
-  if (isempty (img))
-    error ("imwrite: invalid empty image");
-  endif
-
-  if (issparse (img) || issparse (map))
-    error ("imwrite: sparse images not supported");
-  endif
-
-  if (! strcmp (fmt, accepted_formats))
-    error ("imwrite: %s: unsupported or invalid image format", fmt);
-  endif
-
-  img_class = class (img);
-  map_class = class (map);
-  nd = ndims (img);
-
-  if (isempty (map))
-    if (any (strcmp (img_class, {"logical", "uint8", "uint16", "double"})))
-      if ((nd == 2 || nd == 3) && strcmp (img_class, "double"))
-        img = uint8 (img * 255);
-      endif
-      ## FIXME: should we handle color images with alpha channel here?
-      if (nd == 3 && size (img, 3) < 3)
-        error ("imwrite: invalid dimensions for truecolor image");
-      endif
-      if (nd > 5)
-        error ("imwrite: invalid %d-dimensional image data", nd);
-      endif
-    else
-      error ("imwrite: %s: invalid class for truecolor image", img_class);
-    endif
-    if (has_param_list)
-      __magick_write__ (filename, fmt, img, options);
-    else
-      __magick_write__ (filename, fmt, img);
-    endif
-  else
-    if (any (strcmp (img_class, {"uint8", "uint16", "double"})))
-      if (strcmp (img_class, "double"))
-        img = uint8 (img - 1);
-      endif
-      if (nd != 2 && nd != 4)
-        error ("imwrite: invalid size for indexed image");
-      endif
-    else
-      error ("imwrite: %s: invalid class for indexed image data", img_class);
-    endif
-    if (! iscolormap (map))
-      error ("imwrite: invalid indexed image colormap");
-    endif
-
-    ## FIXME: we should really be writing indexed images here but
-    ##        __magick_write__ needs to be fixed to handle them.
-
-    [r, g, b] = ind2rgb (img, map);
-    tmp = uint8 (cat (3, r, g, b) * 255);
-
-    if (has_param_list)
-      __magick_write__ (filename, fmt, tmp, options);
-      ## __magick_write__ (filename, fmt, img, map, options);
-    else
-      __magick_write__ (filename, fmt, tmp);
-      ## __magick_write__ (filename, fmt, img, map);
-    endif
-  endif
+  varargout{1:nargout} = imageIO (@core_imwrite, "write", filename, varargin{:});
 
 endfunction
-
 
 %% Test input validation
 %!error imwrite ()                            # Wrong # of args

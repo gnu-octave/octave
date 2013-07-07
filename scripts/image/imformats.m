@@ -243,7 +243,7 @@ function formats = default_formats ()
   ## the default info, read, and write functions
   [formats.info ] = deal (@core_imfinfo);
   [formats.read ] = deal (@core_imread);
-  [formats.write] = deal (@imread);
+  [formats.write] = deal (@core_imwrite);
 
   ## fills rest of format information by checking with GraphicsMagick
   formats = __magick_formats__ (formats);

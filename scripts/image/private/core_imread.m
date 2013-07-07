@@ -44,7 +44,7 @@
 function varargout = core_imread (filename, varargin)
 
   if (nargin < 1)
-    print_usage ();
+    print_usage ("imread");
   endif
 
   if (! ischar (filename))

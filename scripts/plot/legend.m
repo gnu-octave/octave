@@ -1443,116 +1443,117 @@ endfunction
 %! clf;
 %! option = 'right';
 %! subplot (3,1,1);
-%! plot (rand (1,4));
-%! xlabel xlabel
-%! ylabel ylabel
-%! title ('Subplots should adjust to the legend placed outside');
-%! legend ({'1'}, 'location', 'northeastoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  xlabel xlabel;
+%!  ylabel ylabel;
+%!  title ('Subplots should adjust to the legend placed outside');
+%!  legend ({'1'}, 'location', 'northeastoutside');
+%!  legend (option);
 %! subplot (3,1,2);
-%! plot (rand (1,4));
-%! xlabel xlabel
-%! ylabel ylabel
-%! legend ({'1234567890'}, 'location', 'eastoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  xlabel xlabel;
+%!  ylabel ylabel;
+%!  legend ({'1234567890'}, 'location', 'eastoutside');
+%!  legend (option);
 %! subplot (3,1,3);
-%! plot (rand (1,4));
-%! xlabel xlabel
-%! ylabel ylabel
-%! legend ({'12345678901234567890'}, 'location', 'southeastoutside');
-%! legend (option);
-
-%!demo % bug 36408
-%! clf;
-%! option = 'right';
-%! subplot (3,1,1)
-%! plot (rand (1,4));
-%! title ('Subplots should adjust to the legend placed outside');
-%! legend ({'1'}, 'location', 'northwestoutside');
-%! legend (option);
-%! subplot (3,1,2);
-%! plot (rand (1,4));
-%! legend ({'1234567890'}, 'location', 'westoutside');
-%! legend (option);
-%! subplot (3,1,3);
-%! plot (rand (1,4));
-%! legend ({'12345678901234567890'}, 'location', 'southwestoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  xlabel xlabel;
+%!  ylabel ylabel;
+%!  legend ({'12345678901234567890'}, 'location', 'southeastoutside');
+%!  legend (option);
 
 %!demo % bug 36408
 %! clf;
 %! option = 'right';
 %! subplot (3,1,1);
-%! plot (rand (1,4));
-%! set (gca (), "yaxislocation", "right")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! title ('Subplots should adjust to the legend placed outside');
-%! legend ({'1'}, 'location', 'northeastoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  title ('Subplots should adjust to the legend placed outside');
+%!  legend ({'1'}, 'location', 'northwestoutside');
+%!  legend (option);
 %! subplot (3,1,2);
-%! plot (rand (1,4));
-%! set (gca (), "yaxislocation", "right")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! legend ({'1234567890'}, 'location', 'eastoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  legend ({'1234567890'}, 'location', 'westoutside');
+%!  legend (option);
 %! subplot (3,1,3);
-%! plot (rand (1,4));
-%! set (gca (), "yaxislocation", "right")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! legend ({'12345678901234567890'}, 'location', 'southeastoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
+%!  legend (option);
 
 %!demo % bug 36408
 %! clf;
 %! option = 'right';
-%! subplot (3,1,1)
-%! plot (rand (1,4));
-%! set (gca (), "yaxislocation", "right")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! title ('Subplots should adjust to the legend placed outside');
-%! legend ({'1'}, 'location', 'northwestoutside');
-%! legend (option);
+%! subplot (3,1,1);
+%!  plot (rand (1,4));
+%!  set (gca (), 'yaxislocation', 'right');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  title ('Subplots should adjust to the legend placed outside');
+%!  legend ({'1'}, 'location', 'northeastoutside');
+%!  legend (option);
 %! subplot (3,1,2);
-%! plot (rand (1,4));
-%! set (gca (), "yaxislocation", "right")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! legend ({'1234567890'}, 'location', 'westoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  set (gca (), 'yaxislocation', 'right');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  legend ({'1234567890'}, 'location', 'eastoutside');
+%!  legend (option);
 %! subplot (3,1,3);
-%! plot (rand (1,4));
-%! set (gca (), "yaxislocation", "right")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! legend ({'12345678901234567890'}, 'location', 'southwestoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  set (gca (), 'yaxislocation', 'right');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  legend ({'12345678901234567890'}, 'location', 'southeastoutside');
+%!  legend (option);
 
 %!demo % bug 36408
 %! clf;
 %! option = 'right';
-%! subplot (3,1,1)
-%! plot (rand (1,4));
-%! set (gca (), "xaxislocation", "top")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! title ('Subplots should adjust to the legend placed outside');
-%! legend ({'1'}, 'location', 'northwestoutside');
-%! legend (option);
+%! subplot (3,1,1);
+%!  plot (rand (1,4));
+%!  set (gca (), 'yaxislocation', 'right');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  title ('Subplots should adjust to the legend placed outside');
+%!  legend ({'1'}, 'location', 'northwestoutside');
+%!  legend (option);
 %! subplot (3,1,2);
-%! plot (rand (1,4));
-%! set (gca (), "xaxislocation", "top")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! legend ({'1234567890'}, 'location', 'westoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  set (gca (), 'yaxislocation', 'right');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  legend ({'1234567890'}, 'location', 'westoutside');
+%!  legend (option);
 %! subplot (3,1,3);
-%! plot (rand (1,4));
-%! set (gca (), "xaxislocation", "top")
-%! xlabel ('xlabel')
-%! ylabel ('ylabel')
-%! legend ({'12345678901234567890'}, 'location', 'southwestoutside');
-%! legend (option);
+%!  plot (rand (1,4));
+%!  set (gca (), 'yaxislocation', 'right');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
+%!  legend (option);
+
+%!demo % bug 36408;
+%! clf;
+%! option = 'right';
+%! subplot (3,1,1);
+%!  plot (rand (1,4));
+%!  set (gca (), 'xaxislocation', 'top');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  title ('Subplots should adjust to the legend placed outside');
+%!  legend ({'1'}, 'location', 'northwestoutside');
+%!  legend (option);
+%! subplot (3,1,2);
+%!  plot (rand (1,4));
+%!  set (gca (), 'xaxislocation', 'top');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  legend ({'1234567890'}, 'location', 'westoutside');
+%!  legend (option);
+%! subplot (3,1,3);
+%!  plot (rand (1,4));
+%!  set (gca (), 'xaxislocation', 'top');
+%!  xlabel ('xlabel');
+%!  ylabel ('ylabel');
+%!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
+%!  legend (option);
+

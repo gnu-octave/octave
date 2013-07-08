@@ -135,7 +135,7 @@ triangular part is used.\n\
 \n\
 In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\
-@seealso{cholinv, chol2inv}\n\
+@seealso{hess, lu, qr, qz, schur, svd, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -649,7 +649,7 @@ If @var{op} is \"-\", @var{info} is set to\n\
 @end itemize\n\
 \n\
 If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
-@seealso{chol, qrupdate}\n\
+@seealso{chol, cholinsert, choldelete, cholshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -849,7 +849,7 @@ On return, @var{info} is set to\n\
 @end itemize\n\
 \n\
 If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
-@seealso{chol, cholupdate, choldelete}\n\
+@seealso{chol, cholupdate, choldelete, cholshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -1097,7 +1097,7 @@ Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
 triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 @w{p = [1:j-1,j+1:n+1]}.\n\
-@seealso{chol, cholupdate, cholinsert}\n\
+@seealso{chol, cholupdate, cholinsert, cholshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -1234,7 +1234,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
  or @*\n\
 @code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*\n\
 \n\
-@seealso{chol, cholinsert, choldelete}\n\
+@seealso{chol, cholupdate, cholinsert, choldelete}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();

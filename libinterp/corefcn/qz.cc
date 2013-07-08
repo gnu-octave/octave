@@ -369,7 +369,7 @@ in the closed right half-plane\n\
 Note: @code{qz} performs permutation balancing, but not scaling\n\
 (@pxref{docXbalance}).  The order of output arguments was selected for\n\
 compatibility with @sc{matlab}.\n\
-@seealso{balance, eig, schur}\n\
+@seealso{eig, balance, lu, chol, hess, qr, qzhess, schur, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;

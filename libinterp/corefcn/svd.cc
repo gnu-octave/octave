@@ -121,7 +121,7 @@ v =\n\
 If given a second argument, @code{svd} returns an economy-sized\n\
 decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 @var{V}.\n\
-@seealso{svd_driver, svds, eig}\n\
+@seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}\n\
 @end deftypefn")
 {
   octave_value_list retval;

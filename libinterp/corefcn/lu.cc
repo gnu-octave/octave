@@ -137,6 +137,7 @@ routines is returned.  If the input matrix is sparse then the matrix @var{L}\n\
 is embedded into @var{U} to give a return value similar to the full case.\n\
 For both full and sparse matrices, @code{lu} loses the permutation\n\
 information.\n\
+@seealso{luupdate, chol, hess, qr, qz, schur, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -635,7 +636,7 @@ stable.\n\
 The matrix case is done as a sequence of rank-1 updates;\n\
 thus, for large enough k, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
-@seealso{lu, qrupdate, cholupdate}\n\
+@seealso{lu, cholupdate, qrupdate}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();

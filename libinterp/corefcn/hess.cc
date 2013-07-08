@@ -60,6 +60,7 @@ transposition) and @var{H} is upper Hessenberg\n\
 The Hessenberg decomposition is usually used as the first step in an\n\
 eigenvalue computation, but has other applications as well (see Golub,\n\
 Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
+@seealso{eig, chol, lu, qr, qz, schur, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -194,6 +194,7 @@ as\n\
 x = @var{R} \\ @var{C}\n\
 @end group\n\
 @end example\n\
+@seealso{chol, hess, lu, qz, schur, svd, qrupdate, qrinsert, qrdelete, qrshift}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -769,7 +770,7 @@ to recompute the factorization from scratch.\n\
 The QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
-@seealso{qr, qrinsert, qrdelete}\n\
+@seealso{qr, qrinsert, qrdelete, qrshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -960,7 +961,7 @@ the QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
 If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
-@seealso{qr, qrupdate, qrdelete}\n\
+@seealso{qr, qrupdate, qrdelete, qrshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -1179,7 +1180,7 @@ the QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
 If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
-@seealso{qr, qrinsert, qrupdate}\n\
+@seealso{qr, qrupdate, qrinsert, qrshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -1429,7 +1430,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
  or @*\n\
 @code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*\n\
 \n\
-@seealso{qr, qrinsert, qrdelete}\n\
+@seealso{qr, qrupdate, qrinsert, qrdelete}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();

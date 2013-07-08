@@ -235,8 +235,8 @@ make_statement (T *arg)
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
 %type <tree_fcn_handle_type> fcn_handle
-%type <tree_matrix_type> matrix_rows matrix_rows1
-%type <tree_cell_type> cell_rows cell_rows1
+%type <tree_matrix_type> matrix_rows
+%type <tree_cell_type> cell_rows
 %type <tree_expression_type> matrix cell
 %type <tree_expression_type> primary_expr oper_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
@@ -426,59 +426,62 @@ constant        : NUM
                   { $$ = $1; }
                 ;
 
-matrix          : '[' ']'
-                  { $$ = new tree_constant (octave_null_matrix::instance); }
-                | '[' ';' ']'
-                  { $$ = new tree_constant (octave_null_matrix::instance); }
-                | '[' ',' ']'
-                  { $$ = new tree_constant (octave_null_matrix::instance); }
-                | '[' matrix_rows ']'
+matrix          : '[' matrix_rows ']'
                   { $$ = parser.finish_matrix ($2); }
                 ;
 
-matrix_rows     : matrix_rows1
-                  { $$ = $1; }
-                | matrix_rows1 ';'      // Ignore trailing semicolon.
-                  { $$ = $1; }
-                ;
-
-matrix_rows1    : cell_or_matrix_row
-                  { $$ = new tree_matrix ($1); }
-                | matrix_rows1 ';' cell_or_matrix_row
+matrix_rows     : cell_or_matrix_row
+                  { $$ = $1 ? new tree_matrix ($1) : 0; }
+                | matrix_rows ';' cell_or_matrix_row
                   {
-                    $1->append ($3);
-                    $$ = $1;
+                    if ($1)
+                      {
+                        if ($3)
+                          $1->append ($3);
+
+                        $$ = $1;
+                      }
+                    else
+                      $$ = $3 ? new tree_matrix ($3) : 0;
                   }
                 ;
 
-cell            : '{' '}'
-                  { $$ = new tree_constant (octave_value (Cell ())); }
-                | '{' ';' '}'
-                  { $$ = new tree_constant (octave_value (Cell ())); }
-                | '{' cell_rows '}'
+cell            : '{' cell_rows '}'
                   { $$ = parser.finish_cell ($2); }
                 ;
 
-cell_rows       : cell_rows1
-                  { $$ = $1; }
-                | cell_rows1 ';'        // Ignore trailing semicolon.
-                  { $$ = $1; }
-                ;
-
-cell_rows1      : cell_or_matrix_row
-                  { $$ = new tree_cell ($1); }
-                | cell_rows1 ';' cell_or_matrix_row
+cell_rows       : cell_or_matrix_row
+                  { $$ = $1 ? new tree_cell ($1) : 0; }
+                | cell_rows ';' cell_or_matrix_row
                   {
-                    $1->append ($3);
-                    $$ = $1;
+                    if ($1)
+                      {
+                        if ($3)
+                          $1->append ($3);
+
+                        $$ = $1;
+                      }
+                    else
+                      $$ = $3 ? new tree_cell ($3) : 0;
                   }
                 ;
 
+// tree_argument_list objects can't be empty or have leading or trailing
+// commas, but those are all allowed in matrix and cell array rows.
+
 cell_or_matrix_row
-                : arg_list
+                : // empty
+                  { $$ = 0; }
+                | ','
+                  { $$ = 0; }
+                | arg_list
                   { $$ = $1; }
-                | arg_list ','          // Ignore trailing comma.
+                | arg_list ','
                   { $$ = $1; }
+                | ',' arg_list
+                  { $$ = $2; }
+                | ',' arg_list ','
+                  { $$ = $2; }
                 ;
 
 fcn_handle      : '@' FCN_HANDLE
@@ -3069,7 +3072,9 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
 tree_expression *
 octave_base_parser::finish_matrix (tree_matrix *m)
 {
-  return finish_array_list (m);
+  return (m
+          ? finish_array_list (m)
+          : new tree_constant (octave_null_matrix::instance));
 }
 
 // Finish building a cell list.
@@ -3077,7 +3082,9 @@ octave_base_parser::finish_matrix (tree_matrix *m)
 tree_expression *
 octave_base_parser::finish_cell (tree_cell *c)
 {
-  return finish_array_list (c);
+  return (c
+          ? finish_array_list (c)
+          : new tree_constant (octave_value (Cell ())));
 }
 
 void

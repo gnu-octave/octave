@@ -1336,6 +1336,34 @@ tree_matrix::accept (tree_walker& tw)
 
 %!assert (class ([cell(1), struct("foo", "bar")]), "cell")
 %!error [struct("foo", "bar"), cell(1)]
+
+%!assert ([,1], 1)
+%!assert ([1,], 1)
+%!assert ([,1,], 1)
+%!assert ([,1,;;], 1)
+%!assert ([,1,;,;], 1)
+
+%!assert ([1,1], ones (1, 2))
+%!assert ([,1,1], ones (1, 2))
+%!assert ([1,1,], ones (1, 2))
+%!assert ([,1,1,], ones (1, 2))
+%!assert ([,1,1,;;], ones (1, 2))
+%!assert ([,1,1,;,;], ones (1, 2))
+%!assert ([,;,1,1], ones (1, 2))
+
+%!assert ([1;1], ones (2, 1))
+%!assert ([1,;1], ones (2, 1))
+%!assert ([1,;,;1], ones (2, 1))
+
+%!error eval ("[,,]")
+%!error eval ("[,,;,]")
+%!error eval ("[,;,,;,]")
+
+%!assert (isnull ([,]))
+%!assert (isnull ([;]))
+%!assert (isnull ([;;]))
+%!assert (isnull ([;,;]))
+%!assert (isnull ([,;,;,]))
 */
 
 DEFUN (string_fill_char, args, nargout,

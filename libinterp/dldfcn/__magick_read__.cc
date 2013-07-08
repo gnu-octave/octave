@@ -36,6 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "ov-struct.h"
 
+#include "gripes.h"
+
 #ifdef HAVE_MAGICK
 
 #include <Magick++.h>

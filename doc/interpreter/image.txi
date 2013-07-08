@@ -79,7 +79,7 @@ file.
 By default, Octave's image IO functions (@code{imread}, @code{imwrite},
 and @code{imfinfo}) use the @code{GraphicsMagick} library for their
 operations.  This means a vast number of image formats is supported
-but considering the large ammount of image formats in science and
+but considering the large amount of image formats in science and
 its commonly closed nature, it is impossible to have a library
 capable of reading them all.  Because of this, the function
 @code{imformats} keeps a configurable list of available formats,

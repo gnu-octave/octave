@@ -36,7 +36,7 @@
 ## will automatically detect the file format.
 ## @item description
 ## A long description of the file format.
-## @item isa
+## @item @nospell{isa}
 ## A function handle to confirm if a file is of the specified format.
 ## @item write
 ## A function handle to write if a file is of the specified format.

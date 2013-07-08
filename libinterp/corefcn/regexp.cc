@@ -647,11 +647,18 @@ end (@code{$}) of the string.\n\
 In addition, the following escaped characters have special meaning.\n\
 \n\
 @table @code\n\
-@item \\b\n\
-Match a word boundary\n\
 \n\
-@item \\B\n\
-Match within a word\n\
+@item \\d\n\
+Match any digit\n\
+\n\
+@item \\D\n\
+Match any non-digit\n\
+\n\
+@item \\s\n\
+Match any whitespace character\n\
+\n\
+@item \\S\n\
+Match any non-whitespace character\n\
 \n\
 @item \\w\n\
 Match any word character\n\
@@ -665,17 +672,8 @@ Match the beginning of a word\n\
 @item \\>\n\
 Match the end of a word\n\
 \n\
-@item \\s\n\
-Match any whitespace character\n\
-\n\
-@item \\S\n\
-Match any non-whitespace character\n\
-\n\
-@item \\d\n\
-Match any digit\n\
-\n\
-@item \\D\n\
-Match any non-digit\n\
+@item \\B\n\
+Match within a word\n\
 @end table\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\

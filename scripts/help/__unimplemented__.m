@@ -73,7 +73,8 @@ function txt = __unimplemented__ (fcn)
     "Try @code{help glpk} for more info."];
 
   case "matlabrc"
-    txt = ["matlabrc is not implemented.  Octave uses the file ".octaverc" instead."];
+    txt = ["matlabrc is not implemented.  ",...
+           'Octave uses the file ".octaverc" instead.'];
 
   case {"ode113", "ode15i", "ode15s", "ode23", "ode23s", "ode23t", "ode23tb", "ode45", "odeget", "odeset"}
     txt = ["Octave provides lsode for solving differential equations.  ",...
@@ -82,7 +83,8 @@ function txt = __unimplemented__ (fcn)
     "See @url{http://octave.sourceforge.net/odepkg/}."];
 
   case "startup"
-    txt = ["startup is not implemented.  Octave uses the file ".octaverc" instead."];
+    txt = ["startup is not implemented.  ",...
+           'Octave uses the file ".octaverc" instead.'];
 
   case "quad2d"
     txt = ["quad2d is not implemented.  Consider using dblquad."];

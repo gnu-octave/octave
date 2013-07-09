@@ -128,7 +128,6 @@ function list = missing_functions ()
   "alpha",
   "alphamap",
   "annotation",
-  "atan2d",
   "audiodevinfo",
   "audioinfo",
   "audioplayer",

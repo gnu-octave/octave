@@ -187,20 +187,21 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      base64_decode               ellipke         lines      
-      base64_encode               erfcinv         polyeig                   
-      betaincinv                  erfi            readline_re_read_init_file
-      built_in_docstrings_file    expint          readline_read_init_file 
-      cmpermute                   findfigs        rgbplot               
-      cmunique                    fminsearch      save_default_options  
-      colorcube                   gallery         shrinkfaces           
-      copyobj                     gco             splinefit             
-      dawson                      hdl2struct      stemleaf           
-      dblist                      history_save    strjoin             
-      debug_jit                   importdata      struct2hdl          
-      doc_cache_create            iscolormap      tetramesh           
-      ellipj                      jit_enable      waterfall  
-      imformats
+      atan2d                      erfcinv         readline_re_read_init_file
+      base64_decode               erfi            readline_read_init_file   
+      base64_encode               expint          rgbplot                   
+      betaincinv                  findfigs        save_default_options      
+      built_in_docstrings_file    fminsearch      shrinkfaces               
+      cmpermute                   gallery         splinefit                 
+      cmunique                    gco             stemleaf                  
+      colorcube                   hdl2struct      strjoin                   
+      copyobj                     history_save    struct2hdl                
+      dawson                      imformats       tetramesh                 
+      dblist                      importdata      waterfall                 
+      debug_jit                   iscolormap      
+      doc_cache_create            jit_enable      
+      ellipj                      lines           
+      ellipke                     polyeig                   
 
  ** Deprecated functions.
 

@@ -12,6 +12,7 @@ elfun_FCN_FILES = \
   elfun/asecd.m \
   elfun/asech.m \
   elfun/asind.m \
+  elfun/atan2d.m \
   elfun/atand.m \
   elfun/cosd.m \
   elfun/cot.m \

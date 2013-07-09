@@ -16,7 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/switch/switch-1.m
 %!test
 %! a = 1;
 %! b = 2;
@@ -29,7 +28,6 @@
 %!
 %! assert (x == c && y == a && z == b && p == c);
 
-%% test/octave.test/switch/switch-2.m
 %!test
 %! a = 1;
 %! b = 2;
@@ -53,7 +51,6 @@
 %!
 %! assert (all (x == [3, 1, 2, 3]));
 
-%% test/octave.test/switch/switch-3.m
 %!test
 %! a = 1;
 %! b = 2;
@@ -84,13 +81,10 @@
 %! assert (a == 2);
 
 
-%% test/octave.test/switch/switch-4.m
 %!error <syntax error> eval ("switch endswitch")
 
-%% test/octave.test/switch/switch-5.m
 %!error <syntax error> eval ("switch case endswitch")
 
-%% test/octave.test/switch/switch-6.m
 %!error <syntax error> eval ("switch 1 default 1; endswitch")
 
 %% test parsing of single-quoted character string appearing immediately

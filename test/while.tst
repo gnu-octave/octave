@@ -16,7 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/while/while-1.m
 %!test
 %! i = 0;
 %! while (eye (2))
@@ -25,7 +24,6 @@
 %! endwhile
 %! assert (__prog_output_assert__ (""));
 
-%% test/octave.test/while/while-2.m
 %!test
 %! i = 5;
 %! while (--i)
@@ -34,7 +32,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("4321"));
 
-%% test/octave.test/while/while-3.m
 %!test
 %! i = 5;
 %! while (i)
@@ -44,7 +41,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("43210"));
 
-%% test/octave.test/while/while-4.m
 %!test
 %! i = 0;
 %! while (i++ < 20)
@@ -56,7 +52,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("12"));
 
-%% test/octave.test/while/while-5.m
 %!test
 %! i = 0;
 %! while (++i < 5)

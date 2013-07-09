@@ -16,7 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/if/if-1.m
 %!test
 %! i = 0;
 %! if (i == 0)
@@ -25,7 +24,6 @@
 %! endif
 %! assert (__prog_output_assert__ ("1"));
 
-%% test/octave.test/if/if-2.m
 %!test
 %! if (eye (2))
 %!   __printf_assert__ ("fail\n");
@@ -34,7 +32,6 @@
 %! end
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-3.m
 %!test
 %! x = 2;
 %! if (eye (2))
@@ -44,7 +41,6 @@
 %! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-4.m
 %!test
 %! x = 0;
 %! y = -2;
@@ -57,7 +53,6 @@
 %! end
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-5.m
 %!test
 %! x = 0;
 %! y = -2;
@@ -72,7 +67,6 @@
 %! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-6.m
 %!test
 %! x = 0;
 %! y = -2;

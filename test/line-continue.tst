@@ -71,7 +71,6 @@
 %! y = [1,2];
 %! assert (y, x);
 
-%% test/oc tave.test/contin/contin-16.m
 %!test
 %! x = [ 1 , ...
 %! 2];

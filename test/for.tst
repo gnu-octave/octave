@@ -16,7 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/for/for-1.m
 %!test
 %! for i = 1
 %!   __printf_assert__ ("%d", i);
@@ -24,7 +23,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1"));
 
-%% test/octave.test/for/for-2.m
 %!test
 %! for i = 1:4
 %!   __printf_assert__ ("%d", i);
@@ -32,7 +30,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1234"));
 
-%% test/octave.test/for/for-3.m
 %!test
 %! for i = [1,2,3,4]
 %!   __printf_assert__ ("%d", i);
@@ -40,7 +37,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1234"));
 
-%% test/octave.test/for/for-4.m
 %!test
 %! for i = [1,2;3,4]
 %!   __printf_assert__ ("%d", i(1,1));
@@ -49,7 +45,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1324"));
 
-%% test/octave.test/for/for-5.m
 %!test
 %! for i = I
 %!   __printf_assert__ ("%d", imag (i));
@@ -57,7 +52,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1"));
 
-%% test/octave.test/for/for-6.m
 %!test
 %! for i = [1,2,3,4]*I
 %!   __printf_assert__ ("%d", imag (i));
@@ -65,7 +59,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1234"));
 
-%% test/octave.test/for/for-7.m
 %!test
 %! for i = [1,2;3,4]*I
 %!   __printf_assert__ ("%d", imag (i(1,1)));
@@ -74,7 +67,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1324"));
 
-%% test/octave.test/for/for-8.m
 %!test
 %! for i = [1,2,3,4]
 %!   if (i > 2)
@@ -85,7 +77,6 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("12"));
 
-%% test/octave.test/for/for-9.m
 %!test
 %! for i = [1,2,3,4]
 %!   if (i < 3)

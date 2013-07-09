@@ -16,14 +16,12 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/try/try-1.m
 %!test
 %! try
 %! catch
 %!   error ("Shoudn't get here");
 %! end_try_catch
 
-%% test/octave.test/try/try-2.m
 %!test
 %! try
 %!   clear a;
@@ -33,7 +31,6 @@
 %! a = 1;
 %! assert (a,1);
 
-%% test/octave.test/try/try-3.m
 %!test
 %! clear x;
 %! try
@@ -46,7 +43,6 @@
 %! assert (!exist ('x'));
 %! assert (a,2);
 
-%% test/octave.test/try/try-4.m
 %!test
 %! try
 %!   clear a;
@@ -56,7 +52,6 @@
 %! end_try_catch
 %! assert (exist ('x'));
 
-%% test/octave.test/try/try-5.m
 %!test
 %! try
 %!   clear a;
@@ -67,7 +62,6 @@
 %! end_try_catch
 %! assert (lasterr()(1:13), "'a' undefined");
 
-%% test/octave.test/try/try-6.m
 %!test
 %! try
 %!   error ("user-defined error");
@@ -75,7 +69,6 @@
 %!   assert (lasterr, "user-defined error");
 %! end_try_catch
 
-%% test/octave.test/try/try-7.m
 %!function ms = mangle (s)
 %!  ## Wrap angle brackets around S.
 %!  ms = cstrcat ("<", s, ">");
@@ -89,7 +82,6 @@
 %!   assert (mangle (lasterr)(1:14), "<'a' undefined");
 %! end_try_catch
 
-%% test/octave.test/try/try-8.m
 %!test
 %! try
 %!   try
@@ -106,7 +98,6 @@
 %!   assert (lasterr()(1:13), "'b' undefined");
 %! end_try_catch
 
-%% test/octave.test/try/try-9.m
 %!test
 %! try
 %!   clear a;
@@ -123,7 +114,6 @@
 %!   end_try_catch
 %! end_try_catch
 
-%% test/octave.test/try/try-10.m
 %!test
 %! try
 %!   try

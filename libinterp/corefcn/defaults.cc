@@ -479,6 +479,7 @@ environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+\n\
 @seealso{edit_history}\n\
 @end deftypefn")
 {
@@ -511,6 +512,8 @@ the command line argument @option{--exec-path PATH}.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+\n\
+@seealso{IMAGE_PATH, OCTAVE_HOME}\n\
 @end deftypefn")
 {
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
@@ -544,6 +547,8 @@ list of directories in which to search for image files.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+\n\
+@seealso{EXEC_PATH, OCTAVE_HOME}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
@@ -565,6 +570,8 @@ DEFUN (OCTAVE_HOME, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\
 Return the name of the top-level Octave installation directory.\n\
+\n\
+@seealso{EXEC_PATH, IMAGE_PATH}\n\
 @end deftypefn")
 {
   octave_value retval;

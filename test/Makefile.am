@@ -34,6 +34,7 @@ FCN_FILES = \
   if.tst \
   index.tst \
   io.tst \
+  jit.tst \
   line-continue.tst \
   logical-index.tst \
   null-assign.tst \

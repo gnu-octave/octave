@@ -85,7 +85,7 @@
     <message>
         <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1451"/>
         <source>copied selection to clipboard</source>
-        <translation>sélection copiée vers le clipboard</translation>
+        <translation>sélection copiée vers le presse-papier</translation>
     </message>
 </context>
 <context>
@@ -108,12 +108,12 @@
         <location line="+49"/>
         <location line="+28"/>
         <source>Octave Editor</source>
-        <translation>Editeur d&apos;Octave</translation>
+        <translation>Éditeur d&apos;Octave</translation>
     </message>
     <message>
         <location line="-193"/>
         <source>Octave Files (*.m);;All Files (*)</source>
-        <translation>Fichiers d&apos;Octave (*.);;Tous les fichiers (*)</translation>
+        <translation>Fichiers d&apos;Octave (*.m);;Tous les fichiers (*)</translation>
     </message>
     <message>
         <location line="+117"/>
@@ -127,14 +127,14 @@
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
-        <translation>Fichier non-enregistré! Un fichier avec le nom sélectionné
+        <translation>Fichier non-enregistré! Un fichier ayant le nom sélectionné
 %1
-est déjà ouvert dans l&apos;editeur</translation>
+est déjà ouvert dans l&apos;éditeur</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>The associated file editor tab has disappeared.  It was likely closed by some means.</source>
-        <translation>L&apos;onglet editeur de fichier associé a disparu. Il a probablement été fermé par un moyen quelconque.</translation>
+        <translation>L&apos;onglet éditeur de fichier associé a disparu. Il a probablement été fermé par un moyen quelconque.</translation>
     </message>
     <message>
         <location line="+205"/>
@@ -149,7 +149,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Open File</source>
-        <translation>&amp;Ouvrir...</translation>
+        <translation>&amp;Ouvrir</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -164,7 +164,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+4"/>
         <source>Print</source>
-        <translation>&amp;Imprimer</translation>
+        <translation>Imprimer</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -174,7 +174,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Redo</source>
-        <translation>&amp;Refaire</translation>
+        <translation>&amp;Rétablir</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -189,7 +189,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+4"/>
         <source>Paste</source>
-        <translation>C&amp;oller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -199,7 +199,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+3"/>
         <source>Pre&amp;vious Bookmark</source>
-        <translation>Marque page &amp;precedent</translation>
+        <translation>Marque page &amp;précédent</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -219,7 +219,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+3"/>
         <source>Pre&amp;vious breakpoint</source>
-        <translation>Point d&apos;arrêt &amp;precendent</translation>
+        <translation>Point d&apos;arrêt &amp;précédent</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -244,7 +244,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+73"/>
         <source>&amp;Recent Editor Files</source>
-        <translation>Fichiers &amp;recents</translation>
+        <translation>Fichiers &amp;récents</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -289,7 +289,7 @@ est déjà ouvert dans l&apos;editeur</translation>
     <message>
         <location line="+21"/>
         <source>&amp;Debug</source>
-        <translation>&amp;Deboguer</translation>
+        <translation>&amp;Déboguer</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -331,7 +331,7 @@ est déjà ouvert dans l&apos;editeur</translation>
         <location line="+66"/>
         <location line="+22"/>
         <source>Octave Editor</source>
-        <translation>Editeur d&apos;Octave</translation>
+        <translation>Éditeur d&apos;Octave</translation>
     </message>
     <message>
         <location line="-305"/>
@@ -341,7 +341,7 @@ is about to be closed but has been modified.
 %2</source>
         <translation>Le fichier
 %1
-est en cours de fermeture, mais il à été modifié.
+est en cours de fermeture mais il a été modifié.
 %2</translation>
     </message>
     <message>
@@ -365,7 +365,7 @@ est le même que le nom du fichier courant</translation>
 Warning: The contents in the editor is modified!</source>
         <translation>
 
-Avertissement: Le contenu dans l&apos;editeur est modifié!</translation>
+Avertissement: Le contenu dans l&apos;éditeur est modifié!</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -380,7 +380,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
         <location line="-192"/>
         <source>Could not open file %1 for write:
 %2.</source>
-        <translation>Impossible d&apos;ouvrir le fichier %1 pour ecrire :
+        <translation>Impossible d&apos;ouvrir le fichier %1 pour écrire :
 %2.</translation>
     </message>
     <message>
@@ -591,7 +591,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+4"/>
         <source>Match &amp;case</source>
-        <translation>Respecter &amp;les majuscules/minuscules</translation>
+        <translation>Respecter &amp;la casse</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -611,7 +611,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1"/>
         <source>Find &amp;Previous</source>
-        <translation>Rechercher le &amp;precedant</translation>
+        <translation>Rechercher le &amp;précédent</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -636,7 +636,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1"/>
         <source>Regular E&amp;xpressions</source>
-        <translation>E&amp;xpressions regulières</translation>
+        <translation>E&amp;xpressions régulières</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -666,7 +666,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1"/>
         <source>%1 items replaced</source>
-        <translation>%1 instances remplacés</translation>
+        <translation>%1 instances remplacées</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -676,7 +676,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1"/>
         <source>No more matches found</source>
-        <translation>Aucune correspondance trouvée</translation>
+        <translation>Plus aucune correspondance trouvée</translation>
     </message>
 </context>
 <context>
@@ -719,7 +719,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+3"/>
         <source>Recurse directories</source>
-        <translation>Parcourir recursivement les sous-répertoires</translation>
+        <translation>Parcourir récursivement les sous-répertoires</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -739,12 +739,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+2"/>
         <source>Name case insensitive</source>
-        <translation>Nom insensible aux majuscules/minuscules</translation>
+        <translation>Nom insensible à la casse</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set matching name is case insensitive</source>
-        <translation>Les noms concordant sont insensible aux majuscules/minuscules</translation>
+        <translation>Les noms concordant sont insensible à la casse</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -759,17 +759,17 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+4"/>
         <source>Text to match</source>
-        <translation>Texte concordant</translation>
+        <translation>Texte à rechercher</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Text case insensitive</source>
-        <translation>Texte insensible aux majuscules/minuscules</translation>
+        <translation>Texte insensible à la casse</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set text content is case insensitive</source>
-        <translation>Le texte concordant est insensible aux majuscules/minuscules</translation>
+        <translation>Le texte recherché est insensible à la casse</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -789,7 +789,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1"/>
         <source>Start search for matching files</source>
-        <translation>Démarrer la recherche pour les fichiers concordants</translation>
+        <translation>Démarrer la recherche des fichiers concordants</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -799,12 +799,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1"/>
         <source>Stop searching</source>
-        <translation>Arreter la recherche</translation>
+        <translation>Arrêter la recherche</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>File name/location</source>
-        <translation>Nom de fichier/chemin</translation>
+        <translation>Nom/Chemin de fichier</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -827,7 +827,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/find-files-model.cc" line="+29"/>
         <source>Filename</source>
-        <translation>Fichier</translation>
+        <translation>Nom du fichier</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -840,7 +840,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/history-dock-widget.cc" line="+42"/>
         <source>Browse and search the command history.</source>
-        <translation>Naviguer et rechercher le historique des commandes.</translation>
+        <translation>Naviguer et rechercher l&apos;historique des commandes.</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -934,7 +934,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+5"/>
         <source>Undo</source>
-        <translation>Defaire</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -980,7 +980,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+36"/>
         <source>De&amp;bug</source>
-        <translation>De&amp;boguer</translation>
+        <translation>Dé&amp;boguer</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -995,7 +995,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+3"/>
         <source>Step out</source>
-        <translation>Executer jusqu&apos;à l&apos;instruction de retour</translation>
+        <translation>Exécuter jusqu&apos;à l&apos;instruction de retour</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1050,7 +1050,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+3"/>
         <source>Browse directories</source>
-        <translation>Naviguer les répertoires</translation>
+        <translation>Naviguer dans les répertoires</translation>
     </message>
     <message>
         <location line="-392"/>
@@ -1080,7 +1080,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+3"/>
         <source>Show Editor</source>
-        <translation>Afficher l&apos;editeur</translation>
+        <translation>Afficher l&apos;éditeur</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1105,7 +1105,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+3"/>
         <source>Editor</source>
-        <translation>Editeur</translation>
+        <translation>Éditeur</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1121,7 +1121,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation>Signaler un bug</translation>
+        <translation>Signaler un bogue</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1165,12 +1165,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/octave-qt-link.cc" line="+270"/>
         <source>The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation>Le fichier %1 n&apos;existe pas dans les chemins accessibles.  Pour déboguer la fonction que vous éditez, vous devez soit modifier le répertoire pour %2 ou ajouter le répertoire au chemin.</translation>
+        <translation>Le fichier %1 n&apos;existe pas dans les chemins accessibles. Pour déboguer la fonction que vous éditez, vous devez soit modifier le répertoire pour %2 ou ajouter le répertoire aux chemins accessibles.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.</source>
-        <translation>Le fichier %1 est occulté par un fichier avec le même nom dans le chemin.  Pour déboguer la fonction que vous éditez, vous devez modifier le répertoire pour %2.</translation>
+        <translation>Le fichier %1 est occulté par un fichier du même nom dans les chemins accessibles. Pour déboguer la fonction que vous éditez, vous devez modifier le répertoire pour %2.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1223,17 +1223,17 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+39"/>
         <source>Editor</source>
-        <translation>Editeur</translation>
+        <translation>Éditeur</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Show white space</source>
-        <translation>Montrer les espaces blancs</translation>
+        <translation>Montrer les espaces</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Do not show white spaces used for indentation</source>
-        <translation>Ne pas montrer les espaces blancs utilisés pour l&apos;indentation</translation>
+        <translation>Ne pas montrer les espaces utilisés pour l&apos;indentation</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -1283,7 +1283,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+13"/>
         <source>Case sensitive</source>
-        <translation>Sensible au maj/minuscules</translation>
+        <translation>Sensible à la casse</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1293,17 +1293,17 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+23"/>
         <source>Match words in document</source>
-        <translation>Checher dans le document</translation>
+        <translation>Inclure les mots du document</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Restore editor tabs from previous session on startup</source>
-        <translation>Restaurer les onglets de la session precedente</translation>
+        <translation>Restaurer les onglets de la session précédente</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Use custom file editor</source>
-        <translation>Utiliser un editeur externe</translation>
+        <translation>Utiliser un éditeur externe</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1318,7 +1318,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+24"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as difference to the default size), font decoration (bold, italic, underline), textcolor and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choisir le font, la taille (difference à la taille par défaut), le style (gras, italique, sous-ligné), la couleur du texte et la couleur du fond (dans ce cas, la couleur rose [255,0,255] designé la couleur de fond par défaut)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choisir la police, la taille (différence avec à la taille par défaut), le style (gras, italique, souligné), la couleur du texte et du fond (pour ce dernier, la couleur rose [255,0,255] designe la couleur par défaut)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+76"/>
@@ -1333,7 +1333,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+45"/>
         <source>Font</source>
-        <translation>Font</translation>
+        <translation>Police</translation>
     </message>
     <message>
         <location line="-744"/>
@@ -1343,7 +1343,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+27"/>
         <source>Highlight current line</source>
-        <translation>Sous-ligner la ligne courante</translation>
+        <translation>Surligner la ligne courante</translation>
     </message>
     <message>
         <location line="+262"/>
@@ -1368,17 +1368,17 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+15"/>
         <source>Cursor type:</source>
-        <translation>Type de courseur :</translation>
+        <translation>Type de curseur :</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Cursor blinking</source>
-        <translation>Courseur clignotant</translation>
+        <translation>Curseur clignotant</translation>
     </message>
     <message>
         <location line="+101"/>
         <source>Font size</source>
-        <translation>Taille du font</translation>
+        <translation>Taille de police</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -1433,7 +1433,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+45"/>
         <source>Use proxy server</source>
-        <translation>Serveur proxy</translation>
+        <translation>Utiliser un serveur proxy</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1453,7 +1453,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+7"/>
         <source>Language (requires restart)</source>
-        <translation>Langue (necessite un redemarrage)</translation>
+        <translation>Langue (nécessite un redémarrage)</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1463,12 +1463,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+1098"/>
         <source>Socks5Proxy</source>
-        <translation>Proxy Sock 5</translation>
+        <translation>Proxy Socks5</translation>
     </message>
     <message>
         <location line="-16"/>
         <source>Hostname:</source>
-        <translation>Nom du hote :</translation>
+        <translation>Nom de l&apos;hote :</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1510,7 +1510,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+129"/>
         <source>Difference to the default size</source>
-        <translation>Difference avecla taille par défaut</translation>
+        <translation>Différence avec la taille par défaut</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1538,7 +1538,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/terminal-dock-widget.cc" line="+38"/>
         <source>Command Window</source>
-        <translation>Fenetre de commandes</translation>
+        <translation>Fenêtre de commandes</translation>
     </message>
 </context>
 <context>
@@ -1546,7 +1546,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/qtinfo/webinfo.cc" line="+78"/>
         <source>Type here and press &apos;Return&apos; to search</source>
-        <translation>Entrez le texte ici et appuyez &apos;Entrée&apos; pour lancer la recherche</translation>
+        <translation>Entrez le texte ici et appuyez sur &apos;Entrée&apos; pour lancer la recherche</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1559,12 +1559,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/welcome-wizard.ui" line="+26"/>
         <source>Welcome to GNU Octave</source>
-        <translation>Bienvenu dans Octave</translation>
+        <translation>Bienvenu dans GNU Octave</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>It appears that you have launched Octave GUI for the first time on this computer, since no configuration file could be found at &apos;~/.octave-gui&apos;. This wizard will guide you through the essential settings you should make before you can start using Octave GUI. If you want to transfer your settings you have previously made just close this dialog and copy over the settings file to your home folder. The presence of that file will automatically be detected and will skip this wizard. IMPORTANT: This wizard is not fully functional yet. Just click your way to the end and it will create a standard settings file.</source>
-        <translation>Il semble que vous avez lancé Octave GUI pour la premiere fois sur cet ordinateur, puisque aucun fichier de configuration n&apos;a été trouvé au &apos;~/.octave-gui&apos;. Cet assistant va vous guider à travers les reglages necessaires avant de pouvoir utiliser Octave GUI. Si vous voulez transferer des reglages que vous avez déjà fait, fermez ce dialogue et copiez le fichier de configuration dans votre repertoire personnel. La presence de ce fichier va etre detecté et cet assistant ne s&apos;affichera plus. IMPORTANT : Cet assistant n&apos;est pas encore completement fonctionnel. Passez les pages jusqu&apos;à la fin et il va créer un fichier de configuration standard.</translation>
+        <translation>Il semble que vous avez lancé Octave GUI pour la première fois sur cet ordinateur puisque aucun fichier de configuration &apos;~/.octave-gui&apos; n&apos;a été trouvé. Cet assistant va vous guider pour faire les réglages nécessaires avant de pouvoir utiliser Octave GUI. Si vous voulez transferer des réglages que vous avez déjà faits, fermez ce dialogue et copiez le fichier de configuration dans votre répertoire personnel. La présence de ce fichier sera détectée automatiquement et cet assistant ne s&apos;affichera plus. IMPORTANT : Cet assistant n&apos;est pas encore complètement fonctionnel. Passez les pages jusqu&apos;à la fin et il créera un fichier de configuration standard.</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -1580,7 +1580,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
         <location line="+52"/>
         <location line="+87"/>
         <source>Previous</source>
-        <translation>Precedent</translation>
+        <translation>Précédent</translation>
     </message>
     <message>
         <location line="-45"/>
@@ -1590,12 +1590,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+7"/>
         <source>This is the development version of Octave with the first official GUI.</source>
-        <translation>Ceci est la version de developpement de Octave avec le premier GUI officiel.</translation>
+        <translation>Ceci est la version de développement de Octave avec le premier GUI officiel.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>You seem to run Octave GUI for the first time on this computer. This assistant will help you to configure this software installation. Click &apos;Finish&apos; to write a configuration file and launch Octave GUI.</source>
-        <translation>Il semble que vous executez Octave GUI pour la premiere fois sur cet ordinateur. Cet assistant va vous aider a configurer ce logiciel. Appuyez sur &apos;Fin&apos; pour créer le fichier de configuration et lancer Octave GUI.</translation>
+        <translation>Il semble que vous exécutez Octave GUI pour la premiere fois sur cet ordinateur. Cet assistant va vous aider à configurer ce logiciel. Appuyez sur &apos;Fin&apos; pour créer le fichier de configuration et lancer Octave GUI.</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -1633,7 +1633,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+107"/>
         <source>Right click to copy, rename, or display</source>
-        <translation>Clique droit pour copier, renommer ou afficher</translation>
+        <translation>Cliquez droit pour copier, renommer ou afficher</translation>
     </message>
 </context>
 <context>
@@ -1661,7 +1661,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+8"/>
         <source>Only top-level symbols may be renamed.</source>
-        <translation>Seuls les variables de plus haut niveau peuvent etre renommés.</translation>
+        <translation>Seules les variables de plus haut niveau peuvent être renommées.</translation>
     </message>
     <message>
         <location line="+125"/>

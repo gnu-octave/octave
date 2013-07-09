@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} delaunay (@var{x}, @var{y})
-## @deftypefn  {Function File} {} delaunay (@var{x})
+## @deftypefnx {Function File} {} delaunay (@var{x})
 ## @deftypefnx {Function File} {} delaunay (@dots{}, @var{options})
 ## @deftypefnx {Function File} {@var{tri} =} delaunay (@dots{})
 ## Compute the Delaunay triangulation for a 2-D set of points.

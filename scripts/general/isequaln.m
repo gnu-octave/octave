@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isequalwithequalnans (@var{x1}, @var{x2}, @dots{})
-## Assuming NaN == NaN, return true if all of @var{x1}, @var{x2}, @dots{}
-## are equal.
+## @deftypefn {Function File} {} isequaln (@var{x1}, @var{x2}, @dots{})
+## Return true if all of @var{x1}, @var{x2}, @dots{} are equal under the
+## additional assumption that NaN == NaN (no comparison of NaN placeholders
+## in dataset).
 ## @seealso{isequal}
 ## @end deftypefn
 
-function retval = isequalwithequalnans (x1, varargin)
+function retval = isequaln (x1, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -35,12 +36,15 @@ endfunction
 
 
 ## test for equality
-%!assert (isequalwithequalnans ({1,2,NaN,4},{1,2,NaN,4}), true)
-%!assert (isequalwithequalnans ([1,2,NaN,4],[1,2,NaN,4]), true)
+%!assert (isequaln ({1,2,NaN,4},{1,2,NaN,4}), true)
+%!assert (isequaln ([1,2,NaN,4],[1,2,NaN,4]), true)
 ## test for inequality
-%!assert (isequalwithequalnans ([1,2,NaN,4],[1,NaN,3,4]), false)
-%!assert (isequalwithequalnans ([1,2,NaN,4],[1,2,3,4]), false)
+%!assert (isequaln ([1,2,NaN,4],[1,NaN,3,4]), false)
+%!assert (isequaln ([1,2,NaN,4],[1,2,3,4]), false)
 ## test for equality (struct)
-%!assert (isequalwithequalnans (struct ('a',NaN,'b',2),struct ('a',NaN,'b',2),struct ('a',NaN,'b',2)), true)
-%!assert (isequalwithequalnans (1,2,1), false)
+%!assert (isequaln (struct ('a',NaN,'b',2),struct ('a',NaN,'b',2),struct ('a',NaN,'b',2)), true)
+%!assert (isequaln (1,2,1), false)
 
+## Input validation
+%!error isequaln ()
+%!error isequaln (1)

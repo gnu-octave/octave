@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isequal (@var{x1}, @var{x2}, @dots{})
 ## Return true if all of @var{x1}, @var{x2}, @dots{} are equal.
-## @seealso{isequalwithequalnans}
+## @seealso{isequaln}
 ## @end deftypefn
 
 function retval = isequal (x1, varargin)
@@ -73,4 +73,8 @@ endfunction
 %!assert (isequal (struct ('a',"abc",'b',2),struct ('a',"abc",'b',2)), true)
 ## test for inequality (struct)
 %!assert (isequal (struct ('a',NaN,'b',2),struct ('a',NaN,'b',2),struct ('a',NaN,'b',2)), false)
+
+## Input validation
+%!error isequal ()
+%!error isequal (1)
 

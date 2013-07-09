@@ -46,7 +46,7 @@ general_FCN_FILES = \
   general/iscolumn.m \
   general/isdir.m \
   general/isequal.m \
-  general/isequalwithequalnans.m \
+  general/isequaln.m \
   general/isrow.m \
   general/isscalar.m \
   general/issquare.m \

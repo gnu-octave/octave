@@ -796,7 +796,7 @@ function, not with the comparison operators listed above.
 
 @DOCSTRING(isequal)
 
-@DOCSTRING(isequalwithequalnans)
+@DOCSTRING(isequaln)
 
 @opindex <=
 @DOCSTRING(le)

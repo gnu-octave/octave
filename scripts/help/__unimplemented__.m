@@ -213,7 +213,6 @@ function list = missing_functions ()
   "fitsinfo",
   "fitsread",
   "fitswrite",
-  "flintmax",
   "flow",
   "frame2im",
   "freqspace",

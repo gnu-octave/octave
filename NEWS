@@ -187,21 +187,21 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      atan2d                      erfcinv         readline_re_read_init_file
-      base64_decode               erfi            readline_read_init_file   
-      base64_encode               expint          rgbplot                   
-      betaincinv                  findfigs        save_default_options      
-      built_in_docstrings_file    fminsearch      shrinkfaces               
-      cmpermute                   gallery         splinefit                 
-      cmunique                    gco             stemleaf                  
-      colorcube                   hdl2struct      strjoin                   
-      copyobj                     history_save    struct2hdl                
-      dawson                      imformats       tetramesh                 
-      dblist                      importdata      waterfall                 
-      debug_jit                   iscolormap      
-      doc_cache_create            jit_enable      
-      ellipj                      lines           
-      ellipke                     polyeig                   
+      atan2d                      erfcinv         polyeig                   
+      base64_decode               erfi            readline_re_read_init_file
+      base64_encode               expint          readline_read_init_file   
+      betaincinv                  findfigs        rgbplot                   
+      built_in_docstrings_file    flintmax        save_default_options      
+      cmpermute                   fminsearch      shrinkfaces               
+      cmunique                    gallery         splinefit                 
+      colorcube                   gco             stemleaf                  
+      copyobj                     hdl2struct      strjoin                   
+      dawson                      history_save    struct2hdl                
+      dblist                      imformats       tetramesh                 
+      debug_jit                   importdata      waterfall                 
+      doc_cache_create            iscolormap      
+      ellipj                      jit_enable      
+      ellipke                     lines       
 
  ** Deprecated functions.
 

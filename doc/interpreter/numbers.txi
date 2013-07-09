@@ -614,9 +614,10 @@ As the maximum value that can be represented by a number is important
 for bit manipulation, particularly when forming masks, Octave supplies
 the function @code{bitmax}.
 
+@anchor{docXflintmax}
 @DOCSTRING(bitmax)
 
-This is the double precision version of the functions @code{intmax},
+This is the double precision version of the function @code{intmax},
 previously discussed.
 
 Octave also includes the basic bitwise 'and', 'or' and 'exclusive or'

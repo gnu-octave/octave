@@ -567,9 +567,15 @@ DEFUN (bitmax, args, ,
 @deftypefn  {Built-in Function} {} bitmax ()\n\
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
+@deftypefnx {Built-in Function} {} flintmax (@dots{})\n\
 Return the largest integer that can be represented within a floating point\n\
 value.  The default class is \"double\", but \"single\" is a valid option.\n\
-On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}}.\n\
+On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}} for\n\
+\"double\" and @w{@math{2^{24} -1}} for \"single\".\n\
+\n\
+@code{flintmax} for FLoating point INTeger MAXimum is an alias for\n\
+@code{bitmax}.\n\
+@seealso{intmax, realmax, realmin}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -593,6 +599,8 @@ On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}}.\n\
 
   return retval;
 }
+
+DEFALIAS(flintmax, bitmax)
 
 DEFUN (intmax, args, ,
   "-*- texinfo -*-\n\

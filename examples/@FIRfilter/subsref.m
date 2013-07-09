@@ -1,5 +1,5 @@
 function out = subsref (f, x)
-  switch x.type
+  switch (x.type)
     case "()"
       n = f.polynomial;
       out = filter (n.poly, 1, x.subs{1});

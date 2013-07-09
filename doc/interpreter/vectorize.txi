@@ -112,7 +112,7 @@ instead of
 @example
 @group
 for i = 1:n
-  if a(i) > 5
+  if (a(i) > 5)
     a(i) -= 20
   endif
 endfor

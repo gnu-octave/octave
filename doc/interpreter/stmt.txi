@@ -259,7 +259,7 @@ The general form of the @code{switch} statement is
 
 @example
 @group
-switch @var{expression}
+switch (@var{expression})
   case @var{label}
     @var{command_list}
   case @var{label}
@@ -288,7 +288,7 @@ is executed if @emph{any} of the elements of the cell array match
 @example
 @group
 A = 7;
-switch A
+switch (A)
   case @{ 6, 7 @}
     printf ("variable is either 6 or 7\n");
   otherwise

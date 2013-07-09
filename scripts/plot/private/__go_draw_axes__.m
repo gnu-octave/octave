@@ -1329,7 +1329,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           else
             num_lines = numel (obj.string);
           endif
-          switch valign
+          switch (valign)
             ## Text offset in characters. This relies on gnuplot for font metrics.
             case "top"
               dy = -0.5;

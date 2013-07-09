@@ -101,7 +101,7 @@ endfunction
 
 %!testif HAVE_FLTK
 %! old_toolkit = graphics_toolkit ();
-%! switch old_toolkit
+%! switch (old_toolkit)
 %!   case {"gnuplot"}
 %!     new_toolkit = "fltk";
 %!   otherwise

@@ -146,7 +146,7 @@ function prpstr = getprops (h)
 
   nflds = length (fields);
   ii = 0;
-  while nflds
+  while (nflds)
     prop = fields{nflds};
     val = obj.(fields{nflds});
     ii++;

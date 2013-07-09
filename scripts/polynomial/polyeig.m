@@ -46,13 +46,13 @@ function [ z, varargout ] = polyeig (varargin)
   n = zeros (1, nin);
 
   for cnt = 1 : nin
-    if ! ( issquare (varargin{cnt}) )
+    if (! issquare (varargin{cnt}))
        error ("polyeig: coefficients must be square matrices");
     endif
     n(cnt) = size (varargin{cnt}, 1);
   endfor
 
-  if numel (unique (n)) > 1
+  if (numel (unique (n)) > 1)
        error ("polyeig: coefficients must have the same dimensions");
   endif
   n = unique (n);

@@ -261,7 +261,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       ## constraint inequality function only without any bounds
       ci_grd = @ (x) fd_ci_jac (x, globals.cifcn);
       if (iscell (cif))
-        switch length (cif)
+        switch (length (cif))
          case {1}
            ci_fun = cif{1};
          case {2}

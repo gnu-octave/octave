@@ -47,10 +47,10 @@ function [k, e] = ellipke (m)
 
   k = e = zeros (size (m));
   m = m(:);
-  if any (!isreal (m))
+  if (any (!isreal (m)))
     error ("ellipke must have real m");
   endif
-  if any (m > 1)
+  if (any (m > 1))
     error ("ellipke must have m <= 1");
   endif
 
@@ -119,7 +119,7 @@ endfunction
 %!          1.1047747327040733261;
 %!          1.0159935450252239356;
 %!          1.0 ];
-%! if k(7)==Inf, k(7)=0; endif;
+%! if (k(7)==Inf), k(7)=0; endif;
 %! assert (k, k_exp, 8*eps);
 %! assert (e, e_exp, 8*eps);
 

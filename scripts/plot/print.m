@@ -495,7 +495,7 @@ function cmd = epstool (opts, filein, fileout)
       if (opts.tight_flag)
         cmd = "--copy --bbox";
       elseif (! isempty (opts.preview))
-        switch opts.preview
+        switch (opts.preview)
         case "tiff"
           cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
         case {"tiff6u", "tiff6p", "metafile"}
@@ -617,7 +617,7 @@ function latex_standalone (opts)
     opts.name = opts.name(1:n-1);
   endif
   latexfile = strcat (opts.name, ".tex");
-  switch opts.devopt
+  switch (opts.devopt)
   case {"pdflatexstandalone"}
     packages = "\\usepackage{graphicx,color}";
     graphicsfile = strcat (opts.name, "-inc.pdf");

@@ -1315,7 +1315,7 @@ function A = invhess (x, y)
   x = x(:);
   y = y(:);
 
-  ##  On next line, z = x'; A = z(ones(n,1),:) would be more efficient.
+  ##  FIXME: On next line, z = x'; A = z(ones(n,1),:) would be more efficient.
   A = ones (n, 1) * x';
   for j = 2:n
     A(1:j-1,j) = y(1:j-1);
@@ -1503,16 +1503,16 @@ function A = kms (n, rho = 0.5)
   if (nargin < 1 || nargin > 2)
     error ("gallery: 1 to 2 arguments are required for lauchli matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
-    error("gallery: N must be an integer for lauchli matrix.")
+    error ("gallery: N must be an integer for lauchli matrix.")
   elseif (! isscalar (mu))
-    error("gallery: MU must be a scalar for lauchli matrix.")
+    error ("gallery: MU must be a scalar for lauchli matrix.")
   endif
 
-  A = (1:n)'*ones(1,n);
-  A = abs(A - A');
+  A = (1:n)'*ones (1,n);
+  A = abs (A - A');
   A = rho .^ A;
-  if imag(rho)
-    A = conj(tril(A,-1)) + triu(A);
+  if (imag (rho))
+    A = conj (tril (A,-1)) + triu (A);
   endif
 endfunction
 
@@ -1928,7 +1928,7 @@ function A = prolate (n, w = 0.25)
   a(1)   = 2*w;
   a(2:n) = sin (2*pi*w*(1:n-1)) ./ (pi*(1:n-1));
 
-  A = toeplitz(a);
+  A = toeplitz (a);
 endfunction
 
 function H = randhess (x)
@@ -2252,8 +2252,8 @@ function A = smoke (n, k = 0)
     error ("gallery: K must be a numeric scalar for smoke matrix.");
   endif
 
-  w = exp(2*pi*i/n);
-  A = diag( [w.^(1:n-1) 1] ) + diag(ones(n-1,1),1);
+  w = exp (2*pi*i/n);
+  A = diag ( [w.^(1:n-1) 1] ) + diag (ones (n-1,1), 1);
 
   switch (k)
     case (0), A(n,1) = 1;

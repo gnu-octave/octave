@@ -628,7 +628,7 @@ glob (\"file[12]\")\n\
 %! if (mkdir (tmpdir))
 %!   cwd = pwd;
 %!   cd (tmpdir);
-%!   if strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir))
+%!   if (strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir)))
 %!     a = 0;
 %!     for n = 1:5
 %!       save (filename{n}, "a");

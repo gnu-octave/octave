@@ -1007,7 +1007,7 @@ function updatelegend (h, d)
       outerposition = get (h, "unmodified_axes_outerposition");
       units = get (hax, "units");
       set (hax, "units", "points");
-      switch get (hax, "activepositionproperty")
+      switch (get (hax, "activepositionproperty"))
       case "position"
         set (hax, "outerposition", outerposition);
         set (hax, "position", position);

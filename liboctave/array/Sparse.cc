@@ -2623,7 +2623,7 @@ Sparse<T>::array_value () const
  *
 
 %!function x = set_slice (x, dim, slice, arg)
-%!  switch dim
+%!  switch (dim)
 %!    case 11
 %!      x(slice) = 2;
 %!    case 21
@@ -2636,7 +2636,7 @@ Sparse<T>::array_value () const
 %!endfunction
 
 %!function x = set_slice2 (x, dim, slice)
-%!  switch dim
+%!  switch (dim)
 %!    case 11
 %!      x(slice) = 2 * ones (size (slice));
 %!    case 21

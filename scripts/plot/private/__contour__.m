@@ -444,7 +444,7 @@ function update_data (h, d, prop = "")
 
     delete (get (h, "children"));
 
-    switch prop
+    switch (prop)
     case "levellist"
       set (h, "levellistmode", "manual")
     case "levelstep"

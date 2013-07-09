@@ -120,7 +120,7 @@ function [output, delimiter, header_rows] = importdata (varargin)
   ## Make sure file extension is in lower case.
   fileExt = lower (fileExt);
 
-  switch fileExt
+  switch (fileExt)
     case {".au", ".snd"}
       error ("importdata: not implemented for file format %s", fileExt);
     case ".avi"

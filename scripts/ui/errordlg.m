@@ -40,10 +40,11 @@ function retval = errordlg (msg, title = "Error Dialog")
 
 endfunction
 
-%!demo
-%!  disp('- test errordlg with prompt only.');
-%!  errordlg('Oops, an expected error occured');
 
 %!demo
-%!  disp('- test errordlg with prompt and caption.');
-%!  errordlg('Oops another error','This is a very long and informative caption');
+%! disp ('- test errordlg with prompt only.');
+%! errordlg ('Oops, an expected error occured');
+
+%!demo
+%! disp ('- test errordlg with prompt and caption.');
+%! errordlg ('Oops another error','This is a very long and informative caption');

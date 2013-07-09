@@ -94,21 +94,21 @@ function [sel, ok] = listdlg (varargin)
 
   ## handle key, value pairs
   for i = 1:2:nargin-1
-    if strcmp (varargin{i}, "ListString")
+    if (strcmp (varargin{i}, "ListString"))
       listcell = varargin{i+1};
-    elseif strcmp (varargin{i}, "SelectionMode")
+    elseif (strcmp (varargin{i}, "SelectionMode"))
       selmode = varargin{i+1};
-    elseif strcmp (varargin{i}, "ListSize")
+    elseif (strcmp (varargin{i}, "ListSize"))
       listsize = varargin{i+1};
-    elseif strcmp (varargin{i}, "InitialValue")
+    elseif (strcmp (varargin{i}, "InitialValue"))
       initialvalue = varargin{i+1};
-    elseif strcmp (varargin{i}, "Name")
+    elseif (strcmp (varargin{i}, "Name"))
       name = varargin{i+1};
-    elseif strcmp (varargin{i}, "PromptString")
+    elseif (strcmp (varargin{i}, "PromptString"))
       prompt = varargin{i+1};
-    elseif strcmp (varargin{i}, "OKString")
+    elseif (strcmp (varargin{i}, "OKString"))
       okstring = varargin{i+1};
-    elseif strcmp (varargin{i}, "CancelString")
+    elseif (strcmp (varargin{i}, "CancelString"))
       cancelstring = varargin{i+1};
     endif
   endfor
@@ -137,7 +137,7 @@ function [sel, ok] = listdlg (varargin)
     ## swap width and height to correct calling format for JDialogBox
     listsize = {num2str(listsize(2)), num2str(listsize(1))};
     initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
-    if isempty(prompt)
+    if (isempty (prompt))
       prompt = {""};
     endif
 
@@ -158,35 +158,37 @@ function [sel, ok] = listdlg (varargin)
 
 endfunction
 
-%!demo
-%!  disp('- test listdlg with selectionmode single. No caption, no prompt.');
-%!  itemlist = {'An item \\alpha', 'another', 'yet another'};
-%!  s = listdlg ( 'ListString',itemlist, 'SelectionMode','Single' );
-%!  imax = numel (s);
-%!  for i=1:1:imax
-%!     disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
-%!  end
 
 %!demo
-%!  disp('- test listdlg with selectionmode and preselection. Has caption and two lines prompt.');
-%!  itemlist = {'An item \\alpha', 'another', 'yet another'};
-%!  s = listdlg ( 'ListString',itemlist, ...
-%!                'SelectionMode','Multiple', ...
-%!                'Name','Selection Dialog', ...
-%!                'InitialValue',[1,2,3,4],
-%!                'PromptString',{'Select <b>an</b> item...', '...or <b>multiple</b> items'} );
-%!  imax = numel (s);
-%!  for i=1:1:imax
-%!     disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
-%!  end
+%! disp ('- test listdlg with selectionmode single. No caption, no prompt.');
+%! itemlist = {'An item \\alpha', 'another', 'yet another'};
+%! s = listdlg ('ListString',itemlist, 'SelectionMode','Single');
+%! imax = numel (s);
+%! for i=1:1:imax
+%!   disp (['Selected: ',num2str (i),': ', itemlist{s (i)}]);
+%! end
 
 %!demo
-%!  disp('- test listdlg with listsize.');
-%!  itemlist = {"Neutron","Electron","Quark","Proton","Neutrino"};
-%!  s = listdlg ( "ListString",itemlist,
-%!                "Name","Bits and Pieces",
-%!                "ListSize",[200 75] );
-%!  imax = numel (s);
-%!  for i=1:1:imax
-%!     disp(['Selected: ',num2str(i),': ', itemlist{s(i)}]);
-%!  end
+%! disp ('- test listdlg with selectionmode and preselection. Has caption and two lines prompt.');
+%! itemlist = {'An item \\alpha', 'another', 'yet another'};
+%! s = listdlg ('ListString',itemlist, ...
+%!              'SelectionMode','Multiple', ...
+%!              'Name','Selection Dialog', ...
+%!              'InitialValue',[1,2,3,4],
+%!              'PromptString',{'Select <b>an</b> item...', '...or <b>multiple</b> items'} );
+%! imax = numel (s);
+%! for i=1:1:imax
+%!   disp (['Selected: ',num2str (i),': ', itemlist{s (i)}]);
+%! end
+
+%!demo
+%! disp ('- test listdlg with listsize.');
+%! itemlist = {"Neutron","Electron","Quark","Proton","Neutrino"};
+%! s = listdlg ("ListString",itemlist,
+%!              "Name","Bits and Pieces",
+%!              "ListSize",[200 75] );
+%! imax = numel (s);
+%! for i=1:1:imax
+%!   disp (['Selected: ',num2str (i),': ', itemlist{s (i)}]);
+%! end
+

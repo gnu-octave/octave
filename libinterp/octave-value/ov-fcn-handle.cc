@@ -1329,14 +1329,14 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 
 /*
 %!function fcn_handle_save_recurse (n, mode, nm, f2, g2, hm2, hdld2, hbi2)
-%!  if n == 0
+%!  if (n == 0)
 %!    save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!  else
 %!    fcn_handle_save_recurse (n - 1, mode, nm, f2, g2, hm2, hdld2, hbi2);
 %!  endif
 %!endfunction
 %!function [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n, nm)
-%!  if n == 0
+%!  if (n == 0)
 %!    load (nm)
 %!  else
 %!    [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n - 1, nm);

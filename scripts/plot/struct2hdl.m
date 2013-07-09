@@ -417,7 +417,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
     xudata = s.properties.xudata;
     udata = s.properties.udata;
 
-    switch form
+    switch (form)
       case "xerr"
         h = errorbar (xdata, ydata, xldata, xudata, ">");
       case "yerr"

@@ -479,7 +479,7 @@ function varargout = strread (str, format = "%f", varargin)
       iwrd = 1; iwrdp = 0; iwrdl = length (words{1});
       fwptr = zeros (1, numel (fmt_words));
       ii = 1;
-      while ii <= numel (fmt_words)
+      while (ii <= numel (fmt_words))
 
         nxt_wrd = 0;
         ## Keep track of which words nr. every fmt_words{} is (starts) in.
@@ -679,7 +679,7 @@ function varargout = strread (str, format = "%f", varargin)
       ## Map to format
       ## FIXME - add support for formats like "<%s>", "%[a-zA-Z]"
       ##         Someone with regexp experience is needed.
-      switch fmt_words{m}(1:min (2, length (fmt_words{m})))
+      switch (fmt_words{m}(1:min (2, length (fmt_words{m}))))
         case "%s"
           if (pad_out)
             data(end+1:num_lines) = {""};
@@ -706,7 +706,7 @@ function varargout = strread (str, format = "%f", varargin)
           ew = regexp (fmt_words{m}, '[nfudsq]') - 1;
           nfmt = ostrsplit (fmt_words{m}(2:ew), ".");
           swidth = str2double (nfmt{1});
-          switch fmt_words{m}(ew+1)
+          switch (fmt_words{m}(ew+1))
             case {"d", "u", "f", "n"}
               n = cellfun ("isempty", data);
               ### FIXME - erroneously formatted data lead to NaN, not an error

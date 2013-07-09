@@ -66,7 +66,7 @@ function [x, map] = rgb2ind (varargin)
   else
 
     ## Test for dither_option, by checking if the final input is a string
-    if ischar (varargin{end})
+    if (ischar (varargin{end}))
       dither_option = varargin{end};
       dither_check  = true;
     else
@@ -143,14 +143,14 @@ function [x, map] = rgb2ind (varargin)
   
     ## If image is an ND array, convert it to a tiled 2D image
     ## before processing it with Graphicsmagick
-    if numel (sz)>3
+    if (numel (sz) > 3)
      rgb = reshape (rgb, [prod(sz(1:end-2)), sz(end-1), 3]);
     end
 
     ## Prepare the Graphicsmagick dithering option
-    if strcmp (dither_option, "nodither")
+    if (strcmp (dither_option, "nodither"))
       ditherstr = "+dither";
-    elseif strcmp (dither_option, "dither")
+    elseif (strcmp (dither_option, "dither"))
       ditherstr = "-dither";
     endif
       

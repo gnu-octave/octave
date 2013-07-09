@@ -51,7 +51,7 @@ function pr_out = printd (obj, filename)
   ## It seems best to only use convert for image output.  Its ps and pdf
   ## are badly rendered.
   opt = lower (opt);
-  switch opt
+  switch (opt)
     case {"pdf"}
       enscr = sprintf (
                        "enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit",...

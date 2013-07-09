@@ -34,7 +34,7 @@ UTIL_INC = \
   util/oct-sort.h \
   util/oct-sparse.h \
   util/pathsearch.h \
-  util/regexp.h \
+  util/lo-regexp.h \
   util/singleton-cleanup.h \
   util/sparse-sort.h \
   util/sparse-util.h \
@@ -66,7 +66,7 @@ UTIL_SRC = \
   util/oct-mutex.cc \
   util/oct-shlib.cc \
   util/pathsearch.cc \
-  util/regexp.cc \
+  util/lo-regexp.cc \
   util/singleton-cleanup.cc \
   util/sparse-sort.cc \
   util/sparse-util.cc \

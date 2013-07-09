@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-list.h"
 #include "oct-locbuf.h"
 #include "quit.h"
-#include "regexp.h"
+#include "lo-regexp.h"
 #include "str-vec.h"
 
 #include "defun.h"

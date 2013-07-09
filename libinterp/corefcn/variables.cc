@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "regexp.h"
+#include "lo-regexp.h"
 #include "str-vec.h"
 
 #include <defaults.h>

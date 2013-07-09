@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "glob-match.h"
-#include "regexp.h"
+#include "lo-regexp.h"
 
 class tree_argument_list;
 class octave_user_function;

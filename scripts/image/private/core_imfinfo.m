@@ -57,6 +57,7 @@ function info = core_imfinfo (filename, ext)
           error ("imfinfo: cannot find or download %s: %s", filename, msg);
         endif
         delete_file = true;
+      endif
     endif
 
     info = __magick_finfo__ (fn);

@@ -20,15 +20,16 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Author: Thomas L. Scofield <scofield@calvin.edu>
-## Author: Kristian Rumberg <kristianrumberg@gmail.com>
-## Author: Thomas Weber <thomas.weber.mail@gmail.com>
-## Author: Stefan van der Walt <stefan@sun.ac.za>
-## Author: Andy Adler
-
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
+## @deftypefn  {Function File} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
+## @deftypefnx {Function File} {[@dots{}] =} imread (@var{filename}, @var{ext})
+## @deftypefnx {Function File} {[@dots{}] =} imread (@var{url})
 ## Read images from various file formats.
+##
+## Reads an image as a matrix from the file @var{filename}.  If there is
+## no file @var{filename}, and @var{ext} was specified, it will look for
+## a file named @var{filename} and extension @var{ext}, i.e., a file named
+## @var{filename}.@var{ext}.
 ##
 ## The size and numeric class of the output depends on the
 ## format of the image.  A color image is returned as an
@@ -38,17 +39,32 @@
 ## class of the output: "uint8" or "uint16" for gray
 ## and color, and "logical" for black and white.
 ##
-## @seealso{imwrite, imfinfo}
+## @seealso{imwrite, imfinfo, imformats}
 ## @end deftypefn
 
-function varargout = imread (filename, varargin)
+## Author: Thomas L. Scofield <scofield@calvin.edu>
+## Author: Kristian Rumberg <kristianrumberg@gmail.com>
+## Author: Thomas Weber <thomas.weber.mail@gmail.com>
+## Author: Stefan van der Walt <stefan@sun.ac.za>
+## Author: Andy Adler
+
+function varargout = imread (varargin)
   if (nargin < 1)
     print_usage ();
-  elseif (! ischar (filename))
+  elseif (! ischar (varargin{1}))
     error ("imread: FILENAME must be a string");
   endif
-  varargout{1:nargout} = imageIO (@core_imread, "read", filename,
-                                  filename, varargin{:});
+  ## In case the file format was specified as a separate argument we
+  ## do this. imageIO() will ignore the second part if filename on its
+  ## own is enough. And if the second argument was a parameter name instead
+  ## of an extension, it is still going to be passed to the next function
+  ## since we are passing the whole function input as well.
+  filename = {varargin{1}};
+  if (nargin > 1 && ischar (varargin {2}))
+    filename{2} = varargin{2};
+  endif
+
+  varargout{1:nargout} = imageIO (@core_imread, "read", filename, varargin{:});
 endfunction
 
 %!testif HAVE_MAGICK

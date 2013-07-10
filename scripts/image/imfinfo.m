@@ -18,12 +18,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{info} =} imfinfo (@var{filename})
+## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{filename}, @var{ext})
 ## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{url})
 ## Read image information from a file.
 ##
 ## @code{imfinfo} returns a structure containing information about the image
-## stored in the file @var{filename}.  The output structure contains the
-## following fields.
+## stored in the file @var{filename}.  If there is no file @var{filename},
+## and @var{ext} was specified, it will look for a file named @var{filename}
+## and extension @var{ext}, i.e., a file named @var{filename}.@var{ext}.
+##
+## The output structure @var{info} contains the following fields:
 ##
 ## @table @samp
 ## @item Filename
@@ -103,16 +107,18 @@
 ## FlashPix viewing parameters.
 ## @end table
 ##
-## @seealso{imread, imwrite, imshow}
+## @seealso{imread, imwrite, imshow, imformats}
 ## @end deftypefn
 
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
-function info = imfinfo (filename)
-  if (nargin < 1)
+function info = imfinfo (varargin)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (! ischar (filename))
+  elseif (! ischar (varargin{1}))
     error ("imfinfo: FILENAME must be a string");
+  elseif (nargin > 1 && ! ischar (varargin{2}))
+    error ("imfinfo: EXT must be a string");
   endif
-  info = imageIO (@core_imfinfo, "info", filename, filename);
+  info = imageIO (@core_imfinfo, "info", varargin, varargin);
 endfunction

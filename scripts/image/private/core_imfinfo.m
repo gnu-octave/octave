@@ -1,4 +1,5 @@
 ## Copyright (C) 2008-2012 Soren Hauberg
+## Copyright (C) 2013 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -23,14 +24,16 @@
 
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
-function info = core_imfinfo (filename)
+function info = core_imfinfo (filename, ext)
 
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ("imfinfo");
   endif
 
   if (! ischar (filename))
     error ("imfinfo: FILENAME must be a string");
+  elseif (nargin >= 2 && ! ischar (ext))
+    error ("imfinfo: EXT must be a string");
   endif
   filename = tilde_expand (filename);
 
@@ -38,18 +41,24 @@ function info = core_imfinfo (filename)
   unwind_protect
 
     fn = file_in_path (IMAGE_PATH, filename);
-
     if (isempty (fn))
-      ## Couldn't find file. See if it's an URL.
-      [fn, status, msg] = urlwrite (filename, tmpnam ());
-      if (! status)
-        error ("imfinfo: cannot find %s", filename);
-      endif
-
-      if (! isempty (fn))
+      ## We couldn't find the file so...
+      if (nargin >= 2)
+        ## try adding a possible file extesion
+        filename  = [filename "." ext];
+        fn        = file_in_path (IMAGE_PATH, filename);
+        if (isempty (fn))
+          error ("imfinfo: cannot find file %s", filename);
+        endif
+      else
+        ## try filename as an URL
+        [fn, status, msg] = urlwrite (filename, tmpnam ());
+        if (! status)
+          error ("imfinfo: cannot find or download %s: %s", filename, msg);
+        endif
         delete_file = true;
-      endif
     endif
+
     info = __magick_finfo__ (fn);
 
   unwind_protect_cleanup

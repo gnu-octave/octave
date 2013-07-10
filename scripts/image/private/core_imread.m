@@ -1,3 +1,4 @@
+## Copyright (C) 2013 Carnë Draug
 ## Copyright (C) 2008-2012 Thomas L. Scofield
 ## Copyright (C) 2008 Kristian Rumberg
 ## Copyright (C) 2006 Thomas Weber
@@ -20,41 +21,33 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## This function does all the work of imread. It exists here as private
+## function so that imread can use other functions if imformats is
+## configured to. It is also needed so that imformats can create a
+## function handle for it.
+
+## Author: Carnë Draug <carandraug@octave.org>
 ## Author: Thomas L. Scofield <scofield@calvin.edu>
 ## Author: Kristian Rumberg <kristianrumberg@gmail.com>
 ## Author: Thomas Weber <thomas.weber.mail@gmail.com>
 ## Author: Stefan van der Walt <stefan@sun.ac.za>
 ## Author: Andy Adler
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
-## Read images from various file formats.
-##
-## The size and numeric class of the output depends on the
-## format of the image.  A color image is returned as an
-## @nospell{MxNx3} matrix.  Gray-level and black-and-white images are
-## of size @nospell{MxN}.
-## The color depth of the image determines the numeric
-## class of the output: "uint8" or "uint16" for gray
-## and color, and "logical" for black and white.
-##
-## @seealso{imwrite, imfinfo}
-## @end deftypefn
-
 function varargout = core_imread (filename, varargin)
 
   if (nargin < 1)
     print_usage ("imread");
-  endif
-
-  if (! ischar (filename))
+  elseif (! ischar (filename))
     error ("imread: FILENAME must be a string");
   endif
 
-  filename = tilde_expand (filename);
-
-  fn = file_in_path (IMAGE_PATH, filename);
-
+  filename  = tilde_expand (filename);
+  fn        = file_in_path (IMAGE_PATH, filename);
+  if (isempty (fn) && nargin >= 2 && ischar (varargin{1}))
+    ## if we can't find the file, check if the next input is the file extension
+    filename  = [filename "." varargin{1}];
+    fn        = file_in_path (IMAGE_PATH, filename);
+  endif
   if (isempty (fn))
     error ("imread: cannot find %s", filename);
   endif

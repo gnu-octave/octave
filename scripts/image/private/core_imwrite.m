@@ -23,12 +23,6 @@
 
 function core_imwrite (img, varargin)
 
-  persistent imwrite_possible_formats = {
-    "bmp"; "gif"; "jp2"; "jpg"; "jpx"; "jpeg"; "hdf"; "pbm"; "pcx";
-    "pgm"; "png"; "pnm"; "ppm"; "ras"; "tif"; "tiff"; "xwd" };
-
-  persistent accepted_formats = __magick_format_list__ (imwrite_possible_formats);
-
   if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
     print_usage ("imwrite");
   endif
@@ -39,8 +33,8 @@ function core_imwrite (img, varargin)
   offset = 1;
   if (isnumeric (varargin{1}))
     map = varargin{1};
-    if (isempty (map))
-      error ("imwrite: colormap must not be empty");
+    if (! iscolormap (map))
+      error ("imwrite: invalid COLORMAP");
     endif
     offset = 2;
   endif
@@ -55,18 +49,18 @@ function core_imwrite (img, varargin)
     print_usage ("imwrite");
   endif
   if (offset < length (varargin))
-    has_param_list = 1;
+    has_param_list = true;
     for ii = offset:2:(length (varargin) - 1)
       options.(varargin{ii}) = varargin{ii + 1};
     endfor
   else
-    has_param_list = 0;
+    has_param_list = false;
   endif
 
   filename = tilde_expand (filename);
 
   if (isempty (fmt))
-    [d, n, fmt] = fileparts (filename);
+    [~, ~, fmt] = fileparts (filename);
     if (! isempty (fmt))
       fmt = fmt(2:end);
     endif
@@ -78,10 +72,6 @@ function core_imwrite (img, varargin)
 
   if (issparse (img) || issparse (map))
     error ("imwrite: sparse images not supported");
-  endif
-
-  if (! strcmp (fmt, accepted_formats))
-    error ("imwrite: %s: unsupported or invalid image format", fmt);
   endif
 
   img_class = class (img);
@@ -97,6 +87,7 @@ function core_imwrite (img, varargin)
       if (nd == 3 && size (img, 3) < 3)
         error ("imwrite: invalid dimensions for truecolor image");
       endif
+      ## FIXME: why nd>5? Shouldn't it be nd>4? What's the 5th dimension for?
       if (nd > 5)
         error ("imwrite: invalid %d-dimensional image data", nd);
       endif
@@ -139,16 +130,3 @@ function core_imwrite (img, varargin)
   endif
 
 endfunction
-
-
-%% Test input validation
-%!error imwrite ()                            # Wrong # of args
-%!error imwrite (1)                           # Wrong # of args
-%!error imwrite ({"cell"}, "filename.jpg")    # Wrong class for img
-%!error imwrite (1, [], "filename.jpg")       # Empty image map
-%!error imwrite (1, 2, 3)                     # No filename specified
-%!error imwrite (1, "filename")               # No fmt specified
-%!error imwrite (1, "filename", "junk")       # Invalid fmt specified
-%!error imwrite ([], "filename.jpg")          # Empty img matrix
-%!error imwrite (spones (2), "filename.jpg")  # Invalid sparse img
-

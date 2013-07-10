@@ -18,13 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} imwrite (@var{img}, @var{filename})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
+## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{ext})
+## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{ext}, @var{p1}, @var{v1}, @dots{})
 ## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename}, @dots{})
 ## Write images in various file formats.
 ##
-## If @var{fmt} is not supplied, the file extension of @var{filename} is used
-## to determine the format.
+## If @var{ext} is not supplied, the file extension of @var{filename} is used
+## to determine the format.  The actual supported formats are dependent on
+## options made during the build of Octave.  Use @code{imformats} to check
+## the support of the different image formats.
 ##
 ## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional.
 ## Currently the following options are supported for @t{JPEG} images:
@@ -36,31 +38,7 @@
 ## quality and lower compression.
 ## @end table
 ##
-## @strong{Supported Formats}
-## @multitable @columnfractions .33 .66
-## @headitem Extension @tab Format
-## @item bmp @tab Windows Bitmap
-## @item gif @tab Graphics Interchange Format
-## @item jpg and jpeg @tab Joint Photographic Experts Group
-## @item pbm @tab Portable Bitmap
-## @item pcx @tab
-## @item pgm @tab Portable Graymap
-## @item png @tab Portable Network Graphics
-## @item pnm @tab Portable Anymap
-## @item ppm @tab Portable Pixmap
-## @item ras @tab Sun Raster
-## @item tif and tiff @tab Tagged Image File Format
-## @item xwd @tab X11 Dump
-## @end multitable
-##
-## @strong{Unsupported Formats}
-## @multitable @columnfractions .33 .66
-## @headitem Extension @tab Format
-## @item hdf @tab Hierarchical Data Format V4
-## @item @nospell{jp2} and jpx @tab Joint Photographic Experts Group 2000
-## @end multitable
-##
-## @seealso{imread, imfinfo}
+## @seealso{imread, imfinfo, imformats}
 ## @end deftypefn
 
 function imwrite (varargin)
@@ -68,15 +46,24 @@ function imwrite (varargin)
     print_usage ();
   endif
 
+  ## This input checking is a bit convoluted to support the multiple
+  ## ways the function can be called. Basically, after the image we
+  ## can have the filename or a colormap. If we have a colormap, then
+  ## the filename becomes the third argument. After that, we may have
+  ## the optional file extension.
   if (ischar (varargin{2}))
-    filename = varargin{2};
+    filename_idx = 2;
   elseif (nargin >= 3 && iscolormap (varargin{2}) && ! ischar (varargin{3}))
-    filename = varargin{3}'
+    filename_idx = 3;
   else
     error ("imwrite: no FILENAME specified");
   endif
-  varargout{1:nargout} = imageIO (@core_imwrite, "write", filename, varargin{:});
+  filename = {varargin{filename_idx}};
+  if (nargin > filename_idx + 1 && ischar (varargin {filename_idx + 1}))
+    filename{2} = varargin{filename_idx + 1};
+  endif
 
+  imageIO (@core_imwrite, "write", filename, varargin{:});
 endfunction
 
 %% Test input validation

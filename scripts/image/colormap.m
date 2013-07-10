@@ -24,6 +24,7 @@
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("list")
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("register", "@var{name}")
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("unregister", "@var{name}")
+## @deftypefnx {Command} {} colormap @var{map_name}
 ## Query or set the current colormap.
 ##
 ## With no input arguments, @code{colormap} returns the current color map.
@@ -40,6 +41,10 @@
 ## colormaps.  The options "register" and "unregister" will add or remove
 ## the colormap @var{name} from this list.
 ##
+## For convenience, it is also possible to use this function with the
+## command form, where @var{map_name} must be the name of a function
+## that returns a colormap.
+##
 ## @seealso{jet}
 ## @end deftypefn
 
@@ -54,7 +59,6 @@ function cmap = colormap (map, name)
   endif
 
   persistent map_list = cell ();
-  persistent do_warning = true;
 
   if (nargin == 1)
 
@@ -65,13 +69,6 @@ function cmap = colormap (map, name)
         cmap = map_list;
         return;
       else
-        ## FIXME: This syntax is deprecated.  It is no longer mentioned in
-        ##        documentation and should probably be removed in Octave 3.12.
-        if (do_warning)
-          warning (["colormap: deprecated syntax 'colormap (\"%s\")'.  " ...
-                    "Use 'colormap (%s (64))'"], map, map);
-          do_warning = false;
-        endif
         map = feval (map);
       endif
     endif

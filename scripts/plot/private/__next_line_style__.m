@@ -28,32 +28,33 @@ function [linestyle, marker] = __next_line_style__ (reset)
 
   persistent reset_style = true;
 
-  if (nargin < 2)
-    if (nargin == 1)
-      % Indicates whether the next call will increment or not
-      reset_style = reset;
-    else
-      % Find and return the next line style
-      ca = gca();
-      style_rotation = get (ca, "linestyleorder");
-      if (ischar (style_rotation))
-        style_rotation = strsplit (style_rotation, "|");
-      endif
-      nStyles = length (style_rotation);
-      if reset_style || (nStyles < 2)
-        style_index = 1;
-      else
-        % Executed when "hold all" is active
-        nChildren = length(get(ca, "Children"));
-        nColors = length(get(ca, "ColorOrder"));
-        style_index = mod(floor(nChildren/nColors), nStyles) + 1;
-      endif
-      options = __pltopt__ ("__next_line_style__",
-                            style_rotation (style_index));
-      linestyle = options.linestyle;
-      marker = options.marker;
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
   endif
+
+  if (nargin == 1)
+    ## Indicates whether the next call will increment or not
+    reset_style = reset;
+  else
+    ## Find and return the next line style
+    ca = gca ();
+    style_rotation = get (ca, "linestyleorder");
+    if (ischar (style_rotation))
+      style_rotation = strsplit (style_rotation, "|");
+    endif
+    nStyles = length (style_rotation);
+    if (reset_style || (nStyles < 2))
+      style_index = 1;
+    else
+      ## Executed when "hold all" is active
+      nChildren = length (get (ca, "Children"));
+      nColors = length (get (ca, "ColorOrder"));
+      style_index = mod (floor (nChildren/nColors), nStyles) + 1;
+    endif
+    options = __pltopt__ ("__next_line_style__",
+                          style_rotation(style_index));
+    linestyle = options.linestyle;
+    marker = options.marker;
+  endif
+
 endfunction

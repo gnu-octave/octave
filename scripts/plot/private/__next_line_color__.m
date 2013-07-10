@@ -1,3 +1,4 @@
+## Copyright (C) 2013 Carl Osterwisch
 ## Copyright (C) 2007-2012 John W. Eaton
 ##
 ## This file is part of Octave.
@@ -24,30 +25,33 @@
 ## Return the next line color in the rotation.
 
 ## Author: Carl Osterwisch
+## Author: jwe
 
 function rgb = __next_line_color__ (reset)
 
   persistent reset_colors = true;
 
-  if (nargin < 2)
-    if (nargin == 1)
-      % Indicates whether the next call will increment or not
-      reset_colors = reset;
-    else
-      % Find and return the next line color
-      ca = gca();
-      colorOrder = get(ca, "ColorOrder");
-      if reset_colors
-        color_index = 1;
-      else
-        % Executed when "hold all" is active
-        nChildren = length(get(ca, "Children"));
-        nColors = rows(colorOrder);
-        color_index = mod(nChildren, nColors) + 1;
-      endif
-      rgb = colorOrder(color_index,:);
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
   endif
+
+  if (nargin == 1)
+    ## Indicates whether the next call will increment or not
+    reset_colors = reset;
+  else
+    ## Find and return the next line color
+    ca = gca ();
+    colorOrder = get (ca, "ColorOrder");
+    if (reset_colors)
+      color_index = 1;
+    else
+      ## Executed when "hold all" is active
+      nChildren = length (get (ca, "Children"));
+      nColors = rows (colorOrder);
+      color_index = mod (nChildren, nColors) + 1;
+    endif
+    rgb = colorOrder(color_index,:);
+  endif
+
 endfunction
+

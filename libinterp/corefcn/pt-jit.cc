@@ -44,6 +44,8 @@ static bool Vdebug_jit = false;
 
 static bool Vjit_enable = true;
 
+static int Vjit_startcnt = 1000;
+
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
 #include <llvm/Analysis/Verifier.h>
@@ -1880,8 +1882,6 @@ tree_jit::initialize (void)
 bool
 tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
 {
-  const size_t MIN_TRIP_COUNT = 1000;
-
   size_t tc = trip_count (bounds);
   if (! tc || ! initialize () || ! enabled ())
     return false;
@@ -1892,7 +1892,7 @@ tree_jit::do_execute (tree_simple_for_command& cmd, const octave_value& bounds)
   jit_info *info = cmd.get_info ();
   if (! info || ! info->match (extra_vars))
     {
-      if (tc < MIN_TRIP_COUNT)
+      if (tc < static_cast<size_t> (Vjit_startcnt))
         return false;
 
       delete info;
@@ -2293,7 +2293,7 @@ debugging/tracing is enabled for Octave's JIT compiler.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{jit_enable}\n\
+@seealso{jit_enable, jit_startcnt}\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)
@@ -2314,7 +2314,7 @@ Query or set the internal variable that enables Octave's JIT compiler.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{debug_jit}\n\
+@seealso{jit_startcnt, debug_jit}\n\
 @end deftypefn")
 {
 #if defined (HAVE_LLVM)
@@ -2325,3 +2325,27 @@ variable value is restored when exiting the function.\n\
 #endif
 }
 
+DEFUN (jit_startcnt, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} jit_startcnt ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} jit_startcnt (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} jit_startcnt (@var{new_val}, \"local\")\n\
+Query or set the internal variable that determines whether JIT compilation\n\
+will take place for a specific loop.  Because compilation is a costly\n\
+operation it does not make sense to employ JIT when the loop count is low.\n\
+By default only loops with greater than 1000 iterations will be accelerated.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{jit_enable, debug_jit}\n\
+@end deftypefn")
+{
+#if defined (HAVE_LLVM)
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (jit_startcnt, 1,
+                                            std::numeric_limits<int>::max ());
+#else
+  warning ("jit_enable: JIT compiling not available in this version of Octave");
+  return octave_value ();
+#endif
+}

@@ -55,6 +55,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   QToolButton *dock_button = new QToolButton (this);
   dock_button->setDefaultAction (_dock_action);
   dock_button->setFocusPolicy(Qt::NoFocus);
+  dock_button->setIconSize(QSize(12,12));
 
   QAction *close_action = new QAction
                    (QIcon (":/actions/icons/widget-close.png"), "", this );
@@ -64,6 +65,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   QToolButton *close_button = new QToolButton (this);
   close_button->setDefaultAction (close_action);
   close_button->setFocusPolicy(Qt::NoFocus);
+  close_button->setIconSize(QSize(12,12));
 
   QHBoxLayout *h_layout = new QHBoxLayout ();
   h_layout->addStretch (100);

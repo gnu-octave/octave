@@ -85,7 +85,7 @@ function varargout = imformats (arg1, arg2, arg3)
             error ("imformats: FORMAT to %s must be a structure.", arg1);
           endif
           arrayfun (@is_valid_format, arg2);
-          formats(end + numel (b)) = arg2;
+          formats(end + 1: end + numel (arg2)) = arg2;
           varargout{1} = formats;
 
         case {"remove", "update"},
@@ -274,3 +274,48 @@ function bool = isa_magick (coder, filename)
     bool = strcmp (coder, info.Format);
   end_try_catch
 endfunction
+
+## changing the function to read
+%!testif HAVE_MAGICK
+%! fmt = imformats ("jpg");
+%! fmt.read = @(x) size (x, 2);
+%! imformats ("update", "jpg", fmt);
+%! assert (imread ("this is 30 characters long.jpg"), 30);
+
+## adding a new format
+%!testif HAVE_MAGICK
+%! fmt = imformats ("jpg");
+%! fmt.ext = "junk";
+%! fmt.read = @(x) true();
+%! imformats ("add", fmt);
+%! assert (imread ("some file.junk"), true);
+
+## adding multiple formats in one way
+%!testif HAVE_MAGICK
+%! fmt = imformats ("jpg");
+%! fmt.ext = "junk1";
+%! fmt.read = @(x) true();
+%! fmt(2) = fmt(1);
+%! fmt(2).ext = "junk2";
+%! imformats ("add", fmt);
+%! assert (imread ("some file.junk1"), true);
+%! assert (imread ("some file.junk2"), true);
+
+## changing format
+%!testif HAVE_MAGICK
+%! ori_fmt = mod_fmt = imformats ("jpg");
+%! mod_fmt.description = "Another description";
+%! imformats ("update", "jpg", mod_fmt);
+%! new_fmt = imformats ("jpg");
+%! assert (new_fmt.description, mod_fmt.description);
+%! imformats ("factory");
+%! new_fmt = imformats ("jpg");
+%! assert (new_fmt.description, ori_fmt.description);
+
+## FIXME: how to test for error together with testif?
+## update to an invalid format
+#%!testif HAVE_MAGICK
+#%! fmt = imformats ("jpg");
+#%! fmt = rmfield (fmt, "read");
+#%! error imformats ("update", "jpg", fmt);
+

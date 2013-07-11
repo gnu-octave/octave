@@ -17,7 +17,6 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Hello World} {} trace (@var{A})
 ## @deftypefnx {Function File} {} trace (@var{A})
 ## Compute the trace of @var{A}, the sum of the elements along the main
 ## diagonal.

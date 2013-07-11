@@ -2267,9 +2267,6 @@ void TerminalView::copyClipboard()
 
   if (text.isEmpty ())
     {
-      // FIXME -- interrupt is only appropriate here if CTRL-C is bound
-      // to the copy action.  How can we determine that?
-
       ::raise (SIGINT);
     }
   else

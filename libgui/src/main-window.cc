@@ -1051,12 +1051,12 @@ main_window::construct_edit_menu (QMenuBar *p)
   _copy_action
     = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"),
                             tr ("Copy"), this, SLOT (copyClipboard ()));
-  _copy_action->setShortcut (ctrl_shift + Qt::Key_C);
+  _copy_action->setShortcut (QKeySequence::Copy);
 
   _paste_action
     = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
-  _paste_action->setShortcut (ctrl_shift + Qt::Key_V);
+  _paste_action->setShortcut (QKeySequence::Paste);
 
   edit_menu->addSeparator ();
 

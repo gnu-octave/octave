@@ -42,13 +42,13 @@
 ##
 ## With no output arguments the results are immediately plotted.  With two
 ## output arguments the 2-D plot data is returned.  The data can subsequently
-## be plotted manually with @code{plot (@var{x}, @var{y}).
+## be plotted manually with @code{plot (@var{x}, @var{y})}.
 ##
 ## Example:
 ##
 ## @example
 ## @group
-## fplot (@cos, [0, 2*pi])
+## fplot (@@cos, [0, 2*pi])
 ## fplot ("[cos(x), sin(x)]", [0, 2*pi])
 ## @end group
 ## @end example

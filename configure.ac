@@ -2527,6 +2527,7 @@ do
         JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
       fi
       JAVA_LIBS=-ladvapi32
+      LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
     ;;
     *)
       if test -n "$JAVA_CPPFLAGS"; then

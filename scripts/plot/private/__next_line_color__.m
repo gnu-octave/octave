@@ -44,6 +44,7 @@ function rgb = __next_line_color__ (reset)
     colorOrder = get (ca, "ColorOrder");
     if (reset_colors)
       color_index = 1;
+      reset_colors = false;
     else
       ## Executed when "hold all" is active
       nChildren = length (get (ca, "Children"));

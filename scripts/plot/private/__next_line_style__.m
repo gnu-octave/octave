@@ -45,6 +45,7 @@ function [linestyle, marker] = __next_line_style__ (reset)
     nStyles = length (style_rotation);
     if (reset_style || (nStyles < 2))
       style_index = 1;
+      reset_style = false;
     else
       ## Executed when "hold all" is active
       nChildren = length (get (ca, "Children"));

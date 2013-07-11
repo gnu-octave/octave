@@ -27,43 +27,15 @@ function core_imwrite (img, varargin)
     print_usage ("imwrite");
   endif
 
-  map = [];
-  fmt = "";
+  [filename, ext, map, param_list] = imwrite_filename (varargin{2:end});
 
-  offset = 1;
-  if (isnumeric (varargin{1}))
-    map = varargin{1};
-    if (! iscolormap (map))
-      error ("imwrite: invalid COLORMAP");
-    endif
-    offset = 2;
-  endif
-  if (offset <= length (varargin) && ischar (varargin{offset}))
-    filename = varargin{offset};
-    offset++;
-    if (rem (length (varargin) - offset, 2) == 0 && ischar (varargin{offset}))
-      fmt = varargin{offset};
-      offset++;
-    endif
-  else
-    print_usage ("imwrite");
-  endif
-  if (offset < length (varargin))
-    has_param_list = true;
-    for ii = offset:2:(length (varargin) - 1)
-      options.(varargin{ii}) = varargin{ii + 1};
-    endfor
-  else
+  if (isempty (options))
     has_param_list = false;
-  endif
-
-  filename = tilde_expand (filename);
-
-  if (isempty (fmt))
-    [~, ~, fmt] = fileparts (filename);
-    if (! isempty (fmt))
-      fmt = fmt(2:end);
-    endif
+  else
+    has_param_list = true;
+    for ii = 1:2:(length (param_list))
+      options.(param_list{ii}) = param_list{ii + 1};
+    endfor
   endif
 
   if (isempty (img))
@@ -95,9 +67,9 @@ function core_imwrite (img, varargin)
       error ("imwrite: %s: invalid class for truecolor image", img_class);
     endif
     if (has_param_list)
-      __magick_write__ (filename, fmt, img, options);
+      __magick_write__ (filename, ext, img, options);
     else
-      __magick_write__ (filename, fmt, img);
+      __magick_write__ (filename, ext, img);
     endif
   else
     if (any (strcmp (img_class, {"uint8", "uint16", "double"})))
@@ -121,11 +93,11 @@ function core_imwrite (img, varargin)
     tmp = uint8 (cat (3, r, g, b) * 255);
 
     if (has_param_list)
-      __magick_write__ (filename, fmt, tmp, options);
-      ## __magick_write__ (filename, fmt, img, map, options);
+      __magick_write__ (filename, ext, tmp, options);
+      ## __magick_write__ (filename, ext, img, map, options);
     else
-      __magick_write__ (filename, fmt, tmp);
-      ## __magick_write__ (filename, fmt, img, map);
+      __magick_write__ (filename, ext, tmp);
+      ## __magick_write__ (filename, ext, img, map);
     endif
   endif
 

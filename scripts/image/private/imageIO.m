@@ -16,8 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This function simply connects the function that calls it to all
-## other imageIO functions. It does it by checking the file extension
+## This function simply connects imread and imfinfo() to the function
+## to be used based on their format. It does it by checking the file extension
 ## of the file and redirecting to the appropriate function after checking
 ## with imformats.
 ##
@@ -47,15 +47,11 @@ function varargout = imageIO (core_func, fieldname, filename, varargin)
   ## should completely ignore filename{2}. It won't even be used by
   ## imformats() at all, even if filename{1} has no extension to use with
   ## imformats().
-  ##
-  ## To further complicate things, when we are going to be writing a
-  ## file, whether the file exists or not does not matter.
-  if (isscalar (filename) || (strcmp (fieldname, "write") &&
-      ! isempty (file_in_path (IMAGE_PATH, filename{1}))))
+  if (isscalar (filename) || ! isempty (file_in_path (IMAGE_PATH, filename{1})))
     [~, ~, ext] = fileparts (filename{1});
     if (! isempty (ext))
       ## remove dot from extension
-      ext(1) = [];
+      ext = ext(2:end);
     endif
   else
     ext = filename{2};

@@ -1,4 +1,5 @@
 ## Copyright (C) 2008-2012 John W. Eaton
+## Copyright (C) 2013 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -45,25 +46,23 @@ function imwrite (varargin)
   if (nargin < 2)
     print_usage ();
   endif
+  [filename, ext] = imwrite_filename (varargin{2:end});
 
-  ## This input checking is a bit convoluted to support the multiple
-  ## ways the function can be called. Basically, after the image we
-  ## can have the filename or a colormap. If we have a colormap, then
-  ## the filename becomes the third argument. After that, we may have
-  ## the optional file extension.
-  if (ischar (varargin{2}))
-    filename_idx = 2;
-  elseif (nargin >= 3 && iscolormap (varargin{2}) && ! ischar (varargin{3}))
-    filename_idx = 3;
+  fmt = imformats (ext);
+  ## When there is no match, fmt will be a 1x1 structure with
+  ## no fields, so we can't just use `isempty (fmt)'.
+  if (isempty (fieldnames (fmt)))
+    if (isempty (ext))
+      error ("imwrite: no extension found for %s to identify the image format",
+             filename);
+    endif
+    warning ("imwrite: unlisted image format %s (see imformats). Trying to save anyway.",
+             ext);
+    core_imwrite (varargin{:});
   else
-    error ("imwrite: no FILENAME specified");
-  endif
-  filename = {varargin{filename_idx}};
-  if (nargin > filename_idx + 1 && ischar (varargin {filename_idx + 1}))
-    filename{2} = varargin{filename_idx + 1};
+    fmt.write (varargin{:});
   endif
 
-  imageIO (@core_imwrite, "write", filename, varargin{:});
 endfunction
 
 %% Test input validation

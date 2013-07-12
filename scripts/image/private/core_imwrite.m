@@ -27,7 +27,7 @@ function core_imwrite (img, varargin)
     print_usage ("imwrite");
   endif
 
-  [filename, ext, map, param_list] = imwrite_filename (varargin{2:end});
+  [filename, ext, map, param_list] = imwrite_filename (varargin{:});
 
   options        = struct ();
   has_param_list = false;

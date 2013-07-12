@@ -29,9 +29,9 @@ function core_imwrite (img, varargin)
 
   [filename, ext, map, param_list] = imwrite_filename (varargin{2:end});
 
-  if (isempty (options))
-    has_param_list = false;
-  else
+  options        = struct ();
+  has_param_list = false;
+  if (! isempty (param_list))
     has_param_list = true;
     for ii = 1:2:(length (param_list))
       options.(param_list{ii}) = param_list{ii + 1};

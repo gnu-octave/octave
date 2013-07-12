@@ -93,11 +93,15 @@ endfunction
 %!   16,  28, 160,  16,   0, 197, 214,  13,  34,  74, ...
 %!  117, 213,  17,   0,   0,   0,   0,  73,  69,  78, ...
 %!   68, 174,  66,  96, 130];
-%! fid = fopen ("test.png", "wb");
-%! fwrite (fid, vpng);
-%! fclose (fid);
-%! A = imread ("test.png");
-%! delete ("test.png");
+%! filename = [tmpnam() ".png"];
+%! unwind_protect
+%!   fid = fopen (filename, "wb");
+%!   fwrite (fid, vpng);
+%!   fclose (fid);
+%!   A = imread (filename);
+%! unwind_protect_cleanup
+%!   unlink (filename);
+%! end_unwind_protect
 %! assert (A(:,:,1), uint8 ([0, 255, 0; 255, 237, 255; 0, 255, 0]));
 %! assert (A(:,:,2), uint8 ([0, 255, 0; 255,  28, 255; 0, 255, 0]));
 %! assert (A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));

@@ -1,6 +1,11 @@
 FCN_FILE_DIRS += image
 
 image_PRIVATE_FCN_FILES = \
+  image/private/core_imfinfo.m \
+  image/private/core_imread.m \
+  image/private/core_imwrite.m \
+  image/private/imageIO.m \
+  image/private/imwrite_filename.m \
   image/private/ind2x.m
 
 image_FCN_FILES = \

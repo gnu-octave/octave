@@ -24,6 +24,7 @@
 ## @deftypefn  {Function File} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@var{filename}, @var{ext})
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@var{url})
+## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{idx})
 ## Read images from various file formats.
 ##
 ## Reads an image as a matrix from the file @var{filename}.  If there is
@@ -31,13 +32,20 @@
 ## a file named @var{filename} and extension @var{ext}, i.e., a file named
 ## @var{filename}.@var{ext}.
 ##
-## The size and numeric class of the output depends on the
+## The size and class of the output depends on the
 ## format of the image.  A color image is returned as an
 ## @nospell{MxNx3} matrix.  Gray-level and black-and-white images are
-## of size @nospell{MxN}.
-## The color depth of the image determines the numeric
+## of size @nospell{MxN}.  Multipage images will have an additional 4th
+## dimension.
+## The bit depth of the image determines the
 ## class of the output: "uint8" or "uint16" for gray
 ## and color, and "logical" for black and white.
+## See the Octave manual for more information in representing images.
+##
+## Some file formats, such as TIFF and GIF, are able to store multiple
+## images in a single file.  @var{idx} can be a scalar or vector
+## specifying the index of the images to read.  By default, Octave
+## will only read the first page.
 ##
 ## @seealso{imwrite, imfinfo, imformats}
 ## @end deftypefn

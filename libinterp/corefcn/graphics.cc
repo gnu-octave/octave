@@ -5491,8 +5491,7 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
       double min_pos = octave_Inf;
       double max_neg = -octave_Inf;
       get_children_limits (minval, maxval, min_pos, max_neg, kids, limit_type);
-      if (!xisinf (minval) && !xisnan (minval)
-          && !xisinf (maxval) && !xisnan (maxval))
+      if (xfinite (minval) && xfinite (maxval))
         {
           limits(0) = minval;
           limits(1) = maxval;
@@ -5973,16 +5972,16 @@ check_limit_vals (double& min_val, double& max_val,
                   const array_property& data)
 {
   double val = data.min_val ();
-  if (! (xisinf (val) || xisnan (val)) && val < min_val)
+  if (xfinite (val) && val < min_val)
     min_val = val;
   val = data.max_val ();
-  if (! (xisinf (val) || xisnan (val)) && val > max_val)
+  if (xfinite (val) && val > max_val)
     max_val = val;
   val = data.min_pos ();
-  if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
+  if (xfinite (val) && val > 0 && val < min_pos)
     min_pos = val;
   val = data.max_neg ();
-  if (! (xisinf (val) || xisnan (val)) && val < 0 && val > max_neg)
+  if (xfinite (val) && val < 0 && val > max_neg)
     max_neg = val;
 }
 */
@@ -6001,19 +6000,19 @@ check_limit_vals (double& min_val, double& max_val,
           double val;
 
           val = m(0);
-          if (! (xisinf (val) || xisnan (val)) && val < min_val)
+          if (xfinite (val) && val < min_val)
             min_val = val;
 
           val = m(1);
-          if (! (xisinf (val) || xisnan (val)) && val > max_val)
+          if (xfinite (val) && val > max_val)
             max_val = val;
 
           val = m(2);
-          if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
+          if (xfinite (val) && val > 0 && val < min_pos)
             min_pos = val;
 
           val = m(3);
-          if (! (xisinf (val) || xisnan (val)) && val < 0 && val > max_neg)
+          if (xfinite (val) && val < 0 && val > max_neg)
             max_neg = val;
         }
     }
@@ -6478,16 +6477,16 @@ axes::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4) \
     { \
       val = limits(0); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         min_val = val; \
       val = limits(1); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         max_val = val; \
       val = limits(2); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         min_pos = val; \
       val = limits(3); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         max_neg = val; \
     } \
   else \
@@ -7451,16 +7450,16 @@ hggroup::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4)
     {
       val = limits(0);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         min_val = val;
       val = limits(1);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         max_val = val;
       val = limits(2);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         min_pos = val;
       val = limits(3);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         max_neg = val;
     }
   else

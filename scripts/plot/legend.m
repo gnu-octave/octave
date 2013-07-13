@@ -1180,20 +1180,6 @@ function updateline (h, d, hlegend, linelength)
   endif
 endfunction
 
-%!test
-%! graphics_toolkit ("gnuplot");
-%! h = figure ("visible", "off", "__graphics_toolkit__", "gnuplot");
-%! unwind_protect
-%!   position = get (h, "position");
-%!   plot (rand (3))
-%!   legend ()
-%!   filename = sprintf ("%s.eps", tmpnam ());
-%!   print (filename)
-%!   unlink (filename);
-%!   assert (get (h, "position"), position)
-%! unwind_protect_cleanup
-%!   close (h)
-%! end_unwind_protect
 
 %!demo
 %! clf;
@@ -1556,4 +1542,19 @@ endfunction
 %!  ylabel ('ylabel');
 %!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
 %!  legend (option);
+
+%!test
+%! graphics_toolkit ("gnuplot");
+%! h = figure ("visible", "off", "__graphics_toolkit__", "gnuplot");
+%! unwind_protect
+%!   position = get (h, "position");
+%!   plot (rand (3));
+%!   legend ();
+%!   filename = sprintf ("%s.eps", tmpnam ());
+%!   print (filename);
+%!   unlink (filename);
+%!   assert (get (h, "position"), position);
+%! unwind_protect_cleanup
+%!   close (h);
+%! end_unwind_protect
 

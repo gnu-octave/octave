@@ -395,7 +395,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         if (! strcmp (__pattern, '.'))
           __patstr = ["<",__pattern,">"];
         else
-          __patstr = "an error";
+          __patstr = ifelse (__warning, "a warning", "an error");
         endif
       endif
       try
@@ -411,17 +411,25 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __success = 0;
         __warnstate = warning ("query", "quiet");
         warning ("on", "quiet");
+        ## Clear error and warning strings before starting
+        lasterr ("");
+        lastwarn ("");
         try
+          ## FIXME: lastwarn () must be called once from *WITHIN* the try block
+          ##        or subsequent warning/lastwarn statements may fail.
+          ##        Likely this is something to do with the specialness of
+          ##        the try block which is disabling normal errors.
+          lastwarn ();
           eval (sprintf ("__test__(%s);", __shared));
           if (! __warning)
             __msg = sprintf ("%serror failed.\nExpected %s but got no error\n",
                              __signal_fail, __patstr);
           else
             if (! isempty (__id))
-              [~, __err] = lastwarn;
+              [~, __err] = lastwarn ();
               __mismatch = ! strcmp (__err, __id);
             else
-              __err = trimerr (lastwarn, "warning");
+              __err = trimerr (lastwarn (), "warning");
               __mismatch = isempty (regexp (__err, __pattern, "once"));
             endif
             warning (__warnstate.state, "quiet");
@@ -430,7 +438,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
                                 "Expected %s but got no warning\n"],
                                __signal_fail, __patstr);
             elseif (__mismatch)
-              __msg = sprintf ("%serror failed.\nExpected %s but got <%s>\n",
+              __msg = sprintf ("%swarning failed.\nExpected %s but got <%s>\n",
                                __signal_fail, __patstr, __err);
             else
               __success = 1;
@@ -439,10 +447,10 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
         catch
           if (! isempty (__id))
-            [~, __err] = lasterr;
+            [~, __err] = lasterr ();
             __mismatch = ! strcmp (__err, __id);
           else
-            __err = trimerr (lasterr, "error");
+            __err = trimerr (lasterr (), "error");
             __mismatch = isempty (regexp (__err, __pattern, "once"));
           endif
           warning (__warnstate.state, "quiet");
@@ -645,20 +653,17 @@ endfunction
 
 ## Strip '.*prefix:' from '.*prefix: msg\n' and strip trailing blanks.
 function msg = trimerr (msg, prefix)
-  idx = index (msg, cstrcat (prefix, ":"));
+  idx = index (msg, [prefix ":"]);
   if (idx > 0)
     msg(1:idx+length(prefix)) = [];
   endif
-  msg = trimleft (deblank (msg));
+  msg = strtrim (msg);
 endfunction
 
 ## Strip leading blanks from string.
 function str = trimleft (str)
-  idx = find (isspace (str));
-  leading = find (idx == 1:length (idx));
-  if (! isempty (leading))
-    str = str(leading(end)+1:end);
-  endif
+  idx = find (! isspace (str), 1);
+  str = str(idx:end);
 endfunction
 
 ## Make a structure out of the named variables
@@ -685,6 +690,7 @@ function body = __extract_test_code (nm)
     fclose (fid);
   endif
 endfunction
+
 
 ### example from toeplitz
 %!shared msg1,msg2

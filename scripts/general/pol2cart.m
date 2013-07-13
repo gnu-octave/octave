@@ -55,7 +55,7 @@ function [x, y, z] = pol2cart (theta, r, z)
       r = theta(:,2);
       theta = theta(:,1);
     else
-      error ("pol2car: matrix input must have 2 or 3 columns [THETA, R (, Z)]");
+      error ("pol2cart: matrix input must have 2 or 3 columns [THETA, R (, Z)]");
     endif
   elseif (nargin == 2)
     if (! ((ismatrix (theta) && ismatrix (r))

@@ -319,6 +319,10 @@ TerminalView::TerminalView(QWidget *parent)
   _gridLayout->setMargin(0);
 
   setLayout( _gridLayout );
+
+  connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
+           parent->parent (), SLOT (set_global_shortcuts (bool)));
+
 }
 
 TerminalView::~TerminalView()
@@ -1058,6 +1062,8 @@ void TerminalView::paintEvent( QPaintEvent* pe )
 
 void TerminalView::focusInEvent(QFocusEvent *focusEvent)
 {
+  emit set_global_shortcuts_signal (false);  // disable some shortcuts
+
   setBlinkingCursorState(true);
   updateImage();
   repaint();
@@ -1068,6 +1074,8 @@ void TerminalView::focusInEvent(QFocusEvent *focusEvent)
 
 void TerminalView::focusOutEvent(QFocusEvent *focusEvent)
 {
+  emit set_global_shortcuts_signal (true);  // re-enable shortcuts
+
   // Force the cursor to be redrawn.
   _cursorBlinking = true;
   setBlinkingCursorState(false);

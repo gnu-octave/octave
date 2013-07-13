@@ -799,6 +799,9 @@ main_window::construct (void)
   connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
            this, SLOT (find_files (const QString&)));
 
+  connect (this, SIGNAL (set_widget_shortcuts_signal (bool)),
+           editor_window, SLOT (set_shortcuts (bool)));
+
   connect_uiwidget_links ();
 
   setWindowTitle ("Octave");
@@ -834,6 +837,8 @@ main_window::construct (void)
   setStatusBar (status_bar);
 
   construct_octave_qt_link ();
+
+  set_global_shortcuts (true);
 
 #ifdef HAVE_QSCINTILLA
   connect (this,
@@ -966,6 +971,8 @@ main_window::construct_file_menu (QMenuBar *p)
   _open_action
     = file_menu->addAction (QIcon (":/actions/icons/fileopen.png"),
                             tr ("Open..."));
+  _open_action->setShortcutContext (Qt::ApplicationShortcut);
+
 
 #ifdef HAVE_QSCINTILLA
   file_menu->addMenu (editor_window->get_mru_menu ());
@@ -987,8 +994,8 @@ main_window::construct_file_menu (QMenuBar *p)
 
   file_menu->addSeparator ();
 
-  QAction *exit_action = file_menu->addAction (tr ("Exit"));
-  exit_action->setShortcut (QKeySequence::Quit);
+  _exit_action = file_menu->addAction (tr ("Exit"));
+  _exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
   connect (preferences_action, SIGNAL (triggered ()),
            this, SLOT (process_settings_dialog_request ()));
@@ -1004,7 +1011,7 @@ main_window::construct_file_menu (QMenuBar *p)
   connect (save_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_save_workspace_request ()));
 
-  connect (exit_action, SIGNAL (triggered ()),
+  connect (_exit_action, SIGNAL (triggered ()),
            this, SLOT (close ()));
 }
 
@@ -1016,6 +1023,7 @@ main_window::construct_new_menu (QMenu *p)
   _new_script_action
     = new_menu->addAction (QIcon (":/actions/icons/filenew.png"),
                            tr ("Script"));
+  _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
   QAction *new_function_action = new_menu->addAction (tr ("Function"));
   new_function_action->setEnabled (true);
@@ -1060,9 +1068,8 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   edit_menu->addSeparator ();
 
-  QAction *find_files_action
+  _find_files_action
     = edit_menu->addAction (tr ("Find Files..."));
-  find_files_action->setShortcut (ctrl_shift + Qt::Key_F);
 
   edit_menu->addSeparator ();
 
@@ -1075,7 +1082,7 @@ main_window::construct_edit_menu (QMenuBar *p)
   QAction *clear_workspace_action
     = edit_menu->addAction (tr ("Clear Workspace"));
 
-  connect (find_files_action, SIGNAL (triggered()),
+  connect (_find_files_action, SIGNAL (triggered()),
            this, SLOT (find_files ()));
 
   connect (clear_command_window_action, SIGNAL (triggered ()),
@@ -1571,4 +1578,33 @@ main_window::find_files_finished(int)
 
 }
 
+void
+main_window::set_global_shortcuts (bool set_shortcuts)
+{
+  if (set_shortcuts)
+    {
 
+      _open_action->setShortcut (QKeySequence::Open);
+      _new_script_action->setShortcut (QKeySequence::New);
+
+      _exit_action->setShortcut (QKeySequence::Quit);
+
+      _find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_F);
+
+    }
+  else
+    {
+
+      QKeySequence no_key = QKeySequence ();
+
+      _open_action->setShortcut (no_key);
+      _new_script_action->setShortcut (no_key);
+
+      _exit_action->setShortcut (no_key);
+
+      _find_files_action->setShortcut (no_key);
+
+    }
+
+  emit set_widget_shortcuts_signal (set_shortcuts);
+}

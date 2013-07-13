@@ -152,6 +152,10 @@ public slots:
   // Tells the editor to react on changed settings.
   void notice_settings (const QSettings *settings);
 
+  // Tells the ditor to dis- or enable some shortcuts
+  void set_shortcuts (bool set_shortcuts);
+
+
 protected slots:
   void copyClipboard ();
   void pasteClipboard ();
@@ -178,10 +182,32 @@ private:
   QMenuBar *_menu_bar;
   QToolBar *_tool_bar;
   QMenu *_debug_menu;
+
+  QAction *_comment_selection_action;
+  QAction *_uncomment_selection_action;
+
   QAction *_copy_action;
   QAction *_cut_action;
+  QAction *_paste_action;
+
+  QAction *_find_action;
+  QAction *_goto_line_action;
+
+  QAction *_next_bookmark_action;
+  QAction *_previous_bookmark_action;
+  QAction *_toggle_bookmark_action;
+
+  QAction *_print_action;
   QAction *_run_action;
+
+  QAction *_save_action;
+  QAction *_save_as_action;
+
+  QAction *_redo_action;
+  QAction *_undo_action;
+
   QTabWidget *_tab_widget;
+
   int _marker_breakpoint;
 
   enum { MaxMRUFiles = 10 };

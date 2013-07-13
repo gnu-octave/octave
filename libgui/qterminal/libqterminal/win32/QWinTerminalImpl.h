@@ -70,6 +70,7 @@ public slots:
 signals:
   void terminated (void);
   void titleChanged (const QString&);
+  void set_global_shortcuts_signal (bool);
 
 protected:
   void viewPaintEvent (QConsoleView*, QPaintEvent*);

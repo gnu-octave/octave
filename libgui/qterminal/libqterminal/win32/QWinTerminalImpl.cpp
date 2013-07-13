@@ -1162,6 +1162,8 @@ QConsolePrivate::cursorRect (void)
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
     : QTerminal (parent), d (new QConsolePrivate (this))
 {
+    connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
+           parent, SLOT (set_global_shortcuts (bool)));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1332,6 +1334,8 @@ void QWinTerminalImpl::updateSelection (void)
 
 void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 {
+  emit set_global_shortcuts_signal (false);   // disable some shortcuts
+
   setBlinkingCursorState (true);
 
   QWidget::focusInEvent (event);
@@ -1339,6 +1343,8 @@ void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 
 void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
 {
+  emit set_global_shortcuts_signal (true);    // re-enable shortcuts
+
   // Force the cursor to be redrawn.
   d->m_cursorBlinking = true;
 

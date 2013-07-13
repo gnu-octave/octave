@@ -90,6 +90,8 @@ signals:
   void copyClipboard_signal (void);
   void pasteClipboard_signal (void);
 
+  void set_widget_shortcuts_signal (bool);
+
 public slots:
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
@@ -172,6 +174,10 @@ public slots:
   // find files dialog 
   void find_files(const QString &startdir=QDir::currentPath());
   void find_files_finished(int);
+
+  // setting global shortcuts
+  void set_global_shortcuts (bool enable);
+
 protected:
   void closeEvent (QCloseEvent * closeEvent);
 
@@ -277,6 +283,9 @@ private:
   QAction *_copy_action;
   QAction *_paste_action;
   QAction *_undo_action;
+
+  QAction *_find_files_action;
+  QAction *_exit_action;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;

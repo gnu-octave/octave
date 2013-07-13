@@ -151,21 +151,19 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
   switch (type)
     {
     case Magick::PaletteMatteType:
-#if 0
-      warning ("palettematte");
-      Matrix map (mapsize, 3);
-      Matrix alpha (mapsize, 1);
-      for (i = 0; i < mapsize; i++)
-        {
-          warning ("%d", i);
-          Magick::ColorRGB c = imvec[0].colorMap (i);
-          map(i,0) = c.red ();
-          map(i,1) = c.green ();
-          map(i,2) = c.blue ();
-          alpha(i,1) = c.alpha ();
-        }
-      break;
-#endif
+//      warning ("palettematte");
+//      Matrix map (mapsize, 3);
+//      Matrix alpha (mapsize, 1);
+//      for (i = 0; i < mapsize; i++)
+//        {
+//          warning ("%d", i);
+//          Magick::ColorRGB c = imvec[0].colorMap (i);
+//          map(i,0) = c.red ();
+//          map(i,1) = c.green ();
+//          map(i,2) = c.blue ();
+//          alpha(i,1) = c.alpha ();
+//        }
+//      break;
 
     case Magick::PaletteType:
       alpha = Matrix (0, 0);
@@ -372,13 +370,9 @@ read_images (const std::vector<Magick::Image>& imvec,
   return retval;
 }
 
-#endif
-
 static void
 maybe_initialize_magick (void)
 {
-#ifdef HAVE_MAGICK
-
   static bool initialized = false;
 
   if (! initialized)
@@ -400,8 +394,8 @@ maybe_initialize_magick (void)
 
       initialized = true;
     }
-#endif
 }
+#endif
 
 DEFUN_DLD (__magick_read__, args, nargout,
   "-*- texinfo -*-\n\
@@ -415,7 +409,9 @@ function.  Instead use @code{imread}.\n\
 {
   octave_value_list output;
 
-#ifdef HAVE_MAGICK
+#ifndef HAVE_MAGICK
+  gripe_disabled_feature ("imread", "Image IO");
+#else
 
   maybe_initialize_magick ();
 
@@ -525,12 +521,8 @@ function.  Instead use @code{imread}.\n\
           error ("__magick_read__: image depths greater than 16-bit are not supported");
         }
     }
-#else
-
-  error ("imread: image reading capabilities were disabled when Octave was compiled");
 
 #endif
-
   return output;
 }
 
@@ -882,7 +874,10 @@ function.  Instead use @code{imwrite}.\n\
 {
   octave_value_list retval;
 
-#ifdef HAVE_MAGICK
+#ifndef HAVE_MAGICK
+  gripe_disabled_feature ("imwrite", "Image IO");
+#else
+
   maybe_initialize_magick ();
 
   int nargin = args.length ();
@@ -915,13 +910,9 @@ function.  Instead use @code{imwrite}.\n\
     }
   else
     print_usage ();
-#else
-
-  error ("__magick_write__: not available in this version of Octave");
 
 #endif
-
-return retval;
+  return retval;
 }
 
 /*
@@ -1017,7 +1008,9 @@ not be using this function.  Instead use @code{imfinfo}.\n\
 {
   octave_value retval;
 
-#ifdef HAVE_MAGICK
+#ifndef HAVE_MAGICK
+  gripe_disabled_feature ("imfinfo", "Image IO");
+#else
 
   maybe_initialize_magick ();
 
@@ -1137,13 +1130,7 @@ not be using this function.  Instead use @code{imfinfo}.\n\
       error ("Magick++ exception: %s", e.what ());
       return retval;
     }
-
-#else
-
-  error ("imfinfo: not available in this version of Octave");
-
 #endif
-
   return retval;
 }
 

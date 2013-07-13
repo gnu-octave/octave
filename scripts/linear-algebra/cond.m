@@ -58,7 +58,7 @@ function retval = cond (A, p = 2)
   if (p == 2)
     if (isempty (A))
       retval = 0.0;
-    elseif (any (isinf (A(:)) | isnan (A(:))))
+    elseif (any (! isfinite (A(:))))
       error ("cond: A must not contain Inf or NaN values");
     else
       sigma   = svd (A);

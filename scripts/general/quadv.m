@@ -106,7 +106,7 @@ function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
 
   if (nfun > 10000)
     warning ("maximum iteration count reached");
-  elseif (any (isnan (q)(:) | isinf (q)(:)))
+  elseif (any (! isfinite (q(:))))
     warning ("infinite or NaN function evaluations were returned");
   elseif (hmin < (b - a) * myeps)
     warning ("minimum step size reached -- possibly singular integral");

@@ -54,7 +54,7 @@ function pdf = normpdf (x, mu = 0, sigma = 1)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (!isinf (mu) && !isnan (mu) && (sigma > 0) && (sigma < Inf))
+    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
       pdf = stdnormal_pdf ((x - mu) / sigma) / sigma;
     else
       pdf = NaN (size (x), class (pdf));

@@ -54,13 +54,13 @@ function cdf = normcdf (x, mu = 0, sigma = 1)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (!isinf (mu) && !isnan (mu) && (sigma > 0) && (sigma < Inf))
+    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
       cdf = stdnormal_cdf ((x - mu) / sigma);
     else
       cdf = NaN (size (x), class (cdf));
     endif
   else
-    k = isinf (mu) | isnan (mu) | !(sigma > 0) | !(sigma < Inf);
+    k = ! isfinite (mu) | !(sigma > 0) | !(sigma < Inf);
     cdf(k) = NaN;
 
     k = ! k;

@@ -86,7 +86,7 @@ function fmt = get_fmt (x, sep)
     fmt = sprintf ("%%%dd", 1 + sep);
   else
     ## Maybe have some zeros.
-    nan_inf = isinf (t) | isnan (t);
+    nan_inf = ! isfinite (t);
     if (any (nan_inf))
       if (any (t(nan_inf) < 0))
         min_fw = 4 + sep;

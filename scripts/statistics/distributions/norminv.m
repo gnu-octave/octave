@@ -54,11 +54,11 @@ function inv = norminv (x, mu = 0, sigma = 1)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (!isinf (mu) && !isnan (mu) && (sigma > 0) && (sigma < Inf))
+    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
       inv =  mu + sigma * stdnormal_inv (x);
     endif
   else
-    k = !isinf (mu) & !isnan (mu) & (sigma > 0) & (sigma < Inf);
+    k = isfinite (mu) & (sigma > 0) & (sigma < Inf);
     inv(k) = mu(k) + sigma(k) .* stdnormal_inv (x(k));
   endif
 

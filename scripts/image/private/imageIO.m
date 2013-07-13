@@ -61,8 +61,8 @@ function varargout = imageIO (core_func, fieldname, filename, varargin)
   ## When there is no match, fmt will be a 1x1 structure with no fields,
   ## so we can't just use `isempty (fmt)'.
   if (isempty (fieldnames (fmt)))
-    varargout{1:nargout} = core_func (varargin{:});
+    [varargout{1:nargout}] = core_func (varargin{:});
   else
-    varargout{1:nargout} = fmt.(fieldname) (varargin{:});
+    [varargout{1:nargout}] = fmt.(fieldname) (varargin{:});
   endif
 endfunction

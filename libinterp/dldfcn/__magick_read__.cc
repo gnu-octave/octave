@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 Carnë Draug
 Copyright (C) 2002-2012 Andy Adler
 Copyright (C) 2008 Thomas L. Scofield
 Copyright (C) 2010 David Grundberg
@@ -49,16 +50,11 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
 {
   octave_value_list output;
 
-  int rows = imvec[0].baseRows ();
-  int columns = imvec[0].baseColumns ();
-  int nframes = frameidx.length ();
+  const int rows    = imvec[0].baseRows ();
+  const int columns = imvec[0].baseColumns ();
+  const int nframes = frameidx.length ();
 
-  dim_vector idim = dim_vector ();
-  idim.resize (4);
-  idim(0) = rows;
-  idim(1) = columns;
-  idim(2) = 1;
-  idim(3) = nframes;
+  const dim_vector idim = dim_vector (rows, columns, 1, nframes);
 
   Array<int> idx (dim_vector (4, 1));
 
@@ -200,16 +196,11 @@ read_images (const std::vector<Magick::Image>& imvec,
 
   T im;
 
-  int rows = imvec[0].baseRows ();
-  int columns = imvec[0].baseColumns ();
-  int nframes = frameidx.length ();
+  const int rows    = imvec[0].baseRows ();
+  const int columns = imvec[0].baseColumns ();
+  const int nframes = frameidx.length ();
 
-  dim_vector idim = dim_vector ();
-  idim.resize (4);
-  idim(0) = rows;
-  idim(1) = columns;
-  idim(2) = 1;
-  idim(3) = nframes;
+  dim_vector idim = dim_vector (rows, columns, 1, nframes);
 
   Magick::ImageType type = imvec[0].type ();
   const int divisor = ((uint64_t (1) << QuantumDepth) - 1) / 
@@ -217,8 +208,8 @@ read_images (const std::vector<Magick::Image>& imvec,
 
   switch (type)
     {
-    case Magick::BilevelType:
-    case Magick::GrayscaleType:
+    case Magick::BilevelType:           // Monochrome bi-level image
+    case Magick::GrayscaleType:         // Grayscale image
       {
         im = T (idim);
         P *vec = im.fortran_vec ();
@@ -246,7 +237,7 @@ read_images (const std::vector<Magick::Image>& imvec,
         }
       break;
 
-    case Magick::GrayscaleMatteType:
+    case Magick::GrayscaleMatteType:    // Grayscale image with opacity
       {
         idim(2) = 2;
         im = T (idim);
@@ -279,8 +270,8 @@ read_images (const std::vector<Magick::Image>& imvec,
         }
       break;
 
-    case Magick::PaletteType:
-    case Magick::TrueColorType:
+    case Magick::PaletteType:           // Indexed color (palette) image
+    case Magick::TrueColorType:         // Truecolor image
       {
         idim(2) = 3;
         im = T (idim);
@@ -317,9 +308,9 @@ read_images (const std::vector<Magick::Image>& imvec,
         }
       break;
 
-    case Magick::PaletteMatteType:
-    case Magick::TrueColorMatteType:
-    case Magick::ColorSeparationType:
+    case Magick::PaletteMatteType:      // Indexed color (palette) image with opacity
+    case Magick::TrueColorMatteType:    // Truecolor image with opacity
+    case Magick::ColorSeparationType:   // Cyan/Yellow/Magenta/Black (CYMK) image
       {
         idim(2) = 4;
         im = T (idim);
@@ -361,7 +352,7 @@ read_images (const std::vector<Magick::Image>& imvec,
       break;
 
     default:
-      error ("__magick_read__: undefined ImageMagick image type");
+      error ("__magick_read__: undefined Magick++ image type");
       return retval;
     }
 
@@ -399,12 +390,13 @@ maybe_initialize_magick (void)
 
 DEFUN_DLD (__magick_read__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{m} =} __magick_read__ (@var{fname}, @var{index})\n\
-@deftypefnx {Loadable Function} {[@var{m}, @var{colormap}] =} __magick_read__ (@var{fname}, @var{index})\n\
-@deftypefnx {Loadable Function} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{index})\n\
-Read images with ImageMagick++.  In general you should not be using this\n\
-function.  Instead use @code{imread}.\n\
-@seealso{imread}\n\
+@deftypefn {Loadable Function} {[@var{img}, @var{map}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{options})\n\
+Read image with GraphicsMagick or ImageMagick.\n\
+\n\
+This is a private internal function not intended for direct use.  Instead\n\
+use @code{imread}.\n\
+\n\
+@seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
   octave_value_list output;
@@ -415,34 +407,19 @@ function.  Instead use @code{imread}.\n\
 
   maybe_initialize_magick ();
 
-  if (args.length () > 3 || args.length () < 1 || ! args(0).is_string ()
-      || nargout > 3)
+  if (args.length () != 2 || ! args(0).is_string ())
     {
       print_usage ();
       return output;
     }
 
-  Array<int> frameidx;
-  bool all_frames = false;
-
-  if (args.length () == 2 && args(1).is_real_type ())
-    frameidx = args(1).int_vector_value ();
-  else if (args.length () == 3 && args(1).is_string ()
-           && args(1).string_value () == "frames")
+  octave_map options = args(1).map_value ();
+  if (error_state)
     {
-      if (args(2).is_string () && args(2).string_value () == "all")
-        all_frames = true;
-      else if (args(2).is_real_type ())
-        frameidx = args(2).int_vector_value ();
-    }
-  else
-    {
-      frameidx = Array<int> (dim_vector (1, 1));
-      frameidx(0) = 1;
+      error ("__magick_read__: OPTIONS must be a struct");
     }
 
   std::vector<Magick::Image> imvec;
-
   try
     {
       // Read a file into vector of image objects
@@ -454,6 +431,8 @@ function.  Instead use @code{imread}.\n\
     }
   catch (Magick::ErrorCoder& e)
     {
+      // FIXME: there's a WarningCoder and ErrorCoder. Shouldn't this
+      // exception cause an error?
       warning ("Magick++ coder error: %s", e.what ());
     }
   catch (Magick::Exception& e)
@@ -462,22 +441,34 @@ function.  Instead use @code{imread}.\n\
       return output;
     }
 
-  int nframes = imvec.size ();
-  if (all_frames)
+  const int nframes = imvec.size ();
+  Array<int> frameidx;
+
+  octave_value indexes = options.getfield ("index")(0);
+  if (indexes.is_string () && indexes.string_value () == "all")
     {
       frameidx = Array<int> (dim_vector (1, nframes));
-      for (int i = 0; i < frameidx.length (); i++)
-        frameidx(i) = i;
+      for (int i = 0; i < nframes; i++)
+        {
+          frameidx(i) = i;
+        }
     }
   else
     {
-      for (int i = 0; i < frameidx.length (); i++)
+      frameidx = indexes.int_vector_value ();
+      if (error_state)
         {
-          frameidx(i) = frameidx(i) - 1;
-
-          if (frameidx(i) >= nframes || frameidx(i) < 0)
+          error ("__magick_read__: invalid value for Index/Frame");
+        }
+      // Fix indexex from base 1 to base 0, and at the same time, make
+      // sure none of the indexes is outside the range of image number.
+      int n = frameidx.nelem ();
+      for (int i = 0; i < n; i++)
+        {
+          frameidx(i)--;
+          if (frameidx(i) < 0 || frameidx(i) > nframes - 1)
             {
-              error ("__magick_read__: invalid INDEX vector");
+              error ("imread: index/frames specified are outside the number of images");
               return output;
             }
         }
@@ -485,8 +476,14 @@ function.  Instead use @code{imread}.\n\
 
   Magick::ClassType klass = imvec[0].classType ();
 
+  // PseudoClass:
+  // Image is composed of pixels which specify an index in a color palette.
   if (klass == Magick::PseudoClass && nargout > 1)
-    output = read_indexed_images (imvec, frameidx, (nargout == 3));
+    {
+      output = read_indexed_images (imvec, frameidx, (nargout == 3));
+    }
+  // If not PseudoClass then it must be DirectClass: Image is composed of
+  // pixels which represent literal color values.
   else
     {
       unsigned int depth = imvec[0].modulusDepth ();
@@ -867,9 +864,12 @@ DEFUN_DLD (__magick_write__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img})\n\
 @deftypefnx {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
-Write images with ImageMagick++.  In general you should not be using this\n\
-function.  Instead use @code{imwrite}.\n\
-@seealso{imread}\n\
+Write image with GraphicsMagick or ImageMagick.\n\
+\n\
+This is a private internal function not intended for direct use.  Instead\n\
+use @code{imwrite}.\n\
+\n\
+@seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1001,9 +1001,12 @@ magick_to_octave_value (const Magick::ImageType magick)
 DEFUN_DLD (__magick_finfo__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __magick_finfo__ (@var{fname})\n\
-Read image information with GraphicsMagick++.  In general you should\n\
-not be using this function.  Instead use @code{imfinfo}.\n\
-@seealso{imfinfo, imread}\n\
+Read image information with GraphicsMagick or ImageMagick.\n\
+\n\
+This is a private internal function not intended for direct use.  Instead\n\
+use @code{imfinfo}.\n\
+\n\
+@seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1145,6 +1148,8 @@ DEFUN_DLD (__magick_formats__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __magick_imformats__ (@var{formats})\n\
 Fill formats info with GraphicsMagick CoderInfo.\n\
+\n\
+@seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
   octave_value retval;

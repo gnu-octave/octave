@@ -1,3 +1,4 @@
+## Copyright (C) 2013 Carnë Draug
 ## Copyright (C) 2008-2012 Thomas L. Scofield
 ## Copyright (C) 2008 Kristian Rumberg
 ## Copyright (C) 2006 Thomas Weber
@@ -25,6 +26,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@var{filename}, @var{ext})
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@var{url})
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{idx})
+## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{param1}, @var{val1}, @dots{})
 ## Read images from various file formats.
 ##
 ## Reads an image as a matrix from the file @var{filename}.  If there is
@@ -47,9 +49,25 @@
 ## specifying the index of the images to read.  By default, Octave
 ## will only read the first page.
 ##
+## Depending on the file format, it is possible to configure the reading
+## of images with @var{param}, @var{val} pairs.  The following options
+## are supported:
+##
+## @table @asis
+## @item Frames or Index
+## This is an alternative method to specify @var{idx}.  When specifying it
+## in this way, its value can also be the string "all".
+##
+## @item Info
+## This option exists for @sc{Matlab} compatibility and has no effect.  For
+## maximum performance while reading multiple images from a single file,
+## use the Index option.
+## @end table
+##
 ## @seealso{imwrite, imfinfo, imformats}
 ## @end deftypefn
 
+## Author: Carnë Draug <carandraug@octave.org>
 ## Author: Thomas L. Scofield <scofield@calvin.edu>
 ## Author: Kristian Rumberg <kristianrumberg@gmail.com>
 ## Author: Thomas Weber <thomas.weber.mail@gmail.com>
@@ -72,7 +90,7 @@ function varargout = imread (varargin)
     filename{2} = varargin{2};
   endif
 
-  varargout{1:nargout} = imageIO (@core_imread, "read", filename, varargin{:});
+  [varargout{1:nargout}] = imageIO (@core_imread, "read", filename, varargin{:});
 endfunction
 
 %!testif HAVE_MAGICK

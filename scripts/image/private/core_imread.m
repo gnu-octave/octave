@@ -41,32 +41,112 @@ function varargout = core_imread (filename, varargin)
     error ("imread: FILENAME must be a string");
   endif
 
+  ## keep track of the varargin offset we're looking at each moment
+  offset    = 1;
+
   filename  = tilde_expand (filename);
   fn        = file_in_path (IMAGE_PATH, filename);
-  if (isempty (fn) && nargin >= 2 && ischar (varargin{1}))
+  if (isempty (fn) && nargin >= offset + 1 && ischar (varargin{offset}))
     ## if we can't find the file, check if the next input is the file extension
-    filename  = [filename "." varargin{1}];
+    filename  = [filename "." varargin{offset}];
     fn        = file_in_path (IMAGE_PATH, filename);
+    offset++;
   endif
   if (isempty (fn))
     error ("imread: cannot find %s", filename);
   endif
 
+  ## set default for options
+  options = struct ("index", 1);
+
+  ## Index is the only option that can be defined without the parameter/value
+  ## pair style. When defining it here, the string "all" is invalid though.
+  if (nargin >= offset + 1 && ! ischar (varargin{offset}))
+    if (! is_valid_index_option (options.index))
+      error ("imread: IDX must be a numeric vector");
+    endif
+    options.index = varargin{offset};
+    offset++;
+  endif
+
+  if (rem (numel (varargin) - offset + 1, 2) != 0)
+    error ("imread: no pair for all arguments (even number left)");
+  endif
+
+  for idx = offset:2:(numel (varargin) - offset + 1)
+
+    switch (tolower (varargin{idx}))
+
+      case {"frames", "index"},
+        options.index = varargin{idx+1};
+        if (! (is_valid_index_option (options.index)) &&
+            ! (ischar (options.index) && strcmpi (options.index, "all")))
+          error ("imread: value for %s must be a vector or the string `all'");
+        endif
+
+## FIXME: commented until it's implemented in __magick_read__
+##      case "pixelregion",
+##        options.region = varargin{idx+1};
+##        if (! iscell (options.region) || numel (options.region) != 2)
+##          error ("imread: value for %s must be a 2 element cell array",
+##                 varargin{idx});
+##        endif
+##        for reg_idx = 1:2
+##          if (numel (options.region{reg_idx}) == 3)
+##            ## do nothing
+##          elseif (numel (options.region{reg_idx}) == 2)
+##            options.region{reg_idx}(3) = options.region{reg_idx}(2);
+##            options.region{reg_idx}(2) = 1;
+##          else
+##            error ("imread: range for %s must be a 2 or 3 element vector",
+##                   varargin{idx});
+##          endif
+##          options.region{reg_idx} = floor (options.region{reg_idx}(1)): ...
+##                                    floor (options.region{reg_idx}(2)): ...
+##                                    floor (options.region{reg_idx}(3));
+##        endfor
+
+      case "info",
+        ## We ignore this option. This parameter exists in Matlab to
+        ## speed up the reading of multipage TIFF.  It makes no difference
+        ## for us since we're already quite efficient.
+
+      otherwise
+        error ("imread: invalid PARAMETER `%s'", varargin{idx});
+
+    endswitch
+  endfor
+
   try
-    [varargout{1:nargout}] = __magick_read__ (fn, varargin{:});
+    [varargout{1:nargout}] = __magick_read__ (fn, options);
+
   catch
+    ## If we can't read it with Magick, maybe the image is in Octave's
+    ## native image format.  This is from back before Octave had 'imread'
+    ## and 'imwrite'. Then we had the functions 'loadimage' and 'saveimage'.
+    ##
+    ## This "image format" seems to be any file that can be read with
+    ## load() and contains 2 variables.  The variable named "map" is a
+    ## colormap and must exist whether the image is indexed or not. The
+    ## other variable must be named "img" or "X" for a "normal" or
+    ## indexed image.
+    ##
+    ## FIXME: this has been deprecated for the next major release (3.8 or 4.0).
+    ##        If someone wants to revive this as yet another image format, a
+    ##        separate Octave package can be written for it, that register the
+    ##        format through imformats.
 
     magick_error = lasterr ();
 
     img_field = false;
-    x_field = false;
+    x_field   = false;
     map_field = false;
 
     try
       vars = load (fn);
       if (isstruct (vars))
         img_field = isfield (vars, "img");
-        x_field = isfield (vars, "X");
+        x_field   = isfield (vars, "X");
         map_field = isfield (vars, "map");
       endif
     catch
@@ -80,6 +160,11 @@ function varargout = core_imread (filename, varargin)
       else
         varargout{1} = vars.X;
       endif
+      persistent warned = false;
+      if (! warned)
+        warning ("Octave's native image format has been deprecated.");
+        warned = true;
+      endif
     else
       error ("imread: invalid Octave image file format");
     endif
@@ -88,31 +173,13 @@ function varargout = core_imread (filename, varargin)
 
 endfunction
 
-
-%!testif HAVE_MAGICK
-%! vpng = [ ...
-%!  137,  80,  78,  71,  13,  10,  26,  10,   0,   0, ...
-%!    0,  13,  73,  72,  68,  82,   0,   0,   0,   3, ...
-%!    0,   0,   0,   3,   8,   2,   0,   0,   0, 217, ...
-%!   74,  34, 232,   0,   0,   0,   1, 115,  82,  71, ...
-%!   66,   0, 174, 206,  28, 233,   0,   0,   0,   4, ...
-%!  103,  65,  77,  65,   0,   0, 177, 143,  11, 252, ...
-%!   97,   5,   0,   0,   0,  32,  99,  72,  82,  77, ...
-%!    0,   0, 122,  38,   0,   0, 128, 132,   0,   0, ...
-%!  250,   0,   0,   0, 128, 232,   0,   0, 117,  48, ...
-%!    0,   0, 234,  96,   0,   0,  58, 152,   0,   0, ...
-%!   23, 112, 156, 186,  81,  60,   0,   0,   0,  25, ...
-%!   73,  68,  65,  84,  24,  87,  99,  96,  96,  96, ...
-%!  248, 255, 255,  63, 144,   4,  81, 111, 101,  84, ...
-%!   16,  28, 160,  16,   0, 197, 214,  13,  34,  74, ...
-%!  117, 213,  17,   0,   0,   0,   0,  73,  69,  78, ...
-%!   68, 174,  66,  96, 130];
-%! fid = fopen ("test.png", "wb");
-%! fwrite (fid, vpng);
-%! fclose (fid);
-%! A = imread ("test.png");
-%! delete ("test.png");
-%! assert (A(:,:,1), uint8 ([0, 255, 0; 255, 237, 255; 0, 255, 0]));
-%! assert (A(:,:,2), uint8 ([0, 255, 0; 255,  28, 255; 0, 255, 0]));
-%! assert (A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));
-
+## Tests if the value passed to the Index or Frames is valid. This option
+## can be defined in two places, but only in one place can it also be the
+## string "all"
+function bool = is_valid_index_option (arg)
+  ## is the index option
+  bool = false;
+  if (isvector (arg) && isnumeric (arg) && isreal (arg))
+    bool = true;
+  endif
+endfunction

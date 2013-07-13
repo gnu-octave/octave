@@ -240,6 +240,11 @@ Summary of important user-visible changes for version 3.8:
       CC_VERSION  (now GCC_VERSION)
       CXX_VERSION (now GXX_VERSION)
 
+    The internal class <Octave_map> has been deprecated in Octave 3.8 and will
+    be removed from Octave 3.12 (or whatever version is the second major
+    release after 3.8).  Replacement classes are <octave_map> (struct array)
+    or <octave_scalar_map> for single structure.
+
 Summary of important user-visible changes for version 3.6:
 ---------------------------------------------------------
 

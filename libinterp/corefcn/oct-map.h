@@ -474,6 +474,7 @@ inline octave_map octave_value_extract<octave_map> (const octave_value& v)
   { return v.map_value (); }
 
 // The original Octave_map object which is now deprecated.
+// It was fully deprecated in version 3.8 and should be removed in 3.12.
 // Octave_map and octave_map are convertible to each other.
 
 class

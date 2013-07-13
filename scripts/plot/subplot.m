@@ -364,3 +364,23 @@ endfunction
 %! ylabel ('ylabel (1,2,1)');
 %! title ('title (1,2,1)');
 
+%!demo
+%! x = 0:10;
+%! subplot (221);
+%! plot (x, rand (3, 11))
+%! title ('x & y labels & ticklabels');
+%! xlabel xlabel
+%! ylabel ylabel
+%! subplot (222);
+%! plot (x, rand (3, 11))
+%! title ('no labels');
+%! axis ('nolabel','tic');
+%! subplot (223);
+%! plot (x, rand (3, 11))
+%! title ('no labels');
+%! axis ('nolabel','tic');
+%! subplot (224);
+%! plot (x, rand (3, 11))
+%! title ('x & y labels & ticklabels');
+%! xlabel xlabel
+%! ylabel ylabel

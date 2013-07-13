@@ -392,7 +392,11 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       if (__id)
         __patstr = ["id=",__id];
       else
-        __patstr = ["<",__pattern,">"];
+        if (! strcmp (__pattern, '.'))
+          __patstr = ["<",__pattern,">"];
+        else
+          __patstr = "an error";
+        endif
       endif
       try
         eval (sprintf ("function __test__(%s)\n%s\nendfunction",
@@ -410,7 +414,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         try
           eval (sprintf ("__test__(%s);", __shared));
           if (! __warning)
-            __msg = sprintf ("%sexpected %s but got no error\n",
+            __msg = sprintf ("%serror failed.\nExpected %s but got no error\n",
                              __signal_fail, __patstr);
           else
             if (! isempty (__id))
@@ -422,10 +426,11 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
             endif
             warning (__warnstate.state, "quiet");
             if (isempty (__err))
-              __msg = sprintf ("%sexpected %s but got no warning\n",
-                             __signal_fail, __patstr);
+              __msg = sprintf (["%swarning failed.\n" \
+                                "Expected %s but got no warning\n"],
+                               __signal_fail, __patstr);
             elseif (__mismatch)
-              __msg = sprintf ("%sexpected %s but got %s\n",
+              __msg = sprintf ("%serror failed.\nExpected %s but got <%s>\n",
                                __signal_fail, __patstr, __err);
             else
               __success = 1;
@@ -442,10 +447,11 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
           endif
           warning (__warnstate.state, "quiet");
           if (__warning)
-            __msg = sprintf ("%sexpected warning %s but got error %s\n",
+            __msg = sprintf (["%swarning failed.\n" \
+                              "Expected warning %s but got error <%s>\n"],
                              __signal_fail, __patstr, __err);
           elseif (__mismatch)
-            __msg = sprintf ("%sexpected %s but got %s\n",
+            __msg = sprintf ("%serror failed.\nExpected %s but got <%s>\n",
                              __signal_fail, __patstr, __err);
           else
             __success = 1;

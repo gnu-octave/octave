@@ -29,18 +29,21 @@
 
 function h = meshc (varargin)
 
+  if (! all (cellfun ("isreal", varargin)))
+    error ("meshc: X, Y, Z, C arguments must be real");
+  endif
+
   newplot ();
 
-  tmp = surface (varargin{:});
+  htmp = surface (varargin{:});
 
-  ax = get (tmp, "parent");
+  ax = get (htmp, "parent");
 
-  set (tmp, "facecolor", "w");
-  set (tmp, "edgecolor", "flat");
+  set (htmp, "facecolor", "w");
+  set (htmp, "edgecolor", "flat");
   ## FIXME - gnuplot does not support a filled surface and a
-  ## non-filled contour. 3D filled patches are also not supported.
-  ## Thus, the facecolor will be transparent for the gnuplot
-  ## backend.
+  ## non-filled contour.  3D filled patches are also not supported.
+  ## Thus, the facecolor will be transparent for the gnuplot backend.
 
   if (! ishold ())
     set (ax, "view", [-37.5, 30],
@@ -50,12 +53,12 @@ function h = meshc (varargin)
   drawnow ();
   zmin = get (ax, "zlim")(1);
 
-  [c, tmp2] = __contour__ (ax, zmin, varargin{:});
+  [~, htmp2] = __contour__ (ax, zmin, varargin{:});
 
-  tmp = [tmp; tmp2];
+  htmp = [htmp; htmp2];
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

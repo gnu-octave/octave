@@ -27,24 +27,26 @@
 ## @seealso{meshgrid, mesh, contour}
 ## @end deftypefn
 
-function retval = meshz (varargin)
+function h = meshz (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("meshz", varargin{:});
-
-  ioff = nargin + 1;
-  for i = 1:nargin
-    if (ischar (varargin{i}))
-      ioff = i;
-      break;
-    endif
-  endfor
-
-  ## Bundle C matrix back into varargin
-  if (ioff == 3 || ioff == 5)
-    ioff --;
+  if (! all (cellfun ("isreal", varargin)))
+    error ("meshz: X, Y, Z, C arguments must be real");
   endif
 
-  if (ioff == 2)
+  [ax, varargin, nargin] = __plt_get_axis_arg__ ("meshz", varargin{:});
+
+  ## Find where property/value pairs start
+  charidx = find (cellfun ("isclass", varargin, "char"), 1);
+
+  if (isempty (charidx))
+    if (nargin == 2 || nargin == 4) 
+      charidx = nargin;   # bundle C matrix back into varargin 
+    else
+      charidx = nargin + 1;
+    endif
+  endif
+
+  if (charidx == 2)
     z = varargin{1};
     [m, n] = size (z);
     x = 1:n;
@@ -55,17 +57,16 @@ function retval = meshz (varargin)
     z = varargin{3};
   endif
 
-
   if (isvector (x) && isvector (y))
     x = [x(1), x(:).', x(end)];
     y = [y(1); y(:); y(end)];
   else
-    x = [x(1, 1), x(1, :), x(1, end);
-         x(:, 1), x, x(:, end);
-         x(end, 1), x(end, :), x(end, end)];
-    y = [y(1, 1), y(1, :), y(1, end);
-         y(:, 1), y, y(:, end);
-         y(end, 1), y(end, :), y(end, end)];
+    x = [x(1,1), x(1,:), x(1,end);
+         x(:,1), x, x(:,end);
+         x(end,1), x(end,:), x(end,end)];
+    y = [y(1,1), y(1,:), y(1,end);
+         y(:,1), y, y(:,end);
+         y(end,1), y(end,:), y(end,end)];
   endif
 
   zref = min (z(isfinite (z)));
@@ -73,16 +74,17 @@ function retval = meshz (varargin)
        zref .* ones(rows(z), 1), z, zref .* ones(rows(z), 1);
        zref.* ones(1, columns(z) + 2)];
 
-  oldh = gca ();
+  oldax = gca ();
   unwind_protect
-    axes (h);
-    tmp = mesh (x, y, z, varargin{ioff:end});
+    axes (ax);
+    htmp = mesh (x, y, z, varargin{charidx:end});
   unwind_protect_cleanup
-    axes (oldh);
+    axes (oldax);
   end_unwind_protect
 
   if (nargout > 0)
-    retval = tmp;
+    h = htmp;
   endif
 
 endfunction
+

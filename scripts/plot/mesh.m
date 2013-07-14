@@ -42,14 +42,18 @@
 
 function h = mesh (varargin)
 
+  if (! all (cellfun ("isreal", varargin)))
+    error ("mesh: X, Y, Z, C arguments must be real");
+  endif
+
   newplot ();
 
-  tmp = surface (varargin{:});
+  htmp = surface (varargin{:});
 
-  ax = get (tmp, "parent");
+  ax = get (htmp, "parent");
 
-  set (tmp, "facecolor", "w");
-  set (tmp, "edgecolor", "flat");
+  set (htmp, "facecolor", "w");
+  set (htmp, "edgecolor", "flat");
 
   if (! ishold ())
     set (ax, "view", [-37.5, 30],
@@ -57,7 +61,7 @@ function h = mesh (varargin)
   endif
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction
@@ -68,8 +72,8 @@ endfunction
 %! x = logspace (0,1,11);
 %! z = x'*x;
 %! mesh (x, x, z, z.^2);
-%! xlabel xlabel;
-%! ylabel ylabel;
+%! xlabel 'X-axis';
+%! ylabel 'Y-axis';
 %! zlabel 'linear scale';
 
 %!demo
@@ -78,8 +82,8 @@ endfunction
 %! z = x'*x;
 %! mesh (x, x, z, z.^2);
 %! set (gca, 'zscale', 'log');
-%! xlabel xlabel;
-%! ylabel ylabel;
+%! xlabel 'X-axis';
+%! ylabel 'Y-axis';
 %! zlabel 'log scale';
 %! if (strcmp (get (gcf, '__graphics_toolkit__'), 'gnuplot'))
 %!   title ({'Gnuplot: mesh color is wrong', 'This a Gnuplot bug'});

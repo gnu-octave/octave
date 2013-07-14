@@ -389,8 +389,7 @@ function [varargout] = gallery (name, varargin)
     case "grcar"      , [varargout{1:n_out}] = grcar       (varargin{:});
     case "hanowa"     , [varargout{1:n_out}] = hanowa      (varargin{:});
     case "house"      , [varargout{1:n_out}] = house       (varargin{:});
-    case "integerdata"
-      error ("gallery: matrix %s not implemented.", name);
+    case "integerdata", [varargout{1:n_out}] = integerdata (varargin{:});
     case "invhess"    , [varargout{1:n_out}] = invhess     (varargin{:});
     case "invol"      , [varargout{1:n_out}] = invol       (varargin{:});
     case "ipjfact"    , [varargout{1:n_out}] = ipjfact     (varargin{:});
@@ -1263,6 +1262,48 @@ function [v, beta] = house (x)
     ##  beta = 1/(abs (s) * (abs (s) +abs(x(1)) would guarantee beta real.
     ##  But beta as above can be non-real (due to rounding) only when x is complex.
   endif
+endfunction
+
+function A = integerdata (varargin)
+
+  if (nargin < 3)
+    error ("gallery: At least 3 arguments required for integerdata matrix.");
+  endif
+
+  if (isnumeric (varargin{end}))
+    jidx = varargin{end};
+    svec = [varargin{:}];
+    varargin(end) = [];
+  elseif (ischar (varargin{end}))
+    if (nargin < 4)
+      error (["gallery: CLASS argument requires 4 inputs " ...
+              "for integerdata matrix."]);
+    endif
+    jidx = varargin{end-1};
+    svec = [varargin{1:end-1}];
+    varargin(end-1) = [];
+  else 
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for integerdata matrix"]);
+  endif
+
+  if (! (isnumeric (jidx) && isscalar (jidx)
+         && jidx == fix (jidx)
+         && jidx >= 0 && jidx <= 0xFFFFFFFF))
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for integerdata matrix"]);
+  endif
+
+  ## Save and restore random state.  Initialization done so that reproducible
+  ## data is available from gallery depending on the jidx and size vector.
+  randstate = rand ("state"); 
+  unwind_protect
+    rand ("state", svec);
+    A = randi (varargin{:});
+  unwind_protect_cleanup
+    rand ("state", randstate);
+  end_unwind_protect
+
 endfunction
 
 function A = invhess (x, y)

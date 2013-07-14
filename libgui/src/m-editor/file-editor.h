@@ -202,6 +202,7 @@ private:
 
   QAction *_save_action;
   QAction *_save_as_action;
+  QAction *_close_action;
 
   QAction *_redo_action;
   QAction *_undo_action;

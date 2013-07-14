@@ -819,9 +819,6 @@ file_editor::construct (void)
   _copy_action->setEnabled (false);
   _cut_action->setEnabled (false);
 
-  // shortcuts
-  set_shortcuts (true);
-
   _run_action->setShortcutContext (Qt::WindowShortcut);
   _save_action->setShortcutContext (Qt::WindowShortcut);
   _save_as_action->setShortcutContext (Qt::WindowShortcut);
@@ -874,11 +871,10 @@ file_editor::construct (void)
   fileMenu->addAction (_save_as_action);
 
   fileMenu->addSeparator ();
-  fileMenu->addAction (QIcon::fromTheme("window-close",
-                                      QIcon (":/actions/icons/fileclose.png")),
-                       tr ("&Close"),
-                       this, SLOT (request_close_file (bool)),
-                             QKeySequence::Close);
+  _close_action =
+      fileMenu->addAction (QIcon::fromTheme("window-close",
+                                  QIcon (":/actions/icons/fileclose.png")),
+                       tr ("&Close"), this, SLOT (request_close_file (bool)));
   fileMenu->addAction (QIcon::fromTheme("window-close",
                                       QIcon (":/actions/icons/fileclose.png")),
                        tr ("Close All"),
@@ -928,6 +924,10 @@ file_editor::construct (void)
   _run_menu->addAction (_run_action);
   _menu_bar->addMenu (_run_menu);
 
+  // shortcuts
+  set_shortcuts (true);
+
+  // layout
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
   vbox_layout->addWidget (_menu_bar);
   vbox_layout->addWidget (_tool_bar);
@@ -936,6 +936,7 @@ file_editor::construct (void)
   editor_widget->setLayout (vbox_layout);
   setWidget (editor_widget);
 
+  // signals
   connect (main_win (), SIGNAL (new_file_signal (const QString&)),
            this, SLOT (request_new_file (const QString&)));
 
@@ -1210,6 +1211,7 @@ file_editor::set_shortcuts (bool set)
 
       _save_action->setShortcut (QKeySequence::Save);
       _save_as_action->setShortcut (QKeySequence::SaveAs);
+      _close_action->setShortcut (QKeySequence::Close);
 
       _redo_action->setShortcut (QKeySequence::Redo);
       _undo_action->setShortcut (QKeySequence::Undo);
@@ -1237,6 +1239,7 @@ file_editor::set_shortcuts (bool set)
 
       _save_action->setShortcut (no_key);
       _save_as_action->setShortcut (no_key);
+      _close_action->setShortcut (no_key);
 
       _redo_action->setShortcut (no_key);
       _undo_action->setShortcut (no_key);

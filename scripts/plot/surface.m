@@ -41,16 +41,16 @@
 
 ## Author: jwe
 
-function retval = surface (varargin)
+function h = surface (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("surface", varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("surface", varargin{:});
 
-  oldh = gca ();
+  oldax = gca ();
   unwind_protect
-    axes (h);
-    [tmp, bad_usage] = __surface__ (h, varargin{:});
+    axes (hax);
+    [htmp, bad_usage] = __surface__ (hax, varargin{:});
   unwind_protect_cleanup
-    axes (oldh);
+    axes (oldax);
   end_unwind_protect
 
   if (bad_usage)
@@ -58,30 +58,35 @@ function retval = surface (varargin)
   endif
 
   if (nargout > 0)
-    retval = tmp;
+    h = htmp;
   endif
 
 endfunction
 
 function [h, bad_usage] = __surface__ (ax, varargin)
 
-  bad_usage = false;
   h = 0;
+  bad_usage = false;
   firststring = nargin;
-  for i = 2 : nargin
-    if (ischar (varargin{i - 1}))
-      firststring = i - 1;
+  for i = 1 : (nargin - 1)
+    if (ischar (varargin{i}))
+      firststring = i;
       break;
     endif
   endfor
 
   if (firststring > 5)
     bad_usage = true;
+    return;
   elseif (firststring == 5)
     x = varargin{1};
     y = varargin{2};
     z = varargin{3};
     c = varargin{4};
+
+    if (iscomplex (x) || iscomplex (y) || iscomplex (z) || iscomplex (c))
+      error ("mesh: X, Y, Z, C arguments must be real");
+    endif
 
     [z_nr, z_nc] = size (z);
     [c_nr, c_nc, c_np] = size (c);
@@ -108,6 +113,11 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     y = varargin{2};
     z = varargin{3};
     c = z;
+
+    if (iscomplex (x) || iscomplex (y) || iscomplex (z))
+      error ("mesh: X, Y, Z arguments must be real");
+    endif
+
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
         x = x(:)';
@@ -125,6 +135,11 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   elseif (firststring == 3)
     z = varargin{1};
     c = varargin{2};
+
+    if (iscomplex (z) || iscomplex (c))
+      error ("mesh: X, C arguments must be real");
+    endif
+
     if (ismatrix (z) && !isvector (z) && !isscalar (z))
       [nr, nc] = size (z);
       x = 1:nc;
@@ -135,6 +150,11 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   elseif (firststring == 2)
     z = varargin{1};
     c = z;
+
+    if (iscomplex (z))
+      error ("mesh: Z argument must be real");
+    endif
+
     if (ismatrix (z) && !isvector (z) && !isscalar (z))
       [nr, nc] = size (z);
       x = 1:nc;
@@ -144,24 +164,23 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     endif
   elseif (firststring == 1)
     x = 1:3;
-    y = (x).';
+    y = x';
     c = z = eye (3);
   else
     bad_usage = true;
+    return;
   endif
 
-  if (! bad_usage)
-    ## Make a default surface object.
-    other_args = {};
-    if (firststring < nargin)
-      other_args = varargin(firststring:end);
-    endif
-    h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c,
-                        other_args{:});
+  if (firststring < nargin)
+    other_args = varargin(firststring:end);
+  else
+    other_args = {};  # make a default surface object.
+  endif
+  h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c,
+                      other_args{:});
 
-    if (! ishold ())
-      set (ax, "view", [0, 90], "box", "off");
-    endif
+  if (! ishold ())
+    set (ax, "view", [0, 90], "box", "off");
   endif
 
 endfunction

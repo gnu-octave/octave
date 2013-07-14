@@ -22,7 +22,6 @@
 ## @deftypefnx {Function File} {} gallery (@var{name}, @var{args})
 ## Create interesting matrices for testing.
 ##
-##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{c} =} gallery ("cauchy", @var{x})
@@ -434,8 +433,7 @@ function [varargout] = gallery (name, varargin)
     case "toeppen"     , [varargout{1:n_out}] = toeppen     (varargin{:});
     case "tridiag"     , [varargout{1:n_out}] = tridiag     (varargin{:});
     case "triw"        , [varargout{1:n_out}] = triw        (varargin{:});
-    case "uniformdata"
-      error ("gallery: matrix %s not implemented.", name);
+    case "uniformdata" , [varargout{1:n_out}] = uniformdata (varargin{:});
     case "wathen"      , [varargout{1:n_out}] = wathen      (varargin{:});
     case "wilk"        , [varargout{1:n_out}] = wilk        (varargin{:});
     otherwise
@@ -2424,6 +2422,44 @@ function t = triw (n, alpha = -1, k = -1)
   n = n(end);
 
   t = tril (eye (m, n) + alpha * triu (ones (m, n), 1), k);
+endfunction
+
+function A = uniformdata (varargin)
+
+  if (nargin < 2)
+    error ("gallery: At least 2 argument required for uniformdata matrix.");
+  endif
+  if (isnumeric (varargin{end}))
+    jidx = varargin{end};
+    svec = [varargin{:}];
+    varargin(end) = [];
+  elseif (ischar (varargin{end}))
+    if (nargin < 3)
+      error ("gallery: CLASS argument requires 3 inputs.");
+    endif
+    jidx = varargin{end-1};
+    svec = [varargin{1:end-1}];
+    varargin(end-1) = [];
+  else 
+    error ("gallery: J must be an integer in the range [0, 2^32-1]");
+  endif
+
+  if (! (isnumeric (jidx) && isscalar (jidx)
+         && jidx == fix (jidx)
+         && jidx >= 0 && jidx <= 0xFFFFFFFF))
+    error ("gallery: J must be an integer in the range [0, 2^32-1]");
+  endif
+
+  ## Save and restore random state.  Initialization done so that reproducible
+  ## data is available from gallery depending on the jidx and size vector.
+  randstate = rand ("state"); 
+  unwind_protect
+    rand ("state", svec);
+    A = rand (varargin{:});
+  unwind_protect_cleanup
+    rand ("state", randstate);
+  end_unwind_protect
+
 endfunction
 
 function A = wathen (nx, ny, k = 0)

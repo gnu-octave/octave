@@ -145,6 +145,29 @@
 ##
 ## @end deftypefn
 ##
+## @deftypefn  {Function File} {@var{a} =} gallery ("integerdata", @var{imax}, [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", @var{imax}, @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", [@var{imin}, @var{imax}], [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", [@var{imin}, @var{imax}], @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", @dots{}, "@var{class}")
+## Create a matrix with random integers in the range [1, @var{imax}].
+## If @var{imin} is given then the integers are in the range
+## [@var{imin}, @var{imax}].
+##
+## The second input is a matrix of dimensions describing the size of the output.
+## The dimensions can also be input as comma-separated arguments.
+##
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The
+## values of the output matrix are always exactly the same
+## (reproducibility) for a given size input and @var{j} index.
+##
+## The final optional argument determines the class of the resulting matrix.
+## Possible values for @var{class}: "uint8", "uint16", "uint32", "int8",
+## "int16", int32", "single", "double".
+## The default is "double".
+##
+## @end deftypefn
+##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("invhess", @var{x})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("invhess", @var{x}, @var{y})
 ## Create the inverse of an upper Hessenberg matrix.
@@ -222,6 +245,25 @@
 ##
 ## @deftypefn {Function File} {[@var{a}, @var{t}] =} gallery ("neumann", @var{n})
 ## Create a singular matrix from the discrete Neumann problem (sparse).
+##
+## @end deftypefn
+##
+## @deftypefn  {Function File} {@var{a} =} gallery ("normaldata", [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("normaldata", @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("normaldata", @dots{}, "@var{class}")
+## Create a matrix with random samples from the standard normal distribution
+## (mean = 0, std = 1).
+##
+## The first input is a matrix of dimensions describing the size of the output.
+## The dimensions can also be input as comma-separated arguments.
+##
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The
+## values of the output matrix are always exactly the same
+## (reproducibility) for a given size input and @var{j} index.
+##
+## The final optional argument determines the class of the resulting matrix.
+## Possible values for @var{class}: "single", "double".
+## The default is "double".
 ##
 ## @end deftypefn
 ##
@@ -324,6 +366,25 @@
 ## @deftypefnx {Function File} {@var{t} =} gallery ("triw", @var{n}, @var{alpha})
 ## @deftypefnx {Function File} {@var{t} =} gallery ("triw", @var{n}, @var{alpha}, @var{k})
 ## Create an upper triangular matrix discussed by Kahan, Golub and Wilkinson.
+##
+## @end deftypefn
+##
+## @deftypefn  {Function File} {@var{a} =} gallery ("uniformdata", [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("uniformdata", @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("uniformdata", @dots{}, "@var{class}")
+## Create a matrix with random samples from the standard uniform distribution
+## (range [0,1]).
+##
+## The first input is a matrix of dimensions describing the size of the output.
+## The dimensions can also be input as comma-separated arguments.
+##
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The
+## values of the output matrix are always exactly the same
+## (reproducibility) for a given size input and @var{j} index.
+##
+## The final optional argument determines the class of the resulting matrix.
+## Possible values for @var{class}: "single", "double".
+## The default is "double".
 ##
 ## @end deftypefn
 ##

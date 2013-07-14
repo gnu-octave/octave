@@ -407,8 +407,7 @@ function [varargout] = gallery (name, varargin)
     case "minij"      , [varargout{1:n_out}] = minij       (varargin{:});
     case "moler"      , [varargout{1:n_out}] = moler       (varargin{:});
     case "neumann"    , [varargout{1:n_out}] = neumann     (varargin{:});
-    case "normaldata"
-      error ("gallery: matrix %s not implemented.", name);
+    case "normaldata" , [varargout{1:n_out}] = normaldata  (varargin{:});
     case "orthog"     , [varargout{1:n_out}] = orthog      (varargin{:});
     case "parter"     , [varargout{1:n_out}] = parter      (varargin{:});
     case "pei"        , [varargout{1:n_out}] = pei         (varargin{:});
@@ -1744,6 +1743,47 @@ function [A, T] = neumann (n)
   A = kron (T, eye (n(2))) + kron (eye (n(2)), T);
 endfunction
 
+function A = normaldata (varargin)
+
+  if (nargin < 2)
+    error ("gallery: At least 2 arguments required for normaldata matrix.");
+  endif
+  if (isnumeric (varargin{end}))
+    jidx = varargin{end};
+    svec = [varargin{:}];
+    varargin(end) = [];
+  elseif (ischar (varargin{end}))
+    if (nargin < 3)
+      error (["gallery: CLASS argument requires 3 inputs " ...
+              "for normaldata matrix."]);
+    endif
+    jidx = varargin{end-1};
+    svec = [varargin{1:end-1}];
+    varargin(end-1) = [];
+  else 
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for normaldata matrix"]);
+  endif
+
+  if (! (isnumeric (jidx) && isscalar (jidx)
+         && jidx == fix (jidx)
+         && jidx >= 0 && jidx <= 0xFFFFFFFF))
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for normaldata matrix"]);
+  endif
+
+  ## Save and restore random state.  Initialization done so that reproducible
+  ## data is available from gallery depending on the jidx and size vector.
+  randstate = randn ("state"); 
+  unwind_protect
+    randn ("state", svec);
+    A = randn (varargin{:});
+  unwind_protect_cleanup
+    randn ("state", randstate);
+  end_unwind_protect
+
+endfunction
+
 function Q = orthog (n, k = 1)
   ## ORTHOG Orthogonal and nearly orthogonal matrices.
   ##        Q = ORTHOG(N, K) selects the K'th type of matrix of order N.
@@ -2427,7 +2467,7 @@ endfunction
 function A = uniformdata (varargin)
 
   if (nargin < 2)
-    error ("gallery: At least 2 argument required for uniformdata matrix.");
+    error ("gallery: At least 2 arguments required for uniformdata matrix.");
   endif
   if (isnumeric (varargin{end}))
     jidx = varargin{end};
@@ -2435,19 +2475,22 @@ function A = uniformdata (varargin)
     varargin(end) = [];
   elseif (ischar (varargin{end}))
     if (nargin < 3)
-      error ("gallery: CLASS argument requires 3 inputs.");
+      error (["gallery: CLASS argument requires 3 inputs " ...
+              "for uniformdata matrix."]);
     endif
     jidx = varargin{end-1};
     svec = [varargin{1:end-1}];
     varargin(end-1) = [];
   else 
-    error ("gallery: J must be an integer in the range [0, 2^32-1]");
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for uniformdata matrix"]);
   endif
 
   if (! (isnumeric (jidx) && isscalar (jidx)
          && jidx == fix (jidx)
          && jidx >= 0 && jidx <= 0xFFFFFFFF))
-    error ("gallery: J must be an integer in the range [0, 2^32-1]");
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for uniformdata matrix"]);
   endif
 
   ## Save and restore random state.  Initialization done so that reproducible

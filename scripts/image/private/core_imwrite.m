@@ -1,4 +1,5 @@
 ## Copyright (C) 2008-2012 John W. Eaton
+## Copyright (C) 2013 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -29,76 +30,76 @@ function core_imwrite (img, varargin)
 
   [filename, ext, map, param_list] = imwrite_filename (varargin{:});
 
-  options        = struct ();
-  has_param_list = false;
-  if (! isempty (param_list))
-    has_param_list = true;
-    for ii = 1:2:(length (param_list))
-      options.(param_list{ii}) = param_list{ii + 1};
-    endfor
+  if (rem (numel (param_list), 2) != 0)
+    error ("imwrite: no pair for all arguments (even number left)");
   endif
+
+  ## set default for options
+  options        = struct ("writemode", "overwrite",
+                           "quality",   75);
+
+  for idx = 1:2:numel (param_list)
+
+    switch (tolower (param_list{idx}))
+
+      case "writemode",
+        options.writemode = param_list{idx+1};
+        if (! ischar (options.writemode) ||
+            ! any (strcmpi (options.writemode, {"append", "overwrite"})))
+          error ("imwrite: value for %s option must be \"append\" or \"overwrite\"",
+                 param_list{idx});
+        endif
+        options.writemode = tolower (options.writemode);
+
+      case "quality",
+        options.quality = param_list{idx+1};
+        if (! isnumeric (options.quality) || ! isscalar (options.quality) ||
+            options.quality < 0 || options.quality > 100)
+          error ("imwrite: value for %s option must be a scalar between 0 and 100",
+                 param_list{idx});
+        endif
+        options.quality = round (options.quality);
+
+      otherwise
+        error ("imwrite: invalid PARAMETER `%s'", varargin{idx});
+
+    endswitch
+  endfor
 
   if (isempty (img))
     error ("imwrite: invalid empty image");
-  endif
-
-  if (issparse (img) || issparse (map))
+  elseif (issparse (img) || issparse (map))
     error ("imwrite: sparse images not supported");
   endif
 
-  img_class = class (img);
-  map_class = class (map);
-  nd = ndims (img);
-
-  if (isempty (map))
-    if (any (strcmp (img_class, {"logical", "uint8", "uint16", "double"})))
-      if ((nd == 2 || nd == 3) && strcmp (img_class, "double"))
-        img = uint8 (img * 255);
-      endif
-      ## FIXME: should we handle color images with alpha channel here?
-      if (nd == 3 && size (img, 3) < 3)
-        error ("imwrite: invalid dimensions for truecolor image");
-      endif
-      ## FIXME: why nd>5? Shouldn't it be nd>4? What's the 5th dimension for?
-      if (nd > 5)
-        error ("imwrite: invalid %d-dimensional image data", nd);
-      endif
-    else
-      error ("imwrite: %s: invalid class for truecolor image", img_class);
-    endif
-    if (has_param_list)
-      __magick_write__ (filename, ext, img, options);
-    else
-      __magick_write__ (filename, ext, img);
-    endif
-  else
-    if (any (strcmp (img_class, {"uint8", "uint16", "double"})))
-      if (strcmp (img_class, "double"))
-        img = uint8 (img - 1);
-      endif
-      if (nd != 2 && nd != 4)
-        error ("imwrite: invalid size for indexed image");
-      endif
-    else
-      error ("imwrite: %s: invalid class for indexed image data", img_class);
-    endif
+  if (! isempty (map))
     if (! iscolormap (map))
-      error ("imwrite: invalid indexed image colormap");
+      error ("imwrite: invalid MAP for indexed image");
+    elseif (ndims (img) != 2 && ndims (img) != 4)
+      error ("imwrite: indexed image must have 2 or 4 dimensions (found %i)", ndims (img));
     endif
-
-    ## FIXME: we should really be writing indexed images here but
-    ##        __magick_write__ needs to be fixed to handle them.
-
-    [r, g, b] = ind2rgb (img, map);
-    tmp = uint8 (cat (3, r, g, b) * 255);
-
-    if (has_param_list)
-      __magick_write__ (filename, ext, tmp, options);
-      ## __magick_write__ (filename, ext, img, map, options);
-    else
-      __magick_write__ (filename, ext, tmp);
-      ## __magick_write__ (filename, ext, img, map);
+    ## FIXME: we should really be writing indexed images but that needs
+    ##        to be implemented in  __magick_write__(). So we convert
+    ##        them to RGB and write them "normally".
+    warned = false;
+    if (! warned)
+      warning ("imwrite: saving of indexed images is not yet implemented. Will save a RGB image.");
+      warned = true;
     endif
+    img = ind2rgb (img, map);
+    map = [];
   endif
+
+  if (ndims (img) > 4)
+    error ("imwrite: invalid %d-dimensional image data", ndims (img));
+  elseif (all (size (img, 3) != [1 3]))
+    ## This test needs to be adjusted if one day we implement alternative
+    ## colorspaces. In the mean time, we only have grayscale and RGB images,
+    ## but CMYK means length 4 in the 3rd dimension.
+    error ("imwrite: IMG 3rd dimension must be 1 or 3");
+  endif
+
+  ## FIXME: do we need to convert the image class?
+  __magick_write__ (filename, ext, img, map, options);
 
 endfunction

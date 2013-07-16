@@ -361,6 +361,32 @@ read_images (const std::vector<Magick::Image>& imvec,
   return retval;
 }
 
+void static
+read_file (const std::string filename, std::vector<Magick::Image>& imvec)
+{
+  try
+    {
+      // Read a file into vector of image objects
+      Magick::readImages (&imvec, filename);
+    }
+  catch (Magick::Warning& w)
+    {
+      warning ("Magick++ warning: %s", w.what ());
+    }
+  catch (Magick::ErrorCoder& e)
+    {
+      // FIXME: there's a WarningCoder and ErrorCoder. Shouldn't this
+      // exception cause an error?
+      warning ("Magick++ coder error: %s", e.what ());
+    }
+  catch (Magick::Exception& e)
+    {
+      error ("Magick++ exception: %s", e.what ());
+      error_state = 1;
+    }
+}
+
+
 static void
 maybe_initialize_magick (void)
 {
@@ -368,11 +394,12 @@ maybe_initialize_magick (void)
 
   if (! initialized)
     {
-      // Save locale as GraphicsMagick might change this (depending on version)
+      // Save locale as GraphicsMagick might change this (fixed in
+      // GraphicsMagick since version 1.3.13 released on December 24, 2011)
       const char *static_locale = setlocale (LC_ALL, NULL);
       const std::string locale (static_locale);
 
-      std::string program_name = octave_env::get_program_invocation_name ();
+      const std::string program_name = octave_env::get_program_invocation_name ();
 
       Magick::InitializeMagick (program_name.c_str ());
 
@@ -413,38 +440,23 @@ use @code{imread}.\n\
       return output;
     }
 
-  octave_map options = args(1).map_value ();
+  const octave_map options = args(1).map_value ();
   if (error_state)
     {
       error ("__magick_read__: OPTIONS must be a struct");
     }
 
   std::vector<Magick::Image> imvec;
-  try
+  read_file (args(0).string_value (), imvec);
+  if (error_state)
     {
-      // Read a file into vector of image objects
-      Magick::readImages (&imvec, args(0).string_value ());
-    }
-  catch (Magick::Warning& w)
-    {
-      warning ("Magick++ warning: %s", w.what ());
-    }
-  catch (Magick::ErrorCoder& e)
-    {
-      // FIXME: there's a WarningCoder and ErrorCoder. Shouldn't this
-      // exception cause an error?
-      warning ("Magick++ coder error: %s", e.what ());
-    }
-  catch (Magick::Exception& e)
-    {
-      error ("Magick++ exception: %s", e.what ());
       return output;
     }
 
   const int nframes = imvec.size ();
   Array<int> frameidx;
 
-  octave_value indexes = options.getfield ("index")(0);
+  const octave_value indexes = options.getfield ("index")(0);
   if (indexes.is_string () && indexes.string_value () == "all")
     {
       frameidx = Array<int> (dim_vector (1, nframes));
@@ -462,7 +474,7 @@ use @code{imread}.\n\
         }
       // Fix indexex from base 1 to base 0, and at the same time, make
       // sure none of the indexes is outside the range of image number.
-      int n = frameidx.nelem ();
+      const int n = frameidx.nelem ();
       for (int i = 0; i < n; i++)
         {
           frameidx(i)--;
@@ -474,7 +486,7 @@ use @code{imread}.\n\
         }
     }
 
-  Magick::ClassType klass = imvec[0].classType ();
+  const Magick::ClassType klass = imvec[0].classType ();
 
   // PseudoClass:
   // Image is composed of pixels which specify an index in a color palette.
@@ -531,54 +543,6 @@ use @code{imread}.\n\
 #ifdef HAVE_MAGICK
 
 static void
-jpg_settings (std::vector<Magick::Image>& imvec,
-              const octave_map& options,
-              bool)
-{
-  bool something_set = false;
-
-  // Quality setting
-  octave_value result;
-  octave_map::const_iterator p;
-  bool found_it = false;
-
-  for (p = options.begin (); p != options.end (); p++)
-    {
-      if (options.key (p) == "Quality")
-        {
-          found_it = true;
-          result = options.contents (p).elem (0);
-          break;
-        }
-    }
-
-  if (found_it && (! result.is_empty ()))
-    {
-      something_set = true;
-
-      if (result.is_real_type ())
-        {
-          int qlev = result.int_value ();
-
-          if (qlev < 0 || qlev > 100)
-            warning ("warning: Quality setting invalid--use default of 75");
-          else
-            {
-              for (size_t fnum = 0; fnum < imvec.size (); fnum++)
-                imvec[fnum].quality (static_cast<unsigned int>(qlev));
-            }
-        }
-      else
-        warning ("warning: Quality setting invalid--use default of 75");
-    }
-
-  // Other settings go here
-
-  if (! something_set)
-    warning ("__magick_write__ warning: all write parameters ignored");
-}
-
-static void
 encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
 {
   unsigned int nframes = 1;
@@ -630,7 +594,7 @@ template <class T>
 static void
 encode_uint_image (std::vector<Magick::Image>& imvec,
                    const octave_value& img,
-                   bool has_map)
+                   const bool has_map)
 {
   unsigned int bitdepth = 0;
   T m;
@@ -648,13 +612,13 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   else
     error ("__magick_write__: invalid image class");
 
-  dim_vector dsizes = m.dims ();
+  const dim_vector dsizes = m.dims ();
   unsigned int nframes = 1;
   if (dsizes.length () == 4)
     nframes = dsizes(3);
 
-  bool is_color = ((dsizes.length () > 2) && (dsizes(2) > 2));
-  bool has_alpha = (dsizes.length () > 2 && (dsizes(2) == 2 || dsizes(2) == 4));
+  const bool is_color = ((dsizes.length () > 2) && (dsizes(2) > 2));
+  const bool has_alpha = (dsizes.length () > 2 && (dsizes(2) == 2 || dsizes(2) == 4));
 
   Array<octave_idx_type> idx (dim_vector (dsizes.length (), 1));
   octave_idx_type rows = m.rows ();
@@ -757,92 +721,54 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
     }
 }
 
-static void
-encode_map (std::vector<Magick::Image>& imvec, const NDArray& cmap)
+// FIXME: this will be needed to write indexed images
+//static void
+//encode_map (std::vector<Magick::Image>& imvec, const NDArray& cmap)
+//{
+//  unsigned int mapsize = cmap.dim1 ();
+
+//  for (size_t fnum = 0; fnum < imvec.size (); fnum++)
+//    {
+//      imvec[fnum].colorMapSize (mapsize);
+//      imvec[fnum].type (Magick::PaletteType);
+//    }
+
+//  for (unsigned int ii = 0; ii < mapsize; ii++)
+//    {
+//      Magick::ColorRGB c (cmap(ii,0), cmap(ii,1), cmap(ii,2));
+
+//      // FIXME -- is this case needed?
+//      if (cmap.dim2 () == 4)
+//        c.alpha (cmap(ii,3));
+
+//      try
+//        {
+//          for_each (imvec.begin (), imvec.end (),
+//                    Magick::colorMapImage (ii, c));
+//        }
+//      catch (Magick::Warning& w)
+//        {
+//          warning ("Magick++ warning: %s", w.what ());
+//        }
+//      catch (Magick::ErrorCoder& e)
+//        {
+//          warning ("Magick++ coder error: %s", e.what ());
+//        }
+//      catch (Magick::Exception& e)
+//        {
+//          error ("Magick++ exception: %s", e.what ());
+//        }
+//    }
+//}
+
+void static
+write_file (const std::string filename,
+            const std::string ext,
+            std::vector<Magick::Image>& imvec)
 {
-  unsigned int mapsize = cmap.dim1 ();
-
-  for (size_t fnum = 0; fnum < imvec.size (); fnum++)
-    {
-      imvec[fnum].colorMapSize (mapsize);
-      imvec[fnum].type (Magick::PaletteType);
-    }
-
-  for (unsigned int ii = 0; ii < mapsize; ii++)
-    {
-      Magick::ColorRGB c (cmap(ii,0), cmap(ii,1), cmap(ii,2));
-
-      // FIXME -- is this case needed?
-      if (cmap.dim2 () == 4)
-        c.alpha (cmap(ii,3));
-
-      try
-        {
-          for_each (imvec.begin (), imvec.end (),
-                    Magick::colorMapImage (ii, c));
-        }
-      catch (Magick::Warning& w)
-        {
-          warning ("Magick++ warning: %s", w.what ());
-        }
-      catch (Magick::ErrorCoder& e)
-        {
-          warning ("Magick++ coder error: %s", e.what ());
-        }
-      catch (Magick::Exception& e)
-        {
-          error ("Magick++ exception: %s", e.what ());
-        }
-    }
-}
-
-static void
-write_image (const std::string& filename, const std::string& fmt,
-             const octave_value& img,
-             const octave_value& map = octave_value (),
-             const octave_value& params = octave_value ())
-{
-  std::vector<Magick::Image> imvec;
-
-  bool has_map = map.is_defined ();
-
-  if (has_map)
-    {
-      error ("__magick_write__: direct saving of indexed images not currently supported; use ind2rgb and save converted image");
-      return;
-    }
-
-  if (img.is_bool_type ())
-    encode_bool_image (imvec, img);
-  else if (img.is_uint8_type ())
-    encode_uint_image<uint8NDArray> (imvec, img, has_map);
-  else if (img.is_uint16_type ())
-    encode_uint_image<uint16NDArray> (imvec, img, has_map);
-  else
-    error ("__magick_write__: image type not supported");
-
-  if (! error_state && has_map)
-    {
-      NDArray cmap = map.array_value ();
-
-      if (! error_state)
-        encode_map (imvec, cmap);
-    }
-
-  if (! error_state && params.is_defined ())
-    {
-      octave_map options = params.map_value ();
-
-      // Insert calls here to handle parameters for various image formats
-      if (fmt == "jpg" || fmt == "jpeg")
-        jpg_settings (imvec, options, has_map);
-      else
-        warning ("warning: your parameter(s) currently not supported");
-    }
-
   try
     {
-      Magick::writeImages (imvec.begin (), imvec.end (), fmt + ":" + filename);
+      Magick::writeImages (imvec.begin (), imvec.end (), ext + ":" + filename);
     }
   catch (Magick::Warning& w)
     {
@@ -855,6 +781,7 @@ write_image (const std::string& filename, const std::string& fmt,
   catch (Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
+      error_state = 1;
     }
 }
 
@@ -862,8 +789,7 @@ write_image (const std::string& filename, const std::string& fmt,
 
 DEFUN_DLD (__magick_write__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img})\n\
-@deftypefnx {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
+@deftypefn {Loadable Function} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map}, @var{options})\n\
 Write image with GraphicsMagick or ImageMagick.\n\
 \n\
 This is a private internal function not intended for direct use.  Instead\n\
@@ -880,36 +806,99 @@ use @code{imwrite}.\n\
 
   maybe_initialize_magick ();
 
-  int nargin = args.length ();
-
-  if (nargin > 2)
+  if (args.length () != 5 || ! args(0).is_string () || ! args(1).is_string ())
     {
-      std::string filename = args(0).string_value ();
+      print_usage ();
+      return retval;
+    }
+  const std::string filename = args(0).string_value ();
+  const std::string ext      = args(1).string_value ();
 
-      if (! error_state)
-        {
-          std::string fmt = args(1).string_value ();
+  const octave_map options   = args(4).map_value ();
+  if (error_state)
+    {
+      error ("__magick_write__: OPTIONS must be a struct");
+    }
 
-          if (! error_state)
-            {
-              if (nargin > 4)
-                write_image (filename, fmt, args(2), args(3), args(4));
-              else if (nargin > 3)
-                if (args(3).is_real_type ())
-                  write_image (filename, fmt, args(2), args(3));
-                else
-                  write_image (filename, fmt, args(2), octave_value (), args(3));
-              else
-                write_image (filename, fmt, args(2));
-            }
-          else
-            error ("__magick_write__: FMT must be string");
-        }
-      else
-        error ("__magick_write__: FNAME must be a string");
+  const octave_value img  = args(2);
+  const Matrix       cmap = args(3).matrix_value ();
+  if (error_state)
+    {
+      error ("__magick_write__: invalid IMG or MAP");
+    }
+  const bool is_indexed = ! cmap.is_empty ();
+
+  // Create vector with the images to write
+  std::vector<Magick::Image> imvec;
+  if (img.is_bool_type ())
+    {
+      encode_bool_image (imvec, img);
+    }
+  else if (img.is_uint8_type ())
+    {
+      encode_uint_image<uint8NDArray> (imvec, img, is_indexed);
+    }
+  else if (img.is_uint16_type ())
+    {
+      encode_uint_image<uint16NDArray> (imvec, img, is_indexed);
     }
   else
-    print_usage ();
+    {
+      error ("__magick_write__: image type not supported");
+      return retval;
+    }
+  const int nframes = imvec.size ();
+
+  // Add colormap to image
+  if (is_indexed)
+    {
+    // FIXME: this should be implemented. At the moment, imwrite is doing the
+    //        conversion in case of indexed images.
+      error ("__magick_write__: direct saving of indexed images not currently supported; use ind2rgb and save converted image");
+//      encode_map (imvec, cmap);
+      return retval;
+    }
+
+  // Set quality.
+  // FIXME What happens when we try to set with formats that do not support it?
+  const unsigned int quality = options.getfield ("quality")(0).int_value ();
+  for (int i = 0; i < nframes; i++)
+    {
+      imvec[i].quality (quality);
+    }
+
+  // Finally, save the file.
+  // If writemode is set to append, read the image first, append to it,
+  // and then save it. But even if set to append, make sure anything was
+  // read at all.
+  const std::string writemode = options.getfield ("writemode")(0).string_value ();
+  std::vector<Magick::Image> ini_imvec;
+  if (writemode == "append")
+    {
+      read_file (filename, ini_imvec);
+      if (error_state)
+        {
+          return retval;
+        }
+    }
+
+  if (ini_imvec.size () > 0)
+    {
+      ini_imvec.insert (ini_imvec.end (), imvec.begin (), imvec.end ());
+      write_file (filename, ext, ini_imvec);
+      if (error_state)
+        {
+          return retval;
+        }
+    }
+  else
+    {
+      write_file (filename, ext, imvec);
+      if (error_state)
+        {
+          return retval;
+        }
+    }
 
 #endif
   return retval;

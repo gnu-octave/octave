@@ -634,6 +634,9 @@ main_loop (void)
     }
   while (retval == 0);
 
+  if (retval == EOF)
+    retval = 0;
+
   return retval;
 }
 
@@ -751,7 +754,7 @@ clean_up_and_exit (int retval, bool safe_to_return)
   else
     {
       if (octave_exit)
-        (*octave_exit) (retval == EOF ? 0 : retval);
+        (*octave_exit) (retval);
     }
 }
 

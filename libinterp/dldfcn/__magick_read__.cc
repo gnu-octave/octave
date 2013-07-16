@@ -472,7 +472,7 @@ use @code{imread}.\n\
         {
           error ("__magick_read__: invalid value for Index/Frame");
         }
-      // Fix indexex from base 1 to base 0, and at the same time, make
+      // Fix indexes from base 1 to base 0, and at the same time, make
       // sure none of the indexes is outside the range of image number.
       const int n = frameidx.nelem ();
       for (int i = 0; i < n; i++)
@@ -873,7 +873,7 @@ use @code{imwrite}.\n\
   // read at all.
   const std::string writemode = options.getfield ("writemode")(0).string_value ();
   std::vector<Magick::Image> ini_imvec;
-  if (writemode == "append")
+  if (writemode == "append" && file_stat (filename).exists ())
     {
       read_file (filename, ini_imvec);
       if (error_state)

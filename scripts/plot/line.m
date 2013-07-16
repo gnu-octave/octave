@@ -35,7 +35,12 @@ function h = line (varargin)
 
   ## make a default line object, and make it the current axes for
   ## the current figure.
-  tmp = __line__ (gca (), varargin{:});
+  [ax, varargin] = __plt_get_axis_arg__ ("line", varargin{:});
+  if (isempty (ax))
+    ax = gca ();
+  endif
+  
+  tmp = __line__ (ax, varargin{:});
 
   if (nargout > 0)
     h = tmp;

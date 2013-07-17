@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} hidden ()
 ## @deftypefnx {Function File} {} hidden ("on")
 ## @deftypefnx {Function File} {} hidden ("off")
-## @deftypefnx {Function File} {@var{state} =} hidden (@var{dots{})
+## @deftypefnx {Function File} {@var{state} =} hidden (@dots{})
 ## Control mesh hidden line removal.
 ##
 ## When called with no argument the hidden line removal state is toggled.

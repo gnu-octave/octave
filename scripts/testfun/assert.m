@@ -61,9 +61,9 @@ function assert (cond, varargin)
 
   in = deblank (argn(1,:));
   for i = 2:rows (argn)
-    in = cstrcat (in, ",", deblank (argn(i,:)));
+    in = [in "," deblank(argn(i,:))];
   endfor
-  in = cstrcat ("(", in, ")");
+  in = ["(" in ")"];
 
   if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
     if ((! isnumeric (cond) && ! islogical (cond)) || ! all (cond(:)))
@@ -147,7 +147,7 @@ function assert (cond, varargin)
         ## Without explicit tolerance, be more strict.
         if (! strcmp (class (cond), class (expected)))
           iserror = 1;
-          coda = cstrcat ("Class ", class (cond), " != ", class (expected));
+          coda = ["Class " class (cond) " != " class(expected)];
         elseif (isnumeric (cond))
           if (issparse (cond) != issparse (expected))
             if (issparse (cond))
@@ -228,9 +228,9 @@ function assert (cond, varargin)
     if (! isempty (idx))
       str2 = str2 (idx(1):idx(end));
     endif
-    msg = cstrcat ("assert ", in, " expected\n", str, "\nbut got\n", str2);
+    msg = ["assert " in " expected\n" str "\nbut got\n" str2];
     if (! isempty (coda))
-      msg = cstrcat (msg, "\n", coda);
+      msg = [msg, "\n", coda];
     endif
     error ("%s", msg);
   endif

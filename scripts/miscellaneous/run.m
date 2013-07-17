@@ -39,7 +39,7 @@ function run (script)
       wd = pwd ();
       unwind_protect
         cd (d);
-        if (! exist (cstrcat (f, ext), "file"))
+        if (! exist ([f ext], "file"))
           error ("run: file SCRIPT must exist and be a valid Octave scriptfile");
         endif
         evalin ("caller", sprintf ("source (\"%s%s\");", f, ext),

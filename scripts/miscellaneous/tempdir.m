@@ -29,7 +29,7 @@ function dirname = tempdir ()
   endif
 
   if (! strcmp (dirname(end), filesep))
-    dirname = cstrcat (dirname, filesep);
+    dirname = [dirname filesep];
   endif
 
   if (! isdir (dirname))

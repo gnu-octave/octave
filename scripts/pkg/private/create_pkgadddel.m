@@ -29,8 +29,8 @@ function create_pkgadddel (desc, packdir, nm, global_install)
   ## architecture dependent directory so that the autoload/mfilename
   ## commands work as expected. The only part that doesn't is the
   ## part in the main directory.
-  archdir = fullfile (getarchprefix (desc, global_install), cstrcat (desc.name,
-                      "-", desc.version), getarch ());
+  archdir = fullfile (getarchprefix (desc, global_install), 
+                      [desc.name "-" desc.version], getarch ());
   if (exist (getarchdir (desc, global_install), "dir"))
     archpkg = fullfile (getarchdir (desc, global_install), nm);
     archfid = fopen (archpkg, "at");

@@ -128,7 +128,7 @@ function demo (name, n)
     try
       block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
       ## Use an environment without variables
-      eval (cstrcat ("function __demo__ ()\n", block, "\nendfunction"));
+      eval (["function __demo__()\n" block "\nendfunction"]);
       ## Display the code that will be executed before executing it
       printf ("%s example %d:%s\n\n", name, doidx(i), block);
       __demo__;

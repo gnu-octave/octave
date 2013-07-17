@@ -38,7 +38,7 @@ function desc = get_description (filename)
     elseif (isspace (line(1)))
       ## Continuation lines
       if (exist ("keyword", "var") && isfield (desc, keyword))
-        desc.(keyword) = cstrcat (desc.(keyword), " ", deblank (line));
+        desc.(keyword) = [desc.(keyword) " " deblank(line)];
       endif
     else
       ## Keyword/value pair

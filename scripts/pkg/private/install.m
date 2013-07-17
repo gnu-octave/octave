@@ -121,11 +121,10 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
         endif
 
         ## Set default installation directory.
-        desc.dir = fullfile (prefix, cstrcat (desc.name, "-", desc.version));
+        desc.dir = fullfile (prefix, [desc.name "-" desc.version]);
 
         ## Set default architectire dependent installation directory.
-        desc.archprefix = fullfile (archprefix, cstrcat (desc.name, "-",
-                                                         desc.version));
+        desc.archprefix = fullfile (archprefix, [desc.name "-" desc.version]);
 
         ## Save desc.
         descriptions{end+1} = desc;
@@ -172,9 +171,8 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
         ok = false;
         for i = 1:length (bad_deps)
           dep = bad_deps{i};
-          error_text = cstrcat (error_text, " ", desc.name, " needs ",
-                               dep.package, " ", dep.operator, " ",
-                               dep.version, "\n");
+          error_text = [error_text " " desc.name " needs " ...
+                        dep.package " " dep.operator " " dep.version "\n"]);
         endfor
       endif
     endfor

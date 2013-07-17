@@ -71,7 +71,7 @@
 
 %!function ms = mangle (s)
 %!  ## Wrap angle brackets around S.
-%!  ms = cstrcat ("<", s, ">");
+%!  ms = ["<" s ">"];
 %!endfunction
 %!test
 %! try
@@ -121,7 +121,7 @@
 %!     a;
 %!     error ("Shoudn't get here");
 %!   catch
-%!     error (cstrcat ("rethrow: ", lasterr));
+%!     error (["rethrow: " lasterr]);
 %!   end_try_catch
 %! catch
 %!   assert (lasterr()(1:22), "rethrow: 'a' undefined");

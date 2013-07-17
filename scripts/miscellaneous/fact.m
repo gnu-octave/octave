@@ -257,12 +257,13 @@ function out = wordwrap (w)
   while (i <= numwords);
     line = wc{i};
     while (i < numwords
-           && length (newline = cstrcat (line, " ", wc{i+1})) < cols)
+           && length (newline = [line " " wc{i+1}]) < cols)
       line = newline;
       i++;
     endwhile
-    out = cstrcat (out, line, "\n");
+    out = [out, line, "\n"];
     i++;
   endwhile
-  out = cstrcat (out, "\n");
+  out = [out, "\n"];
 endfunction
+

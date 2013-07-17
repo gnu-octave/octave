@@ -277,7 +277,7 @@ function n = num_elts_matching_pattern (lst, pat)
 endfunction
 
 function report_files_with_no_tests (with, without, typ)
-  pat = cstrcat ('\', typ, "$");
+  pat = ['\' typ "$"];
   n_with = num_elts_matching_pattern (with, pat);
   n_without = num_elts_matching_pattern (without, pat);
   n_tot = n_with + n_without;

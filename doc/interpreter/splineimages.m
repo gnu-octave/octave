@@ -26,7 +26,7 @@ function splineimages (nm, typ)
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
-    d_typ = cstrcat ("-d", typ);
+    d_typ = ["-d" typ];
   endif
 
   if (strcmp (typ, "txt"))
@@ -47,7 +47,7 @@ function splineimages (nm, typ)
     axis tight
     ylim ([-2.5 2.5])
     legend ("data", "41 breaks, 40 pieces", "11 breaks, 10 pieces")
-    print (cstrcat (nm, ".", typ), d_typ)
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit2")) ## Spline orders
     ## Data (200 points)
     x = 2 * pi * rand (1, 200);
@@ -69,7 +69,7 @@ function splineimages (nm, typ)
     axis tight
     ylim ([-2.5 2.5])
     legend ({"data", "order 0", "order 1", "order 2", "order 3", "order 4"})
-    print (cstrcat (nm, ".", typ), d_typ)
+    print ([nm, "." typ], d_typ);
   elseif (strcmp (nm, "splinefit3"))
     ## Data (100 points)
     x = 2 * pi * [0, (rand (1, 98)), 1];
@@ -86,7 +86,7 @@ function splineimages (nm, typ)
     axis tight
     ylim ([-2 3])
     legend ({"data", "no constraints", "periodic"})
-    print (cstrcat (nm, ".", typ), d_typ)
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit4"))
     ## Data (200 points)
     x = 2 * pi * rand (1, 200);
@@ -109,7 +109,7 @@ function splineimages (nm, typ)
     axis tight
     ylim ([-1.5 1.5])
     legend({"data", "clamped", "hinged periodic"})
-    print (cstrcat (nm, ".", typ), d_typ)
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit5"))
     ## Truncated data
     x = [0,  1,  2,  4,  8, 16, 24, 40, 56, 72, 80] / 80;
@@ -130,7 +130,7 @@ function splineimages (nm, typ)
     legend ({"data", "spline", "breaks"})
     axis tight
     ylim ([0 0.1])
-    print (cstrcat (nm, ".", typ), d_typ)
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit6"))
     ## Data
     x = linspace (0, 2*pi, 200);
@@ -153,7 +153,7 @@ function splineimages (nm, typ)
             "robust, beta = 0.75", "no robust fitting"})
     axis tight
     ylim ([-2 2])
-    print (cstrcat (nm, ".", typ), d_typ)
+    print ([nm "." typ], d_typ);
   endif
   hide_output ();  
 endfunction

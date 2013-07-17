@@ -150,7 +150,7 @@ function ret = edit (varargin)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("EDITOR", cstrcat (EDITOR (), " %s"),
+  persistent FUNCTION = struct ("EDITOR", [EDITOR() " %s"],
                                 "HOME", fullfile (default_home, "octave"),
                                 "AUTHOR", default_user(1),
                                 "EMAIL",  [],
@@ -340,7 +340,7 @@ function ret = edit (varargin)
         fid = fopen (fileandpath, "r+t");
         if (fid < 0)
           from = fileandpath;
-          fileandpath = cstrcat (FUNCTION.HOME, from (rindex (from, filesep):end));
+          fileandpath = [FUNCTION.HOME, from(rindex(from, filesep):end)];
           [status, msg] = copyfile (from, fileandpath, 1);
           if (status == 0)
             error (msg);
@@ -386,19 +386,19 @@ function ret = edit (varargin)
       if (isempty (host))
         FUNCTION.EMAIL = " ";
       else
-        FUNCTION.EMAIL = cstrcat ("<", default_user(0), "@", host, ">");
+        FUNCTION.EMAIL = ["<" default_user(0) "@" host ">"];
       endif
     endif
 
     ## Fill in the revision string.
     now = localtime (time);
-    revs = cstrcat ("Created: ", strftime ("%Y-%m-%d", now));
+    revs = ["Created: " strftime("%Y-%m-%d",now)];
 
     ## Fill in the copyright string.
-    copyright = cstrcat (strftime ("Copyright (C) %Y ", now), FUNCTION.AUTHOR);
+    copyright = [strftime("Copyright (C) %Y ",now) FUNCTION.AUTHOR];
 
     ## Fill in the author tag field.
-    author = cstrcat ("Author: ", FUNCTION.AUTHOR, " ", FUNCTION.EMAIL);
+    author = ["Author: " FUNCTION.AUTHOR " " FUNCTION.EMAIL];
 
     ## Fill in the header.
     uclicense = toupper (FUNCTION.LICENSE);
@@ -419,7 +419,7 @@ function ret = edit (varargin)
   along with Octave; see the file COPYING.  If not, see\n\
   <http://www.gnu.org/licenses/>.\
   ");
-        tail = cstrcat (author, "\n", revs);
+        tail = [author, "\n", revs];
 
       case "BSD"
         head = cstrcat (copyright, "\n\n", "\
@@ -445,17 +445,16 @@ function ret = edit (varargin)
   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF\n\
   SUCH DAMAGE.\
   ");
-        tail = cstrcat (author, "\n", revs);
+        tail = [author, "\n", revs];
 
       case "PD"
         head = "";
-        tail = cstrcat (author, "\n", revs, "\n\n",
-                       "This program is granted to the public domain.");
+        tail = [author, "\n", revs, "\n\n", ...
+                "This program is granted to the public domain."];
 
       otherwise
         head = "";
-        tail = cstrcat (copyright, "\n\n", FUNCTION.LICENSE, "\n",
-                       author, "\n", revs);
+        tail = [copyright, "\n\n", FUNCTION.LICENSE, "\n", author, "\n", revs];
     endswitch
 
     ## Generate the function template.
@@ -463,45 +462,45 @@ function ret = edit (varargin)
     switch (ext)
       case {"cc", "C", "cpp"}
         if (isempty (head))
-          comment = cstrcat ("/*\n", tail, "\n\n*/\n\n");
+          comment = ["/*\n", tail, "\n\n*/\n\n"];
         else
-          comment = cstrcat ("/*\n", head, "\n\n", tail, "\n\n*/\n\n");
+          comment = ["/*\n", head, "\n\n", tail, "\n\n*/\n\n"];
         endif
         ## If we are shadowing an m-file, paste the code for the m-file.
         if (any (exists == [2, 103]))
-          code = cstrcat ("\\ ", strrep (type (name){1}, "\n", "\n// "));
+          code = ['\ ', strrep(type(name){1}, "\n", "\n// ")];
         else
           code = " ";
         endif
         body = cstrcat ("#include <octave/oct.h>\n\n",
-                       "DEFUN_DLD(", name, ",args,nargout,\"\\\n",
-                       name, "\\n\\\n\")\n{\n",
-                       "  octave_value_list retval;\n",
-                       "  int nargin = args.length ();\n\n",
-                       code, "\n  return retval;\n}\n");
+                        "DEFUN_DLD(", name, ",args,nargout,\"\\\n",
+                        name, "\\n\\\n\")\n{\n",
+                        "  octave_value_list retval;\n",
+                        "  int nargin = args.length ();\n\n",
+                        code, "\n  return retval;\n}\n");
 
-        text = cstrcat (comment, body);
+        text = [comment, body];
       case "m"
         ## If we are editing a function defined on the fly, paste the
         ## code.
         if (any (exists == [2, 103]))
           body = type (name){1};
         else
-          body = cstrcat ("function [ret] = ", name, " ()\n\nendfunction\n");
+          body = ["function [ret] = " name " ()\n\nendfunction\n"];
         endif
         if (isempty (head))
-          comment = cstrcat ("## -*- texinfo -*- \n## @deftypefn {Function File}", 
-                             "{@var{ret} =}", name, "(@var{x}, @var{y})\n##\n",
-                             "## @seealso{}\n## @end deftypefn\n\n",
-                             "## ", strrep (tail, "\n", "\n## "), "\n\n");
+          comment = ["## -*- texinfo -*- \n## @deftypefn {Function File}" \
+                     "{@var{ret} =}" name "(@var{x}, @var{y})\n##\n"      \
+                     "## @seealso{}\n## @end deftypefn\n\n"               \
+                     "## " strrep(tail, "\n", "\n## ") "\n\n"];
         else
-          comment = cstrcat ("## ", strrep (head,"\n","\n## "), "\n\n", ...
-                             "## -*- texinfo -*- \n## @deftypefn {Function File}", 
-                             "{@var{ret} =}", name, "(@var{x}, @var{y})\n##\n",
-                             "## @seealso{}\n## @end deftypefn\n\n",
-                             "## ", strrep (tail, "\n", "\n## "), "\n\n");
+          comment = ["## " strrep(head,"\n","\n## ") "\n\n"               \
+                     "## -*- texinfo -*- \n## @deftypefn {Function File}" \
+                     "{@var{ret} =}" name "(@var{x} @var{y})\n##\n"       \
+                     "## @seealso{}\n## @end deftypefn\n\n"               \
+                     "## " strrep(tail, "\n", "\n## ") "\n\n"];
         endif
-        text = cstrcat (comment, body);
+        text = [comment, body];
     endswitch
 
     ## Write the initial file (if there is anything to write)
@@ -566,9 +565,7 @@ function do_edit (editor, file, mode)
   status = __octave_link_edit_file__ (file);
 
   if (! status)
-    system (sprintf (undo_string_escapes (editor),
-                     cstrcat ("\"", file, "\"")),
-            [], mode);
+    system (sprintf (undo_string_escapes (editor), ['"' file '"']), [], mode);
   endif
 
 endfunction

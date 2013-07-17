@@ -155,7 +155,7 @@ function retval = do_list_functions ()
     endif
   endfor
 
-  retval = cstrcat (operators, keywords, builtins, flist);
+  retval = [operators, keywords, builtins, flist];
 
 endfunction
 

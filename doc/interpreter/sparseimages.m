@@ -26,7 +26,7 @@ function sparseimages (nm, typ)
   if (__have_feature__ ("COLAMD")
       && __have_feature__ ("CHOLMOD")
       && __have_feature__ ("UMFPACK"))
-    if (strcmp(typ,"txt"))
+    if (strcmp (typ,"txt"))
       txtimages (nm, 15, typ);
     else
       if (strcmp (nm, "gplot"))
@@ -62,14 +62,14 @@ function gplotimages (nm, typ)
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
-    d_typ = cstrcat ("-d", typ);
+    d_typ = ["-d" typ];
   endif
 
   A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
               [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
-  gplot (A, xy)
-  print (cstrcat (nm, ".", typ), d_typ)
+  gplot (A, xy);
+  print ([nm "." typ], d_typ);
   hide_output ();
 endfunction
 
@@ -84,16 +84,16 @@ function txtimages(nm, n, typ)
     fputs (fid, "+---------------------------------+\n");
     fclose (fid);
   elseif (strcmp (nm, "spmatrix"))
-    printsparse(a,cstrcat("spmatrix.",typ));
+    printsparse (a, ["spmatrix." typ]);
   else
     if (__have_feature__ ("COLAMD")
         && __have_feature__ ("CHOLMOD"))
       if (strcmp (nm, "spchol"))
-        r1 = chol(a);
-        printsparse(r1,cstrcat("spchol.",typ));
+        r1 = chol (a);
+        printsparse (r1, ["spchol." typ]);
       elseif (strcmp (nm, "spcholperm"))
-        [r2,p2,q2]=chol(a);
-        printsparse(r2,cstrcat("spcholperm.",typ));
+        [r2,p2,q2] = chol (a);
+        printsparse(r2, ["spcholperm." typ]);
       endif
       ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
@@ -105,30 +105,30 @@ function otherimages(nm, n, typ)
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
-    d_typ = cstrcat ("-d", typ);
+    d_typ = ["-d" typ];
   endif
 
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
   if (strcmp (nm, "spmatrix"))
-    spy(a);
-    axis("ij")
-    print(cstrcat("spmatrix.",typ), d_typ)
+    spy (a);
+    axis ("ij");
+    print (["spmatrix." typ], d_typ);
     hide_output ();
   else
     if (__have_feature__ ("COLAMD")
         && __have_feature__ ("CHOLMOD"))
       if (strcmp (nm, "spchol"))
-        r1 = chol(a);
-        spy(r1);
-        axis("ij")
-        print(cstrcat("spchol.",typ), d_typ)
+        r1 = chol (a);
+        spy (r1);
+        axis ("ij");
+        print (["spchol." typ], d_typ);
         hide_output ();
       elseif (strcmp (nm, "spcholperm"))
-        [r2,p2,q2]=chol(a);
-        spy(r2);
-        axis("ij")
-        print(cstrcat("spcholperm.",typ), d_typ)
+        [r2,p2,q2] = chol (a);
+        spy (r2);
+        axis ("ij");
+        print (["spcholperm." typ], d_typ);
         hide_output ();
       endif
       ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
@@ -136,42 +136,42 @@ function otherimages(nm, n, typ)
   endif
 endfunction
 
-function printsparse(a, nm)
+function printsparse (a, nm)
   fid = fopen (nm,"wt");
   fputs (fid, "\n");
-  for i = 1:size(a,1)
-    if (rem(i,5) == 0)
+  for i = 1:rows (a)
+    if (rem (i,5) == 0)
       fprintf (fid,"         %2d - ", i);
     else
       fprintf (fid,"            | ");
     endif
-    for j = 1:size(a,2)
+    for j = 1:columns (a)
       if (a(i,j) == 0)
-        fprintf(fid,"  ")
+        fprintf (fid,"  ");
       else
-        fprintf(fid," *")
+        fprintf (fid," *");
       endif
     endfor
-    fprintf(fid,"\n")
+    fprintf (fid,"\n");
   endfor
-  fprintf(fid,"            |-");
-  for j=1:size(a,2)
-    if (rem(j,5)==0)
-      fprintf(fid,"-|");
+  fprintf (fid,"            |-");
+  for j=1:columns (a)
+    if (rem (j,5) == 0)
+      fprintf (fid,"-|");
     else
-      fprintf(fid,"--");
+      fprintf (fid,"--");
     endif
   endfor
-  fprintf(fid,"\n")
-  fprintf(fid,"              ");
-  for j=1:size(a,2)
-    if (rem(j,5)==0)
-      fprintf(fid,"%2d",j);
+  fprintf (fid,"\n");
+  fprintf (fid,"              ");
+  for j=1:columns (a)
+    if (rem (j,5) == 0)
+      fprintf (fid,"%2d",j);
     else
-      fprintf(fid,"  ");
+      fprintf (fid,"  ");
     endif
   endfor
-  fclose(fid);
+  fclose (fid);
 endfunction
 
 function femimages (nm, typ)
@@ -179,7 +179,7 @@ function femimages (nm, typ)
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
-    d_typ = cstrcat ("-d", typ);
+    d_typ = ["-d" typ];
   endif
 
   if (__have_feature__ ("COLAMD")
@@ -190,7 +190,7 @@ function femimages (nm, typ)
     node_x = ones(5,1)*[1,1.05,1.1,1.2,1.3,1.5,1.7,1.8,1.9,1.95,2];
     nodes = [node_x(:), node_y(:)];
 
-    [h,w] = size(node_x);
+    [h,w] = size (node_x);
     elems = [];
     for idx = 1:w-1
       widx = (idx-1)*h;
@@ -198,14 +198,14 @@ function femimages (nm, typ)
       elems = [elems; widx+[(2:h);h+(2:h);h+(1:h-1)]']; 
     endfor
 
-    E = size(elems,1);  #No. of elements
-    N = size(nodes,1);  #No. of elements
-    D = size(elems,2);  #dimensions+1
+    E = size (elems,1);  #No. of elements
+    N = size (nodes,1);  #No. of elements
+    D = size (elems,2);  #dimensions+1
 
     ## Plot FEM Geometry
     elemx = elems(:,[1,2,3,1])';
-    xelems = reshape( nodes(elemx, 1), 4, E);
-    yelems = reshape( nodes(elemx, 2), 4, E);
+    xelems = reshape (nodes(elemx, 1), 4, E);
+    yelems = reshape (nodes(elemx, 2), 4, E);
 
     ## Set element conductivity
     conductivity = [1*ones(1,16),2*ones(1,48),1*ones(1,16)];
@@ -221,43 +221,43 @@ function femimages (nm, typ)
     N_value = [];
 
     ## Calculate connectivity matrix
-    C = sparse((1:D*E), reshape(elems',D*E,1),1, D*E, N);
+    C = sparse ((1:D*E), reshape (elems',D*E,1),1, D*E, N);
 
     ## Calculate stiffness matrix
-    Siidx = floor([0:D*E-1]'/D)*D*ones(1,D) + ones(D*E,1)*(1:D) ;
-    Sjidx = [1:D*E]'*ones(1,D);
-    Sdata = zeros(D*E,D);
-    dfact = prod(2:(D-1));
+    Siidx = floor ([0:D*E-1]'/D)*D*ones(1,D) + ones(D*E,1)*(1:D) ;
+    Sjidx = [1:D*E]'*ones (1,D);
+    Sdata = zeros (D*E,D);
+    dfact = prod (2:(D-1));
     for j = 1:E
-      a = inv([ ones(D,1), nodes( elems(j,:), : ) ]);
+      a = inv ([ ones(D,1), nodes( elems(j,:), : ) ]);
       const = conductivity(j)*2/dfact/abs(det(a));
       Sdata(D*(j-1)+(1:D),:)= const * a(2:D,:)'*a(2:D,:);
     endfor
 
     ## Element-wise system matrix
-    SE = sparse(Siidx,Sjidx,Sdata);
+    SE = sparse (Siidx,Sjidx,Sdata);
     ## Global system matrix
     S = C'* SE *C;
 
     ## Set Dirichlet boundary
-    V = zeros(N,1);
+    V = zeros (N,1);
     V(D_nodes) = D_value;
     idx = 1:N;
     idx(D_nodes) = [];
 
     ## Set Neumann boundary
-    Q = zeros(N,1);
+    Q = zeros (N,1);
     Q(N_nodes) = N_value; # FIXME
 
     V(idx) = S(idx,idx)\( Q(idx) - S(idx,D_nodes)*V(D_nodes) );
 
-    velems = reshape( V(elemx), 4, E);
+    velems = reshape ( V(elemx), 4, E);
 
-    sz = size(xelems,2);
+    sz = size (xelems,2);
 
     plot3 (xelems, yelems, velems);
     view (10, 10);
-    print(cstrcat(nm,".",typ), d_typ)
+    print ([nm "." typ], d_typ);
     hide_output ();
   endif
 endfunction
@@ -281,7 +281,7 @@ function sombreroimage (nm, typ)
     if (strcmp (typ, "eps"))
       d_typ = "-depsc2";
     else
-      d_typ = cstrcat ("-d", typ);
+      d_typ = ["-d" typ];
     endif
 
     x = y = linspace (-8, 8, 41)';
@@ -292,7 +292,7 @@ function sombreroimage (nm, typ)
       mesh (x, y, z);
       title ("Sorry, graphics are unavailable because Octave was\ncompiled without a sparse matrix implementation.");
     unwind_protect_cleanup
-      print (cstrcat (nm, ".", typ), d_typ);
+      print ([nm "." typ], d_typ);
       hide_output ();
     end_unwind_protect
   endif

@@ -78,7 +78,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
       [tmppathstr, tmpname, tmpext] = fileparts (name);
       if (strcmpi (tmpext, ".tar"))
         name = tmpname;
-        ext = cstrcat (tmpext, ext);
+        ext = [tmpext ext];
       endif
     endif
 
@@ -88,7 +88,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
       urlfile = file;
       ## FIXME -- should we name the file that we download with the
       ## same file name as the URL requests?
-      tmpfile = cstrcat (tmpnam (), ext);
+      tmpfile = [tmpnam() ext];
       [file, success, msg] = urlwrite (urlfile, tmpfile);
       if (! success)
         error ("unpack: could not get \"%s\": %s", urlfile, msg);
@@ -178,7 +178,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
   unwind_protect
     cd (dir);
-    [status, output] = system (sprintf (cstrcat (command, " 2>&1"), file));
+    [status, output] = system (sprintf ([command " 2>&1"], file));
   unwind_protect_cleanup
     cd (origdir);
   end_unwind_protect

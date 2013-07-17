@@ -119,7 +119,7 @@ function varname = genvarname (str, exclusions)
     error ("genvarname: STR must be a string or a cellstr");
   endif
 
-  validchars = cstrcat ("A":"Z", "a":"z", "0":"9", "_");
+  validchars = ["A":"Z", "a":"z", "0":"9", "_"];
 
   varname = cell (size (str));
   for i = 1:numel (str)
@@ -130,7 +130,7 @@ function varname = genvarname (str, exclusions)
     str{i}(! ismember (str{i}, validchars)) = "_";
     ## do not use keywords
     if (iskeyword (str{i}))
-      str{i} = cstrcat ("_", str{i});
+      str{i} = ["_" str{i}];
     endif
     ## double underscores at the beginning and end are reserved variables
     underscores = (str{i} == "_");
@@ -145,7 +145,7 @@ function varname = genvarname (str, exclusions)
     endif
     ## it cannot start with a number
     if (ismember (str{i}(1), "0":"9"))
-      str{i} = cstrcat ("_", str{i});
+      str{i} = ["_" str{i}];
     endif
 
     ## make sure that the variable is unique relative to other variables

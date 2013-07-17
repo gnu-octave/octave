@@ -564,7 +564,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             titlespec{data_idx} = "title \"\"";
           else
             tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
-            titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
+            titlespec{data_idx} = ['title "' tmp '"'];
           endif
           usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
           errbars = "";
@@ -683,7 +683,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                  titlespec{local_idx} = "title \"\"";
                else
                  tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
-                 titlespec{local_idx} = cstrcat ("title \"", tmp, "\"");
+                 titlespec{local_idx} = ['title "' tmp '"'];
                endif
                if (isfield (obj, "facecolor"))
                  if ((strncmp (obj.facecolor, "flat", 4)
@@ -1119,7 +1119,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
               titlespec{data_idx} = "title \"\"";
             else
               tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
-              titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
+              titlespec{data_idx} = ['title "' tmp '"'];
             endif
             withclause{data_idx} = sprintf ("with pm3d linestyle %d",
                                             data_idx);
@@ -2262,17 +2262,17 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
     if (! isempty (t.fontangle)
         && (strcmpi (t.fontangle, "italic")
             || strcmpi (t.fontangle, "oblique")))
-      f = cstrcat (f, "-bolditalic");
+      f = [f "-bolditalic"];
       it = true;
       bld = true;
     else
-      f = cstrcat (f, "-bold");
+      f = [f "-bold"];
       bld = true;
     endif
   elseif (! isempty (t.fontangle)
           && (strcmpi (t.fontangle, "italic")
               || strcmpi (t.fontangle, "oblique")))
-    f = cstrcat (f, "-italic");
+    f = [f "-italic"];
     it = true;
   endif
   if (isempty (t.fontsize))
@@ -2367,7 +2367,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   for i = length (s) : -1 : 1
     ## special case for "\0"  and replace with "{/Symbol \306}'
     if (strncmp (m{i}, '\0', 2))
-      str = cstrcat (str(1:s(i) - 1), '{/Symbol \306}', str(s(i) + 2:end));
+      str = [str(1:s(i) - 1) '{/Symbol \306}' str(s(i) + 2:end)];
     else
       f = m{i}(2:end);
       if (isfield (sym, f))
@@ -2382,28 +2382,24 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         ##elseif (it)
         ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
         ##endif
-        str = cstrcat (str(1:s(i) - 1), g, str(e(i) + 1:end));
+        str = [str(1:s(i) - 1) g str(e(i) + 1:end)];
       elseif (strncmp (f, "rm", 2))
         bld = false;
         it = false;
-        str = cstrcat (str(1:s(i) - 1), '/', fnt, ' ', str(s(i) + 3:end));
+        str = [str(1:s(i) - 1) '/' fnt ' ' str(s(i) + 3:end)];
       elseif (strncmp (f, "it", 2) || strncmp (f, "sl", 2))
         it = true;
         if (bld)
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ',
-                         str(s(i) + 3:end));
+          str = [str(1:s(i) - 1) '/' fnt '-bolditalic ' str(s(i) + 3:end)];
         else
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-italic ',
-                         str(s(i) + 3:end));
+          str = [str(1:s(i) - 1) '/' fnt '-italic ' str(s(i) + 3:end)];
         endif
       elseif (strncmp (f, "bf", 2))
         bld = true;
         if (it)
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ',
-                         str(2(i) + 3:end));
+          str = [str(1:s(i) - 1) '/' fnt '-bolditalic ' str(s(i) + 3:end)];
         else
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bold ',
-                         str(s(i) + 3:end));
+          str = [str(1:s(i) - 1) '/' fnt '-bold ' str(s(i) + 3:end)];
         endif
       elseif (strcmpi (f, "color"))
         ## FIXME Ignore \color but remove trailing {} block as well
@@ -2411,7 +2407,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         if (isempty (d))
           warning ('syntax error in \color argument');
         else
-          str = cstrcat (str(1:s(i) - 1), str(e(i) + d + 1:end));
+          str = [str(1:s(i) - 1) str(e(i) + d + 1:end)];
         endif
       elseif (strcmpi (f, "fontname"))
         b1 = strfind (str(e(i) + 1:end),'{');
@@ -2419,9 +2415,8 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         if (isempty (b1) || isempty (b2))
           warning ('syntax error in \fontname argument');
         else
-          str = cstrcat (str(1:s(i) - 1), '/',
-                         str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
-                         str(e(i) + b2(1) + 1:end));
+          str = [str(1:s(i) - 1), '/', str(e(i)+b1(1) + 1:e(i)+b2(1)-1), ...
+                 '{}', str(e(i) + b2(1) + 1:end)];
         endif
       elseif (strcmpi (f, "fontsize"))
         b1 = strfind (str(e(i) + 1:end),'{');
@@ -2429,9 +2424,8 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         if (isempty (b1) || isempty (b2))
           warning ('syntax error in \fontname argument');
         else
-          str = cstrcat (str(1:s(i) - 1), '/=',
-                         str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
-                         str(e(i) + b2(1) + 1:end));
+          str = [str(1:s(i) - 1), '/=', str(e(i)+b1(1) + 1:e(i)+b2(1)-1), ...
+                 '{}', str(e(i) + b2(1) + 1:end)];
         endif
       else
         ## Last desperate attempt to treat the symbol. Look for things
@@ -2449,8 +2443,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
             ##elseif (it)
             ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
             ##endif
-            str = cstrcat (str(1:s(i) - 1), g,
-                           str(s(i) + length (flds{j}) + 1:end));
+            str = [str(1:s(i) - 1) g str(s(i) + length (flds{j}) + 1:end)];
             break;
           endif
         endfor
@@ -2507,16 +2500,16 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
             if (length_string (str(s(i)+p+2:s(i)+p+l1-1)) <=
                 length_string (str(s(i+1)+p+2:s(i+1)+p+l2-1)))
               ## Shortest already first!
-              str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
+              str = [str(1:s(i)+p-1) "@" str(s(i)+p:end)];
             else
               ## Have to swap sub/super-script to get shortest first.
-              str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+l2),
-                             str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+l2+1:end));
+              str = [str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+l2), ...
+                     str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+l2+1:end)];
             endif
           else
             ## Have to swap sub/super-script to get shortest first.
-            str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+1),
-                           str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end));
+            str = [str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+1), ...
+                   str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end)];
           endif
           i += 2;
           p ++;
@@ -2526,7 +2519,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
       else
         if (s(i+1) == s(i) + 2)
           ## Shortest already first!
-          str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
+          str = [str(1:s(i)+p-1) "@" str(s(i)+p:end)];
           p ++;
           i += 2;
         else

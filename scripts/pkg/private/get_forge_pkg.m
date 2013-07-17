@@ -53,7 +53,7 @@ function [ver, url] = get_forge_pkg (name)
       if (nargout > 1)
         # Build download string.
         pkg_file = sprintf ("%s-%s.tar.gz", name, ver);
-        url = cstrcat ("http://packages.octave.org/download/", pkg_file);
+        url = ["http://packages.octave.org/download/" pkg_file];
         ## Verify that the package string exists on the page.
         if (isempty (strfind (html, pkg_file)))
           warning ("get_forge_pkg: download URL not verified");

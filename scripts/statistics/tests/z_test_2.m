@@ -78,10 +78,10 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
   if (nargout == 0)
-    s = cstrcat ("Two-sample Z-test of mean(x) == mean(y) against ",
-                 "mean(x) %s mean(y),\n",
-                 "with known var(x) == %g and var(y) == %g:\n",
-                 "  pval = %g\n");
+    s = ["Two-sample Z-test of mean(x) == mean(y) against ", \
+         "mean(x) %s mean(y),\n",                            \
+         "with known var(x) == %g and var(y) == %g:\n",      \
+         "  pval = %g\n"];
     printf (s, alt, v_x, v_y, pval);
   endif
 

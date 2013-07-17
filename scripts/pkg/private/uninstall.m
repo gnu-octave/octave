@@ -81,9 +81,8 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       if (! isempty (bad_deps))
         for i = 1:length (bad_deps)
           dep = bad_deps{i};
-          error_text = cstrcat (error_text, " ", desc.name, " needs ",
-                               dep.package, " ", dep.operator, " ",
-                               dep.version, "\n");
+          error_text = [error_text " " desc.name " needs " ...
+                        dep.package " " dep.operator " " dep.version "\n"];
         endfor
       endif
     endfor

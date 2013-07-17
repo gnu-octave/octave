@@ -103,7 +103,7 @@ function s = mat2str (x, n = 15, cls = "")
     endif
   else
     ## Non-scalar X, print brackets
-    fmt = cstrcat (fmt, " ");
+    fmt = [fmt " "];
     if (x_iscomplex)
       t = x.';
       s = sprintf (fmt, [real(t(:))'; imag(t(:))']);
@@ -114,7 +114,7 @@ function s = mat2str (x, n = 15, cls = "")
       s = sprintf (fmt, x.');
     endif
 
-    s = cstrcat ("[", s);
+    s = ["[" s];
     s(end) = "]";
     idx = strfind (s, " ");
     nc = columns (x);
@@ -122,7 +122,7 @@ function s = mat2str (x, n = 15, cls = "")
   endif
 
   if (strcmp ("class", cls))
-    s = cstrcat (class (x), "(", s, ")");
+    s = [class(x) "(" s ")"];
   endif
 
 endfunction

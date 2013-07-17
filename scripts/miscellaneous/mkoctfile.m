@@ -146,9 +146,9 @@ function [output, status] = mkoctfile (varargin)
 
   shell_script = fullfile (bindir, sprintf ("mkoctfile-%s", OCTAVE_VERSION));
 
-  cmd = cstrcat ("\"", shell_script, "\"");
+  cmd = ['"' shell_script '"'];
   for i = 1:nargin
-    cmd = cstrcat (cmd, " \"", varargin{i}, "\"");
+    cmd = [cmd ' "' varargin{i} '"'];
   endfor
 
   [sys, out] = system (cmd);

@@ -115,14 +115,14 @@ function retval = num2str (x, arg)
         fmt = "%3d";
       endif
     endif
-    fmt = cstrcat (deblank (repmat (fmt, 1, columns (x))), "\n");
+    fmt = [deblank(repmat(fmt, 1, columns(x))), "\n"];
     nd = ndims (x);
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
     retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
   else   # Complex matrix input
     if (nargin == 2)
       if (ischar (arg))
-        fmt = cstrcat (arg, "%-+", arg(2:end), "i");
+        fmt = [arg "%-+" arg(2:end) "i"];
       elseif (isnumeric (arg) && isscalar (arg) && arg >= 0)
         fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
       else
@@ -157,7 +157,7 @@ function retval = num2str (x, arg)
     x = horzcat (real (x), imag (x));
     x = x(idx{:});
 
-    fmt = cstrcat (deblank (repmat (fmt, 1, nc)), "\n");
+    fmt = [deblank(repmat(fmt, 1, nc)), "\n"];
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
 
     ## Put the "i"'s where they are supposed to be.

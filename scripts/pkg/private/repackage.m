@@ -44,8 +44,8 @@ function repackage (builddir, buildlist)
       if (exist (fullfile (pack.name, "inst", "bin"), "dir"))
         movefile (fullfile (pack.name, "inst", "bin"), pack.name);
       endif
-      archdir = fullfile (pack.archprefix, cstrcat (pack.name, "-",
-                          pack.version), getarch ());
+      archdir = fullfile (pack.archprefix, [pack.name "-" pack.version],
+                          getarch ());
       if (exist (archdir, "dir"))
         if (exist (fullfile (pack.name, "inst", "PKG_ADD"), "file"))
           unlink (fullfile (pack.name, "inst", "PKG_ADD"));
@@ -71,7 +71,7 @@ function repackage (builddir, buildlist)
                     fullfile (pack.name, "PKG_DEL"));
         endif
       endif
-      tfile = cstrcat (pack.name, "-", pack.version, ".tar");
+      tfile = [pack.name "-" pack.version ".tar"];
       tar (tfile, pack.name);
       try
         gzip (tfile);

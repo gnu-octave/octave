@@ -229,10 +229,27 @@ only of blank characters (ASCII code 32).
 @node Concatenating Strings
 @subsection Concatenating Strings
 
-It has been shown above that strings can be concatenated using matrix notation
-(@pxref{Strings}, @ref{Character Arrays}).  Apart from that, there are several
-functions to concatenate string objects: @code{char},
-@code{strvcat}, @code{strcat} and @code{cstrcat}.  In addition, the general
+Strings can be concatenated using matrix notation
+(@pxref{Strings}, @ref{Character Arrays}) which is often the most natural
+method.  For example:
+
+@example
+@group
+fullname = [fname ".txt"];
+email = ["<" user "@" domain ">"];
+@end group
+@end example
+
+@noindent
+In each case it is easy to see what the final string will look like.  This
+method is also the most efficient.  When using matrix concatenation the parser
+immediately begins joining the strings without having to process
+the overhead of a function call and the input validation of the associated
+function.
+
+Nevertheless, there are several other functions for concatenating string
+objects which can be useful in specific circumstances: @code{char},
+@code{strvcat}, @code{strcat} and @code{cstrcat}.  Finally, the general
 purpose concatenation functions can be used: see @ref{docXcat,,cat},
 @ref{docXhorzcat,,horzcat} and @ref{docXvertcat,,vertcat}.
 

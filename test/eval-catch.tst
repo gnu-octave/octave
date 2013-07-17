@@ -38,7 +38,7 @@
 
 %!function ms = mangle (s)
 %!  ## Wrap angle brackets around S.
-%!  ms = cstrcat ("<", s, ">");
+%!  ms = ["<" s ">"];
 %!endfunction
 %!test
 %! eval ("clear a; a; str='';", "str = mangle (lasterr);");

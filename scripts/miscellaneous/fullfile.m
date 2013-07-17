@@ -40,7 +40,7 @@ function filename = fullfile (varargin)
         elseif (i == nargs && strcmp (tmp, filesep))
           tmp = "";
         endif
-        filename = cstrcat (filename, filesep, tmp);
+        filename = [filename filesep tmp];
       endfor
     elseif (nargs == 1)
       filename = varargin{1};
@@ -56,10 +56,10 @@ endfunction
 
 %!shared fs, fsx, xfs, fsxfs, xfsy
 %! fs = filesep ();
-%! fsx = cstrcat (fs, "x");
-%! xfs = cstrcat ("x", fs);
-%! fsxfs = cstrcat (fs, "x", fs);
-%! xfsy = cstrcat ("x", fs, "y");
+%! fsx = [fs "x"];
+%! xfs = ["x" fs];
+%! fsxfs = [fs "x" fs];
+%! xfsy = ["x" fs "y"];
 %!assert (fullfile (""), "")
 %!assert (fullfile (fs), fs)
 %!assert (fullfile ("", fs), fs)

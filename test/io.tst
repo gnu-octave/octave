@@ -345,7 +345,7 @@
 %!       else
 %!         fclose (id);
 %!       endif
-%!       tmp_mode = cstrcat (mode, "b");
+%!       tmp_mode = [mode, "b"];
 %!       [id, err] = fopen (nm, tmp_mode, arch);
 %!       if (id < 0)
 %!         __printf_assert__ ("open failed: %s (%s, %s): %s\n", nm, tmp_mode, arch, err);
@@ -354,7 +354,7 @@
 %!       else
 %!         fclose (id);
 %!       endif
-%!       tmp_mode = cstrcat (mode, "t");
+%!       tmp_mode = [mode, "t"];
 %!       [id, err] = fopen (nm, tmp_mode, arch);
 %!       if (id < 0)
 %!         __printf_assert__ ("open failed: %s (%s, %s): %s\n", nm, tmp_mode, arch, err);

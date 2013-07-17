@@ -17,43 +17,50 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hidden (@var{mode})
-## @deftypefnx {Function File} {} hidden ()
-## Manipulation the mesh hidden line removal.  Called with no argument
-## the hidden line removal is toggled.  The argument @var{mode} can be either
-## "on" or "off" and the set of the hidden line removal is set accordingly.
-## @seealso{mesh, meshc, surf}
+## @deftypefn  {Function File} {} hidden ()
+## @deftypefnx {Function File} {} hidden ("on")
+## @deftypefnx {Function File} {} hidden ("off")
+## @deftypefnx {Function File} {@var{state} =} hidden (@var{dots{})
+## Control mesh hidden line removal.
+##
+## When called with no argument the hidden line removal state is toggled.
+## When called with one of the modes "on" or "off" the state is set accordingly.
+##
+## The optional output argument @var{mode} is the current state.
+##
+## Hidden Line Removal determines what graphic objects behind a mesh plot
+## are visible.  The default is for the mesh to be opaque and lines behind
+## the mesh are not visible.  If hidden line removal is turned off then
+## objects behind the mesh can be seen through the faces (openings) of the
+## mesh, although the mesh grid lines are still opaque.
+##
+## @seealso{mesh, meshc, meshz, ezmesh, ezmeshc}
 ## @end deftypefn
 
-function retval = hidden (mode)
+function state = hidden (mode = "toggle")
 
-  if (nargin == 0)
-    mode = "swap";
-  elseif (nargin == 1);
-    if (ischar (mode))
-      mode = tolower (mode);
-      if (! strcmp (mode, "on") && ! strcmp (mode, "off"))
-        error ("hidden: MODE expected to be 'on' or 'off'");
-      endif
-    else
-      error ("hidden: expecting MODE to be a string");
-    endif
-  else
+  if (nargin > 2)
     print_usage ();
+  elseif (nargin == 1)
+    if (! ischar (mode))
+      error ("hidden: expecting MODE to be a string");
+    elseif (! any (strcmpi (mode, {"on", "off"})))
+      error ('hidden: MODE must be "on" or "off"');
+    endif
   endif
 
-  for h = get (gca (), "children");
-    htype = lower (get (h, "type"));
+  for h = (get (gca (), "children")).';
+    htype = get (h, "type");
     if (strcmp (htype, "surface"))
       fc = get (h, "facecolor");
       if ((! ischar (fc) && is_white (fc))
-          || (ischar (fc) && strcmpi (fc, "none")))
+          || (ischar (fc) && strcmp (fc, "none")))
         switch (mode)
         case "on"
           set (h, "facecolor", "w");
         case "off"
           set (h, "facecolor", "none");
-        case "swap"
+        case "toggle"
           if (ischar (fc))
             set (h, "facecolor", "w");
             mode = "on";
@@ -67,7 +74,7 @@ function retval = hidden (mode)
   endfor
 
   if (nargout > 0)
-    retval = mode;
+    state = mode;
   endif
 
 endfunction
@@ -75,3 +82,4 @@ endfunction
 function retval = is_white (color)
   retval = all (color == 1);
 endfunction
+

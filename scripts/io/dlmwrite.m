@@ -151,6 +151,11 @@ function dlmwrite (file, M, varargin)
     endif
   endwhile
 
+  ## Expand '\t' to TAB for Matlab compatibility
+  if (strcmp (delim, '\t'))
+    delim = "\t";
+  endif
+
   if (ischar (file))
     [fid, msg] = fopen (file, opentype);
   elseif (isscalar (file) && isnumeric (file))

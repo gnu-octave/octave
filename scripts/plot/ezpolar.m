@@ -23,17 +23,22 @@
 ## @deftypefnx {Function File} {} ezpolar (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezpolar (@dots{})
 ##
-## Plot a function in polar coordinates.  The function @var{f} is
-## a string, inline function, or function handle with a single argument.
-## The expected form of the function is
+## Plot a 2-D function in polar coordinates.
+## 
+## The function @var{f} is a string, inline function, or function handle with
+## a single argument.  The expected form of the function is
 ## @code{@var{rho} = @var{f}(@var{theta})}.
-## By default the plot is over the domain @code{0 < @var{theta} < 2*pi} with 60
-## points.
+## By default the plot is over the domain @code{0 <= @var{theta} <= 2*pi}
+## with 500 points.
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
-## values of @var{theta}.  @var{n} is a scalar defining the number of points to
-## use.  If the optional input @var{hax} is given then the plot is placed into
-## the specified axes rather than the current axes.
+## values of @var{theta}.
+##
+## @var{n} is a scalar defining the number of points to use in plotting
+## the function.
+##
+## If the first argument is an axis handle, @var{hax}, then plot into this
+## axis rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##
@@ -43,19 +48,19 @@
 ## ezpolar (@@(t) 1 + sin (t));
 ## @end example
 ##
-## @seealso{polar, ezplot, ezsurf, ezmesh}
+## @seealso{polar, ezplot}
 ## @end deftypefn
 
-function retval = ezpolar (varargin)
+function h = ezpolar (varargin)
 
-  [h, needusage] = __ezplot__ ("polar", varargin{:});
+  [htmp, needusage] = __ezplot__ ("polar", varargin{:});
 
   if (needusage)
     print_usage ();
   endif
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction

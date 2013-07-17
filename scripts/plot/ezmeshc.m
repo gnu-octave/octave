@@ -22,24 +22,24 @@
 ## @deftypefnx {Function File} {} ezmeshc (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezmeshc (@dots{}, @var{n})
 ## @deftypefnx {Function File} {} ezmeshc (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezmeshc (@var{h}, @dots{})
+## @deftypefnx {Function File} {} ezmeshc (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezmeshc (@dots{})
 ##
-## Plot the mesh and contour lines defined by a function.  @var{f} is a string,
-## inline function or function handle with two arguments defining the function.
-## By default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
-## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.
+## Plot the mesh and contour lines defined by a function.
 ##
-## If @var{dom} is a two element vector, it represents the minimum and maximum
-## value of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
-## then the minimum and maximum value of @var{x} and @var{y} are specify
-## separately.
-##
-## @var{n} is a scalar defining the number of points to use in each dimension.
+## @var{f} is a string, inline function, or function handle with two arguments
+## defining the function.  By default the plot is over the meshed domain
+## @code{-2*pi <= @var{x} | @var{y} <= 2*pi} with 60 points in each dimension.
 ##
 ## If three functions are passed, then plot the parametrically defined
 ## function @code{[@var{fx} (@var{s}, @var{t}), @var{fy} (@var{s}, @var{t}),
 ## @var{fz} (@var{s}, @var{t})]}.
+##
+## If @var{dom} is a two element vector, it represents the minimum and maximum
+## values of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
+## then the minimum and maximum values are @code{[xmin xmax ymin ymax]}.
+##
+## @var{n} is a scalar defining the number of points to use in each dimension.
 ##
 ## If the argument "circ" is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
@@ -48,6 +48,8 @@
 ## handle for the created mesh plot and a second handle for the created contour
 ## plot.
 ##
+## Example: 2-argument function
+##
 ## @example
 ## @group
 ## f = @@(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
@@ -55,19 +57,19 @@
 ## @end group
 ## @end example
 ##
-## @seealso{ezplot, ezsurfc, ezsurf, ezmesh}
+## @seealso{meshc, ezmesh, ezplot, ezsurf, ezsurfc, hidden}
 ## @end deftypefn
 
-function retval = ezmeshc (varargin)
+function h = ezmeshc (varargin)
 
-  [h, needusage] = __ezplot__ ("meshc", varargin{:});
+  [htmp, needusage] = __ezplot__ ("meshc", varargin{:});
 
   if (needusage)
     print_usage ();
   endif
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction

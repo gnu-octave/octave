@@ -22,30 +22,35 @@
 ## @deftypefnx {Function File} {} ezsurf (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezsurf (@dots{}, @var{n})
 ## @deftypefnx {Function File} {} ezsurf (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezsurf (@var{h}, @dots{})
+## @deftypefnx {Function File} {} ezsurf (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezsurf (@dots{})
 ##
-## Plot the surface defined by a function.  @var{f} is a string, inline
-## function or function handle with two arguments defining the function.  By
-## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
-## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.
+## Plot the surface defined by a function.
 ##
-## If @var{dom} is a two element vector, it represents the minimum and maximum
-## value of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
-## then the minimum and maximum value of @var{x} and @var{y} are specify
-## separately.
-##
-## @var{n} is a scalar defining the number of points to use in each dimension.
+## @var{f} is a string, inline function, or function handle with two arguments
+## defining the function.  By default the plot is over the meshed domain
+## @code{-2*pi <= @var{x} | @var{y} <= 2*pi} with 60 points in each dimension.
 ##
 ## If three functions are passed, then plot the parametrically defined
 ## function @code{[@var{fx} (@var{s}, @var{t}), @var{fy} (@var{s}, @var{t}),
 ## @var{fz} (@var{s}, @var{t})]}.
 ##
+## If @var{dom} is a two element vector, it represents the minimum and maximum
+## values of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
+## then the minimum and maximum values are @code{[xmin xmax ymin ymax]}.
+##
+## @var{n} is a scalar defining the number of points to use in each dimension.
+##
 ## If the argument "circ" is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
+## If the first argument is an axis handle, @var{hax}, then plot into this
+## axis rather than the current axis handle returned by @code{gca}.
+##
 ## The optional return value @var{h} is a graphics handle to the created
 ## surface object.
+##
+## Example 1: 2-argument function
 ##
 ## @example
 ## @group
@@ -54,7 +59,7 @@
 ## @end group
 ## @end example
 ##
-## An example of a parametrically defined function is
+## Example 2: parametrically defined function
 ##
 ## @example
 ## @group
@@ -65,19 +70,19 @@
 ## @end group
 ## @end example
 ##
-## @seealso{ezplot, ezmesh, ezsurfc, ezmeshc}
+## @seealso{surf, ezsurfc, ezplot, ezmesh, ezmeshc, shading}
 ## @end deftypefn
 
-function retval = ezsurf (varargin)
+function h = ezsurf (varargin)
 
-  [h, needusage] = __ezplot__ ("surf", varargin{:});
+  [htmp, needusage] = __ezplot__ ("surf", varargin{:});
 
   if (needusage)
     print_usage ();
   endif
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction
@@ -96,4 +101,16 @@ endfunction
 %! fy = @(s,t) sin (s) .* cos (t);
 %! fz = @(s,t) sin (t);
 %! ezsurf (fx, fy, fz, [-pi,pi,-pi/2,pi/2], 20);
+%! axis equal;
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! f = @(x,y) x.^2 + y.^2;
+%! subplot (1,2,1);
+%!  ezsurf (f, [-2,2]);
+%!  title ({'x^2 + y^2'; 'plotted over rectangular grid (default)'});
+%! subplot (1,2,2);
+%!  ezsurf (f, [-2,2], 'circ');
+%!  title ({'x^2 + y^2'; 'plotted over circular disk with "circ"'});
 

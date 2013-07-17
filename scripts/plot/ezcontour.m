@@ -20,22 +20,27 @@
 ## @deftypefn  {Function File} {} ezcontour (@var{f})
 ## @deftypefnx {Function File} {} ezcontour (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezcontour (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezcontour (@var{h}, @dots{})
+## @deftypefnx {Function File} {} ezcontour (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezcontour (@dots{})
 ##
-## Plot the contour lines of a function.  @var{f} is a string, inline function
-## or function handle with two arguments defining the function.  By default the
-## plot is over the domain @code{-2*pi < @var{x} < 2*pi} and @code{-2*pi <
-## @var{y} < 2*pi} with 60 points in each dimension.
+## Plot the contour lines of a function.
+## 
+## @var{f} is a string, inline function, or function handle with two arguments
+## defining the function.  By default the plot is over the meshed domain
+## @code{-2*pi <= @var{x} | @var{y} <= 2*pi} with 60 points in each dimension.
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
-## value of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
-## then the minimum and maximum value of @var{x} and @var{y} are specify
-## separately.
+## values of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
+## then the minimum and maximum values are @code{[xmin xmax ymin ymax]}.
 ##
 ## @var{n} is a scalar defining the number of points to use in each dimension.
 ##
+## If the first argument is an axis handle, @var{hax}, then plot into this
+## axis rather than the current axis handle returned by @code{gca}.
+##
 ## The optional return value @var{h} is a graphics handle to the created plot.
+##
+## Example:
 ##
 ## @example
 ## @group
@@ -44,19 +49,19 @@
 ## @end group
 ## @end example
 ##
-## @seealso{ezplot, ezcontourf, ezsurfc, ezmeshc}
+## @seealso{contour, ezcontourf, ezplot, ezmeshc, ezsurfc}
 ## @end deftypefn
 
-function retval = ezcontour (varargin)
+function h = ezcontour (varargin)
 
-  [h, needusage] = __ezplot__ ("contour", varargin{:});
+  [htmp, needusage] = __ezplot__ ("contour", varargin{:});
 
   if (needusage)
     print_usage ();
   endif
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction

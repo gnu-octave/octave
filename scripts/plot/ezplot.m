@@ -18,28 +18,31 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} ezplot (@var{f})
+## @deftypefnx {Function File} {} ezplot (@var{f2v})
 ## @deftypefnx {Function File} {} ezplot (@var{fx}, @var{fy})
 ## @deftypefnx {Function File} {} ezplot (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezplot (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezplot (@var{h}, @dots{})
+## @deftypefnx {Function File} {} ezplot (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezplot (@dots{})
 ##
-## Plot the curve defined by @var{f} in two dimensions.  The function
-## @var{f} may be a string, inline function or function handle and can
-## have either one or two variables.  If @var{f} has one variable, then
+## Plot the 2-D curve defined by the function @var{f}.
+##
+## The function @var{f} may be a string, inline function, or function handle
+## and can have either one or two variables.  If @var{f} has one variable, then
 ## the function is plotted over the domain @code{-2*pi < @var{x} < 2*pi}
 ## with 500 points.
 ##
-## If @var{f} has two variables then @code{@var{f}(@var{x},@var{y}) = 0}
-## is calculated over the meshed domain @code{-2*pi < @var{x} | @var{y}
-## < 2*pi} with 60 by 60 in the mesh.  For example:
+## If @var{f2v} is a function of two variables then the implicit function
+## @code{@var{f}(@var{x},@var{y}) = 0} is calculated over the meshed domain
+## @code{-2*pi <= @var{x} | @var{y} <= 2*pi} with 60 points in each dimension.
+##
+## For example:
 ##
 ## @example
 ## ezplot (@@(@var{x}, @var{y}) @var{x}.^2 - @var{y}.^2 - 1)
 ## @end example
 ##
-## If two functions are passed as strings, inline functions or function
-## handles, then the parametric function
+## If two functions are passed as inputs then the parametric function
 ##
 ## @example
 ## @group
@@ -49,47 +52,57 @@
 ## @end example
 ##
 ## @noindent
-## is plotted over the domain @code{-2*pi < @var{t} < 2*pi} with 500
-## points.
+## is plotted over the domain @code{-2*pi <= @var{t} <= 2*pi} with 500 points.
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
-## value of @var{x}, @var{y} and @var{t}.  If it is a four element
-## vector, then the minimum and maximum values of @var{x} and @var{t}
-## are determined by the first two elements and the minimum and maximum
-## of @var{y} by the second pair of elements.
+## values of both @var{x} and @var{y}, or @var{t} for a parametric plot.  If
+## @var{dom} is a four element vector, then the minimum and maximum values are
+## @code{[xmin xmax ymin ymax]}.
 ##
 ## @var{n} is a scalar defining the number of points to use in plotting
 ## the function.
 ##
-## The optional return value @var{h} is a graphics handle to the created plot.
+## If the first argument is an axis handle, @var{hax}, then plot into this
+## axis rather than the current axis handle returned by @code{gca}.
 ##
-## @seealso{plot, ezplot3}
+## The optional return value @var{h} is a list of graphics handles in the
+## created plot.
+##
+## @seealso{plot, ezplot3, ezpolar, ezcontour, ezcontourf, ezmesh, ezmeshc, ezsurf, ezsurfc}
 ## @end deftypefn
 
-function retval = ezplot (varargin)
+function h = ezplot (varargin)
 
-  [h, needusage] = __ezplot__ ("plot", varargin{:});
+  [htmp, needusage] = __ezplot__ ("plot", varargin{:});
 
   if (needusage)
     print_usage ();
   endif
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction
 
 
 %!demo
+%! ## sinc function using function handle
+%! f = @(x) sin (pi*x) ./ (pi*x);
+%! ezplot (f);
+
+%!demo
+%! ## example of a function string and explicit limits
+%! clf;
+%! ezplot ('1/x', [-2 2]);
+
+%!demo
+%! ## parameterized function example over -2*pi <= t <= +2*pi
 %! clf;
 %! ezplot (@cos, @sin);
 
 %!demo
+%! ## implicit function of 2 variables
 %! clf;
-%! ezplot ('1/x');
-
-%!demo
-%! clf;
-%! ezplot (inline ('x^2 - y^2 = 1'));
+%! ezplot (inline ('x^2 - y^2 - 1'));
 

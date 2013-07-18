@@ -121,6 +121,7 @@ public:
 
   static bool file_in_path (const std::string& file, const std::string& dir);
 
+  void do_show_preferences (void);
 private:
 
   // No copying!
@@ -166,6 +167,8 @@ signals:
 
   void insert_debugger_pointer_signal (const QString&, int);
   void delete_debugger_pointer_signal (const QString&, int);
+
+  void show_preferences_signal (void);
 };
 
 #endif

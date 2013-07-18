@@ -402,3 +402,18 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+DEFUN (__octave_link_show_preferences__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_show_preferences__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  retval = octave_link::show_preferences ();
+
+  return retval;
+}
+
+

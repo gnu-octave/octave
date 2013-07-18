@@ -1,4 +1,4 @@
-## Copyright (C) 2012 John W. Eaton
+## Copyright (C) 2013 John Donoghue
 ##
 ## This file is part of Octave.
 ##
@@ -17,19 +17,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} prefsfile ()
-## Undocumented internal function.
+## @deftypefn {Function File} {} preferences 
+## Display the preferences settings. If in GUI mode, display using the preferences dialog, otherwise display in EDITOR.
+##
+## Example:
+#
+## @example
+## preferences
+## @end example
+##
 ## @end deftypefn
 
-## Author: jwe
+## Author: John Donoghue
+## Version: 0.01
 
-function retval = prefsfile ()
-
-  retval = [ prefdir()  "/.octave_prefs" ];
-  
-
+function preferences ()
+  if (! __octave_link_enabled__ ())
+    prefs_file = [ getenv("HOME")  "/.octave_prefs" ];
+      
+    edit (prefs_file); 
+  else
+    __octave_link_show_preferences__ ();    
+  endif
 endfunction
-
-%% Testing these functions will require some care to avoid wiping out
-%% existing (or creating unwanted) preferences for the user running the
-%% tests.

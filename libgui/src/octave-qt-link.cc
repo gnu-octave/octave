@@ -491,3 +491,11 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
 
   return ok;
 }
+
+void
+octave_qt_link::do_show_preferences ()
+{
+  emit show_preferences_signal ();
+}
+
+

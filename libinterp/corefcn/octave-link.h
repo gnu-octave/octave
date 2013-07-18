@@ -307,6 +307,18 @@ public:
     return instance_ok () ? instance->link_enabled : false;
   }
 
+  static bool
+  show_preferences ()
+  {
+    if (enabled ())
+      { 
+        instance->do_show_preferences ();
+        return true;
+      }
+    else
+      return false;
+  }
+
 private:
 
   static octave_link *instance;
@@ -425,6 +437,8 @@ protected:
 
   virtual void do_set_default_prompts (std::string& ps1, std::string& ps2,
                                        std::string& ps4) = 0;
+
+  virtual void do_show_preferences (void) = 0;
 };
 
 #endif // OCTAVELINK_H

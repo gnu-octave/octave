@@ -1,4 +1,4 @@
-## Copyright (C) 2012 John W. Eaton
+## Copyright (C) 2013 John Donoghue
 ##
 ## This file is part of Octave.
 ##
@@ -17,19 +17,28 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} prefsfile ()
-## Undocumented internal function.
+## @deftypefn {Function File} prefdir 
+## @deftypefnx {Function File} {folder =} prefdir 
+## Return the folder that contains the preferences for octave.
+##
+## Examples:
+##
+## Display the preferences folder
+## @example
+## prefdir
+## @end example
+##
+## Change to the preferences folder
+## @example
+## cd(prefdir)
+## @end example
 ## @end deftypefn
 
-## Author: jwe
+## Author: John Donoghue
+## Version: 0.01
 
-function retval = prefsfile ()
+function folder = prefdir ()
 
-  retval = [ prefdir()  "/.octave_prefs" ];
-  
-
+    folder = getenv("HOME");
+      
 endfunction
-
-%% Testing these functions will require some care to avoid wiping out
-%% existing (or creating unwanted) preferences for the user running the
-%% tests.

@@ -912,6 +912,10 @@ main_window::construct_octave_qt_link (void)
   connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
            this, SLOT (handle_exit_debugger ()));
 
+  connect (_octave_qt_link,
+           SIGNAL (show_preferences_signal (void)),
+           this, SLOT (process_settings_dialog_request ()));
+
 #ifdef HAVE_QSCINTILLA
   connect (_octave_qt_link,
            SIGNAL (edit_file_signal (const QString&)),

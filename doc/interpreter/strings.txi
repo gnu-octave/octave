@@ -236,7 +236,7 @@ method.  For example:
 @example
 @group
 fullname = [fname ".txt"];
-email = ["<" user "@" domain ">"];
+email = ["<" user "@@" domain ">"];
 @end group
 @end example
 

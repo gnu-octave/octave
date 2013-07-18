@@ -22,12 +22,60 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "find-files-model.h"
 #include <QFileIconProvider>
+#include <QtAlgorithms>
+
+class find_file_less_than
+{
+public:
+  find_file_less_than (int ord)
+  {
+    _sortorder = ord;
+  }
+  QVariant getValue (const QFileInfo &f) const
+  {
+     QVariant val;
+     int col = (_sortorder > 0) ? _sortorder : -_sortorder;
+
+     switch (col-1)
+       {
+         case 0:
+           val = QVariant (f.fileName());
+           break;
+
+         case 1:
+           val = QVariant (f.absolutePath());
+           break;
+
+         default:
+            break;
+        }
+     return val;
+  }
+  bool lessThan (const QVariant &left, const QVariant &right) const
+  {
+    return left.toString ().compare (right.toString (), Qt::CaseInsensitive) < 0;
+  }
+  bool operator () (const QFileInfo &left, const QFileInfo &right) const
+  {
+     QVariant leftval = getValue(left);
+     QVariant rightval = getValue(right);
+
+     if (_sortorder > 0)
+        return lessThan(leftval, rightval);
+     else
+        return ! lessThan(leftval, rightval);
+  }
+private:
+  int _sortorder;
+};
+
 
 find_files_model::find_files_model (QObject *p)
   : QAbstractListModel(p)
 {
   _columnNames.append (tr ("Filename"));
   _columnNames.append (tr ("Directory"));
+  _sortorder = 0;
 }
 
 find_files_model::~find_files_model ()
@@ -47,11 +95,19 @@ find_files_model::clear ()
 void 
 find_files_model::addFile (const QFileInfo &info)
 {
-  beginInsertRows(QModelIndex(), _files.size(), _files.size() );
+  beginInsertRows (QModelIndex (), _files.size (), _files.size () );
 
-  _files.append(info);
+  QList<QFileInfo>::Iterator it; 
+  find_file_less_than less_than(_sortorder);
 
-  endInsertRows(); 
+  for (it=_files.begin ();it!=_files.end ();it++)
+    {
+      if (less_than (info, *it)) break;
+    }
+
+  _files.insert (it, info);
+
+  endInsertRows (); 
 }
 
 int 
@@ -111,6 +167,27 @@ find_files_model::headerData (int section, Qt::Orientation orientation, int role
     return _columnNames[section];
   else
     return QVariant ();
+}
+
+void
+find_files_model::sort (int column, Qt::SortOrder order)
+{
+  if(column >= 0)
+    {
+      if (order == Qt::DescendingOrder)
+        _sortorder = -(column+1);
+      else
+        _sortorder = column+1;
+    }
+  else
+    _sortorder = 0;
+
+  if (_sortorder != 0)
+    {
+      beginResetModel ();
+      qSort (_files.begin (), _files.end (), find_file_less_than (_sortorder));
+      endResetModel ();
+    }
 }
 
 QFileInfo 

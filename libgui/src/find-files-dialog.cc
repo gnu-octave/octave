@@ -96,7 +96,8 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _content_case_check->setChecked (settings->value ("findfiles/content_case", false).toBool());
   _content_case_check->setToolTip (tr ("Set text content is case insensitive"));
   
-  find_files_model * model = new find_files_model ();
+  find_files_model * model = new find_files_model (this);
+
   _file_list = new QTableView;
   _file_list->setWordWrap (false);
   _file_list->setModel (model);
@@ -105,7 +106,10 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _file_list->setSelectionMode(QAbstractItemView::SingleSelection);
   _file_list->setAlternatingRowColors(true);
   _file_list->setToolTip (tr ("Search results"));
+  _file_list->setSortingEnabled (true);
   _file_list->horizontalHeader ()->restoreState (settings->value ("findfiles/column_state").toByteArray ());
+  _file_list->horizontalHeader ()->setSortIndicatorShown (true);
+  _file_list->horizontalHeader ()->setClickable (true);
   _file_list->horizontalHeader ()->setStretchLastSection (true);
   _file_list->sortByColumn (
               settings->value ("findfiles/sort_files_by_column",0).toInt (),

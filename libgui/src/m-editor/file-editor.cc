@@ -674,6 +674,7 @@ file_editor::handle_tab_remove_request (void)
             }
         }
     }
+    check_actions ();
 }
 
 void
@@ -775,7 +776,7 @@ file_editor::construct (void)
 
   _toggle_bookmark_action = new QAction (tr ("Toggle &Bookmark"), _tool_bar);
 
-  QAction *remove_bookmark_action
+  _remove_bookmark_action
     = new QAction (tr ("&Remove All Bookmarks"), _tool_bar);
 
   QAction *next_breakpoint_action
@@ -875,10 +876,12 @@ file_editor::construct (void)
       fileMenu->addAction (QIcon::fromTheme("window-close",
                                   QIcon (":/actions/icons/fileclose.png")),
                        tr ("&Close"), this, SLOT (request_close_file (bool)));
-  fileMenu->addAction (QIcon::fromTheme("window-close",
+  _close_all_action =
+      fileMenu->addAction (QIcon::fromTheme("window-close",
                                       QIcon (":/actions/icons/fileclose.png")),
                        tr ("Close All"),
                        this, SLOT (request_close_all_files (bool)));
+  _close_others_action = 
   fileMenu->addAction (QIcon::fromTheme("window-close",
                                       QIcon (":/actions/icons/fileclose.png")),
                        tr ("Close Other Files"),
@@ -906,7 +909,7 @@ file_editor::construct (void)
   editMenu->addAction (_toggle_bookmark_action);
   editMenu->addAction (_next_bookmark_action);
   editMenu->addAction (_previous_bookmark_action);
-  editMenu->addAction (remove_bookmark_action);
+  editMenu->addAction (_remove_bookmark_action);
   editMenu->addSeparator ();
   editMenu->addAction (_goto_line_action);
   _menu_bar->addMenu (editMenu);
@@ -985,7 +988,7 @@ file_editor::construct (void)
   connect (_previous_bookmark_action, SIGNAL (triggered ()),
            this, SLOT (request_previous_bookmark ()));
 
-  connect (remove_bookmark_action, SIGNAL (triggered ()),
+  connect (_remove_bookmark_action, SIGNAL (triggered ()),
            this, SLOT (request_remove_bookmark ()));
 
   connect (toggle_breakpoint_action, SIGNAL (triggered ()),
@@ -1036,6 +1039,8 @@ file_editor::construct (void)
       for (int n = 0; n < sessionFileNames.count (); ++n)
         request_open_file (sessionFileNames.at (n));
     }
+
+    check_actions ();
 }
 
 void
@@ -1164,6 +1169,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (do_breakpoint_marker (bool, const QWidget*, int)));
 
   _tab_widget->setCurrentWidget (f);
+
+  check_actions ();
 }
 
 void
@@ -1244,6 +1251,38 @@ file_editor::set_shortcuts (bool set)
       _redo_action->setShortcut (no_key);
       _undo_action->setShortcut (no_key);
     }
+}
+
+void
+file_editor::check_actions ()
+{
+  bool  have_tabs = _tab_widget->count () > 0;
+
+  _comment_selection_action->setEnabled (have_tabs);
+  _uncomment_selection_action->setEnabled (have_tabs);
+
+  _copy_action->setEnabled (have_tabs);
+  _cut_action->setEnabled (have_tabs);
+  _paste_action->setEnabled (have_tabs);
+
+  _find_action->setEnabled (have_tabs);
+  _goto_line_action->setEnabled (have_tabs);
+
+  _next_bookmark_action->setEnabled (have_tabs);
+  _previous_bookmark_action->setEnabled (have_tabs);
+  _toggle_bookmark_action->setEnabled (have_tabs);
+
+  _print_action->setEnabled (have_tabs);
+  _run_action->setEnabled (have_tabs);
+
+  _save_action->setEnabled (have_tabs);
+  _save_as_action->setEnabled (have_tabs);
+  _close_action->setEnabled (have_tabs);
+  _close_all_action->setEnabled (have_tabs);
+  _close_others_action->setEnabled (have_tabs && _tab_widget->count () > 1);
+
+  _undo_action->setEnabled (have_tabs);
+  _redo_action->setEnabled (have_tabs);
 }
 
 

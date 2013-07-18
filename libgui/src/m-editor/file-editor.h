@@ -57,6 +57,7 @@ public:
   void handle_enter_debug_mode (void);
   void handle_exit_debug_mode (void);
 
+  void check_actions (void);
 signals:
 
   void fetab_settings_changed (const QSettings *settings);
@@ -196,6 +197,7 @@ private:
   QAction *_next_bookmark_action;
   QAction *_previous_bookmark_action;
   QAction *_toggle_bookmark_action;
+  QAction * _remove_bookmark_action;
 
   QAction *_print_action;
   QAction *_run_action;
@@ -203,6 +205,8 @@ private:
   QAction *_save_action;
   QAction *_save_as_action;
   QAction *_close_action;
+  QAction *_close_all_action;
+  QAction *_close_others_action;
 
   QAction *_redo_action;
   QAction *_undo_action;

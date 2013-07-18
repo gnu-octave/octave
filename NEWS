@@ -103,7 +103,9 @@ Summary of important user-visible changes for version 3.8:
 
     Other changes include fixes to the way indexed images are read from a
     colormap depending on the image class (integer images have a -1 offset to
-    the colormap row number).
+    the colormap row number), and always returning the actual indexed image
+    with imread instead of a RGB image if the colormap was not requested
+    as output.
 
  ** The colormap function now provides new options--"list", "register",
     and "unregister"--to list all available colormap functions, and to

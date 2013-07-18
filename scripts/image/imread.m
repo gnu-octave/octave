@@ -42,6 +42,9 @@
 ## The bit depth of the image determines the
 ## class of the output: "uint8" or "uint16" for gray
 ## and color, and "logical" for black and white.
+## Note that indexed images always return the indexes for a colormap,
+## independent if @var{map} is a requested output.  To obtain the actual
+## RGB image, use @code{ind2rgb}.
 ## See the Octave manual for more information in representing images.
 ##
 ## Some file formats, such as TIFF and GIF, are able to store multiple
@@ -53,12 +56,12 @@
 ## of images with @var{param}, @var{val} pairs.  The following options
 ## are supported:
 ##
-## @table @asis
-## @item Frames or Index
+## @table @samp
+## @item "Frames" or "Index"
 ## This is an alternative method to specify @var{idx}.  When specifying it
 ## in this way, its value can also be the string "all".
 ##
-## @item Info
+## @item "Info"
 ## This option exists for @sc{Matlab} compatibility and has no effect.  For
 ## maximum performance while reading multiple images from a single file,
 ## use the Index option.

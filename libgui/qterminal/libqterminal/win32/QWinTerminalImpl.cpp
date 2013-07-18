@@ -40,7 +40,9 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdarg.h>
 #define WIN32_LEAN_AND_MEAN
-#define _WIN32_WINNT 0x0500 
+#if ! defined (_WIN32_WINNT) && ! defined (NTDDI_VERSION)
+#define _WIN32_WINNT 0x0500
+#endif
 #include <windows.h>
 #include <cstring>
 #include <csignal>

@@ -636,7 +636,10 @@ files_dock_widget::notice_settings (const QSettings *settings)
 void
 files_dock_widget::popdownmenu_home (bool)
 {
-  QString dir = QDir::homePath ();
+  QString dir = qgetenv ("HOME");
+  if (dir.isEmpty())
+    dir = QDir::homePath ();
+  
   set_current_directory (dir);
 }
 

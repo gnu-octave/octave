@@ -161,7 +161,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
         result(count) = static_cast<double> (f_args.elem (count).ndims ());
       retval(0) = result;
     }
-  else if (name == "prodofsize" || name == "numel")
+  else if (name == "numel" || name == "prodofsize")
     {
       NDArray result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)

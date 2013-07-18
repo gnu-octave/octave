@@ -33,6 +33,11 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     nogca = false;
   endif
 
+
+  ## Search for parent property
+  charargs = cellfun (@ischar,varargin);
+  isparent = strcmp (lower (varargin(charargs)), "parent");
+  
   ## Figure handles are integers, but object handles are non-integer,
   ## therefore ignore integer scalars.
   if (nargin > 1 && length (varargin) > 0 && isnumeric (varargin{1})
@@ -49,6 +54,22 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
       endif
     else
       error ("%s: expecting first argument to be axes handle", caller);
+    endif
+  elseif (numel (varargin) > 1 && any (isparent))
+    tmp = find (charargs);
+    idx = tmp(isparent)(1);
+    if (idx < numel (varargin) && ishandle (varargin{idx+1}))
+      tmp = varargin{idx+1};
+      obj = get (tmp);
+      if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
+          || strcmp (obj.type, "hggroup"))
+        h = ancestor (tmp, "axes");
+        varargin(idx:idx+1) = [];
+      else
+        error ("%s: expecting parent value to be axes handle", caller);
+      endif
+    else
+      error ("%s: expecting parent value to be axes handle", caller);
     endif
   else
     f = get (0, "currentfigure");

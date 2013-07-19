@@ -19,31 +19,34 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} line ()
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y})
+## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{property}, @var{value}, @dots{}))
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
-## Create line object from @var{x} and @var{y} and insert in current
-## axes object.  Return a handle (or vector of handles) to the line
-## objects created.
+## @deftypefnx {Function File} {} line (@var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} line (@dots{})
+## Create line object from @var{x} and @var{y} (and possibly @var{z}) and
+## insert in the current axes.
 ##
-## Multiple property-value pairs may be specified for the line, but they
+## Multiple property-value pairs may be specified for the line object, but they
 ## must appear in pairs.
+##
+## The optional return value @var{h} is a graphics handle (or vector of handles)
+## to the line objects created.
+##
+## @seealso{image, patch, rectangle, surface, text}
 ## @end deftypefn
 
 ## Author: jwe
 
 function h = line (varargin)
 
-  ## make a default line object, and make it the current axes for
-  ## the current figure.
-  [ax, varargin] = __plt_get_axis_arg__ ("line", varargin{:});
-  if (isempty (ax))
-    ax = gca ();
-  endif
-  
-  tmp = __line__ (ax, varargin{:});
+  ## Get any axis argument which may be in a 'parent' PROP/VAL pair
+  [hax, varargin] = __plt_get_axis_arg__ ("line", varargin{:});
+
+  htmp = __line__ (hax, varargin{:});
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

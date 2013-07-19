@@ -25,6 +25,8 @@
 
 function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
 
+  ## First argument can be a boolean which determines whether a new
+  ## axis will be created if none exists.
   if (islogical (caller))
     nogca = caller;
     caller = varargin{1};
@@ -33,38 +35,31 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     nogca = false;
   endif
 
-
   ## Search for parent property
-  charargs = cellfun (@ischar,varargin);
-  isparent = strcmp (lower (varargin(charargs)), "parent");
+  parent = find (strcmpi (varargin, "parent"), 1);
   
-  ## Figure handles are integers, but object handles are non-integer,
-  ## therefore ignore integer scalars.
-  if (nargin > 1 && length (varargin) > 0 && isnumeric (varargin{1})
-      && numel (varargin{1}) == 1 && ishandle (varargin{1}(1))
-      && varargin{1}(1) != 0 && ! isfigure (varargin{1}(1)))
-    tmp = varargin{1};
-    obj = get (tmp);
+  ## Look for numeric scalar which is a graphics handle but not the
+  ## Root Figure (0) or an ordinary figure (integer).
+  if (numel (varargin) > 0 && isnumeric (varargin{1})
+      && isscalar (varargin{1}) && ishandle (varargin{1})
+      && varargin{1} != 0 && ! isfigure (varargin{1}))
+    htmp = varargin{1};
+    obj = get (htmp);
     if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
         || strcmp (obj.type, "hggroup"))
-      h = ancestor (tmp, "axes");
+      h = ancestor (htmp, "axes");
       varargin(1) = [];
-      if (isempty (varargin))
-        varargin = {};
-      endif
     else
       error ("%s: expecting first argument to be axes handle", caller);
     endif
-  elseif (numel (varargin) > 1 && any (isparent))
-    tmp = find (charargs);
-    idx = tmp(isparent)(1);
-    if (idx < numel (varargin) && ishandle (varargin{idx+1}))
-      tmp = varargin{idx+1};
-      obj = get (tmp);
+  elseif (numel (varargin) > 1 && ! isempty (parent))
+    if (parent < numel (varargin) && ishandle (varargin{parent+1}))
+      htmp = varargin{parent+1};
+      obj = get (htmp);
       if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
           || strcmp (obj.type, "hggroup"))
-        h = ancestor (tmp, "axes");
-        varargin(idx:idx+1) = [];
+        h = ancestor (htmp, "axes");
+        varargin(parent:parent+1) = [];
       else
         error ("%s: expecting parent value to be axes handle", caller);
       endif
@@ -72,6 +67,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
       error ("%s: expecting parent value to be axes handle", caller);
     endif
   else
+    ## No axis specified.  Use current axis or create one as necessary.
     f = get (0, "currentfigure");
     if (isempty (f))
       h = [];

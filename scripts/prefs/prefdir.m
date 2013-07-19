@@ -17,21 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} prefdir 
-## @deftypefnx {Function File} {folder =} prefdir 
-## Return the folder that contains the preferences for octave.
+## @deftypefn  {Function File} {} prefdir 
+## @deftypefnx {Function File} {@var{dir} =} prefdir 
+## Return the directory that contains the preferences for Octave.
 ##
 ## Examples:
 ##
-## Display the preferences folder
+## Display the preferences directory
 ## @example
 ## prefdir
 ## @end example
 ##
 ## Change to the preferences folder
 ## @example
-## cd(prefdir)
+## cd (prefdir)
 ## @end example
+## @seealso{preferences, getpref, setpref, addpref, rmpref}
 ## @end deftypefn
 
 ## Author: John Donoghue
@@ -39,6 +40,7 @@
 
 function folder = prefdir ()
 
-    folder = getenv("HOME");
-      
+  folder = getenv ("HOME");
+
 endfunction
+

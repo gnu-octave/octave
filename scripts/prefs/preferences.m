@@ -18,14 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} preferences 
-## Display the preferences settings. If in GUI mode, display using the preferences dialog, otherwise display in EDITOR.
+## Display preferences settings for Octave.
 ##
-## Example:
-#
-## @example
-## preferences
-## @end example
+## If in GUI mode, display using the preferences dialog, otherwise display
+## the preferences with the @code{edit} function.
 ##
+## @seealso{getpref, setpref, addpref, rmpref}
 ## @end deftypefn
 
 ## Author: John Donoghue
@@ -33,10 +31,9 @@
 
 function preferences ()
   if (! __octave_link_enabled__ ())
-    prefs_file = [ getenv("HOME")  "/.octave_prefs" ];
-      
-    edit (prefs_file); 
+    edit (prefsfile ());
   else
-    __octave_link_show_preferences__ ();    
+    __octave_link_show_preferences__ ();
   endif
 endfunction
+

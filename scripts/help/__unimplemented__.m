@@ -336,8 +336,6 @@ function list = missing_functions ()
   "plotbrowser",
   "plotedit",
   "plottools",
-  "prefdir",
-  "preferences",
   "printdlg",
   "printopt",
   "printpreview",

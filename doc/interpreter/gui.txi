@@ -81,13 +81,17 @@ programs that do.  @strong{Warning:} The functions @code{uiwait},
 @node User-Defined Preferences
 @section User-Defined Preferences
 
-@DOCSTRING(addpref)
-
 @DOCSTRING(getpref)
 
-@DOCSTRING(ispref)
+@DOCSTRING(setpref)
+
+@DOCSTRING(addpref)
 
 @DOCSTRING(rmpref)
 
-@DOCSTRING(setpref)
+@DOCSTRING(ispref)
+
+@DOCSTRING(prefdir)
+
+@DOCSTRING(preferences)
 

@@ -191,19 +191,19 @@ Summary of important user-visible changes for version 3.8:
                                                   
       atan2d                      erfcinv         lines       
       base64_decode               erfi            polyeig                   
-      base64_encode               expint          readline_re_read_init_file
-      betaincinv                  findfigs        readline_read_init_file   
-      built_in_docstrings_file    flintmax        rgbplot                   
-      cmpermute                   fminsearch      save_default_options      
-      cmunique                    gallery         shrinkfaces               
-      colorcube                   gco             splinefit                 
-      copyobj                     hdl2struct      stemleaf                  
-      dawson                      history_save    strjoin                   
-      dblist                      imformats       struct2hdl                
-      debug_jit                   importdata      tetramesh                 
-      doc_cache_create            iscolormap      waterfall                 
-      ellipj                      jit_enable      
-      ellipke                     jit_startcnt    
+      base64_encode               expint          prefdir
+      betaincinv                  findfigs        preferences
+      built_in_docstrings_file    flintmax        readline_re_read_init_file
+      cmpermute                   fminsearch      readline_read_init_file   
+      cmunique                    gallery         rgbplot                   
+      colorcube                   gco             save_default_options      
+      copyobj                     hdl2struct      shrinkfaces               
+      dawson                      history_save    splinefit                 
+      dblist                      imformats       stemleaf                  
+      debug_jit                   importdata      strjoin                   
+      doc_cache_create            iscolormap      struct2hdl                
+      ellipj                      jit_enable      tetramesh                 
+      ellipke                     jit_startcnt    waterfall                 
 
  ** Deprecated functions.
 

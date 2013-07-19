@@ -172,7 +172,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
         for i = 1:length (bad_deps)
           dep = bad_deps{i};
           error_text = [error_text " " desc.name " needs " ...
-                        dep.package " " dep.operator " " dep.version "\n"]);
+                        dep.package " " dep.operator " " dep.version "\n"];
         endfor
       endif
     endfor

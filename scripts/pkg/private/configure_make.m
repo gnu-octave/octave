@@ -47,10 +47,10 @@ function configure_make (desc, packdir, verbose)
         flags = [flags ' CXX="' mkoctfile("-p", "CXX") '"'];
       endif
       if (isempty (getenv ("AR")))
-        flags = [flags ' AR="' mkoctfile("-p" "AR") '"'];
+        flags = [flags ' AR="' mkoctfile("-p", "AR") '"'];
       endif
       if (isempty (getenv ("RANLIB")))
-        flags = [flags ' RANLIB="' mkoctfile("-p" "RANLIB") '"'];
+        flags = [flags ' RANLIB="' mkoctfile("-p", "RANLIB") '"'];
       endif
       cmd = ["cd '" src "'; " ...
              scenv "./configure --prefix=\"" desc.dir "\"" flags];

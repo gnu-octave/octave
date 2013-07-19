@@ -32,7 +32,7 @@
 ## @example
 ## cd (prefdir)
 ## @end example
-## @seealso{preferences, getpref, setpref, addpref, rmpref}
+## @seealso{getpref, setpref, addpref, rmpref, ispref}
 ## @end deftypefn
 
 ## Author: John Donoghue

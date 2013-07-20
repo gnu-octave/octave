@@ -25,23 +25,17 @@
 ## Make sure the version string v is a valid x.y.z version string
 ## Examples: "0.1" => "0.1.0", "monkey" => error(...).
 function out = fix_version (v)
-  dots = find (v == ".");
-  if (length (dots) == 1)
-    major = str2num (v(1:dots-1));
-    minor = str2num (v(dots+1:end));
-    if (length (major) != 0 && length (minor) != 0)
-      out = sprintf ("%d.%d.0", major, minor);
-      return;
+
+  if (regexp (v, '^\d+(\.\d+){1,2}$') == 1)
+    parts = ostrsplit (v, '.', true);
+    if (numel (parts) == 2)
+      out = strcat (v, ".0");
+    else
+      out = v;
     endif
-  elseif (length (dots) == 2)
-    major = str2num (v(1:dots(1)-1));
-    minor = str2num (v(dots(1)+1:dots(2)-1));
-    rev = str2num (v(dots(2)+1:end));
-    if (length (major) != 0 && length (minor) != 0 && length (rev) != 0)
-      out = sprintf ("%d.%d.%d", major, minor, rev);
-      return;
-    endif
+  else
+    error ("bad version string: %s", v);
   endif
-  error ("bad version string: %s", v);
+
 endfunction
 

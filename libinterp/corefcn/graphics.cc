@@ -4028,6 +4028,28 @@ axes::properties::sync_positions (void)
     update_outerposition ();
 }
 
+/*
+%!xtest
+%! unwind_protect
+%!   hf = figure (gcf (), "__graphics_toolkit__", "fltk", "visible", "off");
+%!   clf;
+%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1))
+%!   hax = findall (gcf (), "type", "axes");
+%!   positions = cell2mat (get (hax, "position"));
+%!   outerpositions = cell2mat (get (hax, "outerposition"));
+%!   looseinsets = cell2mat (get (hax, "looseinset"));
+%!   tightinsets = cell2mat (get (hax, "tightinset"));
+%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1))
+%!   hax = findall (gcf (), "type", "axes");
+%!   assert (cell2mat (get (hax, "position")), positions)
+%!   assert (cell2mat (get (hax, "outerposition")), outerpositions)
+%!   assert (cell2mat (get (hax, "looseinset")), looseinsets)
+%!   assert (cell2mat (get (hax, "tightinset")), tightinsets)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
+
 void
 axes::properties::set_text_child (handle_property& hp,
                                   const std::string& who,

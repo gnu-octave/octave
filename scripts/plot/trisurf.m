@@ -77,7 +77,7 @@ endfunction
 %! colormap ('default');
 %! N = 31;
 %! [x, y] = meshgrid (1:N);
-%! tri = delaunay (x, y);
+%! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
 %! h = trisurf (tri, x, y, z, 'facecolor', 'interp');
 %! axis tight;
@@ -89,7 +89,7 @@ endfunction
 %! colormap ('default');
 %! N = 31;
 %! [x, y] = meshgrid (1:N);
-%! tri = delaunay (x, y);
+%! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
 %! h = trisurf (tri, x, y, z, 'facecolor', 'flat');
 %! axis tight;

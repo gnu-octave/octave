@@ -233,7 +233,7 @@ function h = subplot (varargin)
     endfor
 
     if (found)
-      set (cf, "currentaxes", tmp);
+      set (cf, "currentaxes", hsubplot);
     else
       hsubplot = axes ("box", "off",
                        "position", pos,

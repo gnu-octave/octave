@@ -39,6 +39,7 @@ protected slots:
   void copyClipboard ();
   void pasteClipboard ();
 
+  void showDoc (const QString & name);
 private:
 
   webinfo *_webinfo;

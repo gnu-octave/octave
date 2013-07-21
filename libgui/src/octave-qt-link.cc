@@ -498,4 +498,10 @@ octave_qt_link::do_show_preferences ()
   emit show_preferences_signal ();
 }
 
+void
+octave_qt_link::do_show_doc (const std::string& file)
+{
+  emit show_doc_signal (QString::fromStdString (file));
+}
+
 

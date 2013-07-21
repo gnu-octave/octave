@@ -592,3 +592,24 @@ parser::global_search (const QString& text, int max_founds)
   results.append ("</body></html>");
   return results;
 }
+
+QString 
+parser::find_ref (const QString &ref_name)
+{
+  QString text = "";
+
+  QHash<QString,node_position>::iterator it;
+  for (it=_ref_map.begin ();it!=_ref_map.end ();++it)
+    {
+      QString k = it.key ();
+      node_position p = it.value ();
+
+      if (k == "docX" + ref_name)
+        {
+          // found ref, so return its name
+          text = "docX" + ref_name;
+        }
+    }
+  return text;
+}
+

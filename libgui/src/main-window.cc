@@ -938,6 +938,10 @@ main_window::construct_octave_qt_link (void)
            this,
            SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
 
+  connect (_octave_qt_link,
+           SIGNAL (show_doc_signal (const QString &)),
+           this, SLOT (handle_show_doc (const QString &)));
+
   connect (_workspace_model,
            SIGNAL (rename_variable (const QString&, const QString&)),
            this,
@@ -1612,3 +1616,12 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
   emit set_widget_shortcuts_signal (set_shortcuts);
 }
+
+void
+main_window::handle_show_doc (const QString& file)
+{
+  doc_browser_window->setVisible (true);
+  emit show_doc_signal (file);
+}
+
+

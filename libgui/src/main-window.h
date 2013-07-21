@@ -82,6 +82,8 @@ signals:
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
 
+  void show_doc_signal (const QString&);
+
   void insert_debugger_pointer_signal (const QString& file, int line);
   void delete_debugger_pointer_signal (const QString& file, int line);
   void update_breakpoint_marker_signal (bool insert, const QString& file,
@@ -170,6 +172,8 @@ public slots:
                                  const QString& title, const QString& filename, 
                                  const QString &dirname,
                                  const QString& multimode);
+
+  void handle_show_doc (const QString &file);
 
   // find files dialog 
   void find_files(const QString &startdir=QDir::currentPath());

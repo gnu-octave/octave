@@ -416,4 +416,22 @@ Undocumented internal function.\n\
   return retval;
 }
 
+DEFUN (__octave_link_show_doc__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_show_doc__ ( @var{filename} )\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  std::string file;
+
+  if (args.length () >= 1)
+    file = args(0).string_value();
+
+  retval = octave_link::show_doc (file);
+
+  return retval;
+}
+
+
 

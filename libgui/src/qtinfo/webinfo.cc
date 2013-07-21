@@ -203,6 +203,9 @@ webinfo::load_ref (const QString &ref_name)
       // not found
      load_node("Top");
     }
+
+   if (_text_browser)
+     _text_browser->setFocus(); 
 }
 
 void

@@ -54,5 +54,12 @@ documentation_dock_widget::pasteClipboard ()
 void
 documentation_dock_widget::showDoc (const QString &name)
 {
+  // show the doc pane
+  if (!isVisible ())
+    setVisible (true);
+  setFocus ();
+  raise ();
+
   _webinfo->load_ref (name);
+
 }

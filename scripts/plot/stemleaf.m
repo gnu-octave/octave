@@ -332,7 +332,7 @@ endfunction
 %!demo
 %! %% Gaussian leaves:
 %! x = fix (30 * randn (300,1));
-%! stemleaf (x);
+%! stemleaf (x, 'Gaussian leaves');
 
 %!test
 %! ## test minus to plus

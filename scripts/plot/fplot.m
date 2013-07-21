@@ -180,7 +180,7 @@ endfunction
 %!demo
 %! clf;
 %! ## sinc function
-%! fh = @(x) sin (x*pi) ./ (x*pi);
+%! fh = @(x) sin (pi*x) ./ (pi*x);
 %! fplot (fh, [-5, 5]);
 
 %!test

@@ -486,7 +486,7 @@ endfunction
 %!  axis ('autox');
 %!
 %! subplot (325);
-%!  plot (t, x, ';sine [0:2p];');
+%!  plot (t, x, ';sine [0:2pi];');
 %!  title ('axes at [3 6 0 1], then autoy');
 %!  axis ([3,6,0,1]);
 %!  axis ('autoy');
@@ -501,7 +501,7 @@ endfunction
 %! x = 0:0.1:10;
 %! plot (x, sin(x));
 %! axis image;
-%! title ('image');
+%! title ({'image', 'equivalent to "tight" & "equal"'});
 
 %!demo
 %! clf;

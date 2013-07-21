@@ -45,9 +45,8 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
       && varargin{1} != 0 && ! isfigure (varargin{1}))
     htmp = varargin{1};
     obj = get (htmp);
-    if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
-        || strcmp (obj.type, "hggroup"))
-      h = ancestor (htmp, "axes");
+    if (strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
+      h = htmp;
       varargin(1) = [];
     else
       error ("%s: expecting first argument to be axes handle", caller);
@@ -56,12 +55,12 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     if (parent < numel (varargin) && ishandle (varargin{parent+1}))
       htmp = varargin{parent+1};
       obj = get (htmp);
-      if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
-          || strcmp (obj.type, "hggroup"))
-        h = ancestor (htmp, "axes");
+      if (strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
+        h = htmp;
         varargin(parent:parent+1) = [];
       else
-        error ("%s: expecting parent value to be axes handle", caller);
+        ## 'parent' property for some other type like hggroup
+        h = ancestor (htmp, "axes");
       endif
     else
       error ("%s: expecting parent value to be axes handle", caller);

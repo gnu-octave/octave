@@ -26,51 +26,55 @@
 ##
 ## If the handle object @var{h} is of type @var{type}, return @var{h}.
 ##
-## If @code{"toplevel"} is given as a 3rd argument, return the highest
+## If @code{"toplevel"} is given as a third argument, return the highest
 ## parent in the object hierarchy that matches the condition, instead
 ## of the first (nearest) one.
-## @seealso{get, set}
+## @seealso{findobj, findall, allchild}
 ## @end deftypefn
 
 function p = ancestor (h, type, toplevel)
 
-  if (nargin == 2 || nargin == 3)
-    p = cell (numel (h), 1);
-    if (ischar (type))
-      type = { type };
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+  endif
+
+  if (ischar (type))
+    type = { type };
+  elseif (! iscellstr (type))
+    error ("ancestor: TYPE must be a string or cell array of strings");
+  endif
+
+  find_first = true;
+  if (nargin == 3)
+    if (ischar (toplevel) && strcmpi (toplevel, "toplevel"))
+      find_first = false;
+    else
+      error ('ancestor: third argument must be "toplevel"');
     endif
-    if (iscellstr (type))
-      look_first = true;
-      if (nargin == 3)
-        if (ischar (toplevel) && strcmpi (toplevel, "toplevel"))
-          look_first = false;
-        else
-          error ("ancestor: third argument must be \"toplevel\"");
+  endif
+
+  if (isempty (h))
+    p = [];
+  else
+    p = cell (numel (h), 1);
+    h = num2cell (h);
+    for nh = 1:numel (h)
+      while (true)
+        if (isempty (h{nh}) || ! ishandle (h{nh}))
+          break;
         endif
-      endif
-      h = num2cell (h);
-      for nh = 1:numel (h)
-        while (true)
-          if (isempty (h{nh}) || ! ishandle (h{nh}))
+        if (any (strcmpi (get (h{nh}, "type"), type)))
+          p{nh} = h{nh};
+          if (find_first)
             break;
           endif
-          if (any (strcmpi (get (h{nh}, "type"), type)))
-            p{nh} = h{nh};
-            if (look_first)
-              break;
-            endif
-          endif
-          h{nh} = get (h{nh}, "Parent");
-        endwhile
-      endfor
-      if (nh == 1)
-        p = p{1};
-      endif
-    else
-      error ("ancestor: second argument must be a string or cell array of strings");
+        endif
+        h{nh} = get (h{nh}, "parent");
+      endwhile
+    endfor
+    if (nh == 1)
+      p = p{1};
     endif
-  else
-    print_usage ();
   endif
 
 endfunction
@@ -79,10 +83,34 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   l = line;
-%!   assert (ancestor (l, "axes"), gca);
-%!   assert (ancestor (l, "figure"), hf);
+%!   hl = line;
+%!   assert (ancestor (hl, "axes"), gca);
+%!   assert (ancestor (hl, "figure"), hf);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!    hg1 = hggroup ("parent", gca);
+%!    hg2 = hggroup ("parent", hg1);
+%!    hl = line ("parent", hg2);
+%!    assert (ancestor (hl, "line"), hl);
+%!    assert (ancestor (hl, "axes"), gca);
+%!    assert (ancestor (hl, "figure"), hf);
+%!    assert (ancestor (hl, "hggroup"), hg2);
+%!    assert (ancestor (hl, "hggroup", "toplevel"), hg1);
+%!    assert (ancestor (hl, {"hggroup", "axes"}), hg2);
+%!    assert (ancestor (hl, {"hggroup", "axes"}, "toplevel"), gca);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!assert (ancestor ([], "axes"), [])
+
+%!error ancestor ()
+%!error ancestor (1,2,3)
+%!error <TYPE must be a string> ancestor (1,2)
+%!error <third argument must be "toplevel"> ancestor (1, "axes", "foo")
 

@@ -45,16 +45,20 @@
 
 function retval = patch (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
-
-  [tmp, failed] = __patch__ (h, varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
+  
+  if (isempty (hax))
+    hax = gca ();
+  endif
+  
+  [htmp, failed] = __patch__ (hax, varargin{:});
 
   if (failed)
     print_usage ();
   endif
 
   if (nargout > 0)
-    retval = tmp;
+    retval = htmp;
   endif
 
 endfunction

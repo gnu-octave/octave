@@ -32,12 +32,16 @@
 
 function h = hggroup (varargin)
 
-  [ax, varargin] = __plt_get_axis_arg__ ("hggroup", varargin{:});
-
-  tmp = __go_hggroup__ (ax, varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("hggroup", varargin{:});
+  
+  if (isempty (hax))
+    hax = gca ();
+  endif
+  
+  htmp = __go_hggroup__ (hax, varargin{:});
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

@@ -1,19 +1,19 @@
 dnl aclocal.m4 -- extra macros for configuring Octave
 dnl
 dnl Copyright (C) 1995-2012 John W. Eaton
-dnl 
+dnl
 dnl This file is part of Octave.
-dnl 
+dnl
 dnl Octave is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
 dnl Free Software Foundation; either version 3 of the License, or (at
 dnl your option) any later version.
-dnl 
+dnl
 dnl Octave is distributed in the hope that it will be useful, but WITHOUT
 dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 dnl for more details.
-dnl 
+dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, see
 dnl <http://www.gnu.org/licenses/>.
@@ -84,7 +84,7 @@ AC_DEFUN([OCTAVE_CC_FLAG], [
   ])
   if eval "test \"`echo '$octave_cv_cc_flag_'$ac_safe`\" = yes"; then
     AC_MSG_RESULT([yes])
-    ifelse([$2], , 
+    ifelse([$2], ,
       [CFLAGS="$CFLAGS $1"
       AC_MSG_RESULT([adding $1 to CFLAGS])], [$2])
   else
@@ -147,7 +147,7 @@ dnl
 dnl Check whether a math mapper function is available in <cmath>.
 dnl Will define HAVE_CMATH_FUNC if there is a double variant and
 dnl HAVE_CMATH_FUNCF if there is a float variant.
-dnl Currently capable of checking for functions with single 
+dnl Currently capable of checking for functions with single
 dnl argument and returning bool/int/real.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
@@ -242,7 +242,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
       end program
 ]],
       octave_cv_func_fortran_isnan=yes, octave_cv_func_fortran_isnan=no)
-    AC_LANG_POP(Fortran 77)      
+    AC_LANG_POP(Fortran 77)
   ])
 ])
 dnl
@@ -267,7 +267,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_func_glutesscallback_threedots = yes; then
-    AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1, 
+    AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1,
       [Define to 1 if gluTessCallback is called with (...).])
   fi
 ])
@@ -295,7 +295,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_func_setplaceholdertext = yes; then
-    AC_DEFINE(HAVE_SETPLACEHOLDERTEXT, 1, 
+    AC_DEFINE(HAVE_SETPLACEHOLDERTEXT, 1,
       [Define to 1 if you have the Qt SetPlaceholderText function.])
   fi
 ])
@@ -470,7 +470,7 @@ doit (void)
   ip[8] = 0;
   ip[9] = 0;
   ip[10] = 0;
- 
+
   int *ipntr = new int [14];
 
   int k = 1;
@@ -486,7 +486,7 @@ doit (void)
 
   double tol = DBL_EPSILON;
 
-  do 
+  do
     {
       F77_FUNC (dnaupd, DNAUPD) (ido, "I", n, "LM", k, tol, resid, p,
                                  v, n, ip, ipntr, workd, workl, lwork,
@@ -509,7 +509,7 @@ doit (void)
 
           break;
         }
-    } 
+    }
   while (1);
 
   int *sel = new int [p];
@@ -652,7 +652,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
             #elif defined (HAVE_OPENGL_GL_H)
             # include <OpenGL/gl.h>
             #endif
-            ]], [[ 
+            ]], [[
             glEnable(GL_SMOOTH);
             ]])], [OPENGL_LIBS="-lopengl32 -lglu32"])
 
@@ -715,7 +715,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
         int n = 4;
         coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
         boolT ismalloc = 0;
-        return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr); 
+        return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr);
       ]])],
       octave_cv_lib_qhull_ok=yes,
       octave_cv_lib_qhull_ok=no,
@@ -740,7 +740,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_TERMLIB], [
                  [], [])
   LIBS="$ac_octave_save_LIBS"
   case "$ac_cv_search_tputs" in
-    -l*)  
+    -l*)
       TERM_LIBS="$ac_cv_search_tputs"
     ;;
     no)
@@ -776,7 +776,7 @@ AC_DEFUN([OCTAVE_CHECK_OPENMP], [
         ]], [[
         int main(int argc, char* argv[])
         {
-          _Pragma("omp parallel")  
+          _Pragma("omp parallel")
           printf("Hello, world.\n");
           return 0;
         }
@@ -828,7 +828,7 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
         #endif
         ]], [[
         const char *tmp = qh_version;
-      ]])], 
+      ]])],
       octave_cv_lib_qhull_version=yes, octave_cv_lib_qhull_version=no)
   ])
   if test $octave_cv_lib_qhull_version = no; then
@@ -998,7 +998,7 @@ AC_DEFUN([OCTAVE_CXX_COMPLEX_SETTERS], [
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_cxx_complex_setters = yes; then
-    AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS, 1, 
+    AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS, 1,
       [Define to 1 if C++ complex class has void real (T) and void imag (T) methods.])
   fi
 ])
@@ -1015,7 +1015,7 @@ AC_DEFUN([OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS], [
         char x[length()];
         test(x);
       ]])],
-      octave_cv_cxx_dynamic_auto_arrays=yes, 
+      octave_cv_cxx_dynamic_auto_arrays=yes,
       octave_cv_cxx_dynamic_auto_arrays=no)
     AC_LANG_POP(C++)
   ])
@@ -1087,13 +1087,13 @@ AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
   ])
   AC_MSG_RESULT([$octave_cv_cxx_iso_compliant_library])
   if test $octave_cv_cxx_iso_compliant_library = yes; then
-    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1, 
+    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1,
       [Define to 1 if your C++ runtime library is ISO compliant.])
   fi
 ])
 dnl
 dnl Check if C++ compiler needs the new friend template declaration
-dnl syntax. 
+dnl syntax.
 dnl
 AC_DEFUN([OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL], [
   AC_REQUIRE([AC_PROG_CXX])
@@ -1141,7 +1141,7 @@ AC_DEFUN([OCTAVE_CXX_PLACEMENT_DELETE], [
         ]], [[
         operator delete((void *)0, (void *)0);
       ]])],
-      octave_cv_cxx_placement_delete=yes, 
+      octave_cv_cxx_placement_delete=yes,
       octave_cv_cxx_placement_delete=no)
     AC_LANG_POP(C++)
   ])
@@ -1230,16 +1230,16 @@ AC_DEFUN([OCTAVE_FAST_INT_OPS], [
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
         #include <limits>
         template<class UT, class ST>
-        static bool 
+        static bool
         do_test (UT, ST)
         {
           volatile ST s = std::numeric_limits<ST>::min () / 3;
           volatile UT u = static_cast<UT> (s);
           if (*(reinterpret_cast<volatile ST *> (&u)) != s) return true;
-          
+
           u = 0; u = ~u;
           if (*(reinterpret_cast<volatile ST *> (&u)) != -1) return true;
-          
+
           ST sx, sy;
           sx = std::numeric_limits<ST>::max () / 2 + 1;
           sy = std::numeric_limits<ST>::max () / 2 + 2;
@@ -1247,7 +1247,7 @@ AC_DEFUN([OCTAVE_FAST_INT_OPS], [
               != std::numeric_limits<ST>::min () + 1) return true;
           if (static_cast<ST> (static_cast<UT> (sx) - static_cast<UT> (sy))
               != -1) return true;
-          
+
           if ((sx & sy) != (static_cast<UT> (sx) & static_cast<UT> (sy)))
             return true;
           if ((sx | sy) != (static_cast<UT> (sx) | static_cast<UT> (sy)))
@@ -1257,7 +1257,7 @@ AC_DEFUN([OCTAVE_FAST_INT_OPS], [
           if ((-1 >> 1) != -1) return true;
           return false;
         }
-      
+
         #define DO_TEST(T) \
           if (do_test (static_cast<unsigned T> (0), static_cast<signed T> (0)))\
             return sizeof (T);
@@ -1305,7 +1305,7 @@ AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
   if test "$octave_cv_framework_$1" = yes; then
     AC_MSG_RESULT([yes])
     AC_ARG_WITH(framework-m4_tolower($1),
-      [AS_HELP_STRING([--without-framework-m4_tolower($1)], 
+      [AS_HELP_STRING([--without-framework-m4_tolower($1)],
         [don't use framework $1])],
          with_have_framework=$withval, with_have_framework=yes)
     if test "$with_have_framework" = yes; then
@@ -1349,10 +1349,10 @@ AC_DEFUN([OCTAVE_IEEE754_DATA_FORMAT], [
   AC_CACHE_VAL([octave_cv_ieee754_data_format],
     [AC_RUN_IFELSE([AC_LANG_SOURCE([[
         int
-        main (void) 
+        main (void)
         {
           typedef union { unsigned char c[8]; double d; } ieeebytes;
-           
+
           ieeebytes l = {0x1c, 0xbc, 0x6e, 0xf2, 0x54, 0x8b, 0x11, 0x43};
           ieeebytes b = {0x43, 0x11, 0x8b, 0x54, 0xf2, 0x6e, 0xbc, 0x1c};
 
@@ -1378,6 +1378,175 @@ AC_DEFUN([OCTAVE_IEEE754_DATA_FORMAT], [
     ## floating point should be capable of removing this check and
     ## the one in the octave_ieee_init function in liboctave/lo-ieee.cc.
     AC_MSG_ERROR([IEEE 754 data format required for building Octave])
+  fi
+])
+dnl
+dnl Check for CallInst::addAttribute API
+dnl
+AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
+  AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attributes],
+    [octave_cv_callinst_addattribute_arg_is_attributes],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Instructions.h>
+          #include <llvm/Attributes.h>
+          #include <llvm/LLVMContext.h>
+          ]], [[
+          llvm::CallInst *callinst;
+          llvm::AttrBuilder attr_builder;
+          attr_builder.addAttribute(llvm::Attributes::StructRet);
+          llvm::Attributes attrs = llvm::Attributes::get(llvm::getGlobalContext(), attr_builder);
+          callinst->addAttribute (1, attrs);
+        ]])],
+        octave_cv_callinst_addattribute_arg_is_attributes=yes,
+        octave_cv_callinst_addattribute_arg_is_attributes=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_callinst_addattribute_arg_is_attributes = yes; then
+    AC_DEFINE(CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1,
+      [Define to 1 if llvm::CallInst:addAttribute arg type is llvm::Attributes.])
+  else
+    AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attribute],
+      [octave_cv_callinst_addattribute_arg_is_attribute],
+      [AC_LANG_PUSH(C++)
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[
+            #include <llvm/Instructions.h>
+            #include <llvm/Attributes.h>
+            ]], [[
+            llvm::CallInst *callinst;
+            callinst->addAttribute (1, llvm::Attribute::StructRet);
+          ]])],
+          octave_cv_callinst_addattribute_arg_is_attribute=yes,
+          octave_cv_callinst_addattribute_arg_is_attribute=no)
+      AC_LANG_POP(C++)
+    ])
+    if test $octave_cv_callinst_addattribute_arg_is_attribute = no; then
+      AC_MSG_ERROR([llvm::CallInst::addAttribute is required.])
+    fi
+  fi
+])
+dnl
+dnl Detect TargetData.h or DataLayout.h.
+dnl
+AC_DEFUN([OCTAVE_LLVM_DATALAYOUT_HEADER], [
+  AC_CHECK_HEADER([llvm/DataLayout.h], [
+    octave_is_datalayout_header=yes], [
+    AC_CHECK_HEADER([llvm/Target/TargetData.h], [
+      octave_is_datalayout_header=no], [
+      AC_MSG_ERROR([DataLayout.h or Target/TargetData.h is required.])
+    ])
+  ])
+  if test $octave_is_datalayout_header = yes; then
+    AC_DEFINE(HAVE_DATALAYOUT, 1,
+      [Define to 1 if DataLayout.h exist.])
+  fi
+])
+dnl
+dnl Check for Function::addAttribute API
+dnl
+AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API], [
+  AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attributes],
+    [octave_cv_function_addattribute_arg_is_attributes],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Function.h>
+          #include <llvm/Attributes.h>
+          #include <llvm/LLVMContext.h>
+          ]], [[
+          llvm::Function *llvm_function;
+          llvm::AttrBuilder attr_builder;
+          attr_builder.addAttribute(llvm::Attributes::StructRet);
+          llvm::Attributes attrs = llvm::Attributes::get(llvm::getGlobalContext(), attr_builder);
+          llvm_function->addAttribute (1, attrs);
+        ]])],
+        octave_cv_function_addattribute_arg_is_attributes=yes,
+        octave_cv_function_addattribute_arg_is_attributes=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_function_addattribute_arg_is_attributes = yes; then
+    AC_DEFINE(FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1,
+      [Define to 1 if llvm::Function:addAttribute arg type is llvm::Attributes.])
+  else
+    AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attribute],
+      [octave_cv_function_addattribute_arg_is_attribute],
+      [AC_LANG_PUSH(C++)
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[
+            #include <llvm/Function.h>
+            #include <llvm/Attributes.h>
+            ]], [[
+            llvm::Function *llvm_function;
+            llvm_function->addAttribute (1, llvm::Attribute::StructRet);
+          ]])],
+          octave_cv_function_addattribute_arg_is_attribute=yes,
+          octave_cv_function_addattribute_arg_is_attribute=no)
+      AC_LANG_POP(C++)
+    ])
+    if test $octave_cv_function_addattribute_arg_is_attribute = no; then
+      AC_MSG_ERROR([llvm::Function::addAttribute is required.])
+    fi
+  fi
+])
+dnl
+dnl Check for Function::addFnAttr API
+dnl
+AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
+  AC_CACHE_CHECK([check LLVM::Function::addFnAttr arg type is llvm::Attributes],
+    [octave_cv_function_addfnattr_arg_is_attributes],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Function.h>
+          #include <llvm/Attributes.h>
+          ]], [[
+          llvm::Function *llvm_function;
+          llvm_function->addFnAttr (llvm::Attributes::AlwaysInline);
+        ]])],
+        octave_cv_function_addfnattr_arg_is_attributes=yes,
+        octave_cv_function_addfnattr_arg_is_attributes=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_function_addfnattr_arg_is_attributes = yes; then
+    AC_DEFINE(FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES, 1,
+      [Define to 1 if llvm::Function:addFnAttr arg type is llvm::Attributes.])
+  else
+    AC_CACHE_CHECK([check llvm::Function::addFnAttr arg type is llvm::Attribute],
+      [octave_cv_function_addfnattr_arg_is_attribute],
+      [AC_LANG_PUSH(C++)
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[
+            #include <llvm/Function.h>
+            #include <llvm/Attributes.h>
+            ]], [[
+            llvm::Function *llvm_function;
+            llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
+          ]])],
+          octave_cv_function_addfnattr_arg_is_attribute=yes,
+          octave_cv_function_addfnattr_arg_is_attribute=no)
+      AC_LANG_POP(C++)
+    ])
+    if test $octave_cv_function_addfnattr_arg_is_attribute = no; then
+      AC_MSG_ERROR([llvm::Function::addFnAttr is required.])
+    fi
+  fi
+])
+dnl
+dnl Check whether IRBuilder.h is in Support directory.
+dnl
+AC_DEFUN([OCTAVE_LLVM_IRBUILDER_HEADER], [
+  AC_CHECK_HEADER([llvm/IRBuilder.h], [
+    octave_irbuilder_header_in_support_dir=no], [
+    AC_CHECK_HEADER([llvm/Support/IRBuilder.h], [
+      octave_irbuilder_header_in_support_dir=yes], [
+      AC_MSG_ERROR([IRBuilder.h is required.])
+    ])
+  ])
+  if test $octave_irbuilder_header_in_support_dir = yes; then
+    AC_DEFINE(IRBUILDER_HEADER_IN_SUPPORT_DIR, 1,
+      [Define to 1 if IRBuilder.h in Support directory.])
   fi
 ])
 dnl
@@ -1574,7 +1743,7 @@ AC_DEFUN([OCTAVE_PROG_GPERF], [
     warn_gperf="
 
 I didn't find gperf, but it's only a problem if you need to
-reconstruct oct-gperf.h 
+reconstruct oct-gperf.h
 "
     OCTAVE_CONFIGURE_WARNING([warn_gperf])
     GPERF='$(top_srcdir)/build-aux/missing gperf'
@@ -1761,7 +1930,7 @@ dnl
 dnl Macro assumes that the check for umfpack has already been performed.
 dnl
 AC_DEFUN([OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME], [
-  AC_CACHE_CHECK([whether UMFPACK needs SuiteSparse_time function], 
+  AC_CACHE_CHECK([whether UMFPACK needs SuiteSparse_time function],
     [octave_cv_umfpack_need_suitesparse_time],
     [AC_LANG_PUSH(C)
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -1814,7 +1983,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
         idx_type n = 5;
         idx_type Ap[] = {0, 2, 5, 9, 10, 12};
         idx_type Ai[]  = {0, 1, 0, 2, 4, 1, 2, 3, 4, 2, 1, 4};
-        double Ax[] = {2., 0., 3., 0., 3., 0., -1., 0., 4., 0., 4., 0., 
+        double Ax[] = {2., 0., 3., 0., 3., 0., -1., 0., 4., 0., 4., 0.,
                       -3., 0., 1., 0., 2., 0., 2., 0., 6., 0., 1., 0.};
         double br[] = {8., 45., -3., 3., 19.};
         double bi[] = {0., 0., 0., 0., 0.};
@@ -1827,10 +1996,10 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
           (void) UMFPACK_NAME (symbolic) (n, n, Ap, Ai, Ax, null, &Symbolic, null, null) ;
           (void) UMFPACK_NAME (numeric) (Ap, Ai, Ax, null, Symbolic, &Numeric, null, null) ;
           UMFPACK_NAME (free_symbolic) (&Symbolic) ;
-          (void) UMFPACK_NAME (solve) (0, Ap, Ai, Ax, null, x, null, br, bi, 
+          (void) UMFPACK_NAME (solve) (0, Ap, Ai, Ax, null, x, null, br, bi,
                                    Numeric, null, null) ;
           UMFPACK_NAME (free_numeric) (&Numeric) ;
-          for (i = 0; i < n; i++, x+=2) 
+          for (i = 0; i < n; i++, x+=2)
             if (fabs (*x - i - 1.) > 1.e-13)
               return (1);
           return (0) ;
@@ -1846,7 +2015,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
     AC_MSG_RESULT([$octave_cv_umfpack_separate_split])
   fi
   if test $octave_cv_umfpack_separate_split = yes; then
-    AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, 
+    AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1,
       [Define to 1 if the UMFPACK Complex solver allows matrix and RHS to be split independently.])
   fi
 ])
@@ -1857,7 +2026,7 @@ dnl
 AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
   AC_CHECK_HEADERS([unordered_map], [],
     [AC_CHECK_HEADERS([tr1/unordered_map])])
-  AC_CACHE_CHECK([whether unordered_map requires tr1 namespace], 
+  AC_CACHE_CHECK([whether unordered_map requires tr1 namespace],
     [octave_cv_header_require_tr1_namespace],
     [AC_LANG_PUSH(C++)
     octave_cv_header_require_tr1_namespace=no
@@ -1870,7 +2039,7 @@ AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
           ]], [[
           std::unordered_map<int,int> m;
         ]])],
-        octave_cv_header_require_tr1_namespace=no, 
+        octave_cv_header_require_tr1_namespace=no,
         octave_cv_header_require_tr1_namespace=yes)
     elif test $ac_cv_header_tr1_unordered_map = yes; then
       octave_cv_header_require_tr1_namespace=yes
@@ -1878,177 +2047,8 @@ AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_header_require_tr1_namespace = yes; then
-    AC_DEFINE(USE_UNORDERED_MAP_WITH_TR1, 1, 
+    AC_DEFINE(USE_UNORDERED_MAP_WITH_TR1, 1,
       [Define to 1 if unordered_map requires the use of tr1 namespace.])
-  fi
-])
-dnl
-dnl Check whether IRBuilder.h is in Support directory.
-dnl
-AC_DEFUN([OCTAVE_LLVM_IRBUILDER_HEADER], [
-  AC_CHECK_HEADER([llvm/IRBuilder.h], [
-    octave_irbuilder_header_in_support_dir=no], [
-    AC_CHECK_HEADER([llvm/Support/IRBuilder.h], [
-      octave_irbuilder_header_in_support_dir=yes], [
-      AC_MSG_ERROR("IRBuilder.h is required.")
-    ])
-  ])
-  if test $octave_irbuilder_header_in_support_dir = yes; then
-    AC_DEFINE(IRBUILDER_HEADER_IN_SUPPORT_DIR, 1, 
-      [Define to 1 if IRBuilder.h in Support directory.])
-  fi
-])
-dnl
-dnl Detect TargetData.h or DataLayout.h.
-dnl
-AC_DEFUN([OCTAVE_LLVM_DATALAYOUT_HEADER], [
-  AC_CHECK_HEADER([llvm/DataLayout.h], [
-    octave_is_datalayout_header=yes], [
-    AC_CHECK_HEADER([llvm/Target/TargetData.h], [
-      octave_is_datalayout_header=no], [
-      AC_MSG_ERROR("DataLayout.h or Target/TargetData.h is required.")
-    ])
-  ])
-  if test $octave_is_datalayout_header = yes; then
-    AC_DEFINE(HAVE_DATALAYOUT, 1, 
-      [Define to 1 if DataLayout.h exist.])
-  fi
-])
-dnl
-dnl Check for Function::addAttribute API
-dnl
-AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API], [
-  AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attributes], 
-    [octave_cv_function_addattribute_arg_is_attributes],
-    [AC_LANG_PUSH(C++)
-      AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[
-          #include <llvm/Function.h>
-          #include <llvm/Attributes.h>
-          #include <llvm/LLVMContext.h>
-          ]], [[
-          llvm::Function *llvm_function;
-          llvm::AttrBuilder attr_builder;
-          attr_builder.addAttribute(llvm::Attributes::StructRet);
-          llvm::Attributes attrs = llvm::Attributes::get(llvm::getGlobalContext(), attr_builder);
-          llvm_function->addAttribute (1, attrs);
-        ]])],
-        octave_cv_function_addattribute_arg_is_attributes=yes, 
-        octave_cv_function_addattribute_arg_is_attributes=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_function_addattribute_arg_is_attributes = yes; then
-    AC_DEFINE(FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1, 
-      [Define to 1 if llvm::Function:addAttribute arg type is llvm::Attributes.])
-  else
-    AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attribute], 
-      [octave_cv_function_addattribute_arg_is_attribute],
-      [AC_LANG_PUSH(C++)
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-            #include <llvm/Function.h>
-            #include <llvm/Attributes.h>
-            ]], [[
-            llvm::Function *llvm_function;
-            llvm_function->addAttribute (1, llvm::Attribute::StructRet);
-          ]])],
-          octave_cv_function_addattribute_arg_is_attribute=yes, 
-          octave_cv_function_addattribute_arg_is_attribute=no)
-      AC_LANG_POP(C++)
-    ])
-    if test $octave_cv_function_addattribute_arg_is_attribute = no; then
-      AC_MSG_ERROR("llvm::Function::addAttribute is required.")      
-    fi
-  fi
-])
-dnl
-dnl Check for Function::addFnAttr API
-dnl
-AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
-  AC_CACHE_CHECK([check LLVM::Function::addFnAttr arg type is llvm::Attributes], 
-    [octave_cv_function_addfnattr_arg_is_attributes],
-    [AC_LANG_PUSH(C++)
-      AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[
-          #include <llvm/Function.h>
-          #include <llvm/Attributes.h>
-          ]], [[
-          llvm::Function *llvm_function;
-          llvm_function->addFnAttr (llvm::Attributes::AlwaysInline);
-        ]])],
-        octave_cv_function_addfnattr_arg_is_attributes=yes, 
-        octave_cv_function_addfnattr_arg_is_attributes=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_function_addfnattr_arg_is_attributes = yes; then
-    AC_DEFINE(FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES, 1, 
-      [Define to 1 if llvm::Function:addFnAttr arg type is llvm::Attributes.])
-  else
-    AC_CACHE_CHECK([check llvm::Function::addFnAttr arg type is llvm::Attribute], 
-      [octave_cv_function_addfnattr_arg_is_attribute],
-      [AC_LANG_PUSH(C++)
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-            #include <llvm/Function.h>
-            #include <llvm/Attributes.h>
-            ]], [[
-            llvm::Function *llvm_function;
-            llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
-          ]])],
-          octave_cv_function_addfnattr_arg_is_attribute=yes, 
-          octave_cv_function_addfnattr_arg_is_attribute=no)
-      AC_LANG_POP(C++)
-    ])
-    if test $octave_cv_function_addfnattr_arg_is_attribute = no; then
-      AC_MSG_ERROR("llvm::Function::addFnAttr is required.")      
-    fi
-  fi
-])
-dnl
-dnl Check for CallInst::addAttribute API
-dnl
-AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
-  AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attributes], 
-    [octave_cv_callinst_addattribute_arg_is_attributes],
-    [AC_LANG_PUSH(C++)
-      AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[
-          #include <llvm/Instructions.h>
-          #include <llvm/Attributes.h>
-          #include <llvm/LLVMContext.h>
-          ]], [[
-          llvm::CallInst *callinst;
-          llvm::AttrBuilder attr_builder;
-          attr_builder.addAttribute(llvm::Attributes::StructRet);
-          llvm::Attributes attrs = llvm::Attributes::get(llvm::getGlobalContext(), attr_builder); 
-          callinst->addAttribute (1, attrs);
-        ]])],
-        octave_cv_callinst_addattribute_arg_is_attributes=yes, 
-        octave_cv_callinst_addattribute_arg_is_attributes=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_callinst_addattribute_arg_is_attributes = yes; then
-    AC_DEFINE(CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1, 
-      [Define to 1 if llvm::CallInst:addAttribute arg type is llvm::Attributes.])
-  else
-    AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attribute], 
-      [octave_cv_callinst_addattribute_arg_is_attribute],
-      [AC_LANG_PUSH(C++)
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-            #include <llvm/Instructions.h>
-            #include <llvm/Attributes.h>
-            ]], [[
-            llvm::CallInst *callinst;
-            callinst->addAttribute (1, llvm::Attribute::StructRet);
-          ]])],
-          octave_cv_callinst_addattribute_arg_is_attribute=yes, 
-          octave_cv_callinst_addattribute_arg_is_attribute=no)
-      AC_LANG_POP(C++)
-    ])
-    if test $octave_cv_callinst_addattribute_arg_is_attribute = no; then
-      AC_MSG_ERROR("llvm::CallInst::addAttribute is required.")      
-    fi    
   fi
 ])
 

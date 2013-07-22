@@ -243,3 +243,8 @@ endfunction
 %! set (h, 'basevalue', -1);
 %! title ({'Parabola y = x^2 -1';'BaseValue = -1'});
 
+%!demo
+%! x = 0:10;
+%! y = rand (size (x));
+%! h = area (x, y);
+%! set (h, 'ydata', sort (get (h, 'ydata')))

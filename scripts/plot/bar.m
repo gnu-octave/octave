@@ -98,8 +98,9 @@ endfunction
 
 %!demo
 %! clf;
-%! y = rand (10, 1);
-%! bar (y);
+%! y = rand (11, 1);
+%! h = bar (y);
+%! set (h, 'ydata', sort (rand (11, 1)));
 
 %!demo
 %! clf;

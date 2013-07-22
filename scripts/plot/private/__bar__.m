@@ -196,10 +196,10 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch (xb(:,:,i), yb(:,:,i), "FaceColor", "flat",
+        h = patch (hg, xb(:,:,i), yb(:,:,i), "FaceColor", "flat",
                    "cdata", lev, "parent", hg);
       else
-        h = patch (xb(:,:,i), yb(:,:,i), "parent", hg);
+        h = patch (hg, xb(:,:,i), yb(:,:,i), "parent", hg);
       endif
     else
       if (! have_color_spec)
@@ -208,10 +208,10 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch (yb(:,:,i), xb(:,:,i), "FaceColor", "flat",
+        h = patch (hg, yb(:,:,i), xb(:,:,i), "FaceColor", "flat",
                    "cdata", lev, "parent", hg);
       else
-        h = patch (yb(:,:,i), xb(:,:,i), "parent", hg);
+        h = patch (hg, yb(:,:,i), xb(:,:,i), "parent", hg);
       endif
     endif
 

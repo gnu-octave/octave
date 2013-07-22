@@ -45,13 +45,11 @@ function h = surface (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("surface", varargin{:});
 
-  oldax = gca ();
-  unwind_protect
-    axes (hax);
-    [htmp, bad_usage] = __surface__ (hax, varargin{:});
-  unwind_protect_cleanup
-    axes (oldax);
-  end_unwind_protect
+  if (isempty (hax))
+    hax = gca ();
+  endif
+  
+  [htmp, bad_usage] = __surface__ (hax, varargin{:});
 
   if (bad_usage)
     print_usage ();

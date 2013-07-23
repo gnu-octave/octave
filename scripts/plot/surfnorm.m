@@ -53,8 +53,7 @@
 
 function [Nx, Ny, Nz] = surfnorm (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout != 0), "surfnorm",
-                                                varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("surfnorm", varargin{:});
 
   if (nargin != 1 && nargin != 3)
     print_usage ();
@@ -115,24 +114,27 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
   nz = nz ./ len;
 
   if (nargout == 0)
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      newplot ();
-      surf (x, y, z, varargin{ioff:end});
-      old_hold_state = get (h, "nextplot");
-      unwind_protect
-        set (h, "nextplot", "add");
-        plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
-               [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
-               [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
-               varargin{ioff:end});
-      unwind_protect_cleanup
-        set (h, "nextplot", old_hold_state);
-      end_unwind_protect
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
+   oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+   unwind_protect
+     hax = newplot (hax);
+     
+     surf (hax, x, y, z, varargin{ioff:end});
+     old_hold_state = get (hax, "nextplot");
+     unwind_protect
+       set (hax, "nextplot", "add");
+       plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
+              [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
+              [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
+              varargin{ioff:end});
+     unwind_protect_cleanup
+       set (hax, "nextplot", old_hold_state);
+     end_unwind_protect
+     
+   unwind_protect_cleanup
+     if (! isempty (oldfig))
+       set (0, "currentfigure", oldfig);
+     endif
+   end_unwind_protect
   else
     Nx = nx;
     Ny = ny;

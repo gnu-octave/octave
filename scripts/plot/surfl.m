@@ -69,12 +69,11 @@
 
 function retval = surfl (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("surfl", varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("surfl", varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
+    hax = newplot (hax);
 
     ## Check for lighting type.
     use_cdata = true;
@@ -122,9 +121,9 @@ function retval = surfl (varargin)
       endif
     endif
 
-    htmp = surface (varargin{:});
-    if (! ishold ())
-      set (h, "view", [-37.5, 30],
+    htmp = surface ([varargin, "parent", hax]{:});
+    if (! ishold (hax))
+      set (hax, "view", [-37.5, 30],
            "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
     endif
 
@@ -143,7 +142,7 @@ function retval = surfl (varargin)
     endif
 
     vn = get (htmp, "vertexnormals");
-    dar = get (h, "plotboxaspectratio");
+    dar = get (hax, "plotboxaspectratio");
     vn(:,:,1) *= dar(1);
     vn(:,:,2) *= dar(2);
     vn(:,:,3) *= dar(3);
@@ -160,7 +159,9 @@ function retval = surfl (varargin)
     set (htmp, "cdata", cdata ./ sum (r(1:3)));
 
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)

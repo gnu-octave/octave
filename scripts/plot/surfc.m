@@ -24,52 +24,58 @@
 ## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus,
 ## columns of @var{z} correspond to different @var{x} values and rows of
 ## @var{z} correspond to different @var{y} values.
-## @seealso{meshgrid, surf, contour}
+## @seealso{ezsurfc, meshgrid, surf, contour}
 ## @end deftypefn
 
 function h = surfc (varargin)
 
-  newplot ();
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("surfc", varargin{:});
 
-  tmp = surface (varargin{:});
-
-  ax = get (tmp, "parent");
-
-  set (tmp, "facecolor", "flat");
-
-  if (! ishold ())
-    set (ax, "view", [-37.5, 30],
-         "xgrid", "on", "ygrid", "on", "zgrid", "on");
+  if (nargin < 1)
+    print_usage ();
   endif
 
-  drawnow ();
-  zmin = get (ax, "zlim")(1);
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  unwind_protect
+    hax = newplot (hax);
+    
+    htmp = surface (hax, varargin{:});
 
-  # don't pass axis handle and/or string arguments to __contour__()
-  stop_idx = nargin;
-  for i = 2 : nargin
-    if (ischar (varargin{i}))
-      stop_idx = i - 1;
-      break;
+    set (htmp, "facecolor", "flat");
+
+    if (! ishold ())
+      set (hax, "view", [-37.5, 30],
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
-  endfor
 
-  start_idx = 1;
-  if (ishandle (varargin{1}))
-    start_idx = 2;
-  endif
+    drawnow ();
 
-  if (stop_idx - start_idx == 1 || stop_idx - start_idx == 3)
-    #don't pass a color matrix c to __contour__
-    stop_idx -= 1;
-  endif
+    # don't pass string arguments to __contour__()
+    stop_idx = find (cellfun ("isclass", varargin, "char"), 1);
+    if (isempty (stop_idx))
+      stop_idx = nargin;
+    else
+      stop_idx--;
+    endif
 
-  [c, tmp2] = __contour__ (ax, zmin, varargin{start_idx:stop_idx});
+    if (stop_idx - 1 == 1 || stop_idx - 1 == 3)
+      ## Don't pass a color matrix c to __contour__
+      stop_idx -= 1;
+    endif
 
-  tmp = [tmp; tmp2];
+    zmin = get (hax, "zlim")(1);
+    [~, htmp2] = __contour__ (hax, zmin, varargin{1:stop_idx});
+
+    htmp = [htmp; htmp2];
+
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

@@ -61,23 +61,25 @@
 
 function retval = scatter (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("scatter", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("scatter", varargin{:});
 
   if (nargin < 2)
     print_usage ();
   else
-    oldh = gca ();
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
     unwind_protect
-      axes (h);
-      newplot ();
-      tmp = __scatter__ (h, 2, "scatter", varargin{:});
+      hax = newplot (hax);
+      
+      htmp = __scatter__ (hax, 2, "scatter", varargin{:});
     unwind_protect_cleanup
-      axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
     end_unwind_protect
   endif
 
   if (nargout > 0)
-    retval = tmp;
+    retval = htmp;
   endif
 
 endfunction

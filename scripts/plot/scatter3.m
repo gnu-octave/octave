@@ -56,23 +56,25 @@
 
 function retval = scatter3 (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("scatter3", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("scatter3", varargin{:});
 
   if (nargin < 2)
     print_usage ();
   else
-    oldh = gca ();
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
     unwind_protect
-      axes (h);
-      newplot ();
-      tmp = __scatter__ (h, 3, "scatter3", varargin{:});
+      hax = newplot (hax);
+      
+      tmp = __scatter__ (hax, 3, "scatter3", varargin{:});
     unwind_protect_cleanup
-      axes (oldh);
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
     end_unwind_protect
   endif
 
-  if (! ishold ())
-    set (h, "view", [-37.5, 30],
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30],
          "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 

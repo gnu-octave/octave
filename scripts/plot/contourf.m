@@ -66,16 +66,19 @@
 
 function [c, h] = contourf (varargin)
 
-  [xh, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (xh);
-    newplot ();
-    [ctmp, htmp] = __contour__ (xh, "none", "fill", "on",
+    hax = newplot (hax);
+    
+    [ctmp, htmp] = __contour__ (hax, "none", "fill", "on",
                                 "linecolor", "black", varargin{:});
+    
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)

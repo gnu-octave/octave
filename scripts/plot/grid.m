@@ -17,83 +17,98 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} grid (@var{arg})
-## @deftypefnx {Function File} {} grid ("minor", @var{arg2})
+## @deftypefn  {Function File} {} grid
+## @deftypefnx {Function File} {} grid on
+## @deftypefnx {Function File} {} grid off
+## @deftypefnx {Function File} {} grid minor
+## @deftypefnx {Function File} {} grid minor on
+## @deftypefnx {Function File} {} grid minor off
 ## @deftypefnx {Function File} {} grid (@var{hax}, @dots{})
-## Force the display of a grid on the plot.
-## The argument may be either @code{"on"}, or @code{"off"}.
+## Control the display of grid lines on a plot.
+##
+## The function input may be either @code{"on"}, or @code{"off"}.
 ## If it is omitted, the current grid state is toggled.
 ##
-## If @var{arg} is @code{"minor"} then the minor grid is toggled.  When
-## using a minor grid a second argument @var{arg2} is allowed, which can
-## be either @code{"on"} or @code{"off"} to explicitly set the state of
-## the minor grid.
+## If the first argument is @code{"minor"} then all further commands
+## modify the minor grid rather than the major grid.
 ##
 ## If the first argument is an axis handle, @var{hax}, operate on the
 ## specified axis object.
-## @seealso{plot}
+##
+## To control the grid lines for an individual axis use the @code{set}
+## function.  For example,
+##
+## @example
+## set (gca, "ygrid", "on");
+## @end example
+## @seealso{box}
 ## @end deftypefn
 
 ## Author: jwe
 
 function grid (varargin)
 
-  [ax, varargin, nargs] = __plt_get_axis_arg__ ("grid", varargin{:});
+  [hax, varargin, nargs] = __plt_get_axis_arg__ ("grid", varargin{:});
 
-  grid_on = (strcmp (get (ax, "xgrid"), "on")
-             && strcmp (get (ax, "ygrid"), "on")
-             && strcmp (get (ax, "zgrid"), "on"));
-
-  minor_on = (strcmp (get (ax, "xminorgrid"), "on")
-              && strcmp (get (ax, "yminorgrid"), "on")
-              && strcmp (get (ax, "zminorgrid"), "on"));
-
+  if (isempty (hax))
+    hax = gca ();
+  endif
+  
   if (nargs > 2)
     print_usage ();
-  elseif (nargs == 0)
+  endif
+
+  grid_on = (   strcmp (get (hax, "xgrid"), "on")
+             && strcmp (get (hax, "ygrid"), "on")
+             && strcmp (get (hax, "zgrid"), "on"));
+
+  minor_on = (   strcmp (get (hax, "xminorgrid"), "on")
+              && strcmp (get (hax, "yminorgrid"), "on")
+              && strcmp (get (hax, "zminorgrid"), "on"));
+
+  if (nargs == 0)
     grid_on = ! grid_on;
   else
     x = varargin{1};
-    if (ischar (x))
-      if (strcmpi (x, "off"))
-        grid_on = false;
-      elseif (strcmpi (x, "on"))
-        grid_on = true;
-      elseif (strcmpi (x, "minor"))
-        if (nargs == 2)
-          x2 = varargin{2};
-          if (strcmpi (x2, "on"))
-            minor_on = true;
-            grid_on = true;
-          elseif (strcmpi (x2, "off"))
-            minor_on = false;
-          else
-            print_usage ();
-          endif
+    if (! ischar (x))
+      error ("grid: argument must be a string");
+    endif
+    if (strcmpi (x, "off"))
+      grid_on = false;
+    elseif (strcmpi (x, "on"))
+      grid_on = true;
+    elseif (strcmpi (x, "minor"))
+      if (nargs == 2)
+        x2 = varargin{2};
+        if (strcmpi (x2, "on"))
+          minor_on = true;
+          grid_on = true;
+        elseif (strcmpi (x2, "off"))
+          minor_on = false;
         else
-           minor_on = ! minor_on;
-           if (minor_on)
-             grid_on = true;
-           endif
+          print_usage ();
         endif
       else
-        print_usage ();
+        minor_on = ! minor_on;
+        if (minor_on)
+          grid_on = true;
+        endif
       endif
     else
-      error ("grid: argument must be a string");
+      print_usage ();
     endif
   endif
 
   if (grid_on)
-    set (ax, "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    set (hax, "xgrid", "on", "ygrid", "on", "zgrid", "on");
     if (minor_on)
-      set (ax, "xminorgrid", "on", "yminorgrid", "on", "zminorgrid", "on");
+      set (hax, "xminorgrid", "on", "yminorgrid", "on", "zminorgrid", "on");
     else
-      set (ax, "xminorgrid", "off", "yminorgrid", "off", "zminorgrid", "off");
+      set (hax, "xminorgrid", "off", "yminorgrid", "off", "zminorgrid", "off");
     endif
   else
-    set (ax, "xgrid", "off", "ygrid", "off", "zgrid", "off");
-    set (ax, "xminorgrid", "off", "yminorgrid", "off", "zminorgrid", "off");
+    set (hax, "xgrid", "off", "ygrid", "off", "zgrid", "off",
+              "xminorgrid", "off", "yminorgrid", "off", "zminorgrid", "off");
   endif
 
 endfunction

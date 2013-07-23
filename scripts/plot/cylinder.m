@@ -48,8 +48,7 @@
 
 function [xx, yy, zz] = cylinder (varargin)
 
-  [ax, args, nargs] = __plt_get_axis_arg__ ((nargout > 0), "cylinder",
-                                            varargin{:});
+  [hax, args, nargs] = __plt_get_axis_arg__ ("cylinder", varargin{:});
 
   if (nargs == 0)
     n = 20;
@@ -80,7 +79,17 @@ function [xx, yy, zz] = cylinder (varargin)
     yy = y;
     zz = z;
   else
-    surf (ax, x, y, z);
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+    unwind_protect
+      hax = newplot (hax);
+    
+      surf (hax, x, y, z);
+      
+    unwind_protect_cleanup
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
+    end_unwind_protect
   endif
 
 endfunction

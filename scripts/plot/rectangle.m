@@ -55,10 +55,20 @@ function h = rectangle (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("rectangle", varargin{:});
 
-  tmp =  __rectangle__ (hax, varargin{:});
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  unwind_protect
+    hax = newplot (hax);
+
+    htmp =  __rectangle__ (hax, varargin{:});
+
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 endfunction
 

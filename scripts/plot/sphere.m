@@ -32,8 +32,8 @@
 
 function [xx, yy, zz] = sphere (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "sphere",
-                                                varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("sphere", varargin{:});
+
   if (nargin > 1)
     print_usage ();
   elseif (nargin == 1)
@@ -55,7 +55,17 @@ function [xx, yy, zz] = sphere (varargin)
     yy = y;
     zz = z;
   else
-    surf (h, x, y, z);
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+    unwind_protect
+      hax = newplot (hax);
+    
+      surf (hax, x, y, z);
+      
+    unwind_protect_cleanup
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
+    end_unwind_protect
   endif
 
 endfunction

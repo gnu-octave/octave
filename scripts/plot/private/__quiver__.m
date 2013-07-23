@@ -284,7 +284,7 @@ function hg = __quiver__ (varargin)
       endif
     endif
     if (have_filled)
-      ## FIXME gnuplot doesn't respect the markerfacecolor field
+      ## FIXME: gnuplot doesn't respect the markerfacecolor field
       set (h3, "markerfacecolor", get (h1, "color"));
     endif
 

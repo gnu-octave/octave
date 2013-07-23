@@ -60,23 +60,24 @@
 
 function retval = quiver (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("quiver", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("quiver", varargin{:});
 
   if (nargin < 2)
     print_usage ();
   else
-    oldh = gca ();
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
     unwind_protect
-      axes (h);
-      newplot ();
-      tmp = __quiver__ (h, 0, varargin{:});
+      hax = newplot (hax);
+      htmp = __quiver__ (hax, false, varargin{:});
     unwind_protect_cleanup
-      axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
     end_unwind_protect
   endif
 
   if (nargout > 0)
-    retval = tmp;
+    retval = htmp;
   endif
 
 endfunction

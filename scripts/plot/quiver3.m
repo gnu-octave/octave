@@ -63,23 +63,28 @@
 
 function retval = quiver3 (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("quiver3", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("quiver3", varargin{:});
 
   if (nargin < 2)
     print_usage ();
   else
-    oldh = gca ();
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
     unwind_protect
-      axes (h);
-      newplot ();
-      tmp = __quiver__ (h, 1, varargin{:});
+      hax = newplot (hax);
+      htmp = __quiver__ (hax, true, varargin{:});
+
+      if (! ishold (hax))
+        set (hax, "view", [-37.5, 30]);  # 3D view
+      endif
     unwind_protect_cleanup
-      axes (oldh);
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
     end_unwind_protect
   endif
 
   if (nargout > 0)
-    retval = tmp;
+    retval = htmp;
   endif
 
 endfunction
@@ -91,9 +96,9 @@ endfunction
 %! [x,y] = meshgrid (-1:0.1:1);
 %! z = sin (2*pi * sqrt (x.^2 + y.^2));
 %! theta = 2*pi * sqrt (x.^2 + y.^2) + pi/2;
-%! quiver3 (x, y, z, sin (theta), cos (theta), ones (size (z)));
-%! hold on;
 %! mesh (x, y, z);
+%! hold on;
+%! quiver3 (x, y, z, sin (theta), cos (theta), ones (size (z)));
 %! hold off;
 
 %!demo

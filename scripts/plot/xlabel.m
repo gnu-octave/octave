@@ -18,32 +18,41 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} xlabel (@var{string})
-## @deftypefnx {Function File} {} xlabel (@var{h}, @var{string})
+## @deftypefnx {Function File} {} xlabel (@var{string}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} xlabel (@var{hax}, @var{string})
+## @deftypefnx {Function File} {} xlabel (@var{hax}, @var{string}, @var{property}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} xlabel (@dots{})
-## @deftypefnx {Function File} {} ylabel (@dots{})
-## @deftypefnx {Function File} {} zlabel (@dots{})
-## Specify x-, y-, or z-axis labels for the current axis.  If @var{h} is
-## specified then label the axis defined by @var{h}.
+## Specify the string used to label the x-axis of the current axis.
 ##
-## The optional return value @var{h} is a graphics handle to the created object.
-## @seealso{title, text}
+## If @var{hax} is specified then label the axis defined by @var{hax}.
+##
+## An optional list of @var{property}/@var{value} pairs can be used to change
+## the properties of the created text label.
+##
+## The optional return value @var{h} is a graphics handle to the created text
+## object.
+## @seealso{ylabel, zlabel, title, text}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = xlabel (varargin)
+function h = xlabel (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("xlabel", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("xlabel", varargin{:});
 
+  if (isempty (hax))
+    hax = gca ();
+  endif
+  
   if (rem (nargin, 2) != 1)
     print_usage ();
   endif
 
-  tmp = __axis_label__ (h, "xlabel", varargin{:},
-                        "color", get (h, "xcolor"));
+  htmp = __axis_label__ (hax, "xlabel", varargin{1},
+                         "color", get (hax, "xcolor"), varargin{2:end});
 
   if (nargout > 0)
-    retval = tmp;
+    h = htmp;
   endif
 
 endfunction
@@ -52,11 +61,12 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   x = xlabel ("xlabel_string");
+%!   x = xlabel ("xlabel_string", "color", "r");
 %!   assert (get (gca, "xlabel"), x);
 %!   assert (get (x, "type"), "text");
 %!   assert (get (x, "visible"), "on");
 %!   assert (get (x, "string"), "xlabel_string");
+%!   assert (get (x, "color"), [1 0 0]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

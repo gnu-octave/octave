@@ -18,28 +18,40 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} title (@var{string})
-## @deftypefnx {Function File} {} title (@var{string}, @var{p1}, @var{v1}, @dots{})
-## @deftypefnx {Function File} {} title (@var{h}, @dots{})
+## @deftypefnx {Function File} {} title (@var{string}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} title (@var{hax}, @var{string})
+## @deftypefnx {Function File} {} title (@var{hax}, @var{string}, @var{property}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} title (@dots{})
-## Create a title object for a plot.
+## Specify the string used as a title for the current axis.
 ##
-## The optional return value @var{h} is a graphics handle to the created object.
+## If @var{hax} is specified then title the axis defined by @var{hax}.
+##
+## An optional list of @var{property}/@var{value} pairs can be used to change
+## the properties of the created title text.
+##
+## The optional return value @var{h} is a graphics handle to the created text
+## object.
+## @seealso{xlabel, ylabel, zlabel, text}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = title (varargin)
+function h = title (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("title", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("title", varargin{:});
 
+  if (isempty (hax))
+    hax = gca ();
+  endif
+  
   if (rem (nargin, 2) != 1)
     print_usage ();
   endif
 
-  tmp = __axis_label__ (h, "title", varargin{:});
+  htmp = __axis_label__ (hax, "title", varargin{:});
 
   if (nargout > 0)
-    retval = tmp;
+    h = htmp;
   endif
 
 endfunction
@@ -48,24 +60,25 @@ endfunction
 %!demo
 %! clf;
 %! ax = axes ();
-%! xl = get (ax, 'title');
+%! h = get (ax, 'title');
 %! title ('Testing title');
-%! assert (get (xl, 'string'), 'Testing title');
+%! assert (get (h, 'string'), 'Testing title');
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! xl = get (gca, 'title');
-%! title ('Testing title');
-%! assert (get (xl, 'string'), 'Testing title');
+%! h = get (gca, 'title');
+%! title ('Testing title', 'fontsize', 16);
+%! assert (get (h, 'string'), 'Testing title');
+%! assert (get (h, 'fontsize'), 16);
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ax = axes ();
-%!   xl = get (ax, "title");
+%!   h = get (ax, "title");
 %!   title ("Testing title");
-%!   assert (get (xl, "string"), "Testing title");
+%!   assert (get (h, "string"), "Testing title");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -74,9 +87,9 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
-%!   xl = get (gca, "title");
+%!   h = get (gca, "title");
 %!   title ("Testing title");
-%!   assert (get (xl, "string"), "Testing title");
+%!   assert (get (h, "string"), "Testing title");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

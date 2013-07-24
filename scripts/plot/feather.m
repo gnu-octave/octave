@@ -46,7 +46,7 @@
 
 function retval = feather (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("feather", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("feather", varargin{:});
 
   arrowsize = 0.25;
 
@@ -94,13 +94,14 @@ function retval = feather (varargin)
   y = [zeros(1, n); yend; ytmp  + u * arrowsize / 3; yend; ...
        ytmp - u * arrowsize / 3];
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
-    hlist = plot (h, x, y, line_spec, [1, n], [0, 0], line_spec);
+    hax = newplot (hax);
+    hlist = plot (hax, x, y, line_spec, [1, n], [0, 0], line_spec);
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)

@@ -151,7 +151,7 @@ function h = __stem__ (have_z, varargin)
     if (! strcmp (hold_state, "add") && have_z)
       set (hax, "view", [-37.5 30]);  # 3D view
     endif
-    set (hax, hold_state);
+    set (hax, "nextplot", hold_state);
 
   unwind_protect_cleanup
     if (! isempty (oldfig))

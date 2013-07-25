@@ -542,6 +542,8 @@ main_window::read_settings (void)
 void
 main_window::set_window_layout (QSettings *settings)
 {
+  QList<octave_dock_widget *> float_and_visible;
+
   // Restore the geometry of all dock-widgets
   foreach (octave_dock_widget *widget, dock_widget_list ())
     {
@@ -564,12 +566,21 @@ main_window::set_window_layout (QSettings *settings)
           // make widget visible if desired
           bool visible = settings->value
               ("DockWidgets/" + name + "Visible", true).toBool ();
-          widget->setVisible (visible);
+          if (floating && visible)              // floating and visible
+            float_and_visible.append (widget);  // not show before main win
+          else
+            widget->setVisible (visible);       // not floating -> show
         }
     }
 
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+  show ();  // main window is ready and can be shown (as first window)
+
+  // show floating widgets after main win to ensure "Octave" in central menu
+  foreach (octave_dock_widget *widget, float_and_visible)
+     widget->setVisible (true);
+
 }
 
 void

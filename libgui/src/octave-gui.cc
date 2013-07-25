@@ -127,9 +127,7 @@ octave_start_gui (int argc, char *argv[])
 
           // create main window, read settings, and show window
           main_window w;
-          w.read_settings ();  // get widget settings after construction
-                               // but before showing
-          w.show ();
+          w.read_settings ();  // get widget settings and window layout
           w.focus_command_window ();
           w.connect_visibility_changed (); // connect signals for changes in
                                            // visibility not before w is shown

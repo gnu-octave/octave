@@ -1845,7 +1845,18 @@ public:
   bool is_valid (void) const { return true; }
 
   bool initialize (const graphics_object& go)
-    { return go.isa ("figure"); }
+  {
+    if (go.isa ("figure")
+        || go.isa ("uimenu"))
+      {
+        if (go.isa ("uimenu"))
+          update (go, uimenu::properties::ID_LABEL);
+
+        return true;
+      }
+
+    return false;
+  }
 
   void finalize (const graphics_object& go)
   {

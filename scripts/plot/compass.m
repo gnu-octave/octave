@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} compass (@var{u}, @var{v})
 ## @deftypefnx {Function File} {} compass (@var{z})
 ## @deftypefnx {Function File} {} compass (@dots{}, @var{style})
-## @deftypefnx {Function File} {} compass (@var{h}, @dots{})
+## @deftypefnx {Function File} {} compass (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} compass (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
@@ -30,6 +30,9 @@
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## in a similar manner to the line styles used with the @code{plot} command.
+##
+## If the first argument @var{hax} is an axis handle, then plot into these axes,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing the drawn vectors.
@@ -44,11 +47,9 @@
 ## @seealso{polar, quiver, feather, plot}
 ## @end deftypefn
 
-function retval = compass (varargin)
+function h = compass (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("compass", varargin{:});
-
-  arrowsize = 0.25;
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("compass", varargin{:});
 
   if (nargin == 0)
     print_usage ();
@@ -63,6 +64,7 @@ function retval = compass (varargin)
     v = varargin{2}(:).';
   endif
 
+  arrowsize = 0.25;
   line_spec = "b-";
   have_line_spec = false;
   while (ioff <= nargin)
@@ -95,17 +97,18 @@ function retval = compass (varargin)
        ytmp - u * arrowsize / 3];
   [r, p] = cart2pol (x, y);
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
-    hlist = polar (h, r, p, line_spec);
+    hax = newplot (hax);
+    hlist = polar (hax, r, p, line_spec);
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)
-    retval = hlist;
+    h = hlist;
   endif
 
 endfunction

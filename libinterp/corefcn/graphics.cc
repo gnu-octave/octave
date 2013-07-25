@@ -4155,7 +4155,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
 {
   box = "on";
   colororder = default_colororder ();
-  dataaspectratio = Matrix (1, 3, 1.0);
+  // Note: dataspectratio will be set through update_aspectratios
   dataaspectratiomode = "auto";
   layer = "bottom";
 
@@ -4169,10 +4169,13 @@ axes::properties::set_defaults (base_graphics_object& obj,
   cl(1) = 1;
   clim = cl;
 
+  alim = tlim;
+
   xlimmode = "auto";
   ylimmode = "auto";
   zlimmode = "auto";
   climmode = "auto";
+  alimmode = "auto";
 
   xgrid = "off";
   ygrid = "off";
@@ -4186,12 +4189,18 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xtickmode = "auto";
   ytickmode = "auto";
   ztickmode = "auto";
+  xminortick = "off";
+  yminortick = "off";
+  zminortick = "off";
   xticklabel = "";
   yticklabel = "";
   zticklabel = "";
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
+
+  interpreter = "none";
+
   color = color_values ("white");
   xcolor = color_values ("black");
   ycolor = color_values ("black");
@@ -4205,44 +4214,53 @@ axes::properties::set_defaults (base_graphics_object& obj,
   yaxislocation = "left";
   xaxislocation = "bottom";
 
-  // Note: camera properties will be set through update_transform
+  Matrix tview (1, 2, 0.0);
+  tview(1) = 90;
+  view = tview;
+
+  __hold_all__ = "off";
+  nextplot = "replace";
+
+  ambientlightcolor = Matrix (1, 3, 1.0);
+
+  // Note: camera properties (not mode) will be set in update_transform
   camerapositionmode = "auto";
   cameratargetmode = "auto";
   cameraupvectormode = "auto";
   cameraviewanglemode = "auto";
-  plotboxaspectratio = Matrix (1, 3, 1.0);
+
   drawmode = "normal";
+
+  fontangle = "normal";
+  fontname = OCTAVE_DEFAULT_FONTNAME;
+  fontsize = 10;
+  fontunits = "points";
+  fontweight = "normal";
+
   gridlinestyle = ":";
   linestyleorder = "-";
   linewidth = 0.5;
   minorgridlinestyle = ":";
-  // Note: plotboxaspectratio will be set through update_aspectratiors
+
+  // Note: plotboxaspectratio will be set through update_aspectratios
   plotboxaspectratiomode = "auto";
   projection = "orthographic";
+
   tickdir = "in";
   tickdirmode = "auto";
   ticklength = default_axes_ticklength ();
+
   tightinset = Matrix (1, 4, 0.0);
 
   sx = "linear";
   sy = "linear";
   sz = "linear";
 
-  Matrix tview (1, 2, 0.0);
-  tview(1) = 90;
-  view = tview;
-
   visible = "on";
-  nextplot = "replace";
 
+  // Replace preserves Position and Units properties
   if (mode != "replace")
     {
-      fontangle = "normal";
-      fontname = OCTAVE_DEFAULT_FONTNAME;
-      fontsize = 10;
-      fontunits = "points";
-      fontweight = "normal";
-
       outerposition = default_axes_outerposition ();
       position = default_axes_position ();
       activepositionproperty = "outerposition";

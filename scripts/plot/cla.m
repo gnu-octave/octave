@@ -17,14 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cla ()
-## @deftypefnx {Function File} {} cla ("reset")
+## @deftypefn  {Function File} {} cla
+## @deftypefnx {Function File} {} cla reset
 ## @deftypefnx {Function File} {} cla (@var{hax})
 ## @deftypefnx {Function File} {} cla (@var{hax}, "reset")
-## Delete the children of the current axes with visible handles.
-## If @var{hax} is specified and is an axes object handle, operate on it
-## instead of the current axes.  If the optional argument @code{"reset"}
-## is specified, also delete the children with hidden handles.
+## Clear the current axes by deleting child graphic objects with visible
+## handles (HandleVisibility = "on").
+##
+## If the optional argument "reset" is specified, delete all child objects
+## including those with hidden handles and reset all axis properties to
+## their defaults.  However, the following properties are not reset:
+## Position, Units.
+##
+## If an axes object handle @var{hax} is specified, operate on it instead of
+## the current axes.
 ## @seealso{clf}
 ## @end deftypefn
 
@@ -35,57 +41,37 @@ function cla (varargin)
 
   if (nargin > 2)
     print_usage ();
-  elseif (nargin > 1)
-    if (ishandle (varargin{1})
-        && strcmp (get (varargin{1}, "type"), "axes")
-        && ischar (varargin{2}) && strcmpi (varargin{2}, "reset"))
-      oldhax = gca;
-      hax = varargin{1};
-      do_reset = true;
-    else
-      print_usage ();
-    endif
+  elseif (nargin == 0)
+    hax = gca;
+    do_reset = false;
   elseif (nargin == 1)
-    if (ishandle (varargin{1})
+    if (isscalar (varargin{1}) && ishandle (varargin{1})
         && strcmp (get (varargin{1}, "type"), "axes"))
-      oldhax = gca;
       hax = varargin{1};
       do_reset = false;
     elseif (ischar (varargin{1}) && strcmpi (varargin{1}, "reset"))
       hax = gca;
-      oldhax = hax;
       do_reset = true;
     else
       print_usage ();
     endif
   else
-    hax = gca;
-    oldhax = hax;
-    do_reset = false;
+    if (isscalar (varargin{1}) && ishandle (varargin{1})
+        && strcmp (get (varargin{1}, "type"), "axes")
+        && ischar (varargin{2}) && strcmpi (varargin{2}, "reset"))
+      hax = varargin{1};
+      do_reset = true;
+    else
+      print_usage ();
+    endif
   endif
 
-  hc = get (hax, "children");
-
-  if (! do_reset && ! isempty (hc))
-    hc = findobj (hc, "flat", "visible", "on");
-    hc = setdiff (hc, hax);
+  if (! do_reset)
+    delete (get (hax, "children"));
+  else
+    __go_axes_init__ (hax, "replace");
+    __request_drawnow__ ();
   endif
-
-  if (! isempty (hc))
-    ## Delete the children of the axis.
-    delete (hc);
-  endif
-
-  ## FIXME: The defaults should be "reset()" below, but so far there is
-  ## no method to determine the defaults, much less return an object's
-  ## properties to their default values.  Instead make a close
-  ## approximation.
-
-  axes (hax);
-  axis ("auto");
-
-  ## Set the current axis back to where it was upon entry.
-  axes (oldhax);
 
 endfunction
 
@@ -101,4 +87,23 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 %! assert (numel (kids), 0);
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = gca;
+%!   plot (hax, 1:10);
+%!   set (hax, "interpreter", "tex");
+%!   cla (hax);
+%!   kids = get (hax, "children");
+%!   assert (numel (kids), 0);
+%!   assert (get (hax, "interpreter"), "tex");
+%!   plot (hax, 1:10);
+%!   cla (hax, "reset");
+%!   kids = get (hax, "children");
+%!   assert (numel (kids), 0);
+%!   assert (get (hax, "interpreter"), "none");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

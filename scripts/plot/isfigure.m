@@ -18,8 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isfigure (@var{h})
-## Return true if @var{h} is a graphics handle that contains a figure
-## object.
+## Return true if @var{h} is a figure graphics handle and false otherwise.
+##
+## If @var{h} is a matrix then return a logical array which is true where
+## the elements of @var{h} are figure graphics handles and false where
+## they are not.
 ## @seealso{ishandle}
 ## @end deftypefn
 
@@ -27,10 +30,15 @@
 
 function retval = isfigure (h)
 
-  if (nargin == 1)
-    retval = (ishandle (h) && strcmp (get (h, "type"), "figure"));
-  else
+  if (nargin != 1)
     print_usage ();
+  endif
+
+  hlist = ishandle (h);
+  if (any (hlist))
+    retval(hlist) = strcmp (get (h(hlist), "type"), "figure");
+  else
+    retval = hlist;
   endif
 
 endfunction

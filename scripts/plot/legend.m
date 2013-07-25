@@ -134,7 +134,10 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       && (! ishandle (varargin{1})
           || (strcmp (get (varargin{1}, "type"), "axes")
               && ! strcmp (get (varargin{1}, "tag"), "legend"))))
-    [ca, varargin, nargs] = __plt_get_axis_arg__ ("legend", varargin{:});
+    [ca, varargin, nargin] = __plt_get_axis_arg__ ("legend", varargin{:});
+    if (isempty (ca))
+      ca = gca ();
+    endif
     fig = get (ca, "parent");
   else
     fig = get (0, "currentfigure");

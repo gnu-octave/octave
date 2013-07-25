@@ -31,7 +31,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
 
   ezfunc = ["ez" pltfunc];
 
-  [ax, varargin, nargin] = __plt_get_axis_arg__ (ezfunc, varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ (ezfunc, varargin{:});
 
   ## Define outputs early in case of shorting out of function with return;
   h = [];
@@ -427,50 +427,53 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
   until (domain_ok)
 
   ## Now, actually call the correct plot function with valid data and domain.
-  oldax = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (ax);
+    hax = newplot (hax);
     if (iscontour)
-      [~, h] = feval (pltfunc, X, Y, Z);
+      [~, h] = feval (pltfunc, hax, X, Y, Z);
       ## FIXME: Work around contour setting axis tight.
       ##        Fix should really be in __countour__.
-      axis (domain);
+      axis (hax, domain);
     elseif (isplot && nargs == 2)
       h = zeros (length (XX), 1);
-      hold_state = get (ax, "nextplot");
+      hold_state = get (hax, "nextplot");
       for i = 1 : length (XX)
-        h(i) = plot(XX{i}, YY{i});
+        h(i) = plot(hax, XX{i}, YY{i});
         if (i == 1)
-          set (ax, "nextplot", "add");
+          set (hax, "nextplot", "add");
         endif
       endfor
-      set (ax, "nextplot", hold_state);
-      axis (domain);
+      set (hax, "nextplot", hold_state);
+      axis (hax, domain);
     elseif (isplot || ispolar)
-      h = feval (pltfunc, X, Z);
+      h = feval (pltfunc, hax, X, Z);
       if (isplot && ! parametric)
-        axis (domain);
+        axis (hax, domain);
       endif
     elseif (isplot3)
       if (animate)
-        comet3 (X, Y, Z, .05);  # draw animation, then replace with true plot3
+        ## draw animation, then replace with true plot3
+        comet3 (hax, X, Y, Z, .05);
       endif
-      h = feval (pltfunc, X, Y, Z);
-      set (gca, "box", "off");
-      grid ("on");
-      zlabel ("z");
+      h = feval (pltfunc, hax, X, Y, Z);
+      set (hax, "box", "off");
+      grid (hax, "on");
+      zlabel (hax, "z");
     else  # mesh and surf plots
-      h = feval (pltfunc, X, Y, Z);
+      h = feval (pltfunc, hax, X, Y, Z);
       ## FIXME: surf, mesh should really do a better job of setting zlim
       if (! parametric)
-        axis (domain);
+        axis (hax, domain);
       endif
     endif
-    xlabel (xarg);
-    ylabel (yarg);
-    title (fstr);
+    xlabel (hax, xarg);
+    ylabel (hax, yarg);
+    title (hax, fstr);
   unwind_protect_cleanup
-    axes (oldax);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
 endfunction

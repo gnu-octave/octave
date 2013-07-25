@@ -130,26 +130,29 @@
 
 ## Author: jwe
 
-function varargout = axis (varargin)
+function limits = axis (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("axis", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("axis", varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    varargout = cell (max (nargin == 0, nargout), 1);
-    if (isempty (varargout))
-      __axis__ (h, varargin{:});
+    if (isempty (hax))
+      hax = gca ();
+    endif
+    if (nargin == 0)
+      limits = __axis__ (hax, varargin{:});
     else
-      [varargout{:}] = __axis__ (h, varargin{:});
+      __axis__ (hax, varargin{:});
     endif
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
 endfunction
 
-function curr_axis = __axis__ (ca, ax, varargin)
+function limits = __axis__ (ca, ax, varargin)
 
   if (nargin == 1)
     if (nargout == 0)
@@ -159,10 +162,10 @@ function curr_axis = __axis__ (ca, ax, varargin)
       ylim = get (ca, "ylim");
       view = get (ca, "view");
       if (view(2) == 90)
-        curr_axis = [xlim, ylim];
+        limits = [xlim, ylim];
       else
         zlim = get (ca, "zlim");
-        curr_axis = [xlim, ylim, zlim];
+        limits = [xlim, ylim, zlim];
       endif
     endif
 
@@ -368,6 +371,7 @@ function __do_tight_option__ (ca)
   endif
 
 endfunction
+
 
 %!demo
 %! clf;

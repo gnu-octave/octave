@@ -19,13 +19,27 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} stem3 (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} stem3 (@var{x}, @var{y}, @var{z}, @var{linespec})
+## @deftypefnx {Function File} {} stem3 (@dots{}, "filled")
+## @deftypefnx {Function File} {} stem3 (@dots{}, "@var{prop}", "@var{val}", @dots{})
+## @deftypefnx {Function File} {} stem3 (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} stem3 (@dots{})
-## Plot a three-dimensional stem graph and return the handles of the line
-## and marker objects used to draw the stems as "stem series" object.
-## The default color is @code{"r"} (red).  The default line style is
-## @code{"-"} and the default marker is @code{"o"}.
+## Plot a 3-D stem graph.
 ##
-## For example,
+## The default color is @code{"r"} (red), the default line style is
+## @code{"-"}, and the default marker is @code{"o"}.  The line style can
+## be altered by the @code{linespec} argument in the same manner as the
+## @code{plot} command.
+##
+## Multiple property/value pairs may be specified, but they must appear in
+## pairs.
+##
+## If the first argument @var{hax} is an axis handle, then plot into these axes,
+## rather than the current axis handle returned by @code{gca}.
+##
+## The optional return value @var{h} is a vector with the handles of the line
+## and marker objects used to draw the stems as "stem series" object.
+##
+## Example:
 ##
 ## @example
 ## @group
@@ -35,9 +49,11 @@
 ## @end example
 ##
 ## @noindent
-## plots 31 stems with heights from 0 to 6 lying on a circle.  Color
-## definitions with RGB-triples are not valid!
-## @seealso{stem, bar, barh, plot}
+## plots 31 stems with heights from 0 to 6 lying on a circle.
+##
+## Implementation Note: Color definitions with RGB-triples are not valid.
+##
+## @seealso{stem, bar, hist, plot}
 ## @end deftypefn
 
 function h = stem3 (varargin)
@@ -46,10 +62,10 @@ function h = stem3 (varargin)
     print_usage ();
   endif
 
-  tmp = __stem__ (true, varargin{:});
+  htmp = __stem__ (true, varargin{:});
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

@@ -19,20 +19,23 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} stem (@var{y})
 ## @deftypefnx {Function File} {} stem (@var{x}, @var{y})
-## @deftypefnx {Function File} {} stem (@var{x}, @var{y}, @var{linespec})
+## @deftypefnx {Function File} {} stem (@dots{}, @var{linespec})
 ## @deftypefnx {Function File} {} stem (@dots{}, "filled")
+## @deftypefnx {Function File} {} stem (@dots{}, "@var{prop}", "@var{val}", @dots{})
+## @deftypefnx {Function File} {} stem (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} stem (@dots{})
-## Plot a stem graph from two vectors of x-y data.  If only one argument
-## is given, it is taken as the y-values and the x coordinates are taken
-## from the indices of the elements.
+## Plot a stem graph from two vectors of x-y data.
+##
+## If only one argument is given, it is taken as the y-values and the
+## x-coordinates are taken from the indices of the elements.
 ##
 ## If @var{y} is a matrix, then each column of the matrix is plotted as
 ## a separate stem graph.  In this case @var{x} can either be a vector,
 ## the same length as the number of rows in @var{y}, or it can be a
 ## matrix of the same size as @var{y}.
 ##
-## The default color is @code{"b"} (blue).  The default line style is
-## @code{"-"} and the default marker is @code{"o"}.  The line style can
+## The default color is @code{"b"} (blue), the default line style is
+## @code{"-"}, and the default marker is @code{"o"}.  The line style can
 ## be altered by the @code{linespec} argument in the same manner as the
 ## @code{plot} command.  For example,
 ##
@@ -46,6 +49,12 @@
 ##
 ## @noindent
 ## plots 10 stems with heights from 2 to 20 in red;
+##
+## Multiple property/value pairs may be specified, but they must appear in
+## pairs.
+##
+## If the first argument @var{hax} is an axis handle, then plot into these axes,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of "stem series" graphics
 ## handles with one handle per column of the variable @var{y}.  The
@@ -66,7 +75,7 @@
 ## @noindent
 ## changes the color of the second "stem series" and moves the base line
 ## of the first.
-## @seealso{bar, barh, plot}
+## @seealso{stem3, bar, hist, plot}
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
@@ -78,10 +87,10 @@ function h = stem (varargin)
     print_usage ();
   endif
 
-  tmp = __stem__ (false, varargin{:});
+  htmp = __stem__ (false, varargin{:});
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

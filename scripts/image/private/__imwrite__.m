@@ -22,7 +22,7 @@
 ## configured to. It is also needed so that imformats can create a
 ## function handle for it.
 
-function core_imwrite (img, varargin)
+function __imwrite__ (img, varargin)
 
   if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
     print_usage ("imwrite");

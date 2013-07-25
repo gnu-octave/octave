@@ -78,7 +78,7 @@ function imwrite (varargin)
     endif
     warning ("imwrite: unlisted image format %s (see imformats). Trying to save anyway.",
              ext);
-    core_imwrite (varargin{:});
+    __imwrite__ (varargin{:});
   else
     fmt.write (varargin{:});
   endif

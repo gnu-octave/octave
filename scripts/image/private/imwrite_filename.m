@@ -18,9 +18,9 @@
 
 ## The input check for imwrite needs to be done twice, once when imwrite
 ## is called the first time to find where the filename is, and a second
-## time by core_imwrite after imformats decides what function to use.
+## time by __imwrite__ after imformats decides what function to use.
 ## Because a user can, and is encouraged to, get a function handle to
-## core_imwrite, the input check is also done there.
+## __imwrite__, the input check is also done there.
 ## In addition, the input check for imwrite is not that straightforward
 ## in order to support the multiple ways the function can be called,
 ## and interpretations of Matlab documentation.

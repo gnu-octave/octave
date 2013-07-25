@@ -24,7 +24,7 @@
 
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
-function info = core_imfinfo (filename, ext)
+function info = __imfinfo__ (filename, ext)
 
   if (nargin < 1 || nargin > 2)
     print_usage ("imfinfo");

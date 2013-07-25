@@ -120,5 +120,5 @@ function info = imfinfo (varargin)
   elseif (nargin > 1 && ! ischar (varargin{2}))
     error ("imfinfo: EXT must be a string");
   endif
-  info = imageIO (@core_imfinfo, "info", varargin, varargin{:});
+  info = imageIO (@__imfinfo__, "info", varargin, varargin{:});
 endfunction

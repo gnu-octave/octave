@@ -33,7 +33,7 @@
 ## Author: Stefan van der Walt <stefan@sun.ac.za>
 ## Author: Andy Adler
 
-function varargout = core_imread (filename, varargin)
+function varargout = __imread__ (filename, varargin)
 
   if (nargin < 1)
     print_usage ("imread");

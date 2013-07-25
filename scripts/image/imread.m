@@ -93,7 +93,7 @@ function varargout = imread (varargin)
     filename{2} = varargin{2};
   endif
 
-  [varargout{1:nargout}] = imageIO (@core_imread, "read", filename, varargin{:});
+  [varargout{1:nargout}] = imageIO (@__imread__, "read", filename, varargin{:});
 endfunction
 
 %!testif HAVE_MAGICK

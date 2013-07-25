@@ -33,32 +33,34 @@
 
 ## Author: jwe
 
-function retval = loglog (varargin)
+function h = loglog (varargin)
 
-  [h, varargin, nargs] = __plt_get_axis_arg__ ("loglog", varargin{:});
+  [hax, varargin, nargs] = __plt_get_axis_arg__ ("loglog", varargin{:});
 
   if (nargs < 1)
     print_usage ();
   endif
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
+    hax = newplot (hax);
 
-    set (h, "xscale", "log", "yscale", "log");
-    if (any( strcmp (get (gca, "nextplot"), {"new", "replace"})))
-      set (h, "xminortick", "on", "yminortick", "on");
+    set (hax, "xscale", "log", "yscale", "log");
+    if (! ishold (hax))
+      set (hax, "xminortick", "on", "yminortick", "on");
     endif
 
-    tmp = __plt__ ("loglog", h, varargin{:});
+    htmp = __plt__ ("loglog", hax, varargin{:});
 
-    if (nargout > 0)
-      retval = tmp;
-    endif
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
+
+  if (nargout > 0)
+    h = htmp;
+  endif
 
 endfunction
 

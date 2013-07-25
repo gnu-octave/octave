@@ -20,52 +20,89 @@
 ## @deftypefn  {Function File} {} fill (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} fill (@var{x1}, @var{y1}, @var{c1}, @var{x2}, @var{y2}, @var{c2})
 ## @deftypefnx {Function File} {} fill (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {} fill (@var{h}, @dots{})
+## @deftypefnx {Function File} {} fill (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} fill (@dots{})
-## Create one or more filled patch objects.
+## Create one or more filled 2-D polygons.
+##
+## The inputs @var{x} and @var{y} are the coordinates of the polygon vertices.
+## If the inputs are matrices then the rows represent different vertices and
+## each column produces a different polygon.
+## @code{fill} will close any open polygons before plotting. 
+##
+## The input @var{c} determines the color of the polygon.  The simplest form
+## is a single color specification such as a @code{plot} format or an
+## RGB-triple.  In this case the polygon(s) will have one unique color.  If
+## @var{c} is a vector or matrix then the color data is first scaled using
+## @code{caxis} and then indexed into the current colormap.  A row vector will
+## color each polygon (a column from matrices @var{x} and @var{y}) with a
+## single computed color.  A matrix @var{c} of the same size as @var{x} and
+## @var{y} will compute the color of each vertex and then interpolate the face
+## color between the vertices.
+##
+## Multiple property/value pairs for the underlying patch object may be
+## specified, but they must appear in pairs.
+##
+## If the first argument @var{hax} is an axis handle, then plot into this axis,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} is an array of graphics handles to
 ## the created patch objects.
-## @seealso{patch}
+##
+## Example: red square
+##
+## @example
+## @group
+## vertices = [0 0
+##             1 0
+##             1 1
+##             0 1];
+## fill (vertices(:,1), vertices(:,2), "r");
+## axis ([-0.5 1.5, -0.5 1.5])
+## axis equal
+## @end group
+## @end example
+##
+## @seealso{patch, caxis, colormap}
 ## @end deftypefn
 
-function retval = fill (varargin)
+function h = fill (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("fill", varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("fill", varargin{:});
 
-  htmp = [];
+  hlist = [];
   iargs = __find_patches__ (varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
+    hax = newplot (hax);
+    old_nxtplt = get (hax, "nextplot");
+    set (hax, "nextplot", "add");
 
-    nextplot = get (h, "nextplot");
     for i = 1 : length (iargs)
-      if (i > 1 && strncmp (nextplot, "replace", 7))
-        set (h, "nextplot", "add");
-      endif
       if (i == length (iargs))
         args = varargin(iargs(i):end);
       else
         args = varargin(iargs(i):iargs(i+1)-1);
       endif
-      newplot ();
-      [tmp, fail] = __patch__ (h, args{:});
+      [htmp, fail] = __patch__ (hax, args{:});
       if (fail)
         print_usage ();
       endif
-      htmp(end + 1, 1) = tmp;
+      hlist(end + 1, 1) = htmp;
     endfor
-    if (strncmp (nextplot, "replace", 7))
-      set (h, "nextplot", nextplot);
+
+    if (strncmp (old_nxtplt, "replace", 7))
+      set (hax, "nextplot", old_nxtplt);
     endif
+
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)
-    retval = htmp;
+    h = hlist;
   endif
 
 endfunction

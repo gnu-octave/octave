@@ -39,7 +39,7 @@
 
 function comet3 (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("comet3", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("comet3", varargin{:});
 
   if (nargin == 0 || nargin == 2 || nargin > 4)
     print_usage ();
@@ -59,25 +59,27 @@ function comet3 (varargin)
     p = varargin{4};
   endif
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
-    theaxis = [min(x), max(x), min(y), max(y), min(z), max(z)];
+    hax = newplot (hax);
+    limits = [min(x), max(x), min(y), max(y), min(z), max(z)];
     num = numel (y);
     dn = round (num/10);
     for n = 1:(num+dn);
       m = n - dn;
       m = max ([m, 1]);
       k = min ([n, num]);
-      h = plot3 (x(1:m), y(1:m), z(1:m), "r", x(m:k), y(m:k), z(m:k), "g",
-                 x(k), y(k), z(k), "ob");
-      axis (theaxis);
+      htmp = plot3 (hax, x(1:m), y(1:m), z(1:m), "r",
+                         x(m:k), y(m:k), z(m:k), "g",
+                         x(k), y(k), z(k), "ob");
+      axis (limits);
       drawnow ();
       pause (p);
     endfor
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
 endfunction

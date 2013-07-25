@@ -181,25 +181,26 @@
 
 ## Author: jwe
 
-function retval = plot (varargin)
+function h = plot (varargin)
 
-  [h, varargin, nargs] = __plt_get_axis_arg__ ("plot", varargin{:});
+  [hax, varargin, nargs] = __plt_get_axis_arg__ ("plot", varargin{:});
 
   if (nargs < 1)
     print_usage ();
   endif
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
-    tmp = __plt__ ("plot", h, varargin{:});
+    hax = newplot (hax);
+    htmp = __plt__ ("plot", hax, varargin{:});
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)
-    retval = tmp;
+    h = htmp;
   endif
 
 endfunction

@@ -25,17 +25,7 @@
 
 function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
 
-  ## First argument can be a boolean which determines whether a new
-  ## axis will be created if none exists.
-  if (islogical (caller))
-    nogca = caller;
-    caller = varargin{1};
-    varargin(1) = [];
-  else
-    nogca = false;
-  endif
-
-  ## Search for parent property
+  h = [];
   parent = find (strcmpi (varargin, "parent"), 1);
   
   ## Look for numeric scalar which is a graphics handle but not the
@@ -65,28 +55,6 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     else
       error ("%s: expecting parent value to be axes handle", caller);
     endif
-  else
-    ## No axis specified.  Use current axis or create one as necessary.
-    f = get (0, "currentfigure");
-    if (isempty (f))
-      h = [];
-    else
-      h = get (f, "currentaxes");
-    endif
-    if (isempty (h))
-      if (nogca)
-        h = NaN;
-      else
-        h = gca ();
-      endif
-    endif
-    if (nargin < 2)
-      varargin = {};
-    endif
-  endif
-
-  if (ishandle (h) && strcmp (get (h, "nextplot"), "new"))
-    h = axes ();
   endif
 
   narg = length (varargin);

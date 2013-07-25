@@ -40,8 +40,12 @@
 
 function h = line (varargin)
 
-  ## Get any axis argument which may be in a 'parent' PROP/VAL pair
+  ## Get axis argument which may be in a 'parent' PROP/VAL pair
   [hax, varargin] = __plt_get_axis_arg__ ("line", varargin{:});
+
+  if (isempty (hax))
+    hax = gca ();
+  endif
 
   htmp = __line__ (hax, varargin{:});
 

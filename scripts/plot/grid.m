@@ -71,7 +71,7 @@ function grid (varargin)
   else
     x = varargin{1};
     if (! ischar (x))
-      error ("grid: argument must be a string");
+      error ("grid: argument 1 must be an axis handle or a string");
     endif
     if (strcmpi (x, "off"))
       grid_on = false;

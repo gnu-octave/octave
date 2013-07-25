@@ -19,19 +19,24 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} pcolor (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} pcolor (@var{c})
-## Produce a density plot for matrices @var{x} and @var{y} from
-## @code{meshgrid}, and a matrix @var{c} corresponding to the @var{x} and
-## @var{y} coordinates of the mesh's vertices.  If @var{x} and @var{y} are
-## vectors, then a typical vertex is (@var{x}(j), @var{y}(i), @var{c}(i,j)). 
+## @deftypefnx {Function File} {} pcolor (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} pcolor (@dots{})
+## Produce a 2D density plot.
+##
+## A @code{pcolor} plot draws rectangles with colors from the matrix @var{c}
+## over the two-dimensional region represented by the matrices @var{x} and
+## @var{y}.  @var{x} and @var{y} are the coordinates of the mesh's vertices
+## and are typically the output of @code{meshgrid}.  If @var{x} and @var{y} are
+## vectors, then a typical vertex is (@var{x}(j), @var{y}(i), @var{c}(i,j)).
 ## Thus, columns of @var{c} correspond to different @var{x} values and rows
 ## of @var{c} correspond to different @var{y} values.
 ##
-## The @code{colormap} is scaled to the extents of @var{c}.
-## Limits may be placed on the color axis by the command @code{caxis}, or by
-## setting the @code{clim} property of the parent axis.
+## The values in @var{c} are scaled to span the range of the current
+## colormap.  Limits may be placed on the color axis by the command
+## @code{caxis}, or by setting the @code{clim} property of the parent axis.
 ##
 ## The face color of each cell of the mesh is determined by interpolating
-## the values of @var{c} for the cell's vertices.  Contrast this with
+## the values of @var{c} for each of the cell's vertices; Contrast this with
 ## @code{imagesc} which renders one cell for each element of @var{c}.
 ##
 ## @code{shading} modifies an attribute determining the manner by which the
@@ -40,41 +45,55 @@
 ## "faceted", which renders a single color for each cell's face with the edge
 ## visible.
 ##
-## The optional return value @var{h} is a handle to the surface object.
+## If the first argument @var{hax} is an axis handle, then plot into this axis,
+## rather than the current axis handle returned by @code{gca}.
 ##
-## @seealso{caxis, contour, meshgrid, imagesc, shading}
+## The optional return value @var{h} is a graphics handle to the created
+## surface object.
+##
+## @seealso{caxis, shading, meshgrid, contour, imagesc}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function h = pcolor (x, y, c)
+function h = pcolor (varargin)
 
-  newplot ();
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("pcolor", varargin{:});
 
   if (nargin == 1)
-    c = x;
+    c = varargin{1};
     [nr, nc] = size (c);
-    z = zeros (nr, nc);
     [x, y] = meshgrid (1:nc, 1:nr);
+    z = zeros (nr, nc);
   elseif (nargin == 3)
+    x = varargin{1};
+    y = varargin{2};
+    c = varargin{3};
     z = zeros (size (c));
   else
     print_usage ();
   endif
 
-  tmp = surface (x, y, z, c);
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  unwind_protect
+    hax = newplot (hax);
+    htmp = surface (x, y, z, c);
 
-  ax = get (tmp, "parent");
+    set (htmp, "facecolor", "flat");
+    set (hax, "box", "on");
 
-  set (tmp, "facecolor", "flat");
-  set (ax, "box", "on");
+    if (! ishold ())
+      set (hax, "view", [0, 90]);
+    endif
 
-  if (! ishold ())
-    set (ax, "view", [0, 90]);
-  endif
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction
@@ -93,4 +112,5 @@ endfunction
 %! [Fx,Fy] = gradient (Z);
 %! pcolor (X,Y,Fx+Fy);
 %! shading interp;
+%! axis tight;
 

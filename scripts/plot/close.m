@@ -18,13 +18,30 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} close
-## @deftypefnx {Command} {} close (@var{n})
+## @deftypefnx {Command} {} close (@var{h})
 ## @deftypefnx {Command} {} close all
 ## @deftypefnx {Command} {} close all hidden
-## Close figure window(s) by calling the function specified by the
-## @code{"closerequestfcn"} property for each figure.  By default, the
-## function @code{closereq} is used.
-## @seealso{closereq}
+## Close figure window(s).
+##
+## @code{close} operates by calling the function specified by the
+## @code{"closerequestfcn"} property for each figure.  By default, the function
+## @code{closereq} is used.
+##
+## When called with no arguments, close the current figure.  This is equivalent
+## to @code{close (gcf)}.  If the input is a graphic handle @var{h} or vector
+## of graphics handles then close each figure in @var{h}.
+##
+## If the argument "all" is given then all figures with visible handles
+## (HandleVisibility = "on") are closed.
+##
+## If the argument "all hidden" is given then all figures, including hidden
+## ones, are closed.
+##
+## Implementation Note: @code{close} calls a function to dispose of the figure.
+## It is possible that the function will delay or abort removing the figure.
+## To remove a figure without calling any callback functions use @code{delete}.
+##
+## @seealso{closereq, delete}
 ## @end deftypefn
 
 ## Author: jwe
@@ -34,29 +51,30 @@ function retval = close (arg1, arg2)
 
   figs = [];
 
-  if (nargin == 0)
-    ## Close current figure.  Don't use gcf because that will open a new
-    ## plot window if one doesn't exist.
+  if (nargin > 2)
+    print_usage ();
+  elseif (nargin == 0)
+    ## Close current figure.
+    ## Can't use gcf because it opens a new plot window if one does not exist.
     figs = get (0, "currentfigure");
-    if (! isempty (figs) && figs == 0)
+    if (figs == 0)  # don't close root figure
       figs = [];
     endif
   elseif (nargin == 1)
     if (ischar (arg1) && strcmpi (arg1, "all"))
-      close_all_figures (false);
+      figs = (get (0, "children"))';
+      figs = figs(isfigure (figs));
     elseif (isfigure (arg1))
       figs = arg1;
     elseif (isempty (arg1))
       figs = [];
     else
-      error ("close: expecting argument to be \"all\" or a figure handle");
+      error ('close: expecting argument to be "all" or a figure handle');
     endif
-  elseif (nargin == 2
-          && ischar (arg1) && strcmpi (arg1, "all")
+  elseif (   ischar (arg1) && strcmpi (arg1, "all")
           && ischar (arg2) && strcmpi (arg2, "hidden"))
-    close_all_figures (true);
-  else
-    print_usage ();
+    figs = (allchild (0))';
+    figs = figs(isfigure (figs));
   endif
 
   for h = figs
@@ -66,17 +84,6 @@ function retval = close (arg1, arg2)
   if (nargout > 0)
     retval = 1;
   endif
-
-endfunction
-
-function close_all_figures (close_hidden_figs)
-
-  while (! isempty (fig = get (0, "currentfigure")))
-    ## handlevisibility = get (fig, "handlevisibility")
-    ## if (close_hidden_figs || ! strcmpi (handlevisibility, "off"))
-    close (fig);
-    ## endif
-  endwhile
 
 endfunction
 

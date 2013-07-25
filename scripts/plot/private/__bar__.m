@@ -25,18 +25,14 @@
 
 function varargout = __bar__ (vertical, func, varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ((nargout > 1), func, varargin{:});
+  [hax, varargin, nargs] = __plt_get_axis_arg__ (func, varargin{:});
 
   ## Slightly smaller than 0.8 to avoid clipping issue in gnuplot 4.0
   width = 0.8 - 10 * eps;
   group = true;
   bv = 0;
 
-  if (nargin < 3)
-    print_usage ();
-  endif
-
-  if (nargin > 3 && isnumeric (varargin{2}))
+  if (nargs > 1 && isnumeric (varargin{2}))
     x = varargin{1};
     if (isvector (x))
       x = x(:);
@@ -54,7 +50,7 @@ function varargout = __bar__ (vertical, func, varargin)
       idx = 2;
     else
       if (! isvector (x))
-        error ("%s: x must be a vector", func);
+        error ("%s: X must be a vector", func);
       endif
       idx = 3;
     endif
@@ -69,7 +65,7 @@ function varargout = __bar__ (vertical, func, varargin)
 
   newargs = {};
   have_line_spec = false;
-  while (idx <= nargin - 2)
+  while (idx <= nargs)
     if (ischar (varargin{idx}) && strcmpi (varargin{idx}, "grouped"))
       group = true;
       idx++;
@@ -91,7 +87,7 @@ function varargout = __bar__ (vertical, func, varargin)
       endif
       if (isscalar (varargin{idx}))
         width = varargin{idx++};
-      elseif (idx == nargin - 2)
+      elseif (idx == nargs)
         newargs = [newargs,varargin(idx++)];
       elseif (ischar (varargin{idx})
               && strcmpi (varargin{idx}, "basevalue")
@@ -109,10 +105,10 @@ function varargout = __bar__ (vertical, func, varargin)
   ylen = rows (y);
 
   if (xlen != ylen)
-    error ("%s: length of x and y must be equal", func);
+    error ("%s: length of X and Y must be equal", func);
   endif
   if (any (x(2:end) < x(1:end-1)))
-    error ("%s: x vector values must be in ascending order", func);
+    error ("%s: X vector values must be in ascending order", func);
   endif
 
   ycols = columns (y);
@@ -153,19 +149,20 @@ function varargout = __bar__ (vertical, func, varargin)
   yb = reshape (yb, [4, numel(yb) / 4 / ycols, ycols]);
 
   if (nargout < 2)
-    oldh = gca ();
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
     unwind_protect
-      axes (h);
-      newplot ();
+      hax = newplot (hax);
 
-      tmp = bars (h, vertical, x, y, xb, yb, width, group,
-                  have_line_spec, bv, newargs{:});
-      if (nargout == 1)
-        varargout{1} = tmp;
-      endif
+      htmp = bars (hax, vertical, x, y, xb, yb, width, group,
+                   have_line_spec, bv, newargs{:});
     unwind_protect_cleanup
-      axes (oldh);
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
     end_unwind_protect
+    if (nargout == 1)
+      varargout{1} = htmp;
+    endif
   else
     if (vertical)
       varargout{1} = xb;
@@ -196,10 +193,10 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch (hg, xb(:,:,i), yb(:,:,i), "FaceColor", "flat",
+        h = patch (ax, xb(:,:,i), yb(:,:,i), "FaceColor", "flat",
                    "cdata", lev, "parent", hg);
       else
-        h = patch (hg, xb(:,:,i), yb(:,:,i), "parent", hg);
+        h = patch (ax, xb(:,:,i), yb(:,:,i), "parent", hg);
       endif
     else
       if (! have_color_spec)
@@ -208,16 +205,16 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch (hg, yb(:,:,i), xb(:,:,i), "FaceColor", "flat",
+        h = patch (ax, yb(:,:,i), xb(:,:,i), "FaceColor", "flat",
                    "cdata", lev, "parent", hg);
       else
-        h = patch (hg, yb(:,:,i), xb(:,:,i), "parent", hg);
+        h = patch (ax, yb(:,:,i), xb(:,:,i), "parent", hg);
       endif
     endif
 
     if (i == 1)
       x_axis_range = get (ax, "xlim");
-      h_baseline = line (x_axis_range, [base_value, base_value],
+      h_baseline = line (ax, x_axis_range, [base_value, base_value],
                          "color", [0, 0, 0]);
       set (h_baseline, "handlevisibility", "off");
       set (h_baseline, "xliminclude", "off");
@@ -362,9 +359,9 @@ endfunction
 function update_props (h, d)
   kids = get (h, "children");
   set (kids, "edgecolor", get (h, "edgecolor"),
-       "linewidth", get (h, "linewidth"),
-       "linestyle", get (h, "linestyle"),
-       "facecolor", get (h, "facecolor"));
+             "linewidth", get (h, "linewidth"),
+             "linestyle", get (h, "linestyle"),
+             "facecolor", get (h, "facecolor"));
 endfunction
 
 function update_data (h, d)
@@ -436,3 +433,4 @@ function update_group (h, d)
     end_unwind_protect
   endif
 endfunction
+

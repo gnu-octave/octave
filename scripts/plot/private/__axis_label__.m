@@ -23,17 +23,17 @@
 
 ## Author: jwe
 
-function retval = __axis_label__ (ah, caller, txt, varargin)
+function retval = __axis_label__ (hax, caller, txt, varargin)
 
-  h = get (ah, caller);
+  h = get (hax, caller);
 
-  set (h, "fontangle", get (ah, "fontangle"),
-       "fontname", get (ah, "fontname"),
-       "fontsize", get (ah, "fontsize"),
-       "fontunits", get (ah, "fontunits"),
-       "fontweight", get (ah, "fontweight"),
-       "string", txt,
-       varargin{:});
+  set (h, "fontangle", get (hax, "fontangle"),
+          "fontname", get (hax, "fontname"),
+          "fontunits", get (hax, "fontunits"),   # must precede fontsize
+          "fontsize", get (hax, "fontsize"),
+          "fontweight", get (hax, "fontweight"),
+          "string", txt,
+          varargin{:});
 
   if (nargout > 0)
     retval = h;

@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} area (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} area (@dots{}, @var{lvl})
 ## @deftypefnx {Function File} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} area (@var{h}, @dots{})
+## @deftypefnx {Function File} {} area (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} area (@dots{})
 ## Area plot of the columns of @var{y}.  This shows the
 ## contributions of each column value to the row sum.  It is functionally
@@ -36,6 +36,9 @@
 ##
 ## Additional arguments to the @code{area} function are passed directly to
 ## @code{patch}.  
+##
+## If the first argument is an axis handle @var{hax}, then plot into these axes,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the hggroup
 ## object representing the area patch objects.  The "BaseValue" property
@@ -56,7 +59,7 @@
 
 function h = area (varargin)
 
-  [ax, varargin, nargin] = __plt_get_axis_arg__ ("area", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("area", varargin{:});
 
   if (nargin == 0)
     print_usage ();
@@ -91,26 +94,27 @@ function h = area (varargin)
   if (nargin >= idx)
     args = {varargin{idx:end}};
   endif
-  newplot ();
   if (isvector (y))
     y = y(:);
   endif
   if (isempty (x))
     x = repmat ([1:rows(y)]', 1, columns (y));
   elseif (isvector (x))
-    x = repmat (x(:),  1, columns (y));
+    x = repmat (x(:), 1, columns (y));
   endif
 
-  oldax = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (ax);
-    tmp = __area__ (ax, x, y, bv, args{:});
+    hax = newplot (hax);
+    htmp = __area__ (hax, x, y, bv, args{:});
   unwind_protect_cleanup
-    axes (oldax);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

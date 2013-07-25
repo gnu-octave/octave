@@ -18,8 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} caxis (@var{limits})
-## @deftypefnx {Function File} {} caxis (@var{h}, @dots{})
-## Set color axis limits for plots.
+## @deftypefnx {Function File} {} caxis ("auto")
+## @deftypefnx {Function File} {} caxis ("manual")
+## @deftypefnx {Function File} {} caxis (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{limits} =} caxis ()
+## Query or set color axis limits for plots.
 ##
 ## The argument @var{limits} should be a 2-element vector specifying the
 ## lower and upper limits to assign to the first and last value in the
@@ -29,39 +32,39 @@
 ## If @var{limits} is "auto", then automatic colormap scaling is applied,
 ## whereas if @var{limits} is "manual" the colormap scaling is set to manual.
 ##
-## Called without any arguments to current color axis limits are returned.
+## Called without arguments the current color axis limits are returned.
 ##
-## If an axes handle is passed as the first argument, then operate on
+## If an axes handle @var{hax} is passed as the first argument then operate on
 ## this axes rather than the current axes.
+## @seealso{colormap}
 ## @end deftypefn
 
-function varargout = caxis (varargin)
+function limits = caxis (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("caxis", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("caxis", varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    varargout = cell (max (nargin == 0, nargout), 1);
-    if (isempty (varargout))
-      __caxis__ (h, varargin{:});
+    if (isempty (hax))
+      hax = gca ();
+    endif
+    if (nargin == 0)
+      limits = __caxis__ (hax);
     else
-      [varargout{:}] = __caxis__ (h, varargin{:});
+      __caxis__ (hax, varargin{:});
     endif
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
 endfunction
 
-function [cmin, cmax] = __caxis__ (ca, ax, varargin)
+function limits = __caxis__ (ca, ax, varargin)
 
   if (nargin == 1)
-    cmin = get (ca, "clim");
-    if (nargout > 1)
-      cmax = cmin(2);
-      cmin = cmin(1);
-    endif
+    limits = get (ca, "clim");
   elseif (ischar (ax))
     if (strcmpi (ax, "auto"))
       set (ca, "climmode", "auto");
@@ -70,16 +73,16 @@ function [cmin, cmax] = __caxis__ (ca, ax, varargin)
     endif
   elseif (isvector (ax))
     len = length (ax);
-
     if (len != 2)
       error ("caxis: expecting vector with 2 elements");
     endif
 
     set (ca, "clim", [ax(1), ax(2)]);
   else
-    error ("caxis: expecting no args, a string or a 2 element vector");
+    error ("caxis: expecting no args, a string, or a 2 element vector");
   endif
 
+  ## FIXME: Why should it be possible to call __caxis__ recursively?
   if (nargin > 2)
     __caxis__ (ca, varargin{:})';
   endif

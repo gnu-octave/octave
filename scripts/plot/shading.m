@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} shading (@var{type})
-## @deftypefnx {Function File} {} shading (@var{ax}, @dots{})
+## @deftypefnx {Function File} {} shading (@var{ax}, @var{type})
 ## Set the shading of surface or patch graphic objects.  Valid arguments
 ## for @var{type} are
 ##
@@ -34,7 +34,7 @@
 ## invisible.
 ## @end table
 ##
-## If @var{ax} is given the shading is applied to axis @var{ax} instead
+## If @var{hax} is given the shading is applied to axis @var{hax} instead
 ## of the current axis.
 ## @end deftypefn
 
@@ -42,34 +42,35 @@
 
 function shading (varargin)
 
-  [ax, varargin] = __plt_get_axis_arg__ ("shading", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("shading", varargin{:});
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin != 1)
     print_usage ();
   endif
 
   mode = varargin{1};
 
-  h1 = findobj (ax, "type", "patch");
-  h2 = findobj (ax, "type", "surface");
+  if (isempty (hax))
+    hax = gca ();
+  endif
 
-  obj = [h1(:); h2(:)];
+  hp = findobj (hax, "type", "patch");
+  hs = findobj (hax, "type", "surface");
+  hall = [hp(:); hs(:)];
 
-  for n = 1:numel (obj)
-    h = obj(n);
-    if (strcmpi (mode, "flat"))
-      set (h, "facecolor", "flat");
-      set (h, "edgecolor", "none");
-    elseif (strcmpi (mode, "interp"))
-      set (h, "facecolor", "interp");
-      set (h, "edgecolor", "none");
-    elseif (strcmpi (mode, "faceted"))
-      set (h, "facecolor", "flat");
-      set (h, "edgecolor", [0 0 0]);
-    else
-      error ("shading: unknown argument");
-    endif
-  endfor
+  switch (lower (mode))
+    case "flat"
+      set (hall, "facecolor", "flat");
+      set (hall, "edgecolor", "none");
+    case "interp"
+      set (hall, "facecolor", "interp");
+      set (hall, "edgecolor", "none");
+    case "faceted"
+      set (hall, "facecolor", "flat");
+      set (hall, "edgecolor", [0 0 0]);
+    otherwise
+      error ('shading: Invalid MODE "%s"', mode);
+  endswitch
 
 endfunction
 

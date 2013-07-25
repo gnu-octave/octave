@@ -21,9 +21,12 @@
 ## @deftypefnx {Function File} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
 ## @deftypefnx {Function File} {} slice (@var{v}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {Function File} {} slice (@var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefnx {Function File} {} slice (@dots{}, @var{method})
+## @deftypefnx {Function File} {} slice (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} slice (@dots{})
-## @deftypefnx {Function File} {@var{h} =} slice (@dots{}, @var{method})
-## Plot slices of 3-D data/scalar fields.  Each element of the 3-dimensional
+## Plot slices of 3-D data/scalar fields.
+##
+## Each element of the 3-dimensional
 ## array @var{v} represents a scalar value at a location given by the
 ## parameters @var{x}, @var{y}, and @var{z}.  The parameters @var{x},
 ## @var{x}, and @var{z} are either 3-dimensional arrays of the same size
@@ -37,7 +40,7 @@
 ## @code{x = 1:size (@var{v}, 2)}, @code{y = 1:size (@var{v}, 1)} and
 ## @code{z = 1:size (@var{v}, 3)}.
 ##
-## @var{Method} is one of:
+## @var{method} is one of:
 ##
 ## @table @asis
 ## @item "nearest"
@@ -54,7 +57,10 @@
 ## throughout the curve.
 ## @end table
 ##
-## The default method is @code{"linear"}.
+## The default method is "linear".
+##
+## If the first argument @var{hax} is an axis handle, then plot into this axis,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## surface object.
@@ -66,6 +72,7 @@
 ## [x, y, z] = meshgrid (linspace (-8, 8, 32));
 ## v = sin (sqrt (x.^2 + y.^2 + z.^2)) ./ (sqrt (x.^2 + y.^2 + z.^2));
 ## slice (x, y, z, v, [], 0, []);
+##
 ## [xi, yi] = meshgrid (linspace (-7, 7));
 ## zi = xi + yi;
 ## slice (x, y, z, v, xi, yi, zi);
@@ -78,8 +85,9 @@
 
 function h = slice (varargin)
 
+  [hax, varargin, nargs] = __plt_get_axis_arg__ ("slice", varargin{:});
+
   method = "linear";
-  nargs = nargin;
 
   if (ischar (varargin{end}))
     method = varargin{end};
@@ -89,7 +97,7 @@ function h = slice (varargin)
   if (nargs == 4)
     v = varargin{1};
     if (ndims (v) != 3)
-      error ("slice: expect 3-dimensional array of values");
+      error ("slice: V must be a 3-dimensional array of values");
     endif
     [nx, ny, nz] = size (v);
     [x, y, z] = meshgrid (1:nx, 1:ny, 1:nz);
@@ -99,7 +107,7 @@ function h = slice (varargin)
   elseif (nargs == 7)
     v = varargin{4};
     if (ndims (v) != 3)
-      error ("slice: expect 3-dimensional array of values");
+      error ("slice: V must be a 3-dimensional array of values");
     endif
     x = varargin{1};
     y = varargin{2};
@@ -126,56 +134,64 @@ function h = slice (varargin)
     error ("slice: dimensional mismatch for (XI, YI, ZI) or (SX, SY, SZ)");
   endif
 
-  newplot ();
-  ax = gca ();
-  sidx = 1;
-  maxv = max (v(:));
-  minv = min (v(:));
-  set (ax, "clim", [minv, maxv]);
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  unwind_protect
+    hax = newplot (hax);
 
-  if (have_sval)
-    ns = length (sx) + length (sy) + length (sz);
-    hs = zeros (ns,1);
-    [ny, nx, nz] = size (v);
-    if (length (sz) > 0)
-      for i = 1:length (sz)
-        [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
-                                 squeeze (y(:,1,1)), sz(i));
-        vz = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
-        tmp(sidx++) = surface (xi, yi, sz(i) * ones (size (yi)), vz);
-      endfor
+    sidx = 1;
+    minv = min (v(:));
+    maxv = max (v(:));
+    set (hax, "clim", [minv, maxv]);
+
+    if (have_sval)
+      ns = length (sx) + length (sy) + length (sz);
+      hs = zeros (ns,1);
+      [ny, nx, nz] = size (v);
+      if (length (sz) > 0)
+        for i = 1:length (sz)
+          [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
+                                   squeeze (y(:,1,1)), sz(i));
+          vz = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
+          htmp(sidx++) = surface (xi, yi, sz(i) * ones (size (yi)), vz);
+        endfor
+      endif
+
+      if (length (sy) > 0)
+        for i = length (sy):-1:1
+          [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)), sy(i), squeeze (z(1,1,:)));
+          vy = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
+          htmp(sidx++) = surface (squeeze (xi),
+                                 squeeze (sy(i) * ones (size (zi))),
+                                 squeeze (zi), vy);
+        endfor
+      endif
+
+      if (length (sx) > 0)
+        for i = length (sx):-1:1
+          [xi, yi, zi] = meshgrid (sx(i), squeeze (y(:,1,1)), squeeze (z(1,1,:)));
+          vx = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
+          htmp(sidx++) = surface (squeeze (sx(i) * ones (size (zi))),
+                                 squeeze (yi), squeeze(zi), vx);
+        endfor
+      endif
+    else
+      vi = interp3 (x, y, z, v, sx, sy, sz);
+      htmp = surface (sx, sy, sz, vi);
     endif
 
-    if (length (sy) > 0)
-      for i = length (sy):-1:1
-        [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)), sy(i), squeeze (z(1,1,:)));
-        vy = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
-        tmp(sidx++) = surface (squeeze (xi),
-                               squeeze (sy(i) * ones (size (zi))),
-                               squeeze (zi), vy);
-      endfor
+    if (! ishold ())
+      set (hax, "view", [-37.5, 30.0], "box", "off",
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
 
-    if (length (sx) > 0)
-      for i = length (sx):-1:1
-        [xi, yi, zi] = meshgrid (sx(i), squeeze (y(:,1,1)), squeeze (z(1,1,:)));
-        vx = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
-        tmp(sidx++) = surface (squeeze (sx(i) * ones (size (zi))),
-                               squeeze (yi), squeeze(zi), vx);
-      endfor
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
     endif
-  else
-    vi = interp3 (x, y, z, v, sx, sy, sz);
-    tmp = surface (sx, sy, sz, vi);
-  endif
-
-  if (! ishold ())
-    set (ax, "view", [-37.5, 30.0], "box", "off", "xgrid", "on",
-         "ygrid", "on", "zgrid", "on");
-  endif
+  end_unwind_protect
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

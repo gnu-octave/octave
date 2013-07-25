@@ -19,8 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} errorbar (@var{args})
 ## @deftypefnx {Function File} {@var{h} =} errorbar (@var{args})
-## This function produces two-dimensional plots with errorbars.  Many
-## different combinations of arguments are possible.  The simplest form is
+## Create a two-dimensional plot with errorbars.
+##
+## Many different combinations of arguments are possible.  The simplest
+## form is
 ##
 ## @example
 ## errorbar (@var{y}, @var{ey})
@@ -117,23 +119,25 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function retval = errorbar (varargin)
+function h = errorbar (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
+    hax = newplot (hax);
 
-    tmp = __errcomm__ ("errorbar", h, varargin{:});
+    htmp = __errcomm__ ("errorbar", hax, varargin{:});
 
-    if (nargout > 0)
-      retval = tmp;
-    endif
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
+
+  if (nargout > 0)
+    h = htmp;
+  endif
 
 endfunction
 
@@ -153,7 +157,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.5:2*pi;
-%! err = x/100;
+%! err = x/30;
 %! y1 = sin (x);
 %! y2 = cos (x);
 %! hg = errorbar (x, y1, err, '~', x, y2, err, '>');
@@ -161,7 +165,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.5:2*pi;
-%! err = x/100;
+%! err = x/30;
 %! y1 = sin (x);
 %! y2 = cos (x);
 %! hg = errorbar (x, y1, err, err, '#r', x, y2, err, err, '#~');
@@ -169,7 +173,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.5:2*pi;
-%! err = x/100;
+%! err = x/30;
 %! y1 = sin (x);
 %! y2 = cos (x);
 %! hg = errorbar (x, y1, err, err, err, err, '~>', ...

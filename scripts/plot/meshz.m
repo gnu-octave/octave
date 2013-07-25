@@ -33,7 +33,7 @@ function h = meshz (varargin)
     error ("meshz: X, Y, Z, C arguments must be real");
   endif
 
-  [ax, varargin, nargin] = __plt_get_axis_arg__ ("meshz", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("meshz", varargin{:});
 
   ## Find where property/value pairs start
   charidx = find (cellfun ("isclass", varargin, "char"), 1);
@@ -72,14 +72,16 @@ function h = meshz (varargin)
   zref = min (z(isfinite (z)));
   z = [zref .* ones(1, columns(z) + 2);
        zref .* ones(rows(z), 1), z, zref .* ones(rows(z), 1);
-       zref.* ones(1, columns(z) + 2)];
+       zref .* ones(1, columns(z) + 2)];
 
-  oldax = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (ax);
-    htmp = mesh (x, y, z, varargin{charidx:end});
+    hax = newplot (hax);
+    htmp = mesh (hax, x, y, z, varargin{charidx:end});
   unwind_protect_cleanup
-    axes (oldax);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)

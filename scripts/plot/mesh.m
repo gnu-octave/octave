@@ -46,19 +46,25 @@ function h = mesh (varargin)
     error ("mesh: X, Y, Z, C arguments must be real");
   endif
 
-  newplot ();
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("mesh", varargin{:});
 
-  htmp = surface (varargin{:});
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  unwind_protect
+    hax = newplot (hax);
+    htmp = surface (hax, varargin{:});
 
-  ax = get (htmp, "parent");
+    set (htmp, "facecolor", "w");
+    set (htmp, "edgecolor", "flat");
 
-  set (htmp, "facecolor", "w");
-  set (htmp, "edgecolor", "flat");
-
-  if (! ishold ())
-    set (ax, "view", [-37.5, 30],
-         "xgrid", "on", "ygrid", "on", "zgrid", "on");
-  endif
+    if (! ishold ())
+      set (hax, "view", [-37.5, 30],
+               "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    endif
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;
@@ -86,6 +92,6 @@ endfunction
 %! ylabel 'Y-axis';
 %! zlabel 'log scale';
 %! if (strcmp (get (gcf, '__graphics_toolkit__'), 'gnuplot'))
-%!   title ({'Gnuplot: mesh color is wrong', 'This a Gnuplot bug'});
+%!   title ({'Gnuplot: mesh color is wrong', 'This is a Gnuplot bug'});
 %! endif
 

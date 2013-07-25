@@ -33,32 +33,42 @@ function h = meshc (varargin)
     error ("meshc: X, Y, Z, C arguments must be real");
   endif
 
-  newplot ();
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("meshc", varargin{:});
 
-  htmp = surface (varargin{:});
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  unwind_protect
+    hax = newplot (hax);
 
-  ax = get (htmp, "parent");
+    htmp = surface (hax, varargin{:});
 
-  set (htmp, "facecolor", "w");
-  set (htmp, "edgecolor", "flat");
-  ## FIXME - gnuplot does not support a filled surface and a
-  ## non-filled contour.  3D filled patches are also not supported.
-  ## Thus, the facecolor will be transparent for the gnuplot backend.
+    ## FIXME - gnuplot does not support a filled surface and a
+    ## non-filled contour.  3D filled patches are also not supported.
+    ## Thus, the facecolor will be transparent for the gnuplot backend.
+    set (htmp, "facecolor", "w");
+    set (htmp, "edgecolor", "flat");
 
-  if (! ishold ())
-    set (ax, "view", [-37.5, 30],
-         "xgrid", "on", "ygrid", "on", "zgrid", "on");
-  endif
+    if (! ishold ())
+      set (hax, "view", [-37.5, 30],
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    endif
 
-  drawnow ();
-  zmin = get (ax, "zlim")(1);
+    drawnow ();
 
-  [~, htmp2] = __contour__ (ax, zmin, varargin{:});
+    zmin = get (hax, "zlim")(1);
 
-  htmp = [htmp; htmp2];
+    [~, htmp2] = __contour__ (hax, zmin, varargin{:});
+
+    htmp = [htmp; htmp2];
+
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;
   endif
 
 endfunction
+

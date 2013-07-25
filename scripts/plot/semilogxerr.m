@@ -50,7 +50,11 @@ function h = semilogxerr (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log");
+    if (! ishold (hax))
+      set (hax, "xminortick", "on");
+    endif
     htmp = __errcomm__ ("semilogxerr", hax, varargin{:});
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

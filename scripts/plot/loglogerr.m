@@ -50,7 +50,11 @@ function h = loglogerr (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log", "yscale", "log");
+    if (! ishold (hax))
+      set (hax, "xminortick", "on", "yminortick", "on");
+    endif
     htmp = __errcomm__ ("loglogerr", hax, varargin{:});
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

@@ -17,16 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} clf ()
-## @deftypefnx {Function File} {} clf ("reset")
+## @deftypefn  {Function File} {} clf
+## @deftypefnx {Function File} {} clf reset
 ## @deftypefnx {Function File} {} clf (@var{hfig})
 ## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
 ## @deftypefnx {Function File} {@var{h} =} clf (@dots{})
-## Clear the current figure window.  @code{clf} operates by deleting child
-## graphics objects with visible handles (@code{handlevisibility} = on).
-## If @var{hfig} is specified operate on it instead of the current figure.
-## If the optional argument @code{"reset"} is specified, all objects including
-## those with hidden handles are deleted.
+## Clear the current figure window.
+## 
+## @code{clf} operates by deleting child graphics objects with visible
+## handles (HandleVisibility = "on").
+##
+## If the optional argument "reset" is specified, delete all child objects
+## including those with hidden handles and reset all figure properties to
+## their defaults.  However, the following properties are not reset:
+## Position, Units, PaperPosition, PaperUnits.
+##
+## If the first argument @var{hfig} is a figure handle, then operate on
+## this figure rather than the current figure returned by @code{gcf}.
 ## 
 ## The optional return value @var{h} is the graphics handle of the figure
 ## window that was cleared.
@@ -35,51 +42,44 @@
 
 ## Author: jwe
 
-function retval = clf (varargin)
+function h = clf (varargin)
 
   if (nargin > 2)
     print_usage ();
-  elseif (nargin > 1)
-    if (isfigure (varargin{1}) && ischar (varargin{2})
-        && strcmpi (varargin{2}, "reset"))
-      oldfig = gcf;
-      hfig = varargin{1};
-      do_reset = true;
-    else
-      print_usage ();
-    endif
+  elseif (nargin == 0)
+    hfig = gcf;
+    do_reset = false;
   elseif (nargin == 1)
-    if (isfigure (varargin{1}))
-      oldfig = gcf;
+    if (isscalar (varargin{1}) && isfigure (varargin{1}))
       hfig = varargin{1};
       do_reset = false;
     elseif (ischar (varargin{1}) && strcmpi (varargin{1}, "reset"))
       hfig = gcf;
-      oldfig = hfig;
       do_reset = true;
     else
       print_usage ();
     endif
   else
-    hfig = gcf;
-    oldfig = hfig;
-    do_reset = false;
+    if (isscalar (varargin{1}) && isfigure (varargin{1})
+        && ischar (varargin{2}) && strcmpi (varargin{2}, "reset"))
+      hfig = varargin{1};
+      do_reset = true;
+    else
+      print_usage ();
+    endif
   endif
 
   if (do_reset)
     ## Select all the children, including the one with hidden handles.
-    hc = allchild (hfig);
+    delete (allchild (hfig));
     reset (hfig);
   else
     ## Select only the chilren with visible handles.
-    hc = get (hfig, "children");
+    delete (get (hfig, "children"));
   endif
 
-  ## Delete the children.
-  delete (hc);
-
   if (nargout > 0)
-    retval = hfig;
+    h = hfig;
   endif
 
 endfunction
@@ -90,6 +90,8 @@ endfunction
 %! unwind_protect
 %!   l = line;
 %!   assert (! isempty (get (gcf, "children")));
+%!   clf;
+%!   assert (isempty (get (gcf, "children")));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -99,6 +101,23 @@ endfunction
 %! unwind_protect
 %!   clf;
 %!   assert (isempty (get (gcf, "children")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!xtest
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot (1:10);
+%!   set (hf, "papertype", "tabloid");
+%!   clf (hf);
+%!   assert (isempty (get (gcf, "children")));
+%!   assert (get (hf, "papertype"), "tabloid");
+%!   plot (1:10);
+%!   clf (hf, "reset");
+%!   kids = get (hf, "children");
+%!   assert (isempty (get (gcf, "children")));
+%!   assert (get (hf, "papertype"), "usletter");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

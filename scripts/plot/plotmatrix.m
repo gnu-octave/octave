@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} plotmatrix (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} plotmatrix (@var{x})
 ## @deftypefnx {Function File} {} plotmatrix (@dots{}, @var{style})
-## @deftypefnx {Function File} {} plotmatrix (@var{h}, @dots{})
+## @deftypefnx {Function File} {} plotmatrix (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {[@var{h}, @var{ax}, @var{bigax}, @var{p}, @var{pax}] =} plotmatrix (@dots{})
 ## Scatter plot of the columns of one matrix against another.  Given the
 ## arguments @var{x} and @var{y}, that have a matching number of rows,
@@ -41,9 +41,10 @@
 ## histogram @code{hist (@var{x}(:, i))}.
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
-## string defining a marker in the same manner as the @code{plot}
-## command.  If a leading axes handle @var{h} is passed to
-## @code{plotmatrix}, then this axis will be used for the plot.
+## string defining a marker in the same manner as the @code{plot} command.
+##
+## If the first argument is an axis handle @var{hax}, then plot into these axes,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} provides handles to the individual
 ## graphics objects in the scatter plots, whereas @var{ax} returns the
@@ -52,6 +53,8 @@
 ## @code{xlabel}, @code{title}, etc., will be associated with this hidden
 ## axis.  Finally @var{p} returns the graphics objects associated with
 ## the histogram and @var{pax} the corresponding axes objects.
+##
+## Example:
 ##
 ## @example
 ## plotmatrix (randn (100, 3), "g+")
@@ -66,37 +69,41 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
 
   if (nargin > 3 || nargin < 1)
     print_usage ();
-  else
-    oldh = gca ();
-    unwind_protect
-      axes (bigax2);
-      newplot ();
-      [h2, ax2, p2, pax2, need_usage] = __plotmatrix__ (bigax2, varargin{:});
-      if (need_usage)
-        print_usage ();
-      endif
-      if (nargout > 0)
-        h = h2;
-        ax = ax2;
-        bigax = bigax2;
-        p = p2;
-        pax = pax2;
-      endif
-      axes (bigax2);
-      ctext = text (0, 0, "", "visible", "off",
-                    "handlevisibility", "off", "xliminclude", "off",
-                    "yliminclude", "off", "zliminclude", "off",
-                    "deletefcn", {@plotmatrixdelete, [ax2; pax2]});
-      set (bigax2, "visible", "off");
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
   endif
+
+  oldfig = ifelse (isempty (bigax2), [], get (0, "currentfigure"));
+  unwind_protect
+    bigax2 = newplot (bigax2);
+
+    [h2, ax2, p2, pax2] = __plotmatrix__ (bigax2, varargin{:});
+
+    if (nargout > 0)
+      h = h2;
+      ax = ax2;
+      bigax = bigax2;
+      p = p2;
+      pax = pax2;
+    endif
+    axes (bigax2);
+    ctext = text (0, 0, "", "visible", "off",
+                  "handlevisibility", "off", "xliminclude", "off",
+                  "yliminclude", "off", "zliminclude", "off",
+                  "deletefcn", {@plotmatrixdelete, [ax2; pax2]});
+    set (bigax2, "visible", "off");
+
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
+
 endfunction
+
 
 %!demo
 %! clf;
 %! plotmatrix (randn (100, 3), 'g+');
+
 
 function plotmatrixdelete (h, d, ax)
   for i = 1 : numel (ax)
@@ -112,8 +119,7 @@ function plotmatrixdelete (h, d, ax)
   endfor
 endfunction
 
-function [h, ax, p, pax, need_usage] = __plotmatrix__ (bigax, varargin)
-  need_usage = false;
+function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
   have_line_spec = false;
   have_hist = false;
   parent = get (bigax, "parent");
@@ -128,8 +134,7 @@ function [h, ax, p, pax, need_usage] = __plotmatrix__ (bigax, varargin)
         nargin = nargin - 1;
         break;
       else
-        need_usage = true;
-        returm;
+        print_usage ("plotmatrix");
       endif
     endif
   endfor
@@ -142,8 +147,7 @@ function [h, ax, p, pax, need_usage] = __plotmatrix__ (bigax, varargin)
     X = varargin{1};
     Y = varargin{2};
   else
-    need_usage = true;
-    returm;
+    print_usage ("plotmatrix");
   endif
 
   if (rows (X) != rows (Y))
@@ -187,3 +191,4 @@ function [h, ax, p, pax, need_usage] = __plotmatrix__ (bigax, varargin)
     endfor
   endfor
 endfunction
+

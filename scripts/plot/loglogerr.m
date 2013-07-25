@@ -19,9 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} loglogerr (@var{args})
 ## @deftypefnx {Function File} {@var{h} =} loglogerr (@var{args})
-## Produce two-dimensional plots on double logarithm axis with
-## errorbars.  Many different combinations of arguments are possible.
-## The most common form is
+## Produce two-dimensional plots on a double logarithm axis with
+## errorbars.
+##
+## Many different combinations of arguments are possible.  The most common
+## form is
 ##
 ## @example
 ## loglogerr (@var{x}, @var{y}, @var{ey}, @var{fmt})
@@ -30,7 +32,7 @@
 ## @noindent
 ## which produces a double logarithm plot of @var{y} versus @var{x}
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
-## format defined by @var{fmt}.  See errorbar for available formats and
+## format defined by @var{fmt}.  See @code{errorbar} for available formats and
 ## additional information.
 ## @seealso{errorbar, semilogxerr, semilogyerr}
 ## @end deftypefn
@@ -39,25 +41,25 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function retval = loglogerr (varargin)
+function h = loglogerr (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("loglogerr", varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("loglogerr", varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
+    hax = newplot (hax);
 
-    set (h, "xscale", "log", "yscale", "log");
-
-    tmp = __errcomm__ ("loglogerr", h, varargin{:});
-
-    if (nargout > 0)
-      retval = tmp;
-    endif
+    set (hax, "xscale", "log", "yscale", "log");
+    htmp = __errcomm__ ("loglogerr", hax, varargin{:});
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
+
+  if (nargout > 0)
+    h = htmp;
+  endif
 
 endfunction
 

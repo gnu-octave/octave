@@ -20,8 +20,10 @@
 ## @deftypefn  {Function File} {} semilogxerr (@var{args})
 ## @deftypefnx {Function File} {@var{h} =} semilogxerr (@var{args})
 ## Produce two-dimensional plots using a logarithmic scale for the @var{x}
-## axis and errorbars at each data point.  Many different combinations of
-## arguments are possible.  The most common form is
+## axis and errorbars at each data point.
+##
+## Many different combinations of arguments are possible.  The most common
+## form is
 ##
 ## @example
 ## semilogxerr (@var{x}, @var{y}, @var{ey}, @var{fmt})
@@ -32,32 +34,32 @@
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
 ## format defined by @var{fmt}.  See @code{errorbar} for available formats and
 ## additional information.
-## @seealso{errorbar, loglogerr, semilogyerr}
+## @seealso{errorbar, semilogyerr, loglogerr}
 ## @end deftypefn
 
 ## Created: 20.2.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function retval = semilogxerr (varargin)
+function h = semilogxerr (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("semilogxerr", varargin{:});
+  [hax, varargin] = __plt_get_axis_arg__ ("semilogxerr", varargin{:});
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
+    hax = newplot (hax);
 
-    set (h, "xscale", "log");
-
-    tmp = __errcomm__ ("semilogxerr", h, varargin{:});
-
-    if (nargout > 0)
-      retval = tmp;
-    endif
+    set (hax, "xscale", "log");
+    htmp = __errcomm__ ("semilogxerr", hax, varargin{:});
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
+
+  if (nargout > 0)
+    h = htmp;
+  endif
 
 endfunction
 

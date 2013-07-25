@@ -21,13 +21,23 @@
 ## @deftypefnx {Function File} {} stairs (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} stairs (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} stairs (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {} stairs (@var{h}, @dots{})
+## @deftypefnx {Function File} {} stairs (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} stairs (@dots{})
 ## @deftypefnx {Function File} {[@var{xstep}, @var{ystep}] =} stairs (@dots{})
-## Produce a stairstep plot.  The arguments may be vectors or matrices.
+## Produce a stairstep plot.
 ##
-## If only one argument is given, it is taken as a vector of y-values
-## and the x coordinates are taken to be the indices of the elements.
+## The arguments @var{x} and @var{y} may be vectors or matrices.
+## If only one argument is given, it is taken as a vector of Y values
+## and the X coordinates are taken to be the indices of the elements.
+## 
+## The style to use for the plot can be defined with a line style @var{style}
+## in the same way as the @code{plot} command.
+##
+## Multiple property/value pairs may be specified, but they must appear in
+## pairs.
+##
+## If the first argument @var{hax} is an axis handle, then plot into this axis,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## If one output argument is requested, return a graphics handle to the
 ## created plot.  If two output arguments are specified, the data are generated
@@ -56,7 +66,7 @@
 
 function [xs, ys] = stairs (varargin)
 
-  [ax, varargin, nargin] = __plt_get_axis_arg__ ("stairs", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("stairs", varargin{:});
 
   if (nargin < 1)
     print_usage ();
@@ -64,17 +74,18 @@ function [xs, ys] = stairs (varargin)
     if (nargout > 1)
       [h, xs, ys] = __stairs__ (false, varargin{:});
     else
-      oldax = gca ();
+      oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
       unwind_protect
-        axes (ax);
-        newplot ();
-        [h, xxs, yys] = __stairs__ (true, varargin{:});
+        hax = newplot (hax);
+        [htmp, xxs, yys] = __stairs__ (true, varargin{:});
       unwind_protect_cleanup
-        axes (oldax);
+        if (! isempty (oldfig))
+          set (0, "currentfigure", oldfig);
+        endif
       end_unwind_protect
-    endif
-    if (nargout == 1)
-      xs = h;
+      if (nargout == 1)
+        xs = htmp;
+      endif
     endif
   endif
 endfunction
@@ -82,7 +93,7 @@ endfunction
 function [h, xs, ys] = __stairs__ (doplot, varargin)
 
   if (nargin == 2 || ischar (varargin{2}))
-    y = varargin {1};
+    y = varargin{1};
     varargin(1) = [];
     if (ismatrix (y))
       if (isvector (y))
@@ -97,7 +108,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
   endif
 
   if (ndims (x) > 2 || ndims (y) > 2)
-    error ("stairs: expecting 2-d arguments");
+    error ("stairs: X and Y must be 2-D objects");
   endif
 
   vec_x = isvector (x);
@@ -140,7 +151,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 
   have_line_spec = false;
   for i = 1 : length (varargin)
-    arg = varargin {i};
+    arg = varargin{i};
     if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("stairs", arg, false);
       if (valid)
@@ -167,24 +178,24 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
         addlistener (hg, "ydata", @update_data);
 
         if (have_line_spec)
-          tmp = line (xs(:,i).', ys(:,i).', "color", linespec.color,
-                      "parent", hg);
+          htmp = line (xs(:,i).', ys(:,i).', "color", linespec.color,
+                       "parent", hg);
         else
-          tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
-                      "parent", hg);
+          htmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
+                       "parent", hg);
         endif
 
-        addproperty ("color", hg, "linecolor", get (tmp, "color"));
-        addproperty ("linewidth", hg, "linelinewidth", get (tmp, "linewidth"));
-        addproperty ("linestyle", hg, "linelinestyle", get (tmp, "linestyle"));
+        addproperty ("color", hg, "linecolor", get (htmp, "color"));
+        addproperty ("linewidth", hg, "linelinewidth", get (htmp, "linewidth"));
+        addproperty ("linestyle", hg, "linelinestyle", get (htmp, "linestyle"));
 
-        addproperty ("marker", hg, "linemarker", get (tmp, "marker"));
+        addproperty ("marker", hg, "linemarker", get (htmp, "marker"));
         addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
-                     get (tmp, "markerfacecolor"));
+                     get (htmp, "markerfacecolor"));
         addproperty ("markeredgecolor", hg, "linemarkeredgecolor",
-                     get (tmp, "markeredgecolor"));
+                     get (htmp, "markeredgecolor"));
         addproperty ("markersize", hg, "linemarkersize",
-                     get (tmp, "markersize"));
+                     get (htmp, "markersize"));
 
         addlistener (hg, "color", @update_props);
         addlistener (hg, "linewidth", @update_props);
@@ -238,7 +249,7 @@ endfunction
 %! x = 0:(N-1);
 %! y = rand (1, N);
 %! hs = stairs (x(1), y(1));
-%! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
+%! axis ([1, N-1 0, 1]);
 %! for k=2:N
 %!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
 %!   drawnow ();
@@ -247,7 +258,8 @@ endfunction
 
 
 function update_props (h, d)
-  set (get (h, "children"), "color", get (h, "color"),
+  set (get (h, "children"),
+       "color", get (h, "color"),
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"),
        "marker", get (h, "marker"),
@@ -282,3 +294,4 @@ function update_data (h, d)
 
   set (get (h, "children"), "xdata", xs, "ydata", ys);
 endfunction
+

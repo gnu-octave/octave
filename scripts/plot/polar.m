@@ -19,42 +19,49 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} polar (@var{theta}, @var{rho})
 ## @deftypefnx {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
-## @deftypefnx {Function File} {} polar (@var{h}, @dots{})
+## @deftypefnx {Function File} {} polar (@var{cplx})
+## @deftypefnx {Function File} {} polar (@var{cplx}, @var{fmt})
+## @deftypefnx {Function File} {} polar (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} polar (@dots{})
-## Create a two-dimensional plot from polar coordinates @var{theta} and
-## @var{rho}.
+## Create a 2-D plot from polar coordinates @var{theta} and @var{rho}.
 ##
-## The optional argument @var{fmt} specifies the line format.
+## If a single complex input @var{cplx} is given then the real part is used
+## for @var{theta} and the imaginary part is used for @var{rho}.
+##
+## The optional argument @var{fmt} specifies the line format in the same way
+## as @code{plot}.
+##
+## If the first argument @var{hax} is an axis handle, then plot into this axis,
+## rather than the current axis handle returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##
-## @seealso{plot, rose, compass}
+## @seealso{rose, compass, plot}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = polar (varargin)
+function h = polar (varargin)
 
-  [h, varargin, nargs] = __plt_get_axis_arg__ ("polar", varargin{:});
+  [hax, varargin, nargs] = __plt_get_axis_arg__ ("polar", varargin{:});
 
   if (nargs < 1)
     print_usage ();
   endif
 
-  oldh = gca ();
+  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
-    axes (h);
-    newplot ();
+    hax = newplot (hax);
 
     if (nargs == 3)
       if (! ischar (varargin{3}))
-        error ("polar: third argument must be a string");
+        error ("polar: FMT argument must be a string");
       endif
-      tmp = __plr2__ (h, varargin{:});
-      maxr = max (varargin {2} (:));
+      htmp = __plr2__ (hax, varargin{:});
+      maxr = max (varargin{2}(:));
     elseif (nargs == 2)
       if (ischar (varargin{2}))
-        tmp = __plr1__ (h, varargin{:});
+        htmp = __plr1__ (hax, varargin{:});
         if (iscomplex (varargin{1}))
           maxr = max (imag (varargin{1})(:));
         else
@@ -62,12 +69,12 @@ function retval = polar (varargin)
         endif
       else
         fmt = "";
-        tmp = __plr2__ (h, varargin{:}, fmt);
-        maxr = max (varargin {2} (:));
+        htmp = __plr2__ (hax, varargin{:}, fmt);
+        maxr = max (varargin{2}(:));
       endif
     elseif (nargs == 1)
       fmt = "";
-      tmp = __plr1__ (h, varargin{:}, fmt);
+      htmp = __plr1__ (hax, varargin{:}, fmt);
       if (iscomplex (varargin{1}))
         maxr = max (imag (varargin{1})(:));
       else
@@ -77,39 +84,31 @@ function retval = polar (varargin)
       print_usage ();
     endif
 
-    set (h, "xlim", [-maxr, maxr], "ylim", [-maxr, maxr],
-         "xaxislocation", "zero", "yaxislocation", "zero",
-         "plotboxaspectratio", [1, 1, 1]);
+    set (hax, "xlim", [-maxr, maxr], "ylim", [-maxr, maxr],
+              "xaxislocation", "zero", "yaxislocation", "zero",
+              "plotboxaspectratio", [1, 1, 1]);
 
-    if (nargout > 0)
-      retval = tmp;
-    endif
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
+
+  if (nargout > 0)
+    h = htmp;
+  endif
 
 endfunction
 
 function retval = __plr1__ (h, theta, fmt)
 
-  if (nargin != 3)
-    print_usage ();
-  endif
-
-  [nr, nc] = size (theta);
-  if (nr == 1)
-    theta = theta';
-    tmp = nr;
-    nr = nc;
-    nc = tmp;
-  endif
-  theta_i = imag (theta);
-  if (any (theta_i))
-    rho = theta_i;
+  theta = theta(:);
+  if (iscomplex (theta))
+    rho = imag (theta);
     theta = real (theta);
   else
     rho = theta;
-    theta = (1:nr)';
+    theta = (1:rows (rho))';
   endif
 
   retval = __plr2__ (h, theta, rho, fmt);
@@ -118,17 +117,11 @@ endfunction
 
 function retval = __plr2__ (h, theta, rho, fmt)
 
-  if (nargin != 4)
-    print_usage ();
+  if (ndims (theta) > 2 || ndims (rho) > 2)
+    error ("polar: THETA and RHO must be 2-D objects");
   endif
-
-  if (any (imag (theta)))
-    theta = real (theta);
-  endif
-
-  if (any (imag (rho)))
-    rho = real (rho);
-  endif
+  theta = real (theta);
+  rho = real (rho);
 
   if (isscalar (theta))
     if (isscalar (rho))
@@ -136,64 +129,46 @@ function retval = __plr2__ (h, theta, rho, fmt)
       y = rho * sin (theta);
       retval = __plt__ ("polar", h, x, y, fmt);
     else
-      error ("__plr2__: invalid data for plotting");
+      error ("polar: Can't plot constant THETA with varying RHO");
     endif
   elseif (isvector (theta))
     if (isvector (rho))
       if (length (theta) != length (rho))
-        error ("__plr2__: vector lengths must match");
+        error ("polar: THETA and RHO vector lengths must match");
       endif
-      if (rows (rho) == 1)
-        rho = rho';
-      endif
-      if (rows (theta) == 1)
-        theta = theta';
-      endif
+      rho = rho(:);
+      theta = theta(:);
       x = rho .* cos (theta);
       y = rho .* sin (theta);
       retval = __plt__ ("polar", h, x, y, fmt);
     elseif (ismatrix (rho))
-      [t_nr, t_nc] = size (theta);
-      if (t_nr == 1)
-        theta = theta';
-        tmp = t_nr;
-        t_nr = t_nc;
-        t_nc = tmp;
-      endif
+      theta = theta(:);
+      t_nr = rows (theta);
       [r_nr, r_nc] = size (rho);
       if (t_nr != r_nr)
         rho = rho';
-        tmp = r_nr;
         r_nr = r_nc;
-        r_nc = tmp;
       endif
       if (t_nr != r_nr)
-        error ("__plr2__: vector and matrix sizes must match");
+        error ("polar: THETA vector and RHO matrix sizes must match");
       endif
       x = diag (cos (theta)) * rho;
       y = diag (sin (theta)) * rho;
       retval = __plt__ ("polar", h, x, y, fmt);
     else
-      error ("__plr2__: invalid data for plotting");
+      error ("polar: invalid data for plotting");
     endif
   elseif (ismatrix (theta))
     if (isvector (rho))
-      [r_nr, r_nc] = size (rho);
-      if (r_nr == 1)
-        rho = rho';
-        tmp = r_nr;
-        r_nr = r_nc;
-        r_nc = tmp;
-      endif
+      rho = rho(:);
+      r_nr = rows (rho);
       [t_nr, t_nc] = size (theta);
       if (r_nr != t_nr)
         theta = theta';
-        tmp = t_nr;
         t_nr = t_nc;
-        t_nc = tmp;
       endif
       if (r_nr != t_nr)
-        error ("__plr2__: vector and matrix sizes must match");
+        error ("polar: THETA matrix and RHO vector sizes must match");
       endif
       diag_r = diag (rho);
       x = diag_r * cos (theta);
@@ -201,16 +176,16 @@ function retval = __plr2__ (h, theta, rho, fmt)
       retval = __plt__ ("polar", h, x, y, fmt);
     elseif (ismatrix (rho))
       if (! size_equal (rho, theta))
-        error ("__plr2__: matrix dimensions must match");
+        error ("polar: THETA and RHO matrix dimensions must match");
       endif
       x = rho .* cos (theta);
       y = rho .* sin (theta);
       retval = __plt__ ("polar", h, x, y, fmt);
     else
-      error ("__plr2__: invalid data for plotting");
+      error ("polar: invalid data for plotting");
     endif
   else
-    error ("__plr2__: invalid data for plotting");
+    error ("polar: invalid data for plotting");
   endif
 
 endfunction
@@ -221,6 +196,12 @@ endfunction
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (7*theta);
 %! polar (theta, rho);
+
+%!demo
+%! clf;
+%! theta = linspace (0,2*pi,1000);
+%! cplx = theta + i*sin (7*theta);
+%! polar (cplx, 'g');
 
 %!demo
 %! clf;

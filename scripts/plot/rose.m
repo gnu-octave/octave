@@ -18,18 +18,22 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} rose (@var{th})
-## @deftypefnx {Function File} {} rose (@var{th}, @var{r})
-## @deftypefnx {Function File} {} rose (@var{h}, @dots{})
+## @deftypefnx {Function File} {} rose (@var{th}, @var{nbins})
+## @deftypefnx {Function File} {} rose (@var{th}, @var{bins})
+## @deftypefnx {Function File} {} rose (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
-## @deftypefnx {Function File} {[@var{r}, @var{th}] =} rose (@dots{})
+## @deftypefnx {Function File} {[@var{thout} @var{rout}] =} rose (@dots{})
 ##
-## Plot an angular histogram.  With one vector argument, @var{th}, plot the
-## histogram with 20 angular bins.  If @var{th} is a matrix then each column
-## of @var{th} produces a separate histogram.
+## Plot an angular histogram.
 ##
-## If @var{r} is given and is a scalar, then the histogram is produced with
-## @var{r} bins.  If @var{r} is a vector, then the center of each bin are
-## defined by the values of @var{r}.
+## With one vector argument, @var{th}, plot the histogram with 20 angular bins.
+## If @var{th} is a matrix then each column of @var{th} produces a separate
+## histogram.
+##
+## If @var{nbins} is given and is a scalar, then the histogram is produced with
+## @var{nbin} bins.  If @var{bins} is a vector, then the center of each bin is
+## defined defined by the values of @var{bins} and the number of bins is
+## given by the number of elements in @var{bins}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing each histogram.
@@ -39,8 +43,8 @@
 ##
 ## @example
 ## @group
-## [r, th] = rose ([2*randn(1e5,1), pi + 2*randn(1e5,1)]);
-## polar (r, th);
+## [th, r] = rose ([2*randn(1e5,1), pi + 2*randn(1e5,1)]);
+## polar (th, r);
 ## @end group
 ## @end example
 ##
@@ -49,33 +53,32 @@
 
 function [thout, rout] = rose (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 1), "rose",
-                                                varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("rose", varargin{:});
 
   if (nargin < 1)
     print_usage ();
   endif
 
   ## Force theta to [0,2*pi] range
-  th = varargin {1};
-  th = atan2  (sin (th), cos (th)) + pi;
+  th = varargin{1};
+  th = atan2 (sin (th), cos (th)) + pi;
 
   if (nargin > 1)
-    x = varargin {2};
+    x = varargin{2};
     if (isscalar (x))
-      x = [0.5/x : 1/x : 1] * 2 * pi;
+      x = [0.5/x : 1/x : 1] * 2*pi;
     else
       ## Force theta to [0,2*pi] range
-      x = atan2  (sin (x), cos (x)) + pi;
+      x = atan2 (sin (x), cos (x)) + pi;
     endif
   else
-    x = [1/40 : 1/20 : 1] * 2 * pi;
+    x = [1/40 : 1/20 : 1] * 2*pi;
   endif
 
   [nn, xx] = hist (th, x);
   xx = xx(:).';
   if (isvector (nn))
-    nn = nn (:);
+    nn = nn(:);
   endif
   x1 = xx(1:end-1) + diff (xx, 1) / 2;
   x1 = [x1 ; x1; x1; x1](:);
@@ -85,17 +88,18 @@ function [thout, rout] = rose (varargin)
   r(3:4:end, :) = nn;
 
   if (nargout < 2)
-    oldh = gca ();
+    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
     unwind_protect
-      axes (h);
-      newplot ();
-      hlist = polar (h, th, r);
+      hax = newplot (hax);
+      htmp = polar (hax, th, r);
     unwind_protect_cleanup
-      axes (oldh);
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
     end_unwind_protect
 
     if (nargout > 0)
-      thout = hlist;
+      thout = htmp;
     endif
   else
     thout = th;

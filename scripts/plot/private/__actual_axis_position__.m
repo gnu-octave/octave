@@ -30,7 +30,7 @@ function pos = __actual_axis_position__ (h)
     axis_obj = get (h);
   elseif (isstruct (h))
     axis_obj = h;
-    h = axis_obj.__my_handle__;
+    h = axis_obj.__cbar_hax__;
   endif
 
   ## Get figure size in pixels

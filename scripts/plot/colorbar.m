@@ -17,9 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} colorbar (@var{s})
-## @deftypefnx {Function File} {} colorbar ("peer", @var{h}, @dots{})
-## Add a colorbar to the current axes.  Valid values for @var{s} are
+## @deftypefn  {Function File} {} colorbar
+## @deftypefnx {Function File} {} colorbar (@var{loc})
+## @deftypefnx {Function File} {} colorbar (@var{delete_option})
+## @deftypefnx {Function File} {} colorbar (@var{hcb}, @dots{})
+## @deftypefnx {Function File} {} colorbar (@var{hax}, @dots{})
+## @deftypefnx {Function File} {} colorbar (@dots{}, "peer", @var{hax}, @dots{})
+## @deftypefnx {Function File} {} colorbar (@dots{}, "location", @var{loc}, @dots{})
+## @deftypefnx {Function File} {} colorbar (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} colorbar (@dots{})
+## Add a colorbar to the current axes.
+##
+## A colorbar displays the current colormap along with numerical rulings
+## so that the color scale can be interpreted.
+##
+## The optional input @var{loc} determines the location of the colorbar.
+## Valid values for @var{loc} are
 ##
 ## @table @asis
 ## @item "EastOutside"
@@ -45,52 +58,105 @@
 ##
 ## @item "South"
 ## Place the colorbar at the bottom of the plot.
-##
-## @item "Off", "None"
-## Remove any existing colorbar from the plot.
 ## @end table
 ##
+## To remove a colorbar from a plot use any one of the following keywords for
+## the @var{delete_option}: "delete", "hide", "off".
+## 
 ## If the argument "peer" is given, then the following argument is treated
-## as the axes handle on which to add the colorbar.
+## as the axes handle in which to add the colorbar.  Alternatively, 
+## If the first argument @var{hax} is an axes handle, then the colorbar is
+## added to this axis, rather than the current axes returned by @code{gca}.
+##
+## If the first argument @var{hcb} is a handle to a colorbar object, then
+## operate on this colorbar directly.
+##
+## Additional property/value pairs are passed directly to the underlying axes
+## object.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## colorbar object.
+##
+## Implementation Note: A colorbar is created as an additional axes to the
+## current figure with the "tag" property set to "colorbar".  The created
+## axes object has the extra property "location" which controls the positioning
+## of the colorbar.
+## @seealso{colormap}
 ## @end deftypefn
 
 function h = colorbar (varargin)
-  ax = [];
-  loc = "eastoutside";
+
+  [hcb, varargin, nargin] = __plt_get_axis_arg__ ("colorbar", varargin{:});
+
+  if (hcb && ! strcmp (get (hcb, "tag"), "colorbar"))
+    ax = hcb;
+    hcb = [];
+  else
+    ax = [];
+  endif
+  loc = "";
   args = {};
   deleting = false;
 
   i = 1;
   while (i <= nargin)
-    arg = varargin {i++};
+    arg = varargin{i++};
     if (ischar (arg))
-      if (strcmpi (arg, "peer"))
-        if (i > nargin)
-          error ("colorbar: missing axes handle after \"peer\"");
-        else
-          ax = varargin{i++};
-          if (!isscalar (ax) || ! ishandle (ax)
-              || ! strcmp (get (ax, "type"), "axes"))
-            error ("colorbar: expecting an axes handle following \"peer\"");
+      switch (tolower (arg))
+        case "peer"
+          if (i > nargin)
+            error ('colorbar: missing axes handle after "peer"');
+          else
+            ax = varargin{i++};
+            if (! isscalar (ax) || ! ishandle (ax)
+                || ! strcmp (get (ax, "type"), "axes"))
+              error ('colorbar: expecting an axes handle following "peer"');
+            endif
           endif
-        endif
-      elseif (strcmpi (arg, "north") || strcmpi (arg, "south")
-              || strcmpi (arg, "east") || strcmpi (arg, "west")
-              || strcmpi (arg, "northoutside") || strcmpi (arg, "southoutside")
-              || strcmpi (arg, "eastoutside") || strcmpi (arg, "westoutside"))
-        loc = tolower (arg);
-      elseif (strcmpi (arg, "location") && i <= nargin)
-        loc = tolower (varargin{i++});
-      elseif (strcmpi (arg, "off") || strcmpi (arg, "none"))
-        deleting = true;
-      else
-        args{end+1} = arg;
-      endif
+        case {"north", "south", "east", "west",
+              "northoutside", "southoutside", "eastoutside", "westoutside"}
+          loc = tolower (arg);
+        case "location"
+          if (i > nargin)
+            error ('colorbar: missing value after "location"');
+          else
+            loc = tolower (varargin{i++});
+          endif
+        case {"delete", "hide", "off", "none"}
+          deleting = true;
+        otherwise
+          args{end+1} = arg;
+      endswitch
     else
       args{end+1} = arg;
     endif
   endwhile
 
+  ## Handle changes to existing colorbar
+  if (! isempty (hcb))
+    if (deleting)
+      delete (hcb);
+      if (nargout > 0)
+        h = hcb;
+      endif
+      return;
+    else
+      ## FIXME: No listener on location property so have to re-create
+      ##        colorbar whenever an option changes.
+      ##        re-instate this code if listener is developed.
+      # if (! isempty (loc))
+      #   set (hcb, "location", loc);
+      # endif
+      # if (! isempty (args))
+      #   set (hcb, args{:});
+      # endif
+      ax = get (get (hcb, "parent"), "currrentaxes");      
+    endif
+  endif
+    
+  if (isempty (loc))
+    loc = "eastoutside";
+  endif
   if (isempty (ax))
     ax = gca ();
   endif
@@ -107,14 +173,16 @@ function h = colorbar (varargin)
   end_unwind_protect
 
   if (! deleting)
-    ## FIXME - Matlab does not require the "position" property to be active.
-    ##         Is there a way to determine the plotbox position for the
-    ##         gnuplot graphics toolkit with the outerposition is active?
+    ## FIXME: Matlab does not require the "position" property to be active.
+    ##        Is there a way to determine the plotbox position for the
+    ##        gnuplot graphics toolkit with the outerposition is active?
     set (ax, "activepositionproperty", "position");
     obj = get (ax);
-    obj.__my_handle__ = ax;
+    obj.__cbar_hax__ = ax;
     position = obj.position;
-    clen = rows (get (get (ax, "parent"), "colormap"));
+    ## FIXME: Should this be ancestor to accommodate hggroups?
+    hpar = get (ax, "parent");  
+    clen = rows (get (hpar, "colormap"));
     cext = get (ax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
     cmin = cext(1) + cdiff;
@@ -124,10 +192,10 @@ function h = colorbar (varargin)
         __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
     set (ax, "position", pos);
 
-    cax = __go_axes__ (get (ax, "parent"), "tag", "colorbar",
-                       "handlevisibility", "on",
-                       "activepositionproperty", "position",
-                       "position", cpos);
+    cax = __go_axes__ (hpar, "tag", "colorbar",
+                             "handlevisibility", "on",
+                             "activepositionproperty", "position",
+                             "position", cpos);
     addproperty ("location", cax, "radio",
                  "eastoutside|east|westoutside|west|northoutside|north|southoutside|south",
                  loc);
@@ -137,38 +205,41 @@ function h = colorbar (varargin)
       hi = image (cax, [0,1], [cmin, cmax], [1 : clen]');
       if (mirror)
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-             "ylim", cext, "ylimmode", "manual",
-             "yaxislocation", "right", args{:});
+                  "ylim", cext, "ylimmode", "manual",
+                  "yaxislocation", "right", args{:});
       else
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-             "ylim", cext, "ylimmode", "manual",
-             "yaxislocation", "left", args{:});
+                  "ylim", cext, "ylimmode", "manual",
+                  "yaxislocation", "left", args{:});
       endif
     else
       hi = image (cax, [cmin, cmax], [0,1], [1 : clen]);
       if (mirror)
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-             "xlim", cext, "xlimmode", "manual",
-             "xaxislocation", "top", args{:});
+                  "xlim", cext, "xlimmode", "manual",
+                  "xaxislocation", "top", args{:});
       else
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-             "xlim", cext, "xlimmode", "manual",
-             "xaxislocation", "bottom", args{:});
+                  "xlim", cext, "xlimmode", "manual",
+                  "xaxislocation", "bottom", args{:});
       endif
     endif
 
-    ctext = text (0, 0, "", "tag", "colorbar","visible", "off",
-                  "handlevisibility", "off", "xliminclude", "off",
-                  "yliminclude", "off", "zliminclude", "off",
+    ## Dummy object placed in axis to delete colorbar when axis is deleted.
+    ctext = text (0, 0, "", "tag", "colorbar",
+                  "visible", "off", "handlevisibility", "off",
+                  "xliminclude", "off", "yliminclude", "off",
+                  "zliminclude", "off",
                   "deletefcn", {@deletecolorbar, cax, obj});
 
     set (cax, "deletefcn", {@resetaxis, ax, obj});
 
+    addlistener (hpar, "colormap", {@update_colorbar_cmap, hi, vertical, clen});
     addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical});
-    addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax, obj});
-    addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax, obj});
     addlistener (ax, "dataaspectratio", {@update_colorbar_axis, cax, obj});
     addlistener (ax, "dataaspectratiomode", {@update_colorbar_axis, cax, obj});
+    addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax, obj});
+    addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax, obj});
     addlistener (ax, "position", {@update_colorbar_axis, cax, obj});
 
   endif
@@ -176,42 +247,55 @@ function h = colorbar (varargin)
   if (nargout > 0)
     h = cax;
   endif
+
 endfunction
 
 function deletecolorbar (h, d, hc, orig_props)
   ## Don't delete the colorbar and reset the axis size if the
   ## parent figure is being deleted.
   if (ishandle (hc) && strcmp (get (hc, "type"), "axes")
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))
+      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
     if (strcmp (get (hc, "beingdeleted"), "off"))
       delete (hc);
     endif
     if (!isempty (ancestor (h, "axes"))
         && strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
-      set (ancestor (h, "axes"), "position", orig_props.position, ...
-                            "outerposition", orig_props.outerposition, ...
-                    "activepositionproperty", orig_props.activepositionproperty);
+      ax = ancestor (h, "axes");
+      units = get (ax, "units");
+      set (ax, "units", orig_props.units);
+      set (ancestor (h, "axes"), "position", orig_props.position,
+                            "outerposition", orig_props.outerposition,
+                   "activepositionproperty", orig_props.activepositionproperty);
+      set (ax, "units", units);
     endif
   endif
 endfunction
 
 function resetaxis (cax, d, ax, orig_props)
   if (ishandle (ax) && strcmp (get (ax, "type"), "axes"))
+    ## FIXME: Probably don't want to delete everyone's listeners on colormap.
+    dellistener (get (ax, "parent"), "colormap");
+    dellistener (ax, "clim");
+    dellistener (ax, "dataaspectratio");
+    dellistener (ax, "dataaspectratiomode");
+    dellistener (ax, "plotboxaspectratio");
+    dellistener (ax, "plotboxaspectratiomode");
     dellistener (ax, "position");
+
     units = get (ax, "units");
     set (ax, "units", orig_props.units);
-    set (ax, "position", orig_props.position, ...
-             "outerposition", orig_props.outerposition, ...
+    set (ax, "position", orig_props.position,
+             "outerposition", orig_props.outerposition,
              "activepositionproperty", orig_props.activepositionproperty);
     set (ax, "units", units);
   endif
 endfunction
 
-function update_colorbar_clim (h, d, hi, vert)
-  if (ishandle (h) && strcmp (get (h, "type"), "image")
-      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))
-    clen = rows (get (get (h, "parent"), "colormap"));
-    cext = get (h, "clim");
+function update_colorbar_clim (hax, d, hi, vert)
+  if (ishandle (hax) && strcmp (get (hax, "type"), "axes")
+      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
+    clen = rows (get (get (hax, "parent"), "colormap"));
+    cext = get (hax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
     cmin = cext(1) + cdiff;
     cmax = cext(2) - cdiff;
@@ -226,13 +310,32 @@ function update_colorbar_clim (h, d, hi, vert)
   endif
 endfunction
 
+function update_colorbar_cmap (hf, d, hi, vert, init_sz)
+  persistent sz = init_sz;
+
+  if (ishandle (hf) && strcmp (get (hf, "type"), "figure")
+      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
+    clen = rows (get (hf, "colormap"));
+    if (clen != sz)
+      if (vert)
+        set (hi, "cdata", [1:clen]');
+      else
+        set (hi, "cdata", [1:clen]);
+      endif
+      sz = clen;
+      ## Also update limits on axis or there will be white gaps
+      update_colorbar_clim (get (hi, "parent"), d, hi, vert);
+    endif
+  endif
+endfunction
+
 function update_colorbar_axis (h, d, cax, orig_props)
 
   if (ishandle (cax) && strcmp (get (cax, "type"), "axes")
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))
     loc = get (cax, "location");
     obj = get (h);
-    obj.__my_handle__ = h;
+    obj.__cbar_hax__ = h;
     obj.position = orig_props.position;
     obj.outerposition = orig_props.outerposition;
     [pos, cpos, vertical, mirror] =  ...
@@ -241,18 +344,18 @@ function update_colorbar_axis (h, d, cax, orig_props)
     if (vertical)
       if (mirror)
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-             "yaxislocation", "right", "position", cpos);
+                  "yaxislocation", "right", "position", cpos);
       else
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-             "yaxislocation", "left", "position", cpos);
+                  "yaxislocation", "left", "position", cpos);
       endif
     else
       if (mirror)
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-             "xaxislocation", "top", "position", cpos);
+                  "xaxislocation", "top", "position", cpos);
       else
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-             "xaxislocation", "bottom", "position", cpos);
+                  "xaxislocation", "bottom", "position", cpos);
       endif
     endif
 
@@ -265,8 +368,8 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
   pos = obj.position;
   sz = pos(3:4);
 
-  if (strcmpi (obj.plotboxaspectratiomode, "manual")
-      || strcmpi (obj.dataaspectratiomode, "manual"))
+  if (strcmp (obj.plotboxaspectratiomode, "manual")
+      || strcmp (obj.dataaspectratiomode, "manual"))
     if (isempty (strfind (cbox, "outside")))
       scale = 1.0;
     else
@@ -340,8 +443,8 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
 
   cpos = [origin, sz];
 
-  if (strcmpi (obj.plotboxaspectratiomode, "manual")
-      || strcmpi (obj.dataaspectratiomode, "manual"))
+  if (strcmp (obj.plotboxaspectratiomode, "manual")
+      || strcmp (obj.dataaspectratiomode, "manual"))
     obj.position = pos;
     actual_pos = __actual_axis_position__ (obj);
     if (strfind (cbox, "outside"))

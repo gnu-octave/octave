@@ -23,7 +23,11 @@
 ## @var{b} using the FFT.
 ##
 ## Given the optional third argument, @var{n}, @code{fftfilt} uses the
-## overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
+## overlap-add method to filter @var{x} with @var{b} using an @var{n}-point
+## FFT.  The FFT size must be an even power of 2 and must be greater than
+## or equal to the length of @var{b}.  If the specified @var{n} does not
+## meet these criteria, it is automatically adjusted to the nearest value
+## that does.
 ##
 ## If @var{x} is a matrix, filter each column of the matrix.
 ## @seealso{filter, filter2}

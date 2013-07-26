@@ -557,7 +557,7 @@ main_window::set_window_layout (QSettings *settings)
           if (floating)
             widget->make_window ();
           else if (! widget->parent ())  // should not be floating but is
-            widget->setParent (this);    // reparent
+            widget->make_widget (false); // no docking, just reparent
 
           // restore geometry
           QVariant val = settings->value (name);
@@ -569,7 +569,10 @@ main_window::set_window_layout (QSettings *settings)
           if (floating && visible)              // floating and visible
             float_and_visible.append (widget);  // not show before main win
           else
-            widget->setVisible (visible);       // not floating -> show
+            {
+              widget->make_widget ();
+              widget->setVisible (visible);       // not floating -> show
+            }
         }
     }
 

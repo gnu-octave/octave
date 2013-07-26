@@ -26,8 +26,8 @@
 ##
 ## One-dimensional interpolation.  Interpolates to determine the value of
 ## @var{yi} at the points, @var{xi}.  If not specified, @var{x} is taken
-## to be the indices of @var{y}.  If @var{y} is an array, treat the columns
-## of @var{y} separately.
+## to be the indices of @var{y}.  If @var{y} is a matrix or an N-dimensional
+## array, the interpolation is performed on each column of @var{y}.
 ##
 ## Method is one of:
 ##

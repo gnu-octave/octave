@@ -21,9 +21,10 @@
 ## One-dimensional linear interpolation without error checking.
 ## Interpolates @var{y}, defined at the points @var{x}, at the points
 ## @var{xi}.  The sample points @var{x} must be a strictly monotonically
-## increasing column vector.  If @var{y} is an array, treat the columns
-## of @var{y} separately.  If @var{y} is a vector, it must be a column
-## vector of the same length as @var{x}.
+## increasing column vector.  If @var{y} is a matrix or an N-dimensional
+## array, the interpolation is performed on each column of @var{y}.  If
+## @var{y} is a vector, it must be a column vector of the same length as
+## @var{x}.
 ##
 ## Values of @var{xi} beyond the endpoints of the interpolation result
 ## in NA being returned.

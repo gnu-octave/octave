@@ -19,11 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
 ## @deftypefnx {Function File} {} subplot (@var{rcn})
-## @deftypefnx {Function File} {@var{ax}} = subplot (@var{rcn}, ...)
+## @deftypefnx {Function File} {@var{hax} =} subplot (@dots{})
 ## Set up a plot grid with @var{rows} by @var{cols} subwindows and plot
 ## in location given by @var{index}.
 ##
-## If @var{ax} is provided, subplot returns the axis handle for the subplot.
+## If @var{hax} is provided, subplot returns the axis handle for the subplot.
 ## This is usuful for modifying the properties of a subplot.
 ##
 ## If only one argument is supplied, then it must be a three digit value

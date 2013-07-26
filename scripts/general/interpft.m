@@ -68,7 +68,7 @@ function z = interpft (x, n, dim)
   x = permute (x, perm);
   m = rows (x);
 
-  inc = max (1, fix (m/n));
+  inc = ceil (m/n);
   y = fft (x) / m;
   k = floor (m / 2);
   sz = size (x);

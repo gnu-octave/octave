@@ -149,7 +149,11 @@ function yi = interp1 (x, y, varargin)
   if (isempty (xi) && firstnumeric && ! ispp)
     xi = y;
     y = x;
-    x = 1:numel (y);
+    if (isvector (y))
+      x = 1:numel (y);
+    else
+      x = 1:rows (y);
+    endif
   endif
 
   ## reshape matrices for convenience

@@ -79,8 +79,8 @@ Note that this is only meant to be an example of calling user-supplied
 functions and should not be taken too seriously.  In addition to using a
 more robust algorithm, any serious code would check the number and type
 of all the arguments, ensure that the supplied function really was a
-function, etc.  @xref{Predicates for Numeric Objects}, for example,
-for a list of predicates for numeric objects, and see @ref{Status of
+function, etc.  @xref{Predicates for Numeric Objects},
+for a list of predicates for numeric objects, and @pxref{Status of
 Variables}, for a description of the @code{exist} function.
 
 @DOCSTRING(feval)

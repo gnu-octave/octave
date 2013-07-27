@@ -517,7 +517,7 @@ If you encounter errors while compiling Octave, first check the list of
 known problems below to see if there is a workaround or solution for
 your problem.  If not,
 @ifclear INSTALLONLY
-see @ref{Trouble},
+@pxref{Trouble},
 @end ifclear
 @ifset INSTALLONLY
 see the file BUGS

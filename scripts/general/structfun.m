@@ -68,7 +68,7 @@
 ## elements "identifier", "message" and "index", giving respectively the error
 ## identifier, the error message, and the index into the input arguments
 ## of the element that caused the error.  For an example on how to use
-## an error handler, @pxref{docXcellfun, @code{cellfun}}.
+## an error handler, @pxref{XREFcellfun,,cellfun}.
 ##
 ## @seealso{cellfun, arrayfun, spfun}
 ## @end deftypefn

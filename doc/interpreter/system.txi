@@ -121,7 +121,7 @@ useful.
 
 @DOCSTRING(is_leap_year)
 
-@anchor{docXtoc}
+@anchor{XREFtoc}
 @DOCSTRING(tic)
 
 @DOCSTRING(pause)
@@ -177,7 +177,7 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(umask)
 
-@anchor{docXlstat}
+@anchor{XREFlstat}
 @DOCSTRING(stat)
 
 @DOCSTRING(S_ISBLK)

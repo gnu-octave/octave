@@ -42,7 +42,7 @@
 ## Currently, @code{fzero}
 ## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
 ## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}.
-## For a description of these options, see @ref{docXoptimset,,optimset}.
+## For a description of these options, see @ref{XREFoptimset,,optimset}.
 ##
 ## On exit, the function returns @var{x}, the approximate zero point
 ## and @var{fval}, the function value thereof.

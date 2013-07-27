@@ -628,10 +628,10 @@ parser::find_ref (const QString &ref_name)
       QString k = it.key ();
       node_position p = it.value ();
 
-      if (k == "docX" + ref_name)
+      if (k == "XREF" + ref_name)
         {
           // found ref, so return its name
-          text = "docX" + ref_name;
+          text = "XREF" + ref_name;
         }
     }
   return text;

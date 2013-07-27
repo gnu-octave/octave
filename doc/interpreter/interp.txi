@@ -29,7 +29,7 @@
 
 Octave supports several methods for one-dimensional interpolation, most
 of which are described in this section.  @ref{Polynomial Interpolation}
-and @ref{Interpolation on Scattered Data} describe further methods.
+and @ref{Interpolation on Scattered Data} describe additional methods.
 
 @DOCSTRING(interp1)
 
@@ -128,9 +128,8 @@ functions, as can be seen in @ref{fig:interpft}.
 @end float
 @end ifnotinfo
 
-In additional the support function @code{spline} and @code{lookup} that
+In addition, the support functions @code{spline} and @code{lookup} that
 underlie the @code{interp1} function can be called directly.
-@ref{Finding Elements and Checking Conditions}
 
 @DOCSTRING(spline)
 

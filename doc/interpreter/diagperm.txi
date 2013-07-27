@@ -436,8 +436,7 @@ This is one way to normalize columns of a matrix @var{X} to unit norm:
 @end example
 
 @noindent
-The same can also be accomplished with broadcasting
-(@pxref{Broadcasting}):
+The same can also be accomplished with broadcasting (@pxref{Broadcasting}):
 
 @example
 @group

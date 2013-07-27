@@ -134,7 +134,7 @@
 ## This value determines whether the editor should be started in async mode
 ## (editor is started in the background and Octave continues) or sync mode
 ## (Octave waits until the editor exits).  Set it to "sync" to start the editor
-## in sync mode.  The default is "async" (@pxref{docXsystem,,system}).
+## in sync mode.  The default is "async" (@pxref{XREFsystem,,system}).
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to

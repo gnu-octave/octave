@@ -26,7 +26,7 @@
 ## starting interval.  @var{options} is a structure specifying additional
 ## options.  Currently, @code{fminbnd} recognizes these options:
 ## "FunValCheck", "OutputFcn", "TolX", "MaxIter", "MaxFunEvals".  For a
-## description of these options, see @ref{docXoptimset,,optimset}.
+## description of these options, see @ref{XREFoptimset,,optimset}.
 ##
 ## On exit, the function returns @var{x}, the approximate minimum point
 ## and @var{fval}, the function value thereof.

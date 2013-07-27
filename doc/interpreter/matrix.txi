@@ -124,7 +124,7 @@ its elements may have, consult @ref{Status of Variables}.
 
 @DOCSTRING(nth_element)
 
-@anchor{docXtriu}
+@anchor{XREFtriu}
 @DOCSTRING(tril)
 
 @DOCSTRING(vec)

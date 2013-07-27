@@ -325,7 +325,7 @@ values distinct names.
 
 It is possible to use the @code{nthargout} function to obtain only some
 of the return values or several at once in a cell array.
-@ref{Cell Array Objects}
+@xref{Cell Array Objects}.
 
 @DOCSTRING(nthargout)
 
@@ -402,7 +402,7 @@ For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
 
 @DOCSTRING(nargoutchk)
 
-@anchor{docXvarargin} @anchor{docXvarargout}
+@anchor{XREFvarargin} @anchor{XREFvarargout}
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
@@ -1150,7 +1150,7 @@ An overloaded function as defined by @code{dispatch}.
 A function that has been defined on the command-line.
 
 @item Autoload function
-A function that is marked as autoloaded with @xref{docXautoload}.
+A function that is marked as autoloaded with @xref{XREFautoload,,autoload}.
 
 @item A Function on the Path
 A function that can be found on the users load-path.  There can also be

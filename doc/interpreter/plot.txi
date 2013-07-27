@@ -34,8 +34,8 @@
 Earlier versions of Octave provided plotting through the use of
 gnuplot.  This capability is still available.  But, a newer plotting
 capability is provided by access to OpenGL@.  Which plotting system
-is used is controlled by the @code{graphics_toolkit} function.  (See
-@ref{Graphics Toolkits}.)
+is used is controlled by the @code{graphics_toolkit} function.
+@xref{Graphics Toolkits}.
 
 The function call @code{graphics_toolkit ("fltk")} selects the
 FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
@@ -252,8 +252,8 @@ function.
 The @code{xlim}, @code{ylim}, and @code{zlim} functions may be used to
 get or set individual axis limits.  Each has the same form.
 
-@anchor{docXylim}
-@anchor{docXzlim}
+@anchor{XREFylim}
+@anchor{XREFzlim}
 @DOCSTRING(xlim)
 
 @node Two-dimensional Function Plotting
@@ -404,7 +404,7 @@ three-dimensional plots.
 
 For three-dimensional plots the aspect ratio can be set for data with
 @code{daspect} and for the plot box with @code{pbaspect}.  
-See @ref{Axis Configuration} for controlling the x-, y-, and z-limits for
+@xref{Axis Configuration}, for controlling the x-, y-, and z-limits for
 plotting.
 
 @DOCSTRING(daspect)
@@ -463,8 +463,8 @@ border lines are on.
 
 See @ref{Text Properties} for the properties that you can set.
 
-@anchor{docXylabel}
-@anchor{docXzlabel}
+@anchor{XREFylabel}
+@anchor{XREFzlabel}
 @DOCSTRING(xlabel)
 
 @DOCSTRING(clabel)
@@ -895,7 +895,7 @@ at the Octave prompt should display a three-dimensional plot.
 @node Introduction to Graphics Structures
 @subsection Introduction to Graphics Structures
 @cindex introduction to graphics structures
-@anchor{docXgraphics structures}
+@anchor{XREFgraphics structures}
 
 The graphics functions use pointers, which are of class graphics_handle, in
 order to address the data structures which control graphical displays.  A
@@ -915,7 +915,7 @@ functions @code{area}, @code{bar}, @code{barh}, @code{contour},
 @code{contourf}, @code{contour3}, @code{surf}, @code{mesh}, @code{surfc},
 @code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter},
 @code{scatter3}, @code{stair}, @code{stem}, @code{stem3} each return a handle
-as documented in @ref{docXdatasources,, Data Sources}.
+as documented in @ref{XREFdatasources,,Data Sources}.
 
 
 The graphics objects are arranged in a hierarchy:
@@ -932,7 +932,7 @@ The graphics objects are arranged in a hierarchy:
 @code{surface}, and @code{image} objects.
 
 Graphics handles may be distinguished from function handles
-(@ref{Function Handles}) by means of the function @code{ishandle}.
+(@pxref{Function Handles}) by means of the function @code{ishandle}.
 @code{ishandle} returns true if its argument is a handle of a graphics object. 
 In addition, the figure object may be tested using @code{isfigure}. 
 @code{isfigure} returns true only if its argument is a handle of a figure.  The
@@ -998,7 +998,7 @@ The root figure has index 0.  Its properties may be displayed by:
 @code{get (0, "")}.
 
 The uses of @code{get} and @code{set} are further explained in
-@ref{docXget,,get}, @ref{docXset,,set}.
+@ref{XREFget,,get}, @ref{XREFset,,set}.
 
 @DOCSTRING(isprop)
 
@@ -1006,8 +1006,8 @@ The uses of @code{get} and @code{set} are further explained in
 @subsection Graphics Objects
 @cindex graphics objects
 
-The hierarchy of graphics objects was explained above.  (See 
-@ref{Introduction to Graphics Structures}.  Here the
+The hierarchy of graphics objects was explained above.
+@xref{Introduction to Graphics Structures}.  Here the
 specific objects are described, and the properties contained in
 these objects are discussed.  Keep in mind that
 graphics objects are always referenced by @dfn{handle}.
@@ -1859,7 +1859,7 @@ The text of the legend entry corresponding to this line.
 @item ldata
 The lower errorbar in the y direction to be plotted.
 
-@item linestyle
+@item  linestyle
 @itemx linewidth
 @xref{Line Styles}.
 
@@ -2839,7 +2839,7 @@ corresponding hggroup elements.
 @node Data Sources in Object Groups
 @subsubsection Data Sources in Object Groups
 @cindex data sources in object groups
-@anchor{docXdatasources}
+@anchor{XREFdatasources}
 All of the group objects contain data source parameters.  There are
 string parameters that contain an expression that is evaluated to update
 the relevant data property of the group when the @code{refreshdata}
@@ -2847,7 +2847,7 @@ function is called.
 
 @DOCSTRING(refreshdata)
 
-@anchor{docXlinkdata}
+@anchor{XREFlinkdata}
 @c add the description of the linkdata function here when it is written
 @c remove the explicit anchor when you add the corresponding @DOCSTRING
 @c command

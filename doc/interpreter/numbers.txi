@@ -29,7 +29,7 @@ that can be an integer, a decimal fraction, a number in scientific
 (exponential) notation, or a complex number.  Note that by default numeric
 constants are represented within Octave in double-precision floating
 point format (complex constants are stored as pairs of double-precision
-floating point values).  It is however possible to represent real
+floating point values).  It is, however, possible to represent real
 integers as described in @ref{Integer Data Types}.  Here are some
 examples of real-valued numeric constants, which all have the same
 value:
@@ -359,7 +359,7 @@ empty matrix symbol, @samp{[]}.  The built-in variable
 
 Empty matrices may also be used in assignment statements as a convenient
 way to delete rows or columns of matrices.
-@xref{Assignment Ops, ,Assignment Expressions}.
+@xref{Assignment Ops,,Assignment Expressions}.
 
 When Octave parses a matrix expression, it examines the elements of the
 list to determine whether they are all constants.  If they are, it
@@ -614,7 +614,7 @@ As the maximum value that can be represented by a number is important
 for bit manipulation, particularly when forming masks, Octave supplies
 the function @code{bitmax}.
 
-@anchor{docXflintmax}
+@anchor{XREFflintmax}
 @DOCSTRING(bitmax)
 
 This is the double precision version of the function @code{intmax},
@@ -840,4 +840,4 @@ variable.
 
 If instead of knowing properties of variables, you wish to know which
 variables are defined and to gather other information about the
-workspace itself, see @ref{Status of Variables}.
+workspace itself, @pxref{Status of Variables}.

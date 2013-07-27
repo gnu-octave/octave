@@ -154,7 +154,7 @@ commands in the system or user startup files that use the
 @cindex @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
-to run Octave within Emacs, see @ref{Emacs Octave Support}.
+to run Octave within Emacs, @pxref{Emacs Octave Support}.
 
 @item --line-editing
 @cindex @code{--line-editing}
@@ -272,8 +272,8 @@ Octave:load-file-in-path
 @noindent
 Note that this does not enable the @code{Octave:matlab-incompatible}
 warning, which you might want if you want to be told about writing code
-that works in Octave but not @sc{matlab} (@pxref{docXwarning},
-@pxref{docXwarning_ids}).
+that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
+@ref{XREFwarning_ids,,warning_ids}).
 
 @item  --verbose
 @itemx -V

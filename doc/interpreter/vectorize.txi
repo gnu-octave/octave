@@ -457,7 +457,7 @@ end_try_catch
 that may have relied on matrices of different size producing an error.
 Due to how broadcasting changes semantics with older versions of Octave,
 by default Octave warns if a broadcasting operation is performed.  To
-disable this warning, refer to its ID (@pxref{docXwarning_ids}):
+disable this warning, refer to its ID (@pxref{XREFwarning_ids,,warning_ids}):
 
 @example
 warning ("off", "Octave:broadcast");

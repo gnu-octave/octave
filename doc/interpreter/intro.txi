@@ -29,7 +29,7 @@ batch-oriented language for data processing.
 GNU Octave is freely redistributable software.  You may redistribute 
 it and/or modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation.  The GPL is included in 
-this manual in @ref{Copying}.
+this manual, @pxref{Copying}.
 
 This manual provides comprehensive documentation on how to install, 
 run, use, and extend GNU Octave.  Additional chapters describe how 
@@ -374,7 +374,7 @@ the cursor backward on the line, @kbd{C-f} will move the cursor forward
 on the line, etc.
 
 A complete description of the command line editing capability is given
-in this manual in @ref{Command Line Editing}.
+in this manual, @pxref{Command Line Editing}.
 
 @subsection Help and Documentation
 
@@ -410,7 +410,7 @@ The part of Octave's help facility that allows you to read the complete
 text of the printed manual from within Octave normally uses a separate
 program called Info.  When you invoke Info you will be put into a menu
 driven program that contains the entire Octave manual.  Help for using
-Info is provided in this manual in @ref{Getting Help}.
+Info is provided in this manual, @pxref{Getting Help}.
 
 @node Conventions
 @section Conventions

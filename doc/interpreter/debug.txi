@@ -43,7 +43,7 @@ debug mode.
 @section Entering Debug Mode
 
 There are two basic means of interrupting the execution of an Octave
-script.  These are breakpoints @pxref{Breakpoints}, discussed in the next
+script.  These are breakpoints (@pxref{Breakpoints}), discussed in the next
 section and interruption based on some condition.
 
 Octave supports three means to stop execution based on the values set in
@@ -241,8 +241,8 @@ and the profiler also records that it is recursive.
 @node Profiler Example
 @section Profiler Example
 
-Below, we will give a short example of a profiler session.  See also
-@ref{Profiling} for the documentation of the profiler functions in
+Below, we will give a short example of a profiler session.
+@xref{Profiling}, for the documentation of the profiler functions in
 detail.  Consider the code:
 
 @example

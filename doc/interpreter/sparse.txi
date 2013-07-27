@@ -307,9 +307,8 @@ number of memory allocations.
 
 The above problem of memory reallocation can be avoided in
 oct-files.  However, the construction of a sparse matrix from an oct-file
-is more complex than can be discussed here, and
-you are referred to chapter @ref{External Code Interface}, to have
-a full description of the techniques involved.
+is more complex than can be discussed here.  @xref{External Code Interface},
+for a a full description of the techniques involved.
 
 @node Information
 @subsection Finding out Information about Sparse Matrices
@@ -342,7 +341,7 @@ mean and the variance of each column.
 
 When solving linear equations involving sparse matrices Octave
 determines the means to solve the equation based on the type of the
-matrix as discussed in @ref{Sparse Linear Algebra}.  Octave probes the
+matrix (@pxref{Sparse Linear Algebra}).  Octave probes the
 matrix type when the div (/) or ldiv (\) operator is first used with
 the matrix and then caches the type.  However the @dfn{matrix_type}
 function can be used to determine the type of the sparse matrix prior

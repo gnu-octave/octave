@@ -1072,7 +1072,7 @@ DEFUN (regexpi, args, nargout,
 \n\
 Case insensitive regular expression string matching.  Search for @var{pat} in\n\
 @var{str} and return the positions and substrings of any matches, or empty\n\
-values if there are none.  @xref{docXregexp,,regexp}, for details on the\n\
+values if there are none.  @xref{XREFregexp,,regexp}, for details on the\n\
 syntax of the search pattern.\n\
 @seealso{regexp}\n\
 @end deftypefn")
@@ -1284,7 +1284,7 @@ DEFUN (regexprep, args, ,
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
 \n\
 The pattern is a regular expression as documented for @code{regexp}.\n\
-@xref{docXregexp,,regexp}.\n\
+@xref{XREFregexp,,regexp}.\n\
 \n\
 The replacement string may contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  For example,\n\

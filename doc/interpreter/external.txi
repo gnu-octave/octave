@@ -1201,7 +1201,7 @@ The warning for division by zero (and in fact all warnings) are disabled in the
 
 The documentation of an oct-file is the fourth string parameter of the
 @w{@code{DEFUN_DLD}} macro.  This string can be formatted in the same manner
-as the help strings for user functions (@ref{Documentation Tips}),
+as the help strings for user functions (@pxref{Documentation Tips}),
 however there are some issue that are particular to the formatting of
 help strings within oct-files.
 
@@ -1231,7 +1231,7 @@ continuation character.  Note that the final @code{\} must be the last
 character on the line.
 
 Octave also includes the ability to embed test and demonstration
-code for a function within the code itself (@ref{Test and Demo Functions}).
+code for a function within the code itself (@pxref{Test and Demo Functions}).
 This can be used from within oct-files (or in fact any file) with
 certain provisos.  First, the test and demo functions of Octave look
 for @code{%!} as the first two characters of a line to identify test

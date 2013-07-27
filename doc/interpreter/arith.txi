@@ -312,7 +312,7 @@ cos (pi/2)
 
 @DOCSTRING(legendre)
 
-@anchor{docXgammaln}
+@anchor{XREFgammaln}
 @DOCSTRING(lgamma)
 
 @node Rational Approximations

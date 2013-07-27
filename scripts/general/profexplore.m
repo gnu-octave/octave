@@ -17,13 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} profexplore (@var{data})
+## @deftypefn {Function File} {} profexplore ()
+## @deftypefnx {Function File} {} profexplore (@var{data})
 ## Interactively explore hierarchical profiler output.
 ##
 ## Assuming @var{data} is the structure with profile data returned by
 ## @code{profile ("info")}, this command opens an interactive prompt
 ## that can be used to explore the call-tree.  Type @kbd{help} to get a list
-## of possible commands.
+## of possible commands. If @var{data} is omitted, @code{profile ("info")}
+## is called and used in its place.
 ## @seealso{profile, profshow}
 ## @end deftypefn
 
@@ -32,7 +34,9 @@
 
 function profexplore (data)
 
-  if (nargin != 1)
+  if (nargin == 0)
+    data = profile ("info");
+  elseif (nargin != 1)
     print_usage ();
   endif
 
@@ -78,12 +82,13 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
     cmd = input ("profexplore> ", "s");
     option = fix (str2double (cmd));
 
-    if (strcmp (cmd, "exit"))
+    if (strcmp (cmd, "exit") || strcmp (cmd, "quit"))
       rv = 0;
       return;
     elseif (strcmp (cmd, "help"))
       printf ("\nCommands for profile explorer:\n\n");
       printf ("exit   Return to Octave prompt.\n");
+      printf ("quit   Return to Octave prompt.\n");
       printf ("help   Display this help message.\n");
       printf ("up [N] Go up N levels, where N is an integer.  Default is 1.\n");
       printf ("N      Go down a level into option N.\n");

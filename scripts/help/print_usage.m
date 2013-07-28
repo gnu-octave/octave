@@ -31,22 +31,22 @@ function print_usage (name)
   if (nargin == 0)
     ## Determine the name of the calling function
     if (numel (x) > 1)
-      name = x (2).name;
+      name = x(2).name;
     else
       error ("Octave:invalid-context", "print_usage: invalid function\n");
     endif
-    fullpath = evalin ("caller", "mfilename (""fullpath"")");
+    fullpath = evalin ("caller", 'mfilename ("fullpath")');
     if (strcmp (fullpath(end-length(name)+1:end), name))
-      fullname = [fullpath, ".m"];
+      fullname = [fullpath ".m"];
     endif
-  elseif (!ischar (name))
+  elseif (! ischar (name))
     error ("Octave:invalid-input-arg",
-                                "print_usage: input argument must be a string");
+           "print_usage: input argument must be a string");
   else
     fullname = name;
   endif
 
-  ## Determine if we're called from top level.
+  ## Determine if we were called from top level.
   at_toplev = length (x) < 2 || (length (x) == 2 && strcmp (x(2).name, name));
 
   ## Do the actual work
@@ -74,7 +74,8 @@ function print_usage (name)
   endif
 
   if (at_toplev)
-    error ("Octave:invalid-fun-call", "Invalid call to %s.  Correct usage is:\n\n%s\n%s",
+    error ("Octave:invalid-fun-call",
+           "Invalid call to %s.  Correct usage is:\n\n%s\n%s",
            name, usage_string, __additional_help_message__ ());
   else
     msg = sprintf ("Invalid call to %s.  Correct usage is:\n\n%s",
@@ -102,25 +103,23 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
 
-  ## Find, and keep, lines that start with @def or @end def. This should include things
-  ## such as @deftypefn, @deftypefnx, @defvar, etc. and their corresponding @end's
+  ## Find, and keep, lines that start with @def or @end def. This should
+  ## include things such as @deftypefn, @deftypefnx, @defvar, etc. and their
+  ## corresponding @end's.
   def_idx = strfind (help_text, "@def");
-  if (!isempty (def_idx))
-    buffer = "";
+  if (! isempty (def_idx))
+    endf_idx = strfind (help_text, "@end def");
+    def_idx = sort ([def_idx, endf_idx]);
     endl_idx = find (help_text == "\n");
+    buffer = "";
     for k = 1:length (def_idx)
-      endl = endl_idx (find (endl_idx > def_idx (k), 1));
+      endl = endl_idx (find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
-        buffer = strcat (buffer, help_text (def_idx (k):end), "\n");
+        buffer = strcat (buffer, help_text (def_idx(k):end), "\n");
       else
-        buffer = strcat (buffer, help_text (def_idx (k):endl));
+        buffer = strcat (buffer, help_text (def_idx(k):endl));
       endif
     endfor
-
-    end_def_idx = strfind (help_text, "@end def");
-    if (!isempty (end_def_idx))
-      buffer = strcat (buffer, help_text (end_def_idx:end));
-    endif
   else
     [retval, status] = get_usage_plain_text (help_text, max_len);
   endif

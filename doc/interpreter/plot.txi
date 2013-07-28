@@ -983,7 +983,7 @@ closerequestfcn       paperorientation     visible
 color                 paperposition        windowbuttondownfcn
 colormap              paperpositionmode    windowbuttonmotionfcn
 createfcn             papersize            windowbuttonupfcn
-currentaxes           papertype            windowbuttonwheelfcn
+currentaxes           papertype            windowscrollwheelfcn
 currentcharacter      paperunits           windowstyle
 currentobject         parent               wvisual
 currentpoint          pointer              wvisualmode
@@ -1473,7 +1473,7 @@ the mouse button is pressed, dragged, and released respectively.  When
 these callback functions are called, the @code{"currentpoint"} property
 holds the current coordinates of the cursor.
 
-@item windowbuttonwheelfcn
+@item windowscrollwheelfcn
 
 @item windowstyle
 

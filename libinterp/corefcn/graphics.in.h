@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "txt-eng-ft.h"
 
-// FIXME -- maybe this should be a configure option?
+// FIXME: maybe this should be a configure option?
 // Matlab defaults to "Helvetica", but that causes problems for many
 // gnuplot users.
 #if !defined (OCTAVE_DEFAULT_FONTNAME)
@@ -1483,7 +1483,7 @@ protected:
 
       if (validate (tmp))
         {
-          // FIXME -- should we check for actual data change?
+          // FIXME: should we check for actual data change?
           if (! is_equal (tmp))
             {
               data = tmp;
@@ -2361,7 +2361,7 @@ public:
 
 private:
 
-  // FIXME -- default toolkit should be configurable.
+  // FIXME: default toolkit should be configurable.
 
   gtk_manager (void)
     : dtk ("gnuplot"), available_toolkits (), loaded_toolkits () { }
@@ -2628,22 +2628,22 @@ public:
 
   static property_list::pval_map_type factory_defaults (void);
 
-  // FIXME -- these functions should be generated automatically by the
-  // genprops.awk script.
+  // FIXME: these functions should be generated automatically by the
+  //        genprops.awk script.
   //
   // EMIT_BASE_PROPERTIES_GET_FUNCTIONS
 
+  virtual octave_value get_alim (void) const { return octave_value (); }
+  virtual octave_value get_clim (void) const { return octave_value (); }
   virtual octave_value get_xlim (void) const { return octave_value (); }
   virtual octave_value get_ylim (void) const { return octave_value (); }
   virtual octave_value get_zlim (void) const { return octave_value (); }
-  virtual octave_value get_clim (void) const { return octave_value (); }
-  virtual octave_value get_alim (void) const { return octave_value (); }
 
+  virtual bool is_aliminclude (void) const { return false; }
+  virtual bool is_climinclude (void) const { return false; }
   virtual bool is_xliminclude (void) const { return false; }
   virtual bool is_yliminclude (void) const { return false; }
   virtual bool is_zliminclude (void) const { return false; }
-  virtual bool is_climinclude (void) const { return false; }
-  virtual bool is_aliminclude (void) const { return false; }
 
   bool is_handle_visible (void) const;
 
@@ -2679,13 +2679,12 @@ protected:
     bool_property selectionhighlight , "on"
     string_property tag s , ""
     string_property type frs , ty
+    handle_property uicontextmenu , graphics_handle ()
     any_property userdata , Matrix ()
     bool_property visible , "on"
-    // additional (octave-specific) properties
+    // additional (Octave-specific) properties
     bool_property __modified__ s , "on"
     graphics_handle __myhandle__ fhrs , mh
-    // FIXME -- should this really be here?
-    handle_property uicontextmenu , graphics_handle ()
   END_PROPERTIES
 
 protected:
@@ -3110,10 +3109,16 @@ public:
 
   operator bool (void) const { return rep->valid_object (); }
 
-  // FIXME -- these functions should be generated automatically by the
-  // genprops.awk script.
+  // FIXME: these functions should be generated automatically by the
+  //        genprops.awk script.
   //
   // EMIT_GRAPHICS_OBJECT_GET_FUNCTIONS
+
+  octave_value get_alim (void) const
+  { return get_properties ().get_alim (); }
+
+  octave_value get_clim (void) const
+  { return get_properties ().get_clim (); }
 
   octave_value get_xlim (void) const
   { return get_properties ().get_xlim (); }
@@ -3124,11 +3129,11 @@ public:
   octave_value get_zlim (void) const
   { return get_properties ().get_zlim (); }
 
-  octave_value get_clim (void) const
-  { return get_properties ().get_clim (); }
+  bool is_aliminclude (void) const
+  { return get_properties ().is_aliminclude (); }
 
-  octave_value get_alim (void) const
-  { return get_properties ().get_alim (); }
+  bool is_climinclude (void) const
+  { return get_properties ().is_climinclude (); }
 
   bool is_xliminclude (void) const
   { return get_properties ().is_xliminclude (); }
@@ -3138,12 +3143,6 @@ public:
 
   bool is_zliminclude (void) const
   { return get_properties ().is_zliminclude (); }
-
-  bool is_climinclude (void) const
-  { return get_properties ().is_climinclude (); }
-
-  bool is_aliminclude (void) const
-  { return get_properties ().is_aliminclude (); }
 
   bool is_handle_visible (void) const
   { return get_properties ().is_handle_visible (); }
@@ -3187,14 +3186,22 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    // FIXME -- it seems strange to me that the diary, diaryfile,
-    // echo, format, formatspacing, language, and recursionlimit
-    // properties are here.  WTF do they have to do with graphics?
+    // FIXME: it seems strange to me that the diary, diaryfile,
+    // echo, errormessage, format, formatspacing, language, and
+    // recursionlimit properties are here.
+    // WTF do they have to do with graphics?
     // Also note that these properties (and the monitorpositions,
     // pointerlocation, and pointerwindow properties) are not yet used
     // by Octave, so setting them will have no effect, and changes
     // made elswhere (say, the diary or format functions) will not
     // cause these properties to be updated.
+    // ANSWER: Matlab defines these properties and uses them in
+    // the same way that Octave uses an internal static variable to
+    // keep track of state.  set (0, "echo", "on") is equivalent
+    // to Octave's echo ("on").  Maybe someday we can connect callbacks
+    // that actually call Octave's own functions for this.
+
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (root_figure, root)
       handle_property callbackobject Sr , graphics_handle ()
@@ -3203,12 +3210,14 @@ public:
       bool_property diary , "off"
       string_property diaryfile , "diary"
       bool_property echo , "off"
-      radio_property format , "+|bank|bit|debug|hex|long|longe|longeng|longg|native-bit|native-hex|rational|{short}|shorte|shorteng|shortg"
-      radio_property formatspacing , "{loose}|compact"
+      string_property errormessage , ""
+      string_property fixedwidthfontname , "Courier"
+      radio_property format , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rational|{short}|shorte|shorteng|shortg"
+      radio_property formatspacing , "compact|{loose}"
       string_property language , "ascii"
       array_property monitorpositions , Matrix (1, 4, 0)
       array_property pointerlocation , Matrix (1, 2, 0)
-      double_property pointerwindow , 0.0
+      double_property pointerwindow r , 0.0
       double_property recursionlimit , 256.0
       double_property screendepth r , default_screendepth ()
       double_property screenpixelsperinch r , default_screenpixelsperinch ()
@@ -3393,17 +3402,15 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (figure)
-      any_property __plot_stream__ h , Matrix ()
-      bool_property __enhanced__ h , "on"
-      radio_property nextplot , "new|{add}|replacechildren|replace"
-      callback_property closerequestfcn , "closereq"
-      handle_property currentaxes S , graphics_handle ()
-      array_property colormap , jet_colormap ()
-      radio_property paperorientation U , "{portrait}|landscape|rotated"
-      color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
       array_property alphamap , Matrix (64, 1, 1)
+      callback_property buttondownfcn , Matrix ()
+      callback_property closerequestfcn , "closereq"
+      color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
+      array_property colormap , jet_colormap ()
+      handle_property currentaxes S , graphics_handle ()
       string_property currentcharacter r , ""
       handle_property currentobject r , graphics_handle ()
       array_property currentpoint r , Matrix (2, 1, 0)
@@ -3417,13 +3424,15 @@ public:
       radio_property menubar , "none|{figure}"
       double_property mincolormap , 64
       string_property name , ""
+      radio_property nextplot , "new|{add}|replacechildren|replace"
       bool_property numbertitle , "on"
       array_property outerposition s , Matrix (1, 4, -1.0)
-      radio_property paperunits Su , "{inches}|centimeters|normalized|points"
+      radio_property paperorientation U , "{portrait}|landscape|rotated"
       array_property paperposition , default_figure_paperposition ()
       radio_property paperpositionmode , "auto|{manual}"
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
+      radio_property paperunits Su , "{inches}|centimeters|normalized|points"
       radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 0)
       array_property pointershapehotspot , Matrix (1, 2, 0)
@@ -3438,16 +3447,20 @@ public:
       callback_property windowbuttondownfcn , Matrix ()
       callback_property windowbuttonmotionfcn , Matrix ()
       callback_property windowbuttonupfcn , Matrix ()
-      callback_property windowbuttonwheelfcn , Matrix ()
+      callback_property windowkeypressfcn , Matrix ()
+      callback_property windowkeyreleasefcn , Matrix ()
+      callback_property windowscrollwheelfcn , Matrix ()
       radio_property windowstyle , "{normal}|modal|docked"
       string_property wvisual , ""
       radio_property wvisualmode , "{auto}|manual"
       string_property xdisplay , ""
       string_property xvisual , ""
       radio_property xvisualmode , "{auto}|manual"
-      callback_property buttondownfcn , Matrix ()
+      // Octave-specific properties
+      bool_property __enhanced__ h , "on"
       string_property __graphics_toolkit__ s , "gnuplot"
       any_property __guidata__ h , Matrix ()
+      any_property __plot_stream__ h , Matrix ()
     END_PROPERTIES
 
   protected:
@@ -3764,80 +3777,29 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
-
-    // properties which are not in matlab: interpreter
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (axes)
-      array_property position u , default_axes_position ()
+      radio_property activepositionproperty , "{outerposition}|position"
+      row_vector_property alim m , default_lim ()
+      radio_property alimmode , "{auto}|manual"
+      color_property ambientlightcolor , color_values (1, 1, 1)
       bool_property box , "on"
+      array_property cameraposition m , Matrix (1, 3, 0.0)
+      radio_property camerapositionmode , "{auto}|manual"
+      array_property cameratarget m , Matrix (1, 3, 0.0)
+      radio_property cameratargetmode , "{auto}|manual"
+      array_property cameraupvector m , Matrix ()
+      radio_property cameraupvectormode , "{auto}|manual"
+      double_property cameraviewangle m , 10.0
+      radio_property cameraviewanglemode , "{auto}|manual"
+      row_vector_property clim m , default_lim ()
+      radio_property climmode al , "{auto}|manual"
+      color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
       array_property colororder , default_colororder ()
+      array_property currentpoint , Matrix (2, 3, 0.0)
       array_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
-      radio_property layer u , "{bottom}|top"
-      row_vector_property xlim mu , default_lim ()
-      row_vector_property ylim mu , default_lim ()
-      row_vector_property zlim mu , default_lim ()
-      row_vector_property clim m , default_lim ()
-      row_vector_property alim m , default_lim ()
-      radio_property xlimmode al , "{auto}|manual"
-      radio_property ylimmode al , "{auto}|manual"
-      radio_property zlimmode al , "{auto}|manual"
-      radio_property climmode al , "{auto}|manual"
-      radio_property alimmode    , "{auto}|manual"
-      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
-      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
-      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
-      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
-      bool_property xgrid , "off"
-      bool_property ygrid , "off"
-      bool_property zgrid , "off"
-      bool_property xminorgrid , "off"
-      bool_property yminorgrid , "off"
-      bool_property zminorgrid , "off"
-      row_vector_property xtick mu , default_axes_tick ()
-      row_vector_property ytick mu , default_axes_tick ()
-      row_vector_property ztick mu , default_axes_tick ()
-      radio_property xtickmode u , "{auto}|manual"
-      radio_property ytickmode u , "{auto}|manual"
-      radio_property ztickmode u , "{auto}|manual"
-      bool_property xminortick , "off"
-      bool_property yminortick , "off"
-      bool_property zminortick , "off"
-      // FIXME -- should be kind of string array.
-      any_property xticklabel S , ""
-      any_property yticklabel S , ""
-      any_property zticklabel S , ""
-      radio_property xticklabelmode u , "{auto}|manual"
-      radio_property yticklabelmode u , "{auto}|manual"
-      radio_property zticklabelmode u , "{auto}|manual"
-      radio_property interpreter , "tex|{none}|latex"
-      color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
-      color_property xcolor , color_values (0, 0, 0)
-      color_property ycolor , color_values (0, 0, 0)
-      color_property zcolor , color_values (0, 0, 0)
-      radio_property xscale alu , "{linear}|log"
-      radio_property yscale alu , "{linear}|log"
-      radio_property zscale alu , "{linear}|log"
-      radio_property xdir u , "{normal}|reverse"
-      radio_property ydir u , "{normal}|reverse"
-      radio_property zdir u , "{normal}|reverse"
-      radio_property yaxislocation u , "{left}|right|zero"
-      radio_property xaxislocation u , "{bottom}|top|zero"
-      array_property view u , Matrix ()
-      bool_property __hold_all__ h , "off"
-      radio_property nextplot , "new|add|replacechildren|{replace}"
-      array_property outerposition u , default_axes_outerposition ()
-      radio_property activepositionproperty , "{outerposition}|position"
-      color_property ambientlightcolor , color_values (1, 1, 1)
-      array_property cameraposition m , Matrix (1, 3, 0.0)
-      array_property cameratarget m , Matrix (1, 3, 0.0)
-      array_property cameraupvector m , Matrix ()
-      double_property cameraviewangle m , 10.0
-      radio_property camerapositionmode , "{auto}|manual"
-      radio_property cameratargetmode , "{auto}|manual"
-      radio_property cameraupvectormode , "{auto}|manual"
-      radio_property cameraviewanglemode , "{auto}|manual"
-      array_property currentpoint , Matrix (2, 3, 0.0)
       radio_property drawmode , "{normal}|fast"
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
@@ -3845,18 +3807,75 @@ public:
       radio_property fontunits SU , "{points}|normalized|inches|centimeters|pixels"
       radio_property fontweight u , "{normal}|light|demi|bold"
       radio_property gridlinestyle , "-|--|{:}|-.|none"
+      // NOTE: interpreter is not a Matlab axis property, but it makes
+      //       more sense to have it so that axis ticklabels can use it.
+      radio_property interpreter , "tex|{none}|latex"
+      radio_property layer u , "{bottom}|top"
       string_array_property linestyleorder , "-"
       double_property linewidth , 0.5
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
+      radio_property nextplot , "add|replacechildren|{replace}"
+      array_property outerposition u , default_axes_outerposition ()
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
+      array_property position u , default_axes_position ()
       radio_property projection , "{orthographic}|perpective"
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
-      // FIXME -- uicontextmenu should be moved here.
+      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
+      array_property view u , Matrix ()
+      radio_property xaxislocation u , "{bottom}|top|zero"
+      color_property xcolor , color_values (0, 0, 0)
+      radio_property xdir u , "{normal}|reverse"
+      bool_property xgrid , "off"
+      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      row_vector_property xlim mu , default_lim ()
+      radio_property xlimmode al , "{auto}|manual"
+      bool_property xminorgrid , "off"
+      bool_property xminortick , "off"
+      radio_property xscale alu , "{linear}|log"
+      row_vector_property xtick mu , default_axes_tick ()
+      // FIXME: should be kind of string array.
+      any_property xticklabel S , ""
+      radio_property xticklabelmode u , "{auto}|manual"
+      radio_property xtickmode u , "{auto}|manual"
+      radio_property yaxislocation u , "{left}|right|zero"
+      color_property ycolor , color_values (0, 0, 0)
+      radio_property ydir u , "{normal}|reverse"
+      bool_property ygrid , "off"
+      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      row_vector_property ylim mu , default_lim ()
+      radio_property ylimmode al , "{auto}|manual"
+      bool_property yminorgrid , "off"
+      bool_property yminortick , "off"
+      radio_property yscale alu , "{linear}|log"
+      row_vector_property ytick mu , default_axes_tick ()
+      any_property yticklabel S , ""
+      radio_property yticklabelmode u , "{auto}|manual"
+      radio_property ytickmode u , "{auto}|manual"
+      color_property zcolor , color_values (0, 0, 0)
+      radio_property zdir u , "{normal}|reverse"
+      bool_property zgrid , "off"
+      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      row_vector_property zlim mu , default_lim ()
+      radio_property zlimmode al , "{auto}|manual"
+      bool_property zminorgrid , "off"
+      bool_property zminortick , "off"
+      radio_property zscale alu , "{linear}|log"
+      row_vector_property ztick mu , default_axes_tick ()
+      any_property zticklabel S , ""
+      radio_property zticklabelmode u , "{auto}|manual"
+      radio_property ztickmode u , "{auto}|manual"
+      // Octave-specific properties
+      bool_property __hold_all__ h , "off"
+      // hidden properties for alignment of subplots
+      radio_property autopos_tag h , "{none}|subplot"
+      // hidden properties for inset
+      array_property looseinset hu , Matrix (1, 4, 0.0)
       // hidden properties for transformation computation
       array_property x_viewtransform h , Matrix (4, 4, 0.0)
       array_property x_projectiontransform h , Matrix (4, 4, 0.0)
@@ -3867,10 +3886,6 @@ public:
       row_vector_property xmtick h , Matrix ()
       row_vector_property ymtick h , Matrix ()
       row_vector_property zmtick h , Matrix ()
-      // hidden properties for inset
-      array_property looseinset hu , Matrix (1, 4, 0.0)
-      // hidden properties for alignment of subplots
-      radio_property autopos_tag h , "{none}|subplot"
    END_PROPERTIES
 
   protected:
@@ -4208,7 +4223,7 @@ public:
   {
     octave_value retval;
 
-    // FIXME -- finish this.
+    // FIXME: finish this.
     if (name.compare ("default", 7))
       retval = get_default (name.substr (7));
     else
@@ -4254,26 +4269,27 @@ public:
   public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
-
-    // properties which are not in matlab: interpreter
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (line)
-      row_vector_property xdata u , default_data ()
-      row_vector_property ydata u , default_data ()
-      row_vector_property zdata u , Matrix ()
-      string_property xdatasource , ""
-      string_property ydatasource , ""
-      string_property zdatasource , ""
       color_property color , color_values (0, 0, 0)
+      string_property displayname , ""
+      radio_property erasemode , "{normal}|none|xor|background"
+      // FIXME: interpreter is not a property of Matlab line objects.
+      radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h|@"
+      radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
       color_property markeredgecolor , "{auto}|none"
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
-      radio_property interpreter , "{tex}|none|latex"
-      string_property displayname , ""
-      radio_property erasemode , "{normal}|none|xor|background"
+      row_vector_property xdata u , default_data ()
+      string_property xdatasource , ""
+      row_vector_property ydata u , default_data ()
+      string_property ydatasource , ""
+      row_vector_property zdata u , Matrix ()
+      string_property zdatasource , ""
+
       // hidden properties for limit computation
       row_vector_property xlim hlr , Matrix ()
       row_vector_property ylim hlr , Matrix ()
@@ -4356,28 +4372,29 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES (text)
-      text_label_property string u , ""
-      radio_property units u , "{data}|pixels|normalized|inches|centimeters|points"
-      array_property position smu , Matrix (1, 3, 0.0)
-      double_property rotation mu , 0
-      radio_property horizontalalignment mu , "{left}|center|right"
-      color_property color u , color_values (0, 0, 0)
-      string_property fontname u , OCTAVE_DEFAULT_FONTNAME
-      double_property fontsize u , 10
-      radio_property fontangle u , "{normal}|italic|oblique"
-      radio_property fontweight u , "light|{normal}|demi|bold"
-      radio_property interpreter u , "{tex}|none|latex"
       color_property backgroundcolor , "{none}"
+      color_property color u , color_values (0, 0, 0)
       string_property displayname , ""
       color_property edgecolor , "{none}"
-      radio_property erasemode , "{normal}|none|xor|background"
       bool_property editing , "off"
+      radio_property erasemode , "{normal}|none|xor|background"
+      array_property extent rG , Matrix (1, 4, 0.0)
+      radio_property fontangle u , "{normal}|italic|oblique"
+      string_property fontname u , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize u , 10
       radio_property fontunits , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property horizontalalignment mu , "{left}|center|right"
+      radio_property interpreter u , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       double_property margin , 1
+      array_property position smu , Matrix (1, 3, 0.0)
+      double_property rotation mu , 0
+      text_label_property string u , ""
+      radio_property units u , "{data}|pixels|normalized|inches|centimeters|points"
       radio_property verticalalignment mu , "top|cap|{middle}|baseline|bottom"
-      array_property extent rG , Matrix (1, 4, 0.0)
+
       // hidden properties for limit computation
       row_vector_property xlim hlr , Matrix ()
       row_vector_property ylim hlr , Matrix ()
@@ -4489,6 +4506,11 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    bool is_aliminclude (void) const
+      { return (aliminclude.is_on () && alphadatamapping.is ("scaled")); }
+    std::string get_aliminclude (void) const
+      { return aliminclude.current_value (); }
+
     bool is_climinclude (void) const
       { return (climinclude.is_on () && cdatamapping.is ("scaled")); }
     std::string get_climinclude (void) const
@@ -4498,19 +4520,25 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (image)
+      array_property alphadata u , Matrix ()
+      radio_property alphadatamapping al , "none|direct|{scaled}"
+      array_property cdata u , Matrix ()
+      radio_property cdatamapping al , "scaled|{direct}"
+      radio_property erasemode , "{normal}|none|xor|background"
       row_vector_property xdata u , Matrix ()
       row_vector_property ydata u , Matrix ()
-      array_property cdata u , Matrix ()
-      radio_property cdatamapping al , "{scaled}|direct"
       // hidden properties for limit computation
+      row_vector_property alim hlr , Matrix ()
+      row_vector_property clim hlr , Matrix ()
       row_vector_property xlim hlr , Matrix ()
       row_vector_property ylim hlr , Matrix ()
-      row_vector_property clim hlr , Matrix ()
+      bool_property aliminclude hlg , "on"
+      bool_property climinclude hlg , "on"
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
-      bool_property climinclude hlg , "on"
     END_PROPERTIES
 
   protected:
@@ -4530,6 +4558,22 @@ public:
       }
 
   private:
+    void update_alphadata (void)
+      {
+        if (alphadatamapping_is ("scaled"))
+          set_alim (alphadata.get_limits ());
+        else
+          alim = alphadata.get_limits ();
+      }
+
+    void update_cdata (void)
+      {
+        if (cdatamapping_is ("scaled"))
+          set_clim (cdata.get_limits ());
+        else
+          clim = cdata.get_limits ();
+      }
+
     void update_xdata (void)
     {
       Matrix limits = xdata.get_limits ();
@@ -4549,14 +4593,6 @@ public:
       limits(1) = limits(1) + dp;
       set_ylim (limits);
     }
-
-    void update_cdata (void)
-      {
-        if (cdatamapping_is ("scaled"))
-          set_clim (cdata.get_limits ());
-        else
-          clim = cdata.get_limits ();
-      }
 
     float pixel_size (octave_idx_type dim, const Matrix limits)
     {
@@ -4616,64 +4652,67 @@ public:
   public:
     octave_value get_color_data (void) const;
 
-    bool is_climinclude (void) const
-      { return (climinclude.is_on () && cdatamapping.is ("scaled")); }
-    std::string get_climinclude (void) const
-      { return climinclude.current_value (); }
-
     bool is_aliminclude (void) const
       { return (aliminclude.is_on () && alphadatamapping.is ("scaled")); }
     std::string get_aliminclude (void) const
       { return aliminclude.current_value (); }
 
+    bool is_climinclude (void) const
+      { return (climinclude.is_on () && cdatamapping.is ("scaled")); }
+    std::string get_climinclude (void) const
+      { return climinclude.current_value (); }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (patch)
-      array_property xdata u , Matrix ()
-      array_property ydata u , Matrix ()
-      array_property zdata u , Matrix ()
+      radio_property alphadatamapping l , "none|{scaled}|direct"
+      double_property ambientstrength , 0.3
+      radio_property backfacelighting , "unlit|lit|{reverselit}"
       array_property cdata u , Matrix ()
       radio_property cdatamapping l , "{scaled}|direct"
+      double_property diffusestrength , 0.6
+      string_property displayname , ""
+      double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
+      color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
+      radio_property edgelighting , "{none}|flat|gouraud|phong"
+      radio_property erasemode , "{normal}|background|xor|none"
+      double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
+      color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
+      radio_property facelighting , "{none}|flat|gouraud|phong"
       array_property faces , Matrix ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata , Matrix ()
-      array_property vertices , Matrix ()
-      array_property vertexnormals , Matrix ()
-      radio_property normalmode , "{auto}|manual"
-      color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
-      double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
-      radio_property facelighting , "flat|{none}|gouraud|phong"
-      color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
-      double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
-      radio_property edgelighting , "{none}|flat|gouraud|phong"
-      radio_property backfacelighting , "{reverselit}|unlit|lit"
-      double_property ambientstrength , 0.3
-      double_property diffusestrength , 0.6
-      double_property specularstrength , 0.6
-      double_property specularexponent , 10.0
-      double_property specularcolorreflectance , 1.0
-      radio_property erasemode , "{normal}|background|xor|none"
+      // FIXME: interpreter is not a property of a Matlab patch.
+      radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h|@"
-      color_property markeredgecolor , "{auto}|none|flat"
-      color_property markerfacecolor , "auto|{none}|flat"
+      radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
+      color_property markeredgecolor , "none|{auto}|flat"
+      color_property markerfacecolor , "{none}|auto|flat"
       double_property markersize , 6
-      radio_property interpreter , "{tex}|none|latex"
-      string_property displayname , ""
-      radio_property alphadatamapping l , "none|{scaled}|direct"
+      radio_property normalmode , "{auto}|manual"
+      double_property specularcolorreflectance , 1.0
+      double_property specularexponent , 10.0
+      double_property specularstrength , 0.6
+      array_property vertexnormals , Matrix ()
+      array_property vertices , Matrix ()
+      array_property xdata u , Matrix ()
+      array_property ydata u , Matrix ()
+      array_property zdata u , Matrix ()
+
       // hidden properties for limit computation
+      row_vector_property alim hlr , Matrix ()
+      row_vector_property clim hlr , Matrix ()
       row_vector_property xlim hlr , Matrix ()
       row_vector_property ylim hlr , Matrix ()
       row_vector_property zlim hlr , Matrix ()
-      row_vector_property clim hlr , Matrix ()
-      row_vector_property alim hlr , Matrix ()
+      bool_property aliminclude hlg , "on"
+      bool_property climinclude hlg , "on"
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
       bool_property zliminclude hl , "on"
-      bool_property climinclude hlg , "on"
-      bool_property aliminclude hlg , "on"
     END_PROPERTIES
 
   protected:
@@ -4734,66 +4773,69 @@ public:
   public:
     octave_value get_color_data (void) const;
 
-    bool is_climinclude (void) const
-      { return (climinclude.is_on () && cdatamapping.is ("scaled")); }
-    std::string get_climinclude (void) const
-      { return climinclude.current_value (); }
-
     bool is_aliminclude (void) const
       { return (aliminclude.is_on () && alphadatamapping.is ("scaled")); }
     std::string get_aliminclude (void) const
       { return aliminclude.current_value (); }
 
+    bool is_climinclude (void) const
+      { return (climinclude.is_on () && cdatamapping.is ("scaled")); }
+    std::string get_climinclude (void) const
+      { return climinclude.current_value (); }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (surface)
-      array_property xdata u , Matrix ()
-      array_property ydata u , Matrix ()
-      array_property zdata u , Matrix ()
-      array_property cdata u , Matrix ()
-      radio_property cdatamapping al , "{scaled}|direct"
-      string_property xdatasource , ""
-      string_property ydatasource , ""
-      string_property zdatasource , ""
-      string_property cdatasource , ""
-      color_property facecolor , "{flat}|none|interp|texturemap"
-      double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
-      color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
-      radio_property linestyle , "{-}|--|:|-.|none"
-      double_property linewidth , 0.5
-      radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h|@"
-      color_property markeredgecolor , "{auto}|none"
-      color_property markerfacecolor , "auto|{none}"
-      double_property markersize , 6
-      radio_property interpreter , "{tex}|none|latex"
-      string_property displayname , ""
       array_property alphadata u , Matrix ()
       radio_property alphadatamapping l , "none|direct|{scaled}"
       double_property ambientstrength , 0.3
       radio_property backfacelighting , "unlit|lit|{reverselit}"
+      array_property cdata u , Matrix ()
+      radio_property cdatamapping al , "{scaled}|direct"
+      string_property cdatasource , ""
       double_property diffusestrength , 0.6
+      string_property displayname , ""
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
+      color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property edgelighting , "{none}|flat|gouraud|phong"
       radio_property erasemode , "{normal}|none|xor|background"
+      double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
+      color_property facecolor , "none|{flat}|interp|texturemap"
       radio_property facelighting , "{none}|flat|gouraud|phong"
+      // FIXME: interpreter is not a Matlab surface property
+      radio_property interpreter , "{tex}|none|latex"
+      radio_property linestyle , "{-}|--|:|-.|none"
+      double_property linewidth , 0.5
+      radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
+      color_property markeredgecolor , "none|{auto}|flat"
+      color_property markerfacecolor , "{none}|auto|flat"
+      double_property markersize , 6
       radio_property meshstyle , "{both}|row|column"
       radio_property normalmode u , "{auto}|manual"
       double_property specularcolorreflectance , 1
       double_property specularexponent , 10
       double_property specularstrength , 0.9
       array_property vertexnormals u , Matrix ()
+      array_property xdata u , Matrix ()
+      string_property xdatasource , ""
+      array_property ydata u , Matrix ()
+      string_property ydatasource , ""
+      array_property zdata u , Matrix ()
+      string_property zdatasource , ""
+
       // hidden properties for limit computation
+      row_vector_property alim hlr , Matrix ()
+      row_vector_property clim hlr , Matrix ()
       row_vector_property xlim hlr , Matrix ()
       row_vector_property ylim hlr , Matrix ()
       row_vector_property zlim hlr , Matrix ()
-      row_vector_property clim hlr , Matrix ()
-      row_vector_property alim hlr , Matrix ()
+      bool_property aliminclude hlg , "on"
+      bool_property climinclude hlg , "on"
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
       bool_property zliminclude hl , "on"
-      bool_property climinclude hlg , "on"
-      bool_property aliminclude hlg , "on"
     END_PROPERTIES
 
   protected:
@@ -4815,7 +4857,21 @@ public:
       }
 
   private:
-    void update_normals (void);
+    void update_alphadata (void)
+      {
+        if (alphadatamapping_is ("scaled"))
+          set_alim (alphadata.get_limits ());
+        else
+          alim = alphadata.get_limits ();
+      }
+
+    void update_cdata (void)
+      {
+        if (cdatamapping_is ("scaled"))
+          set_clim (cdata.get_limits ());
+        else
+          clim = cdata.get_limits ();
+      }
 
     void update_xdata (void)
       {
@@ -4835,21 +4891,7 @@ public:
         set_zlim (zdata.get_limits ());
       }
 
-    void update_cdata (void)
-      {
-        if (cdatamapping_is ("scaled"))
-          set_clim (cdata.get_limits ());
-        else
-          clim = cdata.get_limits ();
-      }
-
-    void update_alphadata (void)
-      {
-        if (alphadatamapping_is ("scaled"))
-          set_alim (alphadata.get_limits ());
-        else
-          alim = alphadata.get_limits ();
-      }
+    void update_normals (void);
 
     void update_normalmode (void)
       { update_normals (); }
@@ -4900,21 +4942,23 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (hggroup)
       string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
+
       // hidden properties for limit computation
+      row_vector_property alim hr , Matrix ()
+      row_vector_property clim hr , Matrix ()
       row_vector_property xlim hr , Matrix ()
       row_vector_property ylim hr , Matrix ()
       row_vector_property zlim hr , Matrix ()
-      row_vector_property clim hr , Matrix ()
-      row_vector_property alim hr , Matrix ()
+      bool_property aliminclude h , "on"
+      bool_property climinclude h , "on"
       bool_property xliminclude h , "on"
       bool_property yliminclude h , "on"
       bool_property zliminclude h , "on"
-      bool_property climinclude h , "on"
-      bool_property aliminclude h , "on"
     END_PROPERTIES
 
   private:
@@ -4973,6 +5017,7 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uimenu)
       any_property __object__ , Matrix ()
@@ -4984,6 +5029,7 @@ public:
       string_property label , ""
       double_property position , 9
       bool_property separator , "off"
+      // Octave-specific properties
       string_property fltk_label h , ""
     END_PROPERTIES
 
@@ -5022,6 +5068,7 @@ public:
   public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontextmenu)
       any_property __object__ , Matrix ()
@@ -5073,6 +5120,7 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontrol)
       any_property __object__ , Matrix ()
@@ -5088,7 +5136,7 @@ public:
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
       radio_property fontweight u , "light|{normal}|demi|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
-      radio_property horizontalalignment , "{left}|center|right"
+      radio_property horizontalalignment , "left|{center}|right"
       callback_property keypressfcn , Matrix ()
       double_property listboxtop , 1
       double_property max , 1
@@ -5165,6 +5213,7 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipanel)
       any_property __object__ , Matrix ()
@@ -5226,6 +5275,7 @@ public:
   public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uitoolbar)
       any_property __object__ , Matrix ()
@@ -5314,6 +5364,7 @@ public:
   public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipushtool)
       any_property __object__ , Matrix ()
@@ -5364,6 +5415,7 @@ public:
   public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uitoggletool)
       any_property __object__ , Matrix ()

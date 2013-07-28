@@ -128,6 +128,10 @@ ChangeLog:
 	mv $@.t $@
 .PHONY: ChangeLog
 
+doxyhtml:
+	$(MAKE) -C doc/doxyhtml
+.PHONY: doxyhtml
+
 octetc_DATA = NEWS
 
 DIRS_TO_MAKE = \

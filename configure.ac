@@ -2177,6 +2177,8 @@ AC_CONFIG_FILES([
   Makefile 
   doc/Makefile
   doc/faq/Makefile
+  doc/doxyhtml/Makefile
+  doc/doxyhtml/Doxyfile
   doc/icons/Makefile
   doc/interpreter/Makefile
   doc/liboctave/Makefile

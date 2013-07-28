@@ -3662,6 +3662,8 @@ public:
         update_axes_layout ();
       }
 
+    void sync_positions (void);
+
     void update_autopos (const std::string& elem_type);
     void update_xlabel_position (void);
     void update_ylabel_position (void);
@@ -3990,8 +3992,6 @@ public:
     void update_fontsize (void) { update_font (); }
     void update_fontangle (void) { update_font (); }
     void update_fontweight (void) { update_font (); }
-
-    void sync_positions (void);
 
     void update_outerposition (void)
     {

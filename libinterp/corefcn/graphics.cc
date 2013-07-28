@@ -6915,6 +6915,8 @@ axes::initialize (const graphics_object& go)
   xinitialize (xproperties.get_xlabel ());
   xinitialize (xproperties.get_ylabel ());
   xinitialize (xproperties.get_zlabel ());
+
+  xproperties.sync_positions ();
 }
 
 // ---------------------------------------------------------------------

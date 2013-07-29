@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-all-local: doxyhtml
-
 doxyhtml:
 	doxygen Doxyfile
 

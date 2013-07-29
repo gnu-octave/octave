@@ -18,9 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} shading (@var{type})
-## @deftypefnx {Function File} {} shading (@var{ax}, @var{type})
-## Set the shading of surface or patch graphic objects.  Valid arguments
-## for @var{type} are
+## @deftypefnx {Function File} {} shading (@var{hax}, @var{type})
+## Set the shading of surface or patch graphic objects.
+##
+## Valid arguments for @var{type} are
 ##
 ## @table @asis
 ## @item "flat"
@@ -34,8 +35,10 @@
 ## invisible.
 ## @end table
 ##
-## If @var{hax} is given the shading is applied to axis @var{hax} instead
-## of the current axis.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axis rather than the current axes returned by @code{gca}.
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
@@ -54,20 +57,41 @@ function shading (varargin)
     hax = gca ();
   endif
 
-  hp = findobj (hax, "type", "patch");
-  hs = findobj (hax, "type", "surface");
-  hall = [hp(:); hs(:)];
+  ## Find all patch and surface objects that are descendants of hax
+  ## and  which are not part of a contour plot hggroup.
+  hlist = [];
+  kids = get (hax, "children");
+  while (! isempty (kids))
+    types = get (kids, "type");
+    hlist = [hlist; kids(strcmp(types, "patch"))];
+    hlist = [hlist; kids(strcmp(types, "surface"))];
+    parents = kids(strcmp(types, "axes"));
+    hglist = kids(strcmp (types, "hggroup"));
+    for i = 1 : numel (hglist)
+      props = get (hglist(i));
+      if (! isfield (props, "levelstep"))
+        parents(end+1) = hglist(i); 
+      endif
+    endfor
+    kids = get (parents, "children");
+  endwhile
+
+  ## FIXME: This is the old, simple code.
+  ##        Unfortunately, it also shades contour plots which is not desirable.
+  ##hp = findobj (hax, "type", "patch");
+  ##hs = findobj (hax, "type", "surface");
+  ##hlist = [hp(:); hs(:)];
 
   switch (lower (mode))
     case "flat"
-      set (hall, "facecolor", "flat");
-      set (hall, "edgecolor", "none");
+      set (hlist, "facecolor", "flat");
+      set (hlist, "edgecolor", "none");
     case "interp"
-      set (hall, "facecolor", "interp");
-      set (hall, "edgecolor", "none");
+      set (hlist, "facecolor", "interp");
+      set (hlist, "edgecolor", "none");
     case "faceted"
-      set (hall, "facecolor", "flat");
-      set (hall, "edgecolor", [0 0 0]);
+      set (hlist, "facecolor", "flat");
+      set (hlist, "edgecolor", [0 0 0]);
     otherwise
       error ('shading: Invalid MODE "%s"', mode);
   endswitch

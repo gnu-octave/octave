@@ -90,7 +90,7 @@ function f = fact ()
        "Richard Stallman doesn’t code; he dares the computer to not do his bidding.";
        "Global warming is caused by Richard Stallman's rage towards non-free software.";
        "Rather than being birthed like a normal child, Richard Stallman instead instantiated himself polymorphically. Shortly thereafter he grew a beard.";
-       "Richard Stallman discovered extra-terrestrial life but killed them because they used non-free software.";
+       "Richard Stallman discovered extra-terrestrial life but killed them because they distributed non-free software.";
        "Richard Stallman doesn't evaluate expressions; expressions evaluate to Richard Stallman.";
        "Richard Stallman can see Russia from his house.";
        "Richard Stallman proved P=NP, twice!";
@@ -237,6 +237,24 @@ function f = fact ()
        "Richard Stallman exists because he compiled himself into being.";
        "Richard Stallman's first words were in binary. When they couldn't understand him, he wrote a parser.";
        "Richard Stallman doesn't need any codecs, he just opens a multimedia file with Emacs, and reads the bytes of the file as plain text. He then performs all the necessary decoding in his mind. But he refuses to decode files encrypted with DRM, although his mind is able to.";
+       "Richard Stallman was right. Sadly.";
+       "Richard Stallman can wiretap the NSA.";
+       "This is how Richard Stallman created Emacs: http://stallman.org/photos/rms-working/img_0631.jpg";
+       "Join Richard Stallman now and share the software, you'll be a free hacker, you'll be free!";
+       "Richard Stallman has not agreed to the terms and conditions and privacy policy because only he can actually read all of it.";
+       "Richard Stallman knows how of a backdoor to AES, but he respects your freedom and privacy too much to actually use it.";
+       "Richard Stallman will never get tired of being mocked for the foot cheese incident.";
+       "You like to release non-free software around Richard Stallman? I too like to live dangerously...";
+       "Yeah, if could just go ahead and make all software free for Richard Stallman, that'd be great, thanks.";
+       "Richard Stallman knows exactly what you mean when you talk about the cloud. But do you?";
+       "Richard Stallman satisfies Greenspun's Tenth Rule of programming, since his DNA also contains a complete implementation of all of Common Lisp.";
+       "Richard Stallman can violate the GPL. In a vulgar display of power, he once did so with the Emacs source code, but he undid the violation before most people noticed.";
+       "Good guy Richard Stallman does not try to shake you down for money. He will just kindly ask you to comply with the GPL.";
+       "Richard Stallman is in fact also a little sad that Steve Jobs is gone because it has diminished the size of the loyal opposition.";
+       "Richard Stallman can release LLVM and clang under the GPL.";
+       "No, really, Richard Stallman has a katana.";
+       "Every day Richard Stallman finds at least fifteen things in the world to rage about. You can read his findings here: http://stallman.org/archives/polnotes.html"
+       "Some of these Richard Stallman facts are completely true. Seriously.";
        };
 
   w = wisdom{randi([1, numel(wisdom)])};

@@ -90,10 +90,10 @@ endfunction
 
 %!testif HAVE_FLTK
 %! unwind_protect
-%!   hf = figure ("visible", "off"); 
+%!   hf = figure ("visible", "off");
 %!   toolkit = graphics_toolkit ();
 %!   assert (get (0, "defaultfigure__graphics_toolkit__"), toolkit);
-%!   graphics_toolkit (hf, "fltk"); 
+%!   graphics_toolkit (hf, "fltk");
 %!   assert (graphics_toolkit (hf), "fltk");
 %! unwind_protect_cleanup
 %!   close (hf);

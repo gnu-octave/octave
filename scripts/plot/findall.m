@@ -45,9 +45,8 @@ endfunction
 
 
 %!testif HAVE_FLTK
-%! toolkit = graphics_toolkit ();
-%! graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off");
+%! toolkit = graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off")
 %! unwind_protect
 %!   h = findall (hf);
 %!   all_handles(1:13,1) = {"uimenu"};

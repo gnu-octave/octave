@@ -101,9 +101,8 @@ endfunction
 %! uimenu (e, 'label', 'Toggle &Grid', 'accelerator', 'g', 'callback', 'grid (gca)');
 
 %!testif HAVE_FLTK
-%! toolkit = graphics_toolkit ();
-%! graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off");
+%! toolkit = graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off")
 %! unwind_protect
 %!   ui = uimenu ("label", "mylabel");
 %!   assert (findobj (hf, "type", "uimenu"), ui);
@@ -119,9 +118,8 @@ endfunction
 
 %% check for top level menus file, edit, and help
 %!testif HAVE_FLTK
-%! toolkit = graphics_toolkit ();
-%! graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off");
+%! toolkit = graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off")
 %! unwind_protect
 %!   uif = findall (hf, "label", "&file");
 %!   assert (ishghandle (uif));
@@ -135,9 +133,8 @@ endfunction
 %! end_unwind_protect
 
 %!testif HAVE_FLTK
-%! toolkit = graphics_toolkit ();
-%! graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off");
+%! toolkit = graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off")
 %! unwind_protect
 %!   uie = findall (hf, "label", "&edit");
 %!   myui = uimenu (uie, "label", "mylabel");

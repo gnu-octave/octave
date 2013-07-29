@@ -1547,8 +1547,8 @@ endfunction
 %!  legend (option);
 
 %!test
-%! graphics_toolkit ("gnuplot");
-%! h = figure ("visible", "off", "__graphics_toolkit__", "gnuplot");
+%! toolkit = graphics_toolkit ("gnuplot");
+%! h = figure ("visible", "off")
 %! unwind_protect
 %!   position = get (h, "position");
 %!   plot (rand (3));
@@ -1559,5 +1559,6 @@ endfunction
 %!   assert (get (h, "position"), position);
 %! unwind_protect_cleanup
 %!   close (h);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 

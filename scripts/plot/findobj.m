@@ -316,8 +316,8 @@ endfunction
 %! assert (h2, h1)
 
 %!test
-%! graphics_toolkit gnuplot;
-%! hf = figure ("visible", "off");
+%! toolkit = graphics_toolkit ("gnuplot");
+%! hf = figure ("visible", "off")
 %! unwind_protect
 %!   h1 = subplot (2, 2, 1);
 %!   h2 = subplot (2, 2, 2);
@@ -328,12 +328,13 @@ endfunction
 %!   h = findobj (hf, "userdata", userdata);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 %! assert (h, h3)
 
 %!test
-%! graphics_toolkit gnuplot;
-%! hf = figure ("visible", "off");
+%! toolkit = graphics_toolkit ("gnuplot");
+%! hf = figure ("visible", "off")
 %! unwind_protect
 %!   h1 = subplot (2, 2, 1);
 %!   set (h1, 'tag', '1')
@@ -346,6 +347,7 @@ endfunction
 %!   h = findobj (hf, 'type', 'axes', '-not', 'tag', '1');
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 %! assert (h, [h2; h3; h4])
 

@@ -146,6 +146,12 @@ octetc_DATA = \
   NEWS \
   CITATION
 
+doxyhtml:
+	$(MAKE) -C doc/doxyhtml
+.PHONY: doxyhtml
+
+octetc_DATA = NEWS
+
 DIRS_TO_MAKE = \
   $(localfcnfiledir) \
   $(localapifcnfiledir) \

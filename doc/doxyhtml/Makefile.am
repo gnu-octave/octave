@@ -20,13 +20,15 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
+all-local: doxyhtml
+
 doxyhtml:
-	cd ../..; doxygen doc/doxyhtml/Doxygen.cfg 
+	doxygen Doxyfile
 
 EXTRA_DIST = \
-  Doxygen.cfg \
+  Doxyfile.in \
   Makefile.am \
   README
 
 maintainer-clean-local:
-	rm -rf `ls | $(GREP) -v Doxygen.cfg | $(GREP) -v Makefile.am | $(GREP) -v Makefile.in | $(GREP) -v README`
+	rm -rf `ls | $(GREP) -v Doxyfile | $(GREP) -v Makefile.am | $(GREP) -v Makefile.in | $(GREP) -v README`

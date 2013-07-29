@@ -26,15 +26,21 @@ DOXYFILE_ENCODING      = UTF-8
 
 PROJECT_NAME           = "GNU Octave"
 
+PROJECT_BRIEF          =  "A high-level interpreted language, primarily intended for numerical computations, mostly compatible with Matlab"
+
 # The public stable API version (unrelated to the internal API
 # version).
 
-PROJECT_NUMBER         = 3.7
+PROJECT_NUMBER         = @PACKAGE_VERSION@
+
+# Our logo!
+
+PROJECT_LOGO           = @top_srcdir@/doc/icons/octave-logo.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
 
-OUTPUT_DIRECTORY       = doc/
+OUTPUT_DIRECTORY       = @abs_top_builddir@/doc
 
 # Create 4096 sub-directories (in 2 levels) under the output directory
 # of each output format and will distribute the generated files over
@@ -77,6 +83,10 @@ INLINE_INHERITED_MEMB  = YES
 # header files.
 
 FULL_PATH_NAMES        = YES
+
+# Remove from the full path names the absolute prefix
+
+STRIP_FROM_PATH        = @top_srcdir@
 
 # Interpret the first line (until the first dot) of a JavaDoc-style
 # comment as the brief description (without needing the @brief
@@ -132,6 +142,10 @@ EXTRACT_STATIC         = YES
 
 EXTRACT_LOCAL_CLASSES  = YES
 
+# We have very few namespaces, so show the ones we have
+
+SHOW_NAMESPACES        = YES
+
 # We don't use namespaces, but if we did, this would extract the
 # anonymous one.
 
@@ -162,13 +176,13 @@ SORT_BRIEF_DOCS        = YES
 
 SORT_MEMBERS_CTORS_1ST = YES
 
-# Show which directories the file is in.
+# Expand the DEFUN family of macros
 
-SHOW_DIRECTORIES       = YES
-
-# We don't have namespaces, so don't show them.
-
-SHOW_NAMESPACES        = NO
+MACRO_EXPANSION = YES
+EXPAND_ONLY_PREDEF = YES
+EXPAND_AS_DEFINED = DEFUN DEFUN_DLD  # As defined in the Octave source
+                                     # code, i.e. not overriden by this
+                                     # config file
 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -176,7 +190,8 @@ SHOW_NAMESPACES        = NO
 
 # Which directories contain Octave source code
 
-INPUT                  = src/ liboctave/ libinterp/
+INPUT                  = @top_srcdir@/src/ @top_srcdir@/liboctave/
+INPUT                 += @top_srcdir@/libinterp @top_srcdir@/libgui
 
 # Search subdirectories for input.
 
@@ -184,7 +199,7 @@ RECURSIVE              = YES
 
 # Our examples.
 
-EXAMPLE_PATH           = examples/
+EXAMPLE_PATH           = @top_srcdir@/examples/
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
@@ -210,10 +225,9 @@ SOURCE_BROWSER         = YES
 
 INLINE_SOURCES         = NO
 
-# Hide any special comment blocks from generated source code
-# fragments. Normal C and C++ comments will always remain visible.
+# Don't hide the special Doxygen comment blocks
 
-STRIP_CODE_COMMENTS    = YES
+STRIP_CODE_COMMENTS    = NO
 
 # For each documented function, list all documented functions
 # referencing it.
@@ -225,7 +239,7 @@ REFERENCED_BY_RELATION = YES
 
 REFERENCES_RELATION    = YES
 
-# References link to documenation, not source code.
+# References link to documentation, not source code.
 
 REFERENCES_LINK_SOURCE = NO
 
@@ -237,7 +251,7 @@ REFERENCES_LINK_SOURCE = NO
 
 GENERATE_HTML          = YES
 
-# i.e. doc/doxyhtml
+# i.e. @abs_top_builddir@/doc/doxyhtml
 
 HTML_OUTPUT            = doxyhtml
 
@@ -265,3 +279,6 @@ HAVE_DOT               = YES
 
 DOT_CLEANUP            = YES
 
+# Some of our dependency graphs are really huge...
+
+DOT_GRAPH_MAX_NODES    = 100

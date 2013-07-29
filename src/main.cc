@@ -51,3 +51,22 @@ main (int argc, char **argv)
 
   return retval;
 }
+
+
+/*!
+@mainpage Source code documentation for GNU Octave
+
+GNU Octave is a high-level language, primarily intended for numerical
+computations.  It provides a convenient interactive command line
+interface for solving linear and nonlinear problems numerically, and
+for performing other numerical experiments.  It may also be used as a
+batch-oriented language for data processing.
+
+GNU Octave is free software. You may redistribute it and/or modify it
+under the terms of the <a href="http://www.gnu.org/licenses/">GNU
+General Public License</a> as published by the Free Software Foundation.
+
+This is the developer documentation for Octave's own source code. It is
+intended to help for hacking Octave. It may also be useful for
+understanding the Octave API when writing your own .oct files.
+*/

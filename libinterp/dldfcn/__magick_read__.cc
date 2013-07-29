@@ -52,7 +52,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
 {
   typedef typename T::element_type P;
 
-  octave_value_list retval;
+  octave_value_list retval (3, Matrix ());
 
   const octave_idx_type nRows    = imvec[0].baseRows ();
   const octave_idx_type nCols    = imvec[0].baseColumns ();
@@ -89,7 +89,6 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
     {
       const octave_idx_type mapsize = imvec[0].colorMapSize ();
       Matrix cmap                   = Matrix (mapsize, 3);
-      NDArray alpha;
 
       // In theory, it should be possible for each frame of an image to
       // have different colormaps but for Matlab compatibility, we only
@@ -108,7 +107,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
               amap(i,0) = c.alpha ();
             }
 
-          alpha.resize (dim_vector (nRows, nCols, 1, nFrames));
+          NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
           const octave_idx_type nPixels = alpha.numel ();
 
           double* alpha_fvec = alpha.fortran_vec ();
@@ -121,6 +120,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
               alpha_fvec[idx] = abs (amap(img(idx), 0) - 1);
               idx++;
             }
+          retval(2) = alpha;
         }
 
       else
@@ -135,187 +135,280 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
         }
 
       retval(1) = cmap;
-      retval(2) = alpha;
     }
 
   return retval;
 }
 
+// This function is highly repetitive, a bunch of for loops that are
+// very similar to account for different image types. They are different
+// enough that trying to reduce the copy and paste would decrease its
+// readability too much.
 template <class T>
 octave_value_list
-read_images (const std::vector<Magick::Image>& imvec,
-             const Array<int>& frameidx, unsigned int depth)
+read_images (std::vector<Magick::Image>& imvec,
+             const Array<octave_idx_type>& frameidx)
 {
   typedef typename T::element_type P;
 
   octave_value_list retval (3, Matrix ());
 
-  T im;
+  const octave_idx_type nRows   = imvec[0].baseRows ();
+  const octave_idx_type nCols   = imvec[0].baseColumns ();
+  const octave_idx_type nFrames = frameidx.length ();
+  T img;
 
-  const int rows    = imvec[0].baseRows ();
-  const int columns = imvec[0].baseColumns ();
-  const int nframes = frameidx.length ();
+  // GraphicsMagick (GM) keeps the image values in memory using whatever
+  // QuantumDepth it was built with independently of the original image
+  // bitdepth. Basically this means that if GM was built with quantum 16
+  // all values are scaled in the uint16 range. If the original image
+  // had an 8 bit depth, we need to rescale it for that range.
+  // However, if the image had a bitdepth of 32, then we will be returning
+  // a floating point image. In this case, the values need to be rescaled
+  // for the range [0 1] (this is what Matlab has documented on the page
+  // about image types but in some cases seems to be doing something else.
+  // See bug #39249).
+  // Finally, we must do the division ourselves (set a divisor) instead of
+  // using quantumOperator for the cases where we will be returning floating
+  // point and want things in the range [0 1]. This is the same reason why
+  // the divisor is of type double.
+  const double divisor = (imvec[0].depth () == 32) ?
+                         std::numeric_limits<uint32_t>::max () :
+                         ((uint64_t (1) << QuantumDepth) - 1) / 
+                         ((uint64_t (1) << imvec[0].depth ()) - 1);
 
-  dim_vector idim = dim_vector (rows, columns, 1, nframes);
-
+  // FIXME: this workaround should probably be fixed in GM by creating a
+  //        new ImageType BilevelMatteType
+  // Despite what GM documentation claims, opacity is not only on the types
+  // with Matte on the name. It is possible that an image is completely
+  // black (1 color), and have a second channel set for transparency (2nd
+  // color). Its type will be bilevel since there is no BilevelMatte. The
+  // only way to check for this seems to be by checking matte ().
   Magick::ImageType type = imvec[0].type ();
-  const int divisor = ((uint64_t (1) << QuantumDepth) - 1) / 
-                      ((uint64_t (1) << depth) - 1);
+  if (type == Magick::BilevelType && imvec[0].matte ())
+    {
+      type = Magick::GrayscaleMatteType;
+    }
 
   switch (type)
     {
     case Magick::BilevelType:           // Monochrome bi-level image
     case Magick::GrayscaleType:         // Grayscale image
       {
-        im = T (idim);
-        P *vec = im.fortran_vec ();
+        img = T (dim_vector (nRows, nCols, 1, nFrames));
+        P *img_fvec = img.fortran_vec ();
 
-        for (int frame = 0; frame < nframes; frame++)
+        octave_idx_type idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
 
-            P *rbuf = vec;
-            for (int y = 0; y < rows; y++)
+            for (octave_idx_type col = 0; col < nCols; col++)
               {
-                for (int x = 0; x < columns; x++)
+                for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    *rbuf = pix->red / divisor;
-                    pix++;
-                    rbuf += rows;
+                    img_fvec[idx++] = pix->red / divisor;
+                    pix += nCols;
                   }
-                rbuf -= rows * columns - 1;
+                pix -= nRows * nCols -1;
               }
-
-            // Next frame.
-            vec += rows * columns * idim(2);
           }
-        }
-      break;
+        break;
+      }
 
     case Magick::GrayscaleMatteType:    // Grayscale image with opacity
       {
-        idim(2) = 2;
-        im = T (idim);
-        P *vec = im.fortran_vec ();
+        img   = T (dim_vector (nRows, nCols, 1, nFrames));
+        T alpha   (dim_vector (nRows, nCols, 1, nFrames));
+        P *img_fvec = img.fortran_vec ();
+        P *a_fvec   = alpha.fortran_vec ();
 
-        for (int frame = 0; frame < nframes; frame++)
+        octave_idx_type idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
 
-            P *rbuf = vec;
-            P *obuf = vec + rows * columns;
-            for (int y = 0; y < rows; y++)
+            for (octave_idx_type col = 0; col < nCols; col++)
               {
-                for (int x = 0; x < columns; x++)
+                for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    *rbuf = pix->red / divisor;
-                    *obuf = pix->opacity / divisor;
-                    pix++;
-                    rbuf += rows;
-                    obuf += rows;
+                    img_fvec[idx] = pix->red / divisor;
+                    a_fvec[idx] = pix->opacity / divisor;
+                    pix += nCols;
+                    idx++;
                   }
-                rbuf -= rows * columns - 1;
-                obuf -= rows * columns - 1;
+                pix -= nRows * nCols -1;
               }
-
-            // Next frame.
-            vec += rows * columns * idim(2);
           }
-        }
-      break;
+        retval(2) = alpha;
+        break;
+      }
 
     case Magick::PaletteType:           // Indexed color (palette) image
     case Magick::TrueColorType:         // Truecolor image
       {
-        idim(2) = 3;
-        im = T (idim);
-        P *vec = im.fortran_vec ();
+        img = T (dim_vector (nRows, nCols, 3, nFrames));
+        P *img_fvec = img.fortran_vec ();
 
-        for (int frame = 0; frame < nframes; frame++)
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
 
-            P *rbuf = vec;
-            P *gbuf = vec + rows * columns;
-            P *bbuf = vec + rows * columns * 2;
-            for (int y = 0; y < rows; y++)
+            octave_idx_type idx = 0;
+            img_fvec += nRows * nCols * frame;
+            P *rbuf   = img_fvec;
+            P *gbuf   = img_fvec + nRows * nCols;
+            P *bbuf   = img_fvec + nRows * nCols * 2;
+
+            for (octave_idx_type col = 0; col < nCols; col++)
               {
-                for (int x = 0; x < columns; x++)
+                for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    *rbuf = pix->red / divisor;
-                    *gbuf = pix->green / divisor;
-                    *bbuf = pix->blue / divisor;
-                    pix++;
-                    rbuf += rows;
-                    gbuf += rows;
-                    bbuf += rows;
+                    rbuf[idx] = pix->red   / divisor;
+                    gbuf[idx] = pix->green / divisor;
+                    bbuf[idx] = pix->blue  / divisor;
+                    pix += nCols;
+                    idx++;
                   }
-                rbuf -= rows * columns - 1;
-                gbuf -= rows * columns - 1;
-                bbuf -= rows * columns - 1;
+                pix -= nRows * nCols -1;
               }
-
-            // Next frame.
-            vec += rows * columns * idim(2);
           }
-        }
-      break;
+        break;
+      }
 
     case Magick::PaletteMatteType:      // Indexed color (palette) image with opacity
     case Magick::TrueColorMatteType:    // Truecolor image with opacity
-    case Magick::ColorSeparationType:   // Cyan/Yellow/Magenta/Black (CYMK) image
       {
-        idim(2) = 4;
-        im = T (idim);
-        P *vec = im.fortran_vec ();
+        img   = T (dim_vector (nRows, nCols, 3, nFrames));
+        T alpha   (dim_vector (nRows, nCols, 1, nFrames));
+        P *img_fvec = img.fortran_vec ();
+        P *a_fvec   = alpha.fortran_vec ();
 
-        for (int frame = 0; frame < nframes; frame++)
+        // Unlike the index for the other channels, this one won't need
+        // to be reset on each frame since it's a separate matrix.
+        octave_idx_type a_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
 
-            P *rbuf = vec;
-            P *gbuf = vec + rows * columns;
-            P *bbuf = vec + rows * columns * 2;
-            P *obuf = vec + rows * columns * 3;
-            for (int y = 0; y < rows; y++)
+            octave_idx_type idx = 0;
+            img_fvec += nRows * nCols * frame;
+            P *rbuf   = img_fvec;
+            P *gbuf   = img_fvec + nRows * nCols;
+            P *bbuf   = img_fvec + nRows * nCols * 2;
+
+            for (octave_idx_type col = 0; col < nCols; col++)
               {
-                for (int x = 0; x < columns; x++)
+                for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    *rbuf = pix->red / divisor;
-                    *gbuf = pix->green / divisor;
-                    *bbuf = pix->blue / divisor;
-                    *obuf = pix->opacity / divisor;
-                    pix++;
-                    rbuf += rows;
-                    gbuf += rows;
-                    bbuf += rows;
-                    obuf += rows;
+                    rbuf[idx]     = pix->red     / divisor;
+                    gbuf[idx]     = pix->green   / divisor;
+                    bbuf[idx]     = pix->blue    / divisor;
+                    a_fvec[a_idx] = pix->opacity / divisor;
+                    pix += nCols;
+                    idx++;
                   }
-                rbuf -= rows * columns - 1;
-                gbuf -= rows * columns - 1;
-                bbuf -= rows * columns - 1;
-                obuf -= rows * columns - 1;
+                pix -= nRows * nCols -1;
               }
-
-            // Next frame.
-            vec += rows * columns * idim(2);
           }
-        }
-      break;
+        retval(2) = alpha;
+        break;
+      }
+
+    case Magick::ColorSeparationType:   // Cyan/Yellow/Magenta/Black (CYMK) image
+      {
+        img   = T (dim_vector (nRows, nCols, 4, nFrames));
+        P *img_fvec = img.fortran_vec ();
+
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            const Magick::PixelPacket *pix
+              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+
+            octave_idx_type idx = 0;
+            img_fvec += nRows * nCols * frame;
+            P *cbuf   = img_fvec;
+            P *mbuf   = img_fvec + nRows * nCols;
+            P *ybuf   = img_fvec + nRows * nCols * 2;
+            P *kbuf   = img_fvec + nRows * nCols * 3;
+
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    cbuf[idx] = pix->red     / divisor;
+                    mbuf[idx] = pix->green   / divisor;
+                    ybuf[idx] = pix->blue    / divisor;
+                    kbuf[idx] = pix->opacity / divisor;
+                    pix += nCols;
+                    idx++;
+                  }
+                pix -= nRows * nCols -1;
+              }
+          }
+        break;
+      }
+
+    // Cyan, magenta, yellow, and black with alpha (opacity) channel
+    case Magick::ColorSeparationMatteType:
+      {
+        img   = T (dim_vector (nRows, nCols, 4, nFrames));
+        T alpha   (dim_vector (nRows, nCols, 1, nFrames));
+        P *img_fvec = img.fortran_vec ();
+        P *a_fvec   = alpha.fortran_vec ();
+
+        // Unlike the index for the other channels, this one won't need
+        // to be reset on each frame since it's a separate matrix.
+        octave_idx_type a_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            const Magick::PixelPacket *pix
+              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+            // Note that for CMYKColorspace + matte (CMYKA), the opacity is
+            // stored in the assocated IndexPacket.
+            const Magick::IndexPacket *apix
+              = imvec[frameidx(frame)].getConstIndexes ();
+
+            octave_idx_type idx = 0;
+            img_fvec += nRows * nCols * frame;
+            P *cbuf   = img_fvec;
+            P *mbuf   = img_fvec + nRows * nCols;
+            P *ybuf   = img_fvec + nRows * nCols * 2;
+            P *kbuf   = img_fvec + nRows * nCols * 3;
+
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    cbuf[idx]     = pix->red     / divisor;
+                    mbuf[idx]     = pix->green   / divisor;
+                    ybuf[idx]     = pix->blue    / divisor;
+                    kbuf[idx]     = pix->opacity / divisor;
+                    a_fvec[a_idx] = *apix / divisor;
+                    pix += nCols;
+                    idx++;
+                    a_idx++;
+                  }
+                pix -= nRows * nCols -1;
+              }
+          }
+        retval(2) = alpha;
+        break;
+      }
 
     default:
-      error ("__magick_read__: undefined Magick++ image type");
+      error ("__magick_read__: unknown Magick++ image type");
       return retval;
     }
 
-  retval(0) = im;
-
+  retval(0) = img;
   return retval;
 }
+
 
 void static
 read_file (const std::string filename, std::vector<Magick::Image>& imvec)
@@ -443,17 +536,36 @@ use @code{imread}.\n\
     }
 
   const Magick::ClassType klass = imvec[0].classType ();
+  const octave_idx_type depth   = imvec[0].depth ();
 
+  // Magick::ClassType
   // PseudoClass:
   // Image is composed of pixels which specify an index in a color palette.
-  if (klass == Magick::PseudoClass)
+  // DirectClass:
+  // Image is composed of pixels which represent literal color values.
+
+  // FIXME: GraphicsMagick does not really distinguishes between indexed and
+  //        normal images. After reading a file, it decides itself the optimal
+  //        way to store the image in memory, independently of the how the
+  //        image was stored in the file. That's what ClassType returns. While
+  //        it seems to match the original file most of the times, this is
+  //        not necessarily true all the times. See
+  //          https://sourceforge.net/mailarchive/message.php?msg_id=31180507
+  //        A grayscale jpeg image reports being indexed even though the JPEG
+  //        format has no support for indexed images. So we can skip at least
+  //        for that.
+
+  if (klass == Magick::PseudoClass && imvec[0].magick () != "JPEG")
     {
-      const octave_idx_type mapsize = imvec[0].colorMapSize ();
-      if (mapsize <= 256)
+      if (depth <= 1)
+        {
+          output = read_indexed_images <boolNDArray> (imvec, frameidx, nargout);
+        }
+      else if (depth <= 8)
         {
           output = read_indexed_images <uint8NDArray> (imvec, frameidx, nargout);
         }
-      else if (mapsize <= 65536)
+      else if (depth <= 16)
         {
           output = read_indexed_images <uint16NDArray> (imvec, frameidx, nargout);
         }
@@ -463,45 +575,30 @@ use @code{imread}.\n\
           return output;
         }
     }
-  // DirectClass:
-  // Image is composed of pixels which represent literal color values.
-  else if (klass == Magick::DirectClass)
-    {
-      unsigned int depth = imvec[0].modulusDepth ();
-      if (depth > 1)
-        {
-          --depth;
-          int i = 1;
-          while (depth >>= 1)
-            i++;
-          depth = 1 << i;
-        }
 
-      switch (depth)
-        {
-        case 1:
-          output = read_images<boolNDArray> (imvec, frameidx, depth);
-          break;
-
-        case 2:
-        case 4:
-        case 8:
-          output = read_images<uint8NDArray> (imvec, frameidx, depth) ;
-          break;
-
-        case 16:
-          output = read_images<uint16NDArray> (imvec, frameidx, depth);
-          break;
-
-        case 32:
-        case 64:
-        default:
-          error ("__magick_read__: image depths greater than 16-bit are not supported");
-        }
-    }
   else
     {
-      error ("imread: unsupported image class type");
+      if (depth <= 1)
+        {
+          output = read_images<boolNDArray> (imvec, frameidx);
+        }
+      else if (depth <= 8)
+        {
+          output = read_images<uint8NDArray> (imvec, frameidx);
+        }
+      else if (depth <= 16)
+        {
+          output = read_images<uint16NDArray> (imvec, frameidx);
+        }
+      else if (depth <= 32)
+        {
+          output = read_images<FloatNDArray> (imvec, frameidx);
+        }
+      else
+        {
+          error ("imread: reading of images with %i-bit depth is not supported",
+                 depth);
+        }
     }
 
 #endif

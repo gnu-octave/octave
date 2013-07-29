@@ -4276,6 +4276,7 @@ public:
       string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
       // FIXME: interpreter is not a property of Matlab line objects.
+      //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -4685,6 +4686,7 @@ public:
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata , Matrix ()
       // FIXME: interpreter is not a property of a Matlab patch.
+      //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -4805,6 +4807,7 @@ public:
       color_property facecolor , "none|{flat}|interp|texturemap"
       radio_property facelighting , "{none}|flat|gouraud|phong"
       // FIXME: interpreter is not a Matlab surface property
+      //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5

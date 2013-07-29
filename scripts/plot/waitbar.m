@@ -87,9 +87,13 @@ function retval = waitbar (varargin)
   endif
 
   if (h)
-    p = findobj (h, "type", "patch");
+    gd = get (h, "__guidata__");
+    ## Get the cached handles.
+    ax = gd(1);
+    p = gd(2);
+
     set (p, "xdata", [0; frac; frac; 0]);
-    ax = findobj (h, "type", "axes");
+
     if (ischar (msg) || iscellstr (msg))
       th = get (ax, "title");
       curr_msg = get (th, "string");
@@ -116,7 +120,10 @@ function retval = waitbar (varargin)
                "xlimmode", "manual", "ylimmode", "manual",
                "position", [0.1, 0.3, 0.8, 0.2]);
 
-    patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
+    p = patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
+
+    ## Cache the axes and patch handles.
+    set (h, "__guidata__", [ax p]);
 
     if (! (ischar (msg) || iscellstr (msg)))
       msg = "Please wait...";

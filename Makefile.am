@@ -147,7 +147,7 @@ octetc_DATA = \
   CITATION
 
 doxyhtml:
-	$(MAKE) -C doc/doxyhtml
+	$(MAKE) -C doc/doxyhtml doxyhtml
 .PHONY: doxyhtml
 
 octetc_DATA = NEWS

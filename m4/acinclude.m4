@@ -300,6 +300,49 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
   fi
 ])
 dnl
+dnl Check whether the Qt QAbstractItemModel::beginResetModel() function exists.
+dnl Also checks for QAbstractItemModel::endResetModel().  These are two of the
+dnl newest Qt functions that the Octave GUI depends on, added in Qt 4.6.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
+  AC_CACHE_CHECK([whether Qt has the QAbstractItemModel::beginResetModel() function],
+    [octave_cv_func_qabstractitemmodel_beginresetmodel],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QAbstractItemModel>
+        class item_model : public QAbstractItemModel
+        {
+        public:
+          item_model (QObject *parent = 0) : QAbstractItemModel (parent) {}
+          ~item_model () {}
+          QModelIndex index (int, int, const QModelIndex& m) const { return m; }
+          QModelIndex parent (const QModelIndex& m) const { return m; }
+          int columnCount (const QModelIndex&) const { return 0; }
+          int rowCount (const QModelIndex&) const { return 0; }
+          QVariant data (const QModelIndex&, int) const { return QVariant(); }
+          void update_model ()
+          {
+            this->beginResetModel ();
+            this->endResetModel ();
+          }
+        };
+        ]], [[
+        item_model model;
+        model.update_model ();
+        ]])],
+      octave_cv_func_qabstractitemmodel_beginresetmodel=yes,
+      octave_cv_func_qabstractitemmodel_beginresetmodel=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qabstractitemmodel_beginresetmodel = yes; then
+    AC_DEFINE(HAVE_QABSTRACTITEMMODEL_BEGINRESETMODEL, 1,
+      [Define to 1 if Qt has the QAbstractItemModel::beginResetModel() function.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [

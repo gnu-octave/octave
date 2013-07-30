@@ -2619,6 +2619,14 @@ if test $build_gui = yes; then
   fi
 
   if test $build_gui = yes; then
+    OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
+    if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
+      AC_MSG_WARN([QAbstractItemModel::beginResetModel() not found -- disabling GUI])
+      build_gui=no
+    fi
+  fi
+
+  if test $build_gui = yes; then
     OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
   fi
 

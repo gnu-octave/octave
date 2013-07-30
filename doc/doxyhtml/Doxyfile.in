@@ -176,6 +176,14 @@ SORT_BRIEF_DOCS        = YES
 
 SORT_MEMBERS_CTORS_1ST = YES
 
+#---------------------------------------------------------------------------
+# Configuration options related to the preprocessor
+#---------------------------------------------------------------------------
+
+# On by default, but let's be explicit
+
+ENABLE_PREPROCESSING   = YES
+
 # Expand the DEFUN family of macros
 
 MACRO_EXPANSION = YES
@@ -183,6 +191,34 @@ EXPAND_ONLY_PREDEF = YES
 EXPAND_AS_DEFINED = DEFUN DEFUN_DLD  # As defined in the Octave source
                                      # code, i.e. not overriden by this
                                      # config file
+
+# So that features that are behind #ifdef HAVE_FOO macros get processed by Doxygen
+
+PREDEFINED = HAVE_ARPACK=1          \
+             HAVE_CHOLMOD=1         \
+             HAVE_CCOLAMD=1         \
+             HAVE_CURL=1            \
+             HAVE_CXSPARSE=1        \
+             HAVE_FFTW=1            \
+             HAVE_FFTW3=1           \
+             HAVE_FFTW3F=1          \
+             HAVE_FFTW3F_THREADS=1  \
+             HAVE_FFTW3_THREADS=1   \
+             HAVE_FREETYPE=1        \
+             HAVE_GLPK=1            \
+             HAVE_HDF5=1            \
+             HAVE_LLVM=1            \
+             HAVE_MAGICK=1          \
+             HAVE_OPENMP=1          \
+             HAVE_PCRE_H=1          \
+             HAVE_PCRE_COMPILE=1    \
+             HAVE_QHULL=1           \
+             HAVE_QRUPDATE=1        \
+             HAVE_QRUPDATE_LUU=1    \
+             HAVE_QT=1              \
+             HAVE_UMFPACK=1         \
+             HAVE_X_WINDOWS=1       \
+             HAVE_ZLIB=1
 
 #---------------------------------------------------------------------------
 # configuration options related to the input files

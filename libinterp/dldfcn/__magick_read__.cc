@@ -44,22 +44,60 @@ along with Octave; see the file COPYING.  If not, see
 #include <Magick++.h>
 #include <clocale>
 
+static std::map<std::string, octave_idx_type>
+calculate_region (const octave_scalar_map& options)
+{
+  std::map<std::string, octave_idx_type> region;
+  const Cell pixel_region = options.getfield ("region").cell_value ();
+
+  // Subtract 1 to account for 0 indexing.
+  const Range rows     = pixel_region (0).range_value ();
+  const Range cols     = pixel_region (1).range_value ();
+  region["row_start"]  = rows.base () -1;
+  region["col_start"]  = cols.base () -1;
+  region["row_end"]    = rows.limit () -1;
+  region["col_end"]    = cols.limit () -1;
+
+  // Length of the area to load into the Image Pixel Cache
+  region["row_cache"] = region["row_end"] - region["row_start"] +1;
+  region["col_cache"] = region["col_end"] - region["col_start"] +1;
+
+  // How much we have to shift in the memory when doing the loops.
+  region["row_shift"] = region["col_cache"] * rows.inc ();
+  region["col_shift"] = region["col_cache"] * region["row_cache"] - cols.inc ();
+
+  // The actual height and width of the output image
+  region["row_out"] = floor ((region["row_end"] - region["row_start"]) / rows.inc ()) + 1;
+  region["col_out"] = floor ((region["col_end"] - region["col_start"]) / cols.inc ()) + 1;
+
+  return region;
+}
+
 template <class T>
 static octave_value_list
 read_indexed_images (std::vector<Magick::Image>& imvec,
                      const Array<octave_idx_type>& frameidx,
-                     const octave_idx_type nargout)
+                     const octave_idx_type nargout,
+                     const octave_scalar_map& options)
 {
   typedef typename T::element_type P;
 
   octave_value_list retval (3, Matrix ());
 
-  const octave_idx_type nRows    = imvec[0].baseRows ();
-  const octave_idx_type nCols    = imvec[0].baseColumns ();
-  const octave_idx_type nFrames  = frameidx.length ();
+  std::map<std::string, octave_idx_type> region = calculate_region (options);
+  const octave_idx_type nFrames = frameidx.length ();
+  const octave_idx_type nRows = region["row_out"];
+  const octave_idx_type nCols = region["col_out"];
 
   T img       = T (dim_vector (nRows, nCols, 1, nFrames));
   P* img_fvec = img.fortran_vec ();
+
+  const octave_idx_type row_start  = region["row_start"];
+  const octave_idx_type col_start  = region["col_start"];
+  const octave_idx_type row_shift  = region["row_shift"];
+  const octave_idx_type col_shift  = region["col_shift"];
+  const octave_idx_type row_cache  = region["row_cache"];
+  const octave_idx_type col_cache  = region["col_cache"];
 
   // When reading PixelPackets from the Image Pixel Cache, they come in
   // row major order. So we keep moving back and forth there so we can
@@ -67,7 +105,8 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
   octave_idx_type idx = 0;
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+      imvec[frameidx(frame)].getConstPixels (col_start, row_start,
+                                             col_cache, row_cache);
 
       const Magick::IndexPacket *pix
         = imvec[frameidx(frame)].getConstIndexes ();
@@ -77,9 +116,9 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
           for (octave_idx_type row = 0; row < nRows; row++)
             {
               img_fvec[idx++] = static_cast<P> (*pix);
-              pix += nCols;
+              pix += row_shift;
             }
-          pix -= nCols * nRows -1;
+          pix -= col_shift;
         }
     }
   retval(0) = octave_value (img);
@@ -148,16 +187,25 @@ template <class T>
 octave_value_list
 read_images (std::vector<Magick::Image>& imvec,
              const Array<octave_idx_type>& frameidx,
-             const octave_idx_type nargout)
+             const octave_idx_type nargout,
+             const octave_scalar_map& options)
 {
   typedef typename T::element_type P;
 
   octave_value_list retval (3, Matrix ());
 
-  const octave_idx_type nRows   = imvec[0].baseRows ();
-  const octave_idx_type nCols   = imvec[0].baseColumns ();
+  std::map<std::string, octave_idx_type> region = calculate_region (options);
   const octave_idx_type nFrames = frameidx.length ();
+  const octave_idx_type nRows = region["row_out"];
+  const octave_idx_type nCols = region["col_out"];
   T img;
+
+  const octave_idx_type row_start  = region["row_start"];
+  const octave_idx_type col_start  = region["col_start"];
+  const octave_idx_type row_shift  = region["row_shift"];
+  const octave_idx_type col_shift  = region["col_shift"];
+  const octave_idx_type row_cache  = region["row_cache"];
+  const octave_idx_type col_cache  = region["col_cache"];
 
   // GraphicsMagick (GM) keeps the image values in memory using whatever
   // QuantumDepth it was built with independently of the original image
@@ -237,16 +285,17 @@ read_images (std::vector<Magick::Image>& imvec,
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+              = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
+                                                       col_cache, row_cache);
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
                     img_fvec[idx++] = pix->red / divisor;
-                    pix += nCols;
+                    pix += row_shift;
                   }
-                pix -= nRows * nCols -1;
+                pix -= col_shift;
               }
           }
         break;
@@ -263,18 +312,19 @@ read_images (std::vector<Magick::Image>& imvec,
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+              = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
+                                                       col_cache, row_cache);
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
                     img_fvec[idx] = pix->red / divisor;
-                    a_fvec[idx] = pix->opacity / divisor;
-                    pix += nCols;
+                    a_fvec[idx]   = pix->opacity / divisor;
+                    pix += row_shift;
                     idx++;
                   }
-                pix -= nRows * nCols -1;
+                pix -= col_shift;
               }
           }
         retval(2) = alpha;
@@ -290,7 +340,8 @@ read_images (std::vector<Magick::Image>& imvec,
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+              = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
+                                                       col_cache, row_cache);
 
             octave_idx_type idx = 0;
             img_fvec += nRows * nCols * frame;
@@ -305,10 +356,10 @@ read_images (std::vector<Magick::Image>& imvec,
                     rbuf[idx] = pix->red   / divisor;
                     gbuf[idx] = pix->green / divisor;
                     bbuf[idx] = pix->blue  / divisor;
-                    pix += nCols;
+                    pix += row_shift;
                     idx++;
                   }
-                pix -= nRows * nCols -1;
+                pix -= col_shift;
               }
           }
         break;
@@ -328,7 +379,8 @@ read_images (std::vector<Magick::Image>& imvec,
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+              = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
+                                                       col_cache, row_cache);
 
             octave_idx_type idx = 0;
             img_fvec += nRows * nCols * frame;
@@ -344,10 +396,10 @@ read_images (std::vector<Magick::Image>& imvec,
                     gbuf[idx]     = pix->green   / divisor;
                     bbuf[idx]     = pix->blue    / divisor;
                     a_fvec[a_idx] = pix->opacity / divisor;
-                    pix += nCols;
+                    pix += row_shift;
                     idx++;
                   }
-                pix -= nRows * nCols -1;
+                pix -= col_shift;
               }
           }
         retval(2) = alpha;
@@ -362,7 +414,8 @@ read_images (std::vector<Magick::Image>& imvec,
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+              = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
+                                                       col_cache, row_cache);
 
             octave_idx_type idx = 0;
             img_fvec += nRows * nCols * frame;
@@ -379,10 +432,10 @@ read_images (std::vector<Magick::Image>& imvec,
                     mbuf[idx] = pix->green   / divisor;
                     ybuf[idx] = pix->blue    / divisor;
                     kbuf[idx] = pix->opacity / divisor;
-                    pix += nCols;
+                    pix += row_shift;
                     idx++;
                   }
-                pix -= nRows * nCols -1;
+                pix -= col_shift;
               }
           }
         break;
@@ -402,7 +455,8 @@ read_images (std::vector<Magick::Image>& imvec,
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
-              = imvec[frameidx(frame)].getConstPixels (0, 0, nCols, nRows);
+              = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
+                                                       col_cache, row_cache);
             // Note that for CMYKColorspace + matte (CMYKA), the opacity is
             // stored in the assocated IndexPacket.
             const Magick::IndexPacket *apix
@@ -424,11 +478,11 @@ read_images (std::vector<Magick::Image>& imvec,
                     ybuf[idx]     = pix->blue    / divisor;
                     kbuf[idx]     = pix->opacity / divisor;
                     a_fvec[a_idx] = *apix / divisor;
-                    pix += nCols;
+                    pix += row_shift;
                     idx++;
                     a_idx++;
                   }
-                pix -= nRows * nCols -1;
+                pix -= col_shift;
               }
           }
         retval(2) = alpha;
@@ -524,7 +578,7 @@ use @code{imread}.\n\
       return output;
     }
 
-  const octave_map options = args(1).map_value ();
+  const octave_scalar_map options = args(1).scalar_map_value ();
   if (error_state)
     {
       error ("__magick_read__: OPTIONS must be a struct");
@@ -540,7 +594,7 @@ use @code{imread}.\n\
   // Prepare an Array with the indexes for the requested frames.
   const octave_idx_type nFrames = imvec.size ();
   Array<octave_idx_type> frameidx;
-  const octave_value indexes = options.getfield ("index")(0);
+  const octave_value indexes = options.getfield ("index");
   if (indexes.is_string () && indexes.string_value () == "all")
     {
       frameidx.resize (dim_vector (1, nFrames));
@@ -594,15 +648,15 @@ use @code{imread}.\n\
     {
       if (depth <= 1)
         {
-          output = read_indexed_images <boolNDArray> (imvec, frameidx, nargout);
+          output = read_indexed_images <boolNDArray> (imvec, frameidx, nargout, options);
         }
       else if (depth <= 8)
         {
-          output = read_indexed_images <uint8NDArray> (imvec, frameidx, nargout);
+          output = read_indexed_images <uint8NDArray> (imvec, frameidx, nargout, options);
         }
       else if (depth <= 16)
         {
-          output = read_indexed_images <uint16NDArray> (imvec, frameidx, nargout);
+          output = read_indexed_images <uint16NDArray> (imvec, frameidx, nargout, options);
         }
       else
         {
@@ -615,19 +669,19 @@ use @code{imread}.\n\
     {
       if (depth <= 1)
         {
-          output = read_images<boolNDArray> (imvec, frameidx, nargout);
+          output = read_images<boolNDArray> (imvec, frameidx, nargout, options);
         }
       else if (depth <= 8)
         {
-          output = read_images<uint8NDArray> (imvec, frameidx, nargout);
+          output = read_images<uint8NDArray> (imvec, frameidx, nargout, options);
         }
       else if (depth <= 16)
         {
-          output = read_images<uint16NDArray> (imvec, frameidx, nargout);
+          output = read_images<uint16NDArray> (imvec, frameidx, nargout, options);
         }
       else if (depth <= 32)
         {
-          output = read_images<FloatNDArray> (imvec, frameidx, nargout);
+          output = read_images<FloatNDArray> (imvec, frameidx, nargout, options);
         }
       else
         {

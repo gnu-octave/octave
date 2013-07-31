@@ -56,8 +56,10 @@ function varargout = __imread__ (filename, varargin)
     error ("imread: cannot find %s", filename);
   endif
 
+  info = imfinfo (fn)(1);
   ## set default for options
-  options = struct ("index", 1);
+  options = struct ("index",       1,
+                    "region", {{1:1:info.Height 1:1:info.Width}});
 
   ## Index is the only option that can be defined without the parameter/value
   ## pair style. When defining it here, the string "all" is invalid though.
@@ -84,27 +86,31 @@ function varargout = __imread__ (filename, varargin)
           error ("imread: value for %s must be a vector or the string `all'");
         endif
 
-## FIXME: commented until it's implemented in __magick_read__
-##      case "pixelregion",
-##        options.region = varargin{idx+1};
-##        if (! iscell (options.region) || numel (options.region) != 2)
-##          error ("imread: value for %s must be a 2 element cell array",
-##                 varargin{idx});
-##        endif
-##        for reg_idx = 1:2
-##          if (numel (options.region{reg_idx}) == 3)
-##            ## do nothing
-##          elseif (numel (options.region{reg_idx}) == 2)
-##            options.region{reg_idx}(3) = options.region{reg_idx}(2);
-##            options.region{reg_idx}(2) = 1;
-##          else
-##            error ("imread: range for %s must be a 2 or 3 element vector",
-##                   varargin{idx});
-##          endif
-##          options.region{reg_idx} = floor (options.region{reg_idx}(1)): ...
-##                                    floor (options.region{reg_idx}(2)): ...
-##                                    floor (options.region{reg_idx}(3));
-##        endfor
+      case "pixelregion",
+        options.region = varargin{idx+1};
+        if (! iscell (options.region) || numel (options.region) != 2)
+          error ("imread: value for %s must be a 2 element cell array",
+                 varargin{idx});
+        endif
+        for reg_idx = 1:2
+          if (numel (options.region{reg_idx}) == 3)
+            ## do nothing
+          elseif (numel (options.region{reg_idx}) == 2)
+            options.region{reg_idx}(3) = options.region{reg_idx}(2);
+            options.region{reg_idx}(2) = 1;
+          else
+            error ("imread: range for %s must be a 2 or 3 element vector",
+                   varargin{idx});
+          endif
+          options.region{reg_idx} = floor (options.region{reg_idx}(1)): ...
+                                    floor (options.region{reg_idx}(2)): ...
+                                    floor (options.region{reg_idx}(3));
+        endfor
+        if (options.region{1}(end) > info.Height)
+          error ("imread: end ROWS for PixelRegions option is larger than image height");
+        elseif (options.region{2}(end) > info.Width)
+          error ("imread: end COLS for PixelRegions option is larger than image width");
+        endif
 
       case "info",
         ## We ignore this option. This parameter exists in Matlab to

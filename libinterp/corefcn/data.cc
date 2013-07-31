@@ -5213,29 +5213,53 @@ the norms of each column and return a row vector.\n\
               // we've handled the last parameter, so act as if it was removed
               nargin --;
             }
-          else if (nargin > 1 && ! args(1).is_scalar_type ())
-            gripe_wrong_type_arg ("norm", args(1), true);
 
           if (! error_state)
             {
               octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);
-              switch (strflag)
+
+              if (p_arg.is_empty ())
+                p_arg = octave_value (2);
+              else if (p_arg.is_string ())
                 {
-                case sfmatrix:
-                  retval(0) = xnorm (x_arg, p_arg);
-                  break;
-                case sfcols:
-                  retval(0) = xcolnorms (x_arg, p_arg);
-                  break;
-                case sfrows:
-                  retval(0) = xrownorms (x_arg, p_arg);
-                  break;
-                case sffrob:
-                  retval(0) = xfrobnorm (x_arg);
-                  break;
-                case sfinf:
-                  retval(0) = xnorm (x_arg, octave_Inf);
-                  break;
+                  std::string str = p_arg.string_value ();
+                  if ((strflag == sfcols || strflag == sfrows))
+                    {
+                      if (str == "cols" || str == "columns" || str == "rows")
+                        error ("norm: invalid combination of options");
+                      else if (str == "fro")
+                        p_arg = octave_value (2);
+                      else if (str == "inf")
+                        p_arg = octave_Inf;
+                      else
+                        error ("norm: unrecognized option: %s", str.c_str ());
+                    }
+                  else
+                    error ("norm: invalid combination of options");
+                }
+              else if (! p_arg.is_scalar_type ())
+                gripe_wrong_type_arg ("norm", p_arg, true);
+
+              if (! error_state)
+                {
+                  switch (strflag)
+                    {
+                    case sfmatrix:
+                      retval(0) = xnorm (x_arg, p_arg);
+                      break;
+                    case sfcols:
+                      retval(0) = xcolnorms (x_arg, p_arg);
+                      break;
+                    case sfrows:
+                      retval(0) = xrownorms (x_arg, p_arg);
+                      break;
+                    case sffrob:
+                      retval(0) = xfrobnorm (x_arg);
+                      break;
+                    case sfinf:
+                      retval(0) = xnorm (x_arg, octave_Inf);
+                      break;
+                    }
                 }
             }
         }
@@ -5298,6 +5322,18 @@ the norms of each column and return a row vector.\n\
 %! fhi = single (1e+300);
 %!assert (norm (flo*m2,"fro"), single (sqrt (30)*flo), -eps ("single"))
 %!assert (norm (fhi*m2,"fro"), single (sqrt (30)*fhi), -eps ("single"))
+
+%!shared q
+%! q = rand (1e3, 3);
+%!assert (norm (q, 3, "rows"), sum (q.^3, 2).^(1/3), sqrt (eps));
+%!assert (norm (q, "fro", "rows"), sum (q.^2, 2).^(1/2), sqrt (eps));
+%!assert (norm (q, "fro", "rows"), sqrt (sumsq (q, 2)), sqrt (eps));
+%!assert (norm (q, "fro", "cols"), sqrt (sumsq (q, 1)), sqrt (eps));
+%!assert (norm (q, 3, "cols"), sum (q.^3, 1).^(1/3), sqrt (eps));
+%!assert (norm (q, "inf", "rows"), norm (q, Inf, "rows"));
+%!assert (norm (q, "inf", "cols"), norm (q, Inf, "cols"));
+%!assert (norm (q, [], "rows"), norm (q, 2, "rows"));
+%!assert (norm (q, [], "cols"), norm (q, 2, "cols"));
 
 %!test
 %! ## Test for norm returning NaN on sparse matrix (bug #30631)

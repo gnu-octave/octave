@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 John W. Eaton
+## Copyright (C) 2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,18 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isfigure (@var{h})
-## Return true if @var{h} is a figure graphics handle and false otherwise.
+## @deftypefn {Function File} {} isaxes (@var{h})
+## Return true if @var{h} is an axes graphics handle and false otherwise.
 ##
 ## If @var{h} is a matrix then return a logical array which is true where
-## the elements of @var{h} are figure graphics handles and false where
+## the elements of @var{h} are axes graphics handles and false where
 ## they are not.
 ## @seealso{isaxes, ishandle}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = isfigure (h)
+function retval = isaxes (h)
 
   if (nargin != 1)
     print_usage ();
@@ -36,7 +36,7 @@ function retval = isfigure (h)
 
   hlist = ishandle (h);
   if (any (hlist))
-    retval(hlist) = strcmp (get (h(hlist), "type"), "figure");
+    retval(hlist) = strcmp (get (h(hlist), "type"), "axes");
   else
     retval = hlist;
   endif
@@ -47,8 +47,9 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   assert (isfigure (hf));
-%!   assert (! isfigure (-hf));
+%!   hax = axes ();
+%!   assert (isaxes (hax));
+%!   assert (! isaxes (-hax));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

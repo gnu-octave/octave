@@ -1082,12 +1082,15 @@ functions.  These objects become children of the current axes object.
 @subsubsection Handle Functions
 @cindex handle functions
 
-To determine whether a variable is a graphics object index or a figure
-index, use the functions @code{ishandle} and @code{isfigure}.
+To determine whether a variable is a graphics object index, or an index
+to an axes or figure, use the functions @code{ishandle}, @code{isaxes}, and
+@code{isfigure}.
 
 @DOCSTRING(ishandle)
 
 @DOCSTRING(ishghandle)
+
+@DOCSTRING(isaxes)
 
 @DOCSTRING(isfigure)
 

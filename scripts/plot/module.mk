@@ -118,6 +118,7 @@ plot_FCN_FILES = \
   plot/hidden.m \
   plot/hist.m \
   plot/hold.m \
+  plot/isaxes.m \
   plot/isfigure.m \
   plot/ishghandle.m \
   plot/ishold.m \

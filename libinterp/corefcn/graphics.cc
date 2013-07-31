@@ -8287,10 +8287,11 @@ DEFUN (ishandle, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ishandle (@var{h})\n\
 Return true if @var{h} is a graphics handle and false otherwise.\n\
+\n\
 @var{h} may also be a matrix of handles in which case a logical\n\
 array is returned that is true where the elements of @var{h} are\n\
 graphics handles and false where they are not.\n\
-@seealso{isfigure}\n\
+@seealso{isaxes, isfigure}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;

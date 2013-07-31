@@ -182,6 +182,11 @@ public slots:
   // setting global shortcuts
   void set_global_shortcuts (bool enable);
 
+  // handling the clipboard
+  void clipboard_has_changed (QClipboard::Mode);
+  void clear_clipboard ();
+
+
 protected:
   void closeEvent (QCloseEvent * closeEvent);
 
@@ -286,6 +291,7 @@ private:
 
   QAction *_copy_action;
   QAction *_paste_action;
+  QAction *_clear_clipboard_action;
   QAction *_undo_action;
 
   QAction *_find_files_action;
@@ -304,6 +310,8 @@ private:
   octave_main_thread *_octave_main_thread;
 
   octave_qt_link *_octave_qt_link;
+
+  QClipboard *_clipboard;
 
   // Flag for closing whole application.
   bool _closing;

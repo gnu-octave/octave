@@ -77,7 +77,8 @@ main_window::main_window (QWidget *p)
     workspace_window (new workspace_view (this)),
     find_files_dlg (0),
     _octave_main_thread (0),
-    _octave_qt_link (0)
+    _octave_qt_link (0),
+    _clipboard (QApplication::clipboard ())
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -852,8 +853,6 @@ main_window::construct (void)
 
   construct_octave_qt_link ();
 
-  set_global_shortcuts (true);
-
 #ifdef HAVE_QSCINTILLA
   connect (this,
            SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
@@ -875,6 +874,9 @@ main_window::construct (void)
   set_current_working_directory (curr_dir.absolutePath ());
 
   octave_link::post_event (this, &main_window::resize_command_window_callback);
+
+  set_global_shortcuts (true);
+
 }
 
 void
@@ -1083,15 +1085,19 @@ main_window::construct_edit_menu (QMenuBar *p)
                             tr ("Copy"), this, SLOT (copyClipboard ()));
   _copy_action->setShortcut (QKeySequence::Copy);
 
+
   _paste_action
     = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
   _paste_action->setShortcut (QKeySequence::Paste);
 
+  _clear_clipboard_action
+    = edit_menu->addAction (tr ("Clear Clipboard"), this,
+                            SLOT (clear_clipboard ()));
+
   edit_menu->addSeparator ();
 
-  _find_files_action
-    = edit_menu->addAction (tr ("Find Files..."));
+  _find_files_action = edit_menu->addAction (tr ("Find Files..."));
 
   edit_menu->addSeparator ();
 
@@ -1115,6 +1121,10 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   connect (clear_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_workspace_request ()));
+
+  connect (_clipboard, SIGNAL (changed (QClipboard::Mode)),
+           this, SLOT (clipboard_has_changed (QClipboard::Mode)));
+  clipboard_has_changed (QClipboard::Clipboard);
 }
 
 QAction *
@@ -1638,4 +1648,26 @@ main_window::handle_show_doc (const QString& file)
   emit show_doc_signal (file);
 }
 
+void
+main_window::clipboard_has_changed (QClipboard::Mode cp_mode)
+{
+  if (cp_mode == QClipboard::Clipboard)
+    {
+      if (_clipboard->text ().isEmpty ())
+        {
+          _paste_action->setEnabled (false);
+          _clear_clipboard_action->setEnabled (false);
+        }
+      else
+        {
+          _paste_action->setEnabled (true);
+          _clear_clipboard_action->setEnabled (true);
+        }
+    }
+}
 
+void
+main_window::clear_clipboard ()
+{
+  _clipboard->clear (QClipboard::Clipboard);
+}

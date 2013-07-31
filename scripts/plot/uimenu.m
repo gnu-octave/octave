@@ -102,7 +102,7 @@ endfunction
 
 %!testif HAVE_FLTK
 %! toolkit = graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off")
+%! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ui = uimenu ("label", "mylabel");
 %!   assert (findobj (hf, "type", "uimenu"), ui);
@@ -119,7 +119,7 @@ endfunction
 %% check for top level menus file, edit, and help
 %!testif HAVE_FLTK
 %! toolkit = graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off")
+%! hf = figure ("visible", "off");
 %! unwind_protect
 %!   uif = findall (hf, "label", "&file");
 %!   assert (ishghandle (uif));
@@ -134,7 +134,7 @@ endfunction
 
 %!testif HAVE_FLTK
 %! toolkit = graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off")
+%! hf = figure ("visible", "off");
 %! unwind_protect
 %!   uie = findall (hf, "label", "&edit");
 %!   myui = uimenu (uie, "label", "mylabel");

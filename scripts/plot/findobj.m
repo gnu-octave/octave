@@ -317,7 +317,7 @@ endfunction
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");
-%! hf = figure ("visible", "off")
+%! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h1 = subplot (2, 2, 1);
 %!   h2 = subplot (2, 2, 2);
@@ -334,7 +334,7 @@ endfunction
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");
-%! hf = figure ("visible", "off")
+%! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h1 = subplot (2, 2, 1);
 %!   set (h1, 'tag', '1')

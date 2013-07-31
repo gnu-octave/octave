@@ -45,7 +45,7 @@ endfunction
 
 %!testif HAVE_FLTK
 %! toolkit = graphics_toolkit ("fltk");
-%! hf = figure ("visible", "off")
+%! hf = figure ("visible", "off");
 %! unwind_protect
 %!   l = line;
 %!   assert (get (allchild (hf),"type"),{"axes"; "uimenu"; "uimenu"; "uimenu"});

@@ -57,8 +57,7 @@ function h = axes (varargin)
   else
     ## ARG is axes handle.
     htmp = varargin{1};
-    if (isscalar (htmp) && ishandle (htmp)
-        && strcmp (get (htmp, "type"), "axes"))
+    if (isscalar (htmp) && isaxes (htmp))
       if (__is_handle_visible__ (htmp))
         parent = ancestor (htmp, "figure");
         set (0, "currentfigure", parent);

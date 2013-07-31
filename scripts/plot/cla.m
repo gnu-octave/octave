@@ -47,8 +47,7 @@ function cla (varargin)
     hax = gca;
     do_reset = false;
   elseif (nargin == 1)
-    if (isscalar (varargin{1}) && ishandle (varargin{1})
-        && strcmp (get (varargin{1}, "type"), "axes"))
+    if (isscalar (varargin{1}) && isaxes (varargin{1}))
       hax = varargin{1};
       do_reset = false;
     elseif (ischar (varargin{1}) && strcmpi (varargin{1}, "reset"))
@@ -58,8 +57,7 @@ function cla (varargin)
       print_usage ();
     endif
   else
-    if (isscalar (varargin{1}) && ishandle (varargin{1})
-        && strcmp (get (varargin{1}, "type"), "axes")
+    if (isscalar (varargin{1}) && isaxes (varargin{1})
         && ischar (varargin{2}) && strcmpi (varargin{2}, "reset"))
       hax = varargin{1};
       do_reset = true;

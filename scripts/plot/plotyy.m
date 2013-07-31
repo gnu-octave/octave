@@ -115,7 +115,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     [ax, h1, h2] = __plotyy__ (ax, varargin{:});
   unwind_protect_cleanup
     ## Only change back to the old axis if we didn't delete it
-    if (ishandle (oldh) && strcmp (get (oldh, "type"), "axes"))
+    if (isaxes (oldh))
       axes (oldh);
     endif
   end_unwind_protect
@@ -142,7 +142,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   xlim = [min([x1(:); x2(:)]), max([x1(:); x2(:)])];
 
-  if (ishandle (ax(1)) && strcmp (get (ax(1), "type"), "axes"))
+  if (isaxes (ax(1)))
     axes (ax(1));
   else
     ax(1) = axes ();
@@ -157,7 +157,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   cf = gcf ();
   set (cf, "nextplot", "add");
 
-  if (ishandle (ax(2)) && strcmp (get (ax(2), "type"), "axes"))
+  if (isaxes (ax(2)))
     axes (ax(2));
   else
     ax(2) = axes ();
@@ -289,7 +289,7 @@ endfunction
 %! ylabel (hax(2), 'Right axis is Green');
 
 function deleteplotyy (h, d, ax2, t2)
-  if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes")
+  if (isaxes (ax2)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off"))
       && strcmp (get (ax2, "beingdeleted"), "off"))
     set (t2, "deletefcn", []);

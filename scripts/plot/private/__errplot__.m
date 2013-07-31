@@ -198,8 +198,8 @@ function h = __errplot__ (fstr, p, varargin)
     hlegend = [];
     fkids = get (gcf (), "children");
     for i = 1 : numel (fkids)
-      if (ishandle (fkids(i)) && strcmp (get (fkids(i), "type"), "axes")
-          && (strcmp (get (fkids(i), "tag"), "legend")))
+      if (   strcmp (get (fkids(i), "type"), "axes")
+          && strcmp (get (fkids(i), "tag"), "legend"))
         udata = get (fkids(i), "userdata");
         if (! isempty (intersect (udata.handle, gca ())))
           hlegend = fkids (i);

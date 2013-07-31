@@ -44,9 +44,6 @@
 ## Toggle the current hold state.
 ## @end table
 ##
-## If the first argument @var{hax} is an axes handle, 
-## rather than the current axes returned by @code{gca}.
-##
 ## When given the additional argument @var{hax}, the hold state is modified
 ## for this axis rather than the current axes returned by @code{gca}.
 ##
@@ -56,12 +53,10 @@
 
 function hold (varargin)
 
-  if (nargin > 0 && isscalar (varargin{1}) && ishandle (varargin{1})
-      && strcmp (get (varargin{1}, "type"), "axes"))
-    [hax, varargin, nargs] = __plt_get_axis_arg__ ("hold", varargin{:});
-    if (isempty (hax))
-      hax = gca ();
-    endif
+  if (nargin > 0 && isscalar (varargin{1}) && isaxes (varargin{1}))
+    hax = vargin{1};
+    varargin(1) = [];
+    nargs = numel (varargin);
     ## FIXME: Should this be ancestor (hax, "parent")?
     hfig = get (hax, "parent");
   elseif (nargin > 0 && numel (varargin{1}) > 1 && ishandle (varargin{1}))
@@ -76,19 +71,18 @@ function hold (varargin)
   if (nargs == 0)
     turn_hold_off = ishold (hax);
   elseif (nargs == 1)
-    state = varargin{1};
-    if (ischar (state))
-      if (strcmpi (state, "off"))
+    state = tolower (varargin{1});
+    switch (state)
+      case "off"
         turn_hold_off = true;
-      elseif (strcmpi (state, "all"))
+      case "all"
         turn_hold_off = false;
         hold_all = true;
-      elseif (strcmpi (state, "on"))
+      case "on"
         turn_hold_off = false;
-      else
+      otherwise
         error ("hold: invalid hold STATE");
-      endif
-    endif
+    endswitch
   else
     print_usage ();
   endif

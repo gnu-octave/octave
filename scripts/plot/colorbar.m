@@ -108,8 +108,7 @@ function h = colorbar (varargin)
             error ('colorbar: missing axes handle after "peer"');
           else
             ax = varargin{i++};
-            if (! isscalar (ax) || ! ishandle (ax)
-                || ! strcmp (get (ax, "type"), "axes"))
+            if (! isscalar (ax) && ! isaxes (ax))
               error ('colorbar: expecting an axes handle following "peer"');
             endif
           endif
@@ -253,7 +252,7 @@ endfunction
 function deletecolorbar (h, d, hc, orig_props)
   ## Don't delete the colorbar and reset the axis size if the
   ## parent figure is being deleted.
-  if (ishandle (hc) && strcmp (get (hc, "type"), "axes")
+  if (isaxes (hc)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
     if (strcmp (get (hc, "beingdeleted"), "off"))
       delete (hc);
@@ -272,7 +271,7 @@ function deletecolorbar (h, d, hc, orig_props)
 endfunction
 
 function resetaxis (cax, d, ax, orig_props)
-  if (ishandle (ax) && strcmp (get (ax, "type"), "axes"))
+  if (isaxes (ax))
     ## FIXME: Probably don't want to delete everyone's listeners on colormap.
     dellistener (get (ax, "parent"), "colormap");
     dellistener (ax, "clim");
@@ -292,7 +291,7 @@ function resetaxis (cax, d, ax, orig_props)
 endfunction
 
 function update_colorbar_clim (hax, d, hi, vert)
-  if (ishandle (hax) && strcmp (get (hax, "type"), "axes")
+  if (isaxes (hax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
     clen = rows (get (get (hax, "parent"), "colormap"));
     cext = get (hax, "clim");
@@ -331,7 +330,7 @@ endfunction
 
 function update_colorbar_axis (h, d, cax, orig_props)
 
-  if (ishandle (cax) && strcmp (get (cax, "type"), "axes")
+  if (isaxes (cax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))
     loc = get (cax, "location");
     obj = get (h);

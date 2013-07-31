@@ -64,7 +64,7 @@ function shading (varargin)
     types = get (kids, "type");
     hlist = [hlist; kids(strcmp(types, "patch"))];
     hlist = [hlist; kids(strcmp(types, "surface"))];
-    parents = kids(strcmp(types, "axes"));
+    parents = kids(strcmp (types, "axes"));
     hglist = kids(strcmp (types, "hggroup"));
     for i = 1 : numel (hglist)
       props = get (hglist(i));

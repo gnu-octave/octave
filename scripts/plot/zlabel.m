@@ -72,7 +72,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! plot3 (hf, 0, 0, 0);
+%! plot3 (0, 0, 0);
 %! unwind_protect
 %!   z = zlabel ("zlabel_string");
 %!   assert (get (gca, "zlabel"), z);

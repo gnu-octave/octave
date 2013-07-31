@@ -253,8 +253,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   hlegend = [];
   fkids = get (fig, "children");
   for i = 1 : numel (fkids)
-    if (ishandle (fkids(i)) && strcmp (get (fkids(i), "type"), "axes")
-        && (strcmp (get (fkids(i), "tag"), "legend")))
+    if (   strcmp (get (fkids(i), "type"), "axes")
+        && strcmp (get (fkids(i), "tag"), "legend"))
       udata = get (fkids(i), "userdata");
       if (! isempty (intersect (udata.handle, ca)))
         hlegend = fkids(i);
@@ -1059,7 +1059,7 @@ function hideshowlegend (h, d, ca, pos1, pos2)
   endif
 
   for i = 1 : numel (ca)
-    if (ishandle (ca(i)) && strcmp (get (ca(i), "type"), "axes")
+    if (isaxes (ca(i))
         && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off"))
         && strcmp (get (ca(i), "beingdeleted"), "off"))
       units = get (ca(i), "units");
@@ -1078,7 +1078,7 @@ function hideshowlegend (h, d, ca, pos1, pos2)
 endfunction
 
 function deletelegend1 (h, d, ca)
-  if (ishandle (ca) && strcmp (get (ca, "type"), "axes")
+  if (isaxes (ca)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
       && strcmp (get (ca, "beingdeleted"), "off"))
     delete (ca);
@@ -1087,7 +1087,7 @@ endfunction
 
 function deletelegend2 (h, d, ca, pos, outpos, t1, hplots)
   for i = 1 : numel (ca)
-    if (ishandle (ca(i)) && strcmp (get (ca(i), "type"), "axes")
+    if (isaxes (ca(i))
         && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
         && strcmp (get (ca(i), "beingdeleted"), "off"))
       if (!isempty (pos) && !isempty(outpos))

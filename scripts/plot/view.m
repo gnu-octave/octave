@@ -51,7 +51,7 @@ function [azimuth, elevation] = view (varargin)
       args = {get(gca (), "view")};
     else
       ax = varargin{1};
-      if (ishandle (ax) && strcmp (get (ax, "type"), "axes"))
+      if (isaxes (ax))
         args = varargin(2:end);
       else
         ax = gca;

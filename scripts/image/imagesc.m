@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} imagesc (@var{img})
 ## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{img})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{climits})
-## @deftypefnx {Function File} {} imagesc (@var{h}, @dots{})
+## @deftypefnx {Function File} {} imagesc (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} imagesc (@dots{})
 ## Display a scaled version of the matrix @var{img} as a color image.  The
 ## colormap is scaled so that the entries of the matrix occupy the entire
@@ -45,14 +45,14 @@ function h = imagesc (varargin)
   if (nargin < 1 || nargin > 4)
     print_usage ();
   elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    harg = varargin{1};
-    if (! strcmp (get (harg, "type"), "axes"))
-      error ("imagesc: expecting first argument to be an axes object");
+    hax = varargin{1};
+    if (! isaxes (hax))
+      error ("imagesc: HAX argument must be an axes object");
     endif
     oldh = gca ();
     unwind_protect
       axes (h);
-      htmp = __imagesc__ (harg, varargin{2:end});
+      htmp = __imagesc__ (hax, varargin{2:end});
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect

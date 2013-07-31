@@ -28,24 +28,24 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
   h = [];
   parent = find (strcmpi (varargin, "parent"), 1);
   
-  ## Look for numeric scalar which is a graphics handle but not the
+
+  ## Look for a scalar which is a graphics handle but not the
   ## Root Figure (0) or an ordinary figure (integer).
-  if (numel (varargin) > 0 && isnumeric (varargin{1})
-      && isscalar (varargin{1}) && ishandle (varargin{1})
-      && varargin{1} != 0 && ! isfigure (varargin{1}))
+  if (numel (varargin) > 0 && numel (varargin{1}) == 1
+      && ishandle (varargin{1}) && varargin{1} != 0 && ! isfigure (varargin{1}))
     htmp = varargin{1};
-    obj = get (htmp);
-    if (strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
-      h = htmp;
-      varargin(1) = [];
-    else
+    if (! isaxes (htmp))
       error ("%s: expecting first argument to be axes handle", caller);
     endif
+    if (! strcmp (get (htmp, "tag"), "legend"))
+      h = htmp;
+      varargin(1) = [];
+    endif
+  ## Look for "parent"/axis prop/value pair
   elseif (numel (varargin) > 1 && ! isempty (parent))
     if (parent < numel (varargin) && ishandle (varargin{parent+1}))
       htmp = varargin{parent+1};
-      obj = get (htmp);
-      if (strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
+      if (isaxes (htmp) && ! strcmp (get (htmp, "tag"), "legend"))
         h = htmp;
         varargin(parent:parent+1) = [];
       else

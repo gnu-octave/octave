@@ -84,7 +84,7 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! [~,~,Z] = peaks ();
+%! Z = peaks ();
 %! surfc (Z);
 
 %!demo

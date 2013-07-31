@@ -102,7 +102,7 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! [~,~,Z] = peaks ();
+%! Z = peaks ();
 %! pcolor (Z);
 
 %!demo

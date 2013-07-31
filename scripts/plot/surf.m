@@ -70,7 +70,7 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! [~,~,Z] = peaks ();
+%! Z = peaks ();
 %! surf (Z);
 
 %!demo

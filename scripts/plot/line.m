@@ -23,12 +23,16 @@
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} line (@var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {} line (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} line (@dots{})
 ## Create line object from @var{x} and @var{y} (and possibly @var{z}) and
 ## insert in the current axes.
 ##
 ## Multiple property-value pairs may be specified for the line object, but they
 ## must appear in pairs.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle (or vector of handles)
 ## to the line objects created.

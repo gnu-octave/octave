@@ -17,8 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{data} =} guidata (@var{handle})
-## @deftypefnx {Function File} {} guidata (@var{handle}, @var{data})
+## @deftypefn  {Function File} {@var{data} =} guidata (@var{h})
+## @deftypefnx {Function File} {} guidata (@var{h}, @var{data})
+## Query or set user-custom GUI data.
+##
+## The GUI data is stored in the figure handle @var{h}.  If @var{h} is not a
+## figure handle then it's parent figure will be used for storage.
+##
+## @var{data} must be a single object which means it is usually preferable
+## for it to be a data container such as a cell array or struct.
+##
+## @seealso{getappdata, setappdata, get, set, getpref, setpref}
 ## @end deftypefn
 
 ## Author: goffioul

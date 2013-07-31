@@ -20,12 +20,23 @@
 ## @deftypefn  {Command} {} figure
 ## @deftypefnx {Command} {} figure @var{n}
 ## @deftypefnx {Function File} {} figure (@var{n})
-## @deftypefnx {Function File} {} figure (@var{n}, "@var{property}", @var{value}, @dots{})
-## Set the current plot window to plot window @var{n}.  If no arguments are
-## specified, the next available window number is chosen.
+## @deftypefnx {Function File} {} figure (@dots{}, "@var{property}", @var{value}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} figure (@var{dots})
+## Create a new figure window for plotting.
 ##
-## Multiple property-value pairs may be specified for the figure, but they
-## must appear in pairs.
+## If no arguments are specified, a new figure with the next available number
+## is created.
+##
+## If called with an integer @var{n}, and no such numbered figure exists, then
+## a new figure with the specified number is created.  If the figure already
+## exists then it is made visible and becomes the current figure for plotting.
+## 
+## Multiple property-value pairs may be specified for the figure object, but
+## they must appear in pairs.
+##
+## The optional return value @var{h} is a graphics handle to the created figure
+## object.
+## @seealso{axes, gcf, clf, close}
 ## @end deftypefn
 
 ## Author: jwe, Bill Denney

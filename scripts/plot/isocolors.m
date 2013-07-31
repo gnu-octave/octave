@@ -93,7 +93,6 @@
 ## @end example
 ##
 ## @seealso{isosurface, isonormals}
-##
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>

@@ -25,7 +25,7 @@
 ## Author: Ben Abbott  <bpabbott@mac.com>
 
 function res = isprop (h, prop)
-  ## Check input
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif

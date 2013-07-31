@@ -23,6 +23,8 @@
 ## 
 ## @code{getappdata(@var{h})} returns a structure, @var{appdata}, whose fields
 ## correspond to the appdata properties.
+##
+## @seealso{setappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>

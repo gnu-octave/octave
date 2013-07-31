@@ -17,31 +17,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} grid
-## @deftypefnx {Function File} {} grid on
-## @deftypefnx {Function File} {} grid off
-## @deftypefnx {Function File} {} grid minor
-## @deftypefnx {Function File} {} grid minor on
-## @deftypefnx {Function File} {} grid minor off
+## @deftypefn  {Command} {} grid
+## @deftypefnx {Command} {} grid on
+## @deftypefnx {Command} {} grid off
+## @deftypefnx {Command} {} grid minor
+## @deftypefnx {Command} {} grid minor on
+## @deftypefnx {Command} {} grid minor off
 ## @deftypefnx {Function File} {} grid (@var{hax}, @dots{})
-## Control the display of grid lines on a plot.
+## Control the display of plot grid lines.
 ##
-## The function input may be either @code{"on"}, or @code{"off"}.
+## The function state input may be either "on" or "off".
 ## If it is omitted, the current grid state is toggled.
 ##
-## If the first argument is @code{"minor"} then all further commands
+## When the first argument is "minor" all subsequent commands
 ## modify the minor grid rather than the major grid.
 ##
-## If the first argument is an axis handle, @var{hax}, operate on the
-## specified axis object.
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axis rather than the current axes returned by @code{gca}.
 ##
 ## To control the grid lines for an individual axis use the @code{set}
-## function.  For example,
+## function.  For example:
 ##
 ## @example
 ## set (gca, "ygrid", "on");
 ## @end example
-## @seealso{box}
+## @seealso{axis, box}
 ## @end deftypefn
 
 ## Author: jwe

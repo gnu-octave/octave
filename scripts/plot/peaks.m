@@ -22,11 +22,12 @@
 ## @deftypefnx {Function File} {} peaks (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} peaks (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} peaks (@dots{})
-## Generate a function with lots of local maxima and minima.  The function
-## has the form
+## Plot a function with lots of local maxima and minima.
+##
+## The function has the form
 ##
 ## @tex
-## $f(x,y) = 3 (1 - x) ^ 2 e ^ {\left(-x^2 - (y+1)^2\right)} - 10 \left({x \over 5} - x^3 - y^5)\right) - {1 \over 3} e^{\left(-(x+1)^2 - y^2\right)}$
+## $$f(x,y) = 3 (1 - x) ^ 2 e ^ {\left(-x^2 - (y+1)^2\right)} - 10 \left({x \over 5} - x^3 - y^5)\right) - {1 \over 3} e^{\left(-(x+1)^2 - y^2\right)}$$
 ## @end tex
 ## @ifnottex
 ## @verbatim
@@ -37,14 +38,21 @@
 ## @end ifnottex
 ##
 ## Called without a return argument, @code{peaks} plots the surface of the
-## above function using @code{mesh}.  If @var{n} is a scalar, the @code{peaks}
-## returns the values of the above function on a @var{n}-by-@var{n} mesh over
-## the range @code{[-3,3]}.  The default value for @var{n} is 49.
+## above function using @code{surf}.
+## 
+## If @var{n} is a scalar, @code{peaks} plots the value of the above
+## function on an @var{n}-by-@var{n} mesh over the range [-3,3].  The
+## default value for @var{n} is 49.
 ##
-## If @var{n} is a vector, then it represents the @var{x} and @var{y} values
-## of the grid on which to calculate the above function.  The @var{x} and
-## @var{y} values can be specified separately.
-## @seealso{surf, mesh, meshgrid}
+## If @var{n} is a vector, then it represents the grid values over which
+## to calculate the function.  If @var{x} and @var{y} are specified then
+## the function value is calculated over the specified grid of vertices.
+##
+## When called with output arguments, return the data for the function
+## evaluated over the meshgrid.  This can subsequently be plotted with
+## @code{surf (@var{x}, @var{y}, @var{z})}.
+## 
+## @seealso{sombrero, meshgrid, mesh, surf}
 ## @end deftypefn
 
 ## Expression for the peaks function was taken from the following paper:

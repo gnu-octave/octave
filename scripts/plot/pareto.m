@@ -18,28 +18,32 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pareto (@var{x})
-## @deftypefnx {Function File} {} pareto (@var{x}, @var{y})
-## @deftypefnx {Function File} {} pareto (@var{h}, @dots{})
+## @deftypefn  {Function File} {} pareto (@var{y})
+## @deftypefnx {Function File} {} pareto (@var{y}, @var{x})
+## @deftypefnx {Function File} {} pareto (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} pareto (@dots{})
-## Draw a Pareto chart, also called ABC chart.  A Pareto chart is a bar graph
-## used to arrange information in such a way that priorities for process
-## improvement can be established.  It organizes and displays information
-## to show the relative importance of data.  The chart is similar to the
-## histogram or bar chart, except that the bars are arranged in decreasing
-## order from left to right along the abscissa.
+## Draw a Pareto chart.
+##
+## A Pareto chart is a bar graph that arranges information in such a way
+## that priorities for process improvement can be established;  It organizes
+## and displays information to show the relative importance of data.  The chart
+## is similar to the histogram or bar chart, except that the bars are arranged
+## in decreasing magnitude from left to right along the x-axis.
 ##
 ## The fundamental idea (Pareto principle) behind the use of Pareto
 ## diagrams is that the majority of an effect is due to a small subset of the
-## causes, so for quality improvement the first few (as presented on the
-## diagram) contributing causes to a problem usually account for the majority
-## of the result.  Thus, targeting these "major causes" for elimination
-## results in the most cost-effective improvement scheme.
+## causes.  For quality improvement, the first few contributing causes 
+## (leftmost bars as presented on the diagram) to a problem usually account for
+## the majority of the result.  Thus, targeting these "major causes" for
+## elimination results in the most cost-effective improvement scheme.
 ##
-## The data are passed as @var{x} and the abscissa as @var{y}.  If @var{y} is
-## absent, then the abscissa are assumed to be @code{1 : length (@var{x})}.
-## @var{y} can be a string array, a cell array of strings, or a numerical
+## Typically only the magnitude data @var{y} is present in which case
+## @var{x} is taken to be the range @code{1 : length (@var{y})}.  If @var{x}
+## is given it may be a string array, a cell array of strings, or a numerical
 ## vector.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a 2-element vector with a graphics
 ## handle for the created bar plot and a second handle for the created line
@@ -55,7 +59,7 @@
 ## pareto (Sold, Cheese);
 ## @end group
 ## @end example
-## @seealso{bar, barh, pie, plot}
+## @seealso{bar, barh, hist, pie, plot}
 ## @end deftypefn
 
 function h = pareto (varargin)

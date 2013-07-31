@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hidden ()
-## @deftypefnx {Function File} {} hidden ("on")
-## @deftypefnx {Function File} {} hidden ("off")
-## @deftypefnx {Function File} {@var{state} =} hidden (@dots{})
+## @deftypefn  {Command} {} hidden
+## @deftypefnx {Command} {} hidden "on"
+## @deftypefnx {Command} {} hidden "off"
+## @deftypefnx {Function File} {@var{mode} =} hidden (@dots{})
 ## Control mesh hidden line removal.
 ##
 ## When called with no argument the hidden line removal state is toggled.
@@ -34,7 +34,7 @@
 ## objects behind the mesh can be seen through the faces (openings) of the
 ## mesh, although the mesh grid lines are still opaque.
 ##
-## @seealso{mesh, meshc, meshz, ezmesh, ezmeshc}
+## @seealso{mesh, meshc, meshz, ezmesh, ezmeshc, trimesh, waterfall}
 ## @end deftypefn
 
 function state = hidden (mode = "toggle")

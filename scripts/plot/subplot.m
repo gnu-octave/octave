@@ -19,18 +19,17 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
 ## @deftypefnx {Function File} {} subplot (@var{rcn})
+## @deftypefnx {Function File} {} subplot (@dots{}, "align")
 ## @deftypefnx {Function File} {@var{hax} =} subplot (@dots{})
-## Set up a plot grid with @var{rows} by @var{cols} subwindows and plot
-## in location given by @var{index}.
+## @deftypefnx {Function File} {@var{hax} =} subplot (@dots{})
+## Set up a plot grid with @var{rows} by @var{cols} subwindows and set the
+## current axes for plotting to the location given by @var{index}.
 ##
-## If @var{hax} is provided, subplot returns the axis handle for the subplot.
-## This is usuful for modifying the properties of a subplot.
+## If only one numeric argument is supplied, then it must be a three digit
+## value specifying the location in digits 1 (rows) and 2 (columns) and the
+## plot index in digit 3.
 ##
-## If only one argument is supplied, then it must be a three digit value
-## specifying the location in digits 1 (rows) and 2 (columns) and the plot
-## index in digit 3.
-##
-## The plot index runs row-wise.  First all the columns in a row are filled
+## The plot index runs row-wise.  First all the columns in a row are numbered
 ## and then the next row is filled.
 ##
 ## For example, a plot with 2 by 3 grid will have plot indices running as
@@ -56,14 +55,20 @@
 ## @end group
 ## @end example
 ##
-## @var{index} may be a vector.  In which case, the new axis will enclose
+## @end ifnottex
+##
+## @var{index} may also be a vector.  In this case, the new axis will enclose
 ## the grid locations specified.  The first demo illustrates an example:
 ##
 ## @example
 ## demo ("subplot", 1)
 ## @end example
 ##
-## @end ifnottex
+## If the option "align" is given then the plot boxes of the subwindows
+## will align, but this may leave no room for axis tick marks or labels.
+##
+## If the output @var{hax} is requested, subplot returns the axis handle for
+## the subplot.  This is useful for modifying the properties of a subplot.
 ## @seealso{axes, plot}
 ## @end deftypefn
 

@@ -18,39 +18,35 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contourf (@var{x}, @var{y}, @var{z}, @var{lvl})
-## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z}, @var{n})
+## @deftypefn  {Function File} {} contourf (@var{z})
+## @deftypefnx {Function File} {} contourf (@var{z}, @var{vn})
 ## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} contourf (@var{z}, @var{n})
-## @deftypefnx {Function File} {} contourf (@var{z}, @var{lvl})
-## @deftypefnx {Function File} {} contourf (@var{z})
-## @deftypefnx {Function File} {} contourf (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {Function File} {} contourf (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} contourf (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@dots{})
-## Compute and plot filled contours of the matrix @var{z}.
-## Parameters @var{x}, @var{y} and @var{n} or @var{lvl} are optional.
+## Create a 2-D contour plot with filled intervals.
 ##
-## If @var{x} and @var{y} are omitted they are taken as the row/column
-## indices of @var{z}.  @var{n} is a scalar denoting the number of contour
-## lines to compute.  Alternatively @var{lvl} is a vector containing the
-## contour levels.  If only one value (e.g., lvl0) is desired, set
-## @var{lvl} to [lvl0, lvl0].  If both @var{n} or @var{lvl} are omitted
-## a default value of 10 contour levels is assumed.
+## Plot level curves (contour lines) of the matrix @var{z} and fill the region
+## between lines with colors from the current colormap.
 ##
-## The appearance of the plot can be customized by passing
-## property/value pairs to the function. 
+## The level curves are taken from the contour matrix @var{c} computed by
+## @code{contourc} for the same arguments; see the latter for their
+## interpretation.
 ##
-## If provided, the filled contours are added to the axes object
-## @var{hax} instead of the current axis.
+## The appearance of contour lines can be defined with a line style @var{style}
+## in the same manner as @code{plot}.  Only line style and color are used;
+## Any markers defined by @var{style} are ignored.
 ##
-## The return value @var{c} is a 2xn matrix containing the contour lines
-## as described in the documentation on the @code{contourc} function.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
-## The return value @var{h} is handle-vector to the patch objects creating
-## the filled contours.
+## The optional output @var{c} are the contour levels in @code{contourc} format.
 ##
-## The following example plots filled contours of the @code{peaks}
-## function.
+## The optional return value @var{h} is a graphics handle to the hggroup
+## comprising the contour lines.
+##
+## The following example plots filled contours of the @code{peaks} function.
 ##
 ## @example
 ## @group
@@ -58,7 +54,7 @@
 ## contourf (x, y, z, -7:9)
 ## @end group
 ## @end example
-## @seealso{contourc, contour, contour3, patch}
+## @seealso{ezcontourf, contour, contourc, contour3, clabel, meshc, surfc, caxis, colormap, plot}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

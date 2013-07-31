@@ -21,10 +21,20 @@
 ## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{z}, @var{vn})
 ## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
-## Compute isolines (contour lines) of the matrix @var{z}.
-## Parameters @var{x}, @var{y}, and @var{vn} are optional.
+## Compute contour lines (isolines of constant Z value).
 ##
-## The return value @var{lev} is a vector of the contour levels.
+## The matrix @var{z} contains height values above the rectangular grid
+## determined by @var{x} and @var{y}.  If only a single input @var{z} is
+## provided then @var{x} is taken to be @code{1:rows (@var{z})} and @var{y} is
+## taken to be @code{1:columns (@var{z})}.
+##
+## The optional input @var{vn} is either a scalar denoting the number of
+## contour lines to compute or a vector containing the Z values where lines
+## will be computed.  When @var{vn} is a vector the number of contour lines
+## is @code{numel (@var{vn})}.  However, to compute a single contour line
+## at a given value use @code{@var{vn} = [val, val]}.  If @var{vn} is omitted
+## it defaults to 10.
+##
 ## The return value @var{c} is a 2x@var{n} matrix containing the
 ## contour lines in the following format
 ##
@@ -39,13 +49,10 @@
 ## in which contour line @var{n} has a level (height) of @var{levn} and
 ## length of @var{lenn}.
 ##
-## If @var{x} and @var{y} are omitted they are taken as the row/column
-## indices of @var{z}.  @var{vn} is either a scalar denoting the number of
-## contour lines to compute or a vector containing the values of the lines.
-## If only one value is desired, set @code{@var{vn} = [val, val]};
-## If @var{vn} is omitted it defaults to 10.
+## The optional return value @var{lev} is a vector with the Z values of
+## of the contour levels.
 ##
-## For example:
+## Example:
 ##
 ## @example
 ## @group
@@ -57,7 +64,7 @@
 ##         2.0000   1.0000   2.0000   2.0000   2.0000   1.5000
 ## @end group
 ## @end example
-## @seealso{contour, contourf, contour3}
+## @seealso{contour, contourf, contour3, clabel}
 ## @end deftypefn
 
 ## Author: Shai Ayal <shaiay@users.sourceforge.net>

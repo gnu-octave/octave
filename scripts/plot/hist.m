@@ -23,7 +23,6 @@
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{x}, @var{norm})
 ## @deftypefnx {Function File} {[@var{nn}, @var{xx}] =} hist (@dots{})
 ## @deftypefnx {Function File} {[@dots{}] =} hist (@dots{}, @var{prop}, @var{val})
-##
 ## Produce histogram counts or plots.
 ##
 ## With one vector input argument, @var{y}, plot a histogram of the values
@@ -65,7 +64,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{bar}
+## @seealso{histc, bar, pie, rose}
 ## @end deftypefn
 
 ## Author: jwe

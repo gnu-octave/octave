@@ -17,11 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cla
-## @deftypefnx {Function File} {} cla reset
+## @deftypefn  {Command} {} cla
+## @deftypefnx {Command} {} cla reset
 ## @deftypefnx {Function File} {} cla (@var{hax})
 ## @deftypefnx {Function File} {} cla (@var{hax}, "reset")
-## Clear the current axes by deleting child graphic objects with visible
+## Clear the current axes.
+##
+## @code{cla} operates by deleting child graphic objects with visible
 ## handles (HandleVisibility = "on").
 ##
 ## If the optional argument "reset" is specified, delete all child objects
@@ -29,8 +31,8 @@
 ## their defaults.  However, the following properties are not reset:
 ## Position, Units.
 ##
-## If an axes object handle @var{hax} is specified, operate on it instead of
-## the current axes.
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axis rather than the current axes returned by @code{gca}.
 ## @seealso{clf}
 ## @end deftypefn
 
@@ -80,13 +82,12 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot (1:10);
+%!   assert (! isempty (get (gca, "children")));
 %!   cla ();
-%!   kids = get (gca, "children");
-%!   cla ();
+%!   assert (isempty (get (gca, "children")));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-%! assert (numel (kids), 0);
 
 %!test
 %! hf = figure ("visible", "off");

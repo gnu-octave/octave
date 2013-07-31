@@ -18,15 +18,21 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{h} =} findall ()
-## @deftypefnx {Function File} {@var{h} =} findall (@var{prop_name}, @var{prop_value})
-## @deftypefnx {Function File} {@var{h} =} findall (@var{h}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} findall (@var{h}, "-depth", @var{d}, @dots{})
-## Find graphics object with specified property values including hidden handles.
+## @deftypefnx {Function File} {@var{h} =} findall (@var{prop_name}, @var{prop_value}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} findall (@var{prop_name}, @var{prop_value}, "-@var{logical_op}", @var{prop_name}, @var{prop_value})
+## @deftypefnx {Function File} {@var{h} =} findall ("-property", @var{prop_name})
+## @deftypefnx {Function File} {@var{h} =} findall ("-regexp", @var{prop_name}, @var{pattern})
+## @deftypefnx {Function File} {@var{h} =} findall (@var{hlist}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} findall (@var{hlist}, "flat", @dots{})
+## @deftypefnx {Function File} {@var{h} =} findall (@var{hlist}, "-depth", @var{d}, @dots{})
+## Find graphics object, including hidden ones, with specified property values.
 ##
-## This function performs the same function as @code{findobj}, but it
-## includes hidden objects in its search.  For full documentation, see
-## @code{findobj}.
-## @seealso{get, set, findobj, allchild}
+## The return value @var{h} is a list of handles to the found graphic objects.
+##
+## @code{findall} performs the same search as @code{findobj}, but it
+## includes hidden objects ("HandleVisibility" = "off").  For full
+## documentation, @pxref{XREFfindobj,,findobj}.
+## @seealso{findobj, allchild, get, set}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>

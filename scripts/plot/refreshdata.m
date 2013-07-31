@@ -21,9 +21,12 @@
 ## @deftypefnx {Function File} {} refreshdata (@var{h})
 ## @deftypefnx {Function File} {} refreshdata (@var{h}, @var{workspace})
 ## Evaluate any @samp{datasource} properties of the current figure and update
-## the plot if the corresponding data has changed.  If called with one or more
-## arguments @var{h} is a scalar or array of figure handles to refresh.  The
-## optional second argument @var{workspace} can take the following values.
+## the plot if the corresponding data has changed.
+##
+## If the first argument @var{h} is a list of graphic handles, then operate
+## on these objects rather than the current figure returned by @code{gcf}.
+##
+## The optional second argument @var{workspace} can take the following values:
 ##
 ## @table @asis
 ## @item "base"

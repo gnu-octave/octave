@@ -25,7 +25,7 @@
 ## @var{h} will be a vector.  Otherwise, @var{h} will be a cell matrix
 ## of the same size as @var{handles} and each cell will contain a
 ## vector of handles.
-## @seealso{get, set, findall, findobj}
+## @seealso{findall, findobj, get, set}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>

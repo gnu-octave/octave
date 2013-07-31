@@ -26,10 +26,10 @@
 ##
 ## @table @code
 ##   @item ps
-##     Postscript
+##     PostScript
 ##
 ##   @item eps
-##     Encapsulated Postscript
+##     Encapsulated PostScript
 ##
 ##   @item jpg
 ##     JPEG Image
@@ -46,7 +46,7 @@
 ##
 ## All device formats specified in @code{print} may also be used.  If
 ## @var{fmt} is omitted it is extracted from the extension of @var{filename}.
-## The default format is @code{"pdf"}.
+## The default format is "pdf".
 ##
 ## @example
 ## @group
@@ -56,7 +56,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{print}
+## @seealso{print, orient}
 ## @end deftypefn
 
 ## Author: Kai Habel

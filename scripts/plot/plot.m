@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} plot (@var{h}, @dots{})
+## @deftypefnx {Function File} {} plot (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} plot (@dots{})
-## Produce two-dimensional plots.
+## Produce 2-D plots.
 ##
 ## Many different combinations of arguments are possible.  The simplest
 ## form is
@@ -94,7 +94,7 @@
 ## @end itemize
 ##
 ## Multiple property-value pairs may be specified, but they must appear
-## in pairs.  These arguments are applied to the lines drawn by
+## in pairs.  These arguments are applied to the line objects drawn by
 ## @code{plot}.
 ##
 ## If the @var{fmt} argument is supplied, it is interpreted as
@@ -125,7 +125,7 @@
 ## @item ";title;"
 ## Here @code{"title"} is the label for the key.
 ##
-## @item +
+## @item  +
 ## @itemx *
 ## @itemx o
 ## @itemx x
@@ -170,13 +170,13 @@
 ## This will plot the cosine and sine functions and label them accordingly
 ## in the key.
 ##
-## If the first argument is an axis handle, then plot into these axes,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a graphics handle to the created plot.
+## The optional return value @var{h} is a vector of graphics handles to
+## the created line objects.
 ##
-## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, bar,
-## stairs, errorbar, xlabel, ylabel, title, print}
+## @seealso{axis, box, grid, hold, legend, title, xlabel, ylabel, xlim, ylim, ezplot, errorbar, fplot, line, plot3, polar, loglog, semilogx, semilogy, subplot}
 ## @end deftypefn
 
 ## Author: jwe

@@ -19,8 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} ylabel (@var{string})
 ## @deftypefnx {Function File} {} ylabel (@var{string}, @var{property}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} ylabel (@var{hax}, @var{string})
-## @deftypefnx {Function File} {} ylabel (@var{hax}, @var{string}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} ylabel (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ylabel (@dots{})
 ## Specify the string used to label the y-axis of the current axis.
 ##
@@ -29,9 +28,12 @@
 ## An optional list of @var{property}/@var{value} pairs can be used to change
 ## the properties of the created text label.
 ##
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axis rather than the current axes returned by @code{gca}.
+##
 ## The optional return value @var{h} is a graphics handle to the created text
 ## object.
-## @seealso{xlabel, zlabel, title, text}
+## @seealso{xlabel, zlabel, datetick, title, text}
 ## @end deftypefn
 
 ## Author: jwe

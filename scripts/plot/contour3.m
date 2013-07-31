@@ -22,13 +22,32 @@
 ## @deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z}, @var{vn})
 ## @deftypefnx {Function File} {} contour3 (@dots{}, @var{style})
-## @deftypefnx {Function File} {} contour3 (@var{h}, @dots{})
+## @deftypefnx {Function File} {} contour3 (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour3 (@dots{})
-## Plot level curves (contour lines) of the matrix @var{z}, using the
-## contour matrix @var{c} computed by @code{contourc} from the same
-## arguments; see the latter for their interpretation.  The contours are
-## plotted at the Z level corresponding to their contour.  The set of
-## contour levels, @var{c}, is only returned if requested.  For example:
+## Create a 3-D contour plot.
+##
+## @code{contour3} plots level curves (contour lines) of the matrix @var{z}
+## at a Z level corresponding to each contour.  This is in contrast to
+## @code{contour} which plots all of the contour lines at the same Z level
+## and produces a 2-D plot.
+##
+## The level curves are taken from the contour matrix @var{c} computed by
+## @code{contourc} for the same arguments; see the latter for their
+## interpretation.
+##
+## The appearance of contour lines can be defined with a line style @var{style}
+## in the same manner as @code{plot}.  Only line style and color are used;
+## Any markers defined by @var{style} are ignored.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
+## The optional output @var{c} are the contour levels in @code{contourc} format.
+##
+## The optional return value @var{h} is a graphics handle to the hggroup
+## comprising the contour lines.
+##
+## Example:
 ##
 ## @example
 ## @group
@@ -39,14 +58,7 @@
 ## @end group
 ## @end example
 ##
-## The style to use for the plot can be defined with a line style @var{style}
-## in a similar manner to the line styles used with the @code{plot} command.
-## Any markers defined by @var{style} are ignored.
-##
-## The optional input and output argument @var{h} allows an axis handle to
-## be passed to @code{contour} and the handles to the contour objects to be
-## returned.
-## @seealso{contourc, contour, contourf, patch, plot}
+## @seealso{contour, contourc, contourf, clabel, meshc, surfc, caxis, colormap, plot}
 ## @end deftypefn
 
 function [c, h] = contour3 (varargin)
@@ -66,7 +78,7 @@ function [c, h] = contour3 (varargin)
 
   if (! ishold ())
     set (hax, "view", [-37.5, 30],
-         "xgrid", "on", "ygrid", "on", "zgrid", "on");
+              "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
   if (nargout > 0)

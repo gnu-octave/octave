@@ -26,15 +26,14 @@
 ## @deftypefnx {Function File} {@var{h} =} slice (@dots{})
 ## Plot slices of 3-D data/scalar fields.
 ##
-## Each element of the 3-dimensional
-## array @var{v} represents a scalar value at a location given by the
-## parameters @var{x}, @var{y}, and @var{z}.  The parameters @var{x},
-## @var{x}, and @var{z} are either 3-dimensional arrays of the same size
-## as the array @var{v} in the "meshgrid" format or vectors.  The
-## parameters @var{xi}, etc. respect a similar format to @var{x}, etc.,
-## and they represent the points at which the array @var{vi} is
-## interpolated using interp3.  The vectors @var{sx}, @var{sy}, and
-## @var{sz} contain points of orthogonal slices of the respective axes.
+## Each element of the 3-dimensional array @var{v} represents a scalar value at
+## a location given by the parameters @var{x}, @var{y}, and @var{z}.  The
+## parameters @var{x}, @var{x}, and @var{z} are either 3-dimensional arrays of
+## the same size as the array @var{v} in the "meshgrid" format or vectors.  The
+## parameters @var{xi}, etc. respect a similar format to @var{x}, etc., and
+## they represent the points at which the array @var{vi} is interpolated using
+## interp3.  The vectors @var{sx}, @var{sy}, and @var{sz} contain points of
+## orthogonal slices of the respective axes.
 ##
 ## If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be
 ## @code{x = 1:size (@var{v}, 2)}, @code{y = 1:size (@var{v}, 1)} and
@@ -59,8 +58,8 @@
 ##
 ## The default method is "linear".
 ##
-## If the first argument @var{hax} is an axis handle, then plot into this axis,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## surface object.

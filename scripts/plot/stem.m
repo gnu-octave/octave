@@ -21,10 +21,10 @@
 ## @deftypefnx {Function File} {} stem (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} stem (@dots{}, @var{linespec})
 ## @deftypefnx {Function File} {} stem (@dots{}, "filled")
-## @deftypefnx {Function File} {} stem (@dots{}, "@var{prop}", "@var{val}", @dots{})
+## @deftypefnx {Function File} {} stem (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} stem (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} stem (@dots{})
-## Plot a stem graph from two vectors of x-y data.
+## Plot a 2-D stem graph.
 ##
 ## If only one argument is given, it is taken as the y-values and the
 ## x-coordinates are taken from the indices of the elements.
@@ -37,7 +37,8 @@
 ## The default color is @code{"b"} (blue), the default line style is
 ## @code{"-"}, and the default marker is @code{"o"}.  The line style can
 ## be altered by the @code{linespec} argument in the same manner as the
-## @code{plot} command.  For example,
+## @code{plot} command.  If the "filled" argument is present the markers at
+## the top of the stems will be filled in.  For example,
 ##
 ## @example
 ## @group
@@ -50,11 +51,11 @@
 ## @noindent
 ## plots 10 stems with heights from 2 to 20 in red;
 ##
-## Multiple property/value pairs may be specified, but they must appear in
-## pairs.
+## Optional property/value pairs may be specified to control the appearance
+## of the plot.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into these axes,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of "stem series" graphics
 ## handles with one handle per column of the variable @var{y}.  The
@@ -75,7 +76,7 @@
 ## @noindent
 ## changes the color of the second "stem series" and moves the base line
 ## of the first.
-## @seealso{stem3, bar, hist, plot}
+## @seealso{stem3, bar, hist, plot, stairs}
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>

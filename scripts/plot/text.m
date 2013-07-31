@@ -17,17 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} text (@var{x}, @var{y}, @var{label})
-## @deftypefnx {Function File} {} text (@var{x}, @var{y}, @var{z}, @var{label})
-## @deftypefnx {Function File} {} text (@var{x}, @var{y}, @var{label}, @var{p1}, @var{v1}, @dots{})
-## @deftypefnx {Function File} {} text (@var{x}, @var{y}, @var{z}, @var{label}, @var{p1}, @var{v1}, @dots{})
+## @deftypefn  {Function File} {} text (@var{x}, @var{y}, @var{string})
+## @deftypefnx {Function File} {} text (@var{x}, @var{y}, @var{z}, @var{string})
+## @deftypefnx {Function File} {} text (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} text (@dots{})
-## Create a text object with text @var{label} at position @var{x},
-## @var{y}, @var{z} on the current axes.  Property-value pairs following
-## @var{label} may be used to specify the appearance of the text.
+## Create a text object with text @var{string} at position @var{x},
+## @var{y}, @var{z} on the current axes.
+##
+## Optional property/value pairs following may be used to specify the
+## appearance of the text.
 ##
 ## The optional return value @var{h} is a graphics handle to the created text
 ## object.
+## @seealso{gtext, title, xlabel, ylabel, zlabel}
 ## @end deftypefn
 
 ## Author: jwe

@@ -17,13 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{hlink} =} linkprop (@var{h}, @var{prop})
+## @deftypefn  {Function File} {@var{hlink} =} linkprop (@var{h}, @var{prop})
+## @deftypefnx {Function File} {@var{hlink} =} linkprop (@var{h}, @{@var{prop1}, @var{prop2}, @dots{}@})
 ## Link graphics object properties, such that a change in one is
-## propagated to the others.  The properties to link are given as a
-## string of cell string array by @var{prop} and the objects containing
-## these properties by the handle array @var{h}.
+## propagated to the others.
 ##
-## An example of the use of linkprop is
+## @var{prop} can be a string for a single property, or a cell array of strings
+## for multiple properties.  @var{h} is an array of graphics handles which
+## will have their properties linked.
+##
+## An example of the use of @code{linkprop} is
 ##
 ## @example
 ## @group

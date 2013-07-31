@@ -33,7 +33,7 @@
 ## given in any order.
 ## @var{tol} is the relative tolerance to use for the plot and defaults
 ## to 2e-3 (.2%).
-## @var{n} is the minimum number of of points to use.  When @var{n} is
+## @var{n} is the minimum number of points to use.  When @var{n} is
 ## specified, the maximum stepsize will be
 ## @code{@var{xhi} - @var{xlo} / @var{n}}.  More than @var{n} points may still
 ## be used in order to meet the relative tolerance requirement.
@@ -54,9 +54,9 @@
 ## @end example
 ##
 ## Note: @code{fplot} works best with continuous functions.  Functions with
-## discontinuities are unlikely to plot well.  This restriction may be
-## removed in the future.
-## @seealso{plot}
+## discontinuities are unlikely to plot well.  This restriction may be removed
+## in the future.
+## @seealso{ezplot, plot}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>

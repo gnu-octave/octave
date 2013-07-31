@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} errorbar (@var{args})
-## @deftypefnx {Function File} {@var{h} =} errorbar (@var{args})
-## Create a two-dimensional plot with errorbars.
+## @deftypefnx {Function File} {} errorbar (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} errorbar (@dots{})
+## Create a 2-D with errorbars.
 ##
 ## Many different combinations of arguments are possible.  The simplest
 ## form is
@@ -78,6 +79,12 @@
 ## Set boxxyerrorbars plot style.
 ## @end table
 ##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
+## The optional return value @var{h} is a handle to the hggroup object
+## representing the data plot and errorbars.
+##
 ## Examples:
 ##
 ## @example
@@ -112,7 +119,7 @@
 ## produces an xyerrorbar plot of @var{y} versus @var{x} in which
 ## @var{x} errorbars are drawn from @var{x}-@var{lx} to @var{x}+@var{ux}
 ## and @var{y} errorbars from @var{y}-@var{ly} to @var{y}+@var{uy}.
-## @seealso{semilogxerr, semilogyerr, loglogerr}
+## @seealso{semilogxerr, semilogyerr, loglogerr, plot}
 ## @end deftypefn
 
 ## Created: 18.7.2000

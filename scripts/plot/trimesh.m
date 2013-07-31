@@ -17,15 +17,35 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefn  {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} trimesh (@var{tri}, @var{x}, @var{y})
+## @deftypefnx {Function File} {} trimesh (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} trimesh (@dots{})
-## Plot a triangular mesh in 3D@.  The variable @var{tri} is the triangular
-## meshing of the points @code{(@var{x}, @var{y})} which is returned
-## from @code{delaunay}.  The variable @var{z} is value at the point
-## @code{(@var{x}, @var{y})}.
+## Plot a 3-D triangular wireframe mesh.
+## 
+## In contrast to @code{mesh}, which plots a mesh using rectangles,
+## @code{trimesh} plots the mesh using triangles.
 ##
-## The optional return value @var{h} is a graphics handle to the created plot.
-## @seealso{triplot, trisurf, delaunay3}
+## @var{tri} is typically the output of a Delaunay triangulation over the
+## grid of @var{x}, @var{y}.  Every row of @var{tri} represents one triangle
+## and contains three indices into [@var{x}, @var{y}] which are the
+## vertices of the triangles in the x-y plane.  @var{z} determines the
+## height above the plane of each vertex.  If no @var{z} input is given then
+## the triangles are plotted as a 2-D figure.
+## 
+## The color of the trimesh is computed by linearly scaling the @var{z} values
+## to fit the range of the current colormap.  Use @code{caxis} and/or
+## change the colormap to control the appearance.
+##
+## Optionally, the color of the mesh can be specified independently of @var{z}
+## by supplying a color matrix, @var{c}.
+##
+## Any property/value pairs are passed directly to the underlying patch object.
+##
+## The optional return value @var{h} is a graphics handle to the created patch
+## object.
+## @seealso{mesh, tetramesh, triplot, trisurf, delaunay, patch, hidden}
 ## @end deftypefn
 
 function h = trimesh (tri, x, y, z, varargin)

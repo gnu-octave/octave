@@ -56,9 +56,10 @@
 ## plot, but preserves special settings such as log scaling for axes.
 ## This is equivalent to @code{cla}.
 ##
-## @item "replace" (default) @tab Delete all child objects of the axis and reset all axis
-## properties to their defaults.  However, the following properties
-## are not reset: Position, Units.  This is equivalent to @code{cla reset}.
+## @item "replace" (default) @tab Delete all child objects of the axis and
+## reset all axis properties to their defaults.  However, the following
+## properties are not reset: Position, Units.  This is equivalent to
+## @code{cla reset}.
 ##
 ## @end multitable    
 ##
@@ -76,7 +77,7 @@
 ##        which are not deleted when the figure and axes are prepared.
 ##        I'm sure there is a good reason for that, but coding such
 ##        compatibility is really tricky and doesn't serve much purpose since
-##        newplot is nearly exclusively used by Octave internal plotting
+##        newplot is nearly exclusively used by Octave's internal plotting
 ##        functions.  In Octave's case the argument is almost always null,
 ##        or occasionally the axis handle to plot into.
 

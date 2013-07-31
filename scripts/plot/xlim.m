@@ -17,28 +17,27 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @c List other forms of function in documentation index
-## @findex ylim
-## @findex zlim
+## @deftypefn  {Function File} {@var{xlimits} =} xlim ()
+## @deftypefnx {Function File} {@var{xmode} =} xlim ("mode")
+## @deftypefnx {Function File} {} xlim ([@var{x_lo} @var{x_hi}])
+## @deftypefnx {Function File} {} xlim ("auto")
+## @deftypefnx {Function File} {} xlim ("manual")
+## @deftypefnx {Function File} {} xlim (@var{hax}, @dots{})
+## Query or set the limits of the x-axis of the current plot.
 ##
-## @deftypefn  {Function File} {@var{xl} =} xlim ()
-## @deftypefnx {Function File} {} xlim (@var{xl})
-## @deftypefnx {Function File} {@var{m} =} xlim ("mode")
-## @deftypefnx {Function File} {} xlim (@var{m})
-## @deftypefnx {Function File} {} xlim (@var{h}, @dots{})
-## Get or set the limits of the x-axis of the current plot.  Called without
-## arguments @code{xlim} returns the x-axis limits of the current plot.
-## If passed a two element vector @var{xl}, the limits of the x-axis are set
-## to this value.
+## Called without arguments @code{xlim} returns the x-axis limits of the
+## current plot.  With the input query "mode", return the current x-limit
+## calculation mode which is either "auto" or "manual".
 ##
-## The current mode for calculation of the x-axis can be returned with a
-## call @code{xlim ("mode")}, and can be either "auto" or "manual".  The
-## current plotting mode can be set by passing either "auto" or "manual"
-## as the argument.
+## If passed a 2-element vector [@var{x_lo} @var{x_hi}], the limits of the
+## x-axis are set to these values.
 ##
-## If passed a handle as the first argument, then operate on this handle
-## rather than the current axes handle.
-## @seealso{ylim, zlim, set, get, gca}
+## The current plotting mode can be set by passing either "auto" or "manual" as
+## the argument.
+##
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axis rather than the current axes returned by @code{gca}.
+## @seealso{ylim, zlim, axis, set, get, gca}
 ## @end deftypefn
 
 function retval = xlim (varargin)

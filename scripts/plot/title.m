@@ -18,16 +18,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} title (@var{string})
-## @deftypefnx {Function File} {} title (@var{string}, @var{property}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} title (@var{hax}, @var{string})
-## @deftypefnx {Function File} {} title (@var{hax}, @var{string}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} title (@var{string}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} title (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} title (@dots{})
 ## Specify the string used as a title for the current axis.
 ##
-## If @var{hax} is specified then title the axis defined by @var{hax}.
-##
 ## An optional list of @var{property}/@var{value} pairs can be used to change
-## the properties of the created title text.
+## the appearance of the created title text object.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created text
 ## object.

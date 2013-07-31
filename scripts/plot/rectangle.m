@@ -22,12 +22,14 @@
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "Curvature", @var{curv})
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "EdgeColor", @var{ec})
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "FaceColor", @var{fc})
+## @deftypefnx {Function File} {} rectangle (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} rectangle (@dots{})
 ##
-## Draw rectangular patch defined by @var{pos} and @var{curv}.  The variable
-## @code{@var{pos}(1:2)} defines the lower left-hand corner of the patch
-## and @code{@var{pos}(3:4)} defines its width and height.  By default, the
-## value of @var{pos} is @code{[0, 0, 1, 1]}.
+## Draw a rectangular patch defined by @var{pos} and @var{curv}.
+## 
+## The variable @code{@var{pos}(1:2)} defines the lower left-hand corner of
+## the patch and @code{@var{pos}(3:4)} defines its width and height.  By
+## default, the value of @var{pos} is @code{[0, 0, 1, 1]}.
 ##
 ## The variable @var{curv} defines the curvature of the sides of the rectangle
 ## and may be a scalar or two-element vector with values between 0 and 1.
@@ -44,12 +46,15 @@
 ## min (pos (1:2)) / max (pos (1:2)) * curv
 ## @end example
 ##
-## Other properties are passed to the underlying patch command. 
+## Additional property/value pairs are passed to the underlying patch command. 
 ## 
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
 ## The optional return value @var{h} is a graphics handle to the created
 ## rectangle object.
 ## @end deftypefn
-## @seealso{patch}
+## @seealso{patch, line, cylinder, ellipsoid, sphere}
 
 function h = rectangle (varargin)
 

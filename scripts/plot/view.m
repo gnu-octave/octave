@@ -17,24 +17,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{azimuth}, @var{elevation}] =} view ()
-## @deftypefnx {Function File} {} view (@var{azimuth}, @var{elevation})
+## @deftypefn  {Function File} {} view (@var{azimuth}, @var{elevation})
 ## @deftypefnx {Function File} {} view ([@var{azimuth} @var{elevation}])
 ## @deftypefnx {Function File} {} view ([@var{x} @var{y} @var{z}])
 ## @deftypefnx {Function File} {} view (2)
 ## @deftypefnx {Function File} {} view (3)
-## @deftypefnx {Function File} {} view (@var{ax}, @dots{})
-## Query or set the viewpoint for the current axes.  The parameters
-## @var{azimuth} and @var{elevation} can be given as two arguments or as
-## 2-element vector.
-## The viewpoint can also be given with Cartesian coordinates @var{x},
-## @var{y}, and @var{z}.
+## @deftypefnx {Function File} {} view (@var{hax}, @dots{})
+## @deftypefnx {Function File} {[@var{azimuth}, @var{elevation}] =} view ()
+## Query or set the viewpoint for the current axes.
+##
+## The parameters @var{azimuth} and @var{elevation} can be given as two
+## arguments or as 2-element vector.  The viewpoint can also be specified with
+## Cartesian coordinates @var{x}, @var{y}, and @var{z}.
+##
 ## The call @code{view (2)} sets the viewpoint to @var{azimuth} = 0
 ## and @var{elevation} = 90, which is the default for 2-D graphs.
+##
 ## The call @code{view (3)} sets the viewpoint to @var{azimuth} = -37.5
 ## and @var{elevation} = 30, which is the default for 3-D graphs.
-## If @var{ax} is given, the viewpoint is set for this axes, otherwise
-## it is set for the current axes.
+##
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axis rather than the current axes returned by @code{gca}.
+##
+## If no inputs are given, return the current @var{azimuth} and @var{elevation}.
 ## @end deftypefn
 
 ## Author: jwe

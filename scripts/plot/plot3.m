@@ -18,13 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} plot3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} plot3 (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {} plot3 (@var{x}, @var{y}, @var{z}, @var{prop}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} plot3 (@var{x}, @var{y}, @var{z}, @var{fmt})
 ## @deftypefnx {Function File} {} plot3 (@var{x}, @var{cplx})
 ## @deftypefnx {Function File} {} plot3 (@var{cplx})
 ## @deftypefnx {Function File} {} plot3 (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} plot3 (@dots{})
-## Produce three-dimensional plots.
+## Produce 3-D plots.
 ##
 ## Many different combinations of arguments are possible.  The simplest
 ## form is
@@ -81,12 +81,12 @@
 ## objects drawn by @code{plot3}.  If the @var{fmt} argument is supplied it
 ## will format the line objects in the same manner as @code{plot}.
 ##
-## If the first argument is an axis handle @var{hax}, then plot into these axes,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##
-## An example of the use of @code{plot3} is
+## Example:
 ##
 ## @example
 ## @group

@@ -25,23 +25,23 @@
 ## @deftypefnx {Function File} {} quiver (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} quiver (@dots{})
 ##
-## Plot the @code{(@var{u}, @var{v})} components of a vector field in
-## an @code{(@var{x}, @var{y})} meshgrid.  If the grid is uniform, you can
+## Plot the (@var{u}, @var{v}) components of a vector field in
+## an (@var{x}, @var{y}) meshgrid.  If the grid is uniform, you can
 ## specify @var{x} and @var{y} as vectors.
 ##
 ## If @var{x} and @var{y} are undefined they are assumed to be
-## @code{(1:@var{m}, 1:@var{n})} where @code{[@var{m}, @var{n}] =
-## size (@var{u})}.
+## @code{(1:@var{m}, 1:@var{n})} where
+## @code{[@var{m}, @var{n}] = size (@var{u})}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 0
 ## disables all scaling.  The default value is 1.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
-## in a similar manner to the line styles used with the @code{plot} command.
+## of the same format as the @code{plot} command.
 ## If a marker is specified then markers at the grid points of the vectors are
-## printed rather than arrows.  If the argument "filled" is given then the
-## markers are drawn filled.
+## drawn rather than arrows.  If the argument "filled" is given then the
+## markers are filled.
 ##
 ## The optional return value @var{h} is a graphics handle to a quiver object.
 ## A quiver object regroups the components of the quiver plot (body, arrow,
@@ -55,7 +55,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{quiver3, feather, plot}
+## @seealso{quiver3, compass, feather, plot}
 ## @end deftypefn
 
 function retval = quiver (varargin)

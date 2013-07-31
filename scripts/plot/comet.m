@@ -29,8 +29,8 @@
 ## time each point is displayed before moving to the next one.  The default for
 ## @var{p} is 0.1 seconds.
 ##
-## If @var{hax} is specified the animation is produced in that axis rather than
-## the current axis.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ## @seealso{comet3}
 ## @end deftypefn
 

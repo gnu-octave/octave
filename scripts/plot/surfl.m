@@ -22,20 +22,32 @@
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L})
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L}, @var{P})
 ## @deftypefnx {Function File} {} surfl (@dots{}, "light")
-## Plot a lighted surface given matrices @var{x}, and @var{y} from
-## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and
-## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors, then
-## a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns
-## of @var{z} correspond to different @var{x} values and rows of @var{z}
-## correspond to different @var{y} values.
+## @deftypefnx {Function File} {} surfl (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} surfl (@dots{})
 ##
-## The light direction can be specified using @var{L}.  It can be given as a
-## 2-element vector [azimuth, elevation] in degrees or as a 3-element vector
-## [lx, ly, lz].  The default value is rotated 45 degrees counterclockwise
-## from the current view.
+## Plot a 3-D surface using shading based on various lighting models.
 ##
-## The material properties of the surface can specified using a 4-element vector
-## @var{P} = [@var{AM} @var{D} @var{SP} @var{exp}] which defaults to
+## The surface mesh is plotted using shaded rectangles.  The vertices of the
+## rectangles [@var{x}, @var{y}] are typically the output of @code{meshgrid}.
+## over a 2-D rectangular region in the x-y plane.  @var{z} determines the
+## height above the plane of each vertex.  If only a single @var{z} matrix is
+## given, then it is plotted over the meshgrid
+## @code{@var{x} = 1:columns (@var{z}), @var{y} = 1:rows (@var{z})}.
+## Thus, columns of @var{z} correspond to different @var{x} values and rows
+## of @var{z} correspond to different @var{y} values.  
+##
+## The default lighting mode "cdata", changes the cdata property of the
+## surface object to give the impression of a lighted surface.
+## @strong{Warning:} The alternative mode "light" mode which creates a light
+## object to illuminate the surface is not implemented (yet).
+##
+## The light source location can be specified using @var{L}.  It can be given
+## as a 2-element vector [azimuth, elevation] in degrees, or as a 3-element
+## vector [lx, ly, lz].  The default value is rotated 45 degrees
+## counterclockwise to the current view.
+##
+## The material properties of the surface can specified using a 4-element
+## vector @var{P} = [@var{AM} @var{D} @var{SP} @var{exp}] which defaults to
 ## @var{p} = [0.55 0.6 0.4 10].
 ##
 ## @table @asis
@@ -48,10 +60,11 @@
 ## @item "EXP" specular exponent
 ## @end table
 ##
-## The default lighting mode "cdata", changes the cdata property to give the
-## impression of a lighted surface.  Please note: the alternative "light"
-## mode, which creates a light object to illuminate the surface is not
-## implemented (yet).
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## surface object.
 ##
 ## Example:
 ##
@@ -62,7 +75,7 @@
 ## shading interp;
 ## @end group
 ## @end example
-## @seealso{surf, diffuse, specular, surface}
+## @seealso{diffuse, specular, surf, shading, colormap, caxis}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

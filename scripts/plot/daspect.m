@@ -22,9 +22,10 @@
 ## @deftypefnx {Function File} {} daspect (@var{mode})
 ## @deftypefnx {Function File} {@var{data_aspect_ratio_mode} =} daspect ("mode")
 ## @deftypefnx {Function File} {} daspect (@var{hax}, @dots{})
-## Query or set the data aspect ratio of the current axes.  The aspect 
-## ratio is a normalized 3-element vector representing the span of the x, y,
-## and z-axis limits.
+## Query or set the data aspect ratio of the current axes.
+##
+## The aspect ratio is a normalized 3-element vector representing the span of
+## the x, y, and z-axis limits.
 ## 
 ## @code{(daspect (@var{mode}))}
 ##

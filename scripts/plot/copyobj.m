@@ -17,11 +17,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{hnew} =} copyobj (@var{horig})
 ## @deftypefnx {Function File} {@var{hnew} =} copyobj (@var{horig}, @var{hparent})
-## Construct a copy of the object associated with handle @var{horig}
+## Construct a copy of the graphic object associated with handle @var{horig}
 ## and return a handle @var{hnew} to the new object.
+##
 ## If a parent handle @var{hparent} (root, figure, axes, or hggroup) is
-## specified, the copied object will be created as a child to @var{hparent}.
-## @seealso{findobj, get, set, struct2hdl, hdl2struct}
+## specified, the copied object will be created as a child of @var{hparent}.
+## @seealso{struct2hdl, hdl2struct, findobj}
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>

@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {} tetramesh (@var{T}, @var{X}, @var{C})
 ## @deftypefnx {Function File} {} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} tetramesh (@dots{})
+## Display the tetrahedrons defined in the m-by-4 matrix @var{T} as 3-D patches.
 ##
-## Display the tetrahedrons defined in the m-by-4 matrix @var{T}
-## as 3-D patches.  @var{T} is typically the output of a Delaunay triangulation
+## @var{T} is typically the output of a Delaunay triangulation
 ## of a 3-D set of points.  Every row of @var{T} contains four indices into
 ## the n-by-3 matrix @var{X} of the vertices of a tetrahedron.  Every row in
 ## @var{X} represents one point in 3-D space. 
@@ -43,7 +43,7 @@
 ## property "on" or "off".
 ##
 ## Type @code{demo tetramesh} to see examples on using @code{tetramesh}.
-## @seealso{delaunay3, delaunayn, trimesh, patch}
+## @seealso{trimesh, delaunay3, delaunayn, patch}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>

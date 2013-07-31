@@ -23,7 +23,6 @@
 ## @deftypefnx {Function File} {} rose (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
 ## @deftypefnx {Function File} {[@var{thout} @var{rout}] =} rose (@dots{})
-##
 ## Plot an angular histogram.
 ##
 ## With one vector argument, @var{th}, plot the histogram with 20 angular bins.
@@ -32,8 +31,11 @@
 ##
 ## If @var{nbins} is given and is a scalar, then the histogram is produced with
 ## @var{nbin} bins.  If @var{bins} is a vector, then the center of each bin is
-## defined defined by the values of @var{bins} and the number of bins is
+## defined by the values of @var{bins} and the number of bins is
 ## given by the number of elements in @var{bins}.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing each histogram.
@@ -48,7 +50,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{polar, compass, hist}
+## @seealso{hist, polar}
 ## @end deftypefn
 
 function [thout, rout] = rose (varargin)

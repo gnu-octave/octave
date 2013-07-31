@@ -19,19 +19,19 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} axes ()
 ## @deftypefnx {Function File} {} axes (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} axes (@var{h})
+## @deftypefnx {Function File} {} axes (@var{hax})
 ## @deftypefnx {Function File} {@var{h} =} axes (@dots{})
 ## Create an axes object and return a handle to it, or set the current
-## axes to @var{h}.
+## axes to @var{hax}.
 ##
 ## Called without any arguments, or with @var{property}/@var{value} pairs,
-## contruct a new axes.  For accepted properties and corresponding
-## values, see @code{set} function.
+## construct a new axes.  For accepted properties and corresponding
+## values, @pxref{XREFset,,set}.
 ##
-## Called with a single axes handle argument @var{h}, the function makes
-## @var{h} the current axis.  It also restacks the axes in the
-## corresponding figure so that @var{h} is the first entry in the list
-## of children.  This causes @var{h} to be displayed on top of any other
+## Called with a single axes handle argument @var{hax}, the function makes
+## @var{hax} the current axis.  It also restacks the axes in the
+## corresponding figure so that @var{hax} is the first entry in the list
+## of children.  This causes @var{hax} to be displayed on top of any other
 ## axes objects (Z-order stacking).
 ## 
 ## @seealso {gca, set, get}

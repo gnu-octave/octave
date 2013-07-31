@@ -17,24 +17,27 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{yl} =} ylim ()
-## @deftypefnx {Function File} {} ylim (@var{yl})
-## @deftypefnx {Function File} {@var{m} =} ylim ("mode")
-## @deftypefnx {Function File} {} ylim (@var{m})
-## @deftypefnx {Function File} {} ylim (@var{h}, @dots{})
-## Get or set the limits of the y-axis of the current plot.  Called without
-## arguments @code{ylim} returns the y-axis limits of the current plot.
-## If passed a two element vector @var{yl}, the limits of the y-axis are set
-## to this value.
+## @deftypefn  {Function File} {@var{ylimits} =} ylim ()
+## @deftypefnx {Function File} {@var{xmode} =} ylim ("mode")
+## @deftypefnx {Function File} {} ylim ([@var{y_lo} @var{y_hi}])
+## @deftypefnx {Function File} {} ylim ("auto")
+## @deftypefnx {Function File} {} ylim ("manual")
+## @deftypefnx {Function File} {} ylim (@var{hax}, @dots{})
+## Query or set the limits of the y-axis of the current plot.
 ##
-## The current mode for calculation of the y-axis can be returned with a
-## call @code{ylim ("mode")}, and can be either "auto" or "manual".  The
-## current plotting mode can be set by passing either "auto" or "manual"
-## as the argument.
+## Called without arguments @code{ylim} returns the y-axis limits of the
+## current plot.  With the input query "mode", return the current y-limit
+## calculation mode which is either "auto" or "manual".
 ##
-## If passed a handle as the first argument, then operate on this handle
-## rather than the current axes handle.
-## @seealso{xlim, zlim, set, get, gca}
+## If passed a 2-element vector [@var{y_lo} @var{y_hi}], the limits of the
+## y-axis are set to these values.
+##
+## The current plotting mode can be set by passing either "auto" or "manual" as
+## the argument.
+##
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axis rather than the current axes returned by @code{gca}.
+## @seealso{xlim, zlim, axis, set, get, gca}
 ## @end deftypefn
 
 function retval = ylim (varargin)

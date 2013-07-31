@@ -106,7 +106,7 @@ function [nf, nv] = shrinkfaces (varargin)
 
   n = columns (vertices);
   if (n < 2 || n > 3)
-    error ("shrinkfaces: only 2D and 3D patches are supported");
+    error ("shrinkfaces: only 2-D and 3-D patches are supported");
   endif
 
   m = columns (faces);

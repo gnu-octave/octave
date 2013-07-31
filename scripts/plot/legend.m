@@ -28,13 +28,16 @@
 ## @deftypefnx {Function File} {} legend ("@var{option}")
 ## @deftypefnx {Function File} {[@var{hleg}, @var{hleg_obj}, @var{hplot}, @var{labels}] =} legend (@dots{})
 ##
-## Display a legend for the axes with handle @var{hax}, or the current axes,
-## using the specified strings as labels.  Legend entries may be specified
-## as individual character string arguments, a character array, or a cell
-## array of character strings.  If the handles, @var{hobjs}, are not specified
-## then the legend's strings will be associated with the axes' descendants.
-## @code{legend} works on line graphs, bar graphs, etc.
-## A plot must exist before legend is called.
+## Display a legend for the current axes using the specified strings as labels.
+##
+## Legend entries may be specified as individual character string arguments,
+## a character array, or a cell array of character strings.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.  If the handles,
+## @var{hobjs}, are not specified then the legend's strings will be associated
+## with the axes' descendants.  @code{legend} works on line graphs,
+## bar graphs, etc.  A plot must exist before legend is called.
 ##
 ## The optional parameter @var{pos} specifies the location of the legend
 ## as follows:
@@ -102,7 +105,7 @@
 ## @item "right"
 ##   Place label text to the right of the keys
 ##
-## @item  "off"
+## @item "off"
 ##   Delete the legend object
 ## @end table
 ##
@@ -126,6 +129,10 @@
 ## is taken from the DisplayName property of graphics objects.  If no
 ## labels or DisplayNames are available, then the label text is simply
 ## "data1", "data2", @dots{}, @nospell{"dataN"}.
+##
+## Implementation Note: A legend is implemented as an additional axes object
+## of the current figure with the "tag" set to "legend".  Properties of the
+## legend object may be manipulated directly by using @code{set}.
 ## @end deftypefn
 
 function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)

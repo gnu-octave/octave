@@ -18,13 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} ishold
-## @deftypefnx {Function File} {} ishold (@var{h})
+## @deftypefnx {Function File} {} ishold (@var{hax})
+## @deftypefnx {Function File} {} ishold (@var{hfig})
 ## Return true if the next plot will be added to the current plot, or
 ## false if the plot device will be cleared before drawing the next plot.
 ##
-## Optionally, operate on the graphics handle @var{h} rather than the current
-## plot.
-## @seealso{hold}
+## If the first argument is an axes handle @var{hax} or figure handle
+## @var{hfig} then operate on this plot rather than the current one.
+## @seealso{hold, newplot}
 ## @end deftypefn
 
 function retval = ishold (h)

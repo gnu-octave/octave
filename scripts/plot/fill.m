@@ -26,8 +26,8 @@
 ##
 ## The inputs @var{x} and @var{y} are the coordinates of the polygon vertices.
 ## If the inputs are matrices then the rows represent different vertices and
-## each column produces a different polygon.
-## @code{fill} will close any open polygons before plotting. 
+## each column produces a different polygon.  @code{fill} will close any open
+## polygons before plotting. 
 ##
 ## The input @var{c} determines the color of the polygon.  The simplest form
 ## is a single color specification such as a @code{plot} format or an
@@ -42,10 +42,10 @@
 ## Multiple property/value pairs for the underlying patch object may be
 ## specified, but they must appear in pairs.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into this axis,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is an array of graphics handles to
+## The optional return value @var{h} is a vector of graphics handles to
 ## the created patch objects.
 ##
 ## Example: red square

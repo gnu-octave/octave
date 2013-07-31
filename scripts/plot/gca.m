@@ -18,9 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} gca ()
-## Return a handle to the current axis object.  If no axis object
-## exists, create one and return its handle.  The handle may then be
-## used to examine or set properties of the axes.  For example,
+## Return a handle to the current axis object.
+##
+## If no axis object exists, create one and return its handle.  The handle may
+## then be used to examine or set properties of the axes.  For example,
 ##
 ## @example
 ## @group
@@ -30,9 +31,9 @@
 ## @end example
 ##
 ## @noindent
-## creates an empty axes object, then changes its location and size in
-## the figure window.
-## @seealso{gcf, gco, get, set}
+## creates an empty axes object, then changes its location and size in the
+## figure window.
+## @seealso{gcf, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
 
 ## Author: jwe

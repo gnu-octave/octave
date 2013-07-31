@@ -18,9 +18,10 @@
 ## @deftypefn {Function File} {@var{s} =} hdl2struct (@var{h})
 ## Return a structure, @var{s}, whose fields describe the properties
 ## of the object, and its children, associated with the handle, @var{h}.
-## The fields of the structure, @var{s}, are "type", "handle", "properties",
-## "children" and "special".
-## @seealso{findobj, get, set, struct2hdl}
+##
+## The fields of the structure @var{s} are "type", "handle", "properties",
+## "children", and "special".
+## @seealso{struct2hdl, findobj}
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>

@@ -44,8 +44,11 @@
 ## Toggle the current hold state.
 ## @end table
 ##
+## If the first argument @var{hax} is an axes handle, 
+## rather than the current axes returned by @code{gca}.
+##
 ## When given the additional argument @var{hax}, the hold state is modified
-## only for the given axis handle.
+## for this axis rather than the current axes returned by @code{gca}.
 ##
 ## To query the current hold state use the @code{ishold} function.
 ## @seealso{ishold, cla, clf, newplot}

@@ -252,8 +252,11 @@ function.
 The @code{xlim}, @code{ylim}, and @code{zlim} functions may be used to
 get or set individual axis limits.  Each has the same form.
 
+@c Add cross-references and function index entries for other limit functions.
 @anchor{XREFylim}
 @anchor{XREFzlim}
+@findex ylim
+@findex zlim
 @DOCSTRING(xlim)
 
 @node Two-dimensional Function Plotting

@@ -24,12 +24,13 @@
 ## @deftypefnx {Function File} {@var{h} =} feather (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
-## from equidistant points on the x-axis.  If a single complex argument
-## @var{z} is given, then @code{@var{u} = real (@var{z})} and
-## @code{@var{v} = imag (@var{z})}.
+## from equidistant points on the x-axis.
+##
+## If a single complex argument @var{z} is given, then
+## @code{@var{u} = real (@var{z})} and @code{@var{v} = imag (@var{z})}.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
-## in a similar manner to the line styles used with the @code{plot} command.
+## of the same format as the @code{plot} command.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing the drawn vectors.

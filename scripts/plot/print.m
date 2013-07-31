@@ -21,17 +21,18 @@
 ## @deftypefnx {Function File} {} print (@var{options})
 ## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
-## Print a plot, or save it to a file.  Both output formatted for 
-## printing (PDF and PostScript), and many bitmapped and vector
-## image formats are supported.
+## Print a plot, or save it to a file.
+##
+## Both output formatted for printing (PDF and PostScript), and many bitmapped
+## and vector image formats are supported.
 ##
 ## @var{filename} defines the name of the output file.  If the
 ## file name has no suffix, one is inferred from the specified
 ## device and appended to the file name.  If no filename is
 ## specified, the output is sent to the printer.
 ##
-## @var{h} specifies the figure handle.  If no handle is specified
-## the handle for the current figure is used.
+## @var{h} specifies the handle of the figure to print.  If no handle is
+## specified the current figure is used.
 ##
 ## For output to a printer, PostScript file, or PDF file,
 ## the paper size is specified by the figure's @code{papersize}
@@ -58,23 +59,23 @@
 ##   Specify the command for calling Ghostscript.  For Unix and Windows
 ## the defaults are 'gs' and 'gswin32c', respectively.
 ##
-## @item -color
+## @item  -color
 ## @itemx -mono
-##   Monochrome or color output.
+##   Color or monochrome output.
 ##
-## @item -solid
+## @item  -solid
 ## @itemx -dashed
 ##   Force all lines to be solid or dashed, respectively.
 ##
-## @item -portrait
+## @item  -portrait
 ## @itemx -landscape
 ##   Specify the orientation of the plot for printed output.  For
 ## non-printed output the aspect ratio of the output corresponds to
 ## the plot area defined by the "paperposition" property in the
-## orientation specified.  This options is equivalent to changing
+## orientation specified.  This option is equivalent to changing
 ## the figure's "paperorientation" property.
 ##
-## @item -TextAlphaBits=@var{n}
+## @item  -TextAlphaBits=@var{n}
 ## @itemx -GraphicsAlphaBits=@var{n}
 ##   Octave is able to produce output for various printers, bitmaps, and
 ## vector formats by using Ghostscript.
@@ -88,21 +89,21 @@
 ## and is one of:
 ##
 ##   @table @code
-##   @item ps
+##   @item  ps
 ##   @itemx ps2
 ##   @itemx psc
 ##   @itemx psc2
-##     Postscript (level 1 and 2, mono and color).  The FLTK graphics
-## toolkit generates Postscript level 3.0.
+##     PostScript (level 1 and 2, mono and color).  The FLTK graphics
+## toolkit generates PostScript level 3.0.
 ##
-##   @item eps
+##   @item  eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
-##     Encapsulated postscript (level 1 and 2, mono and color).  The FLTK
-## graphic toolkit generates Postscript level 3.0.
+##     Encapsulated PostScript (level 1 and 2, mono and color).  The FLTK
+## graphic toolkit generates PostScript level 3.0.
 ##
-##   @item tex
+##   @item  tex
 ##   @itemx epslatex
 ##   @itemx epslatexstandalone
 ##   @itemx pstex
@@ -119,18 +120,18 @@
 ##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
 ## the result is PGF.
 ##
-##   @item ill
+##   @item  ill
 ##   @itemx aifm
 ##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
 ##
-##   @item cdr
+##   @item  cdr
 ##   @itemx @nospell{corel}
 ##     CorelDraw
 ##
 ##   @item dxf
 ##     AutoCAD
 ##
-##   @item emf
+##   @item  emf
 ##   @itemx meta
 ##     Microsoft Enhanced Metafile
 ##
@@ -149,7 +150,7 @@
 ##   @item png
 ##     Portable network graphics
 ##
-##   @item jpg
+##   @item  jpg
 ##   @itemx jpeg
 ##     JPEG image
 ##
@@ -167,7 +168,7 @@
 ##   @end table
 ##
 ##   If the device is omitted, it is inferred from the file extension,
-## or if there is no filename it is sent to the printer as postscript.
+## or if there is no filename it is sent to the printer as PostScript.
 ##
 ## @item -d@var{ghostscript_device}
 ##   Additional devices are supported by Ghostscript.
@@ -199,7 +200,7 @@
 ##     Produces pdf output from eps
 ##   @end table
 ##
-##   For a complete list, type @samp{system ("gs -h")} to see what formats
+##   For a complete list, type @code{system ("gs -h")} to see what formats
 ## and devices are available.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined
@@ -208,7 +209,7 @@
 ## the figure's "paperposition" property.
 ##
 ## @item -append
-##   Append Postscript or PDF output to a pre-existing file of the same type.
+##   Append PostScript or PDF output to a pre-existing file of the same type.
 ##
 ## @item -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and
@@ -243,7 +244,7 @@
 ## of the print function you must quote the @var{xsize},@var{ysize}
 ## option.  For example, by writing @w{"-S640,480"}.
 ##
-## @item -F@var{fontname}
+## @item  -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
 ##   Use @var{fontname} and/or @var{fontsize} for all text.
@@ -267,14 +268,13 @@
 ##
 ## @example
 ## @group
-## figure (1);
 ## clf ();
 ## surf (peaks);
 ## print -dcdj550
 ## @end group
 ## @end example
 ##
-## @seealso{figure, orient, saveas}
+## @seealso{saveas, orient, figure}
 ## @end deftypefn
 
 function print (varargin)

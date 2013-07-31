@@ -36,11 +36,11 @@
 ## The optional input @var{labels} is a cell array of strings of the same
 ## length as @var{x} specifying the label for each slice.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into these axes,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a list of graphics handles to the patch,
-## surface, and text objects generating the plot.
+## The optional return value @var{h} is a list of graphics handles to the
+## patch, surface, and text objects generating the plot.
 ##
 ## Note: If @code{sum (@var{x}) @leq{} 1} then the elements of @var{x} are
 ## interpreted as percentages directly and are not normalized by @code{sum (x)}.

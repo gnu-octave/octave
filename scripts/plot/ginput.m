@@ -17,11 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
-## Return which mouse buttons were pressed and keys were hit on the current
-## figure.  If @var{n} is defined, then wait for @var{n} mouse clicks
-## before returning.  If @var{n} is not defined, then @code{ginput} will
-## loop until the return key @key{RET} is pressed.
+## @deftypefn  {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput ()
+## Return the position and type of mouse button clicks and/or key strokes
+## in the current figure window.
+##
+## If @var{n} is defined, then capture @var{n} events before returning.
+## When @var{n} is not defined @code{ginput} will loop until the return key
+## @key{RET} is pressed.
+##
+## The return values @var{x}, @var{y} are the coordinates where the mouse
+## was clicked in the units of the current axes.  The return value @var{button}
+## is 1, 2, or 3 for the left, middle, or right button.  If a key is pressed
+## the ASCII value is returned in @var{button}.
+## @seealso{gtext}
 ## @end deftypefn
 
 function varargout = ginput (n)
@@ -31,14 +40,15 @@ function varargout = ginput (n)
   endif
 
   f = gcf ();
+  a = gca ();  # Create an axis, if necessary
   drawnow ();
-  toolkit = (get (f, "__graphics_toolkit__"));
+  toolkit = get (f, "__graphics_toolkit__");
 
   varargout = cell (1, nargout);
   if (nargin == 0)
-    [varargout{:}] = feval (strcat ("__", toolkit, "_ginput__"), f);
+    [varargout{:}] = feval (["__" toolkit "_ginput__"], f);
   else
-    [varargout{:}] = feval (strcat ("__", toolkit, "_ginput__"), f, n);
+    [varargout{:}] = feval (["__" toolkit "_ginput__"], f, n);
   endif
 
 endfunction

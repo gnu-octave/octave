@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} colorbar
+## @deftypefn  {Command} {} colorbar
 ## @deftypefnx {Function File} {} colorbar (@var{loc})
 ## @deftypefnx {Function File} {} colorbar (@var{delete_option})
 ## @deftypefnx {Function File} {} colorbar (@var{hcb}, @dots{})

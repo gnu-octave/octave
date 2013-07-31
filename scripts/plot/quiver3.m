@@ -22,26 +22,26 @@
 ## @deftypefnx {Function File} {} quiver3 (@dots{}, @var{s})
 ## @deftypefnx {Function File} {} quiver3 (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} quiver3 (@dots{}, "filled")
-## @deftypefnx {Function File} {} quiver3 (@var{h}, @dots{})
+## @deftypefnx {Function File} {} quiver3 (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} quiver3 (@dots{})
 ##
-## Plot the @code{(@var{u}, @var{v}, @var{w})} components of a vector field in
-## an @code{(@var{x}, @var{y}), @var{z}} meshgrid.  If the grid is uniform, you
-## can specify @var{x}, @var{y} @var{z} as vectors.
+## Plot the (@var{u}, @var{v}, @var{w}) components of a vector field in
+## an (@var{x}, @var{y}, @var{z}) meshgrid.  If the grid is uniform, you
+## can specify @var{x}, @var{y}, and @var{z} as vectors.
 ##
-## If @var{x}, @var{y} and @var{z} are undefined they are assumed to be
+## If @var{x}, @var{y}, and @var{z} are undefined they are assumed to be
 ## @code{(1:@var{m}, 1:@var{n}, 1:@var{p})} where @code{[@var{m}, @var{n}] =
 ## size (@var{u})} and @code{@var{p} = max (size (@var{w}))}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
-##  the arrows of the field relative to the mesh spacing.  A value of 0
+## the arrows of the field relative to the mesh spacing.  A value of 0
 ## disables all scaling.  The default value is 1.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
-## in a similar manner to the line styles used with the @code{plot} command.
+## of the same format as the @code{plot} command.
 ## If a marker is specified then markers at the grid points of the vectors are
-## printed rather than arrows.  If the argument "filled" is given then the
-## markers as filled.
+## drawn rather than arrows.  If the argument "filled" is given then the
+## markers are filled.
 ##
 ## The optional return value @var{h} is a graphics handle to a quiver object.
 ## A quiver object regroups the components of the quiver plot (body, arrow,
@@ -58,7 +58,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{quiver, plot}
+## @seealso{quiver, compass, feather, plot}
 ## @end deftypefn
 
 function retval = quiver3 (varargin)

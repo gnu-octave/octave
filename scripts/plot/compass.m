@@ -24,15 +24,17 @@
 ## @deftypefnx {Function File} {@var{h} =} compass (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
-## from the origin of a polar plot.  If a single complex argument @var{z} is
-## given, then @code{@var{u} = real (@var{z})} and @code{@var{v} = imag
-## (@var{z})}.
+## from the origin of a polar plot.
+##
+## The arrow representing each vector has one end at the origin and the tip at
+## [@var{u}(i), @var{v}(i)].  If a single complex argument @var{z} is given,
+## then @code{@var{u} = real (@var{z})} and @code{@var{v} = imag (@var{z})}.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
-## in a similar manner to the line styles used with the @code{plot} command.
+## of the same format as the @code{plot} command.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into these axes,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing the drawn vectors.

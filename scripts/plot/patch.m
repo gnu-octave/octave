@@ -21,29 +21,58 @@
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{fv})
-## @deftypefnx {Function File} {} patch ("Faces", @var{f}, "Vertices", @var{v}, @dots{})
-## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {} patch (@var{h}, @dots{})
+## @deftypefnx {Function File} {} patch ("Faces", @var{faces}, "Vertices", @var{verts}, @dots{})
+## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} patch (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} patch (@dots{})
-## Create patch object from @var{x} and @var{y} with color @var{c} and
-## insert in the current axes object.  Return handle to patch object.
+## Create patch object in the current axes with vertices at locations
+## (@var{x}, @var{y}) and of color @var{c}.
 ##
-## For a uniform colored patch, @var{c} can be given as an RGB vector,
-## scalar value referring to the current colormap, or string value (for
-## example, "r" or "red").
+## If the vertices are matrices of size @nospell{MxN} then each polygon patch
+## has M vertices and a total of N polygons will be created.  If some polygons
+## do not have M vertices use NaN to represent "no vertex".  If the @var{z}
+## input is present then 3-D patches will be created.
 ##
-## If passed a structure @var{fv} contain the fields "vertices", "faces"
-## and optionally "facevertexcdata", create the patch based on these
-## properties.
+## The color argument @var{c} can take many forms.  To create polygons
+## which all share a single color use a string value (e.g., "r" for
+## red), a scalar value which is scaled by @code{caxis} and indexed into the
+## current colormap, or a 3-element RGB vector with the precise TrueColor.
+##
+## If @var{c} is a vector of length N then the ith polygon will have a color
+## determined by scaling entry @var{c}(i) according to @code{caxis} and then
+## indexing into the current colormap.  More complicated coloring situations
+## require directly manipulating patch property/value pairs.
+##
+## Instead of specifying polygons by matrices @var{x} and @var{y}, it is
+## possible to present a unique list of vertices and then a list of polygon
+## faces created from those vertices.  In this case the "Vertices" matrix will
+## be an @nospell{Nx2} (2-D patch) or @nospell{Nx3} (3-D path).  The
+## @nospell{MxN} "Faces" matrix describes M polygons having N vertices---each
+## row describes a single polygon and each column entry is an index into the
+## "Vertices" matrix to identify a vertex.  The patch object can be created by
+## directly passing the property/value pairs "Vertices"/@var{verts},
+## "Faces"/@var{faces} as inputs.
+##
+## A third input form is to create a structure @var{fv} with the fields
+## "vertices", "faces", and optionally "facevertexcdata".
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created patch
 ## object.
-## @seealso{fill}
+##
+## Implementation Note: Patches are highly configurable objects.  To truly
+## customize them requires setting patch properties directly.  Useful patch
+## properties are: "cdata", "edgecolor", "facecolor", "faces",
+## "facevertexcdata",
+##
+## @seealso{fill, get, set}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = patch (varargin)
+function h = patch (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
   
@@ -58,7 +87,7 @@ function retval = patch (varargin)
   endif
 
   if (nargout > 0)
-    retval = htmp;
+    h = htmp;
   endif
 
 endfunction

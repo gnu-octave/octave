@@ -23,9 +23,9 @@
 ## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi @var{z}_lo @var{z}_hi])
 ## @deftypefnx {Function File} {} axis (@var{option})
 ## @deftypefnx {Function File} {} axis (@dots{}, @var{option})
-## @deftypefnx {Function File} {} axis (@var{h}, @dots{})
+## @deftypefnx {Function File} {} axis (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{limits} =} axis ()
-## Set axis limits for plots.
+## Set axis limits and appearance.
 ##
 ## The argument @var{limits} should be a 2-, 4-, or 6-element vector.  The
 ## first and second elements specify the lower and upper limits for the
@@ -34,7 +34,8 @@
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
-## With one output argument, @code{x = axis} returns the current axes.
+## With one output argument, @code{@var{limits} = axis} returns the current
+## axis limits.
 ##
 ## The vector argument specifying limits is optional, and additional
 ## string arguments may be used to specify various axis properties.  For
@@ -66,7 +67,7 @@
 ## Force x distance to equal y-distance.
 ##
 ## @item "normal"
-## Restore the balance.
+## Restore default aspect ratio.
 ## @end table
 ##
 ## @noindent
@@ -82,11 +83,10 @@
 ##
 ## @item "tight"
 ## Fix axes to the limits of the data.
-## @end table
 ##
-## @noindent
-## The option @code{"image"} is equivalent to @code{"tight"} and
-## @code{"equal"}.
+## @item "image"
+## Equivalent to "tight" and "equal".
+## @end table
 ##
 ## @noindent
 ## The following options affect the appearance of tic marks.
@@ -113,8 +113,7 @@
 ## Note, if there are no tic marks for an axis, there can be no labels.
 ##
 ## @noindent
-## The following options affect the direction of increasing values on
-## the axes.
+## The following options affect the direction of increasing values on the axes.
 ##
 ## @table @asis
 ## @item "ij"
@@ -124,8 +123,10 @@
 ## Restore y-axis, so higher values are nearer the top.
 ## @end table
 ##
-## If an axes handle is passed as the first argument, then operate on
-## this axes rather than the current axes.
+## If the first argument @var{hax} is an axes handle, then operate on
+## this axes rather than the current axes returned by @code{gca}.
+##
+## @seealso{xlim, ylim, zlim, daspect, pbaspect, box, grid}
 ## @end deftypefn
 
 ## Author: jwe

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} shading (@var{type})
 ## @deftypefnx {Function File} {} shading (@var{hax}, @var{type})
-## Set the shading of surface or patch graphic objects.
+## Set the shading of patch or surface graphic objects.
 ##
 ## Valid arguments for @var{type} are
 ##
@@ -37,8 +37,7 @@
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
-## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## @seealso{fill, mesh, patch, pcolor, surf, surface, hidden}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

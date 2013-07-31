@@ -31,8 +31,8 @@
 ## The optional argument @var{fmt} specifies the line format in the same way
 ## as @code{plot}.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into this axis,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##

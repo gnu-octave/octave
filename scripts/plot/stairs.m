@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} stairs (@var{y})
 ## @deftypefnx {Function File} {} stairs (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} stairs (@dots{}, @var{style})
-## @deftypefnx {Function File} {} stairs (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} stairs (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} stairs (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} stairs (@dots{})
 ## @deftypefnx {Function File} {[@var{xstep}, @var{ystep}] =} stairs (@dots{})
@@ -31,7 +31,7 @@
 ## and the X coordinates are taken to be the indices of the elements.
 ## 
 ## The style to use for the plot can be defined with a line style @var{style}
-## in the same way as the @code{plot} command.
+## of the same format as the @code{plot} command.
 ##
 ## Multiple property/value pairs may be specified, but they must appear in
 ## pairs.
@@ -59,7 +59,7 @@
 ##
 ## @noindent
 ## are equivalent.
-## @seealso{plot}
+## @seealso{bar, hist, plot, stem}
 ## @end deftypefn
 
 ## Author: jwe

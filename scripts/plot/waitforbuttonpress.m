@@ -17,11 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{b} =} waitforbuttonpress ()
-## Wait for button or mouse press.over a figure window.  The value of
-## @var{b} returns 0 if a mouse button was pressed or 1 is a key was
-## pressed.
-## @seealso{ginput}
+## @deftypefn  {Function File} {} waitforbuttonpress ()
+## @deftypefnx {Function File} {@var{b} =} waitforbuttonpress ()
+## Wait for mouse click or key press over the current figure window.
+##
+## The return value of @var{b} is 0 if a mouse button was pressed or 1 if a
+## key was pressed.
+## @seealso{waitfor, ginput}
 ## @end deftypefn
 
 ## The original version of this code bore the copyright

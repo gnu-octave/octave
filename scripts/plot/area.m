@@ -24,24 +24,24 @@
 ## @deftypefnx {Function File} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} area (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} area (@dots{})
-## Area plot of the columns of @var{y}.  This shows the
-## contributions of each column value to the row sum.  It is functionally
-## similar to @code{plot (@var{x}, cumsum (@var{y}, 2))}, except that the
-## area under the curve is shaded.
+## Area plot of the columns of @var{y}.
 ##
-## If the @var{x} argument is omitted it defaults to 
-## @code{1 : rows (@var{y})}.  A value @var{lvl} can be defined that determines
-## where the base level of the shading under the curve should be defined.  The
-## default level is 0.
+## This plot shows the contributions of each column value to the row sum.  It
+## is functionally similar to @code{plot (@var{x}, cumsum (@var{y}, 2))},
+## except that the area under the curve is shaded.
 ##
-## Additional arguments to the @code{area} function are passed directly to
-## @code{patch}.  
+## If the @var{x} argument is omitted it defaults to @code{1:rows (@var{y})}.
+## A value @var{lvl} can be defined that determines where the base level of
+## the shading under the curve should be defined.  The default level is 0.
 ##
-## If the first argument is an axis handle @var{hax}, then plot into these axes,
-## rather than the current axis handle returned by @code{gca}.
+## Additional property/value pairs are passed directly to the underlying patch
+## object.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the hggroup
-## object representing the area patch objects.  The "BaseValue" property
+## object comprising the area patch objects.  The "BaseValue" property
 ## of the hggroup can be used to adjust the level where shading begins.
 ##
 ## Example: Verify identity sin^2 + cos^2 = 1
@@ -51,7 +51,7 @@
 ## t = linspace (0, 2*pi, 100)';
 ## y = [sin(t).^2, cos(t).^2)];
 ## area (t, y);
-## legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');  
+## legend ("sin^2", "cos^2", "location", "NorthEastOutside");  
 ## @end group
 ## @end example
 ## @seealso{plot, patch}

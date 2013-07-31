@@ -18,18 +18,18 @@
 ## @deftypefn  {Function File} {@var{h} =} struct2hdl (@var{s})
 ## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p})
 ## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p}, @var{hilev})
-## Construct a handle object @var{h} from the structure @var{s}.  The structure
-## must contain the fields "handle", "type", "children", "properties", and
-## "special".  If the handle of an existing figure or axes is specified,
-## @var{p}, the new object will be created as a child of that object.
-## If no object handle is provided then a new figure and the necessary
-## children will be constructed using the default object values from
-## the root figure.
+## Construct a graphics handle object @var{h} from the structure @var{s}.
+##
+## The structure must contain the fields "handle", "type", "children",
+## "properties", and "special".  If the handle of an existing figure or axes
+## is specified, @var{p}, the new object will be created as a child of that
+## object.  If no parent handle is provided then a new figure and the necessary
+## children will be constructed using the default values from the root figure.
 ##
 ## A third boolean argument @var{hilev} can be passed to specify whether
-## the function should try to preserve listeners/callbacks, e.g., for
-## legends or hggroups.  The default is false.
-## @seealso{hdl2struct, findobj, get, set}
+## the function should preserve listeners/callbacks, e.g., for legends or
+## hggroups.  The default is false.
+## @seealso{hdl2struct, findobj}
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>

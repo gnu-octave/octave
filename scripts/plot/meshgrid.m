@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
+## @deftypefn  {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
+## @deftypefnx {Function File} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
+## @deftypefnx {Function File} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x})
 ## Given vectors of @var{x} and @var{y} and @var{z} coordinates, and
 ## returning 3 arguments, return three-dimensional arrays corresponding
 ## to the @var{x}, @var{y}, and @var{z} coordinates of a mesh.  When
@@ -28,7 +29,7 @@
 ## copies of @var{x}, and the columns of @var{yy} are copies of @var{y}.
 ## If @var{y} is omitted, then it is assumed to be the same as @var{x},
 ## and @var{z} is assumed the same as @var{y}.
-## @seealso{mesh, contour}
+## @seealso{ndgrid, mesh, contour, surf}
 ## @end deftypefn
 
 ## Author: jwe

@@ -18,14 +18,25 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} hggroup ()
-## @deftypefnx {Function File} {} hggroup (@var{h})
+## @deftypefnx {Function File} {} hggroup (@var{hax})
 ## @deftypefnx {Function File} {} hggroup (@dots{}, @var{property}, @var{value}, @dots{})
-## Create group object with parent @var{h}.  If no parent is specified,
-## the group is created in the current axes.  Return the handle of the
-## group object created.
+## @deftypefnx {Function File} {@var{h} =} hggroup (@dots{})
+## Create handle graphics group object with axes parent @var{hax}.
 ##
-## Multiple property-value pairs may be specified for the group, but they
+## If no parent is specified, the group is created in the current axes.
+##
+## Multiple property-value pairs may be specified for the hggroup, but they
 ## must appear in pairs.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## hggroup object.
+##
+## Programming Note: An hggroup is a way to group base graphics objects such
+## as line objects or patch objects into a single unit which can react
+## appropriately.  For example, the individual lines of a contour plot are
+## collected into a single hggroup so that they can be made visible/invisible
+## with a single command, @code{set (hg_handle, "visible", "off")}.
+## 
 ## @end deftypefn
 
 ## Author: goffioul

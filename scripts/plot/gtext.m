@@ -20,18 +20,20 @@
 ## @deftypefn  {Function File} {} gtext (@var{s})
 ## @deftypefnx {Function File} {} gtext (@{@var{s1}, @var{s2}, @dots{}@})
 ## @deftypefnx {Function File} {} gtext (@{@var{s1}; @var{s2}; @dots{}@})
-## @deftypefnx {Function File} {} gtext (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} gtext (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} gtext (@dots{})
-## Place text on the current figure using the mouse.  The text is defined
-## by the string @var{s}.  If @var{s} is a cell string organized as a row
-## vector then each string of the cell array is written to a separate line.
-## If @var{s} is organized as a column vector then one string element of the
-## cell array is placed for every mouse click.  Additional inputs besides a
-## string or cellstr are passed to the underlying text object as Property-value
-## pairs.
+## Place text on the current figure using the mouse.
+##
+## The text is defined by the string @var{s}.  If @var{s} is a cell string
+## organized as a row vector then each string of the cell array is written to a
+## separate line.  If @var{s} is organized as a column vector then one string
+## element of the cell array is placed for every mouse click.
+##
+## Optional property/value pairs are passed directly to the underlying text
+## objects.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
-## text object.
+## text object(s).
 ## @seealso{ginput, text}
 ## @end deftypefn
 

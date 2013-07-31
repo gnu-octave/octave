@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} clf
-## @deftypefnx {Function File} {} clf reset
+## @deftypefn  {Command} {} clf
+## @deftypefnx {Command} {} clf reset
 ## @deftypefnx {Function File} {} clf (@var{hfig})
 ## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
 ## @deftypefnx {Function File} {@var{h} =} clf (@dots{})

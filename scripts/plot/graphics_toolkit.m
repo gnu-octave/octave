@@ -21,23 +21,18 @@
 ## @deftypefnx {Function File} {@var{name} =} graphics_toolkit (@var{hlist})
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{name})
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
-## Return the default graphics toolkit.  The default graphics toolkit value
-## is assigned to new figures.
+## Query or set the default graphics toolkit which is assigned to new
+## figures.
 ## 
-## @code{graphics_toolkit (@var{hlist})}
+## With no inputs, return the current default graphics toolkit.  If the input
+## is a list of figure graphic handles, @var{hlist}, then return the name
+## of the graphics toolkit in use for each figure.
 ## 
-## Return the graphics toolkits for the figures with handles @var{hlist}.
-## 
-## @code{graphics_toolkit (@var{name})}
-## 
-## Set the default graphics toolkit to @var{name}.  If the toolkit is not
-## already loaded, it is initialized by calling the function
-## @code{__init_@var{name}__}.
-## 
-## @code{graphics_toolkit (@var{hlist}, @var{name})}
-##
-## Set the graphics toolkit for the figures with handles @var{hlist} to
-## @var{name}.
+## When called with a single input @var{name} set the default graphics toolkit
+## to @var{name}.  If the toolkit is not already loaded, it is initialized by
+## calling the function @code{__init_@var{name}__}.  If the first input
+## is a list of figure handles, @var{hlist}, then the graphics toolkit is set
+## to @var{name} for these figures only.
 ## 
 ## @seealso{available_graphics_toolkits}
 ## @end deftypefn

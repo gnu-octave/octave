@@ -18,9 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} gcf ()
-## Return the current figure handle.  If a figure does not exist, create
-## one and return its handle.  The handle may then be used to examine or
-## set properties of the figure.  For example,
+## Return the current figure handle.
+##
+## If a figure does not exist, create one and return its handle.  The handle
+## may then be used to examine or set properties of the figure.  For example,
 ##
 ## @example
 ## @group
@@ -34,7 +35,7 @@
 ## plots a sine wave, finds the handle of the current figure, and then
 ## makes that figure invisible.  Setting the visible property of the
 ## figure to @code{"on"} will cause it to be displayed again.
-## @seealso{gca, gco, get, set}
+## @seealso{gca, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
 
 ## Author: jwe, Bill Denney

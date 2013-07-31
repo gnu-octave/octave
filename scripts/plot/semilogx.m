@@ -21,12 +21,16 @@
 ## @deftypefnx {Function File} {} semilogx (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} semilogx (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} semilogx (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} semilogx (@var{h}, @dots{})
+## @deftypefnx {Function File} {} semilogx (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} semilogx (@dots{})
-## Produce a two-dimensional plot using a logarithmic scale for the @var{x}
-## axis.  See the documentation of @code{plot} for a description of the
+## Produce a 2-D plot using a logarithmic scale for the x-axis.
+##
+## See the documentation of @code{plot} for a description of the
 ## arguments that @code{semilogx} will accept.
 ## 
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{plot, semilogy, loglog}
 ## @end deftypefn

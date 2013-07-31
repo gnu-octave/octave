@@ -18,33 +18,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} stem3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} stem3 (@var{x}, @var{y}, @var{z}, @var{linespec})
+## @deftypefnx {Function File} {} stem3 (@dots{}, @var{linespec})
 ## @deftypefnx {Function File} {} stem3 (@dots{}, "filled")
-## @deftypefnx {Function File} {} stem3 (@dots{}, "@var{prop}", "@var{val}", @dots{})
+## @deftypefnx {Function File} {} stem3 (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} stem3 (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} stem3 (@dots{})
 ## Plot a 3-D stem graph.
 ##
-## The default color is @code{"r"} (red), the default line style is
-## @code{"-"}, and the default marker is @code{"o"}.  The line style can
-## be altered by the @code{linespec} argument in the same manner as the
-## @code{plot} command.
+## Stems are drawn from the height @var{z} to the location in the x-y plane
+## determined by @var{x} and @var{y}.  The default color is @code{"b"} (blue),
+## the default line style is @code{"-"}, and the default marker is @code{"o"}.
 ##
-## Multiple property/value pairs may be specified, but they must appear in
-## pairs.
+## The line style can be altered by the @code{linespec} argument in the same
+## manner as the @code{plot} command.  If the "filled" argument is present
+## the markers at the top of the stems will be filled in.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into these axes,
-## rather than the current axis handle returned by @code{gca}.
+## Optional property/value pairs may be specified to control the appearance
+## of the plot.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector with the handles of the line
-## and marker objects used to draw the stems as "stem series" object.
+## and marker objects used to draw the stems as a "stem series" object.
 ##
 ## Example:
 ##
 ## @example
 ## @group
 ## theta = 0:0.2:6;
-## stem3 (cos (theta), sin (theta), theta)
+## stem3 (cos (theta), sin (theta), theta);
 ## @end group
 ## @end example
 ##
@@ -52,7 +55,6 @@
 ## plots 31 stems with heights from 0 to 6 lying on a circle.
 ##
 ## Implementation Note: Color definitions with RGB-triples are not valid.
-##
 ## @seealso{stem, bar, hist, plot}
 ## @end deftypefn
 

@@ -19,35 +19,59 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} waterfall (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} waterfall (@var{z})
+## @deftypefnx {Function File} {} waterfall (@dots{}, @var{c})
+## @deftypefnx {Function File} {} waterfall (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} waterfall (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} waterfall (@dots{})
-## Plot a waterfall plot given matrices @var{x}, and @var{y} from
-## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and
-## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors,
-## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus,
-## columns of @var{z} correspond to different @var{x} values and rows of
-## @var{z} correspond to different @var{y} values.
+## Plot a 3-D waterfall plot.
+##
+## A waterfall plot is similar to a @code{meshz} plot except only
+## mesh lines for the rows of @var{z} (x-values) are shown.
+##
+## The wireframe mesh is plotted using rectangles.  The vertices of the
+## rectangles [@var{x}, @var{y}] are typically the output of @code{meshgrid}.
+## over a 2-D rectangular region in the x-y plane.  @var{z} determines the
+## height above the plane of each vertex.  If only a single @var{z} matrix is
+## given, then it is plotted over the meshgrid
+## @code{@var{x} = 1:columns (@var{z}), @var{y} = 1:rows (@var{z})}.
+## Thus, columns of @var{z} correspond to different @var{x} values and rows
+## of @var{z} correspond to different @var{y} values.  
+##
+## The color of the mesh is computed by linearly scaling the @var{Z} values
+## to fit the range of the current colormap.  Use @code{caxis} and/or
+## change the colormap to control the appearance.
+##
+## Optionally the color of the mesh can be specified independently of @var{z}
+## by supplying a color matrix, @var{c}.
+##
+## Any property/value pairs are passed directly to the underlying surface
+## object.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## surface object.
-## @seealso{meshgrid, meshz, surf}
+##
+## @seealso{meshz, mesh, meshc, contour, surf, surface, ribbon, meshgrid, hidden, shading, colormap, caxis}
 ## @end deftypefn
 
 ## Author: Mike Miller <mtmiller@ieee.org>
 
 function h = waterfall (varargin)
 
-  tmp = meshz (varargin{:});
+  htmp = meshz (varargin{:});
 
-  set (tmp, "meshstyle", "row");
+  set (htmp, "meshstyle", "row");
 
   ## The gnuplot toolkit does nothing with the meshstyle property currently.
-  toolkit = get (ancestor (tmp, "figure"), "__graphics_toolkit__");
+  toolkit = get (ancestor (htmp, "figure"), "__graphics_toolkit__");
   if (strcmp (toolkit, "gnuplot"))
     warning ("waterfall: may not render correctly using toolkit '%s'", toolkit);
   endif
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction

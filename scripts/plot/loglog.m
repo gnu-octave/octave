@@ -19,13 +19,17 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} loglog (@var{y})
 ## @deftypefnx {Function File} {} loglog (@var{x}, @var{y})
-## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{prop}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} loglog (@var{h}, @dots{})
+## @deftypefnx {Function File} {} loglog (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} loglog (@dots{})
-## Produce a two-dimensional plot using log scales for both axes.  See
-## the documentation of @code{plot} for a description of the arguments
+## Produce a 2-D plot using logarithmic scales for both axes.
+##
+## See the documentation of @code{plot} for a description of the arguments
 ## that @code{loglog} will accept.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{plot, semilogx, semilogy}

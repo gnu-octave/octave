@@ -20,9 +20,9 @@
 ## @deftypefn {Function File} {} diffuse (@var{sx}, @var{sy}, @var{sz}, @var{lv})
 ## Calculate diffuse reflection strength of a surface defined by the normal
 ## vector elements @var{sx}, @var{sy}, @var{sz}.
-## The light vector can be specified using parameter @var{lv}.  It can be
-## given as 2-element vector [azimuth, elevation] in degrees or as 3-element
-## vector [lx, ly, lz].
+##
+## The light source location vector @var{lv} can be given as 2-element vector
+## [azimuth, elevation] in degrees or as 3-element vector [lx, ly, lz].
 ## @seealso{specular, surfl}
 ## @end deftypefn
 

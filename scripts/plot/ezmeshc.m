@@ -44,6 +44,9 @@
 ## If the argument "circ" is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
 ## The optional return value @var{h} is a 2-element vector with a graphics
 ## handle for the created mesh plot and a second handle for the created contour
 ## plot.

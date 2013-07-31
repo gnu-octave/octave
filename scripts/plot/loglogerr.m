@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} loglogerr (@var{args})
-## @deftypefnx {Function File} {@var{h} =} loglogerr (@var{args})
-## Produce two-dimensional plots on a double logarithm axis with
-## errorbars.
+## @deftypefnx {Function File} {} loglogerr (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} loglogerr (@dots{})
+## Produce 2-D plots on a double logarithm axis with errorbars.
 ##
 ## Many different combinations of arguments are possible.  The most common
 ## form is
@@ -32,8 +32,8 @@
 ## @noindent
 ## which produces a double logarithm plot of @var{y} versus @var{x}
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
-## format defined by @var{fmt}.  See @code{errorbar} for available formats and
-## additional information.
+## format defined by @var{fmt}.  @xref{XREFerrorbar,,errorbar}, for available
+## formats and additional information.
 ## @seealso{errorbar, semilogxerr, semilogyerr}
 ## @end deftypefn
 

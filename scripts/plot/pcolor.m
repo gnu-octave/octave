@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} pcolor (@var{c})
 ## @deftypefnx {Function File} {} pcolor (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} pcolor (@dots{})
-## Produce a 2D density plot.
+## Produce a 2-D density plot.
 ##
 ## A @code{pcolor} plot draws rectangles with colors from the matrix @var{c}
 ## over the two-dimensional region represented by the matrices @var{x} and
@@ -45,8 +45,8 @@
 ## "faceted", which renders a single color for each cell's face with the edge
 ## visible.
 ##
-## If the first argument @var{hax} is an axis handle, then plot into this axis,
-## rather than the current axis handle returned by @code{gca}.
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## surface object.

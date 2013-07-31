@@ -17,19 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} barh (@var{x}, @var{y})
-## @deftypefnx {Function File} {} barh (@var{y})
-## @deftypefnx {Function File} {} barh (@var{x}, @var{y}, @var{w})
-## @deftypefnx {Function File} {} barh (@var{x}, @var{y}, @var{w}, @var{style})
-## @deftypefnx {Function File} {} barh (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {} barh (@var{h}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} barh (@dots{})
-## Produce a horizontal bar graph from two vectors of x-y data.
+## @deftypefn  {Function File} {} barh (@var{y})
+## @deftypefnx {Function File} {} barh (@var{x}, @var{y})
+## @deftypefnx {Function File} {} barh (@dots{}, @var{w})
+## @deftypefnx {Function File} {} barh (@dots{}, @var{style})
+## @deftypefnx {Function File} {} barh (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} barh (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} barh (@dots{}, @var{prop}, @var{val}, @dots{})
+## Produce a horizontal bar graph from two vectors of X-Y data.
 ##
-## If only one argument is given, it is taken as a vector of y-values
-## and the x coordinates are taken to be the indices of the elements.
+## If only one argument is given, it is taken as a vector of Y values
+## and the X coordinates are the range @code{1:numel (@var{y})}.
 ##
-## The default width of 0.8 for the bars can be changed using @var{w}.
+## The optional input @var{w} controls the width of the bars.  A value of
+## 1.0 will cause each bar to exactly touch any adjacent bars.
+## The default width is 0.8.
 ##
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
 ## separate bar graph plotted on the same graph.  By default the columns
@@ -37,16 +39,16 @@
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
-## Passing the optional input handle @var{h} will draw the resulting plot
-## in the specified handle.
-## 
-## Properties of the patch graphics object can be changed using
-## @var{prop}, @var{val} pairs.
+## Optional property/value pairs are passed directly to the underlying patch
+## objects.
 ##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+## 
 ## The optional return value @var{h} is a graphics handle to the created
-## bar series object.  See @code{bar} for a description of the use of the
-## bar series.
-## @seealso{bar, plot}
+## bar series hggroup.  For a description of the use of the
+## bar series, @pxref{XREFbar,,bar}.
+## @seealso{bar, hist, pie, plot, patch}
 ## @end deftypefn
 
 ## Author: jwe

@@ -17,24 +17,28 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cylinder
+## @deftypefn  {Command} {} cylinder
 ## @deftypefnx {Function File} {} cylinder (@var{r})
 ## @deftypefnx {Function File} {} cylinder (@var{r}, @var{n})
+## @deftypefnx {Function File} {} cylinder (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} cylinder (@dots{})
-## @deftypefnx {Function File} {} cylinder (@var{ax}, @dots{})
-## Generate three matrices in @code{meshgrid} format, such that
-## @code{surf (@var{x}, @var{y}, @var{z})} generates a unit cylinder.
-## The matrices are of size @code{@var{n}+1}-by-@code{@var{n}+1}.
-## @var{r} is a vector containing the radius along the z-axis.
-## If @var{n} or @var{r} are omitted then default values of 20 or [1 1]
-## are assumed.
+## Plot a 3-D unit cylinder.
 ##
-## Called with no return arguments, @code{cylinder} calls directly
-## @code{surf (@var{x}, @var{y}, @var{z})}.  If an axes handle @var{ax}
-## is passed as the first argument, the surface is plotted to this set
-## of axes.
+## The optional input @var{r} is a vector specifying the radius along the
+## unit z-axis.  The default is [1 1] indicating radius 1 at @code{Z == 0}
+## and at @code{Z == 1}.
 ##
-## Examples:
+## The optional input @var{n} determines the number of faces around the
+## the circumference of the cylinder.  The default value is 20.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
+## If outputs are requested @code{cylinder} returns three matrices in
+## @code{meshgrid} format, such that @code{surf (@var{x}, @var{y}, @var{z})}
+## generates a unit cylinder.
+##
+## Example:
 ##
 ## @example
 ## @group
@@ -43,7 +47,7 @@
 ## title ("a cone");
 ## @end group
 ## @end example
-## @seealso{sphere}
+## @seealso{ellipsoid, rectangle, sphere}
 ## @end deftypefn
 
 function [xx, yy, zz] = cylinder (varargin)

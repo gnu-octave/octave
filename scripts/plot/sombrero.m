@@ -19,15 +19,32 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} sombrero ()
 ## @deftypefnx {Function File} {} sombrero (@var{n})
-## Produce the familiar three-dimensional sombrero plot using @var{n}
-## grid lines.  If @var{n} is omitted, a value of 41 is assumed.
+## @deftypefnx {Function File} {@var{z} =} sombrero (@dots{})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} sombrero (@dots{})
+## Plot the familiar 3-D sombrero function.
 ##
 ## The function plotted is
+## @tex
+## $$z = { \rm{sin} (\sqrt {(x^2 + y^2)}) \over \sqrt {(x^2 + y^2)} }$$
+## @end tex
+## @ifnottex
 ##
 ## @example
 ## z = sin (sqrt (x^2 + y^2)) / (sqrt (x^2 + y^2))
 ## @end example
-## @seealso{surf, meshgrid, mesh}
+##
+## @end ifnottex
+## Called without a return argument, @code{sombrero} plots the surface of the
+## above function over the meshgrid [-8,8] using @code{surf}.
+## 
+## If @var{n} is a scalar the plot is made with @var{n} grid lines.
+## The default value for @var{n} is 41.
+##
+## When called with output arguments, return the data for the function
+## evaluated over the meshgrid.  This can subsequently be plotted with
+## @code{surf (@var{x}, @var{y}, @var{z})}.
+##
+## @seealso{peaks, meshgrid, mesh, surf}
 ## @end deftypefn
 
 ## Author: jwe
@@ -43,11 +60,13 @@ function [x, y, z] = sombrero (n = 41)
   tx = linspace (-8, 8, n)';
   ty = tx;
   [xx, yy] = meshgrid (tx, ty);
-  r = sqrt (xx .^ 2 + yy .^ 2) + eps;
+  r = sqrt (xx .^ 2 + yy .^ 2) + eps;  # eps prevents div/0 errors
   tz = sin (r) ./ r;
+
   if (nargout == 0)
     surf (tx, ty, tz);
-    box ("off");
+  elseif (nargout == 1)
+    z = tz;
   else
     x = tx;
     y = ty;

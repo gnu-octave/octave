@@ -113,7 +113,7 @@ endfunction
 %! clf;
 %! colormap ('default');
 %! [x, y, z] = sombrero ();
-%! [x, y] = meshgrid (x, y);
+%! [~, y] = meshgrid (x, y);
 %! ribbon (y, z);
 
 %!FIXME: Could have some input validation tests here

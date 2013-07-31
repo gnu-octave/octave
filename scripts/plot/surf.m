@@ -76,7 +76,7 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! [~,~,Z] = sombrero ();
+%! Z = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! surf (Z, Fx+Fy);
 %! shading interp;

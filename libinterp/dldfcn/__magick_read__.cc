@@ -147,7 +147,8 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
 template <class T>
 octave_value_list
 read_images (std::vector<Magick::Image>& imvec,
-             const Array<octave_idx_type>& frameidx)
+             const Array<octave_idx_type>& frameidx,
+             const octave_idx_type nargout)
 {
   typedef typename T::element_type P;
 
@@ -188,6 +189,40 @@ read_images (std::vector<Magick::Image>& imvec,
   if (type == Magick::BilevelType && imvec[0].matte ())
     {
       type = Magick::GrayscaleMatteType;
+    }
+
+  // If the alpha channel was not requested, treat images as if
+  // it doesn't exist.
+  if (nargout < 3)
+    {
+      switch (type)
+        {
+        case Magick::GrayscaleMatteType:
+          {
+            type = Magick::GrayscaleType;
+            break;
+          }
+        case Magick::PaletteMatteType:
+          {
+            type = Magick::PaletteType;
+            break;
+          }
+        case Magick::TrueColorMatteType:
+          {
+            type = Magick::TrueColorType;
+            break;
+          }
+        case Magick::ColorSeparationMatteType:
+          {
+            type = Magick::ColorSeparationType;
+            break;
+          }
+        default:
+          {
+            // do nothing, other than silencing warnings about enumeration
+            // values not being handled in switch.
+          }
+        }
     }
 
   switch (type)
@@ -580,19 +615,19 @@ use @code{imread}.\n\
     {
       if (depth <= 1)
         {
-          output = read_images<boolNDArray> (imvec, frameidx);
+          output = read_images<boolNDArray> (imvec, frameidx, nargout);
         }
       else if (depth <= 8)
         {
-          output = read_images<uint8NDArray> (imvec, frameidx);
+          output = read_images<uint8NDArray> (imvec, frameidx, nargout);
         }
       else if (depth <= 16)
         {
-          output = read_images<uint16NDArray> (imvec, frameidx);
+          output = read_images<uint16NDArray> (imvec, frameidx, nargout);
         }
       else if (depth <= 32)
         {
-          output = read_images<FloatNDArray> (imvec, frameidx);
+          output = read_images<FloatNDArray> (imvec, frameidx, nargout);
         }
       else
         {

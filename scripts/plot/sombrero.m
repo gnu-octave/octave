@@ -66,7 +66,7 @@ function [x, y, z] = sombrero (n = 41)
   if (nargout == 0)
     surf (tx, ty, tz);
   elseif (nargout == 1)
-    z = tz;
+    x = tz;
   else
     x = tx;
     y = ty;

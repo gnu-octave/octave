@@ -75,7 +75,7 @@ function tri = delaunay (varargin)
   switch (nargin)
 
   case 1
-    if (! ismatrix (varargin{1}) && columns (varargin{1}) != 2)
+    if (! ismatrix (varargin{1}) || columns (varargin{1}) != 2)
         error ("delaunay: X must be a matrix with 2 columns");
     else
       x = varargin{1}(:,1);
@@ -109,7 +109,7 @@ function tri = delaunay (varargin)
 
   endswitch
 
-  if (! (isvector (x) && isvector (y) && length (x) == length (y)))
+  if (! (isequal(size(x),size(y))))
     error ("delaunay: X and Y must be the same size");
   endif
 
@@ -156,5 +156,13 @@ endfunction
 %! y = [0, 1, 0, -1, 0];
 %! assert (sortrows (sort (delaunay (x, y), 2)), [1,2,5;1,4,5;2,3,5;3,4,5]);
 
-%% FIXME: Need input validation tests
+%!testif HAVE_QHULL
+%! x = [-1, 0; 0, 1; 1, 0; 0, -1; 0, 0];
+%! assert (sortrows (sort (delaunay (x), 2)), [1,2,5;1,4,5;2,3,5;3,4,5]);
 
+%!testif HAVE_QHULL
+%! x = [1 5 2; 5 6 7];
+%! y = [5 7 8; 1 2 3];
+%! assert (sortrows (sort (delaunay (x, y), 2)), [1,2,4;1,3,4;1,3,5;3,4,6]);
+
+%% FIXME: Need input validation tests

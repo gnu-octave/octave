@@ -1110,8 +1110,9 @@ private:
       {
         Matrix pos (1,2,0);
         pos(0) = px;
-        // FIXME - only works if (uimenu->is_visible ()) ?
-        pos(1) = h () - status_h - menu_h - py;
+        pos(1) = h () - menu_h - py;
+        if (! uimenu->is_visible ())
+          pos(1) = pos(1) +  menu_h;
         fp.set_currentpoint (pos);
       }
   }

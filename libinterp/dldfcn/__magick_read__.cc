@@ -398,6 +398,7 @@ read_images (std::vector<Magick::Image>& imvec,
                     a_fvec[a_idx] = pix->opacity / divisor;
                     pix += row_shift;
                     idx++;
+                    a_idx++;
                   }
                 pix -= col_shift;
               }

@@ -70,12 +70,14 @@ function retval = close (arg1, arg2)
     elseif (isempty (arg1))
       figs = [];
     else
-      error ('close: expecting argument to be "all" or a figure handle');
+      error ('close: first argument must be "all" or a figure handle');
     endif
   elseif (   ischar (arg1) && strcmpi (arg1, "all")
           && ischar (arg2) && strcmpi (arg2, "hidden"))
     figs = (allchild (0))';
     figs = figs(isfigure (figs));
+  else
+    error ('close: expecting argument to be "all hidden"');
   endif
 
   for h = figs
@@ -94,10 +96,16 @@ endfunction
 %! unwind_protect
 %!   close (hf);
 %!   objs = findobj ("type", "figure");
-%!   assert (isempty (intersect (objs, hf)));
+%!   assert (! any (objs == hf));
 %! unwind_protect_cleanup
 %!   if (isfigure (hf))
 %!     close (hf);
 %!   endif
 %! end_unwind_protect
+
+%!error close (1,2,3)
+%!error <first argument must be "all" or a figure> close ({"all"})
+%!error <first argument must be "all" or a figure> close ("all_and_more")
+%!error <first argument must be "all" or a figure> close (-1)
+%!error <expecting argument to be "all hidden"> close "all" hid"
 

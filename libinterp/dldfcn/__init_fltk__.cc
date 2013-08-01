@@ -662,10 +662,10 @@ class plot_window : public Fl_Window
   friend class fltk_uimenu;
 public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
-    : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
-      ndim (2), fp (xfp), canvas (0), autoscale (0), togglegrid (0),
-      panzoom (0), rotate (0), help (0), status (0),
-      ax_obj (), pos_x (0), pos_y (0)
+    : Fl_Window (xx, yy - menu_h, ww, hh + menu_h + status_h, "octave"),
+      window_label (), shift (0), ndim (2), fp (xfp), canvas (0),
+      autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0),
+      status (0), ax_obj (), pos_x (0), pos_y (0)
   {
     callback (window_close, static_cast<void*> (this));
     size_range (4*status_h, 2*status_h);
@@ -680,32 +680,40 @@ public:
 
     begin ();
     {
+      //Fl_Window::resize (xx, yy - menu_h, ww, hh + menu_h + status_h);
+      
+      // bbox of plot canvas = [xx, yy, ww, hh];
+      // (xx, yy) = UL coordinate relative to UL window.
 
-      canvas = new OpenGL_fltk (0, 0, ww, hh - status_h, number ());
+      canvas = new OpenGL_fltk (0, menu_h, ww, hh, number ());
 
       uimenu = new fltk_uimenu (0, 0, ww, menu_h);
       uimenu->hide ();
 
-      bottom = new Fl_Box (0, hh - status_h, ww, status_h);
+      // Toolbar is a composite of "bottom", "autoscale", "togglegrid",
+      // "panzoom", "rotate", "help", and "status".
+
+      yy = hh + menu_h;
+      bottom = new Fl_Box (0, yy, ww, status_h);
       bottom->box (FL_FLAT_BOX);
 
       ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
 
-      autoscale = new Fl_Button (0, hh - status_h, status_h, status_h, "A");
+      autoscale = new Fl_Button (0, yy, status_h, status_h, "A");
       autoscale->callback (button_callback, static_cast<void*> (this));
       autoscale->tooltip ("Autoscale");
 
-      togglegrid = new Fl_Button (status_h, hh - status_h, status_h,
+      togglegrid = new Fl_Button (status_h, yy, status_h,
                                   status_h, "G");
       togglegrid->callback (button_callback, static_cast<void*> (this));
       togglegrid->tooltip ("Toggle Grid");
 
-      panzoom = new Fl_Button (2 * status_h, hh - status_h, status_h,
+      panzoom = new Fl_Button (2 * status_h, yy, status_h,
                                status_h, "P");
       panzoom->callback (button_callback, static_cast<void*> (this));
       panzoom->tooltip ("Mouse Pan/Zoom");
 
-      rotate = new Fl_Button (3 * status_h, hh - status_h, status_h,
+      rotate = new Fl_Button (3 * status_h, yy, status_h,
                               status_h, "R");
       rotate->callback (button_callback, static_cast<void*> (this));
       rotate->tooltip ("Mouse Rotate");
@@ -713,12 +721,12 @@ public:
       if (ndim == 2)
         rotate->deactivate ();
 
-      help = new Fl_Button (4 * status_h, hh - status_h, status_h,
+      help = new Fl_Button (4 * status_h, yy, status_h,
                             status_h, "?");
       help->callback (button_callback, static_cast<void*> (this));
       help->tooltip ("Help");
 
-      status = new Fl_Output (5 * status_h, hh - status_h,
+      status = new Fl_Output (5 * status_h, yy,
                               ww > 2*status_h ? ww - status_h : 0,
                               status_h, "");
 
@@ -799,10 +807,7 @@ public:
   {
     if (!uimenu->is_visible ())
       {
-        canvas->resize (canvas->x (),
-                        canvas->y () + menu_h,
-                        canvas->w (),
-                        canvas->h () - menu_h);
+        // FIXME - Toolbar and menubar do not update
         uimenu->show ();
         mark_modified ();
       }
@@ -812,10 +817,7 @@ public:
   {
     if (uimenu->is_visible ())
       {
-        canvas->resize (canvas->x (),
-                        canvas->y () - menu_h,
-                        canvas->w (),
-                        canvas->h () + menu_h);
+        // FIXME - Toolbar and menubar do not update
         uimenu->hide ();
         mark_modified ();
       }
@@ -1108,6 +1110,7 @@ private:
       {
         Matrix pos (1,2,0);
         pos(0) = px;
+        // FIXME - only works if (uimenu->is_visible ()) ?
         pos(1) = h () - status_h - menu_h - py;
         fp.set_currentpoint (pos);
       }
@@ -1181,17 +1184,48 @@ private:
 
     Matrix pos (1,4,0);
     pos(0) = xx;
-    pos(1) = yy;
+    pos(1) = yy + menu_h;
     pos(2) = ww;
-    pos(3) = hh - status_h - menu_h;
+    pos(3) = hh - menu_h - status_h;
+    if (! uimenu->is_visible ())
+      {
+        pos(1) = yy;
+        pos(3) = hh - status_h;
+      }
 
     fp.set_boundingbox (pos, true);
   }
 
   void draw (void)
   {
+    // FIXME - Toolbar and menubar do not update properly
     Matrix pos = fp.get_boundingbox (true);
-    Fl_Window::resize (pos(0), pos(1), pos(2), pos(3) + status_h + menu_h);
+    int canvas_h = pos(3);
+    int canvas_w = pos(2);
+    int canvas_y = menu_h;
+    int toolbar_y = menu_h + canvas_h;
+    pos(1) = pos(1) - menu_h;
+    pos(3) = pos(3) + menu_h + status_h;
+
+    if (! uimenu->is_visible ())
+      {
+        pos(1) = pos(1) + menu_h;
+        pos(3) = pos(3) - menu_h;
+        toolbar_y = toolbar_y - menu_h;
+        canvas_y = canvas_y - menu_h;
+      }
+
+    Fl_Window::resize (pos(0), pos(1), pos(2), pos(3));
+
+    bottom->resize (0, toolbar_y, status_h, status_h);
+    autoscale->resize (0, toolbar_y, status_h, status_h);
+    togglegrid->resize (status_h, toolbar_y, status_h, status_h);
+    panzoom->resize (2 * status_h, toolbar_y, status_h, status_h);
+    rotate->resize (3 * status_h, toolbar_y, status_h, status_h);
+    help->resize (4 * status_h, toolbar_y, status_h, status_h);
+    status->resize (5 * status_h, toolbar_y, pos(2) - 4 * status_h, status_h);
+    if (canvas->valid ())
+      canvas->resize (0, canvas_y, canvas_w, canvas_h);
 
     return Fl_Window::draw ();
   }

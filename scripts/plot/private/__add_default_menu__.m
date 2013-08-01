@@ -19,48 +19,49 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __add_default_menu__ (@var{fig})
 ## Add default menu to figure.  All uimenu handles have
-## set their property "handlevisibility" to "off".
+## their "HandleVisibility" property set to "off".
 ## @end deftypefn
 
 ## Author: Kai Habel
 
 function __add_default_menu__ (fig)
 
-  if (isfigure (fig))
-    obj = findall (fig, "label", "&File", "tag", "__default_menu__");
-    if (length (obj) == 0)
-      __f = uimenu (fig, "label", "&File", "handlevisibility", "off", "tag", "__default_menu__");
-        sa = uimenu (__f, "label", "Save &As", "handlevisibility", "off",
-                          "callback", @save_cb);
-        sv = uimenu (__f, "label", "&Save", "handlevisibility", "off",
-                          "callback", @save_cb);
-        cl = uimenu (__f, "label", "&Close", "handlevisibility", "off",
-                          "callback", "close(gcf)");
-
-      __e = uimenu (fig, "label", "&Edit", "handlevisibility", "off");
-        gr = uimenu (__e, "label", "&Grid", "handlevisibility", "off",
-                          "callback", @grid_cb);
-        as = uimenu (__e, "label", "Auto&scale", "handlevisibility", "off",
-                          "callback", @autoscale_cb);
-        gm = uimenu (__e, "label", "GUI &Mode", "handlevisibility", "off");
-          gm2 = uimenu (gm, "label", "Pan+Zoom", "handlevisibility", "off",
-                            "callback", @guimode_cb);
-          gm3 = uimenu (gm, "label", "Rotate+Zoom", "handlevisibility", "off",
-                            "callback", @guimode_cb);
-          gmn = uimenu (gm, "label", "None", "handlevisibility", "off",
-                            "callback", @guimode_cb);
-      __h = uimenu (fig, "label", "&Help", "handlevisibility", "off");
-        ab = uimenu (__h, "label", "A&bout", "handlevisibility", "off", "enable", "off");
-    endif
-  else
-    error ("expecting figure handle", "handlevisibility", "off");
+  ## Only FLTK toolkit currently provides menubar
+  if (! strcmp (get (fig, "__graphics_toolkit__"), "fltk"))
+    return;
   endif
 
-endfunction
+  obj = findall (fig, "-depth", 1, "tag", "__default_menu__", "label", "&File");
+  if (isempty (obj))
+    ## FIXME: uimenu() will cause menubar to be displayed, even though property
+    ##        menubar remains set at "none".  So, forcibly turn menubar status
+    ##        on and then off to force figure to hide menubar.
+    menubar_state = get (fig, "menubar");
+    set (fig, "menubar", "figure");
+    drawnow ();
 
-function grid_cb (h, e)
-  grid;
-  drawnow; # should not be required
+    __f = uimenu (fig, "label", "&File", "handlevisibility", "off",
+                       "tag", "__default_menu__");
+      uimenu (__f, "label", "Save &As", "callback", @save_cb);
+      uimenu (__f, "label", "&Save", "callback", @save_cb);
+      uimenu (__f, "label", "&Close", "callback", "close (gcf)");
+
+    __e = uimenu (fig, "label", "&Edit", "handlevisibility", "off",
+                       "tag", "__default_menu__");
+      uimenu (__e, "label", "&Grid", "callback", @grid_cb);
+      uimenu (__e, "label", "Auto&scale", "callback", @autoscale_cb);
+      gm = uimenu (__e, "label", "GUI &Mode");
+        uimenu (gm, "label", "Pan+Zoom", "callback", @guimode_cb);
+        uimenu (gm, "label", "Rotate+Zoom", "callback", @guimode_cb);
+        uimenu (gm, "label", "None", "callback", @guimode_cb);
+
+    __h = uimenu (fig, "label", "&Help", "handlevisibility", "off",
+                       "tag", "__default_menu__");
+      uimenu (__h, "label", "A&bout", "enable", "off");
+
+    set (fig, "menubar", menubar_state);
+  endif
+
 endfunction
 
 function save_cb (h, e)
@@ -78,32 +79,37 @@ function save_cb (h, e)
 endfunction
 
 function __save_as__ (caller)
-
-  [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg","Supported Graphic Formats"},
-                                  "Save Figure",
-                                  pwd);
+  [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg",
+                                    "Supported Graphic Formats"},
+                                   "Save Figure",
+                                   pwd);
   if (filename != 0)
-    fname = strcat (filedir, filesep, filename);
-    obj = findall ("label", "&Save");
-    if (length (obj) > 0)
+    fname = [filedir filesep() filename];
+    obj = findall (gcbf, "label", "&Save");
+    if (! isempty (obj))
       set (obj(1), "userdata", fname);
     endif
     saveas (caller, fname);
   endif
 endfunction
 
+function grid_cb (h, e)
+  grid;
+endfunction
+
 function autoscale_cb (h, e)
   axis ("auto");
-  drawnow; #should not be required
 endfunction
 
 function guimode_cb (h, e)
   lbl = get (h, "label");
-  if (strncmp (lbl, "Pan+Zoom", 8))
-    gui_mode ("2D");
-  elseif (strncmp (lbl, "Rotate+Zoom", 11))
-    gui_mode ("3D");
-  elseif (strncmp (lbl, "None", 4))
-    gui_mode ("None");
-  endif
+  switch (lbl)
+    case "Pan+Zoom"
+      gui_mode ("2D");
+    case "Rotate+Zoom"
+      gui_mode ("3D");
+    case "None"
+      gui_mode ("None");
+  endswitch
 endfunction
+

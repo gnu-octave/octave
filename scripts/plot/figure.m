@@ -97,9 +97,7 @@ function h = figure (varargin)
     print_usage ();
   endif
 
-  if (strcmp (get (f, "__graphics_toolkit__"), "fltk"))
-    __add_default_menu__ (f);
-  endif
+  __add_default_menu__ (f);
 
   if (nargout > 0)
     h = f;

@@ -56,15 +56,15 @@ function h = semilogy (varargin)
 
     htmp = __plt__ ("semilogy", hax, varargin{:});
 
-    if (nargout > 0)
-      h = htmp;
-    endif
-
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
     endif
   end_unwind_protect
+
+  if (nargout > 0)
+    h = htmp;
+  endif
 
 endfunction
 

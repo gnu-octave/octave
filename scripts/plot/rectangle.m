@@ -64,8 +64,7 @@ function h = rectangle (varargin)
   unwind_protect
     hax = newplot (hax);
 
-    htmp =  __rectangle__ (hax, varargin{:});
-
+    htmp = __rectangle__ (hax, varargin{:});
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -213,9 +212,9 @@ endfunction
 function update_props (h, d)
   kids = get (h, "children");
   set (kids, "edgecolor", get (h, "edgecolor"),
-       "linewidth", get (h, "linewidth"),
-       "linestyle", get (h, "linestyle"),
-       "facecolor", get (h, "facecolor"));
+             "linewidth", get (h, "linewidth"),
+             "linestyle", get (h, "linestyle"),
+             "facecolor", get (h, "facecolor"));
 endfunction
 
 

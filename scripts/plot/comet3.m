@@ -69,9 +69,9 @@ function comet3 (varargin)
       m = n - dn;
       m = max ([m, 1]);
       k = min ([n, num]);
-      htmp = plot3 (hax, x(1:m), y(1:m), z(1:m), "r",
-                         x(m:k), y(m:k), z(m:k), "g",
-                         x(k), y(k), z(k), "ob");
+      htmp = plot3 (x(1:m), y(1:m), z(1:m), "r",
+                    x(m:k), y(m:k), z(m:k), "g",
+                    x(k), y(k), z(k), "ob");
       axis (limits);
       drawnow ();
       pause (p);

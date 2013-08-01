@@ -68,7 +68,6 @@ function [c, h] = contour (varargin)
     hax = newplot (hax);
     
     [ctmp, htmp] = __contour__ (hax, "none", varargin{:});
-    
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

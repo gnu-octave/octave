@@ -67,8 +67,8 @@ function comet (varargin)
       m = n - dn;
       m = max ([m, 1]);
       k = min ([n, num]);
-      plot (hax, x(1:m), y(1:m), "r", x(m:k), y(m:k), "g", x(k), y(k), "ob");
-      axis (hax, limits);
+      plot (x(1:m), y(1:m), "r", x(m:k), y(m:k), "g", x(k), y(k), "ob");
+      axis (limits);
       drawnow ();
       pause (p);
     endfor

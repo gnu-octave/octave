@@ -54,6 +54,7 @@ function h = semilogxerr (varargin)
     if (! ishold (hax))
       set (hax, "xminortick", "on");
     endif
+
     htmp = __errcomm__ ("semilogxerr", hax, varargin{:});
 
   unwind_protect_cleanup

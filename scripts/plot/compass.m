@@ -102,7 +102,7 @@ function h = compass (varargin)
   oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
     hax = newplot (hax);
-    hlist = polar (hax, r, p, line_spec);
+    hlist = polar (r, p, line_spec);
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

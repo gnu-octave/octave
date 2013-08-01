@@ -66,14 +66,14 @@ function h = mesh (varargin)
   oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
     hax = newplot (hax);
-    htmp = surface (hax, varargin{:});
+
+    htmp = surface (varargin{:});
 
     set (htmp, "facecolor", "w");
     set (htmp, "edgecolor", "flat");
-
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
-               "xgrid", "on", "ygrid", "on", "zgrid", "on");
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   unwind_protect_cleanup
     if (! isempty (oldfig))

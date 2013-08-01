@@ -118,7 +118,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
    unwind_protect
      hax = newplot (hax);
      
-     surf (hax, x, y, z, varargin{ioff:end});
+     surf (x, y, z, varargin{ioff:end});
      old_hold_state = get (hax, "nextplot");
      unwind_protect
        set (hax, "nextplot", "add");

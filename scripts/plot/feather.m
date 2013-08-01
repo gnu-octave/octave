@@ -98,7 +98,7 @@ function retval = feather (varargin)
   oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
     hax = newplot (hax);
-    hlist = plot (hax, x, y, line_spec, [1, n], [0, 0], line_spec);
+    hlist = plot (x, y, line_spec, [1, n], [0, 0], line_spec);
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

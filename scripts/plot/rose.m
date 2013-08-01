@@ -93,7 +93,7 @@ function [thout, rout] = rose (varargin)
     oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
     unwind_protect
       hax = newplot (hax);
-      htmp = polar (hax, th, r);
+      htmp = polar (th, r);
     unwind_protect_cleanup
       if (! isempty (oldfig))
         set (0, "currentfigure", oldfig);

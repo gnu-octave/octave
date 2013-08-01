@@ -87,8 +87,7 @@ function [xx, yy, zz] = cylinder (varargin)
     unwind_protect
       hax = newplot (hax);
     
-      surf (hax, x, y, z);
-      
+      surf (x, y, z);
     unwind_protect_cleanup
       if (! isempty (oldfig))
         set (0, "currentfigure", oldfig);

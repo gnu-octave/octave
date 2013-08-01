@@ -65,14 +65,13 @@ function h = meshc (varargin)
   unwind_protect
     hax = newplot (hax);
 
-    htmp = surface (hax, varargin{:});
+    htmp = surface (varargin{:});
 
     ## FIXME - gnuplot does not support a filled surface and a
     ## non-filled contour.  3D filled patches are also not supported.
     ## Thus, the facecolor will be transparent for the gnuplot backend.
     set (htmp, "facecolor", "w");
     set (htmp, "edgecolor", "flat");
-
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
@@ -81,7 +80,6 @@ function h = meshc (varargin)
     drawnow ();
 
     zmin = get (hax, "zlim")(1);
-
     [~, htmp2] = __contour__ (hax, zmin, varargin{:});
 
     htmp = [htmp; htmp2];

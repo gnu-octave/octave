@@ -73,17 +73,17 @@ function h = trisurf (tri, x, y, z, varargin)
         && strcmpi (varargin{nfc+1}, "interp"))
       varargin(end+(1:2)) = {"EdgeColor", "none"};
     endif
-    newplot ();
-    handle = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
-                    "FaceVertexCData", reshape (c, numel (c), 1),
-                    varargin{:});
+    hax = newplot ();
+    htmp = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
+                  "FaceVertexCData", reshape (c, numel (c), 1),
+                  varargin{:});
     if (nargout > 0)
-      h = handle;
+      h = htmp;
     endif
 
     if (! ishold ())
-      set (gca (), "view", [-37.5, 30],
-           "xgrid", "on", "ygrid", "on", "zgrid", "on");
+      set (hax, "view", [-37.5, 30],
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   endif
 

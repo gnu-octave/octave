@@ -209,7 +209,7 @@ function retval = plot3 (varargin)
             color = __next_line_color__ ();
           endif
 
-          htmp(++idx) = line (hax, x(:, i), y(:, i), z(:, i),
+          htmp(++idx) = line (x(:, i), y(:, i), z(:, i),
                               "color", color, "linestyle", linestyle,
                               "marker", marker, properties{:});
           key = options.key;
@@ -264,7 +264,7 @@ function retval = plot3 (varargin)
             color = __next_line_color__ ();
           endif
 
-          htmp(++idx) = line (hax, x(:, i), y(:, i), z(:, i),
+          htmp(++idx) = line (x(:, i), y(:, i), z(:, i),
                               "color", color, "linestyle", linestyle,
                               "marker", marker, properties{:});
           key = options.key;
@@ -339,7 +339,7 @@ function retval = plot3 (varargin)
           color = __next_line_color__ ();
         endif
 
-        htmp(++idx) = line (hax, x(:, i), y(:, i), z(:, i),
+        htmp(++idx) = line (x(:, i), y(:, i), z(:, i),
                             "color", color, "linestyle", linestyle,
                             "marker", marker, properties{:});
         key = options.key;

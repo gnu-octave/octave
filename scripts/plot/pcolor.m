@@ -81,7 +81,6 @@ function h = pcolor (varargin)
 
     set (htmp, "facecolor", "flat");
     set (hax, "box", "on");
-
     if (! ishold ())
       set (hax, "view", [0, 90]);
     endif

@@ -103,7 +103,7 @@ function h = meshz (varargin)
   oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
     hax = newplot (hax);
-    htmp = mesh (hax, x, y, z, varargin{charidx:end});
+    htmp = mesh (x, y, z, varargin{charidx:end});
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

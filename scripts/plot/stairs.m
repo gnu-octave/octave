@@ -164,8 +164,8 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 
   if (doplot)
     h = [];
+    hold_state = get (gca (), "nextplot");
     unwind_protect
-      hold_state = get (gca (), "nextplot");
       for i = 1 : columns (y)
         hg = hggroup ();
         h = [h; hg];

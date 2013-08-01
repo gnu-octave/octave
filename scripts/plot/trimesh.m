@@ -59,13 +59,13 @@ function h = trimesh (tri, x, y, z, varargin)
   elseif (ischar (z))
     triplot (tri, x, y, z, varargin{:});
   else
-    newplot ();
+    hax = newplot ();
     handle = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
                     "FaceColor", "none", "EdgeColor", __next_line_color__ (),
                     varargin{:});
     if (! ishold ())
-      set (gca (), "view", [-37.5, 30],
-           "xgrid", "on", "ygrid", "on", "zgrid", "on");
+      set (hax, "view", [-37.5, 30],
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
     if (nargout > 0)
       h = handle;

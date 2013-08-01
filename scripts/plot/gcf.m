@@ -34,7 +34,7 @@
 ## @noindent
 ## plots a sine wave, finds the handle of the current figure, and then
 ## makes that figure invisible.  Setting the visible property of the
-## figure to @code{"on"} will cause it to be displayed again.
+## figure to "on" will cause it to be displayed again.
 ## @seealso{gca, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
 
@@ -47,7 +47,7 @@ function h = gcf ()
     if (isempty (h) || h == 0)
       ## We only have a root figure object, so create a new figure
       ## object and make it the current figure.
-      h = figure (1);
+      h = figure ();
     endif
   else
     print_usage ();

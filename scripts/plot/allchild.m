@@ -20,17 +20,20 @@
 ## @deftypefn {Function File} {@var{h} =} allchild (@var{handles})
 ## Find all children, including hidden children, of a graphics object.
 ##
-## This function is similar to @code{get (h, "children")}, but also
-## returns hidden objects.  If @var{handles} is a scalar,
-## @var{h} will be a vector.  Otherwise, @var{h} will be a cell matrix
-## of the same size as @var{handles} and each cell will contain a
-## vector of handles.
+## This function is similar to @code{get (h, "children")}, but also returns
+## hidden objects ("HandleVisibility" = "off").  If @var{handles} is a scalar,
+## @var{h} will be a vector.  Otherwise, @var{h} will be a cell matrix of the
+## same size as @var{handles} and each cell will contain a vector of handles.
 ## @seealso{findall, findobj, get, set}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>
 
 function h = allchild (handles)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
 
   shh = get (0, "showhiddenhandles");
   unwind_protect
@@ -48,9 +51,13 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   l = line;
-%!   assert (get (allchild (hf),"type"),{"axes"; "uimenu"; "uimenu"; "uimenu"});
+%!   kids = allchild (hf);
+%!   assert (get (kids, "type"), {"axes"; "uimenu"; "uimenu"; "uimenu"});
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
+
+%!error allchild ()
+%!error allchild (1, 2)
 

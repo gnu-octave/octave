@@ -223,10 +223,10 @@ read_images (std::vector<Magick::Image>& imvec,
   // using quantumOperator for the cases where we will be returning floating
   // point and want things in the range [0 1]. This is the same reason why
   // the divisor is of type double.
-  const double divisor = (imvec[0].depth () == 32) ?
-                         std::numeric_limits<uint32_t>::max () :
-                         ((uint64_t (1) << QuantumDepth) - 1) / 
-                         ((uint64_t (1) << imvec[0].depth ()) - 1);
+  const bool   float_out = imvec[0].depth () == 32;
+  const double type_max  = float_out ? 1 : ((uint64_t (1) << QuantumDepth) - 1);
+  const double divisor   = float_out ? std::numeric_limits<uint32_t>::max () :
+                           type_max / ((uint64_t (1) << imvec[0].depth ()) - 1);
 
   // FIXME: this workaround should probably be fixed in GM by creating a
   //        new ImageType BilevelMatteType
@@ -322,7 +322,7 @@ read_images (std::vector<Magick::Image>& imvec,
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
                     img_fvec[idx] = pix->red / divisor;
-                    a_fvec[idx]   = pix->opacity / divisor;
+                    a_fvec[idx]   = abs ((pix->opacity / divisor) - type_max);
                     pix += row_shift;
                     idx++;
                   }
@@ -397,7 +397,7 @@ read_images (std::vector<Magick::Image>& imvec,
                     rbuf[idx]     = pix->red     / divisor;
                     gbuf[idx]     = pix->green   / divisor;
                     bbuf[idx]     = pix->blue    / divisor;
-                    a_fvec[a_idx] = pix->opacity / divisor;
+                    a_fvec[idx]   = abs ((pix->opacity / divisor) - type_max);
                     pix += row_shift;
                     idx++;
                     a_idx++;
@@ -480,7 +480,7 @@ read_images (std::vector<Magick::Image>& imvec,
                     mbuf[idx]     = pix->green   / divisor;
                     ybuf[idx]     = pix->blue    / divisor;
                     kbuf[idx]     = pix->opacity / divisor;
-                    a_fvec[a_idx] = *apix / divisor;
+                    a_fvec[idx]   = abs ((*apix / divisor) - type_max);
                     pix += row_shift;
                     idx++;
                     a_idx++;

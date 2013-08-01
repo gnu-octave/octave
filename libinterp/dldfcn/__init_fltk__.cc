@@ -1114,6 +1114,10 @@ private:
         if (! uimenu->is_visible ())
           pos(1) = pos(1) +  menu_h;
         fp.set_currentpoint (pos);
+        graphics_object robj = gh_manager::get_object (fp.get_parent ());
+        root_figure::properties& rp =
+          dynamic_cast<root_figure::properties&> (robj.get_properties ());
+        rp.set_currentfigure (fp.get___myhandle__ ().value ());
       }
   }
 
@@ -1134,6 +1138,7 @@ private:
         pos(1,1) = yy;
 
         ap.set_currentpoint (pos);
+        fp.set_currentaxes (ap.get___myhandle__ ().value ());
       }
   }
 

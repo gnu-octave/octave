@@ -55,20 +55,22 @@ calculate_region (const octave_scalar_map& options)
   const Range cols     = pixel_region (1).range_value ();
   region["row_start"]  = rows.base () -1;
   region["col_start"]  = cols.base () -1;
-  region["row_end"]    = rows.limit () -1;
-  region["col_end"]    = cols.limit () -1;
+  region["row_end"]    = rows.max ()  -1;
+  region["col_end"]    = cols.max ()  -1;
 
-  // Length of the area to load into the Image Pixel Cache
+  // Length of the area to load into the Image Pixel Cache.  We use max and
+  // min to account for cases where last element of range is the range limit.
   region["row_cache"] = region["row_end"] - region["row_start"] +1;
   region["col_cache"] = region["col_end"] - region["col_start"] +1;
 
   // How much we have to shift in the memory when doing the loops.
   region["row_shift"] = region["col_cache"] * rows.inc ();
-  region["col_shift"] = region["col_cache"] * region["row_cache"] - cols.inc ();
+  region["col_shift"] = region["col_cache"] *
+                        (region["row_cache"] + rows.inc () -1) - cols.inc ();
 
   // The actual height and width of the output image
-  region["row_out"] = floor ((region["row_end"] - region["row_start"]) / rows.inc ()) + 1;
-  region["col_out"] = floor ((region["col_end"] - region["col_start"]) / cols.inc ()) + 1;
+  region["row_out"] = rows.nelem ();
+  region["col_out"] = cols.nelem ();
 
   return region;
 }
@@ -649,15 +651,18 @@ use @code{imread}.\n\
     {
       if (depth <= 1)
         {
-          output = read_indexed_images <boolNDArray> (imvec, frameidx, nargout, options);
+          output = read_indexed_images <boolNDArray>   (imvec, frameidx,
+                                                        nargout, options);
         }
       else if (depth <= 8)
         {
-          output = read_indexed_images <uint8NDArray> (imvec, frameidx, nargout, options);
+          output = read_indexed_images <uint8NDArray>  (imvec, frameidx,
+                                                        nargout, options);
         }
       else if (depth <= 16)
         {
-          output = read_indexed_images <uint16NDArray> (imvec, frameidx, nargout, options);
+          output = read_indexed_images <uint16NDArray> (imvec, frameidx,
+                                                        nargout, options);
         }
       else
         {
@@ -670,19 +675,23 @@ use @code{imread}.\n\
     {
       if (depth <= 1)
         {
-          output = read_images<boolNDArray> (imvec, frameidx, nargout, options);
+          output = read_images<boolNDArray>   (imvec, frameidx,
+                                               nargout, options);
         }
       else if (depth <= 8)
         {
-          output = read_images<uint8NDArray> (imvec, frameidx, nargout, options);
+          output = read_images<uint8NDArray>  (imvec, frameidx,
+                                               nargout, options);
         }
       else if (depth <= 16)
         {
-          output = read_images<uint16NDArray> (imvec, frameidx, nargout, options);
+          output = read_images<uint16NDArray> (imvec, frameidx,
+                                               nargout, options);
         }
       else if (depth <= 32)
         {
-          output = read_images<FloatNDArray> (imvec, frameidx, nargout, options);
+          output = read_images<FloatNDArray>  (imvec, frameidx,
+                                               nargout, options);
         }
       else
         {

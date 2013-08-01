@@ -30,29 +30,31 @@
 
 function retval = ishold (h)
 
-  if (nargin == 0)
-    fig = gcf ();
-    ax = get (fig, "currentaxes");
-  elseif (nargin == 1)
-    if (ishandle (h))
-      if (isfigure (h))
-        ax = get (h, "currentaxes");
-        fig = h;
-      elseif (strcmpi (get (h, "type"), "axes"))
-        ax = h;
-        fig = get (h, "parent");
-      else
-        error ("ishold: expecting argument to be axes or figure graphics handle");
-      endif
-    else
-      error ("ishold: expecting argument to be axes or figure graphics handle");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
   endif
 
-  retval = (strcmpi (get (fig, "nextplot"), "add")
-            && ! isempty (ax) && strcmpi (get (ax, "nextplot"), "add"));
+  if (nargin == 0)
+    fig = gcf ();
+    ax = get (fig, "currentaxes");
+  else
+    if (ishandle (h))
+      if (strcmp (get (h, "type"), "figure"))
+        fig = h;
+        ax = get (fig, "currentaxes");
+      elseif (strcmp (get (h, "type"), "axes"))
+        ax = h;
+        fig = get (ax, "parent");
+      else
+        error ("ishold: H must be an axes or figure graphics handle");
+      endif
+    else
+      error ("ishold: H must be an axes or figure graphics handle");
+    endif
+  endif
+
+  retval = (strcmp (get (fig, "nextplot"), "add")
+            && ! isempty (ax) && strcmp (get (ax, "nextplot"), "add"));
 
 endfunction
 

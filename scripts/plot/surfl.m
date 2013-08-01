@@ -80,77 +80,82 @@
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function retval = surfl (varargin)
+function h = surfl (varargin)
 
-  [hax, varargin] = __plt_get_axis_arg__ ("surfl", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("surfl", varargin{:});
+
+  if (nargin == 0)
+    print_usage ();
+  endif
+
+  ## Check for lighting type.
+  use_cdata = true;
+  if (ischar (varargin{end}))
+    switch (tolower (varargin{end}))
+      case "light"
+        warning ("light method not supported (yet), using cdata method instead");
+        ## This can be implemented when light objects are supported.
+        use_cdata = false;
+      case "cdata"
+        use_cdata = true;
+      otherwise
+        error ("surfl: unknown lighting method");
+    endswitch
+    varargin(end) = [];
+  endif
+
+  ## Check for reflection properties argument.
+  ##
+  ## r = [ambient light strength,
+  ##      diffuse reflection strength,
+  ##      specular reflection strength,
+  ##      specular shine]
+  if (isnumeric (varargin{end}) && length (varargin{end}) == 4)
+    r = varargin{end};
+    varargin(end) = [];
+  else
+    ## Default values.
+    r = [0.55, 0.6, 0.4, 10];
+  endif
+
+  ## Check for light vector (lv) argument.
+  have_lv = false;
+  if (isnumeric (varargin{end}))
+    len = numel (varargin{end});
+    lastarg = varargin{end};
+    if (len == 3)
+      lv = lastarg;
+      varargin(end) = [];
+      have_lv = true;
+    elseif (len == 2)
+      [lv(1), lv(2), lv(3)] = sph2cart ((lastarg(1) - 90) * pi/180, 
+                                         lastarg(2) * pi/180,
+                                         1.0);
+      varargin(end) = [];
+      have_lv = true;
+    endif
+  endif
 
   oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
     hax = newplot (hax);
 
-    ## Check for lighting type.
-    use_cdata = true;
-    if (ischar (varargin{end}))
-      lstr = tolower (varargin{end});
-      if (strncmp (lstr, "light", 5))
-        warning ("light method not supported (yet), using cdata method instead");
-        ## This can be implemented when light objects are supported.
-        use_cdata = false;
-      elseif (strncmp (lstr, "cdata", 5))
-        use_cdata = true;
-      else
-        error ("surfl: unknown lighting method");
-      endif
-      varargin(end) = [];
-    endif
-
-    ## Check for reflection properties argument.
-    ##
-    ## r = [ambient light strength,
-    ##      diffuse reflection strength,
-    ##      specular reflection strength,
-    ##      specular shine]
-    if (length (varargin{end}) == 4 && isnumeric (varargin{end}))
-      r = varargin{end};
-      varargin(end) = [];
-    else
-      ## Default values.
-      r = [0.55, 0.6, 0.4, 10];
-    endif
-
-    ## Check for light vector (lv) argument.
-    have_lv = false;
-    if (isnumeric (varargin{end}))
-      len = numel (varargin{end});
-      lastarg = varargin{end};
-      if (len == 3)
-        lv = lastarg;
-        varargin(end) = [];
-        have_lv = true;
-      elseif (len == 2)
-        [lv(1), lv(2), lv(3)] = sph2cart ((lastarg(1) - 90) * pi/180, lastarg(2) * pi/180, 1.0);
-        varargin(end) = [];
-        have_lv = true;
-      endif
-    endif
-
-    htmp = surface ([varargin, "parent", hax]{:});
+    htmp = surface (varargin{:});
     if (! ishold (hax))
       set (hax, "view", [-37.5, 30],
-           "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
+                "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
     endif
 
     ## Get view vector (vv).
-    a = axis;
-    [az, el] = view;
+    [az, el] = view ();
     vv = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
 
-    if (!have_lv)
+    if (! have_lv)
       ## Calculate light vector (lv) from view vector.
       Phi = 45.0 / 180.0 * pi;
       R = [cos(Phi), -sin(Phi), 0;
            sin(Phi),  cos(Phi), 0;
-           0,          0,         1];
+           0,         0,        1];
       lv = (R * vv.').';
     endif
 
@@ -165,7 +170,7 @@ function retval = surfl (varargin)
     [nr, nc] = size (get (htmp, "zdata"));
 
     ## Ambient, diffuse, and specular term.
-    cdata = (r(1) * ones (nr, nc)
+    cdata = (  r(1) * ones (nr, nc)
              + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
              + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
 
@@ -178,7 +183,7 @@ function retval = surfl (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    retval = htmp;
+    h = htmp;
   endif
 
 endfunction
@@ -190,6 +195,7 @@ endfunction
 %! colormap (copper (64));
 %! surfl (X,Y,Z);
 %! shading interp;
+%! title ('surfl with defaults');
 
 %!demo
 %! clf;
@@ -198,4 +204,5 @@ endfunction
 %! [az, el] = view ();
 %! surfl (X,Y,Z, [az+225,el], [0.2 0.6 0.4 25]);
 %! shading interp;
+%! title ('surfl with lighting vector and material properties');
 

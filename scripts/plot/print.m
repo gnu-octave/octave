@@ -216,8 +216,9 @@
 ## SVG the default is the screen resolution; for other formats it is 150 dpi.
 ## To specify screen resolution, use "-r0".
 ##
-## @item -tight
-##   Force a tight bounding box for eps files.
+## @item  -loose
+## @itemx -tight
+##   Force a tight or loose bounding box for eps files.  The default is loose.
 ##
 ## @item -@var{preview}
 ##   Add a preview to eps files.  Supported formats are:

@@ -145,7 +145,7 @@ of dialog box.
 * How to make Java classes available?::
 * How to create an instance of a Java class?::
 * How can I handle memory limitations?::
-* Which @TeX{} symbols are implemented in the dialog functions?::
+* Which @TeX{} symbols are implemented in dialog functions?::
 @end menu
 
 @c ------------------------------------------------------------------------
@@ -385,8 +385,8 @@ ans = 12.34
 @seealso{javamem}
 
 @c ------------------------------------------------------------------------
-@node Which @TeX{} symbols are implemented in the dialog functions?
-@subsection Which @TeX{} symbols are implemented in the dialog functions?
+@node Which @TeX{} symbols are implemented in dialog functions?
+@subsection Which @TeX{} symbols are implemented in dialog functions?
 @c - index -
 @cindex symbols, translation table
 @cindex @TeX{} symbols, translation table

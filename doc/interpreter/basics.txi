@@ -25,13 +25,13 @@ command line, and write Octave programs that can be executed as commands
 from your shell.
 
 @menu
-* Invoking Octave from the Command Line::             
-* Quitting Octave::             
-* Getting Help::                
-* Command Line Editing::        
-* Errors::                      
-* Executable Octave Programs::  
-* Comments::                    
+* Invoking Octave from the Command Line::
+* Quitting Octave::
+* Getting Help::
+* Command Line Editing::
+* Errors::
+* Executable Octave Programs::
+* Comments::
 @end menu
 
 @node Invoking Octave from the Command Line
@@ -52,8 +52,8 @@ available options and briefly describe their use (@samp{octave -h} is a
 shorter equivalent).
 
 @menu
-* Command Line Options::        
-* Startup Files::               
+* Command Line Options::
+* Startup Files::
 @end menu
 
 @node Command Line Options
@@ -484,14 +484,14 @@ characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 
 
 @menu
-* Cursor Motion::               
-* Killing and Yanking::         
-* Commands For Text::           
-* Commands For Completion::     
-* Commands For History::        
-* Customizing readline::        
-* Customizing the Prompt::      
-* Diary and Echo Commands::     
+* Cursor Motion::
+* Killing and Yanking::
+* Commands For Text::
+* Commands For Completion::
+* Commands For History::
+* Customizing readline::
+* Customizing the Prompt::
+* Diary and Echo Commands::
 @end menu
 
 @node Cursor Motion
@@ -1047,7 +1047,7 @@ typically hard to understand without them.
 @menu
 * Single Line Comments::
 * Block Comments::
-* Comments and the Help System::                    
+* Comments and the Help System::
 @end menu
 
 @node Single Line Comments

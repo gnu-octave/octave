@@ -26,9 +26,9 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 
 @menu
 * Techniques Used for Linear Algebra::
-* Basic Matrix Functions::      
-* Matrix Factorizations::       
-* Functions of a Matrix::       
+* Basic Matrix Functions::
+* Matrix Factorizations::
+* Functions of a Matrix::
 * Specialized Solvers::
 @end menu
 

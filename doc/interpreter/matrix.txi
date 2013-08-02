@@ -27,10 +27,10 @@ value.  Octave can also rotate the elements, extract the upper- or
 lower-triangular parts, or sort the columns of a matrix.
 
 @menu
-* Finding Elements and Checking Conditions::  
-* Rearranging Matrices::        
-* Special Utility Matrices::    
-* Famous Matrices::             
+* Finding Elements and Checking Conditions::
+* Rearranging Matrices::
+* Special Utility Matrices::
+* Famous Matrices::
 @end menu
 
 @node Finding Elements and Checking Conditions

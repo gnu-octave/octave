@@ -34,14 +34,14 @@ sin ([1, 2; 3, 4])
 
 @menu
 * Exponents and Logarithms::
-* Complex Arithmetic::          
-* Trigonometry::                
-* Sums and Products::           
-* Utility Functions::           
-* Special Functions::           
+* Complex Arithmetic::
+* Trigonometry::
+* Sums and Products::
+* Utility Functions::
+* Special Functions::
 * Rational Approximations::
 * Coordinate Transformations::
-* Mathematical Constants::      
+* Mathematical Constants::
 @end menu
 
 @node Exponents and Logarithms

@@ -23,7 +23,7 @@
 @set htmltex
 @end iftex
 
-@node Sparse Matrices 
+@node Sparse Matrices
 @chapter Sparse Matrices
 
 @menu
@@ -34,7 +34,7 @@
 @end menu
 
 @node Basics
-@section The Creation and Manipulation of Sparse Matrices
+@section Creation and Manipulation of Sparse Matrices
 
 The size of mathematical problems that can be treated at any particular
 time is generally limited by the available computing resources.  Both,
@@ -311,7 +311,7 @@ is more complex than can be discussed here.  @xref{External Code Interface},
 for a a full description of the techniques involved.
 
 @node Information
-@subsection Finding out Information about Sparse Matrices
+@subsection Finding Information about Sparse Matrices
 
 There are a number of functions that allow information concerning
 sparse matrices to be obtained.  The most basic of these is
@@ -442,9 +442,9 @@ symmetric or @code{treeplot (etree (A+A'))} otherwise.
 @subsection Basic Operators and Functions on Sparse Matrices
 
 @menu
-* Sparse Functions::            
-* Return Types of Operators and Functions::  
-* Mathematical Considerations::  
+* Sparse Functions::
+* Return Types of Operators and Functions::
+* Mathematical Considerations::
 @end menu
 
 @node Sparse Functions
@@ -504,7 +504,7 @@ supplied with these functions within Octave itself for further
 details.
 
 @node Return Types of Operators and Functions
-@subsubsection The Return Types of Operators and Functions
+@subsubsection Return Types of Operators and Functions
 
 The two basic reasons to use sparse matrices are to reduce the memory 
 usage and to not have to do calculations on zero elements.  The two are
@@ -855,7 +855,7 @@ singular values and vectors.
 @DOCSTRING(svds)
 
 @node Iterative Techniques
-@section Iterative Techniques applied to sparse matrices
+@section Iterative Techniques Applied to Sparse Matrices
 
 The left division @code{\} and right division @code{/} operators,
 discussed in the previous section, use direct solvers to resolve a
@@ -876,7 +876,7 @@ are partial factorizations of the original matrix.
 @DOCSTRING(luinc)
 
 @node Real Life Example
-@section Real Life Example of the use of Sparse Matrices
+@section Real Life Example using Sparse Matrices
 
 A common application for sparse matrices is in the solution of Finite
 Element Models.  Finite element models allow numerical solution of

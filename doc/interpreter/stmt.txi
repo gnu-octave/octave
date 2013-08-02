@@ -46,16 +46,16 @@ The list of statements contained between keywords like @code{if} or
 @dfn{body} of a control statement.
 
 @menu
-* The if Statement::            
-* The switch Statement::        
-* The while Statement::         
-* The do-until Statement::      
-* The for Statement::           
-* The break Statement::         
-* The continue Statement::      
-* The unwind_protect Statement::  
-* The try Statement::           
-* Continuation Lines::          
+* The if Statement::
+* The switch Statement::
+* The while Statement::
+* The do-until Statement::
+* The for Statement::
+* The break Statement::
+* The continue Statement::
+* The unwind_protect Statement::
+* The try Statement::
+* Continuation Lines::
 @end menu
 
 @node The if Statement
@@ -328,7 +328,7 @@ endswitch
 @end example
 
 @menu
-* Notes for the C Programmer::  
+* Notes for the C Programmer::
 @end menu
 
 @node Notes for the C Programmer
@@ -601,7 +601,7 @@ easier to think of this counting as part of looping rather than as
 something to do inside the loop.
 
 @menu
-* Looping Over Structure Elements::  
+* Looping Over Structure Elements::
 @end menu
 
 @node Looping Over Structure Elements

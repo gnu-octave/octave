@@ -24,9 +24,9 @@ of a function numerically (termed quadrature).  These functions all solve
 1-dimensional integration problems.
 
 @menu
-* Functions of One Variable:: 
-* Orthogonal Collocation::      
-* Functions of Multiple Variables:: 
+* Functions of One Variable::
+* Orthogonal Collocation::
+* Functions of Multiple Variables::
 @end menu
 
 @node Functions of One Variable

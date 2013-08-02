@@ -16,19 +16,19 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@node Diagonal and Permutation Matrices 
+@node Diagonal and Permutation Matrices
 @chapter Diagonal and Permutation Matrices
 
 @menu
-* Basic Usage::          Creation and Manipulation of Diagonal and Permutation Matrices
-* Matrix Algebra::       Linear Algebra with Diagonal and Permutation Matrices
+* Basic Usage::          Creation and Manipulation of Diagonal/Permutation Matrices
+* Matrix Algebra::       Linear Algebra with Diagonal/Permutation Matrices
 * Function Support::     Functions That Are Aware of These Matrices
-* Example Code::         Some Examples of Usage
-* Zeros Treatment::      The Differences in Treatment of Zero Elements
+* Example Code::         Examples of Usage
+* Zeros Treatment::      Differences in Treatment of Zero Elements
 @end menu
 
 @node Basic Usage
-@section Creating and Manipulating Diagonal and Permutation Matrices
+@section Creating and Manipulating Diagonal/Permutation Matrices
 
 A diagonal matrix is defined as a matrix that has zero entries outside the main
 diagonal; that is, 
@@ -210,7 +210,7 @@ requested (explicitly or implicitly), so that subsequent conversions will
 be very cheap.
 
 @node Matrix Algebra
-@section Linear Algebra with Diagonal and Permutation Matrices
+@section Linear Algebra with Diagonal/Permutation Matrices
 
 As has been already said, diagonal and permutation matrices make it
 possible to use efficient algorithms while preserving natural linear
@@ -413,7 +413,7 @@ The @dfn{find} function will also work efficiently with a permutation matrix,
 making it possible to conveniently obtain the permutation indices.
 
 @node Example Code
-@section Some Examples of Usage
+@section Examples of Usage
 
 The following can be used to solve a linear system @code{A*x = b}
 using the pivoted LU@tie{}factorization:
@@ -476,7 +476,7 @@ with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 
 
 @node Zeros Treatment
-@section The Differences in Treatment of Zero Elements
+@section Differences in Treatment of Zero Elements
 
 Making diagonal and permutation matrices special matrix objects in their own
 right and the consequent usage of smarter algorithms for certain operations

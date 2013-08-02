@@ -38,9 +38,9 @@ to report bugs and help contribute code.
 This document corresponds to Octave version @value{VERSION}.
 
 @menu
-* Running Octave::              
-* Simple Examples::             
-* Conventions::                 
+* Running Octave::
+* Simple Examples::
+* Conventions::
 @end menu
 
 @node Running Octave
@@ -419,11 +419,11 @@ This section explains the notational conventions that are used in this
 manual.  You may want to skip this section and refer back to it later.
 
 @menu
-* Fonts::                       
-* Evaluation Notation::         
-* Printing Notation::           
-* Error Messages::              
-* Format of Descriptions::      
+* Fonts::
+* Evaluation Notation::
+* Printing Notation::
+* Error Messages::
+* Format of Descriptions::
 @end menu
 
 @node Fonts
@@ -546,8 +546,8 @@ right margin.
 The description follows on succeeding lines, sometimes with examples.
 
 @menu
-* A Sample Function Description::  
-* A Sample Command Description::  
+* A Sample Function Description::
+* A Sample Command Description::
 @end menu
 
 @node A Sample Function Description

@@ -26,17 +26,17 @@ you can get information about environment variables, the current time,
 and even start other programs from the Octave prompt.
 
 @menu
-* Timing Utilities::            
-* Filesystem Utilities::        
+* Timing Utilities::
+* Filesystem Utilities::
 * File Archiving Utilities::
 * Networking Utilities::
-* Controlling Subprocesses::    
-* Process ID Information::      
-* Environment Variables::       
-* Current Working Directory::   
-* Password Database Functions::  
-* Group Database Functions::    
-* System Information::          
+* Controlling Subprocesses::
+* Process ID Information::
+* Environment Variables::
+* Current Working Directory::
+* Password Database Functions::
+* Group Database Functions::
+* System Information::
 * Hashing Functions::
 @end menu
 

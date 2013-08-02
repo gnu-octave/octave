@@ -56,11 +56,11 @@ Types}, for more information about creating matrices.
 @menu
 * Escape Sequences in String Constants::
 * Character Arrays::
-* Creating Strings:: 
-* Comparing Strings::           
-* Manipulating Strings::     
-* String Conversions::          
-* Character Class Functions::   
+* Creating Strings::
+* Comparing Strings::
+* Manipulating Strings::
+* String Conversions::
+* Character Class Functions::
 @end menu
 
 @node Escape Sequences in String Constants
@@ -222,8 +222,8 @@ only of blank characters (ASCII code 32).
 @DOCSTRING(blanks)
 
 @menu
-* Concatenating Strings:: 
-* Conversion of Numerical Data to Strings::
+* Concatenating Strings::
+* Converting Numerical Data to Strings::
 @end menu
 
 @node Concatenating Strings
@@ -359,8 +359,8 @@ from the internal representation of the strings in a string array
 
 @DOCSTRING(cstrcat)
 
-@node Conversion of Numerical Data to Strings 
-@subsection Conversion of Numerical Data to Strings
+@node Converting Numerical Data to Strings
+@subsection Converting Numerical Data to Strings
 Apart from the string concatenation functions (@pxref{Concatenating Strings})
 which cast numerical data to the corresponding ASCII characters, there are
 several functions that format numerical data as strings.  @code{mat2str} and

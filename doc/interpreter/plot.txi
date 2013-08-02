@@ -22,10 +22,10 @@
 @cindex graphics
 
 @menu
-* Introduction to Plotting::    
-* High-Level Plotting::         
-* Graphics Data Structures::    
-* Advanced Plotting::           
+* Introduction to Plotting::
+* High-Level Plotting::
+* Graphics Data Structures::
+* Advanced Plotting::
 @end menu
 
 @node Introduction to Plotting
@@ -57,25 +57,25 @@ If you need more detailed control, see @ref{Graphics Data Structures}
 and @ref{Advanced Plotting}.
 
 @menu
-* Two-Dimensional Plots::       
-* Three-Dimensional Plots::  
-* Plot Annotations::            
-* Multiple Plots on One Page::  
-* Multiple Plot Windows::       
+* Two-Dimensional Plots::
+* Three-Dimensional Plots::
+* Plot Annotations::
+* Multiple Plots on One Page::
+* Multiple Plot Windows::
 * Manipulation of Plot Windows::
 * Use of the @code{interpreter} Property::
-* Printing and Saving Plots::              
-* Interacting with Plots::      
-* Test Plotting Functions::     
+* Printing and Saving Plots::
+* Interacting with Plots::
+* Test Plotting Functions::
 @end menu
 
 @node Two-Dimensional Plots
 @subsection Two-Dimensional Plots
 
 @menu
-* Axis Configuration::  
-* Two-dimensional Function Plotting::  
-* Two-dimensional Geometric Shapes::  
+* Axis Configuration::
+* Two-dimensional Function Plotting::
+* Two-dimensional Geometric Shapes::
 @end menu
 
 The @code{plot} function allows you to create simple x-y plots with
@@ -398,8 +398,8 @@ three-dimensional plots.
 
 @menu
 * Aspect Ratio::
-* Three-dimensional Function Plotting::  
-* Three-dimensional Geometric Shapes::  
+* Three-dimensional Function Plotting::
+* Three-dimensional Geometric Shapes::
 @end menu
 
 @node Aspect Ratio
@@ -888,11 +888,11 @@ at the Octave prompt should display a three-dimensional plot.
 @cindex graphics data structures
 
 @menu
-* Introduction to Graphics Structures::  
-* Graphics Objects::            
-* Graphics Object Properties::  
-* Searching Properties::        
-* Managing Default Properties::  
+* Introduction to Graphics Structures::
+* Graphics Objects::
+* Graphics Object Properties::
+* Searching Properties::
+* Managing Default Properties::
 @end menu
 
 @node Introduction to Graphics Structures
@@ -1205,14 +1205,14 @@ struct2hdl (fig_struct);
 @cindex graphics object properties
 
 @menu
-* Root Figure Properties::      
-* Figure Properties::           
-* Axes Properties::             
-* Line Properties::             
-* Text Properties::             
-* Image Properties::            
-* Patch Properties::            
-* Surface Properties::          
+* Root Figure Properties::
+* Figure Properties::
+* Axes Properties::
+* Line Properties::
+* Text Properties::
+* Image Properties::
+* Patch Properties::
+* Surface Properties::
 @end menu
 
 In this Section the object properties are discussed in detail, starting
@@ -2528,13 +2528,13 @@ returns a list of factory defaults.
 
 
 @menu
-* Colors::                      
-* Line Styles::                 
-* Marker Styles::               
-* Callbacks::                   
+* Colors::
+* Line Styles::
+* Marker Styles::
+* Callbacks::
 * Application-defined Data::
-* Object Groups::               
-* Graphics Toolkits::           
+* Object Groups::
+* Graphics Toolkits::
 @end menu
 
 
@@ -2686,7 +2686,7 @@ Callbacks can equally be added to properties with the @code{addlistener}
 function described below.
 
 @node Application-defined Data
-@subsection Application-defined Data 
+@subsection Application-defined Data
 @cindex application-defined data
 
 Octave has a provision for attaching application-defined data to a graphics
@@ -2829,17 +2829,17 @@ and position are automatically adjusted, based on changes to the
 corresponding hggroup elements.
 
 @menu
-* Data Sources in Object Groups::  
-* Area Series::                 
-* Bar Series::                  
-* Contour Groups::              
-* Error Bar Series::            
-* Line Series::                 
-* Quiver Group::                
-* Scatter Group::               
-* Stair Group::                 
-* Stem Series::                 
-* Surface Group::               
+* Data Sources in Object Groups::
+* Area Series::
+* Bar Series::
+* Contour Groups::
+* Error Bar Series::
+* Line Series::
+* Quiver Group::
+* Scatter Group::
+* Stair Group::
+* Stem Series::
+* Surface Group::
 @end menu
 
 @node Data Sources in Object Groups
@@ -3336,7 +3336,7 @@ Data source variables.
 @DOCSTRING(register_graphics_toolkit)
 
 @menu
-* Customizing Toolkit Behavior::    
+* Customizing Toolkit Behavior::
 @end menu
 
 @node Customizing Toolkit Behavior

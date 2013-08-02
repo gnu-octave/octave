@@ -44,10 +44,10 @@ Please contact @email{Kurt.Hornik@@wu-wien.ac.at} if you have any questions
 or suggestions on using EOS.
 
 @menu
-* Installing EOS::              
-* Using Octave Mode::           
-* Running Octave from Within Emacs::  
-* Using the Emacs Info Reader for Octave::  
+* Installing EOS::
+* Using Octave Mode::
+* Running Octave from Within Emacs::
+* Using the Emacs Info Reader for Octave::
 @end menu
 
 @node Installing EOS

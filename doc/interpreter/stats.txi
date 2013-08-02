@@ -47,12 +47,12 @@ with explicitly.  See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna},
 
 @menu
 * Descriptive Statistics::
-* Basic Statistical Functions:: 
-* Statistical Plots:: 
-* Correlation and Regression Analysis::                      
-* Distributions::     
-* Tests::                       
-* Random Number Generation::          
+* Basic Statistical Functions::
+* Statistical Plots::
+* Correlation and Regression Analysis::
+* Distributions::
+* Tests::
+* Random Number Generation::
 @end menu
 
 @node Descriptive Statistics

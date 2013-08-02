@@ -569,7 +569,7 @@ Image files that are distributed with Octave.
 @end table
 @end itemize
 
-@node Compiling Octave with 64-bit Indexing  
+@node Compiling Octave with 64-bit Indexing
 @section Compiling Octave with 64-bit Indexing
 
 Note: the following only applies to systems that have 64-bit pointers.

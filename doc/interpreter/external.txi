@@ -104,9 +104,9 @@ to build bridges between Octave and other languages.  This is also a way to
 bridge to hardware resources which often have device drivers written in C.
 
 @menu
-* Oct-Files::                   
-* Mex-Files::                   
-* Standalone Programs::         
+* Oct-Files::
+* Mex-Files::
+* Standalone Programs::
 @end menu
 
 @node Oct-Files
@@ -116,19 +116,19 @@ bridge to hardware resources which often have device drivers written in C.
 @cindex oct
 
 @menu
-* Getting Started with Oct-Files::  
-* Matrices and Arrays in Oct-Files::  
-* Character Strings in Oct-Files::  
-* Cell Arrays in Oct-Files::    
-* Structures in Oct-Files::  
-* Sparse Matrices in Oct-Files::  
-* Accessing Global Variables in Oct-Files::  
-* Calling Octave Functions from Oct-Files::  
-* Calling External Code from Oct-Files::  
-* Allocating Local Memory in Oct-Files::  
-* Input Parameter Checking in Oct-Files::  
-* Exception and Error Handling in Oct-Files::  
-* Documentation and Test of Oct-Files::  
+* Getting Started with Oct-Files::
+* Matrices and Arrays in Oct-Files::
+* Character Strings in Oct-Files::
+* Cell Arrays in Oct-Files::
+* Structures in Oct-Files::
+* Sparse Matrices in Oct-Files::
+* Accessing Global Variables in Oct-Files::
+* Calling Octave Functions from Oct-Files::
+* Calling External Code from Oct-Files::
+* Allocating Local Memory in Oct-Files::
+* Input Parameter Checking in Oct-Files::
+* Exception and Error Handling in Oct-Files::
+* Documentation and Test of Oct-Files::
 @c * Application Programming Interface for Oct-Files::  
 @end menu
 
@@ -584,13 +584,13 @@ must be 2-dimensional.  This means that @code{SparseMatrix} is actually
 more similar to Octave's @code{Matrix} class than its @code{NDArray} class.
 
 @menu
-* Array and Sparse Differences::  
-* Creating Sparse Matrices in Oct-Files::  
-* Using Sparse Matrices in Oct-Files::  
+* Array and Sparse Class Differences::
+* Creating Sparse Matrices in Oct-Files::
+* Using Sparse Matrices in Oct-Files::
 @end menu
 
-@node Array and Sparse Differences
-@subsubsection The Differences between the Array and Sparse Classes
+@node Array and Sparse Class Differences
+@subsubsection Array and Sparse Class Differences
 
 The number of elements in a sparse matrix is considered to be the number
 of non-zero elements rather than the product of the dimensions.  Therefore
@@ -1274,13 +1274,13 @@ mex-file function.  For this reason, it is recommended that any new code
 be written with the oct-file interface previously discussed.
 
 @menu
-* Getting Started with Mex-Files::  
-* Working with Matrices and Arrays in Mex-Files::  
-* Character Strings in Mex-Files::  
-* Cell Arrays with Mex-Files::  
-* Structures with Mex-Files::  
-* Sparse Matrices with Mex-Files::  
-* Calling Other Functions in Mex-Files::  
+* Getting Started with Mex-Files::
+* Working with Matrices and Arrays in Mex-Files::
+* Character Strings in Mex-Files::
+* Cell Arrays with Mex-Files::
+* Structures with Mex-Files::
+* Sparse Matrices with Mex-Files::
+* Calling Other Functions in Mex-Files::
 @c * Application Programming Interface for Mex-Files::  
 @end menu
 

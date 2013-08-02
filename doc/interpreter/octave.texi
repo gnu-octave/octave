@@ -203,75 +203,75 @@ It corresponds to GNU Octave version @value{VERSION}.
 
 Preface
 
-* Acknowledgements::            
+* Acknowledgements::
 * Citing Octave in Publications::
-* How You Can Contribute to Octave::  
-* Distribution::                
+* How You Can Contribute to Octave::
+* Distribution::
 
 Introduction
 
-* Running Octave::              
-* Simple Examples::             
-* Conventions::                 
+* Running Octave::
+* Simple Examples::
+* Conventions::
 
 Conventions
 
-* Fonts::                       
-* Evaluation Notation::         
-* Printing Notation::           
-* Error Messages::              
-* Format of Descriptions::      
+* Fonts::
+* Evaluation Notation::
+* Printing Notation::
+* Error Messages::
+* Format of Descriptions::
 
 Format of Descriptions
 
-* A Sample Function Description::  
-* A Sample Command Description::  
+* A Sample Function Description::
+* A Sample Command Description::
 
 Getting Started
 
-* Invoking Octave from the Command Line::             
-* Quitting Octave::             
-* Getting Help::                
-* Command Line Editing::        
-* Errors::                      
-* Executable Octave Programs::  
-* Comments::                    
+* Invoking Octave from the Command Line::
+* Quitting Octave::
+* Getting Help::
+* Command Line Editing::
+* Errors::
+* Executable Octave Programs::
+* Comments::
 
 Invoking Octave from the Command Line
 
-* Command Line Options::        
-* Startup Files::               
+* Command Line Options::
+* Startup Files::
 
 Command Line Editing
 
-* Cursor Motion::               
-* Killing and Yanking::         
-* Commands For Text::           
-* Commands For Completion::     
-* Commands For History::        
-* Customizing readline::        
-* Customizing the Prompt::      
-* Diary and Echo Commands::     
+* Cursor Motion::
+* Killing and Yanking::
+* Commands For Text::
+* Commands For Completion::
+* Commands For History::
+* Customizing readline::
+* Customizing the Prompt::
+* Diary and Echo Commands::
 
 Comments
 
 * Single Line Comments::
 * Block Comments::
-* Comments and the Help System::                    
+* Comments and the Help System::
 
 Data Types
 
-* Built-in Data Types::         
-* User-defined Data Types::     
-* Object Sizes::                
+* Built-in Data Types::
+* User-defined Data Types::
+* Object Sizes::
 
 Built-in Data Types
 
-* Numeric Objects::             
-* Missing Data::                
-* String Objects::              
-* Data Structure Objects::      
-* Cell Array Objects::          
+* Numeric Objects::
+* Missing Data::
+* String Objects::
+* Data Structure Objects::
+* Cell Array Objects::
 
 Numeric Data Types
 
@@ -280,13 +280,13 @@ Numeric Data Types
 * Single Precision Data Types::
 * Integer Data Types::
 * Bit Manipulations::
-* Logical Values:: 
+* Logical Values::
 * Promotion and Demotion of Data Types::
-* Predicates for Numeric Objects::  
+* Predicates for Numeric Objects::
 
 Matrices
 
-* Empty Matrices::              
+* Empty Matrices::
 
 Integer Data Types
 
@@ -296,16 +296,16 @@ Strings
 
 * Escape Sequences in String Constants::
 * Character Arrays::
-* Creating Strings:: 
-* Comparing Strings::           
-* Manipulating Strings::     
-* String Conversions::          
-* Character Class Functions::   
+* Creating Strings::
+* Comparing Strings::
+* Manipulating Strings::
+* String Conversions::
+* Character Class Functions::
 
 Creating Strings
 
-* Concatenating Strings:: 
-* Conversion of Numerical Data to Strings::
+* Concatenating Strings::
+* Converting Numerical Data to Strings::
 
 Data Containers
 
@@ -336,20 +336,20 @@ Comma Separated Lists
 
 Variables
 
-* Global Variables::            
-* Persistent Variables::        
-* Status of Variables::         
+* Global Variables::
+* Persistent Variables::
+* Status of Variables::
 
 Expressions
 
-* Index Expressions::           
-* Calling Functions::           
-* Arithmetic Ops::              
-* Comparison Ops::              
-* Boolean Expressions::         
-* Assignment Ops::              
-* Increment Ops::               
-* Operator Precedence::         
+* Index Expressions::
+* Calling Functions::
+* Arithmetic Ops::
+* Comparison Ops::
+* Boolean Expressions::
+* Assignment Ops::
+* Increment Ops::
+* Operator Precedence::
 
 Index Expressions
 
@@ -357,13 +357,13 @@ Index Expressions
 
 Calling Functions
 
-* Call by Value::               
-* Recursion::                   
+* Call by Value::
+* Recursion::
 
 Boolean Expressions
 
-* Element-by-element Boolean Operators::  
-* Short-circuit Boolean Operators::  
+* Element-by-element Boolean Operators::
+* Short-circuit Boolean Operators::
 
 Evaluation
 
@@ -372,40 +372,40 @@ Evaluation
 
 Statements
 
-* The if Statement::            
-* The switch Statement::        
-* The while Statement::         
-* The do-until Statement::      
-* The for Statement::           
-* The break Statement::         
-* The continue Statement::      
-* The unwind_protect Statement::  
-* The try Statement::           
-* Continuation Lines::          
+* The if Statement::
+* The switch Statement::
+* The while Statement::
+* The do-until Statement::
+* The for Statement::
+* The break Statement::
+* The continue Statement::
+* The unwind_protect Statement::
+* The try Statement::
+* Continuation Lines::
 
 The switch Statement
 
-* Notes for the C Programmer::  
+* Notes for the C Programmer::
 
 The for Statement
 
-* Looping Over Structure Elements::  
+* Looping Over Structure Elements::
 
 Functions and Scripts
 
 * Introduction to Function and Script Files::
-* Defining Functions::          
-* Multiple Return Values::      
-* Variable-length Argument Lists::  
-* Ignoring Arguments::  
-* Variable-length Return Lists::  
-* Returning from a Function::   
-* Default Arguments::   
-* Function Files::              
-* Script Files::                
-* Function Handles Inline Functions and Anonymous Functions::
+* Defining Functions::
+* Multiple Return Values::
+* Variable-length Argument Lists::
+* Ignoring Arguments::
+* Variable-length Return Lists::
+* Returning from a Function::
+* Default Arguments::
+* Function Files::
+* Script Files::
+* Function Handles Anonymous Functions Inline Functions::
 * Commands::
-* Organization of Functions::   
+* Organization of Functions::
 
 Function Files
 
@@ -417,7 +417,7 @@ Function Files
 * Function Locking::
 * Function Precedence::
 
-Function Handles Inline Functions and Anonymous Functions
+Function Handles Anonymous Functions Inline Functions
 
 * Function Handles::
 * Anonymous Functions::
@@ -451,14 +451,14 @@ Debugging
 
 Input and Output
 
-* Basic Input and Output::      
-* C-Style I/O Functions::       
+* Basic Input and Output::
+* C-Style I/O Functions::
 
 Basic Input and Output
 
-* Terminal Output::             
-* Terminal Input::              
-* Simple File I/O::             
+* Terminal Output::
+* Terminal Input::
+* Simple File I/O::
 
 Terminal Output
 
@@ -470,130 +470,130 @@ Simple File I/O
 
 C-Style I/O Functions
 
-* Opening and Closing Files::   
-* Simple Output::               
-* Line-Oriented Input::         
-* Formatted Output::            
-* Output Conversion for Matrices::  
-* Output Conversion Syntax::    
-* Table of Output Conversions::  
-* Integer Conversions::         
+* Opening and Closing Files::
+* Simple Output::
+* Line-Oriented Input::
+* Formatted Output::
+* Output Conversion for Matrices::
+* Output Conversion Syntax::
+* Table of Output Conversions::
+* Integer Conversions::
 * Floating-Point Conversions::
-* Other Output Conversions::    
-* Formatted Input::             
-* Input Conversion Syntax::     
-* Table of Input Conversions::  
-* Numeric Input Conversions::   
-* String Input Conversions::    
-* Binary I/O::                  
-* Temporary Files::             
-* EOF and Errors::              
-* File Positioning::            
+* Other Output Conversions::
+* Formatted Input::
+* Input Conversion Syntax::
+* Table of Input Conversions::
+* Numeric Input Conversions::
+* String Input Conversions::
+* Binary I/O::
+* Temporary Files::
+* EOF and Errors::
+* File Positioning::
 
 Plotting
 
-* Introduction to Plotting::    
-* High-Level Plotting::         
-* Graphics Data Structures::    
-* Advanced Plotting::           
+* Introduction to Plotting::
+* High-Level Plotting::
+* Graphics Data Structures::
+* Advanced Plotting::
 
 High-Level Plotting
 
-* Two-Dimensional Plots::       
-* Three-Dimensional Plots::  
-* Plot Annotations::            
-* Multiple Plots on One Page::  
-* Multiple Plot Windows::       
+* Two-Dimensional Plots::
+* Three-Dimensional Plots::
+* Plot Annotations::
+* Multiple Plots on One Page::
+* Multiple Plot Windows::
 * Manipulation of Plot Windows::
 * Use of the @code{interpreter} Property::
-* Printing and Saving Plots::              
-* Interacting with Plots::      
-* Test Plotting Functions::     
+* Printing and Saving Plots::
+* Interacting with Plots::
+* Test Plotting Functions::
 
 Two-Dimensional Plots
 
-* Axis Configuration::  
-* Two-dimensional Function Plotting::  
-* Two-dimensional Geometric Shapes::  
+* Axis Configuration::
+* Two-dimensional Function Plotting::
+* Two-dimensional Geometric Shapes::
 
 Three-Dimensional Plots
 
 * Aspect Ratio::
-* Three-dimensional Function Plotting::  
-* Three-dimensional Geometric Shapes::  
+* Three-dimensional Function Plotting::
+* Three-dimensional Geometric Shapes::
 
 Graphics Data Structures
 
-* Introduction to Graphics Structures::  
-* Graphics Objects::            
-* Graphics Object Properties::  
-* Searching Properties::        
-* Managing Default Properties::  
+* Introduction to Graphics Structures::
+* Graphics Objects::
+* Graphics Object Properties::
+* Searching Properties::
+* Managing Default Properties::
 
 Graphics Object Properties
 
-* Root Figure Properties::      
-* Figure Properties::           
-* Axes Properties::             
-* Line Properties::             
-* Text Properties::             
-* Image Properties::            
-* Patch Properties::            
-* Surface Properties::          
+* Root Figure Properties::
+* Figure Properties::
+* Axes Properties::
+* Line Properties::
+* Text Properties::
+* Image Properties::
+* Patch Properties::
+* Surface Properties::
 
 Advanced Plotting
 
-* Colors::                      
-* Line Styles::                 
-* Marker Styles::               
-* Callbacks::                   
+* Colors::
+* Line Styles::
+* Marker Styles::
+* Callbacks::
 * Application-defined Data::
-* Object Groups::               
-* Graphics Toolkits::           
+* Object Groups::
+* Graphics Toolkits::
 
 Object Groups
 
-* Data Sources in Object Groups::  
-* Area Series::                 
-* Bar Series::                  
-* Contour Groups::              
-* Error Bar Series::            
-* Line Series::                 
-* Quiver Group::                
-* Scatter Group::               
-* Stair Group::                 
-* Stem Series::                 
-* Surface Group::               
+* Data Sources in Object Groups::
+* Area Series::
+* Bar Series::
+* Contour Groups::
+* Error Bar Series::
+* Line Series::
+* Quiver Group::
+* Scatter Group::
+* Stair Group::
+* Stem Series::
+* Surface Group::
 
 Graphics Toolkits
 
-* Customizing Toolkit Behavior::    
+* Customizing Toolkit Behavior::
 
 Matrix Manipulation
 
-* Finding Elements and Checking Conditions::  
-* Rearranging Matrices::        
-* Special Utility Matrices::    
-* Famous Matrices::             
+* Finding Elements and Checking Conditions::
+* Rearranging Matrices::
+* Special Utility Matrices::
+* Famous Matrices::
 
 Arithmetic
 
 * Exponents and Logarithms::
-* Complex Arithmetic::          
-* Trigonometry::                
-* Sums and Products::           
-* Utility Functions::           
-* Special Functions::           
+* Complex Arithmetic::
+* Trigonometry::
+* Sums and Products::
+* Utility Functions::
+* Special Functions::
 * Rational Approximations::
 * Coordinate Transformations::
-* Mathematical Constants::      
+* Mathematical Constants::
 
 Linear Algebra
 
 * Techniques Used for Linear Algebra::
-* Basic Matrix Functions::      
-* Matrix Factorizations::       
-* Functions of a Matrix::       
+* Basic Matrix Functions::
+* Matrix Factorizations::
+* Functions of a Matrix::
 * Specialized Solvers::
 
 Vectorization and Faster Code Execution
@@ -609,15 +609,15 @@ Vectorization and Faster Code Execution
 Nonlinear Equations
 
 * Solvers::
-* Minimizers::          
+* Minimizers::
 
 Diagonal and Permutation Matrices
 
-* Basic Usage::          Creation and Manipulation of Diagonal and Permutation Matrices
-* Matrix Algebra::       Linear Algebra with Diagonal and Permutation Matrices
+* Basic Usage::          Creation and Manipulation of Diagonal/Permutation Matrices
+* Matrix Algebra::       Linear Algebra with Diagonal/Permutation Matrices
 * Function Support::     Functions That Are Aware of These Matrices
-* Example Code::         Some Examples of Usage
-* Zeros Treatment::      The Differences in Treatment of Zero Elements
+* Example Code::         Examples of Usage
+* Zeros Treatment::      Differences in Treatment of Zero Elements
 
 Basic Usage
 
@@ -651,37 +651,37 @@ Basics
 
 Operators and Functions
 
-* Sparse Functions::            
-* Return Types of Operators and Functions::  
-* Mathematical Considerations::  
+* Sparse Functions::
+* Return Types of Operators and Functions::
+* Mathematical Considerations::
 
 Numerical Integration
 
-* Functions of One Variable:: 
-* Orthogonal Collocation::      
-* Functions of Multiple Variables:: 
+* Functions of One Variable::
+* Orthogonal Collocation::
+* Functions of Multiple Variables::
 
 Differential Equations
 
-* Ordinary Differential Equations::  
-* Differential-Algebraic Equations::  
+* Ordinary Differential Equations::
+* Differential-Algebraic Equations::
 
 Optimization
 
-* Linear Programming::       
-* Quadratic Programming::       
-* Nonlinear Programming::       
-* Linear Least Squares::        
+* Linear Programming::
+* Quadratic Programming::
+* Nonlinear Programming::
+* Linear Least Squares::
 
 Statistics
 
 * Descriptive Statistics::
-* Basic Statistical Functions:: 
-* Statistical Plots:: 
-* Correlation and Regression Analysis::                      
-* Distributions::     
-* Tests::                       
-* Random Number Generation::          
+* Basic Statistical Functions::
+* Statistical Plots::
+* Correlation and Regression Analysis::
+* Distributions::
+* Tests::
+* Random Number Generation::
 
 Sets
 
@@ -715,11 +715,11 @@ Delaunay Triangulation
 
 Image Processing
 
-* Loading and Saving Images::   
-* Displaying Images::           
-* Representing Images::         
-* Plotting on top of Images::   
-* Color Conversion::            
+* Loading and Saving Images::
+* Displaying Images::
+* Representing Images::
+* Plotting on top of Images::
+* Color Conversion::
 
 Object Oriented Programming
 
@@ -742,24 +742,24 @@ Overloading Objects
 
 GUI Development
 
-* I/O Dialogs::       
-* Progress Bar::       
-* GUI Utility Functions::       
-* User-Defined Preferences::       
+* I/O Dialogs::
+* Progress Bar::
+* GUI Utility Functions::
+* User-Defined Preferences::
 
 System Utilities
 
-* Timing Utilities::            
-* Filesystem Utilities::        
+* Timing Utilities::
+* Filesystem Utilities::
 * File Archiving Utilities::
 * Networking Utilities::
-* Controlling Subprocesses::    
-* Process ID Information::      
-* Environment Variables::       
-* Current Working Directory::   
-* Password Database Functions::  
-* Group Database Functions::    
-* System Information::          
+* Controlling Subprocesses::
+* Process ID Information::
+* Environment Variables::
+* Current Working Directory::
+* Password Database Functions::
+* Group Database Functions::
+* System Information::
 * Hashing Functions::
 
 Networking Utilities
@@ -780,58 +780,58 @@ FAQ - Frequently asked Questions
 * How to make Java classes available?::
 * How to create an instance of a Java class?::
 * How can I handle memory limitations?::
-* Which @TeX{} symbols are implemented in the dialog functions?::
+* Which @TeX{} symbols are implemented in dialog functions?::
 
 Packages
 
-* Installing and Removing Packages::  
-* Using Packages::              
-* Administrating Packages::     
-* Creating Packages::           
+* Installing and Removing Packages::
+* Using Packages::
+* Administrating Packages::
+* Creating Packages::
 
 Creating Packages
 
-* The DESCRIPTION File::        
-* The INDEX File::              
-* PKG_ADD and PKG_DEL Directives::  
+* The DESCRIPTION File::
+* The INDEX File::
+* PKG_ADD and PKG_DEL Directives::
 
 External Code Interface
 
-* Oct-Files::                   
-* Mex-Files::                   
-* Standalone Programs::         
+* Oct-Files::
+* Mex-Files::
+* Standalone Programs::
 
 Oct-Files
 
-* Getting Started with Oct-Files::  
-* Matrices and Arrays in Oct-Files::  
-* Character Strings in Oct-Files::  
-* Cell Arrays in Oct-Files::    
-* Structures in Oct-Files::  
-* Sparse Matrices in Oct-Files::  
-* Accessing Global Variables in Oct-Files::  
-* Calling Octave Functions from Oct-Files::  
-* Calling External Code from Oct-Files::  
-* Allocating Local Memory in Oct-Files::  
-* Input Parameter Checking in Oct-Files::  
-* Exception and Error Handling in Oct-Files::  
-* Documentation and Test of Oct-Files::  
+* Getting Started with Oct-Files::
+* Matrices and Arrays in Oct-Files::
+* Character Strings in Oct-Files::
+* Cell Arrays in Oct-Files::
+* Structures in Oct-Files::
+* Sparse Matrices in Oct-Files::
+* Accessing Global Variables in Oct-Files::
+* Calling Octave Functions from Oct-Files::
+* Calling External Code from Oct-Files::
+* Allocating Local Memory in Oct-Files::
+* Input Parameter Checking in Oct-Files::
+* Exception and Error Handling in Oct-Files::
+* Documentation and Test of Oct-Files::
 
 Sparse Matrices in Oct-Files
 
-* Array and Sparse Differences::  
-* Creating Sparse Matrices in Oct-Files::  
-* Using Sparse Matrices in Oct-Files::  
+* Array and Sparse Class Differences::
+* Creating Sparse Matrices in Oct-Files::
+* Using Sparse Matrices in Oct-Files::
 
 Mex-Files
 
-* Getting Started with Mex-Files::  
-* Working with Matrices and Arrays in Mex-Files::  
-* Character Strings in Mex-Files::  
-* Cell Arrays with Mex-Files::  
-* Structures with Mex-Files::  
-* Sparse Matrices with Mex-Files::  
-* Calling Other Functions in Mex-Files::  
+* Getting Started with Mex-Files::
+* Working with Matrices and Arrays in Mex-Files::
+* Character Strings in Mex-Files::
+* Cell Arrays with Mex-Files::
+* Structures with Mex-Files::
+* Sparse Matrices with Mex-Files::
+* Calling Other Functions in Mex-Files::
 
 Test and Demo Functions
 
@@ -858,12 +858,12 @@ Contributing Guidelines
 Trouble
 
 * Actual Bugs::                 Bugs we will fix later.
-* Reporting Bugs::              
-* Service::                     
+* Reporting Bugs::
+* Service::
 
 Reporting Bugs
 
-* Bug Criteria::                
+* Bug Criteria::
 * Bug Tracker::        Where to submit your bug report.
 * Bug Reporting::      How to report a bug effectively.
 * Sending Patches::    How to send a patch for Octave.
@@ -883,15 +883,15 @@ Build Dependencies
 
 Emacs Octave Support
 
-* Installing EOS::              
-* Using Octave Mode::           
-* Running Octave from Within Emacs::  
-* Using the Emacs Info Reader for Octave::  
+* Installing EOS::
+* Using Octave Mode::
+* Running Octave from Within Emacs::
+* Using the Emacs Info Reader for Octave::
 
 Grammar and Parser
 
-* Keywords::                    
-* Parser::                    
+* Keywords::
+* Parser::
 
 @end detailmenu
 @end menu

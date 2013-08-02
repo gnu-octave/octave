@@ -26,8 +26,8 @@ data is processed.  For more control, a set of functions modeled
 after the C standard library are also provided by Octave.
 
 @menu
-* Basic Input and Output::      
-* C-Style I/O Functions::       
+* Basic Input and Output::
+* C-Style I/O Functions::
 @end menu
 
 @node Basic Input and Output
@@ -36,9 +36,9 @@ after the C standard library are also provided by Octave.
 @c We could use a two-line introduction here...
 
 @menu
-* Terminal Output::             
-* Terminal Input::              
-* Simple File I/O::             
+* Terminal Output::
+* Terminal Input::
+* Simple File I/O::
 @end menu
 
 @node Terminal Output
@@ -284,25 +284,25 @@ make your programs easier to understand.
 @DOCSTRING(stderr)
 
 @menu
-* Opening and Closing Files::   
-* Simple Output::               
-* Line-Oriented Input::         
-* Formatted Output::            
-* Output Conversion for Matrices::  
-* Output Conversion Syntax::    
-* Table of Output Conversions::  
-* Integer Conversions::         
+* Opening and Closing Files::
+* Simple Output::
+* Line-Oriented Input::
+* Formatted Output::
+* Output Conversion for Matrices::
+* Output Conversion Syntax::
+* Table of Output Conversions::
+* Integer Conversions::
 * Floating-Point Conversions::
-* Other Output Conversions::    
-* Formatted Input::             
-* Input Conversion Syntax::     
-* Table of Input Conversions::  
-* Numeric Input Conversions::   
-* String Input Conversions::    
-* Binary I/O::                  
-* Temporary Files::             
-* EOF and Errors::              
-* File Positioning::            
+* Other Output Conversions::
+* Formatted Input::
+* Input Conversion Syntax::
+* Table of Input Conversions::
+* Numeric Input Conversions::
+* String Input Conversions::
+* Binary I/O::
+* Temporary Files::
+* EOF and Errors::
+* File Positioning::
 @end menu
 
 @node Opening and Closing Files
@@ -1008,7 +1008,7 @@ files will be deleted, so this step need not be executed manually.
 
 @DOCSTRING(tmpnam)
 
-@node EOF and Errors, File Positioning, Temporary Files, C-Style I/O Functions
+@node EOF and Errors
 @subsection End of File and Errors
 
 Once a file has been opened its status can be acquired.  As an example

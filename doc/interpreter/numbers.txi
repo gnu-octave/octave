@@ -93,9 +93,9 @@ You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 * Single Precision Data Types::
 * Integer Data Types::
 * Bit Manipulations::
-* Logical Values:: 
+* Logical Values::
 * Promotion and Demotion of Data Types::
-* Predicates for Numeric Objects::  
+* Predicates for Numeric Objects::
 @end menu
 
 @node Matrices
@@ -304,7 +304,7 @@ easily be misinterpreted.
 @DOCSTRING(fixed_point_format)
 
 @menu
-* Empty Matrices::              
+* Empty Matrices::
 @end menu
 
 @node Empty Matrices

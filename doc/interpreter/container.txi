@@ -640,7 +640,7 @@ iscell (3)
 @DOCSTRING(iscell)
 
 @node Creating Cell Arrays
-@subsection Creating Cell Array
+@subsection Creating Cell Arrays
 
 The introductory example (@pxref{Basic Usage of Cell Arrays}) showed
 how to create a cell array containing currently available variables.

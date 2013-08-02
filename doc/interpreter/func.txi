@@ -30,18 +30,18 @@ like built-in functions.
 
 @menu
 * Introduction to Function and Script Files::
-* Defining Functions::          
-* Multiple Return Values::      
-* Variable-length Argument Lists::  
-* Ignoring Arguments::  
-* Variable-length Return Lists::  
-* Returning from a Function::   
-* Default Arguments::   
-* Function Files::              
-* Script Files::                
-* Function Handles Inline Functions and Anonymous Functions::
+* Defining Functions::
+* Multiple Return Values::
+* Variable-length Argument Lists::
+* Ignoring Arguments::
+* Variable-length Return Lists::
+* Returning from a Function::
+* Default Arguments::
+* Function Files::
+* Script Files::
+* Function Handles Anonymous Functions Inline Functions::
 * Commands::
-* Organization of Functions::   
+* Organization of Functions::
 @end menu
 
 @node Introduction to Function and Script Files
@@ -1266,11 +1266,11 @@ execute commands from any file.
 
 @DOCSTRING(source)
 
-@node Function Handles Inline Functions and Anonymous Functions
-@section Function Handles, Inline Functions, and Anonymous Functions
+@node Function Handles Anonymous Functions Inline Functions
+@section Function Handles, Anonymous Functions, Inline Functions
 @cindex handle, function handles
-@cindex inline, inline functions
 @cindex anonymous functions
+@cindex inline, inline functions
 
 It can be very convenient store a function in a variable so that it
 can be passed to a different function.  For example, a function that

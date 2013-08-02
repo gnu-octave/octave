@@ -30,11 +30,11 @@
 ## arguments or as 2-element vector.  The viewpoint can also be specified with
 ## Cartesian coordinates @var{x}, @var{y}, and @var{z}.
 ##
-## The call @code{view (2)} sets the viewpoint to @var{azimuth} = 0
-## and @var{elevation} = 90, which is the default for 2-D graphs.
+## The call @code{view (2)} sets the viewpoint to @w{@var{azimuth} = 0}
+## and @w{@var{elevation} = 90}, which is the default for 2-D graphs.
 ##
-## The call @code{view (3)} sets the viewpoint to @var{azimuth} = -37.5
-## and @var{elevation} = 30, which is the default for 3-D graphs.
+## The call @code{view (3)} sets the viewpoint to @w{@var{azimuth} = -37.5}
+## and @w{@var{elevation} = 30}, which is the default for 3-D graphs.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
@@ -46,56 +46,52 @@
 
 function [azimuth, elevation] = view (varargin)
 
-  if (nargin < 4)
-    if (nargin == 0)
-      args = {get(gca (), "view")};
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("view", varargin{:});
+  if (isempty (hax))
+    hax = gca ();
+  endif
+
+  if (nargin > 3)
+    print_usage ();
+  endif
+
+  if (nargin == 0)
+    x = get (hax, "view");
+    az = x(1);
+    el = x(2);
+  elseif (length (varargin) == 1)
+    x = varargin{1};
+    if (length (x) == 2)
+      az = x(1);
+      el = x(2);
+    elseif (length (x) == 3)
+      [az, el] = cart2sph (x(1), x(2), x(3));
+      az *= 180/pi;
+      az += 90;
+      el *= 180/pi;
+    elseif (x == 2)
+      az = 0;
+      el = 90;
+    elseif (x == 3)
+      az = -37.5;
+      el = 30;
     else
-      ax = varargin{1};
-      if (isaxes (ax))
-        args = varargin(2:end);
-      else
-        ax = gca;
-        args = varargin;
-      endif
+      print_usage ();
     endif
-    if (length (args) == 1)
-      x = args{1};
-      if (length (x) == 2)
-        az = x(1);
-        el = x(2);
-      elseif (length (x) == 3)
-        [az, el] = cart2sph (x(1), x(2), x(3));
-        az *= 180/pi;
-        az += 90;
-        el *= 180/pi;
-      elseif (x == 2)
-        az = 0;
-        el = 90;
-      elseif (x == 3)
-        az = -37.5;
-        el = 30;
-      else
-        print_usage ();
-      endif
-    elseif (length (args) == 2)
-      az = args{1};
-      el = args{2};
-    endif
+  elseif (length (varargin) == 2)
+    az = args{1};
+    el = args{2};
+  endif
 
-    if (nargin > 0)
-      set (ax, "view", [az, el]);
-    endif
-
+  if (nargin > 0)
+    set (hax, "view", [az, el]);
+  else
     if (nargout == 1)
-      error ("view: T = view () not implemented");
-    endif
-
-    if (nargout == 2)
+      azimuth = [az, el];
+    elseif (nargout == 2)
       azimuth = az;
       elevation = el;
     endif
-  else
-    print_usage ();
   endif
 
 endfunction

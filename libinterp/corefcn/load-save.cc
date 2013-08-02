@@ -269,6 +269,20 @@ get_file_format (std::istream& file, const std::string& filename)
 
               if (! tmp.empty ())
                 retval = LS_ASCII;
+              else
+                {
+                  file.clear ();
+                  file.seekg (0, std::ios::beg);
+
+                  // FIXME -- looks_like_mat_ascii_file does not check to see
+                  // whether the file contains numbers.  It just skips comments and
+                  // checks for the same number of words on each line.  We may need
+                  // a better check here.  The best way to do that might be just
+                  // to try to read the file and see if it works.
+
+                  if (looks_like_mat_ascii_file (file, filename))
+                    retval = LS_MAT_ASCII;
+                }
             }
         }
     }
@@ -288,39 +302,36 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
     return LS_HDF5;
 #endif /* HAVE_HDF5 */
 
-  std::ifstream file (fname.c_str ());
-  use_zlib = false;
-
-  if (file)
-    {
-      retval = get_file_format (file, orig_fname);
-      file.close ();
-
 #ifdef HAVE_ZLIB
-      if (retval == LS_UNKNOWN && check_gzip_magic (fname))
-        {
-          gzifstream gzfile (fname.c_str ());
-          use_zlib = true;
-
-          if (gzfile)
-            {
-              retval = get_file_format (gzfile, orig_fname);
-              gzfile.close ();
-            }
-        }
+  use_zlib = check_gzip_magic (fname);
+#else
+  use_zlib = false;
 #endif
 
-      // FIXME -- looks_like_mat_ascii_file does not check to see
-      // whether the file contains numbers.  It just skips comments and
-      // checks for the same number of words on each line.  We may need
-      // a better check here.  The best way to do that might be just
-      // to try to read the file and see if it works.
-
-      if (retval == LS_UNKNOWN && looks_like_mat_ascii_file (fname))
-        retval = LS_MAT_ASCII;
+  if (! use_zlib)
+    {
+      std::ifstream file (fname.c_str ());
+      if (file)
+        {
+          retval = get_file_format (file, orig_fname);
+          file.close ();
+        }
+      else if (! quiet)
+        gripe_file_open ("load", orig_fname);
     }
-  else if (! quiet)
-    gripe_file_open ("load", orig_fname);
+#ifdef HAVE_ZLIB
+  else
+    {
+      gzifstream gzfile (fname.c_str ());
+      if (gzfile)
+        {
+          retval = get_file_format (gzfile, orig_fname);
+          gzfile.close ();
+        }
+      else if (! quiet)
+        gripe_file_open ("load", orig_fname);
+    }
+#endif
 
   return retval;
 }

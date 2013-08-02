@@ -158,7 +158,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
             {
               // GraphicsMagick stores the alpha values inverted, i.e.,
               // 1 for transparent and 0 for opaque so we fix that here.
-              alpha_fvec[idx] = abs (amap(img(idx), 0) - 1);
+              alpha_fvec[idx] = 1 - amap(img(idx), 0);
               idx++;
             }
           retval(2) = alpha;
@@ -223,10 +223,11 @@ read_images (std::vector<Magick::Image>& imvec,
   // using quantumOperator for the cases where we will be returning floating
   // point and want things in the range [0 1]. This is the same reason why
   // the divisor is of type double.
-  const bool   float_out = imvec[0].depth () == 32;
-  const double type_max  = float_out ? 1 : ((uint64_t (1) << QuantumDepth) - 1);
-  const double divisor   = float_out ? std::numeric_limits<uint32_t>::max () :
-                           type_max / ((uint64_t (1) << imvec[0].depth ()) - 1);
+  // TODO in the next release of GraphicsMagick, MaxRGB should be replaced
+  //      with QuantumRange since MaxRGB is already deprecated in ImageMagick.
+  const double divisor   = imvec[0].depth () == 32 ?
+                           std::numeric_limits<uint32_t>::max () :
+                           MaxRGB / ((uint64_t (1) << imvec[0].depth ()) - 1);
 
   // FIXME: this workaround should probably be fixed in GM by creating a
   //        new ImageType BilevelMatteType
@@ -322,7 +323,7 @@ read_images (std::vector<Magick::Image>& imvec,
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
                     img_fvec[idx] = pix->red / divisor;
-                    a_fvec[idx]   = abs ((pix->opacity / divisor) - type_max);
+                    a_fvec[idx]   = (MaxRGB - pix->opacity) / divisor;
                     pix += row_shift;
                     idx++;
                   }
@@ -397,10 +398,9 @@ read_images (std::vector<Magick::Image>& imvec,
                     rbuf[idx]     = pix->red     / divisor;
                     gbuf[idx]     = pix->green   / divisor;
                     bbuf[idx]     = pix->blue    / divisor;
-                    a_fvec[idx]   = abs ((pix->opacity / divisor) - type_max);
+                    a_fvec[a_idx++] = (MaxRGB - pix->opacity) / divisor;
                     pix += row_shift;
                     idx++;
-                    a_idx++;
                   }
                 pix -= col_shift;
               }
@@ -480,10 +480,9 @@ read_images (std::vector<Magick::Image>& imvec,
                     mbuf[idx]     = pix->green   / divisor;
                     ybuf[idx]     = pix->blue    / divisor;
                     kbuf[idx]     = pix->opacity / divisor;
-                    a_fvec[idx]   = abs ((*apix / divisor) - type_max);
+                    a_fvec[a_idx++] = (MaxRGB - *apix) / divisor;
                     pix += row_shift;
                     idx++;
-                    a_idx++;
                   }
                 pix -= col_shift;
               }

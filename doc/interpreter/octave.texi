@@ -37,7 +37,9 @@ END-INFO-DIR-ENTRY
 @c --------------------------------------------------------
 
 @setchapternewpage odd
+@iftex
 @fixcontentsmargin
+@end iftex
 
 @c Settings for small book format:
 @c ------------------------------
@@ -105,6 +107,7 @@ modified versions.
 @author John W. Eaton
 @author David Bateman
 @author S@o{}ren Hauberg
+@author Rik Wehbring
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,

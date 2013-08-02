@@ -23,9 +23,10 @@
 ## @deftypefnx {Function File} {@var{plot_box_aspect_ratio_mode} =} pbaspect ("mode")
 ## @deftypefnx {Function File} {} pbaspect (@var{hax}, @dots{})
 ##
-## Query or set the plot box aspect ratio of the current axes.  The aspect
-## ratio is a normalized 3-element vector representing the rendered lengths of
-## the x, y, and z axes.
+## Query or set the plot box aspect ratio of the current axes.
+##
+## The aspect ratio is a normalized 3-element vector representing the rendered
+## lengths of the x, y, and z axes.
 ##
 ## @code{pbaspect(@var{mode})}
 ##
@@ -46,51 +47,52 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-01-26
 
-function varargout = pbaspect (varargin)
+function pbratio = pbaspect (varargin)
 
-  hax = gca ();
-
+  ## Grab axes handle if present
   if (nargin > 0)
-    if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    if (isscalar (varargin{1}) && isaxes (varargin{1}))
       hax = varargin{1};
       varargin = varargin(2:end);
+    else
+      hax = gca ();
     endif
+  else
+    hax = gca ();
   endif
-  if (numel (varargin) > 0)
-    if (numel (varargin) == 1)
-      if (ischar (varargin{1})
-          && any (strcmpi (varargin{1}, {"mode", "manual", "auto"})))
-        switch (varargin{1})
-        case "mode"
-          if (nargout < 2)
-            varargout{1} = get (hax, "plotboxaspectratiomode");
-            return
-          else
-            error ("pbaspect: only one output is allowed");
-          endif
-        case "manual"
-          set (hax, "plotboxaspectratiomode", "manual");
-        case "auto"
-          set (hax, "plotboxaspectratiomode", "auto");
-        endswitch
-      elseif (isreal (varargin{1}) && numel (varargin{1}) == 2)
-        set (hax, "plotboxaspectratio", [varargin{1}, 1]);
-      elseif (isreal (varargin{1}) && numel (varargin{1}) == 3)
-        set (hax, "plotboxaspectratio", varargin{1});
-      else
-        error ("pbaspect: invalid input");
-      endif
-    elseif (numel (varargin) > 1)
-      error ("pbaspect: too many inputs");
-    endif
-  elseif (nargout == 0)
+
+  nargin = numel (varargin);
+  if (nargin > 1)
     print_usage ();
   endif
 
-  if (nargout == 1)
-    varargout{1} = get (hax, "plotboxaspectratio");
-  elseif (nargout > 1)
-    error ("pbaspect: only one output is allowed");
+  if (nargin == 0)
+    pbratio = get (hax, "plotboxaspectratio");
+  else
+    arg = varargin{1};
+    if (isreal (arg))
+      if (numel (arg) == 2)
+        set (hax, "plotboxaxspectratio", [arg, 1]);
+      elseif (numel (arg) == 3)
+        set (hax, "plotboxaxspectratio", arg);
+      else
+        error ("pbaspect: PLOT_BOX_ASPECT_RATIO must be a 2 or 3 element vector");
+      endif
+    elseif (ischar (arg))
+      arg = tolower (arg);
+      switch (arg)
+        case "auto"
+          set (hax, "plotboxaxspectratiomode", "auto");
+        case "manual"
+          set (hax, "plotboxaxspectratiomode", "manual");
+        case "mode"
+          pbratio = get (hax, "plotboxaxspectratiomode");
+        otherwise
+          error ("pbaspect: Invalid mode <%s>", arg);
+      endswitch
+    else
+      print_usage ();
+    endif
   endif
 
 endfunction

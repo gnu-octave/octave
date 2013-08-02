@@ -23,10 +23,6 @@
 
 function retval = __axes_limits__ (fcn, varargin)
 
-  retval = [];
-
-  fcnmode = sprintf ("%smode", fcn);
-
   [hax, varargin, nargin] = __plt_get_axis_arg__ (fcn, varargin{:});
 
   if (isempty (hax))
@@ -36,17 +32,18 @@ function retval = __axes_limits__ (fcn, varargin)
   if (nargin == 0)
     retval = get (hax, fcn);
   else
+    retval = [];
+    fcnmode = [fcn "mode"];
     arg = varargin{1};
-
     if (ischar (arg))
       if (strcmpi (arg, "mode"))
         retval = get (hax, fcnmode);
-      elseif (strcmpi (arg, "auto") || strcmpi (arg, "manual"))
+      elseif (any (strcmpi (arg, {"auto", "manual"})))
         set (hax, fcnmode, arg);
       endif
     else
       if (!isnumeric (arg) && any (size (arg(:)) != [2, 1]))
-        error ("%s: argument must be a 2 element vector", fcn);
+        error ("%s: LIMITS must be a 2-element vector", fcn);
       else
         if (arg(1) >= arg(2))
           error ("%s: axis limits must be increasing", fcn);
@@ -58,3 +55,4 @@ function retval = __axes_limits__ (fcn, varargin)
   endif
 
 endfunction
+

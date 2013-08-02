@@ -46,51 +46,52 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-01-26
 
-function varargout = daspect (varargin)
+function daratio = daspect (varargin)
 
-  hax = gca ();
-
+  ## Grab axes handle if present
   if (nargin > 0)
-    if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    if (isscalar (varargin{1}) && isaxes (varargin{1}))
       hax = varargin{1};
       varargin = varargin(2:end);
+    else
+      hax = gca ();
     endif
+  else
+    hax = gca ();
   endif
-  if (numel (varargin) > 0)
-    if (numel (varargin) == 1)
-      if (ischar (varargin{1})
-          && any (strcmpi (varargin{1}, {"mode", "manual", "auto"})))
-        switch (varargin{1})
-        case "mode"
-          if (nargout < 2)
-            varargout{1} = get (hax, "dataaspectratiomode");
-            return
-          else
-            error ("daspect: only one output is allowed");
-          endif
-        case "manual"
-          set (hax, "dataaspectratiomode", "manual");
-        case "auto"
-          set (hax, "dataaspectratiomode", "auto");
-        endswitch
-      elseif (isreal (varargin{1}) && numel (varargin{1}) == 2)
-        set (hax, "dataaspectratio", [varargin{1}, 1]);
-      elseif (isreal (varargin{1}) && numel (varargin{1}) == 3)
-        set (hax, "dataaspectratio", varargin{1});
-      else
-        error ("daspect: invalid input");
-      endif
-    elseif (numel (varargin) > 1)
-      error ("daspect: too many inputs");
-    endif
-  elseif (nargout == 0)
+
+  nargin = numel (varargin);
+  if (nargin > 1)
     print_usage ();
   endif
 
-  if (nargout == 1)
-    varargout{1} = get (hax, "dataaspectratio");
-  elseif (nargout > 1)
-    error ("daspect: only one output is allowed");
+  if (nargin == 0)
+    daratio = get (hax, "dataaspectratio");
+  else
+    arg = varargin{1};
+    if (isreal (arg))
+      if (numel (arg) == 2)
+        set (hax, "dataaspectratio", [arg, 1]);
+      elseif (numel (arg) == 3)
+        set (hax, "dataaspectratio", arg);
+      else
+        error ("daspect: DATA_ASPECT_RATIO must be a 2 or 3 element vector");
+      endif
+    elseif (ischar (arg))
+      arg = tolower (arg);
+      switch (arg)
+        case "auto"
+          set (hax, "dataaspectratiomode", "auto");
+        case "manual"
+          set (hax, "dataaspectratiomode", "manual");
+        case "mode"
+          daratio = get (hax, "dataaspectratiomode");
+        otherwise
+          error ("daspect: Invalid mode <%s>", arg);
+      endswitch
+    else
+      print_usage ();
+    endif
   endif
 
 endfunction
@@ -137,4 +138,6 @@ endfunction
 %! set (gca, 'activepositionproperty', 'position');
 %! daspect ([2 1 1]);
 %! title ('square plot-box with axis limits [0, 4, -1, 1]');
+
+## FIXME: need some input validation tests
 

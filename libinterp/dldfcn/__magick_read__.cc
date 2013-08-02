@@ -223,6 +223,8 @@ read_images (std::vector<Magick::Image>& imvec,
   // using quantumOperator for the cases where we will be returning floating
   // point and want things in the range [0 1]. This is the same reason why
   // the divisor is of type double.
+  // uint64_t is used in expression because default 32-bit value overflows
+  // when depth() is 32.
   // TODO in the next release of GraphicsMagick, MaxRGB should be replaced
   //      with QuantumRange since MaxRGB is already deprecated in ImageMagick.
   const double divisor   = imvec[0].depth () == 32 ?
@@ -240,6 +242,42 @@ read_images (std::vector<Magick::Image>& imvec,
   if (type == Magick::BilevelType && imvec[0].matte ())
     {
       type = Magick::GrayscaleMatteType;
+    }
+
+  // FIXME: ImageType is the type being used to represent the image in memory
+  // by GM. The real type may be different (see among others bug #36820). For
+  // example, a png file where all channels are equal may report being
+  // grayscale or even bilevel. But we must always return the real image in
+  // file. In some cases, the original image attributes are stored in the
+  // attributes but this is undocumented. This should be fixed in GM so that
+  // a method such as original_type returns an actual Magick::ImageType
+  if (imvec[0].magick () == "PNG")
+    {
+      // These values come from libpng, not GM:
+      //      Grayscale         = 0
+      //      Palette           = 2 + 1
+      //      RGB               = 2
+      //      RGB + Alpha       = 2 + 4
+      //      Grayscale + Alpha = 4
+      // We won't bother with case 3 (palette) since those should be
+      // read by the function to read indexed images
+      const std::string type_str = imvec[0].attribute ("PNG:IHDR.color-type-orig");
+      if (type_str == "0")
+        {
+          type = Magick::GrayscaleType;
+        }
+      else if (type_str == "2")
+        {
+          type = Magick::TrueColorType;
+        }
+      else if (type_str == "6")
+        {
+          type = Magick::TrueColorMatteType;
+        }
+      else if (type_str == "4")
+        {
+          type = Magick::GrayscaleMatteType;
+        }
     }
 
   // If the alpha channel was not requested, treat images as if

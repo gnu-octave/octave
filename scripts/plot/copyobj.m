@@ -87,59 +87,67 @@ endfunction
 %!demo
 %! ## FIXME: This demo fails occasionally for an obscure reason.
 %! ## It appears that there is something wrong with Octave code for patches.
-%! try
+%! unwind_protect
 %!   hdl = figure (1234);
 %!   clf;
 %!   subplot (2,2,1);
 %!   hold on;
 %!   contourf (rand (10, 10));
-%!   colorbar;
+%!   colorbar ();
 %!   subplot (2,2,2);
 %!   quiver (rand (10, 10), rand (10, 10));
 %!   subplot (2,2,3);
 %!   colormap (jet (64));
 %!   hold on;
-%!   sombrero;
+%!   sombrero ();
 %!   colorbar ('peer', gca, 'NorthOutside');
 %!   subplot (2,2,4);
 %!   imagesc (rand (30, 30));
 %!   text (15, 15, 'Rotated text', ...
-%!        'HorizontAlalignment', 'Center', 'Rotation', 30);
+%!         'HorizontAlalignment', 'Center', 'Rotation', 30);
 %!   hnew = copyobj (hdl);
-%! catch
-%!   close all
-%! end
+%! unwind_protect_cleanup
+%!   close all;
+%! end_unwind_protect
 
 %!testif HAVE_MAGICK
-%! h1 = figure ();
-%! set (h1, "visible", "off");
-%! x = 0:0.1:2*pi;
-%! y1 = sin (x);
-%! y2 = exp (x - 1);
-%! ax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
-%! xlabel ("X");
-%! ylabel (ax(1), "Axis 1");
-%! ylabel (ax(2), "Axis 2");
-%! axes (ax(1));
-%! text (0.5, 0.5, "Left Axis", ...
-%!       "color", [0 0 1], "horizontalalignment", "center");
-%! axes (ax(2));
-%! text (4.5, 80, "Right Axis", ...
-%!       "color", [0 0.5 0], "horizontalalignment", "center");
-%! s1 = hdl2struct (h1);
-%! h2 = struct2hdl (s1);
-%! s2 = hdl2struct (h2);
-%! png1 = strcat (tmpnam (), ".png");
-%! png2 = strcat (tmpnam (), ".png");
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("gnuplot");
 %! unwind_protect
-%!   print (h1, png1);
-%!   [img1, map1, alpha1] = imread (png1);
-%!   print (h2, png2);
-%!   [img2, map2, alpha2] = imread (png2);
+%!   h1 = figure ("visible", "off");
+%!   x = 0:0.1:2*pi;
+%!   y1 = sin (x);
+%!   y2 = exp (x - 1);
+%!   ax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
+%!   xlabel ("X");
+%!   ylabel (ax(1), "Axis 1");
+%!   ylabel (ax(2), "Axis 2");
+%!   axes (ax(1));
+%!   text (0.5, 0.5, "Left Axis", ...
+%!         "color", [0 0 1], "horizontalalignment", "center");
+%!   axes (ax(2));
+%!   text (4.5, 80, "Right Axis", ...
+%!         "color", [0 0.5 0], "horizontalalignment", "center");
+%!   s1 = hdl2struct (h1);
+%!   h2 = struct2hdl (s1);
+%!   s2 = hdl2struct (h2);
+%!   png1 = strcat (tmpnam (), ".png");
+%!   png2 = strcat (tmpnam (), ".png");
+%!   unwind_protect
+%!     print (h1, png1);
+%!     [img1, map1, alpha1] = imread (png1);
+%!     print (h2, png2);
+%!     [img2, map2, alpha2] = imread (png2);
+%!   unwind_protect_cleanup
+%!     unlink (png1);
+%!     unlink (png2);
+%!   end_unwind_protect
+%!   assert (img1, img2);
+%!   assert (map1, map2);
+%!   assert (alpha1, alpha2);
 %! unwind_protect_cleanup
-%!   unlink (png1);
-%!   unlink (png2);
+%!   close (h1);
+%!   close (h2);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
-%! assert (img1, img2);
-%! assert (map1, map2);
-%! assert (alpha1, alpha2);
+

@@ -184,7 +184,7 @@ function local_drawnow (term, file, opts)
   else
     mono = false;
   endif
-  figure (opts.figure);
+  set (0, "currentfigure", opts.figure);
   if (isempty (opts.debug_file) || ! opts.debug)
     drawnow (term, file, mono);
   else

@@ -293,7 +293,7 @@ function print (varargin)
   endif
 
   orig_figure = get (0, "currentfigure");
-  figure (opts.figure);
+  set (0, "currentfigure", opts.figure);
 
   if (opts.append_to_file)
     [~, ~, ext] = fileparts (opts.ghostscript.output);
@@ -437,7 +437,7 @@ function print (varargin)
   end_unwind_protect
 
   if (isfigure (orig_figure))
-    figure (orig_figure);
+    set (0, "currentfigure", orig_figure);
   endif
 
 endfunction

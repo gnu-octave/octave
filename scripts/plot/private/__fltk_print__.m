@@ -25,7 +25,7 @@ function opts = __fltk_print__ (opts)
 
   dos_shell = (ispc () && ! isunix ());
 
-  figure (opts.figure);
+  set (0, "currentfigure", opts.figure);
   drawnow ("expose");
   __fltk_redraw__ ();
 

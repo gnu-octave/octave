@@ -20,6 +20,7 @@
 ## @deftypefn  {Function File} {} runtests ()
 ## @deftypefnx {Function File} {} runtests (@var{directory})
 ## Execute built-in tests for all function files in the specified directory.
+##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
 ## @seealso{rundemos, path}
@@ -34,8 +35,12 @@ function runtests (directory)
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};
+    elseif (is_rooted_relative_filename (directory))
+      dirs = {canonicalize_file_name(directory)};
     else
-      directory = regexprep (directory, ['\',filesep(),'$'], "");
+      if (directory(end) == filesep ())
+        directory = directory(1:end-1);
+      endif
       fullname = find_dir_in_path (directory);
       if (! isempty (fullname))
         dirs = {fullname};
@@ -55,14 +60,13 @@ function runtests (directory)
 endfunction
 
 function run_all_tests (directory)
-  dirinfo = dir (directory);
-  flist = {dirinfo.name};
+  flist = readdir (directory);
   no_tests = {};
   printf ("Processing files in %s:\n\n", directory);
   fflush (stdout);
   for i = 1:numel (flist)
     f = flist{i};
-    if (length (f) > 2 && strcmp (f((end-1):end), ".m"))
+    if (length (f) > 2 && strcmpi (f((end-1):end), ".m"))
       ff = fullfile (directory, f);
       if (has_tests (ff))
         print_test_file_name (f);
@@ -83,9 +87,10 @@ endfunction
 function retval = has_tests (f)
   fid = fopen (f);
   if (fid >= 0)
-    str = fread (fid, "*char")';
+    str = fread (fid, "*char").';
     fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(test|assert|error|warning)', "lineanchors"));
+    retval = ! isempty (regexp (str, '^%!(?:test|assert|error|warning)',
+                                     "lineanchors", "once"));
   else
     error ("runtests: fopen failed: %s", f);
   endif
@@ -106,3 +111,8 @@ function print_test_file_name (nm)
   filler = repmat (".", 1, 55-length (nm));
   printf ("  %s %s", nm, filler);
 endfunction
+
+
+%!error runtests ("foo", 1)
+%!error <DIRECTORY argument> runtests ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
+

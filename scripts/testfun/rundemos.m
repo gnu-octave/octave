@@ -34,8 +34,12 @@ function rundemos (directory)
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};
+    elseif (is_rooted_relative_filename (directory))
+      dirs = {canonicalize_file_name(directory)};
     else
-      directory = regexprep (directory, ['\',filesep(),'$'], "");
+      if (directory(end) == filesep ())
+        directory = directory(1:end-1);
+      endif
       fullname = find_dir_in_path (directory);
       if (! isempty (fullname))
         dirs = {fullname};
@@ -55,8 +59,7 @@ function rundemos (directory)
 endfunction
 
 function run_all_demos (directory)
-  dirinfo = dir (directory);
-  flist = {dirinfo.name};
+  flist = readdir (directory);
   for i = 1:numel (flist)
     f = flist{i};
     if (length (f) > 2 && strcmp (f((end-1):end), ".m"))

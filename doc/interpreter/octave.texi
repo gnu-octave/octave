@@ -222,7 +222,6 @@ Format of Descriptions
 
 * A Sample Function Description::  
 * A Sample Command Description::  
-* A Sample Variable Description::  
 
 Getting Started
 

@@ -16,7 +16,10 @@
 % along with Octave; see the file COPYING.  If not, see
 % <http://www.gnu.org/licenses/>.
 
+\def\fixcontentsmargin{\contentsrightmargin = 0pt}
+
 \input texinfo
+
 @setfilename octave.info
 
 @include macros.texi
@@ -30,10 +33,11 @@ END-INFO-DIR-ENTRY
 @end format
 @end ifinfo
 
-@c Settings for printing on 8-1/2 by 11 inch paper:
-@c -----------------------------------------------
+@c Settings for printing on 8-1/2 by 11 inch paper (default):
+@c --------------------------------------------------------
 
 @setchapternewpage odd
+@fixcontentsmargin
 
 @c Settings for small book format:
 @c ------------------------------

@@ -187,6 +187,11 @@ Summary of important user-visible changes for version 3.8:
       helpdlg    listdlg   questdlg
       inputdlg   msgbox    warndlg
 
+ ** The glpk function has been modified to reflect changes in the GLPK
+    library. The "round" and "itcnt" options have been removed. The
+    "relax" option has been replaced by the "rtest" option. The numeric
+    values of error codes and of some options have also changed.
+
  ** Other new functions added in 3.8.0:
                                                   
       atan2d                     erfi             jit_startcnt

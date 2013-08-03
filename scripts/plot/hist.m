@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{nbins})
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{x}, @var{norm})
 ## @deftypefnx {Function File} {} hist (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} hist (@var{hax}, @dots)
+## @deftypefnx {Function File} {} hist (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {[@var{nn}, @var{xx}] =} hist (@dots{})
 ## Produce histogram counts or plots.
 ##

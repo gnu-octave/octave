@@ -25,7 +25,7 @@
 ##
 ## If no parent is specified, the group is created in the current axes.
 ##
-## Multiple property-value pairs may be specified for the hggroup, but they
+## Multiple property/value pairs may be specified for the hggroup, but they
 ## must appear in pairs.
 ##
 ## The optional return value @var{h} is a graphics handle to the created

@@ -35,6 +35,10 @@
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
 ## format defined by @var{fmt}.  @xref{XREFerrorbar,,errorbar}, for available
 ## formats and additional information.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
 ## @seealso{errorbar, semilogyerr, loglogerr}
 ## @end deftypefn
 

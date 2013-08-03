@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} feather (@var{u}, @var{v})
 ## @deftypefnx {Function File} {} feather (@var{z})
 ## @deftypefnx {Function File} {} feather (@dots{}, @var{style})
-## @deftypefnx {Function File} {} feather (@var{h}, @dots{})
+## @deftypefnx {Function File} {} feather (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} feather (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
@@ -31,6 +31,9 @@
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing the drawn vectors.

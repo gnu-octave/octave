@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} quiver (@dots{}, @var{s})
 ## @deftypefnx {Function File} {} quiver (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} quiver (@dots{}, "filled")
-## @deftypefnx {Function File} {} quiver (@var{h}, @dots{})
+## @deftypefnx {Function File} {} quiver (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} quiver (@dots{})
 ##
 ## Plot the (@var{u}, @var{v}) components of a vector field in
@@ -42,6 +42,9 @@
 ## If a marker is specified then markers at the grid points of the vectors are
 ## drawn rather than arrows.  If the argument "filled" is given then the
 ## markers are filled.
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to a quiver object.
 ## A quiver object regroups the components of the quiver plot (body, arrow,

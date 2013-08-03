@@ -21,8 +21,9 @@
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{x})
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{nbins})
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{x}, @var{norm})
+## @deftypefnx {Function File} {} hist (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {Function File} {} hist (@var{hax}, @dots)
 ## @deftypefnx {Function File} {[@var{nn}, @var{xx}] =} hist (@dots{})
-## @deftypefnx {Function File} {[@dots{}] =} hist (@dots{}, @var{prop}, @var{val})
 ## Produce histogram counts or plots.
 ##
 ## With one vector input argument, @var{y}, plot a histogram of the values
@@ -41,12 +42,8 @@
 ##
 ## Extreme values are lumped in the first and last bins.
 ##
-## With two output arguments, produce the values @var{nn} and @var{xx} such
-## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
-##
 ## The histogram's appearance may be modified by specifying property/value
-## pairs, @var{prop} and @var{val} pairs.  For example the face and edge
-## color may be modified.
+## pairs.  For example the face and edge color may be modified.
 ##
 ## @example
 ## @group
@@ -55,7 +52,7 @@
 ## @end example
 ##
 ## @noindent
-## The histograms colors also depend upon the colormap.
+## The histogram's colors also depend upon the current colormap.
 ##
 ## @example
 ## @group
@@ -64,16 +61,27 @@
 ## @end group
 ## @end example
 ##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
+## With two output arguments, produce the values @var{nn} and @var{xx} such
+## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
+##
 ## @seealso{histc, bar, pie, rose}
 ## @end deftypefn
 
 ## Author: jwe
 
-function [nn, xx] = hist (y, varargin)
+function [nn, xx] = hist (varargin)
+
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("hist", varargin{:});
 
   if (nargin < 1)
     print_usage ();
   endif
+  
+  y = varargin{1};
+  varargin = varargin(2:end);
 
   arg_is_vector = isvector (y);
 
@@ -159,10 +167,15 @@ function [nn, xx] = hist (y, varargin)
       nn = freq;
       xx = x;
     endif
-  elseif (columns (freq) != 1)
-    bar (x, freq, 0.8, varargin{iarg:end});
   else
-    bar (x, freq, 1.0, varargin{iarg:end});
+    if (isempty (hax))
+      hax = gca ();
+    endif
+    if (columns (freq) != 1)
+      bar (hax, x, freq, 0.8, varargin{iarg:end});
+    else
+      bar (hax, x, freq, 1.0, varargin{iarg:end});
+    endif
   endif
 
 endfunction

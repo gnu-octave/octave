@@ -64,8 +64,10 @@ function h = meshz (varargin)
   ## Find where property/value pairs start
   charidx = find (cellfun ("isclass", varargin, "char"), 1);
 
+  have_c = false;
   if (isempty (charidx))
     if (nargin == 2 || nargin == 4) 
+      have_c = true;
       charidx = nargin;   # bundle C matrix back into varargin 
     else
       charidx = nargin + 1;
@@ -100,6 +102,15 @@ function h = meshz (varargin)
        zref .* ones(rows(z), 1), z, zref .* ones(rows(z), 1);
        zref .* ones(1, columns(z) + 2)];
 
+  if (have_c)
+    c = varargin{charidx};
+    cref = min (c(isfinite (c)));
+    c = [cref .* ones(1, columns(c) + 2);
+         cref .* ones(rows(c), 1), c, cref .* ones(rows(c), 1);
+         cref .* ones(1, columns(c) + 2)];
+    varargin(charidx) = c;
+  endif
+    
   oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
   unwind_protect
     hax = newplot (hax);
@@ -115,4 +126,19 @@ function h = meshz (varargin)
   endif
 
 endfunction
+
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! Z = peaks ();
+%! meshz (Z);
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! [X,Y,Z] = peaks ();
+%! [fx, fy] = gradient (Z); 
+%! C = sqrt (fx.^2 + fy.^2);
+%! meshz (X,Y,Z,C);
 

@@ -64,6 +64,8 @@
 
 function h = pareto (varargin)
 
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("pareto", varargin{:});
+
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
@@ -84,23 +86,29 @@ function h = pareto (varargin)
   endif
 
   [x, idx] = sort (x, "descend");
-  y = y (idx);
+  y = y(idx);
   cdf = cumsum (x);
   maxcdf = max (cdf);
   cdf = cdf ./ maxcdf;
   cdf95 = cdf - 0.95;
   idx95 = find (sign (cdf95(1:end-1)) != sign (cdf95(2:end)))(1);
 
-  [ax, hbar, hline] = plotyy (1 : idx95, x (1 : idx95),
-                              1 : length (cdf), 100 .* cdf,
-                              @bar, @plot);
+  if (isempty (hax))
+    [ax, hbar, hline] = plotyy (1 : idx95, x (1 : idx95),
+                                1 : length (cdf), 100 .* cdf,
+                                @bar, @plot);
+  else
+    [ax, hbar, hline] = plotyy (hax, 1 : idx95, x (1 : idx95),
+                                     1 : length (cdf), 100 .* cdf,
+                                     @bar, @plot);
+  endif
 
   axis (ax(1), [1 - 0.6, idx95 + 0.6, 0, maxcdf]);
   axis (ax(2), [1 - 0.6, idx95 + 0.6, 0, 100]);
   set (ax(2), "ytick", [0, 20, 40, 60, 80, 100],
-       "yticklabel", {"0%", "20%", "40%", "60%", "80%", "100%"});
-  set (ax(1), "xtick", 1 : idx95, "xticklabel", y (1: idx95));
-  set (ax(2), "xtick", 1 : idx95, "xticklabel", y (1: idx95));
+              "yticklabel", {"0%", "20%", "40%", "60%", "80%", "100%"});
+  set (ax(1), "xtick", 1:idx95, "xticklabel", y(1:idx95));
+  set (ax(2), "xtick", 1:idx95, "xticklabel", y(1:idx95));
 
   if (nargout > 0)
     h = [hbar; hline];

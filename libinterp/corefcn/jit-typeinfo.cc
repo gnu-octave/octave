@@ -35,17 +35,30 @@ along with Octave; see the file COPYING.  If not, see
 #include "jit-typeinfo.h"
 
 #include <llvm/Analysis/Verifier.h>
-#include <llvm/GlobalVariable.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
+
+#ifdef HAVE_LLVM_IR_FUNCTION_H
+#include <llvm/IR/GlobalVariable.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/Intrinsics.h>
+#else
+#include <llvm/GlobalVariable.h>
 #include <llvm/LLVMContext.h>
 #include <llvm/Function.h>
 #include <llvm/Instructions.h>
 #include <llvm/Intrinsics.h>
-#ifdef IRBUILDER_HEADER_IN_SUPPORT_DIR
+#endif
+
+#ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
 #include <llvm/Support/IRBuilder.h>
+#elif defined(HAVE_LLVM_IR_IRBUILDER_H)
+#include <llvm/IR/IRBuilder.h>
 #else
 #include <llvm/IRBuilder.h>
 #endif
+
 #include <llvm/Support/raw_os_ostream.h>
 
 #include "jit-ir.h"

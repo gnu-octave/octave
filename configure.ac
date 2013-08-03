@@ -712,7 +712,7 @@ if test $octave_cv_lib_z = yes; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
 
-### Check for the LLVM library
+ ### Check for the LLVM library
 
 build_jit=no
 AC_ARG_ENABLE([jit],
@@ -766,6 +766,7 @@ if test $build_jit = yes; then
     AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
       warn_llvm=
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
+    OCTAVE_LLVM_IR_DIR
     OCTAVE_LLVM_IRBUILDER_HEADER
     OCTAVE_LLVM_DATALAYOUT_HEADER
     OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API

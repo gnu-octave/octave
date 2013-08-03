@@ -32,7 +32,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_LLVM
 
+#ifdef HAVE_LLVM_IR_FUNCTION_H
+#include <llvm/IR/Value.h>
+#else
 #include <llvm/Value.h>
+#endif
+
 #include <llvm/Support/raw_os_ostream.h>
 
 std::ostream&

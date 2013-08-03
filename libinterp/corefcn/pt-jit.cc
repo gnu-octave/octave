@@ -50,23 +50,37 @@ static int Vjit_startcnt = 1000;
 #include <llvm/Analysis/Passes.h>
 #include <llvm/Analysis/Verifier.h>
 #include <llvm/Bitcode/ReaderWriter.h>
-#include <llvm/LLVMContext.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
-#include <llvm/Module.h>
 #include <llvm/PassManager.h>
-#ifdef IRBUILDER_HEADER_IN_SUPPORT_DIR
+
+#ifdef HAVE_LLVM_IR_FUNCTION_H
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#else
+#include <llvm/LLVMContext.h>
+#include <llvm/Module.h>
+#endif
+
+#ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
 #include <llvm/Support/IRBuilder.h>
+#elif defined(HAVE_LLVM_IR_IRBUILDER_H)
+#include <llvm/IR/IRBuilder.h>
 #else
 #include <llvm/IRBuilder.h>
 #endif
+
 #include <llvm/Support/raw_os_ostream.h>
 #include <llvm/Support/TargetSelect.h>
-#ifdef HAVE_DATALAYOUT
+
+#ifdef HAVE_LLVM_IR_DATALAYOUT_H
+#include <llvm/IR/DataLayout.h>
+#elif defined(HAVE_LLVM_DATALAYOUT_H)
 #include <llvm/DataLayout.h>
 #else
 #include <llvm/Target/TargetData.h>
 #endif
+
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Transforms/Scalar.h>
 
@@ -1872,7 +1886,7 @@ tree_jit::initialize (void)
   module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 
   pass_manager = new llvm::FunctionPassManager (module);
-#if HAVE_DATALAYOUT
+#ifdef HAVE_LLVM_DATALAYOUT
   pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
 #else
   pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));

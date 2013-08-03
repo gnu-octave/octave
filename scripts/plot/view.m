@@ -79,8 +79,8 @@ function [azimuth, elevation] = view (varargin)
       print_usage ();
     endif
   elseif (length (varargin) == 2)
-    az = args{1};
-    el = args{2};
+    az = varargin{1};
+    el = varargin{2};
   endif
 
   if (nargin > 0)

@@ -40,6 +40,9 @@
 ## The @var{fmt} argument specifies the linestyle to be used by the plot
 ## command.
 ##
+## If the first argument @var{hax} is an axes handle, then plot into this axis,
+## rather than the current axes returned by @code{gca}.
+##
 ## With no output arguments the results are immediately plotted.  With two
 ## output arguments the 2-D plot data is returned.  The data can subsequently
 ## be plotted manually with @code{plot (@var{x}, @var{y})}.
@@ -61,11 +64,17 @@
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function [X, Y] = fplot (fn, limits, varargin)
+function [X, Y] = fplot (varargin)
+
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("fplot", varargin{:});
 
   if (nargin < 2 || nargin > 5)
     print_usage ();
   endif
+
+  fn = varargin{1};
+  limits = varargin{2};
+  varargin = varargin(3:end);
 
   if (strcmp (typeinfo (fn), "inline function"))
     fn = vectorize (fn);
@@ -154,15 +163,18 @@ function [X, Y] = fplot (fn, limits, varargin)
     X = x;
     Y = y;
   else
-    plot (x, y, fmt);
-    axis (limits);
+    if (isempty (hax))
+      hax = gca ();
+    endif
+    plot (hax, x, y, fmt);
+    axis (hax, limits);
     if (isvector (y))
-      legend (nam);
+      legend (hax, nam);
     else
       for i = 1:columns (y)
         nams{i} = sprintf ("%s(:,%i)", nam, i);
       endfor
-      legend (nams{:});
+      legend (hax, nams{:});
     endif
   endif
 

@@ -137,6 +137,7 @@ Clenshaw
 CLI
 clim
 cloglog
+closerequestfcn
 clubsuit
 CMatrix
 cmd
@@ -240,6 +241,7 @@ Durbin
 dx
 dy
 EastOutside
+edgecolor
 EIDORS
 eigenpairs
 eigenvector
@@ -336,6 +338,7 @@ gaminv
 gampdf
 gamrnd
 Gautschi
+gca
 gcbo
 GCC
 gcd
@@ -387,6 +390,7 @@ gzipped
 Hackbusch
 Hadamard
 Haddad
+HandleVisibility
 Hankel
 Hanning
 hardcode
@@ -527,6 +531,7 @@ linefeeds
 linesearch
 linespec
 linespoints
+linestyle
 linkprop
 listdlg
 ListSize
@@ -583,6 +588,7 @@ mcnemar
 McNemar's
 meansq
 Mendelsohn
+menubars
 Mersenne
 meshgrid
 meshgridded
@@ -648,6 +654,7 @@ neq
 Neudecker
 Neumann
 NeXT
+NextPlot
 nfev
 nfft
 Ng
@@ -698,8 +705,10 @@ outputfcn
 overridable
 paperorientation
 paperposition
+PaperPosition
 papersize
 paperunits
+PaperUnits
 parseparams
 Parter
 pbm
@@ -807,6 +816,7 @@ relicensing
 ren
 renderer
 repelems
+replacechildren
 repmat
 resampled
 resampling
@@ -942,6 +952,7 @@ subsindex
 subsref
 substring
 substrings
+subwindows
 SuiteSparse
 sumsq
 SunOS
@@ -997,8 +1008,10 @@ treatasempty
 treelayout
 treeplot
 tridiagonal
+trimesh
 triplot
 trnd
+TrueColor
 Tsang
 Tukey
 tuples
@@ -1096,6 +1109,7 @@ Wilks
 windowstyle
 WinRand
 WIPO
+wireframe
 wp
 wspace
 xb

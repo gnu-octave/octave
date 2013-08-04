@@ -37,7 +37,7 @@
 ## The condition number of a matrix quantifies the sensitivity of the matrix
 ## inversion operation when small changes are made to matrix elements.  Ideally
 ## the condition number will be close to 1.  When the number is large this
-## indicates small changes (such as underflow or roundoff error) will produce
+## indicates small changes (such as underflow or round-off error) will produce
 ## large changes in the resulting output.  In such cases the solution results
 ## from numerical computing are not likely to be accurate.
 ## @seealso{condest, rcond, norm, svd}

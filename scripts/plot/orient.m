@@ -25,7 +25,7 @@
 ##
 ## Valid values for @var{orientation} are "landscape", "portrait", and "tall".
 ##
-## The "tall" option sets the orientation to portait and fills
+## The "tall" option sets the orientation to portrait and fills
 ## the page with the plot, while leaving a 0.25 inch border.
 ##
 ## When called with no arguments, return the default print orientation.

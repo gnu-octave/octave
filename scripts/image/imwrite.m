@@ -27,7 +27,7 @@
 ## The image @var{img} can be a binary, grayscale, RGB, or multi-dimensional
 ## image.  The size and class of @var{img} should be the same as what should
 ## be expected when reading it with @code{imread}: the 3rd and 4th dimensions
-## reserved for colorspace, and multiple pages respectively.  If it's an
+## reserved for color space, and multiple pages respectively.  If it's an
 ## indexed image, the colormap @var{map} must also be specified.
 ##
 ## If @var{ext} is not supplied, the file extension of @var{filename} is used

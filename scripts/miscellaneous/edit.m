@@ -80,10 +80,10 @@
 ## @item @code{[EDITOR, " %s"]}
 ## Use the editor which Octave uses for @code{edit_history}.
 ##
-## @item "xedit %s &"
+## @item @nospell{"xedit %s &"}
 ## pop up simple X11 editor in a separate window
 ##
-## @item "gnudoit -q \"(find-file \\\"%s\\\")\""
+## @item @nospell{"gnudoit -q \"(find-file \\\"%s\\\")\""}
 ## Send it to current Emacs; must have @code{(gnuserv-start)} in @file{.emacs}.
 ## @end table
 ##

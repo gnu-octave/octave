@@ -70,7 +70,7 @@
 ## Controls the image region that is read.  Takes as value a cell array
 ## with two arrays of 3 elements @code{@{@var{rows} @var{cols}@}}.  The
 ## elements in the array are the start, increment and end pixel to be
-## read.  If the increment value is ommited, defaults to 1.
+## read.  If the increment value is omitted, defaults to 1.
 ## @end table
 ##
 ## @seealso{imwrite, imfinfo, imformats}

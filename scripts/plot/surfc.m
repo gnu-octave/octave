@@ -73,7 +73,8 @@ function h = surfc (varargin)
     set (htmp, "facecolor", "flat");
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
+                "xgrid", "on", "ygrid", "on", "zgrid", "on",
+                "xlimmode", "manual", "ylimmode", "manual");
     endif
 
     drawnow ();

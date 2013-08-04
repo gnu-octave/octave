@@ -432,9 +432,6 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     hax = newplot (hax);
     if (iscontour)
       [~, h] = feval (pltfunc, hax, X, Y, Z);
-      ## FIXME: Work around contour setting axis tight.
-      ##        Fix should really be in __countour__.
-      axis (hax, domain);
     elseif (isplot && nargs == 2)
       h = zeros (length (XX), 1);
       hold_state = get (hax, "nextplot");

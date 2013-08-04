@@ -514,23 +514,29 @@ open_diary_file (void)
 
 DEFUN (diary, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} diary options\n\
+@deftypefn  {Command} {} diary\n\
+@deftypefnx {Command} {} diary on\n\
+@deftypefnx {Command} {} diary off\n\
+@deftypefnx {Command} {} diary @var{filename}\n\
 Record a list of all commands @emph{and} the output they produce, mixed\n\
-together just as you see them on your terminal.  Valid options are:\n\
+together just as they appear on the terminal.\n\
 \n\
-@table @code\n\
+Valid options are:\n\
+\n\
+@table @asis\n\
 @item on\n\
-Start recording your session in a file called @file{diary} in your\n\
+Start recording a session in a file called @file{diary} in the\n\
 current working directory.\n\
 \n\
 @item off\n\
-Stop recording your session in the diary file.\n\
+Stop recording the session in the diary file.\n\
 \n\
-@item @var{file}\n\
-Record your session in the file named @var{file}.\n\
+@item @var{filename}\n\
+Record the session in the file named @var{filename}.\n\
 @end table\n\
 \n\
 With no arguments, @code{diary} toggles the current diary state.\n\
+@seealso{history}\n\
 @end deftypefn")
 {
   octave_value_list retval;

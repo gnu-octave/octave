@@ -16,8 +16,6 @@
 % along with Octave; see the file COPYING.  If not, see
 % <http://www.gnu.org/licenses/>.
 
-\def\fixcontentsmargin{\contentsrightmargin = 0pt}
-
 \input texinfo
 
 @setfilename octave.info
@@ -37,9 +35,10 @@ END-INFO-DIR-ENTRY
 @c --------------------------------------------------------
 
 @setchapternewpage odd
-@iftex
-@fixcontentsmargin
-@end iftex
+@c Fix TOC margins for printed manual
+@tex
+{\globaldefs = 1 \contentsrightmargin = 0pt}
+@end tex
 
 @c Settings for small book format:
 @c ------------------------------

@@ -52,25 +52,25 @@ function pr_out = printd (obj, filename)
   ## are badly rendered.
   opt = lower (opt);
   switch (opt)
-    case {"pdf"}
+    case "pdf"
       enscr = sprintf (
                        "enscript --no-header -o %s.ps %s ; ps2pdf %s.ps %s.pdf; mv %s.pdf %s;exit",...
                        tempf, tempf, tempf, tempf, tempf, filename);
       system (enscr);
       delete ([tempf ".ps"]);
-    case {"ps"}
+    case "ps"
       enscr = sprintf ("enscript --no-header -o %s %s ; exit", filename, tempf);
       system (enscr);
-    case {"eps"}
+    case "eps"
       enscr = sprintf (
                        "enscript --no-header -o %s.ps %s ; ps2eps --ignoreBB %s.ps; mv %s.eps %s; exit",...
                        tempf, tempf, tempf, tempf, filename);
       system (enscr);
       delete ([tempf ".ps"]);
-    case {"txt"}
+    case "txt"
       enscr = sprintf ("cp %s %s", tempf, filename);
       system (enscr);
-    case {"jpg" "jpeg"}
+    case {"jpg", "jpeg"}
       enscr = sprintf ("convert -trim txt:%s  jpg:%s", tempf, filename);
       system (enscr);
     otherwise

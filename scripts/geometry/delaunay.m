@@ -74,38 +74,38 @@ function tri = delaunay (varargin)
 
   switch (nargin)
 
-  case 1
-    if (! ismatrix (varargin{1}) || columns (varargin{1}) != 2)
-        error ("delaunay: X must be a matrix with 2 columns");
-    else
-      x = varargin{1}(:,1);
-      y = varargin{1}(:,2);
-    endif
-  
-  case 2
-    if (isnumeric (varargin{2}))
-      x = varargin{1};
-      y = varargin{2};
-    elseif (ischar (varargin{2}) || iscellstr (varargin{2}))
-      options = varargin{2};
-      if (! ismatrix (varargin{1}) && columns (varargin{1}) != 2)
+    case 1
+      if (! ismatrix (varargin{1}) || columns (varargin{1}) != 2)
           error ("delaunay: X must be a matrix with 2 columns");
       else
         x = varargin{1}(:,1);
         y = varargin{1}(:,2);
       endif
-    else
-      error ("delaunay: OPTIONS must be a string or cell array of strings");
-    endif
+    
+    case 2
+      if (isnumeric (varargin{2}))
+        x = varargin{1};
+        y = varargin{2};
+      elseif (ischar (varargin{2}) || iscellstr (varargin{2}))
+        options = varargin{2};
+        if (! ismatrix (varargin{1}) && columns (varargin{1}) != 2)
+            error ("delaunay: X must be a matrix with 2 columns");
+        else
+          x = varargin{1}(:,1);
+          y = varargin{1}(:,2);
+        endif
+      else
+        error ("delaunay: OPTIONS must be a string or cell array of strings");
+      endif
 
-  case 3
-    x = varargin{1};
-    y = varargin{2};
-    options = varargin{3};
+    case 3
+      x = varargin{1};
+      y = varargin{2};
+      options = varargin{3};
 
-    if (! (ischar (options) || iscellstr (options)))
-      error ("delaunay: OPTIONS must be a string or cell array of strings");
-    endif
+      if (! (ischar (options) || iscellstr (options)))
+        error ("delaunay: OPTIONS must be a string or cell array of strings");
+      endif
 
   endswitch
 

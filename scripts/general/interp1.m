@@ -216,91 +216,93 @@ function yi = interp1 (x, y, varargin)
 
   ## Proceed with interpolating by all methods.
   switch (method)
-  case "nearest"
-    pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)], shiftdim (y, 1), szy(2:end));
-    pp.orient = "first";
+    case "nearest"
+      pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)],
+                 shiftdim (y, 1), szy(2:end));
+      pp.orient = "first";
 
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-  case "*nearest"
-    pp = mkpp ([x(1), x(1)+[0.5:(nx-1)]*dx, x(nx)], shiftdim (y, 1), szy(2:end));
-    pp.orient = "first";
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-  case "linear"
-    dy = diff (y);
-    dx = diff (x);
-    dx = repmat (dx, [1 size(dy)(2:end)]);
-    coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
-    xx = x;
-
-    if (have_jumps)
-      ## Omit zero-size intervals.
-      coefs(jumps, :) = [];
-      xx(jumps) = [];
-    endif
-
-    pp = mkpp (xx, coefs, szy(2:end));
-    pp.orient = "first";
-
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-
-  case "*linear"
-    dy = diff (y);
-    coefs = [(dy/dx).'(:), y(1:nx-1, :).'(:)];
-    pp = mkpp (x, coefs, szy(2:end));
-    pp.orient = "first";
-
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-
-  case {"pchip", "*pchip", "cubic", "*cubic"}
-    if (nx == 2 || starmethod)
-      x = linspace (x(1), x(nx), ny);
-    endif
-
-    if (ispp)
-      y = shiftdim (reshape (y, szy), 1);
-      yi = pchip (x, y);
-      yi.orient = "first";
-    else
-      y = shiftdim (y, 1);
-      yi = pchip (x, y, reshape (xi, szx));
-      if (! isvector (y))
-        yi = shiftdim (yi, 1);
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
       endif
-    endif
-  case {"spline", "*spline"}
-    if (nx == 2 || starmethod)
-      x = linspace (x(1), x(nx), ny);
-    endif
-
-    if (ispp)
-      y = shiftdim (reshape (y, szy), 1);
-      yi = spline (x, y);
-      yi.orient = "first";
-    else
-      y = shiftdim (y, 1);
-      yi = spline (x, y, reshape (xi, szx));
-      if (! isvector (y))
-        yi = shiftdim (yi, 1);
+    case "*nearest"
+      pp = mkpp ([x(1), x(1)+[0.5:(nx-1)]*dx, x(nx)],
+                 shiftdim (y, 1), szy(2:end));
+      pp.orient = "first";
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
       endif
-    endif
-  otherwise
-    error ("interp1: invalid method '%s'", method);
+    case "linear"
+      dy = diff (y);
+      dx = diff (x);
+      dx = repmat (dx, [1 size(dy)(2:end)]);
+      coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
+      xx = x;
+
+      if (have_jumps)
+        ## Omit zero-size intervals.
+        coefs(jumps, :) = [];
+        xx(jumps) = [];
+      endif
+
+      pp = mkpp (xx, coefs, szy(2:end));
+      pp.orient = "first";
+
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
+      endif
+
+    case "*linear"
+      dy = diff (y);
+      coefs = [(dy/dx).'(:), y(1:nx-1, :).'(:)];
+      pp = mkpp (x, coefs, szy(2:end));
+      pp.orient = "first";
+
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
+      endif
+
+    case {"pchip", "*pchip", "cubic", "*cubic"}
+      if (nx == 2 || starmethod)
+        x = linspace (x(1), x(nx), ny);
+      endif
+
+      if (ispp)
+        y = shiftdim (reshape (y, szy), 1);
+        yi = pchip (x, y);
+        yi.orient = "first";
+      else
+        y = shiftdim (y, 1);
+        yi = pchip (x, y, reshape (xi, szx));
+        if (! isvector (y))
+          yi = shiftdim (yi, 1);
+        endif
+      endif
+    case {"spline", "*spline"}
+      if (nx == 2 || starmethod)
+        x = linspace (x(1), x(nx), ny);
+      endif
+
+      if (ispp)
+        y = shiftdim (reshape (y, szy), 1);
+        yi = spline (x, y);
+        yi.orient = "first";
+      else
+        y = shiftdim (y, 1);
+        yi = spline (x, y, reshape (xi, szx));
+        if (! isvector (y))
+          yi = shiftdim (yi, 1);
+        endif
+      endif
+    otherwise
+      error ("interp1: invalid method '%s'", method);
   endswitch
 
   if (! ispp)

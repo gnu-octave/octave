@@ -828,56 +828,56 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         for k = 1 : numel (hplots)
           hobjects = [hobjects, texthandle(k)];
           switch (get (hplots(k), "type"))
-          case "line"
-            color = get (hplots(k), "color");
-            style = get (hplots(k), "linestyle");
-            if (! strcmp (style, "none"))
-              l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
-                         "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                         "color", color, "linestyle", style, "marker", "none",
-                         "userdata", hplots (k));
-              hobjects = [hobjects, l1];
-            endif
-            marker = get (hplots(k), "marker");
-            if (! strcmp (marker, "none"))
-              l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
-                         "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                         "color", color, "linestyle", "none", "marker", marker,
-                         "markeredgecolor", get (hplots (k), "markeredgecolor"),
-                         "markerfacecolor", get (hplots (k), "markerfacecolor"),
-                         "markersize", get (hplots (k), "markersize"),
-                         "userdata", hplots (k));
-              hobjects = [hobjects, l1];
-            endif
+            case "line"
+              color = get (hplots(k), "color");
+              style = get (hplots(k), "linestyle");
+              if (! strcmp (style, "none"))
+                l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
+                           "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
+                           "color", color, "linestyle", style, "marker", "none",
+                           "userdata", hplots (k));
+                hobjects = [hobjects, l1];
+              endif
+              marker = get (hplots(k), "marker");
+              if (! strcmp (marker, "none"))
+                l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
+                           "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
+                           "color", color, "linestyle", "none", "marker", marker,
+                           "markeredgecolor", get (hplots (k), "markeredgecolor"),
+                           "markerfacecolor", get (hplots (k), "markerfacecolor"),
+                           "markersize", get (hplots (k), "markersize"),
+                           "userdata", hplots (k));
+                hobjects = [hobjects, l1];
+              endif
 
-            addlistener (hplots(k), "color",
-                         {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "linestyle",
-                         {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "marker",
-                         {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "markeredgecolor",
-                         {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "markerfacecolor",
-                         {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "markersize",
-                         {@updateline, hlegend, linelength});
-            addlistener (hplots(k), "displayname",
-                         {@updateline, hlegend, linelength});
-          case "patch"
-            facecolor = get (hplots(k), "facecolor");
-            edgecolor = get (hplots(k), "edgecolor");
-            cdata = get (hplots(k), "cdata");
-            if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
-              p1 = patch ("xdata", ([0, linelength, linelength, 0] +
-                                   xoffset + xk * xstep) / lpos(3),
-                         "ydata", (lpos(4) - yoffset -
-                                   [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                         "facecolor", facecolor, "edgecolor", edgecolor,
-                         "cdata", cdata, "userdata", hplots(k));
-              hobjects = [hobjects, p1];
-            endif
-          case "surface"
+              addlistener (hplots(k), "color",
+                           {@updateline, hlegend, linelength});
+              addlistener (hplots(k), "linestyle",
+                           {@updateline, hlegend, linelength});
+              addlistener (hplots(k), "marker",
+                           {@updateline, hlegend, linelength});
+              addlistener (hplots(k), "markeredgecolor",
+                           {@updateline, hlegend, linelength});
+              addlistener (hplots(k), "markerfacecolor",
+                           {@updateline, hlegend, linelength});
+              addlistener (hplots(k), "markersize",
+                           {@updateline, hlegend, linelength});
+              addlistener (hplots(k), "displayname",
+                           {@updateline, hlegend, linelength});
+            case "patch"
+              facecolor = get (hplots(k), "facecolor");
+              edgecolor = get (hplots(k), "edgecolor");
+              cdata = get (hplots(k), "cdata");
+              if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
+                p1 = patch ("xdata", ([0, linelength, linelength, 0] +
+                                     xoffset + xk * xstep) / lpos(3),
+                           "ydata", (lpos(4) - yoffset -
+                                     [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
+                           "facecolor", facecolor, "edgecolor", edgecolor,
+                           "cdata", cdata, "userdata", hplots(k));
+                hobjects = [hobjects, p1];
+              endif
+            case "surface"
           endswitch
           set (texthandle (k), "position", [(txoffset + xk * xstep) / lpos(3), ...
                                             (lpos(4) - yoffset - yk * ystep) / lpos(4)]);
@@ -1018,12 +1018,12 @@ function updatelegend (h, d)
       units = get (hax, "units");
       set (hax, "units", "points");
       switch (get (hax, "activepositionproperty"))
-      case "position"
-        set (hax, "outerposition", outerposition);
-        set (hax, "position", position);
-      case "outerposition"
-        set (hax, "position", position);
-        set (hax, "outerposition", outerposition);
+        case "position"
+          set (hax, "outerposition", outerposition);
+          set (hax, "position", position);
+        case "outerposition"
+          set (hax, "position", position);
+          set (hax, "outerposition", outerposition);
       endswitch
       set (hax, "units", units);
       h = legend (hax, hplots, get (h, "string"));

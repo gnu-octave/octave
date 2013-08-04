@@ -39,111 +39,111 @@ function opts = __fltk_print__ (opts)
   gl2ps_device = {};
   pipeline = {};
   switch (lower (opts.devopt))
-  case {"eps", "eps2", "epsc", "epsc2"}
-    ## format GL2PS_EPS
-    gl2ps_device = {"eps"};
-    ## FIXME - use epstool to tighten bbox and provide preview.
-    pipeline = {opts.epstool_cmd(opts, "-", opts.name)};
-  case {"epslatex", "pslatex", "pdflatex", "epslatexstandalone", ...
-        "pslatexstandalone", "pdflatexstandalone"}
-    ## format GL2PS_TEX
-    n = find (opts.devopt == "l", 1);
-    suffix = opts.devopt(1:n-1);
-    dot = find (opts.name == ".", 1, "last");
-    if ((! isempty (dot))
-        && any (strcmpi (opts.name(dot:end), ...
-                {strcat(".", suffix), ".tex", "."})))
-      name = opts.name(1:dot-1);
-      if (dot < numel (opts.name)
-          && any (strcmpi (opts.name(dot+1:end), {"eps", "ps", "pdf"})))
-        ## If user provides eps/ps/pdf suffix, use it.
-        suffix = opts.name(dot+1:end);
-      endif
-    else
-      error ("print:invalid-suffix", 
-             "invalid suffix '%s' for device '%s'.",
-             opts.name(dot:end), lower (opts.devopt));
-    endif
-    gl2ps_device = {sprintf("%snotxt", lower (suffix))};
-    gl2ps_device{2} = "tex";
-    if (dos_shell)
-      ## FIXME - this will only work on MinGW with the MSYS shell
-      pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
-      pipeline{2} = sprintf ("cat > %s.tex", name);
-    else
-      pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
-      pipeline{2} = sprintf ("cat > %s.tex", name);
-    endif
-  case "tikz"
-    ## format GL2PS_PGF
-    gl2ps_device = {"pgf"};
-    pipeline = {sprintf("cat > %s", opts.name)};
-  case "svg"
-    ## format GL2PS_SVG
-    gl2ps_device = {"svg"};
-    pipeline = {sprintf("cat > %s", opts.name)};
-  case fig2dev_devices
-    cmd_pstoedit = opts.pstoedit_cmd (opts, "fig");
-    cmd_fig2dev = opts.fig2dev_cmd (opts, opts.devopt);
-    if (strcmp (opts.devopt, "pstex"))
-      [~, ~, ext] = fileparts (opts.name);
-      if (any (strcmpi (ext, {".ps", ".tex", "."})))
-        opts.name = opts.name(1:end-numel(ext));
-      endif
-      opts.name = strcat (opts.name, ".ps");
-      cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
+    case {"eps", "eps2", "epsc", "epsc2"}
+      ## format GL2PS_EPS
       gl2ps_device = {"eps"};
-      pipeline = {cmd};
-      cmd_fig2dev = opts.fig2dev_cmd (opts, "pstex_t");
-      gl2ps_device{2} = "eps";
-      pipeline{2} = sprintf ("%s | %s > %s", cmd_pstoedit,
-                             cmd_fig2dev, strrep(opts.name, ".ps", ".tex"));
-    else
-      cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
-      gl2ps_device = {"eps"};
-      pipeline = {cmd};
-    endif
-  case "aifm"
-    cmd = opts.pstoedit_cmd (opts, "ps2ai");
-    gl2ps_device = {"eps"};
-    pipeline = {sprintf("%s > %s", cmd, opts.name)};
-  case {"dxf", "emf", "fig", "hpgl"}
-    cmd = opts.pstoedit_cmd (opts);
-    gl2ps_device = {"eps"};
-    pipeline = {sprintf("%s > %s", cmd, opts.name)};
-  case {"corel", "gif"}
-    error ("print:unsupporteddevice",
-           "print.m: %s output is not available for the FLTK graphics toolkit",
-           upper (opts.devopt));
-  case opts.ghostscript.device
-    opts.ghostscript.source = "-";
-    opts.ghostscript.output = opts.name;
-    if (opts.send_to_printer)
-      opts.unlink(strcmp (opts.unlink, opts.ghostscript.output)) = [];
-      opts.ghostscript.output = "-";
-    endif
-    [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
-    if (opts.send_to_printer || isempty (opts.name))
-      cmd_lpr = opts.lpr_cmd (opts);
-      cmd = sprintf ("%s | %s", cmd_gs, cmd_lpr);
-    else
-      cmd = sprintf ("%s", cmd_gs);
-    endif
-    if (! isempty (cmd_cleanup))
-      gl2ps_device = {"eps"};
-      if (dos_shell)
-        pipeline = {sprintf("%s & %s", cmd, cmd_cleanup)};
+      ## FIXME - use epstool to tighten bbox and provide preview.
+      pipeline = {opts.epstool_cmd(opts, "-", opts.name)};
+    case {"epslatex", "pslatex", "pdflatex", "epslatexstandalone", ...
+          "pslatexstandalone", "pdflatexstandalone"}
+      ## format GL2PS_TEX
+      n = find (opts.devopt == "l", 1);
+      suffix = opts.devopt(1:n-1);
+      dot = find (opts.name == ".", 1, "last");
+      if ((! isempty (dot))
+          && any (strcmpi (opts.name(dot:end), ...
+                  {strcat(".", suffix), ".tex", "."})))
+        name = opts.name(1:dot-1);
+        if (dot < numel (opts.name)
+            && any (strcmpi (opts.name(dot+1:end), {"eps", "ps", "pdf"})))
+          ## If user provides eps/ps/pdf suffix, use it.
+          suffix = opts.name(dot+1:end);
+        endif
       else
-        pipeline = {sprintf("%s ; %s", cmd, cmd_cleanup)};
+        error ("print:invalid-suffix", 
+               "invalid suffix '%s' for device '%s'.",
+               opts.name(dot:end), lower (opts.devopt));
       endif
-    else
+      gl2ps_device = {sprintf("%snotxt", lower (suffix))};
+      gl2ps_device{2} = "tex";
+      if (dos_shell)
+        ## FIXME - this will only work on MinGW with the MSYS shell
+        pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
+        pipeline{2} = sprintf ("cat > %s.tex", name);
+      else
+        pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
+        pipeline{2} = sprintf ("cat > %s.tex", name);
+      endif
+    case "tikz"
+      ## format GL2PS_PGF
+      gl2ps_device = {"pgf"};
+      pipeline = {sprintf("cat > %s", opts.name)};
+    case "svg"
+      ## format GL2PS_SVG
+      gl2ps_device = {"svg"};
+      pipeline = {sprintf("cat > %s", opts.name)};
+    case fig2dev_devices
+      cmd_pstoedit = opts.pstoedit_cmd (opts, "fig");
+      cmd_fig2dev = opts.fig2dev_cmd (opts, opts.devopt);
+      if (strcmp (opts.devopt, "pstex"))
+        [~, ~, ext] = fileparts (opts.name);
+        if (any (strcmpi (ext, {".ps", ".tex", "."})))
+          opts.name = opts.name(1:end-numel(ext));
+        endif
+        opts.name = strcat (opts.name, ".ps");
+        cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
+        gl2ps_device = {"eps"};
+        pipeline = {cmd};
+        cmd_fig2dev = opts.fig2dev_cmd (opts, "pstex_t");
+        gl2ps_device{2} = "eps";
+        pipeline{2} = sprintf ("%s | %s > %s", cmd_pstoedit,
+                               cmd_fig2dev, strrep(opts.name, ".ps", ".tex"));
+      else
+        cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
+        gl2ps_device = {"eps"};
+        pipeline = {cmd};
+      endif
+    case "aifm"
+      cmd = opts.pstoedit_cmd (opts, "ps2ai");
       gl2ps_device = {"eps"};
-      pipeline = {cmd};
-    endif
-  otherwise
-    error (sprintf ("print:no%soutput", opts.devopt),
-           "print.m: %s output is not available for GL2PS output",
-           upper (opts.devopt));
+      pipeline = {sprintf("%s > %s", cmd, opts.name)};
+    case {"dxf", "emf", "fig", "hpgl"}
+      cmd = opts.pstoedit_cmd (opts);
+      gl2ps_device = {"eps"};
+      pipeline = {sprintf("%s > %s", cmd, opts.name)};
+    case {"corel", "gif"}
+      error ("print:unsupporteddevice",
+             "print.m: %s output is not available for the FLTK graphics toolkit",
+             upper (opts.devopt));
+    case opts.ghostscript.device
+      opts.ghostscript.source = "-";
+      opts.ghostscript.output = opts.name;
+      if (opts.send_to_printer)
+        opts.unlink(strcmp (opts.unlink, opts.ghostscript.output)) = [];
+        opts.ghostscript.output = "-";
+      endif
+      [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
+      if (opts.send_to_printer || isempty (opts.name))
+        cmd_lpr = opts.lpr_cmd (opts);
+        cmd = sprintf ("%s | %s", cmd_gs, cmd_lpr);
+      else
+        cmd = sprintf ("%s", cmd_gs);
+      endif
+      if (! isempty (cmd_cleanup))
+        gl2ps_device = {"eps"};
+        if (dos_shell)
+          pipeline = {sprintf("%s & %s", cmd, cmd_cleanup)};
+        else
+          pipeline = {sprintf("%s ; %s", cmd, cmd_cleanup)};
+        endif
+      else
+        gl2ps_device = {"eps"};
+        pipeline = {cmd};
+      endif
+    otherwise
+      error (sprintf ("print:no%soutput", opts.devopt),
+             "print.m: %s output is not available for GL2PS output",
+             upper (opts.devopt));
   endswitch
 
   opts.pipeline = pipeline;

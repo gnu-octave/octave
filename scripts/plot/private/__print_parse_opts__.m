@@ -579,12 +579,12 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
     papersize(papersize=="-") = "";
     papersize = strrep (papersize, "us", "");
     switch (papersize)
-    case "a"
-      papersize = "letter";
-    case {"b", "tabloid"}
-      papersize = "11x17";
-    case {"c", "d", "e"}
-      papersize = strcat ("arch", papersize);
+      case "a"
+        papersize = "letter";
+      case {"b", "tabloid"}
+        papersize = "11x17";
+      case {"c", "d", "e"}
+        papersize = strcat ("arch", papersize);
     endswitch
     if (strncmp (papersize, "arch", 4))
       papersize(end) = upper (papersize(end));
@@ -594,7 +594,7 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
 endfunction
 
 function value = convert2points (value, units)
-    switch (units)
+  switch (units)
     case "inches"
       value = value * 72;
     case "centimeters"
@@ -602,7 +602,7 @@ function value = convert2points (value, units)
     case "normalized"
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");
-    endswitch
+  endswitch
 endfunction
 
 function device_list = gs_device_list ();

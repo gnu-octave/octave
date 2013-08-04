@@ -1330,7 +1330,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             num_lines = numel (obj.string);
           endif
           switch (valign)
-            ## Text offset in characters. This relies on gnuplot for font metrics.
+            ## Text offset in characters. Relies on gnuplot for font metrics.
             case "top"
               dy = -0.5;
             case "cap"
@@ -1342,12 +1342,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             case "bottom"
               dy = 0.5 + (num_lines - 1);
           endswitch
-          ## Gnuplot's Character units are different for x/y and vary with fontsize. The aspect ratio
-          ## of 1:1.7 was determined by experiment to work for eps/ps/etc. For the MacOS aqua terminal
-          ## a value of 2.5 is needed. However, the difference is barely noticable.
+          ## Gnuplot's Character units are different for x/y and vary with
+          ## fontsize. The aspect ratio of 1:1.7 was determined by experiment
+          ## to work for eps/ps/etc. For the MacOS aqua terminal a value of 2.5
+          ## is needed. However, the difference is barely noticable.
           dx_and_dy = [(-dy * sind (angle)), (dy * cosd (angle))] .* [1.7 1];
 
-          ## FIXME - Multiline text produced the gnuplot "warning: ft_render: skipping glyph"
+          ## FIXME: Multiline text produced the gnuplot
+          ##        "warning: ft_render: skipping glyph"
           if (nd == 3)
             ## This produces the desired vertical alignment in 3D.
             fprintf (plot_stream,
@@ -1972,19 +1974,19 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
         pt = "10";
         pt2 = "11";
       case ">"
-        ## FIXME -- should be triangle pointing right, use triangle pointing up
+        ## FIXME: should be triangle pointing right, use triangle pointing up
         pt = "8";
         pt2 = "9";
       case "<"
-        ## FIXME -- should be triangle pointing left, use triangle pointing down
+        ## FIXME: should be triangle pointing left, use triangle pointing down
         pt = "10";
         pt2 = "11";
       case {"pentagram", "p"}
-        ## FIXME -- should be pentagram, using pentagon
+        ## FIXME: should be pentagram, using pentagon
         pt = "14";
         pt2 = "15";
       case {"hexagram", "h"}
-        ## FIXME -- should be 6 pt start, using "*" instead
+        ## FIXME: should be 6 pt start, using "*" instead
         pt = pt2 = "3";
       case "none"
         pt = pt2 = "";

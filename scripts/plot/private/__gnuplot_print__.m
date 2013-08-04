@@ -49,103 +49,104 @@ function opts = __gnuplot_print__ (opts)
   pipeline = "";
 
   switch (lower (opts.devopt))
-  case {"eps", "eps2", "epsc", "epsc2"}
-    if (any (strcmp (opts.devopt, {"eps", "epsc"})))
-      gp_opts = [gp_opts " level1"];
-    endif
-    if (opts.tight_flag || ! isempty (opts.preview))
-      tmp_file = strcat (tmpnam (), ".eps");
-      eps_drawnow (opts, tmp_file, gp_opts);
-      if (dos_shell)
-        cleanup = [" & del " strrep(tmp_file, '/', '\')];
-      else
-        cleanup = [" ; rm " tmp_file];
+    case {"eps", "eps2", "epsc", "epsc2"}
+      if (any (strcmp (opts.devopt, {"eps", "epsc"})))
+        gp_opts = [gp_opts " level1"];
       endif
-      pipeline = {sprintf("%s %s",
-                          opts.epstool_cmd (opts, tmp_file, opts.name),
-                          cleanup)};
-    else
-      eps_drawnow (opts, opts.name, gp_opts);
-    endif
-  case {"epslatex", "pslatex", "pstex", "epslatexstandalone"}
-    dot = find (opts.name == ".", 1, "last");
-    n = find (opts.devopt == "l", 1);
-    suffix = opts.devopt(1:n-1);
-    if (! isempty (dot))
-      if (any (strcmpi (opts.name(dot:end), {strcat(".", suffix), ".tex", "."})))
-        name = opts.name(1:dot-1);
+      if (opts.tight_flag || ! isempty (opts.preview))
+        tmp_file = strcat (tmpnam (), ".eps");
+        eps_drawnow (opts, tmp_file, gp_opts);
+        if (dos_shell)
+          cleanup = [" & del " strrep(tmp_file, '/', '\')];
+        else
+          cleanup = [" ; rm " tmp_file];
+        endif
+        pipeline = {sprintf("%s %s",
+                            opts.epstool_cmd (opts, tmp_file, opts.name),
+                            cleanup)};
       else
-        error ("print:invalid-suffix", 
-               "invalid suffix '%s' for device '%s'.",
-               opts.name(dot:end), lower (opts.devopt));
+        eps_drawnow (opts, opts.name, gp_opts);
       endif
-    endif
-    if (strfind (opts.devopt, "standalone"))
-      term = sprintf ("%s ",
-                      strrep (opts.devopt, "standalone", " standalone"));
-    else
-      term = sprintf ("%s ", opts.devopt);
-    endif
-    if (__gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
-      suffix = "tex";
-    else
-      ## Gnuplot 4.0 wants a ".eps" suffix.
-      suffix = "eps";
-    endif
-    local_drawnow ([term " " gp_opts],
-                   strcat (name, ".", suffix), opts);
-  case "tikz"
-    if (__gnuplot_has_terminal__ ("tikz"))
-      local_drawnow (["lua tikz " gp_opts], opts.name, opts);
-    else
-      error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: '%s' output is not available for gnuplot-%s",
-             upper (opts.devopt), __gnuplot_version__ ());
-    endif
-  case "svg"
-    local_drawnow (["svg dynamic " gp_opts], opts.name, opts);
-  case {"aifm", "corel", "eepic", "emf", "fig"}
-    local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
-  case {"pdfcairo", "pngcairo"}
-    if (__gnuplot_has_terminal__ (opts.devopt))
+    case {"epslatex", "pslatex", "pstex", "epslatexstandalone"}
+      dot = find (opts.name == ".", 1, "last");
+      n = find (opts.devopt == "l", 1);
+      suffix = opts.devopt(1:n-1);
+      if (! isempty (dot))
+        if (any (strcmpi (opts.name(dot:end), {["." suffix], ".tex", "."})))
+          name = opts.name(1:dot-1);
+        else
+          error ("print:invalid-suffix", 
+                 "invalid suffix '%s' for device '%s'.",
+                 opts.name(dot:end), lower (opts.devopt));
+        endif
+      endif
+      if (strfind (opts.devopt, "standalone"))
+        term = sprintf ("%s ",
+                        strrep (opts.devopt, "standalone", " standalone"));
+      else
+        term = sprintf ("%s ", opts.devopt);
+      endif
+      if (__gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
+        suffix = "tex";
+      else
+        ## Gnuplot 4.0 wants a ".eps" suffix.
+        suffix = "eps";
+      endif
+      local_drawnow ([term " " gp_opts],
+                     strcat (name, ".", suffix), opts);
+    case "tikz"
+      if (__gnuplot_has_terminal__ ("tikz"))
+        local_drawnow (["lua tikz " gp_opts], opts.name, opts);
+      else
+        error (sprintf ("print:no%soutput", opts.devopt),
+               "print.m: '%s' output is not available for gnuplot-%s",
+               upper (opts.devopt), __gnuplot_version__ ());
+      endif
+    case "svg"
+      local_drawnow (["svg dynamic " gp_opts], opts.name, opts);
+    case {"aifm", "corel", "eepic", "emf", "fig"}
       local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
-    else
-      error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: '%s' output is not available for gnuplot-%s",
-             upper (opts.devopt), __gnuplot_version__ ());
-    endif
-  case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
-    local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
-  case opts.ghostscript.device
-    gp_opts = font_spec (opts, "devopt", "eps");
-    opts.ghostscript.output = opts.name;
-    opts.ghostscript.source = strcat (tmpnam (), ".eps");
-    eps_drawnow (opts, opts.ghostscript.source, gp_opts);
-    [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
-    if (opts.send_to_printer || isempty (opts.name))
-      cmd_lpr = opts.lpr_cmd (opts);
-      cmd = [cmd_gs " | " cmd_lpr];
-    else
-      cmd = cmd_gs;
-    endif
-    if (dos_shell)
-      cmd = sprintf ("%s & del %s", cmd, strrep (opts.ghostscript.source, '/', '\'));
-    else
-      cmd = sprintf ("%s ; rm %s", cmd, opts.ghostscript.source);
-    endif
-    if (! isempty (cmd_cleanup))
-      if (dos_shell)
-        pipeline = {[cmd " & " cmd_cleanup]};
+    case {"pdfcairo", "pngcairo"}
+      if (__gnuplot_has_terminal__ (opts.devopt))
+        local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
       else
-        pipeline = {[cmd " ; " cmd_cleanup]};
+        error (sprintf ("print:no%soutput", opts.devopt),
+               "print.m: '%s' output is not available for gnuplot-%s",
+               upper (opts.devopt), __gnuplot_version__ ());
       endif
-    else
-      pipeline = {cmd};
-    endif
-  otherwise
-    error (sprintf ("print:no%soutput", opts.devopt),
-           "print.m: %s output is not available for the Gnuplot graphics toolkit",
-           upper (opts.devopt));
+    case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
+      local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
+    case opts.ghostscript.device
+      gp_opts = font_spec (opts, "devopt", "eps");
+      opts.ghostscript.output = opts.name;
+      opts.ghostscript.source = strcat (tmpnam (), ".eps");
+      eps_drawnow (opts, opts.ghostscript.source, gp_opts);
+      [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
+      if (opts.send_to_printer || isempty (opts.name))
+        cmd_lpr = opts.lpr_cmd (opts);
+        cmd = [cmd_gs " | " cmd_lpr];
+      else
+        cmd = cmd_gs;
+      endif
+      if (dos_shell)
+        cmd = sprintf ("%s & del %s", cmd,
+                       strrep (opts.ghostscript.source, '/', '\'));
+      else
+        cmd = sprintf ("%s ; rm %s", cmd, opts.ghostscript.source);
+      endif
+      if (! isempty (cmd_cleanup))
+        if (dos_shell)
+          pipeline = {[cmd " & " cmd_cleanup]};
+        else
+          pipeline = {[cmd " ; " cmd_cleanup]};
+        endif
+      else
+        pipeline = {cmd};
+      endif
+    otherwise
+      error (sprintf ("print:no%soutput", opts.devopt),
+             "print.m: %s output is not available for the Gnuplot graphics toolkit",
+             upper (opts.devopt));
   endswitch
 
 
@@ -198,96 +199,96 @@ function f = font_spec (opts, varargin)
   endfor
   f = "";
   switch (opts.devopt)
-  case "cgm"
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ('font "%s"', opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ("%d", opts.fontsize);
-    endif
-  case {"eps", "eps2", "epsc", "epsc2"}
-    ## Gnuplot renders fonts as half their specification, which
-    ## results in a tight spacing for the axes-labels and tick-labels.
-    ## Compensate for the half scale. This will produce the proper
-    ## spacing for the requested fontsize.
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ('font "%s,%d"', opts.font, 2 * opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ('font "%s"', opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ("%d", 2 * opts.fontsize);
-    endif
-  case "svg"
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      fontsize = round (opts.fontsize * 0.75);
-      f = sprintf ('fname "%s" fsize %d', opts.font, fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ('fname "%s"', opts.font);
-    elseif (! isempty (opts.fontsize))
-      fontsize = round (opts.fontsize * 0.75);
-      f = sprintf ("%s fsize %d", f, fontsize);
-    endif
-  case "pdf"
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ('font "%s"', opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ("fsize %d", f, opts.fontsize);
-    endif
-  case {"pdfcairo", "pngcairo"}
-    if (! isempty (opts.font))
-      f = sprintf ('font "%s"', opts.font);
-    endif
-  case {"epslatex", "epslatexstandalone"}
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ('font "%s"', opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ("%d", opts.fontsize);
-    endif
-  case "pslatex"
-    if (! isempty (opts.fontsize))
-      f = sprintf ("%d", opts.fontsize);
-    endif
-  case {"gif", "jpeg", "png"}
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ('font "%s ,%d"', opts.font, opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ('font "%s"', opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ('font "%d"', opts.fontsize);
-    endif
-  case "emf"
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ('"%s" %d', opts.font, opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ('"%s"', opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ("%d", opts.fontsize);
-    endif
-  case "canvas"
-    if (! isempty (opts.fontsize))
-      f = sprintf ("fsize %d", opts.fontsize);
-    endif
-  case {"aifm", "corel"}
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ("%s %d", opts.font, opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ("%s", opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ("%d", opts.fontsize);
-    endif
-  case "fig"
-    if (! isempty (opts.font) && ! isempty (opts.fontsize))
-      f = sprintf ("font %s fontsize %d", opts.font, opts.fontsize);
-    elseif (! isempty (opts.font))
-      f = sprintf ("font %s", opts.font);
-    elseif (! isempty (opts.fontsize))
-      f = sprintf ("fontsize %d", opts.fontsize);
-    endif
+    case "cgm"
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ('font "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ("%d", opts.fontsize);
+      endif
+    case {"eps", "eps2", "epsc", "epsc2"}
+      ## Gnuplot renders fonts as half their specification, which
+      ## results in a tight spacing for the axes-labels and tick-labels.
+      ## Compensate for the half scale. This will produce the proper
+      ## spacing for the requested fontsize.
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('font "%s,%d"', opts.font, 2 * opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ('font "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ("%d", 2 * opts.fontsize);
+      endif
+    case "svg"
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        fontsize = round (opts.fontsize * 0.75);
+        f = sprintf ('fname "%s" fsize %d', opts.font, fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ('fname "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        fontsize = round (opts.fontsize * 0.75);
+        f = sprintf ("%s fsize %d", f, fontsize);
+      endif
+    case "pdf"
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ('font "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ("fsize %d", f, opts.fontsize);
+      endif
+    case {"pdfcairo", "pngcairo"}
+      if (! isempty (opts.font))
+        f = sprintf ('font "%s"', opts.font);
+      endif
+    case {"epslatex", "epslatexstandalone"}
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ('font "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ("%d", opts.fontsize);
+      endif
+    case "pslatex"
+      if (! isempty (opts.fontsize))
+        f = sprintf ("%d", opts.fontsize);
+      endif
+    case {"gif", "jpeg", "png"}
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('font "%s ,%d"', opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ('font "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ('font "%d"', opts.fontsize);
+      endif
+    case "emf"
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('"%s" %d', opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ('"%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ("%d", opts.fontsize);
+      endif
+    case "canvas"
+      if (! isempty (opts.fontsize))
+        f = sprintf ("fsize %d", opts.fontsize);
+      endif
+    case {"aifm", "corel"}
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ("%s %d", opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ("%s", opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ("%d", opts.fontsize);
+      endif
+    case "fig"
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ("font %s fontsize %d", opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
+        f = sprintf ("font %s", opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ("fontsize %d", opts.fontsize);
+      endif
   endswitch
 endfunction
 
@@ -306,9 +307,9 @@ function [h, fontsize] = get_figure_text_objs (opts)
   h(is_legend_key_string) = [];
   fontsize = get (h, "fontsize");
   switch (numel (fontsize))
-  case 0
-    fontsize = {};
-  case 1
-    fontsize = {fontsize};
+    case 0
+      fontsize = {};
+    case 1
+      fontsize = {fontsize};
   endswitch
 endfunction

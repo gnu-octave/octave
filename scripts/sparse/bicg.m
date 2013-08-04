@@ -234,10 +234,10 @@ endfunction;
 
 %!function y = afun (x, t, a)
 %!  switch (t)
-%!   case "notransp"
-%!     y = a * x;
-%!   case "transp"
-%!     y = a' * x;
+%!    case "notransp"
+%!      y = a * x;
+%!    case "transp"
+%!      y = a' * x;
 %!  endswitch
 %!endfunction
 %!

@@ -74,14 +74,14 @@ function [pxx, f] = periodogram (x, varargin)
       range = varargin{k};
     else
       switch (j)
-      case 1
-        window = varargin{k};
-      case 2
-        nfft   = varargin{k};
-      case 3
-        fs     = varargin{k};
-      case 4
-        range  = varargin{k};
+        case 1
+          window = varargin{k};
+        case 2
+          nfft   = varargin{k};
+        case 3
+          fs     = varargin{k};
+        case 4
+          range  = varargin{k};
       endswitch
       j++;
     endif

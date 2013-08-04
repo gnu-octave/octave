@@ -411,10 +411,10 @@ function print (varargin)
 
     ## call the graphcis toolkit print script
     switch (get (opts.figure, "__graphics_toolkit__"))
-    case "gnuplot"
-      opts = __gnuplot_print__ (opts);
-    otherwise
-      opts = __fltk_print__ (opts);
+      case "gnuplot"
+        opts = __gnuplot_print__ (opts);
+      otherwise
+        opts = __fltk_print__ (opts);
     endswitch
 
   unwind_protect_cleanup
@@ -497,18 +497,18 @@ function cmd = epstool (opts, filein, fileout)
         cmd = "--copy --bbox";
       elseif (! isempty (opts.preview))
         switch (opts.preview)
-        case "tiff"
-          cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
-        case {"tiff6u", "tiff6p", "metafile"}
-          cmd = sprintf ("--add-%s-preview --device bmpgray", opts.preview);
-        case {"tiff4", "interchange"}
-          cmd = sprintf ("--add-%s-preview", opts.preview);
-        case "pict"
-          cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
-        otherwise
-          error ("print:invalidpreview",
-                 "print.m: epstool cannot include preview for format '%s'",
-                 opts.preview);
+          case "tiff"
+            cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
+          case {"tiff6u", "tiff6p", "metafile"}
+            cmd = sprintf ("--add-%s-preview --device bmpgray", opts.preview);
+          case {"tiff4", "interchange"}
+            cmd = sprintf ("--add-%s-preview", opts.preview);
+          case "pict"
+            cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
+          otherwise
+            error ("print:invalidpreview",
+                   "print.m: epstool cannot include preview for format '%s'",
+                   opts.preview);
         endswitch
         if (! isempty (opts.ghostscript.resolution))
           cmd = sprintf ("%s --dpi %d", cmd, opts.ghostscript.resolution);
@@ -619,15 +619,15 @@ function latex_standalone (opts)
   endif
   latexfile = strcat (opts.name, ".tex");
   switch (opts.devopt)
-  case {"pdflatexstandalone"}
-    packages = "\\usepackage{graphicx,color}";
-    graphicsfile = strcat (opts.name, "-inc.pdf");
-  case {"pslatexstandalone"}
-    packages = "\\usepackage{epsfig,color}";
-    graphicsfile = strcat (opts.name, "-inc.ps");
-  otherwise
-    packages = "\\usepackage{epsfig,color}";
-    graphicsfile = strcat (opts.name, "-inc.eps");
+    case {"pdflatexstandalone"}
+      packages = "\\usepackage{graphicx,color}";
+      graphicsfile = strcat (opts.name, "-inc.pdf");
+    case {"pslatexstandalone"}
+      packages = "\\usepackage{epsfig,color}";
+      graphicsfile = strcat (opts.name, "-inc.ps");
+    otherwise
+      packages = "\\usepackage{epsfig,color}";
+      graphicsfile = strcat (opts.name, "-inc.eps");
   endswitch
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
                        opts.canvas_size, opts.canvas_size);

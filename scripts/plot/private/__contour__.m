@@ -450,10 +450,10 @@ function update_data (h, d, prop = "")
     delete (get (h, "children"));
 
     switch (prop)
-    case "levellist"
-      set (h, "levellistmode", "manual")
-    case "levelstep"
-      set (h, "levelstepmode", "manual")
+      case "levellist"
+        set (h, "levellistmode", "manual")
+      case "levelstep"
+        set (h, "levelstepmode", "manual")
     endswitch
 
     if (strcmpi (get (h, "levellistmode"), "manual")

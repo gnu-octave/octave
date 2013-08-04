@@ -56,18 +56,18 @@ function state = hidden (mode = "toggle")
       if ((! ischar (fc) && is_white (fc))
           || (ischar (fc) && strcmp (fc, "none")))
         switch (mode)
-        case "on"
-          set (h, "facecolor", "w");
-        case "off"
-          set (h, "facecolor", "none");
-        case "toggle"
-          if (ischar (fc))
+          case "on"
             set (h, "facecolor", "w");
-            mode = "on";
-          else
+          case "off"
             set (h, "facecolor", "none");
-            mode = "off";
-          endif
+          case "toggle"
+            if (ischar (fc))
+              set (h, "facecolor", "w");
+              mode = "on";
+            else
+              set (h, "facecolor", "none");
+              mode = "off";
+            endif
         endswitch
       endif
     endif

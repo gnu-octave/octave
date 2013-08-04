@@ -40,72 +40,75 @@ function txt = __unimplemented__ (fcn)
 
   ## Some smarter cases, add more as needed.
   switch (fcn)
+    case {"avifile", "aviinfo", "aviread"}
+      txt = ["Basic video file support is provided in the video package.  ", \
+             "See @url{http://octave.sf.net/video/}."];
 
-  case {"avifile", "aviinfo", "aviread"}
-    txt = ["Basic video file support is provided in the video package. ",...
-    "See @url{http://octave.sf.net/video/}."];
+    case "gsvd"
+      txt = ["gsvd is not currently part of core Octave.  ", \
+             "See the linear-algebra package at ", \
+             "@url{http://octave.sourceforge.net/linear-algebra/}."];
 
-  case "gsvd"
-    txt = ["gsvd is not currently part of core Octave.  See the ",...
-    "linear-algebra package at ",...
-    "@url{http://octave.sourceforge.net/linear-algebra/}."];
+    case "funm"
+      txt = ["funm is not currently part of core Octave.  ", \
+             "See the linear-algebra package at ", \
+             "@url{http://octave.sourceforge.net/linear-algebra/}."];
 
-  case "funm"
-    txt = ["funm is not currently part of core Octave.  See the ",...
-    "linear-algebra package at @url{http://octave.sf.net/linear-algebra/}."];
+    case "griddedInterpolant"
+      txt = ["griddedInterpolant is not implemented.  ", \
+             "Consider using griddata."];
 
-  case "griddedInterpolant"
-    txt = ["griddedInterpolant is not implemented.  Consider using griddata."];
+    case "integral"
+      txt = ["Octave provides many routines for 1-D numerical integration.  ", \
+             "Consider quadcc, quad, quadv, quadl, quadgk."];
 
-  case "integral"
-    txt = ["Octave provides many routines for 1-D numerical integration.  ",...
-    "Consider quadcc, quad, quadv, quadl, quadgk."];
+    case "integral2"
+      txt = ["integral2 is not implemented.  Consider using dblquad."];
 
-  case "integral2"
-    txt = ["integral2 is not implemented.  Consider using dblquad."];
+    case "integral3"
+      txt = ["integral3 is not implemented.  Consider using triplequad"];
 
-  case "integral3"
-    txt = ["integral3 is not implemented.  Consider using triplequad"];
+    case "linprog"
+      txt = ["Octave does not currently provide linprog.  ", \
+             "Linear programming problems may be solved using @code{glpk}.  ",\
+             "Try @code{help glpk} for more info."];
 
-  case "linprog"
-    txt = ["Octave does not currently provide linprog.  ",...
-    "Linear programming problems may be solved using @code{glpk}.  ",...
-    "Try @code{help glpk} for more info."];
+    case "matlabrc"
+      txt = ["matlabrc is not implemented.  ", \
+             'Octave uses the file ".octaverc" instead.'];
 
-  case "matlabrc"
-    txt = ["matlabrc is not implemented.  ",...
-           'Octave uses the file ".octaverc" instead.'];
+    case {"ode113", "ode15i", "ode15s", "ode23", "ode23s", "ode23t", \
+          "ode23tb", "ode45", "odeget", "odeset"}
+      txt = ["Octave provides lsode for solving differential equations.  ", \
+             "For more information try @code{help lsode}.  ", \
+             "Matlab-compatible ODE functions are provided by the odepkg ", \
+             "package.  See @url{http://octave.sourceforge.net/odepkg/}."];
 
-  case {"ode113", "ode15i", "ode15s", "ode23", "ode23s", "ode23t", "ode23tb", "ode45", "odeget", "odeset"}
-    txt = ["Octave provides lsode for solving differential equations.  ",...
-    "For more information try @code{help lsode}.  ",...
-    "Matlab-compatible ODE functions are provided by the odepkg package.  ",...
-    "See @url{http://octave.sourceforge.net/odepkg/}."];
+    case "startup"
+      txt = ["startup is not implemented.  ", \
+             'Octave uses the file ".octaverc" instead.'];
 
-  case "startup"
-    txt = ["startup is not implemented.  ",...
-           'Octave uses the file ".octaverc" instead.'];
+    case "quad2d"
+      txt = ["quad2d is not implemented.  Consider using dblquad."];
 
-  case "quad2d"
-    txt = ["quad2d is not implemented.  Consider using dblquad."];
+    case {"xlsread", "xlsfinfo", "xlswrite", "wk1read", "wk1finfo", "wk1write"}
+      txt = ["Functions for spreadsheet style I/O ", \
+             "(.xls .xlsx .sxc .ods .dbf .wk1 etc.) " ,  \
+             "are provided in the io package. ", \
+             "See @url{http://octave.sf.net/io/}."];
 
-  case {"xlsread", "xlsfinfo", "xlswrite", "wk1read", "wk1finfo", "wk1write"}
-    txt = ["Functions for spreadsheet style I/O (.xls .xlsx .sxc .ods .dbf .wk1 etc.) " , ...
-    "are provided in the io package. ",...
-    "See @url{http://octave.sf.net/io/}."];
-
-  otherwise
-    if (ismember (fcn, missing_functions ()))
-      txt = sprintf ("the '%s' function is not yet implemented in Octave", fcn);
-    else
-      is_matlab_function = false;
-      txt = "";
-    endif
+    otherwise
+      if (ismember (fcn, missing_functions ()))
+        txt = ["the '" fcn "' function is not yet implemented in Octave"];
+      else
+        is_matlab_function = false;
+        txt = "";
+      endif
   endswitch
 
   if (is_matlab_function)
-    txt = [txt, "\n\n@noindent\nPlease read ",...
-           "@url{http://www.octave.org/missing.html} to learn how ",...
+    txt = [txt, "\n\n@noindent\nPlease read ", \
+           "@url{http://www.octave.org/missing.html} to learn how ", \
            "you can contribute missing functionality."];
     txt = __makeinfo__ (txt);
   endif

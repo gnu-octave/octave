@@ -209,11 +209,11 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
               size_str = sprintf ("size %gin,%gin", gnuplot_size);
             case "dumb"
               new_stream = 1;
-              if (! isempty (getenv ("COLUMNS")) && ! isempty (getenv ("LINES")))
+              if (!isempty (getenv ("COLUMNS")) && !isempty (getenv ("LINES")))
                 ## Let dumb use full text screen size (minus prompt lines).
                 n = sprintf ("%i", -2 - length (find (sprintf ("%s", PS1) == "\n")));
                 ## n = the number of times \n appears in PS1
-                size_str = ["size ", getenv("COLUMNS"), ",", getenv("LINES"), n];
+                size_str = ["size " getenv("COLUMNS") "," getenv("LINES") n];
               else
                 ## Use the gnuplot default.
                 size_str = "";

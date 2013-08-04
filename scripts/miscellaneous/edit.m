@@ -182,54 +182,54 @@ function ret = edit (varargin)
     statevar = varargin{1};
     stateval = varargin{2};
     switch (toupper (statevar))
-    case "EDITOR"
-      FUNCTION.EDITOR = stateval;
-      return;
-    case "HOME"
-      if (! isempty (stateval) && stateval(1) == "~")
-        stateval = [ default_home, stateval(2:end) ];
-      endif
-      FUNCTION.HOME = stateval;
-      return;
-    case "AUTHOR"
-      FUNCTION.AUTHOR = stateval;
-      return;
-    case "EMAIL"
-      FUNCTION.EMAIL = stateval;
-      return;
-    case "LICENSE"
-      FUNCTION.LICENSE = stateval;
-      return;
-    case "MODE"
-      if (strcmp (stateval, "sync") || strcmp (stateval, "async"))
-        FUNCTION.MODE = stateval;
-      else
-        error ('edit: expected "edit MODE sync|async"');
-      endif
-      return
-    case "EDITINPLACE"
-      if (ischar (stateval))
-        if (strcmpi (stateval, "true"))
-          stateval = true;
-        elseif (strcmpi (stateval, "false"))
-          stateval = false;
-        else
-          stateval = eval (stateval);
+      case "EDITOR"
+        FUNCTION.EDITOR = stateval;
+        return;
+      case "HOME"
+        if (! isempty (stateval) && stateval(1) == "~")
+          stateval = [ default_home, stateval(2:end) ];
         endif
-      endif
-      FUNCTION.EDITINPLACE = stateval;
-      return
-    case "GET"
-      if (isfield (FUNCTION, toupper (stateval)))
-        ret = FUNCTION.(toupper (stateval));
-      else
-        ret = FUNCTION;
-      endif
-      return
-    otherwise
-      ## If none of the states match, assume both inputs are
-      ## actually both file names to be opened
-      editfilelist = varargin;
+        FUNCTION.HOME = stateval;
+        return;
+      case "AUTHOR"
+        FUNCTION.AUTHOR = stateval;
+        return;
+      case "EMAIL"
+        FUNCTION.EMAIL = stateval;
+        return;
+      case "LICENSE"
+        FUNCTION.LICENSE = stateval;
+        return;
+      case "MODE"
+        if (strcmp (stateval, "sync") || strcmp (stateval, "async"))
+          FUNCTION.MODE = stateval;
+        else
+          error ('edit: expected "edit MODE sync|async"');
+        endif
+        return
+      case "EDITINPLACE"
+        if (ischar (stateval))
+          if (strcmpi (stateval, "true"))
+            stateval = true;
+          elseif (strcmpi (stateval, "false"))
+            stateval = false;
+          else
+            stateval = eval (stateval);
+          endif
+        endif
+        FUNCTION.EDITINPLACE = stateval;
+        return
+      case "GET"
+        if (isfield (FUNCTION, toupper (stateval)))
+          ret = FUNCTION.(toupper (stateval));
+        else
+          ret = FUNCTION;
+        endif
+        return
+      otherwise
+        ## If none of the states match, assume both inputs are
+        ## actually both file names to be opened
+        editfilelist = varargin;
     endswitch
   elseif (nargin > 2)
     if (iscellstr (varargin))

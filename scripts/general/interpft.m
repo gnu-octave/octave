@@ -70,7 +70,7 @@ function z = interpft (x, n, dim)
 
   inc = ceil (m/n);
   y = fft (x) / m;
-  k = floor (m / 2);
+  k = ceil (m / 2);
   sz = size (x);
   sz(1) = n * inc - m;
 
@@ -79,6 +79,18 @@ function z = interpft (x, n, dim)
   z = cat (1, y(idx{:}), zeros (sz));
   idx{1} = k+1:m;
   z = cat (1, z, y(idx{:}));
+
+  ## When m is an even number of rows, the FFT has a single Nyquist bin.
+  ## If zero-padded above, distribute the value of the Nyquist bin evenly
+  ## between the new corresponding positive and negative frequency bins.
+  if (sz(1) > 0 && k == m/2)
+    idx{1} = n * inc - k + 1;
+    tmp = z(idx{:}) / 2;
+    z(idx{:}) = tmp;
+    idx{1} = k + 1;
+    z(idx{:}) = tmp;
+  endif
+
   z = n * ifft (z);
 
   if (inc != 1)
@@ -107,6 +119,18 @@ endfunction
 %!assert (interpft (y, n), y, 20*eps);
 %!assert (interpft (y', n), y', 20*eps);
 %!assert (interpft ([y,y],n), [y,y], 20*eps);
+
+%% Test case with complex input from bug #39566
+%!test
+%! x = (1 + j) * [1:4]';
+%! y = ifft ([15 + 15*j; -6; -1.5 - 1.5*j; 0; -1.5 - 1.5*j; -6*j]);
+%! assert (interpft (x, 6), y, 10*eps);
+
+%% Test for correct spectral symmetry with even/odd lengths
+%!assert (max (abs (imag (interpft ([1:8], 20)))), 0, 2*eps);
+%!assert (max (abs (imag (interpft ([1:8], 21)))), 0, 2*eps);
+%!assert (max (abs (imag (interpft ([1:9], 20)))), 0, 2*eps);
+%!assert (max (abs (imag (interpft ([1:9], 21)))), 0, 2*eps);
 
 %% Test input validation
 %!error interpft ()

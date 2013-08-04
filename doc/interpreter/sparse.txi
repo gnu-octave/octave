@@ -308,7 +308,7 @@ number of memory allocations.
 The above problem of memory reallocation can be avoided in
 oct-files.  However, the construction of a sparse matrix from an oct-file
 is more complex than can be discussed here.  @xref{External Code Interface},
-for a a full description of the techniques involved.
+for a full description of the techniques involved.
 
 @node Information
 @subsection Finding Information about Sparse Matrices

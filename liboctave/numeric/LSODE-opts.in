@@ -74,11 +74,11 @@ A string specifying the method of integration to use to solve the ODE
 system.  Valid values are
 
 @table @asis
-@item \"adams\"
+@item  \"adams\"
 @itemx \"non-stiff\"
 No Jacobian used (even if it is available).
 
-@item \"bdf\"
+@item  \"bdf\"
 @itemx \"stiff\"
 Use stiff backward differentiation formula (BDF) method.  If a
 function to compute the Jacobian is not supplied, @code{lsode} will

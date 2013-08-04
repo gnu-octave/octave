@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} imwrite (@dots{}, @var{param1}, @var{val1}, @dots{})
 ## Write images in various file formats.
 ##
-## The image @var{img} can be a binary, grayscale, RGB, or multidimensional
+## The image @var{img} can be a binary, grayscale, RGB, or multi-dimensional
 ## image.  The size and class of @var{img} should be the same as what should
 ## be expected when reading it with @code{imread}: the 3rd and 4th dimensions
 ## reserved for colorspace, and multiple pages respectively.  If it's an
@@ -43,7 +43,7 @@
 ## @item Quality
 ## Set the quality of the compression.  The value should be an
 ## integer between 0 and 100, with larger values indicating higher visual
-## quality and lower compression. Defaults to 75.
+## quality and lower compression.  Defaults to 75.
 ##
 ## @item WriteMode
 ## Some file formats, such as TIFF and GIF, are able to store multiple

@@ -62,7 +62,7 @@
 ## in this way, its value can also be the string "all".
 ##
 ## @item "Info"
-## This option exists for @sc{Matlab} compatibility and has no effect.  For
+## This option exists for @sc{matlab} compatibility and has no effect.  For
 ## maximum performance while reading multiple images from a single file,
 ## use the Index option.
 ##

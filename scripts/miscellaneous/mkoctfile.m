@@ -46,7 +46,7 @@
 ## @item -L DIR
 ## Add the library directory DIR to the link command.
 ##
-## @item -M
+## @item  -M
 ## @itemx --depend
 ## Generate dependency files (.d) for C and C++ source files.
 ##
@@ -67,13 +67,13 @@
 ## @item -g
 ## Enable debugging options for compilers.
 ##
-## @item -o FILE
+## @item  -o FILE
 ## @itemx --output FILE
 ## Output file name.  Default extension is .oct
 ## (or .mex if @samp{--mex} is specified) unless linking
 ## a stand-alone executable.
 ##
-## @item -p VAR
+## @item  -p VAR
 ## @itemx --print VAR
 ## Print the configuration variable VAR@.  Recognized variables are:
 ##
@@ -111,11 +111,11 @@
 ## Assume we are creating a MEX file.  Set the default output extension
 ## to ".mex".
 ##
-## @item -s
+## @item  -s
 ## @itemx --strip
 ## Strip the output file.
 ##
-## @item -v
+## @item  -v
 ## @itemx --verbose
 ## Echo commands as they are executed.
 ##

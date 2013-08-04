@@ -1440,28 +1440,28 @@ The optional argument @var{precision} is a string specifying the type of\n\
 data to read and may be one of\n\
 \n\
 @table @asis\n\
-@item \"schar\"\n\
+@item  \"schar\"\n\
 @itemx \"signed char\"\n\
 Signed character.\n\
 \n\
-@item \"uchar\"\n\
+@item  \"uchar\"\n\
 @itemx \"unsigned char\"\n\
 Unsigned character.\n\
 \n\
-@item \"int8\"\n\
+@item  \"int8\"\n\
 @itemx \"integer*1\"\n\
 \n\
 8-bit signed integer.\n\
 \n\
-@item \"int16\"\n\
+@item  \"int16\"\n\
 @itemx \"integer*2\"\n\
 16-bit signed integer.\n\
 \n\
-@item \"int32\"\n\
+@item  \"int32\"\n\
 @itemx \"integer*4\"\n\
 32-bit signed integer.\n\
 \n\
-@item \"int64\"\n\
+@item  \"int64\"\n\
 @itemx \"integer*8\"\n\
 64-bit signed integer.\n\
 \n\
@@ -1477,17 +1477,17 @@ Unsigned character.\n\
 @item \"uint64\"\n\
 64-bit unsigned integer.\n\
 \n\
-@item \"single\"\n\
+@item  \"single\"\n\
 @itemx \"float32\"\n\
 @itemx \"real*4\"\n\
 32-bit floating point number.\n\
 \n\
-@item \"double\"\n\
+@item  \"double\"\n\
 @itemx \"float64\"\n\
 @itemx \"real*8\"\n\
 64-bit floating point number.\n\
 \n\
-@item \"char\"\n\
+@item  \"char\"\n\
 @itemx \"char*1\"\n\
 Single character.\n\
 \n\
@@ -1500,15 +1500,15 @@ Integer (size is platform dependent).\n\
 @item \"long\"\n\
 Long integer (size is platform dependent).\n\
 \n\
-@item \"ushort\"\n\
+@item  \"ushort\"\n\
 @itemx \"unsigned short\"\n\
 Unsigned short integer (size is platform dependent).\n\
 \n\
-@item \"uint\"\n\
+@item  \"uint\"\n\
 @itemx \"unsigned int\"\n\
 Unsigned integer (size is platform dependent).\n\
 \n\
-@item \"ulong\"\n\
+@item  \"ulong\"\n\
 @itemx \"unsigned long\"\n\
 Unsigned long integer (size is platform dependent).\n\
 \n\

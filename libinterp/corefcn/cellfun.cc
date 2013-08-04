@@ -297,7 +297,7 @@ Return a vector of the lengths of cell elements.\n\
 @item ndims\n\
 Return the number of dimensions of each element.\n\
 \n\
-@item numel\n\
+@item  numel\n\
 @itemx prodofsize\n\
 Return the number of elements contained within each cell element.  The\n\
 number is the product of the dimensions of the object at each cell element.\n\

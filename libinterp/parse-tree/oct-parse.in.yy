@@ -3521,7 +3521,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
 DEFUN (autoload, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
+@deftypefn  {Built-in Function} {} autoload (@var{function}, @var{file})\n\
 @deftypefnx {Built-in Function} {} autoload (@dots{}, @asis{\"remove\"})\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\

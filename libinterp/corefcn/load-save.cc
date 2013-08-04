@@ -617,7 +617,7 @@ This option is accepted for backward compatibility but is ignored.\n\
 Octave can now support multi-dimensional HDF data and automatically\n\
 modifies variable names if they are invalid Octave identifiers.\n\
 \n\
-@item -mat\n\
+@item  -mat\n\
 @itemx -mat-binary\n\
 @itemx -6\n\
 @itemx -v6\n\
@@ -1509,20 +1509,20 @@ Save the data in @sc{hdf5} format but only using single precision.\n\
 Only use this format if you know that all the\n\
 values to be saved can be represented in single precision.\n\
 \n\
-@item -V7\n\
+@item  -V7\n\
 @itemx -v7\n\
 @itemx -7\n\
 @itemx -mat7-binary\n\
 Save the data in @sc{matlab}'s v7 binary data format.\n\
 \n\
-@item -V6\n\
+@item  -V6\n\
 @itemx -v6\n\
 @itemx -6\n\
 @itemx -mat\n\
 @itemx -mat-binary\n\
 Save the data in @sc{matlab}'s v6 binary data format.\n\
 \n\
-@item -V4\n\
+@item  -V4\n\
 @itemx -v4\n\
 @itemx -4\n\
 @itemx -mat4-binary\n\
@@ -1531,7 +1531,7 @@ Save the data in the binary format written by @sc{matlab} version 4.\n\
 @item -text\n\
 Save the data in Octave's text data format.  (default).\n\
 \n\
-@item -zip\n\
+@item  -zip\n\
 @itemx -z\n\
 Use the gzip algorithm to compress the file.  This works equally on files\n\
 that are compressed with gzip outside of octave, and gzip can equally be\n\

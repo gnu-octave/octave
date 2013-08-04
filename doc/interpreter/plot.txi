@@ -2871,23 +2871,23 @@ of the area series are
 @item basevalue
 The value where the base of the area plot is drawn.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the edge of the patch objects making up the
 areas.  @xref{Line Styles}.
 
-@item edgecolor
+@item  edgecolor
 @itemx facecolor
 The line and fill color of the patch objects making up the areas. 
 @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 The x and y coordinates of the original columns of the data passed to
 @code{area} prior to the cumulative summation used in the @code{area}
 function.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 Data source variables.
 @end table
@@ -2902,7 +2902,7 @@ functions.  Each @code{hggroup} element contains a single patch object.
 The properties of the bar series are
 
 @table @code
-@item showbaseline
+@item  showbaseline
 @itemx baseline
 @itemx basevalue
 The property @code{showbaseline} flags whether the baseline of the bar
@@ -2915,7 +2915,7 @@ the bar series and to the baseline itself.  Equally changes in the
 properties of the base line itself are propagated to the members of the
 corresponding bar series.
 
-@item barwidth
+@item  barwidth
 @itemx barlayout
 @itemx horizontal
 The property @code{barwidth} is the width of the bar corresponding to
@@ -2927,12 +2927,12 @@ vertical by the @code{horizontal} property.
 Changes to any of these property are propagated to the other members of
 the bar series.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the edge of the patch objects making up the
 bars.  @xref{Line Styles}.
 
-@item edgecolor
+@item  edgecolor
 @itemx facecolor
 The line and fill color of the patch objects making up the bars.  @xref{Colors}.
 
@@ -2943,7 +2943,7 @@ propagated to the other members of the bar series.
 @item ydata
 The y value of the bars in the @code{hggroup}.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 Data source variables.
 @end table
@@ -2967,7 +2967,7 @@ create the contours of the plot.
 A radio property that can have the values "on" or "off" that flags whether the
 contours to plot are to be filled.
 
-@item zlevelmode
+@item  zlevelmode
 @itemx zlevel
 The radio property @code{zlevelmode} can have the values "none", "auto" or
 "manual".  When its value is "none" there is no z component to the plotted
@@ -2976,7 +2976,7 @@ at the same value as the contour itself.  If the value is "manual", then the
 z value at which to plot the contour is determined by the @code{zlevel}
 property.
 
-@item levellistmode
+@item  levellistmode
 @itemx levellist
 @itemx levelstepmode
 @itemx levelstep
@@ -2986,7 +2986,7 @@ set to "auto", then the distance between contours is determined by
 @code{levelstep}.  If both @code{levellistmode} and @code{levelstepmode}
 are set to "auto", then there are assumed to be 10 equal spaced contours.
 
-@item textlistmode
+@item  textlistmode
 @itemx textlist
 @itemx textstepmode
 @itemx textstep
@@ -3015,12 +3015,12 @@ have the values of "none" or "auto".  If @code{linecolor} is "none", then no
 contour line is drawn.  If @code{linecolor} is "auto" then the line color is
 determined by the colormap.
 
-@item xdata
+@item  xdata
 @itemx ydata
 @itemx zdata
 The original x, y, and z data of the contour lines.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 @itemx zdatasource
 Data source variables.
@@ -3040,18 +3040,18 @@ the errorbars separately.  The properties of the error bar series are
 The RGB color or color name of the line objects of the error bars. 
 @xref{Colors}.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the line objects of the error bars.  @xref{Line
 Styles}.
 
-@item marker
+@item  marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
 The line and fill color of the markers on the error bars.  @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 @itemx ldata
 @itemx udata
@@ -3059,7 +3059,7 @@ The line and fill color of the markers on the error bars.  @xref{Colors}.
 @itemx xudata
 The original x, y, l, u, xl, xu data of the error bars.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 @itemx ldatasource
 @itemx udatasource
@@ -3081,22 +3081,22 @@ line series with the ability to add data sources.
 @item color
 The RGB color or color name of the line objects.  @xref{Colors}.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the line objects.  @xref{Line Styles}.
 
-@item marker
+@item  marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
 The line and fill color of the markers.  @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 @itemx zdata
 The original x, y and z data.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 @itemx zdatasource
 Data source variables.
@@ -3114,7 +3114,7 @@ together with a marker as the point of origin of the arrows.  The
 properties of the quiver series are
 
 @table @code
-@item autoscale
+@item  autoscale
 @itemx autoscalefactor
 Flag whether the length of the arrows is scaled or defined directly from
 the @var{u}, @var{v} and @var{w} data.  If the arrow length is flagged
@@ -3131,27 +3131,27 @@ Flag whether the arrow heads are displayed in the quiver plot.
 @item color
 The RGB color or color name of the line objects of the quiver.  @xref{Colors}.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the line objects of the quiver.  @xref{Line Styles}.
 
-@item marker
+@item  marker
 @itemx markerfacecolor
 @itemx markersize
 The line and fill color of the marker objects at the original of the
 arrows.  @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 @itemx zdata
 The origins of the values of the vector field.
 
-@item udata
+@item  udata
 @itemx vdata
 @itemx wdata
 The values of the vector field to plot.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 @itemx zdatasource
 @itemx udatasource
@@ -3174,12 +3174,12 @@ The properties of the stem series are
 @item linewidth
 The line width of the line objects of the points.  @xref{Line Styles}.
 
-@item marker
+@item  marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 The line and fill color of the markers of the points.  @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 @itemx zdata
 The original x, y and z data of the stems.
@@ -3192,7 +3192,7 @@ color, or a unique color can be specified.
 The size data for the points of the plot.  Each point can its own size or a
 unique size can be specified.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 @itemx zdatasource
 @itemx cdatasource
@@ -3213,21 +3213,21 @@ child representing the stair.  The properties of the stair series are
 @item color
 The RGB color or color name of the line objects of the stairs.  @xref{Colors}.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the line objects of the stairs.  @xref{Line Styles}.
 
-@item marker
+@item  marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
 The line and fill color of the markers on the stairs.  @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 The original x and y data of the stairs.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 Data source variables.
 @end table
@@ -3243,7 +3243,7 @@ as a child representing the stems.  The properties of the stem series
 are
 
 @table @code
-@item showbaseline
+@item  showbaseline
 @itemx baseline
 @itemx basevalue
 The property @code{showbaseline} flags whether the baseline of the
@@ -3260,22 +3260,22 @@ corresponding stem series.
 @item color
 The RGB color or color name of the line objects of the stems.  @xref{Colors}.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the line objects of the stems.  @xref{Line Styles}.
 
-@item marker
+@item  marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
 The line and fill color of the markers on the stems.  @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 @itemx zdata
 The original x, y and z data of the stems.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 @itemx zdatasource
 Data source variables.
@@ -3299,23 +3299,23 @@ The properties of the surface group are
 The RGB color or color name of the edges or faces of the surface. 
 @xref{Colors}.
 
-@item linewidth
+@item  linewidth
 @itemx linestyle
 The line width and style of the lines on the surface.  @xref{Line Styles}.
 
-@item marker
+@item  marker
 @itemx markeredgecolor
 @itemx markerfacecolor
 @itemx markersize
 The line and fill color of the markers on the surface.  @xref{Colors}.
 
-@item xdata
+@item  xdata
 @itemx ydata
 @itemx zdata
 @itemx cdata
 The original x, y, z and c data.
 
-@item xdatasource
+@item  xdatasource
 @itemx ydatasource
 @itemx zdatasource
 @itemx cdatasource

@@ -38,7 +38,7 @@
 ## @item "alpha"
 ## True for characters that are alphabetic (letters).
 ##
-## @item "alnum"
+## @item  "alnum"
 ## @itemx "alphanum"
 ## True for characters that are alphabetic or digits.
 ##
@@ -54,7 +54,7 @@
 ## @item "xdigit"
 ## True for hexadecimal digits (@nospell{a-fA-F0-9}).
 ##
-## @item "space"
+## @item  "space"
 ## @itemx "wspace"
 ## True for whitespace characters (space, formfeed, newline, carriage
 ## return, tab, vertical tab).
@@ -66,7 +66,7 @@
 ## @item "cntrl"
 ## True for control characters.
 ##
-## @item "graph"
+## @item  "graph"
 ## @itemx "graphic"
 ## True for printing characters except space.
 ##

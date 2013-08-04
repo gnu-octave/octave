@@ -84,7 +84,7 @@ Lower triangular.  If the optional third argument @var{perm} is given, the\n\
 matrix is assumed to be a permuted lower triangular with the permutations\n\
 defined by the vector @var{perm}.\n\
 \n\
-@item \"banded\"\n\
+@item  \"banded\"\n\
 @itemx \"banded positive definite\"\n\
 Banded matrix with the band size of @var{nl} below the diagonal and @var{nu}\n\
 above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal and\n\

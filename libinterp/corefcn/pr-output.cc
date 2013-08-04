@@ -3803,7 +3803,7 @@ As with the @samp{short} format, Octave will switch to an exponential\n\
 @samp{e} format if it is unable to format a matrix properly using the\n\
 current format.\n\
 \n\
-@item short e\n\
+@item  short e\n\
 @itemx long e\n\
 Exponential format.  The number to be represented is split between a mantissa\n\
 and an exponent (power of 10).  The mantissa has 5 significant digits in the\n\
@@ -3811,14 +3811,14 @@ short format and 15 digits in the long format.\n\
 For example, with the @samp{short e} format, @code{pi} is displayed as\n\
 @code{3.1416e+00}.\n\
 \n\
-@item short E\n\
+@item  short E\n\
 @itemx long E\n\
 Identical to @samp{short e} or @samp{long e} but displays an uppercase\n\
 @samp{E} to indicate the exponent.\n\
 For example, with the @samp{long E} format, @code{pi} is displayed as\n\
 @code{3.14159265358979E+00}.\n\
 \n\
-@item short g\n\
+@item  short g\n\
 @itemx long g\n\
 Optimally choose between fixed point and exponential format based on\n\
 the magnitude of the number.\n\
@@ -3837,19 +3837,19 @@ ans =\n\
 @end group\n\
 @end example\n\
 \n\
-@item short eng\n\
+@item  short eng\n\
 @itemx long eng\n\
 Identical to @samp{short e} or @samp{long e} but displays the value\n\
 using an engineering format, where the exponent is divisible by 3. For\n\
 example, with the @samp{short eng} format, @code{10 * pi} is displayed as\n\
 @code{31.4159e+00}.\n\
 \n\
-@item long G\n\
+@item  long G\n\
 @itemx short G\n\
 Identical to @samp{short g} or @samp{long g} but displays an uppercase\n\
 @samp{E} to indicate the exponent.\n\
 \n\
-@item free\n\
+@item  free\n\
 @itemx none\n\
 Print output in free format, without trying to line up columns of\n\
 matrices on the decimal point.  This also causes complex numbers to be\n\

@@ -27,7 +27,7 @@
 ## be called in three different ways.
 ##
 ## @table @code
-## @item assert (@var{cond})
+## @item  assert (@var{cond})
 ## @itemx assert (@var{cond}, @var{errmsg}, @dots{})
 ## @itemx assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## Called with a single argument @var{cond}, @code{assert} produces an

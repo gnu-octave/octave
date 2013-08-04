@@ -606,7 +606,7 @@ cell or struct element, and possibly economizes them.  For example:
 @group
 a = zeros (1000); # create a 1000x1000 matrix
 b = a(:,10:100);  # lazy slice
-a = []; # the original a array is still allocated
+a = []; # the original "a" array is still allocated
 c@{1@} = b; # b is reallocated at this point
 @end group
 @end example

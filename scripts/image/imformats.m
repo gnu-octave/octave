@@ -34,18 +34,25 @@
 ## @item ext
 ## The name of the file format.  This may match the file extension but Octave
 ## will automatically detect the file format.
+##
 ## @item description
 ## A long description of the file format.
+##
 ## @item @nospell{isa}
 ## A function handle to confirm if a file is of the specified format.
+##
 ## @item write
 ## A function handle to write if a file is of the specified format.
+##
 ## @item read
 ## A function handle to open files the specified format.
+##
 ## @item info
 ## A function handle to obtain image information of the specified format.
+##
 ## @item alpha
 ## Logical value if format supports alpha channel (transparency or matte).
+##
 ## @item multipage
 ## Logical value if format supports multipage (multiple images per file).
 ## @end table

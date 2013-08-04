@@ -179,7 +179,7 @@ The following external packages are required:
 @table @asis
 @item BLAS
 Basic Linear Algebra Subroutine library
-(@url{http://www.netlib.org/blas}).  Accelerated BLAS libraries such as
+(@url{http://www.netlib.org/blas}).  Accelerated @sc{blas} libraries such as
 ATLAS (@url{http://math-atlas.sourceforge.net}) are recommeded for
 better performance.
 

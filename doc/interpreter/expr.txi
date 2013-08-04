@@ -583,7 +583,7 @@ a minimum norm solution is computed.
 Element-by-element left division.  Each element of @var{y} is divided
 by each corresponding element of @var{x}.
 
-@item @var{x} ^ @var{y}
+@item  @var{x} ^ @var{y}
 @itemx @var{x} ** @var{y}
 @opindex **
 @opindex ^
@@ -597,7 +597,7 @@ expansion if @var{y} is not an integer.  An error results if both
 
 The implementation of this operator needs to be improved.
 
-@item @var{x} .^ @var{y}
+@item  @var{x} .^ @var{y}
 @itemx @var{x} .** @var{y}
 @opindex .**
 @opindex .^
@@ -759,7 +759,7 @@ True if @var{x} is greater than or equal to @var{y}.
 @opindex >
 True if @var{x} is greater than @var{y}.
 
-@item @var{x} != @var{y}
+@item  @var{x} != @var{y}
 @itemx @var{x} ~= @var{y}
 @opindex !=
 @opindex ~=
@@ -863,7 +863,7 @@ Elements of the result are true if both corresponding elements of
 Elements of the result are true if either of the corresponding elements
 of @var{boolean1} or @var{boolean2} is true.
 
-@item ! @var{boolean}
+@item  ! @var{boolean}
 @itemx ~ @var{boolean}
 @opindex ~
 @opindex !

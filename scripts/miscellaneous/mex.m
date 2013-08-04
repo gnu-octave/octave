@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mex [options] file @dots{}
+## @deftypefn {Command} {} mex [options] file @dots{}
 ## Compile source code written in C, C++, or Fortran, to a MEX file.
 ## This is equivalent to @code{mkoctfile --mex [options] file}.
 ## @seealso{mkoctfile}

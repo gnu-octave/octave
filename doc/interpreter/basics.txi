@@ -530,7 +530,7 @@ Move to the end of the line.
 @item C-l
 Clear the screen, reprinting the current line at the top.
 
-@item C-_
+@item  C-_
 @itemx C-/
 Undo the last action.  You can undo all the way back to an empty line.
 
@@ -610,7 +610,7 @@ otherwise have a special meaning (e.g., @key{TAB}, @kbd{C-q}, etc.), or
 for quickly correcting typing mistakes.
 
 @table @kbd
-@item C-q
+@item  C-q
 @itemx C-v
 Add the next character that you type to the line verbatim.  This is
 how to insert things like @kbd{C-q} for example.
@@ -678,7 +678,7 @@ Here are the commands for simple browsing and searching the history
 list.
 
 @table @kbd
-@item @key{LFD}
+@item  @key{LFD}
 @itemx @key{RET}
 Accept the current line regardless of where the cursor is.  If the line is
 non-empty, add it to the history list.  If the line was a history

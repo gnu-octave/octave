@@ -150,8 +150,6 @@ doxyhtml:
 	$(MAKE) -C doc/doxyhtml doxyhtml
 .PHONY: doxyhtml
 
-octetc_DATA = NEWS
-
 DIRS_TO_MAKE = \
   $(localfcnfiledir) \
   $(localapifcnfiledir) \

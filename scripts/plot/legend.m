@@ -595,7 +595,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       linelength = 15;
 
       ## Create the axis first
-      ## FIXME hlegend should inherit properties from "ca"
+      ## FIXME: hlegend should inherit properties from "ca"
       curaxes = get (fig, "currentaxes");
       unwind_protect
         ud = ancestor (hplots, "axes");
@@ -706,7 +706,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             gnuplot_offset = unmodified_axes_position(1) ...
                          - unmodified_axes_outerposition(1);
           endif
-          ## FIXME - the "fontsize" is added to match the behavior of OpenGL.
+          ## FIXME: The "fontsize" is added to match the behavior of OpenGL.
           ## This implies that a change in fontsize should trigger a listener
           ## to update the legend.  The "2" was determined using a long legend
           ## key in the absence of any subplots.
@@ -986,7 +986,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           addlistener (hlegend, "orientation", @updatelegend);
           addlistener (hlegend, "string", @updatelegend);
           addlistener (hlegend, "textposition", @updatelegend);
-          ## TODO - need to add listeners for tighinset and position
+          ## FIXME: need to add listeners for tighinset and position
           ##        addlistener (ca, "tightinset", @update????);
           ##        addlistener (ca, "position", @update????);
         endif
@@ -1552,6 +1552,11 @@ endfunction
 %!  ylabel ('ylabel');
 %!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
 %!  legend (option);
+
+%!demo % bug 39697
+%! plot (1:10);
+%! legend ("Legend Text");
+%! title ({"Multi-line", "titles", "are a", "problem"});
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");

@@ -141,6 +141,9 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   if (isempty (max_a))
     max_a = 0;
   endif
+  ## Must initialize variable value, otherwise it may appear to interpreter
+  ## that code is trying to call flag() colormap function.
+  flag = 0;  
 
   if (max_a == 0)
     s = zeros (k, 1);  # special case of zero matrix

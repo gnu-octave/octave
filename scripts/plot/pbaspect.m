@@ -72,9 +72,9 @@ function pbratio = pbaspect (varargin)
     arg = varargin{1};
     if (isreal (arg))
       if (numel (arg) == 2)
-        set (hax, "plotboxaxspectratio", [arg, 1]);
+        set (hax, "plotboxaspectratio", [arg, 1]);
       elseif (numel (arg) == 3)
-        set (hax, "plotboxaxspectratio", arg);
+        set (hax, "plotboxaspectratio", arg);
       else
         error ("pbaspect: PLOT_BOX_ASPECT_RATIO must be a 2 or 3 element vector");
       endif
@@ -82,11 +82,11 @@ function pbratio = pbaspect (varargin)
       arg = tolower (arg);
       switch (arg)
         case "auto"
-          set (hax, "plotboxaxspectratiomode", "auto");
+          set (hax, "plotboxaspectratiomode", "auto");
         case "manual"
-          set (hax, "plotboxaxspectratiomode", "manual");
+          set (hax, "plotboxaspectratiomode", "manual");
         case "mode"
-          pbratio = get (hax, "plotboxaxspectratiomode");
+          pbratio = get (hax, "plotboxaspectratiomode");
         otherwise
           error ("pbaspect: Invalid mode <%s>", arg);
       endswitch

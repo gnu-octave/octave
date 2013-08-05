@@ -94,29 +94,25 @@ function [options, valid] = __pltopt__ (caller, opt, err_on_invalid)
   valid = true;
   options =  __default_plot_options__ ();
 
-  if ((nargin == 2 || nargin == 3) && (nargout == 1 || nargout == 2))
-    if (nargin == 2)
-      err_on_invalid = true;
-    endif
-    if (ischar (opt))
-      nel = rows (opt);
-    elseif (iscellstr (opt))
-      nel = numel (opt);
-    else
-      error ("__pltopt__: expecting argument to be character string or cell array of character strings");
-    endif
-    if (ischar (opt))
-      opt = cellstr (opt);
-    endif
-    for i = nel:-1:1
-      [options(i), valid] = __pltopt1__ (caller, opt{i}, err_on_invalid);
-      if (! err_on_invalid && ! valid)
-        return;
-      endif
-    endfor
-  else
-    print_usage ();
+  if (nargin == 2)
+    err_on_invalid = true;
   endif
+  if (ischar (opt))
+    nel = rows (opt);
+  elseif (iscellstr (opt))
+    nel = numel (opt);
+  else
+    error ("__pltopt__: argument must be a character string or cell array of character strings");
+  endif
+  if (ischar (opt))
+    opt = cellstr (opt);
+  endif
+  for i = nel:-1:1
+    [options(i), valid] = __pltopt1__ (caller, opt{i}, err_on_invalid);
+    if (! err_on_invalid && ! valid)
+      return;
+    endif
+  endfor
 
 endfunction
 
@@ -132,10 +128,6 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   valid = true;
 
   more_opts = 1;
-
-  if (nargin != 2 && nargin != 3)
-    print_usage ();
-  endif
 
   if (! ischar (opt))
     return;
@@ -184,7 +176,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
           topt = "+";
         endif
         options.marker = topt;
-### Numeric color specs for backward compatibility.  Leave undocumented.
+      ## Numeric color specs for backward compatibility.  Leave undocumented.
       elseif (topt == "k" || topt == "0")
         options.color = [0, 0, 0];
       elseif (topt == "r" || topt == "1")

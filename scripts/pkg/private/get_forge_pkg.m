@@ -26,9 +26,7 @@
 ## @end deftypefn
 
 function [ver, url] = get_forge_pkg (name)
-  if (nargin != 1)
-    print_usage ();
-  endif
+
   ## Verify that name is valid.
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
     error ("get_forge_pkg: package NAME must be a string");

@@ -31,12 +31,11 @@ function __imwrite__ (img, varargin)
   [filename, ext, map, param_list] = imwrite_filename (varargin{:});
 
   if (rem (numel (param_list), 2) != 0)
-    error ("imwrite: no pair for all arguments (even number left)");
+    error ("imwrite: no pair for all arguments (odd number left)");
   endif
 
   ## set default for options
-  options        = struct ("writemode", "overwrite",
-                           "quality",   75);
+  options = struct ("writemode", "overwrite", "quality", 75);
 
   for idx = 1:2:numel (param_list)
 
@@ -44,17 +43,17 @@ function __imwrite__ (img, varargin)
 
       case "writemode",
         options.writemode = param_list{idx+1};
-        if (! ischar (options.writemode) ||
-            ! any (strcmpi (options.writemode, {"append", "overwrite"})))
-          error ("imwrite: value for %s option must be \"append\" or \"overwrite\"",
+        if (! ischar (options.writemode)
+            || ! any (strcmpi (options.writemode, {"append", "overwrite"})))
+          error ('imwrite: value for %s option must be "append" or "overwrite"',
                  param_list{idx});
         endif
         options.writemode = tolower (options.writemode);
 
       case "quality",
         options.quality = param_list{idx+1};
-        if (! isnumeric (options.quality) || ! isscalar (options.quality) ||
-            options.quality < 0 || options.quality > 100)
+        if (! isnumeric (options.quality) || ! isscalar (options.quality)
+            || options.quality < 0 || options.quality > 100)
           error ("imwrite: value for %s option must be a scalar between 0 and 100",
                  param_list{idx});
         endif
@@ -65,12 +64,6 @@ function __imwrite__ (img, varargin)
 
     endswitch
   endfor
-
-  if (isempty (img))
-    error ("imwrite: invalid empty image");
-  elseif (issparse (img) || issparse (map))
-    error ("imwrite: sparse images not supported");
-  endif
 
   if (! isempty (map))
     if (! iscolormap (map))
@@ -83,7 +76,7 @@ function __imwrite__ (img, varargin)
     ##        them to RGB and write them "normally".
     warned = false;
     if (! warned)
-      warning ("imwrite: saving of indexed images is not yet implemented. Will save a RGB image.");
+      warning ("imwrite: saving of indexed images is not yet implemented.  Will save an RGB image.");
       warned = true;
     endif
     img = ind2rgb (img, map);
@@ -103,3 +96,4 @@ function __imwrite__ (img, varargin)
   __magick_write__ (filename, ext, img, map, options);
 
 endfunction
+

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} __errplot__ (@var{fstr}, @var{p}, @dots{})
+## @deftypefn {Function File} {@var{h} =} __errplot__ (@var{fstr}, @var{hax}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -25,11 +25,7 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function h = __errplot__ (fstr, p, varargin)
-
-  if (nargin < 4 || nargin > 8) # at least two data arguments needed
-    print_usage ();
-  endif
+function h = __errplot__ (fstr, hax, varargin)
 
   [fmt, valid] = __pltopt__ ("__errplot__", fstr);
 
@@ -55,7 +51,7 @@ function h = __errplot__ (fstr, p, varargin)
       ifmt = "yerr";
     endif
 
-    hg = hggroup ("parent", p);
+    hg = hggroup ("parent", hax);
     h = [h; hg];
     args = __add_datasource__ ("__errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});

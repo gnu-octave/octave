@@ -23,10 +23,6 @@
 
 function newargs = __add_datasource__ (fcn, h, data, varargin)
 
-  if (nargin < 3)
-    error ("__add_datasource__: a minimum of 3 inputs are required");
-  endif
-
   if (ischar (data))
     data = {data};
   endif

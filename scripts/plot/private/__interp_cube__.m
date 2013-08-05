@@ -24,12 +24,12 @@
 ## @end deftypefn
 
 function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
-  if (ismatrix (x) && ndims (x) == 3 && ismatrix (y) && ndims (y) == 3 ...
+  if (ismatrix (x) && ndims (x) == 3 && ismatrix (y) && ndims (y) == 3
        && ismatrix (z) && ndims (z) == 3 && size_equal (x, y, z, val))
     x = squeeze (x(1,:,1))(:);
     y = squeeze (y(:,1,1))(:);
     z = squeeze (z(1,1,:))(:);
-  elseif (isvector (x) && isvector (y) && isvector (z) )
+  elseif (isvector (x) && isvector (y) && isvector (z))
     x = x(:);
     y = y(:);
     z = z(:);
@@ -40,19 +40,17 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
     error ("__interp_cube__: VAL has wrong dimensions");
   endif
   if (columns (v) != 3)
-    error ( "v has to be N*3 matrix");
+    error ( "V has to be Nx3 matrix");
   endif
-  if (!ischar (req))
-   error ("__interp_cube__: Invalid request parameter use 'values', 'normals' or 'normals8'");
-  endif
+  ##if (!ischar (req))
+  ## error ('__interp_cube__: Invalid request parameter use "values", "normals" or "normals8"');
+  ##endif
   if (isempty (v))
     Vxyz = idx = frac = [];
     return
   endif
 
   switch (req)
-    case "values"
-      [Vxyz, idx, frac] = interp_cube_trilin (x, y, z, val, v);
     case "normals"
       [idx, frac] = cube_idx (x, y, z, v);
 
@@ -96,8 +94,10 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
       dz = [dz;dz(end)](idx(:,3));
       [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad (x, y, z, val, v);
       Vxyz = [Dx./dx, Dy./dy, Dz./dz];
+    case "values"
+      [Vxyz, idx, frac] = interp_cube_trilin (x, y, z, val, v);
    otherwise
-     error ("__interp_cube__: Invalid request type '%s', use 'values', 'normals' or 'normals8'", req);
+     error ('__interp_cube__: Invalid request type "%s", use "values", "normals" or "normals8"', req);
   endswitch
 endfunction
 

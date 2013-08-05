@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __errcomm__ (@var{caller}, @var{p}, @dots{})
+## @deftypefn {Function File} {} __errcomm__ (@var{caller}, @var{hax}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -25,10 +25,10 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function retval = __errcomm__ (caller, p, varargin)
+function retval = __errcomm__ (caller, hax, varargin)
 
   if (nargin < 4)
-    print_usage ();
+    print_usage (caller);
   endif
 
   nargs = length (varargin);
@@ -50,27 +50,27 @@ function retval = __errcomm__ (caller, p, varargin)
     while (k <= nargs)
       a = varargin{k++};
       if (ischar (a) || iscellstr (a))
-        retval = [retval; __errplot__(a, p, data{1:ndata})];
+        retval = [retval; __errplot__(a, hax, data{1:ndata})];
         break;
       elseif (isvector (a))
         a = a(:);
       elseif (ismatrix (a))
         ;
       else
-        error ("wrong argument types");
+        error ("%s: wrong argument types", caller);
       endif
       if (size (a) != sz)
-        error ("argument sizes do not match");
+        error ("%s: argument sizes do not match", caller);
       endif
       data{++ndata} = a;
       if (ndata > 6)
-        error ("too many arguments to a plot");
+        error ("%s: too many arguments to plot", caller);
       endif
     endwhile
   endwhile
 
   if (! (ischar (a) || iscellstr (a)))
-    retval = [retval; __errplot__("~", p, data{1:ndata})];
+    retval = [retval; __errplot__("~", hax, data{1:ndata})];
   endif
 
   drawnow ();

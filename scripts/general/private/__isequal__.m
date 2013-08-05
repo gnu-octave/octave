@@ -48,10 +48,6 @@
 
 function t = __isequal__ (nans_compare_equal, x, varargin)
 
-  if (nargin < 3)
-    print_usage ();
-  endif
-
   l_v = nargin - 2;
 
   ## Generic tests.

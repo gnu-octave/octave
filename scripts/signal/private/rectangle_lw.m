@@ -27,10 +27,6 @@
 
 function retval = rectangle_lw (n, b)
 
-  if (nargin != 2)
-    print_usage ();
-  endif
-
   retval = zeros (n, 1);
   t = floor (1 / b);
 

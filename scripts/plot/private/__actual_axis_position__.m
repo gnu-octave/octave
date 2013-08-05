@@ -60,8 +60,8 @@ function pos = __actual_axis_position__ (h)
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       aspect_ratio_2d = axis_obj.plotboxaspectratio(1:2);
     else
-      ## FIXME -- this works for "axis square", but has not been
-      ##          thoroughly tested for other aspect ratios.
+      ## FIXME: This works for "axis square", but has not been
+      ##        thoroughly tested for other aspect ratios.
       aspect_ratio_2d = [max(axis_obj.plotboxaspectratio(1:2)), ...
                              axis_obj.plotboxaspectratio(3)/sqrt(2)];
     endif

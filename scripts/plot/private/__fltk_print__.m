@@ -42,7 +42,7 @@ function opts = __fltk_print__ (opts)
     case {"eps", "eps2", "epsc", "epsc2"}
       ## format GL2PS_EPS
       gl2ps_device = {"eps"};
-      ## FIXME - use epstool to tighten bbox and provide preview.
+      ## FIXME: use epstool to tighten bbox and provide preview.
       pipeline = {opts.epstool_cmd(opts, "-", opts.name)};
     case {"epslatex", "pslatex", "pdflatex", "epslatexstandalone", ...
           "pslatexstandalone", "pdflatexstandalone"}
@@ -67,7 +67,7 @@ function opts = __fltk_print__ (opts)
       gl2ps_device = {sprintf("%snotxt", lower (suffix))};
       gl2ps_device{2} = "tex";
       if (dos_shell)
-        ## FIXME - this will only work on MinGW with the MSYS shell
+        ## FIXME: this will only work on MinGW with the MSYS shell
         pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
         pipeline{2} = sprintf ("cat > %s.tex", name);
       else

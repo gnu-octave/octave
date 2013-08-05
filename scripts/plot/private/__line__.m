@@ -29,10 +29,6 @@
 
 function h = __line__ (p, varargin)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   nvargs = numel (varargin);
 
   if (nvargs > 1 && ! ischar (varargin{1}) && ! ischar (varargin{2}))

@@ -33,14 +33,6 @@
 function entries = __xzip__ (commandname, extension,
                              commandtemplate, files, outdir)
 
-  if (nargin != 4 && nargin != 5)
-    print_usage ();
-  endif
-
-  if (! ischar (extension) || length (extension) == 0)
-    error ("__xzip__: EXTENSION must be a string with finite length");
-  endif
-
   if (nargin == 5 && ! exist (outdir, "dir"))
     error ("__xzip__: OUTDIR output directory does not exist");
   endif

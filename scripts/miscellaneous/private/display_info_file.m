@@ -21,10 +21,6 @@
 
 function display_info_file (func, package, file)
 
-  if (nargin != 3)
-    print_usage ();
-  endif
-
   if (! ischar (package))
     error ("%s: PACKAGE must be a string", func);
   endif

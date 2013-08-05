@@ -31,10 +31,6 @@ function rgb = __next_line_color__ (reset)
 
   persistent reset_colors = true;
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 1)
     ## Indicates whether the next call will increment or not
     reset_colors = reset;

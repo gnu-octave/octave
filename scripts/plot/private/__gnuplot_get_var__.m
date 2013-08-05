@@ -26,10 +26,6 @@
 
 function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
 
-  if (nargin < 2)
-    print_usage ();
-  endif
-
   if (numel (h) == 1 && isfigure (h))
     if (isempty (get (gcf, "__plot_stream__")))
       ostream = __gnuplot_open_stream__ (2, h);
@@ -56,7 +52,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
   if (use_mkfifo)
     gpin_name = tmpnam ();
 
-    ## Mode: 6*8*8 ==  0600
+    ## Mode: 0600 == 6*8*8
     [err, msg] = mkfifo (gpin_name, 6*8*8);
 
     if (err)

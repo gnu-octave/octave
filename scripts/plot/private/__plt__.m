@@ -158,10 +158,6 @@ endfunction
 
 function retval = __plt1__ (h, x1, options, properties = {})
 
-  if (nargin < 2 || nargin > 4)
-    print_usage ();
-  endif
-
   if (nargin < 3 || isempty (options))
     options = __default_plot_options__ ();
   endif
@@ -194,10 +190,6 @@ function retval = __plt1__ (h, x1, options, properties = {})
 endfunction
 
 function retval = __plt2__ (h, x1, x2, options, properties = {})
-
-  if (nargin < 3 || nargin > 5)
-    print_usage ();
-  endif
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();

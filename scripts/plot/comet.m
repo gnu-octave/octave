@@ -75,7 +75,7 @@ function comet (varargin)
       k = min ([n, num]);
       set (hl(1), "xdata", x(1:m), "ydata", y(1:m));
       set (hl(2), "xdata", x(m:k), "ydata", y(m:k));
-      set (hl(3), "xdata", x(k), "ydata", y(k));
+      set (hl(3), "xdata", x(k),   "ydata", y(k));
       drawnow ();
       pause (p);
     endfor

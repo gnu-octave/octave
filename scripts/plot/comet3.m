@@ -65,14 +65,19 @@ function comet3 (varargin)
     limits = [min(x), max(x), min(y), max(y), min(z), max(z)];
     num = numel (y);
     dn = round (num/10);
-    for n = 1:(num+dn);
+
+    hl = plot3 (x(1), y(1), z(1), "color", "r", "marker", "none",
+                x(1), y(1), z(1), "color", "g", "marker", "none",
+                x(1), y(1), z(1), "color", "b", "marker", "o");
+    axis (limits);  # set manual limits to speed up plotting
+
+    for n = 2:(num+dn);
       m = n - dn;
       m = max ([m, 1]);
       k = min ([n, num]);
-      htmp = plot3 (x(1:m), y(1:m), z(1:m), "r",
-                    x(m:k), y(m:k), z(m:k), "g",
-                    x(k), y(k), z(k), "ob");
-      axis (limits);
+      set (hl(1), "xdata", x(1:m), "ydata", y(1:m), "zdata", z(1:m));
+      set (hl(2), "xdata", x(m:k), "ydata", y(m:k), "zdata", z(m:k));
+      set (hl(3), "xdata", x(k)  , "ydata", y(k)  , "zdata", z(k));
       drawnow ();
       pause (p);
     endfor
@@ -88,5 +93,5 @@ endfunction
 %!demo
 %! clf;
 %! t = 0:pi/20:5*pi;
-%! comet3 (cos (t), sin (t), t, 0.01);
+%! comet3 (cos (t), sin (t), t, 0.05);
 

@@ -49,7 +49,7 @@ extern "C"
 #endif
 }
 
-typedef struct
+struct control_params
 {
   int msglev;
   int dual;
@@ -69,7 +69,7 @@ typedef struct
   double objul;
   double tolint;
   double tolobj;
-} control_params;
+};
 
 static jmp_buf mark;  //-- Address for long jump to jump to
 

@@ -52,7 +52,7 @@ endfunction
 %!   t = text;
 %!   assert (ishghandle (t));
 %!   assert (! ishghandle (-t));
-%!   i = image;
+%!   i = image ([1]);
 %!   assert (ishghandle (i));
 %!   assert (! ishghandle (-i));
 %!   hg = hggroup;

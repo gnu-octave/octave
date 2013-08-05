@@ -63,15 +63,23 @@ function comet (varargin)
     limits = [min(x), max(x), min(y), max(y)];
     num = numel (y);
     dn = round (num/10);
-    for n = 1:(num+dn);
+
+    hl = plot (x(1), y(1), "color", "r", "marker", "none",
+               x(1), y(1), "color", "g", "marker", "none",
+               x(1), y(1), "color", "b", "marker", "o");
+    axis (limits);  # set manual limits to speed up plotting
+
+    for n = 2:(num+dn);
       m = n - dn;
       m = max ([m, 1]);
       k = min ([n, num]);
-      plot (x(1:m), y(1:m), "r", x(m:k), y(m:k), "g", x(k), y(k), "ob");
-      axis (limits);
+      set (hl(1), "xdata", x(1:m), "ydata", y(1:m));
+      set (hl(2), "xdata", x(m:k), "ydata", y(m:k));
+      set (hl(3), "xdata", x(k), "ydata", y(k));
       drawnow ();
       pause (p);
     endfor
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -86,5 +94,5 @@ endfunction
 %! t = 0:.1:2*pi;
 %! x = cos (2*t) .* (cos (t).^2);
 %! y = sin (2*t) .* (sin (t).^2);
-%! comet (x, y);
+%! comet (x, y, 0.05);
 

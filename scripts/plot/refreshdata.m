@@ -62,19 +62,19 @@ function refreshdata (h, workspace)
     if (iscell (h))
       h = [h{:}];
     endif
-    if (!all (ishandle (h)) || !all (strcmp (get (h, "type"), "figure")))
-      error ("refreshdata: expecting a list of figure handles");
+    if (! all (isfigure (h)))
+      error ("refreshdata: H must be a list of figure handles");
     endif
-    if (nargin < 2)
+    if (nargin == 1)
       workspace = "base";
-    else
-      if (   !ischar (workspace)
-          || !(strcmpi (workspace, "base")
-          || strcmpi (workspace, "caller")))
-        error ("refreshdata: expecting WORKSPACE to be \"base\" or ""caller\"");
-      else
-        workspace = tolower (workspace);
+    elseif (nargin == 2)
+      if (! ischar (workspace)
+          || ! any (strcmpi (workspace, {"base", "caller"})))
+        error ('refreshdata: WORKSPACE must be "base" or "caller"');
       endif
+      workspace = tolower (workspace);
+    else
+      print_usage ();
     endif
   endif
 
@@ -83,30 +83,24 @@ function refreshdata (h, workspace)
   props = {};
 
   for i = 1 : numel (h)
-    obj = get (h (i));
-    fldnames = fieldnames (obj);
-    m = regexpi (fieldnames (obj), '^.+datasource$', "match");
-    idx = ! cellfun ("isempty", m);
-    if (any (idx))
-      tmp = m(idx);
-      props = [props; {vertcat(tmp{:})}];
-      objs  = [objs ; h(i)];
-    endif
-  endfor
-
-  for i = 1 : length (objs)
-    for j = 1 : length (props {i})
-      expr = get (objs(i), props{i}{j});
-      if (!isempty (expr))
-        val = evalin (workspace, expr);
-        prop =  props{i}{j}(1:end-6);
-        if (! isequal (get (objs(i), prop), val))
-          set (objs(i), props{i}{j}(1:end-6), val);
-        endif
+    obj = get (h(i));
+    flds = fieldnames (obj);
+    ## regexp() is proper way to do searching, but is 3X slower.
+    ## Pretty unlikely that people are going to be adding datasource
+    ## properties that are not, in fact, datasources.
+    ## m = regexp (flds, '^.+datasource$');
+    m = strfind (flds, "datasource");
+    m = flds(!cellfun (@isempty, m));
+    for j = 1 : numel (m)
+      if (isempty (obj.(m{j})))
+        continue;  # datasource field doesn't point to anything
       endif
+      expr = obj.(m{j});       # datasource field
+      val = evalin (workspace, expr);
+      pdname = m{j}(1:end-6);  # property data name without "source"
+      set (h(i), pdname, val); 
     endfor
   endfor
-
 endfunction
 
 
@@ -115,8 +109,10 @@ endfunction
 %! x = 0:0.1:10;
 %! y = sin (x);
 %! plot (x, y, 'ydatasource', 'y');
+%! title ('refreshdata() showing moving sine curve');
+%! axis manual;
 %! for i = 1 : 100
-%!   pause (0.1);
+%!   pause (0);
 %!   y = sin (x + 0.1 * i);
 %!   refreshdata (gcf, 'caller');
 %! end

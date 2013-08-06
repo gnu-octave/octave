@@ -305,7 +305,7 @@ function h = createtext (s, par)
 endfunction
 
 function h = createimage (s, par)
-  h = image ("parent", par);
+  h = image (1, "parent", par);
   addmissingprops (h, s.properties);
 endfunction
 

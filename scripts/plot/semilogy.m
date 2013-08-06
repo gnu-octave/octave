@@ -74,6 +74,7 @@ endfunction
 %! x = 1:0.01:10;
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogy (x, y);
+%! title ({'semilogx() plot', 'Y-axis is logarithmic'});
 
 %!demo
 %! clf;

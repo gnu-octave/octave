@@ -80,6 +80,7 @@ endfunction
 %! clf;
 %! colormap ('default');
 %! sombrero ();
+%! title ('sombrero() function');
 
 ## Test input validation
 %!error sombrero (1,2,3)

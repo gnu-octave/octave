@@ -99,7 +99,7 @@ endfunction
 %! x = randn (100, 1);
 %! y = randn (100, 1);
 %! scatter (x, y, 'r');
-%! title ('Scatter plot with red bubbles');
+%! title ('scatter() plot with red bubbles');
 
 %!demo
 %! clf;
@@ -107,34 +107,15 @@ endfunction
 %! y = randn (100, 1);
 %! c = x .* y;
 %! scatter (x, y, 20, c, 'filled');
-%! title ('Scatter with colors');
+%! title ('scatter() with colored filled bubbles');
 
 %!demo
 %! clf;
 %! x = randn (100, 1);
 %! y = randn (100, 1);
 %! scatter (x, y, [], sqrt (x.^2 + y.^2));
-%! title ('Scatter plot with bubble color determined by distance from origin');
-
-%!demo
-%! clf;
-%! rand_10x1_data1 = [0.171577, 0.404796, 0.025469, 0.335309, 0.047814, 0.898480, 0.639599, 0.700247, 0.497798, 0.737940];
-%! rand_10x1_data2 = [0.75495, 0.83991, 0.80850, 0.73603, 0.19360, 0.72573, 0.69371, 0.74388, 0.13837, 0.54143];
-%! x = rand_10x1_data1;
-%! y = rand_10x1_data2;
-%! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, s, s, 's', 'filled');
-%! title ({'Scatter plot with filled square markers', ...
-%!         'size and color of markers determined by algorithm'});
-
-%!demo
-%! clf;
-%! rand_10x1_data3 = [0.42262, 0.51623, 0.65992, 0.14999, 0.68385, 0.55929, 0.52251, 0.92204, 0.19762, 0.93726];
-%! rand_10x1_data4 = [0.020207, 0.527193, 0.443472, 0.061683, 0.370277, 0.947349, 0.249591, 0.666304, 0.134247, 0.920356];
-%! x = rand_10x1_data3;
-%! y = rand_10x1_data4;
-%! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, [], 'r', 's', 'filled');
+%! title ({'scatter() plot'; ...
+%!         'bubble color determined by distance from origin'});
 
 %!demo
 %! clf;
@@ -144,6 +125,30 @@ endfunction
 %! y = rand_10x1_data6;
 %! s = 10 - 10*log (x.^2 + y.^2);
 %! h = scatter (x, y, [], 'r', 's');
+%! title ({'scatter() plot'; ...
+%!         'marker is square, color is red'});
+
+%!demo
+%! clf;
+%! rand_10x1_data3 = [0.42262, 0.51623, 0.65992, 0.14999, 0.68385, 0.55929, 0.52251, 0.92204, 0.19762, 0.93726];
+%! rand_10x1_data4 = [0.020207, 0.527193, 0.443472, 0.061683, 0.370277, 0.947349, 0.249591, 0.666304, 0.134247, 0.920356];
+%! x = rand_10x1_data3;
+%! y = rand_10x1_data4;
+%! s = 10 - 10*log (x.^2 + y.^2);
+%! h = scatter (x, y, [], 'r', 's', 'filled');
+%! title ({'scatter() plot'; ...
+%!         'marker is square, marker is filled, color is red'});
+
+%!demo
+%! clf;
+%! rand_10x1_data1 = [0.171577, 0.404796, 0.025469, 0.335309, 0.047814, 0.898480, 0.639599, 0.700247, 0.497798, 0.737940];
+%! rand_10x1_data2 = [0.75495, 0.83991, 0.80850, 0.73603, 0.19360, 0.72573, 0.69371, 0.74388, 0.13837, 0.54143];
+%! x = rand_10x1_data1;
+%! y = rand_10x1_data2;
+%! s = 10 - 10*log (x.^2 + y.^2);
+%! h = scatter (x, y, s, s, 's', 'filled');
+%! title ({'scatter() plot with filled square markers', ...
+%!         'size and color of markers determined by algorithm'});
 
 %!demo
 %! clf;

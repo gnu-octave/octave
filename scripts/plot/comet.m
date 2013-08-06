@@ -91,8 +91,11 @@ endfunction
 
 %!demo
 %! clf;
+%! title ('comet() animation');
+%! hold on;
 %! t = 0:.1:2*pi;
 %! x = cos (2*t) .* (cos (t).^2);
 %! y = sin (2*t) .* (sin (t).^2);
 %! comet (x, y, 0.05);
+%! hold off;
 

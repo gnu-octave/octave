@@ -101,7 +101,7 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! [x, y, z] = cylinder (10:-1:0,50);
+%! [x, y, z] = cylinder (10:-1:0, 50);
 %! surf (x, y, z);
-%! title ('a cone');
+%! title ('cylinder() with linearly shrinking radius produces a cone');
 

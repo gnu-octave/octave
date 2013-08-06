@@ -63,6 +63,7 @@ endfunction
 %! clf;
 %! x = rand (10, 1);
 %! barh (x);
+%! title ('barh() graph')
 
 %!demo
 %! clf;
@@ -70,4 +71,5 @@ endfunction
 %! set (h(1), 'facecolor', 'r')
 %! set (h(2), 'facecolor', 'g')
 %! set (h(3), 'facecolor', 'b')
+%! title ('barh() graph w/multiple bars')
 

@@ -82,4 +82,6 @@ endfunction
 %! eyl = 1.0 - 1./(1+eyu);
 %! semilogyerr (x, y, eyl.*y, eyu.*y, '~-d');
 %! xlim ([0 10]);
+%! title ({'semilogyerr(): semilogy() plot with errorbars', ...
+%!         'Y-axis is logarithmic'});
 

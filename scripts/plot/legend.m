@@ -1337,7 +1337,7 @@ endfunction
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
 %! ylim ([0 1.0]);
-%! title ('legend() works for bar graphs (hgobjects)');
+%! title ('legend() works for bar graphs (hggroups)');
 %! legend ({'1st Bar', '2nd Bar', '3rd Bar'});
 
 %!demo
@@ -1345,7 +1345,7 @@ endfunction
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
-%! title ('legend() works for bar graphs (hgobjects)');
+%! title ('legend() works for bar graphs (hggroups)');
 %! legend ('1st Bar', '2nd Bar', '3rd Bar');
 %! legend right;
 
@@ -1554,6 +1554,7 @@ endfunction
 %!  legend (option);
 
 %!demo % bug 39697
+%! clf;
 %! plot (1:10);
 %! legend ("Legend Text");
 %! title ({"Multi-line", "titles", "are a", "problem"});

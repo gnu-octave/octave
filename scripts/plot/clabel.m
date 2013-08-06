@@ -142,10 +142,12 @@ endfunction
 %! colormap ('default');
 %! [c, h] = contour (peaks (), -4:6);
 %! clabel (c, h, -4:2:6, 'fontsize', 12);
+%! title ('clabel() labeling every other contour');
 
 %!demo
 %! clf;
 %! colormap ('default');
 %! [c, h] = contourf (peaks (), -7:6);
 %! clabel (c, h, -6:2:6, 'fontsize', 12);
+%! title ('clabel() labeling every other contour');
 

@@ -233,6 +233,7 @@ endfunction
 %! area (t, y);
 %! axis tight
 %! legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');  
+%! title ('area() plot');
 
 %!demo
 %! # Show effects of setting BaseValue
@@ -248,7 +249,9 @@ endfunction
 %! title ({'Parabola y = x^2 -1';'BaseValue = -1'});
 
 %!demo
+%! clf;
 %! x = 0:10;
 %! y = rand (size (x));
 %! h = area (x, y);
 %! set (h, 'ydata', sort (get (h, 'ydata')))
+%! title ('area() plot of sorted data');

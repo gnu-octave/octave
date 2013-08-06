@@ -107,6 +107,7 @@ endfunction
 %! y = rand (11, 1);
 %! h = bar (y);
 %! set (h, 'ydata', sort (rand (11, 1)));
+%! title ('bar() graph')
 
 %!demo
 %! clf;
@@ -114,4 +115,5 @@ endfunction
 %! set (h(1), 'facecolor', 'r')
 %! set (h(2), 'facecolor', 'g')
 %! set (h(3), 'facecolor', 'b')
+%! title ('bar() graph w/multiple bars')
 

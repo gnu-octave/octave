@@ -81,4 +81,6 @@ endfunction
 %! ey = 0.5*rand (size (y)) .* y;
 %! semilogxerr (x, y, ey, '#~x-');
 %! xlim (x([1, end]));
+%! title ({'semilogxerr(): semilogx() plot with errorbars', ...
+%!         'X-axis is logarithmic'});
 

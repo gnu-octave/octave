@@ -538,20 +538,20 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ('no plot box');
 %! set (gca, 'xaxislocation', 'zero');
 %! set (gca, 'yaxislocation', 'zero');
 %! box off;
+%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = zero'});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ('no plot box');
 %! set (gca, 'xaxislocation', 'zero');
 %! set (gca, 'yaxislocation', 'left');
 %! box off;
+%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = left'});
 
 %!demo
 %! clf;
@@ -562,26 +562,27 @@ endfunction
 %! set (gca, 'xaxislocation', 'zero');
 %! set (gca, 'yaxislocation', 'right');
 %! box off;
+%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = right'});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ('no plot box');
 %! set (gca, 'xaxislocation', 'bottom');
 %! set (gca, 'yaxislocation', 'zero');
 %! box off;
+%! title ({'no plot box', 'xaxislocation = bottom, yaxislocation = zero'});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ('no plot box');
 %! set (gca, 'xaxislocation', 'top');
 %! set (gca, 'yaxislocation', 'zero');
 %! box off;
+%! title ({'no plot box', 'xaxislocation = top, yaxislocation = zero'});
 
 %!test
 %! hf = figure ("visible", "off");

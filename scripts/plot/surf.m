@@ -91,6 +91,7 @@ endfunction
 %! colormap ('default');
 %! Z = peaks ();
 %! surf (Z);
+%! title ({'surf() plot of peaks() function'; 'color determined by height Z'});
 
 %!demo
 %! clf;
@@ -99,6 +100,8 @@ endfunction
 %! [Fx,Fy] = gradient (Z);
 %! surf (Z, Fx+Fy);
 %! shading interp;
+%! title ({'surf() plot of peaks() function'; ...
+%!         'facecolor is interpolated, color determined by gradient of Z'});
 
 %!demo
 %! clf;
@@ -107,4 +110,6 @@ endfunction
 %! [~,Fy] = gradient (Z);
 %! surf (X, Y, Z, Fy);
 %! shading interp;
+%! title ({'surf() plot of peaks() function'; ...
+%!         'facecolor is interpolated, color determined by Y-gradient of Z'});
 

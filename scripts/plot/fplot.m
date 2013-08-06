@@ -184,16 +184,19 @@ endfunction
 %!demo
 %! clf;
 %! fplot (@cos, [0, 2*pi]);
+%! title ('fplot() single function');
 
 %!demo
 %! clf;
 %! fplot ('[cos(x), sin(x)]', [0, 2*pi]);
+%! title ('fplot() multiple functions');
 
 %!demo
 %! clf;
-%! ## sinc function
+%! %% sinc function
 %! fh = @(x) sin (pi*x) ./ (pi*x);
 %! fplot (fh, [-5, 5]);
+%! title ('fplot() sinc function');
 
 %!test
 %! [x, y] = fplot ("[cos(x), sin(x)]", [0, 2*pi]);

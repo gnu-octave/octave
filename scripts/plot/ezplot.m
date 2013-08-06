@@ -87,22 +87,22 @@ endfunction
 
 
 %!demo
-%! ## sinc function using function handle
+%! %% sinc function using function handle
 %! f = @(x) sin (pi*x) ./ (pi*x);
 %! ezplot (f);
 
 %!demo
-%! ## example of a function string and explicit limits
+%! %% example of a function string and explicit limits
 %! clf;
 %! ezplot ('1/x', [-2 2]);
 
 %!demo
-%! ## parameterized function example over -2*pi <= t <= +2*pi
+%! %% parameterized function example over -2*pi <= t <= +2*pi
 %! clf;
 %! ezplot (@cos, @sin);
 
 %!demo
-%! ## implicit function of 2 variables
+%! %% implicit function of 2 variables
 %! clf;
 %! ezplot (inline ('x^2 - y^2 - 1'));
 

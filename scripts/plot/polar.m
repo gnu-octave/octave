@@ -196,16 +196,19 @@ endfunction
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (7*theta);
 %! polar (theta, rho);
+%! title ('polar() plot');
 
 %!demo
 %! clf;
 %! theta = linspace (0,2*pi,1000);
 %! cplx = theta + i*sin (7*theta);
 %! polar (cplx, 'g');
+%! title ('polar() plot of complex data');
 
 %!demo
 %! clf;
-%! theta = linspace (0,10*pi,1000);
+%! theta = linspace (0,8*pi,1000);
 %! rho = sin (5/4*theta);
 %! polar (theta, rho);
+%! title ('polar() plot');
 

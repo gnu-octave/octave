@@ -92,10 +92,21 @@ endfunction
 %! clf;
 %! x = logspace (0,1,11);
 %! z = x'*x;
+%! mesh (x, x, z);
+%! xlabel 'X-axis';
+%! ylabel 'Y-axis';
+%! zlabel 'Z-axis';
+%! title ('mesh() with color proportional to height');
+
+%!demo
+%! clf;
+%! x = logspace (0,1,11);
+%! z = x'*x;
 %! mesh (x, x, z, z.^2);
 %! xlabel 'X-axis';
 %! ylabel 'Y-axis';
 %! zlabel 'linear scale';
+%! title ('mesh() with color proportional to Z^2');
 
 %!demo
 %! clf;
@@ -106,6 +117,7 @@ endfunction
 %! xlabel 'X-axis';
 %! ylabel 'Y-axis';
 %! zlabel 'log scale';
+%! title ({'mesh() with color proportional to Z^2', 'Z-axis is log scale'});
 %! if (strcmp (get (gcf, '__graphics_toolkit__'), 'gnuplot'))
 %!   title ({'Gnuplot: mesh color is wrong', 'This is a Gnuplot bug'});
 %! endif

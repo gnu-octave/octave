@@ -61,24 +61,38 @@ endfunction
 %! clf;
 %! ax = axes ();
 %! h = get (ax, 'title');
-%! title ('Testing title');
-%! assert (get (h, 'string'), 'Testing title');
+%! title ('Test Title Text');
+
+%!demo
+%! clf;
+%! ax = axes ();
+%! h = get (ax, 'title');
+%! title ({'Multi-line'; 'Title'; 'Text'});
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! h = get (gca, 'title');
-%! title ('Testing title', 'fontsize', 16);
-%! assert (get (h, 'string'), 'Testing title');
-%! assert (get (h, 'fontsize'), 16);
+%! title ('Test FontSize Property', 'fontsize', 16);
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ax = axes ();
 %!   h = get (ax, "title");
-%!   title ("Testing title");
-%!   assert (get (h, "string"), "Testing title");
+%!   title ("Test Title Text");
+%!   assert (get (h, "string"), "Test Title Text");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ax = axes ();
+%!   h = get (ax, "title");
+%!   title ({'Multi-line'; 'Title'; 'Text'});
+%!   assert (get (h, "string"), {'Multi-line'; 'Title'; 'Text'});
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -88,8 +102,10 @@ endfunction
 %! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
 %!   h = get (gca, "title");
-%!   title ("Testing title");
-%!   assert (get (h, "string"), "Testing title");
+%!   title ("Test FontSize Property", "fontsize", 16);
+%!   assert (get (h, "string"), "Test FontSize Property");
+%!   assert (get (h, "fontsize"), 16);
+
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

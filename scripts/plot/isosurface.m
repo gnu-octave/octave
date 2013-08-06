@@ -195,6 +195,7 @@ endfunction
 %! [x,y,z] = meshgrid (-2:0.5:2, -2:0.5:2, -2:0.5:2);
 %! v = x.^2 + y.^2 + z.^2;
 %! isosurface (x, y, z, v, 1);
+%! title ('isosurface of a sphere');
 
 %!shared x, y, z, val
 %! [x, y, z]  = meshgrid (0:1, 0:1, 0:1); # Points for single

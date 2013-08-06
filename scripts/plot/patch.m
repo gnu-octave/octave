@@ -222,7 +222,6 @@ endfunction
 %! x = [ 0 0; 1 1; 1 0 ];
 %! y = [ 0 0; 0 1; 1 1 ];
 %! p = patch (x, y, 'facecolor', 'b');
-%! title ('Two blue triangles');
 %! set (p, 'cdatamapping', 'direct', 'facecolor', 'flat', 'cdata', [1 32]);
 %! title ('Direct mapping of colors: Light-Green UL and Blue LR triangles');
 

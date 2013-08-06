@@ -103,6 +103,7 @@ endfunction
 %! colormap ('default');
 %! Z = peaks ();
 %! pcolor (Z);
+%! title ('pcolor() of peaks with facet shading');
 
 %!demo
 %! clf;
@@ -112,4 +113,5 @@ endfunction
 %! pcolor (X,Y,Fx+Fy);
 %! shading interp;
 %! axis tight;
+%! title ('pcolor() of peaks with interp shading');
 

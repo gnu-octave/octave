@@ -97,3 +97,12 @@ function h = meshc (varargin)
 
 endfunction
 
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! [X, Y] = meshgrid (linspace (-3, 3, 40));
+%! Z = sqrt (abs (X .* Y)) ./ (1 + X.^2 + Y.^2);
+%! meshc (X, Y, Z);
+%! title ('meshc() combines mesh/contour plots');
+

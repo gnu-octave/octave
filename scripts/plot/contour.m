@@ -87,6 +87,8 @@ endfunction
 %! colormap ('default');
 %! [x, y, z] = peaks ();
 %! contour (x, y, z);
+%! title ('contour() plot of peaks() function');
+%! title ({'contour() plot (isolines of constant Z)'; 'Z = peaks()');
 
 %!demo
 %! clf;
@@ -95,15 +97,7 @@ endfunction
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
 %! contour (X, Y, abs (Z), 10);
-
-%!demo
-%! clf;
-%! colormap ('default');
-%! x = linspace (-2, 2);
-%! [x, y] = meshgrid (x);
-%! z = sqrt (x.^2 + y.^2) ./ (x.^2 + y.^2 + 1);
-%! contourf (x, y, z, [0.4, 0.4]);
-%! title ('The hole should be filled with the background color');
+%! title ({'contour() plot'; 'polar fcn Z = sin (2*theta) * (1-r)'});
 
 %!test
 %! hf = figure ("visible", "off");

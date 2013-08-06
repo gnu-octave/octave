@@ -195,7 +195,7 @@ endfunction
 %! colormap (copper (64));
 %! surfl (X,Y,Z);
 %! shading interp;
-%! title ('surfl with defaults');
+%! title ('surfl() with defaults');
 
 %!demo
 %! clf;
@@ -204,5 +204,5 @@ endfunction
 %! [az, el] = view ();
 %! surfl (X,Y,Z, [az+225,el], [0.2 0.6 0.4 25]);
 %! shading interp;
-%! title ('surfl with lighting vector and material properties');
+%! title ('surfl() with lighting vector and material properties');
 

@@ -93,10 +93,12 @@ endfunction
 %! clf;
 %! contour3 (peaks (19));
 %! hold on;
-%! surface (peaks (19), 'facecolor', 'none', 'edgecolor', 'black');
+%! surf (peaks (19), 'facecolor', 'none', 'edgecolor', [0.8 0.8 0.8]);
 %! colormap (hot (64));
 %! axis tight;
 %! zlim auto;
 %! box off;
+%! view (315, 17);
+%! title ('contour3 of peaks() function');
 %! hold off;
 

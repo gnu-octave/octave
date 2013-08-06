@@ -79,4 +79,6 @@ endfunction
 %! eyl = 0.5*rand (size (y)) .* y;
 %! loglogerr (x, y, eyl, eyu, '#~x-');
 %! xlim (x([1, end]));
+%! title ({'loglogerr(): loglog() plot with errorbars', ...
+%!         'Both axes are logarithmic'});
 

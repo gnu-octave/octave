@@ -45,7 +45,7 @@
 ## Example:
 ##
 ## @example
-## ezpolar (@@(t) 1 + sin (t));
+## ezpolar (@@(t) sin (5/4 * t), [0, 8*pi]);
 ## @end example
 ##
 ## @seealso{polar, ezplot}
@@ -68,5 +68,4 @@ endfunction
 
 %!demo
 %! clf;
-%! ezpolar (@(t) 1 + sin (t));
-
+%! ezpolar (@(t) sin (5/4 * t), [0, 8*pi]);

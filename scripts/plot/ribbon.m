@@ -116,6 +116,7 @@ endfunction
 %! [x, y, z] = sombrero ();
 %! [~, y] = meshgrid (x, y);
 %! ribbon (y, z);
+%! title ('ribbon() plot of sombrero()');
 
 %!FIXME: Could have some input validation tests here
 

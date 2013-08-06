@@ -119,11 +119,12 @@ endfunction
 %!demo
 %! clf;
 %! A = rand (100);
-%! [X, Y] = find (A > 0.9);
+%! [X, Y] = find (A > 0.95);
 %! imshow (A);
 %! hold on;
 %! plot (X, Y, 'o');
 %! hold off;
+%! title ('hold with image and plot');
 
 %!demo
 %! clf;

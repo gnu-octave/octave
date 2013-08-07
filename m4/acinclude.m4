@@ -1453,43 +1453,6 @@ AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
   if test $octave_cv_callinst_addattribute_arg_is_attributes = yes; then
     AC_DEFINE(CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1,
       [Define to 1 if llvm::CallInst:addAttribute arg type is llvm::Attributes.])
-  else
-    AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attribute],
-      [octave_cv_callinst_addattribute_arg_is_attribute],
-      [AC_LANG_PUSH(C++)
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-#ifdef HAVE_LLVM_IR_FUNCTION_H
-            #include <llvm/IR/Instructions.h>
-            #include <llvm/IR/Attributes.h>
-#else
-            #include <llvm/Instructions.h>
-            #include <llvm/Attributes.h>
-#endif
-            ]], [[
-            llvm::CallInst *callinst;
-            callinst->addAttribute (1, llvm::Attribute::StructRet);
-          ]])],
-          octave_cv_callinst_addattribute_arg_is_attribute=yes,
-          octave_cv_callinst_addattribute_arg_is_attribute=no)
-      AC_LANG_POP(C++)
-    ])
-    if test $octave_cv_callinst_addattribute_arg_is_attribute = no; then
-      AC_MSG_ERROR([llvm::CallInst::addAttribute is required.])
-    fi
-  fi
-])
-dnl
-dnl Detect TargetData.h or DataLayout.h.
-dnl
-AC_DEFUN([OCTAVE_LLVM_DATALAYOUT_HEADER], [
-  OCTAVE_LLVM_DATALAYOUT_HEADER_FOUND=no
-  AC_CHECK_HEADERS([llvm/Target/TargetData.h llvm/IR/DataLayout.h llvm/DataLayout.h], [
-    OCTAVE_LLVM_DATALAYOUT_HEADER_FOUND=yes
-    break
-  ])
-  if test OCTAVE_LLVM_DATALAYOUT_HEADER_FOUND = no; then
-    AC_MSG_ERROR([DataLayout.h or TargetLayout.h is required.])
   fi
 ])
 dnl
@@ -1524,30 +1487,6 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API], [
   if test $octave_cv_function_addattribute_arg_is_attributes = yes; then
     AC_DEFINE(FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES, 1,
       [Define to 1 if llvm::Function:addAttribute arg type is llvm::Attributes.])
-  else
-    AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attribute],
-      [octave_cv_function_addattribute_arg_is_attribute],
-      [AC_LANG_PUSH(C++)
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-#ifdef HAVE_LLVM_IR_FUNCTION_H
-            #include <llvm/IR/Function.h>
-            #include <llvm/IR/Attributes.h>
-#else
-            #include <llvm/Function.h>
-            #include <llvm/Attributes.h>
-#endif
-            ]], [[
-            llvm::Function *llvm_function;
-            llvm_function->addAttribute (1, llvm::Attribute::StructRet);
-          ]])],
-          octave_cv_function_addattribute_arg_is_attribute=yes,
-          octave_cv_function_addattribute_arg_is_attribute=no)
-      AC_LANG_POP(C++)
-    ])
-    if test $octave_cv_function_addattribute_arg_is_attribute = no; then
-      AC_MSG_ERROR([llvm::Function::addAttribute is required.])
-    fi
   fi
 ])
 dnl
@@ -1577,55 +1516,6 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
   if test $octave_cv_function_addfnattr_arg_is_attributes = yes; then
     AC_DEFINE(FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES, 1,
       [Define to 1 if llvm::Function:addFnAttr arg type is llvm::Attributes.])
-  else
-    AC_CACHE_CHECK([check llvm::Function::addFnAttr arg type is llvm::Attribute],
-      [octave_cv_function_addfnattr_arg_is_attribute],
-      [AC_LANG_PUSH(C++)
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM([[
-#ifdef HAVE_LLVM_IR_FUNCTION_H
-            #include <llvm/IR/Function.h>
-            #include <llvm/IR/Attributes.h>
-#else
-            #include <llvm/Function.h>
-            #include <llvm/Attributes.h>
-#endif
-            ]], [[
-            llvm::Function *llvm_function;
-            llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
-          ]])],
-          octave_cv_function_addfnattr_arg_is_attribute=yes,
-          octave_cv_function_addfnattr_arg_is_attribute=no)
-      AC_LANG_POP(C++)
-    ])
-    if test $octave_cv_function_addfnattr_arg_is_attribute = no; then
-      AC_MSG_ERROR([llvm::Function::addFnAttr is required.])
-    fi
-  fi
-])
-dnl
-dnl Check whether IRBuilder.h is in llvm/Support, llvm/IR, or llvm directory.
-dnl
-AC_DEFUN([OCTAVE_LLVM_IRBUILDER_HEADER], [
-  OCTAVE_LLVM_IRBUILDER_HEADER_FOUND=no
-  AC_CHECK_HEADERS([llvm/Support/IRBuilder.h llvm/IR/IRBuilder.h llvm/IRBuilder.h], [
-    OCTAVE_LLVM_IRBUILDER_HEADER_FOUND=yes
-    break
-  ])
-
-  if test OCTAVE_LLVM_IRBUILDER_HEADER_FOUND = no; then
-    AC_MSG_ERROR([Could not find IRBuilder.h])
-  fi
-])
-AC_DEFUN([OCTAVE_LLVM_IR_DIR], [
-  OCTAVE_LLVM_FUNCTION_FOUNDR=no
-  AC_CHECK_HEADERS([llvm/IR/Function.h llvm/Function.h], [
-    OCTAVE_LLVM_FUNCTION_FOUNDR=yes
-    break
-  ])
-
-  if test OCTAVE_LLVM_FUNCTION_FOUNDR = no; then
-    AC_MSG_ERROR([Could not find Function.h])
   fi
 ])
 dnl

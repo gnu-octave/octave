@@ -766,9 +766,26 @@ if test $build_jit = yes; then
     AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
       warn_llvm=
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
-    OCTAVE_LLVM_IR_DIR
-    OCTAVE_LLVM_IRBUILDER_HEADER
-    OCTAVE_LLVM_DATALAYOUT_HEADER
+
+    have_function_h=no
+    AC_CHECK_HEADERS([llvm/IR/Function.h llvm/Function.h],
+                     [have_function_h=yes; break])
+    if test $have_function_h = no; then
+      warn_llvm="Missing LLVM file Function.h.  JIT compiler is disabled."
+    fi
+    have_irbuilder_h=no
+    AC_CHECK_HEADERS([llvm/Support/IRBuilder.h llvm/IR/IRBuilder.h \
+                      llvm/IRBuilder.h], [have_irbuilder_h=yes; break])
+    if test $have_irbuilder_h = no; then
+      warn_llvm="Missing LLVM file IRBuilder.h.  JIT compiler is disabled."
+    fi
+    have_llvm_data_h=no
+    AC_CHECK_HEADERS([llvm/Target/TargetData.h llvm/IR/DataLayout.h \
+                      llvm/DataLayout.h], [have_llvm_data_h=yes; break])
+    if test $have_llvm_data_h = no; then
+      warn_llvm="Missing LLVM file TargetData.h.  JIT compiler is disabled."
+    fi
+
     OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API
     OCTAVE_LLVM_FUNCTION_ADDFNATTR_API
     OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API
@@ -1934,7 +1951,7 @@ dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
 AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h fpu_control.h])
 AC_CHECK_HEADERS([grp.h ieeefp.h inttypes.h locale.h memory.h ncurses.h])
 AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
-AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h ])
+AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h])
 AC_CHECK_HEADERS([sys/select.h sys/utsname.h termcap.h])
 
 ## C++ headers

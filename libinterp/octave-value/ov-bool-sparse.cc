@@ -273,7 +273,7 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   if (tmp != -2) {
-    error ("load: only 2D sparse matrices are supported");
+    error ("load: only 2-D sparse matrices are supported");
     return false;
   }
 

@@ -2229,7 +2229,7 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
       bool sparse = a.is_sparse_type ();
       if (sparse && nargin > 3)
         {
-          error ("mat2cell: sparse arguments only support 2D indexing");
+          error ("mat2cell: sparse arguments only support 2-D indexing");
           return retval;
         }
 

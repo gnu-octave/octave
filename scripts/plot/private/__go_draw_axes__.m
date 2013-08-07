@@ -652,7 +652,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
              endif
              if (nd == 3)
                if (numel (xcol) > 3)
-                 error ("__go_draw_axes__: gnuplot (as of v4.2) only supports 3D filled triangular patches");
+                 error ("__go_draw_axes__: gnuplot (as of v4.2) only supports 3-D filled triangular patches");
                else
                  if (isnan (data_3d_idx))
                    data_idx++;

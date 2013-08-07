@@ -99,7 +99,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   endif
 
   if (ndims (A) > 2)
-    error ("svds: A must be a 2D matrix");
+    error ("svds: A must be a 2-D matrix");
   endif
 
   if (nargin < 4)

@@ -802,7 +802,7 @@ function C = compar (A, k = 0)
   if (nargin < 1 || nargin > 2)
     error ("gallery: 1 or 2 arguments are required for compar matrix.");
   elseif (! isnumeric (A) || ndims (A) != 2)
-    error ("gallery: A must be a 2D matrix for compar matrix.");
+    error ("gallery: A must be a 2-D matrix for compar matrix.");
   elseif (! isnumeric (k) || ! isscalar (k))
     error ("gallery: K must be a numeric scalar for compar matrix.");
   endif
@@ -1630,7 +1630,7 @@ function B = krylov (A, x, j)
   if (nargin < 1 || nargin > 3)
     error ("gallery: 1 to 3 arguments are required for krylov matrix.");
   elseif (! isnumeric (A) || ! issquare (A) || ndims (A) != 2)
-    error ("gallery: A must be a square 2D matrix for krylov matrix.");
+    error ("gallery: A must be a square 2-D matrix for krylov matrix.");
   endif
 
   n = length (A);

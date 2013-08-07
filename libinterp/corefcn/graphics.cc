@@ -7527,6 +7527,7 @@ uicontrol::properties::update_text_extent (void)
                           get_fontsize ());
 #endif
   box = text_renderer.get_extent (elt, 0);
+  delete elt;
 
   Matrix ext (1, 4, 0.0);
 

@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} plot (@var{y})
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y})
-## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {Function File} {} plot (@dots{}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {} plot (@var{x1}, @var{y1}, @dots{}, @var{xn}, @var{yn})
 ## @deftypefnx {Function File} {} plot (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} plot (@dots{})
 ## Produce 2-D plots.
@@ -34,11 +35,7 @@
 ##
 ## @noindent
 ## where the argument is taken as the set of @var{y} coordinates and the
-## @var{x} coordinates are taken to be the indices of the elements
-## starting with 1.
-##
-## To save a plot, in one of several image formats such as PostScript
-## or PNG, use the @code{print} command.
+## @var{x} coordinates are taken to be the range @code{1:numel (@var{y})}.
 ##
 ## If more than one argument is given, they are interpreted as
 ##
@@ -71,7 +68,14 @@
 ## the elements, starting with 1.
 ##
 ## @item
-## If the @var{x} is a vector and @var{y} is a matrix, then
+## If @var{x} and @var{y} are scalars, a single point is plotted.
+## 
+## @item
+## If both arguments are vectors, the elements of @var{y} are plotted versus
+## the elements of @var{x}.
+##
+## @item
+## If @var{x} is a vector and @var{y} is a matrix, then
 ## the columns (or rows) of @var{y} are plotted versus @var{x}.
 ## (using whichever combination matches, with columns tried first.)
 ##
@@ -81,89 +85,120 @@
 ## (using whichever combination matches, with columns tried first.)
 ##
 ## @item
-## If both arguments are vectors, the elements of @var{y} are plotted versus
-## the elements of @var{x}.
-##
-## @item
 ## If both arguments are matrices, the columns of @var{y} are plotted
 ## versus the columns of @var{x}.  In this case, both matrices must have
 ## the same number of rows and columns and no attempt is made to transpose
 ## the arguments to make the number of rows match.
-##
-## If both arguments are scalars, a single point is plotted.
 ## @end itemize
 ##
 ## Multiple property-value pairs may be specified, but they must appear
 ## in pairs.  These arguments are applied to the line objects drawn by
-## @code{plot}.
+## @code{plot}.  Useful properties to modify are "linestyle", "linewidth",
+## "color", "marker", "markersize", "markeredgecolor", "markerfacecolor".
 ##
-## If the @var{fmt} argument is supplied, it is interpreted as
-## follows.  If @var{fmt} is missing, the default gnuplot line style
-## is assumed.
+## The @var{fmt} format argument can also be used to control the plot style.
+## The format is composed of three parts: linestyle, markerstyle, color. 
+## When a markerstyle is specified, but no linestyle, only the markers are
+## plotted.  Similarly, if a linestyle is specified, but no markerstyle, then
+## only lines are drawn.  If both are specified then lines and markers will
+## be plotted.  If no @var{fmt} and no @var{property}/@var{value} pairs are
+## given, then the default plot style is solid lines with no markers and the
+## color determined by the "colororder" property of the current axes.
 ##
-## @table @samp
-## @item -
-## Set lines plot style (default).
+## Format arguments:
 ##
-## @item .
-## Set dots plot style.
+## @table @asis
+## @item linestyle
 ##
-## @item @var{n}
-## Interpreted as the plot color if @var{n} is an integer in the range 1 to
-## 6.
+## @table @asis
+## @item @samp{-}   Use solid lines (default).
 ##
-## @item @var{nm}
-## If @var{nm} is a two digit integer and @var{m} is an integer in the
-## range 1 to 6, @var{m} is interpreted as the point style.  This is only
-## valid in combination with the @code{@@} or @code{-@@} specifiers.
+## @item @samp{--}  Use dashed lines.
 ##
-## @item @var{c}
-## If @var{c} is one of @code{"k"} (black), @code{"r"} (red), @code{"g"}
-## (green), @code{"b"} (blue), @code{"m"} (magenta), @code{"c"} (cyan),
-## or @code{"w"} (white), it is interpreted as the line plot color.
+## @item @samp{:}   Use dotted lines.
 ##
-## @item ";title;"
-## Here @code{"title"} is the label for the key.
-##
-## @item  +
-## @itemx *
-## @itemx o
-## @itemx x
-## @itemx ^
-## Used in combination with the points or linespoints styles, set the point
-## style.
-##
-## @item @@
-## Select the next unused point style.
+## @item @samp{-.}  Use dash-dotted lines.
 ## @end table
 ##
-## The @var{fmt} argument may also be used to assign key titles.
-## To do so, include the desired title between semi-colons after the
-## formatting sequence described above, e.g., "+3;Key Title;"
-## Note that the last semi-colon is required and will generate an error if
-## it is left out.
+## @item markerstyle
+##
+## @table @asis
+## @item @samp{+}  crosshair
+##
+## @item @samp{o}  circle
+##
+## @item @samp{*}  star
+##
+## @item @samp{.}  point
+##
+## @item @samp{x}  cross
+##
+## @item @samp{s}  square
+##
+## @item @samp{d}  diamond
+##
+## @item @samp{^}  upward-facing triangle
+##
+## @item @samp{v}  downward-facing triangle
+##
+## @item @samp{>}  right-facing triangle
+##
+## @item @samp{<}  left-facing triangle
+##
+## @item @samp{p}  pentagram
+##
+## @item @samp{h}  hexagram
+## @end table
+##
+## @item color
+##
+## @table @asis
+## @item @samp{k}  blacK
+##
+## @item @samp{r}  Red
+##
+## @item @samp{g}  Green
+##
+## @item @samp{b}  Blue
+##
+## @item @samp{m}  Magenta
+##
+## @item @samp{c}  Cyan
+##
+## @item @samp{w}  White
+## @end table
+##
+## @item ";key;"
+## Here "key" is the label to use for the plot legend.
+## @end table
+##
+## The @var{fmt} argument may also be used to assign legend keys.
+## To do so, include the desired label between semicolons after the
+## formatting sequence described above, e.g., "+b;Key Title;"
+## Note that the last semicolon is required and Octave will generate an error
+## if it is left out.
 ##
 ## Here are some plot examples:
 ##
 ## @example
-## plot (x, y, "@@12", x, y2, x, y3, "4", x, y4, "+")
+## plot (x, y, "or", x, y2, x, y3, "m", x, y4, "+")
 ## @end example
 ##
-## This command will plot @code{y} with points of type 2 (displayed as
-## @samp{+}) and color 1 (red), @code{y2} with lines, @code{y3} with lines of
-## color 4 (magenta) and @code{y4} with points displayed as @samp{+}.
+## This command will plot @code{y} with red circles, @code{y2} with solid
+## lines, @code{y3} with solid magenta lines, and @code{y4} with points
+## displayed as @samp{+}.
 ##
 ## @example
-## plot (b, "*", "markersize", 3)
+## plot (b, "*", "markersize", 10)
 ## @end example
 ##
 ## This command will plot the data in the variable @code{b},
-## with points displayed as @samp{*} with a marker size of 3.
+## with points displayed as @samp{*} with a marker size of 10
 ##
 ## @example
 ## @group
 ## t = 0:0.1:6.3;
-## plot (t, cos(t), "-;cos(t);", t, sin(t), "+3;sin(t);");
+## plot (t, cos(t), "-;cos(t);", t, sin(t), "-b;sin(t);");
 ## @end group
 ## @end example
 ##
@@ -175,6 +210,9 @@
 ##
 ## The optional return value @var{h} is a vector of graphics handles to
 ## the created line objects.
+##
+## To save a plot, in one of several image formats such as PostScript
+## or PNG, use the @code{print} command.
 ##
 ## @seealso{axis, box, grid, hold, legend, title, xlabel, ylabel, xlim, ylim, ezplot, errorbar, fplot, line, plot3, polar, loglog, semilogx, semilogy, subplot}
 ## @end deftypefn

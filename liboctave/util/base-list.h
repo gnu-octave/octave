@@ -49,24 +49,28 @@ public:
   template <class P>
   void remove_if (P pred)
   {
+    lst.remove_if (pred);
+
+    // FIXME: kluge removed 8/7/13.  Eventually this commented
+    //        code should be deleted.
+    //
+    // FIXME: this kluge should be removed at some point.
     // We would like to simply call
     //
     //   lst.remove_if (pred);
     //
     // but the Sun Studio compiler chokes on that.
     //
-    // FIXME -- this kluge should be removed at some point.
-
-    iterator b = lst.begin ();
-    iterator e = lst.end ();
-    while (b != e)
-      {
-        iterator n = b;
-        n++;
-        if (pred (*b))
-          lst.erase (b);
-        b = n;
-      }
+    // iterator b = lst.begin ();
+    // iterator e = lst.end ();
+    // while (b != e)
+    //   {
+    //     iterator n = b;
+    //     n++;
+    //     if (pred (*b))
+    //       lst.erase (b);
+    //     b = n;
+    //   }
   }
 
   void clear (void) { lst.clear (); }

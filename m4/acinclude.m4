@@ -680,7 +680,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
 #endif
     ])
 
-    if test "$have_opengl_incs" = yes; then
+    if test $have_opengl_incs = yes; then
       case $canonical_host_type in
         *-*-mingw32* | *-*-msdosmsvc)
           save_LIBS="$LIBS"
@@ -1539,11 +1539,11 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
   AC_PROG_YACC
 
   case "`$YACC --version`" in
-    *bison*) tmp_have_bison="yes" ;;
+    *bison*) tmp_have_bison=yes ;;
     *) tmp_have_bison=no ;;
   esac
 
-  if test "$tmp_have_bison" = yes; then
+  if test $tmp_have_bison = yes; then
     AC_CACHE_CHECK([syntax of bison push/pull declaration],
                    [octave_cv_bison_push_pull_decl_style], [
       style="dash underscore"
@@ -1597,7 +1597,7 @@ parser in a bison input file so I'm disabling bison.
     OCTAVE_CONFIGURE_WARNING([warn_bison_push_pull_decl_style])
   fi
 
-  if test "$tmp_have_bison" = no; then
+  if test $tmp_have_bison = no; then
     YACC='$(top_srcdir)/build-aux/missing bison'
     warn_bison="
 

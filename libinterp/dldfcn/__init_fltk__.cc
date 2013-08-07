@@ -1112,7 +1112,7 @@ private:
         pos(0) = px;
         pos(1) = h () - menu_h - py;
         if (! uimenu->is_visible ())
-          pos(1) = pos(1) +  menu_h;
+          pos(1) = pos(1) + menu_h;
         fp.set_currentpoint (pos);
         graphics_object robj = gh_manager::get_object (fp.get_parent ());
         root_figure::properties& rp =
@@ -1129,6 +1129,8 @@ private:
           dynamic_cast<axes::properties&> (ax.get_properties ());
 
         double xx, yy;
+        if (uimenu->is_visible ())
+          py = py - menu_h;
         pixel2pos (ax, px, py, xx, yy);
 
         Matrix pos (2,3,0);

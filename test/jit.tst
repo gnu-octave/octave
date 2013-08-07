@@ -18,11 +18,18 @@
 
 ## Author: Max Brister <max@2bass.com>
 
+## Turn on JIT and set defaults before running tests
+%!testif HAVE_LLVM
+%! global __old_jit_enable__;
+%! global __old_jit_startcnt__;
+%! __old_jit_enable__ = jit_enable (true);
+%! __old_jit_startcnt__ = jit_startcnt (1000);
+
 ## Test some simple cases that compile.
 
-%!test
+%!testif HAVE_LLVM
 %! for i=1:1e6
-%!   if i < 5
+%!   if (i < 5)
 %!     break;
 %!   else
 %!     break;
@@ -30,24 +37,24 @@
 %! endfor
 %! assert (i, 1);
 
-%!test
-%! while 1
-%!   if 1
+%!testif HAVE_LLVM
+%! while (1)
+%!   if (1)
 %!     break;
 %!  else
 %!    break;
 %!  endif
 %! endwhile
 
-%!test
+%!testif HAVE_LLVM
 %! for i=1:1e6
-%!   if i == 100
+%!   if (i == 100)
 %!     break;
 %!   endif
 %! endfor
 %! assert (i, 100);
 
-%!test
+%!testif HAVE_LLVM
 %! inc = 1e-5;
 %! result = 0;
 %! for ii = 0:inc:1
@@ -55,7 +62,7 @@
 %! endfor
 %! assert (abs (result - 1/9) < 1e-5);
 
-%!test
+%!testif HAVE_LLVM
 %! inc = 1e-5;
 %! result = 0;
 %! for ii = 0:inc:1
@@ -64,20 +71,20 @@
 %! endfor
 %! assert (abs (result - 1/9) < 1e-5);
 
-%!test
+%!testif HAVE_LLVM
 %! temp = 1+1i;
 %! nan = NaN;
-%! while 1
+%! while (1)
 %!   temp = temp - 1i;
 %!   temp = temp * nan;
 %!   break;
 %! endwhile
 %! assert (imag (temp), 0);
 
-%!test
+%!testif HAVE_LLVM
 %! temp = 1+1i;
 %! nan = NaN+1i;
-%! while 1
+%! while (1)
 %!   nan = nan - 1i;
 %!   temp = temp - 1i;
 %!   temp = temp * nan;
@@ -85,15 +92,15 @@
 %! endwhile
 %! assert (imag (temp), 0);
 
-%!test
+%!testif HAVE_LLVM
 %! temp = 1+1i;
-%! while 1
+%! while (1)
 %!   temp = temp * 5;
 %!   break;
 %! endwhile
 %! assert (temp, 5+5i);
 
-%!test
+%!testif HAVE_LLVM
 %! nr = 1001;
 %! mat = zeros (1, nr);
 %! for i = 1:nr
@@ -101,7 +108,7 @@
 %! endfor
 %! assert (mat == 1:nr);
 
-%!test
+%!testif HAVE_LLVM
 %! nr = 1001;
 %! mat = 1:nr;
 %! mat(end) = 0; # force mat to a matrix
@@ -111,12 +118,12 @@
 %! endfor
 %! assert (sum (mat) == total);
 
-%!test
+%!testif HAVE_LLVM
 %! nr = 1001;
 %! mat = [3 1 5];
 %! try
 %!   for i = 1:nr
-%!     if i > 500
+%!     if (i > 500)
 %!       result = mat(100);
 %!     else
 %!       result = i;
@@ -144,26 +151,26 @@
 %!  n = numel (A);
 %!  counter = 0;
 %!  for ii=1:n
-%!    if z(ii)
+%!    if (z(ii))
 %!      counter = counter + 1;
 %!    else
-%!      if counter > 0 && counter < K
+%!      if (counter > 0 && counter < K)
 %!        z(ii-counter:ii-1) = 0;
 %!      endif
 %!      counter = 0;
 %!    endif
 %!  endfor
 %!
-%!  if counter > 0 && counter < K
+%!  if (counter > 0 && counter < K)
 %!    z(end-counter+1:end) = 0;
 %!  endif
 %!endfunction
 
-%!test
+%!testif HAVE_LLVM
 %! test_set = gen_test (10000);
 %! assert (all (vectorized (test_set, 3) == loopy (test_set, 3)));
 
-%!test
+%!testif HAVE_LLVM
 %! niter = 1001;
 %! i = 0;
 %! while (i < niter)
@@ -171,7 +178,7 @@
 %! endwhile
 %! assert (i == niter);
 
-%!test
+%!testif HAVE_LLVM
 %! niter = 1001;
 %! result = 0;
 %! m = [5 10];
@@ -180,7 +187,7 @@
 %! endfor
 %! assert (result == m(end) * niter);
 
-%!test
+%!testif HAVE_LLVM
 %! ndim = 100;
 %! result = 0;
 %! m = zeros (ndim);
@@ -194,7 +201,7 @@
 %! endwhile
 %! assert (result == sum (sum (m)));
 
-%!test
+%!testif HAVE_LLVM
 %! ndim = 100;
 %! m = zeros (ndim);
 %! i = 1;
@@ -208,7 +215,7 @@
 %! m2(:) = 1:(ndim^2);
 %! assert (all (m == m2));
 
-%!test
+%!testif HAVE_LLVM
 %! ndim = 2;
 %! m = zeros (ndim, ndim, ndim, ndim);
 %! result = 0;
@@ -242,17 +249,22 @@
 %! end_unwind_protect
 %!endfunction
 
-%!error <division by zero> test_divide ()
+%!testif HAVE_LLVM
+%! lasterr ("");
+%! try
+%!   test_divide ();
+%! end_try_catch
+%! assert (strcmp (lasterr (), "division by zero"));
 
-%!test
-%! while 1
+%!testif HAVE_LLVM
+%! while (1)
 %!   a = 0;
 %!   result = a / 1;
 %!   break;
 %! endwhile
 %! assert (result, 0);
 
-%!test
+%!testif HAVE_LLVM
 %! m = zeros (2, 1001);
 %! for i=1:1001
 %!   m(end, i) = i;
@@ -263,7 +275,7 @@
 %! m2(2, :) = 1:1001;
 %! assert (m, m2);
 
-%!test
+%!testif HAVE_LLVM
 %! m = [1 2 3];
 %! for i=1:1001
 %!   m = sin (m);
@@ -271,21 +283,21 @@
 %! endfor
 %! assert (m == sin ([1  2 3]));
 
-%!test
+%!testif HAVE_LLVM
 %! i = 0;
 %! while i < 10
 %!   i += 1;
 %! endwhile
 %! assert (i == 10);
 
-%!test
+%!testif HAVE_LLVM
 %! i = 0;
 %! while i < 10
 %!   a = ++i;
 %! endwhile
 %! assert (i == 10);
 %! assert (a == 10);
-%!test
+%!testif HAVE_LLVM
 %! i = 0;
 %! while i < 10
 %!   a = i++;
@@ -293,7 +305,7 @@
 %! assert (i == 10);
 %! assert (a == 9);
 
-%!test
+%!testif HAVE_LLVM
 %! num = 2;
 %! a = zeros (1, num);
 %! i = 1;
@@ -315,17 +327,23 @@
 %!   endif;
 %! endwhile
 
-%!error test_compute_idom ()
+%!testif HAVE_LLVM
+%! lasterr ("");
+%! try
+%!   test_compute_idom ();
+%! end_try_catch
+%! assert (! isempty (lasterr ()));
 
 %!function x = test_overload (a)
-%!  while 1
+%!  while (1)
 %!    x = a;
 %!    break;
 %!  endwhile
 %!endfunction
 
-%!assert (test_overload (1), 1);
-%!assert (test_overload ([1 2]), [1 2]);
+%!testif HAVE_LLVM
+%! assert (test_overload (1), 1);
+%! assert (test_overload ([1 2]), [1 2]);
 
 %!function a = bubble (a = [3 2 1])
 %!  swapped = 1;
@@ -333,7 +351,7 @@
 %!  while (swapped)
 %!    swapped = 0;
 %!    for i = 1:n-1
-%!      if a(i) > a(i + 1)
+%!      if (a(i) > a(i + 1))
 %!        swapped = 1;
 %!        temp = a(i);
 %!        a(i) = a(i + 1);
@@ -343,9 +361,10 @@
 %!  endwhile
 %!endfunction
 
-%!assert (bubble (), [1 2 3]);
+%!testif HAVE_LLVM
+%! assert (bubble (), [1 2 3]);
 
-%!test
+%!testif HAVE_LLVM
 %! a = 0;
 %! b = 1;
 %! for i=1:1e3
@@ -356,10 +375,10 @@
 %! assert (a, 2000);
 %! assert (b, 1);
 
-%!test
+%!testif HAVE_LLVM
 %! a = [1+1i 1+2i];
 %! b = 0;
-%! while 1
+%! while (1)
 %!   b = a(1);
 %!   break;
 %! endwhile
@@ -371,13 +390,33 @@
 %!  endfor
 %!endfunction
 
-%!error <undefined near> (test_undef);
+%!testif HAVE_LLVM
+%! lasterr ("");
+%! try
+%!   test_undef ();
+%! end_try_catch
+%! assert (strncmp (lasterr (), "'XXX' undefined near", 20));
 
 %!shared id
 %! id = @(x) x;
 
-%!assert (id (1), 1)
-%!assert (id (1+1i), 1+1i)
-%!assert (id (1, 2), 1)
-%!error <undefined> (id ())
+%!testif HAVE_LLVM
+%! assert (id (1), 1);
+%! assert (id (1+1i), 1+1i);
+%! assert (id (1, 2), 1);
+
+%!testif HAVE_LLVM
+%! lasterr ("");
+%! try
+%!   id ();
+%! end_try_catch
+%! assert (strncmp (lasterr (), "'x' undefined near", 18));
+
+## Restore JIT settings
+%!testif HAVE_LLVM
+%! global __old_jit_enable__;
+%! global __old_jit_startcnt__;
+%! jit_enable (__old_jit_enable__);
+%! jit_startcnt (__old_jit_startcnt__);
+%! clear -g __old_jit_enable__ __old_jit_startcnt__;
 

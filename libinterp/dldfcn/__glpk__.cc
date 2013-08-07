@@ -616,7 +616,7 @@ Undocumented internal function.\n\
     }
 
   //-- Simplex iterations limit
-  par.itlim = INT_MAX;
+  par.itlim = std::numeric_limits<int>::max ();
   OCTAVE_GLPK_GET_INT_PARAM ("itlim", par.itlim);
 
   //-- Output frequency, in iterations
@@ -668,7 +668,7 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  par.tmlim = INT_MAX;
+  par.tmlim = std::numeric_limits<int>::max ();
   OCTAVE_GLPK_GET_INT_PARAM ("tmlim", par.tmlim);
 
   par.outdly = 0;

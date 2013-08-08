@@ -107,13 +107,16 @@ function retval = waitbar (varargin)
       endif
     endif
   else
-    h = __go_figure__ (NaN, "position", [250, 500, 400, 100],
-                       "numbertitle", "off",
-                       "toolbar", "none", "menubar", "none",
-                       "integerhandle", "off",
-                       "handlevisibility", "callback",
-                       "tag", "waitbar",
-                       varargin{:});
+    ## Save and restore current figure
+    cf = get (0, "currentfigure");
+
+    h = figure ("position", [250, 500, 400, 100],
+                "numbertitle", "off",
+                "toolbar", "none", "menubar", "none",
+                "integerhandle", "off",
+                "handlevisibility", "callback",
+                "tag", "waitbar",
+                varargin{:});
 
     ax = axes ("parent", h, "xtick", [], "ytick", [],
                "xlim", [0, 1], "ylim", [0, 1],
@@ -129,6 +132,10 @@ function retval = waitbar (varargin)
       msg = "Please wait...";
     endif
     title (ax, msg);
+
+    if (! isempty (cf))
+      set (0, "currentfigure", cf);
+    endif
   endif
 
   drawnow ();

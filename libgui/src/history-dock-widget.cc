@@ -105,11 +105,17 @@ void history_dock_widget::handle_contextmenu_copy(bool)
   QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
   QModelIndexList rows = selectionModel->selectedRows();
   QModelIndexList::iterator it;
-  for (it=rows.begin() ; it != rows.end(); it++) {
-    if ((*it).isValid()) {
-      text += (*it).data().toString()+"\n";
+  bool prev_valid_row = false;
+  for (it = rows.begin(); it != rows.end(); it++)
+    {
+      if ((*it).isValid())
+        {
+          if (prev_valid_row)
+            text += "\n";
+          text += (*it).data().toString();
+          prev_valid_row = true;
+        }
     }
-  }
   QApplication::clipboard()->setText(text);
 }
 
@@ -118,11 +124,11 @@ void history_dock_widget::handle_contextmenu_evaluate(bool)
   QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
   QModelIndexList rows = selectionModel->selectedRows();
   QModelIndexList::iterator it;
-  for (it=rows.begin() ; it != rows.end(); it++) {
-    if ((*it).isValid()) {
-      emit command_double_clicked ((*it).data().toString()+"\n");
+  for (it = rows.begin() ; it != rows.end(); it++)
+    {
+      if ((*it).isValid())
+        emit command_double_clicked ((*it).data().toString());
     }
-  }
 }
 
 void
@@ -132,10 +138,16 @@ history_dock_widget::handle_contextmenu_create_script (bool)
   QItemSelectionModel *selectionModel = _history_list_view->selectionModel ();
   QModelIndexList rows = selectionModel->selectedRows ();
 
+  bool prev_valid_row = false;
   for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
     {
       if ((*it).isValid ())
-        text += (*it).data().toString() + "\n";
+        {
+          if (prev_valid_row)
+            text += "\n";
+          text += (*it).data().toString();
+          prev_valid_row = true;
+        }
     }
 
   if (text.length () > 0)
@@ -146,7 +158,7 @@ history_dock_widget::handle_contextmenu_create_script (bool)
 void
 history_dock_widget::handle_double_click (QModelIndex modelIndex)
 {
-  emit command_double_clicked (modelIndex.data().toString()+"\n");
+  emit command_double_clicked (modelIndex.data().toString());
 }
 
 void
@@ -195,11 +207,11 @@ void
 history_dock_widget::pasteClipboard ()
 {
   if(_filter_line_edit->hasFocus ())
-  {
-     QClipboard *clipboard = QApplication::clipboard ();
-     QString str =  clipboard->text ();
-     if (str.length() > 0)
-       _filter_line_edit->insert (str);
-  } 
+    {
+      QClipboard *clipboard = QApplication::clipboard ();
+      QString str =  clipboard->text ();
+      if (str.length() > 0)
+        _filter_line_edit->insert (str);
+    }
 }
 

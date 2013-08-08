@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QClipboard>
 #include <QVBoxLayout>
 #include <QMenu>
+#include <QScrollBar>
 
 #include "error.h"
 
@@ -160,8 +161,16 @@ history_dock_widget::append_history (const QString& hist_entry)
 {
   QStringList lst = _history_model->stringList ();
   lst.append (hist_entry);
+
+  QScrollBar *scroll_bar = _history_list_view->verticalScrollBar ();
+
+  bool at_bottom = scroll_bar->maximum () - scroll_bar->value () < 1;
+
   _history_model->setStringList (lst);
-  _history_list_view->scrollToBottom ();
+
+  // Scroll if slider position at bottom.
+  if (at_bottom)
+    _history_list_view->scrollToBottom ();
 }
 
 void

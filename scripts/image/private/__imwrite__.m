@@ -35,7 +35,8 @@ function __imwrite__ (img, varargin)
   endif
 
   ## set default for options
-  options = struct ("writemode", "overwrite", "quality", 75);
+  options = struct ("writemode", "overwrite",
+                    "quality", 75);
 
   for idx = 1:2:numel (param_list)
 
@@ -71,29 +72,25 @@ function __imwrite__ (img, varargin)
     elseif (ndims (img) != 2 && ndims (img) != 4)
       error ("imwrite: indexed image must have 2 or 4 dimensions (found %i)", ndims (img));
     endif
-    ## FIXME: we should really be writing indexed images but that needs
-    ##        to be implemented in  __magick_write__(). So we convert
-    ##        them to RGB and write them "normally".
-    warned = false;
-    if (! warned)
-      warning ("imwrite: saving of indexed images is not yet implemented.  Will save an RGB image.");
-      warned = true;
+    ## If the image is floating point, then we convert it to integer (makes
+    ## it easier in __magick_write__ since it only handles integers. Also,
+    ## if it's floating point, it has an offset of 1
+    if (isfloat (img))
+      if (rows (map) <= 256)
+        img = uint8 (img - 1);
+      else
+        img = uint16 (img - 1);
+      endif
     endif
-    img = ind2rgb (img, map);
-    map = [];
   endif
 
   if (ndims (img) > 4)
     error ("imwrite: invalid %d-dimensional image data", ndims (img));
-  elseif (all (size (img, 3) != [1 3]))
-    ## This test needs to be adjusted if one day we implement alternative
-    ## colorspaces. In the mean time, we only have grayscale and RGB images,
-    ## but CMYK means length 4 in the 3rd dimension.
-    error ("imwrite: IMG 3rd dimension must be 1 or 3");
+  elseif (all (size (img, 3) != [1 3 4]))
+    ## 1, 3, or 4 for grayscle, RGB, and CMYK respectively
+    error ("imwrite: IMG 3rd dimension must be 1, 3, or 4");
   endif
 
-  ## FIXME: do we need to convert the image class?
   __magick_write__ (filename, ext, img, map, options);
 
 endfunction
-

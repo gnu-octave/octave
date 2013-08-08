@@ -454,6 +454,6 @@ endfunction
 %!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), 1e-6)
 %!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, 1e-6)
 
-%error (quadgk (@sin))
-%error (quadgk (@sin, -pi))
-%error (quadgk (@sin, -pi, pi, "DummyArg"))
+%!error (quadgk (@sin))
+%!error (quadgk (@sin, -pi))
+%!error (quadgk (@sin, -pi, pi, "DummyArg"))

@@ -98,9 +98,9 @@ endfunction
 
 
 %% Test pure RED, GREEN, BLUE colors
-%assert (rgb2ntsc ([1 0 0]), [.299  .587  .114])
-%assert (rgb2ntsc ([0 1 0]), [.596 -.274 -.322])
-%assert (rgb2ntsc ([1 0 1]), [.211 -.523  .312])
+%!assert (rgb2ntsc ([1 0 0]), [.299  .587  .114])
+%!assert (rgb2ntsc ([0 1 0]), [.596 -.274 -.322])
+%!assert (rgb2ntsc ([1 0 1]), [.211 -.523  .312])
 
 %!test
 %! rgb_map = rand (64, 3);

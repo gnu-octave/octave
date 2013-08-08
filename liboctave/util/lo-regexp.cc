@@ -550,7 +550,7 @@ regexp::replace (const std::string& buffer, const std::string& replacement)
 
           const Matrix pairs (p->token_extents ());
           rep.append (&buffer[from], static_cast<size_t> (start - 1) - from);
-          from = static_cast<size_t> (end - 1) + 1;
+          from = static_cast<size_t> (end);
 
           size_t cur_pos = 0;
 
@@ -608,7 +608,7 @@ regexp::replace (const std::string& buffer, const std::string& replacement)
           OCTAVE_QUIT;
           rep.append (&buffer[from],
                       static_cast<size_t> (p->start () - 1) - from);
-          from = static_cast<size_t> (p->end () - 1) + 1;
+          from = static_cast<size_t> (p->end ());
           rep.append (repstr);
           p++;
         }

@@ -110,63 +110,42 @@
 ## @table @asis
 ## @item linestyle
 ##
-## @table @asis
-## @item @samp{-}   Use solid lines (default).
-##
-## @item @samp{--}  Use dashed lines.
-##
-## @item @samp{:}   Use dotted lines.
-##
-## @item @samp{-.}  Use dash-dotted lines.
-## @end table
+## @multitable @columnfractions 0.06 0.94
+## @item @samp{-}  @tab Use solid lines (default).
+## @item @samp{--} @tab Use dashed lines.
+## @item @samp{:}  @tab Use dotted lines.
+## @item @samp{-.} @tab Use dash-dotted lines.
+## @end multitable
 ##
 ## @item markerstyle
 ##
-## @table @asis
-## @item @samp{+}  crosshair
-##
-## @item @samp{o}  circle
-##
-## @item @samp{*}  star
-##
-## @item @samp{.}  point
-##
-## @item @samp{x}  cross
-##
-## @item @samp{s}  square
-##
-## @item @samp{d}  diamond
-##
-## @item @samp{^}  upward-facing triangle
-##
-## @item @samp{v}  downward-facing triangle
-##
-## @item @samp{>}  right-facing triangle
-##
-## @item @samp{<}  left-facing triangle
-##
-## @item @samp{p}  pentagram
-##
-## @item @samp{h}  hexagram
-## @end table
+## @multitable @columnfractions 0.06 0.94
+## @item @samp{+} @tab crosshair
+## @item @samp{o} @tab circle
+## @item @samp{*} @tab star
+## @item @samp{.} @tab point
+## @item @samp{x} @tab cross
+## @item @samp{s} @tab square
+## @item @samp{d} @tab diamond
+## @item @samp{^} @tab upward-facing triangle
+## @item @samp{v} @tab downward-facing triangle
+## @item @samp{>} @tab right-facing triangle
+## @item @samp{<} @tab left-facing triangle
+## @item @samp{p} @tab pentagram
+## @item @samp{h} @tab hexagram
+## @end multitable
 ##
 ## @item color
 ##
-## @table @asis
-## @item @samp{k}  blacK
-##
-## @item @samp{r}  Red
-##
-## @item @samp{g}  Green
-##
-## @item @samp{b}  Blue
-##
-## @item @samp{m}  Magenta
-##
-## @item @samp{c}  Cyan
-##
-## @item @samp{w}  White
-## @end table
+## @multitable @columnfractions 0.06 0.94
+## @item @samp{k} @tab blacK
+## @item @samp{r} @tab Red
+## @item @samp{g} @tab Green
+## @item @samp{b} @tab Blue
+## @item @samp{m} @tab Magenta
+## @item @samp{c} @tab Cyan
+## @item @samp{w} @tab White
+## @end multitable
 ##
 ## @item ";key;"
 ## Here "key" is the label to use for the plot legend.
@@ -174,9 +153,9 @@
 ##
 ## The @var{fmt} argument may also be used to assign legend keys.
 ## To do so, include the desired label between semicolons after the
-## formatting sequence described above, e.g., "+b;Key Title;"
-## Note that the last semicolon is required and Octave will generate an error
-## if it is left out.
+## formatting sequence described above, e.g., "+b;Key Title;".
+## Note that the last semicolon is required and Octave will generate
+## an error if it is left out.
 ##
 ## Here are some plot examples:
 ##
@@ -193,7 +172,7 @@
 ## @end example
 ##
 ## This command will plot the data in the variable @code{b},
-## with points displayed as @samp{*} with a marker size of 10
+## with points displayed as @samp{*} and a marker size of 10.
 ##
 ## @example
 ## @group
@@ -203,7 +182,7 @@
 ## @end example
 ##
 ## This will plot the cosine and sine functions and label them accordingly
-## in the key.
+## in the legend.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.

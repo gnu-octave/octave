@@ -43,38 +43,17 @@
 ## as follows:
 ##
 ## @multitable @columnfractions 0.06 0.14 0.80
-##
-## @headitem @tab @var{pos} @tab
-##   location of the legend
-##
-## @item @tab north @tab
-##   center top
-##
-## @item @tab south @tab
-##   center bottom
-##
-## @item @tab east @tab
-##   right center
-##
-## @item @tab west @tab
-##   left center
-##
-## @item @tab northeast @tab
-##   right top (default)
-##
-## @item @tab northwest @tab
-##   left top
-##
-## @item @tab southeast @tab
-##   right bottom
-##
-## @item @tab southwest @tab
-##   left bottom
-##
+## @headitem @tab pos @tab location of the legend
+## @item @tab north @tab center top
+## @item @tab south @tab center bottom
+## @item @tab east @tab right center
+## @item @tab west @tab left center
+## @item @tab northeast @tab right top (default)
+## @item @tab northwest @tab left top
+## @item @tab southeast @tab right bottom
+## @item @tab southwest @tab left bottom
 ## @item
-##
-## @item @tab outside @tab
-##   can be appended to any location string
+## @item @tab outside @tab can be appended to any location string
 ## @end multitable
 ##
 ## The optional parameter @var{orient} determines if the key elements

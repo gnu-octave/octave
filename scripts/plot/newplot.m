@@ -43,7 +43,6 @@
 ## figure properties to their defaults.  However, the following four properties
 ## are not reset: Position, Units, PaperPosition, PaperUnits.  This is
 ## equivalent to @code{clf reset}.
-##
 ## @end multitable    
 ##
 ## @multitable @columnfractions .25 .75
@@ -60,7 +59,6 @@
 ## reset all axis properties to their defaults.  However, the following
 ## properties are not reset: Position, Units.  This is equivalent to
 ## @code{cla reset}.
-##
 ## @end multitable    
 ##
 ## If the optional input @var{hfig} or @var{hax} is given then prepare the

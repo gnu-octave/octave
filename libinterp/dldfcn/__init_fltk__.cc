@@ -680,8 +680,6 @@ public:
 
     begin ();
     {
-      //Fl_Window::resize (xx, yy - menu_h, ww, hh + menu_h + status_h);
-      
       // bbox of plot canvas = [xx, yy, ww, hh];
       // (xx, yy) = UL coordinate relative to UL window.
 
@@ -1110,9 +1108,7 @@ private:
       {
         Matrix pos (1,2,0);
         pos(0) = px;
-        pos(1) = h () - menu_h - py;
-        if (! uimenu->is_visible ())
-          pos(1) = pos(1) + menu_h;
+        pos(1) = h () - (py + status_h + menu_dy ());
         fp.set_currentpoint (pos);
         graphics_object robj = gh_manager::get_object (fp.get_parent ());
         root_figure::properties& rp =
@@ -1129,8 +1125,6 @@ private:
           dynamic_cast<axes::properties&> (ax.get_properties ());
 
         double xx, yy;
-        if (uimenu->is_visible ())
-          py = py - menu_h;
         pixel2pos (ax, px, py, xx, yy);
 
         Matrix pos (2,3,0);
@@ -1143,6 +1137,14 @@ private:
         fp.set_currentaxes (ap.get___myhandle__ ().value ());
       }
   }
+
+  int menu_dy ()
+    {
+      if (uimenu->is_visible ())
+        return menu_h;
+      else
+        return 0;
+    }
 
   int key2shift (int key)
   {
@@ -1192,14 +1194,9 @@ private:
 
     Matrix pos (1,4,0);
     pos(0) = xx;
-    pos(1) = yy + menu_h;
+    pos(1) = yy + menu_dy ();
     pos(2) = ww;
-    pos(3) = hh - menu_h - status_h;
-    if (! uimenu->is_visible ())
-      {
-        pos(1) = yy;
-        pos(3) = hh - status_h;
-      }
+    pos(3) = hh - menu_dy () - status_h;
 
     fp.set_boundingbox (pos, true);
   }
@@ -1210,18 +1207,10 @@ private:
     Matrix pos = fp.get_boundingbox (true);
     int canvas_h = pos(3);
     int canvas_w = pos(2);
-    int canvas_y = menu_h;
-    int toolbar_y = menu_h + canvas_h;
-    pos(1) = pos(1) - menu_h;
-    pos(3) = pos(3) + menu_h + status_h;
-
-    if (! uimenu->is_visible ())
-      {
-        pos(1) = pos(1) + menu_h;
-        pos(3) = pos(3) - menu_h;
-        toolbar_y = toolbar_y - menu_h;
-        canvas_y = canvas_y - menu_h;
-      }
+    int canvas_y = menu_dy ();
+    int toolbar_y = menu_dy () + canvas_h;
+    pos(1) = pos(1) - menu_dy ();
+    pos(3) = pos(3) + menu_dy () + status_h;
 
     Fl_Window::resize (pos(0), pos(1), pos(2), pos(3));
 
@@ -1310,15 +1299,15 @@ private:
             break;
 
           case FL_MOVE:
-            pixel2status (pixel2axes_or_ca (Fl::event_x (), Fl::event_y ()),
-                          Fl::event_x (), Fl::event_y ());
+            pixel2status (pixel2axes_or_ca (Fl::event_x (), Fl::event_y () - menu_dy ()),
+                          Fl::event_x (), Fl::event_y () - menu_dy ());
             break;
 
           case FL_PUSH:
             pos_x = Fl::event_x ();
-            pos_y = Fl::event_y ();
+            pos_y = Fl::event_y () - menu_dy ();
 
-            set_currentpoint (Fl::event_x (), Fl::event_y ());
+            set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
 
             gh = pixel2axes_or_ca (pos_x, pos_y);
 
@@ -1338,7 +1327,7 @@ private:
           case FL_DRAG:
             if (fp.get_windowbuttonmotionfcn ().is_defined ())
               {
-                set_currentpoint (Fl::event_x (), Fl::event_y ());
+                set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                 fp.execute_windowbuttonmotionfcn ();
               }
 
@@ -1348,7 +1337,7 @@ private:
                   {
                     if (gui_mode == pan_zoom)
                       pixel2status (ax_obj, pos_x, pos_y,
-                                    Fl::event_x (), Fl::event_y ());
+                                    Fl::event_x (), Fl::event_y () - menu_dy ());
                     else
                       view2status (ax_obj);
                     axes::properties& ap =
@@ -1357,7 +1346,7 @@ private:
                     double x0, y0, x1, y1;
                     Matrix pos = fp.get_boundingbox (true);
                     pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
-                    pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
+                    pixel2pos (ax_obj, Fl::event_x (), Fl::event_y () - menu_dy (), x1, y1);
 
                     if (gui_mode == pan_zoom)
                       ap.translate_view (x0, x1, y0, y1);
@@ -1365,12 +1354,12 @@ private:
                       {
                         double daz, del;
                         daz = (Fl::event_x () - pos_x) / pos(2) * 360;
-                        del = (Fl::event_y () - pos_y) / pos(3) * 360;
+                        del = (Fl::event_y () - menu_dy () - pos_y) / pos(3) * 360;
                         ap.rotate_view (del, daz);
                       }
 
                     pos_x = Fl::event_x ();
-                    pos_y = Fl::event_y ();
+                    pos_y = Fl::event_y () - menu_dy ();
                     mark_modified ();
                   }
                 return 1;
@@ -1378,12 +1367,12 @@ private:
             else if (Fl::event_button () == 3)
               {
                 pixel2status (ax_obj, pos_x, pos_y,
-                              Fl::event_x (), Fl::event_y ());
+                              Fl::event_x (), Fl::event_y () - menu_dy ());
                 Matrix zoom_box (1,4,0);
                 zoom_box (0) = pos_x;
                 zoom_box (1) = pos_y;
                 zoom_box (2) =  Fl::event_x ();
-                zoom_box (3) =  Fl::event_y ();
+                zoom_box (3) =  Fl::event_y () - menu_dy ();
                 canvas->set_zoom_box (zoom_box);
                 canvas->zoom (true);
                 canvas->redraw ();
@@ -1395,7 +1384,7 @@ private:
             {
               graphics_object ax =
                 gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (),
-                                                          Fl::event_y ()));
+                                                          Fl::event_y () - menu_dy ()));
               if (ax && ax.isa ("axes"))
                 {
                   axes::properties& ap =
@@ -1407,7 +1396,7 @@ private:
 
                   // Get the point we're zooming about.
                   double x1, y1;
-                  pixel2pos (ax, Fl::event_x (), Fl::event_y (), x1, y1);
+                  pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (), x1, y1);
 
                   ap.zoom_about_point (x1, y1, factor, false);
                   mark_modified ();
@@ -1418,7 +1407,7 @@ private:
           case FL_RELEASE:
             if (fp.get_windowbuttonupfcn ().is_defined ())
               {
-                set_currentpoint (Fl::event_x (), Fl::event_y ());
+                set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                 fp.execute_windowbuttonupfcn ();
               }
 
@@ -1450,7 +1439,7 @@ private:
                           dynamic_cast<axes::properties&> (ax_obj.get_properties ());
                         pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
                         int pos_x1 = Fl::event_x ();
-                        int pos_y1 = Fl::event_y ();
+                        int pos_y1 = Fl::event_y () - menu_dy ();
                         pixel2pos (ax_obj, pos_x1, pos_y1, x1, y1);
                         Matrix xl (1,2,0);
                         Matrix yl (1,2,0);

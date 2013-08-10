@@ -74,7 +74,10 @@ function [xs, ys] = stairs (varargin)
     if (nargout > 1)
       [h, xs, ys] = __stairs__ (false, varargin{:});
     else
-      oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
       unwind_protect
         hax = newplot (hax);
         [htmp, xxs, yys] = __stairs__ (true, varargin{:});

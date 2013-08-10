@@ -149,7 +149,10 @@ function varargout = __bar__ (vertical, func, varargin)
   yb = reshape (yb, [4, numel(yb) / 4 / ycols, ycols]);
 
   if (nargout < 2)
-    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
     unwind_protect
       hax = newplot (hax);
 

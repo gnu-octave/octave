@@ -90,7 +90,10 @@ function [thout, rout] = rose (varargin)
   r(3:4:end, :) = nn;
 
   if (nargout < 2)
-    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
     unwind_protect
       hax = newplot (hax);
       htmp = polar (th, r);

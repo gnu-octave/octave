@@ -37,7 +37,10 @@ function h = __stem__ (have_z, varargin)
   [x, y, z, dofill, llc, ls, mmc, ms, varargin] = ...
       check_stem_arg (have_z, varargin{:});
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     hold_state = get (hax, "nextplot");

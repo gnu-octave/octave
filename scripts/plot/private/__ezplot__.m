@@ -427,7 +427,10 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
   until (domain_ok)
 
   ## Now, actually call the correct plot function with valid data and domain.
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     if (iscontour)

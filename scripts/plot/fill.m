@@ -72,7 +72,10 @@ function h = fill (varargin)
   hlist = [];
   iargs = __find_patches__ (varargin{:});
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     old_nxtplt = get (hax, "nextplot");

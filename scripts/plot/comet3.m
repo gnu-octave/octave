@@ -59,7 +59,10 @@ function comet3 (varargin)
     p = varargin{4};
   endif
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     limits = [min(x), max(x), min(y), max(y), min(z), max(z)];

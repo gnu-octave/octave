@@ -61,7 +61,10 @@ function h = pie3 (varargin)
     print_usage ();
   endif
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     htmp = __pie__ ("pie3", hax, varargin{:});

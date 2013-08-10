@@ -83,7 +83,10 @@ function [xx, yy, zz] = cylinder (varargin)
     yy = y;
     zz = z;
   else
-    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
     unwind_protect
       hax = newplot (hax);
     

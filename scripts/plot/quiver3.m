@@ -71,7 +71,10 @@ function retval = quiver3 (varargin)
   if (nargin < 2)
     print_usage ();
   else
-    oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
     unwind_protect
       hax = newplot (hax);
       htmp = __quiver__ (hax, true, varargin{:});

@@ -103,7 +103,10 @@ function h = area (varargin)
     x = repmat (x(:), 1, columns (y));
   endif
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     htmp = __area__ (hax, x, y, bv, args{:});

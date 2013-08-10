@@ -98,7 +98,10 @@ function retval = feather (varargin)
   y = [zeros(1, n); yend; ytmp  + u * arrowsize / 3; yend; ...
        ytmp - u * arrowsize / 3];
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     hlist = plot (x, y, line_spec, [1, n], [0, 0], line_spec);

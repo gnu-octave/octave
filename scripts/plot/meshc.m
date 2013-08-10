@@ -61,7 +61,10 @@ function h = meshc (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("meshc", varargin{:});
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
 

@@ -74,7 +74,10 @@ function h = pcolor (varargin)
     print_usage ();
   endif
 
-  oldfig = ifelse (isempty (hax), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     hax = newplot (hax);
     htmp = surface (x, y, z, c);

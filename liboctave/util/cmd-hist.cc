@@ -48,6 +48,7 @@ command_history *command_history::instance = 0;
 #include <fcntl.h>
 
 #include "oct-rl-hist.h"
+#include "octave-link.h"
 
 #include "file-stat.h"
 
@@ -199,7 +200,12 @@ gnu_history::do_add (const std::string& s)
       if (stmp[stmp_len - 1] == '\n')
         stmp.resize (stmp_len - 1);
 
-      lines_this_session += ::octave_add_history (stmp.c_str (), history_control);
+      int added = ::octave_add_history (stmp.c_str (), history_control);
+      if (added > 0)
+        {
+          lines_this_session += added;
+          octave_link::append_history (stmp.c_str ());
+        }
     }
 }
 

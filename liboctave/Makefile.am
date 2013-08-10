@@ -34,7 +34,8 @@ AM_CPPFLAGS = \
   -Ioperators -I$(srcdir)/operators \
   -I$(srcdir)/system \
   -I$(srcdir)/util \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu \
+  -I$(top_srcdir)/libinterp/corefcn
 
 AM_CFLAGS += $(WARN_CFLAGS)
 

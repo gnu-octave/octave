@@ -328,10 +328,7 @@ edit_history_add_hist (const std::string& line)
         tmp.resize (len - 1);
 
       if (! tmp.empty ())
-        {
-          command_history::add (tmp);
-          octave_link::append_history (tmp);
-        }
+        command_history::add (tmp);
     }
 }
 
@@ -580,10 +577,7 @@ octave_history_write_timestamp (void)
   std::string timestamp = now.strftime (Vhistory_timestamp_format_string);
 
   if (! timestamp.empty ())
-    {
-      command_history::add (timestamp); 
-      octave_link::append_history (timestamp);
-   }
+    command_history::add (timestamp);
 }
 
 DEFUN (edit_history, args, ,

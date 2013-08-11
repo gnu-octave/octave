@@ -271,7 +271,12 @@ octave_base_reader::octave_gets (bool& eof)
   if (retval != "\n")
     {
       if (! history_skip_auto_repeated_debugging_command)
-        command_history::add (retval);
+        {
+          command_history::add (retval);
+
+          if (! command_history::ignoring_entries ())
+            octave_link::append_history (retval);
+        }
 
       octave_diary << retval;
 

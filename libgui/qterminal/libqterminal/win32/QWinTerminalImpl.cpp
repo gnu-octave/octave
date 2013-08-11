@@ -1301,13 +1301,15 @@ bool QWinTerminalImpl::winEvent (MSG* msg, long* result)
     case WM_KEYDOWN:
     case WM_KEYUP:
     //case WM_CHAR:
-      // Forward Win32 message to the console window
-      PostMessage (d->m_consoleWindow,
+      if ( GetKeyState ('C') == 0 || GetKeyState (VK_CONTROL) == 0)
+        {
+          PostMessage (d->m_consoleWindow,
                    msg->message,
                    msg->wParam,
                    msg->lParam);
-      result = 0;
-      return true;
+        }
+      // allow Qt to process messages as well, in case of shortcuts etc
+      return false;
     default:
       return false;
     }

@@ -4055,6 +4055,10 @@ void
 axes::properties::sync_positions (void)
 {
   // First part is equivalent to `update_tightinset ()'
+  if (activepositionproperty.is ("position"))
+    update_position ();
+  else
+    update_outerposition ();
   caseless_str old_units = get_units ();
   set_units ("normalized");
   Matrix pos = position.get ().matrix_value ();
@@ -4068,16 +4072,10 @@ axes::properties::sync_positions (void)
   tightinset = tinset;
   set_units (old_units);
   update_transform ();
-  // Changes to tightinset may result in changes to the inactive
-  // position property
-  if (activepositionproperty.is ("position"))
-    update_position ();
-  else
-    update_outerposition ();
 }
 
 /*
-%!xtest
+%!test
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "fltk");
 %! unwind_protect
@@ -4089,10 +4087,10 @@ axes::properties::sync_positions (void)
 %!   tightinsets = cell2mat (get (hax, "tightinset"));
 %!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
 %!   hax = findall (gcf (), "type", "axes");
-%!   assert (cell2mat (get (hax, "position")), positions);
-%!   assert (cell2mat (get (hax, "outerposition")), outerpositions);
-%!   assert (cell2mat (get (hax, "looseinset")), looseinsets);
-%!   assert (cell2mat (get (hax, "tightinset")), tightinsets);
+%!   assert (cell2mat (get (hax, "position")), positions, 1e-4);
+%!   assert (cell2mat (get (hax, "outerposition")), outerpositions, 1e-4);
+%!   assert (cell2mat (get (hax, "looseinset")), looseinsets, 1e-4);
+%!   assert (cell2mat (get (hax, "tightinset")), tightinsets, 1e-4);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

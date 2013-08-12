@@ -4075,6 +4075,19 @@ axes::properties::sync_positions (void)
 }
 
 /*
+%!xtest
+%! ## Doubling up on subplots results in axes out of order
+%! hf = figure ("visible", "off");
+%! graphics_toolkit (hf, "fltk");
+%! unwind_protect
+%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
+%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
+%!   hax = findall (gcf (), "type", "axes");
+%!   positions = cell2mat (get (hax, "position"));
+%!   assert (positions(1,2) > positions(2,2))
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 %!test
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "fltk");

@@ -65,7 +65,7 @@ public:
 
   std::string do_histcontrol (void) const;
 
-  void do_add (const std::string&);
+  bool do_add (const std::string&);
 
   void do_remove (int);
 
@@ -184,14 +184,14 @@ gnu_history::do_histcontrol (void) const
   return retval;
 }
 
-void
+bool
 gnu_history::do_add (const std::string& s)
 {
   if (! do_ignoring_entries ())
     {
       if (s.empty ()
           || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
-        return;
+        return false;
      
       // Strip newline before adding to list
       std::string stmp = s;
@@ -199,8 +199,11 @@ gnu_history::do_add (const std::string& s)
       if (stmp[stmp_len - 1] == '\n')
         stmp.resize (stmp_len - 1);
 
-      lines_this_session += ::octave_add_history (stmp.c_str (), history_control);
+      int added = ::octave_add_history (stmp.c_str (), history_control);
+      lines_this_session += added;
+      return (added > 0) ? true : false;
     }
+  return false;
 }
 
 void
@@ -587,11 +590,12 @@ command_history::ignoring_entries (void)
     ? instance->do_ignoring_entries () : false;
 }
 
-void
+bool
 command_history::add (const std::string& s)
 {
   if (instance_ok ())
-    instance->do_add (s);
+    return instance->do_add (s);
+  return false;
 }
 
 void
@@ -818,9 +822,10 @@ command_history::do_ignoring_entries (void) const
   return ignoring_additions;
 }
 
-void
+bool
 command_history::do_add (const std::string&)
 {
+  return false;
 }
 
 void

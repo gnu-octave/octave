@@ -8,6 +8,7 @@ sparse_FCN_FILES = \
   sparse/bicgstab.m \
   sparse/cgs.m \
   sparse/colperm.m \
+  sparse/eigs.m \
   sparse/etreeplot.m \
   sparse/gmres.m \
   sparse/gplot.m \

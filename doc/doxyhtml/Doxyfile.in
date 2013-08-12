@@ -184,13 +184,10 @@ SORT_MEMBERS_CTORS_1ST = YES
 
 ENABLE_PREPROCESSING   = YES
 
-# Expand the DEFUN family of macros
+# Expand all macros
 
 MACRO_EXPANSION = YES
-EXPAND_ONLY_PREDEF = YES
-EXPAND_AS_DEFINED = DEFUN DEFUN_DLD  # As defined in the Octave source
-                                     # code, i.e. not overriden by this
-                                     # config file
+EXPAND_ONLY_PREDEF = NO
 
 # So that features that are behind #ifdef HAVE_FOO macros get processed by Doxygen
 

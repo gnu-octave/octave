@@ -4094,6 +4094,45 @@ axes::properties::sync_positions (void)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+%!test
+%! hf = figure ("visible", "off");
+%! graphics_toolkit (hf, "fltk");
+%! fpos = get (hf, "position");
+%! unwind_protect
+%!   plot (rand (3))
+%!   position = get (gca, "position");
+%!   outerposition = get (gca, "outerposition");
+%!   looseinset = get (gca, "looseinset");
+%!   tightinset = get (gca, "tightinset");
+%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)])
+%!   set (hf, "position", fpos);
+%!   assert (get (gca, "outerposition"), outerposition, 0.001)
+%!   assert (get (gca, "position"), position, 0.001)
+%!   assert (get (gca, "looseinset"), looseinset, 0.001)
+%!   assert (get (gca, "tightinset"), tightinset, 0.001)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!test
+%! hf = figure ("visible", "off");
+%! graphics_toolkit (hf, "fltk");
+%! fpos = get (hf, "position");
+%! set (gca, "activepositionproperty", "position")
+%! unwind_protect
+%!   plot (rand (3))
+%!   position = get (gca, "position");
+%!   outerposition = get (gca, "outerposition");
+%!   looseinset = get (gca, "looseinset");
+%!   tightinset = get (gca, "tightinset");
+%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)])
+%!   set (hf, "position", fpos);
+%!   assert (get (gca, "position"), position, 0.001)
+%!   assert (get (gca, "outerposition"), outerposition, 0.001)
+%!   assert (get (gca, "looseinset"), looseinset, 0.001)
+%!   assert (get (gca, "tightinset"), tightinset, 0.001)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 */
 
 void

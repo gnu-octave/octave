@@ -250,7 +250,6 @@ static std::string strip_trailing_whitespace (char *s);
 D       [0-9]
 S       [ \t]
 NL      ((\n)|(\r)|(\r\n))
-CONT    ((\.\.\.)|(\\))
 Im      [iIjJ]
 CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
@@ -964,9 +963,10 @@ ANY_INCLUDING_NL (.|{NL})
 // Continuation lines.  Allow comments after continuations.
 %}
 
-{CONT}{S}*{NL} |
-{CONT}{S}*{CCHAR}.*{NL} {
-    curr_lexer->lexer_debug ("{CONT}{S}*{NL}|{CONT}{S}*{CCHAR}.*{NL}");
+\\{S}*{NL} |
+\\{S}*{CCHAR}.*{NL} |
+\.\.\..*{NL} {
+    curr_lexer->lexer_debug ("\\.\\.\\..*{NL}|\\\\{S}*{NL}|\\\\{S}*{CCHAR}.*{NL}");
 
     curr_lexer->handle_continuation ();
   }

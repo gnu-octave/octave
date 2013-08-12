@@ -468,11 +468,11 @@ SUCH DAMAGE.\
         else
           code = " ";
         endif
-        body = ["#include <octave/oct.h>\n\n",               \
-                "DEFUN_DLD(" name ", args, nargout, \"\\\n", \
-                name, "\\n\\\n\")\n{\n",                     \
-                "  octave_value_list retval;\n",             \
-                "  int nargin = args.length ();\n\n",        \
+        body = ["#include <octave/oct.h>\n\n",               ...
+                "DEFUN_DLD(" name ", args, nargout, \"\\\n", ...
+                name, "\\n\\\n\")\n{\n",                     ...
+                "  octave_value_list retval;\n",             ...
+                "  int nargin = args.length ();\n\n",        ...
                 code, "\n  return retval;\n}\n"];
 
         text = [comment, body];
@@ -484,15 +484,15 @@ SUCH DAMAGE.\
           body = ["function [retval] = " name " ()\n\nendfunction\n"];
         endif
         if (isempty (head))
-          comment = ["## -*- texinfo -*- \n## @deftypefn {Function File} " \
-                     "{@var{retval} =} " name " (@var{x}, @var{y})\n##\n"  \
-                     "## @seealso{}\n## @end deftypefn\n\n"                \
+          comment = ["## -*- texinfo -*- \n## @deftypefn {Function File} " ...
+                     "{@var{retval} =} " name " (@var{x}, @var{y})\n##\n"  ...
+                     "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         else
-          comment = ["## " strrep(head,"\n","\n## ") "\n\n"                \
-                     "## -*- texinfo -*- \n## @deftypefn {Function File} " \
-                     "{@var{retval} =} " name " (@var{x} @var{y})\n##\n"   \
-                     "## @seealso{}\n## @end deftypefn\n\n"                \
+          comment = ["## " strrep(head,"\n","\n## ") "\n\n"                ...
+                     "## -*- texinfo -*- \n## @deftypefn {Function File} " ...
+                     "{@var{retval} =} " name " (@var{x} @var{y})\n##\n"   ...
+                     "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         endif
         text = [comment, body];

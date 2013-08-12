@@ -434,7 +434,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
             endif
             warning (__warnstate.state, "quiet");
             if (isempty (__err))
-              __msg = sprintf (["%swarning failed.\n" \
+              __msg = sprintf (["%swarning failed.\n" ...
                                 "Expected %s but got no warning\n"],
                                __signal_fail, __patstr);
             elseif (__mismatch)
@@ -455,7 +455,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
           endif
           warning (__warnstate.state, "quiet");
           if (__warning)
-            __msg = sprintf (["%swarning failed.\n" \
+            __msg = sprintf (["%swarning failed.\n" ...
                               "Expected warning %s but got error <%s>\n"],
                              __signal_fail, __patstr, __err);
           elseif (__mismatch)

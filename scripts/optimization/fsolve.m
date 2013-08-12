@@ -134,7 +134,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
-    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
+    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, ...
     "Jacobian", "off", "TolX", 1e-7, "TolFun", 1e-7,
     "OutputFcn", [], "Updating", "on", "FunValCheck", "off",
     "ComplexEqn", "off", "FinDiffType", "central",

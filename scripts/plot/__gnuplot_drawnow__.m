@@ -296,9 +296,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     if (! __gnuplot_has_feature__ ("has_termoption_dashed"))
       ## If "set termoption dashed" isn't available add "dashed" option
       ## to the "set terminal ..." command, if it is supported.
-      if (any (strcmp (term, {"aqua", "cgm", "eepic", "emf", "epslatex", \
-                              "fig", "pcl5", "mp", "next", "openstep", "pdf", \
-                              "pdfcairo", "pngcairo", "postscript", \
+      if (any (strcmp (term, {"aqua", "cgm", "eepic", "emf", "epslatex", ...
+                              "fig", "pcl5", "mp", "next", "openstep", "pdf", ...
+                              "pdfcairo", "pngcairo", "postscript", ...
                               "pslatex", "pstext", "svg", "tgif", "x11"})))
         term_str = [term_str " dashed"];
       endif

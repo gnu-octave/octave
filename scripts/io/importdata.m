@@ -125,8 +125,8 @@ function [output, delimiter, header_rows] = importdata (varargin)
       error ("importdata: not implemented for file format %s", fileExt);
     case ".avi"
       error ("importdata: not implemented for file format %s", fileExt);
-    case {".bmp", ".cur", ".gif", ".hdf", ".ico", ".jpe", ".jpeg", ".jpg", \
-          ".pbm", ".pcx", ".pgm", ".png", ".pnm", ".ppm", ".ras", \
+    case {".bmp", ".cur", ".gif", ".hdf", ".ico", ".jpe", ".jpeg", ".jpg", ...
+          ".pbm", ".pcx", ".pgm", ".png", ".pnm", ".ppm", ".ras", ...
           ".tif", ".tiff", ".xwd"}
       delimiter  = NaN;
       header_rows = 0;
@@ -152,7 +152,7 @@ function [output, delimiter, header_rows] = importdata (varargin)
       [output.data, output.fs] = wavread (fname);
     otherwise
       ## Assume the file is in ascii format.
-      [output, delimiter, header_rows]  = \
+      [output, delimiter, header_rows]  = ...
           importdata_ascii (fname, delimiter, header_rows);
   endswitch
 
@@ -179,7 +179,7 @@ endfunction
 
 ########################################
 
-function [output, delimiter, header_rows] = \
+function [output, delimiter, header_rows] = ...
       importdata_ascii (fname, delimiter, header_rows)
 
   ## Define the fields in the output structure so that the order will be
@@ -239,7 +239,7 @@ function [output, delimiter, header_rows] = \
   ## get out of bounds.
   for i=length (file_content_rows):-1:(header_rows + 1)
     if (length (file_content_rows{i}) < 1)
-      file_content_rows = [file_content_rows(1:i-1), \
+      file_content_rows = [file_content_rows(1:i-1), ...
                            file_content_rows(i+1:length(file_content_rows))];
     endif
   endfor
@@ -353,7 +353,7 @@ endfunction
 %!test
 %! # Header
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
-%! A.textdata = {"This is a header row."; \
+%! A.textdata = {"This is a header row."; ...
 %!               "this row does not contain any data, but the next one does."};
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");

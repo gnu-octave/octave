@@ -66,7 +66,7 @@
 ## @example
 ## @group
 ## figure (); view (-38, 20);
-## pa = patch ("Faces", t, "Vertices", p, "FaceVertexCData", p, \
+## pa = patch ("Faces", t, "Vertices", p, "FaceVertexCData", p, ...
 ##             "FaceColor", "interp", "EdgeColor", "none");
 ##
 ## ## Revert normals

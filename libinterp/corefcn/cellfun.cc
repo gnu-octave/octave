@@ -816,7 +816,7 @@ v = cellfun (@@det, a); # faster\n\
 %! A = cellfun (@(x,y,z) x + y + z, {1, 1, 1}, {2, 2, 2}, {3, 4, 5});
 %! assert (A, [6, 7, 8]);
 %!test
-%! A = cellfun (@(x,y,z) x + y + z, {1, 1, 1}, {2, 2, 2}, {3, 4, 5}, \
+%! A = cellfun (@(x,y,z) x + y + z, {1, 1, 1}, {2, 2, 2}, {3, 4, 5}, ...
 %!              "UniformOutput", false);
 %! assert (A, {6, 7, 8});
 %!test %% Two input arguments of different types
@@ -837,20 +837,20 @@ v = cellfun (@@det, a); # faster\n\
 %! A = cellfun (@(x,y) x == y, {false, true}, {true, true});
 %! assert (A, [false, true]);
 %!test
-%! A = cellfun (@(x,y) x == y, {false; true}, {true; true}, \
+%! A = cellfun (@(x,y) x == y, {false; true}, {true; true}, ...
 %!              "UniformOutput", true);
 %! assert (A, [false; true]);
 %!test
 %! A = cellfun (@(x) x, {false, true; false, true}, "UniformOutput", false);
 %! assert (A, {false, true; false, true});
 %!test %% Three ouptut arguments of same type
-%! [A, B, C] = cellfun (@find, {true, false; false, true}, \
+%! [A, B, C] = cellfun (@find, {true, false; false, true}, ...
 %!                      "UniformOutput", false);
 %! assert (isequal (A, {true, []; [], true}));
 %! assert (isequal (B, {true, []; [], true}));
 %! assert (isequal (C, {true, []; [], true}));
 %!test
-%! A = cellfun (@(x,y) cell2str (x,y), {true}, {true}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {true}, {true}, ...
 %!              "ErrorHandler", @__cellfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -858,7 +858,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = cellfun (@(x,y) cell2str (x,y), {true}, {true}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {true}, {true}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -871,7 +871,7 @@ v = cellfun (@@det, a); # faster\n\
 %! A = cellfun (@(x,y) x>y, {1.1, 4.2}, {3.1, 2+3*i});
 %! assert (A, [false, true]);
 %!test
-%! A = cellfun (@(x,y) x>y, {1.1, 4.2; 2, 4}, {3.1, 2; 2, 4+2*i}, \
+%! A = cellfun (@(x,y) x>y, {1.1, 4.2; 2, 4}, {3.1, 2; 2, 4+2*i}, ...
 %!              "UniformOutput", true);
 %! assert (A, [false, true; false, false]);
 %!test
@@ -884,7 +884,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (isequal (B, {true, true; [], true}));
 %! assert (isequal (C, {10, 11; [], 12}));
 %!test
-%! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!              "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -893,7 +893,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -912,7 +912,7 @@ v = cellfun (@@det, a); # faster\n\
 %! A = cellfun (@(x,y) x:y, {"a", "d"}, {"c", "f"}, "UniformOutput", false);
 %! assert (A, {"abc", "def"});
 %!test
-%! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, ...
 %!              "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -920,7 +920,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -938,15 +938,15 @@ v = cellfun (@@det, a); # faster\n\
 %! A = cellfun (@(x,y) x{1} < y{1}, {{1.1}, {4.2}}, {{3.1}, {2}});
 %! assert (A, [1, 0], 1e-16);
 %!test
-%! A = cellfun (@(x,y) x{1} < y{1}, {{1.1}; {4.2}}, {{3.1}; {2}}, \
+%! A = cellfun (@(x,y) x{1} < y{1}, {{1.1}; {4.2}}, {{3.1}; {2}}, ...
 %!              "UniformOutput", true);
 %! assert (A, [1; 0], 1e-16);
 %!test
-%! A = cellfun (@(x,y) x{1} < y{1}, {{1.1}, {4.2}}, {{3.1}, {2}}, \
+%! A = cellfun (@(x,y) x{1} < y{1}, {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "UniformOutput", false);
 %! assert (A, {true, false});
 %!test
-%! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
+%! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -954,7 +954,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
+%! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -969,17 +969,17 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (A, true);
 %!test
 %! a = struct ("a", 1, "b", 2);  b = struct ("a", 1, "b", 3);
-%! A = cellfun (@(x,y) (x.a == y.a) && (x.b < y.b) , {a}, {b}, \
+%! A = cellfun (@(x,y) (x.a == y.a) && (x.b < y.b) , {a}, {b}, ...
 %!              "UniformOutput", true);
 %! assert (A, true);
 %!test
 %! a = struct ("a", 1, "b", 2);  b = struct ("a", 1, "b", 3);
-%! A = cellfun (@(x,y) (x.a == y.a) && (x.b < y.b) , {a}, {b}, \
+%! A = cellfun (@(x,y) (x.a == y.a) && (x.b < y.b) , {a}, {b}, ...
 %!              "UniformOutput", false);
 %! assert (A, {true});
 %!test
 %! a = struct ("a", 1, "b", 2);  b = struct ("a", 1, "b", 3);
-%! A = cellfun (@(x,y) cell2str (x.a, y.a), {a}, {b}, \
+%! A = cellfun (@(x,y) cell2str (x.a, y.a), {a}, {b}, ...
 %!              "ErrorHandler", @__cellfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -988,7 +988,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (A.index, 1);
 %!test %% Overwriting setting of "UniformOutput" true
 %! a = struct ("a", 1, "b", 2);  b = struct ("a", 1, "b", 3);
-%! A = cellfun (@(x,y) cell2str (x.a, y.a), {a}, {b}, \
+%! A = cellfun (@(x,y) cell2str (x.a, y.a), {a}, {b}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -1559,7 +1559,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert (isequal (B, {true, []; [], true}));
 %! assert (isequal (C, {true, []; [], true}));
 %!test
-%! A = arrayfun (@(x,y) array2str (x,y), true, true, \
+%! A = arrayfun (@(x,y) array2str (x,y), true, true, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -1567,7 +1567,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = arrayfun (@(x,y) array2str (x,y), true, true, "UniformOutput", true, \
+%! A = arrayfun (@(x,y) array2str (x,y), true, true, "UniformOutput", true, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -1592,7 +1592,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert (isequal (B, {true, true; [], true}));
 %! assert (isequal (C, {10, 11; [], 12}));
 %!test
-%! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, \
+%! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -1601,7 +1601,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, \
+%! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -1621,7 +1621,7 @@ arrayfun (@@str2num, [1234],\n\
 %! A = arrayfun (@(x,y) x:y, ["a", "d"], ["c", "f"], "UniformOutput", false);
 %! assert (A, {"abc", "def"});
 %!test
-%! A = arrayfun (@(x,y) cell2str (x,y), ["a", "d"], ["c", "f"], \
+%! A = arrayfun (@(x,y) cell2str (x,y), ["a", "d"], ["c", "f"], ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "identifier") && isfield (A(1), "message") && isfield (A(1), "index");
 %! assert (B, true);
@@ -1647,7 +1647,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = arrayfun (@(x) mat2str(x), "a", "UniformOutput", true, \
+%! A = arrayfun (@(x) mat2str(x), "a", "UniformOutput", true, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -1673,7 +1673,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test
-%! A = arrayfun (@(x,y) num2str (x,y), {1.1, 4.2}, {3.1, 2}, \
+%! A = arrayfun (@(x,y) num2str (x,y), {1.1, 4.2}, {3.1, 2}, ...
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);

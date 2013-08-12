@@ -276,7 +276,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
         data_size = nblks * BUFLENGTH + count;
       else
         ## Compute data size to read incl complete EOL
-        data_size = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi) \
+        data_size = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi) ...
                     + l_eol_char - 1;
       endif
       fseek (fid, st_pos, "bof");

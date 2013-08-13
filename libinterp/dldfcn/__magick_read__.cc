@@ -79,7 +79,7 @@ template <class T>
 static octave_value_list
 read_indexed_images (std::vector<Magick::Image>& imvec,
                      const Array<octave_idx_type>& frameidx,
-                     const octave_idx_type nargout,
+                     const octave_idx_type& nargout,
                      const octave_scalar_map& options)
 {
   typedef typename T::element_type P;
@@ -189,7 +189,7 @@ template <class T>
 octave_value_list
 read_images (std::vector<Magick::Image>& imvec,
              const Array<octave_idx_type>& frameidx,
-             const octave_idx_type nargout,
+             const octave_idx_type& nargout,
              const octave_scalar_map& options)
 {
   typedef typename T::element_type P;
@@ -227,9 +227,11 @@ read_images (std::vector<Magick::Image>& imvec,
   // when depth() is 32.
   // TODO in the next release of GraphicsMagick, MaxRGB should be replaced
   //      with QuantumRange since MaxRGB is already deprecated in ImageMagick.
-  const double divisor   = imvec[0].depth () == 32 ?
-                           std::numeric_limits<uint32_t>::max () :
-                           MaxRGB / ((uint64_t (1) << imvec[0].depth ()) - 1);
+  double divisor;
+  if (imvec[0].depth () == 32)
+    divisor = std::numeric_limits<uint32_t>::max ();
+  else
+    divisor = MaxRGB / ((uint64_t (1) << imvec[0].depth ()) - 1);
 
   // FIXME: this workaround should probably be fixed in GM by creating a
   //        new ImageType BilevelMatteType
@@ -240,9 +242,7 @@ read_images (std::vector<Magick::Image>& imvec,
   // only way to check for this seems to be by checking matte ().
   Magick::ImageType type = imvec[0].type ();
   if (type == Magick::BilevelType && imvec[0].matte ())
-    {
-      type = Magick::GrayscaleMatteType;
-    }
+    type = Magick::GrayscaleMatteType;
 
   // FIXME: ImageType is the type being used to represent the image in memory
   // by GM. The real type may be different (see among others bug #36820). For
@@ -263,21 +263,13 @@ read_images (std::vector<Magick::Image>& imvec,
       // read by the function to read indexed images
       const std::string type_str = imvec[0].attribute ("PNG:IHDR.color-type-orig");
       if (type_str == "0")
-        {
-          type = Magick::GrayscaleType;
-        }
+        type = Magick::GrayscaleType;
       else if (type_str == "2")
-        {
-          type = Magick::TrueColorType;
-        }
+        type = Magick::TrueColorType;
       else if (type_str == "6")
-        {
-          type = Magick::TrueColorMatteType;
-        }
+        type = Magick::TrueColorMatteType;
       else if (type_str == "4")
-        {
-          type = Magick::GrayscaleMatteType;
-        }
+        type = Magick::GrayscaleMatteType;
     }
 
   // If the alpha channel was not requested, treat images as if
@@ -287,30 +279,25 @@ read_images (std::vector<Magick::Image>& imvec,
       switch (type)
         {
         case Magick::GrayscaleMatteType:
-          {
-            type = Magick::GrayscaleType;
-            break;
-          }
+          type = Magick::GrayscaleType;
+          break;
+
         case Magick::PaletteMatteType:
-          {
-            type = Magick::PaletteType;
-            break;
-          }
+          type = Magick::PaletteType;
+          break;
+
         case Magick::TrueColorMatteType:
-          {
-            type = Magick::TrueColorType;
-            break;
-          }
+          type = Magick::TrueColorType;
+          break;
+
         case Magick::ColorSeparationMatteType:
-          {
-            type = Magick::ColorSeparationType;
-            break;
-          }
+          type = Magick::ColorSeparationType;
+          break;
+
         default:
-          {
-            // Do nothing other than silencing warnings about enumeration
-            // values not being handled in switch.
-          }
+          // Do nothing other than silencing warnings about enumeration
+          // values not being handled in switch.
+          ;
         }
     }
 
@@ -538,12 +525,12 @@ read_images (std::vector<Magick::Image>& imvec,
   return retval;
 }
 
+// Read a file into vector of image objects.
 void static
-read_file (const std::string filename, std::vector<Magick::Image>& imvec)
+read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
 {
   try
     {
-      // Read a file into vector of image objects
       Magick::readImages (&imvec, filename);
     }
   catch (Magick::Warning& w)
@@ -582,10 +569,9 @@ maybe_initialize_magick (void)
       setlocale (LC_ALL, locale.c_str ());
 
       if (QuantumDepth < 32)
-        {
-          warning ("your version of %s limits images to %d bits per pixel",
-                   MagickPackageName, QuantumDepth);
-        }
+        warning ("your version of %s limits images to %d bits per pixel",
+                 MagickPackageName, QuantumDepth);
+
       initialized = true;
     }
 }
@@ -620,14 +606,13 @@ use @code{imread}.\n\
   if (error_state)
     {
       error ("__magick_read__: OPTIONS must be a struct");
+      return output;
     }
 
   std::vector<Magick::Image> imvec;
   read_file (args(0).string_value (), imvec);
   if (error_state)
-    {
-      return output;
-    }
+    return output;
 
   // Prepare an Array with the indexes for the requested frames.
   const octave_idx_type nFrames = imvec.size ();
@@ -637,9 +622,7 @@ use @code{imread}.\n\
     {
       frameidx.resize (dim_vector (1, nFrames));
       for (octave_idx_type i = 0; i < nFrames; i++)
-        {
-          frameidx(i) = i;
-        }
+        frameidx(i) = i;
     }
   else
     {
@@ -647,6 +630,7 @@ use @code{imread}.\n\
       if (error_state)
         {
           error ("__magick_read__: invalid value for Index/Frame");
+          return output;
         }
       // Fix indexes from base 1 to base 0, and at the same time, make
       // sure none of the indexes is outside the range of image number.
@@ -685,20 +669,14 @@ use @code{imread}.\n\
   if (klass == Magick::PseudoClass && imvec[0].magick () != "JPEG")
     {
       if (depth <= 1)
-        {
-          output = read_indexed_images <boolNDArray>   (imvec, frameidx,
-                                                        nargout, options);
-        }
+        output = read_indexed_images<boolNDArray>   (imvec, frameidx,
+                                                     nargout, options);
       else if (depth <= 8)
-        {
-          output = read_indexed_images <uint8NDArray>  (imvec, frameidx,
-                                                        nargout, options);
-        }
+        output = read_indexed_images<uint8NDArray>  (imvec, frameidx,
+                                                     nargout, options);
       else if (depth <= 16)
-        {
-          output = read_indexed_images <uint16NDArray> (imvec, frameidx,
-                                                        nargout, options);
-        }
+        output = read_indexed_images<uint16NDArray> (imvec, frameidx,
+                                                     nargout, options);
       else
         {
           error ("imread: indexed images with depths greater than 16-bit are not supported");
@@ -709,25 +687,13 @@ use @code{imread}.\n\
   else
     {
       if (depth <= 1)
-        {
-          output = read_images<boolNDArray>   (imvec, frameidx,
-                                               nargout, options);
-        }
+        output = read_images<boolNDArray>   (imvec, frameidx, nargout, options);
       else if (depth <= 8)
-        {
-          output = read_images<uint8NDArray>  (imvec, frameidx,
-                                               nargout, options);
-        }
+        output = read_images<uint8NDArray>  (imvec, frameidx, nargout, options);
       else if (depth <= 16)
-        {
-          output = read_images<uint16NDArray> (imvec, frameidx,
-                                               nargout, options);
-        }
+        output = read_images<uint16NDArray> (imvec, frameidx, nargout, options);
       else if (depth <= 32)
-        {
-          output = read_images<FloatNDArray>  (imvec, frameidx,
-                                               nargout, options);
-        }
+        output = read_images<FloatNDArray>  (imvec, frameidx, nargout, options);
       else
         {
           error ("imread: reading of images with %i-bit depth is not supported",
@@ -759,9 +725,8 @@ img_float2uint (const T& img)
   const octave_uint32 max = octave_uint32::max ();
   const octave_idx_type numel = img.numel ();
   for (octave_idx_type idx = 0; idx < numel; idx++)
-    {
-      out_fvec[idx] = img_fvec[idx] * max;
-    }
+    out_fvec[idx] = img_fvec[idx] * max;
+
   return out;
 }
 
@@ -769,7 +734,7 @@ template <class T>
 static void
 encode_indexed_images (std::vector<Magick::Image>& imvec,
                        const T& img,
-                       const Matrix cmap)
+                       const Matrix& cmap)
 {
   typedef typename T::element_type P;
   const octave_idx_type nFrames   = img.ndims () < 4 ? 1 : img.dims ()(3);
@@ -787,11 +752,9 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
     const octave_idx_type G_offset = cmap_size;
     const octave_idx_type B_offset = cmap_size * 2;
     for (octave_idx_type map_idx = 0; map_idx < cmap_size; map_idx++)
-      {
-        colormap.push_back (Magick::ColorRGB (cmap_fvec[map_idx],
-                                              cmap_fvec[map_idx + G_offset],
-                                              cmap_fvec[map_idx + B_offset]));
-      }
+      colormap.push_back (Magick::ColorRGB (cmap_fvec[map_idx],
+                                            cmap_fvec[map_idx + G_offset],
+                                            cmap_fvec[map_idx + B_offset]));
   }
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
@@ -810,9 +773,8 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
       // Insert colormap.
       m_img.colorMapSize (cmap_size);
       for (octave_idx_type map_idx = 0; map_idx < cmap_size; map_idx++)
-        {
-          m_img.colorMap (map_idx, colormap[map_idx]);
-        }
+        m_img.colorMap (map_idx, colormap[map_idx]);
+
       // Why are we also setting the pixel values instead of only the
       // index values? We don't know if a file format supports indexed
       // images. If we only set the indexes and then try to save the
@@ -824,7 +786,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
       // over the order of that colormap. And that's why we set both.
       Magick::PixelPacket* pix  = m_img.getPixels (0, 0, nCols, nRows);
       Magick::IndexPacket* ind  = m_img.getIndexes ();
-      const P* img_fvec = img.fortran_vec ();
+      const P* img_fvec         = img.fortran_vec ();
 
       octave_idx_type GM_idx = 0;
       for (octave_idx_type column = 0; column < nCols; column++)
@@ -1026,8 +988,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 }
 
 void static
-write_file (const std::string filename,
-            const std::string ext,
+write_file (const std::string& filename,
+            const std::string& ext,
             std::vector<Magick::Image>& imvec)
 {
   try
@@ -1092,27 +1054,19 @@ use @code{imwrite}.\n\
       error ("__magick_write__: invalid IMG or MAP");
       return retval;
     }
-  // Create vector for the images to be written.
+
   std::vector<Magick::Image> imvec;
 
   if (cmap.is_empty ())
     {
       if (img.is_bool_type ())
-        {
-          encode_bool_image (imvec, img);
-        }
+        encode_bool_image (imvec, img);
       else if (img.is_uint8_type ())
-        {
-          encode_uint_image<uint8NDArray> (imvec, img);
-        }
+        encode_uint_image<uint8NDArray> (imvec, img);
       else if (img.is_uint16_type ())
-        {
-          encode_uint_image<uint16NDArray> (imvec, img);
-        }
+        encode_uint_image<uint16NDArray> (imvec, img);
       else if (img.is_uint32_type ())
-        {
-          encode_uint_image<uint32NDArray> (imvec, img);
-        }
+        encode_uint_image<uint32NDArray> (imvec, img);
       else if (img.is_float_type ())
         {
           // For image formats that support floating point values, we write
@@ -1122,13 +1076,10 @@ use @code{imwrite}.\n\
           // values, GM seems unable to do that so we at least make them uint32.
           uint32NDArray clip_img;
           if (img.is_single_type ())
-            {
-              clip_img = img_float2uint<FloatNDArray> (img.float_array_value ());
-            }
+            clip_img = img_float2uint<FloatNDArray> (img.float_array_value ());
           else
-            {
-              clip_img = img_float2uint<NDArray> (img.array_value ());
-            }
+            clip_img = img_float2uint<NDArray> (img.array_value ());
+
           encode_uint_image<uint32NDArray> (imvec, octave_value (clip_img));
         }
       else
@@ -1143,13 +1094,11 @@ use @code{imwrite}.\n\
       // converted them in __imwrite__.m. We should probably do it here
       // but it would look much messier.
       if (img.is_uint8_type ())
-        {
-          encode_indexed_images<uint8NDArray> (imvec, img.uint8_array_value (), cmap);
-        }
+        encode_indexed_images<uint8NDArray>  (imvec, img.uint8_array_value (),
+                                              cmap);
       else if (img.is_uint16_type ())
-        {
-          encode_indexed_images<uint16NDArray> (imvec, img.uint16_array_value (), cmap);
-        }
+        encode_indexed_images<uint16NDArray> (imvec, img.uint16_array_value (),
+                                              cmap);
       else
         {
           error ("__magick_write__: indexed image must be uint8, uint16 or float.");
@@ -1159,13 +1108,10 @@ use @code{imwrite}.\n\
 
   const octave_idx_type nFrames = imvec.size ();
 
-  // Set quality.
   // FIXME What happens when we try to set with formats that do not support it?
   const octave_idx_type quality = options.getfield ("quality").int_value ();
   for (octave_idx_type i = 0; i < nFrames; i++)
-    {
-      imvec[i].quality (quality);
-    }
+    imvec[i].quality (quality);
 
   // If writemode is set to append, read the image and append to it. Even
   // if set to append, make sure that something was read at all.
@@ -1175,9 +1121,7 @@ use @code{imwrite}.\n\
       std::vector<Magick::Image> ini_imvec;
       read_file (filename, ini_imvec);
       if (error_state)
-        {
           return retval;
-        }
       if (ini_imvec.size () > 0)
         {
           ini_imvec.insert (ini_imvec.end (), imvec.begin (), imvec.end ());
@@ -1185,12 +1129,9 @@ use @code{imwrite}.\n\
         }
     }
 
-  // Finally, save the damn thing.
   write_file (filename, ext, imvec);
   if (error_state)
-    {
-      return retval;
-    }
+    return retval;
 
 #endif
   return retval;
@@ -1298,13 +1239,13 @@ use @code{imfinfo}.\n\
 
   maybe_initialize_magick ();
 
-  if (args.length () < 1 || ! args (0).is_string ())
+  if (args.length () < 1 || ! args(0).is_string ())
     {
       print_usage ();
       return retval;
     }
 
-  const std::string filename = args (0).string_value ();
+  const std::string filename = args(0).string_value ();
 
   try
     {
@@ -1437,7 +1378,7 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
 #ifndef HAVE_MAGICK
   gripe_disabled_feature ("imformats", "Image IO");
 #else
-  if (args.length () != 1 || ! args (0).is_map ())
+  if (args.length () != 1 || ! args(0).is_map ())
     {
       print_usage ();
       return retval;

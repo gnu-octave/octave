@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <fcntl.h>
 
+#include "cmd-hist.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-env.h"
@@ -48,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "lo-utils.h"
+#include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "oct-stdstrm.h"
@@ -220,6 +222,11 @@ error message.\n\
 
           if (! error_state)
             {
+              octave_history_write_timestamp ();
+
+              if (! command_history::ignoring_entries ())
+                command_history::clean_up_and_save ();
+
               std::string msg;
 
               int status = octave_syscalls::execvp (exec_file, exec_args, msg);

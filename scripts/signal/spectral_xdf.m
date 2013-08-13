@@ -17,7 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} spectral_xdf (@var{x}, @var{win}, @var{b})
+## @deftypefn  {Function File} {} spectral_xdf (@var{x})
+## @deftypefnx {Function File} {} spectral_xdf (@var{x}, @var{win})
+## @deftypefnx {Function File} {} spectral_xdf (@var{x}, @var{win}, @var{b})
 ## Return the spectral density estimator given a data vector @var{x},
 ## window name @var{win}, and bandwidth, @var{b}.
 ##
@@ -26,12 +28,17 @@
 ##
 ## If @var{win} is omitted, the triangle window is used.  If @var{b} is
 ## omitted, @code{1 / sqrt (length (@var{x}))} is used.
+## @seealso{spectral_adf}
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Spectral density estimation
 
 function retval = spectral_xdf (x, win, b)
+
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  endif
 
   xr = length (x);
 
@@ -45,6 +52,8 @@ function retval = spectral_xdf (x, win, b)
 
   if (nargin == 1)
     w = triangle_sw (xr, b);
+  elseif (! ischar (win))
+    error ("spectral_xdf: WIN must be a string");
   else
     win = str2func ([win "_sw"]);
     w = feval (win, xr, b);
@@ -60,3 +69,8 @@ function retval = spectral_xdf (x, win, b)
 
 endfunction
 
+%% Test input validation
+%!error spectral_xdf ();
+%!error spectral_xdf (1, 2, 3, 4);
+%!error spectral_xdf (1, 2);
+%!error spectral_xdf (1, "invalid");

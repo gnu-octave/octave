@@ -198,10 +198,10 @@ function h = findobj (varargin)
   while (numel (handles) && ! (idepth >= depth))
     children = [];
     for n = 1 : numel (handles)
-      children = union (children, get (handles(n), "children"));
+      children = [children; get(handles(n), "children")];
     endfor
     handles = children;
-    h = union (h, children);
+    h = [h; children];
     idepth = idepth + 1;
   endwhile
 
@@ -274,12 +274,12 @@ function h = findobj (varargin)
   h = h(:);
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
-%! clf (hf);
 %! unwind_protect
 %!   h = findobj (gca (), "-property", "foo");
-%!   assert (h, zeros (0, 1))
+%!   assert (isempty (h));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -288,9 +288,9 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h = plot (1:10);
-%!   set (h, "tag", "foobar")
+%!   set (h, "tag", "foobar");
 %!   g = findobj (gcf (), "tag", "foobar", "type", "line", "color", [0 0 1]);
-%!   assert (g, h)
+%!   assert (g, h);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -311,103 +311,108 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   subplot (2, 2, 1)
-%!   imagesc (rand (10))
-%!   subplot (2, 2, 2)
-%!   surf (peaks)
-%!   subplot (2, 2, 3)
-%!   contour (peaks)
-%!   subplot (2, 2, 4)
-%!   plot (peaks)
+%!   subplot (2,2,1);
+%!    imagesc (rand (10));
+%!   subplot (2,2,2);
+%!    surf (peaks);
+%!   subplot (2,2,3);
+%!    contour (peaks);
+%!   subplot (2,2,4);
+%!    plot (peaks);
 %!   h1 = findobj (gcf (), "-regexp", "Type", "image|surface|hggroup");
-%!   h2 = findobj (gcf (), "Type", "image", "-or", "Type", "surface", "-or", "Type", "hggroup");
+%!   h2 = findobj (gcf (), "Type", "image",
+%!                  "-or", "Type", "surface",
+%!                  "-or", "Type", "hggroup");
+%!   assert (h2, h1);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-%! assert (h2, h1)
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   h1 = subplot (2, 2, 1);
-%!   h2 = subplot (2, 2, 2);
-%!   h3 = subplot (2, 2, 3);
-%!   h4 = subplot (2, 2, 4);
-%!   userdata = struct ("foo", "bar");
-%!   set (h3, "userdata", userdata);
-%!   h = findobj (hf, "userdata", userdata);
+%!   h1 = subplot (2,2,1);
+%!   h2 = subplot (2,2,2);
+%!   h3 = subplot (2,2,3, "userdata", struct ("foo", "bar"));
+%!   h4 = subplot (2,2,4);
+%!   h = findobj (hf, "userdata", struct ("foo", "bar"));
+%!   assert (h, h3);
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
-%! assert (h, h3)
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   h1 = subplot (2, 2, 1);
-%!   set (h1, 'tag', '1')
-%!   h2 = subplot (2, 2, 2);
-%!   set (h2, 'tag', '2')
-%!   h3 = subplot (2, 2, 3);
-%!   set (h3, 'tag', '3')
-%!   h4 = subplot (2, 2, 4);
-%!   set (h4, 'tag', '4')
-%!   h = findobj (hf, 'type', 'axes', '-not', 'tag', '1');
+%!   h1 = subplot (2,2,1, "tag", "1");
+%!   h2 = subplot (2,2,2, "tag", "2");
+%!   h3 = subplot (2,2,3, "tag", "3");
+%!   h4 = subplot (2,2,4, "tag", "4");
+%!   h = findobj (hf, "type", "axes", "-not", "tag", "1");
+%!   assert (h, [h4; h3; h2])
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
-%! assert (h, [h2; h3; h4])
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h1 = subplot (2, 2, 1);
-%!   set (h1, 'userdata', struct ('column', 1, 'row', 1));
+%!   set (h1, "userdata", struct ("column", 1, "row", 1));
 %!   h2 = subplot (2, 2, 2);
-%!   set (h2, 'userdata', struct ('column', 2, 'row', 1));
+%!   set (h2, "userdata", struct ("column", 2, "row", 1));
 %!   h3 = subplot (2, 2, 3);
-%!   set (h3, 'userdata', struct ('column', 1, 'row', 2));
+%!   set (h3, "userdata", struct ("column", 1, "row", 2));
 %!   h4 = subplot (2, 2, 4);
-%!   set (h4, 'userdata', struct ('column', 2, 'row', 2));
-%!   h = findobj (hf, 'type', 'axes', '-not', 'userdata', ...
-%!                struct ('column', 1, 'row', 1));
+%!   set (h4, "userdata", struct ("column", 2, "row", 2));
+%!   h = findobj (hf, "type", "axes",
+%!                "-not", "userdata", struct ("column", 1, "row", 1));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-%! assert (h, [h2; h3; h4])
+%! assert (h, [h4; h3; h2])
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ha = axes ();
 %!   plot (1:10);
-%!   h = findobj (hf, 'type', 'figure', ...
-%!                '-or', 'parent', hf, ...
-%!                '-and', 'type', 'axes');
+%!   h = findobj (hf, "type", "figure",
+%!                "-or", "parent", hf,
+%!                "-and", "type", "axes");
 %! unwind_protect_cleanup
 %!   close (hf)
 %! end_unwind_protect
-%! assert (h, [ha; hf])
+%! assert (h, [hf; ha])
 
 %!test
 %! hf = figure ("visible", "off");
-%! set (hf, 'tag', 'foo');
 %! unwind_protect
-%!   h1 = subplot (2, 2, 1);
-%!   set (h1, 'tag', 'foo');
-%!   h2 = subplot (2, 2, 2);
-%!   set (h2, 'tag', 'bar');
-%!   h3 = subplot (2, 2, 3);
-%!   set (h3, 'tag', 'foo');
-%!   h4 = subplot (2, 2, 4);
-%!   set (h4, 'tag', 'bar')
-%!   h = findobj (hf, 'type', 'axes', '-xor', ...
-%!                'tag', 'foo');
+%!   set (hf, "tag", "foo");
+%!   h1 = subplot (2,2,1, "tag", "foo");
+%!   h2 = subplot (2,2,2, "tag", "bar");
+%!   h3 = subplot (2,2,3, "tag", "foo");
+%!   h4 = subplot (2,2,4, "tag", "bar");
+%!   h = findobj (hf, "type", "axes", "-xor", "tag", "foo");
+%!   assert (h, [hf; h4; h2]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-%! assert (h, [h2; h4; hf])
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax1 = subplot (2,1,1);
+%!    hl1 = plot (rand (10,1));
+%!   hax2 = subplot (2,1,2);
+%!    hl2 = plot (rand (10,1));
+%!   hobj = findobj (hf);
+%!   assert (hobj, [hf; hax2; hax1; hl2; hl1]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+

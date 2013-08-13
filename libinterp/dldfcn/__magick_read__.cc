@@ -747,6 +747,25 @@ use @code{imread}.\n\
 #ifdef HAVE_MAGICK
 
 template <class T>
+static uint32NDArray
+img_float2uint (const T& img)
+{
+  typedef typename T::element_type P;
+  uint32NDArray out (img.dims ());
+
+  octave_uint32* out_fvec = out.fortran_vec ();
+  const P*       img_fvec = img.fortran_vec ();
+
+  const octave_uint32 max = octave_uint32::max ();
+  const octave_idx_type numel = img.numel ();
+  for (octave_idx_type idx = 0; idx < numel; idx++)
+    {
+      out_fvec[idx] = img_fvec[idx] * max;
+    }
+  return out;
+}
+
+template <class T>
 static void
 encode_indexed_images (std::vector<Magick::Image>& imvec,
                        const T& img,
@@ -892,6 +911,11 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
       bitdepth = 16;
       m = img.uint16_array_value ();
     }
+  else if (img.is_uint32_type ())
+    {
+      bitdepth = 32;
+      m = img.uint32_array_value ();
+    }
   else
     error ("__magick_write__: invalid image class");
 
@@ -907,7 +931,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   octave_idx_type rows = m.rows ();
   octave_idx_type columns = m.columns ();
 
-  unsigned int div_factor = (1 << bitdepth) - 1;
+  double div_factor = (uint64_t(1) << bitdepth) - 1;
 
   for (unsigned int ii = 0; ii < nframes; ii++)
     {
@@ -1084,6 +1108,28 @@ use @code{imwrite}.\n\
       else if (img.is_uint16_type ())
         {
           encode_uint_image<uint16NDArray> (imvec, img);
+        }
+      else if (img.is_uint32_type ())
+        {
+          encode_uint_image<uint32NDArray> (imvec, img);
+        }
+      else if (img.is_float_type ())
+        {
+          // For image formats that support floating point values, we write
+          // the actual values. For those who don't, we only use the values
+          // on the range [0 1] and save integer values.
+          // But here, even for formats that would support floating point
+          // values, GM seems unable to do that so we at least make them uint32.
+          uint32NDArray clip_img;
+          if (img.is_single_type ())
+            {
+              clip_img = img_float2uint<FloatNDArray> (img.float_array_value ());
+            }
+          else
+            {
+              clip_img = img_float2uint<NDArray> (img.array_value ());
+            }
+          encode_uint_image<uint32NDArray> (imvec, octave_value (clip_img));
         }
       else
         {

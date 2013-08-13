@@ -270,6 +270,18 @@ read_images (std::vector<Magick::Image>& imvec,
         type = Magick::TrueColorMatteType;
       else if (type_str == "4")
         type = Magick::GrayscaleMatteType;
+      // Color types 0, 2, and 3 can also have alpha channel, conveyed
+      // via the "tRNS" chunk.  For 0 and 2, it's limited to GIF-style
+      // binary transparency, while 3 can have any level of alpha per
+      // palette entry. We thus must check matte() to see if the image
+      // really doesn't have an alpha channel.
+      if (imvec[0].matte ())
+        {
+          if (type == Magick::GrayscaleType)
+            type = Magick::GrayscaleMatteType;
+          else if (type == Magick::TrueColorType)
+            type = Magick::TrueColorMatteType;
+        }
     }
 
   // If the alpha channel was not requested, treat images as if

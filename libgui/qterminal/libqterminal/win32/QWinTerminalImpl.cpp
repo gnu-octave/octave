@@ -94,6 +94,66 @@ private:
 
 //////////////////////////////////////////////////////////////////////////////
 
+static QString translateKey (QKeyEvent *ev)
+{
+  QString s;
+
+  if (!ev->text ().isEmpty ())
+    s = ev->text ();
+  else
+    {
+      QString esc = "\x1b";
+
+      switch (ev->key ())
+        {
+        case Qt::Key_Up:
+          s = esc + "[A";
+          break;
+
+        case Qt::Key_Down:
+          s = esc + "[B";
+          break;
+
+        case Qt::Key_Right:
+          s = esc + "[C";
+          break;
+
+        case Qt::Key_Left:
+          s = esc + "[D";
+          break;
+
+        case Qt::Key_Home:
+          s = esc + "[1~";
+          break;
+
+        case Qt::Key_End:
+          s = esc + "[4~";
+          break;
+
+        case Qt::Key_Insert:
+          s = esc + "[2~";
+          break;
+
+        case Qt::Key_Delete:
+          s = esc + "[3~";
+          break;
+
+        case Qt::Key_PageUp:
+          s = esc + "[5~";
+          break;
+
+        case Qt::Key_PageDown:
+          s = esc + "[6~";
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  return s;
+}
+
 class QConsolePrivate
 {
   friend class QWinTerminalImpl;
@@ -1294,29 +1354,6 @@ void QWinTerminalImpl::wheelEvent (QWheelEvent* event)
 
 //////////////////////////////////////////////////////////////////////////////
 
-bool QWinTerminalImpl::winEvent (MSG* msg, long* result)
-{
-  switch (msg->message)
-    {
-    case WM_KEYDOWN:
-    case WM_KEYUP:
-    //case WM_CHAR:
-      if ( GetKeyState ('C') == 0 || GetKeyState (VK_CONTROL) == 0)
-        {
-          PostMessage (d->m_consoleWindow,
-                   msg->message,
-                   msg->wParam,
-                   msg->lParam);
-        }
-      // allow Qt to process messages as well, in case of shortcuts etc
-      return false;
-    default:
-      return false;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
 void QWinTerminalImpl::scrollValueChanged (int value)
 {
   d->setScrollValue (value);
@@ -1359,6 +1396,10 @@ void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
 
 void QWinTerminalImpl::keyPressEvent (QKeyEvent* event)
 {
+  QString s = translateKey (event);
+  if (!s.isEmpty ())
+    sendText (s);
+
   if (d->m_hasBlinkingCursor)
     {
       d->m_blinkCursorTimer->start (d->BLINK_DELAY);

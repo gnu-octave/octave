@@ -81,7 +81,6 @@ protected:
   void focusInEvent (QFocusEvent*);
   void focusOutEvent (QFocusEvent*);
   void keyPressEvent (QKeyEvent*);
-  bool winEvent (MSG*, long*);
   virtual void start (void);
   void mouseMoveEvent (QMouseEvent *event);
   void mousePressEvent (QMouseEvent *event);

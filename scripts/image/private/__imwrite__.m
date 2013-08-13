@@ -26,6 +26,10 @@ function __imwrite__ (img, varargin)
 
   if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
     print_usage ("imwrite");
+  elseif (isempty (img))
+    error ("imwrite: invalid empty image");
+  elseif (issparse (img) || issparse (map))
+    error ("imwrite: sparse images are not supported");
   endif
 
   [filename, ext, map, param_list] = imwrite_filename (varargin{:});

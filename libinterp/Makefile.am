@@ -316,7 +316,7 @@ uninstall-local: uninstall-oct uninstall-built-in-docstrings
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
-	$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(octfiledir)
+	$(MKDIR_P) $(DESTDIR)$(octfiledir)
 	if [ -n "`cat $(DLDFCN_PKG_ADD_FILE)`" ]; then \
 	  $(INSTALL_DATA) $(DLDFCN_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi

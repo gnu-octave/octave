@@ -201,7 +201,7 @@ public:
   // Build a try-catch command.
   tree_command *
   make_try_command (token *try_tok, tree_statement_list *body,
-                    tree_statement_list *cleanup, token *end_tok,
+                    tree_statement_list *cleanup, tree_identifier *id, token *end_tok,
                     octave_comment_list *lc, octave_comment_list *mc);
 
   // Build a while command.

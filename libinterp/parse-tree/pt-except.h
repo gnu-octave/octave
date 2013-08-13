@@ -29,6 +29,7 @@ class tree_walker;
 
 #include "comment-list.h"
 #include "pt-cmd.h"
+#include "pt-id.h"
 #include "symtab.h"
 
 // Simple exception handling.
@@ -39,18 +40,21 @@ tree_try_catch_command : public tree_command
 public:
 
   tree_try_catch_command (int l = -1, int c = -1)
-    : tree_command (l, c), try_code (0), catch_code (0), lead_comm (0),
+    : tree_command (l, c), try_code (0), catch_code (0), expr_id (0), lead_comm (0),
       mid_comm (0), trail_comm (0) { }
 
   tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
+                          tree_identifier *id,
                           octave_comment_list *cl = 0,
                           octave_comment_list *cm = 0,
                           octave_comment_list *ct = 0,
                           int l = -1, int c = -1)
-    : tree_command (l, c), try_code (tc), catch_code (cc),
+    : tree_command (l, c), try_code (tc), catch_code (cc), expr_id (id),
       lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
 
   ~tree_try_catch_command (void);
+
+  tree_identifier *identifier (void) { return expr_id; }
 
   tree_statement_list *body (void) { return try_code; }
 
@@ -74,6 +78,9 @@ private:
 
   // The code to execute if an error occurs in the first block.
   tree_statement_list *catch_code;
+
+  // Identifier to modify.
+  tree_identifier *expr_id;
 
   // Comment preceding TRY token.
   octave_comment_list *lead_comm;

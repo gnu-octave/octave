@@ -993,6 +993,7 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
   newline ();
 
   tree_statement_list *try_code = cmd.body ();
+  tree_identifier *expr_id = cmd.identifier ();
 
   if (try_code)
     {
@@ -1008,6 +1009,12 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
   indent ();
 
   os << "catch";
+
+  if (expr_id)
+    {
+      os << " ";
+      expr_id->accept (*this);
+    }
 
   newline ();
 

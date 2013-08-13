@@ -100,6 +100,29 @@ Summary of important user-visible changes for version 3.8:
 
     will be consistent with other binary operators.
 
+ ** Octave now has limited support for named exceptions
+
+    The following syntax is now accepted:
+
+      try
+        statements
+      catch exception-id
+        statements
+      end
+
+    The exception-id is a structure with the fields "message" and
+    "identifier".  For example
+
+      try
+        error ("Octave:error-id", "error message");
+      catch myerr
+        printf ("identifier: %s\n", myerr.identifier);
+        printf ("message:    %s\n", myerr.message);
+      end_try_catch
+
+    When classdef-style classes are added to Octave, the exception-id
+    will become an MException object.
+
  ** Warning IDs renamed:
 
     Octave:array-as-scalar => Octave:array-to-scalar

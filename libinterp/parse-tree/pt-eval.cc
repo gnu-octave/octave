@@ -921,6 +921,27 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
           buffer_error_messages--;
 
+          tree_identifier *expr_id = cmd.identifier ();
+          octave_lvalue ult;
+
+          if (expr_id)
+            {
+
+              octave_scalar_map err;
+
+              ult = expr_id->lvalue ();
+
+              if (error_state)
+                return;
+
+              err.assign ("message", last_error_message ());
+              err.assign ("identifier", last_error_id ());
+
+              if (! error_state)
+                ult.assign (octave_value::op_asn_eq, err);
+
+            }
+
           if (catch_code)
             catch_code->accept (*this);
         }

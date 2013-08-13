@@ -127,3 +127,34 @@
 %!   assert (lasterr()(1:22), "rethrow: 'a' undefined");
 %! end_try_catch
 
+%!test
+%! clear myerr;
+%! try
+%!   error ("user-defined error");
+%! catch myerr
+%!   assert (myerr.message, "user-defined error");
+%! end_try_catch
+
+%!test
+%! try
+%!   clear a;
+%!   error ("user-defined error");
+%! catch a=1;
+%!   assert (lasterr, "user-defined error");
+%!   assert (a, 1);
+%! end_try_catch
+
+%!test
+%! clear myerr1
+%! clear myerr2
+%! try
+%!   try
+%!     clear a;
+%!     a;
+%!   catch myerr1
+%!     error (myerr1);
+%!   end_try_catch
+%! catch myerr2
+%!   assert (myerr1.message, myerr2.message);
+%!   assert (myerr1.identifier, myerr2.identifier);
+%! end_try_catch

@@ -2205,16 +2205,19 @@ graphics_object::set_value_or_default (const caseless_str& name,
 /*
 ## test setting of default values
 %!test
-%! hf = figure ("visible", "off");
-%! h = plot (1:10, 10:-1:1);
-%! set (0, "defaultlinelinewidth", 20);
-%! set (h, "linewidth", "default");
-%! lw_def = get (h, "linewidth");
-%! set (h, "linewidth", "factory");
-%! lw_fac = get (h, "linewidth");
-%! close (hf);
-%! assert (lw_def, 20);
-%! assert (lw_fac, 0.5);
+%! old_lw = get (0, "defaultlinelinewidth");
+%! unwind_protect
+%!   hf = figure ("visible", "off");
+%!   h = plot (1:10, 10:-1:1);
+%!   set (0, "defaultlinelinewidth", 20);
+%!   set (h, "linewidth", "default");
+%!   assert (get (h, "linewidth"), 20);
+%!   set (h, "linewidth", "factory");
+%!   assert (get (h, "linewidth"), 0.5);
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   set (0, "defaultlinelinewidth", old_lw);
+%! end_unwind_protect
 */
 
 static double
@@ -3160,19 +3163,24 @@ root_figure::properties::get_boundingbox (bool, const Matrix&) const
 
 /*
 %!test
-%! set (0, "units", "pixels");
-%! sz = get (0, "screensize") - [1, 1, 0, 0];
-%! dpi = get (0, "screenpixelsperinch");
-%! set (0, "units", "inches");
-%! assert (get (0, "screensize"), sz / dpi, 0.5 / dpi);
-%! set (0, "units", "centimeters");
-%! assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54);
-%! set (0, "units", "points");
-%! assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72);
-%! set (0, "units", "normalized");
-%! assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0]);
-%! set (0, "units", "pixels");
-%! assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
+%! old_units = get (0, "units");
+%! unwind_protect
+%!   set (0, "units", "pixels");
+%!   sz = get (0, "screensize") - [1, 1, 0, 0];
+%!   dpi = get (0, "screenpixelsperinch");
+%!   set (0, "units", "inches");
+%!   assert (get (0, "screensize"), sz / dpi, 0.5 / dpi);
+%!   set (0, "units", "centimeters");
+%!   assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54);
+%!   set (0, "units", "points");
+%!   assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72);
+%!   set (0, "units", "normalized");
+%!   assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0]);
+%!   set (0, "units", "pixels");
+%!   assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
+%! unwind_protect_cleanup
+%!   set (0, "units", old_units);
+%! end_unwind_protect
 */
 
 void
@@ -3880,14 +3888,19 @@ figure::properties::update_units (const caseless_str& old_units)
 /*
 %!test
 %! hf = figure ("visible", "off");
-%! set (0, "units", "pixels");
-%! rsz = get (0, "screensize");
-%! set (gcf (), "units", "pixels");
-%! fsz = get (gcf (), "position");
-%! set (gcf (), "units", "normalized");
-%! pos = get (gcf (), "position");
-%! close (hf);
-%! assert (pos, (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]));
+%! old_units = get (0, "units");
+%! unwind_protect
+%!   set (0, "units", "pixels");
+%!   rsz = get (0, "screensize");
+%!   set (gcf (), "units", "pixels");
+%!   fsz = get (gcf (), "position");
+%!   set (gcf (), "units", "normalized");
+%!   pos = get (gcf (), "position");
+%!   assert (pos, (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]));
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   set (0, "units", old_units);
+%! end_unwind_protect
 */
 
 std::string
@@ -4075,19 +4088,6 @@ axes::properties::sync_positions (void)
 }
 
 /*
-%!xtest
-%! ## Doubling up on subplots results in axes out of order
-%! hf = figure ("visible", "off");
-%! graphics_toolkit (hf, "fltk");
-%! unwind_protect
-%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
-%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
-%!   hax = findall (gcf (), "type", "axes");
-%!   positions = cell2mat (get (hax, "position"));
-%!   assert (positions(1,2) > positions(2,2))
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
 %!test
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "fltk");

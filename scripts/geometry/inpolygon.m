@@ -1,5 +1,5 @@
 ## Copyright (C) 2006-2012 Frederick (Rick) A Niles
-##               and S�ren Hauberg
+##               and Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -30,7 +30,7 @@
 ## Author: Frederick (Rick) A Niles <niles@rickniles.com>
 ## Created: 14 November 2006
 
-## Vectorized by S�ren Hauberg <soren@hauberg.org>
+## Vectorized by Søren Hauberg <soren@hauberg.org>
 
 ## The method for determining if a point is in in a polygon is based on
 ## the algorithm shown on

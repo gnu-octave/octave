@@ -6297,7 +6297,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 
 	* plot/grid.m: Document handle argument.
 
-2009-01-15  Peter L. S�ndergaard  <peter@sonderport.dk>
+2009-01-15  Peter L. Søndergaard  <peter@sonderport.dk>
 
 	* general/nargoutchk.m: Doc fix.
 	* general/nargchk.m: Improve compatibility.  New tests.
@@ -6503,7 +6503,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 	systems. Simplify & fix indexing. Use left division for step problem.
 	Fix output args.
 
-2008-12-13  Francesco Potort�  <pot@gnu.org>
+2008-12-13  Francesco Potortì  <pot@gnu.org>
 
 	* specfun/nchoosek.m: Check for input arguments, signal loss of
 	precision, correctly handle k==0 and k==n cases, add proper tests.
@@ -6592,7 +6592,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 2008-11-10  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/spline.m: Delete debugging statements.  From
-	Sebastian Sch�ps <sebastian@schoeps.org>.
+	Sebastian Schöps <sebastian@schoeps.org>.
 
 2008-11-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
 

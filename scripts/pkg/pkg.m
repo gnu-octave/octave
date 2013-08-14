@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 S�ren Hauberg
+## Copyright (C) 2005-2012 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ## Copyright (C) 2012 Carlo de Falco
 ##

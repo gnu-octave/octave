@@ -270,7 +270,7 @@ function assert (cond, varargin)
         B_null_real(exclude) = 0;
         A_null_imag = imag (A);
         B_null_imag = imag (B);
-        exclude = ! isfinite (A_null_real) & ! isfinite (B_null_real);
+        exclude = ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
         A_null_imag(exclude) = 0;
         B_null_imag(exclude) = 0;
         A_null = complex (A_null_real, A_null_imag);

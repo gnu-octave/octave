@@ -91,6 +91,11 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
   const octave_idx_type nRows = region["row_out"];
   const octave_idx_type nCols = region["col_out"];
 
+  // imvec has all of the pages of a file, even the ones we are not
+  // interested in. We will use the first image that we will be actually
+  // reading to get information about the image.
+  const octave_idx_type def_elem = frameidx(0);
+
   T img       = T (dim_vector (nRows, nCols, 1, nFrames));
   P* img_fvec = img.fortran_vec ();
 
@@ -128,7 +133,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
   // Do we need to get the colormap to interpret the image and alpha channel?
   if (nargout > 1)
     {
-      const octave_idx_type mapsize = imvec[0].colorMapSize ();
+      const octave_idx_type mapsize = imvec[def_elem].colorMapSize ();
       Matrix cmap                   = Matrix (mapsize, 3);
 
       // In theory, it should be possible for each frame of an image to
@@ -136,12 +141,12 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
       // return the colormap of the first frame.
 
       // only get alpha channel if it exists and was requested as output
-      if (imvec[0].matte () && nargout >= 3)
+      if (imvec[def_elem].matte () && nargout >= 3)
         {
           Matrix amap = Matrix (mapsize, 1);
           for (octave_idx_type i = 0; i < mapsize; i++)
             {
-              const Magick::ColorRGB c = imvec[0].colorMap (i);
+              const Magick::ColorRGB c = imvec[def_elem].colorMap (i);
               cmap(i,0) = c.red   ();
               cmap(i,1) = c.green ();
               cmap(i,2) = c.blue  ();
@@ -168,7 +173,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
         {
           for (octave_idx_type i = 0; i < mapsize; i++)
             {
-              const Magick::ColorRGB c = imvec[0].colorMap (i);
+              const Magick::ColorRGB c = imvec[def_elem].colorMap (i);
               cmap(i,0) = c.red   ();
               cmap(i,1) = c.green ();
               cmap(i,2) = c.blue  ();
@@ -202,6 +207,11 @@ read_images (std::vector<Magick::Image>& imvec,
   const octave_idx_type nCols = region["col_out"];
   T img;
 
+  // imvec has all of the pages of a file, even the ones we are not
+  // interested in. We will use the first image that we will be actually
+  // reading to get information about the image.
+  const octave_idx_type def_elem = frameidx(0);
+
   const octave_idx_type row_start  = region["row_start"];
   const octave_idx_type col_start  = region["col_start"];
   const octave_idx_type row_shift  = region["row_shift"];
@@ -228,10 +238,10 @@ read_images (std::vector<Magick::Image>& imvec,
   // TODO in the next release of GraphicsMagick, MaxRGB should be replaced
   //      with QuantumRange since MaxRGB is already deprecated in ImageMagick.
   double divisor;
-  if (imvec[0].depth () == 32)
+  if (imvec[def_elem].depth () == 32)
     divisor = std::numeric_limits<uint32_t>::max ();
   else
-    divisor = MaxRGB / ((uint64_t (1) << imvec[0].depth ()) - 1);
+    divisor = MaxRGB / ((uint64_t (1) << imvec[def_elem].depth ()) - 1);
 
   // FIXME: this workaround should probably be fixed in GM by creating a
   //        new ImageType BilevelMatteType
@@ -240,8 +250,8 @@ read_images (std::vector<Magick::Image>& imvec,
   // black (1 color), and have a second channel set for transparency (2nd
   // color). Its type will be bilevel since there is no BilevelMatte. The
   // only way to check for this seems to be by checking matte ().
-  Magick::ImageType type = imvec[0].type ();
-  if (type == Magick::BilevelType && imvec[0].matte ())
+  Magick::ImageType type = imvec[def_elem].type ();
+  if (type == Magick::BilevelType && imvec[def_elem].matte ())
     type = Magick::GrayscaleMatteType;
 
   // FIXME: ImageType is the type being used to represent the image in memory
@@ -658,8 +668,8 @@ use @code{imread}.\n\
         }
     }
 
-  const Magick::ClassType klass = imvec[0].classType ();
-  const octave_idx_type depth   = imvec[0].depth ();
+  const Magick::ClassType klass = imvec[frameidx(0)].classType ();
+  const octave_idx_type depth   = imvec[frameidx(0)].depth ();
 
   // Magick::ClassType
   // PseudoClass:

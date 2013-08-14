@@ -56,36 +56,49 @@ function varargout = __imread__ (filename, varargin)
     error ("imread: cannot find %s", filename);
   endif
 
+  ## It is possible for an file with multiple pages to have very different
+  ## images on each page. Specifically, they may have different sizes. Because
+  ## of this, we need to first find out the index of the images to read so
+  ## we can set up defaults for things such as PixelRegion later on.
+  options = struct ("index", 1);  # default image index
+
+  ## Index is the only option that can be defined without the parameter/value
+  ## pair style. When defining it here, the string "all" is invalid though.
+  ## Also, for matlab compatibility, if index is defined both as an option here
+  ## and parameter/value pair, silently ignore the first.
+  if (nargin >= offset + 1 && ! ischar (varargin{offset}))
+    if (! is_valid_index_option (options.index))
+      error ("imread: IDX must be a numeric vector");
+    endif
+    options.index = varargin{offset};
+    offset++;
+  endif
+
+  if (rem (numel (varargin) - offset + 1, 2) != 0)
+    error ("imread: no pair for all arguments (odd number left over)");
+  endif
+
+  ## Check key/value options.
+  indexes = find (cellfun (@(x) ischar (x) ...
+                                && any (strcmpi (x, {"frames", "index"})),
+                           varargin));
+  if (indexes)
+    options.index = varargin{indexes+1};
+    if (! (is_valid_index_option (options.index)) &&
+        ! (ischar (options.index) && strcmpi (options.index, "all")))
+      error ("imread: value for %s must be a vector or the string `all'");
+    endif
+  endif
+
   try
-    info = imfinfo (fn)(1);
-    ## set default for options
-    options = struct ("index",       1,
-                      "region", {{1:1:info.Height 1:1:info.Width}});
+    ## Use information from the first image to be read to set defaults.
+    info = imfinfo (fn)(options.index(1));
 
-    ## Index is the only option that can be defined without the parameter/value
-    ## pair style. When defining it here, the string "all" is invalid though.
-    if (nargin >= offset + 1 && ! ischar (varargin{offset}))
-      if (! is_valid_index_option (options.index))
-        error ("imread: IDX must be a numeric vector");
-      endif
-      options.index = varargin{offset};
-      offset++;
-    endif
-
-    if (rem (numel (varargin) - offset + 1, 2) != 0)
-      error ("imread: no pair for all arguments (even number left)");
-    endif
+    ## Set default for options.
+    options.region = {1:1:info.Height 1:1:info.Width};
 
     for idx = offset:2:(numel (varargin) - offset + 1)
-
       switch (tolower (varargin{idx}))
-
-        case {"frames", "index"},
-          options.index = varargin{idx+1};
-          if (! (is_valid_index_option (options.index)) &&
-              ! (ischar (options.index) && strcmpi (options.index, "all")))
-            error ("imread: value for %s must be a vector or the string `all'");
-          endif
 
         case "pixelregion",
           options.region = varargin{idx+1};
@@ -115,8 +128,10 @@ function varargout = __imread__ (filename, varargin)
 
         case "info",
           ## We ignore this option. This parameter exists in Matlab to
-          ## speed up the reading of multipage TIFF.  It makes no difference
-          ## for us since we're already quite efficient.
+          ## speed up the reading of multipage TIFF by passing a structure
+          ## that contains information about the start on the file of each
+          ## page.  We can't control it through GraphicsMagic but at least
+          ## we allow to load multiple pages with one command.
 
         otherwise
           error ("imread: invalid PARAMETER `%s'", varargin{idx});

@@ -960,15 +960,33 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// Continuation lines.  Allow comments after continuations.
+// Continuation lines.  Allow arbitrary text after continuations.
+%}
+
+\.\.\..*{NL} {
+    curr_lexer->lexer_debug ("\\.\\.\\..*{NL}");
+
+    curr_lexer->handle_continuation ();
+  }
+
+%{
+// Deprecated C preprocessor style continuation markers.
 %}
 
 \\{S}*{NL} |
-\\{S}*{CCHAR}.*{NL} |
-\.\.\..*{NL} {
-    curr_lexer->lexer_debug ("\\.\\.\\..*{NL}|\\\\{S}*{NL}|\\\\{S}*{CCHAR}.*{NL}");
+\\{S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("\\\\{S}*{NL}|\\\\{S}*{CCHAR}.*{NL}");
 
-    curr_lexer->handle_continuation ();
+    static const char *msg = "using continuation marker \\ outside of double quoted strings is deprecated and will be removed in a future version of Octave";
+
+    std::string nm = curr_lexer->fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg,
+                       curr_lexer->input_line_number, nm.c_str ());
   }
 
 %{

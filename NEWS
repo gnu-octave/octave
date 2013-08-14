@@ -88,6 +88,18 @@ Summary of important user-visible changes for version 3.8:
     be followed immediately by the newline character.  No whitespace or
     end-of-linecomment may appear between them.
 
+ ** Backslash as a continuation marker outside of double-quoted strings
+    is now deprecated.
+
+    Using '\' as a continuation marker outside fo double quoted strings
+    is now deprecated and will be removed from a future version of
+    Octave.  When that is done, the behavior of
+
+      (a \
+       b)
+
+    will be consistent with other binary operators.
+
  ** Warning IDs renamed:
 
     Octave:array-as-scalar => Octave:array-to-scalar

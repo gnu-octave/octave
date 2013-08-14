@@ -119,21 +119,17 @@ Represents a horizontal tab, control-i, ASCII code 9.
 @item \v
 Represents a vertical tab, control-k, ASCII code 11.
 
-@c We don't do octal or hex this way yet.
-@c
-@c @item \@var{nnn}
-@c Represents the octal value @var{nnn}, where @var{nnn} are one to three
-@c digits between 0 and 7.  For example, the code for the ASCII ESC
-@c (escape) character is @samp{\033}.@refill
-@c 
-@c @item \x@var{hh}@dots{}
-@c Represents the hexadecimal value @var{hh}, where @var{hh} are hexadecimal
-@c digits (@samp{0} through @samp{9} and either @samp{A} through @samp{F} or
-@c @samp{a} through @samp{f}).  Like the same construct in @sc{ansi} C,
-@c the escape 
-@c sequence continues until the first non-hexadecimal digit is seen.  However,
-@c using more than two hexadecimal digits produces undefined results.  (The
-@c @samp{\x} escape sequence is not allowed in @sc{posix} @code{awk}.)@refill
+@item \@var{nnn}
+Represents the octal value @var{nnn}, where @var{nnn} are one to three
+digits between 0 and 7.  For example, the code for the ASCII ESC
+(escape) character is @samp{\033}.
+
+@item \x@var{hh}@dots{}
+Represents the hexadecimal value @var{hh}, where @var{hh} are hexadecimal
+digits (@samp{0} through @samp{9} and either @samp{A} through @samp{F} or
+@samp{a} through @samp{f}).  Like the same construct in @sc{ansi} C,
+the escape sequence continues until the first non-hexadecimal digit is seen.
+However, using more than two hexadecimal digits produces undefined results.
 @end table
 
 In a single-quoted string there is only one escape sequence: you may insert a

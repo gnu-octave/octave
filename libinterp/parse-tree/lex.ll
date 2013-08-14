@@ -694,6 +694,21 @@ ANY_INCLUDING_NL (.|{NL})
       curr_lexer->string_text += static_cast<unsigned char> (result);
   }
 
+<DQ_STRING_START>\\x[0-9a-fA-F]+ {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\x[0-9a-fA-F]+");
+
+    curr_lexer->current_input_column += yyleng;
+
+    int result;
+    sscanf (yytext+2, "%x", &result);
+
+    // Truncate the value silently instead of checking the range like
+    // we do for octal above.  This is to match C/C++ where any number
+    // of digits is allowed but the value is implementation-defined if
+    // it exceeds the range of the character type.
+    curr_lexer->string_text += static_cast<unsigned char> (result);
+  }
+
 <DQ_STRING_START>"\\a" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\a\"");
 

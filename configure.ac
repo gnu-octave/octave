@@ -886,7 +886,12 @@ CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
-  [glpk/glpk.h glpk.h], [glp_simplex])
+  [glpk/glpk.h glpk.h], [glp_simplex], [], [],
+  [warn_glpk=
+   OCTAVE_CHECK_LIB_GLPK_OK(
+    [TEXINFO_GLPK="@set HAVE_GLPK"
+    AC_DEFINE(HAVE_GLPK, 1, [Define to 1 if GLPK is available.])],
+    [warn_glpk="GLPK library found, but does not seem to work properly -- disabling glpk function"])])
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 

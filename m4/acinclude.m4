@@ -598,6 +598,42 @@ doit (void)
   fi
 ])
 dnl
+dnl Check whether GLPK provides the latest API functions required
+dnl for the glpk function. The glp_iptcp structure was introduced
+dnl in GLPK version 4.38.
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_GLPK_OK], [
+  AC_CACHE_CHECK([whether the glpk library has glp_interior(glp_prob*, glp_iptcp*)],
+    [octave_cv_lib_glpk_ok],
+    [AC_LANG_PUSH(C++)
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        extern "C"
+        {
+        #if defined (HAVE_GLPK_GLPK_H)
+        #include <glpk/glpk.h>
+        #else
+        #include <glpk.h>
+        #endif
+        }
+        ]], [[
+        glp_prob *lp = glp_create_prob ();
+        glp_iptcp iptcp;
+        glp_init_iptcp (&iptcp);
+        int retval = glp_interior (lp, &iptcp);
+        ]])],
+      octave_cv_lib_glpk_ok=yes,
+      octave_cv_lib_glpk_ok=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_lib_glpk_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
 dnl Check whether using HDF5 DLL under Windows.  This is done by
 dnl testing for a data symbol in the HDF5 library, which would
 dnl require the definition of _HDF5USEDL_ under MSVC compiler.

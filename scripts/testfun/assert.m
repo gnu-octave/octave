@@ -60,13 +60,12 @@ function assert (cond, varargin)
     print_usage ();
   endif
 
-  persistent call_depth = 0;
+  persistent call_depth = -1;
   persistent errmsg;
 
-  if (call_depth > 0)
-    call_depth++;
-  else
-    call_depth = 0;
+  call_depth++;
+
+  if (call_depth == 0)
     errmsg = "";
   end
 
@@ -133,10 +132,10 @@ function assert (cond, varargin)
             assert (cond{i}, expected{i}, tol);
           endfor
         catch
-        err.index{end+1} = "{}";
-        err.observed{end+1} = "O";
-        err.expected{end+1} = "E";
-        err.reason{end+1} = "Cell configuration error";
+          err.index{end+1} = "{}";
+          err.observed{end+1} = "O";
+          err.expected{end+1} = "E";
+          err.reason{end+1} = "Cell configuration error";
         end_try_catch
       endif
 
@@ -355,13 +354,13 @@ function assert (cond, varargin)
 
   endif
 
-  if (call_depth == 0)
+  call_depth--;
+
+  if (call_depth == -1)
     ## Last time through.  If there were any errors on any pass, raise a flag.
     if (! isempty (errmsg))
       error (errmsg);
     endif
-  else
-    call_depth--;
   endif
 
 endfunction

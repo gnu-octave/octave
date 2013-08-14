@@ -967,7 +967,7 @@ install_built_in_docstrings (void)
   if (file)
     {
       // Ignore header;
-      file.ignore (1000, 0x1f);
+      file.ignore (1000, 0x1e);
 
       if (file.gcount () == 1000)
         {
@@ -988,7 +988,7 @@ install_built_in_docstrings (void)
 
       while (! file.eof ())
         {
-          file.getline (buf, bufsize, 0x1f);
+          file.getline (buf, bufsize, 0x1e);
 
           std::string tmp (buf);
 

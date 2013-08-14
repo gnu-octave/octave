@@ -24,7 +24,7 @@ output_file = args{1};
 docstrings_files = args(2:end);
 
 ## Special character used as break between DOCSTRINGS
-doc_delim = char (31);
+doc_delim = char (0x1e);
 
 ## Read the contents of all the DOCSTRINGS files into TEXT.
 ## It is more efficient to fork to shell for makeinfo only once on large data
@@ -52,7 +52,7 @@ text = [text{:}, doc_delim];
 
 ## Strip Texinfo markers and docstring separators.
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
-text = strrep (text, '@', "@@");
+text = strrep (text, [doc_delim "@"], [doc_delim "@@"]);
 
 ## Write data to temporary file for input to makeinfo
 [fid, name, msg] = mkstemp ("octave_doc_XXXXXX", true);

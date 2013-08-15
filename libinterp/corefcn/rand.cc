@@ -533,6 +533,19 @@ or \"single\" argument.  These are the only valid classes.\n\
 %! endif
 */
 
+/*
+%!# Test out-of-range values as rand() seeds.  See oct-rand.cc: double2uint32().
+%!function v = __rand_sample__ (initval)
+%!  rand ("state", initval);
+%!  v = rand (1, 6);
+%!endfunction
+%!
+%!assert (__rand_sample__ (0), __rand_sample__ (2^32))
+%!assert (__rand_sample__ (-2), __rand_sample__ (2^32-2))
+%!assert (__rand_sample__ (Inf), __rand_sample__ (NaN))
+%!assert (! isequal (__rand_sample__ (-1), __rand_sample__ (-2)))
+*/
+
 static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN (randn, args, ,

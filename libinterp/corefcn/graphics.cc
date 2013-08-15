@@ -4085,6 +4085,10 @@ axes::properties::sync_positions (void)
   tightinset = tinset;
   set_units (old_units);
   update_transform ();
+  if (activepositionproperty.is ("position"))
+    update_position ();
+  else
+    update_outerposition ();
 }
 
 /*

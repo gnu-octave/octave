@@ -52,7 +52,7 @@ MFILE: foreach $m_fname (@ARGV)
   @help_txt = gethelp ($fcn, $full_fname);
   next MFILE if ($help_txt[0] eq "");
 
-  print "\x{1e}$fcn\n";
+  print "\x{1d}$fcn\n";
   print "\@c $fcn scripts/$m_fname\n";
 
   foreach $_ (@help_txt)

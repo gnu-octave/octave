@@ -6,7 +6,7 @@ die "usage: munge-texi TOP-SRCDIR DOCSTRING-FILE < file" if (@ARGV < 2);
 $top_srcdir = shift (@ARGV);
 
 # Constant patterns
-$doc_delim = qr/^\x{1e}/;
+$doc_delim = qr/^\x{1d}/;
 $tex_delim = qr/\Q-*- texinfo -*-\E/;
 $comment_line = qr/^\s*(?:$|#)/;
 # Pre-declare hash size for efficiency

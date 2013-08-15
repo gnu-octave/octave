@@ -64,7 +64,7 @@ DFFILE: foreach $df_fname (@ARGV)
   foreach $i (0 .. $#func_list)
   {
     $func = $func_list[$i];
-    print "\x{1e}$func\n";
+    print "\x{1d}$func\n";
     print "\@c $func $src_fname\n";
     print $docstr[$i],"\n";
   }

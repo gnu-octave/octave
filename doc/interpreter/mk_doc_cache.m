@@ -24,7 +24,7 @@ output_file = args{1};
 docstrings_files = args(2:end);
 
 ## Special character used as break between DOCSTRINGS
-doc_delim = char (0x1e);
+doc_delim = char (0x1d);
 
 ## Read the contents of all the DOCSTRINGS files into TEXT.
 ## It is more efficient to fork to shell for makeinfo only once on large data

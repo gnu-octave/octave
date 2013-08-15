@@ -91,7 +91,7 @@ endfunction
 %! [x, y, z] = peaks ();
 %! contour (x, y, z);
 %! title ('contour() plot of peaks() function');
-%! title ({'contour() plot (isolines of constant Z)'; 'Z = peaks()');
+%! title ({'contour() plot (isolines of constant Z)'; 'Z = peaks()'});
 
 %!demo
 %! clf;
@@ -100,7 +100,7 @@ endfunction
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
 %! contour (X, Y, abs (Z), 10);
-%! title ({'contour() plot'; 'polar fcn Z = sin (2*theta) * (1-r)'});
+%! title ({'contour() plot'; 'polar fcn: Z = sin (2*theta) * (1-r)'});
 
 %!test
 %! hf = figure ("visible", "off");

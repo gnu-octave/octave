@@ -92,7 +92,7 @@ endfunction
 %! colormap ('default');
 %! [x, y, z] = peaks (50);
 %! contourf (x, y, z, -7:9);
-%! title ({'contourf() plot (filled contour lines)'; 'Z = peaks()');
+%! title ({'contourf() plot (filled contour lines)'; 'Z = peaks()'});
 
 %!demo
 %! clf;
@@ -101,7 +101,7 @@ endfunction
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
 %! contourf (X, Y, abs (Z), 10);
-%! title ({'contourf() plot'; 'polar fcn Z = sin (2*theta) * (1-r)'});
+%! title ({'contourf() plot'; 'polar fcn: Z = sin (2*theta) * (1-r)'});
 
 %!demo
 %! clf;

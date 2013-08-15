@@ -1161,6 +1161,9 @@ void QConsolePrivate::sendConsoleText (const QString& s)
 
 #define TEXT_CHUNK_SIZE 512
 
+  // clear any selection on inserting text
+  clearSelection();
+
   int len = s.length ();
   INPUT_RECORD events[TEXT_CHUNK_SIZE];
   DWORD nEvents = 0, written;

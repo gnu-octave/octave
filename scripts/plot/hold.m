@@ -54,7 +54,7 @@
 function hold (varargin)
 
   if (nargin > 0 && isscalar (varargin{1}) && isaxes (varargin{1}))
-    hax = vargin{1};
+    hax = varargin{1};
     varargin(1) = [];
     nargs = numel (varargin);
     ## FIXME: Should this be ancestor (hax, "parent")?

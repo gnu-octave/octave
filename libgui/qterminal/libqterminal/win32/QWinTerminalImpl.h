@@ -86,6 +86,8 @@ protected:
   void mousePressEvent (QMouseEvent *event);
   void mouseReleaseEvent (QMouseEvent *event);
 
+  bool eventFilter(QObject *obj, QEvent *ev);
+
 private slots:
   void scrollValueChanged (int value);
   void monitorConsole (void);

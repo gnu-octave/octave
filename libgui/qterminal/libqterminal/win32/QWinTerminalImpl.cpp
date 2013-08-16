@@ -1227,6 +1227,8 @@ QConsolePrivate::cursorRect (void)
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
     : QTerminal (parent), d (new QConsolePrivate (this))
 {
+    installEventFilter (this);
+
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent, SLOT (set_global_shortcuts (bool)));
 }
@@ -1395,6 +1397,22 @@ void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
   setBlinkingCursorState (false);
 
   QWidget::focusOutEvent (event);
+}
+
+bool QWinTerminalImpl::eventFilter (QObject *obj, QEvent * event)
+{
+  // if a keypress, filter out tab keys so that the next/prev tabbing is
+  // disabled - but we still need to pass along to the console .
+  if (event->type () == QEvent::KeyPress)
+  {
+    QKeyEvent* k = static_cast<QKeyEvent*>(event);
+    if (k->key () == Qt::Key_Tab)
+    {
+      sendText ("\t");
+      return true;
+    }
+  }
+  return false;
 }
 
 void QWinTerminalImpl::keyPressEvent (QKeyEvent* event)

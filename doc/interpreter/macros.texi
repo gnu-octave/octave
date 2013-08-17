@@ -16,8 +16,8 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@c FIXME -- someday, we might replace this with @backslashchar, which
-@c has been added to Texinfo.
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is an new addition to Texinfo.
 
 @macro xbackslashchar
 \\
@@ -62,12 +62,12 @@ See also: \args\.
 @c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
 @c can be confusing if the code segment itself ends with a transpose operator.
 @ifinfo
-@macro xcode{arg}
+@macro tcode{arg}
 \arg\
 @end macro
 @end ifinfo
 @ifnotinfo
-@macro xcode{arg}
+@macro tcode{arg}
 @code{\arg\}
 @end macro
 @end ifnotinfo

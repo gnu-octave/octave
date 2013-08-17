@@ -5369,7 +5369,7 @@ Return the logical NOT of @var{x}.  This function is equivalent to\n\
 DEFUN (uplus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
-This function and @w{@xcode{+ x}} are equivalent.\n\
+This function and @w{@tcode{+ x}} are equivalent.\n\
 @seealso{uminus, plus, minus}\n\
 @end deftypefn")
 {
@@ -5379,7 +5379,7 @@ This function and @w{@xcode{+ x}} are equivalent.\n\
 DEFUN (uminus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
-This function and @w{@xcode{- x}} are equivalent.\n\
+This function and @w{@tcode{- x}} are equivalent.\n\
 @seealso{uplus, minus}\n\
 @end deftypefn")
 {
@@ -5390,7 +5390,7 @@ DEFUN (transpose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
 Return the transpose of @var{x}.\n\
-This function and @xcode{x.'} are equivalent.\n\
+This function and @tcode{x.'} are equivalent.\n\
 @seealso{ctranspose}\n\
 @end deftypefn")
 {
@@ -5421,7 +5421,7 @@ DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
 Return the complex conjugate transpose of @var{x}.\n\
-This function and @xcode{x'} are equivalent.\n\
+This function and @tcode{x'} are equivalent.\n\
 @seealso{transpose}\n\
 @end deftypefn")
 {
@@ -5495,7 +5495,7 @@ DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
-This function and @w{@xcode{x + y}} are equivalent.\n\
+This function and @w{@tcode{x + y}} are equivalent.\n\
 If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5514,7 +5514,7 @@ At least one argument is required.\n\
 DEFUN (minus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
-This function and @w{@xcode{x - y}} are equivalent.\n\
+This function and @w{@tcode{x - y}} are equivalent.\n\
 @seealso{plus, uminus}\n\
 @end deftypefn")
 {
@@ -5526,7 +5526,7 @@ DEFUN (mtimes, args, ,
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 Return the matrix multiplication product of inputs.\n\
-This function and @w{@xcode{x * y}} are equivalent.\n\
+This function and @w{@tcode{x * y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5546,7 +5546,7 @@ DEFUN (mrdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x / y}} are equivalent.\n\
+This function and @w{@tcode{x / y}} are equivalent.\n\
 @seealso{mldivide, rdivide, plus, minus}\n\
 @end deftypefn")
 {
@@ -5557,7 +5557,7 @@ DEFUN (mpower, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
-This function and @w{@xcode{x ^ y}} are equivalent.\n\
+This function and @w{@tcode{x ^ y}} are equivalent.\n\
 @seealso{power, mtimes, plus, minus}\n\
 @end deftypefn")
 {
@@ -5568,7 +5568,7 @@ DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x @xbackslashchar{} y}} are equivalent.\n\
+This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.\n\
 @seealso{mrdivide, ldivide, rdivide}\n\
 @end deftypefn")
 {
@@ -5642,7 +5642,7 @@ DEFUN (times, args, ,
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 Return the element-by-element multiplication product of inputs.\n\
-This function and @w{@xcode{x .* y}} are equivalent.\n\
+This function and @w{@tcode{x .* y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5662,7 +5662,7 @@ DEFUN (rdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x ./ y}} are equivalent.\n\
+This function and @w{@tcode{x ./ y}} are equivalent.\n\
 @seealso{ldivide, mrdivide, times, plus}\n\
 @end deftypefn")
 {
@@ -5678,7 +5678,7 @@ returns the one with smallest non-negative argument (angle).  Use\n\
 @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
 real result is preferred.\n\
 \n\
-This function and @w{@xcode{x .^ y}} are equivalent.\n\
+This function and @w{@tcode{x .^ y}} are equivalent.\n\
 @seealso{mpower, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn")
 {
@@ -5689,7 +5689,7 @@ DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x .@xbackslashchar{} y}} are equivalent.\n\
+This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
 @seealso{rdivide, mldivide, times, plus}\n\
 @end deftypefn")
 {

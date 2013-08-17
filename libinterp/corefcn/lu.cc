@@ -615,7 +615,7 @@ as obtained by @code{lu}:\n\
 @end example\n\
 \n\
 @noindent\n\
-then a factorization of @xcode{@var{A}+@var{x}*@var{y}.'} can be obtained\n\
+then a factorization of @tcode{@var{A}+@var{x}*@var{y}.'} can be obtained\n\
 either as\n\
 \n\
 @example\n\

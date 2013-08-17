@@ -147,7 +147,7 @@ function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options, hlgnd, tlgnd, setlgn
   endif
 
   for i = 1 : n
-    key = options.key;
+    key = options(i).key;
     if (! isempty (key))
       hlgnd = [hlgnd(:); h(i)];
       tlgnd = {tlgnd{:}, key};

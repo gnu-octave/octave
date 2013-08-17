@@ -96,3 +96,13 @@ endfunction
 %!error imwrite ([], "filename.jpg")          # Empty img matrix
 %!error imwrite (spones (2), "filename.jpg")  # Invalid sparse img
 
+%!testif HAVE_MAGICK
+%! imw = randi (255, 100, "uint8");
+%! filename = [tmpnam() ".png"];
+%! unwind_protect
+%!   imwrite (imw, filename);
+%!   imr = imread (filename);
+%! unwind_protect_cleanup
+%!   unlink (filename);
+%! end_unwind_protect
+%! assert (imw, imr)

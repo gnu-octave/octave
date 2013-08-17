@@ -26,13 +26,15 @@ function __imwrite__ (img, varargin)
 
   if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
     print_usage ("imwrite");
-  elseif (isempty (img))
+  endif
+
+  [filename, ext, map, param_list] = imwrite_filename (varargin{:});
+
+  if (isempty (img))
     error ("imwrite: invalid empty image");
   elseif (issparse (img) || issparse (map))
     error ("imwrite: sparse images are not supported");
   endif
-
-  [filename, ext, map, param_list] = imwrite_filename (varargin{:});
 
   if (rem (numel (param_list), 2) != 0)
     error ("imwrite: no pair for all arguments (odd number left)");

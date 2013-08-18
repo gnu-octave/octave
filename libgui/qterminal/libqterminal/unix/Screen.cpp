@@ -788,8 +788,8 @@ void Screen::ShowCharacter(unsigned short c)
 
   lastPos = loc(cuX,cuY);
 
-  // check if selection is still valid.
-  checkSelection(cuX,cuY);
+  // clear selection on text input
+  clearSelection ();
 
   Character& currentChar = screenLines[cuY][cuX];
 

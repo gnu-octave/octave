@@ -44,18 +44,18 @@ along with Octave; see the file COPYING.  If not, see
 // combination.
 
 static void
-gripe_missing_glyph (char c)
+gripe_missing_glyph (FT_ULong c)
 {
   warning_with_id ("Octave:missing-glyph",
-                   "ft_render: skipping missing glyph for character '%c'",
+                   "ft_render: skipping missing glyph for character '%x'",
                    c);
 }
 
 static void
-gripe_glyph_render (char c)
+gripe_glyph_render (FT_ULong c)
 {
   warning_with_id ("Octave:glyph-render",
-                   "ft_render: unable to render glyph for character '%c'",
+                   "ft_render: unable to render glyph for character '%x'",
                    c);
 }
 
@@ -302,40 +302,29 @@ ft_face_destroyed (void* object)
 // ---------------------------------------------------------------------------
 
 ft_render::ft_render (void)
-    : text_processor (), fonts (), bbox (1, 4, 0.0), halign (0), xoffset (0),
-      yoffset (0), mode (MODE_BBOX), red (0), green (0), blue (0)
+    : text_processor (), font (), bbox (1, 4, 0.0), halign (0), xoffset (0),
+      line_yoffset (0), yoffset (0), mode (MODE_BBOX),
+      color (dim_vector (1, 3), 0)
 {
 }
 
 ft_render::~ft_render (void)
 {
-  fonts.clear ();
 }
 
 void
 ft_render::set_font (const std::string& name, const std::string& weight,
                      const std::string& angle, double size)
 {
-  if (fonts.size () > 1)
-    ::warning ("ft_render: resetting font parameters while the font stack "
-               "contains more than 1 element.");
-
-  // In all cases, we only replace the first/bottom font in the stack, if any.
-  // Calling this method while there's more than 1 font in the stack does
-  // not make sense: we're not gonna reconstruct the entire font stack.
-
-  if (fonts.size ())
-    fonts.pop_front ();
-
   // FIXME: take "fontunits" into account
   FT_Face face = ft_manager::get_font (name, weight, angle, size);
 
   if (face)
     {
       if (FT_Set_Char_Size (face, 0, size*64, 0, 0))
-        ::warning ("ft_render: unable to set font size to %d", size);
+        ::warning ("ft_render: unable to set font size to %g", size);
 
-      fonts.push_front (ft_font (name, weight, angle, size, face));
+      font = ft_font (name, weight, angle, size, face);
     }
   else
     ::warning ("ft_render: unable to load appropriate font");
@@ -350,7 +339,7 @@ ft_render::push_new_line (void)
         {
           // Create a new bbox entry based on the current font.
 
-          FT_Face face = current_face ();
+          FT_Face face = font.face;
 
           if (face)
             {
@@ -379,7 +368,8 @@ ft_render::push_new_line (void)
           Matrix new_bbox = line_bbox.front ();
 
           xoffset = compute_line_xoffset (new_bbox);
-          yoffset += (old_bbox(1) - (new_bbox(1) + new_bbox(3)));
+          line_yoffset += (old_bbox(1) - (new_bbox(1) + new_bbox(3)));
+          yoffset = 0;
         }
       break;
     }
@@ -437,6 +427,42 @@ ft_render::compute_bbox (void)
 }
 
 void
+ft_render::update_line_bbox (void)
+{
+  // Called after a font change, when in MODE_BBOX mode, to update the
+  // current line bbox with the new font metrics. This also includes the
+  // current yoffset, that is the offset of the current glyph's baseline
+  // the line's baseline.
+
+  if (mode == MODE_BBOX)
+    {
+      int asc = font.face->size->metrics.ascender >> 6;
+      int desc = font.face->size->metrics.descender >> 6;
+
+      Matrix& bb = line_bbox.front ();
+
+      if ((yoffset + desc) < bb(1))
+        {
+          // The new font goes below the bottom of the current bbox.
+
+          int delta = bb(1) - (yoffset + desc);
+
+          bb(1) -= delta;
+          bb(3) += delta;
+        }
+
+      if ((yoffset + asc) > (bb(1) + bb(3)))
+        {
+          // The new font goes above the top of the current bbox.
+
+          int delta = (yoffset + asc) - (bb(1) + bb(3));
+
+          bb(3) += delta;
+        }
+    }
+}
+
+void
 ft_render::set_mode (int m)
 {
   mode = m;
@@ -444,7 +470,7 @@ ft_render::set_mode (int m)
   switch (mode)
     {
     case MODE_BBOX:
-      xoffset = yoffset = 0;
+      xoffset = line_yoffset = yoffset = 0;
       bbox = Matrix (1, 4, 0.0);
       line_bbox.clear ();
       push_new_line ();
@@ -454,7 +480,7 @@ ft_render::set_mode (int m)
         {
           ::warning ("ft_render: invalid bounding box, cannot render");
 
-          xoffset = yoffset = 0;
+          xoffset = line_yoffset = yoffset = 0;
           pixels = uint8NDArray ();
         }
       else
@@ -462,7 +488,8 @@ ft_render::set_mode (int m)
           pixels = uint8NDArray (dim_vector (4, bbox(2), bbox(3)),
                                  static_cast<uint8_t> (0));
           xoffset = compute_line_xoffset (line_bbox.front ());
-          yoffset = -bbox(1)-1;
+          line_yoffset = -bbox(1)-1;
+          yoffset = 0;
         }
       break;
     default:
@@ -471,132 +498,286 @@ ft_render::set_mode (int m)
     }
 }
 
+FT_UInt
+ft_render::process_character (FT_ULong code, FT_UInt previous)
+{
+  FT_Face face = font.face;
+  FT_UInt glyph_index = 0;
+
+  if (face)
+    {
+      glyph_index = FT_Get_Char_Index (face, code);
+
+      if (code != '\n'
+          && (! glyph_index
+              || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
+        {
+          glyph_index = 0;
+          gripe_missing_glyph (code);
+        }
+      else
+        {
+          switch (mode)
+            {
+            case MODE_RENDER:
+              if (code == '\n')
+                {
+                  glyph_index = FT_Get_Char_Index (face, ' ');
+                  if (!glyph_index || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+                    {
+                      glyph_index = 0;
+                      gripe_missing_glyph (' ');
+                    }
+                  else
+                    push_new_line ();
+                }
+              else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
+                {
+                  glyph_index = 0;
+                  gripe_glyph_render (code);
+                }
+              else
+                {
+                  FT_Bitmap& bitmap = face->glyph->bitmap;
+                  int x0, y0;
+
+                  if (previous)
+                    {
+                      FT_Vector delta;
+
+                      FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
+                      xoffset += (delta.x >> 6);
+                    }
+
+                  x0 = xoffset + face->glyph->bitmap_left;
+                  y0 = line_yoffset + yoffset + face->glyph->bitmap_top;
+
+                  // 'w' seems to have a negative -1
+                  // face->glyph->bitmap_left, this is so we don't
+                  // index out of bound, and assumes we we allocated
+                  // the right amount of horizontal space in the bbox.
+                  if (x0 < 0)
+                    x0 = 0;
+
+                  for (int r = 0; r < bitmap.rows; r++)
+                    for (int c = 0; c < bitmap.width; c++)
+                      {
+                        unsigned char pix = bitmap.buffer[r*bitmap.width+c];
+                        if (x0+c < 0 || x0+c >= pixels.dim2 ()
+                            || y0-r < 0 || y0-r >= pixels.dim3 ())
+                          {
+                            //::warning ("ft_render: pixel out of bound (char=%d, (x,y)=(%d,%d), (w,h)=(%d,%d)",
+                            //           str[i], x0+c, y0-r, pixels.dim2 (), pixels.dim3 ());
+                          }
+                        else if (pixels(3, x0+c, y0-r).value () == 0)
+                          {
+                            pixels(0, x0+c, y0-r) = color(0);
+                            pixels(1, x0+c, y0-r) = color(1);
+                            pixels(2, x0+c, y0-r) = color(2);
+                            pixels(3, x0+c, y0-r) = pix;
+                          }
+                      }
+
+                  xoffset += (face->glyph->advance.x >> 6);
+                }
+              break;
+
+            case MODE_BBOX:
+              if (code == '\n')
+                {
+                  glyph_index = FT_Get_Char_Index (face, ' ');
+                  if (! glyph_index
+                      || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+                    {
+                      glyph_index = 0;
+                      gripe_missing_glyph (' ');
+                    }
+                  else
+                    push_new_line ();
+                }
+              else
+                {
+                  Matrix& bb = line_bbox.back ();
+
+                  // If we have a previous glyph, use kerning information.
+                  // This usually means moving a bit backward before adding
+                  // the next glyph. That is, "delta.x" is usually < 0.
+                  if (previous)
+                    {
+                      FT_Vector delta;
+
+                      FT_Get_Kerning (face, previous, glyph_index,
+                                      FT_KERNING_DEFAULT, &delta);
+
+                      bb(2) += (delta.x >> 6);
+                    }
+
+                  // Extend current line bounding box by the width of the
+                  // current glyph.
+                  bb(2) += (face->glyph->advance.x >> 6);
+                }
+              break;
+            }
+        }
+    }
+
+  return glyph_index;
+}
+
 void
 ft_render::visit (text_element_string& e)
 {
-  FT_Face face = current_face ();
-
-  if (face)
+  if (font.is_valid ())
     {
       std::string str = e.string_value ();
       FT_UInt glyph_index, previous = 0;
 
       for (size_t i = 0; i < str.length (); i++)
         {
-          glyph_index = FT_Get_Char_Index (face, str[i]);
+          glyph_index = process_character (str[i], previous);
 
-          if (str[i] != '\n'
-              && (! glyph_index
-              || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
-            gripe_missing_glyph (str[i]);
+          if (str[i] == '\n')
+            previous = 0;
           else
-            {
-              switch (mode)
-                {
-                case MODE_RENDER:
-                  if (str[i] == '\n')
-                    {
-                      glyph_index = FT_Get_Char_Index (face, ' ');
-                      if (!glyph_index || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
-                        {
-                          gripe_missing_glyph (' ');
-                        }
-                      else
-                        push_new_line ();
-                    }
-                  else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
-                    {
-                      gripe_glyph_render (str[i]);
-                    }
-                  else
-                    {
-                      FT_Bitmap& bitmap = face->glyph->bitmap;
-                      int x0, y0;
-
-                      if (previous)
-                        {
-                          FT_Vector delta;
-
-                          FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
-                          xoffset += (delta.x >> 6);
-                        }
-
-                      x0 = xoffset+face->glyph->bitmap_left;
-                      y0 = yoffset+face->glyph->bitmap_top;
-
-                      // 'w' seems to have a negative -1
-                      // face->glyph->bitmap_left, this is so we don't
-                      // index out of bound, and assumes we we allocated
-                      // the right amount of horizontal space in the bbox.
-                      if (x0 < 0)
-                        x0 = 0;
-
-                      for (int r = 0; r < bitmap.rows; r++)
-                        for (int c = 0; c < bitmap.width; c++)
-                          {
-                            unsigned char pix = bitmap.buffer[r*bitmap.width+c];
-                            if (x0+c < 0 || x0+c >= pixels.dim2 ()
-                                || y0-r < 0 || y0-r >= pixels.dim3 ())
-                              {
-                                //::warning ("ft_render: pixel out of bound (char=%d, (x,y)=(%d,%d), (w,h)=(%d,%d)",
-                                //           str[i], x0+c, y0-r, pixels.dim2 (), pixels.dim3 ());
-                              }
-                            else if (pixels(3, x0+c, y0-r).value () == 0)
-                              {
-                                pixels(0, x0+c, y0-r) = red;
-                                pixels(1, x0+c, y0-r) = green;
-                                pixels(2, x0+c, y0-r) = blue;
-                                pixels(3, x0+c, y0-r) = pix;
-                              }
-                          }
-
-                      xoffset += (face->glyph->advance.x >> 6);
-                    }
-                  break;
-
-                case MODE_BBOX:
-                  if (str[i] == '\n')
-                    {
-                      glyph_index = FT_Get_Char_Index (face, ' ');
-                      if (! glyph_index
-                          || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
-                        {
-                          gripe_missing_glyph (' ');
-                        }
-                      else
-                        push_new_line ();
-                    }
-                  else
-                    {
-                      Matrix& bb = line_bbox.back ();
-
-                      // If we have a previous glyph, use kerning information.
-                      // This usually means moving a bit backward before adding
-                      // the next glyph. That is, "delta.x" is usually < 0.
-                      if (previous)
-                        {
-                          FT_Vector delta;
-
-                          FT_Get_Kerning (face, previous, glyph_index,
-                                          FT_KERNING_DEFAULT, &delta);
-
-                          bb(2) += (delta.x >> 6);
-                        }
-
-                      // Extend current line bounding box by the width of the
-                      // current glyph.
-                      bb(2) += (face->glyph->advance.x >> 6);
-                    }
-                  break;
-                }
-
-                if (str[i] == '\n')
-                  previous = 0;
-                else
-                  previous = glyph_index;
-            }
+            previous = glyph_index;
         }
     }
+}
+
+void
+ft_render::visit (text_element_list& e)
+{
+  // Save and restore (after processing the list) the current font and color.
+
+  ft_font saved_font (font);
+  uint8NDArray saved_color (color);
+
+  text_processor::visit (e);
+
+  font = saved_font;
+  color = saved_color;
+}
+
+void
+ft_render::visit (text_element_subscript& e)
+{
+  ft_font saved_font (font);
+  int saved_line_yoffset = line_yoffset;
+  int saved_yoffset = yoffset;
+
+  set_font (font.name, font.weight, font.angle, font.size - 2);
+  if (font.is_valid ())
+    {
+      int h = font.face->size->metrics.height >> 6;
+
+      // Shifting the baseline by 2/3 the font height seems to produce
+      // decent result.
+      yoffset -= (h * 2) / 3;
+
+      if (mode == MODE_BBOX)
+        update_line_bbox ();
+    }
+
+  text_processor::visit (e);
+
+  font = saved_font;
+  // If line_yoffset changed, this means we moved to a new line; hence yoffset
+  // cannot be restored, because the saved value is not relevant anymore.
+  if (line_yoffset == saved_line_yoffset)
+    yoffset = saved_yoffset;
+}
+
+void
+ft_render::visit (text_element_superscript& e)
+{
+  ft_font saved_font (font);
+  int saved_line_yoffset = line_yoffset;
+  int saved_yoffset = yoffset;
+
+  set_font (font.name, font.weight, font.angle, font.size - 2);
+  if (saved_font.is_valid () && font.is_valid ())
+    {
+      int s_asc = saved_font.face->size->metrics.ascender >> 6;
+
+      // Shifting the baseline by 2/3 base font ascender seems to produce
+      // decent result.
+      yoffset += (s_asc * 2) / 3;
+
+      if (mode == MODE_BBOX)
+        update_line_bbox ();
+    }
+
+  text_processor::visit (e);
+
+  font = saved_font;
+  // If line_yoffset changed, this means we moved to a new line; hence yoffset
+  // cannot be restored, because the saved value is not relevant anymore.
+  if (line_yoffset == saved_line_yoffset)
+    yoffset = saved_yoffset;
+}
+
+void
+ft_render::visit (text_element_color& e)
+{
+  if (mode == MODE_RENDER)
+    set_color (e.get_color ());
+}
+
+void
+ft_render::visit (text_element_fontsize& e)
+{
+  double sz = e.get_fontsize ();
+
+  // FIXME: Matlab documentation says that the font size is expressed
+  //        in the text object FontUnit.
+
+  set_font (font.name, font.weight, font.angle, sz);
+
+  if (mode == MODE_BBOX)
+    update_line_bbox ();
+}
+
+void
+ft_render::visit (text_element_fontname& e)
+{
+  set_font (e.get_fontname (), font.weight, font.angle, font.size);
+
+  if (mode == MODE_BBOX)
+    update_line_bbox ();
+}
+
+void
+ft_render::visit (text_element_fontstyle& e)
+{
+  switch (e.get_fontstyle ())
+    {
+    case text_element_fontstyle::normal:
+      set_font (font.name, "normal", "normal", font.size);
+      break;
+    case text_element_fontstyle::bold:
+      set_font (font.name, "bold", "normal", font.size);
+      break;
+    case text_element_fontstyle::italic:
+      set_font (font.name, "normal", "italic", font.size);
+      break;
+    case text_element_fontstyle::oblique:
+      set_font (font.name, "normal", "oblique", font.size);
+      break;
+    }
+
+  if (mode == MODE_BBOX)
+    update_line_bbox ();
+}
+
+void
+ft_render::visit (text_element_symbol& e)
+{
+  uint32_t code = e.get_symbol_code ();
+
+  if (code != text_element_symbol::invalid_code && font.is_valid ())
+    process_character (code);
+  else if (font.is_valid ())
+    ::warning ("ignoring unknown symbol: %s", e.string_value ().c_str ());
 }
 
 void
@@ -611,9 +792,9 @@ ft_render::set_color (Matrix c)
 {
   if (c.numel () == 3)
     {
-      red = static_cast<uint8_t> (c(0)*255);
-      green = static_cast<uint8_t> (c(1)*255);
-      blue = static_cast<uint8_t> (c(2)*255);
+      color(0) = static_cast<uint8_t> (c(0)*255);
+      color(1) = static_cast<uint8_t> (c(1)*255);
+      color(2) = static_cast<uint8_t> (c(2)*255);
     }
   else
     ::warning ("ft_render::set_color: invalid color");

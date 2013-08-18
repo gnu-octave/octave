@@ -56,10 +56,10 @@ NUM	(({D}+\.?{D}*)|(\.{D}+))
       return NUM;
   }
 <NUM_MODE>[ \t]+	{ }
-<NUM_MODE>.		{ yyless (0); BEGIN (INITIAL); }
+<NUM_MODE>"\n"|.	{ yyless (0); BEGIN (INITIAL); }
 
 <MAYBE_NUM_MODE>"{"	{ BEGIN (NUM_MODE); return START; }
-<MAYBE_NUM_MODE>.	{ yyless (0); BEGIN (INITIAL); }
+<MAYBE_NUM_MODE>"\n"|.	{ yyless (0); BEGIN (INITIAL); }
 
 %{
 // Simple commands
@@ -100,7 +100,7 @@ NUM	(({D}+\.?{D}*)|(\.{D}+))
 
 "\\"		{ BEGIN(COMMAND); return CMD; }
 <COMMAND>{ID}	{ yylval->ch = yytext[0]; return ID; }
-<COMMAND>.	{ BEGIN(INITIAL); yyless (0); }
+<COMMAND>"\n"|.	{ BEGIN(INITIAL); yyless (0); }
 
 %{
 // Generic character

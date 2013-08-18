@@ -94,7 +94,6 @@ identifier			: ID
 
 symbol_element			: CMD identifier
 				  {
-				    printf ("symbol: %s\n", $2->c_str ());
 				    $$ = new text_element_symbol (*$2);
 				    delete $2;
 				  }
@@ -116,7 +115,6 @@ fontsize_element		: FONTSIZE START NUM END
 
 fontname_element		: FONTNAME START simple_string END
 				  {
-				    printf ("fontname: %s\n", $3->c_str ());
 				    $$ = new text_element_fontname (*$3);
 				    delete $3;
 				  }
@@ -124,20 +122,17 @@ fontname_element		: FONTNAME START simple_string END
 
 color_element			: COLOR START simple_string END
 				  {
-				    printf ("color: %s\n", $3->c_str ());
 				    $$ = new text_element_color (*$3);
 				    delete $3;
 				  }
 				| COLOR_RGB START NUM NUM NUM END
 				  {
-				    printf ("color: %g %g %g\n", $3, $4, $5);
 				    $$ = new text_element_color ($3, $4, $5);
 				  }
 				;
 
 string_element			: simple_string %prec STR
 				  {
-				    printf ("string: \"%s\"\n", $1->c_str ());
 				    $$ = new text_element_string (*$1);
 				    delete $1;
 				  }
@@ -202,5 +197,5 @@ text_parser_tex::parse (const std::string& s)
 static void
 yyerror (text_parser_tex&, const char *s)
 {
-  fprintf (stderr, "parse error: %s\n", s);
+  fprintf (stderr, "TeX parse error: %s\n", s);
 }

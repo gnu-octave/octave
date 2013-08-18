@@ -242,6 +242,7 @@ COREFCN_SRC = \
   corefcn/time.cc \
   corefcn/toplev.cc \
   corefcn/tril.cc \
+  corefcn/txt-eng.cc \
   corefcn/txt-eng-ft.cc \
   corefcn/typecast.cc \
   corefcn/unwind-prot.cc \

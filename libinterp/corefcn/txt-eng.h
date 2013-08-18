@@ -32,9 +32,14 @@ along with Octave; see the file COPYING.  If not, see
 
 class text_element;
 class text_element_string;
+class text_element_symbol;
 class text_element_list;
 class text_element_subscript;
 class text_element_superscript;
+class text_element_fontname;
+class text_element_fontsize;
+class text_element_fontstyle;
+class text_element_color;
 
 class text_processor;
 
@@ -79,12 +84,20 @@ OCTINTERP_API
 text_element_symbol : public text_element_string
 {
 public:
+  enum { invalid_code = 0xFFFFFFFFU };
+
+public:
   text_element_symbol (const std::string& sym)
-    : text_element_string (sym) { }
+    : text_element_string (sym), code (invalid_code) { }
 
   ~text_element_symbol (void) { }
 
+  uint32_t get_symbol_code (void);
+
   void accept (text_processor& p);
+
+private:
+  uint32_t code;
 };
 
 class
@@ -184,6 +197,8 @@ public:
 
   ~text_element_fontstyle (void) { }
 
+  fontstyle get_fontstyle (void) const { return style; }
+
   void accept (text_processor& p);
 
 private:
@@ -203,7 +218,7 @@ public:
 
   ~text_element_fontname (void) { }
 
-  const std::string& fontname (void) const { return name; }
+  const std::string& get_fontname (void) const { return name; }
 
   void accept (text_processor& p);
 
@@ -224,7 +239,7 @@ public:
 
   ~text_element_fontsize (void) { }
 
-  double fontsize (void) const { return size; }
+  double get_fontsize (void) const { return size; }
 
   void accept (text_processor& p);
 

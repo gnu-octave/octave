@@ -59,6 +59,22 @@ public:
 
   void visit (text_element_string& e);
 
+  void visit (text_element_list& e);
+
+  void visit (text_element_subscript& e);
+
+  void visit (text_element_superscript& e);
+
+  void visit (text_element_color& e);
+
+  void visit (text_element_fontsize& e);
+
+  void visit (text_element_fontname& e);
+
+  void visit (text_element_fontstyle& e);
+
+  void visit (text_element_symbol& e);
+
   void reset (void);
 
   uint8NDArray get_pixels (void) const { return pixels; }
@@ -104,12 +120,16 @@ private:
       double size;
       FT_Face face;
 
+      ft_font (void)
+        : name (), weight (), angle (), size (0), face (0) { }
+
       ft_font (const std::string& nm, const std::string& wt,
                const std::string& ang, double sz, FT_Face f)
         : name (nm), weight (wt), angle (ang), size (sz), face (f) { }
 
       ft_font (const ft_font& ft)
-        : name (ft.name), weight (ft.weight), angle (ft.angle), size (ft.size)
+        : name (ft.name), weight (ft.weight), angle (ft.angle),
+          size (ft.size), face (0)
         {
           if (FT_Reference_Face (ft.face) == 0)
             face = ft.face;
@@ -130,7 +150,7 @@ private:
               angle = ft.angle;
               size = ft.size;
               FT_Done_Face (face);
-              if (FT_Reference_Face (ft.face))
+              if (FT_Reference_Face (ft.face) == 0)
                 face = ft.face;
               else
                 face = 0;
@@ -139,22 +159,22 @@ private:
           return *this;
         }
 
-    private:
-      ft_font (void);
+      bool is_valid (void) const { return face; }
     };
 
-  FT_Face current_face (void)
-    { return fonts.size () ? fonts.back ().face : 0; }
-
   void push_new_line (void);
+
+  void update_line_bbox (void);
 
   void compute_bbox (void);
 
   int compute_line_xoffset (const Matrix& lb) const;
 
+  FT_UInt process_character (FT_ULong code, FT_UInt previous = 0);
+
 private:
-  // The stack of fonts currently used by the renderer.
-  std::list<ft_font> fonts;
+  // The current font used by the renderer.
+  ft_font font;
 
   // Used to stored the bounding box corresponding to the rendered text.
   // The bounding box has the form [x, y, w, h] where x and y represent the
@@ -174,17 +194,22 @@ private:
   // The current horizontal alignment. This is used to align multi-line text.
   int halign;
 
-  // The current X offset for the next glyph.
+  // The X offset for the next glyph.
   int xoffset;
 
-  // The current Y offset for the next glyph.
+  // The Y offset of the baseline for the current line.
+  int line_yoffset;
+
+  // The Y offset of the baseline for the next glyph. The offset is relative
+  // to line_yoffset. The total Y offset is computed with:
+  // line_yoffset + yoffset.
   int yoffset;
 
   // The current mode of the rendering process (box computing or rendering).
   int mode;
 
   // The base color of the rendered text.
-  uint8_t red, green, blue;
+  uint8NDArray color;
 };
 
 #endif // HAVE_FREETYPE

@@ -6292,7 +6292,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
           label.erase (0, label.find_first_not_of (" "));
           label = label.substr (0, label.find_last_not_of (" ")+1);
 #ifdef HAVE_FREETYPE
-          ext = text_renderer.get_extent (label);
+          ext = text_renderer.get_extent (label, 0.0, "none");
           wmax = std::max (wmax, ext(0));
           hmax = std::max (hmax, ext(1));
 #else
@@ -7573,7 +7573,7 @@ uicontrol::properties::update_text_extent (void)
   // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
 
-  elt = text_parser_none ().parse (get_string_string ());
+  elt = text_parser::parse (get_string_string (), "none");
 #ifdef HAVE_FONTCONFIG
   text_renderer.set_font (get_fontname (),
                           get_fontweight (),

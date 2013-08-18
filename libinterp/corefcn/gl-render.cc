@@ -3009,7 +3009,7 @@ opengl_renderer::text_to_pixels (const std::string& txt,
 {
 #if HAVE_FREETYPE
   text_renderer.text_to_pixels (txt, pixels, bbox,
-                                halign, valign, rotation);
+                                halign, valign, rotation, "none");
 #endif
 }
 

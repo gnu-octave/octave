@@ -594,9 +594,10 @@ ft_render::get_extent (text_element *elt, double rotation)
 }
 
 Matrix
-ft_render::get_extent (const std::string& txt, double rotation)
+ft_render::get_extent (const std::string& txt, double rotation,
+                       const caseless_str& interpreter)
 {
-  text_element *elt = text_parser_none ().parse (txt);
+  text_element *elt = text_parser::parse (txt, interpreter);
   Matrix extent = get_extent (elt, rotation);
   delete elt;
 
@@ -621,14 +622,15 @@ ft_render::rotation_to_mode (double rotation) const
 void
 ft_render::text_to_pixels (const std::string& txt,
                            uint8NDArray& pixels_, Matrix& box,
-                           int halign, int valign, double rotation)
+                           int halign, int valign, double rotation,
+                           const caseless_str& interpreter)
 {
   // FIXME: clip "rotation" between 0 and 360
   int rot_mode = rotation_to_mode (rotation);
 
   multiline_halign = halign;
 
-  text_element *elt = text_parser_none ().parse (txt);
+  text_element *elt = text_parser::parse (txt, interpreter);
   pixels_ = render (elt, box, rot_mode);
   delete elt;
 

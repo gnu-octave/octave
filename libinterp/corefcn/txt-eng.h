@@ -23,13 +23,18 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (txt_eng_h)
 #define txt_eng_h 1
 
+#include <memory>
+#include <string>
+
 #include "base-list.h"
+#include "caseless-str.h"
+#include "dMatrix.h"
 
 class text_element;
 class text_element_string;
 class text_element_list;
-class text_subscript_element;
-class text_superscript_element;
+class text_element_subscript;
+class text_element_superscript;
 
 class text_processor;
 
@@ -54,7 +59,7 @@ text_element_string : public text_element
 {
 public:
   text_element_string (const std::string& s = "")
-      : text_element (), str (s) { }
+    : text_element (), str (s) { }
 
   ~text_element_string (void) { }
 
@@ -71,13 +76,30 @@ private:
 
 class
 OCTINTERP_API
+text_element_symbol : public text_element_string
+{
+public:
+  text_element_symbol (const std::string& sym)
+    : text_element_string (sym) { }
+
+  ~text_element_symbol (void) { }
+
+  void accept (text_processor& p);
+};
+
+class
+OCTINTERP_API
 text_element_list :
     public text_element,
     public octave_base_list<text_element *>
 {
 public:
   text_element_list (void)
-      : text_element (), octave_base_list<text_element*> () { }
+    : text_element (), octave_base_list<text_element*> () { }
+
+  text_element_list (text_element* e)
+    : text_element (), octave_base_list<text_element*> ()
+    { push_back (e); }
 
   ~text_element_list (void)
     {
@@ -94,28 +116,164 @@ public:
 
 class
 OCTINTERP_API
-text_subscript_element : public text_element_list
+text_element_subscript : public text_element
 {
 public:
-  text_subscript_element (void)
-      : text_element_list () { }
+  text_element_subscript (text_element* e)
+    : text_element (), elem (e) { }
 
-  ~text_subscript_element (void) { }
+  text_element_subscript (char c)
+    : text_element ()
+    { elem = new text_element_string (std::string (1, c)); }
+
+  ~text_element_subscript (void)
+    { delete elem; }
 
   void accept (text_processor& p);
+
+  text_element* get_element (void) { return elem; }
+
+private:
+  text_element* elem;
+
+private:
+  text_element_subscript (void);
 };
 
 class
 OCTINTERP_API
-text_superscript_element : public text_element_list
+text_element_superscript : public text_element
 {
 public:
-  text_superscript_element (void)
-      : text_element_list () { }
+  text_element_superscript (text_element* e)
+    : text_element (), elem (e) { }
 
-  ~text_superscript_element (void) { }
+  text_element_superscript (char c)
+    : text_element ()
+    { elem = new text_element_string (std::string (1, c)); }
+
+  ~text_element_superscript (void)
+    { delete elem; }
 
   void accept (text_processor& p);
+
+  text_element* get_element (void) { return elem; }
+
+private:
+  text_element* elem;
+
+private:
+  text_element_superscript (void);
+};
+
+class
+OCTINTERP_API
+text_element_fontstyle : public text_element
+{
+public:
+  enum fontstyle
+    {
+      normal,
+      bold,
+      italic,
+      oblique
+    };
+
+  text_element_fontstyle (fontstyle st)
+    : text_element (), style (st) { }
+
+  ~text_element_fontstyle (void) { }
+
+  void accept (text_processor& p);
+
+private:
+  fontstyle style;
+
+private:
+  text_element_fontstyle (void);
+};
+
+class
+OCTINTERP_API
+text_element_fontname : public text_element
+{
+public:
+  text_element_fontname (const std::string& fname)
+    : text_element (), name (fname) { }
+
+  ~text_element_fontname (void) { }
+
+  const std::string& fontname (void) const { return name; }
+
+  void accept (text_processor& p);
+
+private:
+  std::string name;
+
+private:
+  text_element_fontname (void);
+};
+
+class
+OCTINTERP_API
+text_element_fontsize : public text_element
+{
+public:
+  text_element_fontsize (double fsize)
+    : text_element (), size (fsize) { }
+
+  ~text_element_fontsize (void) { }
+
+  double fontsize (void) const { return size; }
+
+  void accept (text_processor& p);
+
+private:
+  double size;
+
+private:
+  text_element_fontsize (void);
+};
+
+class
+OCTINTERP_API
+text_element_color : public text_element
+{
+public:
+  text_element_color (double r, double g, double b)
+    : text_element (), rgb (1, 3, 0.0)
+    {
+      rgb(0) = r;
+      rgb(1) = g;
+      rgb(2) = b;
+    }
+
+  text_element_color (const std::string& cname)
+    : text_element (), rgb (1, 3, 0.0)
+    {
+#define ASSIGN_COLOR(r,g,b) { rgb(0) = r; rgb(1) = g; rgb(2) = b; }
+      if (cname == "red") ASSIGN_COLOR(1, 0, 0)
+      else if (cname == "green") ASSIGN_COLOR(0, 1, 0)
+      else if (cname == "yellow") ASSIGN_COLOR(1, 1, 0)
+      else if (cname == "magenta") ASSIGN_COLOR(1, 0, 1)
+      else if (cname == "blue") ASSIGN_COLOR(0, 0, 1)
+      else if (cname == "black") ASSIGN_COLOR(0, 0, 0)
+      else if (cname == "white") ASSIGN_COLOR(1, 1, 1)
+      else if (cname == "gray") ASSIGN_COLOR(.5, .5, .5)
+      else if (cname == "darkGreen") ASSIGN_COLOR(0, .5, 0)
+      else if (cname == "orange") ASSIGN_COLOR(1, .65, 0)
+      else if (cname == "lightBlue") ASSIGN_COLOR(0.68, .85, .9)
+#undef ASSIGN_COLOR
+    }
+
+  ~text_element_color (void) { }
+
+  Matrix get_color (void) { return rgb; }
+
+  void accept (text_processor& p);
+
+private:
+  Matrix rgb;
 };
 
 class
@@ -124,6 +282,8 @@ text_processor
 {
 public:
   virtual void visit (text_element_string& e) = 0;
+
+  virtual void visit (text_element_symbol&) { }
 
   virtual void visit (text_element_list& e)
     {
@@ -134,11 +294,19 @@ public:
         }
     }
 
-  virtual void visit (text_subscript_element& e)
-    { visit (dynamic_cast<text_element_list&> (e)); }
+  virtual void visit (text_element_subscript& e)
+    { e.get_element ()->accept (*this); }
 
-  virtual void visit (text_superscript_element& e)
-    { visit (dynamic_cast<text_element_list&> (e)); }
+  virtual void visit (text_element_superscript& e)
+    { e.get_element ()->accept (*this); }
+
+  virtual void visit (text_element_fontstyle&) { }
+
+  virtual void visit (text_element_fontname&) { }
+
+  virtual void visit (text_element_fontsize&) { }
+
+  virtual void visit (text_element_color&) { }
 
   virtual void reset (void) { }
 
@@ -154,9 +322,14 @@ cls::accept (text_processor& p) \
 { p.visit (*this); }
 
 TEXT_ELEMENT_ACCEPT(text_element_string)
+TEXT_ELEMENT_ACCEPT(text_element_symbol)
 TEXT_ELEMENT_ACCEPT(text_element_list)
-TEXT_ELEMENT_ACCEPT(text_subscript_element)
-TEXT_ELEMENT_ACCEPT(text_superscript_element)
+TEXT_ELEMENT_ACCEPT(text_element_subscript)
+TEXT_ELEMENT_ACCEPT(text_element_superscript)
+TEXT_ELEMENT_ACCEPT(text_element_fontstyle)
+TEXT_ELEMENT_ACCEPT(text_element_fontname)
+TEXT_ELEMENT_ACCEPT(text_element_fontsize)
+TEXT_ELEMENT_ACCEPT(text_element_color)
 
 class
 OCTINTERP_API
@@ -168,6 +341,10 @@ public:
   virtual ~text_parser (void) { }
 
   virtual text_element* parse (const std::string& s) = 0;
+
+public:
+  static text_element* parse (const std::string& s,
+                              const caseless_str& interpreter);
 };
 
 class
@@ -189,5 +366,51 @@ public:
       return new text_element_string (s);
     }
 };
+
+class
+OCTINTERP_API
+text_parser_tex : public text_parser
+{
+public:
+  text_parser_tex (void)
+    : text_parser (), scanner (0), buffer_state (0), result (0)
+    { }
+
+  ~text_parser_tex (void)
+    { destroy_lexer (); }
+
+  text_element* parse (const std::string& s);
+
+  void* get_scanner (void) { return scanner; }
+
+  void set_parse_result (text_element* e) { result = e; }
+
+  text_element* get_parse_result (void) { return result; }
+
+private:
+  bool init_lexer (const std::string& s);
+
+  void destroy_lexer (void);
+
+private:
+  void* scanner;
+
+  void* buffer_state;
+
+  text_element* result;
+};
+
+inline text_element*
+text_parser::parse (const std::string& s, const caseless_str& interpreter)
+{
+  std::auto_ptr<text_parser> parser;
+
+  if (interpreter.compare ("tex"))
+    parser.reset (new text_parser_tex ());
+  else
+    parser.reset (new text_parser_none ());
+
+  return parser->parse (s);
+}
 
 #endif

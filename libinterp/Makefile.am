@@ -51,6 +51,8 @@ BUILT_SOURCES = \
   corefcn/defaults.h \
   corefcn/graphics-props.cc \
   corefcn/graphics.h \
+  corefcn/oct-tex-lexer.cc \
+  corefcn/oct-tex-parser.cc \
   operators/ops.cc \
   parse-tree/lex.cc \
   parse-tree/oct-gperf.h \

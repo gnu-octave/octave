@@ -209,6 +209,8 @@ COREFCN_SRC = \
   corefcn/oct-procbuf.cc \
   corefcn/oct-stream.cc \
   corefcn/oct-strstrm.cc \
+  corefcn/oct-tex-lexer.ll \
+  corefcn/oct-tex-parser.yy \
   corefcn/octave-link.cc \
   corefcn/pager.cc \
   corefcn/pinv.cc \
@@ -295,3 +297,5 @@ noinst_LTLIBRARIES += corefcn/libcorefcn.la
 corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
 corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
 
+corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
+corefcn/oct-tex-parser.h: corefcn/oct-tex-parser.yy

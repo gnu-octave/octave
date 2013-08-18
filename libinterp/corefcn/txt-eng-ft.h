@@ -68,7 +68,8 @@ public:
                        int rotation = ROTATION_0);
 
   Matrix get_extent (text_element *elt, double rotation = 0.0);
-  Matrix get_extent (const std::string& txt, double rotation = 0.0);
+  Matrix get_extent (const std::string& txt, double rotation = 0.0,
+                     const caseless_str& interpreter = "tex");
 
   void set_font (const std::string& name, const std::string& weight,
                  const std::string& angle, double size);
@@ -79,7 +80,8 @@ public:
 
   void text_to_pixels (const std::string& txt,
                        uint8NDArray& pixels_, Matrix& bbox,
-                       int halign, int valign, double rotation);
+                       int halign, int valign, double rotation,
+                       const caseless_str& interpreter = "tex");
 
 private:
   int rotation_to_mode (double rotation) const;

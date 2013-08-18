@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #if HAVE_FREETYPE
 
+#include <list>
 #include <vector>
 
 #include <ft2build.h>
@@ -92,15 +93,97 @@ private:
 
   ft_render& operator = (const ft_render&);
 
+  // Class to hold information about fonts and a strong
+  // reference to the font objects loaded by freetype.
+  class ft_font
+    {
+    public:
+      std::string name;
+      std::string weight;
+      std::string angle;
+      double size;
+      FT_Face face;
+
+      ft_font (const std::string& nm, const std::string& wt,
+               const std::string& ang, double sz, FT_Face f)
+        : name (nm), weight (wt), angle (ang), size (sz), face (f) { }
+
+      ft_font (const ft_font& ft)
+        : name (ft.name), weight (ft.weight), angle (ft.angle), size (ft.size)
+        {
+          if (FT_Reference_Face (ft.face) == 0)
+            face = ft.face;
+        }
+
+      ~ft_font (void)
+        {
+          if (face)
+            FT_Done_Face (face);
+        }
+
+      ft_font& operator = (const ft_font& ft)
+        {
+          if (&ft != this)
+            {
+              name = ft.name;
+              weight = ft.weight;
+              angle = ft.angle;
+              size = ft.size;
+              FT_Done_Face (face);
+              if (FT_Reference_Face (ft.face))
+                face = ft.face;
+              else
+                face = 0;
+            }
+
+          return *this;
+        }
+
+    private:
+      ft_font (void);
+    };
+
+  FT_Face current_face (void)
+    { return fonts.size () ? fonts.back ().face : 0; }
+
+  void push_new_line (void);
+
+  void compute_bbox (void);
+
+  int compute_line_xoffset (const Matrix& lb) const;
+
 private:
-  FT_Face face;
+  // The stack of fonts currently used by the renderer.
+  std::list<ft_font> fonts;
+
+  // Used to stored the bounding box corresponding to the rendered text.
+  // The bounding box has the form [x, y, w, h] where x and y represent the
+  // coordinates of the bottom left corner relative to the anchor point of
+  // the text (== start of text on the baseline). Due to font descent or
+  // multiple lines, the value y is usually negative.
   Matrix bbox;
+
+  // Used to stored the rendered text. It's a 3D matrix with size MxNx4
+  // where M and N are the width and height of the bounding box.
   uint8NDArray pixels;
+
+  // Used to store the bounding box of each line. This is used to layout
+  // multiline text properly.
+  std::list<Matrix> line_bbox;
+
+  // The current horizontal alignment. This is used to align multi-line text.
+  int halign;
+
+  // The current X offset for the next glyph.
   int xoffset;
+
+  // The current Y offset for the next glyph.
   int yoffset;
-  int multiline_halign;
-  std::vector<int> multiline_align_xoffsets;
+
+  // The current mode of the rendering process (box computing or rendering).
   int mode;
+
+  // The base color of the rendered text.
   uint8_t red, green, blue;
 };
 

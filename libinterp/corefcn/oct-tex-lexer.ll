@@ -106,6 +106,7 @@ NUM	(({D}+\.?{D}*)|(\.{D}+))
 // Generic character
 %}
 
+"\n"	|
 .	{ yylval->ch = yytext[0]; return CH; }
 
 %%

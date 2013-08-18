@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iostream>
+#include <map>
+#include <utility>
 
 #include "singleton-cleanup.h"
 
@@ -64,6 +66,9 @@ gripe_glyph_render (char c)
 // use the imported one.
 #include "PermMatrix.h"
 #endif
+
+// Forward declaration
+static void ft_face_destroyed (void* object);
 
 class
 ft_manager
@@ -99,9 +104,23 @@ public:
               ? instance->do_get_font (name, weight, angle, size)
               : 0); }
 
+  static void font_destroyed (FT_Face face)
+    {
+      if (instance_ok ())
+        instance->do_font_destroyed (face);
+    }
+
 private:
 
   static ft_manager *instance;
+
+  typedef std::pair<std::string, double> ft_key;
+  typedef std::map<ft_key, FT_Face> ft_cache;
+
+  // Cache the fonts loaded by freetype. This cache only contains
+  // weak references to the fonts, strong references are only present
+  // in class ft_render.
+  ft_cache cache;
 
 private:
 
@@ -148,6 +167,18 @@ private:
                        const std::string& angle, double size)
     {
       FT_Face retval = 0;
+
+      // Look first into the font cache, then use fontconfig. If the font
+      // is present in the cache, simply add a reference and return it.
+
+      ft_key key (name + ":" + weight + ":" + angle, size);
+      ft_cache::const_iterator it = cache.find (key);
+
+      if (it != cache.end ())
+        {
+          FT_Reference_Face (it->second);
+          return it->second;
+        }
 
       std::string file;
 
@@ -221,10 +252,39 @@ private:
 #endif
         }
 
-      if (! file.empty () && FT_New_Face (library, file.c_str (), 0, &retval))
-        ::warning ("ft_manager: unable to load font: %s", file.c_str ());
+      if (! file.empty ())
+        {
+          if (FT_New_Face (library, file.c_str (), 0, &retval))
+            ::warning ("ft_manager: unable to load font: %s", file.c_str ());
+          else
+            {
+              // Install a finalizer to notify ft_manager that the font is
+              // being destroyed. The class ft_manager only keeps weak
+              // references to font objects.
+
+              retval->generic.data = new ft_key (key);
+              retval->generic.finalizer = ft_face_destroyed;
+
+              // Insert loaded font into the cache.
+
+              cache[key] = retval;
+            }
+        }
 
       return retval;
+    }
+
+  void do_font_destroyed (FT_Face face)
+    {
+      if (face->generic.data)
+        {
+          ft_key* pkey =
+            reinterpret_cast<ft_key*> (face->generic.data);
+
+          cache.erase (*pkey);
+          delete pkey;
+          face->generic.data = 0;
+        }
     }
 
 private:
@@ -234,6 +294,10 @@ private:
 };
 
 ft_manager* ft_manager::instance = 0;
+
+static void
+ft_face_destroyed (void* object)
+{ ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object)); }
 
 // ---------------------------------------------------------------------------
 

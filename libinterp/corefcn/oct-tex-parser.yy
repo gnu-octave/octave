@@ -156,11 +156,15 @@ superscript_element		: SUPER CH
 				  { $$ = new text_element_superscript ($2); }
 				| SUPER scoped_string_element_list
 				  { $$ = new text_element_superscript ($2); }
+				| SUPER symbol_element
+				  { $$ = new text_element_superscript ($2); }
 				;
 
 subscript_element		: SUB CH
 				  { $$ = new text_element_subscript ($2); }
 				| SUB scoped_string_element_list
+				  { $$ = new text_element_subscript ($2); }
+				| SUB symbol_element
 				  { $$ = new text_element_subscript ($2); }
 				;
 

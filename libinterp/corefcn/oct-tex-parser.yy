@@ -182,6 +182,8 @@ string_element_list		: string_element
 
 scoped_string_element_list	: START string_element_list END
 				  { $$ = $2; }
+				| START END
+				  { $$ = new text_element_list (); }
 				;
 
 string				: /* empty */

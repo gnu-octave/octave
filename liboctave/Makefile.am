@@ -125,7 +125,8 @@ LIBOCTAVE_TST_SRC = \
   $(array_libarray_la_SOURCES) \
   $(numeric_libnumeric_la_SOURCES) \
   $(system_libsystem_la_SOURCES) \
-  $(util_libutil_la_SOURCES)
+  $(util_libutil_la_SOURCES) \
+	$(TEMPLATE_SRC)
 
 TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
 

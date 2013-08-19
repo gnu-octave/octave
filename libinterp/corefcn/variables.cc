@@ -1188,10 +1188,12 @@ do_matlab_compatible_clear (octave::symbol_table& symtab,
 
 DEFMETHOD (clear, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} clear [options] pattern @dots{}
-Delete the names matching the given patterns from the symbol table.
+@deftypefn  {} {} clear
+@deftypefnx {} {} clear @var{pattern} @dots{}
+@deftypefnx {} {} clear @var{options} @var{pattern} @dots{}
+Delete the names matching the given @var{pattern}s from the symbol table.
 
-The pattern may contain the following special characters:
+The @var{pattern} may contain the following special characters:
 
 @table @code
 @item ?
@@ -1201,10 +1203,10 @@ Match any single character.
 Match zero or more characters.
 
 @item [ @var{list} ]
-Match the list of characters specified by @var{list}.  If the first
-character is @code{!} or @code{^}, match all characters except those
-specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
-match all lowercase and uppercase alphabetic characters.
+Match the list of characters specified by @var{list}.  If the first character
+is @code{!} or @code{^}, match all characters except those specified by
+@var{list}.  For example, the pattern @code{[a-zA-Z]} will match all lowercase
+and uppercase alphabetic characters.
 @end table
 
 For example, the command
@@ -1214,49 +1216,53 @@ clear foo b*r
 @end example
 
 @noindent
-clears the name @code{foo} and all names that begin with the letter
-@code{b} and end with the letter @code{r}.
+clears the name @code{foo} and all names that begin with the letter @code{b}
+and end with the letter @code{r}.
 
-If @code{clear} is called without any arguments, all user-defined
-variables (local and global) are cleared from the symbol table.
-
-If @code{clear} is called with at least one argument, only the visible
-names matching the arguments are cleared.  For example, suppose you have
-defined a function @code{foo}, and then hidden it by performing the
-assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once
-will clear the variable definition and restore the definition of
-@code{foo} as a function.  Executing @kbd{clear foo} a second time will
-clear the function definition.
+If @code{clear} is called without any arguments, all user-defined variables
+are cleared from the current workspace (i.e., local variables).  Any global
+variables present will no longer be visible in the current workspace, but they
+will continue to exist in the global workspace.  Functions are unaffected by
+this form of @code{clear}.
 
 The following options are available in both long and short form
 
 @table @code
-@item -all, -a
-Clear all local and global user-defined variables and all functions from the
+@item all, -all, -a
+Clear all local and global user-defined variables, and all functions from the
 symbol table.
 
 @item -exclusive, -x
-Clear the variables that don't match the following pattern.
+Clear variables that do @strong{not} match the following pattern.
 
-@item -functions, -f
-Clear the function names and the built-in symbols names.
+@item functions, -functions, -f
+Clear function names from the function symbol table.
 
-@item -global, -g
-Clear global symbol names.
+@item global, -global, -g
+Clear global variable names.
 
-@item -variables, -v
+@item variables, -variables, -v
 Clear local variable names.
 
-@item -classes, -c
-Clears the class structure table and clears all objects.
+@item classes, -classes, -c
+Clear the class structure table and all objects.
 
 @item -regexp, -r
-The arguments are treated as regular expressions as any variables that
-match will be cleared.
+The @var{pattern} arguments are treated as regular expressions and any matches
+will be cleared.
 @end table
 
-With the exception of @code{exclusive}, all long options can be used
-without the dash as well.
+With the exception of @option{-exclusive} and @option{-regexp}, all long
+options can be used without the dash as well.
+
+Programming Note: The command @code{clear @var{name}} only clears the variable
+@var{name} when both a variable and a (shadowed) function named @var{name}
+are currently defined.  For example, suppose you have defined a function
+@code{foo}, and then hidden it by performing the assignment @code{foo = 2}.
+Executing the command @code{clear foo} once will clear the variable
+definition and restore the definition of @code{foo} as a function.
+Executing @code{clear foo} a second time will clear the function definition.
+
 @seealso{who, whos, exist}
 @end deftypefn */)
 {
@@ -1268,7 +1274,6 @@ without the dash as well.
 
   if (argc == 1)
     {
-      do_clear_globals (symtab, argv, argc, true);
       do_clear_variables (symtab, argv, argc, true);
 
       octave_link::clear_workspace ();
@@ -1389,6 +1394,16 @@ without the dash as well.
 
   return ovl ();
 }
+
+/*
+%!test
+%! global x
+%! x = 3;
+%! clear
+%! assert (! exist ("x", "var"));  # x is not in the current workspace anymore
+%! global x                        # but still lives in the global workspace
+%! assert (exist ("x", "var"));
+*/
 
 static std::string Vmissing_function_hook = "__unimplemented__";
 

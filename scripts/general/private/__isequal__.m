@@ -156,7 +156,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
         t = (l_f_x == length (f_y)) && all (f_x == f_y);
         if (!t)
-          return;
+          break;
         endif
 
         y = y(f_y);
@@ -168,11 +168,17 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         endif
 
         if (!t)
-          return;
+          break;
         endif
       endfor
 
     endif
+  endif
+
+  if (!t)
+    t=logical(0);
+  else
+    t=logical(1);
   endif
 
 endfunction

@@ -74,6 +74,11 @@ endfunction
 ## test for inequality (struct)
 %!assert (isequal (struct ('a',NaN,'b',2),struct ('a',NaN,'b',2),struct ('a',NaN,'b',2)), false)
 
+## test for sparse matrices
+%!assert (isequal (sparse (0,1), sparse (0,1)), true)
+%!assert (isequal (sparse (0,1), sparse (1,0)), false)
+%!assert (isequal (sparse (2, 2), sparse (2, 2)), true)
+
 ## Input validation
 %!error isequal ()
 %!error isequal (1)

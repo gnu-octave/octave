@@ -42,11 +42,27 @@ function __imwrite__ (img, varargin)
 
   ## set default for options
   options = struct ("writemode", "overwrite",
-                    "quality", 75);
+                    "quality",   75,
+                    "alpha",     cast ([], class (img)));
 
   for idx = 1:2:numel (param_list)
 
     switch (tolower (param_list{idx}))
+
+      case "alpha"
+        options.alpha = param_list{idx+1};
+        if (! isnumeric (options.alpha))
+          error ("imwrite: value for %s option must be a numeric matrix",
+                 param_list{idx});
+        elseif (size (options.alpha, 3) != 1)
+          error ("imwrite: 3rd dimension of matrix for %s must be singleton",
+                 param_list{idx});
+        elseif (ndims (options.alpha) > 4 ||
+                any (size (options.alpha)([1 2]) != size (img)([1 2])) ||
+                size (options.alpha, 4) != size (img, 4))
+          error ("imwrite: matrix for %s must have same dimension as image",
+                 param_list{idx});
+        endif
 
       case "writemode",
         options.writemode = param_list{idx+1};

@@ -752,6 +752,49 @@ img_float2uint (const T& img)
   return out;
 }
 
+// Gets the bitdepth to be used for an Octave class, i.e, returns 8 for
+// uint8, 16 for uint16, and 32 for uint32
+template <class T>
+static octave_idx_type
+bitdepth_from_class ()
+{
+  typedef typename T::element_type P;
+  const octave_idx_type bitdepth =
+    sizeof (P) * std::numeric_limits<unsigned char>::digits;
+  return bitdepth;
+}
+
+static Magick::Image
+init_enconde_image (const octave_idx_type& nCols, const octave_idx_type& nRows,
+                    const octave_idx_type& bitdepth,
+                    const Magick::ImageType& type,
+                    const Magick::ClassType& klass)
+{
+  Magick::Image img (Magick::Geometry (nCols, nRows), "black");
+  // Ensure that there are no other references to this image.
+  img.modifyImage ();
+
+  img.classType (klass);
+  img.type (type);
+  // FIXME: for some reason, setting bitdepth doesn't seem to work for
+  //        indexed images.
+  img.depth (bitdepth);
+  switch (type)
+    {
+      case Magick::GrayscaleMatteType:
+      case Magick::TrueColorMatteType:
+      case Magick::ColorSeparationMatteType:
+      case Magick::PaletteMatteType:
+        img.matte (true);
+        break;
+
+      default:
+        img.matte (false);
+    }
+
+  return img;
+}
+
 template <class T>
 static void
 encode_indexed_images (std::vector<Magick::Image>& imvec,
@@ -763,8 +806,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
   const octave_idx_type nRows     = img.rows ();
   const octave_idx_type nCols     = img.columns ();
   const octave_idx_type cmap_size = cmap.rows ();
-  const octave_idx_type bitdepth  =
-    sizeof (P) * std::numeric_limits<unsigned char>::digits;
+  const octave_idx_type bitdepth  = bitdepth_from_class<T> ();
 
   // There is no colormap object, we need to build a new one for each frame,
   // even if it's always the same. We can least get a vector for the Colors.
@@ -781,16 +823,9 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      Magick::Image m_img (Magick::Geometry (nCols, nRows), "black");
-
-      // Ensure that there are no other references to this image.
-      m_img.modifyImage ();
-
-      m_img.classType (Magick::PseudoClass);
-      m_img.type (Magick::PaletteType);
-      // FIXME: for some reason, setting bitdepth doesn't seem to work for
-      //        indexed images.
-      m_img.depth (bitdepth);
+      Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
+                                                Magick::PaletteType,
+                                                Magick::PseudoClass);
 
       // Insert colormap.
       m_img.colorMapSize (cmap_size);
@@ -830,183 +865,312 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
 }
 
 static void
-encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
+encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
 {
-  unsigned int nframes = 1;
-  boolNDArray m = img.bool_array_value ();
+  const octave_idx_type nFrames   = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type nRows     = img.rows ();
+  const octave_idx_type nCols     = img.columns ();
 
-  dim_vector dsizes = m.dims ();
-  if (dsizes.length () == 4)
-    nframes = dsizes(3);
+  // The initialized image will be black, this is for the other pixels
+  const Magick::Color white ("white");
 
-  Array<octave_idx_type> idx (dim_vector (dsizes.length (), 1));
-
-  octave_idx_type rows = m.rows ();
-  octave_idx_type columns = m.columns ();
-
-  for (unsigned int ii = 0; ii < nframes; ii++)
+  const bool *img_fvec = img.fortran_vec ();
+  octave_idx_type img_idx = 0;
+  for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      Magick::Image im (Magick::Geometry (columns, rows), "black");
-      im.classType (Magick::DirectClass);
-      im.depth (1);
+      // For some reason, we can't set the type to Magick::BilevelType.
+      // However, this will still work fine and a binary image will be
+      // saved because we are setting the bitdepth to 1.
+      Magick::Image m_img = init_enconde_image (nCols, nRows, 1,
+                                                Magick::GrayscaleType,
+                                                Magick::DirectClass);
 
-      for (int y = 0; y < columns; y++)
+      Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+      octave_idx_type GM_idx = 0;
+      for (octave_idx_type col = 0; col < nCols; col++)
         {
-          idx(1) = y;
-
-          for (int x = 0; x < rows; x++)
+          for (octave_idx_type row = 0; row < nRows; row++)
             {
-              if (nframes > 1)
-                {
-                  idx(2) = 0;
-                  idx(3) = ii;
-                }
+              if (img_fvec[img_idx])
+                pix[GM_idx] = white;
 
-              idx(0) = x;
-
-              if (m(idx))
-                im.pixelColor (y, x, "white");
+              img_idx++;
+              GM_idx += nCols;
             }
+          GM_idx -= nCols * nRows - 1;
         }
-
-      im.quantizeColorSpace (Magick::GRAYColorspace);
-      im.quantizeColors (2);
-      im.quantize ();
-
-      imvec.push_back (im);
+      // Save changes to underlying image.
+      m_img.syncPixels ();
+      imvec.push_back (m_img);
     }
 }
 
 template <class T>
 static void
 encode_uint_image (std::vector<Magick::Image>& imvec,
-                   const octave_value& img)
+                   const T& img, const T& alpha)
 {
-  unsigned int bitdepth = 0;
-  T m;
+  typedef typename T::element_type P;
+  const octave_idx_type channels  = img.ndims () < 3 ? 1 : img.dims ()(2);
+  const octave_idx_type nFrames   = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type nRows     = img.rows ();
+  const octave_idx_type nCols     = img.columns ();
+  const octave_idx_type bitdepth  = bitdepth_from_class<T> ();
 
-  if (img.is_uint8_type ())
+  Magick::ImageType type;
+  const bool has_alpha = ! alpha.is_empty ();
+  switch (channels)
     {
-      bitdepth = 8;
-      m = img.uint8_array_value ();
-    }
-  else if (img.is_uint16_type ())
-    {
-      bitdepth = 16;
-      m = img.uint16_array_value ();
-    }
-  else if (img.is_uint32_type ())
-    {
-      bitdepth = 32;
-      m = img.uint32_array_value ();
-    }
-  else
-    error ("__magick_write__: invalid image class");
-
-  const dim_vector dsizes = m.dims ();
-  unsigned int nframes = 1;
-  if (dsizes.length () == 4)
-    nframes = dsizes(3);
-
-  const bool is_color = ((dsizes.length () > 2) && (dsizes(2) > 2));
-  const bool has_alpha = (dsizes.length () > 2 && (dsizes(2) == 2 || dsizes(2) == 4));
-
-  Array<octave_idx_type> idx (dim_vector (dsizes.length (), 1));
-  octave_idx_type rows = m.rows ();
-  octave_idx_type columns = m.columns ();
-
-  double div_factor = (uint64_t(1) << bitdepth) - 1;
-
-  for (unsigned int ii = 0; ii < nframes; ii++)
-    {
-      Magick::Image im (Magick::Geometry (columns, rows), "black");
-
-      im.depth (bitdepth);
-
-      im.classType (Magick::DirectClass);
-
-      if (is_color)
-        {
-          if (has_alpha)
-            im.type (Magick::TrueColorMatteType);
-          else
-            im.type (Magick::TrueColorType);
-
-          Magick::ColorRGB c;
-
-          for (int y = 0; y < columns; y++)
-            {
-              idx(1) = y;
-
-              for (int x = 0; x < rows; x++)
-                {
-                  idx(0) = x;
-
-                  if (nframes > 1)
-                    idx(3) = ii;
-
-                  idx(2) = 0;
-                  c.red (static_cast<double>(m(idx)) / div_factor);
-
-                  idx(2) = 1;
-                  c.green (static_cast<double>(m(idx)) / div_factor);
-
-                  idx(2) = 2;
-                  c.blue (static_cast<double>(m(idx)) / div_factor);
-
-                  if (has_alpha)
-                    {
-                      idx(2) = 3;
-                      c.alpha (static_cast<double>(m(idx)) / div_factor);
-                    }
-
-                  im.pixelColor (y, x, c);
-                }
-            }
-        }
+    case 1:
+      if (has_alpha)
+        type = Magick::GrayscaleMatteType;
       else
-        {
-          if (has_alpha)
-            im.type (Magick::GrayscaleMatteType);
-          else
-            im.type (Magick::GrayscaleType);
+        type = Magick::GrayscaleType;
+      break;
 
-          Magick::ColorGray c;
+    case 3:
+      if (has_alpha)
+        type = Magick::TrueColorMatteType;
+      else
+        type = Magick::TrueColorType;
+      break;
 
-          for (int y = 0; y < columns; y++)
-            {
-              idx(1) = y;
+    case 4:
+      if (has_alpha)
+        type = Magick::ColorSeparationMatteType;
+      else
+        type = Magick::ColorSeparationType;
+      break;
 
-              for (int x=0; x < rows; x++)
-                {
-                  idx(0) = x;
-
-                  if (nframes > 1)
-                    {
-                      idx(2) = 0;
-                      idx(3) = ii;
-                    }
-
-                  if (has_alpha)
-                    {
-                      idx(2) = 1;
-                      c.alpha (static_cast<double>(m(idx)) / div_factor);
-                      idx(2) = 0;
-                    }
-
-                  c.shade (static_cast<double>(m(idx)) / div_factor);
-
-                  im.pixelColor (y, x, c);
-                }
-            }
-
-          im.quantizeColorSpace (Magick::GRAYColorspace);
-          im.quantizeColors (1 << bitdepth);
-          im.quantize ();
-        }
-
-      imvec.push_back (im);
+    default:
+      {
+        // __imwrite should have already filtered this cases
+        error ("__magick_write__: wrong size on 3rd dimension");
+        return;
+      }
     }
+
+  // We will be passing the values as integers with depth as specified
+  // by QuantumDepth (maximum value specified by MaxRGB). This is independent
+  // of the actual depth of the image. GM will then convert the values but
+  // while in memory, it always keeps the values as specified by QuantumDepth.
+  // From GM documentation:
+  //  Color arguments are must be scaled to fit the Quantum size according to
+  //  the range of MaxRGB
+  const double divisor = (pow (2, bitdepth) - 1) / MaxRGB;
+
+  const P *img_fvec = img.fortran_vec ();
+  const P *a_fvec   = alpha.fortran_vec ();
+  switch (type)
+    {
+    case Magick::GrayscaleType:
+      {
+        octave_idx_type GM_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
+                                                      type,
+                                                      Magick::DirectClass);
+
+            Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    Magick::Color c;
+                    c.redQuantum (double (*img_fvec) / divisor);
+                    pix[GM_idx] = c;
+                    img_fvec++;
+                    GM_idx += nCols;
+                  }
+                GM_idx -= nCols * nRows - 1;
+              }
+            // Save changes to underlying image.
+            m_img.syncPixels ();
+            imvec.push_back (m_img);
+          }
+        break;
+      }
+
+    case Magick::GrayscaleMatteType:
+      {
+        octave_idx_type GM_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
+                                                      type,
+                                                      Magick::DirectClass);
+
+            Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    Magick::Color c;
+                    c.redQuantum   (double (*img_fvec) / divisor);
+                    c.alphaQuantum (MaxRGB - (double (*a_fvec) / divisor));
+                    pix[GM_idx] = c;
+                    img_fvec++;
+                    a_fvec++;
+                    GM_idx += nCols;
+                  }
+                GM_idx -= nCols * nRows - 1;
+              }
+            // Save changes to underlying image.
+            m_img.syncPixels ();
+            imvec.push_back (m_img);
+          }
+        break;
+      }
+
+    case Magick::TrueColorType:
+      {
+        // The fortran_vec offset for the green and blue channels
+        const octave_idx_type G_offset = nCols * nRows;
+        const octave_idx_type B_offset = nCols * nRows * 2;
+        octave_idx_type GM_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
+                                                      type,
+                                                      Magick::DirectClass);
+
+            Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    Magick::Color c (double (*img_fvec)          / divisor,
+                                     double (img_fvec[G_offset]) / divisor,
+                                     double (img_fvec[B_offset]) / divisor);
+                    pix[GM_idx] = c;
+                    img_fvec++;
+                    GM_idx += nCols;
+                  }
+                GM_idx -= nCols * nRows - 1;
+              }
+            // Save changes to underlying image.
+            m_img.syncPixels ();
+            imvec.push_back (m_img);
+          }
+        break;
+      }
+
+    case Magick::TrueColorMatteType:
+      {
+        // The fortran_vec offset for the green and blue channels
+        const octave_idx_type G_offset = nCols * nRows;
+        const octave_idx_type B_offset = nCols * nRows * 2;
+        octave_idx_type GM_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
+                                                      type,
+                                                      Magick::DirectClass);
+
+            Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    Magick::Color c (double (*img_fvec)          / divisor,
+                                     double (img_fvec[G_offset]) / divisor,
+                                     double (img_fvec[B_offset]) / divisor,
+                                     MaxRGB - (double (*a_fvec) / divisor));
+                    pix[GM_idx] = c;
+                    img_fvec++;
+                    a_fvec++;
+                    GM_idx += nCols;
+                  }
+                GM_idx -= nCols * nRows - 1;
+              }
+            // Save changes to underlying image.
+            m_img.syncPixels ();
+            imvec.push_back (m_img);
+          }
+        break;
+      }
+
+    case Magick::ColorSeparationType:
+      {
+        // The fortran_vec offset for the Magenta, Yellow, and blacK channels
+        const octave_idx_type M_offset = nCols * nRows;
+        const octave_idx_type Y_offset = nCols * nRows * 2;
+        const octave_idx_type K_offset = nCols * nRows * 3;
+        octave_idx_type GM_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
+                                                      type,
+                                                      Magick::DirectClass);
+
+            Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    Magick::Color c (double (*img_fvec)          / divisor,
+                                     double (img_fvec[M_offset]) / divisor,
+                                     double (img_fvec[Y_offset]) / divisor,
+                                     double (img_fvec[K_offset]) / divisor);
+                    pix[GM_idx] = c;
+                    img_fvec++;
+                    GM_idx += nCols;
+                  }
+                GM_idx -= nCols * nRows - 1;
+              }
+            // Save changes to underlying image.
+            m_img.syncPixels ();
+            imvec.push_back (m_img);
+          }
+        break;
+      }
+
+    case Magick::ColorSeparationMatteType:
+      {
+        // The fortran_vec offset for the Magenta, Yellow, and blacK channels
+        const octave_idx_type M_offset = nCols * nRows;
+        const octave_idx_type Y_offset = nCols * nRows * 2;
+        const octave_idx_type K_offset = nCols * nRows * 3;
+        octave_idx_type GM_idx = 0;
+        for (octave_idx_type frame = 0; frame < nFrames; frame++)
+          {
+            Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
+                                                      type,
+                                                      Magick::DirectClass);
+
+            Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            Magick::IndexPacket *ind = m_img.getIndexes ();
+            for (octave_idx_type col = 0; col < nCols; col++)
+              {
+                for (octave_idx_type row = 0; row < nRows; row++)
+                  {
+                    Magick::Color c (double (*img_fvec)          / divisor,
+                                     double (img_fvec[M_offset]) / divisor,
+                                     double (img_fvec[Y_offset]) / divisor,
+                                     double (img_fvec[K_offset]) / divisor);
+                    pix[GM_idx] = c;
+                    ind[GM_idx] = MaxRGB - (double (*a_fvec) / divisor);
+                    img_fvec++;
+                    a_fvec++;
+                    GM_idx += nCols;
+                  }
+                GM_idx -= nCols * nRows - 1;
+              }
+            // Save changes to underlying image.
+            m_img.syncPixels ();
+            imvec.push_back (m_img);
+          }
+        break;
+      }
+
+    default:
+      {
+        error ("__magick_write__: unrecognized Magick::ImageType");
+        return;
+      }
+    }
+  return;
 }
 
 void static
@@ -1081,14 +1245,18 @@ use @code{imwrite}.\n\
 
   if (cmap.is_empty ())
     {
+      const octave_value alpha = options.getfield ("alpha");
       if (img.is_bool_type ())
-        encode_bool_image (imvec, img);
+        encode_bool_image (imvec, img.bool_array_value ());
       else if (img.is_uint8_type ())
-        encode_uint_image<uint8NDArray> (imvec, img);
+        encode_uint_image<uint8NDArray>  (imvec, img.uint8_array_value (),
+                                          alpha.uint8_array_value ());
       else if (img.is_uint16_type ())
-        encode_uint_image<uint16NDArray> (imvec, img);
+        encode_uint_image<uint16NDArray> (imvec, img.uint16_array_value (),
+                                          alpha.uint16_array_value ());
       else if (img.is_uint32_type ())
-        encode_uint_image<uint32NDArray> (imvec, img);
+        encode_uint_image<uint32NDArray> (imvec, img.uint32_array_value (),
+                                          alpha.uint32_array_value ());
       else if (img.is_float_type ())
         {
           // For image formats that support floating point values, we write
@@ -1097,12 +1265,18 @@ use @code{imwrite}.\n\
           // But here, even for formats that would support floating point
           // values, GM seems unable to do that so we at least make them uint32.
           uint32NDArray clip_img;
+          uint32NDArray clip_alpha;
           if (img.is_single_type ())
-            clip_img = img_float2uint<FloatNDArray> (img.float_array_value ());
+            {
+              clip_img   = img_float2uint<FloatNDArray> (img.float_array_value ());
+              clip_alpha = img_float2uint<FloatNDArray> (alpha.float_array_value ());
+            }
           else
-            clip_img = img_float2uint<NDArray> (img.array_value ());
-
-          encode_uint_image<uint32NDArray> (imvec, octave_value (clip_img));
+            {
+              clip_img   = img_float2uint<NDArray> (img.array_value ());
+              clip_alpha = img_float2uint<NDArray> (alpha.array_value ());
+            }
+          encode_uint_image<uint32NDArray> (imvec, clip_img, clip_alpha);
         }
       else
         {

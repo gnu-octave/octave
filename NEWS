@@ -138,9 +138,27 @@ Summary of important user-visible changes for version 3.8:
 
     Other changes include fixes to the way indexed images are read from a
     colormap depending on the image class (integer images have a -1 offset to
-    the colormap row number), and always returning the actual indexed image
-    with imread instead of a RGB image if the colormap was not requested
-    as output.
+    the colormap row number).
+
+ ** The imread and imwrite functions have been completely rewritten
+
+    The main changes relate to the alpha channel, support for reading and
+    writing of floating point images, implemented writing of indexed images,
+    and appending images to multipage image files.
+
+    The issues that may arise due to backwards incompatibility are:
+
+      * imwrite no longer interprets a length of 2 or 4 in the third dimension
+        as grayscale or RGB with alpha channel (a length of 4 will be saved
+        as CMYK image).  Alpha channel must be passed as separate argument.
+      * imread will always return the colormap indexes when reading an indexed
+        image, even if the colormap is not requested as output.
+      * transparency values are now inverted from the previous Octave versions
+        (0 is for completely transparent instead of completely opaque).
+
+    In addition, the function imformats has been implemented to expand
+    reading and writing of images of different formats through imread
+    and imwrite.
 
  ** The colormap function now provides new options---"list", "register",
     and "unregister"---to list all available colormap functions, and to

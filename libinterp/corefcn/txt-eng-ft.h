@@ -75,6 +75,8 @@ public:
 
   void visit (text_element_symbol& e);
 
+  void visit (text_element_combined& e);
+
   void reset (void);
 
   uint8NDArray get_pixels (void) const { return pixels; }

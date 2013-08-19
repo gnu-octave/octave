@@ -36,6 +36,7 @@ class text_element_symbol;
 class text_element_list;
 class text_element_subscript;
 class text_element_superscript;
+class text_element_combined;
 class text_element_fontname;
 class text_element_fontsize;
 class text_element_fontstyle;
@@ -181,6 +182,21 @@ private:
 
 class
 OCTINTERP_API
+text_element_combined : public text_element_list
+{
+public:
+  text_element_combined (text_element* e)
+    : text_element_list (e) { }
+
+  text_element_combined (text_element* e1, text_element* e2)
+    : text_element_list(e1)
+    { push_back (e2); }
+
+  void accept (text_processor& p);
+};
+
+class
+OCTINTERP_API
 text_element_fontstyle : public text_element
 {
 public:
@@ -315,6 +331,8 @@ public:
   virtual void visit (text_element_superscript& e)
     { e.get_element ()->accept (*this); }
 
+  virtual void visit (text_element_combined&) { }
+
   virtual void visit (text_element_fontstyle&) { }
 
   virtual void visit (text_element_fontname&) { }
@@ -341,6 +359,7 @@ TEXT_ELEMENT_ACCEPT(text_element_symbol)
 TEXT_ELEMENT_ACCEPT(text_element_list)
 TEXT_ELEMENT_ACCEPT(text_element_subscript)
 TEXT_ELEMENT_ACCEPT(text_element_superscript)
+TEXT_ELEMENT_ACCEPT(text_element_combined)
 TEXT_ELEMENT_ACCEPT(text_element_fontstyle)
 TEXT_ELEMENT_ACCEPT(text_element_fontname)
 TEXT_ELEMENT_ACCEPT(text_element_fontsize)

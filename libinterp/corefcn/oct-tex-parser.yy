@@ -65,13 +65,16 @@ static void yyerror (text_parser_tex& parser, const char *s);
 
 %type<str> simple_string identifier
 %type<e_base> string_element symbol_element
-%type<e_base> superscript_element subscript_element
+%type<e_base> superscript_element subscript_element combined_script_element
 %type<e_base> font_modifier_element fontname_element fontsize_element color_element
 %type<e_list> string_element_list scoped_string_element_list
 
 /* Make sure there's no memory leak on parse error. */
 %destructor { } <ch> <num>
 %destructor { delete $$; } <*>
+
+%nonassoc SCRIPT
+%nonassoc SUB SUPER
 
 %nonassoc STR
 %nonassoc CH
@@ -144,8 +147,9 @@ string_element			: simple_string %prec STR
 				| fontsize_element
 				| fontname_element
 				| color_element
-				| superscript_element
-				| subscript_element
+				| superscript_element %prec SCRIPT
+				| subscript_element %prec SCRIPT
+				| combined_script_element
 				;
 
 superscript_element		: SUPER CH
@@ -158,6 +162,12 @@ subscript_element		: SUB CH
 				  { $$ = new text_element_subscript ($2); }
 				| SUB scoped_string_element_list
 				  { $$ = new text_element_subscript ($2); }
+				;
+
+combined_script_element		: subscript_element superscript_element
+				  { $$ = new text_element_combined ($1, $2); }
+				| superscript_element subscript_element
+				  { $$ = new text_element_combined ($1, $2); }
 				;
 
 string_element_list		: string_element

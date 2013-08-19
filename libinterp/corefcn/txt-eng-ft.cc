@@ -354,6 +354,8 @@ ft_render::push_new_line (void)
               bb(4) = h;
 
               line_bbox.push_back (bb);
+
+              xoffset = yoffset = 0;
             }
         }
       break;
@@ -609,12 +611,14 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
                       FT_Get_Kerning (face, previous, glyph_index,
                                       FT_KERNING_DEFAULT, &delta);
 
-                      bb(2) += (delta.x >> 6);
+                      xoffset += (delta.x >> 6);
                     }
 
-                  // Extend current line bounding box by the width of the
-                  // current glyph.
-                  bb(2) += (face->glyph->advance.x >> 6);
+                  // Extend current X offset box by the width of the current
+                  // glyph. Then extend the line bounding box if necessary.
+
+                  xoffset += (face->glyph->advance.x >> 6);
+                  bb(2) = xmax (bb(2), xoffset);
                 }
               break;
             }
@@ -778,6 +782,22 @@ ft_render::visit (text_element_symbol& e)
     process_character (code);
   else if (font.is_valid ())
     ::warning ("ignoring unknown symbol: %s", e.string_value ().c_str ());
+}
+
+void
+ft_render::visit (text_element_combined& e)
+{
+  int saved_xoffset = xoffset;
+  int max_xoffset = xoffset;
+
+  for (text_element_combined::iterator it = e.begin (); it != e.end (); ++it)
+    {
+      xoffset = saved_xoffset;
+      (*it)->accept (*this);
+      max_xoffset = xmax (xoffset, max_xoffset);
+    }
+
+  xoffset = max_xoffset;
 }
 
 void

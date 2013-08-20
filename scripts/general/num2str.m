@@ -129,8 +129,6 @@ function retval = num2str (x, arg)
       endif
     else
       ## Setup a suitable format string
-      #dgt = floor (log10 (max (max (abs (real (x(:)))),
-      #                         max (abs (imag (x(:)))))));
       dgt = floor (log10 (max (max (abs (real (x(!isinf (real (x(:))))))),
                                max (abs (imag (x(!isinf (imag (x(:))))))))));
       if (isempty (dgt))

@@ -897,8 +897,9 @@ DEFUN (find_dir_in_path, args, ,
 Return the full name of the path element matching @var{dir}.  The\n\
 match is performed at the end of each path element.  For example, if\n\
 @var{dir} is @qcode{\"foo/bar\"}, it matches the path element\n\
-@qcode{\"/some/dir/foo/bar\"}, but not @qcode{\"/some/dir/foo/bar/baz\"}\n\
-or @qcode{\"/some/dir/allfoo/bar\"}.\n\
+@nospell{@qcode{\"/some/dir/foo/bar\"}}, but not\n\
+@nospell{@qcode{\"/some/dir/foo/bar/baz\"}}\n\
+@nospell{@qcode{\"/some/dir/allfoo/bar\"}}.\n\
 \n\
 The second argument is optional.  If it is supplied, return a cell array\n\
 containing all name matches rather than just the first.\n\

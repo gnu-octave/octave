@@ -152,6 +152,7 @@ colorbar
 colormap
 colormaps
 ColorOrder
+colororder
 colperm
 Comint
 Commandline
@@ -185,6 +186,7 @@ cumprod
 cumsum
 cURL
 CurrentObject
+currentpoint
 Cuthill
 cxsparse
 Cygwin
@@ -277,6 +279,7 @@ Errorbars
 errorbars
 errordlg
 ErrorHandler
+ESC
 Esmond
 et
 etree
@@ -332,6 +335,8 @@ frob
 Frobenius
 Fs
 FSF
+fullpath
+fullpathext
 FunValCheck
 gamcdf
 gaminv
@@ -431,6 +436,7 @@ Hyndman
 Hypergeometric
 hypergeometric
 IEC
+ieee
 IEEE
 ifelse
 ifft
@@ -485,8 +491,10 @@ jvm
 JVM's
 Kac
 Kahan
+kendall
 keybindings
 keypress
+keypressfcn
 Kolmogorov
 kolmogorov
 Konrod
@@ -532,6 +540,7 @@ linesearch
 linespec
 linespoints
 linestyle
+linewidth
 linkprop
 listdlg
 ListSize
@@ -575,6 +584,10 @@ makeinfo
 Mandriva
 MANOVA
 manova
+markeredgecolor
+markerfacecolor
+markersize
+markerstyle
 Marsaglia
 Maschhoff
 matchcase
@@ -714,6 +727,7 @@ Parter
 pbm
 PBM
 PBMplus
+pc
 pcg
 PCG
 pchip
@@ -724,6 +738,7 @@ PCX
 pcx
 pdf
 PDF
+pearson
 pentadiagonal
 periodogram
 perp
@@ -747,6 +762,7 @@ polyderiv
 polyeig
 polyfit
 polyval
+pos
 POSIX
 postorder
 PostScript
@@ -1000,6 +1016,7 @@ TolFun
 TolX
 toolkits
 Toolkits
+toplevel
 tp
 tpdf
 traceback
@@ -1011,6 +1028,7 @@ tridiagonal
 trimesh
 triplot
 trnd
+truecolor
 TrueColor
 Tsang
 Tukey
@@ -1048,6 +1066,8 @@ unimodal
 Uninstall
 uninstalled
 univariate
+unix
+unnorm
 unnormalized
 unpadded
 unpermuted
@@ -1086,6 +1106,7 @@ wallis
 warndlg
 Wathen
 WAV
+WayPoints
 wblcdf
 wblinv
 wblpdf
@@ -1106,6 +1127,9 @@ wildcard
 Wildcards
 wildcards
 Wilks
+windowbuttondownfcn
+windowbuttonmotionfcn
+windowbuttonupfcn
 windowstyle
 WinRand
 WIPO

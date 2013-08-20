@@ -241,7 +241,7 @@
 ## Heuristic by Driebeck and Tomlin.
 ##
 ## @item 5 (@w{@code{GLP_BR_PCH}})
-## Hybrid pseudocost heuristic.
+## Hybrid @nospell{pseudocost} heuristic.
 ## @end table
 ##
 ## @item btrack (default: 4)

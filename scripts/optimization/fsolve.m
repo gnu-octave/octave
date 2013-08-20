@@ -49,8 +49,8 @@
 ## it may sometimes deliver unexpected (though mathematically correct) results.
 ##
 ## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
-## Broyden updates to update the Jacobian, in order to reduce the amount of
-## Jacobian calculations.  If your user function always calculates the
+## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
+## amount of Jacobian calculations.  If your user function always calculates the
 ## Jacobian (regardless of number of output arguments), this option provides
 ## no advantage and should be set to false.
 ##

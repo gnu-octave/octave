@@ -385,8 +385,8 @@ is then changed appropriately for display.
 All samples of code should be marked with this macro for the same
 reasons as the @@var macro.
 
-@item  @@qcode@{"sample_code"@}
-@itemx @@qcode@{'sample_code'@}
+@item  @nospell{@@qcode@{"sample_code"@}}
+@itemx @nospell{@@qcode@{'sample_code'@}}
 All samples of code which are quoted should use this more specialized macro.
 This happens frequently when discussing graphics properties such as "position"
 or options such as "on"/"off".

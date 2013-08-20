@@ -562,14 +562,15 @@ for @@var@{n@} or @@var@{k@}.
 @@seealso@{bincoeff, perms@}
 @@end deftypefn
 @end example
+
 @noindent
 which demonstrates most of the concepts discussed above.
 @iftex
 This documentation string renders as
-
 @c Note: use the actual output of info below, rather than try and 
 @c reproduce it here to prevent it looking different from how it would
 @c appear with info.
+
 @example
  -- Function File: C = nchoosek (N, K)
  -- Function File: C = nchoosek (SET, K)

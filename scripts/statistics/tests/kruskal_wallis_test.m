@@ -36,9 +36,10 @@
 ## where @var{sum_ties} is the sum of @var{t}^2 - @var{t} over each group
 ## of ties where @var{t} is the number of ties in the group and @var{n}
 ## is the total number of values in the input data.  For more info on
-## this adjustment see "Use of Ranks in One-Criterion Variance Analysis"
-## in Journal of the American Statistical Association, Vol. 47,
-## No. 260 (Dec 1952) by William H. Kruskal and W. Allen Wallis.
+## this adjustment see William H. Kruskal and W. Allen Wallis,
+## @cite{Use of Ranks in One-Criterion Variance Analysis}, 
+## Journal of the American Statistical Association, Vol. 47,
+## No. 260 (Dec 1952).
 ##
 ## The p-value (1 minus the CDF of this distribution at @var{k}) is
 ## returned in @var{pval}.

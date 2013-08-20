@@ -357,9 +357,7 @@ The typical way to extract a matrix or array from the input arguments of
 @w{@code{DEFUN_DLD}} function is as follows
 
 @example
-@group
 @EXAMPLEFILE(addtwomatrices.cc)
-@end group
 @end example
 
 To avoid segmentation faults causing Octave to abort this function
@@ -484,9 +482,7 @@ cell array can be treated just like any other @code{octave_value}.  A simple
 example is
 
 @example
-@group
 @EXAMPLEFILE(celldemo.cc)
-@end group
 @end example
 
 Note that cell arrays are used less often in standard oct-files and so
@@ -1517,9 +1513,7 @@ the @file{celldemo.cc} oct-file in a mex-file is given by @file{mycell.c}
 as shown below.
 
 @example
-@group
 @EXAMPLEFILE(mycell.c)
-@end group
 @end example
 
 @noindent
@@ -1737,9 +1731,7 @@ following C++ program, uses class Matrix from @file{liboctave.a} or
 @file{liboctave.so}.
 
 @example
-@group
 @EXAMPLEFILE(standalone.cc)
-@end group
 @end example
 
 @noindent
@@ -1766,9 +1758,7 @@ needs to be initialized first.  An example of how to do this can then be
 seen in the code
 
 @example
-@group
 @EXAMPLEFILE(embedded.cc)
-@end group
 @end example
 
 @noindent

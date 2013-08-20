@@ -147,54 +147,54 @@ It corresponds to GNU Octave version @value{VERSION}.
 @c ------------------------------------------------------------------------
 
 @menu
-* Preface::                     
+* Preface::
 * Introduction::                A brief introduction to Octave.
-* Getting Started::             
-* Data Types::                  
-* Numeric Data Types::          
-* Strings::                     
-* Data Containers::             
-* Variables::                   
-* Expressions::                 
-* Evaluation::                  
+* Getting Started::
+* Data Types::
+* Numeric Data Types::
+* Strings::
+* Data Containers::
+* Variables::
+* Expressions::
+* Evaluation::
 * Statements::                  Looping and program flow control.
-* Functions and Scripts::       
-* Errors and Warnings::              
+* Functions and Scripts::
+* Errors and Warnings::
 * Debugging::
-* Input and Output::            
-* Plotting::                    
-* Matrix Manipulation::         
-* Arithmetic::                  
+* Input and Output::
+* Plotting::
+* Matrix Manipulation::
+* Arithmetic::
 * Linear Algebra::
 * Vectorization and Faster Code Execution::
 * Nonlinear Equations::
 * Diagonal and Permutation Matrices::
 * Sparse Matrices::
-* Numerical Integration::                  
-* Differential Equations::      
-* Optimization::                
-* Statistics::                  
-* Sets::                        
-* Polynomial Manipulations::    
+* Numerical Integration::
+* Differential Equations::
+* Optimization::
+* Statistics::
+* Sets::
+* Polynomial Manipulations::
 * Interpolation::
 * Geometry::
-* Signal Processing::           
-* Image Processing::            
-* Audio Processing::            
-* Object Oriented Programming::            
-* GUI Development::            
-* System Utilities::            
+* Signal Processing::
+* Image Processing::
+* Audio Processing::
+* Object Oriented Programming::
+* GUI Development::
+* System Utilities::
 * Java Interface:: 
 * Packages:: 
 * External Code Interface::
 * Test and Demo Functions::
-* Tips and Standards::                        
+* Tips and Standards::
 * Contributing Guidelines::
 * Obsolete Functions::
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
-* Emacs Octave Support::                       
-* Grammar and Parser::                     
+* Emacs Octave Support::
+* Grammar and Parser::
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Function Index::              An item for each documented function.

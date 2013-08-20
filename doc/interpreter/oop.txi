@@ -94,9 +94,7 @@ called with no arguments to should return a value object.  So for example
 our polynomial might look like
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/polynomial.m)
-@end group
 @end example
 
 Note that the return value of the constructor must be the output of
@@ -177,9 +175,7 @@ then Octave will printed nothing when displaying the contents of a class.
 An example of a display method for the polynomial class might be
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/display.m)
-@end group
 @end example
 
 @noindent
@@ -195,9 +191,7 @@ argument of the appropriate class it should return a structure with
 all of the properties of the class.  For example:
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/get.m)
-@end group
 @end example
 
 @noindent
@@ -205,9 +199,7 @@ Similarly, the @code{set} method should taken as its first argument an
 object to modify, and then take property/value pairs to be modified. 
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/set.m)
-@end group
 @end example
 
 @noindent
@@ -282,9 +274,7 @@ polynomial and indexing with @qcode{"@{@}"} returns the @var{n}-th coefficient
 polynomial class might look like
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/subsref.m)
-@end group
 @end example
 
 The equivalent functionality for subscripted assignments uses the 
@@ -647,9 +637,7 @@ the above is of the type @qcode{"polynomial"} and so we use the
 polynomial class constructor would be modified to be
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/polynomial_superiorto.m)
-@end group
 @end example
 
 Note that user classes always have higher precedence than built-in
@@ -692,9 +680,7 @@ The equivalent class could be implemented in a class directory
 FIRfilter.m in the class directory.
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/FIRfilter.m)
-@end group
 @end example
 
 As before, the leading comments provide command-line documentation for
@@ -758,9 +744,7 @@ underlying struct are private by default, we could provide a mechanism
 to access the fields.  The @code{subsref} method may be used for both.
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/subsref.m)
-@end group
 @end example
 
 The @qcode{"()"} case allows us to filter data using the polynomial provided
@@ -819,9 +803,7 @@ polynomial is simply a field in the class structure.  A class
 constructor for this case might be
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/FIRfilter_aggregation.m)
-@end group
 @end example
 
 For our example, the remaining class methods remain unchanged.

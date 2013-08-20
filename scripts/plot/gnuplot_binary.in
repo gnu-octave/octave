@@ -22,7 +22,7 @@
 ## Query or set the name of the program invoked by the plot command
 ## when the graphics toolkit is set to "gnuplot".  Additional arguments to
 ## pass to the external plotting program may also be given.
-## The default value is @code{"gnuplot"} with no additional arguments.
+## The default value is @qcode{"gnuplot"} with no additional arguments.
 ## @xref{Installation}.
 ## @seealso{graphics_toolkit}
 ## @end deftypefn

@@ -178,7 +178,7 @@
 %!  ret = 1;
 %!endfunction
 
-%!test
+%!testif HAVE_ZLIB
 %!
 %! [save_status, save_files] = testls (0);
 %! [load_status, load_files] = testls (1);

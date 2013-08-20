@@ -272,7 +272,9 @@ private:
     list.append (static_cast<octave_dock_widget *> (history_window));
     list.append (static_cast<octave_dock_widget *> (file_browser_window));
     list.append (static_cast<octave_dock_widget *> (doc_browser_window));
+#ifdef HAVE_QSCINTILLA
     list.append (static_cast<octave_dock_widget *> (editor_window));
+#endif
     list.append (static_cast<octave_dock_widget *> (workspace_window));
     return list;
   }

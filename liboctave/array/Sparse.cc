@@ -2794,17 +2794,21 @@ bug #35570:
 %! assert (s, sparse ([], [], [], 0, 1));
 
 ## Test (bug #37321)
-
-%!test a=sparse (0,0); assert (all (a)==sparse ([1]))
-%!test a=sparse (0,1); assert (all (a)==sparse ([1]))
-%!test a=sparse (1,0); assert (all (a)==sparse ([1]))
-%!test a=sparse (1,0); assert (all (a,2)==sparse ([1]))
-%!test a=sparse (1,0); assert (isequal (size (all (a,1)),[1 0]))
-%!test a=sparse (1,1); assert (all (a)==sparse ([0])), assert (isequal (size (all (a)),[1 1]))
-%!test a=sparse (2,1); assert (all (a)==sparse ([0])), assert (isequal (size (all (a)),[1 1]))
-%!test a=sparse (1,2); assert (all (a)==sparse ([0])), assert (isequal (size (all (a)),[1 1]))
-%!test a=sparse (2,2); assert (isequal(all (a),sparse ([0 0])))
-
+%!test a=sparse (0,0); assert (all (a) == sparse ([1]));
+%!test a=sparse (0,1); assert (all (a) == sparse ([1]));
+%!test a=sparse (1,0); assert (all (a) == sparse ([1]));
+%!test a=sparse (1,0); assert (all (a,2) == sparse ([1]));
+%!test a=sparse (1,0); assert (size (all (a,1)), [1 0]);
+%!test a=sparse (1,1);
+%! assert (all (a) == sparse ([0]));
+%! assert (size (all (a)), [1 1]);
+%!test a=sparse (2,1);
+%! assert (all (a) == sparse ([0]));
+%! assert (size (all (a)), [1 1]);
+%!test a=sparse (1,2);
+%! assert (all (a) == sparse ([0]));
+%! assert (size (all (a)), [1 1]);
+%!test a=sparse (2,2); assert (isequal (all (a), sparse ([0 0])));
 
 */
 

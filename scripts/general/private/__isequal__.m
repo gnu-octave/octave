@@ -176,9 +176,9 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   endif
 
   if (!t)
-    t=logical(0);
+    t = false;
   else
-    t=logical(1);
+    t = true;
   endif
 
 endfunction

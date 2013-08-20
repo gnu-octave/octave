@@ -2544,9 +2544,17 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
                                 nsa--;
                             }
 
-                          const char *tval = xisinf (val)
-                            ? (val < 0 ? "-Inf" : "Inf")
-                            : (lo_ieee_is_NA (val) ? "NA" : "NaN");
+                          const char *tval;
+                          if (xisinf (val))
+                            if (elt->flags.find ('+') != std::string::npos)
+                              tval = (val < 0 ? "-Inf" : "+Inf");
+                            else
+                              tval = (val < 0 ? "-Inf" : "Inf");
+                          else
+                            if (elt->flags.find ('+') != std::string::npos)
+                              tval = (lo_ieee_is_NA (val) ? "+NA" : "+NaN");
+                            else
+                              tval = (lo_ieee_is_NA (val) ? "NA" : "NaN");
 
                           retval += do_printf_conv (os, tfmt.c_str (),
                                                     nsa, sa_1, sa_2,

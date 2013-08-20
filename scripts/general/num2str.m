@@ -92,10 +92,9 @@ function retval = num2str (x, arg)
       if (isnumeric (x))
         ## Setup a suitable format string, ignoring inf entries
         dgt = floor (log10 (max (abs (x(!isinf (x(:)))))));
-
-        ## If the whole input array is inf...
         if (isempty (dgt))
-          dgt = 0;
+          ## If the whole input array is inf...
+          dgt = 1;
         endif
 
         if (any (x(:) != fix (x(:))))
@@ -130,8 +129,15 @@ function retval = num2str (x, arg)
       endif
     else
       ## Setup a suitable format string
-      dgt = floor (log10 (max (max (abs (real (x(:)))),
-                               max (abs (imag (x(:)))))));
+      #dgt = floor (log10 (max (max (abs (real (x(:)))),
+      #                         max (abs (imag (x(:)))))));
+      dgt = floor (log10 (max (max (abs (real (x(!isinf (real (x(:))))))),
+                               max (abs (imag (x(!isinf (imag (x(:))))))))));
+      if (isempty (dgt))
+        ## If the whole input array is inf...
+        dgt = 1;
+      endif
+
       if (any (x(:) != fix (x(:))))
         ## Floating point input
           dgt = max (dgt + 4, 5);   # Keep 4 sig. figures after decimal point
@@ -183,7 +189,16 @@ endfunction
 %!assert (num2str (2^33+1i), "8589934592+1i")
 %!assert (num2str (-2^33+1i), "-8589934592+1i")
 %!assert (num2str (inf), "Inf")
+%!assert (num2str ([inf -inf]), "Inf -Inf")
+%!assert (num2str ([complex(Inf,0), complex(0,-Inf)]), "Inf+0i   0-Infi")
+%!assert (num2str (complex(Inf,1)), "Inf+1i")
+%!assert (num2str (complex(1,Inf)), "1+Infi")
 %!assert (num2str (nan), "NaN")
+%!assert (num2str (complex (NaN, 1)), "NaN+1i")
+%!assert (num2str (complex (1, NaN)), "1+NaNi")
+%!assert (num2str (NA), "NA")
+%!assert (num2str (complex (NA, 1)), "NA+1i")
+%!assert (num2str (complex (1, NA)), "1+NAi")
 
 ## FIXME: Integers greater than bitmax() should be masked to show just
 ##        16 digits of precision.

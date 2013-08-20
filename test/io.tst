@@ -222,7 +222,7 @@
 %! matrix1 = rand (100, 2);
 %! save -ascii matrix.ascii matrix1
 %! matrix2 = load ("matrix.ascii");
-%! assert (matrix1, matrix2, 1e-9)
+%! assert (matrix1, matrix2, 1e-9);
 %!
 %! delete matrix.ascii;
 
@@ -237,7 +237,6 @@
 %!assert (puts (1),-1)
 
 %!error <Invalid call to puts> puts ()
-
 %!error <Invalid call to puts> puts (1, 2)
 
 %!assert (sscanf ('123456', '%10c'), '123456')
@@ -245,11 +244,11 @@
 
 %!assert (sscanf (['ab'; 'cd'], '%s'), 'acbd')
 
-%!assert (sscanf ('02:08:30', '%i:%i:%i'), [2; 0]);
-%!assert (sscanf ('02:08:30', '%d:%d:%d'), [2; 8; 30]);
+%!assert (sscanf ('02:08:30', '%i:%i:%i'), [2; 0])
+%!assert (sscanf ('02:08:30', '%d:%d:%d'), [2; 8; 30])
 
-%!assert (sscanf ('0177 08', '%i'), [127; 0; 8]);
-%!assert (sscanf ('0177 08', '%d'), [177; 8]);
+%!assert (sscanf ('0177 08', '%i'), [127; 0; 8])
+%!assert (sscanf ('0177 08', '%d'), [177; 8])
 
 %!test
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
@@ -282,9 +281,7 @@
 %! && v2 == [1; 2] && c2 == 2 && ischar (m2)));
 
 %!error <Invalid call to sscanf> sscanf ()
-
 %!error sscanf (1, 2)
-
 %!error <Invalid call to sscanf> sscanf ("foo", "bar", "C", 1)
 
 %!test
@@ -305,21 +302,25 @@
 %! assert (str, "test:1");
 
 %!error printf (1)
-
 %!error <Invalid call to printf> printf ()
 
 %!test
 %! [s, msg, status] = sprintf ("%s: %d\n", "test", 1);
-%!
 %! assert (s == "test: 1\n" && ischar (msg) && status == 8);
 
-%!error sprintf (1)
+%!assert (sprintf ("%-+6.2f", Inf), "+Inf  ")
+%!assert (sprintf ("%-6.2f", Inf), "Inf   ")
+%!assert (sprintf ("%-+6.2f", nan), "+NaN  ")  # lowercase nan is part of test
+%!assert (sprintf ("%-6.2f", nan), "NaN   ")
+%!assert (sprintf ("%-+6.2f", NA), "+NA   ")
+%!assert (sprintf ("%-6.2f", NA), "NA    ")
 
 %!error <Invalid call to sprintf> sprintf ()
+%!error <format TEMPLATE must be a string> sprintf (1)
 
 %!test
 %! arch_list = {"native"; "ieee-le"; "ieee-be"; "vaxd"; "vaxg"; "cray"};
-%! warning ("off", "Octave:fopen-mode")
+%! warning ("off", "Octave:fopen-mode");
 %! status = 1;
 %!
 %! for i = 1:6
@@ -386,17 +387,14 @@
 %! assert (__prog_output_assert__ ("error:"));
 
 %!error <Invalid call to fopen> fopen ()
-
 %!error <Invalid call to fopen> fopen ("foo", "wb", "native", 1)
 
 %!error fclose (0)
-
 %!error <Invalid call to fclose> fclose (1, 2)
 
 %!assert (ischar (tmpnam ()))
 
 %!warning tmpnam (1);
-
 %!warning tmpnam ("foo", 1);
 
 %!error <Invalid call to tmpnam> tmpnam (1, 2, 3)
@@ -472,81 +470,60 @@
 %! endif
 %! unlink (nm);
 
-%!error <Invalid call to fputs> fputs ()
-
-%!error <Invalid call to fputs> fputs (1, "foo", 1)
-
 %!assert (fputs (1, 1),-1)
 
-%!error <Invalid call to fgetl> fgetl ()
-
-%!error <Invalid call to fgetl> fgetl (1, 2, 3)
+%!error <Invalid call to fputs> fputs ()
+%!error <Invalid call to fputs> fputs (1, "foo", 1)
 
 %!error fgetl ("foo", 1)
 
-%!error <Invalid call to fgets> fgets ()
-
-%!error <Invalid call to fgets> fgets (1, 2, 3)
+%!error <Invalid call to fgetl> fgetl ()
+%!error <Invalid call to fgetl> fgetl (1, 2, 3)
 
 %!error fgets ("foo", 1)
 
-%!error <Invalid call to fprintf> fprintf ()
-
-%!error <Invalid call to fprintf> fprintf (1)
+%!error <Invalid call to fgets> fgets ()
+%!error <Invalid call to fgets> fgets (1, 2, 3)
 
 %!test
 %! s.a = 1;
 %! fail ("fprintf (s)", "Invalid call to fprintf");
 
+%!error <Invalid call to fprintf> fprintf ()
+%!error <Invalid call to fprintf> fprintf (1)
 %!error fprintf (1, 1)
-
 %!error fprintf (-1, "foo")
-
-%!error <Invalid call to fscanf> fscanf ()
-
-%!error <Invalid call to fscanf> fscanf (1)
 
 %!error fscanf ("foo", "bar")
 
+%!error <Invalid call to fscanf> fscanf ()
+%!error <Invalid call to fscanf> fscanf (1)
+
 %!error <Invalid call to fread> fread ()
-
 %!error <Invalid call to fread> fread (1, 2, "char", 1, "native", 2)
-
 %!error fread ("foo")
 
 %!error <Invalid call to fwrite> fwrite ()
-
 %!error <Invalid call to fwrite> fwrite (1, rand (10), "char", 1, "native", 2)
-
 %!error fwrite ("foo", 1)
 
 %!error <Invalid call to feof> feof ()
-
 %!error <Invalid call to feof> feof (1, 2)
-
 %!error feof ("foo")
 
 %!error <Invalid call to ferror> ferror ()
-
 %!error <Invalid call to ferror> ferror (1, 'clear', 2)
-
 %!error ferror ("foo")
 
 %!error <Invalid call to ftell> ftell ()
-
 %!error <Invalid call to ftell> ftell (1, 2)
-
 %!error ftell ("foo")
 
 %!error <Invalid call to fseek> fseek ()
-
 %!error <Invalid call to fseek> fseek (1, 0, SEEK_SET, 1)
-
 %!error fseek ("foo", 0, SEEK_SET)
 
 %!error <Invalid call to frewind> frewind ()
-
 %!error <Invalid call to frewind> frewind (1, 2)
-
 %!error frewind ("foo")
 

@@ -240,7 +240,7 @@ make_statement (T *arg)
 %type <tree_expression_type> matrix cell
 %type <tree_expression_type> primary_expr oper_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
-%type <tree_identifier_type> identifier fcn_name magic_tilde opt_identifier
+%type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_identifier_type> superclass_identifier meta_identifier
 %type <octave_user_function_type> function1 function2 classdef1
 %type <tree_index_expression_type> word_list_cmd
@@ -975,15 +975,10 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                     if (! ($$ = parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
-                | TRY stash_comment opt_sep opt_list CATCH list END
+                | TRY stash_comment opt_sep opt_list CATCH stash_comment
+                  opt_sep opt_list END
                   {
-                    if (! ($$ = parser.make_try_command ($1, $4, $6, 0, $7, $2, 0)))
-                      ABORT_PARSE;
-                  }
-                | TRY stash_comment opt_sep opt_list CATCH opt_identifier
-                  stash_comment opt_sep opt_list END
-                  {
-                    if (! ($$ = parser.make_try_command ($1, $4, $9, $6, $10, $2, $7)))
+                    if (! ($$ = parser.make_try_command ($1, $4, $7, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list END
@@ -991,12 +986,6 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                     if (! ($$ = parser.make_try_command ($1, $4, 0, 0, $5, $2, 0)))
                       ABORT_PARSE;
                   }
-                ;
-
-opt_identifier: // empty
-                  { $$ = 0; }
-                | identifier sep
-                  { $$ = $1; }
                 ;
 
 // ===========================================
@@ -2201,8 +2190,8 @@ octave_base_parser::make_unwind_command (token *unwind_tok,
 tree_command *
 octave_base_parser::make_try_command (token *try_tok,
                                       tree_statement_list *body,
+                                      char catch_sep,
                                       tree_statement_list *cleanup_stmts,
-                                      tree_identifier *id,
                                       token *end_tok,
                                       octave_comment_list *lc,
                                       octave_comment_list *mc)
@@ -2215,6 +2204,25 @@ octave_base_parser::make_try_command (token *try_tok,
 
       int l = try_tok->line ();
       int c = try_tok->column ();
+
+      tree_identifier *id = 0;
+
+      if (! catch_sep && cleanup_stmts && ! cleanup_stmts->empty ())
+        {
+          tree_statement *stmt = cleanup_stmts->front ();
+
+          if (stmt)
+            {
+              tree_expression *expr = stmt->expression ();
+
+              if (expr && expr->is_identifier ())
+                {
+                  id = dynamic_cast<tree_identifier *> (expr);
+
+                  cleanup_stmts->pop_front ();
+                }
+            }
+        }
 
       retval = new tree_try_catch_command (body, cleanup_stmts, id,
                                            lc, mc, tc, l, c);

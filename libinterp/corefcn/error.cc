@@ -2011,6 +2011,12 @@ last_error_id (void)
   return Vlast_error_id;
 }
 
+octave_map
+last_error_stack (void)
+{
+  return Vlast_error_stack;
+}
+
 std::string
 last_warning_message (void)
 {

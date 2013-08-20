@@ -103,8 +103,8 @@ $ R^T R = Q^T A Q$.\n\
 @end ifnottex\n\
 \n\
 The sparsity preserving permutation is generally returned as a matrix.\n\
-However, given the flag \"vector\", @var{Q} will be returned as a vector\n\
-such that\n\
+However, given the flag @qcode{\"vector\"}, @var{Q} will be returned as a\n\
+vector such that\n\
 @tex\n\
 $ R^T R = A (Q, Q)$.\n\
 @end tex\n\
@@ -116,8 +116,8 @@ $ R^T R = A (Q, Q)$.\n\
 \n\
 @end ifnottex\n\
 \n\
-Called with either a sparse or full matrix and using the \"lower\" flag,\n\
-@code{chol} returns the lower triangular factorization such that\n\
+Called with either a sparse or full matrix and using the @qcode{\"lower\"}\n\
+flag, @code{chol} returns the lower triangular factorization such that\n\
 @tex\n\
 $ L L^T = A $.\n\
 @end tex\n\
@@ -129,9 +129,9 @@ $ L L^T = A $.\n\
 \n\
 @end ifnottex\n\
 \n\
-For full matrices, if the \"lower\" flag is set only the lower triangular\n\
-part of the matrix is used for the factorization, otherwise the upper\n\
-triangular part is used.\n\
+For full matrices, if the @qcode{\"lower\"} flag is set only the lower\n\
+triangular part of the matrix is used for the factorization, otherwise the\n\
+upper triangular part is used.\n\
 \n\
 In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\
@@ -631,14 +631,14 @@ upper triangular matrix @var{R1} such that\n\
 @itemize @bullet\n\
 @item\n\
 @var{R1}'*@var{R1} = @var{R}'*@var{R} + @var{u}*@var{u}'\n\
-if @var{op} is \"+\"\n\
+if @var{op} is @qcode{\"+\"}\n\
 \n\
 @item\n\
 @var{R1}'*@var{R1} = @var{R}'*@var{R} - @var{u}*@var{u}'\n\
-if @var{op} is \"-\"\n\
+if @var{op} is @qcode{\"-\"}\n\
 @end itemize\n\
 \n\
-If @var{op} is \"-\", @var{info} is set to\n\
+If @var{op} is @qcode{\"-\"}, @var{info} is set to\n\
 \n\
 @itemize\n\
 @item 0 if the downdate was successful,\n\

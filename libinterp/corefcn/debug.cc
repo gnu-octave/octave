@@ -917,8 +917,8 @@ Display a script file with line numbers.\n\
 \n\
 When called with no arguments in debugging mode, display the script file\n\
 currently being debugged.  An optional range specification can be used to\n\
-list only a portion of the file.  The special keyword \"end\" is a valid\n\
-line number specification for the last line of the file.\n\
+list only a portion of the file.  The special keyword @qcode{\"end\"} is a\n\
+valid line number specification for the last line of the file.\n\
 \n\
 When called with the name of a function, list that script file with line\n\
 numbers.\n\

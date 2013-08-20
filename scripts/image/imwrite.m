@@ -50,12 +50,12 @@
 ## images in a single file.  This option specifies if @var{img} should be
 ## appended to the file (if it exists) or if a new file should be created
 ## for it (possibly overwriting an existing file).  The value should be
-## the string "Overwrite" (default), or "Append".
+## the string @qcode{"Overwrite"} (default), or @qcode{"Append"}.
 ##
 ## Despite this option, the most efficient method of writing a multipage
 ## image is to pass a 4 dimensional @var{img} to @code{imwrite}, the
 ## same matrix that could be expected when using @code{imread} with the
-## option "Index" set to "all".
+## option @qcode{"Index"} set to @qcode{"all"}.
 ##
 ## @end table
 ##

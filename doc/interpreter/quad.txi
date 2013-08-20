@@ -134,9 +134,10 @@ Although @code{quad} returns a nonzero value for @var{ier}, the result
 is reasonably accurate (to see why, examine what happens to the result
 if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
-The function "f" can be the string name of a function, a function handle, or
-an inline function.  These options make it quite easy to do integration
-without having to fully define a function in an m-file.  For example:
+The function @qcode{"f"} can be the string name of a function, a function
+handle, or an inline function.  These options make it quite easy to do
+integration without having to fully define a function in an m-file.  For
+example:
 
 @example
 @group

@@ -304,7 +304,7 @@ character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
 system-dependent error message, and @var{msgid} contains a unique\n\
 message identifier.\n\
 \n\
-If the optional second parameter is supplied with value @code{\"s\"},\n\
+If the optional second parameter is supplied with value @qcode{\"s\"},\n\
 recursively remove all subdirectories as well.\n\
 @seealso{mkdir, confirm_recursive_rmdir}\n\
 @end deftypefn")
@@ -696,8 +696,8 @@ DEFUN (filesep, args, ,
 @deftypefnx {Built-in Function} {} filesep (\"all\")\n\
 Return the system-dependent character used to separate directory names.\n\
 \n\
-If \"all\" is given, the function returns all valid file separators in\n\
-the form of a string.  The list of file separators is system-dependent.\n\
+If @qcode{\"all\"} is given, the function returns all valid file separators\n\
+in the form of a string.  The list of file separators is system-dependent.\n\
 It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
 @samp{\\} (forward and backward slashes) under Windows.\n\
 @seealso{pathsep}\n\
@@ -780,9 +780,9 @@ DEFUN (confirm_recursive_rmdir, args, nargout,
 Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);

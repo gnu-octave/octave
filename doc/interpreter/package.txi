@@ -71,7 +71,7 @@ pkg list
 
 @noindent
 In this case only version 1.0.0 of the @code{image} package is
-installed.  The '*' character next to the package name shows that the
+installed.  The @qcode{'*'} character next to the package name shows that the
 image package is loaded and ready for use.
 
 It is possible to remove a package from the system using the
@@ -469,7 +469,7 @@ function names on the line belong to the last mentioned category.
 @end itemize
 
 @noindent
-The format can be summarized with the following example.
+The format can be summarized with the following example:
 
 @example
 @group
@@ -571,6 +571,7 @@ In C++ files a @w{@code{PKG_ADD}} directive looks like this
 @noindent
 In both cases @code{some_octave_command} should be replaced by the
 command that should be placed in the @w{@code{PKG_ADD}} file.
-@w{@code{PKG_DEL}} directives work in the same way, except the @w{@code{PKG_ADD}}
-keyword is replaced with @w{@code{PKG_DEL}} and the commands get added
-to the @w{@code{PKG_DEL}} file.
+@w{@code{PKG_DEL}} directives work in the same way, except the
+@w{@code{PKG_ADD}} keyword is replaced with @w{@code{PKG_DEL}} and the commands
+get added to the @w{@code{PKG_DEL}} file.
+

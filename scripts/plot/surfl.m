@@ -34,11 +34,11 @@
 ## given, then it is plotted over the meshgrid
 ## @code{@var{x} = 1:columns (@var{z}), @var{y} = 1:rows (@var{z})}.
 ## Thus, columns of @var{z} correspond to different @var{x} values and rows
-## of @var{z} correspond to different @var{y} values.  
+## of @var{z} correspond to different @var{y} values.
 ##
-## The default lighting mode "cdata", changes the cdata property of the
+## The default lighting mode @qcode{"cdata"}, changes the cdata property of the
 ## surface object to give the impression of a lighted surface.
-## @strong{Warning:} The alternative mode "light" mode which creates a light
+## @strong{Warning:} The alternative mode @qcode{"light"} mode which creates a light
 ## object to illuminate the surface is not implemented (yet).
 ##
 ## The light source location can be specified using @var{L}.  It can be given
@@ -51,13 +51,13 @@
 ## @var{p} = [0.55 0.6 0.4 10].
 ##
 ## @table @asis
-## @item "AM" strength of ambient light
+## @item @qcode{"AM"} strength of ambient light
 ##
-## @item "D" strength of diffuse reflection
+## @item @qcode{"D"} strength of diffuse reflection
 ##
-## @item "SP" strength of specular reflection
+## @item @qcode{"SP"} strength of specular reflection
 ##
-## @item "EXP" specular exponent
+## @item @qcode{"EXP"} specular exponent
 ## @end table
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,

@@ -276,10 +276,10 @@ determined by the @code{subsref} method.
 
 @DOCSTRING(subsref)
 
-For example we might decide that indexing with "()" evaluates the
-polynomial and indexing with "@{@}" returns the @var{n}-th coefficient (of
-@var{n}-th power).  In this case the @code{subsref} method of our polynomial
-class might look like
+For example we might decide that indexing with @qcode{"()"} evaluates the
+polynomial and indexing with @qcode{"@{@}"} returns the @var{n}-th coefficient
+(of @var{n}-th power).  In this case the @code{subsref} method of our
+polynomial class might look like
 
 @example
 @group
@@ -640,9 +640,9 @@ For example with our polynomial class consider the case
 @end example
 
 @noindent
-That mixes an object of the class "double" with an object of the class
-"polynomial".  In this case we like to ensure that the return type of
-the above is of the type "polynomial" and so we use the
+That mixes an object of the class @qcode{"double"} with an object of the class
+@qcode{"polynomial"}.  In this case we like to ensure that the return type of
+the above is of the type @qcode{"polynomial"} and so we use the
 @code{superiorto} function in the class constructor.  In particular our
 polynomial class constructor would be modified to be
 
@@ -654,7 +654,7 @@ polynomial class constructor would be modified to be
 
 Note that user classes always have higher precedence than built-in
 Octave types.  So in fact marking our polynomial class higher than the 
-"double" class is in fact not necessary.
+@qcode{"double"} class is in fact not necessary.
 
 When faced with two objects that have the same precedence, Octave will use the
 method of the object that appears first on the list of arguments.
@@ -763,7 +763,7 @@ to access the fields.  The @code{subsref} method may be used for both.
 @end group
 @end example
 
-The "()" case allows us to filter data using the polynomial provided
+The @qcode{"()"} case allows us to filter data using the polynomial provided
 to the constructor.
 
 @example
@@ -781,7 +781,7 @@ y =
 @end group
 @end example
 
-The "." case allows us to view the contents of the polynomial field.
+The @qcode{"."} case allows us to view the contents of the polynomial field.
 
 @example
 @group

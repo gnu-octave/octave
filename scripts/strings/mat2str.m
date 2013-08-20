@@ -29,7 +29,7 @@
 ## precision of the real part and @code{@var{n}(2)} defines the
 ## precision of the imaginary part.  The default for @var{n} is 15.
 ##
-## If the argument "class" is given then the class of @var{x} is
+## If the argument @qcode{"class"} is given then the class of @var{x} is
 ## included in the string in such a way that @code{eval} will result in the
 ## construction of a matrix of the same class.
 ##

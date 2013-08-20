@@ -34,20 +34,21 @@
 ## supports a few more:
 ##
 ## @itemize
-## @item "collectoutput":
+## @item @qcode{"collectoutput"}:
 ## A value of 1 or true instructs textscan to concatenate consecutive columns
 ## of the same class in the output cell array.  A value of 0 or false (default)
 ## leaves output in distinct columns.
 ##
-## @item "endofline":
-## Specify "\r", "\n" or "\r\n" (for CR, LF, or CRLF).  If no value is given,
-## it will be inferred from the file.  If set to "" (empty string) EOLs are
-## ignored as delimiters and added to whitespace.
+## @item @qcode{"endofline"}:
+## Specify @qcode{"\r"}, @qcode{"\n"} or @qcode{"\r\n"} (for CR, LF, or
+## CRLF).  If no value is given, it will be inferred from the file.  If set
+## to "" (empty string) EOLs are ignored as delimiters and added to
+## whitespace.
 ##
-## @item "headerlines":
+## @item @qcode{"headerlines"}:
 ## The first @var{value} number of lines of @var{fid} are skipped.
 ##
-## @item "returnonerror":
+## @item @qcode{"returnonerror"}:
 ## If set to numerical 1 or true (default), return normally when read errors
 ## have been encountered.  If set to 0 or false, return an error and no data.
 ## As the string or file is read by columns rather than by rows, and because

@@ -34,14 +34,14 @@
 ## output is selected.
 ##
 ## @table @asis
-## @item "quiet"
+## @item @qcode{"quiet"}
 ##  Don't report all the tests as they happen, just the errors.
 ##
-## @item "normal"
+## @item @qcode{"normal"}
 ## Report all tests as they happen, but don't do tests which require
 ## user interaction.
 ##
-## @item "verbose"
+## @item @qcode{"verbose"}
 ## Do tests which require user interaction.
 ## @end table
 ##
@@ -58,13 +58,14 @@
 ## @var{n} and @var{max}, the number of successful tests and the total number
 ## of tests in the file @var{name} are returned.
 ##
-## If the second argument is the string "grabdemo", the contents of the demo
-## blocks are extracted but not executed.  Code for all code blocks is
-## concatenated and returned as @var{code} with @var{idx} being a vector of
-## positions of the ends of the demo blocks.
+## If the second argument is the string @qcode{"grabdemo"}, the contents of
+## the demo blocks are extracted but not executed.  Code for all code blocks
+## is concatenated and returned as @var{code} with @var{idx} being a vector
+## of positions of the ends of the demo blocks.
 ##
-## If the second argument is "explain", then @var{name} is ignored and an
-## explanation of the line markers used is written to the file @var{fid}.
+## If the second argument is @qcode{"explain"}, then @var{name} is ignored
+## and an explanation of the line markers used is written to the file
+## @var{fid}.
 ## @seealso{assert, fail, error, demo, example}
 ## @end deftypefn
 

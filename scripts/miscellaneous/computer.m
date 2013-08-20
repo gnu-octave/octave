@@ -38,10 +38,10 @@
 ## of elements for an array.
 ##
 ## If three output arguments are requested, also return the byte order
-## of the current system as a character (@code{"B"} for big-endian or
-## @code{"L"} for little-endian).
+## of the current system as a character (@qcode{"B"} for big-endian or
+## @qcode{"L"} for little-endian).
 ##
-## If the argument @code{"arch"} is specified, return a string
+## If the argument @qcode{"arch"} is specified, return a string
 ## indicating the architecture of the computer on which Octave is
 ## running.
 ## @end deftypefn

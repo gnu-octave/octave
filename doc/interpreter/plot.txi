@@ -588,13 +588,13 @@ figure window, call the @code{close} function.
 @subsection Use of the @code{interpreter} Property
 
 All text objects, including titles, labels, legends, and text, include
-the property 'interpreter', this property determines the manner in which
+the property @qcode{"interpreter"}, this property determines the manner in which
 special control sequences in the text are rendered.  If the interpreter
-is set to 'none', then no rendering occurs.  At this point the 'latex'
-option is not implemented and so the 'latex' interpreter also does not
-interpret the text.
+is set to @qcode{"none"}, then no rendering occurs.  At this point the
+@qcode{"latex"} option is not implemented and so the @qcode{"latex"}
+interpreter also does not interpret the text.
 
-The 'tex' option implements a subset of @TeX{} functionality in the
+The @qcode{"tex"} option implements a subset of @TeX{} functionality in the
 rendering of the text.  This allows the insertion of special characters
 such as Greek or mathematical symbols within the text.  The special
 characters are also inserted with a code starting with the back-slash
@@ -618,7 +618,7 @@ xlabel ('@{\bf H@} = a @{\bf V@}')
 @end example
 
 @noindent
-where the character 'a' will not appear in a bold font.  Note that to
+where the character @qcode{'a'} will not appear in a bold font.  Note that to
 avoid having Octave interpret the backslash characters in the strings,
 the strings should be in single quotes.
 
@@ -630,11 +630,11 @@ It is also possible to change the fontname and size within the text
 use @tab
 @end multitable
 
-Finally, the superscript and subscripting can be controlled with the '^'
-and '_' characters.  If the '^' or '_' is followed by a @{ character,
-then all of the block surrounded by the @{ @} pair is super- or
-sub-scripted.  Without the @{ @} pair, only the character immediately
-following the '^' or '_' is super- or sub-scripted.
+Finally, the superscript and subscripting can be controlled with the @qcode{'^'}
+and @qcode{'_'} characters.  If the @qcode{'^'} or @qcode{'_'} is followed by a
+@{ character, then all of the block surrounded by the @{ @} pair is super- or
+sub-scripted.  Without the @{ @} pair, only the character immediately following
+the @qcode{'^'} or @qcode{'_'} is super- or sub-scripted.
 
 @float Table,tab:extended
 @tex
@@ -950,8 +950,8 @@ The @code{get} and @code{set} commands are used to obtain and set the values of
 properties of graphics objects.  In addition, the @code{get} command may be
 used to obtain property names.
 
-For example, the property "type" of the graphics object pointed to by the
-graphics handle h may be displayed by:
+For example, the property @qcode{"type"} of the graphics object pointed to by
+the graphics handle h may be displayed by:
 
 @example
 get (h, "type")
@@ -962,7 +962,7 @@ where h is a handle of a graphics object.  If only the names of the
 allowed properties are wanted they may be displayed by:
 @code{get (h, "")}.
 
-Thus, for example,
+Thus, for example:
 
 @smallexample
 h = figure ();
@@ -1227,12 +1227,12 @@ The @code{root figure} properties are:
 
 @table @code
 @item __modified__  
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item __myhandle__
 
 @item beingdeleted  
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item busyaction
 
@@ -1243,7 +1243,7 @@ The @code{root figure} properties are:
 @item children
 
 @item clipping
- --- Values: "on," "off"
+ --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item createfcn
 
@@ -1252,13 +1252,13 @@ The @code{root figure} properties are:
 @item deletefcn
 
 @item handlevisibility  
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item hittest
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item interruptible  
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item parent
 
@@ -1277,7 +1277,7 @@ The @code{root figure} properties are:
 @item screenpixelsperinch
 
 @item showhiddenhandles  
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item tag
 
@@ -1313,7 +1313,7 @@ The @code{figure} properties are:
 @item alphamap
 
 @item beingdeleted 
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item busyaction
 
@@ -1323,7 +1323,7 @@ The @code{figure} properties are:
 Handle to children.
 
 @item clipping
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item closerequestfcn 
 --- Handle of function to call on close.
@@ -1347,36 +1347,36 @@ Handle to graphics object of current axes.
 @item currentpoint
 Holds the coordinates of the point over which the mouse pointer was when
 the mouse button was pressed.  If a mouse callback function is defined,
-@code{"currentpoint"} holds the coordinates of the point over which the
+@qcode{"currentpoint"} holds the coordinates of the point over which the
 mouse pointer is when the function gets called.
 
 @item deletefcn
 
 @item dockcontrols 
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item doublebuffer 
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item filename
 
 @item handlevisibility 
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item hittest
 
 @item integerhandle
 
 @item interruptible 
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item inverthardcopy
 
 @item keypressfcn
-see @code{"keypressfcn"}
+see @qcode{"keypressfcn"}
 
 @item keyreleasefcn
-With @code{"keypressfcn"}, The keyboard callback functions.  These
+With @qcode{"keypressfcn"}, the keyboard callback functions.  These
 callback functions get called when a key is pressed/released
 respectively.  The functions are called with two input arguments.  The
 first argument holds the handle of the calling figure.  The second
@@ -1391,8 +1391,8 @@ lowercase value of the key
 
 @item Modifier
 A cell array containing strings representing the modifiers pressed with
-the key.  Possible values are @code{"shift"}, @code{"alt"}, and
-@code{"control"}.
+the key.  Possible values are @qcode{"shift"}, @qcode{"alt"}, and
+@qcode{"control"}.
 @end table
 
 @item menubar
@@ -1404,21 +1404,21 @@ the key.  Possible values are @code{"shift"}, @code{"alt"}, and
 @item nextplot
 May be one of
 
-@table @code
-@item "new"
+@table @asis
+@item @qcode{"new"}
 
-@item "add"
+@item @qcode{"add"}
 
-@item "replace"
+@item @qcode{"replace"}
 
-@item "replacechildren"
+@item @qcode{"replacechildren"}
 @end table
 
 @item numbertitle
 
 @item paperorientation
-Indicates the orientation for printing.  Either @code{"landscape"} or
-@code{"portrait"}.
+Indicates the orientation for printing.  Either @qcode{"landscape"} or
+@qcode{"portrait"}.
 
 @item paperposition
 
@@ -1449,7 +1449,7 @@ Indicates the orientation for printing.  Either @code{"landscape"} or
 @item selected
 
 @item selectionhighlight 
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item selectiontype
 
@@ -1464,19 +1464,19 @@ Indicates the orientation for printing.  Either @code{"landscape"} or
 @item userdata
 
 @item visible
-Either @code{"on"} or @code{"off"} to toggle display of the figure.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of the figure.
 
 @item windowbuttondownfcn
-See @code{"windowbuttonupfcn"}
+See @qcode{"windowbuttonupfcn"}
 
 @item windowbuttonmotionfcn
-See @code{"windowbuttonupfcn"}
+See @qcode{"windowbuttonupfcn"}
 
 @item windowbuttonupfcn
-With @code{"windowbuttondownfcn"} and @code{"windowbuttonmotionfcn"},
-The mouse callback functions.  These callback functions get called when
+With @qcode{"windowbuttondownfcn"} and @qcode{"windowbuttonmotionfcn"},
+the mouse callback functions.  These callback functions get called when
 the mouse button is pressed, dragged, and released respectively.  When
-these callback functions are called, the @code{"currentpoint"} property
+these callback functions are called, the @qcode{"currentpoint"} property
 holds the current coordinates of the cursor.
 
 @item windowscrollwheelfcn
@@ -1517,7 +1517,7 @@ The @code{axes} properties are:
 
 @item box
 Box surrounding axes. 
---- Values: "on," "off"
+--- Values: @qcode{"on"}, @qcode{"off"}
 
 @item busyaction
 
@@ -1545,10 +1545,10 @@ Box surrounding axes.
 Two-element vector defining the limits for the c axis of
 an image.  See @code{pcolor} property.
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item climmode
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item clipping
 
@@ -1561,7 +1561,7 @@ Either @code{"manual"} or @code{"auto"}.
 @item currentpoint
 Holds the coordinates of the point over which the mouse pointer was when
 the mouse button was pressed.  If a mouse callback function is defined,
-@code{"currentpoint"} holds the coordinates of the point over which the
+@qcode{"currentpoint"} holds the coordinates of the point over which the
 mouse pointer is when the function gets called.
 
 @item dataaspectratio
@@ -1570,10 +1570,10 @@ data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,
 2]} causes the length of one unit as displayed on the y-axis to be the
 same as the length of 2 units on the x-axis.  Setting
 @code{dataaspectratio} also forces the @code{dataaspectratiomode}
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item dataaspectratiomode 
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item deletefcn
 
@@ -1610,14 +1610,12 @@ Either @code{"manual"} or @code{"auto"}.
 @item nextplot
 May be one of
 
-@table @code
-@item "new"
+@table @asis
+@item @qcode{"add"}
 
-@item "add"
+@item @qcode{"replace"}
 
-@item "replace"
-
-@item "replacechildren"
+@item @qcode{"replacechildren"}
 @end table
 
 @item outerposition
@@ -1675,7 +1673,7 @@ Index of text object for the axes title.
 A three element vector specifying the view point for three-dimensional plots.
 
 @item visible
-Either @code{"on"} or @code{"off"} to toggle display of the axes.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of the axes.
 
 @item x_normrendertransform
 
@@ -1688,15 +1686,15 @@ Either @code{"on"} or @code{"off"} to toggle display of the axes.
 @item x_viewtransform
 
 @item xaxislocation 
-Either @code{"top"} or @code{"bottom"}.
+Either @qcode{"top"} or @qcode{"bottom"}.
 
 @item xcolor
 
 @item xdir
-Either @code{"forward"} or @code{"reverse"}.
+Either @qcode{"forward"} or @qcode{"reverse"}.
 
 @item xgrid
-Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of grid lines.
 
 @item xlabel
 Indices to text objects for the axes labels.
@@ -1704,44 +1702,44 @@ Indices to text objects for the axes labels.
 @item xlim
 Two-element vector defining the limits for the x-axis.
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item xlimmode
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item xminorgrid 
-Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of minor grid lines.
 
 @item xminortick
 
 @item xscale
-Either @code{"linear"} or @code{"log"}.
+Either @qcode{"linear"} or @qcode{"log"}.
 
 @item xtick
 Set position of tick marks.
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item xticklabel
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item xticklabelmode 
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item xtickmode 
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item yaxislocation 
-Either @code{"left"} or @code{"right"}
+Either @qcode{"left"} or @qcode{"right"}
 
 @item ycolor
 
 @item ydir
-Either @code{"forward"} or @code{"reverse"}.
+Either @qcode{"forward"} or @qcode{"reverse"}.
 
 @item ygrid
-Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of grid lines.
 
 @item ylabel
 Indices to text objects for the axes labels.
@@ -1749,41 +1747,41 @@ Indices to text objects for the axes labels.
 @item ylim
 Two-element vectors defining the limits for the x, y, and z axes and the
 Setting one of these properties also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item ylimmode
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item yminorgrid 
-Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of minor grid lines.
 
 @item yminortick
 
 @item yscale
-Either @code{"linear"} or @code{"log"}.
+Either @qcode{"linear"} or @qcode{"log"}.
 
 @item ytick
 Set position of tick marks.
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item yticklabel
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item yticklabelmode 
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item ytickmode 
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item zcolor
 
 @item zdir
-Either @code{"forward"} or @code{"reverse"}.
+Either @qcode{"forward"} or @qcode{"reverse"}.
 
 @item zgrid
-Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of grid lines.
 
 @item zlabel
 Indices to text objects for the axes labels.
@@ -1791,33 +1789,33 @@ Indices to text objects for the axes labels.
 @item zlim
 Two-element vector defining the limits for z-axis.
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item zlimmode
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item zminorgrid 
-Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+Either @qcode{"on"} or @qcode{"off"} to toggle display of minor grid lines.
 
 @item zminortick
 
 @item zscale
-Either @code{"linear"} or @code{"log"}.
+Either @qcode{"linear"} or @qcode{"log"}.
 
 @item ztick
 Set position of tick marks.
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item zticklabel 
 Setting this property also forces the corresponding mode
-property to be set to @code{"manual"}.
+property to be set to @qcode{"manual"}.
 
 @item zticklabelmode 
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item ztickmode
-Either @code{"manual"} or @code{"auto"}.
+Either @qcode{"manual"} or @qcode{"auto"}.
 
 @end table
 
@@ -1973,8 +1971,8 @@ The text of the legend entry corresponding to this line.
 @item erasemode
 
 @item fontangle
-Flag whether the font is italic or normal.  Valid values are 'normal',
-'italic' and 'oblique'.
+Flag whether the font is italic or normal.  Valid values are @qcode{"normal"},
+@qcode{"italic"}, and @qcode{"oblique"}.
 
 @item fontname
 The font used for the text.
@@ -1985,19 +1983,19 @@ The size of the font, in points to use.
 @item fontunits
 
 @item fontweight
-Flag whether the font is bold, etc.  Valid values are 'normal', 'bold',
-'demi' or 'light'.
+Flag whether the font is bold, etc.  Valid values are @qcode{"normal"},
+@qcode{"bold"}, @qcode{"demi"}, or @qcode{"light"}.
 
 @item handlevisibility
 
 @item hittest
 
 @item horizontalalignment
-May be @code{"left"}, @code{"center"}, or @code{"right"}.
+May be @qcode{"left"}, @qcode{"center"}, or @qcode{"right"}.
 
 @item interpreter
-Determines how the text is rendered.  Valid values are 'none', 'tex' or
-'latex'.
+Determines how the text is rendered.  Valid values are @qcode{"none"},
+@qcode{"tex"}, or @qcode{"latex"}.
 
 @item interruptible
 
@@ -2029,7 +2027,7 @@ The character string contained by the text object.
 @item uicontextmenu
 
 @item units
-May be @code{"normalized"} or @code{"graph"}.
+May be @qcode{"normalized"} or @qcode{"graph"}.
 
 @item userdata
 
@@ -2440,8 +2438,8 @@ may override the factory defaults.
 Although default values may be set for any object, they are set in
 parent objects and apply to child objects, of the specified object type.
 For example, setting the default @code{color} property of @code{line}
-objects to "green", for the @code{root} object, will result in all
-@code{line} objects inheriting the @code{color} "green" as the default
+objects to @qcode{"green"}, for the @code{root} object, will result in all
+@code{line} objects inheriting the @code{color} @qcode{"green"} as the default
 value.
 
 @example
@@ -2489,7 +2487,7 @@ line in the second figure window is red because it inherits its color
 from the global root figure parent object.
 
 To remove a user-defined default setting, set the default property to
-the value @code{"remove"}.  For example,
+the value @qcode{"remove"}.  For example,
 
 @example
 set (gca (), "defaultlinecolor", "remove");
@@ -2502,7 +2500,7 @@ function.
 
 @DOCSTRING(reset)
 
-Getting the @code{"default"} property of an object returns a list of
+Getting the @qcode{"default"} property of an object returns a list of
 user-defined defaults set for the object.  For example,
 
 @example
@@ -2544,9 +2542,9 @@ returns a list of factory defaults.
 @cindex colors, graphics
 
 Colors may be specified as RGB triplets with values ranging from zero to
-one, or by name.  Recognized color names include @code{"blue"},
-@code{"black"}, @code{"cyan"}, @code{"green"}, @code{"magenta"},
-@code{"red"}, @code{"white"}, and @code{"yellow"}.
+one, or by name.  Recognized color names include @qcode{"blue"},
+@qcode{"black"}, @qcode{"cyan"}, @qcode{"green"}, @qcode{"magenta"},
+@qcode{"red"}, @qcode{"white"}, and @qcode{"yellow"}.
 
 @node Line Styles
 @subsection Line Styles
@@ -2572,7 +2570,7 @@ Dotted line.
 @item "-."
 A dash-dot line.
 
-@item "none"
+@item @qcode{"none"}
 No line.  Points will still be marked using the current Marker Style.
 @end table
 
@@ -2591,14 +2589,14 @@ Marker styles are specified by the following properties:
 @table @code
 @item marker
 A character indicating a plot marker to be place at each data point, or
-@code{"none"}, meaning no markers should be displayed.
+@qcode{"none"}, meaning no markers should be displayed.
 
 @item markeredgecolor
-The color of the edge around the marker, or @code{"auto"}, meaning that
+The color of the edge around the marker, or @qcode{"auto"}, meaning that
 the edge color is the same as the face color.  @xref{Colors}.
 
 @item markerfacecolor
-The color of the marker, or @code{"none"} to indicate that the marker
+The color of the marker, or @qcode{"none"} to indicate that the marker
 should not be filled.  @xref{Colors}.
 
 @item markersize
@@ -2906,8 +2904,8 @@ The properties of the bar series are
 @itemx baseline
 @itemx basevalue
 The property @code{showbaseline} flags whether the baseline of the bar
-series is displayed (default is "on").  The handle of the graphics object
-representing the baseline is given by the @code{baseline} property and
+series is displayed (default is @qcode{"on"}).  The handle of the graphics
+object representing the baseline is given by the @code{baseline} property and
 the y-value of the baseline by the @code{basevalue} property.
 
 Changes to any of these property are propagated to the other members of
@@ -2920,7 +2918,7 @@ corresponding bar series.
 @itemx horizontal
 The property @code{barwidth} is the width of the bar corresponding to
 the @var{width} variable passed to @code{bar} or @var{barh}.  Whether the
-bar series is "grouped" or "stacked" is determined by the
+bar series is @qcode{"grouped"} or @qcode{"stacked"} is determined by the
 @code{barlayout} property and whether the bars are horizontal or
 vertical by the @code{horizontal} property.
 
@@ -2964,37 +2962,37 @@ A read only property that contains the data return by @code{contourc} used to
 create the contours of the plot.
 
 @item fill
-A radio property that can have the values "on" or "off" that flags whether the
-contours to plot are to be filled.
+A radio property that can have the values @qcode{"on"} or @qcode{"off"} that
+flags whether the contours to plot are to be filled.
 
 @item  zlevelmode
 @itemx zlevel
-The radio property @code{zlevelmode} can have the values "none", "auto" or
-"manual".  When its value is "none" there is no z component to the plotted
-contours.  When its value is "auto" the z value of the plotted contours is
-at the same value as the contour itself.  If the value is "manual", then the
-z value at which to plot the contour is determined by the @code{zlevel}
-property.
+The radio property @code{zlevelmode} can have the values @qcode{"none"},
+@qcode{"auto"}, or @qcode{"manual"}.  When its value is @qcode{"none"} there is
+no z component to the plotted contours.  When its value is @qcode{"auto"} the z
+value of the plotted contours is at the same value as the contour itself.  If
+the value is @qcode{"manual"}, then the z value at which to plot the contour is
+determined by the @code{zlevel} property.
 
 @item  levellistmode
 @itemx levellist
 @itemx levelstepmode
 @itemx levelstep
-If @code{levellistmode} is "manual", then the levels at which to plot the
-contours is determined by @code{levellist}.  If @code{levellistmode} is
-set to "auto", then the distance between contours is determined by
-@code{levelstep}.  If both @code{levellistmode} and @code{levelstepmode}
-are set to "auto", then there are assumed to be 10 equal spaced contours.
+If @code{levellistmode} is @qcode{"manual"}, then the levels at which to plot
+the contours is determined by @code{levellist}.  If @code{levellistmode} is set
+to @qcode{"auto"}, then the distance between contours is determined by
+@code{levelstep}.  If both @code{levellistmode} and @code{levelstepmode} are
+set to @qcode{"auto"}, then there are assumed to be 10 equal spaced contours.
 
 @item  textlistmode
 @itemx textlist
 @itemx textstepmode
 @itemx textstep
-If @code{textlistmode} is "manual", then the labeled contours
+If @code{textlistmode} is @qcode{"manual"}, then the labeled contours
 is determined by @code{textlist}.  If @code{textlistmode} is set to
-"auto", then the distance between labeled contours is determined by
+@qcode{"auto"}, then the distance between labeled contours is determined by
 @code{textstep}.  If both @code{textlistmode} and @code{textstepmode}
-are set to "auto", then there are assumed to be 10 equal spaced
+are set to @qcode{"auto"}, then there are assumed to be 10 equal spaced
 labeled contours.
 
 @item showtext
@@ -3011,9 +3009,9 @@ The distance between labels on a single contour in points.
 The properties of the contour lines.  The properties @code{linewidth} and
 @code{linestyle} are similar to the corresponding properties for lines.  The
 property @code{linecolor} is a color property (@pxref{Colors}), that can also
-have the values of "none" or "auto".  If @code{linecolor} is "none", then no
-contour line is drawn.  If @code{linecolor} is "auto" then the line color is
-determined by the colormap.
+have the values of @qcode{"none"} or @qcode{"auto"}.  If @code{linecolor} is
+@qcode{"none"}, then no contour line is drawn.  If @code{linecolor} is
+@qcode{"auto"} then the line color is determined by the colormap.
 
 @item  xdata
 @itemx ydata
@@ -3247,7 +3245,7 @@ are
 @itemx baseline
 @itemx basevalue
 The property @code{showbaseline} flags whether the baseline of the
-stem series is displayed (default is "on").  The handle of the graphics
+stem series is displayed (default is @qcode{"on"}).  The handle of the graphics
 object representing the baseline is given by the @code{baseline}
 property and the y-value (or z-value for @code{stem3}) of the baseline
 by the @code{basevalue} property.

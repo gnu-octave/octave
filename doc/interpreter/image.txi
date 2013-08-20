@@ -204,7 +204,7 @@ and @var{contour} functions.
 @DOCSTRING(gmap40)
 
 The following three functions modify the existing colormap rather than
-replace it.   
+replace it.
 
 @DOCSTRING(brighten)
 

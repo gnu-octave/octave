@@ -59,18 +59,18 @@
 ## the degrees of freedom are reduced to P.
 ##
 ## The optional property, @var{constaints}, is a structure specifying
-## linear constraints on the fit.  The structure has three fields, "xc",
-## "yc", and "cc".
+## linear constraints on the fit.  The structure has three fields, @qcode{"xc"},
+## @qcode{"yc"}, and @qcode{"cc"}.
 ##
 ## @table @asis
-## @item "xc"
+## @item @qcode{"xc"}
 ## Vector of the x-locations of the constraints.
 ##
-## @item "yc"
+## @item @qcode{"yc"}
 ## Constraining values at the locations @var{xc}.
 ## The default is an array of zeros.
 ##
-## @item "cc"
+## @item @qcode{"cc"}
 ## Coefficients (matrix).  The default is an array of ones.  The number of
 ## rows is limited to the order of the piecewise polynomials, @var{order}.
 ## @end table

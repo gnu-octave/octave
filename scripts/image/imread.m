@@ -40,8 +40,8 @@
 ## of size @nospell{MxN}.  Multipage images will have an additional 4th
 ## dimension.
 ## The bit depth of the image determines the
-## class of the output: "uint8" or "uint16" for gray
-## and color, and "logical" for black and white.
+## class of the output: @qcode{"uint8"} or @qcode{"uint16"} for gray
+## and color, and @qcode{"logical"} for black and white.
 ## Note that indexed images always return the indexes for a colormap,
 ## independent if @var{map} is a requested output.  To obtain the actual
 ## RGB image, use @code{ind2rgb}.
@@ -57,16 +57,16 @@
 ## are supported:
 ##
 ## @table @samp
-## @item "Frames" or "Index"
+## @item @qcode{"Frames"} or @qcode{"Index"}
 ## This is an alternative method to specify @var{idx}.  When specifying it
-## in this way, its value can also be the string "all".
+## in this way, its value can also be the string @qcode{"all"}.
 ##
-## @item "Info"
+## @item @qcode{"Info"}
 ## This option exists for @sc{matlab} compatibility and has no effect.  For
 ## maximum performance while reading multiple images from a single file,
 ## use the Index option.
 ##
-## @item "PixelRegion"
+## @item @qcode{"PixelRegion"}
 ## Controls the image region that is read.  Takes as value a cell array
 ## with two arrays of 3 elements @code{@{@var{rows} @var{cols}@}}.  The
 ## elements in the array are the start, increment and end pixel to be

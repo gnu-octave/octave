@@ -99,21 +99,21 @@
 ## pairs.  The following properties are recognized:
 ##
 ## @table @asis
-## @item "commentstyle"
+## @item @qcode{"commentstyle"}
 ## Parts of @var{str} are considered comments and will be skipped.
 ## @var{value} is the comment style and can be any of the following.
 ##
 ## @itemize
-## @item "shell"
+## @item @qcode{"shell"}
 ## Everything from @code{#} characters to the nearest end-of-line is skipped.
 ##
-## @item "c"
+## @item @qcode{"c"}
 ## Everything between @code{/*} and @code{*/} is skipped.
 ##
-## @item "c++"
+## @item @qcode{"c++"}
 ## Everything from @code{//} characters to the nearest end-of-line is skipped.
 ##
-## @item "matlab"
+## @item @qcode{"matlab"}
 ## Everything from @code{%} characters to the nearest end-of-line is skipped.
 ##
 ## @item user-supplied.  Two options:
@@ -122,34 +122,34 @@
 ## is skipped.
 ## @end itemize
 ##
-## @item "delimiter"
+## @item @qcode{"delimiter"}
 ## Any character in @var{value} will be used to split @var{str} into words
 ## (default value = any whitespace).
 ##
-## @item "emptyvalue":
+## @item @qcode{"emptyvalue"}:
 ## Value to return for empty numeric values in non-whitespace delimited data.
 ## The default is NaN@.  When the data type does not support NaN
 ## (int32 for example), then default is zero.
 ##
-## @item "multipledelimsasone"
+## @item @qcode{"multipledelimsasone"}
 ## Treat a series of consecutive delimiters, without whitespace in between,
 ## as a single delimiter.  Consecutive delimiter series need not be vertically
-## "aligned".
+## @qcode{"aligned"}.
 ##
-## @item "treatasempty"
+## @item @qcode{"treatasempty"}
 ## Treat single occurrences (surrounded by delimiters or whitespace) of the
 ## string(s) in @var{value} as missing values.
 ##
-## @item "returnonerror"
+## @item @qcode{"returnonerror"}
 ## If @var{value} true (1, default), ignore read errors and return normally.
 ## If false (0), return an error.
 ##
-## @item "whitespace"
+## @item @qcode{"whitespace"}
 ## Any character in @var{value} will be interpreted as whitespace and
 ## trimmed; the string defining whitespace must be enclosed in double
 ## quotes for proper processing of special characters like \t.
-## The default value for whitespace = " \b\r\n\t" (note the space).
-## Unless whitespace is set to '' (empty) AND at least one "%s" format
+## The default value for whitespace = @qcode{" \b\r\n\t"} (note the space).
+## Unless whitespace is set to '' (empty) AND at least one @qcode{"%s"} format
 ## conversion specifier is supplied, a space is always part of whitespace.
 ##
 ## @end table
@@ -159,11 +159,11 @@
 ## depends on the last character of @var{str}:
 ##
 ## @table @asis
-## @item last character = "\n"
+## @item last character = @qcode{"\n"}
 ## Data columns are padded with empty fields or Nan so that all columns
 ## have equal length 
 ##
-## @item last character is not "\n"
+## @item last character is not @qcode{"\n"}
 ## Data columns are not padded; strread returns columns of unequal length
 ##
 ## @end table

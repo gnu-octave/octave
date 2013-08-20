@@ -677,7 +677,7 @@ Match within a word\n\
 @end table\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in @var{pat}\n\
+sequences (e.g., @qcode{\"\\n\"} => newline) are processed in @var{pat}\n\
 regardless of whether @var{pat} has been defined within single quotes.  Use\n\
 a second backslash to stop interpolation of the escape sequence (e.g.,\n\
 \"\\\\n\") or use the @code{regexptranslate} function.\n\
@@ -717,13 +717,13 @@ correspondence between the output arguments and the optional argument\n\
 are\n\
 \n\
 @multitable @columnfractions 0.2 0.3 0.3 0.2\n\
-@item @tab 'start'        @tab @var{s}  @tab\n\
-@item @tab 'end'          @tab @var{e}  @tab\n\
-@item @tab 'tokenExtents' @tab @var{te} @tab\n\
-@item @tab 'match'        @tab @var{m}  @tab\n\
-@item @tab 'tokens'       @tab @var{t}  @tab\n\
-@item @tab 'names'        @tab @var{nm} @tab\n\
-@item @tab 'split'        @tab @var{sp} @tab\n\
+@item @tab @qcode{'start'}        @tab @var{s}  @tab\n\
+@item @tab @qcode{'end'}          @tab @var{e}  @tab\n\
+@item @tab @qcode{'tokenExtents'} @tab @var{te} @tab\n\
+@item @tab @qcode{'match'}        @tab @var{m}  @tab\n\
+@item @tab @qcode{'tokens'}       @tab @var{t}  @tab\n\
+@item @tab @qcode{'names'}        @tab @var{nm} @tab\n\
+@item @tab @qcode{'split'}        @tab @var{sp} @tab\n\
 @end multitable\n\
 \n\
 Additional arguments are summarized below.\n\
@@ -782,8 +782,8 @@ Zero-length matches are not returned.  (default)\n\
 @item emptymatch\n\
 Return zero-length matches.\n\
 \n\
-@code{regexp ('a', 'b*', 'emptymatch'} returns @code{[1 2]} because there are\n\
-zero or more 'b' characters at positions 1 and end-of-string.\n\
+@code{regexp ('a', 'b*', 'emptymatch')} returns @code{[1 2]} because there\n\
+are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 \n\
 @end table\n\
 @seealso{regexpi, strfind, regexprep}\n\
@@ -1309,7 +1309,7 @@ This option is present for compatibility but is ignored.\n\
 @end table\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in both @var{pat}\n\
+sequences (e.g., @qcode{\"\\n\"} => newline) are processed in both @var{pat}\n\
 and @var{repstr} regardless of whether they were defined within single\n\
 quotes.  Use a second backslash to stop interpolation of the escape sequence\n\
 (e.g., \"\\\\n\") or use the @code{regexptranslate} function.\n\

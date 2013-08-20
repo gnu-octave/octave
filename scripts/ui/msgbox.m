@@ -23,13 +23,13 @@
 ## Display @var{msg} using a message dialog box. 
 ##
 ## The message may have multiple lines separated by newline characters
-## (@code{"\n"}), or it may be a cellstr array with one element for each
+## (@qcode{"\n"}), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
 ## decorate the dialog caption.
 ##
 ## The optional argument @var{icon} selects a dialog icon. 
-## It can be one of @code{"none"} (default), @code{"error"}, @code{"help"}, or
-## @code{"warn"}.
+## It can be one of @qcode{"none"} (default), @qcode{"error"},
+## @qcode{"help"}, or @qcode{"warn"}.
 ##
 ## The return value is always 1.
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, questdlg, warndlg}

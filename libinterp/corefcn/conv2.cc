@@ -44,15 +44,15 @@ is determined by the optional @var{shape} argument which takes the following\n\
 values\n\
 \n\
 @table @asis\n\
-@item @var{shape} = \"full\"\n\
+@item @var{shape} = @qcode{\"full\"}\n\
 Return the full convolution.  (default)\n\
 \n\
-@item @var{shape} = \"same\"\n\
+@item @var{shape} = @qcode{\"same\"}\n\
 Return the central part of the convolution with the same size as @var{A}.\n\
 The central part of the convolution begins at the indices\n\
 @code{floor ([size(@var{B})/2] + 1)}.\n\
 \n\
-@item @var{shape} = \"valid\"\n\
+@item @var{shape} = @qcode{\"valid\"}\n\
 Return only the parts which do not include zero-padded edges.\n\
 The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 @end table\n\
@@ -299,15 +299,15 @@ is determined by the optional @var{shape} argument which takes the following\n\
 values\n\
 \n\
 @table @asis\n\
-@item @var{shape} = \"full\"\n\
+@item @var{shape} = @qcode{\"full\"}\n\
 Return the full convolution.  (default)\n\
 \n\
-@item @var{shape} = \"same\"\n\
+@item @var{shape} = @qcode{\"same\"}\n\
 Return central part of the convolution with the same size as @var{A}.\n\
 The central part of the convolution begins at the indices\n\
 @code{floor ([size(@var{B})/2] + 1)}.\n\
 \n\
-@item @var{shape} = \"valid\"\n\
+@item @var{shape} = @qcode{\"valid\"}\n\
 Return only the parts which do not include zero-padded edges.\n\
 The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 @end table\n\

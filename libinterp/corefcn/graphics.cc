@@ -8466,9 +8466,9 @@ DEFUN (reset, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
 Remove any defaults set for the handle @var{h}.  The default figure\n\
-properties of \"position\", \"units\", \"windowstyle\" and\n\
-\"paperunits\" and the default axes properties of \"position\" and \"units\"\n\
-are not reset.\n\
+properties of @qcode{\"position\"}, @qcode{\"units\"},\n\
+@qcode{\"windowstyle\"} and @qcode{\"paperunits\"} and the default axes\n\
+properties of @qcode{\"position\"} and @qcode{\"units\"} are not reset.\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -9550,7 +9550,7 @@ DEFUN (drawnow, args, ,
 @deftypefnx {Built-in Function} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
 Update figure windows and their children.  The event queue is flushed and\n\
 any callbacks generated are executed.  With the optional argument\n\
-@code{\"expose\"}, only graphic objects are updated and no other events or\n\
+@qcode{\"expose\"}, only graphic objects are updated and no other events or\n\
 callbacks are processed.\n\
 The third calling form of @code{drawnow} is for debugging and is\n\
 undocumented.\n\

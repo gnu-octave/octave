@@ -41,7 +41,7 @@
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the hggroup
-## object comprising the area patch objects.  The "BaseValue" property
+## object comprising the area patch objects.  The @qcode{"BaseValue"} property
 ## of the hggroup can be used to adjust the level where shading begins.
 ##
 ## Example: Verify identity sin^2 + cos^2 = 1
@@ -51,7 +51,7 @@
 ## t = linspace (0, 2*pi, 100)';
 ## y = [sin(t).^2, cos(t).^2)];
 ## area (t, y);
-## legend ("sin^2", "cos^2", "location", "NorthEastOutside");  
+## legend ("sin^2", "cos^2", "location", "NorthEastOutside");
 ## @end group
 ## @end example
 ## @seealso{plot, patch}

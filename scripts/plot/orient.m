@@ -23,9 +23,10 @@
 ## @deftypefnx {Function File} {@var{orientation} =} orient (@var{hfig})
 ## Query or set the default print orientation.
 ##
-## Valid values for @var{orientation} are "landscape", "portrait", and "tall".
+## Valid values for @var{orientation} are @qcode{"landscape"},
+## @qcode{"portrait"}, and @qcode{"tall"}.
 ##
-## The "tall" option sets the orientation to portrait and fills
+## The @qcode{"tall"} option sets the orientation to portrait and fills
 ## the page with the plot, while leaving a 0.25 inch border.
 ##
 ## When called with no arguments, return the default print orientation.

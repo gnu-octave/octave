@@ -26,14 +26,15 @@
 ## Query or set the limits of the y-axis of the current plot.
 ##
 ## Called without arguments @code{ylim} returns the y-axis limits of the
-## current plot.  With the input query "mode", return the current y-limit
-## calculation mode which is either "auto" or "manual".
+## current plot.  With the input query @qcode{"mode"}, return the current
+## y-limit calculation mode which is either @qcode{"auto"} or
+## @qcode{"manual"}.
 ##
 ## If passed a 2-element vector [@var{y_lo} @var{y_hi}], the limits of the
 ## y-axis are set to these values.
 ##
-## The current plotting mode can be set by passing either "auto" or "manual" as
-## the argument.
+## The current plotting mode can be set by passing either @qcode{"auto"} or
+## @qcode{"manual"} as the argument.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.

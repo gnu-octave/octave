@@ -30,12 +30,12 @@
 ## formats:
 ##
 ## @table @asis
-## @item "/path/to/filename.ext"
+## @item @qcode{"/path/to/filename.ext"}
 ## If a filename is given then the file extension is extracted and used as
 ## filter.  In addition, the path is selected as current path and the filename
 ## is selected as default file.  Example: @code{uigetfile ("myfun.m")}
 ##
-## @item A single file extension "*.ext"
+## @item A single file extension @qcode{"*.ext"}
 ## Example: @code{uigetfile ("*.ext")}
 ##
 ## @item A 2-column cell array
@@ -54,10 +54,11 @@
 ## If @var{default_file} is given then it will be selected in the GUI dialog.
 ## If, in addition, a path is given it is also used as current path.
 ##
-## The screen position of the GUI dialog can be set using the "Position" key
-## and a 2-element vector containing the pixel coordinates.
-## Two or more files can be selected when setting the "MultiSelect" key to "on".
-## In that case @var{fname} is a cell array containing the files.
+## The screen position of the GUI dialog can be set using the
+## @qcode{"Position"} key and a 2-element vector containing the pixel
+## coordinates.  Two or more files can be selected when setting the
+## @qcode{"MultiSelect"} key to @qcode{"on"}.  In that case @var{fname} is a
+## cell array containing the files.
 ## @seealso{uiputfile, uigetdir}
 ## @end deftypefn
 

@@ -32,13 +32,13 @@
 ## supports two more:
 ##
 ## @itemize
-## @item "headerlines":
+## @item @qcode{"headerlines"}:
 ## The first @var{value} number of lines of @var{filename} are skipped.
 ##
-## @item "endofline":
-## Specify a single character or "\r\n".  If no value is given, it will be
-## inferred from the file.  If set to "" (empty string) EOLs are ignored as
-## delimiters.
+## @item @qcode{"endofline"}:
+## Specify a single character or @qcode{"\r\n"}.  If no value is given, it
+## will be inferred from the file.  If set to "" (empty string) EOLs are
+## ignored as delimiters.
 ## @end itemize
 ##
 ## The optional input @var{n} specifies the number of data lines to read; in

@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} strmatch (@var{s}, @var{A}, "exact")
 ## Return indices of entries of @var{A} which begin with the string @var{s}.
 ## The second argument @var{A} must be a string, character matrix, or a cell
-## array of strings.  If the third argument @code{"exact"} is not given, then
+## array of strings.  If the third argument @qcode{"exact"} is not given, then
 ## @var{s} only needs to match @var{A} up to the length of @var{s}.
 ## Trailing spaces and nulls in @var{s} and @var{A} are ignored when matching.
 ##
@@ -43,7 +43,7 @@
 ## @end example
 ##
 ## @strong{Caution:} @code{strmatch} is scheduled for deprecation.  Use
-## @code{strncmp} (normal case), or @code{strcmp} ("exact" case), or
+## @code{strncmp} (normal case), or @code{strcmp} (@qcode{"exact"} case), or
 ## @code{regexp} in all new code.
 ## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn

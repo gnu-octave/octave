@@ -537,16 +537,16 @@ If the optional argument @var{type} is supplied, check only for\n\
 symbols of the specified type.  Valid types are\n\
 \n\
 @table @asis\n\
-@item \"var\"\n\
+@item @qcode{\"var\"}\n\
 Check only for variables.\n\
 \n\
-@item \"builtin\"\n\
+@item @qcode{\"builtin\"}\n\
 Check only for built-in functions.\n\
 \n\
-@item \"file\"\n\
+@item @qcode{\"file\"}\n\
 Check only for files and directories.\n\
 \n\
-@item \"dir\"\n\
+@item @qcode{\"dir\"}\n\
 Check only for directories.\n\
 @end table\n\
 \n\
@@ -2530,11 +2530,11 @@ leftmost column.  @code{left-min} specifies the minimum field width to the\n\
 left of the specified balance column.\n\
 \n\
 The default format is\n\
-@code{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
+@qcode{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{whos}\n\
 @end deftypefn")
 {
@@ -2551,9 +2551,9 @@ DEFUN (missing_function_hook, args, nargout,
 Query or set the internal variable that specifies the function to call when\n\
 an unknown identifier is requested.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);

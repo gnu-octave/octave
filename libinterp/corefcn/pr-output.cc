@@ -3982,9 +3982,9 @@ Notice that first value appears to be zero when it is actually 1.  For\n\
 this reason, you should be careful when setting\n\
 @code{fixed_point_format} to a nonzero value.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{format, output_max_field_width, output_precision}\n\
 @end deftypefn")
 {
@@ -4011,9 +4011,9 @@ will print\n\
 ans = [](3x0)\n\
 @end example\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{format}\n\
 @end deftypefn")
 {
@@ -4049,9 +4049,9 @@ ans =\n\
 @end group\n\
 @end example\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{format}\n\
 @end deftypefn")
 {
@@ -4066,9 +4066,9 @@ DEFUN (output_max_field_width, args, nargout,
 Query or set the internal variable that specifies the maximum width\n\
 of a numeric output field.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_precision}\n\
 @end deftypefn")
 {
@@ -4084,9 +4084,9 @@ DEFUN (output_precision, args, nargout,
 Query or set the internal variable that specifies the minimum number of\n\
 significant figures to display for numeric output.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_max_field_width}\n\
 @end deftypefn")
 {

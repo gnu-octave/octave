@@ -43,8 +43,8 @@
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
 ## string defining a marker in the same manner as the @code{plot} command.
-## If no marker is specified it defaults to 'o' or circles.
-## If the argument "filled" is given then the markers are filled.
+## If no marker is specified it defaults to @qcode{"o"} or circles.
+## If the argument @qcode{"filled"} is given then the markers are filled.
 ##
 ## Additional property/value pairs are passed directly to the underlying
 ## patch object.

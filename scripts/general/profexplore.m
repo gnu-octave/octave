@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} profexplore ()
+## @deftypefn  {Function File} {} profexplore ()
 ## @deftypefnx {Function File} {} profexplore (@var{data})
 ## Interactively explore hierarchical profiler output.
 ##
 ## Assuming @var{data} is the structure with profile data returned by
-## @code{profile ("info")}, this command opens an interactive prompt
+## @code{profile (@qcode{"info"})}, this command opens an interactive prompt
 ## that can be used to explore the call-tree.  Type @kbd{help} to get a list
-## of possible commands. If @var{data} is omitted, @code{profile ("info")}
+## of possible commands.  If @var{data} is omitted, @code{profile ("info")}
 ## is called and used in its place.
 ## @seealso{profile, profshow}
 ## @end deftypefn

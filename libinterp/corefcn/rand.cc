@@ -424,7 +424,7 @@ as it is significantly faster than the old generator, and produces\n\
 random numbers with a significantly longer cycle time.  However, in\n\
 some circumstances it might be desirable to obtain the same random\n\
 sequences as used by the old generators.  To do this the keyword\n\
-\"seed\" is used to specify that the old generators should be use,\n\
+@qcode{\"seed\"} is used to specify that the old generators should be use,\n\
 as in\n\
 \n\
 @example\n\
@@ -442,13 +442,15 @@ s = rand (\"seed\")\n\
 However, it should be noted that querying the seed will not cause\n\
 @code{rand} to use the old generators, only setting the seed will.\n\
 To cause @code{rand} to once again use the new generators, the\n\
-keyword \"state\" should be used to reset the state of the @code{rand}.\n\
+keyword @qcode{\"state\"} should be used to reset the state of the\n\
+@code{rand}.\n\
 \n\
 The state or seed of the generator can be reset to a new random value\n\
-using the \"reset\" keyword.\n\
+using the @qcode{\"reset\"} keyword.\n\
 \n\
-The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument.  These are the only valid classes.\n\
+The class of the value returned can be controlled by a trailing\n\
+@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
+classes.\n\
 @seealso{randn, rande, randg, randp}\n\
 @end deftypefn")
 {
@@ -568,8 +570,9 @@ handled the same as the arguments for @code{rand}.\n\
 By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to a normal distribution.\n\
 \n\
-The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument.  These are the only valid classes.\n\
+The class of the value returned can be controlled by a trailing\n\
+@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
+classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -638,8 +641,9 @@ arguments are handled the same as the arguments for @code{rand}.\n\
 By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to an exponential distribution.\n\
 \n\
-The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument.  These are the only valid classes.\n\
+The class of the value returned can be controlled by a trailing\n\
+@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
+classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -784,8 +788,9 @@ r = r / sum (r)\n\
 \n\
 @end table\n\
 \n\
-The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument.  These are the only valid classes.\n\
+The class of the value returned can be controlled by a trailing\n\
+@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
+classes.\n\
 @seealso{rand, randn, rande, randp}\n\
 @end deftypefn")
 {
@@ -1006,8 +1011,9 @@ L. Montanet, et al., @cite{Review of Particle Properties}, Physical Review\n\
 D 50 p1284, 1994.\n\
 @end table\n\
 \n\
-The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument.  These are the only valid classes.\n\
+The class of the value returned can be controlled by a trailing\n\
+@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
+classes.\n\
 @seealso{rand, randn, rande, randg}\n\
 @end deftypefn")
 {

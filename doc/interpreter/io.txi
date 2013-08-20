@@ -702,8 +702,8 @@ of the result and a decimal-point character appears only if it is
 followed by a digit.
 
 The following flags can be used to modify the behavior:
-
 @c Not @samp so we can have ' ' as an item.
+
 @table @asis
 @item @samp{-}
 Left-justify the result in the field.  Normally the result is
@@ -977,9 +977,9 @@ For example, reading the input:
 @end example
 
 @noindent
-with the conversion @samp{%10c} produces @code{" hello, wo"}, but
+with the conversion @samp{%10c} produces @qcode{" hello, wo"}, but
 reading the same input with the conversion @samp{%10s} produces
-@code{"hello,"}.
+@qcode{"hello,"}.
 
 @node Binary I/O
 @subsection Binary I/O

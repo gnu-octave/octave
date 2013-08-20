@@ -3763,9 +3763,9 @@ DEFUN (mfilename, args, ,
 @deftypefnx {Built-in Function} {} mfilename (\"fullpath\")\n\
 @deftypefnx {Built-in Function} {} mfilename (\"fullpathext\")\n\
 Return the name of the currently executing file.  At the top-level,\n\
-return the empty string.  Given the argument @code{\"fullpath\"},\n\
+return the empty string.  Given the argument @qcode{\"fullpath\"},\n\
 include the directory part of the file name, but not the extension.\n\
-Given the argument @code{\"fullpathext\"}, include the directory part\n\
+Given the argument @qcode{\"fullpathext\"}, include the directory part\n\
 of the file name and the extension.\n\
 @end deftypefn")
 {
@@ -4284,7 +4284,7 @@ DEFUN (assignin, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} assignin (@var{context}, @var{varname}, @var{value})\n\
 Assign @var{value} to @var{varname} in context @var{context}, which\n\
-may be either @code{\"base\"} or @code{\"caller\"}.\n\
+may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 @seealso{evalin}\n\
 @end deftypefn")
 {
@@ -4338,8 +4338,8 @@ DEFUN (evalin, args, nargout,
 @deftypefn  {Built-in Function} {} evalin (@var{context}, @var{try})\n\
 @deftypefnx {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
 Like @code{eval}, except that the expressions are evaluated in the\n\
-context @var{context}, which may be either @code{\"caller\"} or\n\
-@code{\"base\"}.\n\
+context @var{context}, which may be either @qcode{\"caller\"} or\n\
+@qcode{\"base\"}.\n\
 @seealso{eval, assignin}\n\
 @end deftypefn")
 {

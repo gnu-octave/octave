@@ -66,8 +66,8 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 @var{a} must agree, and @code{gammainc} is applied element-by-element.\n\
 \n\
 By default the incomplete gamma function integrated from 0 to @var{x} is\n\
-computed.  If \"upper\" is given then the complementary function integrated\n\
-from @var{x} to infinity is calculated.  It should be noted that\n\
+computed.  If @qcode{\"upper\"} is given then the complementary function\n\
+integrated from @var{x} to infinity is calculated.  It should be noted that\n\
 \n\
 @example\n\
 gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\

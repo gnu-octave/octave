@@ -36,8 +36,8 @@
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
 ## separate bar graph plotted on the same graph.  By default the columns
 ## are plotted side-by-side.  This behavior can be changed by the @var{style}
-## argument, which can take the values @code{"grouped"} (the default),
-## or @code{"stacked"}.
+## argument, which can take the values @qcode{"grouped"} (the default),
+## or @qcode{"stacked"}.
 ##
 ## Optional property/value pairs are passed directly to the underlying patch
 ## objects.
@@ -80,7 +80,7 @@
 ##
 ## @noindent
 ## will change the colors used for the bars.  The color of bars can also be set
-## manually using the "facecolor" property as shown below.
+## manually using the @qcode{"facecolor"} property as shown below.
 ##
 ## @example
 ## @group

@@ -42,8 +42,8 @@
 ## @code{shading} modifies an attribute determining the manner by which the
 ## face color of each cell is interpolated from the values of @var{c},
 ## and the visibility of the cells' edges.  By default the attribute is
-## "faceted", which renders a single color for each cell's face with the edge
-## visible.
+## @qcode{"faceted"}, which renders a single color for each cell's face with
+## the edge visible.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.

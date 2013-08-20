@@ -49,7 +49,7 @@
 ## @var{tol} must be >0 and @leq{}1.
 ##
 ## @var{dither_option} is a string which enables or disables dithering:
-## 'dither' (default) or 'nodither'.
+## @qcode{"dither"} (default) or @qcode{"nodither"}.
 ##
 ## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
 ## @end deftypefn

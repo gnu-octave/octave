@@ -1792,8 +1792,8 @@ DEFUN (str2func, args, ,
 @deftypefn  {Built-in Function} {} str2func (@var{fcn_name})\n\
 @deftypefnx {Built-in Function} {} str2func (@var{fcn_name}, \"global\")\n\
 Return a function handle constructed from the string @var{fcn_name}.\n\
-If the optional \"global\" argument is passed, locally visible functions\n\
-are ignored in the lookup.\n\
+If the optional @qcode{\"global\"} argument is passed, locally visible\n\
+functions are ignored in the lookup.\n\
 @end deftypefn")
 {
   octave_value retval;

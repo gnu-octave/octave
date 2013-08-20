@@ -25,8 +25,8 @@
 ## The function is defined by @code{@var{y} = f (@var{x})}.
 ## The interpolation points are all @var{xi}.
 ##
-## The interpolation method can be @code{"nearest"} or @code{"linear"}.
-## If method is omitted it defaults to @code{"linear"}.
+## The interpolation method can be @qcode{"nearest"} or @qcode{"linear"}.
+## If method is omitted it defaults to @qcode{"linear"}.
 ## 
 ## The optional argument @var{options} is passed directly to Qhull when
 ## computing the Delaunay triangulation used for interpolation.  See

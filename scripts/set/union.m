@@ -33,9 +33,9 @@
 ## @end group
 ## @end example
 ##
-## If the optional third input argument is the string "rows" then each row of
-## the matrices @var{a} and @var{b} will be considered as a single set element.
-## For example:
+## If the optional third input argument is the string @qcode{"rows"} then
+## each row of the matrices @var{a} and @var{b} will be considered as a
+## single set element.  For example:
 ##
 ## @example
 ## @group

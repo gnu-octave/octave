@@ -573,8 +573,8 @@ The attempt has been made to make sparse matrices behave in exactly the
 same manner as there full counterparts.  However, there are certain differences
 and especially differences with other products sparse implementations.
 
-Firstly, the "./" and ".^" operators must be used with care.  Consider what
-the examples
+Firstly, the @qcode{"./"} and @qcode{".^"} operators must be used with care. 
+Consider what the examples
 
 @example
 @group

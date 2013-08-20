@@ -22,18 +22,18 @@
 ## populations.
 ##
 ## The optional argument string @var{alt} describes the alternative
-## hypothesis, and can be @code{"!="} or @code{"<>"} (non-zero),
-## @code{">"} (greater than 0), or @code{"<"} (less than 0).  The
+## hypothesis, and can be @qcode{"!="} or @qcode{"<>"} (non-zero),
+## @qcode{">"} (greater than 0), or @qcode{"<"} (less than 0).  The
 ## default is the two-sided case.
 ##
 ## The optional argument string @var{method} specifies which
 ## correlation coefficient to use for testing.  If @var{method} is
-## @code{"pearson"} (default), the (usual) Pearson's product moment
+## @qcode{"pearson"} (default), the (usual) Pearson's product moment
 ## correlation coefficient is used.  In this case, the data should come
 ## from a bivariate normal distribution.  Otherwise, the other two
 ## methods offer nonparametric alternatives.  If @var{method} is
-## @code{"kendall"}, then Kendall's rank correlation tau is used.  If
-## @var{method} is @code{"spearman"}, then Spearman's rank correlation
+## @qcode{"kendall"}, then Kendall's rank correlation tau is used.  If
+## @var{method} is @qcode{"spearman"}, then Spearman's rank correlation
 ## rho is used.  Only the first character is necessary.
 ##
 ## The output is a structure with the following elements:

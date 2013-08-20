@@ -40,8 +40,8 @@
 ## is not successful, the function fails.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fzero}
-## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
-## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}.
+## recognizes these options: @qcode{"FunValCheck"}, @qcode{"OutputFcn"},
+## @qcode{"TolX"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"}.
 ## For a description of these options, see @ref{XREFoptimset,,optimset}.
 ##
 ## On exit, the function returns @var{x}, the approximate zero point

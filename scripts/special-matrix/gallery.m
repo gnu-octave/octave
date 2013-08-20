@@ -162,9 +162,9 @@
 ## (reproducibility) for a given size input and @var{j} index.
 ##
 ## The final optional argument determines the class of the resulting matrix.
-## Possible values for @var{class}: "uint8", "uint16", "uint32", "int8",
-## "int16", int32", "single", "double".
-## The default is "double".
+## Possible values for @var{class}: @qcode{"uint8"}, @qcode{"uint16"},
+## @qcode{"uint32"}, @qcode{"int8"}, @qcode{"int16"}, int32", @qcode{"single"},
+## @qcode{"double"}.  The default is @qcode{"double"}.
 ##
 ## @end deftypefn
 ##
@@ -262,8 +262,8 @@
 ## (reproducibility) for a given size input and @var{j} index.
 ##
 ## The final optional argument determines the class of the resulting matrix.
-## Possible values for @var{class}: "single", "double".
-## The default is "double".
+## Possible values for @var{class}: @qcode{"single"}, @qcode{"double"}.
+## The default is @qcode{"double"}.
 ##
 ## @end deftypefn
 ##
@@ -383,8 +383,8 @@
 ## (reproducibility) for a given size input and @var{j} index.
 ##
 ## The final optional argument determines the class of the resulting matrix.
-## Possible values for @var{class}: "single", "double".
-## The default is "double".
+## Possible values for @var{class}: @qcode{"single"}, @qcode{"double"}.
+## The default is @qcode{"double"}.
 ##
 ## @end deftypefn
 ##

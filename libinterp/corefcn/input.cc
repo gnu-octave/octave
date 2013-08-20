@@ -739,7 +739,7 @@ Currently, @code{input} only returns one value, regardless of the number\n\
 of values produced by the evaluation of the expression.\n\
 \n\
 If you are only interested in getting a literal string value, you can\n\
-call @code{input} with the character string @code{\"s\"} as the second\n\
+call @code{input} with the character string @qcode{\"s\"} as the second\n\
 argument.  This tells Octave to return the string entered by the user\n\
 directly, without evaluating it first.\n\
 \n\
@@ -1226,7 +1226,7 @@ DEFUN (PS1, args, nargout,
 Query or set the primary prompt string.  When executing interactively,\n\
 Octave displays the primary prompt when it is ready to read a command.\n\
 \n\
-The default value of the primary prompt string is @code{\"\\s:\\#> \"}.\n\
+The default value of the primary prompt string is @qcode{\"\\s:\\#> \"}.\n\
 To change it, use a command like\n\
 \n\
 @example\n\
@@ -1249,9 +1249,9 @@ PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\\\]\")\n\
 @noindent\n\
 will give the default Octave prompt a red coloring.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{PS2, PS4}\n\
 @end deftypefn")
 {
@@ -1268,11 +1268,11 @@ printed when Octave is expecting additional input to complete a\n\
 command.  For example, if you are typing a @code{for} loop that spans several\n\
 lines, Octave will print the secondary prompt at the beginning of\n\
 each line after the first.  The default value of the secondary prompt\n\
-string is @code{\"> \"}.\n\
+string is @qcode{\"> \"}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{PS1, PS4}\n\
 @end deftypefn")
 {
@@ -1286,12 +1286,12 @@ DEFUN (PS4, args, nargout,
 @deftypefnx {Built-in Function} {} PS4 (@var{new_val}, \"local\")\n\
 Query or set the character string used to prefix output produced\n\
 when echoing commands is enabled.\n\
-The default value is @code{\"+ \"}.\n\
+The default value is @qcode{\"+ \"}.\n\
 @xref{Diary and Echo Commands}, for a description of echoing commands.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{echo, echo_executing_commands, PS1, PS2}\n\
 @end deftypefn")
 {
@@ -1305,11 +1305,11 @@ DEFUN (completion_append_char, args, nargout,
 @deftypefnx {Built-in Function} {} completion_append_char (@var{new_val}, \"local\")\n\
 Query or set the internal character variable that is appended to\n\
 successful command-line completion attempts.  The default\n\
-value is @code{\" \"} (a single space).\n\
+value is @qcode{\" \"} (a single space).\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (completion_append_char);
@@ -1340,9 +1340,9 @@ equivalent to the command @kbd{echo on all}.\n\
 The value of @code{echo_executing_commands} may be set by the @kbd{echo}\n\
 command or the command line option @option{--echo-commands}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);
@@ -1415,9 +1415,9 @@ dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 @noindent\n\
 will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   char tmp = Vfilemarker;

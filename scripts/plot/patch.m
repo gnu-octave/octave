@@ -34,7 +34,7 @@
 ## input is present then 3-D patches will be created.
 ##
 ## The color argument @var{c} can take many forms.  To create polygons
-## which all share a single color use a string value (e.g., "r" for
+## which all share a single color use a string value (e.g., @qcode{"r"} for
 ## red), a scalar value which is scaled by @code{caxis} and indexed into the
 ## current colormap, or a 3-element RGB vector with the precise TrueColor.
 ##
@@ -45,16 +45,19 @@
 ##
 ## Instead of specifying polygons by matrices @var{x} and @var{y}, it is
 ## possible to present a unique list of vertices and then a list of polygon
-## faces created from those vertices.  In this case the "Vertices" matrix will
-## be an @nospell{Nx2} (2-D patch) or @nospell{Nx3} (3-D path).  The
-## @nospell{MxN} "Faces" matrix describes M polygons having N vertices---each
-## row describes a single polygon and each column entry is an index into the
-## "Vertices" matrix to identify a vertex.  The patch object can be created by
-## directly passing the property/value pairs "Vertices"/@var{verts},
-## "Faces"/@var{faces} as inputs.
+## faces created from those vertices.  In this case the
+## @qcode{"Vertices"} matrix will be an @nospell{Nx2} (2-D patch) or
+## @nospell{Nx3} (3-D path).  The @nospell{MxN} @qcode{"Faces"} matrix
+## describes M polygons having N vertices---each row describes a
+## single polygon and each column entry is an index into the
+## @qcode{"Vertices"} matrix to identify a vertex.  The patch object
+## can be created by directly passing the property/value pairs
+## @qcode{"Vertices"}/@var{verts}, @qcode{"Faces"}/@var{faces} as
+## inputs.
 ##
 ## A third input form is to create a structure @var{fv} with the fields
-## "vertices", "faces", and optionally "facevertexcdata".
+## @qcode{"vertices"}, @qcode{"faces"}, and optionally
+## @qcode{"facevertexcdata"}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
@@ -64,9 +67,8 @@
 ##
 ## Implementation Note: Patches are highly configurable objects.  To truly
 ## customize them requires setting patch properties directly.  Useful patch
-## properties are: "cdata", "edgecolor", "facecolor", "faces",
-## "facevertexcdata",
-##
+## properties are: @qcode{"cdata"}, @qcode{"edgecolor"},
+## @qcode{"facecolor"}, @qcode{"faces"}, @qcode{"facevertexcdata"}.
 ## @seealso{fill, get, set}
 ## @end deftypefn
 

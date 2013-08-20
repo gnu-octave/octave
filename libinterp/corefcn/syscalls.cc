@@ -283,7 +283,7 @@ waitpid (pid);\n\
    @print{} are\n\
 @end example\n\
 \n\
-Note that @code{popen2}, unlike @code{popen}, will not \"reap\" the\n\
+Note that @code{popen2}, unlike @code{popen}, will not @qcode{\"reap\"} the\n\
 child process.  If you don't use @code{waitpid} to check the child's\n\
 exit status, it will linger until Octave exits.\n\
 @end deftypefn")
@@ -900,9 +900,9 @@ File number of the file.\n\
 \n\
 @item mode\n\
 File mode, as an integer.  Use the functions @w{@code{S_ISREG}},\n\
-@w{@code{S_ISDIR}}, @w{@code{S_ISCHR}}, @w{@code{S_ISBLK}}, @w{@code{S_ISFIFO}},\n\
-@w{@code{S_ISLNK}}, or @w{@code{S_ISSOCK}} to extract information from this\n\
-value.\n\
+@w{@code{S_ISDIR}}, @w{@code{S_ISCHR}}, @w{@code{S_ISBLK}},\n\
+@w{@code{S_ISFIFO}}, @w{@code{S_ISLNK}}, or @w{@code{S_ISSOCK}} to extract\n\
+information from this value.\n\
 \n\
 @item modestr\n\
 File mode, as a string of ten letters or dashes as would be returned by\n\

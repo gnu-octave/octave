@@ -38,7 +38,7 @@
 ## vertices data @var{v} a patch handle @var{p} can be passed to this
 ## function.
 ##
-## If given the string input argument "negate" as last input argument
+## If given the string input argument @qcode{"negate"} as last input argument
 ## then compute the reverse vector normals of an isosurface geometry.
 ##
 ## If no output argument is given then directly redraw the patch that is

@@ -30,9 +30,9 @@
 ## @code{(daspect (@var{mode}))}
 ##
 ## Set the data aspect ratio mode of the current axes.  @var{mode} is
-## either "auto" or "manual".
+## either @qcode{"auto"} or @qcode{"manual"}.
 ## 
-## @code{daspect ("mode")}
+## @code{daspect (@qcode{"mode"})}
 ##
 ## Return the data aspect ratio mode of the current axes.
 ## 

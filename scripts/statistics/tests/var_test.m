@@ -25,9 +25,9 @@
 ## degrees of freedom.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @code{var (@var{x}) != var (@var{y})}.  If @var{alt} is @code{">"},
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @code{var (@var{x}) != var (@var{y})}.  If @var{alt} is @qcode{">"},
 ## the one-sided alternative @code{var (@var{x}) > var (@var{y})} is
 ## used.  Similarly for "<", the one-sided alternative @code{var
 ## (@var{x}) > var (@var{y})} is used.  The default is the two-sided

@@ -2316,9 +2316,9 @@ DEFUN (debug_jit, args, nargout,
 Query or set the internal variable that determines whether\n\
 debugging/tracing is enabled for Octave's JIT compiler.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{jit_enable, jit_startcnt}\n\
 @end deftypefn")
 {
@@ -2337,9 +2337,9 @@ DEFUN (jit_enable, args, nargout,
 @deftypefnx {Built-in Function} {} jit_enable (@var{new_val}, \"local\")\n\
 Query or set the internal variable that enables Octave's JIT compiler.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{jit_startcnt, debug_jit}\n\
 @end deftypefn")
 {
@@ -2361,9 +2361,9 @@ will take place for a specific loop.  Because compilation is a costly\n\
 operation it does not make sense to employ JIT when the loop count is low.\n\
 By default only loops with greater than 1000 iterations will be accelerated.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{jit_enable, debug_jit}\n\
 @end deftypefn")
 {

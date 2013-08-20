@@ -19,44 +19,45 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} uimenu (@var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
-## Create a uimenu object and return a handle to it.  If @var{h} is ommited
+## Create a uimenu object and return a handle to it.  If @var{h} is omitted
 ## then a top-level menu for the current figure is created.  If @var{h}
 ## is given then a submenu relative to @var{h} is created.
 ##
 ## uimenu objects have the following specific properties:
 ##
 ## @table @asis
-## @item "accelerator"
+## @item @qcode{"accelerator"}
 ## A string containing the key combination together with CTRL to execute this
-## menu entry (e.g., "x" for CTRL+x).
+## menu entry (e.g., @qcode{"x"} for CTRL+x).
 ##
-## @item "callback"
+## @item @qcode{"callback"}
 ## Is the function called when this menu entry is executed.  It can be either a
-## function string (e.g., "myfun"), a function handle (e.g., @@myfun) or a cell
-## array containing the function handle and arguments for the callback
-## function (e.g., @{@@myfun, arg1, arg2@}).
+## function string (e.g., @qcode{"myfun"}), a function handle (e.g., @@myfun)
+## or a cell array containing the function handle and arguments for the
+## callback function (e.g., @{@@myfun, arg1, arg2@}).
 ##
-## @item "checked"
-## Can be set "on" or "off".  Sets a mark at this menu entry.
+## @item @qcode{"checked"}
+## Can be set @qcode{"on"} or @qcode{"off"}.  Sets a mark at this menu entry.
 ##
-## @item "enable"
-## Can be set "on" or "off".  If disabled the menu entry cannot be selected
-## and it is grayed out.
+## @item @qcode{"enable"}
+## Can be set @qcode{"on"} or @qcode{"off"}.  If disabled the menu entry
+## cannot be selected and it is grayed out.
 ##
-## @item "foregroundcolor"
+## @item @qcode{"foregroundcolor"}
 ## A color value setting the text color for this menu entry.
 ##
-## @item "label"
-## A string containing the label for this menu entry.  A "&"-symbol can be
-## used to mark the "accelerator" character (e.g., @nospell{"E&xit"})
+## @item @qcode{"label"}
+## A string containing the label for this menu entry.  A @qcode{"&"}-symbol
+## can be used to mark the @qcode{"accelerator"} character (e.g.,
+## @nospell{@qcode{"E&xit"}})
 ##
-## @item "position"
+## @item @qcode{"position"}
 ## An scalar value containing the relative menu position.  The entry with the
 ## lowest value is at the first position starting from left or top.
 ##
-## @item "separator"
-## Can be set "on" or "off".  If enabled it draws a separator line above the
-## current position.  It is ignored for top level entries.
+## @item @qcode{"separator"}
+## Can be set @qcode{"on"} or @qcode{"off"}.  If enabled it draws a separator
+## line above the current position.  It is ignored for top level entries.
 ##
 ## @end table
 ##

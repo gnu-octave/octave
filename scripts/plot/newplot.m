@@ -25,41 +25,41 @@
 ##
 ## This function is called at the beginning of all high-level plotting
 ## functions.  It is not normally required in user programs.  @code{newplot}
-## queries the "NextPlot" field of the current figure and axis to determine
-## what to do.
+## queries the @qcode{"NextPlot"} field of the current figure and axis to
+## determine what to do.
 ##
 ## @multitable @columnfractions .25 .75
 ## @headitem Figure NextPlot @tab Action
-## @item "new" @tab Create a new figure and make it the current figure.
+## @item @qcode{"new"} @tab Create a new figure and make it the current figure.
 ##
-## @item "add" (default) @tab Add new graphic objects to the current figure.
+## @item @qcode{"add"} (default) @tab Add new graphic objects to the current figure.
 ##
-## @item "replacechildren" @tab Delete child objects whose HandleVisibility is
-## set to "on".  Set NextPlot property to "add".  This typically clears a
-## figure, but leaves in place hidden objects such as menubars.  This is
-## equivalent to @code{clf}.
+## @item @qcode{"replacechildren"} @tab Delete child objects whose HandleVisibility is
+## set to @qcode{"on"}.  Set NextPlot property to @qcode{"add"}.  This
+## typically clears a figure, but leaves in place hidden objects such as
+## menubars.  This is equivalent to @code{clf}.
 ##
-## @item "replace" @tab Delete all child objects of the figure and reset all
-## figure properties to their defaults.  However, the following four properties
-## are not reset: Position, Units, PaperPosition, PaperUnits.  This is
-## equivalent to @code{clf reset}.
-## @end multitable    
+## @item @qcode{"replace"} @tab Delete all child objects of the figure and
+## reset all figure properties to their defaults.  However, the following
+## four properties are not reset: Position, Units, PaperPosition, PaperUnits.
+##  This is equivalent to @code{clf reset}.
+## @end multitable
 ##
 ## @multitable @columnfractions .25 .75
 ## @headitem Axis NextPlot @tab Action
-## @item "add" @tab Add new graphic objects to the current axes.  This is
+## @item @qcode{"add"} @tab Add new graphic objects to the current axes.  This is
 ## equivalent to @code{hold on}.
 ##
-## @item "replacechildren" @tab Delete child objects whose HandleVisibility is
-## set to "on", but leave axis properties unmodified.  This typically clears a
-## plot, but preserves special settings such as log scaling for axes.
-## This is equivalent to @code{cla}.
+## @item @qcode{"replacechildren"} @tab Delete child objects whose HandleVisibility is
+## set to @qcode{"on"}, but leave axis properties unmodified.  This typically
+## clears a plot, but preserves special settings such as log scaling for
+## axes.  This is equivalent to @code{cla}.
 ##
-## @item "replace" (default) @tab Delete all child objects of the axis and
-## reset all axis properties to their defaults.  However, the following
-## properties are not reset: Position, Units.  This is equivalent to
-## @code{cla reset}.
-## @end multitable    
+## @item @qcode{"replace"} (default) @tab Delete all child objects of the
+## axis and reset all axis properties to their defaults.  However, the
+## following properties are not reset: Position, Units.  This is equivalent
+## to @code{cla reset}.
+## @end multitable
 ##
 ## If the optional input @var{hfig} or @var{hax} is given then prepare the
 ## specified figure or axes rather than the current figure and axes.

@@ -25,11 +25,11 @@
 ## equivalent to the Wilcoxon rank-sum test.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## PROB (@var{x} > @var{y}) != 1/2.  If @var{alt} is @code{">"}, the
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## PROB (@var{x} > @var{y}) != 1/2.  If @var{alt} is @qcode{">"}, the
 ## one-sided alternative PROB (@var{x} > @var{y}) > 1/2 is considered.
-## Similarly for @code{"<"}, the one-sided alternative PROB (@var{x} >
+## Similarly for @qcode{"<"}, the one-sided alternative PROB (@var{x} >
 ## @var{y}) < 1/2 is considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.

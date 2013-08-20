@@ -433,7 +433,7 @@ fcn (foo)
 @noindent
 you should not think of the argument as being ``the variable
 @code{foo}.''  Instead, think of the argument as the string value,
-@code{"bar"}.
+@qcode{"bar"}.
 
 Even though Octave uses pass-by-value semantics for function arguments,
 values are not copied unnecessarily.  For example,
@@ -1043,7 +1043,7 @@ Whatever old value @code{z} had before the assignment is forgotten.
 The @samp{=} sign is called an @dfn{assignment operator}.
 
 Assignments can store string values also.  For example, the following
-expression would store the value @code{"this food is good"} in the
+expression would store the value @qcode{"this food is good"} in the
 variable @code{message}:
 
 @example

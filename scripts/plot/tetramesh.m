@@ -39,8 +39,8 @@
 ##
 ## The optional return value @var{h} is a vector of patch handles where each
 ## handle represents one tetrahedron in the order given by @var{T}. 
-## A typical use case for @var{h} is to turn the respective patch "visible"
-## property "on" or "off".
+## A typical use case for @var{h} is to turn the respective patch
+## @qcode{"visible"} property @qcode{"on"} or @qcode{"off"}.
 ##
 ## Type @code{demo tetramesh} to see examples on using @code{tetramesh}.
 ## @seealso{trimesh, delaunay3, delaunayn, patch}

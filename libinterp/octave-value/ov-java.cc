@@ -2304,9 +2304,9 @@ DEFUN (java_matrix_autoconversion, args, nargout,
 Query or set the internal variable that controls whether Java arrays are\n\
 automatically converted to Octave matrices.  The default value is false.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{java_unsigned_autoconversion, debug_java}\n\
 @end deftypefn")
 {
@@ -2328,9 +2328,9 @@ converted when @code{java_matrix_autoconversion} is enabled.  When enabled,\n\
 Java arrays of class Byte or Integer are converted to matrices of class\n\
 uint8 or uint32 respectively.  The default value is true.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{java_matrix_autoconversion, debug_java}\n\
 @end deftypefn")
 {
@@ -2351,9 +2351,9 @@ Query or set the internal variable that determines whether extra debugging\n\
 information regarding the initialization of the JVM and any Java exceptions\n\
 is printed.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{java_matrix_autoconversion, java_unsigned_autoconversion}\n\
 @end deftypefn")
 {

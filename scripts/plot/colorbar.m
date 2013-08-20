@@ -35,36 +35,36 @@
 ## Valid values for @var{loc} are
 ##
 ## @table @asis
-## @item "EastOutside"
+## @item @qcode{"EastOutside"}
 ## Place the colorbar outside the plot to the right.  This is the default.
 ##
-## @item "East"
+## @item @qcode{"East"}
 ## Place the colorbar inside the plot to the right.
 ##
-## @item "WestOutside"
+## @item @qcode{"WestOutside"}
 ## Place the colorbar outside the plot to the left.
 ##
-## @item "West"
+## @item @qcode{"West"}
 ## Place the colorbar inside the plot to the left.
 ##
-## @item "NorthOutside"
+## @item @qcode{"NorthOutside"}
 ## Place the colorbar above the plot.
 ##
-## @item "North"
+## @item @qcode{"North"}
 ## Place the colorbar at the top of the plot.
 ##
-## @item "SouthOutside"
+## @item @qcode{"SouthOutside"}
 ## Place the colorbar under the plot.
 ##
-## @item "South"
+## @item @qcode{"South"}
 ## Place the colorbar at the bottom of the plot.
 ## @end table
 ##
 ## To remove a colorbar from a plot use any one of the following keywords for
-## the @var{delete_option}: "delete", "hide", "off".
+## the @var{delete_option}: @qcode{"delete"}, @qcode{"hide"}, @qcode{"off"}.
 ## 
-## If the argument "peer" is given, then the following argument is treated
-## as the axes handle in which to add the colorbar.  Alternatively, 
+## If the argument @qcode{"peer"} is given, then the following argument is
+## treated as the axes handle in which to add the colorbar.  Alternatively,
 ## If the first argument @var{hax} is an axes handle, then the colorbar is
 ## added to this axis, rather than the current axes returned by @code{gca}.
 ##
@@ -78,9 +78,9 @@
 ## colorbar object.
 ##
 ## Implementation Note: A colorbar is created as an additional axes to the
-## current figure with the "tag" property set to "colorbar".  The created
-## axes object has the extra property "location" which controls the positioning
-## of the colorbar.
+## current figure with the @qcode{"tag"} property set to @qcode{"colorbar"}. 
+## The created axes object has the extra property @qcode{"location"} which
+## controls the positioning of the colorbar.
 ## @seealso{colormap}
 ## @end deftypefn
 

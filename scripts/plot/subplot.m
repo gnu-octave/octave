@@ -64,7 +64,7 @@
 ## demo ("subplot", 1)
 ## @end example
 ##
-## If the option "align" is given then the plot boxes of the subwindows
+## If the option @qcode{"align"} is given then the plot boxes of the subwindows
 ## will align, but this may leave no room for axis tick marks or labels.
 ##
 ## If the output @var{hax} is requested, subplot returns the axis handle for

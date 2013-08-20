@@ -24,11 +24,11 @@
 ## Clear the current axes.
 ##
 ## @code{cla} operates by deleting child graphic objects with visible
-## handles (HandleVisibility = "on").
+## handles (HandleVisibility = @qcode{"on"}).
 ##
-## If the optional argument "reset" is specified, delete all child objects
-## including those with hidden handles and reset all axis properties to
-## their defaults.  However, the following properties are not reset:
+## If the optional argument @qcode{"reset"} is specified, delete all child
+## objects including those with hidden handles and reset all axis properties
+## to their defaults.  However, the following properties are not reset:
 ## Position, Units.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on

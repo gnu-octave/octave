@@ -27,37 +27,37 @@
 ## The indices in @var{sel} are 1-based.
 ##
 ## The arguments are specified in form of @var{key}, @var{value} pairs. 
-## The "ListString" argument pair must be specified.
+## The @qcode{"ListString"} argument pair must be specified.
 ##
 ## Valid @var{key} and @var{value} pairs are:
 ##
 ## @table @asis
-## @item "ListString"
+## @item @qcode{"ListString"}
 ## a cell array of strings comprising the content of the list.
 ##
-## @item "SelectionMode"
-## can be either "Single" or "Multiple" (default).
+## @item @qcode{"SelectionMode"}
+## can be either @qcode{"Single"} or @qcode{"Multiple"} (default).
 ##
-## @item "ListSize"
+## @item @qcode{"ListSize"}
 ## a vector with two elements @var{width} and @var{height} defining
 ## the size of the list field in pixels.  Default is [160 300].
 ##
-## @item "InitialValue"
+## @item @qcode{"InitialValue"}
 ## a vector containing 1-based indices of preselected elements.  Default
 ## is 1 (first item).
 ##
-## @item "Name"
+## @item @qcode{"Name"}
 ## a string to be used as the dialog caption.  Default is "".
 ##
-## @item "PromptString"
+## @item @qcode{"PromptString"}
 ## a cell array of strings to be displayed above the list field.  Default
 ## is @{@}.
 ##
-## @item "OKString"
-## a string used to label the OK button.  Default is "OK".
+## @item @qcode{"OKString"}
+## a string used to label the OK button.  Default is @qcode{"OK"}.
 ##
-## @item "CancelString"
-## a string used to label the Cancel button.  Default is "Cancel".
+## @item @qcode{"CancelString"}
+## a string used to label the Cancel button.  Default is @qcode{"Cancel"}.
 ## @end table
 ##
 ## Example:

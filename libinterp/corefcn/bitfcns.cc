@@ -569,9 +569,10 @@ DEFUN (bitmax, args, ,
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
 @deftypefnx {Built-in Function} {} flintmax (@dots{})\n\
 Return the largest integer that can be represented within a floating point\n\
-value.  The default class is \"double\", but \"single\" is a valid option.\n\
-On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}} for\n\
-\"double\" and @w{@math{2^{24} -1}} for \"single\".\n\
+value.  The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a\n\
+valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
+@w{@math{2^{53} - 1}} for @qcode{\"double\"} and @w{@math{2^{24} -1}} for\n\
+@qcode{\"single\"}.\n\
 \n\
 @code{flintmax} for FLoating point INTeger MAXimum is an alias for\n\
 @code{bitmax}.\n\

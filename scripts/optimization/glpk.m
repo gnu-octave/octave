@@ -109,19 +109,19 @@
 ## following values
 ##
 ## @table @asis
-## @item "F"
+## @item @qcode{"F"}
 ## A free (unbounded) constraint (the constraint is ignored).
 ##
-## @item "U"
+## @item @qcode{"U"}
 ## An inequality constraint with an upper bound (@code{A(i,:)*x <= b(i)}).
 ##
-## @item "S"
+## @item @qcode{"S"}
 ## An equality constraint (@code{A(i,:)*x = b(i)}).
 ##
-## @item "L"
+## @item @qcode{"L"}
 ## An inequality with a lower bound (@code{A(i,:)*x >= b(i)}).
 ##
-## @item "D"
+## @item @qcode{"D"}
 ## An inequality constraint with both upper and lower bounds
 ## (@code{A(i,:)*x >= -b(i)} @emph{and} (@code{A(i,:)*x <= b(i)}).
 ## @end table
@@ -130,10 +130,10 @@
 ## A column array containing the types of the variables.
 ##
 ## @table @asis
-## @item "C"
+## @item @qcode{"C"}
 ## A continuous variable.
 ##
-## @item "I"
+## @item @qcode{"I"}
 ## An integer variable.
 ## @end table
 ##
@@ -168,7 +168,7 @@
 ## @end table
 ##
 ## @item scale (default: 16)
-## Scaling option. The values can be combined with the bitwise OR operator and
+## Scaling option.  The values can be combined with the bitwise OR operator and
 ## may be the following:
 ##
 ## @table @asis
@@ -185,8 +185,9 @@
 ## Skip if problem is well scaled.
 ## @end table
 ##
-## Alternatively, a value of 128 (@code{GLP_SF_AUTO}) may be also specified, in which case the
-## routine chooses the scaling options automatically.
+## Alternatively, a value of 128 (@w{@env{GLP_SF_AUTO}}) may be also
+## specified, in which case the routine chooses the scaling options
+## automatically.
 ##
 ## @item dual (default: 1)
 ## Simplex method option:

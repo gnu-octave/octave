@@ -474,11 +474,11 @@ Query or set the internal variable that specifies the editor to\n\
 use with the @code{edit_history} command.  The default value is taken from\n\
 the environment variable @w{@env{EDITOR}} when Octave starts.  If the\n\
 environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
-@code{\"emacs\"}.\n\
+@qcode{\"emacs\"}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 \n\
 @seealso{edit_history}\n\
 @end deftypefn")
@@ -509,9 +509,9 @@ programs.  The initial value of is taken from the environment variable\n\
 @w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by\n\
 the command line argument @option{--exec-path PATH}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 \n\
 @seealso{IMAGE_PATH, OCTAVE_HOME}\n\
 @end deftypefn")
@@ -544,9 +544,9 @@ DEFUN (IMAGE_PATH, args, nargout,
 Query or set the internal variable that specifies a colon separated\n\
 list of directories in which to search for image files.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 \n\
 @seealso{EXEC_PATH, OCTAVE_HOME}\n\
 @end deftypefn")

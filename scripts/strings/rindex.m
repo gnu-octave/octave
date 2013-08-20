@@ -32,7 +32,7 @@
 ## @end example
 ##
 ## The @code{rindex} function is equivalent to @code{index} with
-## @var{direction} set to @samp{"last"}.
+## @var{direction} set to @qcode{"last"}.
 ##
 ## @seealso{find, index}
 ## @end deftypefn

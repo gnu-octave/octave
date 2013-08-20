@@ -24,7 +24,8 @@
 ## Control mesh hidden line removal.
 ##
 ## When called with no argument the hidden line removal state is toggled.
-## When called with one of the modes "on" or "off" the state is set accordingly.
+## When called with one of the modes @qcode{"on"} or @qcode{"off"} the state
+## is set accordingly.
 ##
 ## The optional output argument @var{mode} is the current state.
 ##

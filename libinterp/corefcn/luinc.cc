@@ -47,7 +47,7 @@ Produce the incomplete LU@tie{}factorization of the sparse matrix @var{A}.\n\
 Two types of incomplete factorization are possible, and the type\n\
 is determined by the second argument to @code{luinc}.\n\
 \n\
-Called with a second argument of '0', the zero-level incomplete\n\
+Called with a second argument of @qcode{'0'}, the zero-level incomplete\n\
 LU@tie{}factorization is produced.  This creates a factorization of @var{A}\n\
 where the position of the non-zero arguments correspond to the same\n\
 positions as in the matrix @var{A}.\n\
@@ -91,8 +91,8 @@ range are ignored.\n\
 All other fields in @var{opts} are ignored.  The outputs from @code{luinc}\n\
 are the same as for @code{lu}.\n\
 \n\
-Given the string argument \"vector\", @code{luinc} returns the values of\n\
-@var{p} @var{q} as vector values.\n\
+Given the string argument @qcode{\"vector\"}, @code{luinc} returns the\n\
+values of @var{p} @var{q} as vector values.\n\
 @seealso{sparse, lu}\n\
 @end deftypefn")
 {

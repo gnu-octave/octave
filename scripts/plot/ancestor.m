@@ -26,7 +26,7 @@
 ##
 ## If the handle object @var{h} itself is of type @var{type}, return @var{h}.
 ##
-## If @code{"toplevel"} is given as a third argument, return the highest
+## If @qcode{"toplevel"} is given as a third argument, return the highest
 ## parent in the object hierarchy that matches the condition, instead
 ## of the first (nearest) one.
 ## @seealso{findobj, findall, allchild}

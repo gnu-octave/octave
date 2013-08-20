@@ -22,7 +22,7 @@
 ## Return a handle to the object whose callback is currently executing.
 ## 
 ## If no callback is executing, this function returns the empty matrix.  This
-## handle is obtained from the root object property "CallbackObject".
+## handle is obtained from the root object property @qcode{"CallbackObject"}.
 ##
 ## When called with a second output argument, return the handle of the figure
 ## containing the object whose callback is currently executing.  If no callback

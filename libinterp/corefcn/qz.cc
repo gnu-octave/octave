@@ -346,20 +346,20 @@ for ordering eigenvalues of the @nospell{GEP} pencil.  The leading block\n\
 of the revised pencil contains all eigenvalues that satisfy:\n\
 \n\
 @table @asis\n\
-@item \"N\"\n\
+@item @qcode{\"N\"}\n\
 = unordered (default)\n\
 \n\
-@item \"S\"\n\
+@item @qcode{\"S\"}\n\
 = small: leading block has all |lambda| @leq{} 1\n\
 \n\
-@item \"B\"\n\
+@item @qcode{\"B\"}\n\
 = big: leading block has all |lambda| @geq{} 1\n\
 \n\
-@item \"-\"\n\
+@item @qcode{\"-\"}\n\
 = negative real part: leading block has all eigenvalues\n\
 in the open left half-plane\n\
 \n\
-@item \"+\"\n\
+@item @qcode{\"+\"}\n\
 = non-negative real part: leading block has all eigenvalues\n\
 in the closed right half-plane\n\
 @end table\n\

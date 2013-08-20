@@ -30,7 +30,7 @@
 ##
 ## If @var{s} is a string matrix, return a column vector with one value per
 ## row of @var{s}.  If a row contains invalid symbols then the
-## corresponding value will be NaN@.  
+## corresponding value will be NaN@.
 ##
 ## If @var{s} is a cell array of strings, return a column vector with one
 ## value per cell element in @var{s}.

@@ -24,18 +24,18 @@
 ## Close figure window(s).
 ##
 ## @code{close} operates by calling the function specified by the
-## "closerequestfcn" property for each figure.  By default, the function
+## @qcode{"closerequestfcn"} property for each figure.  By default, the function
 ## @code{closereq} is used.
 ##
 ## When called with no arguments, close the current figure.  This is equivalent
 ## to @code{close (gcf)}.  If the input @var{h} is a graphic handle, or vector
 ## of graphics handles, then close each figure in @var{h}.
 ##
-## If the argument "all" is given then all figures with visible handles
-## (HandleVisibility = "on") are closed.
+## If the argument @qcode{"all"} is given then all figures with visible handles
+## (HandleVisibility = @qcode{"on"}) are closed.
 ##
-## If the argument "all hidden" is given then all figures, including hidden
-## ones, are closed.
+## If the argument @qcode{"all hidden"} is given then all figures, including
+## hidden ones, are closed.
 ##
 ## Implementation Note: @code{close} calls a function to dispose of the figure.
 ## It is possible that the function will delay or abort removing the figure.

@@ -91,8 +91,9 @@ s = sparse (i, j, s, m, n, \"sum\")\n\
 @end group\n\
 @end example\n\
 \n\
-Given the option \"unique\". if more than two values are specified for the\n\
-same @var{i}, @var{j} indices, the last specified value will be used.\n\
+Given the option @qcode{\"unique\"}, if more than two values are specified\n\
+for the same @var{i}, @var{j} indices, the last specified value will be\n\
+used.\n\
 \n\
 @code{sparse (@var{m}, @var{n})} is equivalent to\n\
 @code{sparse ([], [], [], @var{m}, @var{n}, 0)}\n\

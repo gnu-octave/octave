@@ -46,7 +46,7 @@
 ##
 ## All device formats specified in @code{print} may also be used.  If
 ## @var{fmt} is omitted it is extracted from the extension of @var{filename}.
-## The default format is "pdf".
+## The default format is @qcode{"pdf"}.
 ##
 ## @example
 ## @group

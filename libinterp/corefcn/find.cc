@@ -377,9 +377,10 @@ containing the nonzero values.  For example:\n\
 If two inputs are given, @var{n} indicates the maximum number of\n\
 elements to find from the beginning of the matrix or vector.\n\
 \n\
-If three inputs are given, @var{direction} should be one of \"first\" or\n\
-\"last\", requesting only the first or last @var{n} indices, respectively.\n\
-However, the indices are always returned in ascending order.\n\
+If three inputs are given, @var{direction} should be one of\n\
+@qcode{\"first\"} or @qcode{\"last\"}, requesting only the first or last\n\
+@var{n} indices, respectively.  However, the indices are always returned in\n\
+ascending order.\n\
 \n\
 Note that this function is particularly useful for sparse matrices, as\n\
 it extracts the non-zero elements as vectors, which can then be used to\n\

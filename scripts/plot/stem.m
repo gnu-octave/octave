@@ -34,11 +34,11 @@
 ## the same length as the number of rows in @var{y}, or it can be a
 ## matrix of the same size as @var{y}.
 ##
-## The default color is @code{"b"} (blue), the default line style is
-## @code{"-"}, and the default marker is @code{"o"}.  The line style can
+## The default color is @qcode{"b"} (blue), the default line style is
+## @qcode{"-"}, and the default marker is @qcode{"o"}.  The line style can
 ## be altered by the @code{linespec} argument in the same manner as the
-## @code{plot} command.  If the "filled" argument is present the markers at
-## the top of the stems will be filled in.  For example,
+## @code{plot} command.  If the @qcode{"filled"} argument is present the
+## markers at the top of the stems will be filled in.  For example,
 ##
 ## @example
 ## @group

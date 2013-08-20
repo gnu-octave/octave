@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} spinmap ("inf")
 ## Cycle the colormap for @var{t} seconds with a color increment of @var{inc}.
 ## Both parameters are optional.  The default cycle time is 5 seconds and the
-## default increment is 2.  If the option "inf" is given then cycle
+## default increment is 2.  If the option @qcode{"inf"} is given then cycle
 ## continuously until @kbd{Control-C} is pressed.
 ##
 ## When rotating the original color 1 becomes color 2, color 2 becomes

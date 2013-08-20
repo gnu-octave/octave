@@ -135,7 +135,7 @@ endfunction
 
 @noindent
 Here, @samp{caller} is the @code{create_data} function and @code{name1}
-is the string @code{"x"}, which evaluates simply as the value of @code{x}.
+is the string @qcode{"x"}, which evaluates simply as the value of @code{x}.
 
 You later want to load the values back from @code{mydata}
 in a different context:

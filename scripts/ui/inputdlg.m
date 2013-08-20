@@ -32,7 +32,8 @@
 ## A cell array with strings labeling each text field.  This input is required. 
 ##
 ## @item title
-## String to use for the caption of the dialog.  The default is "Input Dialog".
+## String to use for the caption of the dialog.  The default is @qcode{"Input
+## Dialog"}.
 ##
 ## @item rowscols
 ## Specifies the size of the text fields and can take three forms:

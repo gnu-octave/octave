@@ -38,7 +38,8 @@
 ## @var{btn3}.
 ##
 ## If only @var{msg} and @var{title} are specified, three buttons with
-## the default captions "Yes", "No", and "Cancel" are used.
+## the default captions @qcode{"Yes"}, @qcode{"No"}, and @qcode{"Cancel"} are
+## used.
 ##
 ## If only two button captions, @var{btn1} and @var{btn2}, are specified 
 ## the dialog will have only these two buttons.

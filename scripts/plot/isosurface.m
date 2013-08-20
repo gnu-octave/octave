@@ -38,9 +38,9 @@
 ## which are three--dimensional arrays with the same size than @var{val}
 ## then the volume data is taken at those given points.
 ##
-## The string input argument "noshare" is only for compatibility and
+## The string input argument @qcode{"noshare"} is only for compatibility and
 ## has no effect.  If given the string input argument
-## "verbose" then print messages to the command line interface about the
+## @qcode{"verbose"} then print messages to the command line interface about the
 ## current progress.
 ##
 ## If called with the input argument @var{col} which is a

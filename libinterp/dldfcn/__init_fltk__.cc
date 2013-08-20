@@ -2171,13 +2171,13 @@ Query or set the GUI mode for the current graphics toolkit.\n\
 The @var{mode} argument can be one of the following strings:\n\
 \n\
 @table @asis\n\
-@item '2d'\n\
+@item @qcode{\"2d\"}\n\
 Allows panning and zooming of current axes.\n\
 \n\
-@item '3d'\n\
+@item @qcode{\"3d\"}\n\
 Allows rotating and zooming of current axes.\n\
 \n\
-@item 'none'\n\
+@item @qcode{\"none\"}\n\
 Mouse inputs have no effect.\n\
 @end table\n\
 \n\

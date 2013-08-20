@@ -29,10 +29,10 @@
 ## The optional second argument @var{workspace} can take the following values:
 ##
 ## @table @asis
-## @item "base"
+## @item @qcode{"base"}
 ## Evaluate the datasource properties in the base workspace.  (default).
 ##
-## @item "caller"
+## @item @qcode{"caller"}
 ## Evaluate the datasource properties in the workspace of the function
 ## that called @code{refreshdata}.
 ## @end table

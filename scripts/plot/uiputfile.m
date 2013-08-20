@@ -24,27 +24,27 @@
 ## Open a GUI dialog for selecting a file.  @var{flt} contains a (list of) file
 ## filter string(s) in one of the following formats:
 ##
-## @table @code
-## @item "/path/to/filename.ext"
-## If a filename is given the file extension is
-## extracted and used as filter.
-## In addition the path is selected as current path and the filename is selected
-## as default file.
-## Example: uiputfile ("myfun.m");
+## @table @asis
+## @item @qcode{"/path/to/filename.ext"}
+## If a filename is given the file extension is extracted and used as filter.
+## In addition the path is selected as current path and the filename is
+## selected as default file.  Example: @code{uiputfile ("myfun.m")}
 ##
-## @item "*.ext"
+## @item @qcode{"*.ext"}
 ## A single file extension.
-## Example: uiputfile ("*.ext");
+## Example: @code{uiputfile ("*.ext")}
 ##
-## @item @{"*.ext","My Description"@}
+## @item @code{@{"*.ext", "My Description"@}}
 ## A 2-column cell array containing the file extension in the 1st column and
 ## a brief description in the 2nd column.
-## Example: uiputfile (@{"*.ext","My Description";"*.xyz","XYZ-Format"@});
+## Example: @code{uiputfile (@{"*.ext","My Description";"*.xyz",
+## "XYZ-Format"@})}
 ## @end table
 ##
 ## The filter string can also contain a semicolon separated list of filter
 ## extensions.
-## Example: uiputfile (@{"*.gif;*.png;*.jpg", "Supported Picture Formats"@});
+## Example: @code{uiputfile (@{"*.gif;*.png;*.jpg",
+## "Supported Picture Formats"@})}
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.

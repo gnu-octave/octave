@@ -60,13 +60,13 @@
 ## The following options control the aspect ratio of the axes.
 ##
 ## @table @asis
-## @item "square"
+## @item @qcode{"square"}
 ## Force a square aspect ratio.
 ##
-## @item "equal"
+## @item @qcode{"equal"}
 ## Force x distance to equal y-distance.
 ##
-## @item "normal"
+## @item @qcode{"normal"}
 ## Restore default aspect ratio.
 ## @end table
 ##
@@ -74,39 +74,39 @@
 ## The following options control the way axis limits are interpreted.
 ##
 ## @table @asis
-## @item "auto"
+## @item @qcode{"auto"}
 ## Set the specified axes to have nice limits around the data
 ## or all if no axes are specified.
 ##
-## @item "manual"
+## @item @qcode{"manual"}
 ## Fix the current axes limits.
 ##
-## @item "tight"
+## @item @qcode{"tight"}
 ## Fix axes to the limits of the data.
 ##
-## @item "image"
-## Equivalent to "tight" and "equal".
+## @item @qcode{"image"}
+## Equivalent to @qcode{"tight"} and @qcode{"equal"}.
 ## @end table
 ##
 ## @noindent
 ## The following options affect the appearance of tic marks.
 ##
 ## @table @asis
-## @item "on"
+## @item @qcode{"on"}
 ## Turn tic marks and labels on for all axes.
 ##
-## @item "off"
+## @item @qcode{"off"}
 ## Turn tic marks off for all axes.
 ##
-## @item "tic[xyz]"
+## @item @qcode{"tic[xyz]"}
 ## Turn tic marks on for all axes, or turn them on for the
 ## specified axes and off for the remainder.
 ##
-## @item "label[xyz]"
+## @item @qcode{"label[xyz]"}
 ## Turn tic labels on for all axes, or turn them on for the
 ## specified axes and off for the remainder.
 ##
-## @item "nolabel"
+## @item @qcode{"nolabel"}
 ## Turn tic labels off for all axes.
 ## @end table
 ##
@@ -116,10 +116,10 @@
 ## The following options affect the direction of increasing values on the axes.
 ##
 ## @table @asis
-## @item "ij"
+## @item @qcode{"ij"}
 ## Reverse y-axis, so lower values are nearer the top.
 ##
-## @item "xy"
+## @item @qcode{"xy"}
 ## Restore y-axis, so higher values are nearer the top.
 ## @end table
 ##

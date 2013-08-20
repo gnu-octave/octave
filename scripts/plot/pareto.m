@@ -25,7 +25,7 @@
 ## Draw a Pareto chart.
 ##
 ## A Pareto chart is a bar graph that arranges information in such a way
-## that priorities for process improvement can be established;  It organizes
+## that priorities for process improvement can be established; It organizes
 ## and displays information to show the relative importance of data.  The chart
 ## is similar to the histogram or bar chart, except that the bars are arranged
 ## in decreasing magnitude from left to right along the x-axis.

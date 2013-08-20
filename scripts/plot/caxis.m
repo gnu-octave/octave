@@ -29,8 +29,9 @@
 ## colormap.  Values outside this range are clamped to the first and last
 ## colormap entries.
 ##
-## If @var{limits} is "auto", then automatic colormap scaling is applied,
-## whereas if @var{limits} is "manual" the colormap scaling is set to manual.
+## If @var{limits} is @qcode{"auto"}, then automatic colormap scaling is
+## applied, whereas if @var{limits} is @qcode{"manual"} the colormap scaling
+## is set to manual.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.

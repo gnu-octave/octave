@@ -32,7 +32,7 @@
 ## given, then it is plotted over the meshgrid
 ## @code{@var{x} = 1:columns (@var{z}), @var{y} = 1:rows (@var{z})}.
 ## Thus, columns of @var{z} correspond to different @var{x} values and rows
-## of @var{z} correspond to different @var{y} values.  
+## of @var{z} correspond to different @var{y} values.
 ##
 ## The color of the surface is computed by linearly scaling the @var{Z} values
 ## to fit the range of the current colormap.  Use @code{caxis} and/or

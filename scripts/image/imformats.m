@@ -58,9 +58,9 @@
 ## @end table
 ##
 ## It is possible to change the way Octave manages file formats with the options
-## @code{"add"}, @code{"remove"}, and @code{"update"}, and supplying a
+## @qcode{"add"}, @qcode{"remove"}, and @qcode{"update"}, and supplying a
 ## structure @var{format} with the required fields.  The option
-## @code{"factory"} resets the configuration to the default.
+## @qcode{"factory"} resets the configuration to the default.
 ##
 ## This can be used by Octave packages to extend the image reading capabilities
 ## Octave, through use of the PKG_ADD and PKG_DEL commands.

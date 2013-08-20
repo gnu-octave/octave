@@ -31,7 +31,7 @@
 ## @code{pbaspect(@var{mode})}
 ##
 ## Set the plot box aspect ratio mode of the current axes.  @var{mode} is
-## either "auto" or "manual".
+## either @qcode{"auto"} or @qcode{"manual"}.
 ##
 ## @code{pbaspect ("mode")}
 ##

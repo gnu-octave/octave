@@ -61,7 +61,7 @@
 ## for the integral @var{q}.
 ##
 ## Alternatively, properties of @code{quadgk} can be passed to the function as
-## pairs @code{"@var{prop}", @var{val}}.  Valid properties are
+## pairs @qcode{"@var{prop}", @var{val}}.  Valid properties are
 ##
 ## @table @code
 ## @item AbsTol
@@ -78,12 +78,12 @@
 ## unacceptable error are subdivided and re-evaluated.  If the number of
 ## subintervals exceeds 650 subintervals at any point then a poor
 ## convergence is signaled and the current estimate of the integral is
-## returned.  The property "MaxIntervalCount" can be used to alter the
+## returned.  The property @qcode{"MaxIntervalCount"} can be used to alter the
 ## number of subintervals that can exist before exiting.
 ##
 ## @item WayPoints
 ## Discontinuities in the first derivative of the function to integrate can be
-## flagged with the  @code{"WayPoints"} property.  This forces the ends of
+## flagged with the @qcode{"WayPoints"} property.  This forces the ends of
 ## a subinterval to fall on the breakpoints of the function and can result in
 ## significantly improved estimation of the error in the integral, faster
 ## computation, or both.  For example,

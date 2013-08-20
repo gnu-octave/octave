@@ -38,7 +38,7 @@ DEFUN (hex2num, args, ,
 @deftypefnx {Built-in Function} {@var{n} =} hex2num (@var{s}, @var{class})\n\
 Typecast the 16 character hexadecimal character string to an IEEE 754\n\
 double precision number.  If fewer than 16 characters are given the\n\
-strings are right padded with '0' characters.\n\
+strings are right padded with @qcode{'0'} characters.\n\
 \n\
 Given a string matrix, @code{hex2num} treats each row as a separate\n\
 number.\n\
@@ -50,10 +50,11 @@ hex2num ([\"4005bf0a8b145769\"; \"4024000000000000\"])\n\
 @end group\n\
 @end example\n\
 \n\
-The optional argument @var{class} can be passed as the string \"single\" to\n\
-specify that the given string should be interpreted as a single precision\n\
-number.  In this case, @var{s} should be an 8 character hexadecimal string.\n\
-For example:\n\
+The optional argument @var{class} can be passed as the string\n\
+@qcode{\"single\"} to specify that the given string should be interpreted as\n\
+a single precision number.  In this case, @var{s} should be an 8 character\n\
+hexadecimal string.  For example: \n\
+\n\
 @example\n\
 @group\n\
 hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\

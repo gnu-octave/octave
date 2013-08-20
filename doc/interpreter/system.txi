@@ -491,7 +491,7 @@ referred to as a @var{grp_struct}.
 @DOCSTRING(getgrent)
 
 @DOCSTRING(getgrgid)
-         
+
 @DOCSTRING(getgrnam)
 
 @DOCSTRING(setgrent)

@@ -24,7 +24,7 @@
 ## returns a cell string with the individual cells concatenated.
 ## For numerical input, each element is converted to the
 ## corresponding ASCII character.  Trailing white space for each of
-## the inputs (@var{s1}, @var{S2}, @dots{}) is eliminated before they
+## the inputs (@var{s1}, @var{s2}, @dots{}) is eliminated before they
 ## are concatenated.
 ##
 ## For example:

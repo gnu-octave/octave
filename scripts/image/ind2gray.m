@@ -30,7 +30,7 @@
 ##
 ## Implementation Note: There are several ways of converting colors to
 ## grayscale intensities.  This functions uses the luminance value obtained
-## from @code{rgb2ntsc} which is @code{I = 0.299*R + 0.587*G + 0.114*B}.  
+## from @code{rgb2ntsc} which is @code{I = 0.299*R + 0.587*G + 0.114*B}.
 ## Other possibilities include the value component from @code{rgb2hsv} or
 ## using a single color channel from @code{ind2rgb}.
 ## @seealso{gray2ind, ind2rgb}

@@ -347,10 +347,10 @@ Note that per default the output argument(s) are arrays of the same size as\n\
 the input arguments.  Input arguments that are singleton (1x1) cells will be\n\
 automatically expanded to the size of the other arguments.\n\
 \n\
-If the parameter \"UniformOutput\" is set to true (the default), then the\n\
-function must return scalars which will be concatenated into the return\n\
-array(s).  If \"UniformOutput\" is false, the outputs are concatenated into a\n\
-cell array (or cell arrays).  For example:\n\
+If the parameter @qcode{\"UniformOutput\"} is set to true (the default),\n\
+then the function must return scalars which will be concatenated into the\n\
+return array(s).  If @qcode{\"UniformOutput\"} is false, the outputs are\n\
+concatenated into a cell array (or cell arrays).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -360,8 +360,9 @@ cellfun (\"tolower\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
 @end group\n\
 @end example\n\
 \n\
-Given the parameter \"ErrorHandler\", then @var{errfunc} defines a function\n\
-to call in case @var{func} generates an error.  The form of the function is\n\
+Given the parameter @qcode{\"ErrorHandler\"}, then @var{errfunc} defines a\n\
+function to call in case @var{func} generates an error.  The form of the\n\
+function is\n\
 \n\
 @example\n\
 function [@dots{}] = errfunc (@var{s}, @dots{})\n\
@@ -370,9 +371,9 @@ function [@dots{}] = errfunc (@var{s}, @dots{})\n\
 @noindent\n\
 where there is an additional input argument to @var{errfunc} relative to\n\
 @var{func}, given by @var{s}.  This is a structure with the elements\n\
-'identifier', 'message' and 'index', giving respectively the error\n\
-identifier, the error message, and the index into the input arguments\n\
-of the element that caused the error.  For example:\n\
+@qcode{\"identifier\"}, @qcode{\"message\"} and @qcode{\"index\"}, giving\n\
+respectively the error identifier, the error message, and the index into the\n\
+input arguments of the element that caused the error.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1070,7 +1071,7 @@ arrayfun (@@atan2, [1, 0], [0, 1])\n\
 @end example\n\
 \n\
 If the parameter @var{val} after a further string input argument\n\
-\"UniformOutput\" is set @code{true} (the default), then the named\n\
+@qcode{\"UniformOutput\"} is set @code{true} (the default), then the named\n\
 function @var{func} must return a single element which then will be\n\
 concatenated into the return value and is of type matrix.  Otherwise,\n\
 if that parameter is set to @code{false}, then the outputs are\n\
@@ -1115,7 +1116,7 @@ C =\n\
 @end example\n\
 \n\
 If the parameter @var{errfunc} after a further string input argument\n\
-\"ErrorHandler\" is another string, a function handle, an inline\n\
+@qcode{\"ErrorHandler\"} is another string, a function handle, an inline\n\
 function, or an anonymous function, then @var{errfunc} defines a\n\
 function to call in the case that @var{func} generates an error.\n\
 The definition of the function must be of the form\n\
@@ -1127,11 +1128,11 @@ function [@dots{}] = errfunc (@var{s}, @dots{})\n\
 @noindent\n\
 where there is an additional input argument to @var{errfunc}\n\
 relative to @var{func}, given by @var{s}.  This is a structure with\n\
-the elements \"identifier\", \"message\", and \"index\" giving,\n\
-respectively, the error identifier, the error message, and the index of\n\
-the array elements that caused the error.  The size of the output\n\
-argument of @var{errfunc} must have the same size as the output\n\
-argument of @var{func}, otherwise a real error is thrown.  For\n\
+the elements @qcode{\"identifier\"}, @qcode{\"message\"}, and\n\
+@qcode{\"index\"} giving, respectively, the error identifier, the error\n\
+message, and the index of the array elements that caused the error.  The\n\
+size of the output argument of @var{errfunc} must have the same size as the\n\
+output argument of @var{func}, otherwise a real error is thrown.  For\n\
 example:\n\
 \n\
 @example\n\

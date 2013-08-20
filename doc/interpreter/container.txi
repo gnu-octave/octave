@@ -372,9 +372,9 @@ in.call1
 @subsection Creating Structures
 @cindex dynamic naming
 
-Besides the index operator ".", Octave can use dynamic naming "(var)" or the
-@code{struct} function to create structures.  Dynamic naming uses the string
-value of a variable as the field name.  For example:
+Besides the index operator @qcode{"."}, Octave can use dynamic naming
+@qcode{"(var)"} or the @code{struct} function to create structures.  Dynamic
+naming uses the string value of a variable as the field name.  For example:
 
 @example
 @group
@@ -484,12 +484,12 @@ struct ("field1", @{@{1, "one"@}@}, "field2", 2)
      @result{} ans =
         @{
           field1 =
-        
+
         @{
           [1,1] =  1
           [1,2] = one
         @}
-        
+
           field2 =  2
         @}
 @end group
@@ -587,7 +587,7 @@ extracted by indexing with a vector of indexes
 c@{1:2@}
      @result{} ans = a string
      @result{} ans =
-          
+
                0.593993   0.627732
                0.377037   0.033643
 @end group
@@ -601,14 +601,14 @@ third place of the previously created cell array
 @group
 c@{3@} = 3
      @result{} c =
-         
+
          @{
            [1,1] = a string
            [1,2] =
-         
+
               0.593993   0.627732
               0.377037   0.033643
-         
+
            [1,3] =  3
          @}
 @end group
@@ -656,7 +656,7 @@ a 2-by-2 cell array containing empty matrices
 @group
 c = cell (2,2)
      @result{} c =
-         
+
          @{
            [1,1] = [](0x0)
            [2,1] = [](0x0)

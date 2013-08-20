@@ -26,9 +26,10 @@
 ## Plot the Voronoi diagram of points @code{(@var{x}, @var{y})}.
 ## The Voronoi facets with points at infinity are not drawn.
 ## 
-## If "linespec" is given it is used to set the color and line style of the
-## plot.  If an axis graphics handle @var{hax} is supplied then the Voronoi
-## diagram is drawn on the specified axis rather than in a new figure.
+## If @qcode{"linespec"} is given it is used to set the color and line style
+## of the plot.  If an axis graphics handle @var{hax} is supplied then the
+## Voronoi diagram is drawn on the specified axis rather than in a new
+## figure.
 ##
 ## The @var{options} argument, which must be a string or cell array of strings,
 ## contains options passed to the underlying qhull command.

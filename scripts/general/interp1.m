@@ -32,19 +32,19 @@
 ## Method is one of:
 ##
 ## @table @asis
-## @item "nearest"
+## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item "linear"
+## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors
 ##
-## @item "pchip"
+## @item @qcode{"pchip"}
 ## Piecewise cubic Hermite interpolating polynomial
 ##
-## @item "cubic"
+## @item @qcode{"cubic"}
 ## Cubic interpolation (same as @code{pchip})
 ##
-## @item "spline"
+## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve
 ## @end table
@@ -52,18 +52,18 @@
 ## Appending '*' to the start of the above method forces @code{interp1}
 ## to assume that @var{x} is uniformly spaced, and only @code{@var{x}(1)}
 ## and @code{@var{x}(2)} are referenced.  This is usually faster,
-## and is never slower.  The default method is "linear".
+## and is never slower.  The default method is @qcode{"linear"}.
 ##
-## If @var{extrap} is the string "extrap", then extrapolate values beyond
-## the endpoints.  If @var{extrap} is a number, replace values beyond the
-## endpoints with that number.  If @var{extrap} is missing, assume NA.
+## If @var{extrap} is the string @qcode{"extrap"}, then extrapolate values
+## beyond the endpoints.  If @var{extrap} is a number, replace values beyond
+## the endpoints with that number.  If @var{extrap} is missing, assume NA.
 ##
-## If the string argument "pp" is specified, then @var{xi} should not be
+## If the string argument @qcode{"pp"} is specified, then @var{xi} should not be
 ## supplied and @code{interp1} returns the piecewise polynomial that
 ## can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
-## @var{y}, @var{method}, "pp"), @var{xi}) == interp1 (@var{x}, @var{y},
-## @var{xi}, @var{method}, "extrap")}.
+## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x}, @var{y},
+## @var{xi}, @var{method}, @qcode{"extrap"})}.
 ##
 ## Duplicate points in @var{x} specify a discontinuous interpolant.  There
 ## may be at most 2 consecutive points with the same value.
@@ -71,10 +71,11 @@
 ## right-continuous.  If @var{x} is decreasing, the default discontinuous
 ## interpolant is left-continuous.
 ## The continuity condition of the interpolant may be specified by using
-## the options, "-left" or "-right", to select a left-continuous
+## the options, @qcode{"-left"} or @qcode{"-right"}, to select a left-continuous
 ## or right-continuous interpolant, respectively.
-## Discontinuous interpolation is only allowed for "nearest" and "linear"
-## methods; in all other cases, the @var{x}-values must be unique.
+## Discontinuous interpolation is only allowed for @qcode{"nearest"} and
+## @qcode{"linear"} methods; in all other cases, the @var{x}-values must be
+## unique.
 ##
 ## An example of the use of @code{interp1} is
 ##

@@ -23,7 +23,7 @@
 ## overloading method that allows the conversion of this class object to
 ## a valid indexing vector.  It is important to note that
 ## @code{subsindex} must return a zero-based real integer vector of the
-## class "double".  For example, if the class constructor
+## class @qcode{"double"}.  For example, if the class constructor
 ##
 ## @example
 ## @group

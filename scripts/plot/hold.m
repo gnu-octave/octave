@@ -22,9 +22,9 @@
 ## @deftypefnx {Command} {} hold off
 ## @deftypefnx {Command} {} hold all
 ## @deftypefnx {Function File} {} hold (@var{hax}, @dots{})
-## Toggle or set the "hold" state of the plotting engine which determines
-## whether new graphic objects are added to the plot or replace the existing
-## objects.
+## Toggle or set the @qcode{"hold"} state of the plotting engine which
+## determines whether new graphic objects are added to the plot or replace
+## the existing objects.
 ##
 ## @table @code
 ## @item hold on

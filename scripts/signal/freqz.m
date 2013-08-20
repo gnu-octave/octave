@@ -44,8 +44,8 @@
 ## For fastest computation, @var{n} should factor into a small number of
 ## small primes.
 ##
-## If the fourth argument, "whole", is omitted the response is evaluated at
-## frequencies between 0 and
+## If the fourth argument, @qcode{"whole"}, is omitted the response is
+## evaluated at frequencies between 0 and
 ## @ifnottex
 ##  pi.
 ## @end ifnottex

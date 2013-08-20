@@ -20,7 +20,7 @@
 ## @deftypefn  {Command} {} help @var{name}
 ## @deftypefnx {Command} {} help @code{--list}
 ## @deftypefnx {Command} {} help @code{.}
-## Display the help text for @var{name}.   For example, the command
+## Display the help text for @var{name}.  For example, the command
 ## @kbd{help help} prints a short message describing the @code{help}
 ## command.
 ##

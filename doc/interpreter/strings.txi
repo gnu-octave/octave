@@ -154,13 +154,13 @@ by using @code{is_dq_string} and @code{is_sq_string}.
 @section Character Arrays
 
 The string representation used by Octave is an array of characters, so
-internally the string @nospell{"dddddddddd"} is actually a row vector of length
-10 containing the value 100 in all places (100 is the ASCII code of "d").  This
-lends itself to the obvious generalization to character matrices.  Using a
-matrix of characters, it is possible to represent a collection of same-length
-strings in one variable.  The convention used in Octave is that each row in a
-character matrix is a separate string, but letting each column represent a
-string is equally possible.
+internally the string @nospell{@qcode{"dddddddddd"}} is actually a row vector
+of length 10 containing the value 100 in all places (100 is the ASCII code of
+@qcode{"d"}).  This lends itself to the obvious generalization to character
+matrices.  Using a matrix of characters, it is possible to represent a
+collection of same-length strings in one variable.  The convention used in
+Octave is that each row in a character matrix is a separate string, but letting
+each column represent a string is equally possible.
 
 The easiest way to create a character matrix is to put several strings
 together into a matrix.
@@ -288,8 +288,8 @@ eliminates empty strings.
 char ("orange", "green", "", "red")
     @result{} orange
        green 
-             
-       red   
+
+       red
 @end group
 
 @group
@@ -331,7 +331,7 @@ kinds of behavior can be useful as can be seen in the examples:
 @example
 @group
 strcat (["dir1";"directory2"], ["/";"/"], ["file1";"file2"])
-     @result{} dir1/file1      
+     @result{} dir1/file1
         directory2/file2
 @end group
 @group

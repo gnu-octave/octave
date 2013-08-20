@@ -23,7 +23,7 @@
 ## to the current object of the figure with handle @var{fig}.
 ##
 ## The current object of a figure is the object that was last clicked on.  It
-## is stored in the "CurrentObject" property of the target figure.
+## is stored in the @qcode{"CurrentObject"} property of the target figure.
 ##
 ## If the last mouse click did not occur on any child object of the figure,
 ## then the current object is the figure itself.

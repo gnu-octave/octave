@@ -25,9 +25,9 @@
 ## arrays of class Byte or Integer are converted to matrices of class uint8 or
 ## uint32 respectively.
 ## 
-## When called from inside a function with the "local" option, the variable is
-## changed locally for the function and any subroutines it calls.  The original
-## variable value is restored when exiting the function.
+## When called from inside a function with the @qcode{"local"} option, the
+## variable is changed locally for the function and any subroutines it calls.
+##  The original variable value is restored when exiting the function.
 ## @seealso{java_unsigned_autoconversion, java_convert_matrix, debug_java}
 ## @end deftypefn
 

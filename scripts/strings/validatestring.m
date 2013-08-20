@@ -28,11 +28,12 @@
 ## cellstr of valid values, then @var{validstr} will be the validated form
 ## of @var{str} where validation is defined as @var{str} being a member
 ## or substring of @var{validstr}.  This is useful for both verifying
-## and expanding short options, such as "r", to their longer forms, such as
-## "red".  If @var{str} is a substring of @var{validstr}, and there are
-## multiple matches, the shortest match will be returned if all matches are
-## substrings of each other.  Otherwise, an error will be raised because the
-## expansion of @var{str} is ambiguous.  All comparisons are case insensitive.
+## and expanding short options, such as @qcode{"r"}, to their longer forms,
+## such as @qcode{"red"}.  If @var{str} is a substring of @var{validstr}, and
+## there are multiple matches, the shortest match will be returned if all
+## matches are substrings of each other.  Otherwise, an error will be raised
+## because the expansion of @var{str} is ambiguous.  All comparisons are case
+## insensitive.
 ##
 ## The additional inputs @var{funcname}, @var{varname}, and @var{position}
 ## are optional and will make any generated validation error message more

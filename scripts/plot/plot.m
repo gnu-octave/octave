@@ -93,8 +93,9 @@
 ##
 ## Multiple property-value pairs may be specified, but they must appear
 ## in pairs.  These arguments are applied to the line objects drawn by
-## @code{plot}.  Useful properties to modify are "linestyle", "linewidth",
-## "color", "marker", "markersize", "markeredgecolor", "markerfacecolor".
+## @code{plot}.  Useful properties to modify are @qcode{"linestyle"},
+## @qcode{"linewidth"}, @qcode{"color"}, @qcode{"marker"},
+## @qcode{"markersize"}, @qcode{"markeredgecolor"}, @qcode{"markerfacecolor"}.
 ##
 ## The @var{fmt} format argument can also be used to control the plot style.
 ## The format is composed of three parts: linestyle, markerstyle, color. 
@@ -103,7 +104,7 @@
 ## only lines are drawn.  If both are specified then lines and markers will
 ## be plotted.  If no @var{fmt} and no @var{property}/@var{value} pairs are
 ## given, then the default plot style is solid lines with no markers and the
-## color determined by the "colororder" property of the current axes.
+## color determined by the @qcode{"colororder"} property of the current axes.
 ##
 ## Format arguments:
 ##
@@ -147,13 +148,13 @@
 ## @item @samp{w} @tab White
 ## @end multitable
 ##
-## @item ";key;"
-## Here "key" is the label to use for the plot legend.
+## @item @qcode{";key;"}
+## Here @qcode{"key"} is the label to use for the plot legend.
 ## @end table
 ##
 ## The @var{fmt} argument may also be used to assign legend keys.
 ## To do so, include the desired label between semicolons after the
-## formatting sequence described above, e.g., "+b;Key Title;".
+## formatting sequence described above, e.g., @qcode{"+b;Key Title;"}.
 ## Note that the last semicolon is required and Octave will generate
 ## an error if it is left out.
 ##

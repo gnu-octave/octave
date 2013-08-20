@@ -1527,14 +1527,14 @@ DEFUN (ignore_function_time_stamp, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave checks\n\
 the time stamp on files each time it looks up functions defined in\n\
-function files.  If the internal variable is set to @code{\"system\"},\n\
+function files.  If the internal variable is set to @qcode{\"system\"},\n\
 Octave will not automatically recompile function files in subdirectories of\n\
 @file{@var{octave-home}/lib/@var{version}} if they have changed since\n\
 they were last compiled, but will recompile other function files in the\n\
-search path if they change.  If set to @code{\"all\"}, Octave will not\n\
+search path if they change.  If set to @qcode{\"all\"}, Octave will not\n\
 recompile any function files unless their definitions are removed with\n\
-@code{clear}.  If set to \"none\", Octave will always check time stamps\n\
-on files to determine whether functions defined in function files\n\
+@code{clear}.  If set to @qcode{\"none\"}, Octave will always check time\n\
+stamps on files to determine whether functions defined in function files\n\
 need to recompiled.\n\
 @end deftypefn")
 {

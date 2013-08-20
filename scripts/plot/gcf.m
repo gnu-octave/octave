@@ -34,7 +34,7 @@
 ## @noindent
 ## plots a sine wave, finds the handle of the current figure, and then
 ## makes that figure invisible.  Setting the visible property of the
-## figure to "on" will cause it to be displayed again.
+## figure to @qcode{"on"} will cause it to be displayed again.
 ## @seealso{gca, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
 

@@ -82,14 +82,15 @@
 ## an underscore.  Also, variables may not begin with a digit; in this
 ## case an underscore is added before the variable name.
 ##
-## Variable names beginning and ending with two underscores "__" are valid but
-## they are used internally by octave and should generally be avoided, therefore
-## genvarname will not generate such names.
+## Variable names beginning and ending with two underscores @qcode{"__"} are
+## valid but they are used internally by octave and should generally be
+## avoided, therefore genvarname will not generate such names.
 ##
 ## genvarname will also make sure that returned names do not clash with
-## keywords such as "for" and "if".  A number will be appended if necessary.
-## Note, however, that this does @strong{not} include function names,
-## such as "sin".  Such names should be included in @var{avoid} if necessary.
+## keywords such as @qcode{"for"} and @qcode{"if"}.  A number will be
+## appended if necessary.  Note, however, that this does @strong{not} include
+## function names, such as @qcode{"sin"}.  Such names should be included in
+## @var{avoid} if necessary.
 ## @seealso{isvarname, exist, tmpnam, eval}
 ## @end deftypefn
 

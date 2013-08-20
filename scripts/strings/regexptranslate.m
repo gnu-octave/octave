@@ -24,7 +24,7 @@
 ## values
 ##
 ## @table @asis
-## @item "wildcard"
+## @item @qcode{"wildcard"}
 ## The wildcard characters @code{.}, @code{*}, and @code{?} are replaced
 ## with wildcards that are appropriate for a regular expression.
 ## For example:
@@ -36,7 +36,7 @@
 ## @end group
 ## @end example
 ##
-## @item "escape"
+## @item @qcode{"escape"}
 ## The characters @code{$.?[]}, that have special meaning for regular
 ## expressions are escaped so that they are treated literally.  For example:
 ##

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __add_default_menu__ (@var{fig})
 ## Add default menu to figure.  All uimenu handles have
-## their "HandleVisibility" property set to "off".
+## their @qcode{"HandleVisibility"} property set to @qcode{"off"}.
 ## @end deftypefn
 
 ## Author: Kai Habel

@@ -293,9 +293,9 @@ not be used unless you are porting old code that relies on this feature.\n\
 To obtain short-circuit behavior for logical expressions in new programs,\n\
 you should always use the @samp{&&} and @samp{||} operators.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);

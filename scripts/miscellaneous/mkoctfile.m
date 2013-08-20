@@ -87,18 +87,18 @@
 ##    CFLAGS                    LD_CXX
 ##    CPICFLAG                  LD_STATIC_FLAG
 ##    CPPFLAGS                  LFLAGS
-##    CXX                       LIBOCTAVE       
-##    CXXFLAGS                  LIBOCTINTERP    
-##    CXXPICFLAG                LIBS            
-##    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS     
+##    CXX                       LIBOCTAVE
+##    CXXFLAGS                  LIBOCTINTERP
+##    CXXPICFLAG                LIBS
+##    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
 ##    DEPEND_FLAGS              OCTAVE_LINK_DEPS
-##    DL_LD                     OCT_LINK_DEPS   
-##    DL_LDFLAGS                RDYNAMIC_FLAG   
-##    EXEEXT                    READLINE_LIBS   
-##    F77                       SED             
-##    F77_INTEGER_8_FLAG        XTRA_CFLAGS     
-##    FFLAGS                    XTRA_CXXFLAGS   
-##    FFTW3_LDFLAGS             
+##    DL_LD                     OCT_LINK_DEPS
+##    DL_LDFLAGS                RDYNAMIC_FLAG
+##    EXEEXT                    READLINE_LIBS
+##    F77                       SED
+##    F77_INTEGER_8_FLAG        XTRA_CFLAGS
+##    FFLAGS                    XTRA_CXXFLAGS
+##    FFTW3_LDFLAGS
 ##    FFTW3_LIBS
 ##    FFTW3F_LDFLAGS
 ##

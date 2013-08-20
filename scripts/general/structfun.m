@@ -34,12 +34,11 @@
 ## a string value.  If the function returns more than one argument, they are
 ## returned as separate output variables.
 ##
-## If the parameter "UniformOutput" is set to true (the default), then the
-## function
-## must return a single element which will be concatenated into the
-## return value.  If "UniformOutput" is false, the outputs are placed into a
-## structure
-## with the same fieldnames as the input structure.
+## If the parameter @qcode{"UniformOutput"} is set to true (the default),
+## then the function must return a single element which will be concatenated
+## into the return value.  If @qcode{"UniformOutput"} is false, the outputs
+## are placed into a structure with the same fieldnames as the input
+## structure.
 ##
 ## @example
 ## @group
@@ -55,8 +54,9 @@
 ## @end group
 ## @end example
 ##
-## Given the parameter "ErrorHandler", @var{errfunc} defines a function to
-## call in case @var{func} generates an error.  The form of the function is
+## Given the parameter @qcode{"ErrorHandler"}, @var{errfunc} defines a
+## function to call in case @var{func} generates an error.  The form of the
+## function is
 ##
 ## @example
 ## function [@dots{}] = errfunc (@var{se}, @dots{})
@@ -65,10 +65,10 @@
 ## @noindent
 ## where there is an additional input argument to @var{errfunc} relative to
 ## @var{func}, given by @nospell{@var{se}}.  This is a structure with the
-## elements "identifier", "message" and "index", giving respectively the error
-## identifier, the error message, and the index into the input arguments
-## of the element that caused the error.  For an example on how to use
-## an error handler, @pxref{XREFcellfun,,cellfun}.
+## elements @qcode{"identifier"}, @qcode{"message"} and @qcode{"index"},
+## giving respectively the error identifier, the error message, and the index
+## into the input arguments of the element that caused the error.  For an
+## example on how to use an error handler, @pxref{XREFcellfun,,cellfun}.
 ##
 ## @seealso{cellfun, arrayfun, spfun}
 ## @end deftypefn

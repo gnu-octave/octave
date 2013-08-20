@@ -43,30 +43,32 @@
 ## descendants, by passing a handle or set of handles @var{hlist} as the first
 ## argument.
 ##
-## The depth of the object hierarchy to search can be limited with the "-depth"
-## argument.  An example of searching only three generations of children is:
+## The depth of the object hierarchy to search can be limited with the
+## @qcode{"-depth"} argument.  An example of searching only three generations
+## of children is:
 ##
 ## @example
 ## findobj (@var{hlist}, "-depth", @var{d}, @var{prop_name}, @var{prop_value})
 ## @end example
 ##
 ## Specifying a depth @var{d} of 0, limits the search to the set of objects
-## passed in @var{hlist}.  A depth @var{d} of 0 is equivalent to the "flat"
-## argument.
+## passed in @var{hlist}.  A depth @var{d} of 0 is equivalent to the
+## @qcode{"flat"} argument.
 ##
 ## A specified logical operator may be applied to the pairs of @var{prop_name}
-## and @var{prop_value}.  The supported logical operators are: "-and", "-or",
-## "-xor", "-not".
+## and @var{prop_value}.  The supported logical operators are:
+## @qcode{"-and"}, @qcode{"-or"},
+## @qcode{"-xor"}, @qcode{"-not"}.
 ##
 ## Objects may also be matched by comparing a regular expression to the
 ## property values, where property values that match
 ## @code{regexp (@var{prop_value}, @var{pattern})} are returned.
 ##
 ## Finally, objects may be matched by property name only by using the
-## "-property" option.
+## @qcode{"-property"} option.
 ##
 ## Implementation Note: The search only includes objects with visible
-## handles ("HandleVisibility" = "on").  @xref{XREFfindall,,findall}, to
+## handles (HandleVisibility = @qcode{"on"}).  @xref{XREFfindall,,findall}, to
 ## search for all objects including hidden ones.
 ## @seealso{findall, allchild, get, set}
 ## @end deftypefn

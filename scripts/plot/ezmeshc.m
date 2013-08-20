@@ -41,8 +41,8 @@
 ##
 ## @var{n} is a scalar defining the number of points to use in each dimension.
 ##
-## If the argument "circ" is given, then the function is plotted over a disk
-## centered on the middle of the domain @var{dom}.
+## If the argument @qcode{"circ"} is given, then the function is plotted over
+## a disk centered on the middle of the domain @var{dom}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.

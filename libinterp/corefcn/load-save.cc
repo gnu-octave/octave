@@ -1772,12 +1772,12 @@ DEFUN (crash_dumps_octave_core, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file \"octave-workspace\" if it\n\
+to save all current variables to the file @file{octave-workspace} if it\n\
 crashes or receives a hangup, terminate or similar signal.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1791,12 +1791,12 @@ DEFUN (save_default_options, args, nargout,
 @deftypefnx {Built-in Function} {} save_default_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
-Typical values include @code{\"-ascii\"}, @code{\"-text -zip\"}.\n\
+Typical values include @qcode{\"-ascii\"}, @qcode{\"-text -zip\"}.\n\
 The default value is @option{-text}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{save}\n\
 @end deftypefn")
 {
@@ -1817,9 +1817,9 @@ then @var{octave_core_file_limit} will be approximately the maximum\n\
 size of the file.  If a text file format is used, then the file could\n\
 be much larger than the limit.  The default value is -1 (unlimited)\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1833,11 +1833,11 @@ DEFUN (octave_core_file_name, args, nargout,
 @deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the file\n\
 used for saving data from the top-level workspace if Octave aborts.\n\
-The default value is @code{\"octave-workspace\"}\n\
+The default value is @qcode{\"octave-workspace\"}\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1855,9 +1855,9 @@ saving the workspace data if Octave aborts.  The value of\n\
 options for the @code{save} function.  The default value is Octave's binary\n\
 format.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
 @end deftypefn")
 {
@@ -1883,9 +1883,9 @@ default value is\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end smallexample\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{strftime, save}\n\
 @end deftypefn")
 {

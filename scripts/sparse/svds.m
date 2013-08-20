@@ -40,13 +40,13 @@
 ## and defaults to 6.
 ##
 ## The argument @var{sigma} specifies which singular values to find.  When
-## @var{sigma} is the string 'L', the default, the largest singular values of
-## @var{A} are found.  Otherwise, @var{sigma} must be a real scalar and the
-## singular values closest to @var{sigma} are found.  As a corollary,
+## @var{sigma} is the string @qcode{'L'}, the default, the largest singular
+## values of @var{A} are found.  Otherwise, @var{sigma} must be a real scalar
+## and the singular values closest to @var{sigma} are found.  As a corollary,
 ## @code{@var{sigma} = 0} finds the smallest singular values.  Note that for
-## relatively small values of @var{sigma}, there is a chance that the requested
-## number of singular values will not be found.  In that case @var{sigma}
-## should be increased.
+## relatively small values of @var{sigma}, there is a chance that the
+## requested number of singular values will not be found.  In that case
+## @var{sigma} should be increased.
 ##
 ## @var{opts} is a structure defining options that @code{svds} will pass
 ## to @code{eigs}.  The possible fields of this structure are documented in

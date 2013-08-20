@@ -49,7 +49,7 @@
 ## Number of bits per channel per pixel.
 ##
 ## @item Format
-## Image format (e.g., @code{"jpeg"}).
+## Image format (e.g., @qcode{"jpeg"}).
 ##
 ## @item LongFormat
 ## Long form image format description.
@@ -75,8 +75,8 @@
 ## for.
 ##
 ## @item ByteOrder
-## Endian option for formats that support it.  Value is @code{"little-endian"},
-## @code{"big-endian"}, or @code{"undefined"}.
+## Endian option for formats that support it.  Value is @qcode{"little-endian"},
+## @qcode{"big-endian"}, or @qcode{"undefined"}.
 ##
 ## @item Gamma
 ## Gamma level of the image.  The same color image displayed on two different
@@ -96,12 +96,12 @@
 ## Preferred number of colors in the image.
 ##
 ## @item ResolutionUnits
-## Units of image resolution.  Value is @code{"pixels per inch"},
-## @code{"pixels per centimeter"}, or @code{"undefined"}.
+## Units of image resolution.  Value is @qcode{"pixels per inch"},
+## @qcode{"pixels per centimeter"}, or @qcode{"undefined"}.
 ##
 ## @item ColorType
-## Image type.  Value is @code{"grayscale"}, @code{"indexed"},
-## @code{"truecolor"}, or @code{"undefined"}.
+## Image type.  Value is @qcode{"grayscale"}, @qcode{"indexed"},
+## @qcode{"truecolor"}, or @qcode{"undefined"}.
 ##
 ## @item View
 ## FlashPix viewing parameters.

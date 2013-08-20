@@ -352,7 +352,7 @@ therefore looks like this
 Help text in Texinfo format.  Code samples should be marked 
 like @@code@{sample of code@} and variables should be marked
 as @@var@{variable@}.
-@@seealso@{fn2@}
+@@seealso@{fn2, fn3@}
 @@end deftypefn
 @end group
 @end example
@@ -385,7 +385,13 @@ is then changed appropriately for display.
 All samples of code should be marked with this macro for the same
 reasons as the @@var macro.
 
-@item @@seealso@{function2@}
+@item  @@qcode@{"sample_code"@}
+@itemx @@qcode@{'sample_code'@}
+All samples of code which are quoted should use this more specialized macro.
+This happens frequently when discussing graphics properties such as "position"
+or options such as "on"/"off".
+
+@item @@seealso@{function2, function3@}
 This is a comma separated list of function names that allows cross
 referencing from one function documentation string to another.
 @end table
@@ -467,8 +473,8 @@ which produces
 The @code{@@group} block prevents the example from being split across a
 page boundary, while the @code{@@result@{@}} macro produces a right
 arrow signifying the result of a command.  If your example is larger than
-20 lines it is better NOT to use grouping so that a reasonable page boundary
-can be calculated.
+20 lines it is better @emph{NOT} to use grouping so that a reasonable page
+boundary can be calculated.
 
 In many cases a function has multiple ways in which it can be called,
 and the @code{@@deftypefnx} macro can be used to give alternatives.  For

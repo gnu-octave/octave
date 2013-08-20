@@ -26,10 +26,10 @@
 ## @deftypefnx {Function File} {} grid (@var{hax}, @dots{})
 ## Control the display of plot grid lines.
 ##
-## The function state input may be either "on" or "off".
+## The function state input may be either @qcode{"on"} or @qcode{"off"}.
 ## If it is omitted, the current grid state is toggled.
 ##
-## When the first argument is "minor" all subsequent commands
+## When the first argument is @qcode{"minor"} all subsequent commands
 ## modify the minor grid rather than the major grid.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on

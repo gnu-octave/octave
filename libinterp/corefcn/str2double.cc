@@ -300,7 +300,7 @@ DEFUN (str2double, args, ,
 Convert a string to a real or complex number.\n\
 \n\
 The string must be in one of the following formats where\n\
-a and b are real numbers and the complex unit is 'i' or 'j':\n\
+a and b are real numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:\n\
 \n\
 @itemize\n\
 @item a + bi\n\
@@ -317,9 +317,9 @@ a and b are real numbers and the complex unit is 'i' or 'j':\n\
 @end itemize\n\
 \n\
 If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where\n\
-the brackets indicate optional arguments and 'd' indicates zero or more\n\
-digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA} are\n\
-also accepted.\n\
+the brackets indicate optional arguments and @qcode{'d'} indicates zero or\n\
+more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}\n\
+are also accepted.\n\
 \n\
 @var{s} may also be a character matrix, in which case the conversion is\n\
 repeated for each row.  Or @var{s} may be a cell array of strings, in which\n\

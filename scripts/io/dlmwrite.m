@@ -35,32 +35,32 @@
 ## The value of @var{c} specifies the number of delimiters to prepend to
 ## each line of data.
 ##
-## If the argument @code{"-append"} is given, append to the end of
+## If the argument @qcode{"-append"} is given, append to the end of
 ## @var{file}.
 ##
 ## In addition, the following keyword value pairs may appear at the end
 ## of the argument list:
 ##
 ## @table @asis
-## @item "append"
-## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
+## @item @qcode{"append"}
+## Either @qcode{"on"} or @qcode{"off"}.  See @qcode{"-append"} above.
 ##
-## @item "delimiter"
+## @item @qcode{"delimiter"}
 ## See @var{delim} above.
 ##
-## @item "newline"
+## @item @qcode{"newline"}
 ## The character(s) to use to separate each row.  Three special cases
-## exist for this option.  @samp{"unix"} is changed into "\n",
-## @samp{"pc"} is changed into "\r\n", and @samp{"mac"} is changed
-## into "\r".  Other values for this option are kept as is.
+## exist for this option.  @qcode{"unix"} is changed into @qcode{"\n"},
+## @qcode{"pc"} is changed into @qcode{"\r\n"}, and @qcode{"mac"} is changed
+## into @qcode{"\r"}.  Other values for this option are kept as is.
 ##
-## @item "roffset"
+## @item @qcode{"roffset"}
 ## See @var{r} above.
 ##
-## @item "coffset"
+## @item @qcode{"coffset"}
 ## See @var{c} above.
 ##
-## @item "precision"
+## @item @qcode{"precision"}
 ## The precision to use when writing the file.  It can either be a
 ## format string (as used by fprintf) or a number of significant digits.
 ## @end table

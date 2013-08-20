@@ -25,12 +25,12 @@
 ## (@var{x} != @var{y})} and @var{p} = 1/2.
 ##
 ## With the optional argument @code{alt}, the alternative of interest
-## can be selected.  If @var{alt} is @code{"!="} or @code{"<>"}, the
+## can be selected.  If @var{alt} is @qcode{"!="} or @qcode{"<>"}, the
 ## null hypothesis is tested against the two-sided alternative PROB
-## (@var{x} < @var{y}) != 1/2.  If @var{alt} is @code{">"}, the
+## (@var{x} < @var{y}) != 1/2.  If @var{alt} is @qcode{">"}, the
 ## one-sided alternative PROB (@var{x} > @var{y}) > 1/2 ("x is
 ## stochastically greater than y") is considered.  Similarly for
-## @code{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) < 1/2
+## @qcode{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) < 1/2
 ## ("x is stochastically less than y") is considered.  The default is
 ## the two-sided case.
 ##

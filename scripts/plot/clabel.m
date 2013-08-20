@@ -35,19 +35,19 @@
 ## this plot rather than the one in the current axes returned by @code{gca}.
 ##
 ## By default, all contours are labeled.  However, the contours to label can be
-## specified by the vector @var{v}.  If the "manual" argument is given then
-## the contours to label can be selected with the mouse.
+## specified by the vector @var{v}.  If the @qcode{"manual"} argument is
+## given then the contours to label can be selected with the mouse.
 ##
 ## Additional property/value pairs that are valid properties of text objects
 ## can be given and are passed to the underlying text objects.  Moreover,
-## the contour group property "LabelSpacing" is available which determines
-## the spacing between labels on a contour to be specified.  The default is
-## 144 points, or 2 inches.
+## the contour group property @qcode{"LabelSpacing"} is available which
+## determines the spacing between labels on a contour to be specified.  The
+## default is 144 points, or 2 inches.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to
-## the text objects representing each label.  
-## The "userdata" property of the text objects contains the numerical value of
-## the contour label.
+## the text objects representing each label.
+## The @qcode{"userdata"} property of the text objects contains the numerical
+## value of the contour label.
 ##
 ## An example of the use of @code{clabel} is
 ##

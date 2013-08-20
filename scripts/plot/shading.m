@@ -24,13 +24,13 @@
 ## Valid arguments for @var{type} are
 ##
 ## @table @asis
-## @item "flat"
+## @item @qcode{"flat"}
 ## Single colored patches with invisible edges.
 ##
-## @item "faceted"
+## @item @qcode{"faceted"}
 ## Single colored patches with visible edges.
 ##
-## @item "interp"
+## @item @qcode{"interp"}
 ## Color between patch vertices are interpolated and the patch edges are
 ## invisible.
 ## @end table

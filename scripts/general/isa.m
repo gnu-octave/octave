@@ -23,13 +23,14 @@
 ## @var{classname} may also be one of the following class categories: 
 ##
 ## @table @asis
-## @item "float"
-## Floating point value comprising classes "double" and "single".
+## @item @qcode{"float"}
+## Floating point value comprising classes @qcode{"double"} and
+## @qcode{"single"}.
 ##
-## @item "integer"
+## @item @qcode{"integer"}
 ## Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.
 ##
-## @item "numeric"
+## @item @qcode{"numeric"}
 ## Numeric value comprising either a floating point or integer value.
 ## @end table
 ## @seealso{class, typeinfo}

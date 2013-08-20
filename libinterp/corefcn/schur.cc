@@ -107,7 +107,8 @@ $2 \\times 2$\n\
 blocks, when appropriate) are the eigenvalues of @var{A} and @var{S}.\n\
 \n\
 The default for real matrices is a real Schur@tie{}decomposition.\n\
-A complex decomposition may be forced by passing the flag \"complex\".\n\
+A complex decomposition may be forced by passing the flag\n\
+@qcode{\"complex\"}.\n\
 \n\
 The eigenvalues are optionally ordered along the diagonal according to\n\
 the value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all\n\

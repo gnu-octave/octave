@@ -35,45 +35,45 @@
 ## The second argument @var{prop} must be one of
 ##
 ## @table @asis
-## @item "alpha"
+## @item @qcode{"alpha"}
 ## True for characters that are alphabetic (letters).
 ##
-## @item  "alnum"
-## @itemx "alphanum"
+## @item  @qcode{"alnum"}
+## @itemx @qcode{"alphanum"}
 ## True for characters that are alphabetic or digits.
 ##
-## @item "lower"
+## @item @qcode{"lower"}
 ## True for lowercase letters.
 ##
-## @item "upper"
+## @item @qcode{"upper"}
 ## True for uppercase letters.
 ##
-## @item "digit"
+## @item @qcode{"digit"}
 ## True for decimal digits (0-9).
 ##
-## @item "xdigit"
+## @item @qcode{"xdigit"}
 ## True for hexadecimal digits (@nospell{a-fA-F0-9}).
 ##
-## @item  "space"
-## @itemx "wspace"
+## @item  @qcode{"space"}
+## @itemx @qcode{"wspace"}
 ## True for whitespace characters (space, formfeed, newline, carriage
 ## return, tab, vertical tab).
 ##
-## @item "punct"
+## @item @qcode{"punct"}
 ## True for punctuation characters (printing characters except space
 ## or letter or digit).
 ##
-## @item "cntrl"
+## @item @qcode{"cntrl"}
 ## True for control characters.
 ##
-## @item  "graph"
-## @itemx "graphic"
+## @item  @qcode{"graph"}
+## @itemx @qcode{"graphic"}
 ## True for printing characters except space.
 ##
-## @item "print"
+## @item @qcode{"print"}
 ## True for printing characters including space.
 ##
-## @item "ascii"
+## @item @qcode{"ascii"}
 ## True for characters that are in the range of ASCII encoding.
 ##
 ## @end table

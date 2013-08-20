@@ -29,7 +29,7 @@
 ## If the optional argument @var{color} is present then the background color
 ## is set to @var{color} rather than inverted.  @var{color} may be a string
 ## representing one of the eight known colors or an RGB triplet.  The special
-## string argument "none" restores the plot to the default colors.
+## string argument @qcode{"none"} restores the plot to the default colors.
 ##
 ## If the first argument @var{hfig} is a figure handle, then operate on
 ## this figure rather than the current figure returned by @code{gcf}.  The

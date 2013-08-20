@@ -25,7 +25,7 @@
 ## Display a scaled version of the matrix @var{img} as a color image.  The
 ## colormap is scaled so that the entries of the matrix occupy the entire
 ## colormap.  If @code{@var{climits} = [@var{lo}, @var{hi}]} is given, then that
-## range is set to the "clim" of the current axes.
+## range is set to the @qcode{"clim"} of the current axes.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}, either as pairs giving the minimum and maximum

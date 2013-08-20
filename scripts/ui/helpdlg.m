@@ -24,7 +24,7 @@
 ## The message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
-## set the dialog caption.  The default title is "Help Dialog".
+## set the dialog caption.  The default title is @qcode{"Help Dialog"}.
 ##
 ## The return value is always 1.
 ## @seealso{errordlg, inputdlg, listdlg, msgbox, questdlg, warndlg}

@@ -29,11 +29,11 @@
 ## Each element of the 3-dimensional array @var{v} represents a scalar value at
 ## a location given by the parameters @var{x}, @var{y}, and @var{z}.  The
 ## parameters @var{x}, @var{x}, and @var{z} are either 3-dimensional arrays of
-## the same size as the array @var{v} in the "meshgrid" format or vectors.  The
-## parameters @var{xi}, etc. respect a similar format to @var{x}, etc., and
-## they represent the points at which the array @var{vi} is interpolated using
-## interp3.  The vectors @var{sx}, @var{sy}, and @var{sz} contain points of
-## orthogonal slices of the respective axes.
+## the same size as the array @var{v} in the @qcode{"meshgrid"} format or
+## vectors.  The parameters @var{xi}, etc. respect a similar format to
+## @var{x}, etc., and they represent the points at which the array @var{vi}
+## is interpolated using interp3.  The vectors @var{sx}, @var{sy}, and
+## @var{sz} contain points of orthogonal slices of the respective axes.
 ##
 ## If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be
 ## @code{x = 1:size (@var{v}, 2)}, @code{y = 1:size (@var{v}, 1)} and
@@ -42,21 +42,21 @@
 ## @var{method} is one of:
 ##
 ## @table @asis
-## @item "nearest"
+## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item "linear"
+## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors.
 ##
-## @item "cubic"
+## @item @qcode{"cubic"}
 ## Cubic interpolation from four nearest neighbors (not implemented yet).
 ##
-## @item "spline"
+## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table
 ##
-## The default method is "linear".
+## The default method is @qcode{"linear"}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.

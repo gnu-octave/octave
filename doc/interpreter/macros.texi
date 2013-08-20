@@ -16,12 +16,27 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is an new addition to Texinfo.
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
 
-@macro xbackslashchar
-\\
+@macro nospell {arg}
+\arg\
 @end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is 
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
 
 @c The following macro is used for the on-line help system, but we don't
 @c want lots of `See also: foo, bar, and baz' strings cluttering the
@@ -30,7 +45,7 @@
 @c
 @c Implementation Note:
 @c For TeX, @vskip produces a nice separation.
-@c For Texinfo '@sp 1' should work, but in practice produces ugly results
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
 @c for HTML.  We use a simple blank line to produce the correct behavior. 
 
 @macro seealso {args}
@@ -40,22 +55,14 @@
 @ifnottex
 
 @end ifnottex
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
 @ifnotinfo
 @noindent
 @strong{See also:} \args\.
 @end ifnotinfo
-@end macro
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
 @end macro
 
 @c The following macro works around a situation where the Info/plain text
@@ -71,3 +78,11 @@ See also: \args\.
 @code{\arg\}
 @end macro
 @end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+

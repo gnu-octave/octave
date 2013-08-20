@@ -45,7 +45,7 @@
 ## Valid options are:
 ##
 ## @table @asis
-## @item "c"
+## @item @qcode{"c"}
 ##   Central Moment.  The moment about the mean defined as
 ## @tex
 ## $$
@@ -62,7 +62,7 @@
 ##
 ## @end ifnottex
 ##
-## @item "a"
+## @item @qcode{"a"}
 ##   Absolute Moment.  The moment about zero ignoring sign defined as
 ## @tex
 ## $$
@@ -79,7 +79,7 @@
 ##
 ## @end ifnottex
 ##
-## @item "ac"
+## @item @qcode{"ac"}
 ##   Absolute Central Moment.  Defined as
 ## @tex
 ## $$

@@ -29,8 +29,8 @@
 ## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If
 ## @var{xi}, @var{yi} are vectors then they are made into a 2-D mesh.
 ##
-## The interpolation method can be @code{"nearest"}, @code{"cubic"} or
-## @code{"linear"}.  If method is omitted it defaults to @code{"linear"}.
+## The interpolation method can be @qcode{"nearest"}, @qcode{"cubic"} or
+## @qcode{"linear"}.  If method is omitted it defaults to @qcode{"linear"}.
 ## @seealso{griddata3, griddatan, delaunay}
 ## @end deftypefn
 

@@ -620,7 +620,7 @@ the function @code{bitmax}.
 This is the double precision version of the function @code{intmax},
 previously discussed.
 
-Octave also includes the basic bitwise 'and', 'or' and 'exclusive or'
+Octave also includes the basic bitwise 'and', 'or', and 'exclusive or'
 operators.
 
 @DOCSTRING(bitand)

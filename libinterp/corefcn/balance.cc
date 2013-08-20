@@ -75,10 +75,10 @@ in @var{DD} for the algebraic eigenvalue problem.\n\
 The eigenvalue balancing option @var{opt} may be one of:\n\
 \n\
 @table @asis\n\
-@item \"noperm\", \"S\"\n\
+@item @qcode{\"noperm\"}, @qcode{\"S\"}\n\
 Scale only; do not permute.\n\
 \n\
-@item \"noscal\", \"P\"\n\
+@item @qcode{\"noscal\"}, @qcode{\"P\"}\n\
 Permute only; do not scale.\n\
 @end table\n\
 \n\

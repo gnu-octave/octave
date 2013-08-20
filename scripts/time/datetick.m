@@ -24,10 +24,10 @@
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keepticks")
 ## @deftypefnx {Function File} {} datetick (@var{hax}, @dots{})
 ## Add date formatted tick labels to an axis.  The axis to apply the
-## ticks to is determined by @var{axis} which can take the values "x",
-## "y", or "z".  The default value is "x".  The formatting of the labels is
-## determined by the variable @var{form}, which can either be a string or
-## positive integer that @code{datestr} accepts.
+## ticks to is determined by @var{axis} which can take the values @qcode{"x"},
+## @qcode{"y"}, or @qcode{"z"}.  The default value is @qcode{"x"}.  The
+## formatting of the labels is determined by the variable @var{form}, which
+## can either be a string or positive integer that @code{datestr} accepts.
 ## @seealso{datenum, datestr}
 ## @end deftypefn
 

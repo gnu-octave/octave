@@ -58,33 +58,33 @@
 ##
 ## The optional parameter @var{orient} determines if the key elements
 ## are placed vertically or horizontally.  The allowed values are
-## "vertical" (default) or "horizontal".
+## @qcode{"vertical"} (default) or @qcode{"horizontal"}.
 ##
 ## The following customizations are available using @var{option}:
 ##
 ## @table @asis
-## @item "show"
+## @item @qcode{"show"}
 ##   Show legend on the plot
 ##
-## @item "hide"
+## @item @qcode{"hide"}
 ##   Hide legend on the plot
 ##
-## @item "toggle"
-##   Toggles between "hide" and "show"
+## @item @qcode{"toggle"}
+##   Toggles between @qcode{"hide"} and @qcode{"show"}
 ##
-## @item "boxon"
+## @item @qcode{"boxon"}
 ##   Show a box around legend
 ##
-## @item "boxoff"
+## @item @qcode{"boxoff"}
 ##   Hide the box around legend
 ##
-## @item "left"
+## @item @qcode{"left"}
 ##   Place label text to the left of the keys
 ##
-## @item "right"
+## @item @qcode{"right"}
 ##   Place label text to the right of the keys
 ##
-## @item "off"
+## @item @qcode{"off"}
 ##   Delete the legend object
 ## @end table
 ##
@@ -107,11 +107,12 @@
 ## The legend label text is either provided in the call to @code{legend} or
 ## is taken from the DisplayName property of graphics objects.  If no
 ## labels or DisplayNames are available, then the label text is simply
-## "data1", "data2", @dots{}, @nospell{"dataN"}.
+## @qcode{"data1"}, @qcode{"data2"}, @dots{}, @nospell{@qcode{"dataN"}}.
 ##
 ## Implementation Note: A legend is implemented as an additional axes object
-## of the current figure with the "tag" set to "legend".  Properties of the
-## legend object may be manipulated directly by using @code{set}.
+## of the current figure with the @qcode{"tag"} set to @qcode{"legend"}. 
+## Properties of the legend object may be manipulated directly by using
+## @code{set}.
 ## @end deftypefn
 
 function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)

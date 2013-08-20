@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{k}, @var{df}] =} kruskal_wallis_test (@var{x1}, @dots{})
-## Perform a Kruskal-Wallis one-factor "analysis of variance".
+## Perform a Kruskal-Wallis one-factor analysis of variance.
 ##
 ## Suppose a variable is observed for @var{k} > 1 different groups, and
 ## let @var{x1}, @dots{}, @var{xk} be the corresponding data vectors.

@@ -25,8 +25,9 @@
 ## @var{fun} should be a function handle or name.  @var{a}, @var{b} specify a
 ## starting interval.  @var{options} is a structure specifying additional
 ## options.  Currently, @code{fminbnd} recognizes these options:
-## "FunValCheck", "OutputFcn", "TolX", "MaxIter", "MaxFunEvals".  For a
-## description of these options, see @ref{XREFoptimset,,optimset}.
+## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
+## @qcode{"MaxIter"}, @qcode{"MaxFunEvals"}.  For a description of these
+## options, see @ref{XREFoptimset,,optimset}.
 ##
 ## On exit, the function returns @var{x}, the approximate minimum point
 ## and @var{fval}, the function value thereof.

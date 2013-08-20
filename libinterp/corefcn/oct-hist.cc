@@ -830,9 +830,9 @@ value is\n\
 \"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end example\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{strftime, history_file, history_size, history_save}\n\
 @end deftypefn")
 {
@@ -847,9 +847,9 @@ DEFUN (history_save, args, nargout,
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
 @end deftypefn")
 {

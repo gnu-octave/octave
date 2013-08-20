@@ -30,7 +30,7 @@
 ## The return value @var{h} is a list of handles to the found graphic objects.
 ##
 ## @code{findall} performs the same search as @code{findobj}, but it
-## includes hidden objects ("HandleVisibility" = "off").  For full
+## includes hidden objects (HandleVisibility = @qcode{"off"}).  For full
 ## documentation, @pxref{XREFfindobj,,findobj}.
 ## @seealso{findobj, allchild, get, set}
 ## @end deftypefn

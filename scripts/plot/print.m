@@ -57,7 +57,7 @@
 ##
 ## @item -G@var{ghostscript_command}
 ##   Specify the command for calling Ghostscript.  For Unix and Windows
-## the defaults are 'gs' and 'gswin32c', respectively.
+## the defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
 ##
 ## @item  -color
 ## @itemx -mono
@@ -71,9 +71,9 @@
 ## @itemx -landscape
 ##   Specify the orientation of the plot for printed output.  For
 ## non-printed output the aspect ratio of the output corresponds to
-## the plot area defined by the "paperposition" property in the
+## the plot area defined by the @qcode{"paperposition"} property in the
 ## orientation specified.  This option is equivalent to changing
-## the figure's "paperorientation" property.
+## the figure's @qcode{"paperorientation"} property.
 ##
 ## @item  -TextAlphaBits=@var{n}
 ## @itemx -GraphicsAlphaBits=@var{n}
@@ -204,9 +204,9 @@
 ## and devices are available.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined
-## by the figure's "papersize" property.  When the output
+## by the figure's @qcode{"papersize"} property.  When the output
 ## is sent to a file the size is determined by the plot box defined by
-## the figure's "paperposition" property.
+## the figure's @qcode{"paperposition"} property.
 ##
 ## @item -append
 ##   Append PostScript or PDF output to a pre-existing file of the same type.
@@ -214,7 +214,7 @@
 ## @item -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and
 ## SVG the default is the screen resolution; for other formats it is 150 dpi.
-## To specify screen resolution, use "-r0".
+## To specify screen resolution, use @qcode{"-r0"}.
 ##
 ## @item  -loose
 ## @itemx -tight
@@ -241,9 +241,9 @@
 ##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.  For
 ## PS, EPS, PDF, and other vector formats the plot size is in points.
 ## This option is equivalent to changing the size of the plot box
-## associated with the "paperposition" property.  When using the command form
-## of the print function you must quote the @var{xsize},@var{ysize}
-## option.  For example, by writing @w{"-S640,480"}.
+## associated with the @qcode{"paperposition"} property.  When using the
+## command form of the print function you must quote the
+## @var{xsize},@var{ysize} option.  For example, by writing @w{"-S640,480"}.
 ##
 ## @item  -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}

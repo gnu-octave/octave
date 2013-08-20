@@ -42,7 +42,7 @@
 ## in the string @var{s}.  Use @code{str2double} for a safer and faster
 ## conversion.
 ##
-## For cell array of strings use @code{str2double}.  
+## For cell array of strings use @code{str2double}.
 ## @seealso{str2double, eval}
 ## @end deftypefn
 

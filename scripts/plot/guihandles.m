@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{hdata} =} guihandles (@var{handle})
 ## @deftypefnx {Function File} {@var{hdata} =} guihandles
-##   
+##
 ## @seealso{guidata, getappdata, setappdata}
 ## @end deftypefn
 

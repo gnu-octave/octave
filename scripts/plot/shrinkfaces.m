@@ -25,17 +25,17 @@
 ##
 ## Reduce the faces area for a given patch, structure or explicit faces
 ## and points matrices by a scale factor @var{sf}.  The structure
-## @var{fv} must contain the fields 'faces' and 'vertices'.  If the
-## factor @var{sf} is omitted then a default of 0.3 is used.
+## @var{fv} must contain the fields @qcode{"faces"} and @qcode{"vertices"}. 
+## If the factor @var{sf} is omitted then a default of 0.3 is used.
 ##
 ## Given a patch handle as the first input argument and no output
 ## parameters, perform the shrinking of the patch faces in place and
 ## redraw the patch.
 ##
 ## If called with one output argument, return a structure with fields
-## 'faces', 'vertices', and 'facevertexcdata' containing the data after
-## shrinking which can then directly be used as an input argument for the
-## @command{patch} function.
+## @qcode{"faces"}, @qcode{"vertices"}, and @qcode{"facevertexcdata"}
+## containing the data after shrinking which can then directly be used as an
+## input argument for the @code{patch} function.
 ##
 ## Performing the shrinking on faces which are not convex can lead to
 ## undesired results.

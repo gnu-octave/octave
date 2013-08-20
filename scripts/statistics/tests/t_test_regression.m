@@ -27,9 +27,9 @@
 ## If @var{r} is omitted, a value of 0 is assumed.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @nospell{@code{@var{rr} * @var{b} != @var{r}}}.  If @var{alt} is @code{">"},
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @nospell{@code{@var{rr} * @var{b} != @var{r}}}.  If @var{alt} is @qcode{">"},
 ## the one-sided alternative
 ## @nospell{@code{@var{rr} * @var{b} > @var{r}}} is used.  Similarly for
 ## @var{"<"}, the one-sided alternative

@@ -18,6 +18,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/copyfile.m \
   miscellaneous/debug.m \
   miscellaneous/delete.m \
+  miscellaneous/desktop.m \
   miscellaneous/dir.m \
   miscellaneous/dos.m \
   miscellaneous/dump_prefs.m \

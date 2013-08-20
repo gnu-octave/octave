@@ -64,6 +64,7 @@ BUILT_SOURCES = \
   builtins.cc
 
 BUILT_DISTFILES = \
+  corefcn/oct-tex-parser.h \
   parse-tree/oct-gperf.h \
   parse-tree/oct-parse.h \
   parse-tree/oct-parse.yy

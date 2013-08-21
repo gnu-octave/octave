@@ -114,8 +114,8 @@ function h = subplot (varargin)
     
   if (! initial_args_decoded && nargin > 0)
     arg = varargin{1};
-    if (nargin == 1 && ishandle (arg))
-      ## Axes handle?
+    if (nargin == 1 && isaxes (arg))
+      ## Axes handle
       axes (arg);
       cf = get (0, "currentfigure");
       set (cf, "nextplot", "add");

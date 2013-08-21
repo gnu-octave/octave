@@ -420,7 +420,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
             if (! auto_domain_done)
               domain = find_valid_domain (X, Y, Z);
             endif
-          end
+          endif
         endif
       endif
     endif

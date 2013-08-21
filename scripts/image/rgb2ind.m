@@ -145,7 +145,7 @@ function [x, map] = rgb2ind (varargin)
     ## before processing it with Graphicsmagick
     if (numel (sz) > 3)
      rgb = reshape (rgb, [prod(sz(1:end-2)), sz(end-1), 3]);
-    end
+    endif
 
     ## Prepare the Graphicsmagick dithering option
     if (strcmp (dither_option, "nodither"))

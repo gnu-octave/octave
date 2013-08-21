@@ -82,7 +82,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{4} = varargin{1};  # default
       if (! any (strcmp (options{4}, options(1:3))))
         error (defbtn_error_msg);
-      end
+      endif
 
     case 3
       ## two buttons and default button string
@@ -92,7 +92,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{4} = varargin{3};  # default
       if (! any (strcmp (options{4}, options([1 3]))))
         error (defbtn_error_msg);
-      end
+      endif
 
     case 4
       ## three buttons and default button string
@@ -102,7 +102,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{4} = varargin{4};  # default
       if (! any (strcmp (options{4}, options(1:3))))
         error (defbtn_error_msg);
-      end
+      endif
 
     otherwise
       print_usage ();

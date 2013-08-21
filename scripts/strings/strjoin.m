@@ -64,7 +64,7 @@ function rval = strjoin (cstr, delimiter)
   if (ischar (delimiter))
     delimiter = do_string_escapes (delimiter);
     delimiter = {delimiter};
-  end
+  endif
  
   num = numel (cstr); 
   if (numel (delimiter) == 1 && num > 1)

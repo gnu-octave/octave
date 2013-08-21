@@ -67,7 +67,7 @@ function assert (cond, varargin)
 
   if (call_depth == 0)
     errmsg = "";
-  end
+  endif
 
   in = deblank (argn(1,:));
   for i = 2:rows (argn)
@@ -367,7 +367,7 @@ function assert (cond, varargin)
         errmsg = [errmsg "\n"];
       endif
       errmsg = [errmsg, pprint(in, err)];
-    end
+    endif
 
   endif
 

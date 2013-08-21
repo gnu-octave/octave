@@ -1949,7 +1949,7 @@ function Q = orthog (n, k = 1)
       Q(1,2:n) = ones (1, n-1);
       for i = 2:n
         Q(i,i) = -(i-1);
-      end
+      endfor
       Q = diag (sqrt ([n 1:n-1] .* [1:n])) \ Q;
 
     case (5)
@@ -2217,8 +2217,8 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
   if (p == 1)
     A = randn (m, n);
     A = A / norm (A);
-    return
-  end
+    return;
+  endif
 
   ##  Set up vector sigma of singular values.
   switch (abs (mode))
@@ -2244,7 +2244,7 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
   ##  Convert to diagonal matrix of singular values.
   if (mode < 0)
     sigma = sigma (p:-1:1);
-  end
+  endif
   sigma = diag (sigma);
 
   if (posdef)
@@ -2258,7 +2258,7 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
   if (m != n)
     ## Expand to m-by-n diagonal matrix
     sigma(m, n) = 0;
-  end
+  endif
 
   if (kl == 0 && ku == 0)
     ## Diagonal matrix requested - nothing more to do.

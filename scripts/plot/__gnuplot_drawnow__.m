@@ -302,7 +302,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
                               "pslatex", "pstext", "svg", "tgif", "x11"})))
         term_str = [term_str " dashed"];
       endif
-    end
+    endif
     if (any (strcmp (term, {"aqua", "wxt"})))
       term_str = [term_str, " ", "dashlength 1"];
     elseif (any (strcmp (term, {"epslatex", "postscript", "pslatex"})))

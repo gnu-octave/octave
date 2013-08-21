@@ -228,7 +228,11 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     xhi = xdata + dx;
   else
     n = xdata > 0;
-    rx = exp (0.01 * (max (log (xdata(n))) - min (log (xdata(n)))));
+    if (! any (n))
+      n = xdata < 0;
+    endif
+    logdata = log (abs (xdata(n)));
+    rx = exp (0.01 * (max (logdata) - min (logdata)));
     xlo = xdata/rx;
     xhi = xdata*rx;
   endif
@@ -238,7 +242,11 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     yhi = ydata + dy;
   else
     n = ydata > 0;
-    ry = exp (0.01 * (max (log (ydata(n))) - min (log (ydata(n)))));
+    if (! any (n))
+      n = ydata < 0;
+    endif
+    logdata = log (abs (ydata(n)));
+    ry = exp (0.01 * (max (logdata) - min (logdata)));
     ylo = ydata/ry;
     yhi = ydata*ry;
   endif

@@ -72,19 +72,15 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
     print_usage ();
   endif
 
-  oldfig = ifelse (isempty (bigax2), [], get (0, "currentfigure"));
+  oldfig = [];
+  if (! isempty (bigax2))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
     bigax2 = newplot (bigax2);
 
     [h2, ax2, p2, pax2] = __plotmatrix__ (bigax2, varargin{:});
 
-    if (nargout > 0)
-      h = h2;
-      ax = ax2;
-      bigax = bigax2;
-      p = p2;
-      pax = pax2;
-    endif
     axes (bigax2);
     ctext = text (0, 0, "", "visible", "off",
                   "handlevisibility", "off", "xliminclude", "off",
@@ -97,6 +93,14 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
       set (0, "currentfigure", oldfig);
     endif
   end_unwind_protect
+
+  if (nargout > 0)
+    h = h2;
+    ax = ax2;
+    bigax = bigax2;
+    p = p2;
+    pax = pax2;
+  endif
 
 endfunction
 

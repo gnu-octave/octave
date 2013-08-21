@@ -115,7 +115,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
 
   if (nargout == 0)
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
    unwind_protect

@@ -69,7 +69,7 @@ function retval = quiver (varargin)
     print_usage ();
   else
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
     unwind_protect

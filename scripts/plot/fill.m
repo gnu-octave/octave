@@ -73,7 +73,7 @@ function h = fill (varargin)
   iargs = __find_patches__ (varargin{:});
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

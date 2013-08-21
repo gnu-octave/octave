@@ -38,7 +38,7 @@ function h = __stem__ (have_z, varargin)
       check_stem_arg (have_z, varargin{:});
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

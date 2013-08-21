@@ -77,7 +77,7 @@ function h = ribbon (varargin)
   endif
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

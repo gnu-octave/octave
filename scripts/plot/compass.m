@@ -100,7 +100,7 @@ function h = compass (varargin)
   [r, p] = cart2pol (x, y);
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

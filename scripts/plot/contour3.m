@@ -66,7 +66,7 @@ function [c, h] = contour3 (varargin)
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("contour3", varargin{:});
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

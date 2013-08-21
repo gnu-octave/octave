@@ -91,7 +91,7 @@ function [thout, rout] = rose (varargin)
 
   if (nargout < 2)
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
     unwind_protect

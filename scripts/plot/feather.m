@@ -99,7 +99,7 @@ function retval = feather (varargin)
        ytmp - u * arrowsize / 3];
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

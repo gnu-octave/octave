@@ -51,7 +51,7 @@ function h = semilogyerr (varargin)
   [hax, varargin] = __plt_get_axis_arg__ ("semilogyerr", varargin{:});
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

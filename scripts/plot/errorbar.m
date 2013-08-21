@@ -131,7 +131,7 @@ function h = errorbar (varargin)
   [hax, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

@@ -36,7 +36,7 @@ function datetick (varargin)
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("datetick", varargin{:});
 
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   if (isempty (hax))

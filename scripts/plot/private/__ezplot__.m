@@ -428,7 +428,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
 
   ## Now, actually call the correct plot function with valid data and domain.
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect

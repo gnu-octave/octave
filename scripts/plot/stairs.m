@@ -75,7 +75,7 @@ function [xs, ys] = stairs (varargin)
       [h, xs, ys] = __stairs__ (false, varargin{:});
     else
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
       unwind_protect

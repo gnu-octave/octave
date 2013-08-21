@@ -72,7 +72,7 @@ function [xx, yy, zz] = sphere (varargin)
     zz = z;
   else
   oldfig = [];
-  if (isempty (hax))
+  if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
     unwind_protect

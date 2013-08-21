@@ -21,10 +21,12 @@
 ## @deftypefn  {Function File} {@var{cmap} =} colormap ()
 ## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{map})
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("default")
-## @deftypefnx {Function File} {@var{cmap} =} colormap ("list")
-## @deftypefnx {Function File} {@var{cmap} =} colormap ("register", "@var{name}")
-## @deftypefnx {Function File} {@var{cmap} =} colormap ("unregister", "@var{name}")
+## @deftypefnx {Function File} {@var{cmap} =} colormap ("@var{map_name}")
+## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{hax}, @dots{})
 ## @deftypefnx {Command} {} colormap @var{map_name}
+## @deftypefnx {Function File} {@var{cmaps} =} colormap ("list")
+## @deftypefnx {Function File} {} colormap ("register", "@var{name}")
+## @deftypefnx {Function File} {} colormap ("unregister", "@var{name}")
 ## Query or set the current colormap.
 ##
 ## With no input arguments, @code{colormap} returns the current color map.
@@ -37,13 +39,18 @@
 ## @code{colormap ("default")} restores the default colormap (the
 ## @code{jet} map with 64 entries).  The default colormap is returned.
 ##
-## @code{colormap ("list")} returns a cell array with all of the available
-## colormaps.  The options @qcode{"register"} and @qcode{"unregister"} will
-## add or remove the colormap @var{name} from this list.
+## The map may also be specified by a string, @qcode{"@var{map_name}"}, where
+## @var{map_name} is the name of a function that returns a colormap.
+##
+## If the first argument @var{hax} is an axes handle, then the colormap for
+## the parent figure of @var{hax} is queried or set.
 ##
 ## For convenience, it is also possible to use this function with the
-## command form, where @var{map_name} must be the name of a function
-## that returns a colormap.
+## command form, @code{colormap @var{map_name}}.
+##
+## @code{colormap ("list")} returns a cell array with all of the available
+## colormaps.  The options @qcode{"register"} and @qcode{"unregister"}
+## add or remove the colormap @var{name} from this list.
 ##
 ## @seealso{jet}
 ## @end deftypefn
@@ -52,16 +59,23 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function cmap = colormap (map, name)
+function cmap = colormap (varargin)
+  persistent map_list = cell ();
+
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("colormap", varargin{:});
 
   if (nargin > 2)
     print_usage ();
   endif
 
-  persistent map_list = cell ();
+  if (! isempty (hax))
+    cf = ancestor (hax, "figure");
+  else
+    cf = get (0, "currentfigure");
+  endif
 
   if (nargin == 1)
-
+    map = varargin{1};
     if (ischar (map))
       if (strcmp (map, "default"))
         map = jet (64);
@@ -81,25 +95,33 @@ function cmap = colormap (map, name)
       if (any (map(:) < 0) || any (map(:) > 1))
         error ("colormap: all MAP values must be in the range [0,1]");
       endif
+      if (isempty (cf))
+        cf = gcf ();
+      endif
       ## Set the new color map
-      set (gcf (), "colormap", map);
+      set (cf, "colormap", map);
     endif
 
   elseif (nargin == 2)
-    if (! ischar (map) || ! any (strcmp (map, {"register", "unregister"})))
+    opt = varargin{1};
+    name = varargin{2};
+    if (! ischar (opt) || ! any (strcmp (opt, {"register", "unregister"})))
       print_usage ();
     elseif (! ischar (name))
       error ("colormap: to register/unregister a colormap, NAME must be a string");
-    elseif (strcmp (map, "register"))
+    elseif (strcmp (opt, "register"))
       map_list{end+1} = name;
-    elseif (strcmp (map, "unregister"))
+    elseif (strcmp (opt, "unregister"))
       map_list(strcmp (name, map_list)) = [];
     endif
   endif
 
   ## Return current color map.
   if (nargout > 0 || (nargout == 0 && nargin == 0))
-    cmap = get (gcf (), "colormap");
+    if (isempty (cf))
+      cf = gcf ();
+    endif
+    cmap = get (cf, "colormap");
   endif
 
 endfunction
@@ -119,7 +141,7 @@ endfunction
 %! title "colormap (colorcube (64))"
 
 %!test
-%! figure ("visible", "off");
+%! hf = figure ("visible", "off");
 %! cmaptst = [0 1 0; 1 0 1; 1 1 1];
 %! cmap = colormap (cmaptst);
 %! assert (cmap, cmaptst);
@@ -131,7 +153,7 @@ endfunction
 %! assert (colormap (), jet (64));
 %! colormap ("ocean");
 %! assert (colormap, ocean (64));
-%! close ();  # done with temp. figure
+%! close (hf);  # done with temp. figure
 
 %!test
 %! cmaplst = colormap ("list");

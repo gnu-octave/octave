@@ -259,7 +259,7 @@ make_statement (T *arg)
 %type <tree_switch_command_type> switch_command
 %type <tree_switch_case_type> switch_case default_case
 %type <tree_switch_case_list_type> case_list1 case_list
-%type <tree_decl_elt_type> decl2
+%type <tree_decl_elt_type> decl2 param_list_elt
 %type <tree_decl_init_list_type> decl1
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement function_end classdef_end
@@ -798,10 +798,6 @@ decl2           : identifier
                     lexer.looking_at_initializer_expression = false;
                     $$ = new tree_decl_elt ($1, $4);
                   }
-                | magic_tilde
-                  {
-                    $$ = new tree_decl_elt ($1);
-                  }
                 ;
 
 // ====================
@@ -1070,13 +1066,19 @@ param_list1     : // empty
                   }
                 ;
 
-param_list2     : decl2
+param_list2     : param_list_elt
                   { $$ = new tree_parameter_list ($1); }
-                | param_list2 ',' decl2
+                | param_list2 ',' param_list_elt
                   {
                     $1->append ($3);
                     $$ = $1;
                   }
+                ;
+
+param_list_elt  : decl2
+                  { $$ = $1; }
+                | magic_tilde
+                  { $$ = new tree_decl_elt ($1); }
                 ;
 
 // ===================================

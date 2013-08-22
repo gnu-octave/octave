@@ -549,21 +549,22 @@ endfunction
 ## structures
 %!error <Expected struct, but observed double> assert (1, struct ("a", 1))
 %!error <Structure sizes don't match>
-%!  x(1,2,3).a = 1;
-%!  y(1,2).a = 1;
-%!  assert (x,y);
+%! x(1,2,3).a = 1;
+%! y(1,2).a = 1;
+%! assert (x,y);
 %!error <Structure sizes don't match>
-%!  x(1,2,3).a = 1;
-%!  y(3,2,2).a = 1;
-%!  assert (x,y);
+%! x(1,2,3).a = 1;
+%! y(3,2,2).a = 1;
+%! assert (x,y);
 %!error <Structure sizes don't match>
-%!  x.a = 1;  x.b = 1;
-%!  y.a = 1;
-%!  assert (x,y);
+%! x.a = 1;
+%! x.b = 1;
+%! y.a = 1;
+%! assert (x,y);
 %!error <'b' is not an expected field>
-%!  x.b = 1;
-%!  y.a = 1;
-%!  assert (x,y);
+%! x.b = 1;
+%! y.a = 1;
+%! assert (x,y);
 
 %!test
 %! x.a = 1; x.b=[2, 2];

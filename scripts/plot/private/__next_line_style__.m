@@ -45,7 +45,7 @@ function [linestyle, marker] = __next_line_style__ (reset)
     else
       ## Executed when "hold all" is active
       nChildren = length (get (ca, "Children"));
-      nColors = length (get (ca, "ColorOrder"));
+      nColors = rows (get (ca, "ColorOrder"));
       style_index = mod (floor (nChildren/nColors), nStyles) + 1;
     endif
     options = __pltopt__ ("__next_line_style__",

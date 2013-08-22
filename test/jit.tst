@@ -54,6 +54,15 @@
 %! endfor
 %! assert (i, 100);
 
+## Also test parfor keyword
+%!testif HAVE_LLVM
+%! parfor i=1:1e6
+%!   if (i == 100)
+%!     break;
+%!   endif
+%! endparfor
+%! assert (i, 100);
+
 %!testif HAVE_LLVM
 %! inc = 1e-5;
 %! result = 0;

@@ -108,3 +108,18 @@
 %!   'foo';
 %! endfor
 %! assert (i, 5);
+
+%!test
+%! parfor i = 1
+%!   __printf_assert__ ("%d", i);
+%! end  # "end" is part of test, check not using "endparfor"
+%! __printf_assert__ ("\n");
+%! assert (__prog_output_assert__ ("1"));
+
+%!test
+%! parfor i = 1:4
+%!   __printf_assert__ ("%d", i);
+%! endparfor
+%! __printf_assert__ ("\n");
+%! assert (__prog_output_assert__ ("1234"));
+

@@ -287,7 +287,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
                               xldata, xudata, "yerr", xscale, yscale);
     xdata = [x1; x2];
     ydata = [y1; y2];
-    return
+    return;
   else
     error ("errorbar: valid error bar types are xerr, yerr, boxxy, and xyerr");
   endif

@@ -40,7 +40,7 @@ function emp = dirempty (nm, ign)
       endfor
       if (! found)
         emp = false;
-        return
+        return;
       endif
     endfor
     emp = true;

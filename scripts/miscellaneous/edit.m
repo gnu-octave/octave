@@ -208,7 +208,7 @@ function ret = edit (varargin)
         else
           error ('edit: expected "edit MODE sync|async"');
         endif
-        return
+        return;
       case "EDITINPLACE"
         if (ischar (stateval))
           if (strcmpi (stateval, "true"))
@@ -220,14 +220,14 @@ function ret = edit (varargin)
           endif
         endif
         FUNCTION.EDITINPLACE = stateval;
-        return
+        return;
       case "GET"
         if (isfield (FUNCTION, toupper (stateval)))
           ret = FUNCTION.(toupper (stateval));
         else
           ret = FUNCTION;
         endif
-        return
+        return;
       otherwise
         ## If none of the states match, assume both inputs are
         ## actually both file names to be opened

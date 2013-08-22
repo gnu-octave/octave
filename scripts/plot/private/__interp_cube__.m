@@ -47,7 +47,7 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
   ##endif
   if (isempty (v))
     Vxyz = idx = frac = [];
-    return
+    return;
   endif
 
   switch (req)

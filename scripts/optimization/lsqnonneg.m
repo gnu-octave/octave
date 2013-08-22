@@ -79,7 +79,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
   if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
     x = optimset ("MaxIter", 1e5);
-    return
+    return;
   endif
 
   if (! (nargin >= 2 && nargin <= 4 && ismatrix (c) && ismatrix (d) && isstruct (options)))

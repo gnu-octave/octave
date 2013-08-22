@@ -83,10 +83,10 @@ function r = expm (A)
 
   if (isscalar (A))
     r = exp (A);
-    return
+    return;
   elseif (strfind (typeinfo (A), "diagonal matrix"))
     r = diag (exp (diag (A)));
-    return
+    return;
   endif
 
   n = rows (A);

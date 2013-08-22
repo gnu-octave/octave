@@ -113,8 +113,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
   if (nlines < 1)
     printf ("textscan: N = 0, no data read\n");
-    return
-  endif
+    return;  endif
 
   if (! any (strcmpi (args, "emptyvalue")))
     ## Matlab returns NaNs for missing values

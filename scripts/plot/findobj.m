@@ -180,7 +180,7 @@ function h = findobj (varargin)
         ## This is sloppy ... but works like Matlab.
         if (strcmpi (args{na}, "-not"))
           h = [];
-          return
+          return;
         endif
         na = na + 1;
       endif

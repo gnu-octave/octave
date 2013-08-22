@@ -73,7 +73,7 @@ function varargout = textread (filename, format = "%f", varargin)
   if (nlines < 1)
     printf ("textread: N = 0, no data read\n");
     varargout = cell (1, nargout);
-    return
+    return;
   endif
 
   ## Read file

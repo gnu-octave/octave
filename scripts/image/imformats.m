@@ -175,7 +175,7 @@ function formats = default_formats ()
   ## there's no need to go and calculate it all over again if we are
   ## requested to reset back to factory.
   if (! isempty (formats))
-    return
+    return;
   endif
 
   ##      Building the formats info

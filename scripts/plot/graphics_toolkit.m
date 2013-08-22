@@ -53,7 +53,7 @@ function retval = graphics_toolkit (name, hlist = [])
     if (all (isfigure (name)))
       hlist = name;
       retval = get (hlist, "__graphics_toolkit__");
-      return
+      return;
     elseif (! ischar (name))
       error ("graphics_toolkit: invalid graphics toolkit NAME");
     endif

@@ -2252,7 +2252,7 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
     Q = qmult (p);
     A = Q' * sigma * Q;
     A = (A + A') / 2;  # Ensure matrix is symmetric.
-    return
+    return;
   endif
 
   if (m != n)

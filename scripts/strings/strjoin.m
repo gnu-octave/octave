@@ -58,7 +58,7 @@ function rval = strjoin (cstr, delimiter)
 
   if (numel (cstr) == 1)
     rval = cstr{1};
-    return
+    return;
   endif
 
   if (ischar (delimiter))

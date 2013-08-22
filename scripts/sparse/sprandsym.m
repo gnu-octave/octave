@@ -121,7 +121,7 @@ function r = pick_rand_diag (n, k)
   ## Degenerate case
   if (k == 1)
     r = 1;
-    return
+    return;
   endif
 
   ## Compute the stuff described above

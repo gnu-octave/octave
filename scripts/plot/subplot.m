@@ -277,7 +277,7 @@ function pos = subplot_position (rows, cols, index, position_property)
     else
       pos = get (0, "defaultaxesouterposition");
     endif
-    return
+    return;
   endif
 
   if (strcmp (position_property, "outerposition")

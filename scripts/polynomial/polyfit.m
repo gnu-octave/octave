@@ -137,7 +137,7 @@ function [p, s, mu] = polyfit (x, y, n)
     try
       C = cholinv (r.'*r)(k, k);
     catch
-      C = NaN * ones (m+1, m+1);
+      C = NaN (m+1, m+1);
     end_try_catch
 
     if (n != m)

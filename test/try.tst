@@ -20,7 +20,7 @@
 %! try
 %! catch
 %!   error ("Shoudn't get here");
-%! end_try_catch
+%! end  # "end" is part of test, check not using "end_try_catch"
 
 %!test
 %! try

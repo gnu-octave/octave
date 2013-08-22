@@ -130,7 +130,7 @@
 %!     endif
 %!   endfor
 %! catch
-%! end
+%! end_try_catch
 %! assert (result == 500);
 
 %!function result = gen_test (n)

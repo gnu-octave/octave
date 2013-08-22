@@ -21,7 +21,7 @@
 %! while (eye (2))
 %!   i++;
 %!   __printf_assert__ ("%d\n", i);
-%! endwhile
+%! end  # "end" is part of test, check not using "endwhile"
 %! assert (__prog_output_assert__ (""));
 
 %!test

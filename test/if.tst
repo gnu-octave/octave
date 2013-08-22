@@ -21,7 +21,7 @@
 %! if (i == 0)
 %!   i++;
 %!   __printf_assert__ ("%d\n", i);
-%! endif
+%! end  # "end" is part of test, check not using "endif"
 %! assert (__prog_output_assert__ ("1"));
 
 %!test
@@ -29,7 +29,7 @@
 %!   __printf_assert__ ("fail\n");
 %! else
 %!   __printf_assert__ ("pass\n");
-%! end
+%! endif
 %! assert (__prog_output_assert__ ("pass"));
 
 %!test
@@ -50,7 +50,7 @@
 %!   __printf_assert__ ("fail\n");
 %! elseif (y)
 %!   __printf_assert__ ("pass\n");
-%! end
+%! endif
 %! assert (__prog_output_assert__ ("pass"));
 
 %!test
@@ -76,11 +76,11 @@
 %!   __printf_assert__ ("fail\n");
 %! elseif (x)
 %!   __printf_assert__ ("fail\n");
-%! end
+%! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test parsing of single-quoted character string appearing at the
-%% beginning of an if condition
+## test parsing of single-quoted character string appearing at the
+## beginning of an if condition
 %!test
 %! if (1)
 %!   'foo';
@@ -88,8 +88,8 @@
 %! endif
 %! assert (x, 13);
 
-%% test parsing of single-quoted character string appearing at the
-%% beginning of an if condition
+## test parsing of single-quoted character string appearing at the
+## beginning of an if condition
 %!test
 %! if (0)
 %!   x = 42;
@@ -98,3 +98,4 @@
 %!   x = 13;
 %! endif
 %! assert (x, 13);
+

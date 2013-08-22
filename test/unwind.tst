@@ -28,7 +28,7 @@
 %!  unwind_protect_cleanup
 %!    g = save_g;
 %!    y = [y, g];
-%!  end_unwind_protect
+%!  end  # "end" is part of test, check not using "end_unwind_protect"
 %!endfunction
 %!
 %!test

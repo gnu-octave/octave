@@ -19,7 +19,7 @@
 %!test
 %! for i = 1
 %!   __printf_assert__ ("%d", i);
-%! end
+%! end  # "end" is part of test, check not using "endfor"
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1"));
 
@@ -101,8 +101,8 @@
 %!   assert (i, {1 + 2*j; 2 + 2*j++})
 %! endfor
 
-%% test parsing of single-quoted character string appearing at the
-%% beginning of a for loop
+## test parsing of single-quoted character string appearing at the
+## beginning of a for loop
 %!test
 %! for i = 1:5
 %!   'foo';

@@ -191,7 +191,7 @@ function yi = interp1 (x, y, varargin)
   endif
 
   if ((rightcontinuous && (x(end) < x(1)))
-      || (~ rightcontinuous && (x(end) > x(1))))
+      || (! rightcontinuous && (x(end) > x(1))))
     ## Switch between left-continuous and right-continuous
     x = flipud (x);
     y = flipud (y);

@@ -115,7 +115,7 @@ function [p, s, mu] = polyfit (x, y, n)
   p = r \ (q' * y);
   p(k) = p;
   
-  if (n ~= m)
+  if (n != m)
     q = p; p = zeros (n+1, 1); 
     p(polymask) = q;
   endif
@@ -140,9 +140,9 @@ function [p, s, mu] = polyfit (x, y, n)
       C = NaN * ones (m+1, m+1);
     end_try_catch
 
-    if (n ~= m)
+    if (n != m)
       ## fill matrices if required
-      s.X(:, ~polymask) = 0;
+      s.X(:, !polymask) = 0;
       s.R = zeros (n+1, n+1); s.R(polymask, polymask) = r;
       s.C = zeros (n+1, n+1); s.C(polymask, polymask) = C;
     else

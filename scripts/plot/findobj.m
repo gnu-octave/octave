@@ -190,7 +190,7 @@ function h = findobj (varargin)
   endwhile
 
   numpairs = np - 1;
-  if (~ isempty (logicaloperator))
+  if (! isempty (logicaloperator))
     logicaloperator = shift (logicaloperator, 1);
   endif
 

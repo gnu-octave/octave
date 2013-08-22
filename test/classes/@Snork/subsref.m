@@ -6,14 +6,14 @@ function b = subsref (snk, s)
   switch (s(1).type)
     case '()'
       ind = s(1).subs;
-      if (numel (ind) ~= 1)
+      if (numel (ind) != 1)
         error ('Snork: need exactly one index');
       else
         b = snk.cack(ind{1});
       end
     case '{}'
       ind = s(1).subs;
-      if (numel (ind) ~= 1)
+      if (numel (ind) != 1)
         error ('Snork: need exactly one index');
       else
         b = snk.cack(ind{1});

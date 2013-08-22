@@ -59,9 +59,9 @@
 %! assert (isobject (snk));
 %! assert (isequal (class (snk), 'Snork'));
 %! assert (isa (snk, 'Snork'));
-%! assert (~isa (snk, 'Sneetch'));
+%! assert (!isa (snk, 'Sneetch'));
 %! assert (ismethod (snk, 'gick'));
-%! assert (~ismethod (snk, 'bletch'));
+%! assert (!ismethod (snk, 'bletch'));
 %! assert (exist ('snk') == 1);
 %! assert (exist ('blink') == 0);
 %!test snk1 = Snork (snk);
@@ -272,17 +272,17 @@
 %!assert (s1 == s1)
 %!assert (s1 == x1)
 %!assert (x1 == s1)
-%!assert (~(s1 == (s1 + 1)))
-%!assert (~(s1 == (x1 + 1)))
-%!assert (~(x1 == (s1 + 1)))
+%!assert (!(s1 == (s1 + 1)))
+%!assert (!(s1 == (x1 + 1)))
+%!assert (!(x1 == (s1 + 1)))
 
-%% Test overloaded ne (~=) for the Snork class
-%!assert (~(s1 ~= s1))
-%!assert (~(s1 ~= x1))
-%!assert (~(x1 ~= s1))
-%!assert (s1 ~= (s1 + 1))
-%!assert (x1 ~= (s1 + 1))
-%!assert (s1 ~= (x1 + 1))
+%% Test overloaded ne (!=) for the Snork class
+%!assert (!(s1 != s1))
+%!assert (!(s1 != x1))
+%!assert (!(x1 != s1))
+%!assert (s1 != (s1 + 1))
+%!assert (x1 != (s1 + 1))
+%!assert (s1 != (x1 + 1))
 
 %% Test overloaded lt (<) for the Snork class
 %!assert (s1 < (s1 + 1))

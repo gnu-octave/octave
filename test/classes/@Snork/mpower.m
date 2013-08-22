@@ -1,6 +1,6 @@
 function s = mpower (s1, x)
 
-  if (~isa (s1, 'Snork') || isa (x, 'Snork'))
+  if (!isa (s1, 'Snork') || isa (x, 'Snork'))
     error ('mpower Snork!!!');
   end
 

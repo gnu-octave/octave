@@ -167,7 +167,7 @@ function [x, map] = rgb2ind (varargin)
   ## Conversion of rgb image to x,map
   pr = prod (sz(1:end-1));
   x = zeros (sz(1:end-1));
-  [map,~,x(:)] = unique (reshape(rgb, [pr, 3]), "rows");
+  [map,~,x(:)] = unique (reshape (rgb, [pr, 3]), "rows");
 
   ## a colormap is of class double and values between 0 and 1
   switch (class (rgb))

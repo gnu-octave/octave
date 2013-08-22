@@ -6,7 +6,7 @@ function x = varg_nest2
     x = a;
   endif
 
-  function a, b = f
+  function [a, b] = f
     if nargout == 2
       a = b = 5;
     endif

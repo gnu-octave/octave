@@ -1086,19 +1086,31 @@ param_list2     : decl2
 return_list     : '[' ']'
                   {
                     lexer.looking_at_return_list = false;
+
                     $$ = new tree_parameter_list ();
                   }
-                | return_list1
+                | identifier
                   {
                     lexer.looking_at_return_list = false;
-                    if ($1->validate (tree_parameter_list::out))
-                      $$ = $1;
+
+                    tree_parameter_list *tmp = new tree_parameter_list ($1);
+
+                    // Even though this parameter list can contain only
+                    // a single identifier, we still need to validate it
+                    // to check for varargin or varargout.
+
+                    if (tmp->validate (tree_parameter_list::out))
+                      $$ = tmp;
                     else
                       ABORT_PARSE;
                   }
                 | '[' return_list1 ']'
                   {
                     lexer.looking_at_return_list = false;
+
+                    // Check for duplicate parameter names, varargin,
+                    // or varargout.
+
                     if ($2->validate (tree_parameter_list::out))
                       $$ = $2;
                     else

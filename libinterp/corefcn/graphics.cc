@@ -7128,7 +7128,8 @@ text::properties::update_text_extent (void)
   string_vector sv = string_prop.all_strings ();
 
   renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
-                           halign, valign, get_rotation ());
+                           halign, valign, get_rotation (),
+                           get_interpreter ());
   /* The bbox is relative to the text's position.
      We'll leave it that way, because get_position () does not return
      valid results when the text is first constructed.

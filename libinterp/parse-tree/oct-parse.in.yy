@@ -264,7 +264,7 @@ make_statement (T *arg)
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement function_end classdef_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
-%type <tree_statement_list_type> opt_list input1
+%type <tree_statement_list_type> opt_list
 // These types need to be specified.
 %type <dummy_type> attr
 %type <dummy_type> class_event
@@ -307,33 +307,24 @@ make_statement (T *arg)
 // Statements and statement lists
 // ==============================
 
-input           : input1
+input           : simple_list '\n'
                   {
+                    parser.stmt_list = $1;
+                    YYACCEPT;
+                  }
+                | simple_list END_OF_INPUT
+                  {
+                    lexer.end_of_input = true;
                     parser.stmt_list = $1;
                     YYACCEPT;
                   }
                 | simple_list parse_error
                   { ABORT_PARSE; }
-                | parse_error
-                  { ABORT_PARSE; }
                 ;
 
-input1          : '\n'
+simple_list     : opt_sep_no_nl
                   { $$ = 0; }
-                | END_OF_INPUT
-                  {
-                    lexer.end_of_input = true;
-                    $$ = 0;
-                  }
-                | simple_list
-                  { $$ = $1; }
-                | simple_list '\n'
-                  { $$ = $1; }
-                | simple_list END_OF_INPUT
-                  { $$ = $1; }
-                ;
-
-simple_list     : simple_list1 opt_sep_no_nl
+                | simple_list1 opt_sep_no_nl
                   { $$ = parser.set_stmt_print_flag ($1, $2, false); }
                 ;
 

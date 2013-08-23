@@ -147,7 +147,7 @@ set_default_prompts (void)
 void
 octave_base_reader::do_input_echo (const std::string& input_string) const
 {
-  int do_echo = LEXER->reading_script_file ?
+  int do_echo = (LEXER && LEXER->reading_script_file) ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
       : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
 
@@ -554,10 +554,10 @@ get_debug_input (const std::string& prompt)
   VPS1 = prompt;
 
   if (! (interactive || forced_interactive)
-      || LEXER->reading_fcn_file
-      || LEXER->reading_classdef_file
-      || LEXER->reading_script_file
-      || LEXER->input_from_eval_string ())
+      || (LEXER && (LEXER->reading_fcn_file
+                    || LEXER->reading_classdef_file
+                    || LEXER->reading_script_file
+                    || LEXER->input_from_eval_string ())))
     {
       frame.protect_var (forced_interactive);
       forced_interactive = true;

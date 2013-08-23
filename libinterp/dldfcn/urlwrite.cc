@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-refcount.h"
 #include "unwind-prot.h"
+#include "gripes.h"
 
 #ifdef HAVE_CURL
 
@@ -843,7 +844,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
     error ("urlwrite: curl: %s", curl.lasterror ().c_str ());
 
 #else
-  error ("urlwrite: not available in this version of Octave");
+  gripe_disabled_feature ("urlwrite", "urlwrite");
 #endif
 
   return retval;
@@ -962,7 +963,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
     error ("urlread: curl: %s", curl.lasterror().c_str());
 
 #else
-  error ("urlread: not available in this version of Octave");
+  gripe_disabled_feature ("urlread", "urlread");
 #endif
 
   return retval;
@@ -1004,7 +1005,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp__", "FTP");
 #endif
 
   return octave_value ();
@@ -1037,7 +1038,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_pwd__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_pwd__", "FTP");
 #endif
 
   return retval;
@@ -1073,7 +1074,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_cwd__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_cwd__", "FTP");
 #endif
 
   return octave_value ();
@@ -1153,7 +1154,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_dir__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_dir__", "FTP");
 #endif
 
   return retval;
@@ -1185,7 +1186,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_ascii__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_ascii__", "FTP");
 #endif
 
   return octave_value ();
@@ -1217,7 +1218,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_binary__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_binary__", "FTP");
 #endif
 
   return octave_value ();
@@ -1226,46 +1227,46 @@ Undocumented internal function\n\
 DEFUN_DLD (__ftp_close__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_close__ (@var{handle})\n\
- Undocumented internal function\n\
- @end deftypefn")
- {
- #ifdef HAVE_CURL
-   int nargin = args.length ();
+Undocumented internal function\n\
+@end deftypefn")
+{
+#ifdef HAVE_CURL
+  int nargin = args.length ();
 
-   if (nargin != 1)
-     error ("__ftp_close__: incorrect number of arguments");
-   else
-     {
-       std::string handle = args(0).string_value ();
+  if (nargin != 1)
+    error ("__ftp_close__: incorrect number of arguments");
+  else
+    {
+      std::string handle = args(0).string_value ();
 
-       if (!error_state)
-         handles.del (handle);
-     }
- #else
-   error ("__ftp_close__: not available in this version of Octave");
- #endif
+      if (! error_state)
+        handles.del (handle);
+    }
+#else
+  gripe_disabled_feature ("__ftp_close__", "FTP");
+#endif
 
-   return octave_value ();
- }
+  return octave_value ();
+}
 
 DEFUN_DLD (__ftp_mode__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_mode__ (@var{handle})\n\
- Undocumented internal function\n\
- @end deftypefn")
- {
-   octave_value retval;
- #ifdef HAVE_CURL
-   int nargin = args.length ();
+Undocumented internal function\n\
+@end deftypefn")
+{
+  octave_value retval;
+#ifdef HAVE_CURL
+  int nargin = args.length ();
 
-   if (nargin != 1)
-     error ("__ftp_mode__: incorrect number of arguments");
-   else
-     {
-       std::string handle = args(0).string_value ();
+  if (nargin != 1)
+    error ("__ftp_mode__: incorrect number of arguments");
+  else
+    {
+      std::string handle = args(0).string_value ();
 
 
-      if (!error_state)
+      if (! error_state)
         {
           const curl_handle curl = handles.contents (handle);
 
@@ -1274,13 +1275,13 @@ DEFUN_DLD (__ftp_mode__, args, ,
           else
             error ("__ftp_binary__: invalid ftp handle");
         }
-     }
- #else
-   error ("__ftp_mode__: not available in this version of Octave");
- #endif
+    }
+#else
+  gripe_disabled_feature ("__ftp_mode__", "FTP");
+#endif
 
-   return retval;
- }
+  return retval;
+}
 
 DEFUN_DLD (__ftp_delete__, args, ,
   "-*- texinfo -*-\n\
@@ -1309,7 +1310,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_delete__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_delete__", "FTP");
 #endif
 
   return octave_value ();
@@ -1342,7 +1343,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_rmdir__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_rmdir__", "FTP");
 #endif
 
   return octave_value ();
@@ -1375,7 +1376,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_mkdir__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_mkdir__", "FTP");
 #endif
 
   return octave_value ();
@@ -1409,7 +1410,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_rename__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_rename__", "FTP");
 #endif
 
   return octave_value ();
@@ -1574,7 +1575,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_mput__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_mput__", "FTP");
 #endif
 
   return (nargout > 0 ? octave_value (retval) : octave_value ());
@@ -1735,7 +1736,7 @@ Undocumented internal function\n\
         }
     }
 #else
-  error ("__ftp_mget__: not available in this version of Octave");
+  gripe_disabled_feature ("__ftp_mget__", "FTP");
 #endif
 
   return octave_value ();

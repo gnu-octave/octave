@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 static const char* symbol_names[] = {
     "alpha",
+    "angle",
+    "ast",
     "beta",
     "gamma",
     "delta",
@@ -95,6 +97,7 @@ static const char* symbol_names[] = {
     "varpi",
     "rangle",
 
+    "sim",
     "leq",
     "infty",
     "clubsuit",
@@ -103,8 +106,10 @@ static const char* symbol_names[] = {
     "spadesuit",
     "leftrightarrow",
     "leftarrow",
+    "Leftarrow",
     "uparrow",
     "rightarrow",
+    "Rightarrow",
     "downarrow",
     "circ",
     "pm",
@@ -136,6 +141,8 @@ static const char* symbol_names[] = {
 // - MS symbol (using Private Use Area)
 static uint32_t symbol_codes[][2] = {
       { 0x03B1, 0xF061 },		// alpha
+      { 0x2220, 0xF0D0 },               // angle
+      { 0x2217, 0xF02A },               // ast
       { 0x03B2, 0xF062 },		// beta
       { 0x03B3, 0xF067 },		// gamma
       { 0x03B4, 0xF064 },		// delta
@@ -167,7 +174,7 @@ static uint32_t symbol_codes[][2] = {
       { 0x2227, 0xF0D9 },		// wedge
       { 0x2309, 0xF0F9 },		// rceil
       { 0x2228, 0xF0DA },		// vee
-      { 0x2220, 0xF0E1 },		// langle
+      { 0x27E8, 0xF0E1 },		// langle
 
       { 0x03C5, 0xF075 },		// upsilon
       { 0x03C6, 0xF066 },		// phi
@@ -201,8 +208,9 @@ static uint32_t symbol_codes[][2] = {
       { 0x00D7, 0xF0B4 },		// times
       { 0x221A, 0xF0D6 },		// surd
       { 0x03D6, 0xF076 },		// varpi
-      { 0x232A, 0xF0F1 },		// rangle
+      { 0x27E9, 0xF0F1 },		// rangle
 
+      { 0x223C, 0xF07E },               // sim
       { 0x2264, 0xF0A3 },		// leq
       { 0x221E, 0xF0A5 },		// infty
       { 0x2663, 0xF0A7 },		// clubsuit
@@ -211,8 +219,10 @@ static uint32_t symbol_codes[][2] = {
       { 0x2660, 0xF0AA },		// spadesuit
       { 0x2194, 0xF0AB },		// leftrightarrow
       { 0x2190, 0xF0AC },		// leftarrow
+      { 0x21D0, 0xF0DC },		// Leftarrow
       { 0x2191, 0xF0AD },		// uparrow
       { 0x2192, 0xF0AE },		// rightarrow
+      { 0x21D2, 0xF0DE },		// Rightarrow
       { 0x2193, 0xF0AF },		// downarrow
       { 0x25CB, 0xF0B0 },		// circ
       { 0x00B1, 0xF0B1 },		// pm

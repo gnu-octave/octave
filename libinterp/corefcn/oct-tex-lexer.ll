@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 %x	COMMAND
 
 D       [0-9]
-ID	[a-zA-Z]
+ID	[a-zA-Z0-9]
 NUM	(({D}+\.?{D}*)|(\.{D}+))
 
 %%

@@ -232,13 +232,13 @@ jit_convert::jit_convert (octave_user_function& fcn,
 void
 jit_convert::visit_anon_fcn_handle (tree_anon_fcn_handle&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_anon_fcn_handle implementation");
 }
 
 void
 jit_convert::visit_argument_list (tree_argument_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_argument_list implementation");
 }
 
 void
@@ -339,25 +339,25 @@ jit_convert::visit_continue_command (tree_continue_command&)
 void
 jit_convert::visit_global_command (tree_global_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_global_command implemenation");
 }
 
 void
 jit_convert::visit_persistent_command (tree_persistent_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_persistent_command implementation");
 }
 
 void
 jit_convert::visit_decl_elt (tree_decl_elt&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_decl_elt implementation");
 }
 
 void
 jit_convert::visit_decl_init_list (tree_decl_init_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_decl_init_list implementation");
 }
 
 void
@@ -466,37 +466,37 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
 void
 jit_convert::visit_complex_for_command (tree_complex_for_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_complex_for_command implementation");
 }
 
 void
 jit_convert::visit_octave_user_script (octave_user_script&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_script implementation");
 }
 
 void
 jit_convert::visit_octave_user_function (octave_user_function&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_function implementation");
 }
 
 void
 jit_convert::visit_octave_user_function_header (octave_user_function&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_function_header implementation");
 }
 
 void
 jit_convert::visit_octave_user_function_trailer (octave_user_function&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_octave_user_function_trailer implementation");
 }
 
 void
 jit_convert::visit_function_def (tree_function_def&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_function_def implementation");
 }
 
 void
@@ -520,7 +520,7 @@ jit_convert::visit_identifier (tree_identifier& ti)
 void
 jit_convert::visit_if_clause (tree_if_clause&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_if_clause implementation");
 }
 
 void
@@ -632,25 +632,25 @@ jit_convert::visit_index_expression (tree_index_expression& exp)
 void
 jit_convert::visit_matrix (tree_matrix&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_matrix implementation");
 }
 
 void
 jit_convert::visit_cell (tree_cell&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_cell implementation");
 }
 
 void
 jit_convert::visit_multi_assignment (tree_multi_assignment&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_multi_assignment implementation");
 }
 
 void
 jit_convert::visit_no_op_command (tree_no_op_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_no_op_command implementation");
 }
 
 void
@@ -681,7 +681,7 @@ jit_convert::visit_constant (tree_constant& tc)
 void
 jit_convert::visit_fcn_handle (tree_fcn_handle&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_fcn_handle implementation");
 }
 
 void
@@ -693,7 +693,7 @@ jit_convert::visit_funcall (tree_funcall&)
 void
 jit_convert::visit_parameter_list (tree_parameter_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_parameter_list implementation");
 }
 
 void
@@ -729,13 +729,13 @@ jit_convert::visit_prefix_expression (tree_prefix_expression& tpe)
 void
 jit_convert::visit_return_command (tree_return_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_return_command implementation");
 }
 
 void
 jit_convert::visit_return_list (tree_return_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_return_list implementation");
 }
 
 void
@@ -813,13 +813,13 @@ jit_convert::visit_statement_list (tree_statement_list& lst)
 void
 jit_convert::visit_switch_case (tree_switch_case&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_switch_case implementation");
 }
 
 void
 jit_convert::visit_switch_case_list (tree_switch_case_list&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_switch_case_list implementation");
 }
 
 void
@@ -831,13 +831,13 @@ jit_convert::visit_switch_command (tree_switch_command&)
 void
 jit_convert::visit_try_catch_command (tree_try_catch_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_try_catch_command implementation");
 }
 
 void
 jit_convert::visit_unwind_protect_command (tree_unwind_protect_command&)
 {
-  throw jit_fail_exception ();
+  throw jit_fail_exception ("No visit_unwind_protect_command implementation");
 }
 
 void

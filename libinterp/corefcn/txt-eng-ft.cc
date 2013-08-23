@@ -638,7 +638,8 @@ ft_render::visit (text_element_string& e)
 
       for (size_t i = 0; i < str.length (); i++)
         {
-          glyph_index = process_character (str[i], previous);
+          glyph_index = process_character (static_cast<unsigned char> (str[i]),
+                                           previous);
 
           if (str[i] == '\n')
             previous = 0;

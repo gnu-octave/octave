@@ -782,7 +782,7 @@ ft_render::visit (text_element_symbol& e)
   if (code != text_element_symbol::invalid_code && font.is_valid ())
     process_character (code);
   else if (font.is_valid ())
-    ::warning ("ignoring unknown symbol: %s", e.string_value ().c_str ());
+    ::warning ("ignoring unknown symbol: %d", e.get_symbol ());
 }
 
 void

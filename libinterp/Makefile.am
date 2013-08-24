@@ -53,6 +53,7 @@ BUILT_SOURCES = \
   corefcn/graphics.h \
   corefcn/oct-tex-lexer.cc \
   corefcn/oct-tex-parser.cc \
+  corefcn/oct-tex-symbols.cc \
   operators/ops.cc \
   parse-tree/lex.cc \
   parse-tree/oct-gperf.h \
@@ -64,7 +65,9 @@ BUILT_SOURCES = \
   builtins.cc
 
 BUILT_DISTFILES = \
+  corefcn/oct-tex-lexer.ll \
   corefcn/oct-tex-parser.h \
+  corefcn/oct-tex-symbols.cc \
   parse-tree/oct-gperf.h \
   parse-tree/oct-parse.h \
   parse-tree/oct-parse.yy
@@ -90,6 +93,8 @@ EXTRA_DIST = \
   Makefile.in \
   DOCSTRINGS \
   config-features.sh \
+  corefcn/oct-tex-lexer.in.ll \
+  corefcn/oct-tex-symbols.in \
   find-defun-files.sh \
   gendoc.pl \
   genprops.awk \
@@ -197,7 +202,7 @@ liboctinterp_la_LDFLAGS = \
 ## Section for defining and creating DEF_FILES
 
 ULT_DIST_SRC := \
-  $(filter-out parse-tree/oct-parse.yy, $(DIST_SRC)) parse-tree/oct-parse.in.yy
+  $(filter-out corefcn/oct-tex-lexer.ll parse-tree/oct-parse.yy, $(DIST_SRC)) corefcn/oct-tex-lexer.in.ll parse-tree/oct-parse.in.yy
 
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
@@ -360,6 +365,7 @@ endif
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \
   corefcn/graphics-props.cc \
+  corefcn/oct-tex-parser.output \
   parse-tree/oct-parse.output
 
 DISTCLEANFILES = \

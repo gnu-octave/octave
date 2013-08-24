@@ -47,6 +47,7 @@ static void yyerror (text_parser_tex& parser, const char *s);
   /* Leaf symbols produced by the scanner */
   char                       ch;
   double                     num;
+  int                        sym;
 
   /* Used for string buffering */
   std::string*               str;
@@ -56,21 +57,22 @@ static void yyerror (text_parser_tex& parser, const char *s);
   text_element_list*         e_list;
 }
 
-%token BF IT SL RM CMD
+%token BF IT SL RM
 %token FONTNAME FONTSIZE
 %token COLOR COLOR_RGB
 %token START END SUPER SUB
-%token<ch> CH ID
+%token<ch> CH
 %token<num> NUM
+%token<sym> SYM
 
-%type<str> simple_string identifier
+%type<str> simple_string
 %type<e_base> string_element symbol_element
 %type<e_base> superscript_element subscript_element combined_script_element
 %type<e_base> font_modifier_element fontname_element fontsize_element color_element
 %type<e_list> string_element_list scoped_string_element_list
 
 /* Make sure there's no memory leak on parse error. */
-%destructor { } <ch> <num>
+%destructor { } <ch> <num> <sym>
 %destructor { delete $$; } <*>
 
 %nonassoc SCRIPT
@@ -89,17 +91,8 @@ simple_string			: CH
 				  { $1->append (1, $2); $$ = $1; }
 				;
 
-identifier			: ID
-				  { $$ = new std::string (1, $1); }
-				| identifier ID
-				  { $1->append (1, $2); $$ = $1; }
-				;
-
-symbol_element			: CMD identifier
-				  {
-				    $$ = new text_element_symbol (*$2);
-				    delete $2;
-				  }
+symbol_element			: SYM
+				  { $$ = new text_element_symbol ($1); }
 				;
 
 font_modifier_element		: BF

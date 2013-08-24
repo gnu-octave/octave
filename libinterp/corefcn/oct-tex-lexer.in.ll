@@ -36,10 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 
 %x	NUM_MODE
 %x	MAYBE_NUM_MODE
-%x	COMMAND
 
 D       [0-9]
-ID	[a-zA-Z0-9]
 NUM	(({D}+\.?{D}*)|(\.{D}+))
 
 %%
@@ -98,9 +96,7 @@ NUM	(({D}+\.?{D}*)|(\.{D}+))
 // Symbols
 %}
 
-"\\"		{ BEGIN(COMMAND); return CMD; }
-<COMMAND>{ID}	{ yylval->ch = yytext[0]; return ID; }
-<COMMAND>"\n"|.	{ BEGIN(INITIAL); yyless (0); }
+@SYMBOL_RULES@
 
 %{
 // Generic character

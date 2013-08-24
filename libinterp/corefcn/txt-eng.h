@@ -82,23 +82,25 @@ private:
 
 class
 OCTINTERP_API
-text_element_symbol : public text_element_string
+text_element_symbol : public text_element
 {
 public:
   enum { invalid_code = 0xFFFFFFFFU };
 
 public:
-  text_element_symbol (const std::string& sym)
-    : text_element_string (sym), code (invalid_code) { }
+  text_element_symbol (int sym)
+    : text_element (), symbol (sym) { }
 
   ~text_element_symbol (void) { }
 
-  uint32_t get_symbol_code (void);
+  int get_symbol (void) const { return symbol; }
+
+  uint32_t get_symbol_code (void) const;
 
   void accept (text_processor& p);
 
 private:
-  uint32_t code;
+  int symbol;
 };
 
 class

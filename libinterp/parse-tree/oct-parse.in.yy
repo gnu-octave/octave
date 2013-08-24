@@ -318,7 +318,7 @@ input           : simple_list '\n'
                     parser.stmt_list = $1;
                     YYACCEPT;
                   }
-                | simple_list parse_error
+                | parse_error
                   { ABORT_PARSE; }
                 ;
 

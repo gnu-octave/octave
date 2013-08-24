@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCloseEvent>
 #include <QToolButton>
 #include <QComboBox>
+#include <QSemaphore>
 
 // Editor includes
 #include "file-editor-interface.h"
@@ -233,7 +234,7 @@ private:
 
   void clear_history_callback (void);
 
-  void execute_command_callback (const std::string& command);
+  void execute_command_callback ();
   void run_file_callback (const QFileInfo& info);
 
   void new_figure_callback (void);
@@ -252,7 +253,8 @@ private:
 
   void exit_callback (void);
 
-  // Data models.
+  void queue_command (QString command);  // Data models.
+
   workspace_model *_workspace_model;
 
   // Toolbars.
@@ -317,6 +319,11 @@ private:
 
   // Flag for closing whole application.
   bool _closing;
+
+  // semaphore to synchronize execution signals and related callback
+  QStringList *_cmd_queue;
+  QSemaphore   _cmd_processing;
+  QMutex       _cmd_queue_mutex;
 };
 
 #endif // MAINWINDOW_H

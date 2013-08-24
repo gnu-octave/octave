@@ -78,7 +78,10 @@ main_window::main_window (QWidget *p)
     find_files_dlg (0),
     _octave_main_thread (0),
     _octave_qt_link (0),
-    _clipboard (QApplication::clipboard ())
+    _clipboard (QApplication::clipboard ()),
+    _cmd_queue (new QStringList ()),  // no command pending
+    _cmd_processing (1),
+    _cmd_queue_mutex ()
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -104,6 +107,7 @@ main_window::~main_window (void)
     }
   delete _octave_main_thread;
   delete _octave_qt_link;
+  delete _cmd_queue;
 }
 
 bool
@@ -198,16 +202,30 @@ main_window::handle_clear_history_request (void)
 void
 main_window::execute_command_in_terminal (const QString& command)
 {
-  octave_link::post_event (this, &main_window::execute_command_callback,
-                           command.toStdString ());
-
+  queue_command (command);
   focus_command_window ();
 }
 
 void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
-  octave_link::post_event (this, &main_window::run_file_callback, info);
+  QString dir = info.absolutePath ();
+  QString function_name = info.fileName ();
+  function_name.chop (info.suffix ().length () + 1);
+  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
+                                    dir.toStdString ()))
+    queue_command (function_name);
+}
+
+void
+main_window::queue_command (QString command)
+{
+  _cmd_queue_mutex.lock ();
+  _cmd_queue->append (command);   // queue command
+  _cmd_queue_mutex.unlock ();
+
+  if (_cmd_processing.tryAcquire ())   // if callback is not processing, post event
+    octave_link::post_event (this, &main_window::execute_command_callback);
 }
 
 void
@@ -1482,29 +1500,34 @@ main_window::clear_history_callback (void)
 }
 
 void
-main_window::execute_command_callback (const std::string& command)
+main_window::execute_command_callback ()
 {
-  std::string pending_input = command_editor::get_current_line ();
+  bool repost = false;          // flag for reposting event for this callback
 
-  command_editor::set_initial_input (pending_input);
+  if (!_cmd_queue->isEmpty ())  // list can not be empty here, just to make sure
+    {
+      std::string pending_input = command_editor::get_current_line ();
+      command_editor::set_initial_input (pending_input);
 
-  command_editor::replace_line (command);
-  command_editor::redisplay ();
+      _cmd_queue_mutex.lock (); // critical path
+      std::string command = _cmd_queue->takeFirst ().toStdString ();
+      if (_cmd_queue->isEmpty ())
+        _cmd_processing.release ();  // command queue empty, processing will stop
+      else
+        repost = true;          // not empty, repost at end
+      _cmd_queue_mutex.unlock ();
 
-  // We are executing inside the command editor event loop.  Force
-  // the current line to be returned for processing.
-  command_editor::interrupt ();
-}
+      command_editor::replace_line (command);
 
-void
-main_window::run_file_callback (const QFileInfo& info)
-{
-  QString dir = info.absolutePath ();
-  QString function_name = info.fileName ();
-  function_name.chop (info.suffix ().length () + 1);
-  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
-                                    dir.toStdString ()))
-    execute_command_callback (function_name.toStdString ());
+      command_editor::redisplay ();
+      // We are executing inside the command editor event loop.  Force
+      // the current line to be returned for processing.
+      command_editor::interrupt ();
+    }
+
+  if (repost)  // queue not empty, so repost event for further processing
+    octave_link::post_event (this, &main_window::execute_command_callback);
+
 }
 
 void

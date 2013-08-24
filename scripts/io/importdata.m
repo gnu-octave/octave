@@ -311,7 +311,7 @@ endfunction
 ########################################
 
 %!test
-%! # Comma separated values
+%! ## Comma separated values
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
@@ -324,25 +324,24 @@ endfunction
 %! assert (h, 0);
 
 %!test
-%! # Tab separated values
+%! ## Tab separated values
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\\t");
+%! [a,d,h] = importdata (fn, "\t");
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 0);
 
 %!test
-%! # Space separated values, using multiple spaces to align in columns.
+%! ## Space separated values, using multiple spaces to align in columns.
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
-%! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(1,:));
-%! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(2,:));
+%! fprintf (fid, "%10.3f %10.3f %10.3f\n", A');
 %! fclose (fid);
 %! [a,d,h] = importdata (fn, " ");
 %! unlink (fn);
@@ -351,24 +350,74 @@ endfunction
 %! assert (h, 0);
 
 %!test
-%! # Header
+%! ## Header text
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"This is a header row."; ...
 %!               "this row does not contain any data, but the next one does."};
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
-%! fputs (fid, [A.textdata{1} "\n"]);
-%! fputs (fid, [A.textdata{2} "\n"]);
+%! fprintf (fid, "%s\n", A.textdata{:});
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\\t");
+%! [a,d,h] = importdata (fn, '\t');
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 2);
 
 %!test
-%! # Ignore empty rows containing only spaces
+%! ## Column headers, only last row is returned in colheaders
+%! A.data = [3.1 -7.2 0; 0.012 6.5 128];
+%! A.textdata = {"Label1 Label2 Label3";
+%!               "col1 col2 col3"};
+%! A.colheaders = {"col1", "col2", "col3"};
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fprintf (fid, "%s\n", A.textdata{:});
+%! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, '\t');
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 2);
+
+%!test
+%! ## Row headers
+%! A.data = [3.1 -7.2 0; 0.012 6.5 128];
+%! ## FIXME: Does Matlab even create field "textdata" if it is null?
+%! A.textdata = {""};
+%! A.rowheaders = {"row1", "row2"};
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "row1\t3.1\t-7.2\t0\nrow2\t0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, '\t');
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 2);
+
+%!test
+%! ## Row/Column headers and Header Text
+%! A.data = [3.1 -7.2 0; 0.012 6.5 128];
+%! A.textdata = {"This is introductory header text"
+%!               "      col1 col2 col3"
+%!               "row1"
+%!               "row2"};
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fprintf (fid, "%s\n", A.textdata{1:2});
+%! fputs (fid, "row1\t3.1\t-7.2\t0\nrow2\t0.012\t6.5\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, '\t');
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 2);
+
+%!test
+%! ## Ignore empty rows containing only spaces
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
@@ -383,65 +432,80 @@ endfunction
 %! assert (h, 0);
 
 %!test
-%! # Exponentials
+%! ## Exponentials
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "+3.1e0\t-72E-1\t0\n12e-3\t6.5\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\\t");
+%! [a,d,h] = importdata (fn, '\t');
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 0);
 
 %!test
-%! # Complex numbers
+%! ## Complex numbers
 %! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0-3.4i\n0.012\t-6.5+7.2i\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\\t");
+%! [a,d,h] = importdata (fn, '\t');
+%! unlink (fn);
+%! assert (a, A);
+%! assert (d, "\t");
+%! assert (h, 0);
+
+## FIXME: Currently commented out (8/23/13) because I can't determine whether
+## Matlab processes exceptional values.
+%!#test
+%! ## Exceptional values (Inf, NaN, NA)
+%! A = [3.1 Inf NA; -Inf NaN 128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "3.1\tInf\tNA\n-Inf\tNaN\t128");
+%! fclose (fid);
+%! [a,d,h] = importdata (fn, '\t');
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 0);
 
 %!test
-%! # Missing values
+%! ## Missing values
 %! A = [3.1 NaN 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t\t0\n0.012\t6.5\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\\t");
+%! [a,d,h] = importdata (fn, '\t');
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 0);
 
 %!test
-%! # CRLF for line breaks
+%! ## CRLF for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\r\n0.012\t6.5\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\\t");
+%! [a,d,h] = importdata (fn, '\t');
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 0);
 
 %!test
-%! # CR for line breaks
+%! ## CR for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\r0.012\t6.5\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\\t");
+%! [a,d,h] = importdata (fn, '\t');
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");

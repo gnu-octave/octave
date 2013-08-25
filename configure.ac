@@ -1069,6 +1069,10 @@ if test -n "$OPENGL_LIBS"; then
       AC_MSG_RESULT(yes)
       AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"
+      save_LIBS="$LIBS"
+      LIBS="$FT2_LIBS $LIBS"
+      AC_CHECK_FUNCS([FT_Reference_Face])
+      LIBS="$save_LIBS"
     else
       AC_MSG_RESULT(no)
       warn_freetype="FreeType library not found.  Native graphics will be disabled."

@@ -116,26 +116,14 @@ private:
   class ft_font
     {
     public:
-      std::string name;
-      std::string weight;
-      std::string angle;
-      double size;
-      FT_Face face;
-
       ft_font (void)
         : name (), weight (), angle (), size (0), face (0) { }
 
       ft_font (const std::string& nm, const std::string& wt,
-               const std::string& ang, double sz, FT_Face f)
+               const std::string& ang, double sz, FT_Face f = 0)
         : name (nm), weight (wt), angle (ang), size (sz), face (f) { }
 
-      ft_font (const ft_font& ft)
-        : name (ft.name), weight (ft.weight), angle (ft.angle),
-          size (ft.size), face (0)
-        {
-          if (FT_Reference_Face (ft.face) == 0)
-            face = ft.face;
-        }
+      ft_font (const ft_font& ft);
 
       ~ft_font (void)
         {
@@ -143,25 +131,26 @@ private:
             FT_Done_Face (face);
         }
 
-      ft_font& operator = (const ft_font& ft)
-        {
-          if (&ft != this)
-            {
-              name = ft.name;
-              weight = ft.weight;
-              angle = ft.angle;
-              size = ft.size;
-              FT_Done_Face (face);
-              if (FT_Reference_Face (ft.face) == 0)
-                face = ft.face;
-              else
-                face = 0;
-            }
+      ft_font& operator = (const ft_font& ft);
 
-          return *this;
-        }
+      bool is_valid (void) const { return get_face (); }
 
-      bool is_valid (void) const { return face; }
+      std::string get_name (void) const { return name; }
+
+      std::string get_weight (void) const { return weight; }
+
+      std::string get_angle (void) const { return angle; }
+
+      double get_size (void) const { return size; }
+
+      FT_Face get_face (void) const;
+
+    private:
+      std::string name;
+      std::string weight;
+      std::string angle;
+      double size;
+      mutable FT_Face face;
     };
 
   void push_new_line (void);

@@ -168,6 +168,7 @@ private:
     {
       FT_Face retval = 0;
 
+#if HAVE_FT_REFERENCE_FACE
       // Look first into the font cache, then use fontconfig. If the font
       // is present in the cache, simply add a reference and return it.
 
@@ -179,6 +180,7 @@ private:
           FT_Reference_Face (it->second);
           return it->second;
         }
+#endif
 
       std::string file;
 
@@ -256,6 +258,7 @@ private:
         {
           if (FT_New_Face (library, file.c_str (), 0, &retval))
             ::warning ("ft_manager: unable to load font: %s", file.c_str ());
+#if HAVE_FT_REFERENCE_FACE
           else
             {
               // Install a finalizer to notify ft_manager that the font is
@@ -269,6 +272,7 @@ private:
 
               cache[key] = retval;
             }
+#endif
         }
 
       return retval;
@@ -317,17 +321,8 @@ ft_render::set_font (const std::string& name, const std::string& weight,
                      const std::string& angle, double size)
 {
   // FIXME: take "fontunits" into account
-  FT_Face face = ft_manager::get_font (name, weight, angle, size);
 
-  if (face)
-    {
-      if (FT_Set_Char_Size (face, 0, size*64, 0, 0))
-        ::warning ("ft_render: unable to set font size to %g", size);
-
-      font = ft_font (name, weight, angle, size, face);
-    }
-  else
-    ::warning ("ft_render: unable to load appropriate font");
+  font = ft_font (name, weight, angle, size, 0);
 }
 
 void
@@ -339,7 +334,7 @@ ft_render::push_new_line (void)
         {
           // Create a new bbox entry based on the current font.
 
-          FT_Face face = font.face;
+          FT_Face face = font.get_face ();
 
           if (face)
             {
@@ -438,8 +433,8 @@ ft_render::update_line_bbox (void)
 
   if (mode == MODE_BBOX)
     {
-      int asc = font.face->size->metrics.ascender >> 6;
-      int desc = font.face->size->metrics.descender >> 6;
+      int asc = font.get_face ()->size->metrics.ascender >> 6;
+      int desc = font.get_face ()->size->metrics.descender >> 6;
 
       Matrix& bb = line_bbox.front ();
 
@@ -503,7 +498,7 @@ ft_render::set_mode (int m)
 FT_UInt
 ft_render::process_character (FT_ULong code, FT_UInt previous)
 {
-  FT_Face face = font.face;
+  FT_Face face = font.get_face ();
   FT_UInt glyph_index = 0;
 
   if (face)
@@ -670,10 +665,12 @@ ft_render::visit (text_element_subscript& e)
   int saved_line_yoffset = line_yoffset;
   int saved_yoffset = yoffset;
 
-  set_font (font.name, font.weight, font.angle, font.size - 2);
+  set_font (font.get_name (), font.get_weight (), font.get_angle (),
+            font.get_size () - 2);
+
   if (font.is_valid ())
     {
-      int h = font.face->size->metrics.height >> 6;
+      int h = font.get_face ()->size->metrics.height >> 6;
 
       // Shifting the baseline by 2/3 the font height seems to produce
       // decent result.
@@ -699,10 +696,12 @@ ft_render::visit (text_element_superscript& e)
   int saved_line_yoffset = line_yoffset;
   int saved_yoffset = yoffset;
 
-  set_font (font.name, font.weight, font.angle, font.size - 2);
-  if (saved_font.is_valid () && font.is_valid ())
+  set_font (font.get_name (), font.get_weight (), font.get_angle (),
+            font.get_size () - 2);
+
+  if (saved_font.is_valid ())
     {
-      int s_asc = saved_font.face->size->metrics.ascender >> 6;
+      int s_asc = saved_font.get_face ()->size->metrics.ascender >> 6;
 
       // Shifting the baseline by 2/3 base font ascender seems to produce
       // decent result.
@@ -736,7 +735,7 @@ ft_render::visit (text_element_fontsize& e)
   // FIXME: Matlab documentation says that the font size is expressed
   //        in the text object FontUnit.
 
-  set_font (font.name, font.weight, font.angle, sz);
+  set_font (font.get_name (), font.get_weight (), font.get_angle (), sz);
 
   if (mode == MODE_BBOX)
     update_line_bbox ();
@@ -745,7 +744,8 @@ ft_render::visit (text_element_fontsize& e)
 void
 ft_render::visit (text_element_fontname& e)
 {
-  set_font (e.get_fontname (), font.weight, font.angle, font.size);
+  set_font (e.get_fontname (), font.get_weight (), font.get_angle (),
+            font.get_size ());
 
   if (mode == MODE_BBOX)
     update_line_bbox ();
@@ -757,16 +757,16 @@ ft_render::visit (text_element_fontstyle& e)
   switch (e.get_fontstyle ())
     {
     case text_element_fontstyle::normal:
-      set_font (font.name, "normal", "normal", font.size);
+      set_font (font.get_name (), "normal", "normal", font.get_size ());
       break;
     case text_element_fontstyle::bold:
-      set_font (font.name, "bold", "normal", font.size);
+      set_font (font.get_name (), "bold", "normal", font.get_size ());
       break;
     case text_element_fontstyle::italic:
-      set_font (font.name, "normal", "italic", font.size);
+      set_font (font.get_name (), "normal", "italic", font.get_size ());
       break;
     case text_element_fontstyle::oblique:
-      set_font (font.name, "normal", "oblique", font.size);
+      set_font (font.get_name (), "normal", "oblique", font.get_size ());
       break;
     }
 
@@ -992,6 +992,63 @@ ft_render::text_to_pixels (const std::string& txt,
       box(1) = -box(1)-box(3);
       break;
     }
+}
+
+ft_render::ft_font::ft_font (const ft_font& ft)
+     : name (ft.name), weight (ft.weight), angle (ft.angle), size (ft.size),
+       face (0)
+{
+#if HAVE_FT_REFERENCE_FACE
+  FT_Face ft_face = ft.get_face ();
+
+  if (ft_face && FT_Reference_Face (ft_face) == 0)
+    face = ft_face;
+#endif
+}
+
+ft_render::ft_font&
+ft_render::ft_font::operator = (const ft_font& ft)
+{
+  if (&ft != this)
+    {
+      name = ft.name;
+      weight = ft.weight;
+      angle = ft.angle;
+      size = ft.size;
+      if (face)
+        {
+          FT_Done_Face (face);
+          face = 0;
+        }
+
+#if HAVE_FT_REFERENCE_FACE
+      FT_Face ft_face = ft.get_face ();
+
+      if (ft_face && FT_Reference_Face (ft_face) == 0)
+        face = ft_face;
+#endif
+    }
+
+  return *this;
+}
+
+FT_Face
+ft_render::ft_font::get_face (void) const
+{
+  if (! face && ! name.empty ())
+    {
+      face = ft_manager::get_font (name, weight, angle, size);
+
+      if (face)
+        {
+          if (FT_Set_Char_Size (face, 0, size*64, 0, 0))
+            ::warning ("ft_render: unable to set font size to %g", size);
+        }
+      else
+        ::warning ("ft_render: unable to load appropriate font");
+    }
+
+  return face;
 }
 
 #endif // HAVE_FREETYPE

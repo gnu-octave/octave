@@ -186,123 +186,153 @@ function [output, delimiter, header_rows] = ...
   ## correct.
 
   output.data       = [];
-  output.textdata   = [];
-  output.rowheaders = [];
-  output.colheaders = [];
+  output.textdata   = {};
+  output.rowheaders = {};
+  output.colheaders = {};
 
-  ## Read file into string and count the number of header rows
-  file_content = fileread (fname);
-
-  ## Split the file into rows (using \n and/or \r as delimiters between rows).
-  file_content_rows = regexp (file_content, "\n|\n\r|\r|\r\n", "split");
-
-  ## FIXME: guess delimiter, if it isn't defined
-  if (isempty (delimiter))
-    error ("importdata: Guessing delimiter is not implemented yet, you have to specify it.");
+  [fid, msg] = fopen (fname, "r");
+  if (fid == -1)
+    error (msg);
   endif
 
-  ## FIXME: A more intelligent way to count number of header rows. This
-  ## is needed e.g. when delimiter=' ' and the header contains spaces...
+  header_rows_estimate = 0;
+  header_cols_estimate = 0;
+  while (1)
+    ## For the first few rows, get one row at a time as opposed to reading
+    ## the whole file.
+    row = fgetl (fid);
 
-  ## If number of header rows is undefined, then count the number of
-  ## header rows by step through row by row and look for the delimiter.
-  ## Assume that the header can't contain any delimiter.
+    ## If no delimiter determined yet, make a guess.
+    if (isempty (delimiter))
+      ## The tab will take precendence.
+      if ~isempty (regexp (row, "[\\t]", "once"))
+        delimiter = "\t";
+      endif
+
+      ## Then a comma.
+      if ~isempty (regexp (row, ",", "once"))
+        delimiter = ",";
+      endif
+
+      ## Next, a space will be used, but perhaps should check
+      ## for character string indicators like ' or " in a more
+      ## robust version.
+      if ~isempty (regexp (row, " ", "once"))
+        delimiter = " ";
+      endif
+    elseif (strcmp (delimiter, '\t'))
+      ## When delimiter = "\\t" convert it to a tab, done for Matlab compatibility.
+      delimiter = "\t";
+    endif
+
+    if (delimiter == " ")
+      row_entries = regexp (strtrim (row), " {1,}", "split");
+    else
+      row_entries = regexp (row, delimiter, "split");
+    endif
+    row_data = str2double (row_entries);
+    if (header_rows < 0 && all (isnan (row_data)) || ...
+        header_rows >= 0 && header_rows_estimate < header_rows)
+      header_rows_estimate++;
+      output.textdata{end + 1, 1} = row;
+      output.colheaders = row_entries;
+    else
+      c = find (! isnan (row_data));
+      header_cols_estimate = c(1) - 1;
+
+      ## The number of header rows and header columns is now known.
+      break;
+    endif
+
+  endwhile
+
   if (header_rows < 0)
-    header_rows = 0;
-    for i=1:length (file_content_rows)
-      if (isempty (regexp(file_content_rows{i}, delimiter, "once")))
-        header_rows++;
-      else
-        ## Data part has begun and therefore no more header rows can be
-        ## found
-        break;
+    header_rows = header_rows_estimate;
+  endif
+  header_cols = header_cols_estimate;
+
+  fclose (fid);
+
+  ## If it is important to remove white space at the front of rows, it is
+  ## probably more efficient to read in the character data stream, modify
+  ## it using regexp index manipulations then send that to a temporary file
+  ## and call dlmread() on the temporary file.
+  if (delimiter == " ")
+    file_content = fileread (fname);
+
+    ## Convert all carriage returns to line feeds for simplicity.
+    file_content (regexp (file_content, "\r")) = "\n";
+
+    ## Remove all consecutive space characters
+    lidx = logical (ones (size (file_content)));
+    widx = regexp (file_content, "[ ]");
+    lidx (widx ([false (diff (widx) == 1)])) = false;
+    file_content = file_content(lidx);
+
+    ## Remove all spaces before and after a newline
+    lidx = logical (ones (size (file_content)));
+    lidx (regexp (file_content, " \n")) = false;
+    lidx (regexp (file_content, "\n ") + 1) = false;
+    file_content = file_content(lidx);
+
+    ## Save to temporary file and continue by using the new name
+    fname  = tmpnam ();
+    fid = fopen (fname, "w");
+    fputs (fid, file_content);
+    fclose (fid);
+  endif
+
+  ## Now let the efficient built-in routine do the bulk of the work.
+  output.data = dlmread (fname, delimiter, header_rows, header_cols, "emptyvalue", NaN);
+
+  nanidx = isnan (output.data);
+  if (header_cols > 0)
+    nanidx = [(true (size (nanidx, 1), header_cols)) nanidx];
+  endif
+  if (any (nanidx (:)))
+
+    file_content = fileread (fname);
+
+    ## Convert all carriage returns to line feeds for simplicity.
+    file_content (regexp (file_content, "\r")) = "\n";
+
+    ## Remove all consecutive space characters
+    lidx = logical (ones (size (file_content)));
+    widx = regexp (file_content, "[ ]");
+    lidx (widx ([false (diff (widx) == 1)])) = false;
+    file_content = file_content(lidx);
+
+    ## Remove all lines consisting of a single white space or nothing.
+    lidx = logical (ones (size (file_content)));
+    nidx = regexp (file_content, "\n");
+    lidx (nidx ([false (diff (nidx) == 1)])) = false;
+    n_nidx = nidx([false (diff (nidx) == 2)]);
+    n_nidx = n_nidx (isspace (file_content (n_nidx - 1)));
+    lidx (n_nidx) = false;
+    lidx (n_nidx - 1) = false;
+    file_content = file_content(lidx);
+
+    rowend = regexp (file_content, "\n");
+    rowstart = [0 rowend] + 1;
+    rowstart = rowstart (header_rows + 1:end);
+    rowend = [rowend length(file_content)];
+    rowend = rowend (header_rows + 1:end);
+    rows_to_process = find (any (nanidx, 2));
+    for i = 1:length (rows_to_process)
+      r = rows_to_process (i);
+      row_cells = regexp (file_content (rowstart (r):rowend (r)), delimiter, "split");
+      output.textdata (end + 1:end + sum (nanidx (r,:)), 1) = row_cells (nanidx (r,:));
+      if (header_cols)
+        output.rowheaders (end + 1, :) = row_cells (1:header_cols);
       endif
     endfor
   endif
 
-  ## Put the header rows in output.textdata.
-  if (header_rows > 0)
-    output.textdata   = file_content_rows (1:header_rows)';
-  endif
-
-  ## If space is the delimiter, then remove spaces in the beginning of
-  ## each data row.
-  if (strcmpi (delimiter, " "))
-    for i=(header_rows+1):length (file_content_rows)
-      ## strtrim does not only remove the leading spaces but also the
-      ## tailing spaces, but that doesn't really matter.
-      file_content_rows{i} = strtrim (file_content_rows{i});
-    endfor
-  endif
-
-  ## Remove empty data rows. Go through them backwards so that you wont
-  ## get out of bounds.
-  for i=length (file_content_rows):-1:(header_rows + 1)
-    if (length (file_content_rows{i}) < 1)
-      file_content_rows = [file_content_rows(1:i-1), ...
-                           file_content_rows(i+1:length(file_content_rows))];
-    endif
-  endfor
-
-  ## Count the number of data columns. If there are different number of
-  ## columns, use the greatest value.
-  data_columns = 0;
-  delimiter_pattern = delimiter;
-  ## If space is the delimiter, then multiple spaces should count as ONE
-  ## delimiter. Also ignore leading spaces.
-  if (strcmpi (delimiter, " "))
-    delimiter_pattern = ' +';
-  endif
-  for i=(header_rows+1):length(file_content_rows)
-    data_columns = max (data_columns,
-                        length (regexp (file_content_rows{i},
-                                        delimiter_pattern, "split")));
-  endfor
-
-  ## FIXME: Make it behave like Matlab when importing a table where a whole
-  ## column is text only. E.g.
-  ##    abc  12  34
-  ##    def  56  78
-  ## This would give a 3x2 data matrix with the left column = nan(2,1), and 
-  ## the text would end up in textdata.
-  ## In Matlab the data matrix would only be a 2x2 matrix, see example at:
-  ## http://www.mathworks.se/help/matlab/import_export/import-numeric-data-and-header-text-from-a-text-file.html
-
-  ## Go through the data and put it in either output.data or
-  ## output.textdata depending on if it is numeric or not.
-  output.data = NaN (length (file_content_rows) - header_rows, data_columns);
-  for i=(header_rows+1):length(file_content_rows)
-    ## Only use the row if it contains anything other than white-space
-    ## characters.
-    if (any (file_content_rows{i} != " "))
-      row_data = regexp (file_content_rows{i}, delimiter_pattern, "split");
-
-      for j=1:length(row_data)
-        ## Try to convert the column to a number, if it works put it in
-        ## output.data, otherwise in output.textdata
-        if (!isempty (row_data{j}))
-          data_numeric = str2double (row_data{j});
-          if (!isnan (data_numeric))
-            output.data(i-header_rows, j) = data_numeric;
-          else
-            output.textdata{i,j} = row_data{j};
-          endif
-        endif
-      endfor
-
-    endif
-  endfor
-
-  ## Check wether rowheaders or colheaders should be used
-  if ((header_rows == data_columns) && (size (output.textdata, 2) == 1))
-    output.rowheaders = output.textdata;
-  elseif (size (output.textdata, 2) == data_columns)
-    output.colheaders = output.textdata(end,:);
-  endif
-
-  ## When delimiter = "\\t" convert it to a tab, done for Matlab compatibility.
-  if (strcmp (delimiter, '\t'))
-    delimiter = "\t";
+  ## Final cleanup to satisfy output configuration
+  if (all (cellfun ("isempty", output.textdata)))
+    output = output.data;
+  elseif (! isempty (output.rowheaders) && ! isempty (output.colheaders))
+    output = struct ('data', {output.data}, 'textdata', {output.textdata});
   endif
 
 endfunction
@@ -317,11 +347,15 @@ endfunction
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1,-7.2,0\n0.012,6.5,128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, ",");
+%! [a1,d1,h1] = importdata (fn, ",");
+%! [a2,d2,h2] = importdata (fn);
 %! unlink (fn);
-%! assert (a, A);
-%! assert (d, ",");
-%! assert (h, 0);
+%! assert (a1, A);
+%! assert (d1, ",");
+%! assert (h1, 0);
+%! assert (a2, A);
+%! assert (d2, ",");
+%! assert (h2, 0);
 
 %!test
 %! ## Tab separated values
@@ -330,11 +364,15 @@ endfunction
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, "\t");
+%! [a1,d1,h1] = importdata (fn, "\t");
+%! [a2,d2,h2] = importdata (fn);
 %! unlink (fn);
-%! assert (a, A);
-%! assert (d, "\t");
-%! assert (h, 0);
+%! assert (a1, A);
+%! assert (d1, "\t");
+%! assert (h1, 0);
+%! assert (a2, A);
+%! assert (d2, "\t");
+%! assert (h2, 0);
 
 %!test
 %! ## Space separated values, using multiple spaces to align in columns.
@@ -343,17 +381,22 @@ endfunction
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%10.3f %10.3f %10.3f\n", A');
 %! fclose (fid);
-%! [a,d,h] = importdata (fn, " ");
+%! [a1,d1,h1] = importdata (fn, " ");
+%! [a2,d2,h2] = importdata (fn);
 %! unlink (fn);
-%! assert (a, A);
-%! assert (d, " ");
-%! assert (h, 0);
+%! assert (a1, A);
+%! assert (d1, " ");
+%! assert (h1, 0);
+%! assert (a2, A);
+%! assert (d2, " ");
+%! assert (h2, 0);
 
 %!test
 %! ## Header text
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"This is a header row."; ...
 %!               "this row does not contain any data, but the next one does."};
+%! A.colheaders = A.textdata (2);
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{:});
@@ -368,8 +411,8 @@ endfunction
 %!test
 %! ## Column headers, only last row is returned in colheaders
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
-%! A.textdata = {"Label1 Label2 Label3";
-%!               "col1 col2 col3"};
+%! A.textdata = {"Label1\tLabel2\tLabel3";
+%!               "col1\tcol2\tcol3"};
 %! A.colheaders = {"col1", "col2", "col3"};
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
@@ -385,9 +428,8 @@ endfunction
 %!test
 %! ## Row headers
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
-%! ## FIXME: Does Matlab even create field "textdata" if it is null?
-%! A.textdata = {""};
-%! A.rowheaders = {"row1", "row2"};
+%! A.textdata = {"row1"; "row2"};
+%! A.rowheaders = A.textdata;
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "row1\t3.1\t-7.2\t0\nrow2\t0.012\t6.5\t128");
@@ -396,7 +438,7 @@ endfunction
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
-%! assert (h, 2);
+%! assert (h, 0);
 
 %!test
 %! ## Row/Column headers and Header Text

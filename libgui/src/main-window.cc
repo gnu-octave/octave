@@ -209,6 +209,12 @@ main_window::execute_command_in_terminal (const QString& command)
 void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
+  octave_link::post_event (this, &main_window::run_file_callback, info);
+}
+
+void
+main_window::run_file_callback (const QFileInfo& info)
+{
   QString dir = info.absolutePath ();
   QString function_name = info.fileName ();
   function_name.chop (info.suffix ().length () + 1);

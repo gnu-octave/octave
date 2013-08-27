@@ -878,7 +878,8 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
   octave_idx_type img_idx = 0;
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      // For some reason, we can't set the type to Magick::BilevelType.
+      // For some reason, we can't set the type to Magick::BilevelType or
+      // the output image will be black, changing to white has no effect.
       // However, this will still work fine and a binary image will be
       // saved because we are setting the bitdepth to 1.
       Magick::Image m_img = init_enconde_image (nCols, nRows, 1,
@@ -901,6 +902,9 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
         }
       // Save changes to underlying image.
       m_img.syncPixels ();
+      // While we could not set it to Bilevel at the start, we can do it
+      // here otherwise some coders won't save it as binary.
+      m_img.type (Magick::BilevelType);
       imvec.push_back (m_img);
     }
 }

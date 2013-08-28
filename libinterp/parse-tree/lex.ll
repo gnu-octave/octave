@@ -987,6 +987,8 @@ ANY_INCLUDING_NL (.|{NL})
       warning_with_id ("Octave:deprecated-syntax",
                        "%s; near line %d of file '%s'", msg,
                        curr_lexer->input_line_number, nm.c_str ());
+
+    curr_lexer->handle_continuation ();
   }
 
 %{

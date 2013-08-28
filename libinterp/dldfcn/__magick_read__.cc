@@ -668,8 +668,28 @@ use @code{imread}.\n\
         }
     }
 
-  const Magick::ClassType klass = imvec[frameidx(0)].classType ();
-  const octave_idx_type depth   = imvec[frameidx(0)].depth ();
+  // FIXME: the depth here is not always correct for us but seems to be the best
+  //        value we can get. For example, a grayscale png image with 1 bit
+  //        per channel should return a depth of 1 but instead we get 8.
+  //        We could check channelDepth() but then, which channel has the data
+  //        is not straightforward. So we'd have to check all
+  //        the channels and select the highest value. But then, I also
+  //        have a 16bit TIFF whose depth returns 16 (correct), but all of the
+  //        channels gives 8 (wrong). No idea why, maybe a bug in GM?
+  //        Anyway, using depth() seems that only causes problems for binary
+  //        images, and the problem with channelDepth() is not making set them
+  //        all to 1. So we will guess that if all channels have depth of 1,
+  //        then we must have a binary image.
+  //        Note that we can't use AllChannels it doesn't work for this.
+  //        Instead of checking all of the individual channels, we check one
+  //        from RGB, CMYK, grayscale, and transparency.
+  octave_idx_type depth = imvec[frameidx(0)].depth ();
+  if (depth != 1
+      && imvec[frameidx(0)].channelDepth (Magick::RedChannel)     == 1
+      && imvec[frameidx(0)].channelDepth (Magick::CyanChannel)    == 1
+      && imvec[frameidx(0)].channelDepth (Magick::OpacityChannel) == 1
+      && imvec[frameidx(0)].channelDepth (Magick::GrayChannel)    == 1)
+    depth = 1;
 
   // Magick::ClassType
   // PseudoClass:
@@ -677,6 +697,7 @@ use @code{imread}.\n\
   // DirectClass:
   // Image is composed of pixels which represent literal color values.
 
+  Magick::ClassType klass = imvec[frameidx(0)].classType ();
   // FIXME: GraphicsMagick does not really distinguishes between indexed and
   //        normal images. After reading a file, it decides itself the optimal
   //        way to store the image in memory, independently of the how the
@@ -684,11 +705,23 @@ use @code{imread}.\n\
   //        it seems to match the original file most of the times, this is
   //        not necessarily true all the times. See
   //          https://sourceforge.net/mailarchive/message.php?msg_id=31180507
-  //        A grayscale jpeg image reports being indexed even though the JPEG
-  //        format has no support for indexed images. So we can skip at least
-  //        for that.
+  //        In addition to the ClassType, there is also ImageType which has a
+  //        type for indexed images (PaletteType and PaletteMatteType). However,
+  //        they also don't represent the original image. Interestingly, one
+  //        would at least guess that PseudoClass would include only the Palette
+  //        types but that does not happen.
+  //
+  //        We can't do better without having format specific code which is
+  //        what we are trying to avoid by using a library such as GM. We at
+  //        least create workarounds for the most common problems.
 
-  if (klass == Magick::PseudoClass && imvec[0].magick () != "JPEG")
+  // 1) A grayscale jpeg image can report being indexed even though the
+  //    JPEG format has no support for indexed images. We can at least
+  //    fix this one.
+  if (klass == Magick::PseudoClass && imvec[0].magick () == "JPEG")
+    klass = Magick::DirectClass;
+
+  if (klass == Magick::PseudoClass)
     {
       if (depth <= 1)
         output = read_indexed_images<boolNDArray>   (imvec, frameidx,

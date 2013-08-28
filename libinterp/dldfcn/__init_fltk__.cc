@@ -255,7 +255,7 @@ private:
 };
 
 // Parameter controlling how fast we zoom when using the scrool wheel.
-static double wheel_zoom_speed = 0.05;
+static double Vwheel_zoom_speed = 0.05;
 // Parameter controlling the GUI mode.
 static enum { pan_zoom, rotate_zoom, none } gui_mode;
 
@@ -1392,7 +1392,8 @@ private:
 
                   // Determine if we're zooming in or out.
                   const double factor =
-                    (Fl::event_dy () > 0) ? 1.0 + wheel_zoom_speed : 1.0 - wheel_zoom_speed;
+                    (Fl::event_dy () > 0) ? 1.0 + Vwheel_zoom_speed
+                                          : 1.0 - Vwheel_zoom_speed;
 
                   // Get the point we're zooming about.
                   double x1, y1;
@@ -2128,35 +2129,35 @@ Undocumented internal function.\n\
   return retval;
 }
 
-// FIXME -- This function should be abstracted and made potentially
+// FIXME: This function should be abstracted and made potentially
 // available to all graphics toolkits.  This suggests putting it in
 // graphics.cc as is done for drawnow() and having the master
 // mouse_wheel_zoom function call fltk_mouse_wheel_zoom.  The same
 // should be done for gui_mode and fltk_gui_mode.  For now (2011.01.30),
 // just changing function names and docstrings.
 
-DEFUN_DLD (mouse_wheel_zoom, args, ,
+DEFUN_DLD (mouse_wheel_zoom, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{speed} =} mouse_wheel_zoom ()\n\
-@deftypefnx {Built-in Function} {} mouse_wheel_zoom (@var{speed})\n\
+@deftypefn  {Loadable Function} {@var{val} =} mouse_wheel_zoom ()\n\
+@deftypefnx {Loadable Function} {@var{old_val} =} mouse_wheel_zoom (@var{new_val})\n\
+@deftypefnx {Loadable Function} {} mouse_wheel_zoom (@var{new_val}, \"local\")\n\
 Query or set the mouse wheel zoom factor.\n\
+\n\
+The zoom factor is a number in the range (0,1) which is the percentage of the\n\
+current axis limits that will be used when zooming.  For example, if the\n\
+current x-axis limits are [0, 50] and @code{mouse_wheel_zoom} is 0.4 (40%),\n\
+then a zoom operation will change the limits by 20.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 \n\
 This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{gui_mode}\n\
 @end deftypefn")
 {
 #ifdef HAVE_FLTK
-  octave_value retval = wheel_zoom_speed;
-
-  if (args.length () == 1)
-    {
-      if (args(0).is_real_scalar ())
-        wheel_zoom_speed = args(0).double_value ();
-      else
-        error ("mouse_wheel_zoom: SPEED must be a real scalar");
-    }
-
-  return retval;
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS(wheel_zoom_speed, 0.0001, 0.9999);
 #else
   error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
   return octave_value ();

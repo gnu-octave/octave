@@ -912,7 +912,7 @@ return @code{NaN}.\n\
 %!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
 %!
-%!  nix = 0.09822388691172060573913739253 - 0.7110230642207380127317227407*I;
+%! nix = 0.09822388691172060573913739253 - 0.7110230642207380127317227407*I;
 %!
 %!assert (besselj (-alpha,x), yx, 100*eps)
 %!assert (bessely (-alpha,x), -jx, 100*eps)

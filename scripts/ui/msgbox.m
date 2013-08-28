@@ -45,10 +45,12 @@ function retval = msgbox (msg, title = "", varargin)
 
 endfunction
 
-%!demo
-%!  disp('- test msgbox message only.');
-%!  msgbox("Below, you should see 3 lines:\nline #1\nline #2, and\nline #3.");
 
 %!demo
-%!  disp('- test msgbox message and caption.');
-%!  msgbox('You should see a single line.','A msgbox');
+%! disp('- test msgbox message only.');
+%! msgbox("Below, you should see 3 lines:\nline #1\nline #2, and\nline #3.");
+
+%!demo
+%! disp('- test msgbox message and caption.');
+%! msgbox('You should see a single line.','A msgbox');
+

@@ -39,8 +39,8 @@
 %!  global H = 1;
 %!endfunction
 %!test
-%!  f;
-%!  fail ("H");
+%! f;
+%! fail ("H");
 
 %!function f ()
 %!  global H = 1;

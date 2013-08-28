@@ -121,7 +121,7 @@ endfunction
 %!error kolmogorov_smirnov_test (1)
 %!error <X must be a vector> kolmogorov_smirnov_test ({}, "unif", 2, 4)
 %!error <no not_a_distcdf or not_a_dist_cdf function found>
-%!  kolmogorov_smirnov_test (1, "not_a_dist");
+%! kolmogorov_smirnov_test (1, "not_a_dist");
 %!error <alternative foo not recognized>
-%!  kolmogorov_smirnov_test (1, "unif", 2, 4, "foo");
+%! kolmogorov_smirnov_test (1, "unif", 2, 4, "foo");
 

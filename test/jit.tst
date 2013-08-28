@@ -41,9 +41,9 @@
 %! while (1)
 %!   if (1)
 %!     break;
-%!  else
-%!    break;
-%!  endif
+%!   else
+%!     break;
+%!   endif
 %! endwhile
 
 %!testif HAVE_LLVM

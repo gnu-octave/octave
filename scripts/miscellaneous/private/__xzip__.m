@@ -108,6 +108,7 @@ function [d, f] = myfileparts (files)
   f(idx) = files(idx);
 endfunction
 
+
 ## FIXME -- reinstate these tests if we invent a way to test private
 ## functions directly.
 ##
@@ -129,3 +130,4 @@ endfunction
 ## %!    delete (filename);
 ## %!    rmdir (dirname);
 ## %!  end_unwind_protect
+

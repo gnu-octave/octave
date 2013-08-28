@@ -4435,3 +4435,54 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+DEFUN (__parse_file__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __parse_file__ (@var{file}, @var{verbose})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string file = args(0).string_value ();
+      
+      std::string full_file = octave_env::make_absolute (file);
+
+      size_t file_len = file.length ();
+
+      if ((file_len > 4 && file.substr (file_len-4) == ".oct")
+          || (file_len > 4 && file.substr (file_len-4) == ".mex")
+          || (file_len > 2 && file.substr (file_len-2) == ".m"))
+        {
+          file = octave_env::base_pathname (file);
+          file = file.substr (0, file.find_last_of ('.'));
+
+          size_t pos = file.find_last_of (file_ops::dir_sep_str ());
+          if (pos != std::string::npos)
+            file = file.substr (pos+1);
+        }
+
+      if (! error_state)
+        {
+          if (nargin == 2)
+            octave_stdout << "parsing " << full_file << std::endl;
+
+          octave_function *fcn = parse_fcn_file (full_file, file, "",
+                                                 true, false, false,
+                                                 false, "__parse_file__");
+
+          if (fcn)
+            delete fcn;
+        }
+      else
+        error ("__parse_file__: expecting file name as argument");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}

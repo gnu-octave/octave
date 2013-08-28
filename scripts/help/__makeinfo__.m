@@ -17,50 +17,28 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
-## @deftypefnx {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{see_also})
+## @deftypefn  {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text})
+## @deftypefnx {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Run @code{makeinfo} on a given text.
 ##
 ## The string @var{text} is run through the @code{__makeinfo__} program
-## to generate output in various formats. This string must contain valid
+## to generate output in various formats.  This string must contain valid
 ## Texinfo formatted text.
 ##
-## The @var{output_type} selects the format of the output. This can be either
-## @t{"html"}, @t{"texinfo"}, or @t{"plain text"}. By default this is
-## @t{"plain text"}. If @var{output_type} is @t{"texinfo"}, the @t{@@seealso}
-## macro is expanded, but otherwise the text is unaltered.
-##
-## If the optional argument @var{see_also} is present, it is used to expand the
-## Octave specific @t{@@seealso} macro. This argument must be a function handle,
-## that accepts a cell array of strings as input argument (each elements of the
-## array corresponds to the arguments to the @t{@@seealso} macro), and return
-## the expanded string. If this argument is not given, the @t{@@seealso} macro
-## will be expanded to the text
-##
-## @example
-## See also: arg1, arg2, ...
-## @end example
-##
-## @noindent
-## for @t{"plain text"} output, and
-##
-## @example
-## See also: @@ref@{arg1@}, @@ref@{arg2@}, ...
-## @end example
-##
-## @noindent
-## otherwise.
+## The @var{output_type} selects the format of the output.  This can be either
+## @qcode{"html"}, @qcode{"texinfo"}, or @qcode{"plain text"}.  By default this
+## is @qcode{"plain text"}. 
 ##
 ## The optional output argument @var{status} contains the exit status of the
 ## @code{makeinfo} program as returned by @code{system}.
 
-function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee_also)
+function [retval, status] = __makeinfo__ (text, output_type = "plain text")
 
   ## Check input
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
@@ -69,21 +47,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   endif
 
   if (! ischar (output_type))
-    error ("__makeinfo__: second input argument must be a string");
-  endif
-
-  if (nargin < 3)
-    if (strcmpi (output_type, "plain text"))
-      fsee_also = @(T) strcat ...
-          ("\nSee also:", sprintf (" %s,", T{:})(1:end-1), "\n");
-    else
-      fsee_also = @(T) strcat ...
-          ("\nSee also:", sprintf (" @ref{%s},", T{:})(1:end-1), "\n");
-    endif
-  endif
-
-  if (! isa (fsee_also, "function_handle"))
-    error ("__makeinfo__: third input argument must be a function handle");
+    error ("__makeinfo__: OUTPUT_TYPE must be a string");
   endif
 
   ## Formatting in m-files has an extra space at the beginning of every line.
@@ -126,10 +90,10 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     ## Take action depending on output type
     switch (lower (output_type))
       case "plain text"
-        cmd = sprintf ("%s --no-headers --no-warn --force --no-validate %s",
+        cmd = sprintf ("%s --no-headers --no-warn --no-validate --force %s",
                        makeinfo_program (), name);
       case "html"
-        cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force %s",
+        cmd = sprintf ("%s --html --no-headers --no-warn --no-validate --force %s",
                        makeinfo_program (), name);
       otherwise
         error ("__makeinfo__: unsupported output type: '%s'", output_type);

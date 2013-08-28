@@ -84,8 +84,8 @@
 ## command that is valid in that workspace context may be executed.
 ##
 ## @seealso{dbstop, dbclear, dbstatus, dbwhere, dbtype, dbcont, dbquit,
-##          dbstack, dbup, dbdown, keyboard, debug_on_error, debug_on_warning,
-##          debug_on_interrupt, isdebugmode}
+## dbstack, dbup, dbdown, keyboard, debug_on_error, debug_on_warning,
+## debug_on_interrupt, isdebugmode}
 ## @end deftypefn
 
 function debug ()

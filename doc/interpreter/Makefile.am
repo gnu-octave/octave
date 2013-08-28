@@ -30,7 +30,7 @@ export TEXINPUTS
 TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"
 export TEXMFCNF
 
-dist_man1_MANS = \
+dist_man_MANS = \
   mkoctfile.1 \
   octave-config.1 \
   octave.1

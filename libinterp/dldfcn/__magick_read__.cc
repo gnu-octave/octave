@@ -44,6 +44,27 @@ along with Octave; see the file COPYING.  If not, see
 #include <Magick++.h>
 #include <clocale>
 
+// We need this in case one of the sides of the image being read has
+// width 1. In those cases, the type will come as scalar instead of range
+// since that's the behaviour of the colon operator (1:1:1 will be a scalar,
+// not a range).
+static Range
+get_region_range (const octave_value& region)
+{
+  Range output;
+  if (region.is_range ())
+    output = region.range_value ();
+  else if (region.is_scalar_type ())
+    {
+      double value = region.scalar_value ();
+      output = Range (value, value);
+    }
+  else
+    error ("__magick_read__: unknow datatype for Region option");
+
+  return output;
+}
+
 static std::map<std::string, octave_idx_type>
 calculate_region (const octave_scalar_map& options)
 {
@@ -51,8 +72,8 @@ calculate_region (const octave_scalar_map& options)
   const Cell pixel_region = options.getfield ("region").cell_value ();
 
   // Subtract 1 to account for 0 indexing.
-  const Range rows     = pixel_region (0).range_value ();
-  const Range cols     = pixel_region (1).range_value ();
+  const Range rows     = get_region_range (pixel_region (0));
+  const Range cols     = get_region_range (pixel_region (1));
   region["row_start"]  = rows.base () -1;
   region["col_start"]  = cols.base () -1;
   region["row_end"]    = rows.max ()  -1;

@@ -26,3 +26,4 @@
 function delete (f, file)
   __ftp_delete__ (f.curlhandle, file);
 endfunction
+

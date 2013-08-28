@@ -994,3 +994,4 @@ endfunction
 %% Illegal format specifiers
 %!test
 %!error <unknown format specifier> strread ("1.0", "%z")
+

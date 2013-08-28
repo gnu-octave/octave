@@ -21,3 +21,4 @@ function b = saveobj (a)
   b = rmfield (b, "curlhandle");
   b.dir = __ftp_pwd (a.curlhandle);
 endfunction
+

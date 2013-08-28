@@ -660,3 +660,4 @@ endfunction
 %! fclose (fid);
 %! unlink (f);
 %! assert (msg1, lasterr);
+

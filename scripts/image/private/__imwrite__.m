@@ -116,3 +116,4 @@ function __imwrite__ (img, varargin)
   __magick_write__ (filename, ext, img, map, options);
 
 endfunction
+

@@ -56,6 +56,7 @@ function retval = optimget (options, parname, default)
 
 endfunction
 
+
 %!error optimget ()
 
 %!shared opts
@@ -65,3 +66,4 @@ endfunction
 %!assert (optimget (opts, "MaxITer"), 100);
 %!warning (optimget (opts, "Max"));
 %!warning (optimget (opts, "foobar"));
+

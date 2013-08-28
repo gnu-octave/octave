@@ -234,3 +234,4 @@ endfunction
 %!error <A must be a function or matrix> gmres ({1},2)
 %!error <M1 must be a function or matrix> gmres (1,2,3,4,5,{6})
 %!error <M2 must be a function or matrix> gmres (1,2,3,4,5,6,{7})
+

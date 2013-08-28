@@ -83,9 +83,11 @@ function [ z, varargout ] = polyeig (varargin)
 
 endfunction
 
+
 %!test
 %! C0 = [8, 0; 0, 4]; C1 = [1, 0; 0, 1];
 %! [v,z] = polyeig (C0, C1);
 %! assert (isequal (z(1), -8), true);
 %! d = C0*v + C1*v*z;
 %! assert (isequal (norm(d), 0.0), true);
+

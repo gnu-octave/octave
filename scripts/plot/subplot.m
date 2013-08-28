@@ -369,6 +369,7 @@ function subplot_align (h, varargin)
   endif
 endfunction
 
+
 %!demo
 %! clf;
 %! r = 3;

@@ -32,3 +32,4 @@ function options = __default_plot_options__ ()
   options.errorstyle = [];
 
 endfunction
+

@@ -82,3 +82,4 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   endif
 
 endfunction
+

@@ -34,3 +34,4 @@ function [msg, msgid] = __error_text__ (varargin)
   [msg, msgid] = lasterr (varargin{:});
 
 endfunction
+

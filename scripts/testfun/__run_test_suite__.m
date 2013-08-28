@@ -267,3 +267,4 @@ function report_files_with_no_tests (with, without, typ)
   n_tot = n_with + n_without;
   printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
 endfunction
+

@@ -37,32 +37,3 @@ function retval = triangle_sw (n, b)
 
 endfunction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

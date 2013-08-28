@@ -341,3 +341,4 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   endif
 
 endfunction
+

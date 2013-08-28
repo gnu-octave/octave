@@ -41,3 +41,4 @@ function varargout = gunzip (gzfile, dir = ".")
   endif
 
 endfunction
+

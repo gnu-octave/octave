@@ -767,3 +767,4 @@ endfunction
 %!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],1.5)
 %!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[], ones (2,2))
 %!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[],-1)
+

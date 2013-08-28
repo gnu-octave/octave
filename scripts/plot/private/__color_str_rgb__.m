@@ -48,3 +48,4 @@ function rgb = __color_str_rgb__ (str)
     error ("__color_str_rgb__: expecting a string argument");
   endif
 endfunction
+

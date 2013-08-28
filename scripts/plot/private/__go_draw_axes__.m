@@ -2659,3 +2659,4 @@ function retval = __do_enhanced_option__ (enhanced, obj)
     endif
   endif
 endfunction
+

@@ -31,3 +31,4 @@ function lst = dir (f)
     lst = __ftp_dir__ (f.curlhandle);
   endif
 endfunction
+

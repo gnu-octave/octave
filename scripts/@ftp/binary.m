@@ -28,3 +28,4 @@
 function binary (f)
   __ftp_binary__ (f.curlhandle);
 endfunction
+

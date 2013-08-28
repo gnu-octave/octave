@@ -203,3 +203,4 @@ endfunction
 %!error <expected date vector containing> datenum ([1, 2])
 %!error <expected date vector containing> datenum ([1,2,3,4,5,6,7])
 %!error <all inputs must be of class double> datenum (int32 (2000), int32 (1), int32 (1))
+

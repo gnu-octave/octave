@@ -357,6 +357,7 @@ function fx = guarded_eval (fun, x)
   endif
 endfunction
 
+
 %!shared opt0
 %! opt0 = optimset ("tolx", 0);
 %!assert (fzero (@cos, [0, 3], opt0), pi/2, 10*eps)

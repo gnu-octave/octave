@@ -34,3 +34,4 @@ function b = loadobj (a)
     b = rmfield (b, "remotePwd");
   endif
 endfunction
+

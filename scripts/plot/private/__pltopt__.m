@@ -231,3 +231,4 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   endif
 
 endfunction
+

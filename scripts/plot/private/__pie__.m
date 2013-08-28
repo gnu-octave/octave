@@ -198,3 +198,4 @@ function update_text_pos (all_handles)
     endfor
   endif
 endfunction
+

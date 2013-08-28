@@ -98,6 +98,7 @@ function [q, d] = polyderiv (p, a)
 
 endfunction
 
+
 %!assert(all (all (polyderiv ([1, 2, 3]) == [2, 2])));
 
 %!assert(polyderiv (13) == 0);

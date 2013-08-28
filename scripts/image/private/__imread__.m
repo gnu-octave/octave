@@ -204,3 +204,4 @@ function bool = is_valid_index_option (arg)
     bool = true;
   endif
 endfunction
+

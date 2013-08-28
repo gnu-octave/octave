@@ -78,3 +78,4 @@ function S = __sprand_impl__ (varargin)
   S = sparse (i, j, randfun (k, 1), m, n);
 
 endfunction
+

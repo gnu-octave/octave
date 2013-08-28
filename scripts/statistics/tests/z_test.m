@@ -85,3 +85,4 @@ function [pval, z] = z_test (x, m, v, alt)
   endif
 
 endfunction
+

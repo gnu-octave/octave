@@ -56,3 +56,4 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
   endfor
 
 endfunction
+

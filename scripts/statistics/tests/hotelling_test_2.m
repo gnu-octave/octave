@@ -84,3 +84,4 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
   endif
 
 endfunction
+

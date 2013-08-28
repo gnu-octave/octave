@@ -85,6 +85,7 @@ function rval = strjoin (cstr, delimiter)
 
 endfunction
 
+
 %!assert (strjoin ({"hello"}, "-"), "hello")
 %!assert (strjoin ({"hello", "world"}), "hello world")
 %!assert (strjoin ({"Octave", "Scilab", "Lush", "Yorick"}, "*"),
@@ -94,3 +95,4 @@ endfunction
 %!assert (strjoin ({'Octave','Scilab'},'\n'), "Octave\nScilab")
 %!assert (strjoin ({'Octave','Scilab'},{'\n'}), "Octave\\nScilab")
 %!assert (strjoin ({},'foo'), "")
+

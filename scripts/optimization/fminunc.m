@@ -427,3 +427,4 @@ function x = __doglegm__ (r, g, d, delta)
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
 endfunction
+

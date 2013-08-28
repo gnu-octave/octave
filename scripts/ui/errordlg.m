@@ -48,3 +48,4 @@ endfunction
 %!demo
 %! disp ('- test errordlg with prompt and caption.');
 %! errordlg ('Oops another error','This is a very long and informative caption');
+

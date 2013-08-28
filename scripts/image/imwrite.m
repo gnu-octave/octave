@@ -92,6 +92,7 @@ function imwrite (varargin)
 
 endfunction
 
+
 %% Test input validation
 %!error imwrite ()                            # Wrong # of args
 %!error imwrite (1)                           # Wrong # of args
@@ -113,3 +114,4 @@ endfunction
 %!   unlink (filename);
 %! end_unwind_protect
 %! assert (imw, imr)
+

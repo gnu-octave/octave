@@ -282,6 +282,7 @@ function bool = isa_magick (coder, filename)
   end_try_catch
 endfunction
 
+
 ## changing the function to read
 %!testif HAVE_MAGICK
 %! fmt = imformats ("jpg");

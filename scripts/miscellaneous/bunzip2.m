@@ -40,3 +40,4 @@ function varargout = bunzip2 (bzfile, dir = ".")
   endif
 
 endfunction
+

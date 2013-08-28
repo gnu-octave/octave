@@ -28,3 +28,4 @@ function handle = uicontextmenu (varargin)
   handle = __go_uicontextmenu__ (h, args{:});
 
 endfunction
+

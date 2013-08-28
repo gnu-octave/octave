@@ -442,3 +442,4 @@ function update_props (h, d)
        "markerfacecolor", get (h, "markerfacecolor"),
        "markersize", get (h, "markersize"));
 endfunction
+

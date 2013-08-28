@@ -2852,3 +2852,4 @@ function A = bandred (A, kl, ku)
     A = A';
   endif
 endfunction
+

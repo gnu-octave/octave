@@ -111,6 +111,7 @@ function ri = randi (bounds, varargin)
 
 endfunction
 
+
 %!test
 %! ri = randi (10, 1000, 1);
 %! assert (ri, fix (ri));

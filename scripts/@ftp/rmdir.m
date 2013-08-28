@@ -26,3 +26,4 @@
 function rmdir (f, path)
   __ftp_rmdir__ (f.curlhandle, path);
 endfunction
+

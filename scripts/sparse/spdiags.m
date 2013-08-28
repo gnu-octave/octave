@@ -91,3 +91,4 @@ endfunction
 %!assert (spdiags (zeros (1,0),1,1,1), sparse (0))
 %!assert (spdiags (zeros (0,1),1,1,1), sparse (0))
 %!assert (spdiags ([0.5 -1 0.5], 0:2, 1, 1), sparse(0.5))
+

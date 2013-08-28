@@ -48,3 +48,4 @@ endfunction
 ## Input validation
 %!error isequaln ()
 %!error isequaln (1)
+

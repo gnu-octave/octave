@@ -91,3 +91,4 @@ function retval = specular (sx, sy, sz, lv, vv, se)
   retval = retval .^ se;
 
 endfunction
+

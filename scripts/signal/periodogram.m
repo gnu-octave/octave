@@ -189,3 +189,4 @@ function [pxx, f] = periodogram (x, varargin)
   endif
 
 endfunction
+

@@ -52,3 +52,4 @@ function retval = wienrnd (t, d, n)
   retval = [((1: n*t)' / n), retval];
 
 endfunction
+

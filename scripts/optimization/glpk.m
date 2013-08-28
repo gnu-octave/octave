@@ -613,3 +613,4 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     __glpk__ (c, A, b, lb, ub, ctype, vartype, sense, param);
 
 endfunction
+

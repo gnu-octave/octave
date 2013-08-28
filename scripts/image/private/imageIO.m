@@ -66,3 +66,4 @@ function varargout = imageIO (core_func, fieldname, filename, varargin)
     [varargout{1:nargout}] = fmt.(fieldname) (varargin{:});
   endif
 endfunction
+

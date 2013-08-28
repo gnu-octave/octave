@@ -79,3 +79,4 @@ function text = strip_superfluous_endlines (text)
   ## Actually remove the elements
   text = text (keep);
 endfunction
+

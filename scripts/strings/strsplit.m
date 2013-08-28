@@ -209,6 +209,7 @@ function [result, matches] = strsplit (str, del, varargin)
   endif
 endfunction
 
+
 %!shared str
 %! str = "The rain in Spain stays mainly in the plain.";
 % Split on all whitespace.

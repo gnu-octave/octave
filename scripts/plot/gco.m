@@ -44,3 +44,4 @@ function h = gco ()
   h = get (get (0, "currentfigure"), "currentobject");
 
 endfunction
+

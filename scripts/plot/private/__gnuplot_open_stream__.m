@@ -43,3 +43,4 @@ function plot_stream = __gnuplot_open_stream__ (npipes, h)
     set (h, "__plot_stream__", plot_stream);
   endif
 endfunction
+

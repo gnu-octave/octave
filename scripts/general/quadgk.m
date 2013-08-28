@@ -457,3 +457,4 @@ endfunction
 %!error (quadgk (@sin))
 %!error (quadgk (@sin, -pi))
 %!error (quadgk (@sin, -pi, pi, "DummyArg"))
+

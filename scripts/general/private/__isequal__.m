@@ -182,3 +182,4 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   endif
 
 endfunction
+

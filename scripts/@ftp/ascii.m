@@ -29,3 +29,4 @@
 function ascii (f)
   __ftp_ascii__ (f.curlhandle);
 endfunction
+

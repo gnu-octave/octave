@@ -37,32 +37,3 @@ function retval = rectangle_sw (n, b)
 
 endfunction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -63,3 +63,4 @@ function retval = message_dialog (caller, msg, title = "", icon)
   endif
 
 endfunction
+

@@ -221,3 +221,4 @@ endfunction
 %!error unique({"a", "b", "c"}, "UnknownOption1", "UnknownOption2")
 %!error unique({"a", "b", "c"}, "rows", "UnknownOption2")
 %!error unique({"a", "b", "c"}, "UnknownOption1", "last")
+

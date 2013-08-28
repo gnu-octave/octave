@@ -99,3 +99,4 @@ function delete_prop (h, d, hlist, prop)
     warning ("linkprop: can not remove linked properties");
   endif
 endfunction
+

@@ -565,3 +565,4 @@ function update_data (h, d)
   set (kids(2), "xdata", xt, "ydata", yt, "zdata", zt);
   set (kids(1), "xdata", x, "ydata", y, "zdata", z);
 endfunction
+

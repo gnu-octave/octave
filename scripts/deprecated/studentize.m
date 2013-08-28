@@ -78,6 +78,7 @@ function t = studentize (x, dim)
 
 endfunction
 
+
 %!assert(studentize ([1,2,3]), [-1,0,1])
 %!assert(studentize (int8 ([1,2,3])), [-1,0,1])
 #%!assert(studentize (ones (3,2,0,2)), zeros (3,2,0,2))

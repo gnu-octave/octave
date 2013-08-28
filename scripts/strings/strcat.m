@@ -118,6 +118,7 @@ function st = strcat (varargin)
 
 endfunction
 
+
 ## test the dimensionality
 ## 1d
 %!assert (strcat ("ab ", "ab "), "abab")

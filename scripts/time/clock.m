@@ -54,6 +54,7 @@ function retval = clock ()
 
 endfunction
 
+
 %!test
 %! t1 = clock;
 %! t2 = str2num (strftime ("[%Y, %m, %d, %H, %M, %S]", localtime (time ())));

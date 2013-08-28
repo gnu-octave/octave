@@ -65,3 +65,4 @@ function [pval, chisq, df] = bartlett_test (varargin)
   endif
 
 endfunction
+

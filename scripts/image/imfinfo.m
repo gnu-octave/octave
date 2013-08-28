@@ -122,3 +122,4 @@ function info = imfinfo (varargin)
   endif
   info = imageIO (@__imfinfo__, "info", varargin, varargin{:});
 endfunction
+

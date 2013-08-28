@@ -79,3 +79,4 @@ function findfigs ()
     endif
   endfor
 endfunction
+

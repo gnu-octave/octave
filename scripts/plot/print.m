@@ -708,4 +708,3 @@ function cmd = pstoedit (opts, devopt)
   endif
 endfunction
 
-

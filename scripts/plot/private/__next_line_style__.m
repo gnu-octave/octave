@@ -55,3 +55,4 @@ function [linestyle, marker] = __next_line_style__ (reset)
   endif
 
 endfunction
+

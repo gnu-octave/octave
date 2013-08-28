@@ -66,3 +66,4 @@ function [filename, ext, cmap, options] = imwrite_filename (varargin)
   options = varargin(options_idx:end);
 
 endfunction
+

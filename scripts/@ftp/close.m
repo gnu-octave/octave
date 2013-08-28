@@ -26,3 +26,4 @@
 function dir (f)
   __ftp_close__ (f.curlhandle);
 endfunction
+

@@ -44,3 +44,4 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
   endfor
   yi(idx) = extrapval;
 endfunction
+

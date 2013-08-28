@@ -172,3 +172,4 @@ endfunction
 %!warning (optimset ("foobar", 13));
 
 %!error (optimset ("%NOT_A_REAL_FUNCTION_NAME%"))
+

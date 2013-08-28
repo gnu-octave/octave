@@ -37,3 +37,4 @@ function handle = uitoggletool (varargin)
   handle = __go_uitoggletool__ (h, args{:});
 
 endfunction
+

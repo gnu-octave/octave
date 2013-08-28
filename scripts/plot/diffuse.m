@@ -56,3 +56,4 @@ function retval = diffuse (sx, sy, sz, lv)
   retval(retval < 0) = 0;
 
 endfunction
+

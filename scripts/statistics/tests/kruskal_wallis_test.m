@@ -98,3 +98,4 @@ endfunction
 
 ## Test with ties
 %!assert (abs (kruskal_wallis_test ([86 86], [74]) - 0.157299207050285) < 0.0000000000001)
+

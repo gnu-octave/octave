@@ -556,3 +556,4 @@ function [local_packages, global_packages] = pkg (varargin)
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
   endswitch
 endfunction
+

@@ -48,3 +48,4 @@ function emp = dirempty (nm, ign)
     emp = true;
   endif
 endfunction
+

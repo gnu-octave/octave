@@ -27,3 +27,4 @@ function mex (varargin)
   args = {"--mex", varargin{:}};
   mkoctfile (args{:});
 endfunction
+

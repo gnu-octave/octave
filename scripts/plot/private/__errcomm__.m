@@ -76,3 +76,4 @@ function retval = __errcomm__ (caller, hax, varargin)
   drawnow ();
 
 endfunction
+

@@ -461,6 +461,7 @@ function [fx, jx] = make_fcn_jac (x, fcn, fjac)
   endif
 endfunction
 
+
 %!function retval = __f (p)
 %!  x = p(1);
 %!  y = p(2);

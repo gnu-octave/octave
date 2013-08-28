@@ -97,3 +97,4 @@ function [q, s] = qqplot (x, dist, varargin)
   endif
 
 endfunction
+

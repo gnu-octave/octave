@@ -62,6 +62,8 @@ function setpref (group, pref, val)
 
 endfunction
 
+
 %% Testing these functions will require some care to avoid wiping out
 %% existing (or creating unwanted) preferences for the user running the
 %% tests.
+

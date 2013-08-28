@@ -100,3 +100,4 @@ function y = arch_rnd (a, b, t)
   y = y(1:t);
 
 endfunction
+

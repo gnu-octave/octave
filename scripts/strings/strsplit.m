@@ -159,7 +159,7 @@ function [result, matches] = strsplit (str, del, varargin)
     args.delimitertype = "simple";
   endif
 
-  # Save the length of the "delimitertype" parameter
+  ## Save the length of the "delimitertype" parameter
   length_deltype = numel (args.delimitertype);
 
   if (nargin == 1 || (nargin > 1 && (islogical (del) || isnumeric (del))))

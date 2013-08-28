@@ -1392,7 +1392,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
 %! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
 %!testif HAVE_QRUPDATE
-%! # Same test as above but with more precicision
+%! ## Same test as above but with more precicision
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
 %!               0.594638  0.425302  0.562834  0.603537;
 %!               0.383594  0.291238  0.742073  0.085574;

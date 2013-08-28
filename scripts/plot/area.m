@@ -229,7 +229,7 @@ endfunction
 
 
 %!demo
-%! # Verify identity sin^2 + cos^2 = 1
+%! ## Verify identity sin^2 + cos^2 = 1
 %! clf;
 %! t = linspace (0, 2*pi, 100)';
 %! y = [sin(t).^2, cos(t).^2];
@@ -239,7 +239,7 @@ endfunction
 %! title ('area() plot');
 
 %!demo
-%! # Show effects of setting BaseValue
+%! ## Show effects of setting BaseValue
 %! clf;
 %! x = [-2:0.1:2]';
 %! y = x.^2 - 1;
@@ -258,3 +258,4 @@ endfunction
 %! h = area (x, y);
 %! set (h, 'ydata', sort (get (h, 'ydata')))
 %! title ('area() plot of sorted data');
+

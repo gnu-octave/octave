@@ -840,14 +840,14 @@ endfunction
 %! assert (a, {"a b c"; "d e"; ""; "f"});
 
 %!test
-%! # Bug #33536
+%! ## Bug #33536
 %! [a, b, c] = strread ("1,,2", "%s%s%s", "delimiter", ",");
 %! assert (a{1}, "1");
 %! assert (b{1}, "");
 %! assert (c{1}, "2");
 
 %!test
-%! # Bug #33536
+%! ## Bug #33536
 %! a = strread ("[SomeText]", "[%s", "delimiter", "]");
 %! assert (a{1}, "SomeText");
 
@@ -868,7 +868,7 @@ endfunction
 %! assert (d, int32 ([0; 0]));
 
 %!test
-%! # Default format (= %f)
+%! ## Default format (= %f)
 %1 [a, b, c] = strread ("0.12 0.234 0.3567");
 %1 assert (a, 0.12);
 %1 assert (b, 0.234);
@@ -879,13 +879,13 @@ endfunction
 %1 assert (a, [0.41; 3.57]);
 
 %!test
-%! # TreatAsEmpty
+%! ## TreatAsEmpty
 %! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", "delimiter", ",", "TreatAsEmpty", "NN");
 %! assert (c, int32 ([3; 0]));
 %! assert (d, [NaN; NaN]);
 
 %!test
-%! # No delimiters at all besides EOL.  Plain reading numbers & strings
+%! ## No delimiters at all besides EOL.  Plain reading numbers & strings
 %! str = "Text1Text2Text\nText398Text4Text\nText57Text";
 %! [a, b] = strread (str, "Text%dText%1sText");
 %! assert (a, int32 ([1; 398; 57]));
@@ -958,14 +958,14 @@ endfunction
 %! assert (b, NaN);
 
 %!test
-%! # Bug #35999
+%! ## Bug #35999
 %! [a, b, c] = strread ("", "%f");
 %! assert (isempty (a));
 %! assert (isempty (b));
 %! assert (isempty (c));
 
-%% bug #37023
 %!test
+%! ## bug #37023
 %! [a, b] = strread (" 1. 1 \n  2 3 \n", "%f %f", "endofline", "\n");
 %! assert (a, [1; 2], 1e-15);
 %! assert (b, [1; 3], 1e-15);

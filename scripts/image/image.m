@@ -170,7 +170,7 @@ function h = __img__ (hax, x, y, img, varargin)
   set (hax, "view", [0, 90]);
 
   if (strcmp (get (hax, "nextplot"), "replace"))
-    # Always reverse y-axis for images, unless hold is on
+    ## Always reverse y-axis for images, unless hold is on
     set (hax, "ydir", "reverse");
   endif
 

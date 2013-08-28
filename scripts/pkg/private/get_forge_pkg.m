@@ -49,7 +49,7 @@ function [ver, url] = get_forge_pkg (name)
     else
       ver = t{1}{1};
       if (nargout > 1)
-        # Build download string.
+        ## Build download string.
         pkg_file = sprintf ("%s-%s.tar.gz", name, ver);
         url = ["http://packages.octave.org/download/" pkg_file];
         ## Verify that the package string exists on the page.

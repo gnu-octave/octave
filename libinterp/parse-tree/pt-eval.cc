@@ -810,18 +810,18 @@ tree_evaluator::visit_statement_list (tree_statement_list& lst)
                 break;
               else
                 {
-                  // Clear preivous values before next statement is
+                  // Clear previous values before next statement is
                   // evaluated so that we aren't holding an extra
                   // reference to a value that may be used next.  For
                   // example, in code like this:
                   //
-                  //   X = rand (N);  ## refcount for X should be 1
-                  //                  ## after this statement
+                  //   X = rand (N);  # refcount for X should be 1
+                  //                  # after this statement
                   //
-                  //   X(idx) = val;  ## no extra copy of X should be
-                  //                  ## needed, but we will be faked
-                  //                  ## out if retval is not cleared
-                  //                  ## between statements here
+                  //   X(idx) = val;  # no extra copy of X should be
+                  //                  # needed, but we will be faked
+                  //                  # out if retval is not cleared
+                  //                  # between statements here
 
                   //              result_values = empty_list;
                 }

@@ -75,8 +75,8 @@ function rgb_map = hsv2rgb (hsv_map)
   ##        are outside range [0, 1].  We could also simply allow those values
   ##        and re-instate this code to produce saturating semantics.
   ## Trim map to range [0, 1]
-  #hsv_map(hsv_map < 0) = 0;
-  #hsv_map(hsv_map > 1) = 1;
+  ## hsv_map(hsv_map < 0) = 0;
+  ## hsv_map(hsv_map > 1) = 1;
 
   h = hsv_map(:,1);
   s = hsv_map(:,2);

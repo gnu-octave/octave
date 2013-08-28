@@ -649,11 +649,10 @@ return @code{NaN}.\n\
 }
 
 /*
-%! # Test values computed with GP/PARI version 2.3.3
-%!
+## Test values computed with GP/PARI version 2.3.3
 %!shared alpha, x, jx, yx, ix, kx, nix
 %!
-%! # Bessel functions, even order, positive and negative x
+%! ## Bessel functions, even order, positive and negative x
 %! alpha = 2;  x = 1.25;
 %! jx = 0.1710911312405234823613091417;
 %! yx = -1.193199310178553861283790424;
@@ -706,7 +705,7 @@ return @code{NaN}.\n\
 %!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
 %!
-%! # Bessel functions, odd order, positive and negative x
+%! ## Bessel functions, odd order, positive and negative x
 %! alpha = 3;  x = 2.5;
 %! jx = 0.2166003910391135247666890035;
 %! yx = -0.7560554967536709968379029772;
@@ -761,7 +760,7 @@ return @code{NaN}.\n\
 %!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
 %!
-%! # Bessel functions, fractional order, positive and negative x
+%! ## Bessel functions, fractional order, positive and negative x
 %!
 %! alpha = 3.5;  x = 2.75;
 %! jx = 0.1691636439842384154644784389;
@@ -819,7 +818,7 @@ return @code{NaN}.\n\
 %!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
 %!
-%! # Bessel functions, even order, complex x
+%! ## Bessel functions, even order, complex x
 %!
 %! alpha = 2;  x = 1.25 + 3.625 * I;
 %! jx = -1.299533366810794494030065917 + 4.370833116012278943267479589*I;
@@ -855,7 +854,7 @@ return @code{NaN}.\n\
 %!assert (besselh (-alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (-alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
 %!
-%! # Bessel functions, odd order, complex x
+%! ## Bessel functions, odd order, complex x
 %!
 %! alpha = 3; x = 2.5 + 1.875 * I;
 %! jx = 0.1330721523048277493333458596 + 0.5386295217249660078754395597*I;
@@ -891,7 +890,7 @@ return @code{NaN}.\n\
 %!assert (besselh (-alpha,1,x,1), -(jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (-alpha,2,x,1), -(jx - I*yx)*exp(I*x), 100*eps)
 %!
-%! # Bessel functions, fractional order, complex x
+%! ## Bessel functions, fractional order, complex x
 %!
 %! alpha = 3.5;  x = 1.75 + 4.125 * I;
 %! jx = -3.018566131370455929707009100 - 0.7585648436793900607704057611*I;

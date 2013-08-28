@@ -178,7 +178,7 @@ endfunction
 
 
 %!test # correct values and fft-polyval consistency
-%! # butterworth filter, order 2, cutoff pi/2 radians
+%! ## butterworth filter, order 2, cutoff pi/2 radians
 %! b = [0.292893218813452  0.585786437626905  0.292893218813452];
 %! a = [1  0  0.171572875253810];
 %! [h,w] = freqz (b,a,32);

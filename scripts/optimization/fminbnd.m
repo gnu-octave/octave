@@ -269,7 +269,7 @@ function print_exit_msg (info, opt=struct())
       printf ("         - increase MaxIter option.\n");
       printf ("         Current function value: %.6f\n", opt.fx);
     case -1
-      "FIXME"; ## FIXME: what's the message MATLAB prints for this case?
+      "FIXME"; # FIXME: what's the message MATLAB prints for this case?
     otherwise
       error ("internal error - fminbnd() is bug, sorry!");
   endswitch

@@ -77,8 +77,6 @@ endfunction
 %!   z = zlabel ("zlabel_string");
 %!   assert (get (gca, "zlabel"), z);
 %!   assert (get (z, "type"), "text");
-%!   ## FIXME: visible test is failing.  Not sure why.
-%!   #assert (get (z, "visible"), "off");
 %!   assert (get (z, "string"), "zlabel_string");
 %! unwind_protect_cleanup
 %!   close (hf);

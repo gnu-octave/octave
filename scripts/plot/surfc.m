@@ -82,7 +82,7 @@ function h = surfc (varargin)
 
     drawnow ();
 
-    # don't pass string arguments to __contour__()
+    ## don't pass string arguments to __contour__()
     stop_idx = find (cellfun ("isclass", varargin, "char"), 1);
     if (isempty (stop_idx))
       stop_idx = nargin;

@@ -925,7 +925,7 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 
 ## Tests for named tokens
 %!test
-%! # Parenthesis in named token (ie (int)) causes a problem
+%! ## Parenthesis in named token (ie (int)) causes a problem
 %! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
 
 %!test

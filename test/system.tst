@@ -140,7 +140,7 @@
 %!
 %! assert (deblank (s1.modestr), "-rw-rw-rw-");
 %! assert (deblank (s2.modestr), "----------");
-%! # Restore original umask value
+%! ## Restore original umask value
 %! umask (orig_umask);
 
 %!error <Invalid call to umask> umask ()
@@ -285,7 +285,7 @@
 %! d1 = pwd ();
 %! cd (xdir);
 %! if (ispc () && ! isunix ())
-%!   # should be a drive letter
+%!   ## should be a drive letter
 %!   assert (length (d1), 3);
 %!   assert (d1(2), ":");
 %!   assert (d1(3), "\\");

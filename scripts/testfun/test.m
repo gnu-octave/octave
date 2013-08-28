@@ -358,7 +358,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __name = __block(__name_position(1):__name_position(2));
         __code = __block;
         try
-          eval (__code); ## Define the function
+          eval (__code);  # Define the function
           __clear = sprintf ("%sclear %s;\n", __clear, __name);
         catch
           __success = 0;
@@ -750,9 +750,9 @@ endfunction
 %! % you should now see a spectrogram in the image window
 
 
-### now test test itself
+## now test 'test' itself
 
-%!## usage and error testing
+## usage and error testing
 % !fail ('test','usage.*test')           # no args, generates usage()
 % !fail ('test (1,2,3,4)','usage.*test') # too many args, generates usage()
 %!fail ('test ("test", "bogus")','unknown flag')  # incorrect args
@@ -770,7 +770,7 @@ endfunction
 
 %!warning <warning message> warning ('warning message');
 
-%!## test of shared variables
+## test of shared variables
 %!shared a                # create a shared variable
 %!test   a=3;             # assign to a shared variable
 %!test   assert (a,3)     # variable should equal 3
@@ -808,17 +808,17 @@ endfunction
 %! assert (x,6);
 %! assert (z,9);
 
-%!## test of assert block
+## test of assert block
 %!assert (isempty ([]))      # support for test assert shorthand
 
-%!## demo blocks
+## demo blocks
 %!demo                   # multiline demo block
 %! t = [0:0.01:2*pi]; x = sin (t);
 %! plot (t,x);
 %! % you should now see a sine wave in your figure window
 %!demo a=3               # single line demo blocks work too
 
-%!## this is a comment block. it can contain anything.
+## this is a comment block. it can contain anything.
 %!##
 %! it is the "#" as the block type that makes it a comment
 %! and it stays as a comment even through continuation lines

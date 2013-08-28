@@ -42,7 +42,7 @@ endfunction
 
 
 %!xtest
-%! # test gzip together with gunzip
+%! ## test gzip together with gunzip
 %! unwind_protect
 %!   filename = tmpnam;
 %!   dummy    = 1;

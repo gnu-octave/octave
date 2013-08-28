@@ -44,7 +44,7 @@ endfunction
 
 
 %!xtest
-%! # test for correct cleanup of temporary files
+%! ## test for correct cleanup of temporary files
 %! unwind_protect
 %!   filename = tmpnam;
 %!   dummy    = 1;

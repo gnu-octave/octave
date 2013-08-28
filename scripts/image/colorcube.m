@@ -46,12 +46,12 @@ function map = colorcube (n)
     return;
   endif
 
-  # Create colorcube of evenly spaced points with side length of n^1/3
+  ## Create colorcube of evenly spaced points with side length of n^1/3
   cubelen = fix (cbrt (n));
   reserve = n - cubelen^3; 
 
   if (reserve == 0)
-    # Steal space from blue to put the gray gradient
+    ## Steal space from blue to put the gray gradient
     [r, g, b] = meshgrid (linspace (0,1,cubelen),
                           linspace (0,1,cubelen),
                           linspace (0,1,cubelen-1));
@@ -61,16 +61,16 @@ function map = colorcube (n)
                           linspace (0,1,cubelen));
   endif
 
-  # Create map and weed out grays
+  ## Create map and weed out grays
   map = [r(:), g(:), b(:)];
   idx = any (bsxfun (@ne, map(:, 1), map(:, 2:3)), 2);
   map = map(idx, :);
 
-  # Weed out pure colors
+  ## Weed out pure colors
   idx = sum (map == 0, 2);
   map = map(idx != 2, :);
 
-  # Put in remaining gradients of pure red, green, blue, and gray
+  ## Put in remaining gradients of pure red, green, blue, and gray
   reserve = n - rows (map) - 1;
   csteps = fix (reserve/4);
   cstepsz = 1 / csteps;

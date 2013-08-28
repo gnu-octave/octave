@@ -195,7 +195,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   n_far_l   = sum (x<o_fence_l);
   n_far_h   = sum (x>o_fence_h);
 
-  # display table similar to that on pg. 33
+  ## display table similar to that on pg. 33
   plot_out = sprintf ("       Data: %s", caption);
   plot_out = [plot_out; sprintf(" ")];
   plot_out = [plot_out; sprintf("         Fenced Letter Display")];

@@ -119,25 +119,25 @@ function cache = gen_doc_cache_in_dir (directory)
   ## If 'directory' is not in the current path, add it so we search it
   dir_in_path = ismember (directory, ostrsplit (path (), pathsep ()));
 
-  # dirs not in path
+  ## dirs not in path
   if (! iscell (directory))
     directory = {directory};
   endif
   dirs_notpath = {directory{!dir_in_path}};
 
-  # add them
+  ## add them
   if (! isempty (dirs_notpath))
     cellfun (@addpath, dirs_notpath);
   endif
 
-  # create cache
+  ## create cache
   func = @(s_) create_cache (__list_functions__ (s_));
   cache = cellfun (func, directory, 'UniformOutput', false);
 
-  # concatenate results
+  ## concatenate results
   cache = [cache{:}];
 
-  #remove dirs form path
+  ## remove dirs form path
   if (! isempty (dirs_notpath))
     cellfun (@rmpath, dirs_notpath);
   endif

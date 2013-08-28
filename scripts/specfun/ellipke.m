@@ -98,13 +98,14 @@ function [k, e] = ellipke (m)
 
 endfunction
 
-%% Test complete elliptic functions of first and second kind
-%% against "exact" solution from Mathematica 3.0
+
+## Test complete elliptic functions of first and second kind
+## against "exact" solution from Mathematica 3.0
 %!test
 %! m = [0.0; 0.01; 0.1; 0.5; 0.9; 0.99; 1.0 ];
 %! [k,e] = ellipke (m);
 %!
-%! # K(1.0) is really infinity - see below
+%! ## K(1.0) is really infinity - see below
 %! k_exp = [1.5707963267948966192;
 %!          1.5747455615173559527;
 %!          1.6124413487202193982;
@@ -123,7 +124,7 @@ endfunction
 %! assert (k, k_exp, 8*eps);
 %! assert (e, e_exp, 8*eps);
 
-%% Test against A&S Table 17.1
+## Test against A&S Table 17.1
 %!test
 %! m = [0:5:50]'/100;
 %! k_exp = [1.570796326794897;
@@ -152,6 +153,7 @@ endfunction
 %! assert (k, k_exp, 1e-15);
 %! assert (e, e_exp, 1e-8);
 
-%% Test input validation
+## Test input validation
 %!error ellipke ()
 %!error ellipke (1,2,3)
+

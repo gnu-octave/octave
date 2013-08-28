@@ -653,7 +653,7 @@ gen_square_tests() {
 %!testif HAVE_UMFPACK   # simple LU + row permutations
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
@@ -662,7 +662,7 @@ gen_square_tests() {
 %!testif HAVE_UMFPACK   # simple LU + row/col permutations
 %! [L,U,P,Q] = lu (bs);
 %! assert (P'*L*U*Q', bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
@@ -671,7 +671,7 @@ gen_square_tests() {
 %!testif HAVE_UMFPACK   # LU with vector permutations
 %! [L,U,P,Q] = lu (bs,'vector');
 %! assert (L(P,:)*U(:,Q), bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
@@ -680,7 +680,7 @@ gen_square_tests() {
 %!testif HAVE_UMFPACK   # LU with scaling
 %! [L,U,P,Q,R] = lu (bs);
 %! assert (R*P'*L*U*Q', bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
@@ -757,7 +757,7 @@ gen_rectangular_tests() {
 %!testif HAVE_UMFPACK   # simple LU + row permutations
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
@@ -766,7 +766,7 @@ gen_rectangular_tests() {
 %!testif HAVE_UMFPACK   # simple LU + row/col permutations
 %! [L,U,P,Q] = lu (bs);
 %! assert (P'*L*U*Q', bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
@@ -775,7 +775,7 @@ gen_rectangular_tests() {
 %!testif HAVE_UMFPACK   # LU with vector permutations
 %! [L,U,P,Q] = lu (bs,'vector');
 %! assert (L (P,:)*U (:,Q), bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
@@ -784,7 +784,7 @@ gen_rectangular_tests() {
 %!testif HAVE_UMFPACK   # LU with scaling
 %! [L,U,P,Q,R] = lu (bs);
 %! assert (R*P'*L*U*Q', bs, 1e-10);
-%! # triangularity
+%! ## triangularity
 %! [i,j,v] = find (L);
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);

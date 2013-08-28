@@ -172,12 +172,12 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
 /*
 %!shared a, b, tol, hitol, d, u, x, y
-%! a = reshape (rand*[1:16], 4, 4);   ## Rank 2 matrix
+%! a = reshape (rand*[1:16], 4, 4);  # Rank 2 matrix
 %! b = pinv (a);
 %! tol = 4e-14;
 %! hitol = 40*sqrt (eps);
 %! d = diag ([rand, rand, hitol, hitol]);
-%! u = rand (4);                      ## Could be singular by freak accident
+%! u = rand (4);                     # Could be singular by freak accident
 %! x = inv (u)*d*u;
 %! y = pinv (x, sqrt (eps));
 %!

@@ -103,7 +103,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   endif
 
   if (nargin < 4)
-    opts.tol = 0;   ## use ARPACK default
+    opts.tol = 0;    # use ARPACK default
     opts.disp = 0;
     opts.maxit = 300;
   else
@@ -111,7 +111,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       error ("svds: OPTS must be a structure");
     endif
     if (!isfield (opts, "tol"))
-      opts.tol = 0;   ## use ARPACK default
+      opts.tol = 0;  # use ARPACK default
     else
       opts.tol = opts.tol / root2;
     endif

@@ -53,7 +53,7 @@ function retval = doc (fname)
       fname = "";
     endif
 
-    # if GUI is running, let it display the function
+    ## if GUI is running, let it display the function
     if isguirunning ()
       __octave_link_show_doc__ (fname);
     else

@@ -161,7 +161,7 @@ function ret = edit (varargin)
                                 "MODE", "async",
                                 "EDITINPLACE", false);
   ## Make sure the stateval variables survive "clear functions".
-  #mlock;
+  mlock;
 
   if (nargin == 1)
     ## User has supplied one arg, this can be a single file name

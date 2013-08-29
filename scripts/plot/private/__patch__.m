@@ -29,6 +29,7 @@
 
 function [h, failed] = __patch__ (p, varargin)
 
+  keyboard
   h = NaN;
   failed = false;
 
@@ -148,7 +149,7 @@ function [h, failed] = __patch__ (p, varargin)
             args{7} = "facecolor";
             args{8} = "interp";
             args{9} = "cdata";
-            agrs{10} = c;
+            args{10} = c;
           else
             error ("patch: color value not valid");
           endif

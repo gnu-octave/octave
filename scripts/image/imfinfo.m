@@ -33,11 +33,14 @@
 ## @item Filename
 ## The full name of the image file.
 ##
+## @item FileModDate
+## Date of last modification to the file.
+##
 ## @item FileSize
 ## Number of bytes of the image on disk
 ##
-## @item FileModDate
-## Date of last modification to the file.
+## @item Format
+## Image format (e.g., @qcode{"jpeg"}).
 ##
 ## @item Height
 ## Image height in pixels.
@@ -48,11 +51,9 @@
 ## @item BitDepth
 ## Number of bits per channel per pixel.
 ##
-## @item Format
-## Image format (e.g., @qcode{"jpeg"}).
-##
-## @item LongFormat
-## Long form image format description.
+## @item ColorType
+## Image type.  Value is @qcode{"grayscale"}, @qcode{"indexed"},
+## @qcode{"truecolor"}, @qcode{"CMYK"}, or @qcode{"undefined"}.
 ##
 ## @item XResolution
 ## X resolution of the image.
@@ -60,19 +61,16 @@
 ## @item YResolution
 ## Y resolution of the image.
 ##
-## @item TotalColors
-## Number of unique colors in the image.
+## @item ResolutionUnit
+## Units of image resolution.  Value is @qcode{"Inch"},
+## @qcode{"Centimeter"}, or @qcode{"undefined"}.
 ##
-## @item TileName
-## Tile name.
-##
-## @item AnimationDelay
+## @item DelayTime
 ## Time in 1/100ths of a second (0 to 65535) which must expire before displaying
 ## the next image in an animated sequence.
 ##
-## @item AnimationIterations
-## Number of iterations to loop an animation (e.g., Netscape loop extension)
-## for.
+## @item LoopCount
+## Number of iterations to loop an animation.
 ##
 ## @item ByteOrder
 ## Endian option for formats that support it.  Value is @qcode{"little-endian"},
@@ -82,29 +80,35 @@
 ## Gamma level of the image.  The same color image displayed on two different
 ## workstations may look different due to differences in the display monitor.
 ##
-## @item Matte
-## @code{true} if the image has transparency.
-##
-## @item ModulusDepth
-## Image modulus depth (minimum number of bits required to support
-## red/green/blue components without loss of accuracy).
-##
 ## @item Quality
-## JPEG/MIFF/PNG compression level.
+## JPEG/MIFF/PNG compression level.  Value is an integer in the range [0 100].
 ##
-## @item QuantizeColors
-## Preferred number of colors in the image.
+## @item DisposalMethod
+## Only valid for GIF images, control how successive frames are rendered (how
+## the preceding frame is disposed of) when creating a GIF animation.  Values
+## can be @qcode{"doNotSpecify"}, @qcode{"leaveInPlace"}, @qcode{"restoreBG"},
+## or @qcode{"restorePrevious"}.  For non-GIF files, value is an empty string.
 ##
-## @item ResolutionUnits
-## Units of image resolution.  Value is @qcode{"pixels per inch"},
-## @qcode{"pixels per centimeter"}, or @qcode{"undefined"}.
+## @item Chromaticities
+## Value is a 1x8 Matrix with the x,y chromaticity values for white, red,
+## green, and blue points, in that order.
 ##
-## @item ColorType
-## Image type.  Value is @qcode{"grayscale"}, @qcode{"indexed"},
-## @qcode{"truecolor"}, or @qcode{"undefined"}.
+## @item Comment
+## Image comment.
 ##
-## @item View
-## FlashPix viewing parameters.
+## @item Compression
+## Compression type.  Value can be @qcode{"none"}, @qcode{"bzip"},
+## @qcode{"fax3"}, @qcode{"fax4"}, @qcode{"jpeg"}, @qcode{"lzw"},
+## @qcode{"rle"}, @qcode{"deflate"}, @qcode{"lzma"}, @qcode{"jpeg2000"},
+## @qcode{"jbig2"}, @qcode{"jbig2"}, or @qcode{"undefined"}.
+##
+## @item Colormap
+## Colormap for each image.
+##
+## @item Orientation
+## The orientation of the image with respect to the rows and columns.  Value
+## is an integer between 1 and 8 as defined in the TIFF 6 specifications, and
+## for @sc{Matlab} compatibility.
 ## @end table
 ##
 ## @seealso{imread, imwrite, imshow, imformats}

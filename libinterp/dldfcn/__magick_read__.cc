@@ -44,6 +44,73 @@ along with Octave; see the file COPYING.  If not, see
 #include <Magick++.h>
 #include <clocale>
 
+// In theory, it should be enough to check the class:
+// Magick::ClassType
+// PseudoClass:
+// Image is composed of pixels which specify an index in a color palette.
+// DirectClass:
+// Image is composed of pixels which represent literal color values.
+//
+//  GraphicsMagick does not really distinguishes between indexed and
+//  normal images. After reading a file, it decides itself the optimal
+//  way to store the image in memory, independently of the how the
+//  image was stored in the file. That's what ClassType returns. While
+//  it seems to match the original file most of the times, this is
+//  not necessarily true all the times. See
+//    https://sourceforge.net/mailarchive/message.php?msg_id=31180507
+//  In addition to the ClassType, there is also ImageType which has a
+//  type for indexed images (PaletteType and PaletteMatteType). However,
+//  they also don't represent the original image. Not only does DirectClass
+//  can have a PaletteType, but also does a PseudoClass have non Palette
+//  types.
+//
+//        We can't do better without having format specific code which is
+//        what we are trying to avoid by using a library such as GM. We at
+//        least create workarounds for the most common problems.
+//
+// 1) A grayscale jpeg image can report being indexed even though the
+//    JPEG format has no support for indexed images. We can at least
+//    fix this one.
+static bool
+is_indexed (const Magick::Image& img)
+{
+  bool retval = false;
+
+  if (img.classType () == Magick::PseudoClass && img.magick () != "JPEG")
+    retval = true;
+
+  return retval;
+}
+
+//  The depth from depth() is not always correct for us but seems to be the
+//  best value we can get. For example, a grayscale png image with 1 bit
+//  per channel should return a depth of 1 but instead we get 8.
+//  We could check channelDepth() but then, which channel has the data
+//  is not straightforward. So we'd have to check all
+//  the channels and select the highest value. But then, I also
+//  have a 16bit TIFF whose depth returns 16 (correct), but all of the
+//  channels gives 8 (wrong). No idea why, maybe a bug in GM?
+//  Anyway, using depth() seems that only causes problems for binary
+//  images, and the problem with channelDepth() is not making set them
+//  all to 1. So we will guess that if all channels have depth of 1,
+//  then we must have a binary image.
+//  Note that we can't use AllChannels it doesn't work for this.
+//  Instead of checking all of the individual channels, we check one
+//  from RGB, CMYK, grayscale, and transparency.
+static octave_idx_type
+get_depth (Magick::Image& img)
+{
+  octave_idx_type depth = img.depth ();
+  if (depth != 1
+      && img.channelDepth (Magick::RedChannel)     == 1
+      && img.channelDepth (Magick::CyanChannel)    == 1
+      && img.channelDepth (Magick::OpacityChannel) == 1
+      && img.channelDepth (Magick::GrayChannel)    == 1)
+    depth = 1;
+
+  return depth;
+}
+
 // We need this in case one of the sides of the image being read has
 // width 1. In those cases, the type will come as scalar instead of range
 // since that's the behaviour of the colon operator (1:1:1 will be a scalar,
@@ -96,9 +163,30 @@ calculate_region (const octave_scalar_map& options)
   return region;
 }
 
+static octave_value_list
+read_maps (Magick::Image& img)
+{
+  // can't call colorMapSize on const Magick::Image
+  const octave_idx_type mapsize = img.colorMapSize ();
+  Matrix cmap                   = Matrix (mapsize, 3); // colormap
+  Matrix amap                   = Matrix (mapsize, 3); // alpha map
+  for (octave_idx_type i = 0; i < mapsize; i++)
+    {
+      const Magick::ColorRGB c = img.colorMap (i);
+      cmap(i,0) = c.red   ();
+      cmap(i,1) = c.green ();
+      cmap(i,2) = c.blue  ();
+      amap(i,0) = c.alpha ();
+    }
+  octave_value_list maps;
+  maps(0) = cmap;
+  maps(1) = amap;
+  return maps;
+}
+
 template <class T>
 static octave_value_list
-read_indexed_images (std::vector<Magick::Image>& imvec,
+read_indexed_images (const std::vector<Magick::Image>& imvec,
                      const Array<octave_idx_type>& frameidx,
                      const octave_idx_type& nargout,
                      const octave_scalar_map& options)
@@ -151,57 +239,36 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
     }
   retval(0) = octave_value (img);
 
-  // Do we need to get the colormap to interpret the image and alpha channel?
+//   Only bother reading the colormap if it was requested as output.
   if (nargout > 1)
     {
-      const octave_idx_type mapsize = imvec[def_elem].colorMapSize ();
-      Matrix cmap                   = Matrix (mapsize, 3);
-
       // In theory, it should be possible for each frame of an image to
       // have different colormaps but for Matlab compatibility, we only
-      // return the colormap of the first frame.
+      // return the colormap of the first frame.  To obtain the colormaps
+      // of different frames, one needs can either use imfinfo or a for
+      // loop around imread.
+      const octave_value_list maps =
+        read_maps (const_cast<Magick::Image&> (imvec[frameidx(def_elem)]));
 
-      // only get alpha channel if it exists and was requested as output
+      retval(1) = maps(0);
+
+      // only interpret alpha channel if it exists and was requested as output
       if (imvec[def_elem].matte () && nargout >= 3)
         {
-          Matrix amap = Matrix (mapsize, 1);
-          for (octave_idx_type i = 0; i < mapsize; i++)
-            {
-              const Magick::ColorRGB c = imvec[def_elem].colorMap (i);
-              cmap(i,0) = c.red   ();
-              cmap(i,1) = c.green ();
-              cmap(i,2) = c.blue  ();
-              amap(i,0) = c.alpha ();
-            }
+          const Matrix amap = maps(1).matrix_value ();
+          const double* amap_fvec = amap.fortran_vec ();
 
           NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
-          const octave_idx_type nPixels = alpha.numel ();
-
           double* alpha_fvec = alpha.fortran_vec ();
 
-          idx = 0;
+          // GraphicsMagick stores the alpha values inverted, i.e.,
+          // 1 for transparent and 0 for opaque so we fix that here.
+          const octave_idx_type nPixels = alpha.numel ();
           for (octave_idx_type pix = 0; pix < nPixels; pix++)
-            {
-              // GraphicsMagick stores the alpha values inverted, i.e.,
-              // 1 for transparent and 0 for opaque so we fix that here.
-              alpha_fvec[idx] = 1 - amap(img(idx), 0);
-              idx++;
-            }
+            alpha_fvec[pix] = 1 - amap_fvec[static_cast<int> (img_fvec[3])];
+
           retval(2) = alpha;
         }
-
-      else
-        {
-          for (octave_idx_type i = 0; i < mapsize; i++)
-            {
-              const Magick::ColorRGB c = imvec[def_elem].colorMap (i);
-              cmap(i,0) = c.red   ();
-              cmap(i,1) = c.green ();
-              cmap(i,2) = c.blue  ();
-            }
-        }
-
-      retval(1) = cmap;
     }
 
   return retval;
@@ -689,60 +756,8 @@ use @code{imread}.\n\
         }
     }
 
-  // FIXME: the depth here is not always correct for us but seems to be the best
-  //        value we can get. For example, a grayscale png image with 1 bit
-  //        per channel should return a depth of 1 but instead we get 8.
-  //        We could check channelDepth() but then, which channel has the data
-  //        is not straightforward. So we'd have to check all
-  //        the channels and select the highest value. But then, I also
-  //        have a 16bit TIFF whose depth returns 16 (correct), but all of the
-  //        channels gives 8 (wrong). No idea why, maybe a bug in GM?
-  //        Anyway, using depth() seems that only causes problems for binary
-  //        images, and the problem with channelDepth() is not making set them
-  //        all to 1. So we will guess that if all channels have depth of 1,
-  //        then we must have a binary image.
-  //        Note that we can't use AllChannels it doesn't work for this.
-  //        Instead of checking all of the individual channels, we check one
-  //        from RGB, CMYK, grayscale, and transparency.
-  octave_idx_type depth = imvec[frameidx(0)].depth ();
-  if (depth != 1
-      && imvec[frameidx(0)].channelDepth (Magick::RedChannel)     == 1
-      && imvec[frameidx(0)].channelDepth (Magick::CyanChannel)    == 1
-      && imvec[frameidx(0)].channelDepth (Magick::OpacityChannel) == 1
-      && imvec[frameidx(0)].channelDepth (Magick::GrayChannel)    == 1)
-    depth = 1;
-
-  // Magick::ClassType
-  // PseudoClass:
-  // Image is composed of pixels which specify an index in a color palette.
-  // DirectClass:
-  // Image is composed of pixels which represent literal color values.
-
-  Magick::ClassType klass = imvec[frameidx(0)].classType ();
-  // FIXME: GraphicsMagick does not really distinguishes between indexed and
-  //        normal images. After reading a file, it decides itself the optimal
-  //        way to store the image in memory, independently of the how the
-  //        image was stored in the file. That's what ClassType returns. While
-  //        it seems to match the original file most of the times, this is
-  //        not necessarily true all the times. See
-  //          https://sourceforge.net/mailarchive/message.php?msg_id=31180507
-  //        In addition to the ClassType, there is also ImageType which has a
-  //        type for indexed images (PaletteType and PaletteMatteType). However,
-  //        they also don't represent the original image. Interestingly, one
-  //        would at least guess that PseudoClass would include only the Palette
-  //        types but that does not happen.
-  //
-  //        We can't do better without having format specific code which is
-  //        what we are trying to avoid by using a library such as GM. We at
-  //        least create workarounds for the most common problems.
-
-  // 1) A grayscale jpeg image can report being indexed even though the
-  //    JPEG format has no support for indexed images. We can at least
-  //    fix this one.
-  if (klass == Magick::PseudoClass && imvec[0].magick () == "JPEG")
-    klass = Magick::DirectClass;
-
-  if (klass == Magick::PseudoClass)
+  const octave_idx_type depth = get_depth (imvec[frameidx(0)]);
+  if (is_indexed (imvec[frameidx(0)]))
     {
       if (depth <= 1)
         output = read_indexed_images<boolNDArray>   (imvec, frameidx,
@@ -1397,81 +1412,126 @@ use @code{imwrite}.\n\
 */
 
 #ifdef HAVE_MAGICK
-
-template<class T>
 static octave_value
-magick_to_octave_value (const T magick)
+magick_to_octave_value (const Magick::CompressionType& magick)
 {
-  return octave_value (magick);
+  switch (magick)
+    {
+      case Magick::NoCompression:
+        return octave_value ("none");
+      case Magick::BZipCompression:
+        return octave_value ("bzip");
+      case Magick::FaxCompression:
+        return octave_value ("fax3");
+      case Magick::Group4Compression:
+        return octave_value ("fax4");
+      case Magick::JPEGCompression:
+        return octave_value ("jpeg");
+      case Magick::LZWCompression:
+        return octave_value ("lzw");
+      case Magick::RLECompression:
+        // This is named "rle" for the HDF, but the same thing is named
+        // "ccitt" and "PackBits" for binary and non-binary images in TIFF.
+        return octave_value ("rle");
+      case Magick::ZipCompression:
+        return octave_value ("deflate");
+      case Magick::LZMACompression:
+        return octave_value ("lzma");
+      case Magick::JPEG2000Compression:
+        return octave_value ("jpeg2000");
+      case Magick::JBIG1Compression:
+        return octave_value ("jbig1");
+      case Magick::JBIG2Compression:
+        return octave_value ("jbig2");
+      default:
+        return octave_value ("undefined");
+    }
 }
 
 static octave_value
-magick_to_octave_value (const Magick::EndianType magick)
+magick_to_octave_value (const Magick::EndianType& magick)
 {
   switch (magick)
     {
       case Magick::LSBEndian:
         return octave_value ("little-endian");
-
       case Magick::MSBEndian:
         return octave_value ("big-endian");
-
       default:
         return octave_value ("undefined");
     }
 }
 
 static octave_value
-magick_to_octave_value (const Magick::ResolutionType magick)
+magick_to_octave_value (const Magick::OrientationType& magick)
+{
+  switch (magick)
+    {
+      // Values come from the TIFF6 spec
+      case Magick::TopLeftOrientation:
+        return octave_value (1);
+      case Magick::TopRightOrientation:
+        return octave_value (2);
+      case Magick::BottomRightOrientation:
+        return octave_value (3);
+      case Magick::BottomLeftOrientation:
+        return octave_value (4);
+      case Magick::LeftTopOrientation:
+        return octave_value (5);
+      case Magick::RightTopOrientation:
+        return octave_value (6);
+      case Magick::RightBottomOrientation:
+        return octave_value (7);
+      case Magick::LeftBottomOrientation:
+        return octave_value (8);
+      default:
+        return octave_value (1);
+    }
+}
+
+static octave_value
+magick_to_octave_value (const Magick::ResolutionType& magick)
 {
   switch (magick)
     {
       case Magick::PixelsPerInchResolution:
-        return octave_value ("pixels per inch");
-
+        return octave_value ("Inch");
       case Magick::PixelsPerCentimeterResolution:
-        return octave_value ("pixels per centimeter");
-
+        return octave_value ("Centimeter");
       default:
         return octave_value ("undefined");
     }
 }
 
-static octave_value
-magick_to_octave_value (const Magick::ImageType magick)
+// We return a map so this can be used both in imwrite and imfinfo.
+static std::map<octave_idx_type, std::string>
+disposal_methods ()
 {
-  switch (magick)
+  //  GIF Specifications:
+  //
+  // Disposal Method - Indicates the way in which the graphic is to
+  //                    be treated after being displayed.
+  //
+  //  0 -   No disposal specified. The decoder is
+  //        not required to take any action.
+  //  1 -   Do not dispose. The graphic is to be left
+  //        in place.
+  //  2 -   Restore to background color. The area used by the
+  //        graphic must be restored to the background color.
+  //  3 -   Restore to previous. The decoder is required to
+  //        restore the area overwritten by the graphic with
+  //        what was there prior to rendering the graphic.
+  //  4-7 - To be defined.
+  static std::map<octave_idx_type, std::string> methods;
+  if (methods.empty ())
     {
-      case Magick::BilevelType:
-      case Magick::GrayscaleType:
-      case Magick::GrayscaleMatteType:
-        return octave_value ("grayscale");
-
-      case Magick::PaletteType:
-      case Magick::PaletteMatteType:
-        return octave_value ("indexed");
-
-      case Magick::TrueColorType:
-      case Magick::TrueColorMatteType:
-      case Magick::ColorSeparationType:
-        return octave_value ("truecolor");
-
-      default:
-        return octave_value ("undefined");
+      methods[0] = "doNotSpecify";
+      methods[1] = "leaveInPlace";
+      methods[2] = "restoreBG";
+      methods[3] = "restorePrevious";
     }
+  return methods;
 }
-
-// We put this in a try-block because GraphicsMagick will throw
-// exceptions if a parameter isn't present in the current image.
-#define GET_PARAM(NAME, OUTNAME) \
-  try \
-    { \
-      info.contents (OUTNAME)(frame,0) = magick_to_octave_value (im.NAME ()); \
-    } \
-  catch (Magick::Warning& w) \
-    { \
-    }
-
 #endif
 
 DEFUN_DLD (__magick_finfo__, args, ,
@@ -1490,7 +1550,6 @@ use @code{imfinfo}.\n\
 #ifndef HAVE_MAGICK
   gripe_disabled_feature ("imfinfo", "Image IO");
 #else
-
   maybe_initialize_magick ();
 
   if (args.length () < 1 || ! args(0).is_string ())
@@ -1498,117 +1557,184 @@ use @code{imfinfo}.\n\
       print_usage ();
       return retval;
     }
-
   const std::string filename = args(0).string_value ();
 
-  try
+  std::vector<Magick::Image> imvec;
+  read_file (filename, imvec);
+  if (error_state)
+    return retval;
+
+  // Matlab has different list of fields for each file format. We don't.
+  static const char *fields[] =
     {
-      // Read the file.
-      std::vector<Magick::Image> imvec;
-      Magick::readImages (&imvec, args(0).string_value ());
-      int nframes = imvec.size ();
+      // These are fields that must always appear for Matlab.
+      "Filename",
+      "FileModDate",
+      "FileSize",
+      "Format",
+      "FormatVersion",
+      "Width",
+      "Height",
+      "BitDepth",
+      "ColorType",
 
-      // Create the right size for the output.
+      // These are format specific or not existent in Matlab. The most
+      // annoying thing is that Matlab may have different names for the
+      // same thing, in different formats.
+      "DelayTime",
+      "DisposalMethod",
+      "LoopCount",
+      "ByteOrder",
+      "Gamma",
+      "Chromaticities",
+      "Comment",
+      "Quality",
+      "Compression",        // same as CompressionType
+      "Colormap",           // same as ColorTable (in PNG)
+      "Orientation",
+      "ResolutionUnit",
+      "XResolution",
+      "YResolution",
+      0
+    };
 
-      static const char *fields[] =
-        {
-          "Filename",
-          "FileModDate",
-          "FileSize",
-          "Height",
-          "Width",
-          "BitDepth",
-          "Format",
-          "LongFormat",
-          "XResolution",
-          "YResolution",
-          "TotalColors",
-          "TileName",
-          "AnimationDelay",
-          "AnimationIterations",
-          "ByteOrder",
-          "Gamma",
-          "Matte",
-          "ModulusDepth",
-          "Quality",
-          "QuantizeColors",
-          "ResolutionUnits",
-          "ColorType",
-          "View",
-          0
-        };
+  // Notes for the future: GM allows to get many attributes, and even has
+  // attribute() to obtain arbitrary ones, that may be set in only some
+  // cases. The following is a list of some methods and into what possible
+  // Matlab value they may be converted.
+  //
+  //  colorSpace()      -> PhotometricInterpretation
+  //  backgroundColor() -> BackgroundColor
+  //  interlaceType()   -> Interlaced, InterlaceType, and PlanarConfiguration
+  //  label()           -> Title
 
-      octave_map info (dim_vector (nframes, 1), string_vector (fields));
+  // Create the right size for the output.
+  const octave_idx_type nFrames = imvec.size ();
+  octave_map info (dim_vector (nFrames, 1), string_vector (fields));
 
-      file_stat fs (filename);
+  const std::string format (imvec[0].magick ());
+  // For each frame in the image (some images contain multiple
+  // layers, each to be treated like a separate image). So we create
+  // octave_scalar_map and insert them in the octave_map during the
+  // loop.  Since some fields will never change value, we set the
+  // template
+  octave_scalar_map template_info = (string_vector (fields));
 
-      std::string filetime;
+  template_info.setfield ("Format", octave_value (format));
+  // We can't actually get FormatVersion but even Matlab sometimes can't.
+  template_info.setfield ("FormatVersion", octave_value (""));
 
-      if (fs)
-        {
-          octave_localtime mtime = fs.mtime ();
-
-          filetime = mtime.strftime ("%e-%b-%Y %H:%M:%S");
-        }
-      else
-        {
-          std::string msg = fs.error ();
-
-          error ("imfinfo: error reading '%s': %s",
-                 filename.c_str (), msg.c_str ());
-
-          return retval;
-        }
-
-      // For each frame in the image (some images contain multiple
-      // layers, each to be treated like a separate image).
-      for (int frame = 0; frame < nframes; frame++)
-        {
-          Magick::Image im = imvec[frame];
-
-          // Add file name and timestamp.
-          info.contents ("Filename")(frame,0) = filename;
-          info.contents ("FileModDate")(frame,0) = filetime;
-
-          // Annoying CamelCase naming is for Matlab compatibility.
-          GET_PARAM (fileSize, "FileSize")
-          GET_PARAM (rows, "Height")
-          GET_PARAM (columns, "Width")
-          GET_PARAM (depth, "BitDepth")
-          GET_PARAM (magick, "Format")
-          GET_PARAM (format, "LongFormat")
-          GET_PARAM (xResolution, "XResolution")
-          GET_PARAM (yResolution, "YResolution")
-          GET_PARAM (totalColors, "TotalColors")
-          GET_PARAM (tileName, "TileName")
-          GET_PARAM (animationDelay, "AnimationDelay")
-          GET_PARAM (animationIterations, "AnimationIterations")
-          GET_PARAM (endian, "ByteOrder")
-          GET_PARAM (gamma, "Gamma")
-          GET_PARAM (matte, "Matte")
-          GET_PARAM (modulusDepth, "ModulusDepth")
-          GET_PARAM (quality, "Quality")
-          GET_PARAM (quantizeColors, "QuantizeColors")
-          GET_PARAM (resolutionUnits, "ResolutionUnits")
-          GET_PARAM (type, "ColorType")
-          GET_PARAM (view, "View")
-        }
-
-      retval = octave_value (info);
+  const file_stat fs (filename);
+  if (fs)
+    {
+      const octave_localtime mtime (fs.mtime ());
+      const std::string filetime = mtime.strftime ("%e-%b-%Y %H:%M:%S");
+      template_info.setfield ("Filename",    octave_value (filename));
+      template_info.setfield ("FileModDate", octave_value (filetime));
+      template_info.setfield ("FileSize",    octave_value (fs.size ()));
     }
-  catch (Magick::Warning& w)
+  else
     {
-      warning ("Magick++ warning: %s", w.what ());
-    }
-  catch (Magick::ErrorCoder& e)
-    {
-      warning ("Magick++ coder error: %s", e.what ());
-    }
-  catch (Magick::Exception& e)
-    {
-      error ("Magick++ exception: %s", e.what ());
+      error ("imfinfo: error reading '%s': %s",
+             filename.c_str (), fs.error ().c_str ());
       return retval;
     }
+
+  std::map<octave_idx_type, std::string> gif_methods = disposal_methods ();
+
+  for (octave_idx_type frame = 0; frame < nFrames; frame++)
+    {
+      octave_scalar_map info_frame (template_info);
+      const Magick::Image img = imvec[frame];
+
+      info_frame.setfield ("Width",  octave_value (img.columns ()));
+      info_frame.setfield ("Height", octave_value (img.rows ()));
+      info_frame.setfield ("BitDepth",
+        octave_value (get_depth (const_cast<Magick::Image&> (img))));
+
+      // Stuff related to colormap, image class and type
+      // Because GM is too smart for us... Read the comments in is_indexed()
+      {
+        std::string color_type;
+        Matrix cmap;
+        if (is_indexed (img))
+          {
+            color_type = "indexed";
+            cmap = read_maps (const_cast<Magick::Image&> (img))(0).matrix_value ();
+          }
+        else
+          {
+            switch (img.type ())
+              {
+                case Magick::BilevelType:
+                case Magick::GrayscaleType:
+                case Magick::GrayscaleMatteType:
+                  color_type = "grayscale";
+                  break;
+
+                case Magick::TrueColorType:
+                case Magick::TrueColorMatteType:
+                  color_type = "truecolor";
+                  break;
+
+                case Magick::PaletteType:
+                case Magick::PaletteMatteType:
+                  // we should never get here or is_indexed needs to be fixed
+                  color_type = "indexed";
+                  break;
+
+                case Magick::ColorSeparationType:
+                case Magick::ColorSeparationMatteType:
+                  color_type = "CMYK";
+                  break;
+
+                default:
+                  color_type = "undefined";
+              }
+          }
+        info_frame.setfield ("ColorType",           octave_value (color_type));
+        info_frame.setfield ("Colormap",            octave_value (cmap));
+      }
+
+      info_frame.setfield ("Gamma",     octave_value (img.gamma ()));
+      {
+        // Not all images have chroma values. In such cases, they'll
+        // be all zeros. SO rather than send a matrix of zeros, we will
+        // check for that, and send an empty vector instead.
+        RowVector chromaticities (8);
+        double* chroma_fvec = chromaticities.fortran_vec ();
+        img.chromaWhitePoint    (&chroma_fvec[0], &chroma_fvec[1]);
+        img.chromaRedPrimary    (&chroma_fvec[2], &chroma_fvec[3]);
+        img.chromaGreenPrimary  (&chroma_fvec[4], &chroma_fvec[5]);
+        img.chromaBluePrimary   (&chroma_fvec[6], &chroma_fvec[7]);
+        if (chromaticities.nnz () == 0)
+          chromaticities = RowVector (0);
+        info_frame.setfield ("Chromaticities", octave_value (chromaticities));
+      }
+
+      info_frame.setfield ("XResolution",   octave_value (img.xResolution ()));
+      info_frame.setfield ("YResolution",   octave_value (img.yResolution ()));
+      info_frame.setfield ("DelayTime",     octave_value (img.animationDelay ()));
+      info_frame.setfield ("LoopCount",     octave_value (img.animationIterations ()));
+      info_frame.setfield ("Quality",       octave_value (img.quality ()));
+      info_frame.setfield ("Comment",       octave_value (img.comment ()));
+
+      info_frame.setfield ("DisposalMethod",
+        octave_value (format == "GIF"?
+                      gif_methods[img.gifDisposeMethod ()] : ""));
+
+      info_frame.setfield ("Compression",
+        magick_to_octave_value (img.compressType ()));
+      info_frame.setfield ("Orientation",
+        magick_to_octave_value (img.orientation ()));
+      info_frame.setfield ("ResolutionUnit",
+        magick_to_octave_value (img.resolutionUnits ()));
+      info_frame.setfield ("ByteOrder",
+        magick_to_octave_value (img.endian ()));
+
+      info.fast_elem_insert (frame, info_frame);
+    }
+  retval = octave_value (info);
 #endif
   return retval;
 }
@@ -1617,8 +1743,6 @@ use @code{imfinfo}.\n\
 ## No test needed for internal helper function.
 %!assert (1)
 */
-
-#undef GET_PARAM
 
 DEFUN_DLD (__magick_formats__, args, ,
   "-*- texinfo -*-\n\

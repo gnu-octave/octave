@@ -39,12 +39,17 @@
 ## @nospell{MxNx3} matrix.  Gray-level and black-and-white images are
 ## of size @nospell{MxN}.  Multipage images will have an additional 4th
 ## dimension.
+##
 ## The bit depth of the image determines the
-## class of the output: @qcode{"uint8"} or @qcode{"uint16"} for gray
-## and color, and @qcode{"logical"} for black and white.
+## class of the output: @qcode{"uint8"}, @qcode{"uint16"} or @qcode{"single"}
+## for gray and color, and @qcode{"logical"} for black and white.
 ## Note that indexed images always return the indexes for a colormap,
 ## independent if @var{map} is a requested output.  To obtain the actual
-## RGB image, use @code{ind2rgb}.
+## RGB image, use @code{ind2rgb}.  When more than one indexed image is being
+## read, @var{map} is obtained from the first.  In some rare cases this
+## may be incorrect and @code{imfinfo] can be used to obtain the colormap of
+## each image.
+##
 ## See the Octave manual for more information in representing images.
 ##
 ## Some file formats, such as TIFF and GIF, are able to store multiple

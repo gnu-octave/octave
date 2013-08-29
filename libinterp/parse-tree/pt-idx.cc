@@ -360,7 +360,7 @@ tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lval
                   // contains the second (or third, etc.) "end" token,
                   // so we must evaluate everything up to the point of
                   // that argument list so we can pass the appropriate
-                  // value to the built-in __end__ function.
+                  // value to the built-in end function.
 
                   const octave_value_list tmp_list
                     = tmp.subsref (type.substr (tmpi, i - tmpi), idx, nargout);

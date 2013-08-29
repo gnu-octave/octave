@@ -126,7 +126,7 @@ static const octave_value *indexed_object = 0;
 static int index_position = 0;
 static int num_indices = 0;
 
-DEFCONSTFUN (__end__, , ,
+DEFCONSTFUN (end, , ,
   "internal function")
 {
   octave_value retval;

@@ -401,6 +401,8 @@ symbol_exist (const std::string& name, const std::string& type)
       struct_elts = name.substr (pos+1);
       symbol_name = name.substr (0, pos);
     }
+  else if (is_keyword (symbol_name))
+    return retval;
 
   // We shouldn't need to look in the global symbol table, since any
   // name that is visible in the current scope will be in the local

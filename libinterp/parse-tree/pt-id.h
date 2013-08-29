@@ -55,7 +55,7 @@ public:
 
   ~tree_identifier (void) { }
 
-  bool has_magic_end (void) const { return (name () == "__end__"); }
+  bool has_magic_end (void) const { return (name () == "end"); }
 
   bool is_identifier (void) const { return true; }
 

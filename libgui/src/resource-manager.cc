@@ -308,7 +308,6 @@ resource_manager::octave_keywords (void)
       "__display_tokens__ "
       "__dsearchn__ "
       "__dump_symtab_info__ "
-      "__end__ "
       "__error_text__ "
       "__finish__ "
       "__fltk_ginput__ "

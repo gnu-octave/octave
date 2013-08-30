@@ -1549,9 +1549,9 @@ magick_to_octave_value (const Magick::ResolutionType& magick)
     }
 }
 
-// We return a map so this can be used both in imwrite and imfinfo.
+// Meant to be shared with both imfinfo and imwrite.
 static std::map<octave_idx_type, std::string>
-disposal_methods ()
+init_disposal_methods ()
 {
   //  GIF Specifications:
   //
@@ -1578,6 +1578,72 @@ disposal_methods ()
     }
   return methods;
 }
+
+static bool
+is_valid_exif (const std::string& val)
+{
+  // Sometimes GM will return the string "unknown" instead of empty
+  // for an empty value.
+  return (! val.empty () && val != "unknown");
+}
+
+static void
+fill_exif (octave_scalar_map& map, Magick::Image& img,
+           const std::string& key)
+{
+  const std::string attr = img.attribute ("EXIF:" + key);
+  if (is_valid_exif (attr))
+    map.setfield (key, octave_value (attr));
+  return;
+}
+
+static void
+fill_exif_ints (octave_scalar_map& map, Magick::Image& img,
+                const std::string& key)
+{
+  const std::string attr = img.attribute ("EXIF:" + key);
+  if (is_valid_exif (attr))
+    {
+      // string of the type "float,float,float....."
+      float number;
+      ColumnVector values (std::count (attr.begin (), attr.end (), ',') +1);
+      std::string sub;
+      std::istringstream sstream (attr);
+      octave_idx_type n = 0;
+      while (std::getline (sstream, sub, char (',')))
+        {
+          sscanf (sub.c_str (), "%f", &number);
+          values(n++) = number;
+        }
+      map.setfield (key, octave_value (values));
+    }
+  return;
+}
+
+static void
+fill_exif_floats (octave_scalar_map& map, Magick::Image& img,
+                  const std::string& key)
+{
+  const std::string attr = img.attribute ("EXIF:" + key);
+  if (is_valid_exif (attr))
+    {
+      // string of the type "int/int,int/int,int/int....."
+      int numerator;
+      int denominator;
+      ColumnVector values (std::count (attr.begin (), attr.end (), ',') +1);
+      std::string sub;
+      std::istringstream sstream (attr);
+      octave_idx_type n = 0;
+      while (std::getline (sstream, sub, ','))
+        {
+          sscanf (sub.c_str (), "%i/%i", &numerator, &denominator);
+          values(n++) = double (numerator) / double (denominator);
+        }
+      map.setfield (key, octave_value (values));
+    }
+  return;
+}
+
 #endif
 
 DEFUN_DLD (__magick_finfo__, args, ,
@@ -1609,8 +1675,27 @@ use @code{imfinfo}.\n\
   read_file (filename, imvec);
   if (error_state)
     return retval;
+  const octave_idx_type nFrames = imvec.size ();
+  const std::string format = imvec[0].magick ();
 
-  // Matlab has different list of fields for each file format. We don't.
+  // Here's how this function works. We need to return a struct array, one
+  // struct for each image in the file (remember, there are image
+  // that allow for multiple images in the same file). Now, Matlab seems
+  // to have format specific code so the fields on the struct are different
+  // for each format. It only has a small subset that is common to all
+  // of them, the others are undocumented. Because we try to abstract from
+  // the formats we always return the same list of fields (note that with
+  // GM we support more than 88 formats. That's way more than Matlab, and
+  // I don't want to write specific code for each of them).
+  //
+  // So what we do is we create an octave_scalar_map, fill it with the
+  // information for that image, and then insert it into an octave_map.
+  // Because in the same file, different images may have values for
+  // different fields, we can't create a field only if there's a value.
+  // Bad things happen if we merge octave_scalar_maps with different
+  // fields from the others (suppose for example a TIFF file with 4 images,
+  // where only the third image has a colormap.
+
   static const char *fields[] =
     {
       // These are fields that must always appear for Matlab.
@@ -1626,7 +1711,7 @@ use @code{imfinfo}.\n\
 
       // These are format specific or not existent in Matlab. The most
       // annoying thing is that Matlab may have different names for the
-      // same thing, in different formats.
+      // same thing in different formats.
       "DelayTime",
       "DisposalMethod",
       "LoopCount",
@@ -1641,29 +1726,33 @@ use @code{imfinfo}.\n\
       "ResolutionUnit",
       "XResolution",
       "YResolution",
+      "Software",           // sometimes is an Exif tag
+      "Make",               // actually an Exif tag
+      "Model",              // actually an Exif tag
+      "DateTime",           // actually an Exif tag
+      "ImageDescription",   // actually an Exif tag
+      "Artist",             // actually an Exif tag
+      "Copyright",          // actually an Exif tag
+      "DigitalCamera",
+      "GPSInfo",
+      // Notes for the future: GM allows to get many attributes, and even has
+      // attribute() to obtain arbitrary ones, that may exist in only some
+      // cases. The following is a list of some methods and into what possible
+      // Matlab compatible values they may be converted.
+      //
+      //  colorSpace()      -> PhotometricInterpretation
+      //  backgroundColor() -> BackgroundColor
+      //  interlaceType()   -> Interlaced, InterlaceType, and PlanarConfiguration
+      //  label()           -> Title
       0
     };
 
-  // Notes for the future: GM allows to get many attributes, and even has
-  // attribute() to obtain arbitrary ones, that may be set in only some
-  // cases. The following is a list of some methods and into what possible
-  // Matlab value they may be converted.
-  //
-  //  colorSpace()      -> PhotometricInterpretation
-  //  backgroundColor() -> BackgroundColor
-  //  interlaceType()   -> Interlaced, InterlaceType, and PlanarConfiguration
-  //  label()           -> Title
-
-  // Create the right size for the output.
-  const octave_idx_type nFrames = imvec.size ();
+  // The one we will return at the end
   octave_map info (dim_vector (nFrames, 1), string_vector (fields));
 
-  const std::string format (imvec[0].magick ());
-  // For each frame in the image (some images contain multiple
-  // layers, each to be treated like a separate image). So we create
-  // octave_scalar_map and insert them in the octave_map during the
-  // loop.  Since some fields will never change value, we set the
-  // template
+  // Some of the fields in the struct are about file information and will be
+  // the same for all images in the file. So we create a template, fill in
+  // those values, and make a copy of the template for each image.
   octave_scalar_map template_info = (string_vector (fields));
 
   template_info.setfield ("Format", octave_value (format));
@@ -1685,8 +1774,6 @@ use @code{imfinfo}.\n\
              filename.c_str (), fs.error ().c_str ());
       return retval;
     }
-
-  std::map<octave_idx_type, std::string> gif_methods = disposal_methods ();
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
@@ -1738,14 +1825,13 @@ use @code{imfinfo}.\n\
                   color_type = "undefined";
               }
           }
-        info_frame.setfield ("ColorType",           octave_value (color_type));
-        info_frame.setfield ("Colormap",            octave_value (cmap));
+        info_frame.setfield ("ColorType", octave_value (color_type));
+        info_frame.setfield ("Colormap",  octave_value (cmap));
       }
 
-      info_frame.setfield ("Gamma",     octave_value (img.gamma ()));
       {
         // Not all images have chroma values. In such cases, they'll
-        // be all zeros. SO rather than send a matrix of zeros, we will
+        // be all zeros. So rather than send a matrix of zeros, we will
         // check for that, and send an empty vector instead.
         RowVector chromaticities (8);
         double* chroma_fvec = chromaticities.fortran_vec ();
@@ -1758,16 +1844,13 @@ use @code{imfinfo}.\n\
         info_frame.setfield ("Chromaticities", octave_value (chromaticities));
       }
 
+      info_frame.setfield ("Gamma",         octave_value (img.gamma ()));
       info_frame.setfield ("XResolution",   octave_value (img.xResolution ()));
       info_frame.setfield ("YResolution",   octave_value (img.yResolution ()));
       info_frame.setfield ("DelayTime",     octave_value (img.animationDelay ()));
       info_frame.setfield ("LoopCount",     octave_value (img.animationIterations ()));
       info_frame.setfield ("Quality",       octave_value (img.quality ()));
       info_frame.setfield ("Comment",       octave_value (img.comment ()));
-
-      info_frame.setfield ("DisposalMethod",
-        octave_value (format == "GIF"?
-                      gif_methods[img.gifDisposeMethod ()] : ""));
 
       info_frame.setfield ("Compression",
         magick_to_octave_value (img.compressType ()));
@@ -1778,8 +1861,227 @@ use @code{imfinfo}.\n\
       info_frame.setfield ("ByteOrder",
         magick_to_octave_value (img.endian ()));
 
+      // It is not possible to know if there's an Exif field so we just
+      // check for the Exif Version value. If it does exists, then we
+      // bother about looking for specific fields.
+      {
+        Magick::Image& cimg = const_cast<Magick::Image&> (img);
+
+        // These will be in Exif tags but must appear as fields in the
+        // base struct array, not as another struct in one of its fields.
+        // This is likely because they belong to the Baseline TIFF specs
+        // and may appear out of the Exif tag. So first we check if it
+        // exists outside the Exif tag.
+        // See Section 4.6.4, table 4, page 28 of Exif specs version 2.3
+        // (CIPA DC- 008-Translation- 2010)
+        static const char *base_exif_str_fields[] = {
+          "DateTime",
+          "ImageDescription",
+          "Make",
+          "Model",
+          "Software",
+          "Artist",
+          "Copyright",
+          0,
+        };
+        static const string_vector base_exif_str (base_exif_str_fields);
+        static const octave_idx_type n_base_exif_str = base_exif_str.numel ();
+        for (octave_idx_type field = 0; field < n_base_exif_str; field++)
+          {
+            info_frame.setfield (base_exif_str[field],
+              octave_value (cimg.attribute (base_exif_str[field])));
+            fill_exif (info_frame, cimg, base_exif_str[field]);
+          }
+
+        octave_scalar_map camera;
+        octave_scalar_map gps;
+        if (! cimg.attribute ("EXIF:ExifVersion").empty ())
+          {
+            // See Section 4.6.5, table 7 and 8, over pages page 42 to 43
+            // of Exif specs version 2.3 (CIPA DC- 008-Translation- 2010)
+
+            // Listed on the Exif specs as being of type ASCII.
+            static const char *exif_str_fields[] = {
+              "RelatedSoundFile",
+              "DateTimeOriginal",
+              "DateTimeDigitized",
+              "SubSecTime",
+              "DateTimeOriginal",
+              "SubSecTimeOriginal",
+              "SubSecTimeDigitized",
+              "ImageUniqueID",
+              "CameraOwnerName",
+              "BodySerialNumber",
+              "LensMake",
+              "LensModel",
+              "LensSerialNumber",
+              "SpectralSensitivity",
+              // These last two are of type undefined but most likely will
+              // be strings. Even if they're not GM returns a string anyway.
+              "UserComment",
+              "MakerComment",
+              0
+            };
+            static const string_vector exif_str (exif_str_fields);
+            static const octave_idx_type n_exif_str = exif_str.numel ();
+            for (octave_idx_type field = 0; field < n_exif_str; field++)
+              fill_exif (camera, cimg, exif_str[field]);
+
+            // Listed on the Exif specs as being of type SHORT or LONG.
+            static const char *exif_int_fields[] = {
+              "ColorSpace",
+              "ExifImageWidth",  // PixelXDimension (CPixelXDimension in Matlab)
+              "ExifImageHeight", // PixelYDimension (CPixelYDimension in Matlab)
+              "PhotographicSensitivity",
+              "StandardOutputSensitivity",
+              "RecommendedExposureIndex",
+              "ISOSpeed",
+              "ISOSpeedLatitudeyyy",
+              "ISOSpeedLatitudezzz",
+              "FocalPlaneResolutionUnit",
+              "FocalLengthIn35mmFilm",
+              // Listed as SHORT or LONG but with more than 1 count.
+              "SubjectArea",
+              "SubjectLocation",
+              // While the following are an integer, their value have a meaning
+              // that must be represented as a string for Matlab compatibility.
+              // For example, a 3 on ExposureProgram, would return
+              // "Aperture priority" as defined on the Exif specs.
+              "ExposureProgram",
+              "SensitivityType",
+              "MeteringMode",
+              "LightSource",
+              "Flash",
+              "SensingMethod",
+              "FileSource",
+              "CustomRendered",
+              "ExposureMode",
+              "WhiteBalance",
+              "SceneCaptureType",
+              "GainControl",
+              "Contrast",
+              "Saturation",
+              "Sharpness",
+              "SubjectDistanceRange",
+              0
+            };
+            static const string_vector exif_int (exif_int_fields);
+            static const octave_idx_type n_exif_int = exif_int.numel ();
+            for (octave_idx_type field = 0; field < n_exif_int; field++)
+              fill_exif_ints (camera, cimg, exif_int[field]);
+
+            // Listed as RATIONAL or SRATIONAL
+            static const char *exif_float_fields[] = {
+              "Gamma",
+              "CompressedBitsPerPixel",
+              "ExposureTime",
+              "FNumber",
+              "ShutterSpeedValue",  // SRATIONAL
+              "ApertureValue",
+              "BrightnessValue",    // SRATIONAL
+              "ExposureBiasValue",  // SRATIONAL
+              "MaxApertureValue",
+              "SubjectDistance",
+              "FocalLength",
+              "FlashEnergy",
+              "FocalPlaneXResolution",
+              "FocalPlaneYResolution",
+              "ExposureIndex",
+              "DigitalZoomRatio",
+              // Listed as RATIONAL or SRATIONAL with more than 1 count.
+              "LensSpecification",
+              0
+            };
+            static const string_vector exif_float (exif_float_fields);
+            static const octave_idx_type n_exif_float = exif_float.numel ();
+            for (octave_idx_type field = 0; field < n_exif_float; field++)
+              fill_exif_floats (camera, cimg, exif_float[field]);
+
+            // Inside a Exif field, it is possible that there is also a
+            // GPS field. This is not the same as ExifVersion but seems
+            // to be how we have to check for it.
+            if (cimg.attribute ("EXIF:GPSInfo") != "unknown")
+              {
+                // The story here is the same as with Exif.
+                // See Section 4.6.6, table 15 on page 68 of Exif specs
+                // version 2.3 (CIPA DC- 008-Translation- 2010)
+
+                static const char *gps_str_fields[] = {
+                  "GPSLatitudeRef",
+                  "GPSLongitudeRef",
+                  "GPSAltitudeRef",
+                  "GPSSatellites",
+                  "GPSStatus",
+                  "GPSMeasureMode",
+                  "GPSSpeedRef",
+                  "GPSTrackRef",
+                  "GPSImgDirectionRef",
+                  "GPSMapDatum",
+                  "GPSDestLatitudeRef",
+                  "GPSDestLongitudeRef",
+                  "GPSDestBearingRef",
+                  "GPSDestDistanceRef",
+                  "GPSDateStamp",
+                  0
+                };
+                static const string_vector gps_str (gps_str_fields);
+                static const octave_idx_type n_gps_str = gps_str.numel ();
+                for (octave_idx_type field = 0; field < n_gps_str; field++)
+                  fill_exif (gps, cimg, gps_str[field]);
+
+                static const char *gps_int_fields[] = {
+                  "GPSDifferential",
+                  0
+                };
+                static const string_vector gps_int (gps_int_fields);
+                static const octave_idx_type n_gps_int = gps_int.numel ();
+                for (octave_idx_type field = 0; field < n_gps_int; field++)
+                  fill_exif_ints (gps, cimg, gps_int[field]);
+
+                static const char *gps_float_fields[] = {
+                  "GPSAltitude",
+                  "GPSDOP",
+                  "GPSSpeed",
+                  "GPSTrack",
+                  "GPSImgDirection",
+                  "GPSDestBearing",
+                  "GPSDestDistance",
+                  "GPSHPositioningError",
+                  // Listed as RATIONAL or SRATIONAL with more than 1 count.
+                  "GPSLatitude",
+                  "GPSLongitude",
+                  "GPSTimeStamp",
+                  "GPSDestLatitude",
+                  "GPSDestLongitude",
+                  0
+                };
+                static const string_vector gps_float (gps_float_fields);
+                static const octave_idx_type n_gps_float = gps_float.numel ();
+                for (octave_idx_type field = 0; field < n_gps_float; field++)
+                  fill_exif_floats (gps, cimg, gps_float[field]);
+
+              }
+          }
+        info_frame.setfield ("DigitalCamera", octave_value (camera));
+        info_frame.setfield ("GPSInfo",       octave_value (gps));
+      }
+
       info.fast_elem_insert (frame, info_frame);
     }
+
+  if (format == "GIF")
+    {
+      static std::map<octave_idx_type, std::string> disposal_methods
+        = init_disposal_methods ();
+      string_vector methods (nFrames);
+      for (octave_idx_type frame = 0; frame < nFrames; frame++)
+        methods[frame] = disposal_methods[imvec[frame].gifDisposeMethod ()];
+      info.setfield ("DisposalMethod", Cell (methods));
+    }
+  else
+    info.setfield ("DisposalMethod",
+                   Cell (dim_vector (nFrames, 1), octave_value ("")));
+
   retval = octave_value (info);
 #endif
   return retval;

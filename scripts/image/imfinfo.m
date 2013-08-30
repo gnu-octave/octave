@@ -109,6 +109,37 @@
 ## The orientation of the image with respect to the rows and columns.  Value
 ## is an integer between 1 and 8 as defined in the TIFF 6 specifications, and
 ## for @sc{Matlab} compatibility.
+##
+## @item Software
+## Name and version of the software or firmware of the camera or image input
+## device used to generate the image.
+##
+## @item Make
+## The manufacturer of the recording equipment.  This is the manufacture of the
+## DSC, scanner, video digitizer or other equipment that generated the image.
+##
+## @item Model
+## The model name or model number of the recording equipment as mentioned
+## on the field @qcode{"Make"}.
+##
+## @item DateTime
+## The date and time of image creation as defined by the Exif standard, i.e,
+## it is the date and time the file was changed.
+##
+## @item ImageDescription
+## The title of the image as defined by the Exif standard.
+##
+## @item Artist
+## Name of the camera owner, photographer or image creator.
+##
+## @item Copyright
+## Copyright notice of the person or organization claiming rights to the image.
+##
+## @item DigitalCamera
+## A struct with information retrieved from the Exif tag.
+##
+## @item GPSInfo
+## A struct with geotagging information retrieved from the Exif tag.
 ## @end table
 ##
 ## @seealso{imread, imwrite, imshow, imformats}

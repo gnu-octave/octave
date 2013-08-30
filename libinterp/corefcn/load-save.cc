@@ -1326,6 +1326,8 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
     {
       for (int i = argv_idx; i < argc; i++)
         {
+          if (argv[i] == "")
+            continue;  // Skip empty vars for Matlab compatibility
           if (! save_vars (os, argv[i], fmt, save_as_floats))
             warning ("save: no such variable '%s'", argv[i].c_str ());
         }

@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <fontconfig/fontconfig.h>
 #endif
 
+#include <clocale>
+#include <cwchar>
 #include <iostream>
 #include <map>
 #include <utility>
@@ -628,18 +630,39 @@ ft_render::visit (text_element_string& e)
 {
   if (font.is_valid ())
     {
-      std::string str = e.string_value ();
       FT_UInt glyph_index, previous = 0;
 
-      for (size_t i = 0; i < str.length (); i++)
-        {
-          glyph_index = process_character (static_cast<unsigned char> (str[i]),
-                                           previous);
+      std::string str = e.string_value ();
+      size_t n = str.length (), curr = 0;
+      mbstate_t ps = { 0 };
+      wchar_t wc;
 
-          if (str[i] == '\n')
-            previous = 0;
+      while (n > 0)
+        {
+          size_t r = gnulib::mbrtowc (&wc, str.data () + curr, n, &ps);
+
+          if (r > 0
+              && r != static_cast<size_t> (-1)
+              && r != static_cast<size_t> (-2))
+            {
+              n -= r;
+              curr += r;
+
+              glyph_index = process_character (wc, previous);
+
+              if (wc == L'\n')
+                previous = 0;
+              else
+                previous = glyph_index;
+            }
           else
-            previous = glyph_index;
+            {
+              if (r != 0)
+                ::warning ("ft_render: failed to decode string `%s' with "
+                           "locale `%s'", str.c_str (),
+                           std::setlocale (LC_CTYPE, NULL));
+              break;
+            }
         }
     }
 }

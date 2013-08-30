@@ -92,10 +92,10 @@ function varargout = __imread__ (filename, varargin)
 
   try
     ## Use information from the first image to be read to set defaults.
-    info = imfinfo (fn)(options.index(1));
+    info = __magick_ping__ (fn, options.index(1));
 
     ## Set default for options.
-    options.region = {1:1:info.Height 1:1:info.Width};
+    options.region = {1:1:info.rows 1:1:info.columns};
 
     for idx = offset:2:(numel (varargin) - offset + 1)
       switch (tolower (varargin{idx}))
@@ -120,9 +120,9 @@ function varargout = __imread__ (filename, varargin)
                                       floor (options.region{reg_idx}(2)): ...
                                       floor (options.region{reg_idx}(3));
           endfor
-          if (options.region{1}(end) > info.Height)
+          if (options.region{1}(end) > info.rows)
             error ("imread: end ROWS for PixelRegions option is larger than image height");
-          elseif (options.region{2}(end) > info.Width)
+          elseif (options.region{2}(end) > info.columns)
             error ("imread: end COLS for PixelRegions option is larger than image width");
           endif
 

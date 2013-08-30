@@ -1411,6 +1411,52 @@ use @code{imwrite}.\n\
 %!assert (1)
 */
 
+// Gets the minimum information from images such as its size and format. Much
+// faster than using imfinfo, which slows down a lot since. Note than without
+// this, we need to read the image once for imfinfo to set defaults (which is
+// done in Octave language), and then again for the actual reading.
+DEFUN_DLD (__magick_ping__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __magick_ping__ (@var{fname}, @var{idx})\n\
+Ping image information with GraphicsMagick or ImageMagick.\n\
+\n\
+This is a private internal function not intended for direct use.\n\
+\n\
+@seealso{imfinfo}\n\
+@end deftypefn")
+{
+  octave_value retval;
+#ifndef HAVE_MAGICK
+  gripe_disabled_feature ("imfinfo", "Image IO");
+#else
+  maybe_initialize_magick ();
+
+  if (args.length () < 1 || ! args(0).is_string ())
+    {
+      print_usage ();
+      return retval;
+    }
+  const std::string filename = args(0).string_value ();
+  int idx;
+  if (args.length () > 1)
+    idx = args(1).int_value () -1;
+  else
+    idx = 0;
+
+  Magick::Image img;
+  img.subImage (idx);
+  img.subRange (1);
+  img.ping (filename);
+  static const char *fields[] = {"rows", "columns", "format", 0};
+  octave_scalar_map ping = octave_scalar_map (string_vector (fields));
+  ping.setfield ("rows",    octave_value (img.rows ()));
+  ping.setfield ("columns", octave_value (img.columns ()));
+  ping.setfield ("format",  octave_value (img.magick ()));
+  retval = octave_value (ping);
+#endif
+  return retval;
+}
+
 #ifdef HAVE_MAGICK
 static octave_value
 magick_to_octave_value (const Magick::CompressionType& magick)

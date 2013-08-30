@@ -277,7 +277,7 @@ endfunction
 function bool = isa_magick (coder, filename)
   bool = false;
   try
-    info = __imfinfo__ (filename);
+    info = __magick_ping__ (filename, 1);
     bool = strcmp (coder, info.Format);
   end_try_catch
 endfunction

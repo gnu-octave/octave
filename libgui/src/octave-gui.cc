@@ -123,6 +123,11 @@ octave_start_gui (int argc, char *argv[])
 
           if (term.empty ())
             octave_env::putenv ("TERM", "xterm");
+#else
+          std::string term = octave_env::getenv ("TERM");
+
+          if (term.empty ())
+            octave_env::putenv ("TERM", "cygwin");
 #endif
 
           // create main window, read settings, and show window

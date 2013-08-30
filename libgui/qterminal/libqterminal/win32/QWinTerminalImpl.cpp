@@ -96,13 +96,15 @@ private:
 
 static QString translateKey (QKeyEvent *ev)
 {
+  QString esc = "\x1b";
   QString s;
 
-  if (!ev->text ().isEmpty ())
+  if (ev->key () == Qt::Key_Delete)
+    s = esc + "[C\b";
+  else if (!ev->text ().isEmpty ())
     s = ev->text ();
   else
     {
-      QString esc = "\x1b";
 
       switch (ev->key ())
         {
@@ -123,19 +125,15 @@ static QString translateKey (QKeyEvent *ev)
           break;
 
         case Qt::Key_Home:
-          s = esc + "[1~";
+          s = esc + "[H";
           break;
 
         case Qt::Key_End:
-          s = esc + "[4~";
+          s = esc + "[F";
           break;
 
         case Qt::Key_Insert:
           s = esc + "[2~";
-          break;
-
-        case Qt::Key_Delete:
-          s = esc + "[3~";
           break;
 
         case Qt::Key_PageUp:
@@ -144,6 +142,10 @@ static QString translateKey (QKeyEvent *ev)
 
         case Qt::Key_PageDown:
           s = esc + "[6~";
+          break;
+
+        case Qt::Key_Escape:
+          s = esc;
           break;
 
         default:

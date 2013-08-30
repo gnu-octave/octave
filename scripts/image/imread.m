@@ -47,7 +47,7 @@
 ## independent if @var{map} is a requested output.  To obtain the actual
 ## RGB image, use @code{ind2rgb}.  When more than one indexed image is being
 ## read, @var{map} is obtained from the first.  In some rare cases this
-## may be incorrect and @code{imfinfo] can be used to obtain the colormap of
+## may be incorrect and @code{imfinfo} can be used to obtain the colormap of
 ## each image.
 ##
 ## See the Octave manual for more information in representing images.

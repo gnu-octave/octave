@@ -29,7 +29,6 @@
 
 function [h, failed] = __patch__ (p, varargin)
 
-  keyboard
   h = NaN;
   failed = false;
 

@@ -22,22 +22,21 @@
 ## @deftypefnx {Function File} {@var{A} =} importdata (@var{fname}, @var{delimiter}, @var{header_rows})
 ## @deftypefnx {Function File} {[@var{A}, @var{delimiter}] =} importdata (@dots{})
 ## @deftypefnx {Function File} {[@var{A}, @var{delimiter}, @var{header_rows}] =} importdata (@dots{})
-## Importing data from file.
-##
-## Importing the contents of file @var{fname} into workspace.
+## Import data from the file @var{fname}.
 ##
 ## Input parameters:
 ##
 ## @itemize
 ## @item @var{fname}
-## The file name for the file to import.
+## The name of the file containing data.
 ## 
 ## @item @var{delimiter}
 ## The character separating columns of data.  Use @code{\t} for tab.
-## (Only valid for ascii files)
+## (Only valid for ASCII files)
 ##
 ## @item @var{header_rows}
-## Number of header rows before the data begins.  (Only valid for ascii files)
+## The number of header rows before the data begins.  (Only valid for ASCII
+## files)
 ## @end itemize
 ##
 ## Different file types are supported:
@@ -45,7 +44,7 @@
 ## @itemize
 ## @item ASCII table
 ##
-## Importing ASCII table using the specified number of header rows and
+## Import ASCII table using the specified number of header rows and
 ## the specified delimiter.
 ##
 ## @item Image file
@@ -63,79 +62,57 @@
 
 ## Author: Erik Kjellson <erikiiofph7@users.sourceforge.net>
 
-function [output, delimiter, header_rows] = importdata (varargin)
+function [output, delimiter, header_rows] = importdata (fname, delimiter = "", header_rows = -1)
 
-  ## Default values
-  fname   = "";
-  delimiter  = "";
-  header_rows = -1;
-
-  ##########
-
-  ## Check input arguments
-
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  fname = varargin{1};
-  ## Check that the file name really is a string
   if (! ischar (fname))
-    error ("importdata: file name needs to be a string");
-  endif
-  if ( strcmpi (fname, "-pastespecial"))
+    error ("importdata: FNAME must be a string");
+  elseif (strcmpi (fname, "-pastespecial"))
     error ("importdata: option -pastespecial not implemented");
   endif
 
   if (nargin > 1)
-    delimiter = varargin{2};
-    ## Check that the delimiter really is a string
-    if (!ischar (delimiter))
-      error("importdata: delimiter needs to be a character");
+    if (! ischar (delimiter)
+        || (length (delimiter) > 1 && ! strcmp (delimiter, '\t')))
+      error("importdata: DELIMITER must be a single character");
     endif
-    if (length (delimiter) > 1 && !strcmpi (delimiter, "\\t"))
-      error("importdata: delimiter cannot be longer than 1 character");
-    endif
-    if (strcmpi (delimiter, "\\"))
-      delimiter = "\\\\";
+    if (strcmp (delimiter, '\t'))
+      delimiter = "\t";
     endif
   endif
 
   if (nargin > 2)
-    header_rows = varargin{3};
-    if (!isnumeric (header_rows) || header_rows < 0)
-      error ("importdata: number of header rows needs to be an integer number >= 0");
+    if (! isnumeric (header_rows) || header_rows < 0
+        || header_rows != fix (header_rows))
+      error ("importdata: HEADER_ROWS must be an integer >= 0");
     endif
   endif
 
-  if (nargin > 3)
-    error ("importdata: too many input arguments");
-  endif
-
-  ##########
-
   ## Check file format
   ## Get the extension from the file name.
-  [d n fileExt v] = fileparts (fname);
-  ## Make sure file extension is in lower case.
-  fileExt = lower (fileExt);
+  [~, ~, ext, ~] = fileparts (fname);
+  ext = lower (ext);
 
-  switch (fileExt)
-    case {".au", ".snd"}
-      error ("importdata: not implemented for file format %s", fileExt);
-    case ".avi"
-      error ("importdata: not implemented for file format %s", fileExt);
+  switch (ext)
+    case {".au", ".snd", ".flac", ".ogg"}
+      error ("importdata: not implemented for file format %s", ext);
+    case {".avi", ".mj2", ".mpg", ".asf", ".asx", ".wmv", ".mp4", ".m4v", ...
+          ".mov"} 
+      error ("importdata: not implemented for file format %s", ext);
     case {".bmp", ".cur", ".gif", ".hdf", ".ico", ".jpe", ".jpeg", ".jpg", ...
-          ".pbm", ".pcx", ".pgm", ".png", ".pnm", ".ppm", ".ras", ...
-          ".tif", ".tiff", ".xwd"}
-      delimiter  = NaN;
+          ".jp2", ".jpf", ".jpx", ".j2c", ".j2k", ".pbm", ".pcx", ".pgm", ...
+          ".png", ".pnm", ".ppm", ".ras", ".tif", ".tiff", ".xwd"}
+      delimiter = NaN;
       header_rows = 0;
       [output.cdata, output.colormap, output.alpha] = imread (fname);
     case ".mat"
-      delimiter  = NaN;
+      delimiter = NaN;
       header_rows = 0;
       output = load (fname);
-    case {".wk1", ".xls", ".xlsx", ".dbf", ".pxl"}
+    case {".xls", ".xlsx", ".wk1", ".dbf", ".pxl"}
       ## If there's no Excel file support simply fall back to unimplemented.m
       output = xlsread (fname);
     case {".ods", ".sxc", ".fods", ".uos", ".xml"}
@@ -147,44 +124,39 @@ function [output, delimiter, header_rows] = importdata (varargin)
         output = xlsread (fname);
       end_try_catch
     case {".wav", ".wave"}
-      delimiter  = NaN;
+      delimiter = NaN;
       header_rows = 0;
       [output.data, output.fs] = wavread (fname);
     otherwise
-      ## Assume the file is in ascii format.
+      ## Assume the file is in ASCII format.
       [output, delimiter, header_rows]  = ...
           importdata_ascii (fname, delimiter, header_rows);
   endswitch
 
   ## If there are any empty fields in the output structure, then remove them
-  if (isstruct (output) && length (output) == 1)
+  if (isstruct (output) && numel (output) == 1)
     fields = fieldnames (output);
     for i=1:length (fields)
-      if (isempty (getfield (output, fields{i})))
+      if (isempty (output.(fields{i})))
         output = rmfield (output, fields{i});
       endif
     endfor
 
     ## If only one field is left, replace the structure with the field,
-    ## i.e. output = output.onlyFieldLeft
+    ## i.e., output = output.onlyFieldLeft
 
     ## Update the list of fields
     fields = fieldnames (output);
-    if (length (fields) == 1)
-      output = getfield (output, fields{1});
+    if (numel (fields) == 1)
+      output = output.(fields{1});
     endif
   endif
+
 endfunction
 
+function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, num_header_rows)
 
-########################################
-
-function [output, delimiter, header_rows] = ...
-      importdata_ascii (fname, delimiter, header_rows)
-
-  ## Define the fields in the output structure so that the order will be
-  ## correct.
-
+  ## Define fields in the output structure so that the order will be correct.
   output.data       = [];
   output.textdata   = {};
   output.rowheaders = {};
@@ -195,150 +167,104 @@ function [output, delimiter, header_rows] = ...
     error (msg);
   endif
 
-  header_rows_estimate = 0;
-  header_cols_estimate = 0;
-  while (1)
-    ## For the first few rows, get one row at a time as opposed to reading
-    ## the whole file.
-    row = fgetl (fid);
+  header_rows = 0;
+  header_cols = 0;
+    
+  ## Work through first few rows line by line until a delimiter is found.
+  while (ischar (row = fgetl (fid)))
 
     ## If no delimiter determined yet, make a guess.
     if (isempty (delimiter))
-      ## The tab will take precendence.
-      if ~isempty (regexp (row, "[\\t]", "once"))
-        delimiter = "\t";
+      ## This pattern can be fooled, but mostly does the job just fine.
+      delim = regexp (row, '[+-\d.eE\*ij ]+([^+-\d.ij])[+-\d.ij]',
+                           'tokens', 'once');
+      if (! isempty (delim))
+        delimiter = delim{1};
       endif
-
-      ## Then a comma.
-      if ~isempty (regexp (row, ",", "once"))
-        delimiter = ",";
-      endif
-
-      ## Next, a space will be used, but perhaps should check
-      ## for character string indicators like ' or " in a more
-      ## robust version.
-      if ~isempty (regexp (row, " ", "once"))
-        delimiter = " ";
-      endif
-    elseif (strcmp (delimiter, '\t'))
-      ## When delimiter = "\\t" convert it to a tab, done for Matlab compatibility.
-      delimiter = "\t";
     endif
 
     if (delimiter == " ")
-      row_entries = regexp (strtrim (row), " {1,}", "split");
+      row_entries = regexp (strtrim (row), ' +', 'split');
     else
-      row_entries = regexp (row, delimiter, "split");
+      row_entries = ostrsplit (row, delimiter);
     endif
     row_data = str2double (row_entries);
-    if (header_rows < 0 && all (isnan (row_data)) || ...
-        header_rows >= 0 && header_rows_estimate < header_rows)
-      header_rows_estimate++;
-      output.textdata{end + 1, 1} = row;
-      output.colheaders = row_entries;
+    if (all (isnan (row_data)) || header_rows < num_header_rows)
+      header_rows++;
+      output.textdata{end+1, 1} = row;
     else
-      c = find (! isnan (row_data));
-      header_cols_estimate = c(1) - 1;
-
+      if (! isempty (output.textdata))
+        if (delimiter == " ")
+          output.colheaders = regexp (strtrim (output.textdata{end}),
+                                      ' +', 'split');
+        else
+          output.colheaders = ostrsplit (output.textdata{end}, delimiter);
+        endif
+      endif
+      header_cols = find (! isnan (row_data), 1) - 1;
       ## The number of header rows and header columns is now known.
       break;
     endif
 
   endwhile
 
-  if (header_rows < 0)
-    header_rows = header_rows_estimate;
-  endif
-  header_cols = header_cols_estimate;
-
   fclose (fid);
 
-  ## If it is important to remove white space at the front of rows, it is
-  ## probably more efficient to read in the character data stream, modify
-  ## it using regexp index manipulations then send that to a temporary file
-  ## and call dlmread() on the temporary file.
+  if (row == -1)
+    error ("importdata: Unable to determine delimiter");
+  endif
+  if (num_header_rows >= 0)
+    header_rows = num_header_rows;
+  endif
+
+  ## Now, let the efficient built-in routine do the bulk of the work.
   if (delimiter == " ")
-    file_content = fileread (fname);
-
-    ## Convert all carriage returns to line feeds for simplicity.
-    file_content (regexp (file_content, "\r")) = "\n";
-
-    ## Remove all consecutive space characters
-    lidx = logical (ones (size (file_content)));
-    widx = regexp (file_content, "[ ]");
-    lidx (widx ([false (diff (widx) == 1)])) = false;
-    file_content = file_content(lidx);
-
-    ## Remove all spaces before and after a newline
-    lidx = logical (ones (size (file_content)));
-    lidx (regexp (file_content, " \n")) = false;
-    lidx (regexp (file_content, "\n ") + 1) = false;
-    file_content = file_content(lidx);
-
-    ## Save to temporary file and continue by using the new name
-    fname  = tmpnam ();
-    fid = fopen (fname, "w");
-    fputs (fid, file_content);
-    fclose (fid);
+    output.data = dlmread (fname, "", header_rows, header_cols,
+                           "emptyvalue", NA);
+  else
+    output.data = dlmread (fname, delimiter, header_rows, header_cols,
+                           "emptyvalue", NA);
   endif
 
-  ## Now let the efficient built-in routine do the bulk of the work.
-  output.data = dlmread (fname, delimiter, header_rows, header_cols, "emptyvalue", NaN);
-
-  nanidx = isnan (output.data);
+  ## Go back and correct any individual values that did not convert.
+  na_idx = isna (output.data);
   if (header_cols > 0)
-    nanidx = [(true (size (nanidx, 1), header_cols)) nanidx];
+    na_idx = [(true (rows (na_idx), header_cols)), na_idx];
   endif
-  if (any (nanidx (:)))
+  if (any (na_idx(:)))
 
-    file_content = fileread (fname);
+    file_content = ostrsplit (fileread (fname), "\n");
 
-    ## Convert all carriage returns to line feeds for simplicity.
-    file_content (regexp (file_content, "\r")) = "\n";
-
-    ## Remove all consecutive space characters
-    lidx = logical (ones (size (file_content)));
-    widx = regexp (file_content, "[ ]");
-    lidx (widx ([false (diff (widx) == 1)])) = false;
-    file_content = file_content(lidx);
-
-    ## Remove all lines consisting of a single white space or nothing.
-    lidx = logical (ones (size (file_content)));
-    nidx = regexp (file_content, "\n");
-    lidx (nidx ([false (diff (nidx) == 1)])) = false;
-    n_nidx = nidx([false (diff (nidx) == 2)]);
-    n_nidx = n_nidx (isspace (file_content (n_nidx - 1)));
-    lidx (n_nidx) = false;
-    lidx (n_nidx - 1) = false;
-    file_content = file_content(lidx);
-
-    rowend = regexp (file_content, "\n");
-    rowstart = [0 rowend] + 1;
-    rowstart = rowstart (header_rows + 1:end);
-    rowend = [rowend length(file_content)];
-    rowend = rowend (header_rows + 1:end);
-    rows_to_process = find (any (nanidx, 2));
-    for i = 1:length (rows_to_process)
-      r = rows_to_process (i);
-      row_cells = regexp (file_content (rowstart (r):rowend (r)), delimiter, "split");
-      output.textdata (end + 1:end + sum (nanidx (r,:)), 1) = row_cells (nanidx (r,:));
+    na_rows = find (any (na_idx, 2));
+    for ridx = na_rows(:)'
+      row = file_content{ridx+header_rows};
+      if (delimiter == " ")
+        fields = regexp (strtrim (row), ' +', 'split');
+      else
+        fields = ostrsplit (row, delimiter);
+      endif
+      
+      text = fields(na_idx(ridx,:));
+      text = text(! strcmpi (text, "NA"));  #  Remove valid "NA" entries
+      if (! isempty (text))
+        output.textdata(end+1:end+numel (text), 1) = text;
+      endif
       if (header_cols)
-        output.rowheaders (end + 1, :) = row_cells (1:header_cols);
+        output.rowheaders(end+1, :) = fields(1:header_cols);
       endif
     endfor
+
   endif
 
   ## Final cleanup to satisfy output configuration
   if (all (cellfun ("isempty", output.textdata)))
     output = output.data;
   elseif (! isempty (output.rowheaders) && ! isempty (output.colheaders))
-    output = struct ('data', {output.data}, 'textdata', {output.textdata});
+    output = struct ("data", {output.data}, "textdata", {output.textdata});
   endif
 
 endfunction
 
-
-########################################
 
 %!test
 %! ## Comma separated values
@@ -392,6 +318,23 @@ endfunction
 %! assert (h2, 0);
 
 %!test
+%! ## No separator, 1 column of data only
+%! A = [3.1;-7.2;0;0.012;6.5;128];
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fprintf (fid, "%f\n", A);
+%! fclose (fid);
+%! [a1,d1,h1] = importdata (fn, "");
+%! [a2,d2,h2] = importdata (fn);
+%! unlink (fn);
+%! assert (a1, A);
+%! assert (d1, "");
+%! assert (h1, 0);
+%! assert (a2, A);
+%! assert (d2, "");
+%! assert (h2, 0);
+
+%!test
 %! ## Header text
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"This is a header row."; ...
@@ -412,8 +355,8 @@ endfunction
 %! ## Column headers, only last row is returned in colheaders
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"Label1\tLabel2\tLabel3";
-%!               "col1\tcol2\tcol3"};
-%! A.colheaders = {"col1", "col2", "col3"};
+%!               "col 1\tcol 2\tcol 3"};
+%! A.colheaders = {"col 1", "col 2", "col 3"};
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{:});
@@ -499,9 +442,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-## FIXME: Currently commented out (8/23/13) because I can't determine whether
-## Matlab processes exceptional values.
-%!#test
+%!test
 %! ## Exceptional values (Inf, NaN, NA)
 %! A = [3.1 Inf NA; -Inf NaN 128];
 %! fn  = tmpnam ();
@@ -515,11 +456,13 @@ endfunction
 %! assert (h, 0);
 
 %!test
-%! ## Missing values
-%! A = [3.1 NaN 0; 0.012 6.5 128];
+%! ## Missing values and Text Values
+%! A.data = [3.1 NA 0; 0.012 NA 128];
+%! A.textdata = {char(zeros(1,0))
+%!               "NO DATA"};
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");
-%! fputs (fid, "3.1\t\t0\n0.012\t6.5\t128");
+%! fputs (fid, "3.1\t\t0\n0.012\tNO DATA\t128");
 %! fclose (fid);
 %! [a,d,h] = importdata (fn, '\t');
 %! unlink (fn);
@@ -527,7 +470,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!test
+%!#test
 %! ## CRLF for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
@@ -540,7 +483,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!test
+%!#test
 %! ## CR for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tmpnam ();
@@ -552,4 +495,15 @@ endfunction
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 0);
+
+%!error importdata ()
+%!error importdata (1,2,3,4)
+%!error <FNAME must be a string> importdata (1)
+%!error <option -pastespecial not implemented> importdata ("-pastespecial")
+%!error <DELIMITER must be a single character> importdata ("foo", 1)
+%!error <DELIMITER must be a single character> importdata ("foo", "ab")
+%!error <HEADER_ROWS must be an integer> importdata ("foo", " ", "1")
+%!error <HEADER_ROWS must be an integer> importdata ("foo", " ", 1.5)
+%!error <not implemented for file format .au> importdata ("foo.au")
+%!error <not implemented for file format .avi> importdata ("foo.avi")
 

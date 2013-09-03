@@ -1481,14 +1481,21 @@ magick_to_octave_value (const Magick::CompressionType& magick)
         return octave_value ("rle");
       case Magick::ZipCompression:
         return octave_value ("deflate");
-      case Magick::LZMACompression:
-        return octave_value ("lzma");
-      case Magick::JPEG2000Compression:
-        return octave_value ("jpeg2000");
-      case Magick::JBIG1Compression:
-        return octave_value ("jbig1");
-      case Magick::JBIG2Compression:
-        return octave_value ("jbig2");
+
+      // The following are present only in recent versions of GraphicsMagick.
+      // At the moment the only use of this would be to have imfinfo report
+      // the compression method. In the future, someone could implement
+      // the Compression option for imwrite in which case a macro in
+      // configure.ac will have to check for their presence of this.
+      // See bug #39913
+//      case Magick::LZMACompression:
+//        return octave_value ("lzma");
+//      case Magick::JPEG2000Compression:
+//        return octave_value ("jpeg2000");
+//      case Magick::JBIG1Compression:
+//        return octave_value ("jbig1");
+//      case Magick::JBIG2Compression:
+//        return octave_value ("jbig2");
       default:
         return octave_value ("undefined");
     }

@@ -1392,7 +1392,7 @@ private:
 
                   // Determine if we're zooming in or out.
                   const double factor =
-                    (Fl::event_dy () > 0) ? 1.0 + Vwheel_zoom_speed
+                    (Fl::event_dy () > 0) ? 1 / (1.0 - Vwheel_zoom_speed)
                                           : 1.0 - Vwheel_zoom_speed;
 
                   // Get the point we're zooming about.

@@ -128,6 +128,25 @@ Summary of important user-visible changes for version 3.8:
     expression would have searched for a literal '\' followed by 't' and
     replaced the two characters with the sequence '\', 'n'.
 
+ ** A TeX parser has been implemented for the FLTK toolkit and is the default
+    for any text object including titles and axis labels.  The TeX parser is
+    supported only for display on a monitor, not for printing.
+    A quick summary of features:
+
+    Code         Feature     Example             Comment
+    _            subscript   H_2O                formula for water
+    ^            exponent    y=x^2               formula for parabola
+    \char        symbol      \beta               Greek symbol beta
+    \fontname    font        \fontname{Arial}    set Arial font
+    \fontsize    fontsize    \fontsize{16}       set fontsize 16
+    \color[rgb]  fontcolor   \color[rgb]{1 0 1}  set magenta color 
+    \bf          bold        \bfBold Text        bold font
+    \it          italic      \itItalic Text      italic font
+    \sl          slanted     \slOblique Text     slanted font
+    \rm          normal      \bfBold\rmNormal    normal font
+    {}           group       {\bf Bold}Normal    group objects
+                             e^{i*\pi} = -1      complex example
+
  ** The m-files in the image directory have been overhauled.
 
     The principal benefit is that Octave will now no longer automatically

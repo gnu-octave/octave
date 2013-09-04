@@ -19,19 +19,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ellipke (@var{m})
-## @deftypefnx {Function File} {} ellipke (@var{m}, @var{tol})
+## @deftypefn  {Function File} {@var{k} =} ellipke (@var{m})
+## @deftypefnx {Function File} {@var{k} =} ellipke (@var{m}, @var{tol})
 ## @deftypefnx {Function File} {[@var{k}, @var{e}] =} ellipke (@dots{})
-## Compute complete elliptic integral of the first K(@var{m}) and second
+## Compute complete elliptic integrals of the first K(@var{m}) and second
 ## E(@var{m}) kind.
 ##
-## @var{m} is either real array or scalar with 0 @leq{} m @leq{} 1.
+## @var{m} must be a scalar or real array with 0 @leq{} @var{m} @leq{} 1.
 ##
-## @var{tol} is currently ignored (@sc{matlab} uses this to allow faster,
-## less accurate approximation).
+## The optional input @var{tol} is currently ignored (@sc{matlab} uses this
+## to allow a faster, less accurate approximation).
 ##
-## Ref: Abramowitz, Milton and Stegun, Irene A. Handbook of Mathematical
-## Functions, Dover, 1965, Chapter 17.
+## Called with only one output, elliptic integrals of the first kind are
+## returned.
+##
+## Reference: Milton Abramowitz and Irene A. Stegun,
+## @cite{Handbook of Mathematical Functions}, Chapter 17, Dover, 1965.
 ## @seealso{ellipj}
 ## @end deftypefn
 

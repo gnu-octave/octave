@@ -146,13 +146,14 @@ If @var{u} is a scalar, the results are the same size as @var{m}.\n\
 If @var{u} is a column vector and @var{m} is a row vector, the\n\
 results are matrices with @code{length (@var{u})} rows and\n\
 @code{length (@var{m})} columns.  Otherwise, @var{u} and\n\
-@var{m} must conform and the results will be the same size.\n\
+@var{m} must conform in size and the results will be the same size as the\n\
+inputs.\n\
 \n\
 The value of @var{u} may be complex.\n\
-The value of @var{m} must be 0 @leq{} m @leq{} 1.\n\
+The value of @var{m} must be 0 @leq{} @var{m} @leq{} 1.\n\
 \n\
-@var{tol} is currently ignored (@sc{matlab} uses this to allow faster,\n\
-less accurate approximation).\n\
+The optinoal input @var{tol} is currently ignored (@sc{matlab} uses this to\n\
+allow faster, less accurate approximation).\n\
 \n\
 If requested, @var{err} contains the following status information\n\
 and is the same size as the result.\n\
@@ -165,9 +166,11 @@ Normal return.\n\
 Error---no computation, algorithm termination condition not met,\n\
 return @code{NaN}.\n\
 @end enumerate\n\
- Ref: Abramowitz, Milton and Stegun, Irene A\n\
-      Handbook of Mathematical Functions, Dover, 1965\n\
-      Chapter 16 (Sections 16.4, 16.13 and 16.15)\n\
+\n\
+Reference: Milton Abramowitz and Irene A Stegun,\n\
+@cite{Handbook of Mathematical Functions}, Chapter 16 (Sections 16.4, 16.13,\n\
+and 16.15), Dover, 1965.\n\
+\n\
 @seealso{ellipke}\n\
 @end deftypefn")
 {

@@ -104,7 +104,7 @@ function [img, varargout] = imread (varargin)
     filename{2} = varargin{2};
   endif
 
-  [img, varargout{2:nargout}] = imageIO (@__imread__, "read", filename, varargin{:});
+  [img, varargout{1:nargout-1}] = imageIO (@__imread__, "read", filename, varargin{:});
 endfunction
 
 

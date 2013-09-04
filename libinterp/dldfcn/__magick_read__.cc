@@ -169,14 +169,14 @@ read_maps (Magick::Image& img)
   // can't call colorMapSize on const Magick::Image
   const octave_idx_type mapsize = img.colorMapSize ();
   Matrix cmap                   = Matrix (mapsize, 3); // colormap
-  Matrix amap                   = Matrix (mapsize, 3); // alpha map
+  ColumnVector amap             = ColumnVector (mapsize); // alpha map
   for (octave_idx_type i = 0; i < mapsize; i++)
     {
       const Magick::ColorRGB c = img.colorMap (i);
       cmap(i,0) = c.red   ();
       cmap(i,1) = c.green ();
       cmap(i,2) = c.blue  ();
-      amap(i,0) = c.alpha ();
+      amap(i)   = c.alpha ();
     }
   octave_value_list maps;
   maps(0) = cmap;

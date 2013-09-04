@@ -1,6 +1,6 @@
 /*
 
-// Author: Leopoldo Cerbaro <redbliss@libero.it>
+Copyright (C) 2013 Leopoldo Cerbaro <redbliss@libero.it>
 
 This file is part of Octave.
 
@@ -35,7 +35,7 @@ gripe_ellipj_arg (const char *arg)
 }
 
 static void
-sncndn (double u, double m, double& sn, double& cn, double& dn, double& err)
+do_ellipj (const double u, const double m, double& sn, double& cn, double& dn, double& err)
 {
   static const int Nmax = 16;
   double m1, t=0, si_u, co_u, se_u, ta_u, b, c[Nmax], a[Nmax], phi;
@@ -43,7 +43,7 @@ sncndn (double u, double m, double& sn, double& cn, double& dn, double& err)
 
   if (m < 0 || m > 1)
     {
-      warning ("ellipj: expecting 0 <= m <= 1"); /* -lc- */
+      warning ("ellipj: expecting 0 <= M <= 1"); // -lc-
       sn = cn = dn = lo_ieee_nan_value ();
       return;
     }
@@ -51,7 +51,7 @@ sncndn (double u, double m, double& sn, double& cn, double& dn, double& err)
   double sqrt_eps = sqrt (std::numeric_limits<double>::epsilon ());
   if (m < sqrt_eps)
     {
-      /*  # For small m, ( Abramowitz and Stegun, Section 16.13 ) */
+      // For small m, ( Abramowitz and Stegun, Section 16.13 ) 
       si_u = sin (u);
       co_u = cos (u);
       t = 0.25*m*(u - si_u*co_u);
@@ -61,7 +61,7 @@ sncndn (double u, double m, double& sn, double& cn, double& dn, double& err)
     }
   else if ((1 - m) < sqrt_eps)
     {
-      /*  For m1 = (1-m) small ( Abramowitz and Stegun, Section 16.15 ) */
+      // For m1 = (1-m) small ( Abramowitz and Stegun, Section 16.15 )
       m1 = 1 - m;
       si_u = sinh (u);
       co_u = cosh (u);
@@ -108,25 +108,25 @@ sncndn (double u, double m, double& sn, double& cn, double& dn, double& err)
 }
 
 static void
-sncndn (Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
+do_ellipj (const Complex& u, const double m, Complex& sn, Complex& cn, Complex& dn,
         double& err)
 {
   double m1 = 1 - m, ss1, cc1, dd1;
 
-  sncndn (imag (u), m1, ss1, cc1, dd1, err);
+  do_ellipj (imag (u), m1, ss1, cc1, dd1, err);
   if (real (u) == 0)
     {
-      /* u is pure imag: Jacoby imag. transf. */
+      // u is pure imag: Jacoby imag. transf.
       sn = Complex (0, ss1/cc1);
       cn = 1/cc1;         //    cn.imag = 0;
       dn = dd1/cc1;       //    dn.imag = 0;
     }
   else
     {
-      /* u is generic complex */
+      // u is generic complex
       double ss, cc, dd, ddd;
 
-      sncndn (real (u), m, ss, cc, dd, err);
+      do_ellipj (real (u), m, ss, cc, dd, err);
       ddd = cc1*cc1 + m*ss*ss*ss1*ss1;
       sn = Complex (ss*dd1/ddd, cc*dd*ss1*cc1/ddd);
       cn = Complex (cc*cc1/ddd, -ss*dd*ss1*dd1/ddd);
@@ -200,7 +200,7 @@ and 16.15), Dover, 1965.\n\
       if (u_arg.is_scalar_type ())
         {
           if (u_arg.is_real_type ())
-            {  // u real
+            {  // u real, m scalar
               double u = args(0).double_value ();
 
               if (error_state)
@@ -208,65 +208,75 @@ and 16.15), Dover, 1965.\n\
                   gripe_ellipj_arg ("first");
                   return retval;
                 }
+
               double sn, cn, dn;
               double err = 0;
 
-              sncndn (u, m, sn, cn, dn, err);
-              retval (0) = sn;
-              retval (1) = cn;
-              retval (2) = dn;
-              if (nargout > 3) retval(3) =  err;
+              do_ellipj (u, m, sn, cn, dn, err);
+
+              if (nargout > 3)
+                retval(3) = err;
+              retval(2) = dn;
+              retval(1) = cn;
+              retval(0) = sn;
             }
           else
-            {  // u complex
+            {  // u complex, m scalar
               Complex u = u_arg.complex_value ();
 
               if (error_state)
                 {
-                  gripe_ellipj_arg ("second");
+                  gripe_ellipj_arg ("first");
                   return retval;
                 }
 
               Complex sn, cn, dn;
-              double err;
+              double err = 0;
 
-              sncndn (u, m, sn, cn, dn, err);
+              do_ellipj (u, m, sn, cn, dn, err);
 
-              retval (0) = sn;
-              retval (1) = cn;
-              retval (2) = dn;
-              if (nargout > 3) retval(3) = err;
+              if (nargout > 3)
+                retval(3) = err;
+              retval(2) = dn;
+              retval(1) = cn;
+              retval(0) = sn;
             }
         }
       else
-        {  /* u is matrix ( m is scalar ) */
-          ComplexMatrix u = u_arg.complex_matrix_value ();
-
+        {  // u is matrix, m is scalar
+          ComplexNDArray u = u_arg.complex_array_value ();
+          
           if (error_state)
             {
               gripe_ellipj_arg ("first");
               return retval;
             }
 
-          octave_idx_type nr = u.rows ();
-          octave_idx_type nc = u.cols ();
+          dim_vector sz_u = u.dims ();
 
-          ComplexMatrix sn (nr, nc), cn (nr, nc), dn (nr, nc);
-          Matrix err (nr, nc);
+          ComplexNDArray sn (sz_u), cn (sz_u), dn (sz_u);
+          NDArray err (sz_u);
 
-          for (octave_idx_type j = 0; j < nc; j++)
-            for (octave_idx_type i = 0; i < nr; i++)
-              sncndn (u(i,j), m, sn(i,j), cn(i,j), dn(i,j), err(i,j));
+          const Complex *pu = u.data ();
+          Complex *psn = sn.fortran_vec ();
+          Complex *pcn = cn.fortran_vec ();
+          Complex *pdn = dn.fortran_vec ();
+          double *perr = err.fortran_vec ();
+          octave_idx_type nel = u.numel ();
 
-          retval (0) = sn;
-          retval (1) = cn;
-          retval (2) = dn;
-          if (nargout > 3) retval(3) = err;
+          for (octave_idx_type i = 0; i < nel; i++)
+            do_ellipj (pu[i], m, psn[i], pcn[i], pdn[i], perr[i]);
+
+          if (nargout > 3)
+            retval(3) = err;
+          retval(2) = dn;
+          retval(1) = cn;
+          retval(0) = sn;
         }
     }
   else
     {
-      Matrix m = args(1).matrix_value ();
+      NDArray m = args(1).array_value ();
 
       if (error_state)
         {
@@ -274,17 +284,12 @@ and 16.15), Dover, 1965.\n\
           return retval;
         }
 
-      octave_idx_type mr = m.rows ();
-      octave_idx_type mc = m.cols ();
+      dim_vector sz_m = m.dims ();
 
       if (u_arg.is_scalar_type ())
-        {    /* u is scalar */
-          octave_idx_type nr = m.rows ();
-          octave_idx_type nc = m.cols ();
-          Matrix err (nr, nc);
-
+        {  // u is scalar, m is array
           if (u_arg.is_real_type ())
-            {
+            {  // u is real scalar, m is array
               double u = u_arg.double_value ();
 
               if (error_state)
@@ -293,129 +298,176 @@ and 16.15), Dover, 1965.\n\
                   return retval;
                 }
 
-              Matrix sn (nr, nc), cn (nr, nc), dn (nr, nc);
-              for (octave_idx_type j = 0; j < nc; j++)
-                for (octave_idx_type i = 0; i < nr; i++)
-                  sncndn (u, m(i,j), sn(i,j), cn(i,j), dn(i,j), err(i,j));
+              NDArray sn (sz_m), cn (sz_m), dn (sz_m);
+              NDArray err (sz_m);
 
-              retval (0) = sn;
-              retval (1) = cn;
-              retval (2) = dn;
-              if (nargout > 3)  retval(3) = err;
+              const double *pm = m.data ();
+              double *psn = sn.fortran_vec ();
+              double *pcn = cn.fortran_vec ();
+              double *pdn = dn.fortran_vec ();
+              double *perr = err.fortran_vec ();
+              octave_idx_type nel = m.numel ();
+
+              for (octave_idx_type i = 0; i < nel; i++)
+                do_ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+
+              if (nargout > 3)
+                retval(3) = err;
+              retval(2) = dn;
+              retval(1) = cn;
+              retval(0) = sn;
             }
           else
-            {
+            {  // u is complex scalar, m is array
               Complex u = u_arg.complex_value ();
+
               if (error_state)
                 {
                   gripe_ellipj_arg ("first");
                   return retval;
                 }
 
-              ComplexMatrix sn (nr, nc), cn (nr, nc), dn (nr, nc);
-              for (octave_idx_type j = 0; j < nc; j++)
-                for (octave_idx_type i = 0; i < nr; i++)
-                  sncndn (u, m(i,j), sn(i,j), cn(i,j), dn(i,j), err(i,j));
-              retval (0) = sn;
-              retval (1) = cn;
-              retval (2) = dn;
-              if (nargout > 3)  retval(3) = err;
+              ComplexNDArray sn (sz_m), cn (sz_m), dn (sz_m);
+              NDArray err (sz_m);
+
+              const double *pm = m.data ();
+              Complex *psn = sn.fortran_vec ();
+              Complex *pcn = cn.fortran_vec ();
+              Complex *pdn = dn.fortran_vec ();
+              double *perr = err.fortran_vec ();
+              octave_idx_type nel = m.numel ();
+
+              for (octave_idx_type i = 0; i < nel; i++)
+                do_ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+
+              if (nargout > 3)
+                retval(3) = err;
+              retval(2) = dn;
+              retval(1) = cn;
+              retval(0) = sn;
             }
         }
       else
-        {    // u is matrix  (m is matrix)
+        {  // u is array, m is array
           if (u_arg.is_real_type ())
-            {  // u real matrix
+            {  // u is real array, m is array
+              NDArray u = u_arg.array_value ();
 
-              Matrix u = u_arg.matrix_value ();
               if (error_state)
                 {
-                  gripe_ellipj_arg ("first ");
+                  gripe_ellipj_arg ("first");
                   return retval;
                 }
 
-              octave_idx_type ur = u.rows ();
-              octave_idx_type uc = u.cols ();
+              dim_vector sz_u = u.dims ();
 
-              if (mr == 1 && uc == 1)
-                {  // u column, m row
-                  RowVector rm = m.row (0);
-                  ColumnVector cu = u.column (0);
+              if (sz_u.length () == 2 && sz_m.length () == 2
+                  && sz_u(1) == 1 && sz_m(0) == 1)
+                {  // u is real column vector, m is row vector
+                  octave_idx_type ur = sz_u(0);
+                  octave_idx_type mc = sz_m(1);
+                  dim_vector sz_out (ur, mc);
 
-                  Matrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
-                  Matrix err (ur,mc);
+                  NDArray sn (sz_out), cn (sz_out), dn (sz_out);
+                  NDArray err (sz_out);
+
+                  const double *pu = u.data ();
+                  const double *pm = m.data ();
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      sncndn (cu(i), rm(j), sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                      do_ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
 
-                  retval (0) = sn;
-                  retval (1) = cn;
-                  retval (2) = dn;
-                  if (nargout > 3)  retval(3) = err;
+                  if (nargout > 3)
+                    retval(3) = err;
+                  retval(2) = dn;
+                  retval(1) = cn;
+                  retval(0) = sn;
                 }
-              else if (ur == mr && uc == mc)
+              else if (sz_m == sz_u)
                 {
-                  Matrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
-                  Matrix err (ur,mc);
+                  NDArray sn (sz_m), cn (sz_m), dn (sz_m);
+                  NDArray err (sz_m);
 
-                  for (octave_idx_type j = 0; j < uc; j++)
-                    for (octave_idx_type i = 0; i < ur; i++)
-                      sncndn (u(i,j), m(i,j), sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                  const double *pu = u.data ();
+                  const double *pm = m.data ();
+                  double *psn = sn.fortran_vec ();
+                  double *pcn = cn.fortran_vec ();
+                  double *pdn = dn.fortran_vec ();
+                  double *perr = err.fortran_vec ();
+                  octave_idx_type nel = m.numel ();
 
-                  retval (0) = sn;
-                  retval (1) = cn;
-                  retval (2) = dn;
-                  if (nargout > 3)  retval(3) = err;
+                  for (octave_idx_type i = 0; i < nel; i++)
+                    do_ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+
+                  if (nargout > 3)
+                    retval(3) = err;
+                  retval(2) = dn;
+                  retval(1) = cn;
+                  retval(0) = sn;
                 }
               else
-                error ("u m invalid");
+                error ("ellipj: Invalid size combination for U and M");
             }
           else
-            {  // u complex matrix
-              ComplexMatrix u = u_arg.complex_matrix_value ();
+            {  // u is complex array, m is array
+              ComplexNDArray u = u_arg.complex_array_value ();
+
               if (error_state)
                 {
                   gripe_ellipj_arg ("second");
                   return retval;
                 }
 
-              octave_idx_type ur = u.rows ();
-              octave_idx_type uc = u.cols ();
+              dim_vector sz_u = u.dims ();
 
-              if (mr == 1 && uc == 1)
-                {
-                  RowVector rm = m.row (0);
-                  ComplexColumnVector cu = u.column (0);
+              if (sz_u.length () == 2 && sz_m.length () == 2
+                  && sz_u(1) == 1 && sz_m(0) == 1)
+                {  // u is complex column vector, m is row vector
+                  octave_idx_type ur = sz_u(0);
+                  octave_idx_type mc = sz_m(1);
+                  dim_vector sz_out (ur, mc);
 
-                  ComplexMatrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
-                  Matrix err (ur,mc);
+                  ComplexNDArray sn (sz_out), cn (sz_out), dn (sz_out);
+                  NDArray err (sz_out);
+
+                  const Complex *pu = u.data ();
+                  const double  *pm = m.data ();
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      sncndn (cu(i), rm(j), sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                      do_ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
 
-                  retval (0) = sn;
-                  retval (1) = cn;
-                  retval (2) = dn;
-                  if (nargout > 3)  retval(3) = err;
+                  if (nargout > 3)
+                    retval(3) = err;
+                  retval(2) = dn;
+                  retval(1) = cn;
+                  retval(0) = sn;
                 }
-              else if (ur == mr && uc == mc)
+              else if (sz_m == sz_u)
                 {
-                  ComplexMatrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
-                  Matrix err (ur,mc);
+                  ComplexNDArray sn (sz_m), cn (sz_m), dn (sz_m);
+                  NDArray err (sz_m);
 
-                  for (octave_idx_type j = 0; j < uc; j++)
-                    for (octave_idx_type i = 0; i < ur; i++)
-                      sncndn (u(i,j), m(i,j), sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                  const Complex *pu = u.data ();
+                  const double  *pm = m.data ();
+                  Complex *psn = sn.fortran_vec ();
+                  Complex *pcn = cn.fortran_vec ();
+                  Complex *pdn = dn.fortran_vec ();
+                  double *perr = err.fortran_vec ();
+                  octave_idx_type nel = m.numel ();
 
-                  retval (0) = sn;
-                  retval (1) = cn;
-                  retval (2) = dn;
-                  if (nargout > 3)  retval(3) = err;
+                  for (octave_idx_type i = 0; i < nel; i++)
+                    do_ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+
+                  if (nargout > 3)
+                    retval(3) = err;
+                  retval(2) = dn;
+                  retval(1) = cn;
+                  retval(0) = sn;
                 }
               else
-                error ("u m invalid");
+                error ("ellipj: Invalid size combination for U and M");
             }
         }
     }  // m matrix
@@ -437,7 +489,6 @@ and 16.15), Dover, 1965.\n\
 %! [sn, cn, dn] = ellipj (U,M);
 %!
 %! ## Plotting
-%! c = colormap (hot (64));
 %! data = {sn,cn,dn};
 %! dname = {"sn","cn","dn"};
 %! for i=1:3
@@ -447,7 +498,7 @@ and 16.15), Dover, 1965.\n\
 %!   image (m,u,32*data{i}+32);
 %!   title (dname{i});
 %! endfor
-%! colormap (c);
+%! colormap (hot (64));
 
 %!demo
 %! N = 200;
@@ -851,9 +902,9 @@ and 16.15), Dover, 1965.\n\
 %!     ui =  y * 0.2;
 %!     ii = 1 + y + x*11;
 %!     [sn, cn, dn] = ellipj (ur + I * ui, m);
-%!     assert (SN(ii, 2), sn, tol);
-%!     assert (CN(ii, 2), cn, tol);
-%!     assert (DN(ii, 2), dn, tol);
+%!     assert (sn, SN(ii, 2), tol);
+%!     assert (cn, CN(ii, 2), tol);
+%!     assert (dn, DN(ii, 2), tol);
 %!   endfor
 %! endfor
 
@@ -894,7 +945,7 @@ and 16.15), Dover, 1965.\n\
 %! u6 = 0.2 + 0.6i; m6 = tan(pi/8)^4;
 %! res6 = [ 0.2369100139 + 0.624633635i, ...
 %!          1.16200643   - 0.1273503824i, ...
-%!          1.004913944 - 0.004334880912i ];
+%!          1.004913944  - 0.004334880912i ];
 %! [sn,cn,dn] = ellipj (u6,m6);
 %! assert ([sn,cn,dn], res6, 1e-8);
 
@@ -907,15 +958,23 @@ and 16.15), Dover, 1965.\n\
 %! assert ([sn,cn,dn], res7, 1e-10);
 
 %!test
-%! u=[0,pi/6,pi/4,pi/2]; m=0;
+%! u = [0,pi/6,pi/4,pi/2]; m=0;
 %! res = [0,1/2,1/sqrt(2),1;1,cos(pi/6),1/sqrt(2),0;1,1,1,1];
 %! [sn,cn,dn] = ellipj (u,m);
-%! assert ([sn;cn;dn],res, 100*eps);
+%! assert ([sn;cn;dn], res, 100*eps);
 %! [sn,cn,dn] = ellipj (u',0);
-%! assert ([sn,cn,dn],res', 100*eps);
+%! assert ([sn,cn,dn], res', 100*eps);
 
-## XXX FIXME XXX
-## need to check [real,complex]x[scalar,rowvec,colvec,matrix]x[u,m]
+## FIXME: need to check [real,complex]x[scalar,rowvec,colvec,matrix]x[u,m]
+
+## One test for u column vector x m row vector
+%!test
+%! u = [0,pi/6,pi/4,pi/2]';  m = [0 0 0 0];
+%! res = [0,1/2,1/sqrt(2),1;1,cos(pi/6),1/sqrt(2),0;1,1,1,1]';
+%! [sn,cn,dn] = ellipj (u,m);
+%! assert (sn, repmat (res(:,1), [1,4]), 100*eps);
+%! assert (cn, repmat (res(:,2), [1,4]), 100*eps);
+%! assert (dn, repmat (res(:,3), [1,4]), 100*eps);
 
 %!test
 %! ## Test Jacobi elliptic functions
@@ -924,27 +983,46 @@ and 16.15), Dover, 1965.\n\
 %! ## 1 February 2001
 %! u = [ 0.25; 0.25; 0.20; 0.20; 0.672; 0.5];
 %! m = [ 0.0;  1.0;  0.19; 0.81; 0.36;  0.9999999999];
-%! S = [ sin(0.25); tanh(0.25);
+%! S = [ sin(0.25);
+%!       tanh(0.25);
 %!       0.19842311013970879516;
 %!       0.19762082367187648571;
 %!       0.6095196917919021945;
 %!       0.4621171572617320908 ];
-%! C = [ cos(0.25); sech(0.25);
+%! C = [ cos(0.25);
+%!       sech(0.25);
 %!       0.9801164570409401062;
 %!       0.9802785369736752032;
 %!       0.7927709286533560550;
 %!       0.8868188839691764094 ];
-%! D = [ 1.0;  sech(0.25);
+%! D = [ 1.0;
+%!       sech(0.25);
 %!       0.9962526643271134302;
 %!       0.9840560289645665155;
 %!       0.9307281387786906491;
 %!       0.8868188839812167635 ];
 %! [sn,cn,dn] = ellipj (u,m);
-%! assert (sn,S,8*eps);
-%! assert (cn,C,8*eps);
-%! assert (dn,D,8*eps);
+%! assert (sn, S, 8*eps);
+%! assert (cn, C, 8*eps);
+%! assert (dn, D, 8*eps);
 
 %!error ellipj ()
 %!error ellipj (1)
 %!error ellipj (1,2,3,4)
+%!warning <expecting 0 <= M <= 1> ellipj (1,2);
+## FIXME: errors commented out untill lasterr() truly returns the last error.
+%!#error <expecting scalar or matrix as second argument> ellipj (1, "1")
+%!#error <expecting scalar or matrix as first argument> ellipj ("1", 1)
+%!#error <expecting scalar or matrix as first argument> ellipj ({1}, 1)
+%!#error <expecting scalar or matrix as first argument> ellipj ({1, 2}, 1)
+%!#error <expecting scalar or matrix as second argument> ellipj (1, {1, 2})
+%!#error <expecting scalar or matrix as first argument> ellipj ("1", [1, 2])
+%!#error <expecting scalar or matrix as first argument> ellipj ({1}, [1, 2])
+%!#error <expecting scalar or matrix as first argument> ellipj ({1}, [1, 2])
+%!#error <expecting scalar or matrix as first argument> ellipj ("1,2", [1, 2])
+%!#error <expecting scalar or matrix as first argument> ellipj ({1, 2}, [1, 2])
+%!error <Invalid size combination for U and M> ellipj ([1:4], [1:3])
+%!error <Invalid size combination for U and M> ellipj (complex (1:4,1:4), [1:3])
+
 */
+

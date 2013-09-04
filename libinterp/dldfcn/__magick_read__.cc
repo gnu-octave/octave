@@ -71,12 +71,17 @@ along with Octave; see the file COPYING.  If not, see
 // 1) A grayscale jpeg image can report being indexed even though the
 //    JPEG format has no support for indexed images. We can at least
 //    fix this one.
+// 2) A PNG file is only an indexed image if color type orig is 3 (value comes
+//    from libpng)
 static bool
 is_indexed (const Magick::Image& img)
 {
   bool retval = false;
-
-  if (img.classType () == Magick::PseudoClass && img.magick () != "JPEG")
+  const std::string format = img.magick ();
+  if (img.classType () == Magick::PseudoClass
+      && format != "JPEG"
+      && (format != "PNG"
+          || const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig") == "3"))
     retval = true;
 
   return retval;
@@ -101,7 +106,7 @@ static octave_idx_type
 get_depth (Magick::Image& img)
 {
   octave_idx_type depth = img.depth ();
-  if (depth != 1
+  if (depth == 8
       && img.channelDepth (Magick::RedChannel)     == 1
       && img.channelDepth (Magick::CyanChannel)    == 1
       && img.channelDepth (Magick::OpacityChannel) == 1

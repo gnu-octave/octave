@@ -46,7 +46,7 @@ function txt = __unimplemented__ (fcn)
 
     case "exifread"
       txt = ["exifread is deprecated.  " ...
-             "The functionality is available in the iminfo function."];
+             "The functionality is available in the imfinfo function."];
 
     case "gsvd"
       txt = ["gsvd is not currently part of core Octave.  ", ...

@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-AUTOMAKE_OPTIONS = subdir-objects
-
 ## Run cruft dir with stand-alone Makefile.
 ## Eventually this will use module.mk syntax.
 SUBDIRS = cruft

@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-AUTOMAKE_OPTIONS = subdir-objects
-
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
   -I$(top_srcdir)/liboctave/cruft/misc \

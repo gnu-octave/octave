@@ -4,7 +4,9 @@ EXTRA_DIST += \
   corefcn/gl2ps.c \
   corefcn/graphics.in.h \
   corefcn/mxarray.in.h \
-  corefcn/oct-errno.in.cc
+  corefcn/oct-errno.in.cc \
+  corefcn/oct-tex-lexer.in.ll \
+  corefcn/oct-tex-symbols.in
 
 ## Options functions for Fortran packages like LSODE, DASPK.
 ## These are generated automagically by configure and Perl.
@@ -34,6 +36,9 @@ JIT_INC = \
   corefcn/jit-typeinfo.h \
   corefcn/jit-ir.h \
   corefcn/pt-jit.h
+
+TEX_PARSER_INC = \
+  corefcn/oct-tex-parser.h
 
 COREFCN_INC = \
   corefcn/Cell.h \
@@ -108,13 +113,18 @@ COREFCN_INC = \
   corefcn/xnorm.h \
   corefcn/xpow.h \
   corefcn/zfstream.h \
-  $(JIT_INC)
+  $(JIT_INC) \
+  $(TEX_PARSER_INC)
 
 JIT_SRC = \
   corefcn/jit-util.cc \
   corefcn/jit-typeinfo.cc \
   corefcn/jit-ir.cc \
   corefcn/pt-jit.cc
+
+TEX_PARSER_SRC = \
+  corefcn/oct-tex-lexer.ll \
+  corefcn/oct-tex-parser.yy
 
 C_COREFCN_SRC = \
   corefcn/cutils.c \
@@ -209,8 +219,6 @@ COREFCN_SRC = \
   corefcn/oct-procbuf.cc \
   corefcn/oct-stream.cc \
   corefcn/oct-strstrm.cc \
-  corefcn/oct-tex-lexer.ll \
-  corefcn/oct-tex-parser.yy \
   corefcn/octave-link.cc \
   corefcn/pager.cc \
   corefcn/pinv.cc \
@@ -293,14 +301,6 @@ corefcn/mxarray.h: corefcn/mxarray.in.h Makefile
 	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
 	mv $@-t $@
 
-noinst_LTLIBRARIES += corefcn/libcorefcn.la
-
-corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
-corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
-
-corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
-corefcn/oct-tex-parser.h: corefcn/oct-tex-parser.yy
-
 corefcn/oct-tex-lexer.ll: corefcn/oct-tex-lexer.in.ll corefcn/oct-tex-symbols.in Makefile.am
 	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/corefcn/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t
 	mv $@-t $@
@@ -310,3 +310,19 @@ corefcn/oct-tex-symbols.cc: corefcn/oct-tex-symbols.in Makefile.am
 	mv $@-t $@
 
 corefcn/txt-eng.cc: corefcn/oct-tex-symbols.cc
+corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
+corefcn/oct-tex-parser.h: corefcn/oct-tex-parser.yy
+
+
+noinst_LTLIBRARIES += \
+  corefcn/libcorefcn.la \
+  corefcn/libtex_parser.la
+
+corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
+corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
+
+corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)
+corefcn_libtex_parser_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)
+corefcn_libtex_parser_la_CXXFLAGS = \
+  $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+

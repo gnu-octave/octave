@@ -91,8 +91,6 @@ EXTRA_DIST = \
   Makefile.in \
   DOCSTRINGS \
   config-features.sh \
-  corefcn/oct-tex-lexer.in.ll \
-  corefcn/oct-tex-symbols.in \
   find-defun-files.sh \
   gendoc.pl \
   genprops.awk \
@@ -102,7 +100,6 @@ EXTRA_DIST = \
   mkdefs \
   mkops \
   oct-conf.in.h \
-  parse-tree/oct-parse.in.yy \
   version.in.h \
   $(BUILT_DISTFILES)
 
@@ -130,7 +127,8 @@ DIST_SRC = \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
   $(PARSER_SRC) \
-  $(COREFCN_SRC)
+  $(COREFCN_SRC) \
+  $(TEX_PARSER_SRC)
 
 noinst_LTLIBRARIES =
 
@@ -181,6 +179,7 @@ liboctinterp_la_LIBADD = \
   parse-tree/libparse-tree.la \
   parse-tree/libparser.la \
   corefcn/libcorefcn.la \
+  corefcn/libtex_parser.la \
   $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 

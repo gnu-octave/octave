@@ -1,5 +1,6 @@
 EXTRA_DIST += \
   parse-tree/module.mk \
+  parse-tree/oct-parse.in.yy \
   parse-tree/octave.gperf
 
 PARSER_INC = \

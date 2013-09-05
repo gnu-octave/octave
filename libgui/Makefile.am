@@ -107,5 +107,6 @@ qrc-%.cc: %.qrc
 	$(LRELEASE) -qm $@ $<
 
 DISTCLEANFILES = \
+  default-qt-settings \
   $(LOCALES)
 

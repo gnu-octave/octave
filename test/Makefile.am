@@ -98,6 +98,7 @@ CLEANFILES = \
   $(GENERATED_BC_OVERLOADS_FILES)
 
 DISTCLEANFILES = \
+  .gdbinit \
   fntests.log
 
 fixedtestsdir := $(octtestsdir)/fixed

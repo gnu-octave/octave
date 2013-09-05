@@ -327,6 +327,22 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.ghostscript.epscrop = ! arg_st.loose;
   endif
 
+  if (arg_st.send_to_printer)
+    if (isempty (arg_st.name))
+      ## Pipe the ghostscript output 
+      arg_st.name = "-";
+    else
+      error ("print: a file name may not specified when spooling to a printer")
+    endif
+    if (! any (strcmp (arg_st.devopt, gs_device_list))
+      || ! any (strcmp (arg_st.devopt, {"pswrite", "ps2write"})))
+      ## Only postscript and supported ghostscript devices
+      error ("print: invalid format for spooling to a printer")
+    endif
+  elseif (isempty (arg_st.name))
+    error ("print: an output file name must be specified")
+  endif
+
   if (isempty (arg_st.canvas_size))
     if (isfigure (arg_st.figure))
       [arg_st.ghostscript.papersize, paperposition] = ...

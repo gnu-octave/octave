@@ -4436,7 +4436,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN (__parse_file__, args, nargout,
+DEFUN (__parse_file__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __parse_file__ (@var{file}, @var{verbose})\n\
 Undocumented internal function.\n\

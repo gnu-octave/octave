@@ -111,13 +111,13 @@ find_files_model::addFile (const QFileInfo &info)
 }
 
 int 
-find_files_model::rowCount (const QModelIndex & p) const
+find_files_model::rowCount (const QModelIndex &) const
 {
   return _files.size();
 }
 
 int 
-find_files_model::columnCount (const QModelIndex & p) const
+find_files_model::columnCount (const QModelIndex &) const
 {
   return _columnNames.size ();
 }

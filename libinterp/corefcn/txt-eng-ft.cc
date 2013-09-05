@@ -42,8 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 #include "txt-eng-ft.h"
 
-// FIXME -- maybe issue at most one warning per glyph/font/size/weight
-// combination.
+// FIXME: maybe issue at most one warning per glyph/font/size/weight
+//        combination.
 
 static void
 gripe_missing_glyph (FT_ULong c)
@@ -62,10 +62,10 @@ gripe_glyph_render (FT_ULong c)
 }
 
 #ifdef _MSC_VER
-// This is just a trick to avoid multiply symbols definition.
+// This is just a trick to avoid multiple symbol definitions.
 // PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
-// that will make MSVC not to generate new instantiation and
-// use the imported one.
+// that will cause MSVC not to generate a new instantiation and
+// use the imported one instead.
 #include "PermMatrix.h"
 #endif
 
@@ -154,8 +154,7 @@ private:
         FT_Done_FreeType (library);
 
 #if defined (HAVE_FONTCONFIG)
-      // FIXME -- Skip the call to FcFini because it can trigger the
-      // assertion
+      // FIXME: Skip the call to FcFini because it can trigger the assertion
       //
       //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
       //
@@ -225,7 +224,7 @@ private:
               FcDefaultSubstitute (pat);
               match = FcFontMatch (0, pat, &res);
 
-              // FIXME -- originally, this test also required that
+              // FIXME: originally, this test also required that
               // res != FcResultNoMatch.  Is that really needed?
               if (match)
                 {
@@ -284,8 +283,7 @@ private:
     {
       if (face->generic.data)
         {
-          ft_key* pkey =
-            reinterpret_cast<ft_key*> (face->generic.data);
+          ft_key* pkey = reinterpret_cast<ft_key*> (face->generic.data);
 
           cache.erase (*pkey);
           delete pkey;
@@ -634,7 +632,8 @@ ft_render::visit (text_element_string& e)
 
       std::string str = e.string_value ();
       size_t n = str.length (), curr = 0;
-      mbstate_t ps = { 0 };
+      mbstate_t ps;
+      memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
       wchar_t wc;
 
       while (n > 0)

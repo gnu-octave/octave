@@ -255,7 +255,7 @@ Undocumented internal function.\n\
 
               std::list<std::string>::iterator it = items_lst.begin ();
 
-              for (unsigned int idx = 0; idx < nel; idx++)
+              for (int idx = 0; idx < nel; idx++)
                 {
                   items.xelem (idx) = *it;
                   it++;

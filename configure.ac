@@ -43,6 +43,10 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.11 tar-ustar])
 
+## Add the option to enable silent rules, available since Automake 1.11
+## and included by default starting with Automake 1.13.
+AM_SILENT_RULES
+
 OCTAVE_CANONICAL_HOST
 
 AC_DEFINE(OCTAVE_SOURCE, 1, [Define to 1 if this is Octave.])

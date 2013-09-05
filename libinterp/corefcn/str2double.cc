@@ -42,9 +42,11 @@ static inline bool
 is_imag_unit (int c)
 { return c == 'i' || c == 'j'; }
 
-static std::istringstream&
-single_num (std::istringstream& is, double& num)
+static double
+single_num (std::istringstream& is)
 {
+  double num;
+
   char c = is.peek ();
 
   // Skip spaces.
@@ -92,7 +94,7 @@ single_num (std::istringstream& is, double& num)
   else
     is >> num;
 
-  return is;
+  return num;
 }
 
 static std::istringstream&
@@ -114,10 +116,10 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
   // Accept leading sign.
   if (c == '+' || c == '-')
     {
+      have_sign = true;
       negative = c == '-';
       is.get ();
       c = is.peek ();
-      have_sign = true;
     }
 
   // Skip spaces after sign.
@@ -138,13 +140,11 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
         {
           // just 'i' and string is finished.  Return immediately.
           imag = true;
-          num = 1.0;
-          if (negative)
-            num = -num;
+          num = negative ? -1.0 : 1.0;
           return is;
         }
       else
-        { 
+        {
           if (std::tolower (c) != 'n')
             imag = true;
           is.unget ();
@@ -152,7 +152,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
     }
   else if (c == 'j')
     imag = true;
-    
+
   // It's i*num or just i
   if (imag)
     {
@@ -169,7 +169,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
         {
           // Multiplier follows, we extract it as a number.
           is.get ();
-          single_num (is, num);
+          num = single_num (is);
           if (is.good ())
             c = is.peek ();
         }
@@ -179,7 +179,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
   else
     {
       // It's num, num*i, or numi.
-      single_num (is, num);
+      num = single_num (is);
       if (is.good ())
         {
           c = is.peek ();
@@ -265,10 +265,9 @@ str2double1 (const std::string& str_arg)
 
   std::string str = str_arg;
 
-  // FIXME -- removing all commas does too much...
-  std::string::iterator se = str.end ();
-  se = std::remove (str.begin (), se, ',');
-  str.erase (se, str.end ());
+  // FIXME: removing all commas doesn't allow actual parsing.
+  //        Example: "1,23.45" is wrong, but passes Octave.
+  str.erase (std::remove (str.begin (), str.end(), ','), str.end ());
   std::istringstream is (str);
 
   double num;
@@ -377,7 +376,6 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double ("1"), 1)
 %!assert (str2double ("-.1e-5"), -1e-6)
 %!assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i])
-%!assert (str2double ("-.1e-5"), -1e-6)
 %!assert (str2double ("1,222.5"), 1222.5)
 %!assert (str2double ("i"), i)
 %!assert (str2double ("2j"), 2i)

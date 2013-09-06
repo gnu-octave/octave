@@ -320,13 +320,18 @@ the brackets indicate optional arguments and @qcode{'d'} indicates zero or\n\
 more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}\n\
 are also accepted.\n\
 \n\
-@var{s} may also be a character matrix, in which case the conversion is\n\
-repeated for each row.  Or @var{s} may be a cell array of strings, in which\n\
-case each element is converted and an array of the same dimensions is\n\
-returned.\n\
+@var{s} can be a character string, a character matrix or a cell array.\n\
+For character arrays the conversion is repeated for every row, and\n\
+a double or complex array is returned in which rows corresponding to\n\
+zero-length rows in @var{s} are deleted.  In case of a cell array @var{s} each\n\
+character string element is processed and a double or complex array of the\n\
+same dimensions as @var{s} is returned.\n\
 \n\
-@code{str2double} returns NaN for elements of @var{s} which cannot be\n\
-converted.\n\
+For unconvertible scalar or character string input @code{str2double} returns\n\
+a NaN.  Similarly, for character array input @code{str2double} returns a NaN\n\
+for any row of @var{s} that could not be converted.  For a cell array\n\
+@code{str2double} returns a NaN for any element of @var{s} for which\n\
+conversion fails, which includes numeric elements.\n\
 \n\
 @code{str2double} can replace @code{str2num}, and it avoids the security\n\
 risk of using @code{eval} on unknown data.\n\
@@ -339,7 +344,11 @@ risk of using @code{eval} on unknown data.\n\
     print_usage ();
   else if (args(0).is_string ())
     {
-      if (args(0).rows () == 1 && args(0).ndims () == 2)
+      if (args(0).rows () == 0 || args(0).columns () == 0)
+        {
+          retval = Matrix (1, 1, octave_NaN);
+        }
+      else if (args(0).rows () == 1 && args(0).ndims () == 2)
         {
           retval = str2double1 (args(0).string_value ());
         }
@@ -366,7 +375,7 @@ risk of using @code{eval} on unknown data.\n\
       }
     }
   else
-    retval = NDArray (args(0).dims (), octave_NaN);
+    retval = Matrix (1, 1, octave_NaN);
 
 
   return retval;
@@ -400,5 +409,8 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
 %!assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i])
 %!assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
-%!assert (str2double (zeros (3,1,2)), NaN (3,1,2))
-*/
+%!assert (str2double (zeros (3,1,2)), NaN)
+%!assert (str2double (''), NaN)
+%!assert (str2double ([]), NaN)
+%!assert (str2double (char(zeros(3,0))), NaN)
+ */

@@ -746,6 +746,7 @@ if test $build_jit = yes; then
 
     save_CPPFLAGS="$CPPFLAGS"
     save_CXXFLAGS="$CXXFLAGS"
+    save_LDFLAGS="$LDFLAGS"
 
     ## Use -isystem if available because we don't want to see warnings in LLVM
     LLVM_INCLUDE_FLAG=-I
@@ -757,7 +758,11 @@ if test $build_jit = yes; then
     LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
     LLVM_CXXFLAGS=
     LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-    LLVM_LIBS=`$LLVM_CONFIG --libs`
+
+
+    LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
+    LLVM_SO=LLVM-`$LLVM_CONFIG --version`
+    AC_CHECK_LIB([$LLVM_SO], [LLVMBuildAdd], [LLVM_LIBS="-l$LLVM_SO"], [LLVM_LIBS=`$LLVM_CONFIG --libs`])
 
     dnl
     dnl Define some extra flags that LLVM requires in order to include headers.
@@ -796,6 +801,7 @@ if test $build_jit = yes; then
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
     CXXFLAGS="$save_CXXFLAGS"
+    LDFLAGS="$save_LDFLAGS"
   fi
 
   if test -z "$warn_llvm"; then

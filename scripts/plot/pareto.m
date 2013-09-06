@@ -70,19 +70,18 @@ function h = pareto (varargin)
     print_usage ();
   endif
 
-  x = varargin {1}(:).';
+  x = varargin{1}(:).';
   if (nargin == 2)
-    y = varargin {2}(:).';
+    y = varargin{2}(:).';
     if (! iscell (y))
       if (ischar (y))
         y = cellstr (y);
       else
-        y = cellfun ("num2str", num2cell (y), "uniformoutput", false);
+        y = cellstr (num2str (y(:)));
       endif
     endif
   else
-    y = cellfun ("int2str", num2cell (1 : numel (x)),
-                 "uniformoutput", false);
+    y = cellstr (int2str ([1:numel(x)]'));
   endif
 
   [x, idx] = sort (x, "descend");

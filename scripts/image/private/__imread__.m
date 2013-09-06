@@ -79,9 +79,9 @@ function varargout = __imread__ (filename, varargin)
   endif
 
   ## Check key/value options.
-  indexes = find (cellfun (@(x) ischar (x) ...
-                                && any (strcmpi (x, {"frames", "index"})),
-                           varargin));
+  indexes = cellfun ("isclass", varargin, "char");
+  indexes(indexes) &= ismember (varargin(indexes), {"frames", "index"});
+  indexes = find (indexes);
   if (indexes)
     options.index = varargin{indexes+1};
     if (! (is_valid_index_option (options.index)) &&

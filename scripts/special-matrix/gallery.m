@@ -2464,7 +2464,7 @@ function P = toeppen (n, a = 1, b = -10, c = 0, d = 10, e = 1)
     error ("gallery: 1 to 6 arguments are required for toeppen matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be a numeric integer for toeppen matrix.");
-  elseif (any (cellfun (@(x) ! isnumeric (x) || ! isscalar (x), {a b c d e})))
+  elseif (any (! cellfun ("isnumeric", {a b c d e})) || any (cellfun ("numel", {a b c d e}) != 1))
     error ("gallery: A, B, C, D and E must be numeric scalars for toeppen matrix.");
   endif
 

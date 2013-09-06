@@ -171,7 +171,7 @@ endfunction
 function eps_drawnow (opts, epsfile, gp_opts)
   [h, fontsize] = get_figure_text_objs (opts);
   unwind_protect
-    fontsize_2x = cellfun (@(x) 2*x, fontsize, "uniformoutput", false);
+    fontsize_2x = cellfun (@times, {2}, fontsize, "uniformoutput", false);
     set (h, {"fontsize"}, fontsize_2x);
     local_drawnow (["postscript eps " gp_opts], epsfile, opts);
   unwind_protect_cleanup

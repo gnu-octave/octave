@@ -187,7 +187,7 @@ function [result, matches] = strsplit (str, del, varargin)
     else
       del = do_string_escapes (del);
     endif
-    % This is clumsy, but needed for multi-row strings
+    ## This is clumsy, but needed for multi-row strings
     del = regexprep (del, '([^\w])', '\\$1');
   endif
 

@@ -94,7 +94,7 @@
 
 function pp = splinefit (x, y, breaks, varargin)
   if (nargin > 3)
-    n = cellfun (@ischar, varargin, "uniformoutput", true);
+    n = cellfun ("isclass", varargin, "char");
     varargin(n) = lower (varargin(n));
     try
       props = struct (varargin{:});

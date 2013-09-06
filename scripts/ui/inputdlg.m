@@ -66,7 +66,7 @@ function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
 
   if (iscell (prompt))
     ## Silently extract only char elements
-    prompt = prompt(cellfun ("ischar", prompt));
+    prompt = prompt(cellfun ("isclass", prompt, "char"));
   elseif (ischar (prompt))
     prompt = {prompt};
   else

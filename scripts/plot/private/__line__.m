@@ -113,7 +113,6 @@ function h = __line__ (p, varargin)
         || (nvecpts != 0 && any (nvecpts != cellfun ("size", tmp, 1))))
       error ("line: data size_mismatch");
     endif
-
     data_args(mask) = cellfun (@(x) x(:,i), data(ismat),
                                "uniformoutput", false);
 

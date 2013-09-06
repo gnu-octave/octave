@@ -42,7 +42,7 @@ function doc_cache_create (out_file = "doc-cache", directory = [])
   if (isempty (directory))
     cache = gen_builtin_cache ();
   elseif (iscell (directory))
-    if (all (cellfun (@ischar, directory)))
+    if (all (cellfun ("isclass", directory, "char")))
       cache = gen_doc_cache_in_dir (directory);
     else
       error ("doc_cache_create: cell must contain only strings");
@@ -95,7 +95,7 @@ function cache = create_cache (list)
 
   ## For each function:
   for n = 1:length (list)
-    f = list {n};
+    f = list{n};
 
     ## Get help text
     [text, format] = get_help_text (f);
@@ -108,9 +108,9 @@ function cache = create_cache (list)
     endif
 
     ## Store the help text
-    cache (1, end+1) = f;
-    cache (2, end) = text;
-    cache (3, end) = first_sentence;
+    cache(1, end+1) = f;
+    cache(2, end) = text;
+    cache(3, end) = first_sentence;
   endfor
 endfunction
 
@@ -127,19 +127,19 @@ function cache = gen_doc_cache_in_dir (directory)
 
   ## add them
   if (! isempty (dirs_notpath))
-    cellfun (@addpath, dirs_notpath);
+    addpath (dirs_notpath{:});
   endif
 
   ## create cache
   func = @(s_) create_cache (__list_functions__ (s_));
-  cache = cellfun (func, directory, 'UniformOutput', false);
+  cache = cellfun (func, directory, "UniformOutput", false);
 
   ## concatenate results
   cache = [cache{:}];
 
   ## remove dirs form path
   if (! isempty (dirs_notpath))
-    cellfun (@rmpath, dirs_notpath);
+    rmpath (dirs_notpath{:});
   endif
 
 endfunction

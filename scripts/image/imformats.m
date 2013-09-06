@@ -260,7 +260,7 @@ function is_valid_format (format)
   ## the minimal list of fields required in the structure. We don't
   ## require multipage because it doesn't exist in matlab
   min_fields  = {"ext", "read", "isa", "write", "info", "alpha", "description"};
-  fields_mask = cellfun (@(x) isfield (format, x), min_fields);
+  fields_mask = isfield (format, min_fields);
   if (! all (fields_mask))
     error ("imformats: structure has missing field `%s'.", min_fields(! fields_mask){1});
   endif

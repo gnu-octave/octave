@@ -339,8 +339,8 @@ function lims = __get_tight_lims__ (ca, ax)
     data = cellfun (@(x) x(isfinite (x)), data, "uniformoutput", false);
     data = data(! cellfun ("isempty", data));
     if (! isempty (data))
-      lims_min = min (cellfun (@(x) min (x(:)), data(:)));
-      lims_max = max (cellfun (@(x) max (x(:)), data(:)));
+      lims_min = min ([data{:}](:));
+      lims_max = max ([data{:}](:));
       lims = [lims_min, lims_max];
     else
       lims = [0, 1];

@@ -93,7 +93,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     p = p(1:2, 1:(tst(end)-1));
   endif
 
-  ## Place the "*mode" properties as the end to avoid having the updaters
+  ## Place the "*mode" properties at the end to avoid having the updaters
   ## change the mode to "manual" when the value is "auto".
   names = fieldnames (s.properties);
   n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
@@ -630,7 +630,7 @@ function addmissingprops (h, props)
   hid = {"autopos_tag", "looseinset"};
   oldfields = fieldnames (props);
   curfields = fieldnames (get (h));
-  missing = cellfun (@(x) !any (strcmp (x, curfields)), oldfields);
+  missing = ! ismember (oldfields, curfields);
   idx = find (missing);
   for ii = 1:length (idx)
     prop = oldfields{idx(ii)};

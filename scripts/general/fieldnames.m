@@ -31,7 +31,7 @@
 ## properties of the object.
 ##
 ## When the input is a Java object @var{javaobj} or Java classname
-## @var{jclassname}) the name are the public data elements of the object or
+## @var{jclassname} the name are the public data elements of the object or
 ## class.
 ## @seealso{struct, methods}
 ## @end deftypefn

@@ -191,7 +191,7 @@ function [h, sout] = createaxes (s, p, par)
       plty = s.properties.__plotyy_axes__;
       addproperty ("__plotyy_axes__", h, "any");
       tmp = [p [s.handle; h]];
-      tst = arrayfun (@(x) any (plty == x), tmp(1:2:end));
+      tst = ismember (tmp(1:2:end), plty);
       if (sum (tst) == numel (plty))
         for ii = 1:numel (plty)
           plty(ii) = tmp(find (tmp == plty(ii)) + 1);
@@ -453,7 +453,8 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
     bargroup = s.properties.bargroup;
     oldh = s.handle;
 
-    temp = arrayfun (@(x) any(x == bargroup), [p(1:2:end) oldh]);
+    temp = ismember ([p(1:2:end) oldh], bargroup);
+
     tst = sum (temp) == length (bargroup);
 
     if (isscalar (bargroup) || !tst)
@@ -547,7 +548,11 @@ function setprops (s, h, p, hilev)
   more off;
   if (strcmpi (s.properties.tag, ""))
     specs = s.children(s.special);
-    hdls = arrayfun (@(x) x.handle, specs);
+    if (isempty (specs))
+      hdls = [];
+    else
+      hdls = [specs.handle];
+    endif
     nh = length (hdls);
     msg = "";
     if (! nh)

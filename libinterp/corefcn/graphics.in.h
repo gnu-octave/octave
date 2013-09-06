@@ -3811,7 +3811,8 @@ public:
       //       more sense to have it so that axis ticklabels can use it.
       radio_property interpreter , "tex|{none}|latex"
       radio_property layer u , "{bottom}|top"
-      string_array_property linestyleorder , "-"
+      // FIXME: should be kind of string array.
+      any_property linestyleorder S , "-"
       double_property linewidth , 0.5
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
       radio_property nextplot , "add|replacechildren|{replace}"

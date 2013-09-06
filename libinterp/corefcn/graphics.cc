@@ -5782,6 +5782,56 @@ axes::properties::set_zticklabel (const octave_value& v)
     }
 }
 
+// Almost identical to convert_ticklabel_string but it only accepts
+// cellstr or string, not numeric input.
+static octave_value
+convert_linestyleorder_string (const octave_value& val)
+{
+  octave_value retval = val;
+
+  if (val.is_cellstr ())
+    {
+      // Always return a column vector for Matlab Compatibility
+      if (val.columns () > 1)
+        retval = val.reshape (dim_vector (val.numel (), 1));
+    }
+  else
+    {
+      string_vector sv;
+      if (val.is_string () && val.rows () == 1)
+        {
+          std::string valstr = val.string_value ();
+          std::istringstream iss (valstr);
+          std::string tmpstr;
+
+          // Split string with delimiter '|'
+          while (std::getline (iss, tmpstr, '|'))
+            sv.append (tmpstr);
+          
+          // If string ends with '|' Matlab appends a null string
+          if (*valstr.rbegin () == '|')
+            sv.append (std::string (""));
+        }
+      else
+        return retval;
+
+      charMatrix chmat (sv, ' ');
+
+      retval = octave_value (chmat);
+    }
+
+  return retval;
+}
+
+void
+axes::properties::set_linestyleorder (const octave_value& v)
+{
+  if (!error_state)
+    {
+      linestyleorder.set (convert_linestyleorder_string (v), false);
+    }
+}
+
 void
 axes::properties::set_units (const octave_value& v)
 {

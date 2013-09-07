@@ -25,6 +25,7 @@
 
 function retval = __plt__ (caller, h, varargin)
 
+  persistent warned_callers = {};
   nargs = nargin - 2;
 
   if (nargs > 0)
@@ -70,6 +71,19 @@ function retval = __plt__ (caller, h, varargin)
       else
         next_cell = varargin(k);
         next_arg = varargin{k++};
+      endif
+
+      if (isnumeric (next_arg) && ndims (next_arg) > 2
+          && any (size (next_arg) == 1))
+        next_arg = squeeze (next_arg);
+        if (! any (strcmp (caller, warned_callers)) && ndims (next_arg) < 3)
+          warning (["%s: N-d inputs have been squeezed to less than " ...
+                    "three dimensions"], caller)
+          warned_callers(end+1) = caller;
+        endif
+      endif
+      if (isnumeric (next_arg) && ndims (next_arg) > 2)
+        error ("%s: plot arrays must have less than 2 dimensions", caller)
       endif
 
       nargs--;

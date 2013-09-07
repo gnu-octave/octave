@@ -69,6 +69,10 @@
 ##
 ## @item
 ## If @var{x} and @var{y} are scalars, a single point is plotted.
+##
+## @item
+## @code{squeeze()} is applied to arguments with more than two dimensions,
+## but no more than two singleton dimensions.
 ## 
 ## @item
 ## If both arguments are vectors, the elements of @var{y} are plotted versus
@@ -244,4 +248,38 @@ endfunction
 %! axis ('tight');
 %! title ({'plot() of blue circles ascending and red squares descending';
 %!         'connecting lines drawn'}); 
+
+%!demo
+%! x = 0:10;
+%! plot (x, rand (numel (x), 3))
+%! axis ([0 10 0 1])
+%! title ({'Three random variables', 'x[1x11], y[11x3]'})
+
+%!demo
+%! x = 0:10;
+%! plot (x, rand (3, numel (x)))
+%! axis ([0 10 0 1])
+%! title ({'Three random variables', 'x[1x11], y[3x11]'})
+
+%!demo
+%! x = 0:10;
+%! plot (repmat (x, 2, 1), rand (2, numel (x)), '-s')
+%! axis ([0 10 0 1])
+%! title ({'Vertical lines with random height and lenths', ...
+%!         'x[2x11], y[2,11]'})
+
+%!demo
+%! x = 0:10;
+%! plot (repmat (x(:), 1, 2), rand (numel (x), 2))
+%! axis ([0 10 0 1])
+%! title ({'Two random variables', 'x[11x2], y[11x2]'})
+
+%!demo
+%! x = 0:10;
+%! shape = [1, 1, numel(x), 2];
+%! x = reshape (repmat (x(:), 1, 2), shape);
+%! y = rand (shape);
+%! plot (x, y)
+%! axis ([0 10 0 1])
+%! title ({'Two random variables', 'squeezed from 4-d arrays'})
 

@@ -54,10 +54,10 @@ function C = bitset (A, n, val)
 
   if (isfloat (A) && isreal (A))
     Bmax = bitmax (cl);
-    Amax = log2 (Bmax);
+    Amax = ceil (log2 (Bmax));
   elseif (isinteger (A))
     Bmax = intmax (cl);
-    Amax = round (log2 (Bmax));
+    Amax = ceil (log2 (Bmax));
   else
     error ("bitset: invalid class %s", cl);
   endif

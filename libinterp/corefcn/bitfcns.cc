@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-int32.h"
 #include "ov-int16.h"
 #include "ov-int8.h"
+#include "ov-float.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-bool.h"
@@ -138,25 +139,55 @@ bitop (const std::string& fname, const octave_value_list& args)
   if (nargin == 2)
     {
       if ((args(0).class_name () == octave_scalar::static_class_name ())
+          || (args(0).class_name () == octave_float_scalar::static_class_name ())
           || (args(0).class_name () == octave_bool::static_class_name ())
           || (args(1).class_name () == octave_scalar::static_class_name ())
+          || (args(1).class_name () == octave_float_scalar::static_class_name ())
           || (args(1).class_name () == octave_bool::static_class_name ()))
         {
           bool arg0_is_int = (args(0).class_name () !=
                               octave_scalar::static_class_name () &&
                               args(0).class_name () !=
+                              octave_float_scalar::static_class_name () &&
+                              args(0).class_name () !=
                               octave_bool::static_class_name ());
           bool arg1_is_int = (args(1).class_name () !=
                               octave_scalar::static_class_name () &&
                               args(1).class_name () !=
+                              octave_float_scalar::static_class_name () &&
+                              args(1).class_name () !=
                               octave_bool::static_class_name ());
+          bool arg0_is_float = args(0).class_name () ==
+                               octave_float_scalar::static_class_name ();
+          bool arg1_is_float = args(1).class_name () ==
+                               octave_float_scalar::static_class_name ();
 
           if (! (arg0_is_int || arg1_is_int))
             {
-              uint64NDArray x (args(0).array_value ());
-              uint64NDArray y (args(1).array_value ());
-              if (! error_state)
-                retval = bitopx (fname, x, y).array_value ();
+              if (! (arg0_is_float || arg1_is_float))
+                {
+                  uint64NDArray x (args(0).array_value ());
+                  uint64NDArray y (args(1).array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).array_value ();
+                }
+              else if (arg0_is_float && arg1_is_float)
+                {
+                  uint64NDArray x (args(0).float_array_value ());
+                  uint64NDArray y (args(1).float_array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).float_array_value ();
+                }
+              else
+                {
+                  int p = (arg0_is_float ? 1 : 0);
+                  int q = (arg0_is_float ? 0 : 1);
+
+                  uint64NDArray x (args(p).array_value ());
+                  uint64NDArray y (args(q).float_array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).float_array_value ();
+                }
             }
           else
             {
@@ -560,6 +591,19 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
           int bits_in_type = sizeof (double) * CHAR_BIT;
           NDArray m = m_arg.array_value ();
           DO_BITSHIFT ( );
+        }
+      else if (cname == "single")
+        {
+          static const int bits_in_mantissa = std::numeric_limits<float>::digits;
+          nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
+          int64_t mask = max_mantissa_value<float> ();
+          if (nbits < bits_in_mantissa)
+            mask = mask >> (bits_in_mantissa - nbits);
+          else if (nbits < 1)
+            mask = 0;
+          int bits_in_type = sizeof (float) * CHAR_BIT;
+          FloatNDArray m = m_arg.float_array_value ();
+          DO_BITSHIFT (Float);
         }
       else
         error ("bitshift: not defined for %s objects", cname.c_str ());

@@ -41,6 +41,9 @@ function C = bitget (A, n)
   if (isa (A, "double"))
     Amax = ceil (log2 (bitmax));
     _conv = @double;
+  elseif (isa (A, "single"))
+    Amax = ceil (log2 (bitmax ("single")));
+    _conv = @single;
   else
     if (isa (A, "uint8"))
       Amax = 8;
@@ -83,6 +86,7 @@ endfunction
 
 %!test
 %! assert (bitget ([4, 14], [3, 3]), logical ([1, 1]));
+%! assert (bitget (single ([4, 14]), [3, 3]), logical ([1, 1]));
 %! pfx = {"", "u"};
 %! for i = 1:2
 %!   for prec = [8, 16, 32, 64]
@@ -93,6 +97,9 @@ endfunction
 
 %!error bitget (0, 0)
 %!error bitget (0, 55)
+
+%!error bitget (single (0), 0)
+%!error bitget (single (0), 26)
 
 %!error bitget (int8 (0), 9)
 %!error bitget (uint8 (0), 9)

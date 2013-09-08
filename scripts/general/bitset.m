@@ -91,6 +91,7 @@ endfunction
 
 %!test
 %! assert (bitset ([0, 10], [3, 3]), [4, 14]);
+%! assert (bitset (single ([0, 10]), [3, 3]), single ([4, 14]));
 %! pfx = {"", "u"};
 %! for i = 1:2
 %!   for prec = [8, 16, 32, 64]
@@ -108,6 +109,8 @@ endfunction
 %!error <invalid class char> bitset ("1", 2)
 %!error <N must be in the range \[1,53\]> bitset (0, 0)
 %!error <N must be in the range \[1,53\]> bitset (0, 55)
+%!error <N must be in the range \[1,24\]> bitset (single (0), 0)
+%!error <N must be in the range \[1,24\]> bitset (single (0), 26)
 %!error <N must be in the range \[1,8\]> bitset (uint8 (0), 0)
 %!error <N must be in the range \[1,8\]> bitset (uint8 (0), 9)
 %!error <N must be in the range \[1,7\]> bitset (int8 (0), 9)

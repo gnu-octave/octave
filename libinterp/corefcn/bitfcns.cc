@@ -575,16 +575,12 @@ DEFUN (bitmax, args, ,
 @deftypefn  {Built-in Function} {} bitmax ()\n\
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
-@deftypefnx {Built-in Function} {} flintmax (@dots{})\n\
 Return the largest integer that can be represented within a floating point\n\
 value.  The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a\n\
 valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
 @w{@math{2^{53} - 1}} for @qcode{\"double\"} and @w{@math{2^{24} -1}} for\n\
 @qcode{\"single\"}.\n\
-\n\
-@code{flintmax} for FLoating point INTeger MAXimum is an alias for\n\
-@code{bitmax}.\n\
-@seealso{intmax, realmax, realmin}\n\
+@seealso{flintmax, intmax, realmax, realmin}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -609,7 +605,39 @@ valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
   return retval;
 }
 
-DEFALIAS(flintmax, bitmax)
+DEFUN (flintmax, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} flintmax ()\n\
+@deftypefnx {Built-in Function} {} flintmax (\"double\")\n\
+@deftypefnx {Built-in Function} {} flintmax (\"single\")\n\
+Return the largest integer that can be represented consecutively in a\n\
+floating point value.  The default class is @qcode{\"double\"}, but @qcode{\"single\"}\n\
+is a valid option.  On IEEE-754 compatible systems, @code{flintmax} is @w{@math{2^53}}\n\
+for @qcode{\"double\"} and @w{@math{2^24}} for @qcode{\"single\"}.\n\
+@seealso{bitmax, intmax, realmax, realmin}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  std::string cname = "double";
+  int nargin = args.length ();
+
+  if (nargin == 1 && args(0).is_string ())
+    cname = args(0).string_value ();
+  else if (nargin != 0)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  if (cname == "double")
+    retval = (static_cast<double> (max_mantissa_value<double> () + 1));
+  else if (cname == "single")
+    retval = (static_cast<float> (max_mantissa_value<float> () + 1));
+  else
+    error ("flintmax: not defined for class '%s'", cname.c_str ());
+
+  return retval;
+}
 
 DEFUN (intmax, args, ,
   "-*- texinfo -*-\n\
@@ -644,7 +672,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{uint32}.\n\
-@seealso{intmin, bitmax}\n\
+@seealso{intmin, flintmax, bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -714,7 +742,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{uint32}.\n\
-@seealso{intmax, bitmax}\n\
+@seealso{intmax, flintmax, bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;

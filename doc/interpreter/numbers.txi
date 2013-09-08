@@ -546,6 +546,8 @@ when converted.
 
 @DOCSTRING(intmin)
 
+@DOCSTRING(flintmax)
+
 @menu
 * Integer Arithmetic::
 @end menu
@@ -614,7 +616,6 @@ As the maximum value that can be represented by a number is important
 for bit manipulation, particularly when forming masks, Octave supplies
 the function @code{bitmax}.
 
-@anchor{XREFflintmax}
 @DOCSTRING(bitmax)
 
 This is the double precision version of the function @code{intmax},

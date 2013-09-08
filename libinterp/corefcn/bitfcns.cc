@@ -344,6 +344,13 @@ Return the bitwise XOR of non-negative integers.\n\
   return bitop ("bitxor", args);
 }
 
+template <typename T>
+static int64_t
+max_mantissa_value ()
+{
+  return (static_cast<int64_t> (1) << std::numeric_limits<T>::digits) - 1;
+}
+
 static int64_t
 bitshift (double a, int n, int64_t mask)
 {
@@ -543,13 +550,14 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
         DO_SBITSHIFT (int64, nbits < 64 ? nbits : 64);
       else if (cname == "double")
         {
-          nbits = (nbits < 53 ? nbits : 53);
-          int64_t mask = 0x1FFFFFFFFFFFFFLL;
-          if (nbits < 53)
-            mask = mask >> (53 - nbits);
+          static const int bits_in_mantissa = std::numeric_limits<double>::digits;
+          nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
+          int64_t mask = max_mantissa_value<double> ();
+          if (nbits < bits_in_mantissa)
+            mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = 64;
+          int bits_in_type = sizeof (double) * CHAR_BIT;
           NDArray m = m_arg.array_value ();
           DO_BITSHIFT ( );
         }
@@ -592,9 +600,9 @@ valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
     }
 
   if (cname == "double")
-    retval = (static_cast<double> (0x1FFFFFFFFFFFFFLL));
+    retval = (static_cast<double> (max_mantissa_value<double> ()));
   else if (cname == "single")
-    retval = (static_cast<double> (0xFFFFFFL));
+    retval = (static_cast<float> (max_mantissa_value<float> ()));
   else
     error ("bitmax: not defined for class '%s'", cname.c_str ());
 

@@ -25,10 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
-#include <climits>
 #include <cstdlib>
 
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include "byte-swap.h"
@@ -45,7 +45,7 @@ template void swap_bytes<8> (volatile void *, int);
 #define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
   do \
     { \
-      int sz = BITS / CHAR_BIT; \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
       if (sizeof (TQ char) == sz) \
         VAL = oct_data_conv::dt_ ## Q ## char; \
       else if (sizeof (TQ short) == sz) \
@@ -64,7 +64,7 @@ template void swap_bytes<8> (volatile void *, int);
 #define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
   do \
     { \
-      int sz = BITS / CHAR_BIT; \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
       if (sizeof (TQ char) == sz) \
         VAL = oct_data_conv::dt_ ## Q ## char; \
       else if (sizeof (TQ short) == sz) \
@@ -82,7 +82,7 @@ template void swap_bytes<8> (volatile void *, int);
 #define FIND_SIZED_FLOAT_TYPE(VAL, BITS) \
   do \
     { \
-      int sz = BITS / CHAR_BIT; \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
       if (sizeof (float) == sz) \
         VAL = oct_data_conv::dt_float; \
       else if (sizeof (double) == sz) \
@@ -94,8 +94,9 @@ template void swap_bytes<8> (volatile void *, int);
 
 // I'm not sure it is worth the trouble, but let's use a lookup table
 // for the types that are supposed to be a specific number of bits
-// wide.  Given the macros above, this should work as long as CHAR_BIT
-// is a multiple of 8 and there are types with the right sizes.
+// wide.  Given the macros above, this should work as long as
+// std::numeric_limits<unsigned char>::digits is a multiple of 8 and
+// there are types with the right sizes.
 //
 // The sized data type lookup table has the following format:
 //

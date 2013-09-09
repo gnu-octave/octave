@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <climits>
+#include <limits>
 
 #include "mx-base.h"
 
@@ -242,9 +242,9 @@ ArrayType
 do_bitpack (const boolNDArray& bitp)
 {
   typedef typename ArrayType::element_type T;
-  octave_idx_type n = bitp.numel () / (sizeof (T) * CHAR_BIT);
+  octave_idx_type n = bitp.numel () / (sizeof (T) * std::numeric_limits<unsigned char>::digits);
 
-  if (n * static_cast<int> (sizeof (T)) * CHAR_BIT == bitp.numel ())
+  if (n * static_cast<int> (sizeof (T)) * std::numeric_limits<unsigned char>::digits == bitp.numel ())
     {
 
       ArrayType retval (get_vec_dims (bitp.dims (), n));
@@ -257,11 +257,11 @@ do_bitpack (const boolNDArray& bitp)
       for (octave_idx_type i = 0; i < m; i++)
         {
           char c = bits[0];
-          for (int j = 1; j < CHAR_BIT; j++)
+          for (int j = 1; j < std::numeric_limits<unsigned char>::digits; j++)
             c |= bits[j] << j;
 
           packed[i] = c;
-          bits += CHAR_BIT;
+          bits += std::numeric_limits<unsigned char>::digits;
         }
 
       return retval;
@@ -361,22 +361,22 @@ boolNDArray
 do_bitunpack (const ArrayType& array)
 {
   typedef typename ArrayType::element_type T;
-  octave_idx_type n = array.numel () * sizeof (T) * CHAR_BIT;
+  octave_idx_type n = array.numel () * sizeof (T) * std::numeric_limits<unsigned char>::digits;
 
   boolNDArray retval (get_vec_dims (array.dims (), n));
 
   const char *packed = reinterpret_cast<const char *> (array.fortran_vec ());
   bool *bits = retval.fortran_vec ();
 
-  octave_idx_type m = n / CHAR_BIT;
+  octave_idx_type m = n / std::numeric_limits<unsigned char>::digits;
 
   for (octave_idx_type i = 0; i < m; i++)
     {
       char c = packed[i];
       bits[0] = c & 1;
-      for (int j = 1; j < CHAR_BIT; j++)
+      for (int j = 1; j < std::numeric_limits<unsigned char>::digits; j++)
         bits[j] = (c >>= 1) & 1;
-      bits += CHAR_BIT;
+      bits += std::numeric_limits<unsigned char>::digits;
     }
 
   return retval;

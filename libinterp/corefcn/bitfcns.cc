@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <limits>
+
 #include "str-vec.h"
 #include "quit.h"
 
@@ -588,7 +590,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
             mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = sizeof (double) * CHAR_BIT;
+          int bits_in_type = sizeof (double) * std::numeric_limits<unsigned char>::digits;
           NDArray m = m_arg.array_value ();
           DO_BITSHIFT ( );
         }
@@ -601,7 +603,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
             mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = sizeof (float) * CHAR_BIT;
+          int bits_in_type = sizeof (float) * std::numeric_limits<unsigned char>::digits;
           FloatNDArray m = m_arg.float_array_value ();
           DO_BITSHIFT (Float);
         }

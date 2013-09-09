@@ -749,11 +749,13 @@ Return 0 if successful, otherwise return -1.\n\
 
 DEFUNX ("lstat", Flstat, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{symlink})\n\
+@deftypefn  {Built-in Function} {@var{info} =} lstat (@var{symlink})\n\
+@deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{symlink})\n\
 Return a structure @var{info} containing information about the symbolic link\n\
-@var{symlink}.  The function outputs are described in the documentation for\n\
-@code{stat}.\n\
-@seealso{stat}\n\
+@var{symlink}.\n\
+\n\
+The function outputs are described in the documentation for @code{stat}.\n\
+@seealso{stat, symlink}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -777,12 +779,14 @@ Return a structure @var{info} containing information about the symbolic link\n\
 
 DEFUNX ("mkfifo", Fmkfifo, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})\n\
-Create a @var{fifo} special file named @var{name} with file mode @var{mode}\n\
+@deftypefn  {Built-in Function} {} mkfifo (@var{name}, @var{mode})\n\
+@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})\n\
+Create a FIFO special file named @var{name} with file mode @var{mode}\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{pipe}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -837,6 +841,7 @@ into @var{read_fd} and @var{write_fd} respectively.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{mkfifo}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -975,6 +980,7 @@ For example:\n\
   @result{} err = 0\n\
   @result{} msg =\n\
 @end example\n\
+@seealso{lstat, ls, dir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1013,8 +1019,9 @@ For example:\n\
 DEFUNX ("S_ISREG", FS_ISREG, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISREG (@var{mode})\n\
-Return true if @var{mode} corresponds to a regular file.  The value\n\
-of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+Return true if @var{mode} corresponds to a regular file.\n\
+\n\
+The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -1038,8 +1045,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISDIR (@var{mode})\n\
-Return true if @var{mode} corresponds to a directory.  The value\n\
-of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+Return true if @var{mode} corresponds to a directory.\n\
+\n\
+The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -1063,8 +1071,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISCHR (@var{mode})\n\
-Return true if @var{mode} corresponds to a character device.  The value\n\
-of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+Return true if @var{mode} corresponds to a character device.\n\
+\n\
+The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -1088,8 +1097,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISBLK (@var{mode})\n\
-Return true if @var{mode} corresponds to a block device.  The value\n\
-of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+Return true if @var{mode} corresponds to a block device.\n\
+\n\
+The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -1113,8 +1123,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISFIFO (@var{mode})\n\
-Return true if @var{mode} corresponds to a fifo.  The value\n\
-of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+Return true if @var{mode} corresponds to a fifo.\n\
+\n\
+The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -1138,8 +1149,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISLNK (@var{mode})\n\
-Return true if @var{mode} corresponds to a symbolic link.  The value\n\
-of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+Return true if @var{mode} corresponds to a symbolic link.\n\
+\n\
+The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -1163,8 +1175,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISSOCK (@var{mode})\n\
-Return true if @var{mode} corresponds to a socket.  The value\n\
-of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+Return true if @var{mode} corresponds to a socket.\n\
+\n\
+The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {

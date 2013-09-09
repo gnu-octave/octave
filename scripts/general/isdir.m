@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isdir (@var{f})
 ## Return true if @var{f} is a directory.
-## @seealso{is_absolute_filename, is_rooted_relative_filename}
+## @seealso{exist, stat, is_absolute_filename, is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isdir (f)

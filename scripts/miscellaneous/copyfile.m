@@ -31,7 +31,7 @@
 ## system-dependent error message, and @var{msgid} contains a unique message
 ## identifier.  Note that the status code is exacly opposite that of the
 ## @code{system} command.
-## @seealso{movefile, glob}
+## @seealso{movefile, rename, unlink, delete, glob}
 ## @end deftypefn
 
 function [status, msg, msgid] = copyfile (f1, f2, force)

@@ -375,7 +375,7 @@ function ret = edit (varargin)
         host = getenv ("COMPUTERNAME");
       endif
       if (isempty (host))
-        [status, host] = system ("uname -n");
+        [~, host] = system ("uname -n");
         ## trim newline from end of hostname
         if (! isempty (host))
           host = host(1:end-1);

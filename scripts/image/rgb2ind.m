@@ -37,16 +37,14 @@
 ##
 ## The input image @var{rgb} must be an N-dimensional RGB image
 ## (@nospell{MxNxO}@dots{}x3 array) where M,N,O@dots{} are the image
-## dimensions, and the
-## final dimension contains the values in the red, green and blue
-## channels.  Alternatively, the red, green and blue color channels can
-## be input as separate arrays @var{R}, @var{G} and  @var{B}.
+## dimensions, and the final dimension contains the values in the red, green
+## and blue channels.  Alternatively, the red, green and blue color channels
+## can be input as separate arrays @var{R}, @var{G}, and @var{B}.
 ##
-## The input @var{map} defines the colormap to be used.  Alternatively,
-## @var{n} or @var{tol} may be used to define the maximum number of
-## colors to use in an automatically generated colormap.  @var{n} is
-## related to @var{tol} by:  @var{n} = (floor (1/@var{tol}) + 1)^3;
-## @var{tol} must be >0 and @leq{}1.
+## The input @var{map} defines the colormap to be used.  Alternatively, @var{n}
+## or @var{tol} may be used to define the maximum number of colors to use in an
+## automatically generated colormap.  @var{n} is related to @var{tol} by:
+## @var{n} = (floor (1/@var{tol}) + 1)^3; where 0 < @var{tol} @leq{} 1.
 ##
 ## @var{dither_option} is a string which enables or disables dithering:
 ## @qcode{"dither"} (default) or @qcode{"nodither"}.

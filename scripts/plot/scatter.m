@@ -28,7 +28,7 @@
 ## Draw a 2-D scatter plot.
 ##
 ## A marker is plotted at each point defined by the coordinates in the vectors
-## @var{x} and  @var{y}.
+## @var{x} and @var{y}.
 ##
 ## The size of the markers is determined by @var{s}, which can be a scalar
 ## or a vector of the same length as @var{x} and @var{y}.  If @var{s}

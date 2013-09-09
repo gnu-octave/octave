@@ -23,7 +23,7 @@
 ## vector elements @var{sx}, @var{sy}, @var{sz} using Phong's approximation.
 ##
 ## The light source location and viewer location vectors can be specified using
-## parameter @var{lv} and  @var{vv} respectively.  The location vectors can
+## parameter @var{lv} and @var{vv} respectively.  The location vectors can
 ## given as 2-element vectors [azimuth, elevation] in degrees or as 3-element
 ## vectors [x, y, z].
 ##

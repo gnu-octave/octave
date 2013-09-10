@@ -13,7 +13,6 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__axis_label__.m \
   plot/private/__bar__.m \
   plot/private/__clabel__.m \
-  plot/private/__color_str_rgb__.m \
   plot/private/__contour__.m \
   plot/private/__default_plot_options__.m \
   plot/private/__errcomm__.m \

@@ -71,29 +71,29 @@ function retval = scatter3 (varargin)
 
   if (nargin < 2)
     print_usage ();
-  else
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
-    unwind_protect
-      hax = newplot (hax);
-      
-      tmp = __scatter__ (hax, 3, "scatter3", varargin{:});
+  unwind_protect
+    hax = newplot (hax);
+    
+    htmp = __scatter__ (hax, 3, "scatter3", varargin{:});
 
-      if (! ishold (hax))
-        set (hax, "view", [-37.5, 30],
-                  "xgrid", "on", "ygrid", "on", "zgrid", "on");
-      endif
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
-  endif
+    if (! ishold (hax))
+      set (hax, "view", [-37.5, 30],
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    endif
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
-    retval = tmp;
+    retval = htmp;
   endif
 
 endfunction

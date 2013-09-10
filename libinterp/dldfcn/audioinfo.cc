@@ -1,5 +1,5 @@
-#include <octave/oct.h>
-#include <octave/ov-struct.h>
+#include "oct.h"
+#include "ov-struct.h"
 #include <sndfile.h>
   
 DEFUN_DLD(audioinfo, args, ,

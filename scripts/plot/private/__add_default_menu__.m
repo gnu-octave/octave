@@ -38,7 +38,6 @@ function __add_default_menu__ (fig)
     ##        on and then off to force figure to hide menubar.
     menubar_state = get (fig, "menubar");
     set (fig, "menubar", "figure");
-    drawnow ();
 
     __f = uimenu (fig, "label", "&File", "handlevisibility", "off",
                        "tag", "__default_menu__");
@@ -58,6 +57,11 @@ function __add_default_menu__ (fig)
     __h = uimenu (fig, "label", "&Help", "handlevisibility", "off",
                        "tag", "__default_menu__");
       uimenu (__h, "label", "A&bout", "enable", "off");
+
+    ## FIXME: This drawnow () must occur after at least one menu item has
+    ##        been defined to avoid sizing issues in new figures.
+    ##        This may lead to flicker.  The real fix must be in the C++ code. 
+    drawnow ();
 
     set (fig, "menubar", menubar_state);
   endif

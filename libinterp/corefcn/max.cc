@@ -663,8 +663,10 @@ DEFUN (cummin, args, nargout,
 @deftypefn  {Built-in Function} {} cummin (@var{x})\n\
 @deftypefnx {Built-in Function} {} cummin (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
-Return the cumulative minimum values along dimension @var{dim}.  If @var{dim}\n\
-is unspecified it defaults to column-wise operation.  For example:\n\
+Return the cumulative minimum values along dimension @var{dim}.\n\
+\n\
+If @var{dim} is unspecified it defaults to column-wise operation.  For\n\
+example:\n\
 \n\
 @example\n\
 @group\n\
@@ -673,40 +675,52 @@ cummin ([5 4 6 2 3 1])\n\
 @end group\n\
 @end example\n\
 \n\
-\n\
-The call\n\
-\n\
-@example\n\
-  [w, iw] = cummin (x)\n\
-@end example\n\
-\n\
-@noindent\n\
-with @code{x} a vector, is equivalent to the following code:\n\
+If called with two output arguments the index of the minimum value is also\n\
+returned.\n\
 \n\
 @example\n\
 @group\n\
-w = iw = zeros (size (x));\n\
-for i = 1:length (x)\n\
-  [w(i), iw(i)] = max (x(1:i));\n\
-endfor\n\
+[w, iw] = cummin ([5 4 6 2 3 1])\n\
+@result{}\n\
+w =  5  4  4  2  2  1\n\
+iw = 1  2  2  4  4  6\n\
 @end group\n\
 @end example\n\
 \n\
-@noindent\n\
-but computed in a much faster manner.\n\
 @seealso{cummax, min, max}\n\
 @end deftypefn")
 {
   return do_cumminmax_body (args, nargout, true);
 }
 
+/*
+%!assert (cummin ([1, 4, 2, 3]), [1 1 1 1])
+%!assert (cummin ([1; -10; 5; -2]), [1; -10; -10; -10])
+%!assert (cummin ([4, i; -2, 2]), [4, i; -2, i])
+
+%!test
+%! x = reshape (1:8, [2,2,2]);
+%! assert (cummin (x, 1), reshape ([1 1 3 3 5 5 7 7], [2,2,2]));
+%! assert (cummin (x, 2), reshape ([1 2 1 2 5 6 5 6], [2,2,2]));
+%! [w, iw] = cummin (x, 3);
+%! assert (ndims (w), 3);
+%! assert (w, repmat ([1 3; 2 4], [1 1 2]));
+%! assert (ndims (iw), 3);
+%! assert (iw, ones (2,2,2));
+
+%!error cummin ()
+%!error cummin (1, 2, 3)
+*/
+
 DEFUN (cummax, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cummax (@var{x})\n\
 @deftypefnx {Built-in Function} {} cummax (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummax (@var{x})\n\
-Return the cumulative maximum values along dimension @var{dim}.  If @var{dim}\n\
-is unspecified it defaults to column-wise operation.  For example:\n\
+@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummax (@dots{})\n\
+Return the cumulative maximum values along dimension @var{dim}.\n\
+\n\
+If @var{dim} is unspecified it defaults to column-wise operation.  For\n\
+example:\n\
 \n\
 @example\n\
 @group\n\
@@ -715,28 +729,40 @@ cummax ([1 3 2 6 4 5])\n\
 @end group\n\
 @end example\n\
 \n\
-The call\n\
-\n\
-@example\n\
-[w, iw] = cummax (x, dim)\n\
-@end example\n\
-\n\
-@noindent\n\
-with @code{x} a vector, is equivalent to the following code:\n\
+If called with two output arguments the index of the maximum value is also\n\
+returned.\n\
 \n\
 @example\n\
 @group\n\
-w = iw = zeros (size (x));\n\
-for i = 1:length (x)\n\
-  [w(i), iw(i)] = max (x(1:i));\n\
-endfor\n\
+[w, iw] = cummax ([1 3 2 6 4 5])\n\
+@result{}\n\
+w =  1  3  3  6  6  6\n\
+iw = 1  2  2  4  4  4\n\
 @end group\n\
 @end example\n\
 \n\
-@noindent\n\
-but computed in a much faster manner.\n\
 @seealso{cummin, max, min}\n\
 @end deftypefn")
 {
   return do_cumminmax_body (args, nargout, false);
 }
+
+/*
+%!assert (cummax ([1, 4, 2, 3]), [1 4 4 4])
+%!assert (cummax ([1; -10; 5; -2]), [1; 1; 5; 5])
+%!assert (cummax ([4, i 4.9, -2, 2, 3+4i]), [4, 4, 4.9, 4.9, 4.9, 3+4i])
+
+%!test
+%! x = reshape (8:-1:1, [2,2,2]);
+%! assert (cummax (x, 1), reshape ([8 8 6 6 4 4 2 2], [2,2,2]));
+%! assert (cummax (x, 2), reshape ([8 7 8 7 4 3 4 3], [2,2,2]));
+%! [w, iw] = cummax (x, 3);
+%! assert (ndims (w), 3);
+%! assert (w, repmat ([8 6; 7 5], [1 1 2]));
+%! assert (ndims (iw), 3);
+%! assert (iw, ones (2,2,2));
+
+%!error cummax ()
+%!error cummax (1, 2, 3)
+*/
+

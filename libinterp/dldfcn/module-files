@@ -20,6 +20,6 @@ symbfact.cc|$(SPARSE_XCPPFLAGS)|$(SPARSE_XLDFLAGS)|$(SPARSE_XLIBS)
 symrcm.cc|$(SPARSE_XCPPFLAGS)|$(SPARSE_XLDFLAGS)|$(SPARSE_XLIBS)
 tsearch.cc
 urlwrite.cc|$(CURL_CPPFLAGS)|$(CURL_LDFLAGS)|$(CURL_LIBS)
-audioread.cc|-lsndfile
-audiowrite.cc|-lsndfile
-audioinfo.cc|-lsndfile
+audioread.cc|$(SNDFILE_CPPFLAGS)|$(SNDFILE_LDFLAGS)|$(SNDFILE_LIBS)
+audiowrite.cc|$(SNDFILE_CPPFLAGS)|$(SNDFILE_LDFLAGS)|$(SNDFILE_LIBS)
+audioinfo.cc|$(SNDFILE_CPPFLAGS)|$(SNDFILE_LDFLAGS)|$(SNDFILE_LIBS)

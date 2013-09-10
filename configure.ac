@@ -934,6 +934,19 @@ fi
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 
+### Check for sndfile
+
+SNDFILE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I sndfile`
+SNDFILE_LDFLAGS=`$PKG_CONFIG --libs-only-L sndfile`
+SNDFILE_LIBS=`$PKG_CONFIG --libs-only-l sndfile`
+
+CPPFLAGS="$MAGICK_CPPFLAGS $CPPFLAGS"
+LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
+
+AC_SUBST(MAGICK_CPPFLAGS)
+AC_SUBST(MAGICK_LDFLAGS)
+AC_SUBST(MAGICK_LIBS)
+
 ### Check for either of Graphics/ImageMagick++ libraries
 
 AC_ARG_WITH([magick],
@@ -2866,6 +2879,9 @@ Octave is now configured for $canonical_host_type
   Qt libraries:                $QT_LIBS
   READLINE libraries:          $READLINE_LIBS
   REGEX libraries:             $REGEX_LIBS
+  Sndfile CPPFLAGS:            $SNDFILE_CPPFLAGS
+  Sndfile LDFLAGS:             $SNDFILE_LDFLAGS
+  Sndfile libraries:           $SNDFILE_LIBS
   TERM libraries:              $TERM_LIBS
   UMFPACK CPPFLAGS:            $UMFPACK_CPPFLAGS
   UMFPACK LDFLAGS:             $UMFPACK_LDFLAGS

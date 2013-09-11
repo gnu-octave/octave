@@ -936,12 +936,27 @@ CPPFLAGS="$save_CPPFLAGS"
 
 ### Check for sndfile
 
-SNDFILE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I sndfile`
-SNDFILE_LDFLAGS=`$PKG_CONFIG --libs-only-L sndfile`
-SNDFILE_LIBS=`$PKG_CONFIG --libs-only-l sndfile`
+SNDFILE_CPPFLAGS=
+SNDFILE_LDFLAGS=
+SNDFILE_LIBS=
 
-CPPFLAGS="$SNDFILE_CPPFLAGS $CPPFLAGS"
-LIBS="$SNDFILE_LDFLAGS $SNDFILE_LIBS $LIBS"
+warn_sndfile="$sndfile library fails tests.  The audioinfo, audioread and audiowrite functions for reading and writing audio files will not be fully functional."
+
+PKG_CHECK_EXISTS([sndfile], [
+  SNDFILE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I sndfile`
+  SNDFILE_LDFLAGS=`$PKG_CONFIG --libs-only-L sndfile`
+  SNDFILE_LIBS=`$PKG_CONFIG --libs-only-l sndfile`
+  warn_sndfile=
+])
+
+if test -z "$warn_sndfile"; then
+  AC_DEFINE(HAVE_SNDFILE, 1,
+    [Define to 1 if sndfile is available.])
+else
+  SNDFILE_CPPFLAGS=
+  SNDFILE_LDFLAGS=
+  SNDFILE_LIBS=
+fi
 
 AC_SUBST(SNDFILE_CPPFLAGS)
 AC_SUBST(SNDFILE_LDFLAGS)

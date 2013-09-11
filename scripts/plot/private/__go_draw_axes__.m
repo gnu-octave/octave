@@ -643,7 +643,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
          if (! isnan (xcol) && ! isnan (ycol))
            ## Is the patch closed or not
-           if (strncmp (obj.facecolor, "none"))
+           if (strcmp (obj.facecolor, "none"))
              hidden_removal = false;
            else
 

@@ -174,7 +174,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
         else
           error ("uigetfile: expecting 2-element vector for position argument");
         endif
-      elseif (strcmpi (prop, "multiselect", 11))
+      elseif (strcmpi (prop, "multiselect"))
         if (ischar (val))
           outargs{5} = tolower (val);
         else

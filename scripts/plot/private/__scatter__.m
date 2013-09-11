@@ -30,29 +30,14 @@ function hg = __scatter__ (varargin)
   y   = varargin{5}(:);
 
   if (nd == 2)
-    idx = isnan (x) | isnan (y);
-    x(idx) = [];
-    y(idx) = [];
-    z = zeros (length (x), 0);
     istart = 6;
   else
     z = varargin{6}(:);
-    idx = isnan (x) | isnan (y) | isnan (z);
-    x(idx) = [];
-    y(idx) = [];
-    z(idx) = [];
     istart = 7;
   endif
 
-  firstnonnumeric = find (! cellfun ("isnumeric", varargin(istart:nargin)), 1);
-  if (isempty (firstnonnumeric))
-    firstnonnumeric = Inf;
-  else
-    firstnonnumeric += istart - 1;
-  endif
-
   if (istart <= nargin)
-    s = varargin{istart};
+    s = varargin{istart}(:);
     if (isempty (s) || ischar (s))
       s = 6;
     endif
@@ -61,6 +46,28 @@ function hg = __scatter__ (varargin)
     endif
   else
     s = 6;
+  endif
+
+  ## Remove NaNs
+  idx = isnan (x) | isnan (y) | isnan (s);
+  if (nd == 3)
+    idx |= isnan (z);
+    z(idx) = [];
+  endif
+  x(idx) = [];
+  y(idx) = [];
+  if (nd == 2)
+    z = zeros (length (x), 0);
+  endif
+  if (numel (s) > 1)
+    s(idx) = [];
+  endif
+
+  firstnonnumeric = find (! cellfun ("isnumeric", varargin(istart:nargin)), 1);
+  if (isempty (firstnonnumeric))
+    firstnonnumeric = Inf;
+  else
+    firstnonnumeric += istart - 1;
   endif
 
   if (istart <= nargin && firstnonnumeric > istart)

@@ -1,6 +1,8 @@
 #include "oct.h"
 #include "ov-struct.h"
-#include <sndfile.h>
+#ifdef HAVE_SNDFILE
+  #include <sndfile.h>
+#endif
   
 DEFUN_DLD(audioinfo, args, ,
 "-*- texinfo -*-\n\

@@ -2,7 +2,33 @@
 #include "ov-struct.h"
 #include <portaudio.h>
 
-#include "common.h"
+PaSampleFormat bits_to_format(int bits)
+{
+  if (bits == 8)
+    {
+      return paInt8;
+    }
+  else if (bits == 16)
+    {
+      return paInt16;
+    }
+  else if (bits == 24)
+    {
+      return paInt24;
+    }
+  else if (bits == 32)
+    {
+      return paInt32;
+    }
+  else if (bits == -1)
+    {
+      return paFloat32;
+    }
+  else 
+    {
+      return 0;
+    }
+}
   
 DEFUN_DLD(audiodevinfo, args, ,
 "-*- texinfo -*-\n\

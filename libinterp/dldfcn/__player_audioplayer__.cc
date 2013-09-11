@@ -56,22 +56,6 @@ DEFUN_DLD(__player_get_channels__, args, ,
   return retval;
 }
    
-DEFUN_DLD(__player_get_id__, args, ,
-"__player_get_id__"
-)
-{
-  octave_value retval;
-  int nargin = args.length ();
-  if (nargin == 1)
-    {
-      audioplayer* player = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      player = &((audioplayer &)rep);
-      retval = octave_value(player->get_id());
-    }
-  return retval;
-}
-   
 DEFUN_DLD(__player_get_fs__, args, ,
 "__player_get_fs__"
 )

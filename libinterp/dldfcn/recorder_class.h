@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include <octave/oct.h>
-#include <octave/ov-int32.h>
+#include "oct.h"
+#include "ov-int32.h"
 #include <portaudio.h>
 
 #include "player_class.h"

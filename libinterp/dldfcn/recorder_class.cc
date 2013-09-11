@@ -1,12 +1,39 @@
-#include <octave/oct.h>
-#include <octave/ov.h>
-#include <octave/parse.h>
+#include "oct.h"
+#include "ov.h"
+#include "parse.h"
 #include <portaudio.h>
 #include <stdint.h>
 
-#include "common.h"
 #include "player_class.h"
 #include "recorder_class.h"
+
+PaSampleFormat bits_to_format(int bits)
+{
+  if (bits == 8)
+    {
+      return paInt8;
+    }
+  else if (bits == 16)
+    {
+      return paInt16;
+    }
+  else if (bits == 24)
+    {
+      return paInt24;
+    }
+  else if (bits == 32)
+    {
+      return paInt32;
+    }
+  else if (bits == -1)
+    {
+      return paFloat32;
+    }
+  else 
+    {
+      return 0;
+    }
+}
 
 #define BUFFER_SIZE 512
 

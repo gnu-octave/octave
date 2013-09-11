@@ -235,6 +235,10 @@ function add_patch_children (hg)
   filled = get (hg, "fill");
   ca = gca ();
 
+  ## Turn off automatic updating of clim while adding patches
+  climmode = get (ca, "climmode");
+  set (ca, "climmode", "manual"); 
+
   if (strcmpi (lc, "auto"))
     lc = "flat";
   endif
@@ -392,6 +396,8 @@ function add_patch_children (hg)
       i1 += clen + 1;
     endwhile
   endif
+
+  set (ca, "climmode", climmode);
 
 endfunction
 

@@ -61,12 +61,13 @@ Comment.\n\
 @end deftypefn"
 )
 {
+  octave_scalar_map retval;
+#ifdef HAVE_SNDFILE
   std::map<std::string, int> extension_to_format;
   fill_extension_table(extension_to_format);
   std::string filename = args(0).string_value ();
   std::string extension = filename.substr(filename.find_last_of(".") + 1);
   std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-  octave_scalar_map retval;
   Matrix audio = args(1).matrix_value ();
   SNDFILE *file;
   SF_INFO info;
@@ -160,5 +161,8 @@ Comment.\n\
   sf_write_float (file, data, audio.rows () * audio.cols ());
   sf_close (file);
   free (data);
+#else
+  error("sndfile not found on your system and thus audiowrite is not functional")
+#endif
   return octave_value(retval);
 }

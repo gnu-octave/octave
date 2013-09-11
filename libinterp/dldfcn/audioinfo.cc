@@ -12,6 +12,7 @@ Return information about an audio file specified by @var{filename}.\
 )
 {
   octave_scalar_map retval;
+#ifdef HAVE_SNDFILE
   Matrix audio;
   SNDFILE *file;
   SF_INFO info;
@@ -54,5 +55,8 @@ Return information about an audio file specified by @var{filename}.\
   retval.assign ("Title", sf_get_string (file, SF_STR_TITLE));
   retval.assign ("Artist", sf_get_string (file, SF_STR_ARTIST));
   retval.assign ("Comment", sf_get_string (file, SF_STR_COMMENT));
+#else
+  error("sndfile not found on your system and thus audioinfo is not functional")
+#endif
   return octave_value(retval);
 }

@@ -52,7 +52,7 @@
 ##    blue, black
 ## @end group
 ## @end smallexample
-## 
+##
 ## @seealso{strcmp, strcmpi}
 ## @end deftypefn
 
@@ -70,7 +70,7 @@ function str = validatestring (str, strarray, varargin)
     position = varargin{end};
     varargin(end) = [];
   endif
-  
+
   funcname = varname = "";
   char_idx = cellfun ("isclass", varargin, "char");
   n_chararg = sum (char_idx);
@@ -112,7 +112,7 @@ function str = validatestring (str, strarray, varargin)
     errstr(end:end+1) = ":\n";
   endif
 
-  matches = strncmpi (str, strarray(:), numel (str));
+  matches = strncmpi (str, strarray(:), length (str));
   nmatches = sum (matches);
   if (nmatches == 0)
     error ("validatestring: %s'%s' does not match any of\n%s", errstr, str,
@@ -124,9 +124,9 @@ function str = validatestring (str, strarray, varargin)
     ## If true, choose the shortest.  If not, raise an error.
     match_idx = find (matches);
     match_len = cellfun ("length", strarray(match_idx));
-    [min_len, min_idx] = min (match_len); 
+    [min_len, min_idx] = min (match_len);
     short_str = strarray{match_idx(min_idx)};
-    submatch = strncmpi (short_str, strarray(match_idx), min_len);    
+    submatch = strncmpi (short_str, strarray(match_idx), min_len);
     if (all (submatch))
       str = short_str;
     else

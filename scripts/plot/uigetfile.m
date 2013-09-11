@@ -103,9 +103,9 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       val = varargin{i};
       if (ischar (val))
         val = tolower (val);
-        if (strncmp (val, "multiselect", 11))
+        if (strcmp (val, "multiselect"))
           idx1 = i;
-        elseif (strncmp (val, "position", 8))
+        elseif (strcmp (val, "position"))
           idx2 = i;
         endif
       endif
@@ -168,13 +168,13 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     for i = stridx : 2 : nargin
       prop = varargin{i};
       val = varargin{i + 1};
-      if (strncmp (tolower (prop), "position", 8))
+      if (strcmpi (prop, "position"))
         if (ismatrix (val) && length (val) == 2)
           outargs{4} = val;
         else
           error ("uigetfile: expecting 2-element vector for position argument");
         endif
-      elseif (strncmp (tolower (prop), "multiselect", 11))
+      elseif (strcmpi (prop, "multiselect", 11))
         if (ischar (val))
           outargs{5} = tolower (val);
         else

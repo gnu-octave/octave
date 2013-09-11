@@ -33,7 +33,7 @@ function retval = optimget (options, parname, default)
   endif
 
   opts = __all_opts__ ();
-  idx = strncmpi (opts, parname, numel (parname));
+  idx = strncmpi (opts, parname, length (parname));
 
   nmatch = sum (idx);
 

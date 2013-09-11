@@ -58,7 +58,7 @@ function bb = __tight_eps_bbox__ (opts, eps_file_name)
     looking_for_bbox = true;
     while (looking_for_bbox)
       current_line = fgetl (fid);
-      if (strncmpi (current_line, box_string, numel (box_string)))
+      if (strncmpi (current_line, box_string, length (box_string)))
         line_length = numel (current_line);
         num_spaces = line_length - numel (tight_bbox_line);
         if (numel (current_line) >= numel (tight_bbox_line))

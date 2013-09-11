@@ -225,7 +225,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
             otherwise
               size_str = "";
           endswitch
-          if ((strncmpi (term, "x11", 3)
+          if ((strcmp (term, "x11")
                && __gnuplot_has_feature__ ("x11_figure_position"))
               || (strcmpi (term, "windows")
                   && __gnuplot_has_feature__ ("windows_figure_position")))

@@ -90,9 +90,9 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.force_solid = 1;
       elseif (strcmp (arg, "-dashed"))
         arg_st.force_solid = -1;
-      elseif (strncmp (arg, "-portrait", numel (arg)))
+      elseif (strncmp (arg, "-portrait", length (arg)))
         arg_st.orientation = "portrait";
-      elseif (strncmp (arg, "-landscape", numel (arg)))
+      elseif (strncmp (arg, "-landscape", length (arg)))
         arg_st.orientation = "landscape";
       elseif (strcmp (arg, "-loose"))
         arg_st.loose = true;
@@ -122,14 +122,14 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.pstoedit_binary = arg{10:end};
       elseif (strncmpi (arg, "-textalphabits=", 15))
         n = find (arg == "=");
-        if (! isempty (n) && n == numel (arg) - 1 && ismember (arg(end), "124"))
+        if (! isempty (n) && n == numel (arg) - 1 && any (arg(end) == "124"))
           arg_st.ghostscript.antialiasing_textalphabits = str2num (arg(end));
         else
           error ("print: improper syntax, or value, for TextAlphaBits");
         endif
       elseif (strncmpi (arg, "-graphicsalphabits=", 19))
         n = find (arg == "=");
-        if (! isempty (n) && n == numel (arg) - 1 && ismember (arg(end), "124"))
+        if (! isempty (n) && n == numel (arg) - 1 && any (arg(end) == "124"))
           arg_st.ghostscript.antialiasing_graphicsalphabits = str2num (arg(end));
         else
           error ("print: improper syntax, or value, for GraphicsAlphaBits");

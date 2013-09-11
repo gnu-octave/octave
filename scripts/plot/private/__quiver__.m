@@ -81,14 +81,14 @@ function hg = __quiver__ (varargin)
   args = {};
   while (ioff <= nargin)
     arg = varargin{ioff++};
-    if (ischar (arg) && strncmpi (arg, "filled", 6))
+    if (ischar (arg) && strcmpi (arg, "filled"))
       have_filled = true;
     elseif ((ischar (arg) || iscell (arg))
             && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("quiver", arg, false);
       if (valid)
         have_line_spec = true;
-        if (strncmp (linespec.linestyle, "none", 4))
+        if (strcmp (linespec.linestyle, "none"))
           linespec.linestyle = "-";
         endif
       else
@@ -228,7 +228,7 @@ function hg = __quiver__ (varargin)
 
     if (have_line_spec)
       if (isfield (linespec, "marker")
-          && ! strncmp (linespec.marker, "none", 4))
+          && ! strcmp (linespec.marker, "none"))
         if (is3d)
           h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
                       [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
@@ -266,7 +266,7 @@ function hg = __quiver__ (varargin)
 
     if (! have_line_spec
         || (isfield (linespec, "marker")
-            && strncmp (linespec.marker, "none", 4)))
+            && strcmp (linespec.marker, "none")))
       if (is3d)
         h3 = plot3 (x, y, z, "linestyle", "none", "marker", "none",
                     "parent", hg);

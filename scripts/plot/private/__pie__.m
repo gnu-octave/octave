@@ -114,7 +114,7 @@ function hlist = __pie__ (caller, varargin)
       set (h, "clim", [1, len]);
     endif
 
-    if (strncmp (caller, "pie3", 4))
+    if (strcmp (caller, "pie3"))
       ln = length (xn);
       zlvl = 0.35;
       sx = repmat (xoff + [0, -sind(xn), 0], [2, 1]);
@@ -128,7 +128,7 @@ function hlist = __pie__ (caller, varargin)
         patch(xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], zlvl * ones (1, ln + 1), i);
         text(xt, yt, zlvl, labels{i})];
 
-    elseif (strncmp (caller, "pie", 3))
+    elseif (strcmp (caller, "pie"))
       if (xt > 0)
         align = "left";
       else
@@ -145,10 +145,10 @@ function hlist = __pie__ (caller, varargin)
 
   addlistener (gca, "view", {@update_text_pos, hlist});
 
-  if (strncmp (caller, "pie3", 4))
+  if (strcmp (caller, "pie3"))
     axis ([-1.25, 1.25, -1.25, 1.25, -0.05, 0.4], "equal", "off");
     view (-37.5, 30);
-  elseif (strncmp (caller, "pie", 3))
+  elseif (strcmp (caller, "pie"))
     axis ([-1.5, 1.5, -1.5, 1.5], "square", "off");
   endif
 endfunction

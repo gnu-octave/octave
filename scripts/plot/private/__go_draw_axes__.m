@@ -480,7 +480,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
     ## Check for facecolor interpolation for surfaces.
     doing_interp_color = ...
-       isfield (obj, "facecolor") && strncmp (obj.facecolor, "interp", 6);
+       isfield (obj, "facecolor") && strcmp (obj.facecolor, "interp");
 
     switch (obj.type)
       case "image"
@@ -547,10 +547,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         withclause{data_idx} = sprintf ("with %s;", imagetype);
 
       case "line"
-        if (strncmp (obj.linestyle, "none", 4)
+        if (strcmp (obj.linestyle, "none")
             && (! isfield (obj, "marker")
                 || (isfield (obj, "marker")
-                    && strncmp (obj.marker, "none", 4))))
+                    && strcmp (obj.marker, "none"))))
           continue;
         endif
         data_idx++;
@@ -643,7 +643,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
          if (! isnan (xcol) && ! isnan (ycol))
            ## Is the patch closed or not
-           if (strncmp (obj.facecolor, "none", 4))
+           if (strncmp (obj.facecolor, "none"))
              hidden_removal = false;
            else
 
@@ -684,8 +684,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                titlespec{local_idx} = ['title "' tmp '"'];
              endif
              if (isfield (obj, "facecolor"))
-               if ((strncmp (obj.facecolor, "flat", 4)
-                   || strncmp (obj.facecolor, "interp", 6))
+               if ((strcmp (obj.facecolor, "flat")
+                   || strcmp (obj.facecolor, "interp"))
                    && isfield (obj, "cdata"))
                  if (ndims (obj.cdata) == 2
                      && (columns (obj.cdata) == nc
@@ -702,7 +702,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                  else
                    ccol = cdat;
                  endif
-                 if (strncmp (obj.facecolor, "flat", 4))
+                 if (strcmp (obj.facecolor, "flat"))
                    if (isequal (size (ccol), [1, 3]))
                      ## RGB Triplet
                      color = ccol;
@@ -718,7 +718,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      r = max (1, min (r, rows (cmap)));
                      color = cmap(r, :);
                    endif
-                 elseif (strncmp (obj.facecolor, "interp", 6))
+                 elseif (strcmp (obj.facecolor, "interp"))
                    if (nd == 3 && numel (xcol) == 3)
                      ccdat = ccol;
                      if (! isvector (ccdat))
@@ -782,10 +782,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
          endif
 
          ## patch outline
-         if (!(strncmp (obj.edgecolor, "none", 4)
-                && (strncmp (obj.marker, "none", 4)
-                    || (strncmp (obj.markeredgecolor, "none", 4)
-                        && strncmp (obj.markerfacecolor, "none", 4)))))
+         if (!(strcmp (obj.edgecolor, "none")
+                && (strcmp (obj.marker, "none")
+                    || (strcmp (obj.markeredgecolor, "none")
+                        && strcmp (obj.markerfacecolor, "none")))))
 
            data_idx++;
            is_image_data(data_idx) = false;
@@ -806,8 +806,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
              ## treat them seperately. However, the below allow the scatter
              ## functions to work as expected, where only one of these values
              ## is set
-             if (strncmp (obj.edgecolor, "none", 4))
-               if (strncmp (obj.markeredgecolor, "none", 4))
+             if (strcmp (obj.edgecolor, "none"))
+               if (strcmp (obj.markeredgecolor, "none"))
                  ec = obj.markerfacecolor;
                else
                  ec = obj.markeredgecolor;
@@ -816,8 +816,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                ec = obj.edgecolor;
              endif
 
-             if ((strncmp (ec, "flat", 4)
-                  || strncmp (ec, "interp", 6))
+             if ((strcmp (ec, "flat")
+                  || strcmp (ec, "interp"))
                  && isfield (obj, "cdata"))
                if (ndims (obj.cdata) == 2
                    && (columns (obj.cdata) == nc
@@ -834,7 +834,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                else
                  ccol = cdat;
                endif
-               if (strncmp (ec, "flat", 4))
+               if (strcmp (ec, "flat"))
                  if (numel (ccol) == 3)
                    color = ccol;
                  else
@@ -844,7 +844,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                    color = "flat";
                    have_cdata(data_idx) = true;
                  endif
-               elseif (strncmp (ec, "interp", 6))
+               elseif (strcmp (ec, "interp"))
                  if (numel (ccol) == 3)
                    warning ("\"interp\" not supported, using 1st entry of cdata");
                    color = ccol(1,:);
@@ -919,8 +919,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
            facesame = true;
            if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-               && !strncmp (obj.markerfacecolor, "none", 4))
-             if (strncmp (obj.markerfacecolor, "auto", 4)
+               && !strcmp (obj.markerfacecolor, "none"))
+             if (strcmp (obj.markerfacecolor, "auto")
                  || ! isnumeric (obj.markerfacecolor)
                  || (isnumeric (obj.markerfacecolor)
                      && isequal (color, obj.markerfacecolor)))
@@ -969,9 +969,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
            endif
 
            if (isfield (obj, "markeredgecolor")
-               && !strncmp (obj.markeredgecolor, "none", 4))
+               && !strcmp (obj.markeredgecolor, "none"))
              if (facesame && !isempty (pt)
-                 && (strncmp (obj.markeredgecolor, "auto", 4)
+                 && (strcmp (obj.markeredgecolor, "auto")
                      || ! isnumeric (obj.markeredgecolor)
                      || (isnumeric (obj.markeredgecolor)
                          && isequal (color, obj.markeredgecolor))))
@@ -1005,7 +1005,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
                if (!isempty (pt))
                  if (! mono)
-                   if (strncmp (obj.markeredgecolor, "auto", 4))
+                   if (strcmp (obj.markeredgecolor, "auto"))
                      colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
                                           round (255*color));
                    elseif (isnumeric (obj.markeredgecolor) && ! mono)
@@ -1102,8 +1102,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
       case "surface"
         view_map = true;
-        if (! (strncmp (obj.edgecolor, "none", 4)
-               && strncmp (obj.facecolor, "none", 4)))
+        if (! (strcmp (obj.edgecolor, "none")
+               && strcmp (obj.facecolor, "none")))
           data_idx++;
           is_image_data(data_idx) = false;
           parametric(data_idx) = false;
@@ -1175,12 +1175,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           endif
           usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3):($4)", ylen, xlen);
 
-          flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
-                              || strncmp (obj.facecolor, "interp", 6));
-          flat_interp_edge = (strncmp (obj.edgecolor, "flat", 4)
-                              || strncmp (obj.edgecolor, "interp", 6));
+          flat_interp_face = (strcmp (obj.facecolor, "flat")
+                              || strcmp (obj.facecolor, "interp"));
+          flat_interp_edge = (strcmp (obj.edgecolor, "flat")
+                              || strcmp (obj.edgecolor, "interp"));
 
-          facecolor_none_or_white = (strncmp (obj.facecolor, "none", 4)
+          facecolor_none_or_white = (strcmp (obj.facecolor, "none")
                                      || (isnumeric (obj.facecolor)
                                          && all (obj.facecolor == 1)));
           hidden_removal = false;
@@ -1211,11 +1211,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             dord = "depthorder";
           endif
 
-          if (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
+          if (flat_interp_face && strcmp (obj.edgecolor, "flat"))
             fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n",
                      interp_str, dord);
           elseif (!facecolor_none_or_white)
-            if (strncmp (obj.edgecolor, "none", 4))
+            if (strcmp (obj.edgecolor, "none"))
               if (__gnuplot_has_feature__ ("transparent_surface")
                   && isscalar (obj.facealpha))
                 fprintf (plot_stream,
@@ -1274,7 +1274,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             withclause{data_idx} = sprintf ("with %s linestyle %d",
                                             style{3}, data_idx);
           endif
-          if (withpm3d && strncmp (style {1}, "linespoints", 11))
+          if (withpm3d && strcmp (style{1}, "linespoints"))
             if (isempty (zz))
               len = 3 * xlen;
               zz = zeros (ylen, len);
@@ -1831,8 +1831,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
     facesame = true;
     if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-        && !strncmp (obj.markerfacecolor, "none", 4))
-      if (strncmp (obj.markerfacecolor, "auto", 4)
+        && !strcmp (obj.markerfacecolor, "none"))
+      if (strcmp (obj.markerfacecolor, "auto")
           || ! isnumeric (obj.markerfacecolor)
           || (isnumeric (obj.markerfacecolor)
               && isequal (color, obj.markerfacecolor)))
@@ -1871,14 +1871,14 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
       endif
     endif
     if (isfield (obj, "markeredgecolor")
-        && !strncmp (obj.markeredgecolor, "none", 4))
+        && !strcmp (obj.markeredgecolor, "none"))
       if (facesame && !isempty (pt)
-          && (strncmp (obj.markeredgecolor, "auto", 4)
+          && (strcmp (obj.markeredgecolor, "auto")
               || ! isnumeric (obj.markeredgecolor)
               || (isnumeric (obj.markeredgecolor)
                   && isequal (color, obj.markeredgecolor))))
         if (sidx == 1 && ((length (style {sidx}) == 5
-            && strncmp (style {sidx}, "lines", 5)) || isempty (style {sidx})))
+            && strncmp (style{sidx}, "lines", 5)) || isempty (style {sidx})))
           if (! isempty (pt))
             style {sidx} = strcat (style{sidx}, "points");
             fprintf (plot_stream, " pointtype %s", pt);
@@ -1901,7 +1901,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         fprintf (plot_stream, "set style line %d default;\n", idx);
         fprintf (plot_stream, "set style line %d", idx);
         if (! mono)
-          if (strncmp (obj.markeredgecolor, "auto", 4))
+          if (strcmp (obj.markeredgecolor, "auto"))
             fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
                      round (255*color));
           elseif (isnumeric (obj.markeredgecolor) && ! mono)
@@ -1945,7 +1945,7 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
         pt = "6";
         pt2 = "7";
         if (isfield (obj, "markerfacecolor")
-            || strncmp (obj.markerfacecolor, "none", 4))
+            || strcmp (obj.markerfacecolor, "none"))
           obj.markerfacecolor = "auto";
         endif
         if (isfield (obj, "markersize"))

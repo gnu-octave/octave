@@ -940,7 +940,7 @@ SNDFILE_CPPFLAGS=
 SNDFILE_LDFLAGS=
 SNDFILE_LIBS=
 
-warn_sndfile="$sndfile library fails tests.  The audioinfo, audioread and audiowrite functions for reading and writing audio files will not be fully functional."
+warn_sndfile="sndfile library fails tests.  The audioinfo, audioread and audiowrite functions for reading and writing audio files will not be fully functional."
 
 PKG_CHECK_EXISTS([sndfile], [
   SNDFILE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I sndfile`
@@ -961,6 +961,34 @@ fi
 AC_SUBST(SNDFILE_CPPFLAGS)
 AC_SUBST(SNDFILE_LDFLAGS)
 AC_SUBST(SNDFILE_LIBS)
+
+### Check for PortAudio
+
+PORTAUDIO_CPPFLAGS=
+PORTAUDIO_LDFLAGS=
+PORTAUDIO_LIBS=
+
+warn_portaudio="PortAudio library fails tests.  The audioplayer, audiorecorder classes and audiodevinfo function for audio playback and recording will not be fully functional."
+
+PKG_CHECK_EXISTS([portaudio-2.0 >= 19], [
+  PORTAUDIO_CPPFLAGS=`$PKG_CONFIG --cflags-only-I portaudio-2.0`
+  PORTAUDIO_LDFLAGS=`$PKG_CONFIG --libs-only-L portaudio-2.0`
+  PORTAUDIO_LIBS=`$PKG_CONFIG --libs-only-l portaudio-2.0`
+  warn_portaudio=
+])
+
+if test -z "$warn_portaudio"; then
+  AC_DEFINE(HAVE_PORTAUDIO, 1,
+    [Define to 1 if PortAudio is available.])
+else
+  PORTAUDIO_CPPFLAGS=
+  PORTAUDIO_LDFLAGS=
+  PORTAUDIO_LIBS=
+fi
+
+AC_SUBST(PORTAUDIO_CPPFLAGS)
+AC_SUBST(PORTAUDIO_LDFLAGS)
+AC_SUBST(PORTAUDIO_LIBS)
 
 ### Check for either of Graphics/ImageMagick++ libraries
 
@@ -2881,6 +2909,9 @@ Octave is now configured for $canonical_host_type
   Magick++ LDFLAGS:            $MAGICK_LDFLAGS
   Magick++ libraries:          $MAGICK_LIBS
   OPENGL libraries:            $OPENGL_LIBS
+  PortAudio CPPFLAGS:          $PORTAUDIO_CPPFLAGS
+  PortAudio LDFLAGS:           $PORTAUDIO_LDFLAGS
+  PortAudio libraries:         $PORTAUDIO_LIBS
   PTHREAD flags:               $PTHREAD_CFLAGS
   PTHREAD libraries:           $PTHREAD_LIBS
   QHULL CPPFLAGS:              $QHULL_CPPFLAGS

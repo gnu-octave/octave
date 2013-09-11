@@ -299,13 +299,32 @@ function update_colorbar_clim (hax, d, hi, vert)
     cmin = cext(1) + cdiff;
     cmax = cext(2) - cdiff;
 
+    hiax = get (hi, "parent");
     if (vert)
       set (hi, "ydata", [cmin, cmax]);
-      set (get (hi, "parent"), "ylim", cext);
+      set (hiax, "ylim", cext);
     else
       set (hi, "xdata", [cmin, cmax]);
-      set (get (hi, "parent"), "xlim", cext);
+      set (hiax, "xlim", cext);
     endif
+
+    ## FIXME: Setting xlim or ylim from within a listener callback
+    ##        causes the axis to change size rather than change limits.
+    ##        Workaround it by jiggling the position property which forces
+    ##        a redraw of the axis object.
+    ##
+    ## Debug Example:
+    ## Uncomment the line below.
+    ##   keyboard;
+    ## Now run the the following code.
+    ##   clf; colorbar (); contour (peaks ())
+    ## Once the keyboard command has been hit in the debugger try
+    ##   set (hiax, "ylim", [0 0.5]) 
+    pos = get (hiax, "position");
+    pos(1) += eps;
+    set (hiax, "position", pos);
+    pos(1) -= eps;
+    set (hiax, "position", pos);
   endif
 endfunction
 
@@ -329,7 +348,6 @@ function update_colorbar_cmap (hf, d, hi, vert, init_sz)
 endfunction
 
 function update_colorbar_axis (h, d, cax, orig_props)
-
   if (isaxes (cax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))
     loc = get (cax, "location");

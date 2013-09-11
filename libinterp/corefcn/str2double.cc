@@ -320,18 +320,20 @@ the brackets indicate optional arguments and @qcode{'d'} indicates zero or\n\
 more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}\n\
 are also accepted.\n\
 \n\
-@var{s} can be a character string, a character matrix or a cell array.\n\
+@var{s} may be a character string, character matrix, or cell array.\n\
 For character arrays the conversion is repeated for every row, and\n\
-a double or complex array is returned in which rows corresponding to\n\
-zero-length rows in @var{s} are deleted.  In case of a cell array @var{s} each\n\
-character string element is processed and a double or complex array of the\n\
-same dimensions as @var{s} is returned.\n\
+a double or complex array is returned.  Empty rows in @var{s} are deleted\n\
+and not returned in the numeric array.  For cell arrays each character\n\
+string element is processed and a double or complex array of the same\n\
+dimensions as @var{s} is returned.\n\
 \n\
 For unconvertible scalar or character string input @code{str2double} returns\n\
-a NaN.  Similarly, for character array input @code{str2double} returns a NaN\n\
-for any row of @var{s} that could not be converted.  For a cell array\n\
+a NaN@.  Similarly, for character array input @code{str2double} returns a\n\
+NaN for any row of @var{s} that could not be converted.  For a cell array,\n\
 @code{str2double} returns a NaN for any element of @var{s} for which\n\
-conversion fails, which includes numeric elements.\n\
+conversion fails.  Note that numeric elements in a mixed string/numeric\n\
+cell array are not strings and the conversion will fail for these elements\n\
+and return NaN.\n\
 \n\
 @code{str2double} can replace @code{str2num}, and it avoids the security\n\
 risk of using @code{eval} on unknown data.\n\

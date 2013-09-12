@@ -1,7 +1,8 @@
 #include "oct.h"
 #include "ov-struct.h"
 
-#include "player_class.h"
+#include "player_class.cc"
+#include "recorder_class.cc"
    
 DEFUN_DLD(__player_audioplayer__, args, ,
 "__player_audioplayer__"

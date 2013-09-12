@@ -23,13 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_byte_swap_h)
 #define octave_byte_swap_h 1
 
-// FIXME -- not sure these volatile qualifiers are really
-// needed or appropriate here.
-
 static inline void
-swap_bytes (volatile void *ptr, unsigned int i, unsigned int j)
+swap_bytes (void *ptr, unsigned int i, unsigned int j)
 {
-  volatile char *t = static_cast<volatile char *> (ptr);
+  char *t = static_cast<char *> (ptr);
 
   char tmp = t[i];
   t[i] = t[j];
@@ -38,7 +35,7 @@ swap_bytes (volatile void *ptr, unsigned int i, unsigned int j)
 
 template <int n>
 void
-swap_bytes (volatile void *ptr)
+swap_bytes (void *ptr)
 {
   for (int i = 0; i < n/2; i++)
     swap_bytes (ptr, i, n-1-i);
@@ -46,20 +43,20 @@ swap_bytes (volatile void *ptr)
 
 template <>
 inline void
-swap_bytes <1> (volatile void *)
+swap_bytes<1> (void *)
 {
 }
 
 template <>
 inline void
-swap_bytes <2> (volatile void *ptr)
+swap_bytes<2> (void *ptr)
 {
   swap_bytes (ptr, 0, 1);
 }
 
 template <>
 inline void
-swap_bytes <4> (volatile void *ptr)
+swap_bytes<4> (void *ptr)
 {
   swap_bytes (ptr, 0, 3);
   swap_bytes (ptr, 1, 2);
@@ -67,7 +64,7 @@ swap_bytes <4> (volatile void *ptr)
 
 template <>
 inline void
-swap_bytes <8> (volatile void *ptr)
+swap_bytes<8> (void *ptr)
 {
   swap_bytes (ptr, 0, 7);
   swap_bytes (ptr, 1, 6);
@@ -77,9 +74,9 @@ swap_bytes <8> (volatile void *ptr)
 
 template <int n>
 void
-swap_bytes (volatile void *ptr, int len)
+swap_bytes (void *ptr, int len)
 {
-  volatile char *t = static_cast<volatile char *> (ptr);
+  char *t = static_cast<char *> (ptr);
 
   for (int i = 0; i < len; i++)
     {
@@ -90,7 +87,7 @@ swap_bytes (volatile void *ptr, int len)
 
 template <>
 inline void
-swap_bytes<1> (volatile void *, int)
+swap_bytes<1> (void *, int)
 {
 }
 

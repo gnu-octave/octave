@@ -37,10 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
 
-template void swap_bytes<2> (volatile void *, int);
-template void swap_bytes<4> (volatile void *, int);
-template void swap_bytes<8> (volatile void *, int);
-
 #if defined HAVE_LONG_LONG_INT
 #define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
   do \

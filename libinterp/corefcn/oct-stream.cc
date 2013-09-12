@@ -3079,14 +3079,10 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
       max_size = 32;
     }
 
-  // FIXME -- byte order for Cray?
-
   bool swap = false;
 
   if (oct_mach_info::words_big_endian ())
-    swap = (from_flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
-            || from_flt_fmt == oct_mach_info::flt_fmt_vax_g
-            || from_flt_fmt == oct_mach_info::flt_fmt_vax_g);
+    swap = (from_flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian);
   else
     swap = (from_flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 
@@ -3495,38 +3491,6 @@ do_write (std::ostream& os, const T& val, oct_data_conv::data_type output_type,
   return retval;
 }
 
-template bool
-do_write (std::ostream&, const octave_int8&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
-template bool
-do_write (std::ostream&, const octave_uint8&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
-template bool
-do_write (std::ostream&, const octave_int16&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
-template bool
-do_write (std::ostream&, const octave_uint16&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
-template bool
-do_write (std::ostream&, const octave_int32&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
-template bool
-do_write (std::ostream&, const octave_uint32&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
-template bool
-do_write (std::ostream&, const octave_int64&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
-template bool
-do_write (std::ostream&, const octave_uint64&, oct_data_conv::data_type,
-          oct_mach_info::float_format, bool, bool);
-
 template <class T>
 octave_idx_type
 octave_stream::write (const Array<T>& data, octave_idx_type block_size,
@@ -3548,14 +3512,10 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
 
   bool do_float_conversion = (flt_fmt != native_flt_fmt);
 
-  // FIXME -- byte order for Cray?
-
   bool swap = false;
 
   if (oct_mach_info::words_big_endian ())
-    swap = (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
-            || flt_fmt == oct_mach_info::flt_fmt_vax_g
-            || flt_fmt == oct_mach_info::flt_fmt_vax_g);
+    swap = (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian);
   else
     swap = (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 

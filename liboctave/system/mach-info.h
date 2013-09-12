@@ -40,9 +40,6 @@ public:
       flt_fmt_unknown,
       flt_fmt_ieee_little_endian,
       flt_fmt_ieee_big_endian,
-      flt_fmt_vax_d,
-      flt_fmt_vax_g,
-      flt_fmt_cray
     };
 
   static bool instance_ok (void);

@@ -194,17 +194,8 @@ mopt_digit_to_float_format (int mach)
       break;
 
     case 2:
-      flt_fmt = oct_mach_info::flt_fmt_vax_d;
-      break;
-
     case 3:
-      flt_fmt = oct_mach_info::flt_fmt_vax_g;
-      break;
-
     case 4:
-      flt_fmt = oct_mach_info::flt_fmt_cray;
-      break;
-
     default:
       flt_fmt = oct_mach_info::flt_fmt_unknown;
       break;
@@ -226,18 +217,6 @@ float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
 
     case oct_mach_info::flt_fmt_ieee_big_endian:
       retval = 1;
-      break;
-
-    case oct_mach_info::flt_fmt_vax_d:
-      retval = 2;
-      break;
-
-    case oct_mach_info::flt_fmt_vax_g:
-      retval = 3;
-      break;
-
-    case oct_mach_info::flt_fmt_cray:
-      retval = 4;
       break;
 
     default:

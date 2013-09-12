@@ -545,45 +545,9 @@ IEEE_big_double_to_IEEE_little_double (void *d, octave_idx_type len)
 }
 
 static void
-VAX_D_double_to_IEEE_little_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX D float", "IEEE little endian format");
-}
-
-static void
-VAX_G_double_to_IEEE_little_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "IEEE little endian format");
-}
-
-static void
-Cray_to_IEEE_little_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("Cray", "IEEE little endian format");
-}
-
-static void
 IEEE_big_float_to_IEEE_little_float (void *d, octave_idx_type len)
 {
   swap_bytes<4> (d, len);
-}
-
-static void
-VAX_D_float_to_IEEE_little_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX D float", "IEEE little endian format");
-}
-
-static void
-VAX_G_float_to_IEEE_little_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "IEEE little endian format");
-}
-
-static void
-Cray_to_IEEE_little_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("Cray", "IEEE little endian format");
 }
 
 static void
@@ -593,141 +557,9 @@ IEEE_little_double_to_IEEE_big_double (void *d, octave_idx_type len)
 }
 
 static void
-VAX_D_double_to_IEEE_big_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX D float", "IEEE big endian format");
-}
-
-static void
-VAX_G_double_to_IEEE_big_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "IEEE big endian format");
-}
-
-static void
-Cray_to_IEEE_big_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("Cray", "IEEE big endian format");
-}
-
-static void
 IEEE_little_float_to_IEEE_big_float (void *d, octave_idx_type len)
 {
   swap_bytes<4> (d, len);
-}
-
-static void
-VAX_D_float_to_IEEE_big_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX D float", "IEEE big endian format");
-}
-
-static void
-VAX_G_float_to_IEEE_big_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "IEEE big endian format");
-}
-
-static void
-Cray_to_IEEE_big_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("Cray", "IEEE big endian format");
-}
-
-static void
-IEEE_little_double_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE little endian", "VAX D");
-}
-
-static void
-IEEE_big_double_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE big endian", "VAX D");
-}
-
-static void
-VAX_G_double_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "VAX D");
-}
-
-static void
-Cray_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("Cray", "VAX D");
-}
-
-static void
-IEEE_little_float_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE little endian", "VAX D");
-}
-
-static void
-IEEE_big_float_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE big endian", "VAX D");
-}
-
-static void
-VAX_G_float_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "VAX D");
-}
-
-static void
-Cray_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("Cray", "VAX D");
-}
-
-static void
-IEEE_little_double_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE little endian", "VAX G");
-}
-
-static void
-IEEE_big_double_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE big endian", "VAX G");
-}
-
-static void
-VAX_D_double_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX D float", "VAX G");
-}
-
-static void
-Cray_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "VAX G");
-}
-
-static void
-IEEE_little_float_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE little endian", "VAX G");
-}
-
-static void
-IEEE_big_float_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("IEEE big endian", "VAX G");
-}
-
-static void
-VAX_D_float_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX D float", "VAX G");
-}
-
-static void
-Cray_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
-{
-  gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 void
@@ -747,18 +579,6 @@ do_double_format_conversion (void *data, octave_idx_type len,
           IEEE_big_double_to_IEEE_little_double (data, len);
           break;
 
-        case oct_mach_info::flt_fmt_vax_d:
-          VAX_D_double_to_IEEE_little_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          VAX_G_double_to_IEEE_little_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_IEEE_little_double (data, len);
-          break;
-
         default:
           gripe_unrecognized_float_fmt ();
           break;
@@ -773,74 +593,6 @@ do_double_format_conversion (void *data, octave_idx_type len,
           break;
 
         case oct_mach_info::flt_fmt_ieee_big_endian:
-          break;
-
-        case oct_mach_info::flt_fmt_vax_d:
-          VAX_D_double_to_IEEE_big_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          VAX_G_double_to_IEEE_big_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_IEEE_big_double (data, len);
-          break;
-
-        default:
-          gripe_unrecognized_float_fmt ();
-          break;
-        }
-      break;
-
-    case oct_mach_info::flt_fmt_vax_d:
-      switch (from_fmt)
-        {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
-          IEEE_little_double_to_VAX_D_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_ieee_big_endian:
-          IEEE_big_double_to_VAX_D_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_d:
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          VAX_G_double_to_VAX_D_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_VAX_D_double (data, len);
-          break;
-
-        default:
-          gripe_unrecognized_float_fmt ();
-          break;
-        }
-      break;
-
-    case oct_mach_info::flt_fmt_vax_g:
-      switch (from_fmt)
-        {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
-          IEEE_little_double_to_VAX_G_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_ieee_big_endian:
-          IEEE_big_double_to_VAX_G_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_d:
-          VAX_D_double_to_VAX_G_double (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_VAX_G_double (data, len);
           break;
 
         default:
@@ -874,18 +626,6 @@ do_float_format_conversion (void *data, octave_idx_type len,
           IEEE_big_float_to_IEEE_little_float (data, len);
           break;
 
-        case oct_mach_info::flt_fmt_vax_d:
-          VAX_D_float_to_IEEE_little_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          VAX_G_float_to_IEEE_little_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_IEEE_little_float (data, len);
-          break;
-
         default:
           gripe_unrecognized_float_fmt ();
           break;
@@ -900,74 +640,6 @@ do_float_format_conversion (void *data, octave_idx_type len,
           break;
 
         case oct_mach_info::flt_fmt_ieee_big_endian:
-          break;
-
-        case oct_mach_info::flt_fmt_vax_d:
-          VAX_D_float_to_IEEE_big_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          VAX_G_float_to_IEEE_big_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_IEEE_big_float (data, len);
-          break;
-
-        default:
-          gripe_unrecognized_float_fmt ();
-          break;
-        }
-      break;
-
-    case oct_mach_info::flt_fmt_vax_d:
-      switch (from_fmt)
-        {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
-          IEEE_little_float_to_VAX_D_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_ieee_big_endian:
-          IEEE_big_float_to_VAX_D_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_d:
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          VAX_G_float_to_VAX_D_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_VAX_D_float (data, len);
-          break;
-
-        default:
-          gripe_unrecognized_float_fmt ();
-          break;
-        }
-      break;
-
-    case oct_mach_info::flt_fmt_vax_g:
-      switch (from_fmt)
-        {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
-          IEEE_little_float_to_VAX_G_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_ieee_big_endian:
-          IEEE_big_float_to_VAX_G_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_d:
-          VAX_D_float_to_VAX_G_float (data, len);
-          break;
-
-        case oct_mach_info::flt_fmt_vax_g:
-          break;
-
-        case oct_mach_info::flt_fmt_cray:
-          Cray_to_VAX_G_float (data, len);
           break;
 
         default:

@@ -1459,9 +1459,6 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           // Unless explicitly asked for, always print in big-endian
           // format.
 
-          // FIXME -- is it correct to swap bytes for VAX
-          // formats and not for Cray?
-
           // FIXME -- will bad things happen if we are
           // interrupted before resetting the format flags and fill
           // character?
@@ -1475,9 +1472,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
             = os.flags (std::ios::right | std::ios::hex);
 
           if (hex_format > 1
-              || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian
-              || flt_fmt == oct_mach_info::flt_fmt_cray
-              || flt_fmt == oct_mach_info::flt_fmt_unknown)
+              || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian)
             {
               for (size_t i = 0; i < sizeof (double); i++)
                 os << std::setw (2) << static_cast<int> (tmp.i[i]);
@@ -1496,15 +1491,10 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           equiv tmp;
           tmp.d = d;
 
-          // FIXME -- is it correct to swap bytes for VAX
-          // formats and not for Cray?
-
           oct_mach_info::float_format flt_fmt =
             oct_mach_info::native_float_format ();
 
-          if (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian
-              || flt_fmt == oct_mach_info::flt_fmt_cray
-              || flt_fmt == oct_mach_info::flt_fmt_unknown)
+          if (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian)
             {
               for (size_t i = 0; i < sizeof (double); i++)
                 PRINT_CHAR_BITS (os, tmp.i[i]);

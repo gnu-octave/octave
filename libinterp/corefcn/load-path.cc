@@ -2076,7 +2076,8 @@ genpath (const std::string& dirname, const string_vector& skip)
         {
           std::string elt = dirlist[i];
 
-          bool skip_p = (elt == "." || elt == ".." || elt[0] == '@');
+          bool skip_p = (elt == "." || elt == ".." || elt[0] == '@'
+                         || elt[0] == '+');
 
           if (! skip_p)
             {

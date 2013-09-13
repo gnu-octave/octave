@@ -850,12 +850,11 @@ the commands do not need to be parsed each time the @var{try} and
 @var{catch} statements are evaluated.  @xref{Errors and Warnings}, for more
 information about the @code{lasterr} function.
 
+@node Continuation Lines
+@section Continuation Lines
 @cindex continuation lines
 @cindex @code{...} continuation marker
 @cindex @code{\} continuation marker
-
-@node Continuation Lines
-@section Continuation Lines
 
 In the Octave language, most statements end with a newline character and
 you must tell Octave to ignore the newline character in order to

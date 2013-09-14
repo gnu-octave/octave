@@ -174,6 +174,111 @@ strip_spaces (const std::string& str)
     } \
   while (0)
 
+size_t
+oct_data_conv::data_type_size (data_type dt)
+{
+  size_t retval = -1;
+
+  switch (dt)
+    {
+    case oct_data_conv::dt_int8:
+      retval = sizeof (int8_t);
+      break;
+
+    case oct_data_conv::dt_uint8:
+      retval = sizeof (uint8_t);
+      break;
+
+    case oct_data_conv::dt_int16:
+      retval = sizeof (int16_t);
+      break;
+
+    case oct_data_conv::dt_uint16:
+      retval = sizeof (uint16_t);
+      break;
+
+    case oct_data_conv::dt_int32:
+      retval = sizeof (int32_t);
+      break;
+
+    case oct_data_conv::dt_uint32:
+      retval = sizeof (uint32_t);
+      break;
+
+    case oct_data_conv::dt_int64:
+      retval = sizeof (int64_t);
+      break;
+
+    case oct_data_conv::dt_uint64:
+      retval = sizeof (uint64_t);
+      break;
+
+    case oct_data_conv::dt_float:
+    case oct_data_conv::dt_single:
+      retval = sizeof (float);
+      break;
+
+    case oct_data_conv::dt_double:
+      retval = sizeof (double);
+      break;
+
+    case oct_data_conv::dt_char:
+      retval = sizeof (char);
+      break;
+
+    case oct_data_conv::dt_schar:
+      retval = sizeof (signed char);
+      break;
+
+    case oct_data_conv::dt_uchar:
+      retval = sizeof (unsigned char);
+      break;
+
+    case oct_data_conv::dt_short:
+      retval = sizeof (short);
+      break;
+
+    case oct_data_conv::dt_ushort:
+      retval = sizeof (unsigned short);
+      break;
+
+    case oct_data_conv::dt_int:
+      retval = sizeof (int);
+      break;
+
+    case oct_data_conv::dt_uint:
+      retval = sizeof (unsigned int);
+      break;
+
+    case oct_data_conv::dt_long:
+      retval = sizeof (long);
+      break;
+
+    case oct_data_conv::dt_ulong:
+      retval = sizeof (unsigned long);
+      break;
+
+    case oct_data_conv::dt_longlong:
+      retval = sizeof (long long);
+      break;
+
+    case oct_data_conv::dt_ulonglong:
+      retval = sizeof (unsigned long long);
+      break;
+
+    case oct_data_conv::dt_logical:
+      retval = sizeof (bool);
+      break;
+
+    case oct_data_conv::dt_unknown:
+    default:
+      abort ();
+      break;
+    }
+
+  return retval;
+}
+
 oct_data_conv::data_type
 oct_data_conv::string_to_data_type (const std::string& str)
 {
@@ -426,7 +531,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
       break;
 
     case oct_data_conv::dt_uchar:
-      retval = "usigned char";
+      retval = "unsigned char";
       break;
 
     case oct_data_conv::dt_short:
@@ -442,7 +547,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
       break;
 
     case oct_data_conv::dt_uint:
-      retval = "usigned int";
+      retval = "unsigned int";
       break;
 
     case oct_data_conv::dt_long:
@@ -450,7 +555,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
       break;
 
     case oct_data_conv::dt_ulong:
-      retval = "usigned long";
+      retval = "unsigned long";
       break;
 
     case oct_data_conv::dt_longlong:

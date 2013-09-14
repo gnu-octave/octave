@@ -1556,10 +1556,6 @@ IEEE big endian.\n\
 IEEE little endian.\n\
 @end table\n\
 \n\
-@noindent\n\
-Conversions are currently only supported for @qcode{\"ieee-be\"} and\n\
-@qcode{\"ieee-le\"} formats.\n\
-\n\
 The data read from the file is returned in @var{val}, and the number of\n\
 values read is returned in @code{count}\n\
 @seealso{fwrite, fgets, fgetl, fscanf, fopen}\n\

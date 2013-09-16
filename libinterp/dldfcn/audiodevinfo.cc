@@ -68,8 +68,9 @@ Returns 1 if the device bearing @var{ID} supports specified sampling rate\
 @end deftypefn"
 )
 {
-  int nargin = args.length();
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
+  int nargin = args.length();
   PaError err;
   octave_scalar_map devinfo;
   octave_value_list input;
@@ -361,6 +362,9 @@ and 1 for input devices");
       error ("audiodevinfo: wrong number of arguments");
       return retval;
     }
+#else
+  error ("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 

@@ -610,3 +610,16 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## Test 'axis tight' with differently oriented, differently numbered data vecs
+## Bug #40036.
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   Z = peaks (linspace (-3, 3, 49), linspace (-2, 2, 29));
+%!   surf (Z);
+%!   axis tight;
+%!   assert (axis (), [1 49 1 29 min(Z(:)) max(Z(:))]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+

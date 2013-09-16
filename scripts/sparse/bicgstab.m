@@ -145,7 +145,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     flag = 1;
 
     for iter = 1:maxit
-      rho_1 = res' * rr;
+      rho_1 = rr' * res;
 
       if (iter == 1)
         p = res;
@@ -163,7 +163,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
       shat = precon (s);
 
       t = Ax (shat);
-      omega = (t' * s) / (t' * t);
+      omega = (s' * t) / (t' * t);
       x = x + alpha * phat + omega * shat;
       res = s - omega * t;
       rho_2 = rho_1;
@@ -248,3 +248,8 @@ endfunction
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
 
+%!test
+%! A = [1 + 1i, 1 + 1i; 2 - 1i, 2 + 1i];
+%! b = A * [1; 1];
+%! [x, flag, relres, iter, resvec] = bicgstab (A, b);
+%! assert (x, [1; 1], 1e-6);

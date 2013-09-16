@@ -1,13 +1,16 @@
 #include "oct.h"
 #include "ov-struct.h"
 
+#ifdef HAVE_PORTAUDIO
 #include "player_class.cc"
 #include "recorder_class.cc"
+#endif
    
 DEFUN_DLD(__player_audioplayer__, args, ,
 "__player_audioplayer__"
 )
 {
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   audioplayer* retval = new audioplayer ();
   bool is_function = args(0).is_string () || args(0).is_function_handle () || args(0).is_inline_function ();
@@ -39,6 +42,11 @@ DEFUN_DLD(__player_audioplayer__, args, ,
       retval->init (); 
     }
   return octave_value(retval);
+#else
+  octave_value retval;
+  error("portaudio not found on your system and thus audio functionality is not present");
+  return retval;
+#endif
 }
    
 DEFUN_DLD(__player_get_channels__, args, ,
@@ -46,6 +54,7 @@ DEFUN_DLD(__player_get_channels__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -54,6 +63,9 @@ DEFUN_DLD(__player_get_channels__, args, ,
       player = &((audioplayer &)rep);
       retval = octave_value(player->get_channels());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
    
@@ -62,6 +74,7 @@ DEFUN_DLD(__player_get_fs__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -70,6 +83,9 @@ DEFUN_DLD(__player_get_fs__, args, ,
       player = &((audioplayer &)rep);
       retval = octave_value(player->get_fs());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -78,6 +94,7 @@ DEFUN_DLD(__player_get_id__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -86,6 +103,9 @@ DEFUN_DLD(__player_get_id__, args, ,
       player = &((audioplayer &)rep);
       retval = octave_value(player->get_id());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -94,6 +114,7 @@ DEFUN_DLD(__player_get_nbits__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -102,6 +123,9 @@ DEFUN_DLD(__player_get_nbits__, args, ,
       player = &((audioplayer &)rep);
       retval = octave_value(player->get_nbits());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
  
@@ -110,6 +134,7 @@ DEFUN_DLD(__player_get_sample_number__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -118,6 +143,9 @@ DEFUN_DLD(__player_get_sample_number__, args, ,
       player = &((audioplayer &)rep);
       retval = octave_value(player->get_sample_number());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -126,6 +154,7 @@ DEFUN_DLD(__player_get_tag__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -134,6 +163,9 @@ DEFUN_DLD(__player_get_tag__, args, ,
       player = &((audioplayer &)rep);
       retval = octave_value (player->get_tag ());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -142,6 +174,7 @@ DEFUN_DLD(__player_get_total_samples__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -150,6 +183,9 @@ DEFUN_DLD(__player_get_total_samples__, args, ,
       player = &((audioplayer &)rep);
       retval = octave_value(player->get_total_samples());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -158,6 +194,7 @@ DEFUN_DLD(__player_get_userdata__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -166,6 +203,9 @@ DEFUN_DLD(__player_get_userdata__, args, ,
       player = &((audioplayer &)rep);
       retval = player->get_userdata ();
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -174,6 +214,7 @@ DEFUN_DLD(__player_isplaying__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -189,6 +230,9 @@ DEFUN_DLD(__player_isplaying__, args, ,
           return octave_value(0);
         }
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -197,6 +241,7 @@ DEFUN_DLD(__player_pause__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -205,6 +250,9 @@ DEFUN_DLD(__player_pause__, args, ,
       player = &((audioplayer &)rep);
       player->pause();
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -213,6 +261,7 @@ DEFUN_DLD(__player_playblocking__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -252,6 +301,9 @@ DEFUN_DLD(__player_playblocking__, args, ,
         }
       player->playblocking();
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -260,6 +312,7 @@ DEFUN_DLD(__player_play__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -299,6 +352,9 @@ DEFUN_DLD(__player_play__, args, ,
         }
       player->play();
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -307,6 +363,7 @@ DEFUN_DLD(__player_resume__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -315,6 +372,9 @@ DEFUN_DLD(__player_resume__, args, ,
       player = &((audioplayer &)rep);
       player->resume();
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -323,6 +383,7 @@ DEFUN_DLD(__player_set_fs__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 2)
     {
@@ -331,6 +392,9 @@ DEFUN_DLD(__player_set_fs__, args, ,
       player = &((audioplayer &)rep);
       player->set_fs (args(1).int_value ());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -339,6 +403,7 @@ DEFUN_DLD(__player_set_tag__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 2)
     {
@@ -347,6 +412,9 @@ DEFUN_DLD(__player_set_tag__, args, ,
       player = &((audioplayer &)rep);
       player->set_tag (args(1).char_matrix_value ());
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -355,6 +423,7 @@ DEFUN_DLD(__player_set_userdata__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 2)
     {
@@ -363,6 +432,9 @@ DEFUN_DLD(__player_set_userdata__, args, ,
       player = &((audioplayer &)rep);
       player->set_userdata (args(1));
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }
 
@@ -371,6 +443,7 @@ DEFUN_DLD(__player_stop__, args, ,
 )
 {
   octave_value retval;
+#ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
@@ -379,5 +452,8 @@ DEFUN_DLD(__player_stop__, args, ,
       player = &((audioplayer &)rep);
       player->stop();
     }
+#else
+  error("portaudio not found on your system and thus audio functionality is not present");
+#endif
   return retval;
 }

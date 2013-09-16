@@ -19,21 +19,23 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
 ## @deftypefnx {Function File} {} subplot (@var{rcn})
+## @deftypefnx {Function File} {} subplot (@var{hax})
 ## @deftypefnx {Function File} {} subplot (@dots{}, "align")
-## @deftypefnx {Function File} {@var{hax} =} subplot (@dots{})
+## @deftypefnx {Function File} {} subplot (@dots{}, "replace")
+## @deftypefnx {Function File} {} subplot (@dots{}, "position", @var{pos})
+## @deftypefnx {Function File} {} subplot (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{hax} =} subplot (@dots{})
 ## Set up a plot grid with @var{rows} by @var{cols} subwindows and set the
-## current axes for plotting to the location given by @var{index}.
+## current axes for plotting (@code{gca}) to the location given by @var{index}.
 ##
 ## If only one numeric argument is supplied, then it must be a three digit
-## value specifying the location in digits 1 (rows) and 2 (columns) and the
-## plot index in digit 3.
+## value specifying the the number of rows in in digit 1, the number of
+## columns in digit 2, and the plot index in digit 3.
 ##
-## The plot index runs row-wise.  First all the columns in a row are numbered
+## The plot index runs row-wise; First, all columns in a row are numbered
 ## and then the next row is filled.
 ##
-## For example, a plot with 2 by 3 grid will have plot indices running as
-## follows:
+## For example, a plot with 2x3 grid will have plot indices running as follows:
 ## @tex
 ## \vskip 10pt
 ## \hfil\vbox{\offinterlineskip\hrule
@@ -58,18 +60,33 @@
 ## @end ifnottex
 ##
 ## @var{index} may also be a vector.  In this case, the new axis will enclose
-## the grid locations specified.  The first demo illustrates an example:
+## the grid locations specified.  The first demo illustrates this:
 ##
 ## @example
 ## demo ("subplot", 1)
 ## @end example
 ##
+## The index of the subplot to make active may also be specified by its axes
+## handle, @var{hax}, returned from a previous @code{subplot} command.
+##
 ## If the option @qcode{"align"} is given then the plot boxes of the subwindows
 ## will align, but this may leave no room for axis tick marks or labels.
 ##
+## If the option @qcode{"replace"} is given then the subplot axis will be
+## reset, rather than just switching the current axis for plotting to the
+## requested subplot.
+##
+## The @qcode{"position"} property can be used to exactly position the subplot
+## axes within the current figure.  The option @var{pos} is a 4-element vector
+## [x, y, width, height] that determines the location and size of the axes.
+## The values in @var{pos} are normalized in the range [0,1].
+##
+## Any property/value pairs are passed directly to the underlying axes object.
+##
 ## If the output @var{hax} is requested, subplot returns the axis handle for
-## the subplot.  This is useful for modifying the properties of a subplot.
-## @seealso{axes, plot}
+## the subplot.  This is useful for modifying the properties of a subplot
+## using @code{set}.
+## @seealso{axes, plot, gca, set}
 ## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
@@ -82,23 +99,24 @@ function h = subplot (varargin)
   have_position = false;
   initial_args_decoded = false;
 
-  if (nargin > 2)
+  if (nargin >= 3)
     ## R, C, N?
     arg1 = varargin{1};
     arg2 = varargin{2};
     arg3 = varargin{3};
-    if (isnumeric (arg1) && isscalar (arg1) && isnumeric (arg2)
-        && isscalar (arg2) && isnumeric (arg3))
+    if (   isnumeric (arg1) && isscalar (arg1)
+        && isnumeric (arg2) && isscalar (arg2)
+        && isnumeric (arg3))
       rows = arg1;
       cols = arg2;
       index = arg3;
-      varargin(1:3)= [];
+      varargin(1:3) = [];
       initial_args_decoded = true;
     endif
   endif
 
   if (! initial_args_decoded && nargin > 1)
-    ## check for 'position', pos, ...
+    ## check for "position", pos, ...
     if (strcmpi (varargin{1}, "position"))
       arg = varargin{2};
       if (isnumeric (arg) && numel (arg) == 4)
@@ -107,7 +125,7 @@ function h = subplot (varargin)
         have_position = true;
         initial_args_decoded = true;
       else
-        error ("expecting position to be a 4-element numeric array");
+        error ("subplot: POSITION must be a 4-element numeric array");
       endif
     endif
   endif
@@ -144,34 +162,32 @@ function h = subplot (varargin)
     index = round (index);
 
     if (any (index < 1) || any (index > rows*cols))
-      error ("subplot: INDEX value must be greater than 1 and less than ROWS*COLS");
+      error ("subplot: INDEX value must be >= 1 and <= ROWS*COLS");
     endif
 
-    if (cols < 1 || rows < 1 || index < 1)
-      error ("subplot: COLS, ROWS, and INDEX must be be positive");
+    if (rows < 1 || cols < 1 || index < 1)
+      error ("subplot: ROWS, COLS, and INDEX must be be positive");
     endif
   endif
 
-  nargs = numel (varargin);
-  while (nargs > 0)
-    arg = varargin{1};
-    if (strcmpi (arg, "align"))
-      align_axes = true;
-    elseif (strcmpi (arg, "replace"))
-      replace_axes = true;
-    else
-      break;
-    endif
-    varargin(1) = [];
-    nargs--;
-  endwhile
+  ## Process "align" and "replace" options
+  idx = strcmpi (varargin, "align");
+  if (any (idx))
+    align_axes = true;
+    varargin(idx) = [];
+  endif
+
+  idx = strcmpi (varargin, "replace");
+  if (any (idx))
+    replace_axes = true;
+    varargin(idx) = [];
+  endif
 
   axesunits = get (0, "defaultaxesunits");
   cf = gcf ();
   figureunits = get (cf, "units");
   unwind_protect
-    units = "normalized";
-    set (0, "defaultaxesunits", units);
+    set (0, "defaultaxesunits", "normalized");
     set (cf, "units", "pixels");
 
     ## FIXME: At the moment we force gnuplot to use the aligned mode
@@ -199,7 +215,7 @@ function h = subplot (varargin)
 
     found = false;
     kids = get (cf, "children");
-    for child = reshape (kids, 1, numel (kids))
+    for child = kids(:)'
       ## Check whether this child is still valid; this might not be the
       ## case anymore due to the deletion of previous children (due to
       ## "deletefcn" callback or for legends/colorbars that are deleted
@@ -209,23 +225,20 @@ function h = subplot (varargin)
       endif
       if (strcmp (get (child, "type"), "axes"))
         ## Skip legend and colorbar objects.
-        if (strcmp (get (child, "tag"), "legend")
-            || strcmp (get (child, "tag"), "colorbar"))
+        if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
           continue;
         endif
-        if (align_axes)
-          objpos = get (child, "position");
-        else
-          objpos = get (child, "outerposition");
-        endif
-        if (all (abs (objpos - pos) < eps) && ! replace_axes)
-          ## If the new axes are in exactly the same position as an
-          ## existing axes object, use the existing axes.
+        objpos = get (child, "outerposition");
+        if (all (abs (objpos - outerpos) < eps) && ! replace_axes)
+          ## If the new axes are in exactly the same position
+          ## as an existing axes object, use the existing axes.
           found = true;
           hsubplot = child;
         else
-          ## If the new axes overlap an old axes object, delete the old
-          ## axes.
+          ## If the new axes overlap an old axes object, delete the old axes.
+          if (align_axes)
+            objpos = get (child, "position");
+          endif
           x0 = pos(1);
           x1 = x0 + pos(3);
           y0 = pos(2);
@@ -242,6 +255,7 @@ function h = subplot (varargin)
     endfor
 
     if (found)
+      ## Switch to existing subplot
       set (cf, "currentaxes", hsubplot);
     else
       hsubplot = axes ("box", "off",
@@ -280,19 +294,13 @@ function pos = subplot_position (rows, cols, index, position_property)
     return;
   endif
 
-  if (strcmp (position_property, "outerposition")
-      || strcmp (position_property, "outerpositiontight"))
+  if (strcmp (position_property, "outerposition"))
     margins.left   = 0.05;
     margins.bottom = 0.05;
     margins.right  = 0.05;
     margins.top    = 0.05;
-    if (strcmp (position_property, "outerpositiontight"))
-      margins.column = 0.;
-      margins.row = 0.;
-    else
-      margins.column = 0.04 / cols;
-      margins.row = 0.04 / rows;
-    endif
+    margins.column = 0.04 / cols;
+    margins.row    = 0.04 / rows;
     width = 1 - margins.left - margins.right - (cols-1)*margins.column;
     width = width / cols;
     height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
@@ -326,7 +334,7 @@ function pos = subplot_position (rows, cols, index, position_property)
   xi = index(:) - yi*cols - 1;
   yi = (rows - 1) - yi;
 
-  ## Lower left corner of the subplot, i.e. position(1:2)
+  ## Lower left corner of the subplot, i.e., position(1:2)
   x0 = xi .* (width + margins.column) + margins.left;
   y0 = yi .* (height + margins.row) + margins.bottom;
 
@@ -345,28 +353,30 @@ function pos = subplot_position (rows, cols, index, position_property)
 endfunction
 
 function subplot_align (h, varargin)
-  persistent updating = false
+  persistent updating = false;
+
   if (! updating)
     unwind_protect
       updating = true;
       hfig = ancestor (h, "figure");
-      hsubplots = findall (hfig, 'type', 'axes', 'subplot_align', 'off');
+      hsubplots = findall (hfig, "type", "axes", "subplot_align", "off");
       if (! isempty (hsubplots))
-        tightinset = get (hsubplots, 'tightinset');
+        tightinset = get (hsubplots, "tightinset");
         if (iscell (tightinset))
           tightinset = max (cell2mat (tightinset));
         endif
-        looseinset = get (hsubplots, 'looseinset');
+        looseinset = get (hsubplots, "looseinset");
         if (iscell (looseinset))
           looseinset = max (cell2mat (looseinset));
         endif
         looseinset = max (tightinset, looseinset);
-        set (hsubplots, 'looseinset', looseinset);
+        set (hsubplots, "looseinset", looseinset);
       endif
     unwind_protect_cleanup
       updating = false;
     end_unwind_protect
   endif
+
 endfunction
 
 

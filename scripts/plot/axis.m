@@ -333,15 +333,15 @@ function lims = __get_tight_lims__ (ca, ax)
     if (strcmp (scale, "log"))
       tmp = data;
       data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);
-      n = cellfun (@isempty, data);
+      n = cellfun ("isempty", data);
       data(n) = cellfun (@(x) x(x<0), tmp(n), "uniformoutput", false);
     endif
     data = cellfun (@(x) x(isfinite (x)), data, "uniformoutput", false);
     data = data(! cellfun ("isempty", data));
     if (! isempty (data))
-      lims_min = min ([data{:}](:));
-      lims_max = max ([data{:}](:));
-      lims = [lims_min, lims_max];
+      ## Change data from cell array of various sizes to a single column vector
+      data = cat (1, cellindexmat (data, ":"){:});
+      lims = [min(data), max(data)];
     else
       lims = [0, 1];
     endif

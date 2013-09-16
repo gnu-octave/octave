@@ -81,8 +81,6 @@ public:
     return instance_ok () ? instance->do_is_first_run () : true;
   }
 
-  static const char *octave_keywords (void);
-  
   static QString storage_class_chars (void) { return "afghip"; }
   static QStringList storage_class_names (void);
   static QList<QColor> storage_class_default_colors (void);

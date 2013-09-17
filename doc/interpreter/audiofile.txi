@@ -4,5 +4,8 @@
 The following functions provide functionality for reading and writing audio files in various formats including .wav, .flag, .ogg and many others. Also for retrieving information about audio files, such as number of channels, sampling rate, metadata and other.
 
 @DOCSTRING(audioinfo)
+
+The following two functions read and write audio files.
+
 @DOCSTRING(audioread)
 @DOCSTRING(audiowrite)

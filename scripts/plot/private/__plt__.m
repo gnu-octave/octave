@@ -495,8 +495,8 @@ function retval = __plt2vv__ (h, x, y, options, properties = {})
   endif
 
   retval = line (x, y, "color", color,
-            "linestyle", linestyle,
-            "marker", marker, properties{:});
+                 "linestyle", linestyle,
+                 "marker", marker, properties{:});
 
 endfunction
 

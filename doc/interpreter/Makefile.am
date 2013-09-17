@@ -116,6 +116,10 @@ LOGOS = \
 MUNGED_TEXI_SRC = \
   arith.texi \
   audio.texi \
+  audiodevinfo.texi \
+  audioplayer.texi \
+  audiorecorder.texi \
+  audiofile.texi \
   basics.texi \
   bugs.texi \
   container.texi \

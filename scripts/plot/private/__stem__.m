@@ -152,7 +152,8 @@ function h = __stem__ (have_z, varargin)
     endfor
 
     if (! strcmp (hold_state, "add") && have_z)
-      set (hax, "view", [-37.5 30]);  # 3D view
+      set (hax, "view", [-37.5 30],
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
     set (hax, "nextplot", hold_state);
 
@@ -166,10 +167,12 @@ endfunction
 
 function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, varargin)
 
-  ## FIXME -- there seems to be a lot of duplicated code in this
-  ## function.  It seems like it should be possible to simplify things
-  ## by combining some of the nearly identical code sections into
-  ## additional subfunctions.
+  ## FIXME: There seems to be a lot of duplicated code in this function.
+  ##        It seems like it should be possible to simplify things by
+  ##        combining some of the nearly identical code sections into
+  ##        additional subfunctions.
+  ## FIXME: The code is so convoluted that certain options, such as "filled",
+  ##        are not being processed correctly.
 
   if (have_z)
     caller = "stem3";

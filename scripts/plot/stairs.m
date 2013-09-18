@@ -70,27 +70,28 @@ function [xs, ys] = stairs (varargin)
 
   if (nargin < 1)
     print_usage ();
-  else
-    if (nargout > 1)
-      [h, xs, ys] = __stairs__ (false, varargin{:});
-    else
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
   endif
-      unwind_protect
-        hax = newplot (hax);
-        [htmp, xxs, yys] = __stairs__ (true, varargin{:});
-      unwind_protect_cleanup
-        if (! isempty (oldfig))
-          set (0, "currentfigure", oldfig);
-        endif
-      end_unwind_protect
-      if (nargout == 1)
-        xs = htmp;
-      endif
+
+  if (nargout < 2)
+    oldfig = [];
+    if (! isempty (hax))
+      oldfig = get (0, "currentfigure");
     endif
+    unwind_protect
+      hax = newplot (hax);
+      [htmp, xxs, yys] = __stairs__ (true, varargin{:});
+    unwind_protect_cleanup
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
+    end_unwind_protect
+    if (nargout == 1)
+      xs = htmp;
+    endif
+  else
+    [~, xs, ys] = __stairs__ (false, varargin{:});
   endif
+
 endfunction
 
 function [h, xs, ys] = __stairs__ (doplot, varargin)
@@ -98,42 +99,35 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
   if (nargin == 2 || ischar (varargin{2}))
     y = varargin{1};
     varargin(1) = [];
-    if (ismatrix (y))
-      if (isvector (y))
-        y = y(:);
-      endif
-      x = 1:rows (y);
+    if (! ismatrix (y) || ndims (y) > 2)
+      error ("stairs: Y must be a numeric 2-D vector or matrix");
     endif
+    if (isvector (y))
+      y = y(:);
+    endif
+    x = 1:rows (y);
   else
     x = varargin{1};
     y = varargin{2};
     varargin(1:2) = [];
-  endif
-
-  if (ndims (x) > 2 || ndims (y) > 2)
-    error ("stairs: X and Y must be 2-D objects");
+    if (! ismatrix (x) || ! ismatrix (y) || ndims (x) > 2 || ndims (y) > 2)
+      error ("stairs: X and Y must be numeric 2-D vectors or matrices");
+    endif
   endif
 
   vec_x = isvector (x);
-
   if (vec_x)
     x = x(:);
   endif
 
   if (isvector (y))
     y = y(:);
+  elseif (ismatrix (y) && vec_x)
+    x = repmat (x, [1, columns(y)]);
   endif
 
-  if (ismatrix (y))
-    [nr, nc] = size (y);
-    if (vec_x)
-      x = repmat (x, [1, nc]);
-    else
-      [x_nr, x_nc] = size (x);
-      if (x_nr != nr || x_nc != nc)
-        error ("stairs: argument size mismatch");
-      endif
-    endif
+  if (! size_equal (x, y))
+    error ("stairs: X and Y sizes must match");
   endif
 
   len = 2*nr - 1;
@@ -153,9 +147,9 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
   ys(ridx,:) = y(2:nr,:);
 
   have_line_spec = false;
-  for i = 1 : length (varargin)
+  for i = 1:2:numel (varargin)
     arg = varargin{i};
-    if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
+    if (ischar (arg) || iscell (arg))
       [linespec, valid] = __pltopt__ ("stairs", arg, false);
       if (valid)
         have_line_spec = true;
@@ -170,6 +164,27 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
     hold_state = get (gca (), "nextplot");
     unwind_protect
       for i = 1 : columns (y)
+
+        if (have_line_spec)
+          lc = linespec.color;
+          if (isempty (lc))
+            lc = __next_line_color__ ();
+          endif
+          ls = linespec.linestyle;
+          if (isempty (ls))
+            ls = "-";
+          endif
+          mk = linespec.marker;
+          if (isempty (mk))
+            mk = "none";
+          endif
+        else
+          lc = __next_line_color__ ();
+          ls = "-";
+          mk = "none";
+        endif
+
+        ## Must occur after __next_line_color__ in order to work correctly.
         hg = hggroup ();
         h = [h; hg];
         args = __add_datasource__ ("stairs", hg, {"x", "y"}, varargin{:});
@@ -180,32 +195,27 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
         addlistener (hg, "xdata", @update_data);
         addlistener (hg, "ydata", @update_data);
 
-        if (have_line_spec)
-          htmp = line (xs(:,i).', ys(:,i).', "color", linespec.color,
-                       "parent", hg);
-        else
-          htmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
-                       "parent", hg);
-        endif
+        htmp = line (xs(:,i).', ys(:,i).', "color", lc, "linestyle", ls,
+                                           "marker", mk, "parent", hg);
 
         addproperty ("color", hg, "linecolor", get (htmp, "color"));
-        addproperty ("linewidth", hg, "linelinewidth", get (htmp, "linewidth"));
         addproperty ("linestyle", hg, "linelinestyle", get (htmp, "linestyle"));
+        addproperty ("linewidth", hg, "linelinewidth", get (htmp, "linewidth"));
 
         addproperty ("marker", hg, "linemarker", get (htmp, "marker"));
-        addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
-                     get (htmp, "markerfacecolor"));
         addproperty ("markeredgecolor", hg, "linemarkeredgecolor",
                      get (htmp, "markeredgecolor"));
+        addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
+                     get (htmp, "markerfacecolor"));
         addproperty ("markersize", hg, "linemarkersize",
                      get (htmp, "markersize"));
 
         addlistener (hg, "color", @update_props);
-        addlistener (hg, "linewidth", @update_props);
         addlistener (hg, "linestyle", @update_props);
+        addlistener (hg, "linewidth", @update_props);
         addlistener (hg, "marker", @update_props);
-        addlistener (hg, "markerfacecolor", @update_props);
         addlistener (hg, "markeredgecolor", @update_props);
+        addlistener (hg, "markerfacecolor", @update_props);
         addlistener (hg, "markersize", @update_props);
 
         if (! isempty (args))
@@ -221,57 +231,18 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 
 endfunction
 
-
-%!demo
-%! clf;
-%! x = 1:10;
-%! rand_1x10_data1 = [0.073, 0.455, 0.837, 0.124, 0.426, 0.781, 0.004, 0.024, 0.519, 0.698];
-%! y = rand_1x10_data1;
-%! stairs (x, y);
-
-%!demo
-%! clf;
-%! x = 1:10;
-%! rand_1x10_data2 = [0.014, 0.460, 0.622, 0.394, 0.531, 0.378, 0.466, 0.788, 0.342, 0.893];
-%! y = rand_1x10_data2;
-%! [xs, ys] = stairs (x, y);
-%! plot (xs, ys);
-
-%!demo
-%! clf;
-%! stairs (1:9);
-
-%!demo
-%! clf;
-%! [xs, ys] = stairs (9:-1:1);
-%! plot (xs, ys);
-
-%!demo
-%! clf;
-%! N = 11;
-%! x = 0:(N-1);
-%! y = rand (1, N);
-%! hs = stairs (x(1), y(1));
-%! axis ([1, N-1 0, 1]);
-%! for k=2:N
-%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
-%!   drawnow ();
-%!   pause (0.2);
-%! end
-
-
-function update_props (h, d)
+function update_props (h, ~)
   set (get (h, "children"),
        "color", get (h, "color"),
-       "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"),
+       "linewidth", get (h, "linewidth"),
        "marker", get (h, "marker"),
-       "markerfacecolor", get (h, "markerfacecolor"),
        "markeredgecolor", get (h, "markeredgecolor"),
+       "markerfacecolor", get (h, "markerfacecolor"),
        "markersize", get (h, "markersize"));
 endfunction
 
-function update_data (h, d)
+function update_data (h, ~)
   x = get (h, "xdata");
   y = get (h, "ydata");
 
@@ -297,4 +268,63 @@ function update_data (h, d)
 
   set (get (h, "children"), "xdata", xs, "ydata", ys);
 endfunction
+
+
+%!demo
+%! clf;
+%! rand_1x10_data1 = [0.073, 0.455, 0.837, 0.124, 0.426, 0.781, 0.004, 0.024, 0.519, 0.698];
+%! y = rand_1x10_data1;
+%! stairs (y);
+%! title ('stairs() plot of y-data');
+
+%!demo
+%! clf;
+%! x = 1:10;
+%! rand_1x10_data2 = [0.014, 0.460, 0.622, 0.394, 0.531, 0.378, 0.466, 0.788, 0.342, 0.893];
+%! y = rand_1x10_data2;
+%! [xs, ys] = stairs (x, y);
+%! plot (xs, ys);
+%! title ('plot() of stairs() generated data');
+
+%!demo
+%! clf;
+%! stairs (1:9, '-o');
+%! title ('stairs() plot with linespec to modify marker');
+
+%!demo
+%! clf;
+%! stairs (9:-1:1, 'marker', 's', 'markersize', 10, 'markerfacecolor', 'm');
+%! title ('stairs() plot with prop/val pairs to modify appearance');
+
+%!demo
+%! clf;
+%! N = 11;
+%! x = 0:(N-1);
+%! y = rand (1, N);
+%! hs = stairs (x(1), y(1));
+%! axis ([1, N-1 0, 1]);
+%! title ('stairs plot data modified through handle');
+%! for k = 2:N
+%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
+%!   drawnow ();
+%!   pause (0.2);
+%! end
+
+## Invisible figure used for tests
+%!shared hf, hax
+%! hf = figure ("visible", "off");
+%! hax = axes;
+
+%!error stairs ()
+%!error <Y must be a numeric 2-D vector> stairs (hax, {1})
+%!error <Y must be a numeric 2-D vector> stairs (ones (2,2,2))
+%!error <X and Y must be numeric 2-D vector> stairs ({1}, 1)
+%!error <X and Y must be numeric 2-D vector> stairs (1, {1})
+%!error <X and Y must be numeric 2-D vector> stairs (ones (2,2,2), 1)
+%!error <X and Y must be numeric 2-D vector> stairs (1, ones (2,2,2))
+%!error <X and Y sizes must match> stairs (1:2, 1:3)
+
+## Close figure used for testing
+%!test
+%! close (hf);
 

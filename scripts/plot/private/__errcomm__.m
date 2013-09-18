@@ -31,45 +31,45 @@ function retval = __errcomm__ (caller, hax, varargin)
     print_usage (caller);
   endif
 
-  nargs = length (varargin);
   retval = [];
-  k = 1;
   data = cell (6,1);
+  nargs = numel (varargin);
+  k = 1;
   while (k <= nargs)
-    a = varargin{k++};
-    if (isvector (a))
-      a = a(:);
-    elseif (ismatrix (a))
-      ;
-    else
-      usage ("%s (...)", caller);
+    arg = varargin{k++};
+    if (! ismatrix (arg))
+      error ("%s: data argument %d must be numeric", caller, k-1);
     endif
-    sz = size (a);
+    if (isvector (arg))
+      arg = arg(:);
+    endif
+    sz = size (arg);
     ndata = 1;
-    data{ndata} = a;
+    data{ndata} = arg;
     while (k <= nargs)
-      a = varargin{k++};
-      if (ischar (a) || iscellstr (a))
-        retval = [retval; __errplot__(a, hax, data{1:ndata})];
+      arg = varargin{k++};
+      if (ischar (arg) || iscellstr (arg))
+        retval(end+1,1) = __errplot__(arg, hax, data{1:ndata});
         break;
-      elseif (isvector (a))
-        a = a(:);
-      elseif (ismatrix (a))
-        ;
-      else
-        error ("%s: wrong argument types", caller);
       endif
-      if (size (a) != sz)
-        error ("%s: argument sizes do not match", caller);
+      if (! ismatrix (arg))
+        error ("%s: data argument %d must be numeric", caller, k-1);
       endif
-      data{++ndata} = a;
+      if (isvector (arg))
+        arg = arg(:);
+      endif
+      if (any (size (arg) != sz))
+        error ("%s: size of argument %d does not match others", caller, k-1);
+      endif
+      data{++ndata} = arg;
       if (ndata > 6)
         error ("%s: too many arguments to plot", caller);
       endif
     endwhile
   endwhile
 
-  if (! (ischar (a) || iscellstr (a)))
+  ## No format code found, use yerrorbar
+  if (! (ischar (arg) || iscellstr (arg)))
     retval = [retval; __errplot__("~", hax, data{1:ndata})];
   endif
 

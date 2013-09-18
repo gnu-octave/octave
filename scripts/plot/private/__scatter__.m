@@ -119,6 +119,7 @@ function hg = __scatter__ (varargin)
     c = __next_line_color__ ();
   endif
 
+  ## Must occur after __next_line_color__ in order to work correctly.
   hg = hggroup ();
   newargs = __add_datasource__ (fcn, hg, {"x", "y", "z", "c", "size"},
                                 newargs{:});

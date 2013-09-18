@@ -39,8 +39,9 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a vector with the handles of the line
-## and marker objects used to draw the stems as a "stem series" object.
+## The optional return value @var{h} is a handle to the "stem series" hggroup
+## containing the line and marker objects used for the plot.
+## @xref{XREFstem,,stem}, for a description of the "stem series" object.
 ##
 ## Example:
 ##
@@ -60,7 +61,7 @@
 
 function h = stem3 (varargin)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -79,3 +80,12 @@ endfunction
 %! stem3 (cos (theta), sin (theta), theta);
 %! title ('stem3() plot');
 
+%!error stem3 ()
+%!error <must define X, Y, and Z> stem3 (1,2)
+%!error <X, Y, and Z must be numeric> stem3 ({1}, 1, 1)
+%!error <X, Y, and Z must be numeric> stem3 (1, {1}, 1)
+%!error <X, Y, and Z must be numeric> stem3 (1, 1, {1})
+%!error <inconsistent sizes for X, Y, and Z> stem3 (ones (2,2), 1, 1);
+%!error <inconsistent sizes for X, Y, and Z> stem3 (1, ones (2,2), 1);
+%!error <inconsistent sizes for X, Y, and Z> stem3 (1, 1, ones (2,2));
+%!error <No value specified for property "FOO"> stem3 (1, "FOO")

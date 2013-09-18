@@ -57,11 +57,13 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a vector of "stem series" graphics
-## handles with one handle per column of the variable @var{y}.  The
-## handle regroups the elements of the stem graph together as the
-## children of the "stem series" handle, allowing them to be altered
-## together.  For example,
+## The optional return value @var{h} is a handle to a "stem series" hggroup.
+## The single hggroup handle has all of the graphical elements comprising the
+## plot as its children; This allows the properties of multiple graphics
+## objects to be changed by modifying just a single property of the
+## "stem series" hggroup.
+##
+## For example,
 ##
 ## @example
 ## @group
@@ -76,6 +78,40 @@
 ## @noindent
 ## changes the color of the second "stem series" and moves the base line
 ## of the first.
+##
+## Stem Series Properties
+##
+## @table @asis
+## @item linestyle
+## The linestyle of the stem.  (Default: @qcode{"-"})
+##
+## @item linewidth
+## The width of the stem.  (Default: 0.5)
+##
+## @item color
+## The color of the stem, and if not separately specified, the marker.
+## (Default: "b" [blue])
+##
+## @item marker
+## The marker symbol to use at the top of each stem.  (Default: @qcode{"o"})
+##
+## @item markeredgecolor
+## The edge color of the marker.  (Default: @qcode{"color"} property)
+##
+## @item markerfacecolor
+## The color to use for "filling" the marker.  (Default: @qcode{"none"}
+## [unfilled])
+##
+## @item markersize
+## The size of the marker.  (Default: 6)
+##
+## @item baseline
+## The handle of the line object which implements the baseline.  Use @code{set}
+## with the returned handle to change graphic properties of the baseline.
+##
+## @item basevalue
+## The y-value where the baseline is drawn.  (Default: 0)
+## @end table
 ## @seealso{stem3, bar, hist, plot, stairs}
 ## @end deftypefn
 
@@ -99,38 +135,51 @@ endfunction
 
 %!demo
 %! clf;
-%! x = 1:10;
-%! stem (x);
+%! y = 1:10;
+%! stem (y);
+%! title ('stem plot of y-values only');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
 %! stem (x, y);
+%! title ('stem plot of x and y-values');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
 %! h = stem (x, y, 'r');
+%! title ('stem plot with modified color');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
 %! h = stem (x, y, '-.k');
+%! title ('stem plot with modified line style and color');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, '-.k.');
+%! h = stem (x, y, '-.ks');
+%! title ('stem plot with modified line style, color, and marker');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
 %! h = stem (x, y, 'filled');
+%! title ('stem plot with "filled" markers');
+
+%!demo
+%! clf;
+%! x = 1:10;
+%! y = 2*x;
+%! h = stem (x, y, 'markerfacecolor', [1 0 1]);
+%! title ('stem plot modified with property/value pair');
 
 %!demo
 %! clf;
@@ -139,6 +188,7 @@ endfunction
 %! h = stem (x, y);
 %! set (h(2), 'color', 'g');
 %! set (h(1), 'basevalue', -1);
+%! title ('stem plots modified through hggroup handle');
 
 %!demo
 %! clf;
@@ -147,9 +197,19 @@ endfunction
 %! y = rand (1, N);
 %! hs = stem (x(1), y(1));
 %! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
+%! title ('stem plot data modified through hggroup handle');
 %! for k=2:N
 %!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k))
 %!   drawnow ();
 %!   pause (0.2);
 %! end
+
+%!error stem ()
+%!error <can not define Z for 2-D stem plot> stem (1,2,3)
+%!error <X and Y must be numeric> stem ({1})
+%!error <X and Y must be numeric> stem (1, {1})
+%!error <inconsistent sizes for X and Y> stem (1:2, 1:3)
+%!error <inconsistent sizes for X and Y> stem (1:2, ones (3,3))
+%!error <inconsistent sizes for X and Y> stem (ones (2,2), ones (3,3))
+%!error <No value specified for property "FOO"> stem (1, "FOO")
 

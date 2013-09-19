@@ -65,35 +65,40 @@ function h = area (varargin)
     print_usage ();
   endif
 
-  idx = 1;
   x = y = [];
   bv = 0;
-  args = {};
-  ## Check for (X) or (X,Y) arguments and possible base value.
-  if (nargin >= idx && ismatrix (varargin{idx}))
-    y = varargin{idx};
-    idx++;
-    if (nargin >= idx)
-      if (isscalar (varargin{idx}))
-        bv = varargin{idx};
-        idx++;
-      elseif (ismatrix (varargin{idx}))
-        x = y;
-        y = varargin{idx};
-        idx++;
-        if (nargin >= idx && isscalar (varargin{idx}))
-          bv = varargin{idx};
-          idx++;
-        endif
+
+  num_numeric = find (cellfun ("isclass", varargin, "char"), 1) - 1;
+  if (isempty (num_numeric))
+    num_numeric = nargin;     
+  endif
+
+  switch (num_numeric)
+    case 1
+      y = varargin{1};
+    case 2
+      if (isscalar (varargin{2})) 
+        y = varargin{1};
+        bv = varargin{2};
+      else
+        x = varargin{1};
+        y = varargin{2};
       endif
-    endif
-  else
-    print_usage ();
+    case 3
+      x = varargin{1};
+      y = varargin{2};
+      bv = varargin{3};
+    otherwise
+      print_usage ();
+  endswitch
+
+  if (! isreal (x) || ! isreal (y))
+    error ("area: X and Y must be real vectors or matrices");
   endif
-  ## Check for additional args.
-  if (nargin >= idx)
-    args = {varargin{idx:end}};
+  if (! isreal (bv) || ! isscalar (bv))
+    error ("area: LVL must be a real scalar");
   endif
+
   if (isvector (y))
     y = y(:);
   endif
@@ -109,7 +114,7 @@ function h = area (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    htmp = __area__ (hax, x, y, bv, args{:});
+    htmp = __area__ (hax, x, y, bv, varargin{num_numeric+1:end});
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -128,12 +133,16 @@ function retval = __area__ (ax, x, y, bv, varargin)
   y0 = zeros (1, rows (y));
   retval = [];
   for i = 1: columns (y);
+
+    lc = __next_line_color__ ();
+
+    ## Must occur after __next_line_color__ in order to work correctly.
     hg = hggroup ();
     retval = [retval; hg];
     args = __add_datasource__ ("area", hg, {"x", "y"}, varargin{:});
 
-    x1 = x(:, 1).';
-    y1 = y (:, i).';
+    x1 = x(:, 1)';
+    y1 = y(:, i)';
     addproperty ("xdata", hg, "data", x1);
     addproperty ("ydata", hg, "data", y1);
 
@@ -142,11 +151,11 @@ function retval = __area__ (ax, x, y, bv, varargin)
 
     if (i == 1)
       h = patch (ax, [x1(1), x1, fliplr(x1)], [bv, y1, bv*ones(1, length(y1))],
-                 __next_line_color__ (), "parent", hg);
+                     lc, "parent", hg);
     else
       y1 = y0 + y1;
       h = patch (ax, [x1(1), x1, fliplr(x1)], [y0(1), y1, fliplr(y0)],
-                 __next_line_color__ (), "parent", hg);
+                     lc, "parent", hg);
     endif
 
     y0 = y1;
@@ -155,14 +164,14 @@ function retval = __area__ (ax, x, y, bv, varargin)
     addlistener (hg, "basevalue", @move_baseline);
 
     addproperty ("edgecolor", hg, "patchedgecolor", get (h, "edgecolor"));
-    addproperty ("linewidth", hg, "patchlinewidth", get (h, "linewidth"));
-    addproperty ("linestyle", hg, "patchlinestyle", get (h, "linestyle"));
     addproperty ("facecolor", hg, "patchfacecolor", get (h, "facecolor"));
+    addproperty ("linestyle", hg, "patchlinestyle", get (h, "linestyle"));
+    addproperty ("linewidth", hg, "patchlinewidth", get (h, "linewidth"));
 
     addlistener (hg, "edgecolor", @update_props);
-    addlistener (hg, "linewidth", @update_props);
-    addlistener (hg, "linestyle", @update_props);
     addlistener (hg, "facecolor", @update_props);
+    addlistener (hg, "linestyle", @update_props);
+    addlistener (hg, "linewidth", @update_props);
 
     addproperty ("areagroup", hg, "data");
     set (retval, "areagroup", retval);
@@ -177,9 +186,9 @@ endfunction
 function update_props (h, d)
   kids = get (h, "children");
   set (kids, "edgecolor", get (h, "edgecolor"),
-             "linewidth", get (h, "linewidth"),
+             "facecolor", get (h, "facecolor"),
              "linestyle", get (h, "linestyle"),
-             "facecolor", get (h, "facecolor"));
+             "linewidth", get (h, "linewidth"));
 endfunction
 
 function move_baseline (h, d)
@@ -258,4 +267,14 @@ endfunction
 %! h = area (x, y);
 %! set (h, 'ydata', sort (get (h, 'ydata')))
 %! title ('area() plot of sorted data');
+
+%% Test input validation
+%!error area ()
+%!error area (1,2,3,4)
+%!error <X and Y must be real vectors or matrices> area ({1})
+%!error <X and Y must be real vectors or matrices> area (1+i)
+%!error <X and Y must be real vectors or matrices> area (1:2, {1, 2})
+%!error <X and Y must be real vectors or matrices> area (1:2, [1 1+i])
+%!error <LVL must be a real scalar> area (1, i)
+%!error <LVL must be a real scalar> area (1, 2, ones (2,2))
 

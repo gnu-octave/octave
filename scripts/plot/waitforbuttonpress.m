@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} waitforbuttonpress ()
-## @deftypefnx {Function File} {@var{b} =} waitforbuttonpress ()
+## @deftypefnx {Function File} {@var{a} =} waitforbuttonpress ()
 ## Wait for mouse click or key press over the current figure window.
 ##
 ## The return value of @var{b} is 0 if a mouse button was pressed or 1 if a
@@ -30,7 +30,7 @@
 ## Author: Petr Mikulik
 ## License: public domain
 
-function a = waitforbuttonpress ()
+function b = waitforbuttonpress ()
 
   if (nargin != 0 || nargout > 1)
     print_usage ();
@@ -40,11 +40,16 @@ function a = waitforbuttonpress ()
 
   if (nargout == 1)
     if (k <= 5)
-      a = 0;
+      b = 0;
     else
-      a = 1;
+      b = 1;
     endif
   endif
 
 endfunction
+
+
+%% Test input validation
+%!error waitforbuttonpress (1)
+%!error [a,b,c] = waitforbuttonpress ()
 

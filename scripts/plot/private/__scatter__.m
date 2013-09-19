@@ -75,9 +75,9 @@ function hg = __scatter__ (varargin)
     if (isvector (c) && columns (c) != 3)
       c = c(:);
     endif
-  ## Compare only first 4 letters of "fill" as that is what Matlab uses.
   elseif (firstnonnumeric == istart && ischar (varargin{istart})
-          && ! strncmpi (varargin{istart}, "filled", 4))
+          && ! (   strcmpi (varargin{istart}, "filled")
+                || strcmpi (varargin{istart}, "fill")))
     c = varargin{istart};
     firstnonnumeric++;
   else
@@ -91,7 +91,7 @@ function hg = __scatter__ (varargin)
   iarg = firstnonnumeric;
   while (iarg <= nargin)
     arg = varargin{iarg++};
-    if (ischar (arg) && strncmpi (arg, "filled", 4))
+    if (ischar (arg) && (strcmpi (arg, "filled") || strcmpi (arg, "fill")))
       filled = true;
     elseif ((ischar (arg) || iscell (arg)) && ! have_marker)
       [linespec, valid] = __pltopt__ (fcn, arg, false);

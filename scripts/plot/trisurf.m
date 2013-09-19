@@ -37,7 +37,9 @@
 ## change the colormap to control the appearance.
 ##
 ## Optionally, the color of the mesh can be specified independently of @var{z}
-## by supplying a color matrix, @var{c}.
+## by supplying a color matrix, @var{c}.  If @var{z} has N elements, then
+## @var{c} should be an Nx1 vector for colormap data or an Nx3 matrix for
+## RGB data.
 ##
 ## Any property/value pairs are passed directly to the underlying patch object.
 ##
@@ -48,43 +50,49 @@
 
 function h = trisurf (tri, x, y, z, varargin)
 
-  if (nargin < 3)
+  if (nargin < 4)
     print_usage ();
   endif
 
-  if (nargin == 3)
-    triplot (tri, x, y);
-  elseif (ischar (z))
-    triplot (tri, x, y, z, varargin{:});
+  if (nargin > 4 && isnumeric (varargin{1}))
+    c = varargin{1};
+    varargin(1) = [];
+    if (isvector (c))
+      if (numel (c) != numel (z))
+        error ("trisurf: C must have 'numel (Z)' elements");
+      endif
+      c = c(:);
+    elseif (rows (c) != numel (z) || columns (c) != 3)
+      error ("trisurf: TrueColor C matrix must be 'numel (Z)' rows by 3 columns");
+    endif
   else
-    if (nargin > 4 && isnumeric (varargin{1}))
-      c = varargin{1};
-      varargin(1) = [];
-    else
-      c = z;
-    endif
-    if (! any (strcmpi (varargin, "FaceColor")))
-      nfc = numel (varargin) + 1;
-      varargin(nfc+(0:1)) = {"FaceColor", "flat"};
-    else
-      nfc = find (any (strcmpi (varargin, "FaceColor")), 1);
-    endif
-    if (! any (strcmpi (varargin, "EdgeColor"))
-        && strcmpi (varargin{nfc+1}, "interp"))
-      varargin(end+(1:2)) = {"EdgeColor", "none"};
-    endif
-    hax = newplot ();
-    htmp = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
-                  "FaceVertexCData", reshape (c, numel (c), 1),
-                  varargin{:});
-    if (nargout > 0)
-      h = htmp;
-    endif
+    c = z(:);
+  endif
+  ## FIXME: Is all this extra input parsing necessary?
+  ##        Is it for Matlab compatibility?
+  if (! any (strcmpi (varargin, "FaceColor")))
+    nfc = numel (varargin) + 1;
+    varargin(nfc+(0:1)) = {"FaceColor", "flat"};
+  else
+    nfc = find (any (strcmpi (varargin, "FaceColor")), 1);
+  endif
+  if (! any (strcmpi (varargin, "EdgeColor"))
+      && strcmpi (varargin{nfc+1}, "interp"))
+    varargin(end+(1:2)) = {"EdgeColor", "none"};
+  endif
 
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
-    endif
+  hax = newplot ();
+
+  htmp = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
+                "FaceVertexCData", c, varargin{:});
+
+  if (! ishold ())
+    set (hax, "view", [-37.5, 30], "box", "off",
+              "xgrid", "on", "ygrid", "on", "zgrid", "on");
+  endif
+
+  if (nargout > 0)
+    h = htmp;
   endif
 
 endfunction
@@ -153,4 +161,14 @@ endfunction
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z, 'facecolor', 'interp', 'edgecolor', 'k');
+
+%% Test input validation
+%!error trisurf ()
+%!error trisurf (1)
+%!error trisurf (1,2)
+%!error trisurf (1,2,3)
+%!error <C must have 'numel \(Z\)' elements> trisurf (1,2,3,4,[5 6])
+%!error <C must have 'numel \(Z\)' elements> trisurf (1,2,3,4,[5 6]')
+%!error <TrueColor C matrix must> trisurf ([1;1],[2;2],[3;3],[4;4],zeros(3,3))
+%!error <TrueColor C matrix must> trisurf ([1;1],[2;2],[3;3],[4;4],zeros(2,2))
 

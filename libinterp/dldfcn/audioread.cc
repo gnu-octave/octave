@@ -12,19 +12,22 @@ Load an audio file that is specified by @var{filename}. It will be loaded in to 
 a column matrix with as many rows as there are audio frames and as many columns \
 as there are channels in the file. Sampling rate will be stored in @var{Fs}. \
 \n\
-@deftypefnx{Loadable Function} [@var{y}, @var{Fs}] = audioread(@var{filename}, @var{samples})\n\
+@end deftypefn\n\
+@deftypefn{Loadable Function} [@var{y}, @var{Fs}] = audioread(@var{filename}, @var{samples})\n\
 \n\
 Read a specified range of samples from a file specified by @var{filename}. \
 Argument @var{samples} is a vector with two values specifying starting frame \
 and ending frame. \
 \n\
-@deftypefnx{Loadable Function} [@var{y}, @var{Fs}] = audioread(@var{filename}, @var{dataType})\n\
+@end deftypefn\n\
+@deftypefn{Loadable Function} [@var{y}, @var{Fs}] = audioread(@var{filename}, @var{dataType})\n\
 \n\
 Read a file and return an array of specified type. If @var{dataType} is \"native\" then \
 an array of fixed width integer type will be returned depending on how data is stored \
 in the audio file. If @var{dataType} is \"double\" a double matrix will be returned. \
 \n\
-@deftypefnx{Loadable Function} [@var{y}, @var{Fs}] = audioread(@var{filename}, @var{samples}, @var{dataType})\n\
+@end deftypefn\n\
+@deftypefn{Loadable Function} [@var{y}, @var{Fs}] = audioread(@var{filename}, @var{samples}, @var{dataType})\n\
 \n\
 Read a file and return a specified range of frames in an array of specified type. \
 \n\

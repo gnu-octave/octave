@@ -39,26 +39,36 @@ Each structure contains an array of structures with three fields called \
 \"Name\", \"DriverVersion\" and \"ID\". Each structure contains information \
 about a PortAudio device.\n\
 \n\
-@deftypefnx{Loadable Function} @var{devs} = audiodevinfo(@var{IO})\n\
+@end deftypefn\n\
+\n\
+@deftypefn{Loadable Function} @var{devs} = audiodevinfo(@var{IO})\n\
 \n\
 Returns the number of input or output devices available. Set @var{IO} to 1 \
 for input devices and to 0 for output devices.\n\
-@deftypefnx{Loadable Function} @var{name} = audiodevinfo(@var{IO}, @var{ID})\n\
+@end deftypefn\n\
+\n\
+@deftypefn{Loadable Function} @var{name} = audiodevinfo(@var{IO}, @var{ID})\n\
 \n\
 Returns the name of a device specified by numerical @var{ID}. Set @var{IO} \
 to 1 for input devices and to 0 for output devices.\n\
-@deftypefnx{Loadable Function} @var{id} = audiodevinfo(@var{IO}, @var{name})\n\
+@end deftypefn\n\
+\n\
+@deftypefn{Loadable Function} @var{id} = audiodevinfo(@var{IO}, @var{name})\n\
 \n\
 Returns the id of a device specified by name. Set @var{IO} \
 to 1 for input devices and to 0 for output devices.\n\
-@deftypefnx{Loadable Function} @var{id} = audiodevinfo(@var{IO}, @var{rate},\
+@end deftypefn\n\
+\n\
+@deftypefn{Loadable Function} @var{id} = audiodevinfo(@var{IO}, @var{rate},\
  @var{bits}, @var{chans})\n\
 \n\
 Returns the id of the first device that supports playback or recording\
  using the specified sampling rate (@var{rate}), bits per sample (@var{bits})\
  and number of channels (@var{chans}). Set @var{IO} to 1 for input devices\
  ant to 0 for output devices.\
-@deftypefnx{Loadable Function} @var{supports} = audiodevinfo(@var{IO}, @var{ID},\
+@end deftypefn\n\
+\n\
+@deftypefn{Loadable Function} @var{supports} = audiodevinfo(@var{IO}, @var{ID},\
  @var{rate}, @var{bits}, @var{chans})\n\
 \n\
 Returns 1 if the device bearing @var{ID} supports specified sampling rate\

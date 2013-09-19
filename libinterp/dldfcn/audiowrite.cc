@@ -44,7 +44,8 @@ DEFUN_DLD(audiowrite, args, ,
 Write audio data from the matrix @var{y} to a file specified by @var{filename}, \
 file format will be determined by the file extension.\
 \n\
-@deftypefnx{Loadable Function} audiowrite(@var{filename}, @var{y}, @var{Fs}, @var{Name}, @var{Value})\n\
+@end deftypefn\n\
+@deftypefn{Loadable Function} audiowrite(@var{filename}, @var{y}, @var{Fs}, @var{Name}, @var{Value})\n\
 \n\
 Lets you specify additional parameters when writing the file. Those parameters are given in the table below:\n\
 \n\

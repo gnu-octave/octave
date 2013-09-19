@@ -1,15 +1,20 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} recorder = audiorecorder
 ## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz sample rate.
-## @deftypefnx{Function File} recorder = audiorecorder (@var{Fs}, @var{nBytes}, @var{Channels})
+## @end deftypefn
+## @deftypefn{Function File} recorder = audiorecorder (@var{Fs}, @var{nBytes}, @var{Channels})
 ## Create an audiorecorder object recording at specified sample rate @var{Fs}, specified bit depth @var{nBytes} and specified number of @var{Channels}.
-## @deftypefnx{Function File} recorder = audiorecorder (@var{Fs}, @var{nBytes}, @var{Channels}, @var{ID})
+## @end deftypefn
+## @deftypefn{Function File} recorder = audiorecorder (@var{Fs}, @var{nBytes}, @var{Channels}, @var{ID})
 ## Create an audiorecorder object recording at specified sample rate @var{Fs}, specified bit depth @var{nBytes}, number of @var{Channels} and recording on the device specified by @var{ID}. You can get device IDs by using the audiodevinfo function.
-## @deftypefnx{Function File} recorder = audiorecorder (@var{function}, @var{Fs})
+## @end deftypefn
+## @deftypefn{Function File} recorder = audiorecorder (@var{function}, @var{Fs})
 ## Argument @var{function} is a function handle, inline function or a string value of a function name that will get called to process audio. Audio will be recorded at @var{Fs} sampling rate.
-## @deftypefnx{Function File} recorder = audiorecorder (@var{function}, @var{Fs}, @var{nBytes})
+## @end deftypefn
+## @deftypefn{Function File} recorder = audiorecorder (@var{function}, @var{Fs}, @var{nBytes})
 ## Same as above but also allows you to specify the number of bytes per sample.
-## @deftypefnx{Function File} recorder = audiorecorder (@var{function}, @var{Fs}, @var{nBytes}, @var{ID})
+## @end deftypefn
+## @deftypefn{Function File} recorder = audiorecorder (@var{function}, @var{Fs}, @var{nBytes}, @var{ID})
 ## Same as above but also allows you to specify device ID that will be used.
 ## @end deftypefn
 

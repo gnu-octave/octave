@@ -1,7 +1,8 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} record (@var{recorderObj})
 ## Record audio without blocking. The recording will continue until you use the stop method on @var{recorderObj}.
-## @deftypefnx{Function File} record (@var{playerObj}, @var{length})
+## @end deftypefn
+## @deftypefn{Function File} record (@var{playerObj}, @var{length})
 ## Record audio without blocking. The recording will continue for @var{length} seconds.
 ## @end deftypefn
 

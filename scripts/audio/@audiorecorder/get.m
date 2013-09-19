@@ -1,9 +1,11 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} @var{Value} = get (@var{recorderObj}, @var{Name})
 ## Returns the @var{Value} of the property identified by @var{Name}.
-## @deftypefnx{Function File} @var{Values} = get (@var{recorderObj}, @{@var{Name1}, ... , @var{NameN}@})
+## @end deftypefn
+## @deftypefn{Function File} @var{Values} = get (@var{recorderObj}, @{@var{Name1}, ... , @var{NameN}@})
 ## Returns the @var{Values} of the properties identified by @var{Name1} to @var{NameN}.
-## @deftypefnx{Function File} @var{Values} = get (@var{recorderObj})
+## @end deftypefn
+## @deftypefn{Function File} @var{Values} = get (@var{recorderObj})
 ## Returns a scalar structure with values of all properties of @var{recorderObj}. 
 ## The field names correspond to property names.
 ## @end deftypefn

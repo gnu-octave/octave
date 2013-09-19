@@ -1,11 +1,14 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} set (@var{recorderObj}, @var{Name}, @var{Value})
 ## Set the value of property specified by @var{Name} to a given @var{Value}.
-## @deftypefnx{Function File} set (@var{recorderObj}, @var{CellOfNames}, @var{CellOfValues})
+## @end deftypefn
+## @deftypefn{Function File} set (@var{recorderObj}, @var{CellOfNames}, @var{CellOfValues})
 ## Given a cell array of property names and a cell array of values, set each property to a corresponding value.
-## @deftypefnx{Function File} set (@var{recorderObj}, @var{StructOfProperties})
+## @end deftypefn
+## @deftypefn{Function File} set (@var{recorderObj}, @var{StructOfProperties})
 ## Given a structure where fields are property names, set the value of those properties for an audiorecorder object to corresponding values.
-## @deftypefnx{Function File} @var{settableProperties} = set (@var{recorderObj})
+## @end deftypefn
+## @deftypefn{Function File} @var{settableProperties} = set (@var{recorderObj})
 ## Returns a structure of settable properties.
 ## @end deftypefn
 

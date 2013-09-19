@@ -46,56 +46,58 @@
 ## @end group
 ## @end example
 ##
-## @seealso{polar, quiver, feather, plot}
+## @seealso{polar, feather, quiver, rose, plot}
 ## @end deftypefn
 
 function h = compass (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("compass", varargin{:});
 
-  if (nargin == 0)
+  if (nargin == 0 || nargin > 3)
     print_usage ();
-  elseif (nargin == 1 || (nargin == 2 && ! isnumeric (varargin{2})))
-    ioff = 2;
+  endif
+
+  if (nargin == 1 || (nargin == 2 && ! isnumeric (varargin{2})))
     z = varargin{1}(:).';
     u = real (z);
     v = imag (z);
-  elseif (nargin > 1 && isnumeric (varargin{2}))
-    ioff = 3;
+    have_line_spec = (nargin == 2);
+  elseif (nargin >= 2 && isnumeric (varargin{2}))
     u = varargin{1}(:).';
     v = varargin{2}(:).';
+    have_line_spec = (nargin == 3);
+  else
+    print_usage ();
   endif
 
-  arrowsize = 0.25;
-  line_spec = "b-";
-  have_line_spec = false;
-  while (ioff <= nargin)
-    arg = varargin{ioff++};
-    if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
-      [linespec, valid] = __pltopt__ ("compass", arg, false);
+  arrowsize = 0.20;
+  line_spec = "-b";
+
+  if (have_line_spec)
+    arg = varargin{end};
+    if (ischar (arg) || iscellstr (arg))
+      [~, valid] = __pltopt__ ("compass", arg, false);
       if (valid)
         line_spec = arg;
-        have_line_spec = true;
-        break;
       else
-        error ("compass: invalid linespec");
+        error ("compass: invalid linestyle STYLE");
       endif
     else
-      error ("compass: unrecognized argument");
+      error ("compass: invalid linestyle STYLE");
     endif
-  endwhile
+  endif
 
-  ## Matlab draws compass plots, with the arrow head as one continous
-  ## line, and each arrow separately. This is completely different than
-  ## quiver and quite ugly.
+  ## Matlab draws compass plots with the arrow head as one continous line,
+  ## and each arrow separately.  This is completely different than quiver
+  ## and quite ugly.
   n = length (u);
   xend = u;
   xtmp = u .* (1 - arrowsize);
   yend = v;
   ytmp = v .* (1 - arrowsize);
-  x = [zeros(1, n); xend; xtmp  - v * arrowsize / 3; xend; ...
+  x = [zeros(1, n); xend; xtmp - v * arrowsize / 3; xend; ...
        xtmp + v * arrowsize / 3];
-  y = [zeros(1, n); yend; ytmp  + u * arrowsize / 3; yend; ...
+  y = [zeros(1, n); yend; ytmp + u * arrowsize / 3; yend; ...
        ytmp - u * arrowsize / 3];
   [r, p] = cart2pol (x, y);
 

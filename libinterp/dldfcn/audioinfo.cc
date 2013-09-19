@@ -14,6 +14,11 @@ Return information about an audio file specified by @var{filename}.\
 )
 {
   octave_scalar_map retval;
+  if (args.length () != 1 || not args(0).is_string ())
+    {
+      print_usage ();
+      return octave_value(retval);
+    }
 #ifdef HAVE_SNDFILE
   Matrix audio;
   SNDFILE *file;

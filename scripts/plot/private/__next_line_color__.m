@@ -37,17 +37,17 @@ function rgb = __next_line_color__ (reset)
   else
     ## Find and return the next line color
     ca = gca ();
-    colorOrder = get (ca, "ColorOrder");
+    colororder = get (ca, "colororder");
     if (reset_colors)
       color_index = 1;
       reset_colors = false;
     else
       ## Executed when "hold all" is active
-      nChildren = length (get (ca, "Children"));
-      nColors = rows (colorOrder);
-      color_index = mod (nChildren, nColors) + 1;
+      n_kids = length (get (ca, "children"));
+      n_colors = rows (colororder);
+      color_index = mod (n_kids, n_colors) + 1;
     endif
-    rgb = colorOrder(color_index,:);
+    rgb = colororder(color_index,:);
   endif
 
 endfunction

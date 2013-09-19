@@ -52,9 +52,9 @@
 ## @example
 ## @group
 ## contour3 (peaks (19));
+## colormap cool;
 ## hold on;
-## surface (peaks (19), "facecolor", "none", "EdgeColor", "black");
-## colormap hot;
+## surf (peaks (19), "facecolor", "none", "edgecolor", "black");
 ## @end group
 ## @end example
 ##
@@ -80,7 +80,7 @@ function [c, h] = contour3 (varargin)
   end_unwind_protect
 
   if (! ishold ())
-    set (hax, "view", [-37.5, 30],
+    set (hax, "view", [-37.5, 30], "box", "off",
               "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
@@ -94,14 +94,13 @@ endfunction
 
 %!demo
 %! clf;
-%! contour3 (peaks (19));
+%! colormap (cool (64));
+%! surf (peaks (19), 'facecolor', 'none', 'edgecolor', [0.85 0.85 0.85]);
 %! hold on;
-%! surf (peaks (19), 'facecolor', 'none', 'edgecolor', [0.8 0.8 0.8]);
-%! colormap (hot (64));
+%! contour3 (peaks (19));
+%! hold off;
 %! axis tight;
 %! zlim auto;
-%! box off;
 %! view (315, 17);
-%! title ('contour3 of peaks() function');
-%! hold off;
+%! title ({'contour3 of peaks() function', 'gray surf() shows peaks function'});
 

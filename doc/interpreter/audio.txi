@@ -22,6 +22,8 @@
 
 @chapter Audio File Utilities
 
+The following functions allow you to read, write and retrieve information about audio files. Various formats are supported including wav, flac and ogg vorbis.
+
 @DOCSTRING(audioinfo)
 @DOCSTRING(audioread)
 @DOCSTRING(audiowrite)

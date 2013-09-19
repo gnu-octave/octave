@@ -17,21 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} caxis (@var{limits})
+## @deftypefn  {Function File} {} caxis ([cmin cmax])
 ## @deftypefnx {Function File} {} caxis ("auto")
 ## @deftypefnx {Function File} {} caxis ("manual")
 ## @deftypefnx {Function File} {} caxis (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{limits} =} caxis ()
 ## Query or set color axis limits for plots.
 ##
-## The argument @var{limits} should be a 2-element vector specifying the
+## The limits argument should be a 2-element vector specifying the
 ## lower and upper limits to assign to the first and last value in the
-## colormap.  Values outside this range are clamped to the first and last
+## colormap.  Data values outside this range are clamped to the first and last
 ## colormap entries.
 ##
-## If @var{limits} is @qcode{"auto"}, then automatic colormap scaling is
-## applied, whereas if @var{limits} is @qcode{"manual"} the colormap scaling
-## is set to manual.
+## If the @qcode{"auto"} option is given then automatic colormap limits are
+## applied.  The automatic algorithm sets @var{cmin} to the minimum data value
+## and @var{cmax} to the maximum data value.  If @qcode{"manual"} is specified
+## then the @qcode{"climmode"} property is set to @qcode{"manual"} and the
+## numeric values in the @qcode{"clim"} property are used for limits.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.

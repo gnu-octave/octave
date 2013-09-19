@@ -109,7 +109,7 @@ Read a file and return a specified range of frames in an array of specified type
   retval(0) = ret_audio;
   retval(1) = info.samplerate;
 #else
-  error("sndfile not found on your system and thus audioread is not functional")
+  error("sndfile not found on your system and thus audioread is not functional");
 #endif
   return octave_value(retval);
 }

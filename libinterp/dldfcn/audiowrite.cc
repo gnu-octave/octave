@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 
+#ifdef HAVE_SNDFILE
 static void fill_extension_table(std::map<std::string, int> &table)
 {
   table["wav"] = SF_FORMAT_WAV;
@@ -34,6 +35,7 @@ static void fill_extension_table(std::map<std::string, int> &table)
   table["mpc2k"] = SF_FORMAT_MPC2K;
   table["rf64"] = SF_FORMAT_RF64;
 }
+#endif
   
 DEFUN_DLD(audiowrite, args, ,
 "-*- texinfo -*-\n\
@@ -164,7 +166,7 @@ Comment.\n\
   sf_close (file);
   free (data);
 #else
-  error("sndfile not found on your system and thus audiowrite is not functional")
+  error("sndfile not found on your system and thus audiowrite is not functional");
 #endif
   return octave_value(retval);
 }

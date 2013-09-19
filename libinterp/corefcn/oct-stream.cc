@@ -2958,191 +2958,173 @@ octave_stream::close (void)
     rep->close ();
 }
 
-template <class RET_T, class READ_T>
+template <class SRC_T, class DST_T>
+static octave_value
+convert_and_copy (std::list<void *>& input_buf_list,
+                  octave_idx_type input_buf_elts,
+                  octave_idx_type elts_read,
+                  octave_idx_type nr, octave_idx_type nc, bool swap,
+                  bool do_float_fmt_conv, bool do_NA_conv,
+                  oct_mach_info::float_format from_flt_fmt)
+{
+  typedef typename DST_T::element_type dst_elt_type;
+
+  DST_T conv (dim_vector (nr, nc));
+
+  dst_elt_type *conv_data = conv.fortran_vec ();
+
+  octave_idx_type j = 0;
+
+  for (std::list<void *>::const_iterator it = input_buf_list.begin ();
+       it != input_buf_list.end (); it++)
+    {
+      SRC_T *data = static_cast<SRC_T *> (*it);
+
+      for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read; i++, j++)
+        {
+          if (swap)
+            swap_bytes<sizeof (SRC_T)> (&data[i]);
+          else if (do_float_fmt_conv)
+            do_float_format_conversion (&data[i], sizeof (SRC_T),
+                                        1, from_flt_fmt,
+                                        oct_mach_info::float_format ());
+
+          dst_elt_type tmp (data[i]);
+
+          if (do_NA_conv && __lo_ieee_is_old_NA (tmp))
+            tmp = __lo_ieee_replace_old_NA (tmp);
+
+          conv_data[j] = tmp;
+        }
+
+      delete [] data;
+    }
+
+  input_buf_list.clear ();
+
+  for (octave_idx_type i = elts_read; i < nr * nc; i++)
+    conv_data[i] = dst_elt_type (0);
+
+  return conv;
+}
+
+typedef octave_value (*conv_fptr)
+  (std::list<void *>& input_buf_list, octave_idx_type input_buf_elts,
+   octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
+   bool swap, bool do_float_fmt_conv, bool do_NA_conv,
+   oct_mach_info::float_format from_flt_fmt);
+
+#define TABLE_ELT(T, U, V, W) \
+  conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
+
+#undef FILL_TABLE_ROW
+#define FILL_TABLE_ROW(T, V) \
+  TABLE_ELT (T, dt_int8, V, int8NDArray); \
+  TABLE_ELT (T, dt_uint8, V, uint8NDArray); \
+  TABLE_ELT (T, dt_int16, V, int16NDArray); \
+  TABLE_ELT (T, dt_uint16, V, uint16NDArray); \
+  TABLE_ELT (T, dt_int32, V, int32NDArray); \
+  TABLE_ELT (T, dt_uint32, V, uint32NDArray); \
+  TABLE_ELT (T, dt_int64, V, int64NDArray); \
+  TABLE_ELT (T, dt_uint64, V, uint64NDArray); \
+  TABLE_ELT (T, dt_single, V, FloatNDArray); \
+  TABLE_ELT (T, dt_double, V, NDArray); \
+  TABLE_ELT (T, dt_char, V, charNDArray); \
+  TABLE_ELT (T, dt_schar, V, charNDArray); \
+  TABLE_ELT (T, dt_uchar, V, charNDArray); \
+  TABLE_ELT (T, dt_logical, V, boolNDArray);
+
 octave_value
-do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx_type block_size,
-         octave_idx_type skip, bool do_float_fmt_conv, bool do_NA_conv,
-         oct_mach_info::float_format from_flt_fmt, octave_idx_type& count)
+octave_stream::finalize_read (std::list<void *>& input_buf_list,
+                              octave_idx_type input_buf_elts,
+                              octave_idx_type elts_read,
+                              octave_idx_type nr, octave_idx_type nc,
+                              oct_data_conv::data_type input_type,
+                              oct_data_conv::data_type output_type,
+                              oct_mach_info::float_format ffmt)
 {
   octave_value retval;
 
-  RET_T nda;
+  static bool initialized = false;
 
-  count = 0;
+  // Table function pointers for return types x read types.
 
-  typedef typename RET_T::element_type ELMT;
-  ELMT elt_zero = ELMT ();
+  static conv_fptr conv_fptr_table[oct_data_conv::dt_unknown][14];
 
-  ELMT *dat = 0;
-
-  octave_idx_type max_size = 0;
-
-  octave_idx_type final_nr = 0;
-  octave_idx_type final_nc = 1;
-
-  if (nr > 0)
+  if (! initialized)
     {
-      if (nc > 0)
-        {
-          nda.resize (dim_vector (nr, nc), elt_zero);
-          dat = nda.fortran_vec ();
-          max_size = nr * nc;
-        }
-      else
-        {
-          nda.resize (dim_vector (nr, 32), elt_zero);
-          dat = nda.fortran_vec ();
-          max_size = nr * 32;
-        }
-    }
-  else
-    {
-      nda.resize (dim_vector (32, 1), elt_zero);
-      dat = nda.fortran_vec ();
-      max_size = 32;
+      for (int i = 0; i < oct_data_conv::dt_unknown; i++)
+        for (int j = 0; j < 14; j++)
+          conv_fptr_table[i][j] = 0;
+
+      FILL_TABLE_ROW (dt_int8, int8_t);
+      FILL_TABLE_ROW (dt_uint8, uint8_t);
+      FILL_TABLE_ROW (dt_int16, int16_t);
+      FILL_TABLE_ROW (dt_uint16, uint16_t);
+      FILL_TABLE_ROW (dt_int32, int32_t);
+      FILL_TABLE_ROW (dt_uint32, uint32_t);
+      FILL_TABLE_ROW (dt_int64, int64_t);
+      FILL_TABLE_ROW (dt_uint64, uint64_t);
+      FILL_TABLE_ROW (dt_single, float);
+      FILL_TABLE_ROW (dt_double, double);
+      FILL_TABLE_ROW (dt_char, char);
+      FILL_TABLE_ROW (dt_schar, signed char);
+      FILL_TABLE_ROW (dt_uchar, unsigned char);
+      FILL_TABLE_ROW (dt_logical, bool);
+
+      initialized = true;
     }
 
   bool swap = false;
 
+  if (ffmt == oct_mach_info::flt_fmt_unknown)
+    ffmt = float_format ();
+
   if (oct_mach_info::words_big_endian ())
-    swap = (from_flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian);
+    swap = (ffmt == oct_mach_info::flt_fmt_ieee_little_endian);
   else
-    swap = (from_flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+    swap = (ffmt == oct_mach_info::flt_fmt_ieee_big_endian);
 
-  union
-  {
-    char buf[sizeof (typename strip_template_param<octave_int, READ_T>::type)];
-    typename strip_template_param<octave_int, READ_T>::type val;
-  } u;
+  bool do_float_fmt_conv = ((input_type == oct_data_conv::dt_double
+                             || input_type == oct_data_conv::dt_single)
+                            && ffmt != float_format ());
 
-  std::istream *isp = strm.input_stream ();
+  bool do_NA_conv = (output_type == oct_data_conv::dt_double);
 
-  if (isp)
+  switch (output_type)
     {
-      std::istream& is = *isp;
+    case oct_data_conv::dt_int8:
+    case oct_data_conv::dt_uint8:
+    case oct_data_conv::dt_int16:
+    case oct_data_conv::dt_uint16:
+    case oct_data_conv::dt_int32:
+    case oct_data_conv::dt_uint32:
+    case oct_data_conv::dt_int64:
+    case oct_data_conv::dt_uint64:
+    case oct_data_conv::dt_single:
+    case oct_data_conv::dt_double:
+    case oct_data_conv::dt_char:
+    case oct_data_conv::dt_schar:
+    case oct_data_conv::dt_uchar:
+    case oct_data_conv::dt_logical:
+      {
+        conv_fptr fptr = conv_fptr_table[input_type][output_type];
 
-      octave_idx_type elts_read = 0;
+        retval = fptr (input_buf_list, input_buf_elts, elts_read,
+                       nr, nc, swap, do_float_fmt_conv, do_NA_conv, ffmt);
+      }
+      break;
 
-      for (;;)
-        {
-          // FIXME -- maybe there should be a special case for
-          // skip == 0.
-
-          if (is)
-            {
-              if (nr > 0 && nc > 0 && count == max_size)
-                {
-                  final_nr = nr;
-                  final_nc = nc;
-
-                  break;
-                }
-
-              is.read (u.buf, sizeof (typename strip_template_param<octave_int, READ_T>::type));
-
-              // We only swap bytes for integer types.  For float
-              // types, the format conversion will also handle byte
-              // swapping.
-
-              if (swap)
-                swap_bytes<sizeof (typename strip_template_param<octave_int, READ_T>::type)> (u.buf);
-              else if (do_float_fmt_conv)
-                do_float_format_conversion
-                  (u.buf,
-                   sizeof (typename strip_template_param<octave_int, READ_T>::type),
-                   1, from_flt_fmt, oct_mach_info::float_format ());
-
-              typename RET_T::element_type tmp
-                = static_cast <typename RET_T::element_type> (u.val);
-
-              if (is)
-                {
-                  if (count == max_size)
-                    {
-                      max_size *= 2;
-
-                      if (nr > 0)
-                        nda.resize (dim_vector (nr, max_size / nr),
-                                    elt_zero);
-                      else
-                        nda.resize (dim_vector (max_size, 1), elt_zero);
-
-                      dat = nda.fortran_vec ();
-                    }
-
-                  if (do_NA_conv && __lo_ieee_is_old_NA (tmp))
-                    tmp = __lo_ieee_replace_old_NA (tmp);
-
-                  dat[count++] = tmp;
-
-                  elts_read++;
-                }
-
-              int seek_status = 0;
-
-              if (skip != 0 && elts_read == block_size)
-                {
-                  seek_status = strm.seek (skip, SEEK_CUR);
-                  elts_read = 0;
-                }
-
-              if (is.eof () || seek_status < 0)
-                {
-                  if (nr > 0)
-                    {
-                      if (count > nr)
-                        {
-                          final_nr = nr;
-                          final_nc = (count - 1) / nr + 1;
-                        }
-                      else
-                        {
-                          final_nr = count;
-                          final_nc = 1;
-                        }
-                    }
-                  else
-                    {
-                      final_nr = count;
-                      final_nc = 1;
-                    }
-
-                  break;
-                }
-            }
-          else if (is.eof ())
-            break;
-        }
+    default:
+      retval = false;
+      (*current_liboctave_error_handler)
+        ("read: invalid type specification");
+      break;
     }
-
-  nda.resize (dim_vector (final_nr, final_nc), elt_zero);
-
-  retval = nda;
+  
 
   return retval;
 }
-
-typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type,
-                                   octave_idx_type, octave_idx_type,
-                                   octave_idx_type, bool, bool, 
-                                   oct_mach_info::float_format ffmt,
-                                   octave_idx_type&);
-
-#define FILL_TABLE_ROW(R, VAL_T) \
-  read_fptr_table[R][oct_data_conv::dt_int8] = do_read<VAL_T, octave_int8>; \
-  read_fptr_table[R][oct_data_conv::dt_uint8] = do_read<VAL_T, octave_uint8>; \
-  read_fptr_table[R][oct_data_conv::dt_int16] = do_read<VAL_T, octave_int16>; \
-  read_fptr_table[R][oct_data_conv::dt_uint16] = do_read<VAL_T, octave_uint16>; \
-  read_fptr_table[R][oct_data_conv::dt_int32] = do_read<VAL_T, octave_int32>; \
-  read_fptr_table[R][oct_data_conv::dt_uint32] = do_read<VAL_T, octave_uint32>; \
-  read_fptr_table[R][oct_data_conv::dt_int64] = do_read<VAL_T, octave_int64>; \
-  read_fptr_table[R][oct_data_conv::dt_uint64] = do_read<VAL_T, octave_uint64>; \
-  read_fptr_table[R][oct_data_conv::dt_single] = do_read<VAL_T, float>; \
-  read_fptr_table[R][oct_data_conv::dt_double] = do_read<VAL_T, double>; \
-  read_fptr_table[R][oct_data_conv::dt_char] = do_read<VAL_T, char>; \
-  read_fptr_table[R][oct_data_conv::dt_schar] = do_read<VAL_T, signed char>; \
-  read_fptr_table[R][oct_data_conv::dt_uchar] = do_read<VAL_T, unsigned char>; \
-  read_fptr_table[R][oct_data_conv::dt_logical] = do_read<VAL_T, unsigned char>
 
 octave_value
 octave_stream::read (const Array<double>& size, octave_idx_type block_size,
@@ -3151,37 +3133,12 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
                      octave_idx_type skip, oct_mach_info::float_format ffmt,
                      octave_idx_type& char_count)
 {
-  static bool initialized = false;
-
-  // Table function pointers for return types x read types.
-
-  static read_fptr read_fptr_table[oct_data_conv::dt_unknown][14];
-
-  if (! initialized)
-    {
-      for (int i = 0; i < oct_data_conv::dt_unknown; i++)
-        for (int j = 0; j < 14; j++)
-          read_fptr_table[i][j] = 0;
-
-      FILL_TABLE_ROW (oct_data_conv::dt_int8, int8NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_uint8, uint8NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_int16, int16NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_uint16, uint16NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_int32, int32NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_uint32, uint32NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_int64, int64NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_uint64, uint64NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_single, FloatNDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_double, NDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_char, charNDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_schar, charNDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_uchar, charNDArray);
-      FILL_TABLE_ROW (oct_data_conv::dt_logical, boolNDArray);
-
-      initialized = true;
-    }
-
   octave_value retval;
+
+  octave_idx_type nr = -1;
+  octave_idx_type nc = -1;
+
+  bool one_elt_size_spec = false;
 
   if (stream_ok ())
     {
@@ -3193,47 +3150,112 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
       char_count = 0;
 
-      octave_idx_type nr = -1;
-      octave_idx_type nc = -1;
-
-      bool ignore;
-
-      get_size (size, nr, nc, ignore, "fread");
+      get_size (size, nr, nc, one_elt_size_spec, "fread");
 
       if (! error_state)
         {
-          if (nr == 0 || nc == 0)
-            retval = Matrix (nr, nc);
+
+          octave_idx_type elts_to_read = std::numeric_limits<octave_idx_type>::max ();
+
+          if (one_elt_size_spec)
+            {
+              // If NR == 0, Matlab returns [](0x0).
+
+              // If NR > 0, the result will be a column vector with the given
+              // number of rows.
+
+              // If NR < 0, then we have Inf and the result will be a column
+              // vector but we have to wait to see how big NR will be.
+
+              if (nr == 0)
+                nr = nc = 0;
+              else
+                nc = 1;
+            }
           else
             {
-              if (ffmt == oct_mach_info::flt_fmt_unknown)
-                ffmt = float_format ();
+              // Matlab returns [] even if there are two elements in the size
+              // specification and one is nonzero.
 
-              read_fptr fcn = read_fptr_table[output_type][input_type];
+              // If NC < 0 we have [NR, Inf] and we'll wait to decide how big NC
+              // should be.
 
-              bool do_float_fmt_conv = ((input_type == oct_data_conv::dt_double
-                                         || input_type == oct_data_conv::dt_single)
-                                        && ffmt != float_format ());
-
-              bool do_NA_conv = (output_type == oct_data_conv::dt_double);
-
-              if (fcn)
-                {
-                  retval = (*fcn) (*this, nr, nc, block_size, skip,
-                                   do_float_fmt_conv, do_NA_conv,
-                                   ffmt, char_count);
-
-                  // FIXME -- kluge!
-
-                  if (! error_state
-                      && (output_type == oct_data_conv::dt_char
-                          || output_type == oct_data_conv::dt_schar
-                          || output_type == oct_data_conv::dt_uchar))
-                    retval = retval.char_matrix_value ();
-                }
-              else
-                error ("fread: unable to read and convert requested types");
+              if (nr == 0 || nc == 0)
+                nr = nc = 0;
             }
+
+          // FIXME -- ensure that this does not overflow.
+
+          elts_to_read = nr * nc;
+
+          bool read_to_eof = elts_to_read < 0;
+
+          octave_idx_type input_buf_elts = -1;
+
+          if (skip == 0)
+            {
+              if (read_to_eof)
+                input_buf_elts = 1024 * 1024;
+              else
+                input_buf_elts = elts_to_read;
+            }
+          else
+            input_buf_elts = block_size;
+
+          octave_idx_type input_elt_size = oct_data_conv::data_type_size (input_type);
+
+          octave_idx_type input_buf_size = input_buf_elts * input_elt_size;
+
+          assert (input_buf_size >= 0);
+
+          // Must also work and return correct type object for 0 elements to read.
+
+          std::istream *isp = input_stream ();
+
+          if (isp)
+            {
+              std::istream& is = *isp;
+
+              std::list <void *> input_buf_list;
+
+              octave_idx_type elts_read = 0;
+
+              while (is && ! is.eof () && (read_to_eof || elts_read < elts_to_read))
+                {
+                  char *input_buf = new char [input_buf_size];
+
+                  is.read (input_buf, input_buf_size);
+
+                  size_t count = is.gcount ();
+
+                  char_count += count;
+
+                  elts_read += count / input_elt_size;
+
+                  input_buf_list.push_back (input_buf);
+
+                  if (is && skip != 0 && elts_read == block_size)
+                    {
+                      int seek_status = seek (skip, SEEK_CUR);
+
+                      if (seek_status < 0)
+                        break;
+                    }
+                }
+
+              if (read_to_eof)
+                {
+                  if (nc < 0)
+                    nc = elts_read / nr + 1;
+                  else
+                    nr = elts_read;
+                }
+
+              retval = finalize_read (input_buf_list, input_buf_elts, elts_read,
+                                      nr, nc, input_type, output_type, ffmt);
+            }
+          else
+            error ("fread: invalid input stream");
         }
       else
         invalid_operation ("fread", "reading");

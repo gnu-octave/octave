@@ -46,7 +46,7 @@
 ## @code{  lphase = lphase + nl;}
 ## @code{  rphase = rphase + nr;}
 ## @code{endfunction}
-## @code{player = audioplayer(@callback_sine, 44100);}
+## @code{player = audioplayer(@@callback_sine, 44100);}
 ## @code{play (player);}
 ## @code{# play for as long as you want}
 ## @code{stop (player);}

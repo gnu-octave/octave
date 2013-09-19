@@ -21,13 +21,6 @@
 @node Audio Processing
 @chapter Audio Processing
 
-@menu
-* Audio Device Information::
-* Audio Player::
-* Audio Recorder::
-* Audio File Utilities::
-@end menu
-
 Octave provides a few functions for dealing with audio data.  An audio
 `sample' is a single output value from an A/D converter, i.e., a small
 integer number (usually 8 or 16 bits), and audio data is just a series
@@ -75,8 +68,3 @@ hardware are welcome.
 @DOCSTRING(wavread)
 
 @DOCSTRING(wavwrite)
-
-@include audiodevinfo.texi
-@include audioplayer.texi
-@include audiorecorder.texi
-@include audiofile.texi

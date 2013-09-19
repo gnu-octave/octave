@@ -12,13 +12,13 @@ audio_FCN_FILES = \
   audio/wavwrite.m \
   audio/@audioplayer/__get_properties__.m \
   audio/@audioplayer/audioplayer.m \
-  audio/@audioplayer/display.m  \
-  audio/@audioplayer/get.m  \
-  audio/@audioplayer/isplaying.m  \
+  audio/@audioplayer/display.m \
+  audio/@audioplayer/get.m \
+  audio/@audioplayer/isplaying.m \
   audio/@audioplayer/pause.m  \
-  audio/@audioplayer/play.m  \
-  audio/@audioplayer/playblocking.m  \
-  audio/@audioplayer/resume.m  \
+  audio/@audioplayer/play.m \
+  audio/@audioplayer/playblocking.m \
+  audio/@audioplayer/resume.m \
   audio/@audioplayer/set.m \
   audio/@audioplayer/stop.m \
   audio/@audioplayer/subsasgn.m \
@@ -36,9 +36,9 @@ audio_FCN_FILES = \
   audio/@audiorecorder/recordblocking.m \
   audio/@audiorecorder/resume.m \
   audio/@audiorecorder/set.m \
-  audio/@audiorecorder/stop.m  \
-  audio/@audiorecorder/subsasgn.m  \
-  audio/@audiorecorder/susbref.m
+  audio/@audiorecorder/stop.m \
+  audio/@audiorecorder/subsasgn.m \
+  audio/@audiorecorder/subsref.m
 
 FCN_FILES += $(audio_FCN_FILES)
 

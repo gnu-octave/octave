@@ -28,15 +28,63 @@
 
 @chapter Audio Device Information
 
-@DOCSTRING(@audiodevinfo)
+@DOCSTRING(audiodevinfo)
 
 @chapter Audio Player
 
+The following methods are used to create and use audioplayer objects. These objects can be used to play back audio data stored in Octave matrices and arrays. The audioplayer object supports playback from various devices available to the system, blocking and non-blocking playback, convenient pausing and resuming and much more.
+
 @DOCSTRING(@audioplayer/audioplayer)
+
+@section Playback
+
+The following methods are used to control player playback.
+
+@DOCSTRING(@audioplayer/play)
+@DOCSTRING(@audioplayer/playblocking)
+@DOCSTRING(@audioplayer/pause)
+@DOCSTRING(@audioplayer/resume)
+@DOCSTRING(@audioplayer/stop)
+@DOCSTRING(@audioplayer/isplaying)
+
+@section Properties
+
+The remaining couple of methods are used to get and set various properties of the audioplayer object.
+
+@DOCSTRING(@audioplayer/get)
+@DOCSTRING(@audioplayer/set)
 
 @chapter Audio Recorder
 
+The following methods are used to create and use audiorecorder objects. These objects can be used to record audio data from various devices available to the system. You can use convenient methods to retrieve that data or audioplayer objects created from that data. Methods for blocking and non-blocking recording, pausing and resuming recording and much more is available.
+
 @DOCSTRING(@audiorecorder/audiorecorder)
+
+@section Recording
+
+The following methods control the recording process.
+
+@DOCSTRING(@audiorecorder/record)
+@DOCSTRING(@audiorecorder/recordblocking)
+@DOCSTRING(@audiorecorder/pause)
+@DOCSTRING(@audiorecorder/resume)
+@DOCSTRING(@audiorecorder/stop)
+@DOCSTRING(@audiorecorder/isrecording)
+
+@section Data Retrieval
+
+The following methods allow you to retrieve recorded audio data in various ways.
+
+@DOCSTRING(@audiorecorder/getaudiodata)
+@DOCSTRING(@audiorecorder/getplayer)
+@DOCSTRING(@audiorecorder/play)
+
+@section Properties
+
+The remaining two methods allow you to read or alter the properties of audiorecorder objects.
+
+@DOCSTRING(@audiorecorder/get)
+@DOCSTRING(@audiorecorder/set)
 
 @chapter Audio Processing
 

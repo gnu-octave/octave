@@ -23,10 +23,6 @@
 ## @deftypefnx {Command} {} close all hidden
 ## Close figure window(s).
 ##
-## @code{close} operates by calling the function specified by the
-## @qcode{"closerequestfcn"} property for each figure.  By default, the function
-## @code{closereq} is used.
-##
 ## When called with no arguments, close the current figure.  This is equivalent
 ## to @code{close (gcf)}.  If the input @var{h} is a graphic handle, or vector
 ## of graphics handles, then close each figure in @var{h}.
@@ -37,10 +33,12 @@
 ## If the argument @qcode{"all hidden"} is given then all figures, including
 ## hidden ones, are closed.
 ##
-## Implementation Note: @code{close} calls a function to dispose of the figure.
-## It is possible that the function will delay or abort removing the figure.
-## To remove a figure without executing any callback functions use
-## @code{delete}.
+## Implementation Note: @code{close} operates by calling the function specified
+## by the @qcode{"closerequestfcn"} property for each figure.  By default, the
+## function @code{closereq} is used.  It is possible that the function invoked
+## will delay or abort removing the figure.  To remove a figure without
+## executing any callback functions use @code{delete}.  When writing a callback
+## function to close a window do not use @code{close} to avoid recursion.
 ##
 ## @seealso{closereq, delete}
 ## @end deftypefn

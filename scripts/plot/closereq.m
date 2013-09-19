@@ -19,6 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} closereq ()
 ## Close the current figure and delete all graphics objects associated with it.
+##
+## By default, the @qcode{"closerequestfcn"} property of a new plot figure
+## points to this function.
 ## @seealso{close, delete}
 ## @end deftypefn
 
@@ -26,17 +29,17 @@
 
 function closereq ()
 
-  if (nargin == 0)
-    cf = gcbf ();
-    if (isempty (cf))
-      warning ("closereq: calling closereq from octave prompt is not supported, use 'close' instead");
-      cf = get (0, "currentfigure");
-    endif
-    if (! isempty (cf) && isfigure (cf))
-      delete (cf);
-    endif
-  else
+  if (nargin != 0)
     print_usage ();
+  endif
+
+  cf = gcbf ();
+  if (isempty (cf))
+    warning ("closereq: calling closereq from octave prompt is not supported, use 'close' instead");
+    cf = get (0, "currentfigure");
+  endif
+  if (! isempty (cf) && isfigure (cf))
+    delete (cf);
   endif
 
 endfunction

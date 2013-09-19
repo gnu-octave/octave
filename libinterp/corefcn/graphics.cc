@@ -8520,6 +8520,7 @@ Remove any defaults set for the handle @var{h}.  The default figure\n\
 properties of @qcode{\"position\"}, @qcode{\"units\"},\n\
 @qcode{\"windowstyle\"} and @qcode{\"paperunits\"} and the default axes\n\
 properties of @qcode{\"position\"} and @qcode{\"units\"} are not reset.\n\
+@seealso{cla, clf}\n\
 @end deftypefn")
 {
   int nargin = args.length ();

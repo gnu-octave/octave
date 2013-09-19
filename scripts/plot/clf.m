@@ -37,7 +37,7 @@
 ## 
 ## The optional return value @var{h} is the graphics handle of the figure
 ## window that was cleared.
-## @seealso{cla, close, delete}
+## @seealso{cla, close, delete, reset}
 ## @end deftypefn
 
 ## Author: jwe

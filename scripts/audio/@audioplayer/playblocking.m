@@ -1,9 +1,11 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} playblocking (@var{playerObj})
 ## Play back audio stored in the audioplayer object with blocking.
-## @deftypefnx{Function File} playblocking (@var{playerObj}, @var{start})
+## @end deftypefn
+## @deftypefn{Function File} playblocking (@var{playerObj}, @var{start})
 ## Play back audio stored in the audioplayer object starting at the time in seconds specified by @var{start}.
-## @deftypefnx{Function File} playblocking (@var{playerObj}, [@var{start}, @var{end}])
+## @end deftypefn
+## @deftypefn{Function File} playblocking (@var{playerObj}, [@var{start}, @var{end}])
 ## Play back audio stored in the audioplayer object starting at the time in seconds specified by @var{start} and ending at the time specified by @var{end}.
 ## @end deftypefn
 

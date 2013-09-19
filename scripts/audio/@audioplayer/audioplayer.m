@@ -1,20 +1,28 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} player = audioplayer (@var{Y}, @var{Fs})
 ## Create an audioplayer object that will play back data @var{Y} at sample rate @var{Fs}.
-## @deftypefnx{Function File} player = audioplayer (@var{Y}, @var{Fs}, @var{nBytes})
+## @end deftypefn
+## @deftypefn{Function File} player = audioplayer (@var{Y}, @var{Fs}, @var{nBytes})
 ## Create an audioplayer object that will play back data @var{Y} at sample rate @var{Fs} and bit depth @var{nBytes}.
-## @deftypefnx{Function File} player = audioplayer (@var{Y}, @var{Fs}, @var{nBytes}, @var{ID})
+## @end deftypefn
+## @deftypefn{Function File} player = audioplayer (@var{Y}, @var{Fs}, @var{nBytes}, @var{ID})
 ## Create an audioplayer object that will play back data @var{Y} at sample rate @var{Fs}, bit depth @var{nBytes} and using a device with @var{ID} that you can get using the audiodevinfo function.
-## @deftypefnx{Function File} player = audioplayer (@var{function}, @var{Fs})
+## @end deftypefn
+## @deftypefn{Function File} player = audioplayer (@var{function}, @var{Fs})
 ## Argument @var{function} is a function handle, inline function or a string value of a function name that will get called to process audio. Audio will be played at @var{Fs} sampling rate.
-## @deftypefnx{Function File} player = audioplayer (@var{function}, @var{Fs}, @var{nBytes})
+## @end deftypefn
+## @deftypefn{Function File} player = audioplayer (@var{function}, @var{Fs}, @var{nBytes})
 ## Same as above but also allows you to specify the number of bytes per sample.
-## @deftypefnx{Function File} player = audioplayer (@var{function}, @var{Fs}, @var{nBytes}, @var{ID})
+## @end deftypefn
+## @deftypefn{Function File} player = audioplayer (@var{function}, @var{Fs}, @var{nBytes}, @var{ID})
 ## Same as above but also allows you to specify device ID that will be used.
-## @deftypefnx{Function File} player = audioplayer (@var{recorder})
+## @end deftypefn
+## @deftypefn{Function File} player = audioplayer (@var{recorder})
 ## Create an audioplayer object that will use data and other information such as sample rate from an audiorecorder object.
-## @deftypefnx{Function File} player = audioplayer (@var{recorder}, @var{ID})
+## @end deftypefn
+## @deftypefn{Function File} player = audioplayer (@var{recorder}, @var{ID})
 ## Create an audioplayer object that will use data and other information from an audiorecorder object and that will use a device with the given @var{ID}.
+## @end deftypefn
 ##
 ## The signal @var{Y} can be a vector or a two dimensional array.
 ##
@@ -52,7 +60,6 @@
 ## @code{stop (player);}
 ## @end group
 ## @end example
-## @end deftypefn
 
 function player = audioplayer (varargin)
   if (nargin < 1 || nargin > 4)

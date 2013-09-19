@@ -38,7 +38,7 @@
 
 ## Author: jwe
 
-function retval = waitbar (varargin)
+function h = waitbar (varargin)
 
   persistent curr_waitbar;
 
@@ -55,20 +55,16 @@ function retval = waitbar (varargin)
 
   ## Use existing waitbar if it still points to a valid graphics handle.
   if (nargin == 1 && ishandle (curr_waitbar))
-    h = curr_waitbar;
+    hf = curr_waitbar;
   else
-    h = false;
+    hf = false;
   endif
 
   if (! isempty (varargin) && isnumeric (varargin{1}))
-    if (! ishandle (varargin{1}))
+    hf = varargin{1};
+    varargin(1) = [];
+    if (! isfigure (hf) || ! strcmp (get (hf, "tag"), "waitbar"))
       error ("waitbar: H must be a handle to a waitbar object");
-    else
-      h = varargin{1};
-      varargin(1) = [];
-      if (! isfigure (h) || ! strcmp (get (h, "tag"), "waitbar"))
-        error ("waitbar: H must be a handle to a waitbar object");
-      endif
     endif
   endif
 
@@ -83,16 +79,16 @@ function retval = waitbar (varargin)
   endif
 
   if (rem (numel (varargin), 2) != 0)
-    error ("waitbar: invalid number of property-value pairs");
+    error ("waitbar: invalid number of property/value pairs");
   endif
 
-  if (h)
-    gd = get (h, "__guidata__");
+  if (hf)
+    gd = get (hf, "__guidata__");
     ## Get the cached handles.
     ax = gd(1);
-    p = gd(2);
+    hp = gd(2);
 
-    set (p, "xdata", [0; frac; frac; 0]);
+    set (hp, "xdata", [0; frac; frac; 0]);
 
     if (ischar (msg) || iscellstr (msg))
       th = get (ax, "title");
@@ -110,23 +106,23 @@ function retval = waitbar (varargin)
     ## Save and restore current figure
     cf = get (0, "currentfigure");
 
-    h = figure ("position", [250, 500, 400, 100],
-                "numbertitle", "off",
-                "toolbar", "none", "menubar", "none",
-                "integerhandle", "off",
-                "handlevisibility", "callback",
-                "tag", "waitbar",
-                varargin{:});
+    hf = figure ("position", [250, 500, 400, 100],
+                 "numbertitle", "off",
+                 "menubar", "none", "toolbar", "none",
+                 "integerhandle", "off",
+                 "handlevisibility", "callback",
+                 "tag", "waitbar",
+                 varargin{:});
 
-    ax = axes ("parent", h, "xtick", [], "ytick", [],
+    ax = axes ("parent", hf,
+               "xtick", [], "ytick", [],
                "xlim", [0, 1], "ylim", [0, 1],
-               "xlimmode", "manual", "ylimmode", "manual",
                "position", [0.1, 0.3, 0.8, 0.2]);
 
-    p = patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
+    hp = patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
     ## Cache the axes and patch handles.
-    set (h, "__guidata__", [ax p]);
+    set (hf, "__guidata__", [ax hp]);
 
     if (! (ischar (msg) || iscellstr (msg)))
       msg = "Please wait...";
@@ -141,11 +137,11 @@ function retval = waitbar (varargin)
   drawnow ();
 
   if (nargout > 0)
-    retval = h;
+    h = hf;
   endif
 
   ## If there were no errors, update current waitbar.
-  curr_waitbar = h;
+  curr_waitbar = hf;
 
 endfunction
 
@@ -199,5 +195,5 @@ endfunction
 %!error <FRAC must be between 0 and 1> waitbar (-0.5)
 %!error <FRAC must be between 0 and 1> waitbar (1.5)
 %!error <MSG must be a character string> waitbar (0.5, struct ())
-%!error <invalid number of property-value pairs> waitbar (0.5, "msg", "Name")
+%!error <invalid number of property/value pairs> waitbar (0.5, "msg", "Name")
 

@@ -19,6 +19,25 @@
 @c Written by Kurt Hornik <Kurt.Hornik@wu-wien.ac.at> on 1996/05/14
 
 @node Audio Processing
+
+@chapter Audio File Utilities
+
+@DOCSTRING(audioinfo)
+@DOCSTRING(audioread)
+@DOCSTRING(audiowrite)
+
+@chapter Audio Device Information
+
+@DOCSTRING(@audiodevinfo)
+
+@chapter Audio Player
+
+@DOCSTRING(@audioplayer/audioplayer)
+
+@chapter Audio Recorder
+
+@DOCSTRING(@audiorecorder/audiorecorder)
+
 @chapter Audio Processing
 
 Octave provides a few functions for dealing with audio data.  An audio

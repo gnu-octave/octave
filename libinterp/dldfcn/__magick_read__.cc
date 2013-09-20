@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <cmath>
-
 #include "file-stat.h"
 #include "oct-env.h"
 #include "oct-time.h"
@@ -1035,7 +1033,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   // From GM documentation:
   //  Color arguments are must be scaled to fit the Quantum size according to
   //  the range of MaxRGB
-  const double divisor = (pow (2, bitdepth) - 1) / MaxRGB;
+  const double divisor = static_cast<double>((1 << bitdepth) - 1) / MaxRGB;
 
   const P *img_fvec = img.fortran_vec ();
   const P *a_fvec   = alpha.fortran_vec ();

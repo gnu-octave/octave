@@ -69,36 +69,36 @@
 
 ## Author: Shai Ayal <shaiay@users.sourceforge.net>
 
-function [cout, lev] = contourc (varargin)
+function [c, lev] = contourc (varargin)
 
-  if (nargin == 1)
-    vn = 10;
-    z = varargin{1};
-    [nr, nc] = size (z);
-    x = 1:nc;
-    y = 1:nr;
-  elseif (nargin == 2)
-    vn = varargin{2};
-    z = varargin{1};
-    [nr, nc] = size (z);
-    x = 1:nc;
-    y = 1:nr;
-  elseif (nargin == 3)
-    vn = 10;
-    x = varargin{1};
-    y = varargin{2};
-    z = varargin{3};
-  elseif (nargin == 4)
-    vn = varargin{4};
-    x = varargin{1};
-    y = varargin{2};
-    z = varargin{3};
-  else
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
-  if (!ismatrix (z) || isvector (z) || isscalar (z))
-    error ("contourc: Z argument must be a matrix");
+  if (nargin == 1)
+    z = varargin{1};
+    x = 1:columns (z);
+    y = 1:rows (z);
+    vn = 10;
+  elseif (nargin == 2)
+    z = varargin{1};
+    x = 1:columns (z);
+    y = 1:rows (z);
+    vn = varargin{2};
+  elseif (nargin == 3)
+    x = varargin{1};
+    y = varargin{2};
+    z = varargin{3};
+    vn = 10;
+  elseif (nargin == 4)
+    x = varargin{1};
+    y = varargin{2};
+    z = varargin{3};
+    vn = varargin{4};
+  endif
+
+  if (! ismatrix (z) || ! ismatrix (x) || ! ismatrix (y))
+    error ("contourc: X, Y, and Z must be matrices");
   endif
 
   if (isscalar (vn))
@@ -108,43 +108,51 @@ function [cout, lev] = contourc (varargin)
   endif
 
   if (isvector (x) && isvector (y))
-    c = __contourc__ (x(:)', y(:)', z, vv);
+    cdat = __contourc__ (x(:)', y(:)', z, vv);
+  elseif (! any (bsxfun (@minus, x, x(1,:))(:))
+          && ! any (bsxfun (@minus, y, y(:,1))(:)))
+    ## x,y are uniform grid (such as from meshgrid)
+    cdat = __contourc__ (x(1,:), y(:,1)', z, vv);
   else
-    ## Indexes x,y for the purpose of __contourc__.
-    ii = 1:columns (z);
-    jj = 1:rows (z);
+    ## Data is sampled over non-uniform mesh.
+    ## Algorithm calculates contours for uniform grid
+    ## and then interpolates values back to the non-uniform mesh.
 
-    ## Now call __contourc__ for the real work...
-    c = __contourc__ (ii, jj, z, vv);
+    ## Uniform grid for __contourc__.
+    [nr, nc] = size (z);
+    ii = 1:nc;
+    jj = 1:nr;
 
-    ## Map the contour lines from index space (i,j) back
-    ## to the original grid (x,y)
+    cdat = __contourc__ (ii, jj, z, vv);
+
+    ## Map the contour lines from index space (i,j)
+    ## back to the original grid (x,y)
     i = 1;
 
-    while (i < columns (c))
-      clen = c(2, i);
-      ind = i + [1 : clen];
+    while (i < columns (cdat))
+      clen = cdat(2, i);
+      idx = i + (1:clen);
 
-      ci = c(1, ind);
-      cj = c(2,ind);
+      ci = cdat(1, idx);
+      cj = cdat(2, idx);
 
-      ## due to rounding errors some elements of ci and cj
-      ## can fall out of the range of ii and jj and interp2 would
-      ## return NA for those values.
+      ## Due to rounding errors, some elements of ci and cj
+      ## can fall out of the range of ii and jj and
+      ## interp2 would return NA for those values.
       ## The permitted range is enforced here:
 
-      ci = max (ci, 1); ci = min (ci, columns (z));
-      cj = max (cj, 1); cj = min (cj, rows (z));
+      ci = max (ci, 1); ci = min (ci, nc);
+      cj = max (cj, 1); cj = min (cj, nr);
 
-      c(1, ind) = interp2 (ii, jj, x, ci, cj);
-      c(2, ind) = interp2 (ii, jj, y, ci, cj);
+      cdat(1, idx) = interp2 (ii, jj, x, ci, cj);
+      cdat(2, idx) = interp2 (ii, jj, y, ci, cj);
 
-      i = i + clen + 1;
+      i += clen + 1;
     endwhile
   endif
 
   if (nargout > 0)
-    cout = c;
+    c = cdat;
     lev = vv;
   endif
 
@@ -155,9 +163,9 @@ endfunction
 %! x = 0:2;
 %! y = x;
 %! z = x' * y;
-%! [c_actual, lev_actual]= contourc (x, y, z, 2:3);
-%! c_expected = [2, 1, 1, 2, 2, 3, 1.5, 2; 4, 2, 2, 1, 1, 2, 2, 1.5];
-%! lev_expected = [2 3];
-%! assert (c_actual, c_expected, eps);
-%! assert (lev_actual, lev_expected, eps);
+%! c_exp = [2, 1, 1, 2, 2, 3, 1.5, 2; 4, 2, 2, 1, 1, 2, 2, 1.5];
+%! lev_exp = [2 3];
+%! [c_obs, lev_obs] = contourc (x, y, z, 2:3);
+%! assert (c_obs, c_exp, eps);
+%! assert (lev_obs, lev_exp, eps);
 

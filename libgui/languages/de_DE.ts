@@ -269,7 +269,7 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+3"/>
         <source>Save File And Run</source>
-        <translation>Datei speichern und ausrühren</translation>
+        <translation>Datei speichern und ausführen</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -378,7 +378,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <location line="-192"/>
         <source>Could not open file %1 for write:
 %2.</source>
-        <translation>Die Datei %1  konnte nicht zum Schrieben geöffnet werden:
+        <translation>Die Datei %1  konnte nicht zum Schreiben geöffnet werden:
 %2.</translation>
     </message>
     <message>
@@ -437,7 +437,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+3"/>
         <source>Show Home directory</source>
-        <translation>Wechlse zum Heimatverzeichnis</translation>
+        <translation>Wechsle zum Heimatverzeichnis</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -689,7 +689,7 @@ zu: </translation>
     <message>
         <location line="+2"/>
         <source>Enter the filename expression</source>
-        <translation>EIngabe eines Ausdrucks für den Dateinamen</translation>
+        <translation>Eingabe eines Ausdrucks für den Dateinamen</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -729,7 +729,7 @@ zu: </translation>
     <message>
         <location line="+2"/>
         <source>Include matching directories in search results</source>
-        <translation>Auch Verzeichnisse berücksichitgen, die die Suchanfrage erfüllen</translation>
+        <translation>Auch Verzeichnisse berücksichtigen, die die Suchanfrage erfüllen</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -739,7 +739,7 @@ zu: </translation>
     <message>
         <location line="+2"/>
         <source>Set matching name is case insensitive</source>
-        <translation>Groß-/Kleinschriebung bei der Dateisuche ignorieren</translation>
+        <translation>Groß-/Kleinschreibung bei der Dateisuche ignorieren</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -980,7 +980,7 @@ zu: </translation>
     <message>
         <location line="+3"/>
         <source>Step</source>
-        <translation>EInzelschritt</translation>
+        <translation>Einzelschritt</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -995,7 +995,7 @@ zu: </translation>
     <message>
         <location line="+4"/>
         <source>Continue</source>
-        <translation>Fortführen</translation>
+        <translation>Fortfahren</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1166,7 +1166,7 @@ zu: </translation>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.</source>
-        <translation>Die Datei %1 wird von einer gleichnamigen Datei im Suchpfad überdeckt. Um die editierte Funktion zu debuggen, in das Verzeichnis %2 gewechselt werden.</translation>
+        <translation>Die Datei %1 wird von einer gleichnamigen Datei im Suchpfad überdeckt. Um die editierte Funktion zu debuggen, muss in das Verzeichnis %2 gewechselt werden.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1224,7 +1224,7 @@ zu: </translation>
     <message>
         <location line="+27"/>
         <source>Do not show white spaces used for indentation</source>
-        <translation>Keine Leezeichen der Einrückung anzeigen</translation>
+        <translation>Keine Leerzeichen der Einrückung anzeigen</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -1279,7 +1279,7 @@ zu: </translation>
     <message>
         <location line="+13"/>
         <source>Replace word by suggested one</source>
-        <translation>Wort durch Vorschalg ersetzen</translation>
+        <translation>Wort durch Vorschlag ersetzen</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -1409,7 +1409,7 @@ zu: </translation>
     <message>
         <location line="+7"/>
         <source>Alternating row colors</source>
-        <translation>Alternierende Farben verwenden</translation>
+        <translation>Alternierende Farben für die Zeilen verwenden</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1506,7 +1506,7 @@ zu: </translation>
     <message>
         <location line="+129"/>
         <source>Difference to the default size</source>
-        <translation>Differenz zur Stnadgröße</translation>
+        <translation>Differenz zur Standardgröße</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1542,7 +1542,7 @@ zu: </translation>
     <message>
         <location filename="../src/qtinfo/webinfo.cc" line="+78"/>
         <source>Type here and press &apos;Return&apos; to search</source>
-        <translation>Suchbegriff eingeben und mit &apos;Enter&apos; die Scuhe starten</translation>
+        <translation>Suchbegriff eingeben und mit &apos;Enter&apos; die Suche starten</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1562,7 +1562,7 @@ zu: </translation>
         <source>It appears that you have launched Octave GUI for the first time on this computer, since no configuration file could be found at &apos;~/.octave-gui&apos;. This wizard will guide you through the essential settings you should make before you can start using Octave GUI. If you want to transfer your settings you have previously made just close this dialog and copy over the settings file to your home folder. The presence of that file will automatically be detected and will skip this wizard. IMPORTANT: This wizard is not fully functional yet. Just click your way to the end and it will create a standard settings file.</source>
         <translation>Es scheint, dass Sie Octave-GUI das erste Mal auf diesem Computer ausführen, da die Konfigurationsdatei 
 ~/.config/octave/qt-settings
-nicht gefunden wurde. Die Default-Konfiguration wird beim Fortfahren an diese Stelle kopiert. Wenn bestehende Einstellungen verwendet werden sollen, muss dieser Dialog geschlossen und  die vorhandene Datei an die oben angegebene Stelle kopiert werden. Eine vorhandene Konfigurationsdatei wird beim nächsten Start automatisch erkannt.
+nicht gefunden wurde. Die Standard-Konfiguration wird beim Fortfahren an diese Stelle kopiert. Wenn bestehende Einstellungen verwendet werden sollen, muss dieser Dialog geschlossen und die vorhandene Datei an die oben angegebene Stelle kopiert werden. Eine vorhandene Konfigurationsdatei wird beim nächsten Start automatisch erkannt.
 
 Nach dem Programmstart können die Einstellungen im Menü &quot;Datei/Einstellungen&quot; angepasst werden.</translation>
     </message>
@@ -1590,12 +1590,12 @@ Nach dem Programmstart können die Einstellungen im Menü &quot;Datei/Einstellun
     <message>
         <location line="+7"/>
         <source>This is the development version of Octave with the first official GUI.</source>
-        <translation>Dieses ist die Entwicklungsversion von Octave mit der ersten offiziellen GUI.</translation>
+        <translation>Dies ist die Entwicklungsversion von Octave mit der ersten offiziellen GUI.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>You seem to run Octave GUI for the first time on this computer. This assistant will help you to configure this software installation. Click &apos;Finish&apos; to write a configuration file and launch Octave GUI.</source>
-        <translation>Die GUI von Octave wird offenbar das erste mal auf diesem Computer ausgeführt. Dieser Assistent erstellt beim Klick auf &apos;Beenden&apos; eine Standarkonfiguration und startet Octve-GUI.  </translation>
+        <translation>Die Octave GUI wird offenbar erstmals auf diesem Computer ausgeführt. Dieser Assistent erstellt beim Klick auf &apos;Beenden&apos; eine Standardkonfiguration und startet die Octave GUI.</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -1633,7 +1633,7 @@ Nach dem Programmstart können die Einstellungen im Menü &quot;Datei/Einstellun
     <message>
         <location line="+107"/>
         <source>Right click to copy, rename, or display</source>
-        <translation>Rechtsklick zum Kopeiren, Umbenennen oder Anzeigen</translation>
+        <translation>Rechtsklick zum Kopieren, Umbenennen oder Anzeigen</translation>
     </message>
 </context>
 <context>
@@ -1661,12 +1661,12 @@ Nach dem Programmstart können die Einstellungen im Menü &quot;Datei/Einstellun
     <message>
         <location line="+8"/>
         <source>Only top-level symbols may be renamed.</source>
-        <translation>Nur Varaiblen auf höchster Ebene können umbenannt werden.</translation>
+        <translation>Nur Variablen auf höchster Ebene können umbenannt werden.</translation>
     </message>
     <message>
         <location line="+125"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
-        <translation>Einsehen der Varaiblen der aktiven Arbeitsumgebung.&lt;br&gt;</translation>
+        <translation>Einsehen der Variablen der aktiven Arbeitsumgebung.&lt;br&gt;</translation>
     </message>
     <message>
         <location line="+1"/>

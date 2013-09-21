@@ -34,6 +34,7 @@ function runtests (directory)
 
   if (nargin == 0)
     dirs = ostrsplit (path (), pathsep ());
+    do_class_dirs = true;
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};
@@ -50,24 +51,26 @@ function runtests (directory)
         error ("runtests: DIRECTORY argument must be a valid pathname");
       endif
     endif
+    do_class_dirs = false;
   else
     print_usage ();
   endif
 
   for i = 1:numel (dirs)
     d = dirs{i};
-    run_all_tests (d);
+    run_all_tests (d, do_class_dirs);
   endfor
 
 endfunction
 
-function run_all_tests (directory)
-  flist = readdir (directory);
+function run_all_tests (directory, do_class_dirs)
+  flist = dir (directory);
+  dirs = {};
   no_tests = {};
   printf ("Processing files in %s:\n\n", directory);
   fflush (stdout);
   for i = 1:numel (flist)
-    f = flist{i};
+    f = flist(i).name;
     if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
         (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       ff = fullfile (directory, f);
@@ -79,11 +82,22 @@ function run_all_tests (directory)
       elseif (has_functions (ff))
         no_tests{end+1} = f;
       endif
+    elseif (flist(i).isdir && f(1) == "@")
+      f = fullfile (directory, f);
+      dirs = {dirs{:}, f};
     endif
   endfor
   if (! isempty (no_tests))
     printf ("\nThe following files in %s have no tests:\n\n", directory);
     printf ("%s", list_in_columns (no_tests));
+  endif
+
+  ## Recurse into class directories since they are implied in the path
+  if (do_class_dirs)
+    for i = 1:numel (dirs)
+      d = dirs{i};
+      run_all_tests (d, false);
+    endfor
   endif
 endfunction
 

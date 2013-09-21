@@ -34,6 +34,7 @@ function rundemos (directory)
 
   if (nargin == 0)
     dirs = ostrsplit (path (), pathsep ());
+    do_class_dirs = true;
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};
@@ -50,21 +51,23 @@ function rundemos (directory)
         error ("rundemos: DIRECTORY argument must be a valid pathname");
       endif
     endif
+    do_class_dirs = false;
   else
     print_usage ();
   endif
 
   for i = 1:numel (dirs)
     d = dirs{i};
-    run_all_demos (d);
+    run_all_demos (d, do_class_dirs);
   endfor
 
 endfunction
 
-function run_all_demos (directory)
-  flist = readdir (directory);
+function run_all_demos (directory, do_class_dirs)
+  flist = dir (directory);
+  dirs = {};
   for i = 1:numel (flist)
-    f = flist{i};
+    f = flist(i).name;
     if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
         (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       f = fullfile (directory, f);
@@ -78,8 +81,19 @@ function run_all_demos (directory)
           input ("Press <enter> to continue: ", "s");
         endif
       endif
+    elseif (flist(i).isdir && f(1) == "@")
+      f = fullfile (directory, f);
+      dirs = {dirs{:}, f};
     endif
   endfor
+
+  ## Recurse into class directories since they are implied in the path
+  if (do_class_dirs)
+    for i = 1:numel (dirs)
+      d = dirs{i};
+      run_all_demos (d, false);
+    endfor
+  endif
 endfunction
 
 function retval = has_demos (f)

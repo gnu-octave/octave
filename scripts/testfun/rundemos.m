@@ -20,6 +20,9 @@
 ## @deftypefn  {Function File} {} rundemos ()
 ## @deftypefnx {Function File} {} rundemos (@var{directory})
 ## Execute built-in demos for all function files in the specified directory.
+## Also executes demos in any C++ source files found in the directory, for
+## use with dynamically linked functions.
+##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
 ## @seealso{runtests, path}
@@ -62,7 +65,8 @@ function run_all_demos (directory)
   flist = readdir (directory);
   for i = 1:numel (flist)
     f = flist{i};
-    if (length (f) > 2 && strcmp (f((end-1):end), ".m"))
+    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
+        (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       f = fullfile (directory, f);
       if (has_demos (f))
         try

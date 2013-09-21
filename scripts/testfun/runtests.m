@@ -20,6 +20,8 @@
 ## @deftypefn  {Function File} {} runtests ()
 ## @deftypefnx {Function File} {} runtests (@var{directory})
 ## Execute built-in tests for all function files in the specified directory.
+## Also executes tests in any C++ source files found in the directory, for
+## use with dynamically linked functions.
 ##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
@@ -66,14 +68,15 @@ function run_all_tests (directory)
   fflush (stdout);
   for i = 1:numel (flist)
     f = flist{i};
-    if (length (f) > 2 && strcmpi (f((end-1):end), ".m"))
+    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
+        (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       ff = fullfile (directory, f);
       if (has_tests (ff))
         print_test_file_name (f);
         [p, n, xf, sk] = test (ff, "quiet");
         print_pass_fail (n, p);
         fflush (stdout);
-      else
+      elseif (has_functions (ff))
         no_tests{end+1} = f;
       endif
     endif
@@ -81,6 +84,25 @@ function run_all_tests (directory)
   if (! isempty (no_tests))
     printf ("\nThe following files in %s have no tests:\n\n", directory);
     printf ("%s", list_in_columns (no_tests));
+  endif
+endfunction
+
+function retval = has_functions (f)
+  n = length (f);
+  if (n > 3 && strcmpi (f((end-2):end), ".cc"))
+    fid = fopen (f);
+    if (fid >= 0)
+      str = fread (fid, "*char")';
+      fclose (fid);
+      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
+                                      'lineanchors', 'once'));
+    else
+      error ("fopen failed: %s", f);
+    endif
+  elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
+    retval = true;
+  else
+    retval = false;
   endif
 endfunction
 

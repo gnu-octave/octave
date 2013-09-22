@@ -64,10 +64,10 @@ function rundemos (directory)
 endfunction
 
 function run_all_demos (directory, do_class_dirs)
-  flist = dir (directory);
+  flist = readdir (directory);
   dirs = {};
   for i = 1:numel (flist)
-    f = flist(i).name;
+    f = flist{i};
     if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
         (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       f = fullfile (directory, f);
@@ -81,9 +81,11 @@ function run_all_demos (directory, do_class_dirs)
           input ("Press <enter> to continue: ", "s");
         endif
       endif
-    elseif (flist(i).isdir && f(1) == "@")
+    elseif (f(1) == "@")
       f = fullfile (directory, f);
-      dirs = {dirs{:}, f};
+      if (isdir (f))
+        dirs(end+1) = f;
+      endif
     endif
   endfor
 

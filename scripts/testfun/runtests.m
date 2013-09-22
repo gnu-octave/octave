@@ -64,13 +64,13 @@ function runtests (directory)
 endfunction
 
 function run_all_tests (directory, do_class_dirs)
-  flist = dir (directory);
+  flist = readdir (directory);
   dirs = {};
   no_tests = {};
   printf ("Processing files in %s:\n\n", directory);
   fflush (stdout);
   for i = 1:numel (flist)
-    f = flist(i).name;
+    f = flist{i};
     if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
         (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       ff = fullfile (directory, f);
@@ -80,11 +80,13 @@ function run_all_tests (directory, do_class_dirs)
         print_pass_fail (n, p);
         fflush (stdout);
       elseif (has_functions (ff))
-        no_tests{end+1} = f;
+        no_tests(end+1) = f;
       endif
-    elseif (flist(i).isdir && f(1) == "@")
+    elseif (f(1) == "@")
       f = fullfile (directory, f);
-      dirs = {dirs{:}, f};
+      if (isdir (f))
+        dirs(end+1) = f;
+      endif
     endif
   endfor
   if (! isempty (no_tests))

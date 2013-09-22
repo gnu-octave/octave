@@ -103,9 +103,9 @@ function retval = has_demos (f)
   if (f < 0)
     error ("rundemos: fopen failed: %s", f);
   else
-    str = fscanf (fid, "%s");
+    str = fread (fid, "*char").';
     fclose (fid);
-    retval = strfind (str, "%!demo");
+    retval = ! isempty (regexp (str, '^%!demo', 'lineanchors', 'once'));
   endif
 endfunction
 

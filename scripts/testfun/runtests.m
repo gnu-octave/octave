@@ -108,7 +108,7 @@ function retval = has_functions (f)
     if (fid >= 0)
       str = fread (fid, "*char")';
       fclose (fid);
-      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
+      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD|DEFUNX)\>',
                                       'lineanchors', 'once'));
     else
       error ("fopen failed: %s", f);
@@ -126,7 +126,7 @@ function retval = has_tests (f)
     str = fread (fid, "*char").';
     fclose (fid);
     retval = ! isempty (regexp (str, '^%!(?:test|assert|error|warning)',
-                                     "lineanchors", "once"));
+                                     'lineanchors', 'once'));
   else
     error ("runtests: fopen failed: %s", f);
   endif

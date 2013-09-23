@@ -26,22 +26,22 @@ function [c, hg] = __contour__ (varargin)
   zlevel = varargin{2};
   filled = "off";
 
-  linespec.linestyle = "-";
   linespec.color = "auto";
-  edgecolor = "flat";
-  for i = 3 : nargin
-    arg = varargin {i};
-    if ((ischar (arg) || iscell (arg)))
-      [linespec, valid] = __pltopt__ ("__contour__", arg, false);
-      if (isempty (linespec.color))
-        linespec.color = "auto";
-      endif
-      if (isempty (linespec.linestyle))
-        linespec.linestyle = "-";
-      endif
+  linespec.linestyle = "-";
+  for i = 3:2:nargin
+    arg = varargin{i};
+    if (ischar (arg) || iscellstr (arg))
+      [lspec, valid] = __pltopt__ ("__contour__", arg, false);
       if (valid)
         have_line_spec = true;
         varargin(i) = [];
+        linespec = lspec;
+        if (isempty (linespec.color))
+          linespec.color = "auto";
+        endif
+        if (isempty (linespec.linestyle))
+          linespec.linestyle = "-";
+        endif
         break;
       endif
     endif
@@ -50,29 +50,16 @@ function [c, hg] = __contour__ (varargin)
   opts = {};
   i = 3;
   while (i < length (varargin))
-    if (ischar (varargin {i}))
+    if (ischar (varargin{i}))
       if (strcmpi (varargin{i}, "fill"))
-        filled = varargin {i + 1};
+        filled = varargin{i+1};
         varargin(i:i+1) = [];
       elseif (strcmpi (varargin{i}, "linecolor"))
-        linespec.color = varargin {i + 1};
-        edgecolor = linespec.color;
-        if (ischar (edgecolor) && strcmpi (edgecolor, "auto"))
-          edgecolor = "flat";
-        endif
-        varargin(i:i+1) = [];
-      elseif (strcmpi (varargin{i}, "edgecolor"))
-        linespec.color = varargin {i + 1};
-        edgecolor = linespec.color;
-        if (ischar (edgecolor) && strcmpi (edgecolor, "flat"))
-          linespec.color = "auto";
-        endif
+        linespec.color = varargin{i+1};
         varargin(i:i+1) = [];
       else
-        opts{end+1} = varargin{i};
-        varargin(i) = [];
-        opts{end+1} = varargin{i};
-        varargin(i) = [];
+        opts(end+(1:2)) = varargin(i:i+1);
+        varargin(i:i+1) = [];
       endif
     else
       i++;
@@ -88,23 +75,24 @@ function [c, hg] = __contour__ (varargin)
     y1 = varargin{4};
     z1 = varargin{5};
   endif
-  if (!ismatrix (z1) || isvector (z1) || isscalar (z1))
-    error ("__contour__: z argument must be a matrix");
+  if (! ismatrix (z1) || ! ismatrix (x1) || ! ismatrix (y1))
+    error ("__contour__: X, Y, and Z must be matrices");
   endif
   if (length (varargin) == 4 || length (varargin) == 6)
     vn = varargin{end};
     vnauto = false;
   else
-    vnauto = true;
     vn = 10;
+    vnauto = true;
   endif
 
   if (isscalar (vn))
-    ## FIXME - the levels should be determined similarly to {x,y,z}ticks
-    lvl = linspace (min (z1(!isinf (z1))), max (z1(!isinf (z1))),
-                    vn + 2)(1:end-1);
+    ## FIXME: The levels should be determined similarly to {x,y,z}ticks
+    ##        so that they aren't set at extremely odd values.
+    lvl = linspace (min (z1(!isinf (z1))), max (z1(!isinf (z1))), vn + 2);
+    lvl = lvl(2:end-1);  # Strip off max, min outliers
   else
-    lvl = vn;
+    lvl = unique (sort (vn));
   endif
 
   if (strcmpi (filled, "on"))
@@ -147,16 +135,10 @@ function [c, hg] = __contour__ (varargin)
     addproperty ("zlevel", hg, "data", zlevel);
   else
     addproperty ("zlevelmode", hg, "radio", "{none}|auto|manual", zlevel);
-    if (ischar (zlevel) && strcmpi (zlevel, "manual"))
-      z = varargin{3};
-      z = 2 * (min (z(:)) - max (z(:)));
-      addproperty ("zlevel", hg, "data", z);
-    else
-      addproperty ("zlevel", hg, "data", 0.);
-    endif
+    addproperty ("zlevel", hg, "data", 0.);
   endif
 
-  lvlstep = sum (abs (diff (lvl))) / (length (lvl) - 1);
+  lvlstep = sum (diff (lvl)) / (length (lvl) - 1);
 
   addproperty ("levellist", hg, "data", lev);
   addproperty ("levelstep", hg, "double", lvlstep);
@@ -182,10 +164,6 @@ function [c, hg] = __contour__ (varargin)
   addproperty ("linestyle", hg, "linelinestyle", linespec.linestyle);
   addproperty ("linewidth", hg, "linelinewidth", 0.5);
 
-  ## FIXME: It would be good to hide this property which is just an
-  ##        undocumented alias for linecolor
-  addproperty ("edgecolor", hg, "color", edgecolor, "{flat}|none");
-
   addlistener (hg, "fill", @update_data);
 
   addlistener (hg, "zlevelmode", @update_zlevel);
@@ -206,8 +184,6 @@ function [c, hg] = __contour__ (varargin)
   addlistener (hg, "linecolor", @update_line);
   addlistener (hg, "linestyle", @update_line);
   addlistener (hg, "linewidth", @update_line);
-
-  addlistener (hg, "edgecolor", @update_edgecolor);
 
   ## Set axis before adding patches so that each new patch does not trigger
   ## new axis calculation.  No need if mode is already "manual".
@@ -239,27 +215,25 @@ function add_patch_children (hg)
   climmode = get (ca, "climmode");
   set (ca, "climmode", "manual"); 
 
-  if (strcmpi (lc, "auto"))
+  if (strcmp (lc, "auto"))
     lc = "flat";
   endif
 
-  if (strcmpi (filled, "on"))
+  if (strcmp (filled, "on"))
 
     lvl_eps = get_lvl_eps (lev);
 
     ## Decode contourc output format.
-    i1 = 1;
+    i = 1;
     ncont = 0;
-    cont_lev = [];
-    cont_area = [];
-    while (i1 < columns (c))
+    while (i < columns (c))
       ncont++;
-      cont_lev(ncont) = c(1, i1);
-      cont_len(ncont) = c(2, i1);
-      cont_idx(ncont) = i1+1;
-      ii = i1+1:i1+cont_len(ncont);
+      cont_lev(ncont) = c(1, i);
+      cont_len(ncont) = c(2, i);
+      cont_idx(ncont) = i+1;
+      ii = i + (1:cont_len(ncont));
       cont_area(ncont) = polyarea (c(1, ii), c(2, ii));
-      i1 += c(2, i1) + 1;
+      i += cont_len(ncont) + 1;
     endwhile
 
     ## Handle for each level the case where we have (a) hole(s) in a patch.
@@ -269,12 +243,10 @@ function add_patch_children (hg)
       lvl_idx = find (abs (cont_lev - lev(k)) < lvl_eps);
       len = numel (lvl_idx);
       if (len > 1)
-        ## mark = logical (zeros (size (lvl_idx)));
         mark = false (size (lvl_idx));
         a = 1;
         while (a < len)
           ## take 1st patch
-          b = a + 1;
           pa_idx = lvl_idx(a);
           ## get pointer to contour start, and contour length
           curr_ct_idx = cont_idx(pa_idx);
@@ -285,7 +257,7 @@ function add_patch_children (hg)
           next_ct_pt_vec = c(:, cont_idx(lvl_idx(b_vec)));
           in = inpolygon (next_ct_pt_vec(1,:), next_ct_pt_vec(2,:),
                           curr_ct(1, :), curr_ct(2, :));
-          mark(b_vec(in)) = !mark(b_vec(in));
+          mark(b_vec(in)) = ! mark(b_vec(in));
           a++;
         endwhile
         if (numel (mark) > 0)
@@ -319,16 +291,15 @@ function add_patch_children (hg)
 
     ## Now we have everything together and can start plotting the patches
     ## beginning with largest area.
-    [tmp, svec] = sort (cont_area);
+    [~, svec] = sort (cont_area);
     len = ncont - numel (del_idx);
     h = [];
-    for n = len:(-1):1
+    for n = len:-1:1
       idx = svec(n);
       ctmp = c(:, cont_idx(idx):cont_idx(idx) + cont_len(idx) - 1);
       if (all (ctmp(:,1) == ctmp(:,end)))
-        ctmp(:, end) = [];
-      else
-        ## Special case unclosed contours
+        ## patch() doesn't need/want closed contour.  It will do it itself.
+        ctmp(:,end) = [];
       endif
       if (isnan (cont_lev (idx)))
         fc = get (ca, "color");
@@ -340,10 +311,10 @@ function add_patch_children (hg)
       endif
       h = [h; __go_patch__(ca, "xdata", ctmp(1, :)(:), "ydata", ctmp(2, :)(:),
                            "vertices", ctmp.', "faces", 1:(cont_len(idx)-1),
-                           "facevertexcdata", cont_lev(idx),
-                           "facecolor", fc, "cdata", cont_lev(idx),
-                           "edgecolor", lc, "linestyle", ls,
-                           "linewidth", lw, "parent", hg)];
+                           "facevertexcdata", cont_lev(idx), "facecolor", fc,
+                           "cdata", cont_lev(idx), "edgecolor", lc,
+                           "linestyle", ls, "linewidth", lw,
+                           "parent", hg)];
     endfor
 
     if (min (lev) == max (lev))
@@ -353,47 +324,47 @@ function add_patch_children (hg)
     endif
   else
     ## Decode contourc output format.
-    i1 = 1;
     h = [];
-    while (i1 < length (c))
-      clev = c(1,i1);
-      clen = c(2,i1);
+    i = 1;
+    while (i < length (c))
+      clev = c(1,i);
+      clen = c(2,i);
 
-      if (all (c(:,i1+1) == c(:,i1+clen)))
-        p = c(:, i1+1:i1+clen-1).';
+      if (all (c(:,i+1) == c(:,i+clen)))
+        p = c(:, i+1:i+clen-1).';
       else
-        p = [c(:, i1+1:i1+clen), NaN(2, 1)].';
+        p = [c(:, i+1:i+clen), NaN(2, 1)].';
       endif
 
       switch (zmode)
         case "none"
           h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
-                               "zdata", [], "facecolor", "none",
-                               "vertices", p, "faces", 1:rows(p),
-                               "facevertexcdata", clev,
-                               "edgecolor", lc, "linestyle", ls,
-                               "linewidth", lw,
-                               "cdata", clev, "parent", hg)];
+                               "zdata", [],
+                               "vertices", p, "faces", 1:rows (p),
+                               "facevertexcdata", clev, "facecolor", "none",
+                               "cdata", clev, "edgecolor", lc,
+                               "linestyle", ls, "linewidth", lw,
+                               "parent", hg)];
         case "auto"
           h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
-                               "zdata", clev * ones(rows(p),1),
+                               "zdata", clev * ones (rows (p),1),
                                "vertices", [p, clev * ones(rows(p),1)],
                                "faces", 1:rows(p),
-                               "facevertexcdata", clev,
-                               "facecolor", "none", "edgecolor", lc,
+                               "facevertexcdata", clev, "facecolor", "none",
+                               "cdata", clev, "edgecolor", lc,
                                "linestyle", ls, "linewidth", lw,
-                               "cdata", clev, "parent", hg)];
+                               "parent", hg)];
         otherwise
           h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
-                               "zdata", zlev * ones (rows(p), 1),
+                               "zdata", zlev * ones (rows (p), 1),
                                "vertices", [p, zlev * ones(rows(p),1)],
-                               "faces", 1:rows(p),
-                               "facevertexcdata", clev,
-                               "facecolor", "none", "edgecolor", lc,
+                               "faces", 1:rows (p),
+                               "facevertexcdata", clev, "facecolor", "none",
+                               "cdata", clev, "edgecolor", lc,
                                "linestyle", ls, "linewidth", lw,
-                               "cdata", clev, "parent", hg)];
+                               "parent", hg)];
       endswitch
-      i1 += clen + 1;
+      i += clen + 1;
     endwhile
   endif
 
@@ -401,8 +372,7 @@ function add_patch_children (hg)
 
 endfunction
 
-function update_zlevel (h, d)
-
+function update_zlevel (h, ~)
   z = get (h, "zlevel");
   zmode = get (h, "zlevelmode");
   kids = get (h, "children");
@@ -412,45 +382,29 @@ function update_zlevel (h, d)
       set (kids, "zdata", []);
     case "auto"
       for i = 1 : length (kids)
-        set (kids(i), "zdata", get (kids (i), "cdata") .*
-             ones (size (get (kids (i), "xdata"))));
+        set (kids(i), "zdata", get (kids(i), "cdata") .*
+             ones (size (get (kids(i), "xdata"))));
       endfor
     otherwise
       for i = 1 : length (kids)
-        set (kids(i), "zdata", z .* ones (size (get (kids (i), "xdata"))));
+        set (kids(i), "zdata", z .* ones (size (get (kids(i), "xdata"))));
       endfor
   endswitch
 endfunction
 
-function update_edgecolor (h, d)
-  ec = get (h, "edgecolor");
+function update_line (h, ~)
   lc = get (h, "linecolor");
-  if (ischar (ec) && strcmpi (ec, "flat"))
-    if (! strcmpi (lc, "auto"))
-      set (h, "linecolor", "auto");
-    endif
-  elseif (! isequal (ec, lc))
-    set (h, "linecolor", ec);
-  endif
-endfunction
-
-function update_line (h, d)
-  lc = get (h, "linecolor");
-  ec = get (h, "edgecolor");
-  if (strcmpi (lc, "auto"))
+  if (strcmp (lc, "auto"))
     lc = "flat";
-  endif
-  if (! isequal (ec, lc))
-    set (h, "edgecolor", lc);
   endif
   set (findobj (h, "type", "patch"), "edgecolor", lc,
        "linewidth", get (h, "linewidth"), "linestyle", get (h, "linestyle"));
 endfunction
 
-function update_data (h, d, prop = "")
+function update_data (h, ~, prop = "")
   persistent recursive = false;
 
-  if (!recursive)
+  if (! recursive)
     recursive = true;
 
     delete (get (h, "children"));
@@ -462,10 +416,10 @@ function update_data (h, d, prop = "")
         set (h, "levelstepmode", "manual")
     endswitch
 
-    if (strcmpi (get (h, "levellistmode"), "manual")
+    if (strcmp (get (h, "levellistmode"), "manual")
         && ! strcmp (prop, "levelstep"))
       lvl = get (h, "levellist");
-    elseif (strcmpi (get (h, "levelstepmode"), "manual"))
+    elseif (strcmp (get (h, "levelstepmode"), "manual"))
       z = get (h, "zdata");
       lvs = get (h, "levelstep");
       lvl(1) = ceil (min (z(:)) / lvs) * lvs;
@@ -481,7 +435,7 @@ function update_data (h, d, prop = "")
       lvl = 10;
     endif
 
-    if (strcmpi (get (h, "fill"), "on"))
+    if (strcmp (get (h, "fill"), "on"))
       X = get (h, "xdata");
       Y = get (h, "ydata");
       Z = get (h, "zdata");
@@ -504,9 +458,9 @@ function update_data (h, d, prop = "")
     endif
     set (h, "contourmatrix", c);
 
-    if (strcmpi (get (h, "levellistmode"), "manual"))
+    if (strcmp (get (h, "levellistmode"), "manual"))
       ## Do nothing
-    elseif (strcmpi (get (h, "levelstepmode"), "manual"))
+    elseif (strcmp (get (h, "levelstepmode"), "manual"))
       set (h, "levellist", lev);
     else
       set (h, "levellist", lev);
@@ -525,14 +479,14 @@ endfunction
 function update_text (h, d)
   persistent recursive = false;
 
-  if (!recursive)
+  if (! recursive)
     recursive = true;
 
     delete (findobj (h, "type", "text"));
 
-    if (strcmpi (get (h, "textlistmode"), "manual"))
+    if (strcmp (get (h, "textlistmode"), "manual"))
       lvl = get (h, "textlist");
-    elseif (strcmpi (get (h, "textstepmode"), "manual"))
+    elseif (strcmp (get (h, "textstepmode"), "manual"))
       lev = get (h, "levellist");
 
       lvl_eps = get_lvl_eps (lev);
@@ -546,7 +500,7 @@ function update_text (h, d)
       set (h, "textlist", lvl, "textstep", get (h, "levelstep"));
     endif
 
-    if (strcmpi (get (h, "showtext"), "on"))
+    if (strcmp (get (h, "showtext"), "on"))
       switch (get (h, "zlevelmode"))
         case "manual"
           __clabel__ (get (h, "contourmatrix"), lvl, h,

@@ -69,18 +69,13 @@ function assert (cond, varargin)
     errmsg = "";
   endif
 
-  in = deblank (argn(1,:));
-  for i = 2:rows (argn)
-    in = [in "," deblank(argn(i,:))];
-  endfor
-  in = ["(" in ")"];
-
   if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
     if ((! isnumeric (cond) && ! islogical (cond)) || ! all (cond(:)))
       call_depth--;
       if (nargin == 1)
         ## Perhaps, say which elements failed?
-        error ("assert %s failed", in);
+        argin = ["(" strjoin(cellstr (argn), ",") ")"];
+        error ("assert %s failed", argin);
       else
         error (varargin{:});
       endif
@@ -363,10 +358,11 @@ function assert (cond, varargin)
 
     ## Print any errors
     if (! isempty (err.index))
+      argin = ["(" strjoin(cellstr (argn), ",") ")"];
       if (! isempty (errmsg))
         errmsg = [errmsg "\n"];
       endif
-      errmsg = [errmsg, pprint(in, err)];
+      errmsg = [errmsg, pprint(argin, err)];
     endif
 
   endif
@@ -629,9 +625,9 @@ endfunction
 
 
 ## Pretty print the various errors in a condensed tabular format.
-function str = pprint (in, err)
+function str = pprint (argin, err)
 
-  str = ["ASSERT errors for:  assert " in "\n"];
+  str = ["ASSERT errors for:  assert " argin "\n"];
   str = [str, "\n  Location  |  Observed  |  Expected  |  Reason\n"];
   for i = 1:length (err.index)
     leni = length (err.index{i});

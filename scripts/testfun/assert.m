@@ -287,7 +287,7 @@ function assert (cond, varargin)
         A_null = complex (A_null_real, A_null_imag);
         B_null = complex (B_null_real, B_null_imag);
         if (isscalar (tol))
-          mtol = repmat (tol, size (A));
+          mtol = tol * ones (size (A));
         else
           mtol = tol;
         endif

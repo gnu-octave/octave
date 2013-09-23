@@ -406,7 +406,7 @@ three-dimensional plots.
 @subsubsection Aspect Ratio
 
 For three-dimensional plots the aspect ratio can be set for data with
-@code{daspect} and for the plot box with @code{pbaspect}.  
+@code{daspect} and for the plot box with @code{pbaspect}.
 @xref{Axis Configuration}, for controlling the x-, y-, and z-limits for
 plotting.
 
@@ -597,7 +597,7 @@ interpreter also does not interpret the text.
 The @qcode{"tex"} option implements a subset of @TeX{} functionality in the
 rendering of the text.  This allows the insertion of special characters
 such as Greek or mathematical symbols within the text.  The special
-characters are also inserted with a code starting with the back-slash
+characters are also inserted with a code starting with the backslash
 (\) character, as in the table @ref{tab:extended}.
 
 In addition, the formatting of the text can be changed within the string
@@ -639,168 +639,232 @@ the @qcode{'^'} or @qcode{'_'} is super- or sub-scripted.
 @float Table,tab:extended
 @tex
 \vskip 6pt
-{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
+\def\symtable#1#2#3{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
+\hskip36pt #1
+\vskip6pt
 \halign{
-\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
-# \hfil & \vrule # & # \hfil & # \vrule &
-# \hfil & \vrule # & # \hfil & # \vrule &
-# \hfil & \vrule # & # \hfil & # \vrule
+\vrule height2.0ex depth1.ex width 0.6pt #2\tabskip=0.3em &
+#2 \hfil & \vrule #2 & #2 \hfil & #2 \vrule &
+#2 \hfil & \vrule #2 & #2 \hfil & #2 \vrule &
+#2 \hfil & \vrule #2 & #2 \hfil & #2 \vrule
 width 0.6pt \tabskip=0pt\cr
 \noalign{\hrule height 0.6pt}
 & Code && Sym && Code && Sym && Code && Sym &\cr
 \noalign{\hrule}
-& $\backslash$forall    && $\forall$
-&& $\backslash$exists   && $\exists$
-&& $\backslash$ni       && $\ni$       &\cr
-& $\backslash$cong      && $\cong$
-&& $\backslash$Delta    && $\Delta$
-&& $\backslash$Phi      && $\Phi$      &\cr
-& $\backslash$Gamma     && $\Gamma$
-&& $\backslash$vartheta && $\vartheta$
-&& $\backslash$Lambda   && $\Lambda$   &\cr
-& $\backslash$Pi        && $\Pi$
-&& $\backslash$Theta    && $\Theta$
-&& $\backslash$Sigma    && $\Sigma$    &\cr
-& $\backslash$varsigma  && $\varsigma$
-&& $\backslash$Omega    && $\Omega$
-&& $\backslash$Xi       && $\Xi$       &\cr
-& $\backslash$Psi       && $\Psi$
-&& $\backslash$perp     && $\perp$
-&& $\backslash$alpha    && $\alpha$    &\cr
-& $\backslash$beta      && $\beta$
-&& $\backslash$chi      && $\chi$
-&& $\backslash$delta    && $\delta$    &\cr
-& $\backslash$epsilon   && $\epsilon$
-&& $\backslash$phi      && $\phi$
-&& $\backslash$gamma    && $\gamma$    &\cr
-& $\backslash$eta       && $\eta$
-&& $\backslash$iota     && $\iota$
-&& $\backslash$varphi   && $\varphi$   &\cr
-& $\backslash$kappa     && $\kappa$
-&& $\backslash$lambda   && $\lambda$
-&& $\backslash$mu       && $\mu$       &\cr
-& $\backslash$nu        && $\nu$
-&& $\backslash$o        && $\o$
-&& $\backslash$pi       && $\pi$       &\cr
-& $\backslash$theta     && $\theta$
-&& $\backslash$rho      && $\rho$
-&& $\backslash$sigma    && $\sigma$    &\cr
-& $\backslash$tau       && $\tau$
-&& $\backslash$upsilon  && $\upsilon$
-&& $\backslash$varpi    && $\varpi$    &\cr
-& $\backslash$omega     && $\omega$
-&& $\backslash$xi       && $\xi$
-&& $\backslash$psi      && $\psi$      &\cr
-& $\backslash$zeta      && $\zeta$
-&& $\backslash$sim      && $\sim$
-&& $\backslash$Upsilon  && $\Upsilon$  &\cr
-& $\backslash$prime     && $\prime$
-&& $\backslash$leq      && $\leq$
-&& $\backslash$infty    && $\infty$    &\cr
-& $\backslash$clubsuit  && $\clubsuit$
-&& $\backslash$diamondsuit    && $\diamondsuit$
-&& $\backslash$heartsuit      && $\heartsuit$     &\cr
-& $\backslash$spadesuit       && $\spadesuit$
-&& $\backslash$leftrightarrow && $\leftrightarrow$
-&& $\backslash$leftarrow      && $\leftarrow$     &\cr
-& $\backslash$uparrow         && $\uparrow$
-&& $\backslash$rightarrow     && $\rightarrow$
-&& $\backslash$downarrow      && $\downarrow$     &\cr
-& $\backslash$circ      && $\circ$
-&& $\backslash$pm       && $\pm$
-&& $\backslash$geq      && $\geq$      &\cr
-& $\backslash$times     && $\times$
-&& $\backslash$propto   && $\propto$
-&& $\backslash$partial  && $\partial$  &\cr
-& $\backslash$bullet    && $\bullet$
-&& $\backslash$div      && $\div$
-&& $\backslash$neq      && $\neq$      &\cr
-& $\backslash$equiv     && $\equiv$
-&& $\backslash$approx   && $\approx$
-&& $\backslash$ldots    && $\ldots$ &\cr
-& $\backslash$mid       && $\mid$
-&& $\backslash$aleph    && $\aleph$
-&& $\backslash$Im       && $\Im$ &\cr
-& $\backslash$Re        && $\Re$
-&& $\backslash$wp       && $\wp$
-&& $\backslash$otimes   && $\otimes$ &\cr
-& $\backslash$oplus     && $\oplus$
-&& $\backslash$oslash   && $\oslash$
-&& $\backslash$cap      && $\cap$ &\cr
-& $\backslash$cup       && $\cup$
-&& $\backslash$supset   && $\supset$
-&& $\backslash$supseteq && $\supseteq$ &\cr
-& $\backslash$subset    && $\subset$
-&& $\backslash$subseteq && $\subseteq$
-&& $\backslash$in       && $\in$ &\cr
-& $\backslash$notin     && $\notin$
-&& $\backslash$angle    && $\angle$
-&& $\backslash$bigtriangledown && $\bigtriangledown$ &\cr
-& $\backslash$langle    && $\langle$
-&& $\backslash$rangle   && $\rangle$
-&& $\backslash$nabla    && $\nabla$    &\cr
-& $\backslash$prod      && $\prod$
-&& $\backslash$surd     && $\surd$
-&& $\backslash$cdot     && $\cdot$     &\cr
-& $\backslash$neg       && $\neg$
-&& $\backslash$wedge    && $\wedge$
-&& $\backslash$vee      && $\vee$      &\cr
-& $\backslash$Leftrightarrow && $\Leftrightarrow$
-&& $\backslash$Leftarrow     && $\Leftarrow$
-&& $\backslash$Uparrow       && $\Uparrow$           &\cr
-& $\backslash$Rightarrow     && $\Rightarrow$
-&& $\backslash$Downarrow     && $\Downarrow$
-&& $\backslash$diamond  && $\diamond$  &\cr
-& $\backslash$copyright && $\copyright$
-&& $\backslash$rfloor   && $\rfloor$
-&& $\backslash$lceil    && $\lceil$    &\cr
-& $\backslash$lfloor    && $\lfloor$
-&& $\backslash$rceil    && $\rceil$
-&& $\backslash$int      && $\int$      &\cr
+#3
 \noalign{\hrule height 0.6pt}
-}}\hfill}}
+}
+}\hfill}}
+\symtable{Greek Lowercase Letters} {#}
+{& $\backslash$alpha     && $\alpha$
+&& $\backslash$beta      && $\beta$
+&& $\backslash$gamma     && $\gamma$     &\cr
+& $\backslash$delta      && $\delta$
+&& $\backslash$epsilon   && $\epsilon$
+&& $\backslash$zeta      && $\zeta$      &\cr
+& $\backslash$eta        && $\eta$
+&& $\backslash$theta     && $\theta$
+&& $\backslash$vartheta  && $\vartheta$  &\cr
+& $\backslash$iota       && $\iota$
+&& $\backslash$kappa     && $\kappa$
+&& $\backslash$lambda    && $\lambda$    &\cr
+& $\backslash$mu         && $\mu$
+&& $\backslash$nu        && $\nu$
+&& $\backslash$xi        && $\xi$        &\cr
+& $\backslash$o          && $o$
+&& $\backslash$pi        && $\pi$
+&& $\backslash$varpi     && $\varpi$     &\cr
+& $\backslash$rho        && $\rho$
+&& $\backslash$sigma     && $\sigma$
+&& $\backslash$varsigma  && $\varsigma$  &\cr
+& $\backslash$tau        && $\tau$
+&& $\backslash$upsilon   && $\upsilon$
+&& $\backslash$phi       && $\phi$       &\cr
+& $\backslash$chi        && $\chi$
+&& $\backslash$psi       && $\psi$
+&& $\backslash$omega     && $\omega$     &\cr}
+\vskip12pt
+\symtable{Greek Uppercase Letters} {#}
+{& $\backslash$Gamma   && $\Gamma$
+&& $\backslash$Delta   && $\Delta$
+&& $\backslash$Theta   && $\Theta$      &\cr
+& $\backslash$Lambda   && $\Lambda$
+&& $\backslash$Xi      && $\Xi$
+&& $\backslash$Pi      && $\Pi$         &\cr
+& $\backslash$Sigma    && $\Sigma$
+&& $\backslash$Upsilon && $\Upsilon$
+&& $\backslash$Phi     && $\Phi$        &\cr
+& $\backslash$Psi      && $\Psi$
+&& $\backslash$Omega   && $\Omega$
+&&    &&       &\cr}
+\vskip12pt
+\symtable{Misc Symbols Type Ord} {#}
+{& $\backslash$aleph       && $\aleph$
+&& $\backslash$wp          && $\wp$
+&& $\backslash$Re          && $\Re$          &\cr
+& $\backslash$Im           && $\Im$
+&& $\backslash$partial     && $\partial$
+&& $\backslash$infty       && $\infty$       &\cr
+& $\backslash$prime        && $\prime$
+&& $\backslash$nabla       && $\nabla$
+&& $\backslash$surd        && $\surd$        &\cr
+& $\backslash$angle        && $\angle$
+&& $\backslash$forall      && $\forall$
+&& $\backslash$exists      && $\exists$      &\cr
+& $\backslash$neg          && $\neg$
+&& $\backslash$clubsuit    && $\clubsuit$
+&& $\backslash$diamondsuit && $\diamondsuit$ &\cr
+& $\backslash$heartsuit    && $\heartsuit$
+&& $\backslash$spadesuit   && $\spadesuit$
+&&    &&       &\cr}
+\vskip12pt
+\symtable{``Large'' Operators} {#}
+{& $\backslash$int   && $\int$
+&&    &&
+&&    &&       &\cr}
+\vskip12pt
+\symtable{Binary operators} {#}
+{& $\backslash$pm     && $\pm$
+&& $\backslash$cdot   && $\cdot$
+&& $\backslash$times  && $\times$      &\cr
+& $\backslash$ast     && $\ast$
+&& $\backslash$circ   && $\circ$
+&& $\backslash$bullet && $\bullet$     &\cr
+& $\backslash$div     && $\div$
+&& $\backslash$cap    && $\cap$
+&& $\backslash$cup    && $\cup$        &\cr
+& $\backslash$vee     && $\vee$
+&& $\backslash$wedge  && $\wedge$
+&& $\backslash$oplus  && $\oplus$      &\cr
+& $\backslash$otimes  && $\otimes$
+&& $\backslash$oslash && $\oslash$
+&&    &&      &\cr}
 @end tex
 @ifnottex
-@multitable @columnfractions .125 .25 .25 .25 .125
-@item @tab  \forall     @tab  \exists     @tab  \ni      @tab
-@item @tab  \cong       @tab  \Delta      @tab  \Phi     @tab
-@item @tab  \Gamma      @tab  \vartheta   @tab  \Lambda  @tab
-@item @tab  \Pi         @tab  \Theta      @tab  \Sigma   @tab
-@item @tab  \varsigma   @tab  \Omega      @tab  \Xi      @tab
-@item @tab  \Psi        @tab  \perp       @tab  \alpha   @tab
-@item @tab  \beta       @tab  \chi        @tab  \delta   @tab
-@item @tab  \epsilon    @tab  \phi        @tab  \gamma   @tab
-@item @tab  \eta        @tab  \iota       @tab  \varphi  @tab
-@item @tab  \kappa      @tab  \lambda     @tab  \mu      @tab
-@item @tab  \nu         @tab  \o          @tab  \pi      @tab
-@item @tab  \theta      @tab  \rho        @tab  \sigma   @tab
-@item @tab  \tau        @tab  \upsilon    @tab  \varpi   @tab
-@item @tab  \omega      @tab  \xi         @tab  \psi     @tab
-@item @tab  \zeta       @tab  \sim        @tab  \Upsilon @tab
-@item @tab  \prime      @tab  \leq        @tab  \infty   @tab
-@item @tab  \clubsuit   @tab  \diamondsuit    @tab  \heartsuit  @tab
-@item @tab  \spadesuit  @tab  \leftrightarrow @tab  \leftarrow  @tab
-@item @tab  \uparrow    @tab  \rightarrow @tab  \downarrow @tab
-@item @tab  \circ       @tab \pm          @tab  \geq     @tab
-@item @tab  \times      @tab  \propto     @tab  \partial @tab
-@item @tab  \bullet     @tab \div         @tab  \neq     @tab
-@item @tab  \equiv      @tab  \approx     @tab  \ldots   @tab
-@item @tab  \mid        @tab  \aleph      @tab  \Im      @tab
-@item @tab  \Re         @tab \wp          @tab  \otimes  @tab
-@item @tab  \oplus      @tab \oslash      @tab  \cap     @tab
-@item @tab  \cup        @tab   \supset    @tab  \supseteq @tab
-@item @tab  \subset     @tab \subseteq    @tab  \in      @tab
-@item @tab  \notin      @tab \angle       @tab  \bigrightriangledown @tab
-@item @tab  \langle     @tab  \rangle     @tab  \nabla   @tab
-@item @tab  \prod       @tab \surd        @tab  \cdot    @tab
-@item @tab  \neg        @tab  \wedge      @tab \vee      @tab
-@item @tab  \Leftrightarrow @tab \Leftarrow @tab \Uparrow @tab
-@item @tab  \Rightarrow @tab \Downarrow   @tab \diamond  @tab
-@item @tab  \copyright  @tab  \lfloor     @tab  \lceil   @tab
-@item @tab  \rfloor     @tab  \rceil      @tab  \int     @tab
+@multitable @columnfractions .25 .25 .25 .25
+@item Greek Lowercase Letters
+@item @tab  \alpha      @tab  \beta        @tab  \gamma
+@item @tab  \delta      @tab  \epsilon     @tab  \zeta
+@item @tab  \eta        @tab  \theta       @tab  \vartheta
+@item @tab  \iota       @tab  \kappa       @tab  \lambda
+@item @tab  \mu         @tab  \nu          @tab  \xi
+@item @tab  \o          @tab  \pi          @tab  \varpi
+@item @tab  \rho        @tab  \sigma       @tab  \varsigma
+@item @tab  \tau        @tab  \upsilon     @tab  \phi
+@item @tab  \chi        @tab  \psi         @tab  \omega
+@item Greek Uppercase Letters
+@item @tab  \Gamma      @tab  \Delta       @tab  \Theta
+@item @tab  \Lambda     @tab  \Xi          @tab  \Pi
+@item @tab  \Sigma      @tab  \Upsilon     @tab  \Phi
+@item @tab  \Psi        @tab  \Omega       @tab
+@item Misc Symbols Type Ord
+@item @tab  \aleph      @tab  \wp          @tab  \Re
+@item @tab  \Im         @tab  \partial     @tab  \infty
+@item @tab  \prime      @tab  \nabla       @tab  \surd
+@item @tab  \angle      @tab  \forall      @tab  \exists
+@item @tab  \neg        @tab  \clubsuit    @tab  \diamondsuit
+@item @tab  \heartsuit  @tab  \spadesuit   @tab
+@item ``Large'' Operators
+@item @tab  \int
+@item Binary Operators
+@item @tab  \pm         @tab  \cdot        @tab  \times
+@item @tab  \ast        @tab  \circ        @tab  \bullet
+@item @tab  \div        @tab  \cap         @tab  \cup
+@item @tab  \vee        @tab  \wedge       @tab  \oplus
+@item @tab  \otimes     @tab  \oslash      @tab
+@item Relations
+@item @tab  \leq        @tab  \subset      @tab  \subseteq
+@item @tab  \in         @tab  \geq         @tab  \supset
+@item @tab  \supseteq   @tab  \ni          @tab  \mid
+@item @tab  \equiv      @tab  \sim         @tab  \approx
+@item @tab  \cong       @tab  \propto      @tab  \perp
+@item Arrows
+@item @tab  \leftarrow  @tab  \Leftarrow   @tab  \rightarrow
+@item @tab  \Rightarrow @tab  \leftrightarrow @tab  \uparrow
+@item @tab  \downarrow  @tab               @tab
+@item Openings and Closings
+@item @tab  \lfloor     @tab  \langle      @tab  \lceil
+@item @tab  \rfloor     @tab  \rangle      @tab  \rceil
+@item Alternate Names
+@item @tab  \neq
+@item Other
+@item @tab  \ldots      @tab  \0          @tab  \copyright
+@item @tab  \deg
 @end multitable
 @end ifnottex
 @caption{Available special characters in @TeX{} mode}
+@end float
+@float
+@tex
+\vskip 6pt
+\def\symtable#1#2#3{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
+\hskip36pt #1
+\vskip6pt
+\halign{
+\vrule height2.0ex depth1.ex width 0.6pt #2\tabskip=0.3em &
+#2 \hfil & \vrule #2 & #2 \hfil & #2 \vrule &
+#2 \hfil & \vrule #2 & #2 \hfil & #2 \vrule &
+#2 \hfil & \vrule #2 & #2 \hfil & #2 \vrule
+width 0.6pt \tabskip=0pt\cr
+\noalign{\hrule height 0.6pt}
+& Code && Sym && Code && Sym && Code && Sym &\cr
+\noalign{\hrule}
+#3
+\noalign{\hrule height 0.6pt}
+}
+}\hfill}}
+\vskip6pt
+\symtable{Relations} {#}
+{& $\backslash$leq      && $\leq$
+&& $\backslash$subset   && $\subset$
+&& $\backslash$subseteq && $\subseteq$    &\cr
+& $\backslash$in        && $\in$
+&& $\backslash$geq      && $\geq$
+&& $\backslash$supset   && $\supset$      &\cr
+& $\backslash$supseteq  && $\supseteq$
+&& $\backslash$ni       && $\ni$
+&& $\backslash$mid      && $\mid$         &\cr
+& $\backslash$equiv     && $\equiv$
+&& $\backslash$sim      && $\sim$
+&& $\backslash$approx   && $\approx$      &\cr
+& $\backslash$cong      && $\cong$
+&& $\backslash$propto   && $\propto$
+&& $\backslash$perp     && $\perp$        &\cr}
+\vskip6pt
+\symtable{Arrows} {#}
+{& $\backslash$leftarrow      && $\leftarrow$
+&& $\backslash$Leftarrow      && $\Leftarrow$
+&& $\backslash$rightarrow     && $\rightarrow$      &\cr
+& $\backslash$Rightarrow      && $\Rightarrow$
+&& $\backslash$leftrightarrow && $\leftrightarrow$
+&& $\backslash$uparrow        && $\uparrow$         &\cr
+& $\backslash$downarrow       && $\downarrow$
+&&   &&
+&&   &&       &\cr}
+\vskip12pt
+\symtable{Openings and Closings} {#}
+{& $\backslash$lfloor   && $\lfloor$
+&& $\backslash$langle   && $\langle$
+&& $\backslash$lceil    && $\lceil$      &\cr
+& $\backslash$rfloor    && $\rfloor$
+&& $\backslash$rangle   && $\rangle$
+&& $\backslash$rceil    && $\rceil$      &\cr}
+\vskip12pt
+\symtable{Alternate Names} {#}
+{& $\backslash$neq   && $\neq$
+&&   &&
+&&   &&   &\cr}
+\vskip12pt
+\symtable{Other (not in Appendix F Tables)} {#}
+{& $\backslash$ldots     && $\ldots$
+&& $\backslash$0         && $\oslash$
+&& $\backslash$copyright && $\copyright$      &\cr
+& $\backslash$deg        && $\deg$
+&&    &&
+&&    &&       &\cr}
+\vskip12pt
+\hskip36pt Table 15.1: Available special characters in \TeX\ mode (cont.)
+@end tex
 @end float
 
 A complete example showing the capabilities of the extended text is
@@ -936,8 +1000,8 @@ The graphics objects are arranged in a hierarchy:
 
 Graphics handles may be distinguished from function handles
 (@pxref{Function Handles}) by means of the function @code{ishandle}.
-@code{ishandle} returns true if its argument is a handle of a graphics object. 
-In addition, the figure object may be tested using @code{isfigure}. 
+@code{ishandle} returns true if its argument is a handle of a graphics object.
+In addition, the figure object may be tested using @code{isfigure}.
 @code{isfigure} returns true only if its argument is a handle of a figure.  The
 @code{whos} function can be used to show the object type of each currently
 defined graphics handle.  (Note: this is not true today, but it is, I hope,
@@ -1180,9 +1244,9 @@ objects.
 Figures can be printed or saved in many graphics formats with @code{print} and
 @code{saveas}.  Occasionally, however, it may be useful to save the original
 Octave handle graphic directly so that further modifications can be made such
-as modifying a title or legend.  
+as modifying a title or legend.
 
-This can be accomplished with the following functions by 
+This can be accomplished with the following functions by
 
 @example
 @group
@@ -1226,12 +1290,12 @@ hierarchy.
 The @code{root figure} properties are:
 
 @table @code
-@item __modified__  
+@item __modified__
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item __myhandle__
 
-@item beingdeleted  
+@item beingdeleted
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item busyaction
@@ -1251,13 +1315,13 @@ The @code{root figure} properties are:
 
 @item deletefcn
 
-@item handlevisibility  
+@item handlevisibility
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item hittest
 --- Values: @qcode{"on"}, @qcode{"off"}
 
-@item interruptible  
+@item interruptible
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item parent
@@ -1276,7 +1340,7 @@ The @code{root figure} properties are:
 
 @item screenpixelsperinch
 
-@item showhiddenhandles  
+@item showhiddenhandles
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item tag
@@ -1299,7 +1363,7 @@ The @code{root figure} properties are:
 The @code{figure} properties are:
 
 @table @code
-@item __graphics_toolkit__  
+@item __graphics_toolkit__
 --- The graphics toolkit currently in use.
 
 @item __enhanced__
@@ -1312,7 +1376,7 @@ The @code{figure} properties are:
 
 @item alphamap
 
-@item beingdeleted 
+@item beingdeleted
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item busyaction
@@ -1325,7 +1389,7 @@ Handle to children.
 @item clipping
 --- Values: @qcode{"on"}, @qcode{"off"}
 
-@item closerequestfcn 
+@item closerequestfcn
 --- Handle of function to call on close.
 
 @item color
@@ -1337,7 +1401,7 @@ An N-by-3 matrix containing the color map for the current axes.
 
 @item createfcn
 
-@item currentaxes 
+@item currentaxes
 Handle to graphics object of current axes.
 
 @item currentcharacter
@@ -1352,22 +1416,22 @@ mouse pointer is when the function gets called.
 
 @item deletefcn
 
-@item dockcontrols 
+@item dockcontrols
 --- Values: @qcode{"on"}, @qcode{"off"}
 
-@item doublebuffer 
+@item doublebuffer
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item filename
 
-@item handlevisibility 
+@item handlevisibility
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item hittest
 
 @item integerhandle
 
-@item interruptible 
+@item interruptible
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item inverthardcopy
@@ -1448,7 +1512,7 @@ Indicates the orientation for printing.  Either @qcode{"landscape"} or
 
 @item selected
 
-@item selectionhighlight 
+@item selectionhighlight
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item selectiontype
@@ -1516,7 +1580,7 @@ The @code{axes} properties are:
 @item beingdeleted
 
 @item box
-Box surrounding axes. 
+Box surrounding axes.
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item busyaction
@@ -1572,7 +1636,7 @@ same as the length of 2 units on the x-axis.  Setting
 @code{dataaspectratio} also forces the @code{dataaspectratiomode}
 property to be set to @qcode{"manual"}.
 
-@item dataaspectratiomode 
+@item dataaspectratiomode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item deletefcn
@@ -1685,7 +1749,7 @@ Either @qcode{"on"} or @qcode{"off"} to toggle display of the axes.
 
 @item x_viewtransform
 
-@item xaxislocation 
+@item xaxislocation
 Either @qcode{"top"} or @qcode{"bottom"}.
 
 @item xcolor
@@ -1707,7 +1771,7 @@ property to be set to @qcode{"manual"}.
 @item xlimmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
-@item xminorgrid 
+@item xminorgrid
 Either @qcode{"on"} or @qcode{"off"} to toggle display of minor grid lines.
 
 @item xminortick
@@ -1724,13 +1788,13 @@ property to be set to @qcode{"manual"}.
 Setting this property also forces the corresponding mode
 property to be set to @qcode{"manual"}.
 
-@item xticklabelmode 
+@item xticklabelmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
-@item xtickmode 
+@item xtickmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
-@item yaxislocation 
+@item yaxislocation
 Either @qcode{"left"} or @qcode{"right"}
 
 @item ycolor
@@ -1752,7 +1816,7 @@ property to be set to @qcode{"manual"}.
 @item ylimmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
-@item yminorgrid 
+@item yminorgrid
 Either @qcode{"on"} or @qcode{"off"} to toggle display of minor grid lines.
 
 @item yminortick
@@ -1769,10 +1833,10 @@ property to be set to @qcode{"manual"}.
 Setting this property also forces the corresponding mode
 property to be set to @qcode{"manual"}.
 
-@item yticklabelmode 
+@item yticklabelmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
-@item ytickmode 
+@item ytickmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item zcolor
@@ -1794,7 +1858,7 @@ property to be set to @qcode{"manual"}.
 @item zlimmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
-@item zminorgrid 
+@item zminorgrid
 Either @qcode{"on"} or @qcode{"off"} to toggle display of minor grid lines.
 
 @item zminortick
@@ -1807,11 +1871,11 @@ Set position of tick marks.
 Setting this property also forces the corresponding mode
 property to be set to @qcode{"manual"}.
 
-@item zticklabel 
+@item zticklabel
 Setting this property also forces the corresponding mode
 property to be set to @qcode{"manual"}.
 
-@item zticklabelmode 
+@item zticklabelmode
 Either @qcode{"manual"} or @qcode{"auto"}.
 
 @item ztickmode
@@ -2876,7 +2940,7 @@ areas.  @xref{Line Styles}.
 
 @item  edgecolor
 @itemx facecolor
-The line and fill color of the patch objects making up the areas. 
+The line and fill color of the patch objects making up the areas.
 @xref{Colors}.
 
 @item  xdata
@@ -3035,7 +3099,7 @@ the errorbars separately.  The properties of the error bar series are
 
 @table @code
 @item color
-The RGB color or color name of the line objects of the error bars. 
+The RGB color or color name of the line objects of the error bars.
 @xref{Colors}.
 
 @item  linewidth
@@ -3294,7 +3358,7 @@ The properties of the surface group are
 @item edgecolor
 
 @item facecolor
-The RGB color or color name of the edges or faces of the surface. 
+The RGB color or color name of the edges or faces of the surface.
 @xref{Colors}.
 
 @item  linewidth

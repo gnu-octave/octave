@@ -1,5 +1,0 @@
-@node Audio Player
-@section Audio Player
-
-@DOCSTRING(@@audioplayer/audioplayer)
-@DOCSTRING(@@audioplayer/play)

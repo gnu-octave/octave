@@ -1,5 +1,0 @@
-@node Audio Recorder
-@section Audio Recorder
-
-@DOCSTRING(@audiorecorder/audiorecorder)
-@DOCSTRING(@audiorecorder/record)

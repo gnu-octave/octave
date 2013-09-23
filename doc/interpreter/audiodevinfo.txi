@@ -1,6 +1,0 @@
-@node Audio Device Information
-@section Audio Device Information
-
-This function is used to get information about audio devices that are available on your system. This information can then be used when creating audioplayer and audiorecorder objects.
-
-@DOCSTRING(audiodevinfo)

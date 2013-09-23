@@ -274,7 +274,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
     arg = varargin{ioff++};
     if (ischar (arg) && any (strcmpi (arg, {"fill", "filled"})))
       dofill = true;
-    elseif ((ischar (arg) || iscell (arg)) && ! have_line_spec)
+    elseif ((ischar (arg) || iscellstr (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ (caller, arg, false);
       if (valid)
         have_line_spec = true;

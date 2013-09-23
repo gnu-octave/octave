@@ -93,7 +93,7 @@ function hg = __scatter__ (varargin)
     arg = varargin{iarg++};
     if (ischar (arg) && (strcmpi (arg, "filled") || strcmpi (arg, "fill")))
       filled = true;
-    elseif ((ischar (arg) || iscell (arg)) && ! have_marker)
+    elseif ((ischar (arg) || iscellstr (arg)) && ! have_marker)
       [linespec, valid] = __pltopt__ (fcn, arg, false);
       if (valid)
         have_marker = true;

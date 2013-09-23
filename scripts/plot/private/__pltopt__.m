@@ -89,24 +89,19 @@
 
 ## Author: jwe
 
-function [options, valid] = __pltopt__ (caller, opt, err_on_invalid)
+function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)
 
+  options = __default_plot_options__ ();
   valid = true;
-  options =  __default_plot_options__ ();
 
-  if (nargin == 2)
-    err_on_invalid = true;
-  endif
-  if (ischar (opt))
-    nel = rows (opt);
-  elseif (iscellstr (opt))
-    nel = numel (opt);
-  else
-    error ("__pltopt__: argument must be a character string or cell array of character strings");
-  endif
   if (ischar (opt))
     opt = cellstr (opt);
+  elseif (! iscellstr (opt))
+    error ("__pltopt__: argument must be a character string or cell array of character strings");
   endif
+
+  nel = numel (opt);
+
   for i = nel:-1:1
     [options(i), valid] = __pltopt1__ (caller, opt{i}, err_on_invalid);
     if (! err_on_invalid && ! valid)
@@ -127,17 +122,11 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   options = __default_plot_options__ ();
   valid = true;
 
-  more_opts = 1;
-
-  if (! ischar (opt))
-    return;
-  endif
-
   have_linestyle = false;
   have_marker = false;
 
   ## If called by __errplot__, extract the linestyle before proceeding.
-  if (strcmp (caller,"__errplot__"))
+  if (strcmp (caller, "__errplot__"))
     if (strncmp (opt, "#~>", 3))
       n = 3;
     elseif (strncmp (opt, "#~", 2) || strncmp (opt, "~>", 2))

@@ -129,7 +129,7 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
   parent = get (bigax, "parent");
   for i = 1 : nargin - 1
     arg = varargin{i};
-    if (ischar (arg) || iscell (arg))
+    if (ischar (arg) || iscellstr (arg))
       [linespec, valid] = __pltopt__ ("plotmatrix", varargin{i}, false);
       if (valid)
         have_line_spec = true;

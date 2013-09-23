@@ -83,7 +83,7 @@ function hg = __quiver__ (varargin)
     arg = varargin{ioff++};
     if (ischar (arg) && strcmpi (arg, "filled"))
       have_filled = true;
-    elseif ((ischar (arg) || iscell (arg))
+    elseif ((ischar (arg) || iscellstr (arg))
             && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("quiver", arg, false);
       if (valid)

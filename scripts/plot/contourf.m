@@ -72,7 +72,7 @@ function [c, h] = contourf (varargin)
     hax = newplot (hax);
     
     [ctmp, htmp] = __contour__ (hax, "none", "fill", "on",
-                                "linecolor", "black", varargin{:});
+                                     "linecolor", "black", varargin{:});
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

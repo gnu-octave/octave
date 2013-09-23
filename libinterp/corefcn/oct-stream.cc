@@ -2980,21 +2980,47 @@ convert_and_copy (std::list<void *>& input_buf_list,
     {
       SRC_T *data = static_cast<SRC_T *> (*it);
 
-      for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read; i++, j++)
+      if (swap || do_float_fmt_conv)
         {
-          if (swap)
-            swap_bytes<sizeof (SRC_T)> (&data[i]);
-          else if (do_float_fmt_conv)
-            do_float_format_conversion (&data[i], sizeof (SRC_T),
-                                        1, from_flt_fmt,
-                                        oct_mach_info::float_format ());
+          for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+               i++, j++)
+            {
+              if (swap)
+                swap_bytes<sizeof (SRC_T)> (&data[i]);
+              else if (do_float_fmt_conv)
+                do_float_format_conversion (&data[i], sizeof (SRC_T),
+                                            1, from_flt_fmt,
+                                            oct_mach_info::float_format ());
 
-          dst_elt_type tmp (data[i]);
+              dst_elt_type tmp (data[i]);
 
-          if (do_NA_conv && __lo_ieee_is_old_NA (tmp))
-            tmp = __lo_ieee_replace_old_NA (tmp);
+              if (do_NA_conv && __lo_ieee_is_old_NA (tmp))
+                tmp = __lo_ieee_replace_old_NA (tmp);
 
-          conv_data[j] = tmp;
+              conv_data[j] = tmp;
+            }
+        }
+      else
+        {
+          if (do_NA_conv)
+            {
+              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                   i++, j++)
+                {
+                  dst_elt_type tmp (data[i]);
+
+                  if (__lo_ieee_is_old_NA (tmp))
+                    tmp = __lo_ieee_replace_old_NA (tmp);
+
+                  conv_data[j] = tmp;
+                }
+            }
+          else
+            {
+              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                   i++, j++)
+                conv_data[j] = data[i];
+            }
         }
 
       delete [] data;
@@ -3017,7 +3043,6 @@ typedef octave_value (*conv_fptr)
 #define TABLE_ELT(T, U, V, W) \
   conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
 
-#undef FILL_TABLE_ROW
 #define FILL_TABLE_ROW(T, V) \
   TABLE_ELT (T, dt_int8, V, int8NDArray); \
   TABLE_ELT (T, dt_uint8, V, uint8NDArray); \

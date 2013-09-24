@@ -23,11 +23,14 @@
 
 function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
 
-  ## FIXME: Why assume?  Can get position in points directly from axis.
-  ## Assume that the plot size is 4 by 3 inches.
+  hax = ancestor (hparent, "axes");
+  units = get (hax, "units");
+  set (hax, "units", "points");
+  axpos = get (hax, "position");
+  set (hax, "units", units);
   lims = axis ();
-  xspacing = 72 * 4 / abs (lims(1) - lims(2));
-  yspacing = 72 * 3 / abs (lims(3) - lims(4));
+  xspacing = axpos(3) / (lims(2) - lims (1));
+  yspacing = axpos(4) / (lims(4) - lims (3));
 
   if (isscalar (hparent) && ishandle (hparent)
       && strcmp (get (hparent, "type"), "hggroup"))
@@ -38,80 +41,89 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
     ymin = min (y(:));
     ymax = max (y(:));
   else
-    i1 = 1;
-    while (i1 < length (c))
-      clev = c(1,i1);
-      clen = c(2,i1);
-      p = c(:, i1+1:i1+clen);
+    xmin = xmax = ymin = ymax = NaN;
+    i = 1;
+    while (i < length (c))
+      clen = c(2,i);
+      data = c(:, i+(1:clen));
 
-      xmin = min (c(1,:));
-      xmax = max (c(1,:));
-      ymin = min (c(2,:));
-      ymax = max (c(2,:));
+      xmin = min ([xmin, data(1,:)]);
+      xmax = max ([xmax, data(1,:)]);
+      ymin = min ([ymin, data(2,:)]);
+      ymax = max ([ymax, data(2,:)]);
 
-      i1 += clen+1;
+      i += clen+1;
     endwhile
   endif
 
   ## Decode contourc output format and place labels.
-  i1 = 1;
   h = [];
-  while (i1 < length (c))
-    clev = c(1,i1);
-    clen = c(2,i1);
+  i = 1;
+  while (i < length (c))
+    clev = c(1,i);
+    clen = c(2,i);
 
-    if (!isempty (v) && ! any (find (clev == v)))
-      i1 += clen+1;
+    if (! isempty (v) && ! any (v == clev))
+      i += clen+1;
       continue;
     endif
 
-    p = c(:, i1+1:i1+clen) .* repmat ([xspacing; yspacing], 1, clen);
+    p = bsxfun (@times, c(:, i+(1:clen)), [xspacing; yspacing]);
     d = sqrt (sumsq (diff (p, 1, 2)));
     cumd = cumsum (d);
-    td = sum (d);
+    td = cumd(end);
     ntag = ceil (td / label_spacing);
 
-    if (all (c(:,i1+1) == c(:,i1+clen)))
-      Spacing = td / ntag;
-      pos = Spacing / 2 + [0:ntag-1] * Spacing;
+    if (all (c(:,i+1) == c(:,i+clen)))
+      ## Closed contour
+      ## FIXME: This spreads the tags uniformly around the contour which
+      ## looks nice, but it does not respect the label_spacing attribute.
+      ## Should we follow user input, which can result in two labels being
+      ## quite close to each other?
+      spacing = td / ntag;
+      pos = spacing/2 + spacing*[0:ntag-1];
     else
+      ## Open contour
       pos = zeros (1, ntag);
-      pos(1) = (td - label_spacing * (ntag - 1)) ./ 2;
-      pos(2:ntag) = pos(1) + [1:ntag-1] * label_spacing;
+      pos(1) = (td - label_spacing*(ntag - 1)) / 2;
+      pos(2:ntag) = pos(1) + label_spacing*[1:ntag-1];
     endif
 
-    j1 = 2;
-    tlabel = sprintf ("%g", clev);
-    for i = 1 : ntag
-      tagpos = pos(i);
+    tlabel = sprintf ("%.5g", clev);
 
-      while (j1 < clen && cumd(j1) < tagpos)
-        j1++;
-      endwhile
-      tpos = sum (c(:,i1+j1-1:i1+j1), 2) ./ 2;
+    for tagpos = pos
+
+      j = find (cumd > tagpos, 1);
+      if (isempty (j))
+        j = clen;
+      endif
+      tpos = sum (c(:,i+j-1:i+j), 2) / 2;
 
       if (   tpos(1) != xmin && tpos(1) != xmax
           && tpos(2) != ymin && tpos(2) != ymax)
-        trot = 180 / pi * atan2 (diff (c(2,i1+j1-1:i1+j1)),
-                                 diff (c(1,i1+j1-1:i1+j1)));
-
+        trot = 180 / pi * atan2 (diff (c(2,i+j-1:i+j)),
+                                 diff (c(1,i+j-1:i+j)));
+        if (abs (trot) > 90)
+          trot += 180;
+        endif
         if (ischar (z))
           ht = text (tpos(1), tpos(2), clev, tlabel, "rotation", trot,
-                     "parent", hparent, "horizontalalignment", "center",
-                     "userdata", clev, varargin{:});
-        elseif (!isempty (z))
+                     "horizontalalignment", "center", "userdata", clev,
+                     "parent", hparent, varargin{:});
+        elseif (! isempty (z))
           ht = text (tpos(1), tpos(2), z, tlabel, "rotation", trot,
-                     "parent", hparent, "horizontalalignment", "center",
-                     "userdata", clev, varargin{:});
+                     "horizontalalignment", "center", "userdata", clev,
+                     "parent", hparent, varargin{:});
         else
           ht = text (tpos(1), tpos(2), tlabel, "rotation", trot,
-                     "parent", hparent, "horizontalalignment", "center",
-                     "userdata", clev, varargin{:});
+                     "horizontalalignment", "center", "userdata", clev,
+                     "parent", hparent, varargin{:});
         endif
         h = [h; ht];
       endif
     endfor
-    i1 += clen+1;
+    i += clen+1;
   endwhile
+
 endfunction
 

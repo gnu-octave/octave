@@ -61,11 +61,11 @@
 ## @seealso{contour, contourf, contour3, meshc, surfc, text}
 ## @end deftypefn
 
-function retval = clabel (c, varargin)
+function h = clabel (c, varargin)
 
-  label_spacing = 2 * 72;
   have_hg = false;
   have_labelspacing = false;
+  label_spacing = 144;  # 2 inches in points
 
   if (nargin < 1)
     print_usage ();
@@ -75,12 +75,13 @@ function retval = clabel (c, varargin)
     arg = varargin{1};
     if (isscalar (arg) && ishandle (arg)
         && strcmp (get (arg, "type"), "hggroup"))
-      obj = get (arg);
-      if (! isfield (obj, "contourmatrix"))
-        error ("clabel: expecting the handle to be a contour group");
-      endif
-      hg = arg;
+      try
+        get (arg, "contourmatrix");
+      catch
+        error ("clabel: H must be a handle to a contour group");
+      end_try_catch
       have_hg = true;
+      hg = arg;
       varargin(1) = [];
     else
       hparent = gca ();
@@ -94,44 +95,43 @@ function retval = clabel (c, varargin)
     v = [];
   endif
 
-  for i = 1 : length (varargin) - 1
-    arg = varargin{i};
-    if (strcmpi (arg, "labelspacing"))
-      label_spacing = varargin{i+1};
-      have_labelspacing = true;
-      varargin(i:i+1) = [];
-      break;
-    endif
-  endfor
+  idx = strcmpi (varargin(1:2:end), "manual");
+  if (any (idx))
+    error ('clabel: "manual" contour mode is not supported');
+  endif
 
-  for i = 1 : length (varargin)
-    arg = varargin{i};
-    if (strcmpi (arg, "manual"))
-      error ("clabel: manual contouring mode not supported");
-    endif
-  endfor
+  idx = find (strcmpi (varargin(1:2:end), "labelspacing"), 1);
+  if (! isempty (idx))
+    have_labelspacing = true;
+    label_spacing = varargin{2*idx};
+    varargin(2*idx+(-1:0)) = [];
+  endif    
 
   if (have_hg)
     if (! isempty (v))
       if (have_labelspacing)
         set (hg, "textlistmode", "manual", "textlist", v,
-             "labelspacing", label_spacing, "showtext", "on");
+                 "labelspacing", label_spacing, "showtext", "on");
       else
         set (hg, "textlistmode", "manual", "textlist", v, "showtext", "on");
       endif
     else
       if (have_labelspacing)
-        set (hg,"showtext", "on", "labelspacing", label_spacing);
+        set (hg, "showtext", "on", "labelspacing", label_spacing);
       else
-        set (hg,"showtext", "on");
+        set (hg, "showtext", "on");
       endif
     endif
-    retval = findobj (hg, "type", "text");
+    htmp = findobj (hg, "type", "text");
     if (! isempty (varargin))
-      set (retval, varargin {:});
+      set (htmp, varargin{:});
     endif
   else
-    retval =  __clabel__ (c, v, hparent, label_spacing, [], varargin{:});
+    htmp =  __clabel__ (c, v, hparent, label_spacing, [], varargin{:});
+  endif
+
+  if (nargout > 0)
+    h = htmp;
   endif
 
 endfunction

@@ -48,54 +48,56 @@
 ## @seealso{plot, quiver, compass}
 ## @end deftypefn
 
-function retval = feather (varargin)
+function h = feather (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("feather", varargin{:});
 
-  arrowsize = 0.25;
-
-  if (nargin == 0)
+  if (nargin == 0 || nargin > 3)
     print_usage ();
-  elseif (nargin == 1 || (nargin == 2 && ! isnumeric (varargin{2})))
-    ioff = 2;
+  endif
+
+  if (nargin == 1 || (nargin == 2 && ! isnumeric (varargin{2})))
     z = varargin{1}(:).';
     u = real (z);
     v = imag (z);
-  elseif (nargin > 1 && isnumeric (varargin{2}))
+    have_line_spec = (nargin == 2);
+  elseif (nargin >= 2 && isnumeric (varargin{2}))
     ioff = 3;
     u = varargin{1}(:).';
     v = varargin{2}(:).';
+    have_line_spec = (nargin == 3);
+  else
+    print_usage ();
   endif
 
-  line_spec = "b-";
-  have_line_spec = false;
-  while (ioff <= nargin)
-    arg = varargin{ioff++};
-    if ((ischar (arg) || iscellstr (arg)) && ! have_line_spec)
-      [linespec, valid] = __pltopt__ ("feather", arg, false);
+  arrowsize = 0.20;
+  line_spec = "-b";
+
+  if (have_line_spec)
+    arg = varargin{end};
+    if (ischar (arg) || iscellstr (arg))
+      [~, valid] = __pltopt__ ("feather", arg, false);
       if (valid)
         line_spec = arg;
-        have_line_spec = false;
-        break;
       else
-        error ("feather: invalid linespec");
+        error ("feather: invalid linestyle STYLE");
       endif
     else
-      error ("feather: unrecognized argument");
+      error ("feather: invalid linestyle STYLE");
     endif
-  endwhile
+  endif
 
   ## Matlab draws feather plots, with the arrow head as one continous
-  ## line, and each arrow separately. This is completely different than
+  ## line, and each arrow separately. This is completely different from
   ## quiver and quite ugly.
   n = length (u);
   xend = [1 : n] + u;
   xtmp = [1 : n] + u .* (1 - arrowsize);
   yend = v;
   ytmp = v .* (1 - arrowsize);
-  x = [[1 : n]; xend; xtmp  - v * arrowsize; xend; ...
-       xtmp + v * arrowsize];
-  y = [zeros(1, n); yend; ytmp  + u * arrowsize / 3; yend; ...
+  x = [[1 : n]; xend; xtmp - v * arrowsize / 3; xend; ...
+       xtmp + v * arrowsize / 3];
+  y = [zeros(1, n); yend; ytmp + u * arrowsize / 3; yend; ...
        ytmp - u * arrowsize / 3];
 
   oldfig = [];
@@ -112,7 +114,7 @@ function retval = feather (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    retval = hlist;
+    h = hlist;
   endif
 
 endfunction
@@ -124,4 +126,11 @@ endfunction
 %! feather (sin (phi), cos (phi));
 %! axis tight;
 %! title ('feather plot');
+
+%% Test input validation
+%!error feather ()
+%!error feather (1,2,3,4)
+%!error feather (1, "-r", 2)
+%!error <invalid linestyle STYLE> feather (1, "abc")
+%!error <invalid linestyle STYLE> feather (1, {1})
 

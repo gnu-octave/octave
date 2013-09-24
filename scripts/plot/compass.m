@@ -88,7 +88,7 @@ function h = compass (varargin)
   endif
 
   ## Matlab draws compass plots with the arrow head as one continous line,
-  ## and each arrow separately.  This is completely different than quiver
+  ## and each arrow separately.  This is completely different from quiver
   ## and quite ugly.
   n = length (u);
   xend = u;
@@ -127,4 +127,11 @@ endfunction
 %! randn_1x9_data = [1.42934, -1.10821, -1.70404, 0.63357, -0.68337, -1.19771, -0.96502, -1.12810, 0.22457];
 %! a = toeplitz ([1;randn_9x1_data], [1,randn_1x9_data]);
 %! compass (eig (a));
+
+%% Test input validation
+%!error compass ()
+%!error compass (1,2,3,4)
+%!error compass (1, "-r", 2)
+%!error <invalid linestyle STYLE> compass (1, "abc")
+%!error <invalid linestyle STYLE> compass (1, {1})
 

@@ -1239,13 +1239,19 @@ octave_class::reconstruct_exemplar (void)
 
       if (have_ctor)
         {
+          unwind_protect frame;
+
+          // Simulate try/catch.
+
+          interpreter_try (frame);
+
           octave_value_list result
             = ctor.do_multi_index_op (1, octave_value_list ());
 
-          if (result.length () == 1)
+          if (! error_state && result.length () == 1)
             retval = true;
-          else
-            warning ("call to constructor for class %s failed", c_name.c_str ());
+
+          error_state = false;
         }
       else
         warning ("no constructor for class %s", c_name.c_str ());
@@ -1401,19 +1407,17 @@ octave_class::load_ascii (std::istream& is)
 
                   if (! reconstruct_parents ())
                     warning ("load: unable to reconstruct object inheritance");
-                  else
-                    {
-                      if (load_path::find_method (classname, "loadobj")
-                          != std::string ())
-                        {
-                          octave_value in = new octave_class (*this);
-                          octave_value_list tmp = feval ("loadobj", in, 1);
 
-                          if (! error_state)
-                            map = tmp(0).map_value ();
-                          else
-                            success = false;
-                        }
+                  if (load_path::find_method (classname, "loadobj")
+                      != std::string ())
+                    {
+                      octave_value in = new octave_class (*this);
+                      octave_value_list tmp = feval ("loadobj", in, 1);
+
+                      if (! error_state)
+                        map = tmp(0).map_value ();
+                      else
+                        success = false;
                     }
                 }
               else
@@ -1548,18 +1552,16 @@ octave_class::load_binary (std::istream& is, bool swap,
 
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
-          else
-            {
-              if (load_path::find_method (c_name, "loadobj") != std::string ())
-                {
-                  octave_value in = new octave_class (*this);
-                  octave_value_list tmp = feval ("loadobj", in, 1);
 
-                  if (! error_state)
-                    map = tmp(0).map_value ();
-                  else
-                    success = false;
-                }
+          if (load_path::find_method (c_name, "loadobj") != std::string ())
+            {
+              octave_value in = new octave_class (*this);
+              octave_value_list tmp = feval ("loadobj", in, 1);
+
+              if (! error_state)
+                map = tmp(0).map_value ();
+              else
+                success = false;
             }
         }
       else
@@ -1788,23 +1790,19 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
 
       if (!reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
-      else
-        {
-          if (load_path::find_method (c_name, "loadobj") != std::string ())
-            {
-              octave_value in = new octave_class (*this);
-              octave_value_list tmp = feval ("loadobj", in, 1);
 
-              if (! error_state)
-                {
-                  map = tmp(0).map_value ();
-                  retval = true;
-                }
-              else
-                retval = false;
+      if (load_path::find_method (c_name, "loadobj") != std::string ())
+        {
+          octave_value in = new octave_class (*this);
+          octave_value_list tmp = feval ("loadobj", in, 1);
+
+          if (! error_state)
+            {
+              map = tmp(0).map_value ();
+              retval = true;
             }
           else
-            retval = true;
+            retval = false;
         }
     }
 

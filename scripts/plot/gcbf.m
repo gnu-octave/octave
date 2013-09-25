@@ -30,7 +30,7 @@
 
 function fig = gcbf ()
 
-  [dummy, fig] = gcbo ();
+  [~, fig] = gcbo ();
 
 endfunction
 

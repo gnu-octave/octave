@@ -55,11 +55,11 @@ function [xx, yy, zz] = cylinder (varargin)
   [hax, args, nargs] = __plt_get_axis_arg__ ("cylinder", varargin{:});
 
   if (nargs == 0)
-    n = 20;
     r = [1, 1];
-  elseif (nargs == 1)
     n = 20;
+  elseif (nargs == 1)
     r = args{1};
+    n = 20;
   elseif (nargs == 2)
     r = args{1};
     n = args{2};
@@ -83,13 +83,12 @@ function [xx, yy, zz] = cylinder (varargin)
     yy = y;
     zz = z;
   else
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
+    oldfig = [];
+    if (! isempty (hax))
+      oldfig = get (0, "currentfigure");
+    endif
     unwind_protect
       hax = newplot (hax);
-    
       surf (x, y, z);
     unwind_protect_cleanup
       if (! isempty (oldfig))

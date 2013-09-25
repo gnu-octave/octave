@@ -20,8 +20,13 @@
 ## @deftypefn {Function File} {@var{h} =} gca ()
 ## Return a handle to the current axis object.
 ##
-## If no axis object exists, create one and return its handle.  The handle may
-## then be used to examine or set properties of the axes.  For example,
+## The current axis is the default target for graphics output.  In the case
+## of a figure with multiple axes, @code{gca} returns the last created axes
+## or the last axes that was clicked on with the mouse.
+##
+## If no current axes object exists, create one and return its handle.  The
+## handle may then be used to examine or set properties of the axes.  For
+## example,
 ##
 ## @example
 ## @group
@@ -31,8 +36,15 @@
 ## @end example
 ##
 ## @noindent
-## creates an empty axes object, then changes its location and size in the
+## creates an empty axes object and then changes its location and size in the
 ## figure window.
+##
+## Note: To find the current axis without creating a new axes object if it
+## does not exist, query the @qcode{"CurrentAxes"} property of a figure.
+##
+## @example
+## get (gcf, "currentaxes");
+## @end example
 ## @seealso{gcf, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
 

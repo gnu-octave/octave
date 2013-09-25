@@ -18,23 +18,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} gcf ()
-## Return the current figure handle.
+## Return a handle to the current figure.
 ##
-## If a figure does not exist, create one and return its handle.  The handle
-## may then be used to examine or set properties of the figure.  For example,
+## The current figure is the default target for graphics output.  If multiple
+## figures exist, @code{gcf} returns the last created figure or the last figure
+## that was clicked on with the mouse.
+##
+## If a current figure does not exist, create one and return its handle.  The
+## handle may then be used to examine or set properties of the figure.  For
+## example,
 ##
 ## @example
 ## @group
 ## fplot (@@sin, [-10, 10]);
 ## fig = gcf ();
-## set (fig, "visible", "off");
+## set (fig, "numbertitle", "off", "name", "sin plot")
 ## @end group
 ## @end example
 ##
 ## @noindent
 ## plots a sine wave, finds the handle of the current figure, and then
-## makes that figure invisible.  Setting the visible property of the
-## figure to @qcode{"on"} will cause it to be displayed again.
+## renames the figure window to describe the contents.
+##
+## Note: To find the current figure without creating a new one if it does not
+## exist, query the @qcode{"CurrentFigure"} property of the root graphics
+## object.
+##
+## @example
+## get (0, "currentfigure");
+## @end example
+##
 ## @seealso{gca, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
 

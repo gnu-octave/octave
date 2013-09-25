@@ -48,7 +48,7 @@
 ## of children is:
 ##
 ## @example
-## findobj (@var{hlist}, "-depth", @var{d}, @var{prop_name}, @var{prop_value})
+## findobj (@var{hlist}, "-depth", 3, @var{prop_name}, @var{prop_value})
 ## @end example
 ##
 ## Specifying a depth @var{d} of 0, limits the search to the set of objects

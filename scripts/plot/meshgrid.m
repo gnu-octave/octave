@@ -36,19 +36,24 @@
 ## plot of the ``sombrero'' function.
 ##
 ## @example
+## @group
 ## f = @@(x,y) sin (sqrt (x.^2 + y.^2)) ./ sqrt (x.^2 + y.^2);
 ## range = linspace (-8, 8, 41);
 ## [@var{X}, @var{Y}] = meshgrid (range, range);  
 ## Z = f (X, Y);
 ## surf (X, Y, Z);
+## @end group
 ## @end example
 ##
 ## Programming Note: @code{meshgrid} is restricted to 2-D or 3-D grid
 ## generation.  The @code{ndgrid} function will generate 1-D through N-D
 ## grids.  However, the functions are not completely equivalent.  If @var{x}
 ## is a vector of length M and @var{y} is a vector of length N, then
-## @code{meshgrid} will produce an output grid which is NxM.  @code{ndgrid}
-## will produce an output which is MxN for the same input.
+## @code{meshgrid} will produce an output grid which is NxM@.  @code{ndgrid}
+## will produce an output which is MxN (transpose) for the same input.  Some
+## core functions expect @code{meshgrid} input and others expect @code{ndgrid}
+## input.  Check the documentation for the function in question to determine
+## the proper input format.
 ## @seealso{ndgrid, mesh, contour, surf}
 ## @end deftypefn
 

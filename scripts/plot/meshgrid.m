@@ -46,9 +46,9 @@
 ## Programming Note: @code{meshgrid} is restricted to 2-D or 3-D grid
 ## generation.  The @code{ndgrid} function will generate 1-D through N-D
 ## grids.  However, the functions are not completely equivalent.  If @var{x}
-## is a vector of length M and @var{y} is a vector of length N, then @code
-## meshgrid will produce an output grid which is NxM.  @code{ndgrid} will
-## produce an output which is MxN for the same input.
+## is a vector of length M and @var{y} is a vector of length N, then
+## @code{meshgrid} will produce an output grid which is NxM.  @code{ndgrid}
+## will produce an output which is MxN for the same input.
 ## @seealso{ndgrid, mesh, contour, surf}
 ## @end deftypefn
 

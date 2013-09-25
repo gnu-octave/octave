@@ -41,6 +41,52 @@
         <source>persistent</source>
         <translation>persistente</translation>
     </message>
+    <message>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+64"/>
+        <source>foreground</source>
+        <translation>primer plano</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>background</source>
+        <translation>plano de fondo</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>selection</source>
+        <translation>selección</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>cursor</source>
+        <translation>cursor</translation>
+    </message>
+</context>
+<context>
+    <name>QTerminal</name>
+    <message>
+        <location filename="../qterminal/libqterminal/QTerminal.h" line="+116"/>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Paste</source>
+        <translation>Pegar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Clear All</source>
+        <translation>Limpiar todo</translation>
+    </message>
+</context>
+<context>
+    <name>QWinTerminalImpl</name>
+    <message>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1527"/>
+        <source>copied selection to clipboard</source>
+        <translation>selección copiada al portapapeles</translation>
+    </message>
 </context>
 <context>
     <name>documentation_dock_widget</name>
@@ -58,19 +104,19 @@
 <context>
     <name>file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+294"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+300"/>
         <location line="+49"/>
         <location line="+28"/>
         <source>Octave Editor</source>
         <translation>Editor de Octave</translation>
     </message>
     <message>
-        <location line="-193"/>
+        <location line="-199"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Archivos de Octave (*.m);;Todos los archivos (*)</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+123"/>
         <source>Could not open file %1 for read:
 %2.</source>
         <translation>No se ha podido abrir el archivo %1 para su lectura:\n%2.</translation>
@@ -93,7 +139,7 @@ is already open in the editor</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location line="+159"/>
+        <location line="+160"/>
         <source>&amp;New File</source>
         <translation>Archivo &amp;nuevo</translation>
     </message>
@@ -108,12 +154,12 @@ is already open in the editor</source>
         <translation>&amp;Guardar archivo</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Save File &amp;As</source>
         <translation>Guardar archivo &amp;como</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Print</source>
         <translation>Imprimir</translation>
     </message>
@@ -143,17 +189,17 @@ is already open in the editor</source>
         <translation>Pegar</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>&amp;Next Bookmark</source>
         <translation>&amp;Marcador siguiente</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Pre&amp;vious Bookmark</source>
         <translation>Marcador &amp;anterior</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Toggle &amp;Bookmark</source>
         <translation>&amp;Alternar marcadores</translation>
     </message>
@@ -193,27 +239,27 @@ is already open in the editor</source>
         <translation>&amp;Eliminar comentario</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+63"/>
         <source>&amp;Recent Editor Files</source>
         <translation>Archivos &amp;recientes</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+16"/>
         <source>&amp;Close</source>
         <translation>C&amp;errar</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Close All</source>
         <translation>Cerrar todo</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Close Other Files</source>
         <translation>Cerrar otros archivos</translation>
     </message>
     <message>
-        <location line="-94"/>
+        <location line="-85"/>
         <source>&amp;Find and Replace</source>
         <translation>&amp;Buscar y reemplazar</translation>
     </message>
@@ -228,12 +274,12 @@ is already open in the editor</source>
         <translation>&amp;Ir a línea</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+53"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+36"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
@@ -278,14 +324,14 @@ is already open in the editor</source>
     <message>
         <location line="+4"/>
         <location line="+114"/>
-        <location line="+104"/>
+        <location line="+109"/>
         <location line="+66"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation>Editor de Octave</translation>
     </message>
     <message>
-        <location line="-305"/>
+        <location line="-310"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -293,7 +339,7 @@ is about to be closed but has been modified.
         <translation>El archivo\n%1\n está a punto de ser cerrado pero ha sido modificado.\n%2</translation>
     </message>
     <message>
-        <location line="+184"/>
+        <location line="+189"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Archivos de Octave(*.m);;Todos los archivos(*)</translation>
     </message>
@@ -319,13 +365,13 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Al parecer el archivo\n%1\n ha sido eliminado o renombrado.¿Desea guardarlo ahora?%2</translation>
     </message>
     <message>
-        <location line="-192"/>
+        <location line="-197"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>No se ha podido abrir el archivo %1 para escritura:\n%2.</translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+175"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Al parecer el archivo \&apos;%1\&apos; ha sido modificado por otra aplicación. ¿Desea recargarlo?</translation>
     </message>
@@ -485,12 +531,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>No se puede eliminar un directorio que no esté vacio</translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+131"/>
         <source>Set directory of file browser</source>
         <translation>Fijar directorio de explorador de archivos</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+28"/>
         <source>Create File</source>
         <translation>Crear archivo</translation>
     </message>
@@ -585,7 +631,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Buscar se&amp;lección</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+71"/>
         <source>Search from end</source>
         <translation>Buscar desde el final</translation>
     </message>
@@ -708,12 +754,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Establecer distinción entre mayúsculas y minúsculas en el texto</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>Search results</source>
         <translation>Resultados de la búsqueda</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+14"/>
         <source>Idle.</source>
         <translation>Inactivo.</translation>
     </message>
@@ -748,7 +794,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Contenido del archivo</translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+99"/>
         <source>Searching...</source>
         <translation>Buscando...</translation>
     </message>
@@ -761,7 +807,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>find_files_model</name>
     <message>
-        <location filename="../src/find-files-model.cc" line="+29"/>
+        <location filename="../src/find-files-model.cc" line="+76"/>
         <source>Filename</source>
         <translation>Nombre de archivo</translation>
     </message>
@@ -774,7 +820,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>history_dock_widget</name>
     <message>
-        <location filename="../src/history-dock-widget.cc" line="+42"/>
+        <location filename="../src/history-dock-widget.cc" line="+43"/>
         <source>Browse and search the command history.</source>
         <translation>Explorar y buscar en el historial de comandos.</translation>
     </message>
@@ -813,23 +859,23 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+155"/>
+        <location filename="../src/main-window.cc" line="+160"/>
         <source>Load Workspace</source>
         <translation>Cargar espacio de trabajo</translation>
     </message>
     <message>
-        <location line="+355"/>
-        <location line="+769"/>
+        <location line="+375"/>
+        <location line="+828"/>
         <source>About Octave</source>
         <translation>Acerca de Octave</translation>
     </message>
     <message>
-        <location line="-338"/>
+        <location line="-348"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+54"/>
         <source>New</source>
         <translation>Nuevo</translation>
     </message>
@@ -840,7 +886,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Guión</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Function</source>
         <translation>Función</translation>
     </message>
@@ -850,12 +896,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Figura</translation>
     </message>
     <message>
-        <location line="-55"/>
+        <location line="-58"/>
         <source>Open...</source>
         <translation>Abrir...</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+20"/>
         <source>Preferences...</source>
         <translation>Preferencias...</translation>
     </message>
@@ -865,7 +911,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+52"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
@@ -880,28 +926,33 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Paste</source>
         <translation>Pegar</translation>
     </message>
     <message>
-        <location line="-895"/>
-        <location line="+817"/>
+        <location line="-968"/>
+        <location line="+888"/>
         <source>Save Workspace As</source>
         <translation>Guardar espacio de trabajo como</translation>
     </message>
     <message>
-        <location line="-602"/>
+        <location line="-653"/>
         <source>Set working directory</source>
         <translation>Fijar directorio de trabajo</translation>
     </message>
     <message>
-        <location line="+686"/>
+        <location line="+737"/>
+        <source>Clear Clipboard</source>
+        <translation>Limpiar el Portapapeles</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Find Files...</source>
         <translation>Buscar archivos...</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Clear Command Window</source>
         <translation>Limpiar ventana de comandos</translation>
     </message>
@@ -916,7 +967,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Limpiar espacio de trabajo</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+40"/>
         <source>De&amp;bug</source>
         <translation>&amp;Depurar</translation>
     </message>
@@ -991,12 +1042,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Explorar directorios</translation>
     </message>
     <message>
-        <location line="-392"/>
+        <location line="-400"/>
         <source>Load workspace</source>
         <translation>Cargar espacio de trabajo</translation>
     </message>
     <message>
-        <location line="+192"/>
+        <location line="+200"/>
         <source>&amp;Window</source>
         <translation>&amp;Ventana</translation>
     </message>
@@ -1076,18 +1127,19 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <name>octave_dock_widget</name>
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+52"/>
+        <location line="+129"/>
         <source>Undock widget</source>
         <translatorcomment>Uso &quot;widget&quot; por ser el término usual: http://es.wikipedia.org/wiki/Widget</translatorcomment>
         <translation>Desacoplar widget</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="-119"/>
         <source>Hide widget</source>
         <translatorcomment>Uso &quot;widget&quot; por ser el término usual: http://es.wikipedia.org/wiki/Widget</translatorcomment>
         <translation>Ocultar widget</translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+86"/>
         <source>Dock widget</source>
         <translatorcomment>Uso &quot;widget&quot; por ser el término usual: http://es.wikipedia.org/wiki/Widget</translatorcomment>
         <translation>Acoplar widget</translation>
@@ -1274,12 +1326,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Colores de la terminal</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+45"/>
         <source>Font</source>
         <translation>Tipo de fuente</translation>
     </message>
     <message>
-        <location line="-745"/>
+        <location line="-744"/>
         <source>Show line numbers</source>
         <translation>Mostrar numeros de línea</translation>
     </message>
@@ -1319,7 +1371,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Cursor parpadeante</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+101"/>
         <source>Font size</source>
         <translation>Tamaño de fuente</translation>
     </message>
@@ -1389,7 +1441,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>HttpProxy</translation>
     </message>
     <message>
-        <location line="-1108"/>
+        <location line="-1107"/>
         <source>Icon set for dock widgets</source>
         <translation>Íconos para widget acoplados</translation>
     </message>
@@ -1404,7 +1456,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Tamaño de ícono</translation>
     </message>
     <message>
-        <location line="+1099"/>
+        <location line="+1098"/>
         <source>Socks5Proxy</source>
         <translation>&quot;Socks5Proxy&quot;</translation>
     </message>
@@ -1436,7 +1488,22 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Configuración del sistema</translation>
     </message>
     <message>
-        <location line="-137"/>
+        <location line="-268"/>
+        <source>IBeam Cursor</source>
+        <translation>cursor IBeam</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Block Cursor</source>
+        <translation>cursor de bloque</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Underline Cursor</source>
+        <translation>cursor subrayado</translation>
+    </message>
+    <message>
+        <location line="+129"/>
         <source>Difference to the default size</source>
         <translation>Diferencia con el tamaño predeterminado</translation>
     </message>
@@ -1472,7 +1539,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>webinfo</name>
     <message>
-        <location filename="../src/qtinfo/webinfo.cc" line="+78"/>
+        <location filename="../src/qtinfo/webinfo.cc" line="+80"/>
         <source>Type here and press &apos;Return&apos; to search</source>
         <translation>Escriba aquí y pulse la tecla de &apos;Retorno&apos; para buscar</translation>
     </message>

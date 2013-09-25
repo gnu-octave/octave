@@ -40,7 +40,7 @@
 ## If a third argument is provided, the histogram is normalized such that
 ## the sum of the bars is equal to @var{norm}.
 ##
-## Extreme values are lumped in the first and last bins.
+## Extreme values are lumped into the first and last bins.
 ##
 ## The histogram's appearance may be modified by specifying property/value
 ## pairs.  For example the face and edge color may be modified.
@@ -64,8 +64,9 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## With two output arguments, produce the values @var{nn} and @var{xx} such
-## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
+## With two output arguments, produce the values @var{nn} (numbers of elements)
+## and @var{xx} (bin centers) such that @code{bar (@var{xx}, @var{nn})} will
+## plot the histogram.
 ##
 ## @seealso{histc, bar, pie, rose}
 ## @end deftypefn
@@ -85,16 +86,16 @@ function [nn, xx] = hist (varargin)
 
   arg_is_vector = isvector (y);
 
-  if (rows (y) == 1)
+  if (arg_is_vector)
     y = y(:);
   endif
 
-  if (isreal (y))
-    max_val = max (y(:));
-    min_val = min (y(:));
-  else
-    error ("hist: first argument must be real valued");
+  if (! isreal (y))
+    error ("hist: Y must be real valued");
   endif
+
+  max_val = max (y(:));
+  min_val = min (y(:));
 
   iarg = 1;
   if (nargin == 1 || ischar (varargin{iarg}))
@@ -107,7 +108,7 @@ function [nn, xx] = hist (varargin)
     if (isscalar (x))
       n = x;
       if (n <= 0)
-        error ("hist: number of bins must be positive");
+        error ("hist: number of bins NBINS must be positive");
       endif
       x = [0.5:n]'/n;
       x = x * (max_val - min_val) + ones (size (x)) * min_val;
@@ -115,10 +116,10 @@ function [nn, xx] = hist (varargin)
       if (isvector (x))
         x = x(:);
       endif
-      tmp = sort (x);
-      if (any (tmp != x))
+      xsort = sort (x);
+      if (any (xsort != x))
         warning ("hist: bin values not sorted on input");
-        x = tmp;
+        x = xsort;
       endif
     else
       error ("hist: second argument must be a scalar or a vector");
@@ -154,14 +155,15 @@ function [nn, xx] = hist (varargin)
   freq = diff (chist);
 
   if (nargin > 2 && ! ischar (varargin{iarg}))
-    ## Normalise the histogram.
+    ## Normalize the histogram.
     norm = varargin{iarg++};
-    freq = freq / sum(! isnan (y)) * norm;
+    freq *= norm / sum (! isnan (y));
   endif
 
   if (nargout > 0)
-    if (arg_is_vector)
-      nn = freq';
+    if (arg_is_vector)  
+      ## Matlab compatibility requires a row vector return
+      nn = freq';  
       xx = x';
     else
       nn = freq;

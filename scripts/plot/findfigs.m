@@ -29,12 +29,10 @@
 
 function findfigs ()
 
-  figh  = allchild (0);
+  hfigs = allchild (0);
   units = get (0, "units");
   unwind_protect
-    if (!strcmp (units, "pixels"))
-      set (0, "units", "pixels");
-    endif
+    set (0, "units", "pixels");
     screensize = get (0, "screensize");
   unwind_protect_cleanup
     set (0, "units", units);
@@ -46,37 +44,34 @@ function findfigs ()
   screensize(1:2) += margin;
   screensize(3:4) -= margin;
 
-  for i = 1:numel (figh)
-    if (strcmp (get (figh(i), "visible"), "on"))
+  hfigs = hfigs(strcmp (get (hfigs, "visible"), "on"));
+  for hf = hfigs'
+    units = get (hf, "units");
+    unwind_protect
+      set (hf, "units", "pixels");
+      pos = get (hf, "position");
+      ## Test if (in order):
+      ## The left side is outside the right side of the screen
+      ## The bottom is above the top of the screen
+      ## The right side is outside the left of the screen
+      ## the top is below the bottom of the screen
+      if (pos(1) > screensize(3)
+          || pos(2) > screensize(4)
+          || pos(1)+pos(3) < screensize(1)
+          || pos(2)+pos(4) < screensize(2))
 
-      units = get (figh(i), "units");
-      unwind_protect
-        if (!strcmp (units, "pixels"))
-          set (figh(i), "units", "pixels");
-        endif
-        pos = get (figh(i), "position");
-        ## Test if (in order):
-        ## The left side is outside the right side of the screen
-        ## The bottom is above the top of the screen
-        ## The right side is outside the left of the screen
-        ## the top is below the bottom of the screen
-        if (pos(1) > screensize(3)
-            || pos(2) > screensize(4)
-            || pos(1)+pos(3) < screensize(1)
-            || pos(2)+pos(4) < screensize(2))
-
-          ## the new position will be at the top left of the screen
-          ## (all moved figures will overlap).  The bottom left is chosen
-          ## instead of the top left because that allows for the unknown
-          ## amount of space for the menu bar and the title bar.
-          pos(1) = screensize(1);
-          pos(2) = screensize(2);
-          set (figh(i), "position", pos);
-        endif
-      unwind_protect_cleanup
-        set (figh(i), "units", units);
-      end_unwind_protect
-    endif
+        ## the new position will be at the top left of the screen
+        ## (all moved figures will overlap).  The bottom left is chosen
+        ## instead of the top left because that allows for the unknown
+        ## amount of space for the menu bar and the title bar.
+        pos(1) = screensize(1);
+        pos(2) = screensize(2);
+        set (hf, "position", pos);
+      endif
+    unwind_protect_cleanup
+      set (hf, "units", units);
+    end_unwind_protect
   endfor
+
 endfunction
 

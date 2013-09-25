@@ -30,7 +30,7 @@
 ## was clicked in the units of the current axes.  The return value @var{button}
 ## is 1, 2, or 3 for the left, middle, or right button.  If a key is pressed
 ## the ASCII value is returned in @var{button}.
-## @seealso{gtext}
+## @seealso{gtext, waitforbuttonpress}
 ## @end deftypefn
 
 function varargout = ginput (n)

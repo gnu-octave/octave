@@ -10207,11 +10207,12 @@ DEFUN (waitfor, args, ,
 @deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
 @deftypefnx {Built-in Function} {} waitfor (@dots{}, \"timeout\", @var{timeout})\n\
 Suspend the execution of the current program until a condition is\n\
-satisfied on the graphics handle @var{h}.  While the program is suspended\n\
-graphics events are still being processed normally, allowing callbacks to\n\
-modify the state of graphics objects.  This function is reentrant and can be\n\
-called from a callback, while another @code{waitfor} call is pending at\n\
-top-level.\n\
+satisfied on the graphics handle @var{h}.\n\
+\n\
+While the program is suspended graphics events are still being processed\n\
+normally, allowing callbacks to modify the state of graphics objects.  This\n\
+function is reentrant and can be called from a callback, while another\n\
+@code{waitfor} call is pending at the top-level.\n\
 \n\
 In the first form, program execution is suspended until the graphics object\n\
 @var{h} is destroyed.  If the graphics handle is invalid, the function\n\
@@ -10238,7 +10239,7 @@ To define a condition on a property named @code{timeout}, use the string\n\
 @code{\\timeout} instead.\n\
 \n\
 In all cases, typing CTRL-C stops program execution immediately.\n\
-@seealso{isequal}\n\
+@seealso{waitforbuttonpress, isequal}\n\
 @end deftypefn")
 {
   if (args.length () > 0)
@@ -10406,7 +10407,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
           // FIXME: There is still a "hole" in the following loop. The code
           //        assumes that an object handle is unique, which is a fair
-          //        assumptions, except for figures. If a figure is destroyed
+          //        assumption, except for figures. If a figure is destroyed
           //        then recreated with the same figure ID, within the same
           //        run of event hooks, then the figure destruction won't be
           //        caught and the loop will not stop. This is an unlikely

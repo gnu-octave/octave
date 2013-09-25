@@ -9787,6 +9787,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 @end group\n\
 @end example\n\
 \n\
+@seealso{addproperty, hggroup}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
@@ -9979,6 +9980,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 @end group\n\
 @end example\n\
 \n\
+@seealso{addlistener, hggroup}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;

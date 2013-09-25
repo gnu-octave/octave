@@ -37,6 +37,7 @@
 ## collected into a single hggroup so that they can be made visible/invisible
 ## with a single command, @code{set (hg_handle, "visible", "off")}.
 ## 
+## @seealso{addproperty, addlistener}
 ## @end deftypefn
 
 ## Author: goffioul

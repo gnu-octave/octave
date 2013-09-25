@@ -71,10 +71,10 @@ function [xx, yy, zz] = sphere (varargin)
     yy = y;
     zz = z;
   else
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
+    oldfig = [];
+    if (! isempty (hax))
+      oldfig = get (0, "currentfigure");
+    endif
     unwind_protect
       hax = newplot (hax);
     

@@ -114,30 +114,30 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
   nz = nz ./ len;
 
   if (nargout == 0)
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-   unwind_protect
-     hax = newplot (hax);
-     
-     surf (x, y, z, varargin{ioff:end});
-     old_hold_state = get (hax, "nextplot");
-     unwind_protect
-       set (hax, "nextplot", "add");
-       plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
-              [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
-              [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
-              varargin{ioff:end});
-     unwind_protect_cleanup
-       set (hax, "nextplot", old_hold_state);
-     end_unwind_protect
-     
-   unwind_protect_cleanup
-     if (! isempty (oldfig))
-       set (0, "currentfigure", oldfig);
-     endif
-   end_unwind_protect
+    oldfig = [];
+    if (! isempty (hax))
+      oldfig = get (0, "currentfigure");
+    endif
+    unwind_protect
+      hax = newplot (hax);
+      
+      surf (x, y, z, varargin{ioff:end});
+      old_hold_state = get (hax, "nextplot");
+      unwind_protect
+        set (hax, "nextplot", "add");
+        plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
+               [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
+               [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
+               varargin{ioff:end});
+      unwind_protect_cleanup
+        set (hax, "nextplot", old_hold_state);
+      end_unwind_protect
+      
+    unwind_protect_cleanup
+      if (! isempty (oldfig))
+        set (0, "currentfigure", oldfig);
+      endif
+    end_unwind_protect
   else
     Nx = nx;
     Ny = ny;

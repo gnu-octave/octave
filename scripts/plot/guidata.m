@@ -25,38 +25,43 @@
 ## figure handle then it's parent figure will be used for storage.
 ##
 ## @var{data} must be a single object which means it is usually preferable
-## for it to be a data container such as a cell array or struct.
+## for it to be a data container such as a cell array or struct so that
+## additional data items can be added easily.
 ##
 ## @seealso{getappdata, setappdata, get, set, getpref, setpref}
 ## @end deftypefn
 
 ## Author: goffioul
 
-function varargout = guidata (varargin)
+function dataout = guidata (h, data)
 
-  if (nargin == 1 || nargin == 2)
-    h = varargin{1};
-    if (ishandle (h))
-      h = ancestor (h, "figure");
-      if (! isempty (h))
-        if (nargin == 1)
-          varargout{1} = get (h, "__guidata__");
-        else
-          data = varargin{2};
-          set (h, "__guidata__", data);
-          if (nargout == 1)
-            varargout{1} = data;
-          endif
-        endif
-      else
-        error ("no ancestor figure found");
-      endif
-    else
-      error ("invalid object handle");
-    endif
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (! ishandle (h))
+    error ("guidata: H must be a valid object handle");
+  endif
+  h = ancestor (h, "figure");
+  if (isempty (h))
+    error ("guidata: no ancestor figure of H found");
+  endif
+
+  if (nargin == 1)
+    dataout = get (h, "__guidata__");
+  else
+    set (h, "__guidata__", data);
+    if (nargout == 1)
+      dataout = data;
+    endif
+  endif
+
 endfunction
+
+
+%% Test input validation
+%!error guidata ()
+%!error guidata (1,2,3)
+%!error <H must be a valid object handle> guidata ({1})
+%!error <no ancestor figure of H found> guidata (0)
 

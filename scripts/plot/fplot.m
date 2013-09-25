@@ -18,25 +18,29 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} fplot (@var{fn}, @var{limits})
-## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{tol})
-## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{n})
-## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{fmt})
-## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{tol}, @var{n}, @var{fmt})
+## @deftypefnx {Function File} {} fplot (@dots{}, @var{tol})
+## @deftypefnx {Function File} {} fplot (@dots{}, @var{n})
+## @deftypefnx {Function File} {} fplot (@dots{}, @var{fmt})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}] =} fplot (@dots{})
 ## Plot a function @var{fn} within the range defined by @var{limits}.
 ##
-## @var{fn} is a function handle, inline function, or string
-## containing the name of the function to evaluate.
-## The limits of the plot are of the form @code{[@var{xlo}, @var{xhi}]} or
-## @code{[@var{xlo}, @var{xhi}, @var{ylo}, @var{yhi}]}.
+## @var{fn} is a function handle, inline function, or string containing the
+## name of the function to evaluate.
+##
+## The limits of the plot are of the form @w{@code{[@var{xlo}, @var{xhi}]}} or
+## @w{@code{[@var{xlo}, @var{xhi}, @var{ylo}, @var{yhi}]}}.
+##
 ## The next three arguments are all optional and any number of them may be
 ## given in any order.
+##
 ## @var{tol} is the relative tolerance to use for the plot and defaults
 ## to 2e-3 (.2%).
-## @var{n} is the minimum number of points to use.  When @var{n} is
-## specified, the maximum stepsize will be
-## @code{@var{xhi} - @var{xlo} / @var{n}}.  More than @var{n} points may still
-## be used in order to meet the relative tolerance requirement.
+##
+## @var{n} is the minimum number of points to use.  When @var{n} is specified,
+## the maximum stepsize will be @code{@var{xhi} - @var{xlo} / @var{n}}.  More
+## than @var{n} points may still be used in order to meet the relative
+## tolerance requirement.
+##
 ## The @var{fmt} argument specifies the linestyle to be used by the plot
 ## command.
 ##
@@ -137,8 +141,8 @@ function [X, Y] = fplot (varargin)
   ## FIXME: This algorithm should really use adaptive scaling as the 
   ##        the numerical quadrature algorithms do so that extra points are
   ##        used where they are needed and not spread evenly over the entire
-  ##        x-range.  Try any function with a discontinuity such as
-  ##        fplot (@tan, [-2, 2]) or fplot ("1./x", [-3, 2]) to see the
+  ##        x-range.  Try any function with a discontinuity, such as
+  ##        fplot (@tan, [-2, 2]) or fplot ("1./x", [-3, 2]), to see the
   ##        problems with the current solution.
 
   while (n < 2^18)    # Something is wrong if we need more than 250K points

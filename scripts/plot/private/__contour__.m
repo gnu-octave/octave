@@ -470,13 +470,13 @@ function update_data (h, ~, prop = "")
     endif
 
     add_patch_children (h);
-    update_text (h, d);
+    update_text (h);
     recursive = false;
   endif
 
 endfunction
 
-function update_text (h, d)
+function update_text (h, ~)
   persistent recursive = false;
 
   if (! recursive)

@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} surfl (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} surfl (@var{z})
-## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L})
-## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L}, @var{P})
+## @deftypefn  {Function File} {} surfl (@var{z})
+## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} surfl (@dots{}, @var{lsrc})
+## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{lsrc}, @var{P})
+## @deftypefnx {Function File} {} surfl (@dots{}, "cdata")
 ## @deftypefnx {Function File} {} surfl (@dots{}, "light")
 ## @deftypefnx {Function File} {} surfl (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} surfl (@dots{})
@@ -38,10 +39,10 @@
 ##
 ## The default lighting mode @qcode{"cdata"}, changes the cdata property of the
 ## surface object to give the impression of a lighted surface.
-## @strong{Warning:} The alternative mode @qcode{"light"} mode which creates a light
-## object to illuminate the surface is not implemented (yet).
+## @strong{Warning:} The alternative mode @qcode{"light"} mode which creates a
+## light object to illuminate the surface is not implemented (yet).
 ##
-## The light source location can be specified using @var{L}.  It can be given
+## The light source location can be specified using @var{lsrc}.  It can be given
 ## as a 2-element vector [azimuth, elevation] in degrees, or as a 3-element
 ## vector [lx, ly, lz].  The default value is rotated 45 degrees
 ## counterclockwise to the current view.
@@ -93,7 +94,7 @@ function h = surfl (varargin)
   if (ischar (varargin{end}))
     switch (tolower (varargin{end}))
       case "light"
-        warning ("light method not supported (yet), using cdata method instead");
+        warning ("surfl: light method not supported (yet), using cdata method instead");
         ## This can be implemented when light objects are supported.
         use_cdata = false;
       case "cdata"
@@ -155,9 +156,9 @@ function h = surfl (varargin)
 
     if (! have_lv)
       ## Calculate light vector (lv) from view vector.
-      Phi = 45.0 / 180.0 * pi;
-      R = [cos(Phi), -sin(Phi), 0;
-           sin(Phi),  cos(Phi), 0;
+      phi = pi / 4;  # 45 degrees
+      R = [cos(phi), -sin(phi), 0;
+           sin(phi),  cos(phi), 0;
            0,         0,        1];
       lv = (R * vv.').';
     endif
@@ -169,15 +170,16 @@ function h = surfl (varargin)
     vn(:,:,3) *= dar(3);
 
     ## Normalize vn.
-    vn = vn ./ repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
+    vn ./= repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
     [nr, nc] = size (get (htmp, "zdata"));
 
     ## Ambient, diffuse, and specular term.
     cdata = (  r(1) * ones (nr, nc)
              + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
              + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
+    cdata ./= sum (r(1:3));
 
-    set (htmp, "cdata", cdata ./ sum (r(1:3)));
+    set (htmp, "cdata", cdata);
 
   unwind_protect_cleanup
     if (! isempty (oldfig))

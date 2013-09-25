@@ -17,36 +17,43 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hdata} =} guihandles (@var{handle})
+## @deftypefn  {Function File} {@var{hdata} =} guihandles (@var{h})
 ## @deftypefnx {Function File} {@var{hdata} =} guihandles
+## Return a structure of object handles for the figure associated with
+## handle @var{h}.
+## 
+## If no handle is specified the current figure returned by @code{gcf} is used.
 ##
-## @seealso{guidata, getappdata, setappdata}
+## The fieldname for each entry of @var{hdata} is taken from the @qcode{"tag"}
+## property of the graphic object.  If the tag is empty then the handle is not
+## returned.  If there are multiple graphic objects with the same tag then
+## the entry in @var{hdata} will be a vector of handles.  @code{guihandles}
+## includes all possible handles, including those for
+## which @qcode{"HandleVisibility"} is @qcode{"off"}.
+## @seealso{guidata, findobj, findall, allchild}
 ## @end deftypefn
 
 ## Author: goffioul
 
-function hdata = guihandles (varargin)
+function hdata = guihandles (h)
 
-  hdata = [];
-
-  if (nargin == 0 || nargin == 1)
-    if (nargin == 1)
-      h = varargin{1};
-      if (ishandle (h))
-        h = ancestor (h, "figure");
-        if (isempty (h))
-          error ("no ancestor figure found");
-        endif
-      else
-        error ("invalid object handle");
-      endif
-    else
-      h = gcf ();
-    endif
-    hdata = __make_guihandles_struct__ (h, hdata);
-  else
+  if (nargin > 2)
     print_usage ();
   endif
+
+  if (nargin == 1)
+    if (! ishandle (h))
+      error ("guidata: H must be a valid object handle");
+    endif
+    h = ancestor (h, "figure");
+    if (isempty (h))
+      error ("guidata: no ancestor figure of H found");
+    endif
+  else
+    h = gcf ();
+  endif
+
+  hdata = __make_guihandles_struct__ (h, []);
 
 endfunction
 
@@ -65,8 +72,8 @@ function hdata = __make_guihandles_struct__ (h, hdata)
   endif
 
   kids = allchild (h);
-  for i = 1 : length (kids)
-    hdata = __make_guihandles_struct__ (kids(i), hdata);
+  for hkid = kids'
+    hdata = __make_guihandles_struct__ (hkid, hdata);
   endfor
 
 endfunction

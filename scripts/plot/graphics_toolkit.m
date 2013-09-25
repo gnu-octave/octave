@@ -21,8 +21,7 @@
 ## @deftypefnx {Function File} {@var{name} =} graphics_toolkit (@var{hlist})
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{name})
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
-## Query or set the default graphics toolkit which is assigned to new
-## figures.
+## Query or set the default graphics toolkit which is assigned to new figures.
 ## 
 ## With no inputs, return the current default graphics toolkit.  If the input
 ## is a list of figure graphic handles, @var{hlist}, then return the name

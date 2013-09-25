@@ -57,20 +57,18 @@ function [x, y, z] = sombrero (n = 41)
     error ("sombrero: number of grid lines N must be greater than 1");
   endif
 
-  tx = linspace (-8, 8, n)';
-  ty = tx;
-  [xx, yy] = meshgrid (tx, ty);
-  r = sqrt (xx .^ 2 + yy .^ 2) + eps;  # eps prevents div/0 errors
-  tz = sin (r) ./ r;
+  [xx, yy] = meshgrid (linspace (-8, 8, n));
+  r = sqrt (xx.^2 + yy.^2) + eps;  # eps prevents div/0 errors
+  zz = sin (r) ./ r;
 
   if (nargout == 0)
-    surf (tx, ty, tz);
+    surf (xx, yy, zz);
   elseif (nargout == 1)
-    x = tz;
+    x = zz;
   else
-    x = tx;
-    y = ty;
-    z = tz;
+    x = xx;
+    y = yy;
+    z = zz;
   endif
 
 endfunction

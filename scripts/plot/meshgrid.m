@@ -21,14 +21,34 @@
 ## @deftypefnx {Function File} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
 ## @deftypefnx {Function File} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x})
-## Given vectors of @var{x} and @var{y} and @var{z} coordinates, and
-## returning 3 arguments, return three-dimensional arrays corresponding
-## to the @var{x}, @var{y}, and @var{z} coordinates of a mesh.  When
-## returning only 2 arguments, return matrices corresponding to the
-## @var{x} and @var{y} coordinates of a mesh.  The rows of @var{xx} are
-## copies of @var{x}, and the columns of @var{yy} are copies of @var{y}.
-## If @var{y} is omitted, then it is assumed to be the same as @var{x},
-## and @var{z} is assumed the same as @var{y}.
+## Given vectors of @var{x} and @var{y} coordinates, return matrices @var{xx}
+## and @var{yy} corresponding to a full 2-D grid.
+##
+## The rows of @var{xx} are copies of @var{x}, and the columns of @var{yy} are
+## copies of @var{y}.  If @var{y} is omitted, then it is assumed to be the same
+## as @var{x}.
+##
+## If the optional @var{z} input is given, or @var{zz} is requested, then the
+## output will be a full 3-D grid.
+##
+## @code{meshgrid} is most frequently used to produce input for a 2-D or 3-D
+## function that will be plotted.  The following example creates a surface
+## plot of the ``sombrero'' function.
+##
+## @example
+## f = @@(x,y) sin (sqrt (x.^2 + y.^2)) ./ sqrt (x.^2 + y.^2);
+## range = linspace (-8, 8, 41);
+## [@var{X}, @var{Y}] = meshgrid (range, range);  
+## Z = f (X, Y);
+## surf (X, Y, Z);
+## @end example
+##
+## Programming Note: @code{meshgrid} is restricted to 2-D or 3-D grid
+## generation.  The @code{ndgrid} function will generate 1-D through N-D
+## grids.  However, the functions are not completely equivalent.  If @var{x}
+## is a vector of length M and @var{y} is a vector of length N, then @code
+## meshgrid will produce an output grid which is NxM.  @code{ndgrid} will
+## produce an output which is MxN for the same input.
 ## @seealso{ndgrid, mesh, contour, surf}
 ## @end deftypefn
 
@@ -44,30 +64,27 @@ function [xx, yy, zz] = meshgrid (x, y, z)
     y = x;
   endif
 
-  ## Use repmat to ensure that the result values have the same type as
-  ## the arguments.
+  ## Use repmat to ensure that result values have the same type as the inputs
 
   if (nargout < 3)
-    if (isvector (x) && isvector (y))
-      xx = repmat (x(:).', length (y), 1);
-      yy = repmat (y(:), 1, length (x));
-    else
-      error ("meshgrid: arguments must be vectors");
+    if (! (isvector (x) && isvector (y)))
+      error ("meshgrid: X and Y must be vectors");
     endif
+    xx = repmat (x(:).', length (y), 1);
+    yy = repmat (y(:), 1, length (x));
   else
     if (nargin < 3)
       z = y;
     endif
-    if (isvector (x) && isvector (y) && isvector (z))
-       lenx = length (x);
-       leny = length (y);
-       lenz = length (z);
-       xx = repmat (repmat (x(:).', leny, 1), [1, 1, lenz]);
-       yy = repmat (repmat (y(:), 1, lenx), [1, 1, lenz]);
-       zz = reshape (repmat (z(:).', lenx*leny, 1)(:), leny, lenx, lenz);
-    else
-      error ("meshgrid: arguments must be vectors");
+    if (! (isvector (x) && isvector (y) && isvector (z)))
+      error ("meshgrid: X, Y, and Z must be vectors");
     endif
+    lenx = length (x);
+    leny = length (y);
+    lenz = length (z);
+    xx = repmat (repmat (x(:).', leny, 1), [1, 1, lenz]);
+    yy = repmat (repmat (y(:), 1, lenx), [1, 1, lenz]);
+    zz = reshape (repmat (z(:).', lenx*leny, 1)(:), leny, lenx, lenz);
   endif
 
 endfunction
@@ -103,4 +120,11 @@ endfunction
 %! assert (size (XX1), [3, 3]);
 %! assert (XX1, XX2);
 %! assert (YY1, YY2);
+
+%% Test input validation
+%!error meshgrid ()
+%!error meshgrid (1,2,3,4)
+%!error <X and Y must be vectors> meshgrid (ones (2,2), 1:3)
+%!error <X and Y must be vectors> meshgrid (1:3, ones (2,2))
+%!error <X, Y, and Z must be vectors> [X,Y,Z] = meshgrid (1:3, 1:3, ones (2,2))
 

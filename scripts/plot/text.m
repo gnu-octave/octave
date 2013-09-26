@@ -21,14 +21,18 @@
 ## @deftypefnx {Function File} {} text (@var{x}, @var{y}, @var{z}, @var{string})
 ## @deftypefnx {Function File} {} text (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} text (@dots{})
-## Create a text object with text @var{string} at position @var{x},
-## @var{y}, @var{z} on the current axes.
+## Create a text object with text @var{string} at position @var{x}, @var{y},
+## (@var{z}) on the current axes.
 ##
-## Optional property/value pairs following may be used to specify the
-## appearance of the text.
+## Multiple locations can be specified if @var{x}, @var{y}, (@var{z}) are
+## vectors.  Multiple strings can be specified with a character matrix or
+## a cell array of strings.
 ##
-## The optional return value @var{h} is a graphics handle to the created text
-## object.
+## Optional property/value pairs may be used to control the appearance of the
+## text.
+##
+## The optional return value @var{h} is a vector of graphics handles to the
+## created text objects.
 ## @seealso{gtext, title, xlabel, ylabel, zlabel}
 ## @end deftypefn
 
@@ -54,64 +58,64 @@ function h = text (varargin)
       offset = 3;
     endif
 
-    label = varargin{offset};
+    string = varargin{offset};
     varargin(1:offset) = [];
 
     nx = numel (x);
     ny = numel (y);
     nz = numel (z);
-    if (ischar (label))
+    if (ischar (string))
 
       do_keyword_repl = true;
-      nt = rows (label);
+      nt = rows (string);
       if (nx == 1 && nt == 1)
         ## Single text object with one line
-        label = {label};
+        string = {string};
       elseif (nx == 1 && nt > 1)
         ## Single text object with multiple lines
         ## FIXME: "default" or "factory" as first row
         ##        should be escaped to "\default" or "\factory"
         ##        Other rows do not require escaping.
         do_keyword_repl = false;
-        label = {label};
+        string = {string};
       elseif (nx > 1 && nt == nx)
         ## Mutiple text objects with different strings
-        label = cellstr (label);
+        string = cellstr (string);
       else 
         ## Mutiple text objects with same string
-        label = repmat ({label}, [nx, 1]);
+        string = repmat ({string}, [nx, 1]);
         nt = nx;
       endif
 
       ## Escape special keywords
       if (do_keyword_repl)
-        label = regexprep (label, '^(default|factory)$', '\\$1');
+        string = regexprep (string, '^(default|factory)$', '\\$1');
       endif
 
-    elseif (iscell (label))
+    elseif (iscell (string))
 
-      nt = numel (label);
+      nt = numel (string);
       if (nx == 1)      
         ## Single text object with one or more lines
-        label = {label};
+        string = {string};
         nt = 1;
       elseif (nx > 1 && nt == nx)
         ## Mutiple text objects with different strings
       else
         ## Mutiple text objects with same string
-        label = repmat ({label}, [nx, 1]);
+        string = repmat ({string}, [nx, 1]);
         nt = nx;
       endif
 
     else
 
-      error ("text: LABEL must be a character string or cell array of character strings");
+      error ("text: STRING must be a character string or cell array of character strings");
 
     endif
   else  # Only PROP/VALUE pairs
     x = y = z = 0;
     nx = ny = nz = 1;
-    label = {""};
+    string = {""};
     nt = 1;
   endif
 
@@ -131,18 +135,18 @@ function h = text (varargin)
     pos = [x(:), y(:), z(:)];
     htmp = zeros (nt, 1);
     if (nx == 1)
-      htmp = __go_text__ (hax, "string", label{1},
-                          varargin{:},
-                          "position", pos);
+      htmp = __go_text__ (hax, "string", string{1},
+                               varargin{:},
+                               "position", pos);
     elseif (nx == nt)
       for n = 1:nt
-        htmp(n) = __go_text__ (hax, "string", label{n},
-                               varargin{:},
-                               "position", pos(n,:));
+        htmp(n) = __go_text__ (hax, "string", string{n},
+                                    varargin{:},
+                                    "position", pos(n,:));
       endfor
       __request_drawnow__ ();
     else
-      error ("text: dimension mismatch for coordinates and LABEL");
+      error ("text: dimension mismatch for coordinates and STRING");
     endif
   elseif (nt == nx || nt == 1 || nx == 1)
     error ("text: dimension mismatch for coordinates");

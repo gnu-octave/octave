@@ -2361,10 +2361,7 @@ public:
 
 private:
 
-  // FIXME: default toolkit should be configurable.
-
-  gtk_manager (void)
-    : dtk ("gnuplot"), available_toolkits (), loaded_toolkits () { }
+  gtk_manager (void);
 
   ~gtk_manager (void) { }
 
@@ -3458,7 +3455,7 @@ public:
       radio_property xvisualmode , "{auto}|manual"
       // Octave-specific properties
       bool_property __enhanced__ h , "on"
-      string_property __graphics_toolkit__ s , "gnuplot"
+      string_property __graphics_toolkit__ s , gtk_manager::default_toolkit ()
       any_property __guidata__ h , Matrix ()
       any_property __plot_stream__ h , Matrix ()
     END_PROPERTIES

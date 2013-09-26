@@ -9501,6 +9501,16 @@ Internal function: returns the pixel size of the image in normalized units.\n\
 
 gtk_manager *gtk_manager::instance = 0;
 
+gtk_manager::gtk_manager (void)
+  : dtk (), available_toolkits (), loaded_toolkits ()
+{
+#if defined (HAVE_FLTK)
+  dtk = "fltk";
+#else
+  dtk = "gnuplot";
+#endif
+}
+
 void
 gtk_manager::create_instance (void)
 {

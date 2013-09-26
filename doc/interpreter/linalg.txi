@@ -96,6 +96,8 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(inv)
 
+@DOCSTRING(linsolve)
+
 @DOCSTRING(matrix_type)
 
 @DOCSTRING(norm)

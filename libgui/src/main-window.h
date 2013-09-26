@@ -109,8 +109,10 @@ public slots:
   void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
   void open_bug_tracker_page (void);
-  void open_octave_forge_page (void);
+  void open_octave_packages_page (void);
   void open_agora_page (void);
+  void open_contribute_page (void);
+  void open_developer_page (void);
   void process_settings_dialog_request (void);
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);

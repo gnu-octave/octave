@@ -243,25 +243,37 @@ main_window::handle_new_figure_request (void)
 void
 main_window::open_online_documentation_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://gnu.org/software/octave/doc/interpreter"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/doc/interpreter"));
 }
 
 void
 main_window::open_bug_tracker_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://bugs.octave.org"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/bugs.html"));
 }
 
 void
-main_window::open_octave_forge_page (void)
+main_window::open_octave_packages_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://octave.sourceforge.net/"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/packages.html"));
 }
 
 void
 main_window::open_agora_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://agora.octave.org/"));
+  QDesktopServices::openUrl (QUrl ("http://agora.octave.org"));
+}
+
+void
+main_window::open_contribute_page (void)
+{
+  QDesktopServices::openUrl (QUrl ("http://octave.org/donate.html"));
+}
+
+void
+main_window::open_developer_page (void)
+{
+  QDesktopServices::openUrl (QUrl ("http://ocxtave.org/get-involved.html"));
 }
 
 void
@@ -1351,11 +1363,17 @@ main_window::construct_help_menu (QMenuBar *p)
   QAction *report_bug_action
     = help_menu->addAction (tr ("Report Bug"));
 
-  QAction *octave_forge_action
-    = help_menu->addAction (tr ("Visit Octave Forge"));
+  QAction *octave_packages_action
+    = help_menu->addAction (tr ("Octave Packages"));
 
   QAction *agora_action
-    = help_menu->addAction (tr ("Visit Agora"));
+    = help_menu->addAction (tr ("Share Code"));
+
+  QAction *contribute_action
+    = help_menu->addAction (tr ("Contribute to Octave"));
+
+  QAction *developer_action
+    = help_menu->addAction (tr ("Octave Developer Resources"));
 
   help_menu->addSeparator ();
 
@@ -1365,11 +1383,17 @@ main_window::construct_help_menu (QMenuBar *p)
   connect (report_bug_action, SIGNAL (triggered ()),
            this, SLOT (open_bug_tracker_page ()));
 
-  connect (octave_forge_action, SIGNAL (triggered ()),
-           this, SLOT (open_octave_forge_page ()));
+  connect (octave_packages_action, SIGNAL (triggered ()),
+           this, SLOT (open_octave_packages_page ()));
 
   connect (agora_action, SIGNAL (triggered ()),
            this, SLOT (open_agora_page ()));
+
+  connect (contribute_action, SIGNAL (triggered ()),
+           this, SLOT (open_contribute_page ()));
+
+  connect (developer_action, SIGNAL (triggered ()),
+           this, SLOT (open_developer_page ()));
 
   connect (about_octave_action, SIGNAL (triggered ()),
            this, SLOT (show_about_octave ()));

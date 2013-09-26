@@ -265,25 +265,24 @@ Summary of important user-visible changes for version 3.8:
       inputdlg   msgbox    warndlg
 
  ** Other new functions added in 3.8.0:
-                                                  
-      atan2d                     erfi             jit_startcnt
-      base64_decode              expint           lines                     
-      base64_encode              findfigs         polyeig                   
-      betaincinv                 flintmax         prefdir                   
-      built_in_docstrings_file   fminsearch       preferences               
-      cmpermute                  gallery          readline_re_read_init_file
-      cmunique                   gco              readline_read_init_file   
-      colorcube                  hdl2struct       rgbplot                   
-      copyobj                    history_save     save_default_options      
-      dawson                     imformats        shrinkfaces               
-      dblist                     importdata       splinefit                 
-      debug_jit                  isaxes           stemleaf                  
-      desktop                    iscolormap       strjoin    
-      doc_cache_create           isequaln         struct2hdl 
-      ellipj                     jit_debug        tetramesh                 
-      ellipke                    jit_enable       waterfall                 
-      erfcinv                    
 
+      atan2d                     erfi             jit_startcnt
+      base64_decode              expint           lines
+      base64_encode              findfigs         linsolve
+      betaincinv                 flintmax         polyeig
+      built_in_docstrings_file   fminsearch       prefdir
+      cmpermute                  gallery          preferences
+      cmunique                   gco              readline_re_read_init_file
+      colorcube                  hdl2struct       readline_read_init_file
+      copyobj                    history_save     rgbplot
+      dawson                     imformats        save_default_options
+      dblist                     importdata       shrinkfaces
+      debug_jit                  isaxes           splinefit
+      desktop                    iscolormap       stemleaf
+      doc_cache_create           isequaln         strjoin
+      ellipj                     jit_debug        struct2hdl
+      ellipke                    jit_enable       tetramesh
+      erfcinv                                     waterfall
 
  ** Deprecated functions.
 

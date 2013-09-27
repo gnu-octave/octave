@@ -60,21 +60,20 @@ function h = tetramesh (varargin)
   X = reg{2};
 
   if (! ismatrix (T) || columns (T) != 4)
-    error ("tetramesh: T must be a n-by-4 matrix");
-  endif
-  if (! ismatrix (X) || columns (X) != 3)
-    error ("tetramesh: X must be a n-by-3 matrix");
+    error ("tetramesh: T must be an n-by-4 matrix");
+  elseif (! ismatrix (X) || columns (X) != 3)
+    error ("tetramesh: X must be an n-by-3 matrix");
   endif
 
   size_T = rows (T);
-  colmap = colormap ();
+  cmap = colormap ();
   
   if (length (reg) < 3)
-    size_colmap = rows (colmap);
-    C = mod ((1:size_T)' - 1, size_colmap) + 1;
-    if (size_T < size_colmap && size_T > 1) 
+    size_cmap = rows (cmap);
+    C = mod ((1:size_T)' - 1, size_cmap) + 1;
+    if (size_T < size_cmap && size_T > 1) 
       ## expand to the available range of colors
-      C = floor ((C - 1) * (size_colmap - 1) / (size_T - 1)) + 1;
+      C = floor ((C - 1) * (size_cmap - 1) / (size_T - 1)) + 1;
     endif
   else
     C = reg{3};
@@ -83,21 +82,30 @@ function h = tetramesh (varargin)
     endif
   endif
 
-  h = zeros (1, size_T);
+  hax = newplot ();
+
+  hvec = zeros (size_T, 1);
   if (strcmp (graphics_toolkit (), "gnuplot"))
-    ## tiny reduction of the tetrahedron size to help gnuplot by
+    ## Tiny reduction of the tetrahedron size to help gnuplot by
     ## avoiding identical faces with different colors
     for i = 1:size_T
       [th, p] = __shrink__ ([1 2 3 4], X(T(i, :), :), 1 - 1e-7);
       hvec(i) = patch ("Faces", th, "Vertices", p, 
-                       "FaceColor", colmap(C(i), :), prop{:});
+                       "FaceColor", cmap(C(i), :), "FaceAlpha", 0.9,
+                       prop{:});
     endfor
   else
+    ## FLTK does not support FaceAlpha.
     for i = 1:size_T
       th = [1 2 3; 2 3 4; 3 4 1; 4 1 2];
       hvec(i) = patch ("Faces", th, "Vertices", X(T(i, :), :), 
-                       "FaceColor", colmap(C(i), :), prop{:});
+                       "FaceColor", cmap(C(i), :), "FaceAlpha", 1.0,
+                       prop{:});
     endfor
+  endif
+
+  if (! ishold ())
+    set (hax, "view", [-37.5, 30], "box", "off");
   endif
 
   if (nargout > 0)
@@ -129,7 +137,8 @@ endfunction
 %! set (h(1:2:end), 'Visible', 'off');
 %! axis equal;
 %! view (30, 20);
-%! title ('Using jet (64), every other tetrahedron invisible');
+%! title ({'tetramesh() plot', ...
+%!         'colormap = jet (64), every other tetrahedron invisible'});
 
 %!demo
 %! clf;
@@ -144,5 +153,6 @@ endfunction
 %! tetramesh (tetra, X, 21:20:241, 'EdgeColor', 'w');
 %! axis equal;
 %! view (30, 20);
-%! title ('Using gray (256) and white edges');
+%! title ({'tetramesh() plot', ...
+%!         'colormap = gray (256) with white edges'});
 

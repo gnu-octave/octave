@@ -607,4 +607,7 @@ extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, co
 extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, double b);
 extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b);
 
+extern OCTAVE_API void ellipj (double u, double m, double& sn, double& cn, double& dn, double& err);
+extern OCTAVE_API void ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn, double& err);
+
 #endif

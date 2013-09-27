@@ -3568,3 +3568,100 @@ betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>&
 
   return retval;
 }
+
+void
+ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
+{
+  static const int Nmax = 16;
+  double m1, t=0, si_u, co_u, se_u, ta_u, b, c[Nmax], a[Nmax], phi;
+  int n, Nn, ii;
+
+  if (m < 0 || m > 1)
+    {
+      (*current_liboctave_warning_handler)
+        ("ellipj: expecting 0 <= M <= 1");
+      sn = cn = dn = lo_ieee_nan_value ();
+      return;
+    }
+
+  double sqrt_eps = sqrt (std::numeric_limits<double>::epsilon ());
+  if (m < sqrt_eps)
+    {
+      // For small m, ( Abramowitz and Stegun, Section 16.13 )
+      si_u = sin (u);
+      co_u = cos (u);
+      t = 0.25*m*(u - si_u*co_u);
+      sn = si_u - t * co_u;
+      cn = co_u + t * si_u;
+      dn = 1 - 0.5*m*si_u*si_u;
+    }
+  else if ((1 - m) < sqrt_eps)
+    {
+      // For m1 = (1-m) small ( Abramowitz and Stegun, Section 16.15 )
+      m1 = 1 - m;
+      si_u = sinh (u);
+      co_u = cosh (u);
+      ta_u = tanh (u);
+      se_u = 1/co_u;
+      sn = ta_u + 0.25*m1*(si_u*co_u - u)*se_u*se_u;
+      cn = se_u - 0.25*m1*(si_u*co_u - u)*ta_u*se_u;
+      dn = se_u + 0.25*m1*(si_u*co_u + u)*ta_u*se_u;
+    }
+  else
+    {
+      //  Arithmetic-Geometric Mean (AGM) algorithm
+      //    ( Abramowitz and Stegun, Section 16.4 )
+      a[0] = 1;
+      b    = sqrt (1 - m);
+      c[0] = sqrt (m);
+      for (n = 1; n < Nmax; ++n)
+        {
+          a[n] = (a[n - 1] + b)/2;
+          c[n] = (a[n - 1] - b)/2;
+          b = sqrt (a[n - 1]*b);
+          if (c[n]/a[n] < std::numeric_limits<double>::epsilon ()) break;
+        }
+      if (n >= Nmax - 1)
+        {
+          err = 1;
+          return;
+        }
+      Nn = n;
+      for (ii = 1; n > 0; ii = ii*2, --n) ; // ii = pow(2,Nn)
+      phi = ii*a[Nn]*u;
+      for (n = Nn; n > 0; --n)
+        {
+          t = phi;
+          phi = (asin ((c[n]/a[n])* sin (phi)) + phi)/2;
+        }
+      sn = sin (phi);
+      cn = cos (phi);
+      dn = cn/cos (t - phi);
+    }
+}
+
+void
+ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn, double& err)
+{
+  double m1 = 1 - m, ss1, cc1, dd1;
+
+  ellipj (imag (u), m1, ss1, cc1, dd1, err);
+  if (real (u) == 0)
+    {
+      // u is pure imag: Jacoby imag. transf.
+      sn = Complex (0, ss1/cc1);
+      cn = 1/cc1;         //    cn.imag = 0;
+      dn = dd1/cc1;       //    dn.imag = 0;
+    }
+  else
+    {
+      // u is generic complex
+      double ss, cc, dd, ddd;
+
+      ellipj (real (u), m, ss, cc, dd, err);
+      ddd = cc1*cc1 + m*ss*ss*ss1*ss1;
+      sn = Complex (ss*dd1/ddd, cc*dd*ss1*cc1/ddd);
+      cn = Complex (cc*cc1/ddd, -ss*dd*ss1*dd1/ddd);
+      dn = Complex (dd*cc1*dd1/ddd, -m*ss*cc*ss1/ddd);
+    }
+}

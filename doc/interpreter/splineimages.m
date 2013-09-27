@@ -43,10 +43,10 @@ function splineimages (nm, typ)
     xx = linspace (0, 2 * pi, 400);
     y1 = ppval (pp1, xx);
     y2 = ppval (pp2, xx);
-    plot (x, y, ".", xx, [y1; y2])
-    axis tight
-    ylim ([-2.5 2.5])
-    legend ("data", "41 breaks, 40 pieces", "11 breaks, 10 pieces")
+    plot (x, y, ".", xx, [y1; y2]);
+    axis tight;
+    ylim ([-2.5 2.5]);
+    legend ("data", "41 breaks, 40 pieces", "11 breaks, 10 pieces");
     print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit2")) ## Spline orders
     ## Data (200 points)
@@ -65,10 +65,10 @@ function splineimages (nm, typ)
     y3 = ppval (pp3, xx);
     y4 = ppval (pp4, xx);
     y5 = ppval (pp5, xx);
-    plot (x, y, ".", xx, [y1; y2; y3; y4; y5])
-    axis tight
-    ylim ([-2.5 2.5])
-    legend ({"data", "order 0", "order 1", "order 2", "order 3", "order 4"})
+    plot (x, y, ".", xx, [y1; y2; y3; y4; y5]);
+    axis tight;
+    ylim ([-2.5 2.5]);
+    legend ({"data", "order 0", "order 1", "order 2", "order 3", "order 4"});
     print ([nm, "." typ], d_typ);
   elseif (strcmp (nm, "splinefit3"))
     ## Data (100 points)
@@ -82,10 +82,10 @@ function splineimages (nm, typ)
     xx = linspace (0, 2 * pi, 400);
     y1 = ppval (pp1, xx);
     y2 = ppval (pp2, xx);
-    plot (x, y, ".", xx, [y1; y2])
-    axis tight
-    ylim ([-2 3])
-    legend ({"data", "no constraints", "periodic"})
+    plot (x, y, ".", xx, [y1; y2]);
+    axis tight;
+    ylim ([-2 3]);
+    legend ({"data", "no constraints", "periodic"});
     print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit4"))
     ## Data (200 points)
@@ -105,10 +105,10 @@ function splineimages (nm, typ)
     xx = linspace (0, 2 * pi, 400);
     y1 = ppval (pp1, xx);
     y2 = ppval (pp2, xx);
-    plot (x, y, ".", xx, [y1; y2])
-    axis tight
-    ylim ([-1.5 1.5])
-    legend({"data", "clamped", "hinged periodic"})
+    plot (x, y, ".", xx, [y1; y2]);
+    axis tight;
+    ylim ([-1.5 1.5]);
+    legend({"data", "clamped", "hinged periodic"});
     print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit5"))
     ## Truncated data
@@ -125,11 +125,11 @@ function splineimages (nm, typ)
     ## Plot
     ss = linspace (0, s(end), 400);
     xyfit = ppval (pp, ss);
-    xyb = ppval(pp, pp.breaks);
-    plot (x, y, ".", xyfit(1,:), xyfit(2,:), "r", xyb(1,:), xyb(2,:), "ro")
-    legend ({"data", "spline", "breaks"})
-    axis tight
-    ylim ([0 0.1])
+    xyb = ppval (pp, pp.breaks);
+    plot (x, y, ".", xyfit(1,:), xyfit(2,:), "r", xyb(1,:), xyb(2,:), "ro");
+    legend ({"data", "spline", "breaks"});
+    axis tight;
+    ylim ([0 0.1]);
     print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "splinefit6"))
     ## Data
@@ -148,11 +148,11 @@ function splineimages (nm, typ)
     y1 = ppval (pp1, xx);
     y2 = ppval (pp2, xx);
     y3 = ppval (pp3, xx);
-    plot (x, y, ".", xx, [y1; y2; y3])
-    legend({"data with outliers","robust, beta = 0.25", ...
-            "robust, beta = 0.75", "no robust fitting"})
-    axis tight
-    ylim ([-2 2])
+    plot (x, y, ".", xx, [y1; y2; y3]);
+    legend ({"data with outliers","robust, beta = 0.25", ...
+             "robust, beta = 0.75", "no robust fitting"});
+    axis tight;
+    ylim ([-2 2]);
     print ([nm "." typ], d_typ);
   endif
   hide_output ();  
@@ -184,6 +184,7 @@ function image_as_txt(nm)
   fputs (fid, "+---------------------------------+\n");
   fclose (fid);
 endfunction
+
 
 %!demo
 %! for s = 1:6

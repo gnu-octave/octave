@@ -102,7 +102,7 @@
 ##
 ## @item labels
 ##   A cell array of strings of the labels in the legend.
-## @end table 
+## @end table
 ##
 ## The legend label text is either provided in the call to @code{legend} or
 ## is taken from the DisplayName property of graphics objects.  If no
@@ -110,12 +110,12 @@
 ## @qcode{"data1"}, @qcode{"data2"}, @dots{}, @nospell{@qcode{"dataN"}}.
 ##
 ## Implementation Note: A legend is implemented as an additional axes object
-## of the current figure with the @qcode{"tag"} set to @qcode{"legend"}. 
+## of the current figure with the @qcode{"tag"} set to @qcode{"legend"}.
 ## Properties of the legend object may be manipulated directly by using
 ## @code{set}.
 ## @end deftypefn
 
-function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
+function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
   if (nargin > 0
       && (! ishandle (varargin{1})
@@ -579,7 +579,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       curaxes = get (fig, "currentaxes");
       unwind_protect
         ud = ancestor (hplots, "axes");
-        if (!isscalar (ud))
+        if (! isscalar (ud))
           ud = unique ([ud{:}]);
         endif
         if (isempty (hlegend))
@@ -587,7 +587,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           hlegend = axes ("tag", "legend", "userdata", struct ("handle", ud),
                           "box", box,
                           "xtick", [], "ytick", [],
-                          "xticklabel", "", "yticklabel", "", "zticklabel", "",
                           "xlim", [0, 1], "ylim", [0, 1],
                           "visible", ifelse (strcmp (box, "on"), "on", "off"),
                           "activepositionproperty", "position",
@@ -597,24 +596,37 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           axes (hlegend);
           delete (get (hlegend, "children"));
         endif
+        if (addprops)
+          addproperty ("edgecolor", hlegend, "color", [0, 0, 0]);
+          addproperty ("textcolor", hlegend, "color", [0, 0, 0]);
+          locations = {"north", "south", "east", "west", ...
+                       "northeast", "southeast", "northwest", "southwest", ...
+                       "northoutside", "southoutside", ...
+                       "eastoutside", "westoutside", ...
+                       "northeastoutside", "southeastoutside", ...
+                       "northwestoutside", "southwestoutside"};
+          addproperty ("location", hlegend, "radio", strjoin (locations, "|"));
+          addproperty ("orientation", hlegend, "radio",
+                       "{vertical}|horizontal");
+          addproperty ("string", hlegend, "any", text_strings);
+          addproperty ("textposition", hlegend, "radio", "{left}|right");
+        endif
         fontsize = get (hlegend, "fontsize");
+        interpreter = get (hlegend, "interpreter");
+        textcolor = get (hlegend, "textcolor");
         ## Add text label to the axis first, checking their extents
         nentries = numel (hplots);
         texthandle = [];
         maxwidth = 0;
         maxheight = 0;
         for k = 1 : nentries
-          if (strcmp (textpos, "right"))
-            texthandle = [texthandle, text(0, 0, text_strings{k},
-                                           "horizontalalignment", "left",
-                                           "userdata", hplots(k),
-                                           "fontsize", fontsize)];
-          else
-            texthandle = [texthandle, text(0, 0, text_strings{k},
-                                           "horizontalalignment", "right",
-                                           "userdata", hplots(k),
-                                           "fontsize", fontsize)];
-          endif
+          halign = ifelse (strcmp (textpos, "right"), "left", "right");
+          texthandle = [texthandle, text(0, 0, text_strings{k},
+                                         "userdata", hplots(k),
+                                         "color", textcolor,
+                                         "horizontalalignment", halign,
+                                         "interpreter", interpreter,
+                                         "fontsize", fontsize)];
           units = get (texthandle(end), "units");
           unwind_protect
             set (texthandle(end), "units", "points");
@@ -672,19 +684,19 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           lpos = [0, 0, num1 * xstep, num2 * ystep];
         endif
 
-        gnuplot =  strcmp (get (fig, "__graphics_toolkit__"), "gnuplot");
+        gnuplot = strcmp (get (fig, "__graphics_toolkit__"), "gnuplot");
         if (gnuplot)
           ## Gnuplot places the key (legend) at edge of the figure window.
           ## OpenGL places the legend box at edge of the unmodified axes
           ## position.
           if (isempty (strfind (location, "east")))
             gnuplot_offset = unmodified_axes_outerposition(1) ...
-                         + unmodified_axes_outerposition(3) ...
-                         - unmodified_axes_position(1) ...
-                         - unmodified_axes_position(3);
+                           + unmodified_axes_outerposition(3) ...
+                           - unmodified_axes_position(1) ...
+                           - unmodified_axes_position(3);
           else
             gnuplot_offset = unmodified_axes_position(1) ...
-                         - unmodified_axes_outerposition(1);
+                           - unmodified_axes_outerposition(1);
           endif
           ## FIXME: The "fontsize" is added to match the behavior of OpenGL.
           ## This implies that a change in fontsize should trigger a listener
@@ -808,6 +820,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         for k = 1 : numel (hplots)
           hobjects = [hobjects, texthandle(k)];
           switch (get (hplots(k), "type"))
+
             case "line"
               color = get (hplots(k), "color");
               style = get (hplots(k), "linestyle");
@@ -844,6 +857,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                            {@updateline, hlegend, linelength});
               addlistener (hplots(k), "displayname",
                            {@updateline, hlegend, linelength});
+
             case "patch"
               facecolor = get (hplots(k), "facecolor");
               edgecolor = get (hplots(k), "edgecolor");
@@ -857,10 +871,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                            "cdata", cdata, "userdata", hplots(k));
                 hobjects = [hobjects, p1];
               endif
+
             case "surface"
+              ## FIXME: Would be nice to do something here
+
           endswitch
-          set (texthandle (k), "position", [(txoffset + xk * xstep) / lpos(3), ...
-                                            (lpos(4) - yoffset - yk * ystep) / lpos(4)]);
+
+          set (texthandle(k), "position", [(txoffset + xk * xstep) / lpos(3), ...
+                                           (lpos(4) - yoffset - yk * ystep) / lpos(4)]);
           if (strcmp (orientation, "vertical"))
             yk++;
             if (yk > num1)
@@ -881,14 +899,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         props = {"parent", ca(1), "tag", "legend", ...
                  "handlevisibility", "off", "visible", "off", ...
                  "xliminclude", "off", "yliminclude", "off"};
-        t1 = findall (ca(1), props{3:4}, "type", "text");
+        t1 = findall (ca(1), "tag", "legend", "type", "text");
         if (isempty (t1))
           t1 = text (0, 0, "", props{:});
           set (t1, "deletefcn", {@deletelegend1, hlegend});
         endif
         if (isprop (hlegend, "unmodified_axes_position"))
           set (hlegend, "unmodified_axes_position", unmodified_axes_position);
-          set (hlegend, "unmodified_axes_outerposition", 
+          set (hlegend, "unmodified_axes_outerposition",
                unmodified_axes_outerposition);
         else
           addproperty ("unmodified_axes_position", hlegend,
@@ -932,26 +950,12 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           set (hlegend, "deletefcn", {@deletelegend2, ca, [], [], t1, hplots});
         endif
 
-        if (addprops)
-          addproperty ("edgecolor", hlegend, "color", [0, 0, 0]);
-          addproperty ("textcolor", hlegend, "color", [0, 0, 0]);
-          locations = {"north", "south", "east", "west", ...
-                       "northeast", "southeast", "northwest", "southwest", ...
-                       "northoutside", "southoutside", ...
-                       "eastoutside", "westoutside", ...
-                       "northeastoutside", "southeastoutside", ...
-                       "northwestoutside", "southwestoutside"};
-          addproperty ("location", hlegend, "radio", strjoin (locations, "|"));
-          addproperty ("orientation", hlegend, "radio",
-                       "{vertical}|horizontal");
-          addproperty ("string", hlegend, "any", text_strings);
-          addproperty ("textposition", hlegend, "radio", "{left}|right");
-        else
+        if (! addprops)
           set (hlegend, "string", text_strings);
         endif
 
         if (outside)
-          set (hlegend, "location", strcat (location, "outside"),
+          set (hlegend, "location", [location "outside"],
                "orientation", orientation, "textposition", textpos);
         else
           set (hlegend, "location", location, "orientation", orientation,
@@ -977,15 +981,15 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   endif
 
   if (nargout > 0)
-    hlegend2 = hlegend;
-    hobjects2 = hobjects;
-    hplot2 = hplots;
-    text_strings2 = text_strings;
+    hleg = hlegend;
+    hleg_obj = hobjects;
+    hplot = hplots;
+    labels = text_strings;
   endif
 
 endfunction
 
-function updatelegend (h, d)
+function updatelegend (h, ~)
   persistent recursive = false;
 
   if (! recursive)
@@ -1014,28 +1018,25 @@ function updatelegend (h, d)
 
 endfunction
 
-function updatelegendtext (h, d)
-  hax = get (h, "userdata").handle;
+function updatelegendtext (h, ~)
   kids = get (h, "children");
-  text_kids = findobj (kids, "-property", "interpreter", "type", "text");
+  text_kids = findobj (kids, "type", "text");
   interpreter = get (h, "interpreter");
   textcolor = get (h, "textcolor");
   fontsize = get (h, "fontsize");
   set (text_kids, "interpreter", interpreter,
-                  "fontsize", fontsize,
-                  "color", textcolor);
+                  "color", textcolor,
+                  "fontsize", fontsize);
 endfunction
 
-function hideshowlegend (h, d, ca, pos1, pos2)
+function hideshowlegend (h, ~, ca, pos1, pos2)
+  keyboard;
   isvisible = strcmp (get (h, "visible"), "off");
   if (! isvisible)
     kids = get (h, "children");
-    for i = 1 : numel (kids)
-      if (! strcmp (get (kids(i), "visible"), "off"))
+    if (any (! strcmp (get (kids, "visible"), "off")))
         isvisible = true;
-        break;
-      endif
-    endfor
+    endif
   endif
 
   for i = 1 : numel (ca)
@@ -1057,7 +1058,7 @@ function hideshowlegend (h, d, ca, pos1, pos2)
   endfor
 endfunction
 
-function deletelegend1 (h, d, ca)
+function deletelegend1 (h, ~, ca)
   if (isaxes (ca)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
       && strcmp (get (ca, "beingdeleted"), "off"))
@@ -1065,7 +1066,7 @@ function deletelegend1 (h, d, ca)
   endif
 endfunction
 
-function deletelegend2 (h, d, ca, pos, outpos, t1, hplots)
+function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
   for i = 1 : numel (ca)
     if (isaxes (ca(i))
         && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
@@ -1096,7 +1097,7 @@ function deletelegend2 (h, d, ca, pos, outpos, t1, hplots)
   endfor
 endfunction
 
-function updateline (h, d, hlegend, linelength)
+function updateline (h, ~, hlegend, linelength)
   lm = [];
   ll = [];
   kids = get (hlegend, "children");
@@ -1121,15 +1122,13 @@ function updateline (h, d, hlegend, linelength)
     ## An element was removed from the legend. Need to recall the
     ## legend function to recreate a new legend
     [hplots, text_strings] = __getlegenddata__ (hlegend);
-    for i = 1 : numel (hplots)
-      if (hplots(i) == h)
-        hplots(i) = [];
-        text_strings(i) = [];
-        break;
-      endif
-    endfor
+    idx = find (hplots == h, 1);
+    if (idx)
+      hplots(idx) = [];
+      text_strings(idx) = [];
+    endif
     legend (hplots, text_strings);
-  elseif ((!isempty (displayname)
+  elseif ((! isempty (displayname)
            && (! strcmp (marker, "none") || ! strcmp (linestyle, "none")))
           && isempty (lm) && isempty (ll))
     ## An element was added to the legend.  Need to re-call the
@@ -1258,6 +1257,8 @@ endfunction
 %! plot (x, x, ';\alpha;',  ...
 %!       x, 2*x, ';\beta=2\alpha;',  ...
 %!       x, 3*x, ';\gamma=3\alpha;');
+%! hl = legend ();
+%! set (h, 'interpreter', 'tex');
 %! title ('Labels with interpreted Greek text');
 
 %!demo

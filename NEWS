@@ -144,6 +144,7 @@ Summary of important user-visible changes for version 3.8:
     A quick summary of features:
 
     Code         Feature     Example             Comment
+    -----------------------------------------------------------------
     _            subscript   H_2O                formula for water
     ^            exponent    y=x^2               formula for parabola
     \char        symbol      \beta               Greek symbol beta
@@ -157,6 +158,14 @@ Summary of important user-visible changes for version 3.8:
     {}           group       {\bf Bold}Normal    group objects
                              e^{i*\pi} = -1      complex example
 
+ ** The m-files in the plot directory have been overhauled.
+
+    The plot functions now produce output that is nearly visually compatible
+    with Matlab.  Plot performance has also increased, dramatically for some
+    functions such as comet and waitbar.  Finally, the documentation for most
+    functions has been updated so it should be clearer both how to use a
+    function and when a function is appropriate.
+
  ** The m-files in the image directory have been overhauled.
 
     The principal benefit is that Octave will now no longer automatically
@@ -169,7 +178,7 @@ Summary of important user-visible changes for version 3.8:
     colormap depending on the image class (integer images have a -1 offset to
     the colormap row number).
 
- ** The imread and imwrite functions have been completely rewritten
+ ** The imread and imwrite functions have been completely rewritten.
 
     The main changes relate to the alpha channel, support for reading and
     writing of floating point images, implemented writing of indexed images,
@@ -179,18 +188,20 @@ Summary of important user-visible changes for version 3.8:
 
       * imwrite no longer interprets a length of 2 or 4 in the third dimension
         as grayscale or RGB with alpha channel (a length of 4 will be saved
-        as CMYK image).  Alpha channel must be passed as separate argument.
+        as a CMYK image).  Alpha channel must be passed as separate argument.
+
       * imread will always return the colormap indexes when reading an indexed
         image, even if the colormap is not requested as output.
-      * transparency values are now inverted from the previous Octave versions
+
+      * transparency values are now inverted from previous Octave versions
         (0 is for completely transparent instead of completely opaque).
 
     In addition, the function imformats has been implemented to expand
     reading and writing of images of different formats through imread
     and imwrite.
 
- ** The colormap function now provides new options---"list", "register",
-    and "unregister"---to list all available colormap functions, and to
+ ** The colormap function now provides new options--"list", "register",
+    and "unregister"--to list all available colormap functions, and to
     add or remove a function name from the list of known colormap
     functions.  Packages that implement extra colormaps should use these
     commands with PKG_ADD and PKG_DEL statements.
@@ -248,8 +259,8 @@ Summary of important user-visible changes for version 3.8:
     "relax" option has been replaced by the "rtest" option.  The numeric
     values of error codes and of some options have also changed.
 
- ** The default name of the Octave crash dump file is now called
-    octave-workspace instead of octave-core.
+ ** The default name of the Octave crash dump file is now 
+    "octave-workspace" instead of "octave-core".
 
  ** A citation command has been added to display information on how to
     cite Octave and packages in publications.  The package system will

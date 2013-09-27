@@ -282,7 +282,6 @@ function list = missing_functions ()
   "lighting",
   "linkaxes",
   "linkdata",
-  "linsolve",
   "listfonts",
   "loadlibrary",
   "lscov",

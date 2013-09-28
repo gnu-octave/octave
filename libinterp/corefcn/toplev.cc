@@ -810,8 +810,7 @@ Describe the conditions for copying and distributing Octave.\n\
 {
   octave_value_list retval;
 
-  octave_stdout << "\n" \
-    OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
+  octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
 \n\
 GNU Octave free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\

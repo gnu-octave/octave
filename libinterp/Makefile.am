@@ -124,6 +124,7 @@ nodist_octinclude_HEADERS = \
 
 DIST_SRC = \
   octave.cc \
+  version.cc \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
   $(PARSER_SRC) \
@@ -154,6 +155,7 @@ endif
 
 liboctinterp_la_SOURCES = \
   octave.cc \
+  version.cc \
   $(OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
 

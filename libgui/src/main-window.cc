@@ -542,9 +542,11 @@ main_window::handle_update_breakpoint_marker_request (bool insert,
 void
 main_window::show_about_octave (void)
 {
-  QString message = OCTAVE_STARTUP_MESSAGE;
+  std::string message
+    = octave_name_version_copyright_copying_warranty_and_bugs (true);
 
-  QMessageBox::about (this, tr ("About Octave"), message);
+  QMessageBox::about (this, tr ("About Octave"),
+                      QString::fromStdString (message));
 }
 
 void

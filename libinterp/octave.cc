@@ -516,7 +516,8 @@ execute_command_line_file (const std::string& fname)
 static void
 verbose_usage (void)
 {
-  std::cout << OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY "\n\
+  std::cout << octave_name_version_copyright_copying_and_warranty ()
+            << "\n\
 \n\
 Usage: octave [options] [FILE]\n\
 \n\
@@ -556,11 +557,12 @@ Options:\n\
   FILE                    Execute commands from FILE.  Exit when done\n\
                           unless --persist is also specified.\n\
 \n"
-OCTAVE_WWW_STATEMENT "\n\
-\n"
-OCTAVE_CONTRIB_STATEMENT "\n\
-\n"
-OCTAVE_BUGS_STATEMENT "\n";
+            << octave_www_statement ()
+            << "\n\n"
+            << octave_contrib_statement ()
+            << "\n\n"
+            << octave_bugs_statement ()
+            << "\n";
 
   exit (0);
 }
@@ -577,7 +579,8 @@ usage (void)
 static void
 print_version_and_exit (void)
 {
-  std::cout << OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS "\n";
+  std::cout << octave_name_version_copyright_copying_warranty_and_bugs ()
+            << "\n";
   exit (0);
 }
 
@@ -941,7 +944,7 @@ int
 octave_execute_interpreter (void)
 {
   if (! inhibit_startup_message)
-    std::cout << OCTAVE_STARTUP_MESSAGE "\n" << std::endl;
+    std::cout << octave_startup_message () << "\n" << std::endl;
 
   execute_startup_files ();
 

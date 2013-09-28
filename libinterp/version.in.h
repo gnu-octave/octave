@@ -26,67 +26,28 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_VERSION %OCTAVE_VERSION%
 
-#define OCTAVE_API_VERSION_NUMBER %OCTAVE_API_VERSION_NUMBER%
-
 #define OCTAVE_API_VERSION %OCTAVE_API_VERSION%
 
 #define OCTAVE_RELEASE_DATE %OCTAVE_RELEASE_DATE%
 
 #define OCTAVE_COPYRIGHT %OCTAVE_COPYRIGHT%
 
-// This is the first line printed by --version.  The GNU coding
-// standards say that the version number should follow the last space
-// on the line.
+extern std::string octave_www_statement (bool html = false);
 
-#define OCTAVE_NAME_AND_VERSION "GNU Octave, version " OCTAVE_VERSION
+extern std::string octave_contrib_statement (bool html = false);
 
-#define OCTAVE_CONFIG_STATEMENT \
-  "Octave was configured for \"" OCTAVE_CANONICAL_HOST_TYPE "\"."
+extern std::string octave_bugs_statement (bool html = false);
 
-#define OCTAVE_COPYING_STATEMENT \
-  "This is free software; see the source code for copying conditions."
+extern std::string octave_name_version_and_copyright (void);
 
-#define X_OCTAVE_WARRANTY_STATEMENT(ARG) \
-  "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or\n\
-FITNESS FOR A PARTICULAR PURPOSE." ARG
+extern std::string
+octave_name_version_copyright_copying_and_warranty
+  (bool html = false, const std::string& extra_info = std::string ());
 
-#define OCTAVE_WARRANTY_STATEMENT \
-  X_OCTAVE_WARRANTY_STATEMENT ("")
+extern std::string
+octave_name_version_copyright_copying_warranty_and_bugs
+  (bool html = false, const std::string& extra_info = std::string ());
 
-#define OCTAVE_WWW_STATEMENT \
-  "Additional information about Octave is available at http://www.octave.org."
+extern std::string octave_startup_message (bool html = false);
 
-#define OCTAVE_CONTRIB_STATEMENT \
-  "Please contribute if you find this software useful.\n\
-For more information, visit http://www.octave.org/get-involved.html"
-
-#define OCTAVE_BUGS_STATEMENT \
-  "Read http://www.octave.org/bugs.html to learn how to submit bug reports."
-
-#define OCTAVE_NAME_VERSION_AND_COPYRIGHT \
-  OCTAVE_NAME_AND_VERSION "\n" \
-  OCTAVE_COPYRIGHT
-
-#define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
-  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY("") \
-
-#define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY(ARG) \
-  OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n" \
-  OCTAVE_COPYING_STATEMENT "\n" \
-  X_OCTAVE_WARRANTY_STATEMENT (ARG) "\n\n" \
-  OCTAVE_CONFIG_STATEMENT
-
-#define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS(ARG) \
-  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY(ARG) "\n\n" \
-  OCTAVE_WWW_STATEMENT "\n\n" \
-  OCTAVE_CONTRIB_STATEMENT "\n\n" \
-  OCTAVE_BUGS_STATEMENT
-
-#define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS ("")
-
-#define OCTAVE_STARTUP_MESSAGE \
-  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-    ("  For details, type 'warranty'.") "\n\n" \
-  "For information about changes from previous versions, type 'news'."
 #endif

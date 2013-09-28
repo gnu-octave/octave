@@ -28,6 +28,8 @@ $(OPT_HANDLERS): corefcn/%.cc : $(top_builddir)/liboctave/numeric/%.in
 	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
 	mv $@-t $@
 
+$(OPT_HANDLERS): $(top_srcdir)/build-aux/mk-opts.pl
+
 $(OPT_INC) : %.h : %.in
 	$(MAKE) -C $(top_builddir)/liboctave/numeric $(@F)
 

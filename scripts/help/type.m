@@ -24,7 +24,7 @@
 ## variable, operator, or keyword.
 ##
 ## @code{type} normally prepends a header line describing the category
-## of @var{name} such as function or variable;  The @option{-q} option
+## of @var{name} such as function or variable; The @option{-q} option
 ## suppresses this behavior.
 ##
 ## If no output variable is used the contents are displayed on screen.

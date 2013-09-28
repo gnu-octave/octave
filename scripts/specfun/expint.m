@@ -37,8 +37,8 @@
 ##          x
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## Note: For compatibility, this functions uses the @sc{matlab} definition
 ## of the exponential integral.  Most other sources refer to this particular
 ## value as @math{E_1 (x)}, and the exponential integral is
@@ -58,8 +58,8 @@
 ##          -x
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## The two definititions are related, for positive real values of @var{x}, by
 ## @tex
 ## $

@@ -657,9 +657,10 @@ DEFUN (flintmax, args, ,
 @deftypefnx {Built-in Function} {} flintmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} flintmax (\"single\")\n\
 Return the largest integer that can be represented consecutively in a\n\
-floating point value.  The default class is @qcode{\"double\"}, but @qcode{\"single\"}\n\
-is a valid option.  On IEEE-754 compatible systems, @code{flintmax} is @w{@math{2^53}}\n\
-for @qcode{\"double\"} and @w{@math{2^24}} for @qcode{\"single\"}.\n\
+floating point value.  The default class is @qcode{\"double\"}, but\n\
+@qcode{\"single\"} is a valid option.  On IEEE-754 compatible systems,\n\
+@code{flintmax} is @w{@math{2^53}} for @qcode{\"double\"} and\n\
+@w{@math{2^24}} for @qcode{\"single\"}.\n\
 @seealso{bitmax, intmax, realmax, realmin}\n\
 @end deftypefn")
 {

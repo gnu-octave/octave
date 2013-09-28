@@ -108,7 +108,7 @@
 ## @item Orientation
 ## The orientation of the image with respect to the rows and columns.  Value
 ## is an integer between 1 and 8 as defined in the TIFF 6 specifications, and
-## for @sc{Matlab} compatibility.
+## for @sc{matlab} compatibility.
 ##
 ## @item Software
 ## Name and version of the software or firmware of the camera or image input
@@ -123,7 +123,7 @@
 ## on the field @qcode{"Make"}.
 ##
 ## @item DateTime
-## The date and time of image creation as defined by the Exif standard, i.e,
+## The date and time of image creation as defined by the Exif standard, i.e.,
 ## it is the date and time the file was changed.
 ##
 ## @item ImageDescription

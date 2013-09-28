@@ -57,11 +57,11 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a handle to a "stem series" hggroup.
-## The single hggroup handle has all of the graphical elements comprising the
-## plot as its children; This allows the properties of multiple graphics
-## objects to be changed by modifying just a single property of the
-## "stem series" hggroup.
+## The optional return value @var{h} is a handle to a @nospell{"stem series"}
+## hggroup.  The single hggroup handle has all of the graphical elements
+## comprising the plot as its children; This allows the properties of
+## multiple graphics objects to be changed by modifying just a single
+## property of the @nospell{"stem series"} hggroup.
 ##
 ## For example,
 ##
@@ -76,8 +76,8 @@
 ## @end example
 ##
 ## @noindent
-## changes the color of the second "stem series" and moves the base line
-## of the first.
+## changes the color of the second @nospell{"stem series"} and moves the base
+## line of the first.
 ##
 ## Stem Series Properties
 ##
@@ -90,7 +90,7 @@
 ##
 ## @item color
 ## The color of the stem, and if not separately specified, the marker.
-## (Default: "b" [blue])
+## (Default: @qcode{"b"} [blue])
 ##
 ## @item marker
 ## The marker symbol to use at the top of each stem.  (Default: @qcode{"o"})
@@ -99,8 +99,8 @@
 ## The edge color of the marker.  (Default: @qcode{"color"} property)
 ##
 ## @item markerfacecolor
-## The color to use for "filling" the marker.  (Default: @qcode{"none"}
-## [unfilled])
+## The color to use for @nospell{"filling"} the marker.  
+## (Default: @qcode{"none"} [unfilled])
 ##
 ## @item markersize
 ## The size of the marker.  (Default: 6)

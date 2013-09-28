@@ -39,9 +39,10 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a handle to the "stem series" hggroup
-## containing the line and marker objects used for the plot.
-## @xref{XREFstem,,stem}, for a description of the "stem series" object.
+## The optional return value @var{h} is a handle to the @nospell{"stem series"}
+## hggroup containing the line and marker objects used for the plot.
+## @xref{XREFstem,,stem}, for a description of the @nospell{"stem series"}
+## object.
 ##
 ## Example:
 ##

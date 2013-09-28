@@ -29,14 +29,19 @@
 ## @table @asis
 ## @item name
 ## File or directory name. 
+##
 ## @item date
 ## Timestamp of file modification (string value).
+##
 ## @item bytes
 ## File size in bytes.
+##
 ## @item isdir
 ## True if name is a directory. 
+##
 ## @item datenum
 ## Timestamp of file modification as serial date number (double).
+##
 ## @item statinfo
 ## Information structure returned from @code{stat}.
 ## @end table

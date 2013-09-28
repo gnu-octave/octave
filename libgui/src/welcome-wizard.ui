@@ -270,7 +270,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>You seem to run Octave GUI for the first time on this computer. This assistant will help you to configure this software installation. Click 'Finish' to write a configuration file and launch Octave GUI.</string>
+            <string>You seem to be running Octave GUI for the first time on this computer. This assistant will help you to configure this software installation. Click 'Finish' to write a configuration file and launch Octave GUI.</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>

@@ -25,37 +25,20 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "welcome-wizard.h"
+#include "resource-manager.h"
 #include "ui-welcome-wizard.h"
 
 welcome_wizard::welcome_wizard (QWidget *p)
   : QDialog (p), _ui (new Ui::welcome_wizard)
 {
   _ui->setupUi (this);
-  connect (_ui->nextButton1, SIGNAL (clicked ()), this, SLOT (next ()));
-  connect (_ui->nextButton2, SIGNAL (clicked ()), this, SLOT (next ()));
-  connect (_ui->nextButton3, SIGNAL (clicked ()), this, SLOT (next ()));
-  connect (_ui->nextButton4, SIGNAL (clicked ()), this, SLOT (next ()));
-
-  connect (_ui->previousButton2, SIGNAL (clicked ()), this, SLOT (previous ()));
-  connect (_ui->previousButton3, SIGNAL (clicked ()), this, SLOT (previous ()));
-  connect (_ui->previousButton4, SIGNAL (clicked ()), this, SLOT (previous ()));
-  connect (_ui->previousButton5, SIGNAL (clicked ()), this, SLOT (previous ()));
+  QString label_text = _ui->label_config_file->text ();
+  label_text.replace (QString ("__%1__"),
+                      resource_manager::get_settings_file ());
+  _ui->label_config_file->setText (label_text);
 }
 
 welcome_wizard::~welcome_wizard()
 {
   delete _ui;
 }
-
-void
-welcome_wizard::next ()
-{
-  _ui->stackedWidget->setCurrentIndex (_ui->stackedWidget->currentIndex () + 1);
-}
-
-void
-welcome_wizard::previous ()
-{
-  _ui->stackedWidget->setCurrentIndex (_ui->stackedWidget->currentIndex () - 1);
-}
-

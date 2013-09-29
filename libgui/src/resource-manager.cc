@@ -153,13 +153,28 @@ resource_manager::do_get_home_path (void) const
   return home_path;
 }
 
+QString
+resource_manager::do_get_settings_path (void)
+{
+  QDesktopServices desktopServices;
+  home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
+  QString settings_path = home_path + "/.config/octave/";
+  return settings_path;
+}
+
+QString
+resource_manager::do_get_settings_file (void)
+{
+  return do_get_settings_path ()  + "qt-settings";
+}
+
 void
 resource_manager::do_reload_settings (void)
 {
   QDesktopServices desktopServices;
   home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  QString settings_path = home_path + "/.config/octave/";
-  QString settings_file = settings_path + "qt-settings";
+  QString settings_path = do_get_settings_path ();
+  QString settings_file = do_get_settings_file ();
 
   if (!QFile::exists (settings_file))
     {

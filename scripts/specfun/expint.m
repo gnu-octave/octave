@@ -60,7 +60,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## The two definititions are related, for positive real values of @var{x}, by
+## The two definitions are related, for positive real values of @var{x}, by
 ## @tex
 ## $
 ## E_1 (-x) = -{\rm Ei} (x) - i\pi.

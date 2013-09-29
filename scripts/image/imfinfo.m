@@ -116,7 +116,8 @@
 ##
 ## @item Make
 ## The manufacturer of the recording equipment.  This is the manufacture of the
-## DSC, scanner, video digitizer or other equipment that generated the image.
+## @nospell{DSC}, scanner, video digitizer or other equipment that generated
+## the image.
 ##
 ## @item Model
 ## The model name or model number of the recording equipment as mentioned

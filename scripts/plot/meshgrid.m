@@ -50,10 +50,10 @@
 ## grids.  However, the functions are not completely equivalent.  If @var{x}
 ## is a vector of length M and @var{y} is a vector of length N, then
 ## @code{meshgrid} will produce an output grid which is NxM@.  @code{ndgrid}
-## will produce an output which is MxN (transpose) for the same input.  Some
-## core functions expect @code{meshgrid} input and others expect @code{ndgrid}
-## input.  Check the documentation for the function in question to determine
-## the proper input format.
+## will produce an output which is @nospell{MxN} (transpose) for the same
+## input.  Some core functions expect @code{meshgrid} input and others expect
+## @code{ndgrid} input.  Check the documentation for the function in question
+## to determine the proper input format.
 ## @seealso{ndgrid, mesh, contour, surf}
 ## @end deftypefn
 

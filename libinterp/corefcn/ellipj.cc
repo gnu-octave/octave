@@ -52,7 +52,7 @@ inputs.\n\
 The value of @var{u} may be complex.\n\
 The value of @var{m} must be 0 @leq{} @var{m} @leq{} 1.\n\
 \n\
-The optinoal input @var{tol} is currently ignored (@sc{matlab} uses this to\n\
+The optional input @var{tol} is currently ignored (@sc{matlab} uses this to\n\
 allow faster, less accurate approximation).\n\
 \n\
 If requested, @var{err} contains the following status information\n\

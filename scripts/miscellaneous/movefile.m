@@ -33,7 +33,7 @@
 ## If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
 ## character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
 ## system-dependent error message, and @var{msgid} contains a unique message
-## identifier.  Note that the status code is exacly opposite that of the
+## identifier.  Note that the status code is exactly opposite that of the
 ## @code{system} command.
 ## @seealso{rename, copyfile, unlink, delete, glob}
 ## @end deftypefn

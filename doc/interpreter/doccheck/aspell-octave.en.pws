@@ -29,6 +29,7 @@ ARMA
 arpack
 ascii
 Ashok
+ast
 async
 atan
 Attr
@@ -53,6 +54,7 @@ Backends
 backends
 bartlett
 BaseValue
+basevalue
 Bateman
 BDF
 bdf
@@ -126,6 +128,7 @@ chisquare
 chol
 Cholesky
 cholmod
+chromaticity
 chrominance
 cindex
 circ
@@ -136,12 +139,14 @@ classpaths
 Clenshaw
 CLI
 clim
+climmode
 cloglog
 closerequestfcn
 clubsuit
 CMatrix
 cmd
 cmember
+CMYK
 cntrl
 codebases
 cof
@@ -185,6 +190,8 @@ cummin
 cumprod
 cumsum
 cURL
+CurrentAxes
+CurrentFigure
 CurrentObject
 currentpoint
 Cuthill
@@ -198,6 +205,7 @@ dassl
 dataset
 datasets
 datasource
+datenum
 datestr
 datestrings
 davis
@@ -229,6 +237,7 @@ dmperm
 Dobkin
 docstrings
 dOmega
+doNotSpecify
 dotall
 dotexceptnewline
 Downarrow
@@ -244,6 +253,7 @@ dx
 dy
 EastOutside
 edgecolor
+Ei
 EIDORS
 eigenpairs
 eigenvector
@@ -286,6 +296,7 @@ etree
 etreeplot
 eval
 Executables
+Exif
 exitflag
 expcdf
 expinv
@@ -354,6 +365,7 @@ geocdf
 geoinv
 geopdf
 geornd
+geotagging
 geq
 gesdd
 gesvd
@@ -467,6 +479,7 @@ interquartile
 inv
 involutory
 ipermute
+isdir
 ishandle
 ishghandle
 isolines
@@ -483,6 +496,7 @@ Jacobian
 Jacobians
 javaaddpath
 javamem
+jbig
 JIT
 jpeg
 JPEG
@@ -517,6 +531,7 @@ ldiv
 ldivide
 ldots
 le
+leaveInPlace
 Leftarrow
 leftarrow
 Leftrightarrow
@@ -576,6 +591,8 @@ lvl
 lx
 ly
 lz
+lzma
+lzw
 Magnus
 Mahalanobis
 makefile
@@ -709,6 +726,7 @@ online
 OpenGL
 oplus
 Oppenheim
+Ord
 oregonator
 Orthogonalize
 oslash
@@ -763,6 +781,7 @@ polyeig
 polyfit
 polyval
 pos
+POSDEF
 POSIX
 postorder
 PostScript
@@ -822,6 +841,7 @@ rceil
 rdivide
 Readline
 readline
+RECT
 recursing
 Redheffer
 reentrant
@@ -841,6 +861,8 @@ resize
 resized
 resnorm
 resparsify
+restoreBG
+restorePrevious
 RET
 returnonerror
 rfloor
@@ -849,6 +871,7 @@ RGB
 Riccati
 Rightarrow
 rightarrow
+rle
 rline
 rmdir
 RMS
@@ -923,6 +946,7 @@ stairstep
 Stallman
 startup
 Startup
+statinfo
 stdnormal
 stdout
 Stegun
@@ -1005,6 +1029,7 @@ ths
 tif
 Tikhonov
 TikZ
+Timestamp
 tinv
 Tisseur
 Tisseur's
@@ -1020,6 +1045,7 @@ toplevel
 tp
 tpdf
 traceback
+TRANSA
 trapz
 treatasempty
 treelayout
@@ -1040,6 +1066,7 @@ TypicalX
 ub
 UB
 uchar
+UHESS
 UID
 uimenu
 uint
@@ -1052,6 +1079,7 @@ Unary
 unary
 uncomment
 Uncomments
+unconvertible
 unformatted
 unidcdf
 unidinv

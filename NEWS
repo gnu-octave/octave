@@ -287,9 +287,9 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      atan2d                     erfi             jit_startcnt
-      base64_decode              expint           lines
-      base64_encode              findfigs         linsolve
+      atan2d                     erfi             lines
+      base64_decode              expint           linsolve
+      base64_encode              findfigs         missing_component_hook
       betaincinv                 flintmax         polyeig
       built_in_docstrings_file   fminsearch       prefdir
       cmpermute                  gallery          preferences
@@ -303,7 +303,7 @@ Summary of important user-visible changes for version 3.8:
       doc_cache_create           isequaln         strjoin
       ellipj                     jit_debug        struct2hdl
       ellipke                    jit_enable       tetramesh
-      erfcinv                                     waterfall
+      erfcinv                    jit_startcnt     waterfall
 
  ** Deprecated functions.
 

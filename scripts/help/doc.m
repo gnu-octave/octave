@@ -79,6 +79,10 @@ function retval = doc (fname)
 
       if (err < 0)
         info_file_name = info_file ();
+
+        if (! exist (info_file_name, "file"))
+          __gripe_missing_component__ ("doc", "info-file");
+        endif
       endif
 
       ## FIXME -- don't change the order of the arguments below because

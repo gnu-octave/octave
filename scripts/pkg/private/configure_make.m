@@ -37,6 +37,16 @@ function configure_make (desc, packdir, verbose)
             "INSTALLDIR"; desc.dir};
     scenv = sprintf ("%s=\"%s\" ", cenv{:});
 
+    if (! exist (mkoctfile_program, "file"))
+      __gripe_missing_component__ ("pkg", "mkoctfile");
+    endif
+    if (! exist (octave_config_program, "file"))
+      __gripe_missing_component__ ("pkg", "octave-config");
+    endif
+    if (! exist (octave_binary, "file"))
+      __gripe_missing_component__ ("pkg", "octave");
+    endif
+
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))
       flags = "";

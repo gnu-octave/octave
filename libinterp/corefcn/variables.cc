@@ -2606,3 +2606,33 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+static std::string Vmissing_component_hook;
+
+DEFUN (missing_component_hook, args, nargout,
+    "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} missing_component_hook ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} missing_component_hook (@var{new_val}, \"local\")\n\
+Query or set the internal variable that specifies the function to call when\n\
+a component of Octave is missing.  This can be useful for packagers that\n\
+may split the Octave installation into multiple sub-packages, for example,\n\
+to provide a hint to users for how to install the missing components.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
+\n\
+The hook function is expected to be of the form\n\
+\n\
+@example\n\
+@var{fcn} (@var{component})\n\
+@end example\n\
+\n\
+Octave will call @var{fcn} with the name of the function that requires the\n\
+component and a string describing the missing component.  The hook function\n\
+should return an error message to be displayed.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (missing_component_hook);
+}

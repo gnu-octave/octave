@@ -5,6 +5,7 @@ help_PRIVATE_FCN_FILES = \
   help/private/__strip_html_tags__.m
 
 help_FCN_FILES = \
+  help/__gripe_missing_component__.m \
   help/__makeinfo__.m \
   help/__unimplemented__.m \
   help/doc.m \

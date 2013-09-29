@@ -146,6 +146,10 @@ function [output, status] = mkoctfile (varargin)
 
   shell_script = fullfile (bindir, sprintf ("mkoctfile-%s", OCTAVE_VERSION));
 
+  if (! exist (shell_script, "file"))
+    __gripe_missing_component__ ("mkoctfile", "mkoctfile");
+  endif
+
   cmd = ['"' shell_script '"'];
   for i = 1:nargin
     cmd = [cmd ' "' varargin{i} '"'];
@@ -159,10 +163,7 @@ function [output, status] = mkoctfile (varargin)
     printf ("%s", out);
   endif
 
-  if (sys == 127)
-    warning ("unable to find mkoctfile in expected location: '%s'",
-             shell_script);
-
+  if (sys != 0)
     warning ("mkoctfile exited with failure status");
   endif
 

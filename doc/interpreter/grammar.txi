@@ -78,8 +78,8 @@ from being evaluated periodically.
 @DOCSTRING(remove_input_event_hook)
 
 Finally, when the parser cannot identify an input token it calls a particular
-function to handle this.  By default, this is the function
-@qcode{"unimplemented"} which makes suggestions about possible Octave
+function to handle this.  By default, this is the internal function
+@qcode{"__unimplemented__"} which makes suggestions about possible Octave
 substitutes for @sc{matlab} functions.
 
 @DOCSTRING(missing_function_hook)

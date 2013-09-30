@@ -36,8 +36,24 @@
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
 ## separate bar graph plotted on the same graph.  By default the columns
 ## are plotted side-by-side.  This behavior can be changed by the @var{style}
-## argument, which can take the values @qcode{"grouped"} (the default),
-## or @qcode{"stacked"}.
+## argument which can take the following values:
+##
+## @table @asis
+## @item @qcode{"grouped"} (default) 
+## Side-by-side bars with a gap between bars and centered over the X-coordinate.
+## 
+## @item  @qcode{"stacked"}
+## Bars are stacked so that each X value has a single bar composed of
+## multiple segments.
+##
+## @item @qcode{"hist"}
+## Side-by-side bars with no gap between bars and centered over the
+## X-coordinate.
+##
+## @item @qcode{"histc"}
+## Side-by-side bars with no gap between bars and left-aligned to the
+## X-coordinate.
+## @end table
 ##
 ## Optional property/value pairs are passed directly to the underlying patch
 ## objects.
@@ -107,13 +123,18 @@ endfunction
 %! y = rand (11, 1);
 %! h = bar (y);
 %! set (h, 'ydata', sort (rand (11, 1)));
-%! title ('bar() graph')
+%! title ('bar() graph');
 
 %!demo
 %! clf;
 %! h = bar (rand (5, 3));
-%! set (h(1), 'facecolor', 'r')
-%! set (h(2), 'facecolor', 'g')
-%! set (h(3), 'facecolor', 'b')
-%! title ('bar() graph w/multiple bars')
+%! set (h(1), 'facecolor', 'r');
+%! set (h(2), 'facecolor', 'g');
+%! set (h(3), 'facecolor', 'b');
+%! title ('bar() graph w/multiple bars');
+
+%!demo
+%! clf;
+%! h = bar (rand (5, 3), 'stacked');
+%! title ('bar() graph with stacked style');
 

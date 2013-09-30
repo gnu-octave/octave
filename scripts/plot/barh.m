@@ -36,8 +36,24 @@
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
 ## separate bar graph plotted on the same graph.  By default the columns
 ## are plotted side-by-side.  This behavior can be changed by the @var{style}
-## argument, which can take the values @qcode{"grouped"} (the default),
-## or @qcode{"stacked"}.
+## argument which can take the following values:
+##
+## @table @asis
+## @item @qcode{"grouped"} (default) 
+## Side-by-side bars with a gap between bars and centered over the Y-coordinate.
+## 
+## @item  @qcode{"stacked"}
+## Bars are stacked so that each Y value has a single bar composed of
+## multiple segments.
+##
+## @item @qcode{"hist"}
+## Side-by-side bars with no gap between bars and centered over the
+## Y-coordinate.
+##
+## @item @qcode{"histc"}
+## Side-by-side bars with no gap between bars and left-aligned to the
+## Y-coordinate.
+## @end table
 ##
 ## Optional property/value pairs are passed directly to the underlying patch
 ## objects.

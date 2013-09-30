@@ -639,7 +639,11 @@ the @qcode{'^'} or @qcode{'_'} is super- or sub-scripted.
 @float Table,tab:extended
 @tex
 \vskip 6pt
-\def\symtable#1#2#3{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
+\newdimen\cola \cola=78pt
+\newdimen\colb \colb=78pt
+\newdimen\colc \colc=78pt
+\def\symtable#1#2#3{
+\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
 \hskip36pt #1
 \vskip6pt
 \halign{
@@ -655,10 +659,11 @@ width 0.6pt \tabskip=0pt\cr
 \noalign{\hrule height 0.6pt}
 }
 }\hfill}}
+\hoffset72pt
 \symtable{Greek Lowercase Letters} {#}
-{& $\backslash$alpha     && $\alpha$
-&& $\backslash$beta      && $\beta$
-&& $\backslash$gamma     && $\gamma$     &\cr
+{& \hbox to \cola{$\backslash$alpha }    && $\alpha$
+&& \hbox to \colb{$\backslash$beta }     && $\beta$
+&& \hbox to \colc{$\backslash$gamma}     && $\gamma$     &\cr
 & $\backslash$delta      && $\delta$
 && $\backslash$epsilon   && $\epsilon$
 && $\backslash$zeta      && $\zeta$      &\cr
@@ -685,9 +690,9 @@ width 0.6pt \tabskip=0pt\cr
 && $\backslash$omega     && $\omega$     &\cr}
 \vskip12pt
 \symtable{Greek Uppercase Letters} {#}
-{& $\backslash$Gamma   && $\Gamma$
-&& $\backslash$Delta   && $\Delta$
-&& $\backslash$Theta   && $\Theta$      &\cr
+{& \hbox to \cola{$\backslash$Gamma}   && $\Gamma$
+&& \hbox to \colb{$\backslash$Delta}   && $\Delta$
+&& \hbox to \colc{$\backslash$Theta}   && $\Theta$      &\cr
 & $\backslash$Lambda   && $\Lambda$
 && $\backslash$Xi      && $\Xi$
 && $\backslash$Pi      && $\Pi$         &\cr
@@ -699,9 +704,9 @@ width 0.6pt \tabskip=0pt\cr
 &&    &&       &\cr}
 \vskip12pt
 \symtable{Misc Symbols Type Ord} {#}
-{& $\backslash$aleph       && $\aleph$
-&& $\backslash$wp          && $\wp$
-&& $\backslash$Re          && $\Re$          &\cr
+{& \hbox to \cola{$\backslash$aleph}       && $\aleph$
+&& \hbox to \colb{$\backslash$wp}          && $\wp$
+&& \hbox to \colc{$\backslash$Re}          && $\Re$      &\cr
 & $\backslash$Im           && $\Im$
 && $\backslash$partial     && $\partial$
 && $\backslash$infty       && $\infty$       &\cr
@@ -719,14 +724,14 @@ width 0.6pt \tabskip=0pt\cr
 &&    &&       &\cr}
 \vskip12pt
 \symtable{``Large'' Operators} {#}
-{& $\backslash$int   && $\int$
-&&    &&
-&&    &&       &\cr}
+{& \hbox to \cola{$\backslash$int}   && $\int$
+&& \hbox to \colb{}   &&
+&& \hbox to \colc{}   &&       &\cr}
 \vskip12pt
 \symtable{Binary operators} {#}
-{& $\backslash$pm     && $\pm$
-&& $\backslash$cdot   && $\cdot$
-&& $\backslash$times  && $\times$      &\cr
+{& \hbox to \cola{$\backslash$pm}     && $\pm$
+&& \hbox to \colb{$\backslash$cdot}   && $\cdot$
+&& \hbox to \colc{$\backslash$times}  && $\times$      &\cr
 & $\backslash$ast     && $\ast$
 && $\backslash$circ   && $\circ$
 && $\backslash$bullet && $\bullet$     &\cr
@@ -797,6 +802,9 @@ width 0.6pt \tabskip=0pt\cr
 @float
 @tex
 \vskip 6pt
+\newdimen\cola \cola=78pt
+\newdimen\colb \colb=78pt
+\newdimen\colc \colc=78pt
 \def\symtable#1#2#3{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
 \hskip36pt #1
 \vskip6pt
@@ -813,11 +821,12 @@ width 0.6pt \tabskip=0pt\cr
 \noalign{\hrule height 0.6pt}
 }
 }\hfill}}
-\vskip6pt
+\hoffset72pt
+\vskip12pt
 \symtable{Relations} {#}
-{& $\backslash$leq      && $\leq$
-&& $\backslash$subset   && $\subset$
-&& $\backslash$subseteq && $\subseteq$    &\cr
+{& \hbox to \cola{$\backslash$leq}      && $\leq$
+&& \hbox to \colb{$\backslash$subset}   && $\subset$
+&& \hbox to \colc{$\backslash$subseteq} && $\subseteq$    &\cr
 & $\backslash$in        && $\in$
 && $\backslash$geq      && $\geq$
 && $\backslash$supset   && $\supset$      &\cr
@@ -830,37 +839,37 @@ width 0.6pt \tabskip=0pt\cr
 & $\backslash$cong      && $\cong$
 && $\backslash$propto   && $\propto$
 && $\backslash$perp     && $\perp$        &\cr}
-\vskip6pt
+\vskip12pt
 \symtable{Arrows} {#}
-{& $\backslash$leftarrow      && $\leftarrow$
-&& $\backslash$Leftarrow      && $\Leftarrow$
-&& $\backslash$rightarrow     && $\rightarrow$      &\cr
+{& \hbox to \cola{$\backslash$leftarrow}      && $\leftarrow$
+&& \hbox to \colb{$\backslash$Leftarrow}      && $\Leftarrow$
+&& \hbox to \colc{$\backslash$rightarrow}     && $\rightarrow$      &\cr
 & $\backslash$Rightarrow      && $\Rightarrow$
 && $\backslash$leftrightarrow && $\leftrightarrow$
 && $\backslash$uparrow        && $\uparrow$         &\cr
 & $\backslash$downarrow       && $\downarrow$
-&&   &&
+&&   && 
 &&   &&       &\cr}
 \vskip12pt
 \symtable{Openings and Closings} {#}
-{& $\backslash$lfloor   && $\lfloor$
-&& $\backslash$langle   && $\langle$
-&& $\backslash$lceil    && $\lceil$      &\cr
+{& \hbox to \cola{$\backslash$lfloor   }    && $\lfloor$
+&& \hbox to \colb{$\backslash$langle   }    && $\langle$
+&& \hbox to \colc{$\backslash$lceil    }    && $\lceil$      &\cr
 & $\backslash$rfloor    && $\rfloor$
 && $\backslash$rangle   && $\rangle$
 && $\backslash$rceil    && $\rceil$      &\cr}
 \vskip12pt
 \symtable{Alternate Names} {#}
-{& $\backslash$neq   && $\neq$
-&&   &&
-&&   &&   &\cr}
+{& \hbox to \cola{$\backslash$neq}   && $\neq$
+&& \hbox to \colb{}   && 
+&& \hbox to \colc{}   &&   &\cr}
 \vskip12pt
 \symtable{Other (not in Appendix F Tables)} {#}
-{& $\backslash$ldots     && $\ldots$
-&& $\backslash$0         && $\oslash$
-&& $\backslash$copyright && $\copyright$      &\cr
+{& \hbox to \cola{$\backslash$ldots}     && $\ldots$
+&& \hbox to \colb{$\backslash$0}         && $\oslash$
+&& \hbox to \colc{$\backslash$copyright} && $\copyright$      &\cr
 & $\backslash$deg        && $\deg$
-&&    &&
+&&    &&  
 &&    &&       &\cr}
 \vskip12pt
 \hskip36pt Table 15.1: Available special characters in \TeX\ mode (cont.)

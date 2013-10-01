@@ -868,7 +868,7 @@ width 0.6pt \tabskip=0pt\cr
 {& \hbox to \cola{$\backslash$ldots}     && $\ldots$
 && \hbox to \colb{$\backslash$0}         && $\oslash$
 && \hbox to \colc{$\backslash$copyright} && $\copyright$      &\cr
-& $\backslash$deg        && $\deg$
+& $\backslash$deg        && $^\circ$
 &&    &&  
 &&    &&       &\cr}
 \vskip12pt

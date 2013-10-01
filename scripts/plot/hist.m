@@ -173,11 +173,7 @@ function [nn, xx] = hist (varargin)
     if (isempty (hax))
       hax = gca ();
     endif
-    if (columns (freq) != 1)
-      bar (hax, x, freq, 0.8, varargin{iarg:end});
-    else
-      bar (hax, x, freq, 1.0, varargin{iarg:end});
-    endif
+    bar (hax, x, freq, "hist", varargin{iarg:end});
   endif
 
 endfunction

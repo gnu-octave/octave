@@ -70,35 +70,34 @@ function h = pareto (varargin)
     print_usage ();
   endif
 
-  x = varargin{1}(:).';
+  y = varargin{1}(:).';
   if (nargin == 2)
-    y = varargin{2}(:).';
-    if (! iscell (y))
-      if (ischar (y))
-        y = cellstr (y);
+    x = varargin{2}(:).';
+    if (! iscell (x))
+      if (ischar (x))
+        x = cellstr (x);
       else
-        y = cellstr (num2str (y(:)));
+        x = cellstr (num2str (x(:)));
       endif
     endif
   else
-    y = cellstr (int2str ([1:numel(x)]'));
+    x = cellstr (int2str ([1:numel(y)]'));
   endif
 
-  [x, idx] = sort (x, "descend");
-  y = y(idx);
-  cdf = cumsum (x);
-  maxcdf = max (cdf);
-  cdf = cdf ./ maxcdf;
-  cdf95 = cdf - 0.95;
-  idx95 = find (sign (cdf95(1:end-1)) != sign (cdf95(2:end)))(1);
+  [y, idx] = sort (y, "descend");
+  x = x(idx);
+  cdf = cumsum (y);
+  maxcdf = cdf(end);
+  cdf ./= maxcdf;
+  idx95 = find (cdf < 0.95, 1, "last") + 1;
 
   if (isempty (hax))
-    [ax, hbar, hline] = plotyy (1 : idx95, x (1 : idx95),
-                                1 : length (cdf), 100 .* cdf,
+    [ax, hbar, hline] = plotyy (1 : idx95, y(1:idx95),
+                                1 : length (cdf), 100 * cdf,
                                 @bar, @plot);
   else
-    [ax, hbar, hline] = plotyy (hax, 1 : idx95, x (1 : idx95),
-                                     1 : length (cdf), 100 .* cdf,
+    [ax, hbar, hline] = plotyy (hax, 1 : idx95, y(1:idx95),
+                                     1 : length (cdf), 100 * cdf,
                                      @bar, @plot);
   endif
 
@@ -106,8 +105,7 @@ function h = pareto (varargin)
   axis (ax(2), [1 - 0.6, idx95 + 0.6, 0, 100]);
   set (ax(2), "ytick", [0, 20, 40, 60, 80, 100],
               "yticklabel", {"0%", "20%", "40%", "60%", "80%", "100%"});
-  set (ax(1), "xtick", 1:idx95, "xticklabel", y(1:idx95));
-  set (ax(2), "xtick", 1:idx95, "xticklabel", y(1:idx95));
+  set (ax(1:2), "xtick", 1:idx95, "xticklabel", x(1:idx95));
 
   if (nargout > 0)
     h = [hbar; hline];

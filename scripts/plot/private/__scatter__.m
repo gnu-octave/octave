@@ -259,6 +259,9 @@ function hg = __scatter__ (varargin)
   addlistener (hg, "markerfacecolor", @update_props);
   addlistener (hg, "markeredgecolor", @update_props);
 
+  ## Matlab property, although Octave does not implement it.
+  addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
+
   if (! isempty (newargs))
     set (hg, newargs{:});
   endif

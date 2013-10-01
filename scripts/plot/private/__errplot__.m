@@ -169,6 +169,9 @@ function h = __errplot__ (fstr, hax, varargin)
     addproperty ("markersize", hg, "linemarkersize",
                  get (hl(1), "markersize"));
 
+    ## Matlab property, although Octave does not implement it.
+    addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
+
     fcn = {@update_props, hl};
     addlistener (hg, "color", fcn);
     addlistener (hg, "linestyle", fcn);

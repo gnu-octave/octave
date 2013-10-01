@@ -165,6 +165,9 @@ function [c, hg] = __contour__ (varargin)
   addproperty ("linestyle", hg, "linelinestyle", linespec.linestyle);
   addproperty ("linewidth", hg, "linelinewidth", 0.5);
 
+  ## Matlab property, although Octave does not implement it.
+  addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
+
   addlistener (hg, "fill", {@update_data, "fill"});
 
   addlistener (hg, "zlevelmode", @update_zlevel);

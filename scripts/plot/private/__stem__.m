@@ -143,6 +143,9 @@ function h = __stem__ (have_z, varargin)
       addlistener (hg, "ydata", @update_data);
       addlistener (hg, "zdata", @update_data);
 
+      ## Matlab property, although Octave does not implement it.
+      addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
+
       if (! isempty (args))
         set (hg, args{:});
       endif

@@ -319,6 +319,10 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
 
     addproperty ("bargroup", hg, "data");
     set (hglist, "bargroup", hglist);
+
+    ## Matlab property, although Octave does not implement it.
+    addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
+
     if (! isempty (args))
       set (hg, args{:});
     endif

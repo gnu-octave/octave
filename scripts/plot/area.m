@@ -176,6 +176,9 @@ function retval = __area__ (ax, x, y, bv, varargin)
     addproperty ("areagroup", hg, "data");
     set (retval, "areagroup", retval);
 
+    ## Matlab property, although Octave does not implement it.
+    addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
+
     if (! isempty (args))
       set (hg, args{:});
     endif

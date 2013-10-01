@@ -320,6 +320,9 @@ function hg = __quiver__ (varargin)
     addlistener (hg, "markerfacecolor", @update_props);
     addlistener (hg, "markersize", @update_props);
 
+    ## Matlab property, although Octave does not implement it.
+    addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
+
     if (! isempty (args))
       set (hg, args{:});
     endif

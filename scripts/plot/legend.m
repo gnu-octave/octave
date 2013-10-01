@@ -73,16 +73,16 @@
 ##   Toggles between @qcode{"hide"} and @qcode{"show"}
 ##
 ## @item @qcode{"boxon"}
-##   Show a box around legend
+##   Show a box around legend (default)
 ##
 ## @item @qcode{"boxoff"}
 ##   Hide the box around legend
 ##
+## @item @qcode{"right"}
+##   Place label text to the right of the keys (default)
+##
 ## @item @qcode{"left"}
 ##   Place label text to the left of the keys
-##
-## @item @qcode{"right"}
-##   Place label text to the right of the keys
 ##
 ## @item @qcode{"off"}
 ##   Delete the legend object
@@ -260,13 +260,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               show = "on";
             else
               show = "create";
-              textpos = "left";
+              textpos = "right";
             endif
             nargs--;
           case "toggle"
             if (isempty (hlegend))
               show = "create";
-              textpos = "left";
+              textpos = "right";
             elseif (strcmp (get (hlegend, "visible"), "off"))
               show = "on";
             else
@@ -530,7 +530,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         box = get (hlegend, "box");
       else
         if (strcmp (textpos, "default"))
-          textpos = "left";
+          textpos = "right";
         endif
         if (strcmp (location, "default"))
           location = "northeast";
@@ -1220,18 +1220,18 @@ endfunction
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('Legend with text to the right of key');
+%! title ('Legend with text to the left of key');
 %! legend ({'I am blue', 'I am green'}, 'location', 'east');
-%! legend right
+%! legend left
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ({'Use properties to place legend text to the right of key', ...
+%! title ({'Use properties to place legend text to the left of key', ...
 %!         'Legend text color is magenta'});
 %! h = legend ({'I am blue', 'I am green'}, 'location', 'east');
-%! legend ('left');
-%! set (h, 'textposition', 'right');
+%! legend ('right');
+%! set (h, 'textposition', 'left');
 %! set (h, 'textcolor', [1 0 1]);
 
 %!demo

@@ -66,24 +66,26 @@ function grid (varargin)
               && strcmp (get (hax, "yminorgrid"), "on")
               && strcmp (get (hax, "zminorgrid"), "on"));
 
+  minor_auto = true;
   if (nargs == 0)
     grid_on = ! grid_on;
   else
-    x = varargin{1};
-    if (! ischar (x))
+    arg1 = varargin{1};
+    if (! ischar (arg1))
       error ("grid: argument 1 must be an axis handle or a string");
     endif
-    if (strcmpi (x, "off"))
+    if (strcmpi (arg1, "off"))
       grid_on = false;
-    elseif (strcmpi (x, "on"))
+    elseif (strcmpi (arg1, "on"))
       grid_on = true;
-    elseif (strcmpi (x, "minor"))
+    elseif (strcmpi (arg1, "minor"))
+      minor_auto = false;
       if (nargs == 2)
-        x2 = varargin{2};
-        if (strcmpi (x2, "on"))
+        arg2 = varargin{2};
+        if (strcmpi (arg2, "on"))
           minor_on = true;
           grid_on = true;
-        elseif (strcmpi (x2, "off"))
+        elseif (strcmpi (arg2, "off"))
           minor_on = false;
         else
           print_usage ();
@@ -103,6 +105,11 @@ function grid (varargin)
     set (hax, "xgrid", "on", "ygrid", "on", "zgrid", "on");
     if (minor_on)
       set (hax, "xminorgrid", "on", "yminorgrid", "on", "zminorgrid", "on");
+    elseif (minor_auto)
+      xmg = ifelse (strcmp (get (hax, "xscale"), "log"), "on", "off");
+      ymg = ifelse (strcmp (get (hax, "yscale"), "log"), "on", "off");
+      zmg = ifelse (strcmp (get (hax, "zscale"), "log"), "on", "off");
+      set (hax, "xminorgrid", xmg, "yminorgrid", ymg, "zminorgrid", zmg);
     else
       set (hax, "xminorgrid", "off", "yminorgrid", "off", "zminorgrid", "off");
     endif

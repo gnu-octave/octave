@@ -90,9 +90,10 @@ function [c, hg] = __contour__ (varargin)
     ## FIXME: The levels should be determined similarly to {x,y,z}ticks
     ##        so that they aren't set at extremely odd values.
     lvl = linspace (min (z1(!isinf (z1))), max (z1(!isinf (z1))), vn + 2);
-    lvl = lvl(2:end-1);  # Strip off max, min outliers
+    ## Strip off max outlier, min must stay for contourf hole algorithm.
+    lvl = lvl(1:end-1);
   else
-    lvl = unique (sort (vn));
+    lvl = sort (vn);
   endif
 
   if (strcmpi (filled, "on"))
@@ -164,7 +165,7 @@ function [c, hg] = __contour__ (varargin)
   addproperty ("linestyle", hg, "linelinestyle", linespec.linestyle);
   addproperty ("linewidth", hg, "linelinewidth", 0.5);
 
-  addlistener (hg, "fill", @update_data);
+  addlistener (hg, "fill", {@update_data, "fill"});
 
   addlistener (hg, "zlevelmode", @update_zlevel);
   addlistener (hg, "zlevel", @update_zlevel);
@@ -175,9 +176,9 @@ function [c, hg] = __contour__ (varargin)
   addlistener (hg, "levelstepmode", @update_data);
 
   addlistener (hg, "labelspacing", @update_text);
-  addlistener (hg, "textlist", @update_text);
+  addlistener (hg, "textlist", {@update_text, "textlist"});
   addlistener (hg, "textlistmode", @update_text);
-  addlistener (hg, "textstep", @update_text);
+  addlistener (hg, "textstep", {@update_text, "textstep"});
   addlistener (hg, "textstepmode", @update_text);
   addlistener (hg, "showtext", @update_text);
 
@@ -301,7 +302,7 @@ function add_patch_children (hg)
         ## patch() doesn't need/want closed contour.  It will do it itself.
         ctmp(:,end) = [];
       endif
-      if (isnan (cont_lev (idx)))
+      if (isnan (cont_lev(idx)))
         fc = get (ca, "color");
         if (strcmp (fc, "none"))
           fc = get (ancestor (ca, "figure"), "color");
@@ -414,6 +415,13 @@ function update_data (h, ~, prop = "")
         set (h, "levellistmode", "manual")
       case "levelstep"
         set (h, "levelstepmode", "manual")
+      case "fill"
+        ## Switching from filled ('k' linespec) to unfilled, reset linecolor
+        if (strcmp (get (h, "fill"), "off"))
+          set (h, "linecolor", "auto");
+        else
+          set (h, "linecolor", "black");
+        endif
     endswitch
 
     if (strcmp (get (h, "levellistmode"), "manual")
@@ -432,7 +440,12 @@ function update_data (h, ~, prop = "")
       set (h, "levellist", lvl);
       set (h, "levellistmode", "auto");
     else
-      lvl = 10;
+      z = get (h, "zdata");
+      ## FIXME: The levels should be determined similarly to {x,y,z}ticks
+      ##        so that they aren't set at extremely odd values.
+      lvl = linspace (min (z(!isinf (z))), max (z(!isinf (z))), 10 + 2);
+      ## Strip off max outlier, min must stay for contourf hole algorithm.
+      lvl = lvl(1:end-1);
     endif
 
     if (strcmp (get (h, "fill"), "on"))
@@ -464,8 +477,7 @@ function update_data (h, ~, prop = "")
       set (h, "levellist", lev);
     else
       set (h, "levellist", lev);
-      z = get (h, "zdata");
-      lvlstep = (max (z(:)) - min (z(:))) / 10;
+      lvlstep = sum (diff (lvl)) / (length (lvl) - 1);
       set (h, "levelstep", lvlstep);
     endif
 
@@ -476,13 +488,20 @@ function update_data (h, ~, prop = "")
 
 endfunction
 
-function update_text (h, ~)
+function update_text (h, ~, prop = "")
   persistent recursive = false;
 
   if (! recursive)
     recursive = true;
 
     delete (findobj (h, "type", "text"));
+
+    switch (prop)
+      case "textlist"
+        set (h, "textlistmode", "manual")
+      case "textstep"
+        set (h, "textstepmode", "manual")
+    endswitch
 
     if (strcmp (get (h, "textlistmode"), "manual"))
       lvl = get (h, "textlist");

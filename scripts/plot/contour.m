@@ -90,7 +90,6 @@ endfunction
 %! colormap ('default');
 %! [x, y, z] = peaks ();
 %! contour (x, y, z);
-%! title ('contour() plot of peaks() function');
 %! title ({'contour() plot (isolines of constant Z)'; 'Z = peaks()'});
 
 %!demo
@@ -102,13 +101,20 @@ endfunction
 %! contour (X, Y, abs (Z), 10);
 %! title ({'contour() plot'; 'polar fcn: Z = sin (2*theta) * (1-r)'});
 
+%!demo
+%! clf;
+%! colormap ('default');
+%! z = peaks ();
+%! contour (z, [0 0]);
+%! title ({'contour() plot with single isoline at Z == 0'; 'Z = peaks()'});
+
 %!test
 %! hf = figure ("visible", "off");
 %! clf (hf);
 %! unwind_protect
 %!   [x, y, z] = peaks ();
 %!   [c, h] = contour (x, y, z);
-%!   levellist = (-6):6;
+%!   levellist = -6:6;
 %!   set (h, "levellist", levellist);
 %!   assert (get (h, "levellist"), levellist)
 %!   assert (get (h, "levellistmode"), "manual")
@@ -126,7 +132,7 @@ endfunction
 %!   set (h, "levelstep", levelstep);
 %!   assert (get (h, "levelstep"), levelstep)
 %!   assert (get (h, "levelstepmode"), "manual")
-%!   assert (get (h, "levellist"), (-6):levelstep:6)
+%!   assert (get (h, "levellist"), -6:levelstep:6)
 %!   assert (get (h, "levellistmode"), "auto")
 %! unwind_protect_cleanup
 %!   close (hf);

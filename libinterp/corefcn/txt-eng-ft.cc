@@ -949,6 +949,12 @@ ft_render::get_extent (const std::string& txt, double rotation,
 int
 ft_render::rotation_to_mode (double rotation) const
 {
+  // Clip rotation to range [0, 360]
+  while (rotation < 0)
+    rotation += 360.0;
+  while (rotation > 360.0)
+    rotation -= 360.0;
+
   if (rotation == 0.0)
     return ROTATION_0;
   else if (rotation == 90.0)
@@ -967,7 +973,6 @@ ft_render::text_to_pixels (const std::string& txt,
                            int _halign, int valign, double rotation,
                            const caseless_str& interpreter)
 {
-  // FIXME: clip "rotation" between 0 and 360
   int rot_mode = rotation_to_mode (rotation);
 
   halign = _halign;

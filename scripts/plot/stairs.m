@@ -130,6 +130,8 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
     error ("stairs: X and Y sizes must match");
   endif
 
+  [nr, nc] = size (y);
+
   len = 2*nr - 1;
 
   xs = ys = zeros (len, nc);
@@ -236,13 +238,10 @@ endfunction
 
 function update_props (h, ~)
   set (get (h, "children"),
-       "color", get (h, "color"),
-       "linestyle", get (h, "linestyle"),
-       "linewidth", get (h, "linewidth"),
-       "marker", get (h, "marker"),
-       "markeredgecolor", get (h, "markeredgecolor"),
-       "markerfacecolor", get (h, "markerfacecolor"),
-       "markersize", get (h, "markersize"));
+       {"color", "linestyle", "linewidth", "marker", "markeredgecolor",
+        "markerfacecolor", "markersize", "markersize"},
+       get (h, {"color", "linestyle", "linewidth", "marker", "markeredgecolor",
+                "markerfacecolor", "markersize", "markersize"}));
 endfunction
 
 function update_data (h, ~)

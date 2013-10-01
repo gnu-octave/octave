@@ -964,7 +964,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         if (addprops)
           addlistener (hlegend, "edgecolor", @updatelegendtext);
           addlistener (hlegend, "textcolor", @updatelegendtext);
+          addlistener (hlegend, "fontangle", @updatelegendtext);
+          addlistener (hlegend, "fontname", @updatelegendtext);
           addlistener (hlegend, "fontsize", @updatelegendtext);
+          addlistener (hlegend, "fontunits", @updatelegendtext);
+          addlistener (hlegend, "fontweight", @updatelegendtext);
           addlistener (hlegend, "interpreter", @updatelegendtext);
           addlistener (hlegend, "location", @updatelegend);
           addlistener (hlegend, "orientation", @updatelegend);
@@ -1019,23 +1023,22 @@ function updatelegend (h, ~)
 endfunction
 
 function updatelegendtext (h, ~)
-  kids = get (h, "children");
-  text_kids = findobj (kids, "type", "text");
-  interpreter = get (h, "interpreter");
-  textcolor = get (h, "textcolor");
-  fontsize = get (h, "fontsize");
-  set (text_kids, "interpreter", interpreter,
-                  "color", textcolor,
-                  "fontsize", fontsize);
+#  keyboard;
+  htext = findobj (get (h, "children"), "type", "text");
+
+  tprops = {"interpreter", "fontunits", "fontangle", "fontname", "fontsize",...
+            "fontweight", "color"};
+  lprops = {"interpreter", "fontunits", "fontangle", "fontname", "fontsize",...
+            "fontweight", "textcolor"};
+  set (htext, tprops, get (h, lprops));
 endfunction
 
 function hideshowlegend (h, ~, ca, pos1, pos2)
-  keyboard;
   isvisible = strcmp (get (h, "visible"), "off");
   if (! isvisible)
     kids = get (h, "children");
     if (any (! strcmp (get (kids, "visible"), "off")))
-        isvisible = true;
+      isvisible = true;
     endif
   endif
 

@@ -160,12 +160,24 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
               || topt == ">" || topt == "<" || topt == "p"
               || topt == "h" || topt == "@")
         have_marker = true;
+        ## Check for long form marker styles
+        if (any (topt == "sdhp"))
+          if (strncmp (opt, "square", 6))
+            n = 6;
+          elseif (strncmp (opt, "diamond", 7))
+            n = 7;
+          elseif (strncmp (opt, "hexagram", 8))
+            n = 8;
+          elseif (strncmp (opt, "pentagram", 9))
+            n = 9;
+          endif
+        endif
         ## Backward compatibility.  Leave undocumented.
         if (topt == "@")
           topt = "+";
         endif
         options.marker = topt;
-      ## Numeric color specs for backward compatibility.  Leave undocumented.
+      ## Numeric color specs are for backward compatibility.  Don't document.
       elseif (topt == "k" || topt == "0")
         options.color = [0, 0, 0];
       elseif (topt == "r" || topt == "1")

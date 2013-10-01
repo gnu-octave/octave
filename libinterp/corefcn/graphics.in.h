@@ -4278,7 +4278,7 @@ public:
       radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
+      radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
       color_property markeredgecolor , "{auto}|none"
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
@@ -4688,7 +4688,8 @@ public:
       radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
+      radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
+      //radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
       color_property markeredgecolor , "none|{auto}|flat"
       color_property markerfacecolor , "{none}|auto|flat"
       double_property markersize , 6
@@ -4809,7 +4810,8 @@ public:
       radio_property interpreter , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
+      radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
+      //radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
       color_property markeredgecolor , "none|{auto}|flat"
       color_property markerfacecolor , "{none}|auto|flat"
       double_property markersize , 6

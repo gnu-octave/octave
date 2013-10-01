@@ -1257,7 +1257,7 @@ endfunction
 %! plot (x, x, ';\alpha;',  ...
 %!       x, 2*x, ';\beta=2\alpha;',  ...
 %!       x, 3*x, ';\gamma=3\alpha;');
-%! hl = legend ();
+%! h = legend ();
 %! set (h, 'interpreter', 'tex');
 %! title ('Labels with interpreted Greek text');
 

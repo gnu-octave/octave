@@ -117,7 +117,6 @@ endfunction
 %! clf;
 %! colormap ('default');
 %! [x, y, z] = sombrero ();
-%! [~, y] = meshgrid (x, y);
 %! ribbon (y, z);
 %! title ('ribbon() plot of sombrero()');
 

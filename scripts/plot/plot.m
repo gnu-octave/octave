@@ -265,7 +265,7 @@ endfunction
 %! x = 0:10;
 %! plot (repmat (x, 2, 1), rand (2, numel (x)), '-s')
 %! axis ([0 10 0 1])
-%! title ({'Vertical lines with random height and lenths', ...
+%! title ({'Vertical lines with random height and lengths', ...
 %!         'x[2x11], y[2,11]'})
 
 %!demo

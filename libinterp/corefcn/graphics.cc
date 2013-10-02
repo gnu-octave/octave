@@ -1927,22 +1927,6 @@ property_list::as_struct (const std::string& prefix_arg) const
   return m;
 }
 
-graphics_handle::graphics_handle (const octave_value& a)
-  : val (octave_NaN)
-{
-  if (a.is_empty ())
-    /* do nothing */;
-  else
-    {
-      double tval = a.double_value ();
-
-      if (! error_state)
-        val = tval;
-      else
-        error ("invalid graphics handle");
-    }
-}
-
 // Set properties given as a cs-list of name, value pairs.
 
 void

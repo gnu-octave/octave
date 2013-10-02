@@ -37,9 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "caseless-str.h"
-#include "lo-ieee.h"
 
 #include "gripes.h"
+#include "oct-handle.h"
 #include "oct-map.h"
 #include "oct-mutex.h"
 #include "oct-refcount.h"
@@ -53,107 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_DEFAULT_FONTNAME "*"
 #endif
 
-// ---------------------------------------------------------------------
-
-class graphics_handle
-{
-public:
-  graphics_handle (void) : val (octave_NaN) { }
-
-  graphics_handle (const octave_value& a);
-
-  graphics_handle (int a) : val (a) { }
-
-  graphics_handle (double a) : val (a) { }
-
-  graphics_handle (const graphics_handle& a) : val (a.val) { }
-
-  graphics_handle& operator = (const graphics_handle& a)
-  {
-    if (&a != this)
-      val = a.val;
-
-    return *this;
-  }
-
-  ~graphics_handle (void) { }
-
-  double value (void) const { return val; }
-
-  octave_value as_octave_value (void) const
-  {
-    return ok () ? octave_value (val) : octave_value (Matrix ());
-  }
-
-  // Prefix increment/decrement operators.
-  graphics_handle& operator ++ (void)
-  {
-    ++val;
-    return *this;
-  }
-
-  graphics_handle& operator -- (void)
-  {
-    --val;
-    return *this;
-  }
-
-  // Postfix increment/decrement operators.
-  const graphics_handle operator ++ (int)
-  {
-    graphics_handle old_value = *this;
-    ++(*this);
-    return old_value;
-  }
-
-  const graphics_handle operator -- (int)
-  {
-    graphics_handle old_value = *this;
-    --(*this);
-    return old_value;
-  }
-
-  bool ok (void) const { return ! xisnan (val); }
-
-private:
-  double val;
-};
-
-inline bool
-operator == (const graphics_handle& a, const graphics_handle& b)
-{
-  return a.value () == b.value ();
-}
-
-inline bool
-operator != (const graphics_handle& a, const graphics_handle& b)
-{
-  return a.value () != b.value ();
-}
-
-inline bool
-operator < (const graphics_handle& a, const graphics_handle& b)
-{
-  return a.value () < b.value ();
-}
-
-inline bool
-operator <= (const graphics_handle& a, const graphics_handle& b)
-{
-  return a.value () <= b.value ();
-}
-
-inline bool
-operator >= (const graphics_handle& a, const graphics_handle& b)
-{
-  return a.value () >= b.value ();
-}
-
-inline bool
-operator > (const graphics_handle& a, const graphics_handle& b)
-{
-  return a.value () > b.value ();
-}
+typedef octave_handle graphics_handle;
 
 // ---------------------------------------------------------------------
 

@@ -81,6 +81,7 @@ COREFCN_INC = \
   corefcn/mxarray.in.h \
   corefcn/oct-errno.h \
   corefcn/oct-fstrm.h \
+  corefcn/oct-handle.h \
   corefcn/oct-hdf5.h \
   corefcn/oct-hist.h \
   corefcn/oct-iostrm.h \

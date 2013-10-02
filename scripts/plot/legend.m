@@ -1043,6 +1043,9 @@ function updatelegendtext (h, ~)
   lprops = {"interpreter", "fontunits", "fontangle", "fontname", "fontsize",...
             "fontweight", "textcolor"};
   set (htext, tprops, get (h, lprops));
+
+  ec = get (h, "edgecolor");
+  set (h, "xcolor", ec, "ycolor", ec);
 endfunction
 
 function hideshowlegend (h, ~, ca, pos1, pos2)

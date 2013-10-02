@@ -544,7 +544,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       ## Get axis size and fontsize in points.
       ## Rely on listener to handle coversion.
       units = get (ca(1), "units");
-      fontunits = get (ca(1), "fontunits");
+      #fontunits = get (ca(1), "fontunits");
       unwind_protect
         set (ca(1), "units", "points");
         set (ca(1), "fontunits", "points");
@@ -558,14 +558,14 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endif
         ca_pos = unmodified_axes_position;
         ca_outpos = unmodified_axes_outerposition;
-        ca_fontsize = get (ca(1), "fontsize");
+      #  ca_fontsize = get (ca(1), "fontsize");
         tightinset = get (ca(1), "tightinset");
         for i = 2 : numel (ca)
           tightinset = max (tightinset, get (ca(i), "tightinset"));
         endfor
       unwind_protect_cleanup
         set (ca(1), "units", units);
-        set (ca(1), "fontunits", fontunits);
+      #  set (ca(1), "fontunits", fontunits);
       end_unwind_protect
 
       ## Padding between legend entries horizontally and vertically
@@ -575,7 +575,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       linelength = 15;
 
       ## Create the axis first
-      ## FIXME: hlegend should inherit properties from "ca"
       curaxes = get (fig, "currentaxes");
       unwind_protect
         ud = ancestor (hplots, "axes");
@@ -590,7 +589,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                           "xlim", [0, 1], "ylim", [0, 1],
                           "visible", ifelse (strcmp (box, "on"), "on", "off"),
                           "activepositionproperty", "position",
-                          "fontsize", ca_fontsize);
+                          "interpreter", "tex");
+          ## Inherit properties from current axis
+          ## "fontunits" shoud be first because it affects interpretation of "fontsize"
+          proplist = {"fontunits", "fontangle", "fontname", "fontsize", "fontweight"};
+          ca_props = get (ca(1), proplist); 
+          set (hlegend, proplist, ca_props);
         else
           addprops = false;
           axes (hlegend);
@@ -611,7 +615,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           addproperty ("string", hlegend, "any", text_strings);
           addproperty ("textposition", hlegend, "radio", "{left}|right");
         endif
+        ## Inherit visual properties from legend object
+        fontunits = get (hlegend, "fontunits");
+        fontangle = get (hlegend, "fontangle");
+        fontname = get (hlegend, "fontname");
         fontsize = get (hlegend, "fontsize");
+        fontweight = get (hlegend, "fontweight");
         interpreter = get (hlegend, "interpreter");
         textcolor = get (hlegend, "textcolor");
         ## Add text label to the axis first, checking their extents
@@ -622,11 +631,15 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         for k = 1 : nentries
           halign = ifelse (strcmp (textpos, "right"), "left", "right");
           texthandle = [texthandle, text(0, 0, text_strings{k},
-                                         "userdata", hplots(k),
-                                         "color", textcolor,
-                                         "horizontalalignment", halign,
-                                         "interpreter", interpreter,
-                                         "fontsize", fontsize)];
+                                               "userdata", hplots(k),
+                                               "color", textcolor,
+                                               "horizontalalignment", halign,
+                                               "interpreter", interpreter,
+                                               "fontunits", fontunits,
+                                               "fontangle", fontangle,
+                                               "fontname", fontname,
+                                               "fontsize", fontsize,
+                                               "fontweight", fontweight)];,
           units = get (texthandle(end), "units");
           unwind_protect
             set (texthandle(end), "units", "points");
@@ -1023,7 +1036,6 @@ function updatelegend (h, ~)
 endfunction
 
 function updatelegendtext (h, ~)
-#  keyboard;
   htext = findobj (get (h, "children"), "type", "text");
 
   tprops = {"interpreter", "fontunits", "fontangle", "fontname", "fontsize",...

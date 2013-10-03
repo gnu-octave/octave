@@ -16,6 +16,12 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{properties} =} __get_properties__ (@var{recorder})
+## Return a struct containing all named properties of the recorder object
+## @var{recorder}.
+## @end deftypefn
+
 function properties = __get_properties__ (recorder)
   properties.BitsPerSample = __recorder_get_nbits__ (struct (recorder).recorder);
   properties.CurrentSample = __recorder_get_sample_number__ (struct (recorder).recorder);

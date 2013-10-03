@@ -33,7 +33,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (__recorder_audiorecorder__, args, ,
-"__recorder_audiorecorder__")
+  "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels})\n\
+@deftypefnx {Loadable Function} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels}, @var{id})\n\
+@deftypefnx {Loadable Function} {@var{recorder} =} __recorder_audiorecorder__ (@var{fcn}, @dots{})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
@@ -72,7 +77,10 @@ DEFUN_DLD (__recorder_audiorecorder__, args, ,
 }
 
 DEFUN_DLD (__recorder_getaudiodata__, args, ,
-"__recorder_getaudiodata__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{data}} __recorder_getaudiodata__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -86,7 +94,10 @@ DEFUN_DLD (__recorder_getaudiodata__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_channels__, args, ,
-"__recorder_get_channels__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{n} =} __recorder_get_channels__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -104,7 +115,10 @@ DEFUN_DLD (__recorder_get_channels__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_fs__, args, ,
-"__recorder_get_fs__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{fs} =} __recorder_get_fs__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -122,7 +136,10 @@ DEFUN_DLD (__recorder_get_fs__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_id__, args, ,
-"__recorder_get_id__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{id} =} __recorder_get_id__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -140,7 +157,10 @@ DEFUN_DLD (__recorder_get_id__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_nbits__, args, ,
-"__recorder_get_nbits__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{nbits} =} __recorder_get_nbits__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -158,7 +178,10 @@ DEFUN_DLD (__recorder_get_nbits__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_sample_number__, args, ,
-"__recorder_get_sample_number__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{n} =} __recorder_get_sample_number__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -176,7 +199,10 @@ DEFUN_DLD (__recorder_get_sample_number__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_tag__, args, ,
-"__recorder_get_tag__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{tag} =} __recorder_get_tag__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -194,7 +220,10 @@ DEFUN_DLD (__recorder_get_tag__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_total_samples__, args, ,
-"__recorder_get_total_samples__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{n} =} __recorder_get_total_samples__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -212,7 +241,10 @@ DEFUN_DLD (__recorder_get_total_samples__, args, ,
 }
 
 DEFUN_DLD (__recorder_get_userdata__, args, ,
-"__recorder_get_userdata__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{data} =} __recorder_get_userdata__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -230,7 +262,10 @@ DEFUN_DLD (__recorder_get_userdata__, args, ,
 }
 
 DEFUN_DLD (__recorder_isrecording__, args, ,
-"__recorder_isrecording__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_isrecording__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -251,7 +286,10 @@ DEFUN_DLD (__recorder_isrecording__, args, ,
 }
 
 DEFUN_DLD (__recorder_pause__, args, ,
-"__recorder_pause__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_pause__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -269,7 +307,10 @@ DEFUN_DLD (__recorder_pause__, args, ,
 }
 
 DEFUN_DLD (__recorder_recordblocking__, args, ,
-"__recorder_recordblocking__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_recordblocking__ (@var{recorder}, @var{seconds})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -283,7 +324,11 @@ DEFUN_DLD (__recorder_recordblocking__, args, ,
 }
 
 DEFUN_DLD (__recorder_record__, args, ,
-"__recorder_record__")
+  "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {} __recorder_record__ (@var{recorder})\n\
+@deftypefnx {Loadable Function} {} __recorder_record__ (@var{recorder}, @var{seconds})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -309,7 +354,10 @@ DEFUN_DLD (__recorder_record__, args, ,
 }
 
 DEFUN_DLD (__recorder_resume__, args, ,
-"__recorder_resume__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_resume__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -327,7 +375,10 @@ DEFUN_DLD (__recorder_resume__, args, ,
 }
 
 DEFUN_DLD (__recorder_set_fs__, args, ,
-"__recorder_set_fs__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_set_fs__ (@var{recorder}, @var{fs})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -345,7 +396,10 @@ DEFUN_DLD (__recorder_set_fs__, args, ,
 }
 
 DEFUN_DLD (__recorder_set_tag__, args, ,
-"__recorder_set_tag__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_set_tag__ (@var{recorder}, @var{tag})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -363,7 +417,10 @@ DEFUN_DLD (__recorder_set_tag__, args, ,
 }
 
 DEFUN_DLD (__recorder_set_userdata__, args, ,
-"__recorder_set_userdata__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_set_userdata__ (@var{recorder}, @var{data})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -381,7 +438,10 @@ DEFUN_DLD (__recorder_set_userdata__, args, ,
 }
 
 DEFUN_DLD (__recorder_stop__, args, ,
-"__recorder_stop__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __recorder_stop__ (@var{recorder})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO

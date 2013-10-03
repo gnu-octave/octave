@@ -33,7 +33,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (__player_audioplayer__, args, ,
-"__player_audioplayer__")
+  "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs})\n\
+@deftypefnx {Loadable Function} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits})\n\
+@deftypefnx {Loadable Function} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits}, @var{id})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
@@ -67,7 +72,10 @@ DEFUN_DLD (__player_audioplayer__, args, ,
 }
 
 DEFUN_DLD (__player_get_channels__, args, ,
-"__player_get_channels__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{n} =} __player_get_channels__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -85,7 +93,10 @@ DEFUN_DLD (__player_get_channels__, args, ,
 }
 
 DEFUN_DLD (__player_get_fs__, args, ,
-"__player_get_fs__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{fs} =} __player_get_fs__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -103,7 +114,10 @@ DEFUN_DLD (__player_get_fs__, args, ,
 }
 
 DEFUN_DLD (__player_get_id__, args, ,
-"__player_get_id__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{id} =} __player_get_id__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -121,7 +135,10 @@ DEFUN_DLD (__player_get_id__, args, ,
 }
 
 DEFUN_DLD (__player_get_nbits__, args, ,
-"__player_get_nbits__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{nbits} =} __player_get_nbits__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -139,7 +156,10 @@ DEFUN_DLD (__player_get_nbits__, args, ,
 }
 
 DEFUN_DLD (__player_get_sample_number__, args, ,
-"__player_get_sample_number__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{n} =} __player_get_sample_number__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -157,7 +177,10 @@ DEFUN_DLD (__player_get_sample_number__, args, ,
 }
 
 DEFUN_DLD (__player_get_tag__, args, ,
-"__player_get_tag__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{tag} =} __player_get_tag__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -175,7 +198,10 @@ DEFUN_DLD (__player_get_tag__, args, ,
 }
 
 DEFUN_DLD (__player_get_total_samples__, args, ,
-"__player_get_total_samples__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{n} =} __player_get_total_samples__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -193,7 +219,10 @@ DEFUN_DLD (__player_get_total_samples__, args, ,
 }
 
 DEFUN_DLD (__player_get_userdata__, args, ,
-"__player_get_userdata__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{data} =} __player_get_userdata__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -211,7 +240,10 @@ DEFUN_DLD (__player_get_userdata__, args, ,
 }
 
 DEFUN_DLD (__player_isplaying__, args, ,
-"__player_isplaying__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __player_isplaying__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -232,7 +264,10 @@ DEFUN_DLD (__player_isplaying__, args, ,
 }
 
 DEFUN_DLD (__player_pause__, args, ,
-"__player_pause__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __player_pause__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -250,7 +285,12 @@ DEFUN_DLD (__player_pause__, args, ,
 }
 
 DEFUN_DLD (__player_playblocking__, args, ,
-"__player_playblocking__")
+  "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {} __player_playblocking__ (@var{player})\n\
+@deftypefnx {Loadable Function} {} __player_playblocking__ (@var{player}, @var{start})\n\
+@deftypefnx {Loadable Function} {} __player_playblocking__ (@var{player}, [@var{start}, @var{end}])\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -294,7 +334,12 @@ DEFUN_DLD (__player_playblocking__, args, ,
 }
 
 DEFUN_DLD (__player_play__, args, ,
-"__player_play__")
+  "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {} __player_play__ (@var{player})\n\
+@deftypefnx {Loadable Function} {} __player_play__ (@var{player}, @var{start})\n\
+@deftypefnx {Loadable Function} {} __player_play__ (@var{player}, [@var{start}, @var{end}])\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -338,7 +383,10 @@ DEFUN_DLD (__player_play__, args, ,
 }
 
 DEFUN_DLD (__player_resume__, args, ,
-"__player_resume__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __player_resume__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -356,7 +404,10 @@ DEFUN_DLD (__player_resume__, args, ,
 }
 
 DEFUN_DLD (__player_set_fs__, args, ,
-"__player_set_fs__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __player_set_fs__ (@var{player}, @var{fs})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -374,7 +425,10 @@ DEFUN_DLD (__player_set_fs__, args, ,
 }
 
 DEFUN_DLD (__player_set_tag__, args, ,
-"__player_set_tag__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __player_set_tag__ (@var{player}, @var{tag})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -392,7 +446,10 @@ DEFUN_DLD (__player_set_tag__, args, ,
 }
 
 DEFUN_DLD (__player_set_userdata__, args, ,
-"__player_set_userdata__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __player_set_userdata__ (@var{player}, @var{data})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
@@ -410,7 +467,10 @@ DEFUN_DLD (__player_set_userdata__, args, ,
 }
 
 DEFUN_DLD (__player_stop__, args, ,
-"__player_stop__")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __player_stop__ (@var{player})\n\
+Undocumented internal function.\n\
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO

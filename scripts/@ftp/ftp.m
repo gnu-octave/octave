@@ -53,7 +53,7 @@ function obj = ftp (host = "", username = "anonymous", password = "")
     p.password = password;
     p.curlhandle = tmpnam ("ftp-");
     if (nargin > 0)
-      __ftp__ (p.curlhandle, host, username, password);
+      p.curlhandle = __ftp__ (host, username, password);
     endif
     obj = class (p, "ftp");
   endif

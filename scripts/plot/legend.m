@@ -880,11 +880,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                            "cdata", cdata, "userdata", hplots(k));
                 hobjects(end+1) = p1;
               endif
+              ## FIXME: Probably need listeners, as for line objects
 
             case "surface"
               facecolor = get (hplots(k), "facecolor");
               edgecolor = get (hplots(k), "edgecolor");
-              cdata = sum (caxis ()) / 2;
+              cdata = sum (get (ca(1), "clim")) / 2;
               if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
                 p1 = patch ("xdata", ([0, linelength, linelength, 0] +
                                       xoffset + xk * xstep) / lpos(3),
@@ -894,6 +895,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                            "cdata", cdata, "userdata", hplots(k));
                 hobjects(end+1) = p1;
               endif
+              ## FIXME: Probably need listeners, as for line objects
 
           endswitch
 

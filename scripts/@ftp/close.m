@@ -23,7 +23,7 @@
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function dir (f)
+function close (f)
   __ftp_close__ (f.curlhandle);
 endfunction
 

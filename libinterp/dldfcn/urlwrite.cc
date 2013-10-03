@@ -57,6 +57,257 @@ delete_file (const std::string& file)
   octave_unlink (file);
 }
 
+class base_url_transfer
+{
+private:
+
+  static void reset_path (const base_url_transfer *curl_xfer)
+  {
+    curl_xfer->cwd ("..");
+  }
+
+public:
+
+  friend class url_transfer;
+
+  base_url_transfer (void)
+    : count (1), host (), userpwd (), valid (false), ascii_mode (false) { }
+
+  base_url_transfer (const std::string& host_arg,
+                     const std::string& /* user_arg */,
+                     const std::string& /* passwd */)
+    : count (1), host (host_arg), userpwd (), valid (false),
+      ascii_mode (false) { }
+
+  base_url_transfer (const std::string& /* url */,
+                     const std::string& /* method */,
+                     const Cell& /* param */, std::ostream& /* os */,
+                     bool& /* retval */)
+    : count (1), host (), userpwd (), valid (false), ascii_mode (false) { }
+
+  virtual ~base_url_transfer (void) { }
+
+  bool is_valid (void) const { return valid; }
+
+  virtual bool perform (bool /* silent */ = false) const { return false; }
+
+  virtual std::string lasterror (void) const { return std::string (); }
+
+  virtual void set_ostream (std::ostream& /* os */) const { }
+
+  virtual void set_istream (std::istream& /* is */) const { }
+
+  virtual void ascii (void) { }
+
+  virtual void binary (void) { }
+
+  bool is_ascii (void) const { return ascii_mode; }
+
+  bool is_binary (void) const { return !ascii_mode; }
+
+  virtual void cwd (const std::string& /* path */) const { } 
+
+  virtual void del (const std::string& /* file */) const { }
+
+  virtual void rmdir (const std::string& /* path */) const { }
+
+  virtual bool mkdir (const std::string& /* path */, bool /* silent */) const
+  { return false; }
+
+  virtual void rename (const std::string& /* oldname */,
+                       const std::string& /* newname */) const { }
+
+  virtual void put (const std::string& /* file */,
+                    std::istream& /* is */) const { }
+
+  virtual void get (const std::string& /* file */,
+                    std::ostream& /* os */) const { }
+
+  void mget_directory (const std::string& directory,
+                       const std::string& target) const
+  {
+    std::string sep = file_ops::dir_sep_str ();
+    file_stat fs (directory);
+
+    if (!fs || !fs.is_dir ())
+      {
+        std::string msg;
+        int status = octave_mkdir (directory, 0777, msg);
+
+        if (status < 0)
+          {
+            error ("__ftp_mget__: can't create directory %s%s%s. %s",
+                   target.c_str (), sep.c_str (), directory.c_str (),
+                   msg.c_str ());
+
+            return;
+          }
+      }
+
+    cwd (directory);
+
+    if (! error_state)
+      {
+        unwind_protect_safe frame;
+
+        frame.add_fcn (reset_path, this);
+
+        string_vector sv = list ();
+
+        for (octave_idx_type i = 0; i < sv.length (); i++)
+          {
+            time_t ftime;
+            bool fisdir;
+            double fsize;
+
+            get_fileinfo (sv(i), fsize, ftime, fisdir);
+
+            if (fisdir)
+              mget_directory (sv(i), target + directory + sep);
+            else
+              {
+                std::string realfile = target + directory + sep + sv(i);
+
+                std::ofstream ofile (realfile.c_str (),
+                                     std::ios::out | std::ios::binary);
+
+                if (! ofile.is_open ())
+                  {
+                    error ("__ftp_mget__: unable to open file");
+                    break;
+                  }
+
+                unwind_protect_safe frame2;
+
+                frame2.add_fcn (delete_file, realfile);
+
+                get (sv(i), ofile);
+
+                ofile.close ();
+
+                if (!error_state)
+                  frame2.discard ();
+                else
+                  frame2.run ();
+              }
+
+            if (error_state)
+              break;
+          }
+      }
+  }
+
+  string_vector mput_directory (const std::string& base,
+                                const std::string& directory) const
+  {
+    string_vector retval;
+
+    std::string realdir
+      = (base.length () == 0
+         ? directory : base + file_ops::dir_sep_str () + directory);
+
+    if (! mkdir (directory, false))
+      warning ("__ftp_mput__: can not create the remote directory ""%s""",
+               realdir.c_str ());
+
+    cwd (directory);
+
+    if (! error_state)
+      {
+        unwind_protect_safe frame;
+
+        frame.add_fcn (reset_path, this);
+
+        dir_entry dirlist (realdir);
+
+        if (dirlist)
+          {
+            string_vector files = dirlist.read ();
+
+            for (octave_idx_type i = 0; i < files.length (); i++)
+              {
+                std::string file = files (i);
+
+                if (file == "." || file == "..")
+                  continue;
+
+                std::string realfile = realdir + file_ops::dir_sep_str () + file;
+                file_stat fs (realfile);
+
+                if (! fs.exists ())
+                  {
+                    error ("__ftp__mput: file ""%s"" does not exist",
+                           realfile.c_str ());
+                    break;
+                  }
+
+                if (fs.is_dir ())
+                  {
+                    retval.append (mput_directory (realdir, file));
+
+                    if (error_state)
+                      break;
+                  }
+                else
+                  {
+                    // FIXME Does ascii mode need to be flagged here?
+                    std::ifstream ifile (realfile.c_str (), std::ios::in |
+                                         std::ios::binary);
+
+                    if (! ifile.is_open ())
+                      {
+                        error ("__ftp_mput__: unable to open file ""%s""",
+                               realfile.c_str ());
+                        break;
+                      }
+
+                    put (file, ifile);
+
+                    ifile.close ();
+
+                    if (error_state)
+                      break;
+
+                    retval.append (realfile);
+                  }
+              }
+          }
+        else
+          error ("__ftp_mput__: can not read the directory ""%s""",
+                 realdir.c_str ());
+      }
+
+    return retval;
+  }
+
+  virtual void dir (void) const { }
+
+  virtual string_vector list (void) const { return string_vector (); }
+
+  virtual void get_fileinfo (const std::string& /* filename */,
+                             double& /* filesize */,
+                             time_t& /* filetime */,
+                             bool& /* fileisdir */) const { }
+
+  virtual std::string pwd (void) const { return std::string (); }
+
+protected:
+
+  octave_refcount<size_t> count;
+  std::string host;
+  std::string userpwd;
+  bool valid;
+  bool ascii_mode;
+
+private:
+
+  // No copying!
+
+  base_url_transfer (const base_url_transfer&);
+
+  base_url_transfer& operator = (const base_url_transfer&);
+};
+
 #ifdef HAVE_CURL
 
 #include <curl/curl.h>
@@ -88,11 +339,7 @@ throw_away (void *, size_t size, size_t nmemb, void *)
   return static_cast<size_t>(size * nmemb);
 }
 
-class curl_object
-{
-private:
-
-// I'd love to rewrite this as a private method of the curl_object
+// I'd love to rewrite this as a private method of the url_transfer
 // class, but you can't pass the va_list from the wrapper SETOPT to
 // the curl_easy_setopt function.
 #define SETOPT(option, parameter) \
@@ -120,631 +367,492 @@ private:
     } \
   while (0)
 
-  class curl_object_rep
-  {
-  private:
-
-    static void reset_path (const curl_object_rep *curl_rep)
-    {
-      curl_rep->cwd ("..");
-    }
-
-  public:
-
-    curl_object_rep (void)
-      : count (1), curl (curl_easy_init ()), host (), userpwd (),
-        valid (false), ascii_mode (false), errnum ()
-    {
-      if (! curl)
-        error ("can not create curl object");
-    }
-
-    curl_object_rep (const std::string& host_arg, const std::string& user_arg,
-               const std::string& passwd)
-      : count (1), curl (curl_easy_init ()), host (host_arg),
-        userpwd (), valid (true), ascii_mode (false), errnum ()
-    {
-      if (!curl)
-        {
-          valid = false;
-          error ("can not create curl object");
-          return;
-        }
-
-      init (user_arg, passwd, std::cin, octave_stdout);
-
-      std::string url ("ftp://" + host_arg);
-      SETOPT (CURLOPT_URL, url.c_str ());
-
-      // Setup the link, with no transfer.
-      perform ();
-    }
-
-    curl_object_rep (const std::string& url, const std::string& method,
-                     const Cell& param, std::ostream& os, bool& retval)
-      : count (1), curl (curl_easy_init ()), host (), userpwd (),
-        valid (true), ascii_mode (false), errnum ()
-    {
-      retval = false;
-
-      if (!curl)
-        {
-          valid = false;
-          error ("can not create curl object");
-          return;
-        }
-
-      init ("", "", std::cin, os);
-
-      SETOPT (CURLOPT_NOBODY, 0);
-
-      // Restore the default HTTP request method to GET after setting
-      // NOBODY to true and back to false.  This is needed for backward
-      // compatibility with versions of libcurl < 7.18.2.
-      SETOPT (CURLOPT_HTTPGET, 1);
-
-      // Don't need to store the parameters here as we can't change
-      // the URL after the object is created
-      std::string query_string = form_query_string (param);
-
-      if (method == "get")
-        {
-          query_string = url + "?" + query_string;
-          SETOPT (CURLOPT_URL, query_string.c_str ());
-        }
-      else if (method == "post")
-        {
-          SETOPT (CURLOPT_URL, url.c_str ());
-          SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
-        }
-      else
-        SETOPT (CURLOPT_URL, url.c_str ());
-
-      retval = perform (false);
-    }
-
-    ~curl_object_rep (void)
-    {
-      if (curl)
-        curl_easy_cleanup (curl);
-    }
-
-    bool is_valid (void) const { return valid; }
-
-    bool perform (bool curlerror = true) const
-    {
-      bool retval = false;
-
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-      errnum = curl_easy_perform (curl);
-      if (errnum != CURLE_OK)
-        {
-          if (curlerror)
-            error ("%s", curl_easy_strerror (errnum));
-        }
-      else
-        retval = true;
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-      return retval;
-    }
-
-    std::string lasterror (void) const
-    {
-      return std::string (curl_easy_strerror (errnum));
-    }
-
-    void set_ostream (std::ostream& os) const
-    {
-      SETOPT (CURLOPT_WRITEDATA, static_cast<void*> (&os));
-    }
-
-    void set_istream (std::istream& is) const
-    {
-      SETOPT (CURLOPT_READDATA, static_cast<void*> (&is));
-    }
-
-    void ascii (void)
-    {
-      SETOPT (CURLOPT_TRANSFERTEXT, 1);
-      ascii_mode = true;
-    }
-
-    void binary (void)
-    {
-      SETOPT (CURLOPT_TRANSFERTEXT, 0);
-      ascii_mode = false;
-    }
-
-    bool is_ascii (void) const { return ascii_mode; }
-
-    bool is_binary (void) const { return !ascii_mode; }
-
-    void cwd (const std::string& path) const
-    {
-      struct curl_slist *slist = 0;
-      std::string cmd = "cwd " + path;
-      slist = curl_slist_append (slist, cmd.c_str ());
-      SETOPT (CURLOPT_POSTQUOTE, slist);
-      perform ();
-      SETOPT (CURLOPT_POSTQUOTE, 0);
-      curl_slist_free_all (slist);
-    }
-
-    void del (const std::string& file) const
-    {
-      struct curl_slist *slist = 0;
-      std::string cmd = "dele " + file;
-      slist = curl_slist_append (slist, cmd.c_str ());
-      SETOPT (CURLOPT_POSTQUOTE, slist);
-      perform ();
-      SETOPT (CURLOPT_POSTQUOTE, 0);
-      curl_slist_free_all (slist);
-    }
-
-    void rmdir (const std::string& path) const
-    {
-      struct curl_slist *slist = 0;
-      std::string cmd = "rmd " + path;
-      slist = curl_slist_append (slist, cmd.c_str ());
-      SETOPT (CURLOPT_POSTQUOTE, slist);
-      perform ();
-      SETOPT (CURLOPT_POSTQUOTE, 0);
-      curl_slist_free_all (slist);
-    }
-
-    bool mkdir (const std::string& path, bool curlerror = true) const
-    {
-      bool retval = false;
-      struct curl_slist *slist = 0;
-      std::string cmd = "mkd " + path;
-      slist = curl_slist_append (slist, cmd.c_str ());
-      SETOPTR (CURLOPT_POSTQUOTE, slist);
-      retval = perform (curlerror);
-      SETOPTR (CURLOPT_POSTQUOTE, 0);
-      curl_slist_free_all (slist);
-      return retval;
-    }
-
-    void rename (const std::string& oldname, const std::string& newname) const
-    {
-      struct curl_slist *slist = 0;
-      std::string cmd = "rnfr " + oldname;
-      slist = curl_slist_append (slist, cmd.c_str ());
-      cmd = "rnto " + newname;
-      slist = curl_slist_append (slist, cmd.c_str ());
-      SETOPT (CURLOPT_POSTQUOTE, slist);
-      perform ();
-      SETOPT (CURLOPT_POSTQUOTE, 0);
-      curl_slist_free_all (slist);
-    }
-
-    void put (const std::string& file, std::istream& is) const
-    {
-      std::string url = "ftp://" + host + "/" + file;
-      SETOPT (CURLOPT_URL, url.c_str ());
-      SETOPT (CURLOPT_UPLOAD, 1);
-      SETOPT (CURLOPT_NOBODY, 0);
-      set_istream (is);
-      perform ();
-      set_istream (std::cin);
-      SETOPT (CURLOPT_NOBODY, 1);
-      SETOPT (CURLOPT_UPLOAD, 0);
-      url = "ftp://" + host;
-      SETOPT (CURLOPT_URL, url.c_str ());
-    }
-
-    void get (const std::string& file, std::ostream& os) const
-    {
-      std::string url = "ftp://" + host + "/" + file;
-      SETOPT (CURLOPT_URL, url.c_str ());
-      SETOPT (CURLOPT_NOBODY, 0);
-      set_ostream (os);
-      perform ();
-      set_ostream (octave_stdout);
-      SETOPT (CURLOPT_NOBODY, 1);
-      url = "ftp://" + host;
-      SETOPT (CURLOPT_URL, url.c_str ());
-    }
-
-    void mget_directory (const std::string& directory,
-                         const std::string& target) const
-    {
-      std::string sep = file_ops::dir_sep_str ();
-      file_stat fs (directory);
-
-      if (!fs || !fs.is_dir ())
-        {
-          std::string msg;
-          int status = octave_mkdir (directory, 0777, msg);
-
-          if (status < 0)
-            {
-              error ("__ftp_mget__: can't create directory %s%s%s. %s",
-                     target.c_str (), sep.c_str (), directory.c_str (),
-                     msg.c_str ());
-
-              return;
-            }
-        }
-
-      cwd (directory);
-
-      if (! error_state)
-        {
-          unwind_protect_safe frame;
-
-          frame.add_fcn (reset_path, this);
-
-          string_vector sv = list ();
-
-          for (octave_idx_type i = 0; i < sv.length (); i++)
-            {
-              time_t ftime;
-              bool fisdir;
-              double fsize;
-
-              get_fileinfo (sv(i), fsize, ftime, fisdir);
-
-              if (fisdir)
-                mget_directory (sv(i), target + directory + sep);
-              else
-                {
-                  std::string realfile = target + directory + sep + sv(i);
-
-                  std::ofstream ofile (realfile.c_str (),
-                                       std::ios::out | std::ios::binary);
-
-                  if (! ofile.is_open ())
-                    {
-                      error ("__ftp_mget__: unable to open file");
-                      break;
-                    }
-
-                  unwind_protect_safe frame2;
-
-                  frame2.add_fcn (delete_file, realfile);
-
-                  get (sv(i), ofile);
-
-                  ofile.close ();
-
-                  if (!error_state)
-                    frame2.discard ();
-                  else
-                    frame2.run ();
-                }
-
-              if (error_state)
-                break;
-            }
-        }
-    }
-
-    string_vector mput_directory (const std::string& base,
-                                  const std::string& directory) const
-    {
-      string_vector retval;
-
-      std::string realdir
-        = (base.length () == 0
-           ? directory : base + file_ops::dir_sep_str () + directory);
-
-      if (! mkdir (directory, false))
-        warning ("__ftp_mput__: can not create the remote directory ""%s""",
-                 realdir.c_str ());
-
-      cwd (directory);
-
-      if (! error_state)
-        {
-          unwind_protect_safe frame;
-
-          frame.add_fcn (reset_path, this);
-
-          dir_entry dirlist (realdir);
-
-          if (dirlist)
-            {
-              string_vector files = dirlist.read ();
-
-              for (octave_idx_type i = 0; i < files.length (); i++)
-                {
-                  std::string file = files (i);
-
-                  if (file == "." || file == "..")
-                    continue;
-
-                  std::string realfile = realdir + file_ops::dir_sep_str () + file;
-                  file_stat fs (realfile);
-
-                  if (! fs.exists ())
-                    {
-                      error ("__ftp__mput: file ""%s"" does not exist",
-                             realfile.c_str ());
-                      break;
-                    }
-
-                  if (fs.is_dir ())
-                    {
-                      retval.append (mput_directory (realdir, file));
-
-                      if (error_state)
-                        break;
-                    }
-                  else
-                    {
-                      // FIXME Does ascii mode need to be flagged here?
-                      std::ifstream ifile (realfile.c_str (), std::ios::in |
-                                           std::ios::binary);
-
-                      if (! ifile.is_open ())
-                        {
-                          error ("__ftp_mput__: unable to open file ""%s""",
-                                 realfile.c_str ());
-                          break;
-                        }
-
-                      put (file, ifile);
-
-                      ifile.close ();
-
-                      if (error_state)
-                        break;
-
-                      retval.append (realfile);
-                    }
-                }
-            }
-          else
-            error ("__ftp_mput__: can not read the directory ""%s""",
-                   realdir.c_str ());
-        }
-
-      return retval;
-    }
-
-    void dir (void) const
-    {
-      std::string url = "ftp://" + host + "/";
-      SETOPT (CURLOPT_URL, url.c_str ());
-      SETOPT (CURLOPT_NOBODY, 0);
-      perform ();
-      SETOPT (CURLOPT_NOBODY, 1);
-      url = "ftp://" + host;
-      SETOPT (CURLOPT_URL, url.c_str ());
-    }
-
-    string_vector list (void) const
-    {
-      string_vector retval;
-      std::ostringstream buf;
-      std::string url = "ftp://" + host + "/";
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
-      SETOPTR (CURLOPT_URL, url.c_str ());
-      SETOPTR (CURLOPT_DIRLISTONLY, 1);
-      SETOPTR (CURLOPT_NOBODY, 0);
-      perform ();
-      SETOPTR (CURLOPT_NOBODY, 1);
-      url = "ftp://" + host;
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&octave_stdout));
-      SETOPTR (CURLOPT_DIRLISTONLY, 0);
-      SETOPTR (CURLOPT_URL, url.c_str ());
-
-      // Count number of directory entries
-      std::string str = buf.str ();
-      octave_idx_type n = 0;
-      size_t pos = 0;
-      while (true)
-        {
-          pos = str.find_first_of ('\n', pos);
-          if (pos == std::string::npos)
-            break;
-          pos++;
-          n++;
-        }
-      retval.resize (n);
-      pos = 0;
-      for (octave_idx_type i = 0; i < n; i++)
-        {
-          size_t newpos = str.find_first_of ('\n', pos);
-          if (newpos == std::string::npos)
-            break;
-
-          retval(i) = str.substr(pos, newpos - pos);
-          pos = newpos + 1;
-        }
-      return retval;
-    }
-
-    void get_fileinfo (const std::string& filename, double& filesize,
-                       time_t& filetime, bool& fileisdir) const
-    {
-      std::string path = pwd ();
-
-      std::string url = "ftp://" + host + "/" + path + "/" + filename;
-      SETOPT (CURLOPT_URL, url.c_str ());
-      SETOPT (CURLOPT_FILETIME, 1);
-      SETOPT (CURLOPT_HEADERFUNCTION, throw_away);
-      SETOPT (CURLOPT_WRITEFUNCTION, throw_away);
-
-      // FIXME
-      // The MDTM command fails for a directory on the servers I tested
-      // so this is a means of testing for directories. It also means
-      // I can't get the date of directories!
-
-      if (! perform (false))
-        {
-          fileisdir = true;
-          filetime = -1;
-          filesize = 0;
-        }
-      else
-        {
-          fileisdir = false;
-          time_t ft;
-          curl_easy_getinfo (curl, CURLINFO_FILETIME, &ft);
-          filetime = ft;
-          double fs;
-          curl_easy_getinfo (curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
-          filesize = fs;
-        }
-
-      SETOPT (CURLOPT_WRITEFUNCTION, write_data);
-      SETOPT (CURLOPT_HEADERFUNCTION, 0);
-      SETOPT (CURLOPT_FILETIME, 0);
-      url = "ftp://" + host;
-      SETOPT (CURLOPT_URL, url.c_str ());
-
-      // The MDTM command seems to reset the path to the root with the
-      // servers I tested with, so cd again into the correct path. Make
-      // the path absolute so that this will work even with servers that
-      // don't end up in the root after an MDTM command.
-      cwd ("/" + path);
-    }
-
-    std::string pwd (void) const
-    {
-      struct curl_slist *slist = 0;
-      std::string retval;
-      std::ostringstream buf;
-
-      slist = curl_slist_append (slist, "pwd");
-      SETOPTR (CURLOPT_POSTQUOTE, slist);
-      SETOPTR (CURLOPT_HEADERFUNCTION, write_data);
-      SETOPTR (CURLOPT_WRITEHEADER, static_cast<void *>(&buf));
-
-      perform ();
-      retval = buf.str ();
-
-      // Can I assume that the path is alway in "" on the last line
-      size_t pos2 = retval.rfind ('"');
-      size_t pos1 = retval.rfind ('"', pos2 - 1);
-      retval = retval.substr (pos1 + 1, pos2 - pos1 - 1);
-
-      SETOPTR (CURLOPT_HEADERFUNCTION, 0);
-      SETOPTR (CURLOPT_WRITEHEADER, 0);
-      SETOPTR (CURLOPT_POSTQUOTE, 0);
-      curl_slist_free_all (slist);
-
-      return retval;
-    }
-
-    octave_refcount<size_t> count;
-
-  private:
-
-    CURL *curl;
-    std::string host;
-    std::string userpwd;
-    bool valid;
-    bool ascii_mode;
-    mutable CURLcode errnum;
-
-    // No copying!
-
-    curl_object_rep (const curl_object_rep& ov);
-
-    curl_object_rep& operator = (const curl_object_rep&);
-
-    void init (const std::string& user, const std::string& passwd,
-               std::istream& is, std::ostream& os)
-    {
-      // No data transfer by default
-      SETOPT (CURLOPT_NOBODY, 1);
-
-      // Set the username and password
-      userpwd = user;
-      if (! passwd.empty ())
-        userpwd += ":" + passwd;
-      if (! userpwd.empty ())
-        SETOPT (CURLOPT_USERPWD, userpwd.c_str ());
-
-      // Define our callback to get called when there's data to be written.
-      SETOPT (CURLOPT_WRITEFUNCTION, write_data);
-
-      // Set a pointer to our struct to pass to the callback.
-      SETOPT (CURLOPT_WRITEDATA, static_cast<void*> (&os));
-
-      // Define our callback to get called when there's data to be read
-      SETOPT (CURLOPT_READFUNCTION, read_data);
-
-      // Set a pointer to our struct to pass to the callback.
-      SETOPT (CURLOPT_READDATA, static_cast<void*> (&is));
-
-      // Follow redirects.
-      SETOPT (CURLOPT_FOLLOWLOCATION, true);
-
-      // Don't use EPSV since connecting to sites that don't support it
-      // will hang for some time (3 minutes?) before moving on to try PASV
-      // instead.
-      SETOPT (CURLOPT_FTP_USE_EPSV, false);
-
-      SETOPT (CURLOPT_NOPROGRESS, true);
-      SETOPT (CURLOPT_FAILONERROR, true);
-
-      SETOPT (CURLOPT_POSTQUOTE, 0);
-      SETOPT (CURLOPT_QUOTE, 0);
-    }
-
-    std::string form_query_string (const Cell& param)
-    {
-      std::ostringstream query;
-
-      for (int i = 0; i < param.numel (); i += 2)
-        {
-          std::string name = param(i).string_value ();
-          std::string text = param(i+1).string_value ();
-
-          // Encode strings.
-          char *enc_name = curl_easy_escape (curl, name.c_str (),
-                                             name.length ());
-          char *enc_text = curl_easy_escape (curl, text.c_str (),
-                                             text.length ());
-
-          query << enc_name << "=" << enc_text;
-
-          curl_free (enc_name);
-          curl_free (enc_text);
-
-          if (i < param.numel ()-1)
-            query << "&";
-        }
-
-      query.flush ();
-
-      return query.str ();
-    }
-#undef SETOPT
-#undef SETOPTR
-  };
-
+class curl_transfer : public base_url_transfer
+{
 public:
 
-  curl_object (void) : rep (new curl_object_rep ()) { }
+  curl_transfer (void)
+    : base_url_transfer (), curl (curl_easy_init ()), errnum ()
+  {
+    if (curl)
+      valid = true;
+    else
+      error ("can not create curl object");
+  }
 
-  curl_object (const std::string& host, const std::string& user,
-               const std::string& passwd)
-    : rep (new curl_object_rep (host, user, passwd)) { }
+  curl_transfer (const std::string& host_arg, const std::string& user_arg,
+                 const std::string& passwd)
+    : base_url_transfer (host_arg, user_arg, passwd),
+      curl (curl_easy_init ()), errnum ()
+  {
+    if (curl)
+      valid = true;
+    else
+      {
+        error ("can not create curl object");
+        return;
+      }
 
-  curl_object (const std::string& url, const std::string& method,
-               const Cell& param, std::ostream& os, bool& retval)
-    : rep (new curl_object_rep (url, method, param, os, retval)) { }
+    init (user_arg, passwd, std::cin, octave_stdout);
 
-  curl_object (const curl_object& h) : rep (h.rep)
+    std::string url ("ftp://" + host_arg);
+    SETOPT (CURLOPT_URL, url.c_str ());
+
+    // Setup the link, with no transfer.
+    perform ();
+  }
+
+  curl_transfer (const std::string& url, const std::string& method,
+                 const Cell& param, std::ostream& os, bool& retval)
+    : base_url_transfer (url, method, param, os, retval),
+      curl (curl_easy_init ()), errnum ()
+  {
+    retval = false;
+
+    if (curl)
+      valid = true;
+    else
+      {
+        error ("can not create curl object");
+        return;
+      }
+
+    init ("", "", std::cin, os);
+
+    SETOPT (CURLOPT_NOBODY, 0);
+
+    // Restore the default HTTP request method to GET after setting
+    // NOBODY to true and back to false.  This is needed for backward
+    // compatibility with versions of libcurl < 7.18.2.
+    SETOPT (CURLOPT_HTTPGET, 1);
+
+    // Don't need to store the parameters here as we can't change
+    // the URL after the object is created
+    std::string query_string = form_query_string (param);
+
+    if (method == "get")
+      {
+        query_string = url + "?" + query_string;
+        SETOPT (CURLOPT_URL, query_string.c_str ());
+      }
+    else if (method == "post")
+      {
+        SETOPT (CURLOPT_URL, url.c_str ());
+        SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
+      }
+    else
+      SETOPT (CURLOPT_URL, url.c_str ());
+
+    retval = perform (true);
+  }
+
+  ~curl_transfer (void)
+  {
+    if (curl)
+      curl_easy_cleanup (curl);
+  }
+
+  bool perform (bool silent = false) const
+  {
+    bool retval = false;
+
+    BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+    errnum = curl_easy_perform (curl);
+    if (errnum != CURLE_OK)
+      {
+        if (! silent)
+          error ("%s", curl_easy_strerror (errnum));
+      }
+    else
+      retval = true;
+
+    END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+    return retval;
+  }
+
+  std::string lasterror (void) const
+  {
+    return std::string (curl_easy_strerror (errnum));
+  }
+
+  void set_ostream (std::ostream& os) const
+  {
+    SETOPT (CURLOPT_WRITEDATA, static_cast<void*> (&os));
+  }
+
+  void set_istream (std::istream& is) const
+  {
+    SETOPT (CURLOPT_READDATA, static_cast<void*> (&is));
+  }
+
+  void ascii (void)
+  {
+    SETOPT (CURLOPT_TRANSFERTEXT, 1);
+    ascii_mode = true;
+  }
+
+  void binary (void)
+  {
+    SETOPT (CURLOPT_TRANSFERTEXT, 0);
+    ascii_mode = false;
+  }
+
+  void cwd (const std::string& path) const
+  {
+    struct curl_slist *slist = 0;
+    std::string cmd = "cwd " + path;
+    slist = curl_slist_append (slist, cmd.c_str ());
+    SETOPT (CURLOPT_POSTQUOTE, slist);
+    perform ();
+    SETOPT (CURLOPT_POSTQUOTE, 0);
+    curl_slist_free_all (slist);
+  }
+
+  void del (const std::string& file) const
+  {
+    struct curl_slist *slist = 0;
+    std::string cmd = "dele " + file;
+    slist = curl_slist_append (slist, cmd.c_str ());
+    SETOPT (CURLOPT_POSTQUOTE, slist);
+    perform ();
+    SETOPT (CURLOPT_POSTQUOTE, 0);
+    curl_slist_free_all (slist);
+  }
+
+  void rmdir (const std::string& path) const
+  {
+    struct curl_slist *slist = 0;
+    std::string cmd = "rmd " + path;
+    slist = curl_slist_append (slist, cmd.c_str ());
+    SETOPT (CURLOPT_POSTQUOTE, slist);
+    perform ();
+    SETOPT (CURLOPT_POSTQUOTE, 0);
+    curl_slist_free_all (slist);
+  }
+
+  bool mkdir (const std::string& path, bool silent) const
+  {
+    bool retval = false;
+    struct curl_slist *slist = 0;
+    std::string cmd = "mkd " + path;
+    slist = curl_slist_append (slist, cmd.c_str ());
+    SETOPTR (CURLOPT_POSTQUOTE, slist);
+    retval = perform (silent);
+    SETOPTR (CURLOPT_POSTQUOTE, 0);
+    curl_slist_free_all (slist);
+    return retval;
+  }
+
+  void rename (const std::string& oldname, const std::string& newname) const
+  {
+    struct curl_slist *slist = 0;
+    std::string cmd = "rnfr " + oldname;
+    slist = curl_slist_append (slist, cmd.c_str ());
+    cmd = "rnto " + newname;
+    slist = curl_slist_append (slist, cmd.c_str ());
+    SETOPT (CURLOPT_POSTQUOTE, slist);
+    perform ();
+    SETOPT (CURLOPT_POSTQUOTE, 0);
+    curl_slist_free_all (slist);
+  }
+
+  void put (const std::string& file, std::istream& is) const
+  {
+    std::string url = "ftp://" + host + "/" + file;
+    SETOPT (CURLOPT_URL, url.c_str ());
+    SETOPT (CURLOPT_UPLOAD, 1);
+    SETOPT (CURLOPT_NOBODY, 0);
+    set_istream (is);
+    perform ();
+    set_istream (std::cin);
+    SETOPT (CURLOPT_NOBODY, 1);
+    SETOPT (CURLOPT_UPLOAD, 0);
+    url = "ftp://" + host;
+    SETOPT (CURLOPT_URL, url.c_str ());
+  }
+
+  void get (const std::string& file, std::ostream& os) const
+  {
+    std::string url = "ftp://" + host + "/" + file;
+    SETOPT (CURLOPT_URL, url.c_str ());
+    SETOPT (CURLOPT_NOBODY, 0);
+    set_ostream (os);
+    perform ();
+    set_ostream (octave_stdout);
+    SETOPT (CURLOPT_NOBODY, 1);
+    url = "ftp://" + host;
+    SETOPT (CURLOPT_URL, url.c_str ());
+  }
+
+  void dir (void) const
+  {
+    std::string url = "ftp://" + host + "/";
+    SETOPT (CURLOPT_URL, url.c_str ());
+    SETOPT (CURLOPT_NOBODY, 0);
+    perform ();
+    SETOPT (CURLOPT_NOBODY, 1);
+    url = "ftp://" + host;
+    SETOPT (CURLOPT_URL, url.c_str ());
+  }
+
+  string_vector list (void) const
+  {
+    string_vector retval;
+    std::ostringstream buf;
+    std::string url = "ftp://" + host + "/";
+    SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
+    SETOPTR (CURLOPT_URL, url.c_str ());
+    SETOPTR (CURLOPT_DIRLISTONLY, 1);
+    SETOPTR (CURLOPT_NOBODY, 0);
+    perform ();
+    SETOPTR (CURLOPT_NOBODY, 1);
+    url = "ftp://" + host;
+    SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&octave_stdout));
+    SETOPTR (CURLOPT_DIRLISTONLY, 0);
+    SETOPTR (CURLOPT_URL, url.c_str ());
+
+    // Count number of directory entries
+    std::string str = buf.str ();
+    octave_idx_type n = 0;
+    size_t pos = 0;
+    while (true)
+      {
+        pos = str.find_first_of ('\n', pos);
+        if (pos == std::string::npos)
+          break;
+        pos++;
+        n++;
+      }
+    retval.resize (n);
+    pos = 0;
+    for (octave_idx_type i = 0; i < n; i++)
+      {
+        size_t newpos = str.find_first_of ('\n', pos);
+        if (newpos == std::string::npos)
+          break;
+
+        retval(i) = str.substr(pos, newpos - pos);
+        pos = newpos + 1;
+      }
+    return retval;
+  }
+
+  void get_fileinfo (const std::string& filename, double& filesize,
+                     time_t& filetime, bool& fileisdir) const
+  {
+    std::string path = pwd ();
+
+    std::string url = "ftp://" + host + "/" + path + "/" + filename;
+    SETOPT (CURLOPT_URL, url.c_str ());
+    SETOPT (CURLOPT_FILETIME, 1);
+    SETOPT (CURLOPT_HEADERFUNCTION, throw_away);
+    SETOPT (CURLOPT_WRITEFUNCTION, throw_away);
+
+    // FIXME
+    // The MDTM command fails for a directory on the servers I tested
+    // so this is a means of testing for directories. It also means
+    // I can't get the date of directories!
+
+    if (! perform (true))
+      {
+        fileisdir = true;
+        filetime = -1;
+        filesize = 0;
+      }
+    else
+      {
+        fileisdir = false;
+        time_t ft;
+        curl_easy_getinfo (curl, CURLINFO_FILETIME, &ft);
+        filetime = ft;
+        double fs;
+        curl_easy_getinfo (curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
+        filesize = fs;
+      }
+
+    SETOPT (CURLOPT_WRITEFUNCTION, write_data);
+    SETOPT (CURLOPT_HEADERFUNCTION, 0);
+    SETOPT (CURLOPT_FILETIME, 0);
+    url = "ftp://" + host;
+    SETOPT (CURLOPT_URL, url.c_str ());
+
+    // The MDTM command seems to reset the path to the root with the
+    // servers I tested with, so cd again into the correct path. Make
+    // the path absolute so that this will work even with servers that
+    // don't end up in the root after an MDTM command.
+    cwd ("/" + path);
+  }
+
+  std::string pwd (void) const
+  {
+    struct curl_slist *slist = 0;
+    std::string retval;
+    std::ostringstream buf;
+
+    slist = curl_slist_append (slist, "pwd");
+    SETOPTR (CURLOPT_POSTQUOTE, slist);
+    SETOPTR (CURLOPT_HEADERFUNCTION, write_data);
+    SETOPTR (CURLOPT_WRITEHEADER, static_cast<void *>(&buf));
+
+    perform ();
+    retval = buf.str ();
+
+    // Can I assume that the path is alway in "" on the last line
+    size_t pos2 = retval.rfind ('"');
+    size_t pos1 = retval.rfind ('"', pos2 - 1);
+    retval = retval.substr (pos1 + 1, pos2 - pos1 - 1);
+
+    SETOPTR (CURLOPT_HEADERFUNCTION, 0);
+    SETOPTR (CURLOPT_WRITEHEADER, 0);
+    SETOPTR (CURLOPT_POSTQUOTE, 0);
+    curl_slist_free_all (slist);
+
+    return retval;
+  }
+
+private:
+
+  CURL *curl;
+  mutable CURLcode errnum;
+
+  // No copying!
+
+  curl_transfer (const curl_transfer&);
+
+  curl_transfer& operator = (const curl_transfer&);
+
+  void init (const std::string& user, const std::string& passwd,
+             std::istream& is, std::ostream& os)
+  {
+    // No data transfer by default
+    SETOPT (CURLOPT_NOBODY, 1);
+
+    // Set the username and password
+    userpwd = user;
+    if (! passwd.empty ())
+      userpwd += ":" + passwd;
+    if (! userpwd.empty ())
+      SETOPT (CURLOPT_USERPWD, userpwd.c_str ());
+
+    // Define our callback to get called when there's data to be written.
+    SETOPT (CURLOPT_WRITEFUNCTION, write_data);
+
+    // Set a pointer to our struct to pass to the callback.
+    SETOPT (CURLOPT_WRITEDATA, static_cast<void*> (&os));
+
+    // Define our callback to get called when there's data to be read
+    SETOPT (CURLOPT_READFUNCTION, read_data);
+
+    // Set a pointer to our struct to pass to the callback.
+    SETOPT (CURLOPT_READDATA, static_cast<void*> (&is));
+
+    // Follow redirects.
+    SETOPT (CURLOPT_FOLLOWLOCATION, true);
+
+    // Don't use EPSV since connecting to sites that don't support it
+    // will hang for some time (3 minutes?) before moving on to try PASV
+    // instead.
+    SETOPT (CURLOPT_FTP_USE_EPSV, false);
+
+    SETOPT (CURLOPT_NOPROGRESS, true);
+    SETOPT (CURLOPT_FAILONERROR, true);
+
+    SETOPT (CURLOPT_POSTQUOTE, 0);
+    SETOPT (CURLOPT_QUOTE, 0);
+  }
+
+  std::string form_query_string (const Cell& param)
+  {
+    std::ostringstream query;
+
+    for (int i = 0; i < param.numel (); i += 2)
+      {
+        std::string name = param(i).string_value ();
+        std::string text = param(i+1).string_value ();
+
+        // Encode strings.
+        char *enc_name = curl_easy_escape (curl, name.c_str (),
+                                           name.length ());
+        char *enc_text = curl_easy_escape (curl, text.c_str (),
+                                           text.length ());
+
+        query << enc_name << "=" << enc_text;
+
+        curl_free (enc_name);
+        curl_free (enc_text);
+
+        if (i < param.numel ()-1)
+          query << "&";
+      }
+
+    query.flush ();
+
+    return query.str ();
+  }
+};
+
+#undef SETOPT
+#undef SETOPTR
+
+#endif
+
+static void
+disabled_error (void)
+{
+  error ("support for url transfers was disabled when Octave was built");
+}
+
+class url_transfer
+{
+public:
+
+#if defined (HAVE_CURL)
+# define REP_CLASS curl_transfer
+#else
+# define REP_CLASS base_url_transfer
+#endif
+
+  url_transfer (void) : rep (new REP_CLASS ())
+  {
+#if !defined (HAVE_CURL)
+    disabled_error ();
+#endif
+  }
+
+  url_transfer (const std::string& host, const std::string& user,
+                const std::string& passwd)
+    : rep (new REP_CLASS (host, user, passwd))
+  {
+#if !defined (HAVE_CURL)
+    disabled_error ();
+#endif
+  }
+
+  url_transfer (const std::string& url, const std::string& method,
+                const Cell& param, std::ostream& os, bool& retval)
+    : rep (new REP_CLASS (url, method, param, os, retval))
+  {
+#if !defined (HAVE_CURL)
+    disabled_error ();
+#endif
+  }
+
+#undef REP_CLASS
+
+  url_transfer (const url_transfer& h) : rep (h.rep)
   {
     rep->count++;
   }
 
-  ~curl_object (void)
+  ~url_transfer (void)
   {
     if (--rep->count == 0)
       delete rep;
   }
 
-  curl_object& operator = (const curl_object& h)
+  url_transfer& operator = (const url_transfer& h)
   {
     if (this != &h)
       {
@@ -780,9 +888,9 @@ public:
 
   void rmdir (const std::string& path) const { rep->rmdir (path); }
 
-  bool mkdir (const std::string& path, bool curlerror = true) const
+  bool mkdir (const std::string& path, bool silent = false) const
   {
-    return rep->mkdir (path, curlerror);
+    return rep->mkdir (path, silent);
   }
 
   void rename (const std::string& oldname, const std::string& newname) const
@@ -826,7 +934,7 @@ public:
 
 private:
 
-  curl_object_rep *rep;
+  base_url_transfer *rep;
 };
 
 typedef octave_handle curl_handle;
@@ -885,19 +993,19 @@ public:
       ? lookup (val.double_value ()) : curl_handle ();
   }
 
-  static curl_object get_object (double val)
+  static url_transfer get_object (double val)
   {
     return get_object (lookup (val));
   }
 
-  static curl_object get_object (const octave_value& val)
+  static url_transfer get_object (const octave_value& val)
   {
     return get_object (lookup (val));
   }
 
-  static curl_object get_object (const curl_handle& h)
+  static url_transfer get_object (const curl_handle& h)
   {
-    return instance_ok () ? instance->do_get_object (h) : curl_object ();
+    return instance_ok () ? instance->do_get_object (h) : url_transfer ();
   }
 
   static curl_handle make_curl_handle (const std::string& host,
@@ -917,14 +1025,14 @@ private:
 
   static ch_manager *instance;
 
-  typedef std::map<curl_handle, curl_object>::iterator iterator;
-  typedef std::map<curl_handle, curl_object>::const_iterator const_iterator;
+  typedef std::map<curl_handle, url_transfer>::iterator iterator;
+  typedef std::map<curl_handle, url_transfer>::const_iterator const_iterator;
 
   typedef std::set<curl_handle>::iterator free_list_iterator;
   typedef std::set<curl_handle>::const_iterator const_free_list_iterator;
 
   // A map of handles to curl objects.
-  std::map<curl_handle, curl_object> handle_map;
+  std::map<curl_handle, url_transfer> handle_map;
 
   // The available curl handles.
   std::set<curl_handle> handle_free_list;
@@ -943,11 +1051,11 @@ private:
     return (p != handle_map.end ()) ? p->first : curl_handle ();
   }
 
-  curl_object do_get_object (const curl_handle& h)
+  url_transfer do_get_object (const curl_handle& h)
   {
     iterator p = (h.ok () ? handle_map.find (h) : handle_map.end ());
 
-    return (p != handle_map.end ()) ? p->second : curl_object ();
+    return (p != handle_map.end ()) ? p->second : url_transfer ();
   }
 
   curl_handle do_make_curl_handle (const std::string& host,
@@ -956,16 +1064,12 @@ private:
   {
     curl_handle h = get_handle ();
 
-    curl_object obj (host, user, passwd);
+    url_transfer obj (host, user, passwd);
 
     if (! error_state)
       handle_map[h] = obj;
     else
-      {
-        do_free (h);
-
-        h = curl_handle ();
-      }
+      h = curl_handle ();
 
     return h;
   }
@@ -1055,8 +1159,6 @@ ch_manager::do_free (const curl_handle& h)
 
 ch_manager *ch_manager::instance = 0;
 
-#endif
-
 DEFUN_DLD (urlwrite, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} urlwrite (@var{url}, @var{localfile})\n\
@@ -1105,8 +1207,6 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 @end deftypefn")
 {
   octave_value_list retval;
-
-#ifdef HAVE_CURL
 
   int nargin = args.length ();
 
@@ -1188,37 +1288,33 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   frame.add_fcn (delete_file, filename);
 
   bool ok;
-  curl_object curl = curl_object (url, method, param, ofile, ok);
+  url_transfer curl = url_transfer (url, method, param, ofile, ok);
 
   ofile.close ();
 
-  if (!error_state)
-    frame.discard ();
-  else
-    frame.run ();
-
-  if (nargout > 0)
+  if (! error_state)
     {
-      if (ok)
+      frame.discard ();
+
+      if (nargout > 0)
         {
-          retval(2) = std::string ();
-          retval(1) = true;
-          retval(0) = octave_env::make_absolute (filename);
+          if (ok)
+            {
+              retval(2) = std::string ();
+              retval(1) = true;
+              retval(0) = octave_env::make_absolute (filename);
+            }
+          else
+            {
+              retval(2) = curl.lasterror ();
+              retval(1) = false;
+              retval(0) = std::string ();
+            }
         }
-      else
-        {
-          retval(2) = curl.lasterror ();
-          retval(1) = false;
-          retval(0) = std::string ();
-        }
+
+      if (nargout < 2 && ! ok)
+        error ("urlwrite: curl: %s", curl.lasterror ().c_str ());
     }
-
-  if (nargout < 2 && ! ok)
-    error ("urlwrite: curl: %s", curl.lasterror ().c_str ());
-
-#else
-  gripe_disabled_feature ("urlwrite", "urlwrite");
-#endif
 
   return retval;
 }
@@ -1265,8 +1361,6 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 {
   // Octave's return value
   octave_value_list retval;
-
-#ifdef HAVE_CURL
 
   int nargin = args.length ();
 
@@ -1322,22 +1416,21 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
   std::ostringstream buf;
 
   bool ok;
-  curl_object curl = curl_object (url, method, param, buf, ok);
+  url_transfer curl = url_transfer (url, method, param, buf, ok);
 
-  if (nargout > 0)
+  if (! error_state)
     {
-      // Return empty string if no error occured.
-      retval(2) = ok ? "" : curl.lasterror ();
-      retval(1) = ok;
-      retval(0) = buf.str ();
+      if (nargout > 0)
+        {
+          // Return empty string if no error occured.
+          retval(2) = ok ? "" : curl.lasterror ();
+          retval(1) = ok;
+          retval(0) = buf.str ();
+        }
+
+      if (nargout < 2 && ! ok)
+        error ("urlread: curl: %s", curl.lasterror().c_str());
     }
-
-  if (nargout < 2 && ! ok)
-    error ("urlread: curl: %s", curl.lasterror().c_str());
-
-#else
-  gripe_disabled_feature ("urlread", "urlread");
-#endif
 
   return retval;
 }
@@ -1351,7 +1444,6 @@ Undocumented internal function\n\
 {
   octave_value retval;
 
-#ifdef HAVE_CURL
   int nargin = args.length ();
   std::string host;
   std::string user = "anonymous";
@@ -1380,9 +1472,6 @@ Undocumented internal function\n\
             retval = ch.value ();
         }
     }
-#else
-  gripe_disabled_feature ("__ftp__", "FTP");
-#endif
 
   return retval;
 }
@@ -1394,23 +1483,23 @@ Undocumented internal function\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifdef HAVE_CURL
+
   int nargin = args.length ();
 
   if (nargin != 1)
     error ("__ftp_pwd__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         retval = curl.pwd ();
       else
         error ("__ftp_pwd__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_pwd__", "FTP");
-#endif
 
   return retval;
 }
@@ -1421,14 +1510,18 @@ DEFUN_DLD (__ftp_cwd__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 1 && nargin != 2)
     error ("__ftp_cwd__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1445,11 +1538,8 @@ Undocumented internal function\n\
       else
         error ("__ftp_cwd__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_cwd__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_dir__, args, nargout,
@@ -1459,14 +1549,17 @@ Undocumented internal function\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifdef HAVE_CURL
+
   int nargin = args.length ();
 
   if (nargin != 1)
     error ("__ftp_dir__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1526,9 +1619,6 @@ Undocumented internal function\n\
       else
         error ("__ftp_dir__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_dir__", "FTP");
-#endif
 
   return retval;
 }
@@ -1539,25 +1629,26 @@ DEFUN_DLD (__ftp_ascii__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 1)
     error ("__ftp_ascii__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         curl.ascii ();
       else
         error ("__ftp_ascii__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_ascii__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_binary__, args, ,
@@ -1566,25 +1657,26 @@ DEFUN_DLD (__ftp_binary__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 1)
     error ("__ftp_binary__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         curl.binary ();
       else
         error ("__ftp_binary__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_binary__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_close__, args, ,
@@ -1593,7 +1685,8 @@ DEFUN_DLD (__ftp_close__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 1)
@@ -1602,16 +1695,16 @@ Undocumented internal function\n\
     {
       curl_handle h = ch_manager::lookup (args(0));
 
+      if (error_state)
+        return retval;
+
       if (h.ok ())
         ch_manager::free (h);
       else
         error ("__ftp_close__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_close__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_mode__, args, ,
@@ -1621,23 +1714,23 @@ Undocumented internal function\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifdef HAVE_CURL
+
   int nargin = args.length ();
 
   if (nargin != 1)
     error ("__ftp_mode__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         retval = (curl.is_ascii () ? "ascii" : "binary");
       else
         error ("__ftp_binary__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_mode__", "FTP");
-#endif
 
   return retval;
 }
@@ -1648,14 +1741,18 @@ DEFUN_DLD (__ftp_delete__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 2)
     error ("__ftp_delete__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1669,11 +1766,8 @@ Undocumented internal function\n\
       else
         error ("__ftp_delete__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_delete__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_rmdir__, args, ,
@@ -1682,14 +1776,18 @@ DEFUN_DLD (__ftp_rmdir__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 2)
     error ("__ftp_rmdir__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1703,11 +1801,8 @@ Undocumented internal function\n\
       else
         error ("__ftp_rmdir__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_rmdir__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_mkdir__, args, ,
@@ -1716,14 +1811,18 @@ DEFUN_DLD (__ftp_mkdir__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 2)
     error ("__ftp_mkdir__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1737,11 +1836,8 @@ Undocumented internal function\n\
       else
         error ("__ftp_mkdir__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_mkdir__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_rename__, args, ,
@@ -1750,14 +1846,18 @@ DEFUN_DLD (__ftp_rename__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 3)
     error ("__ftp_rename__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1772,11 +1872,8 @@ Undocumented internal function\n\
       else
         error ("__ftp_rename__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_rename__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }
 
 DEFUN_DLD (__ftp_mput__, args, nargout,
@@ -1785,16 +1882,18 @@ DEFUN_DLD (__ftp_mput__, args, nargout,
 Undocumented internal function\n\
 @end deftypefn")
 {
-  string_vector retval;
+  octave_value retval;
 
-#ifdef HAVE_CURL
   int nargin = args.length ();
 
   if (nargin != 2)
     error ("__ftp_mput__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1802,6 +1901,8 @@ Undocumented internal function\n\
 
           if (! error_state)
             {
+              string_vector result;
+
               glob_match pattern (file_ops::tilde_expand (pat));
               string_vector files = pattern.glob ();
 
@@ -1819,7 +1920,7 @@ Undocumented internal function\n\
 
                   if (fs.is_dir ())
                     {
-                      retval.append (curl.mput_directory ("", file));
+                      result.append (curl.mput_directory ("", file));
                       if (error_state)
                         break;
                     }
@@ -1842,9 +1943,12 @@ Undocumented internal function\n\
                       if (error_state)
                         break;
 
-                      retval.append (file);
+                      result.append (file);
                     }
                 }
+
+              if (nargout > 0)
+                retval = result;
             }
           else
             error ("__ftp_mput__: expecting file name patter as second argument");
@@ -1852,11 +1956,8 @@ Undocumented internal function\n\
       else
         error ("__ftp_mput__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_mput__", "FTP");
-#endif
 
-  return (nargout > 0 ? octave_value (retval) : octave_value ());
+  return retval;
 }
 
 DEFUN_DLD (__ftp_mget__, args, ,
@@ -1865,14 +1966,18 @@ DEFUN_DLD (__ftp_mget__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-#ifdef HAVE_CURL
+  octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 2 && nargin != 3)
     error ("__ftp_mget__: incorrect number of arguments");
   else
     {
-      const curl_object curl = ch_manager::get_object (args(0));
+      const url_transfer curl = ch_manager::get_object (args(0));
+
+      if (error_state)
+        return retval;
 
       if (curl.is_valid ())
         {
@@ -1941,9 +2046,6 @@ Undocumented internal function\n\
       else
         error ("__ftp_mget__: invalid ftp handle");
     }
-#else
-  gripe_disabled_feature ("__ftp_mget__", "FTP");
-#endif
 
-  return octave_value ();
+  return retval;
 }

@@ -17,8 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} @var{Properties} = __get_properties__ (@var{playerObj})
-## For a given audioplayer object this function gathers and returns the current values of all properties.
+## @deftypefn {Function File} {@var{properties} =} __get_properties__ (@var{player})
+## Return a struct containing all named properties of the player object
+## @var{player}.
 ## @end deftypefn
 
 function properties = __get_properties__ (player)

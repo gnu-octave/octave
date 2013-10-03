@@ -31,11 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (audioinfo, args, ,
-"-*- texinfo -*-\n\
-@deftypefn{Loadable Function} info = audioinfo (@var{filename})\n\
-\n\
-Return information about an audio file specified by @var{filename}.\
-\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{info} =} audioinfo (@var{filename})\n\
+Return information about an audio file specified by @var{filename}.\n\
 @end deftypefn")
 {
   octave_scalar_map retval;

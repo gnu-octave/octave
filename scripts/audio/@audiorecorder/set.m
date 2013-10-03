@@ -17,16 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} set (@var{recorderObj}, @var{Name}, @var{Value})
-## Set the value of property specified by @var{Name} to a given @var{Value}.
+## @deftypefn {Function File} {} set (@var{recorder}, @var{name}, @var{value})
+## Set the value of property specified by @var{name} to a given @var{value}.
 ## @end deftypefn
-## @deftypefn{Function File} set (@var{recorderObj}, @var{CellOfNames}, @var{CellOfValues})
-## Given a cell array of property names and a cell array of values, set each property to a corresponding value.
+## @deftypefn {Function File} {} set (@var{recorder}, @var{names}, @var{values})
+## Given a cell array of property @var{names} and a cell array of @var{values},
+## set each property to a corresponding value.
 ## @end deftypefn
-## @deftypefn{Function File} set (@var{recorderObj}, @var{StructOfProperties})
-## Given a structure where fields are property names, set the value of those properties for an audiorecorder object to corresponding values.
+## @deftypefn {Function File} {} set (@var{recorder}, @var{properties})
+## Given a structure where fields are property names, set the value of those
+## properties for an audiorecorder object to corresponding values.
 ## @end deftypefn
-## @deftypefn{Function File} @var{settableProperties} = set (@var{recorderObj})
+## @deftypefn {Function File} {@var{properties} =} set (@var{recorder})
 ## Returns a structure of settable properties.
 ## @end deftypefn
 

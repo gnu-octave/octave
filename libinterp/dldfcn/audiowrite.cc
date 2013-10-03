@@ -65,16 +65,17 @@ fill_extension_table (std::map<std::string, int> &table)
 #endif
 
 DEFUN_DLD (audiowrite, args, ,
-"-*- texinfo -*-\n\
-@deftypefn{Loadable Function} audiowrite (@var{filename}, @var{y}, @var{Fs})\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
 \n\
-Write audio data from the matrix @var{y} to a file specified by @var{filename}, \
-file format will be determined by the file extension.\
+Write audio data from the matrix @var{y} to a file specified by @var{filename},\n\
+file format will be determined by the file extension.\n\
 \n\
 @end deftypefn\n\
-@deftypefn{Loadable Function} audiowrite (@var{filename}, @var{y}, @var{Fs}, @var{Name}, @var{Value})\n\
+@deftypefn {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value})\n\
 \n\
-Lets you specify additional parameters when writing the file. Those parameters are given in the table below:\n\
+Lets you specify additional parameters when writing the file. Those parameters\n\
+are given in the table below:\n\
 \n\
 @table @samp\n\
 @item BitsPerSample\n\

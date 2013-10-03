@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} resume (@var{playerObj})
+## @deftypefn {Function File} {} resume (@var{player})
 ## Resume playback for a previously paused audioplayer object.
 ## @end deftypefn
 

@@ -31,31 +31,33 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (audioread, args, ,
-"-*- texinfo -*-\n\
-@deftypefn{Loadable Function} [@var{y}, @var{Fs}] = audioread (@var{filename})\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
 \n\
-Load an audio file that is specified by @var{filename}. It will be loaded in to \
-a column matrix with as many rows as there are audio frames and as many columns \
-as there are channels in the file. Sampling rate will be stored in @var{Fs}. \
-\n\
-@end deftypefn\n\
-@deftypefn{Loadable Function} [@var{y}, @var{Fs}] = audioread (@var{filename}, @var{samples})\n\
-\n\
-Read a specified range of samples from a file specified by @var{filename}. \
-Argument @var{samples} is a vector with two values specifying starting frame \
-and ending frame. \
+Load an audio file that is specified by @var{filename}.  It will be loaded\n\
+in to a column matrix with as many rows as there are audio frames and as many\n\
+columns as there are channels in the file.  Sampling rate will be stored in\n\
+@var{fs}.\n\
 \n\
 @end deftypefn\n\
-@deftypefn{Loadable Function} [@var{y}, @var{Fs}] = audioread (@var{filename}, @var{dataType})\n\
+@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
 \n\
-Read a file and return an array of specified type. If @var{dataType} is \"native\" then \
-an array of fixed width integer type will be returned depending on how data is stored \
-in the audio file. If @var{dataType} is \"double\" a double matrix will be returned. \
+Read a specified range of samples from a file specified by @var{filename}.\n\
+Argument @var{samples} is a vector with two values specifying starting frame\n\
+and ending frame.\n\
 \n\
 @end deftypefn\n\
-@deftypefn{Loadable Function} [@var{y}, @var{Fs}] = audioread (@var{filename}, @var{samples}, @var{dataType})\n\
+@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
 \n\
-Read a file and return a specified range of frames in an array of specified type. \
+Read a file and return an array of specified type.  If @var{datatype} is\n\
+@qcode{\"native\"} then an array of fixed width integer type will be returned\n\
+depending on how data is stored in the audio file.  If @var{datatype} is\n\
+@qcode{\"double\"} a double matrix will be returned.\n\
+\n\
+@end deftypefn\n\
+@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
+\n\
+Read a file and return a specified range of frames in an array of specified type.\n\
 \n\
 @end deftypefn"
 )

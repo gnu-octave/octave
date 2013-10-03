@@ -17,11 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} record (@var{recorderObj})
-## Record audio without blocking. The recording will continue until you use the stop method on @var{recorderObj}.
+## @deftypefn {Function File} {} record (@var{recorder})
+## Record audio without blocking. The recording will continue until you use
+## the stop method on @var{recorder}.
 ## @end deftypefn
-## @deftypefn{Function File} record (@var{playerObj}, @var{length})
-## Record audio without blocking. The recording will continue for @var{length} seconds.
+## @deftypefn {Function File} {} record (@var{recorder}, @var{length})
+## Record audio without blocking. The recording will continue for
+## @var{length} seconds.
 ## @end deftypefn
 
 function record (varargin)

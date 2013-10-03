@@ -17,34 +17,46 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} player = audioplayer (@var{Y}, @var{Fs})
-## Create an audioplayer object that will play back data @var{Y} at sample rate @var{Fs}.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs})
+## Create an audioplayer object that will play back data @var{y} at sample
+## rate @var{fs}.
 ## @end deftypefn
-## @deftypefn{Function File} player = audioplayer (@var{Y}, @var{Fs}, @var{nBytes})
-## Create an audioplayer object that will play back data @var{Y} at sample rate @var{Fs} and bit depth @var{nBytes}.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
+## Create an audioplayer object that will play back data @var{y} at sample
+## rate @var{fs} and bit depth @var{nbits}.
 ## @end deftypefn
-## @deftypefn{Function File} player = audioplayer (@var{Y}, @var{Fs}, @var{nBytes}, @var{ID})
-## Create an audioplayer object that will play back data @var{Y} at sample rate @var{Fs}, bit depth @var{nBytes} and using a device with @var{ID} that you can get using the audiodevinfo function.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
+## Create an audioplayer object that will play back data @var{y} at sample
+## rate @var{fs}, bit depth @var{nbits} and using a device with @var{id}
+## that you can get using the audiodevinfo function.
 ## @end deftypefn
-## @deftypefn{Function File} player = audioplayer (@var{function}, @var{Fs})
-## Argument @var{function} is a function handle, inline function or a string value of a function name that will get called to process audio. Audio will be played at @var{Fs} sampling rate.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{function}, @var{fs})
+## Argument @var{function} is a function handle, inline function or a string
+## value of a function name that will get called to process audio.  Audio
+## will be played at @var{fs} sampling rate.
 ## @end deftypefn
-## @deftypefn{Function File} player = audioplayer (@var{function}, @var{Fs}, @var{nBytes})
-## Same as above but also allows you to specify the number of bytes per sample.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{function}, @var{fs}, @var{nbits})
+## Same as above but also allows you to specify the number of bits per
+## sample.
 ## @end deftypefn
-## @deftypefn{Function File} player = audioplayer (@var{function}, @var{Fs}, @var{nBytes}, @var{ID})
-## Same as above but also allows you to specify device ID that will be used.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{function}, @var{fs}, @var{nbits}, @var{id})
+## Same as above but also allows you to specify device @var{id} that will be
+## used.
 ## @end deftypefn
-## @deftypefn{Function File} player = audioplayer (@var{recorder})
-## Create an audioplayer object that will use data and other information such as sample rate from an audiorecorder object.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{recorder})
+## Create an audioplayer object that will use data and other information
+## such as sample rate from an audiorecorder object.
 ## @end deftypefn
-## @deftypefn{Function File} player = audioplayer (@var{recorder}, @var{ID})
-## Create an audioplayer object that will use data and other information from an audiorecorder object and that will use a device with the given @var{ID}.
+## @deftypefn {Function File} {@var{player} =} audioplayer (@var{recorder}, @var{id})
+## Create an audioplayer object that will use data and other information
+## from an audiorecorder object and that will use a device with the given @var{id}.
 ## @end deftypefn
 ##
-## The signal @var{Y} can be a vector or a two dimensional array.
+## The signal @var{y} can be a vector or a two dimensional array.
 ##
-## The following example will create an audioplayer object that will play back one second of white noise at 44100 sample rate using 8 bits per sample.
+## The following example will create an audioplayer object that will play
+## back one second of white noise at 44100 sample rate using 8 bits per
+## sample.
 ##
 ## @example
 ## @group
@@ -54,7 +66,8 @@
 ## @end group
 ## @end example
 ##
-## The following example will create and register a callback that generates a sine wave on both channels.
+## The following example will create and register a callback that generates
+## a sine wave on both channels.
 ##
 ## @example
 ## @group

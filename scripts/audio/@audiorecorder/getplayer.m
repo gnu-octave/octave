@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} getplayer (@var{recorderObj})
+## @deftypefn {Function File} {@var{player} =} getplayer (@var{recorder})
 ## Returns an audioplayer object with data recorded by the recorder.
 ## @end deftypefn
 

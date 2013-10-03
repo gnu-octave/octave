@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} display (@var{recorderObj})
-## Display an audiorecorder object.
+## @deftypefn {Function File} {} display (@var{recorder})
+## Display the properties of the audiorecorder object @var{recorder}.
 ## @end deftypefn
 
 function display (recorder)

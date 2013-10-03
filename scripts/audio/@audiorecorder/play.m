@@ -17,14 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} player = play (@var{recorderObj})
-## Play the audio recorded in @var{recorderObj} and return a corresponding audioplayer object.
+## @deftypefn {Function File} {@var{player} =} play (@var{recorder})
+## Play the audio recorded in @var{recorder} and return a corresponding
+## audioplayer object.
 ## @end deftypefn
-## @deftypefn{Function File} player = play (@var{recorderObj}, start)
-## Play the audio recorded in @var{recorderObj} starting from @var{start} seconds in to the recording. Returns a corresponding audioplayer object.
+## @deftypefn {Function File} {@var{player} =} play (@var{recorder}, @var{start})
+## Play the audio recorded in @var{recorder} starting from @var{start}
+## seconds in to the recording. Returns a corresponding audioplayer object.
 ## @end deftypefn
-## @deftypefn{Function File} player = play (@var{recorderObj}, [start, end])
-## Play the audio recorded in @var{recorderObj} starting from @var{start} seconds and ending at @var{end} seconds in the recording. Returns a corresponding audioplayer object.
+## @deftypefn {Function File} {@var{player} =} play (@var{recorder}, [@var{start}, @var{end}])
+## Play the audio recorded in @var{recorder} starting from @var{start}
+## seconds and ending at @var{end} seconds in the recording. Returns a
+## corresponding audioplayer object.
 ## @end deftypefn
 
 function player = play (varargin)

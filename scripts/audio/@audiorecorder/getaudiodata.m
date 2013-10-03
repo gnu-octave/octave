@@ -17,12 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} getaudiodata (@var{recorderObj})
-## Returns recorder audio data as a Matrix with values between -1.0 and 1.0 and with as many columns as there are channels in the recorder.
+## @deftypefn {Function File} {@var{data} =} getaudiodata (@var{recorder})
+## Returns recorder audio data as a matrix with values between -1.0 and 1.0
+## and with as many columns as there are channels in the recorder.
 ## @end deftypefn
-## @deftypefn{Function File} getaudiodata (@var{recorderObj}, @var{dataType})
-## Converts recorded data to specified @var{dataType}. It can be set to 'double',
-## 'single', 'int16', 'int8' or 'uint8'.
+## @deftypefn {Function File} {@var{data} =} getaudiodata (@var{recorder}, @var{datatype})
+## Converts recorded data to specified @var{datatype}.  It can be set to
+## @qcode{"double"}, @qcode{"single"}, @qcode{"int16"}, @qcode{"int8"} or
+## @qcode{"uint8"}.
 ## @end deftypefn
 
 function data = getaudiodata (varargin)

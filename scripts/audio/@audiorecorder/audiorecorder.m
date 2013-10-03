@@ -17,23 +17,33 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} recorder = audiorecorder
-## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz sample rate.
+## @deftypefn {Function File} {@var{recorder} =} audiorecorder ()
+## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz
+## sample rate.
 ## @end deftypefn
-## @deftypefn{Function File} recorder = audiorecorder (@var{Fs}, @var{nBytes}, @var{Channels})
-## Create an audiorecorder object recording at specified sample rate @var{Fs}, specified bit depth @var{nBytes} and specified number of @var{Channels}.
+## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
+## Create an audiorecorder object recording at specified sample rate
+## @var{fs}, specified bit depth @var{nbits}, and specified number of
+## @var{channels}.
 ## @end deftypefn
-## @deftypefn{Function File} recorder = audiorecorder (@var{Fs}, @var{nBytes}, @var{Channels}, @var{ID})
-## Create an audiorecorder object recording at specified sample rate @var{Fs}, specified bit depth @var{nBytes}, number of @var{Channels} and recording on the device specified by @var{ID}. You can get device IDs by using the audiodevinfo function.
+## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
+## Create an audiorecorder object recording at specified sample rate @var{fs},
+## specified bit depth @var{nbits}, number of @var{channels}, and recording
+## on the device specified by @var{id}.  You can get device IDs by using the
+## audiodevinfo function.
 ## @end deftypefn
-## @deftypefn{Function File} recorder = audiorecorder (@var{function}, @var{Fs})
-## Argument @var{function} is a function handle, inline function or a string value of a function name that will get called to process audio. Audio will be recorded at @var{Fs} sampling rate.
+## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{function}, @var{fs})
+## Argument @var{function} is a function handle, inline function, or a string
+## value of a function name that will get called to process audio.  Audio
+## will be recorded at @var{fs} sampling rate.
 ## @end deftypefn
-## @deftypefn{Function File} recorder = audiorecorder (@var{function}, @var{Fs}, @var{nBytes})
-## Same as above but also allows you to specify the number of bytes per sample.
+## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{function}, @var{fs}, @var{nbits})
+## Same as above but also allows you to specify the number of bits per
+## sample.
 ## @end deftypefn
-## @deftypefn{Function File} recorder = audiorecorder (@var{function}, @var{Fs}, @var{nBytes}, @var{ID})
-## Same as above but also allows you to specify device ID that will be used.
+## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{function}, @var{fs}, @var{nbits}, @var{id})
+## Same as above but also allows you to specify device @var{id} that will be
+## used.
 ## @end deftypefn
 
 function recorder = audiorecorder (varargin)

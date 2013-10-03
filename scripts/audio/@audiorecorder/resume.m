@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} resume (@var{recorderObj})
-## Will resume recording if pause was used before on @var{recorderObj}.
+## @deftypefn {Function File} {} resume (@var{recorder})
+## Will resume recording if pause was used before on @var{recorder}.
 ## @end deftypefn
 
 function resume (recorder)

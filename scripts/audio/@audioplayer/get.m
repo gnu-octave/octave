@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} @var{Value} = get (@var{playerObj}, @var{Name})
-## Returns the @var{Value} of the property identified by @var{Name}.
+## @deftypefn {Function File} {@var{value} =} get (@var{player}, @var{name})
+## Returns the @var{value} of the property identified by @var{name}.
 ## @end deftypefn
-## @deftypefn{Function File} @var{Values} = get (@var{playerObj}, @{@var{Name1}, ... , @var{NameN}@})
-## Returns the @var{Values} of the properties identified by @var{Name1} to @var{NameN}.
+## @deftypefn {Function File} {@var{values} =} get (@var{player}, @{@var{name1}, @dots{}, @var{namen}@})
+## Returns the @var{values} of the properties identified by @var{name1} to
+## @var{namen}.
 ## @end deftypefn
-## @deftypefn{Function File} @var{Values} = get (@var{playerObj})
-## Returns a scalar structure with values of all properties of @var{playerObj}.
+## @deftypefn {Function File} {@var{values} =} get (@var{player})
+## Returns a scalar structure with values of all properties of @var{player}.
 ## The field names correspond to property names.
 ## @end deftypefn
 

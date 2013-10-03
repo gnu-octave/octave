@@ -17,14 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} playblocking (@var{playerObj})
+## @deftypefn {Function File} {} playblocking (@var{player})
 ## Play back audio stored in the audioplayer object with blocking.
 ## @end deftypefn
-## @deftypefn{Function File} playblocking (@var{playerObj}, @var{start})
-## Play back audio stored in the audioplayer object starting at the time in seconds specified by @var{start}.
+## @deftypefn {Function File} {} playblocking (@var{player}, @var{start})
+## Play back audio stored in the audioplayer object starting at the time in
+## seconds specified by @var{start}.
 ## @end deftypefn
-## @deftypefn{Function File} playblocking (@var{playerObj}, [@var{start}, @var{end}])
-## Play back audio stored in the audioplayer object starting at the time in seconds specified by @var{start} and ending at the time specified by @var{end}.
+## @deftypefn {Function File} {} playblocking (@var{player}, [@var{start}, @var{end}])
+## Play back audio stored in the audioplayer object starting at the time in
+## seconds specified by @var{start} and ending at the time specified by
+## @var{end}.
 ## @end deftypefn
 
 function playblocking (varargin)

@@ -83,9 +83,8 @@ function h = pcolor (varargin)
     htmp = surface (x, y, z, c);
 
     set (htmp, "facecolor", "flat");
-    set (hax, "box", "on");
     if (! ishold ())
-      set (hax, "view", [0, 90]);
+      set (hax, "view", [0, 90], "box", "on");
     endif
 
   unwind_protect_cleanup

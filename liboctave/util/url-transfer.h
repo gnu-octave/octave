@@ -35,11 +35,7 @@ class base_url_transfer
 {
 private:
 
-  static void
-  delete_file (const std::string& file)
-  {
-    octave_unlink (file);
-  }
+  static void delete_file (const std::string& file);
 
   static void reset_path (base_url_transfer *curl_xfer)
   {

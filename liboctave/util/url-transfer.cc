@@ -45,6 +45,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <curl/easy.h>
 #endif
 
+void base_url_transfer::delete_file (const std::string& file)
+{
+  octave_unlink (file);
+}
+
 void
 base_url_transfer::mget_directory (const std::string& directory,
                                    const std::string& target)

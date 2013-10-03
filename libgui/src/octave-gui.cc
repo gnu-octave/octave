@@ -94,6 +94,13 @@ octave_start_gui (int argc, char *argv[])
 
   QApplication application (argc, argv);
 
+  // install translators for the gui and qt text
+  QTranslator gui_tr, qt_tr, qsci_tr;
+  resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
+  application.installTranslator (&qt_tr);
+  application.installTranslator (&qsci_tr);
+  application.installTranslator (&gui_tr);
+
   while (true)
     {
       if (resource_manager::is_first_run ())
@@ -104,13 +111,6 @@ octave_start_gui (int argc, char *argv[])
         }
       else
         {
-          // install translators for the gui and qt text
-          QTranslator gui_tr, qt_tr, qsci_tr;
-          resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
-          application.installTranslator (&qt_tr);
-          application.installTranslator (&qsci_tr);
-          application.installTranslator (&gui_tr);
-
           // update network-settings
           resource_manager::update_network_settings ();
 

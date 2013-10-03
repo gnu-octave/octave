@@ -22,36 +22,38 @@
 ## @end deftypefn
 
 function [hplots, text_strings] = __getlegenddata__ (hlegend)
+
   hplots = [];
   text_strings = {};
   ca = getfield (get (hlegend, "userdata"), "handle");
-  kids = [];
-  for i = 1:numel (ca)
-    kids = [kids; get(ca(i), "children")];
-  endfor
+  if (numel (ca) == 1)
+    kids = get (ca, "children");
+  else
+    kids = [get(kids, "children"){:}];
+  endif
 
   for i = numel (kids):-1:1
     typ = get (kids(i), "type");
-    if (strcmp (typ, "line") || strcmp (typ, "surface")
-        || strcmp (typ, "patch") || strcmp (typ, "hggroup"))
-
+    if (any (strcmp (typ, {"line", "patch", "surface", "hggroup"})))
       if (strcmp (typ, "hggroup"))
         hgkids = get (kids(i), "children");
         for j = 1 : length (hgkids)
-          hgobj = get (hgkids (j));
-          if (isfield (hgobj, "displayname") && ! isempty (hgobj.displayname))
-            hplots = [hplots, hgkids(j)];
-            text_strings = {text_strings{:}, hgobj.displayname};
-            break;
-          endif
+          try
+            dname = get (hgkids(j), "DisplayName");
+            if (! isempty (dname))
+              hplots(end+1) = hgkids(j);
+              text_strings(end+1) = dname;
+              break;  # break from j-loop over hgkids
+            endif
+          end_try_catch
         endfor
       else
-        if (! isempty (get (kids (i), "displayname")))
-          hplots = [hplots, kids(i)];
-          text_strings = {text_strings{:}, get(kids (i), "displayname")};
+        dname = get (kids(i), "DisplayName");
+        if (! isempty (dname))
+          hplots(end+1) = kids(i);
+          text_strings(end+1) = dname;
         endif
       endif
-
     endif
   endfor
 

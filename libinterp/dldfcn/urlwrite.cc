@@ -82,7 +82,8 @@ public:
 
   base_url_transfer (const std::string& /* url */,
                      const std::string& /* method */,
-                     const Cell& /* param */, std::ostream& /* os */)
+                     const Array<std::string>& /* param */,
+                     std::ostream& /* os */)
     : count (1), host (), userpwd (), valid (false), ascii_mode (false),
       ok (true), errmsg () { }
 
@@ -411,7 +412,7 @@ public:
   }
 
   curl_transfer (const std::string& url, const std::string& method,
-                 const Cell& param, std::ostream& os)
+                 const Array<std::string>& param, std::ostream& os)
     : base_url_transfer (url, method, param, os),
       curl (curl_easy_init ()), errnum ()
   {
@@ -823,14 +824,14 @@ private:
     SETOPT (CURLOPT_QUOTE, 0);
   }
 
-  std::string form_query_string (const Cell& param)
+  std::string form_query_string (const Array<std::string>& param)
   {
     std::ostringstream query;
 
     for (int i = 0; i < param.numel (); i += 2)
       {
-        std::string name = param(i).string_value ();
-        std::string text = param(i+1).string_value ();
+        std::string name = param(i);
+        std::string text = param(i+1);
 
         // Encode strings.
         char *enc_name = curl_easy_escape (curl, name.c_str (),
@@ -892,7 +893,7 @@ public:
   }
 
   url_transfer (const std::string& url, const std::string& method,
-                const Cell& param, std::ostream& os)
+                const Array<std::string>& param, std::ostream& os)
     : rep (new REP_CLASS (url, method, param, os))
   {
 #if !defined (HAVE_CURL)
@@ -1295,7 +1296,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
     }
 
   std::string method;
-  Cell param; // empty cell array
+  Array<std::string> param;
 
   if (nargin == 4)
     {
@@ -1313,11 +1314,11 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
           return retval;
         }
 
-      param = args(3).cell_value ();
+      param = args(3).cellstr_value ();
 
       if (error_state)
         {
-          error ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell");
+          error ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of character strings");
           return retval;
         }
 
@@ -1437,7 +1438,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
     }
 
   std::string method;
-  Cell param; // empty cell array
+  Array<std::string> param;
 
   if (nargin == 3)
     {
@@ -1455,11 +1456,11 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
           return retval;
         }
 
-      param = args(2).cell_value ();
+      param = args(2).cellstr_value ();
 
       if (error_state)
         {
-          error ("urlread: parameters (PARAM) for get and post requests must be given as a cell");
+          error ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of character strings");
           return retval;
         }
 

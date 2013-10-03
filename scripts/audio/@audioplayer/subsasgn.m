@@ -16,13 +16,13 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function value = subsasgn(player, idx, rhs)
+function value = subsasgn (player, idx, rhs)
   if (isempty (idx))
     error ("audioplayer: missing index");
   endif
-  if (strcmp(idx(1).type, "."))
+  if (strcmp (idx(1).type, "."))
     field = idx.subs;
-    set(player, field, rhs);
+    set (player, field, rhs);
     value = player;
   else
     error ("audioplayer: invalid subscript type");

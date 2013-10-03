@@ -24,7 +24,7 @@
 ## Returns the @var{Values} of the properties identified by @var{Name1} to @var{NameN}.
 ## @end deftypefn
 ## @deftypefn{Function File} @var{Values} = get (@var{playerObj})
-## Returns a scalar structure with values of all properties of @var{playerObj}. 
+## Returns a scalar structure with values of all properties of @var{playerObj}.
 ## The field names correspond to property names.
 ## @end deftypefn
 
@@ -40,11 +40,11 @@ function result = get (varargin)
       result = {};
       index = 1;
       for property = varargin{2}
-        result{index} = getfield (properties, char(property));
+        result{index} = getfield (properties, char (property));
         index = index + 1;
       endfor
     endif
   else
-    error ('audioplayer: wrong number of arguments to the get method');
+    error ("audioplayer: wrong number of arguments to the get method");
   endif
 endfunction

@@ -22,6 +22,6 @@
 ## Returns 0 otherwise.
 ## @end deftypefn
 
-function result = isrecording(recorder)
-    result = __recorder_isrecording__(struct(recorder).recorder);
+function result = isrecording (recorder)
+  result = __recorder_isrecording__ (struct (recorder).recorder);
 endfunction

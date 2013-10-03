@@ -21,6 +21,6 @@
 ## Resume playback for a previously paused audioplayer object.
 ## @end deftypefn
 
-function resume(player)
-    __player_resume__(struct(player).player);
+function resume (player)
+  __player_resume__ (struct (player).player);
 endfunction

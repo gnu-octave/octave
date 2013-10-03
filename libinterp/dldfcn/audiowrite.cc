@@ -27,13 +27,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct.h"
 #include "ov-struct.h"
 #ifdef HAVE_SNDFILE
-  #include <sndfile.h>
+#include <sndfile.h>
 #endif
 #include <string>
 #include <map>
 
 #ifdef HAVE_SNDFILE
-static void fill_extension_table(std::map<std::string, int> &table)
+static void
+fill_extension_table (std::map<std::string, int> &table)
 {
   table["wav"] = SF_FORMAT_WAV;
   table["aiff"] = SF_FORMAT_AIFF;
@@ -62,16 +63,16 @@ static void fill_extension_table(std::map<std::string, int> &table)
   table["rf64"] = SF_FORMAT_RF64;
 }
 #endif
-  
-DEFUN_DLD(audiowrite, args, ,
+
+DEFUN_DLD (audiowrite, args, ,
 "-*- texinfo -*-\n\
-@deftypefn{Loadable Function} audiowrite(@var{filename}, @var{y}, @var{Fs})\n\
+@deftypefn{Loadable Function} audiowrite (@var{filename}, @var{y}, @var{Fs})\n\
 \n\
 Write audio data from the matrix @var{y} to a file specified by @var{filename}, \
 file format will be determined by the file extension.\
 \n\
 @end deftypefn\n\
-@deftypefn{Loadable Function} audiowrite(@var{filename}, @var{y}, @var{Fs}, @var{Name}, @var{Value})\n\
+@deftypefn{Loadable Function} audiowrite (@var{filename}, @var{y}, @var{Fs}, @var{Name}, @var{Value})\n\
 \n\
 Lets you specify additional parameters when writing the file. Those parameters are given in the table below:\n\
 \n\
@@ -89,20 +90,19 @@ Artist name.\n\
 @item Comment\n\
 Comment.\n\
 @end table\n\
-@end deftypefn"
-)
+@end deftypefn")
 {
   octave_scalar_map retval;
 #ifdef HAVE_SNDFILE
   std::map<std::string, int> extension_to_format;
-  fill_extension_table(extension_to_format);
+  fill_extension_table (extension_to_format);
   std::string filename = args(0).string_value ();
-  std::string extension = filename.substr(filename.find_last_of(".") + 1);
-  std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+  std::string extension = filename.substr (filename.find_last_of (".") + 1);
+  std::transform (extension.begin (), extension.end (), extension.begin (), ::tolower);
   Matrix audio = args(1).matrix_value ();
   SNDFILE *file;
   SF_INFO info;
-  float *data = (float *)malloc(audio.rows () * audio.cols () * sizeof(float));
+  float *data = (float *)malloc (audio.rows () * audio.cols () * sizeof (float));
   for (int i = 0; i < audio.cols (); i++)
     {
       for (int j = 0; j < audio.rows (); j++)
@@ -110,14 +110,12 @@ Comment.\n\
           data[j * audio.cols () + i] = audio(j, i);
         }
     }
+
   if (extension == "ogg")
-    {
-      info.format = SF_FORMAT_VORBIS;
-    }
+    info.format = SF_FORMAT_VORBIS;
   else
-    {
-      info.format = SF_FORMAT_PCM_16;
-    }
+    info.format = SF_FORMAT_PCM_16;
+
   std::string title = "";
   std::string artist = "";
   std::string comment = "";
@@ -128,72 +126,44 @@ Comment.\n\
         {
           int bits = args(i + 1).int_value ();
           if (bits == 8)
-            {
-              info.format |= SF_FORMAT_PCM_S8;
-            }
+            info.format |= SF_FORMAT_PCM_S8;
           else if (bits == 16)
-            {
-              info.format |= SF_FORMAT_PCM_16;
-            }
+            info.format |= SF_FORMAT_PCM_16;
           else if (bits == 24)
-            {
-              info.format |= SF_FORMAT_PCM_24;
-            }
+            info.format |= SF_FORMAT_PCM_24;
           else if (bits == 32)
-            {
-              info.format |= SF_FORMAT_PCM_32;
-            }
+            info.format |= SF_FORMAT_PCM_32;
           else
-            {
-              error("audiowrite: wrong number of bits specified");
-            }
+            error ("audiowrite: wrong number of bits specified");
         }
       else if (args(i).string_value () == "BitRate")
-        {
-
-        }
+        ;
       else if (args(i).string_value () == "Quality")
-        {
-          quality = args(i + 1).int_value () * 0.01;
-        }
+        quality = args(i + 1).int_value () * 0.01;
       else if (args(i).string_value () == "Title")
-        {
-          title = args(i + 1).string_value ();
-        }
+        title = args(i + 1).string_value ();
       else if (args(i).string_value () == "Artist")
-        {
-          artist = args(i + 1).string_value ();
-        }
+        artist = args(i + 1).string_value ();
       else if (args(i).string_value () == "Comment")
-        {
-          comment = args(i + 1).string_value ();
-        }
+        comment = args(i + 1).string_value ();
       else
-        {
-          error("audiowrite: wrong argument name");
-        }
+        error ("audiowrite: wrong argument name");
     }
   info.samplerate = args(2).int_value ();
   info.channels = audio.cols ();
   info.format |= extension_to_format[extension];
   file = sf_open (filename.c_str (), SFM_WRITE, &info);
   if (title != "")
-    {
-      sf_set_string (file, SF_STR_TITLE, title.c_str ());
-    }
+    sf_set_string (file, SF_STR_TITLE, title.c_str ());
   if (artist != "")
-    {
-      sf_set_string (file, SF_STR_ARTIST, artist.c_str ());
-    }
+    sf_set_string (file, SF_STR_ARTIST, artist.c_str ());
   if (comment != "")
-    {
-      sf_set_string (file, SF_STR_COMMENT, comment.c_str ());
-    }
+    sf_set_string (file, SF_STR_COMMENT, comment.c_str ());
   sf_write_float (file, data, audio.rows () * audio.cols ());
   sf_close (file);
   free (data);
 #else
-  error("sndfile not found on your system and thus audiowrite is not functional");
+  error ("sndfile not found on your system and thus audiowrite is not functional");
 #endif
-  return octave_value(retval);
+  return octave_value (retval);
 }

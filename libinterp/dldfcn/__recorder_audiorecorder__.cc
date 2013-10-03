@@ -31,10 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "player_class.cc"
 #include "recorder_class.cc"
 #endif
-   
-DEFUN_DLD(__recorder_audiorecorder__, args, ,
-"__recorder_audiorecorder__"
-)
+
+DEFUN_DLD (__recorder_audiorecorder__, args, ,
+"__recorder_audiorecorder__")
 {
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
@@ -45,7 +44,7 @@ DEFUN_DLD(__recorder_audiorecorder__, args, ,
       bool is_function = args(0).is_string () || args(0).is_function_handle () || args(0).is_inline_function ();
       if (is_function)
         {
-          retval->octave_callback_function = args (0).function_value ();
+          retval->octave_callback_function = args(0).function_value ();
           offset = 1;
         }
     }
@@ -63,24 +62,22 @@ DEFUN_DLD(__recorder_audiorecorder__, args, ,
         retval->set_id (args(3 + offset).int_value ());
         break;
     }
-  retval->init();
-  return octave_value(retval);
+  retval->init ();
+  return octave_value (retval);
 #else
   octave_value retval;
   error ("portaudio not found on your system and thus audio functionality is not present");
   return retval;
 #endif
 }
-   
-DEFUN_DLD(__recorder_getaudiodata__, args, ,
-"__recorder_getaudiodata__"
-)
+
+DEFUN_DLD (__recorder_getaudiodata__, args, ,
+"__recorder_getaudiodata__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  audiorecorder* recorder = 0;
-  const octave_base_value& rep = args (0).get_rep ();
-  recorder = &((audiorecorder &)rep);
+  const octave_base_value& rep = args(0).get_rep ();
+  audiorecorder *recorder = &((audiorecorder &)rep);
   retval = octave_value (recorder->getaudiodata ());
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -88,19 +85,17 @@ DEFUN_DLD(__recorder_getaudiodata__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_channels__, args, ,
-"__recorder_get_channels__"
-)
+DEFUN_DLD (__recorder_get_channels__, args, ,
+"__recorder_get_channels__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      retval = octave_value(recorder->get_channels());
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      retval = octave_value (recorder->get_channels ());
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -108,19 +103,17 @@ DEFUN_DLD(__recorder_get_channels__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_fs__, args, ,
-"__recorder_get_fs__"
-)
+DEFUN_DLD (__recorder_get_fs__, args, ,
+"__recorder_get_fs__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      retval = octave_value(recorder->get_fs());
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      retval = octave_value (recorder->get_fs ());
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -128,19 +121,17 @@ DEFUN_DLD(__recorder_get_fs__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_id__, args, ,
-"__recorder_get_id__"
-)
+DEFUN_DLD (__recorder_get_id__, args, ,
+"__recorder_get_id__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      retval = octave_value(recorder->get_id());
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      retval = octave_value (recorder->get_id ());
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -148,19 +139,17 @@ DEFUN_DLD(__recorder_get_id__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_nbits__, args, ,
-"__recorder_get_nbits__"
-)
+DEFUN_DLD (__recorder_get_nbits__, args, ,
+"__recorder_get_nbits__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      retval = octave_value(recorder->get_nbits ());
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      retval = octave_value (recorder->get_nbits ());
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -168,19 +157,17 @@ DEFUN_DLD(__recorder_get_nbits__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_sample_number__, args, ,
-"__recorder_get_sample_number__"
-)
+DEFUN_DLD (__recorder_get_sample_number__, args, ,
+"__recorder_get_sample_number__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      retval = octave_value(recorder->get_sample_number());
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      retval = octave_value (recorder->get_sample_number ());
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -188,18 +175,16 @@ DEFUN_DLD(__recorder_get_sample_number__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_tag__, args, ,
-"__recorder_get_tag__"
-)
+DEFUN_DLD (__recorder_get_tag__, args, ,
+"__recorder_get_tag__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
       retval = octave_value (recorder->get_tag ());
     }
 #else
@@ -208,19 +193,17 @@ DEFUN_DLD(__recorder_get_tag__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_total_samples__, args, ,
-"__recorder_get_total_samples__"
-)
+DEFUN_DLD (__recorder_get_total_samples__, args, ,
+"__recorder_get_total_samples__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      retval = octave_value(recorder->get_total_samples());
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      retval = octave_value (recorder->get_total_samples ());
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -228,18 +211,16 @@ DEFUN_DLD(__recorder_get_total_samples__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_get_userdata__, args, ,
-"__recorder_get_userdata__"
-)
+DEFUN_DLD (__recorder_get_userdata__, args, ,
+"__recorder_get_userdata__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
       retval = recorder->get_userdata ();
     }
 #else
@@ -248,26 +229,20 @@ DEFUN_DLD(__recorder_get_userdata__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_isrecording__, args, ,
-"__recorder_isrecording__"
-)
+DEFUN_DLD (__recorder_isrecording__, args, ,
+"__recorder_isrecording__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      if (recorder->isrecording())
-        {
-          return octave_value(1);
-        }
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      if (recorder->isrecording ())
+        return octave_value (1);
       else
-        {
-          return octave_value(0);
-        }
+        return octave_value (0);
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -275,19 +250,17 @@ DEFUN_DLD(__recorder_isrecording__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_pause__, args, ,
-"__recorder_pause__"
-)
+DEFUN_DLD (__recorder_pause__, args, ,
+"__recorder_pause__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      recorder->pause();
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      recorder->pause ();
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -295,38 +268,34 @@ DEFUN_DLD(__recorder_pause__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_recordblocking__, args, ,
-"__recorder_recordblocking__"
-)
+DEFUN_DLD (__recorder_recordblocking__, args, ,
+"__recorder_recordblocking__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  audiorecorder* recorder = 0;
-  const octave_base_value& rep = args (0).get_rep ();
-  recorder = &((audiorecorder &)rep);
-  recorder->recordblocking (args (1).float_value ());
+  const octave_base_value& rep = args(0).get_rep ();
+  audiorecorder *recorder = &((audiorecorder &)rep);
+  recorder->recordblocking (args(1).float_value ());
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
 #endif
   return retval;
 }
 
-DEFUN_DLD(__recorder_record__, args, ,
-"__recorder_record__"
-)
+DEFUN_DLD (__recorder_record__, args, ,
+"__recorder_record__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  audiorecorder* recorder = 0;
-  const octave_base_value& rep = args (0).get_rep ();
-  recorder = &((audiorecorder &)rep);
+  const octave_base_value& rep = args(0).get_rep ();
+  audiorecorder *recorder = &((audiorecorder &)rep);
   if (args.length () == 1)
     {
       recorder->record ();
     }
   else if (args.length () == 2)
     {
-      recorder->set_end_sample (args (1).int_value () * recorder->get_fs ());
+      recorder->set_end_sample (args(1).int_value () * recorder->get_fs ());
       recorder->record ();
     }
   else
@@ -339,19 +308,17 @@ DEFUN_DLD(__recorder_record__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_resume__, args, ,
-"__recorder_resume__"
-)
+DEFUN_DLD (__recorder_resume__, args, ,
+"__recorder_resume__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 1)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      recorder->resume();
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      recorder->resume ();
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -359,19 +326,17 @@ DEFUN_DLD(__recorder_resume__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_set_fs__, args, ,
-"__recorder_set_fs__"
-)
+DEFUN_DLD (__recorder_set_fs__, args, ,
+"__recorder_set_fs__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 2)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
-      recorder->set_fs (args (1).int_value());
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
+      recorder->set_fs (args(1).int_value ());
     }
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -379,18 +344,16 @@ DEFUN_DLD(__recorder_set_fs__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_set_tag__, args, ,
-"__recorder_set_tag__"
-)
+DEFUN_DLD (__recorder_set_tag__, args, ,
+"__recorder_set_tag__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 2)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
       recorder->set_tag (args(1).char_matrix_value ());
     }
 #else
@@ -399,18 +362,16 @@ DEFUN_DLD(__recorder_set_tag__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_set_userdata__, args, ,
-"__recorder_set_userdata__"
-)
+DEFUN_DLD (__recorder_set_userdata__, args, ,
+"__recorder_set_userdata__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
   int nargin = args.length ();
   if (nargin == 2)
     {
-      audiorecorder* recorder = 0;
-      const octave_base_value& rep = args (0).get_rep ();
-      recorder = &((audiorecorder &)rep);
+      const octave_base_value& rep = args(0).get_rep ();
+      audiorecorder *recorder = &((audiorecorder &)rep);
       recorder->set_userdata (args(1));
     }
 #else
@@ -419,16 +380,14 @@ DEFUN_DLD(__recorder_set_userdata__, args, ,
   return retval;
 }
 
-DEFUN_DLD(__recorder_stop__, args, ,
-"__recorder_stop__"
-)
+DEFUN_DLD (__recorder_stop__, args, ,
+"__recorder_stop__")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  audiorecorder* recorder = 0;
-  const octave_base_value& rep = args (0).get_rep ();
-  recorder = &((audiorecorder &)rep);
-  recorder->stop();
+  const octave_base_value& rep = args(0).get_rep ();
+  audiorecorder *recorder = &((audiorecorder &)rep);
+  recorder->stop ();
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
 #endif

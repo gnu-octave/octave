@@ -72,7 +72,7 @@
 ## @code{  lphase = lphase + nl;}
 ## @code{  rphase = rphase + nr;}
 ## @code{endfunction}
-## @code{player = audioplayer(@@callback_sine, 44100);}
+## @code{player = audioplayer (@@callback_sine, 44100);}
 ## @code{play (player);}
 ## @code{# play for as long as you want}
 ## @code{stop (player);}
@@ -83,22 +83,22 @@ function player = audioplayer (varargin)
   if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
-  if ((isa(varargin{1}, 'function_handle') || ischar(varargin{1})) && nargin < 2)
+  if ((isa (varargin{1}, "function_handle") || ischar (varargin{1})) && nargin < 2)
     print_usage ();
   endif
-  if isa (varargin{1}, 'audiorecorder')
+  if isa (varargin{1}, "audiorecorder")
     if nargin == 1
-      player = getplayer(varargin{1});
+      player = getplayer (varargin{1});
     elseif nargin == 2
       recorder = varargin{1};
       data = getaudiodata (recorder);
-      player = audioplayer (data, get (recorder, 'SampleRate'), get (recorder, 'BitsPerSample'), varargin{2});    
+      player = audioplayer (data, get (recorder, "SampleRate"), get (recorder, "BitsPerSample"), varargin{2});
     else
       print_usage ();
     endif
   else
-    if ischar(varargin{1})
-      varargin{1} = str2func(varargin{1});
+    if ischar (varargin{1})
+      varargin{1} = str2func (varargin{1});
     endif
     player.player = __player_audioplayer__ (varargin{:});
     player = class (player, "audioplayer");
@@ -152,9 +152,9 @@ endfunction
 %!  audio = randn (2, 44100) - 0.5;
 %!  fs = 44100;
 %!  player = audioplayer (audio, fs);
-%!  set (player, {'SampleRate', 'Tag', 'UserData'}, {8000, 'tag', [1, 2; 3, 4]});
+%!  set (player, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
 %!  assert (player.SampleRate, 8000);
-%!  assert (player.Tag, 'tag');
+%!  assert (player.Tag, "tag");
 %!  assert (player.UserData, [1, 2; 3, 4]);
 
 %!test
@@ -163,11 +163,11 @@ endfunction
 %!  player = audioplayer (audio, fs);
 %!  settable = set (player);
 %!  settable.SampleRate = 8000;
-%!  settable.Tag = 'tag';
+%!  settable.Tag = "tag";
 %!  settable.UserData = [1, 2; 3, 4];
 %!  set (player, settable);
 %!  assert (player.SampleRate, 8000);
-%!  assert (player.Tag, 'tag');
+%!  assert (player.Tag, "tag");
 %!  assert (player.UserData, [1, 2; 3, 4]);
 
 %!test
@@ -175,10 +175,10 @@ endfunction
 %!  fs = 44100;
 %!  player = audioplayer (audio, fs);
 %!  player.SampleRate = 8000;
-%!  player.Tag = 'tag';
+%!  player.Tag = "tag";
 %!  player.UserData = [1, 2; 3, 4];
-%!  properties = get (player, {'SampleRate', 'Tag', 'UserData'});
-%!  assert (properties, {8000, 'tag', [1, 2; 3, 4]});
+%!  properties = get (player, {"SampleRate", "Tag", "UserData"});
+%!  assert (properties, {8000, "tag", [1, 2; 3, 4]});
 
 %!function [ sound, status ] = callback (samples)
 %!  sound = rand (samples, 2) - 0.5;
@@ -196,5 +196,5 @@ endfunction
 %!  player = audioplayer ("callback", 44100, 16);
 %!  play (player);
 %!  sleep (2);
-%!  stop(player);
+%!  stop (player);
 %!  assert (1);

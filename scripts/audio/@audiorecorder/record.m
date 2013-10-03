@@ -24,9 +24,9 @@
 ## Record audio without blocking. The recording will continue for @var{length} seconds.
 ## @end deftypefn
 
-function record(varargin)
+function record (varargin)
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif 
-  __recorder_record__(struct(varargin{1}).recorder, varargin{2:end});
+  endif
+  __recorder_record__ (struct (varargin{1}).recorder, varargin{2:end});
 endfunction

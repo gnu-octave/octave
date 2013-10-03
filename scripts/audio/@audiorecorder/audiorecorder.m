@@ -40,8 +40,8 @@ function recorder = audiorecorder (varargin)
   if (nargin > 5)
     print_usage ();
   endif
-  if nargin > 0 && ischar(varargin{1})
-    varargin{1} = str2func(varargin{1});
+  if nargin > 0 && ischar (varargin{1})
+    varargin{1} = str2func (varargin{1});
   endif
   recorder.recorder = __recorder_audiorecorder__ (varargin{:});
   recorder = class (recorder, "audiorecorder");
@@ -50,12 +50,12 @@ endfunction
 %!test
 %!  recorder = audiorecorder (44100, 16, 2);
 %!  recordblocking (recorder, 1);
-%!  data = getaudiodata (recorder, 'int16');
-%!  assert (strcmp (class (data), 'int16'));
-%!  data = getaudiodata (recorder, 'int8');
-%!  assert (strcmp (class (data), 'int8'));
-%!  data = getaudiodata (recorder, 'uint8');
-%!  assert (strcmp (class (data), 'uint8'));
+%!  data = getaudiodata (recorder, "int16");
+%!  assert (strcmp (class (data), "int16"));
+%!  data = getaudiodata (recorder, "int8");
+%!  assert (strcmp (class (data), "int8"));
+%!  data = getaudiodata (recorder, "uint8");
+%!  assert (strcmp (class (data), "uint8"));
 %!  assert (size (data)(1), recorder.TotalSamples);
 %!  assert (size (data)(2), 2);
 %!  assert (size (data)(1) != 0);
@@ -66,7 +66,7 @@ endfunction
 %!  sleep (2);
 %!  record (recorder, 1);
 %!  sleep (2);
-%!  data = getaudiodata(recorder);
+%!  data = getaudiodata (recorder);
 %!  assert (size (data)(1) < 44100 * 2);
 
 %!test
@@ -84,53 +84,53 @@ endfunction
 
 %!test
 %!  recorder = audiorecorder;
-%!  set (recorder, {'SampleRate', 'Tag', 'UserData'}, {8000, 'tag', [1, 2; 3, 4]});
+%!  set (recorder, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
 %!  assert (recorder.SampleRate, 8000);
-%!  assert (recorder.Tag, 'tag');
+%!  assert (recorder.Tag, "tag");
 %!  assert (recorder.UserData, [1, 2; 3, 4]);
 
 %!test
 %!  recorder = audiorecorder;
 %!  settable = set (recorder);
 %!  settable.SampleRate = 8000;
-%!  settable.Tag = 'tag';
+%!  settable.Tag = "tag";
 %!  settable.UserData = [1, 2; 3, 4];
 %!  set (recorder, settable);
 %!  assert (recorder.SampleRate, 8000);
-%!  assert (recorder.Tag, 'tag');
+%!  assert (recorder.Tag, "tag");
 %!  assert (recorder.UserData, [1, 2; 3, 4]);
 
 %!test
 %!  recorder = audiorecorder;
 %!  recorder.SampleRate = 8000;
-%!  recorder.Tag = 'tag';
+%!  recorder.Tag = "tag";
 %!  recorder.UserData = [1, 2; 3, 4];
-%!  properties = get (recorder, {'SampleRate', 'Tag', 'UserData'});
-%!  assert (properties, {8000, 'tag', [1, 2; 3, 4]});
+%!  properties = get (recorder, {"SampleRate", "Tag", "UserData"});
+%!  assert (properties, {8000, "tag", [1, 2; 3, 4]});
 
 #%!function status = callback_record (sound)
-#%!  fid = fopen('record.txt', 'at');
+#%!  fid = fopen ("record.txt", "at");
 #%!  for index = 1:rows(sound)
-#%!    fprintf(fid, "%.4f, %.4f\n", sound(index, 1), sound(index, 2));
+#%!    fprintf (fid, "%.4f, %.4f\n", sound(index, 1), sound(index, 2));
 #%!  endfor
-#%!  fclose(fid);
+#%!  fclose (fid);
 #%!  status = 0;
 #%!endfunction
 
 #%!test
 #%!  recorder = audiorecorder (@callback_record, 44100);
-#%!  unlink('record.txt')
+#%!  unlink ("record.txt")
 #%!  record (recorder);
 #%!  sleep (2);
 #%!  stop (player);
-#%!  s = stat('record.txt');
+#%!  s = stat ("record.txt");
 #%!  assert (s.size > 0);
 
 #%!test
 #%!  recorder = audiorecorder (@callback_record, 44100);
-#%!  unlink('record.txt')
+#%!  unlink ("record.txt")
 #%!  record (recorder);
 #%!  sleep (2);
 #%!  stop (recorder);
-#%!  s = stat('record.txt');
+#%!  s = stat ("record.txt");
 #%!  assert (s.size > 0);

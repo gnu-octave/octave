@@ -31,75 +31,75 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "player_class.h"
 
-class audiorecorder : public octave_base_value 
+class audiorecorder : public octave_base_value
 {
 public:
-    audiorecorder();
-    ~audiorecorder();
-    // Overloaded base functions
-    double player_value() const { return 0; }
-    virtual double scalar_value (bool frc_str_conv = false) const 
-    {
-        return 0;
-    }
-    void print (std::ostream& os, bool pr_as_read_syntax = false) const;
-    void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
-    // Properties
-    bool is_constant (void) const { return true;}
-    bool is_defined (void) const { return true;}
-    bool print_as_scalar (void) const { return true;}
+  audiorecorder (void);
+  ~audiorecorder (void) {};
 
-    void init();
-    void set_fs(int fs);
-    int get_fs();
-    void set_nbits(int nbits);
-    int get_nbits();
-    void set_id(int id);
-    int get_id();
-    void set_channels(int channels);
-    int get_channels();
-    audio_type get_type();
+  // Overloaded base functions
+  double player_value (void) const { return 0; }
+  virtual double scalar_value (bool frc_str_conv = false) const { return 0; }
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
-    void set_sample_number(unsigned int sample);
-    unsigned int get_sample_number();
-    unsigned int get_total_samples();
-    void set_end_sample(unsigned int sample);
-    unsigned int get_end_sample();
-    void reset_end_sample();
-    void set_tag(charMatrix tag);
-    charMatrix get_tag();
-    void set_userdata(octave_value userdata);
-    octave_value get_userdata();
-    PaStream *get_stream();
-    octave_function *octave_callback_function;
+  // Properties
+  bool is_constant (void) const { return true; }
+  bool is_defined (void) const { return true; }
+  bool print_as_scalar (void) const { return true; }
 
-    octave_value getaudiodata();
-    audioplayer *getplayer();
-    bool isrecording();
-    audioplayer play();
-    void record();
-    void recordblocking(float seconds);
-    void pause();
-    void resume();
-    void stop();
-    void append(float sample_l, float sample_r);
+  void init (void);
+  void set_fs (int fs);
+  int get_fs (void);
+  void set_nbits (int nbits);
+  int get_nbits (void);
+  void set_id (int id);
+  int get_id (void);
+  void set_channels (int channels);
+  int get_channels (void);
+  audio_type get_type (void);
+
+  void set_sample_number (unsigned int sample);
+  unsigned int get_sample_number (void);
+  unsigned int get_total_samples (void);
+  void set_end_sample (unsigned int sample);
+  unsigned int get_end_sample (void);
+  void reset_end_sample (void);
+  void set_tag (charMatrix tag);
+  charMatrix get_tag (void);
+  void set_userdata (octave_value userdata);
+  octave_value get_userdata (void);
+  PaStream *get_stream (void);
+  octave_function *octave_callback_function;
+
+  octave_value getaudiodata (void);
+  audioplayer *getplayer (void);
+  bool isrecording (void);
+  audioplayer play (void);
+  void record (void);
+  void recordblocking (float seconds);
+  void pause (void);
+  void resume (void);
+  void stop (void);
+  void append (float sample_l, float sample_r);
+
 private:
-    Matrix y;
-    std::vector<float> left;
-    std::vector<float> right;
-    charMatrix tag;
-    octave_value userdata;
-    int channels;
-    int fs;
-    int nbits;
-    int id;
-    unsigned int sample_number;
-    unsigned int end_sample;
-    PaStream *stream;
-    PaStreamParameters input_parameters;
-    audio_type type;
-    DECLARE_OCTAVE_ALLOCATOR
-    DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  Matrix y;
+  std::vector<float> left;
+  std::vector<float> right;
+  charMatrix tag;
+  octave_value userdata;
+  int channels;
+  int fs;
+  int nbits;
+  int id;
+  unsigned int sample_number;
+  unsigned int end_sample;
+  PaStream *stream;
+  PaStreamParameters input_parameters;
+  audio_type type;
+  DECLARE_OCTAVE_ALLOCATOR
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif // RECORDER_CLASS_H

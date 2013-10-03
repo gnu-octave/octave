@@ -27,16 +27,16 @@
 ## Play the audio recorded in @var{recorderObj} starting from @var{start} seconds and ending at @var{end} seconds in the recording. Returns a corresponding audioplayer object.
 ## @end deftypefn
 
-function player = play(varargin)
+function player = play (varargin)
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif 
+  endif
   recorder = varargin{1};
-  data = getaudiodata(recorder);
-  player = audioplayer(data, get(recorder, 'SampleRate'), get(recorder, 'BitsPerSample'));
+  data = getaudiodata (recorder);
+  player = audioplayer (data, get (recorder, "SampleRate"), get (recorder, "BitsPerSample"));
   if (nargin == 1)
-    play(player);
+    play (player);
   else
-    play(player, varargin{2});
+    play (player, varargin{2});
   endif
 endfunction

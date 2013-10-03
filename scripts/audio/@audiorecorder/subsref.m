@@ -16,13 +16,13 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function value = subsref(recorder, idx)
+function value = subsref (recorder, idx)
   if (isempty (idx))
     error ("audiorecorder: missing index");
   endif
-  if (strcmp(idx(1).type, "."))
+  if (strcmp (idx(1).type, "."))
     field = idx.subs;
-    value = get(recorder, field);
+    value = get (recorder, field);
   else
     error ("audiorecorder: invalid subscript file")
   endif

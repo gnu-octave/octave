@@ -16,13 +16,13 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function value = subsasgn(recorder, idx, rhs)
+function value = subsasgn (recorder, idx, rhs)
   if (isempty (idx))
     error ("audiorecorder: missing index");
   endif
-  if (strcmp(idx(1).type, "."))
+  if (strcmp (idx(1).type, "."))
     field = idx.subs;
-    set(recorder, field, rhs);
+    set (recorder, field, rhs);
     value = recorder;
   else
     error ("audiorecorder: invalid subscript type");

@@ -32,7 +32,7 @@
 
 function settable = set (varargin)
   if nargin < 1 || nargin > 3
-    print_usage();
+    print_usage ();
   endif
   player = struct (varargin{1}).player;
   if nargin == 1
@@ -47,26 +47,26 @@ function settable = set (varargin)
     if iscell (varargin{2})
       index = 1;
       for property = varargin{2}
-        setproperty (player, char(property), varargin{3}{index});
+        setproperty (player, char (property), varargin{3}{index});
         index = index + 1;
       endfor
     else
       setproperty (player, varargin{2}, varargin{3});
     endif
   else
-    error ('audioplayer: wrong number of arguments to the set method');
+    error ("audioplayer: wrong number of arguments to the set method");
   endif
 endfunction
 
 function setproperty (player, property, value)
-  switch property
-    case 'SampleRate'
+  switch (property)
+    case "SampleRate"
       __player_set_fs__ (player, value);
-    case 'Tag'
+    case "Tag"
       __player_set_tag__ (player, value);
-    case 'UserData'
+    case "UserData"
       __player_set_userdata__ (player, value);
     otherwise
-      error ('audioplayer: no such property or the property specified is read-only');
+      error ("audioplayer: no such property or the property specified is read-only");
   endswitch
 endfunction

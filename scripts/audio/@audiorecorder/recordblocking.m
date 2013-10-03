@@ -22,9 +22,9 @@
 ## that the recording will continue for.
 ## @end deftypefn
 
-function recordblocking(varargin)
+function recordblocking (varargin)
   if (nargin != 2)
     print_usage ();
-  endif 
-  __recorder_recordblocking__(struct(varargin{1}).recorder, varargin{2});
+  endif
+  __recorder_recordblocking__ (struct (varargin{1}).recorder, varargin{2});
 endfunction

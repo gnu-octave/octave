@@ -21,6 +21,6 @@
 ## Display an audioplayer object.
 ## @end deftypefn
 
-function display(player)
-  disp(__get_properties__(player));
+function display (player)
+  disp (__get_properties__ (player));
 endfunction

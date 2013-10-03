@@ -16,13 +16,13 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function value = subsref(player, idx)
+function value = subsref (player, idx)
   if (isempty (idx))
     error ("audioplayer: missing index");
   endif
-  if (strcmp(idx(1).type, "."))
+  if (strcmp (idx(1).type, "."))
     field = idx.subs;
-    value = get(player, field);
+    value = get (player, field);
   else
     error ("audioplayer: invalid subscript file")
   endif

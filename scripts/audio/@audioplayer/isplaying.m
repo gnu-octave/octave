@@ -22,6 +22,6 @@
 ## Returns 0 otherwise.
 ## @end deftypefn
 
-function result = isplaying(player)
-    result = __player_isplaying__(struct(player).player);
+function result = isplaying (player)
+  result = __player_isplaying__ (struct (player).player);
 endfunction

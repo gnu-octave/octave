@@ -27,9 +27,9 @@
 ## Play back audio stored in the audioplayer object starting at the time in seconds specified by @var{start} and ending at the time specified by @var{end}.
 ## @end deftypefn
 
-function playblocking(varargin)
+function playblocking (varargin)
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif 
-  __player_playblocking__(struct(varargin{1}).player, varargin{2:end});
+  endif
+  __player_playblocking__ (struct (varargin{1}).player, varargin{2:end});
 endfunction

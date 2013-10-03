@@ -28,35 +28,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 #include <portaudio.h>
 
-PaSampleFormat bits_to_format(int bits)
+PaSampleFormat
+bits_to_format (int bits)
 {
   if (bits == 8)
-    {
-      return paInt8;
-    }
+    return paInt8;
   else if (bits == 16)
-    {
-      return paInt16;
-    }
+    return paInt16;
   else if (bits == 24)
-    {
-      return paInt24;
-    }
+    return paInt24;
   else if (bits == 32)
-    {
-      return paInt32;
-    }
+    return paInt32;
   else if (bits == -1)
-    {
-      return paFloat32;
-    }
-  else 
-    {
-      return 0;
-    }
+    return paFloat32;
+  else
+    return 0;
 }
-  
-DEFUN_DLD(audiodevinfo, args, ,
+
+DEFUN_DLD (audiodevinfo, args, ,
 "-*- texinfo -*-\n\
 @deftypefn{Loadable Function} @var{devinfo} = audiodevinfo\n\
 \n\
@@ -67,25 +56,25 @@ about a PortAudio device.\n\
 \n\
 @end deftypefn\n\
 \n\
-@deftypefn{Loadable Function} @var{devs} = audiodevinfo(@var{IO})\n\
+@deftypefn{Loadable Function} @var{devs} = audiodevinfo (@var{IO})\n\
 \n\
 Returns the number of input or output devices available. Set @var{IO} to 1 \
 for input devices and to 0 for output devices.\n\
 @end deftypefn\n\
 \n\
-@deftypefn{Loadable Function} @var{name} = audiodevinfo(@var{IO}, @var{ID})\n\
+@deftypefn{Loadable Function} @var{name} = audiodevinfo (@var{IO}, @var{ID})\n\
 \n\
 Returns the name of a device specified by numerical @var{ID}. Set @var{IO} \
 to 1 for input devices and to 0 for output devices.\n\
 @end deftypefn\n\
 \n\
-@deftypefn{Loadable Function} @var{id} = audiodevinfo(@var{IO}, @var{name})\n\
+@deftypefn{Loadable Function} @var{id} = audiodevinfo (@var{IO}, @var{name})\n\
 \n\
 Returns the id of a device specified by name. Set @var{IO} \
 to 1 for input devices and to 0 for output devices.\n\
 @end deftypefn\n\
 \n\
-@deftypefn{Loadable Function} @var{id} = audiodevinfo(@var{IO}, @var{rate},\
+@deftypefn{Loadable Function} @var{id} = audiodevinfo (@var{IO}, @var{rate},\
  @var{bits}, @var{chans})\n\
 \n\
 Returns the id of the first device that supports playback or recording\
@@ -94,61 +83,62 @@ Returns the id of the first device that supports playback or recording\
  ant to 0 for output devices.\
 @end deftypefn\n\
 \n\
-@deftypefn{Loadable Function} @var{supports} = audiodevinfo(@var{IO}, @var{ID},\
+@deftypefn{Loadable Function} @var{supports} = audiodevinfo (@var{IO}, @var{ID},\
  @var{rate}, @var{bits}, @var{chans})\n\
 \n\
 Returns 1 if the device bearing @var{ID} supports specified sampling rate\
  (@var{rate}), bits per sample (@var{bits}) and number of channels (@var{chans}).\
  Returns 0 otherwise. Set @var{IO} to 1 for input devices and to 0 for output\
  devices.\n\
-@end deftypefn"
-)
+@end deftypefn")
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length();
+  int nargin = args.length ();
   PaError err;
   octave_scalar_map devinfo;
   octave_value_list input;
   octave_value_list output;
+
   err = Pa_Initialize ();
-  if (err != paNoError) 
-    { 
+  if (err != paNoError)
+    {
       error ("audiodevinfo: cannot initialize PortAudio");
       return retval;
     }
-  int num_devices;
-  num_devices = Pa_GetDeviceCount ();
-  if (num_devices < 0) 
+
+  int num_devices = Pa_GetDeviceCount ();
+  if (num_devices < 0)
     {
       error ("audiodevinfo: no audio device found");
       return retval;
     }
-      octave_idx_type numinput = 0, numoutput = 0;
+
+  octave_idx_type numinput = 0, numoutput = 0;
   for (int i = 0; i < num_devices; i++)
     {
-      const PaDeviceInfo* device_info  = Pa_GetDeviceInfo (i);
-
+      const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
       if (device_info->maxInputChannels != 0)
-          numinput++;
-
+        numinput++;
       if (device_info->maxOutputChannels != 0)
-          numoutput++;
+        numoutput++;
     }
-  Cell input_name (dim_vector (1, numinput)),
-    input_id (dim_vector (1, numinput)),
-    input_driver_version (dim_vector (1, numinput)),
-    output_name (dim_vector (1, numoutput)),
-    output_driver_version (dim_vector (1, numoutput)),
-    output_id (dim_vector (1, numoutput));
+
+  Cell input_name (dim_vector (1, numinput));
+  Cell input_driver_version (dim_vector (1, numinput));
+  Cell input_id (dim_vector (1, numinput));
+  Cell output_name (dim_vector (1, numoutput));
+  Cell output_driver_version (dim_vector (1, numoutput));
+  Cell output_id (dim_vector (1, numoutput));
+
   octave_idx_type idx_i = 0, idx_o = 0;
   for (int i = 0; i < num_devices; i++)
     {
-      const PaDeviceInfo* device_info  = Pa_GetDeviceInfo (i);
+      const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
       const char *driver;
       char name[128];
-      driver = Pa_GetHostApiInfo (device_info -> hostApi) -> name;
-      sprintf(name, "%s (%s)", device_info->name, driver);
+      driver = Pa_GetHostApiInfo (device_info->hostApi)->name;
+      sprintf (name, "%s (%s)", device_info->name, driver);
 
       if (device_info->maxInputChannels != 0)
         {
@@ -166,6 +156,7 @@ Returns 1 if the device bearing @var{ID} supports specified sampling rate\
           idx_o++;
         }
     }
+
   octave_map inputdev, outputdev;
   inputdev.setfield ("Name", input_name);
   inputdev.setfield ("DriverVersion", input_driver_version);
@@ -175,27 +166,21 @@ Returns 1 if the device bearing @var{ID} supports specified sampling rate\
   outputdev.setfield ("ID", output_id);
   devinfo.setfield ("input", inputdev);
   devinfo.setfield ("output", outputdev);
-  // Return information about input and output audio devices and 
+
+  // Return information about input and output audio devices and
   // their properties.
   if (nargin == 0)
-    {
-      retval = devinfo;
-    }
+    retval = devinfo;
   // Return the number of input or output devices
   else if (nargin == 1)
     {
       if (args(0).int_value () == 0)
-        {
-          retval = octave_value (numoutput);
-        }
+        retval = octave_value (numoutput);
       else if (args(0).int_value () == 1)
+        retval = octave_value (numinput);
+      else
         {
-          retval = octave_value (numinput);
-        }
-      else 
-        {
-          error ("audiodevinfo: please specify 0 for output \
-and 1 for input devices");
+          error ("audiodevinfo: please specify 0 for output and 1 for input devices");
           return retval;
         }
     }
@@ -211,7 +196,7 @@ and 1 for input devices");
               for (int i = 0; i < numoutput; i++)
                 {
                   if (output_name(i).string_value () == args(1).string_value ())
-                    { 
+                    {
                       retval = output_id(i);
                       found = true;
                       break;
@@ -223,17 +208,16 @@ and 1 for input devices");
               for (int i = 0; i < numinput; i++)
                 {
                   if (input_name(i).string_value () == args(1).string_value ())
-                    { 
+                    {
                       retval = input_id(i);
                       found = true;
                       break;
                     }
                 }
             }
-          else 
+          else
             {
-              error ("audiodevinfo: please specify 0 for output \
-and 1 for input devices");
+              error ("audiodevinfo: please specify 0 for output and 1 for input devices");
               return retval;
             }
         }
@@ -263,17 +247,14 @@ and 1 for input devices");
                     }
                 }
             }
-          else 
+          else
             {
-              error ("audiodevinfo: please specify 0 for output \
-and 1 for input devices");
+              error ("audiodevinfo: please specify 0 for output and 1 for input devices");
               return retval;
             }
         }
       if (not found)
-        {
-          error("audiodevinfo: no device meeting the specified criteria found");
-        }
+        error ("audiodevinfo: no device meeting the specified criteria found");
     }
   else if (nargin == 3)
     {
@@ -291,25 +272,22 @@ and 1 for input devices");
           PaStreamParameters stream_parameters;
           stream_parameters.device = i;
           stream_parameters.channelCount = chans;
-          PaSampleFormat format = bits_to_format(bits);
+          PaSampleFormat format = bits_to_format (bits);
           if (format != 0)
-            {
-              stream_parameters.sampleFormat = format;
-            }
+            stream_parameters.sampleFormat = format;
           else
             {
-              error("audiodevinfo: no such bits per sample format");
+              error ("audiodevinfo: no such bits per sample format");
               return retval;
             }
-          stream_parameters.suggestedLatency = 
-            Pa_GetDeviceInfo (i)->defaultLowInputLatency;
+          stream_parameters.suggestedLatency =
+              Pa_GetDeviceInfo (i)->defaultLowInputLatency;
           stream_parameters.hostApiSpecificStreamInfo = NULL;
           if (io == 0)
             {
               if (Pa_GetDeviceInfo (i)->maxOutputChannels < chans)
-                {
-                  continue;
-                }
+                continue;
+
               err = Pa_IsFormatSupported (NULL, &stream_parameters, rate);
               if (err == paFormatIsSupported)
                 {
@@ -320,9 +298,8 @@ and 1 for input devices");
           else if (io == 1)
             {
               if (Pa_GetDeviceInfo (i)->maxInputChannels < chans)
-                {
-                  continue;
-                }
+                continue;
+
               err = Pa_IsFormatSupported (&stream_parameters, NULL, rate);
               if (err == paFormatIsSupported)
                 {
@@ -331,7 +308,7 @@ and 1 for input devices");
                 }
             }
         }
-        retval = -1;
+      retval = -1;
     }
   // Check if given device supports specified playback or recording modes.
   else if (nargin == 5)
@@ -344,17 +321,15 @@ and 1 for input devices");
       PaStreamParameters stream_parameters;
       stream_parameters.device = id;
       stream_parameters.channelCount = chans;
-      PaSampleFormat format = bits_to_format(bits);
+      PaSampleFormat format = bits_to_format (bits);
       if (format != 0)
-        {
-          stream_parameters.sampleFormat = format;
-        }
+        stream_parameters.sampleFormat = format;
       else
         {
-          error("audiodevinfo: no such bits per sample format");
+          error ("audiodevinfo: no such bits per sample format");
           return retval;
         }
-      stream_parameters.suggestedLatency = 
+      stream_parameters.suggestedLatency =
         Pa_GetDeviceInfo (id)->defaultLowInputLatency;
       stream_parameters.hostApiSpecificStreamInfo = NULL;
       if (io == 0)
@@ -387,8 +362,7 @@ and 1 for input devices");
         }
       else
         {
-          error ("audiodevinfo: please specify 0 for output\
-and 1 for input devices");
+          error ("audiodevinfo: please specify 0 for output and 1 for input devices");
           return retval;
         }
       retval = 0;
@@ -405,39 +379,37 @@ and 1 for input devices");
 }
 
 /*
+%!test
+%! devinfo = audiodevinfo;
+%! assert(rows(devinfo.('input')) == 1);
+%! assert(rows(devinfo.('output')) == 1);
 
 %!test
-%!  devinfo = audiodevinfo;
-%!  assert(rows(devinfo.('input')) == 1);
-%!  assert(rows(devinfo.('output')) == 1);
+%! devinfo = audiodevinfo;
+%! nout = audiodevinfo(0);
+%! nin = audiodevinfo(1);
+%! assert(columns(devinfo.('output')) == nout);
+%! assert(columns(devinfo.('input')) == nin);
 
 %!test
-%!  devinfo = audiodevinfo;
-%!  nout = audiodevinfo(0);
-%!  nin = audiodevinfo(1);
-%!  assert(columns(devinfo.('output')) == nout);
-%!  assert(columns(devinfo.('input')) == nin);
+%! devinfo = audiodevinfo;
+%! nout = audiodevinfo(0);
+%! nin = audiodevinfo(1);
+%! for i=1:nout,
+%!   assert(devinfo.('output')(i).('Name') == audiodevinfo(0, devinfo.('output')(i).('ID')))
+%! end
+%! for i=1:nin,
+%!   assert(devinfo.('input')(i).('Name') == audiodevinfo(0, devinfo.('input')(i).('ID')))
+%! end
 
 %!test
-%!  devinfo = audiodevinfo;
-%!  nout = audiodevinfo(0);
-%!  nin = audiodevinfo(1);
-%!  for i=1:nout,
-%!    assert(devinfo.('output')(i).('Name') == audiodevinfo(0, devinfo.('output')(i).('ID')))
-%!  end
-%!  for i=1:nin,
-%!    assert(devinfo.('input')(i).('Name') == audiodevinfo(0, devinfo.('input')(i).('ID')))
-%!  end
-
-%!test
-%!  devinfo = audiodevinfo;
-%!  nout = audiodevinfo(0);
-%!  nin = audiodevinfo(1);
-%!  for i=1:nout,
-%!    assert(devinfo.('output')(i).('ID') == audiodevinfo(0, devinfo.('output')(i).('Name')))
-%!  end
-%!  for i=1:nin,
-%!    assert(devinfo.('input')(i).('ID') == audiodevinfo(0, devinfo.('input')(i).('Name')))
-%!  end
-
+%! devinfo = audiodevinfo;
+%! nout = audiodevinfo(0);
+%! nin = audiodevinfo(1);
+%! for i=1:nout,
+%!   assert(devinfo.('output')(i).('ID') == audiodevinfo(0, devinfo.('output')(i).('Name')))
+%! end
+%! for i=1:nin,
+%!   assert(devinfo.('input')(i).('ID') == audiodevinfo(0, devinfo.('input')(i).('Name')))
+%! end
 */

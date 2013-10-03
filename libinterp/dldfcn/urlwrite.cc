@@ -81,22 +81,20 @@ throw_away (void *, size_t size, size_t nmemb, void *)
   return static_cast<size_t>(size * nmemb);
 }
 
-class
-curl_handle
+class curl_object
 {
 private:
-  class
-  curl_handle_rep
+  class curl_object_rep
   {
   public:
-    curl_handle_rep (void) : count (1), valid (true), ascii (false)
+    curl_object_rep (void) : count (1), valid (true), ascii (false)
       {
         curl = curl_easy_init ();
         if (!curl)
-          error ("can not create curl handle");
+          error ("can not create curl object");
       }
 
-    ~curl_handle_rep (void)
+    ~curl_object_rep (void)
       {
         if (curl)
           curl_easy_cleanup (curl);
@@ -128,7 +126,7 @@ private:
         return retval;
       }
 
-    CURL* handle (void) const
+    CURL *object (void) const
       {
         return curl;
       }
@@ -156,31 +154,31 @@ private:
 
     // No copying!
 
-    curl_handle_rep (const curl_handle_rep& ov);
+    curl_object_rep (const curl_object_rep& ov);
 
-    curl_handle_rep& operator = (const curl_handle_rep&);
+    curl_object_rep& operator = (const curl_object_rep&);
   };
 
 public:
 
-// I'd love to rewrite this as a private method of the curl_handle
+// I'd love to rewrite this as a private method of the curl_object
 // class, but you can't pass the va_list from the wrapper setopt to
 // the curl_easy_setopt function.
 #define setopt(option, parameter) \
   { \
-    CURLcode res = curl_easy_setopt (rep->handle (), option, parameter); \
+    CURLcode res = curl_easy_setopt (rep->object (), option, parameter); \
     if (res != CURLE_OK) \
       error ("%s", curl_easy_strerror (res)); \
   }
 
-  curl_handle (void) : rep (new curl_handle_rep ())
+  curl_object (void) : rep (new curl_object_rep ())
     {
       rep->valid = false;
     }
 
-  curl_handle (const std::string& _host, const std::string& user,
+  curl_object (const std::string& _host, const std::string& user,
                const std::string& passwd) :
-    rep (new curl_handle_rep ())
+    rep (new curl_object_rep ())
     {
       rep->host = _host;
       init (user, passwd, std::cin, octave_stdout);
@@ -193,9 +191,9 @@ public:
         perform ();
     }
 
-  curl_handle (const std::string& url, const std::string& method,
+  curl_object (const std::string& url, const std::string& method,
                const Cell& param, std::ostream& os, bool& retval) :
-    rep (new curl_handle_rep ())
+    rep (new curl_object_rep ())
     {
       retval = false;
 
@@ -209,7 +207,7 @@ public:
       setopt (CURLOPT_HTTPGET, 1);
 
       // Don't need to store the parameters here as we can't change
-      // the URL after the handle is created
+      // the URL after the object is created
       std::string query_string = form_query_string (param);
 
       if (method == "get")
@@ -229,18 +227,18 @@ public:
         retval = perform (false);
     }
 
-  curl_handle (const curl_handle& h) : rep (h.rep)
+  curl_object (const curl_object& h) : rep (h.rep)
     {
       rep->count++;
     }
 
-  ~curl_handle (void)
+  ~curl_object (void)
     {
       if (--rep->count == 0)
         delete rep;
     }
 
-  curl_handle& operator = (const curl_handle& h)
+  curl_object& operator = (const curl_object& h)
     {
       if (this != &h)
         {
@@ -470,10 +468,10 @@ public:
             {
               fileisdir = false;
               time_t ft;
-              curl_easy_getinfo (rep->handle (), CURLINFO_FILETIME, &ft);
+              curl_easy_getinfo (rep->object (), CURLINFO_FILETIME, &ft);
               filetime = ft;
               double fs;
-              curl_easy_getinfo (rep->handle (),
+              curl_easy_getinfo (rep->object (),
                                  CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
               filesize = fs;
             }
@@ -527,7 +525,7 @@ public:
     }
 
 private:
-  curl_handle_rep *rep;
+  curl_object_rep *rep;
 
   std::string form_query_string (const Cell& param)
     {
@@ -539,9 +537,9 @@ private:
           std::string text = param(i+1).string_value ();
 
           // Encode strings.
-          char *enc_name = curl_easy_escape (rep->handle (), name.c_str (),
+          char *enc_name = curl_easy_escape (rep->object (), name.c_str (),
                                              name.length ());
-          char *enc_text = curl_easy_escape (rep->handle (), text.c_str (),
+          char *enc_text = curl_easy_escape (rep->object (), text.c_str (),
                                              text.length ());
 
           query << enc_name << "=" << enc_text;
@@ -606,8 +604,8 @@ curl_handles
 {
 public:
 
-  typedef std::map<std::string, curl_handle>::iterator iterator;
-  typedef std::map<std::string, curl_handle>::const_iterator const_iterator;
+  typedef std::map<std::string, curl_object>::iterator iterator;
+  typedef std::map<std::string, curl_object>::const_iterator const_iterator;
 
   curl_handles (void) : map ()
    {
@@ -634,21 +632,21 @@ public:
 
   std::string key (const_iterator p) const { return p->first; }
 
-  curl_handle& contents (const std::string& k)
+  curl_object& contents (const std::string& k)
     {
       return map[k];
     }
 
-  curl_handle contents (const std::string& k) const
+  curl_object contents (const std::string& k) const
     {
       const_iterator p = seek (k);
-      return p != end () ? p->second : curl_handle ();
+      return p != end () ? p->second : curl_object ();
     }
 
-  curl_handle& contents (iterator p)
+  curl_object& contents (iterator p)
     { return p->second; }
 
-  curl_handle contents (const_iterator p) const
+  curl_object contents (const_iterator p) const
     { return p->second; }
 
   void del (const std::string& k)
@@ -660,7 +658,7 @@ public:
     }
 
 private:
-  std::map<std::string, curl_handle> map;
+  std::map<std::string, curl_object> map;
 };
 
 static curl_handles handles;
@@ -672,7 +670,7 @@ cleanup_urlwrite (std::string filename)
 }
 
 static void
-reset_path (const curl_handle curl)
+reset_path (const curl_object& curl)
 {
   curl.cwd ("..");
 }
@@ -815,7 +813,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   frame.add_fcn (cleanup_urlwrite, filename);
 
   bool ok;
-  curl_handle curl = curl_handle (url, method, param, ofile, ok);
+  curl_object curl = curl_object (url, method, param, ofile, ok);
 
   ofile.close ();
 
@@ -949,7 +947,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
   std::ostringstream buf;
 
   bool ok;
-  curl_handle curl = curl_handle (url, method, param, buf, ok);
+  curl_object curl = curl_object (url, method, param, buf, ok);
 
   if (nargout > 0)
     {
@@ -998,7 +996,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          handles.contents (handle) = curl_handle (host, user, passwd);
+          handles.contents (handle) = curl_object (host, user, passwd);
 
           if (error_state)
             handles.del (handle);
@@ -1029,7 +1027,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             retval = curl.pwd ();
@@ -1065,7 +1063,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             curl.cwd (path);
@@ -1098,7 +1096,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             {
@@ -1177,7 +1175,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             curl.ascii ();
@@ -1209,7 +1207,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             curl.binary ();
@@ -1268,7 +1266,7 @@ Undocumented internal function\n\
 
       if (! error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             retval = (curl.is_ascii () ? "ascii" : "binary");
@@ -1301,7 +1299,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             curl.del (file);
@@ -1334,7 +1332,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             curl.rmdir (dir);
@@ -1367,7 +1365,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             curl.mkdir (dir);
@@ -1401,7 +1399,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             curl.rename (oldname, newname);
@@ -1418,7 +1416,7 @@ Undocumented internal function\n\
 
 #ifdef HAVE_CURL
 static string_vector
-mput_directory (const curl_handle& curl, const std::string& base,
+mput_directory (const curl_object& curl, const std::string& base,
                 const std::string& dir)
 {
   string_vector retval;
@@ -1522,7 +1520,7 @@ Undocumented internal function\n\
 
       if (!error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             {
@@ -1583,7 +1581,7 @@ Undocumented internal function\n\
 
 #ifdef HAVE_CURL
 static void
-getallfiles (const curl_handle& curl, const std::string& dir,
+getallfiles (const curl_object& curl, const std::string& dir,
              const std::string& target)
 {
   std::string sep = file_ops::dir_sep_str ();
@@ -1678,7 +1676,7 @@ Undocumented internal function\n\
 
       if (! error_state)
         {
-          const curl_handle curl = handles.contents (handle);
+          const curl_object curl = handles.contents (handle);
 
           if (curl.is_valid ())
             {

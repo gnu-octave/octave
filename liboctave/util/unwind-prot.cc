@@ -25,11 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "error.h"
+#include "lo-error.h"
 #include "unwind-prot.h"
 
-void unwind_protect_safe::gripe_exception (void)
+void
+unwind_protect_safe::gripe_exception (void)
 {
   // FIXME: can this throw an exception?
-  error ("internal: unhandled exception in unwind_protect handler");
+
+  (*current_liboctave_error_handler)
+    ("internal: unhandled exception in unwind_protect handler");
 }

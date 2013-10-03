@@ -2,6 +2,7 @@ EXTRA_DIST += \
   util/module.mk
 
 UTIL_INC = \
+  util/action-container.h \
   util/base-list.h \
   util/byte-swap.h \
   util/caseless-str.h \
@@ -40,7 +41,8 @@ UTIL_INC = \
   util/sparse-util.h \
   util/statdefs.h \
   util/str-vec.h \
-  util/sun-utils.h 
+  util/sun-utils.h \
+  util/unwind-prot.cc
 
 UTIL_C_SRC = \
   util/f2c-main.c \
@@ -71,6 +73,7 @@ UTIL_SRC = \
   util/sparse-sort.cc \
   util/sparse-util.cc \
   util/str-vec.cc \
+  util/unwind-prot.cc \
   $(UTIL_C_SRC)
 
 TEMPLATE_SRC += \

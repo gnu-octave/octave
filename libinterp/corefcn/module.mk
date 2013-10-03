@@ -44,7 +44,6 @@ TEX_PARSER_INC = \
 
 COREFCN_INC = \
   corefcn/Cell.h \
-  corefcn/action-container.h \
   corefcn/c-file-ptr-stream.h \
   corefcn/comment-list.h \
   corefcn/cutils.h \
@@ -108,7 +107,6 @@ COREFCN_INC = \
   corefcn/toplev.h \
   corefcn/txt-eng-ft.h \
   corefcn/txt-eng.h \
-  corefcn/unwind-prot.h \
   corefcn/utils.h \
   corefcn/variables.h \
   corefcn/workspace-element.h \
@@ -256,7 +254,6 @@ COREFCN_SRC = \
   corefcn/txt-eng.cc \
   corefcn/txt-eng-ft.cc \
   corefcn/typecast.cc \
-  corefcn/unwind-prot.cc \
   corefcn/utils.cc \
   corefcn/variables.cc \
   corefcn/xdiv.cc \

@@ -828,12 +828,6 @@ ch_manager::do_free (const curl_handle& h)
 ch_manager *ch_manager::instance = 0;
 
 static void
-cleanup_urlwrite (std::string filename)
-{
-  octave_unlink (filename);
-}
-
-static void
 reset_path (const curl_object& curl)
 {
   curl.cwd ("..");
@@ -844,6 +838,7 @@ delete_file (std::string file)
 {
   octave_unlink (file);
 }
+
 #endif
 
 DEFUN_DLD (urlwrite, args, nargout,
@@ -974,7 +969,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   unwind_protect_safe frame;
 
-  frame.add_fcn (cleanup_urlwrite, filename);
+  frame.add_fcn (delete_file, filename);
 
   bool ok;
   curl_object curl = curl_object (url, method, param, ofile, ok);

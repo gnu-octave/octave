@@ -131,10 +131,11 @@ public:
 
   static curl_handle make_curl_handle (const std::string& host,
                                        const std::string& user,
-                                       const std::string& passwd)
+                                       const std::string& passwd,
+                                       std::ostream& os)
   {
     return instance_ok ()
-      ? instance->do_make_curl_handle (host, user, passwd) : curl_handle ();
+      ? instance->do_make_curl_handle (host, user, passwd, os) : curl_handle ();
   }
 
   static Matrix handle_list (void)
@@ -181,11 +182,12 @@ private:
 
   curl_handle do_make_curl_handle (const std::string& host,
                                    const std::string& user,
-                                   const std::string& passwd)
+                                   const std::string& passwd,
+                                   std::ostream& os)
   {
     curl_handle h = get_handle ();
 
-    url_transfer obj (host, user, passwd, octave_stdout);
+    url_transfer obj (host, user, passwd, os);
 
     if (! error_state)
       handle_map[h] = obj;

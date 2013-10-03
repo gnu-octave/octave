@@ -1025,22 +1025,22 @@ zu: </translation>
     <message>
         <location line="+77"/>
         <source>Octave Packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave Pakete</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Share Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Code teilen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Contribute to Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Bei Octave mitwirken</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished"></translation>
+        <translation>Ressourcen für Octave Entwickler</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1575,12 +1575,12 @@ zu: </translation>
     <message>
         <location line="+20"/>
         <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI. </source>
-        <translation type="unfinished"></translation>
+        <translation>Die grafische Nutzerschnittstelle von Octave wird offenbar das erste Mal gestartet. Ein Klick auf &apos;Beenden&apos; erstellt eine Standard-Konfigurationsdatei und startet Octave GUI.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>The configuration file is stored in __%1__. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Konfigurationsdatei wid in __%1__ gespeichert. Wenn diese Datei existiert, erscheint dieser Dialog beim nächsten Start von Octave nicht mehr.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1591,7 +1591,13 @@ zu: </translation>
 &lt;li&gt;open the documentation browser of Octave GUI with the help menu.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Weitere Informationsquellen zu Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Homepage &lt;a href=&quot;http://octave.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://octave.org&lt;/span&gt;&lt;/a&gt;,&lt;/li&gt;
+&lt;li&gt; Online-Dokumentation als &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;html&lt;/span&gt;&lt;/a&gt;- oder &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-Dokument&lt;/li&gt;
+&lt;li&gt;Dokumentations-Browser von Octave GUI im Hilfe-Menü&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="-27"/>

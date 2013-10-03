@@ -254,6 +254,7 @@ COREFCN_SRC = \
   corefcn/txt-eng.cc \
   corefcn/txt-eng-ft.cc \
   corefcn/typecast.cc \
+  corefcn/urlwrite.cc \
   corefcn/utils.cc \
   corefcn/variables.cc \
   corefcn/xdiv.cc \

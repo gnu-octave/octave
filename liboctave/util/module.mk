@@ -42,7 +42,8 @@ UTIL_INC = \
   util/statdefs.h \
   util/str-vec.h \
   util/sun-utils.h \
-  util/unwind-prot.cc
+  util/unwind-prot.h \
+  util/url-transfer.h
 
 UTIL_C_SRC = \
   util/f2c-main.c \
@@ -74,6 +75,7 @@ UTIL_SRC = \
   util/sparse-util.cc \
   util/str-vec.cc \
   util/unwind-prot.cc \
+  util/url-transfer.cc \
   $(UTIL_C_SRC)
 
 TEMPLATE_SRC += \

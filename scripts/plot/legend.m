@@ -882,7 +882,18 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               endif
 
             case "surface"
-              ## FIXME: Would be nice to do something here
+              facecolor = get (hplots(k), "facecolor");
+              edgecolor = get (hplots(k), "edgecolor");
+              cdata = sum (caxis ()) / 2;
+              if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
+                p1 = patch ("xdata", ([0, linelength, linelength, 0] +
+                                      xoffset + xk * xstep) / lpos(3),
+                            "ydata", (lpos(4) - yoffset -
+                                      [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
+                           "facecolor", facecolor, "edgecolor", edgecolor,
+                           "cdata", cdata, "userdata", hplots(k));
+                hobjects(end+1) = p1;
+              endif
 
           endswitch
 
@@ -1554,8 +1565,15 @@ endfunction
 %!demo % bug 39697
 %! clf;
 %! plot (1:10);
-%! legend ("Legend Text");
-%! title ({"Multi-line", "titles", "are a", "problem"});
+%! legend ('Legend Text');
+%! title ({'Multi-line', 'titles', 'are a', 'problem'});
+
+%!demo
+%! clf;
+%! colormap (cool (64));
+%! surf (peaks ());
+%! legend ('peaks()')
+%! title ('legend() works for surface objects too');
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");

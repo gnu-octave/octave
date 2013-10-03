@@ -864,13 +864,13 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Cargar espacio de trabajo</translation>
     </message>
     <message>
-        <location line="+375"/>
-        <location line="+828"/>
+        <location line="+388"/>
+        <location line="+835"/>
         <source>About Octave</source>
         <translation>Acerca de Octave</translation>
     </message>
     <message>
-        <location line="-348"/>
+        <location line="-354"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
@@ -931,18 +931,18 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Pegar</translation>
     </message>
     <message>
-        <location line="-968"/>
-        <location line="+888"/>
+        <location line="-982"/>
+        <location line="+902"/>
         <source>Save Workspace As</source>
         <translation>Guardar espacio de trabajo como</translation>
     </message>
     <message>
-        <location line="-653"/>
+        <location line="-655"/>
         <source>Set working directory</source>
         <translation>Fijar directorio de trabajo</translation>
     </message>
     <message>
-        <location line="+737"/>
+        <location line="+739"/>
         <source>Clear Clipboard</source>
         <translation>Limpiar el Portapapeles</translation>
     </message>
@@ -1012,7 +1012,27 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Reestablecer esquema de ventana predeterminado</translation>
     </message>
     <message>
-        <location line="+106"/>
+        <location line="+77"/>
+        <source>Octave Packages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Share Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Contribute to Octave</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Octave Developer Resources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+32"/>
         <source>On Disk</source>
         <translation>En disco</translation>
     </message>
@@ -1042,7 +1062,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Explorar directorios</translation>
     </message>
     <message>
-        <location line="-400"/>
+        <location line="-412"/>
         <source>Load workspace</source>
         <translation>Cargar espacio de trabajo</translation>
     </message>
@@ -1098,12 +1118,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+108"/>
+        <location line="+120"/>
         <source>Documentation</source>
         <translation>Documentación</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-48"/>
         <source>&amp;Help</source>
         <translation>&amp;Ayuda</translation>
     </message>
@@ -1111,16 +1131,6 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <location line="+7"/>
         <source>Report Bug</source>
         <translation>Informar de fallo</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Visit Agora</source>
-        <translation>Visitar Agora</translation>
-    </message>
-    <message>
-        <location line="-3"/>
-        <source>Visit Octave Forge</source>
-        <translation>Visitar Octave Forge</translation>
     </message>
 </context>
 <context>
@@ -1552,53 +1562,38 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.ui" line="+26"/>
+        <location filename="../src/welcome-wizard.ui" line="+29"/>
         <source>Welcome to GNU Octave</source>
         <translation>Bienvenido a GNU Octave</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>It appears that you have launched Octave GUI for the first time on this computer, since no configuration file could be found at &apos;~/.octave-gui&apos;. This wizard will guide you through the essential settings you should make before you can start using Octave GUI. If you want to transfer your settings you have previously made just close this dialog and copy over the settings file to your home folder. The presence of that file will automatically be detected and will skip this wizard. IMPORTANT: This wizard is not fully functional yet. Just click your way to the end and it will create a standard settings file.</source>
-        <translation> Al parecer ha iniciado Octave GUI por primera vez en su 
-  computadora/ordenador, ya que no se ha encontrado un archivo 
-  de configuración en &apos;~/.octave-gui&apos;. Este asistente lo guiará con los ajustes esenciales que 
-  debe hacer antes de empezar a usar Octave GUI. Si desea transferir su configuración hecha con anterioridad 
-  solamente cierre este diálogo y copie el archivo de configuración en su carpeta de inicio. La presencia de dicho archivo de configuración será detectada automáticamente y evitará esta ventana de asistencia.  
-  IMPORTANTE: Este asistente no es completamente funcional aún. Simplemente haga clic de inicio a fin y el asistente creará un archivo de configuración estándar. </translation>
+        <location line="+20"/>
+        <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI. </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+41"/>
-        <location line="+50"/>
-        <location line="+52"/>
-        <location line="+52"/>
-        <source>Next</source>
-        <translation>Siguiente</translation>
+        <location line="+10"/>
+        <source>The configuration file is stored in __%1__. If that file exists, you will not see this dialog when Octave starts again.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-124"/>
-        <location line="+52"/>
-        <location line="+52"/>
-        <location line="+87"/>
-        <source>Previous</source>
-        <translation>Anterior</translation>
+        <location line="+10"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;For more information about Octave,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;visit &lt;a href=&quot;http://octave.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://octave.org&lt;/span&gt;&lt;/a&gt;,&lt;/li&gt;
+&lt;li&gt; get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;html&lt;/span&gt;&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document, or&lt;/li&gt;
+&lt;li&gt;open the documentation browser of Octave GUI with the help menu.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-45"/>
+        <location line="-27"/>
         <source>Welcome to Octave!</source>
         <translation>¡Bienvenido a Octave!</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>This is the development version of Octave with the first official GUI.</source>
-        <translation>Esta es la versión en desarrollo de Octave con su primer GUI oficial.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>You seem to run Octave GUI for the first time on this computer. This assistant will help you to configure this software installation. Click &apos;Finish&apos; to write a configuration file and launch Octave GUI.</source>
-        <translation>Parece que ejecuta Octave GUI por primera vez en esta computadora/ordenador. Este asistente le ayudará a configurar la instalación del programa. Presione &quot;Terminar&quot; para escribir un archivo de configuración e iniciar Octave GUI. </translation>
-    </message>
-    <message>
-        <location line="+48"/>
+        <location line="+74"/>
         <source>Finish</source>
         <translation>Terminar</translation>
     </message>

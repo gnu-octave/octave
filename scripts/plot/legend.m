@@ -391,9 +391,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           for j = 1 : length (hgkids)
             try
               dname = get (hgkids(j), "DisplayName");
-              if (! isempty (dname));
+              if (! isempty (dname))
                 have_dname = true;
-                toc
                 break;  # break from j-loop over hgkids
               endif
             end_try_catch

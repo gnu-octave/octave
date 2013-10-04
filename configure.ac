@@ -2644,7 +2644,7 @@ if test $build_gui = yes; then
   if test $build_gui = yes; then
     AC_CHECK_TOOLS(MOC, [moc-qt5 moc-qt4 moc])
     AC_CHECK_TOOLS(UIC, [uic-qt5 uic-qt4 uic])
-    AC_CHECK_TOOLS(RCC, [rcc])
+    AC_CHECK_TOOLS(RCC, [rcc-qt5 rcc-qt4 rcc])
     AC_CHECK_TOOLS(LRELEASE, [lrelease-qt5 lrelease-qt4 lrelease])
     if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
       AC_DEFINE(HAVE_QT, 1, 

@@ -189,7 +189,7 @@ function [h, sout] = createaxes (s, p, par)
 
     if (isfield (s.properties, "__plotyy_axes__"))
       plty = s.properties.__plotyy_axes__;
-      addproperty ("__plotyy_axes__", h, "any");
+      addproperty ("__plotyy_axes__", h, "data");
       tmp = [p [s.handle; h]];
       tst = ismember (tmp(1:2:end), plty);
       if (sum (tst) == numel (plty))

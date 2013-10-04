@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include <fcntl.h>
 #include <getopt.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -1085,7 +1086,21 @@ octave_starting_gui (void)
 int
 octave_fork_gui (void)
 {
-  return ! no_fork_option;
+  bool have_ctty = false;
+
+#if ! (defined (__WIN32__) || defined (__APPLE__)) || defined (__CYGWIN__)
+
+#if defined (HAVE_CTERMID)
+  const char *ctty = ctermid (0);
+#else
+  const char *ctty = "/dev/tty";
+#endif
+
+  have_ctty = gnulib::open (ctty, O_RDWR, 0) > 0;
+
+#endif
+
+  return (have_ctty && ! no_fork_option);
 }
 
 DEFUN (isguirunning, args, ,

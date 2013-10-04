@@ -1033,7 +1033,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   // From GM documentation:
   //  Color arguments are must be scaled to fit the Quantum size according to
   //  the range of MaxRGB
-  const double divisor = static_cast<double>((1 << bitdepth) - 1) / MaxRGB;
+  const double divisor = static_cast<double>((uint64_t (1) << bitdepth) - 1) / MaxRGB;
 
   const P *img_fvec = img.fortran_vec ();
   const P *a_fvec   = alpha.fortran_vec ();

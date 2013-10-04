@@ -38,7 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-utils.h"
 #include "oct-env.h"
+#include "oct-syscalls.h"
 #include "syswait.h"
+
+#include "sighandlers.h"
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
@@ -73,8 +76,7 @@ dissociate_terminal (void)
     {
       // Parent
 
-      // FIXME -- we should catch signals and pass them on to the child
-      // process in some way, possibly translating SIGINT to SIGTERM.
+      install_gui_driver_signal_handlers (pid);
 
       int status;
 

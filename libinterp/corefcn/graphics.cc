@@ -4614,7 +4614,7 @@ axes::properties::update_camera (void)
   double yo = ylimits(yd > 0 ? 0 : 1);
   double zo = zlimits(zd > 0 ? 0 : 1);
 
-  Matrix pb  = get_plotboxaspectratio ().matrix_value ();
+  Matrix pb = get_plotboxaspectratio ().matrix_value ();
 
   bool autocam = (camerapositionmode_is ("auto")
                   && cameratargetmode_is ("auto")
@@ -9088,25 +9088,27 @@ calc_dimensions (const graphics_object& go)
 
   if (go.isa ("surface"))
     nd = 3;
-
-  if ((go.isa ("line") || go.isa ("patch")) && ! go.get("zdata").is_empty ())
+  else if ((go.isa ("line") || go.isa ("patch"))
+            && ! go.get ("zdata").is_empty ())
     nd = 3;
-
-  Matrix kids = go.get_properties ().get_children ();
-
-  for (octave_idx_type i = 0; i < kids.length (); i++)
+  else
     {
-      graphics_handle hnd = gh_manager::lookup (kids(i));
+      Matrix kids = go.get_properties ().get_children ();
 
-      if (hnd.ok ())
+      for (octave_idx_type i = 0; i < kids.length (); i++)
         {
-          const graphics_object& kid = gh_manager::get_object (hnd);
+          graphics_handle hnd = gh_manager::lookup (kids(i));
 
-          if (kid.valid_object ())
-            nd = calc_dimensions (kid);
+          if (hnd.ok ())
+            {
+              const graphics_object& kid = gh_manager::get_object (hnd);
 
-          if (nd == 3)
-            break;
+              if (kid.valid_object ())
+                nd = calc_dimensions (kid);
+
+              if (nd == 3)
+                break;
+            }
         }
     }
 
@@ -9126,17 +9128,15 @@ object, whether 2 or 3.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      double h = args(0).double_value ();
-
-      if (! error_state)
-        retval = calc_dimensions (gh_manager::get_object (h));
-      else
-        error ("__calc_dimensions__: expecting graphics handle as only argument");
-    }
-  else
+  if (nargin != 1)
     print_usage ();
+
+  double h = args(0).double_value ();
+
+  if (! error_state)
+    retval = calc_dimensions (gh_manager::get_object (h));
+  else
+    error ("__calc_dimensions__: expecting graphics handle as only argument");
 
   return retval;
 }

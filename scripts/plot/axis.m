@@ -364,7 +364,9 @@ function __do_tight_option__ (ca)
     ylim = ylim .* (1 + eps () * [-1, 1]);
   endif
   set (ca, "xlim", xlim, "ylim", ylim)
-  if (__calc_dimensions__ (ca) > 2)
+  nd = __calc_dimensions__ (ca);
+  is3dview = (get (ca, "view")(2) != 90);
+  if (nd > 2 && is3dview)
     zlim = __get_tight_lims__ (ca, "z");
     if (all (zlim == 0))
       zlim = eps () * [-1 1];

@@ -131,11 +131,20 @@ function h = text (varargin)
     hax = gca ();
   endif
 
-  if (nx == ny && nx == nz && (nt == nx || nt == 1 || nx == 1))
+  ## Position argument may alse be in PROP/VAL pair
+  idx = find (strcmpi (varargin, "position"), 1);
+  if (idx)
+    pos = varargin{idx+1};
+    varargin(idx:idx+1) = [];
+  else
     pos = [x(:), y(:), z(:)];
+  endif
+
+  if (nx == ny && nx == nz && (nt == nx || nt == 1 || nx == 1))
     htmp = zeros (nt, 1);
     if (nx == 1)
       htmp = __go_text__ (hax, "string", string{1},
+                               ## varargin first, in case "Units" set for pos.
                                varargin{:},
                                "position", pos);
     elseif (nx == nt)

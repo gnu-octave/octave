@@ -141,6 +141,7 @@ Summary of important user-visible changes for version 3.8:
  ** A TeX parser has been implemented for the FLTK toolkit and is the default
     for any text object including titles and axis labels.  The TeX parser is
     supported only for display on a monitor, not for printing.
+
     A quick summary of features:
 
     Code         Feature     Example             Comment
@@ -231,11 +232,11 @@ Summary of important user-visible changes for version 3.8:
        [1,2] = 3
       }
 
-    (2) By default, Matlab treats consecutive delimiters are as a single
+    (2) By default, Matlab treats consecutive delimiters as a single
     delimiter.  By default, Octave's legacy behavior was to return an
     empty string for the part between the delmiters.
 
-    Where the legacy behavior is desired, the call to strsplit() may be
+    Where legacy behavior is desired, the call to strsplit() may be
     replaced by ostrsplit(), which is Octave's original implementation of
     strsplit().
 

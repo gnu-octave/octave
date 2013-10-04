@@ -41,7 +41,7 @@ AC_CONFIG_HEADERS([config.h:config.in.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.11 tar-ustar subdir-objects])
+AM_INIT_AUTOMAKE([1.11 foreign -Wno-portability -Wno-override tar-ustar subdir-objects])
 
 ## Add the option to enable silent rules, available since Automake 1.11
 ## and included by default starting with Automake 1.13.

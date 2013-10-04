@@ -759,7 +759,8 @@ private:
 static void
 disabled_error (void)
 {
-  error ("support for url transfers was disabled when Octave was built");
+  (*current_liboctave_error_handler)
+    ("support for url transfers was disabled when Octave was built");
 }
 
 #endif

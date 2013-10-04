@@ -125,6 +125,10 @@ static bool verbose_flag = false;
 // (--force-gui)
 static bool force_gui_option = false;
 
+// If TRUE don't fork when starting the GUI.
+// (--no-fork)
+static bool no_fork_option = false;
+
 // If TRUE don't start the GUI.
 // (--no-gui)
 static bool no_gui_option = false;
@@ -159,7 +163,7 @@ static const char *usage_string =
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
        [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--line-editing] [--no-gui] [--no-history]\n\
+       [--line-editing] [--no-fork] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-jit-compiler]\n\
        [--no-line-editing] [--no-site-file] [--no-window-system]\n\
        [--norc] [-p path] [--path path] [--persist] [--silent]\n\
@@ -194,15 +198,16 @@ static bool traditional = false;
 #define INFO_PROG_OPTION 8
 #define DEBUG_JIT_OPTION 9
 #define LINE_EDITING_OPTION 10
-#define NO_GUI_OPTION 11
-#define NO_INIT_FILE_OPTION 12
-#define NO_INIT_PATH_OPTION 13
-#define NO_JIT_COMPILER_OPTION 14
-#define NO_LINE_EDITING_OPTION 15
-#define NO_SITE_FILE_OPTION 16
-#define PERSIST_OPTION 17
-#define TEXI_MACROS_FILE_OPTION 18
-#define TRADITIONAL_OPTION 19
+#define NO_FORK_OPTION 11
+#define NO_GUI_OPTION 12
+#define NO_INIT_FILE_OPTION 13
+#define NO_INIT_PATH_OPTION 14
+#define NO_JIT_COMPILER_OPTION 15
+#define NO_LINE_EDITING_OPTION 16
+#define NO_SITE_FILE_OPTION 17
+#define PERSIST_OPTION 18
+#define TEXI_MACROS_FILE_OPTION 19
+#define TRADITIONAL_OPTION 20
 struct option long_opts[] = {
   { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
   { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
@@ -219,6 +224,7 @@ struct option long_opts[] = {
   { "info-program",             required_argument, 0, INFO_PROG_OPTION },
   { "interactive",              no_argument,       0, 'i' },
   { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
+  { "no-fork",                  no_argument,       0, NO_FORK_OPTION },
   { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
   { "no-history",               no_argument,       0, 'H' },
   { "no-init-file",             no_argument,       0, NO_INIT_FILE_OPTION },
@@ -537,6 +543,7 @@ Options:\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
   --line-editing          Force readline use for command-line editing.\n\
+  --no-fork               Don't fork when starting the graphical user interface.\n\
   --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
@@ -785,6 +792,10 @@ octave_process_command_line (int argc, char **argv)
 
         case LINE_EDITING_OPTION:
           forced_line_editing = true;
+          break;
+
+        case NO_FORK_OPTION:
+          no_fork_option = true;
           break;
 
         case NO_GUI_OPTION:
@@ -1069,6 +1080,12 @@ octave_starting_gui (void)
 {
   start_gui = check_starting_gui ();
   return start_gui;
+}
+
+int
+octave_fork_gui (void)
+{
+  return ! no_fork_option;
 }
 
 DEFUN (isguirunning, args, ,

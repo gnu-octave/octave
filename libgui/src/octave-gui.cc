@@ -88,9 +88,10 @@ dissociate_terminal (void)
 }
 
 int
-octave_start_gui (int argc, char *argv[])
+octave_start_gui (int argc, char *argv[], bool fork)
 {
-  dissociate_terminal ();
+  if (fork)
+    dissociate_terminal ();
 
   QApplication application (argc, argv);
 

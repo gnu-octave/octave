@@ -41,7 +41,7 @@ main (int argc, char **argv)
   install_defaults ();
 
   if (octave_starting_gui ())
-    retval = octave_start_gui (argc, argv);
+    retval = octave_start_gui (argc, argv, octave_fork_gui ());
   else
     {
       octave_initialize_interpreter (argc, argv, 0);

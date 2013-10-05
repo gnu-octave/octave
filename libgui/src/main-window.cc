@@ -273,7 +273,7 @@ main_window::open_contribute_page (void)
 void
 main_window::open_developer_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://ocxtave.org/get-involved.html"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/get-involved.html"));
 }
 
 void

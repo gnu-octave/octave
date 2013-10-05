@@ -1,7 +1,7 @@
 FCN_FILE_DIRS += plot/appearance
 
 plot_appearance_PRIVATE_FCN_FILES = \
-  plot/appearance/private/__axes_limits__.m \
+  plot/appearance/private/__axis_limits__.m \
   plot/appearance/private/__axis_label__.m
 
 plot_appearance_FCN_FILES = \

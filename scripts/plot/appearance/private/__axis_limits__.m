@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __axes_limits__ (@var{fcn}, @dots{})
+## @deftypefn {Function File} {} __axis_limits__ (@var{fcn}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function retval = __axes_limits__ (fcn, varargin)
+function retval = __axis_limits__ (fcn, varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ (fcn, varargin{:});
 

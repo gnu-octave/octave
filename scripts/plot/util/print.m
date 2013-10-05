@@ -339,7 +339,6 @@
 ## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
 ## TikZ file.
 ##
-##
 ##   @end table
 ##
 ## Raster Formats
@@ -363,6 +362,9 @@
 ##
 ##   @item pbm
 ##     PBMplus
+##
+##   @item dumb*
+##     ASCII art
 ##
 ##   @end table
 ##

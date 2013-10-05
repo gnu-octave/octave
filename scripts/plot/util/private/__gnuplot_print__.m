@@ -156,6 +156,8 @@ function opts = __gnuplot_print__ (opts)
                "print.m: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
+    case "dumb"
+      local_drawnow ("dumb size 72,24", opts.name, opts);
     case opts.ghostscript.device
       gp_opts = font_spec (opts, "devopt", "eps");
       opts.ghostscript.output = opts.name;

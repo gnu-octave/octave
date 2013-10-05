@@ -126,6 +126,9 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     compatibility.  To produce uncompressed images use the -dtiffn
     device.
 
+ ** A new printing device is available, -ddumb, which produces ASCII art
+    for plots.  This device is only available with the gnuplot toolkit.
+
  ** Printing to EPS files now uses a tight bounding box ("-tight"
     argument to print) by default.  This makes more sense for EPS
     files which are normally embedded within other documents, and is

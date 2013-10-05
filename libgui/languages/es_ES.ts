@@ -1014,22 +1014,22 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+77"/>
         <source>Octave Packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Paquetes de Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Share Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartir código</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Contribute to Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Contribuir a octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished"></translation>
+        <translation>Recursos para el desarrollador de Octave</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1569,12 +1569,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+20"/>
         <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI. </source>
-        <translation type="unfinished"></translation>
+        <translation>Al parecer usted utiiza la interfase gráfica de Octave por primera vez en este ordenador.  Presione &apos;Finalizar&apos; para generar un archivo de configuración e iniciar Octave GUI.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>The configuration file is stored in __%1__. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>La configuración ha sido guardada en __%1__. Si ese archivo existe, usted no verá este diálogo cuando Octave inicie de nuevo.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1585,7 +1585,13 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 &lt;li&gt;open the documentation browser of Octave GUI with the help menu.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Para mayor información acerca de Octave,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;visite &lt;a href=&quot;http://octave.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://octave.org&lt;/span&gt;&lt;/a&gt;,&lt;/li&gt;
+&lt;li&gt; para obtener la documentación en linea como &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;html&lt;/span&gt;&lt;/a&gt;- o &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;como documento &lt;/span&gt;&lt;/a&gt;-pdf, o&lt;/li&gt;
+&lt;li&gt;abrir el navegador de documentación de Octave GUI con el menú de ayuda.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="-27"/>

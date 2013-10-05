@@ -84,9 +84,10 @@ endfunction
 %! legend ('errorbar', 'line');
 %! hnew = copyobj (hdl);
 
-%!demo
-%! ## FIXME: This demo fails occasionally for an obscure reason.
+%!#demo
+%! ## FIXME: This demo fails for an obscure reason.
 %! ## It appears that there is something wrong with Octave code for patches.
+%! ## This demo must remain commented out until patch() has been reworked.
 %! unwind_protect
 %!   hdl = figure (1234);
 %!   clf;

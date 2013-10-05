@@ -238,10 +238,10 @@ endfunction
 
 function update_props (h, ~)
   set (get (h, "children"),
-       {"color", "linestyle", "linewidth", "marker", "markeredgecolor",
-        "markerfacecolor", "markersize", "markersize"},
-       get (h, {"color", "linestyle", "linewidth", "marker", "markeredgecolor",
-                "markerfacecolor", "markersize", "markersize"}));
+       {"color", "linestyle", "linewidth", "marker", ...
+        "markeredgecolor", "markerfacecolor", "markersize"},
+       get (h, {"color", "linestyle", "linewidth", "marker", ...
+                "markeredgecolor", "markerfacecolor", "markersize"}));
 endfunction
 
 function update_data (h, ~)

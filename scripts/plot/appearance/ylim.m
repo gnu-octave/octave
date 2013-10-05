@@ -17,31 +17,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{zlimits} =} zlim ()
-## @deftypefnx {Function File} {@var{xmode} =} zlim ("mode")
-## @deftypefnx {Function File} {} zlim ([@var{z_lo} @var{z_hi}])
-## @deftypefnx {Function File} {} zlim ("auto")
-## @deftypefnx {Function File} {} zlim ("manual")
-## @deftypefnx {Function File} {} zlim (@var{hax}, @dots{})
-## Query or set the limits of the z-axis for the current plot.
+## @deftypefn  {Function File} {@var{ylimits} =} ylim ()
+## @deftypefnx {Function File} {@var{xmode} =} ylim ("mode")
+## @deftypefnx {Function File} {} ylim ([@var{y_lo} @var{y_hi}])
+## @deftypefnx {Function File} {} ylim ("auto")
+## @deftypefnx {Function File} {} ylim ("manual")
+## @deftypefnx {Function File} {} ylim (@var{hax}, @dots{})
+## Query or set the limits of the y-axis for the current plot.
 ##
-## Called without arguments @code{zlim} returns the z-axis limits of the
+## Called without arguments @code{ylim} returns the y-axis limits of the
 ## current plot.  With the input query @qcode{"mode"}, return the current
-## z-limit calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
+## y-limit calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
 ##
-## If passed a 2-element vector [@var{z_lo} @var{z_hi}], the limits of the
-## x-axis are set to these values and the mode is set to @qcode{"manual"}.
+## If passed a 2-element vector [@var{y_lo} @var{y_hi}], the limits of the
+## y-axis are set to these values and the mode is set to @qcode{"manual"}.
 ##
 ## The current plotting mode can be changed by using either @qcode{"auto"}
 ## or @qcode{"manual"} as the argument.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
-## @seealso{xlim, ylim, axis, set, get, gca}
+## @seealso{xlim, zlim, axis, set, get, gca}
 ## @end deftypefn
 
-function retval = zlim (varargin)
-  ret = __axes_limits__ ("zlim", varargin{:});
+function retval = ylim (varargin)
+  ret = __axis_limits__ ("ylim", varargin{:});
 
   if (! isempty (ret))
     retval = ret;
@@ -52,39 +52,39 @@ endfunction
 %!demo
 %! clf;
 %! line ();
-%! zlim ([0.2, 0.8]);
-%! title ('zlim is [0.2, 0.8]');
-%! assert (zlim (), [0.2, 0.8]);
+%! ylim ([0.2, 0.8]);
+%! title ('ylim is [0.2, 0.8]');
+%! assert (ylim (), [0.2, 0.8]);
 
 %!demo
 %! clf;
 %! line ();
-%! zlim ('auto');
-%! title ('zlim is auto');
-%! assert (zlim ('mode'), 'auto');
+%! ylim ('auto');
+%! title ('ylim is auto');
+%! assert (ylim ('mode'), 'auto');
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! zlim ([0.2, 0.8]);
-%! title ('zlim is [0.2, 0.8]');
-%! assert (zlim (), [0.2, 0.8]);
+%! ylim ([0.2, 0.8]);
+%! title ('ylim is [0.2, 0.8]');
+%! assert (ylim (), [0.2, 0.8]);
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! zlim ('auto');
-%! title ('zlim is auto');
-%! assert (zlim ('mode'), 'auto');
+%! ylim ('auto');
+%! title ('ylim is auto');
+%! assert (ylim ('mode'), 'auto');
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   limz = [0, 1.1];
+%!   limy = [0, 1.1];
 %!   plot3 ([0,1], [0,1], [0,1]);
-%!   zlim (limz);
-%!   assert (get (gca, "zlim"), limz, eps);
-%!   assert (zlim ("mode"), "manual");
+%!   ylim (limy);
+%!   assert (get (gca, "ylim"), limy, eps);
+%!   assert (ylim ("mode"), "manual");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -92,9 +92,9 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   plot3 ([0,1], [0,1], [0, 1.1]);
-%!   assert (get (gca, "zlim"), [0, 1.4], eps);
-%!   assert (zlim ("mode"), "auto");
+%!   plot3 ([0,1], [0,1.1], [0, 1]);
+%!   assert (get (gca, "ylim"), [0, 1.4], eps);
+%!   assert (ylim ("mode"), "auto");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

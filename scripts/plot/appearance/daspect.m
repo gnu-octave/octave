@@ -27,7 +27,7 @@
 ## The aspect ratio is a normalized 3-element vector representing the span of
 ## the x, y, and z-axis limits.
 ## 
-## @code{(daspect (@var{mode}))}
+## @code{daspect (@var{mode})}
 ##
 ## Set the data aspect ratio mode of the current axes.  @var{mode} is
 ## either @qcode{"auto"} or @qcode{"manual"}.

@@ -38,7 +38,8 @@
 ## @var{btn3}.
 ##
 ## If only @var{msg} and @var{title} are specified, three buttons with
-## the default captions "Yes", "No", and "Cancel" are used.
+## the default captions @qcode{"Yes"}, @qcode{"No"}, and @qcode{"Cancel"} are
+## used.
 ##
 ## If only two button captions, @var{btn1} and @var{btn2}, are specified 
 ## the dialog will have only these two buttons.
@@ -81,7 +82,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{4} = varargin{1};  # default
       if (! any (strcmp (options{4}, options(1:3))))
         error (defbtn_error_msg);
-      end
+      endif
 
     case 3
       ## two buttons and default button string
@@ -91,7 +92,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{4} = varargin{3};  # default
       if (! any (strcmp (options{4}, options([1 3]))))
         error (defbtn_error_msg);
-      end
+      endif
 
     case 4
       ## three buttons and default button string
@@ -101,7 +102,7 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
       options{4} = varargin{4};  # default
       if (! any (strcmp (options{4}, options(1:3))))
         error (defbtn_error_msg);
-      end
+      endif
 
     otherwise
       print_usage ();
@@ -120,55 +121,56 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
 
 endfunction
 
+
 %!demo
-%!  disp('- test questdlg with two buttons');
-%!  a = questdlg('Would you like some free money?',...
+%! disp ('- test questdlg with two buttons');
+%! a = questdlg ('Would you like some free money?',...
 %!               '$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $',...
 %!               'No', 'Cancel', 'Cancel');
-%!  if strcmp (a, 'No')
-%!    msgbox('Suit yourself.', 'Message Box');
-%!  endif
+%! if (strcmp (a, 'No'))
+%!   msgbox ('Suit yourself.', 'Message Box');
+%! endif
 
 %!demo
-%!  disp('- test questdlg with message and title only.');
-%!  a = 'No';
-%!  c = 0;
-%!  while (strcmp(a, 'No') || !c)
-%!    a = questdlg('Close this Question Dialog?', 'Reductio Ad Absurdum');
-%!    if strcmp(a, 'Yes')
-%!      q = 'Are you sure?';
-%!      while (strcmp(a, 'Yes') && !c)
-%!        a = questdlg(q, 'Reductio Ad Absurdum');
-%!        word = ' really';
-%!        i = strfind(q, word);
-%!        if isempty( i )
-%!          i = strfind(q, ' sure');
-%!          q = [q '!'];
-%!        else
-%!          word = [word ','];
-%!        endif
-%!        q = [q(1:i-1) word q(i:end)];
-%!      endwhile
-%!    endif
-%!    if strcmp(a, 'Cancel')
-%!      warndlg('Answer "Yes" or "No".', 'Warning Dialog');
-%!      a = 'No';
-%!      c = 1;
-%!    endif
-%!  endwhile
-%!  msgbox('Whew!');
+%! disp ('- test questdlg with message and title only.');
+%! a = 'No';
+%! c = 0;
+%! while (strcmp (a, 'No') || !c)
+%!   a = questdlg ('Close this Question Dialog?', 'Reductio Ad Absurdum');
+%!   if (strcmp (a, 'Yes'))
+%!     q = 'Are you sure?';
+%!     while (strcmp (a, 'Yes') && !c)
+%!       a = questdlg (q, 'Reductio Ad Absurdum');
+%!       word = ' really';
+%!       i = strfind (q, word);
+%!       if (isempty (i))
+%!         i = strfind (q, ' sure');
+%!         q = [q '!'];
+%!       else
+%!         word = [word ','];
+%!       endif
+%!       q = [q(1:i-1) word q(i:end)];
+%!     endwhile
+%!   endif
+%!   if (strcmp (a, 'Cancel'))
+%!     warndlg ('Answer "Yes" or "No".', 'Warning Dialog');
+%!     a = 'No';
+%!     c = 1;
+%!   endif
+%! endwhile
+%! msgbox ('Whew!');
 
 %!demo
-%!  disp('- test questdlg with five inputs');
-%!  ans = questdlg('Are you ready Steve?', 'Brian', 'No', 'Uh huh', 'Uh huh');
-%!  if !strcmp (ans, 'No')
-%!    ans = questdlg ('Andy?', 'Brian', 'No', 'Yeah', 'Yeah');
-%!    if !strcmp (ans, 'No')
-%!      ans = questdlg ('Mick?', 'Brian', 'No', 'Okay', 'Okay');
-%!      if !strcmp (ans, 'No')
-%!        ans = msgbox ("Well all right, fellas.    \n\n     Let''s GO!!!!!",...
-%!                      'Ballroom Blitz', 'none');
-%!      endif
-%!    endif
-%!  endif
+%! disp ('- test questdlg with five inputs');
+%! ans = questdlg ('Are you ready Steve?', 'Brian', 'No', 'Uh huh', 'Uh huh');
+%! if (! strcmp (ans, 'No'))
+%!   ans = questdlg ('Andy?', 'Brian', 'No', 'Yeah', 'Yeah');
+%!   if (! strcmp (ans, 'No'))
+%!     ans = questdlg ('Mick?', 'Brian', 'No', 'Okay', 'Okay');
+%!     if (! strcmp (ans, 'No'))
+%!       ans = msgbox ("Well all right, fellas.    \n\n     Let''s GO!!!!!",...
+%!                     'Ballroom Blitz', 'none');
+%!     endif
+%!   endif
+%! endif
 

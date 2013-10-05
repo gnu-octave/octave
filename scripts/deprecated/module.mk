@@ -9,6 +9,7 @@ deprecated_FCN_FILES = \
   deprecated/java_debug.m \
   deprecated/error_text.m \
   deprecated/gen_doc_cache.m \
+  deprecated/isequalwithequalnans.m \
   deprecated/isstr.m \
   deprecated/java_convert_matrix.m \
   deprecated/java_get.m \

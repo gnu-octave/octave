@@ -16,14 +16,12 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/try/try-1.m
 %!test
 %! try
 %! catch
 %!   error ("Shoudn't get here");
-%! end_try_catch
+%! end  # "end" is part of test, check not using "end_try_catch"
 
-%% test/octave.test/try/try-2.m
 %!test
 %! try
 %!   clear a;
@@ -33,7 +31,6 @@
 %! a = 1;
 %! assert (a,1);
 
-%% test/octave.test/try/try-3.m
 %!test
 %! clear x;
 %! try
@@ -46,7 +43,6 @@
 %! assert (!exist ('x'));
 %! assert (a,2);
 
-%% test/octave.test/try/try-4.m
 %!test
 %! try
 %!   clear a;
@@ -56,7 +52,6 @@
 %! end_try_catch
 %! assert (exist ('x'));
 
-%% test/octave.test/try/try-5.m
 %!test
 %! try
 %!   clear a;
@@ -67,7 +62,6 @@
 %! end_try_catch
 %! assert (lasterr()(1:13), "'a' undefined");
 
-%% test/octave.test/try/try-6.m
 %!test
 %! try
 %!   error ("user-defined error");
@@ -75,10 +69,9 @@
 %!   assert (lasterr, "user-defined error");
 %! end_try_catch
 
-%% test/octave.test/try/try-7.m
 %!function ms = mangle (s)
 %!  ## Wrap angle brackets around S.
-%!  ms = cstrcat ("<", s, ">");
+%!  ms = ["<" s ">"];
 %!endfunction
 %!test
 %! try
@@ -89,7 +82,6 @@
 %!   assert (mangle (lasterr)(1:14), "<'a' undefined");
 %! end_try_catch
 
-%% test/octave.test/try/try-8.m
 %!test
 %! try
 %!   try
@@ -106,7 +98,6 @@
 %!   assert (lasterr()(1:13), "'b' undefined");
 %! end_try_catch
 
-%% test/octave.test/try/try-9.m
 %!test
 %! try
 %!   clear a;
@@ -123,7 +114,6 @@
 %!   end_try_catch
 %! end_try_catch
 
-%% test/octave.test/try/try-10.m
 %!test
 %! try
 %!   try
@@ -131,9 +121,62 @@
 %!     a;
 %!     error ("Shoudn't get here");
 %!   catch
-%!     error (cstrcat ("rethrow: ", lasterr));
+%!     error (["rethrow: " lasterr]);
 %!   end_try_catch
 %! catch
 %!   assert (lasterr()(1:22), "rethrow: 'a' undefined");
 %! end_try_catch
 
+%!test
+%! clear myerr;
+%! try
+%!   error ("user-defined error");
+%! catch myerr
+%!   assert (myerr.message, "user-defined error");
+%! end_try_catch
+
+%!test
+%! try
+%!   clear a;
+%!   error ("user-defined error");
+%! catch a=1;
+%!   assert (lasterr, "user-defined error");
+%!   assert (a, 1);
+%! end_try_catch
+
+%!test
+%! clear myerr1
+%! clear myerr2
+%! try
+%!   try
+%!     clear a;
+%!     a;
+%!   catch myerr1
+%!     error (myerr1);
+%!   end_try_catch
+%! catch myerr2
+%!   assert (myerr1.message, myerr2.message);
+%!   assert (myerr1.identifier, myerr2.identifier);
+%! end_try_catch
+
+%!test
+%! x = 1;
+%! try error ("foo"); catch x; assert (x.message, "foo"); end_try_catch
+
+%!test
+%! x = 1;
+%! try error ("foo"); catch x end_try_catch
+%! assert (x.message, "foo");
+
+%!test
+%! x = 1;
+%! try error ("foo"); catch, x; assert (x, 1); end_try_catch
+
+%!test
+%! x = 1;
+%! try error ("foo"); catch; x; assert (x, 1); end_try_catch
+
+%!test
+%! x = 1;
+%! try error ("foo"); catch
+%!   x; assert (x, 1); end_try_catch

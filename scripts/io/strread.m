@@ -99,21 +99,21 @@
 ## pairs.  The following properties are recognized:
 ##
 ## @table @asis
-## @item "commentstyle"
+## @item @qcode{"commentstyle"}
 ## Parts of @var{str} are considered comments and will be skipped.
 ## @var{value} is the comment style and can be any of the following.
 ##
 ## @itemize
-## @item "shell"
+## @item @qcode{"shell"}
 ## Everything from @code{#} characters to the nearest end-of-line is skipped.
 ##
-## @item "c"
+## @item @qcode{"c"}
 ## Everything between @code{/*} and @code{*/} is skipped.
 ##
-## @item "c++"
+## @item @qcode{"c++"}
 ## Everything from @code{//} characters to the nearest end-of-line is skipped.
 ##
-## @item "matlab"
+## @item @qcode{"matlab"}
 ## Everything from @code{%} characters to the nearest end-of-line is skipped.
 ##
 ## @item user-supplied.  Two options:
@@ -122,34 +122,34 @@
 ## is skipped.
 ## @end itemize
 ##
-## @item "delimiter"
+## @item @qcode{"delimiter"}
 ## Any character in @var{value} will be used to split @var{str} into words
 ## (default value = any whitespace).
 ##
-## @item "emptyvalue":
+## @item @qcode{"emptyvalue"}:
 ## Value to return for empty numeric values in non-whitespace delimited data.
 ## The default is NaN@.  When the data type does not support NaN
 ## (int32 for example), then default is zero.
 ##
-## @item "multipledelimsasone"
+## @item @qcode{"multipledelimsasone"}
 ## Treat a series of consecutive delimiters, without whitespace in between,
 ## as a single delimiter.  Consecutive delimiter series need not be vertically
-## "aligned".
+## @qcode{"aligned"}.
 ##
-## @item "treatasempty"
+## @item @qcode{"treatasempty"}
 ## Treat single occurrences (surrounded by delimiters or whitespace) of the
 ## string(s) in @var{value} as missing values.
 ##
-## @item "returnonerror"
+## @item @qcode{"returnonerror"}
 ## If @var{value} true (1, default), ignore read errors and return normally.
 ## If false (0), return an error.
 ##
-## @item "whitespace"
+## @item @qcode{"whitespace"}
 ## Any character in @var{value} will be interpreted as whitespace and
 ## trimmed; the string defining whitespace must be enclosed in double
 ## quotes for proper processing of special characters like \t.
-## The default value for whitespace = " \b\r\n\t" (note the space).
-## Unless whitespace is set to '' (empty) AND at least one "%s" format
+## The default value for whitespace = @qcode{" \b\r\n\t"} (note the space).
+## Unless whitespace is set to '' (empty) AND at least one @qcode{"%s"} format
 ## conversion specifier is supplied, a space is always part of whitespace.
 ##
 ## @end table
@@ -159,11 +159,11 @@
 ## depends on the last character of @var{str}:
 ##
 ## @table @asis
-## @item last character = "\n"
+## @item last character = @qcode{"\n"}
 ## Data columns are padded with empty fields or Nan so that all columns
 ## have equal length 
 ##
-## @item last character is not "\n"
+## @item last character is not @qcode{"\n"}
 ## Data columns are not padded; strread returns columns of unequal length
 ##
 ## @end table
@@ -479,7 +479,7 @@ function varargout = strread (str, format = "%f", varargin)
       iwrd = 1; iwrdp = 0; iwrdl = length (words{1});
       fwptr = zeros (1, numel (fmt_words));
       ii = 1;
-      while ii <= numel (fmt_words)
+      while (ii <= numel (fmt_words))
 
         nxt_wrd = 0;
         ## Keep track of which words nr. every fmt_words{} is (starts) in.
@@ -679,7 +679,7 @@ function varargout = strread (str, format = "%f", varargin)
       ## Map to format
       ## FIXME - add support for formats like "<%s>", "%[a-zA-Z]"
       ##         Someone with regexp experience is needed.
-      switch fmt_words{m}(1:min (2, length (fmt_words{m})))
+      switch (fmt_words{m}(1:min (2, length (fmt_words{m}))))
         case "%s"
           if (pad_out)
             data(end+1:num_lines) = {""};
@@ -706,7 +706,7 @@ function varargout = strread (str, format = "%f", varargin)
           ew = regexp (fmt_words{m}, '[nfudsq]') - 1;
           nfmt = ostrsplit (fmt_words{m}(2:ew), ".");
           swidth = str2double (nfmt{1});
-          switch fmt_words{m}(ew+1)
+          switch (fmt_words{m}(ew+1))
             case {"d", "u", "f", "n"}
               n = cellfun ("isempty", data);
               ### FIXME - erroneously formatted data lead to NaN, not an error
@@ -840,14 +840,14 @@ endfunction
 %! assert (a, {"a b c"; "d e"; ""; "f"});
 
 %!test
-%! # Bug #33536
+%! ## Bug #33536
 %! [a, b, c] = strread ("1,,2", "%s%s%s", "delimiter", ",");
 %! assert (a{1}, "1");
 %! assert (b{1}, "");
 %! assert (c{1}, "2");
 
 %!test
-%! # Bug #33536
+%! ## Bug #33536
 %! a = strread ("[SomeText]", "[%s", "delimiter", "]");
 %! assert (a{1}, "SomeText");
 
@@ -868,7 +868,7 @@ endfunction
 %! assert (d, int32 ([0; 0]));
 
 %!test
-%! # Default format (= %f)
+%! ## Default format (= %f)
 %1 [a, b, c] = strread ("0.12 0.234 0.3567");
 %1 assert (a, 0.12);
 %1 assert (b, 0.234);
@@ -879,13 +879,13 @@ endfunction
 %1 assert (a, [0.41; 3.57]);
 
 %!test
-%! # TreatAsEmpty
+%! ## TreatAsEmpty
 %! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", "delimiter", ",", "TreatAsEmpty", "NN");
 %! assert (c, int32 ([3; 0]));
 %! assert (d, [NaN; NaN]);
 
 %!test
-%! # No delimiters at all besides EOL.  Plain reading numbers & strings
+%! ## No delimiters at all besides EOL.  Plain reading numbers & strings
 %! str = "Text1Text2Text\nText398Text4Text\nText57Text";
 %! [a, b] = strread (str, "Text%dText%1sText");
 %! assert (a, int32 ([1; 398; 57]));
@@ -958,14 +958,14 @@ endfunction
 %! assert (b, NaN);
 
 %!test
-%! # Bug #35999
+%! ## Bug #35999
 %! [a, b, c] = strread ("", "%f");
 %! assert (isempty (a));
 %! assert (isempty (b));
 %! assert (isempty (c));
 
-%% bug #37023
 %!test
+%! ## bug #37023
 %! [a, b] = strread (" 1. 1 \n  2 3 \n", "%f %f", "endofline", "\n");
 %! assert (a, [1; 2], 1e-15);
 %! assert (b, [1; 3], 1e-15);
@@ -994,3 +994,4 @@ endfunction
 %% Illegal format specifiers
 %!test
 %!error <unknown format specifier> strread ("1.0", "%z")
+

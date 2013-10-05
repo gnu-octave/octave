@@ -33,17 +33,17 @@
 ## in all calls to @var{fcn}, but otherwise is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fminunc} recognizes these options:
-## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
-## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"},
-## @code{"GradObj"}, @code{"FinDiffType"},
-## @code{"TypicalX"}, @code{"AutoScaling"}.
+## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
+## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
+## @qcode{"GradObj"}, @qcode{"FinDiffType"},
+## @qcode{"TypicalX"}, @qcode{"AutoScaling"}.
 ##
-## If @code{"GradObj"} is @code{"on"}, it specifies that @var{fcn},
+## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
-## of right-hand sides at the requested point.  @code{"TolX"} specifies
+## of right-hand sides at the requested point.  @qcode{"TolX"} specifies
 ## the termination tolerance in the unknown variables, while
-## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
-## for both @code{"TolX"} and @code{"TolFun"}.
+## @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
+## for both @qcode{"TolX"} and @qcode{"TolFun"}.
 ##
 ## For description of the other options, see @code{optimset}.
 ##
@@ -427,3 +427,4 @@ function x = __doglegm__ (r, g, d, delta)
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
 endfunction
+

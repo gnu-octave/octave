@@ -125,10 +125,10 @@ element defines the pivoting tolerance for the unsymmetric @sc{umfpack}\n\
 pivoting strategy and the second for the symmetric strategy.  By default,\n\
 the values defined by @code{spparms} are used ([0.1, 0.001]).\n\
 \n\
-Given the string argument \"vector\", @code{lu} returns the values of @var{P}\n\
-and @var{Q} as vector values, such that for full matrix, @code{@var{A}\n\
-(@var{P},:) = @var{L} * @var{U}}, and @code{@var{R}(@var{P},:) * @var{A}\n\
-(:, @var{Q}) = @var{L} * @var{U}}.\n\
+Given the string argument @qcode{\"vector\"}, @code{lu} returns the values\n\
+of @var{P} and @var{Q} as vector values, such that for full matrix,\n\
+@code{@var{A} (@var{P},:) = @var{L} * @var{U}}, and @code{@var{R}(@var{P},:)\n\
+* @var{A} (:, @var{Q}) = @var{L} * @var{U}}.\n\
 \n\
 With two output arguments, returns the permuted forms of the upper and\n\
 lower triangular matrices, such that @code{@var{A} = @var{L} * @var{U}}.\n\
@@ -137,6 +137,7 @@ routines is returned.  If the input matrix is sparse then the matrix @var{L}\n\
 is embedded into @var{U} to give a return value similar to the full case.\n\
 For both full and sparse matrices, @code{lu} loses the permutation\n\
 information.\n\
+@seealso{luupdate, chol, hess, qr, qz, schur, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -614,7 +615,7 @@ as obtained by @code{lu}:\n\
 @end example\n\
 \n\
 @noindent\n\
-then a factorization of @xcode{@var{A}+@var{x}*@var{y}.'} can be obtained\n\
+then a factorization of @tcode{@var{A}+@var{x}*@var{y}.'} can be obtained\n\
 either as\n\
 \n\
 @example\n\
@@ -635,7 +636,7 @@ stable.\n\
 The matrix case is done as a sequence of rank-1 updates;\n\
 thus, for large enough k, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
-@seealso{lu, qrupdate, cholupdate}\n\
+@seealso{lu, cholupdate, qrupdate}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();

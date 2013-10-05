@@ -1,3 +1,4 @@
+## Copyright (C) 2013 Julien Bect
 ## Copyright (C) 2012 Rik Wehbring
 ## Copyright (C) 1995-2012 Kurt Hornik
 ##
@@ -51,11 +52,26 @@ function cdf = tcdf (x, n)
   endif
 
   k = !isinf (x) & (n > 0);
+
+  xx = x .^ 2;
+  x_big_abs = (xx > n);
+
+  ## deal with the case "abs(x) big"
+  kk = k & x_big_abs;
   if (isscalar (n))
-    cdf(k) = betainc (1 ./ (1 + x(k) .^ 2 / n), n/2, 1/2) / 2;
+    cdf(kk) = betainc (n ./ (n + xx(kk)), n/2, 1/2) / 2;
   else
-    cdf(k) = betainc (1 ./ (1 + x(k) .^ 2 ./ n(k)), n(k)/2, 1/2) / 2;
+    cdf(kk) = betainc (n(kk) ./ (n(kk) + xx(kk)), n(kk)/2, 1/2) / 2;
   endif
+
+  ## deal with the case "abs(x) small"
+  kk = k & !x_big_abs;
+  if (isscalar (n))
+    cdf(kk) = 0.5 * (1 - betainc (xx(kk) ./ (n + xx(kk)), 1/2, n/2));
+  else
+    cdf(kk) = 0.5 * (1 - betainc (xx(kk) ./ (n(kk) + xx(kk)), 1/2, n(kk)/2));
+  endif
+
   k &= (x > 0);
   if (any (k(:)))
     cdf(k) = 1 - cdf(k);
@@ -91,4 +107,54 @@ endfunction
 %!error tcdf (ones (2), ones (3))
 %!error tcdf (i, 2)
 %!error tcdf (2, i)
+
+## Check some reference values
+
+%!shared tol_rel
+%! tol_rel = 10 * eps;
+
+## check accuracy for small positive values
+%!assert (tcdf (10^(-10), 2.5), 0.50000000003618087, -tol_rel)
+%!assert (tcdf (10^(-11), 2.5), 0.50000000000361809, -tol_rel)
+%!assert (tcdf (10^(-12), 2.5), 0.50000000000036181, -tol_rel)
+%!assert (tcdf (10^(-13), 2.5), 0.50000000000003618, -tol_rel)
+%!assert (tcdf (10^(-14), 2.5), 0.50000000000000362, -tol_rel)
+%!assert (tcdf (10^(-15), 2.5), 0.50000000000000036, -tol_rel)
+%!assert (tcdf (10^(-16), 2.5), 0.50000000000000004, -tol_rel)
+
+## check accuracy for large negative values
+%!assert (tcdf (-10^1, 2.5), 2.2207478836537124e-03, -tol_rel)
+%!assert (tcdf (-10^2, 2.5), 7.1916492116661878e-06, -tol_rel)
+%!assert (tcdf (-10^3, 2.5), 2.2747463948307452e-08, -tol_rel)
+%!assert (tcdf (-10^4, 2.5), 7.1933970159922115e-11, -tol_rel)
+%!assert (tcdf (-10^5, 2.5), 2.2747519231756221e-13, -tol_rel)
+
+## # Reference values obtained using Python 2.7.4 and mpmath 0.17
+##
+## from mpmath import *
+##
+## mp.dps = 100
+##
+## def F(x_in, nu_in):
+##     x = mpf(x_in);
+##     nu = mpf(nu_in);
+##     t = nu / (nu + x*x)
+##     a = nu / 2
+##     b = mpf(0.5)
+##     F = betainc(a, b, 0, t, regularized=True) / 2
+##     if (x > 0):
+##         F = 1 - F
+##     return F
+##
+## nu = 2.5
+##
+## for i in range(1, 6):
+##     x = - power(mpf(10), mpf(i))
+##     print "%%!assert (tcdf (-10^%d, 2.5), %s, -eps)" \
+##         % (i, nstr(F(x, nu), 17))
+##
+## for i in range(10, 17):
+##     x = power(mpf(10), -mpf(i))
+##     print "%%!assert (tcdf (10^(-%d), 2.5), %s, -eps)" \
+##         % (i, nstr(F(x, nu), 17))
 

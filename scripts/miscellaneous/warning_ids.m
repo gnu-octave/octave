@@ -177,7 +177,7 @@
 ## compatibility problems with @sc{matlab}.
 ## By default, the @code{Octave:matlab-incompatible} warning is disabled.
 ## The --traditional or --braindead startup options for Octave may also
-## be of use, @xref{Command Line Options}.
+## be of use, @pxref{Command Line Options}.
 ##
 ## @item Octave:md5sum-file-in-path
 ## By default, the @code{Octave:md5sum-file-in-path} warning is enabled.
@@ -333,6 +333,8 @@
 ## expression.
 ## By default, the @code{Octave:variable-switch-label} warning is disabled.
 ## @end table
+##
+
 
 function warning_ids ()
   help ("warning_ids");

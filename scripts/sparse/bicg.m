@@ -233,11 +233,11 @@ endfunction;
 %! assert (x, ones (size (b)), 1e-7);
 
 %!function y = afun (x, t, a)
-%!  switch t
-%!   case "notransp"
-%!     y = a * x;
-%!   case "transp"
-%!     y = a' * x;
+%!  switch (t)
+%!    case "notransp"
+%!      y = a * x;
+%!    case "transp"
+%!      y = a' * x;
 %!  endswitch
 %!endfunction
 %!

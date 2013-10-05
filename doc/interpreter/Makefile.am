@@ -30,7 +30,7 @@ export TEXINPUTS
 TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"
 export TEXMFCNF
 
-dist_man1_MANS = \
+dist_man_MANS = \
   mkoctfile.1 \
   octave-config.1 \
   octave.1
@@ -225,19 +225,19 @@ contributors.texi: contributors.in
 		cp $(srcdir)/contributors.texi contributors.texi; \
 		touch -r $(srcdir)/contributors.texi contributors.texi; \
 	fi
-	-$(MAKEINFO) -D AUTHORSONLY \
+	-$(MAKEINFO) -D AUTHORSONLY -I $(srcdir) \
 	  --no-validate --no-headers --no-split --output AUTHORS $<
 	mv AUTHORS ../../AUTHORS
 
 ../../BUGS: bugs.texi
 	rm -f BUGS
-	-$(MAKEINFO) -D BUGSONLY \
+	-$(MAKEINFO) -D BUGSONLY -I $(srcdir) \
 	  --no-validate --no-headers --no-split --output BUGS $<
 	mv BUGS ../../BUGS
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
-	-$(MAKEINFO) -D INSTALLONLY \
+	-$(MAKEINFO) -D INSTALLONLY -I $(srcdir) \
 	  --no-validate --no-headers --no-split --output INSTALL $<
 	mv INSTALL ../../INSTALL.OCTAVE
 

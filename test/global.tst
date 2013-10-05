@@ -16,12 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/global/global-1.m
 %!test
 %! global G = 1;
 %! assert (G,1);
 
-%% test/octave.test/global/global-2.m
 %!function f ()
 %!  global G;
 %!  assert (G,1);
@@ -30,7 +28,6 @@
 %! global G = 1;
 %! f;
 
-%% test/octave.test/global/global-3.m
 %!function f ()
 %!  fail ("G");
 %!endfunction
@@ -38,15 +35,13 @@
 %! global G = 1;
 %! f ();
 
-%% test/octave.test/global/global-4.m
 %!function f ()
 %!  global H = 1;
 %!endfunction
 %!test
-%!  f;
-%!  fail ("H");
+%! f;
+%! fail ("H");
 
-%% test/octave.test/global/global-5.m
 %!function f ()
 %!  global H = 1;
 %!endfunction
@@ -56,7 +51,6 @@
 %!test
 %! g ();
 
-%% test/octave.test/global/global-6.m
 %!function f ()
 %!  global H = 1;
 %!endfunction
@@ -68,7 +62,6 @@
 %! f ();
 %! g ();
 
-%% test/octave.test/global/global-7.m
 %!test
 %!function f ()
 %!  global H = 1;
@@ -76,7 +69,6 @@
 %!test
 %! fail ("H");
 
-%% test/octave.test/global/global-8.m
 %!function f ()
 %!  global H = 1;
 %!endfunction

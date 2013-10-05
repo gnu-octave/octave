@@ -43,3 +43,4 @@ function retval = cast (val, typ)
   endif
 
 endfunction
+

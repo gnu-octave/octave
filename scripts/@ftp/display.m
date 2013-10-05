@@ -23,3 +23,4 @@ function display (obj)
   printf ("  dir: %s\n", __ftp_pwd__ (obj.curlhandle));
   printf (" mode: %s\n", __ftp_mode__ (obj.curlhandle));
 endfunction
+

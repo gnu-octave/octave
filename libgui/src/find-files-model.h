@@ -50,11 +50,14 @@ public:
   QVariant headerData (int section, Qt::Orientation orientation,
                        int role = Qt::DisplayRole) const;
 
+  void sort (int column, Qt::SortOrder order=Qt::AscendingOrder);
+
   QFileInfo fileInfo (const QModelIndex & p) const;
   QIcon     fileIcon (const QModelIndex &p) const;
 private:
   QList<QFileInfo> _files;
   QStringList _columnNames;
+  int _sortorder;
 };
 
 #endif // find_files_model_h

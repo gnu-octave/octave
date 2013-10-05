@@ -405,3 +405,4 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   endif
 
 endfunction
+

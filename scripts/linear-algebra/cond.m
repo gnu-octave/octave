@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} cond (@var{A}, @var{p})
 ## Compute the @var{p}-norm condition number of a matrix.
 ##
-## @code{cond (@var{A})} is ## defined as
+## @code{cond (@var{A})} is defined as
 ## @tex
 ## $ {\parallel A \parallel_p * \parallel A^{-1} \parallel_p .} $
 ## @end tex
@@ -29,47 +29,49 @@
 ## @code{norm (@var{A}, @var{p}) * norm (inv (@var{A}), @var{p})}.
 ## @end ifnottex
 ##
-## By default @code{@var{p} = 2} is used which implies a (relatively slow)
+## By default, @code{@var{p} = 2} is used which implies a (relatively slow)
 ## singular value decomposition.  Other possible selections are
 ## @code{@var{p} = 1, Inf, "fro"} which are generally faster.  See
 ## @code{norm} for a full discussion of possible @var{p} values.
+##
+## The condition number of a matrix quantifies the sensitivity of the matrix
+## inversion operation when small changes are made to matrix elements.  Ideally
+## the condition number will be close to 1.  When the number is large this
+## indicates small changes (such as underflow or round-off error) will produce
+## large changes in the resulting output.  In such cases the solution results
+## from numerical computing are not likely to be accurate.
 ## @seealso{condest, rcond, norm, svd}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = cond (A, p)
+function retval = cond (A, p = 2)
 
-  if (nargin && nargin < 3)
-    if (ndims (A) > 2)
-      error ("cond: only valid on 2-D objects");
-    endif
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
 
-    if (nargin <2)
-      p = 2;
-    endif
+  if (ndims (A) > 2)
+    error ("cond: A must be a 2-D matrix");
+  endif
 
-    if (! ischar (p) && p == 2)
-      [nr, nc] = size (A);
-      if (nr == 0 || nc == 0)
-        retval = 0.0;
-      elseif (any (any (isinf (A) | isnan (A))))
-        error ("cond: argument must not contain Inf or NaN values");
-      else
-        sigma   = svd (A);
-        sigma_1 = sigma(1);
-        sigma_n = sigma(end);
-        if (sigma_1 == 0 || sigma_n == 0)
-          retval = Inf;
-        else
-          retval = sigma_1 / sigma_n;
-        endif
-      endif
+  if (p == 2)
+    if (isempty (A))
+      retval = 0.0;
+    elseif (any (! isfinite (A(:))))
+      error ("cond: A must not contain Inf or NaN values");
     else
-      retval = norm (A, p) * norm (inv (A), p);
+      sigma   = svd (A);
+      sigma_1 = sigma(1);
+      sigma_n = sigma(end);
+      if (sigma_1 == 0 || sigma_n == 0)
+        retval = Inf;
+      else
+        retval = sigma_1 / sigma_n;
+      endif
     endif
   else
-    print_usage ();
+    retval = norm (A, p) * norm (inv (A), p);
   endif
 
 endfunction
@@ -89,4 +91,7 @@ endfunction
 
 %!error cond ()
 %!error cond (1, 2, 3)
+%!error <A must be a 2-D matrix> cond (ones (1,3,3))
+%!error <A must not contain Inf or NaN value> cond ([1, 2;Inf 4])
+%!error <A must not contain Inf or NaN value> cond ([1, 2;NaN 4])
 

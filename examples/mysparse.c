@@ -11,14 +11,14 @@ mexFunction (int nlhs, mxArray *plhs[],
   double *pr2, *pi2;
   mwIndex *ir, *jc;
   mwIndex *ir2, *jc2;
-  
+
   if (nrhs != 1 || ! mxIsSparse (prhs[0]))
     mexErrMsgTxt ("ARG1 must be a sparse matrix");
 
   m = mxGetM (prhs[0]);
   n = mxGetN (prhs[0]);
   nz = mxGetNzmax (prhs[0]);
-  
+
   if (mxIsComplex (prhs[0]))
     {
       mexPrintf ("Matrix is %d-by-%d complex sparse matrix", m, n);
@@ -40,7 +40,7 @@ mexFunction (int nlhs, mxArray *plhs[],
       pi2 = mxGetPi (v);
       ir2 = mxGetIr (v);
       jc2 = mxGetJc (v);
-      
+
       for (i = 0; i < nz; i++)
         {
           pr2[i] = 2 * pr[i];
@@ -72,7 +72,7 @@ mexFunction (int nlhs, mxArray *plhs[],
       pbr2 = mxGetLogicals (v);
       ir2 = mxGetIr (v);
       jc2 = mxGetJc (v);
-      
+
       for (i = 0; i < nz; i++)
         {
           pbr2[i] = pbr[i];
@@ -102,7 +102,7 @@ mexFunction (int nlhs, mxArray *plhs[],
       pr2 = mxGetPr (v);
       ir2 = mxGetIr (v);
       jc2 = mxGetJc (v);
-      
+
       for (i = 0; i < nz; i++)
         {
           pr2[i] = 2 * pr[i];

@@ -40,10 +40,11 @@ function [output, status] = python (scriptfile = "-c ''", varargin)
       scriptfile = file_in_loadpath (scriptfile);
     endif
 
-    [status, output] = system (cstrcat ("python ", scriptfile,
-                                        sprintf (" %s", varargin{:})));
+    [status, output] = system (["python ", scriptfile, ...
+                                sprintf(" %s", varargin{:})]);
   else
     error ("python: invalid arguments");
   endif
 
 endfunction
+

@@ -641,8 +641,8 @@ The default statement in a switch block (similar to else in an if block).\n\
 
   pair_type ("parfor",
     "-*- texinfo -*-\n\
-@deftypefn  {Keyword} {} for @var{i} = @var{range}\n\
-@deftypefnx {Keyword} {} for (@var{i} = @var{range}, @var{maxproc})\n\
+@deftypefn  {Keyword} {} parfor @var{i} = @var{range}\n\
+@deftypefnx {Keyword} {} parfor (@var{i} = @var{range}, @var{maxproc})\n\
 Begin a for loop that may execute in parallel.\n\
 \n\
 @example\n\
@@ -967,7 +967,7 @@ install_built_in_docstrings (void)
   if (file)
     {
       // Ignore header;
-      file.ignore (1000, 0x1f);
+      file.ignore (1000, 0x1d);
 
       if (file.gcount () == 1000)
         {
@@ -988,7 +988,7 @@ install_built_in_docstrings (void)
 
       while (! file.eof ())
         {
-          file.getline (buf, bufsize, 0x1f);
+          file.getline (buf, bufsize, 0x1d);
 
           std::string tmp (buf);
 
@@ -1066,8 +1066,8 @@ DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
 Return the raw help text of function @var{name}.\n\
 \n\
 The raw help text is returned in @var{text} and the format in @var{format}\n\
-The format is a string which is one of @t{\"texinfo\"}, @t{\"html\"}, or\n\
-@t{\"plain text\"}.\n\
+The format is a string which is one of @qcode{\"texinfo\"},\n\
+@qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1135,8 +1135,8 @@ DEFUN (get_help_text_from_file, args, ,
 Return the raw help text from the file @var{fname}.\n\
 \n\
 The raw help text is returned in @var{text} and the format in @var{format}\n\
-The format is a string which is one of @t{\"texinfo\"}, @t{\"html\"}, or\n\
-@t{\"plain text\"}.\n\
+The format is a string which is one of @qcode{\"texinfo\"},\n\
+@qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1398,9 +1398,9 @@ The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
 @samp{--doc-cache-file FNAME}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{doc_cache_create, lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1422,9 +1422,9 @@ The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument\n\
 @samp{--texi-macros-file FNAME}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1444,9 +1444,9 @@ The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
 @samp{--info-file FNAME}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1468,9 +1468,9 @@ default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
 @samp{--info-program NAME}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1486,9 +1486,9 @@ Query or set the internal variable that specifies the name of the\n\
 program that Octave runs to format help text containing\n\
 Texinfo markup commands.  The default value is @code{makeinfo}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{texi_macros_file, info_file, info_program, doc, help}\n\
 @end deftypefn")
 {
@@ -1504,9 +1504,9 @@ Query or set the internal variable that controls whether Octave\n\
 will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);

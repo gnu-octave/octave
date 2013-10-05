@@ -22,8 +22,8 @@
 function [x, map] = ind2x (caller, x, map)
 
   ## Check if X is an indexed image.
-  ## an indexed image is defined has having only 2D, and that's how matlab
-  ## behaves. But we want to support ND images, so we will allow up to 4D
+  ## an indexed image is defined has having only 2D, and that's how Matlab
+  ## behaves.  But we want to support ND images, so we will allow up to 4D
   ## and check that the 3rd is a singleton
   if (all (ndims (x) != [2 4]) || size (x, 3) != 1 || issparse (x) ||
       (isfloat (x) && ! isindex (x)) ||
@@ -51,9 +51,10 @@ function [x, map] = ind2x (caller, x, map)
 
   num_colors = rows (map);
   if (num_colors < maxidx)
-    ## Pad with the last color in the map for matlab compatibility
+    ## Pad with the last color in the map for Matlab compatibility
     pad = repmat (map(end,:), maxidx - num_colors, 1);
     map(end+1:maxidx, :) = pad;
   endif
 
 endfunction
+

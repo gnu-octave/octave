@@ -29,16 +29,16 @@
 ## output is always a column vector.  @var{x} may also be a cell array of
 ## strings.
 ##
-## If the optional argument @code{"rows"} is supplied, return the unique
+## If the optional argument @qcode{"rows"} is supplied, return the unique
 ## rows of @var{x}, sorted in ascending order.
 ##
 ## If requested, return index vectors @var{i} and @var{j} such that
 ## @code{x(i)==y} and @code{y(j)==x}.
 ##
-## Additionally, if @var{i} is a requested output then one of @code{"first"} or
-## @code{"last"} may be given as an input.  If @code{"last"} is specified,
-## return the highest possible indices in @var{i}, otherwise, if @code{"first"}
-## is specified, return the lowest.  The default is @code{"last"}.
+## Additionally, if @var{i} is a requested output then one of @qcode{"first"} or
+## @qcode{"last"} may be given as an input.  If @qcode{"last"} is specified,
+## return the highest possible indices in @var{i}, otherwise, if @qcode{"first"}
+## is specified, return the lowest.  The default is @qcode{"last"}.
 ## @seealso{union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
@@ -221,3 +221,4 @@ endfunction
 %!error unique({"a", "b", "c"}, "UnknownOption1", "UnknownOption2")
 %!error unique({"a", "b", "c"}, "rows", "UnknownOption2")
 %!error unique({"a", "b", "c"}, "UnknownOption1", "last")
+

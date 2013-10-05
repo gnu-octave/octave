@@ -26,9 +26,7 @@
 ## @end deftypefn
 
 function [ver, url] = get_forge_pkg (name)
-  if (nargin != 1)
-    print_usage ();
-  endif
+
   ## Verify that name is valid.
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
     error ("get_forge_pkg: package NAME must be a string");
@@ -51,9 +49,9 @@ function [ver, url] = get_forge_pkg (name)
     else
       ver = t{1}{1};
       if (nargout > 1)
-        # Build download string.
+        ## Build download string.
         pkg_file = sprintf ("%s-%s.tar.gz", name, ver);
-        url = cstrcat ("http://packages.octave.org/download/", pkg_file);
+        url = ["http://packages.octave.org/download/" pkg_file];
         ## Verify that the package string exists on the page.
         if (isempty (strfind (html, pkg_file)))
           warning ("get_forge_pkg: download URL not verified");
@@ -80,3 +78,4 @@ function [ver, url] = get_forge_pkg (name)
   endif
 
 endfunction
+

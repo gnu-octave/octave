@@ -1,4 +1,5 @@
 ## Copyright (C) 2008-2012 John W. Eaton
+## Copyright (C) 2013 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -18,166 +19,75 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} imwrite (@var{img}, @var{filename})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename}, @dots{})
+## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{ext})
+## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename})
+## @deftypefnx {Function File} {} imwrite (@dots{}, @var{param1}, @var{val1}, @dots{})
 ## Write images in various file formats.
 ##
-## If @var{fmt} is not supplied, the file extension of @var{filename} is used
-## to determine the format.
+## The image @var{img} can be a binary, grayscale, RGB, or multi-dimensional
+## image.  The size and class of @var{img} should be the same as what should
+## be expected when reading it with @code{imread}: the 3rd and 4th dimensions
+## reserved for color space, and multiple pages respectively.  If it's an
+## indexed image, the colormap @var{map} must also be specified.
 ##
-## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional.
-## Currently the following options are supported for @t{JPEG} images:
+## If @var{ext} is not supplied, the file extension of @var{filename} is used
+## to determine the format.  The actual supported formats are dependent on
+## options made during the build of Octave.  Use @code{imformats} to check
+## the support of the different image formats.
+##
+## Depending on the file format, it is possible to configure the writing
+## of images with @var{param}, @var{val} pairs.  The following options
+## are supported:
 ##
 ## @table @samp
+## @item Alpha
+## Alpha (transparency) channel for the image.  This must be a matrix with
+## same class, and number of rows and columns of @var{img}.  In case of a
+## multipage image, the size of the 4th dimension must also match and the third
+## dimension must be a singleton.  By default, image will be completely
+## opaque.
+##
 ## @item Quality
 ## Set the quality of the compression.  The value should be an
 ## integer between 0 and 100, with larger values indicating higher visual
-## quality and lower compression.
+## quality and lower compression.  Defaults to 75.
+##
+## @item WriteMode
+## Some file formats, such as TIFF and GIF, are able to store multiple
+## images in a single file.  This option specifies if @var{img} should be
+## appended to the file (if it exists) or if a new file should be created
+## for it (possibly overwriting an existing file).  The value should be
+## the string @qcode{"Overwrite"} (default), or @qcode{"Append"}.
+##
+## Despite this option, the most efficient method of writing a multipage
+## image is to pass a 4 dimensional @var{img} to @code{imwrite}, the
+## same matrix that could be expected when using @code{imread} with the
+## option @qcode{"Index"} set to @qcode{"all"}.
+##
 ## @end table
 ##
-## @strong{Supported Formats}
-## @multitable @columnfractions .33 .66
-## @headitem Extension @tab Format
-## @item bmp @tab Windows Bitmap
-## @item gif @tab Graphics Interchange Format
-## @item jpg and jpeg @tab Joint Photographic Experts Group
-## @item pbm @tab Portable Bitmap
-## @item pcx @tab
-## @item pgm @tab Portable Graymap
-## @item png @tab Portable Network Graphics
-## @item pnm @tab Portable Anymap
-## @item ppm @tab Portable Pixmap
-## @item ras @tab Sun Raster
-## @item tif and tiff @tab Tagged Image File Format
-## @item xwd @tab X11 Dump
-## @end multitable
-##
-## @strong{Unsupported Formats}
-## @multitable @columnfractions .33 .66
-## @headitem Extension @tab Format
-## @item hdf @tab Hierarchical Data Format V4
-## @item @nospell{jp2} and jpx @tab Joint Photographic Experts Group 2000
-## @end multitable
-##
-## @seealso{imread, imfinfo}
+## @seealso{imread, imfinfo, imformats}
 ## @end deftypefn
 
-function imwrite (img, varargin)
-
-  persistent imwrite_possible_formats = {
-    "bmp"; "gif"; "jp2"; "jpg"; "jpx"; "jpeg"; "hdf"; "pbm"; "pcx";
-    "pgm"; "png"; "pnm"; "ppm"; "ras"; "tif"; "tiff"; "xwd" };
-
-  persistent accepted_formats = __magick_format_list__ (imwrite_possible_formats);
-
-  if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
+function imwrite (varargin)
+  if (nargin < 2)
     print_usage ();
   endif
+  [filename, ext] = imwrite_filename (varargin{2:end});
 
-  map = [];
-  fmt = "";
-
-  offset = 1;
-  if (isnumeric (varargin{1}))
-    map = varargin{1};
-    if (isempty (map))
-      error ("imwrite: colormap must not be empty");
+  fmt = imformats (ext);
+  ## When there is no match, fmt will be a 1x1 structure with
+  ## no fields, so we can't just use `isempty (fmt)'.
+  if (isempty (fieldnames (fmt)))
+    if (isempty (ext))
+      error ("imwrite: no extension found for %s to identify the image format",
+             filename);
     endif
-    offset = 2;
-  endif
-  if (offset <= length (varargin) && ischar (varargin{offset}))
-    filename = varargin{offset};
-    offset++;
-    if (rem (length (varargin) - offset, 2) == 0 && ischar (varargin{offset}))
-      fmt = varargin{offset};
-      offset++;
-    endif
+    warning ("imwrite: unlisted image format %s (see imformats). Trying to save anyway.",
+             ext);
+    __imwrite__ (varargin{:});
   else
-    print_usage ();
-  endif
-  if (offset < length (varargin))
-    has_param_list = 1;
-    for ii = offset:2:(length (varargin) - 1)
-      options.(varargin{ii}) = varargin{ii + 1};
-    endfor
-  else
-    has_param_list = 0;
-  endif
-
-  filename = tilde_expand (filename);
-
-  if (isempty (fmt))
-    [d, n, fmt] = fileparts (filename);
-    if (! isempty (fmt))
-      fmt = fmt(2:end);
-    endif
-  endif
-
-  if (isempty (img))
-    error ("imwrite: invalid empty image");
-  endif
-
-  if (issparse (img) || issparse (map))
-    error ("imwrite: sparse images not supported");
-  endif
-
-  if (! strcmp (fmt, accepted_formats))
-    error ("imwrite: %s: unsupported or invalid image format", fmt);
-  endif
-
-  img_class = class (img);
-  map_class = class (map);
-  nd = ndims (img);
-
-  if (isempty (map))
-    if (any (strcmp (img_class, {"logical", "uint8", "uint16", "double"})))
-      if ((nd == 2 || nd == 3) && strcmp (img_class, "double"))
-        img = uint8 (img * 255);
-      endif
-      ## FIXME: should we handle color images with alpha channel here?
-      if (nd == 3 && size (img, 3) < 3)
-        error ("imwrite: invalid dimensions for truecolor image");
-      endif
-      if (nd > 5)
-        error ("imwrite: invalid %d-dimensional image data", nd);
-      endif
-    else
-      error ("imwrite: %s: invalid class for truecolor image", img_class);
-    endif
-    if (has_param_list)
-      __magick_write__ (filename, fmt, img, options);
-    else
-      __magick_write__ (filename, fmt, img);
-    endif
-  else
-    if (any (strcmp (img_class, {"uint8", "uint16", "double"})))
-      if (strcmp (img_class, "double"))
-        img = uint8 (img - 1);
-      endif
-      if (nd != 2 && nd != 4)
-        error ("imwrite: invalid size for indexed image");
-      endif
-    else
-      error ("imwrite: %s: invalid class for indexed image data", img_class);
-    endif
-    if (! iscolormap (map))
-      error ("imwrite: invalid indexed image colormap");
-    endif
-
-    ## FIXME: we should really be writing indexed images here but
-    ##        __magick_write__ needs to be fixed to handle them.
-
-    [r, g, b] = ind2rgb (img, map);
-    tmp = uint8 (cat (3, r, g, b) * 255);
-
-    if (has_param_list)
-      __magick_write__ (filename, fmt, tmp, options);
-      ## __magick_write__ (filename, fmt, img, map, options);
-    else
-      __magick_write__ (filename, fmt, tmp);
-      ## __magick_write__ (filename, fmt, img, map);
-    endif
+    fmt.write (varargin{:});
   endif
 
 endfunction
@@ -193,4 +103,15 @@ endfunction
 %!error imwrite (1, "filename", "junk")       # Invalid fmt specified
 %!error imwrite ([], "filename.jpg")          # Empty img matrix
 %!error imwrite (spones (2), "filename.jpg")  # Invalid sparse img
+
+%!testif HAVE_MAGICK
+%! imw = randi (255, 100, "uint8");
+%! filename = [tmpnam() ".png"];
+%! unwind_protect
+%!   imwrite (imw, filename);
+%!   imr = imread (filename);
+%! unwind_protect_cleanup
+%!   unlink (filename);
+%! end_unwind_protect
+%! assert (imw, imr)
 

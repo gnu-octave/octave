@@ -94,9 +94,7 @@ called with no arguments to should return a value object.  So for example
 our polynomial might look like
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/polynomial.m)
-@end group
 @end example
 
 Note that the return value of the constructor must be the output of
@@ -177,9 +175,7 @@ then Octave will printed nothing when displaying the contents of a class.
 An example of a display method for the polynomial class might be
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/display.m)
-@end group
 @end example
 
 @noindent
@@ -195,9 +191,7 @@ argument of the appropriate class it should return a structure with
 all of the properties of the class.  For example:
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/get.m)
-@end group
 @end example
 
 @noindent
@@ -205,9 +199,7 @@ Similarly, the @code{set} method should taken as its first argument an
 object to modify, and then take property/value pairs to be modified. 
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/set.m)
-@end group
 @end example
 
 @noindent
@@ -276,15 +268,13 @@ determined by the @code{subsref} method.
 
 @DOCSTRING(subsref)
 
-For example we might decide that indexing with "()" evaluates the
-polynomial and indexing with "@{@}" returns the @var{n}-th coefficient (of
-@var{n}-th power).  In this case the @code{subsref} method of our polynomial
-class might look like
+For example we might decide that indexing with @qcode{"()"} evaluates the
+polynomial and indexing with @qcode{"@{@}"} returns the @var{n}-th coefficient
+(of @var{n}-th power).  In this case the @code{subsref} method of our
+polynomial class might look like
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/subsref.m)
-@end group
 @end example
 
 The equivalent functionality for subscripted assignments uses the 
@@ -640,21 +630,19 @@ For example with our polynomial class consider the case
 @end example
 
 @noindent
-That mixes an object of the class "double" with an object of the class
-"polynomial".  In this case we like to ensure that the return type of
-the above is of the type "polynomial" and so we use the
+That mixes an object of the class @qcode{"double"} with an object of the class
+@qcode{"polynomial"}.  In this case we like to ensure that the return type of
+the above is of the type @qcode{"polynomial"} and so we use the
 @code{superiorto} function in the class constructor.  In particular our
 polynomial class constructor would be modified to be
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/polynomial_superiorto.m)
-@end group
 @end example
 
 Note that user classes always have higher precedence than built-in
 Octave types.  So in fact marking our polynomial class higher than the 
-"double" class is in fact not necessary.
+@qcode{"double"} class is in fact not necessary.
 
 When faced with two objects that have the same precedence, Octave will use the
 method of the object that appears first on the list of arguments.
@@ -692,9 +680,7 @@ The equivalent class could be implemented in a class directory
 FIRfilter.m in the class directory.
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/FIRfilter.m)
-@end group
 @end example
 
 As before, the leading comments provide command-line documentation for
@@ -758,12 +744,10 @@ underlying struct are private by default, we could provide a mechanism
 to access the fields.  The @code{subsref} method may be used for both.
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/subsref.m)
-@end group
 @end example
 
-The "()" case allows us to filter data using the polynomial provided
+The @qcode{"()"} case allows us to filter data using the polynomial provided
 to the constructor.
 
 @example
@@ -781,7 +765,7 @@ y =
 @end group
 @end example
 
-The "." case allows us to view the contents of the polynomial field.
+The @qcode{"."} case allows us to view the contents of the polynomial field.
 
 @example
 @group
@@ -819,9 +803,7 @@ polynomial is simply a field in the class structure.  A class
 constructor for this case might be
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/FIRfilter_aggregation.m)
-@end group
 @end example
 
 For our example, the remaining class methods remain unchanged.

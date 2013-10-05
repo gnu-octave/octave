@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 S�ren Hauberg
+## Copyright (C) 2005-2012 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ## Copyright (C) 2012 Carlo de Falco
 ##
@@ -137,8 +137,9 @@
 ## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## The option "-forge" lists packages available at the Octave-Forge repository.
-## This requires an internet connection and the cURL library.  For example:
+## The option @qcode{"-forge"} lists packages available at the Octave-Forge
+## repository.  This requires an internet connection and the cURL library. 
+## For example:
 ##
 ## @example
 ## oct_forge_pkgs = pkg ("list", "-forge")
@@ -146,7 +147,7 @@
 ##
 ## @item describe
 ## Show a short description of the named installed packages, with the option
-## "-verbose" also list functions provided by the package.  For example,
+## @qcode{"-verbose"} also list functions provided by the package.  For example,
 ##
 ## @example
 ## pkg describe -verbose all
@@ -171,8 +172,9 @@
 ## @end example
 ##
 ## @noindent
-## @var{flag} will take one of the values "Not installed", "Loaded" or
-## "Not loaded" for each of the named packages.
+## @var{flag} will take one of the values @qcode{"Not installed"},
+## @qcode{"Loaded"}, or
+## @qcode{"Not loaded"} for each of the named packages.
 ##
 ## @item prefix
 ## Set the installation prefix directory.  For example,
@@ -554,3 +556,4 @@ function [local_packages, global_packages] = pkg (varargin)
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
   endswitch
 endfunction
+

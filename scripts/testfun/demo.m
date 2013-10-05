@@ -28,9 +28,9 @@
 ## Examples are stored in the script file, or in a file with the same
 ## name but no extension located on Octave's load path.  To keep examples
 ## separate from regular script code, all lines are prefixed by @code{%!}.  Each
-## example must also be introduced by the keyword 'demo' flush left to the
-## prefix with no intervening spaces.  The remainder of the example can
-## contain arbitrary Octave code.  For example:
+## example must also be introduced by the keyword @qcode{"demo"} flush left
+## to the prefix with no intervening spaces.  The remainder of the example
+## can contain arbitrary Octave code.  For example:
 ##
 ## @example
 ## @group
@@ -67,8 +67,8 @@
 ## rather than just anonymous functions or inline functions, you will have to
 ## use @code{eval (example ("function",n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
-## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
-## with the 'if' on the same line as 'demo'.  For example:
+## multiple lines, you must wrap your demo in @qcode{"if 1 <demo stuff> endif"}
+## with the @qcode{"if"} on the same line as @qcode{"demo"}.  For example:
 ##
 ## @example
 ## @group
@@ -128,7 +128,7 @@ function demo (name, n)
     try
       block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
       ## Use an environment without variables
-      eval (cstrcat ("function __demo__ ()\n", block, "\nendfunction"));
+      eval (["function __demo__()\n" block "\nendfunction"]);
       ## Display the code that will be executed before executing it
       printf ("%s example %d:%s\n\n", name, doidx(i), block);
       __demo__;

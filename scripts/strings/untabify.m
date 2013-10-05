@@ -61,7 +61,7 @@ function s = untabify (t, tw = 8, dblank = false)
   if (ischar (t))
     s = replace_tabs (t, tw);
   else
-    s = cellfun (@(str) replace_tabs (str, tw), t, "uniformoutput", false);
+    s = cellfun (@replace_tabs, t, {tw}, "uniformoutput", false);
   endif
 
   if (dblank)

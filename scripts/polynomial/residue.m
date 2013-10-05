@@ -160,7 +160,7 @@ function [r, p, k, e] = residue (b, a, varargin)
     ## The inputs are the residue, pole, and direct part. Solve for the
     ## corresponding numerator and denominator polynomials
     [r, p] = rresidue (b, a, varargin{1}, toler, e);
-    return
+    return;
   endif
 
   ## Make sure both polynomials are in reduced form.

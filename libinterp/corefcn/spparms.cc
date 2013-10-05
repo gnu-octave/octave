@@ -97,9 +97,9 @@ Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
 The value of individual keys can be set with\n\
 @code{spparms (@var{key}, @var{val})}.\n\
 The default values can be restored with the special keyword\n\
-\"defaults\".  The special keyword \"tight\" can be used to set the mmd\n\
-solvers to attempt a sparser solution at the potential cost of longer\n\
-running time.\n\
+@qcode{\"defaults\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
+set the mmd solvers to attempt a sparser solution at the potential cost of\n\
+longer running time.\n\
 @end deftypefn")
 {
   octave_value_list retval;

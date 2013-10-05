@@ -35,7 +35,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
     wd = pwd ();
     unwind_protect
       cd (prefix);
-      dirlist = glob (cellfun(@(x) cstrcat (x, '-*'), files, 'uniformoutput', 0));
+      dirlist = glob (strcat (files, '-*'));
     unwind_protect_cleanup
       cd (wd);
     end_unwind_protect
@@ -49,8 +49,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
     if (exist (descfile, "file"))
       desc = get_description (descfile);
       desc.dir = fullfile (prefix, dirlist{k});
-      desc.archprefix = fullfile (archprefix, cstrcat (desc.name, "-",
-                                  desc.version));
+      desc.archprefix = fullfile (archprefix, [desc.name "-" desc.version]);
       if (auto != 0)
         if (exist (fullfile (desc.dir, "packinfo", ".autoload"), "file"))
           unlink (fullfile (desc.dir, "packinfo", ".autoload"));
@@ -98,3 +97,4 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
     endif
   endif
 endfunction
+

@@ -32,7 +32,7 @@
 ##
 ## @end ifnottex
 ## and return it as a string or write it to the screen (if @var{nargout} is
-## zero).  @var{x} defaults to the string @code{"s"}.
+## zero).  @var{x} defaults to the string @qcode{"s"}.
 ## @seealso{polyreduce}
 ## @end deftypefn
 

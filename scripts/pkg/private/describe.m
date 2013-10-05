@@ -29,7 +29,6 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
   installed_pkgs_lst = installed_packages(local_list, global_list);
   num_packages = length (installed_pkgs_lst);
 
-
   describe_all = false;
   if (any (strcmp ("all", pkgnames)))
     describe_all = true;
@@ -85,3 +84,4 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
   endif
 
 endfunction
+

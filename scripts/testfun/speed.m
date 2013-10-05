@@ -187,14 +187,14 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
   do_display = (nargout == 0);
 
   if (do_display)
-    disp (cstrcat ("testing ", __f1, "\ninit: ", __init));
+    disp (["testing " __f1 "\ninit: " __init]);
   endif
 
   ## Add semicolon closure to all code fragments in case user has not done so.
-  __init = cstrcat (__init, ";");
-  __f1 = cstrcat (__f1, ";");
+  __init(end+1) = ";";
+  __f1(end+1) = ";";
   if (! isempty (__f2))
-    __f2 = cstrcat (__f2, ";");
+    __f2(end+1) = ";";
   endif
 
   ## Make sure the functions are freshly loaded by evaluating them at
@@ -217,19 +217,19 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
       fflush (stdout);
     endif
 
-    eval (cstrcat ("__t = time();", __f1, "__v1=ans; __t = time()-__t;"));
+    eval (["__t = time();" __f1 "__v1=ans; __t = time()-__t;"]);
     if (__t < 0.25)
-      eval (cstrcat ("__t2 = time();", __f1, "__t2 = time()-__t2;"));
-      eval (cstrcat ("__t3 = time();", __f1, "__t3 = time()-__t3;"));
+      eval (["__t2 = time();" __f1 "__t2 = time()-__t2;"]);
+      eval (["__t3 = time();" __f1 "__t3 = time()-__t3;"]);
       __t = min ([__t, __t2, __t3]);
     endif
     __tnew(k) = __t;
 
     if (! isempty (__f2))
-      eval (cstrcat ("__t = time();", __f2, "__v2=ans; __t = time()-__t;"));
+      eval (["__t = time();" __f2 "__v2=ans; __t = time()-__t;"]);
       if (__t < 0.25)
-        eval (cstrcat ("__t2 = time();", __f2, "__t2 = time()-__t2;"));
-        eval (cstrcat ("__t3 = time();", __f2, "__t3 = time()-__t3;"));
+        eval (["__t2 = time();" __f2 "__t2 = time()-__t2;"]);
+        eval (["__t3 = time();" __f2 "__t3 = time()-__t3;"]);
         __t = min ([__t, __t2, __t3]);
       endif
       __torig(k) = __t;
@@ -280,27 +280,25 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
     loglog (__test_n, __tnew*1000, "*-g;execution time;");
     xlabel ("test length");
     ylabel ("best execution time (ms)");
-    title ({__f1, cstrcat("init: ", __init)});
+    title ({__f1, ["init: " __init]});
 
   elseif (do_display)
 
     subplot (1, 2, 1);
     semilogx (__test_n, __torig./__tnew,
-              cstrcat ("-*r;", strrep (__f1, ";", "."), " / ",
-                       strrep (__f2, ";", "."), ";"),
-               __test_n, __tnew./__torig,
-              cstrcat ("-*g;", strrep (__f2, ";", "."), " / ",
-                       strrep (__f1, ";", "."), ";"));
+             ["-*r;" strrep(__f1, ";", ".") " / " strrep(__f2, ";", ".") ";"],
+              __test_n, __tnew./__torig,
+             ["-*g;", strrep(__f2, ";", ".") " / " strrep(__f1, ";", ".") ";"]);
     title ("Speedup Ratio");
     xlabel ("test length");
     ylabel ("speedup ratio");
 
     subplot (1, 2, 2);
     loglog (__test_n, __tnew*1000,
-            cstrcat ("*-g;", strrep (__f1, ";", "."), ";"),
+            ["*-g;" strrep(__f1,";",".") ";"],
             __test_n, __torig*1000,
-            cstrcat ("*-r;", strrep (__f2,";","."), ";"));
-    title ({"Execution Times", cstrcat("init: ", __init)});
+            ["*-r;" strrep(__f2,";",".") ";"]);
+    title ({"Execution Times", ["init: " __init]});
     xlabel ("test length");
     ylabel ("best execution time (ms)");
 

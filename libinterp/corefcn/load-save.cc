@@ -269,6 +269,20 @@ get_file_format (std::istream& file, const std::string& filename)
 
               if (! tmp.empty ())
                 retval = LS_ASCII;
+              else
+                {
+                  file.clear ();
+                  file.seekg (0, std::ios::beg);
+
+                  // FIXME -- looks_like_mat_ascii_file does not check to see
+                  // whether the file contains numbers.  It just skips comments and
+                  // checks for the same number of words on each line.  We may need
+                  // a better check here.  The best way to do that might be just
+                  // to try to read the file and see if it works.
+
+                  if (looks_like_mat_ascii_file (file, filename))
+                    retval = LS_MAT_ASCII;
+                }
             }
         }
     }
@@ -288,39 +302,36 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
     return LS_HDF5;
 #endif /* HAVE_HDF5 */
 
-  std::ifstream file (fname.c_str ());
-  use_zlib = false;
-
-  if (file)
-    {
-      retval = get_file_format (file, orig_fname);
-      file.close ();
-
 #ifdef HAVE_ZLIB
-      if (retval == LS_UNKNOWN && check_gzip_magic (fname))
-        {
-          gzifstream gzfile (fname.c_str ());
-          use_zlib = true;
-
-          if (gzfile)
-            {
-              retval = get_file_format (gzfile, orig_fname);
-              gzfile.close ();
-            }
-        }
+  use_zlib = check_gzip_magic (fname);
+#else
+  use_zlib = false;
 #endif
 
-      // FIXME -- looks_like_mat_ascii_file does not check to see
-      // whether the file contains numbers.  It just skips comments and
-      // checks for the same number of words on each line.  We may need
-      // a better check here.  The best way to do that might be just
-      // to try to read the file and see if it works.
-
-      if (retval == LS_UNKNOWN && looks_like_mat_ascii_file (fname))
-        retval = LS_MAT_ASCII;
+  if (! use_zlib)
+    {
+      std::ifstream file (fname.c_str ());
+      if (file)
+        {
+          retval = get_file_format (file, orig_fname);
+          file.close ();
+        }
+      else if (! quiet)
+        gripe_file_open ("load", orig_fname);
     }
-  else if (! quiet)
-    gripe_file_open ("load", orig_fname);
+#ifdef HAVE_ZLIB
+  else
+    {
+      gzifstream gzfile (fname.c_str ());
+      if (gzfile)
+        {
+          retval = get_file_format (gzfile, orig_fname);
+          gzfile.close ();
+        }
+      else if (! quiet)
+        gripe_file_open ("load", orig_fname);
+    }
+#endif
 
   return retval;
 }
@@ -617,7 +628,7 @@ This option is accepted for backward compatibility but is ignored.\n\
 Octave can now support multi-dimensional HDF data and automatically\n\
 modifies variable names if they are invalid Octave identifiers.\n\
 \n\
-@item -mat\n\
+@item  -mat\n\
 @itemx -mat-binary\n\
 @itemx -6\n\
 @itemx -v6\n\
@@ -1315,6 +1326,8 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
     {
       for (int i = argv_idx; i < argc; i++)
         {
+          if (argv[i] == "")
+            continue;  // Skip empty vars for Matlab compatibility
           if (! save_vars (os, argv[i], fmt, save_as_floats))
             warning ("save: no such variable '%s'", argv[i].c_str ());
         }
@@ -1509,20 +1522,20 @@ Save the data in @sc{hdf5} format but only using single precision.\n\
 Only use this format if you know that all the\n\
 values to be saved can be represented in single precision.\n\
 \n\
-@item -V7\n\
+@item  -V7\n\
 @itemx -v7\n\
 @itemx -7\n\
 @itemx -mat7-binary\n\
 Save the data in @sc{matlab}'s v7 binary data format.\n\
 \n\
-@item -V6\n\
+@item  -V6\n\
 @itemx -v6\n\
 @itemx -6\n\
 @itemx -mat\n\
 @itemx -mat-binary\n\
 Save the data in @sc{matlab}'s v6 binary data format.\n\
 \n\
-@item -V4\n\
+@item  -V4\n\
 @itemx -v4\n\
 @itemx -4\n\
 @itemx -mat4-binary\n\
@@ -1531,7 +1544,7 @@ Save the data in the binary format written by @sc{matlab} version 4.\n\
 @item -text\n\
 Save the data in Octave's text data format.  (default).\n\
 \n\
-@item -zip\n\
+@item  -zip\n\
 @itemx -z\n\
 Use the gzip algorithm to compress the file.  This works equally on files\n\
 that are compressed with gzip outside of octave, and gzip can equally be\n\
@@ -1761,12 +1774,12 @@ DEFUN (crash_dumps_octave_core, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file \"octave-workspace\" if it\n\
+to save all current variables to the file @file{octave-workspace} if it\n\
 crashes or receives a hangup, terminate or similar signal.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1780,12 +1793,12 @@ DEFUN (save_default_options, args, nargout,
 @deftypefnx {Built-in Function} {} save_default_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
-Typical values include @code{\"-ascii\"}, @code{\"-text -zip\"}.\n\
+Typical values include @qcode{\"-ascii\"}, @qcode{\"-text -zip\"}.\n\
 The default value is @option{-text}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{save}\n\
 @end deftypefn")
 {
@@ -1806,9 +1819,9 @@ then @var{octave_core_file_limit} will be approximately the maximum\n\
 size of the file.  If a text file format is used, then the file could\n\
 be much larger than the limit.  The default value is -1 (unlimited)\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1822,11 +1835,11 @@ DEFUN (octave_core_file_name, args, nargout,
 @deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the file\n\
 used for saving data from the top-level workspace if Octave aborts.\n\
-The default value is @code{\"octave-workspace\"}\n\
+The default value is @qcode{\"octave-workspace\"}\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1844,9 +1857,9 @@ saving the workspace data if Octave aborts.  The value of\n\
 options for the @code{save} function.  The default value is Octave's binary\n\
 format.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
 @end deftypefn")
 {
@@ -1872,9 +1885,9 @@ default value is\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end smallexample\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{strftime, save}\n\
 @end deftypefn")
 {

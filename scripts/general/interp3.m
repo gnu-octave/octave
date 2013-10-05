@@ -28,9 +28,9 @@
 ## array @var{v} represents a value at a location given by the parameters
 ## @var{x}, @var{y}, and @var{z}.  The parameters @var{x}, @var{x}, and
 ## @var{z} are either 3-dimensional arrays of the same size as the array
-## @var{v} in the "meshgrid" format or vectors.  The parameters @var{xi}, etc.
-## respect a similar format to @var{x}, etc., and they represent the points
-## at which the array @var{vi} is interpolated.
+## @var{v} in the @qcode{"meshgrid"} format or vectors.  The parameters
+## @var{xi}, etc. respect a similar format to @var{x}, etc., and they
+## represent the points at which the array @var{vi} is interpolated.
 ##
 ## If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be
 ## @code{x = 1 : size (@var{v}, 2)}, @code{y = 1 : size (@var{v}, 1)} and
@@ -42,25 +42,25 @@
 ## Method is one of:
 ##
 ## @table @asis
-## @item "nearest"
+## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item "linear"
+## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors.
 ##
-## @item "cubic"
+## @item @qcode{"cubic"}
 ## Cubic interpolation from four nearest neighbors (not implemented yet).
 ##
-## @item "spline"
+## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table
 ##
-## The default method is "linear".
+## The default method is @qcode{"linear"}.
 ##
-## If @var{extrap} is the string "extrap", then extrapolate values beyond
-## the endpoints.  If @var{extrap} is a number, replace values beyond the
-## endpoints with that number.  If @var{extrap} is missing, assume NA.
+## If @var{extrap} is the string @qcode{"extrap"}, then extrapolate values
+## beyond the endpoints.  If @var{extrap} is a number, replace values beyond
+## the endpoints with that number.  If @var{extrap} is missing, assume NA.
 ## @seealso{interp1, interp2, spline, meshgrid}
 ## @end deftypefn
 

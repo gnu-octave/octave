@@ -59,6 +59,9 @@ public:
   tree_parameter_list (tree_decl_elt *t)
     : marked_for_varargs (0) { append (t); }
 
+  tree_parameter_list (tree_identifier *id)
+    : marked_for_varargs (0) { append (new tree_decl_elt (id)); }
+
   ~tree_parameter_list (void);
 
   void mark_as_formal_parameters (void);

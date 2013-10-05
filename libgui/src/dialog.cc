@@ -420,7 +420,7 @@ InputDialog::reject (void)
   buttonCancel_clicked ();
 }
 
-FileDialog::FileDialog (const QStringList& filters, const QString& title,
+FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
                         const QString& filename, const QString& dirname,
                         const QString& multimode)
   : QFileDialog()
@@ -456,7 +456,7 @@ FileDialog::FileDialog (const QStringList& filters, const QString& title,
       setAcceptMode (QFileDialog::AcceptOpen);
     }
 
-  setNameFilters (filters);
+  setNameFilters (name_filters);
 
   selectFile (filename);
   
@@ -493,8 +493,8 @@ void FileDialog::accept(void)
 
   path = directory ().absolutePath ();
 
-  QStringList filters = nameFilters ();
-  idx = filters.indexOf (selectedNameFilter ()) + 1;
+  QStringList name_filters = nameFilters ();
+  idx = name_filters.indexOf (selectedNameFilter ()) + 1;
   
   // send the selected info
   emit finish_input (string_result, path, idx);

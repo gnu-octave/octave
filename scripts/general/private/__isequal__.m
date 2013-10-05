@@ -48,10 +48,6 @@
 
 function t = __isequal__ (nans_compare_equal, x, varargin)
 
-  if (nargin < 3)
-    print_usage ();
-  endif
-
   l_v = nargin - 2;
 
   ## Generic tests.
@@ -160,7 +156,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
         t = (l_f_x == length (f_y)) && all (f_x == f_y);
         if (!t)
-          return;
+          break;
         endif
 
         y = y(f_y);
@@ -172,11 +168,18 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         endif
 
         if (!t)
-          return;
+          break;
         endif
       endfor
 
     endif
   endif
 
+  if (!t)
+    t = false;
+  else
+    t = true;
+  endif
+
 endfunction
+

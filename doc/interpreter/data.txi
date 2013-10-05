@@ -35,9 +35,9 @@ new data type for Octave.
 @DOCSTRING(typeinfo)
 
 @menu
-* Built-in Data Types::         
-* User-defined Data Types::     
-* Object Sizes::                
+* Built-in Data Types::
+* User-defined Data Types::
+* Object Sizes::
 @end menu
 
 @node Built-in Data Types
@@ -70,11 +70,11 @@ use of the following functions.
 @DOCSTRING(bitunpack)
 
 @menu
-* Numeric Objects::             
-* Missing Data::                
-* String Objects::              
-* Data Structure Objects::      
-* Cell Array Objects::          
+* Numeric Objects::
+* Missing Data::
+* String Objects::
+* Data Structure Objects::
+* Cell Array Objects::
 @end menu
 
 @node Numeric Objects

@@ -20,6 +20,9 @@
 ## @deftypefn  {Function File} {} rundemos ()
 ## @deftypefnx {Function File} {} rundemos (@var{directory})
 ## Execute built-in demos for all function files in the specified directory.
+## Also executes demos in any C++ source files found in the directory, for
+## use with dynamically linked functions.
+##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
 ## @seealso{runtests, path}
@@ -31,11 +34,16 @@ function rundemos (directory)
 
   if (nargin == 0)
     dirs = ostrsplit (path (), pathsep ());
+    do_class_dirs = true;
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};
+    elseif (is_rooted_relative_filename (directory))
+      dirs = {canonicalize_file_name(directory)};
     else
-      directory = regexprep (directory, ['\',filesep(),'$'], "");
+      if (directory(end) == filesep ())
+        directory = directory(1:end-1);
+      endif
       fullname = find_dir_in_path (directory);
       if (! isempty (fullname))
         dirs = {fullname};
@@ -43,23 +51,25 @@ function rundemos (directory)
         error ("rundemos: DIRECTORY argument must be a valid pathname");
       endif
     endif
+    do_class_dirs = false;
   else
     print_usage ();
   endif
 
   for i = 1:numel (dirs)
     d = dirs{i};
-    run_all_demos (d);
+    run_all_demos (d, do_class_dirs);
   endfor
 
 endfunction
 
-function run_all_demos (directory)
-  dirinfo = dir (directory);
-  flist = {dirinfo.name};
+function run_all_demos (directory, do_class_dirs)
+  flist = readdir (directory);
+  dirs = {};
   for i = 1:numel (flist)
     f = flist{i};
-    if (length (f) > 2 && strcmp (f((end-1):end), ".m"))
+    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
+        (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       f = fullfile (directory, f);
       if (has_demos (f))
         try
@@ -71,8 +81,21 @@ function run_all_demos (directory)
           input ("Press <enter> to continue: ", "s");
         endif
       endif
+    elseif (f(1) == "@")
+      f = fullfile (directory, f);
+      if (isdir (f))
+        dirs(end+1) = f;
+      endif
     endif
   endfor
+
+  ## Recurse into class directories since they are implied in the path
+  if (do_class_dirs)
+    for i = 1:numel (dirs)
+      d = dirs{i};
+      run_all_demos (d, false);
+    endfor
+  endif
 endfunction
 
 function retval = has_demos (f)
@@ -80,9 +103,9 @@ function retval = has_demos (f)
   if (f < 0)
     error ("rundemos: fopen failed: %s", f);
   else
-    str = fscanf (fid, "%s");
+    str = fread (fid, "*char").';
     fclose (fid);
-    retval = strfind (str, "%!demo");
+    retval = ! isempty (regexp (str, '^%!demo', 'lineanchors', 'once'));
   endif
 endfunction
 

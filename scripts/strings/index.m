@@ -32,8 +32,8 @@
 ## @end group
 ## @end example
 ##
-## If @var{direction} is @samp{"first"}, return the first element found.
-## If @var{direction} is @samp{"last"}, return the last element found.
+## If @var{direction} is @qcode{"first"}, return the first element found.
+## If @var{direction} is @qcode{"last"}, return the last element found.
 ##
 ## @seealso{find, rindex}
 ## @end deftypefn

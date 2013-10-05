@@ -577,6 +577,137 @@ install_signal_handlers (void)
 
 }
 
+static pid_t gui_pid = 0;
+
+static void
+gui_driver_sig_handler (int sig)
+{
+  if (gui_pid > 0)
+    octave_syscalls::kill (gui_pid, sig);
+}
+
+void
+install_gui_driver_signal_handlers (pid_t pid)
+{
+  gui_pid = pid;
+
+#ifdef SIGINT
+  octave_set_signal_handler (SIGINT, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGBREAK
+  octave_set_signal_handler (SIGBREAK, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGABRT
+  octave_set_signal_handler (SIGABRT, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGALRM
+  octave_set_signal_handler (SIGALRM, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGBUS
+  octave_set_signal_handler (SIGBUS, gui_driver_sig_handler);
+#endif
+
+  // SIGCHLD
+  // SIGCLD
+  // SIGCONT
+
+#ifdef SIGEMT
+  octave_set_signal_handler (SIGEMT, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGFPE
+  octave_set_signal_handler (SIGFPE, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGHUP
+  octave_set_signal_handler (SIGHUP, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGILL
+  octave_set_signal_handler (SIGILL, gui_driver_sig_handler);
+#endif
+
+  // SIGINFO
+  // SIGINT
+
+#ifdef SIGIOT
+  octave_set_signal_handler (SIGIOT, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGLOST
+  octave_set_signal_handler (SIGLOST, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGPIPE
+  octave_set_signal_handler (SIGPIPE, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGPOLL
+  octave_set_signal_handler (SIGPOLL, gui_driver_sig_handler);
+#endif
+
+  // SIGPROF
+  // SIGPWR
+
+#ifdef SIGQUIT
+  octave_set_signal_handler (SIGQUIT, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGSEGV
+  octave_set_signal_handler (SIGSEGV, gui_driver_sig_handler);
+#endif
+
+  // SIGSTOP
+
+#ifdef SIGSYS
+  octave_set_signal_handler (SIGSYS, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGTERM
+  octave_set_signal_handler (SIGTERM, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGTRAP
+  octave_set_signal_handler (SIGTRAP, gui_driver_sig_handler);
+#endif
+
+  // SIGTSTP
+  // SIGTTIN
+  // SIGTTOU
+  // SIGURG
+
+#ifdef SIGUSR1
+  octave_set_signal_handler (SIGUSR1, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGUSR2
+  octave_set_signal_handler (SIGUSR2, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGVTALRM
+  octave_set_signal_handler (SIGVTALRM, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGIO
+  octave_set_signal_handler (SIGIO, gui_driver_sig_handler);
+#endif
+
+  // SIGWINCH
+
+#ifdef SIGXCPU
+  octave_set_signal_handler (SIGXCPU, gui_driver_sig_handler);
+#endif
+
+#ifdef SIGXFSZ
+  octave_set_signal_handler (SIGXFSZ, gui_driver_sig_handler);
+#endif
+
+}
+
 static octave_scalar_map
 make_sig_struct (void)
 {
@@ -908,9 +1039,9 @@ to enter debugging mode when it receives an interrupt signal (typically\n\
 generated with @kbd{C-c}).  If a second interrupt signal is received\n\
 before reaching the debugging mode, a normal interrupt will occur.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{debug_on_error, debug_on_warning}\n\
 @end deftypefn")
 {
@@ -935,12 +1066,12 @@ DEFUN (sighup_dumps_octave_core, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sighup_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file \"octave-workspace\" if it receives\n\
-a hangup signal.\n\
+to save all current variables to the file @file{octave-workspace} if it\n\
+receives a hangup signal.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (sighup_dumps_octave_core);
@@ -964,12 +1095,12 @@ DEFUN (sigterm_dumps_octave_core, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sigterm_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file \"octave-workspace\" if it receives\n\
-a terminate signal.\n\
+to save all current variables to the file @file{octave-workspace} if it\n\
+receives a terminate signal.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (sigterm_dumps_octave_core);

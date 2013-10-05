@@ -23,8 +23,8 @@
 ## @end deftypefn
 
 function arch = getarch ()
-  persistent _arch = cstrcat (octave_config_info ("canonical_host_type"),
-                              "-", octave_config_info ("api_version"));
+  persistent _arch = [octave_config_info("canonical_host_type"), "-", ...
+                      octave_config_info("api_version")];
   arch = _arch;
 endfunction
 

@@ -240,7 +240,7 @@ When called with two arguments, \@code{$OPT_FCN_NAME} set the option\\n\\
     }
 }
 
-#FIXME: What does this routine do?  And can it be simpler to understand?
+## FIXME: What does this routine do?  And can it be simpler to understand?
 sub get_min_match_len_info
 {
   my ($i, $j, $k);
@@ -924,7 +924,7 @@ _END_EMIT_OPTIONS_FUNCTION_HDR_
 
   for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      print '@item \"', $NAME[$i], '\"\n\\', "\n";
+      print '@item @qcode{\"', $NAME[$i], '\"}\n\\', "\n";
       print $DOC_ITEM[$i] if $DOC_ITEM[$i];
     }
 

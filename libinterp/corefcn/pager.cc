@@ -514,23 +514,29 @@ open_diary_file (void)
 
 DEFUN (diary, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} diary options\n\
+@deftypefn  {Command} {} diary\n\
+@deftypefnx {Command} {} diary on\n\
+@deftypefnx {Command} {} diary off\n\
+@deftypefnx {Command} {} diary @var{filename}\n\
 Record a list of all commands @emph{and} the output they produce, mixed\n\
-together just as you see them on your terminal.  Valid options are:\n\
+together just as they appear on the terminal.\n\
 \n\
-@table @code\n\
+Valid options are:\n\
+\n\
+@table @asis\n\
 @item on\n\
-Start recording your session in a file called @file{diary} in your\n\
+Start recording a session in a file called @file{diary} in the\n\
 current working directory.\n\
 \n\
 @item off\n\
-Stop recording your session in the diary file.\n\
+Stop recording the session in the diary file.\n\
 \n\
-@item @var{file}\n\
-Record your session in the file named @var{file}.\n\
+@item @var{filename}\n\
+Record the session in the file named @var{filename}.\n\
 @end table\n\
 \n\
 With no arguments, @code{diary} toggles the current diary state.\n\
+@seealso{history}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -648,9 +654,9 @@ output to the pager as soon as it is available.  Otherwise, Octave\n\
 buffers its output and waits until just before the prompt is printed to\n\
 flush it to the pager.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{page_screen_output, more, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
 {
@@ -668,9 +674,9 @@ pager.  This allows you to view one screenful at a time.  Some pagers\n\
 (such as @code{less}---see @ref{Installation}) are also capable of moving\n\
 backward on the output.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{more, page_output_immediately, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
 {
@@ -684,13 +690,13 @@ DEFUN (PAGER, args, nargout,
 @deftypefnx {Built-in Function} {} PAGER (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the program to use\n\
 to display terminal output on your system.  The default value is\n\
-normally @code{\"less\"}, @code{\"more\"}, or\n\
-@code{\"pg\"}, depending on what programs are installed on your system.\n\
+normally @qcode{\"less\"}, @qcode{\"more\"}, or\n\
+@qcode{\"pg\"}, depending on what programs are installed on your system.\n\
 @xref{Installation}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{PAGER_FLAGS, page_output_immediately, more, page_screen_output}\n\
 @end deftypefn")
 {
@@ -705,9 +711,9 @@ DEFUN (PAGER_FLAGS, args, nargout,
 Query or set the internal variable that specifies the options to pass\n\
 to the pager.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{PAGER, more, page_screen_output, page_output_immediately}\n\
 @end deftypefn")
 {

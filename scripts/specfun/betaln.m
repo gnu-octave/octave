@@ -55,3 +55,4 @@ endfunction
 %% Test input validation
 %!error (betaln (1))
 %!error (betaln (1,2,3))
+

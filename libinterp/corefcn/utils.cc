@@ -299,7 +299,7 @@ If the first argument is a cell array of strings, search each\n\
 directory of the loadpath for element of the cell array and return\n\
 the first that matches.\n\
 \n\
-If the second optional argument @code{\"all\"} is supplied, return\n\
+If the second optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
 @seealso{file_in_path, path}\n\
@@ -375,7 +375,7 @@ If the second argument is a cell array of strings, search each\n\
 directory of the path for element of the cell array and return\n\
 the first that matches.\n\
 \n\
-If the third optional argument @code{\"all\"} is supplied, return\n\
+If the third optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
 @seealso{file_in_loadpath}\n\
@@ -896,9 +896,10 @@ DEFUN (find_dir_in_path, args, ,
 @deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, \"all\")\n\
 Return the full name of the path element matching @var{dir}.  The\n\
 match is performed at the end of each path element.  For example, if\n\
-@var{dir} is @code{\"foo/bar\"}, it matches the path element\n\
-@code{\"/some/dir/foo/bar\"}, but not @code{\"/some/dir/foo/bar/baz\"}\n\
-or @code{\"/some/dir/allfoo/bar\"}.\n\
+@var{dir} is @qcode{\"foo/bar\"}, it matches the path element\n\
+@nospell{@qcode{\"/some/dir/foo/bar\"}}, but not\n\
+@nospell{@qcode{\"/some/dir/foo/bar/baz\"}}\n\
+@nospell{@qcode{\"/some/dir/allfoo/bar\"}}.\n\
 \n\
 The second argument is optional.  If it is supplied, return a cell array\n\
 containing all name matches rather than just the first.\n\

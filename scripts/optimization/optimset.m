@@ -35,16 +35,16 @@
 ## Request verbose display of results from optimizations.  Values are:
 ##
 ## @table @asis
-## @item "off" [default]
+## @item @qcode{"off"} [default]
 ## No display.
 ##
-## @item "iter"
+## @item @qcode{"iter"}
 ## Display intermediate results for every loop iteration.
 ##
-## @item "final"
+## @item @qcode{"final"}
 ## Display the result of the final loop iteration.
 ##
-## @item "notify"
+## @item @qcode{"notify"}
 ## Display the result of the final loop iteration if the function has
 ## failed to converge.
 ## @end table
@@ -53,22 +53,22 @@
 ##
 ## @item FunValCheck
 ## When enabled, display an error if the objective function returns an invalid
-## value (a complex number, NaN, or Inf).  Must be set to "on" or "off"
-## [default].  Note: the functions @code{fzero} and @code{fminbnd} correctly
-## handle Inf values and only complex values or NaN will cause an error in this
-## case. 
+## value (a complex number, NaN, or Inf).  Must be set to @qcode{"on"} or
+## @qcode{"off"} [default].  Note: the functions @code{fzero} and
+## @code{fminbnd} correctly handle Inf values and only complex values or NaN
+## will cause an error in this case. 
 ##
 ## @item GradObj
-## When set to "on", the function to be minimized must return a second argument
-## which is the gradient, or first derivative, of the function at the point
-## @var{x}.  If set to "off" [default], the gradient is computed via finite
-## differences.
+## When set to @qcode{"on"}, the function to be minimized must return a
+## second argument which is the gradient, or first derivative, of the
+## function at the point @var{x}.  If set to @qcode{"off"} [default], the
+## gradient is computed via finite differences.
 ##
 ## @item Jacobian
-## When set to "on", the function to be minimized must return a second argument
-## which is the Jacobian, or first derivative, of the function at the point
-## @var{x}.  If set to "off" [default], the Jacobian is computed via finite
-## differences.
+## When set to @qcode{"on"}, the function to be minimized must return a
+## second argument which is the Jacobian, or first derivative, of the
+## function at the point @var{x}.  If set to @qcode{"off"} [default], the
+## Jacobian is computed via finite differences.
 ##
 ## @item MaxFunEvals
 ## Maximum number of function evaluations before optimization stops.
@@ -172,3 +172,4 @@ endfunction
 %!warning (optimset ("foobar", 13));
 
 %!error (optimset ("%NOT_A_REAL_FUNCTION_NAME%"))
+

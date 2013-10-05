@@ -115,7 +115,7 @@ function [p, s, mu] = polyfit (x, y, n)
   p = r \ (q' * y);
   p(k) = p;
   
-  if (n ~= m)
+  if (n != m)
     q = p; p = zeros (n+1, 1); 
     p(polymask) = q;
   endif
@@ -137,12 +137,12 @@ function [p, s, mu] = polyfit (x, y, n)
     try
       C = cholinv (r.'*r)(k, k);
     catch
-      C = NaN * ones (m+1, m+1);
+      C = NaN (m+1, m+1);
     end_try_catch
 
-    if (n ~= m)
+    if (n != m)
       ## fill matrices if required
-      s.X(:, ~polymask) = 0;
+      s.X(:, !polymask) = 0;
       s.R = zeros (n+1, n+1); s.R(polymask, polymask) = r;
       s.C = zeros (n+1, n+1); s.C(polymask, polymask) = C;
     else
@@ -171,10 +171,10 @@ endfunction
 ## variable is not normalized properly.
 ## Also check the usage of 2nd & 3rd output arguments.
 %!test
-%! x = [ -1196.4, -1195.2, -1194, -1192.8, -1191.6, -1190.4, -1189.2, -1188, \
+%! x = [ -1196.4, -1195.2, -1194, -1192.8, -1191.6, -1190.4, -1189.2, -1188, ...
 %!       -1186.8, -1185.6, -1184.4, -1183.2, -1182];
-%! y = [ 315571.7086, 315575.9618, 315579.4195, 315582.6206, 315585.4966,    \
-%!       315588.3172, 315590.9326, 315593.5934, 315596.0455, 315598.4201,    \
+%! y = [ 315571.7086, 315575.9618, 315579.4195, 315582.6206, 315585.4966, ...
+%!       315588.3172, 315590.9326, 315593.5934, 315596.0455, 315598.4201, ...
 %!       315600.7143, 315602.9508, 315605.1765 ];
 %! [p1, s1] = polyfit (x, y, 10);
 %! [p2, s2, mu] = polyfit (x, y, 10);

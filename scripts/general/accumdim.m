@@ -108,7 +108,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
       subsc{dim} = mask;
       A(subsc{:}) = fillval;
     endif
-    return
+    return;
   endif
 
   ## The general case.

@@ -36,11 +36,11 @@
 ## that calculates the CDF of distribution @var{dist} exists.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative F
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative F
 ## != G@.  In this case, the test statistic @var{ks} follows a two-sided
-## Kolmogorov-Smirnov distribution.  If @var{alt} is @code{">"}, the
-## one-sided alternative F > G is considered.  Similarly for @code{"<"},
+## Kolmogorov-Smirnov distribution.  If @var{alt} is @qcode{">"}, the
+## one-sided alternative F > G is considered.  Similarly for @qcode{"<"},
 ## the one-sided alternative F > G is considered.  In this case, the
 ## test statistic @var{ks} has a one-sided Kolmogorov-Smirnov
 ## distribution.  The default is the two-sided case.
@@ -121,7 +121,7 @@ endfunction
 %!error kolmogorov_smirnov_test (1)
 %!error <X must be a vector> kolmogorov_smirnov_test ({}, "unif", 2, 4)
 %!error <no not_a_distcdf or not_a_dist_cdf function found>
-%!  kolmogorov_smirnov_test (1, "not_a_dist");
+%! kolmogorov_smirnov_test (1, "not_a_dist");
 %!error <alternative foo not recognized>
-%!  kolmogorov_smirnov_test (1, "unif", 2, 4, "foo");
+%! kolmogorov_smirnov_test (1, "unif", 2, 4, "foo");
 

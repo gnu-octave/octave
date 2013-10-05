@@ -31,12 +31,14 @@ class octave_value_list;
 #include <iosfwd>
 #include <sstream>
 #include <string>
+#include <list>
 #include <map>
 
 #include "Array.h"
 #include "data-conv.h"
 #include "lo-utils.h"
 #include "mach-info.h"
+#include "oct-locbuf.h"
 #include "oct-refcount.h"
 
 class
@@ -539,13 +541,19 @@ public:
                      octave_idx_type& count);
 
   octave_idx_type write (const octave_value& data, octave_idx_type block_size,
-             oct_data_conv::data_type output_type,
-             octave_idx_type skip, oct_mach_info::float_format flt_fmt);
+                         oct_data_conv::data_type output_type,
+                         octave_idx_type skip,
+                         oct_mach_info::float_format flt_fmt);
+
+  bool write_bytes (const void *data, size_t n_elts);
+
+  bool skip_bytes (size_t n_elts);
 
   template <class T>
-  octave_idx_type write (const Array<T>&, octave_idx_type block_size,
-             oct_data_conv::data_type output_type,
-             octave_idx_type skip, oct_mach_info::float_format flt_fmt);
+  octave_idx_type write (const Array<T>& data, octave_idx_type block_size,
+                         oct_data_conv::data_type output_type,
+                         octave_idx_type skip,
+                         oct_mach_info::float_format flt_fmt);
 
   octave_value scanf (const std::string& fmt, const Array<double>& size,
                       octave_idx_type& count, const std::string& who /* = "scanf" */);
@@ -641,6 +649,15 @@ private:
       if (rep)
         rep->invalid_operation (who, rw);
     }
+
+  octave_value
+  finalize_read (std::list<void *>& input_buf_list,
+                 octave_idx_type input_buf_elts,
+                 octave_idx_type elts_read,
+                 octave_idx_type nr, octave_idx_type nc,
+                 oct_data_conv::data_type input_type,
+                 oct_data_conv::data_type output_type,
+                 oct_mach_info::float_format ffmt);
 };
 
 class

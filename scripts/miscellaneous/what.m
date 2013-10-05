@@ -63,13 +63,13 @@ function ret = what (d)
       [dummy, f, e] = fileparts (n);
       if (strcmp (e, ".m"))
         w.m{end+1} = n;
-      elseif (strcmp (e, mexext ()))
-        w.mex{end+1} = n;
       elseif (strcmp (e, ".oct"))
         w.oct{end+1} = n;
+      elseif (strcmp (e, mexext ()))
+        w.mex{end+1} = n;
       elseif (strcmp (e, ".mat"))
         w.mat{end+1} = n;
-      elseif(strcmp (n(1), "@"))
+      elseif (strcmp (n(1), "@"))
         w.classes{end+1} = n;
       endif
     endif
@@ -108,3 +108,4 @@ function __display_filenames__ (msg, p, f)
     endfor
   endif
 endfunction
+

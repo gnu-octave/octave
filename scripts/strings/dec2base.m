@@ -62,7 +62,7 @@ function retval = dec2base (d, base, len)
     d = cell2mat (d);
   endif
 
-  # Create column vector for algorithm
+  ## Create column vector for algorithm
   if (! iscolumn (d))
     d = d(:);
   endif

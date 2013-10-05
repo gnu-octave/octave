@@ -1766,7 +1766,7 @@ along with Octave; see the file COPYING.  If not, see
           for (octave_idx_type i = 0; i < nc ; i++) \
             { \
               retval.ridx (i) = 0; \
-              retval.cidx (i+1) = i; \
+              retval.cidx (i+1) = i+1; \
               retval.data (i) = MT_RESULT; \
             } \
         } \

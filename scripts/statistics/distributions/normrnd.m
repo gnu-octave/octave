@@ -83,14 +83,14 @@ function rnd = normrnd (mu, sigma, varargin)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (!isnan (mu) && !isinf (mu) && (sigma > 0) && (sigma < Inf))
+    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
       rnd =  mu + sigma * randn (sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
   else
     rnd = mu + sigma .* randn (sz, cls);
-    k = isnan (mu) | isinf (mu) | !(sigma > 0) | !(sigma < Inf);
+    k = ! isfinite (mu) | !(sigma > 0) | !(sigma < Inf);
     rnd(k) = NaN;
   endif
 

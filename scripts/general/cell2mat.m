@@ -21,8 +21,8 @@
 ## @deftypefn {Function File} {@var{m} =} cell2mat (@var{c})
 ## Convert the cell array @var{c} into a matrix by concatenating all
 ## elements of @var{c} into a hyperrectangle.  Elements of @var{c} must
-## be numeric, logical or char matrices, or cell arrays, and @code{cat}
-## must be able to concatenate them together.
+## be numeric, logical, or char matrices; or cell arrays; or structs; and
+## @code{cat} must be able to concatenate them together.
 ## @seealso{mat2cell, num2cell}
 ## @end deftypefn
 
@@ -42,38 +42,48 @@ function m = cell2mat (c)
     m = [];
   else
 
-    ## We only want numeric, logical, and char matrices.
+    ## Check first for valid matrix types
     valid = cellfun ("isnumeric", c);
-    valid |= cellfun ("islogical", c);
-    valid |= cellfun ("isclass", c, "char");
-    validc = cellfun ("isclass", c, "cell");
-    valids = cellfun ("isclass", c, "struct");
-
-    if (! all (valid(:)) && ! all (validc(:)) && ! all (valids(:)))
-      error ("cell2mat: wrong type elements or mixed cells, structs and matrices");
+    valid = cellfun ("islogical", c(! valid));
+    valid = cellfun ("isclass", c(! valid), "char");
+    if (! all (valid(:)))
+      valid = cellfun ("isclass", c, "cell");
+      if (! all (valid(:)))
+        valid = cellfun ("isclass", c, "struct");
+        if (! all (valid(:)))
+          error ("cell2mat: wrong type elements or mixed cells, structs, and matrices");
+        endif
+      endif
     endif
 
-    ## The goal is to minimize the total number of cat() calls.
-    ## The dimensions can be concatenated along in arbitrary order.
-    ## The numbers of concatenations are:
-    ## n / d1
-    ## n / (d1 * d2)
-    ## n / (d1 * d2 * d3)
-    ## etc.
-    ## This is minimized if d1 >= d2 >= d3...
+    sz = size (c);
+    if (all (cellfun ("numel", c)(:) == 1))
+      ## Special case of all scalars
+      m = reshape (cat (1, c{:}), sz);
+    else
 
-    sc = size (c);
-    nd = ndims (c);
-    [~, isc] = sort (sc);
-    for idim = isc
-      if (sc(idim) == 1)
-        continue;
-      endif
-      xdim = [1:idim-1, idim+1:nd];
-      cc = num2cell (c, xdim);
-      c = cellfun ("cat", {idim}, cc{:}, "uniformoutput", false);
-    endfor
-    m = c{1};
+      ## The goal is to minimize the total number of cat() calls.
+      ## The dimensions can be concatenated along in arbitrary order.
+      ## The numbers of concatenations are:
+      ## n / d1
+      ## n / (d1 * d2)
+      ## n / (d1 * d2 * d3)
+      ## etc.
+      ## This is minimized if d1 >= d2 >= d3...
+
+      nd = ndims (c);
+      [~, isz] = sort (sz, "descend");
+      for idim = isz
+        if (sz(idim) == 1)
+          continue;
+        endif
+        xdim = [1:idim-1, idim+1:nd];
+        cc = num2cell (c, xdim);
+        c = cellfun ("cat", {idim}, cc{:}, "uniformoutput", false);
+      endfor
+      m = c{1};
+
+    endif
   endif
 
 endfunction
@@ -102,4 +112,11 @@ endfunction
 %!test
 %! m = {1, 2, 3};
 %! assert (cell2mat (mat2cell (m, 1, [1 1 1])), m);
+
+%!error cell2mat ()
+%!error cell2mat (1,2)
+%!error <C is not a cell array> cell2mat ([1,2])
+%!error <mixed cells, structs, and matrices> cell2mat ({[1], struct()})
+%!error <mixed cells, structs, and matrices> cell2mat ({[1], {1}})
+%!error <mixed cells, structs, and matrices> cell2mat ({struct(), {1}})
 

@@ -231,7 +231,7 @@ Undocumented internal function.\n\
 
           retval.resize (3);
 
-          // If 3, then is filename, directory and selected index.
+          // If 3, then retval is filename, directory, and selected index.
           if (nel <= 3)
             {
               int idx = 0;
@@ -250,12 +250,12 @@ Undocumented internal function.\n\
           else
             {
               // Multiple files.
-              nel = items_lst.size ();
+              nel = items_lst.size () - 2;
               Cell items (dim_vector (1, nel));
 
               std::list<std::string>::iterator it = items_lst.begin ();
 
-              for (unsigned int idx = 0; idx < items_lst.size ()-2; idx++)
+              for (int idx = 0; idx < nel; idx++)
                 {
                   items.xelem (idx) = *it;
                   it++;
@@ -402,3 +402,36 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+DEFUN (__octave_link_show_preferences__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_show_preferences__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  retval = octave_link::show_preferences ();
+
+  return retval;
+}
+
+DEFUN (__octave_link_show_doc__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __octave_link_show_doc__ ( @var{filename} )\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  std::string file;
+
+  if (args.length () >= 1)
+    file = args(0).string_value();
+
+  retval = octave_link::show_doc (file);
+
+  return retval;
+}
+
+
+

@@ -67,36 +67,36 @@ endfunction
 
 %% FIXME: Borrow tests from conv.m.  May need a tolerance on the assert comparison
 %!test
-%!  x = ones (3,1);
-%!  y = ones (1,3);
-%!  b = 2;
-%!  c = 3;
-%!  assert (fftconv (x, x), [1; 2; 3; 2; 1], 5*eps);
-%!  assert (fftconv (y, y), [1, 2, 3, 2, 1], 5*eps);
-%!  assert (fftconv (x, y), [1, 2, 3, 2, 1], 5*eps);
-%!  assert (fftconv (y, x), [1; 2; 3; 2; 1], 5*eps);
-%!  assert (fftconv (c, x), [3; 3; 3], 5*eps);
-%!  assert (fftconv (c, y), [3, 3, 3], 5*eps);
-%!  assert (fftconv (x, c), [3; 3; 3], 5*eps);
-%!  assert (fftconv (y, c), [3, 3, 3], 5*eps);
-%!  assert (fftconv (b, c), 6, 5*eps);
+%! x = ones (3,1);
+%! y = ones (1,3);
+%! b = 2;
+%! c = 3;
+%! assert (fftconv (x, x), [1; 2; 3; 2; 1], 5*eps);
+%! assert (fftconv (y, y), [1, 2, 3, 2, 1], 5*eps);
+%! assert (fftconv (x, y), [1, 2, 3, 2, 1], 5*eps);
+%! assert (fftconv (y, x), [1; 2; 3; 2; 1], 5*eps);
+%! assert (fftconv (c, x), [3; 3; 3], 5*eps);
+%! assert (fftconv (c, y), [3, 3, 3], 5*eps);
+%! assert (fftconv (x, c), [3; 3; 3], 5*eps);
+%! assert (fftconv (y, c), [3, 3, 3], 5*eps);
+%! assert (fftconv (b, c), 6, 5*eps);
 
 %!test
-%!  a = 1:10;
-%!  b = 1:3;
-%!  assert (size (conv (a,b)), [1, numel(a)+numel(b)-1])
-%!  assert (size (conv (b,a)), [1, numel(a)+numel(b)-1])
+%! a = 1:10;
+%! b = 1:3;
+%! assert (size (conv (a,b)), [1, numel(a)+numel(b)-1]);
+%! assert (size (conv (b,a)), [1, numel(a)+numel(b)-1]);
 
-%!  a = (1:10).';
-%!  b = 1:3;
-%!  assert (size (conv (a,b)), [numel(a)+numel(b)-1, 1])
-%!  assert (size (conv (b,a)), [numel(a)+numel(b)-1, 1])
+%! a = (1:10).';
+%! b = 1:3;
+%! assert (size (conv (a,b)), [numel(a)+numel(b)-1, 1]);
+%! assert (size (conv (b,a)), [numel(a)+numel(b)-1, 1]);
 
 %!test
-%!  a = 1:10;
-%!  b = (1:3).';
-%!  assert (size (conv (a,b)), [1, numel(a)+numel(b)-1])
-%!  assert (size (conv (b,a)), [1, numel(a)+numel(b)-1])
+%! a = 1:10;
+%! b = (1:3).';
+%! assert (size (conv (a,b)), [1, numel(a)+numel(b)-1]);
+%! assert (size (conv (b,a)), [1, numel(a)+numel(b)-1]);
 
 %% Test input validation
 %!error fftconv (1)

@@ -190,3 +190,4 @@ function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, thet
   endif
 
 endfunction
+

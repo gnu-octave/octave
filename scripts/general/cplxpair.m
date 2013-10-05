@@ -161,6 +161,6 @@ endfunction
 %!assert (cplxpair ([z(randperm(7)),z(randperm(7))],[],1), [z,z])
 %!assert (cplxpair ([z(randperm(7)).';z(randperm(7)).'],[],2), [z.';z.'])
 
-%!## tolerance test
+## tolerance test
 %!assert (cplxpair ([1i, -1i, 1+(1i*eps)],2*eps), [-1i, 1i, 1+(1i*eps)])
- 
+

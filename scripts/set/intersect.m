@@ -60,7 +60,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
       len_a = rows (a);
     else
       c = [a(:); b(:)];
-      [c, ic] = sort (c);               ## [a(:);b(:)](ic) == c
+      [c, ic] = sort (c);               # [a(:);b(:)](ic) == c
       if (iscellstr (c))
         ii = find (strcmp (c(1:end-1), c(2:end)));
       else
@@ -71,8 +71,8 @@ function [c, ia, ib] = intersect (a, b, varargin)
     endif
 
     if (nargout > 1)
-      ia = ja(ic(ii));                  ## a(ia) == c
-      ib = jb(ic(ii+1) - len_a);        ## b(ib) == c
+      ia = ja(ic(ii));                  # a(ia) == c
+      ib = jb(ic(ii+1) - len_a);        # b(ib) == c
     endif
 
     if (nargin == 2 && (rows (b) == 1 || rows (a) == 1))

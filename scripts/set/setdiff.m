@@ -26,7 +26,7 @@
 ## return a column vector, otherwise return a row vector.
 ## @var{a}, @var{b} may be cell arrays of string(s).
 ##
-## Given the optional third argument @samp{"rows"}, return the rows in
+## Given the optional third argument @qcode{"rows"}, return the rows in
 ## @var{a} that are not in @var{b}, sorted in ascending order by rows.
 ##
 ## If requested, return @var{i} such that @code{c = a(i)}.

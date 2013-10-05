@@ -56,11 +56,11 @@ Types}, for more information about creating matrices.
 @menu
 * Escape Sequences in String Constants::
 * Character Arrays::
-* Creating Strings:: 
-* Comparing Strings::           
-* Manipulating Strings::     
-* String Conversions::          
-* Character Class Functions::   
+* Creating Strings::
+* Comparing Strings::
+* Manipulating Strings::
+* String Conversions::
+* Character Class Functions::
 @end menu
 
 @node Escape Sequences in String Constants
@@ -119,21 +119,17 @@ Represents a horizontal tab, control-i, ASCII code 9.
 @item \v
 Represents a vertical tab, control-k, ASCII code 11.
 
-@c We don't do octal or hex this way yet.
-@c
-@c @item \@var{nnn}
-@c Represents the octal value @var{nnn}, where @var{nnn} are one to three
-@c digits between 0 and 7.  For example, the code for the ASCII ESC
-@c (escape) character is @samp{\033}.@refill
-@c 
-@c @item \x@var{hh}@dots{}
-@c Represents the hexadecimal value @var{hh}, where @var{hh} are hexadecimal
-@c digits (@samp{0} through @samp{9} and either @samp{A} through @samp{F} or
-@c @samp{a} through @samp{f}).  Like the same construct in @sc{ansi} C,
-@c the escape 
-@c sequence continues until the first non-hexadecimal digit is seen.  However,
-@c using more than two hexadecimal digits produces undefined results.  (The
-@c @samp{\x} escape sequence is not allowed in @sc{posix} @code{awk}.)@refill
+@item \@var{nnn}
+Represents the octal value @var{nnn}, where @var{nnn} are one to three
+digits between 0 and 7.  For example, the code for the ASCII ESC
+(escape) character is @samp{\033}.
+
+@item \x@var{hh}@dots{}
+Represents the hexadecimal value @var{hh}, where @var{hh} are hexadecimal
+digits (@samp{0} through @samp{9} and either @samp{A} through @samp{F} or
+@samp{a} through @samp{f}).  Like the same construct in @sc{ansi} C,
+the escape sequence continues until the first non-hexadecimal digit is seen.
+However, using more than two hexadecimal digits produces undefined results.
 @end table
 
 In a single-quoted string there is only one escape sequence: you may insert a
@@ -158,13 +154,13 @@ by using @code{is_dq_string} and @code{is_sq_string}.
 @section Character Arrays
 
 The string representation used by Octave is an array of characters, so
-internally the string @nospell{"dddddddddd"} is actually a row vector of length
-10 containing the value 100 in all places (100 is the ASCII code of "d").  This
-lends itself to the obvious generalization to character matrices.  Using a
-matrix of characters, it is possible to represent a collection of same-length
-strings in one variable.  The convention used in Octave is that each row in a
-character matrix is a separate string, but letting each column represent a
-string is equally possible.
+internally the string @nospell{@qcode{"dddddddddd"}} is actually a row vector
+of length 10 containing the value 100 in all places (100 is the ASCII code of
+@qcode{"d"}).  This lends itself to the obvious generalization to character
+matrices.  Using a matrix of characters, it is possible to represent a
+collection of same-length strings in one variable.  The convention used in
+Octave is that each row in a character matrix is a separate string, but letting
+each column represent a string is equally possible.
 
 The easiest way to create a character matrix is to put several strings
 together into a matrix.
@@ -222,19 +218,36 @@ only of blank characters (ASCII code 32).
 @DOCSTRING(blanks)
 
 @menu
-* Concatenating Strings:: 
-* Conversion of Numerical Data to Strings::
+* Concatenating Strings::
+* Converting Numerical Data to Strings::
 @end menu
 
 @node Concatenating Strings
 @subsection Concatenating Strings
 
-It has been shown above that strings can be concatenated using matrix notation
-(@pxref{Strings}, @ref{Character Arrays}).  Apart from that, there are several
-functions to concatenate string objects: @code{char},
-@code{strvcat}, @code{strcat} and @code{cstrcat}.  In addition, the general
-purpose concatenation functions can be used: see @ref{docXcat,,cat},
-@ref{docXhorzcat,,horzcat} and @ref{docXvertcat,,vertcat}.
+Strings can be concatenated using matrix notation
+(@pxref{Strings}, @ref{Character Arrays}) which is often the most natural
+method.  For example:
+
+@example
+@group
+fullname = [fname ".txt"];
+email = ["<" user "@@" domain ">"];
+@end group
+@end example
+
+@noindent
+In each case it is easy to see what the final string will look like.  This
+method is also the most efficient.  When using matrix concatenation the parser
+immediately begins joining the strings without having to process
+the overhead of a function call and the input validation of the associated
+function.
+
+Nevertheless, there are several other functions for concatenating string
+objects which can be useful in specific circumstances: @code{char},
+@code{strvcat}, @code{strcat}, and @code{cstrcat}.  Finally, the general
+purpose concatenation functions can be used: see @ref{XREFcat,,cat},
+@ref{XREFhorzcat,,horzcat}, and @ref{XREFvertcat,,vertcat}.
 
 @itemize @bullet
 @item All string concatenation functions except @code{cstrcat}
@@ -275,8 +288,8 @@ eliminates empty strings.
 char ("orange", "green", "", "red")
     @result{} orange
        green 
-             
-       red   
+
+       red
 @end group
 
 @group
@@ -318,7 +331,7 @@ kinds of behavior can be useful as can be seen in the examples:
 @example
 @group
 strcat (["dir1";"directory2"], ["/";"/"], ["file1";"file2"])
-     @result{} dir1/file1      
+     @result{} dir1/file1
         directory2/file2
 @end group
 @group
@@ -342,8 +355,8 @@ from the internal representation of the strings in a string array
 
 @DOCSTRING(cstrcat)
 
-@node Conversion of Numerical Data to Strings 
-@subsection Conversion of Numerical Data to Strings
+@node Converting Numerical Data to Strings
+@subsection Converting Numerical Data to Strings
 Apart from the string concatenation functions (@pxref{Concatenating Strings})
 which cast numerical data to the corresponding ASCII characters, there are
 several functions that format numerical data as strings.  @code{mat2str} and
@@ -351,7 +364,7 @@ several functions that format numerical data as strings.  @code{mat2str} and
 integer matrices.  @code{int2str} takes the real part of complex values and
 round fractional values to integer.  A more flexible way to format numerical
 data as strings is the @code{sprintf} function (@pxref{Formatted Output},
-@ref{docXsprintf}).
+@ref{XREFsprintf,,sprintf}).
 
 @DOCSTRING(mat2str)
 

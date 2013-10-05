@@ -30,8 +30,9 @@
 ##
 ## Options for the search are provided in the parameter @var{options} using 
 ## the function @code{optimset}.  Currently, @code{fminsearch} accepts the
-## options: "TolX", "MaxFunEvals", "MaxIter", "Display".  For a description of
-## these options, see @code{optimset}.
+## options: @qcode{"TolX"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
+## @qcode{"Display"}.  For a description of these options, see
+## @code{optimset}.
 ##
 ## On exit, the function returns @var{x}, the minimum point,
 ## and @var{fval}, the function value thereof.

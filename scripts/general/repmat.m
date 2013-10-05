@@ -117,13 +117,14 @@ function x = repmat (A, m, n)
       cidx{2,i} = ones (1, idx (i));
     endfor
     aaidx = aidx;
-    # add singleton dims
+    ## add singleton dims
     aaidx(2,:) = 1;
     A = reshape (A, aaidx(:));
     x = reshape (A (cidx{:}), idx .* aidx);
   endif
 
 endfunction
+
 
 # Tests for ML compatibility
 %!shared x

@@ -55,6 +55,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   QToolButton *dock_button = new QToolButton (this);
   dock_button->setDefaultAction (_dock_action);
   dock_button->setFocusPolicy(Qt::NoFocus);
+  dock_button->setIconSize(QSize(12,12));
 
   QAction *close_action = new QAction
                    (QIcon (":/actions/icons/widget-close.png"), "", this );
@@ -64,6 +65,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   QToolButton *close_button = new QToolButton (this);
   close_button->setDefaultAction (close_action);
   close_button->setFocusPolicy(Qt::NoFocus);
+  close_button->setIconSize(QSize(12,12));
 
   QHBoxLayout *h_layout = new QHBoxLayout ();
   h_layout->addStretch (100);
@@ -152,7 +154,7 @@ octave_dock_widget::make_window ()
 
 // dock the widget
 void
-octave_dock_widget::make_widget ()
+octave_dock_widget::make_widget (bool dock)
 {
   QSettings *settings = resource_manager::get_settings ();
 
@@ -161,14 +163,18 @@ octave_dock_widget::make_widget ()
                       saveGeometry ());
   settings->sync ();
 
-  // add widget to last saved docking area
-  int area = settings->value ("DockWidgets/" + objectName () + "_dock_area",
-                               Qt::TopDockWidgetArea).toInt ();
-  _parent->addDockWidget (static_cast<Qt::DockWidgetArea> (area), this);
+  if (dock)
+    { // add widget to last saved docking area (dock=true is default)
+      int area = settings->value ("DockWidgets/" + objectName () + "_dock_area",
+                                   Qt::TopDockWidgetArea).toInt ();
+      _parent->addDockWidget (static_cast<Qt::DockWidgetArea> (area), this);
 
-  // FIXME: restoreGeometry is ignored for docked widgets and its child widget
-  // restoreGeometry (settings->value
-  //        ("DockWidgets/" + objectName ()).toByteArray ());
+      // FIXME: restoreGeometry is ignored for docked widgets and its child widget
+      // restoreGeometry (settings->value
+      //        ("DockWidgets/" + objectName ()).toByteArray ());
+    }
+  else  // only reparent, no docking
+    setParent (_parent);
 
   // adjust the (un)dock icon
   _dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));

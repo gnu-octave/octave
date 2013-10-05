@@ -96,3 +96,4 @@ function dump_prefs (file)
   endfor
 
 endfunction
+

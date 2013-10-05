@@ -50,48 +50,49 @@ Called with a single argument, @code{matrix_type} returns the type of the\n\
 matrix and caches it for future use.  Called with more than one argument,\n\
 @code{matrix_type} allows the type of the matrix to be defined.\n\
 \n\
-If the option \"nocompute\" is given, the function will not attempt to guess\n\
-the type if it is still unknown.  This is useful for debugging purposes.\n\
+If the option @qcode{\"nocompute\"} is given, the function will not attempt\n\
+to guess the type if it is still unknown.  This is useful for debugging\n\
+purposes.\n\
 \n\
 The possible matrix types depend on whether the matrix is full or sparse, and\n\
 can be one of the following\n\
 \n\
 @table @asis\n\
-@item \"unknown\"\n\
+@item @qcode{\"unknown\"}\n\
 Remove any previously cached matrix type, and mark type as unknown.\n\
 \n\
-@item \"full\"\n\
+@item @qcode{\"full\"}\n\
 Mark the matrix as full.\n\
 \n\
-@item \"positive definite\"\n\
+@item @qcode{\"positive definite\"}\n\
 Probable full positive definite matrix.\n\
 \n\
-@item \"diagonal\"\n\
+@item @qcode{\"diagonal\"}\n\
 Diagonal matrix.  (Sparse matrices only)\n\
 \n\
-@item \"permuted diagonal\"\n\
+@item @qcode{\"permuted diagonal\"}\n\
 Permuted Diagonal matrix.  The permutation does not need to be specifically\n\
 indicated, as the structure of the matrix explicitly gives this.  (Sparse\n\
 matrices only)\n\
 \n\
-@item \"upper\"\n\
+@item @qcode{\"upper\"}\n\
 Upper triangular.  If the optional third argument @var{perm} is given, the\n\
 matrix is assumed to be a permuted upper triangular with the permutations\n\
 defined by the vector @var{perm}.\n\
 \n\
-@item \"lower\"\n\
+@item @qcode{\"lower\"}\n\
 Lower triangular.  If the optional third argument @var{perm} is given, the\n\
 matrix is assumed to be a permuted lower triangular with the permutations\n\
 defined by the vector @var{perm}.\n\
 \n\
-@item \"banded\"\n\
-@itemx \"banded positive definite\"\n\
+@item  @qcode{\"banded\"}\n\
+@itemx @qcode{\"banded positive definite\"}\n\
 Banded matrix with the band size of @var{nl} below the diagonal and @var{nu}\n\
 above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal and\n\
 treated with specialized code.  In addition the matrix can be marked as\n\
 probably a positive definite.  (Sparse matrices only)\n\
 \n\
-@item \"singular\"\n\
+@item @qcode{\"singular\"}\n\
 The matrix is assumed to be singular and will be treated with a minimum norm\n\
 solution.\n\
 \n\

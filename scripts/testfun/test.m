@@ -34,14 +34,14 @@
 ## output is selected.
 ##
 ## @table @asis
-## @item "quiet"
+## @item @qcode{"quiet"}
 ##  Don't report all the tests as they happen, just the errors.
 ##
-## @item "normal"
+## @item @qcode{"normal"}
 ## Report all tests as they happen, but don't do tests which require
 ## user interaction.
 ##
-## @item "verbose"
+## @item @qcode{"verbose"}
 ## Do tests which require user interaction.
 ## @end table
 ##
@@ -58,13 +58,14 @@
 ## @var{n} and @var{max}, the number of successful tests and the total number
 ## of tests in the file @var{name} are returned.
 ##
-## If the second argument is the string "grabdemo", the contents of the demo
-## blocks are extracted but not executed.  Code for all code blocks is
-## concatenated and returned as @var{code} with @var{idx} being a vector of
-## positions of the ends of the demo blocks.
+## If the second argument is the string @qcode{"grabdemo"}, the contents of
+## the demo blocks are extracted but not executed.  Code for all code blocks
+## is concatenated and returned as @var{code} with @var{idx} being a vector
+## of positions of the ends of the demo blocks.
 ##
-## If the second argument is "explain", then @var{name} is ignored and an
-## explanation of the line markers used is written to the file @var{fid}.
+## If the second argument is @qcode{"explain"}, then @var{name} is ignored
+## and an explanation of the line markers used is written to the file
+## @var{fid}.
 ## @seealso{assert, fail, error, demo, example}
 ## @end deftypefn
 
@@ -155,10 +156,10 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   ## Locate the file to test.
   __file = file_in_loadpath (__name, "all");
   if (isempty (__file))
-    __file = file_in_loadpath (cstrcat (__name, ".m"), "all");
+    __file = file_in_loadpath ([__name ".m"], "all");
   endif
   if (isempty (__file))
-    __file = file_in_loadpath (cstrcat (__name, ".cc"), "all");
+    __file = file_in_loadpath ([__name ".cc"], "all");
   endif
   if (iscell (__file))
       ## If repeats, return first in path.
@@ -229,7 +230,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
   ## Ready to start tests ... if in batch mode, tell us what is happening.
   if (__verbose)
-    disp (cstrcat (__signal_file, __file));
+    disp ([__signal_file, __file]);
   endif
 
   ## Assume all tests will pass.
@@ -281,7 +282,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
           __demo_code = __code;
           __demo_idx = [1, length(__demo_code)+1];
         else
-          __demo_code = cstrcat (__demo_code, __code);
+          __demo_code = [__demo_code, __code];
           __demo_idx = [__demo_idx, length(__demo_code)+1];
         endif
 
@@ -326,9 +327,9 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       try
         __vars = deblank (__vars);
         if (! isempty (__vars))
-          eval (cstrcat (strrep (__vars, ",", "=[];"), "=[];"));
+          eval ([strrep(__vars, ",", "=[];"), "=[];"]);
           __shared = __vars;
-          __shared_r = cstrcat ("[ ", __vars, "] = ");
+          __shared_r = ["[ ", __vars, "] = "];
         else
           __shared = " ";
           __shared_r = " ";
@@ -357,7 +358,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __name = __block(__name_position(1):__name_position(2));
         __code = __block;
         try
-          eval (__code); ## Define the function
+          eval (__code);  # Define the function
           __clear = sprintf ("%sclear %s;\n", __clear, __name);
         catch
           __success = 0;
@@ -392,7 +393,11 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       if (__id)
         __patstr = ["id=",__id];
       else
-        __patstr = ["<",__pattern,">"];
+        if (! strcmp (__pattern, '.'))
+          __patstr = ["<",__pattern,">"];
+        else
+          __patstr = ifelse (__warning, "a warning", "an error");
+        endif
       endif
       try
         eval (sprintf ("function __test__(%s)\n%s\nendfunction",
@@ -407,25 +412,34 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __success = 0;
         __warnstate = warning ("query", "quiet");
         warning ("on", "quiet");
+        ## Clear error and warning strings before starting
+        lasterr ("");
+        lastwarn ("");
         try
+          ## FIXME: lastwarn () must be called once from *WITHIN* the try block
+          ##        or subsequent warning/lastwarn statements may fail.
+          ##        Likely this is something to do with the specialness of
+          ##        the try block which is disabling normal errors.
+          lastwarn ();
           eval (sprintf ("__test__(%s);", __shared));
           if (! __warning)
-            __msg = sprintf ("%sexpected %s but got no error\n",
+            __msg = sprintf ("%serror failed.\nExpected %s but got no error\n",
                              __signal_fail, __patstr);
           else
             if (! isempty (__id))
-              [~, __err] = lastwarn;
+              [~, __err] = lastwarn ();
               __mismatch = ! strcmp (__err, __id);
             else
-              __err = trimerr (lastwarn, "warning");
+              __err = trimerr (lastwarn (), "warning");
               __mismatch = isempty (regexp (__err, __pattern, "once"));
             endif
             warning (__warnstate.state, "quiet");
             if (isempty (__err))
-              __msg = sprintf ("%sexpected %s but got no warning\n",
-                             __signal_fail, __patstr);
+              __msg = sprintf (["%swarning failed.\n" ...
+                                "Expected %s but got no warning\n"],
+                               __signal_fail, __patstr);
             elseif (__mismatch)
-              __msg = sprintf ("%sexpected %s but got %s\n",
+              __msg = sprintf ("%swarning failed.\nExpected %s but got <%s>\n",
                                __signal_fail, __patstr, __err);
             else
               __success = 1;
@@ -434,18 +448,19 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
         catch
           if (! isempty (__id))
-            [~, __err] = lasterr;
+            [~, __err] = lasterr ();
             __mismatch = ! strcmp (__err, __id);
           else
-            __err = trimerr (lasterr, "error");
+            __err = trimerr (lasterr (), "error");
             __mismatch = isempty (regexp (__err, __pattern, "once"));
           endif
           warning (__warnstate.state, "quiet");
           if (__warning)
-            __msg = sprintf ("%sexpected warning %s but got error %s\n",
+            __msg = sprintf (["%swarning failed.\n" ...
+                              "Expected warning %s but got error <%s>\n"],
                              __signal_fail, __patstr, __err);
           elseif (__mismatch)
-            __msg = sprintf ("%sexpected %s but got %s\n",
+            __msg = sprintf ("%serror failed.\nExpected %s but got <%s>\n",
                              __signal_fail, __patstr, __err);
           else
             __success = 1;
@@ -565,13 +580,16 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   if (nargout == 0)
     if (__tests || __xfail || __xskip)
       if (__xfail)
-        printf ("PASSES %d out of %d tests (%d expected failures)\n",
-                __successes, __tests, __xfail);
+        printf ("PASSES %d out of %d test%s (%d expected failure%s)\n",
+                __successes, __tests, ifelse (__tests > 1, "s", ""),
+                __xfail, ifelse (__xfail > 1, "s", ""));
       else
-        printf ("PASSES %d out of %d tests\n", __successes, __tests);
+        printf ("PASSES %d out of %d test%s\n", __successes, __tests,
+               ifelse (__tests > 1, "s", ""));
       endif
       if (__xskip)
-        printf ("Skipped %d tests due to missing features\n", __xskip);
+        printf ("Skipped %d test%s due to missing features\n", __xskip,
+                ifelse (__xskip > 1, "s", ""));
       endif
     else
       printf ("%s%s has no tests available\n", __signal_empty, __file);
@@ -639,20 +657,17 @@ endfunction
 
 ## Strip '.*prefix:' from '.*prefix: msg\n' and strip trailing blanks.
 function msg = trimerr (msg, prefix)
-  idx = index (msg, cstrcat (prefix, ":"));
+  idx = index (msg, [prefix ":"]);
   if (idx > 0)
     msg(1:idx+length(prefix)) = [];
   endif
-  msg = trimleft (deblank (msg));
+  msg = strtrim (msg);
 endfunction
 
 ## Strip leading blanks from string.
 function str = trimleft (str)
-  idx = find (isspace (str));
-  leading = find (idx == 1:length (idx));
-  if (! isempty (leading))
-    str = str(leading(end)+1:end);
-  endif
+  idx = find (! isspace (str), 1);
+  str = str(idx:end);
 endfunction
 
 ## Make a structure out of the named variables
@@ -672,13 +687,14 @@ function body = __extract_test_code (nm)
       if (length (ln) >= 2 && strcmp (ln(1:2), "%!"))
         body = [body, "\n"];
         if (length (ln) > 2)
-          body = cstrcat (body, ln(3:end));
+          body = [body, ln(3:end)];
         endif
       endif
     endwhile
     fclose (fid);
   endif
 endfunction
+
 
 ### example from toeplitz
 %!shared msg1,msg2
@@ -734,9 +750,9 @@ endfunction
 %! % you should now see a spectrogram in the image window
 
 
-### now test test itself
+## now test 'test' itself
 
-%!## usage and error testing
+## usage and error testing
 % !fail ('test','usage.*test')           # no args, generates usage()
 % !fail ('test (1,2,3,4)','usage.*test') # too many args, generates usage()
 %!fail ('test ("test", "bogus")','unknown flag')  # incorrect args
@@ -754,7 +770,7 @@ endfunction
 
 %!warning <warning message> warning ('warning message');
 
-%!## test of shared variables
+## test of shared variables
 %!shared a                # create a shared variable
 %!test   a=3;             # assign to a shared variable
 %!test   assert (a,3)     # variable should equal 3
@@ -792,17 +808,17 @@ endfunction
 %! assert (x,6);
 %! assert (z,9);
 
-%!## test of assert block
+## test of assert block
 %!assert (isempty ([]))      # support for test assert shorthand
 
-%!## demo blocks
+## demo blocks
 %!demo                   # multiline demo block
 %! t = [0:0.01:2*pi]; x = sin (t);
 %! plot (t,x);
 %! % you should now see a sine wave in your figure window
 %!demo a=3               # single line demo blocks work too
 
-%!## this is a comment block. it can contain anything.
+## this is a comment block. it can contain anything.
 %!##
 %! it is the "#" as the block type that makes it a comment
 %! and it stays as a comment even through continuation lines

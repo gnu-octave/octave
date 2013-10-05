@@ -30,10 +30,6 @@
 
 function [dl, d2l] = logistic_regression_derivatives (x, z, z1, g, g1, p)
 
-  if (nargin != 6)
-    print_usage ();
-  endif
-
   ## first derivative
   v = g .* (1 - g) ./ p; v1 = g1 .* (1 - g1) ./ p;
   dlogp = [(diag (v) * z - diag (v1) * z1), (diag (v - v1) * x)];
@@ -45,3 +41,4 @@ function [dl, d2l] = logistic_regression_derivatives (x, z, z1, g, g1, p)
       - dlogp' * dlogp;
 
 endfunction
+

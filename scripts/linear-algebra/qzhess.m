@@ -39,6 +39,8 @@
 ##
 ## Algorithm taken from Golub and Van Loan,
 ## @cite{Matrix Computations, 2nd edition}.
+## 
+## @seealso{lu, chol, hess, qr, qz, schur, svd}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

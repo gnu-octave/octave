@@ -387,7 +387,7 @@ end
 if isempty(cc)
     cc = ones(size(xc));
 elseif numel(size(cc)) ~= 2
-    error('arguments:ccsize1','Constraint coefficients cc must be 2D.')
+    error('arguments:ccsize1','Constraint coefficients cc must be 2-D.')
 elseif size(cc,2) ~= nx
     mess = 'Last dimension of cc must equal length of xc.';
     error('arguments:ccsize2',mess)

@@ -75,14 +75,6 @@ get_float_format (void)
 {
   oct_mach_info::float_format retval = oct_mach_info::flt_fmt_unknown;
 
-#if defined (CRAY)
-
-  // FIXME -- this should be determined automatically.
-
-  native_float_fmt = oct_mach_info::flt_fmt_cray;
-
-#else
-
   float_params fp[5];
 
   INIT_FLT_PAR (fp[0], oct_mach_info::flt_fmt_ieee_big_endian,
@@ -96,18 +88,6 @@ get_float_format (void)
                 -1, 2146435071,
                  0, 1017118720,
                  0, 1018167296);
-
-  INIT_FLT_PAR (fp[2], oct_mach_info::flt_fmt_vax_d,
-                   128,  0,
-                -32769, -1,
-                  9344,  0,
-                  9344,  0);
-
-  INIT_FLT_PAR (fp[3], oct_mach_info::flt_fmt_vax_g,
-                    16,  0,
-                -32769, -1,
-                 15552,  0,
-                 15552,  0);
 
   INIT_FLT_PAR (fp[4], oct_mach_info::flt_fmt_unknown,
                 0, 0,
@@ -132,8 +112,6 @@ get_float_format (void)
         }
     }
   while (fp[++i].fp_fmt != oct_mach_info::flt_fmt_unknown);
-
-#endif
 
   return retval;
 }
@@ -214,12 +192,6 @@ oct_mach_info::string_to_float_format (const std::string& s)
     retval = oct_mach_info::flt_fmt_ieee_big_endian;
   else if (s == "ieee-le" || s == "l")
     retval = oct_mach_info::flt_fmt_ieee_little_endian;
-  else if (s == "vaxd" || s == "d")
-    retval = oct_mach_info::flt_fmt_vax_d;
-  else if (s == "vaxg" || s == "g")
-    retval = oct_mach_info::flt_fmt_vax_g;
-  else if (s == "cray" || s == "c")
-    retval = oct_mach_info::flt_fmt_cray;
   else if (s == "unknown")
     retval = oct_mach_info::flt_fmt_unknown;
   else
@@ -242,18 +214,6 @@ oct_mach_info::float_format_as_string (float_format flt_fmt)
 
     case flt_fmt_ieee_little_endian:
       retval = "ieee-le";
-      break;
-
-    case flt_fmt_vax_d:
-      retval = "vaxd";
-      break;
-
-    case flt_fmt_vax_g:
-      retval = "vaxg";
-      break;
-
-    case flt_fmt_cray:
-      retval = "cray";
       break;
 
     default:

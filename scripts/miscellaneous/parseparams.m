@@ -40,8 +40,8 @@
 ## @end group
 ## @end example
 ##
-## The parseparams function may be used to separate "regular"
-## arguments and additional arguments given as property/value pairs of
+## The parseparams function may be used to separate regular numeric
+## arguments from additional arguments given as property/value pairs of
 ## the @var{varargin} cell array.
 ##
 ## In the second form of the call, available options are specified directly

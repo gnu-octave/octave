@@ -18,7 +18,7 @@
 
 %!function x = set_slice (size, dim, slice)
 %!  x = ones (size);
-%!  switch dim
+%!  switch (dim)
 %!    case 11
 %!      x(slice) = 2;
 %!    case 21

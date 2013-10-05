@@ -186,8 +186,7 @@
 
 function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, maxiter, tolerance)
 
-  globals = struct (); # data and handles, needed and changed by
-                       # subfunctions
+  globals = struct (); # data and handles, needed and changed by subfunctions
 
   if (nargin < 2 || nargin > 8 || nargin == 5)
     print_usage ();
@@ -203,19 +202,19 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
   have_hess = 0;
   if (iscell (objf))
     switch (numel (objf))
-     case 1
-       obj_fun = objf{1};
-       obj_grd = @ (x) fd_obj_grd (x, obj_fun);
-     case 2
-       obj_fun = objf{1};
-       obj_grd = objf{2};
-     case 3
-       obj_fun = objf{1};
-       obj_grd = objf{2};
-       obj_hess = objf{3};
-       have_hess = 1;
-     otherwise
-      error ("sqp: invalid objective function specification");
+      case 1
+        obj_fun = objf{1};
+        obj_grd = @ (x) fd_obj_grd (x, obj_fun);
+      case 2
+        obj_fun = objf{1};
+        obj_grd = objf{2};
+      case 3
+        obj_fun = objf{1};
+        obj_grd = objf{2};
+        obj_hess = objf{3};
+        have_hess = 1;
+      otherwise
+        error ("sqp: invalid objective function specification");
     endswitch
   else
     obj_fun = objf;   # No cell array, only obj_fun set
@@ -227,14 +226,14 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
   if (nargin > 2)
     if (iscell (cef))
       switch (numel (cef))
-       case 1
-         ce_fun = cef{1};
-         ce_grd = @ (x) fd_ce_jac (x, ce_fun);
-       case 2
-         ce_fun = cef{1};
-         ce_grd = cef{2};
-       otherwise
-         error ("sqp: invalid equality constraint function specification");
+        case 1
+          ce_fun = cef{1};
+          ce_grd = @ (x) fd_ce_jac (x, ce_fun);
+        case 2
+          ce_fun = cef{1};
+          ce_grd = cef{2};
+        otherwise
+          error ("sqp: invalid equality constraint function specification");
       endswitch
     elseif (! isempty (cef))
       ce_fun = cef;   # No cell array, only constraint equality function set
@@ -261,14 +260,14 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       ## constraint inequality function only without any bounds
       ci_grd = @ (x) fd_ci_jac (x, globals.cifcn);
       if (iscell (cif))
-        switch length (cif)
-         case {1}
-           ci_fun = cif{1};
-         case {2}
-           ci_fun = cif{1};
-           ci_grd = cif{2};
-        otherwise
-          error ("sqp: invalid inequality constraint function specification");
+        switch (length (cif))
+          case 1
+            ci_fun = cif{1};
+          case 2
+            ci_fun = cif{1};
+            ci_grd = cif{2};
+          otherwise
+           error ("sqp: invalid inequality constraint function specification");
         endswitch
       elseif (! isempty (cif))
         ci_fun = cif;   # No cell array, only constraint inequality function set
@@ -425,8 +424,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     ## Choose mu such that p is a descent direction for the chosen
     ## merit function phi.
-    [x_new, alpha, obj_new, globals] = \
-        linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, \
+    [x_new, alpha, obj_new, globals] = ...
+        linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
                        obj, globals);
 
     ## Evaluate objective function, constraints, and gradients at x_new.
@@ -520,7 +519,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 endfunction
 
 
-function [merit, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, \
+function [merit, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, ...
                                          x, mu, globals)
 
   ce = feval (ce_fun, x);
@@ -545,8 +544,8 @@ function [merit, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, \
 endfunction
 
 
-function [x_new, alpha, obj, globals] = \
-      linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, \
+function [x_new, alpha, obj, globals] = ...
+      linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
                      obj, globals)
 
   ## Choose parameters
@@ -570,7 +569,7 @@ function [x_new, alpha, obj, globals] = \
   c = feval (obj_grd, x);
   ce = feval (ce_fun, x);
 
-  [phi_x_mu, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, \
+  [phi_x_mu, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, ...
                                      mu, globals);
 
   D_phi_x_mu = c' * p;
@@ -584,7 +583,7 @@ function [x_new, alpha, obj, globals] = \
   endif
 
   while (1)
-    [p1, obj, globals] = phi_L1 ([], obj_fun, ce_fun, ci_fun, \
+    [p1, obj, globals] = phi_L1 ([], obj_fun, ce_fun, ci_fun, ...
                                  x+alpha*p, mu, globals);
     p2 = phi_x_mu+eta*alpha*D_phi_x_mu;
     if (p1 > p2)
@@ -768,3 +767,4 @@ endfunction
 %!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],1.5)
 %!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[], ones (2,2))
 %!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[],-1)
+

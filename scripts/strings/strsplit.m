@@ -159,8 +159,8 @@ function [result, matches] = strsplit (str, del, varargin)
     args.delimitertype = "simple";
   endif
 
-  # Save the length of the "delimitertype" parameter
-  length_deltype = numel (args.delimitertype);
+  ## Save the length of the "delimitertype" parameter
+  length_deltype = length (args.delimitertype);
 
   if (nargin == 1 || (nargin > 1 && (islogical (del) || isnumeric (del))))
     if (nargin > 1)
@@ -168,7 +168,7 @@ function [result, matches] = strsplit (str, del, varargin)
       args.collapsedelimiters = del;
     endif
     ## Set proper default for the delimiter type
-    if (strncmpi (args.delimitertype, "simple", numel (args.delimitertype)))
+    if (strncmpi (args.delimitertype, "simple", length (args.delimitertype)))
       del = {" ","\f","\n","\r","\t","\v"};
     else
       del = "\\s";
@@ -187,7 +187,7 @@ function [result, matches] = strsplit (str, del, varargin)
     else
       del = do_string_escapes (del);
     endif
-    % This is clumsy, but needed for multi-row strings
+    ## This is clumsy, but needed for multi-row strings
     del = regexprep (del, '([^\w])', '\\$1');
   endif
 
@@ -208,6 +208,7 @@ function [result, matches] = strsplit (str, del, varargin)
            "strsplit: Invalid DELIMITERTYPE");
   endif
 endfunction
+
 
 %!shared str
 %! str = "The rain in Spain stays mainly in the plain.";

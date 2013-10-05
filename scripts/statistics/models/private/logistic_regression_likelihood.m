@@ -29,10 +29,6 @@
 
 function [g, g1, p, dev] = logistic_regression_likelihood (y, x, beta, z, z1)
 
-  if (nargin != 5)
-    print_usage ();
-  endif
-
   e = exp ([z, x] * beta); e1 = exp ([z1, x] * beta);
   g = e ./ (1 + e); g1 = e1 ./ (1 + e1);
   g = max (y == max (y), g); g1 = min (y > min (y), g1);
@@ -41,3 +37,4 @@ function [g, g1, p, dev] = logistic_regression_likelihood (y, x, beta, z, z1)
   dev = -2 * sum (log (p));
 
 endfunction
+

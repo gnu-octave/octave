@@ -32,7 +32,7 @@
 ## The @code{dir} and @code{ls} commands are implemented by calling your
 ## system's directory listing command, so the available options may vary
 ## from system to system.
-## @seealso{dir, stat, readdir, glob, filesep, ls_command}
+## @seealso{dir, readdir, glob, what, stat, filesep, ls_command}
 ## @end deftypefn
 
 ## Author: jwe

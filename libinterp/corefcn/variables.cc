@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "regexp.h"
+#include "lo-regexp.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -401,6 +401,8 @@ symbol_exist (const std::string& name, const std::string& type)
       struct_elts = name.substr (pos+1);
       symbol_name = name.substr (0, pos);
     }
+  else if (is_keyword (symbol_name))
+    return retval;
 
   // We shouldn't need to look in the global symbol table, since any
   // name that is visible in the current scope will be in the local
@@ -537,16 +539,16 @@ If the optional argument @var{type} is supplied, check only for\n\
 symbols of the specified type.  Valid types are\n\
 \n\
 @table @asis\n\
-@item \"var\"\n\
+@item @qcode{\"var\"}\n\
 Check only for variables.\n\
 \n\
-@item \"builtin\"\n\
+@item @qcode{\"builtin\"}\n\
 Check only for built-in functions.\n\
 \n\
-@item \"file\"\n\
+@item @qcode{\"file\"}\n\
 Check only for files and directories.\n\
 \n\
-@item \"dir\"\n\
+@item @qcode{\"dir\"}\n\
 Check only for directories.\n\
 @end table\n\
 \n\
@@ -2530,11 +2532,11 @@ leftmost column.  @code{left-min} specifies the minimum field width to the\n\
 left of the specified balance column.\n\
 \n\
 The default format is\n\
-@code{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
+@qcode{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{whos}\n\
 @end deftypefn")
 {
@@ -2551,9 +2553,9 @@ DEFUN (missing_function_hook, args, nargout,
 Query or set the internal variable that specifies the function to call when\n\
 an unknown identifier is requested.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);
@@ -2603,4 +2605,34 @@ Undocumented internal function.\n\
     print_usage ();
 
   return retval;
+}
+
+static std::string Vmissing_component_hook;
+
+DEFUN (missing_component_hook, args, nargout,
+    "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} missing_component_hook ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} missing_component_hook (@var{new_val}, \"local\")\n\
+Query or set the internal variable that specifies the function to call when\n\
+a component of Octave is missing.  This can be useful for packagers that\n\
+may split the Octave installation into multiple sub-packages, for example,\n\
+to provide a hint to users for how to install the missing components.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
+\n\
+The hook function is expected to be of the form\n\
+\n\
+@example\n\
+@var{fcn} (@var{component})\n\
+@end example\n\
+\n\
+Octave will call @var{fcn} with the name of the function that requires the\n\
+component and a string describing the missing component.  The hook function\n\
+should return an error message to be displayed.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (missing_component_hook);
 }

@@ -30,14 +30,14 @@ function [status, output] = shell (cmd, verbose)
   cmd = strrep (cmd, "\\", "/");
   if (ispc () && ! isunix ())
     if (isempty (have_sh))
-      if (system ("sh.exe -c \"exit\""))
+      if (system ('sh.exe -c "exit"'))
         have_sh = false;
       else
         have_sh = true;
       endif
     endif
     if (have_sh)
-      cmd = cstrcat ("sh.exe -c \"", cmd, "\"");
+      cmd = ['sh.exe -c "' cmd '"'];
     else
       error ("pkg: unable to find the command shell.");
     endif
@@ -54,3 +54,4 @@ function [status, output] = shell (cmd, verbose)
     [status, output] = system (cmd);
   endif
 endfunction
+

@@ -127,4 +127,7 @@ gripe_nonbraced_cs_list_assignment (void);
 extern OCTINTERP_API void
 gripe_warn_complex_cmp (void);
 
+extern OCTINTERP_API void
+gripe_disabled_feature (const std::string& func, const std::string& feature,
+                        const std::string& pkg="Octave");
 #endif

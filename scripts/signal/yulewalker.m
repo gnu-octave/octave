@@ -55,6 +55,3 @@ function [a, v] = yulewalker (c)
 endfunction
 
 
-
-
-

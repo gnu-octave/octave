@@ -29,6 +29,7 @@ ARMA
 arpack
 ascii
 Ashok
+ast
 async
 atan
 Attr
@@ -53,6 +54,7 @@ Backends
 backends
 bartlett
 BaseValue
+basevalue
 Bateman
 BDF
 bdf
@@ -126,6 +128,7 @@ chisquare
 chol
 Cholesky
 cholmod
+chromaticity
 chrominance
 cindex
 circ
@@ -136,11 +139,14 @@ classpaths
 Clenshaw
 CLI
 clim
+climmode
 cloglog
+closerequestfcn
 clubsuit
 CMatrix
 cmd
 cmember
+CMYK
 cntrl
 codebases
 cof
@@ -151,6 +157,7 @@ colorbar
 colormap
 colormaps
 ColorOrder
+colororder
 colperm
 Comint
 Commandline
@@ -183,7 +190,10 @@ cummin
 cumprod
 cumsum
 cURL
+CurrentAxes
+CurrentFigure
 CurrentObject
+currentpoint
 Cuthill
 cxsparse
 Cygwin
@@ -195,6 +205,7 @@ dassl
 dataset
 datasets
 datasource
+datenum
 datestr
 datestrings
 davis
@@ -226,6 +237,7 @@ dmperm
 Dobkin
 docstrings
 dOmega
+doNotSpecify
 dotall
 dotexceptnewline
 Downarrow
@@ -240,6 +252,8 @@ Durbin
 dx
 dy
 EastOutside
+edgecolor
+Ei
 EIDORS
 eigenpairs
 eigenvector
@@ -275,12 +289,14 @@ Errorbars
 errorbars
 errordlg
 ErrorHandler
+ESC
 Esmond
 et
 etree
 etreeplot
 eval
 Executables
+Exif
 exitflag
 expcdf
 expinv
@@ -330,12 +346,15 @@ frob
 Frobenius
 Fs
 FSF
+fullpath
+fullpathext
 FunValCheck
 gamcdf
 gaminv
 gampdf
 gamrnd
 Gautschi
+gca
 gcbo
 GCC
 gcd
@@ -346,6 +365,7 @@ geocdf
 geoinv
 geopdf
 geornd
+geotagging
 geq
 gesdd
 gesvd
@@ -387,6 +407,7 @@ gzipped
 Hackbusch
 Hadamard
 Haddad
+HandleVisibility
 Hankel
 Hanning
 hardcode
@@ -427,6 +448,7 @@ Hyndman
 Hypergeometric
 hypergeometric
 IEC
+ieee
 IEEE
 ifelse
 ifft
@@ -457,6 +479,7 @@ interquartile
 inv
 involutory
 ipermute
+isdir
 ishandle
 ishghandle
 isolines
@@ -473,6 +496,7 @@ Jacobian
 Jacobians
 javaaddpath
 javamem
+jbig
 JIT
 jpeg
 JPEG
@@ -481,8 +505,10 @@ jvm
 JVM's
 Kac
 Kahan
+kendall
 keybindings
 keypress
+keypressfcn
 Kolmogorov
 kolmogorov
 Konrod
@@ -505,6 +531,7 @@ ldiv
 ldivide
 ldots
 le
+leaveInPlace
 Leftarrow
 leftarrow
 Leftrightarrow
@@ -527,6 +554,8 @@ linefeeds
 linesearch
 linespec
 linespoints
+linestyle
+linewidth
 linkprop
 listdlg
 ListSize
@@ -562,6 +591,8 @@ lvl
 lx
 ly
 lz
+lzma
+lzw
 Magnus
 Mahalanobis
 makefile
@@ -570,6 +601,10 @@ makeinfo
 Mandriva
 MANOVA
 manova
+markeredgecolor
+markerfacecolor
+markersize
+markerstyle
 Marsaglia
 Maschhoff
 matchcase
@@ -583,6 +618,7 @@ mcnemar
 McNemar's
 meansq
 Mendelsohn
+menubars
 Mersenne
 meshgrid
 meshgridded
@@ -624,6 +660,7 @@ Multi
 multi
 multibyte
 multiline
+multipage
 multipledelimsasone
 MultiSelect
 mxArray
@@ -647,6 +684,7 @@ neq
 Neudecker
 Neumann
 NeXT
+NextPlot
 nfev
 nfft
 Ng
@@ -688,6 +726,7 @@ online
 OpenGL
 oplus
 Oppenheim
+Ord
 oregonator
 Orthogonalize
 oslash
@@ -697,13 +736,16 @@ outputfcn
 overridable
 paperorientation
 paperposition
+PaperPosition
 papersize
 paperunits
+PaperUnits
 parseparams
 Parter
 pbm
 PBM
 PBMplus
+pc
 pcg
 PCG
 pchip
@@ -714,6 +756,7 @@ PCX
 pcx
 pdf
 PDF
+pearson
 pentadiagonal
 periodogram
 perp
@@ -737,6 +780,8 @@ polyderiv
 polyeig
 polyfit
 polyval
+pos
+POSDEF
 POSIX
 postorder
 PostScript
@@ -796,6 +841,7 @@ rceil
 rdivide
 Readline
 readline
+RECT
 recursing
 Redheffer
 reentrant
@@ -806,6 +852,7 @@ relicensing
 ren
 renderer
 repelems
+replacechildren
 repmat
 resampled
 resampling
@@ -814,6 +861,8 @@ resize
 resized
 resnorm
 resparsify
+restoreBG
+restorePrevious
 RET
 returnonerror
 rfloor
@@ -822,6 +871,7 @@ RGB
 Riccati
 Rightarrow
 rightarrow
+rle
 rline
 rmdir
 RMS
@@ -896,6 +946,7 @@ stairstep
 Stallman
 startup
 Startup
+statinfo
 stdnormal
 stdout
 Stegun
@@ -941,6 +992,7 @@ subsindex
 subsref
 substring
 substrings
+subwindows
 SuiteSparse
 sumsq
 SunOS
@@ -977,6 +1029,7 @@ ths
 tif
 Tikhonov
 TikZ
+Timestamp
 tinv
 Tisseur
 Tisseur's
@@ -988,16 +1041,21 @@ TolFun
 TolX
 toolkits
 Toolkits
+toplevel
 tp
 tpdf
 traceback
+TRANSA
 trapz
 treatasempty
 treelayout
 treeplot
 tridiagonal
+trimesh
 triplot
 trnd
+truecolor
+TrueColor
 Tsang
 Tukey
 tuples
@@ -1008,6 +1066,7 @@ TypicalX
 ub
 UB
 uchar
+UHESS
 UID
 uimenu
 uint
@@ -1020,6 +1079,7 @@ Unary
 unary
 uncomment
 Uncomments
+unconvertible
 unformatted
 unidcdf
 unidinv
@@ -1034,6 +1094,8 @@ unimodal
 Uninstall
 uninstalled
 univariate
+unix
+unnorm
 unnormalized
 unpadded
 unpermuted
@@ -1072,6 +1134,7 @@ wallis
 warndlg
 Wathen
 WAV
+WayPoints
 wblcdf
 wblinv
 wblpdf
@@ -1092,9 +1155,13 @@ wildcard
 Wildcards
 wildcards
 Wilks
+windowbuttondownfcn
+windowbuttonmotionfcn
+windowbuttonupfcn
 windowstyle
 WinRand
 WIPO
+wireframe
 wp
 wspace
 xb

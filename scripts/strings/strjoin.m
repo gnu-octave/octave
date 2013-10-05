@@ -58,13 +58,13 @@ function rval = strjoin (cstr, delimiter)
 
   if (numel (cstr) == 1)
     rval = cstr{1};
-    return
+    return;
   endif
 
   if (ischar (delimiter))
     delimiter = do_string_escapes (delimiter);
     delimiter = {delimiter};
-  end
+  endif
  
   num = numel (cstr); 
   if (numel (delimiter) == 1 && num > 1)
@@ -85,6 +85,7 @@ function rval = strjoin (cstr, delimiter)
 
 endfunction
 
+
 %!assert (strjoin ({"hello"}, "-"), "hello")
 %!assert (strjoin ({"hello", "world"}), "hello world")
 %!assert (strjoin ({"Octave", "Scilab", "Lush", "Yorick"}, "*"),
@@ -94,3 +95,4 @@ endfunction
 %!assert (strjoin ({'Octave','Scilab'},'\n'), "Octave\nScilab")
 %!assert (strjoin ({'Octave','Scilab'},{'\n'}), "Octave\\nScilab")
 %!assert (strjoin ({},'foo'), "")
+

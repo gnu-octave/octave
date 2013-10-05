@@ -71,10 +71,14 @@
 %! y = [1,2];
 %! assert (y, x);
 
-%% test/oc tave.test/contin/contin-16.m
 %!test
 %! x = [ 1 , ...
 %! 2];
 %! y = [1,2];
 %! assert  (y, x);
 
+%!test
+%! x = [ 1 , ...anything after the ... is ignored
+%! 2];
+%! y = [1,2];
+%! assert  (y, x);

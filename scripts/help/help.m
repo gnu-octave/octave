@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 S�ren Hauberg
+## Copyright (C) 2009-2012 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -20,7 +20,7 @@
 ## @deftypefn  {Command} {} help @var{name}
 ## @deftypefnx {Command} {} help @code{--list}
 ## @deftypefnx {Command} {} help @code{.}
-## Display the help text for @var{name}.   For example, the command
+## Display the help text for @var{name}.  For example, the command
 ## @kbd{help help} prints a short message describing the @code{help}
 ## command.
 ##
@@ -155,7 +155,7 @@ function retval = do_list_functions ()
     endif
   endfor
 
-  retval = cstrcat (operators, keywords, builtins, flist);
+  retval = [operators, keywords, builtins, flist];
 
 endfunction
 
@@ -208,5 +208,4 @@ endfunction
 
 %!assert (! isempty (strfind (help ("ls"), "List directory contents")))
 %!error <invalid input> help (42)
-
 

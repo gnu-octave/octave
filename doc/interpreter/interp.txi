@@ -29,18 +29,18 @@
 
 Octave supports several methods for one-dimensional interpolation, most
 of which are described in this section.  @ref{Polynomial Interpolation}
-and @ref{Interpolation on Scattered Data} describe further methods.
+and @ref{Interpolation on Scattered Data} describe additional methods.
 
 @DOCSTRING(interp1)
 
 There are some important differences between the various interpolation
-methods.  The 'spline' method enforces that both the first and second
+methods.  The @qcode{"spline"} method enforces that both the first and second
 derivatives of the interpolated values have a continuous derivative,
 whereas the other methods do not.  This means that the results of the
-'spline' method are generally smoother.  If the function to be
-interpolated is in fact smooth, then 'spline' will give excellent
+@qcode{"spline"} method are generally smoother.  If the function to be
+interpolated is in fact smooth, then @qcode{"spline"} will give excellent
 results.  However, if the function to be evaluated is in some manner
-discontinuous, then 'pchip' interpolation might give better results.
+discontinuous, then @qcode{"pchip"} interpolation might give better results.
 
 This can be demonstrated by the code
 
@@ -51,16 +51,16 @@ dt = 1;
 ti =-2:0.025:2;
 dti = 0.025;
 y = sign (t);
-ys = interp1 (t,y,ti,'spline');
-yp = interp1 (t,y,ti,'pchip');
+ys = interp1 (t,y,ti,"spline");
+yp = interp1 (t,y,ti,"pchip");
 ddys = diff (diff (ys)./dti) ./ dti;
 ddyp = diff (diff (yp)./dti) ./ dti;
 figure (1);
 plot (ti,ys,'r-', ti,yp,'g-');
-legend ('spline', 'pchip', 4);
+legend ("spline", "pchip", 4);
 figure (2);
 plot (ti,ddys,'r+', ti,ddyp,'g*');
-legend ('spline', 'pchip');
+legend ("spline", "pchip");
 @end group
 @end example
 
@@ -71,13 +71,13 @@ The result of which can be seen in @ref{fig:interpderiv1} and
 
 @float Figure,fig:interpderiv1
 @center @image{interpderiv1,4in}
-@caption{Comparison of 'pchip' and 'spline' interpolation methods for a 
+@caption{Comparison of @qcode{"pchip"} and @qcode{"spline"} interpolation methods for a 
 step function}
 @end float
 
 @float Figure,fig:interpderiv2
 @center @image{interpderiv2,4in}
-@caption{Comparison of the second derivative of the 'pchip' and 'spline' 
+@caption{Comparison of the second derivative of the @qcode{"pchip"} and @qcode{"spline"} 
 interpolation methods for a step function}
 @end float
 @end ifnotinfo
@@ -107,9 +107,9 @@ n = length (t); k = 100;
 ti = t(1) + [0 : k-1]*dt*n/k;
 y = sin (4*t + 0.3) .* cos (3*t - 0.1);
 yp = sin (4*ti + 0.3) .* cos (3*ti - 0.1);
-plot (ti, yp, 'g', ti, interp1 (t, y, ti, 'spline'), 'b', ...
-      ti, interpft (y, k), 'c', t, y, 'r+');
-legend ('sin(4t+0.3)cos(3t-0.1', 'spline', 'interpft', 'data');
+plot (ti, yp, "g", ti, interp1 (t, y, ti, "spline"), "b", ...
+      ti, interpft (y, k), "c", t, y, 'r+');
+legend ('sin(4t+0.3)cos(3t-0.1', "spline", "interpft", "data");
 @end group
 @end example
 
@@ -128,9 +128,8 @@ functions, as can be seen in @ref{fig:interpft}.
 @end float
 @end ifnotinfo
 
-In additional the support function @code{spline} and @code{lookup} that
+In addition, the support functions @code{spline} and @code{lookup} that
 underlie the @code{interp1} function can be called directly.
-@ref{Finding Elements and Checking Conditions}
 
 @DOCSTRING(spline)
 
@@ -149,12 +148,11 @@ in @ref{Interpolation on Scattered Data}.
 
 A significant difference between @code{interpn} and the other two
 multi-dimensional interpolation functions is the fashion in which the
-dimensions are treated.  For @code{interp2} and @code{interp3}, the 'y'
-axis is considered to be the columns of the matrix, whereas the 'x'
-axis corresponds to the rows of the array.  As Octave indexes arrays in
-column major order, the first dimension of any array is the columns, and
-so @code{interpn} effectively reverses the 'x' and 'y' dimensions. 
-Consider the example,
+dimensions are treated.  For @code{interp2} and @code{interp3}, the y-axis is
+considered to be the columns of the matrix, whereas the x-axis corresponds to
+the rows of the array.  As Octave indexes arrays in column major order, the
+first dimension of any array is the columns, and so @code{interpn} effectively
+reverses the 'x' and 'y' dimensions.  Consider the example,
 
 @example
 @group
@@ -164,9 +162,9 @@ f = @@(x,y,z) x.^2 - y - z.^2;
 v = f (xx,yy,zz);
 xi = yi = zi = -1:0.1:1;
 [xxi, yyi, zzi] = meshgrid (xi, yi, zi);
-vi = interp3 (x, y, z, v, xxi, yyi, zzi, 'spline');
+vi = interp3 (x, y, z, v, xxi, yyi, zzi, "spline");
 [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
-vi2 = interpn (x, y, z, v, xxi, yyi, zzi, 'spline');
+vi2 = interpn (x, y, z, v, xxi, yyi, zzi, "spline");
 mesh (zi, yi, squeeze (vi2(1,:,:)));
 @end group
 @end example

@@ -34,8 +34,8 @@
 ## with a lower and upper bound in which case the returned integers will be
 ## on the interval @w{[@var{imin}, @var{imax}]}.
 ##
-## The optional argument "@var{class}" will return a matrix of the requested
-## type.  The default is "double".
+## The optional argument @var{class} will return a matrix of the requested
+## type.  The default is @qcode{"double"}.
 ##
 ## The following example returns 150 integers in the range 1-10.
 ##
@@ -44,7 +44,7 @@
 ## @end example
 ##
 ## Implementation Note: @code{randi} relies internally on @code{rand} which
-## uses class "double" to represent numbers.  This limits the maximum
+## uses class @qcode{"double"} to represent numbers.  This limits the maximum
 ## integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
 ## returned by the @code{bitmax} function.  For IEEE floating point numbers
 ## this value is @w{@math{2^{53} - 1}}.
@@ -110,6 +110,7 @@ function ri = randi (bounds, varargin)
   endif
 
 endfunction
+
 
 %!test
 %! ri = randi (10, 1000, 1);

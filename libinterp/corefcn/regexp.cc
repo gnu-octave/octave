@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-list.h"
 #include "oct-locbuf.h"
 #include "quit.h"
-#include "regexp.h"
+#include "lo-regexp.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -68,6 +68,13 @@ do_regexp_ptn_string_escapes (const std::string& s)
             {
             case 'b': // backspace
               retval[i] = '\b';
+              break;
+
+            // Translate \< and \> to PCRE word boundary
+            case '<': // begin word boundary
+            case '>': // end word boundary
+              retval[i] = '\\';
+              retval[++i] = 'b';
               break;
 
 #if 0
@@ -640,11 +647,18 @@ end (@code{$}) of the string.\n\
 In addition, the following escaped characters have special meaning.\n\
 \n\
 @table @code\n\
-@item \\b\n\
-Match a word boundary\n\
 \n\
-@item \\B\n\
-Match within a word\n\
+@item \\d\n\
+Match any digit\n\
+\n\
+@item \\D\n\
+Match any non-digit\n\
+\n\
+@item \\s\n\
+Match any whitespace character\n\
+\n\
+@item \\S\n\
+Match any non-whitespace character\n\
 \n\
 @item \\w\n\
 Match any word character\n\
@@ -658,21 +672,12 @@ Match the beginning of a word\n\
 @item \\>\n\
 Match the end of a word\n\
 \n\
-@item \\s\n\
-Match any whitespace character\n\
-\n\
-@item \\S\n\
-Match any non-whitespace character\n\
-\n\
-@item \\d\n\
-Match any digit\n\
-\n\
-@item \\D\n\
-Match any non-digit\n\
+@item \\B\n\
+Match within a word\n\
 @end table\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in @var{pat}\n\
+sequences (e.g., @qcode{\"\\n\"} => newline) are processed in @var{pat}\n\
 regardless of whether @var{pat} has been defined within single quotes.  Use\n\
 a second backslash to stop interpolation of the escape sequence (e.g.,\n\
 \"\\\\n\") or use the @code{regexptranslate} function.\n\
@@ -712,13 +717,13 @@ correspondence between the output arguments and the optional argument\n\
 are\n\
 \n\
 @multitable @columnfractions 0.2 0.3 0.3 0.2\n\
-@item @tab 'start'        @tab @var{s}  @tab\n\
-@item @tab 'end'          @tab @var{e}  @tab\n\
-@item @tab 'tokenExtents' @tab @var{te} @tab\n\
-@item @tab 'match'        @tab @var{m}  @tab\n\
-@item @tab 'tokens'       @tab @var{t}  @tab\n\
-@item @tab 'names'        @tab @var{nm} @tab\n\
-@item @tab 'split'        @tab @var{sp} @tab\n\
+@item @tab @qcode{'start'}        @tab @var{s}  @tab\n\
+@item @tab @qcode{'end'}          @tab @var{e}  @tab\n\
+@item @tab @qcode{'tokenExtents'} @tab @var{te} @tab\n\
+@item @tab @qcode{'match'}        @tab @var{m}  @tab\n\
+@item @tab @qcode{'tokens'}       @tab @var{t}  @tab\n\
+@item @tab @qcode{'names'}        @tab @var{nm} @tab\n\
+@item @tab @qcode{'split'}        @tab @var{sp} @tab\n\
 @end multitable\n\
 \n\
 Additional arguments are summarized below.\n\
@@ -777,8 +782,8 @@ Zero-length matches are not returned.  (default)\n\
 @item emptymatch\n\
 Return zero-length matches.\n\
 \n\
-@code{regexp ('a', 'b*', 'emptymatch'} returns @code{[1 2]} because there are\n\
-zero or more 'b' characters at positions 1 and end-of-string.\n\
+@code{regexp ('a', 'b*', 'emptymatch')} returns @code{[1 2]} because there\n\
+are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 \n\
 @end table\n\
 @seealso{regexpi, strfind, regexprep}\n\
@@ -920,7 +925,7 @@ zero or more 'b' characters at positions 1 and end-of-string.\n\
 
 ## Tests for named tokens
 %!test
-%! # Parenthesis in named token (ie (int)) causes a problem
+%! ## Parenthesis in named token (ie (int)) causes a problem
 %! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
 
 %!test
@@ -1067,7 +1072,7 @@ DEFUN (regexpi, args, nargout,
 \n\
 Case insensitive regular expression string matching.  Search for @var{pat} in\n\
 @var{str} and return the positions and substrings of any matches, or empty\n\
-values if there are none.  @xref{docXregexp,,regexp}, for details on the\n\
+values if there are none.  @xref{XREFregexp,,regexp}, for details on the\n\
 syntax of the search pattern.\n\
 @seealso{regexp}\n\
 @end deftypefn")
@@ -1279,7 +1284,7 @@ DEFUN (regexprep, args, ,
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
 \n\
 The pattern is a regular expression as documented for @code{regexp}.\n\
-@xref{docXregexp,,regexp}.\n\
+@xref{XREFregexp,,regexp}.\n\
 \n\
 The replacement string may contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  For example,\n\
@@ -1304,7 +1309,7 @@ This option is present for compatibility but is ignored.\n\
 @end table\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, ordinary escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in both @var{pat}\n\
+sequences (e.g., @qcode{\"\\n\"} => newline) are processed in both @var{pat}\n\
 and @var{repstr} regardless of whether they were defined within single\n\
 quotes.  Use a second backslash to stop interpolation of the escape sequence\n\
 (e.g., \"\\\\n\") or use the @code{regexptranslate} function.\n\

@@ -64,3 +64,4 @@ function freqz_plot (w, h)
   axis ([w(1), w(n)], "autoy", "label");
 
 endfunction
+

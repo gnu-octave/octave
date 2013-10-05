@@ -504,6 +504,15 @@ tree_checker::visit_try_catch_command (tree_try_catch_command& cmd)
 {
   tree_statement_list *try_code = cmd.body ();
 
+  tree_identifier *expr_id = cmd.identifier ();
+
+  if (expr_id)
+    {
+      if (! expr_id->lvalue_ok ())
+        gripe ("invalid lvalue used for identifier in try-catch command",
+               cmd.line ());
+    }
+
   if (try_code)
     try_code->accept (*this);
 

@@ -18,22 +18,29 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{info} =} imfinfo (@var{filename})
+## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{filename}, @var{ext})
 ## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{url})
 ## Read image information from a file.
 ##
 ## @code{imfinfo} returns a structure containing information about the image
-## stored in the file @var{filename}.  The output structure contains the
-## following fields.
+## stored in the file @var{filename}.  If there is no file @var{filename},
+## and @var{ext} was specified, it will look for a file named @var{filename}
+## and extension @var{ext}, i.e., a file named @var{filename}.@var{ext}.
+##
+## The output structure @var{info} contains the following fields:
 ##
 ## @table @samp
 ## @item Filename
 ## The full name of the image file.
 ##
+## @item FileModDate
+## Date of last modification to the file.
+##
 ## @item FileSize
 ## Number of bytes of the image on disk
 ##
-## @item FileModDate
-## Date of last modification to the file.
+## @item Format
+## Image format (e.g., @qcode{"jpeg"}).
 ##
 ## @item Height
 ## Image height in pixels.
@@ -44,11 +51,9 @@
 ## @item BitDepth
 ## Number of bits per channel per pixel.
 ##
-## @item Format
-## Image format (e.g., @code{"jpeg"}).
-##
-## @item LongFormat
-## Long form image format description.
+## @item ColorType
+## Image type.  Value is @qcode{"grayscale"}, @qcode{"indexed"},
+## @qcode{"truecolor"}, @qcode{"CMYK"}, or @qcode{"undefined"}.
 ##
 ## @item XResolution
 ## X resolution of the image.
@@ -56,102 +61,101 @@
 ## @item YResolution
 ## Y resolution of the image.
 ##
-## @item TotalColors
-## Number of unique colors in the image.
+## @item ResolutionUnit
+## Units of image resolution.  Value is @qcode{"Inch"},
+## @qcode{"Centimeter"}, or @qcode{"undefined"}.
 ##
-## @item TileName
-## Tile name.
-##
-## @item AnimationDelay
+## @item DelayTime
 ## Time in 1/100ths of a second (0 to 65535) which must expire before displaying
 ## the next image in an animated sequence.
 ##
-## @item AnimationIterations
-## Number of iterations to loop an animation (e.g., Netscape loop extension)
-## for.
+## @item LoopCount
+## Number of iterations to loop an animation.
 ##
 ## @item ByteOrder
-## Endian option for formats that support it.  Value is @code{"little-endian"},
-## @code{"big-endian"}, or @code{"undefined"}.
+## Endian option for formats that support it.  Value is @qcode{"little-endian"},
+## @qcode{"big-endian"}, or @qcode{"undefined"}.
 ##
 ## @item Gamma
 ## Gamma level of the image.  The same color image displayed on two different
 ## workstations may look different due to differences in the display monitor.
 ##
-## @item Matte
-## @code{true} if the image has transparency.
-##
-## @item ModulusDepth
-## Image modulus depth (minimum number of bits required to support
-## red/green/blue components without loss of accuracy).
-##
 ## @item Quality
-## JPEG/MIFF/PNG compression level.
+## JPEG/MIFF/PNG compression level.  Value is an integer in the range [0 100].
 ##
-## @item QuantizeColors
-## Preferred number of colors in the image.
+## @item DisposalMethod
+## Only valid for GIF images, control how successive frames are rendered (how
+## the preceding frame is disposed of) when creating a GIF animation.  Values
+## can be @qcode{"doNotSpecify"}, @qcode{"leaveInPlace"}, @qcode{"restoreBG"},
+## or @qcode{"restorePrevious"}.  For non-GIF files, value is an empty string.
 ##
-## @item ResolutionUnits
-## Units of image resolution.  Value is @code{"pixels per inch"},
-## @code{"pixels per centimeter"}, or @code{"undefined"}.
+## @item Chromaticities
+## Value is a 1x8 Matrix with the x,y chromaticity values for white, red,
+## green, and blue points, in that order.
 ##
-## @item ColorType
-## Image type.  Value is @code{"grayscale"}, @code{"indexed"},
-## @code{"truecolor"}, or @code{"undefined"}.
+## @item Comment
+## Image comment.
 ##
-## @item View
-## FlashPix viewing parameters.
+## @item Compression
+## Compression type.  Value can be @qcode{"none"}, @qcode{"bzip"},
+## @qcode{"fax3"}, @qcode{"fax4"}, @qcode{"jpeg"}, @qcode{"lzw"},
+## @qcode{"rle"}, @qcode{"deflate"}, @qcode{"lzma"}, @qcode{"jpeg2000"},
+## @qcode{"jbig2"}, @qcode{"jbig2"}, or @qcode{"undefined"}.
+##
+## @item Colormap
+## Colormap for each image.
+##
+## @item Orientation
+## The orientation of the image with respect to the rows and columns.  Value
+## is an integer between 1 and 8 as defined in the TIFF 6 specifications, and
+## for @sc{matlab} compatibility.
+##
+## @item Software
+## Name and version of the software or firmware of the camera or image input
+## device used to generate the image.
+##
+## @item Make
+## The manufacturer of the recording equipment.  This is the manufacture of the
+## @nospell{DSC}, scanner, video digitizer or other equipment that generated
+## the image.
+##
+## @item Model
+## The model name or model number of the recording equipment as mentioned
+## on the field @qcode{"Make"}.
+##
+## @item DateTime
+## The date and time of image creation as defined by the Exif standard, i.e.,
+## it is the date and time the file was changed.
+##
+## @item ImageDescription
+## The title of the image as defined by the Exif standard.
+##
+## @item Artist
+## Name of the camera owner, photographer or image creator.
+##
+## @item Copyright
+## Copyright notice of the person or organization claiming rights to the image.
+##
+## @item DigitalCamera
+## A struct with information retrieved from the Exif tag.
+##
+## @item GPSInfo
+## A struct with geotagging information retrieved from the Exif tag.
 ## @end table
 ##
-## @seealso{imread, imwrite, imshow}
+## @seealso{imread, imwrite, imshow, imformats}
 ## @end deftypefn
 
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
-function info = imfinfo (filename)
-
-  if (nargin < 1)
+function info = imfinfo (varargin)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif
-
-  if (! ischar (filename))
+  elseif (! ischar (varargin{1}))
     error ("imfinfo: FILENAME must be a string");
+  elseif (nargin > 1 && ! ischar (varargin{2}))
+    error ("imfinfo: EXT must be a string");
   endif
-
-  filename = tilde_expand (filename);
-
-  delete_file = false;
-
-  unwind_protect
-
-    fn = file_in_path (IMAGE_PATH, filename);
-
-    if (isempty (fn))
-
-      ## Couldn't find file. See if it's an URL.
-
-      tmp = tmpnam ();
-
-      [fn, status, msg] = urlwrite (filename, tmp);
-
-      if (! status)
-        error ("imfinfo: cannot find %s", filename);
-      endif
-
-      if (! isempty (fn))
-        delete_file = true;
-      endif
-
-    endif
-
-    info = __magick_finfo__ (fn);
-
-  unwind_protect_cleanup
-
-    if (delete_file)
-      unlink (fn);
-    endif
-
-  end_unwind_protect
-
+  info = imageIO (@__imfinfo__, "info", varargin, varargin{:});
 endfunction
+

@@ -367,7 +367,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 
   if (tc.is_real_matrix ())
     {
-      os << "# 3D data...\n"
+      os << "# 3-D data...\n"
          << "# type: matrix\n"
          << "# total rows: " << nr << "\n"
          << "# total columns: " << nc << "\n";
@@ -408,7 +408,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
     }
   else
     {
-      ::error ("for now, I can only save real matrices in 3D format");
+      ::error ("for now, I can only save real matrices in 3-D format");
       fail = true;
     }
 
@@ -423,9 +423,9 @@ DEFUN (save_precision, args, nargout,
 Query or set the internal variable that specifies the number of\n\
 digits to keep when saving data in text format.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1,

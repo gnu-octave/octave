@@ -2,6 +2,7 @@ EXTRA_DIST += \
   util/module.mk
 
 UTIL_INC = \
+  util/action-container.h \
   util/base-list.h \
   util/byte-swap.h \
   util/caseless-str.h \
@@ -34,13 +35,15 @@ UTIL_INC = \
   util/oct-sort.h \
   util/oct-sparse.h \
   util/pathsearch.h \
-  util/regexp.h \
+  util/lo-regexp.h \
   util/singleton-cleanup.h \
   util/sparse-sort.h \
   util/sparse-util.h \
   util/statdefs.h \
   util/str-vec.h \
-  util/sun-utils.h 
+  util/sun-utils.h \
+  util/unwind-prot.h \
+  util/url-transfer.h
 
 UTIL_C_SRC = \
   util/f2c-main.c \
@@ -66,11 +69,13 @@ UTIL_SRC = \
   util/oct-mutex.cc \
   util/oct-shlib.cc \
   util/pathsearch.cc \
-  util/regexp.cc \
+  util/lo-regexp.cc \
   util/singleton-cleanup.cc \
   util/sparse-sort.cc \
   util/sparse-util.cc \
   util/str-vec.cc \
+  util/unwind-prot.cc \
+  util/url-transfer.cc \
   $(UTIL_C_SRC)
 
 TEMPLATE_SRC += \

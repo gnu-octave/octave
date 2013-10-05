@@ -60,9 +60,9 @@ function cdf = binocdf (x, n, p)
   k = (x >= 0) & (x < n) & (n == fix (n)) & (p >= 0) & (p <= 1);
   tmp = floor (x(k));
   if (isscalar (n) && isscalar (p))
-    cdf(k) = 1 - betainc (p, tmp + 1, n - tmp);
+    cdf(k) = betainc (1 - p, n - tmp, tmp + 1);
   else
-    cdf(k) = 1 - betainc (p(k), tmp + 1, n(k) - tmp);
+    cdf(k) = betainc (1 .- p(k), n(k) - tmp, tmp + 1);
   endif
 
 endfunction

@@ -24,7 +24,7 @@
 ## The set @var{a} must be a numerical matrix or a cell array of strings.  The
 ## output will always be a cell array of either vectors or strings.
 ##
-## With the optional second argument @code{"rows"}, each row of the set @var{a}
+## With the optional second argument @qcode{"rows"}, each row of the set @var{a}
 ## is considered one element of the set.  As a result, @var{a} must then be a
 ## numerical 2-D matrix.
 ##

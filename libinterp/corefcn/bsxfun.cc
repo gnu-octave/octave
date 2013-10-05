@@ -773,12 +773,12 @@ dimensionality as the other array.\n\
 %% Test automatic bsxfun
 %
 %!test
-%! funs = {@plus, @minus, @times, @rdivide, @ldivide, @power, @max, @min, \
-%!         @rem, @mod, @atan2, @hypot, @eq, @ne, @lt, @le, @gt, @ge, \
+%! funs = {@plus, @minus, @times, @rdivide, @ldivide, @power, @max, @min, ...
+%!         @rem, @mod, @atan2, @hypot, @eq, @ne, @lt, @le, @gt, @ge, ...
 %!         @and, @or, @xor };
 %!
 %! float_types = {@single, @double};
-%! int_types = {@int8, @int16, @int32, @int64, \
+%! int_types = {@int8, @int16, @int32, @int64, ...
 %!              @uint8, @uint16, @uint32, @uint64};
 %!
 %! x = rand (3) * 10-5;
@@ -792,19 +792,19 @@ dimensionality as the other array.\n\
 %!       f_type = float_types{j};
 %!       i_type = int_types{k};
 %!
-%!         assert (bsxfun (fun, f_type (x), i_type (y)), \
+%!         assert (bsxfun (fun, f_type (x), i_type (y)), ...
 %!                 fun (f_type(x), i_type (y)));
-%!         assert (bsxfun (fun, f_type (y), i_type (x)), \
+%!         assert (bsxfun (fun, f_type (y), i_type (x)), ...
 %!                 fun (f_type(y), i_type (x)));
 %!
-%!         assert (bsxfun (fun, i_type (x), i_type (y)), \
+%!         assert (bsxfun (fun, i_type (x), i_type (y)), ...
 %!                 fun (i_type (x), i_type (y)));
-%!         assert (bsxfun (fun, i_type (y), i_type (x)), \
+%!         assert (bsxfun (fun, i_type (y), i_type (x)), ...
 %!                 fun (i_type (y), i_type (x)));
 %!
-%!         assert (bsxfun (fun, f_type (x), f_type (y)), \
+%!         assert (bsxfun (fun, f_type (x), f_type (y)), ...
 %!                 fun (f_type (x), f_type (y)));
-%!         assert (bsxfun (fun, f_type(y), f_type(x)), \
+%!         assert (bsxfun (fun, f_type(y), f_type(x)), ...
 %!                 fun (f_type (y), f_type (x)));
 %!     endfor
 %!   endfor

@@ -40,6 +40,7 @@ class charMatrix;
 
 #include "input.h"
 #include "oct-map.h"
+#include "symtab.h"
 
 
 typedef void (*octave_exit_func) (int);

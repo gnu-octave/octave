@@ -31,8 +31,8 @@
 ## @code{@var{x} >= 0}.  @var{c} and @var{d} must be real.  @var{x0} is an
 ## optional initial guess for @var{x}.
 ## Currently, @code{lsqnonneg}
-## recognizes these options: @code{"MaxIter"}, @code{"TolX"}.
-## For a description of these options, see @ref{docXoptimset,,optimset}.
+## recognizes these options: @qcode{"MaxIter"}, @qcode{"TolX"}.
+## For a description of these options, see @ref{XREFoptimset,,optimset}.
 ##
 ## Outputs:
 ##
@@ -57,9 +57,9 @@
 ## A structure with two fields:
 ##
 ## @itemize @bullet
-## @item "algorithm": The algorithm used ("nnls")
+## @item @qcode{"algorithm"}: The algorithm used (@qcode{"nnls"})
 ##
-## @item "iterations": The number of iterations taken.
+## @item @qcode{"iterations"}: The number of iterations taken.
 ## @end itemize
 ##
 ## @item lambda
@@ -79,7 +79,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
   if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
     x = optimset ("MaxIter", 1e5);
-    return
+    return;
   endif
 
   if (! (nargin >= 2 && nargin <= 4 && ismatrix (c) && ismatrix (d) && isstruct (options)))

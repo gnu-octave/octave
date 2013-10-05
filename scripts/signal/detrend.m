@@ -28,8 +28,9 @@
 ## is assumed.  This corresponds to removing a linear trend.
 ##
 ## The order of the polynomial can also be given as a string, in which case
-## @var{p} must be either @t{"constant"} (corresponds to @code{@var{p}=0}) or
-## @t{"linear"} (corresponds to @code{@var{p}=1}).
+## @var{p} must be either @qcode{"constant"} (corresponds to
+## @code{@var{p}=0}) or
+## @qcode{"linear"} (corresponds to @code{@var{p}=1}).
 ## @seealso{polyfit}
 ## @end deftypefn
 

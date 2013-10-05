@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 S�ren Hauberg
+## Copyright (C) 2009-2012 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -19,24 +19,24 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} type @var{name} @dots{}
 ## @deftypefnx {Command} {} type -q @var{name} @dots{}
-## @deftypefnx {Function File} {dfns =} type ("@var{name}", @dots{})
-## Display the definition of each @var{name} that refers to a function.
+## @deftypefnx {Function File} {text =} type ("@var{name}", @dots{})
+## Display the contents of @var{name} which may be a file, function (m-file),
+## variable, operator, or keyword.
 ##
-## Normally also displays whether each @var{name} is user-defined or built-in;
-## the @option{-q} option suppresses this behavior.
+## @code{type} normally prepends a header line describing the category
+## of @var{name} such as function or variable; The @option{-q} option
+## suppresses this behavior.
 ##
-## If an output argument is requested nothing is displayed.  Instead, a cell
-## array of strings is returned, where each element corresponds to the
-## definition of each requested function.
+## If no output variable is used the contents are displayed on screen.
+## Otherwise, a cell array of strings is returned, where each element
+## corresponds to the contents of each requested function.
 ## @end deftypefn
 
-function retval = type (varargin)
-  ## Parse input
-  if (nargin == 0)
-    error ("type: not enough input arguments");
-  endif
+function text = type (varargin)
 
-  if (!iscellstr (varargin))
+  if (nargin == 0)
+    print_usage ();
+  elseif (! iscellstr (varargin))
     error ("type: input arguments must be strings");
   endif
 
@@ -44,18 +44,18 @@ function retval = type (varargin)
   idx = strcmpi (varargin, "-q") | strcmpi (varargin, "-quiet");
   if (any (idx))
     quiet = true;
-    varargin (idx) = [];
+    varargin(idx) = [];
   endif
 
   if (nargout > 0)
-    retval = cell (size (varargin));
+    text = cell (size (varargin));
   endif
 
   for n = 1:length (varargin)
-    name = varargin {n};
+    name = varargin{n};
 
     ## Find function and get its code
-    text = "";
+    txt = "";
     cmd = sprintf ("exist ('%s')", name);
     e = evalin ("caller", cmd);
     if (e == 1)
@@ -63,17 +63,20 @@ function retval = type (varargin)
       cmd = sprintf ("disp (%s);", name);
       desc = evalin ("caller", cmd);
       if (quiet)
-        text = desc;
+        txt = desc;
       else
-        text = sprintf ("%s is a variable\n%s", name, desc);
+        txt = sprintf ("%s is a variable\n%s", name, desc);
       endif
     elseif (e == 2)
       ## m-file or ordinary file
       file = which (name);
-      if (isempty (file))
+      if (length (file) > 2)
+        ext = file(end-1:end);
+      endif
+      if (isempty (file) || ! strcmpi (ext, ".m"))
         ## 'name' is an ordinary file, and not a function name.
-        ## FIXME: Should we just print it anyway?
-        error ("type: '%s' undefined\n", name);
+        file = file_in_loadpath (name);
+        quiet = true;
       endif
 
       ## Read the file
@@ -85,28 +88,27 @@ function retval = type (varargin)
       fclose (fid);
 
       if (quiet)
-        text = contents;
+        txt = contents;
       else
-        text = sprintf ("%s is the user-defined function defined from: %s\n\n%s",
+        txt = sprintf ("%s is the user-defined function defined from: %s\n\n%s",
                         name, file, contents);
       endif
     elseif (e == 3)
-      text = sprintf ("%s is a dynamically-linked function", name);
+      txt = sprintf ("%s is a dynamically-linked function", name);
     elseif (e == 5)
-      text = sprintf ("%s is a built-in function", name);
+      txt = sprintf ("%s is a built-in function", name);
     elseif (any (strcmp (__operators__ (), name)))
-      text = sprintf ("%s is an operator", name);
+      txt = sprintf ("%s is an operator", name);
     elseif (any (strcmp (__keywords__ (), name)))
-      text = sprintf ("%s is a keyword", name);
+      txt = sprintf ("%s is a keyword", name);
     else
       error ("type: '%s' undefined\n", name);
     endif
 
-    ## Should we return the text or print if
     if (nargout == 0)
-      disp (text);
+      disp (txt);
     else
-      retval {n} = text;
+      text{n} = txt;
     endif
   endfor
 endfunction
@@ -114,13 +116,25 @@ endfunction
 
 %!test
 %! var = 1;
-%! typestr = type ("var");
-%! typestr = typestr{1}(1:17);
+%! text = type ("var");
+%! typestr = text{1}(1:17);
 %! assert (typestr, "var is a variable");
+
+%!test
+%! text = type ("ls");
+%! typestr = text{1}(1:31);
+%! assert (typestr, "ls is the user-defined function");
+
+%!test
+%! text = type ("ls", "-q");
+%! typestr = text{1}(1:21);
+%! assert (typestr, "## Copyright (C) 2006");
 
 %!assert (type ("amd"){1}, "amd is a dynamically-linked function")
 %!assert (type ("cat"){1}, "cat is a built-in function")
 %!assert (type ("+"){1}, "+ is an operator")
 %!assert (type ("end"){1}, "end is a keyword")
-%!error (type ('NO_NAME'))
+
+%!error type ()
+%!error <'__NO_NAME__' undefined> type ('__NO_NAME__')
  

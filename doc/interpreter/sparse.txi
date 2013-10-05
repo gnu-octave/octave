@@ -23,7 +23,7 @@
 @set htmltex
 @end iftex
 
-@node Sparse Matrices 
+@node Sparse Matrices
 @chapter Sparse Matrices
 
 @menu
@@ -34,7 +34,7 @@
 @end menu
 
 @node Basics
-@section The Creation and Manipulation of Sparse Matrices
+@section Creation and Manipulation of Sparse Matrices
 
 The size of mathematical problems that can be treated at any particular
 time is generally limited by the available computing resources.  Both,
@@ -307,12 +307,11 @@ number of memory allocations.
 
 The above problem of memory reallocation can be avoided in
 oct-files.  However, the construction of a sparse matrix from an oct-file
-is more complex than can be discussed here, and
-you are referred to chapter @ref{External Code Interface}, to have
-a full description of the techniques involved.
+is more complex than can be discussed here.  @xref{External Code Interface},
+for a full description of the techniques involved.
 
 @node Information
-@subsection Finding out Information about Sparse Matrices
+@subsection Finding Information about Sparse Matrices
 
 There are a number of functions that allow information concerning
 sparse matrices to be obtained.  The most basic of these is
@@ -342,7 +341,7 @@ mean and the variance of each column.
 
 When solving linear equations involving sparse matrices Octave
 determines the means to solve the equation based on the type of the
-matrix as discussed in @ref{Sparse Linear Algebra}.  Octave probes the
+matrix (@pxref{Sparse Linear Algebra}).  Octave probes the
 matrix type when the div (/) or ldiv (\) operator is first used with
 the matrix and then caches the type.  However the @dfn{matrix_type}
 function can be used to determine the type of the sparse matrix prior
@@ -443,9 +442,9 @@ symmetric or @code{treeplot (etree (A+A'))} otherwise.
 @subsection Basic Operators and Functions on Sparse Matrices
 
 @menu
-* Sparse Functions::            
-* Return Types of Operators and Functions::  
-* Mathematical Considerations::  
+* Sparse Functions::
+* Return Types of Operators and Functions::
+* Mathematical Considerations::
 @end menu
 
 @node Sparse Functions
@@ -505,7 +504,7 @@ supplied with these functions within Octave itself for further
 details.
 
 @node Return Types of Operators and Functions
-@subsubsection The Return Types of Operators and Functions
+@subsubsection Return Types of Operators and Functions
 
 The two basic reasons to use sparse matrices are to reduce the memory 
 usage and to not have to do calculations on zero elements.  The two are
@@ -574,8 +573,8 @@ The attempt has been made to make sparse matrices behave in exactly the
 same manner as there full counterparts.  However, there are certain differences
 and especially differences with other products sparse implementations.
 
-Firstly, the "./" and ".^" operators must be used with care.  Consider what
-the examples
+Firstly, the @qcode{"./"} and @qcode{".^"} operators must be used with care. 
+Consider what the examples
 
 @example
 @group
@@ -856,7 +855,7 @@ singular values and vectors.
 @DOCSTRING(svds)
 
 @node Iterative Techniques
-@section Iterative Techniques applied to sparse matrices
+@section Iterative Techniques Applied to Sparse Matrices
 
 The left division @code{\} and right division @code{/} operators,
 discussed in the previous section, use direct solvers to resolve a
@@ -877,7 +876,7 @@ are partial factorizations of the original matrix.
 @DOCSTRING(luinc)
 
 @node Real Life Example
-@section Real Life Example of the use of Sparse Matrices
+@section Real Life Example using Sparse Matrices
 
 A common application for sparse matrices is in the solution of Finite
 Element Models.  Finite element models allow numerical solution of

@@ -25,7 +25,7 @@
 ## When called with only two arguments, @code{cmpermute} randomly rearranges
 ## the colormap @var{map} and returns a new colormap @var{newmap}.  It also
 ## returns the indexed image @var{Y} which is the equivalent of the original
-## input image @var{X} when displayed using @var{newmap}.  
+## input image @var{X} when displayed using @var{newmap}.
 ##
 ## When called with an optional third argument the order of colors in the
 ## new colormap is defined by @var{index}.

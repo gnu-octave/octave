@@ -63,10 +63,10 @@ contributing additional functions for it, and by reporting any problems
 you may have.
 
 @menu
-* Acknowledgements::            
+* Acknowledgements::
 * Citing Octave in Publications::
-* How You Can Contribute to Octave::  
-* Distribution::                
+* How You Can Contribute to Octave::
+* Distribution::
 @end menu
 
 @node Acknowledgements

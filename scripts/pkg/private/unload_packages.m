@@ -73,8 +73,7 @@ function unload_packages (files, handle_deps, local_list, global_list)
     idx = strcmp (p, d);
     if (any (idx))
       rmpath (d);
-      ## FIXME: We should also check if we need to remove items from
-      ## EXEC_PATH.
+      ## FIXME: We should also check if we need to remove items from EXEC_PATH.
     endif
   endfor
 endfunction

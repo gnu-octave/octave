@@ -39,13 +39,13 @@
 ## The following options are recognized:
 ##
 ## @table @asis
-## @item "a"
+## @item @qcode{"a"}
 ## Compute the (ordinary) arithmetic mean.  [default]
 ##
-## @item "g"
+## @item @qcode{"g"}
 ## Compute the geometric mean.
 ##
-## @item "h"
+## @item @qcode{"h"}
 ## Compute the harmonic mean.
 ## @end table
 ##

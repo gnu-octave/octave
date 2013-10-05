@@ -177,8 +177,8 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
         length = (param(2)-param(1)+1) * channels;
       elseif (nparams == 4 && char (param) == "size")
         ## Size of the file is requested.
-        tmp = idivide (8 * data_size, channels * bits_per_sample);
-        y = [tmp, channels];
+        y = idivide (8 * data_size, channels * bits_per_sample);
+        samples_per_sec = channels;
         return;
       else
         error ("wavread: invalid PARAM argument");

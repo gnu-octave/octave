@@ -651,7 +651,8 @@ Return the elimination tree for the matrix @var{S}.  By default @var{S}\n\
 is assumed to be symmetric and the symmetric elimination tree is\n\
 returned.  The argument @var{typ} controls whether a symmetric or\n\
 column elimination tree is returned.  Valid values of @var{typ} are\n\
-\"sym\" or \"col\", for symmetric or column elimination tree respectively\n\
+@qcode{\"sym\"} or @qcode{\"col\"}, for symmetric or column elimination tree\n\
+respectively.\n\
 \n\
 Called with a second argument, @code{etree} also returns the postorder\n\
 permutations on the tree.\n\

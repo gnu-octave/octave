@@ -93,6 +93,7 @@ webinfo::webinfo (QWidget *p)
   resize (500, 300);
 
   set_info_path (QString::fromStdString (Vinfo_file));
+
 }
 
 void
@@ -187,6 +188,24 @@ webinfo::close_tab (int index)
 
       _tab_bar->removeTab (index);
     }
+}
+
+void
+webinfo::load_ref (const QString &ref_name)
+{
+  QString text = _parser.find_ref (ref_name);
+  if (text.length () > 0)
+    {
+      load_node (text);
+    }
+  else
+    {
+      // not found
+     load_node("Top");
+    }
+
+   if (_text_browser)
+     _text_browser->setFocus(); 
 }
 
 void

@@ -77,11 +77,10 @@ QTerminal::notice_settings (const QSettings *settings)
 
   // Set terminal font:
   QFont term_font = QFont ();
+  term_font.setStyleHint (QFont::TypeWriter);
   term_font.setFamily
     (settings->value ("terminal/fontName", "Courier New").toString ());
-
   term_font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
-
   setTerminalFont (term_font);
 
   QString cursorType

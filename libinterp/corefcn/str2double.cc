@@ -42,9 +42,11 @@ static inline bool
 is_imag_unit (int c)
 { return c == 'i' || c == 'j'; }
 
-static std::istringstream&
-single_num (std::istringstream& is, double& num)
+static double
+single_num (std::istringstream& is)
 {
+  double num;
+
   char c = is.peek ();
 
   // Skip spaces.
@@ -92,7 +94,7 @@ single_num (std::istringstream& is, double& num)
   else
     is >> num;
 
-  return is;
+  return num;
 }
 
 static std::istringstream&
@@ -114,10 +116,10 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
   // Accept leading sign.
   if (c == '+' || c == '-')
     {
+      have_sign = true;
       negative = c == '-';
       is.get ();
       c = is.peek ();
-      have_sign = true;
     }
 
   // Skip spaces after sign.
@@ -138,13 +140,11 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
         {
           // just 'i' and string is finished.  Return immediately.
           imag = true;
-          num = 1.0;
-          if (negative)
-            num = -num;
+          num = negative ? -1.0 : 1.0;
           return is;
         }
       else
-        { 
+        {
           if (std::tolower (c) != 'n')
             imag = true;
           is.unget ();
@@ -152,7 +152,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
     }
   else if (c == 'j')
     imag = true;
-    
+
   // It's i*num or just i
   if (imag)
     {
@@ -169,7 +169,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
         {
           // Multiplier follows, we extract it as a number.
           is.get ();
-          single_num (is, num);
+          num = single_num (is);
           if (is.good ())
             c = is.peek ();
         }
@@ -179,7 +179,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
   else
     {
       // It's num, num*i, or numi.
-      single_num (is, num);
+      num = single_num (is);
       if (is.good ())
         {
           c = is.peek ();
@@ -265,10 +265,9 @@ str2double1 (const std::string& str_arg)
 
   std::string str = str_arg;
 
-  // FIXME -- removing all commas does too much...
-  std::string::iterator se = str.end ();
-  se = std::remove (str.begin (), se, ',');
-  str.erase (se, str.end ());
+  // FIXME: removing all commas doesn't allow actual parsing.
+  //        Example: "1,23.45" is wrong, but passes Octave.
+  str.erase (std::remove (str.begin (), str.end(), ','), str.end ());
   std::istringstream is (str);
 
   double num;
@@ -300,7 +299,7 @@ DEFUN (str2double, args, ,
 Convert a string to a real or complex number.\n\
 \n\
 The string must be in one of the following formats where\n\
-a and b are real numbers and the complex unit is 'i' or 'j':\n\
+a and b are real numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:\n\
 \n\
 @itemize\n\
 @item a + bi\n\
@@ -317,17 +316,24 @@ a and b are real numbers and the complex unit is 'i' or 'j':\n\
 @end itemize\n\
 \n\
 If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where\n\
-the brackets indicate optional arguments and 'd' indicates zero or more\n\
-digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA} are\n\
-also accepted.\n\
+the brackets indicate optional arguments and @qcode{'d'} indicates zero or\n\
+more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}\n\
+are also accepted.\n\
 \n\
-@var{s} may also be a character matrix, in which case the conversion is\n\
-repeated for each row.  Or @var{s} may be a cell array of strings, in which\n\
-case each element is converted and an array of the same dimensions is\n\
-returned.\n\
+@var{s} may be a character string, character matrix, or cell array.\n\
+For character arrays the conversion is repeated for every row, and\n\
+a double or complex array is returned.  Empty rows in @var{s} are deleted\n\
+and not returned in the numeric array.  For cell arrays each character\n\
+string element is processed and a double or complex array of the same\n\
+dimensions as @var{s} is returned.\n\
 \n\
-@code{str2double} returns NaN for elements of @var{s} which cannot be\n\
-converted.\n\
+For unconvertible scalar or character string input @code{str2double} returns\n\
+a NaN@.  Similarly, for character array input @code{str2double} returns a\n\
+NaN for any row of @var{s} that could not be converted.  For a cell array,\n\
+@code{str2double} returns a NaN for any element of @var{s} for which\n\
+conversion fails.  Note that numeric elements in a mixed string/numeric\n\
+cell array are not strings and the conversion will fail for these elements\n\
+and return NaN.\n\
 \n\
 @code{str2double} can replace @code{str2num}, and it avoids the security\n\
 risk of using @code{eval} on unknown data.\n\
@@ -340,7 +346,11 @@ risk of using @code{eval} on unknown data.\n\
     print_usage ();
   else if (args(0).is_string ())
     {
-      if (args(0).rows () == 1 && args(0).ndims () == 2)
+      if (args(0).rows () == 0 || args(0).columns () == 0)
+        {
+          retval = Matrix (1, 1, octave_NaN);
+        }
+      else if (args(0).rows () == 1 && args(0).ndims () == 2)
         {
           retval = str2double1 (args(0).string_value ());
         }
@@ -367,7 +377,7 @@ risk of using @code{eval} on unknown data.\n\
       }
     }
   else
-    retval = NDArray (args(0).dims (), octave_NaN);
+    retval = Matrix (1, 1, octave_NaN);
 
 
   return retval;
@@ -377,7 +387,6 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double ("1"), 1)
 %!assert (str2double ("-.1e-5"), -1e-6)
 %!assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i])
-%!assert (str2double ("-.1e-5"), -1e-6)
 %!assert (str2double ("1,222.5"), 1222.5)
 %!assert (str2double ("i"), i)
 %!assert (str2double ("2j"), 2i)
@@ -402,5 +411,8 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
 %!assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i])
 %!assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
-%!assert (str2double (zeros (3,1,2)), NaN (3,1,2))
-*/
+%!assert (str2double (zeros (3,1,2)), NaN)
+%!assert (str2double (''), NaN)
+%!assert (str2double ([]), NaN)
+%!assert (str2double (char(zeros(3,0))), NaN)
+ */

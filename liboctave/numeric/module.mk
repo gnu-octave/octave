@@ -168,10 +168,12 @@ TEMPLATE_SRC += \
   numeric/sparse-dmsolve.cc
 
 ## Special rules for sources which must be built before rest of compilation.
-$(OPT_INC) : %.h : %.in $(top_srcdir)/build-aux/mk-opts.pl
+$(OPT_INC) : %.h : %.in
 	@echo making $@ from $<
 	@$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t
 	mv $@-t $@
+
+$(OPT_INC) : $(top_srcdir)/build-aux/mk-opts.pl
 
 noinst_LTLIBRARIES += numeric/libnumeric.la
 

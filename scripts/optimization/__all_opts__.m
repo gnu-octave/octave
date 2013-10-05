@@ -49,7 +49,7 @@ function names = __all_opts__ (varargin)
         fn = fieldnames (opts).';
         names = [names, fn];
       catch
-        # throw the error as a warning.
+        ## throw the error as a warning.
         warning (lasterr ());
       end_try_catch
     endfor

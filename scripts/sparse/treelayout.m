@@ -144,7 +144,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
       if (columns (idx) == 1 && top_level == 1)
         s++;
       else
-        # We aren't in top level separator now.
+        ## We aren't in top level separator now.
         top_level = 0;
       endif
       ## If there is not any descendant of "parent node":

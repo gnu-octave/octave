@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-cmd.h"
 #include "pt-except.h"
 #include "pt-exp.h"
+#include "pt-id.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
@@ -43,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 
 tree_try_catch_command::~tree_try_catch_command (void)
 {
+  delete expr_id;
   delete try_code;
   delete catch_code;
   delete lead_comm;
@@ -57,6 +59,7 @@ tree_try_catch_command::dup (symbol_table::scope_id scope,
   return new
     tree_try_catch_command (try_code ? try_code->dup (scope, context) : 0,
                             catch_code ? catch_code->dup (scope, context) : 0,
+                            expr_id ? expr_id->dup (scope, context) : 0,
                             lead_comm ? lead_comm->dup () : 0,
                             mid_comm ? mid_comm->dup () : 0,
                             trail_comm ? trail_comm->dup () : 0,

@@ -25,3 +25,4 @@ function __printf_assert__ (varargin)
   global _assert_printf;
   _assert_printf = cat (2, _assert_printf, sprintf (varargin{:}));
 endfunction
+

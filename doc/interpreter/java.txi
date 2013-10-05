@@ -145,13 +145,13 @@ of dialog box.
 * How to make Java classes available?::
 * How to create an instance of a Java class?::
 * How can I handle memory limitations?::
-* Which @TeX{} symbols are implemented in the dialog functions?::
+* Which @TeX{} symbols are implemented in dialog functions?::
 @end menu
 
 @c ------------------------------------------------------------------------
 @node How to distinguish between Octave and Matlab?
 @subsection How to distinguish between Octave and Matlab?
-@anchor{docXFAQ}
+@anchor{XREFFAQ}
 @c - index -
 @cindex Octave and @sc{matlab}, how to distinguish between
 @c - index -
@@ -234,7 +234,7 @@ on a 'per user' basis.
 @item Finally, Octave looks for a next occurrence of file
 @file{javaclasspath.txt} in the m-files directory where Octave Java functions 
 live.  This is where @file{javaclasspath.m} resides, usually something like
-@file{@env{OCTAVE_HOME}/share/octave/@env{OCTAVE_VERSION}/m/java/}.  You can
+@file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}.  You can
 find this directory by executing the command
 
 @example
@@ -316,7 +316,7 @@ Passenger = javaObject ('package.FirstClass', row, seat);
 In order to execute Java code Octave creates a Java Virtual Machine (JVM).
 Such a JVM allocates a fixed amount of initial memory and may expand this pool
 up to a fixed maximum memory limit.  The default values depend on the Java
-version (see @ref{docXjavamem,,javamem}).  The memory pool is shared by all
+version (@pxref{XREFjavamem,,javamem}).  The memory pool is shared by all
 Java objects running in the JVM@.  This strict memory limit is intended mainly
 to avoid that runaway applications inside web browsers or in enterprise servers
 can consume all memory and crash the system.  When the maximum memory limit is
@@ -330,7 +330,7 @@ You can specify options for the creation of the JVM inside a file named
 The directory where the Java options file is located is specified by the
 environment variable @w{@env{OCTAVE_JAVA_DIR}}.  If unset the directory where
 @file{javaclasspath.m} resides is used instead (typically
-@file{@env{OCTAVE_HOME}/share/octave/@env{OCTAVE_VERSION}/m/java/}).  You can
+@file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}).  You can
 find this directory by executing
 
 @example
@@ -385,8 +385,8 @@ ans = 12.34
 @seealso{javamem}
 
 @c ------------------------------------------------------------------------
-@node Which @TeX{} symbols are implemented in the dialog functions?
-@subsection Which @TeX{} symbols are implemented in the dialog functions?
+@node Which @TeX{} symbols are implemented in dialog functions?
+@subsection Which @TeX{} symbols are implemented in dialog functions?
 @c - index -
 @cindex symbols, translation table
 @cindex @TeX{} symbols, translation table

@@ -44,6 +44,7 @@
 ## exist but Octave is unable to find it in the search path.
 ##
 ## @end table
+##
 
 
 function error_ids ()
@@ -53,3 +54,4 @@ endfunction
 
 ## Remove from test statistics.  No real tests possible
 %!assert (1)
+

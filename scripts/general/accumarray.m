@@ -61,7 +61,7 @@
 ## that in the first column counts how many occurrences each number in
 ## the second column has, taken from the vector @var{x}.  Note the usage
 ## of @code{unique}  for assigning to all repeated elements of @var{x}
-## the same index (@pxref{docXunique}).
+## the same index (@pxref{XREFunique,,unique}).
 ##
 ## @example
 ## @group
@@ -92,7 +92,7 @@
 ## @end example
 ##
 ## The sparse option can be used as an alternative to the @code{sparse}
-## constructor (@pxref{docXsparse}).  Thus
+## constructor (@pxref{XREFsparse,,sparse}).  Thus
 ##
 ## @example
 ## sparse (@var{i}, @var{j}, @var{sv})

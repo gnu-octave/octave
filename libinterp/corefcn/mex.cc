@@ -1164,7 +1164,7 @@ public:
     switch (get_class_id ())
       {
       case mxLOGICAL_CLASS:
-        retval = int_to_ov<bool, boolNDArray, bool> (dv);
+        retval = int_to_ov<mxLogical, boolNDArray, bool> (dv);
         break;
 
       case mxCHAR_CLASS:

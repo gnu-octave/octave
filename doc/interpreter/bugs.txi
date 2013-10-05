@@ -52,8 +52,8 @@ where people's opinions differ as to what is best.
 
 @menu
 * Actual Bugs::                 Bugs we will fix later.
-* Reporting Bugs::              
-* Service::                     
+* Reporting Bugs::
+* Service::
 @end menu
 
 @node Actual Bugs
@@ -105,7 +105,7 @@ In order for a bug report to serve its purpose, you must include the
 information that makes it possible to fix the bug.
 
 @menu
-* Bug Criteria::                
+* Bug Criteria::
 * Bug Tracker::        Where to submit your bug report.
 * Bug Reporting::      How to report a bug effectively.
 * Sending Patches::    How to send a patch for Octave.

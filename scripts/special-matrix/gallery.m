@@ -22,7 +22,6 @@
 ## @deftypefnx {Function File} {} gallery (@var{name}, @var{args})
 ## Create interesting matrices for testing.
 ##
-##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{c} =} gallery ("cauchy", @var{x})
@@ -146,6 +145,29 @@
 ##
 ## @end deftypefn
 ##
+## @deftypefn  {Function File} {@var{a} =} gallery ("integerdata", @var{imax}, [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", @var{imax}, @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", [@var{imin}, @var{imax}], [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", [@var{imin}, @var{imax}], @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("integerdata", @dots{}, "@var{class}")
+## Create a matrix with random integers in the range [1, @var{imax}].
+## If @var{imin} is given then the integers are in the range
+## [@var{imin}, @var{imax}].
+##
+## The second input is a matrix of dimensions describing the size of the output.
+## The dimensions can also be input as comma-separated arguments.
+##
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The
+## values of the output matrix are always exactly the same
+## (reproducibility) for a given size input and @var{j} index.
+##
+## The final optional argument determines the class of the resulting matrix.
+## Possible values for @var{class}: @qcode{"uint8"}, @qcode{"uint16"},
+## @qcode{"uint32"}, @qcode{"int8"}, @qcode{"int16"}, int32", @qcode{"single"},
+## @qcode{"double"}.  The default is @qcode{"double"}.
+##
+## @end deftypefn
+##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("invhess", @var{x})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("invhess", @var{x}, @var{y})
 ## Create the inverse of an upper Hessenberg matrix.
@@ -223,6 +245,25 @@
 ##
 ## @deftypefn {Function File} {[@var{a}, @var{t}] =} gallery ("neumann", @var{n})
 ## Create a singular matrix from the discrete Neumann problem (sparse).
+##
+## @end deftypefn
+##
+## @deftypefn  {Function File} {@var{a} =} gallery ("normaldata", [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("normaldata", @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("normaldata", @dots{}, "@var{class}")
+## Create a matrix with random samples from the standard normal distribution
+## (mean = 0, std = 1).
+##
+## The first input is a matrix of dimensions describing the size of the output.
+## The dimensions can also be input as comma-separated arguments.
+##
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The
+## values of the output matrix are always exactly the same
+## (reproducibility) for a given size input and @var{j} index.
+##
+## The final optional argument determines the class of the resulting matrix.
+## Possible values for @var{class}: @qcode{"single"}, @qcode{"double"}.
+## The default is @qcode{"double"}.
 ##
 ## @end deftypefn
 ##
@@ -328,6 +369,25 @@
 ##
 ## @end deftypefn
 ##
+## @deftypefn  {Function File} {@var{a} =} gallery ("uniformdata", [@var{M} @var{N} @dots{}], @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("uniformdata", @var{M}, @var{N}, @dots{}, @var{j})
+## @deftypefnx {Function File} {@var{a} =} gallery ("uniformdata", @dots{}, "@var{class}")
+## Create a matrix with random samples from the standard uniform distribution
+## (range [0,1]).
+##
+## The first input is a matrix of dimensions describing the size of the output.
+## The dimensions can also be input as comma-separated arguments.
+##
+## The input @var{j} is an integer index in the range [0, 2^32-1].  The
+## values of the output matrix are always exactly the same
+## (reproducibility) for a given size input and @var{j} index.
+##
+## The final optional argument determines the class of the resulting matrix.
+## Possible values for @var{class}: @qcode{"single"}, @qcode{"double"}.
+## The default is @qcode{"double"}.
+##
+## @end deftypefn
+##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("wathen", @var{nx}, @var{ny})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("wathen", @var{nx}, @var{ny}, @var{k})
 ## Create the Wathen matrix.
@@ -390,8 +450,7 @@ function [varargout] = gallery (name, varargin)
     case "grcar"      , [varargout{1:n_out}] = grcar       (varargin{:});
     case "hanowa"     , [varargout{1:n_out}] = hanowa      (varargin{:});
     case "house"      , [varargout{1:n_out}] = house       (varargin{:});
-    case "integerdata"
-      error ("gallery: matrix %s not implemented.", name);
+    case "integerdata", [varargout{1:n_out}] = integerdata (varargin{:});
     case "invhess"    , [varargout{1:n_out}] = invhess     (varargin{:});
     case "invol"      , [varargout{1:n_out}] = invol       (varargin{:});
     case "ipjfact"    , [varargout{1:n_out}] = ipjfact     (varargin{:});
@@ -408,8 +467,7 @@ function [varargout] = gallery (name, varargin)
     case "minij"      , [varargout{1:n_out}] = minij       (varargin{:});
     case "moler"      , [varargout{1:n_out}] = moler       (varargin{:});
     case "neumann"    , [varargout{1:n_out}] = neumann     (varargin{:});
-    case "normaldata"
-      error ("gallery: matrix %s not implemented.", name);
+    case "normaldata" , [varargout{1:n_out}] = normaldata  (varargin{:});
     case "orthog"     , [varargout{1:n_out}] = orthog      (varargin{:});
     case "parter"     , [varargout{1:n_out}] = parter      (varargin{:});
     case "pei"        , [varargout{1:n_out}] = pei         (varargin{:});
@@ -434,8 +492,7 @@ function [varargout] = gallery (name, varargin)
     case "toeppen"     , [varargout{1:n_out}] = toeppen     (varargin{:});
     case "tridiag"     , [varargout{1:n_out}] = tridiag     (varargin{:});
     case "triw"        , [varargout{1:n_out}] = triw        (varargin{:});
-    case "uniformdata"
-      error ("gallery: matrix %s not implemented.", name);
+    case "uniformdata" , [varargout{1:n_out}] = uniformdata (varargin{:});
     case "wathen"      , [varargout{1:n_out}] = wathen      (varargin{:});
     case "wilk"        , [varargout{1:n_out}] = wilk        (varargin{:});
     otherwise
@@ -745,7 +802,7 @@ function C = compar (A, k = 0)
   if (nargin < 1 || nargin > 2)
     error ("gallery: 1 or 2 arguments are required for compar matrix.");
   elseif (! isnumeric (A) || ndims (A) != 2)
-    error ("gallery: A must be a 2D matrix for compar matrix.");
+    error ("gallery: A must be a 2-D matrix for compar matrix.");
   elseif (! isnumeric (k) || ! isscalar (k))
     error ("gallery: K must be a numeric scalar for compar matrix.");
   endif
@@ -1268,6 +1325,48 @@ function [v, beta] = house (x)
   endif
 endfunction
 
+function A = integerdata (varargin)
+
+  if (nargin < 3)
+    error ("gallery: At least 3 arguments required for integerdata matrix.");
+  endif
+
+  if (isnumeric (varargin{end}))
+    jidx = varargin{end};
+    svec = [varargin{:}];
+    varargin(end) = [];
+  elseif (ischar (varargin{end}))
+    if (nargin < 4)
+      error (["gallery: CLASS argument requires 4 inputs " ...
+              "for integerdata matrix."]);
+    endif
+    jidx = varargin{end-1};
+    svec = [varargin{1:end-1}];
+    varargin(end-1) = [];
+  else 
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for integerdata matrix"]);
+  endif
+
+  if (! (isnumeric (jidx) && isscalar (jidx)
+         && jidx == fix (jidx)
+         && jidx >= 0 && jidx <= 0xFFFFFFFF))
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for integerdata matrix"]);
+  endif
+
+  ## Save and restore random state.  Initialization done so that reproducible
+  ## data is available from gallery depending on the jidx and size vector.
+  randstate = rand ("state"); 
+  unwind_protect
+    rand ("state", svec);
+    A = randi (varargin{:});
+  unwind_protect_cleanup
+    rand ("state", randstate);
+  end_unwind_protect
+
+endfunction
+
 function A = invhess (x, y)
   ## INVHESS  Inverse of an upper Hessenberg matrix.
   ##          INVHESS(X, Y), where X is an N-vector and Y an N-1 vector,
@@ -1315,7 +1414,7 @@ function A = invhess (x, y)
   x = x(:);
   y = y(:);
 
-  ##  On next line, z = x'; A = z(ones(n,1),:) would be more efficient.
+  ##  FIXME: On next line, z = x'; A = z(ones(n,1),:) would be more efficient.
   A = ones (n, 1) * x';
   for j = 2:n
     A(1:j-1,j) = y(1:j-1);
@@ -1503,16 +1602,16 @@ function A = kms (n, rho = 0.5)
   if (nargin < 1 || nargin > 2)
     error ("gallery: 1 to 2 arguments are required for lauchli matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
-    error("gallery: N must be an integer for lauchli matrix.")
+    error ("gallery: N must be an integer for lauchli matrix.")
   elseif (! isscalar (mu))
-    error("gallery: MU must be a scalar for lauchli matrix.")
+    error ("gallery: MU must be a scalar for lauchli matrix.")
   endif
 
-  A = (1:n)'*ones(1,n);
-  A = abs(A - A');
+  A = (1:n)'*ones (1,n);
+  A = abs (A - A');
   A = rho .^ A;
-  if imag(rho)
-    A = conj(tril(A,-1)) + triu(A);
+  if (imag (rho))
+    A = conj (tril (A,-1)) + triu (A);
   endif
 endfunction
 
@@ -1531,7 +1630,7 @@ function B = krylov (A, x, j)
   if (nargin < 1 || nargin > 3)
     error ("gallery: 1 to 3 arguments are required for krylov matrix.");
   elseif (! isnumeric (A) || ! issquare (A) || ndims (A) != 2)
-    error ("gallery: A must be a square 2D matrix for krylov matrix.");
+    error ("gallery: A must be a square 2-D matrix for krylov matrix.");
   endif
 
   n = length (A);
@@ -1746,6 +1845,47 @@ function [A, T] = neumann (n)
   A = kron (T, eye (n(2))) + kron (eye (n(2)), T);
 endfunction
 
+function A = normaldata (varargin)
+
+  if (nargin < 2)
+    error ("gallery: At least 2 arguments required for normaldata matrix.");
+  endif
+  if (isnumeric (varargin{end}))
+    jidx = varargin{end};
+    svec = [varargin{:}];
+    varargin(end) = [];
+  elseif (ischar (varargin{end}))
+    if (nargin < 3)
+      error (["gallery: CLASS argument requires 3 inputs " ...
+              "for normaldata matrix."]);
+    endif
+    jidx = varargin{end-1};
+    svec = [varargin{1:end-1}];
+    varargin(end-1) = [];
+  else 
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for normaldata matrix"]);
+  endif
+
+  if (! (isnumeric (jidx) && isscalar (jidx)
+         && jidx == fix (jidx)
+         && jidx >= 0 && jidx <= 0xFFFFFFFF))
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for normaldata matrix"]);
+  endif
+
+  ## Save and restore random state.  Initialization done so that reproducible
+  ## data is available from gallery depending on the jidx and size vector.
+  randstate = randn ("state"); 
+  unwind_protect
+    randn ("state", svec);
+    A = randn (varargin{:});
+  unwind_protect_cleanup
+    randn ("state", randstate);
+  end_unwind_protect
+
+endfunction
+
 function Q = orthog (n, k = 1)
   ## ORTHOG Orthogonal and nearly orthogonal matrices.
   ##        Q = ORTHOG(N, K) selects the K'th type of matrix of order N.
@@ -1809,7 +1949,7 @@ function Q = orthog (n, k = 1)
       Q(1,2:n) = ones (1, n-1);
       for i = 2:n
         Q(i,i) = -(i-1);
-      end
+      endfor
       Q = diag (sqrt ([n 1:n-1] .* [1:n])) \ Q;
 
     case (5)
@@ -1928,7 +2068,7 @@ function A = prolate (n, w = 0.25)
   a(1)   = 2*w;
   a(2:n) = sin (2*pi*w*(1:n-1)) ./ (pi*(1:n-1));
 
-  A = toeplitz(a);
+  A = toeplitz (a);
 endfunction
 
 function H = randhess (x)
@@ -2077,8 +2217,8 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
   if (p == 1)
     A = randn (m, n);
     A = A / norm (A);
-    return
-  end
+    return;
+  endif
 
   ##  Set up vector sigma of singular values.
   switch (abs (mode))
@@ -2104,7 +2244,7 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
   ##  Convert to diagonal matrix of singular values.
   if (mode < 0)
     sigma = sigma (p:-1:1);
-  end
+  endif
   sigma = diag (sigma);
 
   if (posdef)
@@ -2112,13 +2252,13 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = n-1, ku = kl)
     Q = qmult (p);
     A = Q' * sigma * Q;
     A = (A + A') / 2;  # Ensure matrix is symmetric.
-    return
+    return;
   endif
 
   if (m != n)
     ## Expand to m-by-n diagonal matrix
     sigma(m, n) = 0;
-  end
+  endif
 
   if (kl == 0 && ku == 0)
     ## Diagonal matrix requested - nothing more to do.
@@ -2252,8 +2392,8 @@ function A = smoke (n, k = 0)
     error ("gallery: K must be a numeric scalar for smoke matrix.");
   endif
 
-  w = exp(2*pi*i/n);
-  A = diag( [w.^(1:n-1) 1] ) + diag(ones(n-1,1),1);
+  w = exp (2*pi*i/n);
+  A = diag ( [w.^(1:n-1) 1] ) + diag (ones (n-1,1), 1);
 
   switch (k)
     case (0), A(n,1) = 1;
@@ -2324,7 +2464,7 @@ function P = toeppen (n, a = 1, b = -10, c = 0, d = 10, e = 1)
     error ("gallery: 1 to 6 arguments are required for toeppen matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be a numeric integer for toeppen matrix.");
-  elseif (any (cellfun (@(x) ! isnumeric (x) || ! isscalar (x), {a b c d e})))
+  elseif (any (! cellfun ("isnumeric", {a b c d e})) || any (cellfun ("numel", {a b c d e}) != 1))
     error ("gallery: A, B, C, D and E must be numeric scalars for toeppen matrix.");
   endif
 
@@ -2424,6 +2564,47 @@ function t = triw (n, alpha = -1, k = -1)
   n = n(end);
 
   t = tril (eye (m, n) + alpha * triu (ones (m, n), 1), k);
+endfunction
+
+function A = uniformdata (varargin)
+
+  if (nargin < 2)
+    error ("gallery: At least 2 arguments required for uniformdata matrix.");
+  endif
+  if (isnumeric (varargin{end}))
+    jidx = varargin{end};
+    svec = [varargin{:}];
+    varargin(end) = [];
+  elseif (ischar (varargin{end}))
+    if (nargin < 3)
+      error (["gallery: CLASS argument requires 3 inputs " ...
+              "for uniformdata matrix."]);
+    endif
+    jidx = varargin{end-1};
+    svec = [varargin{1:end-1}];
+    varargin(end-1) = [];
+  else 
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for uniformdata matrix"]);
+  endif
+
+  if (! (isnumeric (jidx) && isscalar (jidx)
+         && jidx == fix (jidx)
+         && jidx >= 0 && jidx <= 0xFFFFFFFF))
+    error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
+            "for uniformdata matrix"]);
+  endif
+
+  ## Save and restore random state.  Initialization done so that reproducible
+  ## data is available from gallery depending on the jidx and size vector.
+  randstate = rand ("state"); 
+  unwind_protect
+    rand ("state", svec);
+    A = rand (varargin{:});
+  unwind_protect_cleanup
+    rand ("state", randstate);
+  end_unwind_protect
+
 endfunction
 
 function A = wathen (nx, ny, k = 0)
@@ -2671,3 +2852,4 @@ function A = bandred (A, kl, ku)
     A = A';
   endif
 endfunction
+

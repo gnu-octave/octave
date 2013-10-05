@@ -40,13 +40,13 @@
 ## and defaults to 6.
 ##
 ## The argument @var{sigma} specifies which singular values to find.  When
-## @var{sigma} is the string 'L', the default, the largest singular values of
-## @var{A} are found.  Otherwise, @var{sigma} must be a real scalar and the
-## singular values closest to @var{sigma} are found.  As a corollary,
+## @var{sigma} is the string @qcode{'L'}, the default, the largest singular
+## values of @var{A} are found.  Otherwise, @var{sigma} must be a real scalar
+## and the singular values closest to @var{sigma} are found.  As a corollary,
 ## @code{@var{sigma} = 0} finds the smallest singular values.  Note that for
-## relatively small values of @var{sigma}, there is a chance that the requested
-## number of singular values will not be found.  In that case @var{sigma}
-## should be increased.
+## relatively small values of @var{sigma}, there is a chance that the
+## requested number of singular values will not be found.  In that case
+## @var{sigma} should be increased.
 ##
 ## @var{opts} is a structure defining options that @code{svds} will pass
 ## to @code{eigs}.  The possible fields of this structure are documented in
@@ -99,11 +99,11 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   endif
 
   if (ndims (A) > 2)
-    error ("svds: A must be a 2D matrix");
+    error ("svds: A must be a 2-D matrix");
   endif
 
   if (nargin < 4)
-    opts.tol = 0;   ## use ARPACK default
+    opts.tol = 0;    # use ARPACK default
     opts.disp = 0;
     opts.maxit = 300;
   else
@@ -111,7 +111,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       error ("svds: OPTS must be a structure");
     endif
     if (!isfield (opts, "tol"))
-      opts.tol = 0;   ## use ARPACK default
+      opts.tol = 0;  # use ARPACK default
     else
       opts.tol = opts.tol / root2;
     endif
@@ -141,6 +141,9 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   if (isempty (max_a))
     max_a = 0;
   endif
+  ## Must initialize variable value, otherwise it may appear to interpreter
+  ## that code is trying to call flag() colormap function.
+  flag = 0;  
 
   if (max_a == 0)
     s = zeros (k, 1);  # special case of zero matrix
@@ -294,7 +297,7 @@ endfunction
 %!
 %!testif HAVE_ARPACK
 %! s = svds (speye (10));
-%! assert (s, ones (6, 1), 4*eps);
+%! assert (s, ones (6, 1), 8*eps);
 
 %!test
 %! ## Restore random number generator seeds at end of tests

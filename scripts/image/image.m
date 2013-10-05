@@ -39,7 +39,7 @@
 ## upper left.  For ordinary plots, the origin is located in the lower
 ## left.  Octave handles this inversion by plotting the data normally,
 ## and then reversing the direction of the y-axis by setting the
-## @code{ydir} property to "reverse".  This has implications whenever
+## @code{ydir} property to @qcode{"reverse"}.  This has implications whenever
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata)}.
@@ -53,7 +53,11 @@
 
 function h = image (varargin)
 
-  [ax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
+  
+  if (isempty (hax))
+    hax = gca ();
+  endif
 
   chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
   
@@ -71,15 +75,9 @@ function h = image (varargin)
     img = varargin{3};
     chararg = 4;
   endif
-
-  oldax = gca ();
-  unwind_protect
-    axes (ax);
-    htmp = __img__ (x, y, img, varargin{chararg:end});
-    set (ax, "layer", "top");
-  unwind_protect_cleanup
-    axes (oldax);
-  end_unwind_protect
+  
+  htmp = __img__ (hax, x, y, img, varargin{chararg:end});
+  set (hax, "layer", "top");
 
   if (nargout > 0)
     h = htmp;
@@ -97,9 +95,7 @@ endfunction
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function h = __img__ (x, y, img, varargin)
-  
-  newplot ();
+function h = __img__ (hax, x, y, img, varargin)
 
   if (isempty (img))
     error ("__img__: matrix is empty");
@@ -136,9 +132,7 @@ function h = __img__ (x, y, img, varargin)
     endif
   endif
 
-  ca = gca ();
-
-  htmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
+  htmp = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
                        "cdatamapping", "direct", varargin {:});
 
   px = __image_pixel_size__ (htmp);
@@ -162,22 +156,22 @@ function h = __img__ (x, y, img, varargin)
   ## explicitly setting the values here.  But then what information is
   ## available to axes::update_axis_limits to determine that the
   ## adjustment is necessary?
-  set (ca, "xlim", xlim, "ylim", ylim);
+  set (hax, "xlim", xlim, "ylim", ylim);
 
   if (ndims (img) == 3)
     if (isinteger (img))
       cls = class (img);
       mn = intmin (cls);
       mx = intmax (cls);
-      set (ca, "clim", double ([mn, mx]));
+      set (hax, "clim", double ([mn, mx]));
     endif
   endif
 
-  set (ca, "view", [0, 90]);
+  set (hax, "view", [0, 90]);
 
-  if (strcmp (get (ca, "nextplot"), "replace"))
-    # Always reverse y-axis for images, unless hold is on
-    set (ca, "ydir", "reverse");
+  if (strcmp (get (hax, "nextplot"), "replace"))
+    ## Always reverse y-axis for images, unless hold is on
+    set (hax, "ydir", "reverse");
   endif
 
   if (nargout > 0)

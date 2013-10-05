@@ -1336,6 +1336,34 @@ tree_matrix::accept (tree_walker& tw)
 
 %!assert (class ([cell(1), struct("foo", "bar")]), "cell")
 %!error [struct("foo", "bar"), cell(1)]
+
+%!assert ([,1], 1)
+%!assert ([1,], 1)
+%!assert ([,1,], 1)
+%!assert ([,1,;;], 1)
+%!assert ([,1,;,;], 1)
+
+%!assert ([1,1], ones (1, 2))
+%!assert ([,1,1], ones (1, 2))
+%!assert ([1,1,], ones (1, 2))
+%!assert ([,1,1,], ones (1, 2))
+%!assert ([,1,1,;;], ones (1, 2))
+%!assert ([,1,1,;,;], ones (1, 2))
+%!assert ([,;,1,1], ones (1, 2))
+
+%!assert ([1;1], ones (2, 1))
+%!assert ([1,;1], ones (2, 1))
+%!assert ([1,;,;1], ones (2, 1))
+
+%!error eval ("[,,]")
+%!error eval ("[,,;,]")
+%!error eval ("[,;,,;,]")
+
+%!assert (isnull ([,]))
+%!assert (isnull ([;]))
+%!assert (isnull ([;;]))
+%!assert (isnull ([;,;]))
+%!assert (isnull ([,;,;,]))
 */
 
 DEFUN (string_fill_char, args, nargout,
@@ -1345,7 +1373,7 @@ DEFUN (string_fill_char, args, nargout,
 @deftypefnx {Built-in Function} {} string_fill_char (@var{new_val}, \"local\")\n\
 Query or set the internal variable used to pad all rows of a character\n\
 matrix to the same length.  It must be a single character.  The default\n\
-value is @code{\" \"} (a single space).  For example:\n\
+value is @qcode{\" \"} (a single space).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1357,9 +1385,9 @@ string_fill_char (\"X\");\n\
 @end group\n\
 @end example\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (string_fill_char);

@@ -23,9 +23,9 @@
 ## Query or set the internal variable that controls whether Java arrays are
 ## automatically converted to Octave matrices.  The default value is false.
 ## 
-## When called from inside a function with the "local" option, the variable is
-## changed locally for the function and any subroutines it calls.  The original
-## variable value is restored when exiting the function.
+## When called from inside a function with the @qcode{"local"} option, the
+## variable is changed locally for the function and any subroutines it calls.
+##  The original variable value is restored when exiting the function.
 ## @seealso{java_matrix_autoconversion, java_unsigned_conversion, java_debug}
 ## @end deftypefn
 

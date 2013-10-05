@@ -303,7 +303,7 @@ endfunction
 
 
 %!demo
-%! # Simplest usage of PCR (see also 'help pcr')
+%! ## Simplest usage of PCR (see also 'help pcr')
 %!
 %! N = 20;
 %! A = diag (linspace (-3.1,3,N)); b = rand (N,1);
@@ -311,13 +311,13 @@ endfunction
 %! x = pcr (A,b);
 %! printf ("The solution relative error is %g\n", norm (x-y) / norm (y));
 %!
-%! # You shouldn't be afraid if PCR issues some warning messages in this
-%! # example: watch out in the second example, why it takes N iterations
-%! # of PCR to converge to (a very accurate, by the way) solution
+%! ## You shouldn't be afraid if PCR issues some warning messages in this
+%! ## example: watch out in the second example, why it takes N iterations
+%! ## of PCR to converge to (a very accurate, by the way) solution.
 
 %!demo
-%! # Full output from PCR
-%! # We use this output to plot the convergence history
+%! ## Full output from PCR
+%! ## We use this output to plot the convergence history
 %!
 %! N = 20;
 %! A = diag (linspace (-3.1,30,N)); b = rand (N,1);
@@ -330,11 +330,11 @@ endfunction
 %! semilogy ([0:iter], resvec/resvec(1), "o-g;relative residual;");
 
 %!demo
-%! # Full output from PCR
-%! # We use indefinite matrix based on the Hilbert matrix, with one
-%! # strongly negative eigenvalue
-%! # Hilbert matrix is extremely ill conditioned, so is ours,
-%! # and that's why PCR WILL have problems
+%! ## Full output from PCR
+%! ## We use indefinite matrix based on the Hilbert matrix, with one
+%! ## strongly negative eigenvalue
+%! ## Hilbert matrix is extremely ill conditioned, so is ours,
+%! ## and that's why PCR WILL have problems
 %!
 %! N = 10;
 %! A = hilb (N); A(1,1) = -A(1,1); b = rand (N,1);
@@ -350,14 +350,14 @@ endfunction
 %! semilogy ([0:iter], resvec, "o-g;absolute residual;");
 
 %!demo
-%! # Full output from PCR
-%! # We use an indefinite matrix based on the 1-D Laplacian matrix for A,
-%! # and here we have cond(A) = O(N^2)
-%! # That's the reason we need some preconditioner; here we take
-%! # a very simple and not powerful Jacobi preconditioner,
-%! # which is the diagonal of A
+%! ## Full output from PCR
+%! ## We use an indefinite matrix based on the 1-D Laplacian matrix for A,
+%! ## and here we have cond(A) = O(N^2)
+%! ## That's the reason we need some preconditioner; here we take
+%! ## a very simple and not powerful Jacobi preconditioner,
+%! ## which is the diagonal of A.
 %!
-%! # Note that we use here indefinite preconditioners!
+%! ## Note that we use here indefinite preconditioners!
 %!
 %! N = 100;
 %! A = zeros (N,N);
@@ -369,7 +369,7 @@ endfunction
 %! X = A \ b;  # X is the true solution
 %! maxit = 80;
 %! printf ("System condition number is %g\n", cond (A));
-%! # No preconditioner: the convergence is very slow!
+%! ## No preconditioner: the convergence is very slow!
 %!
 %! [x, flag, relres, iter, resvec] = pcr (A,b,[],maxit);
 %! clf;
@@ -378,7 +378,7 @@ endfunction
 %! semilogy ([0:iter], resvec, "o-g;NO preconditioning: absolute residual;");
 %!
 %! pause (1);
-%! # Test Jacobi preconditioner: it will not help much!!!
+%! ## Test Jacobi preconditioner: it will not help much!!!
 %!
 %! M = diag (diag (A)); # Jacobi preconditioner
 %! [x, flag, relres, iter, resvec] = pcr (A,b,[],maxit,M);
@@ -386,8 +386,8 @@ endfunction
 %! semilogy ([0:iter],resvec,"o-r;JACOBI preconditioner: absolute residual;");
 %!
 %! pause (1);
-%! # Test nonoverlapping block Jacobi preconditioner: this one should give
-%! # some convergence speedup!
+%! ## Test nonoverlapping block Jacobi preconditioner: this one should give
+%! ## some convergence speedup!
 %!
 %! M = zeros (N,N); k = 4;
 %! for i=1:k:N # get k x k diagonal blocks of A
@@ -399,7 +399,7 @@ endfunction
 %! hold off;
 
 %!test
-%! # solve small indefinite diagonal system
+%! ## solve small indefinite diagonal system
 %!
 %! N = 10;
 %! A = diag (linspace (-10.1,10,N)); b = ones (N,1);
@@ -409,8 +409,8 @@ endfunction
 %! assert (flag, 0);
 
 %!test
-%! # solve tridiagonal system, do not converge in default 20 iterations
-%! # should perform max allowable default number of iterations
+%! ## solve tridiagonal system, do not converge in default 20 iterations
+%! ## should perform max allowable default number of iterations
 %!
 %! N = 100;
 %! A = zeros (N,N);
@@ -425,8 +425,8 @@ endfunction
 %! assert (iter, 20);
 
 %!test
-%! # solve tridiagonal system with "perfect" preconditioner
-%! # converges in one iteration
+%! ## solve tridiagonal system with "perfect" preconditioner
+%! ## converges in one iteration
 %!
 %! N = 100;
 %! A = zeros (N,N);

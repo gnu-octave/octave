@@ -36,3 +36,4 @@ endfunction
 %!assert (islogical (ismac ()))
 
 %!error ismac (1)
+

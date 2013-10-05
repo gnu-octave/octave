@@ -46,11 +46,11 @@
 ## @var{toggle}, which may be one of:
 ##
 ## @table @asis
-## @item "enable"
+## @item @qcode{"enable"}
 ## Future tests for the specified license of @var{feature} are conducted
 ## as usual.
 ##
-## @item "disable"
+## @item @qcode{"disable"}
 ## Future tests for the specified license of @var{feature} return 0.
 ## @end table
 ##

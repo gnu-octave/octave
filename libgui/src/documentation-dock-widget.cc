@@ -36,6 +36,9 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
 
   _webinfo = new webinfo (this);
   setWidget (_webinfo);
+
+  connect (p, SIGNAL(show_doc_signal(const QString &)),
+   this, SLOT(showDoc(const QString &)));
 }
 
 void
@@ -47,4 +50,16 @@ void
 documentation_dock_widget::pasteClipboard ()
 {
   _webinfo->pasteClipboard ();
+}
+void
+documentation_dock_widget::showDoc (const QString &name)
+{
+  // show the doc pane
+  if (!isVisible ())
+    setVisible (true);
+  setFocus ();
+  raise ();
+
+  _webinfo->load_ref (name);
+
 }

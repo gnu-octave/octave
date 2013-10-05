@@ -75,7 +75,7 @@ function S = __sprand_impl__ (varargin)
     [i, j] = ind2sub ([m, n], idx);
   endif
 
-
   S = sparse (i, j, randfun (k, 1), m, n);
 
 endfunction
+

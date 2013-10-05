@@ -75,3 +75,4 @@ endfunction
 %% Test very large, very low density matrix doesn't fail 
 %!test
 %! s = sprandn(1e6,1e6,1e-7);
+

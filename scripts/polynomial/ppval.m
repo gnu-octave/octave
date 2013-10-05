@@ -95,7 +95,7 @@ function yi = ppval (pp, xi)
     yi = shiftdim (yi, nd);
   endif
 
-  ##
+  ## FIXME: Why is this commented out, rather than just removed?
   #if (d == 1)
   #  yi = reshape (yi, sxi);
   #endif
@@ -127,3 +127,4 @@ endfunction
 %! ret(:,:,1) = ppval (pp, breaks');
 %! ret(:,:,2) = ppval (pp, breaks');
 %! assert (ppval (pp, [breaks',breaks']), ret)
+

@@ -34,7 +34,7 @@
 ##
 ## @itemize
 ## @item x: data; if real-valued a one-sided spectrum is estimated,
-## if complex-valued or range indicates "@nospell{twosided}", the full
+## if complex-valued or range indicates @qcode{"@nospell{twosided}"}, the full
 ## spectrum is estimated.
 ##
 ## @item win: weight data with window, x.*win is used for further computation,
@@ -44,9 +44,10 @@
 ##
 ## @item Fs: sampling rate, default 1.
 ##
-## @item range: "@nospell{onesided}" computes spectrum from [0..nfft/2+1].
-## "@nospell{twosided}" computes spectrum from [0..nfft-1].  These strings
-## can appear at any position in the list input arguments after window.
+## @item range: @qcode{"@nospell{onesided}"} computes spectrum from [0..nfft/2+1].
+## @qcode{"@nospell{twosided}"} computes spectrum from [0..nfft-1].  These
+## strings can appear at any position in the list input arguments after
+## window.
 ##
 ## @item @nospell{Pxx}: one-, or two-sided power spectrum.
 ##
@@ -74,14 +75,14 @@ function [pxx, f] = periodogram (x, varargin)
       range = varargin{k};
     else
       switch (j)
-      case 1
-        window = varargin{k};
-      case 2
-        nfft   = varargin{k};
-      case 3
-        fs     = varargin{k};
-      case 4
-        range  = varargin{k};
+        case 1
+          window = varargin{k};
+        case 2
+          nfft   = varargin{k};
+        case 3
+          fs     = varargin{k};
+        case 4
+          range  = varargin{k};
       endswitch
       j++;
     endif
@@ -188,3 +189,4 @@ function [pxx, f] = periodogram (x, varargin)
   endif
 
 endfunction
+

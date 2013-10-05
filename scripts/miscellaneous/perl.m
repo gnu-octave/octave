@@ -41,10 +41,11 @@ function [output, status] = perl (scriptfile = "-e ''", varargin)
       scriptfile = file_in_loadpath (scriptfile);
     endif
 
-    [status, output] = system (cstrcat ("perl ", scriptfile,
-                                        sprintf (" %s", varargin{:})));
+    [status, output] = system (["perl " scriptfile ...
+                                sprintf(" %s", varargin{:})]);
   else
     error ("perl: invalid arguments");
   endif
 
 endfunction
+

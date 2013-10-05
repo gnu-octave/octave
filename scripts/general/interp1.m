@@ -26,25 +26,25 @@
 ##
 ## One-dimensional interpolation.  Interpolates to determine the value of
 ## @var{yi} at the points, @var{xi}.  If not specified, @var{x} is taken
-## to be the indices of @var{y}.  If @var{y} is an array, treat the columns
-## of @var{y} separately.
+## to be the indices of @var{y}.  If @var{y} is a matrix or an N-dimensional
+## array, the interpolation is performed on each column of @var{y}.
 ##
 ## Method is one of:
 ##
 ## @table @asis
-## @item "nearest"
+## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item "linear"
+## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors
 ##
-## @item "pchip"
+## @item @qcode{"pchip"}
 ## Piecewise cubic Hermite interpolating polynomial
 ##
-## @item "cubic"
+## @item @qcode{"cubic"}
 ## Cubic interpolation (same as @code{pchip})
 ##
-## @item "spline"
+## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve
 ## @end table
@@ -52,18 +52,18 @@
 ## Appending '*' to the start of the above method forces @code{interp1}
 ## to assume that @var{x} is uniformly spaced, and only @code{@var{x}(1)}
 ## and @code{@var{x}(2)} are referenced.  This is usually faster,
-## and is never slower.  The default method is "linear".
+## and is never slower.  The default method is @qcode{"linear"}.
 ##
-## If @var{extrap} is the string "extrap", then extrapolate values beyond
-## the endpoints.  If @var{extrap} is a number, replace values beyond the
-## endpoints with that number.  If @var{extrap} is missing, assume NA.
+## If @var{extrap} is the string @qcode{"extrap"}, then extrapolate values
+## beyond the endpoints.  If @var{extrap} is a number, replace values beyond
+## the endpoints with that number.  If @var{extrap} is missing, assume NA.
 ##
-## If the string argument "pp" is specified, then @var{xi} should not be
+## If the string argument @qcode{"pp"} is specified, then @var{xi} should not be
 ## supplied and @code{interp1} returns the piecewise polynomial that
 ## can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
-## @var{y}, @var{method}, "pp"), @var{xi}) == interp1 (@var{x}, @var{y},
-## @var{xi}, @var{method}, "extrap")}.
+## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x}, @var{y},
+## @var{xi}, @var{method}, @qcode{"extrap"})}.
 ##
 ## Duplicate points in @var{x} specify a discontinuous interpolant.  There
 ## may be at most 2 consecutive points with the same value.
@@ -71,10 +71,11 @@
 ## right-continuous.  If @var{x} is decreasing, the default discontinuous
 ## interpolant is left-continuous.
 ## The continuity condition of the interpolant may be specified by using
-## the options, "-left" or "-right", to select a left-continuous
+## the options, @qcode{"-left"} or @qcode{"-right"}, to select a left-continuous
 ## or right-continuous interpolant, respectively.
-## Discontinuous interpolation is only allowed for "nearest" and "linear"
-## methods; in all other cases, the @var{x}-values must be unique.
+## Discontinuous interpolation is only allowed for @qcode{"nearest"} and
+## @qcode{"linear"} methods; in all other cases, the @var{x}-values must be
+## unique.
 ##
 ## An example of the use of @code{interp1} is
 ##
@@ -149,7 +150,11 @@ function yi = interp1 (x, y, varargin)
   if (isempty (xi) && firstnumeric && ! ispp)
     xi = y;
     y = x;
-    x = 1:numel (y);
+    if (isvector (y))
+      x = 1:numel (y);
+    else
+      x = 1:rows (y);
+    endif
   endif
 
   ## reshape matrices for convenience
@@ -182,15 +187,15 @@ function yi = interp1 (x, y, varargin)
       rightcontinuous = false;
     else
       rightcontinuous = true;
-    end
+    endif
   endif
 
   if ((rightcontinuous && (x(end) < x(1)))
-      || (~ rightcontinuous && (x(end) > x(1))))
+      || (! rightcontinuous && (x(end) > x(1))))
     ## Switch between left-continuous and right-continuous
     x = flipud (x);
     y = flipud (y);
-  end
+  endif
 
   starmethod = method(1) == "*";
 
@@ -212,91 +217,93 @@ function yi = interp1 (x, y, varargin)
 
   ## Proceed with interpolating by all methods.
   switch (method)
-  case "nearest"
-    pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)], shiftdim (y, 1), szy(2:end));
-    pp.orient = "first";
+    case "nearest"
+      pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)],
+                 shiftdim (y, 1), szy(2:end));
+      pp.orient = "first";
 
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-  case "*nearest"
-    pp = mkpp ([x(1), x(1)+[0.5:(nx-1)]*dx, x(nx)], shiftdim (y, 1), szy(2:end));
-    pp.orient = "first";
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-  case "linear"
-    dy = diff (y);
-    dx = diff (x);
-    dx = repmat (dx, [1 size(dy)(2:end)]);
-    coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
-    xx = x;
-
-    if (have_jumps)
-      ## Omit zero-size intervals.
-      coefs(jumps, :) = [];
-      xx(jumps) = [];
-    endif
-
-    pp = mkpp (xx, coefs, szy(2:end));
-    pp.orient = "first";
-
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-
-  case "*linear"
-    dy = diff (y);
-    coefs = [(dy/dx).'(:), y(1:nx-1, :).'(:)];
-    pp = mkpp (x, coefs, szy(2:end));
-    pp.orient = "first";
-
-    if (ispp)
-      yi = pp;
-    else
-      yi = ppval (pp, reshape (xi, szx));
-    endif
-
-  case {"pchip", "*pchip", "cubic", "*cubic"}
-    if (nx == 2 || starmethod)
-      x = linspace (x(1), x(nx), ny);
-    endif
-
-    if (ispp)
-      y = shiftdim (reshape (y, szy), 1);
-      yi = pchip (x, y);
-      yi.orient = "first";
-    else
-      y = shiftdim (y, 1);
-      yi = pchip (x, y, reshape (xi, szx));
-      if (! isvector (y))
-        yi = shiftdim (yi, 1);
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
       endif
-    endif
-  case {"spline", "*spline"}
-    if (nx == 2 || starmethod)
-      x = linspace (x(1), x(nx), ny);
-    endif
-
-    if (ispp)
-      y = shiftdim (reshape (y, szy), 1);
-      yi = spline (x, y);
-      yi.orient = "first";
-    else
-      y = shiftdim (y, 1);
-      yi = spline (x, y, reshape (xi, szx));
-      if (! isvector (y))
-        yi = shiftdim (yi, 1);
+    case "*nearest"
+      pp = mkpp ([x(1), x(1)+[0.5:(nx-1)]*dx, x(nx)],
+                 shiftdim (y, 1), szy(2:end));
+      pp.orient = "first";
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
       endif
-    endif
-  otherwise
-    error ("interp1: invalid method '%s'", method);
+    case "linear"
+      dy = diff (y);
+      dx = diff (x);
+      dx = repmat (dx, [1 size(dy)(2:end)]);
+      coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
+      xx = x;
+
+      if (have_jumps)
+        ## Omit zero-size intervals.
+        coefs(jumps, :) = [];
+        xx(jumps) = [];
+      endif
+
+      pp = mkpp (xx, coefs, szy(2:end));
+      pp.orient = "first";
+
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
+      endif
+
+    case "*linear"
+      dy = diff (y);
+      coefs = [(dy/dx).'(:), y(1:nx-1, :).'(:)];
+      pp = mkpp (x, coefs, szy(2:end));
+      pp.orient = "first";
+
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
+      endif
+
+    case {"pchip", "*pchip", "cubic", "*cubic"}
+      if (nx == 2 || starmethod)
+        x = linspace (x(1), x(nx), ny);
+      endif
+
+      if (ispp)
+        y = shiftdim (reshape (y, szy), 1);
+        yi = pchip (x, y);
+        yi.orient = "first";
+      else
+        y = shiftdim (y, 1);
+        yi = pchip (x, y, reshape (xi, szx));
+        if (! isvector (y))
+          yi = shiftdim (yi, 1);
+        endif
+      endif
+    case {"spline", "*spline"}
+      if (nx == 2 || starmethod)
+        x = linspace (x(1), x(nx), ny);
+      endif
+
+      if (ispp)
+        y = shiftdim (reshape (y, szy), 1);
+        yi = spline (x, y);
+        yi.orient = "first";
+      else
+        y = shiftdim (y, 1);
+        yi = spline (x, y, reshape (xi, szx));
+        if (! isvector (y))
+          yi = shiftdim (yi, 1);
+        endif
+      endif
+    otherwise
+      error ("interp1: invalid method '%s'", method);
   endswitch
 
   if (! ispp)

@@ -26,17 +26,17 @@ you can get information about environment variables, the current time,
 and even start other programs from the Octave prompt.
 
 @menu
-* Timing Utilities::            
-* Filesystem Utilities::        
+* Timing Utilities::
+* Filesystem Utilities::
 * File Archiving Utilities::
 * Networking Utilities::
-* Controlling Subprocesses::    
-* Process ID Information::      
-* Environment Variables::       
-* Current Working Directory::   
-* Password Database Functions::  
-* Group Database Functions::    
-* System Information::          
+* Controlling Subprocesses::
+* Process ID Information::
+* Environment Variables::
+* Current Working Directory::
+* Password Database Functions::
+* Group Database Functions::
+* System Information::
 * Hashing Functions::
 @end menu
 
@@ -121,7 +121,7 @@ useful.
 
 @DOCSTRING(is_leap_year)
 
-@anchor{docXtoc}
+@anchor{XREFtoc}
 @DOCSTRING(tic)
 
 @DOCSTRING(pause)
@@ -177,7 +177,7 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(umask)
 
-@anchor{docXlstat}
+@anchor{XREFlstat}
 @DOCSTRING(stat)
 
 @DOCSTRING(S_ISBLK)
@@ -491,7 +491,7 @@ referred to as a @var{grp_struct}.
 @DOCSTRING(getgrent)
 
 @DOCSTRING(getgrgid)
-         
+
 @DOCSTRING(getgrnam)
 
 @DOCSTRING(setgrent)

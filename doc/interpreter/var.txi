@@ -49,7 +49,7 @@ Case is significant in variable names.  The symbols @code{a} and
 A variable name is a valid expression by itself.  It represents the
 variable's current value.  Variables are given new values with
 @dfn{assignment operators} and @dfn{increment operators}.
-@xref{Assignment Ops, ,Assignment Expressions}.
+@xref{Assignment Ops,,Assignment Expressions}.
 
 There is one built-in variable with a special meaning.  The @code{ans} variable
 always contains the result of the last computation, where the output wasn't
@@ -72,9 +72,9 @@ before they have been given a value.  Doing so results in an error.
 @DOCSTRING(namelengthmax)
 
 @menu
-* Global Variables::            
-* Persistent Variables::        
-* Status of Variables::         
+* Global Variables::
+* Persistent Variables::
+* Status of Variables::
 @end menu
 
 @node Global Variables
@@ -178,7 +178,7 @@ the function works with a @emph{copy} of its argument.
 @cindex persistent variables
 @cindex @code{persistent} statement
 @cindex variables, persistent
-@anchor{docXpersistent}
+@anchor{XREFpersistent}
 
 A variable that has been declared @dfn{persistent} within a function
 will retain its contents in memory between subsequent calls to the
@@ -299,8 +299,8 @@ definition is typed directly into the Octave prompt, the persistent
 variable will be cleared by a simple @code{clear} command as the entire
 function definition will be removed from memory.  If you do not want
 a persistent variable to be removed from memory even if the function is
-cleared, you should use the @code{mlock} function as described in
-@xref{Function Locking}.
+cleared, you should use the @code{mlock} function
+(@pxref{Function Locking}).
 
 @node Status of Variables
 @section Status of Variables

@@ -67,9 +67,9 @@ function retval = int2str (n)
     ifmt = get_fmt (n(idx{:}), 0);
     idx(2) = 2:sz(2);
     rfmt = get_fmt (n(idx{:}), 2);
-    fmt = cstrcat (ifmt, repmat (rfmt, 1, nc-1), "\n");
+    fmt = [ifmt repmat(rfmt,1,nc-1) "\n"];
   else
-    fmt = cstrcat (get_fmt (n, 0), "\n");
+    fmt = [get_fmt(n, 0) "\n"];
   endif
   tmp = sprintf (fmt, permute (n, [2, 1, 3 : nd]));
   tmp(end) = "";
@@ -86,7 +86,7 @@ function fmt = get_fmt (x, sep)
     fmt = sprintf ("%%%dd", 1 + sep);
   else
     ## Maybe have some zeros.
-    nan_inf = isinf (t) | isnan (t);
+    nan_inf = ! isfinite (t);
     if (any (nan_inf))
       if (any (t(nan_inf) < 0))
         min_fw = 4 + sep;

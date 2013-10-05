@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 S�ren Hauberg
+## Copyright (C) 2009-2012 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -157,7 +157,8 @@ function [text, status] = first_sentence_html (help_text, max_len)
 endfunction
 
 
-%!assert (get_first_help_sentence ('get_first_help_sentence'), "Return the first sentence of a function's help text.")
+%!assert (get_first_help_sentence ('get_first_help_sentence'), ...
+%!        "Return the first sentence of a function's help text.")
 
 %% Test input validation
 %!error get_first_help_sentence ()

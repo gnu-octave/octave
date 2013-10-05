@@ -652,7 +652,7 @@ If the second and subsequent arguments are character strings,\n\
 they are the names of the arguments of the function.\n\
 \n\
 If the second argument is an integer @var{n}, the arguments are\n\
-@code{\"x\"}, @code{\"P1\"}, @dots{}, @code{\"P@var{N}\"}.\n\
+@qcode{\"x\"}, @qcode{\"P1\"}, @dots{}, @qcode{\"P@var{N}\"}.\n\
 @seealso{argnames, formula, vectorize}\n\
 @end deftypefn")
 {

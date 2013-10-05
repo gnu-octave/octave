@@ -27,11 +27,11 @@
 ## and thus is invalid for @var{n} @leq{} 25.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## PROB (@var{x} > @var{y}) != 1/2.  If alt is @code{">"}, the one-sided
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## PROB (@var{x} > @var{y}) != 1/2.  If alt is @qcode{">"}, the one-sided
 ## alternative PROB (@var{x} > @var{y}) > 1/2 is considered.  Similarly
-## for @code{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) <
+## for @qcode{"<"}, the one-sided alternative PROB (@var{x} > @var{y}) <
 ## 1/2 is considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
@@ -89,3 +89,4 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   endif
 
 endfunction
+

@@ -41,6 +41,645 @@
         <source>persistent</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+64"/>
+        <source>foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QTerminal</name>
+    <message>
+        <location filename="../qterminal/libqterminal/QTerminal.h" line="+116"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Clear All</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QWinTerminalImpl</name>
+    <message>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1527"/>
+        <source>copied selection to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerBatch</name>
+    <message>
+        <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hide command character</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>External command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerCPP</name>
+    <message>
+        <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerDiff</name>
+    <message>
+        <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Added line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Changed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerMatlab</name>
+    <message>
+        <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerPerl</name>
+    <message>
+        <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Symbol table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Data section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (q)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD verbatim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Subroutine prototype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format body</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciScintilla</name>
+    <message>
+        <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
+        <source>&amp;Undo</source>
+        <translation type="unfinished">В&amp;ернути</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Redo</source>
+        <translation type="unfinished">П&amp;овторити</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished">Виріза&amp;ти</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished">&amp;Копіювати</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>documentation_dock_widget</name>
@@ -58,19 +697,19 @@
 <context>
     <name>file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+294"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+300"/>
         <location line="+49"/>
         <location line="+28"/>
         <source>Octave Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-193"/>
+        <location line="-199"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+123"/>
         <source>Could not open file %1 for read:
 %2.</source>
         <translation type="unfinished"></translation>
@@ -93,7 +732,7 @@ is already open in the editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+159"/>
+        <location line="+160"/>
         <source>&amp;New File</source>
         <translation type="unfinished">&amp;Створити</translation>
     </message>
@@ -108,12 +747,12 @@ is already open in the editor</source>
         <translation type="unfinished">&amp;Зберегти</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Save File &amp;As</source>
         <translation type="unfinished">Зберегти &amp;як</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
@@ -143,17 +782,17 @@ is already open in the editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>&amp;Next Bookmark</source>
         <translation type="unfinished">До &amp;наступної закладки</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Pre&amp;vious Bookmark</source>
         <translation type="unfinished">До &amp;попередньої закладки</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Toggle &amp;Bookmark</source>
         <translation type="unfinished">В&amp;становити/видалити закладку</translation>
     </message>
@@ -193,27 +832,27 @@ is already open in the editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+63"/>
         <source>&amp;Recent Editor Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+16"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Close All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Close Other Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-94"/>
+        <location line="-85"/>
         <source>&amp;Find and Replace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -228,12 +867,12 @@ is already open in the editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+53"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Файл</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+36"/>
         <source>&amp;Edit</source>
         <translation type="unfinished">&amp;Правка</translation>
     </message>
@@ -278,14 +917,14 @@ is already open in the editor</source>
     <message>
         <location line="+4"/>
         <location line="+114"/>
-        <location line="+104"/>
+        <location line="+109"/>
         <location line="+66"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-305"/>
+        <location line="-310"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -293,7 +932,7 @@ is about to be closed but has been modified.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+184"/>
+        <location line="+189"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -319,13 +958,13 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-192"/>
+        <location line="-197"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+175"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -475,7 +1114,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="-10"/>
-        <source>Are you sre you want to delete
+        <source>Are you sure you want to delete
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -485,12 +1124,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+131"/>
         <source>Set directory of file browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+28"/>
         <source>Create File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -585,7 +1224,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+71"/>
         <source>Search from end</source>
         <translation type="unfinished"></translation>
     </message>
@@ -708,12 +1347,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>Search results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+14"/>
         <source>Idle.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -748,7 +1387,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+99"/>
         <source>Searching...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -761,7 +1400,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>find_files_model</name>
     <message>
-        <location filename="../src/find-files-model.cc" line="+29"/>
+        <location filename="../src/find-files-model.cc" line="+76"/>
         <source>Filename</source>
         <translation type="unfinished"></translation>
     </message>
@@ -774,7 +1413,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>history_dock_widget</name>
     <message>
-        <location filename="../src/history-dock-widget.cc" line="+42"/>
+        <location filename="../src/history-dock-widget.cc" line="+43"/>
         <source>Browse and search the command history.</source>
         <translation type="unfinished">Перегляд і пошук серед історії виконаних команд.</translation>
     </message>
@@ -812,23 +1451,23 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+155"/>
+        <location filename="../src/main-window.cc" line="+160"/>
         <source>Load Workspace</source>
         <translation type="unfinished">Завантажити область змінних</translation>
     </message>
     <message>
-        <location line="+355"/>
-        <location line="+769"/>
+        <location line="+388"/>
+        <location line="+835"/>
         <source>About Octave</source>
         <translation type="unfinished">Про Octave</translation>
     </message>
     <message>
-        <location line="-338"/>
+        <location line="-354"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Файл</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+54"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
@@ -838,7 +1477,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Function</source>
         <translation type="unfinished"></translation>
     </message>
@@ -848,12 +1487,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-55"/>
+        <location line="-58"/>
         <source>Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+20"/>
         <source>Preferences...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -863,7 +1502,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished">Вийти</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+52"/>
         <source>&amp;Edit</source>
         <translation type="unfinished">&amp;Правка</translation>
     </message>
@@ -878,28 +1517,33 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-895"/>
-        <location line="+817"/>
+        <location line="-982"/>
+        <location line="+902"/>
         <source>Save Workspace As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-602"/>
+        <location line="-655"/>
         <source>Set working directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+686"/>
+        <location line="+739"/>
+        <source>Clear Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Find Files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Clear Command Window</source>
         <translation type="unfinished"></translation>
     </message>
@@ -914,7 +1558,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+40"/>
         <source>De&amp;bug</source>
         <translation type="unfinished"></translation>
     </message>
@@ -959,7 +1603,27 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+106"/>
+        <location line="+77"/>
+        <source>Octave Packages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Share Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Contribute to Octave</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Octave Developer Resources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+32"/>
         <source>On Disk</source>
         <translation type="unfinished"></translation>
     </message>
@@ -989,12 +1653,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-392"/>
+        <location line="-412"/>
         <source>Load workspace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+192"/>
+        <location line="+200"/>
         <source>&amp;Window</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1045,12 +1709,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+108"/>
+        <location line="+120"/>
         <source>Documentation</source>
         <translation type="unfinished">Документація</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-48"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1059,37 +1723,23 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <source>Report Bug</source>
         <translation type="unfinished">Повідомити про помилку</translation>
     </message>
-    <message>
-        <location line="+6"/>
-        <source>Visit Agora</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-3"/>
-        <source>Visit Octave Forge</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>octave_dock_widget</name>
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+52"/>
+        <location line="+129"/>
         <source>Undock widget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="-119"/>
         <source>Hide widget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+86"/>
         <source>Dock widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+29"/>
-        <source>Unock widget</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1157,12 +1807,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Graphic  icons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+39"/>
+        <location line="+46"/>
         <source>Editor</source>
         <translation type="unfinished">Редактор</translation>
     </message>
@@ -1272,12 +1917,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+45"/>
         <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-745"/>
+        <location line="-744"/>
         <source>Show line numbers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1297,7 +1942,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+548"/>
+        <location line="-72"/>
+        <source>Graphic icons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+620"/>
         <source>emacs</source>
         <translation type="unfinished">emacs</translation>
     </message>
@@ -1317,7 +1967,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+101"/>
         <source>Font size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1387,7 +2037,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1108"/>
+        <location line="-1107"/>
         <source>Icon set for dock widgets</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1402,7 +2052,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1099"/>
+        <location line="+1098"/>
         <source>Socks5Proxy</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1434,8 +2084,23 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-137"/>
-        <source>Difference to the defalt size</source>
+        <location line="-268"/>
+        <source>IBeam Cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Block Cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Underline Cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+129"/>
+        <source>Difference to the default size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1470,7 +2135,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>webinfo</name>
     <message>
-        <location filename="../src/qtinfo/webinfo.cc" line="+78"/>
+        <location filename="../src/qtinfo/webinfo.cc" line="+80"/>
         <source>Type here and press &apos;Return&apos; to search</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1483,48 +2148,38 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.ui" line="+26"/>
+        <location filename="../src/welcome-wizard.ui" line="+29"/>
         <source>Welcome to GNU Octave</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>It appears that you have launched Octave GUI for the first time on this computer, since no configuration file could be found at &apos;~/.octave-gui&apos;. This wizard will guide you through the essential settings you should make before you can start using Octave GUI. If you want to transfer your settings you have previously made just close this dialog and copy over the settings file to your home folder. The presence of that file will automatically be detected and will skip this wizard. IMPORTANT: This wizard is not fully functional yet. Just click your way to the end and it will create a standard settings file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+41"/>
-        <location line="+50"/>
-        <location line="+52"/>
-        <location line="+52"/>
-        <source>Next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-124"/>
-        <location line="+52"/>
-        <location line="+52"/>
-        <location line="+87"/>
-        <source>Previous</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-45"/>
-        <source>Welcome to Octave!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>This is the development version of Octave with the first official GUI.</source>
+        <location line="+20"/>
+        <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>You seem to run Octave GUI for the first time on this computer. This assistant will help you to configure this software installation. Click &apos;Finish&apos; to write a configuration file and launch Octave GUI.</source>
+        <source>The configuration file is stored in __%1__. If that file exists, you will not see this dialog when Octave starts again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+10"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;For more information about Octave,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;visit &lt;a href=&quot;http://octave.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://octave.org&lt;/span&gt;&lt;/a&gt;,&lt;/li&gt;
+&lt;li&gt; get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;html&lt;/span&gt;&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document, or&lt;/li&gt;
+&lt;li&gt;open the documentation browser of Octave GUI with the help menu.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-27"/>
+        <source>Welcome to Octave!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+74"/>
         <source>Finish</source>
         <translation type="unfinished"></translation>
     </message>

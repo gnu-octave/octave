@@ -123,98 +123,98 @@
 %!  assert (x, 0);
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## numeric vector (spaces)
 %!function f (x = [0 1 2])
 %!  assert (x, [0 1 2]);
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## numeric vector (range)
 %!function f (x = 1:3)
 %!  assert (x, 1:3);
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## numeric vector (commas)
 %!function f (x = [0,1,2])
 %!  assert (x, [0 1 2]);
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## numeric vector (commas and spaces)
 %!function f (x = [0, 1, 2])
 %!  assert (x, [0 1 2]);
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## numeric matrix
 %!function f (x = [0, 1, 2;3, 4, 5])
 %!  assert (x, [0 1 2;3 4 5]);
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## empty cell
 %!function f (x = {})
 %!  assert (x, {});
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## full cell
 %!function f (x = {1})
 %!  assert (x, {1});
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## many cells
 %!function f (x = {1 'a' "b" 2.0 struct("a", 3)})
 %!  assert (x, {1 'a' "b" 2.0 struct("a", 3)});
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## struct
 %!function f (x = struct("a", 3))
 %!  assert (x, struct ("a", 3));
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## char (double quotes)
 %!function f (x = "a")
 %!  assert (x, "a");
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## char (single quotes)
 %!function f (x = 'a')
 %!  assert (x, "a");
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## char (string, double quotes)
 %!function f (x = "abc123")
 %!  assert (x, "abc123");
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## char (string, double quotes, punctuation)
 %!function f (x = "abc123`1234567890-=~!@#$%^&*()_+[]{}|;':\",./<>?\\")
 %!  assert (x, "abc123`1234567890-=~!@#$%^&*()_+[]{}|;':\",./<>?\\");
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## Function handle (builtin)
 %!function f (x = @sin)
@@ -223,7 +223,7 @@
 %!  assert (isa (x, "function_handle") && strcmp (fname, "sin"));
 %!endfunction
 %!test
-%!  f()
+%! f()
 
 ## Function handle (anonymous)
 %!function f (x = @(x) x.^2)
@@ -232,5 +232,5 @@
 %!  assert (isa (x, "function_handle") && strcmp (ftype, "anonymous"));
 %!endfunction
 %!test
-%!  f()
+%! f()
 

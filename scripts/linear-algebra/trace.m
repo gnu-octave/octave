@@ -18,7 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} trace (@var{A})
-## Compute the trace of @var{A}, @code{sum (diag (@var{A}))}.
+## Compute the trace of @var{A}, the sum of the elements along the main
+## diagonal.
+##
+## The implementation is straightforward: @code{sum (diag (@var{A}))}.
+## @seealso{eig}
 ## @end deftypefn
 
 ## Author: jwe
@@ -33,7 +37,7 @@ function y = trace (A)
     error ("trace: only valid on 2-D objects");
   elseif (isempty (A))
     y = 0;
-  elseif (any (size (A) == 1))
+  elseif (isvector (A))
     y = A(1);
   else
     y = sum (diag (A));
@@ -46,7 +50,8 @@ endfunction
 %!assert (trace ([1, 2; 3, 4; 5, 6]), 5)
 %!assert (trace ([1, 3, 5; 2, 4, 6]), 5)
 %!assert (trace ([]), 0)
-%!assert (trace (randn (1,0)), 0)
+%!assert (trace (rand (1,0)), 0)
+%!assert (trace ([3:10]), 3)
 
 %!error trace ()
 %!error trace (1, 2)

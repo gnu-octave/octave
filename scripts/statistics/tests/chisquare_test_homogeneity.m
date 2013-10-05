@@ -66,3 +66,4 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
   endif
 
 endfunction
+

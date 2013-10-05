@@ -34,8 +34,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "jit-ir.h"
 
+#ifdef HAVE_LLVM_IR_FUNCTION_H
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/Instructions.h>
+#else
 #include <llvm/BasicBlock.h>
 #include <llvm/Instructions.h>
+#endif
 
 #include "error.h"
 

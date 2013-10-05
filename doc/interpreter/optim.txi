@@ -25,10 +25,10 @@ Quadratic Programming, Nonlinear Programming, and Linear Least Squares
 Minimization.
 
 @menu
-* Linear Programming::       
-* Quadratic Programming::       
-* Nonlinear Programming::       
-* Linear Least Squares::        
+* Linear Programming::
+* Quadratic Programming::
+* Nonlinear Programming::
+* Linear Least Squares::
 @end menu
 
 @c @cindex linear programming

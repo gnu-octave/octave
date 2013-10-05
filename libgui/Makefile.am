@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-AUTOMAKE_OPTIONS = subdir-objects
-
 MOC_CPPFLAGS =
 
 octlib_LTLIBRARIES = liboctgui.la
@@ -109,5 +107,6 @@ qrc-%.cc: %.qrc
 	$(LRELEASE) -qm $@ $<
 
 DISTCLEANFILES = \
+  default-qt-settings \
   $(LOCALES)
 

@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-AUTOMAKE_OPTIONS = subdir-objects
-
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
   -I$(top_srcdir)/liboctave/cruft/misc \
@@ -51,6 +49,9 @@ BUILT_SOURCES = \
   corefcn/defaults.h \
   corefcn/graphics-props.cc \
   corefcn/graphics.h \
+  corefcn/oct-tex-lexer.cc \
+  corefcn/oct-tex-parser.cc \
+  corefcn/oct-tex-symbols.cc \
   operators/ops.cc \
   parse-tree/lex.cc \
   parse-tree/oct-gperf.h \
@@ -62,6 +63,9 @@ BUILT_SOURCES = \
   builtins.cc
 
 BUILT_DISTFILES = \
+  corefcn/oct-tex-lexer.ll \
+  corefcn/oct-tex-parser.h \
+  corefcn/oct-tex-symbols.cc \
   parse-tree/oct-gperf.h \
   parse-tree/oct-parse.h \
   parse-tree/oct-parse.yy
@@ -96,7 +100,6 @@ EXTRA_DIST = \
   mkdefs \
   mkops \
   oct-conf.in.h \
-  parse-tree/oct-parse.in.yy \
   version.in.h \
   $(BUILT_DISTFILES)
 
@@ -121,10 +124,12 @@ nodist_octinclude_HEADERS = \
 
 DIST_SRC = \
   octave.cc \
+  version.cc \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
   $(PARSER_SRC) \
-  $(COREFCN_SRC)
+  $(COREFCN_SRC) \
+  $(TEX_PARSER_SRC)
 
 noinst_LTLIBRARIES =
 
@@ -150,6 +155,7 @@ endif
 
 liboctinterp_la_SOURCES = \
   octave.cc \
+  version.cc \
   $(OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
 
@@ -175,6 +181,7 @@ liboctinterp_la_LIBADD = \
   parse-tree/libparse-tree.la \
   parse-tree/libparser.la \
   corefcn/libcorefcn.la \
+  corefcn/libtex_parser.la \
   $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 
@@ -194,7 +201,7 @@ liboctinterp_la_LDFLAGS = \
 ## Section for defining and creating DEF_FILES
 
 ULT_DIST_SRC := \
-  $(filter-out parse-tree/oct-parse.yy, $(DIST_SRC)) parse-tree/oct-parse.in.yy
+  $(filter-out corefcn/oct-tex-lexer.ll parse-tree/oct-parse.yy, $(DIST_SRC)) corefcn/oct-tex-lexer.in.ll parse-tree/oct-parse.in.yy
 
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
@@ -248,7 +255,7 @@ nobase_libinterptests_DATA = $(TST_FILES)
 ## though we don't want it.  It would be super awesome if automake
 ## would allow users to choose the header file extension.
 .yy.cc:
-	$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE)
+	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE)
 
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
@@ -316,7 +323,7 @@ uninstall-local: uninstall-oct uninstall-built-in-docstrings
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
-	$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(octfiledir)
+	$(MKDIR_P) $(DESTDIR)$(octfiledir)
 	if [ -n "`cat $(DLDFCN_PKG_ADD_FILE)`" ]; then \
 	  $(INSTALL_DATA) $(DLDFCN_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
@@ -357,6 +364,7 @@ endif
 CLEANFILES = \
   $(DLDFCN_PKG_ADD_FILE) \
   corefcn/graphics-props.cc \
+  corefcn/oct-tex-parser.output \
   parse-tree/oct-parse.output
 
 DISTCLEANFILES = \

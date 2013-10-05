@@ -96,8 +96,8 @@ function retval = toeplitz (c, r)
   endif
 
   if (issparse (c) && issparse (r))
-    c = c(:).';  ## enforce row vector
-    r = r(:).';  ## enforce row vector
+    c = c(:).';  # enforce row vector
+    r = r(:).';  # enforce row vector
     cidx = find (c);
     ridx = find (r);
 

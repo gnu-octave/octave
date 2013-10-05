@@ -39,19 +39,19 @@
 ## @item directory
 ## True if @var{file} is a directory.
 ##
-## @item UserRead
+## @item  UserRead
 ## @itemx GroupRead
 ## @itemx OtherRead
 ## True if the user (group; other users) has read permission for
 ## @var{file}.
 ##
-## @item UserWrite
+## @item  UserWrite
 ## @itemx GroupWrite
 ## @itemx OtherWrite
 ## True if the user (group; other users) has write permission for
 ## @var{file}.
 ##
-## @item UserExecute
+## @item  UserExecute
 ## @itemx GroupExecute
 ## @itemx OtherExecute
 ## True if the user (group; other users) has execute permission for
@@ -143,3 +143,4 @@ function [status, msg, msgid] = fileattrib (file)
   endif
 
 endfunction
+

@@ -34,20 +34,21 @@
 ## supports a few more:
 ##
 ## @itemize
-## @item "collectoutput":
+## @item @qcode{"collectoutput"}:
 ## A value of 1 or true instructs textscan to concatenate consecutive columns
 ## of the same class in the output cell array.  A value of 0 or false (default)
 ## leaves output in distinct columns.
 ##
-## @item "endofline":
-## Specify "\r", "\n" or "\r\n" (for CR, LF, or CRLF).  If no value is given,
-## it will be inferred from the file.  If set to "" (empty string) EOLs are
-## ignored as delimiters and added to whitespace.
+## @item @qcode{"endofline"}:
+## Specify @qcode{"\r"}, @qcode{"\n"} or @qcode{"\r\n"} (for CR, LF, or
+## CRLF).  If no value is given, it will be inferred from the file.  If set
+## to "" (empty string) EOLs are ignored as delimiters and added to
+## whitespace.
 ##
-## @item "headerlines":
+## @item @qcode{"headerlines"}:
 ## The first @var{value} number of lines of @var{fid} are skipped.
 ##
-## @item "returnonerror":
+## @item @qcode{"returnonerror"}:
 ## If set to numerical 1 or true (default), return normally when read errors
 ## have been encountered.  If set to 0 or false, return an error and no data.
 ## As the string or file is read by columns rather than by rows, and because
@@ -79,8 +80,8 @@
 
 function [C, position] = textscan (fid, format = "%f", varargin)
 
-  BUFLENGTH = 4096;               ## Read buffer
-  emptfmt = 0;                    ## Signals deliberately empty format string
+  BUFLENGTH = 4096;               # Read buffer
+  emptfmt = 0;                    # Signals deliberately empty format string
 
   ## Check input
   if (nargin < 1)
@@ -112,8 +113,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
   if (nlines < 1)
     printf ("textscan: N = 0, no data read\n");
-    return
-  endif
+    return;  endif
 
   if (! any (strcmpi (args, "emptyvalue")))
     ## Matlab returns NaNs for missing values
@@ -276,7 +276,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
         data_size = nblks * BUFLENGTH + count;
       else
         ## Compute data size to read incl complete EOL
-        data_size = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi) \
+        data_size = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi) ...
                     + l_eol_char - 1;
       endif
       fseek (fid, st_pos, "bof");
@@ -439,7 +439,7 @@ endfunction
 %! assert (int8 (c{:}{:}), int8 ([ 76,  49,  10,  76,  50 ]));
 
 %!test
-%! # No delimiters at all besides EOL.  Skip fields, even empty fields
+%! ## No delimiters at all besides EOL.  Skip fields, even empty fields
 %! str = "Text1Text2Text\nTextText4Text\nText57Text";
 %! c = textscan (str, "Text%*dText%dText");
 %! assert (c{1}, int32 ([2; 4; 0]));
@@ -660,3 +660,4 @@ endfunction
 %! fclose (fid);
 %! unlink (f);
 %! assert (msg1, lasterr);
+

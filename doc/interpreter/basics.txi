@@ -25,13 +25,13 @@ command line, and write Octave programs that can be executed as commands
 from your shell.
 
 @menu
-* Invoking Octave from the Command Line::             
-* Quitting Octave::             
-* Getting Help::                
-* Command Line Editing::        
-* Errors::                      
-* Executable Octave Programs::  
-* Comments::                    
+* Invoking Octave from the Command Line::
+* Quitting Octave::
+* Getting Help::
+* Command Line Editing::
+* Errors::
+* Executable Octave Programs::
+* Comments::
 @end menu
 
 @node Invoking Octave from the Command Line
@@ -52,8 +52,8 @@ available options and briefly describe their use (@samp{octave -h} is a
 shorter equivalent).
 
 @menu
-* Command Line Options::        
-* Startup Files::               
+* Command Line Options::
+* Startup Files::
 @end menu
 
 @node Command Line Options
@@ -154,7 +154,7 @@ commands in the system or user startup files that use the
 @cindex @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
-to run Octave within Emacs, see @ref{Emacs Octave Support}.
+to run Octave within Emacs, @pxref{Emacs Octave Support}.
 
 @item --line-editing
 @cindex @code{--line-editing}
@@ -272,8 +272,8 @@ Octave:load-file-in-path
 @noindent
 Note that this does not enable the @code{Octave:matlab-incompatible}
 warning, which you might want if you want to be told about writing code
-that works in Octave but not @sc{matlab} (@pxref{docXwarning},
-@pxref{docXwarning_ids}).
+that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
+@ref{XREFwarning_ids,,warning_ids}).
 
 @item  --verbose
 @itemx -V
@@ -484,14 +484,14 @@ characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 
 
 @menu
-* Cursor Motion::               
-* Killing and Yanking::         
-* Commands For Text::           
-* Commands For Completion::     
-* Commands For History::        
-* Customizing readline::        
-* Customizing the Prompt::      
-* Diary and Echo Commands::     
+* Cursor Motion::
+* Killing and Yanking::
+* Commands For Text::
+* Commands For Completion::
+* Commands For History::
+* Customizing readline::
+* Customizing the Prompt::
+* Diary and Echo Commands::
 @end menu
 
 @node Cursor Motion
@@ -530,7 +530,7 @@ Move to the end of the line.
 @item C-l
 Clear the screen, reprinting the current line at the top.
 
-@item C-_
+@item  C-_
 @itemx C-/
 Undo the last action.  You can undo all the way back to an empty line.
 
@@ -610,7 +610,7 @@ otherwise have a special meaning (e.g., @key{TAB}, @kbd{C-q}, etc.), or
 for quickly correcting typing mistakes.
 
 @table @kbd
-@item C-q
+@item  C-q
 @itemx C-v
 Add the next character that you type to the line verbatim.  This is
 how to insert things like @kbd{C-q} for example.
@@ -678,7 +678,7 @@ Here are the commands for simple browsing and searching the history
 list.
 
 @table @kbd
-@item @key{LFD}
+@item  @key{LFD}
 @itemx @key{RET}
 Accept the current line regardless of where the cursor is.  If the line is
 non-empty, add it to the history list.  If the line was a history
@@ -1047,7 +1047,7 @@ typically hard to understand without them.
 @menu
 * Single Line Comments::
 * Block Comments::
-* Comments and the Help System::                    
+* Comments and the Help System::
 @end menu
 
 @node Single Line Comments
@@ -1099,8 +1099,8 @@ endfunction
 @end example
 
 @noindent
-will produce a very quick countdown from '3' to 'Blast Off' as the
-lines "@code{disp (2);}" and "@code{disp (1);}" won't be executed.
+will produce a very quick countdown from @qcode{'3'} to @qcode{"Blast Off"} as
+the lines "@code{disp (2);}" and "@code{disp (1);}" won't be executed.
 
 The block comment markers must appear alone as the only characters on a line
 (excepting whitespace) in order to be parsed correctly.

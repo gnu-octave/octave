@@ -16,25 +16,22 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/if/if-1.m
 %!test
 %! i = 0;
 %! if (i == 0)
 %!   i++;
 %!   __printf_assert__ ("%d\n", i);
-%! endif
+%! end  # "end" is part of test, check not using "endif"
 %! assert (__prog_output_assert__ ("1"));
 
-%% test/octave.test/if/if-2.m
 %!test
 %! if (eye (2))
 %!   __printf_assert__ ("fail\n");
 %! else
 %!   __printf_assert__ ("pass\n");
-%! end
+%! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-3.m
 %!test
 %! x = 2;
 %! if (eye (2))
@@ -44,7 +41,6 @@
 %! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-4.m
 %!test
 %! x = 0;
 %! y = -2;
@@ -54,10 +50,9 @@
 %!   __printf_assert__ ("fail\n");
 %! elseif (y)
 %!   __printf_assert__ ("pass\n");
-%! end
+%! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-5.m
 %!test
 %! x = 0;
 %! y = -2;
@@ -72,7 +67,6 @@
 %! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test/octave.test/if/if-6.m
 %!test
 %! x = 0;
 %! y = -2;
@@ -82,11 +76,11 @@
 %!   __printf_assert__ ("fail\n");
 %! elseif (x)
 %!   __printf_assert__ ("fail\n");
-%! end
+%! endif
 %! assert (__prog_output_assert__ ("pass"));
 
-%% test parsing of single-quoted character string appearing at the
-%% beginning of an if condition
+## test parsing of single-quoted character string appearing at the
+## beginning of an if condition
 %!test
 %! if (1)
 %!   'foo';
@@ -94,8 +88,8 @@
 %! endif
 %! assert (x, 13);
 
-%% test parsing of single-quoted character string appearing at the
-%% beginning of an if condition
+## test parsing of single-quoted character string appearing at the
+## beginning of an if condition
 %!test
 %! if (0)
 %!   x = 42;
@@ -104,3 +98,4 @@
 %!   x = 13;
 %! endif
 %! assert (x, 13);
+

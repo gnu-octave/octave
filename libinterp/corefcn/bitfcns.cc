@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <limits>
+
 #include "str-vec.h"
 #include "quit.h"
 
@@ -38,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-int32.h"
 #include "ov-int16.h"
 #include "ov-int8.h"
+#include "ov-float.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-bool.h"
@@ -138,25 +141,55 @@ bitop (const std::string& fname, const octave_value_list& args)
   if (nargin == 2)
     {
       if ((args(0).class_name () == octave_scalar::static_class_name ())
+          || (args(0).class_name () == octave_float_scalar::static_class_name ())
           || (args(0).class_name () == octave_bool::static_class_name ())
           || (args(1).class_name () == octave_scalar::static_class_name ())
+          || (args(1).class_name () == octave_float_scalar::static_class_name ())
           || (args(1).class_name () == octave_bool::static_class_name ()))
         {
           bool arg0_is_int = (args(0).class_name () !=
                               octave_scalar::static_class_name () &&
                               args(0).class_name () !=
+                              octave_float_scalar::static_class_name () &&
+                              args(0).class_name () !=
                               octave_bool::static_class_name ());
           bool arg1_is_int = (args(1).class_name () !=
                               octave_scalar::static_class_name () &&
                               args(1).class_name () !=
+                              octave_float_scalar::static_class_name () &&
+                              args(1).class_name () !=
                               octave_bool::static_class_name ());
+          bool arg0_is_float = args(0).class_name () ==
+                               octave_float_scalar::static_class_name ();
+          bool arg1_is_float = args(1).class_name () ==
+                               octave_float_scalar::static_class_name ();
 
           if (! (arg0_is_int || arg1_is_int))
             {
-              uint64NDArray x (args(0).array_value ());
-              uint64NDArray y (args(1).array_value ());
-              if (! error_state)
-                retval = bitopx (fname, x, y).array_value ();
+              if (! (arg0_is_float || arg1_is_float))
+                {
+                  uint64NDArray x (args(0).array_value ());
+                  uint64NDArray y (args(1).array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).array_value ();
+                }
+              else if (arg0_is_float && arg1_is_float)
+                {
+                  uint64NDArray x (args(0).float_array_value ());
+                  uint64NDArray y (args(1).float_array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).float_array_value ();
+                }
+              else
+                {
+                  int p = (arg0_is_float ? 1 : 0);
+                  int q = (arg0_is_float ? 0 : 1);
+
+                  uint64NDArray x (args(p).array_value ());
+                  uint64NDArray y (args(q).float_array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).float_array_value ();
+                }
             }
           else
             {
@@ -342,6 +375,13 @@ Return the bitwise XOR of non-negative integers.\n\
 @end deftypefn")
 {
   return bitop ("bitxor", args);
+}
+
+template <typename T>
+static int64_t
+max_mantissa_value ()
+{
+  return (static_cast<int64_t> (1) << std::numeric_limits<T>::digits) - 1;
 }
 
 static int64_t
@@ -543,15 +583,29 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
         DO_SBITSHIFT (int64, nbits < 64 ? nbits : 64);
       else if (cname == "double")
         {
-          nbits = (nbits < 53 ? nbits : 53);
-          int64_t mask = 0x1FFFFFFFFFFFFFLL;
-          if (nbits < 53)
-            mask = mask >> (53 - nbits);
+          static const int bits_in_mantissa = std::numeric_limits<double>::digits;
+          nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
+          int64_t mask = max_mantissa_value<double> ();
+          if (nbits < bits_in_mantissa)
+            mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = 64;
+          int bits_in_type = sizeof (double) * std::numeric_limits<unsigned char>::digits;
           NDArray m = m_arg.array_value ();
           DO_BITSHIFT ( );
+        }
+      else if (cname == "single")
+        {
+          static const int bits_in_mantissa = std::numeric_limits<float>::digits;
+          nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
+          int64_t mask = max_mantissa_value<float> ();
+          if (nbits < bits_in_mantissa)
+            mask = mask >> (bits_in_mantissa - nbits);
+          else if (nbits < 1)
+            mask = 0;
+          int bits_in_type = sizeof (float) * std::numeric_limits<unsigned char>::digits;
+          FloatNDArray m = m_arg.float_array_value ();
+          DO_BITSHIFT (Float);
         }
       else
         error ("bitshift: not defined for %s objects", cname.c_str ());
@@ -568,8 +622,11 @@ DEFUN (bitmax, args, ,
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
 Return the largest integer that can be represented within a floating point\n\
-value.  The default class is \"double\", but \"single\" is a valid option.\n\
-On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}}.\n\
+value.  The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a\n\
+valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
+@w{@math{2^{53} - 1}} for @qcode{\"double\"} and @w{@math{2^{24} -1}} for\n\
+@qcode{\"single\"}.\n\
+@seealso{flintmax, intmax, realmax, realmin}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -585,11 +642,46 @@ On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}}.\n\
     }
 
   if (cname == "double")
-    retval = (static_cast<double> (0x1FFFFFFFFFFFFFLL));
+    retval = (static_cast<double> (max_mantissa_value<double> ()));
   else if (cname == "single")
-    retval = (static_cast<double> (0xFFFFFFL));
+    retval = (static_cast<float> (max_mantissa_value<float> ()));
   else
     error ("bitmax: not defined for class '%s'", cname.c_str ());
+
+  return retval;
+}
+
+DEFUN (flintmax, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} flintmax ()\n\
+@deftypefnx {Built-in Function} {} flintmax (\"double\")\n\
+@deftypefnx {Built-in Function} {} flintmax (\"single\")\n\
+Return the largest integer that can be represented consecutively in a\n\
+floating point value.  The default class is @qcode{\"double\"}, but\n\
+@qcode{\"single\"} is a valid option.  On IEEE-754 compatible systems,\n\
+@code{flintmax} is @w{@math{2^53}} for @qcode{\"double\"} and\n\
+@w{@math{2^24}} for @qcode{\"single\"}.\n\
+@seealso{bitmax, intmax, realmax, realmin}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  std::string cname = "double";
+  int nargin = args.length ();
+
+  if (nargin == 1 && args(0).is_string ())
+    cname = args(0).string_value ();
+  else if (nargin != 0)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  if (cname == "double")
+    retval = (static_cast<double> (max_mantissa_value<double> () + 1));
+  else if (cname == "single")
+    retval = (static_cast<float> (max_mantissa_value<float> () + 1));
+  else
+    error ("flintmax: not defined for class '%s'", cname.c_str ());
 
   return retval;
 }
@@ -627,7 +719,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{uint32}.\n\
-@seealso{intmin, bitmax}\n\
+@seealso{intmin, flintmax, bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -697,7 +789,7 @@ unsigned 64-bit integer.\n\
 @end table\n\
 \n\
 The default for @var{type} is @code{uint32}.\n\
-@seealso{intmax, bitmax}\n\
+@seealso{intmax, flintmax, bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;

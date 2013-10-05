@@ -51,3 +51,4 @@ function [pval, chisq, df] = chisquare_test_independence (x)
   endif
 
 endfunction
+

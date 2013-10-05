@@ -830,10 +830,10 @@ DEFUN (rethrow, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rethrow (@var{err})\n\
 Reissue a previous error as defined by @var{err}.  @var{err} is a structure\n\
-that must contain at least the 'message' and 'identifier' fields.  @var{err}\n\
-can also contain a field 'stack' that gives information on the assumed\n\
-location of the error.  Typically @var{err} is returned from\n\
-@code{lasterror}.\n\
+that must contain at least the @qcode{\"message\"} and @qcode{\"identifier\"}\n\
+fields.  @var{err} can also contain a field @qcode{\"stack\"} that gives\n\
+information on the assumed location of the error.  Typically @var{err} is\n\
+returned from @code{lasterror}.\n\
 @seealso{lasterror, lasterr, error}\n\
 @end deftypefn")
 {
@@ -1091,7 +1091,7 @@ error (err_msg);\n\
 which will only stop execution if an error has been found.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
+sequences (e.g., @qcode{\"\\n\"} => newline) are processed in @var{template}\n\
 regardless of whether @var{template} has been defined within single quotes\n\
 as long as there are two or more input arguments.\n\
 Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
@@ -1235,17 +1235,17 @@ to go on.\n\
 \n\
 The optional message identifier allows users to enable or disable\n\
 warnings tagged by @var{id}.  A message identifier is of the form\n\
-\"NAMESPACE:WARNING-NAME\".  Octave's own warnings use the \"Octave\"\n\
-namespace (@pxref{docXwarning_ids}).  The special identifier @samp{\"all\"}\n\
+\"NAMESPACE:WARNING-NAME\".  Octave's own warnings use the @qcode{\"Octave\"}\n\
+namespace (@pxref{XREFwarning_ids}).  The special identifier @qcode{\"all\"}\n\
 may be used to set the state of all warnings.\n\
 \n\
-If the first argument is @samp{\"on\"} or @samp{\"off\"}, set the state\n\
-of a particular warning using the identifier @var{id}.  If the first\n\
-argument is @samp{\"query\"}, query the state of this warning instead.\n\
-If the identifier is omitted, a value of @samp{\"all\"} is assumed.  If\n\
-you set the state of a warning to @samp{\"error\"}, the warning named by\n\
-@var{id} is handled as if it were an error instead.  So, for example, the\n\
-following handles all warnings as errors:\n\
+If the first argument is @qcode{\"on\"} or @qcode{\"off\"},\n\
+set the state of a particular warning using the identifier @var{id}.  If the\n\
+first argument is @qcode{\"query\"}, query the state of this warning\n\
+instead.  If the identifier is omitted, a value of @qcode{\"all\"} is\n\
+assumed.  If you set the state of a warning to @qcode{\"error\"}, the\n\
+warning named by @var{id} is handled as if it were an error instead.  So,\n\
+for example, the following handles all warnings as errors:\n\
 \n\
 @example\n\
 @group\n\
@@ -1253,17 +1253,17 @@ warning (\"error\");\n\
 @end group\n\
 @end example\n\
 \n\
-If the state is @samp{\"on\"}, @samp{\"off\"}, or @samp{\"error\"}\n\
-and the third argument is @samp{\"local\"}, then the warning state\n\
+If the state is @qcode{\"on\"}, @qcode{\"off\"}, or @qcode{\"error\"}\n\
+and the third argument is @qcode{\"local\"}, then the warning state\n\
 will be set temporarily, until the end of the current function.\n\
 Changes to warning states that are set locally affect the current\n\
 function and all functions called from the current scope.  The\n\
 previous warning state is restored on return from the current\n\
-function.  The \"local\" option is ignored if used in the top-level\n\
+function.  The @qcode{\"local\"} option is ignored if used in the top-level\n\
 workspace.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
+sequences (e.g., @qcode{\"\\n\"} => newline) are processed in @var{template}\n\
 regardless of whether @var{template} has been defined within single quotes\n\
 as long as there are two or more input arguments.\n\
 Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
@@ -1654,29 +1654,29 @@ Query or set the last error message structure.  When called without\n\
 arguments, return a structure containing the last error message and other\n\
 information related to this error.  The elements of the structure are:\n\
 \n\
-@table @asis\n\
-@item 'message'\n\
+@table @code\n\
+@item message\n\
 The text of the last error message\n\
 \n\
-@item 'identifier'\n\
+@item identifier\n\
 The message identifier of this error message\n\
 \n\
-@item 'stack'\n\
+@item stack\n\
 A structure containing information on where the message occurred.  This may\n\
 be an empty structure if the information cannot\n\
 be obtained.  The fields of the structure are:\n\
 \n\
-@table @asis\n\
-@item 'file'\n\
+@table @code\n\
+@item file\n\
 The name of the file where the error occurred\n\
 \n\
-@item 'name'\n\
+@item name\n\
 The name of function in which the error occurred\n\
 \n\
-@item 'line'\n\
+@item line\n\
 The line number at which the error occurred\n\
 \n\
-@item 'column'\n\
+@item column\n\
 An optional field with the column number at which the error occurred\n\
 @end table\n\
 @end table\n\
@@ -1685,8 +1685,8 @@ The last error structure may be set by passing a scalar structure, @var{err},\n\
 as input.  Any fields of @var{err} that match those above are set while any\n\
 unspecified fields are initialized with default values.\n\
 \n\
-If @code{lasterror} is called with the argument \"reset\", all fields are\n\
-set to their default values.\n\
+If @code{lasterror} is called with the argument @qcode{\"reset\"}, all\n\
+fields are set to their default values.\n\
 @seealso{lasterr, error, lastwarn}\n\
 @end deftypefn")
 {
@@ -1956,9 +1956,9 @@ DEFUN (beep_on_error, args, nargout,
 Query or set the internal variable that controls whether Octave will try\n\
 to ring the terminal bell before printing an error message.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (beep_on_error);
@@ -1974,9 +1974,9 @@ to enter the debugger when an error is encountered.  This will also\n\
 inhibit printing of the normal traceback message (you will only see\n\
 the top-level error message).\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{debug_on_warning, debug_on_interrupt}\n\
 @end deftypefn")
 {
@@ -1991,9 +1991,9 @@ DEFUN (debug_on_warning, args, nargout,
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when a warning is encountered.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{debug_on_error, debug_on_interrupt}\n\
 @end deftypefn")
 {

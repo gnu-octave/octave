@@ -40,7 +40,8 @@
 ## is @code{quadcc}.
 ##
 ## Additional arguments, are passed directly to @var{f}.  To use the default
-## value for @var{tol} or @var{quadf} one may pass ':' or an empty matrix ([]).
+## value for @var{tol} or @var{quadf} one may pass @qcode{':'} or an empty
+## matrix ([]).
 ## @seealso{dblquad, quad, quadv, quadl, quadgk, quadcc, trapz}
 ## @end deftypefn
 

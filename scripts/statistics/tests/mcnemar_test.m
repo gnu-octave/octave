@@ -63,5 +63,3 @@ function [pval, chisq, df] = mcnemar_test (x)
 
 endfunction
 
-
-

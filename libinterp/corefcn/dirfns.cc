@@ -94,11 +94,16 @@ octave_change_to_directory (const std::string& newdir)
 
 DEFUN (cd, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Command} {} cd dir\n\
-@deftypefnx {Command} {} chdir dir\n\
-Change the current working directory to @var{dir}.  If @var{dir} is\n\
-omitted, the current directory is changed to the user's home\n\
-directory.  For example,\n\
+@deftypefn  {Command} {} cd @var{dir}\n\
+@deftypefnx {Command} {} cd\n\
+@deftypefnx {Built-in Function} {@var{old_dir} =} cd @var{dir}\n\
+@deftypefnx {Command} {} chdir @dots{}\n\
+Change the current working directory to @var{dir}.\n\
+\n\
+If @var{dir} is omitted, the current directory is changed to the user's home\n\
+directory (@qcode{\"~\"}).\n\
+\n\
+For example,\n\
 \n\
 @example\n\
 cd ~/octave\n\
@@ -108,7 +113,13 @@ cd ~/octave\n\
 changes the current working directory to @file{~/octave}.  If the\n\
 directory does not exist, an error message is printed and the working\n\
 directory is not changed.\n\
-@seealso{mkdir, rmdir, dir}\n\
+\n\
+@code{chdir} is an alias for @code{cd} and can be used in all of the same\n\
+calling formats.\n\
+\n\
+Compatibility Note: When called with no arguments, @sc{matlab} prints the\n\
+present working directory rather than changing to the user's home directory.\n\
+@seealso{pwd, mkdir, rmdir, dir, ls}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -120,30 +131,22 @@ directory is not changed.\n\
   if (error_state)
     return retval;
 
+  if (nargout > 0)
+    retval = octave_value (octave_env::get_current_directory ());
+
   if (argc > 1)
     {
       std::string dirname = argv[1];
 
-      if (dirname.length () > 0
-          && ! octave_change_to_directory (dirname))
-        {
-          return retval;
-        }
+      if (dirname.length () > 0)
+        octave_change_to_directory (dirname);
     }
   else
     {
-      // Behave like Unixy shells for "cd" by itself, but be Matlab
-      // compatible if doing "current_dir = cd".
+      std::string home_dir = octave_env::get_home_directory ();
 
-      if (nargout == 0)
-        {
-          std::string home_dir = octave_env::get_home_directory ();
-
-          if (home_dir.empty () || ! octave_change_to_directory (home_dir))
-            return retval;
-        }
-      else
-        retval = octave_value (octave_env::get_current_directory ());
+      if (! home_dir.empty ())
+        octave_change_to_directory (home_dir);
     }
 
   return retval;
@@ -153,9 +156,10 @@ DEFALIAS (chdir, cd);
 
 DEFUN (pwd, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} pwd ()\n\
+@deftypefn  {Built-in Function} {} pwd ()\n\
+@deftypefnx {Built-in Function} {@var{dir} =} pwd ()\n\
 Return the current working directory.\n\
-@seealso{dir, ls}\n\
+@seealso{cd, dir, ls, mkdir, rmdir}\n\
 @end deftypefn")
 {
   return octave_value (octave_env::get_current_directory ());
@@ -163,14 +167,16 @@ Return the current working directory.\n\
 
 DEFUN (readdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})\n\
-Return names of the files in the directory @var{dir} as a cell array of\n\
-strings.  If an error occurs, return an empty cell array in @var{files}.\n\
+@deftypefn  {Built-in Function} {@var{files} =} readdir (@var{dir})\n\
+@deftypefnx {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})\n\
+Return the names of files in the directory @var{dir} as a cell array of\n\
+strings.\n\
 \n\
+If an error occurs, return an empty cell array in @var{files}.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{ls, dir, glob}\n\
+@seealso{ls, dir, glob, what}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -207,20 +213,24 @@ system-dependent error message.\n\
   return retval;
 }
 
-// FIXME -- should maybe also allow second arg to specify
-// mode?  OTOH, that might cause trouble with compatibility later...
+// FIXME: should maybe also allow second arg to specify mode?
+//        OTOH, that might cause trouble with compatibility later...
 
 DEFUNX ("mkdir", Fmkdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})\n\
+@deftypefn  {Built-in Function} {} mkdir @var{dir}\n\
+@deftypefnx {Built-in Function} {} mkdir (@var{parent}, @var{dir})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@dots{})\n\
 Create a directory named @var{dir} in the directory @var{parent}.\n\
 \n\
-If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
-character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-system-dependent error message, and @var{msgid} contains a unique\n\
-message identifier.\n\
-@seealso{rmdir}\n\
+If no @var{parent} directory is specified the present working directory is\n\
+used.\n\
+\n\
+If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
+character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
+system-dependent error message, and @var{msgid} contains a unique message\n\
+identifier.\n\
+@seealso{rmdir, pwd, cd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -295,18 +305,19 @@ message identifier.\n\
 
 DEFUNX ("rmdir", Frmdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, \"s\")\n\
+@deftypefn  {Built-in Function} {} rmdir @var{dir}\n\
+@deftypefnx {Built-in Function} {} rmdir (@var{dir}, \"s\")\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})\n\
 Remove the directory named @var{dir}.\n\
 \n\
-If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
-character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-system-dependent error message, and @var{msgid} contains a unique\n\
-message identifier.\n\
+If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
+character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
+system-dependent error message, and @var{msgid} contains a unique message\n\
+identifier.\n\
 \n\
-If the optional second parameter is supplied with value @code{\"s\"},\n\
+If the optional second parameter is supplied with value @qcode{\"s\"},\n\
 recursively remove all subdirectories as well.\n\
-@seealso{mkdir, confirm_recursive_rmdir}\n\
+@seealso{mkdir, confirm_recursive_rmdir, pwd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -369,13 +380,14 @@ recursively remove all subdirectories as well.\n\
 
 DEFUNX ("link", Flink, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})\n\
+@deftypefn  {Built-in Function} {} link @var{old} @var{new}\n\
+@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})\n\
 Create a new link (also known as a hard link) to an existing file.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{symlink}\n\
+@seealso{symlink, unlink, readlink, lstat}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -401,10 +413,9 @@ system-dependent error message.\n\
 
               int status = octave_link (from, to, msg);
 
-              retval(0) = status;
-
               if (status < 0)
                 retval(1) = msg;
+              retval(0) = status;
             }
         }
     }
@@ -416,13 +427,14 @@ system-dependent error message.\n\
 
 DEFUNX ("symlink", Fsymlink, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})\n\
+@deftypefn  {Built-in Function} {} symlink @var{old} @var{new}\n\
+@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})\n\
 Create a symbolic link @var{new} which contains the string @var{old}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{link, readlink}\n\
+@seealso{link, unlink, readlink, lstat}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -448,10 +460,9 @@ system-dependent error message.\n\
 
               int status = octave_symlink (from, to, msg);
 
-              retval(0) = status;
-
               if (status < 0)
                 retval(1) = msg;
+              retval(0) = status;
             }
         }
     }
@@ -463,14 +474,15 @@ system-dependent error message.\n\
 
 DEFUNX ("readlink", Freadlink, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})\n\
+@deftypefn  {Built-in Function} {} readlink @var{symlink}\n\
+@deftypefnx {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})\n\
 Read the value of the symbolic link @var{symlink}.\n\
 \n\
 If successful, @var{result} contains the contents of the symbolic link\n\
-@var{symlink}, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
-system-dependent error message.\n\
-@seealso{link, symlink}\n\
+@var{symlink}, @var{err} is 0, and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
+error message.\n\
+@seealso{lstat, symlink, link, unlink, delete}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -506,13 +518,14 @@ system-dependent error message.\n\
 
 DEFUNX ("rename", Frename, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\
+@deftypefn  {Built-in Function} {} rename @var{old} @var{new}\n\
+@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\
 Change the name of file @var{old} to @var{new}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{ls, dir}\n\
+@seealso{movefile, copyfile, ls, dir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -538,10 +551,9 @@ system-dependent error message.\n\
 
               int status = octave_rename (from, to, msg);
 
-              retval(0) = status;
-
               if (status < 0)
                 retval(1) = msg;
+              retval(0) = status;
             }
         }
     }
@@ -571,9 +583,8 @@ matches any single character, and\n\
 matches any of the enclosed characters.\n\
 @end table\n\
 \n\
-Tilde expansion\n\
-is performed on each of the patterns before looking for matching file\n\
-names.  For example:\n\
+Tilde expansion is performed on each of the patterns before looking for\n\
+matching file names.  For example:\n\
 \n\
 @example\n\
 ls\n\
@@ -597,7 +608,7 @@ glob (\"file[12]\")\n\
         [2,1] = file2\n\
       @}\n\
 @end example\n\
-@seealso{ls, dir, readdir}\n\
+@seealso{ls, dir, readdir, what, fnmatch}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -628,7 +639,7 @@ glob (\"file[12]\")\n\
 %! if (mkdir (tmpdir))
 %!   cwd = pwd;
 %!   cd (tmpdir);
-%!   if strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir))
+%!   if (strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir)))
 %!     a = 0;
 %!     for n = 1:5
 %!       save (filename{n}, "a");
@@ -656,7 +667,7 @@ glob (\"file[12]\")\n\
 DEFUNX ("fnmatch", Ffnmatch, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
-Return 1 or zero for each element of @var{string} that matches any of\n\
+Return true or false for each element of @var{string} that matches any of\n\
 the elements of the string array @var{pattern}, using the rules of\n\
 filename pattern matching.  For example:\n\
 \n\
@@ -666,6 +677,7 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
      @result{} [ 1; 1; 0 ]\n\
 @end group\n\
 @end example\n\
+@seealso{glob, regexp}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -696,8 +708,8 @@ DEFUN (filesep, args, ,
 @deftypefnx {Built-in Function} {} filesep (\"all\")\n\
 Return the system-dependent character used to separate directory names.\n\
 \n\
-If \"all\" is given, the function returns all valid file separators in\n\
-the form of a string.  The list of file separators is system-dependent.\n\
+If @qcode{\"all\"} is given, the function returns all valid file separators\n\
+in the form of a string.  The list of file separators is system-dependent.\n\
 It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
 @samp{\\} (forward and backward slashes) under Windows.\n\
 @seealso{pathsep}\n\
@@ -780,9 +792,10 @@ DEFUN (confirm_recursive_rmdir, args, nargout,
 Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
+@seealso{rmdir}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);

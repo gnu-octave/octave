@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Søren Hauberg
+## Copyright (C) 2009-2012 SÃ¸ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -37,3 +37,4 @@ mailing list.\n";
   endif
 
 endfunction
+

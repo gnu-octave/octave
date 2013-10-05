@@ -33,15 +33,15 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
   endif
   global files_with_no_tests = {};
   global files_with_tests = {};
-  ## FIXME -- these names don't really make sense if we are running
-  ## tests for an installed copy of Octave.
+  ## FIXME: These names don't really make sense if we are running
+  ##        tests for an installed copy of Octave.
   global topsrcdir = fcnfiledir;
   global topbuilddir = testsdir;
   pso = page_screen_output ();
   warn_state = warning ("query", "quiet");
   warning ("on", "quiet");
   try
-    page_screen_output (0);
+    page_screen_output (false);
     warning ("off", "Octave:deprecated-function");
     fid = fopen ("fntests.log", "wt");
     if (fid < 0)
@@ -92,9 +92,9 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
     endif
 
     ## Weed out deprecated and private functions
-    weed_idx = cellfun (@isempty, regexp (files_with_tests, '\bdeprecated\b|\bprivate\b', 'once'));
+    weed_idx = cellfun (@isempty, regexp (files_with_tests, '\<deprecated\>|\<private\>', 'once'));
     files_with_tests = files_with_tests(weed_idx);
-    weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\bdeprecated\b|\bprivate\b', 'once'));
+    weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\<deprecated\>|\<private\>', 'once'));
     files_with_no_tests = files_with_no_tests(weed_idx);
 
     report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
@@ -103,7 +103,7 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
     puts ("these files (see the list in the file fntests.log).\n\n");
 
     fprintf (fid, "\nFiles with no tests:\n\n%s",
-            list_in_columns (files_with_no_tests, 80));
+                  list_in_columns (files_with_no_tests, 80));
     fclose (fid);
 
     page_screen_output (pso);
@@ -133,16 +133,17 @@ endfunction
 
 function retval = has_functions (f)
   n = length (f);
-  if (n > 3 && strcmp (f((end-2):end), ".cc"))
+  if (n > 3 && strcmpi (f((end-2):end), ".cc"))
     fid = fopen (f);
     if (fid >= 0)
       str = fread (fid, "*char")';
       fclose (fid);
-      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\b', 'lineanchors'));
+      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
+                                      'lineanchors', 'once'));
     else
       error ("fopen failed: %s", f);
     endif
-  elseif (n > 2 && strcmp (f((end-1):end), ".m"))
+  elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
     retval = true;
   else
     retval = false;
@@ -154,18 +155,8 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char")';
     fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(assert|error|fail|test|warning)', "lineanchors"));
-  else
-    error ("fopen failed: %s", f);
-  endif
-endfunction
-
-function retval = has_demos (f)
-  fid = fopen (f);
-  if (fid >= 0)
-    str = fread (fid, "*char")';
-    fclose (fid);
-    retval = ! isempty (regexp (str, '^%!demo', "lineanchors"));
+    retval = ! isempty (regexp (str, '^%!(assert|error|fail|test|warning)',
+                                     'lineanchors', 'once'));
   else
     error ("fopen failed: %s", f);
   endif
@@ -179,9 +170,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   for i = 1:length (lst)
     nm = lst(i).name;
     if (lst(i).isdir
-        && ! strcmp (nm, ".") && ! strcmp (nm, "..")
-        && ! strcmp (nm, "private") && nm(1) != "@"
-        && ! strcmp (nm, "CVS"))
+        && nm(1) != "." && ! strcmp (nm, "private") && nm(1) != "@")
       [p, n, xf, sk] = run_test_dir (fid, [d, filesep, nm]);
       dp += p;
       dn += n;
@@ -194,7 +183,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
     chdir (d);
     for i = 1:length (lst)
       nm = lst(i).name;
-      if (length (nm) > 4 && strcmp (nm((end-3):end), ".tst"))
+      if (length (nm) > 4 && strcmpi (nm((end-3):end), ".tst"))
         p = n = xf = sk = 0;
         ffnm = fullfile (d, nm);
         if (has_tests (ffnm))
@@ -202,8 +191,6 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
           [p, n, xf, sk] = test (nm, "quiet", fid);
           print_pass_fail (n, p);
           files_with_tests(end+1) = ffnm;
-        ##elseif (has_demos (ffnm))
-        ##  files_with_tests(end+1) = ffnm;
         else
           files_with_no_tests(end+1) = ffnm;
         endif
@@ -227,8 +214,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
     nm = lst(i).name;
-    if (lst(i).isdir && ! strcmp (nm, ".") && ! strcmp (nm, "..")
-        && ! strcmp (nm, "CVS"))
+    if (lst(i).isdir && nm(1) != ".")
       [p, n, xf, sk] = run_test_script (fid, [d, filesep, nm]);
       dp += p;
       dn += n;
@@ -243,12 +229,12 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
       continue
     endif
     f = fullfile (d, nm);
-    if ((length (nm) > 2 && strcmp (nm((end-1):end), ".m"))
+    if ((length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
         || (length (nm) > 4
-            && (strcmp (nm((end-3):end), "-tst")
-                || strcmp (nm((end-3):end), ".tst"))))
+            && (   strcmpi (nm((end-3):end), "-tst")
+                || strcmpi (nm((end-3):end), ".tst"))))
       p = n = xf = 0;
-      ## Only run if it contains %!test, %!assert %!error or %!warning
+      ## Only run if it contains %!test, %!assert, %!error, %!fail, or %!warning
       if (has_tests (f))
         tmp = strrep (f, [topsrcdir, filesep], "");
         tmp = strrep (tmp, [topbuilddir, filesep], "");
@@ -260,8 +246,6 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         dxf += xf;
         dsk += sk;
         files_with_tests(end+1) = f;
-      ##elseif (has_demos (f))
-      ##  files_with_tests(end+1) = f;
       else
         ## To reduce the list length, only mark .cc files that contain
         ## DEFUN definitions.
@@ -273,13 +257,14 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
 endfunction
 
 function n = num_elts_matching_pattern (lst, pat)
-  n = sum (cellfun (@(x) !isempty (x), regexp (lst, pat, 'once')));
+  n = sum (! cellfun ("isempty", regexp (lst, pat, 'once')));
 endfunction
 
 function report_files_with_no_tests (with, without, typ)
-  pat = cstrcat ('\', typ, "$");
+  pat = ['\' typ "$"];
   n_with = num_elts_matching_pattern (with, pat);
   n_without = num_elts_matching_pattern (without, pat);
   n_tot = n_with + n_without;
   printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
 endfunction
+

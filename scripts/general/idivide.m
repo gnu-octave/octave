@@ -28,25 +28,25 @@
 ## a string with one of the values:
 ##
 ## @table @asis
-## @item "fix"
+## @item @qcode{"fix"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards zero.
 ##
-## @item "round"
+## @item @qcode{"round"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards the nearest integer.
 ##
-## @item "floor"
+## @item @qcode{"floor"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards negative infinity.
 ##
-## @item "ceil"
+## @item @qcode{"ceil"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards positive infinity.
 ## @end table
 ##
 ## @noindent
-## If @var{op} is not given it defaults to @code{"fix"}.
+## If @var{op} is not given it defaults to @qcode{"fix"}.
 ## An example demonstrating these rounding rules is
 ##
 ## @example

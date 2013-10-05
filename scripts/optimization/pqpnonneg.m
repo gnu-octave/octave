@@ -48,9 +48,9 @@
 ## A structure with two fields:
 ##
 ## @itemize @bullet
-## @item "algorithm": The algorithm used ("nnls")
+## @item @qcode{"algorithm"}: The algorithm used (@qcode{"nnls"})
 ##
-## @item "iterations": The number of iterations taken.
+## @item @qcode{"iterations"}: The number of iterations taken.
 ## @end itemize
 ##
 ## @item lambda
@@ -72,7 +72,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
 
   if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
     x = optimset ("MaxIter", 1e5);
-    return
+    return;
   endif
 
   if (! (nargin >= 2 && nargin <= 4 && ismatrix (c) && ismatrix (d) && isstruct (options)))

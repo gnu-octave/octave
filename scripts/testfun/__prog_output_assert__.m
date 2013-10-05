@@ -32,3 +32,4 @@ function ret = __prog_output_assert__ (str)
   endif
   _assert_printf = "";
 endfunction
+

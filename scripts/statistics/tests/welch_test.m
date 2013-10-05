@@ -25,11 +25,11 @@
 ## Student distribution with @var{df} degrees of freedom.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @code{">"}, the
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @qcode{">"}, the
 ## one-sided alternative mean(x) > @var{m} is considered.  Similarly for
-## @code{"<"}, the one-sided alternative mean(x) < @var{m} is
+## @qcode{"<"}, the one-sided alternative mean(x) < @var{m} is
 ## considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
@@ -83,3 +83,4 @@ function [pval, t, df] = welch_test (x, y, alt)
   endif
 
 endfunction
+

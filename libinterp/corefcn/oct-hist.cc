@@ -328,10 +328,8 @@ edit_history_add_hist (const std::string& line)
         tmp.resize (len - 1);
 
       if (! tmp.empty ())
-        {
-          command_history::add (tmp);
+        if (command_history::add (tmp))
           octave_link::append_history (tmp);
-        }
     }
 }
 
@@ -580,10 +578,8 @@ octave_history_write_timestamp (void)
   std::string timestamp = now.strftime (Vhistory_timestamp_format_string);
 
   if (! timestamp.empty ())
-    {
-      command_history::add (timestamp); 
+    if (command_history::add (timestamp))
       octave_link::append_history (timestamp);
-   }
 }
 
 DEFUN (edit_history, args, ,
@@ -759,12 +755,13 @@ the history list, subject to the value of @code{history_save}.\n\
 @seealso{history_file, history_size, history_timestamp_format_string, history_save}\n\
 @end deftypefn")
 {
+  octave_value retval;
+
   std::string old_history_control = command_history::histcontrol ();
 
   std::string tmp = old_history_control;
 
-  octave_value retval = set_internal_variable (tmp, args, nargout,
-                                               "history_control");
+  retval = set_internal_variable (tmp, args, nargout, "history_control");
 
   if (tmp != old_history_control)
     command_history::process_histcontrol (tmp);
@@ -782,13 +779,15 @@ but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 @seealso{history_file, history_timestamp_format_string, history_save}\n\
 @end deftypefn")
 {
+  octave_value retval;
+
   int old_history_size = command_history::size ();
 
   int tmp = old_history_size;
 
-  octave_value retval = set_internal_variable (tmp, args, nargout,
-                                               "history_size", -1,
-                                               std::numeric_limits<int>::max ());
+  retval = set_internal_variable (tmp, args, nargout,
+                                  "history_size", -1,
+                                  std::numeric_limits<int>::max ());
 
   if (tmp != old_history_size)
     command_history::set_size (tmp);
@@ -807,12 +806,13 @@ variable @w{@env{OCTAVE_HISTFILE}}.\n\
 @seealso{history_size, history_save, history_timestamp_format_string}\n\
 @end deftypefn")
 {
+  octave_value retval;
+
   std::string old_history_file = command_history::file ();
 
   std::string tmp = old_history_file;
 
-  octave_value retval = set_internal_variable (tmp, args, nargout,
-                                               "history_file");
+  retval = set_internal_variable (tmp, args, nargout, "history_file");
 
   if (tmp != old_history_file)
     command_history::set_file (tmp);
@@ -834,9 +834,9 @@ value is\n\
 \"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end example\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{strftime, history_file, history_size, history_save}\n\
 @end deftypefn")
 {
@@ -851,18 +851,19 @@ DEFUN (history_save, args, nargout,
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
 @end deftypefn")
 {
+  octave_value retval;
+
   bool old_history_save = ! command_history::ignoring_entries ();
 
   bool tmp = old_history_save;
 
-  octave_value retval = set_internal_variable (tmp, args, nargout,
-                                               "history_save");
+  retval = set_internal_variable (tmp, args, nargout, "history_save");
 
   if (tmp != old_history_save)
     command_history::ignore_entries (! tmp);

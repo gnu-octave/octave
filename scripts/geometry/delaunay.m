@@ -18,12 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} delaunay (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{tri} =} delaunay (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{tri} =} delaunay (@var{x}, @var{y}, @var{options})
+## @deftypefnx {Function File} {} delaunay (@var{x})
+## @deftypefnx {Function File} {} delaunay (@dots{}, @var{options})
+## @deftypefnx {Function File} {@var{tri} =} delaunay (@dots{})
 ## Compute the Delaunay triangulation for a 2-D set of points.
 ## The return value @var{tri} is a set of triangles which satisfies the
 ## Delaunay circum-circle criterion, i.e., only a single data point from
 ## [@var{x}, @var{y}] is within the circum-circle of the defining triangle.
+## The input @var{x} may also be a matrix with two columns where the first
+## column contains x-data and the second y-data.
 ##
 ## The set of triangles @var{tri} is a matrix of size [n, 3].  Each
 ## row defines a triangle and the three columns are the three vertices
@@ -31,7 +34,7 @@
 ## @var{x} and @var{y} for the location of the j-th vertex of the i-th
 ## triangle.
 ##
-## An optional third argument, which must be a string or cell array of strings,
+## The optional last argument, which must be a string or cell array of strings,
 ## contains options passed to the underlying qhull command.
 ## See the documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
@@ -61,24 +64,56 @@
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function tri = delaunay (x, y, options)
+function tri = delaunay (varargin)
 
-  if (nargin != 2 && nargin != 3)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (! (isvector (x) && isvector (y) && length (x) == length (y))
-      && ! size_equal (x, y))
+  options = [];
+
+  switch (nargin)
+
+    case 1
+      if (! ismatrix (varargin{1}) || columns (varargin{1}) != 2)
+          error ("delaunay: X must be a matrix with 2 columns");
+      else
+        x = varargin{1}(:,1);
+        y = varargin{1}(:,2);
+      endif
+    
+    case 2
+      if (isnumeric (varargin{2}))
+        x = varargin{1};
+        y = varargin{2};
+      elseif (ischar (varargin{2}) || iscellstr (varargin{2}))
+        options = varargin{2};
+        if (! ismatrix (varargin{1}) && columns (varargin{1}) != 2)
+            error ("delaunay: X must be a matrix with 2 columns");
+        else
+          x = varargin{1}(:,1);
+          y = varargin{1}(:,2);
+        endif
+      else
+        error ("delaunay: OPTIONS must be a string or cell array of strings");
+      endif
+
+    case 3
+      x = varargin{1};
+      y = varargin{2};
+      options = varargin{3};
+
+      if (! (ischar (options) || iscellstr (options)))
+        error ("delaunay: OPTIONS must be a string or cell array of strings");
+      endif
+
+  endswitch
+
+  if (! (isequal(size(x),size(y))))
     error ("delaunay: X and Y must be the same size");
-  elseif (nargin == 3 && ! (ischar (options) || iscellstr (options)))
-    error ("delaunay: OPTIONS must be a string or cell array of strings");
   endif
 
-  if (nargin == 2)
-    T = delaunayn ([x(:), y(:)]);
-  else
-    T = delaunayn ([x(:), y(:)], options);
-  endif
+  T = delaunayn ([x(:), y(:)], options);
 
   if (nargout == 0)
     x = x(:).';
@@ -112,9 +147,23 @@ endfunction
 %! assert (sortrows (sort (delaunay (x, y), 2)), [1,2,4;2,3,4]);
 
 %!testif HAVE_QHULL
+%! x = [-1, 0, 1, 0];
+%! y = [0, 1, 0, -1];
+%! assert (sortrows (sort (delaunay ([x(:) y(:)]), 2)), [1,2,4;2,3,4]);
+
+%!testif HAVE_QHULL
 %! x = [-1, 0, 1, 0, 0];
 %! y = [0, 1, 0, -1, 0];
 %! assert (sortrows (sort (delaunay (x, y), 2)), [1,2,5;1,4,5;2,3,5;3,4,5]);
+
+%!testif HAVE_QHULL
+%! x = [-1, 0; 0, 1; 1, 0; 0, -1; 0, 0];
+%! assert (sortrows (sort (delaunay (x), 2)), [1,2,5;1,4,5;2,3,5;3,4,5]);
+
+%!testif HAVE_QHULL
+%! x = [1 5 2; 5 6 7];
+%! y = [5 7 8; 1 2 3];
+%! assert (sortrows (sort (delaunay (x, y), 2)), [1,2,4;1,3,4;1,3,5;3,4,6]);
 
 %% FIXME: Need input validation tests
 

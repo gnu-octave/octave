@@ -4,7 +4,9 @@ EXTRA_DIST += \
   corefcn/gl2ps.c \
   corefcn/graphics.in.h \
   corefcn/mxarray.in.h \
-  corefcn/oct-errno.in.cc
+  corefcn/oct-errno.in.cc \
+  corefcn/oct-tex-lexer.in.ll \
+  corefcn/oct-tex-symbols.in
 
 ## Options functions for Fortran packages like LSODE, DASPK.
 ## These are generated automagically by configure and Perl.
@@ -26,6 +28,8 @@ $(OPT_HANDLERS): corefcn/%.cc : $(top_builddir)/liboctave/numeric/%.in
 	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
 	mv $@-t $@
 
+$(OPT_HANDLERS): $(top_srcdir)/build-aux/mk-opts.pl
+
 $(OPT_INC) : %.h : %.in
 	$(MAKE) -C $(top_builddir)/liboctave/numeric $(@F)
 
@@ -35,9 +39,11 @@ JIT_INC = \
   corefcn/jit-ir.h \
   corefcn/pt-jit.h
 
+TEX_PARSER_INC = \
+  corefcn/oct-tex-parser.h
+
 COREFCN_INC = \
   corefcn/Cell.h \
-  corefcn/action-container.h \
   corefcn/c-file-ptr-stream.h \
   corefcn/comment-list.h \
   corefcn/cutils.h \
@@ -74,6 +80,7 @@ COREFCN_INC = \
   corefcn/mxarray.in.h \
   corefcn/oct-errno.h \
   corefcn/oct-fstrm.h \
+  corefcn/oct-handle.h \
   corefcn/oct-hdf5.h \
   corefcn/oct-hist.h \
   corefcn/oct-iostrm.h \
@@ -100,7 +107,6 @@ COREFCN_INC = \
   corefcn/toplev.h \
   corefcn/txt-eng-ft.h \
   corefcn/txt-eng.h \
-  corefcn/unwind-prot.h \
   corefcn/utils.h \
   corefcn/variables.h \
   corefcn/workspace-element.h \
@@ -108,13 +114,18 @@ COREFCN_INC = \
   corefcn/xnorm.h \
   corefcn/xpow.h \
   corefcn/zfstream.h \
-  $(JIT_INC)
+  $(JIT_INC) \
+  $(TEX_PARSER_INC)
 
 JIT_SRC = \
   corefcn/jit-util.cc \
   corefcn/jit-typeinfo.cc \
   corefcn/jit-ir.cc \
   corefcn/pt-jit.cc
+
+TEX_PARSER_SRC = \
+  corefcn/oct-tex-lexer.ll \
+  corefcn/oct-tex-parser.yy
 
 C_COREFCN_SRC = \
   corefcn/cutils.c \
@@ -240,9 +251,10 @@ COREFCN_SRC = \
   corefcn/time.cc \
   corefcn/toplev.cc \
   corefcn/tril.cc \
+  corefcn/txt-eng.cc \
   corefcn/txt-eng-ft.cc \
   corefcn/typecast.cc \
-  corefcn/unwind-prot.cc \
+  corefcn/urlwrite.cc \
   corefcn/utils.cc \
   corefcn/variables.cc \
   corefcn/xdiv.cc \
@@ -290,8 +302,28 @@ corefcn/mxarray.h: corefcn/mxarray.in.h Makefile
 	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
 	mv $@-t $@
 
-noinst_LTLIBRARIES += corefcn/libcorefcn.la
+corefcn/oct-tex-lexer.ll: corefcn/oct-tex-lexer.in.ll corefcn/oct-tex-symbols.in Makefile.am
+	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/corefcn/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t
+	mv $@-t $@
+
+corefcn/oct-tex-symbols.cc: corefcn/oct-tex-symbols.in Makefile.am
+	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } /^#/ { } { if (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; } }' $< > $@-t
+	mv $@-t $@
+
+corefcn/txt-eng.cc: corefcn/oct-tex-symbols.cc
+corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
+corefcn/oct-tex-parser.h: corefcn/oct-tex-parser.yy
+
+
+noinst_LTLIBRARIES += \
+  corefcn/libcorefcn.la \
+  corefcn/libtex_parser.la
 
 corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
 corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
+
+corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)
+corefcn_libtex_parser_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)
+corefcn_libtex_parser_la_CXXFLAGS = \
+  $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
 

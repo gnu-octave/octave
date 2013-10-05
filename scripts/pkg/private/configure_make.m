@@ -37,25 +37,34 @@ function configure_make (desc, packdir, verbose)
             "INSTALLDIR"; desc.dir};
     scenv = sprintf ("%s=\"%s\" ", cenv{:});
 
+    if (! exist (mkoctfile_program, "file"))
+      __gripe_missing_component__ ("pkg", "mkoctfile");
+    endif
+    if (! exist (octave_config_program, "file"))
+      __gripe_missing_component__ ("pkg", "octave-config");
+    endif
+    if (! exist (octave_binary, "file"))
+      __gripe_missing_component__ ("pkg", "octave");
+    endif
+
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))
       flags = "";
       if (isempty (getenv ("CC")))
-        flags = cstrcat (flags, " CC=\"", mkoctfile ("-p", "CC"), "\"");
+        flags = [flags ' CC="' mkoctfile("-p", "CC") '"'];
       endif
       if (isempty (getenv ("CXX")))
-        flags = cstrcat (flags, " CXX=\"", mkoctfile ("-p", "CXX"), "\"");
+        flags = [flags ' CXX="' mkoctfile("-p", "CXX") '"'];
       endif
       if (isempty (getenv ("AR")))
-        flags = cstrcat (flags, " AR=\"", mkoctfile ("-p", "AR"), "\"");
+        flags = [flags ' AR="' mkoctfile("-p", "AR") '"'];
       endif
       if (isempty (getenv ("RANLIB")))
-        flags = cstrcat (flags, " RANLIB=\"", mkoctfile ("-p", "RANLIB"), "\"");
+        flags = [flags ' RANLIB="' mkoctfile("-p", "RANLIB") '"'];
       endif
-      [status, output] = shell (cstrcat ("cd '", src, "'; ", scenv,
-                                         "./configure --prefix=\"",
-                                         desc.dir, "\"", flags),
-                                verbose);
+      cmd = ["cd '" src "'; " ...
+             scenv "./configure --prefix=\"" desc.dir "\"" flags];
+      [status, output] = shell (cmd, verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);
@@ -65,8 +74,7 @@ function configure_make (desc, packdir, verbose)
 
     ## Make.
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell (cstrcat (scenv, "make -C '", src, "'"),
-                                verbose);
+      [status, output] = shell ([scenv "make -C '" src "'"], verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);

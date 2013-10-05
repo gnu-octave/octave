@@ -386,9 +386,9 @@ tril (ones (3), 1)\n\
 @end group\n\
 @end example\n\
 \n\
-If the option \"pack\" is given as third argument, the extracted elements\n\
-are not inserted into a matrix, but rather stacked column-wise one above\n\
-other.\n\
+If the option @qcode{\"pack\"} is given as third argument, the extracted\n\
+elements are not inserted into a matrix, but rather stacked column-wise one\n\
+above other.\n\
 @seealso{diag}\n\
 @end deftypefn")
 {

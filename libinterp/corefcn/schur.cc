@@ -107,7 +107,8 @@ $2 \\times 2$\n\
 blocks, when appropriate) are the eigenvalues of @var{A} and @var{S}.\n\
 \n\
 The default for real matrices is a real Schur@tie{}decomposition.\n\
-A complex decomposition may be forced by passing the flag \"complex\".\n\
+A complex decomposition may be forced by passing the flag\n\
+@qcode{\"complex\"}.\n\
 \n\
 The eigenvalues are optionally ordered along the diagonal according to\n\
 the value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all\n\
@@ -123,7 +124,7 @@ subspace corresponding to the @var{k} leading eigenvalues of @var{S}.\n\
 The Schur@tie{}decomposition is used to compute eigenvalues of a\n\
 square matrix, and has applications in the solution of algebraic\n\
 Riccati equations in control (see @code{are} and @code{dare}).\n\
-@seealso{rsf2csf}\n\
+@seealso{rsf2csf, lu, chol, hess, qr, qz, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -305,7 +306,7 @@ $UR \\cdot TR \\cdot {UR}^T = U T U^{\\dagger}$ and\n\
 $U^{\\dagger} U$ is the identity matrix I.\n\
 @end tex\n\
 @ifnottex\n\
-@xcode{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
+@tcode{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
 @code{@var{U}' * @var{U}} is the identity matrix I.\n\
 @end ifnottex\n\
 \n\

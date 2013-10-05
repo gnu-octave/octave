@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include <fcntl.h>
 #include <getopt.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -126,6 +127,10 @@ static bool verbose_flag = false;
 // (--force-gui)
 static bool force_gui_option = false;
 
+// If TRUE don't fork when starting the GUI.
+// (--no-fork)
+static bool no_fork_option = false;
+
 // If TRUE don't start the GUI.
 // (--no-gui)
 static bool no_gui_option = false;
@@ -160,7 +165,7 @@ static const char *usage_string =
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
        [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--line-editing] [--no-gui] [--no-history]\n\
+       [--line-editing] [--no-fork] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-jit-compiler]\n\
        [--no-line-editing] [--no-site-file] [--no-window-system]\n\
        [--norc] [-p path] [--path path] [--persist] [--silent]\n\
@@ -195,15 +200,16 @@ static bool traditional = false;
 #define INFO_PROG_OPTION 8
 #define DEBUG_JIT_OPTION 9
 #define LINE_EDITING_OPTION 10
-#define NO_GUI_OPTION 11
-#define NO_INIT_FILE_OPTION 12
-#define NO_INIT_PATH_OPTION 13
-#define NO_JIT_COMPILER_OPTION 14
-#define NO_LINE_EDITING_OPTION 15
-#define NO_SITE_FILE_OPTION 16
-#define PERSIST_OPTION 17
-#define TEXI_MACROS_FILE_OPTION 18
-#define TRADITIONAL_OPTION 19
+#define NO_FORK_OPTION 11
+#define NO_GUI_OPTION 12
+#define NO_INIT_FILE_OPTION 13
+#define NO_INIT_PATH_OPTION 14
+#define NO_JIT_COMPILER_OPTION 15
+#define NO_LINE_EDITING_OPTION 16
+#define NO_SITE_FILE_OPTION 17
+#define PERSIST_OPTION 18
+#define TEXI_MACROS_FILE_OPTION 19
+#define TRADITIONAL_OPTION 20
 struct option long_opts[] = {
   { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
   { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
@@ -220,6 +226,7 @@ struct option long_opts[] = {
   { "info-program",             required_argument, 0, INFO_PROG_OPTION },
   { "interactive",              no_argument,       0, 'i' },
   { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
+  { "no-fork",                  no_argument,       0, NO_FORK_OPTION },
   { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
   { "no-history",               no_argument,       0, 'H' },
   { "no-init-file",             no_argument,       0, NO_INIT_FILE_OPTION },
@@ -517,7 +524,8 @@ execute_command_line_file (const std::string& fname)
 static void
 verbose_usage (void)
 {
-  std::cout << OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY "\n\
+  std::cout << octave_name_version_copyright_copying_and_warranty ()
+            << "\n\
 \n\
 Usage: octave [options] [FILE]\n\
 \n\
@@ -537,6 +545,7 @@ Options:\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
   --line-editing          Force readline use for command-line editing.\n\
+  --no-fork               Don't fork when starting the graphical user interface.\n\
   --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
@@ -557,11 +566,12 @@ Options:\n\
   FILE                    Execute commands from FILE.  Exit when done\n\
                           unless --persist is also specified.\n\
 \n"
-OCTAVE_WWW_STATEMENT "\n\
-\n"
-OCTAVE_CONTRIB_STATEMENT "\n\
-\n"
-OCTAVE_BUGS_STATEMENT "\n";
+            << octave_www_statement ()
+            << "\n\n"
+            << octave_contrib_statement ()
+            << "\n\n"
+            << octave_bugs_statement ()
+            << "\n";
 
   exit (0);
 }
@@ -578,7 +588,8 @@ usage (void)
 static void
 print_version_and_exit (void)
 {
-  std::cout << OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS "\n";
+  std::cout << octave_name_version_copyright_copying_warranty_and_bugs ()
+            << "\n";
   exit (0);
 }
 
@@ -785,6 +796,10 @@ octave_process_command_line (int argc, char **argv)
           forced_line_editing = true;
           break;
 
+        case NO_FORK_OPTION:
+          no_fork_option = true;
+          break;
+
         case NO_GUI_OPTION:
           no_gui_option = true;
           break;
@@ -944,7 +959,7 @@ int
 octave_execute_interpreter (void)
 {
   if (! inhibit_startup_message)
-    std::cout << OCTAVE_STARTUP_MESSAGE "\n" << std::endl;
+    std::cout << octave_startup_message () << "\n" << std::endl;
 
   execute_startup_files ();
 
@@ -1069,6 +1084,26 @@ octave_starting_gui (void)
 {
   start_gui = check_starting_gui ();
   return start_gui;
+}
+
+int
+octave_fork_gui (void)
+{
+  bool have_ctty = false;
+
+#if ! (defined (__WIN32__) || defined (__APPLE__)) || defined (__CYGWIN__)
+
+#if defined (HAVE_CTERMID)
+  const char *ctty = ctermid (0);
+#else
+  const char *ctty = "/dev/tty";
+#endif
+
+  have_ctty = gnulib::open (ctty, O_RDWR, 0) > 0;
+
+#endif
+
+  return (have_ctty && ! no_fork_option);
 }
 
 DEFUN (isguirunning, args, ,

@@ -63,18 +63,18 @@ Factorize @var{S}.  This is the default.\n\
 Factorize @code{@var{S}' * @var{S}}.\n\
 \n\
 @item row\n\
-Factorize @xcode{@var{S} * @var{S}'}.\n\
+Factorize @tcode{@var{S} * @var{S}'}.\n\
 \n\
 @item lo\n\
-Factorize @xcode{@var{S}'}\n\
+Factorize @tcode{@var{S}'}\n\
 @end table\n\
 \n\
 @item mode\n\
 The default is to return the Cholesky@tie{}factorization for @var{r}, and if\n\
-@var{mode} is 'L', the conjugate transpose of the Cholesky@tie{}factorization\n\
-is returned.  The conjugate transpose version is faster and uses less\n\
-memory, but returns the same values for @var{count}, @var{h}, @var{parent}\n\
-and @var{post} outputs.\n\
+@var{mode} is @qcode{'L'}, the conjugate transpose of the\n\
+Cholesky@tie{}factorization is returned.  The conjugate transpose version is\n\
+faster and uses less memory, but returns the same values for @var{count},\n\
+@var{h}, @var{parent} and @var{post} outputs.\n\
 @end table\n\
 \n\
 The output variables are\n\

@@ -33,6 +33,9 @@
 ## 
 ## If no size arguments are given then the result matrix is the size of
 ## @var{p}.
+##
+## The geometric distribution models the number of failures (@var{x}-1) of a
+## Bernoulli trial with probability @var{p} before the first success (@var{x}).
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

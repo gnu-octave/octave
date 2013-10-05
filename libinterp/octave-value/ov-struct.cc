@@ -2285,9 +2285,9 @@ DEFUN (struct_levels_to_print, args, nargout,
 Query or set the internal variable that specifies the number of\n\
 structure levels to display.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print, -1,
@@ -2305,9 +2305,9 @@ This variable does not affect scalar structures.  Their elements\n\
 are always printed.  In both cases, however, printing will be limited to\n\
 the number of levels specified by @var{struct_levels_to_print}.\n\
 \n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);

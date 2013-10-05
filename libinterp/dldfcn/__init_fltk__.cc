@@ -255,7 +255,7 @@ private:
 };
 
 // Parameter controlling how fast we zoom when using the scrool wheel.
-static double wheel_zoom_speed = 0.05;
+static double Vwheel_zoom_speed = 0.05;
 // Parameter controlling the GUI mode.
 static enum { pan_zoom, rotate_zoom, none } gui_mode;
 
@@ -662,10 +662,10 @@ class plot_window : public Fl_Window
   friend class fltk_uimenu;
 public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
-    : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
-      ndim (2), fp (xfp), canvas (0), autoscale (0), togglegrid (0),
-      panzoom (0), rotate (0), help (0), status (0),
-      ax_obj (), pos_x (0), pos_y (0)
+    : Fl_Window (xx, yy - menu_h, ww, hh + menu_h + status_h, "octave"),
+      window_label (), shift (0), ndim (2), fp (xfp), canvas (0),
+      autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0),
+      status (0), ax_obj (), pos_x (0), pos_y (0)
   {
     callback (window_close, static_cast<void*> (this));
     size_range (4*status_h, 2*status_h);
@@ -680,32 +680,38 @@ public:
 
     begin ();
     {
+      // bbox of plot canvas = [xx, yy, ww, hh];
+      // (xx, yy) = UL coordinate relative to UL window.
 
-      canvas = new OpenGL_fltk (0, 0, ww, hh - status_h, number ());
+      canvas = new OpenGL_fltk (0, menu_h, ww, hh, number ());
 
       uimenu = new fltk_uimenu (0, 0, ww, menu_h);
       uimenu->hide ();
 
-      bottom = new Fl_Box (0, hh - status_h, ww, status_h);
+      // Toolbar is a composite of "bottom", "autoscale", "togglegrid",
+      // "panzoom", "rotate", "help", and "status".
+
+      yy = hh + menu_h;
+      bottom = new Fl_Box (0, yy, ww, status_h);
       bottom->box (FL_FLAT_BOX);
 
       ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
 
-      autoscale = new Fl_Button (0, hh - status_h, status_h, status_h, "A");
+      autoscale = new Fl_Button (0, yy, status_h, status_h, "A");
       autoscale->callback (button_callback, static_cast<void*> (this));
       autoscale->tooltip ("Autoscale");
 
-      togglegrid = new Fl_Button (status_h, hh - status_h, status_h,
+      togglegrid = new Fl_Button (status_h, yy, status_h,
                                   status_h, "G");
       togglegrid->callback (button_callback, static_cast<void*> (this));
       togglegrid->tooltip ("Toggle Grid");
 
-      panzoom = new Fl_Button (2 * status_h, hh - status_h, status_h,
+      panzoom = new Fl_Button (2 * status_h, yy, status_h,
                                status_h, "P");
       panzoom->callback (button_callback, static_cast<void*> (this));
       panzoom->tooltip ("Mouse Pan/Zoom");
 
-      rotate = new Fl_Button (3 * status_h, hh - status_h, status_h,
+      rotate = new Fl_Button (3 * status_h, yy, status_h,
                               status_h, "R");
       rotate->callback (button_callback, static_cast<void*> (this));
       rotate->tooltip ("Mouse Rotate");
@@ -713,12 +719,12 @@ public:
       if (ndim == 2)
         rotate->deactivate ();
 
-      help = new Fl_Button (4 * status_h, hh - status_h, status_h,
+      help = new Fl_Button (4 * status_h, yy, status_h,
                             status_h, "?");
       help->callback (button_callback, static_cast<void*> (this));
       help->tooltip ("Help");
 
-      status = new Fl_Output (5 * status_h, hh - status_h,
+      status = new Fl_Output (5 * status_h, yy,
                               ww > 2*status_h ? ww - status_h : 0,
                               status_h, "");
 
@@ -799,10 +805,7 @@ public:
   {
     if (!uimenu->is_visible ())
       {
-        canvas->resize (canvas->x (),
-                        canvas->y () + menu_h,
-                        canvas->w (),
-                        canvas->h () - menu_h);
+        // FIXME - Toolbar and menubar do not update
         uimenu->show ();
         mark_modified ();
       }
@@ -812,10 +815,7 @@ public:
   {
     if (uimenu->is_visible ())
       {
-        canvas->resize (canvas->x (),
-                        canvas->y () - menu_h,
-                        canvas->w (),
-                        canvas->h () + menu_h);
+        // FIXME - Toolbar and menubar do not update
         uimenu->hide ();
         mark_modified ();
       }
@@ -1108,8 +1108,12 @@ private:
       {
         Matrix pos (1,2,0);
         pos(0) = px;
-        pos(1) = h () - status_h - menu_h - py;
+        pos(1) = h () - (py + status_h + menu_dy ());
         fp.set_currentpoint (pos);
+        graphics_object robj = gh_manager::get_object (fp.get_parent ());
+        root_figure::properties& rp =
+          dynamic_cast<root_figure::properties&> (robj.get_properties ());
+        rp.set_currentfigure (fp.get___myhandle__ ().value ());
       }
   }
 
@@ -1130,8 +1134,17 @@ private:
         pos(1,1) = yy;
 
         ap.set_currentpoint (pos);
+        fp.set_currentaxes (ap.get___myhandle__ ().value ());
       }
   }
+
+  int menu_dy ()
+    {
+      if (uimenu->is_visible ())
+        return menu_h;
+      else
+        return 0;
+    }
 
   int key2shift (int key)
   {
@@ -1181,17 +1194,35 @@ private:
 
     Matrix pos (1,4,0);
     pos(0) = xx;
-    pos(1) = yy;
+    pos(1) = yy + menu_dy ();
     pos(2) = ww;
-    pos(3) = hh - status_h - menu_h;
+    pos(3) = hh - menu_dy () - status_h;
 
     fp.set_boundingbox (pos, true);
   }
 
   void draw (void)
   {
+    // FIXME - Toolbar and menubar do not update properly
     Matrix pos = fp.get_boundingbox (true);
-    Fl_Window::resize (pos(0), pos(1), pos(2), pos(3) + status_h + menu_h);
+    int canvas_h = pos(3);
+    int canvas_w = pos(2);
+    int canvas_y = menu_dy ();
+    int toolbar_y = menu_dy () + canvas_h;
+    pos(1) = pos(1) - menu_dy ();
+    pos(3) = pos(3) + menu_dy () + status_h;
+
+    Fl_Window::resize (pos(0), pos(1), pos(2), pos(3));
+
+    bottom->resize (0, toolbar_y, status_h, status_h);
+    autoscale->resize (0, toolbar_y, status_h, status_h);
+    togglegrid->resize (status_h, toolbar_y, status_h, status_h);
+    panzoom->resize (2 * status_h, toolbar_y, status_h, status_h);
+    rotate->resize (3 * status_h, toolbar_y, status_h, status_h);
+    help->resize (4 * status_h, toolbar_y, status_h, status_h);
+    status->resize (5 * status_h, toolbar_y, pos(2) - 4 * status_h, status_h);
+    if (canvas->valid ())
+      canvas->resize (0, canvas_y, canvas_w, canvas_h);
 
     return Fl_Window::draw ();
   }
@@ -1268,15 +1299,15 @@ private:
             break;
 
           case FL_MOVE:
-            pixel2status (pixel2axes_or_ca (Fl::event_x (), Fl::event_y ()),
-                          Fl::event_x (), Fl::event_y ());
+            pixel2status (pixel2axes_or_ca (Fl::event_x (), Fl::event_y () - menu_dy ()),
+                          Fl::event_x (), Fl::event_y () - menu_dy ());
             break;
 
           case FL_PUSH:
             pos_x = Fl::event_x ();
-            pos_y = Fl::event_y ();
+            pos_y = Fl::event_y () - menu_dy ();
 
-            set_currentpoint (Fl::event_x (), Fl::event_y ());
+            set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
 
             gh = pixel2axes_or_ca (pos_x, pos_y);
 
@@ -1296,7 +1327,7 @@ private:
           case FL_DRAG:
             if (fp.get_windowbuttonmotionfcn ().is_defined ())
               {
-                set_currentpoint (Fl::event_x (), Fl::event_y ());
+                set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                 fp.execute_windowbuttonmotionfcn ();
               }
 
@@ -1306,7 +1337,7 @@ private:
                   {
                     if (gui_mode == pan_zoom)
                       pixel2status (ax_obj, pos_x, pos_y,
-                                    Fl::event_x (), Fl::event_y ());
+                                    Fl::event_x (), Fl::event_y () - menu_dy ());
                     else
                       view2status (ax_obj);
                     axes::properties& ap =
@@ -1315,7 +1346,7 @@ private:
                     double x0, y0, x1, y1;
                     Matrix pos = fp.get_boundingbox (true);
                     pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
-                    pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
+                    pixel2pos (ax_obj, Fl::event_x (), Fl::event_y () - menu_dy (), x1, y1);
 
                     if (gui_mode == pan_zoom)
                       ap.translate_view (x0, x1, y0, y1);
@@ -1323,12 +1354,12 @@ private:
                       {
                         double daz, del;
                         daz = (Fl::event_x () - pos_x) / pos(2) * 360;
-                        del = (Fl::event_y () - pos_y) / pos(3) * 360;
+                        del = (Fl::event_y () - menu_dy () - pos_y) / pos(3) * 360;
                         ap.rotate_view (del, daz);
                       }
 
                     pos_x = Fl::event_x ();
-                    pos_y = Fl::event_y ();
+                    pos_y = Fl::event_y () - menu_dy ();
                     mark_modified ();
                   }
                 return 1;
@@ -1336,12 +1367,12 @@ private:
             else if (Fl::event_button () == 3)
               {
                 pixel2status (ax_obj, pos_x, pos_y,
-                              Fl::event_x (), Fl::event_y ());
+                              Fl::event_x (), Fl::event_y () - menu_dy ());
                 Matrix zoom_box (1,4,0);
                 zoom_box (0) = pos_x;
                 zoom_box (1) = pos_y;
                 zoom_box (2) =  Fl::event_x ();
-                zoom_box (3) =  Fl::event_y ();
+                zoom_box (3) =  Fl::event_y () - menu_dy ();
                 canvas->set_zoom_box (zoom_box);
                 canvas->zoom (true);
                 canvas->redraw ();
@@ -1353,7 +1384,7 @@ private:
             {
               graphics_object ax =
                 gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (),
-                                                          Fl::event_y ()));
+                                                          Fl::event_y () - menu_dy ()));
               if (ax && ax.isa ("axes"))
                 {
                   axes::properties& ap =
@@ -1361,11 +1392,12 @@ private:
 
                   // Determine if we're zooming in or out.
                   const double factor =
-                    (Fl::event_dy () > 0) ? 1.0 + wheel_zoom_speed : 1.0 - wheel_zoom_speed;
+                    (Fl::event_dy () > 0) ? 1 / (1.0 - Vwheel_zoom_speed)
+                                          : 1.0 - Vwheel_zoom_speed;
 
                   // Get the point we're zooming about.
                   double x1, y1;
-                  pixel2pos (ax, Fl::event_x (), Fl::event_y (), x1, y1);
+                  pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (), x1, y1);
 
                   ap.zoom_about_point (x1, y1, factor, false);
                   mark_modified ();
@@ -1376,7 +1408,7 @@ private:
           case FL_RELEASE:
             if (fp.get_windowbuttonupfcn ().is_defined ())
               {
-                set_currentpoint (Fl::event_x (), Fl::event_y ());
+                set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
                 fp.execute_windowbuttonupfcn ();
               }
 
@@ -1408,7 +1440,7 @@ private:
                           dynamic_cast<axes::properties&> (ax_obj.get_properties ());
                         pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
                         int pos_x1 = Fl::event_x ();
-                        int pos_y1 = Fl::event_y ();
+                        int pos_y1 = Fl::event_y () - menu_dy ();
                         pixel2pos (ax_obj, pos_x1, pos_y1, x1, y1);
                         Matrix xl (1,2,0);
                         Matrix yl (1,2,0);
@@ -1845,7 +1877,18 @@ public:
   bool is_valid (void) const { return true; }
 
   bool initialize (const graphics_object& go)
-    { return go.isa ("figure"); }
+  {
+    if (go.isa ("figure")
+        || go.isa ("uimenu"))
+      {
+        if (go.isa ("uimenu"))
+          update (go, uimenu::properties::ID_LABEL);
+
+        return true;
+      }
+
+    return false;
+  }
 
   void finalize (const graphics_object& go)
   {
@@ -2086,35 +2129,35 @@ Undocumented internal function.\n\
   return retval;
 }
 
-// FIXME -- This function should be abstracted and made potentially
+// FIXME: This function should be abstracted and made potentially
 // available to all graphics toolkits.  This suggests putting it in
 // graphics.cc as is done for drawnow() and having the master
 // mouse_wheel_zoom function call fltk_mouse_wheel_zoom.  The same
 // should be done for gui_mode and fltk_gui_mode.  For now (2011.01.30),
 // just changing function names and docstrings.
 
-DEFUN_DLD (mouse_wheel_zoom, args, ,
+DEFUN_DLD (mouse_wheel_zoom, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{speed} =} mouse_wheel_zoom ()\n\
-@deftypefnx {Built-in Function} {} mouse_wheel_zoom (@var{speed})\n\
+@deftypefn  {Loadable Function} {@var{val} =} mouse_wheel_zoom ()\n\
+@deftypefnx {Loadable Function} {@var{old_val} =} mouse_wheel_zoom (@var{new_val})\n\
+@deftypefnx {Loadable Function} {} mouse_wheel_zoom (@var{new_val}, \"local\")\n\
 Query or set the mouse wheel zoom factor.\n\
+\n\
+The zoom factor is a number in the range (0,1) which is the percentage of the\n\
+current axis limits that will be used when zooming.  For example, if the\n\
+current x-axis limits are [0, 50] and @code{mouse_wheel_zoom} is 0.4 (40%),\n\
+then a zoom operation will change the limits by 20.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
 \n\
 This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{gui_mode}\n\
 @end deftypefn")
 {
 #ifdef HAVE_FLTK
-  octave_value retval = wheel_zoom_speed;
-
-  if (args.length () == 1)
-    {
-      if (args(0).is_real_scalar ())
-        wheel_zoom_speed = args(0).double_value ();
-      else
-        error ("mouse_wheel_zoom: SPEED must be a real scalar");
-    }
-
-  return retval;
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS(wheel_zoom_speed, 0.0001, 0.9999);
 #else
   error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
   return octave_value ();
@@ -2129,13 +2172,13 @@ Query or set the GUI mode for the current graphics toolkit.\n\
 The @var{mode} argument can be one of the following strings:\n\
 \n\
 @table @asis\n\
-@item '2d'\n\
+@item @qcode{\"2d\"}\n\
 Allows panning and zooming of current axes.\n\
 \n\
-@item '3d'\n\
+@item @qcode{\"3d\"}\n\
 Allows rotating and zooming of current axes.\n\
 \n\
-@item 'none'\n\
+@item @qcode{\"none\"}\n\
 Mouse inputs have no effect.\n\
 @end table\n\
 \n\

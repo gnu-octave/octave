@@ -71,6 +71,8 @@ extern OCTINTERP_API sig_handler *octave_set_signal_handler (int, sig_handler *,
 
 extern OCTINTERP_API void install_signal_handlers (void);
 
+extern OCTINTERP_API void install_gui_driver_signal_handlers (pid_t pid);
+
 extern OCTINTERP_API void octave_signal_handler (void);
 
 extern OCTINTERP_API octave_interrupt_handler octave_catch_interrupts (void);

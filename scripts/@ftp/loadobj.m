@@ -21,8 +21,7 @@ function b = loadobj (a)
   if (isfield (b, "jobject"))
     b = rmfield (b, "jobject");
   endif
-  b.curlhandle = tmpnam ("ftp-");
-  __ftp__ (b.curlhandle, b.host, b.username, b.password);
+  b.curlhandle = __ftp__ (b.host, b.username, b.password);
   if (isfield (b, "dir"))
     if (! isempty (b.dir))
       __ftp_cwd__ (b.curlhandle, b.dir);
@@ -34,3 +33,4 @@ function b = loadobj (a)
     b = rmfield (b, "remotePwd");
   endif
 endfunction
+

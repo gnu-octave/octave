@@ -26,9 +26,10 @@
 ## Plot the Voronoi diagram of points @code{(@var{x}, @var{y})}.
 ## The Voronoi facets with points at infinity are not drawn.
 ## 
-## If "linespec" is given it is used to set the color and line style of the
-## plot.  If an axis graphics handle @var{hax} is supplied then the Voronoi
-## diagram is drawn on the specified axis rather than in a new figure.
+## If @qcode{"linespec"} is given it is used to set the color and line style
+## of the plot.  If an axis graphics handle @var{hax} is supplied then the
+## Voronoi diagram is drawn on the specified axis rather than in a new
+## figure.
 ##
 ## The @var{options} argument, which must be a string or cell array of strings,
 ## contains options passed to the underlying qhull command.
@@ -74,13 +75,13 @@ function [vx, vy] = voronoi (varargin)
 
   narg = 1;
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    handl = varargin{1};
-    if (! strcmp (get (handl, "type"), "axes"))
-      error ("voronoi: expecting first argument to be an axes object");
+    hax = varargin{1};
+    if (! isaxes (harg))
+      error ("imagesc: HAX argument must be an axes object");
     endif
     narg++;
   elseif (nargout < 2)
-    handl = gca ();
+    hax = gca ();
   endif
 
   if (nargin < 1 + narg || nargin > 3 + narg)
@@ -154,7 +155,7 @@ function [vx, vy] = voronoi (varargin)
   Vvy = reshape (p(edges, 2), size (edges));
 
   if (nargout < 2)
-    h = plot (handl, Vvx, Vvy, linespec{:}, x, y, '+');
+    h = plot (hax, Vvx, Vvy, linespec{:}, x, y, '+');
     lim = [xmin, xmax, ymin, ymax];
     axis (lim + 0.1 * [[-1, 1] * xdelta, [-1, 1] * ydelta]);
     if (nargout == 1)

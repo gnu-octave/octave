@@ -49,6 +49,9 @@ function C = bitcmp (A, k)
   if (isa (A, "double"))
     bmax = bitmax;
     amax = ceil (log2 (bmax));
+  elseif (isa (A, "single"))
+    bmax = bitmax ("single");
+    amax = ceil (log2 (bmax));
   else
     if (isa (A, "uint8"))
       amax = 8;
@@ -92,6 +95,13 @@ endfunction
 %! assert (bitcmp (A,Amax),bitor (bitshift (1,Amax-1), bitshift (1,Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (1,Amax-2));
 %! assert (bitcmp (A,Amax-2), 0);
+%!test
+%! Amax = 24;
+%! Bmax = bitmax ("single");
+%! A = bitshift (Bmax,-2);
+%! assert (bitcmp (A,Amax),bitor (bitshift (single (1),Amax-1), bitshift (single (1),Amax-2)));
+%! assert (bitcmp (A,Amax-1), bitshift (single (1),Amax-2));
+%! assert (bitcmp (A,Amax-2), single (0));
 %!test
 %! Amax = 8;
 %! Bmax = intmax ("uint8");

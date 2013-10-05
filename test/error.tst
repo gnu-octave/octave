@@ -18,7 +18,6 @@
 
 ## Test %!error usage
 
-%% test/octave.test/error/error-1.m
 %!function g ()
 %!  error ("foo");
 %!endfunction
@@ -27,7 +26,6 @@
 %!endfunction
 %!error <foo> f ()
 
-%% test/octave.test/error/error-2.m
 %!function g ()
 %!  error ("foo\n");
 %!endfunction
@@ -36,15 +34,12 @@
 %!endfunction
 %!error <foo> f ()
 
-%% test/octave.test/error/error-3.m
 %!error error ()
 
-%% test/octave.test/error/error-4.m
 %!error <foo> error ("foo\n")
 
 ## Test %!warning usage
 
-%% test/octave.test/error/warning-1.m
 %!function g ()
 %!  warning ("foo");
 %!endfunction
@@ -53,7 +48,6 @@
 %!endfunction
 %!warning <foo> f ()
 
-%% test/octave.test/error/warning-2.m
 %!test
 %! st.identifier = "backtrace";
 %! ws = warning ("query", "backtrace");
@@ -67,7 +61,6 @@
 
 ## Test usage() function
 
-%% test/octave.test/error/usage-1.m
 %!function g ()
 %!  usage ("foo");
 %!endfunction
@@ -76,7 +69,6 @@
 %!endfunction
 %!error <foo> f ()
 
-%% test/octave.test/error/usage-2.m
 %!function g ()
 %!  usage ("foo");
 %!endfunction
@@ -85,9 +77,7 @@
 %!endfunction
 %!error <foo> f ()
 
-%% test/octave.test/error/usage-3.m
 %!error usage ()
 
-%% test/octave.test/error/usage-4.m
 %!error <foo> usage ("foo\n")
 

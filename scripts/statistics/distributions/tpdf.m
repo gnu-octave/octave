@@ -53,7 +53,7 @@ function pdf = tpdf (x, n)
   k = isnan (x) | !(n > 0) | !(n < Inf);
   pdf(k) = NaN;
 
-  k = !isinf (x) & !isnan (x) & (n > 0) & (n < Inf);
+  k = isfinite (x) & (n > 0) & (n < Inf);
   if (isscalar (n))
     pdf(k) = (exp (- (n + 1) * log (1 + x(k) .^ 2 / n)/2)
               / (sqrt (n) * beta (n/2, 1/2)));

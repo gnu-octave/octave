@@ -1600,6 +1600,9 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
   i1 = i2 = j1 = j2 = 0;
 
+  if ((fc_mode > 0 && fc_mode < 3) || ec_mode > 0)
+    c = props.get_color_data ().array_value ();
+
   boolMatrix clip (z.dims (), false);
 
   for (int i = 0; i < zr; i++)
@@ -1613,11 +1616,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
             j1 = j;
 
           clip(i,j) = is_nan_or_inf (x(i1,j), y(i,j1), z(i,j));
+          if (fc_mode == 1 || fc_mode == 2)
+            clip(i,j) |= (xisnan (c(i,j)) || xisinf (c(i,j)));
         }
     }
-
-  if ((fc_mode > 0 && fc_mode < 3) || ec_mode > 0)
-    c = props.get_color_data ().array_value ();
 
   if (fa_mode > 0 || ea_mode > 0)
     {
@@ -3009,7 +3011,7 @@ opengl_renderer::text_to_pixels (const std::string& txt,
 {
 #if HAVE_FREETYPE
   text_renderer.text_to_pixels (txt, pixels, bbox,
-                                halign, valign, rotation);
+                                halign, valign, rotation, "none");
 #endif
 }
 

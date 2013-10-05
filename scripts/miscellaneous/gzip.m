@@ -20,10 +20,10 @@
 ## @deftypefn  {Function File} {@var{entries} =} gzip (@var{files})
 ## @deftypefnx {Function File} {@var{entries} =} gzip (@var{files}, @var{outdir})
 ## Compress the list of files and/or directories specified in @var{files}.
-## Each file is compressed separately and a new file with a ".gz" extension
-## is created.  The original files are not modified.  Existing compressed
-## files are silently overwritten.  If @var{outdir} is defined the compressed
-## files are placed in this directory.
+## Each file is compressed separately and a new file with a @file{".gz"}
+## extension is created.  The original files are not modified.  Existing
+## compressed files are silently overwritten.  If @var{outdir} is defined the
+## compressed files are placed in this directory.
 ## @seealso{gunzip, bzip2, zip, tar}
 ## @end deftypefn
 
@@ -42,7 +42,7 @@ endfunction
 
 
 %!xtest
-%! # test gzip together with gunzip
+%! ## test gzip together with gunzip
 %! unwind_protect
 %!   filename = tmpnam;
 %!   dummy    = 1;

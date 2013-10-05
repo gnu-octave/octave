@@ -42,7 +42,6 @@ EXTRA_DIST = \
   bootstrap.conf \
   build-aux/find-files-with-tests.sh \
   build-aux/mk-opts.pl \
-  build-aux/mkinstalldirs \
   build-aux/move-if-change \
   build-aux/OctJavaQry.class \
   etc/NEWS.1 \
@@ -145,6 +144,10 @@ ChangeLog:
 octetc_DATA = \
   NEWS \
   CITATION
+
+doxyhtml:
+	$(MAKE) -C doc/doxyhtml doxyhtml
+.PHONY: doxyhtml
 
 DIRS_TO_MAKE = \
   $(localfcnfiledir) \

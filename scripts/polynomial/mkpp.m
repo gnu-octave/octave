@@ -45,12 +45,12 @@
 
 function pp = mkpp (x, P, d)
 
-  # check number of arguments
+  ## check number of arguments
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  # check x
+  ## check x
   if (length (x) < 2)
     error ("mkpp: at least one interval is needed");
   endif

@@ -70,31 +70,32 @@ the @code{fftw} function.  There are five different manners in which the\n\
 wisdom can be treated:\n\
 \n\
 @table @asis\n\
-@item \"estimate\"\n\
+@item @qcode{\"estimate\"}\n\
 Specifies that no run-time measurement of the optimal means of\n\
 calculating a particular is performed, and a simple heuristic is used\n\
 to pick a (probably sub-optimal) plan.  The advantage of this method is\n\
 that there is little or no overhead in the generation of the plan, which\n\
 is appropriate for a Fourier transform that will be calculated once.\n\
 \n\
-@item \"measure\"\n\
+@item @qcode{\"measure\"}\n\
 In this case a range of algorithms to perform the transform is considered\n\
 and the best is selected based on their execution time.\n\
 \n\
-@item \"patient\"\n\
-Similar to \"measure\", but a wider range of algorithms is considered.\n\
+@item @qcode{\"patient\"}\n\
+Similar to @qcode{\"measure\"}, but a wider range of algorithms is\n\
+considered.\n\
 \n\
-@item \"exhaustive\"\n\
-Like \"measure\", but all possible algorithms that may be used to\n\
+@item @qcode{\"exhaustive\"}\n\
+Like @qcode{\"measure\"}, but all possible algorithms that may be used to\n\
 treat the transform are considered.\n\
 \n\
-@item \"hybrid\"\n\
+@item @qcode{\"hybrid\"}\n\
 As run-time measurement of the algorithm can be expensive, this is a\n\
-compromise where \"measure\" is used for transforms up to the size of 8192\n\
-and beyond that the \"estimate\" method is used.\n\
+compromise where @qcode{\"measure\"} is used for transforms up to the size\n\
+of 8192 and beyond that the @qcode{\"estimate\"} method is used.\n\
 @end table\n\
 \n\
-The default method is \"estimate\".  The current method can\n\
+The default method is @qcode{\"estimate\"}.  The current method can\n\
 be queried with\n\
 \n\
 @example\n\

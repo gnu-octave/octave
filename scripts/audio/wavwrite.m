@@ -154,46 +154,65 @@ endfunction
 %! fname = tmpnam ();
 
 %!test
-%! A = [-1:0.1:1; -1:0.1:1];
+%! A = [-1:0.1:1; -1:0.1:1]';
 %! wavwrite (A, fname);
 %! [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%! unlink (fname);
 %! assert (A,B, 1/2^15);
 %! assert (samples_per_sec, 8000);
 %! assert (bits_per_sample, 16);
-%! unlink (fname);
-%
+
 %!test
-%! A = [-1:0.1:1; -1:0.1:1];
+%! A = [-1:0.1:1; -1:0.1:1]';
 %! wavwrite (A, 4000, fname);
 %! [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%! unlink (fname);
 %! assert (A,B, 1/2^15);
 %! assert (samples_per_sec, 4000);
 %! assert (bits_per_sample, 16);
-%! unlink (fname);
-%
+
 %!test
-%! A = [-1:0.1:1; -1:0.1:1];
+%! A = [-1:0.1:1; -1:0.1:1]';
 %! wavwrite (A, 4000, 8, fname);
 %! [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%! unlink (fname);
 %! assert (A,B, 1/128);
 %! assert (samples_per_sec, 4000);
 %! assert (bits_per_sample, 8);
-%! unlink (fname);
-%
+
 %!test
 %! A = [-2:2]';
 %! wavwrite (A, fname);
 %! B = wavread (fname);
+%! unlink (fname);
 %! B *= 32768;
 %! assert (B, [-32768 -32768 0 32767 32767]');
-%! unlink (fname);
-%
+
 %!test
 %! A = [-1:0.1:1];
 %! wavwrite (A, fname);
 %! [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%! unlink (fname);
 %! assert (A', B, 1/2^15);
 %! assert (samples_per_sec, 8000);
 %! assert (bits_per_sample, 16);
+
+%!test
+%! A = [-1:0.1:1; -1:0.1:1]';
+%! wavwrite (A, fname);
+%! B = wavread (fname, 15);
 %! unlink (fname);
+%! assert (A(1:15,:) ,B, 1/2^15);
+%! wavwrite (A, fname);
+%! B = wavread (fname, [10, 20]);
+%! unlink (fname);
+%! assert (A(10:20,:) ,B, 1/2^15);
+
+%!test
+%! A = [-1:0.1:1; -1:0.1:1]';
+%! wavwrite (A, fname);
+%! [nsamp, nchan] = wavread (fname, "size");
+%! unlink (fname);
+%! assert (nsamp, 21);
+%! assert (nchan, 2);
 

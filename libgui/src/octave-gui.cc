@@ -38,7 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-utils.h"
 #include "oct-env.h"
+#include "oct-syscalls.h"
 #include "syswait.h"
+
+#include "sighandlers.h"
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
@@ -73,8 +76,7 @@ dissociate_terminal (void)
     {
       // Parent
 
-      // FIXME -- we should catch signals and pass them on to the child
-      // process in some way, possibly translating SIGINT to SIGTERM.
+      install_gui_driver_signal_handlers (pid);
 
       int status;
 
@@ -88,11 +90,19 @@ dissociate_terminal (void)
 }
 
 int
-octave_start_gui (int argc, char *argv[])
+octave_start_gui (int argc, char *argv[], bool fork)
 {
-  dissociate_terminal ();
+  if (fork)
+    dissociate_terminal ();
 
   QApplication application (argc, argv);
+
+  // install translators for the gui and qt text
+  QTranslator gui_tr, qt_tr, qsci_tr;
+  resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
+  application.installTranslator (&qt_tr);
+  application.installTranslator (&qsci_tr);
+  application.installTranslator (&gui_tr);
 
   while (true)
     {
@@ -104,13 +114,6 @@ octave_start_gui (int argc, char *argv[])
         }
       else
         {
-          // install translators for the gui and qt text
-          QTranslator gui_tr, qt_tr, qsci_tr;
-          resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
-          application.installTranslator (&qt_tr);
-          application.installTranslator (&qsci_tr);
-          application.installTranslator (&gui_tr);
-
           // update network-settings
           resource_manager::update_network_settings ();
 
@@ -123,13 +126,16 @@ octave_start_gui (int argc, char *argv[])
 
           if (term.empty ())
             octave_env::putenv ("TERM", "xterm");
+#else
+          std::string term = octave_env::getenv ("TERM");
+
+          if (term.empty ())
+            octave_env::putenv ("TERM", "cygwin");
 #endif
 
           // create main window, read settings, and show window
           main_window w;
-          w.read_settings ();  // get widget settings after construction
-                               // but before showing
-          w.show ();
+          w.read_settings ();  // get widget settings and window layout
           w.focus_command_window ();
           w.connect_visibility_changed (); // connect signals for changes in
                                            // visibility not before w is shown

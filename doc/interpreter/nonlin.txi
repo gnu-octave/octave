@@ -23,7 +23,7 @@
 
 @menu
 * Solvers::
-* Minimizers::          
+* Minimizers::
 @end menu
 
 @node Solvers

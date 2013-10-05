@@ -271,6 +271,8 @@ An overview of the directory layout of Octave's source files:
 
     geometry         geometry algorithms
 
+    gui              User-Interface (UI) functions
+
     help             help subsystem functions
 
     image            image processing
@@ -318,15 +320,15 @@ An overview of the directory layout of Octave's source files:
 
     test_ .m         fixed tests for the interpreter
 
-    fntests.m        script to run function tests embedded in C++ and .m
-                     files
+    fntests.m        script to run function tests embedded in C++ and
+                     .m files
 
 ----
 John W. Eaton
 jwe@octave.org
 
+Last updated: Fri, 4 Oct 2013 16:58:52 PDT 
 
-Last updated: Wed, 15 May 2013 03:02:45 EDT
 
 
 ################################################################################

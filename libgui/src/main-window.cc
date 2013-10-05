@@ -77,7 +77,11 @@ main_window::main_window (QWidget *p)
     workspace_window (new workspace_view (this)),
     find_files_dlg (0),
     _octave_main_thread (0),
-    _octave_qt_link (0)
+    _octave_qt_link (0),
+    _clipboard (QApplication::clipboard ()),
+    _cmd_queue (new QStringList ()),  // no command pending
+    _cmd_processing (1),
+    _cmd_queue_mutex ()
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -103,6 +107,7 @@ main_window::~main_window (void)
     }
   delete _octave_main_thread;
   delete _octave_qt_link;
+  delete _cmd_queue;
 }
 
 bool
@@ -139,7 +144,7 @@ void
 main_window::handle_save_workspace_request (void)
 {
   QString file =
-    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".");
+    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".", 0, 0, QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::save_workspace_callback,
@@ -152,7 +157,7 @@ main_window::handle_load_workspace_request (const QString& file_arg)
   QString file = file_arg;
 
   if (file.isEmpty ())
-    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".");
+    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".", 0, 0, QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::load_workspace_callback,
@@ -197,9 +202,7 @@ main_window::handle_clear_history_request (void)
 void
 main_window::execute_command_in_terminal (const QString& command)
 {
-  octave_link::post_event (this, &main_window::execute_command_callback,
-                           command.toStdString ());
-
+  queue_command (command);
   focus_command_window ();
 }
 
@@ -207,6 +210,28 @@ void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
   octave_link::post_event (this, &main_window::run_file_callback, info);
+}
+
+void
+main_window::run_file_callback (const QFileInfo& info)
+{
+  QString dir = info.absolutePath ();
+  QString function_name = info.fileName ();
+  function_name.chop (info.suffix ().length () + 1);
+  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
+                                    dir.toStdString ()))
+    queue_command (function_name);
+}
+
+void
+main_window::queue_command (QString command)
+{
+  _cmd_queue_mutex.lock ();
+  _cmd_queue->append (command);   // queue command
+  _cmd_queue_mutex.unlock ();
+
+  if (_cmd_processing.tryAcquire ())   // if callback is not processing, post event
+    octave_link::post_event (this, &main_window::execute_command_callback);
 }
 
 void
@@ -218,25 +243,37 @@ main_window::handle_new_figure_request (void)
 void
 main_window::open_online_documentation_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://gnu.org/software/octave/doc/interpreter"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/doc/interpreter"));
 }
 
 void
 main_window::open_bug_tracker_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://bugs.octave.org"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/bugs.html"));
 }
 
 void
-main_window::open_octave_forge_page (void)
+main_window::open_octave_packages_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://octave.sourceforge.net/"));
+  QDesktopServices::openUrl (QUrl ("http://octave.org/packages.html"));
 }
 
 void
 main_window::open_agora_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://agora.octave.org/"));
+  QDesktopServices::openUrl (QUrl ("http://agora.octave.org"));
+}
+
+void
+main_window::open_contribute_page (void)
+{
+  QDesktopServices::openUrl (QUrl ("http://octave.org/donate.html"));
+}
+
+void
+main_window::open_developer_page (void)
+{
+  QDesktopServices::openUrl (QUrl ("http://octave.org/get-involved.html"));
 }
 
 void
@@ -354,7 +391,7 @@ void
 main_window::browse_for_directory (void)
 {
   QString dir
-    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"));
+    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"), 0, QFileDialog::DontUseNativeDialog);
 
   set_current_working_directory (dir);
 
@@ -505,9 +542,11 @@ main_window::handle_update_breakpoint_marker_request (bool insert,
 void
 main_window::show_about_octave (void)
 {
-  QString message = OCTAVE_STARTUP_MESSAGE;
+  std::string message
+    = octave_name_version_copyright_copying_warranty_and_bugs (true);
 
-  QMessageBox::about (this, tr ("About Octave"), message);
+  QMessageBox::about (this, tr ("About Octave"),
+                      QString::fromStdString (message));
 }
 
 void
@@ -542,6 +581,8 @@ main_window::read_settings (void)
 void
 main_window::set_window_layout (QSettings *settings)
 {
+  QList<octave_dock_widget *> float_and_visible;
+
   // Restore the geometry of all dock-widgets
   foreach (octave_dock_widget *widget, dock_widget_list ())
     {
@@ -555,7 +596,7 @@ main_window::set_window_layout (QSettings *settings)
           if (floating)
             widget->make_window ();
           else if (! widget->parent ())  // should not be floating but is
-            widget->setParent (this);    // reparent
+            widget->make_widget (false); // no docking, just reparent
 
           // restore geometry
           QVariant val = settings->value (name);
@@ -564,12 +605,24 @@ main_window::set_window_layout (QSettings *settings)
           // make widget visible if desired
           bool visible = settings->value
               ("DockWidgets/" + name + "Visible", true).toBool ();
-          widget->setVisible (visible);
+          if (floating && visible)              // floating and visible
+            float_and_visible.append (widget);  // not show before main win
+          else
+            {
+              widget->make_widget ();
+              widget->setVisible (visible);       // not floating -> show
+            }
         }
     }
 
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+  show ();  // main window is ready and can be shown (as first window)
+
+  // show floating widgets after main win to ensure "Octave" in central menu
+  foreach (octave_dock_widget *widget, float_and_visible)
+     widget->setVisible (true);
+
 }
 
 void
@@ -799,6 +852,9 @@ main_window::construct (void)
   connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
            this, SLOT (find_files (const QString&)));
 
+  connect (this, SIGNAL (set_widget_shortcuts_signal (bool)),
+           editor_window, SLOT (set_shortcuts (bool)));
+
   connect_uiwidget_links ();
 
   setWindowTitle ("Octave");
@@ -856,6 +912,9 @@ main_window::construct (void)
   set_current_working_directory (curr_dir.absolutePath ());
 
   octave_link::post_event (this, &main_window::resize_command_window_callback);
+
+  set_global_shortcuts (true);
+
 }
 
 void
@@ -907,6 +966,10 @@ main_window::construct_octave_qt_link (void)
   connect (_octave_qt_link, SIGNAL (exit_debugger_signal ()),
            this, SLOT (handle_exit_debugger ()));
 
+  connect (_octave_qt_link,
+           SIGNAL (show_preferences_signal (void)),
+           this, SLOT (process_settings_dialog_request ()));
+
 #ifdef HAVE_QSCINTILLA
   connect (_octave_qt_link,
            SIGNAL (edit_file_signal (const QString&)),
@@ -928,6 +991,10 @@ main_window::construct_octave_qt_link (void)
            SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
            this,
            SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
+
+  connect (_octave_qt_link,
+           SIGNAL (show_doc_signal (const QString &)),
+           this, SLOT (handle_show_doc (const QString &)));
 
   connect (_workspace_model,
            SIGNAL (rename_variable (const QString&, const QString&)),
@@ -966,6 +1033,8 @@ main_window::construct_file_menu (QMenuBar *p)
   _open_action
     = file_menu->addAction (QIcon (":/actions/icons/fileopen.png"),
                             tr ("Open..."));
+  _open_action->setShortcutContext (Qt::ApplicationShortcut);
+
 
 #ifdef HAVE_QSCINTILLA
   file_menu->addMenu (editor_window->get_mru_menu ());
@@ -987,8 +1056,8 @@ main_window::construct_file_menu (QMenuBar *p)
 
   file_menu->addSeparator ();
 
-  QAction *exit_action = file_menu->addAction (tr ("Exit"));
-  exit_action->setShortcut (QKeySequence::Quit);
+  _exit_action = file_menu->addAction (tr ("Exit"));
+  _exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
   connect (preferences_action, SIGNAL (triggered ()),
            this, SLOT (process_settings_dialog_request ()));
@@ -1004,7 +1073,7 @@ main_window::construct_file_menu (QMenuBar *p)
   connect (save_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_save_workspace_request ()));
 
-  connect (exit_action, SIGNAL (triggered ()),
+  connect (_exit_action, SIGNAL (triggered ()),
            this, SLOT (close ()));
 }
 
@@ -1016,6 +1085,7 @@ main_window::construct_new_menu (QMenu *p)
   _new_script_action
     = new_menu->addAction (QIcon (":/actions/icons/filenew.png"),
                            tr ("Script"));
+  _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
   QAction *new_function_action = new_menu->addAction (tr ("Function"));
   new_function_action->setEnabled (true);
@@ -1051,18 +1121,21 @@ main_window::construct_edit_menu (QMenuBar *p)
   _copy_action
     = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"),
                             tr ("Copy"), this, SLOT (copyClipboard ()));
-  _copy_action->setShortcut (ctrl_shift + Qt::Key_C);
+  _copy_action->setShortcut (QKeySequence::Copy);
+
 
   _paste_action
     = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
-  _paste_action->setShortcut (ctrl_shift + Qt::Key_V);
+  _paste_action->setShortcut (QKeySequence::Paste);
+
+  _clear_clipboard_action
+    = edit_menu->addAction (tr ("Clear Clipboard"), this,
+                            SLOT (clear_clipboard ()));
 
   edit_menu->addSeparator ();
 
-  QAction *find_files_action
-    = edit_menu->addAction (tr ("Find Files..."));
-  find_files_action->setShortcut (ctrl_shift + Qt::Key_F);
+  _find_files_action = edit_menu->addAction (tr ("Find Files..."));
 
   edit_menu->addSeparator ();
 
@@ -1075,7 +1148,7 @@ main_window::construct_edit_menu (QMenuBar *p)
   QAction *clear_workspace_action
     = edit_menu->addAction (tr ("Clear Workspace"));
 
-  connect (find_files_action, SIGNAL (triggered()),
+  connect (_find_files_action, SIGNAL (triggered()),
            this, SLOT (find_files ()));
 
   connect (clear_command_window_action, SIGNAL (triggered ()),
@@ -1086,6 +1159,10 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   connect (clear_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_workspace_request ()));
+
+  connect (_clipboard, SIGNAL (changed (QClipboard::Mode)),
+           this, SLOT (clipboard_has_changed (QClipboard::Mode)));
+  clipboard_has_changed (QClipboard::Clipboard);
 }
 
 QAction *
@@ -1288,11 +1365,17 @@ main_window::construct_help_menu (QMenuBar *p)
   QAction *report_bug_action
     = help_menu->addAction (tr ("Report Bug"));
 
-  QAction *octave_forge_action
-    = help_menu->addAction (tr ("Visit Octave Forge"));
+  QAction *octave_packages_action
+    = help_menu->addAction (tr ("Octave Packages"));
 
   QAction *agora_action
-    = help_menu->addAction (tr ("Visit Agora"));
+    = help_menu->addAction (tr ("Share Code"));
+
+  QAction *contribute_action
+    = help_menu->addAction (tr ("Contribute to Octave"));
+
+  QAction *developer_action
+    = help_menu->addAction (tr ("Octave Developer Resources"));
 
   help_menu->addSeparator ();
 
@@ -1302,11 +1385,17 @@ main_window::construct_help_menu (QMenuBar *p)
   connect (report_bug_action, SIGNAL (triggered ()),
            this, SLOT (open_bug_tracker_page ()));
 
-  connect (octave_forge_action, SIGNAL (triggered ()),
-           this, SLOT (open_octave_forge_page ()));
+  connect (octave_packages_action, SIGNAL (triggered ()),
+           this, SLOT (open_octave_packages_page ()));
 
   connect (agora_action, SIGNAL (triggered ()),
            this, SLOT (open_agora_page ()));
+
+  connect (contribute_action, SIGNAL (triggered ()),
+           this, SLOT (open_contribute_page ()));
+
+  connect (developer_action, SIGNAL (triggered ()),
+           this, SLOT (open_developer_page ()));
 
   connect (about_octave_action, SIGNAL (triggered ()),
            this, SLOT (show_about_octave ()));
@@ -1443,29 +1532,34 @@ main_window::clear_history_callback (void)
 }
 
 void
-main_window::execute_command_callback (const std::string& command)
+main_window::execute_command_callback ()
 {
-  std::string pending_input = command_editor::get_current_line ();
+  bool repost = false;          // flag for reposting event for this callback
 
-  command_editor::set_initial_input (pending_input);
+  if (!_cmd_queue->isEmpty ())  // list can not be empty here, just to make sure
+    {
+      std::string pending_input = command_editor::get_current_line ();
+      command_editor::set_initial_input (pending_input);
 
-  command_editor::replace_line (command);
-  command_editor::redisplay ();
+      _cmd_queue_mutex.lock (); // critical path
+      std::string command = _cmd_queue->takeFirst ().toStdString ();
+      if (_cmd_queue->isEmpty ())
+        _cmd_processing.release ();  // command queue empty, processing will stop
+      else
+        repost = true;          // not empty, repost at end
+      _cmd_queue_mutex.unlock ();
 
-  // We are executing inside the command editor event loop.  Force
-  // the current line to be returned for processing.
-  command_editor::interrupt ();
-}
+      command_editor::replace_line (command);
 
-void
-main_window::run_file_callback (const QFileInfo& info)
-{
-  QString dir = info.absolutePath ();
-  QString function_name = info.fileName ();
-  function_name.chop (info.suffix ().length () + 1);
-  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
-                                    dir.toStdString ()))
-    execute_command_callback (function_name.toStdString ());
+      command_editor::redisplay ();
+      // We are executing inside the command editor event loop.  Force
+      // the current line to be returned for processing.
+      command_editor::interrupt ();
+    }
+
+  if (repost)  // queue not empty, so repost event for further processing
+    octave_link::post_event (this, &main_window::execute_command_callback);
+
 }
 
 void
@@ -1571,4 +1665,64 @@ main_window::find_files_finished(int)
 
 }
 
+void
+main_window::set_global_shortcuts (bool set_shortcuts)
+{
+  if (set_shortcuts)
+    {
 
+      _open_action->setShortcut (QKeySequence::Open);
+      _new_script_action->setShortcut (QKeySequence::New);
+
+      _exit_action->setShortcut (QKeySequence::Quit);
+
+      _find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_F);
+
+    }
+  else
+    {
+
+      QKeySequence no_key = QKeySequence ();
+
+      _open_action->setShortcut (no_key);
+      _new_script_action->setShortcut (no_key);
+
+      _exit_action->setShortcut (no_key);
+
+      _find_files_action->setShortcut (no_key);
+
+    }
+
+  emit set_widget_shortcuts_signal (set_shortcuts);
+}
+
+void
+main_window::handle_show_doc (const QString& file)
+{
+  doc_browser_window->setVisible (true);
+  emit show_doc_signal (file);
+}
+
+void
+main_window::clipboard_has_changed (QClipboard::Mode cp_mode)
+{
+  if (cp_mode == QClipboard::Clipboard)
+    {
+      if (_clipboard->text ().isEmpty ())
+        {
+          _paste_action->setEnabled (false);
+          _clear_clipboard_action->setEnabled (false);
+        }
+      else
+        {
+          _paste_action->setEnabled (true);
+          _clear_clipboard_action->setEnabled (true);
+        }
+    }
+}
+
+void
+main_window::clear_clipboard ()
+{
+  _clipboard->clear (QClipboard::Clipboard);
+}

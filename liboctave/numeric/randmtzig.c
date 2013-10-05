@@ -268,7 +268,7 @@ oct_init_by_entropy (void)
             unsigned char word[4];
             if (fread (word, 4, 1, urandom) != 1)
               break;
-            entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(word[3]<<24);
+            entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+((uint32_t)word[3]<<24);
           }
         fclose (urandom);
       }

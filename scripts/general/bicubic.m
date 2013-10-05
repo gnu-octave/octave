@@ -221,6 +221,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 
 endfunction
 
+
 %!demo
 %! clf;
 %! colormap ("default");

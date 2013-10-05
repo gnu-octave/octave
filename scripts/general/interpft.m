@@ -22,9 +22,9 @@
 ##
 ## Fourier interpolation.  If @var{x} is a vector, then @var{x} is
 ## resampled with @var{n} points.  The data in @var{x} is assumed to be
-## equispaced.  If @var{x} is an array, then operate along each column of
-## the array separately.  If @var{dim} is specified, then interpolate
-## along the dimension @var{dim}.
+## equispaced.  If @var{x} is a matrix or an N-dimensional array, the
+## interpolation is performed on each column of @var{x}.  If @var{dim} is
+## specified, then interpolate along the dimension @var{dim}.
 ##
 ## @code{interpft} assumes that the interpolated function is periodic,
 ## and so assumptions are made about the endpoints of the interpolation.
@@ -68,9 +68,9 @@ function z = interpft (x, n, dim)
   x = permute (x, perm);
   m = rows (x);
 
-  inc = max (1, fix (m/n));
+  inc = ceil (m/n);
   y = fft (x) / m;
-  k = floor (m / 2);
+  k = ceil (m / 2);
   sz = size (x);
   sz(1) = n * inc - m;
 
@@ -79,6 +79,18 @@ function z = interpft (x, n, dim)
   z = cat (1, y(idx{:}), zeros (sz));
   idx{1} = k+1:m;
   z = cat (1, z, y(idx{:}));
+
+  ## When m is an even number of rows, the FFT has a single Nyquist bin.
+  ## If zero-padded above, distribute the value of the Nyquist bin evenly
+  ## between the new corresponding positive and negative frequency bins.
+  if (sz(1) > 0 && k == m/2)
+    idx{1} = n * inc - k + 1;
+    tmp = z(idx{:}) / 2;
+    z(idx{:}) = tmp;
+    idx{1} = k + 1;
+    z(idx{:}) = tmp;
+  endif
+
   z = n * ifft (z);
 
   if (inc != 1)
@@ -107,6 +119,18 @@ endfunction
 %!assert (interpft (y, n), y, 20*eps);
 %!assert (interpft (y', n), y', 20*eps);
 %!assert (interpft ([y,y],n), [y,y], 20*eps);
+
+%% Test case with complex input from bug #39566
+%!test
+%! x = (1 + j) * [1:4]';
+%! y = ifft ([15 + 15*j; -6; -1.5 - 1.5*j; 0; -1.5 - 1.5*j; -6*j]);
+%! assert (interpft (x, 6), y, 10*eps);
+
+%% Test for correct spectral symmetry with even/odd lengths
+%!assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps);
+%!assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps);
+%!assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps);
+%!assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps);
 
 %% Test input validation
 %!error interpft ()

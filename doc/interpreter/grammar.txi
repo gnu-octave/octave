@@ -25,8 +25,8 @@ This appendix will eventually contain a semi-formal description of
 Octave's language.
 
 @menu
-* Keywords::                    
-* Parser::                    
+* Keywords::
+* Parser::
 @end menu
 
 @node Keywords
@@ -78,9 +78,9 @@ from being evaluated periodically.
 @DOCSTRING(remove_input_event_hook)
 
 Finally, when the parser cannot identify an input token it calls a particular
-function to handle this.  By default, this is the function "unimplemented"
-which makes suggestions about possible Octave substitutes for @sc{matlab}
-functions.
+function to handle this.  By default, this is the internal function
+@qcode{"__unimplemented__"} which makes suggestions about possible Octave
+substitutes for @sc{matlab} functions.
 
 @DOCSTRING(missing_function_hook)
 

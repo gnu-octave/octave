@@ -43,7 +43,7 @@
 ## @var{value1}.  @var{string_param1} can be any of the following:
 ##
 ## @table @asis
-## @item "displayrange"
+## @item @qcode{"displayrange"}
 ## @var{value1} is the display range as described above.
 ## @end table
 ##

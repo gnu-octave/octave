@@ -70,3 +70,4 @@ function x = synthesis (y, c)
   x = reshape (z, inc * nc, 1);
 
 endfunction
+

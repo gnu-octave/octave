@@ -19,13 +19,13 @@ dnl Copyright (C) 1993-2012 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.62])
-AC_INIT([GNU Octave], [3.7.5], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.7.7+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 OCTAVE_API_VERSION_NUMBER="48"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2013-05-14"
+OCTAVE_RELEASE_DATE="2013-09-23"
 OCTAVE_COPYRIGHT="Copyright (C) 2013 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
@@ -41,7 +41,11 @@ AC_CONFIG_HEADERS([config.h:config.in.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.11 tar-ustar])
+AM_INIT_AUTOMAKE([1.11 foreign -Wno-portability -Wno-override tar-ustar subdir-objects])
+
+## Add the option to enable silent rules, available since Automake 1.11
+## and included by default starting with Automake 1.13.
+AM_SILENT_RULES
 
 OCTAVE_CANONICAL_HOST
 
@@ -712,7 +716,7 @@ if test $octave_cv_lib_z = yes; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
 
-### Check for the LLVM library
+ ### Check for the LLVM library
 
 build_jit=no
 AC_ARG_ENABLE([jit],
@@ -742,6 +746,7 @@ if test $build_jit = yes; then
 
     save_CPPFLAGS="$CPPFLAGS"
     save_CXXFLAGS="$CXXFLAGS"
+    save_LDFLAGS="$LDFLAGS"
 
     ## Use -isystem if available because we don't want to see warnings in LLVM
     LLVM_INCLUDE_FLAG=-I
@@ -753,7 +758,11 @@ if test $build_jit = yes; then
     LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
     LLVM_CXXFLAGS=
     LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-    LLVM_LIBS=`$LLVM_CONFIG --libs`
+
+
+    LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
+    LLVM_SO=LLVM-`$LLVM_CONFIG --version`
+    AC_CHECK_LIB([$LLVM_SO], [LLVMBuildAdd], [LLVM_LIBS="-l$LLVM_SO"], [LLVM_LIBS=`$LLVM_CONFIG --libs`])
 
     dnl
     dnl Define some extra flags that LLVM requires in order to include headers.
@@ -766,9 +775,33 @@ if test $build_jit = yes; then
     AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
       warn_llvm=
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
+
+    have_function_h=no
+    AC_CHECK_HEADERS([llvm/IR/Function.h llvm/Function.h],
+                     [have_function_h=yes; break])
+    if test $have_function_h = no; then
+      warn_llvm="Missing LLVM file Function.h.  JIT compiler is disabled."
+    fi
+    have_irbuilder_h=no
+    AC_CHECK_HEADERS([llvm/Support/IRBuilder.h llvm/IR/IRBuilder.h \
+                      llvm/IRBuilder.h], [have_irbuilder_h=yes; break])
+    if test $have_irbuilder_h = no; then
+      warn_llvm="Missing LLVM file IRBuilder.h.  JIT compiler is disabled."
+    fi
+    have_llvm_data_h=no
+    AC_CHECK_HEADERS([llvm/Target/TargetData.h llvm/IR/DataLayout.h \
+                      llvm/DataLayout.h], [have_llvm_data_h=yes; break])
+    if test $have_llvm_data_h = no; then
+      warn_llvm="Missing LLVM file TargetData.h.  JIT compiler is disabled."
+    fi
+
+    OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API
+    OCTAVE_LLVM_FUNCTION_ADDFNATTR_API
+    OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
     CXXFLAGS="$save_CXXFLAGS"
+    LDFLAGS="$save_LDFLAGS"
   fi
 
   if test -z "$warn_llvm"; then
@@ -863,7 +896,12 @@ CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
-  [glpk/glpk.h glpk.h], [_glp_lpx_simplex])
+  [glpk/glpk.h glpk.h], [glp_simplex], [], [],
+  [warn_glpk=
+   OCTAVE_CHECK_LIB_GLPK_OK(
+    [TEXINFO_GLPK="@set HAVE_GLPK"
+    AC_DEFINE(HAVE_GLPK, 1, [Define to 1 if GLPK is available.])],
+    [warn_glpk="GLPK library found, but does not seem to work properly -- disabling glpk function"])])
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 
@@ -1041,6 +1079,10 @@ if test -n "$OPENGL_LIBS"; then
       AC_MSG_RESULT(yes)
       AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"
+      save_LIBS="$LIBS"
+      LIBS="$FT2_LIBS $LIBS"
+      AC_CHECK_FUNCS([FT_Reference_Face])
+      LIBS="$save_LIBS"
     else
       AC_MSG_RESULT(no)
       warn_freetype="FreeType library not found.  Native graphics will be disabled."
@@ -1928,7 +1970,7 @@ dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
 AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h fpu_control.h])
 AC_CHECK_HEADERS([grp.h ieeefp.h inttypes.h locale.h memory.h ncurses.h])
 AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
-AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h ])
+AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h])
 AC_CHECK_HEADERS([sys/select.h sys/utsname.h termcap.h])
 
 ## C++ headers
@@ -2040,7 +2082,7 @@ gl_INIT
 dnl These checks define/undefine HAVE_FUNCNAME in config.h.
 dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_FUNCS([canonicalize_file_name dup2])
+AC_CHECK_FUNCS([canonicalize_file_name ctermid dup2])
 AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
 AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
 AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
@@ -2527,6 +2569,7 @@ do
         JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
       fi
       JAVA_LIBS=-ladvapi32
+      LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
     ;;
     *)
       if test -n "$JAVA_CPPFLAGS"; then
@@ -2601,13 +2644,21 @@ if test $build_gui = yes; then
   if test $build_gui = yes; then
     AC_CHECK_TOOLS(MOC, [moc-qt5 moc-qt4 moc])
     AC_CHECK_TOOLS(UIC, [uic-qt5 uic-qt4 uic])
-    AC_CHECK_TOOLS(RCC, [rcc])
+    AC_CHECK_TOOLS(RCC, [rcc-qt5 rcc-qt4 rcc])
     AC_CHECK_TOOLS(LRELEASE, [lrelease-qt5 lrelease-qt4 lrelease])
     if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
       AC_DEFINE(HAVE_QT, 1, 
         [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
     else
       AC_MSG_WARN([Qt utility programs moc, uic, rcc, and lrelease not found -- disabling GUI])
+      build_gui=no
+    fi
+  fi
+
+  if test $build_gui = yes; then
+    OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
+    if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
+      AC_MSG_WARN([QAbstractItemModel::beginResetModel() not found -- disabling GUI])
       build_gui=no
     fi
   fi
@@ -2712,6 +2763,7 @@ AC_CONFIG_FILES([
   Makefile 
   doc/Makefile
   doc/doxyhtml/Makefile
+  doc/doxyhtml/Doxyfile
   doc/icons/Makefile
   doc/interpreter/Makefile
   doc/liboctave/Makefile

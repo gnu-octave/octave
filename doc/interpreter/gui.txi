@@ -36,10 +36,10 @@ preferences or state variables.  This can be done with user-defined
 preferences.
 
 @menu
-* I/O Dialogs::       
-* Progress Bar::       
-* GUI Utility Functions::       
-* User-Defined Preferences::       
+* I/O Dialogs::
+* Progress Bar::
+* GUI Utility Functions::
+* User-Defined Preferences::
 @end menu
 
 @node I/O Dialogs
@@ -81,13 +81,17 @@ programs that do.  @strong{Warning:} The functions @code{uiwait},
 @node User-Defined Preferences
 @section User-Defined Preferences
 
-@DOCSTRING(addpref)
-
 @DOCSTRING(getpref)
 
-@DOCSTRING(ispref)
+@DOCSTRING(setpref)
+
+@DOCSTRING(addpref)
 
 @DOCSTRING(rmpref)
 
-@DOCSTRING(setpref)
+@DOCSTRING(ispref)
+
+@DOCSTRING(prefdir)
+
+@DOCSTRING(preferences)
 

@@ -82,14 +82,15 @@
 ## an underscore.  Also, variables may not begin with a digit; in this
 ## case an underscore is added before the variable name.
 ##
-## Variable names beginning and ending with two underscores "__" are valid but
-## they are used internally by octave and should generally be avoided, therefore
-## genvarname will not generate such names.
+## Variable names beginning and ending with two underscores @qcode{"__"} are
+## valid but they are used internally by octave and should generally be
+## avoided, therefore genvarname will not generate such names.
 ##
 ## genvarname will also make sure that returned names do not clash with
-## keywords such as "for" and "if".  A number will be appended if necessary.
-## Note, however, that this does @strong{not} include function names,
-## such as "sin".  Such names should be included in @var{avoid} if necessary.
+## keywords such as @qcode{"for"} and @qcode{"if"}.  A number will be
+## appended if necessary.  Note, however, that this does @strong{not} include
+## function names, such as @qcode{"sin"}.  Such names should be included in
+## @var{avoid} if necessary.
 ## @seealso{isvarname, exist, tmpnam, eval}
 ## @end deftypefn
 
@@ -119,7 +120,7 @@ function varname = genvarname (str, exclusions)
     error ("genvarname: STR must be a string or a cellstr");
   endif
 
-  validchars = cstrcat ("A":"Z", "a":"z", "0":"9", "_");
+  validchars = ["A":"Z", "a":"z", "0":"9", "_"];
 
   varname = cell (size (str));
   for i = 1:numel (str)
@@ -130,7 +131,7 @@ function varname = genvarname (str, exclusions)
     str{i}(! ismember (str{i}, validchars)) = "_";
     ## do not use keywords
     if (iskeyword (str{i}))
-      str{i} = cstrcat ("_", str{i});
+      str{i} = ["_" str{i}];
     endif
     ## double underscores at the beginning and end are reserved variables
     underscores = (str{i} == "_");
@@ -145,7 +146,7 @@ function varname = genvarname (str, exclusions)
     endif
     ## it cannot start with a number
     if (ismember (str{i}(1), "0":"9"))
-      str{i} = cstrcat ("_", str{i});
+      str{i} = ["_" str{i}];
     endif
 
     ## make sure that the variable is unique relative to other variables

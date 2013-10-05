@@ -1095,8 +1095,8 @@ DEFUN (cumsum, args, ,
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-See @code{sum} for an explanation of the optional parameters \"native\",\n\
-\"double\", and \"extra\".\n\
+See @code{sum} for an explanation of the optional parameters\n\
+@qcode{\"native\"}, @qcode{\"double\"}, and @qcode{\"extra\"}.\n\
 @seealso{sum, cumprod}\n\
 @end deftypefn")
 {
@@ -2375,10 +2375,13 @@ returns the original array @var{A}.\n\
 DEFUN (length, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} length (@var{a})\n\
-Return the \"length\" of the object @var{a}.  For matrix objects, the\n\
-length is the number of rows or columns, whichever is greater (this\n\
-odd definition is used for compatibility with @sc{matlab}).\n\
-@seealso{size}\n\
+Return the length of the object @var{a}.\n\
+\n\
+The length is 0 for empty objects, 1 for scalars, and the number of elements\n\
+for vectors.  For matrix objects, the length is the number of rows or\n\
+columns, whichever is greater (this odd definition is used for compatibility\n\
+with @sc{matlab}).\n\
+@seealso{numel, size}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2671,9 +2674,9 @@ DEFUN (sum, args, ,
 Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
 omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-If the optional argument \"native\" is given, then the sum is performed\n\
-in the same type as the original argument, rather than in the default\n\
-double type.  For example:\n\
+If the optional argument @qcode{\"native\"} is given, then the sum is\n\
+performed in the same type as the original argument, rather than in the\n\
+default double type.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2684,13 +2687,13 @@ sum ([true, true], \"native\")\n\
 @end group\n\
 @end example\n\
 \n\
-On the contrary, if \"double\" is given, the sum is performed in double\n\
-precision even for single precision inputs.\n\
+On the contrary, if @qcode{\"double\"} is given, the sum is performed in\n\
+double precision even for single precision inputs.\n\
 \n\
-For double precision inputs, \"extra\" indicates that a more accurate\n\
+For double precision inputs, @qcode{\"extra\"} indicates that a more accurate\n\
 algorithm than straightforward summation is to be used.  For single precision\n\
-inputs, \"extra\" is the same as \"double\".  Otherwise, \"extra\" has no\n\
-effect.\n\
+inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
+@qcode{\"extra\"} has no effect.\n\
 @seealso{cumsum, sumsq, prod}\n\
 @end deftypefn")
 {
@@ -3970,7 +3973,7 @@ specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{isinf, NaN}\n\
 @end deftypefn")
 {
@@ -4029,7 +4032,7 @@ specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{isnan, Inf}\n\
 @end deftypefn")
 {
@@ -4078,7 +4081,7 @@ specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{log, exp, pi, I}\n\
 @end deftypefn")
 {
@@ -4119,7 +4122,7 @@ When called with more than one argument the first two arguments are taken as\n\
 the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{realmax, realmin, intmax, bitmax}\n\
 @end deftypefn")
 {
@@ -4243,7 +4246,7 @@ specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{e, I}\n\
 @end deftypefn")
 {
@@ -4276,13 +4279,13 @@ $1.7977\\times10^{308}$ for double precision and $3.4028\\times10^{38}$\n\
 for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
-@code{realmax (\"double\")}.\n\
+@code{realmax (@qcode{\"double\"})}.\n\
 When called with a single argument, return a square matrix with the dimension\n\
 specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{realmin, intmax, bitmax, eps}\n\
 @end deftypefn")
 {
@@ -4310,13 +4313,13 @@ $2.2251\\times10^{-308}$ for double precision and $1.1755\\times10^{-38}$\n\
 for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
-@code{realmin (\"double\")}.\n\
+@code{realmin (@qcode{\"double\"})}.\n\
 When called with a single argument, return a square matrix with the dimension\n\
 specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{realmax, intmin, eps}\n\
 @end deftypefn")
 {
@@ -4354,7 +4357,7 @@ specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{e, pi, log, exp}\n\
 @end deftypefn")
 {
@@ -4384,7 +4387,7 @@ specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
-either \"double\" or \"single\".\n\
+either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 @seealso{isna}\n\
 @end deftypefn")
 {
@@ -4783,9 +4786,9 @@ if fewer than two values are requested.\n\
 %! assert (size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2);
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
 
-%assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
+%! ##assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
 
-%assert (linspace (0, 1, []), 1)
+%!assert (linspace (0, 1, []), 1)
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)
@@ -5144,11 +5147,11 @@ If @var{A} is a matrix (or sparse matrix):\n\
 @item @var{p} = @code{2}\n\
 Largest singular value of @var{A}.\n\
 \n\
-@item @var{p} = @code{Inf} or @code{\"inf\"}\n\
+@item @var{p} = @code{Inf} or @qcode{\"inf\"}\n\
 @cindex infinity norm\n\
 Infinity norm, the largest row sum of the absolute values of @var{A}.\n\
 \n\
-@item @var{p} = @code{\"fro\"}\n\
+@item @var{p} = @qcode{\"fro\"}\n\
 @cindex Frobenius norm\n\
 Frobenius norm of @var{A}, @code{sqrt (sum (diag (@var{A}' * @var{A})))}.\n\
 \n\
@@ -5160,13 +5163,13 @@ maximum @code{norm (A*x, p)} such that @code{norm (x, p) == 1}\n\
 If @var{A} is a vector or a scalar:\n\
 \n\
 @table @asis\n\
-@item @var{p} = @code{Inf} or @code{\"inf\"}\n\
+@item @var{p} = @code{Inf} or @qcode{\"inf\"}\n\
 @code{max (abs (@var{A}))}.\n\
 \n\
 @item @var{p} = @code{-Inf}\n\
 @code{min (abs (@var{A}))}.\n\
 \n\
-@item @var{p} = @code{\"fro\"}\n\
+@item @var{p} = @qcode{\"fro\"}\n\
 Frobenius norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.\n\
 \n\
 @item @var{p} = 0\n\
@@ -5179,10 +5182,10 @@ p-norm of @var{A}, @code{(sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})}.\n\
 the p-pseudonorm defined as above.\n\
 @end table\n\
 \n\
-If @var{opt} is the value @code{\"rows\"}, treat each row as a vector and\n\
+If @var{opt} is the value @qcode{\"rows\"}, treat each row as a vector and\n\
 compute its norm.  The result is returned as a column vector.\n\
-Similarly, if @var{opt} is @code{\"columns\"} or @code{\"cols\"} then compute\n\
-the norms of each column and return a row vector.\n\
+Similarly, if @var{opt} is @qcode{\"columns\"} or @qcode{\"cols\"} then\n\
+compute the norms of each column and return a row vector.\n\
 @seealso{cond, svd}\n\
 @end deftypefn")
 {
@@ -5213,29 +5216,53 @@ the norms of each column and return a row vector.\n\
               // we've handled the last parameter, so act as if it was removed
               nargin --;
             }
-          else if (nargin > 1 && ! args(1).is_scalar_type ())
-            gripe_wrong_type_arg ("norm", args(1), true);
 
           if (! error_state)
             {
               octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);
-              switch (strflag)
+
+              if (p_arg.is_empty ())
+                p_arg = octave_value (2);
+              else if (p_arg.is_string ())
                 {
-                case sfmatrix:
-                  retval(0) = xnorm (x_arg, p_arg);
-                  break;
-                case sfcols:
-                  retval(0) = xcolnorms (x_arg, p_arg);
-                  break;
-                case sfrows:
-                  retval(0) = xrownorms (x_arg, p_arg);
-                  break;
-                case sffrob:
-                  retval(0) = xfrobnorm (x_arg);
-                  break;
-                case sfinf:
-                  retval(0) = xnorm (x_arg, octave_Inf);
-                  break;
+                  std::string str = p_arg.string_value ();
+                  if ((strflag == sfcols || strflag == sfrows))
+                    {
+                      if (str == "cols" || str == "columns" || str == "rows")
+                        error ("norm: invalid combination of options");
+                      else if (str == "fro")
+                        p_arg = octave_value (2);
+                      else if (str == "inf")
+                        p_arg = octave_Inf;
+                      else
+                        error ("norm: unrecognized option: %s", str.c_str ());
+                    }
+                  else
+                    error ("norm: invalid combination of options");
+                }
+              else if (! p_arg.is_scalar_type ())
+                gripe_wrong_type_arg ("norm", p_arg, true);
+
+              if (! error_state)
+                {
+                  switch (strflag)
+                    {
+                    case sfmatrix:
+                      retval(0) = xnorm (x_arg, p_arg);
+                      break;
+                    case sfcols:
+                      retval(0) = xcolnorms (x_arg, p_arg);
+                      break;
+                    case sfrows:
+                      retval(0) = xrownorms (x_arg, p_arg);
+                      break;
+                    case sffrob:
+                      retval(0) = xfrobnorm (x_arg);
+                      break;
+                    case sfinf:
+                      retval(0) = xnorm (x_arg, octave_Inf);
+                      break;
+                    }
                 }
             }
         }
@@ -5299,6 +5326,18 @@ the norms of each column and return a row vector.\n\
 %!assert (norm (flo*m2,"fro"), single (sqrt (30)*flo), -eps ("single"))
 %!assert (norm (fhi*m2,"fro"), single (sqrt (30)*fhi), -eps ("single"))
 
+%!shared q
+%! q = rand (1e3, 3);
+%!assert (norm (q, 3, "rows"), sum (q.^3, 2).^(1/3), sqrt (eps));
+%!assert (norm (q, "fro", "rows"), sum (q.^2, 2).^(1/2), sqrt (eps));
+%!assert (norm (q, "fro", "rows"), sqrt (sumsq (q, 2)), sqrt (eps));
+%!assert (norm (q, "fro", "cols"), sqrt (sumsq (q, 1)), sqrt (eps));
+%!assert (norm (q, 3, "cols"), sum (q.^3, 1).^(1/3), sqrt (eps));
+%!assert (norm (q, "inf", "rows"), norm (q, Inf, "rows"));
+%!assert (norm (q, "inf", "cols"), norm (q, Inf, "cols"));
+%!assert (norm (q, [], "rows"), norm (q, 2, "rows"));
+%!assert (norm (q, [], "cols"), norm (q, 2, "cols"));
+
 %!test
 %! ## Test for norm returning NaN on sparse matrix (bug #30631)
 %! A = sparse (2,2); 
@@ -5333,7 +5372,7 @@ Return the logical NOT of @var{x}.  This function is equivalent to\n\
 DEFUN (uplus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
-This function and @w{@xcode{+ x}} are equivalent.\n\
+This function and @w{@tcode{+ x}} are equivalent.\n\
 @seealso{uminus, plus, minus}\n\
 @end deftypefn")
 {
@@ -5343,7 +5382,7 @@ This function and @w{@xcode{+ x}} are equivalent.\n\
 DEFUN (uminus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
-This function and @w{@xcode{- x}} are equivalent.\n\
+This function and @w{@tcode{- x}} are equivalent.\n\
 @seealso{uplus, minus}\n\
 @end deftypefn")
 {
@@ -5354,7 +5393,7 @@ DEFUN (transpose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
 Return the transpose of @var{x}.\n\
-This function and @xcode{x.'} are equivalent.\n\
+This function and @tcode{x.'} are equivalent.\n\
 @seealso{ctranspose}\n\
 @end deftypefn")
 {
@@ -5385,7 +5424,7 @@ DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
 Return the complex conjugate transpose of @var{x}.\n\
-This function and @xcode{x'} are equivalent.\n\
+This function and @tcode{x'} are equivalent.\n\
 @seealso{transpose}\n\
 @end deftypefn")
 {
@@ -5459,7 +5498,7 @@ DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
-This function and @w{@xcode{x + y}} are equivalent.\n\
+This function and @w{@tcode{x + y}} are equivalent.\n\
 If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5478,7 +5517,7 @@ At least one argument is required.\n\
 DEFUN (minus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
-This function and @w{@xcode{x - y}} are equivalent.\n\
+This function and @w{@tcode{x - y}} are equivalent.\n\
 @seealso{plus, uminus}\n\
 @end deftypefn")
 {
@@ -5490,7 +5529,7 @@ DEFUN (mtimes, args, ,
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 Return the matrix multiplication product of inputs.\n\
-This function and @w{@xcode{x * y}} are equivalent.\n\
+This function and @w{@tcode{x * y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5510,7 +5549,7 @@ DEFUN (mrdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x / y}} are equivalent.\n\
+This function and @w{@tcode{x / y}} are equivalent.\n\
 @seealso{mldivide, rdivide, plus, minus}\n\
 @end deftypefn")
 {
@@ -5521,7 +5560,7 @@ DEFUN (mpower, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
-This function and @w{@xcode{x ^ y}} are equivalent.\n\
+This function and @w{@tcode{x ^ y}} are equivalent.\n\
 @seealso{power, mtimes, plus, minus}\n\
 @end deftypefn")
 {
@@ -5532,7 +5571,7 @@ DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x @xbackslashchar{} y}} are equivalent.\n\
+This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.\n\
 @seealso{mrdivide, ldivide, rdivide}\n\
 @end deftypefn")
 {
@@ -5606,7 +5645,7 @@ DEFUN (times, args, ,
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 Return the element-by-element multiplication product of inputs.\n\
-This function and @w{@xcode{x .* y}} are equivalent.\n\
+This function and @w{@tcode{x .* y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5626,7 +5665,7 @@ DEFUN (rdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x ./ y}} are equivalent.\n\
+This function and @w{@tcode{x ./ y}} are equivalent.\n\
 @seealso{ldivide, mrdivide, times, plus}\n\
 @end deftypefn")
 {
@@ -5642,7 +5681,7 @@ returns the one with smallest non-negative argument (angle).  Use\n\
 @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
 real result is preferred.\n\
 \n\
-This function and @w{@xcode{x .^ y}} are equivalent.\n\
+This function and @w{@tcode{x .^ y}} are equivalent.\n\
 @seealso{mpower, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn")
 {
@@ -5653,7 +5692,7 @@ DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x .@xbackslashchar{} y}} are equivalent.\n\
+This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
 @seealso{rdivide, mldivide, times, plus}\n\
 @end deftypefn")
 {
@@ -5929,7 +5968,7 @@ sort ([1, 2; 2, 3; 3, 1])\n\
 If the optional argument @var{dim} is given, then the matrix is sorted\n\
 along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
 defines the order in which the values will be sorted.  Valid values of\n\
-@code{mode} are \"ascend\" or \"descend\".\n\
+@code{mode} are @qcode{\"ascend\"} or @qcode{\"descend\"}.\n\
 \n\
 The @code{sort} function may also be used to produce a matrix\n\
 containing the original row indices of the elements in the sorted\n\
@@ -6322,11 +6361,11 @@ DEFUN (issorted, args, ,
 @deftypefnx {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
 @deftypefnx {Built-in Function} {} issorted (@var{a}, \"rows\", @var{mode})\n\
 Return true if the array is sorted according to @var{mode}, which\n\
-may be either \"ascending\", \"descending\", or \"either\".  By default,\n\
- @var{mode} is \"ascending\".  NaNs are treated in the same manner as\n\
-@code{sort}.\n\
+may be either @qcode{\"ascending\"}, @qcode{\"descending\"}, or\n\
+@qcode{\"either\"}.  By default,  @var{mode} is @qcode{\"ascending\"}.  NaNs\n\
+are treated in the same manner as @code{sort}.\n\
 \n\
-If the optional argument \"rows\" is supplied, check whether\n\
+If the optional argument @qcode{\"rows\"} is supplied, check whether\n\
 the array is sorted by rows as output by the function @code{sortrows}\n\
 (with no options).\n\
 \n\

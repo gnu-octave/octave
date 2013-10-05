@@ -20,6 +20,9 @@
 ## @deftypefn  {Function File} {} runtests ()
 ## @deftypefnx {Function File} {} runtests (@var{directory})
 ## Execute built-in tests for all function files in the specified directory.
+## Also executes tests in any C++ source files found in the directory, for
+## use with dynamically linked functions.
+##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
 ## @seealso{rundemos, path}
@@ -31,11 +34,16 @@ function runtests (directory)
 
   if (nargin == 0)
     dirs = ostrsplit (path (), pathsep ());
+    do_class_dirs = true;
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};
+    elseif (is_rooted_relative_filename (directory))
+      dirs = {canonicalize_file_name(directory)};
     else
-      directory = regexprep (directory, ['\',filesep(),'$'], "");
+      if (directory(end) == filesep ())
+        directory = directory(1:end-1);
+      endif
       fullname = find_dir_in_path (directory);
       if (! isempty (fullname))
         dirs = {fullname};
@@ -43,34 +51,41 @@ function runtests (directory)
         error ("runtests: DIRECTORY argument must be a valid pathname");
       endif
     endif
+    do_class_dirs = false;
   else
     print_usage ();
   endif
 
   for i = 1:numel (dirs)
     d = dirs{i};
-    run_all_tests (d);
+    run_all_tests (d, do_class_dirs);
   endfor
 
 endfunction
 
-function run_all_tests (directory)
-  dirinfo = dir (directory);
-  flist = {dirinfo.name};
+function run_all_tests (directory, do_class_dirs)
+  flist = readdir (directory);
+  dirs = {};
   no_tests = {};
   printf ("Processing files in %s:\n\n", directory);
   fflush (stdout);
   for i = 1:numel (flist)
     f = flist{i};
-    if (length (f) > 2 && strcmp (f((end-1):end), ".m"))
+    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m")) ||
+        (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       ff = fullfile (directory, f);
       if (has_tests (ff))
         print_test_file_name (f);
         [p, n, xf, sk] = test (ff, "quiet");
         print_pass_fail (n, p);
         fflush (stdout);
-      else
-        no_tests{end+1} = f;
+      elseif (has_functions (ff))
+        no_tests(end+1) = f;
+      endif
+    elseif (f(1) == "@")
+      f = fullfile (directory, f);
+      if (isdir (f))
+        dirs(end+1) = f;
       endif
     endif
   endfor
@@ -78,14 +93,42 @@ function run_all_tests (directory)
     printf ("\nThe following files in %s have no tests:\n\n", directory);
     printf ("%s", list_in_columns (no_tests));
   endif
+
+  ## Recurse into class directories since they are implied in the path
+  if (do_class_dirs)
+    for i = 1:numel (dirs)
+      d = dirs{i};
+      run_all_tests (d, false);
+    endfor
+  endif
+endfunction
+
+function retval = has_functions (f)
+  n = length (f);
+  if (n > 3 && strcmpi (f((end-2):end), ".cc"))
+    fid = fopen (f);
+    if (fid >= 0)
+      str = fread (fid, "*char")';
+      fclose (fid);
+      retval = ! isempty (regexp (str,'^(?:DEFUN|DEFUN_DLD|DEFUNX)\>',
+                                      'lineanchors', 'once'));
+    else
+      error ("fopen failed: %s", f);
+    endif
+  elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
+    retval = true;
+  else
+    retval = false;
+  endif
 endfunction
 
 function retval = has_tests (f)
   fid = fopen (f);
   if (fid >= 0)
-    str = fread (fid, "*char")';
+    str = fread (fid, "*char").';
     fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(test|assert|error|warning)', "lineanchors"));
+    retval = ! isempty (regexp (str, '^%!(?:test|assert|error|warning)',
+                                     'lineanchors', 'once'));
   else
     error ("runtests: fopen failed: %s", f);
   endif
@@ -106,3 +149,8 @@ function print_test_file_name (nm)
   filler = repmat (".", 1, 55-length (nm));
   printf ("  %s %s", nm, filler);
 endfunction
+
+
+%!error runtests ("foo", 1)
+%!error <DIRECTORY argument> runtests ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
+

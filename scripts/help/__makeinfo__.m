@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 S�ren Hauberg
+## Copyright (C) 2009-2012 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -72,6 +72,9 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     error ("__makeinfo__: second input argument must be a string");
   endif
 
+  ## NOTE: The 3rd argument is used by Octave-Forge function
+  ##       generate_package_html, not by core Octave.  This functionality
+  ##       can only be removed when that function has been updated.
   if (nargin < 3)
     if (strcmpi (output_type, "plain text"))
       fsee_also = @(T) strcat ...
@@ -100,7 +103,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     error ("unable to open %s for reading", file);
   else
     macros_text = fread (fid, Inf, "*char")';
-    text = cstrcat (macros_text, text);
+    text = [macros_text text];
   endif
   fclose (fid);
 

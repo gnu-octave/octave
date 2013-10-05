@@ -42,13 +42,13 @@
 ## If called with a single input parameter @var{what}:
 ##
 ## @table @asis
-## @item "-dynamic"
+## @item @qcode{"-dynamic"}
 ## Return the dynamic classpath.
 ##
-## @item "-static"
+## @item @qcode{"-static"}
 ## Return the static classpath.
 ##
-## @item "-all"
+## @item @qcode{"-all"}
 ## Return both the static and dynamic classpath in a single cellstr.
 ## @end table
 ## @seealso{javaaddpath, javarmpath}

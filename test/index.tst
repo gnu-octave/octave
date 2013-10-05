@@ -134,7 +134,7 @@
 %!assert (b([],3), zeros (0,1))
 
 %!shared x
-%! # Dummy shared block to clear any previous definitions
+%! ## Dummy shared block to clear any previous definitions
 %! x = 1;
 
 %!test

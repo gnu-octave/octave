@@ -31,12 +31,12 @@ function pkg = extract_pkg (nm, pat)
       if (ln > 0)
         t = regexp (ln, pat, "tokens");
         if (! isempty (t))
-          pkg = cstrcat (pkg, "\n", t{1}{1});
+          pkg = [pkg "\n" t{1}{1}];
         endif
       endif
     endwhile
     if (! isempty (pkg))
-      pkg = cstrcat (pkg, "\n");
+      pkg = [pkg "\n"];
     endif
     fclose (fid);
   endif

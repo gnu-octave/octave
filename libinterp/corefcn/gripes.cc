@@ -236,3 +236,11 @@ gripe_warn_complex_cmp (void)
   warning_with_id ("Octave:matlab-incompatible",
                    "potential Matlab compatibility problem: comparing complex numbers");
 }
+
+void
+gripe_disabled_feature (const std::string& func, const std::string& feature,
+                        const std::string& pkg /*="Octave"*/)
+{
+  error ("%s: support for %s was disabled when %s was built",
+         func.c_str (), feature.c_str (), pkg.c_str ());
+}

@@ -35,13 +35,30 @@ along with Octave; see the file COPYING.  If not, see
 #include "jit-typeinfo.h"
 
 #include <llvm/Analysis/Verifier.h>
-#include <llvm/GlobalVariable.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
+
+#ifdef HAVE_LLVM_IR_FUNCTION_H
+#include <llvm/IR/GlobalVariable.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/Intrinsics.h>
+#else
+#include <llvm/GlobalVariable.h>
 #include <llvm/LLVMContext.h>
 #include <llvm/Function.h>
 #include <llvm/Instructions.h>
 #include <llvm/Intrinsics.h>
+#endif
+
+#ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
 #include <llvm/Support/IRBuilder.h>
+#elif defined(HAVE_LLVM_IR_IRBUILDER_H)
+#include <llvm/IR/IRBuilder.h>
+#else
+#include <llvm/IRBuilder.h>
+#endif
+
 #include <llvm/Support/raw_os_ostream.h>
 
 #include "jit-ir.h"
@@ -579,10 +596,23 @@ jit_function::jit_function (llvm::Module *amodule,
                                           aname, module);
 
   if (sret ())
-    llvm_function->addAttribute (1, llvm::Attribute::StructRet);
+    {
+#ifdef FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
+      llvm::AttrBuilder attr_builder;
+      attr_builder.addAttribute (llvm::Attributes::StructRet);
+      llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder);
+      llvm_function->addAttribute (1, attrs);
+#else
+      llvm_function->addAttribute (1, llvm::Attribute::StructRet);
+#endif
+    }
 
   if (call_conv == jit_convention::internal)
+#ifdef FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES
+    llvm_function->addFnAttr (llvm::Attributes::AlwaysInline);
+#else
     llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
+#endif
 }
 
 jit_function::jit_function (const jit_function& fn, jit_type *aresult,
@@ -685,7 +715,14 @@ jit_function::call (llvm::IRBuilderD& builder,
 
   if (sret ())
     {
+#ifdef CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
+      llvm::AttrBuilder attr_builder;
+      attr_builder.addAttribute(llvm::Attributes::StructRet);
+      llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder); 
+      callinst->addAttribute (1, attrs);
+#else
       callinst->addAttribute (1, llvm::Attribute::StructRet);
+#endif
       ret = builder.CreateLoad (sret_mem);
     }
 

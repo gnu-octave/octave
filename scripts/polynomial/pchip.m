@@ -125,6 +125,7 @@ function ret = pchip (x, y, xi)
 
 endfunction
 
+
 %!demo
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
@@ -170,3 +171,4 @@ endfunction
 
 %!error (pchip (1,2));
 %!error (pchip (1,2,3));
+

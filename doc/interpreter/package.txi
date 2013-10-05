@@ -71,7 +71,7 @@ pkg list
 
 @noindent
 In this case only version 1.0.0 of the @code{image} package is
-installed.  The '*' character next to the package name shows that the
+installed.  The @qcode{'*'} character next to the package name shows that the
 image package is loaded and ready for use.
 
 It is possible to remove a package from the system using the
@@ -217,7 +217,7 @@ into @file{package/ONEWS}.
 This is an optional file describing old entries from the @file{NEWS} file.
 
 @cindex PKG_ADD
-@anchor{docXPKG_ADD}
+@anchor{XREFPKG_ADD}
 @item package/PKG_ADD
 An optional file that includes commands that are run when the package
 is added to the users path.  Note that @w{@code{PKG_ADD}} directives in the
@@ -242,7 +242,7 @@ autoload ('bar', which ('foo'));
 directives.
 
 @cindex PKG_DEL
-@anchor{docXPKG_DEL}
+@anchor{XREFPKG_DEL}
 @item package/PKG_DEL
 An optional file that includes commands that are run when the package
 is removed from the users path.  Note that @w{@code{PKG_DEL}} directives in
@@ -469,7 +469,7 @@ function names on the line belong to the last mentioned category.
 @end itemize
 
 @noindent
-The format can be summarized with the following example.
+The format can be summarized with the following example:
 
 @example
 @group
@@ -571,6 +571,7 @@ In C++ files a @w{@code{PKG_ADD}} directive looks like this
 @noindent
 In both cases @code{some_octave_command} should be replaced by the
 command that should be placed in the @w{@code{PKG_ADD}} file.
-@w{@code{PKG_DEL}} directives work in the same way, except the @w{@code{PKG_ADD}}
-keyword is replaced with @w{@code{PKG_DEL}} and the commands get added
-to the @w{@code{PKG_DEL}} file.
+@w{@code{PKG_DEL}} directives work in the same way, except the
+@w{@code{PKG_ADD}} keyword is replaced with @w{@code{PKG_DEL}} and the commands
+get added to the @w{@code{PKG_DEL}} file.
+

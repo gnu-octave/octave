@@ -24,7 +24,7 @@
 ## The message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
-## set the dialog caption.  The default title is "Warning Dialog".
+## set the dialog caption.  The default title is @qcode{"Warning Dialog"}.
 ##
 ## @seealso{helpdlg, inputdlg, listdlg, questdlg}
 ## @end deftypefn
@@ -39,10 +39,12 @@ function retval = warndlg (msg, title = "Warning Dialog")
 
 endfunction
 
-%!demo
-%!  disp('- test warndlg with prompt only.');
-%!  warndlg('Oh, a warning occured');
 
 %!demo
-%!  disp('- test warndlg with prompt and caption.');
-%!  warndlg('Oh, No...','This is the last Warning');
+%! disp ('- test warndlg with prompt only.');
+%! warndlg ('Oh, a warning occured');
+
+%!demo
+%! disp ('- test warndlg with prompt and caption.');
+%! warndlg ('Oh, No...','This is the last Warning');
+

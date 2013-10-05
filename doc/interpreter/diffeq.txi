@@ -24,8 +24,8 @@ and differential-algebraic equations.
 All solvers are based on reliable ODE routines written in Fortran.
 
 @menu
-* Ordinary Differential Equations::  
-* Differential-Algebraic Equations::  
+* Ordinary Differential Equations::
+* Differential-Algebraic Equations::
 @end menu
 
 @cindex differential equations

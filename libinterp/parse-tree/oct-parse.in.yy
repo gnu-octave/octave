@@ -257,8 +257,8 @@ make_statement (T *arg)
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
 %type <tree_fcn_handle_type> fcn_handle
-%type <tree_matrix_type> matrix_rows matrix_rows1
-%type <tree_cell_type> cell_rows cell_rows1
+%type <tree_matrix_type> matrix_rows
+%type <tree_cell_type> cell_rows
 %type <tree_expression_type> matrix cell
 %type <tree_expression_type> primary_expr oper_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
@@ -282,13 +282,12 @@ make_statement (T *arg)
 %type <tree_switch_command_type> switch_command
 %type <tree_switch_case_type> switch_case default_case
 %type <tree_switch_case_list_type> case_list1 case_list
-%type <tree_decl_elt_type> decl2
+%type <tree_decl_elt_type> decl2 param_list_elt
 %type <tree_decl_init_list_type> decl1
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement function_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
-%type <tree_statement_list_type> opt_list input1
-
+%type <tree_statement_list_type> opt_list
 %type <tree_classdef_attribute_type> attr
 %type <tree_classdef_attribute_list_type> attr_list opt_attr_list
 %type <tree_classdef_superclass_type> superclass
@@ -331,33 +330,24 @@ make_statement (T *arg)
 // Statements and statement lists
 // ==============================
 
-input           : input1
+input           : simple_list '\n'
                   {
                     parser.stmt_list = $1;
                     YYACCEPT;
                   }
-                | simple_list parse_error
-                  { ABORT_PARSE; }
+                | simple_list END_OF_INPUT
+                  {
+                    lexer.end_of_input = true;
+                    parser.stmt_list = $1;
+                    YYACCEPT;
+                  }
                 | parse_error
                   { ABORT_PARSE; }
                 ;
 
-input1          : '\n'
+simple_list     : opt_sep_no_nl
                   { $$ = 0; }
-                | END_OF_INPUT
-                  {
-                    lexer.end_of_input = true;
-                    $$ = 0;
-                  }
-                | simple_list
-                  { $$ = $1; }
-                | simple_list '\n'
-                  { $$ = $1; }
-                | simple_list END_OF_INPUT
-                  { $$ = $1; }
-                ;
-
-simple_list     : simple_list1 opt_sep_no_nl
+                | simple_list1 opt_sep_no_nl
                   { $$ = parser.set_stmt_print_flag ($1, $2, false); }
                 ;
 
@@ -465,59 +455,62 @@ constant        : NUM
                   { $$ = $1; }
                 ;
 
-matrix          : '[' ']'
-                  { $$ = new tree_constant (octave_null_matrix::instance); }
-                | '[' ';' ']'
-                  { $$ = new tree_constant (octave_null_matrix::instance); }
-                | '[' ',' ']'
-                  { $$ = new tree_constant (octave_null_matrix::instance); }
-                | '[' matrix_rows ']'
+matrix          : '[' matrix_rows ']'
                   { $$ = parser.finish_matrix ($2); }
                 ;
 
-matrix_rows     : matrix_rows1
-                  { $$ = $1; }
-                | matrix_rows1 ';'      // Ignore trailing semicolon.
-                  { $$ = $1; }
-                ;
-
-matrix_rows1    : cell_or_matrix_row
-                  { $$ = new tree_matrix ($1); }
-                | matrix_rows1 ';' cell_or_matrix_row
+matrix_rows     : cell_or_matrix_row
+                  { $$ = $1 ? new tree_matrix ($1) : 0; }
+                | matrix_rows ';' cell_or_matrix_row
                   {
-                    $1->append ($3);
-                    $$ = $1;
+                    if ($1)
+                      {
+                        if ($3)
+                          $1->append ($3);
+
+                        $$ = $1;
+                      }
+                    else
+                      $$ = $3 ? new tree_matrix ($3) : 0;
                   }
                 ;
 
-cell            : '{' '}'
-                  { $$ = new tree_constant (octave_value (Cell ())); }
-                | '{' ';' '}'
-                  { $$ = new tree_constant (octave_value (Cell ())); }
-                | '{' cell_rows '}'
+cell            : '{' cell_rows '}'
                   { $$ = parser.finish_cell ($2); }
                 ;
 
-cell_rows       : cell_rows1
-                  { $$ = $1; }
-                | cell_rows1 ';'        // Ignore trailing semicolon.
-                  { $$ = $1; }
-                ;
-
-cell_rows1      : cell_or_matrix_row
-                  { $$ = new tree_cell ($1); }
-                | cell_rows1 ';' cell_or_matrix_row
+cell_rows       : cell_or_matrix_row
+                  { $$ = $1 ? new tree_cell ($1) : 0; }
+                | cell_rows ';' cell_or_matrix_row
                   {
-                    $1->append ($3);
-                    $$ = $1;
+                    if ($1)
+                      {
+                        if ($3)
+                          $1->append ($3);
+
+                        $$ = $1;
+                      }
+                    else
+                      $$ = $3 ? new tree_cell ($3) : 0;
                   }
                 ;
 
+// tree_argument_list objects can't be empty or have leading or trailing
+// commas, but those are all allowed in matrix and cell array rows.
+
 cell_or_matrix_row
-                : arg_list
+                : // empty
+                  { $$ = 0; }
+                | ','
+                  { $$ = 0; }
+                | arg_list
                   { $$ = $1; }
-                | arg_list ','          // Ignore trailing comma.
+                | arg_list ','
                   { $$ = $1; }
+                | ',' arg_list
+                  { $$ = $2; }
+                | ',' arg_list ','
+                  { $$ = $2; }
                 ;
 
 fcn_handle      : '@' FCN_HANDLE
@@ -832,10 +825,6 @@ decl2           : identifier
                     lexer.looking_at_initializer_expression = false;
                     $$ = new tree_decl_elt ($1, $4);
                   }
-                | magic_tilde
-                  {
-                    $$ = new tree_decl_elt ($1);
-                  }
                 ;
 
 // ====================
@@ -1009,15 +998,15 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                     if (! ($$ = parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
-                | TRY stash_comment opt_sep opt_list CATCH
-                  stash_comment opt_sep opt_list END
+                | TRY stash_comment opt_sep opt_list CATCH stash_comment
+                  opt_sep opt_list END
                   {
-                    if (! ($$ = parser.make_try_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = parser.make_try_command ($1, $4, $7, $8, $9, $2, $6)))
                       ABORT_PARSE;
                   }
                 | TRY stash_comment opt_sep opt_list END
                   {
-                    if (! ($$ = parser.make_try_command ($1, $4, 0, $5, $2, 0)))
+                    if (! ($$ = parser.make_try_command ($1, $4, 0, 0, $5, $2, 0)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1104,13 +1093,19 @@ param_list1     : // empty
                   }
                 ;
 
-param_list2     : decl2
+param_list2     : param_list_elt
                   { $$ = new tree_parameter_list ($1); }
-                | param_list2 ',' decl2
+                | param_list2 ',' param_list_elt
                   {
                     $1->append ($3);
                     $$ = $1;
                   }
+                ;
+
+param_list_elt  : decl2
+                  { $$ = $1; }
+                | magic_tilde
+                  { $$ = new tree_decl_elt ($1); }
                 ;
 
 // ===================================
@@ -1120,19 +1115,31 @@ param_list2     : decl2
 return_list     : '[' ']'
                   {
                     lexer.looking_at_return_list = false;
+
                     $$ = new tree_parameter_list ();
                   }
-                | return_list1
+                | identifier
                   {
                     lexer.looking_at_return_list = false;
-                    if ($1->validate (tree_parameter_list::out))
-                      $$ = $1;
+
+                    tree_parameter_list *tmp = new tree_parameter_list ($1);
+
+                    // Even though this parameter list can contain only
+                    // a single identifier, we still need to validate it
+                    // to check for varargin or varargout.
+
+                    if (tmp->validate (tree_parameter_list::out))
+                      $$ = tmp;
                     else
                       ABORT_PARSE;
                   }
                 | '[' return_list1 ']'
                   {
                     lexer.looking_at_return_list = false;
+
+                    // Check for duplicate parameter names, varargin,
+                    // or varargout.
+
                     if ($2->validate (tree_parameter_list::out))
                       $$ = $2;
                     else
@@ -2283,6 +2290,7 @@ octave_base_parser::make_unwind_command (token *unwind_tok,
 tree_command *
 octave_base_parser::make_try_command (token *try_tok,
                                       tree_statement_list *body,
+                                      char catch_sep,
                                       tree_statement_list *cleanup_stmts,
                                       token *end_tok,
                                       octave_comment_list *lc,
@@ -2297,7 +2305,26 @@ octave_base_parser::make_try_command (token *try_tok,
       int l = try_tok->line ();
       int c = try_tok->column ();
 
-      retval = new tree_try_catch_command (body, cleanup_stmts,
+      tree_identifier *id = 0;
+
+      if (! catch_sep && cleanup_stmts && ! cleanup_stmts->empty ())
+        {
+          tree_statement *stmt = cleanup_stmts->front ();
+
+          if (stmt)
+            {
+              tree_expression *expr = stmt->expression ();
+
+              if (expr && expr->is_identifier ())
+                {
+                  id = dynamic_cast<tree_identifier *> (expr);
+
+                  cleanup_stmts->pop_front ();
+                }
+            }
+        }
+
+      retval = new tree_try_catch_command (body, cleanup_stmts, id,
                                            lc, mc, tc, l, c);
     }
 
@@ -3340,7 +3367,9 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
 tree_expression *
 octave_base_parser::finish_matrix (tree_matrix *m)
 {
-  return finish_array_list (m);
+  return (m
+          ? finish_array_list (m)
+          : new tree_constant (octave_null_matrix::instance));
 }
 
 // Finish building a cell list.
@@ -3348,7 +3377,9 @@ octave_base_parser::finish_matrix (tree_matrix *m)
 tree_expression *
 octave_base_parser::finish_cell (tree_cell *c)
 {
-  return finish_array_list (c);
+  return (c
+          ? finish_array_list (c)
+          : new tree_constant (octave_value (Cell ())));
 }
 
 void
@@ -3804,7 +3835,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
 DEFUN (autoload, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
+@deftypefn  {Built-in Function} {} autoload (@var{function}, @var{file})\n\
 @deftypefnx {Built-in Function} {} autoload (@dots{}, @asis{\"remove\"})\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
@@ -4034,9 +4065,9 @@ DEFUN (mfilename, args, ,
 @deftypefnx {Built-in Function} {} mfilename (\"fullpath\")\n\
 @deftypefnx {Built-in Function} {} mfilename (\"fullpathext\")\n\
 Return the name of the currently executing file.  At the top-level,\n\
-return the empty string.  Given the argument @code{\"fullpath\"},\n\
+return the empty string.  Given the argument @qcode{\"fullpath\"},\n\
 include the directory part of the file name, but not the extension.\n\
-Given the argument @code{\"fullpathext\"}, include the directory part\n\
+Given the argument @qcode{\"fullpathext\"}, include the directory part\n\
 of the file name and the extension.\n\
 @end deftypefn")
 {
@@ -4555,7 +4586,7 @@ DEFUN (assignin, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} assignin (@var{context}, @var{varname}, @var{value})\n\
 Assign @var{value} to @var{varname} in context @var{context}, which\n\
-may be either @code{\"base\"} or @code{\"caller\"}.\n\
+may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 @seealso{evalin}\n\
 @end deftypefn")
 {
@@ -4609,8 +4640,8 @@ DEFUN (evalin, args, nargout,
 @deftypefn  {Built-in Function} {} evalin (@var{context}, @var{try})\n\
 @deftypefnx {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
 Like @code{eval}, except that the expressions are evaluated in the\n\
-context @var{context}, which may be either @code{\"caller\"} or\n\
-@code{\"base\"}.\n\
+context @var{context}, which may be either @qcode{\"caller\"} or\n\
+@qcode{\"base\"}.\n\
 @seealso{eval, assignin}\n\
 @end deftypefn")
 {
@@ -4690,6 +4721,57 @@ Undocumented internal function.\n\
                                   "__parser_debug_flag__");
 
   octave_debug = debug_flag;
+
+  return retval;
+}
+
+DEFUN (__parse_file__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __parse_file__ (@var{file}, @var{verbose})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string file = args(0).string_value ();
+      
+      std::string full_file = octave_env::make_absolute (file);
+
+      size_t file_len = file.length ();
+
+      if ((file_len > 4 && file.substr (file_len-4) == ".oct")
+          || (file_len > 4 && file.substr (file_len-4) == ".mex")
+          || (file_len > 2 && file.substr (file_len-2) == ".m"))
+        {
+          file = octave_env::base_pathname (file);
+          file = file.substr (0, file.find_last_of ('.'));
+
+          size_t pos = file.find_last_of (file_ops::dir_sep_str ());
+          if (pos != std::string::npos)
+            file = file.substr (pos+1);
+        }
+
+      if (! error_state)
+        {
+          if (nargin == 2)
+            octave_stdout << "parsing " << full_file << std::endl;
+
+          octave_function *fcn = parse_fcn_file (full_file, file, "", "",
+                                                 true, false, false,
+                                                 false, "__parse_file__");
+
+          if (fcn)
+            delete fcn;
+        }
+      else
+        error ("__parse_file__: expecting file name as argument");
+    }
+  else
+    print_usage ();
 
   return retval;
 }

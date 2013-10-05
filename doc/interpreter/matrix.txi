@@ -27,10 +27,10 @@ value.  Octave can also rotate the elements, extract the upper- or
 lower-triangular parts, or sort the columns of a matrix.
 
 @menu
-* Finding Elements and Checking Conditions::  
-* Rearranging Matrices::        
-* Special Utility Matrices::    
-* Famous Matrices::             
+* Finding Elements and Checking Conditions::
+* Rearranging Matrices::
+* Special Utility Matrices::
+* Famous Matrices::
 @end menu
 
 @node Finding Elements and Checking Conditions
@@ -77,7 +77,7 @@ Note that in conditional contexts (like the test clause of @code{if} and
 @DOCSTRING(common_size)
 
 @DOCSTRING(find)
-        
+
 @DOCSTRING(lookup)
 
 If you wish to check if a variable exists at all, instead of properties
@@ -124,7 +124,7 @@ its elements may have, consult @ref{Status of Variables}.
 
 @DOCSTRING(nth_element)
 
-@anchor{docXtriu}
+@anchor{XREFtriu}
 @DOCSTRING(tril)
 
 @DOCSTRING(vec)
@@ -174,7 +174,7 @@ create vectors with evenly or logarithmically spaced elements.
 
 The generators operate in the new or old style together, it is not
 possible to mix the two.  Initializing any generator with
-@code{"state"} or @code{"seed"} causes the others to switch to the
+@qcode{"state"} or @qcode{"seed"} causes the others to switch to the
 same style for future calls.
 
 The state of each generator is independent and calls to different
@@ -208,7 +208,7 @@ end
 
 @noindent
 produce equivalent results.  When the generators are initialized in
-the old style with @code{"seed"} only @code{rand} and @code{randn} are
+the old style with @qcode{"seed"} only @code{rand} and @code{randn} are
 independent, because the old @code{rande}, @code{randg} and
 @code{randp} generators make calls to @code{rand} and @code{randn}.
 

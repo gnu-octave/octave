@@ -6,7 +6,7 @@ die "usage: munge-texi TOP-SRCDIR DOCSTRING-FILE < file" if (@ARGV < 2);
 $top_srcdir = shift (@ARGV);
 
 # Constant patterns
-$doc_delim = qr/^\c_/;
+$doc_delim = qr/^\x{1d}/;
 $tex_delim = qr/\Q-*- texinfo -*-\E/;
 $comment_line = qr/^\s*(?:$|#)/;
 # Pre-declare hash size for efficiency
@@ -61,7 +61,7 @@ TXI_LINE: while (<STDIN>)
     }
 
     $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
-    $docstring =~ s/^$tex_delim$/\@anchor{docX$func}/m;
+    $docstring =~ s/^$tex_delim$/\@anchor{XREF$func}/m;
     print $docstring,"\n";
 
     next TXI_LINE;
@@ -110,7 +110,7 @@ sub extract_docstring
       foreach $func (split (/,/, $func_list))
       {
         $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
-        $repl .= "\@ref{docX$func,,$func}, ";
+        $repl .= "\@ref{XREF$func,,$func}, ";
       }
       substr($repl,-2) = "";   # Remove last ', ' 
       $_ = "\@seealso{$repl}$rest_of_line";

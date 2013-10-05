@@ -31,31 +31,30 @@
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fsolve} recognizes these options:
-## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
-## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"},
-## @code{"Jacobian"}, @code{"Updating"}, @code{"ComplexEqn"}
-## @code{"TypicalX"}, @code{"AutoScaling"} and @code{"FinDiffType"}.
+## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
+## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
+## @qcode{"Jacobian"}, @qcode{"Updating"}, @qcode{"ComplexEqn"}
+## @qcode{"TypicalX"}, @qcode{"AutoScaling"} and @qcode{"FinDiffType"}.
 ##
-## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
+## If @qcode{"Jacobian"} is @qcode{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
-## of right-hand sides at the requested point.  @code{"TolX"} specifies
+## of right-hand sides at the requested point.  @qcode{"TolX"} specifies
 ## the termination tolerance in the unknown variables, while
-## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
-## for both @code{"TolX"} and @code{"TolFun"}.
+## @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
+## for both @qcode{"TolX"} and @qcode{"TolFun"}.
 ##
-## If @code{"AutoScaling"} is on, the variables will be automatically scaled
+## If @qcode{"AutoScaling"} is on, the variables will be automatically scaled
 ## according to the column norms of the (estimated) Jacobian.  As a result,
 ## TolF becomes scaling-independent.  By default, this option is off, because
 ## it may sometimes deliver unexpected (though mathematically correct) results.
 ##
-## If @code{"Updating"} is "on", the function will attempt to use Broyden
-## updates to update the Jacobian, in order to reduce the amount of Jacobian
-## calculations.
-## If your user function always calculates the Jacobian (regardless of number
-## of output arguments), this option provides no advantage and should be set to
-## false.
+## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
+## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
+## amount of Jacobian calculations.  If your user function always calculates the
+## Jacobian (regardless of number of output arguments), this option provides
+## no advantage and should be set to false.
 ##
-## @code{"ComplexEqn"} is @code{"on"}, @code{fsolve} will attempt to solve
+## @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations possess a
 ## complex derivative (i.e., are holomorphic).  If this is not what you want,
 ## should unpack the real and imaginary parts of the system to get a real
@@ -134,7 +133,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
-    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
+    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, ...
     "Jacobian", "off", "TolX", 1e-7, "TolFun", 1e-7,
     "OutputFcn", [], "Updating", "on", "FunValCheck", "off",
     "ComplexEqn", "off", "FinDiffType", "central",
@@ -461,6 +460,7 @@ function [fx, jx] = make_fcn_jac (x, fcn, fjac)
     jx = fjac (x);
   endif
 endfunction
+
 
 %!function retval = __f (p)
 %!  x = p(1);

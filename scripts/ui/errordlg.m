@@ -24,7 +24,7 @@
 ## The message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
-## set the dialog caption.  The default title is "Error Dialog".
+## set the dialog caption.  The default title is @qcode{"Error Dialog"}.
 ##
 ## The return value is always 1.
 ## @seealso{helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
@@ -40,10 +40,12 @@ function retval = errordlg (msg, title = "Error Dialog")
 
 endfunction
 
-%!demo
-%!  disp('- test errordlg with prompt only.');
-%!  errordlg('Oops, an expected error occured');
 
 %!demo
-%!  disp('- test errordlg with prompt and caption.');
-%!  errordlg('Oops another error','This is a very long and informative caption');
+%! disp ('- test errordlg with prompt only.');
+%! errordlg ('Oops, an expected error occured');
+
+%!demo
+%! disp ('- test errordlg with prompt and caption.');
+%! errordlg ('Oops another error','This is a very long and informative caption');
+

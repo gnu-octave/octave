@@ -36,8 +36,9 @@
 ## matrices @var{xi}, @var{yi}.
 ##
 ## If the last argument is a string, the interpolation method can
-## be specified.  The method can be "linear", "nearest" or "cubic".
-## If it is omitted "linear" interpolation is assumed.
+## be specified.  The method can be @qcode{"linear"}, @qcode{"nearest"} or
+## @qcode{"cubic"}.  If it is omitted @qcode{"linear"} interpolation is
+## assumed.
 ##
 ## @item interp2 (@var{z}, @var{xi}, @var{yi})
 ## Assumes @code{@var{x} = 1:rows (@var{z})} and @code{@var{y} =
@@ -52,19 +53,19 @@
 ## interpolation.  It can take one of the following values
 ##
 ## @table @asis
-## @item "nearest"
+## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item "linear"
+## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors.
 ##
-## @item "pchip"
+## @item @qcode{"pchip"}
 ## Piecewise cubic Hermite interpolating polynomial.
 ##
-## @item "cubic"
+## @item @qcode{"cubic"}
 ## Cubic interpolation from four nearest neighbors.
 ##
-## @item "spline"
+## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table

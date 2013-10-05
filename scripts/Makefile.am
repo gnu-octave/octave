@@ -20,8 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-AUTOMAKE_OPTIONS = subdir-objects
-
 EXTRA_DIST =
 
 CLEANFILES =
@@ -49,6 +47,7 @@ include deprecated/module.mk
 include elfun/module.mk
 include general/module.mk
 include geometry/module.mk
+include gui/module.mk
 include help/module.mk
 include image/module.mk
 include io/module.mk
@@ -58,7 +57,9 @@ include miscellaneous/module.mk
 include optimization/module.mk
 include path/module.mk
 include pkg/module.mk
-include plot/module.mk
+include plot/appearance/module.mk
+include plot/draw/module.mk
+include plot/util/module.mk
 include polynomial/module.mk
 include prefs/module.mk
 include set/module.mk
@@ -114,6 +115,10 @@ geometry/PKG_ADD: $(geometry_FCN_FILES) $(geometry_GEN_FCN_FILES) geometry/$(oct
 	$(srcdir)/mk-pkg-add $(srcdir) $(geometry_FCN_FILES) -- $(geometry_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
+gui/PKG_ADD: $(gui_FCN_FILES) $(gui_GEN_FCN_FILES) gui/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(gui_FCN_FILES) -- $(gui_GEN_FCN_FILES) > $@-t
+	mv $@-t $@
+
 help/PKG_ADD: $(help_FCN_FILES) $(help_GEN_FCN_FILES) help/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(help_FCN_FILES) -- $(help_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
@@ -150,8 +155,16 @@ pkg/PKG_ADD: $(pkg_FCN_FILES) $(pkg_GEN_FCN_FILES) pkg/$(octave_dirstamp) mk-pkg
 	$(srcdir)/mk-pkg-add $(srcdir) $(pkg_FCN_FILES) -- $(pkg_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
-plot/PKG_ADD: $(plot_FCN_FILES) $(plot_GEN_FCN_FILES) plot/$(octave_dirstamp) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(srcdir) $(plot_FCN_FILES) -- $(plot_GEN_FCN_FILES) > $@-t
+plot/appearance/PKG_ADD: $(plot_appearance_FCN_FILES) $(plot_appearance_GEN_FCN_FILES) plot/appearance/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(plot_appearance_FCN_FILES) -- $(plot_appearance_GEN_FCN_FILES) > $@-t
+	mv $@-t $@
+
+plot/draw/PKG_ADD: $(plot_draw_FCN_FILES) $(plot_draw_GEN_FCN_FILES) plot/draw/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(plot_draw_FCN_FILES) -- $(plot_draw_GEN_FCN_FILES) > $@-t
+	mv $@-t $@
+
+plot/util/PKG_ADD: $(plot_util_FCN_FILES) $(plot_util_GEN_FCN_FILES) plot/util/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(plot_util_FCN_FILES) -- $(plot_util_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
 polynomial/PKG_ADD: $(polynomial_FCN_FILES) $(polynomial_GEN_FCN_FILES) polynomial/$(octave_dirstamp) mk-pkg-add
@@ -224,6 +237,7 @@ $(deprecated_GEN_FCN_FILES): deprecated/$(octave_dirstamp)
 $(elfun_GEN_FCN_FILES): elfun/$(octave_dirstamp)
 $(general_GEN_FCN_FILES): general/$(octave_dirstamp)
 $(geometry_GEN_FCN_FILES): geometry/$(octave_dirstamp)
+$(gui_GEN_FCN_FILES): gui/$(octave_dirstamp)
 $(help_GEN_FCN_FILES): help/$(octave_dirstamp)
 $(image_GEN_FCN_FILES): image/$(octave_dirstamp)
 $(io_GEN_FCN_FILES): io/$(octave_dirstamp)
@@ -233,7 +247,9 @@ $(miscellaneous_GEN_FCN_FILES): miscellaneous/$(octave_dirstamp)
 $(optimization_GEN_FCN_FILES): optimization/$(octave_dirstamp)
 $(path_GEN_FCN_FILES): path/$(octave_dirstamp)
 $(pkg_GEN_FCN_FILES): pkg/$(octave_dirstamp)
-$(plot_GEN_FCN_FILES): plot/$(octave_dirstamp)
+$(plot_appearance_GEN_FCN_FILES): plot/appearance/$(octave_dirstamp)
+$(plot_draw_GEN_FCN_FILES): plot/draw/$(octave_dirstamp)
+$(plot_util_GEN_FCN_FILES): plot/util/$(octave_dirstamp)
 $(polynomial_GEN_FCN_FILES): polynomial/$(octave_dirstamp)
 $(prefs_GEN_FCN_FILES): prefs/$(octave_dirstamp)
 $(set_GEN_FCN_FILES): set/$(octave_dirstamp)
@@ -269,6 +285,9 @@ general/$(octave_dirstamp):
 geometry/$(octave_dirstamp):
 	$(MKDIR_P) geometry
 	: > geometry/$(octave_dirstamp)
+gui/$(octave_dirstamp):
+	$(MKDIR_P) gui
+	: > gui/$(octave_dirstamp)
 help/$(octave_dirstamp):
 	$(MKDIR_P) help
 	: > help/$(octave_dirstamp)
@@ -296,9 +315,15 @@ path/$(octave_dirstamp):
 pkg/$(octave_dirstamp):
 	$(MKDIR_P) pkg
 	: > pkg/$(octave_dirstamp)
-plot/$(octave_dirstamp):
-	$(MKDIR_P) plot
-	: > plot/$(octave_dirstamp)
+plot/appearance/$(octave_dirstamp):
+	$(MKDIR_P) plot/appearance
+	: > plot/appearance/$(octave_dirstamp)
+plot/draw/$(octave_dirstamp):
+	$(MKDIR_P) plot/draw
+	: > plot/draw/$(octave_dirstamp)
+plot/util/$(octave_dirstamp):
+	$(MKDIR_P) plot/util
+	: > plot/util/$(octave_dirstamp)
 polynomial/$(octave_dirstamp):
 	$(MKDIR_P) polynomial
 	: > polynomial/$(octave_dirstamp)

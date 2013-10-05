@@ -1927,22 +1927,6 @@ property_list::as_struct (const std::string& prefix_arg) const
   return m;
 }
 
-graphics_handle::graphics_handle (const octave_value& a)
-  : val (octave_NaN)
-{
-  if (a.is_empty ())
-    /* do nothing */;
-  else
-    {
-      double tval = a.double_value ();
-
-      if (! error_state)
-        val = tval;
-      else
-        error ("invalid graphics handle");
-    }
-}
-
 // Set properties given as a cs-list of name, value pairs.
 
 void
@@ -1978,11 +1962,14 @@ graphics_object::set (const octave_value_list& args)
 /*
 ## test set with name, value pairs
 %!test
-%! set (gcf, "visible", "off");
+%! hf = figure ("visible", "off");
 %! h = plot (1:10, 10:-1:1);
 %! set (h, "linewidth", 10, "marker", "x");
-%! assert (get (h, "linewidth"), 10);
-%! assert (get (h, "marker"), "x");
+%! lw = get (h, "linewidth");
+%! mk = get (h, "marker");
+%! close (hf);
+%! assert (lw, 10);
+%! assert (mk, "x");
 */
 
 // Set properties given in two cell arrays containing names and values.
@@ -2013,32 +2000,47 @@ graphics_object::set (const Array<std::string>& names,
 /*
 ## test set with cell array arguments
 %!test
-%! set (gcf, "visible", "off");
+%! hf = figure ("visible", "off");
 %! h = plot (1:10, 10:-1:1);
 %! set (h, {"linewidth", "marker"}, {10, "x"});
-%! assert (get (h, "linewidth"), 10);
-%! assert (get (h, "marker"), "x");
+%! lw = get (h, "linewidth");
+%! mk = get (h, "marker");
+%! close (hf);
+%! assert (lw, 10);
+%! assert (mk, "x");
 
 ## test set with multiple handles and cell array arguments
 %!test
-%! set (gcf, "visible", "off");
-%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%! set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"});
-%! assert (get (h, "linewidth"), {10; 5});
-%! assert (get (h, "marker"), {"x"; "o"});
-%! set (h, {"linewidth", "marker"}, {10, "x"});
-%! assert (get (h, "linewidth"), {10; 10});
-%! assert (get (h, "marker"), {"x"; "x"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!   set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"});
+%!   assert (get (h, "linewidth"), {10; 5});
+%!   assert (get (h, "marker"), {"x"; "o"});
+%!   set (h, {"linewidth", "marker"}, {10, "x"});
+%!   assert (get (h, "linewidth"), {10; 10});
+%!   assert (get (h, "marker"), {"x"; "x"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect;
 
 %!error <set: number of graphics handles must match number of value rows>
-%! set (gcf, "visible", "off");
-%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%! set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"; 7, "."});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!   set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"; 7, "."});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 %!error <set: number of names must match number of value columns>
-%! set (gcf, "visible", "off");
-%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%! set (h, {"linewidth"}, {10, "x"; 5, "o"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!   set (h, {"linewidth"}, {10, "x"; 5, "o"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 */
 
 // Set properties given in a struct array
@@ -2061,27 +2063,34 @@ graphics_object::set (const octave_map& m)
 /*
 ## test set ticklabels for compatibility
 %!test
-%! set (gcf (), "visible", "off");
+%! hf = figure ("visible", "off");
 %! set (gca (), "xticklabel", [0, 0.2, 0.4, 0.6, 0.8, 1]);
 %! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
 %! assert (class (xticklabel), "char");
 %! assert (size (xticklabel), [6, 3]);
+
 %!test
-%! set (gcf (), "visible", "off");
+%! hf = figure ("visible", "off");
 %! set (gca (), "xticklabel", "0|0.2|0.4|0.6|0.8|1");
 %! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
 %! assert (class (xticklabel), "char");
 %! assert (size (xticklabel), [6, 3]);
+
 %!test
-%! set (gcf (), "visible", "off");
+%! hf = figure ("visible", "off");
 %! set (gca (), "xticklabel", ["0 "; "0.2"; "0.4"; "0.6"; "0.8"; "1 "]);
 %! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
 %! assert (class (xticklabel), "char");
 %! assert (size (xticklabel), [6, 3]);
+
 %!test
-%! set (gcf (), "visible", "off");
+%! hf = figure ("visible", "off");
 %! set (gca (), "xticklabel", {"0", "0.2", "0.4", "0.6", "0.8", "1"});
 %! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
 %! assert (class (xticklabel), "cell");
 %! assert (size (xticklabel), [6, 1]);
 */
@@ -2089,40 +2098,47 @@ graphics_object::set (const octave_map& m)
 /*
 ## test set with struct arguments
 %!test
-%! set (gcf, "visible", "off");
-%! h = plot (1:10, 10:-1:1);
-%! set (h, struct ("linewidth", 10, "marker", "x"));
-%! assert (get (h, "linewidth"), 10);
-%! assert (get (h, "marker"), "x");
-%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%! set (h, struct ("linewidth", {5, 10}));
-%! assert (get (h, "linewidth"), {10; 10});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (1:10, 10:-1:1);
+%!   set (h, struct ("linewidth", 10, "marker", "x"));
+%!   assert (get (h, "linewidth"), 10);
+%!   assert (get (h, "marker"), "x");
+%!   h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%!   set (h, struct ("linewidth", {5, 10}));
+%!   assert (get (h, "linewidth"), {10; 10});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## test ordering
 %!test
 %! markchanged = @(h, foobar, name) set (h, "userdata", [get(h,"userdata"); {name}]);
-%! figure (1, "visible", "off")
-%! clf ();
-%! h = line ();
-%! set (h, "userdata", {});
-%! addlistener (h, "color", {markchanged, "color"});
-%! addlistener (h, "linewidth", {markchanged, "linewidth"});
-%! # "linewidth" first
-%! props.linewidth = 2;
-%! props.color = "r";
-%! set (h, props);
-%! assert (get (h, "userdata"), fieldnames (props));
-%! clear props
-%! clf ();
-%! h = line ();
-%! set (h, "userdata", {});
-%! addlistener (h, "color", {markchanged, "color"});
-%! addlistener (h, "linewidth", {markchanged, "linewidth"});
-%! # "color" first
-%! props.color = "r";
-%! props.linewidth = 2;
-%! set (h, props);
-%! assert (get (h, "userdata"), fieldnames (props));
-%! close (1);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = line ();
+%!   set (h, "userdata", {});
+%!   addlistener (h, "color", {markchanged, "color"});
+%!   addlistener (h, "linewidth", {markchanged, "linewidth"});
+%!   ## "linewidth" first
+%!   props.linewidth = 2;
+%!   props.color = "r";
+%!   set (h, props);
+%!   assert (get (h, "userdata"), fieldnames (props));
+%!   clear props;
+%!   clf ();
+%!   h = line ();
+%!   set (h, "userdata", {});
+%!   addlistener (h, "color", {markchanged, "color"});
+%!   addlistener (h, "linewidth", {markchanged, "linewidth"});
+%!   ## "color" first
+%!   props.color = "r";
+%!   props.linewidth = 2;
+%!   set (h, props);
+%!   assert (get (h, "userdata"), fieldnames (props));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 */
 
 // Set a property to a value or to its (factory) default value.
@@ -2173,13 +2189,19 @@ graphics_object::set_value_or_default (const caseless_str& name,
 /*
 ## test setting of default values
 %!test
-%! set (gcf, "visible", "off");
-%! h = plot (1:10, 10:-1:1);
-%! set (0, "defaultlinelinewidth", 20);
-%! set (h, "linewidth", "default");
-%! assert (get (h, "linewidth"), 20);
-%! set (h, "linewidth", "factory");
-%! assert (get (h, "linewidth"), 0.5);
+%! old_lw = get (0, "defaultlinelinewidth");
+%! unwind_protect
+%!   hf = figure ("visible", "off");
+%!   h = plot (1:10, 10:-1:1);
+%!   set (0, "defaultlinelinewidth", 20);
+%!   set (h, "linewidth", "default");
+%!   assert (get (h, "linewidth"), 20);
+%!   set (h, "linewidth", "factory");
+%!   assert (get (h, "linewidth"), 0.5);
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   set (0, "defaultlinelinewidth", old_lw);
+%! end_unwind_protect
 */
 
 static double
@@ -3125,19 +3147,24 @@ root_figure::properties::get_boundingbox (bool, const Matrix&) const
 
 /*
 %!test
-%! set (0, "units", "pixels");
-%! sz = get (0, "screensize") - [1, 1, 0, 0];
-%! dpi = get (0, "screenpixelsperinch");
-%! set (0, "units", "inches");
-%! assert (get (0, "screensize"), sz / dpi, 0.5 / dpi);
-%! set (0, "units", "centimeters");
-%! assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54);
-%! set (0, "units", "points");
-%! assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72);
-%! set (0, "units", "normalized");
-%! assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0]);
-%! set (0, "units", "pixels");
-%! assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
+%! old_units = get (0, "units");
+%! unwind_protect
+%!   set (0, "units", "pixels");
+%!   sz = get (0, "screensize") - [1, 1, 0, 0];
+%!   dpi = get (0, "screenpixelsperinch");
+%!   set (0, "units", "inches");
+%!   assert (get (0, "screensize"), sz / dpi, 0.5 / dpi);
+%!   set (0, "units", "centimeters");
+%!   assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54);
+%!   set (0, "units", "points");
+%!   assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72);
+%!   set (0, "units", "normalized");
+%!   assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0]);
+%!   set (0, "units", "pixels");
+%!   assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
+%! unwind_protect_cleanup
+%!   set (0, "units", old_units);
+%! end_unwind_protect
 */
 
 void
@@ -3745,27 +3772,34 @@ figure::properties::update_papersize (void)
 
 /*
 %!test
-%! figure (1, "visible", "off");
-%! set (1, "paperunits", "inches");
-%! set (1, "papersize", [5, 4]);
-%! set (1, "paperunits", "points");
-%! assert (get (1, "papersize"), [5, 4] * 72, 1);
-%! papersize = get (gcf, "papersize");
-%! set (1, "papersize", papersize + 1);
-%! set (1, "papersize", papersize);
-%! assert (get (1, "papersize"), [5, 4] * 72, 1);
-%! close (1);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   set (hf, "paperunits", "inches");
+%!   set (hf, "papersize", [5, 4]);
+%!   set (hf, "paperunits", "points");
+%!   assert (get (hf, "papersize"), [5, 4] * 72, 1);
+%!   papersize = get (hf, "papersize");
+%!   set (hf, "papersize", papersize + 1);
+%!   set (hf, "papersize", papersize);
+%!   assert (get (hf, "papersize"), [5, 4] * 72, 1);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 %!test
-%! figure (1, "visible", "off");
-%! set (1, "paperunits", "inches");
-%! set (1, "papersize", [5, 4]);
-%! set (1, "paperunits", "centimeters");
-%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72);
-%! papersize = get (gcf, "papersize");
-%! set (1, "papersize", papersize + 1);
-%! set (1, "papersize", papersize);
-%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72);
-%! close (1);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   set (hf, "paperunits", "inches");
+%!   set (hf, "papersize", [5, 4]);
+%!   set (hf, "paperunits", "centimeters");
+%!   assert (get (hf, "papersize"), [5, 4] * 2.54, 2.54/72);
+%!   papersize = get (hf, "papersize");
+%!   set (hf, "papersize", papersize + 1);
+%!   set (hf, "papersize", papersize);
+%!   assert (get (hf, "papersize"), [5, 4] * 2.54, 2.54/72);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 */
 
 void
@@ -3789,25 +3823,29 @@ figure::properties::update_paperorientation (void)
 
 /*
 %!test
-%! figure (1, "visible", false);
-%! tol = 100 * eps ();
-%! ## UPPER case and MiXed case is part of test and should not be changed.
-%! set (gcf (), "paperorientation", "PORTRAIT");
-%! set (gcf (), "paperunits", "inches");
-%! set (gcf (), "papertype", "USletter");
-%! assert (get (gcf (), "papersize"), [8.5, 11.0], tol);
-%! set (gcf (), "paperorientation", "Landscape");
-%! assert (get (gcf (), "papersize"), [11.0, 8.5], tol);
-%! set (gcf (), "paperunits", "centimeters");
-%! assert (get (gcf (), "papersize"), [11.0, 8.5] * 2.54, tol);
-%! set (gcf (), "papertype", "a4");
-%! assert (get (gcf (), "papersize"), [29.7, 21.0], tol);
-%! set (gcf (), "paperunits", "inches", "papersize", [8.5, 11.0]);
-%! assert (get (gcf (), "papertype"), "usletter");
-%! assert (get (gcf (), "paperorientation"), "portrait");
-%! set (gcf (), "papersize", [11.0, 8.5]);
-%! assert (get (gcf (), "papertype"), "usletter");
-%! assert (get (gcf (), "paperorientation"), "landscape");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   tol = 100 * eps ();
+%!   ## UPPER case and MiXed case is part of test and should not be changed.
+%!   set (hf, "paperorientation", "PORTRAIT");
+%!   set (hf, "paperunits", "inches");
+%!   set (hf, "papertype", "USletter");
+%!   assert (get (hf, "papersize"), [8.5, 11.0], tol);
+%!   set (hf, "paperorientation", "Landscape");
+%!   assert (get (hf, "papersize"), [11.0, 8.5], tol);
+%!   set (hf, "paperunits", "centimeters");
+%!   assert (get (hf, "papersize"), [11.0, 8.5] * 2.54, tol);
+%!   set (hf, "papertype", "a4");
+%!   assert (get (hf, "papersize"), [29.7, 21.0], tol);
+%!   set (hf, "paperunits", "inches", "papersize", [8.5, 11.0]);
+%!   assert (get (hf, "papertype"), "usletter");
+%!   assert (get (hf, "paperorientation"), "portrait");
+%!   set (hf, "papersize", [11.0, 8.5]);
+%!   assert (get (hf, "papertype"), "usletter");
+%!   assert (get (hf, "paperorientation"), "landscape");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 */
 
 void
@@ -3833,13 +3871,20 @@ figure::properties::update_units (const caseless_str& old_units)
 
 /*
 %!test
-%! figure (1, "visible", false);
-%! set (0, "units", "pixels");
-%! rsz = get (0, "screensize");
-%! set (gcf (), "units", "pixels");
-%! fsz = get (gcf (), "position");
-%! set (gcf (), "units", "normalized");
-%! assert (get (gcf (), "position"), (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]));
+%! hf = figure ("visible", "off");
+%! old_units = get (0, "units");
+%! unwind_protect
+%!   set (0, "units", "pixels");
+%!   rsz = get (0, "screensize");
+%!   set (gcf (), "units", "pixels");
+%!   fsz = get (gcf (), "position");
+%!   set (gcf (), "units", "normalized");
+%!   pos = get (gcf (), "position");
+%!   assert (pos, (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]));
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   set (0, "units", old_units);
+%! end_unwind_protect
 */
 
 std::string
@@ -4006,228 +4051,90 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
 void
 axes::properties::sync_positions (void)
 {
-  Matrix ref_linset = looseinset.get ().matrix_value ();
-  if (autopos_tag_is ("subplot"))
-    {
-      graphics_object parent_obj = gh_manager::get_object (get_parent ());
-      if (parent_obj.isa ("figure"))
-        {
-           // FIXME: temporarily changed units should be protected
-           //        from interrupts
-           std::string fig_units = parent_obj.get ("units").string_value ();
-           parent_obj.set ("units", "pixels");
-
-           Matrix ref_outbox = outerposition.get ().matrix_value ();
-           ref_outbox(2) += ref_outbox(0);
-           ref_outbox(3) += ref_outbox(1);
-
-           // Find those subplots that are left, right, bottom and top aligned
-           // with the current subplot
-           Matrix kids = parent_obj.get_properties ().get_children ();
-           std::vector<octave_value> aligned;
-           std::vector<bool> l_aligned, b_aligned, r_aligned, t_aligned;
-           for (octave_idx_type i = 0; i < kids.numel (); i++)
-             {
-               graphics_object go = gh_manager::get_object (kids(i));
-               if (go.isa ("axes"))
-                 {
-                   axes::properties& props =
-                     dynamic_cast<axes::properties&> (go.get_properties ());
-                   if (props.autopos_tag_is ("subplot"))
-                     {
-                       Matrix outpos = go.get ("outerposition").matrix_value ();
-                       bool l_align = (std::abs (outpos(0)-ref_outbox(0)) < 1e-15);
-                       bool b_align = (std::abs (outpos(1)-ref_outbox(1)) < 1e-15);
-                       bool r_align = (std::abs (outpos(0)+outpos(2)-ref_outbox(2)) < 1e-15);
-                       bool t_align = (std::abs (outpos(1)+outpos(3)-ref_outbox(3)) < 1e-15);
-                       if (l_align || b_align || r_align || t_align)
-                         {
-                           aligned.push_back (kids(i));
-                           l_aligned.push_back (l_align);
-                           b_aligned.push_back (b_align);
-                           r_aligned.push_back (r_align);
-                           t_aligned.push_back (t_align);
-                           // FIXME: the temporarily deleted tags should be
-                           //        protected from interrupts
-                           props.set_autopos_tag ("none");
-                         }
-                     }
-                 }
-             }
-           // Determine a minimum box which aligns the subplots
-           Matrix ref_box (1, 4, 0.);
-           ref_box(2) = 1.;
-           ref_box(3) = 1.;
-           for (size_t i = 0; i < aligned.size (); i++)
-             {
-               graphics_object go = gh_manager::get_object (aligned[i]);
-               axes::properties& props =
-                 dynamic_cast<axes::properties&> (go.get_properties ());
-               Matrix linset = props.get_looseinset ().matrix_value ();
-               if (l_aligned[i])
-                 linset(0) = std::min (0., linset(0)-0.01);
-               if (b_aligned[i])
-                 linset(1) = std::min (0., linset(1)-0.01);
-               if (r_aligned[i])
-                 linset(2) = std::min (0., linset(2)-0.01);
-               if (t_aligned[i])
-                 linset(3) = std::min (0., linset(3)-0.01);
-               props.set_looseinset (linset);
-               Matrix pos = props.get_position ().matrix_value ();
-               if (l_aligned[i])
-                 ref_box(0) = std::max (ref_box(0), pos(0));
-               if (b_aligned[i])
-                 ref_box(1) = std::max (ref_box(1), pos(1));
-               if (r_aligned[i])
-                 ref_box(2) = std::min (ref_box(2), pos(0)+pos(2));
-               if (t_aligned[i])
-                 ref_box(3) = std::min (ref_box(3), pos(1)+pos(3));
-             }
-           // Set common looseinset values for all aligned subplots and
-           // revert their tag values
-           for (size_t i = 0; i < aligned.size (); i++)
-             {
-               graphics_object go = gh_manager::get_object (aligned[i]);
-               axes::properties& props =
-                 dynamic_cast<axes::properties&> (go.get_properties ());
-               Matrix outpos = props.get_outerposition ().matrix_value ();
-               Matrix linset = props.get_looseinset ().matrix_value ();
-               if (l_aligned[i])
-                 linset(0) = (ref_box(0)-outpos(0))/outpos(2);
-               if (b_aligned[i])
-                 linset(1) = (ref_box(1)-outpos(1))/outpos(3);
-               if (r_aligned[i])
-                 linset(2) = (outpos(0)+outpos(2)-ref_box(2))/outpos(2);
-               if (t_aligned[i])
-                 linset(3) = (outpos(1)+outpos(3)-ref_box(3))/outpos(3);
-               props.set_looseinset (linset);
-               props.set_autopos_tag ("subplot");
-             }
-           parent_obj.set ("units", fig_units);
-        }
-    }
+  // First part is equivalent to `update_tightinset ()'
+  if (activepositionproperty.is ("position"))
+    update_position ();
   else
-    sync_positions (ref_linset);
-}
-
-void
-axes::properties::sync_positions (const Matrix& linset)
-{
-  Matrix pos = position.get ().matrix_value ();
-  Matrix outpos = outerposition.get ().matrix_value ();
-  double lratio = linset(0);
-  double bratio = linset(1);
-  double wratio = 1-linset(0)-linset(2);
-  double hratio = 1-linset(1)-linset(3);
-  if (activepositionproperty.is ("outerposition"))
-    {
-      pos = outpos;
-      pos(0) = outpos(0)+lratio*outpos(2);
-      pos(1) = outpos(1)+bratio*outpos(3);
-      pos(2) = wratio*outpos(2);
-      pos(3) = hratio*outpos(3);
-
-      position = pos;
-      update_transform ();
-      Matrix tightpos = calc_tightbox (pos);
-
-      double thrshldx = 0.005*outpos(2);
-      double thrshldy = 0.005*outpos(3);
-      double minsizex = 0.2*outpos(2);
-      double minsizey = 0.2*outpos(3);
-      bool updatex = true, updatey = true;
-      for (int i = 0; i < 10; i++)
-        {
-          double dt;
-          bool modified = false;
-          dt = outpos(0)+outpos(2)-tightpos(0)-tightpos(2);
-          if (dt < -thrshldx && updatex)
-            {
-              pos(2) += dt;
-              modified = true;
-            }
-          dt = outpos(1)+outpos(3)-tightpos(1)-tightpos(3);
-          if (dt < -thrshldy && updatey)
-            {
-              pos(3) += dt;
-              modified = true;
-            }
-          dt = outpos(0)-tightpos(0);
-          if (dt > thrshldx && updatex)
-            {
-              pos(0) += dt;
-              pos(2) -= dt;
-              modified = true;
-            }
-          dt = outpos(1)-tightpos(1);
-          if (dt > thrshldy && updatey)
-            {
-              pos(1) += dt;
-              pos(3) -= dt;
-              modified = true;
-            }
-
-          // Note: checking limit for minimum axes size
-          if (pos(2) < minsizex)
-            {
-              pos(0) -= 0.5*(minsizex-pos(2));
-              pos(2) = minsizex;
-              updatex = false;
-            }
-          if (pos(3) < minsizey)
-            {
-              pos(1) -= 0.5*(minsizey-pos(3));
-              pos(3) = minsizey;
-              updatey = false;
-            }
-
-          if (modified)
-            {
-              position = pos;
-              update_transform ();
-              tightpos = calc_tightbox (pos);
-            }
-          else
-            break;
-        }
-    }
-  else
-    {
-      update_transform ();
-
-      outpos(0) = pos(0)-pos(2)*lratio/wratio;
-      outpos(1) = pos(1)-pos(3)*bratio/hratio;
-      outpos(2) = pos(2)/wratio;
-      outpos(3) = pos(3)/hratio;
-
-      outerposition = calc_tightbox (outpos);
-    }
-
-  update_insets ();
-}
-
-void
-axes::properties::update_insets (void)
-{
+    update_outerposition ();
+  caseless_str old_units = get_units ();
+  set_units ("normalized");
   Matrix pos = position.get ().matrix_value ();
   Matrix outpos = outerposition.get ().matrix_value ();
   Matrix tightpos = calc_tightbox (pos);
-  // Determine the tightinset = axes_bbox - position
-  Matrix inset (1, 4, 1.0);
-  inset(0) = pos(0)-tightpos(0);
-  inset(1) = pos(1)-tightpos(1);
-  inset(2) = tightpos(0)+tightpos(2)-pos(0)-pos(2);
-  inset(3) = tightpos(1)+tightpos(3)-pos(1)-pos(3);
-  tightinset = inset;
-
-  // Determine the looseinset = outerposition - position
-  inset(0) = pos(0)-outpos(0);
-  inset(1) = pos(1)-outpos(1);
-  inset(2) = outpos(0)+outpos(2)-pos(0)-pos(2);
-  inset(3) = outpos(1)+outpos(3)-pos(1)-pos(3);
-  looseinset = inset;
+  Matrix tinset (1, 4, 1.0);
+  tinset(0) = pos(0)-tightpos(0);
+  tinset(1) = pos(1)-tightpos(1);
+  tinset(2) = tightpos(0)+tightpos(2)-pos(0)-pos(2);
+  tinset(3) = tightpos(1)+tightpos(3)-pos(1)-pos(3);
+  tightinset = tinset;
+  set_units (old_units);
+  update_transform ();
+  if (activepositionproperty.is ("position"))
+    update_position ();
+  else
+    update_outerposition ();
 }
 
+/*
+%!testif HAVE_FLTK
+%! hf = figure ("visible", "off");
+%! graphics_toolkit (hf, "fltk");
+%! unwind_protect
+%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
+%!   hax = findall (gcf (), "type", "axes");
+%!   positions = cell2mat (get (hax, "position"));
+%!   outerpositions = cell2mat (get (hax, "outerposition"));
+%!   looseinsets = cell2mat (get (hax, "looseinset"));
+%!   tightinsets = cell2mat (get (hax, "tightinset"));
+%!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
+%!   hax = findall (gcf (), "type", "axes");
+%!   assert (cell2mat (get (hax, "position")), positions, 1e-4);
+%!   assert (cell2mat (get (hax, "outerposition")), outerpositions, 1e-4);
+%!   assert (cell2mat (get (hax, "looseinset")), looseinsets, 1e-4);
+%!   assert (cell2mat (get (hax, "tightinset")), tightinsets, 1e-4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!testif HAVE_FLTK
+%! hf = figure ("visible", "off");
+%! graphics_toolkit (hf, "fltk");
+%! fpos = get (hf, "position");
+%! unwind_protect
+%!   plot (rand (3))
+%!   position = get (gca, "position");
+%!   outerposition = get (gca, "outerposition");
+%!   looseinset = get (gca, "looseinset");
+%!   tightinset = get (gca, "tightinset");
+%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)])
+%!   set (hf, "position", fpos);
+%!   assert (get (gca, "outerposition"), outerposition, 0.001)
+%!   assert (get (gca, "position"), position, 0.001)
+%!   assert (get (gca, "looseinset"), looseinset, 0.001)
+%!   assert (get (gca, "tightinset"), tightinset, 0.001)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!testif HAVE_FLTK
+%! hf = figure ("visible", "off");
+%! graphics_toolkit (hf, "fltk");
+%! fpos = get (hf, "position");
+%! set (gca, "activepositionproperty", "position")
+%! unwind_protect
+%!   plot (rand (3))
+%!   position = get (gca, "position");
+%!   outerposition = get (gca, "outerposition");
+%!   looseinset = get (gca, "looseinset");
+%!   tightinset = get (gca, "tightinset");
+%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)])
+%!   set (hf, "position", fpos);
+%!   assert (get (gca, "position"), position, 0.001)
+%!   assert (get (gca, "outerposition"), outerposition, 0.001)
+%!   assert (get (gca, "looseinset"), looseinset, 0.001)
+%!   assert (get (gca, "tightinset"), tightinset, 0.001)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
 
 void
 axes::properties::set_text_child (handle_property& hp,
@@ -4334,7 +4241,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
 {
   box = "on";
   colororder = default_colororder ();
-  dataaspectratio = Matrix (1, 3, 1.0);
+  // Note: dataspectratio will be set through update_aspectratios
   dataaspectratiomode = "auto";
   layer = "bottom";
 
@@ -4348,10 +4255,13 @@ axes::properties::set_defaults (base_graphics_object& obj,
   cl(1) = 1;
   clim = cl;
 
+  alim = tlim;
+
   xlimmode = "auto";
   ylimmode = "auto";
   zlimmode = "auto";
   climmode = "auto";
+  alimmode = "auto";
 
   xgrid = "off";
   ygrid = "off";
@@ -4365,12 +4275,18 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xtickmode = "auto";
   ytickmode = "auto";
   ztickmode = "auto";
+  xminortick = "off";
+  yminortick = "off";
+  zminortick = "off";
   xticklabel = "";
   yticklabel = "";
   zticklabel = "";
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
+
+  interpreter = "none";
+
   color = color_values ("white");
   xcolor = color_values ("black");
   ycolor = color_values ("black");
@@ -4384,44 +4300,53 @@ axes::properties::set_defaults (base_graphics_object& obj,
   yaxislocation = "left";
   xaxislocation = "bottom";
 
-  // Note: camera properties will be set through update_transform
+  Matrix tview (1, 2, 0.0);
+  tview(1) = 90;
+  view = tview;
+
+  __hold_all__ = "off";
+  nextplot = "replace";
+
+  ambientlightcolor = Matrix (1, 3, 1.0);
+
+  // Note: camera properties (not mode) will be set in update_transform
   camerapositionmode = "auto";
   cameratargetmode = "auto";
   cameraupvectormode = "auto";
   cameraviewanglemode = "auto";
-  plotboxaspectratio = Matrix (1, 3, 1.0);
+
   drawmode = "normal";
+
+  fontangle = "normal";
+  fontname = OCTAVE_DEFAULT_FONTNAME;
+  fontsize = 10;
+  fontunits = "points";
+  fontweight = "normal";
+
   gridlinestyle = ":";
   linestyleorder = "-";
   linewidth = 0.5;
   minorgridlinestyle = ":";
-  // Note: plotboxaspectratio will be set through update_aspectratiors
+
+  // Note: plotboxaspectratio will be set through update_aspectratios
   plotboxaspectratiomode = "auto";
   projection = "orthographic";
+
   tickdir = "in";
   tickdirmode = "auto";
   ticklength = default_axes_ticklength ();
+
   tightinset = Matrix (1, 4, 0.0);
 
   sx = "linear";
   sy = "linear";
   sz = "linear";
 
-  Matrix tview (1, 2, 0.0);
-  tview(1) = 90;
-  view = tview;
-
   visible = "on";
-  nextplot = "replace";
 
+  // Replace preserves Position and Units properties
   if (mode != "replace")
     {
-      fontangle = "normal";
-      fontname = OCTAVE_DEFAULT_FONTNAME;
-      fontsize = 10;
-      fontunits = "points";
-      fontweight = "normal";
-
       outerposition = default_axes_outerposition ();
       position = default_axes_position ();
       activepositionproperty = "outerposition";
@@ -4483,7 +4408,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   adopt (title.handle_value ());
 
   update_transform ();
-  update_insets ();
+  sync_positions ();
   override_defaults (obj);
 }
 
@@ -4689,7 +4614,7 @@ axes::properties::update_camera (void)
   double yo = ylimits(yd > 0 ? 0 : 1);
   double zo = zlimits(zd > 0 ? 0 : 1);
 
-  Matrix pb  = get_plotboxaspectratio ().matrix_value ();
+  Matrix pb = get_plotboxaspectratio ().matrix_value ();
 
   bool autocam = (camerapositionmode_is ("auto")
                   && cameratargetmode_is ("auto")
@@ -5491,8 +5416,7 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
       double min_pos = octave_Inf;
       double max_neg = -octave_Inf;
       get_children_limits (minval, maxval, min_pos, max_neg, kids, limit_type);
-      if (!xisinf (minval) && !xisnan (minval)
-          && !xisinf (maxval) && !xisnan (maxval))
+      if (xfinite (minval) && xfinite (maxval))
         {
           limits(0) = minval;
           limits(1) = maxval;
@@ -5842,6 +5766,56 @@ axes::properties::set_zticklabel (const octave_value& v)
     }
 }
 
+// Almost identical to convert_ticklabel_string but it only accepts
+// cellstr or string, not numeric input.
+static octave_value
+convert_linestyleorder_string (const octave_value& val)
+{
+  octave_value retval = val;
+
+  if (val.is_cellstr ())
+    {
+      // Always return a column vector for Matlab Compatibility
+      if (val.columns () > 1)
+        retval = val.reshape (dim_vector (val.numel (), 1));
+    }
+  else
+    {
+      string_vector sv;
+      if (val.is_string () && val.rows () == 1)
+        {
+          std::string valstr = val.string_value ();
+          std::istringstream iss (valstr);
+          std::string tmpstr;
+
+          // Split string with delimiter '|'
+          while (std::getline (iss, tmpstr, '|'))
+            sv.append (tmpstr);
+          
+          // If string ends with '|' Matlab appends a null string
+          if (*valstr.rbegin () == '|')
+            sv.append (std::string (""));
+        }
+      else
+        return retval;
+
+      charMatrix chmat (sv, ' ');
+
+      retval = octave_value (chmat);
+    }
+
+  return retval;
+}
+
+void
+axes::properties::set_linestyleorder (const octave_value& v)
+{
+  if (!error_state)
+    {
+      linestyleorder.set (convert_linestyleorder_string (v), false);
+    }
+}
+
 void
 axes::properties::set_units (const octave_value& v)
 {
@@ -5973,16 +5947,16 @@ check_limit_vals (double& min_val, double& max_val,
                   const array_property& data)
 {
   double val = data.min_val ();
-  if (! (xisinf (val) || xisnan (val)) && val < min_val)
+  if (xfinite (val) && val < min_val)
     min_val = val;
   val = data.max_val ();
-  if (! (xisinf (val) || xisnan (val)) && val > max_val)
+  if (xfinite (val) && val > max_val)
     max_val = val;
   val = data.min_pos ();
-  if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
+  if (xfinite (val) && val > 0 && val < min_pos)
     min_pos = val;
   val = data.max_neg ();
-  if (! (xisinf (val) || xisnan (val)) && val < 0 && val > max_neg)
+  if (xfinite (val) && val < 0 && val > max_neg)
     max_neg = val;
 }
 */
@@ -6001,19 +5975,19 @@ check_limit_vals (double& min_val, double& max_val,
           double val;
 
           val = m(0);
-          if (! (xisinf (val) || xisnan (val)) && val < min_val)
+          if (xfinite (val) && val < min_val)
             min_val = val;
 
           val = m(1);
-          if (! (xisinf (val) || xisnan (val)) && val > max_val)
+          if (xfinite (val) && val > max_val)
             max_val = val;
 
           val = m(2);
-          if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
+          if (xfinite (val) && val > 0 && val < min_pos)
             min_pos = val;
 
           val = m(3);
-          if (! (xisinf (val) || xisnan (val)) && val < 0 && val > max_neg)
+          if (xfinite (val) && val < 0 && val > max_neg)
             max_neg = val;
         }
     }
@@ -6352,7 +6326,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
           label.erase (0, label.find_first_not_of (" "));
           label = label.substr (0, label.find_last_not_of (" ")+1);
 #ifdef HAVE_FREETYPE
-          ext = text_renderer.get_extent (label);
+          ext = text_renderer.get_extent (label, 0.0, "none");
           wmax = std::max (wmax, ext(0));
           hmax = std::max (hmax, ext(1));
 #else
@@ -6478,16 +6452,16 @@ axes::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4) \
     { \
       val = limits(0); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         min_val = val; \
       val = limits(1); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         max_val = val; \
       val = limits(2); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         min_pos = val; \
       val = limits(3); \
-      if (! (xisinf (val) || xisnan (val))) \
+      if (xfinite (val)) \
         max_neg = val; \
     } \
   else \
@@ -7077,6 +7051,8 @@ axes::initialize (const graphics_object& go)
   xinitialize (xproperties.get_xlabel ());
   xinitialize (xproperties.get_ylabel ());
   xinitialize (xproperties.get_zlabel ());
+
+  xproperties.sync_positions ();
 }
 
 // ---------------------------------------------------------------------
@@ -7186,7 +7162,8 @@ text::properties::update_text_extent (void)
   string_vector sv = string_prop.all_strings ();
 
   renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
-                           halign, valign, get_rotation ());
+                           halign, valign, get_rotation (),
+                           get_interpreter ());
   /* The bbox is relative to the text's position.
      We'll leave it that way, because get_position () does not return
      valid results when the text is first constructed.
@@ -7451,16 +7428,16 @@ hggroup::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4)
     {
       val = limits(0);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         min_val = val;
       val = limits(1);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         max_val = val;
       val = limits(2);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         min_pos = val;
       val = limits(3);
-      if (! (xisinf (val) || xisnan (val)))
+      if (xfinite (val))
         max_neg = val;
     }
   else
@@ -7631,7 +7608,7 @@ uicontrol::properties::update_text_extent (void)
   // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
 
-  elt = text_parser_none ().parse (get_string_string ());
+  elt = text_parser::parse (get_string_string (), "none");
 #ifdef HAVE_FONTCONFIG
   text_renderer.set_font (get_fontname (),
                           get_fontweight (),
@@ -7639,6 +7616,7 @@ uicontrol::properties::update_text_extent (void)
                           get_fontsize ());
 #endif
   box = text_renderer.get_extent (elt, 0);
+  delete elt;
 
   Matrix ext (1, 4, 0.0);
 
@@ -8447,10 +8425,11 @@ DEFUN (ishandle, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ishandle (@var{h})\n\
 Return true if @var{h} is a graphics handle and false otherwise.\n\
+\n\
 @var{h} may also be a matrix of handles in which case a logical\n\
 array is returned that is true where the elements of @var{h} are\n\
 graphics handles and false where they are not.\n\
-@seealso{isfigure}\n\
+@seealso{isaxes, isfigure}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
@@ -8522,9 +8501,10 @@ DEFUN (reset, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
 Remove any defaults set for the handle @var{h}.  The default figure\n\
-properties of \"position\", \"units\", \"windowstyle\" and\n\
-\"paperunits\" and the default axes properties of \"position\" and \"units\"\n\
-are not reset.\n\
+properties of @qcode{\"position\"}, @qcode{\"units\"},\n\
+@qcode{\"windowstyle\"} and @qcode{\"paperunits\"} and the default axes\n\
+properties of @qcode{\"position\"} and @qcode{\"units\"} are not reset.\n\
+@seealso{cla, clf}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -9108,25 +9088,27 @@ calc_dimensions (const graphics_object& go)
 
   if (go.isa ("surface"))
     nd = 3;
-
-  if ((go.isa ("line") || go.isa ("patch")) && ! go.get("zdata").is_empty ())
+  else if ((go.isa ("line") || go.isa ("patch"))
+            && ! go.get ("zdata").is_empty ())
     nd = 3;
-
-  Matrix kids = go.get_properties ().get_children ();
-
-  for (octave_idx_type i = 0; i < kids.length (); i++)
+  else
     {
-      graphics_handle hnd = gh_manager::lookup (kids(i));
+      Matrix kids = go.get_properties ().get_children ();
 
-      if (hnd.ok ())
+      for (octave_idx_type i = 0; i < kids.length (); i++)
         {
-          const graphics_object& kid = gh_manager::get_object (hnd);
+          graphics_handle hnd = gh_manager::lookup (kids(i));
 
-          if (kid.valid_object ())
-            nd = calc_dimensions (kid);
+          if (hnd.ok ())
+            {
+              const graphics_object& kid = gh_manager::get_object (hnd);
 
-          if (nd == 3)
-            break;
+              if (kid.valid_object ())
+                nd = calc_dimensions (kid);
+
+              if (nd == 3)
+                break;
+            }
         }
     }
 
@@ -9146,17 +9128,15 @@ object, whether 2 or 3.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
-    {
-      double h = args(0).double_value ();
-
-      if (! error_state)
-        retval = calc_dimensions (gh_manager::get_object (h));
-      else
-        error ("__calc_dimensions__: expecting graphics handle as only argument");
-    }
-  else
+  if (nargin != 1)
     print_usage ();
+
+  double h = args(0).double_value ();
+
+  if (! error_state)
+    retval = calc_dimensions (gh_manager::get_object (h));
+  else
+    error ("__calc_dimensions__: expecting graphics handle as only argument");
 
   return retval;
 }
@@ -9505,6 +9485,16 @@ Internal function: returns the pixel size of the image in normalized units.\n\
 
 gtk_manager *gtk_manager::instance = 0;
 
+gtk_manager::gtk_manager (void)
+  : dtk (), available_toolkits (), loaded_toolkits ()
+{
+#if defined (HAVE_FLTK)
+  dtk = "fltk";
+#else
+  dtk = "gnuplot";
+#endif
+}
+
 void
 gtk_manager::create_instance (void)
 {
@@ -9606,7 +9596,7 @@ DEFUN (drawnow, args, ,
 @deftypefnx {Built-in Function} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
 Update figure windows and their children.  The event queue is flushed and\n\
 any callbacks generated are executed.  With the optional argument\n\
-@code{\"expose\"}, only graphic objects are updated and no other events or\n\
+@qcode{\"expose\"}, only graphic objects are updated and no other events or\n\
 callbacks are processed.\n\
 The third calling form of @code{drawnow} is for debugging and is\n\
 undocumented.\n\
@@ -9791,6 +9781,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 @end group\n\
 @end example\n\
 \n\
+@seealso{addproperty, hggroup}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
@@ -9983,6 +9974,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 @end group\n\
 @end example\n\
 \n\
+@seealso{addlistener, hggroup}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
@@ -10211,11 +10203,12 @@ DEFUN (waitfor, args, ,
 @deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
 @deftypefnx {Built-in Function} {} waitfor (@dots{}, \"timeout\", @var{timeout})\n\
 Suspend the execution of the current program until a condition is\n\
-satisfied on the graphics handle @var{h}.  While the program is suspended\n\
-graphics events are still being processed normally, allowing callbacks to\n\
-modify the state of graphics objects.  This function is reentrant and can be\n\
-called from a callback, while another @code{waitfor} call is pending at\n\
-top-level.\n\
+satisfied on the graphics handle @var{h}.\n\
+\n\
+While the program is suspended graphics events are still being processed\n\
+normally, allowing callbacks to modify the state of graphics objects.  This\n\
+function is reentrant and can be called from a callback, while another\n\
+@code{waitfor} call is pending at the top-level.\n\
 \n\
 In the first form, program execution is suspended until the graphics object\n\
 @var{h} is destroyed.  If the graphics handle is invalid, the function\n\
@@ -10242,7 +10235,7 @@ To define a condition on a property named @code{timeout}, use the string\n\
 @code{\\timeout} instead.\n\
 \n\
 In all cases, typing CTRL-C stops program execution immediately.\n\
-@seealso{isequal}\n\
+@seealso{waitforbuttonpress, isequal}\n\
 @end deftypefn")
 {
   if (args.length () > 0)
@@ -10410,7 +10403,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
           // FIXME: There is still a "hole" in the following loop. The code
           //        assumes that an object handle is unique, which is a fair
-          //        assumptions, except for figures. If a figure is destroyed
+          //        assumption, except for figures. If a figure is destroyed
           //        then recreated with the same figure ID, within the same
           //        run of event hooks, then the figure destruction won't be
           //        caught and the loop will not stop. This is an unlikely

@@ -19,6 +19,7 @@
 ## Set the named application data to @var{value} for the object(s) with
 ## handle(s) @var{h}.  If the application data with the specified name does
 ## not exist, it is created.
+## @seealso{getappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>

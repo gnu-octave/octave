@@ -647,14 +647,14 @@ Open or create a file for reading or writing at the end of the\n\
 file.\n\
 @end table\n\
 \n\
-Append a \"t\" to the mode string to open the file in text mode or a\n\
-\"b\" to open in binary mode.  On Windows and Macintosh systems, text\n\
+Append a @qcode{\"t\"} to the mode string to open the file in text mode or a\n\
+@qcode{\"b\"} to open in binary mode.  On Windows and Macintosh systems, text\n\
 mode reading and writing automatically converts linefeeds to the\n\
 appropriate line end character for the system (carriage-return linefeed\n\
 on Windows, carriage-return on Macintosh).  The default if no mode is\n\
 specified is binary mode.\n\
 \n\
-Additionally, you may append a \"z\" to the mode string to open a\n\
+Additionally, you may append a @qcode{\"z\"} to the mode string to open a\n\
 gzipped file for reading or writing.  For this to be successful, you\n\
 must also open the file in binary mode.\n\
 \n\
@@ -670,15 +670,6 @@ IEEE big endian format.\n\
 \n\
 @item ieee-le\n\
 IEEE little endian format.\n\
-\n\
-@item vaxd\n\
-VAX D floating format.\n\
-\n\
-@item vaxg\n\
-VAX G floating format.\n\
-\n\
-@item cray\n\
-Cray floating format.\n\
 @end table\n\
 \n\
 @noindent\n\
@@ -825,8 +816,10 @@ Set the file pointer to any location within the file @var{fid}.\n\
 The pointer is positioned @var{offset} characters from the @var{origin},\n\
 which may be one of the predefined variables @w{@code{SEEK_CUR}} (current\n\
 position), @w{@code{SEEK_SET}} (beginning), or @w{@code{SEEK_END}} (end of\n\
-file) or strings \"cof\", \"bof\" or \"eof\".  If @var{origin} is omitted,\n\
-@w{@code{SEEK_SET}} is assumed.  @var{offset} may be positive, negative, or zero but not all combinations of @var{origin} and @var{offset} can be realized.\n\
+file) or strings @qcode{\"cof\"}, @qcode{\"bof\"} or @qcode{\"eof\"}.  If\n\
+@var{origin} is omitted, @w{@code{SEEK_SET}} is assumed.  @var{offset} may\n\
+be positive, negative, or zero but not all combinations of @var{origin} and\n\
+@var{offset} can be realized.\n\
 \n\
 Return 0 on success and -1 on error.\n\
 @seealso{fskipl, frewind, ftell, fopen}\n\
@@ -1440,84 +1433,84 @@ The optional argument @var{precision} is a string specifying the type of\n\
 data to read and may be one of\n\
 \n\
 @table @asis\n\
-@item \"schar\"\n\
-@itemx \"signed char\"\n\
+@item  @qcode{\"schar\"}\n\
+@itemx @qcode{\"signed char\"}\n\
 Signed character.\n\
 \n\
-@item \"uchar\"\n\
-@itemx \"unsigned char\"\n\
+@item  @qcode{\"uchar\"}\n\
+@itemx @qcode{\"unsigned char\"}\n\
 Unsigned character.\n\
 \n\
-@item \"int8\"\n\
-@itemx \"integer*1\"\n\
+@item  @qcode{\"int8\"}\n\
+@itemx @qcode{\"integer*1\"}\n\
 \n\
 8-bit signed integer.\n\
 \n\
-@item \"int16\"\n\
-@itemx \"integer*2\"\n\
+@item  @qcode{\"int16\"}\n\
+@itemx @qcode{\"integer*2\"}\n\
 16-bit signed integer.\n\
 \n\
-@item \"int32\"\n\
-@itemx \"integer*4\"\n\
+@item  @qcode{\"int32\"}\n\
+@itemx @qcode{\"integer*4\"}\n\
 32-bit signed integer.\n\
 \n\
-@item \"int64\"\n\
-@itemx \"integer*8\"\n\
+@item  @qcode{\"int64\"}\n\
+@itemx @qcode{\"integer*8\"}\n\
 64-bit signed integer.\n\
 \n\
-@item \"uint8\"\n\
+@item @qcode{\"uint8\"}\n\
 8-bit unsigned integer.\n\
 \n\
-@item \"uint16\"\n\
+@item @qcode{\"uint16\"}\n\
 16-bit unsigned integer.\n\
 \n\
-@item \"uint32\"\n\
+@item @qcode{\"uint32\"}\n\
 32-bit unsigned integer.\n\
 \n\
-@item \"uint64\"\n\
+@item @qcode{\"uint64\"}\n\
 64-bit unsigned integer.\n\
 \n\
-@item \"single\"\n\
-@itemx \"float32\"\n\
-@itemx \"real*4\"\n\
+@item  @qcode{\"single\"}\n\
+@itemx @qcode{\"float32\"}\n\
+@itemx @qcode{\"real*4\"}\n\
 32-bit floating point number.\n\
 \n\
-@item \"double\"\n\
-@itemx \"float64\"\n\
-@itemx \"real*8\"\n\
+@item  @qcode{\"double\"}\n\
+@itemx @qcode{\"float64\"}\n\
+@itemx @qcode{\"real*8\"}\n\
 64-bit floating point number.\n\
 \n\
-@item \"char\"\n\
-@itemx \"char*1\"\n\
+@item  @qcode{\"char\"}\n\
+@itemx @qcode{\"char*1\"}\n\
 Single character.\n\
 \n\
-@item \"short\"\n\
+@item @qcode{\"short\"}\n\
 Short integer (size is platform dependent).\n\
 \n\
-@item \"int\"\n\
+@item @qcode{\"int\"}\n\
 Integer (size is platform dependent).\n\
 \n\
-@item \"long\"\n\
+@item @qcode{\"long\"}\n\
 Long integer (size is platform dependent).\n\
 \n\
-@item \"ushort\"\n\
-@itemx \"unsigned short\"\n\
+@item  @qcode{\"ushort\"}\n\
+@itemx @qcode{\"unsigned short\"}\n\
 Unsigned short integer (size is platform dependent).\n\
 \n\
-@item \"uint\"\n\
-@itemx \"unsigned int\"\n\
+@item  @qcode{\"uint\"}\n\
+@itemx @qcode{\"unsigned int\"}\n\
 Unsigned integer (size is platform dependent).\n\
 \n\
-@item \"ulong\"\n\
-@itemx \"unsigned long\"\n\
+@item  @qcode{\"ulong\"}\n\
+@itemx @qcode{\"unsigned long\"}\n\
 Unsigned long integer (size is platform dependent).\n\
 \n\
-@item \"float\"\n\
+@item @qcode{\"float\"}\n\
 Single precision floating point number (size is platform dependent).\n\
 @end table\n\
 \n\
 @noindent\n\
-The default precision is @code{\"uchar\"}.\n\
+The default precision is @qcode{\"uchar\"}.\n\
 \n\
 The @var{precision} argument may also specify an optional repeat\n\
 count.  For example, @samp{32*single} causes @code{fread} to read\n\
@@ -1553,7 +1546,7 @@ The optional argument @var{arch} is a string specifying the data format\n\
 for the file.  Valid values are\n\
 \n\
 @table @code\n\
-@item \"native\"\n\
+@item @qcode{\"native\"}\n\
 The format of the current machine.\n\
 \n\
 @item \"ieee-be\"\n\
@@ -1561,20 +1554,7 @@ IEEE big endian.\n\
 \n\
 @item \"ieee-le\"\n\
 IEEE little endian.\n\
-\n\
-@item \"vaxd\"\n\
-VAX D floating format.\n\
-\n\
-@item \"vaxg\"\n\
-VAX G floating format.\n\
-\n\
-@item \"cray\"\n\
-Cray floating format.\n\
 @end table\n\
-\n\
-@noindent\n\
-Conversions are currently only supported for @code{\"ieee-be\"} and\n\
-@code{\"ieee-le\"} formats.\n\
 \n\
 The data read from the file is returned in @var{val}, and the number of\n\
 values read is returned in @code{count}\n\
@@ -1827,11 +1807,11 @@ or output stream of the process is returned in @var{fid}.  The argument\n\
 @var{mode} may be\n\
 \n\
 @table @code\n\
-@item \"r\"\n\
+@item @qcode{\"r\"}\n\
 The pipe will be connected to the standard output of the process, and\n\
 open for reading.\n\
 \n\
-@item \"w\"\n\
+@item @qcode{\"w\"}\n\
 The pipe will be connected to the standard input of the process, and\n\
 open for writing.\n\
 @end table\n\
@@ -1922,7 +1902,7 @@ DEFUNX ("tmpnam", Ftmpnam, args, ,
 @deftypefnx {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
 Return a unique temporary file name as a string.\n\
 \n\
-If @var{prefix} is omitted, a value of @code{\"oct-\"} is used.\n\
+If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
 If @var{dir} is also omitted, the default directory for temporary files\n\
 is used.  If @var{dir} is provided, it must exist, otherwise the default\n\
 directory for temporary files is used.  Since the named file is not\n\
@@ -1964,7 +1944,7 @@ DEFUN (tmpfile, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} tmpfile ()\n\
 Return the file ID corresponding to a new temporary file with a unique\n\
-name.  The file is opened in binary read/write (@code{\"w+b\"}) mode.\n\
+name.  The file is opened in binary read/write (@qcode{\"w+b\"}) mode.\n\
 The file will be deleted automatically when it is closed or when Octave\n\
 exits.\n\
 \n\

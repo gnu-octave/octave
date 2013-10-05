@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 
 #include "mach-info.h"
+#include "oct-inttypes.h"
 
 class
 OCTAVE_API
@@ -60,6 +61,8 @@ public:
       dt_float     = 22,
       dt_unknown   = 23 // Must be last, have largest value!
     };
+
+  static size_t data_type_size (data_type dt);
 
   static data_type string_to_data_type (const std::string& s);
 
@@ -124,5 +127,138 @@ read_floats (std::istream& is, float *data, save_type type,
 extern OCTAVE_API void
 write_floats (std::ostream& os, const float *data, save_type type,
               octave_idx_type len);
+
+template <typename T>
+inline bool
+is_equivalent_type (oct_data_conv::data_type)
+{
+  return false;
+}
+
+template <>
+inline bool
+is_equivalent_type<int8_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int8;
+}
+
+template <>
+inline bool
+is_equivalent_type<int16_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int16;
+}
+
+template <>
+inline bool
+is_equivalent_type<int32_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int32;
+}
+
+template <>
+inline bool
+is_equivalent_type<int64_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int64;
+}
+
+template <>
+inline bool
+is_equivalent_type<uint8_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint8;
+}
+
+template <>
+inline bool
+is_equivalent_type<uint16_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint16;
+}
+
+template <>
+inline bool
+is_equivalent_type<uint32_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint32;
+}
+
+template <>
+inline bool
+is_equivalent_type<uint64_t> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint64;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_int8> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int8;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_int16> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int16;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_int32> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int32;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_int64> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_int64;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_uint8> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint8;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_uint16> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint16;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_uint32> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint32;
+}
+
+template <>
+inline bool
+is_equivalent_type<octave_uint64> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_uint64;
+}
+
+template <>
+inline bool
+is_equivalent_type<double> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_double;
+}
+
+template <>
+inline bool
+is_equivalent_type<float> (oct_data_conv::data_type t)
+{
+  return t == oct_data_conv::dt_single || t == oct_data_conv::dt_float;
+}
 
 #endif

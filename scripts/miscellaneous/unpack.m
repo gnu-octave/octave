@@ -75,10 +75,10 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
     ## Check to see if it's .tar.gz, .tar.Z, etc.
     if (any (strcmpi ({".gz" ".Z" ".bz2" ".bz"}, ext)))
-      [tmppathstr, tmpname, tmpext] = fileparts (name);
+      [~, tmpname, tmpext] = fileparts (name);
       if (strcmpi (tmpext, ".tar"))
         name = tmpname;
-        ext = cstrcat (tmpext, ext);
+        ext = [tmpext ext];
       endif
     endif
 
@@ -88,10 +88,10 @@ function filelist = unpack (file, dir = ".", filetype = "")
       urlfile = file;
       ## FIXME -- should we name the file that we download with the
       ## same file name as the URL requests?
-      tmpfile = cstrcat (tmpnam (), ext);
+      tmpfile = [tmpnam() ext];
       [file, success, msg] = urlwrite (urlfile, tmpfile);
       if (! success)
-        error ("unpack: could not get \"%s\": %s", urlfile, msg);
+        error ('unpack: could not get "%s": %s', urlfile, msg);
       endif
     endif
 
@@ -102,7 +102,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
   cfile = canonicalize_file_name (file);
 
   if (isempty (cfile))
-    error ("unpack: file \"%s\" not found", file);
+    error ('unpack: file "%s" not found', file);
   else
     file = cfile;
   endif
@@ -112,40 +112,44 @@ function filelist = unpack (file, dir = ".", filetype = "")
   ## The field names are the file extension without periods.
   ## The first cell is what is executed to unpack an archive verbosely.
   ## The second cell is what is executed to unpack an archive quietly.
-  ## The third cell is the function to execute on output to get the
-  ##   files list.
+  ## The third cell is the function to execute on output to get the files list.
   ## The fourth cell indicates if the files may need to be manually moved
-  ##   (i.e. tar and unzip decompress into the current directory while
-  ##   bzip2 and gzip decompress the file at its location).
+  ##   (i.e., tar and unzip decompress into the current directory while
+  ##    bzip2 and gzip decompress the file at its location).
   persistent commandlist;
   if (isempty (commandlist))
-    commandlist.gz = {"gzip -d -v -r \"%s\"", ...
-                      "gzip -d -r \"%s\"", ...
+    commandlist.gz = {'gzip -d -v -r "%s"', ...
+                      'gzip -d -r "%s"', ...
                       @__parse_gzip__, true};
     commandlist.z = commandlist.gz;
-    commandlist.bz2 = {"bzip2 -d -v \"%s\"", ...
-                       "bzip2 -d \"%s\"", ...
+    commandlist.bz2 = {'bzip2 -d -v "%s"', ...
+                       'bzip2 -d "%s"', ...
                        @__parse_bzip2__, true};
     commandlist.bz = commandlist.bz2;
-    commandlist.tar = {"tar xvf \"%s\"", ...
-                       "tar xf \"%s\"", ...
+    commandlist.tar = {'tar xvf "%s"', ...
+                       'tar xf "%s"', ...
                        @__parse_tar__, false};
-    commandlist.targz = {"gzip -d -c \"%s\" | tar xvf -", ...
-                         "gzip -d -c \"%s\" | tar xf -", ...
+    commandlist.targz = {'gzip -d -c "%s" | tar xvf -', ...
+                         'gzip -d -c "%s" | tar xf -', ...
                          @__parse_tar__, false};
     commandlist.tgz = commandlist.targz;
-    commandlist.tarbz2 = {"bzip2 -d -c \"%s\" | tar xvf -", ...
-                          "bzip2 -d -c \"%s\" | tar xf -", ...
+    commandlist.tarbz2 = {'bzip2 -d -c "%s" | tar xvf -', ...
+                          'bzip2 -d -c "%s" | tar xf -', ...
                           @__parse_tar__, false};
     commandlist.tarbz = commandlist.tarbz2;
     commandlist.tbz2 = commandlist.tarbz2;
     commandlist.tbz = commandlist.tarbz2;
-    commandlist.zip = {"unzip \"%s\"", ...
-                       "unzip -q \"%s\"", ...
+    commandlist.zip = {'unzip -n "%s"', ...
+                       'unzip -nq "%s"', ...
                        @__parse_zip__, false};
   endif
 
-  nodotext = ext(! ismember (ext, "."));
+  ## Unzip doesn't actually care about the extension
+  if (strcmp (filetype, "unzip"))
+    nodotext = "zip";
+  else
+    nodotext = ext(ext != '.');
+  endif
 
   origdir = pwd ();
 
@@ -178,7 +182,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
   unwind_protect
     cd (dir);
-    [status, output] = system (sprintf (cstrcat (command, " 2>&1"), file));
+    [status, output] = system (sprintf ([command " 2>&1"], file));
   unwind_protect_cleanup
     cd (origdir);
   end_unwind_protect
@@ -189,19 +193,18 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   if (nargout > 0 || needmove)
-    ## Trim the last cr if needed.
+    ## Trim the last CR if needed.
     ## FIXME -- will this need to change to a check for "\r\n" for windows?
-    if (output(length (output)) == "\n")
-      output(length (output)) = [];
+    if (output(end) == "\n")
+      output(end) = [];
     endif
     files = parser (ostrsplit (output, "\n"))';
 
     ## Move files if necessary
     if (needmove)
-      [st, msg, msgid] = movefile (files, dir);
+      [st, msg, ~] = movefile (files, dir);
       if (! st)
-        error ("unpack: unable to move files to \"%s\": %s",
-               dir, msg);
+        error ('unpack: unable to move files to "%s": %s', dir, msg);
       endif
 
       ## Fix the names for the files since they were moved.
@@ -222,54 +225,27 @@ function files = __parse_zip__ (output)
   ## Parse the output from zip and unzip.
 
   ## Skip first line which is Archive header
-  output(1) = [];
-  for i = 1:length (output)
-    files{i} = output{i}(14:length (output{i}));
-  endfor
+  files = char (output(2:end));
+  ## Trim constant width prefix and return cell array
+  files = cellstr (files(:,14:end))
 endfunction
 
 function output = __parse_tar__ (output)
-  ## This is a noop, but it makes things simpler for other cases.
+  ## This is a no-op, but it makes things simpler for other cases.
 endfunction
 
 function files = __parse_gzip__ (output)
   ## Parse the output from gzip and gunzip returning the files
   ## commpressed (or decompressed).
 
-  files = {};
-  ## The middle ": " should indicate a good place to start looking for
-  ## the filename.
-  for i = 1:length (output)
-    colons = strfind (output{i}, ":");
-    if (isempty (colons))
-      warning ("unpack:parsing",
-               "Unable to parse line (gzip missing colon):\n%s", output{i});
-    else
-      midcolon = colons(ceil (length (colons)/2));
-      thisstr = output{i}(midcolon+2:length (output{i}));
-      idx = index (thisstr, "with") + 5;
-      if (isempty (idx))
-        warning ("unpack:parsing",
-                 "Unable to parse line (gzip missing with):\n%s", output{i});
-      else
-        files{i} = thisstr(idx:length (thisstr));
-      endif
-    endif
-  endfor
+  files = regexprep (output, '^.+ with (.*)$', '$1');
 endfunction
 
 function files = __parse_bzip2__ (output)
   ## Parse the output from bzip2 and bunzip2 returning the files
   ## commpressed (or decompressed).
 
-  files = {};
-  for i = 1:length (output)
-    ## the -5 is to remove the ".bz2:"
-    endoffilename = rindex (output{i}, ": ") - 5;
-    if (isempty (endoffilename))
-      warning ("unpack:parsing", "Unable to parse line:\n%s", output{i});
-    else
-      files{i} = output{i}(3:endoffilename);
-    endif
-  endfor
+  ## Strip leading blanks and .bz2 extension from file name
+  files = regexprep (output, '^\s+(.*)\.bz2: .*', '$1');
 endfunction
+

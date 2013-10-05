@@ -25,11 +25,11 @@
 ## freedom.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @code{mean (@var{x}) != mean (@var{y})}.  If @var{alt} is @code{">"},
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @code{mean (@var{x}) != mean (@var{y})}.  If @var{alt} is @qcode{">"},
 ## the one-sided alternative @code{mean (@var{x}) > mean (@var{y})} is
-## used.  Similarly for @code{"<"}, the one-sided alternative @code{mean
+## used.  Similarly for @qcode{"<"}, the one-sided alternative @code{mean
 ## (@var{x}) < mean (@var{y})} is used.  The default is the two-sided
 ## case.
 ##
@@ -82,3 +82,4 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   endif
 
 endfunction
+

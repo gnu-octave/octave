@@ -32,3 +32,4 @@ endfunction
 
 
 %!assert (namelengthmax (), 63)
+

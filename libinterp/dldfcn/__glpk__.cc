@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2005-2012 Nicolo' Giorgetti
+Copyright (C) 2013 Sébastien Villemot <sebastien@debian.org>
 
 This file is part of Octave.
 
@@ -46,191 +47,86 @@ extern "C"
 #else
 #include <glpk.h>
 #endif
-
-#if 0
-#ifdef GLPK_PRE_4_14
-
-#ifndef _GLPLIB_H
-#include <glplib.h>
-#endif
-#ifndef lib_set_fault_hook
-#define lib_set_fault_hook lib_fault_hook
-#endif
-#ifndef lib_set_print_hook
-#define lib_set_print_hook lib_print_hook
-#endif
-
-#else
-
-void _glp_lib_print_hook (int (*func)(void *info, char *buf), void *info);
-void _glp_lib_fault_hook (int (*func)(void *info, char *buf), void *info);
-
-#endif
-#endif
 }
 
-#define NIntP 17
-#define NRealP 10
-
-int lpxIntParam[NIntP] = {
-  0,
-  1,
-  0,
-  1,
-  0,
-  -1,
-  0,
-  200,
-  1,
-  2,
-  0,
-  1,
-  0,
-  0,
-  2,
-  2,
-  1
-};
-
-int IParam[NIntP] = {
-  LPX_K_MSGLEV,
-  LPX_K_SCALE,
-  LPX_K_DUAL,
-  LPX_K_PRICE,
-  LPX_K_ROUND,
-  LPX_K_ITLIM,
-  LPX_K_ITCNT,
-  LPX_K_OUTFRQ,
-  LPX_K_MPSINFO,
-  LPX_K_MPSOBJ,
-  LPX_K_MPSORIG,
-  LPX_K_MPSWIDE,
-  LPX_K_MPSFREE,
-  LPX_K_MPSSKIP,
-  LPX_K_BRANCH,
-  LPX_K_BTRACK,
-  LPX_K_PRESOL
-};
-
-
-double lpxRealParam[NRealP] = {
-  0.07,
-  1e-7,
-  1e-7,
-  1e-9,
-  -std::numeric_limits<double>::max (),
-  std::numeric_limits<double>::max (),
-  -1.0,
-  0.0,
-  1e-6,
-  1e-7
-};
-
-int RParam[NRealP] = {
-  LPX_K_RELAX,
-  LPX_K_TOLBND,
-  LPX_K_TOLDJ,
-  LPX_K_TOLPIV,
-  LPX_K_OBJLL,
-  LPX_K_OBJUL,
-  LPX_K_TMLIM,
-  LPX_K_OUTDLY,
-  LPX_K_TOLINT,
-  LPX_K_TOLOBJ
+struct control_params
+{
+  int msglev;
+  int dual;
+  int price;
+  int itlim;
+  int outfrq;
+  int branch;
+  int btrack;
+  int presol;
+  int rtest;
+  int tmlim;
+  int outdly;
+  double tolbnd;
+  double toldj;
+  double tolpiv;
+  double objll;
+  double objul;
+  double tolint;
+  double tolobj;
 };
 
 static jmp_buf mark;  //-- Address for long jump to jump to
-
-#if 0
-int
-glpk_fault_hook (void * /* info */, char *msg)
-{
-  error ("CRITICAL ERROR in GLPK: %s", msg);
-  longjmp (mark, -1);
-}
-
-int
-glpk_print_hook (void * /* info */, char *msg)
-{
-  message (0, "%s", msg);
-  return 1;
-}
-#endif
 
 int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       double *a, double *b, char *ctype, int *freeLB, double *lb,
       int *freeUB, double *ub, int *vartype, int isMIP, int lpsolver,
-      int save_pb, double *xmin, double *fmin, double *status,
-      double *lambda, double *redcosts, double *time, double *mem)
+      int save_pb, int scale, const control_params *par,
+      double *xmin, double *fmin, int *status,
+      double *lambda, double *redcosts, double *time)
 {
-  int errnum;
   int typx = 0;
-  int method;
+  int errnum = 0;
 
   clock_t t_start = clock ();
 
-#if 0
-#ifdef GLPK_PRE_4_14
-  lib_set_fault_hook (0, glpk_fault_hook);
-#else
-  _glp_lib_fault_hook (glpk_fault_hook, 0);
-#endif
-
-  if (lpxIntParam[0] > 1)
-#ifdef GLPK_PRE_4_14
-    lib_set_print_hook (0, glpk_print_hook);
-#else
-    _glp_lib_print_hook (glpk_print_hook, 0);
-#endif
-#endif
-
-  LPX *lp = lpx_create_prob ();
-
+  glp_prob *lp = glp_create_prob ();
 
   //-- Set the sense of optimization
   if (sense == 1)
-    lpx_set_obj_dir (lp, LPX_MIN);
+    glp_set_obj_dir (lp, GLP_MIN);
   else
-    lpx_set_obj_dir (lp, LPX_MAX);
+    glp_set_obj_dir (lp, GLP_MAX);
 
-  //-- If the problem has integer structural variables switch to MIP
-  if (isMIP)
-    lpx_set_class (lp, LPX_MIP);
-
-  lpx_add_cols (lp, n);
+  glp_add_cols (lp, n);
   for (int i = 0; i < n; i++)
     {
       //-- Define type of the structural variables
       if (! freeLB[i] && ! freeUB[i])
         {
           if (lb[i] != ub[i])
-            lpx_set_col_bnds (lp, i+1, LPX_DB, lb[i], ub[i]);
+            glp_set_col_bnds (lp, i+1, GLP_DB, lb[i], ub[i]);
           else
-            lpx_set_col_bnds (lp, i+1, LPX_FX, lb[i], ub[i]);
+            glp_set_col_bnds (lp, i+1, GLP_FX, lb[i], ub[i]);
         }
       else
         {
           if (! freeLB[i] && freeUB[i])
-            lpx_set_col_bnds (lp, i+1, LPX_LO, lb[i], ub[i]);
+            glp_set_col_bnds (lp, i+1, GLP_LO, lb[i], ub[i]);
           else
             {
               if (freeLB[i] && ! freeUB[i])
-                lpx_set_col_bnds (lp, i+1, LPX_UP, lb[i], ub[i]);
+                glp_set_col_bnds (lp, i+1, GLP_UP, lb[i], ub[i]);
               else
-                lpx_set_col_bnds (lp, i+1, LPX_FR, lb[i], ub[i]);
+                glp_set_col_bnds (lp, i+1, GLP_FR, lb[i], ub[i]);
             }
         }
 
       // -- Set the objective coefficient of the corresponding
       // -- structural variable. No constant term is assumed.
-      lpx_set_obj_coef(lp,i+1,c[i]);
+      glp_set_obj_coef(lp,i+1,c[i]);
 
       if (isMIP)
-        lpx_set_col_kind (lp, i+1, vartype[i]);
+        glp_set_col_kind (lp, i+1, vartype[i]);
     }
 
-  lpx_add_rows (lp, m);
+  glp_add_rows (lp, m);
 
   for (int i = 0; i < m; i++)
     {
@@ -245,124 +141,123 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       switch (ctype[i])
         {
         case 'F':
-          typx = LPX_FR;
+          typx = GLP_FR;
           break;
 
         case 'U':
-          typx = LPX_UP;
+          typx = GLP_UP;
           break;
 
         case 'L':
-          typx = LPX_LO;
+          typx = GLP_LO;
           break;
 
         case 'S':
-          typx = LPX_FX;
+          typx = GLP_FX;
           break;
 
         case 'D':
-          typx = LPX_DB;
+          typx = GLP_DB;
           break;
         }
 
-      lpx_set_row_bnds (lp, i+1, typx, b[i], b[i]);
+      glp_set_row_bnds (lp, i+1, typx, b[i], b[i]);
 
     }
 
-  lpx_load_matrix (lp, nz, rn, cn, a);
+  glp_load_matrix (lp, nz, rn, cn, a);
 
   if (save_pb)
     {
       static char tmp[] = "outpb.lp";
-      if (lpx_write_cpxlp (lp, tmp) != 0)
+      if (glp_write_lp (lp, NULL, tmp) != 0)
         {
           error ("__glpk__: unable to write problem");
           longjmp (mark, -1);
         }
     }
 
-  //-- scale the problem data (if required)
-  //-- if (scale && (!presol || method == 1)) lpx_scale_prob (lp);
-  //-- LPX_K_SCALE=IParam[1]  LPX_K_PRESOL=IParam[16]
-  if (lpxIntParam[1] && (! lpxIntParam[16] || lpsolver != 1))
-    lpx_scale_prob (lp);
+  //-- scale the problem data
+  if (!par->presol || lpsolver != 1)
+    glp_scale_prob (lp, scale);
 
   //-- build advanced initial basis (if required)
-  if (lpsolver == 1 && ! lpxIntParam[16])
-    lpx_adv_basis (lp);
+  if (lpsolver == 1 && !par->presol)
+    glp_adv_basis (lp, 0);
 
-  for (int i = 0; i < NIntP; i++)
-    lpx_set_int_parm (lp, IParam[i], lpxIntParam[i]);
-
-  for (int i = 0; i < NRealP; i++)
-    lpx_set_real_parm (lp, RParam[i], lpxRealParam[i]);
-
-  if (lpsolver == 1)
-    method = 'S';
-  else
-    method = 'T';
-
-  switch (method)
+  /* For MIP problems without a presolver, a first pass with glp_simplex
+     is required */
+  if ((!isMIP && lpsolver == 1)
+      || (isMIP && !par->presol))
     {
-    case 'S':
-      {
-        if (isMIP)
-          {
-            method = 'I';
-            errnum = lpx_simplex (lp);
-            errnum = lpx_integer (lp);
-          }
-        else
-          errnum = lpx_simplex (lp);
-      }
-     break;
-
-    case 'T':
-      errnum = lpx_interior (lp);
-      break;
-
-    default:
-      break;
-#if 0
-#ifdef GLPK_PRE_4_14
-      insist (method != method);
-#else
-      static char tmp[] = "method != method";
-      glpk_fault_hook (0, tmp);
-#endif
-#endif
+      glp_smcp smcp;
+      glp_init_smcp (&smcp);
+      smcp.msg_lev = par->msglev;
+      smcp.meth = par->dual;
+      smcp.pricing = par->price;
+      smcp.r_test = par->rtest;
+      smcp.tol_bnd = par->tolbnd;
+      smcp.tol_dj = par->toldj;
+      smcp.tol_piv = par->tolpiv;
+      smcp.obj_ll = par->objll;
+      smcp.obj_ul = par->objul;
+      smcp.it_lim = par->itlim;
+      smcp.tm_lim = par->tmlim;
+      smcp.out_frq = par->outfrq;
+      smcp.out_dly = par->outdly;
+      smcp.presolve = par->presol;
+      errnum = glp_simplex (lp, &smcp);
     }
 
-  /*  errnum assumes the following results:
-      errnum = 0 <=> No errors
-      errnum = 1 <=> Iteration limit exceeded.
-      errnum = 2 <=> Numerical problems with basis matrix.
-  */
-  if (errnum == LPX_E_OK)
+  if (isMIP)
+    {
+      glp_iocp iocp;
+      glp_init_iocp (&iocp);
+      iocp.msg_lev = par->msglev;
+      iocp.br_tech = par->branch;
+      iocp.bt_tech = par->btrack;
+      iocp.tol_int = par->tolint;
+      iocp.tol_obj = par->tolobj;
+      iocp.tm_lim = par->tmlim;
+      iocp.out_frq = par->outfrq;
+      iocp.out_dly = par->outdly;
+      iocp.presolve = par->presol;
+      errnum = glp_intopt (lp, &iocp);
+    }
+
+  if (!isMIP && lpsolver == 2)
+    {
+      glp_iptcp iptcp;
+      glp_init_iptcp (&iptcp);
+      iptcp.msg_lev = par->msglev;
+      errnum = glp_interior (lp, &iptcp);
+    }
+
+  if (errnum == 0)
     {
       if (isMIP)
         {
-          *status = lpx_mip_status (lp);
-          *fmin = lpx_mip_obj_val (lp);
+          *status = glp_mip_status (lp);
+          *fmin = glp_mip_obj_val (lp);
         }
       else
         {
           if (lpsolver == 1)
             {
-              *status = lpx_get_status (lp);
-              *fmin = lpx_get_obj_val (lp);
+              *status = glp_get_status (lp);
+              *fmin = glp_get_obj_val (lp);
             }
           else
             {
-              *status = lpx_ipt_status (lp);
-              *fmin = lpx_ipt_obj_val (lp);
+              *status = glp_ipt_status (lp);
+              *fmin = glp_ipt_obj_val (lp);
             }
         }
 
       if (isMIP)
         {
           for (int i = 0; i < n; i++)
-            xmin[i] = lpx_mip_col_val (lp, i+1);
+            xmin[i] = glp_mip_col_val (lp, i+1);
         }
       else
         {
@@ -370,52 +265,41 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
           for (int i = 0; i < n; i++)
             {
               if (lpsolver == 1)
-                xmin[i] = lpx_get_col_prim (lp, i+1);
+                xmin[i] = glp_get_col_prim (lp, i+1);
               else
-                xmin[i] = lpx_ipt_col_prim (lp, i+1);
+                xmin[i] = glp_ipt_col_prim (lp, i+1);
             }
 
           /* Dual values */
           for (int i = 0; i < m; i++)
             {
               if (lpsolver == 1)
-                lambda[i] = lpx_get_row_dual (lp, i+1);
+                lambda[i] = glp_get_row_dual (lp, i+1);
               else
-                lambda[i] = lpx_ipt_row_dual (lp, i+1);
+                lambda[i] = glp_ipt_row_dual (lp, i+1);
             }
 
           /* Reduced costs */
-          for (int i = 0; i < lpx_get_num_cols (lp); i++)
+          for (int i = 0; i < glp_get_num_cols (lp); i++)
             {
               if (lpsolver == 1)
-                redcosts[i] = lpx_get_col_dual (lp, i+1);
+                redcosts[i] = glp_get_col_dual (lp, i+1);
               else
-                redcosts[i] = lpx_ipt_col_dual (lp, i+1);
+                redcosts[i] = glp_ipt_col_dual (lp, i+1);
             }
         }
 
       *time = (clock () - t_start) / CLOCKS_PER_SEC;
-
-#ifdef GLPK_PRE_4_14
-      *mem = (lib_env_ptr () -> mem_tpeak);
-#else
-      *mem = 0;
-#endif
-
-      lpx_delete_prob (lp);
-      return 0;
     }
 
-   lpx_delete_prob (lp);
-
-   *status = errnum;
+   glp_delete_prob (lp);
 
    return errnum;
 }
 
 #endif
 
-#define OCTAVE_GLPK_GET_REAL_PARAM(NAME, IDX) \
+#define OCTAVE_GLPK_GET_REAL_PARAM(NAME, VAL) \
   do \
     { \
       octave_value tmp = PARAM.getfield (NAME); \
@@ -424,7 +308,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
         { \
           if (! tmp.is_empty ()) \
             { \
-              lpxRealParam[IDX] = tmp.scalar_value (); \
+              VAL = tmp.scalar_value (); \
  \
               if (error_state) \
                 { \
@@ -659,10 +543,10 @@ Undocumented internal function.\n\
       if (VTYPE(i,0) == 'I')
         {
           isMIP = 1;
-          vartype(i) = LPX_IV;
+          vartype(i) = GLP_IV;
         }
       else
-        vartype(i) = LPX_CV;
+        vartype(i) = GLP_CV;
     }
 
   //-- 8th Input. Sense of optimization.
@@ -689,78 +573,78 @@ Undocumented internal function.\n\
       return retval;
     }
 
+  control_params par;
+
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   //-- Integer parameters
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   //-- Level of messages output by the solver
-  OCTAVE_GLPK_GET_INT_PARAM ("msglev", lpxIntParam[0]);
-  if (lpxIntParam[0] < 0 || lpxIntParam[0] > 3)
+  par.msglev = 1;
+  OCTAVE_GLPK_GET_INT_PARAM ("msglev", par.msglev);
+  if (par.msglev < 0 || par.msglev > 3)
     {
-      error ("__glpk__: PARAM.msglev must be 0 (no output [default]) or 1 (error messages only) or 2 (normal output) or 3 (full output)");
+      error ("__glpk__: PARAM.msglev must be 0 (no output) or 1 (error and warning messages only [default]) or 2 (normal output) or 3 (full output)");
       return retval;
     }
 
   //-- scaling option
-  OCTAVE_GLPK_GET_INT_PARAM ("scale", lpxIntParam[1]);
-  if (lpxIntParam[1] < 0 || lpxIntParam[1] > 2)
+  volatile int scale = 16;
+  OCTAVE_GLPK_GET_INT_PARAM ("scale", scale);
+  if (scale < 0 || scale > 128)
     {
-      error ("__glpk__: PARAM.scale must be 0 (no scaling) or 1 (equilibration scaling [default]) or 2 (geometric mean scaling)");
+      error ("__glpk__: PARAM.scale must either be 128 (automatic selection of scaling options), or a bitwise or of: 1 (geometric mean scaling), 16 (equilibration scaling), 32 (round scale factors to power of two), 64 (skip if problem is well scaled");
       return retval;
     }
 
-  //-- Dual dimplex option
-  OCTAVE_GLPK_GET_INT_PARAM ("dual", lpxIntParam[2]);
-  if (lpxIntParam[2] < 0 || lpxIntParam[2] > 1)
+  //-- Dual simplex option
+  par.dual = 1;
+  OCTAVE_GLPK_GET_INT_PARAM ("dual", par.dual);
+  if (par.dual < 1 || par.dual > 3)
     {
-      error ("__glpk__: PARAM.dual must be 0 (do NOT use dual simplex [default]) or 1 (use dual simplex)");
+      error ("__glpk__: PARAM.dual must be 1 (use two-phase primal simplex [default]) or 2 (use two-phase dual simplex) or 3 (use two-phase dual simplex, and if it fails, switch to the primal simplex)");
       return retval;
     }
 
   //-- Pricing option
-  OCTAVE_GLPK_GET_INT_PARAM ("price", lpxIntParam[3]);
-  if (lpxIntParam[3] < 0 || lpxIntParam[3] > 1)
+  par.price = 34;
+  OCTAVE_GLPK_GET_INT_PARAM ("price", par.price);
+  if (par.price != 17 && par.price != 34)
     {
-      error ("__glpk__: PARAM.price must be 0 (textbook pricing) or 1 (steepest edge pricing [default])");
-      return retval;
-    }
-
-  //-- Solution rounding option
-  OCTAVE_GLPK_GET_INT_PARAM ("round", lpxIntParam[4]);
-  if (lpxIntParam[4] < 0 || lpxIntParam[4] > 1)
-    {
-      error ("__glpk__: PARAM.round must be 0 (report all primal and dual values [default]) or 1 (replace tiny primal and dual values by exact zero)");
+      error ("__glpk__: PARAM.price must be 17 (textbook pricing) or 34 (steepest edge pricing [default])");
       return retval;
     }
 
   //-- Simplex iterations limit
-  OCTAVE_GLPK_GET_INT_PARAM ("itlim", lpxIntParam[5]);
-
-  //-- Simplex iterations count
-  OCTAVE_GLPK_GET_INT_PARAM ("itcnt", lpxIntParam[6]);
+  par.itlim = std::numeric_limits<int>::max ();
+  OCTAVE_GLPK_GET_INT_PARAM ("itlim", par.itlim);
 
   //-- Output frequency, in iterations
-  OCTAVE_GLPK_GET_INT_PARAM ("outfrq", lpxIntParam[7]);
+  par.outfrq = 200;
+  OCTAVE_GLPK_GET_INT_PARAM ("outfrq", par.outfrq);
 
   //-- Branching heuristic option
-  OCTAVE_GLPK_GET_INT_PARAM ("branch", lpxIntParam[14]);
-  if (lpxIntParam[14] < 0 || lpxIntParam[14] > 2)
+  par.branch = 4;
+  OCTAVE_GLPK_GET_INT_PARAM ("branch", par.branch);
+  if (par.branch < 1 || par.branch > 5)
     {
-      error ("__glpk__: PARAM.branch must be (MIP only) 0 (branch on first variable) or 1 (branch on last variable) or 2 (branch using a heuristic by Driebeck and Tomlin [default]");
+      error ("__glpk__: PARAM.branch must be 1 (first fractional variable) or 2 (last fractional variable) or 3 (most fractional variable) or 4 (heuristic by Driebeck and Tomlin [default]) or 5 (hybrid pseudocost heuristic)");
       return retval;
     }
 
   //-- Backtracking heuristic option
-  OCTAVE_GLPK_GET_INT_PARAM ("btrack", lpxIntParam[15]);
-  if (lpxIntParam[15] < 0 || lpxIntParam[15] > 2)
+  par.btrack = 4;
+  OCTAVE_GLPK_GET_INT_PARAM ("btrack", par.btrack);
+  if (par.btrack < 1 || par.btrack > 4)
     {
-      error ("__glpk__: PARAM.btrack must be (MIP only) 0 (depth first search) or 1 (breadth first search) or 2 (backtrack using the best projection heuristic [default]");
+      error ("__glpk__: PARAM.btrack must be 1 (depth first search) or 2 (breadth first search) or 3 (best local bound) or 4 (best projection heuristic [default]");
       return retval;
     }
 
   //-- Presolver option
-  OCTAVE_GLPK_GET_INT_PARAM ("presol", lpxIntParam[16]);
-  if (lpxIntParam[16] < 0 || lpxIntParam[16] > 1)
+  par.presol = 1;
+  OCTAVE_GLPK_GET_INT_PARAM ("presol", par.presol);
+  if (par.presol < 0 || par.presol > 1)
     {
       error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
       return retval;
@@ -775,6 +659,21 @@ Undocumented internal function.\n\
       return retval;
     }
 
+  //-- Ratio test option
+  par.rtest = 34;
+  OCTAVE_GLPK_GET_INT_PARAM ("rtest", par.rtest);
+  if (par.rtest != 17 && par.rtest != 34)
+    {
+      error ("__glpk__: PARAM.rtest must be 17 (standard ratio test) or 34 (Harris' two-pass ratio test [default])");
+      return retval;
+    }
+
+  par.tmlim = std::numeric_limits<int>::max ();
+  OCTAVE_GLPK_GET_INT_PARAM ("tmlim", par.tmlim);
+
+  par.outdly = 0;
+  OCTAVE_GLPK_GET_INT_PARAM ("outdly", par.outdly);
+
   //-- Save option
   volatile int save_pb = 0;
   OCTAVE_GLPK_GET_INT_PARAM ("save", save_pb);
@@ -784,51 +683,50 @@ Undocumented internal function.\n\
   //-- Real parameters
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  //-- Ratio test option
-  OCTAVE_GLPK_GET_REAL_PARAM ("relax", 0);
-
   //-- Relative tolerance used to check if the current basic solution
   //-- is primal feasible
-  OCTAVE_GLPK_GET_REAL_PARAM ("tolbnd", 1);
+  par.tolbnd = 1e-7;
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolbnd", par.tolbnd);
 
   //-- Absolute tolerance used to check if the current basic solution
   //-- is dual feasible
-  OCTAVE_GLPK_GET_REAL_PARAM ("toldj", 2);
+  par.toldj = 1e-7;
+  OCTAVE_GLPK_GET_REAL_PARAM ("toldj", par.toldj);
 
   //-- Relative tolerance used to choose eligible pivotal elements of
   //--  the simplex table in the ratio test
-  OCTAVE_GLPK_GET_REAL_PARAM ("tolpiv", 3);
+  par.tolpiv = 1e-10;
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolpiv", par.tolpiv);
 
-  OCTAVE_GLPK_GET_REAL_PARAM ("objll", 4);
+  par.objll = -std::numeric_limits<double>::max ();
+  OCTAVE_GLPK_GET_REAL_PARAM ("objll", par.objll);
 
-  OCTAVE_GLPK_GET_REAL_PARAM ("objul", 5);
+  par.objul = std::numeric_limits<double>::max ();
+  OCTAVE_GLPK_GET_REAL_PARAM ("objul", par.objul);
 
-  OCTAVE_GLPK_GET_REAL_PARAM ("tmlim", 6);
+  par.tolint = 1e-5;
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolint", par.tolint);
 
-  OCTAVE_GLPK_GET_REAL_PARAM ("outdly", 7);
-
-  OCTAVE_GLPK_GET_REAL_PARAM ("tolint", 8);
-
-  OCTAVE_GLPK_GET_REAL_PARAM ("tolobj", 9);
+  par.tolobj = 1e-7;
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolobj", par.tolobj);
 
   //-- Assign pointers to the output parameters
   ColumnVector xmin (mrowsc, octave_NA);
   double fmin = octave_NA;
-  double status;
   ColumnVector lambda (mrowsA, octave_NA);
   ColumnVector redcosts (mrowsc, octave_NA);
   double time;
-  double mem;
+  int status, errnum = 0;
 
   int jmpret = setjmp (mark);
 
   if (jmpret == 0)
-    glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
-          cn.fortran_vec (), a.fortran_vec (), b, ctype,
-          freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
-          vartype.fortran_vec (), isMIP, lpsolver, save_pb,
-          xmin.fortran_vec (), &fmin, &status, lambda.fortran_vec (),
-          redcosts.fortran_vec (), &time, &mem);
+    errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
+                   cn.fortran_vec (), a.fortran_vec (), b, ctype,
+                   freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
+                   vartype.fortran_vec (), isMIP, lpsolver, save_pb, scale, &par,
+                   xmin.fortran_vec (), &fmin, &status, lambda.fortran_vec (),
+                   redcosts.fortran_vec (), &time);
 
   octave_scalar_map extra;
 
@@ -839,10 +737,10 @@ Undocumented internal function.\n\
     }
 
   extra.assign ("time", time);
-  extra.assign ("mem", mem);
+  extra.assign ("status", status);
 
   retval(3) = extra;
-  retval(2) = status;
+  retval(2) = errnum;
   retval(1) = fmin;
   retval(0) = xmin;
 

@@ -24,11 +24,11 @@
 ## statistic @var{z} follows a standard normal distribution.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @code{mean (@var{x}) != mean (@var{y})}.  If alt is @code{">"}, the
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @code{mean (@var{x}) != mean (@var{y})}.  If alt is @qcode{">"}, the
 ## one-sided alternative @code{mean (@var{x}) > mean (@var{y})} is used.
-## Similarly for @code{"<"}, the one-sided alternative @code{mean
+## Similarly for @qcode{"<"}, the one-sided alternative @code{mean
 ## (@var{x}) < mean (@var{y})} is used.  The default is the two-sided
 ## case.
 ##
@@ -78,11 +78,12 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
   if (nargout == 0)
-    s = cstrcat ("Two-sample Z-test of mean(x) == mean(y) against ",
-                 "mean(x) %s mean(y),\n",
-                 "with known var(x) == %g and var(y) == %g:\n",
-                 "  pval = %g\n");
+    s = ["Two-sample Z-test of mean(x) == mean(y) against ", ...
+         "mean(x) %s mean(y),\n",                            ...
+         "with known var(x) == %g and var(y) == %g:\n",      ...
+         "  pval = %g\n"];
     printf (s, alt, v_x, v_y, pval);
   endif
 
 endfunction
+

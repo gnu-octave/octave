@@ -1,7 +1,7 @@
 function out = loadobj (in)
 
   out = in;
-  if (~isa (in, 'Spork'))
+  if (!isa (in, 'Spork'))
     out.cack = [];
   end
 

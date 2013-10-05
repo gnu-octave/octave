@@ -25,6 +25,7 @@
 @end ifclear
 
 @ifset INSTALLONLY
+@include macros.texi
 
 This file documents the installation of Octave.
 
@@ -179,7 +180,7 @@ The following external packages are required:
 @table @asis
 @item BLAS
 Basic Linear Algebra Subroutine library
-(@url{http://www.netlib.org/blas}).  Accelerated BLAS libraries such as
+(@url{http://www.netlib.org/blas}).  Accelerated @sc{blas} libraries such as
 ATLAS (@url{http://math-atlas.sourceforge.net}) are recommeded for
 better performance.
 
@@ -205,7 +206,7 @@ The following external software packages are optional but recommended:
 @table @asis
 @item ARPACK
 Library for the solution of large-scale eigenvalue problems
-(@url{http://forge.scilab.org/index.php/p/arpack-ng}).  ARPACK is
+(@url{http://forge.scilab.org/index.php/p/arpack-ng}).  @sc{arpack} is
 required to provide the functions @code{eigs} and @code{svds}.
 
 @item cURL
@@ -247,7 +248,7 @@ functions.
 
 @item HDF5
 Library for manipulating portable data files
-(@url{http://www.hdfgroup.org/HDF5}).  HDF5 is required for Octave's
+(@url{http://www.hdfgroup.org/HDF5}).  @sc{hdf5} is required for Octave's
 @code{load} and @code{save} commands to read and write HDF data files.
 
 @item LLVM
@@ -383,7 +384,7 @@ library that Octave should use.
 
 @item --with-magick=<lib>
 Select the library to use for image I/O@.  The two possible values are
-"GraphicsMagick" (default) or "ImageMagick".
+@qcode{"GraphicsMagick"} (default) or @qcode{"ImageMagick"}.
 
 @item --with-sepchar=<char>
 Use <char> as the path separation character.  This option can help when
@@ -517,7 +518,7 @@ If you encounter errors while compiling Octave, first check the list of
 known problems below to see if there is a workaround or solution for
 your problem.  If not,
 @ifclear INSTALLONLY
-see @ref{Trouble},
+@pxref{Trouble},
 @end ifclear
 @ifset INSTALLONLY
 see the file BUGS
@@ -569,7 +570,7 @@ Image files that are distributed with Octave.
 @end table
 @end itemize
 
-@node Compiling Octave with 64-bit Indexing  
+@node Compiling Octave with 64-bit Indexing
 @section Compiling Octave with 64-bit Indexing
 
 Note: the following only applies to systems that have 64-bit pointers.
@@ -1064,7 +1065,7 @@ directory to the include search path by specifying (for example)
 @env{CFLAGS}, @env{CXXFLAGS}, @env{FFLAGS}, and @env{LDFLAGS}.  Passing
 them as options to the configure script also records them in the
 @file{config.status} file.  By default, @env{CPPFLAGS} and @env{LDFLAGS}
-are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @code{"-g -O"} and
-@env{FFLAGS} is set to @code{"-O"}.
+are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @qcode{"-g -O"} and
+@env{FFLAGS} is set to @qcode{"-O"}.
 
 @end itemize

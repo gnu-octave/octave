@@ -107,7 +107,7 @@ get_mat_data_input_line (std::istream& is)
 }
 
 static void
-get_lines_and_columns (std::istream& is, 
+get_lines_and_columns (std::istream& is,
                        octave_idx_type& nr, octave_idx_type& nc,
                        const std::string& filename = std::string (),
                        bool quiet = false, bool check_numeric = false)
@@ -410,21 +410,14 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
 }
 
 bool
-looks_like_mat_ascii_file (const std::string& filename)
+looks_like_mat_ascii_file (std::istream& is, const std::string& filename)
 {
   bool retval = false;
+  octave_idx_type nr = 0;
+  octave_idx_type nc = 0;
 
-  std::ifstream is (filename.c_str ());
-
-  if (is)
-    {
-      octave_idx_type nr = 0;
-      octave_idx_type nc = 0;
-
-      get_lines_and_columns (is, nr, nc, filename, true, true);
-
-      retval = (nr != 0 && nc != 0);
-    }
+  get_lines_and_columns (is, nr, nc, filename, true, true);
+  retval = (nr != 0 && nc != 0);
 
   return retval;
 }

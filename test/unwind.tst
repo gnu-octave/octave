@@ -16,7 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/unwind/unwind-1.m
 %!function y = f (x)
 %!  global g;
 %!  save_g = g;
@@ -29,7 +28,7 @@
 %!  unwind_protect_cleanup
 %!    g = save_g;
 %!    y = [y, g];
-%!  end_unwind_protect
+%!  end  # "end" is part of test, check not using "end_unwind_protect"
 %!endfunction
 %!
 %!test
@@ -37,7 +36,6 @@
 %! y = f ([3,4]);
 %! assert (y, [0,1,-1]);
 
-%% test/octave.test/unwind/unwind-2.m
 %!function y = f (x)
 %!  global g;
 %!  save_g = g;

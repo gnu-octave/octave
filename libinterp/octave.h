@@ -41,6 +41,7 @@ extern OCTINTERP_API char **octave_cmdline_argv;
 extern OCTINTERP_API int octave_embedded;
 
 extern OCTINTERP_API int octave_starting_gui (void);
+extern OCTINTERP_API int octave_fork_gui (void);
 
 #ifdef  __cplusplus
 }

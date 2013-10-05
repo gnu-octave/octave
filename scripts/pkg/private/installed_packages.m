@@ -140,10 +140,9 @@ function [out1, out2] = installed_packages (local_list, global_list)
       first_char = length (cur_dir) - max_dir_length + 4;
       first_filesep = strfind (cur_dir(first_char:end), filesep ());
       if (! isempty (first_filesep))
-        cur_dir = cstrcat ("...",
-                          cur_dir((first_char + first_filesep(1) - 1):end));
+        cur_dir = ["..." cur_dir((first_char + first_filesep(1) - 1):end)];
       else
-        cur_dir = cstrcat ("...", cur_dir(first_char:end));
+        cur_dir = ["..." cur_dir(first_char:end)];
       endif
     endif
     if (installed_pkgs_lst{idx(i)}.loaded)

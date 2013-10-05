@@ -29,10 +29,10 @@
 ## The optional @var{shape} argument may be
 ##
 ## @table @asis
-## @item @var{shape} = "full"
+## @item @var{shape} = @qcode{"full"}
 ## Return the full convolution.  (default)
 ##
-## @item @var{shape} = "same"
+## @item @var{shape} = @qcode{"same"}
 ## Return the central part of the convolution with the same size as @var{a}.
 ## @end table
 ##

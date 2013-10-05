@@ -61,3 +61,4 @@ function build (files, handle_deps, autoload, verbose)
     endif
   end_unwind_protect
 endfunction
+

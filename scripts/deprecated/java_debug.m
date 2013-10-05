@@ -24,9 +24,9 @@
 ## information regarding the initialization of the JVM and any Java exceptions
 ## is printed.
 ## 
-## When called from inside a function with the "local" option, the variable is
-## changed locally for the function and any subroutines it calls.  The original
-## variable value is restored when exiting the function.
+## When called from inside a function with the @qcode{"local"} option, the
+## variable is changed locally for the function and any subroutines it calls.
+##  The original variable value is restored when exiting the function.
 ## @seealso{debug_java, java_convert_matrix, java_unsigned_conversion}
 ## @end deftypefn
 

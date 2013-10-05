@@ -61,7 +61,7 @@ public:
 
   static bool ignoring_entries (void);
 
-  static void add (const std::string&);
+  static bool add (const std::string&);
 
   static void remove (int);
 
@@ -156,7 +156,7 @@ protected:
 
   virtual bool do_ignoring_entries (void) const;
 
-  virtual void do_add (const std::string&);
+  virtual bool do_add (const std::string&);
 
   virtual void do_remove (int);
 

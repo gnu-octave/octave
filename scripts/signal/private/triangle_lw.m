@@ -27,10 +27,6 @@
 
 function retval = triangle_lw (n, b)
 
-  if (nargin != 2)
-    print_usage ();
-  endif
-
   retval = 1 - (0 : n-1)' * b;
   retval = max ([retval'; (zeros (1, n))])';
 

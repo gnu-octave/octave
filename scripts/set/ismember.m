@@ -48,7 +48,7 @@
 ## @end group
 ## @end example
 ##
-## With the optional third argument @code{"rows"}, and matrices
+## With the optional third argument @qcode{"rows"}, and matrices
 ## @var{A} and @var{s} with the same number of columns, compare rows in
 ## @var{A} with the rows in @var{s}.
 ##

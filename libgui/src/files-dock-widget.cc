@@ -636,7 +636,10 @@ files_dock_widget::notice_settings (const QSettings *settings)
 void
 files_dock_widget::popdownmenu_home (bool)
 {
-  QString dir = QDir::homePath ();
+  QString dir = qgetenv ("HOME");
+  if (dir.isEmpty())
+    dir = QDir::homePath ();
+  
   set_current_directory (dir);
 }
 
@@ -644,7 +647,8 @@ void
 files_dock_widget::popdownmenu_search_dir (bool)
 {
   QString dir = QFileDialog::getExistingDirectory
-    (this, tr ("Set directory of file browser"),_file_system_model->rootPath());
+    (this, tr ("Set directory of file browser"),_file_system_model->rootPath(),
+     QFileDialog::DontUseNativeDialog);
   set_current_directory (dir);
 }
 

@@ -17,22 +17,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} spectral_adf (@var{c}, @var{win}, @var{b})
+## @deftypefn  {Function File} {} spectral_adf (@var{c})
+## @deftypefnx {Function File} {} spectral_adf (@var{c}, @var{win})
+## @deftypefnx {Function File} {} spectral_adf (@var{c}, @var{win}, @var{b})
 ## Return the spectral density estimator given a vector of
 ## autocovariances @var{c}, window name @var{win}, and bandwidth,
 ## @var{b}.
 ##
-## The window name, e.g., @code{"triangle"} or @code{"rectangle"} is
-## used to search for a function called @code{@var{win}_sw}.
+## The window name, e.g., @qcode{"triangle"} or @qcode{"rectangle"} is
+## used to search for a function called @code{@var{win}_lw}.
 ##
 ## If @var{win} is omitted, the triangle window is used.  If @var{b} is
 ## omitted, @code{1 / sqrt (length (@var{x}))} is used.
+## @seealso{spectral_xdf}
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Spectral density estimation
 
 function retval = spectral_adf (c, win, b)
+
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  endif
 
   cr = length (c);
 
@@ -46,8 +53,10 @@ function retval = spectral_adf (c, win, b)
 
   if (nargin == 1)
     w = triangle_lw (cr, b);
+  elseif (! ischar (win))
+    error ("spectral_adf: WIN must be a string");
   else
-    win = str2func (cstrcat (win, "_lw"));
+    win = str2func ([win "_lw"]);
     w = feval (win, cr, b);
   endif
 
@@ -60,6 +69,9 @@ function retval = spectral_adf (c, win, b)
 endfunction
 
 
-
-
+%% Test input validation
+%!error spectral_adf ();
+%!error spectral_adf (1, 2, 3, 4);
+%!error spectral_adf (1, 2);
+%!error spectral_adf (1, "invalid");
 

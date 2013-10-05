@@ -78,12 +78,12 @@ function [Y, newmap] = cmunique (X, map)
     endif
   else
     switch (size (X,3))
-      case (1)
+      case 1
         ## I case
         [newmap,i,j] = unique (X);               # calculate unique colormap
         newmap = repmat (newmap,1,3);            # get a RGB colormap
         Y = reshape (j, rows (X), columns (X));  # Y is j reshaped
-      case (3)
+      case 3
         ## RGB case
         ## build a map with all values
         map = [X(:,:,1)(:), X(:,:,2)(:), X(:,:,3)(:)];

@@ -40,7 +40,7 @@ public:
 
   virtual void connect_visibility_changed (void);
   void make_window (void);
-  void make_widget (void);
+  void make_widget (bool dock=true);
   void set_title (const QString&);
 
 signals:

@@ -157,3 +157,4 @@ function D = del2 (M, varargin)
 
   D = D ./ nd;
 endfunction
+

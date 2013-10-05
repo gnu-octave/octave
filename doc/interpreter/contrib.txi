@@ -355,7 +355,7 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 @noindent
 The function name should start in column 1, and multi-line argument
 lists should be aligned on the first char after the open parenthesis.
-You should put a space after the left open parenthesis and after commas,
+You should put a space before the left open parenthesis and after commas,
 for both function definitions and function calls.
 
 Recommended indent is 2 spaces.  When indenting, indent the statement

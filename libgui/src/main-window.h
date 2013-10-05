@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCloseEvent>
 #include <QToolButton>
 #include <QComboBox>
+#include <QSemaphore>
 
 // Editor includes
 #include "file-editor-interface.h"
@@ -82,6 +83,8 @@ signals:
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
 
+  void show_doc_signal (const QString&);
+
   void insert_debugger_pointer_signal (const QString& file, int line);
   void delete_debugger_pointer_signal (const QString& file, int line);
   void update_breakpoint_marker_signal (bool insert, const QString& file,
@@ -89,6 +92,8 @@ signals:
 
   void copyClipboard_signal (void);
   void pasteClipboard_signal (void);
+
+  void set_widget_shortcuts_signal (bool);
 
 public slots:
   void report_status_message (const QString& statusMessage);
@@ -104,8 +109,10 @@ public slots:
   void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
   void open_bug_tracker_page (void);
-  void open_octave_forge_page (void);
+  void open_octave_packages_page (void);
   void open_agora_page (void);
+  void open_contribute_page (void);
+  void open_developer_page (void);
   void process_settings_dialog_request (void);
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
@@ -169,9 +176,20 @@ public slots:
                                  const QString &dirname,
                                  const QString& multimode);
 
+  void handle_show_doc (const QString &file);
+
   // find files dialog 
   void find_files(const QString &startdir=QDir::currentPath());
   void find_files_finished(int);
+
+  // setting global shortcuts
+  void set_global_shortcuts (bool enable);
+
+  // handling the clipboard
+  void clipboard_has_changed (QClipboard::Mode);
+  void clear_clipboard ();
+
+
 protected:
   void closeEvent (QCloseEvent * closeEvent);
 
@@ -218,7 +236,7 @@ private:
 
   void clear_history_callback (void);
 
-  void execute_command_callback (const std::string& command);
+  void execute_command_callback ();
   void run_file_callback (const QFileInfo& info);
 
   void new_figure_callback (void);
@@ -237,7 +255,8 @@ private:
 
   void exit_callback (void);
 
-  // Data models.
+  void queue_command (QString command);  // Data models.
+
   workspace_model *_workspace_model;
 
   // Toolbars.
@@ -257,7 +276,9 @@ private:
     list.append (static_cast<octave_dock_widget *> (history_window));
     list.append (static_cast<octave_dock_widget *> (file_browser_window));
     list.append (static_cast<octave_dock_widget *> (doc_browser_window));
+#ifdef HAVE_QSCINTILLA
     list.append (static_cast<octave_dock_widget *> (editor_window));
+#endif
     list.append (static_cast<octave_dock_widget *> (workspace_window));
     return list;
   }
@@ -276,7 +297,11 @@ private:
 
   QAction *_copy_action;
   QAction *_paste_action;
+  QAction *_clear_clipboard_action;
   QAction *_undo_action;
+
+  QAction *_find_files_action;
+  QAction *_exit_action;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;
@@ -292,8 +317,15 @@ private:
 
   octave_qt_link *_octave_qt_link;
 
+  QClipboard *_clipboard;
+
   // Flag for closing whole application.
   bool _closing;
+
+  // semaphore to synchronize execution signals and related callback
+  QStringList *_cmd_queue;
+  QSemaphore   _cmd_processing;
+  QMutex       _cmd_queue_mutex;
 };
 
 #endif // MAINWINDOW_H

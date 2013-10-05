@@ -272,5 +272,5 @@ Mathematics, Manchester, England, January 1999.\n\
 %! z = eye (4);  z(2,2) = z(3,3) = 2^-13;  z(1,4) = 0.5;
 %! [y, err] = sqrtm (x);
 %! assert (y, z);
-%! assert (err, 0);   ## Yes, this one has to hold exactly
+%! assert (err, 0);   # Yes, this one has to hold exactly
 */

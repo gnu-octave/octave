@@ -34,6 +34,7 @@ FCN_FILES = \
   if.tst \
   index.tst \
   io.tst \
+  jit.tst \
   line-continue.tst \
   logical-index.tst \
   null-assign.tst \
@@ -98,6 +99,7 @@ CLEANFILES = \
   $(GENERATED_BC_OVERLOADS_FILES)
 
 DISTCLEANFILES = \
+  .gdbinit \
   fntests.log
 
 fixedtestsdir := $(octtestsdir)/fixed

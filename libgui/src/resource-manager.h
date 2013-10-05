@@ -54,6 +54,11 @@ public:
     return instance_ok () ? instance->do_get_home_path () : QString ();
   }
 
+  static QString get_settings_file (void)
+  {
+    return instance_ok () ? instance->do_get_settings_file () : QString ();
+  }
+
   static void reload_settings (void)
   {
     if (instance_ok ())
@@ -81,8 +86,6 @@ public:
     return instance_ok () ? instance->do_is_first_run () : true;
   }
 
-  static const char *octave_keywords (void);
-  
   static QString storage_class_chars (void) { return "afghip"; }
   static QStringList storage_class_names (void);
   static QList<QColor> storage_class_default_colors (void);
@@ -118,6 +121,10 @@ private:
   QSettings *do_get_default_settings (void) const;
 
   QString do_get_home_path (void) const;
+
+  QString do_get_settings_file (void);
+
+  QString do_get_settings_path (void);
 
   void do_reload_settings (void);
 

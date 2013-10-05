@@ -28,11 +28,12 @@
 ## cellstr of valid values, then @var{validstr} will be the validated form
 ## of @var{str} where validation is defined as @var{str} being a member
 ## or substring of @var{validstr}.  This is useful for both verifying
-## and expanding short options, such as "r", to their longer forms, such as
-## "red".  If @var{str} is a substring of @var{validstr}, and there are
-## multiple matches, the shortest match will be returned if all matches are
-## substrings of each other.  Otherwise, an error will be raised because the
-## expansion of @var{str} is ambiguous.  All comparisons are case insensitive.
+## and expanding short options, such as @qcode{"r"}, to their longer forms,
+## such as @qcode{"red"}.  If @var{str} is a substring of @var{validstr}, and
+## there are multiple matches, the shortest match will be returned if all
+## matches are substrings of each other.  Otherwise, an error will be raised
+## because the expansion of @var{str} is ambiguous.  All comparisons are case
+## insensitive.
 ##
 ## The additional inputs @var{funcname}, @var{varname}, and @var{position}
 ## are optional and will make any generated validation error message more
@@ -51,7 +52,7 @@
 ##    blue, black
 ## @end group
 ## @end smallexample
-## 
+##
 ## @seealso{strcmp, strcmpi}
 ## @end deftypefn
 
@@ -69,7 +70,7 @@ function str = validatestring (str, strarray, varargin)
     position = varargin{end};
     varargin(end) = [];
   endif
-  
+
   funcname = varname = "";
   char_idx = cellfun ("isclass", varargin, "char");
   n_chararg = sum (char_idx);
@@ -111,7 +112,7 @@ function str = validatestring (str, strarray, varargin)
     errstr(end:end+1) = ":\n";
   endif
 
-  matches = strncmpi (str, strarray(:), numel (str));
+  matches = strncmpi (str, strarray(:), length (str));
   nmatches = sum (matches);
   if (nmatches == 0)
     error ("validatestring: %s'%s' does not match any of\n%s", errstr, str,
@@ -123,9 +124,9 @@ function str = validatestring (str, strarray, varargin)
     ## If true, choose the shortest.  If not, raise an error.
     match_idx = find (matches);
     match_len = cellfun ("length", strarray(match_idx));
-    [min_len, min_idx] = min (match_len); 
+    [min_len, min_idx] = min (match_len);
     short_str = strarray{match_idx(min_idx)};
-    submatch = strncmpi (short_str, strarray(match_idx), min_len);    
+    submatch = strncmpi (short_str, strarray(match_idx), min_len);
     if (all (submatch))
       str = short_str;
     else

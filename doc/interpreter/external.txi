@@ -104,9 +104,9 @@ to build bridges between Octave and other languages.  This is also a way to
 bridge to hardware resources which often have device drivers written in C.
 
 @menu
-* Oct-Files::                   
-* Mex-Files::                   
-* Standalone Programs::         
+* Oct-Files::
+* Mex-Files::
+* Standalone Programs::
 @end menu
 
 @node Oct-Files
@@ -116,19 +116,19 @@ bridge to hardware resources which often have device drivers written in C.
 @cindex oct
 
 @menu
-* Getting Started with Oct-Files::  
-* Matrices and Arrays in Oct-Files::  
-* Character Strings in Oct-Files::  
-* Cell Arrays in Oct-Files::    
-* Structures in Oct-Files::  
-* Sparse Matrices in Oct-Files::  
-* Accessing Global Variables in Oct-Files::  
-* Calling Octave Functions from Oct-Files::  
-* Calling External Code from Oct-Files::  
-* Allocating Local Memory in Oct-Files::  
-* Input Parameter Checking in Oct-Files::  
-* Exception and Error Handling in Oct-Files::  
-* Documentation and Test of Oct-Files::  
+* Getting Started with Oct-Files::
+* Matrices and Arrays in Oct-Files::
+* Character Strings in Oct-Files::
+* Cell Arrays in Oct-Files::
+* Structures in Oct-Files::
+* Sparse Matrices in Oct-Files::
+* Accessing Global Variables in Oct-Files::
+* Calling Octave Functions from Oct-Files::
+* Calling External Code from Oct-Files::
+* Allocating Local Memory in Oct-Files::
+* Input Parameter Checking in Oct-Files::
+* Exception and Error Handling in Oct-Files::
+* Documentation and Test of Oct-Files::
 @c * Application Programming Interface for Oct-Files::  
 @end menu
 
@@ -305,8 +305,8 @@ These types all share a number of basic methods and operators.  Many bear
 a resemblance to functions that exist in the interpreter.  A selection of
 useful methods include
 
-@deftypefn  Method T& {operator ()} (octave_idx_type)
-@deftypefnx Method T& elem (octave_idx_type)
+@deftypefn  {Method} {T&} operator () (octave_idx_type)
+@deftypefnx {Method} {T&} elem (octave_idx_type)
 The @code{()} operator or @code{elem} method allow the values of the
 matrix or array to be read or set.  These can take a single argument,
 which is of type @code{octave_idx_type}, that is the index into the matrix or
@@ -319,30 +319,30 @@ Note that these functions do significant error checking and so in some
 circumstances the user might prefer to access the data of the array or
 matrix directly through the @nospell{fortran_vec} method discussed below.
 
-@deftypefn Method octave_idx_type numel (void) const
+@deftypefn {Method} {} octave_idx_type numel (void) const
 The total number of elements in the matrix or array.
 @end deftypefn
 
-@deftypefn Method size_t byte_size (void) const
+@deftypefn {Method} {size_t} byte_size (void) const
 The number of bytes used to store the matrix or array.
 @end deftypefn
 
-@deftypefn Method dim_vector dims (void) const
+@deftypefn {Method} {dim_vector} dims (void) const
 The dimensions of the matrix or array in value of type dim_vector.
 @end deftypefn
 
-@deftypefn Method int ndims (void) const
+@deftypefn {Method} {int} ndims (void) const
 The number of dimensions of the matrix or array.  Matrices are 2-D,
 but arrays can be N-dimensional.
 @end deftypefn
 
-@deftypefn Method void resize (const dim_vector&)
+@deftypefn {Method} {void} resize (const dim_vector&)
 A method taking either an argument of type @code{dim_vector}, or in the
 case of a matrix two arguments of type @code{octave_idx_type} defining
 the number of rows and columns in the matrix.
 @end deftypefn
 
-@deftypefn Method T* fortran_vec (void)
+@deftypefn {Method} {T*} fortran_vec (void)
 This method returns a pointer to the underlying data of the matrix or
 array so that it can be manipulated directly, either within Octave or by
 an external library.
@@ -357,9 +357,7 @@ The typical way to extract a matrix or array from the input arguments of
 @w{@code{DEFUN_DLD}} function is as follows
 
 @example
-@group
 @EXAMPLEFILE(addtwomatrices.cc)
-@end group
 @end example
 
 To avoid segmentation faults causing Octave to abort this function
@@ -484,9 +482,7 @@ cell array can be treated just like any other @code{octave_value}.  A simple
 example is
 
 @example
-@group
 @EXAMPLEFILE(celldemo.cc)
-@end group
 @end example
 
 Note that cell arrays are used less often in standard oct-files and so
@@ -584,13 +580,13 @@ must be 2-dimensional.  This means that @code{SparseMatrix} is actually
 more similar to Octave's @code{Matrix} class than its @code{NDArray} class.
 
 @menu
-* Array and Sparse Differences::  
-* Creating Sparse Matrices in Oct-Files::  
-* Using Sparse Matrices in Oct-Files::  
+* Array and Sparse Class Differences::
+* Creating Sparse Matrices in Oct-Files::
+* Using Sparse Matrices in Oct-Files::
 @end menu
 
-@node Array and Sparse Differences
-@subsubsection The Differences between the Array and Sparse Classes
+@node Array and Sparse Class Differences
+@subsubsection Array and Sparse Class Differences
 
 The number of elements in a sparse matrix is considered to be the number
 of non-zero elements rather than the product of the dimensions.  Therefore
@@ -616,7 +612,7 @@ hundred times the maximum value that can be represented by an unsigned int.
 The use of @code{numel} should therefore be avoided useless it is known
 it won't overflow.
 
-Extreme care must be take with the elem method and the "()" operator,
+Extreme care must be take with the elem method and the @qcode{"()"} operator,
 which perform basically the same function.  The reason is that if a
 sparse object is non-const, then Octave will assume that a
 request for a zero element in a sparse matrix is in fact a request
@@ -1201,7 +1197,7 @@ The warning for division by zero (and in fact all warnings) are disabled in the
 
 The documentation of an oct-file is the fourth string parameter of the
 @w{@code{DEFUN_DLD}} macro.  This string can be formatted in the same manner
-as the help strings for user functions (@ref{Documentation Tips}),
+as the help strings for user functions (@pxref{Documentation Tips}),
 however there are some issue that are particular to the formatting of
 help strings within oct-files.
 
@@ -1231,7 +1227,7 @@ continuation character.  Note that the final @code{\} must be the last
 character on the line.
 
 Octave also includes the ability to embed test and demonstration
-code for a function within the code itself (@ref{Test and Demo Functions}).
+code for a function within the code itself (@pxref{Test and Demo Functions}).
 This can be used from within oct-files (or in fact any file) with
 certain provisos.  First, the test and demo functions of Octave look
 for @code{%!} as the first two characters of a line to identify test
@@ -1274,13 +1270,13 @@ mex-file function.  For this reason, it is recommended that any new code
 be written with the oct-file interface previously discussed.
 
 @menu
-* Getting Started with Mex-Files::  
-* Working with Matrices and Arrays in Mex-Files::  
-* Character Strings in Mex-Files::  
-* Cell Arrays with Mex-Files::  
-* Structures with Mex-Files::  
-* Sparse Matrices with Mex-Files::  
-* Calling Other Functions in Mex-Files::  
+* Getting Started with Mex-Files::
+* Working with Matrices and Arrays in Mex-Files::
+* Character Strings in Mex-Files::
+* Cell Arrays with Mex-Files::
+* Structures with Mex-Files::
+* Sparse Matrices with Mex-Files::
+* Calling Other Functions in Mex-Files::
 @c * Application Programming Interface for Mex-Files::  
 @end menu
 
@@ -1307,9 +1303,9 @@ Consider the following short example:
 
 The first line @code{#include "mex.h"} makes available all of the definitions
 necessary for a mex-file.  One important difference between Octave and
-@sc{matlab} is that the header file @code{"matrix.h"} is implicitly included
-through the inclusion of @code{"mex.h"}.  This is necessary to avoid a conflict
-with the Octave file @code{"Matrix.h"} for operating systems and compilers that
+@sc{matlab} is that the header file @qcode{"matrix.h"} is implicitly included
+through the inclusion of @qcode{"mex.h"}.  This is necessary to avoid a conflict
+with the Octave file @qcode{"Matrix.h"} for operating systems and compilers that
 don't distinguish between filenames in upper and lower case.
 
 The entry point into the mex-file is defined by @code{mexFunction}.  The
@@ -1517,9 +1513,7 @@ the @file{celldemo.cc} oct-file in a mex-file is given by @file{mycell.c}
 as shown below.
 
 @example
-@group
 @EXAMPLEFILE(mycell.c)
-@end group
 @end example
 
 @noindent
@@ -1617,23 +1611,23 @@ b = mystruct (a)
     b =
     @{
       this =
-    
+
       (,
         [1] = this1
         [2] = this2
         [3] = this3
         [4] = this4
       ,)
-    
+
       that =
-    
+
       (,
         [1] = that1
         [2] = that2
         [3] = that3
         [4] = that4
       ,)
-    
+
     @}
 @end example
 
@@ -1737,9 +1731,7 @@ following C++ program, uses class Matrix from @file{liboctave.a} or
 @file{liboctave.so}.
 
 @example
-@group
 @EXAMPLEFILE(standalone.cc)
-@end group
 @end example
 
 @noindent
@@ -1766,9 +1758,7 @@ needs to be initialized first.  An example of how to do this can then be
 seen in the code
 
 @example
-@group
 @EXAMPLEFILE(embedded.cc)
-@end group
 @end example
 
 @noindent

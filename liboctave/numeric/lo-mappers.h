@@ -234,7 +234,7 @@ template <typename T>
 T
 X_NINT (T x)
 {
-  return (xisinf (x) || xisnan (x)) ? x : xfloor (x + 0.5);
+  return (xfinite (x) ? xfloor (x + 0.5) : x);
 }
 
 inline OCTAVE_API double D_NINT (double x) { return X_NINT (x); }

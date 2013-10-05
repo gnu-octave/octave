@@ -40,7 +40,9 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdarg.h>
 #define WIN32_LEAN_AND_MEAN
-#define _WIN32_WINNT 0x0500 
+#if ! defined (_WIN32_WINNT) && ! defined (NTDDI_VERSION)
+#define _WIN32_WINNT 0x0500
+#endif
 #include <windows.h>
 #include <cstring>
 #include <csignal>
@@ -91,6 +93,68 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////////
+
+static QString translateKey (QKeyEvent *ev)
+{
+  QString esc = "\x1b";
+  QString s;
+
+  if (ev->key () == Qt::Key_Delete)
+    s = esc + "[C\b";
+  else if (!ev->text ().isEmpty ())
+    s = ev->text ();
+  else
+    {
+
+      switch (ev->key ())
+        {
+        case Qt::Key_Up:
+          s = esc + "[A";
+          break;
+
+        case Qt::Key_Down:
+          s = esc + "[B";
+          break;
+
+        case Qt::Key_Right:
+          s = esc + "[C";
+          break;
+
+        case Qt::Key_Left:
+          s = esc + "[D";
+          break;
+
+        case Qt::Key_Home:
+          s = esc + "[H";
+          break;
+
+        case Qt::Key_End:
+          s = esc + "[F";
+          break;
+
+        case Qt::Key_Insert:
+          s = esc + "[2~";
+          break;
+
+        case Qt::Key_PageUp:
+          s = esc + "[5~";
+          break;
+
+        case Qt::Key_PageDown:
+          s = esc + "[6~";
+          break;
+
+        case Qt::Key_Escape:
+          s = esc;
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  return s;
+}
 
 class QConsolePrivate
 {
@@ -1099,6 +1163,9 @@ void QConsolePrivate::sendConsoleText (const QString& s)
 
 #define TEXT_CHUNK_SIZE 512
 
+  // clear any selection on inserting text
+  clearSelection();
+
   int len = s.length ();
   INPUT_RECORD events[TEXT_CHUNK_SIZE];
   DWORD nEvents = 0, written;
@@ -1162,6 +1229,10 @@ QConsolePrivate::cursorRect (void)
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
     : QTerminal (parent), d (new QConsolePrivate (this))
 {
+    installEventFilter (this);
+
+    connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
+           parent, SLOT (set_global_shortcuts (bool)));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1290,27 +1361,6 @@ void QWinTerminalImpl::wheelEvent (QWheelEvent* event)
 
 //////////////////////////////////////////////////////////////////////////////
 
-bool QWinTerminalImpl::winEvent (MSG* msg, long* result)
-{
-  switch (msg->message)
-    {
-    case WM_KEYDOWN:
-    case WM_KEYUP:
-    //case WM_CHAR:
-      // Forward Win32 message to the console window
-      PostMessage (d->m_consoleWindow,
-                   msg->message,
-                   msg->wParam,
-                   msg->lParam);
-      result = 0;
-      return true;
-    default:
-      return false;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
 void QWinTerminalImpl::scrollValueChanged (int value)
 {
   d->setScrollValue (value);
@@ -1332,6 +1382,8 @@ void QWinTerminalImpl::updateSelection (void)
 
 void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 {
+  emit set_global_shortcuts_signal (false);   // disable some shortcuts
+
   setBlinkingCursorState (true);
 
   QWidget::focusInEvent (event);
@@ -1339,6 +1391,8 @@ void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 
 void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
 {
+  emit set_global_shortcuts_signal (true);    // re-enable shortcuts
+
   // Force the cursor to be redrawn.
   d->m_cursorBlinking = true;
 
@@ -1347,8 +1401,28 @@ void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
   QWidget::focusOutEvent (event);
 }
 
+bool QWinTerminalImpl::eventFilter (QObject *obj, QEvent * event)
+{
+  // if a keypress, filter out tab keys so that the next/prev tabbing is
+  // disabled - but we still need to pass along to the console .
+  if (event->type () == QEvent::KeyPress)
+  {
+    QKeyEvent* k = static_cast<QKeyEvent*>(event);
+    if (k->key () == Qt::Key_Tab)
+    {
+      sendText ("\t");
+      return true;
+    }
+  }
+  return false;
+}
+
 void QWinTerminalImpl::keyPressEvent (QKeyEvent* event)
 {
+  QString s = translateKey (event);
+  if (!s.isEmpty ())
+    sendText (s);
+
   if (d->m_hasBlinkingCursor)
     {
       d->m_blinkCursorTimer->start (d->BLINK_DELAY);

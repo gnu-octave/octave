@@ -360,7 +360,7 @@ octave_rand::do_scalar (double a)
           break;
 
         case poisson_dist:
-          if (a < 0.0 || xisnan (a) || xisinf (a))
+          if (a < 0.0 || ! xfinite (a))
             retval = octave_NaN;
           else
             {
@@ -371,7 +371,7 @@ octave_rand::do_scalar (double a)
           break;
 
         case gamma_dist:
-          if (a <= 0.0 || xisnan (a) || xisinf (a))
+          if (a <= 0.0 || ! xfinite (a))
             retval = octave_NaN;
           else
             F77_FUNC (dgengam, DGENGAM) (1.0, a, retval);
@@ -443,7 +443,7 @@ octave_rand::do_float_scalar (float a)
           break;
 
         case poisson_dist:
-          if (da < 0.0 || xisnan (da) || xisinf (da))
+          if (da < 0.0 || ! xfinite (a))
             dretval = octave_NaN;
           else
             {
@@ -454,7 +454,7 @@ octave_rand::do_float_scalar (float a)
           break;
 
         case gamma_dist:
-          if (da <= 0.0 || xisnan (da) || xisinf (da))
+          if (da <= 0.0 || ! xfinite (a))
             retval = octave_NaN;
           else
             F77_FUNC (dgengam, DGENGAM) (1.0, da, dretval);
@@ -663,6 +663,30 @@ octave_rand::get_dist_id (const std::string& d)
   return retval;
 }
 
+// Guarantee reproducible conversion of negative initialization values to
+// random number algorithm.  Note that Matlab employs slightly different rules.
+// 1) Seed saturates at 2^32-1 for any value larger than that.
+// 2) NaN, Inf are translated to 2^32-1.
+// 3) -Inf is translated to 0.
+static uint32_t
+double2uint32 (double d)
+{
+  uint32_t u;
+  static const double TWOUP32 = std::numeric_limits<uint32_t>::max() + 1.0;
+
+  if (! xfinite (d))
+    u = 0;
+  else
+    {
+      d = fmod (d, TWOUP32);
+      if (d < 0)
+        d += TWOUP32;
+      u = static_cast<uint32_t> (d);
+    }
+
+  return u;
+}
+
 void
 octave_rand::set_internal_state (const ColumnVector& s)
 {
@@ -672,7 +696,7 @@ octave_rand::set_internal_state (const ColumnVector& s)
   OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
 
   for (octave_idx_type i = 0; i < n; i++)
-    tmp[i] = static_cast<uint32_t> (s.elem (i));
+    tmp[i] = double2uint32 (s.elem (i));
 
   if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
     oct_set_state (tmp);
@@ -748,7 +772,7 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     case poisson_dist:
       if (use_old_generators)
         {
-          if (a < 0.0 || xisnan (a) || xisinf (a))
+          if (a < 0.0 || ! xfinite (a))
 #define RAND_FUNC(x) x = octave_NaN;
             MAKE_RAND (len);
 #undef RAND_FUNC
@@ -769,7 +793,7 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     case gamma_dist:
       if (use_old_generators)
         {
-          if (a <= 0.0 || xisnan (a) || xisinf (a))
+          if (a <= 0.0 || ! xfinite (a))
 #define RAND_FUNC(x) x = octave_NaN;
             MAKE_RAND (len);
 #undef RAND_FUNC
@@ -838,7 +862,7 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
       if (use_old_generators)
         {
           double da = a;
-          if (da < 0.0 || xisnan (da) || xisinf (da))
+          if (da < 0.0 || ! xfinite (a))
 #define RAND_FUNC(x) x = octave_NaN;
             MAKE_RAND (len);
 #undef RAND_FUNC
@@ -860,7 +884,7 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
       if (use_old_generators)
         {
           double da = a;
-          if (da <= 0.0 || xisnan (da) || xisinf (da))
+          if (da <= 0.0 || ! xfinite (a))
 #define RAND_FUNC(x) x = octave_NaN;
             MAKE_RAND (len);
 #undef RAND_FUNC

@@ -38,8 +38,6 @@ class welcome_wizard : public QDialog
   ~welcome_wizard ();
 
 public slots:
-  void next ();
-  void previous ();
 
 private:
   Ui::welcome_wizard *_ui;

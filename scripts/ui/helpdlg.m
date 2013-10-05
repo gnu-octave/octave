@@ -24,7 +24,7 @@
 ## The message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
-## set the dialog caption.  The default title is "Help Dialog".
+## set the dialog caption.  The default title is @qcode{"Help Dialog"}.
 ##
 ## The return value is always 1.
 ## @seealso{errordlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
@@ -40,10 +40,12 @@ function retval = helpdlg (msg, title = "Help Dialog")
 
 endfunction
 
-%!demo
-%!  disp('- test helpdlg with a help message only.');
-%!  helpdlg("Below, you should see 3 lines:\nline #1\nline #2, and\nline #3.");
 
 %!demo
-%!  disp('- test helpdlg with help message and caption.');
-%!  helpdlg('You should see a single line.','A help dialog');
+%! disp ('- test helpdlg with a help message only.');
+%! helpdlg ("Below, you should see 3 lines:\nline #1\nline #2, and\nline #3.");
+
+%!demo
+%! disp ('- test helpdlg with help message and caption.');
+%! helpdlg ('You should see a single line.','A help dialog');
+

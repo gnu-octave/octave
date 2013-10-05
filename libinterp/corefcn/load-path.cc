@@ -2319,8 +2319,8 @@ DEFUN (addpath, args, nargout,
 @deftypefn  {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
 Add named directories to the function search path.  If\n\
-@var{option} is \"-begin\" or 0 (the default), prepend the\n\
-directory name to the current path.  If @var{option} is \"-end\"\n\
+@var{option} is @qcode{\"-begin\"} or 0 (the default), prepend the\n\
+directory name to the current path.  If @var{option} is @qcode{\"-end\"}\n\
 or 1, append the directory name to the current path.\n\
 Directories added to the path must exist.\n\
 \n\

@@ -16,7 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/return/return-1.m
 %!function y = f ()
 %!  y = 1;
 %!  return;
@@ -25,7 +24,6 @@
 %!
 %!assert (f (), 1)
 
-%% test/octave.test/return/return-2.m
 %!test
 %! return;
 

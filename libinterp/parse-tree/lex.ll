@@ -51,6 +51,9 @@ object) relevant global values before and after the nested call.
 %x BLOCK_COMMENT_START
 %x LINE_COMMENT_START
 
+%x DQ_STRING_START
+%x SQ_STRING_START
+
 %{
 
 #include <cctype>
@@ -205,6 +208,31 @@ object) relevant global values before and after the nested call.
     } \
   while (0)
 
+// We can't rely on the trick used elsewhere of sticking ASCII 1 in
+// the input buffer and recognizing it as a special case because ASCII
+// 1 is a valid character for a character string.  If we are at the
+// end of the buffer, ask for more input.  If we are at the end of the
+// file, deal with it.  Otherwise, just keep going with the text from
+// the current buffer.
+#define HANDLE_STRING_CONTINUATION \
+  do \
+    { \
+      curr_lexer->decrement_promptflag (); \
+      curr_lexer->input_line_number++; \
+      curr_lexer->current_input_column = 1; \
+ \
+      if (curr_lexer->is_push_lexer ()) \
+        { \
+          if (curr_lexer->at_end_of_buffer ()) \
+            return -1; \
+ \
+          if (curr_lexer->at_end_of_file ()) \
+            return curr_lexer->handle_end_of_input (); \
+        } \
+    } \
+  while (0)
+
+
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
@@ -222,7 +250,6 @@ static std::string strip_trailing_whitespace (char *s);
 D       [0-9]
 S       [ \t]
 NL      ((\n)|(\r)|(\r\n))
-CONT    ((\.\.\.)|(\\))
 Im      [iIjJ]
 CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
@@ -290,9 +317,9 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->at_beginning_of_statement = false;
 
     curr_lexer->current_input_column++;
-    int tok = curr_lexer->handle_string (yytext[0]);
 
-    return curr_lexer->count_token_internal (tok);
+    curr_lexer->begin_string (yytext[0] == '"'
+                              ? DQ_STRING_START : SQ_STRING_START);
   }
 
 <COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}* {
@@ -449,7 +476,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 ^{S}*{CCHAR}\{{S}*{NL} {
-    curr_lexer->lexer_debug ("^{S}*{CCHAR}\{{S}*{NL}");
+    curr_lexer->lexer_debug ("^{S}*{CCHAR}\\{{S}*{NL}");
 
     yyless (0);
 
@@ -468,7 +495,7 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 <BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
-    curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL}");
+    curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\\{{S}*{NL}");
 
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
@@ -622,6 +649,238 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
+// Double-quoted character strings.
+%}
+
+<DQ_STRING_START>\"\" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\"\\\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '"';
+  }
+
+<DQ_STRING_START>\" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\"");
+
+    curr_lexer->current_input_column++;
+
+    curr_lexer->pop_start_state ();
+
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
+
+    curr_lexer->push_token (new token (DQ_STRING,
+                                       curr_lexer->string_text,
+                                       curr_lexer->string_line,
+                                       curr_lexer->string_column));
+
+    curr_lexer->string_text = "";
+
+    return curr_lexer->count_token_internal (DQ_STRING);
+  }
+
+<DQ_STRING_START>\\[0-7]{1,3} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\[0-7]{1,3}");
+
+    curr_lexer->current_input_column += yyleng;
+
+    int result;
+    sscanf (yytext+1, "%o", &result);
+
+    if (result > 0xff)
+      error ("invalid octal escape sequence in character string");
+    else
+      curr_lexer->string_text += static_cast<unsigned char> (result);
+  }
+
+<DQ_STRING_START>\\x[0-9a-fA-F]+ {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\x[0-9a-fA-F]+");
+
+    curr_lexer->current_input_column += yyleng;
+
+    int result;
+    sscanf (yytext+2, "%x", &result);
+
+    // Truncate the value silently instead of checking the range like
+    // we do for octal above.  This is to match C/C++ where any number
+    // of digits is allowed but the value is implementation-defined if
+    // it exceeds the range of the character type.
+    curr_lexer->string_text += static_cast<unsigned char> (result);
+  }
+
+<DQ_STRING_START>"\\a" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\a\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\a';
+  }
+
+<DQ_STRING_START>"\\b" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\b\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\b';
+  }
+
+<DQ_STRING_START>"\\f" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\f\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\f';
+  }
+
+<DQ_STRING_START>"\\n" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\n\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\n';
+  }
+
+<DQ_STRING_START>"\\r" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\r\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\r';
+  }
+
+<DQ_STRING_START>"\\t" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\t\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\t';
+  }
+
+<DQ_STRING_START>"\\v" {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\v\"");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\v';
+  }
+
+<DQ_STRING_START>(\.\.\.){S}*{NL} |
+<DQ_STRING_START>(\.\.\.){S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}|<DQ_STRING_START>(\\.\\.\\.){S}*{CCHAR}.*{NL}");
+
+    static const char *msg = "'...' continuations in double-quoted character strings are obsolete and will not be allowed in a future version of Octave; please use '\\' instead";
+
+    std::string nm = curr_lexer->fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg,
+                       curr_lexer->input_line_number, nm.c_str ());
+
+    HANDLE_STRING_CONTINUATION;
+  }
+
+<DQ_STRING_START>\\{S}+{NL} |
+<DQ_STRING_START>\\{S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}|<DQ_STRING_START>\\\\{S}*{CCHAR}.*{NL}");
+
+    static const char *msg = "white space and comments after continuation markers in double-quoted character strings are obsolete and will not be allowed in a future version of Octave";
+
+    std::string nm = curr_lexer->fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg,
+                       curr_lexer->input_line_number, nm.c_str ());
+
+    HANDLE_STRING_CONTINUATION;
+  }
+
+<DQ_STRING_START>\\{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{NL}");
+
+    HANDLE_STRING_CONTINUATION;
+  }
+
+<DQ_STRING_START>\\. {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\.");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += yytext[1];
+  }
+
+<DQ_STRING_START>\. {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\.");
+
+    curr_lexer->current_input_column++;
+    curr_lexer->string_text += yytext[0];
+  }
+
+<DQ_STRING_START>[^\.\\\r\n\"]+ {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>[^\\.\\\\\\r\\n\\\"]+");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += yytext;
+  }
+
+<DQ_STRING_START>{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    error ("unterminated character string constant");
+
+    return LEXICAL_ERROR;
+  }
+
+%{
+// Single-quoted character strings.
+%}
+
+<SQ_STRING_START>\'\' {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>\\'\\'");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += '\'';
+  }
+
+<SQ_STRING_START>\' {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>\\'");
+
+    curr_lexer->current_input_column++;
+
+    curr_lexer->pop_start_state ();
+
+    curr_lexer->looking_for_object_index = true;
+    curr_lexer->at_beginning_of_statement = false;
+
+    curr_lexer->push_token (new token (SQ_STRING,
+                                       curr_lexer->string_text,
+                                       curr_lexer->string_line,
+                                       curr_lexer->string_column));
+
+    curr_lexer->string_text = "";
+
+    return curr_lexer->count_token_internal (SQ_STRING);
+  }
+
+<SQ_STRING_START>[^\'\n\r]+ {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>[^\\'\\n\\r]+");
+
+    curr_lexer->current_input_column += yyleng;
+    curr_lexer->string_text += yytext;
+  }
+
+<SQ_STRING_START>{NL} {
+    curr_lexer->lexer_debug ("<SQ_STRING_START>{NL}");
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
+
+    error ("unterminated character string constant");
+
+    return LEXICAL_ERROR;
+  }
+
+%{
 // Imaginary numbers.
 %}
 
@@ -661,7 +920,7 @@ ANY_INCLUDING_NL (.|{NL})
 
 {D}+/\.[\*/\\^\'] |
 {NUMBER} {
-    curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\^\\']|{NUMBER}");
+    curr_lexer->lexer_debug ("{D}+/\\.[\\*/\\\\^\\']|{NUMBER}");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
@@ -701,12 +960,33 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// Continuation lines.  Allow comments after continuations.
+// Continuation lines.  Allow arbitrary text after continuations.
 %}
 
-{CONT}{S}*{NL} |
-{CONT}{S}*{CCHAR}.*{NL} {
-    curr_lexer->lexer_debug ("{CONT}{S}*{NL}|{CONT}{S}*{CCHAR}.*{NL}");
+\.\.\..*{NL} {
+    curr_lexer->lexer_debug ("\\.\\.\\..*{NL}");
+
+    curr_lexer->handle_continuation ();
+  }
+
+%{
+// Deprecated C preprocessor style continuation markers.
+%}
+
+\\{S}*{NL} |
+\\{S}*{CCHAR}.*{NL} {
+    curr_lexer->lexer_debug ("\\\\{S}*{NL}|\\\\{S}*{CCHAR}.*{NL}");
+
+    static const char *msg = "using continuation marker \\ outside of double quoted strings is deprecated and will be removed in a future version of Octave";
+
+    std::string nm = curr_lexer->fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg,
+                       curr_lexer->input_line_number, nm.c_str ());
 
     curr_lexer->handle_continuation ();
   }
@@ -867,14 +1147,14 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
       {
-        yyless (0);
+        curr_lexer->current_input_column++;
         curr_lexer->push_start_state (COMMAND_START);
+        curr_lexer->begin_string (SQ_STRING_START);
       }
     else if (curr_lexer->at_beginning_of_statement)
       {
         curr_lexer->current_input_column++;
-        int retval = curr_lexer->handle_string ('\'');
-        return curr_lexer->count_token_internal (retval);
+        curr_lexer->begin_string (SQ_STRING_START);
       }
     else
       {
@@ -888,8 +1168,7 @@ ANY_INCLUDING_NL (.|{NL})
                     || curr_lexer->previous_token_is_binop ())
                   {
                     curr_lexer->current_input_column++;
-                    int retval = curr_lexer->handle_string ('\'');
-                    return curr_lexer->count_token_internal (retval);
+                    curr_lexer->begin_string (SQ_STRING_START);
                   }
                 else
                   {
@@ -906,8 +1185,7 @@ ANY_INCLUDING_NL (.|{NL})
                     || curr_lexer->previous_token_is_keyword ())
                   {
                     curr_lexer->current_input_column++;
-                    int retval = curr_lexer->handle_string ('\'');
-                    return curr_lexer->count_token_internal (retval);
+                    curr_lexer->begin_string (SQ_STRING_START);
                   }
                 else
                   return curr_lexer->count_token (HERMITIAN);
@@ -920,8 +1198,7 @@ ANY_INCLUDING_NL (.|{NL})
                 || curr_lexer->previous_token_is_keyword ())
               {
                 curr_lexer->current_input_column++;
-                int retval = curr_lexer->handle_string ('\'');
-                return curr_lexer->count_token_internal (retval);
+                curr_lexer->begin_string (SQ_STRING_START);
               }
             else
               return curr_lexer->count_token (HERMITIAN);
@@ -934,13 +1211,14 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 \" {
-    curr_lexer->lexer_debug ("\"");
+    curr_lexer->lexer_debug ("\\\"");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
       {
-        yyless (0);
+        curr_lexer->current_input_column++;
         curr_lexer->push_start_state (COMMAND_START);
+        curr_lexer->begin_string (DQ_STRING_START);
       }
     else
       {
@@ -954,8 +1232,7 @@ ANY_INCLUDING_NL (.|{NL})
                     || curr_lexer->previous_token_is_binop ())
                   {
                     curr_lexer->current_input_column++;
-                    int retval = curr_lexer->handle_string ('"');
-                    return curr_lexer->count_token_internal (retval);
+                    curr_lexer->begin_string (DQ_STRING_START);
                   }
                 else
                   {
@@ -968,15 +1245,13 @@ ANY_INCLUDING_NL (.|{NL})
             else
               {
                 curr_lexer->current_input_column++;
-                int retval = curr_lexer->handle_string ('"');
-                return curr_lexer->count_token_internal (retval);
+                curr_lexer->begin_string (DQ_STRING_START);
               }
           }
         else
           {
             curr_lexer->current_input_column++;
-            int retval = curr_lexer->handle_string ('"');
-            return curr_lexer->count_token_internal (retval);
+            curr_lexer->begin_string (DQ_STRING_START);
           }
       }
   }
@@ -1557,6 +1832,9 @@ lexical_feedback::reset (void)
   current_input_line = "";
   comment_text = "";
   help_text = "";
+  string_text = "";
+  string_line = 0;
+  string_column = 0;
   fcn_file_name = "";
   fcn_file_full_name = "";
   looking_at_object_index.clear ();
@@ -1769,6 +2047,15 @@ octave_base_lexer::prep_for_file (void)
   reading_script_file = true;
 
   push_start_state (INPUT_FILE_START);
+}
+
+void
+octave_base_lexer::begin_string (int state)
+{
+  string_line = input_line_number;
+  string_column = current_input_column;
+
+  push_start_state (state);
 }
 
 int
@@ -2259,218 +2546,6 @@ octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ)
   at_beginning_of_statement = true;
 }
 
-// We have seen a backslash and need to find out if it should be
-// treated as a continuation character.  If so, this eats it, up to
-// and including the new line character.
-//
-// Match whitespace only, followed by a comment character or newline.
-// Once a comment character is found, discard all input until newline.
-// If non-whitespace characters are found before comment
-// characters, return 0.  Otherwise, return 1.
-
-// FIXME -- we need to handle block comments here.
-
-bool
-octave_base_lexer::have_continuation (bool trailing_comments_ok)
-{
-  std::ostringstream buf;
-
-  std::string comment_buf;
-
-  bool in_comment = false;
-  bool beginning_of_comment = false;
-
-  int c = 0;
-
-  while ((c = text_yyinput ()) != EOF)
-    {
-      buf << static_cast<char> (c);
-
-      switch (c)
-        {
-        case ' ':
-        case '\t':
-          if (in_comment)
-            {
-              comment_buf += static_cast<char> (c);
-              beginning_of_comment = false;
-            }
-          break;
-
-        case '%':
-        case '#':
-          if (trailing_comments_ok)
-            {
-              if (in_comment)
-                {
-                  if (! beginning_of_comment)
-                    comment_buf += static_cast<char> (c);
-                }
-              else
-                {
-                  maybe_gripe_matlab_incompatible_comment (c);
-                  in_comment = true;
-                  beginning_of_comment = true;
-                }
-            }
-          else
-            goto cleanup;
-          break;
-
-        case '\n':
-          if (in_comment)
-            {
-              comment_buf += static_cast<char> (c);
-              octave_comment_buffer::append (comment_buf);
-            }
-          current_input_column = 0;
-          decrement_promptflag ();
-          gripe_matlab_incompatible_continuation ();
-          return true;
-
-        default:
-          if (in_comment)
-            {
-              comment_buf += static_cast<char> (c);
-              beginning_of_comment = false;
-            }
-          else
-            goto cleanup;
-          break;
-        }
-    }
-
-  xunput (c);
-  return false;
-
-cleanup:
-
-  std::string s = buf.str ();
-
-  int len = s.length ();
-  while (len--)
-    xunput (s[len]);
-
-  return false;
-}
-
-// We have seen a '.' and need to see if it is the start of a
-// continuation.  If so, this eats it, up to and including the new
-// line character.
-
-bool
-octave_base_lexer::have_ellipsis_continuation (bool trailing_comments_ok)
-{
-  char c1 = text_yyinput ();
-  if (c1 == '.')
-    {
-      char c2 = text_yyinput ();
-      if (c2 == '.' && have_continuation (trailing_comments_ok))
-        return true;
-      else
-        {
-          xunput (c2);
-          xunput (c1);
-        }
-    }
-  else
-    xunput (c1);
-
-  return false;
-}
-
-int
-octave_base_lexer::handle_string (char delim)
-{
-  std::ostringstream buf;
-
-  int bos_line = input_line_number;
-  int bos_col = current_input_column;
-
-  int c;
-  int escape_pending = 0;
-
-  while ((c = text_yyinput ()) != EOF)
-    {
-      current_input_column++;
-
-      if (c == '\\')
-        {
-          if (delim == '\'' || escape_pending)
-            {
-              buf << static_cast<char> (c);
-              escape_pending = 0;
-            }
-          else
-            {
-              if (have_continuation (false))
-                escape_pending = 0;
-              else
-                {
-                  buf << static_cast<char> (c);
-                  escape_pending = 1;
-                }
-            }
-          continue;
-        }
-      else if (c == '.')
-        {
-          if (delim == '\'' || ! have_ellipsis_continuation (false))
-            buf << static_cast<char> (c);
-        }
-      else if (c == '\n')
-        {
-          error ("unterminated string constant");
-          break;
-        }
-      else if (c == delim)
-        {
-          if (escape_pending)
-            buf << static_cast<char> (c);
-          else
-            {
-              c = text_yyinput ();
-              if (c == delim)
-                {
-                  buf << static_cast<char> (c);
-                }
-              else
-                {
-                  std::string s;
-                  xunput (c);
-
-                  if (delim == '\'')
-                    s = buf.str ();
-                  else
-                    s = do_string_escapes (buf.str ());
-
-                  if (delim == '"')
-                    gripe_matlab_incompatible ("\" used as string delimiter");
-                  else if (delim == '\'')
-                    gripe_single_quote_string ();
-
-                  looking_for_object_index = true;
-                  at_beginning_of_statement = false;
-
-                  int tok = delim == '"' ? DQ_STRING : SQ_STRING;
-
-                  push_token (new token (tok, s, bos_line, bos_col));
-
-                  return tok;
-                }
-            }
-        }
-      else
-        {
-          buf << static_cast<char> (c);
-        }
-
-      escape_pending = 0;
-    }
-
-  return LEXICAL_ERROR;
-}
-
 int
 octave_base_lexer::handle_close_bracket (int bracket_type)
 {
@@ -2638,11 +2713,7 @@ octave_base_lexer::handle_identifier (void)
       return kw_token;
     }
 
-  // Find the token in the symbol table.  Beware the magic
-  // transformation of the end keyword...
-
-  if (tok == "end")
-    tok = "__end__";
+  // Find the token in the symbol table.
 
   symbol_table::scope_id sid = symtab_context.curr_scope ();
 
@@ -2669,7 +2740,9 @@ octave_base_lexer::handle_identifier (void)
 
   current_input_column += flex_yyleng ();
 
-  if (tok != "__end__")
+  // The magic end index can't be indexed.
+
+  if (tok != "end")
     looking_for_object_index = true;
 
   at_beginning_of_statement = false;
@@ -2978,6 +3051,14 @@ octave_base_lexer::display_start_state (void) const
 
     case LINE_COMMENT_START:
       std::cerr << "LINE_COMMENT_START" << std::endl;
+      break;
+
+    case DQ_STRING_START:
+      std::cerr << "DQ_STRING_START" << std::endl;
+      break;
+
+    case SQ_STRING_START:
+      std::cerr << "SQ_STRING_START" << std::endl;
       break;
 
     default:

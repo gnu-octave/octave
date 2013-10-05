@@ -42,7 +42,7 @@ function A = perms (v)
   if (nargin != 1)
     print_usage ();
   endif
-  vidx = [1:length(v)]';
+  vidx = uint8 ([1:length(v)]');
   n = length (vidx);
 
   if (n == 0)
@@ -51,7 +51,7 @@ function A = perms (v)
     p = vidx(1);
     for j = 2:n
       B = p;
-      p = zeros (prod (2:j), n);
+      p = zeros (prod (2:j), n, "uint8");
       k = rows (B);
       idx = 1:k;
       for i = j:-1:1

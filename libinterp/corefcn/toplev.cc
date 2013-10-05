@@ -634,6 +634,9 @@ main_loop (void)
     }
   while (retval == 0);
 
+  if (retval == EOF)
+    retval = 0;
+
   return retval;
 }
 
@@ -751,7 +754,7 @@ clean_up_and_exit (int retval, bool safe_to_return)
   else
     {
       if (octave_exit)
-        (*octave_exit) (retval == EOF ? 0 : retval);
+        (*octave_exit) (retval);
     }
 }
 
@@ -807,8 +810,7 @@ Describe the conditions for copying and distributing Octave.\n\
 {
   octave_value_list retval;
 
-  octave_stdout << "\n" \
-    OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
+  octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
 \n\
 GNU Octave free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
@@ -913,11 +915,11 @@ DEFUN (system, args, nargout,
 @deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{output}] =} system (@dots{})\n\
 Execute a shell command specified by @var{string}.\n\
-If the optional argument @var{type} is \"async\", the process\n\
+If the optional argument @var{type} is @qcode{\"async\"}, the process\n\
 is started in the background and the process ID of the child process\n\
 is returned immediately.  Otherwise, the child process is started and\n\
 Octave waits until it exits.  If the @var{type} argument is omitted, it\n\
-defaults to the value \"sync\".\n\
+defaults to the value @qcode{\"sync\"}.\n\
 \n\
 If @var{system} is called with one or more output arguments, or if the\n\
 optional argument @var{return_output} is true and the subprocess is started\n\
@@ -1139,7 +1141,7 @@ atexit (\"last_words\");\n\
 @end example\n\
 \n\
 @noindent\n\
-will print the message \"Bye bye\" when Octave exits.\n\
+will print the message @qcode{\"Bye bye\"} when Octave exits.\n\
 \n\
 The additional argument @var{flag} will register or unregister\n\
 @var{fcn} from the list of functions to be called when Octave\n\

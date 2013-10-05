@@ -133,7 +133,7 @@ $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 @var{R} is upper triangular.\n\
 @end ifnottex\n\
 \n\
-If given a second argument of '0', @code{qr} returns an economy-sized\n\
+If given a second argument of @qcode{'0'}, @code{qr} returns an economy-sized\n\
 QR@tie{}factorization, omitting zero rows of @var{R} and the corresponding\n\
 columns of @var{Q}.\n\
 \n\
@@ -194,6 +194,7 @@ as\n\
 x = @var{R} \\ @var{C}\n\
 @end group\n\
 @end example\n\
+@seealso{chol, hess, lu, qz, schur, svd, qrupdate, qrinsert, qrdelete, qrshift}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -769,7 +770,7 @@ to recompute the factorization from scratch.\n\
 The QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
-@seealso{qr, qrinsert, qrdelete}\n\
+@seealso{qr, qrinsert, qrdelete, qrshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -941,13 +942,13 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
 @w{[A(:,1:j-1) x A(:,j:n)]}, where @var{u} is a column vector to be\n\
-inserted into @var{A} (if @var{orient} is @code{\"col\"}), or the\n\
+inserted into @var{A} (if @var{orient} is @qcode{\"col\"}), or the\n\
 QR@tie{}factorization of @w{[A(1:j-1,:);x;A(:,j:n)]}, where @var{x}\n\
 is a row vector to be inserted into @var{A} (if @var{orient} is\n\
-@code{\"row\"}).\n\
+@qcode{\"row\"}).\n\
 \n\
-The default value of @var{orient} is @code{\"col\"}.\n\
-If @var{orient} is @code{\"col\"},\n\
+The default value of @var{orient} is @qcode{\"col\"}.\n\
+If @var{orient} is @qcode{\"col\"},\n\
 @var{u} may be a matrix and @var{j} an index vector\n\
 resulting in the QR@tie{}factorization of a matrix @var{B} such that\n\
 @w{B(:,@var{j})} gives @var{u} and @w{B(:,@var{j}) = []} gives @var{A}.\n\
@@ -955,12 +956,12 @@ Notice that the latter case is done as a sequence of k insertions;\n\
 thus, for k large enough, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
 \n\
-If @var{orient} is @code{\"col\"},\n\
+If @var{orient} is @qcode{\"col\"},\n\
 the QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
-If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
-@seealso{qr, qrupdate, qrdelete}\n\
+If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
+@seealso{qr, qrupdate, qrdelete, qrshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -1160,13 +1161,13 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
 @w{[A(:,1:j-1) A(:,j+1:n)]}, i.e., @var{A} with one column deleted\n\
-(if @var{orient} is \"col\"), or the QR@tie{}factorization of\n\
+(if @var{orient} is @qcode{\"col\"}), or the QR@tie{}factorization of\n\
 @w{[A(1:j-1,:);A(j+1:n,:)]}, i.e., @var{A} with one row deleted (if\n\
-@var{orient} is \"row\").\n\
+@var{orient} is @qcode{\"row\"}).\n\
 \n\
-The default value of @var{orient} is \"col\".\n\
+The default value of @var{orient} is @qcode{\"col\"}.\n\
 \n\
-If @var{orient} is @code{\"col\"},\n\
+If @var{orient} is @qcode{\"col\"},\n\
 @var{j} may be an index vector\n\
 resulting in the QR@tie{}factorization of a matrix @var{B} such that\n\
 @w{A(:,@var{j}) = []} gives @var{B}.\n\
@@ -1174,12 +1175,12 @@ Notice that the latter case is done as a sequence of k deletions;\n\
 thus, for k large enough, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
 \n\
-If @var{orient} is @code{\"col\"},\n\
+If @var{orient} is @qcode{\"col\"},\n\
 the QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
-If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
-@seealso{qr, qrinsert, qrupdate}\n\
+If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
+@seealso{qr, qrupdate, qrinsert, qrshift}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();
@@ -1391,7 +1392,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
 %! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
 %!testif HAVE_QRUPDATE
-%! # Same test as above but with more precicision
+%! ## Same test as above but with more precicision
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
 %!               0.594638  0.425302  0.562834  0.603537;
 %!               0.383594  0.291238  0.742073  0.085574;
@@ -1429,7 +1430,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
  or @*\n\
 @code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*\n\
 \n\
-@seealso{qr, qrinsert, qrdelete}\n\
+@seealso{qr, qrupdate, qrinsert, qrdelete}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();

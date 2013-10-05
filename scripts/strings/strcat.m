@@ -20,19 +20,20 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
 ## Return a string containing all the arguments concatenated
-## horizontally.  If the arguments are cells strings,  @code{strcat}
+## horizontally.  If the arguments are cell strings, @code{strcat}
 ## returns a cell string with the individual cells concatenated.
 ## For numerical input, each element is converted to the
-## corresponding ASCII character.  Trailing white space for each of
-## the inputs (@var{s1}, @var{S2}, @dots{}) is eliminated before they
-## are concatenated.
+## corresponding ASCII character.  Trailing white space for any
+## character string input is eliminated before the strings are
+## concatenated.  Note that cell string values do @strong{not} have
+## whitespace trimmed.
 ##
 ## For example:
 ##
 ## @example
 ## @group
 ## strcat ("|", " leading space is preserved", "|")
-##     @result{} | leading space is perserved|
+##     @result{} | leading space is preserved|
 ## @end group
 ## @end example
 ##
@@ -62,12 +63,12 @@
 ##
 ## @example
 ## @group
-## s = @{ "ab"; "cde" @};
+## s = @{ "ab"; "cd " @};
 ## strcat (s, s, s)
 ##     @result{}
 ##         @{
 ##           [1,1] = ababab
-##           [2,1] = cdecdecde
+##           [2,1] = cd cd cd 
 ##         @}
 ## @end group
 ## @end example
@@ -79,44 +80,45 @@
 
 function st = strcat (varargin)
 
-  if (nargin > 0)
-    if (nargin == 1)
-      st = varargin{1};
-    elseif (nargin > 1)
-      ## Convert to cells of strings
-      uo = "uniformoutput";
-      reals = cellfun ("isreal", varargin);
-      if (any (reals))
-        varargin(reals) = cellfun ("char", varargin(reals), uo, false);
-      endif
-      chars = cellfun ("isclass", varargin, "char");
-      allchar = all (chars);
-      varargin(chars) = cellfun ("cellstr", varargin(chars), uo, false);
-      if (! all (cellfun ("isclass", varargin, "cell")))
-        error ("strcat: inputs must be strings or cells of strings");
-      endif
-
-      ## We don't actually need to bring all cells to common size, because
-      ## cellfun can now expand scalar cells.
-      err = common_size (varargin{:});
-
-      if (err)
-        error ("strcat: arguments must be the same size, or be scalars");
-      endif
-
-      ## Cellfun handles everything for us.
-      st = cellfun ("horzcat", varargin{:}, uo, false);
-
-      if (allchar)
-        ## If all inputs were strings, return strings.
-        st = char (st);
-      endif
-    endif
-  else
+  if (nargin == 0)
     print_usage ();
   endif
 
+  if (nargin == 1)
+    st = varargin{1};
+  else
+    ## Convert to cells of strings
+    uo = "uniformoutput";
+    reals = cellfun ("isreal", varargin);
+    if (any (reals))
+      varargin(reals) = cellfun ("char", varargin(reals), uo, false);
+    endif
+    chars = cellfun ("isclass", varargin, "char");
+    allchar = all (chars);
+    varargin(chars) = cellfun ("cellstr", varargin(chars), uo, false);
+    if (! all (cellfun ("isclass", varargin, "cell")))
+      error ("strcat: inputs must be strings or cells of strings");
+    endif
+
+    ## We don't actually need to bring all cells to common size, because
+    ## cellfun can now expand scalar cells.
+    err = common_size (varargin{:});
+
+    if (err)
+      error ("strcat: arguments must be the same size, or be scalars");
+    endif
+
+    ## Cellfun handles everything for us.
+    st = cellfun ("horzcat", varargin{:}, uo, false);
+
+    if (allchar)
+      ## If all inputs were strings, return strings.
+      st = char (st);
+    endif
+  endif
+
 endfunction
+
 
 ## test the dimensionality
 ## 1d

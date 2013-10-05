@@ -73,9 +73,6 @@ octave_ieee_init (void)
       }
       break;
 
-    case oct_mach_info::flt_fmt_cray:
-    case oct_mach_info::flt_fmt_vax_d:
-    case oct_mach_info::flt_fmt_vax_g:
     default:
       // If the format is unknown, then you will probably not have a
       // useful system, so we will abort here.  Anyone wishing to

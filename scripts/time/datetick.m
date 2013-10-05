@@ -24,23 +24,35 @@
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keepticks")
 ## @deftypefnx {Function File} {} datetick (@var{hax}, @dots{})
 ## Add date formatted tick labels to an axis.  The axis to apply the
-## ticks to is determined by @var{axis} which can take the values "x",
-## "y", or "z".  The default value is "x".  The formatting of the labels is
-## determined by the variable @var{form}, which can either be a string or
-## positive integer that @code{datestr} accepts.
+## ticks to is determined by @var{axis} which can take the values @qcode{"x"},
+## @qcode{"y"}, or @qcode{"z"}.  The default value is @qcode{"x"}.  The
+## formatting of the labels is determined by the variable @var{form}, which
+## can either be a string or positive integer that @code{datestr} accepts.
 ## @seealso{datenum, datestr}
 ## @end deftypefn
 
 function datetick (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("datetick", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("datetick", varargin{:});
 
-  oldh = gca ();
+  oldfig = [];
+  if (! isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
+  if (isempty (hax))
+    hax = gca ();
+  endif 
+
   unwind_protect
-    axes (h);
+    ## FIXME: This will bring the axes to the top of the stack.
+    ##        This may not always be desirable if there are multiple axes
+    ##        objects.
+    axes (hax);
     __datetick__ (varargin{:});
   unwind_protect_cleanup
-    axes (oldh);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
 endfunction
@@ -61,7 +73,7 @@ endfunction
 %! yr = 1988:2:2002;
 %! yr = datenum (yr,1,1);
 %! pr = [12.1 13.3 12.6 13.1 13.3 14.1 14.4 15.2];
-%! plot (yr, pr);
+%! plot (yr, pr, "-o");
 %! xlabel ("year");
 %! ylabel ("average price");
 %! ax = gca;
@@ -75,31 +87,26 @@ endfunction
 function __datetick__ (varargin)
 
   keeplimits = false;
+  idx = strcmpi (varargin, "keeplimits");
+  if (any (idx))
+    keeplimits = true;
+    varargin = varargin(! idx);
+  endif
   keepticks = false;
-  idx = [];
-  for i = 1 : nargin
-    arg = varargin {i};
-    if (ischar (arg))
-      if (strcmpi (arg, "keeplimits"))
-        keeplimits = true;
-        idx = [idx, i];
-      elseif (strcmpi (arg, "keepticks"))
-        keepticks = true;
-        idx = [idx, i];
-      endif
-    endif
-  endfor
+  idx = strcmpi (varargin, "keepticks");
+  if (any (idx))
+    keepticks = true;
+    varargin = varargin(! idx);
+  endif
 
-  varargin(idx) = [];
-  nargin = length (varargin);
+  nargin = numel (varargin); 
   form = [];
   ax = "x";
 
   if (nargin != 0)
     arg = varargin{1};
-    if (ischar (arg) && (strcmp (arg, "x") || strcmp (arg, "y")
-                         || strcmp (arg, "z")))
-      ax = arg;
+    if (ischar (arg) && any (strcmpi (arg, {"x", "y", "z"})))
+      ax = tolower (arg);
       if (nargin > 1)
         form = varargin{2};
         varargin(1:2) = [];
@@ -121,7 +128,7 @@ function __datetick__ (varargin)
 
   if (! isempty (form))
     if (isnumeric (form))
-      if (! isscalar (form) || floor (form) != form || form < 0)
+      if (! isscalar (form) || form < 0 || form != fix (form))
         error ("datetick: expecting FORM argument to be a positive integer");
       endif
     elseif (! ischar (form))
@@ -130,7 +137,7 @@ function __datetick__ (varargin)
   endif
 
   if (keepticks)
-    ticks = get (gca (), strcat (ax, "tick"));
+    ticks = get (gca (), [ax "tick"]);
   else
     ## Need to do our own axis tick position calculation as
     ## year, etc, don't fallback on nice datenum values.
@@ -139,8 +146,8 @@ function __datetick__ (varargin)
     xmin = NaN;
     for i = 1 : length (objs)
       fld = get (objs (i));
-      if (isfield (fld, strcat (ax, "data")))
-        xdata = getfield (fld, strcat (ax, "data"))(:);
+      if (isfield (fld, [ax "data"]))
+        xdata = getfield (fld, [ax "data"])(:);
         xmin = min (xmin, min (xdata));
         xmax = max (xmax, max (xdata));
       endif
@@ -209,7 +216,7 @@ function __datetick__ (varargin)
       ## days
       form = 8;
     elseif (r < 365)
-      ## FIXME -- FORM should be 19 for European users who use dd/mm
+      ## FIXME: FORM should be 19 for European users who use dd/mm
       ## instead of mm/dd.  How can that be determined automatically?
       ## months
       form = 6;
@@ -243,17 +250,17 @@ function __datetick__ (varargin)
 
   if (keepticks)
     if (keeplimits)
-      set (gca (), strcat (ax, "ticklabel"), sticks);
+      set (gca (), [ax "ticklabel"], sticks);
     else
-      set (gca (), strcat (ax, "ticklabel"), sticks, strcat (ax, "lim"),
-      [min(ticks), max(ticks)]);
+      set (gca (), [ax "ticklabel"], sticks,
+                   [ax "lim"], [min(ticks), max(ticks)]);
     endif
   else
     if (keeplimits)
-      set (gca (), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks);
+      set (gca (), [ax "tick"], ticks, [ax "ticklabel"], sticks);
     else
-      set (gca (), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks,
-      strcat (ax, "lim"), [min(ticks), max(ticks)]);
+      set (gca (), [ax "tick"], ticks, [ax "ticklabel"], sticks,
+                   [ax "lim"], [min(ticks), max(ticks)]);
     endif
   endif
 endfunction

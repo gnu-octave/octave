@@ -69,7 +69,7 @@ function daratio = daspect (varargin)
     daratio = get (hax, "dataaspectratio");
   else
     arg = varargin{1};
-    if (isreal (arg))
+    if (isnumeric (arg))
       if (numel (arg) == 2)
         set (hax, "dataaspectratio", [arg, 1]);
       elseif (numel (arg) == 3)

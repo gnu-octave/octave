@@ -33,9 +33,11 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ##                mean ((@var{x} - mean (@var{x})).^3)
 ## skewness (@var{X}) = ------------------------.
-##                     std (@var{x}, 1).^3
+##                       std (@var{x}).^3
+## @end group
 ## @end example
 ##
 ## @end ifnottex
@@ -43,28 +45,29 @@
 ## @noindent
 ## The optional argument @var{flag} controls which normalization is used.
 ## If @var{flag} is equal to 1 (default value, used when @var{flag} is omitted
-## or empty), return the sample skewness as defined above. If @var{flag} is
+## or empty), return the sample skewness as defined above.  If @var{flag} is
 ## equal to 0, return the adjusted skewness coefficient instead:
 ## @tex
 ## $$
-## {\rm skewness} (@var{x}) = {{{N \over (N - 1) (N - 2)}\,
-##          \sum_{i=1}^N (@var{x}_i - \bar{@var{x}})^3} \over @var{s}^3},
+## {\rm skewness} (@var{x}) = {\sqrt{N (N - 1)} \over N - 2} \times \,
+##   {{{1 \over N} \sum_{i=1}^N (@var{x}_i - \bar{@var{x}})^3} \over \sigma^3}
 ## $$
-## where @var{s} is the corrected standard deviation of @var{x}.
 ## @end tex
 ## @ifnottex
 ##
 ## @example
-##                         N^2        mean ((@var{x} - mean (@var{x})).^3)
+## @group
+##                   sqrt (N*(N-1))   mean ((@var{x} - mean (@var{x})).^3)
 ## skewness (@var{X}, 0) = -------------- * ------------------------.
-##                   (N - 1)(N - 2)        std (@var{x}, 0).^3
+##                       (N - 2)             std (@var{x}).^3
+## @end group
 ## @end example
 ##
 ## @end ifnottex
 ## The adjusted skewness coefficient is obtained by replacing the sample second
 ## and third central moments by their bias-corrected versions.
 ##
-## If @var{x} is a matrix, or more generally a multidimensional array, return
+## If @var{x} is a matrix, or more generally a multi-dimensional array, return
 ## the skewness along the first non-singleton dimension.  If the optional
 ## @var{dim} argument is given, operate along this dimension.
 ##
@@ -81,22 +84,22 @@ function y = skewness (x, flag, dim)
     print_usage ();
   endif
 
-  if (! isnumeric (x)) || islogical (x)
+  if (! (isnumeric (x) || islogical (x)))
     error ("skewness: X must be a numeric vector or matrix");
   endif
 
-  if (nargin < 2) || isempty (flag)
+  if (nargin < 2 || isempty (flag))
     flag = 1;  # default: do not use the "bias corrected" version
   else
     flag = double (flag);
-    if (~ isequal (flag, 0)) && (~ isequal (flag, 1))
+    if (flag != 0 && flag != 1)
       error ("skewness: FLAG must be 0 or 1");
     end
   endif
 
   nd = ndims (x);
   sz = size (x);
-  if nargin < 3
+  if (nargin < 3)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
@@ -108,20 +111,18 @@ function y = skewness (x, flag, dim)
   n = sz(dim);
   sz(dim) = 1;
 
-  ## In the following sequence of computations, if x is of class single,
-  ## then the result y is also of class single
-  x = center (x, dim);
-  s = std (x, flag, dim);  # use the biased estimator of the variance
+  x = center (x, dim);   # center also promotes integer, logical to double
+  s = std (x, 1, dim);   # Normalize with 1/N
   y = sum (x .^ 3, dim);
-  y = y ./ (n * s .^ 3);
-  y(s <= 0) = nan;
+  y ./= (n * s .^ 3);
+  y(s == 0) = NaN;
 
   ## Apply bias correction to the third central sample moment
-  if flag == 0
-    if n > 2
-      y = y * (n * n ) / ((n - 1) * (n - 2));
+  if (flag == 0)
+    if (n > 2)
+      y *= sqrt (n * (n - 1)) / (n - 2);
     else
-      y(:) = nan;
+      y(:) = NaN;
     end
   endif
 
@@ -132,27 +133,28 @@ endfunction
 %!assert (skewness ([-2, 0, 1]) < 0)
 %!assert (skewness ([-1, 0, 2]) > 0)
 %!assert (skewness ([-3, 0, 1]) == -1 * skewness ([-1, 0, 3]))
-%!assert (skewness (ones (3, 5)), nan (1, 5))
+%!assert (skewness (ones (3, 5)), NaN (1, 5))
 
 %!test
 %! x = [0; 0; 0; 1];
 %! y = [x, 2*x];
-%! assert (skewness (y),  1.154700538379251 * [1 1], 1e-13)
+%! assert (skewness (y), 1.154700538379251 * [1 1], 5*eps);
 
-%!assert (skewness ([1:5 10; 1:5 10],  0, 2), 1.439590274527954 * [1; 1], 1e-15)
-%!assert (skewness ([1:5 10; 1:5 10],  1, 2), 1.051328089232020 * [1; 1], 1e-15)
-%!assert (skewness ([1:5 10; 1:5 10], [], 2), 1.051328089232020 * [1; 1], 1e-15)
+%!assert (skewness ([1:5 10; 1:5 10],  0, 2), 1.439590274527954 * [1; 1], eps)
+%!assert (skewness ([1:5 10; 1:5 10],  1, 2), 1.051328089232020 * [1; 1], eps)
+%!assert (skewness ([1:5 10; 1:5 10], [], 2), 1.051328089232020 * [1; 1], eps)
 
 ## Test behaviour on single input
-%! assert (skewness (single ([1:5 10])), single (1.0513283))
-%! assert (skewness (single ([1 2]), 0), single (nan))
+%!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
+%!assert (skewness (single ([1 2]), 0), single (NaN))
 
 ## Test input validation
 %!error skewness ()
 %!error skewness (1, 2, 3)
-%!error skewness (['A'; 'B'])
-%!error skewness (1, ones (2,2))
-%!error skewness (1, 1.5)
-%!error skewness (1, [], 0)
-%!error skewness (1, 3)
+%!error <X must be a numeric vector or matrix> skewness (['A'; 'B'])
+%!error <FLAG must be 0 or 1> skewness (1, 2)
+%!error <DIM must be an integer> skewness (1, [], ones (2,2))
+%!error <DIM must be an integer> skewness (1, [], 1.5)
+%!error <DIM must be .* a valid dimension> skewness (1, [], 0)
+%!error <DIM must be .* a valid dimension> skewness (1, [], 3)
 

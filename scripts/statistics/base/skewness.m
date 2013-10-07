@@ -91,8 +91,7 @@ function y = skewness (x, flag, dim)
   if (nargin < 2 || isempty (flag))
     flag = 1;  # default: do not use the "bias corrected" version
   else
-    flag = double (flag);
-    if (flag != 0 && flag != 1)
+    if ((! isscalar (flag)) || (flag != 0 && flag != 1))
       error ("skewness: FLAG must be 0 or 1");
     endif
   endif
@@ -114,8 +113,9 @@ function y = skewness (x, flag, dim)
   x = center (x, dim);   # center also promotes integer, logical to double
   s = std (x, 1, dim);   # Normalize with 1/N
   y = sum (x .^ 3, dim);
-  y ./= (n * s .^ 3);
-  y(s == 0) = NaN;
+  idx = (s != 0);
+  y(idx) ./= (n * s(idx) .^ 3);
+  y(! idx) = NaN;
 
   ## Apply bias correction to the third central sample moment
   if (flag == 0)
@@ -141,18 +141,30 @@ endfunction
 %! assert (skewness (y), 1.154700538379251 * [1 1], 5*eps);
 
 %!assert (skewness ([1:5 10; 1:5 10],  0, 2), 1.439590274527954 * [1; 1], eps)
-%!assert (skewness ([1:5 10; 1:5 10],  1, 2), 1.051328089232020 * [1; 1], eps)
-%!assert (skewness ([1:5 10; 1:5 10], [], 2), 1.051328089232020 * [1; 1], eps)
+%!assert (skewness ([1:5 10; 1:5 10],  1, 2), 1.051328089232020 * [1; 1], 2*eps)
+%!assert (skewness ([1:5 10; 1:5 10], [], 2), 1.051328089232020 * [1; 1], 2*eps)
 
 ## Test behaviour on single input
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
+
+## Verify no "division-by-zero" warnings
+%!test
+%! wstate = warning ("query", "Octave:divide-by-zero");
+%! unwind_protect
+%!   lastwarn ("");  # clear last warning
+%!   skewness (1);
+%!   assert (lastwarn (), "");
+%! unwind_protect_cleanup
+%!   warning (wstate, "Octave:divide-by-zero");
+%! end_unwind_protect
 
 ## Test input validation
 %!error skewness ()
 %!error skewness (1, 2, 3)
 %!error <X must be a numeric vector or matrix> skewness (['A'; 'B'])
 %!error <FLAG must be 0 or 1> skewness (1, 2)
+%!error <FLAG must be 0 or 1> skewness (1, [1 0])
 %!error <DIM must be an integer> skewness (1, [], ones (2,2))
 %!error <DIM must be an integer> skewness (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> skewness (1, [], 0)

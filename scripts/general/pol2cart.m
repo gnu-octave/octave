@@ -28,7 +28,8 @@
 ## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{r} is the distance to the z-axis (0, 0, z).
 ## If called with a single matrix argument then each row of @var{p}
-## represents the polar/(cylindrical) coordinate (@var{x}, @var{y} (, @var{z})).
+## represents the polar/(cylindrical) coordinate (@var{theta}, @var{r} (,
+## @var{z})).
 ##
 ## If only a single return argument is requested then return a matrix
 ## @var{C} where each row represents one Cartesian coordinate
@@ -39,7 +40,7 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe
 
-function [x, y, z] = pol2cart (theta, r, z)
+function [x, y, z] = pol2cart (theta, r, z = [])
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -49,8 +50,6 @@ function [x, y, z] = pol2cart (theta, r, z)
     if (ismatrix (theta) && (columns (theta) == 2 || columns (theta) == 3))
       if (columns (theta) == 3)
         z = theta(:,3);
-      else
-        z = [];
       endif
       r = theta(:,2);
       theta = theta(:,1);
@@ -75,7 +74,7 @@ function [x, y, z] = pol2cart (theta, r, z)
   y = r .* sin (theta);
 
   if (nargout <= 1)
-    x  = [x, y, z];
+    x = [x(:), y(:), z(:)];
   endif
 
 endfunction
@@ -91,9 +90,9 @@ endfunction
 %!test
 %! t = [0, 1, 1] * pi/4;
 %! r = sqrt (2) * [0, 1, 2];
-%! [x, y] = pol2cart (t, r);
-%! assert (x, [0, 1, 2], sqrt (eps));
-%! assert (y, [0, 1, 2], sqrt (eps));
+%! cart = pol2cart (t, r);
+%! assert (cart(:,1), [0; 1; 2], sqrt (eps));
+%! assert (cart(:,2), [0; 1; 2], sqrt (eps));
 
 %!test
 %! t = [0, 1, 1] * pi/4;

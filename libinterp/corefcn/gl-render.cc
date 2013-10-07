@@ -1616,8 +1616,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
             j1 = j;
 
           clip(i,j) = is_nan_or_inf (x(i1,j), y(i,j1), z(i,j));
+          /*
           if (fc_mode == 1 || fc_mode == 2)
             clip(i,j) |= (xisnan (c(i,j)) || xisinf (c(i,j)));
+            */
         }
     }
 
@@ -1676,9 +1678,24 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
               for (int j = 1; j < zr; j++)
                 {
-                  if (clip(j-1, i-1) || clip (j, i-1)
-                      || clip (j-1, i) || clip (j, i))
+
+                  if (clip(j-1, i-1) || clip(j, i-1)
+                      || clip(j-1, i) || clip(j, i))
                     continue;
+
+                  if (fc_mode == 1)
+                    {
+                      // "flat" only needs color at lower-left vertex
+                      if (! xfinite (c(j-1,i-1)))
+                        continue;
+                    }
+                  else if (fc_mode == 2)
+                    {
+                      // "interp" needs valid color at all 4 vertices
+                      if (! (xfinite (c(j-1, i-1)) && xfinite (c(j, i-1))
+                             && xfinite (c(j-1, i)) && xfinite (c(j, i))))
+                        continue;
+                    }
 
                   if (x_mat)
                     {
@@ -1867,6 +1884,19 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       if (clip(j-1,i) || clip(j,i))
                         continue;
 
+                      if (ec_mode == 1)
+                        {
+                          // "flat" only needs color at lower-left vertex
+                          if (! xfinite (c(j-1,i)))
+                            continue;
+                        }
+                      else if (ec_mode == 2)
+                        {
+                          // "interp" needs valid color at both vertices
+                          if (! (xfinite (c(j-1, i)) && xfinite (c(j, i))))
+                            continue;
+                        }
+
                       if (x_mat)
                         {
                           j1 = j-1;
@@ -1950,6 +1980,19 @@ opengl_renderer::draw_surface (const surface::properties& props)
                     {
                       if (clip(j,i-1) || clip(j,i))
                         continue;
+
+                      if (ec_mode == 1)
+                        {
+                          // "flat" only needs color at lower-left vertex
+                          if (! xfinite (c(j,i-1)))
+                            continue;
+                        }
+                      else if (ec_mode == 2)
+                        {
+                          // "interp" needs valid color at both vertices
+                          if (! (xfinite (c(j, i-1)) && xfinite (c(j, i))))
+                            continue;
+                        }
 
                       if (y_mat)
                         {
@@ -2080,12 +2123,17 @@ opengl_renderer::draw_surface (const surface::properties& props)
               if ((do_edge && mecolor.numel () == 0)
                   || (do_face && mfcolor.numel () == 0))
                 {
+                  if (! xfinite (c(j,i)))
+                    continue;  // Skip NaNs in color data
+
                   for (int k = 0; k < 3; k++)
                     cc(k) = c(j,i,k);
                 }
 
-              Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor) : Matrix ());
-              Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor) : Matrix ());
+              Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor)
+                                   : Matrix ());
+              Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor)
+                                   : Matrix ());
 
               draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
             }

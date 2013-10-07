@@ -107,10 +107,9 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
     for k = 1:length (def_idx)
       endl = endl_idx(find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
-        keep(def_idx(k):end) = false;
-      else
-        keep(def_idx(k):endl) = false;
+        endl = numel (keep);
       endif
+      keep(def_idx(k):endl) = false;
     endfor
 
     ## Remove the @end ... that corresponds to the @def we removed above
@@ -125,16 +124,11 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
     sep_idx = min (space_idx, bracket_idx);
     def_type = help_text(def1+1:sep_idx-1);
 
-    end_idx = strfind (help_text, sprintf ("@end %s", def_type));
+    end_idx = strfind (help_text, sprintf ("@end %s", def_type))(1);
     if (isempty (end_idx))
       error ("get_first_help_sentence: couldn't parse texinfo");
     endif
-    endl = endl_idx(find (endl_idx > end_idx, 1));
-    if (isempty (endl))
-      keep(end_idx:end) = false;
-    else
-      keep(end_idx:endl) = false;
-    endif
+    keep(end_idx:end) = false;
 
     help_text = help_text(keep);
   endif

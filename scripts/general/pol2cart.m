@@ -19,15 +19,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
-## @deftypefnx {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{p})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{p})
+## @deftypefnx {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{P})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{P})
 ## @deftypefnx {Function File} {@var{C} =} pol2cart (@dots{})
 ## Transform polar or cylindrical to Cartesian coordinates.
 ##
 ## @var{theta}, @var{r}, (and @var{z}) must be the same shape, or scalar.
 ## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{r} is the distance to the z-axis (0, 0, z).
-## If called with a single matrix argument then each row of @var{p}
+## If called with a single matrix argument then each row of @var{P}
 ## represents the polar/(cylindrical) coordinate (@var{theta}, @var{r} (,
 ## @var{z})).
 ##
@@ -90,9 +90,9 @@ endfunction
 %!test
 %! t = [0, 1, 1] * pi/4;
 %! r = sqrt (2) * [0, 1, 2];
-%! cart = pol2cart (t, r);
-%! assert (cart(:,1), [0; 1; 2], sqrt (eps));
-%! assert (cart(:,2), [0; 1; 2], sqrt (eps));
+%! C = pol2cart (t, r);
+%! assert (C(:,1), [0; 1; 2], sqrt (eps));
+%! assert (C(:,2), [0; 1; 2], sqrt (eps));
 
 %!test
 %! t = [0, 1, 1] * pi/4;

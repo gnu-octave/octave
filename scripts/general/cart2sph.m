@@ -26,11 +26,11 @@
 ## @var{phi} is the angle relative to the xy-plane.
 ## @var{r} is the distance to the origin @w{(0, 0, 0)}.
 ## @var{x}, @var{y}, and @var{z} must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{c}
+## If called with a single matrix argument then each row of @var{C}
 ## represents the Cartesian coordinate (@var{x}, @var{y}, @var{z}).
 ##
 ## If only a single return argument is requested then return a matrix
-## @var{s} where each row represents one spherical coordinate
+## @var{S} where each row represents one spherical coordinate
 ## (@var{theta}, @var{phi}, @var{r}).
 ## @seealso{sph2cart, cart2pol, pol2cart}
 ## @end deftypefn
@@ -66,7 +66,7 @@ function [theta, phi, r] = cart2sph (x, y, z)
   r = sqrt (x .^ 2 + y .^ 2 + z .^ 2);
 
   if (nargout <= 1)
-    theta = [theta, phi, r];
+    theta = [theta(:), phi(:), r(:)];
   endif
 
 endfunction
@@ -85,10 +85,10 @@ endfunction
 %! x = 0;
 %! y = [0, 1, 2];
 %! z = [0, 1, 2];
-%! [t, p, r] = cart2sph (x, y, z);
-%! assert (t, [0, 1, 1] * pi/2, eps);
-%! assert (p, [0, 1, 1] * pi/4, eps);
-%! assert (r, [0, 1, 2] * sqrt (2), eps);
+%! S = cart2sph (x, y, z);
+%! assert (S(:,1), [0; 1; 1] * pi/2, eps);
+%! assert (S(:,2), [0; 1; 1] * pi/4, eps);
+%! assert (S(:,3), [0; 1; 2] * sqrt (2), eps);
 
 %!test
 %! x = [0, 1, 2];

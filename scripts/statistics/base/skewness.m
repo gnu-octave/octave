@@ -94,7 +94,7 @@ function y = skewness (x, flag, dim)
     flag = double (flag);
     if (flag != 0 && flag != 1)
       error ("skewness: FLAG must be 0 or 1");
-    end
+    endif
   endif
 
   nd = ndims (x);
@@ -123,7 +123,7 @@ function y = skewness (x, flag, dim)
       y *= sqrt (n * (n - 1)) / (n - 2);
     else
       y(:) = NaN;
-    end
+    endif
   endif
 
 endfunction

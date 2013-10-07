@@ -117,7 +117,7 @@ function y = skewness (x, flag, dim)
   y(idx) ./= (n * s(idx) .^ 3);
   y(! idx) = NaN;
 
-  ## Apply bias correction to the third central sample moment
+  ## Apply bias correction to the second and third central sample moment
   if (flag == 0)
     if (n > 2)
       y *= sqrt (n * (n - 1)) / (n - 2);
@@ -165,4 +165,3 @@ endfunction
 %!error <DIM must be an integer> skewness (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> skewness (1, [], 0)
 %!error <DIM must be .* a valid dimension> skewness (1, [], 3)
-

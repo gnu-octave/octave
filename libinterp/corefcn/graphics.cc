@@ -5569,8 +5569,11 @@ axes::properties::get_boundingbox (bool internal,
     {
       graphics_object obj = gh_manager::get_object (get_parent ());
 
-      parent_size =
-       obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      if (obj.valid_object ())
+        parent_size =
+          obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      else
+        parent_size = default_figure_position ();
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);

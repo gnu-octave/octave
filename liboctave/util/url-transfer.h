@@ -47,24 +47,23 @@ public:
   friend class url_transfer;
 
   base_url_transfer (void)
-    : count (1), host (), userpwd (), valid (false), ascii_mode (false),
-      ok (true), errmsg (), curr_istream (&std::cin), curr_ostream (&std::cout)
+    : count (1), host_or_url (), userpwd (), valid (false), ftp (false),
+      ascii_mode (false), ok (true), errmsg (),
+      curr_istream (&std::cin), curr_ostream (&std::cout)
   { }
 
-  base_url_transfer (const std::string& host_arg,
+  base_url_transfer (const std::string& host,
                      const std::string& /* user_arg */,
                      const std::string& /* passwd */,
                      std::ostream& os)
-    : count (1), host (host_arg), userpwd (), valid (false),
+    : count (1), host_or_url (host), userpwd (), valid (false), ftp (true),
       ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
       curr_ostream (&os) { }
 
-  base_url_transfer (const std::string& /* url */,
-                     const std::string& /* method */,
-                     const Array<std::string>& /* param */,
-                     std::ostream& os)
-    : count (1), host (), userpwd (), valid (false), ascii_mode (false),
-      ok (true), errmsg (), curr_istream (&std::cin), curr_ostream (&os) { }
+  base_url_transfer (const std::string& url, std::ostream& os)
+    : count (1), host_or_url (url), userpwd (), valid (false), ftp (false),
+      ascii_mode (false), ok (true), errmsg (),
+      curr_istream (&std::cin), curr_ostream (&os) { }
 
   virtual ~base_url_transfer (void) { }
 
@@ -128,12 +127,23 @@ public:
 
   virtual std::string pwd (void) { return std::string (); }
 
+  virtual void http_get (const Array<std::string>& /* param */) { }
+
+  virtual void http_post (const Array<std::string>& /* param */) { }
+
+  virtual void http_action (const Array<std::string>& /* param */,
+                            const std::string& /* action */) { }
+
 protected:
 
+  // Reference count.
   octave_refcount<size_t> count;
-  std::string host;
+
+  // Host for ftp transfers or full URL for http requests.
+  std::string host_or_url;
   std::string userpwd;
   bool valid;
+  bool ftp;
   bool ascii_mode;
   bool ok;
   std::string errmsg;
@@ -158,8 +168,7 @@ public:
   url_transfer (const std::string& host, const std::string& user,
                 const std::string& passwd, std::ostream& os);
 
-  url_transfer (const std::string& url, const std::string& method,
-                const Array<std::string>& param, std::ostream& os);
+  url_transfer (const std::string& url, std::ostream& os);
 
   url_transfer (const url_transfer& h) : rep (h.rep)
   {
@@ -256,6 +265,16 @@ public:
   }
 
   std::string pwd (void) { return rep->pwd (); }
+
+  void http_get (const Array<std::string>& param) { rep->http_get (param); }
+
+  void http_post (const Array<std::string>& param) { rep->http_post (param); }
+
+  void http_action (const Array<std::string>& param,
+                    const std::string& action)
+  {
+    rep->http_action (param, action);
+  }
 
 private:
 

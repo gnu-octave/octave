@@ -45,7 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <curl/easy.h>
 #endif
 
-void base_url_transfer::delete_file (const std::string& file)
+void
+base_url_transfer::delete_file (const std::string& file)
 {
   octave_unlink (file);
 }
@@ -281,9 +282,9 @@ public:
       errmsg = "can not create curl object";
   }
 
-  curl_transfer (const std::string& host_arg, const std::string& user_arg,
+  curl_transfer (const std::string& host, const std::string& user_arg,
                  const std::string& passwd, std::ostream& os)
-    : base_url_transfer (host_arg, user_arg, passwd, os),
+    : base_url_transfer (host, user_arg, passwd, os),
       curl (curl_easy_init ()), errnum ()
   {
     if (curl)
@@ -296,17 +297,15 @@ public:
 
     init (user_arg, passwd, std::cin, os);
 
-    std::string url ("ftp://" + host_arg);
+    std::string url ("ftp://" + host);
     SETOPT (CURLOPT_URL, url.c_str ());
 
-    // Setup the link, with no transfer.
+    // Set up the link, with no transfer.
     perform ();
   }
 
-  curl_transfer (const std::string& url, const std::string& method,
-                 const Array<std::string>& param, std::ostream& os)
-    : base_url_transfer (url, method, param, os),
-      curl (curl_easy_init ()), errnum ()
+  curl_transfer (const std::string& url, std::ostream& os)
+    : base_url_transfer (url, os), curl (curl_easy_init ()), errnum ()
   {
     if (curl)
       valid = true;
@@ -321,28 +320,10 @@ public:
     SETOPT (CURLOPT_NOBODY, 0);
 
     // Restore the default HTTP request method to GET after setting
-    // NOBODY to true and back to false.  This is needed for backward
-    // compatibility with versions of libcurl < 7.18.2.
+    // NOBODY to true (in the init method) and back to false (above).
+    // This is needed for backward compatibility with versions of
+    // libcurl < 7.18.2.
     SETOPT (CURLOPT_HTTPGET, 1);
-
-    // Don't need to store the parameters here as we can't change
-    // the URL after the object is created
-    std::string query_string = form_query_string (param);
-
-    if (method == "get")
-      {
-        query_string = url + "?" + query_string;
-        SETOPT (CURLOPT_URL, query_string.c_str ());
-      }
-    else if (method == "post")
-      {
-        SETOPT (CURLOPT_URL, url.c_str ());
-        SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
-      }
-    else
-      SETOPT (CURLOPT_URL, url.c_str ());
-
-    perform ();
   }
 
   ~curl_transfer (void)
@@ -441,7 +422,7 @@ public:
 
   void put (const std::string& file, std::istream& is)
   {
-    std::string url = "ftp://" + host + "/" + file;
+    std::string url = "ftp://" + host_or_url + "/" + file;
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_UPLOAD, 1);
     SETOPT (CURLOPT_NOBODY, 0);
@@ -454,13 +435,13 @@ public:
     set_istream (old_is);
     SETOPT (CURLOPT_NOBODY, 1);
     SETOPT (CURLOPT_UPLOAD, 0);
-    url = "ftp://" + host;
+    url = "ftp://" + host_or_url;
     SETOPT (CURLOPT_URL, url.c_str ());
   }
 
   void get (const std::string& file, std::ostream& os)
   {
-    std::string url = "ftp://" + host + "/" + file;
+    std::string url = "ftp://" + host_or_url + "/" + file;
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_NOBODY, 0);
     std::ostream& old_os = set_ostream (os);
@@ -471,13 +452,13 @@ public:
 
     set_ostream (old_os);
     SETOPT (CURLOPT_NOBODY, 1);
-    url = "ftp://" + host;
+    url = "ftp://" + host_or_url;
     SETOPT (CURLOPT_URL, url.c_str ());
   }
 
   void dir (void)
   {
-    std::string url = "ftp://" + host + "/";
+    std::string url = "ftp://" + host_or_url + "/";
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_NOBODY, 0);
 
@@ -486,7 +467,7 @@ public:
       return;
 
     SETOPT (CURLOPT_NOBODY, 1);
-    url = "ftp://" + host;
+    url = "ftp://" + host_or_url;
     SETOPT (CURLOPT_URL, url.c_str ());
   }
 
@@ -495,7 +476,7 @@ public:
     string_vector retval;
 
     std::ostringstream buf;
-    std::string url = "ftp://" + host + "/";
+    std::string url = "ftp://" + host_or_url + "/";
     SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
     SETOPTR (CURLOPT_URL, url.c_str ());
     SETOPTR (CURLOPT_DIRLISTONLY, 1);
@@ -506,7 +487,7 @@ public:
       return retval;
 
     SETOPTR (CURLOPT_NOBODY, 1);
-    url = "ftp://" + host;
+    url = "ftp://" + host_or_url;
     SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (curr_ostream));
     SETOPTR (CURLOPT_DIRLISTONLY, 0);
     SETOPTR (CURLOPT_URL, url.c_str ());
@@ -543,7 +524,7 @@ public:
   {
     std::string path = pwd ();
 
-    std::string url = "ftp://" + host + "/" + path + "/" + filename;
+    std::string url = "ftp://" + host_or_url + "/" + path + "/" + filename;
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_FILETIME, 1);
     SETOPT (CURLOPT_HEADERFUNCTION, throw_away);
@@ -575,7 +556,7 @@ public:
     SETOPT (CURLOPT_WRITEFUNCTION, write_data);
     SETOPT (CURLOPT_HEADERFUNCTION, 0);
     SETOPT (CURLOPT_FILETIME, 0);
-    url = "ftp://" + host;
+    url = "ftp://" + host_or_url;
     SETOPT (CURLOPT_URL, url.c_str ());
 
     // The MDTM command seems to reset the path to the root with the
@@ -617,6 +598,44 @@ public:
     SETOPTR (CURLOPT_POSTQUOTE, 0);
 
     return retval;
+  }
+
+  void http_get (const Array<std::string>& param)
+  {
+    std::string url = host_or_url;
+
+    std::string query_string = form_query_string (param);
+
+    if (! query_string.empty ())
+      url += "?" + query_string;
+
+    SETOPT (CURLOPT_URL, url.c_str ());
+
+    perform ();
+  }
+
+  void http_post (const Array<std::string>& param)
+  {
+    SETOPT (CURLOPT_URL, host_or_url.c_str ());
+
+    std::string query_string = form_query_string (param);
+
+    SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
+
+    perform ();
+  }
+
+  void http_action (const Array<std::string>& param, const std::string& action)
+  {
+    if (action.empty () || action == "get")
+      http_get (param);
+    else if (action == "post")
+      http_post (param);
+    else
+      {
+        ok = false;
+        errmsg = "curl_transfer: unknown http action";
+      }
   }
 
 private:
@@ -758,9 +777,8 @@ url_transfer::url_transfer (const std::string& host, const std::string& user,
 #endif
 }
 
-url_transfer::url_transfer (const std::string& url, const std::string& method,
-                            const Array<std::string>& param, std::ostream& os)
-  : rep (new REP_CLASS (url, method, param, os))
+url_transfer::url_transfer (const std::string& url, std::ostream& os)
+  : rep (new REP_CLASS (url, os))
 {
 #if !defined (HAVE_CURL)
   disabled_error ();

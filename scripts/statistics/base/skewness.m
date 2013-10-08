@@ -148,12 +148,16 @@ endfunction
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
 
+## Verify no "division-by-zero" warnings
 %!test
-%! ## Verify no "division-by-zero" warnings
-%! warning ("on", "Octave:divide-by-zero", "local");
-%! lastwarn ("");  # clear last warning
-%! skewness (1);
-%! assert (lastwarn (), "");
+%! wstate = warning ("query", "Octave:divide-by-zero");
+%! unwind_protect
+%!   lastwarn ("");  # clear last warning
+%!   skewness (1);
+%!   assert (lastwarn (), "");
+%! unwind_protect_cleanup
+%!   warning (wstate, "Octave:divide-by-zero");
+%! end_unwind_protect
 
 ## Test input validation
 %!error skewness ()

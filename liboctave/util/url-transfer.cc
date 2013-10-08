@@ -276,7 +276,7 @@ class curl_transfer : public base_url_transfer
 public:
 
   curl_transfer (void)
-    : base_url_transfer (), curl (curl_easy_init ()), errnum ()
+    : base_url_transfer (), curl (curl_easy_init ()), errnum (), userpwd ()
   {
     if (curl)
       valid = true;
@@ -287,7 +287,7 @@ public:
   curl_transfer (const std::string& host, const std::string& user_arg,
                  const std::string& passwd, std::ostream& os)
     : base_url_transfer (host, user_arg, passwd, os),
-      curl (curl_easy_init ()), errnum ()
+      curl (curl_easy_init ()), errnum (), userpwd ()
   {
     if (curl)
       valid = true;
@@ -307,7 +307,8 @@ public:
   }
 
   curl_transfer (const std::string& url, std::ostream& os)
-    : base_url_transfer (url, os), curl (curl_easy_init ()), errnum ()
+    : base_url_transfer (url, os), curl (curl_easy_init ()), errnum (),
+      userpwd ()
   {
     if (curl)
       valid = true;
@@ -642,8 +643,26 @@ public:
 
 private:
 
+  // Pointer to cURL object.
   CURL *curl;
+
+  // cURL error code.
   CURLcode errnum;
+
+  // The cURL library changed the curl_easy_setopt call to make an
+  // internal copy of string parameters in version 7.17.0. Prior
+  // versions only held a pointer to a string provided by the caller
+  // that must persist for the lifetime of the CURL handle.
+  //
+  // The associated API did not change, only the behavior of the library
+  // implementing the function call.
+  //
+  // To be compatible with any version of cURL, the caller must keep a
+  // copy of all string parameters associated with a CURL handle until
+  // the handle is released. The curl_handle::curl_handle_rep class
+  // contains the pointer to the CURL handle and so is the best
+  // candidate for storing the strings as well. (bug #36717)
+  std::string userpwd;
 
   // No copying!
 
@@ -658,7 +677,7 @@ private:
     SETOPT (CURLOPT_NOBODY, 1);
 
     // Set the username and password
-    std::string userpwd = user;
+    userpwd = user;
     if (! passwd.empty ())
       userpwd += ":" + passwd;
     if (! userpwd.empty ())

@@ -74,7 +74,7 @@ function h = fill (varargin)
 
   opts = {};
   if (numel (varargin) > iargs(end) + 2)
-    opts = varargin(iargs(end) + (3:end));
+    opts = varargin(iargs(end)+3 : end);
   endif
   
   if (! all (cellfun (@(x) iscolorspec (x), varargin(iargs + 2))))
@@ -88,21 +88,33 @@ function h = fill (varargin)
   unwind_protect
     hax = newplot (hax);
     old_nxtplt = get (hax, "nextplot");
-    set (hax, "nextplot", "add");
+    unwind_protect
+      set (hax, "nextplot", "add");
 
-    for i = 1 : length (iargs)
-      args = [varargin(iargs(i) + (0:2)) opts];
+      for i = 1 : length (iargs)
+        cdata = varargin{iargs(i) + 2};
 
-      [htmp, fail] = __patch__ (hax, args{:});
-      if (fail)
-        print_usage ();
+        ## Matlab uses flat/interp shading based on orientation of cdata.
+        if (isnumeric (cdata) && isrow (cdata))
+          popt = ["facecolor", "flat", opts];
+        else
+          popt = opts;
+        endif
+
+        [htmp, fail] = __patch__ (hax, varargin{iargs(i)+(0:1)}, cdata,
+                                       popt{:});
+        if (fail)
+          print_usage ();
+        endif
+        
+        hlist(end+1, 1) = htmp;
+      endfor
+
+    unwind_protect_cleanup
+      if (strcmp (old_nxtplt, "replace"))
+        set (hax, "nextplot", old_nxtplt);
       endif
-      hlist(end+1, 1) = htmp;
-    endfor
-
-    if (strcmp (old_nxtplt, "replace"))
-      set (hax, "nextplot", old_nxtplt);
-    endif
+    end_unwind_protect
 
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -131,10 +143,10 @@ function retval = iscolorspec (arg)
     if (any (strcmpi (arg, colors)))
       retval = true;
     endif
-  elseif (isvector (arg))
-    if (length (arg) == 3 || all (arg >= 0 && arg <=1))
-      retval = true;
-    endif
+  elseif (isnumeric (arg))
+    ## Assume any numeric argument is correctly formatted cdata.
+    ## Let patch worry about the multple different input formats
+    retval = true;
   endif
 endfunction
 

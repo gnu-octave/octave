@@ -1616,10 +1616,6 @@ opengl_renderer::draw_surface (const surface::properties& props)
             j1 = j;
 
           clip(i,j) = is_nan_or_inf (x(i1,j), y(i,j1), z(i,j));
-          /*
-          if (fc_mode == 1 || fc_mode == 2)
-            clip(i,j) |= (xisnan (c(i,j)) || xisinf (c(i,j)));
-            */
         }
     }
 

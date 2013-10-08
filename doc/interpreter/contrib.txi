@@ -36,13 +36,14 @@ This chapter is dedicated to those who wish to contribute code to Octave.
 
 @node How to Contribute
 @section How to Contribute
-The mailing list for Octave development discussion and sending
-contributions is @email{maintainers@@octave.org}.  This concerns the
-development of Octave core, i.e., code that goes to Octave directly.
-You may consider developing and publishing a package instead; a great
-place for this is the allied Octave-Forge project
-(@url{http://octave.sourceforge.net}).  Note that the Octave core project is
-inherently more conservative and follows narrower rules.
+The mailing list for Octave development discussion is
+@email{maintainers@@octave.org}.  Patches should be submitted to
+@url{https://savannah.gnu.org/patch/?func=additem&group=octave, Octave's patch tracker}.
+This concerns the development of Octave core, i.e., code that goes to Octave
+directly.  You may consider developing and publishing a package instead;
+a great place for this is the allied Octave-Forge project
+(@url{http://octave.sourceforge.net}).  Note that the Octave core
+project is inherently more conservative and follows narrower rules.
 
 @node Building the Development Sources
 @section Building the Development Sources

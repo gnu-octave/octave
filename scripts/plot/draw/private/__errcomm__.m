@@ -58,7 +58,8 @@ function retval = __errcomm__ (caller, hax, varargin)
       if (isvector (arg))
         arg = arg(:);
       endif
-      if (any (size (arg) != sz))
+      if (! isscalar (arg) && ((isvector (arg) && numel (arg) != prod (sz))
+          || any (size (arg) != sz)))
         error ("%s: size of argument %d does not match others", caller, k-1);
       endif
       data{++ndata} = arg;

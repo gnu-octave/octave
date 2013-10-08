@@ -63,7 +63,8 @@ function h = pcolor (varargin)
   if (nargin == 1)
     c = varargin{1};
     [nr, nc] = size (c);
-    [x, y] = meshgrid (1:nc, 1:nr);
+    x = 1:nc;
+    y = 1:nr;
     z = zeros (nr, nc);
   elseif (nargin == 3)
     x = varargin{1};
@@ -86,12 +87,34 @@ function h = pcolor (varargin)
     if (! ishold ())
       set (hax, "view", [0, 90], "box", "on");
       ## FIXME: Maybe this should be in the general axis limit setting routine?
-      ##        When values are integers, want to use tight limits.
-      if (all (x(:) == fix (x(:)))) 
-        xlim ([min(x(:)), max(x(:))]);
+      ##        When values are integers (such as from meshgrid), we want to
+      ##        use tight limits for pcolor, mesh, surf, etc.  Situation is
+      ##        complicated immensely by vector or matrix input and meshgrid()
+      ##        or ndgrid() format.
+      meshgrid_fmt = true;
+      if (isvector (x))
+        xrng = x(isfinite (x));
+      else
+        xrng = x(1, isfinite (x(1,:)));    # meshgrid format (default)
+        if (all (xrng == xrng(1)))
+          xrng = x(isfinite (x(:,1)), 1);  # ndgrid format
+          meshgrid_fmt = false;
+        endif
       endif
-      if (all (y(:) == fix (y(:)))) 
-        ylim ([min(y(:)), max(y(:))]);
+      if (isvector (y))
+        yrng = y(isfinite (y));
+      else
+        if (meshgrid_fmt)
+          yrng = y(isfinite (y(:,1)), 1);
+        else
+          yrng = y(1, isfinite (y(1,:)));
+        endif
+      endif
+      if (all (xrng == fix (xrng)))
+        xlim ([min(xrng), max(xrng)]);
+      endif
+      if (all (yrng == fix (yrng)))
+        ylim ([min(yrng), max(yrng)]);
       endif
     endif
 

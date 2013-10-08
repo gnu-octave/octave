@@ -100,8 +100,7 @@ octave_gui_MOC += \
 octave_gui_RC = src/qrc-resource.cc
 
 octave_gui_UI = \
-  src/settings-dialog.ui \
-  src/welcome-wizard.ui
+  src/settings-dialog.ui
 
 octave_gui_UI_H = $(patsubst src/%.ui, src/ui-%.h, $(octave_gui_UI))
 

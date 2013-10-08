@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John W. Eaton
 Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
@@ -25,22 +26,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDialog>
 
-namespace Ui {
-  class welcome_wizard;
-}
-
 class welcome_wizard : public QDialog
 {
   Q_OBJECT
 
-  public:
-  explicit welcome_wizard (QWidget *parent = 0);
-  ~welcome_wizard ();
+public:
 
-public slots:
+  welcome_wizard (QWidget *parent = 0);
 
-private:
-  Ui::welcome_wizard *_ui;
+  ~welcome_wizard (void) { }
 };
 
 #endif // WELCOMEWIZARD_H

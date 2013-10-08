@@ -308,7 +308,6 @@ function ret = edit (varargin)
       endif
     endif
 
-    keyboard;
     ## If the file includes a path, it may be an overloaded function.
     if (! index (file, "@") && index (file, filesep))
       ## No "@" at the beginning of the file, add to the list.

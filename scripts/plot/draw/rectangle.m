@@ -24,7 +24,6 @@
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "FaceColor", @var{fc})
 ## @deftypefnx {Function File} {} rectangle (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} rectangle (@dots{})
-##
 ## Draw a rectangular patch defined by @var{pos} and @var{curv}.
 ## 
 ## The variable @code{@var{pos}(1:2)} defines the lower left-hand corner of
@@ -43,7 +42,7 @@
 ## by
 ##
 ## @example
-## min (pos (1:2)) / max (pos (1:2)) * curv
+## min (pos(1:2)) / max (pos(1:2)) * curv
 ## @end example
 ##
 ## Additional property/value pairs are passed to the underlying patch command. 
@@ -93,14 +92,14 @@ function hg = __rectangle__ (hax, varargin)
       if (strcmpi (arg, "position"))
         pos = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];
-        if (!isvector (pos) || numel (pos) != 4)
+        if (! isvector (pos) || numel (pos) != 4)
           error ("rectangle: position must be a 4 element vector");
         endif
       elseif (strcmpi (arg, "curvature"))
         curv2 = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];
         if (!isnumeric (curv2) || (numel (curv2) != 1 && numel (curv2) != 2))
-          error ("rectangle: curvature must be a 2 element vector or a scalar");
+          error ("rectangle: curvature must be a 2-element vector or a scalar");
         endif
         if (any (curv2 < 0) || any (curv2 > 1))
           error ("rectangle: curvature values must be between 0 and 1");
@@ -120,8 +119,8 @@ function hg = __rectangle__ (hax, varargin)
   endwhile
 
   if (numel (curv2) == 1)
-    [a, ai] = min (pos (3 : 4));
-    [b, bi] = max (pos (3 : 4));
+    [a, ai] = min (pos(3:4));
+    [b, bi] = max (pos(3:4));
     if (ai < bi)
       curv = [curv2, curv2 .* a ./ b];
     else
@@ -131,13 +130,13 @@ function hg = __rectangle__ (hax, varargin)
     curv = curv2;
   endif
 
-  if (all (curv) < 0.01)
+  if (all (curv < 0.01))
     ## Special case : no curvature
     x = [pos(1), pos(1) + pos(3), pos(1) + pos(3), pos(1), pos(1)];
     y = [pos(2), pos(2), pos(2) + pos(4), pos(2) + pos(4), pos(2)];
   else
     p = pi / 2 * [0 : 15] / 15;
-    c = curv .* pos(3 : 4) / 2;
+    c = curv .* pos(3:4) / 2;
     cx = c(1) * sin (p) - c(1);
     cy = c(2) * cos (p) - c(2);
     x = [pos(1) - fliplr(cx), pos(1) + pos(3) + cx, ...
@@ -148,7 +147,7 @@ function hg = __rectangle__ (hax, varargin)
 
   hg = hggroup ();
 
-  h = patch ("xdata", x(:), "ydata", y(:), "facecolor", fc, "edgecolor", ec, ...
+  h = patch ("xdata", x(:), "ydata", y(:), "facecolor", fc, "edgecolor", ec,
              "parent", hg, varargin{:});
 
   addproperty ("curvature", hg, "data", curv2);
@@ -166,11 +165,11 @@ function hg = __rectangle__ (hax, varargin)
   addlistener (hg, "facecolor", @update_props);
 endfunction
 
-function update_data (h, d)
+function update_data (h, ~)
   persistent recursion = false;
 
   ## Don't allow recursion
-  if (!recursion)
+  if (! recursion)
     unwind_protect
       recursion = true;
 
@@ -179,8 +178,8 @@ function update_data (h, d)
       curv2 = get (h, "curvature");
 
       if (numel (curv2) == 1)
-        [a, ai] = min (pos (3 : 4));
-        [b, bi] = max (pos (3 : 4));
+        [a, ai] = min (pos(3:4));
+        [b, bi] = max (pos(3:4));
         if (ai < bi)
           curv = [curv2, curv2 .* a ./ b];
         else
@@ -190,13 +189,13 @@ function update_data (h, d)
         curv = curv2;
       endif
 
-      if (all (curv) < 0.01)
+      if (all (curv < 0.01))
         ## Special case : no curvature
         x = [pos(1), pos(1) + pos(3), pos(1) + pos(3), pos(1), pos(1)];
         y = [pos(2), pos(2), pos(2) + pos(4), pos(2) + pos(4), pos(2)];
       else
         p = pi / 2 * [0 : 15] / 15;
-        c = curv .* pos(3 : 4) / 2;
+        c = curv .* pos(3:4) / 2;
         cx = c(1) * sin (p) - c(1);
         cy = c(2) * cos (p) - c(2);
         x = [pos(1) - fliplr(cx), pos(1) + pos(3) + cx, ...
@@ -212,12 +211,11 @@ function update_data (h, d)
   endif
 endfunction
 
-function update_props (h, d)
+function update_props (h, ~)
   kids = get (h, "children");
-  set (kids, "edgecolor", get (h, "edgecolor"),
-             "linewidth", get (h, "linewidth"),
-             "linestyle", get (h, "linestyle"),
-             "facecolor", get (h, "facecolor"));
+  set (kids, {"edgecolor", "linewidth", "linestyle", "facecolor"},
+     get (h, {"edgecolor", "linewidth", "linestyle", "facecolor"}));
+  
 endfunction
 
 

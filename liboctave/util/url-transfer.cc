@@ -210,6 +210,8 @@ base_url_transfer::mput_directory (const std::string& base,
             + realdir + "'";
         }
     }
+
+  return file_list;
 }
 
 #if defined (HAVE_CURL)

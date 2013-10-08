@@ -401,74 +401,22 @@ public:
 
   void cwd (const std::string& path)
   {
-    struct curl_slist *slist = 0;
-
-    unwind_protect frame;
-    frame.add_fcn (curl_slist_free_all, slist);
-
-    std::string cmd = "cwd " + path;
-    slist = curl_slist_append (slist, cmd.c_str ());
-    SETOPT (CURLOPT_POSTQUOTE, slist);
-
-    perform ();
-    if (! good ())
-      return;
-
-    SETOPT (CURLOPT_POSTQUOTE, 0);
+    ftp_file_or_dir_action (path, "cwd");
   }
 
   void del (const std::string& file)
   {
-    struct curl_slist *slist = 0;
-
-    unwind_protect frame;
-    frame.add_fcn (curl_slist_free_all, slist);
-
-    std::string cmd = "dele " + file;
-    slist = curl_slist_append (slist, cmd.c_str ());
-    SETOPT (CURLOPT_POSTQUOTE, slist);
-
-    perform ();
-    if (! good ())
-      return;
-
-    SETOPT (CURLOPT_POSTQUOTE, 0);
+    ftp_file_or_dir_action (file, "dele");
   }
 
   void rmdir (const std::string& path)
   {
-    struct curl_slist *slist = 0;
-
-    unwind_protect frame;
-    frame.add_fcn (curl_slist_free_all, slist);
-
-    std::string cmd = "rmd " + path;
-    slist = curl_slist_append (slist, cmd.c_str ());
-    SETOPT (CURLOPT_POSTQUOTE, slist);
-
-    perform ();
-    if (! good ())
-      return;
-
-    SETOPT (CURLOPT_POSTQUOTE, 0);
+    ftp_file_or_dir_action (path, "rmd");
   }
 
   void mkdir (const std::string& path)
   {
-    struct curl_slist *slist = 0;
-
-    unwind_protect frame;
-    frame.add_fcn (curl_slist_free_all, slist);
-
-    std::string cmd = "mkd " + path;
-    slist = curl_slist_append (slist, cmd.c_str ());
-    SETOPT (CURLOPT_POSTQUOTE, slist);
-
-    perform ();
-    if (! good ())
-      return;
-
-    SETOPT (CURLOPT_POSTQUOTE, 0);
+    ftp_file_or_dir_action (path, "mkd");
   }
 
   void rename (const std::string& oldname, const std::string& newname)
@@ -749,6 +697,29 @@ private:
     query.flush ();
 
     return query.str ();
+  }
+
+  void ftp_file_or_dir_action (const std::string& file_or_dir,
+                               const std::string& action)
+  {
+    struct curl_slist *slist = 0;
+
+    unwind_protect frame;
+
+    frame.add_fcn (curl_slist_free_all, slist);
+
+    std::string cmd = action + " " + file_or_dir;
+
+    slist = curl_slist_append (slist, cmd.c_str ());
+
+    SETOPT (CURLOPT_POSTQUOTE, slist);
+
+    perform ();
+
+    if (! good ())
+      return;
+
+    SETOPT (CURLOPT_POSTQUOTE, 0);
   }
 };
 

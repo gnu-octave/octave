@@ -85,6 +85,7 @@ octave_gui_MOC += \
   src/moc-main-window.cc \
   src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
+  src/moc-news-dock-widget.cc \
   src/moc-terminal-dock-widget.cc \
   src/moc-color-picker.cc \
   src/moc-welcome-wizard.cc \
@@ -125,6 +126,7 @@ noinst_HEADERS += \
   src/qtinfo/webinfo.h \
   src/resource-manager.h \
   src/settings-dialog.h \
+  src/news-dock-widget.h \
   src/terminal-dock-widget.h \
   src/color-picker.h \
   src/welcome-wizard.h \
@@ -151,6 +153,7 @@ src_libgui_src_la_SOURCES = \
   src/qtinfo/webinfo.cc \
   src/resource-manager.cc \
   src/settings-dialog.cc \
+  src/news-dock-widget.cc \
   src/terminal-dock-widget.cc \
   src/color-picker.cc \
   src/welcome-wizard.cc \

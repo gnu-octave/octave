@@ -2623,16 +2623,16 @@ AC_ARG_ENABLE([gui],
 
 if test $build_gui = yes; then
   ## Check for Qt libraries
-  PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
+  PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork, QtWebKit],
     [],
     [AC_MSG_WARN([Qt libraries not found -- disabling GUI])
      build_gui=no])
 
   if test $build_gui = yes; then
     ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
-    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
-    QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
+    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork QtWebKit`"
+    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork QtWebKit`"
+    QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork QtWebKit`"
 
     ## Check for Qt4
     if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then

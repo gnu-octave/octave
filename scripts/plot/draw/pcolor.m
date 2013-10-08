@@ -85,6 +85,14 @@ function h = pcolor (varargin)
     set (htmp, "facecolor", "flat");
     if (! ishold ())
       set (hax, "view", [0, 90], "box", "on");
+      ## FIXME: Maybe this should be in the general axis limit setting routine?
+      ##        When values are integers, want to use tight limits.
+      if (all (x(:) == fix (x(:)))) 
+        xlim ([min(x(:)), max(x(:))]);
+      endif
+      if (all (y(:) == fix (y(:)))) 
+        ylim ([min(y(:)), max(y(:))]);
+      endif
     endif
 
   unwind_protect_cleanup

@@ -47,7 +47,7 @@ public:
   friend class url_transfer;
 
   base_url_transfer (void)
-    : count (1), host_or_url (), userpwd (), valid (false), ftp (false),
+    : count (1), host_or_url (), valid (false), ftp (false),
       ascii_mode (false), ok (true), errmsg (),
       curr_istream (&std::cin), curr_ostream (&std::cout)
   { }
@@ -56,12 +56,12 @@ public:
                      const std::string& /* user_arg */,
                      const std::string& /* passwd */,
                      std::ostream& os)
-    : count (1), host_or_url (host), userpwd (), valid (false), ftp (true),
+    : count (1), host_or_url (host), valid (false), ftp (true),
       ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
       curr_ostream (&os) { }
 
   base_url_transfer (const std::string& url, std::ostream& os)
-    : count (1), host_or_url (url), userpwd (), valid (false), ftp (false),
+    : count (1), host_or_url (url), valid (false), ftp (false),
       ascii_mode (false), ok (true), errmsg (),
       curr_istream (&std::cin), curr_ostream (&os) { }
 
@@ -141,7 +141,6 @@ protected:
 
   // Host for ftp transfers or full URL for http requests.
   std::string host_or_url;
-  std::string userpwd;
   bool valid;
   bool ftp;
   bool ascii_mode;

@@ -658,7 +658,7 @@ private:
     SETOPT (CURLOPT_NOBODY, 1);
 
     // Set the username and password
-    userpwd = user;
+    std::string userpwd = user;
     if (! passwd.empty ())
       userpwd += ":" + passwd;
     if (! userpwd.empty ())

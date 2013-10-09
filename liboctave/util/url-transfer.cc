@@ -276,7 +276,8 @@ class curl_transfer : public base_url_transfer
 public:
 
   curl_transfer (void)
-    : base_url_transfer (), curl (curl_easy_init ()), errnum (), userpwd ()
+    : base_url_transfer (), curl (curl_easy_init ()), errnum (), url (),
+      userpwd ()
   {
     if (curl)
       valid = true;
@@ -287,7 +288,7 @@ public:
   curl_transfer (const std::string& host, const std::string& user_arg,
                  const std::string& passwd, std::ostream& os)
     : base_url_transfer (host, user_arg, passwd, os),
-      curl (curl_easy_init ()), errnum (), userpwd ()
+      curl (curl_easy_init ()), errnum (), url (), userpwd ()
   {
     if (curl)
       valid = true;
@@ -299,7 +300,7 @@ public:
 
     init (user_arg, passwd, std::cin, os);
 
-    std::string url ("ftp://" + host);
+    url = "ftp://" + host;
     SETOPT (CURLOPT_URL, url.c_str ());
 
     // Set up the link, with no transfer.
@@ -308,7 +309,7 @@ public:
 
   curl_transfer (const std::string& url, std::ostream& os)
     : base_url_transfer (url, os), curl (curl_easy_init ()), errnum (),
-      userpwd ()
+      url (), userpwd ()
   {
     if (curl)
       valid = true;
@@ -425,7 +426,7 @@ public:
 
   void put (const std::string& file, std::istream& is)
   {
-    std::string url = "ftp://" + host_or_url + "/" + file;
+    url = "ftp://" + host_or_url + "/" + file;
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_UPLOAD, 1);
     SETOPT (CURLOPT_NOBODY, 0);
@@ -444,7 +445,7 @@ public:
 
   void get (const std::string& file, std::ostream& os)
   {
-    std::string url = "ftp://" + host_or_url + "/" + file;
+    url = "ftp://" + host_or_url + "/" + file;
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_NOBODY, 0);
     std::ostream& old_os = set_ostream (os);
@@ -461,7 +462,7 @@ public:
 
   void dir (void)
   {
-    std::string url = "ftp://" + host_or_url + "/";
+    url = "ftp://" + host_or_url + "/";
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_NOBODY, 0);
 
@@ -479,7 +480,7 @@ public:
     string_vector retval;
 
     std::ostringstream buf;
-    std::string url = "ftp://" + host_or_url + "/";
+    url = "ftp://" + host_or_url + "/";
     SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
     SETOPTR (CURLOPT_URL, url.c_str ());
     SETOPTR (CURLOPT_DIRLISTONLY, 1);
@@ -527,7 +528,7 @@ public:
   {
     std::string path = pwd ();
 
-    std::string url = "ftp://" + host_or_url + "/" + path + "/" + filename;
+    url = "ftp://" + host_or_url + "/" + path + "/" + filename;
     SETOPT (CURLOPT_URL, url.c_str ());
     SETOPT (CURLOPT_FILETIME, 1);
     SETOPT (CURLOPT_HEADERFUNCTION, throw_away);
@@ -605,7 +606,7 @@ public:
 
   void http_get (const Array<std::string>& param)
   {
-    std::string url = host_or_url;
+    url = host_or_url;
 
     std::string query_string = form_query_string (param);
 
@@ -662,6 +663,7 @@ private:
   // the handle is released. The curl_handle::curl_handle_rep class
   // contains the pointer to the CURL handle and so is the best
   // candidate for storing the strings as well. (bug #36717)
+  std::string url;
   std::string userpwd;
 
   // No copying!

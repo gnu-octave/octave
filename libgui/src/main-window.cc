@@ -268,6 +268,8 @@ main_window::display_url_in_window (const QUrl& url)
   vlayout->addWidget (browser);
 
   w->setLayout (vlayout);
+  w->setWindowTitle (tr ("Octave Release Notes"));
+  w->setWindowIcon (QIcon (_release_notes_icon));
   w->show ();
   w->raise ();
   w->activateWindow ();
@@ -368,6 +370,11 @@ main_window::notice_settings (const QSettings *settings)
           widget->setWindowIcon (QIcon (icon));
         }
     }
+  if (widget_icon_data[icon_set_found].name != "NONE")
+     _release_notes_icon = widget_icon_data[icon_set_found].path
+                           + "ReleaseWidget.png";
+  else
+     _release_notes_icon = ":/actions/icons/logo.png";
 
   int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));

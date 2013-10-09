@@ -291,6 +291,8 @@ private:
     return list;
   }
 
+  QString _release_notes_icon;
+
   QToolBar *_main_tool_bar;
 
   QMenu *_debug_menu;

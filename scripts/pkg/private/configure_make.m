@@ -28,9 +28,10 @@ function configure_make (desc, packdir, verbose)
     src = fullfile (packdir, "src");
     octave_bindir = octave_config_info ("bindir");
     ver = version ();
-    mkoctfile_program = fullfile (octave_bindir, sprintf ("mkoctfile-%s", ver));
-    octave_config_program = fullfile (octave_bindir, sprintf ("octave-config-%s", ver));
-    octave_binary = fullfile (octave_bindir, sprintf ("octave-%s", ver));
+    ext = octave_config_info ("EXEEXT");
+    mkoctfile_program = fullfile (octave_bindir, sprintf ("mkoctfile-%s%s", ver, ext));
+    octave_config_program = fullfile (octave_bindir, sprintf ("octave-config-%s%s", ver, ext));
+    octave_binary = fullfile (octave_bindir, sprintf ("octave-%s%s", ver, ext));
     cenv = {"MKOCTFILE"; mkoctfile_program;
             "OCTAVE_CONFIG"; octave_config_program;
             "OCTAVE"; octave_binary;

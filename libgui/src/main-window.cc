@@ -680,14 +680,8 @@ main_window::write_settings (void)
 void
 main_window::connect_visibility_changed (void)
 {
-  command_window->connect_visibility_changed ();
-  history_window->connect_visibility_changed ();
-  file_browser_window->connect_visibility_changed ();
-  doc_browser_window->connect_visibility_changed ();
-#ifdef HAVE_QSCINTILLA
-  editor_window->connect_visibility_changed ();
-#endif
-  workspace_window->connect_visibility_changed ();
+  foreach (octave_dock_widget *widget, dock_widget_list ())
+    widget->connect_visibility_changed ();
 }
 
 void
@@ -1361,6 +1355,9 @@ main_window::construct_window_menu (QMenuBar *p)
 
   connect (show_news_action, SIGNAL (toggled (bool)),
            news_window, SLOT (setVisible (bool)));
+
+  connect (news_window, SIGNAL (active_changed (bool)),
+           show_news_action, SLOT (setChecked (bool)));
 
   connect (show_documentation_action, SIGNAL (toggled (bool)),
            doc_browser_window, SLOT (setVisible (bool)));

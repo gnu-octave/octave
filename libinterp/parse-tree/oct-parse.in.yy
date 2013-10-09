@@ -1126,7 +1126,17 @@ return_list1    : identifier
 
 file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
-                    if (! lexer.reading_fcn_file)
+                    if (lexer.reading_fcn_file)
+                      {
+                        // Delete the dummy statement_list we created
+                        // after parsing the function.  Any function
+                        // definitions found in the file have already
+                        // been stored in the symbol table or in
+                        // octave_base_parser::primary_fcn_ptr.
+
+                        delete $3;
+                      }
+                    else
                       {
                         tree_statement *end_of_script
                           = parser.make_end ("endscript", true,

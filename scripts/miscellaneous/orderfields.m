@@ -19,19 +19,18 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1})
 ## @deftypefnx {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1}, @var{s2})
-## Return a copy of @var{s1} with fields arranged alphabetically or
-## as specified by @var{s2}.
+## Return a copy of @var{s1} with fields arranged alphabetically or as
+## specified by @var{s2}.
 ##
 ## Given one struct, arrange field names in @var{s1} alphabetically.
 ##
-## If the second argument is a struct, arrange field names in @var{s1}
-## as they appear in @var{s2}.  The second argument may also specify the
-## order in a permutation vector or a cell array of strings containing
-## the fieldnames of @var{s1} in the desired order.
+## If the second argument is a struct, arrange field names in @var{s1} as they
+## appear in @var{s2}.  The second argument may also specify the order in a
+## permutation vector or a cell array of strings containing the fieldnames of
+## @var{s1} in the desired order.
 ##
 ## The optional second output argument @var{p} is assigned the permutation
-## vector
-## which converts the original name order into the new name order.
+## vector which converts the original name order into the new name order.
 ##
 ## Examples:
 ##
@@ -95,7 +94,7 @@ function [t, p] = orderfields (s1, s2)
 
   if (nargin == 1 || nargin == 2)
     if (! isstruct (s1))
-      error ("orderfields: expecting argument to be a struct");
+      error ("orderfields: S1 must be a struct");
     endif
   else
     print_usage ();
@@ -111,7 +110,7 @@ function [t, p] = orderfields (s1, s2)
       ## Two structures: return the fields in the order of s2.
       names = fieldnames (s2);
       if (! isequal (sort (fieldnames (s1)), sort (names)))
-        error ("orderfields: structures do not have same fields");
+        error ("orderfields: structures do not have the same fields");
       endif
     elseif (iscellstr (s2))
       ## A structure and a list of fields: order by the list of fields.
@@ -130,8 +129,14 @@ function [t, p] = orderfields (s1, s2)
       if (! isequal (t1, t2))
         error ("orderfields: invalid permutation vector");
       endif
-      names = names (s2);
+      names = names(s2);
     endif
+  endif
+
+  ## Corner case of empty struct
+  if (isempty (names))
+    t = struct ();
+    p = [];
   endif
 
   ## Find permutation vector which converts the original name order
@@ -139,8 +144,8 @@ function [t, p] = orderfields (s1, s2)
   ## in some cases, but performance isn't critical.
 
   if (nargout == 2)
-    [oldel, oldidx] = sort (fieldnames (s1));
-    [newel, newidx] = sort (names);
+    [~, oldidx] = sort (fieldnames (s1));
+    [~, newidx] = sort (names);
     p = oldidx(newidx);
   endif
 
@@ -194,4 +199,7 @@ endfunction
 %! aa(2) = orderfields (bb, aa);
 %! assert (aa(2).x, 8);
 %! assert (aa(2).y{1}, 6);
+
+## Corner case of empty struct, bug #40224
+%!assert (orderfields (struct ()), struct ())
 

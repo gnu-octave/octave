@@ -47,27 +47,24 @@ welcome_wizard::welcome_wizard (QWidget *p)
   QVBoxLayout *page_layout = new QVBoxLayout (this);
   setLayout (page_layout);
 
-  QHBoxLayout *message_and_logo = new QHBoxLayout (this);
+  QHBoxLayout *message_and_logo = new QHBoxLayout;
 
-  QVBoxLayout *message = new QVBoxLayout (this);
+  QVBoxLayout *message = new QVBoxLayout;
 
-  QLabel *title = new QLabel (tr ("Welcome to Octave!"), this);
+  QLabel *title = new QLabel (tr ("Welcome to Octave!"));
   QFont ft;
   ft.setPointSize (20);
   title->setFont (ft);
 
-  QLabel *msg_1 = new QLabel (tr ("You seem to be using the Octave graphical interface for the first  time on this computer.  Click 'Finish' to write a configuration file  and launch Octave GUI."),
-                              this);
+  QLabel *msg_1 = new QLabel (tr ("You seem to be using the Octave graphical interface for the first  time on this computer.  Click 'Finish' to write a configuration file  and launch Octave GUI."));
   msg_1->setWordWrap (true);
 
-  QLabel *msg_2 = new QLabel (tr ("The configuration file is stored in __%1__. If that file exists, you will not see this dialog when Octave starts again."),
-                              this);
+  QString msg_2_text = QString (tr ("The configuration file is stored in %1. "
+                                    "If that file exists, you will not see this "
+                                    "dialog when Octave starts again.").
+                                    arg (resource_manager::get_settings_file ()));
+  QLabel *msg_2 = new QLabel (msg_2_text);
   msg_2->setWordWrap (true);
-
-  QString msg_2_text = msg_2->text ();
-  msg_2_text.replace (QString ("__%1__"),
-                      resource_manager::get_settings_file ());
-  msg_2->setText (msg_2_text);
 
   message->addWidget (title);
   message->addWidget (msg_1);
@@ -76,7 +73,7 @@ welcome_wizard::welcome_wizard (QWidget *p)
   QSpacerItem *logo_filler = new QSpacerItem (40, 20, QSizePolicy::Expanding,
                                               QSizePolicy::Minimum);
 
-  QLabel *logo = new QLabel (this);
+  QLabel *logo = new QLabel;
   QPixmap logo_pixmap (":/actions/icons/logo.png");
   logo->setPixmap (logo_pixmap.scaledToHeight (150));
 
@@ -104,12 +101,12 @@ welcome_wizard::welcome_wizard (QWidget *p)
   QSpacerItem *hfill = new QSpacerItem (40, 20, QSizePolicy::Expanding,
                                         QSizePolicy::Minimum);
 
-  QPushButton *finish_button = new QPushButton (this);
+  QPushButton *finish_button = new QPushButton;
   finish_button->setText (tr ("Finish"));
 
   QSpacerItem *vspace = new QSpacerItem (20, 40, QSizePolicy::Minimum);
 
-  QHBoxLayout *button_bar = new QHBoxLayout (this);
+  QHBoxLayout *button_bar = new QHBoxLayout;
 
   button_bar->addItem (hfill);
   button_bar->addWidget (finish_button);

@@ -238,7 +238,7 @@ make_statement (T *arg)
 %type <tree_matrix_type> matrix_rows
 %type <tree_cell_type> cell_rows
 %type <tree_expression_type> matrix cell
-%type <tree_expression_type> primary_expr oper_expr
+%type <tree_expression_type> primary_expr oper_expr power_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_identifier_type> superclass_identifier meta_identifier
@@ -598,9 +598,9 @@ oper_expr       : primary_expr
                   { $$ = parser.make_prefix_op ('+', $2, $1); }
                 | '-' oper_expr %prec UNARY
                   { $$ = parser.make_prefix_op ('-', $2, $1); }
-                | oper_expr POW oper_expr
+                | oper_expr POW power_expr
                   { $$ = parser.make_binary_op (POW, $1, $2, $3); }
-                | oper_expr EPOW oper_expr
+                | oper_expr EPOW power_expr
                   { $$ = parser.make_binary_op (EPOW, $1, $2, $3); }
                 | oper_expr '+' oper_expr
                   { $$ = parser.make_binary_op ('+', $1, $2, $3); }
@@ -622,6 +622,52 @@ oper_expr       : primary_expr
                   { $$ = parser.make_binary_op (LEFTDIV, $1, $2, $3); }
                 | oper_expr ELEFTDIV oper_expr
                   { $$ = parser.make_binary_op (ELEFTDIV, $1, $2, $3); }
+                ;
+
+power_expr      : primary_expr
+                  { $$ = $1; }
+                | power_expr PLUS_PLUS
+                  { $$ = parser.make_postfix_op (PLUS_PLUS, $1, $2); }
+                | power_expr MINUS_MINUS
+                  { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
+                | power_expr '(' ')'
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
+                | power_expr '(' arg_list ')'
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '(');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
+                | power_expr '{' '}'
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '{');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
+                | power_expr '{' arg_list '}'
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '{');
+                    if (! $$)
+                      ABORT_PARSE;
+                  }
+                | power_expr indirect_ref_op STRUCT_ELT
+                  { $$ = parser.make_indirect_ref ($1, $3->text ()); }
+                | power_expr indirect_ref_op '(' expression ')'
+                  { $$ = parser.make_indirect_ref ($1, $4); }
+                | PLUS_PLUS power_expr %prec POW
+                  { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
+                | MINUS_MINUS power_expr %prec POW
+                  { $$ = parser.make_prefix_op (MINUS_MINUS, $2, $1); }
+                | EXPR_NOT power_expr %prec POW
+                  { $$ = parser.make_prefix_op (EXPR_NOT, $2, $1); }
+                | '+' power_expr %prec POW
+                  { $$ = parser.make_prefix_op ('+', $2, $1); }
+                | '-' power_expr %prec POW
+                  { $$ = parser.make_prefix_op ('-', $2, $1); }
                 ;
 
 colon_expr      : colon_expr1

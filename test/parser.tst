@@ -208,8 +208,6 @@
 ## Level 12 (postfix increment and decrement)
 ## No tests possible since a++-- is not valid
 ## Level 11 (transpose and exponentiation)
-## Note: Exponentiation should be left-to-right, but Octave does right-to-left.
-##       See bug #33304.
 %!test
 %! assert (2^3**2, 64);
 %! assert ([2 3].^2.', [4;9]);
@@ -219,9 +217,6 @@
 %! assert (2^-4^3, (1/16)^3);
 %! assert (2^+4^3, 16^3);
 %! assert (2^~0^2, 4);
-
-## Note: Exponentiation should be left-to-right, but Octave does right-to-left.
-##       See bug #33304.
 
 ## Level 10 (unary plus/minus, prefix increment/decrement, not)
 %!test
@@ -287,3 +282,4 @@
 %!test
 %! xyz(1) = 1; xyz /= 1;
 %! assert (xyz, 1);
+

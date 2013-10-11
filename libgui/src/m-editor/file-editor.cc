@@ -724,6 +724,7 @@ file_editor::handle_editor_state_changed (bool copy_available,
     {
       _copy_action->setEnabled (copy_available);
       _cut_action->setEnabled (copy_available);
+      _context_run_action->setEnabled (copy_available);
 
       if (!file_name.isEmpty ())
         {
@@ -785,9 +786,11 @@ file_editor::construct (void)
 
   _copy_action = new QAction (QIcon (":/actions/icons/editcopy.png"),
                               tr ("&Copy"), _tool_bar);
+  _copy_action->setEnabled (false);
 
   _cut_action = new QAction (QIcon (":/actions/icons/editcut.png"),
                               tr ("Cu&t"), _tool_bar);
+  _cut_action->setEnabled (false);
 
   _paste_action
     = new QAction (QIcon (":/actions/icons/editpaste.png"),
@@ -817,7 +820,6 @@ file_editor::construct (void)
 
   _comment_selection_action
     = new QAction (tr ("&Comment"), _tool_bar);
-
   _uncomment_selection_action
     = new QAction (tr ("&Uncomment"), _tool_bar);
 
@@ -954,6 +956,7 @@ file_editor::construct (void)
   _context_run_action =
     _run_menu->addAction (QIcon (), tr ("Run &Selection"),
                            this, SLOT (request_context_run (bool)));
+  _context_run_action->setEnabled (false);
   _menu_bar->addMenu (_run_menu);
 
   QMenu *_help_menu = new QMenu (tr ("&Help"), _menu_bar);
@@ -1315,8 +1318,6 @@ file_editor::check_actions ()
   _comment_selection_action->setEnabled (have_tabs);
   _uncomment_selection_action->setEnabled (have_tabs);
 
-  _copy_action->setEnabled (have_tabs);
-  _cut_action->setEnabled (have_tabs);
   _paste_action->setEnabled (have_tabs);
   _context_help_action->setEnabled (have_tabs);
   _context_doc_action->setEnabled (have_tabs);
@@ -1327,10 +1328,10 @@ file_editor::check_actions ()
   _next_bookmark_action->setEnabled (have_tabs);
   _previous_bookmark_action->setEnabled (have_tabs);
   _toggle_bookmark_action->setEnabled (have_tabs);
+  _remove_bookmark_action->setEnabled (have_tabs);
 
   _print_action->setEnabled (have_tabs);
   _run_action->setEnabled (have_tabs);
-  _context_run_action->setEnabled (have_tabs);
 
   _context_edit_action->setEnabled (have_tabs);
   _save_action->setEnabled (have_tabs);

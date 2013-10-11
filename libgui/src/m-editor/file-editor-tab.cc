@@ -940,6 +940,7 @@ file_editor_tab::load_file (const QString& fileName)
   _edit_area->setText (in.readAll ());
   QApplication::restoreOverrideCursor ();
 
+  _copy_available = false;     // no selection yet available
   set_file_name (fileName);
   update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet

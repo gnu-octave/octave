@@ -2738,20 +2738,27 @@ base_properties::set_parent (const octave_value& val)
 
   if (! error_state)
     {
-      new_parent = gh_manager::lookup (tmp);
-
-      if (new_parent.ok ())
-        {
-          graphics_object parent_obj = gh_manager::get_object (get_parent ());
-
-          parent_obj.remove_child (__myhandle__);
-
-          parent = new_parent.as_octave_value ();
-
-          ::adopt (parent.handle_value (), __myhandle__);
-        }
+      if (tmp == __myhandle__)
+        error ("set: can not set object parent to be object itself");
       else
-        error ("set: invalid graphics handle (= %g) for parent", tmp);
+        {
+          new_parent = gh_manager::lookup (tmp);
+
+          if (new_parent.ok ())
+            {
+              graphics_object parent_obj;
+
+              parent_obj = gh_manager::get_object (get_parent ());
+
+              parent_obj.remove_child (__myhandle__);
+
+              parent = new_parent.as_octave_value ();
+
+              ::adopt (parent.handle_value (), __myhandle__);
+            }
+          else
+            error ("set: invalid graphics handle (= %g) for parent", tmp);
+        }
     }
   else
     error ("set: expecting parent to be a graphics handle");

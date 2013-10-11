@@ -80,6 +80,7 @@ signals:
   void fetab_save_file_as (const QWidget* ID);
   void fetab_print_file (const QWidget* ID);
   void fetab_run_file (const QWidget* ID);
+  void fetab_context_run (const QWidget* ID);
   void fetab_toggle_bookmark (const QWidget* ID);
   void fetab_next_bookmark (const QWidget* ID);
   void fetab_previous_bookmark (const QWidget* ID);
@@ -122,6 +123,7 @@ public slots:
   void request_save_file (void);
   void request_save_file_as (void);
   void request_run_file (void);
+  void request_context_run (bool);
   void request_toggle_bookmark (void);
   void request_next_bookmark (void);
   void request_previous_bookmark (void);
@@ -208,6 +210,7 @@ private:
 
   QAction *_print_action;
   QAction *_run_action;
+  QAction *_context_run_action;
 
   QAction *_context_edit_action;
   QAction *_save_action;

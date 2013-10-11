@@ -76,8 +76,16 @@ octave_qscintilla::context_help_doc (bool documentation)
 void
 octave_qscintilla::context_edit ()
 {
-  if (get_actual_word ())
+  if (hasSelectedText ())
     contextmenu_edit (true);
+}
+
+// call edit the function related to the current word
+void
+octave_qscintilla::context_run ()
+{
+  if (hasSelectedText ())
+    contextmenu_run (true);
 }
 
 #ifdef HAVE_QSCI_VERSION_2_6_0
@@ -115,12 +123,18 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
     {
       _word_at_cursor = wordAtPoint (local_pos);
       if (!_word_at_cursor.isEmpty ())
-        context_menu->addAction (tr ("Help on") + " " + _word_at_cursor,
-                                this, SLOT (contextmenu_help (bool)));
-        context_menu->addAction (tr ("Documentation on") + " " + _word_at_cursor,
-                                this, SLOT (contextmenu_doc (bool)));
-        context_menu->addAction (tr ("Edit") + " " + _word_at_cursor,
-                                this, SLOT (contextmenu_edit (bool)));
+        {
+          context_menu->addAction (tr ("Help on") + " " + _word_at_cursor,
+                                  this, SLOT (contextmenu_help (bool)));
+          context_menu->addAction (tr ("Documentation on") + " " + _word_at_cursor,
+                                  this, SLOT (contextmenu_doc (bool)));
+          context_menu->addAction (tr ("Edit") + " " + _word_at_cursor,
+                                  this, SLOT (contextmenu_edit (bool)));
+        }
+      context_menu->addSeparator ();   // separator before custom entries
+      if (hasSelectedText ())
+        context_menu->addAction (tr ("&Run Selection"),
+                                 this, SLOT (contextmenu_run (bool)));
     }
 
   // finaly show the menu
@@ -157,6 +171,13 @@ void
 octave_qscintilla::contextmenu_edit (bool)
 {
   emit execute_command_in_terminal_signal (QString("edit ") + _word_at_cursor);
+}
+
+void
+octave_qscintilla::contextmenu_run (bool)
+{
+  QString command = selectedText ();
+  emit execute_command_in_terminal_signal (command);
 }
 
 #endif

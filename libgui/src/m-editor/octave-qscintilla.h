@@ -43,6 +43,7 @@ public:
 #endif
   void context_help_doc (bool);
   void context_edit ();
+  void context_run ();
   void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
   bool get_actual_word ();
 
@@ -56,6 +57,7 @@ private slots:
   void contextmenu_doc (bool);
   void contextmenu_help_doc (bool);
   void contextmenu_edit (bool);
+  void contextmenu_run (bool);
 
 private:
 

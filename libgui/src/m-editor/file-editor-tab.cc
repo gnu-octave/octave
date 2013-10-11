@@ -484,6 +484,15 @@ file_editor_tab::run_file (const QWidget *ID)
 }
 
 void
+file_editor_tab::context_run (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->context_run ();
+}
+
+void
 file_editor_tab::toggle_bookmark (const QWidget *ID)
 {
   if (ID != this)

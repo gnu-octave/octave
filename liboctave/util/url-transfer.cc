@@ -307,8 +307,8 @@ public:
     perform ();
   }
 
-  curl_transfer (const std::string& url, std::ostream& os)
-    : base_url_transfer (url, os), curl (curl_easy_init ()), errnum (),
+  curl_transfer (const std::string& url_str, std::ostream& os)
+    : base_url_transfer (url_str, os), curl (curl_easy_init ()), errnum (),
       url (), userpwd ()
   {
     if (curl)

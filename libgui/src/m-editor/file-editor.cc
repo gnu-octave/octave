@@ -1250,7 +1250,7 @@ file_editor::set_shortcuts (bool set)
   if (set)
     {
       _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_R);
-      _uncomment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_T);
+      _uncomment_selection_action->setShortcut (Qt::SHIFT + Qt::ControlModifier + Qt::Key_R);
 
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);

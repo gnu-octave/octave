@@ -1199,14 +1199,10 @@ array_property::validate (const octave_value& v)
 {
   bool xok = false;
 
-  // FIXME -- should we always support []?
-  if (v.is_empty () && v.is_numeric_type ())
-    return true;
-
   // check value type
   if (type_constraints.size () > 0)
     {
-      if(type_constraints.find (v.class_name()) != type_constraints.end())
+      if (type_constraints.find (v.class_name ()) != type_constraints.end ())
         xok = true;
 
       // check if complex is allowed (it's also of class "double", so
@@ -1220,29 +1216,36 @@ array_property::validate (const octave_value& v)
 
   if (xok)
     {
+      if (size_constraints.size () == 0)
+        return true;
+
       dim_vector vdims = v.dims ();
       int vlen = vdims.length ();
 
       xok = false;
 
-      // check value size
-      if (size_constraints.size () > 0)
-        for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
-             ! xok && it != size_constraints.end (); ++it)
-          {
-            dim_vector itdims = (*it);
+      // check dimensional size constraints until a match is found
+      for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
+           ! xok && it != size_constraints.end (); ++it)
+        {
+          dim_vector itdims = (*it);
 
-            if (itdims.length () == vlen)
-              {
-                xok = true;
+          if (itdims.length () == vlen)
+            {
+              xok = true;
 
-                for (int i = 0; xok && i < vlen; i++)
-                  if (itdims(i) >= 0 && itdims(i) != vdims(i))
-                    xok = false;
-              }
-          }
-      else
-        return true;
+              for (int i = 0; xok && i < vlen; i++)
+                {
+                  if (itdims(i) > 0)
+                    {
+                      if (itdims(i) != vdims(i))
+                        xok = false;
+                    }
+                  else if (v.is_empty ())
+                    break;
+                }
+            }
+        }
     }
 
   return xok;
@@ -3940,32 +3943,33 @@ void
 axes::properties::init (void)
 {
   position.add_constraint (dim_vector (1, 4));
-  position.add_constraint (dim_vector (0, 0));
   outerposition.add_constraint (dim_vector (1, 4));
+  tightinset.add_constraint (dim_vector (1, 4));
+  looseinset.add_constraint (dim_vector (1, 4));
   colororder.add_constraint (dim_vector (-1, 3));
   dataaspectratio.add_constraint (dim_vector (1, 3));
   plotboxaspectratio.add_constraint (dim_vector (1, 3));
+  alim.add_constraint (2);
+  clim.add_constraint (2);
   xlim.add_constraint (2);
   ylim.add_constraint (2);
   zlim.add_constraint (2);
-  clim.add_constraint (2);
-  alim.add_constraint (2);
   xtick.add_constraint (dim_vector (1, -1));
   ytick.add_constraint (dim_vector (1, -1));
   ztick.add_constraint (dim_vector (1, -1));
+  ticklength.add_constraint (dim_vector (1, 2));
   Matrix vw (1, 2, 0);
   vw(1) = 90;
   view = vw;
   view.add_constraint (dim_vector (1, 2));
   cameraposition.add_constraint (dim_vector (1, 3));
+  cameratarget.add_constraint (dim_vector (1, 3));
   Matrix upv (1, 3, 0.0);
   upv(2) = 1.0;
   cameraupvector = upv;
   cameraupvector.add_constraint (dim_vector (1, 3));
   currentpoint.add_constraint (dim_vector (2, 3));
-  ticklength.add_constraint (dim_vector (1, 2));
-  tightinset.add_constraint (dim_vector (1, 4));
-  looseinset.add_constraint (dim_vector (1, 4));
+  // No constraints for hidden transform properties
   update_font ();
 
   x_zlim.resize (1, 2);

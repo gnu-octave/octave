@@ -1426,6 +1426,7 @@ public:
   {
     add_constraint (dim_vector (-1, 1));
     add_constraint (dim_vector (1, -1));
+    add_constraint (dim_vector (0, 0));
   }
 
   row_vector_property (const row_vector_property& p)
@@ -1433,6 +1434,7 @@ public:
   {
     add_constraint (dim_vector (-1, 1));
     add_constraint (dim_vector (1, -1));
+    add_constraint (dim_vector (0, 0));
   }
 
   void add_constraint (const std::string& type)
@@ -3363,13 +3365,14 @@ public:
   protected:
     void init (void)
       {
-        colormap.add_constraint (dim_vector (-1, 3));
         alphamap.add_constraint (dim_vector (-1, 1));
+        colormap.add_constraint (dim_vector (-1, 3));
+        outerposition.add_constraint (dim_vector (1, 4));
         paperposition.add_constraint (dim_vector (1, 4));
+        papersize.add_constraint (dim_vector (1, 2));
         pointershapecdata.add_constraint (dim_vector (16, 16));
         pointershapehotspot.add_constraint (dim_vector (1, 2));
         position.add_constraint (dim_vector (1, 4));
-        outerposition.add_constraint (dim_vector (1, 4));
       }
 
   private:
@@ -4454,6 +4457,9 @@ public:
         cdata.add_constraint ("real");
         cdata.add_constraint (dim_vector (-1, -1));
         cdata.add_constraint (dim_vector (-1, -1, 3));
+        alphadata.add_constraint (dim_vector (-1, -1));
+        alphadata.add_constraint ("double");
+        alphadata.add_constraint ("uint8");
       }
 
   private:
@@ -4622,6 +4628,7 @@ public:
         xdata.add_constraint (dim_vector (-1, -1));
         ydata.add_constraint (dim_vector (-1, -1));
         zdata.add_constraint (dim_vector (-1, -1));
+        faces.add_constraint (dim_vector (-1, -1));
         vertices.add_constraint (dim_vector (-1, 2));
         vertices.add_constraint (dim_vector (-1, 3));
         cdata.add_constraint (dim_vector (-1, -1));
@@ -4629,6 +4636,7 @@ public:
         facevertexcdata.add_constraint (dim_vector (-1, 1));
         facevertexcdata.add_constraint (dim_vector (-1, 3));
         facevertexalphadata.add_constraint (dim_vector (-1, 1));
+        vertexnormals.add_constraint (dim_vector (-1, -1));
       }
 
   private:
@@ -4747,16 +4755,14 @@ public:
         xdata.add_constraint (dim_vector (-1, -1));
         ydata.add_constraint (dim_vector (-1, -1));
         zdata.add_constraint (dim_vector (-1, -1));
-        alphadata.add_constraint ("single");
+        cdata.add_constraint ("double");
+        cdata.add_constraint ("single");
+        cdata.add_constraint (dim_vector (-1, -1));
+        cdata.add_constraint (dim_vector (-1, -1, 3));
         alphadata.add_constraint ("double");
         alphadata.add_constraint ("uint8");
         alphadata.add_constraint (dim_vector (-1, -1));
         vertexnormals.add_constraint (dim_vector (-1, -1, 3));
-        cdata.add_constraint ("single");
-        cdata.add_constraint ("double");
-        cdata.add_constraint ("uint8");
-        cdata.add_constraint (dim_vector (-1, -1));
-        cdata.add_constraint (dim_vector (-1, -1, 3));
       }
 
   private:
@@ -5062,7 +5068,6 @@ public:
       {
         cdata.add_constraint ("double");
         cdata.add_constraint ("single");
-        cdata.add_constraint ("uint8");
         cdata.add_constraint (dim_vector (-1, -1, 3));
         position.add_constraint (dim_vector (1, 4));
         sliderstep.add_constraint (dim_vector (1, 2));
@@ -5283,7 +5288,6 @@ public:
       {
         cdata.add_constraint ("double");
         cdata.add_constraint ("single");
-        cdata.add_constraint ("uint8");
         cdata.add_constraint (dim_vector (-1, -1, 3));
       }
   };
@@ -5337,7 +5341,6 @@ public:
       {
         cdata.add_constraint ("double");
         cdata.add_constraint ("single");
-        cdata.add_constraint ("uint8");
         cdata.add_constraint (dim_vector (-1, -1, 3));
       }
   };

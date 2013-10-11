@@ -1249,8 +1249,8 @@ file_editor::set_shortcuts (bool set)
 {
   if (set)
     {
-      _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_7);
-      _uncomment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_8);
+      _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_R);
+      _uncomment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_T);
 
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);
@@ -1266,7 +1266,7 @@ file_editor::set_shortcuts (bool set)
       _toggle_bookmark_action->setShortcut (Qt::Key_F7);
 
       _print_action->setShortcut (QKeySequence::Print);
-      _run_action->setShortcut (Qt::ControlModifier+ Qt::Key_R);
+      _run_action->setShortcut (Qt::Key_F5);
       _context_run_action->setShortcut (Qt::Key_F9);
 
       _context_edit_action->setShortcut (Qt::ControlModifier + Qt::Key_E);

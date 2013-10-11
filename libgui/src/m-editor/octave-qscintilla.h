@@ -42,6 +42,9 @@ public:
   virtual void contextMenuEvent (QContextMenuEvent *e);
 #endif
   void context_help_doc (bool);
+  void context_edit ();
+  void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
+  bool get_actual_word ();
 
 signals:
 
@@ -52,7 +55,7 @@ private slots:
   void contextmenu_help (bool);
   void contextmenu_doc (bool);
   void contextmenu_help_doc (bool);
-  void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
+  void contextmenu_edit (bool);
 
 private:
 

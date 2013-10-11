@@ -52,17 +52,32 @@ octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos, QPoint *local_
   *global_pos = mapToGlobal (*local_pos); // global position of cursor
 }
 
-// call documentation or help on the current word
-void
-octave_qscintilla::context_help_doc (bool documentation)
+// determine the actual word and whether we are in an octave or matlab script
+bool
+octave_qscintilla::get_actual_word ()
 {
   QPoint global_pos, local_pos;
   get_global_textcursor_pos (&global_pos, &local_pos);
   _word_at_cursor = wordAtPoint (local_pos);
   QString lexer_name = lexer ()->lexer ();
-  if ((lexer_name == "octave" || lexer_name == "matlab")
-                              && !_word_at_cursor.isEmpty ())
+  return ((lexer_name == "octave" || lexer_name == "matlab")
+          && !_word_at_cursor.isEmpty ());
+}
+
+// call documentation or help on the current word
+void
+octave_qscintilla::context_help_doc (bool documentation)
+{
+  if (get_actual_word ())
     contextmenu_help_doc (documentation);
+}
+
+// call edit the function related to the current word
+void
+octave_qscintilla::context_edit ()
+{
+  if (get_actual_word ())
+    contextmenu_edit (true);
 }
 
 #ifdef HAVE_QSCI_VERSION_2_6_0
@@ -104,6 +119,8 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
                                 this, SLOT (contextmenu_help (bool)));
         context_menu->addAction (tr ("Documentation on") + " " + _word_at_cursor,
                                 this, SLOT (contextmenu_doc (bool)));
+        context_menu->addAction (tr ("Edit") + " " + _word_at_cursor,
+                                this, SLOT (contextmenu_edit (bool)));
     }
 
   // finaly show the menu
@@ -134,6 +151,12 @@ octave_qscintilla::contextmenu_help_doc (bool documentation)
   else
     command = "help ";
   emit execute_command_in_terminal_signal (command + _word_at_cursor);
+}
+
+void
+octave_qscintilla::contextmenu_edit (bool)
+{
+  emit execute_command_in_terminal_signal (QString("edit ") + _word_at_cursor);
 }
 
 #endif

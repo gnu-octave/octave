@@ -418,6 +418,15 @@ file_editor_tab::context_help (const QWidget *ID, bool doc)
 }
 
 void
+file_editor_tab::context_edit (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->context_edit ();
+}
+
+void
 file_editor_tab::save_file (const QWidget *ID)
 {
   if (ID != this)

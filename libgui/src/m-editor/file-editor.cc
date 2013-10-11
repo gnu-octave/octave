@@ -478,6 +478,12 @@ file_editor::request_context_doc (bool)
 }
 
 void
+file_editor::request_context_edit (bool)
+{
+  emit fetab_context_edit (_tab_widget->currentWidget ());
+}
+
+void
 file_editor::request_save_file (void)
 {
   emit fetab_save_file (_tab_widget->currentWidget ());
@@ -877,7 +883,10 @@ file_editor::construct (void)
   fileMenu->addAction (new_action);
   fileMenu->addAction (open_action);
   fileMenu->addMenu (_mru_file_menu);
-
+  fileMenu->addSeparator ();
+  _context_edit_action =
+    fileMenu->addAction (QIcon (), tr ("&Edit Function"),
+                         this, SLOT (request_context_edit (bool)));
   fileMenu->addSeparator ();
   fileMenu->addAction (_save_action);
   fileMenu->addAction (_save_as_action);
@@ -1130,6 +1139,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_context_help (const QWidget*, bool)),
            f, SLOT (context_help (const QWidget*, bool)));
 
+  connect (this, SIGNAL (fetab_context_edit (const QWidget*)),
+           f, SLOT (context_edit (const QWidget*)));
+
   connect (this, SIGNAL (fetab_save_file (const QWidget*)),
            f, SLOT (save_file (const QWidget*)));
 
@@ -1241,6 +1253,7 @@ file_editor::set_shortcuts (bool set)
       _print_action->setShortcut (QKeySequence::Print);
       _run_action->setShortcut (Qt::ControlModifier+ Qt::Key_R);
 
+      _context_edit_action->setShortcut (Qt::ControlModifier + Qt::Key_E);
       _save_action->setShortcut (QKeySequence::Save);
       _save_as_action->setShortcut (QKeySequence::SaveAs);
       _close_action->setShortcut (QKeySequence::Close);
@@ -1270,6 +1283,7 @@ file_editor::set_shortcuts (bool set)
       _print_action->setShortcut (no_key);
       _run_action->setShortcut (no_key);
 
+      _context_edit_action->setShortcut (no_key);
       _save_action->setShortcut (no_key);
       _save_as_action->setShortcut (no_key);
       _close_action->setShortcut (no_key);
@@ -1303,6 +1317,7 @@ file_editor::check_actions ()
   _print_action->setEnabled (have_tabs);
   _run_action->setEnabled (have_tabs);
 
+  _context_edit_action->setEnabled (have_tabs);
   _save_action->setEnabled (have_tabs);
   _save_as_action->setEnabled (have_tabs);
   _close_action->setEnabled (have_tabs);

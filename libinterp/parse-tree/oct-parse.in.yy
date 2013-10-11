@@ -298,6 +298,13 @@ make_statement (T *arg)
 %right PLUS_PLUS MINUS_MINUS
 %left '(' '.' '{'
 
+// How to clean up if there is a parse error.  We handle deleting tokens
+// and comments seperately and separators are just characters.  The
+// remaining items are dynamically allocated parse tree objects that
+// must be deleted.
+%destructor { } <sep_type> <tok_val> <comment_type> <dummy_type> <>
+%destructor { delete $$; } <*>
+
 // Where to start.
 %start input
 

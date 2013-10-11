@@ -174,8 +174,7 @@ function varargout = isosurface (varargin)
                     "FaceColor", "g", "EdgeColor", "k");
       endif
       if (! ishold ())
-        set (hax, "view", [-37.5, 30],
-                  "xgrid", "on", "ygrid", "on", "zgrid", "on");
+        set (hax, "view", [-37.5, 30], "box", "off");
       endif
     case 1
       varargout = {fvc};
@@ -195,6 +194,7 @@ endfunction
 %! [x,y,z] = meshgrid (-2:0.5:2, -2:0.5:2, -2:0.5:2);
 %! v = x.^2 + y.^2 + z.^2;
 %! isosurface (x, y, z, v, 1);
+%! axis equal;
 %! title ('isosurface of a sphere');
 
 %!shared x, y, z, val

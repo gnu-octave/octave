@@ -467,6 +467,17 @@ file_editor::request_paste (void)
 }
 
 void
+file_editor::request_context_help (bool)
+{
+  emit fetab_context_help (_tab_widget->currentWidget (), false);
+}
+void
+file_editor::request_context_doc (bool)
+{
+  emit fetab_context_help (_tab_widget->currentWidget (), true);
+}
+
+void
 file_editor::request_save_file (void)
 {
   emit fetab_save_file (_tab_widget->currentWidget ());
@@ -927,6 +938,15 @@ file_editor::construct (void)
   _run_menu->addAction (_run_action);
   _menu_bar->addMenu (_run_menu);
 
+  QMenu *_help_menu = new QMenu (tr ("&Help"), _menu_bar);
+  _context_help_action =
+    _help_menu->addAction (QIcon (), tr ("&Help on Keyword"),
+                           this, SLOT (request_context_help (bool)));
+  _context_doc_action =
+    _help_menu->addAction (QIcon (), tr ("&Documentation on Keyword"),
+                           this, SLOT (request_context_doc (bool)));
+  _menu_bar->addMenu (_help_menu);
+
   // shortcuts
   set_shortcuts (true);
 
@@ -1107,6 +1127,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_paste (const QWidget*)),
            f, SLOT (paste (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_context_help (const QWidget*, bool)),
+           f, SLOT (context_help (const QWidget*, bool)));
+
   connect (this, SIGNAL (fetab_save_file (const QWidget*)),
            f, SLOT (save_file (const QWidget*)));
 
@@ -1205,6 +1228,8 @@ file_editor::set_shortcuts (bool set)
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);
       _paste_action->setShortcut (QKeySequence::Paste);
+      _context_help_action->setShortcut (QKeySequence::HelpContents);
+      _context_doc_action->setShortcut (Qt::SHIFT + Qt::Key_F1);
 
       _find_action->setShortcut (QKeySequence::Find);
       _goto_line_action->setShortcut (Qt::ControlModifier+ Qt::Key_G);
@@ -1233,6 +1258,7 @@ file_editor::set_shortcuts (bool set)
       _copy_action->setShortcut (no_key);
       _cut_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
+      _context_help_action->setShortcut (no_key);
 
       _find_action->setShortcut (no_key);
       _goto_line_action->setShortcut (no_key);
@@ -1264,6 +1290,8 @@ file_editor::check_actions ()
   _copy_action->setEnabled (have_tabs);
   _cut_action->setEnabled (have_tabs);
   _paste_action->setEnabled (have_tabs);
+  _context_help_action->setEnabled (have_tabs);
+  _context_doc_action->setEnabled (have_tabs);
 
   _find_action->setEnabled (have_tabs);
   _goto_line_action->setEnabled (have_tabs);

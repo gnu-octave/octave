@@ -409,6 +409,15 @@ file_editor_tab::paste (const QWidget *ID)
 }
 
 void
+file_editor_tab::context_help (const QWidget *ID, bool doc)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->context_help_doc (doc);
+}
+
+void
 file_editor_tab::save_file (const QWidget *ID)
 {
   if (ID != this)

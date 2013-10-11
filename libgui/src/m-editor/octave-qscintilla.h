@@ -41,6 +41,7 @@ public:
 #ifdef HAVE_QSCI_VERSION_2_6_0
   virtual void contextMenuEvent (QContextMenuEvent *e);
 #endif
+  void context_help_doc (bool);
 
 signals:
 
@@ -49,6 +50,9 @@ signals:
 private slots:
 
   void contextmenu_help (bool);
+  void contextmenu_doc (bool);
+  void contextmenu_help_doc (bool);
+  void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
 
 private:
 

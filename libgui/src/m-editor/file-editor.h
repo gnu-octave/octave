@@ -74,6 +74,7 @@ signals:
   void fetab_copy (const QWidget* ID);
   void fetab_cut (const QWidget* ID);
   void fetab_paste (const QWidget* ID);
+  void fetab_context_help (const QWidget* ID, bool);
   void fetab_save_file (const QWidget* ID);
   void fetab_save_file_as (const QWidget* ID);
   void fetab_print_file (const QWidget* ID);
@@ -114,6 +115,8 @@ public slots:
   void request_copy (void);
   void request_cut (void);
   void request_paste (void);
+  void request_context_help (bool);
+  void request_context_doc (bool);
   void request_save_file (void);
   void request_save_file_as (void);
   void request_run_file (void);
@@ -190,6 +193,8 @@ private:
   QAction *_copy_action;
   QAction *_cut_action;
   QAction *_paste_action;
+  QAction *_context_help_action;
+  QAction *_context_doc_action;
 
   QAction *_find_action;
   QAction *_goto_line_action;

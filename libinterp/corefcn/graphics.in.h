@@ -2398,7 +2398,7 @@ public:
 
   virtual ~base_properties (void) { }
 
-  virtual std::string graphics_object_name (void) const { return "unknonwn"; }
+  virtual std::string graphics_object_name (void) const { return "unknown"; }
 
   void mark_modified (void);
 

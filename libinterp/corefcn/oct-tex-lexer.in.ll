@@ -30,12 +30,37 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "txt-eng.h"
-#include "oct-tex-parser.h"
 }
 
 %x	NUM_MODE
 %x	MAYBE_NUM_MODE
+
+%{
+
+// The generated code may include unistd.h.  We need that to happen
+// before defining isatty to be prefixed with the gnulib namespace
+// identifier.
+
+#include <sys/types.h>
+#include <unistd.h>
+
+#include "txt-eng.h"
+#include "oct-tex-parser.h"
+
+#if defined (GNULIB_NAMESPACE)
+// Calls to the following functions appear in the generated output from
+// flex without the namespace tag.  Redefine them so we will use them
+// via the gnulib namespace.
+#define fprintf GNULIB_NAMESPACE::fprintf
+#define fread GNULIB_NAMESPACE::fread
+#define fwrite GNULIB_NAMESPACE::fwrite
+#define getc GNULIB_NAMESPACE::getc
+#define isatty GNULIB_NAMESPACE::isatty
+#define malloc GNULIB_NAMESPACE::malloc
+#define realloc GNULIB_NAMESPACE::realloc
+#endif
+
+%}
 
 D       [0-9]
 NUM	(({D}+\.?{D}*)|(\.{D}+))

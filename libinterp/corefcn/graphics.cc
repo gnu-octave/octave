@@ -2735,32 +2735,40 @@ base_properties::get_property_dynamic (const caseless_str& name)
 void
 base_properties::set_parent (const octave_value& val)
 {
-  double tmp = val.double_value ();
+  double hnp = val.double_value ();
 
   graphics_handle new_parent = octave_NaN;
 
   if (! error_state)
     {
-      if (tmp == __myhandle__)
+      if (hnp == __myhandle__)
         error ("set: can not set object parent to be object itself");
       else
         {
-          new_parent = gh_manager::lookup (tmp);
+          new_parent = gh_manager::lookup (hnp);
 
           if (new_parent.ok ())
             {
-              graphics_object parent_obj;
+              // Remove child from current parent
+              graphics_object old_parent_obj;
+              old_parent_obj = gh_manager::get_object (get_parent ());
+              old_parent_obj.remove_child (__myhandle__);
 
-              parent_obj = gh_manager::get_object (get_parent ());
+              // Check new parent's parent is not this child to avoid recursion
+              graphics_object new_parent_obj;
+              new_parent_obj = gh_manager::get_object (new_parent);
+              if (new_parent_obj.get_parent () == __myhandle__)
+                {
+                  // new parent's parent gets child's original parent
+                  new_parent_obj.get_properties ().set_parent (get_parent ().as_octave_value ());
+                }
 
-              parent_obj.remove_child (__myhandle__);
-
+              // Set parent property to new_parent and do adoption
               parent = new_parent.as_octave_value ();
-
               ::adopt (parent.handle_value (), __myhandle__);
             }
           else
-            error ("set: invalid graphics handle (= %g) for parent", tmp);
+            error ("set: invalid graphics handle (= %g) for parent", hnp);
         }
     }
   else

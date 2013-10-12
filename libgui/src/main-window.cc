@@ -40,8 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QIcon>
 
-#include <QWebView>
-
 #include <utility>
 
 #ifdef HAVE_QSCINTILLA

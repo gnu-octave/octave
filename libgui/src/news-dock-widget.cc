@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <QVBoxLayout>
 #include <QThread>
 
 #include "news-dock-widget.h"
@@ -38,15 +37,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 
 news_dock_widget::news_dock_widget (QWidget *p)
-  : octave_dock_widget (p), news_browser (new QWebView (p))
+  : octave_dock_widget (p), browser (new QTextBrowser (this))
 {
-  news_browser->setObjectName ("OctaveNews");
-
   setObjectName ("NewsDockWidget");
   setWindowIcon (QIcon (":/icons/logo.png"));
   set_title (tr ("Community News"));
 
-  setWidget (news_browser);
+  browser->setObjectName ("OctaveNews");
+  browser->setOpenExternalLinks (true);
+
+  setWidget (browser);
 
   load_news ();
 }
@@ -63,8 +63,8 @@ news_dock_widget::load_news (void)
 
   reader->moveToThread (worker_thread);
 
-  connect (reader, SIGNAL (display_news_signal (const QString&, const QUrl&)),
-           this, SLOT (display_news (const QString&, const QUrl&)));
+  connect (reader, SIGNAL (display_news_signal (const QString&)),
+           this, SLOT (display_news (const QString&)));
 
   connect (worker_thread, SIGNAL (started (void)), reader, SLOT (process ()));
 
@@ -99,17 +99,17 @@ when you have a connection to the web.\n\
 </html>\n";
 
 void
-news_dock_widget::display_news (const QString& news, const QUrl& base_url)
+news_dock_widget::display_news (const QString& news)
 {
   if (news.contains ("this-is-the-gnu-octave-community-news-page"))
     {
-      news_browser->setHtml (news, base_url);
+      browser->setHtml (news);
 
       if (news.contains ("critical-news-event") && ! isVisible ())
         setVisible (true);
     }
   else
-    news_browser->setHtml (fixed_news);
+    browser->setHtml (fixed_news);
 }
 
 void
@@ -131,7 +131,7 @@ news_reader::process (void)
   if (octave_dot_org.good ())
     html_text = QString::fromStdString (buf.str ());
 
-  emit display_news_signal (html_text, QUrl (base_url));
+  emit display_news_signal (html_text);
 
   emit finished ();
 }

@@ -23,8 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef NEWSDOCKWIDGET_H
 #define NEWSDOCKWIDGET_H
 
-#include <QBasicTimer>
-#include <QWebView>
+#include <QTextBrowser>
 
 #include "octave-dock-widget.h"
 
@@ -40,11 +39,11 @@ public:
 
 protected slots:
 
-  void display_news (const QString& news, const QUrl& base_url);
+  void display_news (const QString& news);
 
 private:
 
-  QWebView *news_browser;
+  QTextBrowser *browser;
 };
 
 class news_reader : public QObject
@@ -62,7 +61,7 @@ public slots:
  
 signals:
 
-  void display_news_signal (const QString& news, const QUrl& base_url);
+  void display_news_signal (const QString& news);
 
   void finished (void);
  

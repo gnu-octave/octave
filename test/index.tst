@@ -227,3 +227,277 @@
 %!error d(3,6);
 %!error dd(3,6);
 
+## bug 31287
+%!test
+%! y = ones (2, 2, 2);
+%! x = ones (2, 2, 2);
+%! x(false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2, 2);
+%! x = ones (2, 2, 2);
+%! x(false,[]) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2, 2);
+%! x = ones (2, 2, 2);
+%! x(false,[],false) = [];
+%! assert (x, y);
+
+%!shared x, y
+%! y = ones (2, 2, 2);
+%! x = ones (2, 2, 2);
+%! x(false, 1) = [];
+%! assert (x, y);
+
+%!shared x, y
+%! y = ones (2, 2, 2);
+%! x = ones (2, 2, 2);
+%! x(false, false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x([], []) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x([], []) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(1, []) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x([], 1, []) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(1, [], 1, 1) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x([], 1, 1) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! ea2 = ones (3, 2, 0, 2);
+%! x(1, ea2) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! ea2 = ones (3, 2, 0, 2);
+%! x(1, ea2) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! ea2 = ones (3, 2, 0, 2);
+%! x([], 1, ea2) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! ea2 = ones (3, 2, 0, 2);
+%! x(1, ea2, ea2) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! ea2 = ones (3, 2, 0, 2);
+%! x(1, ea2, 1) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, 1) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x(false, 1) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(1, [], false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, false) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x(false, false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, [], false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x([], false, false, false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(1, [], false, false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(:, false) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x(:, false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, :) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x(false, :) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, :, [], 1) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(:, [], false) = [];
+%! assert (x, y);
+
+%!shared x, y
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%!error x(1, 1, []) = [];
+
+%!shared x, y
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, false, 1) = [];
+%! assert (x, y);
+
+%!shared x, y
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, false, []) = [];
+%! assert (x, y);
+
+%!shared x, y
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false, false, [], false) = [];
+%! assert (x, y);
+
+%!shared x, y
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(1, false, [], false) = [];
+%! assert (x, y);
+
+%!shared x, y
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(:, false, 1) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x([]) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x([]) = [];
+%! assert (x, y);
+
+%!test
+%! y = [];
+%! x = ones (2, 2);
+%! x(:) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse ([]);
+%! x = sparse (ones (2, 2));
+%! x(:) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x(false) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x(false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x([], false) = [];
+%! assert (x, y);
+
+%!test
+%! y = sparse (ones (2, 2));
+%! x = sparse (ones (2, 2));
+%! x([], false) = [];
+%! assert (x, y);
+
+%!test
+%! y = ones (2, 2);
+%! x = ones (2, 2);
+%! x([], false, :) = [];
+%! assert (x, y);

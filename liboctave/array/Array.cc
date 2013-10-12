@@ -1460,12 +1460,14 @@ template <class T>
 void
 Array<T>::delete_elements (const Array<idx_vector>& ia)
 {
-  if (ia.length () == 1)
+  int ial = ia.length ();
+
+  if (ial == 1)
     delete_elements (ia(0));
   else
     {
-      int len = ia.length (), k, dim = -1;
-      for (k = 0; k < len; k++)
+      int k, dim = -1;
+      for (k = 0; k < ial; k++)
         {
           if (! ia(k).is_colon ())
             {
@@ -1481,14 +1483,51 @@ Array<T>::delete_elements (const Array<idx_vector>& ia)
           dv(0) = 0;
           *this = Array<T> (dv);
         }
-      else if (k == len)
+      else if (k == ial)
         {
           delete_elements (dim, ia(dim));
         }
       else
         {
-          (*current_liboctave_error_handler)
-            ("a null assignment can only have one non-colon index");
+          // Allow the null assignment to succeed if it won't change
+          // anything because the indices reference an empty slice,
+          // provided that there is at most one non-colon (or
+          // equivalent) index.  So, we still have the requirement of
+          // deleting a slice, but it is OK if the slice is empty.
+
+          // For compatibility with Matlab, stop checking once we see
+          // more than one non-colon index or an empty index.  Matlab
+          // considers "[]" to be an empty index but not "false".  We
+          // accept both.
+
+          bool empty_assignment = false;
+
+          int num_non_colon_indices = 0;
+
+          int nd = ndims ();
+
+          for (int i = 0; i < ial; i++)
+            {
+              octave_idx_type dim_len = i >= nd ? 1 : dimensions(i);
+
+              if (ia(i).length (dim_len) == 0)
+                {
+                  empty_assignment = true;
+                  break;
+                }
+
+              if (! ia(i).is_colon_equiv (dim_len))
+                {
+                  num_non_colon_indices++;
+
+                  if (num_non_colon_indices == 2)
+                    break;
+                }
+            }
+
+          if (! empty_assignment)
+            (*current_liboctave_error_handler)
+              ("a null assignment can only have one non-colon index");
         }
     }
 

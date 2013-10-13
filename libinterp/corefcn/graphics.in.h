@@ -4280,7 +4280,7 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES (text)
-      color_property backgroundcolor , "{none}"
+      color_property backgroundcolor , color_property (radio_values ("{none}"), color_values (1, 1, 1))
       color_property color u , color_values (0, 0, 0)
       string_property displayname , ""
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))

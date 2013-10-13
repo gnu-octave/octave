@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QtGui/QApplication>
+#include <QTextCodec>
 #include <QTranslator>
 
 #include <iostream>
@@ -96,6 +97,9 @@ octave_start_gui (int argc, char *argv[], bool fork)
     dissociate_terminal ();
 
   QApplication application (argc, argv);
+
+  // Set the codec for all strings
+  QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
   // install translators for the gui and qt text
   QTranslator gui_tr, qt_tr, qsci_tr;

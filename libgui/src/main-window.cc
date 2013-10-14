@@ -1478,7 +1478,7 @@ main_window::construct_news_menu (QMenuBar *p)
            this, SLOT (display_release_notes ()));
 
   connect (current_news_action, SIGNAL (triggered ()),
-           news_window, SLOT (show ()));
+           news_window, SLOT (focus ()));
 }
 
 void

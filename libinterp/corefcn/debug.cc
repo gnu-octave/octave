@@ -1121,26 +1121,41 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
   size_t nskip = 0;
 
-  if (args.length () == 1)
+  octave_idx_type len = args.length ();
+
+  // dbstack accepts up to 2 arguments.
+
+  if (len == 1 || len == 2)
     {
       int n = 0;
 
-      octave_value arg = args(0);
-
-      if (arg.is_string ())
+      for (octave_idx_type i = 0; i < len && ! error_state; i++)
         {
-          std::string s_arg = arg.string_value ();
+          octave_value arg = args(i);
 
-          n = atoi (s_arg.c_str ());
+          if (arg.is_string ())
+            {
+              std::string s_arg = arg.string_value ();
+
+              // Skip "-completenames", octave returns full names anyway.
+
+              if (s_arg == "-completenames")
+                continue;
+
+              n = atoi (s_arg.c_str ());
+            }
+          else
+            n = arg.int_value ();
+
+          if (! error_state && n <= 0)
+            error ("dbstack: N must be a non-negative integer");
         }
-      else
-        n = args(0).int_value ();
 
       if (n > 0)
         nskip = n;
-      else
-        error ("dbstack: N must be a non-negative integer");
     }
+  else if (len)
+    print_usage ();
 
   if (! error_state)
     {
@@ -1214,9 +1229,14 @@ DEFUN (dbstack, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} dbstack\n\
 @deftypefnx {Command} {} dbstack @var{n}\n\
+@deftypefnx {Command} {} dbstack @var{-completenames}\n\
 @deftypefnx {Built-in Function} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
 Display or return current debugging function stack information.\n\
 With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
+\n\
+Although accepted, the argument @var{-completenames} is silently ignored.\n\
+Octave always returns absolute file names. The arguments @var{n} and\n\
+@var{-completenames} can be both specified in any order.\n\
 \n\
 The optional return argument @var{stack} is a struct array with the\n\
 following fields:\n\

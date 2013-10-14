@@ -121,12 +121,13 @@ function h = __img__ (hax, x, y, img, varargin)
 
   if (numel (x) > 2 && numel (y) > 2)
     ## Test data for non-linear spacing which is unsupported
-    ## FIXME: Need a better check on linearity
-    tol = 100*eps;
+    tol = .01;  # 1% tolerance.  FIXME: this value was chosen without thought.
     dx = diff (x);
+    dxmean = (max (x) - min (x)) / (numel (x) - 1);
+    dx = abs ((dx - dxmean) / dxmean);
     dy = diff (y);
-    dx = std (dx) / mean (abs (dx));
-    dy = std (dy) / mean (abs (dy));
+    dymean = (max (y) - min (y)) / (numel (y) - 1);
+    dy = abs ((dy - dymean) / dymean);
     if (any (dx > tol) || any (dy > tol))
       warning ("image: non-linear X, Y data is ignored.  IMG will be shown with linear mapping");
     endif

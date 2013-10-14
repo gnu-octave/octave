@@ -41,6 +41,9 @@ protected slots:
 
   void display_news (const QString& news);
 
+  /* from octave_dock_widget */
+  void copyClipboard ();
+
 private:
 
   QTextBrowser *browser;

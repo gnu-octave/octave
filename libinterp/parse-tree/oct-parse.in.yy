@@ -1446,7 +1446,10 @@ classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superc
                     lexer.parsing_classdef = false;
 
                     if (! ($$ = parser.make_classdef ($1, $3, $4, $5, $7, $9, $2)))
-                      ABORT_PARSE;
+                      {
+                        // make_classdef deleted $3, $4, $5, and $7.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -1532,8 +1535,11 @@ properties_block
                 : PROPERTIES stash_comment opt_attr_list opt_sep property_list opt_sep END
                   {
                     if (! ($$ = parser.make_classdef_properties_block
-                                              ($1, $3, $5, $7, $2)))
-                      ABORT_PARSE;
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_properties_block delete $3 and $5.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -1559,8 +1565,11 @@ class_property  : identifier
 methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_sep END
                   {
                     if (! ($$ = parser.make_classdef_methods_block
-                                              ($1, $3, $5, $7, $2)))
-                      ABORT_PARSE;
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_methods_block deleted $3 and $5.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -1587,8 +1596,11 @@ methods_list    : function
 events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep END
                   {
                     if (! ($$ = parser.make_classdef_events_block
-                                              ($1, $3, $5, $7, $2)))
-                      ABORT_PARSE;
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_events_block deleted $3 and $5.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -1608,8 +1620,11 @@ class_event     : identifier
 enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_sep END
                   {
                     if (! ($$ = parser.make_classdef_enum_block
-                                              ($1, $3, $5, $7, $2)))
-                      ABORT_PARSE;
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_enum_block deleted $3 and $5.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -3132,20 +3147,24 @@ octave_base_parser::make_classdef (token *tok_val,
     nm = lexer.fcn_file_name.substr (pos+1);
 
   if (nm != cls_name)
-    {
-      bison_error ("invalid classdef definition, the class name must match the file name");
-      return retval;
-    }
-
-  if (end_token_ok (end_tok, token::classdef_end))
+    bison_error ("invalid classdef definition, the class name must match the file name");
+  else if (end_token_ok (end_tok, token::classdef_end))
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
       int l = tok_val->line ();
       int c = tok_val->column ();
 
-      retval = new tree_classdef (a, id, sc, body, lc, tc, curr_package_name,
-                                  l, c);
+      retval = new tree_classdef (a, id, sc, body, lc, tc,
+                                  curr_package_name, l, c);
+    }
+
+  if (! retval)
+    {
+      delete a;
+      delete id;
+      delete sc;
+      delete body;
     }
 
   return retval;
@@ -3169,6 +3188,11 @@ octave_base_parser::make_classdef_properties_block (token *tok_val,
 
       retval = new tree_classdef_properties_block (a, plist, lc, tc, l, c);
     }
+  else
+    {
+      delete a;
+      delete plist;
+    }
 
   return retval;
 }
@@ -3190,6 +3214,11 @@ octave_base_parser::make_classdef_methods_block (token *tok_val,
       int c = tok_val->column ();
 
       retval = new tree_classdef_methods_block (a, mlist, lc, tc, l, c);
+    }
+  else
+    {
+      delete a;
+      delete mlist;
     }
 
   return retval;
@@ -3213,6 +3242,11 @@ octave_base_parser::make_classdef_events_block (token *tok_val,
 
       retval = new tree_classdef_events_block (a, elist, lc, tc, l, c);
     }
+  else
+    {
+      delete a;
+      delete elist;
+    }
 
   return retval;
 }
@@ -3234,6 +3268,11 @@ octave_base_parser::make_classdef_enum_block (token *tok_val,
       int c = tok_val->column ();
 
       retval = new tree_classdef_enum_block (a, elist, lc, tc, l, c);
+    }
+  else
+    {
+      delete a;
+      delete elist;
     }
 
   return retval;

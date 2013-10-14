@@ -165,7 +165,6 @@ make_statement (T *arg)
 
   // Types for the nonterminals we generate.
   char sep_type;
-  token *tok_type;
   tree *tree_type;
   tree_matrix *tree_matrix_type;
   tree_cell *tree_cell_type;
@@ -251,7 +250,7 @@ make_statement (T *arg)
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment
-%type <tok_type> function_beg classdef_beg
+%type <tok_val> function_beg classdef_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -325,7 +324,7 @@ make_statement (T *arg)
 // and comments seperately and separators are just characters.  The
 // remaining items are dynamically allocated parse tree objects that
 // must be deleted.
-%destructor { } <sep_type> <tok_val> <comment_type> <dummy_type> <tok_type> <>
+%destructor { } <sep_type> <tok_val> <comment_type> <dummy_type> <>
 %destructor { delete $$; } <*>
 
 // Where to start.

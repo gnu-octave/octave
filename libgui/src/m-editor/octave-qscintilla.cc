@@ -76,7 +76,7 @@ octave_qscintilla::context_help_doc (bool documentation)
 void
 octave_qscintilla::context_edit ()
 {
-  if (hasSelectedText ())
+  if (get_actual_word ())
     contextmenu_edit (true);
 }
 

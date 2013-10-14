@@ -898,9 +898,9 @@ load_path::do_remove (const std::string& dir_arg)
 
               dir_info& di = *i;
 
-              dir_info_list.erase (i);
-
               remove (di);
+
+              dir_info_list.erase (i);
             }
         }
     }

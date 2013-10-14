@@ -8022,13 +8022,13 @@ callback_event : public base_graphics_event
 public:
   callback_event (const graphics_handle& h, const std::string& name,
                   const octave_value& data = Matrix ())
-      : base_graphics_event (), handle (h), callback_name (name),
-        callback (), callback_data (data) { }
+    : base_graphics_event (), handle (h), callback_name (name),
+      callback (), callback_data (data) { }
 
   callback_event (const graphics_handle& h, const octave_value& cb,
                   const octave_value& data = Matrix ())
-      : base_graphics_event (), handle (h), callback_name (),
-        callback (cb), callback_data (data) { }
+    : base_graphics_event (), handle (h), callback_name (),
+      callback (cb), callback_data (data) { }
 
   void execute (void)
     {
@@ -8040,8 +8040,7 @@ public:
 
 private:
   callback_event (void)
-    : base_graphics_event (), handle (),
-      callback_name (), callback_data ()
+    : base_graphics_event (), handle (), callback_name (), callback_data ()
   { }
 
 private:
@@ -8056,8 +8055,8 @@ function_event : public base_graphics_event
 {
 public:
   function_event (graphics_event::event_fcn fcn, void* data = 0)
-      : base_graphics_event (), function (fcn),
-        function_data (data) { }
+    : base_graphics_event (), function (fcn), function_data (data)
+  { }
 
   void execute (void)
     {
@@ -8086,8 +8085,8 @@ set_event : public base_graphics_event
 public:
   set_event (const graphics_handle& h, const std::string& name,
              const octave_value& value, bool do_notify_toolkit = true)
-      : base_graphics_event (), handle (h), property_name (name),
-        property_value (value), notify_toolkit (do_notify_toolkit) { }
+    : base_graphics_event (), handle (h), property_name (name),
+      property_value (value), notify_toolkit (do_notify_toolkit) { }
 
   void execute (void)
     {

@@ -229,8 +229,8 @@ function ret = edit (varargin)
         endif
         return;
       otherwise
-        ## If none of the states match, assume both inputs are
-        ## actually both file names to be opened
+        ## If none of the states match, assume both inputs are actually
+        ## file names to be opened.
         editfilelist = varargin;
     endswitch
   elseif (nargin > 2)
@@ -267,7 +267,7 @@ function ret = edit (varargin)
   else
   
     ## Only one file name was supplied, get it from the cell array
-    file = editfilelist{1};
+    file = tilde_expand (editfilelist{1});
 
     ## Check whether the user is trying to edit a builtin or compiled function.
     switch (exist (file))
@@ -300,20 +300,20 @@ function ret = edit (varargin)
     if (idx == 0)
       if (isempty (regexp (file, '\.m$')))
         ## No ".m" at the end of the file, add to the list.
-        filelist{end+1} = [file ".m"];
+        filelist(end+1) = [file ".m"];
       endif
       if (isempty (regexp (file, '\.cc$')))
         ## No ".cc" at the end of the file, add to the list.
-        filelist{end+1} = [file ".cc"];
+        filelist(end+1) = [file ".cc"];
       endif
     endif
 
     ## If the file includes a path, it may be an overloaded function.
-    if (! strcmp (file, "@") && index (file, filesep))
+    if (! index (file, "@") && index (file, filesep))
       ## No "@" at the beginning of the file, add to the list.
       numfiles = numel (filelist);
       for n = 1:numfiles
-        filelist{n+numfiles} = ["@" filelist{n}];
+        filelist(n+numfiles) = ["@" filelist{n}];
       endfor
     endif
 
@@ -353,7 +353,7 @@ function ret = edit (varargin)
       endif
     endif
 
-    ## If editing a new file that is neither a m-file or an oct-file,
+    ## If editing a new file that is neither an m-file or an oct-file,
     ## just edit it.
     fileandpath = file;
     idx = rindex (file, ".");

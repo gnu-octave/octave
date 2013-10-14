@@ -19,20 +19,20 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{theta}, @var{r}] =} cart2pol (@var{x}, @var{y})
 ## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}] =} cart2pol (@var{c})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{c})
-## @deftypefnx {Function File} {@var{p} =} cart2pol (@dots{})
+## @deftypefnx {Function File} {[@var{theta}, @var{r}] =} cart2pol (@var{C})
+## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{C})
+## @deftypefnx {Function File} {@var{P} =} cart2pol (@dots{})
 ##
 ## Transform Cartesian to polar or cylindrical coordinates.
 ##
 ## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{r} is the distance to the z-axis @w{(0, 0, z)}.
-## @var{x}, @var{y} (and @var{z}) must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{c}
+## @var{x}, @var{y} (, and @var{z}) must be the same shape, or scalar.
+## If called with a single matrix argument then each row of @var{C}
 ## represents the Cartesian coordinate (@var{x}, @var{y} (, @var{z})).
 ##
 ## If only a single return argument is requested then return a matrix
-## @var{p} where each row represents one polar/(cylindrical) coordinate
+## @var{P} where each row represents one polar/(cylindrical) coordinate
 ## (@var{theta}, @var{phi} (, @var{z})).
 ## @seealso{pol2cart, cart2sph, sph2cart}
 ## @end deftypefn
@@ -40,7 +40,7 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe
 
-function [theta, r, z] = cart2pol (x, y, z)
+function [theta, r, z] = cart2pol (x, y, z = [])
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -50,8 +50,6 @@ function [theta, r, z] = cart2pol (x, y, z)
     if (ismatrix (x) && (columns (x) == 2 || columns (x) == 3))
       if (columns (x) == 3)
         z = x(:,3);
-      else
-        z = [];
       endif
       y = x(:,2);
       x = x(:,1);
@@ -76,7 +74,7 @@ function [theta, r, z] = cart2pol (x, y, z)
   r = sqrt (x .^ 2 + y .^ 2);
 
   if (nargout <= 1)
-    theta = [theta, r, z];
+    theta = [theta(:), r(:), z(:)];
   endif
 
 endfunction
@@ -92,9 +90,9 @@ endfunction
 %!test
 %! x = [0, 1, 2];
 %! y = [0, 1, 2];
-%! [t, r] = cart2pol (x, y);
-%! assert (t, [0, pi/4, pi/4], sqrt (eps));
-%! assert (r, sqrt (2)*[0, 1, 2], sqrt (eps));
+%! P = cart2pol (x, y);
+%! assert (P(:,1), [0; pi/4; pi/4], sqrt (eps));
+%! assert (P(:,2), sqrt (2)*[0; 1; 2], sqrt (eps));
 
 %!test
 %! x = [0, 1, 2];

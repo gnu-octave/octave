@@ -222,7 +222,6 @@ function formats = default_formats ()
             "PBM",  {"pbm"},          false;
             "PCX",  {"pcx"},          true;
             "PGM",  {"pgm"},          false;
-            "PGM",  {"pgm"},          false;
             "PNG",  {"png"},          true;
             ## PNM is a family of formats supporting portable bitmaps (PBM),
             ## graymaps (PGM), and pixmaps (PPM). There is no file format

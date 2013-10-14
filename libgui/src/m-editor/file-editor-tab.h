@@ -70,12 +70,15 @@ public slots:
   void copy (const QWidget *ID);
   void cut (const QWidget *ID);
   void paste (const QWidget *ID);
+  void context_help (const QWidget *ID, bool);
+  void context_edit (const QWidget *ID);
   void save_file (const QWidget *ID);
   void save_file (const QWidget *ID, const QString& fileName,
                   bool remove_on_success);
   void save_file_as (const QWidget *ID);
   void print_file (const QWidget *ID);
   void run_file (const QWidget *ID);
+  void context_run (const QWidget *ID);
   void toggle_bookmark (const QWidget *ID);
   void next_bookmark (const QWidget *ID);
   void previous_bookmark (const QWidget *ID);

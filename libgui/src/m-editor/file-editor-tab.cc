@@ -409,6 +409,24 @@ file_editor_tab::paste (const QWidget *ID)
 }
 
 void
+file_editor_tab::context_help (const QWidget *ID, bool doc)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->context_help_doc (doc);
+}
+
+void
+file_editor_tab::context_edit (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->context_edit ();
+}
+
+void
 file_editor_tab::save_file (const QWidget *ID)
 {
   if (ID != this)
@@ -463,6 +481,15 @@ file_editor_tab::run_file (const QWidget *ID)
 
   QFileInfo info (_file_name);
   emit run_file_signal (info);
+}
+
+void
+file_editor_tab::context_run (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->context_run ();
 }
 
 void
@@ -913,6 +940,7 @@ file_editor_tab::load_file (const QString& fileName)
   _edit_area->setText (in.readAll ());
   QApplication::restoreOverrideCursor ();
 
+  _copy_available = false;     // no selection yet available
   set_file_name (fileName);
   update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet

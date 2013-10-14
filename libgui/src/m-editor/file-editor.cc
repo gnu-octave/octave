@@ -467,6 +467,23 @@ file_editor::request_paste (void)
 }
 
 void
+file_editor::request_context_help (bool)
+{
+  emit fetab_context_help (_tab_widget->currentWidget (), false);
+}
+void
+file_editor::request_context_doc (bool)
+{
+  emit fetab_context_help (_tab_widget->currentWidget (), true);
+}
+
+void
+file_editor::request_context_edit (bool)
+{
+  emit fetab_context_edit (_tab_widget->currentWidget ());
+}
+
+void
 file_editor::request_save_file (void)
 {
   emit fetab_save_file (_tab_widget->currentWidget ());
@@ -489,6 +506,12 @@ void
 file_editor::request_run_file (void)
 {
   emit fetab_run_file (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::request_context_run (bool)
+{
+  emit fetab_context_run (_tab_widget->currentWidget ());
 }
 
 void
@@ -701,6 +724,7 @@ file_editor::handle_editor_state_changed (bool copy_available,
     {
       _copy_action->setEnabled (copy_available);
       _cut_action->setEnabled (copy_available);
+      _context_run_action->setEnabled (copy_available);
 
       if (!file_name.isEmpty ())
         {
@@ -762,9 +786,11 @@ file_editor::construct (void)
 
   _copy_action = new QAction (QIcon (":/actions/icons/editcopy.png"),
                               tr ("&Copy"), _tool_bar);
+  _copy_action->setEnabled (false);
 
   _cut_action = new QAction (QIcon (":/actions/icons/editcut.png"),
                               tr ("Cu&t"), _tool_bar);
+  _cut_action->setEnabled (false);
 
   _paste_action
     = new QAction (QIcon (":/actions/icons/editpaste.png"),
@@ -794,7 +820,6 @@ file_editor::construct (void)
 
   _comment_selection_action
     = new QAction (tr ("&Comment"), _tool_bar);
-
   _uncomment_selection_action
     = new QAction (tr ("&Uncomment"), _tool_bar);
 
@@ -866,7 +891,10 @@ file_editor::construct (void)
   fileMenu->addAction (new_action);
   fileMenu->addAction (open_action);
   fileMenu->addMenu (_mru_file_menu);
-
+  fileMenu->addSeparator ();
+  _context_edit_action =
+    fileMenu->addAction (QIcon (), tr ("&Edit Function"),
+                         this, SLOT (request_context_edit (bool)));
   fileMenu->addSeparator ();
   fileMenu->addAction (_save_action);
   fileMenu->addAction (_save_as_action);
@@ -925,7 +953,20 @@ file_editor::construct (void)
 
   QMenu *_run_menu = new QMenu (tr ("&Run"), _menu_bar);
   _run_menu->addAction (_run_action);
+  _context_run_action =
+    _run_menu->addAction (QIcon (), tr ("Run &Selection"),
+                           this, SLOT (request_context_run (bool)));
+  _context_run_action->setEnabled (false);
   _menu_bar->addMenu (_run_menu);
+
+  QMenu *_help_menu = new QMenu (tr ("&Help"), _menu_bar);
+  _context_help_action =
+    _help_menu->addAction (QIcon (), tr ("&Help on Keyword"),
+                           this, SLOT (request_context_help (bool)));
+  _context_doc_action =
+    _help_menu->addAction (QIcon (), tr ("&Documentation on Keyword"),
+                           this, SLOT (request_context_doc (bool)));
+  _menu_bar->addMenu (_help_menu);
 
   // shortcuts
   set_shortcuts (true);
@@ -1107,6 +1148,12 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_paste (const QWidget*)),
            f, SLOT (paste (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_context_help (const QWidget*, bool)),
+           f, SLOT (context_help (const QWidget*, bool)));
+
+  connect (this, SIGNAL (fetab_context_edit (const QWidget*)),
+           f, SLOT (context_edit (const QWidget*)));
+
   connect (this, SIGNAL (fetab_save_file (const QWidget*)),
            f, SLOT (save_file (const QWidget*)));
 
@@ -1118,6 +1165,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   connect (this, SIGNAL (fetab_run_file (const QWidget*)),
            f, SLOT (run_file (const QWidget*)));
+
+  connect (this, SIGNAL (fetab_context_run (const QWidget*)),
+           f, SLOT (context_run (const QWidget*)));
 
   connect (this, SIGNAL (fetab_toggle_bookmark (const QWidget*)),
            f, SLOT (toggle_bookmark (const QWidget*)));
@@ -1199,12 +1249,14 @@ file_editor::set_shortcuts (bool set)
 {
   if (set)
     {
-      _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_7);
-      _uncomment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_8);
+      _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_R);
+      _uncomment_selection_action->setShortcut (Qt::SHIFT + Qt::ControlModifier + Qt::Key_R);
 
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);
       _paste_action->setShortcut (QKeySequence::Paste);
+      _context_help_action->setShortcut (QKeySequence::HelpContents);
+      _context_doc_action->setShortcut (Qt::SHIFT + Qt::Key_F1);
 
       _find_action->setShortcut (QKeySequence::Find);
       _goto_line_action->setShortcut (Qt::ControlModifier+ Qt::Key_G);
@@ -1214,8 +1266,10 @@ file_editor::set_shortcuts (bool set)
       _toggle_bookmark_action->setShortcut (Qt::Key_F7);
 
       _print_action->setShortcut (QKeySequence::Print);
-      _run_action->setShortcut (Qt::ControlModifier+ Qt::Key_R);
+      _run_action->setShortcut (Qt::Key_F5);
+      _context_run_action->setShortcut (Qt::Key_F9);
 
+      _context_edit_action->setShortcut (Qt::ControlModifier + Qt::Key_E);
       _save_action->setShortcut (QKeySequence::Save);
       _save_as_action->setShortcut (QKeySequence::SaveAs);
       _close_action->setShortcut (QKeySequence::Close);
@@ -1233,6 +1287,7 @@ file_editor::set_shortcuts (bool set)
       _copy_action->setShortcut (no_key);
       _cut_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
+      _context_help_action->setShortcut (no_key);
 
       _find_action->setShortcut (no_key);
       _goto_line_action->setShortcut (no_key);
@@ -1243,7 +1298,9 @@ file_editor::set_shortcuts (bool set)
 
       _print_action->setShortcut (no_key);
       _run_action->setShortcut (no_key);
+      _context_run_action->setShortcut (no_key);
 
+      _context_edit_action->setShortcut (no_key);
       _save_action->setShortcut (no_key);
       _save_as_action->setShortcut (no_key);
       _close_action->setShortcut (no_key);
@@ -1261,9 +1318,9 @@ file_editor::check_actions ()
   _comment_selection_action->setEnabled (have_tabs);
   _uncomment_selection_action->setEnabled (have_tabs);
 
-  _copy_action->setEnabled (have_tabs);
-  _cut_action->setEnabled (have_tabs);
   _paste_action->setEnabled (have_tabs);
+  _context_help_action->setEnabled (have_tabs);
+  _context_doc_action->setEnabled (have_tabs);
 
   _find_action->setEnabled (have_tabs);
   _goto_line_action->setEnabled (have_tabs);
@@ -1271,10 +1328,12 @@ file_editor::check_actions ()
   _next_bookmark_action->setEnabled (have_tabs);
   _previous_bookmark_action->setEnabled (have_tabs);
   _toggle_bookmark_action->setEnabled (have_tabs);
+  _remove_bookmark_action->setEnabled (have_tabs);
 
   _print_action->setEnabled (have_tabs);
   _run_action->setEnabled (have_tabs);
 
+  _context_edit_action->setEnabled (have_tabs);
   _save_action->setEnabled (have_tabs);
   _save_as_action->setEnabled (have_tabs);
   _close_action->setEnabled (have_tabs);

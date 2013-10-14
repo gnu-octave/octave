@@ -1215,11 +1215,16 @@ Sparse<T>::delete_elements (const idx_vector& idx)
       else
         *this = index (idx.complement (nc));
     }
-  else
+  else if (idx.length (nel) != 0)
     {
-      *this = index (idx_vector::colon);
-      delete_elements (idx);
-      *this = transpose (); // We want a row vector.
+      if (idx.is_colon_equiv (nel))
+        *this = Sparse<T> ();
+      else
+        {
+          *this = index (idx_vector::colon);
+          delete_elements (idx);
+          *this = transpose (); // We want a row vector.
+        }
     }
 }
 
@@ -1324,8 +1329,21 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
         }
     }
   else
-    (*current_liboctave_error_handler)
-      ("a null assignment can only have one non-colon index");
+    {
+      // Empty assignment (no elements to delete) is OK if there is at
+      // least one zero-length index and at most one other index that is
+      // non-colon (or equivalent) index.  Since we only have two
+      // indices, we just need to check that we have at least one zero
+      // length index.  Matlab considers "[]" to be an empty index but
+      // not "false".  We accept both.
+
+      bool empty_assignment
+        = (idx_i.length (nr) == 0 || idx_j.length (nc) == 0);
+
+      if (! empty_assignment)
+        (*current_liboctave_error_handler)
+          ("a null assignment can only have one non-colon index");
+    }
 }
 
 template <class T>

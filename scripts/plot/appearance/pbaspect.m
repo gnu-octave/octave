@@ -70,7 +70,7 @@ function pbratio = pbaspect (varargin)
     pbratio = get (hax, "plotboxaspectratio");
   else
     arg = varargin{1};
-    if (isreal (arg))
+    if (isnumeric (arg))
       if (numel (arg) == 2)
         set (hax, "plotboxaspectratio", [arg, 1]);
       elseif (numel (arg) == 3)

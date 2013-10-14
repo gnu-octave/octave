@@ -69,6 +69,7 @@ main_window::main_window (QWidget *p)
   : QMainWindow (p),
     _workspace_model (new workspace_model ()),
     status_bar (new QStatusBar ()),
+    news_window (new news_dock_widget (this)),
     command_window (new terminal_dock_widget (this)),
     history_window (new history_dock_widget (this)),
     file_browser_window (new files_dock_widget (this)),
@@ -93,6 +94,7 @@ main_window::~main_window (void)
   // to its original pipe to capture error messages at exit.
 
   delete editor_window;     // first one for dialogs of modified editor-tabs
+  delete news_window;
   delete command_window;
   delete workspace_window;
   delete doc_browser_window;
@@ -247,6 +249,31 @@ main_window::open_online_documentation_page (void)
 }
 
 void
+main_window::display_release_notes (void)
+{
+  display_url_in_window (QUrl ("file://" OCTAVE_OCTETCDIR "/NEWS"));
+}
+
+void
+main_window::display_url_in_window (const QUrl& url)
+{
+  QWidget *w = new QWidget;
+
+  QTextBrowser *browser = new QTextBrowser (w);
+  browser->setSource (url);
+
+  QVBoxLayout *vlayout = new QVBoxLayout;
+  vlayout->addWidget (browser);
+
+  w->setLayout (vlayout);
+  w->setWindowTitle (tr ("Octave Release Notes"));
+  w->setWindowIcon (QIcon (_release_notes_icon));
+  w->show ();
+  w->raise ();
+  w->activateWindow ();
+}
+
+void
 main_window::open_bug_tracker_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://octave.org/bugs.html"));
@@ -341,6 +368,11 @@ main_window::notice_settings (const QSettings *settings)
           widget->setWindowIcon (QIcon (icon));
         }
     }
+  if (widget_icon_data[icon_set_found].name != "NONE")
+     _release_notes_icon = widget_icon_data[icon_set_found].path
+                           + "ReleaseWidget.png";
+  else
+     _release_notes_icon = ":/actions/icons/logo.png";
 
   int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
@@ -653,14 +685,8 @@ main_window::write_settings (void)
 void
 main_window::connect_visibility_changed (void)
 {
-  command_window->connect_visibility_changed ();
-  history_window->connect_visibility_changed ();
-  file_browser_window->connect_visibility_changed ();
-  doc_browser_window->connect_visibility_changed ();
-#ifdef HAVE_QSCINTILLA
-  editor_window->connect_visibility_changed ();
-#endif
-  workspace_window->connect_visibility_changed ();
+  foreach (octave_dock_widget *widget, dock_widget_list ())
+    widget->connect_visibility_changed ();
 }
 
 void
@@ -863,6 +889,7 @@ main_window::construct (void)
                   | QMainWindow::AllowNestedDocks
                   | QMainWindow::AllowTabbedDocks);
 
+  addDockWidget (Qt::RightDockWidgetArea, news_window);
   addDockWidget (Qt::RightDockWidgetArea, command_window);
   addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
   tabifyDockWidget (command_window, doc_browser_window);
@@ -1021,6 +1048,8 @@ main_window::construct_menu_bar (void)
   construct_window_menu (menu_bar);
 
   construct_help_menu (menu_bar);
+
+  construct_news_menu (menu_bar);
 }
 
 void
@@ -1266,6 +1295,9 @@ main_window::construct_window_menu (QMenuBar *p)
   QAction *show_documentation_action = construct_window_menu_item
     (window_menu, tr ("Show Documentation"), true, ctrl_shift + Qt::Key_5);
 
+  QAction *show_news_action = construct_window_menu_item
+    (window_menu, tr ("Show News Window"), true, ctrl_shift + Qt::Key_6);
+
   window_menu->addSeparator ();
 
   QAction *command_window_action = construct_window_menu_item
@@ -1285,6 +1317,9 @@ main_window::construct_window_menu (QMenuBar *p)
 
   QAction *documentation_action = construct_window_menu_item
     (window_menu, tr ("Documentation"), false, ctrl + Qt::Key_5);
+
+  QAction *news_action = construct_window_menu_item
+    (window_menu, tr ("News"), false, ctrl + Qt::Key_6);
 
   window_menu->addSeparator ();
 
@@ -1323,6 +1358,12 @@ main_window::construct_window_menu (QMenuBar *p)
            show_editor_action, SLOT (setChecked (bool)));
 #endif
 
+  connect (show_news_action, SIGNAL (toggled (bool)),
+           news_window, SLOT (setVisible (bool)));
+
+  connect (news_window, SIGNAL (active_changed (bool)),
+           show_news_action, SLOT (setChecked (bool)));
+
   connect (show_documentation_action, SIGNAL (toggled (bool)),
            doc_browser_window, SLOT (setVisible (bool)));
 
@@ -1345,6 +1386,9 @@ main_window::construct_window_menu (QMenuBar *p)
   connect (editor_action, SIGNAL (triggered ()),
            editor_window, SLOT (focus ()));
 #endif
+
+  connect (news_action, SIGNAL (triggered ()),
+           news_window, SLOT (focus ()));
 
   connect (documentation_action, SIGNAL (triggered ()),
            doc_browser_window, SLOT (focus ()));
@@ -1417,6 +1461,24 @@ main_window::construct_documentation_menu (QMenu *p)
 
   connect (online_documentation_action, SIGNAL (triggered ()),
            this, SLOT (open_online_documentation_page ()));
+}
+
+void
+main_window::construct_news_menu (QMenuBar *p)
+{
+  QMenu *news_menu = p->addMenu (tr ("&News"));
+
+  QAction *release_notes_action
+    = news_menu->addAction (tr ("Release Notes"));
+
+  QAction *current_news_action
+    = news_menu->addAction (tr ("Community News"));
+
+  connect (release_notes_action, SIGNAL (triggered ()),
+           this, SLOT (display_release_notes ()));
+
+  connect (current_news_action, SIGNAL (triggered ()),
+           news_window, SLOT (show ()));
 }
 
 void

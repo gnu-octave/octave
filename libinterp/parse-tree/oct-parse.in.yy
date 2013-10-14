@@ -260,7 +260,7 @@ make_statement (T *arg)
 %type <tree_matrix_type> matrix_rows
 %type <tree_cell_type> cell_rows
 %type <tree_expression_type> matrix cell
-%type <tree_expression_type> primary_expr oper_expr
+%type <tree_expression_type> primary_expr oper_expr power_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_funcall_type> superclass_identifier meta_identifier
@@ -320,6 +320,13 @@ make_statement (T *arg)
 %left POW EPOW HERMITIAN TRANSPOSE
 %right PLUS_PLUS MINUS_MINUS
 %left '(' '.' '{'
+
+// How to clean up if there is a parse error.  We handle deleting tokens
+// and comments seperately and separators are just characters.  The
+// remaining items are dynamically allocated parse tree objects that
+// must be deleted.
+%destructor { } <sep_type> <tok_val> <comment_type> <dummy_type> <>
+%destructor { delete $$; } <*>
 
 // Where to start.
 %start input
@@ -393,7 +400,10 @@ word_list_cmd   : identifier word_list
                   {
                     $$ = parser.make_index_expression ($1, $2, '(');
                     if (! $$)
-                      ABORT_PARSE;
+                      {
+                        // make_index_expression deleted $1 and $2.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -598,25 +608,37 @@ oper_expr       : primary_expr
                   {
                     $$ = parser.make_index_expression ($1, 0, '(');
                     if (! $$)
-                      ABORT_PARSE;
+                      {
+                        // make_index_expression deleted $1.
+                        ABORT_PARSE;
+                      }
                   }
                 | oper_expr '(' arg_list ')'
                   {
                     $$ = parser.make_index_expression ($1, $3, '(');
                     if (! $$)
-                      ABORT_PARSE;
+                      {
+                        // make_index_expression deleted $1 and $3.
+                        ABORT_PARSE;
+                      }
                   }
                 | oper_expr '{' '}'
                   {
                     $$ = parser.make_index_expression ($1, 0, '{');
                     if (! $$)
-                      ABORT_PARSE;
+                      {
+                        // make_index_expression deleted $1.
+                        ABORT_PARSE;
+                      }
                   }
                 | oper_expr '{' arg_list '}'
                   {
                     $$ = parser.make_index_expression ($1, $3, '{');
                     if (! $$)
-                      ABORT_PARSE;
+                      {
+                        // make_index_expression deleted $1 and $3.
+                        ABORT_PARSE;
+                      }
                   }
                 | oper_expr HERMITIAN
                   { $$ = parser.make_postfix_op (HERMITIAN, $1, $2); }
@@ -636,9 +658,9 @@ oper_expr       : primary_expr
                   { $$ = parser.make_prefix_op ('+', $2, $1); }
                 | '-' oper_expr %prec UNARY
                   { $$ = parser.make_prefix_op ('-', $2, $1); }
-                | oper_expr POW oper_expr
+                | oper_expr POW power_expr
                   { $$ = parser.make_binary_op (POW, $1, $2, $3); }
-                | oper_expr EPOW oper_expr
+                | oper_expr EPOW power_expr
                   { $$ = parser.make_binary_op (EPOW, $1, $2, $3); }
                 | oper_expr '+' oper_expr
                   { $$ = parser.make_binary_op ('+', $1, $2, $3); }
@@ -662,6 +684,64 @@ oper_expr       : primary_expr
                   { $$ = parser.make_binary_op (ELEFTDIV, $1, $2, $3); }
                 ;
 
+power_expr      : primary_expr
+                  { $$ = $1; }
+                | power_expr PLUS_PLUS
+                  { $$ = parser.make_postfix_op (PLUS_PLUS, $1, $2); }
+                | power_expr MINUS_MINUS
+                  { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
+                | power_expr '(' ')'
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '(');
+                    if (! $$)
+                      {
+                        // make_index_expression deleted $1.
+                        ABORT_PARSE;
+                      }
+                  }
+                | power_expr '(' arg_list ')'
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '(');
+                    if (! $$)
+                      {
+                        // make_index_expression deleted $1 and $3.
+                        ABORT_PARSE;
+                      }
+                  }
+                | power_expr '{' '}'
+                  {
+                    $$ = parser.make_index_expression ($1, 0, '{');
+                    if (! $$)
+                      {
+                        // make_index_expression deleted $1.
+                        ABORT_PARSE;
+                      }
+                  }
+                | power_expr '{' arg_list '}'
+                  {
+                    $$ = parser.make_index_expression ($1, $3, '{');
+                    if (! $$)
+                      {
+                        // make_index_expression deleted $1 and $3.
+                        ABORT_PARSE;
+                      }
+                  }
+                | power_expr indirect_ref_op STRUCT_ELT
+                  { $$ = parser.make_indirect_ref ($1, $3->text ()); }
+                | power_expr indirect_ref_op '(' expression ')'
+                  { $$ = parser.make_indirect_ref ($1, $4); }
+                | PLUS_PLUS power_expr %prec POW
+                  { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
+                | MINUS_MINUS power_expr %prec POW
+                  { $$ = parser.make_prefix_op (MINUS_MINUS, $2, $1); }
+                | EXPR_NOT power_expr %prec POW
+                  { $$ = parser.make_prefix_op (EXPR_NOT, $2, $1); }
+                | '+' power_expr %prec POW
+                  { $$ = parser.make_prefix_op ('+', $2, $1); }
+                | '-' power_expr %prec POW
+                  { $$ = parser.make_prefix_op ('-', $2, $1); }
+                ;
+
 colon_expr      : colon_expr1
                   { $$ = parser.finish_colon_expression ($1); }
                 ;
@@ -671,7 +751,11 @@ colon_expr1     : oper_expr
                 | colon_expr1 ':' oper_expr
                   {
                     if (! ($$ = $1->append ($3)))
-                      ABORT_PARSE;
+                      {
+                        delete $1;
+                        delete $3;
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -844,7 +928,10 @@ select_command  : if_command
 if_command      : IF stash_comment if_cmd_list END
                   {
                     if (! ($$ = parser.finish_if_command ($1, $3, $4, $2)))
-                      ABORT_PARSE;
+                      {
+                        // finish_if_command deleted $3.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -889,7 +976,10 @@ else_clause     : ELSE stash_comment opt_sep opt_list
 switch_command  : SWITCH stash_comment expression opt_sep case_list END
                   {
                     if (! ($$ = parser.finish_switch_command ($1, $3, $5, $6, $2)))
-                      ABORT_PARSE;
+                      {
+                        // finish_switch_command deleted $3 adn $5.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -934,36 +1024,50 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                     $3->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
 
                     if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
-                      ABORT_PARSE;
+                      {
+                        // make_while_command deleted $3 and $6.
+                        ABORT_PARSE;
+                      }
                   }
                 | DO stash_comment opt_sep opt_list UNTIL expression
                   {
-                    if (! ($$ = parser.make_do_until_command ($5, $4, $6, $2)))
-                      ABORT_PARSE;
+                    $$ = parser.make_do_until_command ($5, $4, $6, $2);
                   }
                 | FOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_for_command (FOR, $1, $3, $5, 0,
-                                                  $8, $9, $2)))
-                      ABORT_PARSE;
+                                                         $8, $9, $2)))
+                      {
+                        // make_for_command deleted $3, $5, and $8.
+                        ABORT_PARSE;
+                      }
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_for_command (FOR, $1, $4, $6, 0,
-                                                  $9, $10, $2)))
-                      ABORT_PARSE;
+                                                         $9, $10, $2)))
+                      {
+                        // make_for_command deleted $4, $6, and $9.
+                        ABORT_PARSE;
+                      }
                   }
                 | PARFOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_for_command (PARFOR, $1, $3, $5,
-                                                  0, $8, $9, $2)))
-                      ABORT_PARSE;
+                                                         0, $8, $9, $2)))
+                      {
+                        // make_for_command deleted $3, $5, and $8.
+                        ABORT_PARSE;
+                      }
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_for_command (PARFOR, $1, $4, $6,
-                                                  $8, $11, $12, $2)))
-                      ABORT_PARSE;
+                                                         $8, $11, $12, $2)))
+                      {
+                        // make_for_command deleted $4, $6, $8, and $11.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -972,20 +1076,11 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
 // =======
 
 jump_command    : BREAK
-                  {
-                    if (! ($$ = parser.make_break_command ($1)))
-                      ABORT_PARSE;
-                  }
+                  { $$ = parser.make_break_command ($1); }
                 | CONTINUE
-                  {
-                    if (! ($$ = parser.make_continue_command ($1)))
-                      ABORT_PARSE;
-                  }
+                  { $$ = parser.make_continue_command ($1); }
                 | FUNC_RET
-                  {
-                    if (! ($$ = parser.make_return_command ($1)))
-                      ABORT_PARSE;
-                  }
+                  { $$ = parser.make_return_command ($1); }
                 ;
 
 // ==========
@@ -996,18 +1091,27 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                   stash_comment opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
-                      ABORT_PARSE;
+                      {
+                        // make_unwind_command deleted $4 and $8.
+                        ABORT_PARSE;
+                      }
                   }
                 | TRY stash_comment opt_sep opt_list CATCH stash_comment
                   opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_try_command ($1, $4, $7, $8, $9, $2, $6)))
-                      ABORT_PARSE;
+                      {
+                        // make_try_command deleted $4 and $8.
+                        ABORT_PARSE;
+                      }
                   }
                 | TRY stash_comment opt_sep opt_list END
                   {
                     if (! ($$ = parser.make_try_command ($1, $4, 0, 0, $5, $2, 0)))
-                      ABORT_PARSE;
+                      {
+                        // make_try_command deleted $4.
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -1089,7 +1193,10 @@ param_list1     : // empty
                         $$ = $1;
                       }
                     else
-                      ABORT_PARSE;
+                      {
+                        delete $1;
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -1131,7 +1238,10 @@ return_list     : '[' ']'
                     if (tmp->validate (tree_parameter_list::out))
                       $$ = tmp;
                     else
-                      ABORT_PARSE;
+                      {
+                        delete tmp;
+                        ABORT_PARSE;
+                      }
                   }
                 | '[' return_list1 ']'
                   {
@@ -1143,7 +1253,10 @@ return_list     : '[' ']'
                     if ($2->validate (tree_parameter_list::out))
                       $$ = $2;
                     else
-                      ABORT_PARSE;
+                      {
+                        delete $2;
+                        ABORT_PARSE;
+                      }
                   }
                 ;
 
@@ -1162,7 +1275,17 @@ return_list1    : identifier
 
 file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
-                    if (! lexer.reading_fcn_file)
+                    if (lexer.reading_fcn_file)
+                      {
+                        // Delete the dummy statement_list we created
+                        // after parsing the function.  Any function
+                        // definitions found in the file have already
+                        // been stored in the symbol table or in
+                        // octave_base_parser::primary_fcn_ptr.
+
+                        delete $3;
+                      }
+                    else
                       {
                         tree_statement *end_of_script
                           = parser.make_end ("endscript", true,
@@ -1246,8 +1369,7 @@ function1       : fcn_name function2
                     else if (lexer.parsing_classdef_set_method)
                       fname.insert (0, "set.");
 
-                    if (! ($$ = parser.frob_function (fname, $2)))
-                      ABORT_PARSE;
+                    $$ = parser.frob_function (fname, $2);
                   }
                 ;
 
@@ -2281,6 +2403,11 @@ octave_base_parser::make_unwind_command (token *unwind_tok,
       retval = new tree_unwind_protect_command (body, cleanup_stmts,
                                                 lc, mc, tc, l, c);
     }
+  else
+    {
+      delete body;
+      delete cleanup_stmts;
+    }
 
   return retval;
 }
@@ -2327,6 +2454,11 @@ octave_base_parser::make_try_command (token *try_tok,
       retval = new tree_try_catch_command (body, cleanup_stmts, id,
                                            lc, mc, tc, l, c);
     }
+  else
+    {
+      delete body;
+      delete cleanup_stmts;
+    }
 
   return retval;
 }
@@ -2355,6 +2487,11 @@ octave_base_parser::make_while_command (token *while_tok,
 
       retval = new tree_while_command (expr, body, lc, tc, l, c);
     }
+  else
+    {
+      delete expr;
+      delete body;
+    }
 
   return retval;
 }
@@ -2367,8 +2504,6 @@ octave_base_parser::make_do_until_command (token *until_tok,
                                            tree_expression *expr,
                                            octave_comment_list *lc)
 {
-  tree_command *retval = 0;
-
   maybe_warn_assign_as_truth_value (expr);
 
   octave_comment_list *tc = octave_comment_buffer::get_comment ();
@@ -2378,9 +2513,7 @@ octave_base_parser::make_do_until_command (token *until_tok,
   int l = until_tok->line ();
   int c = until_tok->column ();
 
-  retval = new tree_do_until_command (expr, body, lc, tc, l, c);
-
-  return retval;
+  return new tree_do_until_command (expr, body, lc, tc, l, c);
 }
 
 // Build a for command.
@@ -2425,6 +2558,13 @@ octave_base_parser::make_for_command (int tok_id, token *for_tok,
                                                    lc, tc, l, c);
         }
     }
+  else
+    {
+      delete lhs;
+      delete expr;
+      delete maxproc;
+      delete body;
+    }
 
   return retval;
 }
@@ -2434,14 +2574,10 @@ octave_base_parser::make_for_command (int tok_id, token *for_tok,
 tree_command *
 octave_base_parser::make_break_command (token *break_tok)
 {
-  tree_command *retval = 0;
-
   int l = break_tok->line ();
   int c = break_tok->column ();
 
-  retval = new tree_break_command (l, c);
-
-  return retval;
+  return new tree_break_command (l, c);
 }
 
 // Build a continue command.
@@ -2449,14 +2585,10 @@ octave_base_parser::make_break_command (token *break_tok)
 tree_command *
 octave_base_parser::make_continue_command (token *continue_tok)
 {
-  tree_command *retval = 0;
-
   int l = continue_tok->line ();
   int c = continue_tok->column ();
 
-  retval = new tree_continue_command (l, c);
-
-  return retval;
+  return new tree_continue_command (l, c);
 }
 
 // Build a return command.
@@ -2464,14 +2596,10 @@ octave_base_parser::make_continue_command (token *continue_tok)
 tree_command *
 octave_base_parser::make_return_command (token *return_tok)
 {
-  tree_command *retval = 0;
-
   int l = return_tok->line ();
   int c = return_tok->column ();
 
-  retval = new tree_return_command (l, c);
-
-  return retval;
+  return new tree_return_command (l, c);
 }
 
 // Start an if command.
@@ -2517,6 +2645,8 @@ octave_base_parser::finish_if_command (token *if_tok,
 
       retval = new tree_if_command (list, lc, tc, l, c);
     }
+  else
+    delete list;
 
   return retval;
 }
@@ -2567,6 +2697,11 @@ octave_base_parser::finish_switch_command (token *switch_tok,
         }
 
       retval = new tree_switch_command (expr, list, lc, tc, l, c);
+    }
+  else
+    {
+      delete expr;
+      delete list;
     }
 
   return retval;
@@ -3116,6 +3251,10 @@ octave_base_parser::make_index_expression (tree_expression *expr,
   if (args && args->has_magic_tilde ())
     {
       bison_error ("invalid use of empty argument (~) in index expression");
+
+      delete expr;
+      delete args;
+
       return retval;
     }
 

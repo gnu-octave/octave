@@ -676,7 +676,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
     {
       // This is cruft for backward compatiability and easy data
       // importation
-      if (rank == 0)
+      if (rank == 0) //FIXME: Does rank==0 even exist for strings in HDF5?
         {
           // a single string:
           int slen = H5Tget_size (type_hid);
@@ -693,7 +693,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
               // create datatype for (null-terminated) string
               // to read into:
               hid_t st_id = H5Tcopy (H5T_C_S1);
-              H5Tset_size (st_id, slen);
+              H5Tset_size (st_id, slen+1);
               if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
                 {
                   H5Tclose (st_id);
@@ -731,12 +731,12 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
               // same physical length (I think), which is
               // slightly wasteful, but oh well.
 
-              OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
+              OCTAVE_LOCAL_BUFFER (char, s, elements * (slen+1));
 
               // create datatype for (null-terminated) string
               // to read into:
               hid_t st_id = H5Tcopy (H5T_C_S1);
-              H5Tset_size (st_id, slen);
+              H5Tset_size (st_id, slen+1);
 
               if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
                 {
@@ -747,10 +747,10 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
                   return false;
                 }
 
-              charMatrix chm (elements, slen - 1);
+              charMatrix chm (elements, slen, ' ');
               for (hsize_t i = 0; i < elements; ++i)
                 {
-                  chm.insert (s + i*slen, i, 0);
+                  chm.insert (s + i*(slen+1), i, 0);
                 }
 
               matrix = chm;

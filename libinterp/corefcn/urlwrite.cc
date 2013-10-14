@@ -410,7 +410,9 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   frame.add_fcn (delete_file, filename);
 
-  url_transfer curl = url_transfer (url, method, param, ofile);
+  url_transfer curl = url_transfer (url, ofile);
+
+  curl.http_action (param, method);
 
   ofile.close ();
 
@@ -535,7 +537,9 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   std::ostringstream buf;
 
-  url_transfer curl = url_transfer (url, method, param, buf);
+  url_transfer curl = url_transfer (url, buf);
+
+  curl.http_action (param, method);
 
   if (curl.good ())
     {

@@ -7343,10 +7343,13 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
                 reinterpret_cast<const char*> (in.data ());             \
               char* out;                                                \
               if (! error_state                                         \
-                  && octave_base64_encode (inc, inlen, &out))          \
-                retval(0) = octave_value (out);                         \
+                  && octave_base64_encode (inc, inlen, &out))           \
+                {                                                       \
+                  retval(0) = octave_value (out);                       \
+                  ::free (out);                                         \
+                }                                                       \
             }
-                                          
+
           MAKE_INT_BRANCH(int8)
           else MAKE_INT_BRANCH(int16)
           else MAKE_INT_BRANCH(int32)
@@ -7370,7 +7373,10 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           char* out;
           if (! error_state 
               && octave_base64_encode (inc, inlen, &out))
-            retval(0) = octave_value (out);
+            {
+              retval(0) = octave_value (out);
+              ::free (out);
+            }
         }                 
       else
         {
@@ -7382,7 +7388,10 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
           char* out;
           if (! error_state 
               && octave_base64_encode (inc, inlen, &out))
-            retval(0) = octave_value (out);
+            {
+              retval(0) = octave_value (out);
+              ::free (out);
+            }
         }
     }  
   return retval;

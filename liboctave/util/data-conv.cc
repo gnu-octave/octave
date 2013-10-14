@@ -627,13 +627,6 @@ gripe_unrecognized_float_fmt (void)
     ("unrecognized floating point format requested");
 }
 
-static void
-gripe_data_conversion (const char *from, const char *to)
-{
-  (*current_liboctave_error_handler)
-    ("unable to convert from %s to %s format", from, to);
-}
-
 // But first, some data conversion routines.
 
 // Currently, we only handle conversions for the IEEE types.  To fix

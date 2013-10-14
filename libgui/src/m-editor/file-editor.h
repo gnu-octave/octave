@@ -74,10 +74,13 @@ signals:
   void fetab_copy (const QWidget* ID);
   void fetab_cut (const QWidget* ID);
   void fetab_paste (const QWidget* ID);
+  void fetab_context_help (const QWidget* ID, bool);
+  void fetab_context_edit (const QWidget* ID);
   void fetab_save_file (const QWidget* ID);
   void fetab_save_file_as (const QWidget* ID);
   void fetab_print_file (const QWidget* ID);
   void fetab_run_file (const QWidget* ID);
+  void fetab_context_run (const QWidget* ID);
   void fetab_toggle_bookmark (const QWidget* ID);
   void fetab_next_bookmark (const QWidget* ID);
   void fetab_previous_bookmark (const QWidget* ID);
@@ -114,9 +117,13 @@ public slots:
   void request_copy (void);
   void request_cut (void);
   void request_paste (void);
+  void request_context_help (bool);
+  void request_context_doc (bool);
+  void request_context_edit (bool);
   void request_save_file (void);
   void request_save_file_as (void);
   void request_run_file (void);
+  void request_context_run (bool);
   void request_toggle_bookmark (void);
   void request_next_bookmark (void);
   void request_previous_bookmark (void);
@@ -190,6 +197,8 @@ private:
   QAction *_copy_action;
   QAction *_cut_action;
   QAction *_paste_action;
+  QAction *_context_help_action;
+  QAction *_context_doc_action;
 
   QAction *_find_action;
   QAction *_goto_line_action;
@@ -201,7 +210,9 @@ private:
 
   QAction *_print_action;
   QAction *_run_action;
+  QAction *_context_run_action;
 
+  QAction *_context_edit_action;
   QAction *_save_action;
   QAction *_save_as_action;
   QAction *_close_action;

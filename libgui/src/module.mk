@@ -36,8 +36,10 @@ octave_gui_ICONS = \
   src/icons/graphic_logo_FileEditor.png \
   src/icons/graphic_logo_FilesDockWidget.png \
   src/icons/graphic_logo_HistoryDockWidget.png \
+  src/icons/graphic_logo_NewsDockWidget.png \
   src/icons/graphic_logo_TerminalDockWidget.png \
   src/icons/graphic_logo_WorkspaceView.png \
+  src/icons/graphic_logo_ReleaseWidget.png \
   src/icons/help_index.png \
   src/icons/home.png \
   src/icons/icons_license \
@@ -46,8 +48,10 @@ octave_gui_ICONS = \
   src/icons/letter_logo_FileEditor.png \
   src/icons/letter_logo_FilesDockWidget.png \
   src/icons/letter_logo_HistoryDockWidget.png \
+  src/icons/letter_logo_NewsDockWidget.png \
   src/icons/letter_logo_TerminalDockWidget.png \
   src/icons/letter_logo_WorkspaceView.png \
+  src/icons/letter_logo_ReleaseWidget.png \
   src/icons/logo.png \
   src/icons/ok.png \
   src/icons/question.png \
@@ -85,6 +89,7 @@ octave_gui_MOC += \
   src/moc-main-window.cc \
   src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
+  src/moc-news-dock-widget.cc \
   src/moc-terminal-dock-widget.cc \
   src/moc-color-picker.cc \
   src/moc-welcome-wizard.cc \
@@ -99,8 +104,7 @@ octave_gui_MOC += \
 octave_gui_RC = src/qrc-resource.cc
 
 octave_gui_UI = \
-  src/settings-dialog.ui \
-  src/welcome-wizard.ui
+  src/settings-dialog.ui
 
 octave_gui_UI_H = $(patsubst src/%.ui, src/ui-%.h, $(octave_gui_UI))
 
@@ -125,6 +129,7 @@ noinst_HEADERS += \
   src/qtinfo/webinfo.h \
   src/resource-manager.h \
   src/settings-dialog.h \
+  src/news-dock-widget.h \
   src/terminal-dock-widget.h \
   src/color-picker.h \
   src/welcome-wizard.h \
@@ -151,6 +156,7 @@ src_libgui_src_la_SOURCES = \
   src/qtinfo/webinfo.cc \
   src/resource-manager.cc \
   src/settings-dialog.cc \
+  src/news-dock-widget.cc \
   src/terminal-dock-widget.cc \
   src/color-picker.cc \
   src/welcome-wizard.cc \

@@ -1,7 +1,6 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,20 +20,55 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef WELCOMEWIZARD_H
-#define WELCOMEWIZARD_H
+#ifndef NEWSDOCKWIDGET_H
+#define NEWSDOCKWIDGET_H
 
-#include <QDialog>
+#include <QTextBrowser>
 
-class welcome_wizard : public QDialog
+#include "octave-dock-widget.h"
+
+class news_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
 
 public:
 
-  welcome_wizard (QWidget *parent = 0);
+  news_dock_widget (QWidget *parent = 0);
 
-  ~welcome_wizard (void) { }
+  void load_news (void);
+
+protected slots:
+
+  void display_news (const QString& news);
+
+private:
+
+  QTextBrowser *browser;
 };
 
-#endif // WELCOMEWIZARD_H
+class news_reader : public QObject
+{
+  Q_OBJECT
+ 
+public:
+
+  news_reader (const QString& xbase_url, const QString& xpage)
+    : QObject (), base_url (xbase_url), page (xpage) { }
+ 
+public slots:
+
+    void process (void);
+ 
+signals:
+
+  void display_news_signal (const QString& news);
+
+  void finished (void);
+ 
+private:
+
+  QString base_url;
+  QString page;
+};
+
+#endif // NEWSDOCKWIDGET_H

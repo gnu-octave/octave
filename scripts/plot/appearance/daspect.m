@@ -27,7 +27,7 @@
 ## The aspect ratio is a normalized 3-element vector representing the span of
 ## the x, y, and z-axis limits.
 ## 
-## @code{(daspect (@var{mode}))}
+## @code{daspect (@var{mode})}
 ##
 ## Set the data aspect ratio mode of the current axes.  @var{mode} is
 ## either @qcode{"auto"} or @qcode{"manual"}.
@@ -69,7 +69,7 @@ function daratio = daspect (varargin)
     daratio = get (hax, "dataaspectratio");
   else
     arg = varargin{1};
-    if (isreal (arg))
+    if (isnumeric (arg))
       if (numel (arg) == 2)
         set (hax, "dataaspectratio", [arg, 1]);
       elseif (numel (arg) == 3)

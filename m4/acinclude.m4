@@ -1467,7 +1467,7 @@ AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
     [octave_cv_callinst_addattribute_arg_is_attributes],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([
+        [AC_LANG_PROGRAM([[
 #ifdef HAVE_LLVM_IR_FUNCTION_H
           #include <llvm/IR/Instructions.h>
           #include <llvm/IR/Attributes.h>
@@ -1475,7 +1475,7 @@ AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
           #include <llvm/Instructions.h>
           #include <llvm/Attributes.h>
 #endif
-          ], [[
+          ]], [[
           llvm::CallInst *callinst;
           llvm::AttrBuilder attr_builder;
           attr_builder.addAttribute(llvm::Attributes::StructRet);
@@ -1534,9 +1534,9 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
         [AC_LANG_PROGRAM([[
-#ifdef LLVM_HAVE_IR_FUNCTION_H
-          #include <llvm/Function.h>
-          #include <llvm/Attributes.h>
+#ifdef HAVE_LLVM_IR_FUNCTION_H
+          #include <llvm/IR/Function.h>
+          #include <llvm/IR/Attributes.h>
 #else
           #include <llvm/Function.h>
           #include <llvm/Attributes.h>

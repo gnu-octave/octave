@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-view.h"
 #include "history-dock-widget.h"
 #include "files-dock-widget.h"
+#include "news-dock-widget.h"
 #include "terminal-dock-widget.h"
 #include "documentation-dock-widget.h"
 #include "octave-qt-link.h"
@@ -108,6 +109,7 @@ public slots:
   void new_file (const QString& commands = QString ());
   void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
+  void display_release_notes (void);
   void open_bug_tracker_page (void);
   void open_octave_packages_page (void);
   void open_agora_page (void);
@@ -216,7 +218,11 @@ private:
   void construct_help_menu (QMenuBar *p);
   void construct_documentation_menu (QMenu *p);
 
+  void construct_news_menu (QMenuBar *p);
+
   void construct_tool_bar (void);
+
+  void display_url_in_window (const QUrl& url);
 
   void establish_octave_link (void);
 
@@ -263,6 +269,7 @@ private:
   QStatusBar *status_bar;
 
   // Subwindows.
+  news_dock_widget *news_window;
   terminal_dock_widget *command_window;
   history_dock_widget *history_window;
   files_dock_widget *file_browser_window;
@@ -272,6 +279,7 @@ private:
   QList<octave_dock_widget *> dock_widget_list ()
   {
     QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
+    list.append (static_cast<octave_dock_widget *> (news_window));
     list.append (static_cast<octave_dock_widget *> (command_window));
     list.append (static_cast<octave_dock_widget *> (history_window));
     list.append (static_cast<octave_dock_widget *> (file_browser_window));
@@ -283,7 +291,10 @@ private:
     return list;
   }
 
+  QString _release_notes_icon;
+
   QToolBar *_main_tool_bar;
+
   QMenu *_debug_menu;
 
   QAction *_debug_continue;

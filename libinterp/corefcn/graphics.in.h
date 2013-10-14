@@ -1085,6 +1085,12 @@ public:
       current_val (v.default_value ())
   { }
 
+  color_property (const radio_values& v, const color_values& c)
+    : base_property ("", graphics_handle ()),
+      current_type (radio_t), color_val (c), radio_val (v),
+      current_val (v.default_value ())
+  { }
+
   color_property (const std::string& nm, const graphics_handle& h,
                   const color_values& c = color_values (),
                   const radio_values& v = radio_values ())
@@ -1426,6 +1432,7 @@ public:
   {
     add_constraint (dim_vector (-1, 1));
     add_constraint (dim_vector (1, -1));
+    add_constraint (dim_vector (0, 0));
   }
 
   row_vector_property (const row_vector_property& p)
@@ -1433,6 +1440,7 @@ public:
   {
     add_constraint (dim_vector (-1, 1));
     add_constraint (dim_vector (1, -1));
+    add_constraint (dim_vector (0, 0));
   }
 
   void add_constraint (const std::string& type)
@@ -2398,7 +2406,7 @@ public:
 
   virtual ~base_properties (void) { }
 
-  virtual std::string graphics_object_name (void) const { return "unknonwn"; }
+  virtual std::string graphics_object_name (void) const { return "unknown"; }
 
   void mark_modified (void);
 
@@ -3363,13 +3371,14 @@ public:
   protected:
     void init (void)
       {
-        colormap.add_constraint (dim_vector (-1, 3));
         alphamap.add_constraint (dim_vector (-1, 1));
+        colormap.add_constraint (dim_vector (-1, 3));
+        outerposition.add_constraint (dim_vector (1, 4));
         paperposition.add_constraint (dim_vector (1, 4));
+        papersize.add_constraint (dim_vector (1, 2));
         pointershapecdata.add_constraint (dim_vector (16, 16));
         pointershapehotspot.add_constraint (dim_vector (1, 2));
         position.add_constraint (dim_vector (1, 4));
-        outerposition.add_constraint (dim_vector (1, 4));
       }
 
   private:
@@ -4179,8 +4188,8 @@ public:
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
-      color_property markeredgecolor , "{auto}|none"
-      color_property markerfacecolor , "auto|{none}"
+      color_property markeredgecolor , color_property (radio_values ("{auto}|none"), color_values (0, 0, 0))
+      color_property markerfacecolor , color_property (radio_values ("auto|{none}"), color_values (0, 0, 0))
       double_property markersize , 6
       row_vector_property xdata u , default_data ()
       string_property xdatasource , ""
@@ -4271,10 +4280,10 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES (text)
-      color_property backgroundcolor , "{none}"
+      color_property backgroundcolor , color_property (radio_values ("{none}"), color_values (1, 1, 1))
       color_property color u , color_values (0, 0, 0)
       string_property displayname , ""
-      color_property edgecolor , "{none}"
+      color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
       radio_property erasemode , "{normal}|none|xor|background"
       array_property extent rG , Matrix (1, 4, 0.0)
@@ -4454,6 +4463,9 @@ public:
         cdata.add_constraint ("real");
         cdata.add_constraint (dim_vector (-1, -1));
         cdata.add_constraint (dim_vector (-1, -1, 3));
+        alphadata.add_constraint (dim_vector (-1, -1));
+        alphadata.add_constraint ("double");
+        alphadata.add_constraint ("uint8");
       }
 
   private:
@@ -4589,9 +4601,8 @@ public:
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
-      //radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
-      color_property markeredgecolor , "none|{auto}|flat"
-      color_property markerfacecolor , "{none}|auto|flat"
+      color_property markeredgecolor , color_property (radio_values ("none|{auto}|flat"), color_values (0, 0, 0))
+      color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
       radio_property normalmode , "{auto}|manual"
       double_property specularcolorreflectance , 1.0
@@ -4622,6 +4633,7 @@ public:
         xdata.add_constraint (dim_vector (-1, -1));
         ydata.add_constraint (dim_vector (-1, -1));
         zdata.add_constraint (dim_vector (-1, -1));
+        faces.add_constraint (dim_vector (-1, -1));
         vertices.add_constraint (dim_vector (-1, 2));
         vertices.add_constraint (dim_vector (-1, 3));
         cdata.add_constraint (dim_vector (-1, -1));
@@ -4629,6 +4641,7 @@ public:
         facevertexcdata.add_constraint (dim_vector (-1, 1));
         facevertexcdata.add_constraint (dim_vector (-1, 3));
         facevertexalphadata.add_constraint (dim_vector (-1, 1));
+        vertexnormals.add_constraint (dim_vector (-1, -1));
       }
 
   private:
@@ -4703,7 +4716,7 @@ public:
       radio_property edgelighting , "{none}|flat|gouraud|phong"
       radio_property erasemode , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
-      color_property facecolor , "none|{flat}|interp|texturemap"
+      color_property facecolor , color_property (radio_values ("none|{flat}|interp|texturemap"), color_values (0, 0, 0))
       radio_property facelighting , "{none}|flat|gouraud|phong"
       // FIXME: interpreter is not a Matlab surface property
       //        Octave uses this for legend() with the string displayname.
@@ -4711,9 +4724,8 @@ public:
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
-      //radio_property marker , "{none}|+|o|*|.|x|s|d|^|v|>|<|p|h"
-      color_property markeredgecolor , "none|{auto}|flat"
-      color_property markerfacecolor , "{none}|auto|flat"
+      color_property markeredgecolor , color_property (radio_values ("none|{auto}|flat"), color_values (0, 0, 0))
+      color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
       radio_property meshstyle , "{both}|row|column"
       radio_property normalmode u , "{auto}|manual"
@@ -4747,16 +4759,14 @@ public:
         xdata.add_constraint (dim_vector (-1, -1));
         ydata.add_constraint (dim_vector (-1, -1));
         zdata.add_constraint (dim_vector (-1, -1));
-        alphadata.add_constraint ("single");
+        cdata.add_constraint ("double");
+        cdata.add_constraint ("single");
+        cdata.add_constraint (dim_vector (-1, -1));
+        cdata.add_constraint (dim_vector (-1, -1, 3));
         alphadata.add_constraint ("double");
         alphadata.add_constraint ("uint8");
         alphadata.add_constraint (dim_vector (-1, -1));
         vertexnormals.add_constraint (dim_vector (-1, -1, 3));
-        cdata.add_constraint ("single");
-        cdata.add_constraint ("double");
-        cdata.add_constraint ("uint8");
-        cdata.add_constraint (dim_vector (-1, -1));
-        cdata.add_constraint (dim_vector (-1, -1, 3));
       }
 
   private:
@@ -5062,7 +5072,6 @@ public:
       {
         cdata.add_constraint ("double");
         cdata.add_constraint ("single");
-        cdata.add_constraint ("uint8");
         cdata.add_constraint (dim_vector (-1, -1, 3));
         position.add_constraint (dim_vector (1, 4));
         sliderstep.add_constraint (dim_vector (1, 2));
@@ -5283,7 +5292,6 @@ public:
       {
         cdata.add_constraint ("double");
         cdata.add_constraint ("single");
-        cdata.add_constraint ("uint8");
         cdata.add_constraint (dim_vector (-1, -1, 3));
       }
   };
@@ -5337,7 +5345,6 @@ public:
       {
         cdata.add_constraint ("double");
         cdata.add_constraint ("single");
-        cdata.add_constraint ("uint8");
         cdata.add_constraint (dim_vector (-1, -1, 3));
       }
   };

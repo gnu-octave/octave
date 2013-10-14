@@ -800,10 +800,16 @@ octave_user_function::restore_warning_states (void)
 
   if (val.is_defined ())
     {
-      octave_map m = val.map_value ();
+      // Don't use the usual approach of attempting to extract a value
+      // and then checking error_state since this code might be
+      // executing when error_state is already set.  But do fail
+      // spectacularly if .saved_warning_states. is not an octave_map
+      // (or octave_scalar_map) object.
 
-      if (error_state)
+      if (! val.is_map ())
         panic_impossible ();
+
+      octave_map m = val.map_value ();
 
       Cell ids = m.contents ("identifier");
       Cell states = m.contents ("state");

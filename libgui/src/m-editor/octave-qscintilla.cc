@@ -40,6 +40,53 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
 octave_qscintilla::~octave_qscintilla ()
 { }
 
+void
+octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos)
+{
+  long position = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
+  long point_x  = SendScintilla
+                    (QsciScintillaBase::SCI_POINTXFROMPOSITION,0,position);
+  long point_y  = SendScintilla
+                    (QsciScintillaBase::SCI_POINTYFROMPOSITION,0,position);
+  *local_pos = QPoint (point_x,point_y);  // local cursor position
+  *global_pos = mapToGlobal (*local_pos); // global position of cursor
+}
+
+// determine the actual word and whether we are in an octave or matlab script
+bool
+octave_qscintilla::get_actual_word ()
+{
+  QPoint global_pos, local_pos;
+  get_global_textcursor_pos (&global_pos, &local_pos);
+  _word_at_cursor = wordAtPoint (local_pos);
+  QString lexer_name = lexer ()->lexer ();
+  return ((lexer_name == "octave" || lexer_name == "matlab")
+          && !_word_at_cursor.isEmpty ());
+}
+
+// call documentation or help on the current word
+void
+octave_qscintilla::context_help_doc (bool documentation)
+{
+  if (get_actual_word ())
+    contextmenu_help_doc (documentation);
+}
+
+// call edit the function related to the current word
+void
+octave_qscintilla::context_edit ()
+{
+  if (hasSelectedText ())
+    contextmenu_edit (true);
+}
+
+// call edit the function related to the current word
+void
+octave_qscintilla::context_run ()
+{
+  if (hasSelectedText ())
+    contextmenu_run (true);
+}
 
 #ifdef HAVE_QSCI_VERSION_2_6_0
 // context menu requested
@@ -58,13 +105,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
     }
   else
     { // context menu by keyboard or other: get point of text cursor
-      long position = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
-      long point_x  = SendScintilla
-                        (QsciScintillaBase::SCI_POINTXFROMPOSITION,0,position);
-      long point_y  = SendScintilla
-                        (QsciScintillaBase::SCI_POINTYFROMPOSITION,0,position);
-      local_pos = QPoint (point_x,point_y);  // local cursor position
-      global_pos = mapToGlobal (local_pos); // global position of cursor
+      get_global_textcursor_pos (&global_pos, &local_pos);
       QRect editor_rect = geometry ();      // editor rect mapped to global
       editor_rect.moveTopLeft
               (parentWidget ()->mapToGlobal (editor_rect.topLeft ()));
@@ -82,8 +123,18 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
     {
       _word_at_cursor = wordAtPoint (local_pos);
       if (!_word_at_cursor.isEmpty ())
-        context_menu->addAction (tr ("help") + " " + _word_at_cursor,
-                                this, SLOT (contextmenu_help (bool)));
+        {
+          context_menu->addAction (tr ("Help on") + " " + _word_at_cursor,
+                                  this, SLOT (contextmenu_help (bool)));
+          context_menu->addAction (tr ("Documentation on") + " " + _word_at_cursor,
+                                  this, SLOT (contextmenu_doc (bool)));
+          context_menu->addAction (tr ("Edit") + " " + _word_at_cursor,
+                                  this, SLOT (contextmenu_edit (bool)));
+        }
+      context_menu->addSeparator ();   // separator before custom entries
+      if (hasSelectedText ())
+        context_menu->addAction (tr ("&Run Selection"),
+                                 this, SLOT (contextmenu_run (bool)));
     }
 
   // finaly show the menu
@@ -92,11 +143,40 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 #endif
 
 
-// handle the menu entry for calling help
+// handle the menu entry for calling help or doc
+void
+octave_qscintilla::contextmenu_doc (bool)
+{
+  contextmenu_help_doc (true);
+}
 void
 octave_qscintilla::contextmenu_help (bool)
 {
-  QString command = "help " + _word_at_cursor;
+  contextmenu_help_doc (false);
+}
+
+// common function with flag for documentation
+void
+octave_qscintilla::contextmenu_help_doc (bool documentation)
+{
+  QString command;
+  if (documentation)
+    command = "doc ";
+  else
+    command = "help ";
+  emit execute_command_in_terminal_signal (command + _word_at_cursor);
+}
+
+void
+octave_qscintilla::contextmenu_edit (bool)
+{
+  emit execute_command_in_terminal_signal (QString("edit ") + _word_at_cursor);
+}
+
+void
+octave_qscintilla::contextmenu_run (bool)
+{
+  QString command = selectedText ();
   emit execute_command_in_terminal_signal (command);
 }
 

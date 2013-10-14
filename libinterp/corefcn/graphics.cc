@@ -1199,14 +1199,10 @@ array_property::validate (const octave_value& v)
 {
   bool xok = false;
 
-  // FIXME -- should we always support []?
-  if (v.is_empty () && v.is_numeric_type ())
-    return true;
-
   // check value type
   if (type_constraints.size () > 0)
     {
-      if(type_constraints.find (v.class_name()) != type_constraints.end())
+      if (type_constraints.find (v.class_name ()) != type_constraints.end ())
         xok = true;
 
       // check if complex is allowed (it's also of class "double", so
@@ -1220,29 +1216,36 @@ array_property::validate (const octave_value& v)
 
   if (xok)
     {
+      if (size_constraints.size () == 0)
+        return true;
+
       dim_vector vdims = v.dims ();
       int vlen = vdims.length ();
 
       xok = false;
 
-      // check value size
-      if (size_constraints.size () > 0)
-        for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
-             ! xok && it != size_constraints.end (); ++it)
-          {
-            dim_vector itdims = (*it);
+      // check dimensional size constraints until a match is found
+      for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
+           ! xok && it != size_constraints.end (); ++it)
+        {
+          dim_vector itdims = (*it);
 
-            if (itdims.length () == vlen)
-              {
-                xok = true;
+          if (itdims.length () == vlen)
+            {
+              xok = true;
 
-                for (int i = 0; xok && i < vlen; i++)
-                  if (itdims(i) >= 0 && itdims(i) != vdims(i))
-                    xok = false;
-              }
-          }
-      else
-        return true;
+              for (int i = 0; xok && i < vlen; i++)
+                {
+                  if (itdims(i) > 0)
+                    {
+                      if (itdims(i) != vdims(i))
+                        xok = false;
+                    }
+                  else if (v.is_empty ())
+                    break;
+                }
+            }
+        }
     }
 
   return xok;
@@ -2732,26 +2735,41 @@ base_properties::get_property_dynamic (const caseless_str& name)
 void
 base_properties::set_parent (const octave_value& val)
 {
-  double tmp = val.double_value ();
+  double hnp = val.double_value ();
 
   graphics_handle new_parent = octave_NaN;
 
   if (! error_state)
     {
-      new_parent = gh_manager::lookup (tmp);
-
-      if (new_parent.ok ())
-        {
-          graphics_object parent_obj = gh_manager::get_object (get_parent ());
-
-          parent_obj.remove_child (__myhandle__);
-
-          parent = new_parent.as_octave_value ();
-
-          ::adopt (parent.handle_value (), __myhandle__);
-        }
+      if (hnp == __myhandle__)
+        error ("set: can not set object parent to be object itself");
       else
-        error ("set: invalid graphics handle (= %g) for parent", tmp);
+        {
+          new_parent = gh_manager::lookup (hnp);
+
+          if (new_parent.ok ())
+            {
+              // Remove child from current parent
+              graphics_object old_parent_obj;
+              old_parent_obj = gh_manager::get_object (get_parent ());
+              old_parent_obj.remove_child (__myhandle__);
+
+              // Check new parent's parent is not this child to avoid recursion
+              graphics_object new_parent_obj;
+              new_parent_obj = gh_manager::get_object (new_parent);
+              if (new_parent_obj.get_parent () == __myhandle__)
+                {
+                  // new parent's parent gets child's original parent
+                  new_parent_obj.get_properties ().set_parent (get_parent ().as_octave_value ());
+                }
+
+              // Set parent property to new_parent and do adoption
+              parent = new_parent.as_octave_value ();
+              ::adopt (parent.handle_value (), __myhandle__);
+            }
+          else
+            error ("set: invalid graphics handle (= %g) for parent", hnp);
+        }
     }
   else
     error ("set: expecting parent to be a graphics handle");
@@ -3933,32 +3951,33 @@ void
 axes::properties::init (void)
 {
   position.add_constraint (dim_vector (1, 4));
-  position.add_constraint (dim_vector (0, 0));
   outerposition.add_constraint (dim_vector (1, 4));
+  tightinset.add_constraint (dim_vector (1, 4));
+  looseinset.add_constraint (dim_vector (1, 4));
   colororder.add_constraint (dim_vector (-1, 3));
   dataaspectratio.add_constraint (dim_vector (1, 3));
   plotboxaspectratio.add_constraint (dim_vector (1, 3));
+  alim.add_constraint (2);
+  clim.add_constraint (2);
   xlim.add_constraint (2);
   ylim.add_constraint (2);
   zlim.add_constraint (2);
-  clim.add_constraint (2);
-  alim.add_constraint (2);
   xtick.add_constraint (dim_vector (1, -1));
   ytick.add_constraint (dim_vector (1, -1));
   ztick.add_constraint (dim_vector (1, -1));
+  ticklength.add_constraint (dim_vector (1, 2));
   Matrix vw (1, 2, 0);
   vw(1) = 90;
   view = vw;
   view.add_constraint (dim_vector (1, 2));
   cameraposition.add_constraint (dim_vector (1, 3));
+  cameratarget.add_constraint (dim_vector (1, 3));
   Matrix upv (1, 3, 0.0);
   upv(2) = 1.0;
   cameraupvector = upv;
   cameraupvector.add_constraint (dim_vector (1, 3));
   currentpoint.add_constraint (dim_vector (2, 3));
-  ticklength.add_constraint (dim_vector (1, 2));
-  tightinset.add_constraint (dim_vector (1, 4));
-  looseinset.add_constraint (dim_vector (1, 4));
+  // No constraints for hidden transform properties
   update_font ();
 
   x_zlim.resize (1, 2);
@@ -5569,8 +5588,11 @@ axes::properties::get_boundingbox (bool internal,
     {
       graphics_object obj = gh_manager::get_object (get_parent ());
 
-      parent_size =
-       obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      if (obj.valid_object ())
+        parent_size =
+          obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      else
+        parent_size = default_figure_position ();
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);
@@ -7666,8 +7688,11 @@ uicontrol::properties::get_boundingbox (bool,
     {
       graphics_object obj = gh_manager::get_object (get_parent ());
 
-      parent_size =
-       obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      if (obj.valid_object ())
+        parent_size =
+          obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      else
+        parent_size = default_figure_position ();
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);

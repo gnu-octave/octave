@@ -72,6 +72,15 @@ function h = fill (varargin)
   hlist = [];
   iargs = __find_patches__ (varargin{:});
 
+  opts = {};
+  if (numel (varargin) > iargs(end) + 2)
+    opts = varargin(iargs(end)+3 : end);
+  endif
+  
+  if (! all (cellfun (@(x) iscolorspec (x), varargin(iargs + 2))))
+    print_usage ();
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
@@ -79,24 +88,33 @@ function h = fill (varargin)
   unwind_protect
     hax = newplot (hax);
     old_nxtplt = get (hax, "nextplot");
-    set (hax, "nextplot", "add");
+    unwind_protect
+      set (hax, "nextplot", "add");
 
-    for i = 1 : length (iargs)
-      if (i == length (iargs))
-        args = varargin(iargs(i):end);
-      else
-        args = varargin(iargs(i):iargs(i+1)-1);
-      endif
-      [htmp, fail] = __patch__ (hax, args{:});
-      if (fail)
-        print_usage ();
-      endif
-      hlist(end + 1, 1) = htmp;
-    endfor
+      for i = 1 : length (iargs)
+        cdata = varargin{iargs(i) + 2};
 
-    if (strcmp (old_nxtplt, "replace"))
-      set (hax, "nextplot", old_nxtplt);
-    endif
+        ## Matlab uses flat/interp shading based on orientation of cdata.
+        if (isnumeric (cdata) && isrow (cdata))
+          popt = ["facecolor", "flat", opts];
+        else
+          popt = opts;
+        endif
+
+        [htmp, fail] = __patch__ (hax, varargin{iargs(i)+(0:1)}, cdata,
+                                       popt{:});
+        if (fail)
+          print_usage ();
+        endif
+        
+        hlist(end+1, 1) = htmp;
+      endfor
+
+    unwind_protect_cleanup
+      if (strcmp (old_nxtplt, "replace"))
+        set (hax, "nextplot", old_nxtplt);
+      endif
+    end_unwind_protect
 
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -111,45 +129,25 @@ function h = fill (varargin)
 endfunction
 
 function iargs = __find_patches__ (varargin)
-  iargs = [];
-  i = 1;
-  while (i < nargin)
-    iargs(end + 1) = i;
-    if (ischar (varargin{i})
-        && (strcmpi (varargin{i}, "faces")
-            || strcmpi (varargin{i}, "vertices")))
-      i += 4;
-    elseif (isnumeric (varargin{i}))
-      i += 2;
-    endif
+  iargs = 1:3:nargin;
+  optidx = find (! cellfun (@isnumeric, varargin(iargs)), 1);
+  iargs(optidx:end) = [];
+endfunction
 
-    if (i <= nargin)
-      while (true);
-        if (ischar (varargin{i})
-            && (strcmpi (varargin{i}, "faces")
-                || strcmpi (varargin{i}, "vertices")))
-          break;
-        elseif (isnumeric (varargin{i}))
-          ## Assume its the colorspec
-          i++;
-          break;
-        elseif (ischar (varargin{i}))
-          colspec = tolower (varargin{i});
-          collen = length (colspec);
-          if (any (strncmp (colspec, 
-                            {"blue", "black", "k", "red", "green", ...
-                             "yellow", "magenta", "cyan", "white"},
-                            collen)))
-            i++;
-            break;
-          endif
-        else
-          i += 2;
-        endif
-      endwhile
+function retval = iscolorspec (arg)
+  retval = false;
+  if (ischar (arg))
+    persistent colors = {"y", "yellow", "r", "red", "m", "magenta", ...
+                         "c", "cyan", "g", "green", "b", "blue", ...
+                         "w", "white", "k", "black"};
+    if (any (strcmpi (arg, colors)))
+      retval = true;
     endif
-  endwhile
-
+  elseif (isnumeric (arg))
+    ## Assume any numeric argument is correctly formatted cdata.
+    ## Let patch worry about the multple different input formats
+    retval = true;
+  endif
 endfunction
 
 

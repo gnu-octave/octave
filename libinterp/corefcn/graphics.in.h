@@ -1234,23 +1234,23 @@ class double_radio_property : public base_property
 {
 public:
   double_radio_property (double d, const radio_values& v)
-      : base_property ("", graphics_handle ()),
-        current_type (double_t), dval (d), radio_val (v),
-        current_val (v.default_value ())
+    : base_property ("", graphics_handle ()),
+      current_type (double_t), dval (d), radio_val (v),
+      current_val (v.default_value ())
   { }
 
   double_radio_property (const std::string& nm, const graphics_handle& h,
                          const std::string& v)
-      : base_property (nm, h),
-        current_type (radio_t), dval (0), radio_val (v),
-        current_val (radio_val.default_value ())
+    : base_property (nm, h),
+      current_type (radio_t), dval (0), radio_val (v),
+      current_val (radio_val.default_value ())
   { }
 
   double_radio_property (const std::string& nm, const graphics_handle& h,
                          const double_radio_property& v)
-      : base_property (nm, h),
-        current_type (v.current_type), dval (v.dval),
-        radio_val (v.radio_val), current_val (v.current_val)
+    : base_property (nm, h),
+      current_type (v.current_type), dval (v.dval),
+      radio_val (v.radio_val), current_val (v.current_val)
   { }
 
   double_radio_property (const double_radio_property& p)
@@ -2040,7 +2040,7 @@ public:
 
 public:
   base_graphics_toolkit (const std::string& nm)
-      : name (nm), count (0) { }
+    : name (nm), count (0) { }
 
   virtual ~base_graphics_toolkit (void) { }
 
@@ -2118,19 +2118,19 @@ class graphics_toolkit
 {
 public:
   graphics_toolkit (void)
-      : rep (new base_graphics_toolkit ("unknown"))
+    : rep (new base_graphics_toolkit ("unknown"))
     {
       rep->count++;
     }
 
   graphics_toolkit (base_graphics_toolkit* b)
-      : rep (b)
+    : rep (b)
     {
       rep->count++;
     }
 
   graphics_toolkit (const graphics_toolkit& b)
-      : rep (b.rep)
+    : rep (b.rep)
     {
       rep->count++;
     }
@@ -3468,11 +3468,11 @@ public:
   graphics_xform (const Matrix& xm, const Matrix& xim,
                   const scaler& x, const scaler& y, const scaler& z,
                   const Matrix& zl)
-      : xform (xm), xform_inv (xim), sx (x), sy (y), sz (z), zlim (zl) { }
+    : xform (xm), xform_inv (xim), sx (x), sy (y), sz (z), zlim (zl) { }
 
   graphics_xform (const graphics_xform& g)
-      : xform (g.xform), xform_inv (g.xform_inv), sx (g.sx),
-        sy (g.sy), sz (g.sz), zlim (g.zlim) { }
+    : xform (g.xform), xform_inv (g.xform_inv), sx (g.sx),
+      sy (g.sy), sz (g.sz), zlim (g.zlim) { }
 
   ~graphics_xform (void) { }
 

@@ -44,12 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #define CALLBACK
 #endif
 
-static octave_idx_type
-xmin (octave_idx_type x, octave_idx_type y)
-{
-  return x < y ? x : y;
-}
-
 class
 opengl_texture
 {
@@ -63,9 +57,9 @@ protected:
     { }
 
     texture_rep (GLuint id_arg, int w_arg, int h_arg, int tw_arg, int th_arg)
-        : id (id_arg), w (w_arg), h (h_arg), tw (tw_arg), th (th_arg),
-          tx (double(w)/tw), ty (double(h)/th), valid (true),
-          count (1) { }
+      : id (id_arg), w (w_arg), h (h_arg), tw (tw_arg), th (th_arg),
+        tx (double(w)/tw), ty (double(h)/th), valid (true),
+        count (1) { }
 
     ~texture_rep (void)
       {
@@ -96,7 +90,7 @@ public:
   opengl_texture (void) : rep (new texture_rep ()) { }
 
   opengl_texture (const opengl_texture& tx)
-      : rep (tx.rep)
+    : rep (tx.rep)
     {
       rep->count++;
     }
@@ -151,8 +145,8 @@ opengl_texture::create (const octave_value& data)
   // Expect RGB data
   if (dv.length () == 3 && dv(2) == 3)
     {
-      // FIXME -- dim_vectors hold octave_idx_type values.  Should we
-      // check for dimensions larger than intmax?
+      // FIXME: dim_vectors hold octave_idx_type values.
+      //        Should we check for dimensions larger than intmax?
       int h = dv(0), w = dv(1), tw, th;
       GLuint id;
       bool ok = true;
@@ -179,8 +173,7 @@ opengl_texture::create (const octave_value& data)
                 }
             }
 
-          glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
-                        GL_RGB, GL_FLOAT, a);
+          glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0, GL_RGB, GL_FLOAT, a);
         }
       else if (data.is_uint8_type ())
         {
@@ -266,10 +259,10 @@ protected:
 
   virtual void end (void) { }
 
-  virtual void vertex (void */*data*/) { }
+  virtual void vertex (void * /*data*/) { }
 
-  virtual void combine (GLdouble /*c*/[3], void */*data*/[4],
-                        GLfloat /*w*/[4], void **/*out_data*/) { }
+  virtual void combine (GLdouble [3] /*c*/, void * [4] /*data*/,
+                        GLfloat  [4] /*w*/, void ** /*out_data*/) { }
 
   virtual void edge_flag (GLboolean /*flag*/) { }
 
@@ -353,9 +346,9 @@ public:
 
     vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
                      double a, float as, float ds, float ss, float se)
-        : coords (c), color (col), normal (n), alpha (a),
-          ambient (as), diffuse (ds), specular (ss), specular_exp (se),
-          count (1) { }
+      : coords (c), color (col), normal (n), alpha (a),
+        ambient (as), diffuse (ds), specular (ss), specular_exp (se),
+        count (1) { }
   };
 
 private:
@@ -377,11 +370,11 @@ public:
 
   vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
                double a, float as, float ds, float ss, float se)
-      : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se))
+    : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se))
     { }
 
   vertex_data (vertex_data_rep *new_rep)
-      : rep (new_rep) { }
+    : rep (new_rep) { }
 
   ~vertex_data (void)
     {
@@ -408,9 +401,9 @@ opengl_renderer::patch_tesselator : public opengl_tesselator
 {
 public:
   patch_tesselator (opengl_renderer *r, int cmode, int lmode, int idx = 0)
-      : opengl_tesselator (), renderer (r),
-        color_mode (cmode), light_mode (lmode), index (idx),
-        first (true), tmp_vdata ()
+    : opengl_tesselator (), renderer (r),
+      color_mode (cmode), light_mode (lmode), index (idx),
+      first (true), tmp_vdata ()
   { }
 
 protected:
@@ -1434,7 +1427,7 @@ opengl_renderer::draw_line (const line::properties& props)
   Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
 
   bool has_z = (z.numel () > 0);
-  int n = static_cast<int> (::xmin (::xmin (x.numel (), y.numel ()), (has_z ? z.numel () : std::numeric_limits<int>::max ())));
+  int n = static_cast<int> (std::min (std::min (x.numel (), y.numel ()), (has_z ? z.numel () : std::numeric_limits<int>::max ())));
   octave_uint8 clip_mask = (props.is_clipping () ? 0x7F : 0x40), clip_ok (0x40);
 
   std::vector<octave_uint8> clip (n);

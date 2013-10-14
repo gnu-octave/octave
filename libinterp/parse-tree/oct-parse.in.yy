@@ -323,9 +323,47 @@ make_statement (T *arg)
 // How to clean up if there is a parse error.  We handle deleting tokens
 // and comments seperately and separators are just characters.  The
 // remaining items are dynamically allocated parse tree objects that
-// must be deleted.
-%destructor { } <sep_type> <tok_val> <comment_type> <dummy_type> <>
-%destructor { delete $$; } <*>
+// must be deleted.  Use the wildcard case (<*>) to detect unhandled
+// cases (for example, a new semantic type is added but not handled
+// here).
+
+%destructor { } <sep_type>
+%destructor { } <tok_val>
+%destructor { } <comment_type>
+%destructor { } <dummy_type>
+%destructor { } <>
+
+%destructor { delete $$; } <tree_type> 
+%destructor { delete $$; } <tree_matrix_type> 
+%destructor { delete $$; } <tree_cell_type> 
+%destructor { delete $$; } <tree_expression_type> 
+%destructor { delete $$; } <tree_constant_type> 
+%destructor { delete $$; } <tree_fcn_handle_type> 
+%destructor { delete $$; } <tree_anon_fcn_handle_type> 
+%destructor { delete $$; } <tree_identifier_type> 
+%destructor { delete $$; } <tree_index_expression_type> 
+%destructor { delete $$; } <tree_colon_expression_type> 
+%destructor { delete $$; } <tree_argument_list_type> 
+%destructor { delete $$; } <tree_parameter_list_type> 
+%destructor { delete $$; } <tree_command_type> 
+%destructor { delete $$; } <tree_if_command_type> 
+%destructor { delete $$; } <tree_if_clause_type> 
+%destructor { delete $$; } <tree_if_command_list_type> 
+%destructor { delete $$; } <tree_switch_command_type> 
+%destructor { delete $$; } <tree_switch_case_type> 
+%destructor { delete $$; } <tree_switch_case_list_type> 
+%destructor { delete $$; } <tree_decl_elt_type> 
+%destructor { delete $$; } <tree_decl_init_list_type> 
+%destructor { delete $$; } <tree_decl_command_type> 
+%destructor { delete $$; } <tree_statement_type> 
+%destructor { delete $$; } <tree_statement_list_type> 
+%destructor { delete $$; } <octave_user_function_type> 
+
+%destructor {
+    warning_with_id
+      ("Octave:parser-destructor",
+       "possible memory leak in cleanup following parse error");
+ } <*>
 
 // Where to start.
 %start input

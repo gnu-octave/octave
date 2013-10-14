@@ -325,7 +325,7 @@ make_statement (T *arg)
 // and comments seperately and separators are just characters.  The
 // remaining items are dynamically allocated parse tree objects that
 // must be deleted.
-%destructor { } <sep_type> <tok_val> <comment_type> <dummy_type> <>
+%destructor { } <sep_type> <tok_val> <comment_type> <dummy_type> <tok_type> <>
 %destructor { delete $$; } <*>
 
 // Where to start.

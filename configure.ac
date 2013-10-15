@@ -295,8 +295,8 @@ AC_PROG_CXXCPP
 
 GXX_VERSION=
 if test "$GXX" = yes; then
-  gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
-    sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g.. version" | \
+    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
   AX_COMPARE_VERSION([$gxx_version], [lt], [3.5],
     [AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])])
@@ -342,8 +342,8 @@ gl_EARLY
 
 GCC_VERSION=
 if test "$GCC" = yes; then
-  gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
-    sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+  gcc_version=`$CC -v 2>&1 | $GREP "^.*gcc version" | \
+    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
   AX_COMPARE_VERSION([$gcc_version], [lt], [3],
     [warn_gcc_version="gcc version $gcc_version is likely to cause problems"
@@ -613,7 +613,7 @@ if test $octave_cv_sizeof_fortran_integer = no; then
             case $FFLAGS in
               *-fdefault-integer-8*)
                 AC_MSG_NOTICE([setting -fdefault-integer-8 in F77_INTEGER_8_FLAG instead of FFLAGS])
-                FFLAGS=`echo $FFLAGS | sed 's/-fdefault-integer-8//g'`
+                FFLAGS=`echo $FFLAGS | $SED 's/-fdefault-integer-8//g'`
                 F77_INTEGER_8_FLAG="-fdefault-integer-8"
               ;;
               *)
@@ -1154,7 +1154,7 @@ if test -n "$OPENGL_LIBS"; then
 
     case $host_os in
       mingw*)
-        FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`
+        FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | $SED -e 's/-mwindows//g'`
       ;;
     esac
 
@@ -1295,7 +1295,7 @@ if test $ax_blas_f77_func_ok = no; then
         BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
       else
         ## wrapper in cruft, remove from BLAS_LIBS
-        BLAS_LIBS=`echo $BLAS_LIBS | sed -e 's/blaswrap.[[^ ]]* //g'`
+        BLAS_LIBS=`echo $BLAS_LIBS | $SED -e 's/blaswrap.[[^ ]]* //g'`
         AC_DEFINE(USE_BLASWRAP, 1,
           [Define to 1 if BLAS functions need to be wrapped (potentially needed for 64-bit OSX only).])
       fi
@@ -1609,7 +1609,7 @@ case $canonical_host_type in
       SHLLIBPRE=
       SHLBINPRE=
       SH_LDFLAGS="-shared"
-      if test -n "`echo $CFLAGS | grep -e '-g'`" || test -n "`echo $CXXFLAGS | grep -e '-g'`"; then
+      if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
         DL_LDFLAGS="$DL_LDFLAGS -g"
         SH_LDFLAGS="$SH_LDFLAGS -g"
       fi
@@ -1649,7 +1649,7 @@ case $canonical_host_type in
     SHLLIBPRE=
     SHLBINPRE=
     SH_LDFLAGS="-shared"
-    if test -n "`echo $CFLAGS | grep -e '-g'`" || test -n "`echo $CXXFLAGS | grep -e '-g'`"; then
+    if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
       DL_LDFLAGS="$DL_LDFLAGS -g"
       SH_LDFLAGS="$SH_LDFLAGS -g"
     fi
@@ -1904,13 +1904,13 @@ AC_SUBST(LIBOCTAVE)
 
 if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   CROSS_TOOL_PREFIX="$ac_tool_prefix"
-  MKOCTFILE_AR='$(shell echo $(AR) | sed "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_CC='$(shell echo $(CC) | sed "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_CXX='$(shell echo $(CXX) | sed "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_DL_LD='$(shell echo $(DL_LD) | sed "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_F77='$(shell echo $(F77) | sed "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_LD_CXX='$(shell echo $(LD_CXX) | sed "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_RANLIB='$(shell echo $(RANLIB) | sed "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_AR='$(shell echo $(AR) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_CC='$(shell echo $(CC) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_CXX='$(shell echo $(CXX) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_DL_LD='$(shell echo $(DL_LD) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_F77='$(shell echo $(F77) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_LD_CXX='$(shell echo $(LD_CXX) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_RANLIB='$(shell echo $(RANLIB) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
 else
   MKOCTFILE_AR="$AR"
   MKOCTFILE_CC="$CC"
@@ -2402,7 +2402,7 @@ do
     ## Find JAVA_HOME for JRE by running java and querying properties.
     JAVA_TMP_HOME=`"$JAVA" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`
     ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
-    JAVA_HOME=`echo $JAVA_TMP_HOME | sed -e 's|[[/\\]]bin[[/\\]]\?$||' | sed -e 's|[[/\\]]jre[[/\\]]\?$||'`
+    JAVA_HOME=`echo $JAVA_TMP_HOME | $SED -e 's|[[/\\]]bin[[/\\]]\?$||' | $SED -e 's|[[/\\]]jre[[/\\]]\?$||'`
   fi
 
   case $host_os in
@@ -2440,10 +2440,10 @@ do
 
   ## Check Java version is recent enough.
   AC_MSG_CHECKING([for Java version])
-  java_version=[`"$JAVA" -version 2>&1 | sed -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)"/\1/p'`]
+  java_version=[`"$JAVA" -version 2>&1 | $SED -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)"/\1/p'`]
   AC_MSG_RESULT([$java_version])
-  java_major=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
-  java_minor=[`echo $java_version | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+  java_major=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
+  java_minor=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
   if test $java_major -ge 1 && test $java_minor -ge 5; then
     :  # Version is ok.  Do nothing.
   else
@@ -2491,7 +2491,7 @@ do
   if test -z "$JAVA_LDPATH"; then
     ## Run Java to try and determine library path to libjvm.so.
     JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
-    JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | sed -e "s/${PATH_SEPARATOR}/ /g"`
+    JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | $SED -e "s/${PATH_SEPARATOR}/ /g"`
     for dir in $JAVA_TMP_LDPATH; do
       if test -f "$dir/$jvmlib"; then
         JAVA_LDPATH=$dir
@@ -2581,7 +2581,7 @@ do
   esac
 
   ## Verify jni.h include file exists.
-  JNI_PATH=`echo $JAVA_CPPFLAGS | sed -e 's/-I//g'`
+  JNI_PATH=`echo $JAVA_CPPFLAGS | $SED -e 's/-I//g'`
   have_jni=no
   for dir in $JNI_PATH; do 
     if test -f "${dir}/jni.h"; then have_jni=yes; break; fi

@@ -70,7 +70,7 @@ dnl arguments are specified, execute the second arg as shell commands.
 dnl Otherwise, add FLAG to CFLAGS if the compiler accepts the flag.
 dnl
 AC_DEFUN([OCTAVE_CC_FLAG], [
-  ac_safe=`echo "$1" | sed 'y% ./+-:=%___p___%'`
+  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
   AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
   AC_CACHE_VAL([octave_cv_cc_flag_$ac_safe],
     [AC_LANG_PUSH(C)
@@ -151,7 +151,7 @@ dnl Currently capable of checking for functions with single
 dnl argument and returning bool/int/real.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
-  ac_safe=`echo "$1" | sed 'y% ./+-:=%___p___%'`
+  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
 
   AC_CACHE_CHECK([for std::$1 in <cmath>],
     [octave_cv_func_cmath_$ac_safe],
@@ -1109,7 +1109,7 @@ dnl arguments are specified, execute the second arg as shell commands.
 dnl Otherwise, add FLAG to CXXFLAGS if the compiler accepts the flag.
 dnl
 AC_DEFUN([OCTAVE_CXX_FLAG], [
-  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  ac_safe=`echo "$1" | $SED 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING([whether ${CXX-g++} accepts $1])
   AC_CACHE_VAL([octave_cv_cxx_flag_$ac_safe],
     [AC_LANG_PUSH(C++)
@@ -1266,7 +1266,7 @@ dnl commands.  Otherwise, add FLAG to FFLAGS if the compiler accepts
 dnl the flag.
 dnl
 AC_DEFUN([OCTAVE_F77_FLAG], [
-  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  ac_safe=`echo "$1" | $SED 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING([whether ${F77-g77} accepts $1])
   AC_CACHE_VAL([octave_cv_f77_flag_$ac_safe], [
     AC_LANG_PUSH(Fortran 77)

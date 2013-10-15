@@ -115,7 +115,7 @@ FloatColumnVector::fill (float val, octave_idx_type r1, octave_idx_type r2)
       return *this;
     }
 
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
 
   if (r2 >= r1)
     {
@@ -168,7 +168,7 @@ imag (const FloatComplexColumnVector& a)
 FloatColumnVector
 FloatColumnVector::extract (octave_idx_type r1, octave_idx_type r2) const
 {
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
 
   octave_idx_type new_r = r2 - r1 + 1;
 

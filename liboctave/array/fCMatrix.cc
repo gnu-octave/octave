@@ -581,8 +581,8 @@ FloatComplexMatrix::fill (float val, octave_idx_type r1, octave_idx_type c1, oct
       return *this;
     }
 
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   if (r2 >= r1 && c2 >= c1)
     {
@@ -609,8 +609,8 @@ FloatComplexMatrix::fill (const FloatComplex& val, octave_idx_type r1, octave_id
       return *this;
     }
 
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   if (r2 >= r1 && c2 >=c1)
     {
@@ -931,8 +931,8 @@ conj (const FloatComplexMatrix& a)
 FloatComplexMatrix
 FloatComplexMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
 {
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   return index (idx_vector (r1, r2+1), idx_vector (c1, c2+1));
 }

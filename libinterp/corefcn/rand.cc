@@ -1157,7 +1157,7 @@ using std::unordered_map;
 
       // Quick and dirty heuristic to decide if we allocate or not the
       // whole vector for tracking the truncated shuffle.
-      bool short_shuffle = m < n/5 && m < 1e5;
+      bool short_shuffle = m < n/5;
 
       if (! error_state)
         {
@@ -1166,7 +1166,20 @@ using std::unordered_map;
           double *rvec = r.fortran_vec ();
 
           octave_idx_type idx_len = short_shuffle ? m : n;
-          Array<octave_idx_type> idx (dim_vector (1, idx_len));
+          Array<octave_idx_type> idx;
+          try
+            {
+              idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+            }
+          catch(std::bad_alloc)
+            {
+              // Looks like n is too big and short_shuffle is false.
+              // Let's try again, but this time with the alternative.
+              idx_len = m;
+              short_shuffle = true;
+              idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+            }
+
           octave_idx_type *ivec = idx.fortran_vec ();
 
           for (octave_idx_type i = 0; i < idx_len; i++)
@@ -1230,6 +1243,9 @@ using std::unordered_map;
 /*
 %!assert (sort (randperm (20)), 1:20)
 %!assert (length (randperm (20,10)), 10)
+
+## Test biggish N (bug #39378)
+%!assert (length (randperm(30000^2, 100000)), 100000);
 
 %!test
 %! rand ("seed", 0);

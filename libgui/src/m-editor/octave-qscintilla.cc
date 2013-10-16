@@ -176,8 +176,9 @@ octave_qscintilla::contextmenu_edit (bool)
 void
 octave_qscintilla::contextmenu_run (bool)
 {
-  QString command = selectedText ();
-  emit execute_command_in_terminal_signal (command);
+  QStringList commands = selectedText ().split (QRegExp("[\r\n]"),QString::SkipEmptyParts);
+  for (int i = 0; i < commands.size (); i++ )
+    emit execute_command_in_terminal_signal (commands.at (i));
 }
 
 #endif

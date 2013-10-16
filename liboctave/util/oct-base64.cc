@@ -38,7 +38,7 @@ octave_base64_encode (const char *inc, const size_t inlen, char **out)
 
   size_t outlen = base64_encode_alloc (inc, inlen, out);
   
-  if (! *out)
+  if (! out)
     {
       if (outlen == 0 && inlen != 0)
         (*current_liboctave_error_handler)
@@ -74,8 +74,11 @@ octave_base64_decode (const std::string& str)
   else
     {
       if ((outlen % (sizeof (double) / sizeof (char))) != 0)
-        (*current_liboctave_error_handler)
-          ("base64_decode: incorrect input size");
+        {
+          ::free (out);
+          (*current_liboctave_error_handler)
+            ("base64_decode: incorrect input size");
+        }
       else
         {
           octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);

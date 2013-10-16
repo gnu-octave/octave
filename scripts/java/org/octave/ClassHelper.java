@@ -623,6 +623,10 @@ public class ClassHelper
           {
             return new Long (((Number) obj).longValue ());
           }
+        else if (expType.equals (Float.TYPE) || expType.equals (Float.class))
+          {
+            return new Float (((Number) obj).floatValue ());
+          }
       }
     else if (isBooleanClass (expType))
       {

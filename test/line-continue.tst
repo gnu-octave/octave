@@ -26,6 +26,9 @@
 %! b];
 %! assert (y, x);
 
+## FIXME: Next 3 tests use '\' continuation outside of a double-quoted string
+##        This behavior is deprecated and will be removed at some point.
+##        When it does these 
 %!test
 %! x = [1;2];
 %! y = [a... # comments here ok
@@ -50,6 +53,13 @@
 %!endfunction
 %!
 %!assert (f (), 1)
+
+# String continuation using '\'
+%!assert (["abc\
+%! def"], "abc def")
+
+%!assert (['abc\
+%! def'], "abc def")
 
 %!test
 %!assert (1 == 1

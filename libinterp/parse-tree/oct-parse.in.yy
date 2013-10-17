@@ -2390,6 +2390,9 @@ octave_base_parser::make_try_command (token *try_tok,
                   id = dynamic_cast<tree_identifier *> (expr);
 
                   cleanup_stmts->pop_front ();
+
+                  stmt->set_expression (0);
+                  delete stmt;
                 }
             }
         }

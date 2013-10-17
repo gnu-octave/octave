@@ -276,15 +276,14 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseMatrix result;
   dim_vector dv = dims ();
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
 
-  if (dv.numel () == 0 || dim >= dv.length ())
+  if (nr == 0 || nc == 0 || dim >= dv.length ())
     return result;
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
-
-  octave_idx_type nr = dv(0);
-  octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
@@ -425,15 +424,14 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseMatrix result;
   dim_vector dv = dims ();
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
 
-  if (dv.numel () == 0 || dim >= dv.length ())
+  if (nr == 0 || nc == 0 || dim >= dv.length ())
     return result;
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
-
-  octave_idx_type nr = dv(0);
-  octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
@@ -561,6 +559,13 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 
   return result;
 }
+
+/*
+
+%!assert (max (max (speye (65536))), sparse (1)) 
+%!assert (min (min (speye (65536))), sparse (0)) 
+
+*/
 
 RowVector
 SparseMatrix::row (octave_idx_type i) const

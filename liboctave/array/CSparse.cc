@@ -258,15 +258,14 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseComplexMatrix result;
   dim_vector dv = dims ();
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
 
-  if (dv.numel () == 0 || dim >= dv.length ())
+  if (nr == 0 || nc == 0 || dim >= dv.length ())
     return result;
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
-
-  octave_idx_type nr = dv(0);
-  octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
@@ -413,15 +412,14 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseComplexMatrix result;
   dim_vector dv = dims ();
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
 
-  if (dv.numel () == 0 || dim >= dv.length ())
+  if (nr == 0 || nc == 0 || dim >= dv.length ())
     return result;
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
-
-  octave_idx_type nr = dv(0);
-  octave_idx_type nc = dv(1);
 
   if (dim == 0)
     {
@@ -555,6 +553,13 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 
   return result;
 }
+
+/*
+
+%!assert (max (max (speye (65536) * 1i)), sparse (1i)) 
+%!assert (min (min (speye (65536) * 1i)), sparse (0)) 
+
+*/
 
 ComplexRowVector
 SparseComplexMatrix::row (octave_idx_type i) const

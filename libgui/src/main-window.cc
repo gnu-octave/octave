@@ -251,7 +251,9 @@ main_window::open_online_documentation_page (void)
 void
 main_window::display_release_notes (void)
 {
-  display_url_in_window (QUrl ("file://" OCTAVE_OCTETCDIR "/NEWS"));
+  std::string news_file = "file://" + Voct_etc_dir + "/NEWS";
+
+  display_url_in_window (QUrl (QString::fromStdString (news_file)));
 }
 
 void

@@ -751,6 +751,18 @@ file_editor::notice_settings (const QSettings *settings)
 }
 
 void
+file_editor::request_preferences (bool)
+{
+  emit request_settings_dialog ("editor");
+}
+
+void
+file_editor::request_styles_preferences (bool)
+{
+  emit request_settings_dialog ("editor_styles");
+}
+
+void
 file_editor::construct (void)
 {
   QWidget *editor_widget = new QWidget (this);
@@ -940,6 +952,13 @@ file_editor::construct (void)
   editMenu->addAction (_remove_bookmark_action);
   editMenu->addSeparator ();
   editMenu->addAction (_goto_line_action);
+  editMenu->addSeparator ();
+  _preferences_action =
+     editMenu->addAction (QIcon (":/actions/icons/configure.png"),
+       tr ("&Preferences"), this, SLOT (request_preferences (bool)));
+  _styles_preferences_action =
+    editMenu->addAction (QIcon (":/actions/icons/configure.png"),
+      tr ("&Styles Preferences"), this, SLOT (request_styles_preferences (bool)));
   _menu_bar->addMenu (editMenu);
 
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
@@ -981,6 +1000,9 @@ file_editor::construct (void)
   setWidget (editor_widget);
 
   // signals
+  connect (this, SIGNAL (request_settings_dialog (const QString&)),
+           main_win (), SLOT (process_settings_dialog_request (const QString&)));
+
   connect (main_win (), SIGNAL (new_file_signal (const QString&)),
            this, SLOT (request_new_file (const QString&)));
 

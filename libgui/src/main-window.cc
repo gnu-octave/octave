@@ -306,9 +306,9 @@ main_window::open_developer_page (void)
 }
 
 void
-main_window::process_settings_dialog_request (void)
+main_window::process_settings_dialog_request (const QString& desired_tab)
 {
-  settings_dialog *settingsDialog = new settings_dialog (this);
+  settings_dialog *settingsDialog = new settings_dialog (this, desired_tab);
   int change_settings = settingsDialog->exec ();
   if (change_settings == QDialog::Accepted)
     {

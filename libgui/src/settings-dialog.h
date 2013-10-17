@@ -40,7 +40,7 @@ namespace Ui
 class settings_dialog:public QDialog
 {
   Q_OBJECT public:
-  explicit settings_dialog (QWidget * parent);
+  explicit settings_dialog (QWidget * parent, const QString& desired_tab = QString ());
   ~settings_dialog ();
   void write_changed_settings ();
 

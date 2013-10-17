@@ -279,15 +279,22 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
-  if (nr == 0 || nc == 0 || dim >= dv.length ())
-    return result;
+  if (dim >= dv.length ())
+    {
+      idx_arg.resize (dim_vector (nr, nc), 0);
+      return *this;
+    }
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
 
   if (dim == 0)
     {
-      idx_arg.clear (1, nc);
+      idx_arg.resize (dim_vector (nr == 0 ? 0 : 1, nc), 0);
+
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseMatrix (nr == 0 ? 0 : 1, nc);
+
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -341,7 +348,10 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (dim_vector  (nr, 1), 0);
+      idx_arg.resize (dim_vector (nr, nc == 0 ? 0 : 1), 0);
+
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseMatrix (nr, nc == 0 ? 0 : 1);
 
       for (octave_idx_type i = cidx (0); i < cidx (1); i++)
         idx_arg.elem (ridx (i)) = -1;
@@ -427,15 +437,22 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
-  if (nr == 0 || nc == 0 || dim >= dv.length ())
-    return result;
+  if (dim >= dv.length ())
+    {
+      idx_arg.resize (dim_vector (nr, nc), 0);
+      return *this;
+    }
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
 
   if (dim == 0)
     {
-      idx_arg.clear (1, nc);
+      idx_arg.resize (dim_vector (nr == 0 ? 0 : 1, nc), 0);
+
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseMatrix (nr == 0 ? 0 : 1, nc);
+
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -489,7 +506,10 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (dim_vector (nr, 1), 0);
+      idx_arg.resize (dim_vector (nr, nc == 0 ? 0 : 1), 0);
+
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseMatrix (nr, nc == 0 ? 0 : 1);
 
       for (octave_idx_type i = cidx (0); i < cidx (1); i++)
         idx_arg.elem (ridx (i)) = -1;

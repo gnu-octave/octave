@@ -65,6 +65,11 @@ function retval = orient (varargin)
         set (cf, "papersize", papersize([2, 1]));
         set (cf, "paperposition", paperposition([2, 1, 4, 3]));
       endif
+      ## landscape also sets the plot to occupy the entire page
+      if (strcmpi (orientation, "landscape"))
+        papersize = get (cf, "papersize");
+        set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);
+      endif
     elseif (strcmpi (varargin{1}, 'tall'))
       orient ("portrait");
       papersize = get (cf, "papersize");

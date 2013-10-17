@@ -58,9 +58,6 @@
 %!assert (["abc\
 %! def"], "abc def")
 
-%!assert (['abc\
-%! def'], "abc def")
-
 %!test
 %!assert (1 == 1
 %! && 2 == 2

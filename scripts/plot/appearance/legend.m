@@ -160,7 +160,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (isscalar (kids))
       kids = get (kids, "children")(:);
     else
-      kids = flipud ([get(kids, "children"){:}](:));
+      kids = flipud (vertcat (get (kids, "children"){:}));
     endif
   endif
   nargs = numel (varargin);

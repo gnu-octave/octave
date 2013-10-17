@@ -35,7 +35,7 @@
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 0
-## disables all scaling.  The default value is 1.
+## disables all scaling.  The default value is 0.9.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.
@@ -64,34 +64,34 @@
 ## @seealso{quiver, compass, feather, plot}
 ## @end deftypefn
 
-function retval = quiver3 (varargin)
+function h = quiver3 (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("quiver3", varargin{:});
 
   if (nargin < 2)
     print_usage ();
-  else
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
-    unwind_protect
-      hax = newplot (hax);
-      htmp = __quiver__ (hax, true, varargin{:});
+  unwind_protect
+    hax = newplot (hax);
+    htmp = __quiver__ (hax, true, varargin{:});
 
-      if (! ishold (hax))
-        set (hax, "view", [-37.5, 30], "box", "off",
-                  "xgrid", "on", "ygrid", "on", "zgrid", "on");
-      endif
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
-  endif
+    if (! ishold (hax))
+      set (hax, "view", [-37.5, 30], "box", "off",
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    endif
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
-    retval = htmp;
+    h = htmp;
   endif
 
 endfunction
@@ -100,13 +100,14 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! [x,y] = meshgrid (-1:0.1:1);
-%! z = sin (2*pi * sqrt (x.^2 + y.^2));
-%! theta = 2*pi * sqrt (x.^2 + y.^2) + pi/2;
-%! mesh (x, y, z);
+%! [x, y, z] = peaks (25);
+%! surf (x, y, z);
 %! hold on;
-%! quiver3 (x, y, z, sin (theta), cos (theta), ones (size (z)));
+%! [u, v, w] = surfnorm (x, y, z / 10);
+%! h = quiver3 (x, y, z, u, v, w);
+%! set (h, 'maxheadsize', 0.25);
 %! hold off;
+%! title ('quiver3 of surface normals to peaks() function');
 
 %!demo
 %! clf;
@@ -116,18 +117,9 @@ endfunction
 %! hold on;
 %! [u, v, w] = surfnorm (x, y, z / 10);
 %! h = quiver3 (x, y, z, u, v, w);
-%! set (h, 'maxheadsize', 0.33);
-%! hold off;
-
-%!demo
-%! clf;
-%! colormap ('default');
-%! [x, y, z] = peaks (25);
-%! surf (x, y, z);
-%! hold on;
-%! [u, v, w] = surfnorm (x, y, z / 10);
-%! h = quiver3 (x, y, z, u, v, w);
-%! set (h, 'maxheadsize', 0.33);
+%! set (h, 'maxheadsize', 0.25);
 %! hold off;
 %! shading interp;
+%! title ({'quiver3 of surface normals to peaks() function'; ...
+%!         'shading "interp"'});
 

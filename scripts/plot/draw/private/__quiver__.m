@@ -27,15 +27,19 @@ function hg = __quiver__ (varargin)
   is3d = varargin{2};
 
   autoscale = 0.9;
-  arrowsize = 0.2;
+  ## Matlab uses 0.2, but Octave's algorithm produces equivalent visual
+  ## results if arrowsize=0.33.  Since this is just a non-dimensional
+  ## scaling factor we scale the arrowsize property value by 0.33/0.20
+  ## in order to get equivalent visual results while keeping equivalent
+  ## property values.
+  arrowsize = 0.20;
 
-  firstnonnumeric = Inf;
-  for i = 3:nargin
-    if (! isnumeric (varargin{i}))
-      firstnonnumeric = i;
-      break;
-    endif
-  endfor
+  firstnonnumeric = find (! cellfun ("isnumeric", varargin(3:nargin)), 1);
+  if (isempty (firstnonnumeric))
+    firstnonnumeric = Inf;
+  else
+    firstnonnumeric += 2;
+  endif
 
   ioff = 3;
   if (nargin < (6 + is3d) || firstnonnumeric < (6 + is3d))
@@ -88,34 +92,37 @@ function hg = __quiver__ (varargin)
       [linespec, valid] = __pltopt__ ("quiver", arg, false);
       if (valid)
         have_line_spec = true;
-        if (strcmp (linespec.linestyle, "none"))
+        if (isempty (linespec.linestyle) || strcmp (linespec.linestyle, "none"))
           linespec.linestyle = "-";
         endif
       else
-        args {end + 1} = arg;
+        args{end+1} = arg;
         if (ioff <= nargin)
-          args {end + 1} = varargin{ioff++};
+          args{end+1} = varargin{ioff++};
         endif
       endif
     else
-      args {end + 1} = arg;
+      args{end+1} = arg;
       if (ioff <= nargin)
-        args {end + 1} = varargin{ioff++};
+        args{end+1} = varargin{ioff++};
       endif
     endif
   endwhile
 
+  ## Normalize 0.20 to 1/3 for plotting
+  arrowsize /= 0.20 * 3;
+
   if (autoscale && numel (u) > 1)
     ## Scale the arrows to fit in the grid
     if (isvector (x))
-      ny = nx = length (x);
+      nx = ny = sqrt (length (x));
     else
-      [nx, ny] = size (x);
+      [ny, nx] = size (x);  # assume meshgrid fmt, x in columns, y in rows
     endif
-    dx = (max (x(:)) - min (x(:))) ./ nx;
-    dy = (max (y(:)) - min (y(:))) ./ ny;
+    dx = (max (x(:)) - min (x(:))) / nx;
+    dy = (max (y(:)) - min (y(:))) / ny;
     if (is3d)
-      dz = (max (z(:)) - min (z(:))) ./ max (size (z));
+      dz = (max (z(:)) - min (z(:))) / max (nx, ny);
       len = max (sqrt (u(:).^2 + v(:).^2 + w(:).^2));
     else
       dz = 0;
@@ -124,14 +131,14 @@ function hg = __quiver__ (varargin)
     if (len > 0)
       sd = sqrt (dx.^2 + dy.^2 + dz.^2) / len;
       if (sd != 0)
-        s = sqrt (2) * autoscale * sd;
-      else # special case of identical points with multiple vectors
+        s = autoscale * sd;
+      else  # special case of identical points with multiple vectors
         s = autoscale;
       endif
       uu = s * u;
       vv = s * v;
       if (is3d)
-        ww = s*w;
+        ww = s * w;
       endif
     endif
   else
@@ -144,6 +151,16 @@ function hg = __quiver__ (varargin)
 
   hstate = get (h, "nextplot");
   unwind_protect
+
+    if (have_line_spec)
+      ls = linespec.linestyle;
+      lc = linespec.color;
+    else
+      ls = "-";
+      lc = __next_line_color__ ();
+    endif
+
+    ## Must occur after __next_line_color__ in order to work correctly.
     hg = hggroup ();
     if (is3d)
       args = __add_datasource__ ("quiver3", hg,
@@ -183,105 +200,64 @@ function hg = __quiver__ (varargin)
       zend = z + ww(:);
     endif
 
-    if (have_line_spec)
-      if (is3d)
-        h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
-                    [y.'; yend.'; NaN(1, length (y))](:),
-                    [z.'; zend.'; NaN(1, length (z))](:),
-                    "linestyle", linespec.linestyle,
-                    "color", linespec.color, "parent", hg);
-      else
-        h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
-                   [y.'; yend.'; NaN(1, length (y))](:),
-                   "linestyle", linespec.linestyle,
-                    "color", linespec.color, "parent", hg);
-      endif
+    ## Draw arrow shaft as one line object
+    if (is3d)
+      h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
+                  [y.'; yend.'; NaN(1, length (y))](:),
+                  [z.'; zend.'; NaN(1, length (z))](:),
+                  "linestyle", ls, "color", lc, "parent", hg);
     else
-      if (is3d)
-        h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
-                    [y.'; yend.'; NaN(1, length (y))](:),
-                    [z.'; zend.'; NaN(1, length (z))](:),
-                    "color", "black", "parent", hg);
-      else
-        h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
-                   [y.'; yend.'; NaN(1, length (y))](:),
-                   "parent", hg);
-      endif
+      h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
+                 [y.'; yend.'; NaN(1, length (y))](:),
+                 "linestyle", ls, "color", lc, "parent", hg);
     endif
 
-    xtmp = x + uu(:) .* (1 - arrowsize);
-    ytmp = y + vv(:) .* (1 - arrowsize);
+    xtmp = x + uu(:) * (1 - arrowsize);
+    ytmp = y + vv(:) * (1 - arrowsize);
 
     if (is3d)
-      xarrw1 = xtmp + sqrt((y - yend).^2 + (z - zend).^2) * arrowsize / 3;
-      xarrw2 = xtmp - sqrt((y - yend).^2 + (z - zend).^2) * arrowsize / 3;
-      yarrw1 = ytmp - sqrt((x - xend).^2 + (z - zend).^2) * arrowsize / 3;
-      yarrw2 = ytmp + sqrt((x - xend).^2 + (z - zend).^2) * arrowsize / 3;
-
+      xydist = sqrt (uu(:).^2 + vv(:).^2 + ww(:).^2) ./ ...
+                 (sqrt (uu(:).^2 + vv(:).^2) + eps);
+      xarrw1 = xtmp + vv(:) .* xydist * arrowsize / 4;
+      xarrw2 = xtmp - vv(:) .* xydist * arrowsize / 4;
+      yarrw1 = ytmp - uu(:) .* xydist * arrowsize / 4;
+      yarrw2 = ytmp + uu(:) .* xydist * arrowsize / 4;
       zarrw1 = zarrw2 = zend - ww(:) * arrowsize;
     else
-      xarrw1 = xtmp + (y - yend) * arrowsize / 3;
-      xarrw2 = xtmp - (y - yend) * arrowsize / 3;
-      yarrw1 = ytmp - (x - xend) * arrowsize / 3;
-      yarrw2 = ytmp + (x - xend) * arrowsize / 3;
+      xarrw1 = xtmp + vv(:) * arrowsize / 3;
+      xarrw2 = xtmp - vv(:) * arrowsize / 3;
+      yarrw1 = ytmp - uu(:) * arrowsize / 3;
+      yarrw2 = ytmp + uu(:) * arrowsize / 3;
     endif
 
+    ## Draw arrowhead as one line object
     if (have_line_spec)
-      if (isfield (linespec, "marker")
-          && ! strcmp (linespec.marker, "none"))
-        if (is3d)
-          h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-                      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-                      [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-                      "linestyle", "none", "parent", hg);
-        else
-          h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-                     [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-                     "linestyle", "none", "parent", hg);
-        endif
-      else
-        if (is3d)
-          h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-                      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-                      [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-                      "linestyle", linespec.linestyle,
-                      "color", linespec.color, "parent", hg);
-        else
-          h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-                     [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-                     "linestyle", linespec.linestyle,
-                      "color", linespec.color, "parent", hg);
-        endif
+      if (! isempty (linespec.marker) && ! strcmp (linespec.marker, "none"))
+        ls = "none";  # No arrowhead drawn when marker present
       endif
-    elseif (is3d)
+    endif
+
+    if (is3d)
       h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
                   [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
                   [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-                  "color", "black", "parent", hg);
+                  "linestyle", ls, "color", lc, "parent", hg);
     else
       h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
                  [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-                 "parent", hg);
+                  "linestyle", ls, "color", lc, "parent", hg);
     endif
 
-    if (! have_line_spec
-        || (isfield (linespec, "marker")
-            && strcmp (linespec.marker, "none")))
-      if (is3d)
-        h3 = plot3 (x, y, z, "linestyle", "none", "marker", "none",
-                    "parent", hg);
-      else
-        h3 = plot (x, y, "linestyle", "none", "marker", "none", "parent", hg);
-      endif
+    ## Draw arrow base marker as a third line object
+    if (! have_line_spec || isempty (linespec.marker))
+      mk = "none";
     else
-      if (is3d)
-        h3 = plot3 (x, y, z, "linestyle", "none", "marker", linespec.marker,
-                    "parent", hg);
-      else
-
-        h3 = plot (x, y, "linestyle", "none", "marker", linespec.marker,
-                   "parent", hg);
-      endif
+      mk = linespec.marker;
+    endif
+    if (is3d)
+      h3 = plot3 (x, y, z, "linestyle", "none", "marker", mk, "parent", hg);
+    else
+      h3 = plot (x, y, "linestyle", "none", "marker", mk, "parent", hg);
     endif
     if (have_filled)
       ## FIXME: gnuplot doesn't respect the markerfacecolor field
@@ -299,23 +275,23 @@ function hg = __quiver__ (varargin)
     addlistener (hg, "autoscale", @update_data);
     addlistener (hg, "autoscalefactor", @update_data);
 
-    addproperty ("maxheadsize", hg, "data", arrowsize);
+    addproperty ("maxheadsize", hg, "data", arrowsize * .20*3);
     addlistener (hg, "maxheadsize", @update_data);
 
     addproperty ("showarrowhead", hg, "radio", "{on}|off", "on");
     addlistener (hg, "showarrowhead", @update_props);
 
     addproperty ("color", hg, "linecolor", get (h1, "color"));
-    addproperty ("linewidth", hg, "linelinewidth", get (h1, "linewidth"));
     addproperty ("linestyle", hg, "linelinestyle", get (h1, "linestyle"));
+    addproperty ("linewidth", hg, "linelinewidth", get (h1, "linewidth"));
     addproperty ("marker", hg, "linemarker", get (h3, "marker"));
     addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
                  get (h3, "markerfacecolor"));
     addproperty ("markersize", hg, "linemarkersize", get (h3, "markersize"));
 
     addlistener (hg, "color", @update_props);
-    addlistener (hg, "linewidth", @update_props);
     addlistener (hg, "linestyle", @update_props);
+    addlistener (hg, "linewidth", @update_props);
     addlistener (hg, "marker", @update_props);
     addlistener (hg, "markerfacecolor", @update_props);
     addlistener (hg, "markersize", @update_props);
@@ -332,7 +308,8 @@ function hg = __quiver__ (varargin)
 
 endfunction
 
-function update_data (h, d)
+function update_data (h, ~)
+
   x = get (h, "xdata");
   y = get (h, "ydata");
   z = get (h, "zdata");
@@ -343,6 +320,7 @@ function update_data (h, d)
 
   s = get (h, "autoscalefactor");
   arrowsize = get (h, "maxheadsize");
+  arrowsize /= 0.20 * 3;
 
   kids = get (h, "children");
 
@@ -352,17 +330,17 @@ function update_data (h, d)
     is3d = true;
   endif
 
-  if (strcmpi (get (h, "autoscale"), "on") && s != 0)
+  if (strcmp (get (h, "autoscale"), "on") && s != 0)
     ## Scale the arrows to fit in the grid
     if (isvector (x))
-      ny = nx = length (x);
+      nx = ny = sqrt (length (x));
     else
-      [nx, ny] = size (x);
+      [ny, nx] = size (x);
     endif
-    dx = (max (x(:)) - min (x(:))) ./ nx;
-    dy = (max (y(:)) - min (y(:))) ./ ny;
+    dx = (max (x(:)) - min (x(:))) / nx;
+    dy = (max (y(:)) - min (y(:))) / ny;
     if (is3d)
-      dz = (max (z(:)) - min (z(:))) ./ max (size (z));
+      dz = (max (z(:)) - min (z(:))) / max (nx, ny);
       len = max (sqrt (u(:).^2 + v(:).^2 + w(:).^2));
     else
       dz = 0;
@@ -371,12 +349,12 @@ function update_data (h, d)
     if (len > 0)
       sd = sqrt (dx.^2 + dy.^2 + dz.^2) / len;
       if (sd != 0)
-        s *= sqrt (2) * sd;
+        s *= sd;
       endif
       u = s * u;
       v = s * v;
       if (is3d)
-        w = s*w;
+        w = s * w;
       endif
     endif
   endif
@@ -390,59 +368,57 @@ function update_data (h, d)
     zend = z + w(:);
   endif
 
-  set (kids (3), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
-  set (kids (3), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  set (kids(3), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
+  set (kids(3), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
   if (is3d)
-    set (kids (3), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
+    set (kids(3), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
   endif
 
-  xtmp = x + u(:) .* (1 - arrowsize);
-  ytmp = y + v(:) .* (1 - arrowsize);
-  xarrw1 = xtmp + (y - yend) * arrowsize / 3;
-  xarrw2 = xtmp - (y - yend) * arrowsize / 3;
-  yarrw1 = ytmp - (x - xend) * arrowsize / 3;
-  yarrw2 = ytmp + (x - xend) * arrowsize / 3;
+  xtmp = x + u(:) * (1 - arrowsize);
+  ytmp = y + v(:) * (1 - arrowsize);
+
   if (is3d)
+    xydist = sqrt (u(:).^2 + v(:).^2 + w(:).^2) ./ ...
+               (sqrt (u(:).^2 + v(:).^2) + eps);
+    xarrw1 = xtmp + v(:) .* xydist * arrowsize / 4;
+    xarrw2 = xtmp - v(:) .* xydist * arrowsize / 4;
+    yarrw1 = ytmp - u(:) .* xydist * arrowsize / 4;
+    yarrw2 = ytmp + u(:) .* xydist * arrowsize / 4;
     zarrw1 = zarrw2 = zend - w(:) * arrowsize;
+  else
+    xarrw1 = xtmp + v(:) * arrowsize / 3;
+    xarrw2 = xtmp - v(:) * arrowsize / 3;
+    yarrw1 = ytmp - u(:) * arrowsize / 3;
+    yarrw2 = ytmp + u(:) * arrowsize / 3;
   endif
 
-  set (kids (2), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
-  set (kids (2), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  set (kids(2), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
+  set (kids(2), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
   if (is3d)
-    set (kids (2), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
+    set (kids(2), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
   endif
 
-  set (kids (2), "xdata", [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:));
-  set (kids (2), "ydata", [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
+  set (kids(2), "xdata", [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:));
+  set (kids(2), "ydata", [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
   if (is3d)
-    set (kids (2), "zdata", [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:));
+    set (kids(2), "zdata", [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:));
   endif
 
-  set (kids (1), "xdata", x);
-  set (kids (1), "ydata", y);
+  set (kids(1), "xdata", x);
+  set (kids(1), "ydata", y);
   if (is3d)
-    set (kids (1), "zdata", z);
+    set (kids(1), "zdata", z);
   endif
 
 endfunction
 
-function update_props (h, d)
+function update_props (h, ~)
   kids = get (h, "children");
 
-  set (kids(3), "color", get (h, "color"),
-       "linewidth", get (h, "linewidth"),
-       "linestyle", get (h, "linestyle"));
-  set (kids(2), "color", get (h, "color"),
-       "linewidth", get (h, "linewidth"),
-       "linestyle", get (h, "linestyle"));
-  if (strcmpi (get (h, "showarrowhead"), "on"))
-    set (kids (2), "visible", "on");
-  else
-    set (kids (2), "visible", "off");
-  endif
-  set (kids(1), "color", get (h, "color"),
-       "marker", get (h, "marker"),
-       "markerfacecolor", get (h, "markerfacecolor"),
-       "markersize", get (h, "markersize"));
+  set (kids([3 2]), {"color", "linestyle", "linewidth"},
+            get (h, {"color", "linestyle", "linewidth"}));
+  set (kids(2), "visible", get (h, "showarrowhead"));
+  set (kids(1), {"color", "marker", "markerfacecolor", "markersize"},
+        get (h, {"color", "marker", "markerfacecolor", "markersize"}));
 endfunction
 

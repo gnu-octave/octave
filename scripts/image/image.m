@@ -65,15 +65,31 @@ function h = image (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
   
-  if (isempty (hax))
-    hax = gca ();
-  endif
-
   chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
   
-  if (nargin == 0 || chararg == 1)
+  do_new = true;
+  if (nargin == 0)
     img = imread ("default.img");
     x = y = [];
+  elseif (chararg == 1) 
+    ## Low-Level syntax
+    do_new = false;
+    x = y = img = [];
+    idx = find (strcmpi (varargin, "cdata"), 1);
+    if (idx)
+      img = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
+    idx = find (strcmpi (varargin, "xdata"), 1);
+    if (idx)
+      x = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
+    idx = find (strcmpi (varargin, "ydata"), 1);
+    if (idx)
+      y = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
   elseif (nargin == 1 || chararg == 2)
     img = varargin{1};
     x = y = [];
@@ -85,9 +101,25 @@ function h = image (varargin)
     img = varargin{3};
     chararg = 4;
   endif
-  
-  htmp = __img__ (hax, x, y, img, varargin{chararg:end});
-  set (hax, "layer", "top");
+
+  oldfig = [];
+  if (! isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
+  unwind_protect
+    if (do_new)
+      hax = newplot (hax);
+    elseif (isempty (hax))
+      hax = gca ();
+    endif
+
+    htmp = __img__ (hax, do_new, x, y, img, varargin{chararg:end});
+
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;
@@ -105,89 +137,89 @@ endfunction
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function h = __img__ (hax, x, y, img, varargin)
-
-  if (isempty (img))
-    error ("__img__: matrix is empty");
-  endif
+function h = __img__ (hax, do_new, x, y, img, varargin)
 
   ## FIXME: Hack for integer formats which use zero-based indexing
   ##        Hack favors correctness of display over size of image in memory.
-  ##        True fix will be done in C++ code. 
+  ##        True fix must be done in C++ code for renderer. 
   if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
     img = single (img) + 1;
   endif
 
-  if (isempty (x))
-    x = [1, columns(img)];
-  endif
+  if (! isempty (img))
 
-  if (isempty (y))
-    y = [1, rows(img)];
-  endif
-
-  xdata = x([1, end]);
-  ydata = y([1, end]);
-
-  if (numel (x) > 2 && numel (y) > 2)
-    ## Test data for non-linear spacing which is unsupported
-    tol = .01;  # 1% tolerance.  FIXME: this value was chosen without thought.
-    dx = diff (x);
-    dxmean = (max (x) - min (x)) / (numel (x) - 1);
-    dx = abs ((dx - dxmean) / dxmean);
-    dy = diff (y);
-    dymean = (max (y) - min (y)) / (numel (y) - 1);
-    dy = abs ((dy - dymean) / dymean);
-    if (any (dx > tol) || any (dy > tol))
-      warning ("image: non-linear X, Y data is ignored.  IMG will be shown with linear mapping");
+    if (isempty (x))
+      x = [1, columns(img)];
     endif
-  endif
 
-  htmp = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
-                       "cdatamapping", "direct", varargin {:});
-
-  px = __image_pixel_size__ (htmp);
-
-  if (xdata(2) < xdata(1))
-    xdata = fliplr (xdata);
-  elseif (xdata(2) == xdata(1))
-    xdata = xdata(1) + [0, columns(img)-1];
-  endif
-  if (ydata(2) < ydata(1))
-    ydata = fliplr (ydata);
-  elseif (ydata(2) == ydata(1))
-    ydata = ydata(1) + [0, rows(img)-1];
-  endif
-  xlim = xdata + [-px(1), px(1)];
-  ylim = ydata + [-px(2), px(2)];
-
-  ## FIXME -- how can we do this and also get the {x,y}limmode
-  ## properties to remain "auto"?  I suppose this adjustment should
-  ## happen automatically in axes::update_axis_limits instead of
-  ## explicitly setting the values here.  But then what information is
-  ## available to axes::update_axis_limits to determine that the
-  ## adjustment is necessary?
-  set (hax, "xlim", xlim, "ylim", ylim);
-
-  if (ndims (img) == 3)
-    if (isinteger (img))
-      cls = class (img);
-      mn = intmin (cls);
-      mx = intmax (cls);
-      set (hax, "clim", double ([mn, mx]));
+    if (isempty (y))
+      y = [1, rows(img)];
     endif
-  endif
 
-  set (hax, "view", [0, 90]);
+    xdata = x([1, end]);
+    ydata = y([1, end]);
 
-  if (strcmp (get (hax, "nextplot"), "replace"))
-    ## Always reverse y-axis for images, unless hold is on
-    set (hax, "ydir", "reverse");
-  endif
+    if (numel (x) > 2 && numel (y) > 2)
+      ## Test data for non-linear spacing which is unsupported
+      tol = .01;  # 1% tolerance.  FIXME: this value was chosen without thought.
+      dx = diff (x);
+      dxmean = (max (x) - min (x)) / (numel (x) - 1);
+      dx = abs ((abs (dx) - dxmean) / dxmean);
+      dy = diff (y);
+      dymean = (max (y) - min (y)) / (numel (y) - 1);
+      dy = abs ((abs (dy) - dymean) / dymean);
+      if (any (dx > tol) || any (dy > tol))
+        warning (["image: non-linear X, Y data is ignored.  " ...
+                  "IMG will be shown with linear mapping"]);
+      endif
+    endif
 
-  if (nargout > 0)
-    h = htmp;
-  endif
+  endif  # ! isempty (img)
+
+  h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
+                         "cdatamapping", "direct", varargin{:});
+
+  if (do_new && ! ishold (hax))
+    ## Set axis properties for new images
+
+    if (! isempty (img))
+      px = __image_pixel_size__ (h);
+
+      if (xdata(2) < xdata(1))
+        xdata = fliplr (xdata);
+      elseif (xdata(2) == xdata(1))
+        xdata = xdata(1) + [0, columns(img)-1];
+      endif
+      if (ydata(2) < ydata(1))
+        ydata = fliplr (ydata);
+      elseif (ydata(2) == ydata(1))
+        ydata = ydata(1) + [0, rows(img)-1];
+      endif
+      xlim = xdata + [-px(1), px(1)];
+      ylim = ydata + [-px(2), px(2)];
+
+      ## FIXME -- how can we do this and also get the {x,y}limmode
+      ## properties to remain "auto"?  I suppose this adjustment should
+      ## happen automatically in axes::update_axis_limits instead of
+      ## explicitly setting the values here.  But then what information is
+      ## available to axes::update_axis_limits to determine that the
+      ## adjustment is necessary?
+      set (hax, "xlim", xlim, "ylim", ylim);
+
+      if (ndims (img) == 3)
+        if (isinteger (img))
+          cls = class (img);
+          mn = intmin (cls);
+          mx = intmax (cls);
+          set (hax, "clim", double ([mn, mx]));
+        endif
+      endif
+
+    endif  # ! isempty (img)
+
+    set (hax, "view", [0, 90], "ydir", "reverse", "layer", "bottom");
+
+  endif  # do_new
 
 endfunction
 
@@ -212,3 +244,4 @@ endfunction
 %!  h = image (-x, -y, img);
 %!  title ("image (-x, -y, img)");
 
+## FIXME: Need %!tests for linear

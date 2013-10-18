@@ -52,51 +52,69 @@
 
 function h = imagesc (varargin)
 
-  if (nargin < 1 || nargin > 4)
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("imagesc", varargin{:});
+
+  chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
+
+  do_new = true;
+  if (nargin == 0)
     print_usage ();
-  elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    hax = varargin{1};
-    if (! isaxes (hax))
-      error ("imagesc: HAX argument must be an axes object");
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      htmp = __imagesc__ (hax, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    htmp = __imagesc__ (gca (), varargin{:});
+  elseif (chararg == 1)
+    ## Low-Level syntax
+    do_new = false;
+    img = x = y = climits = [];
+  elseif (nargin == 1 || chararg == 2)
+    img = varargin{1};
+    x = y = climits = [];
+  elseif (nargin == 2 || chararg == 3)
+    img = varargin{1};
+    climits = varargin{2};
+    x = y = [];
+  elseif (nargin == 3 || chararg == 4)
+    x = varargin{1};
+    y = varargin{2};
+    img = varargin{3};
+    climits = [];
+  elseif (nargin == 4 || chararg == 5)
+    x = varargin{1};
+    y = varargin{2};
+    img = varargin{3};
+    climits = varargin{4};
   endif
+
+  oldfig = [];
+  if (! isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
+  unwind_protect
+    if (do_new)
+      hax = newplot (hax);
+    elseif (isempty (hax))
+      hax = gca ();
+    endif
+
+    if (do_new)
+      htmp = image (x, y, img, "cdatamapping", "scaled", varargin{chararg:end});
+    else
+      htmp = image ("cdatamapping", "scaled", varargin{:});
+    endif
+
+    if (do_new && ! ishold (hax))
+      ## use given climits or guess them from the matrix
+      if (numel (climits) == 2 && climits(1) <= climits(2))
+        set (hax, "clim", climits);
+      elseif (! isempty (climits))
+        error ("imagesc: CLIMITS must be in form [lo, hi]");
+      endif
+    endif
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;
-  endif
-
-endfunction
-
-function h = __imagesc__ (ax, x, y, img, climits)
-
-  if (nargin == 2)
-    img = x;
-    x = y = climits = [];
-  elseif (nargin == 3)
-    img = x;
-    climits = y;
-    x = y = [];
-  elseif (nargin == 4 && ! isscalar (x) && ! isscalar (y) && ! isscalar (img))
-    climits = [];
-  endif
-
-  h = image (ax, x, y, img);
-  set (h, "cdatamapping", "scaled");
-
-  ## use given climits or guess them from the matrix
-  if (numel (climits) == 2 && climits(1) <= climits(2))
-    set (ax, "clim", climits);
-  elseif (! isempty (climits))
-    error ("imagesc: CLIMITS must be in form [lo, hi]");
   endif
 
 endfunction

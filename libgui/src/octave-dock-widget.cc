@@ -38,13 +38,17 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 {
 
   _parent = static_cast<QMainWindow *> (p);     // store main window
-  setFeatures (QDockWidget::DockWidgetMovable); // not floatable or cloasable
 
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility_changed (bool)));
 
   connect (p, SIGNAL (settings_changed (const QSettings*)),
            this, SLOT (notice_settings (const QSettings*)));
+
+#if defined (Q_OS_WIN32)
+  // windows: add an extra title bar that persists when floating
+
+  setFeatures (QDockWidget::DockWidgetMovable); // not floatable or closeable
 
   // the custom (extra) title bar of the widget
   _dock_action = new QAction
@@ -78,6 +82,18 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   title_widget->setLayout (h_layout);
   setTitleBarWidget (title_widget);
 
+#else
+
+  // non windows: qt takes control of floating widgets
+  setFeatures (QDockWidget::DockWidgetMovable |
+               QDockWidget::DockWidgetClosable |
+               QDockWidget::DockWidgetFloatable); // floatable and closeable
+
+  connect (this, SIGNAL (topLevelChanged (bool)),
+           this, SLOT (change_floating (bool)));
+
+#endif
+
   // copy & paste handling
   connect (p, SIGNAL (copyClipboard_signal ()), this, SLOT (copyClipboard ()));
   connect (p, SIGNAL (pasteClipboard_signal()), this, SLOT (pasteClipboard ()));
@@ -94,7 +110,7 @@ octave_dock_widget::~octave_dock_widget ()
   settings->beginGroup ("DockWidgets");
 
   if (!parent ())
-    { // widget is floating, save actual floating geometry
+    { // widget is floating (windows), save actual floating geometry
       floating = true;
       settings->setValue (name+"_floating_geometry", saveGeometry ());
     }
@@ -123,10 +139,12 @@ octave_dock_widget::connect_visibility_changed (void)
 void
 octave_dock_widget::set_title (const QString& title)
 {
+#if defined (Q_OS_WIN32)
   QHBoxLayout* h_layout =
       static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
   QLabel *label = new QLabel (title);
   h_layout->insertWidget (0,label);
+#endif
   setWindowTitle (title);
 }
 
@@ -134,6 +152,10 @@ octave_dock_widget::set_title (const QString& title)
 void
 octave_dock_widget::make_window ()
 {
+#if defined (Q_OS_WIN32)
+
+  // windows: the widget has to be reparented (parent = 0)
+
   QSettings *settings = resource_manager::get_settings ();
 
   // save the docking area for later redocking
@@ -150,12 +172,24 @@ octave_dock_widget::make_window ()
   // restore the last geometry when floating
   restoreGeometry (settings->value
           ("DockWidgets/" + objectName ()+"_floating_geometry").toByteArray ());
+
+#else
+
+  // non windows: Just set the appripriate window flag
+  setWindowFlags (Qt::Window);
+
+#endif
+
 }
 
 // dock the widget
 void
 octave_dock_widget::make_widget (bool dock)
 {
+#if defined (Q_OS_WIN32)
+
+  // windows: Since floating widget has no parent, we have to readd it
+
   QSettings *settings = resource_manager::get_settings ();
 
   // save last floating geometry
@@ -179,13 +213,24 @@ octave_dock_widget::make_widget (bool dock)
   // adjust the (un)dock icon
   _dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
   _dock_action->setToolTip (tr ("Undock widget"));
+
+#else
+
+  // non windows: just say we are a docked widget again
+  setWindowFlags (Qt::Widget);
+
+#endif
 }
 
 // slot for (un)dock action
 void
-octave_dock_widget::change_floating (bool)
-{
-  if (parent())
+octave_dock_widget::change_floating (bool floating)
+ {
+#if defined (Q_OS_WIN32)
+   if (parent())
+#else
+  if (floating)
+#endif
     {
       make_window ();
       focus ();

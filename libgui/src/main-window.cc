@@ -633,7 +633,7 @@ main_window::set_window_layout (QSettings *settings)
             widget->make_widget (false); // no docking, just reparent
 
           // restore geometry
-          QVariant val = settings->value (name);
+          QVariant val = settings->value ("DockWidgets/" + name);
           widget->restoreGeometry (val.toByteArray ());
 
           // make widget visible if desired

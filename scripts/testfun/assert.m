@@ -284,13 +284,8 @@ function assert (cond, varargin)
         exclude = errseen | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
         A_null_imag(exclude) = 0;
         B_null_imag(exclude) = 0;
-        if (issparse (A) || issparse (B))
-          A_null = sparse (complex (full (A_null_real), full (A_null_imag)));
-          B_null = sparse (complex (full (B_null_real), full (B_null_imag)));
-        else
-          A_null = complex (A_null_real, A_null_imag);
-          B_null = complex (B_null_real, B_null_imag);
-        endif
+        A_null = complex (A_null_real, A_null_imag);
+        B_null = complex (B_null_real, B_null_imag);
         if (isscalar (tol))
           mtol = tol * ones (size (A));
         else

@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
-## @deftypefnx {Function File} {} image (@dots{}, "@var{property}", @var{value}, @dots{})
+## @deftypefnx {Function File} {} image (@dots{}, "@var{prop}", @var{val}, @dots{})
+## @deftypefnx {Function File} {} image ("@var{prop1}", @var{val1}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} image (@dots{})
 ## Display a matrix as an indexed color image.
 ##
@@ -33,6 +34,9 @@
 ## @strong{Warning:} @var{x} and @var{y} are ignored when using gnuplot 4.0
 ## or earlier.
 ##
+## Multiple property/value pairs may be specified for the image object, but
+## they must appear in pairs.
+##
 ## The optional return value @var{h} is a graphics handle to the image.
 ##
 ## Implementation Note: The origin (0, 0) for images is located in the
@@ -44,6 +48,12 @@
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata)}.
 ##
+## Calling Forms: The @code{image} function can be called in two forms:
+## High-Level and Low-Level.  When invoked with normal options, the High-Level
+## form is used which first calls @code{newplot} to prepare the graphic figure
+## and axes.  When the only inputs to @code{image} are property/value pairs
+## the Low-Level form is used which creates a new instance of an image object
+## and inserts it in the current axes.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 

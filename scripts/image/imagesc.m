@@ -20,6 +20,8 @@
 ## @deftypefn  {Function File} {} imagesc (@var{img})
 ## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{img})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{climits})
+## @deftypefnx {Function File} {} imagesc (@dots{}, "@var{prop}", @var{val}, @dots{})
+## @deftypefnx {Function File} {} imagesc ("@var{prop1}", @var{val1}, @dots{})
 ## @deftypefnx {Function File} {} imagesc (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} imagesc (@dots{})
 ## Display a scaled version of the matrix @var{img} as a color image.  The
@@ -33,6 +35,14 @@
 ## of the matrix @var{img}.
 ##
 ## The optional return value @var{h} is a graphics handle to the image.
+##
+## Calling Forms: The @code{imagesc} function can be called in two forms:
+## High-Level and Low-Level.  When invoked with normal options, the High-Level
+## form is used which first calls @code{newplot} to prepare the graphic figure
+## and axes.  When the only inputs to @code{image} are property/value pairs
+## the Low-Level form is used which creates a new instance of an image object
+## and inserts it in the current axes.
+##
 ## @seealso{image, imshow, caxis}
 ## @end deftypefn
 

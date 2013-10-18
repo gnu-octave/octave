@@ -653,6 +653,7 @@ real (const SparseComplexMatrix& a)
       r.ridx (i) = a.ridx (i);
     }
 
+  r.maybe_compress (true);
   return r;
 }
 
@@ -673,8 +674,16 @@ imag (const SparseComplexMatrix& a)
       r.ridx (i) = a.ridx (i);
     }
 
+  r.maybe_compress (true);
   return r;
 }
+
+/*
+
+%!assert(nnz(real(sparse([1i,1]))),1)
+%!assert(nnz(real(sparse([1i,1]))),1)
+
+*/
 
 SparseMatrix
 atan2 (const double& x, const SparseMatrix& y)

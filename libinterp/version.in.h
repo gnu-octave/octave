@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_COPYRIGHT %OCTAVE_COPYRIGHT%
 
+#include <string>
+
 extern std::string octave_www_statement (bool html = false);
 
 extern std::string octave_contrib_statement (bool html = false);

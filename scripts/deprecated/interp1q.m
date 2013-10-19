@@ -37,6 +37,14 @@
 ## @end deftypefn
 
 function yi = interp1q (x, y, xi)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "interp1q is obsolete and will be removed from a future version of Octave; use interp1 instead");
+  endif
+
   x = x(:);
   nx = rows (x);
   szy = size (y);

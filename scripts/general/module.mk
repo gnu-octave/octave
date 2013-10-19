@@ -37,7 +37,6 @@ general_FCN_FILES = \
   general/idivide.m \
   general/int2str.m \
   general/interp1.m \
-  general/interp1q.m \
   general/interp2.m \
   general/interp3.m \
   general/interpn.m \

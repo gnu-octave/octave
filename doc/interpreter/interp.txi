@@ -82,12 +82,6 @@ interpolation methods for a step function}
 @end float
 @end ifnotinfo
 
-A simplified version of @code{interp1} that performs only linear
-interpolation is available in @code{interp1q}.  This argument is slightly
-faster than @code{interp1} as to performs little error checking.
-
-@DOCSTRING(interp1q)
-
 Fourier interpolation, is a resampling technique where a signal is
 converted to the frequency domain, padded with zeros and then
 reconverted to the time domain.

@@ -322,14 +322,15 @@ Summary of important user-visible changes for version 3.8:
     be removed from Octave 3.12 (or whatever version is the second major
     release after 3.8):
 
-      default_save_options    java_set                  
-      gen_doc_cache           java_unsigned_conversion  
+      default_save_options    java_new            
+      gen_doc_cache           java_set                   
+      interp1q                java_unsigned_conversion
       isequalwithequalnans    javafields                
       java_convert_matrix     javamethods               
       java_debug              re_read_readline_init_file
       java_get                read_readline_init_file   
       java_invoke             saving_history            
-      java_new           
+
 
     The following keywords have been deprecated in Octave 3.8 and will
     be removed from Octave 3.12 (or whatever version is the second major

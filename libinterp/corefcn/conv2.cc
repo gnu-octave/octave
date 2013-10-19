@@ -330,6 +330,11 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
     {
       if (args(2).is_string ())
         shape = args(2).string_value ();
+      else
+        {
+          error ("convn: SHAPE must be a string");
+          return retval;
+        }
     }
 
   if (shape == "full")
@@ -397,4 +402,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 
 /*
  FIXME: Need tests for convn in addition to conv2.
+%!error convn ()
+%!error convn (1)
+%!error <SHAPE type not valid> convn (1,2, "NOT_A_SHAPE")
+%!error convn (rand (3), 1, 1)
 */

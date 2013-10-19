@@ -88,7 +88,7 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
         {
           for (octave_idx_type ja = 0; ja < na - nb + 1; ja++)
             for (octave_idx_type jb = 0; jb < nb; jb++)
-              convolve_nd<T, R> (a + ma*(ja + jb), ad, acd, b + mb*jb, bd, bcd,
+              convolve_nd<T, R> (a + ma*(ja+jb), ad, acd, b + mb*(nb-jb-1), bd, bcd,
                                  c + ldc*ja, ccd, nd-1, inner);
         }
       else

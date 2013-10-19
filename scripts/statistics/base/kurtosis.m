@@ -27,7 +27,7 @@
 ## \kappa_1 = {{{1\over N}\,
 ##          \sum_{i=1}^N (@var{x}_i - \bar{@var{x}})^4} \over \sigma^4},
 ## $$
-## where $N$ is the length of @var{x}, $\bar{@var{x}}$ its mean and $\sigma$
+## where $N$ is the length of @var{x}, $\bar{@var{x}}$ its mean, and $\sigma$
 ## its (uncorrected) standard deviation.
 ## @end tex
 ## @ifnottex
@@ -35,7 +35,7 @@
 ## @example
 ## @group
 ##      mean ((@var{x} - mean (@var{x})).^4)
-## k1 = ------------------------.
+## k1 = ------------------------
 ##             std (@var{x}).^4
 ## @end group
 ## @end example
@@ -46,11 +46,11 @@
 ## The optional argument @var{flag} controls which normalization is used.
 ## If @var{flag} is equal to 1 (default value, used when @var{flag} is omitted
 ## or empty), return the sample kurtosis as defined above.  If @var{flag} is
-## equal to 0, return the "bias-corrected" kurtosis coefficient instead:
+## equal to 0, return the @w{"bias-corrected"} kurtosis coefficient instead:
 ## @tex
 ## $$
 ## \kappa_0 = 3 + {\scriptstyle N - 1 \over \scriptstyle (N - 2)(N - 3)} \,
-##     \left( (N + 1)\, \kappa_1 - 3 (N - 1) \right).
+##     \left( (N + 1)\, \kappa_1 - 3 (N - 1) \right)
 ## $$
 ## @end tex
 ## @ifnottex
@@ -65,7 +65,7 @@
 ##
 ## @end ifnottex
 ## The bias-corrected kurtosis coefficient is obtained by replacing the sample
-## second and fourth central moments by their unbiased versions. It is an
+## second and fourth central moments by their unbiased versions.  It is an
 ## unbiased estimate of the population kurtosis for normal populations.
 ##
 ## If @var{x} is a matrix, or more generally a multi-dimensional array, return

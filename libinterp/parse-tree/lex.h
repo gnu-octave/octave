@@ -493,8 +493,50 @@ public:
     bool eof;
   };
 
+  // Collect comment text.
+
+  class
+  comment_buffer
+  {
+  public:
+
+    comment_buffer (void) : comment_list (0) { }
+
+    ~comment_buffer (void) { delete comment_list; }
+
+    void append (const std::string& s, octave_comment_elt::comment_type t)
+    {
+      if (! comment_list)
+        comment_list = new octave_comment_list ();
+
+      comment_list->append (s, t);
+    }
+
+    // Caller is expected to delete the returned value.
+
+    octave_comment_list *get_comment (void)
+    {
+      octave_comment_list *retval = comment_list;
+
+      comment_list = 0;
+
+      return retval;
+    }
+
+    void reset (void)
+    {
+      delete comment_list;
+
+      comment_list = 0;
+    }
+
+  private:
+
+    octave_comment_list *comment_list;
+  };
+
   octave_base_lexer (void)
-    : lexical_feedback (), scanner (0), input_buf ()
+    : lexical_feedback (), scanner (0), input_buf (), comment_buf ()
   {
     init ();
   }
@@ -545,6 +587,8 @@ public:
 
   void finish_comment (octave_comment_elt::comment_type typ);
 
+  octave_comment_list *get_comment (void) { return comment_buf.get_comment (); }
+
   int handle_close_bracket (int bracket_type);
 
   bool looks_like_command_arg (void);
@@ -582,6 +626,9 @@ public:
 
   // Object that reads and buffers input.
   input_buffer input_buf;
+
+  // Object that collects comment text.
+  comment_buffer comment_buf;
 
   virtual void increment_promptflag (void) = 0;
 

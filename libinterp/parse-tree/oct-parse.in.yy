@@ -105,16 +105,6 @@ static std::map<std::string, std::string> autoload_map;
 
 static void yyerror (octave_base_parser& parser, const char *s);
 
-// Finish building a statement.
-template <class T>
-static tree_statement *
-make_statement (T *arg)
-{
-  octave_comment_list *comment = octave_comment_buffer::get_comment ();
-
-  return new tree_statement (arg, comment);
-}
-
 #define ABORT_PARSE \
   do \
     { \
@@ -396,11 +386,11 @@ list1           : statement
                 ;
 
 statement       : expression
-                  { $$ = make_statement ($1); }
+                  { $$ = parser.make_statement ($1); }
                 | command
-                  { $$ = make_statement ($1); }
+                  { $$ = parser.make_statement ($1); }
                 | word_list_cmd
-                  { $$ = make_statement ($1); }
+                  { $$ = parser.make_statement ($1); }
                 ;
 
 // =================
@@ -1579,7 +1569,7 @@ stmt_begin      : // empty
                 ;
 
 stash_comment   : // empty
-                  { $$ = octave_comment_buffer::get_comment (); }
+                  { $$ = lexer.get_comment (); }
                 ;
 
 parse_error     : LEXICAL_ERROR
@@ -2338,7 +2328,7 @@ octave_base_parser::make_unwind_command (token *unwind_tok,
 
   if (end_token_ok (end_tok, token::unwind_protect_end))
     {
-      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       int l = unwind_tok->line ();
       int c = unwind_tok->column ();
@@ -2370,7 +2360,7 @@ octave_base_parser::make_try_command (token *try_tok,
 
   if (end_token_ok (end_tok, token::try_catch_end))
     {
-      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       int l = try_tok->line ();
       int c = try_tok->column ();
@@ -2424,7 +2414,7 @@ octave_base_parser::make_while_command (token *while_tok,
 
   if (end_token_ok (end_tok, token::while_end))
     {
-      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       lexer.looping--;
 
@@ -2452,7 +2442,7 @@ octave_base_parser::make_do_until_command (token *until_tok,
 {
   maybe_warn_assign_as_truth_value (expr);
 
-  octave_comment_list *tc = octave_comment_buffer::get_comment ();
+  octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
   lexer.looping--;
 
@@ -2479,7 +2469,7 @@ octave_base_parser::make_for_command (int tok_id, token *for_tok,
 
   if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
     {
-      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       lexer.looping--;
 
@@ -2573,7 +2563,7 @@ octave_base_parser::finish_if_command (token *if_tok,
 
   if (end_token_ok (end_tok, token::if_end))
     {
-      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       int l = if_tok->line ();
       int c = if_tok->column ();
@@ -2626,7 +2616,7 @@ octave_base_parser::finish_switch_command (token *switch_tok,
 
   if (end_token_ok (end_tok, token::switch_end))
     {
-      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       int l = switch_tok->line ();
       int c = switch_tok->column ();
@@ -2810,7 +2800,7 @@ octave_base_parser::start_function (tree_parameter_list *param_list,
 
   if (fcn)
     {
-      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       fcn->stash_trailing_comment (tc);
       fcn->stash_fcn_end_location (end_fcn_stmt->line (),
@@ -3344,6 +3334,16 @@ octave_base_parser::set_stmt_print_flag (tree_statement_list *list,
   return list;
 }
 
+// Finish building a statement.
+template <class T>
+tree_statement *
+octave_base_parser::make_statement (T *arg)
+{
+  octave_comment_list *comment = lexer.get_comment ();
+
+  return new tree_statement (arg, comment);
+}
+
 tree_statement_list *
 octave_base_parser::make_statement_list (tree_statement *stmt)
 {
@@ -3465,15 +3465,6 @@ octave_push_parser::run (const std::string& input, bool eof)
 static void
 safe_fclose (FILE *f)
 {
-  // FIXME -- comments at the end of an input file are
-  // discarded (otherwise, they would be appended to the next
-  // statement, possibly from the command line or another file, which
-  // can be quite confusing).
-
-  octave_comment_list *tc = octave_comment_buffer::get_comment ();
-
-  delete tc;
-
   if (f)
     fclose (static_cast<FILE *> (f));
 }

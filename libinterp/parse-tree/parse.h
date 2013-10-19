@@ -327,6 +327,10 @@ public:
   tree_statement_list *
   set_stmt_print_flag (tree_statement_list *, char, bool);
 
+  // Finish building a statement.
+  template <class T>
+  tree_statement *make_statement (T *arg);
+
   // Create a statement list.
   tree_statement_list *make_statement_list (tree_statement *stmt);
 

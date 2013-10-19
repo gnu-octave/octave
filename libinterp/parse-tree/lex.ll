@@ -2037,6 +2037,8 @@ octave_base_lexer::reset (void)
     yyrestart (stdin, scanner);
 
   lexical_feedback::reset ();
+
+  comment_buf.reset ();
 }
 
 void
@@ -2537,7 +2539,7 @@ octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ)
   if (copyright)
     typ = octave_comment_elt::copyright;
 
-  octave_comment_buffer::append (comment_text, typ);
+  comment_buf.append (comment_text, typ);
 
   comment_text = "";
 

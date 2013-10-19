@@ -98,35 +98,4 @@ public:
   octave_comment_list *dup (void) const;
 };
 
-class
-octave_comment_buffer
-{
-public:
-
-  octave_comment_buffer (void)
-    : comment_list (new octave_comment_list ()) { }
-
-  ~octave_comment_buffer (void) { delete comment_list; }
-
-  static bool instance_ok (void);
-
-  static void append
-    (const std::string& s,
-     octave_comment_elt::comment_type t = octave_comment_elt::unknown);
-
-  static octave_comment_list *get_comment (void);
-
-private:
-
-  void do_append (const std::string& s, octave_comment_elt::comment_type t);
-
-  octave_comment_list *do_get_comment (void);
-
-  octave_comment_list *comment_list;
-
-  static octave_comment_buffer *instance;
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-};
-
 #endif

@@ -22,6 +22,9 @@
         <file>icons/filesaveas.png</file>
         <file>icons/redled.png</file>
         <file>icons/arrow_right.png</file>
+        <file>icons/arrow_left.png</file>
+        <file>icons/arrow_up.png</file>
+        <file>icons/arrow_down.png</file>
         <file>icons/bookmark.png</file>
         <file>icons/question.png</file>
         <file>icons/star.png</file>

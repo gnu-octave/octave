@@ -89,7 +89,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->markerDefine (QsciScintilla::RightTriangle, bookmark);
   _edit_area->markerDefine (QPixmap (":/actions/icons/redled.png"),
                             breakpoint);
-  _edit_area->markerDefine (QPixmap (":/actions/icons/arrow_right.png"),
+  _edit_area->markerDefine (QPixmap (":/actions/icons/bookmark.png"),
                             debugger_position);
 
   connect (_edit_area, SIGNAL (marginClicked (int, int,

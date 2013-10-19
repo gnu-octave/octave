@@ -75,7 +75,6 @@ include statistics/tests/module.mk
 include strings/module.mk
 include testfun/module.mk
 include time/module.mk
-include ui/module.mk
 
 nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES) $(JAR_FILES)
 

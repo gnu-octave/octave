@@ -432,7 +432,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 %! b = rand (3, 3, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,2));
-%!assert (convn (a, b, "valid"), []);
+%!assert (convn (a, b, "valid"), c(3:10,3:10,3:2)); # a 7x7x0 matrix
 %!
 %! ## test multiple different number of dimensions, with odd
 %! ## and even numbers
@@ -440,7 +440,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 %! b = rand (4, 3, 2, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(3:12,2:16,2:8,2:9,:))
-%!assert (convn (a, b, "valid"), c(4:6,3:15,2:7,3:8,:));
+%!assert (convn (a, b, "valid"), c(4:10,3:15,2:7,3:8,:));
 
 %!shared a, b, c
 %! a = reshape (floor (magic (16) /10), [4 8 4 2]);

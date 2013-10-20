@@ -189,9 +189,10 @@ file_editor_tab::set_file_name (const QString& fileName)
   update_lexer ();
 
   // update the file editor with current editing directory
-  emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name));
+  emit editor_state_changed (_copy_available, _file_name);
   // add the new file to the mru list
-  emit mru_add_file (QDir::cleanPath (_file_name));
+
+  emit mru_add_file (_file_name);
 }
 
 void
@@ -931,7 +932,14 @@ file_editor_tab::set_modified (bool modified)
 QString
 file_editor_tab::load_file (const QString& fileName)
 {
-  QFile file (fileName);
+  // get the absolute path
+  QFileInfo file_info = QFileInfo (fileName);
+  QString file_to_load;
+  if (file_info.exists ())
+    file_to_load = file_info.canonicalFilePath ();
+  else
+    file_to_load = fileName;
+  QFile file (file_to_load);
   if (!file.open (QFile::ReadOnly))
     return file.errorString ();
 
@@ -941,7 +949,7 @@ file_editor_tab::load_file (const QString& fileName)
   QApplication::restoreOverrideCursor ();
 
   _copy_available = false;     // no selection yet available
-  set_file_name (fileName);
+  set_file_name (file_to_load);
   update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet
 
@@ -967,27 +975,34 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
       save_file_as (remove_on_success);
       return;
     }
+  // get the absolute path (if existing)
+  QFileInfo file_info = QFileInfo (saveFileName);
+  QString file_to_save;
+  if (file_info.exists ())
+    file_to_save = file_info.canonicalFilePath ();
+  else
+    file_to_save = saveFileName;
+  QFile file (file_to_save);
 
   // stop watching file
   QStringList trackedFiles = _file_system_watcher.files ();
-  if (!trackedFiles.isEmpty ())
-    _file_system_watcher.removePath (saveFileName);
+  if (trackedFiles.contains (file_to_save))
+    _file_system_watcher.removePath (file_to_save);
 
   // open the file for writing
-  QFile file (saveFileName);
   if (!file.open (QIODevice::WriteOnly))
     {
       // Unsuccessful, begin watching file again if it was being
       // watched previously.
-      if (trackedFiles.contains (saveFileName))
-        _file_system_watcher.addPath (saveFileName);
+      if (trackedFiles.contains (file_to_save))
+        _file_system_watcher.addPath (file_to_save);
 
       // Create a NonModal message about error.
       QMessageBox* msgBox
         = new QMessageBox (QMessageBox::Critical,
                            tr ("Octave Editor"),
                            tr ("Could not open file %1 for write:\n%2.").
-                           arg (saveFileName).arg (file.errorString ()),
+                           arg (file_to_save).arg (file.errorString ()),
                            QMessageBox::Ok, 0);
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -1000,11 +1015,17 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
   QTextStream out (&file);
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << _edit_area->text ();
+  out.flush ();
   QApplication::restoreOverrideCursor ();
+  file.flush ();
   file.close ();
 
+  // file exists now
+  file_info = QFileInfo (file);
+  file_to_save = file_info.canonicalFilePath ();
+
   // save file name after closing file as set_file_name starts watching again
-  set_file_name (saveFileName);
+  set_file_name (file_to_save);   // make absolute
 
   // set the window title to actual file name (not modified)
   update_window_title (false);

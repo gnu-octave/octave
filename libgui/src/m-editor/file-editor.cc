@@ -277,7 +277,8 @@ file_editor::request_open_file (const QString& openFileName, int line,
                   add_file_editor_tab (fileEditorTab, "");
                   fileEditorTab->update_window_title (false);
                   // file already loaded, add file to mru list here
-                  handle_mru_add_file (QDir::cleanPath (openFileName));
+                  QFileInfo file_info = QFileInfo (openFileName);
+                  handle_mru_add_file (file_info.canonicalFilePath ());
 
                   if (line > 0)
                     {

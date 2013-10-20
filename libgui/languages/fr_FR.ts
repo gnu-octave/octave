@@ -960,7 +960,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+739"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer le presse-papiers</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1030,22 +1030,22 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+77"/>
         <source>Octave Packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Paquets d&apos;Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Share Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Partager Code</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Contribute to Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Contribuer à Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished"></translation>
+        <translation>Ressources développeurs d'Octave</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1580,12 +1580,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+20"/>
         <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI. </source>
-        <translation type="unfinished"></translation>
+        <translation>Il semble que vous exécutez l&apos;interface graphique d&apos;Octave pour la première fois sur cet ordinateur. Cliquez sur &apos;Fin&apos; pour écrire un fichier de configuration et lancez l&apos;interface graphique d&apos;Octave.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>The configuration file is stored in __%1__. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier de configuration est stockée dans __% 1__. Si ce fichier existe, vous ne verrez pas cette boîte de dialogue lorsque d&apos;Octave recommence.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1596,7 +1596,13 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
 &lt;li&gt;open the documentation browser of Octave GUI with the help menu.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pour plus d'information sur d&apos;Octave,lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;visiter &lt;a href=&quot;http://octave.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://octave.org&lt;/span&gt;&lt;/a&gt;,&lt;/li&gt; 
+&lt;li&gt; obtenir le documentation en ligne comme &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;html&lt;/span&gt;&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document, ou&lt;/li&gt;
+&lt;li&gt;ouvrir le navigateur de documentation de l'interface graphique d'Octave avec le menu d'aide.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="-27"/>

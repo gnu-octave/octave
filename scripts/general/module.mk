@@ -8,6 +8,7 @@ general_FCN_FILES = \
   general/accumarray.m \
   general/accumdim.m \
   general/bicubic.m \
+  general/bincoeff.m \
   general/bitcmp.m \
   general/bitget.m \
   general/bitset.m \
@@ -18,7 +19,6 @@ general_FCN_FILES = \
   general/celldisp.m \
   general/chop.m \
   general/circshift.m \
-  general/colon.m \
   general/common_size.m \
   general/cplxpair.m \
   general/cumtrapz.m \
@@ -32,7 +32,6 @@ general_FCN_FILES = \
   general/flipdim.m \
   general/fliplr.m \
   general/flipud.m \
-  general/genvarname.m \
   general/gradient.m \
   general/idivide.m \
   general/int2str.m \

@@ -201,7 +201,9 @@ function h = colorbar (varargin)
     addproperty ("axes", cax, "handle", ax);
 
     if (vertical)
-      hi = image (cax, [0,1], [cmin, cmax], [1 : clen]');
+      ## Use low-level form to avoid calling newplot which changes axes
+      hi = image (cax, "xdata", [0,1], "ydata", [cmin, cmax],
+                       "cdata", [1 : clen]');
       if (mirror)
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
                   "ylim", cext, "ylimmode", "manual",
@@ -212,7 +214,8 @@ function h = colorbar (varargin)
                   "yaxislocation", "left", args{:});
       endif
     else
-      hi = image (cax, [cmin, cmax], [0,1], [1 : clen]);
+      hi = image (cax, "xdata", [cmin, cmax], "ydata", [0,1],
+                       "cdata", [1 : clen]);
       if (mirror)
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
                   "xlim", cext, "xlimmode", "manual",

@@ -330,7 +330,8 @@ tm_row_const::tm_row_const_rep::do_init_element (const octave_value& val,
   if (!any_class && val.is_object ())
     any_class = true;
 
-  all_1x1 = all_1x1 && val.numel () == 1;
+  // Special treatment of sparse matrices to avoid out-of-memory error
+  all_1x1 = all_1x1 && ! val.is_sparse_type () && val.numel () == 1;
 }
 
 void

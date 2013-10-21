@@ -17,7 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}, @var{c}] =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{win_type})
+## @deftypefn  {Function File} {@var{y} =} stft (@var{x})
+## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size})
+## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc})
+## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef})
+## @deftypefnx {Function File} {@var{y} =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{win_type})
+## @deftypefnx {Function File} {[@var{y}, @var{c}] =} stft (@dots{})
 ## Compute the short-time Fourier transform of the vector @var{x} with
 ## @var{num_coef} coefficients by applying a window of @var{win_size} data
 ## points and an increment of @var{inc} points.
@@ -26,19 +31,19 @@
 ## is applied:
 ##
 ## @table @asis
-## @item @nospell{hanning}
+## @item @qcode{"hanning"}
 ## win_type = 1
 ##
-## @item @nospell{hamming}
+## @item @qcode{"hamming"}
 ## win_type = 2
 ##
-## @item rectangle
+## @item @qcode{"rectangle"}
 ## win_type = 3
 ## @end table
 ##
 ## The window names can be passed as strings or by the @var{win_type} number.
 ##
-## If not all arguments are specified, the following defaults are used:
+## The following defaults are used for unspecifed arguments:
 ## @var{win_size} = 80, @var{inc} = 24, @var{num_coef} = 64, and
 ## @var{win_type} = 1.
 ##
@@ -49,71 +54,48 @@
 ## @code{[@var{y}, @var{c}] = stft (@code{x}, @dots{})} returns the
 ## entire STFT-matrix @var{y} and a 3-element vector @var{c} containing
 ## the window size, increment, and window type, which is needed by the
-## synthesis function.
+## @code{synthesis} function.
+## @seealso{synthesis}
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description: Short-Time Fourier Transform
 
-function [y, c] = stft (x, win_size, inc, num_coef, win_type)
+function [y, c] = stft (x, win_size = 80, inc = 24, num_coef = 64, win_type = 1)
 
-  ## Default values of unspecified arguments.
-  if (nargin < 5)
-    win_type = 1;
-    if (nargin < 4)
-      num_coef = 64;
-      if (nargin < 3)
-        inc = 24;
-        if (nargin < 2)
-          win_size = 80;
-        endif
-      endif
-    endif
-  elseif (nargin == 5)
-    if (ischar (win_type))
-      if (strcmp (win_type, "hanning"))
-        win_type = 1;
-      elseif (strcmp (win_type, "hamming"))
-        win_type = 2;
-      elseif (strcmp (win_type, "rectangle"))
-        win_type = 3;
-      else
-        error ("stft: unknown window type '%s'", win_type);
-      endif
-    endif
-  else
+  if (nargin < 1 || nargin > 5)
     print_usage ();
   endif
 
-  ## Check whether X is a vector.
-  [nr, nc] = size (x);
-  if (nc != 1)
-    if (nr == 1)
-      x = x';
-      nr = nc;
-    else
-      error ("stft: X must be a vector");
-    endif
+  if (ischar (win_type))
+    switch (tolower (win_type))
+      case "hanning"    win_type = 1;
+      case "hamming"    win_type = 2;
+      case "rectangle"  win_type = 3;
+      otherwise
+        error ("stft: unknown window type '%s'", win_type);
+    endswitch
   endif
+
+  ## Check whether X is a vector.
+  if (! isvector (x))
+    error ("stft: X must be a vector");
+  endif
+  x = x(:);
 
   ncoef = 2 * num_coef;
   if (win_size > ncoef)
     win_size = ncoef;
     printf ("stft: window size adjusted to %f\n", win_size);
   endif
-  num_win = fix ((nr - win_size) / inc);
+  num_win = fix ((rows (x) - win_size) / inc);
 
   ## compute the window coefficients
-  if (win_type == 3)
-    ## Rectangular window.
-    win_coef = ones (win_size, 1);
-  elseif (win_type == 2)
-    ## Hamming window.
-    win_coef = hamming (win_size);
-  else
-    ## Hanning window.
-    win_coef = hanning (win_size);
-  endif
+  switch (win_type)
+    case 1  win_coef = hanning (win_size);
+    case 2  win_coef = hamming (win_size);
+    case 3  win_coef = ones (win_size, 1);
+  endswitch
 
   ## Create a matrix Z whose columns contain the windowed time-slices.
   z = zeros (ncoef, num_win + 1);

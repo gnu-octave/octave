@@ -380,7 +380,8 @@ do_load (std::istream& stream, const std::string& orig_fname,
 
 #ifdef HAVE_HDF5
         case LS_HDF5:
-          name = read_hdf5_data (stream, orig_fname, global, tc, doc);
+          name = read_hdf5_data (stream, orig_fname, global, tc, doc,
+                                 argv, argv_idx, argc);
           break;
 #endif /* HAVE_HDF5 */
 

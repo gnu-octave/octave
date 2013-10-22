@@ -405,7 +405,8 @@ function print (varargin)
           ## This is done to work around the bbox being whole numbers.
           fontsize = fontsize * opts.scalefontsize;
         endif
-        set (h(ishandle (h)), "fontsize", fontsize);
+        ## FIXME: sort needed so legend child objects are acted on first
+        set (sort (h(ishandle (h))), "fontsize", fontsize);
       endif
     endif
 

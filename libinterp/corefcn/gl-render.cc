@@ -1403,7 +1403,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   if (x_max > floatmax || y_max > floatmax || z_max > floatmax)
   {
-    warning ("gl-render: data limits greater than float capacity");
+    warning ("gl-render: data values greater than float capacity.  (1) Scale data, or (2) Use gnuplot");
     return;
   }
 

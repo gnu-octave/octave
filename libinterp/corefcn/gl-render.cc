@@ -1401,7 +1401,8 @@ opengl_renderer::draw_axes (const axes::properties& props)
   double z_min = props.get_z_min ();
   double z_max = props.get_z_max ();
 
-  if (x_max > floatmax || y_max > floatmax || z_max > floatmax)
+  if (x_max > floatmax || y_max > floatmax || z_max > floatmax
+      || x_min < -floatmax || y_min < -floatmax || z_min < -floatmax)
   {
     warning ("gl-render: data values greater than float capacity.  (1) Scale data, or (2) Use gnuplot");
     return;

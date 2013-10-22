@@ -2557,6 +2557,12 @@ opengl_renderer::draw_image (const image::properties& props)
   const ColumnVector p0 = xform.transform (x(0), y(0), 0);
   const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
+  if (xisnan (p0(0)) || xisnan (p0(1)) || xisnan (p1(0)) || xisnan (p1(1)))
+    {
+      warning ("gl-render: image x,y data too large to draw");
+      return;
+    }
+
   // image pixel size in screen pixel units
   float pix_dx, pix_dy;
   // image pixel size in normalized units

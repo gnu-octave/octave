@@ -649,6 +649,18 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
+// End of a block of full-line comments.
+%}
+
+<LINE_COMMENT_START><<EOF>> {
+    curr_lexer->lexer_debug ("<LINE_COMMENT_START><<EOF>>");
+
+    curr_lexer->finish_comment (octave_comment_elt::full_line);
+
+    curr_lexer->pop_start_state ();
+  }
+
+%{
 // Double-quoted character strings.
 %}
 

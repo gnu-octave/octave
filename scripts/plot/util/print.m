@@ -405,8 +405,12 @@ function print (varargin)
           ## This is done to work around the bbox being whole numbers.
           fontsize = fontsize * opts.scalefontsize;
         endif
-        ## FIXME: sort needed so legend child objects are acted on first
-        set (sort (h(ishandle (h))), "fontsize", fontsize);
+        ## FIXME: legend child objects need to be acted on first.
+        ##        or legend fontsize callback will destroy them.
+        hlist = h(ishandle (h));
+        haxes = strcmp (get (hlist, "type"), "axes");
+        set (hlist(! haxes), "fontsize", fontsize);
+        set (hlist(haxes), "fontsize", fontsize);
       endif
     endif
 
